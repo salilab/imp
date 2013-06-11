@@ -26,10 +26,10 @@ class IMPCOREEXPORT ConstantClassnamePredicate : public ClassnamePredicate {
  public:
   ConstantClassnamePredicate(int v,
                              std::string name = "ConstClassnamePredicate%1%");
-  virtual int get_value_index(Model *m, PASSINDEXTYPE pi) const IMP_OVERRIDE {
+  virtual int get_value_index(Model *, PASSINDEXTYPE ) const IMP_OVERRIDE {
     return v_;
   }
-  virtual ModelObjectsTemp do_get_inputs(Model *m, const ParticleIndexes &pis)
+  virtual ModelObjectsTemp do_get_inputs(Model *, const ParticleIndexes &)
       const IMP_OVERRIDE {
     return ModelObjectsTemp();
   }

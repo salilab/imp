@@ -74,7 +74,7 @@ class IMPCONTAINEREXPORT ConsecutivePairFilter : public PairPredicate {
  public:
   ConsecutivePairFilter(ConsecutivePairContainer *cpc);
 
-  virtual int get_value_index(Model *m, const ParticleIndexPair &pip)
+  virtual int get_value_index(Model *, const ParticleIndexPair &pip)
       const IMP_OVERRIDE {
     return cpc_->get_contains(pip);
   }

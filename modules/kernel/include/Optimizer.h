@@ -148,21 +148,21 @@ class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
   FloatIndexes get_optimized_attributes() const {
     return get_model()->get_optimized_attributes();
   }
-  IMP_PROTECTED_METHOD(void, set_value, (FloatIndex fi, double v), const, {
+  void set_value(FloatIndex fi, double v) const {
     get_model()->set_attribute(fi.get_key(), fi.get_particle(), v);
-  });
+  }
 
-  IMP_PROTECTED_METHOD(Float, get_value, (FloatIndex fi), const, {
+ Float get_value(FloatIndex fi) const {
     return get_model()->get_attribute(fi.get_key(), fi.get_particle());
-  });
+  }
 
-  IMP_PROTECTED_METHOD(Float, get_derivative, (FloatIndex fi), const, {
+  Float get_derivative(FloatIndex fi) const {
     return get_model()->get_derivative(fi.get_key(), fi.get_particle());
-  });
+  }
 
     //!@}
 
-  IMP_PROTECTED_METHOD(double, width, (FloatKey k), const, {
+  double width(FloatKey k) const {
     if (widths_.size() <= k.get_index() || widths_[k.get_index()] == 0) {
       FloatRange w = model_->get_range(k);
       double wid = static_cast<double>(w.second) - w.first;
@@ -176,7 +176,7 @@ class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
     }
     return widths_[k.get_index()];
                                                              //return 1.0;
-  });
+  }
 
     /** @name Methods to get and set scaled optimizable values
         Certain optimizers benefit from having all the optimized values
@@ -185,36 +185,35 @@ class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
         them and unscale them before setting them.
     */
     //{@
-  IMP_PROTECTED_METHOD(void, set_scaled_value, (FloatIndex fi, Float v), const,
-                       {
+  void set_scaled_value (FloatIndex fi, Float v) const {
     double wid = width(fi.get_key());
     set_value(fi, v * wid);
-  });
+  }
 
-  IMP_PROTECTED_METHOD(double, get_scaled_value, (FloatIndex fi), const, {
+  double get_scaled_value (FloatIndex fi) const {
     double uv = get_value(fi);
     double wid = width(fi.get_key());
     return uv / wid;
-  });
+  }
 
-  IMP_PROTECTED_METHOD(double, get_scaled_derivative, (FloatIndex fi), const, {
+  double get_scaled_derivative(FloatIndex fi) const {
     double uv = get_derivative(fi);
     double wid = width(fi.get_key());
     return uv * wid;
-  });
+  }
 
     //! Clear the cache of range information. Do this at the start of
     //optimization
-  IMP_PROTECTED_METHOD(void, clear_range_cache, (), , {
+  void clear_range_cache() {
     widths_.clear();
-  });
+  }
 //!@}
 
 #ifndef IMP_DOXYGEN
   //! Return the restraint sets used in evaluation.
   /** Use IMP::kernel::get_restraints() to get the actual restraints used.
    */
-  IMP_PROTECTED_METHOD(Restraints, get_restraints, (), const, );
+  Restraints get_restraints() const;
 #endif
  private:
   void set_is_optimizing_states(bool tf) const;

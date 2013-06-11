@@ -5,7 +5,6 @@
 typedef IMP::algebra::Sphere3D S;
 typedef IMP::algebra::Vector3D V;
 int main(int, char * []) {
-  double epsilon = std::numeric_limits<double>::epsilon();
   //
   // test computation for two non intersecting balls
   //

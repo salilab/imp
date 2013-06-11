@@ -29,21 +29,36 @@ IMPKERNEL_BEGIN_NAMESPACE
  */
 
 //! The type used to identify float attributes in the Particles
-IMP_DECLARE_KEY_TYPE(FloatKey, 0);
+typedef Key<0, true> FloatKey;
+IMP_VALUES(FloatKey, FloatKeys);
+
 //! The type used to identify int attributes in the Particles
-IMP_DECLARE_KEY_TYPE(IntKey, 1);
+typedef Key<1, true> IntKey;
+IMP_VALUES(IntKey, IntKeys);
+
 //! The type used to identify string attributes in the Particles
-IMP_DECLARE_KEY_TYPE(StringKey, 2);
+typedef Key<2, true> StringKey;
+IMP_VALUES(StringKey, StringKeys);
+
 //! The type used to identify a particle attribute in the Particles
-IMP_DECLARE_KEY_TYPE(ParticleIndexKey, 3);
+typedef Key<3, true> ParticleIndexKey;
+IMP_VALUES(ParticleIndexKey, ParticleIndexKeys);
+
 //! The type used to identify an Object attribute
-IMP_DECLARE_KEY_TYPE(ObjectKey, 4);
+typedef Key<4, true> ObjectKey;
+IMP_VALUES(ObjectKey, ObjectKeys);
+
 //! The type used to identify a non-ref counted Object attribute
-IMP_DECLARE_KEY_TYPE(WeakObjectKey, 9);
+typedef Key<9, true> WeakObjectKey;
+IMP_VALUES(WeakObjectKey, WeakObjectKeys);
+
 //! The type used to identify int attributes in the Particles
-IMP_DECLARE_KEY_TYPE(IntsKey, 5);
+typedef Key<5, true> IntsKey;
+IMP_VALUES(IntsKey, IntsKeys);
+
 //! The type used to identify a particle attribute in the Particles
-IMP_DECLARE_KEY_TYPE(ParticleIndexesKey, 6);
+typedef Key<6, true> ParticleIndexesKey;
+IMP_VALUES(ParticleIndexesKey, ParticleIndexesKeys);
 
 #ifndef IMP_DOXYGEN
 // for backwards compat, no way to provide a warning on this
@@ -52,10 +67,12 @@ typedef ParticleIndexKey ParticleKey;
 #endif
 
 //! The type used to identify a particle attribute in the Particles
-IMP_DECLARE_KEY_TYPE(ObjectsKey, 7);
+typedef Key<7, true> ObjectsKey;
+IMP_VALUES(ObjectsKey, ObjectsKeys);
 
 //! The type used to identify data stored directly in the model.
-IMP_DECLARE_KEY_TYPE(ModelKey, 8);
+typedef Key<8, true> ModelKey;
+IMP_VALUES(ModelKey, ModelKeys);
 
 /** @} */
 

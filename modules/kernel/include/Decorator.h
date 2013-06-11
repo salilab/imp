@@ -124,9 +124,10 @@ class Decorator : public base::Value {
     else
       return 0;
   }
-  IMP_PROTECTED_CONSTRUCTOR(Decorator, (Model* m, ParticleIndex pi), );
-  IMP_PROTECTED_CONSTRUCTOR(Decorator, (Particle* p), );
-  IMP_PROTECTED_CONSTRUCTOR(Decorator, (), );
+protected:
+  Decorator(Model* m, ParticleIndex pi);
+  Decorator(Particle* p);
+  Decorator();
 
  public:
   ParticleIndex get_particle_index() const { return pi_; }

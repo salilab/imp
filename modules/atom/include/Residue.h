@@ -23,8 +23,9 @@ IMPATOM_BEGIN_NAMESPACE
 /* each static must be on a separate line because of MSVC bug C2487:
    see http://support.microsoft.com/kb/127900/
 */
+typedef Key<IMP_RESIDUE_TYPE_INDEX, true> ResidueType;
+IMP_VALUES(ResidueType, ResidueTypes);
 
-IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
 /** \class IMP::atom::ResidueType
     \brief The type for a residue.
 

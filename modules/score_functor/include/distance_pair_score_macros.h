@@ -23,7 +23,7 @@
 
 #else
 #define IMP_FUNCTOR_DISTANCE_PAIR_SCORE(Name, Functor, Args, PassArgs) \
-  IMPSCORE_FUNCTOR_DEPRECATED_MACRO(2.1, "Declare the class yourself"); \
+  IMPSCOREFUNCTOR_DEPRECATED_MACRO(2.1, "Declare the class yourself"); \
   class Name : public IMP::score_functor::DistancePairScore<Functor> { \
     typedef IMP::score_functor::DistancePairScore<Functor> P;          \
    public:                                                             \

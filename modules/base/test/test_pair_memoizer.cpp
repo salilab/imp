@@ -19,7 +19,7 @@
 
 // Skip test on g++ 4.2, since it fails to compile due to a g++ bug
 #if __GNUC__ == 4 && __GNUC_MINOR__ == 2
-int main(int argc, char *argv[]) {
+int main(int, char *[]) {
   std::cout << "Skipped due to g++ 4.2 bug" << std::endl;
   return 0;
 }

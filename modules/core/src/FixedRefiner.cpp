@@ -21,8 +21,8 @@ bool FixedRefiner::get_can_refine(Particle *) const { return true; }
 
 const ParticlesTemp FixedRefiner::get_refined(Particle *) const { return ps_; }
 
-ModelObjectsTemp FixedRefiner::do_get_inputs(Model *m,
-                                             const ParticleIndexes &pis) const {
+ModelObjectsTemp FixedRefiner::do_get_inputs(Model *,
+                                             const ParticleIndexes &) const {
   return ModelObjectsTemp();
 }
 

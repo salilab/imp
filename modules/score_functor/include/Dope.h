@@ -14,12 +14,12 @@
 #include "Statistical.h"
 #include <IMP/algebra/utility.h>
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
-
-/** The type of atoms for Dope.*/
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-IMP_DECLARE_CONTROLLED_KEY_TYPE(DopeType, 6453462);
-#elif defined(SWIG)
+#ifdef SWIG
 class DopeType;
+#else
+/** The type of atoms for Dope.*/
+typedef Key<6453462, false> DopeType;
+IMP_VALUES(DopeType, DopeTypes);
 #endif
 
 /**  Score pair of atoms based on DOPE.

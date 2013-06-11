@@ -2,6 +2,7 @@
  */
 #include <IMP/base/map.h>
 #include <IMP/base/Vector.h>
+IMP_COMPILER_DISABLE_WARNINGS
 IMP_CLANG_PRAGMA(diagnostic ignored "-Wc++11-extensions")
 #include <CGAL/Origin.h>
 #include <CGAL/Nef_polyhedron_3.h>
@@ -12,6 +13,7 @@ IMP_CLANG_PRAGMA(diagnostic ignored "-Wc++11-extensions")
 #include <CGAL/make_skin_surface_mesh_3.h>
 #include <CGAL/Union_of_balls_3.h>
 #include <CGAL/Gmpq.h>
+IMP_COMPILER_ENABLE_WARNINGS
 int main(int, char * []) {
   double pts[][3] = {
     { 3.3874, 3.3577, 2.86547 }, { 4.20832, 3.04325, 3.05838 },
