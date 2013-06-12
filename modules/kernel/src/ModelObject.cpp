@@ -26,10 +26,12 @@ void ModelObject::set_has_dependencies(bool tf, const ScoreStatesTemp &ss) {
       std::find(ss.begin(), ss.end(), dynamic_cast<ScoreState *>(this)) ==
           ss.end(),
       "An object can't depend on itself");
+  IMP_LOG_VERBOSE(get_name() << " depends on " << ss << std::endl);
   required_score_states_ = ss;
 }
 
 void ModelObject::set_has_dependencies(bool tf) {
+  IMP_OBJECT_LOG;
   if (tf == has_dependencies_) return;
   if (!tf) {
     has_dependencies_ = false;
