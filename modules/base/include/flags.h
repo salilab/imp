@@ -53,6 +53,17 @@ IMPBASEEXPORT void setup_from_argv(int argc, char **argv,
                                    std::string description);
 
 /** Parse the command line flags and return the
+    positional arguments returning unknown flags in a list. Use this version
+    if some arguments are to be parsed by a different system.
+
+    \param[in] argc argc
+    \param[in] argv argv
+    \param[in] description A message describing what the program does.
+    */
+IMPBASEEXPORT Strings setup_from_argv_allowing_unknown(int argc, char **argv,
+                                                    std::string description);
+
+/** Parse the command line flags and return the
     positional arguments.
 
     \param[in] argc argc
