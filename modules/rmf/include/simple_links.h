@@ -25,28 +25,23 @@ IMPRMF_BEGIN_NAMESPACE
 template <class O> class SimpleLoadLink : public LoadLink {
   base::Vector<base::Pointer<O> > os_;
   RMF::NodeIDs nhs_;
-  IMP_PROTECTED_METHOD(virtual void, do_load_one,
-                       (RMF::NodeConstHandle nh, O *o), , = 0);
-  IMP_PROTECTED_METHOD(void, do_load, (RMF::FileConstHandle fh), , {
+protected:
+  virtual void do_load_one(RMF::NodeConstHandle nh, O *o) = 0;
+  void do_load(RMF::FileConstHandle fh) {
     for (unsigned int i = 0; i < os_.size(); ++i) {
       do_load_one(fh.get_node_from_id(nhs_[i]), os_[i]);
     }
-  });
-  IMP_PROTECTED_METHOD(virtual void, do_add_link, (O *, RMF::NodeConstHandle), ,
-                       {
-  });
-  IMP_PROTECTED_METHOD(void, add_link, (O *o, RMF::NodeConstHandle nh), , {
+  }
+  virtual void do_add_link(O *, RMF::NodeConstHandle) {};
+  void add_link(O *o, RMF::NodeConstHandle nh) {
     os_.push_back(o);
     nhs_.push_back(nh.get_id());
     set_association(nh, o, true);
-  });
-  IMP_PROTECTED_METHOD(virtual bool, get_is, (RMF::NodeConstHandle nh), const,
-                       = 0);
-  IMP_PROTECTED_METHOD(virtual O *, do_create, (RMF::NodeConstHandle nh), ,
-                       = 0);
-  IMP_PROTECTED_CONSTRUCTOR(SimpleLoadLink, (std::string name),
-                            : LoadLink(name) {
-  });
+  }
+  virtual bool get_is(RMF::NodeConstHandle nh) const = 0;
+  virtual O * do_create(RMF::NodeConstHandle nh) = 0;
+  SimpleLoadLink(std::string name): LoadLink(name) {
+  }
 
  public:
   /** Create all the entities under the passed root.*/
