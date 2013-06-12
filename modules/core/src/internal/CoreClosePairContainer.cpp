@@ -145,22 +145,29 @@ void CoreClosePairContainer::do_first_call() {
 }
 
 void CoreClosePairContainer::do_incremental() {
-  ParticleIndexes moved = moved_->get_indexes();
   IMP_LOG_TERSE("Handling incremental update of ClosePairContainer"
                 << std::endl);
   using IMP::operator<< ;
-  IMP_LOG_VERBOSE("Moved " << moved << std::endl);
+  IMP_LOG_VERBOSE("Moved " << moved_->get_indexes() << std::endl);
   PairPredicatesTemp pf = access_pair_filters();
   pf.push_back(new AllSamePairPredicate());
   pf.back()->set_was_used(true);
   cpf_->set_pair_filters(pf);
   cpf_->set_distance(distance_ + 2 * slack_);
-  ParticleIndexPairs ret =
-      cpf_->get_close_pairs(get_model(), c_->get_indexes(), moved);
-  ParticleIndexPairs ret1 = cpf_->get_close_pairs(get_model(), moved);
-  ret.insert(ret.begin(), ret1.begin(), ret1.end());
-  internal::fix_order(ret);
-  moved_count_ += moved.size();
+  ParticleIndexPairs ret;
+  IMP_CONTAINER_ACCESS(SingletonContainer, moved_,
+                       {
+                         const ParticleIndexes &moved = imp_indexes;
+                          IMP_CONTAINER_ACCESS(SingletonContainer, c_,
+                                ret = cpf_->get_close_pairs(get_model(),
+                                                            c_->get_indexes(),
+                                                            moved));
+                         ParticleIndexPairs ret1
+                             = cpf_->get_close_pairs(get_model(), moved);
+                         ret.insert(ret.begin(), ret1.begin(), ret1.end());
+                         internal::fix_order(ret);
+                         moved_count_ += moved.size();
+                       });
   {
     /*InList il= InList::create(moved);
       remove_from_list_if(il);
