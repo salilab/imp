@@ -14,7 +14,7 @@
 #include <IMP/base/Object.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/internal/container_helpers.h>
-#include <IMP/input_output_macros.h>
+#include <IMP/model_object_helpers.h>
 
 IMPCORE_BEGIN_NAMESPACE
 #ifndef IMP_DOXYGEN
@@ -32,7 +32,8 @@ class MovedSingletonContainer;
     \see ClosePairContainer
     \see CloseBipartitePairContainer
  */
-class IMPCOREEXPORT ClosePairsFinder : public IMP::base::Object {
+class IMPCOREEXPORT ClosePairsFinder : public ParticleInputs,
+                                       public IMP::base::Object {
   double distance_;
 
  public:
@@ -67,19 +68,6 @@ class IMPCOREEXPORT ClosePairsFinder : public IMP::base::Object {
   double get_distance() const { return distance_; }
 /** @} */
 
-  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
-      ParticlesTemp get_input_particles(
-          const ParticlesTemp &ps) const;
-  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1) ContainersTemp get_input_containers(
-      const ParticlesTemp &ps) const;
-  ModelObjectsTemp get_inputs(Model *m,
-                              const ParticleIndexes &pis) const {
-    return do_get_inputs(m, pis);
-  }
-protected:
-  /** Override this to return the inputs.*/
-  virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                         const ParticleIndexes &pis) const =0;
     public:
   /** @name Methods to control the set of filters
 

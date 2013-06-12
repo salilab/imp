@@ -33,9 +33,13 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class ProteinLigandRestraint;
 
+#ifndef SWIG
 /** The marker to identify the atom types.*/
 typedef Key<783462, false> ProteinLigandType;
 IMP_VALUES(ProteinLigandType, ProteinLigandTypes);
+#else
+class ProteinLigandType;
+#endif
 
 /** add_protein_ligand_score_data() must be called on the molecules
     containing the atoms before the PairScore is used in order

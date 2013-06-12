@@ -22,13 +22,20 @@ class Linear : public UnaryFunction {
   //! Create with the given offset and slope.
   Linear(double offset, double slope) : slope_(slope), offset_(offset) {}
 
-  IMP_UNARY_FUNCTION_INLINE(
-      Linear, (feature - offset_) * slope_, slope_,
-      "Linear: " << slope_ << ", " << offset_ << std::endl);
   void set_slope(double f) { slope_ = f; }
 
   void set_offset(double f) { offset_ = f; }
 
+  virtual double evaluate(double feature) const IMP_OVERRIDE {
+    return (feature - offset_) * slope_;
+  }
+
+  virtual DerivativePair evaluate_with_derivative(double feature)
+      const IMP_OVERRIDE {
+    return DerivativePair(evaluate(feature), slope_);
+  }
+
+  IMP_OBJECT_METHODS(Linear);
  private:
   double slope_, offset_;
 };

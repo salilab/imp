@@ -26,22 +26,27 @@ class IMPCOREEXPORT BoxSweepClosePairsFinder : public ClosePairsFinder {
  public:
   BoxSweepClosePairsFinder();
 
+#ifndef SWIG
+  using ClosePairsFinder::get_close_pairs;
+#else
+  ParticlePairsTemp get_close_pairs(const ParticlesTemp &pc) const;
+  ParticlePairsTemp get_close_pairs(const ParticlesTemp &pca,
+                                    const ParticlesTemp &pcb) const;
+#endif
   virtual IntPairs
   get_close_pairs(const algebra::BoundingBox3Ds &bbs) const IMP_OVERRIDE;
   virtual IntPairs
   get_close_pairs(const algebra::BoundingBox3Ds &bas,
                   const algebra::BoundingBox3Ds &bbs) const IMP_OVERRIDE;
-  using ClosePairsFinder::get_close_pairs;
-  virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                         const ParticleIndexes &pis)
-      const IMP_OVERRIDE;
-
   virtual ParticleIndexPairs get_close_pairs(Model *m,
                                              const ParticleIndexes &pc)
       const IMP_OVERRIDE;
   virtual ParticleIndexPairs get_close_pairs(Model *m,
                                              const ParticleIndexes &pca,
                                              const ParticleIndexes &pcb)
+      const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                         const ParticleIndexes &pis)
       const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(BoxSweepClosePairsFinder);
 };

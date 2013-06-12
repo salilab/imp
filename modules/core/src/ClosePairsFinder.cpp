@@ -41,20 +41,6 @@ ClosePairsFinder::get_close_pairs(const ParticlesTemp &pca,
                                             IMP::internal::get_index(pcb)));
 }
 
-ParticlesTemp ClosePairsFinder::get_input_particles(
-    const ParticlesTemp &ps) const {
-  IMPCORE_DEPRECATED_FUNCTION_DEF(2.1, "Use get_inputs() instead");
-  return IMP::get_input_particles(
-      get_inputs(ps[0]->get_model(), IMP::get_indexes(ps)));
-}
-
-ContainersTemp ClosePairsFinder::get_input_containers(
-    const ParticlesTemp &ps) const {
-  IMPCORE_DEPRECATED_FUNCTION_DEF(2.1, "Use get_inputs() instead");
-  return IMP::get_input_containers(
-      get_inputs(ps[0]->get_model(), IMP::get_indexes(ps)));
-}
-
 IMP_LIST_IMPL(ClosePairsFinder, PairFilter, pair_filter, PairPredicate*,
               PairPredicates);
 

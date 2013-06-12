@@ -16,7 +16,7 @@
 #include "DerivativeAccumulator.h"
 #include "internal/container_helpers.h"
 #include <IMP/base/utility_macros.h>
-#include "input_output_macros.h"
+#include "model_object_helpers.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -28,7 +28,8 @@ IMPKERNEL_BEGIN_NAMESPACE
 
     Implementers should check out IMP_CLASSNAME_SCORE().
 */
-class IMPKERNELEXPORT ClassnameScore : public base::Object {
+class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
+                                       public base::Object {
  public:
   typedef VARIABLETYPE Argument;
   typedef INDEXTYPE IndexArgument;
@@ -73,8 +74,6 @@ class IMPKERNELEXPORT ClassnameScore : public base::Object {
       be equal to the current score. The defualt implementation
       just returns this object bound to the pair.*/
   Restraints create_current_decomposition(Model *m, PASSINDEXTYPE vt) const;
-
-  IMP_INPUTS_DECL(ClassnameScore);
 
  protected:
   /** Overide this to return your own decomposition.*/

@@ -85,9 +85,6 @@ ClassnameContainerAdaptor::ClassnameContainerAdaptor(
 
 ClassnameModifier::ClassnameModifier(std::string name) : Object(name) {}
 
-IMP_INPUTS_DEF(ClassnameModifier);
-IMP_OUTPUTS_DEF(ClassnameModifier);
-
 void ClassnameModifier::apply_index(Model *m, PASSINDEXTYPE v) const {
   apply(internal::get_particle(m, v));
 }
@@ -125,8 +122,6 @@ void ClassnamePredicate::remove_if_not_equal(Model *m, PLURALINDEXTYPE &ps,
                           make_predicate_not_equal(this, m, value)),
            ps.end());
 }
-
-IMP_INPUTS_DEF(ClassnamePredicate);
 
 ClassnameScore::ClassnameScore(std::string name) : Object(name) {
   /* Implemented here rather than in the header so that PairScore
@@ -193,8 +188,6 @@ Restraints ClassnameScore::create_current_decomposition(
     Model *m, PASSINDEXTYPE vt) const {
   return do_create_current_decomposition(m, vt);
 }
-
-IMP_INPUTS_DEF(ClassnameScore);
 
 IMPKERNEL_END_NAMESPACE
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE

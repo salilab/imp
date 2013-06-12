@@ -15,7 +15,7 @@
 #include "base_types.h"
 #include "ParticleTuple.h"
 #include "internal/container_helpers.h"
-#include "input_output_macros.h"
+#include "model_object_helpers.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -28,7 +28,9 @@ IMPKERNEL_BEGIN_NAMESPACE
     Implementors should see IMP_CLASSNAME_MODIFIER(). Also see
     ClassnameDerivativeModifier.
  */
-class IMPKERNELEXPORT ClassnameModifier : public base::Object {
+class IMPKERNELEXPORT ClassnameModifier : public ParticleInputs,
+                                          public ParticleOutputs,
+                                          public base::Object {
  public:
   typedef VARIABLETYPE Argument;
   typedef INDEXTYPE IndexArgument;
@@ -55,8 +57,6 @@ class IMPKERNELEXPORT ClassnameModifier : public base::Object {
       apply_index(m, o[i]);
     }
   }
-  IMP_INPUTS_DECL(ClassnameModifier);
-  IMP_OUTPUTS_DECL(ClassnameModifier);
 };
 
 IMPKERNEL_END_NAMESPACE

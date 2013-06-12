@@ -194,8 +194,6 @@ IMP_COMPILER_DISABLE_WARNINGS
 #if %(cppprefix)s_SHOW_WARNINGS
 #define %(cppprefix)s_DEPRECATED_HEADER(version, help_message)          \
     IMP_PRAGMA(message(__FILE__ " is deprecated: " help_message))
-#define %(cppprefix)s_DEPRECATED_MACRO(version, message)        \
-  IMP_DEPRECATED_MACRO(version, message)
 #define %(cppprefix)s_DEPRECATED_CLASS_DECL(version)    \
   IMP_DEPRECATED_ATTRIBUTE
 #define %(cppprefix)s_DEPRECATED_FUNCTION_DECL(version) \
@@ -205,13 +203,26 @@ IMP_COMPILER_DISABLE_WARNINGS
 /** See [deprecation support](../developer_guide.html#deprecation). */
 #define %(cppprefix)s_DEPRECATED_HEADER(version, help_message) \
 /** See [deprecation support](../developer_guide.html#deprecation). */
-#define %(cppprefix)s_DEPRECATED_MACRO(version, message)
-/** See [deprecation support](../developer_guide.html#deprecation). */
 #define %(cppprefix)s_DEPRECATED_CLASS_DECL(version)
 /** See [deprecation support](../developer_guide.html#deprecation). */
 #define %(cppprefix)s_DEPRECATED_FUNCTION_DECL(version)
 
 #endif // %(cppprefix)s_SHOW_WARNINGS
+
+// only warn about it in the all inclusion to cut down on copies
+#if !defined(IMP_ALL) || defined(SWIG) || defined(IMP_DOXYGEN)          \
+  || defined(IMPBASE_COMPILATION) || defined(IMPKERNEL_COMPILATION)     \
+  || defined(IMPCORE_COMPILATION) || defined(IMPATOM_COMPILATION)       \
+  || defined(IMPSTATISTICS_COMPILATION) || defined(IMPDOMINO_COMPILATION) \
+  || defined(IMPCONTAINER_COMPILATION) || defined(IMPDISPLAY_COMPILATION) \
+  || defined(IMPSCOREFUNCTOR_COMPILATION)
+/** See [deprecation support](../developer_guide.html#deprecation). */
+#define %(cppprefix)s_DEPRECATED_MACRO(version, message)
+
+#else
+#define %(cppprefix)s_DEPRECATED_MACRO(version, message)        \
+  IMP_DEPRECATED_MACRO(version, message)
+#endif
 
 /** See [deprecation support](../developer_guide.html#deprecation). */
 #define %(cppprefix)s_DEPRECATED_CLASS_DEF(version, message) \

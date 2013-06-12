@@ -15,7 +15,7 @@
 #include "ParticleTuple.h"
 #include "DerivativeAccumulator.h"
 #include "internal/container_helpers.h"
-#include "input_output_macros.h"
+#include "model_object_helpers.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -27,7 +27,8 @@ IMPKERNEL_BEGIN_NAMESPACE
 
     Implementers should check out IMP_CLASSNAME_PREDICATE().
 */
-class IMPKERNELEXPORT ClassnamePredicate : public base::Object {
+class IMPKERNELEXPORT ClassnamePredicate : public ParticleInputs,
+                                           public base::Object {
  public:
   typedef VARIABLETYPE Argument;
   typedef INDEXTYPE IndexArgument;
@@ -66,8 +67,6 @@ class IMPKERNELEXPORT ClassnamePredicate : public base::Object {
     }
     return ret;
   }
-
-  IMP_INPUTS_DECL(ClassnamePredicate);
 
   IMP_REF_COUNTED_DESTRUCTOR(ClassnamePredicate);
 };

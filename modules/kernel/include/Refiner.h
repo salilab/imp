@@ -15,7 +15,7 @@
 #include "RefCounted.h"
 #include "internal/IndexingIterator.h"
 #include <IMP/base/deprecation_macros.h>
-#include "input_output_macros.h"
+#include "model_object_helpers.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -29,7 +29,8 @@ class DerivativeAccumulator;
     IMP::core::LeavesRefiner or arbitrary relationships set up
     for a particular purpose, such as IMP::core::TableRefiner.
 */
-class IMPKERNELEXPORT Refiner : public IMP::base::Object {
+class IMPKERNELEXPORT Refiner : public ParticleInputs,
+                                public IMP::base::Object {
   struct Accessor;
 
  public:
@@ -68,8 +69,6 @@ class IMPKERNELEXPORT Refiner : public IMP::base::Object {
   RefinedIterator refined_end(Particle *a) const;
 /** @} */
 #endif
-
-  IMP_INPUTS_DECL(Refiner);
 };
 //! a collection of Refiner objects
 IMP_OBJECTS(Refiner, Refiners);

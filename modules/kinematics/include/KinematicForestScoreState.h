@@ -18,6 +18,17 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
+namespace {
+Model *extract_model(const IMP::core::RigidBodies& rbs,
+                     const IMP::ParticlesTemp& atoms) {
+  if (!rbs.empty()) return rbs[0].get_model();
+  else if (!atoms.empty()) return atoms[0]->get_model();
+  else {
+    IMP_FAILURE("No particles passed to KinematicForestScoreState");
+  }
+}
+}
+
 class IMPKINEMATICSEXPORT KinematicForestScoreState : public IMP::ScoreState {
  public:
 
@@ -26,6 +37,8 @@ class IMPKINEMATICSEXPORT KinematicForestScoreState : public IMP::ScoreState {
   KinematicForestScoreState(KinematicForest *kf,
                             IMP::core::RigidBodies rbs,
                             IMP::ParticlesTemp atoms) :
+      ScoreState(extract_model(rbs, atoms),
+                 "KinematicForestScoreState%1%"),
     kf_(kf), rbs_(rbs), atoms_(atoms) {}
 
   // functions that ScoreState requires

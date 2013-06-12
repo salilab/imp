@@ -139,7 +139,8 @@ get_output_containers(Particle *p) const
 
 /** \deprecated Just declare the methods yourself.*/
 #define IMP_INPUTS_DECL(Name)                                           \
-  IMPKERNEL_DEPRECATED_MACRO(2.1, "Just declare the methods yourself."); \
+  IMPKERNEL_DEPRECATED_MACRO(2.1,                                       \
+                             "Inherit from IMP::kernel::ParticleInputs."); \
   IMP_INPUTS_DECL_BACKWARDS(Name);                                      \
   public:                                                               \
   /** Get all the ModelObject objects that are read when the referenced
@@ -155,6 +156,8 @@ virtual ModelObjectsTemp do_get_inputs(Model *m,                        \
     such as IMP::SingletonModifier and IMP::PairScore.*/
 #define IMP_INPUTS_DEF(Name)                                            \
   IMP_INPUTS_DEF_BACKWARDS(Name)                                        \
+  IMPKERNEL_DEPRECATED_MACRO(2.1,                                       \
+                             "Inherit from IMP::kernel::ParticleInputs."); \
   ModelObjectsTemp Name::get_inputs(Model *m,                           \
                                     const ParticleIndexes &pis) const { \
     return do_get_inputs(m, pis);                                       \
@@ -164,7 +167,8 @@ virtual ModelObjectsTemp do_get_inputs(Model *m,                        \
 
 /** \deprecated Declare the methods yourself. */
 #define IMP_OUTPUTS_DECL(Name)                                          \
-  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the methods directly.");     \
+  IMPKERNEL_DEPRECATED_MACRO(2.1,                                       \
+                             "Inherit from IMP::kernel::ParticleOutputs."); \
   IMP_OUTPUTS_DECL_BACKWARDS(Name);                                     \
 public:                                                                 \
 /** Get all the ModelObject objects that are read when the referenced
@@ -178,7 +182,8 @@ virtual ModelObjectsTemp do_get_outputs(Model *m,                       \
 
 /** \deprecated Declare the methods yourself*/
 #define IMP_OUTPUTS_DEF(Name)                                           \
-  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the methods directly.");     \
+   IMPKERNEL_DEPRECATED_MACRO(2.1,                                       \
+                             "Inherit from IMP::kernel::ParticleOutputs."); \
   IMP_OUTPUTS_DEF_BACKWARDS(Name)                                       \
   ModelObjectsTemp Name::get_outputs(Model *m,                          \
                                      const ParticleIndexes &pis) const { \

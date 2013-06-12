@@ -91,6 +91,18 @@ namespace kernel {
 %warnfilter(473) Sampler;
 %warnfilter(473) Restraint;
 %warnfilter(403) Restraint;
+%warnfilter(403) SingletonPredicate;
+%warnfilter(403) PairPredicate;
+%warnfilter(403) TripletPredicate;
+%warnfilter(403) QuadPredicate;
+%warnfilter(403) SingletonModifier;
+%warnfilter(403) PairModifier;
+%warnfilter(403) TripletModifier;
+%warnfilter(403) QuadModifier;
+%warnfilter(403) SingletonScore;
+%warnfilter(403) PairScore;
+%warnfilter(403) TripletScore;
+%warnfilter(403) QuadScore;
 }
 }
 // to avoid extend clash
@@ -224,6 +236,9 @@ class Decorators;
 %include "IMP/kernel/base_types.h"
 %include "IMP/kernel/constants.h"
 %include "IMP/kernel/ModelObject.h"
+%rename(_ParticleInputs) ParticleInputs;
+%rename(_ParticleOutputs) ParticleOutputs;
+%include "IMP/kernel/model_object_helpers.h"
 %include "IMP/kernel/input_output.h"
 %include "IMP/kernel/utility.h"
 %include "IMP/kernel/DerivativeAccumulator.h"

@@ -80,12 +80,19 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder {
   internal::MovedSingletonContainer *get_moved_singleton_container(
       SingletonContainer *c, double thresold) const;
 #endif
+#ifndef SWIG
+  using ClosePairsFinder::get_close_pairs;
+#else
+  ParticlePairsTemp get_close_pairs(const ParticlesTemp &pc) const;
+  ParticlePairsTemp get_close_pairs(const ParticlesTemp &pca,
+                                    const ParticlesTemp &pcb) const;
+#endif
+
   virtual IntPairs
   get_close_pairs(const algebra::BoundingBox3Ds &bbs) const IMP_OVERRIDE;
   virtual IntPairs
   get_close_pairs(const algebra::BoundingBox3Ds &bas,
                   const algebra::BoundingBox3Ds &bbs) const IMP_OVERRIDE;
-  using ClosePairsFinder::get_close_pairs;
   virtual ModelObjectsTemp do_get_inputs(Model *m,
                                          const ParticleIndexes &pis)
       const IMP_OVERRIDE;

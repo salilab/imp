@@ -12,6 +12,4 @@ IMPKERNEL_BEGIN_NAMESPACE
 
 Refiner::Refiner(std::string name) : Object(name) {}
 
-IMP_INPUTS_DEF(Refiner);
-
 IMPKERNEL_END_NAMESPACE

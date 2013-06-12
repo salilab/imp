@@ -162,7 +162,16 @@ class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
 
     //!@}
 
+#if !defined(SWIG)
+  /** \deprecated Use get_width instead.*/
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   double width(FloatKey k) const {
+    IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_width instead");
+    return get_width(k);
+  }
+#endif
+
+  double get_width(FloatKey k) const {
     if (widths_.size() <= k.get_index() || widths_[k.get_index()] == 0) {
       FloatRange w = model_->get_range(k);
       double wid = static_cast<double>(w.second) - w.first;
@@ -175,7 +184,6 @@ class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
       }
     }
     return widths_[k.get_index()];
-                                                             //return 1.0;
   }
 
     /** @name Methods to get and set scaled optimizable values
@@ -186,19 +194,19 @@ class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
     */
     //{@
   void set_scaled_value (FloatIndex fi, Float v) const {
-    double wid = width(fi.get_key());
+    double wid = get_width(fi.get_key());
     set_value(fi, v * wid);
   }
 
   double get_scaled_value (FloatIndex fi) const {
     double uv = get_value(fi);
-    double wid = width(fi.get_key());
+    double wid = get_width(fi.get_key());
     return uv / wid;
   }
 
   double get_scaled_derivative(FloatIndex fi) const {
     double uv = get_derivative(fi);
-    double wid = width(fi.get_key());
+    double wid = get_width(fi.get_key());
     return uv * wid;
   }
 
