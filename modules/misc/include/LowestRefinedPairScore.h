@@ -29,7 +29,12 @@ public:
       \param[in] f The pair score to apply to the generated pairs
    */
   LowestRefinedPairScore(Refiner *r, PairScore *f);
-  IMP_INDEX_PAIR_SCORE(LowestRefinedPairScore);
+  double evaluate_index(Model *m, const ParticleIndexPair& p,
+                         DerivativeAccumulator *da) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs(Model *m,
+                                 const ParticleIndexes &pis) const;
+  IMP_PAIR_SCORE_METHODS(LowestRefinedPairScore);
+  IMP_OBJECT_METHODS(LowestRefinedPairScore);;
 };
 
 IMPMISC_END_NAMESPACE

@@ -35,7 +35,15 @@ class IMPCOREEXPORT DerivativesFromRefined
   //! Copy ks from the particles returned by r.
   DerivativesFromRefined(Refiner *r, FloatKeys ks = XYZ::get_xyz_keys());
 
-  IMP_INDEX_SINGLETON_DERIVATIVE_MODIFIER(DerivativesFromRefined);
+  virtual void apply_index(Model *m, ParticleIndex a) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                         const ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs(Model *m,
+                                          const ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  IMP_SINGLETON_MODIFIER_METHODS(DerivativesFromRefined);
+  IMP_OBJECT_METHODS(DerivativesFromRefined);
 };
 
 IMPCORE_END_NAMESPACE

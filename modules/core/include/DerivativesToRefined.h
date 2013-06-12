@@ -34,7 +34,15 @@ class IMPCOREEXPORT DerivativesToRefined : public SingletonDerivativeModifier {
   //! Copy ks to the particles returned by r.
   DerivativesToRefined(Refiner *r, FloatKeys ks = XYZ::get_xyz_keys());
 
-  IMP_INDEX_SINGLETON_DERIVATIVE_MODIFIER(DerivativesToRefined);
+  virtual void apply_index(Model *m, ParticleIndex a) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                         const ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs(Model *m,
+                                          const ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  IMP_SINGLETON_MODIFIER_METHODS(DerivativesToRefined);
+  IMP_OBJECT_METHODS(DerivativesToRefined);
 };
 
 IMPCORE_END_NAMESPACE

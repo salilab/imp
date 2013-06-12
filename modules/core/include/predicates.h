@@ -23,15 +23,17 @@ class InBoundingBox3DSingletonPredicate : public SingletonPredicate {
                                     std::string name =
                                         "InBoundingBox3DSingletonPredicate%1%")
       : SingletonPredicate(name), bb_(bb) {}
-  IMP_INDEX_SINGLETON_PREDICATE(
-      InBoundingBox3DSingletonPredicate,
-      return bb_.get_contains(XYZ(m, pi).get_coordinates()) ? 1 : 0;
-      , {
+  virtual int get_value_index(Model *m, ParticleIndex pi) const IMP_OVERRIDE {
+    return bb_.get_contains(XYZ(m, pi).get_coordinates()) ? 1 : 0;
+  }
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                 const ParticleIndexes &pi) const IMP_OVERRIDE{
     ModelObjectsTemp ret;
     ret += IMP::get_particles(m, pi);
     return ret;
-  });
-
+  }
+  IMP_SINGLETON_PREDICATE_METHODS(InBoundingBox3DSingletonPredicate);
+  IMP_OBJECT_METHODS(InBoundingBox3DSingletonPredicate);
 };
 /** Return the value of an int attribute as the predicate value.*/
 class AttributeSingletonPredicate : public SingletonPredicate {
@@ -41,12 +43,17 @@ class AttributeSingletonPredicate : public SingletonPredicate {
   AttributeSingletonPredicate(IntKey bb, std::string name =
                                              "AttributeSingletonPredicate%1%")
       : SingletonPredicate(name), bb_(bb) {}
-  IMP_INDEX_SINGLETON_PREDICATE(AttributeSingletonPredicate,
-                                return m->get_attribute(bb_, pi), {
+  virtual int get_value_index(Model *m, ParticleIndex pi) const IMP_OVERRIDE {
+    return m->get_attribute(bb_, pi);
+  }
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                 const ParticleIndexes &pi) const IMP_OVERRIDE{
     ModelObjectsTemp ret;
     ret += IMP::get_particles(m, pi);
     return ret;
-  });
+  }
+  IMP_SINGLETON_PREDICATE_METHODS(AttributeSingletonPredicate);
+  IMP_OBJECT_METHODS(AttributeSingletonPredicate);
 };
 
 /** Use a predicate to determine which score to apply. One can use this to,
@@ -74,7 +81,12 @@ class PredicateSingletonScore : public SingletonScore {
     scores_.resize(std::max<int>(val + 1, scores_.size()));
     scores_[val] = score;
   }
-  IMP_INDEX_SINGLETON_SCORE(PredicateSingletonScore);
+  virtual double evaluate_index(Model *m, ParticleIndex p,
+                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                 const ParticleIndexes &pis) const IMP_OVERRIDE;
+  IMP_SINGLETON_SCORE_METHODS(PredicateSingletonScore);
+  IMP_OBJECT_METHODS(PredicateSingletonScore);
 };
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)

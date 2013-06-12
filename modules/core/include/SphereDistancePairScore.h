@@ -70,7 +70,12 @@ class IMPCOREEXPORT HarmonicUpperBoundSphereDiameterPairScore
   HarmonicUpperBoundSphereDiameterPairScore(double d0, double k);
   double get_rest_length() const { return x0_; }
   double get_stiffness() const { return k_; }
-  IMP_INDEX_PAIR_SCORE(HarmonicUpperBoundSphereDiameterPairScore);
+  double evaluate_index(Model *m, const ParticleIndexPair& p,
+                         DerivativeAccumulator *da) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs(Model *m,
+                                 const ParticleIndexes &pis) const;
+  IMP_PAIR_SCORE_METHODS(HarmonicUpperBoundSphereDiameterPairScore);
+  IMP_OBJECT_METHODS(HarmonicUpperBoundSphereDiameterPairScore);;
 };
 
 IMP_OBJECTS(HarmonicUpperBoundSphereDiameterPairScore,

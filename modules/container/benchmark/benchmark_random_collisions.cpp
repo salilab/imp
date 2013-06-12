@@ -28,7 +28,12 @@ std::string get_module_version() {
 class ConstPairScore : public PairScore {
  public:
   ConstPairScore() {}
-  IMP_INDEX_PAIR_SCORE(ConstPairScore);
+  double evaluate_index(Model *m, const ParticleIndexPair& p,
+                         DerivativeAccumulator *da) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs(Model *m,
+                                 const ParticleIndexes &pis) const;
+  IMP_PAIR_SCORE_METHODS(ConstPairScore);
+  IMP_OBJECT_METHODS(ConstPairScore);;
 };
 
 double ConstPairScore::evaluate_index(Model *, const ParticleIndexPair &,
