@@ -261,7 +261,7 @@ void setup_from_argv(const Strings &iargv, std::string description) {
 Strings setup_from_argv_allowing_unknown(int argc, char **argv,
                                          std::string description) {
   return setup_from_argv_internal(argc, argv, description,
-                                  "", -1, true);
+                                  "various arguments", -1, true);
 }
 
 IMPBASE_END_NAMESPACE
