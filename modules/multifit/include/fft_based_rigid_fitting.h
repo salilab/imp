@@ -166,7 +166,7 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
      \param[in] num_angle_per_voxel number of rotations to save per voxel
      \param[in] max_clustering_translation cluster transformations whose
                 translational distance is lower than the parameter
-     \param[in] max_clustering_angle cluster transformations whose
+     \param[in] max_clustering_rotation cluster transformations whose
                 rotational distance is lower than the parameter
      \param[in] angles_filename a file containing angles to sample.
                 if not specified, all angles are sampled
@@ -189,6 +189,7 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
 /**
 \param[in] mol2fit a rigid body molecule to fit
 \param[in] dmap the map to fit into
+\param[in] density_threshold ignore density below this value
 \param[in] angle_sampling_interval_rad sampling internal in radians
  */
 IMPMULTIFITEXPORT

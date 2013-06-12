@@ -66,7 +66,7 @@ public:
 
   /*! Initialize the class
     \param[in] scf Score function used to compute the value of the restraint
-    \param[in] Rbs Rigid bodies that are restrained
+    \param[in] rbs Rigid bodies that are restrained
     \param[in] img Image used to compute the restraint
   */
   RigidBodiesImageFitRestraint(ScoreFunction *scf,
@@ -78,7 +78,6 @@ public:
 
   /*! Set the possible rotations that a rigid body can have. A projection of
       the rigid body in all posible orientations is stored
-    \param[in]
   */
   void set_orientations(const core::RigidBody &rb,
                      const algebra::Rotation3Ds &rots);

@@ -26,8 +26,8 @@ public:
     \param[in] n_projections Number of projections to use for obtaining the CCS
     \param[in] resolution "Resolution" to use to generate the projections.
     \param[in] pixel_size size in A/pix to use when generating the projections
-    \param[in] projection_image_size. The size of the projections to generate
-               for this value you should request a size so that:
+    \param[in] projection_image_size The size of the projections to generate;
+               for this value you should request a size so that
                pixel_size * projection_image_size >= Max distance between two
                particles.
   */
@@ -64,7 +64,7 @@ protected:
 
   /*! Gets the sum of the values in the pixels with value > 0
     \param[in] m The projected area is computed for this matrix
-    \param[out] Values of the area
+    \return Values of the area
   */
   double get_projected_area(const cv::Mat &m) const;
 
