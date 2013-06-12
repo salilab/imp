@@ -15,7 +15,7 @@
 #include "DOFsSampler.h"
 #include <IMP/base/Object.h>
 #include <IMP/base/Pointer.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
