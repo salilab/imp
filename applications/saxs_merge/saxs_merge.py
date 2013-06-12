@@ -2099,6 +2099,16 @@ def rescaling(profiles, args):
                             "or fitting model."
     return profiles,args
 
+def reorder_profiles(profiles):
+    """try to guess which profile has predecence over which"""
+    qmaxs=[]
+    for i,p in enumerate(profiles):
+        qmax = p.get_data(filter='agood',colwise=True)['q'][-1]
+        qmaxs.append((qmax,i))
+    qmaxs.sort()
+    newprofs = [ profiles[i] for q,i in qmaxs ]
+    return newprofs
+
 def classification(profiles, args):
     """fourth stage of merge: classify mean functions. If the auto flag
     is on, guesses the correct order of the input profiles.
@@ -2115,6 +2125,8 @@ def classification(profiles, args):
     alpha = args.dalpha
     verbose = args.verbose
     average=args.baverage
+    if args.auto:
+        profiles = reorder_profiles(profiles)
     if verbose >0:
         print "4. classification ( alpha = %2G %% )" % (alpha*100)
     if args.auto:
