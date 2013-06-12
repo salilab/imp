@@ -108,13 +108,14 @@ class IMPMULTIFITEXPORT AssemblyHeader : public IMP::base::Object {
       return fine_over_sampled_ap_fn_;}
     void set_fine_over_sampled_ap_fn (const std::string &new_fn) {
       fine_over_sampled_ap_fn_=new_fn;}
-    IMP_OBJECT_INLINE(AssemblyHeader, {
+    IMP_OBJECT_METHODS(AssemblyHeader);
+    /*IMP_OBJECT_INLINE(AssemblyHeader, {
         out<<dens_fn_<<"|"<<resolution_<<"|"<<spacing_<<"|"<<threshold_
            <<"|"<<origin_[0]<<"|";
         out<<origin_[1]<<"|"<<origin_[2]<<"|"<<coarse_ap_fn_;
         out<<"|"<<coarse_over_sampled_ap_fn_<<"|";
         out<<fine_ap_fn_<<"|"<<fine_over_sampled_ap_fn_<<"|\n";
-      }, {});
+        }, {});*/
   protected:
     std::string dens_fn_;
     float resolution_;
@@ -169,7 +170,7 @@ public:
   }
   std::string get_data_path() const {return data_path_;}
 
-  IMP_OBJECT_INLINE(SettingsData, { out << "Settings data"; }, {});
+  IMP_OBJECT_METHODS(SettingsData);
 
   IMP_LIST_ACTION(public, ComponentHeader, ComponentHeaders,
                   component_header, component_headers,
