@@ -660,6 +660,9 @@ Merging
     #general
     group = optparse.OptionGroup(parser, title="general")
     parser.add_option_group(group)
+    group.add_option('--auto', help="Fully automatic merge. Will try to find"
+            " correct order for input files (default is off)",
+            default=False, action='store_true')
     group.add_option('--mergename', help="filename suffix for output "
             "(default is merged.dat)", default='merged.dat', metavar='SUFFIX')
     group.add_option('--sumname', metavar='NAME', default='summary.txt',
@@ -2026,8 +2029,19 @@ def rescaling(profiles, args):
                             "or fitting model."
     return profiles,args
 
+def reorder_profiles(profiles):
+    """try to guess which profile has predecence over which"""
+    qmaxs=[]
+    for i,p in enumerate(profiles):
+        qmax = p.get_data(filter='agood',colwise=True)['q'][-1]
+        qmaxs.append((qmax,i))
+    qmaxs.sort()
+    newprofs = [ profiles[i] for q,i in qmaxs ]
+    return newprofs
+
 def classification(profiles, args):
-    """fourth stage of merge: classify mean functions
+    """fourth stage of merge: classify mean functions. If the auto flag
+    is on, guesses the correct order of the input profiles.
     Created flags:
         drefnum : number of the reference profile for this point
         drefname : associated filename
@@ -2041,6 +2055,8 @@ def classification(profiles, args):
     alpha = args.dalpha
     verbose = args.verbose
     average=args.baverage
+    if args.auto:
+        profiles = reorder_profiles(profiles)
     if verbose >0:
         print "4. classification ( alpha = %2G %% )" % (alpha*100)
     for i in xrange(len(profiles)):
