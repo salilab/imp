@@ -2,7 +2,7 @@
 
 \tableofcontents
 
-\section intro Introduction
+\section foxs_nup133_intro Introduction
 
 Nup133 is one of the proteins that make up the yeast
 \salilab{npc,Nuclear Pore Complex (NPC)}. The structure of this protein has
@@ -23,7 +23,7 @@ All steps in the procedure below use a command line tool called
 foxs -h
 \endcode
 
-\section setup Setup
+\section foxs_nup133_setup Setup
 
 First, obtain the input files used in this example and put them in the
 current directory, by typing:
@@ -37,7 +37,7 @@ is the directory containing the IMP example files. The full path to the files
 can be determined by running in a Python interpreter '<tt>import IMP.saxs;
 print IMP.saxs.get_example_path('nup133')</tt>'.
 
-\section calc Calculation
+\section foxs_nup133_calc Calculation
 
 The structure of the C-terminal domain of yeast Nup133 is available in the
 \external{http://www.pdb.org,RCSB Protein Data Bank (PDB)} as code

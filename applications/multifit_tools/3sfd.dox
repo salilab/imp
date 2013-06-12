@@ -2,7 +2,7 @@
 
 \tableofcontents
 
-\section intro Introduction
+\section multifit_3sfd_intro Introduction
 
 In this example, [MultiFit](index.html)
 is used to build a model of porcine mitochondrial
@@ -20,7 +20,7 @@ All steps in the procedure use a command line tool called
 multifit.py help
 \endcode
 
-\section setup Setup
+\section multifit_3sfd_setup Setup
 
 First, obtain the input files used in this example and put them in the
 current directory, by typing:
@@ -96,7 +96,7 @@ adjusted if necessary to handle difficult modeling cases.
 (Note that two other files are also created, with a <tt>.refined</tt> extension.
 These can be used for model refinement, which is discussed later.)
 
-\section anchors Create the assembly anchor graph
+\section multifit_3sfd_anchors Create the assembly anchor graph
 
 Next, a reduced representation of the assembly density map is generated
 using the Gaussian Mixture Model, by running:
@@ -117,7 +117,7 @@ protein should use 3 Gaussians and a 260-residue protein should use
 containing fake CA atoms, where each CA corresponds to a single anchor point,
 and also as a \external{http://www.cgl.ucsf.edu/chimera/,Chimera} cmm file.
 
-\section fit_fft Fit each protein to the map
+\section multifit_3sfd_fit_fft Fit each protein to the map
 
 First, fit each protein to the map using a FFT search either globally or
 locally:
@@ -146,7 +146,7 @@ but 10 or more fits are recommended in most cases. Do this by running:
 multifit.py indexes 3sfd 3sfd.asmb.input 3 3sfd.indexes.mapping.input
 \endcode
 
-\section proteomics Create a proteomics restraint file
+\section multifit_3sfd_proteomics Create a proteomics restraint file
 
 Here, the restraint file used in the next assembly step is created.
 This file instructs MultiFit how to combine the individual subunit fits
@@ -203,7 +203,7 @@ value in the xlink definition. Setting the value to 0 instead of the default 1
 specifies that the restraint is evaluated only at the root of the tree
 and not in an intermediate merging step.
 
-\section assemble Assemble subunits
+\section multifit_3sfd_assemble Assemble subunits
 
 The fits are combined into a set of the best-scoring global configurations
 by running:
@@ -226,7 +226,7 @@ of all possible mappings of subunits to anchor points by means of a
 branch-and-bound algorithm combined with the DOMINO divide-and-conquer
 message-passing optimizer using a discrete sampling space.
 
-\section visualization Visualization
+\section multifit_3sfd_visualization Visualization
 
 Finally, models can be generated as PDB files from the fits and best
 combinations by running:
@@ -243,7 +243,7 @@ is shown below:
 
 <img src="multifit_3sfd.png" alt="3sfd model fit into the density">
 
-\section bench Benchmarking
+\section multifit_3sfd_bench Benchmarking
 
 If a reference structure for each subunit is available, the 'reference'
 command can be used to compare the models to the reference. To use this command,
@@ -262,7 +262,7 @@ scores, one for each subunit. Each placement score is the distance that the
 subunit must be moved to reach the reference structure and the angle through
 which it must be rotated.
 
-\section cluster Clustering
+\section multifit_3sfd_cluster Clustering
 
 It is often useful to cluster the solutions. MultiFit includes a 'cluster'
 command to accomplish this. It uses the
@@ -281,7 +281,7 @@ this case, this results in three equally-sized clusters. It generates a file
 <tt>3sfd.asmb.combinations.clustered</tt> containing the combination of a
 representative for each cluster.
 
-\section refine Refinement
+\section multifit_3sfd_refine Refinement
 
 Once the set of models has been determined, they can be improved by refinement.
 The first step in refinement is to run another FFT fit. This time the fit is

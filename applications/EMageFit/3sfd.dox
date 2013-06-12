@@ -2,7 +2,7 @@
 
 \tableofcontents
 
-\section intro Introduction
+\section emagefit_3sfd_intro Introduction
 
 In this example, [EMageFit](index.html) is used to build
 a model of porcine mitochondrial
@@ -22,7 +22,7 @@ All steps in the procedure use a command line tool called
 emagefit.py -h
 \endcode
 
-\section setup Setup
+\section emagefit_3sfd_setup Setup
 
 First, obtain the input files used in this example and put them in the
 current directory, by typing:
@@ -47,7 +47,7 @@ of all the parameters see <tt>config_example.py</tt>.
 Building a model requires 4 steps: pairwise docking between interacting
 subunits, SA-MC optimization, SA-MC model gathering, and DOMINO sampling.
 
-\section dock Pairwise docking
+\section emagefit_3sfd_dock Pairwise docking
 
 To do the dockings, run from the command line:
 
@@ -85,7 +85,7 @@ pairs printed in the log file (the second component, 3sfdB, in this case).
 (Anchored components are not moved during the SA-MC optimization.)
 The file <tt>config_step_2.py</tt> includes this information.
 
-\section optimize SA-MC optimization
+\section emagefit_3sfd_optimize SA-MC optimization
 
 The next step is running a Monte Carlo optimization. There are several
 parameters to control this optimization, such as the profile of temperatures,
@@ -111,7 +111,7 @@ The output is the file <tt>mc_solution1.db</tt>, an SQLite database with the
 solution. To generate multiple candidate solutions, simply run the command
 multiple times with different output file names.
 
-\section gather Model gathering
+\section emagefit_3sfd_gather Model gathering
 
 After generating a set of solutions, they must be gathered together into a
 single database, using a command such as:
@@ -128,7 +128,7 @@ subsequent steps in the example, run:
 cp outputs/monte_carlo_solutions_500.db monte_carlo_solutions.db
 \endcode
 
-\section domino DOMINO sampling
+\section emagefit_3sfd_domino DOMINO sampling
 
 The last part of the modeling is running DOMINO employing the configuration
 file <tt>config_step_3.py</tt>. This new configuration file has changes with
@@ -162,7 +162,7 @@ benchmark used in the EMageFit publication, parameters of
 <tt>self.max_number=50</tt> and <tt>self.heap_solutions=2000</tt> were used,
 resulting in the file <tt>outputs/domino_benchmark.db</tt>.
 
-\section analysis Analysis
+\section emagefit_3sfd_analysis Analysis
 
 The solutions can be written out as PDB files. To write out the 10 best models
 according to the value of the em2d restraint, run:

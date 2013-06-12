@@ -2,7 +2,7 @@
 
 \tableofcontents
 
-\section intro Introduction
+\section cnmultifit_groel_intro Introduction
 
 In this example, \ref IMP_cnmultifit_tools_overview "cnmultifit" is employed
 to generate a model of part of the
@@ -24,7 +24,7 @@ All steps in the procedure use a command line tool called
 cnmultifit.py help
 \endcode
 
-\section setup Setup
+\section cnmultifit_groel_setup Setup
 
 First, obtain the input files used in this example and put them in the
 current directory, by typing:
@@ -81,7 +81,7 @@ corresponding \external{http://www.ebi.ac.uk/pdbe/emdb/,EMDB} entry.
 A threshold is often provided by the author in the EMDB entry as
 "Recommended counter level" under the "Map Information" section.
 
-\section modgen Model generation
+\section cnmultifit_groel_modgen Model generation
 
 Now that all input files are prepared, the modeling procedure itself can
 be run with:
@@ -105,7 +105,7 @@ cnmultifit.py chimera_models 1oel_A.pdb 7 multifit.chimera.output 5 test
 
 This generates models named <tt>test.*.pdb</tt>.
 
-\section analysis Analysis
+\section cnmultifit_groel_analysis Analysis
 
 If a single 'reference' PDB file is available of the entire complex,
 the cnmultifit output can be compared against this reference with:
