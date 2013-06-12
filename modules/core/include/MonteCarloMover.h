@@ -37,7 +37,7 @@ IMP_NAMED_TUPLE_2(MonteCarloMoverResult, MonteCarloMoverResults,
 class IMPCOREEXPORT MonteCarloMover : public ModelObject {
   unsigned int num_proposed_;
   unsigned int num_rejected_;
-
+  bool has_move_;
  public:
   MonteCarloMover(Model *m, std::string name);
 
@@ -49,6 +49,10 @@ class IMPCOREEXPORT MonteCarloMover : public ModelObject {
    */
   MonteCarloMoverResult propose() {
     IMP_OBJECT_LOG;
+    IMP_USAGE_CHECK(!has_move_, "Mover already had proposed a move. "
+                    << " This probably means you added it twice: "
+                    << get_name());
+    has_move_ = true;
     set_was_used(true);
     ++num_proposed_;
     return do_propose();
@@ -58,12 +62,14 @@ class IMPCOREEXPORT MonteCarloMover : public ModelObject {
   void reject() {
     IMP_OBJECT_LOG;
     ++num_rejected_;
+    has_move_ = false;
     do_reject();
   }
 
   //! Roll back any changes made to the Particles
   void accept() {
     IMP_OBJECT_LOG;
+    has_move_ = false;
     do_accept();
   }
 
