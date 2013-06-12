@@ -33,11 +33,9 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class ProteinLigandRestraint;
 
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-IMP_DECLARE_CONTROLLED_KEY_TYPE(ProteinLigandType, 783462);
-#elif defined(SWIG)
-class ProteinLigandType;
-#endif
+/** The marker to identify the atom types.*/
+typedef Key<783462, false> ProteinLigandType;
+IMP_VALUES(ProteinLigandType, ProteinLigandTypes);
 
 /** add_protein_ligand_score_data() must be called on the molecules
     containing the atoms before the PairScore is used in order
