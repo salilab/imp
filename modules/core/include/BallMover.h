@@ -11,6 +11,7 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/base_types.h>
+#include <IMP/base/exception.h>
 #include "MonteCarloMover.h"
 
 IMPCORE_BEGIN_NAMESPACE
@@ -50,7 +51,9 @@ class IMPCOREEXPORT BallMover : public MonteCarloMover {
 #endif
 
   void set_radius(Float radius) {
-    IMP_USAGE_CHECK(radius > 0, "The radius must be positive");
+    IMP_ALWAYS_CHECK(radius > 0,
+                     "The radius must be positive",
+                     IMP::base::ValueException);
     radius_ = radius;
   }
 
