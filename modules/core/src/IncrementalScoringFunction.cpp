@@ -50,6 +50,22 @@ IncrementalScoringFunction::IncrementalScoringFunction(const ParticlesTemp &ps,
   suppress_error.release();
 }
 
+namespace {
+class IncrementalRestraintsScoringFunction:
+      public IMP::internal::RestraintsScoringFunction {
+ public:
+  IncrementalRestraintsScoringFunction(const RestraintsTemp &rs,
+                                   double weight = 1.0, double max = NO_MAX,
+                                   std::string name =
+                                      "IncrementalRestraintsScoringFunction%1%")
+      : IMP::internal::RestraintsScoringFunction(rs, weight, max, name){}
+  // don't depend on optimized particles
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+    return get_restraints();
+  }
+};
+}
+
 IncrementalScoringFunction::Data IncrementalScoringFunction::create_data(
     ParticleIndex pi, const base::map<Restraint *, int> &all,
     const Restraints &dummies) const {
@@ -71,7 +87,7 @@ IncrementalScoringFunction::Data IncrementalScoringFunction::create_data(
     }
   }
   cr += RestraintsTemp(dummies.begin(), dummies.end());
-  ret.sf = new IMP::internal::RestraintsScoringFunction(
+  ret.sf = new IncrementalRestraintsScoringFunction(
       cr, 1.0, NO_MAX, p->get_name() + " restraints");
   return ret;
 }
