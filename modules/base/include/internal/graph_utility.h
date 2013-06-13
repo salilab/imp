@@ -45,7 +45,7 @@ template <class Graph> class ObjectNameWriter {
         Graph, boost::vertex_name_t>::const_type>::value_type VT;
     std::ostringstream oss;
     oss << Showable(boost::get(om_, v));
-    oss << "\\n[" << boost::get(om_, v)->get_type_name() << "]";
+    //oss << "\\n[" << boost::get(om_, v)->get_type_name() << "]";
     std::string nm = oss.str();
     base::Vector<char> vnm(nm.begin(), nm.end());
     std::string cleaned = std::string(vnm.begin(),
