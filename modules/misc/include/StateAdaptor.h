@@ -24,7 +24,8 @@ class IMPMISCEXPORT StateAdaptor: public ScoreState
   IMP::base::OwnerPointer<OptimizerState> before_, after_;
 public:
   //! set the before and after states
-  StateAdaptor(OptimizerState *before, OptimizerState *after);
+  StateAdaptor(Model *m,
+               OptimizerState *before, OptimizerState *after);
   virtual void do_before_evaluate() IMP_OVERRIDE;
   virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;

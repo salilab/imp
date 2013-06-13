@@ -11,9 +11,12 @@
 
 IMPMISC_BEGIN_NAMESPACE
 
-StateAdaptor::StateAdaptor(OptimizerState *before,
-                           OptimizerState *after): before_(before),
-                                                   after_(after){
+StateAdaptor::StateAdaptor(Model *m,
+                           OptimizerState *before,
+                           OptimizerState *after):
+    ScoreState(m, "StateAdaptor%1%"),
+    before_(before),
+    after_(after) {
 }
 
 void StateAdaptor::do_before_evaluate() {
