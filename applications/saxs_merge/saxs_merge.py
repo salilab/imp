@@ -889,24 +889,8 @@ def setup_particles(initvals):
     sigma=IMP.isd.Scale.setup_particle(IMP.Particle(model,"sigma2"),
                                     initvals['sigma2'])
     #prior on scales
-    model.add_score_state(IMP.core.SingletonConstraint(
-        IMP.isd.NuisanceRangeModifier(),None,G,"Constrain_G"))
-    model.add_score_state(IMP.core.SingletonConstraint(
-        IMP.isd.NuisanceRangeModifier(),None,Rg,"Constrain_Rg"))
-    model.add_score_state(IMP.core.SingletonConstraint(
-        IMP.isd.NuisanceRangeModifier(),None,d,"Constrain_d"))
-    model.add_score_state(IMP.core.SingletonConstraint(
-        IMP.isd.NuisanceRangeModifier(),None,A,"Constrain_A"))
-    model.add_score_state(IMP.core.SingletonConstraint(
-        IMP.isd.NuisanceRangeModifier(),None,s,"Constrain_s"))
-    model.add_score_state(IMP.core.SingletonConstraint(
-        IMP.isd.NuisanceRangeModifier(),None,lam,"Constrain_lambda"))
     #model.add_restraint(IMP.isd.JeffreysRestraint(tau))
-    model.add_score_state(IMP.core.SingletonConstraint(
-        IMP.isd.NuisanceRangeModifier(),None,tau,"Constrain_tau"))
     model.add_restraint(IMP.isd.JeffreysRestraint(sigma))
-    model.add_score_state(IMP.core.SingletonConstraint(
-        IMP.isd.NuisanceRangeModifier(),None,sigma,"Constrain_sigma2"))
     #set lower and upper bounds for Rg, d and s
     Rg.set_lower(0.1)
     d.set_lower(0.1)
