@@ -539,6 +539,7 @@ MatrixXd GaussianProcessInterpolation::get_posterior_covariance_hessian(
         IMP_LOG_TERSE( "need to update m" << std::endl);
         const_cast<GaussianProcessInterpolation *>(this)->compute_m();
         const_cast<GaussianProcessInterpolation *>(this)->flag_m_ = true;
+        IMP_LOG_VERBOSE( m_ );
         IMP_LOG_TERSE( "done updating m" << std::endl);
     }
     return m_;

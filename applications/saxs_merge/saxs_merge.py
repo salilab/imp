@@ -996,7 +996,7 @@ def set_defaults_mean(data, particles, mean_function):
 def find_fit_mean(data, initvals, verbose, mean_function):
     model, particles, functions, gp = \
             setup_process(data, initvals, 1)
-    IMP.base.set_log_level(IMP.base.TERSE)
+    IMP.base.set_log_level(IMP.base.VERBOSE)
     gpr = IMP.isd.GaussianProcessInterpolationRestraint(gp)
     model.add_restraint(gpr)
     set_defaults_mean(data, particles, mean_function)
