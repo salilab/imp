@@ -895,7 +895,7 @@ def setup_particles(initvals):
     Rg.set_lower(0.1)
     d.set_lower(0.1)
     d.set_upper(8.)
-    s.set_upper(3.)
+    s.set_upper(2.99999)
     s.set_upper(d)
     #set lower bounds for cov particles
     tau.set_lower(0.01)
