@@ -2125,8 +2125,6 @@ def classification(profiles, args):
     alpha = args.dalpha
     verbose = args.verbose
     average=args.baverage
-    if args.auto:
-        profiles = reorder_profiles(profiles)
     if verbose >0:
         print "4. classification ( alpha = %2G %% )" % (alpha*100)
     if args.auto:
