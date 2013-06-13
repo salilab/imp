@@ -60,11 +60,10 @@ RestraintsTemp get_restraints(const Subset &s, const ParticleStatesTable *pst,
   ParticlesTemp oms;
   std::set_difference(other.begin(), other.end(), s.begin(), s.end(),
                       std::back_inserter(oms));
-  IMP::base::map<Restraint *, int> index =
-      IMP::base::internal::get_graph_index<Restraint>(dg);
+  DependencyGraphVertexIndex dgvi = get_vertex_index(dg);
   Ints to_remove;
   for (unsigned int i = 0; i < rw.size(); ++i) {
-    if (IMP::internal::get_has_ancestor(dg, index[rw[i]], oms)) {
+    if (IMP::internal::get_has_ancestor(dg, dgvi[rw[i]], oms)) {
       to_remove.push_back(i);
     }
   }

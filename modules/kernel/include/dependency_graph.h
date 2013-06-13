@@ -13,6 +13,7 @@
 #include "base_types.h"
 #include <IMP/base/base_macros.h>
 #include <boost/graph/adjacency_list.hpp>
+#include "ModelObject.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -31,7 +32,11 @@ IMPKERNEL_BEGIN_NAMESPACE
     See
     \ref dependencies "Dependencies" for more information about dependencies.
 */
-IMP_GRAPH(DependencyGraph, bidirectional, ModelObject *, int);
+IMP_GRAPH(DependencyGraph, bidirectional, ModelObject *, int,
+          {
+            out << vertex->get_name() << "\n["
+                << vertex->get_type_name() << "]";
+          });
 
 class Model;
 

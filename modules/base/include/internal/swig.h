@@ -21,7 +21,9 @@
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
 
-template <class BG, class Label> class BoostDigraph : public IMP::base::Object {
+template <class BG, class Label, class ShowFunction>
+class BoostDigraph : public IMP::base::Object {
+  ShowFunction f_;
   BG bg_;
   typedef typename boost::graph_traits<BG> Traits;
   typedef typename boost::property_map<BG, boost::vertex_name_t>::type
@@ -119,18 +121,14 @@ template <class BG, class Label> class BoostDigraph : public IMP::base::Object {
     }
     return ret;
   }
-  void do_show(std::ostream &out) const {
-    set_was_used(true);
-    show_as_graphviz(bg_, out);
-  }
   void show_graphviz(std::ostream &out = std::cout) const {
     set_was_used(true);
-    show_as_graphviz(bg_, out);
+    show_as_graphviz(bg_, ShowFunction(), out);
   }
   std::string get_graphviz_string() const {
     set_was_used(true);
     std::ostringstream oss;
-    show_as_graphviz(bg_, oss);
+    show_as_graphviz(bg_, ShowFunction(), oss);
     return oss.str();
   }
   std::string get_type_name() const { return "Graph"; }

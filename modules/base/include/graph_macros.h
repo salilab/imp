@@ -10,6 +10,8 @@
 #define IMPBASE_GRAPH_MACROS_H
 #include <IMP/base/base_config.h>
 #include <boost/graph/adjacency_list.hpp>
+#include "file.h"
+#include "internal/graph_utility.h"
 #include <IMP/base/map.h>
 #include <boost/version.hpp>
 
@@ -20,8 +22,11 @@
     - \c bidirectional
     - \c directed
     - \c undirected
+
+    ShowVertex should take the VertexData as a variable named `vertex` and write
+    to a stream `out`.
  */
-#define IMP_GRAPH(Name, directionality, VertexData, EdgeData)           \
+#define IMP_GRAPH(Name, directionality, VertexData, EdgeData, ShowVertex) \
   /** See \ref graphs "Graphs in IMP" for more information.*/           \
   typedef boost::graph Name;                                            \
   typedef Name::VertexNameMap Name##ConstVertexName;                    \
@@ -30,21 +35,24 @@
   typedef Name::vertex_descriptor Name##Vertex;                         \
   typedef Name::edge_descriptor Name##Edge;                             \
   class Name##VertexIndex{};                                            \
+  inline void show_as_graphviz(const Name &name, base::TextOutput out); \
   Name##VertexIndex get_vertex_index(const Name &g)
 
 #elif defined(SWIG)
 #if defined(__GNUC__) && __GNUC__ == 4 && __GNUC_MINOR__ == 2 \
   && BOOST_VERSION <= 104800
-#define IMP_GRAPH(Name, directionality, VertexData, EdgeData)  \
-  class Name;                                                  \
+#define IMP_GRAPH(Name, directionality, VertexData, EdgeData, ShowVertex) \
+  class Name;                                                           \
+  inline void show_as_graphviz(const Name &name, base::TextOutput out); \
   class Name##VertexIndex {}
 
 #else // GCC VERSION
-#define IMP_GRAPH(Name, directionality, VertexData, EdgeData)  \
-  class Name;                                                  \
-  class Name##VertexIndex {};                                  \
+#define IMP_GRAPH(Name, directionality, VertexData, EdgeData, ShowVertex) \
+  class Name;                                                           \
+  class Name##VertexIndex {};                                           \
+  inline void show_as_graphviz(const Name &name, base::TextOutput out); \
   inline Name##VertexIndex get_vertex_index(const Name &g)
-  #endif // GCC VERSION
+#endif // GCC VERSION
 
 #else // swig and doxygen
 
@@ -58,7 +66,7 @@
 #define IMP_GRAPH_MAP_TYPE base::map
 #endif
 
-#define IMP_GRAPH(Name, directionality, VertexData, EdgeData)           \
+#define IMP_GRAPH(Name, directionality, VertexData, EdgeData, ShowVertex) \
   typedef boost::adjacency_list<boost::vecS, boost::vecS,               \
                                 boost::directionality##S,               \
   boost::property<boost::vertex_name_t, VertexData>,                    \
@@ -73,14 +81,19 @@
   typedef Name##Traits::edge_descriptor Name##Edge;                     \
   typedef IMP_GRAPH_MAP_TYPE<VertexData, Name##Vertex> Name##VertexIndex; \
   inline Name##VertexIndex get_vertex_index(const Name &g) {            \
-    Name##ConstVertexName vm = boost::get(boost::vertex_name, g);       \
-    std::pair<Name##Traits::vertex_iterator, Name##Traits::vertex_iterator> \
-      be= boost::vertices(g);                                           \
-    Name##VertexIndex ret;                                              \
-    for (; be.first != be.second; ++be.first) {                         \
-      ret[vm[*be.first]]= *be.first;                                    \
+    return IMP::base::internal::get_graph_vertex_index<Name,            \
+                                                     VertexData,        \
+                                                     Name##Vertex,      \
+                                                     Name##Traits>(g);  \
+  }                                                                     \
+  struct Show##Name##Vertex {                                           \
+    void operator()(VertexData vertex,                                  \
+                    base::TextOutput out) const {                       \
+      ShowVertex;                                                       \
     }                                                                   \
-    return ret;                                                         \
+  };                                                                    \
+  inline void show_as_graphviz(const Name &graph, base::TextOutput out) { \
+    IMP::base::internal::show_as_graphviz(graph, Show##Name##Vertex(), out); \
   }                                                                     \
   typedef boost::property_map<Name, boost::edge_name_t>::type           \
   Name##EdgeName;                                                       \
@@ -89,22 +102,19 @@
 #endif // swig and doxygen
 
 
-#ifdef IMP_DOXYGEN
+#if defined(IMP_DOXYGEN) || defined(SWIG)
 //! Define a graph object in \imp
-/** The docs for the graph should appear before the macro
-    invocation. Directionality should be one of
-    - \c bidirectional
-    - \c directed
-    - \c undirected
+/** See IMP_GRAPH() for more info. Edges have a floating point weight.
  */
-#define IMP_WEIGHTED_GRAPH(Name, directionality, VertexData)    \
+#define IMP_WEIGHTED_GRAPH(Name, directionality, VertexData, ShowVertex) \
   /** See \ref graphs "Graphs" for more information.*/  \
-  typedef boost::graph Name
+  IMP_GRAPH(Name, directionality, VertexData, double, ShowVertex)
 
 #elif defined(SWIG)
-#define IMP_WEIGHTED_GRAPH(Name, directionality, VertexData)  class Name
+#define IMP_WEIGHTED_GRAPH(Name, directionality, VertexData, ShowVertex) \
+  class Name
 #else
-#define IMP_WEIGHTED_GRAPH(Name, directionality, VertexData)            \
+#define IMP_WEIGHTED_GRAPH(Name, directionality, VertexData, ShowVertex) \
   typedef boost::adjacency_list<boost::vecS, boost::vecS,               \
                                 boost::directionality##S,               \
   boost::property<boost::vertex_name_t, VertexData>,                    \
@@ -117,16 +127,21 @@
   typedef boost::graph_traits<Name> Name##Traits;                       \
   typedef Name##Traits::vertex_descriptor Name##Vertex;                 \
   typedef Name##Traits::edge_descriptor Name##Edge;                     \
-  typedef base::map<VertexData, Name##Vertex> Name##VertexIndex; \
+  typedef base::map<VertexData, Name##Vertex> Name##VertexIndex;        \
   inline Name##VertexIndex get_vertex_index(const Name &g) {            \
-    Name##ConstVertexName vm = boost::get(boost::vertex_name, g);       \
-    std::pair<Name##Traits::vertex_iterator, Name##Traits::vertex_iterator> \
-      be= boost::vertices(g);                                           \
-    Name##VertexIndex ret;                                              \
-    for (; be.first != be.second; ++be.first) {                         \
-      ret[vm[*be.first]]= *be.first;                                    \
+    return IMP::base::internal::get_graph_vertex_index<Name,            \
+                                                     VertexData,        \
+                                                     Name##Vertex,      \
+                                                     Name##Traits>(g);  \
+  }                                                                     \
+  struct Show##Name##Vertex {                                           \
+    void operator()(VertexData vertex,                                  \
+                    base::TextOutput out) const {                       \
+      ShowVertex;                                                       \
     }                                                                   \
-    return ret;                                                         \
+  };                                                                    \
+  inline void show_as_graphviz(const Name &graph, base::TextOutput out) { \
+    IMP::base::internal::show_as_graphviz(graph, Show##Name##Vertex(), out); \
   }                                                                     \
   typedef boost::property_map<Name, boost::edge_weight_t>::type         \
   Name##EdgeWeight;                                                     \

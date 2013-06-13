@@ -10,8 +10,7 @@
 
 #include <IMP/base/base_config.h>
 #include <IMP/base/map.h>
-#include "../Vector.h"
-#include "../Object.h"
+#include "../file.h"
 #include <cctype>
 #include <algorithm>
 #include <sstream>
@@ -32,22 +31,24 @@ using boost::is_convertible;
 using boost::is_base_of;
 using boost::is_pointer;
 
-template <class Graph> class ObjectNameWriter {
-
+template <class Graph, class ShowFunction> class ObjectNameWriter {
+  ShowFunction f_;
   typedef typename boost::property_map<Graph, boost::vertex_name_t>::const_type
       VertexMap;
   VertexMap om_;
 
  public:
-  ObjectNameWriter(const Graph &g) : om_(boost::get(boost::vertex_name, g)) {}
+  ObjectNameWriter(ShowFunction f,
+                   const Graph &g) : f_(f),
+                                     om_(boost::get(boost::vertex_name, g)) {}
   void operator()(std::ostream &out, int v) const {
     typedef typename boost::property_traits<typename boost::property_map<
         Graph, boost::vertex_name_t>::const_type>::value_type VT;
     std::ostringstream oss;
-    oss << Showable(boost::get(om_, v));
+    f_(boost::get(om_, v), oss);
     //oss << "\\n[" << boost::get(om_, v)->get_type_name() << "]";
     std::string nm = oss.str();
-    base::Vector<char> vnm(nm.begin(), nm.end());
+    std::vector<char> vnm(nm.begin(), nm.end());
     std::string cleaned = std::string(vnm.begin(),
                                       std::remove(vnm.begin(), vnm.end(),
                                                   '\"'));
@@ -56,22 +57,25 @@ template <class Graph> class ObjectNameWriter {
 };
 }
 
-template <class Graph>
-inline void show_as_graphviz(const Graph &g, std::ostream &out) {
-  OWN::ObjectNameWriter<Graph> onw(g);
+template <class Graph, class ShowFunction>
+inline void show_as_graphviz(const Graph &g, ShowFunction f, TextOutput out) {
+  OWN::ObjectNameWriter<Graph, ShowFunction> onw(f, g);
   boost::write_graphviz(out, g, onw);
 }
 
-template <class Base, class Graph>
-inline base::map<Base *, int> get_graph_index(const Graph &g) {
-  base::map<Base *, int> ret;
+template <class Graph, class VertexName, class VertexDescriptor,
+          class GraphTraits>
+inline base::map<VertexName, VertexDescriptor>
+get_graph_vertex_index(const Graph &g) {
+  base::map<VertexName, VertexDescriptor> ret;
   typename boost::property_map<Graph, boost::vertex_name_t>::const_type vm =
       boost::get(boost::vertex_name, g);
-  for (unsigned int i = 0; i < boost::num_vertices(g); ++i) {
-    base::Object *o = vm[i];
-    if (dynamic_cast<Base *>(o)) {
-      ret[dynamic_cast<Base *>(o)] = i;
-    }
+  std::pair<typename GraphTraits::vertex_iterator,
+            typename GraphTraits::vertex_iterator>
+      be= boost::vertices(g);
+  for (; be.first != be.second; ++be.first) {
+    VertexName vn = vm[*be.first];
+    ret[vn] = *be.first;
   }
   return ret;
 }

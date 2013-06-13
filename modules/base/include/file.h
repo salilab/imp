@@ -10,11 +10,12 @@
 #define IMPBASE_FILE_H
 
 #include <IMP/base/base_config.h>
-#include "base_macros.h"
 #include "exception.h"
 #include "internal/ifile.h"
 #include "Pointer.h"
 #include "InputAdaptor.h"
+#include "value_macros.h"
+#include "check_macros.h"
 #include <boost/shared_ptr.hpp>
 #include <fstream>
 #include <iostream>

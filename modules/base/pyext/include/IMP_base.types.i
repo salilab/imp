@@ -874,41 +874,41 @@ IMP_SWIG_DOUBLY_NESTED_SEQUENCE_TYPEMAP(Name, Namespace::PluralName, Namespace::
 namespace IMP {
   namespace base {
 namespace internal {
-template <class G, class L>
+  template <class G, class L, class S>
 class BoostDigraph;
 }
   }
 }
 %}
 %typemap(out) Namespace::Type {
-  typedef IMP::base::internal::BoostDigraph<Namespace::Type, Label > GT;
+  typedef IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex> GT;
   IMP_NEW(GT, ret, ($1));
   IMP::base::internal::ref(ret.get());
-  %set_output(SWIG_NewPointerObj(%as_voidptr(ret), $descriptor(IMP::base::internal::BoostDigraph<Namespace::Type, Label >*), $owner | SWIG_POINTER_OWN));
+  %set_output(SWIG_NewPointerObj(%as_voidptr(ret), $descriptor(IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex >*), $owner | SWIG_POINTER_OWN));
  }
 %typemap(out) Namespace::Type const& {
-  typedef IMP::base::internal::BoostDigraph<Namespace::Type, Label > GT;
+  typedef IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex > GT;
   IMP_NEW(GT, ret, (*$1));
   IMP::base::internal::ref(ret.get());
-  %set_output(SWIG_NewPointerObj(%as_voidptr(ret), $descriptor(IMP::base::internal::BoostDigraph<Namespace::Type, Label >*), $owner | SWIG_POINTER_OWN));
+  %set_output(SWIG_NewPointerObj(%as_voidptr(ret), $descriptor(IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex >*), $owner | SWIG_POINTER_OWN));
  }
 %typecheck(SWIG_TYPECHECK_POINTER) Namespace::Type const& {
   void *vp;
-  $1=SWIG_IsOK(SWIG_ConvertPtr($input, &vp, $descriptor(IMP::base::internal::BoostDigraph<Namespace::Type, Label >*), 0 ));
+  $1=SWIG_IsOK(SWIG_ConvertPtr($input, &vp, $descriptor(IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex >*), 0 ));
  }
 %typemap(in) Namespace::Type const& {
       void *vp;
-      int res=SWIG_ConvertPtr($input, &vp, $descriptor(IMP::base::internal::BoostDigraph<Namespace::Type, Label >*), 0 );
+      int res=SWIG_ConvertPtr($input, &vp, $descriptor(IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex >*), 0 );
       if (!SWIG_IsOK(res)) {
         IMP_THROW( "Wrong type.", IMP::base::ValueException);
       }
       if (!vp) {
         IMP_THROW( "Wrong type.", IMP::base::ValueException);
       }
-      IMP::base::internal::BoostDigraph<Namespace::Type, Label >* p= reinterpret_cast< IMP::base::internal::BoostDigraph<Namespace::Type, Label >*>(vp);
+      IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex >* p= reinterpret_cast< IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex  >*>(vp);
       $1= &p->access_graph();
  }
-%template(Name) ::IMP::base::internal::BoostDigraph< Namespace::Type, Label>;
+%template(Name) ::IMP::base::internal::BoostDigraph< Namespace::Type, Label, Namespace::Show##Name##Vertex>;
 %pythoncode %{
 _value_types.append(#Name)
 %}

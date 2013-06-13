@@ -339,7 +339,7 @@ void ProteomicsEMAlignmentAtomic::show_domino_merge_tree() const {
   DependencyGraph dg = get_dependency_graph(mdl_);
   domino::MergeTree mt
     = domino::get_balanced_merge_tree(jt);
-  base::internal::show_as_graphviz(mt,std::cout);
+  show_as_graphviz(mt,std::cout);
 }
 
 
@@ -371,13 +371,13 @@ void ProteomicsEMAlignmentAtomic::align(){
                               domino::get_interaction_graph(jt_rs_,
                                                             pst_));
   std::cout<<"=============6"<<std::endl;
-  base::internal::show_as_graphviz(jt,std::cout);
+  show_as_graphviz(jt,std::cout);
   DependencyGraph dg = get_dependency_graph(mdl_);
-  base::internal::show_as_graphviz(dg,std::cout);
+  show_as_graphviz(dg,std::cout);
   std::cout<<"merge tree"<<std::endl;
   domino::MergeTree mt
     = domino::get_balanced_merge_tree(jt);
-  base::internal::show_as_graphviz(mt,std::cout);
+  show_as_graphviz(mt,std::cout);
   ds->set_merge_tree(mt);//remove for non interative
   ds->set_subset_filter_tables(filters_);
   std::cout<<"Number of filters:"<<filters_.size()<<std::endl;

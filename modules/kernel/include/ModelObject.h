@@ -9,7 +9,6 @@
 
 #include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
-#include "dependency_graph.h"
 #include <IMP/base/ref_counted_macros.h>
 #include <IMP/base/tracking.h>
 #include <IMP/base/utility_macros.h>

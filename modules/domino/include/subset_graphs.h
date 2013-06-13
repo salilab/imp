@@ -20,7 +20,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 /** An undirected graph on subsets of vertices. Each vertex is
     named with an Subset.
  */
-IMP_GRAPH(SubsetGraph, undirected, Subset, int);
+IMP_GRAPH(SubsetGraph, undirected, Subset, int, out << vertex);
 
 /** An undirected graph with one vertex per particle of interest.
     Two particles are connected by an edge if a Restraint
@@ -29,7 +29,8 @@ IMP_GRAPH(SubsetGraph, undirected, Subset, int);
     See \ref graphs "Graphs in IMP" for more information.
  */
 IMP_GRAPH(InteractionGraph, undirected, Particle *,
-          base::Pointer<base::Object>);
+          base::Pointer<base::Object>,
+          out << vertex->get_name() << "\n[" << vertex->get_index() << "]");
 
 //! Gets all of the Subsets of a SubsetGraph
 IMPDOMINOEXPORT Subsets get_subsets(const SubsetGraph &g);
@@ -47,13 +48,13 @@ IMPDOMINOEXPORT Subsets get_subsets(const SubsetGraph &g);
 */
 IMPDOMINOEXPORT SubsetGraph get_junction_tree(const InteractionGraph &ig);
 
-#ifndef IMP_DOMINO
+#ifndef IMP_DOXYGEN
 /** \name Debugging Junction Trees
     @{ */
 IMPDOMINOEXPORT InteractionGraph get_triangulated(
     const InteractionGraph &input);
 
-IMP_WEIGHTED_GRAPH(CliqueGraph, undirected, Subset);
+IMP_WEIGHTED_GRAPH(CliqueGraph, undirected, Subset, out << vertex);
 
 IMPDOMINOEXPORT CliqueGraph get_clique_graph(const InteractionGraph &input);
 
@@ -111,7 +112,7 @@ IMPDOMINOEXPORT display::Geometries get_subset_graph_geometry(
 /** A directed graph on subsets of vertices. Each vertex is
     named with an Subset.
  */
-IMP_GRAPH(MergeTree, bidirectional, Subset, int);
+IMP_GRAPH(MergeTree, bidirectional, Subset, int, out << vertex);
 
 /** \see get_merge_tree(const SubsetGraph&)
 
