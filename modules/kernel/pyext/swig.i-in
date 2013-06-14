@@ -103,6 +103,7 @@ namespace kernel {
 %warnfilter(403) PairScore;
 %warnfilter(403) TripletScore;
 %warnfilter(403) QuadScore;
+%warnfilter(403) AttributeOptimizer;
 }
 }
 // to avoid extend clash
@@ -110,6 +111,7 @@ IMP_SWIG_BASE_OBJECT(IMP::kernel,Constraint, Constraints);
 IMP_SWIG_BASE_OBJECT(IMP::kernel,Undecorator, Undecorators);
 IMP_SWIG_BASE_OBJECT(IMP::kernel,Container, Containers);
 IMP_SWIG_BASE_OBJECT(IMP::kernel,Optimizer, Optimizers);
+IMP_SWIG_BASE_OBJECT(IMP::kernel,AttributeOptimizer, AttributeOptimizers);
 IMP_SWIG_BASE_OBJECT(IMP::kernel,OptimizerState, OptimizerStates);
 IMP_SWIG_BASE_OBJECT(IMP::kernel,PairContainer, PairContainers);
 IMP_SWIG_BASE_OBJECT(IMP::kernel,PairModifier, PairModifiers);
@@ -266,6 +268,7 @@ namespace kernel {
 %include "IMP/kernel/OptimizerState.h"
 %include "IMP/kernel/Refiner.h"
 %include "IMP/kernel/Optimizer.h"
+%include "IMP/kernel/AttributeOptimizer.h"
 %include "IMP/kernel/ConfigurationSet.h"
 %include "IMP/kernel/Configuration.h"
 %include "IMP/kernel/Sampler.h"

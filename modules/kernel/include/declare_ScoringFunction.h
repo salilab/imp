@@ -70,8 +70,6 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
  public:
   ScoringFunction(Model *m, std::string name);
 
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-
   virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
     return ModelObjectsTemp();
   }

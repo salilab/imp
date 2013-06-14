@@ -11,8 +11,7 @@
 
 #include <IMP/core/core_config.h>
 
-#include <IMP/Optimizer.h>
-#include <IMP/optimizer_macros.h>
+#include <IMP/AttributeOptimizer.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -29,7 +28,7 @@ IMPCORE_BEGIN_NAMESPACE
     scale, then you can use Model::set_range to set a more accurate range
     for the parameters.
 */
-class IMPCOREEXPORT ConjugateGradients : public Optimizer {
+class IMPCOREEXPORT ConjugateGradients : public AttributeOptimizer {
  public:
   ConjugateGradients(Model *m = nullptr);
 

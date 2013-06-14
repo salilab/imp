@@ -24,6 +24,9 @@ class NullScoringFunction : public ScoringFunction {
   void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator,
                                     const ScoreStatesTemp &) IMP_OVERRIDE {}
   Restraints create_restraints() const IMP_OVERRIDE { return Restraints(); }
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+    return ModelObjectsTemp();
+  }
   IMP_OBJECT_METHODS(NullScoringFunction);
 };
 
@@ -61,14 +64,6 @@ double ScoringFunction::evaluate_if_below(bool derivatives, double max) {
   const ScoreAccumulator sa = get_score_accumulator_if_below(derivatives, max);
   do_add_score_and_derivatives(sa, get_required_score_states());
   return es_.score;
-}
-
-ModelObjectsTemp ScoringFunction::do_get_inputs() const {
-  if (get_model()) {
-    return get_model()->get_optimized_particles();
-  } else {
-    return ModelObjectsTemp();
-  }
 }
 
 ScoringFunction *ScoringFunctionAdaptor::get(const RestraintsTemp &sf) {

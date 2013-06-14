@@ -43,6 +43,8 @@ IMPKERNEL_BEGIN_NAMESPACE
 */
 class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
  public:
+  /** \deprecated Use the constructor with a Model and a name.*/
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   Optimizer();
   Optimizer(Model *m, std::string name = "Optimizer %1%");
 
@@ -58,17 +60,18 @@ class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
   */
   double optimize(unsigned int max_steps);
 
-#ifndef IMP_DOXYGEN
-  /** \name Score threshold
-      Optimizers can be set to stop if they achieve a score below
-      a score threshold. This is useful so that they don't spend time
-      improving already very good solutions.
-      @{
-  */
-  void set_score_threshold(double s) { min_score_ = s; }
-  double get_score_threshold() const { return min_score_; }
-/** @} */
-#endif
+  /** \deprecated Do not use as it is not reliably supported. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  void set_score_threshold(double s) {
+    IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Not a reliable function.");
+    min_score_ = s;
+  }
+  /** \deprecated Do not use as it is not reliably supported. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  double get_score_threshold() const {
+    IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Not a reliable function.");
+    return min_score_;
+  }
 
   /** Optimization can be stopped if all the thresholds in the Model are
       satisfied. */
@@ -83,20 +86,9 @@ class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
   //! Get the model being optimized
   Model *get_model() const { return model_.get(); }
 
-  //! Set the model being optimized
-  /**
-     \note The model is not owned by the optimizer and so is not
-     deleted when the optimizer is deleted. Further, the Optimizer
-     does not prevent the model from being deleted when all Python
-     references go away.
-  */
+  //! \deprecated Use the constructor that takes the model
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   void set_model(Model *m);
-
-  //! Print info about the optimizer state
-  /** It should end in a newline */
-  virtual void show(std::ostream &out = std::cout) const {
-    out << "Some optimizer" << std::endl;
-  }
 
     /** @name States
 
@@ -122,9 +114,9 @@ class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
   */
   virtual void set_scoring_function(ScoringFunctionAdaptor sf);
 
-#ifndef IMP_DOXYGEN
+  /** \deprecated Use set_scoring_function() instead. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   void set_restraints(const RestraintsTemp &rs);
-#endif
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Optimizer);
 
@@ -136,93 +128,52 @@ class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
       called (eg by calling evaluate).*/
   void update_states() const;
 
-  /** @name Methods for getting and setting optimized attributes
-      Optimizers don't have to go through the particles themselves
-      looking for values to optimize unless they care about special
-      properties of the optimized values. Instead they can iterate
-      through the list of optimized attributes, each of which is
-      identified by a FloatIndex. With these FloatIndex objects
-      they can get and set the values and derivatives as needed.
-  */
-  //!@{
-  FloatIndexes get_optimized_attributes() const {
-    return get_model()->get_optimized_attributes();
-  }
-  void set_value(FloatIndex fi, double v) const {
-    get_model()->set_attribute(fi.get_key(), fi.get_particle(), v);
-  }
+#ifndef SWIG
+  /** \deprecated Use AttributeOptimizer instead. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+      FloatIndexes get_optimized_attributes() const;
+  /** \deprecated Use AttributeOptimizer instead. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+      void set_value(FloatIndex fi, double v) const;
 
- Float get_value(FloatIndex fi) const {
-    return get_model()->get_attribute(fi.get_key(), fi.get_particle());
-  }
+  /** \deprecated Use AttributeOptimizer instead. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+      Float get_value(FloatIndex fi) const;
 
-  Float get_derivative(FloatIndex fi) const {
-    return get_model()->get_derivative(fi.get_key(), fi.get_particle());
-  }
+  /** \deprecated Use AttributeOptimizer instead. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+      Float get_derivative(FloatIndex fi) const;
 
     //!@}
 
 #if !defined(SWIG)
   /** \deprecated Use get_width instead.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-  double width(FloatKey k) const {
-    IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_width instead");
-    return get_width(k);
-  }
+      double width(FloatKey k) const;
 #endif
+  /** \deprecated Use AttributeOptimizer instead. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+      double get_width(FloatKey k) const;
+  /** \deprecated Use AttributeOptimizer instead. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+      void set_scaled_value (FloatIndex fi, Float v) const;
 
-  double get_width(FloatKey k) const {
-    if (widths_.size() <= k.get_index() || widths_[k.get_index()] == 0) {
-      FloatRange w = model_->get_range(k);
-      double wid = static_cast<double>(w.second) - w.first;
-      widths_.resize(std::max(widths_.size(), size_t(k.get_index() + 1)), 0.0);
-      if (wid > .0001) {
-        //double nwid= std::pow(2, std::ceil(log2(wid)));
-        widths_[k.get_index()] = wid;
-      } else {
-        widths_[k.get_index()] = 1.0;
-      }
-    }
-    return widths_[k.get_index()];
-  }
+  /** \deprecated Use AttributeOptimizer instead. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+      double get_scaled_value (FloatIndex fi) const;
 
-    /** @name Methods to get and set scaled optimizable values
-        Certain optimizers benefit from having all the optimized values
-        scaled to vary over a similar range. These accessors use the
-        Model::get_range ranges to scale the values before returning
-        them and unscale them before setting them.
-    */
-    //{@
-  void set_scaled_value (FloatIndex fi, Float v) const {
-    double wid = get_width(fi.get_key());
-    set_value(fi, v * wid);
-  }
+  /** \deprecated Use AttributeOptimizer instead. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+      double get_scaled_derivative(FloatIndex fi) const;
 
-  double get_scaled_value (FloatIndex fi) const {
-    double uv = get_value(fi);
-    double wid = get_width(fi.get_key());
-    return uv / wid;
-  }
+  /** \deprecated Use AttributeOptimizer instead. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+      void clear_range_cache();
+#endif // SWIG
 
-  double get_scaled_derivative(FloatIndex fi) const {
-    double uv = get_derivative(fi);
-    double wid = get_width(fi.get_key());
-    return uv * wid;
-  }
-
-    //! Clear the cache of range information. Do this at the start of
-    //optimization
-  void clear_range_cache() {
-    widths_.clear();
-  }
-//!@}
-
-#ifndef IMP_DOXYGEN
-  //! Return the restraint sets used in evaluation.
-  /** Use IMP::kernel::get_restraints() to get the actual restraints used.
-   */
+  /** \deprecated Use Optimizer::get_scoring_function() instead. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   Restraints get_restraints() const;
-#endif
  private:
   void set_is_optimizing_states(bool tf) const;
   static void set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o);

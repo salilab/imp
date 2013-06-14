@@ -115,7 +115,7 @@ class IMPKERNELEXPORT ScoreState : public ModelObject {
 };
 
 /** Return the passed list of score states ordered based on how they need to
-    be ordered during update calls.*/
+    be ordered during update calls. Duplicates will be removed. */
 IMPKERNELEXPORT ScoreStatesTemp get_update_order(ScoreStatesTemp input);
 
 IMPKERNEL_END_NAMESPACE

@@ -10,8 +10,7 @@
 
 #include <IMP/core/core_config.h>
 
-#include <IMP/Optimizer.h>
-#include <IMP/optimizer_macros.h>
+#include <IMP/AttributeOptimizer.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -21,7 +20,7 @@ IMPCORE_BEGIN_NAMESPACE
     If the score gets better, increase the step size if we are sufficiently
     far from a score of zero. If the score reaches the threshold, quit.
 */
-class IMPCOREEXPORT SteepestDescent : public Optimizer {
+class IMPCOREEXPORT SteepestDescent : public AttributeOptimizer {
  public:
   SteepestDescent(Model *m = nullptr);
 

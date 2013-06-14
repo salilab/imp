@@ -10,8 +10,7 @@
 
 #include <IMP/gsl/gsl_config.h>
 
-#include <IMP/Optimizer.h>
-#include <IMP/optimizer_macros.h>
+#include <IMP/AttributeOptimizer.h>
 #include <gsl/gsl_multimin.h>
 
 IMPGSL_BEGIN_NAMESPACE
@@ -20,7 +19,7 @@ IMPGSL_BEGIN_NAMESPACE
 /** This class is a base class for the various GSL-based optimizers. It exposes
     very little user functionality.
  */
-class IMPGSLEXPORT GSLOptimizer : public Optimizer {
+class IMPGSLEXPORT GSLOptimizer : public AttributeOptimizer {
   double stop_score_;
   mutable double best_score_;
   mutable FloatIndexes fis_;

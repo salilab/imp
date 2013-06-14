@@ -57,6 +57,12 @@ protected:
   virtual ~ParticleOutputs(){}
 };
 
+/** Compute the set of score states required by the passed list of
+    ModelObjects. This will compute dependencies if needed.*/
+IMPKERNELEXPORT ScoreStatesTemp
+get_required_score_states(const ModelObjectsTemp &mos,
+                          ScoreStatesTemp exclude = ScoreStatesTemp());
+
 IMPKERNEL_END_NAMESPACE
 
 #endif /* IMPKERNEL_MODEL_OBJECT_HELPERS_H */

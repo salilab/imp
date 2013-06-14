@@ -245,7 +245,7 @@ bool ConjugateGradients::line_search(
 
 //! Constructor
 ConjugateGradients::ConjugateGradients(Model *m)
-    : Optimizer(m, "ConjugateGradients") {
+    : AttributeOptimizer(m, "ConjugateGradients%1%") {
   threshold_ = std::numeric_limits<Float>::epsilon();
   max_change_ = std::numeric_limits<Float>::max() / 100.0;
 }
