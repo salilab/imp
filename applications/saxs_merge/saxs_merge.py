@@ -15,7 +15,8 @@ import IMP.isd
 import IMP.gsl
 import IMP.saxs
 
-IMP.base.set_log_level(0)
+#IMP.base.set_log_level(IMP.base.SILENT)
+IMP.base.set_log_level(IMP.base.VERBOSE)
 #fitno=0
 
 def subsample(idx, data, npoints):
@@ -1002,7 +1003,6 @@ def set_defaults_mean(data, particles, mean_function):
 def find_fit_mean(data, initvals, verbose, mean_function):
     model, particles, functions, gp = \
             setup_process(data, initvals, 1)
-    IMP.base.set_log_level(IMP.base.VERBOSE)
     gpr = IMP.isd.GaussianProcessInterpolationRestraint(gp)
     model.add_restraint(gpr)
     set_defaults_mean(data, particles, mean_function)
@@ -1810,8 +1810,45 @@ def reorder_profiles(profiles):
     newprofs = [ profiles[i] for q,i in qmaxs ]
     return newprofs
 
-def remove_redundant(merge):
-    return merge
+def remove_redundant(profiles):
+    if len(profiles) == 1:
+        return profiles
+    data = [i.get_data(filter='dgood',colwise=True) for i in profiles]
+    #map noise levels to profiles
+    noiselevels = [(median(p['err']),i) for i,p in enumerate(data)]
+    noiselevels.sort()
+    n2p = [i[1] for i in noiselevels] #n2p[-1] is noisiest profile
+    dbest = data[n2p[0]]
+    #get median distance between q values
+    qdist = median([ dbest['q'][i+1]-dbest['q'][i]
+                        for i in xrange(len(dbest['q'])-1) ])
+    for p in n2p[1:]:
+        prof = profiles[p]
+        dat = data[p]
+        imin = 0
+        for qbest in dbest['q']:
+            #find qs in data
+            while imin < len(dat['q']) and dat['q'][imin] <qbest-qdist:
+                imin += 1
+            #if this profile has no more data, stop loop
+            if imin == len(dat['q']):
+                break
+            #if there is no data around qbest, continue
+            if dat['q'][imin] > qbest+qdist:
+                continue
+            #find upper bound
+            imax=imin+1
+            while imax < len(dat['q']) and dat['q'][imax] <= qbest+qdist:
+                imax += 1
+            #loop over qs and discard them
+            for i in xrange(imin,imax):
+                prof.set_flag(dat['id'][i],'dgood', False)
+                prof.set_flag(dat['id'][i],'dpvalue', -1)
+    #apply same alg to remaining profiles
+    pnew = [p for i,p in enumerate(profiles) if i != n2p[0] ]
+    pnew = remove_redundant(pnew)
+    pnew.insert(n2p[0], profiles[n2p[0]])
+    return pnew
 
 
 def initialize():
@@ -2096,6 +2133,8 @@ def classification(profiles, args):
         create_intervals_from_data(p, 'drefname')
         create_intervals_from_data(p, 'dselfref')
         create_intervals_from_data(p, 'dgood')
+    if args.remove_redundant:
+        profiles = remove_redundant(profiles)
     return profiles, args
 
 def merging(profiles, args):
@@ -2244,8 +2283,6 @@ def main():
             profiles, args = globals()[step](profiles, args)
         else:
             merge, profiles, args = merging(profiles, args)
-            if args.remove_redundant:
-                merge = remove_redundant(merge)
     #write output
     write_data(merge, profiles, args)
 
