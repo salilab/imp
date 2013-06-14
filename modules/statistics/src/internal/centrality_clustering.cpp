@@ -7,11 +7,13 @@
 #include <IMP/statistics/internal/centrality_clustering.h>
 #include <IMP/statistics/PartitionalClustering.h>
 #include <IMP/statistics/internal/TrivialPartitionalClustering.h>
-#include <boost/pending/disjoint_sets.hpp>
+#include <boost/property_map/vector_property_map.hpp>
+#include <boost/property_map/property_map.hpp>
 #include <boost/graph/adjacency_matrix.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/incremental_components.hpp>
 #include <boost/graph/graph_utility.hpp>
+#include <boost/pending/disjoint_sets.hpp>
 #if BOOST_VERSION > 103900
 namespace boost {
 // work around bug in bc_clustering
@@ -38,12 +40,14 @@ typedef boost::adjacency_matrix<
                               double> > Graph;*/
 typedef boost::graph_traits<Graph> Traits;
 
-typedef boost::disjoint_sets<int *, int *> DS;
+  typedef boost::vector_property_map<Traits::vertex_descriptor> PM;
+
+  typedef boost::disjoint_sets<PM, PM > DS;
 
 struct Done {
   typedef double centrality_type;
   int k_;
-  Ints rank_, parent_;
+  PM rank_, parent_;
   Done(int k, int n) : k_(k), rank_(n), parent_(n) {}
   template <class B>
   bool operator()(centrality_type c, const B &e, const Graph &g) {
@@ -53,7 +57,7 @@ struct Done {
     */
     IMP_UNUSED(c);
     IMP_UNUSED(e);
-    DS ds(&rank_[0], &parent_[0]);
+    DS ds(rank_, parent_);
     boost::initialize_incremental_components(g, ds);
     boost::incremental_components(g, ds);
     unsigned int s =
@@ -70,8 +74,8 @@ PartitionalClustering *get_centrality_clustering(CentralityGraph &g,
       boost::get(boost::edge_centrality, g);
   unsigned int n = boost::num_vertices(g);
   boost::betweenness_centrality_clustering(g, Done(k, n), m);
-  Ints rank(n), parent(n);
-  DS ds(&rank[0], &parent[0]);
+  PM rank(n), parent(n);
+  DS ds(rank, parent);
   boost::initialize_incremental_components(g, ds);
   boost::incremental_components(g, ds);
   IMP::base::map<int, Ints> sets;
