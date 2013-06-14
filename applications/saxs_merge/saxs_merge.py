@@ -1527,7 +1527,6 @@ def create_intervals_from_data(profile, flag):
     if q != oldval:
         profile.set_flag_interval(flag, oldval, q, oldb)
 
-
 def rescale_curves(refdata, data, normal = False, offset = False):
     """Find gamma and (optionnally) c so that
     normal model: I0 = gamma*(I1 + c)
@@ -1903,7 +1902,7 @@ def cleanup(profiles, args):
             else:
                 p.set_flag(id, 'agood', True)
             p.set_flag(id, 'apvalue', pval)
-        #compute error average and discard 3*sigma points if requested
+        #compute error average and discard 2*sigma points if requested
         if args.remove_noisy:
             data = p.get_data(filter="agood", colwise=True)
             med = median(data['err'])
@@ -1911,7 +1910,7 @@ def cleanup(profiles, args):
             ids = []
             for datum in p.get_data(filter="agood"):
                 id,q,I,err = datum[:4]
-                if err > med+3*sd:
+                if err > med+2*sd:
                     p.set_flag(id,'agood',False)
                     p.set_flag(id, 'apvalue', -1)
         qvals = p.get_data(filter="agood", colwise=True)['q']
