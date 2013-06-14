@@ -2315,8 +2315,6 @@ def main():
             profiles, args = globals()[step](profiles, args)
         else:
             merge, profiles, args = merging(profiles, args)
-            if args.remove_redundant:
-                merge = remove_redundant(merge)
     #write output
     write_data(merge, profiles, args)
 
