@@ -1533,7 +1533,7 @@ DensityMap* create_density_map(const algebra::GridD<3,
       for (unsigned int k=0; k< arg.get_number_of_voxels(2); ++k) {
         G::ExtendedIndex ei(i,j,k);
         G::Index gi= arg.get_index(ei);
-        long vi= ret->get_voxel_by_location(i,j,k);
+        long vi= ret->xyz_ind2voxel(i,j,k);
         ret->set_value(vi, arg[gi]);
       }
     }
