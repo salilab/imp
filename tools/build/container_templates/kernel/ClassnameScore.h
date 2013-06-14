@@ -38,7 +38,7 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
   typedef ClassnameModifier Modifier;
   ClassnameScore(std::string name = "ClassnameScore %1%");
   //! Compute the score and the derivative if needed.
-  /** \deprecated Use the index-based evaluate instead. */
+  /** \deprecated_at{2.1} Use the index-based evaluate instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
      virtual double evaluate(ARGUMENTTYPE vt,
                              DerivativeAccumulator *da) const;

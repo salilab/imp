@@ -14,7 +14,7 @@
 #include "Sampler.h"
 
 
-/** \deprecated Declare the needed methods directly.
+/** \deprecated_at{2.1} Declare the needed methods directly.
 */
 #define IMP_SAMPLER(Name)                       \
   IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the needed functions directly."); \

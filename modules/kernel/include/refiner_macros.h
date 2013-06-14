@@ -15,7 +15,7 @@
 
 
 
-/** \deprecated Declare methods yourself.
+/** \deprecated_at{2.1} Declare methods yourself.
 */
 #define IMP_REFINER(Name)                                               \
   IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare methods yourself");          \
@@ -27,7 +27,7 @@
   IMP_OBJECT_NO_WARNING(Name)
 
 
-/** \deprecated Declare methods yourself.
+/** \deprecated_at{2.1} Declare methods yourself.
 */
 #define IMP_SIMPLE_REFINER(Name)                                        \
   IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare methods yourself");          \

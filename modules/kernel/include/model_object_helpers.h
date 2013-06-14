@@ -22,10 +22,10 @@ public:
   ModelObjectsTemp get_inputs(Model *m,
                               const ParticleIndexes &pis) const;
 
-  /** \deprecated Use get_inputs instead. */
+  /** \deprecated_at{2.1} Use get_inputs instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
       virtual ContainersTemp get_input_containers(Particle *p) const;
-  /** \deprecated Use get_inputs instead. */
+  /** \deprecated_at{2.1} Use get_inputs instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
       virtual ParticlesTemp get_input_particles(Particle *p) const;
 protected:
@@ -44,10 +44,10 @@ public:
   ModelObjectsTemp get_outputs(Model *m,
                               const ParticleIndexes &pis) const;
 
-  /** \deprecated Use get_inputs instead. */
+  /** \deprecated_at{2.1} Use get_inputs instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
       virtual ContainersTemp get_output_containers(Particle *p) const;
-  /** \deprecated Use get_inputs instead. */
+  /** \deprecated_at{2.1} Use get_inputs instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
       virtual ParticlesTemp get_output_particles(Particle *p) const;
 protected:

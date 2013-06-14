@@ -14,7 +14,7 @@
 #include "Key.h"
 
 
-/** \deprecated Just declare the typedef directly.
+/** \deprecated_at{2.1} Just declare the typedef directly.
 */
 #define IMP_DECLARE_KEY_TYPE(Name, Tag)                                 \
   IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the typedef directly.")      \
@@ -22,7 +22,7 @@
   IMP_VALUES(Name, Name##s)
 
 
-/** \deprecated Just declare the typedef directly.
+/** \deprecated_at{2.1} Just declare the typedef directly.
 */
 #define IMP_DECLARE_CONTROLLED_KEY_TYPE(Name, Tag)                      \
   IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the typedef directly.")      \

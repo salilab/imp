@@ -14,7 +14,7 @@
 
 IMPCORE_DEPRECATED_HEADER(2.1, "Use MonteCarloMover")
 
-/** \deprecated Use IMP::core::MonteCarloMover
+/** \deprecated_at{2.1} Use IMP::core::MonteCarloMover
  */
 #define IMP_MOVER(Name)                                                \
   IMP_DEPRECATED_MACRO(2.1, "You should move to IMP::core::MonteCarloMover") \

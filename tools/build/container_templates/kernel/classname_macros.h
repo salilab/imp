@@ -19,7 +19,7 @@
 #include <algorithm>
 
 
-/** \deprecated Declare methods youself and use
+/** \deprecated_at{2.1} Declare methods youself and use
     IMP_CLASSNAME_SCORE_METHODS() to fill in the rest.
 */
 #define IMP_CLASSNAME_SCORE(Name)                                      \
@@ -42,7 +42,7 @@
   IMP_BACKWARDS_MACRO_INPUTS;                                           \
   IMP_OBJECT_NO_WARNING(Name)
 
-/** \deprecated Declare methods youself and use
+/** \deprecated_at{2.1} Declare methods youself and use
     IMP_CLASSNAME_SCORE_METHODS() to fill in the rest.
 */
 #define IMP_SIMPLE_CLASSNAME_SCORE(Name)                               \
@@ -67,7 +67,7 @@
 
 
 
-/** \deprecated Do it yourself.
+/** \deprecated_at{2.1} Do it yourself.
 */
 #define IMP_COMPOSITE_CLASSNAME_SCORE(Name)                            \
   IMPKERNEL_DEPRECATED_MACRO(2.1, "Do it yourself.");                  \
@@ -144,7 +144,7 @@
   }                                                                     \
 
 
-/** \deprecated Declare methods youself and use
+/** \deprecated_at{2.1} Declare methods youself and use
     IMP_CLASSNAME_SCORE_METHODS() to fill in the rest.
 */
 #define IMP_INDEX_CLASSNAME_SCORE(Name)                                 \
@@ -193,7 +193,7 @@
 
 
 
-/** \deprecated Use IMP_CLASSNAME_PREDICATE_METHODS instead and declare
+/** \deprecated_at{2.1} Use IMP_CLASSNAME_PREDICATE_METHODS instead and declare
     the methods you implement.
  */
 #define IMP_CLASSNAME_PREDICATE(Name)                                   \
@@ -262,7 +262,7 @@
                ps.end());                                               \
                        });
 
-/** \deprecated Declare methods yourself and use
+/** \deprecated_at{2.1} Declare methods yourself and use
     IMP_CLASSNAME_PREDICATE_METHODS to fill in the rest.
 */
 #define IMP_INDEX_CLASSNAME_PREDICATE(Name, return_value, return_inputs) \
@@ -312,7 +312,7 @@
   IMP_OBJECT_METHODS(Name)
 
 
-/** \deprecated Declare methods yourself and use IMP_CLASSNAME_MODIFIER_METHODS
+/** \deprecated_at{2.1} Declare methods yourself and use IMP_CLASSNAME_MODIFIER_METHODS
     to fill in the rest.
 */
 #define IMP_CLASSNAME_MODIFIER(Name)                                    \
@@ -346,7 +346,7 @@
 
 
 
-/** \deprecated Declare methods yourself and use IMP_CLASSNAME_MODIFIER_METHODS
+/** \deprecated_at{2.1} Declare methods yourself and use IMP_CLASSNAME_MODIFIER_METHODS
     to fill in the rest.
 */
 #define IMP_INDEX_CLASSNAME_MODIFIER(Name)                            \
@@ -395,7 +395,7 @@
   }
 
 
-/** \deprecated Declare the methods directly and use
+/** \deprecated_at{2.1} Declare the methods directly and use
     IMP_CLASSNAME_CONTAINER_METHODS
 */
 #define IMP_CLASSNAME_CONTAINER(Name)                                  \
@@ -415,7 +415,7 @@
   IMP_IMPLEMENT_CLASSNAME_CONTAINER(Name)
 
 
-/** \deprecated Declare the methods directly and use
+/** \deprecated_at{2.1} Declare the methods directly and use
     IMP_CLASSNAME_CONTAINER_METHODS
 */
 #define IMP_ACTIVE_CLASSNAME_CONTAINER(Name)                           \

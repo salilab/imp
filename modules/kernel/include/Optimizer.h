@@ -43,7 +43,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 */
 class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
  public:
-  /** \deprecated Use the constructor with a Model and a name.*/
+  /** \deprecated_at{2.1} Use the constructor with a Model and a name.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   Optimizer();
   Optimizer(Model *m, std::string name = "Optimizer %1%");
@@ -60,13 +60,13 @@ class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
   */
   double optimize(unsigned int max_steps);
 
-  /** \deprecated Do not use as it is not reliably supported. */
+  /** \deprecated_at{2.1} Do not use as it is not reliably supported. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   void set_score_threshold(double s) {
     IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Not a reliable function.");
     min_score_ = s;
   }
-  /** \deprecated Do not use as it is not reliably supported. */
+  /** \deprecated_at{2.1} Do not use as it is not reliably supported. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   double get_score_threshold() const {
     IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Not a reliable function.");
@@ -86,7 +86,7 @@ class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
   //! Get the model being optimized
   Model *get_model() const { return model_.get(); }
 
-  //! \deprecated Use the constructor that takes the model
+  //! \deprecated_at{2.1} Use the constructor that takes the model
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   void set_model(Model *m);
 
@@ -114,7 +114,7 @@ class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
   */
   virtual void set_scoring_function(ScoringFunctionAdaptor sf);
 
-  /** \deprecated Use set_scoring_function() instead. */
+  /** \deprecated_at{2.1} Use set_scoring_function() instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   void set_restraints(const RestraintsTemp &rs);
 
@@ -129,49 +129,49 @@ class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
   void update_states() const;
 
 #ifndef SWIG
-  /** \deprecated Use AttributeOptimizer instead. */
+  /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
       FloatIndexes get_optimized_attributes() const;
-  /** \deprecated Use AttributeOptimizer instead. */
+  /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
       void set_value(FloatIndex fi, double v) const;
 
-  /** \deprecated Use AttributeOptimizer instead. */
+  /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
       Float get_value(FloatIndex fi) const;
 
-  /** \deprecated Use AttributeOptimizer instead. */
+  /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
       Float get_derivative(FloatIndex fi) const;
 
     //!@}
 
 #if !defined(SWIG)
-  /** \deprecated Use get_width instead.*/
+  /** \deprecated_at{2.1} Use get_width instead.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
       double width(FloatKey k) const;
 #endif
-  /** \deprecated Use AttributeOptimizer instead. */
+  /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
       double get_width(FloatKey k) const;
-  /** \deprecated Use AttributeOptimizer instead. */
+  /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
       void set_scaled_value (FloatIndex fi, Float v) const;
 
-  /** \deprecated Use AttributeOptimizer instead. */
+  /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
       double get_scaled_value (FloatIndex fi) const;
 
-  /** \deprecated Use AttributeOptimizer instead. */
+  /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
       double get_scaled_derivative(FloatIndex fi) const;
 
-  /** \deprecated Use AttributeOptimizer instead. */
+  /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
       void clear_range_cache();
 #endif // SWIG
 
-  /** \deprecated Use Optimizer::get_scoring_function() instead. */
+  /** \deprecated_at{2.1} Use Optimizer::get_scoring_function() instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   Restraints get_restraints() const;
  private:

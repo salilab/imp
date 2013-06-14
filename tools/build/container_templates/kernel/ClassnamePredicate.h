@@ -33,7 +33,7 @@ class IMPKERNELEXPORT ClassnamePredicate : public ParticleInputs,
   typedef VARIABLETYPE Argument;
   typedef INDEXTYPE IndexArgument;
   ClassnamePredicate(std::string name = "ClassnamePredicate %1%");
-  /** \deprecated Use the index based version.*/
+  /** \deprecated_at{2.1} Use the index based version.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   virtual int get_value(ARGUMENTTYPE vt) const {
     IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use index version");
@@ -41,7 +41,7 @@ class IMPKERNELEXPORT ClassnamePredicate : public ParticleInputs,
                            internal::get_index(vt));
   }
 
-  /** \deprecated Use the index based version.*/
+  /** \deprecated_at{2.1} Use the index based version.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
       virtual Ints get_value(const PLURALVARIABLETYPE &o) const;
 

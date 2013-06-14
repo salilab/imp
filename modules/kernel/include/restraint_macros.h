@@ -16,7 +16,7 @@
 #include "input_output_macros.h"
 #include "constants.h"
 
-/** \deprecated Declare the methods yourself instead.
+/** \deprecated_at{2.1} Declare the methods yourself instead.
 */
 #define IMP_RESTRAINT(Name)                                             \
   IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the methods yourself");      \
@@ -26,7 +26,7 @@
   IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS;                              \
   IMP_OBJECT_NO_WARNING(Name)
 
-/**  \deprecated Declare the methods yourself instead.
+/**  \deprecated_at{2.1} Declare the methods yourself instead.
  */
 #define IMP_RESTRAINT_2(Name)                                           \
   public:                                                               \
@@ -37,7 +37,7 @@
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE; \
   IMP_OBJECT_NO_WARNING(Name)
 
-/**  \deprecated Declare the methods yourself instead.
+/**  \deprecated_at{2.1} Declare the methods yourself instead.
  */
 #define IMP_RESTRAINT_ACCUMULATOR(Name)                                 \
   public:                                                               \

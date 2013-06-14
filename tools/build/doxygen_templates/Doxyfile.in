@@ -221,6 +221,7 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "untested{1}=\warning \1 has not been well tested yet\n  Use with caution and please report any bugs found." \
                          "unimplemented{1}=\warning \1 has not beeen implemented.\n If you want to use it, ask someone to implement it or do it yourself." \
                          "dotgraph{1}=\1" \
+                         "deprecated_at{1}=\deprecated As of IMP release \1. See the [IMP Deprecation Policy](http://github.com/salilab/imp/wiki/Deprecation) for more information about deprecation in IMP."
                          "geometry=See \ref geometricprimitives \"geometric primitives\" for more information." \
                          "pythononlyclass=\note This class is only available in Python." \
                          "quote{1}=&ldquo;\1&rdquo;" \

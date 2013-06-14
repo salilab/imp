@@ -215,16 +215,16 @@ class IMPKERNELEXPORT Model : public base::Object
   using Object::clear_caches;
 #endif
 
-  /** \deprecated Get the maximum directly from the restraint.*/
+  /** \deprecated_at{2.1} Get the maximum directly from the restraint.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   double get_maximum_score(Restraint *r) const;
-  /** \deprecated Set get the maximum directly on the restraint.*/
+  /** \deprecated_at{2.1} Set get the maximum directly on the restraint.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   void set_maximum_score(Restraint *r, double s);
-  /** \deprecated You should use a ScoringFunction or a RestraintSet.*/
+  /** \deprecated_at{2.1} You should use a ScoringFunction or a RestraintSet.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   void set_maximum_score(double s);
-  /** \deprecated You should use a ScoringFunction or a RestraintSet.*/
+  /** \deprecated_at{2.1} You should use a ScoringFunction or a RestraintSet.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   double get_maximum_score() const;
 

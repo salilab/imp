@@ -28,8 +28,8 @@
     imp_deprecation_warn = true;                                        \
   }
 
-/** \deprecated{Deprecated as of IMP 2.1. Use
-    IMPMODULE_DEPRECATED_CLASS_DEF().}
+/** \deprecated_at{2.1} Deprecated as of IMP 2.1. Use
+    IMPMODULE_DEPRECATED_CLASS_DEF().
  */
 #define IMP_DEPRECATED_OBJECT(replacement_classname)                    \
   IMP_DEPRECATED_MACRO(2.1, "Use IMP@MODULE@_DEPRECATED_CLASS_DECL()")  \
@@ -41,7 +41,8 @@
     ::IMP::base::internal::set_printed_deprecation_message(get_name(), \
                                                      true);             \
   }
-/** \deprecated As of IMP 2.1. Use IMPMODULE_DEPRECATED_CLASS_DEF() instead
+/** \deprecated_at{2.1} As of IMP 2.1. Use IMPMODULE_DEPRECATED_CLASS_DEF()
+    instead
  */
 #define IMP_DEPRECATED_CLASS(classname, replacement_classname)         \
   IMP_DEPRECATED_MACRO(2.1, "Use IMP@MODULE@_DEPRECATED_CLASS_DEF instead") \
@@ -53,8 +54,8 @@
     ::IMP::base::internal::set_printed_deprecation_message(#classname, \
                                                      true);             \
   }
-/** \deprecated{As of IMP 2.1. Use IMPMODULE_DEPRECATED_FUNCTION_DEF()
-    instead}
+/** \deprecated_at{2.1} As of IMP 2.1. Use IMPMODULE_DEPRECATED_FUNCTION_DEF()
+    instead
  */
 #define IMP_DEPRECATED_FUNCTION(replacement)                            \
   IMP_DEPRECATED_MACRO(2.1, "Use IMP@MODULE@_DEPRECATED_FUNCTION instead"); \
@@ -77,8 +78,8 @@ __attribute__((deprecated))
 #else
 /** Produce compiler warnings when the function is called.
 
-    \deprecated{As of IMP 2.1. Use IMPMODULE_DEPRECATED_FUNCTION_DEF()
-    instead.}
+    \deprecated_at{2.1} As of IMP 2.1. Use IMPMODULE_DEPRECATED_FUNCTION_DEF()
+    instead.
 */
 #define IMP_DEPRECATED_WARN
 #endif

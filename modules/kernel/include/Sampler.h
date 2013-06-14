@@ -34,7 +34,7 @@ class IMPKERNELEXPORT Sampler : public IMP::base::Object {
 
  public:
   Sampler(Model *m, std::string name = "Sampler %1%");
-  /** \deprecated Use create_sample */
+  /** \deprecated_at{2.1} Use create_sample */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   ConfigurationSet *get_sample() const {
     IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use create_sample instead");

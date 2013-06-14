@@ -15,14 +15,14 @@
 #include "OptimizerState.h"
 
 
-/** \deprecated Declare the methods directly.
+/** \deprecated_at{2.1} Declare the methods directly.
 */
 #define IMP_OPTIMIZER_STATE(Name)                                       \
   IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the methods youself.");      \
   virtual void update() IMP_OVERRIDE;                                   \
   IMP_OBJECT_NO_WARNING(Name)
 
-/** \deprecated Please use IMP::core::PeriodicOptimizerState instead.
+/** \deprecated_at{2.1} Please use IMP::core::PeriodicOptimizerState instead.
 */
 #define IMP_PERIODIC_OPTIMIZER_STATE(Name)                              \
   IMPKERNEL_DEPRECATED_MACRO(2.1, "Use IMP::core::PeriodicOptimizerState."); \

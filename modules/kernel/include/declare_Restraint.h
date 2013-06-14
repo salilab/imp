@@ -61,7 +61,7 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   /** Create a restraint and register it with the model. The restraint is
       not added to implicit scoring function in the Model.*/
   Restraint(Model *m, std::string name);
-  /** \deprecated Use the constructor that takes a model instead.
+  /** \deprecated_at{2.1} Use the constructor that takes a model instead.
    */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   Restraint(std::string name = "Restraint %1%");
@@ -204,10 +204,10 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
    */
   bool get_was_good() const { return get_last_score() < max_; }
 
-  /** \deprecated use get_inputs() instead.*/
+  /** \deprecated_at{2.1} use get_inputs() instead.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
     ParticlesTemp get_input_particles() const;
-  /** \deprecated use get_inputs() instead.*/
+  /** \deprecated_at{2.1} use get_inputs() instead.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
     ContainersTemp get_input_containers() const;
 

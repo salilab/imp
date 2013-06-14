@@ -13,7 +13,7 @@
 #include "Optimizer.h"
 
 
-/** \deprecated Declare the methods directly.
+/** \deprecated_at{2.1} Declare the methods directly.
 */
 #define IMP_OPTIMIZER(Name)                                             \
   IMPKERNEL_DEPRECATED_MACRO(2.1, "Expand methods directly instead.");  \

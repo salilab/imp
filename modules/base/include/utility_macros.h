@@ -27,25 +27,25 @@
   IMP_NO_SWIG(Name& operator=(const Name &o) {copy_from(o); return *this;}) \
   IMP_REQUIRE_SEMICOLON_CLASS(copy)
 
-/** \deprecated Don't use this */
+/** \deprecated_at{2.1} Don't use this */
 #define IMP_PROTECTED_METHOD_DECL(protection, return_value, name, arguments, \
                                   const_or_not, body)                   \
   IMPBASE_DEPRECATED_MACRO(2.1, "Don't use this.");                     \
   protection:                                                           \
   return_value name arguments const_or_not body
 
-/** \deprecated Don't use this */
+/** \deprecated_at{2.1} Don't use this */
 #define IMP_PROTECTED_CONSTRUCTOR_DECL(protection, Name, arguments, body) \
   protection:                                                           \
   Name arguments body
 
-/** \deprecated Don't use this */
+/** \deprecated_at{2.1} Don't use this */
 #define IMP_PROTECTED_DESTRUCTOR_DECL(protection, Name, arguments, body) \
   protection:                                                           \
   virtual ~Name arguments body
 
 #if !defined(SWIG)
-/** \deprecated Don't use this */
+/** \deprecated_at{2.1} Don't use this */
 #define IMP_PROTECTED_METHOD(return_value, name, arguments, const_or_not, \
                              body)                                      \
   IMPBASE_DEPRECATED_MACRO(2.1, "Don't use this");                      \
@@ -53,19 +53,19 @@
                             const_or_not, body)
 
 
-/** \deprecated Don't use this */
+/** \deprecated_at{2.1} Don't use this */
 #define IMP_PROTECTED_CONSTRUCTOR(Name, arguments, body)                \
   IMPBASE_DEPRECATED_MACRO(2.1, "Don't use this");                      \
   IMP_PROTECTED_CONSTRUCTOR_DECL(protected, Name, arguments, body)
 
-/** \deprecated Don't use this */
+/** \deprecated_at{2.1} Don't use this */
 #define IMP_PROTECTED_DESTRUCTOR(Name, arguments, body)                 \
   IMPBASE_DEPRECATED_MACRO(2.1, "Don't use this");                      \
   IMP_PROTECTED_DESTRUCTOR_DECL(protected, Name, arguments, body)
 
 
 #ifndef IMP_DOXYGEN
-/** \deprecated Don't use this */
+/** \deprecated_at{2.1} Don't use this */
 #define IMP_INTERNAL_METHOD(return_value, name, arguments, const_or_not, \
                             body)                                       \
     IMPBASE_DEPRECATED_MACRO(2.1, "Don't use this");                      \
@@ -73,7 +73,7 @@ public:                                                                 \
  return_value name arguments const_or_not body
 
 #else
-/** \deprecated Don't use this */
+/** \deprecated_at{2.1} Don't use this */
 #define IMP_INTERNAL_METHOD(return_value, name, arguments, const_or_not, \
                             body)
 #endif

@@ -42,7 +42,7 @@ class IMPCOREEXPORT ConnectivityRestraint : public Restraint {
  public:
   //! Use the given PairScore
   ConnectivityRestraint(PairScore *ps, SingletonContainer *sc);
-  /** \deprecated Use constructor that takes a container instead.
+  /** \deprecated_at{2.1} Use constructor that takes a container instead.
    */
   IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
   ConnectivityRestraint(PairScore *ps);

@@ -14,7 +14,7 @@
 #include <IMP/base/doxygen_macros.h>
 #include <IMP/base/object_macros.h>
 
-/** \deprecated Declare the methods yourself.
+/** \deprecated_at{2.1} Declare the methods yourself.
  */
 #define IMP_CLOSE_PAIRS_FINDER(Name)                                    \
   IMPCORE_DEPRECATED_MACRO(2.1, "Declare the methods directly.");       \

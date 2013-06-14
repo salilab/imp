@@ -92,20 +92,20 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   /** \brief This function is very slow and you should think hard about using
       it.
 
-      \deprecated{This is slow and dependent on the order of elements in the
-      tuple.}
+      \deprecated_at{2.1} This is slow and dependent on the order of elements
+      in the tuple.
 
       Return whether the container has the given element.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
     bool get_contains_FUNCTIONNAME(VARIABLETYPE v) const;
 
-  /** \deprecated This can be very slow and is probably not useful
+  /** \deprecated_at{2.1} This can be very slow and is probably not useful
    */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
     unsigned int get_number_of_FUNCTIONNAMEs() const;
 
-  /** \deprecated{Use indexes instead and thing about using the
-      IMP_CONTAINER_FOREACH() macro.}*/
+  /** \deprecated_at{2.1}Use indexes instead and thing about using the
+      IMP_CONTAINER_FOREACH() macro.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
     VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const;
 

@@ -16,7 +16,7 @@
 
 
 
-//! \deprecated Declare the needed functions directly
+//! \deprecated_at{2.1} Declare the needed functions directly
 #define IMP_SCORE_STATE(Name)                                           \
   IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the needed functions directly."); \
   protected:                                                            \
@@ -27,7 +27,7 @@
   IMP_OBJECT_NO_WARNING(Name)
 
 
-//! \deprecated Declare the needed functions directly
+//! \deprecated_at{2.1} Declare the needed functions directly
 #define IMP_CONSTRAINT(Name)                                            \
   IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the needed functions directly."); \
   protected:                                                            \
@@ -37,7 +37,7 @@
   IMP_MODEL_OBJECT_BACKWARDS_MACRO_OUTPUTS;                             \
   IMP_OBJECT_NO_WARNING(Name)
 
-//! \deprecated Declare the needed functions directly
+//! \deprecated_at{2.1} Declare the needed functions directly
 #define IMP_SCORE_STATE_2(Name)                                         \
   IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the needed functions directly."); \
   protected:                                                            \
@@ -48,7 +48,7 @@
   IMP_OBJECT_NO_WARNING(Name)
 
 
-//! \deprecated Declare the needed functions directly
+//! \deprecated_at{2.1} Declare the needed functions directly
 #define IMP_CONSTRAINT_2(Name)                                          \
   IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the needed functions directly."); \
   protected:                                                            \

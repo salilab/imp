@@ -24,7 +24,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
     and save them all, make sure there is a "%1%" in the file name string
     passed to the constructor.
 
-    \deprecated Use IMP::rmf instead when interfacing with Chimera.
+    \deprecated_at{2.1} Use IMP::rmf instead when interfacing with Chimera.
  */
 class IMPDISPLAYEXPORT ChimeraWriter : public TextWriter {
   void cleanup(std::string name, bool need_ms, bool need_surf = false);

@@ -21,7 +21,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 /** Keeps a set of values within a range
     the range is arranged into some number of bins
     specified during construction.
-    \deprecated Use HistogramD instead.
+    \deprecated_at{2.1} Use HistogramD instead.
 */
 class IMPSTATISTICSEXPORT Histogram {
  public:

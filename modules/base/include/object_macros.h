@@ -32,7 +32,7 @@
   }                                                                     \
 IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
 
-/** \deprecated Use IMP_OBJECT_METHODS() */
+/** \deprecated_at{2.1} Use IMP_OBJECT_METHODS() */
 #define IMP_OBJECT_INLINE(Name, show, destructor)                       \
   public:                                                               \
   IMPBASE_DEPRECATED_MACRO(2.1, "Use IMP_OBJECT_METHODS() instead.");   \
@@ -64,7 +64,7 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
 IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
 
 
-//! \deprecated Use IMP_OBJECT_METHODS()
+//! \deprecated_at{2.1} Use IMP_OBJECT_METHODS()
 #define IMP_OBJECT(Name)                                                \
   public:                                                               \
   IMPBASE_DEPRECATED_MACRO(2.1, "Use IMP_OBJECT_METHODS() instead.");   \
@@ -72,7 +72,7 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
 
 
 
-/** \deprecated Use IMP_OBJECT_METHODS() */
+/** \deprecated_at{2.1} Use IMP_OBJECT_METHODS() */
 #define IMP_OBJECT_2(Name)                              \
   IMP_DEPRECATED_MACRO(2.0, "Use IMP_OBJECT_METHODS() macro")   \
   IMP_OBJECT_METHODS(Name)

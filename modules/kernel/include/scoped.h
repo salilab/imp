@@ -23,7 +23,7 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-/** \deprecated No longer needed, just destroy the ScoreState itself.
+/** \deprecated_at{2.1} No longer needed, just destroy the ScoreState itself.
 */
 template <class SS> class GenericScopedScoreState : public base::RAII {
   base::Pointer<SS> ss_;
@@ -65,8 +65,8 @@ template <class SS> class GenericScopedScoreState : public base::RAII {
 //! Removes the Restraint when the RAII object is destroyed
 /** It is templated so it can act as a general pointer
     to the restraint.
-    \deprecated{With the advent of the ScoringFunction, this
-    should not be needed.}
+    \deprecated_at{2.1} With the advent of the ScoringFunction, this
+    should not be needed.
 */
 template <class SS> class GenericScopedRestraint : public base::RAII {
   base::Pointer<SS> ss_;
@@ -112,8 +112,8 @@ template <class SS> class GenericScopedRestraint : public base::RAII {
 //! Removes the Restraint until RAII object is destroyed
 /** It is templated so it can act as a general pointer
     to the restraint.
-    \deprecated{With the advent of the ScoringFunction, this
-    should not be needed.}
+    \deprecated_at{2.1} With the advent of the ScoringFunction, this
+    should not be needed.
 */
 template <class SS> class GenericScopedRemoveRestraint : public base::RAII {
   base::Pointer<SS> ss_;
@@ -167,7 +167,7 @@ template <class SS> class GenericScopedRemoveRestraint : public base::RAII {
 #endif
 };
 
-/** \deprecated This doesn't actually do anything any more.
+/** \deprecated_at{2.1} This doesn't actually do anything any more.
 */
 template <class SS> class GenericScopedRemoveScoreState : public base::RAII {
   base::Pointer<SS> ss_;
