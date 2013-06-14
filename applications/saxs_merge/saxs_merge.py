@@ -663,6 +663,12 @@ Merging
     group.add_option('--auto', help="Fully automatic merge. Will try to find"
             " correct order for input files (default is off)",
             default=False, action='store_true')
+    group.add_option('--remove_noisy', help="Remove data points that have"
+            " too large error bars, such as data at very low q (default is not "
+            " to perform this cleanup) ", default=False, action='store_true')
+    group.add_option('--remove_redundant', help="Remove high noise data if it "
+            " is surrounded by low noise data (default is not to remove it)",
+            default=False, action='store_true')
     group.add_option('--mergename', help="filename suffix for output "
             "(default is merged.dat)", default='merged.dat', metavar='SUFFIX')
     group.add_option('--sumname', metavar='NAME', default='summary.txt',
@@ -1794,6 +1800,19 @@ def write_summary_file(merge, profiles, args):
         fl.write("(%s)" % type(val).__name__)
         fl.write('= "%s"\n' % val)
 
+def reorder_profiles(profiles):
+    """try to guess which profile has predecence over which"""
+    qmaxs=[]
+    for i,p in enumerate(profiles):
+        qmax = p.get_data(filter='agood',colwise=True)['q'][-1]
+        qmaxs.append((qmax,i))
+    qmaxs.sort()
+    newprofs = [ profiles[i] for q,i in qmaxs ]
+    return newprofs
+
+def remove_redundant(merge):
+    return merge
+
 
 def initialize():
     args, files = parse_args()
@@ -1828,7 +1847,6 @@ def cleanup(profiles, args):
         N = p.get_Nreps()
         p.new_flag('agood',bool)
         p.new_flag('apvalue',float)
-        all_points_bad = True
         #loop over individual points
         had_outlier = False
         for datum in p.get_data():
@@ -1844,19 +1862,28 @@ def cleanup(profiles, args):
                     had_outlier = True
             else:
                 p.set_flag(id, 'agood', True)
-                if all_points_bad:
-                    all_points_bad = False
             p.set_flag(id, 'apvalue', pval)
-        if all_points_bad:
+        #compute error average and discard 3*sigma points if requested
+        if args.remove_noisy:
+            data = p.get_data(filter="agood", colwise=True)
+            med = median(data['err'])
+            sd = std(data['err'])
+            ids = []
+            for datum in p.get_data(filter="agood"):
+                id,q,I,err = datum[:4]
+                if err > med+3*sd:
+                    p.set_flag(id,'agood',False)
+                    p.set_flag(id, 'apvalue', -1)
+        qvals = p.get_data(filter="agood", colwise=True)['q']
+        if len(qvals)==0:
             print "Warning: all points in file %s have been discarded"\
-                    " on cleanup" % p.filename
-        else:
-            if verbose > 2:
-                qvals = p.get_data(filter="agood", colwise=True)['q']
-                print "\tqmin = %.3f\tqmax = %.3f" % (qvals[0], qvals[-1])
-            elif verbose == 2:
-                print ""
-            good_profiles.append(p)
+                " on cleanup" % p.filename
+            continue
+        if verbose > 2:
+            print "\tqmin = %.3f\tqmax = %.3f" % (qvals[0], qvals[-1])
+        elif verbose == 2:
+            print ""
+        good_profiles.append(p)
     #need a continuous indicator of validity
     for p in good_profiles:
         create_intervals_from_data(p, 'agood')
@@ -2012,16 +2039,6 @@ def rescaling(profiles, args):
         raise RuntimeError, "Got NAN in rescaling step, try another rescaling " \
                             "or fitting model."
     return profiles,args
-
-def reorder_profiles(profiles):
-    """try to guess which profile has predecence over which"""
-    qmaxs=[]
-    for i,p in enumerate(profiles):
-        qmax = p.get_data(filter='agood',colwise=True)['q'][-1]
-        qmaxs.append((qmax,i))
-    qmaxs.sort()
-    newprofs = [ profiles[i] for q,i in qmaxs ]
-    return newprofs
 
 def classification(profiles, args):
     """fourth stage of merge: classify mean functions. If the auto flag
@@ -2224,6 +2241,8 @@ def main():
             profiles, args = globals()[step](profiles, args)
         else:
             merge, profiles, args = merging(profiles, args)
+            if args.remove_redundant:
+                merge = remove_redundant(merge)
     #write output
     write_data(merge, profiles, args)
 
