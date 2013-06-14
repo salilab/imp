@@ -160,7 +160,7 @@ void CoreClosePairContainer::do_incremental() {
                          const ParticleIndexes &moved = imp_indexes;
                           IMP_CONTAINER_ACCESS(SingletonContainer, c_,
                                 ret = cpf_->get_close_pairs(get_model(),
-                                                            c_->get_indexes(),
+                                                            imp_indexes,
                                                             moved));
                          ParticleIndexPairs ret1
                              = cpf_->get_close_pairs(get_model(), moved);
