@@ -49,7 +49,7 @@ template <class Before, class After>
 TupleConstraint<Before, After>::TupleConstraint(
     Before *before, After *after, const typename Before::Argument &vt,
     std::string name)
-    : Constraint(name), v_(get_index(vt)) {
+    : Constraint(internal::get_model(vt), name), v_(get_index(vt)) {
   if (before) f_ = before;
   if (after) af_ = after;
 }

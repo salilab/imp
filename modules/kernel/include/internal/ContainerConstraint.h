@@ -92,7 +92,7 @@ template <class Before, class After, class C>
 ContainerConstraint<Before, After, C>::ContainerConstraint(Before *before,
                                                            After *after, C *c,
                                                            std::string name)
-    : Constraint(name), c_(c) {
+    : Constraint(c->get_model(), name), c_(c) {
   if (before) f_ = before;
   if (after) af_ = after;
 }
