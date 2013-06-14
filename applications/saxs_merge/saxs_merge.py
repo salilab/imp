@@ -1838,7 +1838,10 @@ def cleanup(profiles, args):
     alpha = args.aalpha
     q_cutoff = args.acutoff
     if verbose >0:
-        print "1. cleanup ( alpha = %2G %% )" % (alpha*100)
+        print "1. cleanup ( alpha = %2G %% " % (alpha*100),
+        if args.remove_noisy:
+            print "and removing noisy points",
+        print ")"
     #loop over profiles
     good_profiles=[]
     for p in profiles:
