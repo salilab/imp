@@ -2133,6 +2133,8 @@ def classification(profiles, args):
         create_intervals_from_data(p, 'dselfref')
         create_intervals_from_data(p, 'dgood')
     if args.remove_redundant:
+        if verbose >0:
+            print "   Removing redundant data"
         profiles = remove_redundant(profiles)
     return profiles, args
 
