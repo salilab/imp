@@ -725,8 +725,9 @@ Merging
                               " of zero are discarded as well")
     parser.add_option_group(group)
 
-    group.add_option('--aalpha', help='type I error (default 1e-4)',
-                     type="float", default=1e-4, metavar='ALPHA')
+    group.add_option('--aalpha', help='type I error (default 0.05 before '
+            'Bonferroni correction)', type="float", default=0.05,
+            metavar='ALPHA')
     group.add_option('--acutoff', help='when a value after CUT is discarded,'
             ' the rest of the curve is discarded as well (default is 0.1)',
             type="float", default=0.1, metavar='CUT')
@@ -1839,7 +1840,7 @@ def cleanup(profiles, args):
     alpha = args.aalpha
     q_cutoff = args.acutoff
     if verbose >0:
-        print "1. cleanup ( alpha = %2G %% " % (alpha*100),
+        print "1. cleanup ( alpha = %2G %% / M " % (alpha*100),
         if args.remove_noisy:
             print "and removing noisy points",
         print ")"
@@ -1853,14 +1854,16 @@ def cleanup(profiles, args):
         p.new_flag('apvalue',float)
         #loop over individual points
         had_outlier = False
-        for datum in p.get_data():
+        data = p.get_data()
+        M = len(data)
+        for datum in data:
             id,q,I,err = datum[:4]
             if err == 0:
                 p.set_flag(id,'agood', False)
                 p.set_flag(id, 'apvalue', -1)
                 continue
             pval,t = ttest_one(I,err,N)[0:2]
-            if pval > alpha or had_outlier:  #the point is invalid
+            if pval > alpha/M or had_outlier:  #the point is invalid
                 p.set_flag(id, 'agood', False)
                 if q >= q_cutoff and had_outlier == False:
                     had_outlier = True
