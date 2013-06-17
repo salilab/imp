@@ -7,6 +7,7 @@ from random import sample
 from numpy import *
 import copy
 from scipy.stats import t as student_t
+from scipy import linalg
 import glob
 import tempfile
 
@@ -414,7 +415,7 @@ class SAXSProfile:
         """returns (q,I,err,mean,...) tuples for num points (default 200)
         ranging from qmin to qmax (whole data range by default)
         possible keyword arguments:
-            num qmin qmax filter average verbose
+            num qmin qmax filter average verbose qvalues
         mean is the mean function of the gaussian process.
         the length of the returned tuple is the same as the number of flags plus
         one for the mean function.
@@ -438,6 +439,7 @@ class SAXSProfile:
             #compute hessian, which doesn't depend on q
             gp = self._setup_gp(average)
             Hessian = self._get_hessian(gp)
+            Hchol = linalg.cho_factor(Hessian)
         #
         if 'qvalues' in kwargs:
             qvals = kwargs['qvalues']
@@ -517,7 +519,7 @@ class SAXSProfile:
                 #fl=open('avcov','a')
                 #fl.write(" ".join(["%f" % i for  i in thing[:3]]))
                 lapl = linalg.det(matrix(eye(Hessian.shape[0]))
-                                  + linalg.solve(Hessian,Hlcov))**(-0.5)
+                                  + linalg.cho_solve(Hcho,Hlcov))**(-0.5)
                 #fl.write(" %f" % sqrt(cov*lapl))
                 #fl.write(" %f" % lapl)
                 #fl.write(" %f\n" % linalg.det(Hlcov))
@@ -531,6 +533,21 @@ class SAXSProfile:
                     retval[flag].append(thing[flagdict[flag]])
             else:
                 retval.append(tuple(thing))
+        return retval
+
+    def get_cov(self, qvals):
+        """returns the covariance matrix for the provided q values.
+        No posterior averaging is performed as it is too costy.
+        """
+        gamma = self.get_gamma()
+        M=len(qvals)
+        retval=zeros((M,M))
+        for i,q1 in enumerate(qvals):
+            for j,q2 in enumerate(qvals[:i+1]):
+                retval[i,j] = \
+                    gamma**2*self.gp.get_posterior_covariance([q1],[q2])
+                if j!=i:
+                    retval[j,i]=retval[i,j]
         return retval
 
     def get_flag_names(self):
@@ -1527,38 +1544,60 @@ def create_intervals_from_data(profile, flag):
     if q != oldval:
         profile.set_flag_interval(flag, oldval, q, oldb)
 
-def rescale_curves(refdata, data, normal = False, offset = False):
+def rescale_curves(I0, I1, Sigma1, normal = False, offset = False):
     """Find gamma and (optionnally) c so that
     normal model: I0 = gamma*(I1 + c)
     lognormal model log I0 = log(gamma*I1)
     if offset==False we have c=0
     """
-    I0=array(refdata['I'])
-    s0=array(refdata['err'])
-    I1=array(data['I'])
-    s1=array(data['err'])
-    if not offset:
-        if normal:
-            weights = (s0**2+(s1*I0/I1)**2)**(-1)
-            return (weights*I0*I1).sum()/(weights*I1**2).sum(),0
-        else:
-            weights=(s0**2/I0**2 + s1**2/I1**2)**(-1)
-            lg = (weights*log(I0/I1)).sum()/weights.sum()
-            return exp(lg),0
+    I0 = atleast_2d(I0).transpose()
+    I1 = atleast_2d(I1).transpose()
+    M=I1.shape[0]
+    J = ones(I1.shape)
+    try:
+        Scho = linalg.cho_factor(Sigma1)
+        mat = 1
+    except linalg.LinAlgError:
+        try:
+            Sigma2 = Sigma1 + eye(M)*max(Sigma1.diagonal())*0.05
+            Scho = linalg.cho_factor(Sigma2)
+            mat = 2
+        except linalg.LinAlgError:
+            Sigma3 = zeros(Sigma1.shape)
+            Sigma3[diag_indices_from(Sigma3)] = Sigma1.diagonal()
+            Scho = linalg.cho_factor(Sigma3)
+            mat = 3
+    if normal and offset:
+        #normal with offset
+        Su = linalg.cho_solve(Scho, I1).transpose()
+        Sj = linalg.cho_solve(Scho, J)
+        osj = dot(I0.transpose(),Sj)
+        usu = dot(Su,I1)
+        uso = dot(Su,I0)
+        usj = dot(Su,J)
+        jsj = dot(J.transpose(), Sj)
+        c = (M*osj+usu*osj-uso*usj)/(uso*jsj-usj*osj)
+        gamma = uso/(M+usu+c*usj)
+        return gamma,c,mat
+    elif normal:
+        #normal without offset
+        Si1 = linalg.cho_solve(Scho, I1).transpose()
+        gamma = dot(Si1,I0)/(dot(Si1,I1)+M)
+        return gamma,0,mat
+    elif not offset:
+        #lognormal
+        if (I0<0).any():
+            raise ValueError, "negative entries in I0"
+        if (I1<0).any():
+            raise ValueError, "negative entries in I1"
+        li = log(I0/I1).transpose()
+        Sij = linalg.cho_solve(Scho, J)
+        lg = dot(li,Sij)/dot(J.transpose(),Sij)
+        gamma = exp(lg)
+        return gamma,0,mat
     else:
-        if normal:
-            weights = (s0**2+(s1*I0/I1)**2)**(-1)
-            iexp = (weights*I0).sum()/weights.sum()
-            icalc = (weights*I1).sum()/weights.sum()
-            icalc2 = (weights*I1*I1).sum()/weights.sum()
-            icie = (weights*I1*I0).sum()/weights.sum()
-            c = (icalc*icie-icalc2*iexp)/(icalc*iexp-icie)
-            gamma = (icie-iexp*icalc)/(icalc2-icalc**2)
-            return gamma,c
-        else:
-            raise NotImplementedError
-
-
+        #lognormal with offset
+        raise NotImplementedError
 
 def write_individual_profile(prof, qvals, args):
     destname = os.path.basename(prof.get_filename())
@@ -2032,16 +2071,21 @@ def rescaling(profiles, args):
         pvalues = p.get_mean(qvalues=qvalues, colwise=True, average=average)
         if True in map(isnan,pvalues['I']):
             raise RuntimeError, "Got NAN in I"
-        if True in map(isnan,pvalues['err']):
-            raise RuntimeError, "Got NAN in err"
         prefvalues = pref.get_mean(qvalues=qvalues, colwise=True,
                         average=average)
         if True in map(isnan,prefvalues['I']):
             raise RuntimeError, "Got NAN in ref I"
+        pcov = p.get_cov(pvalues['q'])
+        if isnan(pcov).any():
+            raise RuntimeError, "Got NAN in covariance matrix"
+        if isinf(pcov).any():
+            raise RuntimeError, "Got inf in covariance matrix"
         if True in map(isnan,prefvalues['err']):
             raise RuntimeError, "Got NAN in ref err"
-        gammas.append(rescale_curves(prefvalues, pvalues,
-            normal = use_normal, offset = use_offset))
+        gammas.append(rescale_curves(prefvalues['I'],
+                                     pvalues['I'],
+                                     pcov, normal = use_normal,
+                                     offset = use_offset))
         #fl=open('rescale_%d.npy' % ctr, 'w')
         #import cPickle
         #cPickle.dump([pvalues,prefvalues],fl)
@@ -2067,13 +2111,14 @@ def rescaling(profiles, args):
     for p,g in zip(profiles,gammas):
         gamma = g[0]/gr
         c = g[1] - cr
+        mat = g[2]
         p.set_gamma(gamma)
         p.set_offset(c)
         if verbose >1:
             print "   ",p.filename,"   gamma = %.3G" % gamma,
             if use_offset:
                 print "   offset = %.3G" % c,
-            print ""
+            print " (%d)" % mat
     if True in map(isnan,gammas[-1]):
         raise RuntimeError, "Got NAN in rescaling step, try another rescaling " \
                             "or fitting model."
