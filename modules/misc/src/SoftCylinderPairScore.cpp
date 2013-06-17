@@ -49,7 +49,7 @@ Float SoftCylinderPairScore::evaluate_index(Model *m,
   }
 }
 
-ModelObjectsTemp TypedPairScore::do_get_inputs(Model *m,
+ModelObjectsTemp SoftCylinderPairScore::do_get_inputs(Model *m,
                                                const ParticleIndexes &pis)
     const {
   ModelObjectsTemp ret(pis.size() * 3);
@@ -58,6 +58,7 @@ ModelObjectsTemp TypedPairScore::do_get_inputs(Model *m,
     ret[3 * i + 1] = atom::Bond(m, pis[i]).get_bonded(0);
     ret[3 * i + 2] = atom::Bond(m, pis[i]).get_bonded(1);
   }
+  return ret;
 }
 
 IMPMISC_END_NAMESPACE

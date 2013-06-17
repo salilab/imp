@@ -30,63 +30,45 @@ NormalizedSphereDistancePairScore::NormalizedSphereDistancePairScore(
     UnaryFunction *f, FloatKey radius)
     : f_(f), radius_(radius) {}
 
-Float NormalizedSphereDistancePairScore::evaluate(
-    const ParticlePair &p, DerivativeAccumulator *da) const {
-  IMP_USAGE_CHECK(
-      p[0]->has_attribute(radius_),
-      "Particle " << p[0]->get_name()
-                  << "missing radius in NormalizedSphereDistancePairScore");
-  IMP_USAGE_CHECK(
-      p[1]->has_attribute(radius_),
-      "Particle " << p[1]->get_name()
-                  << "missing radius in NormalizedSphereDistancePairScore");
-  Float ra = p[0]->get_value(radius_);
-  Float rb = p[1]->get_value(radius_);
+double NormalizedSphereDistancePairScore::evaluate_index(
+    Model *m,
+    const ParticleIndexPair &pip, DerivativeAccumulator *da) const {
+  Float ra = m->get_attribute(radius_, pip[0]);
+  Float rb = m->get_attribute(radius_, pip[1]);
   Float mr = std::min(ra, rb);
   // lambda is inefficient due to laziness
   return internal::evaluate_distance_pair_score(
-      XYZ(p[0]), XYZ(p[1]), da, f_.get(),
+      XYZ(m, pip[0]), XYZ(m, pip[1]), da, f_.get(),
       boost::lambda::_1 / mr - (ra + rb) / mr);
 }
 
-void NormalizedSphereDistancePairScore::do_show(std::ostream &out) const {
-  out << "function " << *f_ << std::endl;
+ModelObjectsTemp
+NormalizedSphereDistancePairScore::do_get_inputs(Model *m,
+                                     const ParticleIndexes &pis) const {
+  return IMP::kernel::get_particles(m, pis);
 }
 
 WeightedSphereDistancePairScore::WeightedSphereDistancePairScore(
     UnaryFunction *f, FloatKey weight, FloatKey radius)
     : f_(f), radius_(radius), weight_(weight) {}
 
-Float WeightedSphereDistancePairScore::evaluate(
-    const ParticlePair &p, DerivativeAccumulator *da) const {
-  IMP_USAGE_CHECK(
-      p[0]->has_attribute(radius_),
-      "Particle " << p[0]->get_name()
-                  << "missing radius in WeightedSphereDistancePairScore");
-  IMP_USAGE_CHECK(
-      p[1]->has_attribute(radius_),
-      "Particle " << p[1]->get_name()
-                  << "missing radius in WeightedSphereDistancePairScore");
-  IMP_USAGE_CHECK(
-      p[0]->has_attribute(weight_),
-      "Particle " << p[0]->get_name()
-                  << "missing weight in WeightedSphereDistancePairScore");
-  IMP_USAGE_CHECK(
-      p[1]->has_attribute(weight_),
-      "Particle " << p[1]->get_name()
-                  << "missing weight in WeightedSphereDistancePairScore");
-  Float ra = p[0]->get_value(radius_);
-  Float rb = p[1]->get_value(radius_);
-  Float wa = p[0]->get_value(weight_);
-  Float wb = p[1]->get_value(weight_);
+double WeightedSphereDistancePairScore::evaluate_index(
+    Model *m,
+    const ParticleIndexPair &p, DerivativeAccumulator *da) const {
+  Float ra = m->get_attribute(radius_, p[0]);
+  Float rb = m->get_attribute(radius_, p[1]);
+  Float wa = m->get_attribute(weight_, p[0]);
+  Float wb = m->get_attribute(weight_, p[1]);
   // lambda is inefficient due to laziness
   return internal::evaluate_distance_pair_score(
-      XYZ(p[0]), XYZ(p[1]), da, f_.get(),
+      XYZ(m, p[0]), XYZ(m, p[1]), da, f_.get(),
       (boost::lambda::_1 - (ra + rb)) * (wa + wb));
 }
 
-void WeightedSphereDistancePairScore::do_show(std::ostream &out) const {
-  out << "function " << *f_ << std::endl;
+ModelObjectsTemp
+WeightedSphereDistancePairScore::do_get_inputs(Model *m,
+                                             const ParticleIndexes &pis) const {
+  return IMP::kernel::get_particles(m, pis);
 }
 
 IMPCORE_END_NAMESPACE

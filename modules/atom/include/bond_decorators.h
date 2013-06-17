@@ -117,9 +117,14 @@ class IMPATOMEXPORT Bonded : public Decorator {
 
  public:
   IMP_DECORATOR(Bonded, Decorator);
-  //! return true if it is a bonded particle
+#ifndef IMP_DOXYGEN
   static bool particle_is_instance(Particle *p) {
     return IMP::core::internal::graph_is_node(p,
+                                              internal::get_bond_data().graph_);
+  }
+#endif
+  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+    return IMP::core::internal::graph_is_node(m->get_particle(pi),
                                               internal::get_bond_data().graph_);
   }
 

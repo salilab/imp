@@ -25,7 +25,13 @@ class IMPATOMEXPORT BondedPairFilter : public PairPredicate {
   //! no arguments
   BondedPairFilter();
 
-  IMP_PAIR_PREDICATE(BondedPairFilter);
+  virtual int get_value_index(Model *m,
+               const ParticleIndexPair &p) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                         const ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  IMP_PAIR_PREDICATE_METHODS(BondedPairFilter);
+  IMP_OBJECT_METHODS(BondedPairFilter);;
 };
 
 IMP_OBJECTS(BondedPairFilter, BondedPairFilters);

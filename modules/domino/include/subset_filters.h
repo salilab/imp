@@ -182,17 +182,18 @@ class IMPDOMINOEXPORT DisjointSetsSubsetFilterTable : public SubsetFilterTable {
   ParticlesTemp get_set(unsigned int i) const { return sets_[i]; }
   DisjointSetsSubsetFilterTable(ParticleStatesTable *pst, std::string name);
   DisjointSetsSubsetFilterTable(std::string name);
-  IMP_INTERNAL_METHOD(void, get_indexes,
-                      (const Subset &s, const Subsets &excluded,
-                       base::Vector<Ints> &ret, int lb, Ints &used),
-                      const, );
-  IMP_INTERNAL_METHOD(int, get_index_in_set, (Particle *p), const, {
+#ifndef IMP_DOXYGEN
+  void get_indexes(const Subset &s, const Subsets &excluded,
+                   base::Vector<Ints> &ret, int lb, Ints &used)
+      const;
+  int get_index_in_set(Particle *p) const {
     if (set_indexes_.find(p) == set_indexes_.end()) {
       return -1;
     } else {
       return set_indexes_.find(p)->second;
     }
-  });
+  }
+#endif
 
  public:
   void add_set(const ParticlesTemp &ps);

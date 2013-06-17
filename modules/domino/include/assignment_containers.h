@@ -188,7 +188,9 @@ class IMPDOMINOEXPORT WriteHDF5AssignmentContainer
   Ints cache_;
   unsigned int max_cache_;
   void flush();
-
+  virtual void do_destroy() IMP_OVERRIDE {
+    flush();
+  }
  public:
   WriteHDF5AssignmentContainer(RMF::HDF5::Group parent, const Subset &s,
                                const ParticlesTemp &all_particles,
@@ -203,7 +205,7 @@ class IMPDOMINOEXPORT WriteHDF5AssignmentContainer
   virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE;
   virtual void add_assignment(const Assignment &a) IMP_OVERRIDE;
   IMP_ASSIGNMENT_CONTAINER_METHODS(WriteHDF5AssignmentContainer);
-  IMP_OBJECT_INLINE(WriteHDF5AssignmentContainer, , flush());
+  IMP_OBJECT_METHODS(WriteHDF5AssignmentContainer);
 };
 
 /** Store the assignments in an HDF5DataSet. The format on disk should not,
@@ -215,7 +217,6 @@ class IMPDOMINOEXPORT ReadHDF5AssignmentContainer : public AssignmentContainer {
   Ints cache_;
   unsigned int max_cache_;
   void flush();
-
  public:
 
   ReadHDF5AssignmentContainer(RMF::HDF5::IndexConstDataSet2D dataset,
@@ -243,6 +244,14 @@ class IMPDOMINOEXPORT WriteAssignmentContainer : public AssignmentContainer {
   int number_;
   void flush();
 
+  virtual void do_destroy() IMP_OVERRIDE {
+    flush();
+#ifdef _MSC_VER
+    _close(f_);
+#else
+    close(f_);
+#endif
+  }
  public:
   WriteAssignmentContainer(std::string out_file, const Subset &s,
                            const ParticlesTemp &all_particles,
@@ -252,17 +261,7 @@ class IMPDOMINOEXPORT WriteAssignmentContainer : public AssignmentContainer {
   virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE;
   virtual void add_assignment(const Assignment &a) IMP_OVERRIDE;
   IMP_ASSIGNMENT_CONTAINER_METHODS(WriteAssignmentContainer);
-#ifdef _MSC_VER
-  IMP_OBJECT_INLINE(WriteAssignmentContainer, IMP_UNUSED(out), {
-    flush();
-    _close(f_);
-  });
-#else
-  IMP_OBJECT_INLINE(WriteAssignmentContainer, IMP_UNUSED(out), {
-    flush();
-    close(f_);
-  });
-#endif
+  IMP_OBJECT_METHODS(WriteAssignmentContainer);
 };
 
 /** Read the assignments from binary data on disk. Use a
@@ -276,7 +275,13 @@ class IMPDOMINOEXPORT ReadAssignmentContainer : public AssignmentContainer {
   unsigned int max_cache_;
   mutable int offset_;
   int size_;
-
+  virtual void do_destroy() IMP_OVERRIDE {
+#ifdef _MSC_VER
+    _close(f_);
+#else
+    close(f_);
+#endif
+  }
  public:
   ReadAssignmentContainer(std::string out_file, const Subset &s,
                           const ParticlesTemp &all_particles, std::string name);
@@ -285,15 +290,7 @@ class IMPDOMINOEXPORT ReadAssignmentContainer : public AssignmentContainer {
   virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE;
   virtual void add_assignment(const Assignment &a) IMP_OVERRIDE;
   IMP_ASSIGNMENT_CONTAINER_METHODS(ReadAssignmentContainer);
-#ifdef _MSC_VER
-  IMP_OBJECT_INLINE(ReadAssignmentContainer, IMP_UNUSED(out), {
-    _close(f_);
-  });
-#else
-  IMP_OBJECT_INLINE(ReadAssignmentContainer, IMP_UNUSED(out), {
-    close(f_);
-  });
-#endif
+  IMP_OBJECT_METHODS(ReadAssignmentContainer);
 };
 
 /** Expose a range [begin, end) of an inner assignement container to

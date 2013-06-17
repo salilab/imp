@@ -13,9 +13,10 @@ IMPISD_BEGIN_NAMESPACE
 RepulsiveDistancePairScore::RepulsiveDistancePairScore(double d0, double k) :
     x0_(d0), k_(k) {}
 
-inline double RepulsiveDistancePairScore::evaluate(const ParticlePair &p,
+double RepulsiveDistancePairScore::evaluate_index(Model *m,
+                                                  const ParticleIndexPair &p,
                             DerivativeAccumulator *da) const {
-  core::XYZR d0(p[0]), d1(p[1]);
+  core::XYZR d0(m, p[0]), d1(m, p[1]);
   algebra::VectorD<3> delta;
   for (int i = 0; i < 3; ++i) {
     delta[i] = d0.get_coordinate(i) - d1.get_coordinate(i);
@@ -35,8 +36,10 @@ inline double RepulsiveDistancePairScore::evaluate(const ParticlePair &p,
   return energy;
 }
 
-void RepulsiveDistancePairScore::do_show(std::ostream &out) const {
-   out << "x0=" << x0_ << " and k=" << k_ << std::endl;
-  }
+ModelObjectsTemp RepulsiveDistancePairScore::do_get_inputs(Model *m,
+                                               const ParticleIndexes &pis)
+    const {
+  return IMP::kernel::get_particles(m, pis);
+}
 
 IMPISD_END_NAMESPACE

@@ -216,19 +216,9 @@ ModelObjectsTemp ClosePairsPairScore::do_get_inputs(
   return real_get_inputs(m, pis, r_, f_, cpf_);
 }
 
-void ClosePairsPairScore::do_show(std::ostream &out) const {
-  out << "function " << *f_;
-  out << "\nrefiner " << *r_ << std::endl;
-}
-
 ModelObjectsTemp KClosePairsPairScore::do_get_inputs(
     Model *m, const ParticleIndexes &pis) const {
   return real_get_inputs(m, pis, r_, f_, cpf_);
-}
-
-void KClosePairsPairScore::do_show(std::ostream &out) const {
-  out << "function " << *f_;
-  out << "\nrefiner " << *r_ << std::endl;
 }
 
 Restraints ClosePairsPairScore::create_current_decomposition(

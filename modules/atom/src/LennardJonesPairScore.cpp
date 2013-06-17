@@ -11,10 +11,11 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-Float LennardJonesPairScore::evaluate(const ParticlePair &p,
+Float LennardJonesPairScore::evaluate_index(Model *m,
+                                      const ParticleIndexPair& p,
                                       DerivativeAccumulator *da) const {
-  LennardJones lj0(p[0]);
-  LennardJones lj1(p[1]);
+  LennardJones lj0(m, p[0]);
+  LennardJones lj1(m, p[1]);
 
   algebra::Vector3D delta = lj0.get_coordinates() - lj1.get_coordinates();
   double distsqr = delta.get_squared_magnitude();
@@ -40,9 +41,10 @@ Float LennardJonesPairScore::evaluate(const ParticlePair &p,
   }
 }
 
-void LennardJonesPairScore::do_show(std::ostream &out) const {
-  out << " attractive_weight " << attractive_weight_ << ", repulsive weight "
-      << repulsive_weight_ << " using " << *smoothing_function_ << std::endl;
+ModelObjectsTemp LennardJonesPairScore::do_get_inputs(Model *m,
+                                               const ParticleIndexes &pis)
+    const {
+  return IMP::kernel::get_particles(m, pis);
 }
 
 IMPATOM_END_NAMESPACE

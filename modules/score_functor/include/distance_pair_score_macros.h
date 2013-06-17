@@ -13,17 +13,30 @@
 #include "DistancePairScore.h"
 
 #if defined(SWIG) || defined(IMP_DOXYGEN)
+/** Use this macro to define PairScores based on the
+    IMP::score_functor::DistancePairScore as it works around various
+    complications caused by SWIG.
+
+    To use it do something like
+         IMP_FUNCTOR_DISTANCE_PAIR_SCORE(DistancePairScore,
+                                   score_functor::UnaryFunctionEvaluate,
+                            (UnaryFunction *uf, std::string name
+                                         = "DistancePairScore%1%"), (uf));
+ */
 #define IMP_FUNCTOR_DISTANCE_PAIR_SCORE(Name, Functor, Args, PassArgs) \
   class Name : public IMP::PairScore {                                 \
     typedef IMP::score_functor::DistancePairScore<Functor> P;          \
    public:                                                             \
     Name Args;                                                         \
-    IMP_INDEX_PAIR_SCORE(Name);                                        \
+    double evaluate_index(Model *m, const ParticleIndexPair &pip,      \
+                          DerivativeAccumulator *da) const;             \
+    ModelObjectsTemp do_get_inputs(Model *m, const ParticleIndexes &pis) \
+        const;                                                          \
+    IMP_OBJECT_METHODS(Name);                                          \
   }
 
 #else
 #define IMP_FUNCTOR_DISTANCE_PAIR_SCORE(Name, Functor, Args, PassArgs) \
-  IMPSCOREFUNCTOR_DEPRECATED_MACRO(2.1, "Declare the class yourself"); \
   class Name : public IMP::score_functor::DistancePairScore<Functor> { \
     typedef IMP::score_functor::DistancePairScore<Functor> P;          \
    public:                                                             \

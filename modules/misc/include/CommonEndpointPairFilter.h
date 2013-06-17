@@ -22,7 +22,13 @@ class IMPMISCEXPORT CommonEndpointPairFilter: public PairPredicate
 public:
   CommonEndpointPairFilter();
 
-  IMP_PAIR_PREDICATE(CommonEndpointPairFilter);
+  virtual int get_value_index(Model *m,
+               const ParticleIndexPair &p) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                         const ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  IMP_PAIR_PREDICATE_METHODS(CommonEndpointPairFilter);
+  IMP_OBJECT_METHODS(CommonEndpointPairFilter);
 };
 
 

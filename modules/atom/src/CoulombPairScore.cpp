@@ -25,10 +25,11 @@ void CoulombPairScore::calculate_multiplication_factor() {
       permittivity_vacuum / kcal2joule / (4.0 * PI * relative_dielectric_);
 }
 
-Float CoulombPairScore::evaluate(const ParticlePair &p,
-                                 DerivativeAccumulator *da) const {
-  Charged c0(p[0]);
-  Charged c1(p[1]);
+double CoulombPairScore::evaluate_index(Model *m,
+                                        const ParticleIndexPair& p,
+                                        DerivativeAccumulator *da) const {
+  Charged c0(m, p[0]);
+  Charged c1(m, p[1]);
   algebra::Vector3D delta = c0.get_coordinates() - c1.get_coordinates();
   double dist = delta.get_magnitude();
   double score =
@@ -44,9 +45,10 @@ Float CoulombPairScore::evaluate(const ParticlePair &p,
   }
 }
 
-void CoulombPairScore::do_show(std::ostream &out) const {
-  out << "relative dielectric " << relative_dielectric_ << " using "
-      << *smoothing_function_ << std::endl;
+ModelObjectsTemp CoulombPairScore::do_get_inputs(Model *m,
+                                               const ParticleIndexes &pis)
+    const {
+  return IMP::kernel::get_particles(m, pis);
 }
 
 IMPATOM_END_NAMESPACE

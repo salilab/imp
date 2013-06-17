@@ -24,7 +24,14 @@ class LogPairScore : public PairScore
  public:
   //! create with an empty map
   LogPairScore(){}
-  IMP_SIMPLE_PAIR_SCORE(LogPairScore);
+  virtual double evaluate_index(Model *m,
+               const ParticleIndexPair &p, DerivativeAccumulator *da)
+      const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                         const ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  IMP_PAIR_SCORE_METHODS(LogPairScore);
+  IMP_OBJECT_METHODS(LogPairScore);
 
   //! Get a list of all pairs (without multiplicity)
   ParticlePairsTemp get_particle_pairs() const {
@@ -47,11 +54,12 @@ class LogPairScore : public PairScore
 
 // doxygen spits out warnings
 #ifndef IMP_DOXYGEN
-inline void LogPairScore::do_show(std::ostream &) const {
-}
 
-inline Float LogPairScore::evaluate(const ParticlePair &pp,
+inline Float LogPairScore::evaluate_index(Model *m,
+                                          const ParticleIndexPair &p,
                                     DerivativeAccumulator *) const {
+  ParticlePair pp(m->get_particle(p[0]),
+                  m->get_particle(p[1]));
   if (map_.find(pp) == map_.end()) {
     map_[pp]=0;
   }
