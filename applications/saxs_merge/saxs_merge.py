@@ -1839,13 +1839,17 @@ def write_summary_file(merge, profiles, args):
         fl.write('= "%s"\n' % val)
 
 def reorder_profiles(profiles):
-    """try to guess which profile has predecence over which"""
-    qmaxs=[]
+    """try to guess which profile has predecence over which.
+    criterion is increasing I(0) at constant noise level
+    """
+    Izeros=[]
     for i,p in enumerate(profiles):
-        qmax = p.get_data(filter='agood',colwise=True)['q'][-1]
-        qmaxs.append((qmax,i))
-    qmaxs.sort()
-    newprofs = [ profiles[i] for q,i in qmaxs ]
+        gamma = p.get_gamma()
+        Izero = p.get_mean(qvalues=[0],colwise=True)['I'][0]
+        mnoise = median(p.get_data(filter='agood'))
+        Izeros.append((Izero/mnoise,i))
+    Izeros.sort()
+    newprofs = [ profiles[i] for q,i in Izeros ]
     return newprofs
 
 def remove_redundant(profiles):
@@ -2285,7 +2289,7 @@ def merging(profiles, args):
 
 def write_data(merge, profiles, args):
     if args.verbose > 0:
-        print "writing data"
+        print "writing data to %s" % args.destdir 
     if not os.path.isdir(args.destdir):
         os.mkdir(args.destdir)
     qvals = array(profiles[0].get_raw_data(colwise=True)['q'])
