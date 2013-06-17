@@ -9,8 +9,11 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-Float TypedPairScore::evaluate(const ParticlePair &p,
-                               DerivativeAccumulator *da) const {
+Float TypedPairScore::evaluate_index(Model *m,
+                                     const ParticleIndexPair &pip,
+                                     DerivativeAccumulator *da) const {
+  ParticlePair p(m->get_particle(pip[0]),
+                  m->get_particle(pip[1]));
   PairScore *ps = get_pair_score(p);
   if (!ps) {
     if (!allow_invalid_types_) {
@@ -23,9 +26,7 @@ Float TypedPairScore::evaluate(const ParticlePair &p,
       return 0.0;
     }
   } else {
-    return ps->evaluate_index(
-        p[0]->get_model(),
-        ParticleIndexPair(p[0]->get_index(), p[1]->get_index()), da);
+    return ps->evaluate_index(m, pip, da);
   }
 }
 
@@ -55,17 +56,10 @@ TypedPairScore::TypedPairScore(IntKey typekey, bool allow_invalid_types)
       allow_invalid_types_(allow_invalid_types) {}
 
 // should pass it off, fix later
-ParticlesTemp TypedPairScore::get_input_particles(Particle *p) const {
-  ParticlesTemp ret(1, p);
-  return ret;
-}
-
-ContainersTemp TypedPairScore::get_input_containers(Particle *) const {
-  return ContainersTemp();
-}
-
-void TypedPairScore::do_show(std::ostream &out) const {
-  out << "key " << typekey_ << std::endl;
+ModelObjectsTemp TypedPairScore::do_get_inputs(Model *m,
+                                               const ParticleIndexes &pis)
+    const {
+  return IMP::kernel::get_particles(m, pis);
 }
 
 IMPCORE_END_NAMESPACE

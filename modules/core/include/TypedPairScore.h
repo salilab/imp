@@ -65,7 +65,14 @@ class IMPCOREEXPORT TypedPairScore : public PairScore {
         IMP::base::OwnerPointer<PairScore>(ps);
   }
 
-  IMP_PAIR_SCORE(TypedPairScore);
+  virtual double evaluate_index(Model *m,
+                                const ParticleIndexPair &p,
+                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                         const ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  IMP_PAIR_SCORE_METHODS(TypedPairScore);
+  IMP_OBJECT_METHODS(TypedPairScore);;
 };
 
 IMPCORE_END_NAMESPACE

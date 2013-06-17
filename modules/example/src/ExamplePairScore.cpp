@@ -15,13 +15,14 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 
 ExamplePairScore::ExamplePairScore(double x0, double k) : x0_(x0), k_(k) {}
 
-Float ExamplePairScore::evaluate(const ParticlePair &p,
+Float ExamplePairScore::evaluate(Model *m,
+                                 const ParticleIndexPair &pip,
                                  DerivativeAccumulator *da) const {
   // turn on logging for this method
   IMP_OBJECT_LOG;
   // assume they have coordinates
-  core::XYZ d0(p[0]);
-  core::XYZ d1(p[1]);
+  core::XYZ d0(m, pip[0]);
+  core::XYZ d1(m, pip[1]);
   // log something
   double diff =
       (d0.get_coordinates() - d1.get_coordinates()).get_magnitude() - x0_;
@@ -39,19 +40,10 @@ Float ExamplePairScore::evaluate(const ParticlePair &p,
   return score;
 }
 
-ParticlesTemp ExamplePairScore::get_input_particles(Particle *p) const {
-  // return any particles that would be read if p is one of the particles
-  // being scored. Don't worry about returning duplicates.
-  return ParticlesTemp(1, p);
-}
-ContainersTemp ExamplePairScore::get_input_containers(Particle *) const {
-  // return any containers that would be read if p is one of the particles
-  // being scored. Don't worry about returning duplicates.
-  return ContainersTemp();
-}
-
-void ExamplePairScore::do_show(std::ostream &out) const {
-  out << "x0=" << x0_ << " and k=" << k_ << std::endl;
+ModelObjectsTemp TypedPairScore::do_get_inputs(Model *m,
+                                               const ParticleIndexes &pis)
+    const {
+  return IMP::kernel::get_particles(m, pis);
 }
 
 IMPEXAMPLE_END_NAMESPACE
