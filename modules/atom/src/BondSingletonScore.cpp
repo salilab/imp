@@ -16,10 +16,12 @@ IMPATOM_BEGIN_NAMESPACE
 
 BondSingletonScore::BondSingletonScore(UnaryFunction *f) : f_(f) {}
 
-double BondSingletonScore::evaluate(Particle *b,
-                                    DerivativeAccumulator *da) const {
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) { Bond::decorate_particle(b); }
-  Bond bd(b);
+double BondSingletonScore::evaluate_index(Model *m, ParticleIndex pi,
+                                          DerivativeAccumulator *da) const {
+  IMP_OBJECT_LOG;
+  IMP_USAGE_CHECK(Bond::particle_is_instance(m, pi),
+                  "Particle is not a bond particle");
+  Bond bd(m, pi);
   Float l = bd.get_length();
   Float s = bd.get_stiffness();
   if (l < 0) {
@@ -42,21 +44,17 @@ double BondSingletonScore::evaluate(Particle *b,
       s * (boost::lambda::_1 - l), s);
 }
 
-ContainersTemp BondSingletonScore::get_input_containers(Particle *) const {
-  return ContainersTemp();
-}
-
-ParticlesTemp BondSingletonScore::get_input_particles(Particle *p) const {
-  ParticlesTemp ret(3);
-  Bond bd(p);
-  ret[0] = bd.get_bonded(0);
-  ret[1] = bd.get_bonded(1);
-  ret[2] = p;
+ModelObjectsTemp BondSingletonScore::do_get_inputs(Model *m,
+                                                   const ParticleIndexes &pi)
+    const {
+  ModelObjectsTemp ret(3*pi.size());
+  for (unsigned int i = 0; i < pi.size(); ++i) {
+    Bond ad(m, pi[i]);
+    ret[3 * i + 0] = ad.get_bonded(0);
+    ret[3 * i + 1] = ad.get_bonded(1);
+    ret[3 * i + 3] = m->get_particle(pi[i]);
+  }
   return ret;
-}
-
-void BondSingletonScore::do_show(std::ostream &out) const {
-  out << "function " << *f_ << std::endl;
 }
 
 IMPATOM_END_NAMESPACE

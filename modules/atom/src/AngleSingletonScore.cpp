@@ -16,10 +16,13 @@ IMPATOM_BEGIN_NAMESPACE
 AngleSingletonScore::AngleSingletonScore(UnaryFunction *f)
     : SingletonScore("AngleSingletonScore%1%"), f_(f) {}
 
-double AngleSingletonScore::evaluate(Particle *b,
+double AngleSingletonScore::evaluate_index(Model *m,
+                                           ParticleIndex pi,
                                      DerivativeAccumulator *da) const {
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) { Angle::decorate_particle(b); }
-  Angle ad(b);
+  IMP_OBJECT_LOG;
+  IMP_USAGE_CHECK(Angle::particle_is_instance(m, pi),
+                  "Not an angle particle");
+  Angle ad(m, pi);
   Float ideal = ad.get_ideal();
   Float s = ad.get_stiffness();
   if (s <= 0) {
@@ -47,22 +50,18 @@ double AngleSingletonScore::evaluate(Particle *b,
   }
 }
 
-ContainersTemp AngleSingletonScore::get_input_containers(Particle *) const {
-  return ContainersTemp();
-}
-
-ParticlesTemp AngleSingletonScore::get_input_particles(Particle *p) const {
-  ParticlesTemp ret(4);
-  Angle ad(p);
-  ret[0] = ad.get_particle(0);
-  ret[1] = ad.get_particle(1);
-  ret[2] = ad.get_particle(2);
-  ret[3] = p;
+ModelObjectsTemp AngleSingletonScore::do_get_inputs(Model *m,
+                                                    const ParticleIndexes &pi)
+    const {
+  ModelObjectsTemp ret(4*pi.size());
+  for (unsigned int i = 0; i < pi.size(); ++i) {
+    Angle ad(m, pi[i]);
+    ret[4 * i + 0] = ad.get_particle(0);
+    ret[4 * i + 1] = ad.get_particle(1);
+    ret[4 * i + 2] = ad.get_particle(2);
+    ret[4 * i + 3] = m->get_particle(pi[i]);
+  }
   return ret;
-}
-
-void AngleSingletonScore::do_show(std::ostream &out) const {
-  out << "function " << *f_ << std::endl;
 }
 
 IMPATOM_END_NAMESPACE

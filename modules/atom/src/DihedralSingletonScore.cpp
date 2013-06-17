@@ -17,10 +17,12 @@ IMPATOM_BEGIN_NAMESPACE
 DihedralSingletonScore::DihedralSingletonScore()
     : SingletonScore("DihedralSingletonScore%1%") {}
 
-double DihedralSingletonScore::evaluate(Particle *b,
-                                        DerivativeAccumulator *da) const {
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) { Dihedral::decorate_particle(b); }
-  Dihedral ad(b);
+double DihedralSingletonScore::evaluate_index(Model *mod, ParticleIndex pi,
+                                              DerivativeAccumulator *da) const {
+  IMP_OBJECT_LOG;
+  IMP_USAGE_CHECK(Dihedral::particle_is_instance(mod, pi),
+                  "Particle is not a dihedral particle");
+  Dihedral ad(mod, pi);
   Float ideal = ad.get_ideal();
   Float s = ad.get_stiffness();
   if (s <= 0.) {
@@ -48,21 +50,19 @@ double DihedralSingletonScore::evaluate(Particle *b,
   return 0.5 * std::abs(s) * s * (1.0 + std::cos(dih * m - ideal));
 }
 
-ContainersTemp DihedralSingletonScore::get_input_containers(Particle *) const {
-  return ContainersTemp();
-}
-
-ParticlesTemp DihedralSingletonScore::get_input_particles(Particle *p) const {
-  ParticlesTemp ret(5);
-  Dihedral dd(p);
-  ret[0] = dd.get_particle(0);
-  ret[1] = dd.get_particle(1);
-  ret[2] = dd.get_particle(2);
-  ret[3] = dd.get_particle(3);
-  ret[4] = p;
+ModelObjectsTemp DihedralSingletonScore::do_get_inputs(Model *m,
+                                                   const ParticleIndexes &pi)
+    const {
+  ModelObjectsTemp ret(5*pi.size());
+  for (unsigned int i = 0; i < pi.size(); ++i) {
+    Dihedral ad(m, pi[i]);
+    ret[5 * i + 0] = ad.get_particle(0);
+    ret[5 * i + 1] = ad.get_particle(1);
+    ret[5 * i + 2] = ad.get_particle(1);
+    ret[5 * i + 3] = ad.get_particle(1);
+    ret[5 * i + 4] = m->get_particle(pi[i]);
+  }
   return ret;
 }
-
-void DihedralSingletonScore::do_show(std::ostream &) const {}
 
 IMPATOM_END_NAMESPACE
