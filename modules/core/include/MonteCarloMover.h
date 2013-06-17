@@ -38,6 +38,7 @@ class IMPCOREEXPORT MonteCarloMover : public ModelObject {
   unsigned int num_proposed_;
   unsigned int num_rejected_;
   bool has_move_;
+
  public:
   MonteCarloMover(Model *m, std::string name);
 
@@ -49,9 +50,10 @@ class IMPCOREEXPORT MonteCarloMover : public ModelObject {
    */
   MonteCarloMoverResult propose() {
     IMP_OBJECT_LOG;
-    IMP_USAGE_CHECK(!has_move_, "Mover already had proposed a move. "
-                    << " This probably means you added it twice: "
-                    << get_name());
+    IMP_USAGE_CHECK(
+        !has_move_,
+        "Mover already had proposed a move. "
+            << " This probably means you added it twice: " << get_name());
     has_move_ = true;
     set_was_used(true);
     ++num_proposed_;

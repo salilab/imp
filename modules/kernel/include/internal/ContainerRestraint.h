@@ -104,8 +104,8 @@ Restraints ContainerRestraint<Score, C>::do_create_decomposition() const {
 }
 
 template <class Score, class C>
-Restraints
-ContainerRestraint<Score, C>::do_create_current_decomposition() const {
+Restraints ContainerRestraint<Score, C>::do_create_current_decomposition()
+    const {
   if (get_last_score() == 0) return Restraints();
   return IMP::kernel::internal::create_current_decomposition(
       get_model(), acc_->get_score_object(), pc_.get(), get_name());

@@ -71,7 +71,8 @@ struct ParticleCheck {
   }
 };
 
-template <class T> struct SFSetIt {
+template <class T>
+struct SFSetIt {
   T *t_;
   T old_;
   SFSetIt(T *t, T nv) : t_(t), old_(*t) { *t_ = nv; }

@@ -53,7 +53,7 @@ void LinearFit2D::evaluate_error(const algebra::Vector2Ds& data,
     }
     error_ += diff * diff;
   }
-  //std::cerr << error_ << std::endl;
+  // std::cerr << error_ << std::endl;
 }
 
 IMPALGEBRA_END_NAMESPACE

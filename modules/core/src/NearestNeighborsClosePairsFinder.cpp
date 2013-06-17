@@ -16,7 +16,8 @@ IMPCORE_BEGIN_NAMESPACE
 
 namespace {
 
-template <class It> double max_radius(It b, It e) {
+template <class It>
+double max_radius(It b, It e) {
   double m = 0;
   for (It c = b; c != e; ++c) {
     XYZR d(*c);
@@ -24,17 +25,13 @@ template <class It> double max_radius(It b, It e) {
   }
   return m;
 }
-
 }
 
 NearestNeighborsClosePairsFinder::NearestNeighborsClosePairsFinder()
     : ClosePairsFinder("NearestNeighborsCPF") {}
 
-ParticleIndexPairs
-NearestNeighborsClosePairsFinder::get_close_pairs(Model *m,
-                                                  const ParticleIndexes &pai,
-                                                  const ParticleIndexes &pbi)
-    const {
+ParticleIndexPairs NearestNeighborsClosePairsFinder::get_close_pairs(
+    Model *m, const ParticleIndexes &pai, const ParticleIndexes &pbi) const {
   ParticlesTemp pa = IMP::get_particles(m, pai);
   ParticlesTemp pb = IMP::get_particles(m, pbi);
   IMP_NEW(algebra::NearestNeighborD<3>, nn, (pa.begin(), pa.end(), 0));
@@ -50,10 +47,8 @@ NearestNeighborsClosePairsFinder::get_close_pairs(Model *m,
   }
   return ret;
 }
-ParticleIndexPairs
-NearestNeighborsClosePairsFinder::get_close_pairs(Model *m,
-                                                  const ParticleIndexes &pai)
-    const {
+ParticleIndexPairs NearestNeighborsClosePairsFinder::get_close_pairs(
+    Model *m, const ParticleIndexes &pai) const {
   ParticlesTemp c = IMP::get_particles(m, pai);
   IMP_NEW(algebra::NearestNeighborD<3>, nn, (c.begin(), c.end(), 0));
   double rm = max_radius(c.begin(), c.end());

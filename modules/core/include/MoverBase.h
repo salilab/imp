@@ -85,7 +85,7 @@ class IMPCOREEXPORT MoverBase : public Mover {
   }
 
   IMPCORE_DEPRECATED_CLASS_DECL(2.1)
-    MoverBase(const ParticlesTemp &ps, const FloatKeys &keys, std::string name);
+  MoverBase(const ParticlesTemp &ps, const FloatKeys &keys, std::string name);
 };
 
 IMP_OBJECTS(MoverBase, MoverBases);

@@ -55,6 +55,6 @@ int main(int argc, char **argv) {
              runtime);
     IMP::benchmark::report("rotation (nocache)", runtime, sum);
   }
-  //std::cout << "Sum is " << sum << std::endl;
+  // std::cout << "Sum is " << sum << std::endl;
   return IMP::benchmark::get_return_value();
 }

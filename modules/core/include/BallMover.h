@@ -51,8 +51,7 @@ class IMPCOREEXPORT BallMover : public MonteCarloMover {
 #endif
 
   void set_radius(Float radius) {
-    IMP_ALWAYS_CHECK(radius > 0,
-                     "The radius must be positive",
+    IMP_ALWAYS_CHECK(radius > 0, "The radius must be positive",
                      IMP::base::ValueException);
     radius_ = radius;
   }

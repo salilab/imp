@@ -155,7 +155,7 @@ void setup_as_approximation_internal(Particle *p, const ParticlesTemp &other,
     s = algebra::Sphere3D(center,
                           algebra::get_ball_radius_from_volume_3d(volume));
   } else {
-    //IMP_LOG_VERBOSE( "Approximating volume." << std::endl);
+    // IMP_LOG_VERBOSE( "Approximating volume." << std::endl);
     double v = get_volume_measurement(ss, resolution);
     s = algebra::Sphere3D(center, algebra::get_ball_radius_from_volume_3d(v));
   }
@@ -166,7 +166,6 @@ void setup_as_approximation_internal(Particle *p, const ParticlesTemp &other,
     core::XYZR::setup_particle(p, s);
   }
 }
-
 }
 
 Hierarchy create_protein(Model *m, std::string name, double resolution,
@@ -296,7 +295,6 @@ Hierarchy create_simplified_along_backbone(Chain in, int num_res,
   }
   return create_simplified_along_backbone(in, rs, keep_detailed);
 }
-
 }
 
 Hierarchy create_simplified_along_backbone(Hierarchy in, int num_res,

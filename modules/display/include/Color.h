@@ -49,7 +49,10 @@ class IMPDISPLAYEXPORT Color : public base::Value {
 
   /** Components must be between 0 and 1
     */
-  template <class It> Color(It b, It e) { std::copy(b, e, c_.begin()); }
+  template <class It>
+  Color(It b, It e) {
+    std::copy(b, e, c_.begin());
+  }
 
   ~Color();
   /** @name Component access

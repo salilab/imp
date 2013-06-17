@@ -71,8 +71,8 @@ IMP_OBJECTS(ParticleStates, ParticleStatesList);
     in the DominoSampler.
  */
 class IMPDOMINOEXPORT ParticleStatesTable : public IMP::base::Object {
-  typedef IMP::base::map<Particle *,
-                         IMP::base::OwnerPointer<ParticleStates> > Map;
+  typedef IMP::base::map<Particle *, IMP::base::OwnerPointer<ParticleStates> >
+      Map;
   Map enumerators_;
   friend class DominoSampler;
 
@@ -126,8 +126,7 @@ class IMPDOMINOEXPORT IndexStates : public ParticleStates {
   IndexStates(unsigned int n, IntKey k = IntKey("state"))
       : ParticleStates("IndexStates %1%"), n_(n), k_(k) {}
   virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
-  virtual void load_particle_state(unsigned int, Particle *) const
-    IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, Particle *) const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(IndexStates);
 };
 
@@ -155,8 +154,7 @@ class IMPDOMINOEXPORT XYZStates : public ParticleStates {
     return nn_->get_nearest_neighbors(v, 1)[0];
   }
   virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
-  virtual void load_particle_state(unsigned int, Particle *) const
-    IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, Particle *) const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(XYZStates);
 };
 
@@ -177,8 +175,7 @@ class IMPDOMINOEXPORT RigidBodyStates : public ParticleStates {
   algebra::VectorKD get_embedding(unsigned int i) const;
   unsigned int get_nearest_state(const algebra::VectorKD &v) const;
   virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
-  virtual void load_particle_state(unsigned int, Particle *) const
-    IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, Particle *) const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RigidBodyStates);
 };
 
@@ -186,7 +183,7 @@ class IMPDOMINOEXPORT RigidBodyStates : public ParticleStates {
     internal transformation of a rigid member
 */
 class IMPDOMINOEXPORT NestedRigidBodyStates : public ParticleStates {
-  algebra::Transformation3Ds states_;  //states of a nested rigid body
+  algebra::Transformation3Ds states_;  // states of a nested rigid body
   double scale_;
   base::OwnerPointer<algebra::NearestNeighbor6D> nn_;
 
@@ -206,8 +203,7 @@ class IMPDOMINOEXPORT NestedRigidBodyStates : public ParticleStates {
   algebra::VectorKD get_embedding(unsigned int i) const;
   unsigned int get_nearest_state(const algebra::VectorKD &v) const;
   virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
-  virtual void load_particle_state(unsigned int, Particle *) const
-    IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, Particle *) const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(NestedRigidBodyStates);
 };
 
@@ -221,8 +217,7 @@ class IMPDOMINOEXPORT CompoundStates : public ParticleStates {
   CompoundStates(ParticleStates *a, ParticleStates *b)
       : ParticleStates("CompoundStates %1%"), a_(a), b_(b) {}
   virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
-  virtual void load_particle_state(unsigned int, Particle *) const
-    IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, Particle *) const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(CompoundStates);
 };
 
@@ -242,8 +237,7 @@ class IMPDOMINOEXPORT RecursiveStates : public ParticleStates {
   RecursiveStates(Particle *p, Subset s, const Assignments &ss,
                   ParticleStatesTable *pst);
   virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
-  virtual void load_particle_state(unsigned int, Particle *) const
-    IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, Particle *) const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RecursiveStates);
 };
 
@@ -268,8 +262,7 @@ class IMPDOMINOEXPORT PermutationStates : public ParticleStates {
     return cur;
   }
   virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
-  virtual void load_particle_state(unsigned int, Particle *) const
-    IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, Particle *) const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(PermutationStates);
 };
 

@@ -31,27 +31,26 @@ using boost::is_convertible;
 using boost::is_base_of;
 using boost::is_pointer;
 
-template <class Graph, class ShowFunction> class ObjectNameWriter {
+template <class Graph, class ShowFunction>
+class ObjectNameWriter {
   ShowFunction f_;
   typedef typename boost::property_map<Graph, boost::vertex_name_t>::const_type
       VertexMap;
   VertexMap om_;
 
  public:
-  ObjectNameWriter(ShowFunction f,
-                   const Graph &g) : f_(f),
-                                     om_(boost::get(boost::vertex_name, g)) {}
+  ObjectNameWriter(ShowFunction f, const Graph &g)
+      : f_(f), om_(boost::get(boost::vertex_name, g)) {}
   void operator()(std::ostream &out, int v) const {
     typedef typename boost::property_traits<typename boost::property_map<
         Graph, boost::vertex_name_t>::const_type>::value_type VT;
     std::ostringstream oss;
     f_(boost::get(om_, v), oss);
-    //oss << "\\n[" << boost::get(om_, v)->get_type_name() << "]";
+    // oss << "\\n[" << boost::get(om_, v)->get_type_name() << "]";
     std::string nm = oss.str();
     std::vector<char> vnm(nm.begin(), nm.end());
-    std::string cleaned = std::string(vnm.begin(),
-                                      std::remove(vnm.begin(), vnm.end(),
-                                                  '\"'));
+    std::string cleaned =
+        std::string(vnm.begin(), std::remove(vnm.begin(), vnm.end(), '\"'));
     out << "[label=\"" << cleaned << "\"]";
   }
 };
@@ -65,14 +64,13 @@ inline void show_as_graphviz(const Graph &g, ShowFunction f, TextOutput out) {
 
 template <class Graph, class VertexName, class VertexDescriptor,
           class GraphTraits>
-inline base::map<VertexName, VertexDescriptor>
-get_graph_vertex_index(const Graph &g) {
+inline base::map<VertexName, VertexDescriptor> get_graph_vertex_index(
+    const Graph &g) {
   base::map<VertexName, VertexDescriptor> ret;
   typename boost::property_map<Graph, boost::vertex_name_t>::const_type vm =
       boost::get(boost::vertex_name, g);
   std::pair<typename GraphTraits::vertex_iterator,
-            typename GraphTraits::vertex_iterator>
-      be= boost::vertices(g);
+            typename GraphTraits::vertex_iterator> be = boost::vertices(g);
   for (; be.first != be.second; ++be.first) {
     VertexName vn = vm[*be.first];
     ret[vn] = *be.first;

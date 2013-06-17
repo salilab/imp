@@ -60,7 +60,7 @@ class Plane3D : public GeometricPrimitiveD<3> {
 
  private:
   double distance_;
-  Vector3D normal_;  //normal to plane
+  Vector3D normal_;  // normal to plane
 };
 
 //! Return the distance between a plane and a point in 3D

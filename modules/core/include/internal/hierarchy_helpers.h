@@ -20,7 +20,8 @@ IMPCORE_END_NAMESPACE
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-template <class K, class V> struct MatchAttribute {
+template <class K, class V>
+struct MatchAttribute {
   K k_;
   V v_;
   MatchAttribute(K k, V v) : k_(k), v_(v) {}
@@ -32,7 +33,8 @@ template <class K, class V> struct MatchAttribute {
   }
 };
 
-template <class K0, class V0, class K1, class V1> struct MatchAttributes {
+template <class K0, class V0, class K1, class V1>
+struct MatchAttributes {
   K0 k0_;
   V0 v0_;
   K1 k1_;

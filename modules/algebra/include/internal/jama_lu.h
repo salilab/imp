@@ -8,7 +8,7 @@
 
 #include <IMP/algebra/algebra_config.h>
 #include <algorithm>
-//for min(), max() below
+// for min(), max() below
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 IMP_CLANG_PRAGMA(diagnostic ignored "-Wshadow")
@@ -29,7 +29,8 @@ singular, so the constructor will never fail.  The primary use of the
 LU decomposition is in the solution of square systems of simultaneous
 linear equations.  This will fail if isNonsingular() returns false.
 */
-template <class Real> class LU {
+template <class Real>
+class LU {
 
   /* Array for internal storage of decomposition.  */
   Array2D<Real> LU_;
@@ -43,8 +44,7 @@ template <class Real> class LU {
     Array2D<Real> X(piv_length, j1 - j0 + 1);
 
     for (int i = 0; i < piv_length; i++)
-      for (int j = j0; j <= j1; j++)
-        X[i][j - j0] = A[piv[i]][j];
+      for (int j = j0; j <= j1; j++) X[i][j - j0] = A[piv[i]][j];
 
     return X;
   }
@@ -55,8 +55,7 @@ template <class Real> class LU {
 
     Array1D<Real> x(piv_length);
 
-    for (int i = 0; i < piv_length; i++)
-      x[i] = A[piv[i]];
+    for (int i = 0; i < piv_length; i++) x[i] = A[piv[i]];
 
     return x;
   }
@@ -285,8 +284,7 @@ template <class Real> class LU {
     // Solve U*X = Y;
     for (int k = n - 1; k >= 0; k--) {
       x[k] /= LU_[k][k];
-      for (int i = 0; i < k; i++)
-        x[i] -= x[k] * LU_[i][k];
+      for (int i = 0; i < k; i++) x[i] -= x[k] * LU_[i][k];
     }
 
     return x;

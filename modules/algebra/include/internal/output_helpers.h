@@ -32,15 +32,15 @@ IMPALGEBRAEXPORT int best_precision(double F, int width);
 IMPALGEBRAEXPORT std::string float_to_string(double F, int width = 8,
                                              int prec = 0);
 
-template <class T> struct IMPALGEBRAEXPORT stdVectorIO {
+template <class T>
+struct IMPALGEBRAEXPORT stdVectorIO {
   const base::Vector<T>& v_;
   stdVectorIO(const base::Vector<T>& v) : v_(v) {}
 };
 
 //! output for a vector
 template <class T>
-    inline std::ostream& operator<<(std::ostream& ostrm,
-                                    const stdVectorIO<T>& v) {
+inline std::ostream& operator<<(std::ostream& ostrm, const stdVectorIO<T>& v) {
   unsigned long s = v.v_.size();
   for (unsigned long i = 0; i < s; i++) {
     ostrm << v.v_[i] << " ";

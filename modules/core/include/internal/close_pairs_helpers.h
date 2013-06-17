@@ -121,7 +121,7 @@ struct InList {
     else if (std::binary_search(ps_.begin(), ps_.end(), pp[1]))
       return true;
     return false;
-    //return pp[0]->has_attribute(key_) || pp[1]->has_attribute(key_);
+    // return pp[0]->has_attribute(key_) || pp[1]->has_attribute(key_);
   }
 };
 
@@ -158,12 +158,12 @@ inline void initialize_particles(
     IMP::base::set<Particle *> spis(pis.begin(), pis.end());
     IMP_USAGE_CHECK(pis.size() == spis.size(), "Duplicate particles in input");
   }
-  //constituents_.clear();
+  // constituents_.clear();
   xyzrs_.clear();
   rbs_.clear();
   using IMP::operator<< ;
   IMP_CONTAINER_FOREACH(SingletonContainer, sc, {
-      Model *m = sc->get_model();
+    Model *m = sc->get_model();
     IMP_LOG_VERBOSE("Processing " << m->get_particle_name(_1) << " (" << _1
                                   << ")" << std::endl);
     if (use_rigid_bodies && RigidMember::particle_is_instance(m, _1)) {
@@ -171,8 +171,7 @@ inline void initialize_particles(
       ParticleIndex pi = rb.get_particle_index();
       rbs_.push_back(rb.get_particle_index());
       if (constituents_.find(pi) == constituents_.end()) {
-        constituents_.insert(
-            std::make_pair(pi, ParticleIndexes(1, _1)));
+        constituents_.insert(std::make_pair(pi, ParticleIndexes(1, _1)));
       } else {
         constituents_[pi].push_back(_1);
       }

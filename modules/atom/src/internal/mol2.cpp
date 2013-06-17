@@ -86,7 +86,7 @@ std::string get_mol2_name(Atom at) {
       break;
     }
   }
-  //std::cout << "Returning " << atom_type << " for " << at << std::endl;
+  // std::cout << "Returning " << atom_type << " for " << at << std::endl;
   return atom_type;
 }
 

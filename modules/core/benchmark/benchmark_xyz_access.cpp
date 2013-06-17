@@ -146,8 +146,8 @@ void do_benchmark(std::string descr, unsigned int n) {
     core::XYZ::setup_particle(particles.back(),
                               algebra::get_random_vector_in(bb));
   }
-  //std::cout << "Number of particles " << particles.size() << std::endl;
-  //set_check_level(IMP::NONE);
+  // std::cout << "Number of particles " << particles.size() << std::endl;
+  // set_check_level(IMP::NONE);
   set_log_level(SILENT);
   // TEST 1
   {

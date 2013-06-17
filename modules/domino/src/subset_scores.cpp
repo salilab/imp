@@ -18,7 +18,6 @@ RestraintCache::RestraintCache(ParticleStatesTable *pst, unsigned int size)
     : Object("RestraintCache%1%"),
       cache_(Generator(pst), size, ApproximatelyEqual()) {
   next_index_ = 0;
-
 }
 void RestraintCache::add_restraint_set_internal(RestraintSet *rs,
                                                 unsigned int index,
@@ -221,7 +220,6 @@ void RestraintCache::validate() const {
     IMP_INTERNAL_CHECK_FLOAT_EQUAL(score, new_score,
                                    "Cached and computed scores don't match "
                                        << score << " vs " << new_score);
-
   }
 #endif
 }
@@ -258,10 +256,9 @@ ParticleIndex get_particle_index(const ParticlesTemp &particle_ordering) {
   }
   return map;
 }
-  Orders get_orders(const base::map<base::Pointer<Restraint>, Subset>
-                    &known_restraints,
-                  const RestraintsTemp &restraints,
-                  const ParticlesTemp &particle_ordering) {
+Orders get_orders(
+    const base::map<base::Pointer<Restraint>, Subset> &known_restraints,
+    const RestraintsTemp &restraints, const ParticlesTemp &particle_ordering) {
   Orders ret(restraints.size());
   for (unsigned int i = 0; i < restraints.size(); ++i) {
     ret[i] =

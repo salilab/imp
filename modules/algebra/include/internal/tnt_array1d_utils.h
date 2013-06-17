@@ -29,7 +29,7 @@ namespace TNT {
 using namespace std;
 
 template <class T>
-    inline std::ostream &operator<<(std::ostream &s, const Array1D<T> &A) {
+inline std::ostream &operator<<(std::ostream &s, const Array1D<T> &A) {
   int N = A.dim1();
 
 #ifdef TNT_DEBUG
@@ -50,14 +50,13 @@ template <class T>
   s >> N;
 
   Array1D<T> B(N);
-  for (int i = 0; i < N; i++)
-    s >> B[i];
+  for (int i = 0; i < N; i++) s >> B[i];
   A = B;
   return s;
 }
 
 template <class T>
-    inline Array1D<T> operator+(const Array1D<T> &A, const Array1D<T> &B) {
+inline Array1D<T> operator+(const Array1D<T> &A, const Array1D<T> &B) {
   int n = A.dim1();
 
   if (B.dim1() != n)
@@ -74,7 +73,7 @@ template <class T>
 }
 
 template <class T>
-    inline Array1D<T> operator-(const Array1D<T> &A, const Array1D<T> &B) {
+inline Array1D<T> operator-(const Array1D<T> &A, const Array1D<T> &B) {
   int n = A.dim1();
 
   if (B.dim1() != n)

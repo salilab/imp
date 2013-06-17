@@ -42,7 +42,8 @@ IMPKERNEL_BEGIN_NAMESPACE
     If LazyAdd is true, keys created with a new string will be added,
     otherwise this is an error.
  */
-template <unsigned int ID, bool LazyAdd> class Key : public base::Value {
+template <unsigned int ID, bool LazyAdd>
+class Key : public base::Value {
   int str_;
 
   static const internal::KeyData::Map& get_map() {

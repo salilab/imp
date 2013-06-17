@@ -45,8 +45,7 @@ class IMPATOMEXPORT Angle : public Decorator {
 #endif
 
   //! Return true if the particle is an angle.
-  static bool particle_is_instance(Model *m,
-                                   ParticleIndex pi) {
+  static bool particle_is_instance(Model* m, ParticleIndex pi) {
     for (unsigned int i = 0; i < 3; ++i) {
       if (!m->get_has_attribute(get_particle_key(i), pi)) return false;
     }
@@ -100,8 +99,7 @@ class IMPATOMEXPORT Dihedral : public Decorator {
 #ifndef IMP_DOXYGEN
   /** \deprecated_at{2.1} Use the index-based variant. */
   static bool particle_is_instance(Particle* p) {
-    IMPATOM_DEPRECATED_FUNCTION_DEF(2.1,
-                                    "Use the index-based variant.");
+    IMPATOM_DEPRECATED_FUNCTION_DEF(2.1, "Use the index-based variant.");
     for (unsigned int i = 0; i < 4; ++i) {
       if (!p->has_attribute(get_particle_key(i))) return false;
     }
@@ -109,7 +107,7 @@ class IMPATOMEXPORT Dihedral : public Decorator {
   }
 #endif
 
-  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+  static bool particle_is_instance(Model* m, ParticleIndex pi) {
     for (unsigned int i = 0; i < 4; ++i) {
       if (!m->get_has_attribute(get_particle_key(i), pi)) return false;
     }

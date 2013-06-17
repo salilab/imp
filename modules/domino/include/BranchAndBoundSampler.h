@@ -30,9 +30,8 @@ class IMPDOMINOEXPORT BranchAndBoundSampler : public DiscreteSampler {
                         std::string name = "BranchAndBoundSampler %1%");
   BranchAndBoundSampler(Model *m, ParticleStatesTable *pst,
                         std::string name = "BranchAndBoundSampler %1%");
-  Assignments
-    do_get_sample_assignments(const IMP::domino::Subset &known)
-    const IMP_OVERRIDE;
+  Assignments do_get_sample_assignments(const IMP::domino::Subset &known) const
+      IMP_OVERRIDE;
   IMP_OBJECT_METHODS(BranchAndBoundSampler);
 };
 

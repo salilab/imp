@@ -31,11 +31,13 @@ class IMPATOMEXPORT DihedralSingletonScore : public SingletonScore {
  public:
   DihedralSingletonScore();
   virtual double evaluate_index(Model *m, ParticleIndex p,
-  DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual ModelObjectsTemp
-      do_get_inputs(Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                         const ParticleIndexes &pis) const
+      IMP_OVERRIDE;
   IMP_SINGLETON_SCORE_METHODS(DihedralSingletonScore);
-  IMP_OBJECT_METHODS(DihedralSingletonScore);;
+  IMP_OBJECT_METHODS(DihedralSingletonScore);
+  ;
 };
 
 IMP_OBJECTS(DihedralSingletonScore, DihedralSingletonScores);

@@ -145,8 +145,7 @@ ParticlesTemp _create_particles_from_pdb(std::string name, Model *m) {
   return create_particles_from_pdb(name, m);
 }
 
-Float _LogPairScore::evaluate_index(Model *m,
-                                    const ParticleIndexPair &ipp,
+Float _LogPairScore::evaluate_index(Model *m, const ParticleIndexPair &ipp,
                                     DerivativeAccumulator *) const {
   ParticlePair pp(m->get_particle(ipp[0]), m->get_particle(ipp[1]));
   if (map_.find(pp) == map_.end()) {

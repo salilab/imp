@@ -32,7 +32,8 @@ void get_restraints_internal(It b, It e, RestraintsTemp &ret) {
 }
 #endif
 
-template <class It> inline RestraintsTemp get_restraints(It b, It e) {
+template <class It>
+inline RestraintsTemp get_restraints(It b, It e) {
   RestraintsTemp ret;
   get_restraints_internal(b, e, ret);
   std::sort(ret.begin(), ret.end());

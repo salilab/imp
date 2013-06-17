@@ -21,7 +21,8 @@ using namespace IMP;
 
 #ifndef SWIG
 
-template <> struct Convert<Particle> : public ConvertObjectBase<Particle> {
+template <>
+struct Convert<Particle> : public ConvertObjectBase<Particle> {
   static const int converter = 2;
   template <class SwigData>
   static Particle *get_cpp_object(PyObject *o, SwigData st,

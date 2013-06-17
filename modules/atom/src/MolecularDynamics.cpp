@@ -168,8 +168,8 @@ void MolecularDynamics::assign_velocities(Float temperature) {
 
   boost::normal_distribution<Float> mrng(0., 1.);
   boost::variate_generator<base::RandomNumberGenerator &,
-                           boost::normal_distribution<Float> >
-    sampler(base::random_number_generator, mrng);
+                           boost::normal_distribution<Float> > sampler(
+      base::random_number_generator, mrng);
 
   for (ParticlesTemp::iterator iter = ps.begin(); iter != ps.end(); ++iter) {
     Particle *p = *iter;
@@ -190,7 +190,6 @@ void MolecularDynamics::assign_velocities(Float temperature) {
       velocity *= rescale;
       p->set_value(vs_[i], velocity);
     }
-
   }
 }
 

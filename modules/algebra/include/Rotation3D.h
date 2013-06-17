@@ -92,7 +92,6 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
       // make them canonical
       v_ = -v_;
     }
-
   }
   ~Rotation3D();
 
@@ -106,7 +105,8 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
             2 * (v_[1] * v_[3] + v_[0] * v_[2]) * o[2],
         2 * (v_[1] * v_[2] + v_[0] * v_[3]) * o[0] +
             (v_[0] * v_[0] - v_[1] * v_[1] + v_[2] * v_[2] - v_[3] * v_[3]) *
-                o[1] + 2 * (v_[2] * v_[3] - v_[0] * v_[1]) * o[2],
+                o[1] +
+            2 * (v_[2] * v_[3] - v_[0] * v_[1]) * o[2],
         2 * (v_[1] * v_[3] - v_[0] * v_[2]) * o[0] +
             2 * (v_[2] * v_[3] + v_[0] * v_[1]) * o[1] +
             (v_[0] * v_[0] - v_[1] * v_[1] - v_[2] * v_[2] + v_[3] * v_[3]) *
@@ -121,13 +121,15 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
     switch (coord) {
       case 0:
         return (v_[0] * v_[0] + v_[1] * v_[1] - v_[2] * v_[2] - v_[3] * v_[3]) *
-                   o[0] + 2 * (v_[1] * v_[2] - v_[0] * v_[3]) * o[1] +
+                   o[0] +
+               2 * (v_[1] * v_[2] - v_[0] * v_[3]) * o[1] +
                2 * (v_[1] * v_[3] + v_[0] * v_[2]) * o[2];
         break;
       case 1:
         return 2 * (v_[1] * v_[2] + v_[0] * v_[3]) * o[0] +
                (v_[0] * v_[0] - v_[1] * v_[1] + v_[2] * v_[2] - v_[3] * v_[3]) *
-                   o[1] + 2 * (v_[2] * v_[3] - v_[0] * v_[1]) * o[2];
+                   o[1] +
+               2 * (v_[2] * v_[3] - v_[0] * v_[1]) * o[2];
 
         break;
       case 2:

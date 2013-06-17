@@ -19,20 +19,19 @@ CoverRefined::CoverRefined(Refiner *ref, Float slack) : slack_(slack) {
 }
 
 ModelObjectsTemp CoverRefined::do_get_inputs(Model *m,
-                                          const ParticleIndexes &pis) const {
+                                             const ParticleIndexes &pis) const {
   ModelObjectsTemp ret = refiner_->get_inputs(m, pis);
-  ret+= IMP::kernel::get_particles(m, pis);
-  for (unsigned int i=0; i< pis.size(); ++i) {
-    ret += IMP::kernel::get_particles(m,
-                                      refiner_->get_refined_indexes(m,
-                                                                    pis[i]));
+  ret += IMP::kernel::get_particles(m, pis);
+  for (unsigned int i = 0; i < pis.size(); ++i) {
+    ret +=
+        IMP::kernel::get_particles(m, refiner_->get_refined_indexes(m, pis[i]));
   }
   return ret;
 }
 
-ModelObjectsTemp CoverRefined::do_get_outputs(Model *m,
-                                       const ParticleIndexes &pis) const {
-  ModelObjectsTemp ret =IMP::kernel::get_particles(m, pis);
+ModelObjectsTemp CoverRefined::do_get_outputs(
+    Model *m, const ParticleIndexes &pis) const {
+  ModelObjectsTemp ret = IMP::kernel::get_particles(m, pis);
   return ret;
 }
 

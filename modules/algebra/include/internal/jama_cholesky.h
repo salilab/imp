@@ -48,7 +48,8 @@ using namespace std;
 
    */
 
-template <class Real> class Cholesky {
+template <class Real>
+class Cholesky {
   IMP::algebra::internal::TNT::Array2D<Real> L_;  // lower triangular factor
   int isspd;  // 1 if matrix to be factored was SPD
 
@@ -62,16 +63,20 @@ template <class Real> class Cholesky {
   IMP::algebra::internal::TNT::Array2D<Real> solve(
       const IMP::algebra::internal::TNT::Array2D<Real> &B);
   int is_spd() const;
-
 };
 
-template <class Real> Cholesky<Real>::Cholesky() : L_(0, 0), isspd(0) {}
+template <class Real>
+Cholesky<Real>::Cholesky()
+    : L_(0, 0), isspd(0) {}
 
 /**
   @return 1, if original matrix to be factored was symmetric
     positive-definite (SPD).
 */
-template <class Real> int Cholesky<Real>::is_spd() const { return isspd; }
+template <class Real>
+int Cholesky<Real>::is_spd() const {
+  return isspd;
+}
 
 /**
   @return the lower triangular factor, L, such that L*L'=A.
@@ -143,16 +148,13 @@ IMP::algebra::internal::TNT::Array1D<Real> Cholesky<Real>::solve(
 
   // Solve L*y = b;
   for (int k = 0; k < n; k++) {
-    for (int i = 0; i < k; i++)
-      x[k] -= x[i] * L_[k][i];
+    for (int i = 0; i < k; i++) x[k] -= x[i] * L_[k][i];
     x[k] /= L_[k][k];
-
   }
 
   // Solve L'*X = Y;
   for (int k = n - 1; k >= 0; k--) {
-    for (int i = k + 1; i < n; i++)
-      x[k] -= x[i] * L_[i][k];
+    for (int i = k + 1; i < n; i++) x[k] -= x[i] * L_[i][k];
     x[k] /= L_[k][k];
   }
 
@@ -208,8 +210,7 @@ IMP::algebra::internal::TNT::Array2D<Real> Cholesky<Real>::solve(
   // Solve L*y = b;
   for (int j = 0; j < nx; j++) {
     for (int k = 0; k < n; k++) {
-      for (int i = 0; i < k; i++)
-        X[k][j] -= X[i][j] * L_[k][i];
+      for (int i = 0; i < k; i++) X[k][j] -= X[i][j] * L_[k][i];
       X[k][j] /= L_[k][k];
     }
   }
@@ -217,15 +218,13 @@ IMP::algebra::internal::TNT::Array2D<Real> Cholesky<Real>::solve(
   // Solve L'*X = Y;
   for (int j = 0; j < nx; j++) {
     for (int k = n - 1; k >= 0; k--) {
-      for (int i = k + 1; i < n; i++)
-        X[k][j] -= X[i][j] * L_[i][k];
+      for (int i = k + 1; i < n; i++) X[k][j] -= X[i][j] * L_[i][k];
       X[k][j] /= L_[k][k];
     }
   }
 
   return X;
 }
-
 }
 // namespace JAMA
 

@@ -37,7 +37,7 @@ struct TruncatedHarmonicData {
     IMP_INTERNAL_CHECK(o_ < t_,
                        "Something wrong with computed values for intermediates "
                            << o_ << " " << b_);
-    //std::cout << o_ << " " << b_ << std::endl;
+    // std::cout << o_ << " " << b_ << std::endl;
   }
 
   inline double evaluate(double feature) const {

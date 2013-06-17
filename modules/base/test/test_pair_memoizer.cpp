@@ -19,7 +19,7 @@
 
 // Skip test on g++ 4.2, since it fails to compile due to a g++ bug
 #if __GNUC__ == 4 && __GNUC_MINOR__ == 2
-int main(int, char *[]) {
+int main(int, char * []) {
   std::cout << "Skipped due to g++ 4.2 bug" << std::endl;
   return 0;
 }
@@ -34,7 +34,7 @@ struct IP {
   IP() : p_(IMP_NULLPTR) {}
   IP(int *p) : p_(p) {}
   operator int *() const { return p_; }
-  //operator int*(){return p_;}
+  // operator int*(){return p_;}
   int operator*() const { return *p_; }
   IMP_SHOWABLE_INLINE(IP, out << p_ << "(" << *p_ << ")");
   IMP_HASHABLE_INLINE(IP, return boost::hash_value(p_););

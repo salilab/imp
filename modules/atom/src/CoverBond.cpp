@@ -14,8 +14,7 @@ IMPATOM_BEGIN_NAMESPACE
 
 CoverBond::CoverBond() {}
 
-void CoverBond::apply_index(Model *m,
-                            ParticleIndex pi) const {
+void CoverBond::apply_index(Model *m, ParticleIndex pi) const {
   Bond bd(m, pi);
   core::XYZ ea(bd.get_bonded(0)), eb(bd.get_bonded(1));
   core::XYZR r(m, pi);
@@ -25,7 +24,7 @@ void CoverBond::apply_index(Model *m,
 
 ModelObjectsTemp CoverBond::do_get_inputs(Model *m,
                                           const ParticleIndexes &pis) const {
-  ModelObjectsTemp ret(3*pis.size());
+  ModelObjectsTemp ret(3 * pis.size());
   for (unsigned int i = 0; i < pis.size(); ++i) {
     Bond bd(m, pis[i]);
     ret[3 * i + 0] = m->get_particle(pis[i]);

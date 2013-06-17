@@ -30,12 +30,13 @@ class Linear : public UnaryFunction {
     return (feature - offset_) * slope_;
   }
 
-  virtual DerivativePair evaluate_with_derivative(double feature)
-      const IMP_OVERRIDE {
+  virtual DerivativePair evaluate_with_derivative(double feature) const
+      IMP_OVERRIDE {
     return DerivativePair(evaluate(feature), slope_);
   }
 
   IMP_OBJECT_METHODS(Linear);
+
  private:
   double slope_, offset_;
 };

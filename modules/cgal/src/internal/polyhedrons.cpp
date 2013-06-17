@@ -92,19 +92,23 @@ IMPCGAL_BEGIN_INTERNAL_NAMESPACE
 namespace {
 
 struct AddressLess {
-  template <class T> bool operator()(const T &a, const T &b) const {
+  template <class T>
+  bool operator()(const T &a, const T &b) const {
     return &*a < &*b;
   }
 };
 
-template <class K> algebra::Vector3D trp(const typename CGAL::Point_3<K> pt) {
+template <class K>
+algebra::Vector3D trp(const typename CGAL::Point_3<K> pt) {
   return algebra::Vector3D(CGAL::to_double(pt[0]), CGAL::to_double(pt[1]),
                            CGAL::to_double(pt[2]));
 }
-template <class K> typename K::Point_3 trp(const algebra::Vector3D pt) {
+template <class K>
+typename K::Point_3 trp(const algebra::Vector3D pt) {
   return typename K::Point_3(pt[0], pt[1], pt[2]);
 }
-template <class K> typename K::Plane_3 trp(const algebra::Plane3D &p) {
+template <class K>
+typename K::Plane_3 trp(const algebra::Plane3D &p) {
   return typename K::Plane_3(p.get_normal()[0], p.get_normal()[1],
                              p.get_normal()[2], -p.get_distance_from_origin());
 }
@@ -131,12 +135,12 @@ base::Vector<algebra::Vector3Ds> get_facets(CGAL::Nef_polyhedron_3<K> &np) {
 template <class K>
 std::pair<algebra::Vector3Ds, Ints> get_indexed_facets(
     CGAL::Polyhedron_3<K> &p) {
-  //CGAL_precondition( p.is_valid(true));
+  // CGAL_precondition( p.is_valid(true));
   Ints faces;
   algebra::Vector3Ds coords;
   typename std::map<typename CGAL::Polyhedron_3<K>::Vertex_handle, int,
                     AddressLess> vertices;
-  //std::map<Polyhedron::Vertex_handle, int> vertices;
+  // std::map<Polyhedron::Vertex_handle, int> vertices;
   for (typename CGAL::Polyhedron_3<K>::Face_iterator it = p.facets_begin();
        it != p.facets_end(); ++it) {
     typename CGAL::Polyhedron_3<K>::Facet::Halfedge_around_facet_circulator c =
@@ -214,7 +218,7 @@ CGAL::Nef_polyhedron_3<K> create_nef(
     typename CGAL::Polyhedron_3<K> p;
     try {
       cur.convert_to_polyhedron(p);
-      //std::cout << p << std::endl;
+      // std::cout << p << std::endl;
     }
     catch (...) {
       IMP_INTERNAL_CHECK(false, "Error after intersection with "
@@ -267,7 +271,7 @@ std::pair<algebra::Vector3Ds, Ints> get_skin_surface(
   CGAL::Union_of_balls_3<CGAL::Skin_surface_traits_3<IKernel> > skin_surface(
       l.begin(), l.end());
   CGAL::mesh_skin_surface_3(skin_surface, p);
-  //CGAL::make_skin_surface_mesh_3(p, l.begin(), l.end(), 1.0);
+  // CGAL::make_skin_surface_mesh_3(p, l.begin(), l.end(), 1.0);
   namespace SMS = CGAL::Surface_mesh_simplification;
   /*SMS::Count_stop_predicate<CGAL::Polyhedron_3<IKernel> > stop(10*ss.size());
   IMP_LOG_TERSE( "Simplifying polyhedron from "
@@ -293,7 +297,8 @@ typedef GT::Sphere_3 Sphere_3;
 typedef GT::Point_3 Point_3;
 typedef GT::FT FT;
 
-template <class Grid> class CGALImplicitSurface {
+template <class Grid>
+class CGALImplicitSurface {
   const Grid &grid_;
   double d_;
 
@@ -302,10 +307,10 @@ template <class Grid> class CGALImplicitSurface {
       : grid_(grid), d_(iso_level) {}
   FT operator()(const Point_3 &pt) const {
     double ret = get_trilinearly_interpolated(
-        grid_, algebra::Vector3D(pt[0], pt[1], pt[2]),
-        typename Grid::Value(d_ - 1)) -
+                     grid_, algebra::Vector3D(pt[0], pt[1], pt[2]),
+                     typename Grid::Value(d_ - 1)) -
                  d_;
-    //std::cout << "trilerp at " << trp(pt) << " is " << ret+d_ << std::endl;
+    // std::cout << "trilerp at " << trp(pt) << " is " << ret+d_ << std::endl;
     return ret;
   }
   Sphere_3 get_bounding_sphere() const {
@@ -345,7 +350,7 @@ void cgal_triangulate_surface(const Grid &grid, double iso_level, C2t3 &c2t3) {
   // defining the surface
   CGALImplicitSurface<Grid> cs(grid, iso_level);
   Sphere_3 bs = cs.get_bounding_sphere();
-  //bs= Sphere_3(Point_3(30, 30, 0), 200);
+  // bs= Sphere_3(Point_3(30, 30, 0), 200);
   IMP_LOG_TERSE("Bounding sphere is" << bs << std::endl);
   IMP_LOG_TERSE("Scale is " << cs.get_scale() << std::endl);
   typedef CGAL::Implicit_surface_3<GT, CGALImplicitSurface<Grid> > Surface_3;
@@ -359,18 +364,17 @@ void cgal_triangulate_surface(const Grid &grid, double iso_level, C2t3 &c2t3) {
       .5 * cs.get_scale(),   // radius bound
       .2 * cs.get_scale());  // distance bound
                              // meshing surface
-  //std::cerr << "Computing mesh with seed " << emf.centers()[i] << std::endl;
+  // std::cerr << "Computing mesh with seed " << emf.centers()[i] << std::endl;
   IMP_LOG_TERSE("Beginning surface meshing." << std::endl);
   CGAL::make_surface_mesh(c2t3, surface, criteria, CGAL::Manifold_tag());
   IMP_LOG_TERSE("Ending surface meshing." << std::endl);
-  //CGAL::make_surface_mesh(c2t3, surface, criteria, CGAL::Manifold_tag());
-
+  // CGAL::make_surface_mesh(c2t3, surface, criteria, CGAL::Manifold_tag());
 }
 
 template <class Tr, class F>
 const typename Tr::Vertex_handle get_vertex(const Tr &tr, const F &f,
                                             unsigned int i) {
-  //return f->first->vertex((f->second+i)%4)->point();
+  // return f->first->vertex((f->second+i)%4)->point();
   return f->first->vertex(tr.vertex_triple_index(f->second, i));
 }
 
@@ -462,7 +466,6 @@ std::pair<algebra::Vector3Ds, Ints> get_iso_surface_t(const Grid &grid,
   std::cout << "returning facets" << std::endl;*/
   return get_indexed_facets(poly);
 }
-
 }
 
 std::pair<algebra::Vector3Ds, Ints> get_iso_surface(

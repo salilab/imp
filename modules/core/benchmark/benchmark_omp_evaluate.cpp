@@ -97,7 +97,6 @@ void benchmark_serial(IMP::core::RestraintsScoringFunction *sf) {
     IMP::benchmark::report("serial evaluate deriv", time, score);
   }
 }
-
 }
 
 int main(int argc, char **argv) {

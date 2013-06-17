@@ -75,9 +75,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 template <int D, class Storage,
           // swig needs this for some reason
           class Value, class EmbeddingT = DefaultEmbeddingD<D> >
-class GridD : public Storage,
-              public EmbeddingT,
-              public GeometricPrimitiveD<D> {
+class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
  private:
   typedef GridD<D, Storage, Value, EmbeddingT> This;
 #ifndef IMP_DOXYGEN
@@ -88,7 +86,7 @@ class GridD : public Storage,
     typedef Value &result_type;
     typedef const GridIndexD<D> &argument_type;
     result_type operator()(argument_type i) const {
-      //std::cout << i << std::endl;
+      // std::cout << i << std::endl;
       return home_->operator[](i);
     }
   };
@@ -99,7 +97,7 @@ class GridD : public Storage,
     typedef const Value &result_type;
     typedef const GridIndexD<D> &argument_type;
     result_type operator()(argument_type i) const {
-      //std::cout << i << std::endl;
+      // std::cout << i << std::endl;
       return home_->operator[](i);
     }
   };
@@ -290,8 +288,8 @@ class GridD : public Storage,
     return VoxelIterator(indexes_begin(bb), GetVoxel(this));
   }
   VoxelIterator voxels_end(const BoundingBoxD<D> &bb) {
-    //ExtendedIndex lb= get_extended_index(bb.get_corner(0));
-    //ExtendedIndex ub= get_extended_index(bb.get_corner(1));
+    // ExtendedIndex lb= get_extended_index(bb.get_corner(0));
+    // ExtendedIndex ub= get_extended_index(bb.get_corner(1));
     return VoxelIterator(indexes_end(bb), GetVoxel(this));
   }
 
@@ -310,8 +308,8 @@ class GridD : public Storage,
     return Storage::indexes_begin(lb, ub);
   }
   typename Storage::IndexIterator indexes_end(const BoundingBoxD<D> &) const {
-    //ExtendedIndex lb= get_extended_index(bb.get_corner(0));
-    //ExtendedIndex ub= get_extended_index(bb.get_corner(1));
+    // ExtendedIndex lb= get_extended_index(bb.get_corner(0));
+    // ExtendedIndex ub= get_extended_index(bb.get_corner(1));
     return Storage::indexes_end(ExtendedGridIndexD<3>(),
                                 ExtendedGridIndexD<3>());
   }
@@ -324,7 +322,8 @@ class GridD : public Storage,
       arguments, the grid, the Grid::Index of the voxel and the
       Grid::Vector for the center of the voxel.
       @{ */
-  template <class Functor> Functor apply(const Functor &f) const {
+  template <class Functor>
+  Functor apply(const Functor &f) const {
     return Storage::apply(*this, f);
   }
   /** @} */

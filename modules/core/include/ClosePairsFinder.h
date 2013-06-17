@@ -42,16 +42,16 @@ class IMPCOREEXPORT ClosePairsFinder : public ParticleInputs,
 
   /** \deprecated_at{2.1} use the index-based on instead. */
   IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
-      ParticlePairsTemp get_close_pairs(const ParticlesTemp &pc) const;
+  ParticlePairsTemp get_close_pairs(const ParticlesTemp &pc) const;
   /** \deprecated_at{2.1} use the index-based on instead. */
   IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
-      ParticlePairsTemp get_close_pairs(const ParticlesTemp &pca,
-                                        const ParticlesTemp &pcb) const;
-  virtual ParticleIndexPairs get_close_pairs(Model *m,
-                                          const ParticleIndexes &pc) const = 0;
-  virtual ParticleIndexPairs get_close_pairs(Model *m,
-                                             const ParticleIndexes &pca,
-                                         const ParticleIndexes &pcb) const = 0;
+  ParticlePairsTemp get_close_pairs(const ParticlesTemp &pca,
+                                    const ParticlesTemp &pcb) const;
+  virtual ParticleIndexPairs get_close_pairs(
+      Model *m, const ParticleIndexes &pc) const = 0;
+  virtual ParticleIndexPairs get_close_pairs(
+      Model *m, const ParticleIndexes &pca,
+      const ParticleIndexes &pcb) const = 0;
   virtual IntPairs get_close_pairs(
       const algebra::BoundingBox3Ds &bbs) const = 0;
   virtual IntPairs get_close_pairs(
@@ -66,9 +66,9 @@ class IMPCOREEXPORT ClosePairsFinder : public ParticleInputs,
   */
   virtual void set_distance(double d) { distance_ = d; }
   double get_distance() const { return distance_; }
-/** @} */
+  /** @} */
 
-    public:
+ public:
   /** @name Methods to control the set of filters
 
      PairPredicates objects can be used as filters to prevent

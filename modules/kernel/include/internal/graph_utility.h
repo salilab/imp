@@ -17,8 +17,7 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 struct IMPKERNELEXPORT AncestorException {
   base::Object *o;
-  AncestorException(base::Object *oi) : o(oi) {}
-  ;
+  AncestorException(base::Object *oi) : o(oi) {};
   virtual ~AncestorException();
 };
 
@@ -35,7 +34,7 @@ class AncestorVisitor : public boost::default_dfs_visitor {
   void discover_vertex(typename boost::graph_traits<Graph>::vertex_descriptor u,
                        const Graph &) {
     base::Object *o = vm_[u];
-    //std::cout << "Visiting " << o->get_name() << std::endl;
+    // std::cout << "Visiting " << o->get_name() << std::endl;
     if (pst_.find(dynamic_cast<Particle *>(o)) != pst_.end()) {
       throw AncestorException(o);
     }
@@ -59,7 +58,7 @@ inline bool get_has_ancestor(const G &g, unsigned int v,
   AncestorVisitor<RG> av(pst, g);
   boost::vector_property_map<int> color(boost::num_vertices(g));
   try {
-    //std::cout << "Searching for dependents of " << v << std::endl;
+    // std::cout << "Searching for dependents of " << v << std::endl;
     boost::depth_first_visit(rg, v, av, color);
     return false;
   }

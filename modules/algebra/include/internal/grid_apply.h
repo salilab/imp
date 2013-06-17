@@ -11,7 +11,8 @@
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
-template <class Functor, class Grid, int D> struct GridApplier {
+template <class Functor, class Grid, int D>
+struct GridApplier {
   static void apply(const Grid &g, typename Grid::ExtendedIndex &lb,
                     typename Grid::ExtendedIndex &ub,
                     const typename Grid::Vector &corner,
@@ -27,7 +28,8 @@ template <class Functor, class Grid, int D> struct GridApplier {
   }
 };
 
-template <class Functor, class Grid> struct GridApplier<Functor, Grid, 0> {
+template <class Functor, class Grid>
+struct GridApplier<Functor, Grid, 0> {
   static void apply(const Grid &g, typename Grid::ExtendedIndex &lb,
                     typename Grid::ExtendedIndex &ub,
                     const typename Grid::Vector &corner,
@@ -44,7 +46,8 @@ template <class Functor, class Grid> struct GridApplier<Functor, Grid, 0> {
 };
 
 // silly and do it on D-1
-template <class Functor, class Grid> struct GridApplier<Functor, Grid, -2> {
+template <class Functor, class Grid>
+struct GridApplier<Functor, Grid, -2> {
   static void apply_recursive(const Grid &g, typename Grid::ExtendedIndex &lb,
                               typename Grid::ExtendedIndex &ub,
                               const typename Grid::Vector &corner,

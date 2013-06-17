@@ -93,18 +93,18 @@ class IMPKERNELEXPORT ScoreState : public ModelObject {
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(ScoreState);
 
  public:
-   /** \deprecated_at{2.1} use get_inputs() instead.*/
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-    ParticlesTemp get_input_particles() const;
   /** \deprecated_at{2.1} use get_inputs() instead.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-    ContainersTemp get_input_containers() const;
+  ParticlesTemp get_input_particles() const;
+  /** \deprecated_at{2.1} use get_inputs() instead.*/
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  ContainersTemp get_input_containers() const;
   /** \deprecated_at{2.1} use get_outputs() instead.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-    ParticlesTemp get_output_particles() const;
+  ParticlesTemp get_output_particles() const;
   /** \deprecated_at{2.1} use get_outputs() instead.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-    ContainersTemp get_output_containers() const;
+  ContainersTemp get_output_containers() const;
 
  private:
 

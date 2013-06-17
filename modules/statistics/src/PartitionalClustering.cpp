@@ -27,10 +27,9 @@ void validate_partitional_clustering(PartitionalClustering* pc,
         used.insert(e);
       }
     }
-    IMP_USAGE_CHECK(
-        used.size() == n,
-        "Not all elements are clustered: " << used.size() << " of " << n
-                                           << " found: " << Showable(pc));
+    IMP_USAGE_CHECK(used.size() == n, "Not all elements are clustered: "
+                                          << used.size() << " of " << n
+                                          << " found: " << Showable(pc));
   }
 }
 IMPSTATISTICS_END_NAMESPACE

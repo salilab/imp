@@ -36,7 +36,7 @@ inline double random_gauss(double mean = 0.0, double sigma = 1.0) {
 
   NormalDistribution norm_dist(mean, sigma);
   boost::variate_generator<base::RandomNumberGenerator&, NormalDistribution>
-    generator(base::random_number_generator, norm_dist);
+      generator(base::random_number_generator, norm_dist);
   return generator();
 }
 

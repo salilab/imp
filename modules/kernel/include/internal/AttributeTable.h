@@ -26,7 +26,8 @@ IMPKERNEL_END_NAMESPACE
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
-template <class T, class K> struct DefaultTraits {
+template <class T, class K>
+struct DefaultTraits {
   typedef base::IndexVector<ParticleIndexTag, T> Container;
   typedef T Value;
   typedef T PassValue;
@@ -35,7 +36,8 @@ template <class T, class K> struct DefaultTraits {
   static const T &min(const T &a, const T &b) { return std::min(a, b); }
 };
 
-template <class T, class K> struct ArrayTraits {
+template <class T, class K>
+struct ArrayTraits {
   typedef IMP::base::Vector<T> Value;
   typedef base::IndexVector<ParticleIndexTag, Value> Container;
   typedef const Value &PassValue;
@@ -75,8 +77,7 @@ struct ParticleAttributeTableTraits
 };
 
 struct ParticlesAttributeTableTraits
-    : public ArrayTraits<ParticleIndex, ParticleIndexesKey> {
-};
+    : public ArrayTraits<ParticleIndex, ParticleIndexesKey> {};
 
 struct ObjectAttributeTableTraits {
   typedef base::Object *Value;
@@ -119,8 +120,7 @@ struct ObjectsAttributeTableTraits {
   }
 };
 
-struct IntsAttributeTableTraits : ArrayTraits<int, IntsKey> {
-};
+struct IntsAttributeTableTraits : ArrayTraits<int, IntsKey> {};
 
 struct IntAttributeTableTraits : public DefaultTraits<Int, IntKey> {
   static Int get_invalid() { return std::numeric_limits<Int>::max(); }
@@ -163,8 +163,8 @@ struct StringAttributeTableTraits : public DefaultTraits<String, StringKey> {
  */
 
 namespace {
-static const FloatKey xyzr_keys[] = { FloatKey(0U), FloatKey(1U), FloatKey(2U),
-                                      FloatKey(3U) };
+static const FloatKey xyzr_keys[] = {FloatKey(0U), FloatKey(1U), FloatKey(2U),
+                                     FloatKey(3U)};
 
 #ifndef __clang__
 // just to disable a warning

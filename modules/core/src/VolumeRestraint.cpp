@@ -28,7 +28,7 @@ double VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   algebra::Sphere3Ds spheres;
   Model *m = get_model();
   IMP_CONTAINER_FOREACH(SingletonContainer, sc_, {
-      spheres.push_back(XYZR(m, _1).get_sphere());
+    spheres.push_back(XYZR(m, _1).get_sphere());
   });
   double vol = algebra::get_surface_area_and_volume(spheres).second;
   return f_->evaluate(vol - volume_);
@@ -184,9 +184,8 @@ double VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
 }
 
 ModelObjectsTemp VolumeRestraint::do_get_inputs() const {
-  ModelObjectsTemp ret
-      = IMP::kernel::get_particles(get_model(),
-                                   sc_->get_all_possible_indexes());
+  ModelObjectsTemp ret =
+      IMP::kernel::get_particles(get_model(), sc_->get_all_possible_indexes());
   ret.push_back(sc_);
   return ret;
 }

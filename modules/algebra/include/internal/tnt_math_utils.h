@@ -19,7 +19,8 @@ using namespace std;
   using (a * sqrt( 1 + (b/a) * (b/a))), rather than
   sqrt(a*a + b*b).
 */
-template <class Real> inline Real hypot(const Real &a, const Real &b) {
+template <class Real>
+inline Real hypot(const Real &a, const Real &b) {
 
   if (a == 0)
     return abs(b);

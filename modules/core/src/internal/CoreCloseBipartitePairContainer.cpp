@@ -134,8 +134,8 @@ void CoreCloseBipartitePairContainer::do_before_evaluate() {
   }
 }
 
-ParticleIndexes
-CoreCloseBipartitePairContainer::get_all_possible_indexes() const {
+ParticleIndexes CoreCloseBipartitePairContainer::get_all_possible_indexes()
+    const {
   ParticleIndexes ret = sc_[0]->get_indexes();
   ret += sc_[1]->get_indexes();
   return ret;

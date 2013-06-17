@@ -33,7 +33,10 @@ Configuration::Configuration(Model *m, std::string name)
 }
 
 namespace {
-template <class T> bool are_equal(const T &a, const T &b) { return a == b; }
+template <class T>
+bool are_equal(const T &a, const T &b) {
+  return a == b;
+}
 template <class T>
 bool are_not_equal(const base::Vector<T> &a, const base::Vector<T> &b) {
   if (a.size() != b.size())

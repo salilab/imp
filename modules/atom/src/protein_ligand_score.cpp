@@ -332,7 +332,7 @@ void add_protein_ligand_score_data(Atom atom) {
     if (!ProteinLigandType::get_key_exists(nm)) {
       type = -1;
     } else {
-      //std::cout << "Type for " << atom << " is "
+      // std::cout << "Type for " << atom << " is "
       //<< LigandType(nm) << std::endl;
       type = ProteinLigandType(nm).get_index();
     }

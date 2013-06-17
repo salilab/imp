@@ -10,7 +10,7 @@
 
 #include <IMP/base/base_config.h>
 #include "compiler_macros.h"
-//IMPBASE_BEGIN_NAMESPACE
+// IMPBASE_BEGIN_NAMESPACE
 namespace IMP {
 
 namespace base {
@@ -66,6 +66,6 @@ enum CheckLevel {
 IMPBASEEXPORT std::istream &operator>>(std::istream &in, CheckLevel &ll);
 #endif
 }
-}  //IMPBASE_END_NAMESPACE
+}  // IMPBASE_END_NAMESPACE
 
 #endif /* IMPBASE_ENUMS_H */

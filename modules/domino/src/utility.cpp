@@ -34,16 +34,14 @@ inline void load_particle_states(It b, It e, const Assignment &ss,
       std::distance(b, e) ==
           static_cast<typename std::iterator_traits<It>::difference_type>(
               ss.size()),
-      "Sizes don't match in load particle states: " << Subset(
-                                                           ParticlesTemp(b, e))
-                                                    << " vs " << ss);
+      "Sizes don't match in load particle states: "
+          << Subset(ParticlesTemp(b, e)) << " vs " << ss);
   unsigned int i = 0;
   for (It c = b; c != e; ++c) {
     pst->get_particle_states(*c)->load_particle_state(ss[i], *c);
     ++i;
   }
 }
-
 }
 
 void load_particle_states(const Subset &s, const Assignment &ss,

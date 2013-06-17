@@ -46,15 +46,13 @@ class IMPATOMEXPORT Bond : public Decorator {
 #ifndef IMP_DOXYGEN
   /** \deprecated_at{2.1} Use the index based variant. */
   static bool particle_is_instance(Particle *p) {
-    IMPATOM_DEPRECATED_FUNCTION_DEF(2.1,
-                                    "Use the index-based variant");
+    IMPATOM_DEPRECATED_FUNCTION_DEF(2.1, "Use the index-based variant");
     return IMP::core::internal::graph_is_edge(p,
                                               internal::get_bond_data().graph_);
   }
 #endif
 
-  static bool particle_is_instance(Model *m,
-                                   ParticleIndex pi) {
+  static bool particle_is_instance(Model *m, ParticleIndex pi) {
     return IMP::core::internal::graph_is_edge(m->get_particle(pi),
                                               internal::get_bond_data().graph_);
   }

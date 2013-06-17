@@ -41,7 +41,8 @@ using namespace std;
   (Adapted from JAMA, a Java Matrix Library, developed by jointly
   by the Mathworks and NIST; see  http://math.nist.gov/javanumerics/jama).
    */
-template <class Real> class SVD {
+template <class Real>
+class SVD {
 
   Array2D<Real> U, V;
   Array1D<Real> s;
@@ -470,9 +471,7 @@ template <class Real> class SVD {
     A = Array2D<Real>(m, minm);
 
     for (int i = 0; i < m; i++)
-      for (int j = 0; j < minm; j++)
-        A[i][j] = U[i][j];
-
+      for (int j = 0; j < minm; j++) A[i][j] = U[i][j];
   }
 
   /* Return the right singular vectors */
@@ -521,7 +520,6 @@ template <class Real> class SVD {
     return r;
   }
 };
-
 }
 IMPALGEBRA_END_INTERNAL_NAMESPACE
 

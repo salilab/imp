@@ -41,7 +41,8 @@ class DenseGridStorageD : public BoundedGridRangeD<D> {
   unsigned int extent_;
   VT default_;
 
-  template <class I> unsigned int index(const I &i) const {
+  template <class I>
+  unsigned int index(const I &i) const {
     unsigned int ii = 0;
     for (int d = D - 1; d >= 0; --d) {
       unsigned int cur = i[d];
@@ -67,7 +68,8 @@ class DenseGridStorageD : public BoundedGridRangeD<D> {
   struct NonDefault {
     VT default_;
     NonDefault(const VT &def) : default_(def) {}
-    template <class P> bool operator()(const P &def) const {
+    template <class P>
+    bool operator()(const P &def) const {
       return def.second != default_;
     }
   };
@@ -87,7 +89,7 @@ class DenseGridStorageD : public BoundedGridRangeD<D> {
     }
     data_.reset(new VT[extent_]);
     std::fill(data_.get(), data_.get() + get_extent(), default_);
-    //BoundedGridRangeD<D>::set_number_of_voxels(dims);
+    // BoundedGridRangeD<D>::set_number_of_voxels(dims);
   }
 
  public:
@@ -182,7 +184,8 @@ class SparseGridStorageD : public Base {
   struct GetIndex {
     typedef GridIndexD<D> result_type;
     typedef typename Data::const_iterator::value_type argument_type;
-    template <class T> GridIndexD<D> operator()(const T &t) const {
+    template <class T>
+    GridIndexD<D> operator()(const T &t) const {
       return t.first;
     }
   };
@@ -321,7 +324,7 @@ class SparseGridStorageD : public Base {
   }
   IndexIterator indexes_end(const ExtendedGridIndexD<D> &,
                             const ExtendedGridIndexD<D> &) const {
-    //IMP_INTERNAL_CHECK(lb <= ub, "empty range");
+    // IMP_INTERNAL_CHECK(lb <= ub, "empty range");
     return IndexIterator();
   }
 #endif

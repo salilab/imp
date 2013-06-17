@@ -24,7 +24,8 @@ DominoSampler::DominoSampler(Model *m, ParticleStatesTable *pst,
 DominoSampler::DominoSampler(Model *m, std::string name)
     : DiscreteSampler(m, new ParticleStatesTable(), name), csf_(false) {}
 
-template <class G> void check_graph(const G &jt, Subset known_particles) {
+template <class G>
+void check_graph(const G &jt, Subset known_particles) {
   IMP_CHECK_VARIABLE(known_particles);
   IMP_CHECK_VARIABLE(jt);
   IMP_IF_CHECK(USAGE) {
@@ -162,7 +163,8 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
   SubsetMap subset_map = boost::get(boost::vertex_name, mt_);
 
   base::Pointer<RestraintSet> rs = get_model()->get_root_restraint_set();
-  //ParticlesTemp known_particles= get_particle_states_table()->get_particles();
+  // ParticlesTemp known_particles=
+  // get_particle_states_table()->get_particles();
   SubsetFilterTables sfts = get_subset_filter_tables_to_use(
       RestraintsTemp(1, rs), get_particle_states_table());
   IMP::base::OwnerPointer<AssignmentsTable> sst =
@@ -196,8 +198,9 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
   SubsetMap subset_map = boost::get(boost::vertex_name, mt_);
 
   base::Pointer<RestraintSet> rs = get_model()->get_root_restraint_set();
-  //ParticlesTemp known_particles= get_particle_states_table()->get_particles();
-  //ParticlesTemp pt(known_particles.begin(), known_particles.end())
+  // ParticlesTemp known_particles=
+  // get_particle_states_table()->get_particles();
+  // ParticlesTemp pt(known_particles.begin(), known_particles.end())
   SubsetFilterTables sfts = get_subset_filter_tables_to_use(
       RestraintsTemp(1, rs), get_particle_states_table());
   ListSubsetFilterTable *lsft = nullptr;

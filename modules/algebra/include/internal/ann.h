@@ -23,7 +23,8 @@ struct ANNData {
   double fix_distance(double dist, double eps) const {
     return (1 + eps) * dist;
   }
-  template <class It> unsigned int extract_dimension(It b, It e) const {
+  template <class It>
+  unsigned int extract_dimension(It b, It e) const {
     unsigned int ret = 0;
     for (It c = b; c != e; ++c) {
       VectorKD v = get_vector_d_geometry(*c);
@@ -36,7 +37,8 @@ struct ANNData {
     return ret;
   }
   ANNData() : dimension_(0) {}
-  template <class It> ANNcoord **extract_points(It b, It e) const {
+  template <class It>
+  ANNcoord **extract_points(It b, It e) const {
     unsigned int i = 0;
     ANNcoord **ret = new ANNcoord *[std::distance(b, e)];
     for (It c = b; c != e; ++c) {

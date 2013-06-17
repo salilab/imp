@@ -115,20 +115,19 @@ class IMPSTATISTICSEXPORT KMFilterCenters : public KMCenters {
  protected:
   KMPointArray *sums_;         // vector sum of points
   KMPoint sum_sqs_;            // sum of squares
-  Ints weights_;               //number of data points assigned to each point
-  KMPointArray *ini_cen_arr_;  //initial guess of centers
+  Ints weights_;               // number of data points assigned to each point
+  KMPointArray *ini_cen_arr_;  // initial guess of centers
   KMPoint dists_;              // individual distortions
   double curr_dist_;           // current total distortion
   bool valid_;                 // are sums/distortions valid?
-  double damp_factor_;   // dampening factor [0,1] - determines how much to
-                         //consider old centers in move_to_centroid function
-  KMCentersTree *tree_;  //the centers tree of the data points
+  double damp_factor_;  // dampening factor [0,1] - determines how much to
+  // consider old centers in move_to_centroid function
+  KMCentersTree *tree_;  // the centers tree of the data points
 };
 
 class IMPSTATISTICSEXPORT KMFilterCentersResults : public KMCenters {
  public:
-  KMFilterCentersResults() {}
-  ;
+  KMFilterCentersResults() {};
   //! Constructor
   /**
   \param[in] k     number of centers
@@ -217,7 +216,7 @@ class IMPSTATISTICSEXPORT KMFilterCentersResults : public KMCenters {
  protected:
   KMPointArray *sums_;  // vector sum of points
   KMPoint sum_sqs_;     // sum of squares
-  Ints weights_;        //number of data points assigned to each point
+  Ints weights_;        // number of data points assigned to each point
   KMPoint dists_;       // individual distortions
   double curr_dist_;    // current total distortion
   Ints close_center_;

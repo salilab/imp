@@ -49,13 +49,15 @@ IMPALGEBRA_BEGIN_NAMESPACE
     \uses{class NearestNeighborD, CGAL}
     \uses{class NearestNeighborD, ANN}
  */
-template <int D> class NearestNeighborD : public IMP::base::Object {
+template <int D>
+class NearestNeighborD : public IMP::base::Object {
   IMP_KNN_DATA data_;
   double eps_;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   mutable std::ofstream query_log_;
 #endif
-  template <class It> void instantiate(It b, It e) {
+  template <class It>
+  void instantiate(It b, It e) {
     if (0) {
       // compile all of them
       Ints ret;
@@ -170,7 +172,7 @@ typedef NearestNeighborD<3> NearestNeighbor3D;
 typedef NearestNeighborD<4> NearestNeighbor4D;
 typedef NearestNeighborD<5> NearestNeighbor5D;
 typedef NearestNeighborD<6> NearestNeighbor6D;
-typedef NearestNeighborD< -1> NearestNeighborKD;
+typedef NearestNeighborD<-1> NearestNeighborKD;
 #endif
 
 /** This class provides an incremental nearest neighbor search function.

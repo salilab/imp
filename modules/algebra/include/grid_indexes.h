@@ -24,7 +24,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
    by various functions.
    \see Grid3D
 */
-template <int D> class ExtendedGridIndexD : public base::Value {
+template <int D>
+class ExtendedGridIndexD : public base::Value {
   internal::VectorData<int, D, true> data_;
   int compare(const ExtendedGridIndexD<D>& o) const {
     if (D == -1) {
@@ -53,13 +54,14 @@ template <int D> class ExtendedGridIndexD : public base::Value {
     data_.set_coordinates(vals.begin(), vals.end());
   }
 #ifndef SWIG
-  template <class It> ExtendedGridIndexD(It b, It e) {
+  template <class It>
+  ExtendedGridIndexD(It b, It e) {
     data_.set_coordinates(b, e);
   }
 #endif
   ExtendedGridIndexD(int x, int y, int z) {
     IMP_USAGE_CHECK(D == 3, "Can only use explicit constructor in 3D");
-    int v[] = { x, y, z };
+    int v[] = {x, y, z};
     data_.set_coordinates(v, v + 3);
   }
   ExtendedGridIndexD() {}
@@ -94,12 +96,12 @@ template <int D> class ExtendedGridIndexD : public base::Value {
     for (unsigned int i = 0; i < get_dimension(); ++i) {
       ret[i] = operator[](i) + ii;
     }
-    //std::cout << "Offset " << *this << " to get " << ret << std::endl;
+    // std::cout << "Offset " << *this << " to get " << ret << std::endl;
     return ExtendedGridIndexD<D>(ret);
   }
   ExtendedGridIndexD<D> get_offset(int i, int j, int k) const {
     IMP_USAGE_CHECK(D == 3, "Only for 3D");
-    int v[] = { operator[](0) + i, operator[](1) + j, operator[](2) + k };
+    int v[] = {operator[](0) + i, operator[](1) + j, operator[](2) + k};
     ExtendedGridIndexD<D> ret(v, v + 3);
     return ret;
   }
@@ -118,7 +120,8 @@ inline std::size_t hash_value(const ExtendedGridIndexD<D>& ind) {
    are the actual cells).
    \see Grid3D
 */
-template <int D> class GridIndexD : public base::Value {
+template <int D>
+class GridIndexD : public base::Value {
   internal::VectorData<int, D, true> data_;
   int compare(const GridIndexD<D>& o) const {
     if (D == -1) {
@@ -167,7 +170,10 @@ template <int D> class GridIndexD : public base::Value {
   explicit GridIndexD(Ints vals) {
     data_.set_coordinates(vals.begin(), vals.end());
   }
-  template <class It> GridIndexD(It b, It e) { data_.set_coordinates(b, e); }
+  template <class It>
+  GridIndexD(It b, It e) {
+    data_.set_coordinates(b, e);
+  }
 #endif
   unsigned int __len__() const { return get_dimension(); }
 #endif
@@ -176,7 +182,8 @@ template <int D> class GridIndexD : public base::Value {
 };
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-template <int D> inline std::size_t hash_value(const GridIndexD<D>& ind) {
+template <int D>
+inline std::size_t hash_value(const GridIndexD<D>& ind) {
   return ind.__hash__();
 }
 #endif
@@ -212,8 +219,8 @@ typedef ExtendedGridIndexD<6> ExtendedGridIndex6D;
 typedef base::Vector<GridIndex6D> GridIndex6Ds;
 typedef base::Vector<ExtendedGridIndex6D> ExtendedGridIndex6Ds;
 
-typedef GridIndexD< -1> GridIndexKD;
-typedef ExtendedGridIndexD< -1> ExtendedGridIndexKD;
+typedef GridIndexD<-1> GridIndexKD;
+typedef ExtendedGridIndexD<-1> ExtendedGridIndexKD;
 typedef base::Vector<GridIndexKD> GridIndexKDs;
 typedef base::Vector<ExtendedGridIndexKD> ExtendedGridIndexKDs;
 #endif

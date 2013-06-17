@@ -92,8 +92,8 @@ void Optimizer::set_optimizer_state_optimizer(OptimizerState *os,
 }
 
 void Optimizer::set_restraints(const RestraintsTemp &rs) {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1,
-                                "Use Optimizer::set_scoring_function instead");
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(
+      2.1, "Use Optimizer::set_scoring_function instead");
   if (rs.empty()) {
     // otherwise the SF can't figure out the model
     IMP_NEW(RestraintSet, rss, (get_model(), 1.0, "dummy restraint set"));
@@ -107,74 +107,64 @@ void Optimizer::set_restraints(const RestraintsTemp &rs) {
 void Optimizer::set_scoring_function(ScoringFunctionAdaptor sf) { cache_ = sf; }
 
 Restraints Optimizer::get_restraints() const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1,
-                                "Use Optimizer::get_scoring_function instead");
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(
+      2.1, "Use Optimizer::get_scoring_function instead");
   return cache_->create_restraints();
 }
 
+FloatIndexes Optimizer::get_optimized_attributes() const {
+  return get_model()->get_optimized_attributes();
+}
 
+void Optimizer::set_value(FloatIndex fi, double v) const {
+  get_model()->set_attribute(fi.get_key(), fi.get_particle(), v);
+}
 
+Float Optimizer::get_value(FloatIndex fi) const {
+  return get_model()->get_attribute(fi.get_key(), fi.get_particle());
+}
 
+Float Optimizer::get_derivative(FloatIndex fi) const {
+  return get_model()->get_derivative(fi.get_key(), fi.get_particle());
+}
 
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+double Optimizer::width(FloatKey k) const {
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_width instead");
+  return get_width(k);
+}
 
-
-
-
-  FloatIndexes Optimizer::get_optimized_attributes() const {
-    return get_model()->get_optimized_attributes();
-  }
-
-  void Optimizer::set_value(FloatIndex fi, double v) const {
-    get_model()->set_attribute(fi.get_key(), fi.get_particle(), v);
-  }
-
- Float Optimizer::get_value(FloatIndex fi) const {
-    return get_model()->get_attribute(fi.get_key(), fi.get_particle());
-  }
-
-  Float Optimizer::get_derivative(FloatIndex fi) const {
-    return get_model()->get_derivative(fi.get_key(), fi.get_particle());
-  }
-
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-  double Optimizer::width(FloatKey k) const {
-    IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_width instead");
-    return get_width(k);
-  }
-
-  double Optimizer::get_width(FloatKey k) const {
-    if (widths_.size() <= k.get_index() || widths_[k.get_index()] == 0) {
-      FloatRange w = model_->get_range(k);
-      double wid = static_cast<double>(w.second) - w.first;
-      widths_.resize(std::max(widths_.size(), size_t(k.get_index() + 1)), 0.0);
-      if (wid > .0001) {
-        //double nwid= std::pow(2, std::ceil(log2(wid)));
-        widths_[k.get_index()] = wid;
-      } else {
-        widths_[k.get_index()] = 1.0;
-      }
+double Optimizer::get_width(FloatKey k) const {
+  if (widths_.size() <= k.get_index() || widths_[k.get_index()] == 0) {
+    FloatRange w = model_->get_range(k);
+    double wid = static_cast<double>(w.second) - w.first;
+    widths_.resize(std::max(widths_.size(), size_t(k.get_index() + 1)), 0.0);
+    if (wid > .0001) {
+      // double nwid= std::pow(2, std::ceil(log2(wid)));
+      widths_[k.get_index()] = wid;
+    } else {
+      widths_[k.get_index()] = 1.0;
     }
-    return widths_[k.get_index()];
   }
+  return widths_[k.get_index()];
+}
 
-  void Optimizer::set_scaled_value (FloatIndex fi, Float v) const {
-    double wid = get_width(fi.get_key());
-    set_value(fi, v * wid);
-  }
+void Optimizer::set_scaled_value(FloatIndex fi, Float v) const {
+  double wid = get_width(fi.get_key());
+  set_value(fi, v * wid);
+}
 
-  double Optimizer::get_scaled_value (FloatIndex fi) const {
-    double uv = get_value(fi);
-    double wid = get_width(fi.get_key());
-    return uv / wid;
-  }
+double Optimizer::get_scaled_value(FloatIndex fi) const {
+  double uv = get_value(fi);
+  double wid = get_width(fi.get_key());
+  return uv / wid;
+}
 
-  double Optimizer::get_scaled_derivative(FloatIndex fi) const {
-    double uv = get_derivative(fi);
-    double wid = get_width(fi.get_key());
-    return uv * wid;
-  }
+double Optimizer::get_scaled_derivative(FloatIndex fi) const {
+  double uv = get_derivative(fi);
+  double wid = get_width(fi.get_key());
+  return uv * wid;
+}
 
-  void Optimizer::clear_range_cache() {
-    widths_.clear();
-  }
+void Optimizer::clear_range_cache() { widths_.clear(); }
 IMPKERNEL_END_NAMESPACE

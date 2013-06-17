@@ -13,7 +13,8 @@
 #include "boost/multi_array.hpp"
 
 IMPALGEBRA_BEGIN_NAMESPACE
-template <typename T, int D> class MultiArray;
+template <typename T, int D>
+class MultiArray;
 IMPALGEBRA_END_NAMESPACE
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 

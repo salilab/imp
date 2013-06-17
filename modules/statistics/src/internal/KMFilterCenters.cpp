@@ -44,9 +44,9 @@ void KMFilterCenters::generate_random_centers(int k) {
         KMPoint *p = (*ini_cen_arr_)[i];
         (*(*centers_)[i])[j] =
             internal::random_uniform((*(p))[j] - 20., (*(p))[j] + 20.);
-        //kmCopyPt(pts->getDim(),(*ini_cen_arr_)[i],ctrs[i]);
-      }  //for j
-    }    //for i
+        // kmCopyPt(pts->getDim(),(*ini_cen_arr_)[i],ctrs[i]);
+      }  // for j
+    }    // for i
   } else {
     IMP_LOG_VERBOSE("KMFilterCenters::generate_random_centers"
                     << " without initial points" << std::endl);

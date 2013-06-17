@@ -249,10 +249,9 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
         inputs.erase(std::unique(inputs.begin(), inputs.end()), inputs.end());
         RMF::NodeConstHandles nhs = get_node_ids(nh.get_file(), inputs);
         sdnf.set_representation(nhs);
-        IMP_INTERNAL_CHECK(
-            sdnf.get_representation().size() == nhs.size(),
-            "Get and set values don't match: " << nhs << " vs "
-                                               << sdnf.get_representation());
+        IMP_INTERNAL_CHECK(sdnf.get_representation().size() == nhs.size(),
+                           "Get and set values don't match: "
+                               << nhs << " vs " << sdnf.get_representation());
       }
     }
     RMF::Score sd = sf_.get(nh);
@@ -290,7 +289,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
                 RMF::NodeHandle nnh = get_node(s, d, sf_, nh);
                 RMF::Score csd = sf_.get(nnh);
                 csd.set_score(score);
-                //csd.set_representation(get_node_ids(nh.get_file(), s));
+                // csd.set_representation(get_node_ids(nh.get_file(), s));
               }
             }
           }
@@ -316,7 +315,6 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
   void set_maximum_number_of_terms(unsigned int n) { max_terms_ = n; }
   IMP_OBJECT_METHODS(RestraintSaveLink);
 };
-
 }
 
 IMP_DEFINE_LINKERS(Restraint, restraint, restraints, Restraint *, Restraints,

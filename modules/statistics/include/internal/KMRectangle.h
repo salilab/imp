@@ -83,7 +83,7 @@ class KMRectangle {
     return max_length;
   }
   KMPoint find_closest_vertex(const KMPoint &p) {
-    IMP_INTERNAL_CHECK(p.size() == (unsigned int) get_dim(),
+    IMP_INTERNAL_CHECK(p.size() == (unsigned int)get_dim(),
                        "KMRectangle::find_closest_vertex the"
                            << " input point is of the wrong dimension"
                            << p.size() << " != " << get_dim() << std::endl);
@@ -93,7 +93,7 @@ class KMRectangle {
         closest_vertex.push_back(hi_[d]);
       } else if (p[d] < lo_[d]) {
         closest_vertex.push_back(lo_[d]);
-      } else {  //p[d] is in the box, find the closest vertex
+      } else {  // p[d] is in the box, find the closest vertex
         if ((p[d] - lo_[d]) < (hi_[d] - p[d])) {
           closest_vertex.push_back(lo_[d]);
         } else {

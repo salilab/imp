@@ -14,11 +14,12 @@
 IMPCORE_BEGIN_NAMESPACE
 
 ChecksScoreState::ChecksScoreState(Model *m, double prob)
-  : ScoreState(m, "ChecksScoreState %1%"), probability_(prob), num_checked_(0) {
+    : ScoreState(m, "ChecksScoreState %1%"),
+      probability_(prob),
+      num_checked_(0) {
   IMP_USAGE_CHECK(prob >= 0 && prob <= 1,
                   "Probability must be a number between 0 and 1.");
 }
-
 
 ChecksScoreState::ChecksScoreState(double prob)
     : ScoreState("ChecksScoreState %1%"), probability_(prob), num_checked_(0) {

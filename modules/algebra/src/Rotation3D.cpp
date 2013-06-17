@@ -119,7 +119,8 @@ const Vector3D Rotation3D::get_derivative(const Vector3D &o,
   double t26 = 1.0 / t25;
 
   double t27 = ((t5 + t6 - t7 - t8) * o[0] + 2 * (t14 - t15) * o[1] +
-                2 * (t19 + t20) * o[2]) * t26;
+                2 * (t19 + t20) * o[2]) *
+               t26;
 
   double t34 = v_[3] * o[0] + v_[0] * o[1] - v_[1] * o[2];
   double t35 = 2 * t34 * t10;
@@ -127,13 +128,15 @@ const Vector3D Rotation3D::get_derivative(const Vector3D &o,
   double t42 = v_[0] * v_[1];
 
   double t47 = (2 * (t14 + t15) * o[0] + (t5 - t6 + t7 - t8) * o[1] +
-                2 * (t41 - t42) * o[2]) * t26;
+                2 * (t41 - t42) * o[2]) *
+               t26;
 
   double t54 = -v_[2] * o[0] + v_[1] * o[1] + v_[0] * o[2];
   double t55 = 2 * t54 * t10;
 
   double t65 = (2 * (t19 - t20) * o[0] + 2 * (t41 + t42) * o[1] +
-                (t5 - t6 - t7 + t8) * o[2]) * t26;
+                (t5 - t6 - t7 + t8) * o[2]) *
+               t26;
 
   double t73 = 2 * (v_[1] * o[0] + v_[2] * o[1] + v_[3] * o[2]) * t10;
 
@@ -294,7 +297,7 @@ FixedZYZ get_fixed_zyz_from_rotation(const Rotation3D &r) {
   double sin_rot_sin_tilt = r.get_rotated(Vector3D(0, 1, 0))[2];
   // double d02 = c3 * s2;
   double cos_psi_sin_tilt = r.get_rotated(Vector3D(0, 0, 1))[0];
-  //double d20 = (-1.0) * c1 * s2;
+  // double d20 = (-1.0) * c1 * s2;
   double cos_rot_sin_tilt = -r.get_rotated(Vector3D(1, 0, 0))[2];
   double psi = std::atan2(sin_tilt_sin_psi, cos_psi_sin_tilt);
   if (std::abs(sin(psi)) < .01) {
@@ -338,7 +341,7 @@ FixedXYZ get_fixed_xyz_from_rotation(const Rotation3D &r) {
   double q33 = get_squared(quat[3]);
   double mat11 = q00 + q11 - q22 - q33;
   double mat21 = 2 * (quat[1] * quat[2] + quat[0] * quat[3]);
-  //double mat23 = 2*(quat[2]*quat[3] - quat[0]*quat[1]);
+  // double mat23 = 2*(quat[2]*quat[3] - quat[0]*quat[1]);
   double mat31 = 2 * (quat[1] * quat[3] - quat[0] * quat[2]);
   double mat32 = 2 * (quat[2] * quat[3] + quat[0] * quat[1]);
   double mat33 = q00 - q11 - q22 + q33;
@@ -362,7 +365,7 @@ Rotation3D get_rotation_about_normalized_axis(const Vector3D &axis_norm,
 }
 
 Rotation3D get_rotation_about_axis(const Vector3D &axis, double angle) {
-  //normalize the vector
+  // normalize the vector
   Vector3D axis_norm = axis.get_unit_vector();
   return get_rotation_about_normalized_axis(axis_norm, angle);
 }
@@ -371,13 +374,13 @@ Rotation3D get_rotation_taking_first_to_second(const Vector3D &v1,
                                                const Vector3D &v2) {
   Vector3D v1_norm = v1.get_unit_vector();
   Vector3D v2_norm = v2.get_unit_vector();
-  //get a vector that is perpendicular to the plane containing v1 and v2
+  // get a vector that is perpendicular to the plane containing v1 and v2
   Vector3D vv = get_vector_product(v1_norm, v2_norm);
-  //get the angle between v1 and v2
+  // get the angle between v1 and v2
   double dot = v1_norm * v2_norm;
   dot = (dot < -1.0 ? -1.0 : (dot > 1.0 ? 1.0 : dot));
   double angle = std::acos(dot);
-  //check a special case: the input vectors are parallel / antiparallel
+  // check a special case: the input vectors are parallel / antiparallel
   if (std::abs(dot) > .999999) {
     IMP_LOG_VERBOSE(" the input vectors are (anti)parallel " << std::endl);
     return get_rotation_about_axis(get_orthogonal_vector(v1), angle);
@@ -415,7 +418,7 @@ std::pair<Vector3D, double> get_axis_and_angle(const Rotation3D &rot) {
 //! Generates a nondegenerate set of Euler angles with a delta resolution
 algebra::Rotation3Ds get_uniformly_sampled_rotations(double delta_rad) {
   double delta = delta_rad / PI * 180.0;
-  Vector3D eu_start(0., 0., 0.);  //psi,theta,phi
+  Vector3D eu_start(0., 0., 0.);  // psi,theta,phi
   Vector3D eu_end(360., 180., 360.);
   Vector3D eu_range = eu_end - eu_start;
   double phi_steps = get_rounded((eu_range[2] / delta) + 0.499);

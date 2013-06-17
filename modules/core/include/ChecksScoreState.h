@@ -29,11 +29,11 @@ class IMPCOREEXPORT ChecksScoreState : public ScoreState {
 
   unsigned int get_number_of_checked() const { return num_checked_; }
 
-   virtual void do_before_evaluate() IMP_OVERRIDE;
-   virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
-   virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
-   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-   IMP_OBJECT_METHODS(ChecksScoreState);
+  virtual void do_before_evaluate() IMP_OVERRIDE;
+  virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ChecksScoreState);
 };
 
 IMPCORE_END_NAMESPACE

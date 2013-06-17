@@ -13,17 +13,23 @@
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
-template <class T> inline T get_null_value() { return T(); }
+template <class T>
+inline T get_null_value() {
+  return T();
+}
 
-template <> inline double get_null_value() {
+template <>
+inline double get_null_value() {
   return std::numeric_limits<double>::quiet_NaN();
 }
 
-template <> inline int get_null_value() {
+template <>
+inline int get_null_value() {
   return std::numeric_limits<int>::max();
 }
 
-template <class T, int D, bool KNOWN_DEFAULT> class VectorData {
+template <class T, int D, bool KNOWN_DEFAULT>
+class VectorData {
   T storage_[D];
 
  public:
@@ -41,7 +47,8 @@ template <class T, int D, bool KNOWN_DEFAULT> class VectorData {
     }
 #endif
   }
-  template <class It> void set_coordinates(It b, It e) {
+  template <class It>
+  void set_coordinates(It b, It e) {
     IMP_USAGE_CHECK(std::distance(b, e) == D,
                     "Wrong number of coordinates provided.");
     std::copy(b, e, storage_);
@@ -58,7 +65,8 @@ template <class T, int D, bool KNOWN_DEFAULT> class VectorData {
   }
 };
 
-template <class T, bool KNOWN_DEFAULT> class VectorData<T, -1, KNOWN_DEFAULT> {
+template <class T, bool KNOWN_DEFAULT>
+class VectorData<T, -1, KNOWN_DEFAULT> {
   boost::scoped_array<T> storage_;
   unsigned int d_;
 
@@ -72,7 +80,8 @@ template <class T, bool KNOWN_DEFAULT> class VectorData<T, -1, KNOWN_DEFAULT> {
   }
   VectorData() : d_(0) {}
   unsigned int get_dimension() const { return d_; }
-  template <class It> void set_coordinates(It b, It e) {
+  template <class It>
+  void set_coordinates(It b, It e) {
     d_ = std::distance(b, e);
     storage_.reset(new T[d_]);
     std::copy(b, e, storage_.get());

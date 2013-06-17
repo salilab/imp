@@ -34,26 +34,26 @@ class IMPCOREEXPORT SerialMover : public MonteCarloMover {
 
   /** \deprecated_at{2.1} Use the functions on the individual movers. */
   IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
-    double get_acceptance_probability(int i) const {
-    IMPCORE_DEPRECATED_FUNCTION_DEF(2.1,
-                              "Use statistics functions on individual movers");
+  double get_acceptance_probability(int i) const {
+    IMPCORE_DEPRECATED_FUNCTION_DEF(
+        2.1, "Use statistics functions on individual movers");
     return static_cast<double>(movers_[i]->get_number_of_accepted()) /
            movers_[i]->get_number_of_proposed();
   }
   /** \deprecated_at{2.1} Use the functions on the individual movers. */
   IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
-    void reset_acceptance_probabilities() {
-    IMPCORE_DEPRECATED_FUNCTION_DEF(2.1,
-                              "Use statistics functions on individual movers");
+  void reset_acceptance_probabilities() {
+    IMPCORE_DEPRECATED_FUNCTION_DEF(
+        2.1, "Use statistics functions on individual movers");
     for (unsigned int i = 0; i < movers_.size(); ++i) {
       movers_[i]->reset_statistics();
     }
   }
   /** \deprecated_at{2.1} Use the functions on the individual movers. */
   IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
-    unsigned int get_number_of_movers() const {
-    IMPCORE_DEPRECATED_FUNCTION_DEF(2.1,
-                               "Use statistics functions on individual movers");
+  unsigned int get_number_of_movers() const {
+    IMPCORE_DEPRECATED_FUNCTION_DEF(
+        2.1, "Use statistics functions on individual movers");
     return movers_.size();
   }
 

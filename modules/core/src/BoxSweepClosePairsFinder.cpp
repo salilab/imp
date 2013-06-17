@@ -40,12 +40,11 @@ struct NBLBbox {
   NT min_coord(unsigned int i) const { return d_.get_coordinate(i) - r_; }
   NT max_coord(unsigned int i) const { return d_.get_coordinate(i) + r_; }
   // make it so I can reused the callback provide by NBLSS
-  operator ParticleIndex () const { return d_.get_particle_index(); }
+  operator ParticleIndex() const { return d_.get_particle_index(); }
 };
 
-void copy_particles_to_boxes(Model *m,
-                             const ParticleIndexes &ps, Float distance,
-                             base::Vector<NBLBbox> &boxes) {
+void copy_particles_to_boxes(Model *m, const ParticleIndexes &ps,
+                             Float distance, base::Vector<NBLBbox> &boxes) {
   boxes.resize(ps.size());
   for (unsigned int i = 0; i < ps.size(); ++i) {
     Float r = distance / 2.0;
@@ -60,8 +59,7 @@ struct AddToList {
   ParticleIndexPairs &out_;
   AddToList(ParticleIndexPairs &out) : out_(out) {}
   void operator()(const NBLBbox &a, const NBLBbox &b) {
-    if (get_squared_distance(a.d_.get_coordinates(),
-                             b.d_.get_coordinates()) <
+    if (get_squared_distance(a.d_.get_coordinates(), b.d_.get_coordinates()) <
         square(a.r_ + b.r_)) {
       out_.push_back(ParticleIndexPair(a, b));
     }
@@ -104,16 +102,13 @@ struct BoxAddToList {
     }
   }
 };
-
 }
 
 BoxSweepClosePairsFinder::BoxSweepClosePairsFinder()
     : ClosePairsFinder("BoxSweepCPF") {}
 
-ParticleIndexPairs
-BoxSweepClosePairsFinder::get_close_pairs( Model *m,
-                                           const ParticleIndexes &ca,
-                                           const ParticleIndexes &cb) const {
+ParticleIndexPairs BoxSweepClosePairsFinder::get_close_pairs(
+    Model *m, const ParticleIndexes &ca, const ParticleIndexes &cb) const {
   set_was_used(true);
   base::Vector<NBLBbox> boxes0, boxes1;
   copy_particles_to_boxes(m, ca, get_distance(), boxes0);
@@ -126,9 +121,8 @@ BoxSweepClosePairsFinder::get_close_pairs( Model *m,
   return out;
 }
 
-ParticleIndexPairs
- BoxSweepClosePairsFinder::get_close_pairs(Model *m,
-                                           const ParticleIndexes &ca) const {
+ParticleIndexPairs BoxSweepClosePairsFinder::get_close_pairs(
+    Model *m, const ParticleIndexes &ca) const {
   set_was_used(true);
   ParticleIndexPairs out;
   base::Vector<NBLBbox> boxes;

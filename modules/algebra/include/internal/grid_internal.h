@@ -40,7 +40,8 @@ inline int lexicographical_compare(It b0, It e0, It b1, It e1) {
   return 0;
 }
 
-template <class BI, class IsVI> class GridIndexIterator {
+template <class BI, class IsVI>
+class GridIndexIterator {
   typedef typename IsVI::ReturnType VI;
   void advance() {
     IMP_INTERNAL_CHECK(*this != GridIndexIterator(),
@@ -48,7 +49,7 @@ template <class BI, class IsVI> class GridIndexIterator {
     IMP_INTERNAL_CHECK(cur_ >= lb_, "cur out of range");
     IMP_INTERNAL_CHECK(cur_ < ub_, "cur out of range");
     for (unsigned int i = 0; i < cur_.get_dimension(); ++i) {
-      //for (int i=cur_.get_dimension()-1; i>=0; --i) {
+      // for (int i=cur_.get_dimension()-1; i>=0; --i) {
       ++cur_.access_data().get_data()[i];
       if (cur_.access_data().get_data()[i] == ub_[i]) {
         cur_.access_data().get_data()[i] = lb_[i];
@@ -112,7 +113,8 @@ template <class BI, class IsVI> class GridIndexIterator {
   }
 };
 
-template <class ED> inline int snap(unsigned int dim, int v, ED d) {
+template <class ED>
+inline int snap(unsigned int dim, int v, ED d) {
   IMP_INTERNAL_CHECK(dim < d.get_dimension(), "Invalid dim");
   if (v < 0)
     return 0;
@@ -122,14 +124,16 @@ template <class ED> inline int snap(unsigned int dim, int v, ED d) {
     return v;
 }
 
-template <class EI, class ED> inline EI snap(const EI &v, ED d) {
+template <class EI, class ED>
+inline EI snap(const EI &v, ED d) {
   Ints is(v.begin(), v.end());
   for (unsigned int i = 0; i < is.size(); ++i) {
     is[i] = snap(i, is[i], d);
   }
   return EI(is.begin(), is.end());
 }
-template <class EI> inline std::pair<EI, EI> empty_range() {
+template <class EI>
+inline std::pair<EI, EI> empty_range() {
   return std::make_pair(EI(0, 0, 0), EI(0, 0, 0));
 }
 
@@ -142,7 +146,8 @@ inline std::pair<EI, EI> intersect(EI l, EI u, ED d) {
   return std::make_pair(snap<EI>(l, d), snap<EI>(u, d));
 }
 
-template <class E, class R> struct AllItHelp {
+template <class E, class R>
+struct AllItHelp {
   typedef R ReturnType;
   bool get_is_good(E) const { return true; }
   R get_return(const E &v) const {

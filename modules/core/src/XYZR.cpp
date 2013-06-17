@@ -14,7 +14,6 @@ IMPCORE_BEGIN_NAMESPACE
 void XYZR::show(std::ostream &out) const {
   out << "(" << get_x() << ", " << get_y() << ", " << get_z() << ": "
       << get_radius() << ")";
-
 }
 
 algebra::Sphere3D get_enclosing_sphere(const XYZs &v) {

@@ -77,7 +77,9 @@ class IMPSTATISTICSEXPORT VectorDEmbedding : public Embedding {
   base::Vector<algebra::VectorKD> vectors_;
 
  public:
-  template <class C> VectorDEmbedding(const C &vs) : Embedding("VectorDs") {
+  template <class C>
+  VectorDEmbedding(const C &vs)
+      : Embedding("VectorDs") {
     vectors_.resize(vs.size());
     for (unsigned int i = 0; i < vs.size(); ++i) {
       vectors_[i] =

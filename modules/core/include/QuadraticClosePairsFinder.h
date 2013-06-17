@@ -21,9 +21,7 @@ class IMPCOREEXPORT QuadraticClosePairsFinder : public ClosePairsFinder {
  public:
   QuadraticClosePairsFinder();
   bool get_are_close(Particle *a, Particle *b) const {
-    return get_are_close(a->get_model(),
-                         a->get_index(),
-                         b->get_index());
+    return get_are_close(a->get_model(), a->get_index(), b->get_index());
   }
   bool get_are_close(Model *m, ParticleIndex a, ParticleIndex b) const;
 #ifndef SWIG
@@ -33,21 +31,21 @@ class IMPCOREEXPORT QuadraticClosePairsFinder : public ClosePairsFinder {
   ParticlePairsTemp get_close_pairs(const ParticlesTemp &pca,
                                     const ParticlesTemp &pcb) const;
 #endif
-  virtual IntPairs
-  get_close_pairs(const algebra::BoundingBox3Ds &bbs) const IMP_OVERRIDE;
-  virtual IntPairs
-  get_close_pairs(const algebra::BoundingBox3Ds &bas,
-                  const algebra::BoundingBox3Ds &bbs) const IMP_OVERRIDE;
+  virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const
+      IMP_OVERRIDE;
+  virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas,
+                                   const algebra::BoundingBox3Ds &bbs) const
+      IMP_OVERRIDE;
   virtual ParticleIndexPairs get_close_pairs(Model *m,
-                                             const ParticleIndexes &pc)
-      const IMP_OVERRIDE;
+                                             const ParticleIndexes &pc) const
+      IMP_OVERRIDE;
   virtual ParticleIndexPairs get_close_pairs(Model *m,
                                              const ParticleIndexes &pca,
-                                             const ParticleIndexes &pcb)
-      const IMP_OVERRIDE;
+                                             const ParticleIndexes &pcb) const
+      IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                         const ParticleIndexes &pis)
-      const IMP_OVERRIDE;
+                                         const ParticleIndexes &pis) const
+      IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(QuadraticClosePairsFinder);
 };

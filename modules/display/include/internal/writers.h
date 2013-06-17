@@ -23,7 +23,8 @@ class WriterFactory {
   virtual Writer *create(std::string name) const = 0;
 };
 
-template <class Wr> class WriterFactoryHelper : public WriterFactory {
+template <class Wr>
+class WriterFactoryHelper : public WriterFactory {
  public:
   WriterFactoryHelper() {}
   Writer *create(std::string name) const {

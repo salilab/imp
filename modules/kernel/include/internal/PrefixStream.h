@@ -27,9 +27,9 @@ class PrefixStream
   struct IndentFilter : public boost::iostreams::output_filter {
     PrefixStream *ps_;
     bool to_indent_;
-    IndentFilter(PrefixStream *ps) : ps_(ps), to_indent_(false) {}
-    ;
-    template <typename Sink> bool put(Sink &sink, char c) {
+    IndentFilter(PrefixStream *ps) : ps_(ps), to_indent_(false) {};
+    template <typename Sink>
+    bool put(Sink &sink, char c) {
       if (c == '\n') {
         to_indent_ = true;
       } else if (to_indent_) {

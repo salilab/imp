@@ -23,7 +23,8 @@ namespace IMP {
 namespace base {
 class Object;
 namespace internal {
-template <class R, class E> struct RefStuff;
+template <class R, class E>
+struct RefStuff;
 }
 }
 }
@@ -83,7 +84,8 @@ class IMPBASEEXPORT RefCounted : public NonCopyable {
   }
 
 #ifndef _MSC_VER
-  template <class R, class E> friend struct internal::RefStuff;
+  template <class R, class E>
+  friend struct internal::RefStuff;
 #else
  public:
 #endif  // _MSC_VER
@@ -112,8 +114,7 @@ class IMPBASEEXPORT RefCounted : public NonCopyable {
 #endif
   }
 
-  void show(std::ostream &) const {}
-  ;
+  void show(std::ostream &) const {};
 
   std::string get_name() const { return "RefCounted"; }
 #endif
@@ -127,7 +128,6 @@ class IMPBASEEXPORT RefCounted : public NonCopyable {
 #endif  // IMP_DOXYGEN
 
   bool get_is_shared() const { return count_ > 1; }
-
 };
 
 IMPBASE_END_NAMESPACE

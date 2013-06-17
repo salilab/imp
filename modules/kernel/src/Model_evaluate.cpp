@@ -98,7 +98,7 @@ void Model::before_evaluate(const ScoreStatesTemp &states) {
     IMP_OMP_PRAGMA(taskwait)
     IMP_OMP_PRAGMA(flush)
     cur_begin = cur_end;
-    //IMP_LOG_VERBOSE( "." << std::flush);
+    // IMP_LOG_VERBOSE( "." << std::flush);
   }
 }
 

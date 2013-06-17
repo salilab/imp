@@ -48,7 +48,8 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 typedef boost::dynamic_bitset<> Mask;
 
-template <class Traits> class BasicAttributeTable {
+template <class Traits>
+class BasicAttributeTable {
  public:
   typedef typename Traits::Key Key;
 
@@ -217,8 +218,8 @@ template <class Traits> class BasicAttributeTable {
 IMP_SWAP_1(BasicAttributeTable);
 
 class FloatAttributeTable {
-  //vector<algebra::Sphere3D> spheres_;
-  //vector<algebra::Sphere3D> sphere_derivatives_;
+  // vector<algebra::Sphere3D> spheres_;
+  // vector<algebra::Sphere3D> sphere_derivatives_;
   base::IndexVector<ParticleIndexTag, algebra::Sphere3D> spheres_;
   base::IndexVector<ParticleIndexTag, algebra::Sphere3D> sphere_derivatives_;
   base::IndexVector<ParticleIndexTag, algebra::Vector3D> internal_coordinates_;
@@ -400,7 +401,7 @@ class FloatAttributeTable {
                          const DerivativeAccumulator &da) {
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Can't get derivative that isn't there: "
-                    << k.get_string() << " on particle " << particle);
+                        << k.get_string() << " on particle " << particle);
     if (k.get_index() < 4) {
       IMP_CHECK_MASK(write_derivatives_mask_, particle, k, SET, DERIVATIVE);
       sphere_derivatives_[particle][k.get_index()] += da(v);
@@ -419,7 +420,7 @@ class FloatAttributeTable {
     IMP_CHECK_MASK(add_remove_mask_, particle, k, ADD, ATTRIBUTE);
     IMP_USAGE_CHECK(!get_has_attribute(k, particle),
                     "Can't add attribute that is there: "
-                    << k.get_string() << " on particle " << particle);
+                        << k.get_string() << " on particle " << particle);
     IMP_USAGE_CHECK(
         FloatAttributeTableTraits::get_is_valid(v),
         "Can't set float attribute to " << v << " that is a special value.");
@@ -478,11 +479,11 @@ class FloatAttributeTable {
     IMP_CHECK_MASK(write_mask_, particle, k, SET, ATTRIBUTE);
     IMP_USAGE_CHECK(internal::FloatAttributeTableTraits::get_is_valid(v),
                     "Can't set attribute to invalid value: "
-                    << k.get_string() << " on particle " << particle
-                    << " with value " << v);
+                        << k.get_string() << " on particle " << particle
+                        << " with value " << v);
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Can't set attribute that is not there: "
-                    << k.get_string() << " on particle " << particle);
+                        << k.get_string() << " on particle " << particle);
     if (k.get_index() < 4) {
       spheres_[particle][k.get_index()] = v;
     } else if (k.get_index() < 7) {
@@ -498,7 +499,7 @@ class FloatAttributeTable {
     }
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Can't get attribute that is not there: "
-                    << k.get_string() << " on particle " << particle);
+                        << k.get_string() << " on particle " << particle);
     if (k.get_index() < 4) {
       return spheres_[particle][k.get_index()];
     } else if (k.get_index() < 7) {
@@ -512,7 +513,7 @@ class FloatAttributeTable {
     IMP_CHECK_MASK(write_mask_, particle, k, SET, ATTRIBUTE);
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Can't get attribute that is not there: "
-                    << k.get_string() << " on particle " << particle);
+                        << k.get_string() << " on particle " << particle);
     if (k.get_index() < 4) {
       return spheres_[particle][k.get_index()];
     } else if (k.get_index() < 7) {

@@ -17,7 +17,6 @@ ChildrenRefiner::ChildrenRefiner(HierarchyTraits traits)
 bool ChildrenRefiner::get_can_refine(Particle *p) const {
   if (!core::Hierarchy::particle_is_instance(p, traits_)) return false;
   return core::Hierarchy(p, traits_).get_number_of_children() != 0;
-
 }
 
 const ParticlesTemp ChildrenRefiner::get_refined(Particle *p) const {
@@ -29,8 +28,8 @@ const ParticlesTemp ChildrenRefiner::get_refined(Particle *p) const {
   return ret;
 }
 
-ModelObjectsTemp ChildrenRefiner::do_get_inputs(Model *m,
-                                             const ParticleIndexes &pis) const {
+ModelObjectsTemp ChildrenRefiner::do_get_inputs(
+    Model *m, const ParticleIndexes &pis) const {
   return IMP::kernel::get_particles(m, pis);
 }
 

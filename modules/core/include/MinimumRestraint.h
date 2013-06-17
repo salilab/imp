@@ -51,9 +51,7 @@ class IMPCOREEXPORT MinimumRestraint : public Restraint {
       obj->set_model(get_model());
     }
   },
-                  {
-  },
-                  {
+                  {}, {
     obj->set_model(nullptr);
   });
   void set_model(Model *m);

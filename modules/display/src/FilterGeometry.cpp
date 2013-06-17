@@ -24,16 +24,16 @@ void FilterGeometry::add_geometry(const Geometries& g) {
   }
 }
 
-#define HANDLE(Name, name, test)                                      \
-  bool FilterGeometry::handle_##name(Name##Geometry * g, Color color, \
-                                     std::string name) {              \
-    if (test) {                                                       \
-      filtered_.push_back(g);                                         \
-      g->set_name(name);                                              \
-      g->set_color(color);                                            \
-    }                                                                 \
-    return true;                                                      \
-  }                                                                   \
+#define HANDLE(Name, name, test)                                     \
+  bool FilterGeometry::handle_##name(Name##Geometry* g, Color color, \
+                                     std::string name) {             \
+    if (test) {                                                      \
+      filtered_.push_back(g);                                        \
+      g->set_name(name);                                             \
+      g->set_color(color);                                           \
+    }                                                                \
+    return true;                                                     \
+  }                                                                  \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 HANDLE(Sphere, sphere, !p_.get_is_below(g->get_geometry().get_center()));

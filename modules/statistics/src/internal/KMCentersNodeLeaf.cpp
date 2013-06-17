@@ -44,7 +44,7 @@ void KMCentersNodeLeaf::get_neighbors(const Ints &cands, KMPointArray *sums,
                                       KMPoint *sum_sqs, Ints *weights) {
   IMP_LOG_VERBOSE("KMCentersNodeLeaf::get_neighbors for " << cands.size()
                                                           << " candidates\n");
-  //if only one candidate left, post points as neighbors
+  // if only one candidate left, post points as neighbors
   if (cands.size() == 1) {
     IMP_LOG_VERBOSE(
         "KMCentersNodeLeaf::get_neighbors the particles are associated"
@@ -52,9 +52,9 @@ void KMCentersNodeLeaf::get_neighbors(const Ints &cands, KMPointArray *sums,
     post_neighbor(sums, sum_sqs, weights, cands[0]);
     return;
   }
-  //find the closest centers for each point in the bucket
+  // find the closest centers for each point in the bucket
   IMP_INTERNAL_CHECK(
-      (unsigned int) n_data_ == data_ps_.size(),
+      (unsigned int)n_data_ == data_ps_.size(),
       "KMCentersNodeLeaf::get_neighbors inconsistency in sizes \n");
   for (int i = 0; i < n_data_; i++) {
     KMPoint *data_p = (*(centers_->get_data()))[data_ps_[i]];
@@ -76,7 +76,7 @@ void KMCentersNodeLeaf::get_neighbors(const Ints &cands, KMPointArray *sums,
 void KMCentersNodeLeaf::get_assignments(const Ints &cands, Ints &close_center) {
   KMData *data = centers_->get_data();
   for (int i = 0; i < n_data_; i++) {
-    //find the closest center to each data point associated to the node
+    // find the closest center to each data point associated to the node
     double min_dist = std::numeric_limits<double>::max();
     int closest_ind = -1;
     KMPoint *p = (*data)[data_ps_[i]];

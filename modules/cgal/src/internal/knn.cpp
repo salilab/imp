@@ -76,7 +76,9 @@ struct RealRCTree : public RCTree {
   typedef CGAL::K_neighbor_search<Traits, Distance> K_neighbor_search;
   typedef K_neighbor_search::Tree Tree;
   Tree tree;
-  template <class It> RealRCTree(It b, It e) : tree(b, e) {}
+  template <class It>
+  RealRCTree(It b, It e)
+      : tree(b, e) {}
 };
 
 void KNNData::initialize(const base::Vector<VectorWithIndex>& v) {

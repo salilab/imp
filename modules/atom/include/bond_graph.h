@@ -127,10 +127,10 @@ class IMPATOMEXPORT BondGraph {
   struct traversal_category : public virtual boost::adjacency_graph_tag,
                               public virtual boost::vertex_list_graph_tag,
                               public virtual boost::edge_list_graph_tag,
-                              //public virtual boost::incidence_graph_tag
+                              // public virtual boost::incidence_graph_tag
                               public virtual boost::bidirectional_graph_tag {};
   typedef Bonded vertex_descriptor;
-  //typedef undirected_tag directed_category;
+  // typedef undirected_tag directed_category;
   typedef int vertices_size_type;
   typedef int edges_size_type;
   typedef int degree_size_type;
@@ -153,7 +153,6 @@ class IMPATOMEXPORT BondGraph {
   struct graph_tag {};
   typedef Int vertex_property_type;
 #endif
-
 };
 
 IMPATOM_END_NAMESPACE

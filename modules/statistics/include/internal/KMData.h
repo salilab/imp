@@ -60,7 +60,7 @@ class IMPSTATISTICSEXPORT KMData {
   //! Get a const point
   const KMPoint *operator[](int i) const { return (*points_)[i]; }
   //  //! Build tree from points
-  //void buildKcTree();
+  // void buildKcTree();
   //! Sample a center point. The center is selected randomly from the
   //! set of data points
   /**
@@ -83,7 +83,6 @@ class IMPSTATISTICSEXPORT KMData {
  protected:
   int dim_;               // the dimension of the data points
   KMPointArray *points_;  // the data points
-
 };
 //! Allocate a point array of n points
 /**

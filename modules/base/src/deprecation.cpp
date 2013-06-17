@@ -11,8 +11,8 @@
 IMPBASE_BEGIN_NAMESPACE
 void handle_use_deprecated(std::string message) {
   if (internal::print_deprecation_messages) {
-    if (internal::printed_deprecation_messages.find(message)
-        == internal::printed_deprecation_messages.end()) {
+    if (internal::printed_deprecation_messages.find(message) ==
+        internal::printed_deprecation_messages.end()) {
       std::cerr << message;
       internal::printed_deprecation_messages.insert(message);
     }

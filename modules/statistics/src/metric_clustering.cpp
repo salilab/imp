@@ -95,7 +95,7 @@ PartitionalClustering *create_connectivity_clustering(Metric *d,
   for (unsigned int i = 0; i < matrix.size(); ++i) {
     for (unsigned int j = 0; j < i; ++j) {
       if (matrix[i][j] < maximum_distance) {
-        //std::cout << "Unioning " << i << " and " << ns[j] << std::endl;
+        // std::cout << "Unioning " << i << " and " << ns[j] << std::endl;
         uf.union_set(static_cast<int>(i), static_cast<int>(j));
       }
     }

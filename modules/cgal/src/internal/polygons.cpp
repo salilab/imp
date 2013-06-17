@@ -24,7 +24,8 @@ typedef Kernel::Segment_3 Segment_3;
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
 
 namespace {
-template <class To, class From> To tr(const From &v) {
+template <class To, class From>
+To tr(const From &v) {
   return To(v[0], v[1], v[2]);
 }
 
@@ -77,9 +78,9 @@ Ints get_convex_polygons(const Ints &indexes,
   if (indexes.size() < 3) {
     IMP_THROW("Polygon must at least be a triangle", base::ValueException);
   }
-  //std::cout << "Splitting polygon " << poly.size() << std::endl;
+  // std::cout << "Splitting polygon " << poly.size() << std::endl;
   typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
-  //Kernel k;
+  // Kernel k;
   typedef Kernel::Point_2 Point_2;
   typedef Kernel::Point_3 Point_3;
   typedef Kernel::Plane_3 Plane_3;
@@ -96,14 +97,14 @@ Ints get_convex_polygons(const Ints &indexes,
   CGAL::linear_least_squares_fitting_3(poly_3.begin(), poly_3.end(), plane,
                                        centroid,  // k,
                                        dt);
-  //plane= CGAL::object_cast<Plane_3>(out);
+  // plane= CGAL::object_cast<Plane_3>(out);
   // project points
   base::Vector<Point_2> points_2(indexes.size());
   std::map<Point_2, int, PointLess> index;
   for (unsigned int i = 0; i < indexes.size(); ++i) {
     points_2[i] = plane.to_2d(poly_3[i]);
     index[points_2[i]] = i;
-    //std::cout << "Got point " << points_2[i] << std::endl;
+    // std::cout << "Got point " << points_2[i] << std::endl;
   }
   Polygon_2 poly2(points_2.begin(), points_2.end());
   bool reverse = false;
@@ -121,7 +122,7 @@ Ints get_convex_polygons(const Ints &indexes,
   catch (...) {
     IMP_THROW("Polygon is not simple", base::ValueException);
   }
-  //std::cout << "Got " << polys2.size() << std::endl;
+  // std::cout << "Got " << polys2.size() << std::endl;
   // unproject decomposition
   Ints ret;
   for (unsigned int i = 0; i < polys2.size(); ++i) {
@@ -132,7 +133,7 @@ Ints get_convex_polygons(const Ints &indexes,
       ret.push_back(index.find(*it)->second);
     }
     ret.push_back(-1);
-    //std::cout << std::endl;
+    // std::cout << std::endl;
   }
   if (reverse) {
     ret.pop_back();

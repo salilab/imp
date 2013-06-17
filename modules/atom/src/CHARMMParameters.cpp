@@ -309,7 +309,6 @@ Particle *get_other_end_of_bond(Particle *p, Bond bd) {
   Particle *p2 = bd.get_bonded(1).get_particle();
   return p1 == p ? p2 : p1;
 }
-
 }
 
 CHARMMParameters::CHARMMParameters(base::TextInput top_file,
@@ -636,7 +635,8 @@ void CHARMMParameters::read_parameter_file(base::TextInput input_file) {
     if (line.substr(0, NONBONDED_LINE.length()) == NONBONDED_LINE ||
         line.substr(0, NONBONDED_LINE2.length()) == NONBONDED_LINE2) {
       section = NONBONDED;
-      getline(input_file.get_stream(), line);  //remove second line of NONBONDED
+      getline(input_file.get_stream(), line);  // remove second line of
+                                               // NONBONDED
     } else if (line.substr(0, BONDS_LINE.length()) == BONDS_LINE) {
       section = BONDS;
     } else if (line.substr(0, ANGLES_LINE.length()) == ANGLES_LINE ||

@@ -39,7 +39,7 @@ class IMPSTATISTICSEXPORT KMCentersNode {
   int get_number_of_data_points() { return n_data_; }
 
   KMPoint get_mid_point() const;
-  KMRectangle &get_bounding_box()  //TODO - should be const ?
+  KMRectangle &get_bounding_box()  // TODO - should be const ?
       {
     return bnd_box_;
   }
@@ -54,7 +54,7 @@ class IMPSTATISTICSEXPORT KMCentersNode {
   virtual void get_assignments(const Ints &cands, Ints &close_center) = 0;
   // sample a center point c
   virtual KMPoint sample_center() = 0;
-  //Print node
+  // Print node
   virtual void show(std::ostream &out = std::cout) const = 0;
 
  protected:
@@ -83,10 +83,10 @@ class IMPSTATISTICSEXPORT KMCentersNode {
   void post_one_neighbor(KMPointArray *sums, KMPoint *sum_sqs, Ints *weights,
                          int center_ind, const KMPoint &p);
   int n_data_;           // number of data points associated with the node
-  KMPoint sum_;          //sum of points for each dimension
+  KMPoint sum_;          // sum of points for each dimension
   double sum_sq_;        // sum of squares
   KMRectangle bnd_box_;  // bounding box for cell
-  KMCenters *centers_;   //all of the centers
+  KMCenters *centers_;   // all of the centers
   int level_;
 };
 

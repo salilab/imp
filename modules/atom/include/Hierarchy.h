@@ -225,7 +225,7 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
     return setup_particle(p->get_model(), p->get_index());
   }
 
- static bool particle_is_instance(Particle *p) {
+  static bool particle_is_instance(Particle *p) {
     return H::particle_is_instance(p, get_traits());
   }
 #endif

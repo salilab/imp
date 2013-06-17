@@ -65,13 +65,13 @@ class IMPSTATISTICSEXPORT KMLProxy {
   bool is_calculated;
   void set_default_values();
 
-  //kmean data structure for handling the input data
+  // kmean data structure for handling the input data
   KMData *data_;            // particles in KM data structure
   unsigned int dim_;        // dimension
   unsigned int data_size_;  // data size
   unsigned int kcenters_;   // number of centers
 
-  //kmean optimization parameters
+  // kmean optimization parameters
   unsigned int max_swaps_;  // max number of swaps
   Float damp_factor_;       // Lloyd's dampening factor
   unsigned int n_color_;
@@ -80,10 +80,10 @@ class IMPSTATISTICSEXPORT KMLProxy {
   DistributionType distr_;         // distribution //TODO - return when relevant
   Float std_dev_;                  // standard deviation
   Float corr_coef_;                // correlation coef
-  Float clus_sep_;                 //cluster seperation
+  Float clus_sep_;                 // cluster seperation
   unsigned int max_visit_;         // number of points visited
   unsigned int seed_;              // seed for random numbers
-  KMLocalSearchLloyd *lloyd_alg_;  //Lloyd algorithm
+  KMLocalSearchLloyd *lloyd_alg_;  // Lloyd algorithm
   Float kc_build_time_;            // execution times
   bool print_points_;              // print points?
   bool show_assign_;               // show point assignments?
@@ -92,7 +92,7 @@ class IMPSTATISTICSEXPORT KMLProxy {
 
   // our data
   Model *m_;
-  Particles ps_;                 //input particles
+  Particles ps_;                 // input particles
   Particles centroids_;          // the k means as particles
   base::Vector<FloatKey> atts_;  // the attributes k-means in minimized on
   std::map<Particle *, unsigned int> assignment_;

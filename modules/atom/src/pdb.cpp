@@ -262,7 +262,6 @@ Particle* chain_particle(Model* m, char chain_id) {
   Molecule::setup_particle(p);
   return p;
 }
-
 }
 
 namespace {
@@ -384,7 +383,6 @@ Hierarchies read_pdb(std::istream& in, std::string name, Model* model,
         Residue(rp).add_child(Atom(ap));
         has_atom = true;
       }
-
     }
   }
   if (!has_atom) {
@@ -619,7 +617,7 @@ std::string get_pdb_string(const algebra::Vector3D& v, int index, AtomType at,
   } else {
     out << "ATOM  ";
   }
-  //7-11 : atom id
+  // 7-11 : atom id
   out.setf(std::ios::right, std::ios::adjustfield);
   out.width(5);
   out << index;
@@ -648,16 +646,16 @@ std::string get_pdb_string(const algebra::Vector3D& v, int index, AtomType at,
   out << " ";
   // 18-20 : residue name
   out << std::right << std::setw(3) << rt.get_string().substr(0, 3);
-  //skip 21
+  // skip 21
   out.width(1);
   out << " ";
   // 22: chain identifier
   out << chain;
-  //23-26: residue number
+  // 23-26: residue number
   out.setf(std::ios::right, std::ios::adjustfield);
   out.width(4);
   out << res_index;
-  //27: residue insertion code
+  // 27: residue insertion code
   out.width(1);
   out << res_icode;
   out.setf(std::ios::fixed, std::ios::floatfield);
@@ -672,24 +670,24 @@ std::string get_pdb_string(const algebra::Vector3D& v, int index, AtomType at,
   out.width(8);
   out.precision(3);
   out << v[2];
-  //55:60 occupancy
+  // 55:60 occupancy
   out.width(6);
   out.precision(2);
   out << occupancy;
-  //61-66: temp. factor
+  // 61-66: temp. factor
   out.width(6);
   out.precision(2);
   out << tempFactor;
   // 73 - 76  LString(4)      Segment identifier, left-justified.
   out.width(10);
-  out << "";  //TODO
-              // 77 - 78  LString(2)      Element symbol, right-justified.
+  out << "";  // TODO
+  // 77 - 78  LString(2)      Element symbol, right-justified.
   out.width(2);
   out.setf(std::ios::right, std::ios::adjustfield);
   out << element_name;
   //     79 - 80        LString(2)      Charge on the atom.
   out.width(2);
-  out << "" << std::endl;  //TODO
+  out << "" << std::endl;  // TODO
   return out.str();
 }
 
@@ -702,23 +700,23 @@ std::string get_pdb_conect_record_string(int a1_ind, int a2_ind) {
   // 1-6         Record name      "CONECT"
   out.width(6);
   out << "CONECT";
-  //7 - 11 Atom serial number
+  // 7 - 11 Atom serial number
   out.width(5);
-  out << a1_ind;  //a1.get_input_index();
-                  //12 - 16 Serial number of bonded atom
-  out << a2_ind;  //a2.get_input_index();
-                  //17 - 21 Serial number of bonded atom
-                  // if(a3 != nullptr) {
-                  //   out<<a3->get_input_index();
-                  // }
-                  // //22 - 26  Serial number of bonded atom
-                  // if(a4 != nullptr) {
-                  //   out<<a4->get_input_index();
-                  // }
-                  // //27 - 31 Serial number of bonded atom
-                  // if(a5 != nullptr) {
-                  //   out<<a5->get_input_index();
-                  // }
+  out << a1_ind;  // a1.get_input_index();
+  // 12 - 16 Serial number of bonded atom
+  out << a2_ind;  // a2.get_input_index();
+  // 17 - 21 Serial number of bonded atom
+  // if(a3 != nullptr) {
+  //   out<<a3->get_input_index();
+  // }
+  // //22 - 26  Serial number of bonded atom
+  // if(a4 != nullptr) {
+  //   out<<a4->get_input_index();
+  // }
+  // //27 - 31 Serial number of bonded atom
+  // if(a5 != nullptr) {
+  //   out<<a5->get_input_index();
+  // }
   return out.str();
 }
 

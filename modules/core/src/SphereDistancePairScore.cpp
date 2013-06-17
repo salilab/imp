@@ -31,8 +31,7 @@ NormalizedSphereDistancePairScore::NormalizedSphereDistancePairScore(
     : f_(f), radius_(radius) {}
 
 double NormalizedSphereDistancePairScore::evaluate_index(
-    Model *m,
-    const ParticleIndexPair &pip, DerivativeAccumulator *da) const {
+    Model *m, const ParticleIndexPair &pip, DerivativeAccumulator *da) const {
   Float ra = m->get_attribute(radius_, pip[0]);
   Float rb = m->get_attribute(radius_, pip[1]);
   Float mr = std::min(ra, rb);
@@ -42,9 +41,8 @@ double NormalizedSphereDistancePairScore::evaluate_index(
       boost::lambda::_1 / mr - (ra + rb) / mr);
 }
 
-ModelObjectsTemp
-NormalizedSphereDistancePairScore::do_get_inputs(Model *m,
-                                     const ParticleIndexes &pis) const {
+ModelObjectsTemp NormalizedSphereDistancePairScore::do_get_inputs(
+    Model *m, const ParticleIndexes &pis) const {
   return IMP::kernel::get_particles(m, pis);
 }
 
@@ -53,8 +51,7 @@ WeightedSphereDistancePairScore::WeightedSphereDistancePairScore(
     : f_(f), radius_(radius), weight_(weight) {}
 
 double WeightedSphereDistancePairScore::evaluate_index(
-    Model *m,
-    const ParticleIndexPair &p, DerivativeAccumulator *da) const {
+    Model *m, const ParticleIndexPair &p, DerivativeAccumulator *da) const {
   Float ra = m->get_attribute(radius_, p[0]);
   Float rb = m->get_attribute(radius_, p[1]);
   Float wa = m->get_attribute(weight_, p[0]);
@@ -65,9 +62,8 @@ double WeightedSphereDistancePairScore::evaluate_index(
       (boost::lambda::_1 - (ra + rb)) * (wa + wb));
 }
 
-ModelObjectsTemp
-WeightedSphereDistancePairScore::do_get_inputs(Model *m,
-                                             const ParticleIndexes &pis) const {
+ModelObjectsTemp WeightedSphereDistancePairScore::do_get_inputs(
+    Model *m, const ParticleIndexes &pis) const {
   return IMP::kernel::get_particles(m, pis);
 }
 

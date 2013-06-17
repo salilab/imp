@@ -105,12 +105,7 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
        @{
   */
   IMP_LIST_ACTION(public, Mover, Movers, mover, movers, MonteCarloMover *,
-                  MonteCarloMovers, {
-  },
-                  {
-  },
-                  {
-  });
+                  MonteCarloMovers, {}, {}, {});
   /** @} */
 
   /** \name Incremental

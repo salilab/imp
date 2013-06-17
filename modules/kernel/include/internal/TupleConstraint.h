@@ -16,7 +16,8 @@
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
-template <class Before, class After> class TupleConstraint : public Constraint {
+template <class Before, class After>
+class TupleConstraint : public Constraint {
   IMP::base::OwnerPointer<Before> f_;
   IMP::base::OwnerPointer<After> af_;
   typename Before::IndexArgument v_;

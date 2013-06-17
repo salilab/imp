@@ -3,7 +3,7 @@
  *  \brief 2D transformations.
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
-**/
+ */
 
 #ifndef IMPALGEBRA_TRANSFORMATION_2D_H
 #define IMPALGEBRA_TRANSFORMATION_2D_H
@@ -109,8 +109,8 @@ class IMPALGEBRAEXPORT Transformation2D : public GeometricPrimitiveD<2> {
   Transformation2D get_inverse() const;
 
  private:
-  Vector2D trans_;  //tranlation
-  Rotation2D rot_;  //rotation
+  Vector2D trans_;  // tranlation
+  Rotation2D rot_;  // rotation
 };
 
 IMP_VALUES(Transformation2D, Transformation2Ds);

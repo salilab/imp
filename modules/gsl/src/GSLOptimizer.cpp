@@ -13,8 +13,7 @@
 
 IMPGSL_BEGIN_NAMESPACE
 namespace {
-struct AllDone {
-};
+struct AllDone {};
 }
 
 GSLOptimizer::GSLOptimizer(Model *m)
@@ -99,7 +98,7 @@ double GSLOptimizer::optimize(unsigned int iter,
     int status;
     do {
       --iter;
-      //update_state(x);
+      // update_state(x);
       status = gsl_multimin_fdfminimizer_iterate(s);
       update_states();
       if (status) {
@@ -147,7 +146,7 @@ double GSLOptimizer::optimize(unsigned int iter,
     int status;
     do {
       --iter;
-      //update_state(x);
+      // update_state(x);
       status = gsl_multimin_fminimizer_iterate(s);
       if (status) {
         IMP_LOG_TERSE("Ending optimization because of state " << s

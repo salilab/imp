@@ -105,7 +105,8 @@ struct BBPairSink {
   bool check_contains(unsigned int, unsigned int) const { return true; }
 };
 
-template <class Traits> struct Helper {
+template <class Traits>
+struct Helper {
   typedef typename Traits::ID ID;
   struct IDs : public base::Vector<ID> {
     int which_;
@@ -117,7 +118,8 @@ template <class Traits> struct Helper {
   typedef typename algebra::SparseGrid3D<IDs> Grid;
   typedef base::Vector<Grid> Grids;
 
-  template <class It> struct ParticleSet {
+  template <class It>
+  struct ParticleSet {
     It b_, e_;
     int which_;
     ParticleSet(It b, It e, int which) : b_(b), e_(e), which_(which) {}
@@ -127,12 +129,14 @@ template <class Traits> struct Helper {
   static ParticleSet<It> get_particle_set(It b, It e, int which) {
     return ParticleSet<It>(b, e, which);
   }
-  template <class It> struct IDSet {
+  template <class It>
+  struct IDSet {
     It b_, e_;
     int which_;
     IDSet(It b, It e, int which) : b_(b), e_(e), which_(which) {}
   };
-  template <class It> static IDSet<It> get_id_set(It b, It e, int which) {
+  template <class It>
+  static IDSet<It> get_id_set(It b, It e, int which) {
     return IDSet<It>(b, e, which);
   }
 

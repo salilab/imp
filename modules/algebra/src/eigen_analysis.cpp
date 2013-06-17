@@ -30,7 +30,7 @@ Transformation3Ds get_alignments_from_first_to_second(
               pca1.get_principal_component(i2) * sign[j2]);
           algebra::ReferenceFrame3D rf1(
               algebra::Transformation3D(rot1, pca1.get_centroid()));
-          //get the transformation from pca1 to pca2
+          // get the transformation from pca1 to pca2
           algebra::Transformation3D pca12pca2 =
               get_transformation_from_first_to_second(rf1, rf2);
           IMP_IF_LOG(VERBOSE) {
@@ -40,9 +40,9 @@ Transformation3Ds get_alignments_from_first_to_second(
           }
           all_trans.push_back(pca12pca2);
         }
-      }  //j1,j2
-    }    //i2
-  }      //i1
+      }  // j1,j2
+    }  // i2
+  }  // i1
   return all_trans;
 }
 

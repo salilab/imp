@@ -104,7 +104,7 @@ typedef HistogramD<5> Histogram5D;
 IMP_VALUES(Histogram5D, Histogram5Ds);
 typedef HistogramD<6> Histogram6D;
 IMP_VALUES(Histogram6D, Histogram6Ds);
-typedef HistogramD< -1> HistogramKD;
+typedef HistogramD<-1> HistogramKD;
 IMP_VALUES(HistogramKD, HistogramKDs);
 #endif
 

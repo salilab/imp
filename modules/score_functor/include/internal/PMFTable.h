@@ -21,11 +21,13 @@
 IMPSCOREFUNCTOR_BEGIN_INTERNAL_NAMESPACE
 
 // slightly evil using the grid storage, but...
-template <bool SPARSE> struct StorageSelector {
+template <bool SPARSE>
+struct StorageSelector {
   typedef algebra::DenseGridStorageD<2, RawOpenCubicSpline> Type;
 };
 
-template <> struct StorageSelector<true> {
+template <>
+struct StorageSelector<true> {
   typedef algebra::SparseGridStorageD<2, RawOpenCubicSpline,
                                       algebra::UnboundedGridRangeD<2> > Type;
 };
@@ -59,7 +61,8 @@ struct PMFTable {
 
  public:
   PMFTable(unsigned int split) : split_(split) {}
-  template <class Key> void initialize(base::TextInput tin) {
+  template <class Key>
+  void initialize(base::TextInput tin) {
     std::istream &in = tin;
     double bin;
     std::string line;
@@ -149,11 +152,10 @@ struct PMFTable {
                                                         inverse_bin_width_);
       }
       if (bins_read != -1 && cur_bins_read != bins_read) {
-        IMP_THROW(
-            "Read wrong number of bins from line: " << line << "\nExpected "
-                                                    << bins_read << " got "
-                                                    << cur_bins_read,
-            IOException);
+        IMP_THROW("Read wrong number of bins from line: "
+                      << line << "\nExpected " << bins_read << " got "
+                      << cur_bins_read,
+                  IOException);
       }
       bins_read = cur_bins_read;
       ins.clear();

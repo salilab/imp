@@ -69,8 +69,8 @@ Restraints RestraintScoringFunction<RestraintType>::create_restraints() const {
 }
 
 template <class RestraintType>
-ModelObjectsTemp
-RestraintScoringFunction<RestraintType>::do_get_inputs() const {
+ModelObjectsTemp RestraintScoringFunction<RestraintType>::do_get_inputs()
+    const {
   return ModelObjectsTemp(1, r_);
 }
 
@@ -111,8 +111,8 @@ WrappedRestraintScoringFunction<RestraintType>::do_add_score_and_derivatives(
 }
 
 template <class RestraintType>
-Restraints
-WrappedRestraintScoringFunction<RestraintType>::create_restraints() const {
+Restraints WrappedRestraintScoringFunction<RestraintType>::create_restraints()
+    const {
   IMP_NEW(RestraintSet, rs, (get_name() + " weights"));
   rs->add_restraint(r_);
   rs->set_model(get_model());
@@ -122,8 +122,8 @@ WrappedRestraintScoringFunction<RestraintType>::create_restraints() const {
 }
 
 template <class RestraintType>
-ModelObjectsTemp
-WrappedRestraintScoringFunction<RestraintType>::do_get_inputs() const {
+ModelObjectsTemp WrappedRestraintScoringFunction<RestraintType>::do_get_inputs()
+    const {
   return ModelObjectsTemp(1, r_);
 }
 

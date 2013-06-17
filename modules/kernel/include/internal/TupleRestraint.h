@@ -18,7 +18,8 @@
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
-template <class Score> class TupleRestraint : public Restraint {
+template <class Score>
+class TupleRestraint : public Restraint {
   IMP::base::OwnerPointer<Score> ss_;
   typename Score::IndexArgument v_;
 
@@ -63,8 +64,8 @@ ModelObjectsTemp TupleRestraint<Score>::do_get_inputs() const {
 }
 
 template <class Score>
-inline Restraints
-TupleRestraint<Score>::do_create_current_decomposition() const {
+inline Restraints TupleRestraint<Score>::do_create_current_decomposition()
+    const {
   if (get_last_score() == 0) return Restraints();
   Restraints rs = ss_->create_current_decomposition(get_model(), v_);
   if (rs.size() == 1 && rs[0]->get_last_score() == BAD_SCORE) {

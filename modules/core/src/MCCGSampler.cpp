@@ -48,7 +48,7 @@ class CollectVisitor : public boost::default_dfs_visitor {
     base::Object *o = vm_[u];
     Particle *p = dynamic_cast<Particle *>(o);
     if (p) {
-      //std::cout << "Checking particle " << p->get_name() << std::endl;
+      // std::cout << "Checking particle " << p->get_name() << std::endl;
       typename std::map<Particle *, int>::const_iterator it = lu_.find(p);
       if (it != lu_.end()) {
         vals_.push_back(it->second);
@@ -194,11 +194,10 @@ void ScoreWeightedIncrementalBallMover::do_reject() {
   }
 }
 
-kernel::ModelObjectsTemp
-ScoreWeightedIncrementalBallMover::do_get_inputs() const {
+kernel::ModelObjectsTemp ScoreWeightedIncrementalBallMover::do_get_inputs()
+    const {
   return kernel::ModelObjectsTemp(ps_.begin(), ps_.end());
 }
-
 }
 
 #define XK XYZ::get_xyz_keys()[0]
@@ -340,12 +339,12 @@ ConfigurationSet *MCCGSampler::do_sample() const {
   base::LogLevel mll(
       static_cast<base::LogLevel>(std::max(0, IMP::base::get_log_level() - 1)));
   set_was_used(true);
-  //get_model()->set_is_incremental(true);
+  // get_model()->set_is_incremental(true);
   base::Pointer<ConfigurationSet> ret = new ConfigurationSet(get_model());
   Parameters pms = fill_in_parameters();
   IMP_NEW(MonteCarloWithLocalOptimization, mc, (pms.local_opt_, pms.cg_steps_));
   mc->set_scoring_function(get_scoring_function());
-  //mc->set_log_level(mll);
+  // mc->set_log_level(mll);
   mc->set_stop_on_good_score(true);
   mc->add_optimizer_states(
       OptimizerStatesTemp(optimizer_states_begin(), optimizer_states_end()));

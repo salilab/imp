@@ -29,7 +29,8 @@ class MinimalSet {
 
   struct CompareFirst {
     Less l_;
-    template <class T> bool operator()(const T &a, const T &b) const {
+    template <class T>
+    bool operator()(const T &a, const T &b) const {
       return l_(a.first, b.first);
     }
   };

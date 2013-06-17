@@ -58,10 +58,12 @@ class IMPCOREEXPORT TransformationAndReflectionSymmetry
                                       const algebra::Reflection3D &r);
 
   virtual void apply_index(Model *m, ParticleIndex p) const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs(Model *m, const ParticleIndexes &pis)
-      const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_outputs(Model *m, const ParticleIndexes &pis)
-      const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                         const ParticleIndexes &pis) const
+      IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs(Model *m,
+                                          const ParticleIndexes &pis) const
+      IMP_OVERRIDE;
   IMP_SINGLETON_MODIFIER_METHODS(TransformationAndReflectionSymmetry);
   IMP_OBJECT_METHODS(TransformationAndReflectionSymmetry);
 };
@@ -79,10 +81,12 @@ class IMPCOREEXPORT TransformationSymmetry : public SingletonModifier {
   TransformationSymmetry(const algebra::Transformation3D &t);
 
   virtual void apply_index(Model *m, ParticleIndex p) const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs(Model *m, const ParticleIndexes &pis)
-      const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_outputs(Model *m, const ParticleIndexes &pis)
-      const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                         const ParticleIndexes &pis) const
+      IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs(Model *m,
+                                          const ParticleIndexes &pis) const
+      IMP_OVERRIDE;
   IMP_SINGLETON_MODIFIER_METHODS(TransformationSymmetry);
   IMP_OBJECT_METHODS(TransformationSymmetry);
 };

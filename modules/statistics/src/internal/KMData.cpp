@@ -30,7 +30,7 @@ void KMData::sample_centers(KMPointArray *sample, int k, double offset,
   IMP_LOG_VERBOSE("KMData::sample_centers size: " << sample->size()
                                                   << std::endl);
   if (!allow_duplicate) {
-    IMP_INTERNAL_CHECK(((unsigned int) k) <= points_->size(),
+    IMP_INTERNAL_CHECK(((unsigned int)k) <= points_->size(),
                        "not enough points to sample from");
   }
   Ints sampled_ind;

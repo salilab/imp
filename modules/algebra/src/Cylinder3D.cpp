@@ -57,7 +57,6 @@ const Vector3D Cylinder3D::get_inner_point_at(double relative_height,
       get_segment().get_point(1) - get_segment().get_point(0));
   Transformation3D tr(rot, get_segment().get_point(0));
   return tr.get_transformed(pt);
-
 }
 
 IMPALGEBRA_END_NAMESPACE

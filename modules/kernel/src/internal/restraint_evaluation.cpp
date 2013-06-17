@@ -119,7 +119,6 @@ void protected_evaluate_one(IMP::kernel::ScoreAccumulator sa, RS *restraint,
   }
   after_protected_evaluate(m, states, sa.get_derivative_accumulator());
 }
-
 }
 
 void protected_evaluate(IMP::kernel::ScoreAccumulator sa, Restraint *restraint,

@@ -99,7 +99,8 @@ inline F graph_traverse(Particle *start, F f, const GraphData &d) {
 }
 
 /** \internal */
-template <class Oit> struct GraphGather {
+template <class Oit>
+struct GraphGather {
   GraphGather(Oit out) : out_(out) {}
   void operator()(Particle *p) {
     *out_ = p;

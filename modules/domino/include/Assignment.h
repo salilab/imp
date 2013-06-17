@@ -35,7 +35,9 @@ class IMPDOMINOEXPORT Assignment : public base::ConstVector<int> {
  public:
   Assignment() {}
   Assignment(unsigned int sz) : P(sz, -1) {}
-  template <class It> Assignment(It b, It e) : P(b, e) {}
+  template <class It>
+  Assignment(It b, It e)
+      : P(b, e) {}
   explicit Assignment(const Ints &i) : P(i.begin(), i.end()) {}
 };
 

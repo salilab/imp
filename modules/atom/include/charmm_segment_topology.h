@@ -35,7 +35,7 @@ class IMPATOMEXPORT CHARMMSegmentTopology : public IMP::base::Object {
 
  public:
   CHARMMSegmentTopology(std::string name = "CHARMM segment topology %1%")
-    : base::Object(name) {}
+      : base::Object(name) {}
 
   //! Apply patches to the first and last residue in the segment.
   /** Default patches are defined for each residue type in the topology

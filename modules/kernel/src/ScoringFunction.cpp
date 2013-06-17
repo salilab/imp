@@ -144,7 +144,6 @@ ScoringFunctions create_decomposition_into_scoring_functions(
   }
   return ret;
 }
-
 }
 
 ScoringFunctions create_decomposition(ScoringFunction *sf) {

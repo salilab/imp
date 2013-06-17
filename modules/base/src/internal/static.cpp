@@ -42,12 +42,12 @@
 #include <log4cxx/level.h>
 #endif
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
-    /*
-     With all the static data in a single file, we
-     needn't
-     fuss about initialization and destruction
-     order.
-    */
+/*
+ With all the static data in a single file, we
+ needn't
+ fuss about initialization and destruction
+ order.
+*/
 
 // exceptions
 
@@ -204,19 +204,19 @@ AddIntFlag ntf("number_of_threads", "Number of threads to use.",
 namespace {
 boost::uint64_t get_random_seed() {
 #if IMP_BASE_HAS_BOOST_RANDOM
-  //IMP_LOG_TERSE("Seeding from boost::random_device" << std::endl);
+  // IMP_LOG_TERSE("Seeding from boost::random_device" << std::endl);
   return boost::random_device()();
 #else
   int fd = open("/dev/urandom", O_RDONLY);
   if (fd != -1) {
-    //IMP_LOG_TERSE("Seeding from /dev/urandom" << std::endl);
+    // IMP_LOG_TERSE("Seeding from /dev/urandom" << std::endl);
     boost::uint64_t result;
     int sz = read(fd, reinterpret_cast<char*>(&result), sizeof(result));
     if (sz == sizeof(result)) {
       return result;
     }
   }
-  //IMP_LOG_TERSE("Seeding from time" << std::endl);
+  // IMP_LOG_TERSE("Seeding from time" << std::endl);
   return static_cast<boost::uint64_t>(std::time(nullptr));
 #endif
 }
@@ -245,10 +245,10 @@ bool print_deprecation_messages = true;
 bool exceptions_on_deprecation = false;
 base::set<std::string> printed_deprecation_messages;
 
-AddBoolFlag printed_deprecation_messages_adder("deprecation_warnings",
-                         "Print warnings on runtime deprecation use",
-                                               &print_deprecation_messages);
-AddBoolFlag exceptions_depre_adder("deprecation_exceptions",
-                         "Throw an exception on runtime deprecation use",
-                                               &exceptions_on_deprecation);
+AddBoolFlag printed_deprecation_messages_adder(
+    "deprecation_warnings", "Print warnings on runtime deprecation use",
+    &print_deprecation_messages);
+AddBoolFlag exceptions_depre_adder(
+    "deprecation_exceptions", "Throw an exception on runtime deprecation use",
+    &exceptions_on_deprecation);
 IMPBASE_END_INTERNAL_NAMESPACE

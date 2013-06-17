@@ -76,7 +76,6 @@ class IMPCOREEXPORT NBLScoring {
   Restraint *get_dummy_restraint() const { return dummy_restraint_; }
   void update_dependencies(const DependencyGraph &dg,
                            const DependencyGraphVertexIndex &index);
-
 };
 
 IMPCORE_END_INTERNAL_NAMESPACE

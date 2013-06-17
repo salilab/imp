@@ -73,7 +73,6 @@ struct OwnedStreamStorage : public internal::IOStorage<BaseStream> {
       : P("python stream"), stream_(stream), ref_(o) {}
   BaseStream &get_stream() { return stream_; }
 };
-
 }
 
 TextOutput::TextOutput(const char *c, bool append)

@@ -28,10 +28,10 @@ class IMPDISPLAYEXPORT Geometry : public IMP::base::Object {
   Color color_;
 
  public:
-  //Geometry();
+  // Geometry();
   Geometry(std::string name);
   Geometry(Color c, std::string name);
-  //Geometry(Color c);
+  // Geometry(Color c);
   virtual Color get_color() const {
     IMP_USAGE_CHECK(has_color_, "Color not set");
     return color_;

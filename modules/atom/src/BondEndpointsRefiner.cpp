@@ -25,8 +25,8 @@ const ParticlesTemp BondEndpointsRefiner::get_refined(Particle *p) const {
   return ps;
 }
 
-ModelObjectsTemp BondEndpointsRefiner::do_get_inputs(Model *m,
-                                            const ParticleIndexes &pis) const {
+ModelObjectsTemp BondEndpointsRefiner::do_get_inputs(
+    Model *m, const ParticleIndexes &pis) const {
   return IMP::kernel::get_particles(m, pis);
 }
 

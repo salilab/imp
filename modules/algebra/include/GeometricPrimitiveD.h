@@ -25,7 +25,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
     See the \ref geometricprimitives :Geometric Primitives" entry for more
     information.
 */
-template <int D> class GeometricPrimitiveD {
+template <int D>
+class GeometricPrimitiveD {
  protected:
   GeometricPrimitiveD() {}
 };
@@ -37,7 +38,7 @@ typedef GeometricPrimitiveD<3> GeometricPrimitive3D;
 typedef GeometricPrimitiveD<4> GeometricPrimitive4D;
 typedef GeometricPrimitiveD<5> GeometricPrimitive5D;
 typedef GeometricPrimitiveD<6> GeometricPrimitive6D;
-typedef GeometricPrimitiveD< -1> GeometricPrimitiveKD;
+typedef GeometricPrimitiveD<-1> GeometricPrimitiveKD;
 #endif
 
 IMPALGEBRA_END_NAMESPACE

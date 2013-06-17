@@ -53,11 +53,11 @@ class KMTerminationCondition {
   inline double get_min_accumulated_rdl() const { return min_accumulated_rdl_; }
 
  protected:
-  Int abs_max_num_of_stages_;  //max number of stages it total (for all runs)
-  Int max_num_of_stages_for_run_;  //max number of stages for a single run
-  //min value for consecutive relative distortion loss
+  Int abs_max_num_of_stages_;  // max number of stages it total (for all runs)
+  Int max_num_of_stages_for_run_;  // max number of stages for a single run
+  // min value for consecutive relative distortion loss
   double min_consecutive_rdl_;
-  //min value for accumulated  relative distortion loss within a single run
+  // min value for accumulated  relative distortion loss within a single run
   double min_accumulated_rdl_;
 };
 

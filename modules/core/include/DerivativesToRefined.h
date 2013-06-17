@@ -36,11 +36,11 @@ class IMPCOREEXPORT DerivativesToRefined : public SingletonDerivativeModifier {
 
   virtual void apply_index(Model *m, ParticleIndex a) const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                         const ParticleIndexes &pis)
-      const IMP_OVERRIDE;
+                                         const ParticleIndexes &pis) const
+      IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_outputs(Model *m,
-                                          const ParticleIndexes &pis)
-      const IMP_OVERRIDE;
+                                          const ParticleIndexes &pis) const
+      IMP_OVERRIDE;
   IMP_SINGLETON_MODIFIER_METHODS(DerivativesToRefined);
   IMP_OBJECT_METHODS(DerivativesToRefined);
 };

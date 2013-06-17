@@ -13,7 +13,6 @@ IMPCORE_BEGIN_NAMESPACE
 
 void XYZ::show(std::ostream &out) const {
   out << "(" << algebra::commas_io(get_coordinates()) << ")";
-
 }
 
 const FloatKeys &XYZ::get_xyz_keys() {

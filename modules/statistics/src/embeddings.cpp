@@ -13,10 +13,10 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 
 namespace {
 algebra::Vector3D get_coordinates(Model *m, ParticleIndex pi) {
-  algebra::Vector3D
-      ret(m->get_attribute(IMP::kernel::internal::xyzr_keys[0], pi),
-          m->get_attribute(IMP::kernel::internal::xyzr_keys[1], pi),
-          m->get_attribute(IMP::kernel::internal::xyzr_keys[2], pi));
+  algebra::Vector3D ret(
+      m->get_attribute(IMP::kernel::internal::xyzr_keys[0], pi),
+      m->get_attribute(IMP::kernel::internal::xyzr_keys[1], pi),
+      m->get_attribute(IMP::kernel::internal::xyzr_keys[2], pi));
   return ret;
 }
 }
@@ -40,12 +40,12 @@ algebra::VectorKD ConfigurationSetXYZEmbedding::get_point(
     cs_->load_configuration(0);
     algebra::Vector3Ds vs0;
     IMP_CONTAINER_FOREACH(SingletonContainer, sc_, {
-        vs0.push_back(get_coordinates(sc_->get_model(), _1));
+      vs0.push_back(get_coordinates(sc_->get_model(), _1));
     });
     cs_->load_configuration(a);
     algebra::Vector3Ds vsc;
     IMP_CONTAINER_FOREACH(SingletonContainer, sc_, {
-        vsc.push_back(get_coordinates(sc_->get_model(), _1));
+      vsc.push_back(get_coordinates(sc_->get_model(), _1));
     });
     tr = get_transformation_aligning_first_to_second(vsc, vs0);
   } else {
@@ -53,8 +53,8 @@ algebra::VectorKD ConfigurationSetXYZEmbedding::get_point(
   }
   Floats ret;
   IMP_CONTAINER_FOREACH(SingletonContainer, sc_, {
-    algebra::Vector3D v
-        = tr.get_transformed(get_coordinates(sc_->get_model(), _1));
+    algebra::Vector3D v =
+        tr.get_transformed(get_coordinates(sc_->get_model(), _1));
     ret.push_back(v[0]);
     ret.push_back(v[1]);
     ret.push_back(v[2]);

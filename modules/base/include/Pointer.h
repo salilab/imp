@@ -77,14 +77,17 @@ IMPBASE_BEGIN_NAMESPACE
 template <class O>
 struct Pointer : internal::PointerBase<internal::RefCountedPointerTraits<O> > {
   typedef internal::PointerBase<internal::RefCountedPointerTraits<O> > P;
-  template <class Any> Pointer(const Any& o) : P(o) {}
+  template <class Any>
+  Pointer(const Any& o)
+      : P(o) {}
   Pointer() {}
   template <class OT>
   base::Pointer<O>& operator=(const internal::PointerBase<OT>& o) {
     P::operator=(o);
     return *this;
   }
-  template <class OT> base::Pointer<O>& operator=(OT* o) {
+  template <class OT>
+  base::Pointer<O>& operator=(OT* o) {
     P::operator=(o);
     return *this;
   }
@@ -111,14 +114,17 @@ struct Pointer : internal::PointerBase<internal::RefCountedPointerTraits<O> > {
 template <class O>
 struct OwnerPointer : internal::PointerBase<internal::OwnerPointerTraits<O> > {
   typedef internal::PointerBase<internal::OwnerPointerTraits<O> > P;
-  template <class Any> OwnerPointer(const Any& o) : P(o) {}
+  template <class Any>
+  OwnerPointer(const Any& o)
+      : P(o) {}
   OwnerPointer() {}
   template <class OT>
   base::OwnerPointer<O>& operator=(const internal::PointerBase<OT>& o) {
     P::operator=(o);
     return *this;
   }
-  template <class OT> base::OwnerPointer<O>& operator=(OT* o) {
+  template <class OT>
+  base::OwnerPointer<O>& operator=(OT* o) {
     P::operator=(o);
     return *this;
   }

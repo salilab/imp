@@ -26,7 +26,7 @@ void Transform::apply_index(Model *m, ParticleIndex pi) const {
 }
 
 ModelObjectsTemp Transform::do_get_inputs(Model *m,
-                                           const ParticleIndexes &pis) const {
+                                          const ParticleIndexes &pis) const {
   return IMP::kernel::get_particles(m, pis);
 }
 

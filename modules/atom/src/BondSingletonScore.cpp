@@ -44,10 +44,9 @@ double BondSingletonScore::evaluate_index(Model *m, ParticleIndex pi,
       s * (boost::lambda::_1 - l), s);
 }
 
-ModelObjectsTemp BondSingletonScore::do_get_inputs(Model *m,
-                                                   const ParticleIndexes &pi)
-    const {
-  ModelObjectsTemp ret(3*pi.size());
+ModelObjectsTemp BondSingletonScore::do_get_inputs(
+    Model *m, const ParticleIndexes &pi) const {
+  ModelObjectsTemp ret(3 * pi.size());
   for (unsigned int i = 0; i < pi.size(); ++i) {
     Bond ad(m, pi[i]);
     ret[3 * i + 0] = ad.get_bonded(0);

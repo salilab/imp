@@ -101,13 +101,13 @@ ParticleIndexPairs ExclusiveConsecutivePairContainer::get_indexes() const {
   return ret;
 }
 
-ParticleIndexPairs
-ExclusiveConsecutivePairContainer::get_range_indexes() const {
+ParticleIndexPairs ExclusiveConsecutivePairContainer::get_range_indexes()
+    const {
   return get_indexes();
 }
 
-ParticleIndexes
-ExclusiveConsecutivePairContainer::get_all_possible_indexes() const {
+ParticleIndexes ExclusiveConsecutivePairContainer::get_all_possible_indexes()
+    const {
   return ps_;
 }
 

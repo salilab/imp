@@ -27,7 +27,8 @@ class InBoundingBox3DSingletonPredicate : public SingletonPredicate {
     return bb_.get_contains(XYZ(m, pi).get_coordinates()) ? 1 : 0;
   }
   virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                 const ParticleIndexes &pi) const IMP_OVERRIDE{
+                                         const ParticleIndexes &pi) const
+      IMP_OVERRIDE {
     ModelObjectsTemp ret;
     ret += IMP::get_particles(m, pi);
     return ret;
@@ -47,7 +48,8 @@ class AttributeSingletonPredicate : public SingletonPredicate {
     return m->get_attribute(bb_, pi);
   }
   virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                 const ParticleIndexes &pi) const IMP_OVERRIDE{
+                                         const ParticleIndexes &pi) const
+      IMP_OVERRIDE {
     ModelObjectsTemp ret;
     ret += IMP::get_particles(m, pi);
     return ret;
@@ -84,7 +86,8 @@ class PredicateSingletonScore : public SingletonScore {
   virtual double evaluate_index(Model *m, ParticleIndex p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                 const ParticleIndexes &pis) const IMP_OVERRIDE;
+                                         const ParticleIndexes &pis) const
+      IMP_OVERRIDE;
   IMP_SINGLETON_SCORE_METHODS(PredicateSingletonScore);
   IMP_OBJECT_METHODS(PredicateSingletonScore);
 };

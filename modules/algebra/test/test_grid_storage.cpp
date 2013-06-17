@@ -14,8 +14,8 @@ int main(int, char * []) {
   {
     typedef UnboundedGridRangeD<4> UBGS;
     UBGS ubgs;
-    int lb[] = { 1, 2, 3, 4 };
-    int ub[] = { 2, 4, 6, 8 };
+    int lb[] = {1, 2, 3, 4};
+    int ub[] = {2, 4, 6, 8};
     ExtendedGridIndexD<4> elb(lb, lb + 4);
     ExtendedGridIndexD<4> eub(ub, ub + 4);
     std::cout << "eus " << elb << " " << eub << std::endl;

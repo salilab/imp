@@ -53,7 +53,8 @@ inline VectorD<D> get_random_vector_on(const BoundingBoxD<D> &bb) {
 /** See VectorD
     See SphereD
  */
-template <int D> inline VectorD<D> get_random_vector_in(const SphereD<D> &s) {
+template <int D>
+inline VectorD<D> get_random_vector_in(const SphereD<D> &s) {
   BoundingBoxD<D> bb = get_bounding_box(s);
   double norm;
   VectorD<D> ret;
@@ -86,7 +87,8 @@ IMPALGEBRAEXPORT Vector3D get_random_vector_in(const Cylinder3D &c);
 /** See VectorD
     See SphereD
  */
-template <int D> inline VectorD<D> get_random_vector_on(const SphereD<D> &s) {
+template <int D>
+inline VectorD<D> get_random_vector_on(const SphereD<D> &s) {
   return internal::get_random_vector_on(s);
 }
 

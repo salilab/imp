@@ -42,7 +42,10 @@ namespace unit {
 
 namespace internal {
 
-template <class Tag> inline std::string get_unit_name(int) { return ""; }
+template <class Tag>
+inline std::string get_unit_name(int) {
+  return "";
+}
 
 // for stupid line length limits
 using boost::mpl::transform;
@@ -58,27 +61,33 @@ namespace pl = boost::mpl::placeholders;
 /*
   These classes allow the Units part of a unit to be manipulated
  */
-template <class UA, class UB> struct Divide {
+template <class UA, class UB>
+struct Divide {
   typedef typename transform<UA, UB, minus<pl::_1, pl::_2> >::type type;
 };
 
-template <class UA> struct Inverse {
+template <class UA>
+struct Inverse {
   typedef typename transform<UA, minus<int_<0>, pl::_1> >::type type;
 };
 
-template <class UA, class UB> struct Multiply {
+template <class UA, class UB>
+struct Multiply {
   typedef typename transform<UA, UB, plus<pl::_1, pl::_2> >::type type;
 };
 
-template <class UA> struct Sqrt {
+template <class UA>
+struct Sqrt {
   typedef typename transform<UA, divides<pl::_1, int_<2> > >::type type;
 };
 
-template <class UA, class UB> struct Exponentiate {
+template <class UA, class UB>
+struct Exponentiate {
   typedef typename transform<UA, UB, multiplies<pl::_1, pl::_2> >::type type;
 };
 
-template <class InputVector, int SZ> struct DoNormalize {
+template <class InputVector, int SZ>
+struct DoNormalize {
   typedef int type;
 };
 
@@ -87,33 +96,39 @@ template <class InputVector, int SZ> struct DoNormalize {
   type that we want so we have to change it into the exact type to get
   certain things to work right.
  */
-template <class InputVector> struct DoNormalize<InputVector, 0> {
+template <class InputVector>
+struct DoNormalize<InputVector, 0> {
   typedef vector_c<int> type;
 };
 
-template <class InputVector> struct DoNormalize<InputVector, 1> {
+template <class InputVector>
+struct DoNormalize<InputVector, 1> {
   typedef vector_c<int, at<InputVector, int_<0> >::type::value> type;
 };
 
-template <class InputVector> struct DoNormalize<InputVector, 2> {
+template <class InputVector>
+struct DoNormalize<InputVector, 2> {
   typedef vector_c<int, at<InputVector, int_<0> >::type::value,
                    at<InputVector, int_<1> >::type::value> type;
 };
 
-template <class InputVector> struct DoNormalize<InputVector, 3> {
+template <class InputVector>
+struct DoNormalize<InputVector, 3> {
   typedef vector_c<int, at<InputVector, int_<0> >::type::value,
                    at<InputVector, int_<1> >::type::value,
                    at<InputVector, int_<2> >::type::value> type;
 };
 
-template <class InputVector> struct DoNormalize<InputVector, 4> {
+template <class InputVector>
+struct DoNormalize<InputVector, 4> {
   typedef vector_c<int, at<InputVector, int_<0> >::type::value,
                    at<InputVector, int_<1> >::type::value,
                    at<InputVector, int_<2> >::type::value,
                    at<InputVector, int_<3> >::type::value> type;
 };
 
-template <class InputVector> struct DoNormalize<InputVector, 5> {
+template <class InputVector>
+struct DoNormalize<InputVector, 5> {
   typedef vector_c<int, at<InputVector, int_<0> >::type::value,
                    at<InputVector, int_<1> >::type::value,
                    at<InputVector, int_<2> >::type::value,
@@ -121,13 +136,15 @@ template <class InputVector> struct DoNormalize<InputVector, 5> {
                    at<InputVector, int_<4> >::type::value> type;
 };
 
-template <class InputVector> struct Normalize {
+template <class InputVector>
+struct Normalize {
   typedef typename DoNormalize<
       InputVector, boost::mpl::size<InputVector>::type::value>::type type;
 };
 
 // Recursive type to print out the unit names and powers
-template <class Tag, int O, int SZ, class Units> struct PrintUnits {
+template <class Tag, int O, int SZ, class Units>
+struct PrintUnits {
   PrintUnits<Tag, O + 1, SZ, Units> p_;
 
   void operator()(std::ostream &out) const {
@@ -144,9 +161,9 @@ template <class Tag, int O, int SZ, class Units> struct PrintUnits {
 };
 
 //! \internal Terminate the recursion
-template <class Tag, int O, class Units> struct PrintUnits<Tag, O, O, Units> {
-  void operator()(std::ostream &) const {}
-  ;
+template <class Tag, int O, class Units>
+struct PrintUnits<Tag, O, O, Units> {
+  void operator()(std::ostream &) const {};
 };
 
 //! \internal Specializaton for singleton units
@@ -159,22 +176,26 @@ struct PrintUnits<Tag, O, O, boost::mpl::vector_c<int> > {
 };
 
 // recursive type to check if all the unit powers are zero
-template <int O, int SZ, class Units> struct IsNoUnits {
+template <int O, int SZ, class Units>
+struct IsNoUnits {
   typedef IsNoUnits<O + 1, SZ, Units> Next;
   static const bool value =
       Next::value &&
       !(boost::mpl::at<Units, typename boost::mpl::int_<O> >::type::value);
 };
 
-template <int O, class Units> struct IsNoUnits<O, O, Units> {
+template <int O, class Units>
+struct IsNoUnits<O, O, Units> {
   static const bool value = true;
 };
 
 }  // namespace unit::internal
 
 //! \internal A base class for units
-template <class TagT, int EXPT, class UnitsT> class Unit {
-  template <class T, int E, class U> friend class Unit;
+template <class TagT, int EXPT, class UnitsT>
+class Unit {
+  template <class T, int E, class U>
+  friend class Unit;
   typedef Unit<TagT, EXPT, UnitsT> This;
   typedef ExponentialNumber<EXPT> V;
   V v_;
@@ -188,13 +209,17 @@ template <class TagT, int EXPT, class UnitsT> class Unit {
 
   explicit Unit(V v) : v_(v) {}
   explicit Unit(double v) : v_(v) {}
-  //Unit(int v): v_(v){}
+  // Unit(int v): v_(v){}
   Unit() {}
-  template <int OEXP, class OUnits> Unit(Unit<Tag, OEXP, OUnits> o) : v_(o.v_) {
+  template <int OEXP, class OUnits>
+  Unit(Unit<Tag, OEXP, OUnits> o)
+      : v_(o.v_) {
     BOOST_STATIC_ASSERT((boost::mpl::equal<Units, OUnits>::type::value));
   }
 
-  template <int OEXP> Unit(Unit<Tag, OEXP, Units> o) : v_(o.v_) {}
+  template <int OEXP>
+  Unit(Unit<Tag, OEXP, Units> o)
+      : v_(o.v_) {}
 
   operator double() const {
     BOOST_STATIC_ASSERT((internal::IsNoUnits<
@@ -235,17 +260,18 @@ inline std::ostream &operator<<(std::ostream &out, Unit<Tag, EXP, Units> o) {
 
 // Multiply and divide Unit instantiations
 
-template <class U0, class U1> struct Divide {
+template <class U0, class U1>
+struct Divide {
   BOOST_STATIC_ASSERT(
       (boost::mpl::equal<typename U0::Tag, typename U1::Tag>::type::value));
   typedef typename internal::Divide<typename U0::Units,
                                     typename U1::Units>::type raw_units;
   typedef typename internal::Normalize<raw_units>::type units;
   typedef Unit<typename U0::Tag, U0::EXP - U1::EXP, units> type;
-
 };
 
-template <class U0, class U1> struct Multiply {
+template <class U0, class U1>
+struct Multiply {
   BOOST_STATIC_ASSERT(
       (boost::mpl::equal<typename U0::Tag, typename U1::Tag>::type::value));
   typedef typename internal::Multiply<typename U0::Units,
@@ -254,18 +280,20 @@ template <class U0, class U1> struct Multiply {
   typedef Unit<typename U0::Tag, U0::EXP + U1::EXP, units> type;
 };
 
-template <class U0> struct Inverse {
+template <class U0>
+struct Inverse {
   typedef typename internal::Inverse<typename U0::Units>::type raw_units;
   typedef typename internal::Normalize<raw_units>::type units;
   typedef Unit<typename U0::Tag, -U0::EXP, units> type;
 };
 
-template <class U, int E> struct Shift {
+template <class U, int E>
+struct Shift {
   typedef Unit<typename U::Tag, U::EXP + E, typename U::Units> type;
-
 };
 
-template <class U, class R, class A, int DEXP> struct Exchange {
+template <class U, class R, class A, int DEXP>
+struct Exchange {
   BOOST_STATIC_ASSERT(
       (boost::mpl::equal<typename U::Tag, typename R::Tag>::type::value));
   BOOST_STATIC_ASSERT(
@@ -275,7 +303,6 @@ template <class U, class R, class A, int DEXP> struct Exchange {
   typedef typename internal::Multiply<Div, typename A::Units>::type Mul;
   typedef typename internal::Normalize<Mul>::type units;
   typedef Unit<typename U::Tag, U::EXP - R::EXP + A::EXP + DEXP, units> type;
-
 };
 
 typedef boost::mpl::vector_c<int> SingletonUnit;

@@ -30,7 +30,8 @@ namespace {
 //! Estimate of limit of machine precision
 const double cg_eps = 1.2e-7;
 
-template <class NT> bool is_good_value(const NT &f) {
+template <class NT>
+bool is_good_value(const NT &f) {
   if (base::isnan(f) ||
       std::abs(f) > std::numeric_limits<NT>::max() / 1024.0f) {
     IMP_LOG_VERBOSE("Bad value found in CG: " << f << std::endl);
@@ -90,9 +91,9 @@ ConjugateGradients::NT ConjugateGradients::get_score(
   /* get derivatives */
   for (i = 0; i < opt_var_cnt; i++) {
 #ifdef IMP_CG_SCALE
-    dscore[i] = get_scaled_derivative(float_indices[i]);  //scaled
+    dscore[i] = get_scaled_derivative(float_indices[i]);  // scaled
 #else
-    dscore[i] = get_derivative(float_indices[i]);  //scaled
+    dscore[i] = get_derivative(float_indices[i]);  // scaled
 #endif
     IMP_USAGE_CHECK(is_good_value(dscore[i]), "Bad input to CG");
   }
@@ -257,7 +258,7 @@ Float ConjugateGradients::do_optimize(unsigned int max_steps) {
   clear_range_cache();
   base::Vector<NT> x, dx;
   int i;
-  //ModelData* model_data = get_model()->get_model_data();
+  // ModelData* model_data = get_model()->get_model_data();
 
   FloatIndexes float_indices = get_optimized_attributes();
 
@@ -271,9 +272,9 @@ Float ConjugateGradients::do_optimize(unsigned int max_steps) {
   // get initial state in x(n):
   for (i = 0; i < n; i++) {
 #ifdef IMP_CG_SCALE
-    x[i] = get_scaled_value(float_indices[i]);  //scaled
+    x[i] = get_scaled_value(float_indices[i]);  // scaled
 #else
-    x[i] = get_value(float_indices[i]);  //scaled
+    x[i] = get_value(float_indices[i]);  // scaled
 #endif
     IMP_USAGE_CHECK(
         !base::isnan(x[i]) && std::abs(x[i]) < std::numeric_limits<NT>::max(),

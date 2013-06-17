@@ -18,7 +18,7 @@ IMPCORE_DEPRECATED_HEADER(2.1, "Not needed any more")
     - IMP::core::PeriodicOptimizerState::do_update()
 */
 #define IMP_CORE_PERIODIC_OPTIMIZER_STATE(Name)                         \
-  IMP_DEPRECATED_MACRO(2.1, "Just expand the macro in place instead");        \
+  IMP_DEPRECATED_MACRO(2.1, "Just expand the macro in place instead");  \
   /** do a periodic update of Name                                      \
                                                                         \
              @param call_num the number of times do_update() was called \

@@ -38,7 +38,6 @@ bool test_marked(const Grid &g, BoundingBox3D bb) {
   }
   return true;
 }
-
 }
 
 int main(int, char * []) {

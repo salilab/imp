@@ -112,11 +112,11 @@ class IMPDOMINOEXPORT RestraintScoreSubsetFilterTable
   RestraintScoreSubsetFilterTable(RestraintsAdaptor rs,
                                   ParticleStatesTable *pst);
   virtual IMP::domino::SubsetFilter *get_subset_filter(
-      const IMP::domino::Subset &s,
-      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
-  virtual double get_strength(
-      const IMP::domino::Subset &s,
-      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
+      const IMP::domino::Subset &s, const IMP::domino::Subsets &excluded) const
+      IMP_OVERRIDE;
+  virtual double get_strength(const IMP::domino::Subset &s,
+                              const IMP::domino::Subsets &excluded) const
+      IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RestraintScoreSubsetFilterTable);
 };
 
@@ -141,11 +141,11 @@ class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilterTable
     return max_violated_;
   }
   virtual IMP::domino::SubsetFilter *get_subset_filter(
-      const IMP::domino::Subset &s,
-      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
-  virtual double get_strength(
-      const IMP::domino::Subset &s,
-      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
+      const IMP::domino::Subset &s, const IMP::domino::Subsets &excluded) const
+      IMP_OVERRIDE;
+  virtual double get_strength(const IMP::domino::Subset &s,
+                              const IMP::domino::Subsets &excluded) const
+      IMP_OVERRIDE;
   IMP_OBJECT_METHODS(MinimumRestraintScoreSubsetFilterTable);
 };
 
@@ -184,8 +184,7 @@ class IMPDOMINOEXPORT DisjointSetsSubsetFilterTable : public SubsetFilterTable {
   DisjointSetsSubsetFilterTable(std::string name);
 #ifndef IMP_DOXYGEN
   void get_indexes(const Subset &s, const Subsets &excluded,
-                   base::Vector<Ints> &ret, int lb, Ints &used)
-      const;
+                   base::Vector<Ints> &ret, int lb, Ints &used) const;
   int get_index_in_set(Particle *p) const {
     if (set_indexes_.find(p) == set_indexes_.end()) {
       return -1;
@@ -276,12 +275,12 @@ class IMPDOMINOEXPORT ListSubsetFilterTable : public SubsetFilterTable {
     return states_[i].size();
   }
   void set_allowed_states(Particle *p, const Ints &states);
-    virtual IMP::domino::SubsetFilter *get_subset_filter(
-      const IMP::domino::Subset &s,
-      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
-  virtual double get_strength(
-      const IMP::domino::Subset &s,
-      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
+  virtual IMP::domino::SubsetFilter *get_subset_filter(
+      const IMP::domino::Subset &s, const IMP::domino::Subsets &excluded) const
+      IMP_OVERRIDE;
+  virtual double get_strength(const IMP::domino::Subset &s,
+                              const IMP::domino::Subsets &excluded) const
+      IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ListSubsetFilterTable);
 };
 
@@ -303,11 +302,11 @@ class IMPDOMINOEXPORT PairListSubsetFilterTable : public SubsetFilterTable {
   PairListSubsetFilterTable();
   void set_allowed_states(ParticlePair p, const IntPairs &states);
   virtual IMP::domino::SubsetFilter *get_subset_filter(
-      const IMP::domino::Subset &s,
-      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
-  virtual double get_strength(
-      const IMP::domino::Subset &s,
-      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
+      const IMP::domino::Subset &s, const IMP::domino::Subsets &excluded) const
+      IMP_OVERRIDE;
+  virtual double get_strength(const IMP::domino::Subset &s,
+                              const IMP::domino::Subsets &excluded) const
+      IMP_OVERRIDE;
   IMP_OBJECT_METHODS(PairListSubsetFilterTable);
 };
 
@@ -329,11 +328,11 @@ class IMPDOMINOEXPORT ProbabilisticSubsetFilterTable
   */
   ProbabilisticSubsetFilterTable(double p, bool leaves_only = false);
   virtual IMP::domino::SubsetFilter *get_subset_filter(
-      const IMP::domino::Subset &s,
-      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
-  virtual double get_strength(
-      const IMP::domino::Subset &s,
-      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
+      const IMP::domino::Subset &s, const IMP::domino::Subsets &excluded) const
+      IMP_OVERRIDE;
+  virtual double get_strength(const IMP::domino::Subset &s,
+                              const IMP::domino::Subsets &excluded) const
+      IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ProbabilisticSubsetFilterTable);
 };
 

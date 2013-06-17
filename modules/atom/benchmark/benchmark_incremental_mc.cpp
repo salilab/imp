@@ -14,7 +14,7 @@ using namespace IMP::container;
 using namespace IMP::algebra;
 
 namespace {
-const unsigned int np = 10;  //5
+const unsigned int np = 10;  // 5
 const unsigned int nrb = 10;
 const double radius = 4;
 
@@ -48,7 +48,7 @@ Restraint *create_excluded_volume(atom::Hierarchy h, RigidBodies, double k) {
   IMP_NEW(ListSingletonContainer, lsc, (atom::get_leaves(h)));
   IMP_NEW(ExcludedVolumeRestraint, evr, (lsc, k, 10));
   evr->set_name("excluded volume");
-  //evr->set_log_level(VERBOSE);
+  // evr->set_log_level(VERBOSE);
   return evr.release();
 }
 PairScore *create_pair_score(atom::Hierarchy, RigidBodies rbs, double k) {
@@ -74,7 +74,7 @@ Restraint *add_DOPE(Model *, atom::Hierarchy h) {
   IMP_NEW(ListSingletonContainer, lsc, (atom::get_leaves(h)));
   IMP_NEW(ClosePairContainer, cpc, (lsc, 15.0));
   IMP_NEW(DopePairScore, dps, (15.0));
-  //dps->set_log_level(VERBOSE);
+  // dps->set_log_level(VERBOSE);
   IMP_NEW(PairsRestraint, dope, (dps, cpc));
   dope->set_name("DOPE");
   return dope.release();
@@ -107,8 +107,8 @@ void benchmark_it(std::string name, bool incr, bool nbl, bool longr) {
     IMP_NEW(core::RestraintsScoringFunction, sf, (rs));
     mc->set_scoring_function(sf);
   }
-  //add_DOPE(m, h);
-  //mc->set_log_level(VERBOSE);
+  // add_DOPE(m, h);
+  // mc->set_log_level(VERBOSE);
   mc->set_return_best(false);
   mc->set_kt(1.0);
   MonteCarloMovers mvs;
@@ -129,7 +129,7 @@ void benchmark_it(std::string name, bool incr, bool nbl, bool longr) {
   if (longr) nsteps *= 100;
   double runtime, score = 0;
   IMP_TIME(score += mc->optimize(nsteps), runtime);
-  //std::cout << "average: "
+  // std::cout << "average: "
   //<< mc->get_average_number_of_incremental_restraints() << std::endl;
   IMP::benchmark::report(name + " mc", runtime, score);
 }

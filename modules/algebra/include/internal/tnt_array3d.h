@@ -34,7 +34,8 @@ IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 namespace TNT {
 using namespace std;
 
-template <class T> class Array3D {
+template <class T>
+class Array3D {
 
  private:
   Array1D<T> data_;
@@ -74,7 +75,9 @@ template <class T> class Array3D {
   Array3D subarray(int i0, int i1, int j0, int j1, int k0, int k1);
 };
 
-template <class T> Array3D<T>::Array3D() : data_(), v_(), m_(0), n_(0) {}
+template <class T>
+Array3D<T>::Array3D()
+    : data_(), v_(), m_(0), n_(0) {}
 
 template <class T>
 Array3D<T>::Array3D(const Array3D<T>& A)
@@ -90,8 +93,7 @@ Array3D<T>::Array3D(int m, int n, int g)
 
     for (int i = 0; i < m_; i++) {
       T* ping = p + i * ng;
-      for (int j = 0; j < n; j++)
-        v_[i][j] = ping + j * g_;
+      for (int j = 0; j < n; j++) v_[i][j] = ping + j * g_;
     }
   }
 }
@@ -106,8 +108,7 @@ Array3D<T>::Array3D(int m, int n, int g, T val)
 
     for (int i = 0; i < m_; i++) {
       T* ping = p + i * ng;
-      for (int j = 0; j < n; j++)
-        v_[i][j] = ping + j * g_;
+      for (int j = 0; j < n; j++) v_[i][j] = ping + j * g_;
     }
   }
 }
@@ -122,55 +123,57 @@ Array3D<T>::Array3D(int m, int n, int g, T* a)
 
     for (int i = 0; i < m_; i++) {
       T* ping = p + i * ng;
-      for (int j = 0; j < n; j++)
-        v_[i][j] = ping + j * g_;
+      for (int j = 0; j < n; j++) v_[i][j] = ping + j * g_;
     }
   }
 }
 
-template <class T> inline T** Array3D<T>::operator[](int i) {
+template <class T>
+inline T** Array3D<T>::operator[](int i) {
 #ifdef TNT_BOUNDS_CHECK
   assert(i >= 0);
   assert(i < m_);
 #endif
 
   return v_[i];
-
 }
 
-template <class T> inline const T* const* Array3D<T>::operator[](int i) const {
+template <class T>
+inline const T* const* Array3D<T>::operator[](int i) const {
   return v_[i];
 }
 
-template <class T> Array3D<T>& Array3D<T>::operator=(const T& a) {
+template <class T>
+Array3D<T>& Array3D<T>::operator=(const T& a) {
   for (int i = 0; i < m_; i++)
     for (int j = 0; j < n_; j++)
-      for (int k = 0; k < g_; k++)
-        v_[i][j][k] = a;
+      for (int k = 0; k < g_; k++) v_[i][j][k] = a;
 
   return *this;
 }
 
-template <class T> Array3D<T> Array3D<T>::copy() const {
+template <class T>
+Array3D<T> Array3D<T>::copy() const {
   Array3D A(m_, n_, g_);
   for (int i = 0; i < m_; i++)
     for (int j = 0; j < n_; j++)
-      for (int k = 0; k < g_; k++)
-        A.v_[i][j][k] = v_[i][j][k];
+      for (int k = 0; k < g_; k++) A.v_[i][j][k] = v_[i][j][k];
 
   return A;
 }
 
-template <class T> Array3D<T>& Array3D<T>::inject(const Array3D& A) {
-  if (A.m_ == m_ && A.n_ == n_ && A.g_ == g_) for (int i = 0; i < m_; i++)
+template <class T>
+Array3D<T>& Array3D<T>::inject(const Array3D& A) {
+  if (A.m_ == m_ && A.n_ == n_ && A.g_ == g_)
+    for (int i = 0; i < m_; i++)
       for (int j = 0; j < n_; j++)
-        for (int k = 0; k < g_; k++)
-          v_[i][j][k] = A.v_[i][j][k];
+        for (int k = 0; k < g_; k++) v_[i][j][k] = A.v_[i][j][k];
 
   return *this;
 }
 
-template <class T> Array3D<T>& Array3D<T>::ref(const Array3D<T>& A) {
+template <class T>
+Array3D<T>& Array3D<T>::ref(const Array3D<T>& A) {
   if (this != &A) {
     m_ = A.m_;
     n_ = A.n_;
@@ -181,21 +184,38 @@ template <class T> Array3D<T>& Array3D<T>::ref(const Array3D<T>& A) {
   return *this;
 }
 
-template <class T> Array3D<T>& Array3D<T>::operator=(const Array3D<T>& A) {
+template <class T>
+Array3D<T>& Array3D<T>::operator=(const Array3D<T>& A) {
   return ref(A);
 }
 
-template <class T> inline int Array3D<T>::dim1() const { return m_; }
+template <class T>
+inline int Array3D<T>::dim1() const {
+  return m_;
+}
 
-template <class T> inline int Array3D<T>::dim2() const { return n_; }
+template <class T>
+inline int Array3D<T>::dim2() const {
+  return n_;
+}
 
-template <class T> inline int Array3D<T>::dim3() const { return g_; }
+template <class T>
+inline int Array3D<T>::dim3() const {
+  return g_;
+}
 
-template <class T> Array3D<T>::~Array3D() {}
+template <class T>
+Array3D<T>::~Array3D() {}
 
-template <class T> inline Array3D<T>::operator T***() { return v_; }
+template <class T>
+inline Array3D<T>::operator T***() {
+  return v_;
+}
 
-template <class T> inline Array3D<T>::operator const T***() { return v_; }
+template <class T>
+inline Array3D<T>::operator const T***() {
+  return v_;
+}
 
 /* extended interface */
 template <class T>
@@ -217,8 +237,7 @@ Array3D<T> Array3D<T>::subarray(int i0, int i1, int j0, int j1, int k0,
 
   for (int i = 0; i < A.m_; i++) {
     T* ping = p + i * n_ * g_;
-    for (int j = 0; j < A.n_; j++)
-      A.v_[i][j] = ping + j * g_;
+    for (int j = 0; j < A.n_; j++) A.v_[i][j] = ping + j * g_;
   }
 
   return A;

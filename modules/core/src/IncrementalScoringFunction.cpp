@@ -51,14 +51,13 @@ IncrementalScoringFunction::IncrementalScoringFunction(const ParticlesTemp &ps,
 }
 
 namespace {
-class IncrementalRestraintsScoringFunction:
-      public IMP::internal::RestraintsScoringFunction {
+class IncrementalRestraintsScoringFunction
+    : public IMP::internal::RestraintsScoringFunction {
  public:
-  IncrementalRestraintsScoringFunction(const RestraintsTemp &rs,
-                                   double weight = 1.0, double max = NO_MAX,
-                                   std::string name =
-                                      "IncrementalRestraintsScoringFunction%1%")
-      : IMP::internal::RestraintsScoringFunction(rs, weight, max, name){}
+  IncrementalRestraintsScoringFunction(
+      const RestraintsTemp &rs, double weight = 1.0, double max = NO_MAX,
+      std::string name = "IncrementalRestraintsScoringFunction%1%")
+      : IMP::internal::RestraintsScoringFunction(rs, weight, max, name) {}
   // don't depend on optimized particles
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
     return get_restraints();
@@ -140,7 +139,6 @@ void IncrementalScoringFunction::create_flattened_restraints(
       IMP::get_restraints(decomposed.begin(), decomposed.end());
   IMP_LOG_TERSE("Flattened restraints are " << flattened_restraints_
                                             << std::endl);
-
 }
 void IncrementalScoringFunction::reset_moved_particles() {
   IMP_OBJECT_LOG;

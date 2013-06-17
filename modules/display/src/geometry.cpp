@@ -81,19 +81,18 @@ Geometries GeometrySet::get_components() const { return get_geometry(); }
 namespace {
 Geometries get_frame(const algebra::Transformation3D &tr) {
   algebra::Vector3D o = tr.get_transformed(algebra::Vector3D(0, 0, 0));
-  algebra::Vector3D pts[] = { tr.get_transformed(algebra::Vector3D(10, 0, 0)),
-                              tr.get_transformed(algebra::Vector3D(0, 10, 0)),
-                              tr.get_transformed(algebra::Vector3D(0, 0, 10)) };
-  //Color colors[]= {Color(1,0,0), Color(0,1,0), Color(0,0,1)};
+  algebra::Vector3D pts[] = {tr.get_transformed(algebra::Vector3D(10, 0, 0)),
+                             tr.get_transformed(algebra::Vector3D(0, 10, 0)),
+                             tr.get_transformed(algebra::Vector3D(0, 0, 10))};
+  // Color colors[]= {Color(1,0,0), Color(0,1,0), Color(0,0,1)};
   Geometries ret;
   for (unsigned int i = 0; i < 3; ++i) {
     algebra::Segment3D s(o, pts[i]);
     ret.push_back(new CylinderGeometry(algebra::Cylinder3D(s, 1)));
-    //ret.back()->set_color(colors[i]);
+    // ret.back()->set_color(colors[i]);
   }
   return ret;
 }
-
 }
 
 IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DEF(ReferenceFrameGeometry,

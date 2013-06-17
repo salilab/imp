@@ -45,13 +45,13 @@ class DirectCollectVisitor : public boost::default_dfs_visitor {
   void discover_vertex(typename boost::graph_traits<Graph>::vertex_descriptor u,
                        const TG &) {
     ModelObject *o = vm_[u];
-    //std::cout << "Visiting " << o->get_name() << std::endl;
+    // std::cout << "Visiting " << o->get_name() << std::endl;
     Type *p = dynamic_cast<Type *>(o);
     if (p) {
-      //IMP_LOG_VERBOSE( "Found vertex " << o->get_name() << std::endl);
+      // IMP_LOG_VERBOSE( "Found vertex " << o->get_name() << std::endl);
       vals_.push_back(p);
     } else {
-      //IMP_LOG_VERBOSE( "Visited vertex " << o->get_name() << std::endl);
+      // IMP_LOG_VERBOSE( "Visited vertex " << o->get_name() << std::endl);
     }
   }
 };
@@ -85,7 +85,6 @@ ResultType get_dependent(const ModelObjectsTemp &p, const ModelObjectsTemp &all,
   }
   return cv.get_collected();
 }
-
 }
 
 ParticlesTemp get_dependent_particles(ModelObject *p,
@@ -126,7 +125,8 @@ ScoreStatesTemp get_required_score_states(
 
 namespace {
 
-template <class C, class O> C filter(C c, O *o) {
+template <class C, class O>
+C filter(C c, O *o) {
   std::sort(c.begin(), c.end());
   c.erase(std::unique(c.begin(), c.end()), c.end());
   IMP_INTERNAL_CHECK_VARIABLE(o);
@@ -166,7 +166,6 @@ void add_edge(DependencyGraph &graph,
   boost::add_edge(va, vb, graph);
   IMP_INTERNAL_CHECK(get_has_edge(graph, va, vb),
                      "No has edge between " << va << " and " << vb);
-
 }
 
 DependencyGraphTraits::vertex_descriptor get_vertex(
@@ -237,7 +236,8 @@ DependencyGraph get_dependency_graph(Model *m) {
 }
 
 namespace {
-template <class P> bool get_range_is_empty(const P &p) {
+template <class P>
+bool get_range_is_empty(const P &p) {
   return p.first == p.second;
 }
 }
@@ -296,7 +296,7 @@ struct Connections {
   IMP_CLANG_PRAGMA(diagnostic ignored "-Wunused-member-function")
   IMP_COMPARISONS(Connections);
 };
-//IMP_VALUES(Connections, ConnectionsList);
+// IMP_VALUES(Connections, ConnectionsList);
 inline std::size_t hash_value(const Connections &t) { return t.__hash__(); }
 }
 
@@ -329,9 +329,10 @@ DependencyGraph get_pruned_dependency_graph(Model *m) {
 
 struct cycle_detector : public boost::default_dfs_visitor {
   base::Vector<DependencyGraphVertex> cycle_;
-  template <class DGEdge> void tree_edge(DGEdge e, const DependencyGraph &g) {
+  template <class DGEdge>
+  void tree_edge(DGEdge e, const DependencyGraph &g) {
     DependencyGraphVertex t = boost::target(e, g);
-    //MDGVertex s= boost::source(e, g);
+    // MDGVertex s= boost::source(e, g);
     cycle_.push_back(t);
   }
   template <class DependencyGraphVertex>
@@ -340,18 +341,19 @@ struct cycle_detector : public boost::default_dfs_visitor {
     IMP_USAGE_CHECK(cycle_.back() == v, "They don't match");
     cycle_.pop_back();
   }
-  template <class ED> void back_edge(ED e, const DependencyGraph &g) {
+  template <class ED>
+  void back_edge(ED e, const DependencyGraph &g) {
     DependencyGraphVertex t = boost::target(e, g);
-    //MDGVertex s= boost::source(e, g);
+    // MDGVertex s= boost::source(e, g);
     base::Vector<DependencyGraphVertex>::iterator it =
         std::find(cycle_.begin(), cycle_.end(), t);
-    //std::cout << s << " " << cycle_.back() << std::endl;
+    // std::cout << s << " " << cycle_.back() << std::endl;
     if (it != cycle_.end()) {
       cycle_.erase(cycle_.begin(), it);
       cycle_.push_back(t);
       throw cycle_;
     } else {
-      //std::cout << "non-loop " << s << " " << t << std::endl;
+      // std::cout << "non-loop " << s << " " << t << std::endl;
     }
   }
 };

@@ -32,7 +32,8 @@ class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer {
   friend class AllPairContainer;
 
  public:
-  template <class F> void apply_generic(F* f) const {
+  template <class F>
+  void apply_generic(F* f) const {
     validate_readable();
     ParticleIndexes ib = b_->get_indexes();
     IMP_CONTAINER_FOREACH(SingletonContainer, a_, {

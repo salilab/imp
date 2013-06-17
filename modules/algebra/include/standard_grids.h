@@ -32,7 +32,6 @@ struct SparseUnboundedGridD
   SparseUnboundedGridD() {}
   SparseUnboundedGridD(double side, unsigned int d, const VT &def = VT())
       : P(side, d, def) {}
-
 };
 
 /** A dense grid of values. In python DenseFloatGrid3D and DenseDoubleGrid3D are
@@ -48,7 +47,6 @@ struct DenseGrid3D
   DenseGrid3D(int xd, int yd, int zd, const BoundingBoxD<3> &bb, VT def = VT())
       : P(xd, yd, zd, bb, def) {}
   DenseGrid3D() {}
-
 };
 
 /** A sparse grid of values. In python SparseIntGrid3D is provided.*/
@@ -76,7 +74,6 @@ struct SparseUnboundedGrid3D
   SparseUnboundedGrid3D(double side, const Vector3D &origin, VT def = VT())
       : P(side, origin, def) {}
   SparseUnboundedGrid3D() {}
-
 };
 
 #endif

@@ -39,7 +39,8 @@ enum BoundDirection {
  \see HarmonicLowerBound
  \see HarmonicUpperBound
  */
-template <int DIRECTION> class TruncatedHarmonic : public UnaryFunction {
+template <int DIRECTION>
+class TruncatedHarmonic : public UnaryFunction {
  public:
   /** \param[in] center The center point for the harmonic.
    \param[in] k The spring constant for the harmonic.

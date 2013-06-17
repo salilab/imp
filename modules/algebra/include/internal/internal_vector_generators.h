@@ -26,7 +26,8 @@ inline VectorD<D> get_random_vector_in(const BoundingBoxD<D> &bb) {
   return ret;
 }
 
-template <int D> inline VectorD<D> get_random_vector_on(const SphereD<D> &s) {
+template <int D>
+inline VectorD<D> get_random_vector_on(const SphereD<D> &s) {
   BoundingBoxD<D> bb = get_unit_bounding_box_d<D>();
   do {
     VectorD<D> pt = internal::get_random_vector_in(bb);
@@ -39,13 +40,13 @@ template <int D> inline VectorD<D> get_random_vector_on(const SphereD<D> &s) {
 }
 
 // sillyness due to lack of generic api for creating kd objects
-inline VectorD< -1> get_random_vector_on(const SphereD< -1> &s) {
-  BoundingBoxD< -1> bb = get_unit_bounding_box_kd(s.get_dimension());
+inline VectorD<-1> get_random_vector_on(const SphereD<-1> &s) {
+  BoundingBoxD<-1> bb = get_unit_bounding_box_kd(s.get_dimension());
   do {
-    VectorD< -1> pt = get_random_vector_in(bb);
+    VectorD<-1> pt = get_random_vector_in(bb);
     double r2 = pt.get_squared_magnitude();
     if (r2 < 1 && r2 > .01) {
-      VectorD< -1> udiff = pt.get_unit_vector();
+      VectorD<-1> udiff = pt.get_unit_vector();
       return s.get_center() + udiff * s.get_radius();
     }
   } while (true);
@@ -229,14 +230,17 @@ inline Vector2Ds uniform_cover_sphere(unsigned int N, const Vector2D &center,
   return ret;
 }
 
-template <int DO> struct DMinus1 {
+template <int DO>
+struct DMinus1 {
   static const int D = DO - 1;
 };
-template <> struct DMinus1< -1> {
+template <>
+struct DMinus1<-1> {
   static const int D = -1;
 };
 
-template <int D> struct RandomVectorOnBB {
+template <int D>
+struct RandomVectorOnBB {
   static VectorD<D> get(BoundingBoxD<D> bb) {
     IMP_USAGE_CHECK(D > 0, "Does not work in runtime D yet");
     boost::scoped_array<double> areas(new double[bb.get_dimension() * 2]);
@@ -260,7 +264,7 @@ template <int D> struct RandomVectorOnBB {
       }*/
     ::boost::uniform_real<> rand(0, areas[2 * bb.get_dimension() - 1]);
     double a = rand(base::random_number_generator);
-    //std::cout << ": " << a << std::endl;
+    // std::cout << ": " << a << std::endl;
     unsigned int side;
     for (side = 0; side < 2 * bb.get_dimension(); ++side) {
       if (areas[side] > a) break;
@@ -279,7 +283,7 @@ template <int D> struct RandomVectorOnBB {
         BoundingBoxD<internal::DMinus1<D>::D>(vfmin, vfmax));
 
     Floats ret(bb.get_dimension());
-    //std::cout << "Side is " << side << std::endl;
+    // std::cout << "Side is " << side << std::endl;
     if (side >= bb.get_dimension()) {
       std::copy(ub.coordinates_begin(), ub.coordinates_end(), ret.begin());
       for (unsigned int i = 1; i < bb.get_dimension(); ++i) {
@@ -296,7 +300,8 @@ template <int D> struct RandomVectorOnBB {
   }
 };
 
-template <> struct RandomVectorOnBB<1> {
+template <>
+struct RandomVectorOnBB<1> {
   static VectorD<1> get(BoundingBoxD<1> bb) {
     ::boost::uniform_int<> rand(0, 1);
     return bb.get_corner(rand(base::random_number_generator));

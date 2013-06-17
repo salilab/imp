@@ -68,7 +68,7 @@ class IMPSTATISTICSEXPORT KMLocalSearch {
   virtual void reset();
   virtual bool is_done() const;
   virtual void begin_run();
-  //apply stage
+  // apply stage
   virtual void preform_stage() {}
   virtual void begin_stage() {}
   //! End of stage processing
@@ -84,8 +84,8 @@ class IMPSTATISTICSEXPORT KMLocalSearch {
   Int dim_;
   Int stage_num_;
   Int run_init_stage_;           // the stage at which a new run started
-  KMFilterCenters *curr_;        //current solution
-  KMFilterCentersResults best_;  //best solution so far
+  KMFilterCenters *curr_;        // current solution
+  KMFilterCentersResults best_;  // best solution so far
   KMTerminationCondition *term_;
 };
 

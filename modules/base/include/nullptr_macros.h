@@ -16,6 +16,6 @@
 #else
 #define IMP_NULLPTR IMP::nullptr
 #define IMP_NULLPTR_T IMP::nullptr_t
-#endif // IMP_COMPILER_HAS_NULLPTR
+#endif  // IMP_COMPILER_HAS_NULLPTR
 
-#endif  /* IMPBASE_NULLPTR_MACROS_H */
+#endif /* IMPBASE_NULLPTR_MACROS_H */

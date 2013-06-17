@@ -28,7 +28,7 @@ using namespace std;
 
 inline static double seconds(void) {
   const double secs_per_tick = 1.0 / CLOCKS_PER_SEC;
-  return ((double) clock()) * secs_per_tick;
+  return ((double)clock()) * secs_per_tick;
 }
 
 class Stopwatch {

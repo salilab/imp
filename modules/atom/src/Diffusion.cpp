@@ -28,7 +28,6 @@ Diffusion Diffusion::setup_particle(Particle *p) {
 void Diffusion::show(std::ostream &out) const {
   XYZ::show(out);
   out << "D= " << get_diffusion_coefficient() << "A^2/fs";
-
 }
 
 double get_diffusion_coefficient_from_cm2_per_second(double din) {
@@ -55,7 +54,6 @@ FloatKey RigidBodyDiffusion::get_rotational_diffusion_coefficient_key() {
 void RigidBodyDiffusion::show(std::ostream &out) const {
   Diffusion::show(out);
   out << "D rotation= " << get_rotational_diffusion_coefficient() << "1/sec";
-
 }
 
 IMPATOM_END_NAMESPACE

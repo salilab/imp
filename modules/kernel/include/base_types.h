@@ -144,8 +144,7 @@ IMP_VALUES(ParticleTriplet, ParticleTripletsTemp);
 typedef base::Array<4, base::WeakPointer<Particle>, Particle*> ParticleQuad;
 IMP_VALUES(ParticleQuad, ParticleQuadsTemp);
 
-class ParticleIndexTag {
-};
+class ParticleIndexTag {};
 /** A unique identifier for a particle within a Model. Use it to get
     attributes and do other operations.*/
 typedef base::Index<ParticleIndexTag> ParticleIndex;

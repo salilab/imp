@@ -102,9 +102,7 @@ class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
     set_optimizer_state_optimizer(obj, this);
     obj->set_was_used(true);
   },
-                  {
-  },
-                  {
+                  {}, {
     Optimizer::set_optimizer_state_optimizer(obj, nullptr);
   });
   /**@}*/
@@ -131,49 +129,50 @@ class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
 #ifndef SWIG
   /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-      FloatIndexes get_optimized_attributes() const;
+  FloatIndexes get_optimized_attributes() const;
   /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-      void set_value(FloatIndex fi, double v) const;
+  void set_value(FloatIndex fi, double v) const;
 
   /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-      Float get_value(FloatIndex fi) const;
+  Float get_value(FloatIndex fi) const;
 
   /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-      Float get_derivative(FloatIndex fi) const;
+  Float get_derivative(FloatIndex fi) const;
 
-    //!@}
+//!@}
 
 #if !defined(SWIG)
   /** \deprecated_at{2.1} Use get_width instead.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-      double width(FloatKey k) const;
+  double width(FloatKey k) const;
 #endif
   /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-      double get_width(FloatKey k) const;
+  double get_width(FloatKey k) const;
   /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-      void set_scaled_value (FloatIndex fi, Float v) const;
+  void set_scaled_value(FloatIndex fi, Float v) const;
 
   /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-      double get_scaled_value (FloatIndex fi) const;
+  double get_scaled_value(FloatIndex fi) const;
 
   /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-      double get_scaled_derivative(FloatIndex fi) const;
+  double get_scaled_derivative(FloatIndex fi) const;
 
   /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-      void clear_range_cache();
-#endif // SWIG
+  void clear_range_cache();
+#endif  // SWIG
 
   /** \deprecated_at{2.1} Use Optimizer::get_scoring_function() instead. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   Restraints get_restraints() const;
+
  private:
   void set_is_optimizing_states(bool tf) const;
   static void set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o);

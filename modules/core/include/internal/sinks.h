@@ -104,7 +104,8 @@ struct ParticleIndexPairSink {
   }
 };
 
-template <class PS> struct ParticlePairSinkWithMax : public ParticlePairSink {
+template <class PS>
+struct ParticlePairSinkWithMax : public ParticlePairSink {
   double &score_;
   double max_;
   PS *ssps_;

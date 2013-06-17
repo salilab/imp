@@ -15,7 +15,8 @@
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
-template <class Accessor> class IndexingIterator {
+template <class Accessor>
+class IndexingIterator {
   Accessor a_;
   unsigned int i_;
   mutable typename Accessor::result_type vt_;

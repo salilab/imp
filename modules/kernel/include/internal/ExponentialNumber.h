@@ -31,12 +31,14 @@ namespace unit {
     and meter without much pain. Since the exponent is stored
     as a template argument, there shouldn't be any runtime overhead.
  */
-template <int EXP> class ExponentialNumber {
+template <int EXP>
+class ExponentialNumber {
   double v_;
 
   typedef ExponentialNumber<EXP> This;
 
-  template <int OEXP> void copy_from(ExponentialNumber<OEXP> o) {
+  template <int OEXP>
+  void copy_from(ExponentialNumber<OEXP> o) {
     const int diff = OEXP - EXP;
     v_ = o.v_;
     double factor = std::pow(10.0, static_cast<double>(diff));
@@ -46,7 +48,8 @@ template <int EXP> class ExponentialNumber {
     return v_ >= std::numeric_limits<double>::infinity();
   }
 
-  template <int E> friend class ExponentialNumber;
+  template <int E>
+  friend class ExponentialNumber;
   int compare(const This &o) const {
     if (v_ < o.v_)
       return -1;
@@ -59,11 +62,13 @@ template <int EXP> class ExponentialNumber {
  public:
 
   ExponentialNumber() : v_(std::numeric_limits<double>::infinity()) {}
-  template <int OEXP> ExponentialNumber(ExponentialNumber<OEXP> o) {
+  template <int OEXP>
+  ExponentialNumber(ExponentialNumber<OEXP> o) {
     copy_from(o);
   }
   explicit ExponentialNumber(double d) : v_(d) {}
-  template <int OEXP> This &operator=(ExponentialNumber<OEXP> o) {
+  template <int OEXP>
+  This &operator=(ExponentialNumber<OEXP> o) {
     copy_from(o);
     return *this;
   }

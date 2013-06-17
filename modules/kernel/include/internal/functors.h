@@ -15,7 +15,8 @@
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
-template <class Pred, bool Sense> class PredicateEquals {
+template <class Pred, bool Sense>
+class PredicateEquals {
   base::OwnerPointer<const Pred> p_;
   base::Pointer<Model> m_;
   int v_;

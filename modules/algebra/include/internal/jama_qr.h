@@ -39,7 +39,8 @@ using namespace std;
   by the Mathworks and NIST; see  http://math.nist.gov/javanumerics/jama).
 */
 
-template <class Real> class QR {
+template <class Real>
+class QR {
 
   /** Array for internal storage of decomposition.
   @serial internal array storage.
@@ -232,8 +233,7 @@ template <class Real> class QR {
 
     /* return n x nx portion of X */
     TNT::Array1D<Real> x_(n);
-    for (int i = 0; i < n; i++)
-      x_[i] = x[i];
+    for (int i = 0; i < n; i++) x_[i] = x[i];
 
     return x_;
   }
@@ -286,14 +286,11 @@ template <class Real> class QR {
     /* return n x nx portion of X */
     TNT::Array2D<Real> X_(n, nx);
     for (i = 0; i < n; i++)
-      for (j = 0; j < nx; j++)
-        X_[i][j] = X[i][j];
+      for (j = 0; j < nx; j++) X_[i][j] = X[i][j];
 
     return X_;
   }
-
 };
-
 }
 // namespace JAMA
 

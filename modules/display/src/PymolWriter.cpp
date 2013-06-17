@@ -100,7 +100,7 @@ bool PymolWriter::handle_label(LabelGeometry *g, Color, std::string name) {
   cleanup(lastname_, true);
   setup(name, OTHER, false);
 
-  //write_color(get_stream(), color);
+  // write_color(get_stream(), color);
   get_stream()
       << "cyl_text(curdata,plain, ["
       << g->get_location().get_center()[0] + g->get_location().get_radius()

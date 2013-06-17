@@ -19,13 +19,13 @@ class IMPSTATISTICSEXPORT VQClusteringParameters {
  public:
   int dim_;
   bool show_status_bar_;
-  int k_;  //number of centers
+  int k_;  // number of centers
   int number_of_runs_;
   int number_of_steps_;
   double ei_, ef_;        // parameters for epsilon updates
   double li_, lf_;        // parameters for lamda updates
-  double random_offset_;  //random offset for point sampling
-  bool eq_clusters_;      //should the clusters have equal size
+  double random_offset_;  // random offset for point sampling
+  bool eq_clusters_;      // should the clusters have equal size
   void show(std::ostream &out = std::cout) const {
     out << "Dimension      : " << dim_ << std::endl;
     out << "Number of runs : " << number_of_runs_ << std::endl;
@@ -69,7 +69,7 @@ class IMPSTATISTICSEXPORT VQClustering : public ClusteringEngine {
   int get_cluster_assignment(int data_point_ind) const {
     IMP_USAGE_CHECK(is_set_,
                     " the clusters have not been assigned " << std::endl);
-    IMP_USAGE_CHECK((unsigned int) data_point_ind < assignment_.size(),
+    IMP_USAGE_CHECK((unsigned int)data_point_ind < assignment_.size(),
                     " no cluster has been assigned to data point "
                         << data_point_ind << std::endl);
     return assignment_[data_point_ind];
@@ -119,19 +119,19 @@ class IMPSTATISTICSEXPORT VQClustering : public ClusteringEngine {
   void clustering(Array1DD_VEC *tracking, Array1DD_VEC *centers);
   void get_eq_centers(Array1DD_VEC *centers, Array1DD_VEC *eq_centers);
   void set_assignments();
-  //void set_centers_as_particles();
+  // void set_centers_as_particles();
   void sample_data_point(Array1DD &p);
-  //sample initial centers from the data
+  // sample initial centers from the data
   void center_sampling(Array1DD_VEC *centers_sample);
   int dim_;
   VQClusteringParameters par_;
   bool show_status_bar_;
-  int k_;        //number of centers
-  bool is_set_;  //is_set_ is true if the clustering was preformed
+  int k_;        // number of centers
+  bool is_set_;  // is_set_ is true if the clustering was preformed
   const Array1DD_VEC *data_;
   base::OwnerPointer<DataPoints> full_data_;
   Array1DD_VEC centers_;
-  std::vector<int> assignment_;  //the assignment of data points to clusters
+  std::vector<int> assignment_;  // the assignment of data points to clusters
 };
 IMPSTATISTICS_END_INTERNAL_NAMESPACE
 #endif /* IMPSTATISTICS_INTERNAL_VQ_CLUSTERING_H */

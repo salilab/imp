@@ -44,12 +44,14 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
     \geometry
  */
-template <int D> class VectorD : public GeometricPrimitiveD<D> {
+template <int D>
+class VectorD : public GeometricPrimitiveD<D> {
   void check_vector() const {
     IMP_USAGE_CHECK(!data_.get_is_null(),
                     "Attempt to use uninitialized vector.");
   }
-  template <int OD> void check_compatible_vector(const VectorD<OD> &o) const {
+  template <int OD>
+  void check_compatible_vector(const VectorD<OD> &o) const {
     IMP_USAGE_CHECK_VARIABLE(o);
     IMP_USAGE_CHECK(o.get_dimension() == get_dimension(),
                     "Dimensions don't match: " << get_dimension() << " vs "
@@ -59,22 +61,23 @@ template <int D> class VectorD : public GeometricPrimitiveD<D> {
 #if IMP_HAS_CHECKS < IMP_INTERNAL
     IMP_UNUSED(i);
 #endif
-    IMP_INTERNAL_CHECK(
-        i < data_.get_dimension(),
-        "Invalid component of vector requested: " << i << " of "
-                                                  << get_dimension());
+    IMP_INTERNAL_CHECK(i < data_.get_dimension(),
+                       "Invalid component of vector requested: "
+                           << i << " of " << get_dimension());
   }
 
  public:
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  template <int OD> VectorD(const VectorD<OD> &o) {
+  template <int OD>
+  VectorD(const VectorD<OD> &o) {
     BOOST_STATIC_ASSERT(D == -1 || OD == -1 || D == OD);
     IMP_USAGE_CHECK(
         D == -1 || o.get_dimension() == static_cast<unsigned int>(D),
         "Dimensions don't match in conversion");
     data_.set_coordinates(o.coordinates_begin(), o.coordinates_end());
   }
-  template <int OD> VectorD &operator=(const VectorD<OD> &o) {
+  template <int OD>
+  VectorD &operator=(const VectorD<OD> &o) {
     BOOST_STATIC_ASSERT(D == -1 || OD == -1 || D == OD);
     IMP_USAGE_CHECK(D == -1 || o.get_dimension() == D,
                     "Dimensions don't match in conversion");
@@ -93,7 +96,10 @@ template <int D> class VectorD : public GeometricPrimitiveD<D> {
 
   /** The distance between b and e must be equal to D.
    */
-  template <class It> VectorD(It b, It e) { data_.set_coordinates(b, e); }
+  template <class It>
+  VectorD(It b, It e) {
+    data_.set_coordinates(b, e);
+  }
 
   //! Initialize the 1-vector from its value.
   explicit VectorD(double x) {
@@ -117,7 +123,7 @@ template <int D> class VectorD : public GeometricPrimitiveD<D> {
 #else
     BOOST_STATIC_ASSERT(D == 2);
 #endif
-    double d[] = { x, y };
+    double d[] = {x, y};
     data_.set_coordinates(d, d + 2);
   }
 
@@ -129,7 +135,7 @@ template <int D> class VectorD : public GeometricPrimitiveD<D> {
 #else
     BOOST_STATIC_ASSERT(D == 3);
 #endif
-    double d[] = { x, y, z };
+    double d[] = {x, y, z};
     data_.set_coordinates(d, d + 3);
   }
 
@@ -141,7 +147,7 @@ template <int D> class VectorD : public GeometricPrimitiveD<D> {
 #else
     BOOST_STATIC_ASSERT(D == 4);
 #endif
-    double d[] = { x0, x1, x2, x3 };
+    double d[] = {x0, x1, x2, x3};
     data_.set_coordinates(d, d + 4);
   }
 
@@ -330,7 +336,7 @@ template <int D> class VectorD : public GeometricPrimitiveD<D> {
 #ifndef IMP_DOXYGEN
 
 template <int D>
-    inline std::ostream &operator<<(std::ostream &out, const VectorD<D> &v) {
+inline std::ostream &operator<<(std::ostream &out, const VectorD<D> &v) {
   v.show(out);
   return out;
 }
@@ -349,7 +355,8 @@ template <int D>
 /** Note that this is not very reliable and probably should not be used.
     See VectorD
  */
-template <int D> inline int compare(const VectorD<D> &a, const VectorD<D> &b) {
+template <int D>
+inline int compare(const VectorD<D> &a, const VectorD<D> &b) {
   IMP_USAGE_CHECK(a.get_dimension() == b.get_dimension(),
                   "Dimensions don't match.");
   for (unsigned int i = 0; i < a.get_dimension(); ++i) {
@@ -362,7 +369,8 @@ template <int D> inline int compare(const VectorD<D> &a, const VectorD<D> &b) {
 }
 
 /** See VectorD */
-template <int D> inline VectorD<D> operator*(double s, const VectorD<D> &o) {
+template <int D>
+inline VectorD<D> operator*(double s, const VectorD<D> &o) {
   return o * s;
 }
 
@@ -390,7 +398,8 @@ inline double get_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
     \endcode
     See VectorD
  */
-template <int D> inline VectorD<D> get_basis_vector_d(unsigned int coordinate) {
+template <int D>
+inline VectorD<D> get_basis_vector_d(unsigned int coordinate) {
   IMP_USAGE_CHECK(coordinate < D, "There are only " << D << " basis vectors");
   double vs[D];
   for (unsigned int i = 0; i < D; ++i) {
@@ -403,7 +412,7 @@ template <int D> inline VectorD<D> get_basis_vector_d(unsigned int coordinate) {
 }
 
 //! Return a dynamically sized basis vector
-inline VectorD< -1> get_basis_vector_kd(int D, unsigned int coordinate) {
+inline VectorD<-1> get_basis_vector_kd(int D, unsigned int coordinate) {
   IMP_USAGE_CHECK(D > 0, "D must be positive");
   IMP_USAGE_CHECK(coordinate < static_cast<unsigned int>(D),
                   "There are only " << D << " basis vectors");
@@ -414,35 +423,37 @@ inline VectorD< -1> get_basis_vector_kd(int D, unsigned int coordinate) {
     else
       vs[i] = 0;
   }
-  return VectorD< -1>(vs.get(), vs.get() + D);
+  return VectorD<-1>(vs.get(), vs.get() + D);
 }
 
 //! Return a vector of zeros
-template <int D> inline VectorD<D> get_zero_vector_d() {
+template <int D>
+inline VectorD<D> get_zero_vector_d() {
   IMP_USAGE_CHECK(D > 0, "D must be positive");
   Floats vs(D, 0);
   return VectorD<D>(vs.begin(), vs.end());
 }
 
 //! Return a dynamically sized vector of zeros
-inline VectorD< -1> get_zero_vector_kd(int D) {
+inline VectorD<-1> get_zero_vector_kd(int D) {
   IMP_USAGE_CHECK(D > 0, "D must be positive");
   Floats vs(D, 0);
-  return VectorD< -1>(vs.begin(), vs.end());
+  return VectorD<-1>(vs.begin(), vs.end());
 }
 
 //! Return a vector of ones (or another constant)
-inline VectorD< -1> get_ones_vector_kd(unsigned int D, double v = 1) {
+inline VectorD<-1> get_ones_vector_kd(unsigned int D, double v = 1) {
   IMP_USAGE_CHECK(D > 0, "D must be positive");
   boost::scoped_array<double> vv(new double[D]);
   for (unsigned int i = 0; i < D; ++i) {
     vv[i] = v;
   }
-  return VectorD< -1>(vv.get(), vv.get() + D);
+  return VectorD<-1>(vv.get(), vv.get() + D);
 }
 
 //! Return a vector of ones (or another constant)
-template <int D> inline VectorD<D> get_ones_vector_d(double v = 1) {
+template <int D>
+inline VectorD<D> get_ones_vector_d(double v = 1) {
   IMP_USAGE_CHECK(D > 0, "D must be positive");
   boost::scoped_array<double> vv(new double[D]);
   for (unsigned int i = 0; i < D; ++i) {
@@ -461,11 +472,13 @@ template <int D> inline VectorD<D> get_ones_vector_d(double v = 1) {
     @{
 */
 
-template <int D> inline double get_l2_norm(const VectorD<D> &v) {
+template <int D>
+inline double get_l2_norm(const VectorD<D> &v) {
   return v.get_magnitude();
 }
 
-template <int D> inline double get_l1_norm(const VectorD<D> &v) {
+template <int D>
+inline double get_l1_norm(const VectorD<D> &v) {
   double n = std::abs(v[0]);
   for (unsigned int i = 1; i < v.get_dimension(); ++i) {
     n += std::abs(v[i]);
@@ -473,7 +486,8 @@ template <int D> inline double get_l1_norm(const VectorD<D> &v) {
   return n;
 }
 
-template <int D> inline double get_linf_norm(const VectorD<D> &v) {
+template <int D>
+inline double get_linf_norm(const VectorD<D> &v) {
   double n = std::abs(v[0]);
   for (unsigned int i = 1; i < v.get_dimension(); ++i) {
     n = std::max(n, std::abs(v[i]));
@@ -485,22 +499,24 @@ template <int D> inline double get_linf_norm(const VectorD<D> &v) {
 
 #ifndef IMP_DOXYGEN
 
-template <int D> struct SpacesIO {
+template <int D>
+struct SpacesIO {
   const VectorD<D> &v_;
   SpacesIO(const VectorD<D> &v) : v_(v) {}
 };
 
-template <int D> struct CommasIO {
+template <int D>
+struct CommasIO {
   const VectorD<D> &v_;
   CommasIO(const VectorD<D> &v) : v_(v) {}
 };
 template <int D>
-    inline std::ostream &operator<<(std::ostream &out, const SpacesIO<D> &s) {
+inline std::ostream &operator<<(std::ostream &out, const SpacesIO<D> &s) {
   s.v_.show(out, " ", false);
   return out;
 }
 template <int D>
-    inline std::ostream &operator<<(std::ostream &out, const CommasIO<D> &s) {
+inline std::ostream &operator<<(std::ostream &out, const CommasIO<D> &s) {
   s.v_.show(out, ", ", false);
   return out;
 }
@@ -510,7 +526,8 @@ template <int D>
     produces "1.0 2.0 3.0"
     See VectorD
  */
-template <int D> inline SpacesIO<D> spaces_io(const VectorD<D> &v) {
+template <int D>
+inline SpacesIO<D> spaces_io(const VectorD<D> &v) {
   return SpacesIO<D>(v);
 }
 
@@ -519,13 +536,14 @@ template <int D> inline SpacesIO<D> spaces_io(const VectorD<D> &v) {
     produces "1.0, 2.0, 3.0"
     See VectorD
  */
-template <int D> inline CommasIO<D> commas_io(const VectorD<D> &v) {
+template <int D>
+inline CommasIO<D> commas_io(const VectorD<D> &v) {
   return CommasIO<D>(v);
 }
 #endif  // doxygen
 
-#endif  //swig
-        /** 1D vector typedef for swig */
+#endif  // swig
+/** 1D vector typedef for swig */
 typedef VectorD<1> Vector1D;
 /** 1D vectors typedef for swig */
 typedef base::Vector<VectorD<1> > Vector1Ds;
@@ -550,9 +568,9 @@ typedef VectorD<6> Vector6D;
 /** 6D vector typedef for swig */
 typedef base::Vector<VectorD<6> > Vector6Ds;
 /** KD vector typedef for swig */
-typedef VectorD< -1> VectorKD;
+typedef VectorD<-1> VectorKD;
 /** KD vectors typedef for swig */
-typedef base::Vector<VectorD< -1> > VectorKDs;
+typedef base::Vector<VectorD<-1> > VectorKDs;
 
 /** See VectorD */
 template <int D>
@@ -596,8 +614,7 @@ inline VectorD<D> get_elementwise_product(const Ints &a,
     See VectorD
  */
 template <int D>
-class VectorInputD : public VectorD<D>,
-                     public base::InputAdaptor {
+class VectorInputD : public VectorD<D>, public base::InputAdaptor {
  public:
   VectorInputD(const VectorD<D> &v) : VectorD<D>(v) {}
   VectorInputD(const Floats &v) : VectorD<D>(v) {}
@@ -608,8 +625,7 @@ class VectorInputD : public VectorD<D>,
     See VectorD
  */
 template <>
-class VectorInputD<1> : public VectorD<1>,
-                        public base::InputAdaptor {
+class VectorInputD<1> : public VectorD<1>, public base::InputAdaptor {
  public:
   VectorInputD(const VectorD<1> &v) : VectorD<1>(v) {}
   VectorInputD(const Floats &v) : VectorD<1>(v) {}
@@ -641,9 +657,9 @@ typedef VectorInputD<6> VectorInput6D;
 /** Typedef for python. */
 typedef base::Vector<VectorInputD<6> > VectorInput6Ds;
 /** Typedef for python. */
-typedef VectorInputD< -1> VectorInputKD;
+typedef VectorInputD<-1> VectorInputKD;
 /** Typedef for python. */
-typedef base::Vector<VectorInputD< -1> > VectorInputKDs;
+typedef base::Vector<VectorInputD<-1> > VectorInputKDs;
 
 IMPALGEBRA_END_NAMESPACE
 

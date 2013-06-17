@@ -29,17 +29,17 @@ Color::~Color() {}
 
 Color get_display_color(unsigned int i) {
   // from http://colorbrewer2.org/
-  static const Color all[] = { Color(166 / 255., 206. / 255., 227. / 255.),
-                               Color(31. / 255., 120. / 255., 180. / 255.),
-                               Color(178. / 255., 223. / 255., 138. / 255.),
-                               Color(51. / 255., 160. / 255., 44. / 255.),
-                               Color(251. / 255., 154. / 255., 153. / 255.),
-                               Color(227. / 255., 26. / 255., 28. / 255.),
-                               Color(253. / 255., 191. / 255., 111. / 255.),
-                               Color(255. / 255., 127. / 255., 0. / 255.),
-                               Color(202. / 255., 178. / 255., 214. / 255.),
-                               Color(106. / 255., 61. / 255., 154. / 255.),
-                               Color(255. / 255., 255. / 255., 153. / 255.) };
+  static const Color all[] = {Color(166 / 255., 206. / 255., 227. / 255.),
+                              Color(31. / 255., 120. / 255., 180. / 255.),
+                              Color(178. / 255., 223. / 255., 138. / 255.),
+                              Color(51. / 255., 160. / 255., 44. / 255.),
+                              Color(251. / 255., 154. / 255., 153. / 255.),
+                              Color(227. / 255., 26. / 255., 28. / 255.),
+                              Color(253. / 255., 191. / 255., 111. / 255.),
+                              Color(255. / 255., 127. / 255., 0. / 255.),
+                              Color(202. / 255., 178. / 255., 214. / 255.),
+                              Color(106. / 255., 61. / 255., 154. / 255.),
+                              Color(255. / 255., 255. / 255., 153. / 255.)};
   static const int size = sizeof(all) / sizeof(Color);
   return all[i % size];
 }
@@ -59,31 +59,31 @@ Color get_color_map_color(double f, Color *colors, unsigned int n) {
 }
 
 Color get_jet_color(double f) {
-  static Color colors[] = { Color(0, 0, 1), Color(0, 1, 1), Color(1, 1, 0),
-                            Color(1, 0, 0), Color(1, 0, 1), Color(0, 0, 1) };
+  static Color colors[] = {Color(0, 0, 1), Color(0, 1, 1), Color(1, 1, 0),
+                           Color(1, 0, 0), Color(1, 0, 1), Color(0, 0, 1)};
   return get_color_map_color(f, colors, sizeof(colors) / sizeof(Color));
 }
 
 Color get_rgb_color(double f) {
-  static Color colors[] = { Color(0, 0, 1), Color(0, 1, 0), Color(1, 0, 0) };
+  static Color colors[] = {Color(0, 0, 1), Color(0, 1, 0), Color(1, 0, 0)};
   return get_color_map_color(f, colors, sizeof(colors) / sizeof(Color));
 }
 
 Color get_hot_color(double f) {
-  static Color colors[] = { Color(0, 0, 0), Color(1, 0, 0), Color(1, 1, 0),
-                            Color(1, 1, 1) };
+  static Color colors[] = {Color(0, 0, 0), Color(1, 0, 0), Color(1, 1, 0),
+                           Color(1, 1, 1)};
   return get_color_map_color(f, colors, sizeof(colors) / sizeof(Color));
 }
 
 Color get_grey_color(double f) {
-  static Color colors[] = { Color(0, 0, 0), Color(1, 1, 1) };
+  static Color colors[] = {Color(0, 0, 0), Color(1, 1, 1)};
   return get_color_map_color(f, colors, sizeof(colors) / sizeof(Color));
 }
 
 Color get_gnuplot_color(double f) {
-  static Color colors[] = { Color(0, 0, 0), Color(.5, 0, 1), Color(.6, 0, .6),
-                            Color(.75, .25, 0), Color(.9, .5, 0),
-                            Color(1, 1, 0) };
+  static Color colors[] = {Color(0, 0, 0), Color(.5, 0, 1), Color(.6, 0, .6),
+                           Color(.75, .25, 0), Color(.9, .5, 0),
+                           Color(1, 1, 0)};
   return get_color_map_color(f, colors, sizeof(colors) / sizeof(Color));
 }
 

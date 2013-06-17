@@ -65,8 +65,8 @@ class IMPSTATISTICSEXPORT KMCentersNodeLeaf : public KMCentersNode {
   void show(std::ostream &out = std::cout) const;
 
  protected:
-  Ints data_ps_;  //the indexes of data points
-                  //which are part of the leaf
+  Ints data_ps_;  // the indexes of data points
+                  // which are part of the leaf
 };
 
 #endif

@@ -118,7 +118,7 @@ void fix_internal_coordinates(core::RigidBody rb, algebra::ReferenceFrame3D rf,
 }
 
 void fix_rigid_body(const std::pair<core::RigidBody, ParticleIndexes> &in) {
-  //core::RigidMembers rms=in.second;
+  // core::RigidMembers rms=in.second;
   core::RigidBody rb = in.first;
   rb.set_reference_frame_from_members(in.second);
   algebra::ReferenceFrame3D rf = rb.get_reference_frame();
@@ -127,7 +127,6 @@ void fix_rigid_body(const std::pair<core::RigidBody, ParticleIndexes> &in) {
     fix_internal_coordinates(rb, rf, in.second[i]);
   }
 }
-
 }
 void HierarchyLoadLink::do_load_node(RMF::NodeConstHandle nh, Particle *o) {
   if (rigid_factory_.get_is(nh)) {
@@ -188,7 +187,7 @@ void HierarchyLoadLink::do_load_one(RMF::NodeConstHandle nh, Particle *o) {
   }
   std::for_each(rbs.begin(), rbs.end(), fix_rigid_body);
 
-  //IMP::atom::show(atom::Hierarchy(o));
+  // IMP::atom::show(atom::Hierarchy(o));
   IMP_INTERNAL_CHECK(atom::Hierarchy(o).get_is_valid(true),
                      "Invalid hierarchy loaded");
 }
@@ -316,7 +315,7 @@ Particle *HierarchyLoadLink::do_create(RMF::NodeConstHandle name) {
   IMP_USAGE_CHECK(
       name.get_file().get_current_frame().get_id() == RMF::FrameID(0),
       "Bad frame in create: " << name.get_file().get_current_frame());
-  //IMP::atom::show(atom::Hierarchy(ret));
+  // IMP::atom::show(atom::Hierarchy(ret));
   IMP_INTERNAL_CHECK(atom::Hierarchy(ret).get_is_valid(true),
                      "Invalid hierarchy created");
   return ret;
@@ -516,7 +515,6 @@ void HierarchySaveLink::do_save_node(Particle *p, RMF::NodeHandle n) {
           .set_force(RMF::Floats(fv.coordinates_begin(), fv.coordinates_end()));
     }
   }
-
 }
 void HierarchySaveLink::do_save_one(Particle *o, RMF::NodeHandle nh) {
   RMF::FileHandle fh = nh.get_file();

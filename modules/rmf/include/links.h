@@ -38,6 +38,7 @@ IMP_OBJECTS(LoadLink, LoadLinks);
 */
 class IMPRMFEXPORT LoadLink : public base::Object {
   bool frame_loaded_;
+
  protected:
   virtual void do_load(RMF::FileConstHandle fh) = 0;
   LoadLink(std::string name);
@@ -59,6 +60,7 @@ class IMPRMFEXPORT LoadLink : public base::Object {
 */
 class IMPRMFEXPORT SaveLink : public base::Object {
   bool frame_saved_;
+
  protected:
   virtual void do_save(RMF::FileHandle hf) = 0;
   SaveLink(std::string name);

@@ -21,9 +21,8 @@ class TouchyRestraint : public IMP::Restraint {
  public:
   TouchyRestraint(IMP::Particle *p, IMP::FloatKey fk)
       : IMP::Restraint(p->get_model(), "Touchy"), p_(p), fk_(fk) {}
-  virtual double
-  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
-      const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(
+      IMP::kernel::DerivativeAccumulator *accum) const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(TouchyRestraint);
 };
@@ -36,7 +35,6 @@ double TouchyRestraint::unprotected_evaluate(
 IMP::ModelObjectsTemp TouchyRestraint::do_get_inputs() const {
   return IMP::ModelObjectsTemp();
 }
-
 }
 
 int main(int argc, char *argv[]) {

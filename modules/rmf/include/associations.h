@@ -28,7 +28,8 @@ typedef base::Pointer<LoadLink> LoadLinkAssociationType;
 IMPRMFEXPORT void set_association(RMF::NodeConstHandle nh, base::Object *o,
                                   bool overwrite = false);
 
-template <class T> inline T *get_association(RMF::NodeConstHandle nh) {
+template <class T>
+inline T *get_association(RMF::NodeConstHandle nh) {
   AssociationType o = nh.get_association<AssociationType>();
   base::Object *op = o;
   return dynamic_cast<T *>(op);

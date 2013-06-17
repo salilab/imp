@@ -21,12 +21,12 @@ IMPKERNEL_BEGIN_NAMESPACE
 */
 class IMPKERNELEXPORT AttributeOptimizer : public Optimizer {
  public:
- /** \deprecated_at{2.1} Use the constructor with a Model and a name.*/
+  /** \deprecated_at{2.1} Use the constructor with a Model and a name.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   AttributeOptimizer();
   AttributeOptimizer(Model *m, std::string name = "Optimizer %1%");
 
-protected:
+ protected:
 
   /** @name Methods for getting and setting optimized attributes
       Optimizers don't have to go through the particles themselves
@@ -44,7 +44,7 @@ protected:
     get_model()->set_attribute(fi.get_key(), fi.get_particle(), v);
   }
 
- Float get_value(FloatIndex fi) const {
+  Float get_value(FloatIndex fi) const {
     return get_model()->get_attribute(fi.get_key(), fi.get_particle());
   }
 
@@ -52,7 +52,7 @@ protected:
     return get_model()->get_derivative(fi.get_key(), fi.get_particle());
   }
 
-    //!@}
+  //!@}
 
   double get_width(FloatKey k) const {
     if (widths_.size() <= k.get_index() || widths_[k.get_index()] == 0) {
@@ -60,7 +60,7 @@ protected:
       double wid = static_cast<double>(w.second) - w.first;
       widths_.resize(std::max(widths_.size(), size_t(k.get_index() + 1)), 0.0);
       if (wid > .0001) {
-        //double nwid= std::pow(2, std::ceil(log2(wid)));
+        // double nwid= std::pow(2, std::ceil(log2(wid)));
         widths_[k.get_index()] = wid;
       } else {
         widths_[k.get_index()] = 1.0;
@@ -69,19 +69,19 @@ protected:
     return widths_[k.get_index()];
   }
 
-    /** @name Methods to get and set scaled optimizable values
-        Certain optimizers benefit from having all the optimized values
-        scaled to vary over a similar range. These accessors use the
-        Model::get_range ranges to scale the values before returning
-        them and unscale them before setting them.
-    */
-    //{@
-  void set_scaled_value (FloatIndex fi, Float v) const {
+  /** @name Methods to get and set scaled optimizable values
+      Certain optimizers benefit from having all the optimized values
+      scaled to vary over a similar range. These accessors use the
+      Model::get_range ranges to scale the values before returning
+      them and unscale them before setting them.
+  */
+  //{@
+  void set_scaled_value(FloatIndex fi, Float v) const {
     double wid = get_width(fi.get_key());
     set_value(fi, v * wid);
   }
 
-  double get_scaled_value (FloatIndex fi) const {
+  double get_scaled_value(FloatIndex fi) const {
     double uv = get_value(fi);
     double wid = get_width(fi.get_key());
     return uv / wid;
@@ -93,12 +93,10 @@ protected:
     return uv * wid;
   }
 
-    //! Clear the cache of range information. Do this at the start of
-    //optimization
-  void clear_range_cache() {
-    widths_.clear();
-  }
-//!@}
+  //! Clear the cache of range information. Do this at the start of
+  // optimization
+  void clear_range_cache() { widths_.clear(); }
+  //!@}
  private:
   mutable Floats widths_;
 };

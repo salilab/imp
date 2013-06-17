@@ -35,16 +35,21 @@ IMP_GCC_PRAGMA(diagnostic ignored "-Wc++0x-compat")
 #endif
 
 struct nullptr_t {
-  template <class O> operator O *() const { return static_cast<O *>(NULL); }
+  template <class O>
+  operator O *() const {
+    return static_cast<O *>(NULL);
+  }
   /*template <class O, class C>
   operator O C::*() const {
     return static_cast<const O*>(NULL);
     }*/
 };
-template <class O> inline bool operator==(O *a, nullptr_t o) {
+template <class O>
+inline bool operator==(O *a, nullptr_t o) {
   return a == static_cast<O *>(o);
 }
-template <class O> inline bool operator!=(O *a, nullptr_t o) {
+template <class O>
+inline bool operator!=(O *a, nullptr_t o) {
   return a != static_cast<O *>(o);
 }
 extern IMPBASEEXPORT const nullptr_t nullptr;
@@ -55,9 +60,8 @@ IMP_GCC_PRAGMA(diagnostic pop)
 
 #else  // SWIG
 extern const void *const nullptr;
-#endif  //SWIG
+#endif  // SWIG
 #endif  // IMP_DOXYGEN
-
 }
 
 #endif /* IMPBASE_NULLPTR_H */

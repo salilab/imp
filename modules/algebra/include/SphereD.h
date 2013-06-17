@@ -21,7 +21,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /** Represent a sphere in D-dimensions.
     \geometry
   */
-template <int D> class SphereD : public GeometricPrimitiveD<D> {
+template <int D>
+class SphereD : public GeometricPrimitiveD<D> {
  public:
   SphereD() {
 #if IMP_HAS_CHECKS >= IMP_USAGE
@@ -91,12 +92,13 @@ IMP_VOLUME_GEOMETRY_METHODS_D(
 },
     return BoundingBoxD<D>(g.get_center()) + g.get_radius(););
 
-template <unsigned int D> inline SphereD<D> get_unit_sphere_d() {
+template <unsigned int D>
+inline SphereD<D> get_unit_sphere_d() {
   return SphereD<D>(get_zero_vector_d<D>(), 1.0);
 }
 
-inline SphereD< -1> get_unit_sphere_kd(unsigned int d) {
-  return SphereD< -1>(get_zero_vector_kd(d), 1.0);
+inline SphereD<-1> get_unit_sphere_kd(unsigned int d) {
+  return SphereD<-1>(get_zero_vector_kd(d), 1.0);
 }
 
 //! Return the distance between the two spheres if they are disjoint
@@ -136,13 +138,13 @@ inline bool get_interiors_intersect(const SphereD<D> &a, const SphereD<D> &b) {
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 
 namespace internal {
-template <int D> struct SphereSpacesIO {
+template <int D>
+struct SphereSpacesIO {
   const SphereD<D> &v_;
   SphereSpacesIO(const SphereD<D> &v) : v_(v) {}
 };
 template <int D>
-    inline std::ostream &operator<<(std::ostream &out,
-                                    const SphereSpacesIO<D> &s) {
+inline std::ostream &operator<<(std::ostream &out, const SphereSpacesIO<D> &s) {
   for (unsigned int i = 0; i < s.v_.get_center().get_dimension(); ++i) {
     out << s.v_.get_center()[i] << " ";
   }
@@ -164,16 +166,21 @@ inline internal::SphereSpacesIO<D> spaces_io(const SphereD<D> &v) {
 
 #ifdef IMP_DOXYGEN
 //! Compute the bounding box of any geometric object
-template <class Geometry> BoundingBoxD<3> get_bounding_box(const Geometry &);
+template <class Geometry>
+BoundingBoxD<3> get_bounding_box(const Geometry &);
 //! Compute the surface area of any volumetric object
-template <class Geometry> double get_surface_area(const Geometry &);
+template <class Geometry>
+double get_surface_area(const Geometry &);
 //! Compute the volume of any volumetric object
-template <class Geometry> double get_volume(const Geometry &);
+template <class Geometry>
+double get_volume(const Geometry &);
 //! Compute the area of any surface object
-template <class Geometry> double get_area(const Geometry &);
+template <class Geometry>
+double get_area(const Geometry &);
 
 #endif
-template <int D> VectorD<D> get_vector_d_geometry(const SphereD<D> &s) {
+template <int D>
+VectorD<D> get_vector_d_geometry(const SphereD<D> &s) {
   return s.get_center();
 }
 

@@ -28,8 +28,7 @@ IMP_GRAPH(SubsetGraph, undirected, Subset, int, out << vertex);
 
     See \ref graphs "Graphs in IMP" for more information.
  */
-IMP_GRAPH(InteractionGraph, undirected, Particle *,
-          base::Pointer<base::Object>,
+IMP_GRAPH(InteractionGraph, undirected, Particle *, base::Pointer<base::Object>,
           out << vertex->get_name() << "\n[" << vertex->get_index() << "]");
 
 //! Gets all of the Subsets of a SubsetGraph

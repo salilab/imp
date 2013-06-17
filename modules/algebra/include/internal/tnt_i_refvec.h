@@ -47,7 +47,8 @@ using namespace std;
 
 
 */
-template <class T> class i_refvec {
+template <class T>
+class i_refvec {
 
  private:
   T* data_;
@@ -70,12 +71,11 @@ template <class T> class i_refvec {
   inline int is_null() const;
   inline void destroy();
   ~i_refvec();
-
 };
 
-template <class T> void i_refvec<T>::copy_(T* p, const T* q, const T* e) {
-  for (T* t = p; q < e; t++, q++)
-    *t = *q;
+template <class T>
+void i_refvec<T>::copy_(T* p, const T* q, const T* e) {
+  for (T* t = p; q < e; t++, q++) *t = *q;
 }
 
 template <class T>
@@ -108,17 +108,28 @@ template <class T>
 i_refvec<T>::i_refvec(T* data)
     : data_(data), ref_count_(nullptr) {}
 
-template <class T> inline T* i_refvec<T>::begin() { return data_; }
+template <class T>
+inline T* i_refvec<T>::begin() {
+  return data_;
+}
 
-template <class T> inline const T& i_refvec<T>::operator[](int i) const {
+template <class T>
+inline const T& i_refvec<T>::operator[](int i) const {
   return data_[i];
 }
 
-template <class T> inline T& i_refvec<T>::operator[](int i) { return data_[i]; }
+template <class T>
+inline T& i_refvec<T>::operator[](int i) {
+  return data_[i];
+}
 
-template <class T> inline const T* i_refvec<T>::begin() const { return data_; }
+template <class T>
+inline const T* i_refvec<T>::begin() const {
+  return data_;
+}
 
-template <class T> i_refvec<T>& i_refvec<T>::operator=(const i_refvec<T>& V) {
+template <class T>
+i_refvec<T>& i_refvec<T>::operator=(const i_refvec<T>& V) {
   if (this == &V) return *this;
 
   if (ref_count_ != nullptr) {
@@ -134,7 +145,8 @@ template <class T> i_refvec<T>& i_refvec<T>::operator=(const i_refvec<T>& V) {
   return *this;
 }
 
-template <class T> void i_refvec<T>::destroy() {
+template <class T>
+void i_refvec<T>::destroy() {
   if (ref_count_ != nullptr) {
 #ifdef TNT_DEBUG
     std::cout << "destorying data... \n";
@@ -158,7 +170,8 @@ template <class T> void i_refvec<T>::destroy() {
 * if is_null() is false and ref_count() is 0, then
 *
 */
-template <class T> int i_refvec<T>::is_null() const {
+template <class T>
+int i_refvec<T>::is_null() const {
   return (data_ == nullptr ? 1 : 0);
 }
 
@@ -168,14 +181,16 @@ template <class T> int i_refvec<T>::is_null() const {
 *  otherwise returns the positive number of vectors sharing
 *      this data space.
 */
-template <class T> int i_refvec<T>::ref_count() const {
+template <class T>
+int i_refvec<T>::ref_count() const {
   if (data_ == nullptr)
     return 0;
   else
     return (ref_count_ != nullptr ? *ref_count_ : -1);
 }
 
-template <class T> i_refvec<T>::~i_refvec() {
+template <class T>
+i_refvec<T>::~i_refvec() {
   if (ref_count_ != nullptr) {
     (*ref_count_)--;
 

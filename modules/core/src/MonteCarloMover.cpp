@@ -15,13 +15,12 @@ MonteCarloMover::MonteCarloMover(Model *m, std::string name)
   reset_statistics();
 }
 
-
 MoverBase::MoverBase(const ParticlesTemp &ps, const FloatKeys &keys,
                      std::string name)
-      : Mover(IMP::internal::get_model(ps), name),
-        keys_(keys),
-        particles_(IMP::internal::get_index(ps)) {
-    IMPCORE_DEPRECATED_CLASS_DEF(2.1, "Use MonteCarloMover instead");
+    : Mover(IMP::internal::get_model(ps), name),
+      keys_(keys),
+      particles_(IMP::internal::get_index(ps)) {
+  IMPCORE_DEPRECATED_CLASS_DEF(2.1, "Use MonteCarloMover instead");
 }
 
 ParticlesTemp MoverBase::propose_move(Float f) {

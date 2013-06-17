@@ -15,19 +15,21 @@
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
-template <int D> struct GridRangeData : public base::RefCounted {
+template <int D>
+struct GridRangeData : public base::RefCounted {
   const BoundingBoxD<D> bb;
   double step;
   GridRangeData(const BoundingBoxD<D> &ibb, double stp) : bb(ibb), step(stp) {}
 };
 
 template <int D>
-    std::ostream &operator<<(std::ostream &out, const GridRangeData<D> &d) {
+std::ostream &operator<<(std::ostream &out, const GridRangeData<D> &d) {
   out << d.min << " " << d.max << " " << d.step << std::endl;
   return out;
 }
 
-template <int D> class GridIteratorD {
+template <int D>
+class GridIteratorD {
   base::Pointer<GridRangeData<D> > data_;
   VectorD<D> cur_;
 
@@ -84,7 +86,8 @@ template <int D> class GridIteratorD {
     where \f$\hat{\mathbf{x}_i}\f$ is the ith basis vector, \f$q_i\f$ is
     an arbitrary integer and \f$i\f$ ranges over the dimension of the vector.
 */
-template <int D> class GridRangeD {
+template <int D>
+class GridRangeD {
  private:
   IMP::base::Pointer<GridRangeData<D> > data_;
 

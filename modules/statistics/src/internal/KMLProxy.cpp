@@ -36,7 +36,7 @@ void KMLProxy::initialize(Model *m, const Particles &ps, const FloatKeys &atts,
 void KMLProxy::run(Particles *initial_centers) {
   IMP_INTERNAL_CHECK(is_init_, "The proxy was not initialized");
   IMP_LOG_VERBOSE("KMLProxy::run start \n");
-  //use the initial centers if provided
+  // use the initial centers if provided
   KMPointArray *kmc = nullptr;
   if (initial_centers != nullptr) {
     IMP_INTERNAL_CHECK(
@@ -53,10 +53,10 @@ void KMLProxy::run(Particles *initial_centers) {
     }
   }
   IMP_LOG_VERBOSE("KMLProxy::run load initial guess \n");
-  //load the initail guess
+  // load the initail guess
   KMFilterCenters ctrs(kcenters_, data_, kmc, damp_factor_);
 
-  //apply lloyd search
+  // apply lloyd search
   IMP_LOG_VERBOSE("KMLProxy::run load lloyd \n");
   lloyd_alg_ = new KMLocalSearchLloyd(&ctrs, &term_);
   log_header();
@@ -69,31 +69,31 @@ void KMLProxy::run(Particles *initial_centers) {
   IMP_CHECK_CODE(IMP_LOG_WRITE(TERSE, log_summary(&best_clusters, exec_time)));
   IMP_LOG_WRITE(TERSE, best_clusters.show(IMP_STREAM));
   IMP_INTERNAL_CHECK(
-      kcenters_ == (unsigned int) best_clusters.get_number_of_centers(),
+      kcenters_ == (unsigned int)best_clusters.get_number_of_centers(),
       "The final number of centers does not match the requested one");
-  IMP_INTERNAL_CHECK(dim_ == (unsigned int) best_clusters.get_dim(),
+  IMP_INTERNAL_CHECK(dim_ == (unsigned int)best_clusters.get_dim(),
                      "The dimension of the final clusters is wrong");
-  //TODO clear the centroids list
-  //set the centroids:
+  // TODO clear the centroids list
+  // set the centroids:
   Particle *p;
   IMP_LOG_VERBOSE("KMLProxy::run load best results \n");
   for (unsigned int ctr_ind = 0; ctr_ind < kcenters_; ctr_ind++) {
     KMPoint *kmp = best_clusters[ctr_ind];
-    //create a new particle
+    // create a new particle
     p = new Particle(m_);
     centroids_.push_back(p);
     for (unsigned int att_ind = 0; att_ind < dim_; att_ind++) {
       p->add_attribute(atts_[att_ind], (*kmp)[att_ind], false);
     }
   }
-  //set the assignment of particles to centers
-  //array of number of all points
-  //TODO - return this
+  // set the assignment of particles to centers
+  // array of number of all points
+  // TODO - return this
   IMP_LOG_VERBOSE("KMLProxy::run get assignments \n");
   const Ints *close_center = best_clusters.get_assignments();
   IMP_LOG_VERBOSE("KMLProxy::run get assignments 2\n");
   for (int i = 0; i < data_->get_number_of_points(); i++) {
-    //std::cout<<"ps number i: " << i << " close center : "
+    // std::cout<<"ps number i: " << i << " close center : "
     //<< (*close_center)[i] << std::endl;
     assignment_[ps_[i]] = (*close_center)[i];
   }
@@ -127,9 +127,9 @@ void KMLProxy::log_header() const {
       << "  data_size       = " << data_->get_number_of_points() << "\n"
       << "  kcenters        = " << kcenters_ << "\n"
       << "  dim             = " << dim_ << "\n"
-      //TODO - should we add this back ?
+      // TODO - should we add this back ?
       //      << "  max_tot_stage   = " << term_.getMaxTotStage(kcenters_,
-      //data_size_) << "\n"
+      // data_size_) << "\n"
       << "  max_run_stage   = " << term_.get_max_num_of_stages_for_run() << "\n"
       << "  min_accum_rdl   = " << term_.get_min_accumulated_rdl() << "\n");
 }
@@ -145,15 +145,14 @@ void KMLProxy::log_summary(KMFilterCentersResults *ctrs, Float run_time,
       << "  stage_time_    = " << Float(run_time) / Float(n_stages)
       << " sec/stage_(excl_init) " << Float(total_time) / Float(n_stages)
       << " sec/stage_(incl_init)\n"
-      << "  average_distort = " << ctrs->get_distortion() /
-                                       Float(ctrs->get_number_of_centers())
-      << "\n";
+      << "  average_distort = "
+      << ctrs->get_distortion() / Float(ctrs->get_number_of_centers()) << "\n";
 }
 
 std::string KMLProxy::get_cmm_string() const {
   //   CMMLogOptimizerState cmm_log;
   //   cmm_log.set_radius(IMP.StringKey("get_cmm_string(centroids_);
-  //TODO - add the edges
+  // TODO - add the edges
   return std::string();
 }
 unsigned int KMLProxy::get_particle_assignment(Particle *p) const {

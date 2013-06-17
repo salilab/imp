@@ -44,7 +44,8 @@ using namespace std;
 
 
 */
-template <class T> class Sparse_Matrix_CompRow {
+template <class T>
+class Sparse_Matrix_CompRow {
 
  private:
   Array1D<T> val_;       // data values (nz_ elements)
@@ -69,7 +70,6 @@ template <class T> class Sparse_Matrix_CompRow {
   int NumNonzeros() const { return val_.dim1(); }
 
   Sparse_Matrix_CompRow &operator=(const Sparse_Matrix_CompRow &R);
-
 };
 
 /**
@@ -89,7 +89,6 @@ Sparse_Matrix_CompRow<T>::Sparse_Matrix_CompRow(int M, int N, int nz,
                                                 const T *val, const int *r,
                                                 const int *c)
     : val_(nz, val), rowptr_(M, r), colind_(nz, c), dim1_(M), dim2_(N) {}
-
 }
 // namespace TNT
 

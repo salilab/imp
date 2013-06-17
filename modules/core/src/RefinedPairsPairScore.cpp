@@ -34,8 +34,8 @@ ParticlesTemp get_set(Particle *a, Refiner *r) {
 Float RefinedPairsPairScore::evaluate_index(Model *m,
                                             const ParticleIndexPair &p,
                                             DerivativeAccumulator *da) const {
-  ParticlesTemp ps[2] = { get_set(m->get_particle(p[0]), r_),
-                          get_set(m->get_particle(p[1]), r_) };
+  ParticlesTemp ps[2] = {get_set(m->get_particle(p[0]), r_),
+                         get_set(m->get_particle(p[1]), r_)};
   double ret = 0;
   for (unsigned int i = 0; i < ps[0].size(); ++i) {
     for (unsigned int j = 0; j < ps[1].size(); ++j) {

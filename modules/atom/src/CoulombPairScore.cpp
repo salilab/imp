@@ -25,8 +25,7 @@ void CoulombPairScore::calculate_multiplication_factor() {
       permittivity_vacuum / kcal2joule / (4.0 * PI * relative_dielectric_);
 }
 
-double CoulombPairScore::evaluate_index(Model *m,
-                                        const ParticleIndexPair& p,
+double CoulombPairScore::evaluate_index(Model *m, const ParticleIndexPair &p,
                                         DerivativeAccumulator *da) const {
   Charged c0(m, p[0]);
   Charged c1(m, p[1]);
@@ -45,9 +44,8 @@ double CoulombPairScore::evaluate_index(Model *m,
   }
 }
 
-ModelObjectsTemp CoulombPairScore::do_get_inputs(Model *m,
-                                               const ParticleIndexes &pis)
-    const {
+ModelObjectsTemp CoulombPairScore::do_get_inputs(
+    Model *m, const ParticleIndexes &pis) const {
   return IMP::kernel::get_particles(m, pis);
 }
 

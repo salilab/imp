@@ -26,25 +26,22 @@ IMPMISC_BEGIN_NAMESPACE
     pedicate is applied to all the remaining pairs and ones for which
     it evaluates to 0 are removed.
  */
-class IMPMISCEXPORT DecayPairContainerOptimizerState :
-  public core::PeriodicOptimizerState
-{
+class IMPMISCEXPORT DecayPairContainerOptimizerState
+    : public core::PeriodicOptimizerState {
   base::OwnerPointer<PairPredicate> pred_;
   base::OwnerPointer<PairContainer> input_;
   base::Pointer<IMP::internal::InternalDynamicListPairContainer> output_;
+
  public:
   DecayPairContainerOptimizerState(PairPredicate *pred,
                                    const ParticlePairsTemp &initial_list,
-                                   std::string name
-                                   ="DecayPairContainerOptimizerState%1%");
-  PairContainer *get_output_container() const {
-    return output_;
-  }
+                                   std::string name =
+                                       "DecayPairContainerOptimizerState%1%");
+  PairContainer *get_output_container() const { return output_; }
   virtual void do_update(unsigned int call_num) IMP_OVERRIDE;
   IMP_OBJECT_METHODS(DecayPairContainerOptimizerState);
 };
 
-
 IMPMISC_END_NAMESPACE
 
-#endif  /* IMPMISC_DECAY_PAIR_CONTAINER_OPTIMIZER_STATE_H */
+#endif /* IMPMISC_DECAY_PAIR_CONTAINER_OPTIMIZER_STATE_H */

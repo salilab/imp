@@ -36,8 +36,7 @@ ConnectivityRestraint::ConnectivityRestraint(PairScore *ps,
 
 ConnectivityRestraint::ConnectivityRestraint(PairScore *ps)
     : Restraint("ConnectivityRestraint %1%"), ps_(ps) {
-  IMPCORE_DEPRECATED_FUNCTION_DEF(2.1,
-                                  "Use constructor that takes container.");
+  IMPCORE_DEPRECATED_FUNCTION_DEF(2.1, "Use constructor that takes container.");
 }
 
 namespace {
@@ -100,7 +99,7 @@ void compute_mst(Model *m, const ParticleIndexes &pis, PairScore *ps, Graph &g,
                         << ParticleIndexPair(pis[i], pis[j]) << " with weight "
                         << d << std::endl);
         /*Edge e =*/ boost::add_edge(i, j, Weight(d), g);
-        //boost::put(boost::edge_weight_t(), g, e, d);
+        // boost::put(boost::edge_weight_t(), g, e, d);
       }
     }
     mst.resize(pis.size() - 1);

@@ -13,7 +13,8 @@
 #include <IMP/algebra/VectorD.h>
 
 IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
-template <int D> struct MinMax {
+template <int D>
+struct MinMax {
   FloatPair minmax;
   MinMax()
       : minmax(std::numeric_limits<double>::max(),
@@ -26,7 +27,8 @@ template <int D> struct MinMax {
   }
 };
 
-template <int D> struct Mean {
+template <int D>
+struct Mean {
   algebra::VectorD<D> mn;
   Mean(algebra::VectorD<D> start) : mn(start) {}
   template <class G>
@@ -36,7 +38,8 @@ template <int D> struct Mean {
   }
 };
 
-template <int D> struct Sigma2 {
+template <int D>
+struct Sigma2 {
   algebra::VectorD<D> mn, sigma2;
   Sigma2(algebra::VectorD<D> mn, algebra::VectorD<D> start)
       : mn(mn), sigma2(start) {}
@@ -51,7 +54,8 @@ template <int D> struct Sigma2 {
   }
 };
 
-template <int D, class Grid> struct Frequency {
+template <int D, class Grid>
+struct Frequency {
   Grid &g_;
   double norm_;
   Frequency(Grid &g, double norm) : g_(g), norm_(norm) {}

@@ -122,7 +122,7 @@ class KMCentersTree {
   KMCentersNode *build_tree(int start_ind, int end_ind, int level);
 
   //! split a set of points about a cutting plane along a given cutting
-  //dimension.
+  // dimension.
   /**
   /note split the points whose indexes are stored in p_id [start_ind,end_ind]
   \param[in] start_ind the start index
@@ -174,10 +174,10 @@ class KMCentersTree {
   std::pair<double, double> limits_along_dimension(int start_ind, int end_ind,
                                                    int dim);
 
-  KMData *data_points_;  //all of the data points
+  KMData *data_points_;  // all of the data points
   KMCenters *centers_;
-  Ints p_id_;  //the indexes of the data points sorted by
-               //the plane splitting algorithm
+  Ints p_id_;  // the indexes of the data points sorted by
+  // the plane splitting algorithm
   KMCentersNode *root_;
   KMRectangle *bnd_box_;
 };

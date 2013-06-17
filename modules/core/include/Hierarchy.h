@@ -240,7 +240,8 @@ class IMPCOREEXPORT ModifierVisitor : public HierarchyVisitor {
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 namespace internal {
-template <class H, class F, class Out, bool Slice = false> struct Gather {
+template <class H, class F, class Out, bool Slice = false>
+struct Gather {
   //! initialize with the function and the container
   Gather(F f, Out out) : f_(f), out_(out) {}
   bool operator()(H p) {
@@ -258,7 +259,6 @@ template <class H, class F, class Out, bool Slice = false> struct Gather {
   F f_;
   Out out_;
 };
-
 }
 #endif
 
@@ -269,15 +269,16 @@ template <class H, class F, class Out, bool Slice = false> struct Gather {
     \ingroup hierarchy
     See Hierarchy
  */
-template <class HD, class F> inline F visit_breadth_first(HD d, F f) {
+template <class HD, class F>
+inline F visit_breadth_first(HD d, F f) {
   std::deque<HD> stack;
   stack.push_back(d);
-  //d.show(std::cerr);
+  // d.show(std::cerr);
   do {
     HD cur = stack.front();
     stack.pop_front();
     if (f(cur)) {
-      //std::cerr << "Visiting particle " << cur.get_particle() << std::endl;
+      // std::cerr << "Visiting particle " << cur.get_particle() << std::endl;
       for (int i = cur.get_number_of_children() - 1; i >= 0; --i) {
         stack.push_back(cur.get_child(i));
       }
@@ -291,15 +292,16 @@ template <class HD, class F> inline F visit_breadth_first(HD d, F f) {
     \ingroup hierarchy
     See Hierarchy
  */
-template <class HD, class F> inline F visit_depth_first(HD d, F f) {
+template <class HD, class F>
+inline F visit_depth_first(HD d, F f) {
   base::Vector<HD> stack;
   stack.push_back(d);
-  //d.show(std::cerr);
+  // d.show(std::cerr);
   do {
     HD cur = stack.back();
     stack.pop_back();
     if (f(cur)) {
-      //std::cerr << "Visiting particle " << cur.get_particle() << std::endl;
+      // std::cerr << "Visiting particle " << cur.get_particle() << std::endl;
       for (int i = cur.get_number_of_children() - 1; i >= 0; --i) {
         stack.push_back(cur.get_child(i));
       }
@@ -338,12 +340,12 @@ inline F visit_breadth_first_with_data(HD d, F f, typename F::result_type i) {
   typedef std::pair<typename F::result_type, HD> DP;
   std::deque<DP> stack;
   stack.push_back(DP(i, d));
-  //d.show(std::cerr);
+  // d.show(std::cerr);
   do {
     DP cur = stack.front();
     stack.pop_front();
     typename F::result_type r = f(cur.second.get_particle(), cur.first);
-    //std::cerr << "Visiting particle " << cur.get_particle() << std::endl;
+    // std::cerr << "Visiting particle " << cur.get_particle() << std::endl;
     for (int i = cur.second.get_number_of_children() - 1; i >= 0; --i) {
       stack.push_back(std::make_pair(r, cur.second.get_child(i)));
     }
@@ -361,12 +363,12 @@ inline F visit_depth_first_with_data(HD d, F f, typename F::result_type i) {
   typedef std::pair<typename F::result_type, HD> DP;
   base::Vector<DP> stack;
   stack.push_back(DP(i, d));
-  //d.show(std::cerr);
+  // d.show(std::cerr);
   do {
     DP cur = stack.back();
     stack.pop_back();
     typename F::result_type r = f(cur.second, cur.first);
-    //std::cerr << "Visiting particle " << cur.get_particle() << std::endl;
+    // std::cerr << "Visiting particle " << cur.get_particle() << std::endl;
     for (int i = cur.second.get_number_of_children() - 1; i >= 0; --i) {
       stack.push_back(DP(r, cur.second.get_child(i)));
     }
@@ -414,7 +416,8 @@ IMP_VALUES(HierarchyCounter, HierarchyCounters);
 /** \ingroup hierarchy
     See Hierarchy
  */
-template <class H, class Out, class F> inline Out gather(H h, F f, Out out) {
+template <class H, class Out, class F>
+inline Out gather(H h, F f, Out out) {
   internal::Gather<H, F, Out> gather(f, out);
   visit_depth_first(h, gather);
   return gather.get_out();
@@ -462,11 +465,12 @@ inline Out gather_by_attributes(H h, K0 k0, V0 v0, K1 k1, V1 v1, Out out) {
 /** \ingroup hierarchy
     See Hierarchy
  */
-template <class HD, class F> inline HD find_breadth_first(HD h, F f) {
+template <class HD, class F>
+inline HD find_breadth_first(HD h, F f) {
   if (f(h.get_particle())) return h;
   base::Vector<HD> stack;
   stack.push_back(h);
-  //d.show(std::cerr);
+  // d.show(std::cerr);
   do {
     HD cur = stack.back();
     stack.pop_back();

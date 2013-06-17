@@ -18,7 +18,8 @@ struct Sum {
   }
 };
 
-template <class Grid> double do_foreach(const Grid &g) {
+template <class Grid>
+double do_foreach(const Grid &g) {
   double dist = 0;
   IMP_GRID3D_FOREACH_VOXEL(g, {
     dist += g[voxel_index];
@@ -26,7 +27,8 @@ template <class Grid> double do_foreach(const Grid &g) {
   return dist;
 }
 
-template <class Grid> void benchmark(const Grid &g, std::string name) {
+template <class Grid>
+void benchmark(const Grid &g, std::string name) {
   {
     double runtime, dist = 0;
     IMP_TIME({

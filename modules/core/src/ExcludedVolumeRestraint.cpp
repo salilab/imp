@@ -134,8 +134,8 @@ double ExcludedVolumeRestraint::unprotected_evaluate(
     IMP_IF_CHECK(base::USAGE) {
       Model *m = get_model();
       IMP_CONTAINER_FOREACH(SingletonContainer, sc_, {
-          if (RigidMember::particle_is_instance(m, _1)) {
-            RigidBody rb = RigidMember(m, _1).get_rigid_body();
+        if (RigidMember::particle_is_instance(m, _1)) {
+          RigidBody rb = RigidMember(m, _1).get_rigid_body();
           using IMP::operator<< ;
           IMP_USAGE_CHECK(
               std::find(rbs_.begin(), rbs_.end(),
@@ -147,11 +147,10 @@ double ExcludedVolumeRestraint::unprotected_evaluate(
                   << " not in " << rbs_);
         } else {
           IMP_USAGE_CHECK(
-              std::find(xyzrs_.begin(), xyzrs_.end(), _1) !=
-                  xyzrs_.end(),
+              std::find(xyzrs_.begin(), xyzrs_.end(), _1) != xyzrs_.end(),
               "You cannot change the contents of the singleton container "
                   << "passed to ExcludedVolume after the first evaluate."
-              << " Found unexpected particle " << m->get_particle_name(_1));
+                  << " Found unexpected particle " << m->get_particle_name(_1));
         }
       });
     }
@@ -189,15 +188,15 @@ double ExcludedVolumeRestraint::unprotected_evaluate(
           check += cur;
           if (cur > 0) {
             ++found;
-            bool cur_found = std::find(
-                cur_list_.begin(), cur_list_.end(),
-                ParticleIndexPair(all[i]->get_index(), all[j]->get_index())) !=
-                                 cur_list_.end() ||
-                             std::find(
-                                 cur_list_.begin(), cur_list_.end(),
-                                 ParticleIndexPair(all[j]->get_index(),
-                                                   all[i]->get_index())) !=
-                                 cur_list_.end();
+            bool cur_found =
+                std::find(cur_list_.begin(), cur_list_.end(),
+                          ParticleIndexPair(all[i]->get_index(),
+                                            all[j]->get_index())) !=
+                    cur_list_.end() ||
+                std::find(cur_list_.begin(), cur_list_.end(),
+                          ParticleIndexPair(all[j]->get_index(),
+                                            all[i]->get_index())) !=
+                    cur_list_.end();
             IMP_CHECK_VARIABLE(cur_found);
             IMP_INTERNAL_CHECK(
                 cur_found, "Pair " << all[i]->get_name() << " "

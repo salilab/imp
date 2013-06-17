@@ -27,44 +27,45 @@ namespace unit {
 
 namespace internal {
 
-struct AtomsPerMol {
-};
+struct AtomsPerMol {};
 
 struct MDEnergyTag;
 
-template <> inline std::string get_unit_name<MDEnergyTag>(int) {
-  std::string os[] = { "Cal/Mol" };
+template <>
+inline std::string get_unit_name<MDEnergyTag>(int) {
+  std::string os[] = {"Cal/Mol"};
   return os[0];
 }
 
 struct MDDerivativeTag;
 
-template <> inline std::string get_unit_name<MDDerivativeTag>(int) {
-  std::string os[] = { "Cal/(A Mol)" };
+template <>
+inline std::string get_unit_name<MDDerivativeTag>(int) {
+  std::string os[] = {"Cal/(A Mol)"};
   return os[0];
 }
 
-struct MKSTag {
-};
+struct MKSTag {};
 
-template <> inline std::string get_unit_name<MKSTag>(int o) {
-  std::string os[] = { "kg", "m", "s", "k", "Cal" };
+template <>
+inline std::string get_unit_name<MKSTag>(int o) {
+  std::string os[] = {"kg", "m", "s", "k", "Cal"};
   return os[o];
 }
 
-struct DaltonTag {
-};
+struct DaltonTag {};
 
-template <> inline std::string get_unit_name<DaltonTag>(int) {
-  std::string os[] = { "Da" };
+template <>
+inline std::string get_unit_name<DaltonTag>(int) {
+  std::string os[] = {"Da"};
   return os[0];
 }
 
-struct MolarTag {
-};
+struct MolarTag {};
 
-template <> inline std::string get_unit_name<MolarTag>(int) {
-  std::string os[] = { "Mol" };
+template <>
+inline std::string get_unit_name<MolarTag>(int) {
+  std::string os[] = {"Mol"};
   return os[0];
 }
 
@@ -128,8 +129,8 @@ typedef Shift<Meter, -6>::type Micron;
 
 template <int EXP, class Units>
 inline typename Exchange<Unit<internal::MKSTag, EXP, Units>, Kilocalorie, Joule,
-                         4>::type convert_Cal_to_J(
-    Unit<internal::MKSTag, EXP, Units> i) {
+                         4>::type
+convert_Cal_to_J(Unit<internal::MKSTag, EXP, Units> i) {
   typedef typename Exchange<Unit<internal::MKSTag, EXP, Units>, Kilocalorie,
                             Joule, 4>::type Return;
   return Return(i.get_exponential_value() * JOULES_PER_KILOCALORIE);
@@ -137,8 +138,8 @@ inline typename Exchange<Unit<internal::MKSTag, EXP, Units>, Kilocalorie, Joule,
 
 template <int EXP, class Units>
 inline typename Exchange<Unit<internal::MKSTag, EXP, Units>, Joule, Kilocalorie,
-                         -3>::type convert_J_to_Cal(
-    Unit<internal::MKSTag, EXP, Units> i) {
+                         -3>::type
+convert_J_to_Cal(Unit<internal::MKSTag, EXP, Units> i) {
   typedef typename Exchange<Unit<internal::MKSTag, EXP, Units>, Joule,
                             Kilocalorie, -3>::type Return;
   return Return(i.get_exponential_value() / JOULES_PER_KILOCALORIE);
@@ -151,14 +152,13 @@ typedef Unit<internal::MDEnergyTag, 0, SingletonUnit> KilocaloriePerMol;
 typedef Unit<internal::MDDerivativeTag, 0, SingletonUnit>
     KilocaloriePerAngstromPerMol;
 
-inline Unit<internal::MKSTag, -24,
-            HeatEnergy> operator/(KilocaloriePerMol k, internal::AtomsPerMol) {
+inline Unit<internal::MKSTag, -24, HeatEnergy> operator/(
+    KilocaloriePerMol k, internal::AtomsPerMol) {
   return Unit<internal::MKSTag, -24, HeatEnergy>(k.get_value() * 1.661);
 }
 
-inline Unit<internal::MKSTag, -14,
-            HeatEnergyDerivative> operator/(KilocaloriePerAngstromPerMol k,
-                                            internal::AtomsPerMol) {
+inline Unit<internal::MKSTag, -14, HeatEnergyDerivative> operator/(
+    KilocaloriePerAngstromPerMol k, internal::AtomsPerMol) {
   return Unit<internal::MKSTag, -14, HeatEnergyDerivative>(k.get_value() *
                                                            1.661);
 }
@@ -174,7 +174,7 @@ inline KilocaloriePerAngstromPerMol operator*(
     Unit<internal::MKSTag, EXP, HeatEnergyDerivative> k,
     internal::AtomsPerMol) {
   return KilocaloriePerAngstromPerMol(k.get_exponential_value() * NA *
-                                      ExponentialNumber< -10>(1));
+                                      ExponentialNumber<-10>(1));
 }
 
 template <int EXP>
@@ -186,9 +186,10 @@ inline KilocaloriePerMol operator*(internal::AtomsPerMol,
 template <int EXP>
 inline KilocaloriePerAngstromPerMol operator*(
     internal::AtomsPerMol,
-    Unit<internal::MKSTag,
-         EXP, HeatEnergyDerivative> /*typename
-                          YoctoKilocaloriePerAngstrom::Units>*/ k) {
+    Unit<
+        internal::MKSTag, EXP,
+        HeatEnergyDerivative> /*typename
+                    YoctoKilocaloriePerAngstrom::Units>*/ k) {
   return operator*(k, ATOMS_PER_MOL);
 }
 
@@ -210,8 +211,8 @@ inline Molar molarity_from_count(double count,
 
 template <int E1>
 inline Unit<internal::MKSTag, E1 + 23 - 3,
-            boost::mpl::vector_c<int, 0, -3, 0, 0, 0> > density_from_molarity(
-    Unit<internal::MolarTag, E1, SingletonUnit> molar) {
+            boost::mpl::vector_c<int, 0, -3, 0, 0, 0> >
+density_from_molarity(Unit<internal::MolarTag, E1, SingletonUnit> molar) {
   Unit<internal::MKSTag, E1 + 23, boost::mpl::vector_c<int, 0, -3, 0, 0, 0> >
       count_per_liter(molar.get_exponential_value() * NA);
   return count_per_liter * 1000.0;

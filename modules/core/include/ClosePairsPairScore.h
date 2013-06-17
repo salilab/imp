@@ -49,13 +49,12 @@ class IMPCOREEXPORT KClosePairsPairScore : public PairScore {
   Restraints create_current_decomposition(Model *m,
                                           const ParticleIndexPair &vt) const;
 
-  virtual double evaluate_index(Model *m,
-                                const ParticleIndexPair &p,
-                                DerivativeAccumulator *da)
-      const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs(Model *m, const ParticleIndexes &pis)
-      const IMP_OVERRIDE;
-  virtual double evaluate_if_good_index(Model *m, const ParticleIndexPair& vt,
+  virtual double evaluate_index(Model *m, const ParticleIndexPair &p,
+                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                         const ParticleIndexes &pis) const
+      IMP_OVERRIDE;
+  virtual double evaluate_if_good_index(Model *m, const ParticleIndexPair &vt,
                                         DerivativeAccumulator *da,
                                         double max) const IMP_OVERRIDE;
   IMP_PAIR_SCORE_METHODS(KClosePairsPairScore);
@@ -91,16 +90,14 @@ class IMPCOREEXPORT ClosePairsPairScore : public PairScore {
   Restraints create_current_decomposition(Model *m,
                                           const ParticleIndexPair &vt) const;
 
-  virtual double evaluate_index(Model *m,
-                                const ParticleIndexPair &p,
-                                DerivativeAccumulator *da)
-      const IMP_OVERRIDE;
-  virtual double evaluate_if_good_index(Model *m, const ParticleIndexPair& vt,
+  virtual double evaluate_index(Model *m, const ParticleIndexPair &p,
+                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+  virtual double evaluate_if_good_index(Model *m, const ParticleIndexPair &vt,
                                         DerivativeAccumulator *da,
                                         double max) const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                         const ParticleIndexes &pis)
-      const IMP_OVERRIDE;
+                                         const ParticleIndexes &pis) const
+      IMP_OVERRIDE;
   IMP_PAIR_SCORE_METHODS(KClosePairsPairScore);
   IMP_OBJECT_METHODS(ClosePairsPairScore);
 };

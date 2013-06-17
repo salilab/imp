@@ -41,13 +41,14 @@ class DummyPairContainer : public IMP::internal::ListLikePairContainer {
     return ret;
   }
   IMP_CLANG_PRAGMA(diagnostic pop)
-  template <class PS> Restraints create_decomposition_t(PS *ps) const {
+  template <class PS>
+  Restraints create_decomposition_t(PS *ps) const {
     ParticleIndexPairs all = get_range_indexes();
     Restraints ret(all.size());
     for (unsigned int i = 0; i < all.size(); ++i) {
       ret[i] = IMP::create_restraint(
           ps, IMP::internal::get_particle(get_model(), all[i]),
-                                     "IncrementalClosePairs%1%");
+          "IncrementalClosePairs%1%");
     }
     return ret;
   }
@@ -92,7 +93,6 @@ ParticleIndexes DummyPairContainer::get_all_possible_indexes() const {
   }
   return ret;
 }
-
 }
 
 /** to handle good/max evaluate, add dummy restraints for each
@@ -142,13 +142,15 @@ namespace {
 struct NBSum {
   double value;
   NBSum() : value(0) {}
-  template <class T> void operator()(const T &t) {
+  template <class T>
+  void operator()(const T &t) {
     IMP_LOG_TERSE("adding " << t << std::endl);
     value += t.score;
   }
 };
 struct NBShow {
-  template <class T> void operator()(const T &t) {
+  template <class T>
+  void operator()(const T &t) {
     IMP_LOG_VARIABLE(t);
     IMP_LOG_TERSE(t << std::endl);
   }
@@ -214,8 +216,8 @@ NBGenerator::NBGenerator(Model *m, const ParticleIndexes &pis, PairScore *ps,
 
 NBGenerator::result_type NBGenerator::operator()(argument_type a) const {
   std::sort(a.begin(), a.end());
-  //a.erase(std::unique(a.begin(), a.end()), a.end());
-  //IMP_LOG_TERSE( "Input of " << ia << " resolves to " << a << std::endl);
+  // a.erase(std::unique(a.begin(), a.end()), a.end());
+  // IMP_LOG_TERSE( "Input of " << ia << " resolves to " << a << std::endl);
   IMP_LOG_TERSE("Generating pair scores from " << a << std::endl);
   result_type ret;
   for (unsigned int i = 0; i < a.size(); ++i) {

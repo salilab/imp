@@ -23,7 +23,7 @@ void ParabolicFit2D::find_regression(const algebra::Vector2Ds& data) {
   double S00(0.0), S10(0.0), S20(0.0), S30(0.0), S40(0.0);
   double S01(0.0), S11(0.0), S21(0.0);
 
-  S00 = (double) data.size();
+  S00 = (double)data.size();
 
   for (unsigned int i = 0; i < data.size(); i++) {
     S10 += data[i][0];
@@ -40,13 +40,16 @@ void ParabolicFit2D::find_regression(const algebra::Vector2Ds& data) {
              2 * S10 * S20 * S30 - S20 * S20 * S20;
 
   a_ = (S01 * S10 * S30 - S11 * S00 * S30 - S01 * S20 * S20 + S11 * S10 * S20 +
-        S21 * S00 * S20 - S21 * S10 * S10) / d;
+        S21 * S00 * S20 - S21 * S10 * S10) /
+       d;
 
   b_ = (S11 * S00 * S40 - S01 * S10 * S40 + S01 * S20 * S30 - S21 * S00 * S30 -
-        S11 * S20 * S20 + S21 * S10 * S20) / d;
+        S11 * S20 * S20 + S21 * S10 * S20) /
+       d;
 
   c_ = (S01 * S20 * S40 - S11 * S10 * S40 - S01 * S30 * S30 + S11 * S20 * S30 +
-        S21 * S10 * S30 - S21 * S20 * S20) / d;
+        S21 * S10 * S30 - S21 * S20 * S20) /
+       d;
 }
 
 void ParabolicFit2D::evaluate_error(const algebra::Vector2Ds& data) {

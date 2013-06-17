@@ -75,9 +75,9 @@ class IMPCOREEXPORT MSConnectivityRestraint : public Restraint {
   unsigned int add_type(const ParticlesTemp &ps);
   unsigned int add_composite(const Ints &components);
   unsigned int add_composite(const Ints &components, unsigned int parent);
-  //void add_particle(Particle *p);
-  //void add_particles(const Particles &ps);
-  //void set_particles(const Particles &ps);
+  // void add_particle(Particle *p);
+  // void add_particles(const Particles &ps);
+  // void set_particles(const Particles &ps);
   /*@}*/
 
   //! Return the set of pairs which are connected by the restraint
@@ -229,7 +229,6 @@ class IMPCOREEXPORT MSConnectivityRestraint : public Restraint {
   mutable ExperimentalTree tree_;
 
   friend class MSConnectivityScore;
-
 };
 
 IMPCORE_END_NAMESPACE

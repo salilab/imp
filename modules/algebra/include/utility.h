@@ -21,7 +21,8 @@ inline bool xorT(bool x, bool y) { return (((x) && !(y)) || (!(x) && (y))); }
 inline double get_squared(double x) { return x * x; }
 
 //! Sign of a number. 1 if the number is higher or equal to 0 and -1 otherwise
-template <typename T> inline int get_sign(const T& x) {
+template <typename T>
+inline int get_sign(const T& x) {
   if (x >= 0) return 1;
   return -1;
 }
@@ -38,7 +39,8 @@ template <typename T> inline int get_sign(const T& x) {
  * a = round(0.7); // a = 1
  * \endcode
  */
-template <typename T> inline int get_rounded(const T& x) {
+template <typename T>
+inline int get_rounded(const T& x) {
   if (x > 0) {
     return static_cast<int>((x) + 0.5);
   } else {

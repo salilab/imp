@@ -206,10 +206,10 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
 
   /** \deprecated_at{2.1} use get_inputs() instead.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-    ParticlesTemp get_input_particles() const;
+  ParticlesTemp get_input_particles() const;
   /** \deprecated_at{2.1} use get_inputs() instead.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-    ContainersTemp get_input_containers() const;
+  ContainersTemp get_input_containers() const;
 
   IMP_REF_COUNTED_DESTRUCTOR(Restraint);
 

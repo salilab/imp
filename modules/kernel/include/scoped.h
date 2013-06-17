@@ -25,21 +25,18 @@ IMPKERNEL_BEGIN_NAMESPACE
 
 /** \deprecated_at{2.1} No longer needed, just destroy the ScoreState itself.
 */
-template <class SS> class GenericScopedScoreState : public base::RAII {
+template <class SS>
+class GenericScopedScoreState : public base::RAII {
   base::Pointer<SS> ss_;
 
  public:
 
-  IMP_DEPRECATED_RAII(2.1,  "Just create/destroy the ScoreState itself",
-                      KERNEL,
-                      GenericScopedScoreState,
-                      (SS* ss, Model* m), {
-  },
-           {
+  IMP_DEPRECATED_RAII(2.1, "Just create/destroy the ScoreState itself", KERNEL,
+                      GenericScopedScoreState, (SS* ss, Model* m), {}, {
     ss_ = ss;
     m->add_score_state(ss);
   },
-           {
+                      {
     if (ss_ && ss_->get_is_part_of_model()) {
       IMP_CHECK_OBJECT(ss_);
       IMP_CHECK_OBJECT(ss_->get_model());
@@ -47,7 +44,7 @@ template <class SS> class GenericScopedScoreState : public base::RAII {
       ss_ = nullptr;
     }
   },
-           {
+                      {
     if (ss_)
       out << "(Scoped " << ss_->get_name() << ")";
     else
@@ -68,24 +65,20 @@ template <class SS> class GenericScopedScoreState : public base::RAII {
     \deprecated_at{2.1} With the advent of the ScoringFunction, this
     should not be needed.
 */
-template <class SS> class GenericScopedRestraint : public base::RAII {
+template <class SS>
+class GenericScopedRestraint : public base::RAII {
   base::Pointer<SS> ss_;
   base::Pointer<RestraintSet> rs_;
 
  public:
 
-  IMP_DEPRECATED_RAII(2.1,
-                      "Just use an IMP::kernel::ScoringFunction",
-                      KERNEL,
-                      GenericScopedRestraint,
-           (SS* ss, RestraintSet* rs), {
-  },
-           {
+  IMP_DEPRECATED_RAII(2.1, "Just use an IMP::kernel::ScoringFunction", KERNEL,
+                      GenericScopedRestraint, (SS* ss, RestraintSet* rs), {}, {
     ss_ = ss;
     rs_ = rs;
     rs_->add_restraint(ss);
   },
-           {
+                      {
     if (ss_ && ss_->get_is_part_of_model()) {
       IMP_CHECK_OBJECT(ss_);
       IMP_CHECK_OBJECT(ss_->get_model());
@@ -94,7 +87,7 @@ template <class SS> class GenericScopedRestraint : public base::RAII {
       rs_ = nullptr;
     }
   },
-           {
+                      {
     if (ss_)
       out << "(Scoped " << ss_->get_name() << ")";
     else
@@ -115,7 +108,8 @@ template <class SS> class GenericScopedRestraint : public base::RAII {
     \deprecated_at{2.1} With the advent of the ScoringFunction, this
     should not be needed.
 */
-template <class SS> class GenericScopedRemoveRestraint : public base::RAII {
+template <class SS>
+class GenericScopedRemoveRestraint : public base::RAII {
   base::Pointer<SS> ss_;
   base::Pointer<RestraintSet> rs_;
   void cleanup() {
@@ -139,20 +133,17 @@ template <class SS> class GenericScopedRemoveRestraint : public base::RAII {
     IMP_LOG_VERBOSE("Removing restraint " << ss_->get_name() << " from "
                                           << rs_->get_name() << std::endl);
   }
+
  public:
-  IMP_DEPRECATED_RAII(2.1,
-                      "Just use an IMP::kernel::ScoringFunction",
-                      KERNEL,
-                      GenericScopedRemoveRestraint,
-           (SS* ss, RestraintSet* rs), {
-  },
-           {
+  IMP_DEPRECATED_RAII(2.1, "Just use an IMP::kernel::ScoringFunction", KERNEL,
+                      GenericScopedRemoveRestraint, (SS* ss, RestraintSet* rs),
+                      {}, {
     setup(ss, rs);
   },
-           {
+                      {
     cleanup();
   },
-           {
+                      {
     if (ss_)
       out << "(Scoped removal of " << ss_->get_name() << ")";
     else
@@ -169,7 +160,8 @@ template <class SS> class GenericScopedRemoveRestraint : public base::RAII {
 
 /** \deprecated_at{2.1} This doesn't actually do anything any more.
 */
-template <class SS> class GenericScopedRemoveScoreState : public base::RAII {
+template <class SS>
+class GenericScopedRemoveScoreState : public base::RAII {
   base::Pointer<SS> ss_;
   base::Pointer<Model> rs_;
   void cleanup() {
@@ -192,20 +184,15 @@ template <class SS> class GenericScopedRemoveScoreState : public base::RAII {
   }
 
  public:
-  IMP_DEPRECATED_RAII(2.1, "This doesn't work any more",
-                      KERNEL,
-                      GenericScopedRemoveScoreState,
-           (SS* ss, Model* rs), {
-  },
-           {
-             IMPKERNEL_DEPRECATED_CLASS_DEF(2.1,
-                                          "This doesn't do anything any more");
+  IMP_DEPRECATED_RAII(2.1, "This doesn't work any more", KERNEL,
+                      GenericScopedRemoveScoreState, (SS* ss, Model* rs), {}, {
+    IMPKERNEL_DEPRECATED_CLASS_DEF(2.1, "This doesn't do anything any more");
     setup(ss, rs);
   },
-           {
+                      {
     cleanup();
   },
-           {
+                      {
     if (ss_)
       out << "(Scoped removal of " << ss_->get_name() << ")";
     else
@@ -259,7 +246,8 @@ class ScopedAddCacheAttribute : public base::RAII {
 /** Set an attribute to a given value and restore the old
     value when this goes out of scope..
 */
-template <class Key, class Value> class ScopedSetAttribute : public base::RAII {
+template <class Key, class Value>
+class ScopedSetAttribute : public base::RAII {
   base::Pointer<Model> m_;
   ParticleIndex pi_;
   Key key_;

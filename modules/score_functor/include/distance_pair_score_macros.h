@@ -26,12 +26,13 @@
 #define IMP_FUNCTOR_DISTANCE_PAIR_SCORE(Name, Functor, Args, PassArgs) \
   class Name : public IMP::PairScore {                                 \
     typedef IMP::score_functor::DistancePairScore<Functor> P;          \
+                                                                       \
    public:                                                             \
     Name Args;                                                         \
     double evaluate_index(Model *m, const ParticleIndexPair &pip,      \
-                          DerivativeAccumulator *da) const;             \
-    ModelObjectsTemp do_get_inputs(Model *m, const ParticleIndexes &pis) \
-        const;                                                          \
+                          DerivativeAccumulator *da) const;            \
+    ModelObjectsTemp do_get_inputs(Model *m,                           \
+                                   const ParticleIndexes &pis) const;  \
     IMP_OBJECT_METHODS(Name);                                          \
   }
 
@@ -39,6 +40,7 @@
 #define IMP_FUNCTOR_DISTANCE_PAIR_SCORE(Name, Functor, Args, PassArgs) \
   class Name : public IMP::score_functor::DistancePairScore<Functor> { \
     typedef IMP::score_functor::DistancePairScore<Functor> P;          \
+                                                                       \
    public:                                                             \
     Name Args : P(Functor PassArgs, name) {}                           \
   }

@@ -30,8 +30,7 @@ class IMPALGEBRAEXPORT SphericalVector3D : public GeometricPrimitiveD<3> {
   bool check(double r, double theta, double psi);
 
  public:
-  SphericalVector3D() {}
-  ;
+  SphericalVector3D() {};
 
   //! Constructor that directly converts to spherical coordinates from a vector
   //! v in Cartesian coordinates
@@ -56,16 +55,14 @@ class IMPALGEBRAEXPORT SphericalVector3D : public GeometricPrimitiveD<3> {
   }
 
   double operator[](unsigned int i) const {
-    IMP_USAGE_CHECK(
-        i < 3,
-        "Invalid component of SphericalCoords requested: " << i << " of " << 3);
+    IMP_USAGE_CHECK(i < 3, "Invalid component of SphericalCoords requested: "
+                               << i << " of " << 3);
     return v_[i];
   }
 
   double& operator[](unsigned int i) {
-    IMP_USAGE_CHECK(
-        i < 3,
-        "Invalid component of SphericalCoords requested: " << i << " of " << 3);
+    IMP_USAGE_CHECK(i < 3, "Invalid component of SphericalCoords requested: "
+                               << i << " of " << 3);
     return v_[i];
   }
 

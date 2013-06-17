@@ -30,13 +30,13 @@ IMPKERNELEXPORT ParticleIndexPairs get_indexes(const ParticlePairsTemp &ps);
 /** Take Decorator, Particle or ParticleIndex. */
 class IMPKERNELEXPORT ParticleIndexAdaptor
 #ifndef SWIG
-// suppress swig warning that doesn't make sense and I can't make go away
-: public ParticleIndex
+    // suppress swig warning that doesn't make sense and I can't make go away
+    : public ParticleIndex
 #endif
-{
+      {
  public:
   ParticleIndexAdaptor(Particle *p);
-  ParticleIndexAdaptor(ParticleIndex pi): ParticleIndex(pi) {}
+  ParticleIndexAdaptor(ParticleIndex pi) : ParticleIndex(pi) {}
   ParticleIndexAdaptor(const Decorator &d);
 #if !defined(SWIG) && !defined(IMP_DOXYGEN) && !defined(IMP_SWIG_WRAPPER)
   ParticleIndexAdaptor(base::WeakPointer<Particle> p);

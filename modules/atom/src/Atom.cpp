@@ -139,7 +139,7 @@ NAME_DEF(HH22, H);
 NAME_DEF(HH23, H);
 NAME_DEF(HH33, H);
 NAME_DEF(HH13, H);
-//NAME_ALIAS(1HH3, HH31);
+// NAME_ALIAS(1HH3, HH31);
 NAME_DEF(P, P);
 NAME_DEF(OP1, O);
 NAME_DEF(OP2, O);
@@ -213,8 +213,8 @@ Atom Atom::setup_particle(Model *m, ParticleIndex pi, AtomType t) {
     Hierarchy::setup_particle(p);
   }
   p->add_attribute(get_element_key(), UNKNOWN_ELEMENT);
-  //p->add_attribute(get_occupancy_key(), 1.00);
-  //p->add_attribute(get_tempFactor_key(), 0.00);
+  // p->add_attribute(get_occupancy_key(), 1.00);
+  // p->add_attribute(get_tempFactor_key(), 0.00);
 
   Atom ret(p);
   if (!Mass::particle_is_instance(p)) {

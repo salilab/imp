@@ -14,7 +14,7 @@
 #include <IMP/base/hash.h>
 #include <IMP/base/nullptr.h>
 
-//IMPBASE_BEGIN_NAMESPACE
+// IMPBASE_BEGIN_NAMESPACE
 namespace IMP {
 //! Basic floating-point value (could be float, double...)
 typedef double Float;
@@ -63,6 +63,6 @@ class Object;
 IMP_OBJECTS(Object, Objects);
 }
 }
-//IMPBASE_END_NAMESPACE
+// IMPBASE_END_NAMESPACE
 
 #endif /* IMPBASE_TYPES_H */

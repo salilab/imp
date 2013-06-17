@@ -34,7 +34,8 @@ IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 namespace TNT {
 using namespace std;
 
-template <class T> class Array2D {
+template <class T>
+class Array2D {
 
  private:
 
@@ -70,10 +71,11 @@ template <class T> class Array2D {
   inline int ref_count_data();
   inline int ref_count_dim1();
   Array2D subarray(int i0, int i1, int j0, int j1);
-
 };
 
-template <class T> Array2D<T>::Array2D() : data_(), v_(), m_(0), n_(0) {}
+template <class T>
+Array2D<T>::Array2D()
+    : data_(), v_(), m_(0), n_(0) {}
 
 template <class T>
 Array2D<T>::Array2D(const Array2D<T> &A)
@@ -117,74 +119,82 @@ Array2D<T>::Array2D(int m, int n, T *a)
   }
 }
 
-template <class T> inline T *Array2D<T>::operator[](int i) {
+template <class T>
+inline T *Array2D<T>::operator[](int i) {
 #ifdef TNT_BOUNDS_CHECK
   assert(i >= 0);
   assert(i < m_);
 #endif
 
   return v_[i];
-
 }
 
-template <class T> inline const T *Array2D<T>::operator[](int i) const {
+template <class T>
+inline const T *Array2D<T>::operator[](int i) const {
 #ifdef TNT_BOUNDS_CHECK
   assert(i >= 0);
   assert(i < m_);
 #endif
 
   return v_[i];
-
 }
 
-template <class T> Array2D<T> &Array2D<T>::operator=(const T &a) {
+template <class T>
+Array2D<T> &Array2D<T>::operator=(const T &a) {
   /* non-optimzied, but will work with subarrays in future verions */
 
   for (int i = 0; i < m_; i++)
-    for (int j = 0; j < n_; j++)
-      v_[i][j] = a;
+    for (int j = 0; j < n_; j++) v_[i][j] = a;
   return *this;
 }
 
-template <class T> Array2D<T> Array2D<T>::copy() const {
+template <class T>
+Array2D<T> Array2D<T>::copy() const {
   Array2D A(m_, n_);
 
   for (int i = 0; i < m_; i++)
-    for (int j = 0; j < n_; j++)
-      A[i][j] = v_[i][j];
+    for (int j = 0; j < n_; j++) A[i][j] = v_[i][j];
 
   return A;
 }
 
-template <class T> Array2D<T> &Array2D<T>::inject(const Array2D &A) {
+template <class T>
+Array2D<T> &Array2D<T>::inject(const Array2D &A) {
   if (A.m_ == m_ && A.n_ == n_) {
     for (int i = 0; i < m_; i++)
-      for (int j = 0; j < n_; j++)
-        v_[i][j] = A[i][j];
+      for (int j = 0; j < n_; j++) v_[i][j] = A[i][j];
   }
   return *this;
 }
 
-template <class T> Array2D<T> &Array2D<T>::ref(const Array2D<T> &A) {
+template <class T>
+Array2D<T> &Array2D<T>::ref(const Array2D<T> &A) {
   if (this != &A) {
     v_ = A.v_;
     data_ = A.data_;
     m_ = A.m_;
     n_ = A.n_;
-
   }
   return *this;
 }
 
-template <class T> Array2D<T> &Array2D<T>::operator=(const Array2D<T> &A) {
+template <class T>
+Array2D<T> &Array2D<T>::operator=(const Array2D<T> &A) {
   return ref(A);
 }
 
-template <class T> inline int Array2D<T>::dim1() const { return m_; }
+template <class T>
+inline int Array2D<T>::dim1() const {
+  return m_;
+}
 
-template <class T> inline int Array2D<T>::dim2() const { return n_; }
+template <class T>
+inline int Array2D<T>::dim2() const {
+  return n_;
+}
 
-template <class T> Array2D<T>::~Array2D() {}
+template <class T>
+Array2D<T>::~Array2D() {}
 
 /*
 template <class T>
@@ -224,20 +234,22 @@ Array2D<T> Array2D<T>::subarray(int i0, int i1, int j0, int j1) {
   T *p = &(data_[0]) + i0 * n_ + j0;
   for (int i = 0; i < m; i++) {
     A.v_[i] = p + i * n_;
-
   }
   return A;
 }
 
-template <class T> inline int Array2D<T>::ref_count() {
+template <class T>
+inline int Array2D<T>::ref_count() {
   return ref_count_data();
 }
 
-template <class T> inline int Array2D<T>::ref_count_data() {
+template <class T>
+inline int Array2D<T>::ref_count_data() {
   return data_.ref_count();
 }
 
-template <class T> inline int Array2D<T>::ref_count_dim1() {
+template <class T>
+inline int Array2D<T>::ref_count_dim1() {
   return v_.ref_count();
 }
 

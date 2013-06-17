@@ -32,14 +32,17 @@ template <class O>
 struct UncheckedWeakPointer
     : internal::PointerBase<internal::WeakPointerTraits<O> > {
   typedef internal::PointerBase<internal::WeakPointerTraits<O> > P;
-  template <class Any> UncheckedWeakPointer(const Any& o) : P(o) {}
+  template <class Any>
+  UncheckedWeakPointer(const Any& o)
+      : P(o) {}
   UncheckedWeakPointer() {}
   template <class OT>
   UncheckedWeakPointer<O>& operator=(const internal::PointerBase<OT>& o) {
     P::operator=(o);
     return *this;
   }
-  template <class OT> UncheckedWeakPointer<O>& operator=(OT* o) {
+  template <class OT>
+  UncheckedWeakPointer<O>& operator=(OT* o) {
     P::operator=(o);
     return *this;
   }
@@ -71,14 +74,17 @@ template <class O>
 struct WeakPointer
     : internal::PointerBase<internal::CheckedWeakPointerTraits<O> > {
   typedef internal::PointerBase<internal::CheckedWeakPointerTraits<O> > P;
-  template <class Any> WeakPointer(const Any& o) : P(o) {}
+  template <class Any>
+  WeakPointer(const Any& o)
+      : P(o) {}
   WeakPointer() {}
   template <class OT>
   WeakPointer<O>& operator=(const internal::PointerBase<OT>& o) {
     P::operator=(o);
     return *this;
   }
-  template <class OT> WeakPointer<O>& operator=(OT* o) {
+  template <class OT>
+  WeakPointer<O>& operator=(OT* o) {
     P::operator=(o);
     return *this;
   }

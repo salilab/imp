@@ -132,7 +132,7 @@ double get_slack_estimate(const ParticlesTemp &ps, double upper_bound,
       if (deaths.empty()) {
         ml = ns;
       } else {
-        //double l=1;
+        // double l=1;
         IMP_INTERNAL_CHECK(deaths.size() < static_cast<unsigned int>(ns),
                            "Too much death");
         double S = 1;
@@ -160,8 +160,9 @@ double get_slack_estimate(const ParticlesTemp &ps, double upper_bound,
           (datas[i].rcost + datas[i - 1].rcost + datas[i + 1].rcost) / 3.0;
       datas[i].ccost =
           (datas[i].ccost + datas[i - 1].ccost + datas[i + 1].ccost) / 3.0;
-      datas[i].lifetime = (datas[i].lifetime + datas[i - 1].lifetime +
-                           datas[i + 1].lifetime) / 3.0;
+      datas[i].lifetime =
+          (datas[i].lifetime + datas[i - 1].lifetime + datas[i + 1].lifetime) /
+          3.0;
     }
     double min = std::numeric_limits<double>::max();
     for (unsigned int i = 0; i < datas.size(); ++i) {

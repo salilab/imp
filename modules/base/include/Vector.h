@@ -15,7 +15,7 @@
 #include <sstream>
 #include "hash.h"
 
-#if IMP_COMPILER_HAS_DEBUG_VECTOR && IMP_HAS_CHECKS >= IMP_INTERNAL
+#if IMP_COMPILER_HAS_DEBUG_VECTOR &&IMP_HAS_CHECKS >= IMP_INTERNAL
 #include <debug/vector>
 #else
 #include <vector>
@@ -36,7 +36,7 @@ IMPBASE_BEGIN_NAMESPACE
 template <class T>
 class Vector : public Value
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-#if IMP_COMPILER_HAS_DEBUG_VECTOR && IMP_HAS_CHECKS >= IMP_INTERNAL
+#if IMP_COMPILER_HAS_DEBUG_VECTOR &&IMP_HAS_CHECKS >= IMP_INTERNAL
                ,
                public __gnu_debug::vector<T>
 #else
@@ -53,14 +53,18 @@ class Vector : public Value
  public:
   Vector() {}
   explicit Vector(unsigned int sz, const T &t = T()) : V(sz, t) {}
-  template <class It> Vector(It b, It e) : V(b, e) {}
+  template <class It>
+  Vector(It b, It e)
+      : V(b, e) {}
   template <class VO>
   explicit Vector(const std::vector<VO> &o)
       : V(o.begin(), o.end()) {}
-  template <class O> operator Vector<O>() const {
+  template <class O>
+  operator Vector<O>() const {
     return Vector<O>(V::begin(), V::end());
   }
-  template <class OV> Vector<T> operator+=(const OV &o) {
+  template <class OV>
+  Vector<T> operator+=(const OV &o) {
     V::insert(V::end(), o.begin(), o.end());
     return *this;
   }
@@ -89,7 +93,10 @@ class Vector : public Value
 };
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-template <class T> void swap(Vector<T> &a, Vector<T> &b) { a.swap(b); }
+template <class T>
+void swap(Vector<T> &a, Vector<T> &b) {
+  a.swap(b);
+}
 
 template <class T>
 inline Vector<T> operator+(Vector<T> ret, const Vector<T> &o) {

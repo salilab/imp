@@ -136,7 +136,8 @@ IMPCOREEXPORT ParticlePair closest_pair(Model *m, const RigidBodyHierarchy *da,
                                             std::numeric_limits<double>::max());
 
 struct LessFirst {
-  template <class A> bool operator()(const A &a, const A &b) const {
+  template <class A>
+  bool operator()(const A &a, const A &b) const {
     return a.first < b.first;
   }
 };

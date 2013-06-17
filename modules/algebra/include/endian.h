@@ -43,7 +43,8 @@ void IMPALGEBRAEXPORT byte_swap(unsigned char* b, int n);
 #endif
 
 //! Conversion between little and big endian. Goes both ways
-template <class T> inline void get_swapped_endian(T& x) {
+template <class T>
+inline void get_swapped_endian(T& x) {
   byte_swap((unsigned char*)&x, sizeof(T));
 }
 

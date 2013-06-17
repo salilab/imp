@@ -44,7 +44,6 @@ class IMPATOMEXPORT RemoveTranslationOptimizerState : public OptimizerState {
   Particles pis_;
   unsigned skip_steps_;
   unsigned call_number_;
-
 };
 
 IMP_OBJECTS(RemoveTranslationOptimizerState, RemoveTranslationOptimizerStates);

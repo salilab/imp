@@ -26,7 +26,8 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
     particles and containers later, for now the former
     is assumed to just be the input and the latter empty.
 */
-template <class DistanceScoreT> class DistancePairScore : public PairScore {
+template <class DistanceScoreT>
+class DistancePairScore : public PairScore {
   DistanceScoreT ds_;
 
  public:
@@ -39,8 +40,8 @@ template <class DistanceScoreT> class DistancePairScore : public PairScore {
   virtual double evaluate_index(Model *m, const ParticleIndexPair &pip,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                         const ParticleIndexes &pis)
-      const IMP_OVERRIDE;
+                                         const ParticleIndexes &pis) const
+      IMP_OVERRIDE;
   IMP_PAIR_SCORE_METHODS(DistancePairScore);
   IMP_OBJECT_METHODS(DistancePairScore);
 };

@@ -16,11 +16,11 @@ IMPCORE_DEPRECATED_HEADER(2.1, "Use MonteCarloMover")
 
 /** \deprecated_at{2.1} Use IMP::core::MonteCarloMover
  */
-#define IMP_MOVER(Name)                                                \
+#define IMP_MOVER(Name)                                                      \
   IMP_DEPRECATED_MACRO(2.1, "You should move to IMP::core::MonteCarloMover") \
-  IMP_IMPLEMENT(virtual ParticlesTemp propose_move(Float size));        \
-  IMP_IMPLEMENT(virtual void reset_move());                            \
-  IMP_IMPLEMENT(virtual ParticlesTemp get_output_particles() const);   \
+      IMP_IMPLEMENT(virtual ParticlesTemp propose_move(Float size));         \
+  IMP_IMPLEMENT(virtual void reset_move());                                  \
+  IMP_IMPLEMENT(virtual ParticlesTemp get_output_particles() const);         \
   IMP_OBJECT_NO_WARNING(Name)
 
 #endif /* IMPCORE_MOVER_MACROS_H */

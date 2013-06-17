@@ -44,6 +44,5 @@ algebra::Sphere3D get_enclosing_sphere(const algebra::Sphere3Ds &ss) {
     IMP_LOG_VERBOSE( std::endl);
     }*/
   return s;
-
 }
 IMPCGAL_END_INTERNAL_NAMESPACE

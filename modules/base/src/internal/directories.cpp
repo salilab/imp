@@ -80,7 +80,7 @@ bool get_install_location(std::string &dir) {
         keytype == REG_SZ) {
       char *keyval = new char[keylen];
 
-      if (RegQueryValueEx(key, "", nullptr, &keytype, (LPBYTE) keyval,
+      if (RegQueryValueEx(key, "", nullptr, &keytype, (LPBYTE)keyval,
                           &keylen) ==
           ERROR_SUCCESS) {
         dir.assign(keyval);
@@ -153,7 +153,6 @@ Strings get_example_prefixes(std::string) {
   }
   return ret;
 }
-
 }
 
 void set_backup_data_path(std::string path) {

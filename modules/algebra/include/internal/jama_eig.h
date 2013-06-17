@@ -73,7 +73,8 @@ using namespace std;
   by the Mathworks and NIST; see  http://math.nist.gov/javanumerics/jama).
 **/
 
-template <class Real> class Eigenvalue {
+template <class Real>
+class Eigenvalue {
 
   /** Row and column dimension (square matrix).  */
   int n;
@@ -1016,7 +1017,7 @@ template <class Real> class Eigenvalue {
   }
 };
 
-}  //namespace JAMA
+}  // namespace JAMA
 
 IMPALGEBRA_END_INTERNAL_NAMESPACE
 

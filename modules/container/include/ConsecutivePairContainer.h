@@ -47,7 +47,8 @@ class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer {
 
  public:
   //! apply to each item in container
-  template <class F> void apply_generic(F *f) const {
+  template <class F>
+  void apply_generic(F *f) const {
     for (unsigned int i = 1; i < ps_.size(); ++i) {
       f->apply_index(get_model(), ParticleIndexPair(ps_[i - 1], ps_[i]));
     }
@@ -74,13 +75,13 @@ class IMPCONTAINEREXPORT ConsecutivePairFilter : public PairPredicate {
  public:
   ConsecutivePairFilter(ConsecutivePairContainer *cpc);
 
-  virtual int get_value_index(Model *, const ParticleIndexPair &pip)
-      const IMP_OVERRIDE {
+  virtual int get_value_index(Model *, const ParticleIndexPair &pip) const
+      IMP_OVERRIDE {
     return cpc_->get_contains(pip);
   }
   virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                         const ParticleIndexes &pi)
-      const IMP_OVERRIDE {
+                                         const ParticleIndexes &pi) const
+      IMP_OVERRIDE {
     ModelObjectsTemp ret;
     ret += IMP::get_particles(m, pi);
     return ret;
@@ -123,7 +124,8 @@ class IMPCONTAINEREXPORT ExclusiveConsecutivePairContainer
 
  public:
   //! apply to each item in container
-  template <class F> void apply_generic(F *f) const {
+  template <class F>
+  void apply_generic(F *f) const {
     for (unsigned int i = 1; i < ps_.size(); ++i) {
       f->apply_index(get_model(), ParticleIndexPair(ps_[i - 1], ps_[i]));
     }
@@ -149,13 +151,13 @@ class IMPCONTAINEREXPORT ExclusiveConsecutivePairFilter : public PairPredicate {
   ExclusiveConsecutivePairFilter()
       : PairPredicate("ExclusiveConsecutivePairFilter %1%") {}
 
-  virtual int get_value_index(Model *m, const ParticleIndexPair &pip)
-      const IMP_OVERRIDE {
+  virtual int get_value_index(Model *m, const ParticleIndexPair &pip) const
+      IMP_OVERRIDE {
     return ExclusiveConsecutivePairContainer::get_contains(m, pip);
   }
   virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                         const ParticleIndexes &pi)
-      const IMP_OVERRIDE {
+                                         const ParticleIndexes &pi) const
+      IMP_OVERRIDE {
     ModelObjectsTemp ret;
     ret += IMP::get_particles(m, pi);
     return ret;

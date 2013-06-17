@@ -46,7 +46,7 @@ Subsets get_subsets(const SubsetGraph &g) {
 SubsetGraph get_restraint_graph(ScoringFunctionAdaptor in,
                                 const ParticleStatesTable *pst) {
   RestraintsTemp rs = IMP::create_decomposition(in->create_restraints());
-  //ScoreStatesTemp ss= get_required_score_states(rs);
+  // ScoreStatesTemp ss= get_required_score_states(rs);
   SubsetGraph ret(rs.size());  // + ss.size());
   IMP_LOG_TERSE("Creating restraint graph on " << rs.size() << " restraints."
                                                << std::endl);
@@ -188,7 +188,7 @@ void triangulate(InteractionGraph &ig) {
         maxv = *be.first;
       }
     }
-    //unsigned int v= vmap.find(mpm[maxv])->second;
+    // unsigned int v= vmap.find(mpm[maxv])->second;
     /*std::cout << "Triangulating vertex "
       << vmap.find(mpm[maxv])->second
       << " with degree " << maxd << std::endl;
@@ -202,7 +202,7 @@ void triangulate(InteractionGraph &ig) {
       }
       std::cout << std::endl;*/
     for (unsigned int i = 1; i < neighbors.size(); ++i) {
-      //std::cout << "neighbor 0 is "
+      // std::cout << "neighbor 0 is "
       // << boost::get(mpm, neighbors[i])->get_name() << std::endl;
       InteractionGraphVertex o0 =
           vmap.find(boost::get(mpm, neighbors[i]))->second;
@@ -218,13 +218,13 @@ void triangulate(InteractionGraph &ig) {
         }
         // connect if not adjacent
         if (be01.first == be01.second) {
-          //std::cout << "Connecting " << o0 << " " << o1 << std::endl;
-          //std::cout << "and " << neighbors[i] << " "
+          // std::cout << "Connecting " << o0 << " " << o1 << std::endl;
+          // std::cout << "and " << neighbors[i] << " "
           //<< neighbors[j] << std::endl;
           boost::add_edge(neighbors[i], neighbors[j], mig);
           boost::add_edge(o0, o1, ig);
         } else {
-          //std::cout << "Already connected " << o0
+          // std::cout << "Already connected " << o0
           //<< " " << o1 << std::endl;
         }
       }
@@ -241,7 +241,6 @@ void triangulate(InteractionGraph &ig) {
       IMP::internal::show_as_graphviz(ig, std::cout);*/
   }
 }
-
 }
 
 InteractionGraph get_triangulated(const InteractionGraph &ig) {
@@ -251,10 +250,8 @@ InteractionGraph get_triangulated(const InteractionGraph &ig) {
     IMP::internal::show_as_graphviz(ig, std::cout);*/
   triangulate(cig);
   IMP_LOG_VERBOSE("Triangulated graph is " << std::endl);
-  IMP_LOG_WRITE(VERBOSE,
-                show_as_graphviz(cig, IMP_STREAM));
+  IMP_LOG_WRITE(VERBOSE, show_as_graphviz(cig, IMP_STREAM));
   return cig;
-
 }
 
 SubsetGraph get_minimum_spanning_tree(const CliqueGraph &cg) {
@@ -328,8 +325,7 @@ bool get_has_edge(InteractionGraph &graph, InteractionGraphVertex va,
 
 void add_edges(const ParticlesTemp &ps, ModelObjects pt,
                const IMP::base::map<ModelObject *, int> &map,
-               base::Object *blame,
-               InteractionGraph &g) {
+               base::Object *blame, InteractionGraph &g) {
   IMP_LOG_VARIABLE(ps);
   InteractionGraphEdgeName om = boost::get(boost::edge_name, g);
   std::sort(pt.begin(), pt.end());
@@ -355,7 +351,6 @@ void add_edges(const ParticlesTemp &ps, ModelObjects pt,
     }
   }
 }
-
 }
 
 InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
@@ -369,7 +364,7 @@ InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
   if (ps.empty()) return InteractionGraph();
   InteractionGraph ret(ps.size());
   Restraints rs = IMP::create_decomposition(rsi->create_restraints());
-  //Model *m= ps[0]->get_model();
+  // Model *m= ps[0]->get_model();
   IMP::base::map<ModelObject *, int> map;
   InteractionGraphVertexName pm = boost::get(boost::vertex_name, ret);
   DependencyGraph dg = get_dependency_graph(ps[0]->get_model());
@@ -689,7 +684,7 @@ MergeTree get_balanced_merge_tree(const SubsetGraph &jti) {
       mt_sets[mn] = jt_sets[jn];
       vertex_map[jn] = mn;
     }
-    //IMP::internal::show_as_graphviz(ret, std::cout);
+    // IMP::internal::show_as_graphviz(ret, std::cout);
     /*{
       SubsetGraph sg;
       boost::copy_graph(junction_tree, sg);
@@ -714,7 +709,7 @@ struct NameWriter {
       : index_(index), vm_(vm) {}
   void operator()(std::ostream &out, int v) const {
     Subset s = boost::get(vm_, v);
-    //std::cout << "Writing name for subset " << s << std::endl;
+    // std::cout << "Writing name for subset " << s << std::endl;
     out << " [label=\"";
     for (unsigned int i = 0; i < s.size(); ++i) {
       if (i != 0) out << " ";
@@ -780,7 +775,7 @@ MergeTree read_merge_tree(std::istream &in, const ParticlesTemp &ps) {
   // Use ref_property_map to turn a graph property into a property map
   /*boost::ref_property_map<MergeTree*,std::string>
     gname(get_property(graph,boost::graph_name));*/
-  //dp.property("name",gname);
+  // dp.property("name",gname);
   {
     // this spews large amounts of output in tests, not sure how to prevent that
     bool status = read_graphviz(in, graph, dp, "node_id");

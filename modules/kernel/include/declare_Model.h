@@ -203,9 +203,7 @@ class IMPKERNELEXPORT Model : public base::Object
                       "Score state already in model " << obj->get_name());
     }
   },
-                  {
-  },
-                  {
+                  {}, {
     obj->set_model(nullptr);
   });
   /**@}*/
@@ -227,7 +225,6 @@ class IMPKERNELEXPORT Model : public base::Object
   /** \deprecated_at{2.1} You should use a ScoringFunction or a RestraintSet.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   double get_maximum_score() const;
-
 
 #if !defined(IMP_DOXYGEN)
   ModelObjectsTemp get_optimized_particles() const;

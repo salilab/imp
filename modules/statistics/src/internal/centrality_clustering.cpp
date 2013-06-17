@@ -40,9 +40,9 @@ typedef boost::adjacency_matrix<
                               double> > Graph;*/
 typedef boost::graph_traits<Graph> Traits;
 
-  typedef boost::vector_property_map<Traits::vertex_descriptor> PM;
+typedef boost::vector_property_map<Traits::vertex_descriptor> PM;
 
-  typedef boost::disjoint_sets<PM, PM > DS;
+typedef boost::disjoint_sets<PM, PM> DS;
 
 struct Done {
   typedef double centrality_type;
@@ -65,7 +65,6 @@ struct Done {
     return s >= static_cast<unsigned int>(k_);
   }
 };
-
 }
 
 PartitionalClustering *get_centrality_clustering(CentralityGraph &g,

@@ -70,12 +70,12 @@ class IMPCOREEXPORT HarmonicUpperBoundSphereDiameterPairScore
   HarmonicUpperBoundSphereDiameterPairScore(double d0, double k);
   double get_rest_length() const { return x0_; }
   double get_stiffness() const { return k_; }
-  double evaluate_index(Model *m, const ParticleIndexPair& p,
-                         DerivativeAccumulator *da) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs(Model *m,
-                                 const ParticleIndexes &pis) const;
+  double evaluate_index(Model *m, const ParticleIndexPair &p,
+                        DerivativeAccumulator *da) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs(Model *m, const ParticleIndexes &pis) const;
   IMP_PAIR_SCORE_METHODS(HarmonicUpperBoundSphereDiameterPairScore);
-  IMP_OBJECT_METHODS(HarmonicUpperBoundSphereDiameterPairScore);;
+  IMP_OBJECT_METHODS(HarmonicUpperBoundSphereDiameterPairScore);
+  ;
 };
 
 IMP_OBJECTS(HarmonicUpperBoundSphereDiameterPairScore,
@@ -132,14 +132,14 @@ class IMPCOREEXPORT NormalizedSphereDistancePairScore : public PairScore {
  public:
   NormalizedSphereDistancePairScore(UnaryFunction *f,
                                     FloatKey radius = FloatKey("radius"));
-  virtual double evaluate_index(Model *m,
-                                const ParticleIndexPair &p,
+  virtual double evaluate_index(Model *m, const ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                         const ParticleIndexes &pis)
-      const IMP_OVERRIDE;
+                                         const ParticleIndexes &pis) const
+      IMP_OVERRIDE;
   IMP_PAIR_SCORE_METHODS(NormalizedSphereDistancePairScore);
-  IMP_OBJECT_METHODS(NormalizedSphereDistancePairScore);;
+  IMP_OBJECT_METHODS(NormalizedSphereDistancePairScore);
+  ;
 };
 
 //! A score on a weighted distance between the surfaces of two spheres
@@ -157,15 +157,14 @@ class IMPCOREEXPORT WeightedSphereDistancePairScore : public PairScore {
  public:
   WeightedSphereDistancePairScore(UnaryFunction *f, FloatKey weight,
                                   FloatKey radius = FloatKey("radius"));
-  virtual double evaluate_index(Model *m,
-                                const ParticleIndexPair &p,
-                                DerivativeAccumulator *da)
-      const IMP_OVERRIDE;
+  virtual double evaluate_index(Model *m, const ParticleIndexPair &p,
+                                DerivativeAccumulator *da) const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                         const ParticleIndexes &pis)
-      const IMP_OVERRIDE;
+                                         const ParticleIndexes &pis) const
+      IMP_OVERRIDE;
   IMP_PAIR_SCORE_METHODS(WeightedSphereDistancePairScore);
-  IMP_OBJECT_METHODS(WeightedSphereDistancePairScore);;
+  IMP_OBJECT_METHODS(WeightedSphereDistancePairScore);
+  ;
 };
 
 typedef score_functor::SphereDistance<score_functor::HarmonicLowerBound>

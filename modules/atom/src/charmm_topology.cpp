@@ -220,7 +220,6 @@ Atom get_atom_by_name(Hierarchy h, const std::string atom_name) {
     return IMP::atom::get_atom(r, AtomType("HET:" + atom_name));
   }
 }
-
 }
 
 CHARMMBondEndpoint::CHARMMBondEndpoint(std::string atom_name,

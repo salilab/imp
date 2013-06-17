@@ -99,7 +99,8 @@ inline void maximal_cliques(const Graph& graph, CliqueOutputIterator out) {
 
 // Private Function Implementation
 namespace _maximal_cliques {
-template <class It> inline void opt_incr(bool incr, It& it) {
+template <class It>
+inline void opt_incr(bool incr, It& it) {
   if (incr) ++it;
 }
 
@@ -115,7 +116,7 @@ void IK_GX(const Graph& graph, CliqueOutputIterator& out, Vector& R, Vector& P,
   typedef typename graph_traits::vertex_iterator vertex_iterator;
   typedef typename graph_traits::adjacency_iterator adjacency_iterator;
 #ifdef DCLIQUE
-  //std::cout << R.size() << " " << P.size() << " " << X.size() << std::endl;
+  // std::cout << R.size() << " " << P.size() << " " << X.size() << std::endl;
   // need to add depth parameter for std::cout << "[" << depth << "]" << " ";
   std::cout << "|R| = " << R.size() << " ";
   std::cout << "|P| = " << P.size() << " ";

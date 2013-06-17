@@ -11,9 +11,9 @@ IMPBASE_BEGIN_INTERNAL_NAMESPACE
 #if !IMP_BASE_HAS_LOG4CXX
 struct IndentFilter : public boost::iostreams::output_filter {
   bool to_indent_;
-  IndentFilter() : to_indent_(false) {}
-  ;
-  template <typename Sink> bool put(Sink &sink, char c) {
+  IndentFilter() : to_indent_(false) {};
+  template <typename Sink>
+  bool put(Sink &sink, char c) {
     if (c == '\n') {
       to_indent_ = true;
     } else if (to_indent_) {

@@ -336,5 +336,5 @@ using IMP::kernel::write_particles_to_buffer;
     For now you should use the IMP namespace versions of the names.
 */
 
-#endif  //doxygen
+#endif  // doxygen
 #endif  /* IMPKERNEL_DOXYGEN_H */

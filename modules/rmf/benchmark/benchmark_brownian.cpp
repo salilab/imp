@@ -167,7 +167,7 @@ It create_restraints(PS0 *link, PS1 *lb, SS *bottom, It in) {
   ret.cpc = cpc;
   ret.lb = lb;
   IMP_NEW(PR, pr, (lb, cpc, "close pairs"));
-  //ret.rss.push_back(pr);
+  // ret.rss.push_back(pr);
   IMP_NEW(SingletonsRestraint, sr, (bottom, ret.lsc));
   ret.rss.push_back(sr);
   Restraints all_restraints = ret.rss;
@@ -176,9 +176,9 @@ It create_restraints(PS0 *link, PS1 *lb, SS *bottom, It in) {
   ret.bd->set_log_level(SILENT);
   ret.bd->set_scoring_function(all_restraints);
   ret.bd->get_scoring_function()->set_log_level(SILENT);
-  //double ts=Diffusion(ret.all[0]).get_time_step_from_sigma(sigma);
+  // double ts=Diffusion(ret.all[0]).get_time_step_from_sigma(sigma);
   ret.bd->set_maximum_time_step(ret.sp->get_value(tsk));
-  //std::cout << ret.sp->get_value(tsk) << std::endl;
+  // std::cout << ret.sp->get_value(tsk) << std::endl;
   return ret;
 }
 
@@ -261,7 +261,7 @@ void do_benchmark(std::string name, PS0 *link, PS1 *lb, SS *bottom, bool rigid,
   IMP::benchmark::report("bd", name, runtime, total);
 }
 }
-//new LowerBound(kk)
+// new LowerBound(kk)
 namespace {
 bool FLAGS_initialize = false, FLAGS_setup = false;
 IMP::base::AddBoolFlag ifl("initialize", "Initialize things",

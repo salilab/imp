@@ -33,8 +33,7 @@ Rotation2D compose(const Rotation2D &a, const Rotation2D &b);
 **/
 class Rotation2D : public GeometricPrimitiveD<2> {
  public:
-  Rotation2D() : angle_(std::numeric_limits<double>::quiet_NaN()) {}
-  ;
+  Rotation2D() : angle_(std::numeric_limits<double>::quiet_NaN()) {};
 
   //! Builds the matrix for the given angle
   Rotation2D(double angle) { set_angle(angle); }
@@ -90,7 +89,7 @@ inline Rotation2D get_identity_rotation_2d() { return Rotation2D(0.0); }
 
 //! Builds an identity rotation in 2D
 inline Rotation2D get_random_rotation_2d() {
-  return Rotation2D(2 * PI * ((double) rand() / ((double) RAND_MAX + 1)));
+  return Rotation2D(2 * PI * ((double)rand() / ((double)RAND_MAX + 1)));
 }
 
 //! Builds the rotation that transforms the vector X of the origin

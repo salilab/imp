@@ -21,20 +21,18 @@ IMPMISC_BEGIN_NAMESPACE
 //! A decorator for a particle with x,y,z coordinates and a radius.
 /** This is mostly just a sample decorator.
  */
-class IMPMISCEXPORT CustomXYZR:
-  public core::XYZ
-{
-public:
-  IMP_DECORATOR_WITH_TRAITS(CustomXYZR, core::XYZ, FloatKey,
-                       radius_key, get_default_radius_key());
+class IMPMISCEXPORT CustomXYZR : public core::XYZ {
+ public:
+  IMP_DECORATOR_WITH_TRAITS(CustomXYZR, core::XYZ, FloatKey, radius_key,
+                            get_default_radius_key());
 
   /** Create a decorator using radius_key to store the FloatKey.
      \param[in] p The particle to wrap.
      \param[in] radius_key The (optional) key name to use.
      The default is "radius".
    */
-  static CustomXYZR setup_particle(Particle *p,
-                     FloatKey radius_key= get_default_radius_key()) {
+  static CustomXYZR setup_particle(Particle *p, FloatKey radius_key =
+                                                    get_default_radius_key()) {
     if (!XYZ::particle_is_instance(p)) {
       XYZ::setup_particle(p);
     }
@@ -42,17 +40,16 @@ public:
     return CustomXYZR(p, radius_key);
   }
 
-
- /** Create a decorator using radius_key to store the FloatKey.
-     The particle should already be an XYZ particle.
-     \param[in] p The particle to wrap.
-     \param[in] radius The radius to set initially
-     \param[in] radius_key The (optional) key name to use.
-     The default is "radius".
-   */
-  static CustomXYZR setup_particle(Particle *p,
-                     Float radius,
-                     FloatKey radius_key= get_default_radius_key()) {
+  /** Create a decorator using radius_key to store the FloatKey.
+      The particle should already be an XYZ particle.
+      \param[in] p The particle to wrap.
+      \param[in] radius The radius to set initially
+      \param[in] radius_key The (optional) key name to use.
+      The default is "radius".
+    */
+  static CustomXYZR setup_particle(Particle *p, Float radius,
+                                   FloatKey radius_key =
+                                       get_default_radius_key()) {
     p->add_attribute(radius_key, radius, false);
     return CustomXYZR(p, radius_key);
   }
@@ -63,21 +60,20 @@ public:
      \param[in] radius_key The (optional) key name to use.
      The default is "radius".
    */
-  static CustomXYZR setup_particle(Particle *p,
-                     const algebra::Sphere3D &s,
-                     FloatKey radius_key= get_default_radius_key()) {
+  static CustomXYZR setup_particle(Particle *p, const algebra::Sphere3D &s,
+                                   FloatKey radius_key =
+                                       get_default_radius_key()) {
     XYZ::setup_particle(p, s.get_center());
     p->add_attribute(radius_key, s.get_radius(), false);
     return CustomXYZR(p, radius_key);
   }
 
   //! Check if the particle has the required attributes
-  static bool particle_is_instance(Particle *p,
-                             FloatKey radius_key= get_default_radius_key()) {
+  static bool particle_is_instance(Particle *p, FloatKey radius_key =
+                                                    get_default_radius_key()) {
     return p->has_attribute(radius_key);
   }
   IMP_DECORATOR_GET_SET(radius, get_radius_key(), Float, Float);
-
 
   //! Return a sphere object
   algebra::Sphere3D get_sphere() const {
@@ -93,16 +89,13 @@ public:
   static FloatKey get_default_radius_key() {
     return IMP::internal::xyzr_keys[3];
   }
-  void add_to_radius_derivative(double v,
-                                DerivativeAccumulator &d) {
+  void add_to_radius_derivative(double v, DerivativeAccumulator &d) {
     get_particle()->add_to_derivative(get_radius_key(), v, d);
   }
-  FloatKey get_traits() {
-    return get_radius_key();
-  }
+  FloatKey get_traits() { return get_radius_key(); }
 };
 
-IMP_DECORATORS(CustomXYZR,CustomXYZRs, core::XYZs);
+IMP_DECORATORS(CustomXYZR, CustomXYZRs, core::XYZs);
 
 //! Compute the distance between a pair of particles
 /** See XYZR
@@ -123,4 +116,4 @@ inline void set_sphere_d_geometry(CustomXYZR d, const algebra::Sphere3D &v) {
 
 IMPMISC_END_NAMESPACE
 
-#endif  /* IMPMISC_CUSTOM_XYZ_R_H */
+#endif /* IMPMISC_CUSTOM_XYZ_R_H */

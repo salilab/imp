@@ -42,7 +42,8 @@ struct IMPCGALEXPORT RCTree : public base::RefCounted {
 struct IMPCGALEXPORT KNNData {
   mutable base::Pointer<RCTree> tree_;
   base::Vector<VectorWithIndex> vsi_;
-  template <class It> KNNData(It b, It e) {
+  template <class It>
+  KNNData(It b, It e) {
     initialize(create_vectors_with_index(b, e));
   }
   void initialize(const base::Vector<VectorWithIndex> &v);

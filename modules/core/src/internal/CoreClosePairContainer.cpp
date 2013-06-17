@@ -155,19 +155,16 @@ void CoreClosePairContainer::do_incremental() {
   cpf_->set_pair_filters(pf);
   cpf_->set_distance(distance_ + 2 * slack_);
   ParticleIndexPairs ret;
-  IMP_CONTAINER_ACCESS(SingletonContainer, moved_,
-                       {
-                         const ParticleIndexes &moved = imp_indexes;
-                          IMP_CONTAINER_ACCESS(SingletonContainer, c_,
-                                ret = cpf_->get_close_pairs(get_model(),
-                                                            imp_indexes,
-                                                            moved));
-                         ParticleIndexPairs ret1
-                             = cpf_->get_close_pairs(get_model(), moved);
-                         ret.insert(ret.begin(), ret1.begin(), ret1.end());
-                         internal::fix_order(ret);
-                         moved_count_ += moved.size();
-                       });
+  IMP_CONTAINER_ACCESS(SingletonContainer, moved_, {
+    const ParticleIndexes &moved = imp_indexes;
+    IMP_CONTAINER_ACCESS(
+        SingletonContainer, c_,
+        ret = cpf_->get_close_pairs(get_model(), imp_indexes, moved));
+    ParticleIndexPairs ret1 = cpf_->get_close_pairs(get_model(), moved);
+    ret.insert(ret.begin(), ret1.begin(), ret1.end());
+    internal::fix_order(ret);
+    moved_count_ += moved.size();
+  });
   {
     /*InList il= InList::create(moved);
       remove_from_list_if(il);

@@ -73,7 +73,7 @@ typedef PrincipalComponentAnalysisD<3> PrincipalComponentAnalysis3D;
 typedef PrincipalComponentAnalysisD<4> PrincipalComponentAnalysis4D;
 typedef PrincipalComponentAnalysisD<5> PrincipalComponentAnalysis5D;
 typedef PrincipalComponentAnalysisD<6> PrincipalComponentAnalysis6D;
-typedef PrincipalComponentAnalysisD< -1> PrincipalComponentAnalysisKD;
+typedef PrincipalComponentAnalysisD<-1> PrincipalComponentAnalysisKD;
 typedef base::Vector<PrincipalComponentAnalysisD<1> >
     PrincipalComponentAnalysis1Ds;
 typedef base::Vector<PrincipalComponentAnalysisD<2> >
@@ -86,7 +86,7 @@ typedef base::Vector<PrincipalComponentAnalysisD<5> >
     PrincipalComponentAnalysis5Ds;
 typedef base::Vector<PrincipalComponentAnalysisD<6> >
     PrincipalComponentAnalysis6Ds;
-typedef base::Vector<PrincipalComponentAnalysisD< -1> >
+typedef base::Vector<PrincipalComponentAnalysisD<-1> >
     PrincipalComponentAnalysisKDs;
 
 template <int D>
@@ -109,8 +109,9 @@ PrincipalComponentAnalysisD<D> get_principal_components(
     const base::Vector<VectorD<D> > &ps) {
   IMP_USAGE_CHECK(!ps.empty(), "Need some vectors to get components.");
   unsigned int dim = ps[0].get_dimension();
-  VectorD<D> m = std::accumulate(ps.begin(), ps.end(),
-                                 get_zero_vector_kd(dim)) / ps.size();
+  VectorD<D> m =
+      std::accumulate(ps.begin(), ps.end(), get_zero_vector_kd(dim)) /
+      ps.size();
   internal::TNT::Array2D<double> cov = internal::get_covariance_matrix(ps, m);
   IMP_LOG_VERBOSE("The covariance matrix is " << cov << std::endl);
   internal::JAMA::SVD<double> svd(cov);
@@ -128,8 +129,8 @@ PrincipalComponentAnalysisD<D> get_principal_components(
       vectors[i][j] = V[j][i];
     }
   }
-  //the principal components are the columns of V
-  //pc1(pc3) is the vector of the largest(smallest) eigenvalue
+  // the principal components are the columns of V
+  // pc1(pc3) is the vector of the largest(smallest) eigenvalue
   return PrincipalComponentAnalysisD<D>(vectors, values, m);
 }
 

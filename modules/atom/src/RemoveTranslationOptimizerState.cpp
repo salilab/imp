@@ -34,7 +34,6 @@ void RemoveTranslationOptimizerState::remove_translation() const {
     core::XYZ d(p);
     d.set_coordinates(d.get_coordinates() - coords);
   }
-
 }
 
 IMPATOM_END_NAMESPACE

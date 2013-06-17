@@ -21,7 +21,7 @@ bool get_are_parallel(const Vector3D &v1, const Vector3D &v2) {
 
 bool get_are_colinear(const Vector3D &p1, const Vector3D &p2,
                       const Vector3D &p3) {
-  //check that the three points are not on the same line
+  // check that the three points are not on the same line
   algebra::Vector3D v1 = p1 - p2;
   algebra::Vector3D v2 = p1 - p3;
   return get_are_parallel(v1, v2);
@@ -70,7 +70,7 @@ ReferenceFrame3D get_reference_frame_of_triagle(Triangle3D t) {
   Vector3D p0 = t.get_point(0);
   Vector3D p1 = t.get_point(1);
   Vector3D p2 = t.get_point(2);
-  Vector3D trans = (p0 + p1 + p2) / 3;  //the translation
+  Vector3D trans = (p0 + p1 + p2) / 3;  // the translation
   Vector3D x = trans - p0;
   x /= get_l2_norm(x);
   Vector3D z = get_vector_product(p2 - p0, p2 - p1);
@@ -80,7 +80,7 @@ ReferenceFrame3D get_reference_frame_of_triagle(Triangle3D t) {
                                             z[0], z[1], z[2]);
   return ReferenceFrame3D(Transformation3D(rot.get_inverse(), trans));
 }
-}  //close namespace
+}  // close namespace
 
 Transformation3D get_transformation_from_first_triangle_to_second(
     Triangle3D first_tri, Triangle3D second_tri) {

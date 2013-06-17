@@ -48,7 +48,7 @@ void compute_mst(Model *m, const ParticleIndexes &imp_indexes,
     vs[i] = core::XYZ(m, imp_indexes[i]).get_coordinates();
   }
   IMP_NEW(algebra::NearestNeighborD<3>, nn, (vs));
-  ///unsigned int nnn=static_cast<unsigned int>(std::sqrt(vs.size())+1);
+  /// unsigned int nnn=static_cast<unsigned int>(std::sqrt(vs.size())+1);
   Graph g(vs.size());
   for (unsigned int i = 0; i < vs.size(); ++i) {
     core::XYZR di(m, imp_indexes[i]);
@@ -74,7 +74,6 @@ void compute_mst(const SingletonContainer *sc, ParticleIndexPairs &out) {
   IMP_CONTAINER_ACCESS(SingletonContainer, sc, {
     compute_mst(sc->get_model(), imp_indexes, out);
   });
-
 }
 }
 

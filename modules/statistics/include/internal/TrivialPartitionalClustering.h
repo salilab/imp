@@ -30,13 +30,13 @@ class TrivialPartitionalClustering : public PartitionalClustering {
     }
   }
   unsigned int get_number_of_clusters() const IMP_OVERRIDE;
-  const Ints& get_cluster(unsigned int i) const IMP_OVERRIDE;
+  const Ints &get_cluster(unsigned int i) const IMP_OVERRIDE;
   int get_cluster_representative(unsigned int i) const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(TrivialPartitionalClustering);
 };
 
-inline unsigned int
-TrivialPartitionalClustering::get_number_of_clusters() const {
+inline unsigned int TrivialPartitionalClustering::get_number_of_clusters()
+    const {
   IMP_CHECK_OBJECT(this);
   return clusters_.size();
 }

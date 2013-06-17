@@ -61,7 +61,7 @@ IMPBASEEXPORT void setup_from_argv(int argc, char **argv,
     \param[in] description A message describing what the program does.
     */
 IMPBASEEXPORT Strings setup_from_argv_allowing_unknown(int argc, char **argv,
-                                                    std::string description);
+                                                       std::string description);
 
 /** Parse the command line flags and return the
     positional arguments.

@@ -25,28 +25,35 @@ Particle::Particle(Model *m)
 
 namespace {
 struct IdentityValue {
-  template <class T> const T &operator()(const T &t) const { return t; }
+  template <class T>
+  const T &operator()(const T &t) const {
+    return t;
+  }
 };
 struct NameValue {
   Model *m_;
   NameValue(Model *m) : m_(m) {}
-  template <class T> std::string operator()(const T &t) const {
+  template <class T>
+  std::string operator()(const T &t) const {
     std::ostringstream oss;
     oss << "\"" << m_->get_particle(t)->get_name() << "\"";
     return oss.str();
   }
 };
 struct DirectNameValue {
-  template <class T> std::string operator()(const T &t) const {
+  template <class T>
+  std::string operator()(const T &t) const {
     std::ostringstream oss;
     oss << "\"" << t->get_name() << "\"";
     return oss.str();
   }
 };
-template <class V> struct SizeValue {
+template <class V>
+struct SizeValue {
   V v_;
   SizeValue(V v = V()) : v_(v) {}
-  template <class T> std::string operator()(const T &t) const {
+  template <class T>
+  std::string operator()(const T &t) const {
     std::ostringstream oss;
     if (t.size() < 5) {
       oss << "[";

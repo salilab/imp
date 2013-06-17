@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
   IMP::base::setup_from_argv(argc, argv, "Benchmark connectivity");
   unsigned int npart = 1000;
   set_log_level(SILENT);
-  //set_check_level(NONE);
+  // set_check_level(NONE);
   IMP_NEW(Model, m, ());
   IMP_NEW(HarmonicUpperBoundSphereDistancePairScore, ss, (0, 1));
   ParticlesTemp ps = create_xyzr_particles(m, npart, .1);
@@ -66,8 +66,8 @@ int main(int argc, char **argv) {
   }
   {
     IMP_NEW(ConnectingPairContainer, cpc, (lsc, .1));
-    base::Pointer<Restraint>
-      pr(container::create_restraint(ss.get(), cpc.get()));
+    base::Pointer<Restraint> pr(
+        container::create_restraint(ss.get(), cpc.get()));
     m->add_restraint(pr);
     benchmark_it("connectivity", "fast", lsc, m);
     m->remove_restraint(pr);

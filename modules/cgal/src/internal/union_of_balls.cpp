@@ -42,7 +42,7 @@ typedef K::Vector_3 Vector;
 typedef K::Line_3 Line;
 typedef K::Triangle_3 Triangle3;
 
-//typedef CGAL::Regular_triangulation_euclidean_traits_3<K> Gt;
+// typedef CGAL::Regular_triangulation_euclidean_traits_3<K> Gt;
 #if CGAL_VERSION_NR > 1030701000
 typedef CGAL::Regular_triangulation_euclidean_traits_3<K> Gt;
 typedef CGAL::Fixed_alpha_shape_vertex_base_3<Gt> Vb;
@@ -105,7 +105,8 @@ double safe_sqrt(double v) {
  * init of internal some objects)
  * \todo should consider to give access to internal objects via getters
  */
-template <typename Gt> class SpacefillingVolumetric {
+template <typename Gt>
+class SpacefillingVolumetric {
  public:
   // types
   typedef typename Gt::Vector_3 Vector;
@@ -129,9 +130,9 @@ template <typename Gt> class SpacefillingVolumetric {
   //\@{
   // begin name *
   //! the constant Pi=3.1415926...
-  //float const PI=3.1415926
+  // float const PI=3.1415926
   double PI;
-  //float const PI=acos(-1.0)
+  // float const PI=acos(-1.0)
   //! the oposite of Pi
   //#define OP_PI=0.318309892
   double OP_PI;
@@ -148,7 +149,7 @@ template <typename Gt> class SpacefillingVolumetric {
   /*!\name A. global predicates and construct objects
   */
   //\@{
-  //begin name A
+  // begin name A
 
   // a global instanciation for the geometric traits class
   /* a global instanciation for the geometric traits class
@@ -157,7 +158,7 @@ template <typename Gt> class SpacefillingVolumetric {
   * host all that stuff in a class it is only needed to instanciate
   * the 3 construction predicates.
   */
-  //Gt gt;
+  // Gt gt;
 
   //! a global function object that constructs the radical center of
   //! some weighted points
@@ -445,7 +446,7 @@ template <typename Gt> class SpacefillingVolumetric {
   //! orthogonal center of 2 balls
   Point orthoCenter(Wpoint const &, Wpoint const &);
   //! dual point of an oriented triangle (surface intersection point of the
-  //three
+  // three
   //! spheres)
   Point triangleDual(Wpoint const &, Wpoint const &, Wpoint const &);
   //\@}
@@ -479,7 +480,7 @@ template <typename Gt> class SpacefillingVolumetric {
   //! Computes the area of a triangle
   double triangle_A(Point const &i, Point const &j, Point const &k);
   //! Computes the area of a triangle from the size of it's edges (Heron
-  //formula)
+  // formula)
   double triangle_A(double i, double j, double k);
   //! Computes the squared area of a triangle from the size of it's edges
   double squared_triangle_A(double i, double j, double k);
@@ -592,7 +593,7 @@ inline bool SpacefillingVolumetric<Gt>::is_hidden(Wpoint const &i,
  *
  * When three balls intersect in a third one and not outside.
  */
-//bool is_hidden2();
+// bool is_hidden2();
 
 /***********************************************************
  * 14. STRAIGHT INCLUSION-EXCLUSION FORMULA
@@ -602,7 +603,7 @@ inline bool SpacefillingVolumetric<Gt>::is_hidden(Wpoint const &i,
 template <typename Gt>
 inline double SpacefillingVolumetric<Gt>::ball_V(Wpoint const &v) {
   double w = ball_R(v);
-  //TRACE("ball_V :"<<4*PI*w*w*w/3.0<<" with ball_R(v):"<<w);
+  // TRACE("ball_V :"<<4*PI*w*w*w/3.0<<" with ball_R(v):"<<w);
   return 4 * PI * w * w * w / 3.0;
 }
 /*! ball area
@@ -758,7 +759,7 @@ inline double SpacefillingVolumetric<Gt>::sector_V(Wpoint const &i,
                                                    Wpoint const &k,
                                                    Wpoint const &l) {
   double tmp = solid_angle(i, j, k, l) * ball_V(i);
-  //TRACE(" sector_V: "<<tmp);
+  // TRACE(" sector_V: "<<tmp);
   return tmp;
 }
 /*! area of a sector
@@ -768,7 +769,7 @@ inline double SpacefillingVolumetric<Gt>::sector_A(Wpoint const &i,
                                                    Wpoint const &j,
                                                    Wpoint const &k,
                                                    Wpoint const &l) {
-  //TRACE(" sector_A");
+  // TRACE(" sector_A");
   return solid_angle(i, j, k, l) * ball_A(i);
 }
 /*! volume of a wedge
@@ -778,7 +779,7 @@ inline double SpacefillingVolumetric<Gt>::wedge_V(Wpoint const &i,
                                                   Wpoint const &j,
                                                   Wpoint const &k,
                                                   Wpoint const &l) {
-  //TRACE(" wedge_V da:"<<dihedral_angle(i,j,k,l)<<" bi:"<<ballInter2_V(i,j));
+  // TRACE(" wedge_V da:"<<dihedral_angle(i,j,k,l)<<" bi:"<<ballInter2_V(i,j));
   return dihedral_angle(i, j, k, l) * ballInter2_V(i, j);
 }
 /*! area of a wedge
@@ -788,7 +789,7 @@ inline double SpacefillingVolumetric<Gt>::wedge_A(Wpoint const &i,
                                                   Wpoint const &j,
                                                   Wpoint const &k,
                                                   Wpoint const &l) {
-  //TRACE(" wedge_A");
+  // TRACE(" wedge_A");
   return dihedral_angle(i, j, k, l) * ballInter2_A(i, j);
 }
 /*! length of a wedge
@@ -798,7 +799,7 @@ inline double SpacefillingVolumetric<Gt>::wedge_L(Wpoint const &i,
                                                   Wpoint const &j,
                                                   Wpoint const &k,
                                                   Wpoint const &l) {
-  //TRACE(" wedge_L");
+  // TRACE(" wedge_L");
   return dihedral_angle(i, j, k, l) * disk_L(i, j);
 }
 /*! volume of a pawn
@@ -807,7 +808,7 @@ template <typename Gt>
 inline double SpacefillingVolumetric<Gt>::pawn_V(Wpoint const &i,
                                                  Wpoint const &j,
                                                  Wpoint const &k) {
-  //TRACE(" pawn_V ballInter2_V:"<<ballInter2_V(i,j)<<"
+  // TRACE(" pawn_V ballInter2_V:"<<ballInter2_V(i,j)<<"
   // ballInter3_V:"<<ballInter3_V(i,j,k));
   return 0.5 * ballInter3_V(i, j, k);
 }
@@ -817,7 +818,7 @@ template <typename Gt>
 inline double SpacefillingVolumetric<Gt>::pawn_A(Wpoint const &i,
                                                  Wpoint const &j,
                                                  Wpoint const &k) {
-  //TRACE(" pawn_A");
+  // TRACE(" pawn_A");
   return 0.5 * ballInter3_A(i, j, k);
 }
 /*! length of a pawn
@@ -826,7 +827,7 @@ template <typename Gt>
 inline double SpacefillingVolumetric<Gt>::pawn_L(Wpoint const &i,
                                                  Wpoint const &j,
                                                  Wpoint const &k) {
-  //TRACE(" pawn_L");
+  // TRACE(" pawn_L");
   return 0.5 * ballInter3_L(i, j, k);
 }
 /*! tetrahedron
@@ -848,7 +849,7 @@ inline double SpacefillingVolumetric<Gt>::tetra_V(Wpoint const &i,
 template <typename Gt>
 inline double SpacefillingVolumetric<Gt>::cap_V(Wpoint const &i,
                                                 Wpoint const &j) {
-  //TRACE("cap_V ball_R:"<<ball_R(i)<<" cap_A:"<<cap_A(i,j)<<
+  // TRACE("cap_V ball_R:"<<ball_R(i)<<" cap_A:"<<cap_A(i,j)<<
   // "cap_H:"<<cap_H(i,j)<<" disk_A:"<<disk_A(i,j));
   return (ball_R(i) * cap_A(i, j) - (ball_R(i) - cap_H(i, j)) * disk_A(i, j)) /
          3.0;
@@ -965,13 +966,13 @@ inline double SpacefillingVolumetric<Gt>::capInter3and2_V(Wpoint const &i,
   dualilj = triangleDual(i, l, j);
   dualilk = triangleDual(i, l, k);
   double /*dijk,*/ dijl, /*dikl,*/ dikj, /*dilj,*/ dilk;
-  //I could pythagore instead of explicit computations, but since dual are
+  // I could pythagore instead of explicit computations, but since dual are
   // computed for center4 I also use it with center3
-  //dijk=vector_length(center4-dualijk) - vector_length(center3ijk-dualijk);
+  // dijk=vector_length(center4-dualijk) - vector_length(center3ijk-dualijk);
   dijl = vector_length(center4 - dualijl) - vector_length(center3ijl - dualijl);
-  //dikl=vector_length(center4-dualikl) - vector_length(center3ikl-dualikl);
+  // dikl=vector_length(center4-dualikl) - vector_length(center3ikl-dualikl);
   dikj = vector_length(center4 - dualikj) - vector_length(center3ijk - dualikj);
-  //dilj=vector_length(center4-dualilj) - vector_length(center3ijl-dualilj);
+  // dilj=vector_length(center4-dualilj) - vector_length(center3ijl-dualilj);
   dilk = vector_length(center4 - dualilk) - vector_length(center3ikl - dualilk);
   return (2 * Br * capInter3and2_A(i, j, k, l) +
           (Br - cap_H(i, j)) * (2 * PI * rj * rj * dihedral_angle(i, j, k, l) +
@@ -1278,7 +1279,7 @@ template <typename Gt>
 inline typename SpacefillingVolumetric<Gt>::Point
 SpacefillingVolumetric<Gt>::orthoCenter(Wpoint const &p, Wpoint const &q,
                                         Wpoint const &r, Wpoint const &s) {
-  //return Wpoint(radicalCenter(p,q,r,s),radicalRadius(p,q,r,s));
+  // return Wpoint(radicalCenter(p,q,r,s),radicalRadius(p,q,r,s));
   return radicalCenter(p, q, r, s);
 }
 /*! orthogonal center of 3 balls
@@ -1286,7 +1287,7 @@ SpacefillingVolumetric<Gt>::orthoCenter(Wpoint const &p, Wpoint const &q,
 template <typename Gt>
 inline typename SpacefillingVolumetric<Gt>::Point SpacefillingVolumetric<
     Gt>::orthoCenter(Wpoint const &p, Wpoint const &q, Wpoint const &r) {
-  //return Wpoint(radicalCenter(p,q,r),radicalRadius(p,q,r));
+  // return Wpoint(radicalCenter(p,q,r),radicalRadius(p,q,r));
   return radicalCenter(p, q, r);
 }
 /*! orthogonal center of 2 balls
@@ -1294,7 +1295,7 @@ inline typename SpacefillingVolumetric<Gt>::Point SpacefillingVolumetric<
 template <typename Gt>
 inline typename SpacefillingVolumetric<Gt>::Point
 SpacefillingVolumetric<Gt>::orthoCenter(Wpoint const &p, Wpoint const &q) {
-  //return Wpoint(radicalCenter(p,q),radicalRadius(p,q));
+  // return Wpoint(radicalCenter(p,q),radicalRadius(p,q));
   return radicalCenter(p, q);
 }
 /*! dual point of an oriented triangle
@@ -1318,7 +1319,7 @@ inline typename SpacefillingVolumetric<Gt>::Point SpacefillingVolumetric<
   // second, compute vector normal to the triangle
   // third, project radical center on the surface of one of the three spheres
   // (let's take the first)
-  //Wpoint radC = orthoCenter(radicalCenter(p,q,r),radicalRadius(p,q,r));
+  // Wpoint radC = orthoCenter(radicalCenter(p,q,r),radicalRadius(p,q,r));
   Point radC = radicalCenter(p, q, r);
   //\todo look if there is something better in CGAL, or if this can't be
   // simplified in another way
@@ -1327,7 +1328,7 @@ inline typename SpacefillingVolumetric<Gt>::Point SpacefillingVolumetric<
   S1 = dot_prod(radC - p.point(), N);
   // S2 = dot_prod(N,N);
   S2 = vector_squared_length(N);
-  //S3 = scalar_product(radC-p.point(),radC-p.point());
+  // S3 = scalar_product(radC-p.point(),radC-p.point());
   S3 = vector_squared_length(radC - p.point());
   return radC +
          ((safe_sqrt(S1 * S1 - S3 * S2 + p.weight() * S2) - S1) / S2) * N;
@@ -1358,7 +1359,7 @@ inline double SpacefillingVolumetric<Gt>::solid_angle(Point const &i,
   double tmp = 0.5 * (dihedral_angle(i, j, l, k) + dihedral_angle(i, k, j, l) +
                       dihedral_angle(i, l, k, j)) -
                0.25;
-  //TRACE("solid_angle :"<<tmp);
+  // TRACE("solid_angle :"<<tmp);
   return tmp;
 }
 /*! dihedral angle,
@@ -1386,7 +1387,7 @@ inline double SpacefillingVolumetric<Gt>::dihedral_angle(Point const &i,
                                                          Point const &l) {
   Vector M1 = normalized_cross_product(k - i, k - j);
   Vector M2 = normalized_cross_product(l - i, l - j);
-  //TRACE("dihedral_angle "<<OP_2PI*acos( dot_prod(M1,M2) ));
+  // TRACE("dihedral_angle "<<OP_2PI*acos( dot_prod(M1,M2) ));
   return (OP_2PI * acos(dot_prod(M1, M2)));
 }
 /*! cross product,
@@ -1412,7 +1413,7 @@ inline bool SpacefillingVolumetric<Gt>::ccw_orientation(Point const &i,
                                                         Point const &j,
                                                         Point const &k,
                                                         Point const &l) {
-  //CGAL considers the viewer on last point, contrary to Edelsbrunner
+  // CGAL considers the viewer on last point, contrary to Edelsbrunner
   return (CGAL::orientation(j, k, l, i) == CGAL::COUNTERCLOCKWISE);
 }
 /*! tells if i sees (j,k,l) in conter clock wise order
@@ -1622,7 +1623,7 @@ inline void SpacefillingVolumetric<Gt>::halfDiskInter2_A(Wpoint const &i,
     I = (ball_R2(i) - ball_R2(j) + d2) / (2. * d * ball_R(i));
     J = (ball_R2(j) - ball_R2(i) + d2) / (2. * d * ball_R(j));
     // let's check numerical problems ! \remark Patrice does that qith an
-    //epsilon that he eventually substracts or adds to I or J
+    // epsilon that he eventually substracts or adds to I or J
     if (I < -1) {
       I = PI;
     } else if (I > 1) {
@@ -1707,7 +1708,8 @@ inline void SpacefillingVolumetric<Gt>::triangle_diff_spheres(
       Ljk;
 }
 
-template <typename Gt> SpacefillingVolumetric<Gt>::SpacefillingVolumetric() {
+template <typename Gt>
+SpacefillingVolumetric<Gt>::SpacefillingVolumetric() {
 #ifdef M_PI
   PI = M_PI;
   OP_PI = M_1_PI;

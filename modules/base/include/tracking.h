@@ -19,7 +19,8 @@ IMPBASE_BEGIN_NAMESPACE
     a list
     of objects as long as they are alive.
 */
-template <class Tracked> class Tracker {
+template <class Tracked>
+class Tracker {
   base::set<Tracked *> tracked_;
   base::set<Tracked *> added_;
   base::map<Tracked *, std::string> removed_;
@@ -35,7 +36,7 @@ template <class Tracked> class Tracker {
     IMP_CHECK_OBJECT(tr);
     tracked_.insert(tr);
     added_.insert(tr);
-    //can't remove it from removed as it might be a new one
+    // can't remove it from removed as it might be a new one
     // with the same address
   }
   void remove_tracked(Tracked *tr) {
@@ -88,7 +89,8 @@ template <class Tracked> class Tracker {
 
 /** By inheriting from this, a record of the Object will be
     maintained as long as it is alive.*/
-template <class Type, class Tracker> class TrackedObject : public Object {
+template <class Type, class Tracker>
+class TrackedObject : public Object {
   typedef IMP::base::Tracker<Type> T;
   UncheckedWeakPointer<Tracker> tracker_;
   UncheckedWeakPointer<Type> me_;

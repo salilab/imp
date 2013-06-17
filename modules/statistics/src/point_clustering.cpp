@@ -45,10 +45,10 @@ PartitionalClusteringWithCenter *create_lloyds_kmeans(const Ints &names,
               base::ValueException);
   }
   IMP_LOG_VERBOSE("KMLProxy::run start \n");
-  //use the initial centers if provided
+  // use the initial centers if provided
   boost::scoped_ptr<internal::KMPointArray> kmc;
   IMP_LOG_VERBOSE("KMLProxy::run load initial guess \n");
-  //load the initail guess
+  // load the initail guess
   internal::KMData data(metric->get_point(names[0]).get_dimension(),
                         names.size());
   for (unsigned int i = 0; i < names.size(); ++i) {
@@ -57,7 +57,7 @@ PartitionalClusteringWithCenter *create_lloyds_kmeans(const Ints &names,
   }
   internal::KMFilterCenters ctrs(k, &data, nullptr, 1.0);
 
-  //apply lloyd search
+  // apply lloyd search
   IMP_LOG_VERBOSE("KMLProxy::run load lloyd \n");
   internal::KMTerminationCondition term;
   internal::KMLocalSearchLloyd la(&ctrs, &term);
@@ -65,7 +65,7 @@ PartitionalClusteringWithCenter *create_lloyds_kmeans(const Ints &names,
   la.execute();
   internal::KMFilterCentersResults best_clusters = la.get_best();
   IMP_INTERNAL_CHECK(
-      k == (unsigned int) best_clusters.get_number_of_centers(),
+      k == (unsigned int)best_clusters.get_number_of_centers(),
       "The final number of centers does not match the requested one");
   IMP_LOG_VERBOSE("KMLProxy::run load best results \n");
   IMP::base::Vector<algebra::VectorKD> centers(k);
@@ -73,15 +73,15 @@ PartitionalClusteringWithCenter *create_lloyds_kmeans(const Ints &names,
     internal::KMPoint *kmp = best_clusters[i];
     centers[i] = algebra::VectorKD(kmp->begin(), kmp->end());
   }
-  //set the assignment of particles to centers
-  //array of number of all points
-  //TODO - return this
+  // set the assignment of particles to centers
+  // array of number of all points
+  // TODO - return this
   IMP_LOG_VERBOSE("KMLProxy::run get assignments \n");
   const Ints &close_center = *best_clusters.get_assignments();
   IMP_LOG_VERBOSE("KMLProxy::run get assignments 2\n");
   IMP::base::Vector<Ints> clusters(k);
   for (unsigned int i = 0; i < names.size(); i++) {
-    //std::cout<<"ps number i: " << i << " close center : "
+    // std::cout<<"ps number i: " << i << " close center : "
     //<< (*close_center)[i] << std::endl;
     clusters[close_center[i]].push_back(names[i]);
   }
@@ -139,7 +139,7 @@ PartitionalClusteringWithCenter *create_connectivity_clustering(
     Ints ns = nn->get_in_ball(i, dist);
     for (unsigned int j = 0; j < ns.size(); ++j) {
       if (get_distance(vs[i], vs[ns[j]]) < dist) {
-        //std::cout << "Unioning " << i << " and " << ns[j] << std::endl;
+        // std::cout << "Unioning " << i << " and " << ns[j] << std::endl;
         uf.union_set(static_cast<int>(i), ns[j]);
       }
     }
@@ -179,7 +179,7 @@ PartitionalClusteringWithCenter *create_connectivity_clustering(
 PartitionalClusteringWithCenter *create_bin_based_clustering(Embedding *embed,
                                                              double side) {
   IMP::base::OwnerPointer<Embedding> e(embed);
-  typedef algebra::SparseUnboundedGridD< -1, Ints> Grid;
+  typedef algebra::SparseUnboundedGridD<-1, Ints> Grid;
   int dim = embed->get_point(0).get_dimension();
   Grid grid(side, algebra::get_zero_vector_kd(dim));
   for (unsigned int i = 0; i < embed->get_number_of_items(); ++i) {
@@ -202,7 +202,6 @@ PartitionalClusteringWithCenter *create_bin_based_clustering(Embedding *embed,
   IMP_NEW(PartitionalClusteringWithCenter, ret, (clusters, centers, reps));
   validate_partitional_clustering(ret, embed->get_number_of_items());
   return ret.release();
-
 }
 
 PartitionalClustering *create_centrality_clustering(Embedding *d, double far,

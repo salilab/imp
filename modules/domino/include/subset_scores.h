@@ -37,9 +37,8 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
   IMP_NAMED_TUPLE_2(Key, Keys, base::WeakPointer<Restraint>, restraint,
                     Assignment, assignment, );
   IMP_NAMED_TUPLE_3(RestraintData, RestraintDatas,
-                    base::OwnerPointer<ScoringFunction>,
-                    scoring_function, Subset,
-                    subset, double, max, );
+                    base::OwnerPointer<ScoringFunction>, scoring_function,
+                    Subset, subset, double, max, );
   IMP_NAMED_TUPLE_2(RestraintSetData, RestraintSetDatas, Slice, slice,
                     base::WeakPointer<Restraint>, restraint, );
   IMP_NAMED_TUPLE_2(SetData, SetDatas, RestraintSetDatas, members, double,

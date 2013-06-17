@@ -12,7 +12,8 @@
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
-template <class T> class NestedIterator {
+template <class T>
+class NestedIterator {
   typedef NestedIterator<T> This;
   typedef typename T::Make_value Make_value;
   typedef typename T::Get_inner Get_inner;
@@ -65,10 +66,12 @@ template <class T> class NestedIterator {
       return rit_ != o.rit_ || ait_ != o.ait_;
   }
   NestedIterator() {}
-  template <class OT> NestedIterator(const NestedIterator<OT>& o) {
+  template <class OT>
+  NestedIterator(const NestedIterator<OT>& o) {
     copy_from(o);
   }
-  template <class OT> This& operator=(const NestedIterator<OT>& o) {
+  template <class OT>
+  This& operator=(const NestedIterator<OT>& o) {
     copy_from(o);
     return *this;
   }
@@ -78,17 +81,20 @@ template <class T> class NestedIterator {
     return *this;
   }
 
-  template <class It> NestedIterator(It b, It e) : rit_(b), rend_(e) {
+  template <class It>
+  NestedIterator(It b, It e)
+      : rit_(b), rend_(e) {
     if (b != e) {
       ait_ = Get_inner()(rit_).first;
       aend_ = Get_inner()(rit_).second;
-      //typename boost::tuple_element<1, value_type>::type st=ait_->second;
+      // typename boost::tuple_element<1, value_type>::type st=ait_->second;
       ret_ = Make_value()(rit_, ait_);
     }
   }
 
  protected:
-  template <class OT> void copy_from(const NestedIterator<OT>& o) {
+  template <class OT>
+  void copy_from(const NestedIterator<OT>& o) {
     rit_ = o.rit_;
     rend_ = o.rend_;
     if (rit_ != rend_) {

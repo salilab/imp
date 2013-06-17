@@ -42,8 +42,8 @@ void TransformationSymmetry::apply_index(Model *m, ParticleIndex pi) const {
   }
 }
 
-ModelObjectsTemp TransformationSymmetry::do_get_inputs(Model *m,
-                                           const ParticleIndexes &pis) const {
+ModelObjectsTemp TransformationSymmetry::do_get_inputs(
+    Model *m, const ParticleIndexes &pis) const {
   ModelObjectsTemp ret = IMP::kernel::get_particles(m, pis);
   for (unsigned int i = 0; i < pis.size(); ++i) {
     if (RigidBody::particle_is_instance(m, pis[i])) {
@@ -54,8 +54,8 @@ ModelObjectsTemp TransformationSymmetry::do_get_inputs(Model *m,
   return ret;
 }
 
-ModelObjectsTemp TransformationSymmetry::do_get_outputs(Model *m,
-                                           const ParticleIndexes &pis) const {
+ModelObjectsTemp TransformationSymmetry::do_get_outputs(
+    Model *m, const ParticleIndexes &pis) const {
   return IMP::kernel::get_particles(m, pis);
 }
 
@@ -65,8 +65,8 @@ TransformationAndReflectionSymmetry::TransformationAndReflectionSymmetry(
   r_ = r;
 }
 
-void TransformationAndReflectionSymmetry
-::apply_index(Model *m, ParticleIndex pi) const {
+void TransformationAndReflectionSymmetry::apply_index(Model *m,
+                                                      ParticleIndex pi) const {
   IMP_USAGE_CHECK(!RigidBody::particle_is_instance(m, pi),
                   "Particle must not be a rigid body particle");
   set_was_used(true);
@@ -75,9 +75,8 @@ void TransformationAndReflectionSymmetry
   d.set_coordinates(t_.get_transformed(r_.get_reflected(rd.get_coordinates())));
 }
 
-ModelObjectsTemp
-TransformationAndReflectionSymmetry::do_get_inputs(Model *m,
-                                      const ParticleIndexes &pis) const {
+ModelObjectsTemp TransformationAndReflectionSymmetry::do_get_inputs(
+    Model *m, const ParticleIndexes &pis) const {
   ModelObjectsTemp ret(2 * pis.size());
   for (unsigned int i = 0; i < pis.size(); ++i) {
     ret[2 * i + 0] = m->get_particle(pis[i]);
@@ -87,8 +86,7 @@ TransformationAndReflectionSymmetry::do_get_inputs(Model *m,
 }
 
 ModelObjectsTemp TransformationAndReflectionSymmetry::do_get_outputs(
-    Model *m,
-                                           const ParticleIndexes &pis) const {
+    Model *m, const ParticleIndexes &pis) const {
   return IMP::kernel::get_particles(m, pis);
 }
 

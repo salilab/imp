@@ -16,7 +16,8 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
 /** A shift the distance by subtracting x0 and pass it to the base
     class.*/
-template <class BaseDistanceScore> class Shift : public BaseDistanceScore {
+template <class BaseDistanceScore>
+class Shift : public BaseDistanceScore {
   typedef BaseDistanceScore P;
   double x0_;
 

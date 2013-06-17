@@ -60,7 +60,7 @@ MonteCarloMoverResult NormalMover::do_propose() {
   boost::normal_distribution<double> mrng(0, stddev_);
   boost::variate_generator<base::RandomNumberGenerator &,
                            boost::normal_distribution<double> > sampler(
-                               base::random_number_generator, mrng);
+      base::random_number_generator, mrng);
 
   for (unsigned int i = 0; i < pis_.size(); ++i) {
     for (unsigned int j = 0; j < keys_.size(); ++j) {

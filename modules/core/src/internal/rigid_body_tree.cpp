@@ -72,7 +72,7 @@ RigidBodyHierarchy::SpheresSplit RigidBodyHierarchy::divide_spheres(
   SpheresSplit ret;
   for (Grid::AllIndexIterator it = grid.all_indexes_begin();
        it != grid.all_indexes_end(); ++it) {
-    //std::cout << "Gathering from " << *it << std::endl;
+    // std::cout << "Gathering from " << *it << std::endl;
     if (!grid[*it].empty()) {
       ret.push_back(grid[*it]);
     }
@@ -107,7 +107,7 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
     d.set_reference_frame(d.get_reference_frame());
   }
   // they had better be up to date
-  //d.update_members();
+  // d.update_members();
   std::sort(constituents_.begin(), constituents_.end());
   IMP_IF_CHECK(base::USAGE) {
     for (unsigned int i = 0; i < constituents_.size(); ++i) {
@@ -274,10 +274,9 @@ void RigidBodyHierarchy::validate(Model *m) const {
     ParticleIndexes uall = all;
     std::sort(uall.begin(), uall.end());
     uall.erase(std::unique(uall.begin(), uall.end()), uall.end());
-    IMP_INTERNAL_CHECK(
-        all.size() == uall.size(),
-        "Duplicate entries were found: " << all.size()
-                                         << " != " << uall.size());
+    IMP_INTERNAL_CHECK(all.size() == uall.size(),
+                       "Duplicate entries were found: " << all.size() << " != "
+                                                        << uall.size());
     IMP_INTERNAL_CHECK(all.size() == get_constituents().size(),
                        "Particle lists don't match in validate: "
                            << all.size() << "!=" << get_constituents().size());
@@ -477,8 +476,8 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
     free = keys.back();
     add_rigid_body_cache_key(keys.back());
   }
-  base::Pointer<RigidBodyHierarchy> h
-    = new RigidBodyHierarchy(rb, constituents);
+  base::Pointer<RigidBodyHierarchy> h =
+      new RigidBodyHierarchy(rb, constituents);
   if (mykey != ObjectKey()) {
     IMP_LOG_TERSE("Storing tree at " << mykey << std::endl);
     rb.get_model()

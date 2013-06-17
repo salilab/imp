@@ -22,10 +22,12 @@
 
 IMPRMF_BEGIN_NAMESPACE
 
-template <class O> class SimpleLoadLink : public LoadLink {
+template <class O>
+class SimpleLoadLink : public LoadLink {
   base::Vector<base::Pointer<O> > os_;
   RMF::NodeIDs nhs_;
-protected:
+
+ protected:
   virtual void do_load_one(RMF::NodeConstHandle nh, O *o) = 0;
   void do_load(RMF::FileConstHandle fh) {
     for (unsigned int i = 0; i < os_.size(); ++i) {
@@ -39,9 +41,8 @@ protected:
     set_association(nh, o, true);
   }
   virtual bool get_is(RMF::NodeConstHandle nh) const = 0;
-  virtual O * do_create(RMF::NodeConstHandle nh) = 0;
-  SimpleLoadLink(std::string name): LoadLink(name) {
-  }
+  virtual O *do_create(RMF::NodeConstHandle nh) = 0;
+  SimpleLoadLink(std::string name) : LoadLink(name) {}
 
  public:
   /** Create all the entities under the passed root.*/
@@ -90,10 +91,10 @@ protected:
                     "Didn't find enough matching things. Found "
                         << links << " wanted " << ps.size());
   }
-
 };
 
-template <class O> class SimpleSaveLink : public SaveLink {
+template <class O>
+class SimpleSaveLink : public SaveLink {
   base::Vector<base::Pointer<O> > os_;
   RMF::NodeIDs nhs_;
 

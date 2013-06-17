@@ -24,11 +24,10 @@ int BondedPairFilter::get_value_index(Model *m,
   return bd != Bond();
 }
 
-ModelObjectsTemp
-BondedPairFilter::do_get_inputs(Model *m,
-                                const ParticleIndexes &pis) const {
+ModelObjectsTemp BondedPairFilter::do_get_inputs(
+    Model *m, const ParticleIndexes &pis) const {
   ModelObjectsTemp ret = IMP::kernel::get_particles(m, pis);
-  for (unsigned int i = 0; i< pis.size(); ++i) {
+  for (unsigned int i = 0; i < pis.size(); ++i) {
     if (Bonded::particle_is_instance(m, pis[i])) {
       Bonded b(m, pis[i]);
       for (unsigned int i = 0; i < b.get_number_of_bonds(); ++i) {

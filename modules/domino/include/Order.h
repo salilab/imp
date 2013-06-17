@@ -32,7 +32,8 @@ class IMPDOMINOEXPORT Order : public base::ConstVector<unsigned int> {
  public:
   Order() {}
   Order(Subset outer, const ParticlesTemp &order);
-  template <class It> Ints get_list_ordered(It b, It e) const {
+  template <class It>
+  Ints get_list_ordered(It b, It e) const {
     IMP_USAGE_CHECK(static_cast<unsigned int>(std::distance(b, e)) == size(),
                     "Sizes don't match in permutation");
     Ints ret(std::distance(b, e));
@@ -44,7 +45,8 @@ class IMPDOMINOEXPORT Order : public base::ConstVector<unsigned int> {
                                                << get_subset_ordered(ret));
     return ret;
   }
-  template <class It> Assignment get_subset_ordered(It b, It e) const {
+  template <class It>
+  Assignment get_subset_ordered(It b, It e) const {
     IMP_CHECK_VARIABLE(e);
     IMP_USAGE_CHECK(static_cast<unsigned int>(std::distance(b, e)) == size(),
                     "Sizes don't match in permutation");

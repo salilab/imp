@@ -20,7 +20,8 @@ IMPBASE_BEGIN_NAMESPACE /** Up (or down) cast an \imp Object-derived class. If
                             \c dynamic_cast if you prefer to have a nullptr
                             returned.
                          */
-template <class O> inline O *object_cast(Object *o) {
+template <class O>
+inline O *object_cast(Object *o) {
   O *ret = dynamic_cast<O *>(o);
   if (!ret) {
     if (!o) {

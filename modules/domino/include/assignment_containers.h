@@ -74,8 +74,8 @@ class IMPDOMINOEXPORT PackedAssignmentContainer : public AssignmentContainer {
 
 #ifndef IMP_DOXYGEN
 
-inline unsigned int
-PackedAssignmentContainer::get_number_of_assignments() const {
+inline unsigned int PackedAssignmentContainer::get_number_of_assignments()
+    const {
   if (width_ == -1) return 0;
   return d_.size() / width_;
 }
@@ -162,8 +162,8 @@ class IMPDOMINOEXPORT SampleAssignmentContainer : public AssignmentContainer {
 };
 
 #ifndef IMP_DOXYGEN
-inline unsigned int
-SampleAssignmentContainer::get_number_of_assignments() const {
+inline unsigned int SampleAssignmentContainer::get_number_of_assignments()
+    const {
   return d_.size() / width_;
 }
 
@@ -188,9 +188,8 @@ class IMPDOMINOEXPORT WriteHDF5AssignmentContainer
   Ints cache_;
   unsigned int max_cache_;
   void flush();
-  virtual void do_destroy() IMP_OVERRIDE {
-    flush();
-  }
+  virtual void do_destroy() IMP_OVERRIDE { flush(); }
+
  public:
   WriteHDF5AssignmentContainer(RMF::HDF5::Group parent, const Subset &s,
                                const ParticlesTemp &all_particles,
@@ -217,6 +216,7 @@ class IMPDOMINOEXPORT ReadHDF5AssignmentContainer : public AssignmentContainer {
   Ints cache_;
   unsigned int max_cache_;
   void flush();
+
  public:
 
   ReadHDF5AssignmentContainer(RMF::HDF5::IndexConstDataSet2D dataset,
@@ -252,6 +252,7 @@ class IMPDOMINOEXPORT WriteAssignmentContainer : public AssignmentContainer {
     close(f_);
 #endif
   }
+
  public:
   WriteAssignmentContainer(std::string out_file, const Subset &s,
                            const ParticlesTemp &all_particles,
@@ -282,6 +283,7 @@ class IMPDOMINOEXPORT ReadAssignmentContainer : public AssignmentContainer {
     close(f_);
 #endif
   }
+
  public:
   ReadAssignmentContainer(std::string out_file, const Subset &s,
                           const ParticlesTemp &all_particles, std::string name);
@@ -323,8 +325,8 @@ class IMPDOMINOEXPORT HeapAssignmentContainer : public AssignmentContainer {
   Subset subset_;
   Slices slices_;
   Restraints rs_;
-  unsigned int k_;                // max number of assignments (heap size)
-  base::Pointer<RestraintCache> rssf_;  //to score candidate assignments
+  unsigned int k_;  // max number of assignments (heap size)
+  base::Pointer<RestraintCache> rssf_;  // to score candidate assignments
  public:
   HeapAssignmentContainer(Subset subset, unsigned int k, RestraintCache *rssf,
                           std::string name = "HeapAssignmentsContainer %1%");

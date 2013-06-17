@@ -17,21 +17,19 @@ IMPMISC_BEGIN_NAMESPACE
 //! Return true for any pair of bonds sharing an endpoint
 /** XXXXXX.
  */
-class IMPMISCEXPORT CommonEndpointPairFilter: public PairPredicate
-{
-public:
+class IMPMISCEXPORT CommonEndpointPairFilter : public PairPredicate {
+ public:
   CommonEndpointPairFilter();
 
-  virtual int get_value_index(Model *m,
-               const ParticleIndexPair &p) const IMP_OVERRIDE;
+  virtual int get_value_index(Model *m, const ParticleIndexPair &p) const
+      IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                         const ParticleIndexes &pis)
-      const IMP_OVERRIDE;
+                                         const ParticleIndexes &pis) const
+      IMP_OVERRIDE;
   IMP_PAIR_PREDICATE_METHODS(CommonEndpointPairFilter);
   IMP_OBJECT_METHODS(CommonEndpointPairFilter);
 };
 
-
 IMPMISC_END_NAMESPACE
 
-#endif  /* IMPMISC_COMMON_ENDPOINT_PAIR_FILTER_H */
+#endif /* IMPMISC_COMMON_ENDPOINT_PAIR_FILTER_H */

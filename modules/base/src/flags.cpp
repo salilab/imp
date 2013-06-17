@@ -139,8 +139,8 @@ void write_help(std::ostream &out) {
 namespace {
 
 Strings setup_from_argv_internal(int argc, char **argv, std::string description,
-                        std::string usage, int num_positional,
-                        bool allow_unknown) {
+                                 std::string usage, int num_positional,
+                                 bool allow_unknown) {
   if (num_positional != 0) {
     IMP_USAGE_CHECK(!usage.empty(),
                     "You must have a usage string describing your "
@@ -177,7 +177,7 @@ Strings setup_from_argv_internal(int argc, char **argv, std::string description,
   try {
     boost::program_options::parsed_options parsed =
         boost::program_options::command_line_parser(argc, argv).options(all)
-        .positional(m_positional).allow_unregistered().run();
+            .positional(m_positional).allow_unregistered().run();
     boost::program_options::store(parsed, internal::variables_map);
     boost::program_options::notify(internal::variables_map);
     if (internal::variables_map.count("positional") != 0) {
@@ -200,7 +200,7 @@ Strings setup_from_argv_internal(int argc, char **argv, std::string description,
            positional.size() != static_cast<unsigned int>(num_positional)) ||
           (num_positional < 0 &&
            positional.size() <
-           static_cast<unsigned int>(std::abs(num_positional)))) {
+               static_cast<unsigned int>(std::abs(num_positional)))) {
         throw IMP::base::UsageException("Bad arguments");
       }
     }
@@ -212,11 +212,12 @@ Strings setup_from_argv_internal(int argc, char **argv, std::string description,
     initialize();
     if (allow_unknown) {
       try {
-        std::vector<std::string> ret
-            = boost::program_options::collect_unrecognized(parsed.options,
-                                    boost::program_options::include_positional);
+        std::vector<std::string> ret =
+            boost::program_options::collect_unrecognized(
+                parsed.options, boost::program_options::include_positional);
         return Strings(ret.begin(), ret.end());
-      } catch (...) {
+      }
+      catch (...) {
         std::cerr << "Error gathering unknow arguments" << std::endl;
         write_help(std::cerr);
         throw IMP::base::UsageException("Bad arguments");
@@ -230,9 +231,7 @@ Strings setup_from_argv_internal(int argc, char **argv, std::string description,
     write_help(std::cerr);
     throw IMP::base::UsageException("Bad arguments");
   }
-
 }
-
 }
 
 void setup_from_argv(int argc, char **argv, std::string description) {
@@ -251,8 +250,8 @@ Strings setup_from_argv(const Strings &iargv, std::string description,
 
 Strings setup_from_argv(int argc, char **argv, std::string description,
                         std::string usage, int num_positional) {
-  return setup_from_argv_internal(argc, argv, description,
-                                  usage, num_positional, false);
+  return setup_from_argv_internal(argc, argv, description, usage,
+                                  num_positional, false);
 }
 void setup_from_argv(const Strings &iargv, std::string description) {
   setup_from_argv(iargv, description, std::string(), 0);
@@ -260,8 +259,8 @@ void setup_from_argv(const Strings &iargv, std::string description) {
 
 Strings setup_from_argv_allowing_unknown(int argc, char **argv,
                                          std::string description) {
-  return setup_from_argv_internal(argc, argv, description,
-                                  "various arguments", -1, true);
+  return setup_from_argv_internal(argc, argv, description, "various arguments",
+                                  -1, true);
 }
 
 IMPBASE_END_NAMESPACE

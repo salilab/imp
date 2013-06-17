@@ -155,7 +155,7 @@ Hierarchy get_residue(Hierarchy mhd, unsigned int index) {
   IMP_THROW(msg, BadHierarchy)
 
 namespace {
-  struct BadHierarchy : public base::Exception {
+struct BadHierarchy : public base::Exception {
   BadHierarchy(const char *str) : Exception(str) {}
 };
 struct Validator {
@@ -501,7 +501,7 @@ struct True {
 
 void destroy(Hierarchy d) {
   ParticlesTemp all;
-  //core::Hierarchy h=d;
+  // core::Hierarchy h=d;
 
   core::gather(d, True(), std::back_inserter(all));
   for (unsigned int i = 0; i < all.size(); ++i) {

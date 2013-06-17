@@ -192,7 +192,6 @@ double get_disjoint_set_strength(const IMP::domino::Subset &s,
   }
   return 1 - r;
 }
-
 }
 
 int DisjointSetsSubsetFilterTable::get_index(Particle *p) {
@@ -375,7 +374,7 @@ double get_sorted_strength(const IMP::domino::Subset &s,
       gap = true;
     }
   }
-  //IMP_LOG(SILENT, " returning for set " << count << std::endl);
+  // IMP_LOG(SILENT, " returning for set " << count << std::endl);
   double ret = std::pow(.1, static_cast<double>(s.size() - count));
   return ret;
 }
@@ -388,9 +387,8 @@ int get_next_permutation(int pos, const Assignment &state, const Ints &set) {
     }
   }
   int ret = std::max(mx, state[pos] + 1);
-  IMP_INTERNAL_CHECK(
-      ret > state[pos],
-      "Too low a permutation index returned: " << ret << " vs " << state[pos]);
+  IMP_INTERNAL_CHECK(ret > state[pos], "Too low a permutation index returned: "
+                                           << ret << " vs " << state[pos]);
   return ret;
 }
 }
@@ -418,7 +416,7 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(
     }
     last = state[members[i]];
   }
-  //IMP_LOG_TERSE( "ok" << std::endl);
+  // IMP_LOG_TERSE( "ok" << std::endl);
   return true;
 },
     return get_sorted_strength(s, excluded, members),

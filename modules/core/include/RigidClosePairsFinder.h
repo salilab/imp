@@ -66,10 +66,9 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder {
  public:
   RigidClosePairsFinder(ClosePairsFinder *cpf = nullptr);
 
-  ParticleIndexPairs get_close_pairs(Model *m,
-                                     ParticleIndex a, ParticleIndex b,
-                                    const ParticleIndexes &pa,
-                                    const ParticleIndexes &pb) const;
+  ParticleIndexPairs get_close_pairs(Model *m, ParticleIndex a, ParticleIndex b,
+                                     const ParticleIndexes &pa,
+                                     const ParticleIndexes &pb) const;
 
   void set_distance(double d) {
     cpf_->set_distance(d);
@@ -88,22 +87,22 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder {
                                     const ParticlesTemp &pcb) const;
 #endif
 
-  virtual IntPairs
-  get_close_pairs(const algebra::BoundingBox3Ds &bbs) const IMP_OVERRIDE;
-  virtual IntPairs
-  get_close_pairs(const algebra::BoundingBox3Ds &bas,
-                  const algebra::BoundingBox3Ds &bbs) const IMP_OVERRIDE;
+  virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const
+      IMP_OVERRIDE;
+  virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas,
+                                   const algebra::BoundingBox3Ds &bbs) const
+      IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                         const ParticleIndexes &pis)
-      const IMP_OVERRIDE;
+                                         const ParticleIndexes &pis) const
+      IMP_OVERRIDE;
 
   virtual ParticleIndexPairs get_close_pairs(Model *m,
-                                             const ParticleIndexes &pc)
-      const IMP_OVERRIDE;
+                                             const ParticleIndexes &pc) const
+      IMP_OVERRIDE;
   virtual ParticleIndexPairs get_close_pairs(Model *m,
                                              const ParticleIndexes &pca,
-                                             const ParticleIndexes &pcb)
-      const IMP_OVERRIDE;
+                                             const ParticleIndexes &pcb) const
+      IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RigidClosePairsFinder);
 };
 

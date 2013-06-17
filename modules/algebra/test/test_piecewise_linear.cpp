@@ -10,7 +10,8 @@
 #include <IMP/base/utility.h>
 
 namespace {
-template <class RNG> void check_one(RNG rng, double mean, double sigma) {
+template <class RNG>
+void check_one(RNG rng, double mean, double sigma) {
   const int num = 1000;
   IMP::Floats sample(num);
   for (int i = 0; i < num; ++i) {
@@ -45,15 +46,15 @@ void check_gaussian() {
     locs0.push_back(locs0.back() + steps[i]);
   }
   using IMP::base::operator<< ;
-  //std::cout << locs0 << std::endl;
+  // std::cout << locs0 << std::endl;
   IMP::Floats locs(locs0.rbegin(), locs0.rend());
   for (unsigned int i = 0; i < locs.size(); ++i) {
     locs[i] = -locs[i];
   }
-  //std::cout << locs << std::endl;
+  // std::cout << locs << std::endl;
   locs.pop_back();
   locs.insert(locs.end(), locs0.begin(), locs0.end());
-  //std::cout << locs << std::endl;
+  // std::cout << locs << std::endl;
   for (unsigned int i = 0; i < locs.size(); ++i) {
     locs[i] += m;
   }
@@ -68,8 +69,8 @@ void check_gaussian() {
 }
 
 void check_triangle() {
-  double locs[] = { 0, 1, 2 };
-  double weights[] = { 0, 1, 0 };
+  double locs[] = {0, 1, 2};
+  double weights[] = {0, 1, 0};
   IMP::base::piecewise_linear_distribution<> pld(locs, locs + 3, weights);
   check_one(pld, 1, 1.0 / std::sqrt(6.0));
 }

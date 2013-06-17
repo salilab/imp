@@ -49,7 +49,7 @@ get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0& source,
 
   Vector3D center_source(0, 0, 0), center_target(0, 0, 0);
   for (unsigned int i = 0; i < source.size(); ++i) {
-    //double x= p_it->x();
+    // double x= p_it->x();
     center_source += get_vector_d_geometry(source[i]);
     center_target += get_vector_d_geometry(target[i]);
     IMP_LOG_VERBOSE(i << ": (" << get_vector_d_geometry(source[i]) << ") ("

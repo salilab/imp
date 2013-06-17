@@ -10,4 +10,4 @@
 #define IMPALGEBRA_MACROS_H
 #include "geometric_primitive_macros.h"
 
-#endif  /* IMPALGEBRA_MACROS_H */
+#endif /* IMPALGEBRA_MACROS_H */

@@ -28,13 +28,13 @@ typedef algebra::internal::TNT::Array2D<double> Array2DD;
 typedef algebra::internal::TNT::Array1D<double> Array1DD;
 typedef std::vector<Array1DD> Array1DD_VEC;
 
-//density grid (to remove once DensityMap is grid3d)
+// density grid (to remove once DensityMap is grid3d)
 //! Holds the data points to be used in the clustering procedure
 /** \unstable{DataPoints} */
 class IMPSTATISTICSEXPORT DataPoints : public IMP::base::Object {
  public:
   DataPoints() : Object("DataPoints%1%") { data_ = Array1DD_VEC(); }
-  //TODO - change to get_random_point
+  // TODO - change to get_random_point
   virtual Array1DD sample() const {
     return data_[statistics::internal::random_int(data_.size())];
   }

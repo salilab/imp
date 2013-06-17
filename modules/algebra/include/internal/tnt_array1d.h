@@ -34,7 +34,8 @@ IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 namespace TNT {
 using namespace std;
 
-template <class T> class Array1D {
+template <class T>
+class Array1D {
 
  private:
 
@@ -75,10 +76,11 @@ template <class T> class Array1D {
 
   inline int ref_count() const;
   inline Array1D<T> subarray(int i0, int i1);
-
 };
 
-template <class T> Array1D<T>::Array1D() : v_(), n_(0), data_(0) {}
+template <class T>
+Array1D<T>::Array1D()
+    : v_(), n_(0), data_(0) {}
 
 template <class T>
 Array1D<T>::Array1D(const Array1D<T>& A)
@@ -86,7 +88,6 @@ Array1D<T>::Array1D(const Array1D<T>& A)
 #ifdef TNT_DEBUG
   std::cout << "Created Array1D(const Array1D<T> &A) \n";
 #endif
-
 }
 
 template <class T>
@@ -104,7 +105,6 @@ Array1D<T>::Array1D(int n, const T& val)
   std::cout << "Created Array1D(int n, const T& val) \n";
 #endif
   set_(data_, data_ + n, val);
-
 }
 
 template <class T>
@@ -115,11 +115,18 @@ Array1D<T>::Array1D(int n, T* a)
 #endif
 }
 
-template <class T> inline Array1D<T>::operator T*() { return &(v_[0]); }
+template <class T>
+inline Array1D<T>::operator T*() {
+  return &(v_[0]);
+}
 
-template <class T> inline Array1D<T>::operator const T*() { return &(v_[0]); }
+template <class T>
+inline Array1D<T>::operator const T*() {
+  return &(v_[0]);
+}
 
-template <class T> inline T& Array1D<T>::operator[](int i) {
+template <class T>
+inline T& Array1D<T>::operator[](int i) {
 #ifdef TNT_BOUNDS_CHECK
   assert(i >= 0);
   assert(i < n_);
@@ -127,7 +134,8 @@ template <class T> inline T& Array1D<T>::operator[](int i) {
   return data_[i];
 }
 
-template <class T> inline const T& Array1D<T>::operator[](int i) const {
+template <class T>
+inline const T& Array1D<T>::operator[](int i) const {
 #ifdef TNT_BOUNDS_CHECK
   assert(i >= 0);
   assert(i < n_);
@@ -135,51 +143,64 @@ template <class T> inline const T& Array1D<T>::operator[](int i) const {
   return data_[i];
 }
 
-template <class T> Array1D<T>& Array1D<T>::operator=(const T& a) {
+template <class T>
+Array1D<T>& Array1D<T>::operator=(const T& a) {
   set_(data_, data_ + n_, a);
   return *this;
 }
 
-template <class T> Array1D<T> Array1D<T>::copy() const {
+template <class T>
+Array1D<T> Array1D<T>::copy() const {
   Array1D A(n_);
   copy_(A.data_, data_, n_);
 
   return A;
 }
 
-template <class T> Array1D<T>& Array1D<T>::inject(const Array1D& A) {
+template <class T>
+Array1D<T>& Array1D<T>::inject(const Array1D& A) {
   if (A.n_ == n_) copy_(data_, A.data_, n_);
 
   return *this;
 }
 
-template <class T> Array1D<T>& Array1D<T>::ref(const Array1D<T>& A) {
+template <class T>
+Array1D<T>& Array1D<T>::ref(const Array1D<T>& A) {
   if (this != &A) {
     v_ = A.v_; /* operator= handles the reference counting. */
     n_ = A.n_;
     data_ = A.data_;
-
   }
   return *this;
 }
 
-template <class T> Array1D<T>& Array1D<T>::operator=(const Array1D<T>& A) {
+template <class T>
+Array1D<T>& Array1D<T>::operator=(const Array1D<T>& A) {
   return ref(A);
 }
 
-template <class T> inline int Array1D<T>::dim1() const { return n_; }
+template <class T>
+inline int Array1D<T>::dim1() const {
+  return n_;
+}
 
-template <class T> inline int Array1D<T>::dim() const { return n_; }
+template <class T>
+inline int Array1D<T>::dim() const {
+  return n_;
+}
 
-template <class T> Array1D<T>::~Array1D() {}
+template <class T>
+Array1D<T>::~Array1D() {}
 
 /* ............................ exented interface ......................*/
 
-template <class T> inline int Array1D<T>::ref_count() const {
+template <class T>
+inline int Array1D<T>::ref_count() const {
   return v_.ref_count();
 }
 
-template <class T> inline Array1D<T> Array1D<T>::subarray(int i0, int i1) {
+template <class T>
+inline Array1D<T> Array1D<T>::subarray(int i0, int i1) {
   if (((i0 > 0) && (i1 < n_)) || (i0 <= i1)) {
     Array1D<T> X(*this); /* create a new instance of this array. */
     X.n_ = i1 - i0 + 1;
@@ -193,17 +214,15 @@ template <class T> inline Array1D<T> Array1D<T>::subarray(int i0, int i1) {
 
 /* private internal functions */
 
-template <class T> void Array1D<T>::set_(T* begin, T* end, const T& a) {
-  for (T* p = begin; p < end; p++)
-    *p = a;
-
+template <class T>
+void Array1D<T>::set_(T* begin, T* end, const T& a) {
+  for (T* p = begin; p < end; p++) *p = a;
 }
 
-template <class T> void Array1D<T>::copy_(T* p, const T* q, int len) const {
+template <class T>
+void Array1D<T>::copy_(T* p, const T* q, int len) const {
   T* end = p + len;
-  while (p < end)
-    *p++ = *q++;
-
+  while (p < end) *p++ = *q++;
 }
 
 } /* namespace TNT */

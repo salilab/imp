@@ -30,7 +30,7 @@ Ints DynamicNearestNeighbor3D::get_in_ball(int id, double distance) const {
   IMP_OBJECT_LOG;
   set_was_used(true);
   IMP_IF_CHECK(base::USAGE_AND_INTERNAL) { audit(); }
-  //Index i= indexes_[id];
+  // Index i= indexes_[id];
   BoundingBox3D bb(coords_[id]);
   bb += distance;
   Ints ret;

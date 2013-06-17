@@ -82,7 +82,7 @@ SecondaryStructureResidues setup_coarse_secondary_structure_residues(
     stop_idx -= (stop_idx + start_res_num) % coarse_factor;
   }
 
-  //now start grouping
+  // now start grouping
   int prev_coarse = (start_idx + start_res_num) / coarse_factor;
   Particles tmp_ps;
   for (int nr = start_idx; nr < stop_idx; nr++) {

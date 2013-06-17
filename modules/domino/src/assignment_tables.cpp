@@ -126,7 +126,6 @@ void recursive_load_assignments(const Subset &s, ParticleStatesTable *pst,
     }
   }
 }
-
 }
 
 SimpleAssignmentsTable::SimpleAssignmentsTable(ParticleStatesTable *pst,
@@ -168,7 +167,8 @@ ParticlesTemp get_sub_particles(const Subset &s, It b, It e) {
                        boost::make_permutation_iterator(s.end(), e));
 }
 
-template <class It> Subset get_sub_subset(const Subset &s, It b, It e) {
+template <class It>
+Subset get_sub_subset(const Subset &s, It b, It e) {
   ParticlesTemp pt = get_sub_particles(s, b, e);
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     for (int i = 0; i < std::distance(b, e); ++i) {
@@ -227,7 +227,7 @@ ParticlesTemp initialize_order(const Subset &s, const SubsetFilterTables &sft) {
     double max_restraint = -1;
     int max_j = -1;
     for (unsigned int j = 0; j < remaining.size(); ++j) {
-      //std::cout << "Trying " << remaining[j] << std::endl;
+      // std::cout << "Trying " << remaining[j] << std::endl;
       int cur = remaining[j];
       order.push_back(cur);
 
@@ -316,7 +316,7 @@ Assignment get_next_assignment(const ParticlesTemp &s, const Subsets &subsets,
       IMP_INTERNAL_CHECK(subsets.back()[i] == s[orders.back()[i]],
                          "Ordering doesn't match");
     }
-    //std::cout << "Trying " << cur  << " = " << reordered_cur << std::endl;
+    // std::cout << "Trying " << cur  << " = " << reordered_cur << std::endl;
     Assignment cura(reordered_cur);
     bool ok = true;
     IMP_LOG_VERBOSE("Trying " << cura << " for " << subsets.back()
@@ -381,7 +381,7 @@ void BranchAndBoundAssignmentsTable::load_assignments(
   set_was_used(true);
   IMP_OBJECT_LOG;
   ParticlesTemp spt = initialize_order(s, sft_);
-  //std::reverse(spt.begin(), spt.end());
+  // std::reverse(spt.begin(), spt.end());
   Ints cur(s.size(), std::numeric_limits<int>::max() - 3);
   cur.front() = -1;
   Ints maxs(cur.size());

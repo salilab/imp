@@ -311,8 +311,8 @@ void ReadAssignmentContainer::add_assignment(const Assignment &) {
 
 ////////////////////////// RangeViewAssignmentContainer
 
-inline unsigned int
-RangeViewAssignmentContainer::get_number_of_assignments() const {
+inline unsigned int RangeViewAssignmentContainer::get_number_of_assignments()
+    const {
   return end_ - begin_;
 }
 
@@ -362,7 +362,7 @@ void HeapAssignmentContainer::add_assignment(const Assignment &a) {
                          "Assignment " << a << " already here.");
     }
   }
-  //rssf_ may be null if no restraints are assigned to the particles
+  // rssf_ may be null if no restraints are assigned to the particles
   double score = std::numeric_limits<double>::max();
   if (rssf_) {
     score = 0;

@@ -105,9 +105,9 @@ void XYZRMovedSingletonContainer::do_reset_all() {
   IMP_OBJECT_LOG;
   backup_.clear();
   moved_.clear();
-    //backup_.resize(get_singleton_container()->get_number_of_particles());
+    // backup_.resize(get_singleton_container()->get_number_of_particles());
   IMP_CONTAINER_FOREACH(SingletonContainer, get_singleton_container(), {
-      backup_.push_back(XYZR(get_model(), _1).get_sphere());
+    backup_.push_back(XYZR(get_model(), _1).get_sphere());
   });
 }
 ParticleIndexes XYZRMovedSingletonContainer::do_initialize() {
@@ -115,7 +115,7 @@ ParticleIndexes XYZRMovedSingletonContainer::do_initialize() {
   backup_.clear();
   moved_.clear();
   ParticleIndexes ret;
-    //backup_.resize(get_singleton_container()->get_number_of_particles());
+    // backup_.resize(get_singleton_container()->get_number_of_particles());
   IMP_CONTAINER_FOREACH(SingletonContainer, get_singleton_container(), {
     backup_.push_back(XYZR(get_model(), _1).get_sphere());
     moved_.push_back(_2);

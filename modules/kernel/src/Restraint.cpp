@@ -31,9 +31,9 @@ Restraint::Restraint(Model *m, std::string name)
 
 Restraint::Restraint(std::string name)
     : ModelObject(name), weight_(1), max_(NO_MAX), last_score_(BAD_SCORE) {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1,
-               "You should pass the model to the Restraint constructor. "
-           << "Constructing " << name);
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(
+      2.1, "You should pass the model to the Restraint constructor. "
+               << "Constructing " << name);
 }
 
 double Restraint::evaluate(bool calc_derivs) const {
@@ -91,7 +91,7 @@ void check_decomposition(Restraint *in, Restraint *out) {
   IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     // be lazy and hope that they behave the same on un updated states
     // otherwise it can be bery, bery slow
-    //in->get_model()->update();
+    // in->get_model()->update();
     base::SetLogState sls(WARNING);
     double tin = in->unprotected_evaluate(nullptr);
     double tout = out->unprotected_evaluate(nullptr);

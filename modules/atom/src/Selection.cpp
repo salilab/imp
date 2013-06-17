@@ -87,21 +87,22 @@ namespace {
 #define IMP_ATOM_SELECTION_PRED(Name, DataType, check)                         \
   class Name##SingletonPredicate : public SingletonPredicate {                 \
     DataType data_;                                                            \
+                                                                               \
    public:                                                                     \
     Name##SingletonPredicate(const DataType &data,                             \
                              std::string name = #Name "SingletonPredicate%1%") \
-    : SingletonPredicate(name), data_(data) {}                          \
-    virtual int get_value_index(Model *m, ParticleIndex pi)             \
-        const IMP_OVERRIDE {                                            \
-      check;                                                            \
-    }                                                                   \
-    virtual ModelObjectsTemp do_get_inputs(Model *m,                    \
-                                           const ParticleIndexes &pis)  \
-        const IMP_OVERRIDE {                                            \
-      return IMP::get_particles(m, pis);                                \
-    }                                                                   \
-    IMP_SINGLETON_PREDICATE_METHODS(Name##SingletonPredicate);          \
-    IMP_OBJECT_METHODS(Name##SingletonPredicate);                       \
+        : SingletonPredicate(name), data_(data) {}                             \
+    virtual int get_value_index(Model *m, ParticleIndex pi) const              \
+        IMP_OVERRIDE {                                                         \
+      check;                                                                   \
+    }                                                                          \
+    virtual ModelObjectsTemp do_get_inputs(Model *m,                           \
+                                           const ParticleIndexes &pis) const   \
+        IMP_OVERRIDE {                                                         \
+      return IMP::get_particles(m, pis);                                       \
+    }                                                                          \
+    IMP_SINGLETON_PREDICATE_METHODS(Name##SingletonPredicate);                 \
+    IMP_OBJECT_METHODS(Name##SingletonPredicate);                              \
   };
 
 bool get_is_residue_index_match(const Ints &data, Model *m, ParticleIndex pi) {
@@ -191,7 +192,7 @@ IMP_ATOM_SELECTION_PRED(Type, core::ParticleTypes, {
   return 0;
 });
 #define IMP_ATOM_SELECTION_MATCH_TYPE(Type, type, UCTYPE)          \
-  if(Type::particle_is_instance(m, pi)) {                          \
+  if (Type::particle_is_instance(m, pi)) {                         \
     return std::binary_search(data_.begin(), data_.end(), UCTYPE); \
   }
 
@@ -236,7 +237,6 @@ IMP_ATOM_SELECTION_PRED(Terminus, Int, {
   else
     return get_is_terminus(m, pi, data_);
 });
-
 }
 std::pair<boost::dynamic_bitset<>, ParticleIndexes> Selection::search(
     Model *m, ParticleIndex pi, boost::dynamic_bitset<> parent) const {
@@ -298,8 +298,8 @@ ParticleIndexes Selection::get_selected_particle_indexes() const {
   int sz = predicates_.size();
   boost::dynamic_bitset<> base(sz);
   base.set();
-  IMP_LOG_TERSE("Processing selection on "
-                << h_ << " with predicates " << predicates_ << std::endl);
+  IMP_LOG_TERSE("Processing selection on " << h_ << " with predicates "
+                                           << predicates_ << std::endl);
   for (unsigned int i = 0; i < h_.size(); ++i) {
     ret += search(m_, h_[i], base).second;
   }

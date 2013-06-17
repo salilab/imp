@@ -31,8 +31,8 @@ void LangevinThermostatOptimizerState::rescale_velocities() const {
                          "the molecular dynamics optimizer.");
   boost::normal_distribution<Float> mrng(0., 1.);
   boost::variate_generator<base::RandomNumberGenerator &,
-                           boost::normal_distribution<Float> >
-    sampler(base::random_number_generator, mrng);
+                           boost::normal_distribution<Float> > sampler(
+      base::random_number_generator, mrng);
   for (unsigned int i = 0; i < pis_.size(); ++i) {
     Particle *p = pis_[i];
     double mass = Mass(p).get_mass();

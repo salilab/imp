@@ -111,12 +111,11 @@ unsigned int NestedRigidBodyStates::get_nearest_state(
 }
 
 unsigned int CompoundStates::get_number_of_particle_states() const {
-  IMP_USAGE_CHECK(
-      a_->get_number_of_particle_states() ==
-          b_->get_number_of_particle_states(),
-      "Number of states don't match: " << a_->get_number_of_particle_states()
-                                       << " vs "
-                                       << b_->get_number_of_particle_states());
+  IMP_USAGE_CHECK(a_->get_number_of_particle_states() ==
+                      b_->get_number_of_particle_states(),
+                  "Number of states don't match: "
+                      << a_->get_number_of_particle_states() << " vs "
+                      << b_->get_number_of_particle_states());
   return a_->get_number_of_particle_states();
 }
 void CompoundStates::load_particle_state(unsigned int i, Particle *p) const {
@@ -162,8 +161,8 @@ unsigned int RecursiveStates::get_number_of_particle_states() const {
 void RecursiveStates::load_particle_state(unsigned int i, Particle *) const {
   IMP_USAGE_CHECK(i < get_number_of_particle_states(), "Out of range");
   for (unsigned int j = 0; j < s_.size(); ++j) {
-    IMP::base::OwnerPointer<ParticleStates> ps
-      = pst_->get_particle_states(s_[j]);
+    IMP::base::OwnerPointer<ParticleStates> ps =
+        pst_->get_particle_states(s_[j]);
     ps->load_particle_state(ss_[i][j], s_[j]);
   }
 }

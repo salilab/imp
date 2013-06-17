@@ -34,9 +34,7 @@ class CHARMMAtomTopology {
   CHARMMAtomTopology(std::string name) : name_(name) {}
 
   CHARMMAtomTopology(std::string name, const CHARMMAtomTopology &other)
-      : name_(name),
-        charmm_type_(other.charmm_type_),
-        charge_(other.charge_) {}
+      : name_(name), charmm_type_(other.charmm_type_), charge_(other.charge_) {}
 
   std::string get_name() const { return name_; }
   std::string get_charmm_type() const { return charmm_type_; }

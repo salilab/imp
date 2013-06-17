@@ -41,8 +41,8 @@ algebra::VectorKD RecursivePartitionalClusteringEmbedding::get_point(
   return metric_->get_point(clustering_->get_cluster_representative(i));
 }
 
-unsigned int
-RecursivePartitionalClusteringEmbedding::get_number_of_items() const {
+unsigned int RecursivePartitionalClusteringEmbedding::get_number_of_items()
+    const {
   return clustering_->get_number_of_clusters();
 }
 IMPSTATISTICS_END_NAMESPACE

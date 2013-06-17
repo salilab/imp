@@ -64,11 +64,11 @@ ConfigurationSet *DiscreteSampler::do_sample() const {
   ret->set_log_level(base::SILENT);
   Subset known_particles = get_particle_states_table()->get_subset();
   Assignments final_solutions = do_get_sample_assignments(known_particles);
-  //TODO - remove
+  // TODO - remove
   /*std::cout<<"Number of solutions:"<<final_solutions.size()<<std::endl;
     std::cout<<"Number of particles:"<<known_particles.size()<<std::endl;*/
   for (unsigned int i = 0; i < final_solutions.size(); ++i) {
-    //if (i%10000==0) {std::cout<<i<<std::endl;}
+    // if (i%10000==0) {std::cout<<i<<std::endl;}
     IMP_INTERNAL_CHECK(
         final_solutions[i].size() == known_particles.size(),
         "Number of particles doesn't match:"
@@ -80,8 +80,8 @@ ConfigurationSet *DiscreteSampler::do_sample() const {
           get_particle_states_table()->get_particle_states(p);
       ps->load_particle_state(final_solutions[i][j], p);
     }
-    //get_model()->evaluate(false);
-    //if (get_model()->get_has_good_score()) {
+    // get_model()->evaluate(false);
+    // if (get_model()->get_has_good_score()) {
     get_model()->update();
     ret->save_configuration();
     //} else {

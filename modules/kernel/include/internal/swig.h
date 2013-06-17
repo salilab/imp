@@ -42,8 +42,8 @@ class IMPKERNELEXPORT _ConstRestraint : public Restraint {
       : Restraint(m, "ConstRestraint%1%"), v_(v), ps_(get_particles(m, pis)) {}
   double get_value() const { return v_; }
   Restraints do_create_decomposition() const;
-  double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
-      const IMP_OVERRIDE;
+  double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum) const
+      IMP_OVERRIDE;
   ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(_ConstRestraint);
 };
@@ -55,13 +55,12 @@ class _ConstSingletonScore : public SingletonScore {
 
  public:
   _ConstSingletonScore(double v) : v_(v) {}
-  virtual double evaluate_index(Model *, ParticleIndex ,
+  virtual double evaluate_index(Model *, ParticleIndex,
                                 DerivativeAccumulator *) const IMP_OVERRIDE {
     return v_;
   }
-  virtual ModelObjectsTemp do_get_inputs(Model *,
-                                         const ParticleIndexes &)
-      const IMP_OVERRIDE {
+  virtual ModelObjectsTemp do_get_inputs(Model *, const ParticleIndexes &) const
+      IMP_OVERRIDE {
     return ModelObjectsTemp();
   }
   IMP_SINGLETON_SCORE_METHODS(_ConstSingletonScore);
@@ -74,13 +73,12 @@ class IMPKERNELEXPORT _ConstPairScore : public PairScore {
 
  public:
   _ConstPairScore(double v) : v_(v) {}
-  virtual double evaluate_index(Model *, const ParticleIndexPair& ,
+  virtual double evaluate_index(Model *, const ParticleIndexPair &,
                                 DerivativeAccumulator *) const IMP_OVERRIDE {
     return v_;
   }
-  virtual ModelObjectsTemp do_get_inputs(Model *,
-                                         const ParticleIndexes &)
-      const IMP_OVERRIDE {
+  virtual ModelObjectsTemp do_get_inputs(Model *, const ParticleIndexes &) const
+      IMP_OVERRIDE {
     return ModelObjectsTemp();
   }
   IMP_PAIR_SCORE_METHODS(_ConstPairScore);
@@ -208,11 +206,10 @@ class IMPKERNELEXPORT _LogPairScore : public PairScore {
  public:
   //! create with an empty map
   _LogPairScore() {}
-  virtual double evaluate_index(Model *m, const ParticleIndexPair& p,
+  virtual double evaluate_index(Model *m, const ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs(Model *,
-                                         const ParticleIndexes &)
-      const IMP_OVERRIDE {
+  virtual ModelObjectsTemp do_get_inputs(Model *, const ParticleIndexes &) const
+      IMP_OVERRIDE {
     return ModelObjectsTemp();
   }
   IMP_PAIR_SCORE_METHODS(_LogPairScore);

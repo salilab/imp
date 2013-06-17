@@ -55,7 +55,6 @@ inline double get_rmsd(const Vector3DsOrXYZs0 &m1, const Vector3DsOrXYZs1 &m2,
   }
   return std::sqrt(rmsd / m1.size());
 }
-
 }
 
 double ConfigurationSetRMSDMetric::get_distance(unsigned int i,

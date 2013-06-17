@@ -26,8 +26,7 @@ struct TransformParticle {
   const algebra::Rotation3D &ri_;
   XYZ d_;
   TransformParticle(const algebra::Transformation3D &t,
-                    const algebra::Rotation3D &r,
-                    Model *m, ParticleIndex pi)
+                    const algebra::Rotation3D &r, Model *m, ParticleIndex pi)
       : ri_(r), d_(m, pi) {
     tv_ = t.get_transformed(d_.get_coordinates());
   }
@@ -43,10 +42,8 @@ struct TransformParticle {
   }
 };
 
-double TransformedDistancePairScore
-::evaluate_index(Model *m,
-                 const ParticleIndexPair &pip,
-                 DerivativeAccumulator *da) const {
+double TransformedDistancePairScore::evaluate_index(
+    Model *m, const ParticleIndexPair &pip, DerivativeAccumulator *da) const {
   TransformParticle tb(t_, ri_, m, pip[1]);
   IMP_LOG_VERBOSE("Transformed particle is "
                   << tb.get_coordinate(0) << " " << tb.get_coordinate(1) << " "
@@ -56,9 +53,8 @@ double TransformedDistancePairScore
   return ret;
 }
 
-ModelObjectsTemp
-TransformedDistancePairScore::do_get_inputs(Model *m,
-                                            const ParticleIndexes &pis) const {
+ModelObjectsTemp TransformedDistancePairScore::do_get_inputs(
+    Model *m, const ParticleIndexes &pis) const {
   return IMP::kernel::get_particles(m, pis);
 }
 

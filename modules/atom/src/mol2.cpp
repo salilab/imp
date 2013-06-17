@@ -202,7 +202,6 @@ void bond_particle(Model*, const String& mol2_bondline,
 
   // bond decorator
   /*Bond ab_d =*/ create_bond(ad, bd, type);
-
 }
 
 Hierarchy molecule_particle(Model* m, const std::string& molecule_name,
@@ -355,7 +354,6 @@ void write_molecule_mol2(Hierarchy chd, std::ostream& mol2_file) {
     mol2_file << mol2_string(bonds[i], i);
   }
 }
-
 }
 
 Hierarchy read_mol2(base::TextInput mol2_file, Model* model,
@@ -391,7 +389,7 @@ Hierarchy read_mol2(base::TextInput mol2_file, Model* model,
       IMP_LOG_TERSE("Couldn't parse line " << line << std::endl);
     }
   }
-  //Hierarchies mps = get_by_type(root_d, RESIDUE_TYPE);
+  // Hierarchies mps = get_by_type(root_d, RESIDUE_TYPE);
   //  std::cout << "check " << mps.size() << std::endl;
   add_radii(root_d);
   IMP_INTERNAL_CHECK(root_d.get_is_valid(true), "Invalid hierarchy produced");

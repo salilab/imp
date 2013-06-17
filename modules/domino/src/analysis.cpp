@@ -104,8 +104,8 @@ Assignments get_state_clusters(const Subset &subset, const Assignments &states,
   }
   base::Vector<Ints> clustering(states.size());
   for (unsigned int i = 0; i < subset.size(); ++i) {
-    IMP::base::OwnerPointer<ParticleStates> ps
-      = pst->get_particle_states(subset[i]);
+    IMP::base::OwnerPointer<ParticleStates> ps =
+        pst->get_particle_states(subset[i]);
     Ints c = get_state_clusters(subset[i], ps, rotated[i], resolution);
     clustering[i] = c;
   }

@@ -26,7 +26,8 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 
 /** Embed a grid as an evenly spaced axis aligned grid.*/
-template <int D> class DefaultEmbeddingD {
+template <int D>
+class DefaultEmbeddingD {
   VectorD<D> origin_;
   VectorD<D> unit_cell_;
   // inverse
@@ -162,16 +163,18 @@ typedef base::Vector<DefaultEmbedding5D> DefaultEmbedding5Ds;
 typedef DefaultEmbeddingD<6> DefaultEmbedding6D;
 typedef base::Vector<DefaultEmbedding6D> DefaultEmbedding6Ds;
 
-typedef DefaultEmbeddingD< -1> DefaultEmbeddingKD;
+typedef DefaultEmbeddingD<-1> DefaultEmbeddingKD;
 typedef base::Vector<DefaultEmbeddingKD> DefaultEmbeddingKDs;
 #endif
 
 /** Embedding of a grid as log-evenly spaced axis aligned grid.*/
-template <int D> class LogEmbeddingD {
+template <int D>
+class LogEmbeddingD {
   VectorD<D> origin_;
   VectorD<D> unit_cell_;
   VectorD<D> base_;
-  template <class O> VectorD<D> get_coordinates(const O &index) const {
+  template <class O>
+  VectorD<D> get_coordinates(const O &index) const {
     VectorD<D> ret = origin_;
     for (unsigned int i = 0; i < unit_cell_.get_dimension(); ++i) {
       IMP_USAGE_CHECK(index[i] >= 0, "Out of range index in log graph.'");
@@ -354,7 +357,7 @@ typedef base::Vector<LogEmbedding5D> LogEmbedding5Ds;
 typedef LogEmbeddingD<6> LogEmbedding6D;
 typedef base::Vector<LogEmbedding6D> LogEmbedding6Ds;
 
-typedef LogEmbeddingD< -1> LogEmbeddingKD;
+typedef LogEmbeddingD<-1> LogEmbeddingKD;
 typedef base::Vector<LogEmbeddingKD> LogEmbeddingKDs;
 #endif
 

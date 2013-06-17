@@ -23,7 +23,7 @@ std::string get_ball_mover_name(Model *m, ParticleIndex pi) {
 void BallMover::initialize(ParticleIndexes pis, FloatKeys keys, double radius) {
   pis_ = pis;
   keys_ = keys;
-  set_radius( radius );
+  set_radius(radius);
   originals_.resize(pis.size(), algebra::get_zero_vector_kd(keys.size()));
 }
 

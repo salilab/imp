@@ -83,7 +83,7 @@ MonteCarloMoverResult MonteCarlo::do_move() {
     IMP_LOG_VERBOSE("Moving using " << (*it)->get_name() << std::endl);
     IMP_CHECK_OBJECT(*it);
     {
-      //IMP_LOG_CONTEXT("Mover " << (*it)->get_name());
+      // IMP_LOG_CONTEXT("Mover " << (*it)->get_name());
       MonteCarloMoverResult cur = (*it)->propose();
       ret += cur.get_moved_particles();
       prob *= cur.get_proposal_ratio();
@@ -147,7 +147,7 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
 
   IMP_LOG_TERSE("MC Final energy is " << last_energy_ << std::endl);
   if (return_best_) {
-    //std::cout << "Final score is " << get_model()->evaluate(false)
+    // std::cout << "Final score is " << get_model()->evaluate(false)
     //<< std::endl;
     best_->swap_configuration();
     IMP_LOG_TERSE("MC Returning energy " << best_energy_ << std::endl);

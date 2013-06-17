@@ -16,9 +16,9 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-//swig can't deal with things
-//using base::TextInput;
-//using base::TextOutput;
+// swig can't deal with things
+// using base::TextInput;
+// using base::TextOutput;
 using IMP::base::create_temporary_file;
 using IMP::base::create_temporary_file_name;
 using IMP::base::set_log_target;

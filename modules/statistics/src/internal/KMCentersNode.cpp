@@ -35,8 +35,8 @@ void KMCentersNode::compute_close_centers(const Ints &candidate_centers_inds,
   const KMPoint *l, *h;
   l = bnd_box_.get_point(0);
   h = bnd_box_.get_point(1);
-  //first we calculate the center that is closest to the middle of the
-  //bounding box
+  // first we calculate the center that is closest to the middle of the
+  // bounding box
   int mid_center_ind = mid_center(candidate_centers_inds);
   KMPoint *mid_cen = (*centers_)[mid_center_ind];
   double box_dot = 0.;  // holds (p-c').(c-c')
@@ -75,18 +75,18 @@ void KMCentersNode::compute_close_centers(const Ints &candidate_centers_inds,
 */
 void KMCentersNode::post_neighbor(KMPointArray *sums, KMPoint *sum_sqs,
                                   Ints *weights, int center_ind) {
-  IMP_INTERNAL_CHECK((unsigned int) center_ind < sums->size(),
+  IMP_INTERNAL_CHECK((unsigned int)center_ind < sums->size(),
                      "the center index is out of range\n");
   // increment sum
   for (int d = 0; d < centers_->get_dim(); d++) {
     (*((*sums)[center_ind]))[d] += sum_[d];
   }
-  //incremet weight
-  IMP_INTERNAL_CHECK((unsigned int) center_ind < weights->size(),
+  // incremet weight
+  IMP_INTERNAL_CHECK((unsigned int)center_ind < weights->size(),
                      "the center index is out of range\n");
   (*weights)[center_ind] += n_data_;
-  //increment sum of squares
-  IMP_INTERNAL_CHECK((unsigned int) center_ind < sum_sqs->size(),
+  // increment sum of squares
+  IMP_INTERNAL_CHECK((unsigned int)center_ind < sum_sqs->size(),
                      "the center index is out of range\n");
   (*sum_sqs)[center_ind] += sum_sq_;
 }
@@ -94,15 +94,15 @@ void KMCentersNode::post_neighbor(KMPointArray *sums, KMPoint *sum_sqs,
 void KMCentersNode::post_one_neighbor(KMPointArray *sums, KMPoint *sum_sqs,
                                       Ints *weights, int center_ind,
                                       const KMPoint &p) {
-  IMP_INTERNAL_CHECK((unsigned int) center_ind < sums->size(),
+  IMP_INTERNAL_CHECK((unsigned int)center_ind < sums->size(),
                      "the center index is out of range\n");
   // increment sums and sums sq
   for (int d = 0; d < centers_->get_dim(); d++) {
     (*((*sums)[center_ind]))[d] += p[d];
     (*sum_sqs)[center_ind] += p[d] * p[d];
   }
-  //incremet weight
-  IMP_INTERNAL_CHECK((unsigned int) center_ind < weights->size(),
+  // incremet weight
+  IMP_INTERNAL_CHECK((unsigned int)center_ind < weights->size(),
                      "the center index is out of range\n");
   (*weights)[center_ind] += 1;
 }
@@ -111,11 +111,11 @@ int KMCentersNode::mid_center(const Ints &cands) {
   KMPoint *lo, *hi, mid;
   lo = bnd_box_.get_point(0);
   hi = bnd_box_.get_point(1);
-  //get the mid point of the bounding box
+  // get the mid point of the bounding box
   for (int d = 0; d < bnd_box_.get_dim(); d++) {
     mid.push_back(((*lo)[d] + (*hi)[d]) / 2);
   }
-  //the closest center will be the closest to the middle of the bounding box
+  // the closest center will be the closest to the middle of the bounding box
   double min_dist = km_distance2(mid, *((*centers_)[cands[0]]));
   int min_ind = 0;
   for (unsigned int j = 1; j < cands.size(); j++) {

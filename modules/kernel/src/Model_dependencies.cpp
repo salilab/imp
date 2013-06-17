@@ -124,7 +124,6 @@ void Model::compute_required_score_states() {
       }
     }
   }
-
 }
 
 void Model::compute_dependencies() {
@@ -135,7 +134,7 @@ void Model::compute_dependencies() {
   dependency_graph_ = IMP::kernel::get_dependency_graph(this);
   // attempt to get around boost/gcc bug and the most vexing parse
   dependency_graph_index_ = IMP::kernel::get_vertex_index(dependency_graph_);
-  //internal::show_as_graphviz(boost::make_reverse_graph(dg), std::cout);
+  // internal::show_as_graphviz(boost::make_reverse_graph(dg), std::cout);
   set_score_state_update_order(dependency_graph_, dependency_graph_index_);
   // to prevent infinite recursion when updating ScoringFunctions
   ModelObjectTracker::set_is_dirty(false);

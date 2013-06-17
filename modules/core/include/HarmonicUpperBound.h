@@ -24,11 +24,11 @@ class HarmonicUpperBound : public Harmonic {
   virtual double evaluate(double feature) const IMP_OVERRIDE {
     return feature <= Harmonic::get_mean() ? 0.0 : Harmonic::evaluate(feature);
   }
-  virtual DerivativePair evaluate_with_derivative(double feature)
-      const IMP_OVERRIDE {
+  virtual DerivativePair evaluate_with_derivative(double feature) const
+      IMP_OVERRIDE {
     return feature <= Harmonic::get_mean()
-        ? DerivativePair(0.0, 0.0)
-        : Harmonic::evaluate_with_derivative(feature);
+               ? DerivativePair(0.0, 0.0)
+               : Harmonic::evaluate_with_derivative(feature);
   }
   IMP_OBJECT_METHODS(HarmonicUpperBound);
 };

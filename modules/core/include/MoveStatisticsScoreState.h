@@ -36,7 +36,7 @@ class IMPCOREEXPORT MoveStatisticsScoreState : public ScoreState {
   void show_statistics(std::ostream& out = std::cout) const;
   void reset();
   virtual void do_before_evaluate() IMP_OVERRIDE;
-  virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
+  virtual void do_after_evaluate(DerivativeAccumulator* da) IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs() const;
   virtual ModelObjectsTemp do_get_outputs() const;
   IMP_OBJECT_METHODS(MoveStatisticsScoreState);

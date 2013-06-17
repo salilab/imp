@@ -124,7 +124,8 @@ class Decorator : public base::Value {
     else
       return 0;
   }
-protected:
+
+ protected:
   Decorator(Model* m, ParticleIndex pi);
   Decorator(Particle* p);
   Decorator();
@@ -178,7 +179,7 @@ protected:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   operator Particle*() const { return get_particle(); }
   Particle* operator->() const { return get_particle(); }
-  operator ParticleIndex() const {return get_particle_index();}
+  operator ParticleIndex() const { return get_particle_index(); }
 #endif
 
   /** \brief Returns the Model containing the particle. */
@@ -240,8 +241,7 @@ protected:
 
 #ifndef IMP_DOXYGEN
 
-inline Decorator::Decorator(Model* m, ParticleIndex pi) : model_(m), pi_(pi) {}
-;
+inline Decorator::Decorator(Model* m, ParticleIndex pi) : model_(m), pi_(pi) {};
 inline Decorator::Decorator(Particle* p)
     : model_(p->get_model()), pi_(p->get_index()) {}
 inline Decorator::Decorator() : pi_(-1) {}

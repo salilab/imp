@@ -34,7 +34,7 @@ namespace TNT {
 using namespace std;
 
 template <class T>
-    inline std::ostream &operator<<(std::ostream &s, const Array2D<T> &A) {
+inline std::ostream &operator<<(std::ostream &s, const Array2D<T> &A) {
   int M = A.dim1();
   int N = A.dim2();
 
@@ -69,7 +69,7 @@ template <class T>
 }
 
 template <class T>
-    inline Array2D<T> operator+(const Array2D<T> &A, const Array2D<T> &B) {
+inline Array2D<T> operator+(const Array2D<T> &A, const Array2D<T> &B) {
   int m = A.dim1();
   int n = A.dim2();
 
@@ -80,15 +80,14 @@ template <class T>
     Array2D<T> C(m, n);
 
     for (int i = 0; i < m; i++) {
-      for (int j = 0; j < n; j++)
-        C[i][j] = A[i][j] + B[i][j];
+      for (int j = 0; j < n; j++) C[i][j] = A[i][j] + B[i][j];
     }
     return C;
   }
 }
 
 template <class T>
-    inline Array2D<T> operator-(const Array2D<T> &A, const Array2D<T> &B) {
+inline Array2D<T> operator-(const Array2D<T> &A, const Array2D<T> &B) {
   int m = A.dim1();
   int n = A.dim2();
 
@@ -99,8 +98,7 @@ template <class T>
     Array2D<T> C(m, n);
 
     for (int i = 0; i < m; i++) {
-      for (int j = 0; j < n; j++)
-        C[i][j] = A[i][j] - B[i][j];
+      for (int j = 0; j < n; j++) C[i][j] = A[i][j] - B[i][j];
     }
     return C;
   }
@@ -118,8 +116,7 @@ inline Array2D<T> operator*(const Array2D<T> &A, const Array2D<T> &B) {
     Array2D<T> C(m, n);
 
     for (int i = 0; i < m; i++) {
-      for (int j = 0; j < n; j++)
-        C[i][j] = A[i][j] * B[i][j];
+      for (int j = 0; j < n; j++) C[i][j] = A[i][j] * B[i][j];
     }
     return C;
   }
@@ -137,8 +134,7 @@ inline Array2D<T> operator/(const Array2D<T> &A, const Array2D<T> &B) {
     Array2D<T> C(m, n);
 
     for (int i = 0; i < m; i++) {
-      for (int j = 0; j < n; j++)
-        C[i][j] = A[i][j] / B[i][j];
+      for (int j = 0; j < n; j++) C[i][j] = A[i][j] / B[i][j];
     }
     return C;
   }
@@ -151,8 +147,7 @@ inline Array2D<T> &operator+=(Array2D<T> &A, const Array2D<T> &B) {
 
   if (B.dim1() == m || B.dim2() == n) {
     for (int i = 0; i < m; i++) {
-      for (int j = 0; j < n; j++)
-        A[i][j] += B[i][j];
+      for (int j = 0; j < n; j++) A[i][j] += B[i][j];
     }
   }
   return A;
@@ -165,8 +160,7 @@ inline Array2D<T> &operator-=(Array2D<T> &A, const Array2D<T> &B) {
 
   if (B.dim1() == m || B.dim2() == n) {
     for (int i = 0; i < m; i++) {
-      for (int j = 0; j < n; j++)
-        A[i][j] -= B[i][j];
+      for (int j = 0; j < n; j++) A[i][j] -= B[i][j];
     }
   }
   return A;
@@ -179,8 +173,7 @@ inline Array2D<T> &operator*=(Array2D<T> &A, const Array2D<T> &B) {
 
   if (B.dim1() == m || B.dim2() == n) {
     for (int i = 0; i < m; i++) {
-      for (int j = 0; j < n; j++)
-        A[i][j] *= B[i][j];
+      for (int j = 0; j < n; j++) A[i][j] *= B[i][j];
     }
   }
   return A;
@@ -193,8 +186,7 @@ inline Array2D<T> &operator/=(Array2D<T> &A, const Array2D<T> &B) {
 
   if (B.dim1() == m || B.dim2() == n) {
     for (int i = 0; i < m; i++) {
-      for (int j = 0; j < n; j++)
-        A[i][j] /= B[i][j];
+      for (int j = 0; j < n; j++) A[i][j] /= B[i][j];
     }
   }
   return A;
@@ -228,18 +220,17 @@ inline Array2D<T> matmult(const Array2D<T> &A, const Array2D<T> &B) {
     for (int j = 0; j < K; j++) {
       T sum = 0;
 
-      for (int k = 0; k < N; k++)
-        sum += A[i][k] * B[k][j];
+      for (int k = 0; k < N; k++) sum += A[i][k] * B[k][j];
 
       C[i][j] = sum;
     }
 
   return C;
-
 }
 
 /** Added by Daniel */
-template <class T> inline Array2D<T> transpose(const Array2D<T> &A) {
+template <class T>
+inline Array2D<T> transpose(const Array2D<T> &A) {
   Array2D<T> ret(A.dim2(), A.dim1());
   for (int i = 0; i < A.dim1(); ++i) {
     for (int j = 0; j < A.dim2(); ++j) {
@@ -250,7 +241,8 @@ template <class T> inline Array2D<T> transpose(const Array2D<T> &A) {
 }
 
 /** Added by Keren */
-template <class T> inline T determinant(const Array2D<T> &M) {
+template <class T>
+inline T determinant(const Array2D<T> &M) {
   assert(M.dim1() == M.dim2());  // square matrices only please
                                  // Compute determinant using LU factors.
   JAMA::LU<T> lu(M);
@@ -258,32 +250,32 @@ template <class T> inline T determinant(const Array2D<T> &M) {
 }
 
 /** Added by Keren */
-template <class T> inline Array2D<T> inverse(const Array2D<T> &M) {
+template <class T>
+inline Array2D<T> inverse(const Array2D<T> &M) {
   assert(M.dim1() == M.dim2());  // square matrices only please
                                  // solve for inverse with LU decomposition
   JAMA::LU<T> lu(M);
   // create identity matrix
-  Array2D<T> id(M.dim1(), M.dim2(), (T) 0);
-  for (int i = 0; i < M.dim1(); i++)
-    id[i][i] = 1;
+  Array2D<T> id(M.dim1(), M.dim2(), (T)0);
+  for (int i = 0; i < M.dim1(); i++) id[i][i] = 1;
   // solves A * A_inv = Identity
   return lu.solve(id);
 }
 
 /** Added by Keren */
-template <class T> inline bool is_inversable(const Array2D<T> &M) {
+template <class T>
+inline bool is_inversable(const Array2D<T> &M) {
   if (M.dim1() != M.dim2()) {
     return false;
   }
   // solve for inverse with LU decomposition
   JAMA::LU<T> lu(M);
   // create identity matrix
-  Array2D<T> id(M.dim1(), M.dim2(), (T) 0);
-  for (int i = 0; i < M.dim1(); i++)
-    id[i][i] = 1;
+  Array2D<T> id(M.dim1(), M.dim2(), (T)0);
+  for (int i = 0; i < M.dim1(); i++) id[i][i] = 1;
   // solves A * A_inv = Identity
   Array2D<T> inv = lu.solve(id);
-  //check if the values of inv are all numbers
+  // check if the values of inv are all numbers
   for (int d1 = 0; d1 < inv.dim1(); d1++) {
     for (int d2 = 0; d2 < inv.dim2(); d2++) {
       if (IMP::base::isnan(inv[d1][d2])) {
@@ -309,7 +301,8 @@ inline Array1D<T> multiply(const Array2D<T> &M, const Array1D<T> &V) {
 }
 
 /** Added by Keren */
-template <class T> inline Array1D<T> multiply(T s, const Array1D<T> &V) {
+template <class T>
+inline Array1D<T> multiply(T s, const Array1D<T> &V) {
   Array1D<T> ans(V.dim1());
   for (int i = 0; i < V.dim1(); ++i) {
     ans[i] = V[i] * s;
@@ -318,7 +311,8 @@ template <class T> inline Array1D<T> multiply(T s, const Array1D<T> &V) {
 }
 
 /** Added by Keren */
-template <class T> inline Array2D<T> multiply(T s, const Array2D<T> &V) {
+template <class T>
+inline Array2D<T> multiply(T s, const Array2D<T> &V) {
   Array2D<T> ans(V.dim1(), V.dim2());
   for (int i = 0; i < V.dim1(); ++i) {
     for (int j = 0; j < V.dim2(); ++j) {
@@ -353,7 +347,7 @@ inline Array1D<T> subtract(const Array1D<T> &V1, const Array1D<T> &V2) {
 template <class T>
 inline T dot_product(const Array1D<T> &V1, const Array1D<T> &V2) {
   assert(V1.dim1() == V2.dim1());
-  T ans = (T) 0;
+  T ans = (T)0;
   for (int i = 0; i < V1.dim1(); ++i) {
     ans += V1[i] * V2[i];
   }
@@ -361,7 +355,8 @@ inline T dot_product(const Array1D<T> &V1, const Array1D<T> &V2) {
 }
 
 /** Added by Keren */
-template <class T> inline void set_identity(Array2D<T> &M) {
+template <class T>
+inline void set_identity(Array2D<T> &M) {
   for (int r = 0; r < M.dim1(); ++r) {
     for (int c = 0; c < M.dim2(); ++c) {
       M[r][c] = 0.;

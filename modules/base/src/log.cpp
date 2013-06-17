@@ -47,7 +47,6 @@ std::string get_context_name(unsigned int i) {
   }
   return oss.str();
 }
-
 }
 
 std::string get_context_message() {

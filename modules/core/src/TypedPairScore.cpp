@@ -9,11 +9,9 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-Float TypedPairScore::evaluate_index(Model *m,
-                                     const ParticleIndexPair &pip,
+Float TypedPairScore::evaluate_index(Model *m, const ParticleIndexPair &pip,
                                      DerivativeAccumulator *da) const {
-  ParticlePair p(m->get_particle(pip[0]),
-                  m->get_particle(pip[1]));
+  ParticlePair p(m->get_particle(pip[0]), m->get_particle(pip[1]));
   PairScore *ps = get_pair_score(p);
   if (!ps) {
     if (!allow_invalid_types_) {
@@ -56,9 +54,8 @@ TypedPairScore::TypedPairScore(IntKey typekey, bool allow_invalid_types)
       allow_invalid_types_(allow_invalid_types) {}
 
 // should pass it off, fix later
-ModelObjectsTemp TypedPairScore::do_get_inputs(Model *m,
-                                               const ParticleIndexes &pis)
-    const {
+ModelObjectsTemp TypedPairScore::do_get_inputs(
+    Model *m, const ParticleIndexes &pis) const {
   return IMP::kernel::get_particles(m, pis);
 }
 

@@ -33,12 +33,12 @@ IMPATOM_BEGIN_NAMESPACE
 
 namespace {
 
-  typedef boost::variate_generator<base::RandomNumberGenerator &,
-                                   boost::normal_distribution<double> > RNG;
+typedef boost::variate_generator<base::RandomNumberGenerator &,
+                                 boost::normal_distribution<double> > RNG;
 }
 BrownianDynamics::BrownianDynamics(Model *m, std::string name)
-    : Simulator(m, name),  //nd_(0,1),
-      //sampler_(base::random_number_generator, nd_),
+    : Simulator(m, name),  // nd_(0,1),
+      // sampler_(base::random_number_generator, nd_),
       max_step_(std::numeric_limits<double>::max()),
       srk_(false) {}
 
@@ -60,7 +60,7 @@ inline double get_force(Model *m, ParticleIndex p, unsigned int i, double dt,
                         double ikT) {
   Diffusion d(m, p);
   double nforce(-d.get_derivative(i));
-  //unit::Angstrom R(sampler_());
+  // unit::Angstrom R(sampler_());
   double dd = d.get_diffusion_coefficient();
   double force_term(nforce * dd * dt * ikT);
   /*if (force_term > unit::Angstrom(.5)) {
@@ -81,7 +81,7 @@ inline double get_torque(Model *m, ParticleIndex p, unsigned int i, double dt,
   core::RigidBody rb(m, p);
 
   double cforce(rb.get_torque()[i]);
-  //unit::Angstrom R(sampler_());
+  // unit::Angstrom R(sampler_());
   double dr = d.get_rotational_diffusion_coefficient();
   double force_term = dr * cforce * dt * ikT;
   /*if (force_term > unit::Angstrom(.5)) {
@@ -130,7 +130,7 @@ IMP_GCC_DISABLE_WARNING(-Wuninitialized)
 namespace {
 void check_delta(algebra::Vector3D &delta, double max_step) {
   for (unsigned int j = 0; j < 3; ++j) {
-    //if (std::abs(delta[j]) > max_step) {
+    // if (std::abs(delta[j]) > max_step) {
     /*std::cerr << "Truncating motion: " << delta[j] << " to " << max_step
       << std::endl;*/
     delta[j] = std::min(delta[j], max_step);
@@ -208,7 +208,7 @@ void BrownianDynamics::advance_chunk(double dtfs, double ikT,
   IMP_LOG_TERSE("Advancing particles " << begin << " to " << end << std::endl);
   for (unsigned int i = begin; i < end; ++i) {
     if (RigidBodyDiffusion::particle_is_instance(get_model(), ps[i])) {
-      //std::cout << "rb" << std::endl;
+      // std::cout << "rb" << std::endl;
       advance_orientation_0(ps[i], dtfs, ikT);
     } else {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
@@ -278,7 +278,7 @@ bool is_constant(It b, It e) {
 }
 
 bool is_ok_step(BrownianDynamics *bd, Configuration *c, double step) {
-  //std::cout << "Trying time step " << step << std::endl;
+  // std::cout << "Trying time step " << step << std::endl;
   ParticlesTemp ps = bd->get_simulation_particles();
   c->load_configuration();
   bd->set_maximum_time_step(step);
@@ -303,8 +303,8 @@ bool is_ok_step(BrownianDynamics *bd, Configuration *c, double step) {
                              (coords[i][j] - coords[i + 1][j]).get_magnitude());
     }
   }
-  //std::cout << "Distances are "  << max_dist << std::endl;
-  //std::cout << "Energies are "  << es << std::endl;
+  // std::cout << "Distances are "  << max_dist << std::endl;
+  // std::cout << "Energies are "  << es << std::endl;
   return is_constant(es.begin(), es.end()) &&
          is_constant(max_dist.begin(), max_dist.end());
 }

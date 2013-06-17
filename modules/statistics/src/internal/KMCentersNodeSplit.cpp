@@ -64,7 +64,7 @@ void KMCentersNodeSplit::get_neighbors(const Ints &cands, KMPointArray *sums,
     // post points as neighbors
     post_neighbor(sums, sum_sqs, weights, cands[0]);
   }
-      //get cloest candidate to the box represented by the node
+      // get cloest candidate to the box represented by the node
       else {
     Ints new_cands;
     IMP_LOG_VERBOSE(

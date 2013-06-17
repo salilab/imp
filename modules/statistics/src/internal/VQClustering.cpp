@@ -50,7 +50,7 @@ VQClustering::VQClustering() {
   show_status_bar_ = true;
 }
 VQClustering::VQClustering(DataPoints *data, int k) : k_(k) {
-  //store relevate particle data in a more efficeint data structure
+  // store relevate particle data in a more efficeint data structure
   show_status_bar_ = true;
   full_data_ = data;
   data_ = full_data_->get_data();
@@ -74,11 +74,11 @@ void VQClustering::sampling(Array1DD_VEC *tracking) {
   double log_ef_ei = log(par_.ef_ / par_.ei_);
   double log_lf_li = log(par_.lf_ / par_.li_);
 
-  double epsilon;  //neuron plasticity
-  double lambda;   //approximated width
-  //order_track and order_centers_indexes are data structures used to sort
-  //the centers
-  //according to their distance from a randomly selected data point
+  double epsilon;  // neuron plasticity
+  double lambda;   // approximated width
+  // order_track and order_centers_indexes are data structures used to sort
+  // the centers
+  // according to their distance from a randomly selected data point
   std::vector<int> order_track;
   std::vector<int> order_centers_indexes;
   order_track.insert(order_track.end(), k_, 0);
@@ -95,22 +95,22 @@ void VQClustering::sampling(Array1DD_VEC *tracking) {
       ++show_progress;
     }
     IMP_LOG_VERBOSE("TRN clustering run number : " << run_ind << std::endl);
-    //randomly sample centers from the data points
+    // randomly sample centers from the data points
     center_sampling(&centers_sample);
 
-    //update the centers according to the distance from set of number_of_steps
-    //randomly selected data points
+    // update the centers according to the distance from set of number_of_steps
+    // randomly selected data points
     for (int step_ind = 0; step_ind < par_.number_of_steps_; step_ind++) {
       Array1DD rand_data_p;
       sample_data_point(rand_data_p);
-      //sort all of the centers from the closest to the farthest
-      //to the randomly selected data point
+      // sort all of the centers from the closest to the farthest
+      // to the randomly selected data point
       sorter.set_point(&rand_data_p);
       sorter.set_centers(&centers_sample);
       for (int i = 0; i < k_; ++i) order_track[i] = i;
       std::sort(order_track.begin(), order_track.end(), sorter);
-      //order_centers_indexes holds the center indexes according to their
-      //distance from the random point ( low to high)
+      // order_centers_indexes holds the center indexes according to their
+      // distance from the random point ( low to high)
       for (int i = 0; i < k_; ++i) {
         order_centers_indexes[i] = order_track[i];
       }
@@ -119,22 +119,22 @@ void VQClustering::sampling(Array1DD_VEC *tracking) {
       lambda =
           par_.li_ * exp((1. * step_ind / par_.number_of_steps_) * log_lf_li);
 
-      //update the centers
+      // update the centers
       for (int i = 0; i < k_; ++i) {
         Array1DD *cen = &(centers_sample[order_centers_indexes[i]]);
         double t = epsilon * exp(-i / lambda);
-        for (int j = 0; j < dim_; ++j) {  //all attributes
+        for (int j = 0; j < dim_; ++j) {  // all attributes
           (*cen)[j] += t * (rand_data_p[j] - (*cen)[j]);
         }
       }
-      //todo - add which particles belong to which center
-      //update the centers to be eq space -- TODO --
-    }  //end steps
-       //keep the centers of the current run in the tracking vector
+      // todo - add which particles belong to which center
+      // update the centers to be eq space -- TODO --
+    }  // end steps
+    // keep the centers of the current run in the tracking vector
     for (int i = 0; i < k_; ++i) {
       tracking->push_back(centers_sample[i]);
     }
-  }  //end run iterations
+  }  // end run iterations
   if (par_.eq_clusters_) {
     Array1DD_VEC centers_sample_eq;
     get_eq_centers(&centers_sample, &centers_sample_eq);
@@ -153,7 +153,7 @@ void VQClustering::sampling(Array1DD_VEC *tracking) {
     }
     centers_sample_eq = centers_sample;
   }
-}  //end sampling
+}  // end sampling
 
 void VQClustering::clustering(Array1DD_VEC *tracking, Array1DD_VEC *centers) {
   std::vector<std::vector<int> > closest_center;
@@ -183,14 +183,14 @@ void VQClustering::clustering(Array1DD_VEC *tracking, Array1DD_VEC *centers) {
           closest_center_ind = cen_ind;
         }
       }
-      closest_center[closest_center_ind].push_back((int) j);
+      closest_center[closest_center_ind].push_back((int)j);
     }
     // According to the closest_center logging we compute
     // the refined centers of the k clusters
     for (int cen_ind = 0; cen_ind < k_; cen_ind++) {
       Array1DD *cen = &((*centers)[cen_ind]);
       last_centers[cen_ind] = (*centers)[cen_ind];
-      //update att_sum data
+      // update att_sum data
       for (int i = 0; i < dim_; i++) {
         att_sum[i] = 0.;
       }
@@ -201,7 +201,7 @@ void VQClustering::clustering(Array1DD_VEC *tracking, Array1DD_VEC *centers) {
         }
       }
       if (closest_center[cen_ind].size() > 0) {
-        //check if center with cen_ind is going to be update
+        // check if center with cen_ind is going to be update
         for (int d = 0; d < dim_; d++) {
           (*cen)[d] = att_sum[d] / closest_center[cen_ind].size();
         }
@@ -213,11 +213,11 @@ void VQClustering::clustering(Array1DD_VEC *tracking, Array1DD_VEC *centers) {
       wdiff += TNT::dot_product((*centers)[i] - last_centers[i],
                                 (*centers)[i] - last_centers[i]);
     }
-    wdiff = sqrt(wdiff / (double) k_);
+    wdiff = sqrt(wdiff / (double)k_);
   } while (wdiff > 1e-5);
 }
 
-//Return eq size version of the current centers
+// Return eq size version of the current centers
 void VQClustering::get_eq_centers(Array1DD_VEC *centers,
                                   Array1DD_VEC *eq_centers) {
   const Array1DD_VEC *data = full_data_->get_data();
@@ -225,13 +225,13 @@ void VQClustering::get_eq_centers(Array1DD_VEC *centers,
   unsigned int eq_size = num_points / k_;
   std::cout << "Number of points:" << num_points << " eq_size:" << eq_size
             << std::endl;
-  //TODO - think of eq mass option
-  //calculate all pairwise distances
+  // TODO - think of eq mass option
+  // calculate all pairwise distances
   ValInds distances(k_ * num_points);
-  //TODO - only calculate distances for close centers, think of using knn
-  //TODO - print all of the unassigned anchors
-  //TODO - use the GMM
-  //TODO - add the edges
+  // TODO - only calculate distances for close centers, think of using knn
+  // TODO - print all of the unassigned anchors
+  // TODO - use the GMM
+  // TODO - add the edges
   for (int i = 0; i < k_; i++) {
     for (int j = 0; j < num_points; j++) {
       Array1DD a1 = (*centers)[i];
@@ -242,12 +242,12 @@ void VQClustering::get_eq_centers(Array1DD_VEC *centers,
                          i * num_points + j);
     }
   }
-  //now create the assignment
+  // now create the assignment
   std::vector<Ints> assignments(k_);
   int centers_full = 0;
   int points_visited = 0;
   bool not_done = true;
-  //make a heap of the array
+  // make a heap of the array
   std::make_heap(distances.begin(), distances.end(),
                  comp_first_smaller_than_second);
   std::sort_heap(distances.begin(), distances.end(),
@@ -267,14 +267,14 @@ void VQClustering::get_eq_centers(Array1DD_VEC *centers,
       std::cout << "remove points for center:" << center_ind << std::endl;
       for (unsigned int i = 0; i < heap_size; i++) {
         int counter = 0;
-        if ((((int) distances[i].second) >= center_ind * num_points) &&
-            (((int) distances[i].second) < (center_ind + 1) * num_points)) {
+        if ((((int)distances[i].second) >= center_ind * num_points) &&
+            (((int)distances[i].second) < (center_ind + 1) * num_points)) {
           distances[i].first = INT_MAX;
           counter++;
         }
         heap_size -= counter;
       }
-      //order is now wrong
+      // order is now wrong
       // std::make_heap(distances.begin(),distances.end(),
       //                comp_first_smaller_than_second);
       std::sort_heap(distances.begin(), distances.begin() + heap_size,
@@ -295,7 +295,7 @@ void VQClustering::get_eq_centers(Array1DD_VEC *centers,
       not_done = false;
     }
   }
-  //recalculate centers
+  // recalculate centers
   for (int i = 0; i < k_; i++) {
     algebra::Vector3D cen(0., 0., 0.);
     for (unsigned int j = 0; j < assignments[i].size(); j++) {
@@ -322,7 +322,7 @@ void VQClustering::get_eq_centers(Array1DD_VEC *centers,
 }
 
 void VQClustering::set_assignments() {
-  //index the centers
+  // index the centers
   algebra::Vector3Ds all_cen;
   for (int i = 0; i < k_; i++) {
     all_cen.push_back(
@@ -335,7 +335,7 @@ void VQClustering::set_assignments() {
     algebra::Vector3D point((*data_)[j][0], (*data_)[j][1], (*data_)[j][2]);
     int closest_cen = nn->get_nearest_neighbor(point);
     //-----
-    //debug
+    // debug
     int min_ind = 0;
     double min_dist = 999999;
     for (unsigned int kk = 0; kk < all_cen.size(); kk++) {
@@ -356,24 +356,24 @@ void VQClustering::set_assignments() {
 }
 
 void VQClustering::run(DataPoints *starting_centers) {
-  //tracking keeps information of all suggested centers throught the algorithm
+  // tracking keeps information of all suggested centers throught the algorithm
   Array1DD_VEC tracking;
   IMP_LOG_VERBOSE("VQClustering::run before sampling" << std::endl);
   sampling(&tracking);
   IMP_LOG_VERBOSE("VQClustering::run after sampling" << std::endl);
   centers_.clear();
-  //the initial centers to the clustering are the results of the first run
-  //TODO - maybe we can improve that ?
+  // the initial centers to the clustering are the results of the first run
+  // TODO - maybe we can improve that ?
   if (starting_centers == nullptr) {
     for (int i = 0; i < k_; i++) {
       centers_.push_back(tracking[i]);
     }
   } else {
-    //add all precalculated centers
+    // add all precalculated centers
     for (int i = 0; i < starting_centers->get_number_of_data_points(); i++) {
       centers_.push_back((*(starting_centers->get_data()))[i]);
     }
-    //rest are sampled
+    // rest are sampled
     for (int i = starting_centers->get_number_of_data_points(); i < k_; i++) {
       centers_.push_back(tracking[i]);
     }

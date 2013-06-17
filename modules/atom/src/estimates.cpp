@@ -106,7 +106,7 @@ static MillipascalSecond eta(unit::Kelvin T) {
                    MillipascalSecond(0.2822))
   };
 
-  //const unsigned int npoints= sizeof(points)/sizeof(std::pair<float,float>);
+  // const unsigned int npoints= sizeof(points)/sizeof(std::pair<float,float>);
   if (T < points[0].first) {
     return points[0].second;
   } else {
@@ -137,7 +137,7 @@ double get_einstein_diffusion_coefficient(double r) {
 
 double get_einstein_rotational_diffusion_coefficient(double r) {
   MillipascalSecond e = eta(IMP::internal::DEFAULT_TEMPERATURE);
-  //double kt= get_kt(IMP::internal::DEFAULT_TEMPERATURE);
+  // double kt= get_kt(IMP::internal::DEFAULT_TEMPERATURE);
   unit::PerFemtosecond ret =
       kt(IMP::internal::DEFAULT_TEMPERATURE) /
       (8 * PI * e * square(unit::Angstrom(r)) * unit::Angstrom(r));
@@ -163,7 +163,7 @@ double get_diffusion_length(double D, double force, double dtfs, double temp) {
       unit::Femtosecond(dtfs) /
       unit::Femtojoule(IMP::internal::KB * unit::Kelvin(temp));
   unit::Femtonewton nforce(get_force_in_femto_newtons(force));
-  //unit::Angstrom R(sampler_());
+  // unit::Angstrom R(sampler_());
   unit::Angstrom force_term(nforce * unit::SquareAngstromPerFemtosecond(D) *
                             dtikt);
   return strip_units(force_term);

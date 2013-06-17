@@ -77,8 +77,8 @@ class IMPALGEBRAEXPORT Transformation3D : public GeometricPrimitiveD<3> {
   Transformation3D get_inverse() const;
 
  private:
-  Vector3D trans_;  //translation
-  Rotation3D rot_;  //rotation
+  Vector3D trans_;  // translation
+  Rotation3D rot_;  // rotation
 };
 
 IMP_VALUES(Transformation3D, Transformation3Ds);

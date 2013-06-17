@@ -125,8 +125,9 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
   }
 
   CHARMMIdealResidueTopology *get_residue_topology(ResidueType type) const {
-    std::map<ResidueType, base::Pointer<CHARMMIdealResidueTopology> >
-      ::const_iterator it = residue_topologies_.find(type);
+    std::map<ResidueType,
+             base::Pointer<CHARMMIdealResidueTopology> >::const_iterator it =
+        residue_topologies_.find(type);
     if (it != residue_topologies_.end()) {
       return it->second;
     } else {

@@ -63,20 +63,19 @@ struct NestedTraits {
   typedef EdgeDescriptor value_type;
 };
 
-template <class Key, class Value> struct AttributeVertexPropertyMap {
+template <class Key, class Value>
+struct AttributeVertexPropertyMap {
   Key k_;
   AttributeVertexPropertyMap() {}
   AttributeVertexPropertyMap(Key k) : k_(k) {}
   typedef Bonded key_type;
   typedef Value value_type;
-  struct category : public virtual boost::read_write_property_map_tag {
-  };
+  struct category : public virtual boost::read_write_property_map_tag {};
   typedef value_type reference;
 
   value_type operator[](key_type d) const {
     return typename AttributeVertexPropertyMap<Key, Value>::value_type(
         d.get_particle()->get_value(k_));
-
   }
 };
 
@@ -106,14 +105,14 @@ inline void put(const AttributeVertexPropertyMap<Key, Bonded> &m, Bonded d,
   }
 }
 
-template <class Key, class Value> struct AttributeEdgePropertyMap {
+template <class Key, class Value>
+struct AttributeEdgePropertyMap {
   AttributeEdgePropertyMap() {}
   Key k_;
   AttributeEdgePropertyMap(Key k) : k_(k) {}
   typedef EdgeDescriptor key_type;
   typedef Value value_type;
-  struct category : public virtual boost::read_write_property_map_tag {
-  };
+  struct category : public virtual boost::read_write_property_map_tag {};
   typedef value_type reference;
   value_type operator[](key_type d) const {
     Bond bd = get_bond(Bonded(d.first), Bonded(d.second));

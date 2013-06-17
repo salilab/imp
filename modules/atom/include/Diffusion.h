@@ -79,7 +79,6 @@ class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
   }
   //! Get the D key
   static FloatKey get_diffusion_coefficient_key();
-
 };
 
 IMPATOMEXPORT double get_diffusion_coefficient_from_cm2_per_second(double din);

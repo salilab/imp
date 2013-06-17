@@ -20,21 +20,21 @@ IMPMISC_BEGIN_NAMESPACE
 /** The two endpoints of the bond must have the same radius and that is used
     for the radius of the cylinder connecting them.
 */
-class IMPMISCEXPORT SoftCylinderPairScore : public PairScore
-{
+class IMPMISCEXPORT SoftCylinderPairScore : public PairScore {
   double k_;
-public:
+
+ public:
   SoftCylinderPairScore(double k);
-  virtual double evaluate_index(Model *m,
-                                const ParticleIndexPair &p,
+  virtual double evaluate_index(Model *m, const ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                         const ParticleIndexes &pis)
-      const IMP_OVERRIDE;
+                                         const ParticleIndexes &pis) const
+      IMP_OVERRIDE;
   IMP_PAIR_SCORE_METHODS(SoftCylinderPairScore);
-  IMP_OBJECT_METHODS(SoftCylinderPairScore);;
+  IMP_OBJECT_METHODS(SoftCylinderPairScore);
+  ;
 };
 
 IMPMISC_END_NAMESPACE
 
-#endif  /* IMPMISC_SOFT_CYLINDER_PAIR_SCORE_H */
+#endif /* IMPMISC_SOFT_CYLINDER_PAIR_SCORE_H */

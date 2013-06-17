@@ -68,7 +68,8 @@ class IMPCOREEXPORT CoreClosePairContainer
     }
     return ret;
   }
-  template <class PS> Restraints create_decomposition_t(PS *ps) const {
+  template <class PS>
+  Restraints create_decomposition_t(PS *ps) const {
     ParticleIndexPairs all = get_range_indexes();
     Restraints ret(all.size());
     for (unsigned int i = 0; i < all.size(); ++i) {

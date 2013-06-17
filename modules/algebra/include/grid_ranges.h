@@ -25,7 +25,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 /** The base for storing a grid on all of space (in 3D).
  */
-template <int D> class UnboundedGridRangeD {
+template <int D>
+class UnboundedGridRangeD {
  public:
   typedef GridIndexD<D> Index;
   typedef ExtendedGridIndexD<D> ExtendedIndex;
@@ -81,7 +82,7 @@ typedef UnboundedGridRangeD<3> UnboundedGridRange3D;
 typedef UnboundedGridRangeD<4> UnboundedGridRange4D;
 typedef UnboundedGridRangeD<5> UnboundedGridRange5D;
 typedef UnboundedGridRangeD<6> UnboundedGridRange6D;
-typedef UnboundedGridRangeD< -1> UnboundedGridRangeKD;
+typedef UnboundedGridRangeD<-1> UnboundedGridRangeKD;
 typedef base::Vector<UnboundedGridRange1D> UnboundedGridRange1Ds;
 typedef base::Vector<UnboundedGridRange2D> UnboundedGridRange2Ds;
 typedef base::Vector<UnboundedGridRange3D> UnboundedGridRange3Ds;
@@ -94,7 +95,8 @@ typedef base::Vector<UnboundedGridRangeKD> UnboundedGridRangeKDs;
 /** This is a base class for storage types which refer to a bounded number
     of cells.
 */
-template <int D> class BoundedGridRangeD {
+template <int D>
+class BoundedGridRangeD {
   ExtendedGridIndexD<D> d_;
 
   void set_number_of_voxels(Ints bds) {
@@ -203,7 +205,7 @@ template <int D> class BoundedGridRangeD {
   }
   IndexIterator indexes_end(const ExtendedGridIndexD<D>&,
                             const ExtendedGridIndexD<D>&) const {
-    //IMP_INTERNAL_CHECK(lb <= ub, "empty range");
+    // IMP_INTERNAL_CHECK(lb <= ub, "empty range");
     return IndexIterator();
   }
   ExtendedIndexIterator extended_indexes_begin(
@@ -213,7 +215,7 @@ template <int D> class BoundedGridRangeD {
   }
   ExtendedIndexIterator extended_indexes_end(
       const ExtendedGridIndexD<D>&, const ExtendedGridIndexD<D>&) const {
-    //IMP_INTERNAL_CHECK(lb <= ub, "empty range");
+    // IMP_INTERNAL_CHECK(lb <= ub, "empty range");
     return ExtendedIndexIterator();
   }
 #endif
@@ -267,7 +269,7 @@ typedef BoundedGridRangeD<3> BoundedGridRange3D;
 typedef BoundedGridRangeD<4> BoundedGridRange4D;
 typedef BoundedGridRangeD<5> BoundedGridRange5D;
 typedef BoundedGridRangeD<6> BoundedGridRange6D;
-typedef BoundedGridRangeD< -1> BoundedGridRangeKD;
+typedef BoundedGridRangeD<-1> BoundedGridRangeKD;
 typedef base::Vector<BoundedGridRange1D> BoundedGridRange1Ds;
 typedef base::Vector<BoundedGridRange2D> BoundedGridRange2Ds;
 typedef base::Vector<BoundedGridRange3D> BoundedGridRange3Ds;

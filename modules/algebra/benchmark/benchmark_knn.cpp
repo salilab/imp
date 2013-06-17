@@ -43,18 +43,19 @@ void test_uniform(std::string name, unsigned int n, double eps) {
   test(name + " uniform", pts, knn, eps);
 }
 
-template <class Data> void test_all(std::string name) {
+template <class Data>
+void test_all(std::string name) {
   test_uniform<Data>(name, 10, 0);
-  //test_uniform<Data>(name, 10, .1);
+  // test_uniform<Data>(name, 10, .1);
   test_uniform<Data>(name, 10, .5);
   test_uniform<Data>(name, 100, 0);
-  //test_uniform<Data>(name, 100, .1);
+  // test_uniform<Data>(name, 100, .1);
   test_uniform<Data>(name, 100, .5);
   test_uniform<Data>(name, 1000, 0);
-  //test_uniform<Data>(name, 1000, .1;
+  // test_uniform<Data>(name, 1000, .1;
   test_uniform<Data>(name, 1000, .5);
   test_uniform<Data>(name, 10000, 0);
-  //test_uniform<Data>(name, 10000, .1;
+  // test_uniform<Data>(name, 10000, .1;
   test_uniform<Data>(name, 10000, .5);
 }
 }

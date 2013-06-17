@@ -10,7 +10,7 @@
 IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 double km_distance2(const KMPoint &p, const KMPoint &q) {
   double dist = 0;
-  //IMP_INTERNAL_CHECK(); - TODO L add check for high checks level
+  // IMP_INTERNAL_CHECK(); - TODO L add check for high checks level
   for (unsigned int i = 0; i < p.size(); i++) {
     dist += (p[i] - q[i]) * (p[i] - q[i]);
   }

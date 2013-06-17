@@ -20,7 +20,7 @@ namespace {
 
 #define IMP_GET_EVALUATE(Class)                                    \
   static_cast<double(Class::*)(Model *, const ParticleIndexPair &, \
-                               DerivativeAccumulator *)const>(     \
+                               DerivativeAccumulator *) const>(    \
       &Class::evaluate_index)
 
 template <class It, class F>

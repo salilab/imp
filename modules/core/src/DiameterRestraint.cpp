@@ -57,7 +57,7 @@ double DiameterRestraint::unprotected_evaluate(
   double radius = diameter_ / 2.0;
   Model *m = get_model();
   IMP_CONTAINER_FOREACH(SingletonContainer, sc_, {
-      double dc = XYZR(m, _1).get_radius();
+    double dc = XYZR(m, _1).get_radius();
     v += internal::evaluate_distance_pair_score(
         dp, XYZ(m, _1), da, f_.get(), boost::lambda::_1 - radius + dc);
   });

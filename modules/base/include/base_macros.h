@@ -28,5 +28,4 @@
 #include "swig_macros.h"
 #include "utility_macros.h"
 
-
-#endif  /* IMPBASE_BASE_MACROS_H */
+#endif /* IMPBASE_BASE_MACROS_H */

@@ -22,7 +22,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
     \note This class is a \ref geometricprimitives "geometric primitive".
 */
-template <int D> class BoundingBoxD {
+template <int D>
+class BoundingBoxD {
   void make_empty() {
     for (int i = 0; i < D; ++i) {
       b_[0][i] = std::numeric_limits<double>::max();
@@ -105,13 +106,14 @@ template <int D> class BoundingBoxD {
   }
   //! Returning a bounding box containing both
   template <class O>
-      const BoundingBoxD<D> operator+(const BoundingBoxD<D> &o) const {
+  const BoundingBoxD<D> operator+(const BoundingBoxD<D> &o) const {
     BoundingBoxD<D> ret(*this);
     ret += o;
     return ret;
   }
   //! Return a bounding box grown by o on all sides
-  template <class O> const BoundingBoxD<D> operator+(const O &o) const {
+  template <class O>
+  const BoundingBoxD<D> operator+(const O &o) const {
     BoundingBoxD<D> ret(*this);
     ret += o;
     return ret;
@@ -141,7 +143,8 @@ template <int D> class BoundingBoxD {
   VectorD<D> b_[2];
 };
 /** See BoundingBoxD */
-template <int D> inline double get_volume(const BoundingBoxD<D> &bb) {
+template <int D>
+inline double get_volume(const BoundingBoxD<D> &bb) {
   double v = 1;
   for (unsigned int i = 0; i < bb.get_dimension(); ++i) {
     v *= bb.get_corner(1)[i] - bb.get_corner(0)[i];
@@ -158,28 +161,30 @@ IMP_VOLUME_GEOMETRY_METHODS_D(BoundingBox, bounding_box, IMP_UNUSED(g);
 
 //! Box with radius one
 /** See BoundingBoxD */
-template <unsigned int D> inline BoundingBoxD<D> get_unit_bounding_box_d() {
+template <unsigned int D>
+inline BoundingBoxD<D> get_unit_bounding_box_d() {
   return BoundingBoxD<D>(-get_ones_vector_d<D>(), get_ones_vector_d<D>());
 }
 
 //! Box with radius one
 /** See BoundingBoxD */
-inline BoundingBoxD< -1> get_unit_bounding_box_kd(unsigned int d) {
-  return BoundingBoxD< -1>(-get_ones_vector_kd(d), get_ones_vector_kd(d));
+inline BoundingBoxD<-1> get_unit_bounding_box_kd(unsigned int d) {
+  return BoundingBoxD<-1>(-get_ones_vector_kd(d), get_ones_vector_kd(d));
 }
 
 //! Cube with radius of length \c radius
 /** See BoundingBoxD */
-template <unsigned int D> inline BoundingBoxD<D> get_cube_d(double radius) {
+template <unsigned int D>
+inline BoundingBoxD<D> get_cube_d(double radius) {
   return BoundingBoxD<D>(-radius * get_ones_vector_d<D>(),
                          radius * get_ones_vector_d<D>());
 }
 
 //! Cube with radius of length \c side
 /** See BoundingBoxD */
-inline BoundingBoxD< -1> get_cube_kd(unsigned int d, double radius) {
-  return BoundingBoxD< -1>(-radius * get_ones_vector_kd(d),
-                           radius * get_ones_vector_kd(d));
+inline BoundingBoxD<-1> get_cube_kd(unsigned int d, double radius) {
+  return BoundingBoxD<-1>(-radius * get_ones_vector_kd(d),
+                          radius * get_ones_vector_kd(d));
 }
 
 //! Return true if they intersect
@@ -202,7 +207,7 @@ template <int D>
 inline BoundingBoxD<D> get_intersection(const BoundingBoxD<D> &a,
                                         const BoundingBoxD<D> &b) {
   VectorD<D> ic[2];
-  //set low
+  // set low
   int j = 0;
   for (unsigned int i = 0; i < a.get_dimension(); ++i) {
     if (a.get_corner(j)[i] > b.get_corner(j)[i]) {
@@ -211,7 +216,7 @@ inline BoundingBoxD<D> get_intersection(const BoundingBoxD<D> &a,
       ic[j][i] = b.get_corner(j)[i];
     }
   }
-  //set top
+  // set top
   j = 1;
   for (unsigned int i = 0; i < a.get_dimension(); ++i) {
     if (a.get_corner(j)[i] < b.get_corner(j)[i]) {
@@ -235,7 +240,8 @@ inline BoundingBoxD<D> get_union(BoundingBoxD<D> a, const BoundingBoxD<D> &b) {
 
 //! Return the maximum axis aligned extent
 /** See BoundingBoxD */
-template <int D> inline double get_maximum_length(const BoundingBoxD<D> &a) {
+template <int D>
+inline double get_maximum_length(const BoundingBoxD<D> &a) {
   double e = a.get_corner(1)[0] - a.get_corner(0)[0];
   for (unsigned int i = 1; i < a.get_dimension(); ++i) {
     double ce = a.get_corner(1)[0] - a.get_corner(0)[0];
@@ -263,11 +269,11 @@ inline Vector3Ds get_vertices(const BoundingBoxD<3> &bb) {
 //! Return the edges of the box as indices into the vertices list
 /** See BoundingBoxD */
 inline IntPairs get_edges(const BoundingBoxD<3> &) {
-  static const IntPair edges[12] = {
-    IntPair(0, 1), IntPair(0, 2), IntPair(0, 4), IntPair(1, 3), IntPair(1, 5),
-    IntPair(2, 3), IntPair(2, 6), IntPair(3, 7), IntPair(4, 5), IntPair(4, 6),
-    IntPair(5, 7), IntPair(6, 7)
-  };
+  static const IntPair edges[12] = {IntPair(0, 1), IntPair(0, 2), IntPair(0, 4),
+                                    IntPair(1, 3), IntPair(1, 5), IntPair(2, 3),
+                                    IntPair(2, 6), IntPair(3, 7), IntPair(4, 5),
+                                    IntPair(4, 6), IntPair(5, 7),
+                                    IntPair(6, 7)};
   static IntPairs ret(edges, edges + 12);
   return ret;
 }

@@ -15,9 +15,8 @@ IMPATOM_BEGIN_NAMESPACE
 
 StereochemistryPairFilter::StereochemistryPairFilter() {}
 
-int StereochemistryPairFilter::get_value_index(Model *m,
-                                               const ParticleIndexPair& pp)
-    const {
+int StereochemistryPairFilter::get_value_index(
+    Model *m, const ParticleIndexPair &pp) const {
   return excluded_map_.find(internal::ExcludedPair(m->get_particle(pp[0]),
                                                    m->get_particle(pp[1]))) !=
          excluded_map_.end();

@@ -23,7 +23,8 @@ IMPRMF_BEGIN_NAMESPACE
 
 namespace {
 
-template <class G, class F> class GeometryLoadLink : public SimpleLoadLink<G> {
+template <class G, class F>
+class GeometryLoadLink : public SimpleLoadLink<G> {
   typedef SimpleLoadLink<G> P;
   F factory_;
   RMF::ColoredConstFactory colored_factory_;
@@ -55,7 +56,8 @@ void save_colored(display::Geometry *g, RMF::NodeHandle nh,
   }
 }
 
-template <class G, class F> class GeometrySaveLink : public SimpleSaveLink<G> {
+template <class G, class F>
+class GeometrySaveLink : public SimpleSaveLink<G> {
   typedef SimpleSaveLink<G> P;
   F factory_;
   RMF::ColoredFactory colored_factory_;
@@ -299,7 +301,6 @@ void divide(const display::GeometriesTemp &r, display::SphereGeometries &sgs,
     }
   }
 }
-
 }
 IMP_DEFINE_INTERNAL_LINKERS(Sphere, sphere, (RMF::FileHandle fh),
                             (RMF::FileConstHandle fh), (fh), (fh));

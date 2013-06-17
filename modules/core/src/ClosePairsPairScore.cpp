@@ -42,10 +42,9 @@ ParticleIndexes expand(Particle *p, Refiner *r) {
     ParticleIndexes ret = IMP::internal::get_index(r->get_refined(p));
     IMP_IF_CHECK(USAGE) {
       base::set<ParticleIndex> uret(ret.begin(), ret.end());
-      IMP_USAGE_CHECK(
-          uret.size() == ret.size(),
-          "Duplicate particles in refined result: " << uret.size()
-                                                    << " != " << ret.size());
+      IMP_USAGE_CHECK(uret.size() == ret.size(),
+                      "Duplicate particles in refined result: "
+                          << uret.size() << " != " << ret.size());
     }
     return ret;
   } else {
@@ -97,7 +96,7 @@ double ClosePairsPairScore::evaluate_if_good_index(Model *m,
 ParticleIndexPairs KClosePairsPairScore::get_close_pairs(
     Model *m, const ParticleIndexPair &p) const {
   IMP_OBJECT_LOG;
-  //double mr= std::max(max_radius(psa), max_radius(psb));
+  // double mr= std::max(max_radius(psa), max_radius(psb));
   ParticleIndexPairs ppt;
   ParticleIndexes ps0 = expand(m->get_particle(p[0]), r_);
   ParticleIndexes ps1 = expand(m->get_particle(p[1]), r_);
@@ -118,7 +117,7 @@ ParticleIndexPairs KClosePairsPairScore::get_close_pairs(
     for (unsigned int i = 0; i < ppt.size(); ++i) {
       double d = algebra::get_distance(m->get_sphere(ppt[i][0]),
                                        m->get_sphere(ppt[i][1]));
-      //std::cout << "Trying " << d << " " << ppt[i] << std::endl;
+      // std::cout << "Trying " << d << " " << ppt[i] << std::endl;
       ms.insert(d, ppt[i]);
     }
     if (ppt.size() > static_cast<unsigned int>(k_ * 2)) {
@@ -129,7 +128,7 @@ ParticleIndexPairs KClosePairsPairScore::get_close_pairs(
     last_distance_ = std::max(1.0, last_distance_);
     ParticleIndexPairs retps;
     for (unsigned int i = 0; i < ms.size(); ++i) {
-      //std::cout << "Got " << ms[i].second << std::endl;
+      // std::cout << "Got " << ms[i].second << std::endl;
       retps.push_back(ms[i].second);
     }
     IMP_INTERNAL_CHECK(retps.size() == static_cast<unsigned int>(k_),
@@ -166,7 +165,7 @@ ParticleIndexPairs KClosePairsPairScore::get_close_pairs(
     }
     ParticleIndexPairs retps;
     for (unsigned int i = 0; i < ms.size(); ++i) {
-      //std::cout << "Got " << ms[i].second << std::endl;
+      // std::cout << "Got " << ms[i].second << std::endl;
       retps.push_back(ms[i].second);
     }
     return retps;
