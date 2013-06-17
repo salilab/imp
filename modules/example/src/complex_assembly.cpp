@@ -150,8 +150,8 @@ void optimize_assembly(Model *m, const ParticlesTemp &components,
     RestraintsTemp rs = other_restraints + ad.get_restraints(cur);
     IMP_LOG_TERSE("Current restraints are " << rs << " and particles " << cur
                                             << std::endl);
-    mc->set_restraints(rs);
-    cg->set_restraints(rs + RestraintsTemp(1, evr.get()) +
+    mc->set_scoring_function(rs);
+    cg->set_scoring_function(rs + RestraintsTemp(1, evr.get()) +
                        RestraintsTemp(1, bbr.get()));
     active->set_particles(cur);
     double e;

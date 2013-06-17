@@ -53,10 +53,8 @@ void optimize_balls(const ParticlesTemp &ps, const RestraintsTemp &rs,
 
   IMP_NEW(core::SoftSpherePairScore, ssps, (10));
   IMP_NEW(core::ConjugateGradients, cg, (m));
-  cg->set_score_threshold(.1);
   cg->set_optimizer_states(opt_states);
   {
-    cg->set_score_threshold(ps.size() * .1);
     // set up restraints for cg
     IMP_NEW(container::ListSingletonContainer, lsc, (ps));
     IMP_NEW(container::ClosePairContainer, cpc,
@@ -65,16 +63,14 @@ void optimize_balls(const ParticlesTemp &ps, const RestraintsTemp &rs,
     base::Pointer<Restraint> r
       = container::create_restraint(ssps.get(), cpc.get());
     r->set_model(ps[0]->get_model());
-    cg->set_restraints(rs + RestraintsTemp(1, r.get()));
+    cg->set_scoring_function(rs + RestraintsTemp(1, r.get()));
     cg->set_optimizer_states(opt_states);
   }
   IMP_NEW(core::MonteCarlo, mc, (m));
-  mc->set_score_threshold(.1);
   mc->set_optimizer_states(opt_states);
   IMP_NEW(core::IncrementalScoringFunction, isf, (ps, rs));
   {
     // set up MC
-    mc->set_score_threshold(ps.size() * .1);
     mc->add_mover(create_serial_mover(ps));
     // we are special casing the nbl term for montecarlo, but using all for CG
     mc->set_incremental_scoring_function(isf);
