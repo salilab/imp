@@ -408,11 +408,6 @@ class DominoModel:
         """
             Sets the native model for benchmark, by reading the native
             structure and set the rigid bodies.
-            @param fn_pdb_native PDB with the native structure
-            @param anchored List of True/False values indicating
-                if the components of the assembly are anchored. The function
-                sets the FIRST anchored component in the (0,0,0) coordinate
-                and moves the other components with the same translation
         """
         self.measure_models = True
         self.native_model = IMP.Model()
@@ -715,7 +710,7 @@ class DominoModel:
         """
             Set a part of the model as not optimized (it does not move during
             the model optimization)
-            @param Name of the component to optimized
+            @param name of the component to optimized
         """
         if name not in self.names:
             raise ValueError("DominoModel: There is not component " \
@@ -784,7 +779,8 @@ class DominoModel:
             @param name2 Name of the second component
             @param restraint_name Name for the restraint
             @param distance Maximum distance tolerated between particles
-            @param weight. Weight of the restraint
+            @param weight Weight of the restraint
+            @param n_pairs
             @param max_score Maximum value tolerated for the restraint
             @param stddev Standard deviation used to approximate the
                 HarmonicUpperBound function to a Gaussian
@@ -825,6 +821,7 @@ class DominoModel:
     def write_solutions_database(self, fn_database, max_number=None):
         """
             Write the results of the DOMINO sampling to a SQLite database.
+            @param fn_database
             @param max_number Maximum number of results to write
         """
         log.info("Creating the database of solutions")

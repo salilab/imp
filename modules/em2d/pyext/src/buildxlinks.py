@@ -122,7 +122,6 @@ class XlinksDict(dict):
         """
             Add a xlink. It is ensured that the id of the first element is
             is lower that the second
-            @param
         """
         if xlink.second_id < xlink.first_id:
             xlink.swap()

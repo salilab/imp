@@ -318,6 +318,8 @@ class ResultsDB(Database.Database2):
             tables, a left join is done. Otherwise get_solutions_results_table()
             is called. See get_solutions_results_table() for the meaning
             of the parameters.
+            @param max_number
+            @param orderby
         """
         tables = self.get_tables_names()
         log.debug("tables %s", tables)

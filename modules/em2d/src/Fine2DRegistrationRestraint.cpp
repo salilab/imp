@@ -15,6 +15,15 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
+Fine2DRegistrationRestraint::Fine2DRegistrationRestraint(): calls_(0) {
+    projection_ = new Image();
+    projection_->set_was_used(true);
+    projection_->set_name("projection-in-fine2d");
+    subject_ = new Image();
+    subject_->set_was_used(true);
+    subject_->set_name("subject-in-fine2d");
+  };
+
 void Fine2DRegistrationRestraint::setup(
                        ParticlesTemp &ps,
                        const ProjectingParameters &params,

@@ -18,7 +18,8 @@ using namespace example;
 using namespace display;
 using namespace atom;
 
-namespace {
+/*namespace {
+
 double threshold = 10;
 
 Sphere3Ds get_residues(std::string fname) {
@@ -104,11 +105,12 @@ void align_input_and_output(const ParticlesTemp &output,
   std::cout << "RMSD " << get_rmsd(input, output) << std::endl;
 }
 }
+*/
 
 int main(int, char * []) {
   // not finished
   return 0;
-  Sphere3Ds s3 = get_residues(benchmark::get_data_path("small_protein.pdb"));
+  /*Sphere3Ds s3 = get_residues(benchmark::get_data_path("small_protein.pdb"));
 
   BoundingBox3D bb;
   for (unsigned int i = 0; i < s3.size(); ++i) {
@@ -174,5 +176,5 @@ int main(int, char * []) {
     }
   }
   std::cout << "scores are " << tot0 << " " << tot1 << std::endl;
-  return 0;
+  return 0;*/
 }
