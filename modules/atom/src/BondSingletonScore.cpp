@@ -52,7 +52,7 @@ ModelObjectsTemp BondSingletonScore::do_get_inputs(Model *m,
     Bond ad(m, pi[i]);
     ret[3 * i + 0] = ad.get_bonded(0);
     ret[3 * i + 1] = ad.get_bonded(1);
-    ret[3 * i + 3] = m->get_particle(pi[i]);
+    ret[3 * i + 2] = m->get_particle(pi[i]);
   }
   return ret;
 }
