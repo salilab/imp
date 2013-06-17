@@ -526,8 +526,7 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints(){
       //only allow the particles to penetrate or separate by 1 angstrom
       std::cout<<"Max Score for the restraint:"<<ss.str()<<" "<<
         params_.get_connectivity_params().max_conn_rest_val_<<std::endl;
-      mdl_->set_maximum_score(
-                  r,
+      r->set_maximum_score(
                   params_.get_connectivity_params().max_conn_rest_val_);
       if (prot_data_->get_interaction_part_of_filter(i)){
         std::cout<<"Adding restraint "<<r->get_name()<<" to conn with filter"
@@ -695,8 +694,7 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints(){
       //only allow the particles to penetrate or separate by 1 angstrom
       std::cout<<"Max Score for the restraint:"<<ss1.str()<<" "<<
         params_.get_xlink_params().max_xlink_val_<<std::endl;
-      mdl_->set_maximum_score(rx,
-                              params_.get_xlink_params().max_xlink_val_);
+      rx->set_maximum_score(params_.get_xlink_params().max_xlink_val_);
       // if (prot_data_.get_xlink_used_to_build_jt(i)){
       //   jt_rs_.push_back(rx);
       // }
@@ -750,7 +748,7 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints(){
         float max_penetration=comp_param.max_penetration_;
         evr->set_maximum_penetration_score(
            max_penetration*voxel_size*voxel_size*voxel_size);
-        mdl_->set_maximum_score(evr,comp_param.max_score_);
+        evr->set_maximum_score(comp_param.max_score_);
         ev_rs_->add_restraint(evr);
         mtb.increase_edge(mhs_[i],mhs_[j]);
       }
