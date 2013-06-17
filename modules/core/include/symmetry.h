@@ -57,7 +57,13 @@ class IMPCOREEXPORT TransformationAndReflectionSymmetry
   TransformationAndReflectionSymmetry(const algebra::Transformation3D &t,
                                       const algebra::Reflection3D &r);
 
-  IMP_SINGLETON_MODIFIER(TransformationAndReflectionSymmetry);
+  virtual void apply_index(Model *m, ParticleIndex p) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *m, const ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs(Model *m, const ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  IMP_SINGLETON_MODIFIER_METHODS(TransformationAndReflectionSymmetry);
+  IMP_OBJECT_METHODS(TransformationAndReflectionSymmetry);
 };
 
 //! Set the coordinates of a particle to be a transformed version of a reference
@@ -72,7 +78,13 @@ class IMPCOREEXPORT TransformationSymmetry : public SingletonModifier {
   //! Create with both reflection and translation
   TransformationSymmetry(const algebra::Transformation3D &t);
 
-  IMP_SINGLETON_MODIFIER(TransformationSymmetry);
+  virtual void apply_index(Model *m, ParticleIndex p) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *m, const ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs(Model *m, const ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  IMP_SINGLETON_MODIFIER_METHODS(TransformationSymmetry);
+  IMP_OBJECT_METHODS(TransformationSymmetry);
 };
 
 IMPCORE_END_NAMESPACE

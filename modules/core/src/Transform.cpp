@@ -15,34 +15,24 @@ Transform::Transform(const algebra::Transformation3D &t, bool ignore_non_xyz) {
   ignore_non_xyz_ = ignore_non_xyz;
 }
 
-void Transform::apply(Particle *p) const {
-  if (!XYZ::particle_is_instance(p)) {
+void Transform::apply_index(Model *m, ParticleIndex pi) const {
+  if (!XYZ::particle_is_instance(m, pi)) {
     IMP_INTERNAL_CHECK(ignore_non_xyz_,
                        "The particle does not have XYZ attributes");
     return;
   }
-  XYZ xyz = XYZ(p);
+  XYZ xyz = XYZ(m, pi);
   xyz.set_coordinates(t_.get_transformed(xyz.get_coordinates()));
 }
 
-ParticlesTemp Transform::get_input_particles(Particle *p) const {
-  return ParticlesTemp(1, p);
+ModelObjectsTemp Transform::do_get_inputs(Model *m,
+                                           const ParticleIndexes &pis) const {
+  return IMP::kernel::get_particles(m, pis);
 }
 
-ParticlesTemp Transform::get_output_particles(Particle *p) const {
-  return ParticlesTemp(1, p);
-}
-
-ContainersTemp Transform::get_input_containers(Particle *) const {
-  return ContainersTemp();
-}
-
-ContainersTemp Transform::get_output_containers(Particle *) const {
-  return ContainersTemp();
-}
-
-void Transform::do_show(std::ostream &out) const {
-  out << "transformation " << t_ << std::endl;
+ModelObjectsTemp Transform::do_get_outputs(Model *m,
+                                           const ParticleIndexes &pis) const {
+  return IMP::kernel::get_particles(m, pis);
 }
 
 IMPCORE_END_NAMESPACE

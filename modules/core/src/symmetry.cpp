@@ -25,55 +25,38 @@ TransformationSymmetry::TransformationSymmetry(
   t_ = t;
 }
 
-void TransformationSymmetry::apply(Particle *p) const {
+void TransformationSymmetry::apply_index(Model *m, ParticleIndex pi) const {
   set_was_used(true);
-  if (RigidBody::particle_is_instance(p)) {
-    RigidBody rrb(Reference(p).get_reference_particle());
-    RigidBody rb(p);
+  if (RigidBody::particle_is_instance(m, pi)) {
+    RigidBody rrb(Reference(m, pi).get_reference_particle());
+    RigidBody rb(m, pi);
     // We do the non-lazy version in order as it is hard
     // for the dependency checker to get the dependencies right
     // Is it really? We should check this.
     rb.set_reference_frame(algebra::ReferenceFrame3D(
         t_ * rrb.get_reference_frame().get_transformation_to()));
   } else {
-    XYZ rd(Reference(p).get_reference_particle());
-    XYZ d(p);
+    XYZ rd(Reference(m, pi).get_reference_particle());
+    XYZ d(m, pi);
     d.set_coordinates(t_.get_transformed(rd.get_coordinates()));
   }
 }
 
-ParticlesTemp TransformationSymmetry::get_input_particles(Particle *p) const {
-  ParticlesTemp ret;
-  ret.push_back(p);
-  if (RigidBody::particle_is_instance(p)) {
-    for (unsigned int i = 0; i < RigidBody(p).get_number_of_members(); ++i) {
-      ret.push_back(RigidBody(p).get_member(i));
+ModelObjectsTemp TransformationSymmetry::do_get_inputs(Model *m,
+                                           const ParticleIndexes &pis) const {
+  ModelObjectsTemp ret = IMP::kernel::get_particles(m, pis);
+  for (unsigned int i = 0; i < pis.size(); ++i) {
+    if (RigidBody::particle_is_instance(m, pis[i])) {
+      ret += RigidBody(m, pis[i]).get_members();
     }
-  }
-  ret.push_back(Reference(p).get_reference_particle());
-  return ret;
-}
-
-ParticlesTemp TransformationSymmetry::get_output_particles(Particle *p) const {
-  ParticlesTemp ret(1, p);
-  if (RigidBody::particle_is_instance(p)) {
-    for (unsigned int i = 0; i < RigidBody(p).get_number_of_members(); ++i) {
-      ret.push_back(RigidBody(p).get_member(i));
-    }
+    ret.push_back(Reference(m, pis[i]).get_reference_particle());
   }
   return ret;
 }
 
-ContainersTemp TransformationSymmetry::get_input_containers(Particle *) const {
-  return ContainersTemp();
-}
-
-ContainersTemp TransformationSymmetry::get_output_containers(Particle *) const {
-  return ContainersTemp();
-}
-
-void TransformationSymmetry::do_show(std::ostream &out) const {
-  out << "transformation: " << t_ << std::endl;
+ModelObjectsTemp TransformationSymmetry::do_get_outputs(Model *m,
+                                           const ParticleIndexes &pis) const {
+  return IMP::kernel::get_particles(m, pis);
 }
 
 TransformationAndReflectionSymmetry::TransformationAndReflectionSymmetry(
@@ -82,40 +65,31 @@ TransformationAndReflectionSymmetry::TransformationAndReflectionSymmetry(
   r_ = r;
 }
 
-void TransformationAndReflectionSymmetry::apply(Particle *p) const {
-  IMP_USAGE_CHECK(!RigidBody::particle_is_instance(p),
+void TransformationAndReflectionSymmetry
+::apply_index(Model *m, ParticleIndex pi) const {
+  IMP_USAGE_CHECK(!RigidBody::particle_is_instance(m, pi),
                   "Particle must not be a rigid body particle");
   set_was_used(true);
-  XYZ rd(Reference(p).get_reference_particle());
-  XYZ d(p);
+  XYZ rd(Reference(m, pi).get_reference_particle());
+  XYZ d(m, pi);
   d.set_coordinates(t_.get_transformed(r_.get_reflected(rd.get_coordinates())));
 }
 
-ParticlesTemp TransformationAndReflectionSymmetry::get_input_particles(
-    Particle *p) const {
-  ParticlesTemp ret;
-  ret.push_back(p);
-  ret.push_back(Reference(p).get_reference_particle());
+ModelObjectsTemp
+TransformationAndReflectionSymmetry::do_get_inputs(Model *m,
+                                      const ParticleIndexes &pis) const {
+  ModelObjectsTemp ret(2 * pis.size());
+  for (unsigned int i = 0; i < pis.size(); ++i) {
+    ret[2 * i + 0] = m->get_particle(pis[i]);
+    ret[2 * i + 0] = Reference(m, pis[i]).get_reference_particle();
+  }
   return ret;
 }
 
-ParticlesTemp TransformationAndReflectionSymmetry::get_output_particles(
-    Particle *p) const {
-  return ParticlesTemp(1, p);
-}
-
-ContainersTemp TransformationAndReflectionSymmetry::get_input_containers(
-    Particle *) const {
-  return ContainersTemp();
-}
-
-ContainersTemp TransformationAndReflectionSymmetry::get_output_containers(
-    Particle *) const {
-  return ContainersTemp();
-}
-
-void TransformationAndReflectionSymmetry::do_show(std::ostream &out) const {
-  out << "transformation: " << t_ << std::endl;
+ModelObjectsTemp TransformationAndReflectionSymmetry::do_get_outputs(
+    Model *m,
+                                           const ParticleIndexes &pis) const {
+  return IMP::kernel::get_particles(m, pis);
 }
 
 IMPCORE_END_NAMESPACE
