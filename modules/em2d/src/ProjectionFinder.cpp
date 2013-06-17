@@ -350,7 +350,7 @@ void ProjectionFinder::get_complete_registration() {
   // Set optimizer
   IMP_NEW(Model,scoring_model,());
   IMP_NEW(Fine2DRegistrationRestraint,fine2d,());
-  IMP_NEW(IMP::gsl::Simplex,simplex_optimizer,());
+  IMP_NEW(IMP::gsl::Simplex,simplex_optimizer,(scoring_model));
 
 
   IMP_LOG_TERSE("ProjectionFinder: Setting Fine2DRegistrationRestraint "
@@ -362,7 +362,6 @@ void ProjectionFinder::get_complete_registration() {
                 score_function_,
                 masks_manager_);
 
-  simplex_optimizer->set_model(scoring_model);
   simplex_optimizer->set_initial_length(params_.simplex_initial_length);
   simplex_optimizer->set_minimum_size(params_.simplex_minimum_size);
 
