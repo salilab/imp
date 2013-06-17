@@ -418,10 +418,6 @@ ConfigurationSet *MCCGSampler::do_sample() const {
   return ret.release();
 }
 
-void MCCGSampler::do_show(std::ostream &out) const {
-  out << "attempts " << default_parameters_.attempts_ << std::endl;
-}
-
 IMP_LIST_IMPL(MCCGSampler, OptimizerState, optimizer_state, OptimizerState *,
               OptimizerStates);
 
