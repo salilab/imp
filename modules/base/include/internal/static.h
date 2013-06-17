@@ -10,6 +10,7 @@
 
 #include <IMP/base/base_config.h>
 #include <IMP/base/map.h>
+#include <IMP/base/set.h>
 #include <boost/program_options.hpp>
 #include <boost/cstdint.hpp>
 #include <boost/progress.hpp>
@@ -48,6 +49,9 @@ extern IMPBASEEXPORT boost::int64_t number_of_threads;
 
 extern IMPBASEEXPORT boost::scoped_ptr<boost::progress_display> progress;
 
+extern IMPBASEEXPORT bool print_deprecation_messages;
+extern IMPBASEEXPORT bool exceptions_on_deprecation;
+extern IMPBASEEXPORT base::set<std::string> printed_deprecation_messages;
 IMPBASE_END_INTERNAL_NAMESPACE
 
 #endif /* IMPBASE_INTERNAL_STATIC_H */

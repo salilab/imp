@@ -10,6 +10,7 @@
 #define IMPBASE_DEPRECATION_MACROS_H
 
 #include <IMP/base/base_config.h>
+#include "deprecation.h"
 
 /** Used to implement deprecation support.
     See [deprecation support](../devguide.html#devguide_deprecation). */
@@ -20,12 +21,12 @@
 /** Used to implement deprecation support.
     See [deprecation support](../devguide.html#devguide_deprecation). */
 #define IMP_DEPRECATED_RUNTIME_WARNING(version, help_message)           \
-  static bool imp_deprecation_warn = false;                             \
-  if (!imp_deprecation_warn) {                                          \
-    std::cerr << "WARNING: " << IMP_CURRENT_FUNCTION << " is deprecated." \
-              << std::endl;                                             \
-    std::cerr << "WARNING: " << help_message << std::endl;              \
-    imp_deprecation_warn = true;                                        \
+  {                                                                     \
+    std::ostringstream oss;                                             \
+    oss << "WARNING: " << IMP_CURRENT_FUNCTION << " is deprecated."     \
+        << std::endl;                                                   \
+    oss << "WARNING: " << help_message << std::endl;                    \
+    IMP::base::handle_use_deprecated(oss.str());                        \
   }
 
 /** \deprecated_at{2.1} Deprecated as of IMP 2.1. Use

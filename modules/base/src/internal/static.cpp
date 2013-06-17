@@ -201,11 +201,6 @@ AddIntFlag ntf("number_of_threads", "Number of threads to use.",
                &number_of_threads);
 #endif
 
-AddBoolFlag rqt("run_quick_test",
-                "Run (quicker) tests on the program."
-                " Not all executables do useful things with this.",
-                &run_quick_test);
-
 namespace {
 boost::uint64_t get_random_seed() {
 #if IMP_BASE_HAS_BOOST_RANDOM
@@ -232,8 +227,28 @@ boost::int64_t random_seed = get_random_seed();
 AddIntFlag sf("random_seed", "Random seed to use.", &random_seed);
 
 IMPBASE_END_INTERNAL_NAMESPACE
+
 IMPBASE_BEGIN_NAMESPACE
 ::boost::rand48 random_number_generator(internal::random_seed);
-
-bool run_quick_test = false;
 IMPBASE_END_NAMESPACE
+
+IMPBASE_BEGIN_NAMESPACE
+bool run_quick_test = false;
+AddBoolFlag rqt("run_quick_test",
+                "Run (quicker) tests on the program."
+                " Not all executables do useful things with this.",
+                &run_quick_test);
+IMPBASE_END_NAMESPACE
+
+IMPBASE_BEGIN_INTERNAL_NAMESPACE
+bool print_deprecation_messages = true;
+bool exceptions_on_deprecation = false;
+base::set<std::string> printed_deprecation_messages;
+
+AddBoolFlag printed_deprecation_messages_adder("deprecation_warnings",
+                         "Print warnings on runtime deprecation use",
+                                               &print_deprecation_messages);
+AddBoolFlag exceptions_depre_adder("deprecation_exceptions",
+                         "Throw an exception on runtime deprecation use",
+                                               &exceptions_on_deprecation);
+IMPBASE_END_INTERNAL_NAMESPACE

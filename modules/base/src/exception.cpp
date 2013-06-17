@@ -14,7 +14,8 @@
 #include <boost/lambda/lambda.hpp>
 
 IMPBASE_BEGIN_NAMESPACE
-void handle_error(const char *) {
+void handle_error(const char *message) {
+  IMP_UNUSED(message);
   // this method is just here to provide a place to break in the debugger
 }
 
