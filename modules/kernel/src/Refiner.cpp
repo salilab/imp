@@ -12,4 +12,9 @@ IMPKERNEL_BEGIN_NAMESPACE
 
 Refiner::Refiner(std::string name) : Object(name) {}
 
+ParticleIndexes Refiner::get_refined_indexes(Model *m,
+                                             ParticleIndex pi) const {
+  return get_indexes(get_refined(m->get_particle(pi)));
+}
+
 IMPKERNEL_END_NAMESPACE

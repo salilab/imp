@@ -104,7 +104,15 @@ class AccumulateRigidBodyDerivatives : public SingletonDerivativeModifier {
   AccumulateRigidBodyDerivatives(std::string name =
                                      "AccumulateRigidBodyDerivatives%1%")
       : SingletonDerivativeModifier(name) {}
-  IMP_INDEX_SINGLETON_DERIVATIVE_MODIFIER(AccumulateRigidBodyDerivatives);
+  virtual void apply_index(Model *m, ParticleIndex pi) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                         const ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs(Model *m,
+                                          const ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  IMP_SINGLETON_MODIFIER_METHODS(AccumulateRigidBodyDerivatives);
+  IMP_OBJECT_METHODS(AccumulateRigidBodyDerivatives);
 };
 
 /** \brief Compute the coordinates of the RigidMember objects bases
@@ -122,7 +130,15 @@ class UpdateRigidBodyMembers : public SingletonModifier {
  public:
   UpdateRigidBodyMembers(std::string name = "UpdateRigidBodyMembers%1%")
       : SingletonModifier(name) {}
-  IMP_INDEX_SINGLETON_MODIFIER(UpdateRigidBodyMembers);
+  virtual void apply_index(Model *m, ParticleIndex pi) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                         const ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs(Model *m,
+                                          const ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  IMP_SINGLETON_MODIFIER_METHODS(AccumulateRigidBodyDerivatives);
+  IMP_OBJECT_METHODS(AccumulateRigidBodyDerivatives);
 };
 
 /** \brief Fix the normalization of the rotation term. */
@@ -130,7 +146,15 @@ class NormalizeRotation : public SingletonModifier {
  public:
   NormalizeRotation(std::string name = "NormalizeRotation%1%")
       : SingletonModifier(name) {}
-  IMP_INDEX_SINGLETON_MODIFIER(NormalizeRotation);
+  virtual void apply_index(Model *m, ParticleIndex pi) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                         const ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs(Model *m,
+                                          const ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  IMP_SINGLETON_MODIFIER_METHODS(NormalizeRotation);
+  IMP_OBJECT_METHODS(NormalizeRotation);
 };
 
 /** \brief Fix the normalization of the rotation term. */
@@ -138,7 +162,15 @@ class NullSDM : public SingletonDerivativeModifier {
  public:
   NullSDM(std::string name = "NullModifier%1%")
       : SingletonDerivativeModifier(name) {}
-  IMP_INDEX_SINGLETON_DERIVATIVE_MODIFIER(NullSDM);
+  virtual void apply_index(Model *m, ParticleIndex pi) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                         const ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs(Model *m,
+                                          const ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  IMP_SINGLETON_MODIFIER_METHODS(NullSDM);
+  IMP_OBJECT_METHODS(NullSDM);
 };
 
 void AccumulateRigidBodyDerivatives::apply_index(Model *m,
@@ -237,8 +269,22 @@ void AccumulateRigidBodyDerivatives::apply_index(Model *m,
   }
 }
 
-IMP_SINGLETON_MODIFIER_FROM_REFINED(AccumulateRigidBodyDerivatives,
-                                    internal::get_rigid_members_refiner());
+ModelObjectsTemp AccumulateRigidBodyDerivatives::do_get_inputs(Model *m,
+                                            const ParticleIndexes &pis) const {
+  Refiner *refiner = internal::get_rigid_members_refiner();
+  ModelObjectsTemp ret = refiner->get_inputs(m, pis);
+  ret+= IMP::kernel::get_particles(m, pis);
+  for (unsigned int i=0; i< pis.size(); ++i) {
+    ret += IMP::kernel::get_particles(refiner->get_refined_indexes(m,
+                                                                   pis[i]));
+    }
+  return ret;
+}
+ModelObjectsTemp AccumulateRigidBodyDerivatives::do_get_outputs(Model *m,
+                                       const ParticleIndexes &pis) const {
+  ModelObjectsTemp ret =IMP::kernel::get_particles(m, pis);
+  return ret;
+}
 
 void UpdateRigidBodyMembers::apply_index(Model *m, ParticleIndex pi) const {
   RigidBody rb(m, pi);

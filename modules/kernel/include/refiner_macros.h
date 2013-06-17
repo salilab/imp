@@ -52,53 +52,37 @@
 
 
 
-//! Add interaction methods to a SingletonModifer
-/** This macro is designed to be used in conjunction with
-    IMP_SINGLETON_MODIFIER or IMP_SINGLETON_MODIFIER_DA. It adds
-    definitions for the methods:
-    - IMP::SingletonModifier::get_input_particles()
-    - IMP::SingletonModifier::get_output_particles()
-    for a modifier which updates the passed particle based on the results
-    of refinement.
+/** \deprecated_at{2.1} Just define the methods yourself.
 */
 #define IMP_SINGLETON_MODIFIER_FROM_REFINED(Name, refiner)              \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Define methods yourself");          \
   ModelObjectsTemp Name::do_get_inputs(Model *m,                        \
                                        const ParticleIndexes &pis) const { \
-    ModelObjectsTemp ret;                                               \
-    ret+= refiner->get_inputs(m, pis);                                  \
+    ModelObjectsTemp ret = refiner->get_inputs(m, pis);                 \
     ret+= IMP::kernel::get_particles(m, pis);                           \
     for (unsigned int i=0; i< pis.size(); ++i) {                        \
-      ret+=refiner->get_refined(m->get_particle(pis[i]));               \
+      ret += IMP::kernel::get_particles(refiner->get_refined_indexes(m, \
+                                                                     pis[i])); \
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
   ModelObjectsTemp Name::do_get_outputs(Model *m,                       \
                                         const ParticleIndexes &pis) const { \
-    ModelObjectsTemp ret;                                               \
-    ret+=IMP::kernel::get_particles(m, pis);                            \
+    ModelObjectsTemp ret =IMP::kernel::get_particles(m, pis);           \
     return ret;                                                         \
   }                                                                     \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
-//! Add interaction methods to a SingletonModifer
-/** This macro is designed to be used in conjunction with
-    IMP_SINGLETON_MODIFIER or IMP_SINGLETON_MODIFIER_DA. It adds
-    definitions for the methods:
-    - IMP::SingletonModifier::get_input_particles()
-    - IMP::SingletonModifier::get_output_particles()
-    - IMP::base::Object::do_show()
-    for a modifier which updates the refined particles based on the one
-    they are refined from.
-
-    This macro should appear in a .cpp file.
+/** \deprecated_at{2.1} Just define the methods yourself.
 */
 #define IMP_SINGLETON_MODIFIER_TO_REFINED(Name, refiner)                \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Define methods yourself");          \
   ModelObjectsTemp Name::do_get_inputs(Model *m,                        \
                                        const ParticleIndexes &pis) const { \
-    ModelObjectsTemp ret;                                               \
-    ret+= refiner->get_inputs(m, pis);                                  \
+    ModelObjectsTemp ret = refiner->get_inputs(m, pis);                 \
     for (unsigned int i=0; i< pis.size(); ++i) {                        \
-      ret+=refiner->get_refined(m->get_particle(pis[i]));               \
+      ret += IMP::kernel::get_particles(refiner->get_refined_indexes(m, \
+                                                                     pis[i])); \
     }                                                                   \
     ret+= IMP::kernel::get_particles(m, pis);                           \
     return ret;                                                         \
@@ -107,7 +91,8 @@
                                         const ParticleIndexes &pis) const { \
     ModelObjectsTemp ret;                                               \
     for (unsigned int i=0; i< pis.size(); ++i) {                        \
-      ret+=refiner->get_refined(m->get_particle(pis[i]));               \
+      ret += IMP::kernel::get_particles(refiner->get_refined_indexes(m, \
+                                                                     pis[i])); \
     }                                                                   \
     return ret;                                                         \
    }                                                                     \

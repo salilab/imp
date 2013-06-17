@@ -91,12 +91,18 @@ namespace {
    public:                                                                     \
     Name##SingletonPredicate(const DataType &data,                             \
                              std::string name = #Name "SingletonPredicate%1%") \
-        : SingletonPredicate(name), data_(data) {}                             \
-    IMP_INDEX_SINGLETON_PREDICATE(Name##SingletonPredicate, check, {           \
-      ModelObjectsTemp ret;                                                    \
-      ret += IMP::get_particles(m, pi);                                        \
-      return ret;                                                              \
-    });                                                                        \
+    : SingletonPredicate(name), data_(data) {}                          \
+    virtual int get_value_index(Model *m, ParticleIndex pi)             \
+        const IMP_OVERRIDE {                                            \
+      check;                                                            \
+    }                                                                   \
+    virtual ModelObjectsTemp do_get_inputs(Model *m,                    \
+                                           const ParticleIndexes &pis)  \
+        const IMP_OVERRIDE {                                            \
+      return IMP::get_particles(m, pi);                                 \
+    });                                                                 \
+    IMP_SINGLETON_PREDICATE_METHODS(Name##SingletonPredicate);          \
+    IMP_OBJECT_METHODS(Name##SingletonPredicate);                       \
   };
 
 bool get_is_residue_index_match(const Ints &data, Model *m, ParticleIndex pi) {
