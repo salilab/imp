@@ -7,6 +7,7 @@
 
 #include "IMP/base/deprecation.h"
 #include "IMP/base/internal/static.h"
+#include "IMP/base/exception.h"
 
 IMPBASE_BEGIN_NAMESPACE
 void handle_use_deprecated(std::string message) {
