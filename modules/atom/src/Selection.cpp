@@ -87,7 +87,6 @@ namespace {
 #define IMP_ATOM_SELECTION_PRED(Name, DataType, check)                         \
   class Name##SingletonPredicate : public SingletonPredicate {                 \
     DataType data_;                                                            \
-                                                                               \
    public:                                                                     \
     Name##SingletonPredicate(const DataType &data,                             \
                              std::string name = #Name "SingletonPredicate%1%") \
@@ -99,8 +98,8 @@ namespace {
     virtual ModelObjectsTemp do_get_inputs(Model *m,                    \
                                            const ParticleIndexes &pis)  \
         const IMP_OVERRIDE {                                            \
-      return IMP::get_particles(m, pi);                                 \
-    });                                                                 \
+      return IMP::get_particles(m, pis);                                \
+    }                                                                   \
     IMP_SINGLETON_PREDICATE_METHODS(Name##SingletonPredicate);          \
     IMP_OBJECT_METHODS(Name##SingletonPredicate);                       \
   };

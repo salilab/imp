@@ -31,7 +31,8 @@ ModelObjectsTemp DerivativesToRefined::do_get_inputs(Model *m,
                                           const ParticleIndexes &pis) const {
   ModelObjectsTemp ret = refiner_->get_inputs(m, pis);
   for (unsigned int i=0; i< pis.size(); ++i) {
-    ret += IMP::kernel::get_particles(refiner_->get_refined_indexes(m,
+    ret += IMP::kernel::get_particles(m,
+                                      refiner_->get_refined_indexes(m,
                                                                     pis[i]));
   }
   ret+= IMP::kernel::get_particles(m, pis);
@@ -42,7 +43,8 @@ ModelObjectsTemp DerivativesToRefined::do_get_outputs(Model *m,
                                             const ParticleIndexes &pis) const {
   ModelObjectsTemp ret;
   for (unsigned int i=0; i< pis.size(); ++i) {
-    ret += IMP::kernel::get_particles(refiner_->get_refined_indexes(m,
+    ret += IMP::kernel::get_particles(m,
+                                      refiner_->get_refined_indexes(m,
                                                                     pis[i]));
   }
   return ret;

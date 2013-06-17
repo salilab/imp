@@ -137,8 +137,8 @@ class UpdateRigidBodyMembers : public SingletonModifier {
   virtual ModelObjectsTemp do_get_outputs(Model *m,
                                           const ParticleIndexes &pis)
       const IMP_OVERRIDE;
-  IMP_SINGLETON_MODIFIER_METHODS(AccumulateRigidBodyDerivatives);
-  IMP_OBJECT_METHODS(AccumulateRigidBodyDerivatives);
+  IMP_SINGLETON_MODIFIER_METHODS(UpdateRigidBodyMembers);
+  IMP_OBJECT_METHODS(UpdateRigidBodyMembers);
 };
 
 /** \brief Fix the normalization of the rotation term. */
@@ -275,7 +275,8 @@ ModelObjectsTemp AccumulateRigidBodyDerivatives::do_get_inputs(Model *m,
   ModelObjectsTemp ret = refiner->get_inputs(m, pis);
   ret+= IMP::kernel::get_particles(m, pis);
   for (unsigned int i=0; i< pis.size(); ++i) {
-    ret += IMP::kernel::get_particles(refiner->get_refined_indexes(m,
+    ret += IMP::kernel::get_particles(m,
+                                      refiner->get_refined_indexes(m,
                                                                    pis[i]));
     }
   return ret;
