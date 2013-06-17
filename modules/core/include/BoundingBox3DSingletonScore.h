@@ -34,7 +34,14 @@ class GenericBoundingBox3DSingletonScore : public SingletonScore {
  public:
   GenericBoundingBox3DSingletonScore(UF *f, const algebra::BoundingBoxD<3> &bb);
 
-  IMP_SIMPLE_SINGLETON_SCORE(GenericBoundingBox3DSingletonScore);
+  virtual double evaluate_index(Model *m, ParticleIndex p,
+  DerivativeAccumulator *da) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *m, const ParticleIndexes &pis)
+      const IMP_OVERRIDE {
+    return IMP::kernel::get_particles(m, pis);
+  }
+  IMP_SINGLETON_SCORE_METHODS(GenericBoundingBox3DSingletonScore);
+  IMP_OBJECT_METHODS(GenericBoundingBox3DSingletonScore);;
 };
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
@@ -47,10 +54,10 @@ GenericBoundingBox3DSingletonScore<UF>::GenericBoundingBox3DSingletonScore(
                   " 0 when passed a value of 0. Not " << f_->evaluate(0));
 }
 template <class UF>
-double GenericBoundingBox3DSingletonScore<UF>::evaluate(
-    Particle *p, DerivativeAccumulator *da) const {
+double GenericBoundingBox3DSingletonScore<UF>::evaluate_index(
+    Model *m, ParticleIndex pi, DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
-  core::XYZ d(p);
+  core::XYZ d(m, pi);
   algebra::Vector3D cp;
   bool outside = false;
   for (unsigned int i = 0; i < 3; ++i) {
@@ -65,7 +72,7 @@ double GenericBoundingBox3DSingletonScore<UF>::evaluate(
     }
   }
   if (outside) {
-    IMP_LOG_VERBOSE("Particle " << Showable(p) << " is outside box: " << d
+    IMP_LOG_VERBOSE("Particle " << Showable(pi) << " is outside box: " << d
                                 << " of " << bb_ << std::endl);
     algebra::Vector3D deriv;
     double v = internal::compute_distance_pair_score(
@@ -77,10 +84,6 @@ double GenericBoundingBox3DSingletonScore<UF>::evaluate(
   } else {
     return 0;
   }
-}
-template <class UF>
-void GenericBoundingBox3DSingletonScore<UF>::do_show(std::ostream &out) const {
-  out << "box is " << bb_ << std::endl;
 }
 
 #endif

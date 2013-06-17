@@ -17,18 +17,14 @@ SphereDistanceToSingletonScore::SphereDistanceToSingletonScore(
     UnaryFunction *f, const algebra::Vector3D &v)
     : f_(f), pt_(v) {}
 
-Float SphereDistanceToSingletonScore::evaluate(
-    Particle *b, DerivativeAccumulator *da) const {
+Float SphereDistanceToSingletonScore::evaluate_index(
+    Model *m, ParticleIndex pi, DerivativeAccumulator *da) const {
   Float v = internal::evaluate_distance_pair_score(
-      XYZR(b), StaticD(pt_), da, f_.get(),
-      boost::lambda::_1 - XYZR(b).get_radius());
-  IMP_LOG_VERBOSE("SphereDistanceTo from " << XYZR(b) << " to " << pt_
+      XYZR(m, pi), StaticD(pt_), da, f_.get(),
+      boost::lambda::_1 - XYZR(m, pi).get_radius());
+  IMP_LOG_VERBOSE("SphereDistanceTo from " << XYZR(m, pi) << " to " << pt_
                                            << " scored " << v << std::endl);
   return v;
-}
-
-void SphereDistanceToSingletonScore::do_show(std::ostream &out) const {
-  out << "function " << *f_ << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

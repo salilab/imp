@@ -46,7 +46,15 @@ class GenericDistanceToSingletonScore : public SingletonScore {
 
  public:
   GenericDistanceToSingletonScore(UF *f, const algebra::Vector3D &pt);
-  IMP_SIMPLE_SINGLETON_SCORE(GenericDistanceToSingletonScore);
+  virtual double evaluate_index(Model *m, ParticleIndex p,
+  DerivativeAccumulator *da) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                         const ParticleIndexes &pis)
+      const IMP_OVERRIDE {
+    return IMP::kernel::get_particles(m, pis);
+  }
+  IMP_SINGLETON_SCORE_METHODS(GenericDistanceToSingletonScore);
+  IMP_OBJECT_METHODS(GenericDistanceToSingletonScore);;
 };
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
@@ -56,17 +64,15 @@ GenericDistanceToSingletonScore<UF>::GenericDistanceToSingletonScore(
     UF *f, const algebra::Vector3D &v)
     : f_(f), pt_(v) {}
 template <class UF>
-Float GenericDistanceToSingletonScore<UF>::evaluate(
-    Particle *b, DerivativeAccumulator *da) const {
-  Float v = internal::evaluate_distance_pair_score(XYZ(b), StaticD(pt_), da,
-                                                   f_.get(), boost::lambda::_1);
-  IMP_LOG_VERBOSE("DistanceTo from " << XYZ(b) << " to " << pt_ << " scored "
-                                     << v << std::endl);
+double GenericDistanceToSingletonScore<UF>::evaluate_index(
+    Model *m, ParticleIndex pi, DerivativeAccumulator *da) const {
+  double v = internal::evaluate_distance_pair_score(XYZ(m, pi),
+                                                    StaticD(pt_), da,
+                                                f_.get(), boost::lambda::_1);
+  IMP_LOG_VERBOSE("DistanceTo from " << XYZ(m, pi) << " to "
+                  << pt_ << " scored "
+                  << v << std::endl);
   return v;
-}
-template <class UF>
-void GenericDistanceToSingletonScore<UF>::do_show(std::ostream &out) const {
-  out << "function " << *f_;
 }
 
 #endif
@@ -100,7 +106,14 @@ class IMPCOREEXPORT SphereDistanceToSingletonScore : public SingletonScore {
 
  public:
   SphereDistanceToSingletonScore(UnaryFunction *f, const algebra::Vector3D &pt);
-  IMP_SIMPLE_SINGLETON_SCORE(SphereDistanceToSingletonScore);
+  virtual double evaluate_index(Model *m, ParticleIndex p,
+  DerivativeAccumulator *da) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *m, const ParticleIndexes &pis)
+      const IMP_OVERRIDE {
+    return IMP::kernel::get_particles(m, pis);
+  }
+  IMP_SINGLETON_SCORE_METHODS(SphereDistanceToSingletonScore);
+  IMP_OBJECT_METHODS(SphereDistanceToSingletonScore);;
 };
 
 IMPCORE_END_NAMESPACE
