@@ -18,7 +18,7 @@ if(${status} EQUAL 0)
   # for warning control
   add_definitions(-DIMP%(NAME)s_COMPILATION)
 
-  if(DOXYGEN_FOUND)
+  if(IMP_DOXYGEN_FOUND)
     # documentation
     file(GLOB headers ${PROJECT_BINARY_DIR}/include/IMP/%(name)s/*.h)
     file(GLOB docs ${PROJECT_SOURCE_DIR}/modules/%(name)s/doc/*.dox
@@ -31,10 +31,10 @@ if(${status} EQUAL 0)
       COMMAND ln -s -f ../../include
       COMMAND ln -s -f ../../doc/examples
       COMMAND ln -s -f ../../lib
-      COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/%(name)s/Doxyfile
+      COMMAND ${IMP_DOXYGEN_EXECUTABLE} ../../doxygen/%(name)s/Doxyfile
       COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=%(name)s --file=../../doxygen/%(name)s/tags
       COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/%(name)s/warnings.txt
-      DEPENDS %(tags)s ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/%(name)s/README.md
+      DEPENDS %(tags)s ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/%(name)s/README.md ${IMP_DOXYGEN_FETCH}
       WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/%(name)s/
       COMMENT "Running doxygen on %(name)s")
 
@@ -44,7 +44,7 @@ if(${status} EQUAL 0)
 
     list(APPEND IMP_DOC_DEPENDS "${IMP_%(NAME)s_DOC}")
     set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} CACHE INTERNAL "" FORCE)
-  endif(DOXYGEN_FOUND)
+  endif(IMP_DOXYGEN_FOUND)
 
   list(APPEND imp_%(name)s_libs %(modules)s)
   list(APPEND imp_%(name)s_libs %(dependencies)s)

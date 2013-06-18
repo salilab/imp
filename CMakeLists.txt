@@ -49,11 +49,42 @@ if(DOXYGEN_FOUND)
   imp_get_process_output("Doxygen version" doxygen_version ${PROJECT_BINARY_DIR} COMMAND ${DOXYGEN_EXECUTABLE} --version)
   if("${doxygen_version}" STREQUAL "${needed_doxygen_version}")
     message(STATUS "Doxygen is "${DOXYGEN_EXECUTABLE})
+    set(IMP_DOXYGEN_FOUND True CACHE INTERNAL "")
+    set(IMP_DOXYGEN_EXECUTABLE ${DOXYGEN_EXECUTABLE} CACHE INTERNAL "")
   else()
     message(STATUS "Wrong doxygen version at ${DOXYGEN_EXECUTABLE}. Found ${doxygen_version}, but needed ${needed_doxygen_version}")
-    set(DOXYGEN_FOUND False CACHE BOOL "Whether the doxygen executable has been found")
+    set(IMP_DOXYGEN_FOUND False CACHE INTERNAL "")
+    set(IMP_DOXYGEN_EXECUTABLE "not-found" CACHE INTERNAL "")
   endif()
 endif(DOXYGEN_FOUND)
+
+if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+  set(IMP_DOXYGEN_URL "http://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.4.linux.bin.tar.gz" CACHE INTERNAL "")
+endif()
+if ("${CMAKE_SYSTEM_NAME}" STREQUAL "MacOS")
+  set(IMP_DOXYGEN_URL "http://ftp.stack.nl/pub/users/dimitri/Doxygen-1.8.4.dmg" CACHE INTERNAL "")
+endif()
+
+if(NOT IMP_DOXYGEN_FOUND)
+  if(DEFINED IMP_DOXYGEN_URL)
+    set(IMP_FETCH_DOXYGEN True CACHE INTERNAL "")
+  endif()
+endif()
+
+if(IMP_FETCH_DOXYGEN)
+    include(ExternalProject)
+    message(STATUS "Downloading doxygen from ${IMP_DOXYGEN_URL}")
+    ExternalProject_Add( download_doxygen
+            SOURCE_DIR "${PROJECT_BINARY_DIR}/tools/doxygen"
+            URL ${IMP_DOXYGEN_URL}
+            CONFIGURE_COMMAND ${CMAKE_COMMAND} -E echo "configure"
+            BUILD_COMMAND ${CMAKE_COMMAND} -E echo "build"
+            INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "install"
+            )
+    set(IMP_DOXYGEN_FETCH download_doxygen CACHE INTERNAL "")
+    set(IMP_DOXYGEN_FOUND True CACHE INTERNAL "")
+    set(IMP_DOXYGEN_EXECUTABLE "${PROJECT_BINARY_DIR}/tools/doxygen/bin/doxygen" CACHE INTERNAL "")
+endif()
 
 if(IMP_STATIC)
   SET(IMP_LIB_TYPE STATIC)
@@ -280,26 +311,26 @@ imp_execute_process("setup_imppy" ${PROJECT_BINARY_DIR}
                     "--output=setup_environment.${SETUP_EXT}"
                     ${PATH_ARGS})
 
-if(DOXYGEN_FOUND)
+if(IMP_DOXYGEN_FOUND)
 
-file(GLOB docs ${PROJECT_SOURCE_DIR}/doc/*.dox
-               ${PROJECT_SOURCE_DIR}/doc/*.md)
+ file(GLOB docs ${PROJECT_SOURCE_DIR}/doc/*.dox
+   ${PROJECT_SOURCE_DIR}/doc/*.md)
 
-add_custom_target(IMP-doc ALL
-                  COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_doxygen.py
-                            --source=${PROJECT_SOURCE_DIR}
-                  COMMAND ${PROJECT_SOURCE_DIR}/tools/build/make_cross_refs.py
-                  COMMAND ${DOXYGEN_EXECUTABLE} doxygen/Doxyfile.html
-                  COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${PROJECT_BINARY_DIR}/doxygen/warnings.txt
-                  WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-                  DEPENDS ${IMP_DOC_DEPENDS} ${docs}
-                  COMMENT "Building documentation")
+  add_custom_target(IMP-doc ALL
+    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_doxygen.py
+    --source=${PROJECT_SOURCE_DIR}
+    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/make_cross_refs.py
+    COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/Doxyfile.html
+    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${PROJECT_BINARY_DIR}/doxygen/warnings.txt
+    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+    DEPENDS ${IMP_DOC_DEPENDS} ${docs} ${IMP_DOXYGEN_FETCH}
+    COMMENT "Building documentation")
 
-add_custom_target(IMP-doc-install
-                  COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_BINARY_DIR}/doc/html" "${CMAKE_INSTALL_FULL_DOCDIR}/html"
-                  DEPENDS "IMP-doc"
-                  COMMENT "Installing documentation to ${CMAKE_INSTALL_FULL_DOCDIR}/html")
-endif()
+  add_custom_target(IMP-doc-install
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_BINARY_DIR}/doc/html" "${CMAKE_INSTALL_FULL_DOCDIR}/html"
+    DEPENDS "IMP-doc"
+    COMMENT "Installing documentation to ${CMAKE_INSTALL_FULL_DOCDIR}/html")
+endif(IMP_DOXYGEN_FOUND)
 
 # Install headers
 install(FILES ${CMAKE_BINARY_DIR}/include/IMP.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
