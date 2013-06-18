@@ -57,8 +57,8 @@ ModelObjectsTemp DihedralSingletonScore::do_get_inputs(
     Dihedral ad(m, pi[i]);
     ret[5 * i + 0] = ad.get_particle(0);
     ret[5 * i + 1] = ad.get_particle(1);
-    ret[5 * i + 2] = ad.get_particle(1);
-    ret[5 * i + 3] = ad.get_particle(1);
+    ret[5 * i + 2] = ad.get_particle(2);
+    ret[5 * i + 3] = ad.get_particle(3);
     ret[5 * i + 4] = m->get_particle(pi[i]);
   }
   return ret;
