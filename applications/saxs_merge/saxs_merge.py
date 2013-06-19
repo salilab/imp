@@ -972,17 +972,36 @@ def setup_process(data,initvals, subs, maxpoints=-1):
             particles['sigma2'])
     return model, particles, functions, gp
 
-def get_initial_Rg(data):
-    fl, name = tempfile.mkstemp(text=True)
-    handle = os.fdopen(fl,'w')
-    for dat in zip(data['q'],data['I'],data['err']):
-        handle.write(' '.join(['%G' % i for i in dat]))
-        handle.write('\n')
-    handle.close()
-    profile = IMP.saxs.Profile(name)
-    Rg = profile.radius_of_gyration()
-    os.unlink(name)
-    return Rg
+def _get_guinier_fit_fixed(qs,Is,errs):
+    X=array([ones(len(qs)),qs**2]).transpose()
+    W=diagflat(errs/Is)
+    y=atleast_2d(log(Is)).transpose()
+    #weighted least squares estimator
+    #beta = (X^T W X )^(-1) X^T W y
+    XW=dot(X.transpose(),W)
+    beta = linalg.solve( dot(XW,X), dot(XW,y), sym_pos=True)
+    if beta[1,0]>0:
+        rg=0
+    else:
+        rg=sqrt(-3*beta[1,0])
+    izero = exp(beta[0,0])
+    return rg,izero
+
+def get_guinier_fit(data, end_q_rg=1.3):
+    qs,Is,errs = map(array, [data['q'],data['I'],data['err']])
+    #fit the whole range up to q_rg, take median values for robustness
+    cut=5 #drop first 5 points, and take at least 5 points to estimate
+    vals = []
+    for i in xrange(cut+5,len(qs)):
+        rg,izero = _get_guinier_fit_fixed(qs[cut:i],Is[cut:i],errs[cut:i])
+        if rg >0:
+            vals.append((rg,izero,qs[i-1]*rg))
+            if qs[i-1]*rg > end_q_rg:
+                break
+    vals=array(vals).transpose()
+    rg = median(vals[0])
+    izero = median(vals[1])
+    return rg,izero
 
 def set_defaults_mean(data, particles, mean_function):
     #set initial value for G to be a rough estimate of I(0)
@@ -1005,7 +1024,7 @@ def set_defaults_mean(data, particles, mean_function):
     else:
         particles['G'].set_nuisance_is_optimized(True)
         particles['Rg'].set_nuisance_is_optimized(True)
-        particles['Rg'].set_nuisance(get_initial_Rg(data))
+        particles['Rg'].set_nuisance(get_guinier_fit(data)[0])
         if mean_function == 'Simple':
             particles['d'].set_nuisance_is_optimized(False)
         else:
@@ -1577,13 +1596,13 @@ def rescale_curves(I0, I1, Sigma1, normal = False, offset = False):
         uso = dot(Su,I0)
         usj = dot(Su,J)
         jsj = dot(J.transpose(), Sj)
-        c = (M*osj+usu*osj-uso*usj)/(uso*jsj-usj*osj)
-        gamma = uso/(M+usu+c*usj)
+        c = float((M*osj+usu*osj-uso*usj)/(uso*jsj-usj*osj))
+        gamma = float(uso/(M+usu+c*usj))
         return gamma,c,mat
     elif normal:
         #normal without offset
         Si1 = linalg.cho_solve(Scho, I1).transpose()
-        gamma = dot(Si1,I0)/(dot(Si1,I1)+M)
+        gamma = float(dot(Si1,I0)/(dot(Si1,I1)+M))
         return gamma,0,mat
     elif not offset:
         #lognormal
@@ -1593,7 +1612,7 @@ def rescale_curves(I0, I1, Sigma1, normal = False, offset = False):
             raise ValueError, "negative entries in I1"
         li = log(I0/I1).transpose()
         Sij = linalg.cho_solve(Scho, J)
-        lg = dot(li,Sij)/dot(J.transpose(),Sij)
+        lg = float(dot(li,Sij)/dot(J.transpose(),Sij))
         gamma = exp(lg)
         return gamma,0,mat
     else:
@@ -1844,19 +1863,43 @@ def reorder_profiles(profiles):
     criterion is increasing I(0) at constant noise level
     """
     Izeros=[]
+    #fl=open(profiles[0].get_filename().split('/')[-2]+'.txt','w')
+    #fl.write("id name Izero mnoise Izero/mnoise Rg G\n")
     for i,p in enumerate(profiles):
-        gamma = p.get_gamma()
-        Izero = p.get_mean(qvalues=[0],colwise=True)['I'][0]
-        mnoise = median(p.get_data(filter='agood'))
+        #gamma = p.get_gamma()
+        data = p.get_data(filter='agood',colwise=True)
+        Rg,Izero = get_guinier_fit(data)
+        mnoise = median(data['err'])
         Izeros.append((Izero/mnoise,i))
+        """
+        fl.write("%d\t" % i)
+        fl.write("%s\t" % p.get_filename().split('/')[-1])
+        fl.write("%f\t" % (Izero/gamma))
+        fl.write("%f\t" % (mnoise/gamma))
+        fl.write("%f\t" % (Izero/mnoise))
+        fl.write("%f\n" % p.get_params()['Rg'])
+        """
     Izeros.sort()
     newprofs = [ profiles[i] for q,i in Izeros ]
     return newprofs
 
-def remove_redundant(profiles):
+def remove_redundant(profiles, verbose=0):
     if len(profiles) == 1:
         return profiles
     data = [i.get_data(filter='dgood',colwise=True) for i in profiles]
+    #remove profile if it has no data
+    tbd=[]
+    for i,d in enumerate(data):
+        if d.keys() == []:
+            tbd.append(i)
+    tbd.reverse()
+    for i in tbd:
+        profiles.pop(i)
+        data.pop(i)
+        if verbose>0:
+            print "    removed profile %d because it is redundant" % i
+    if len(profiles) == 1:
+        return profiles
     #map noise levels to profiles
     noiselevels = [(median(p['err']),i) for i,p in enumerate(data)]
     noiselevels.sort()
@@ -1952,11 +1995,11 @@ def cleanup(profiles, args):
         if args.remove_noisy:
             data = p.get_data(filter="agood", colwise=True)
             med = median(data['err'])
-            sd = std(data['err'])
+            mad = median(abs(data['err']-med))
             ids = []
             for datum in p.get_data(filter="agood"):
                 id,q,I,err = datum[:4]
-                if err > med+2*sd:
+                if err > med+2*mad:
                     p.set_flag(id,'agood',False)
                     p.set_flag(id, 'apvalue', -1)
         qvals = p.get_data(filter="agood", colwise=True)['q']
@@ -2187,7 +2230,7 @@ def classification(profiles, args):
     if args.remove_redundant:
         if verbose >0:
             print "   Removing redundant data"
-        profiles = remove_redundant(profiles)
+        profiles = remove_redundant(profiles,verbose=verbose)
     return profiles, args
 
 def merging(profiles, args):
