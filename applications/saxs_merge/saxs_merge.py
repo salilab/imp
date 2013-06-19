@@ -1999,7 +1999,7 @@ def cleanup(profiles, args):
             ids = []
             for datum in p.get_data(filter="agood"):
                 id,q,I,err = datum[:4]
-                if err > med+2*mad:
+                if err > med+10*mad:
                     p.set_flag(id,'agood',False)
                     p.set_flag(id, 'apvalue', -1)
         qvals = p.get_data(filter="agood", colwise=True)['q']
