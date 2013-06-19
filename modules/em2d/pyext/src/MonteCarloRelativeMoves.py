@@ -178,6 +178,7 @@ class MonteCarloRelativeMoves:
                 self.set_relative_movers(tr, rot)
                 for m in self.movers:
                     m.propose()
+                    m.accept()
                 mc.add_movers( self.movers)
                 mc.set_kt(T)
                 log.debug("Optimizing for %s iterations ...", iters)
