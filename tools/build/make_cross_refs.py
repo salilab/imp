@@ -207,8 +207,8 @@ def main():
         module = os.path.split(os.path.split(os.path.split(f)[0])[0])[1]
         try:
             et= ET.parse(f)
-        except ET.ParseError as e:
-            print >> sys.stderr, "ERROR parsing", f, e
+        except ET.ParseError:
+            print >> sys.stderr, "ERROR parsing", f
         fname=os.path.basename(f)
         if fname.startswith("namespaceIMP"):
             if verbose:
