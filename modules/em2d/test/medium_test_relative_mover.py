@@ -133,7 +133,7 @@ class Tests(IMP.test.TestCase):
                     found = True
             self.assertTrue(found, msg= "the proposed move is not " \
                     "in the relative solutions")
-
+            mv.accept()
 #            os.remove(fn_proposed)
 
 if __name__ == '__main__':
