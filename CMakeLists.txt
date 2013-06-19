@@ -67,7 +67,11 @@ endif()
 
 if(NOT IMP_DOXYGEN_FOUND)
   if(DEFINED IMP_DOXYGEN_URL)
-    set(IMP_FETCH_DOXYGEN True CACHE INTERNAL "")
+    file(DOWNLOAD "http://ftp.stack.nl/" ${PROJECT_BINARY_DIR}/internet_check STATUS download_status)
+    list(GET download_status 0 download_success)
+    if("${download_success}" STREQUAL "0")
+      set(IMP_FETCH_DOXYGEN True CACHE INTERNAL "")
+    endif()
   endif()
 endif()
 
