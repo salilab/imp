@@ -2227,6 +2227,19 @@ def classification(profiles, args):
         create_intervals_from_data(p, 'drefname')
         create_intervals_from_data(p, 'dselfref')
         create_intervals_from_data(p, 'dgood')
+    #remove unused profiles
+    tbd=[]
+    for i,p in enumerate(profiles):
+        if p.get_data(filter='dgood',colwise=True).keys() == []:
+            tbd.append(i)
+    tbd.reverse()
+    for i in tbd:
+        name = profiles[i].get_filename()
+        profiles.pop(i)
+        if verbose>1:
+            print "   All points of profile %d (%s) were discarded" % \
+                    (i,name)
+    #remove redundant data if required
     if args.remove_redundant:
         if verbose >0:
             print "   Removing redundant data"
