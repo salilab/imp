@@ -21,6 +21,7 @@ IMP.base.setup_from_argv(sys.argv, "Dock several proteins using excluded volume 
 
 # remove internal checks
 IMP.base.set_check_level(IMP.base.USAGE)
+IMP.base.set_log_level(IMP.base.SILENT)
 pdbs=[IMP.get_example_path('dock_data/chainf.pdb'),
       IMP.get_example_path('dock_data/chaind.pdb')]
 xlinks=[
@@ -68,10 +69,10 @@ def setup_radii(chains):
             dres.set_radius(rg)
 
 
-def add_excluded_volume(chains):
+def add_excluded_volume(m, chains):
     """add excluded volume score on the coarse grained c-alpha model
     residues are represented by beads with conveniently defined excluded volume radius"""
-    rs = IMP.RestraintSet('excluded_volume')
+    rs = IMP.RestraintSet(m, 1.0, 'excluded_volume')
     kappa_=0.1
     lsc= IMP.container.ListSingletonContainer(m)
     IMP.atom.get_by_type
@@ -213,8 +214,7 @@ def add_restraints():
     return restraints,restraints_map
 
 def setup_md(temp=300.0, tau=0.01):
-    md=IMP.atom.MolecularDynamics()
-    md.set_model(m)
+    md=IMP.atom.MolecularDynamics(m)
     md.assign_velocities(temp)
     md.set_time_step(1.0)
     st = IMP.atom.LangevinThermostatOptimizerState(md.get_simulation_particles(), temp,tau)
@@ -319,7 +319,7 @@ init_pdb("best")
 chains,chain_id=read_pdbs("pdb.list")
 write_pdb("best")
 setup_radii(chains)
-add_excluded_volume(chains)
+add_excluded_volume(m, chains)
 restraints,restraints_map=add_restraints()
 shuffle_configuration(chains,300.0)
 
