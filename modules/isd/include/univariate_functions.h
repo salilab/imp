@@ -370,6 +370,15 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
             Rg_val_ = Scale(Rg_).get_scale();
             d_val_ = Scale(d_).get_scale();
             s_val_ = Scale(s_).get_scale();
+            if (d_val_ == s_val_) {
+                IMP_LOG_TERSE("Warning: d==s !" << std::endl);
+                if (s_val_ > 0.001) {
+                    s_val_ -= 0.001;
+                } else {
+                    d_val_ += 0.001;
+                }
+                //IMP_THROW("d == s ! ", ModelException);
+            }
             A_val_ = Nuisance(A_).get_nuisance();
             q1_param_ = std::sqrt((d_val_-s_val_)*(3-s_val_)/2.);
             D_param_ = G_val_ *std::exp(-IMP::square(q1_param_)/(3-s_val_));
