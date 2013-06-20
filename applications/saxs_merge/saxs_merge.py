@@ -2014,11 +2014,10 @@ def cleanup(profiles, args):
                     " on cleanup" % os.path.basename(p.filename)
                 continue
             med = median(data['err'])
-            mad = median(abs(data['err']-med))
             ids = []
             for datum in p.get_data(filter="agood"):
                 id,q,I,err = datum[:4]
-                if err > med+10*mad:
+                if err > 20*med:
                     p.set_flag(id,'agood',False)
                     p.set_flag(id, 'apvalue', -1)
         data = p.get_data(filter="agood", colwise=True)
