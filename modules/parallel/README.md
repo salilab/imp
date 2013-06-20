@@ -8,20 +8,20 @@ moved to another slave.
 
 To use the module, first create a Manager object. Add one or
 more slaves to the Manager using its
-\link Manager::add_slave() add_slave()\endlink method (example slaves are
+\link IMP::parallel::Manager.add_slave() add_slave()\endlink method (example slaves are
 LocalSlave, which simply starts another IMP process on the
 same machine as the master, and SGEQsubSlaveArray, which starts
-an array of multiple slaves on a Sun GridEngine cluster). Next, call
-Manager::get_context() method, which creates and returns a new Context object.
-Add tasks to the Context with the Context::add_task() method (each task is
+an array of multiple slaves on a Sun GridEngine cluster). Next, call the
+Manager.get_context() method, which creates and returns a new Context object.
+Add tasks to the Context with the Context.add_task() method (each task is
 simply a Python function or other callable object). Finally, call
-Context::get_results_unordered() to
+Context.get_results_unordered() to
 send the tasks out to the slaves (a slave only runs a single task at a time;
 if there are more tasks than slaves later tasks will be queued until a slave
 is done with an earlier task). This method returns the results from each task
 as it completes.
 
-Setup in IMP is often expensive, and thus the Manager::get_context() method
+Setup in IMP is often expensive, and thus the Manager.get_context() method
 allows you to specify a Python function or other callable object to do any
 setup for the tasks. This function will be run on the slave before any tasks
 from that context are started (the return values from this function are
@@ -42,7 +42,7 @@ solutions.
    containing <tt>qsub</tt> to the PATH, or remove the setting of PATH entirely.
 
  - <b>The master process 'hangs' and does not do anything when
-   Context::get_results_unordered() is called.</b>\n
+   Context.get_results_unordered() is called.</b>\n
    Usually this is because no slaves have successfully started up. Check the
    slave output files to determine what the problem is.
 
