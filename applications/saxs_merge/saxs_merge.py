@@ -715,8 +715,9 @@ Merging
             "In that case extrapolation flags are ignored, and extrapolation "
             "is performed when the data file's q values fall outside of the "
             "range of accepted data points. Default is NUM=200 points.")
-    group.add_option('--lambdamin', type="float", default=0.005, metavar="MIN",
-            help="lower bound for lambda parameter in steps 2 and 5")
+    group.add_option('--lambdamin', type="float", default=0.025, metavar="MIN",
+            help="lower bound for lambda parameter in steps 2 and 5 (default"
+            " 0.025)")
     #cleanup
     group = optparse.OptionGroup(parser, title="Cleanup (Step 1)",
                               description="Discard or keep SAXS curves' "
@@ -1454,7 +1455,7 @@ def bayes_factor(data, initvals, verbose, mean_func, maxpoints):
             MP - Np/2.*log(2*pi) + logdet)
 
 def find_fit(data, initvals, verbose, model_comp=False, model_comp_maxpoints=-1,
-        mean_function='Simple', lambdamin=0.005):
+        mean_function='Simple', lambdamin=0.025):
     #if verbose >2:
     #    print " %d:%d" % (subs,nsteps),
     #    sys.stdout.flush()
@@ -1583,10 +1584,24 @@ def rescale_curves(I0, I1, Sigma1, normal = False, offset = False):
             Scho = linalg.cho_factor(Sigma2)
             mat = 2
         except linalg.LinAlgError:
-            Sigma3 = zeros(Sigma1.shape)
-            Sigma3[diag_indices_from(Sigma3)] = Sigma1.diagonal()
-            Scho = linalg.cho_factor(Sigma3)
-            mat = 3
+            try:
+                Sigma3 = zeros(Sigma1.shape)
+                Sigma3[diag_indices_from(Sigma3)] = Sigma1.diagonal()
+                Scho = linalg.cho_factor(Sigma3)
+                mat = 3
+            except linalg.LinAlgError:
+                try:
+                    Sigma4 = zeros(Sigma1.shape)
+                    Sigma4[diag_indices_from(Sigma4)] = Sigma1.diagonal()
+                    Sigma4 += eye(M)*max(Sigma1.diagonal())*0.05
+                    Scho = linalg.cho_factor(Sigma4)
+                    mat = 4
+                except linalg.LinAlgError:
+                    Sigma5 = zeros(Sigma1.shape)
+                    Sigma5[diag_indices_from(Sigma5)] = abs(Sigma1.diagonal())
+                    Scho = linalg.cho_factor(Sigma5)
+                    mat = 5
+
     if normal and offset:
         #normal with offset
         Su = linalg.cho_solve(Scho, I1).transpose()
@@ -1898,7 +1913,7 @@ def remove_redundant(profiles, verbose=0):
         data.pop(i)
         if verbose>0:
             print "    removed profile %d because it is redundant" % i
-    if len(profiles) == 1:
+    if len(profiles) <= 1:
         return profiles
     #map noise levels to profiles
     noiselevels = [(median(p['err']),i) for i,p in enumerate(data)]
@@ -1932,7 +1947,7 @@ def remove_redundant(profiles, verbose=0):
                 prof.set_flag(dat['id'][i],'dpvalue', -1)
     #apply same alg to remaining profiles
     pnew = [p for i,p in enumerate(profiles) if i != n2p[0] ]
-    pnew = remove_redundant(pnew)
+    pnew = remove_redundant(pnew, verbose)
     pnew.insert(n2p[0], profiles[n2p[0]])
     return pnew
 
@@ -1969,7 +1984,7 @@ def cleanup(profiles, args):
     good_profiles=[]
     for p in profiles:
         if verbose > 1:
-            print "   ",p.filename,
+            print "   ",os.path.basename(p.filename),
         N = p.get_Nreps()
         p.new_flag('agood',bool)
         p.new_flag('apvalue',float)
@@ -1994,6 +2009,10 @@ def cleanup(profiles, args):
         #compute error average and discard 2*sigma points if requested
         if args.remove_noisy:
             data = p.get_data(filter="agood", colwise=True)
+            if len(data)==0:
+                print "Warning: all points in file %s have been discarded"\
+                    " on cleanup" % os.path.basename(p.filename)
+                continue
             med = median(data['err'])
             mad = median(abs(data['err']-med))
             ids = []
@@ -2002,13 +2021,15 @@ def cleanup(profiles, args):
                 if err > med+10*mad:
                     p.set_flag(id,'agood',False)
                     p.set_flag(id, 'apvalue', -1)
-        qvals = p.get_data(filter="agood", colwise=True)['q']
-        if len(qvals)==0:
+        data = p.get_data(filter="agood", colwise=True)
+        if data=={}:
             print "Warning: all points in file %s have been discarded"\
-                " on cleanup" % p.filename
+                " on cleanup" % os.path.basename(p.filename)
             continue
+        qvals = data['q']
         if verbose > 2:
-            print "\tqmin = %.3f\tqmax = %.3f" % (qvals[0], qvals[-1])
+            print "\tqmin = %.3f\tqmax = %.3f\tM = %d" % \
+                    (qvals[0], qvals[-1], M)
         elif verbose == 2:
             print ""
         good_profiles.append(p)
@@ -2031,7 +2052,7 @@ def fitting(profiles, args):
         print "2. fitting"
     for p in profiles:
         if verbose > 1:
-            print "   ",p.filename,
+            print "   ",os.path.basename(p.filename),
         try:
             data = p.get_data(filter='agood',colwise=True, maxpoints=maxpointsF)
         except KeyError:
@@ -2165,7 +2186,7 @@ def rescaling(profiles, args):
         p.set_gamma(gamma)
         p.set_offset(c)
         if verbose >1:
-            print "   ",p.filename,"   gamma = %.3G" % gamma,
+            print "   ",os.path.basename(p.filename),"   gamma = %.3G" % gamma,
             if use_offset:
                 print "   offset = %.3G" % c,
             print " (%d)" % mat
@@ -2199,7 +2220,7 @@ def classification(profiles, args):
     for i in xrange(len(profiles)):
         p = profiles[i]
         if verbose >1:
-            print "   ",p.filename
+            print "   ",os.path.basename(p.filename)
         p.new_flag('drefnum',int)
         p.new_flag('drefname',str)
         p.new_flag('dgood',bool)
@@ -2234,7 +2255,7 @@ def classification(profiles, args):
             tbd.append(i)
     tbd.reverse()
     for i in tbd:
-        name = profiles[i].get_filename()
+        name = os.path.basename(profiles[i].get_filename())
         profiles.pop(i)
         if verbose>1:
             print "   All points of profile %d (%s) were discarded" % \
@@ -2278,7 +2299,7 @@ def merging(profiles, args):
     #loop over profiles and add data
     for i,p in enumerate(profiles):
         if verbose >1:
-            print "    ",p.filename
+            print "    ",os.path.basename(p.filename)
         #get data and keep only relevant flags
         data = p.get_data(filter='dgood',colwise=True)
         if data == {}: #no good datapoints
@@ -2358,7 +2379,7 @@ def write_data(merge, profiles, args):
             print "   individual profiles"
         for i in profiles:
             if args.verbose > 2:
-                print "    %s" % (i.get_filename())
+                print "    %s" % os.path.basename(i.get_filename())
             write_individual_profile(i, qvals, args)
     #merge profile
     if args.stop == 'merging':
