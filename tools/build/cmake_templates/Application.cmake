@@ -46,6 +46,10 @@ set(IMP_%(NAME)s_DOC "IMP.%(name)s-doc" CACHE INTERNAL "" FORCE)
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} ${IMP_%(NAME)s_DOC} CACHE INTERNAL "" FORCE)
 endif(IMP_DOXYGEN_FOUND)
 
+add_custom_target(IMP.%(name)s DEPENDS
+  %(module_deps)s
+  ${bins})
+
 elseif(${status} EQUAL 1)
 message("Application %(name)s disabled")
 else()

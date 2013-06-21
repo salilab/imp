@@ -194,6 +194,7 @@ def setup_application(options, name, ordered):
     values["modules"]="\n".join(modules)
     values["tags"]="\n".join(["${IMP_%s_DOC}"%m.upper() for m in all_modules])
     values["dependencies"]="\n".join(dependencies)
+    values["module_deps"] = "\n".join("IMP.%s"%m for m in all_modules)
     exes= tools.get_application_executables(path)
     exedirs = list(set(sum([x[1] for x in exes], [])))
     exedirs.sort()
@@ -215,9 +216,7 @@ def setup_application(options, name, ordered):
         values["cpps"]= "\n".join(["${PROJECT_SOURCE_DIR}/%s" \
                                   % tools.to_cmake_path(c) for c in cpps])
         bins.append(bintmpl%values)
-    values["bins"] = "\n".join(bins) + """
-add_custom_target("IMP.%s" ALL DEPENDS ${bins})
-""" % values["name"]
+    values["bins"] = "\n".join(bins)
     values["includepath"] = get_dep_merged(all_modules, "include_path", ordered)+" "+localincludes
     values["libpath"] = get_dep_merged(all_modules, "link_path", ordered)
     values["swigpath"] = get_dep_merged(all_modules, "swig_path", ordered)
