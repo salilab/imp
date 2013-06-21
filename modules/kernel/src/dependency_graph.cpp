@@ -393,7 +393,7 @@ void set_score_state_update_order(const DependencyGraph &dg,
         cur.push_back(dynamic_cast<ScoreState *>(s));
       }
     }
-    IMP_INTERNAL_CHECK(!cur.empty(), "There must be something");
+    IMP_INTERNAL_CHECK(!cur.empty(), "I think the score states form a loop");
     for (unsigned int i = 0; i < cur.size(); ++i) {
       cur[i]->order_ = round;
     }
