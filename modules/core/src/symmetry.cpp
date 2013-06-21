@@ -33,7 +33,7 @@ void TransformationSymmetry::apply_index(Model *m, ParticleIndex pi) const {
     // We do the non-lazy version in order as it is hard
     // for the dependency checker to get the dependencies right
     // Is it really? We should check this.
-    rb.set_reference_frame(algebra::ReferenceFrame3D(
+    rb.set_reference_frame_lazy(algebra::ReferenceFrame3D(
         t_ * rrb.get_reference_frame().get_transformation_to()));
   } else {
     XYZ rd(Reference(m, pi).get_reference_particle());
@@ -46,9 +46,6 @@ ModelObjectsTemp TransformationSymmetry::do_get_inputs(
     Model *m, const ParticleIndexes &pis) const {
   ModelObjectsTemp ret = IMP::kernel::get_particles(m, pis);
   for (unsigned int i = 0; i < pis.size(); ++i) {
-    if (RigidBody::particle_is_instance(m, pis[i])) {
-      ret += RigidBody(m, pis[i]).get_members();
-    }
     ret.push_back(Reference(m, pis[i]).get_reference_particle());
   }
   return ret;
