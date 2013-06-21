@@ -916,6 +916,7 @@ class DominoModel:
             Write a file with a configuration for the model (configuration
             here means a configuration in DOMINO)
             @param n Index of the configuration desired.
+            @param fn_pdb
         """
         if not self.configuration_sampling_done:
             raise ValueError("DominoModel: sampling not done")
