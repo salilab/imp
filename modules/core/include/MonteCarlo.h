@@ -87,6 +87,21 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
   unsigned int get_number_of_upward_steps() const {
     return stat_upward_steps_taken_;
   }
+  //! Get number of proposed moves
+  unsigned int get_number_of_proposed_steps() const {
+    return stat_forward_steps_taken_ + stat_upward_steps_taken_
+      + stat_num_failures_;
+  }
+  //! Get number of accepted moves
+  unsigned int get_number_of_accepted_steps() const {
+    return stat_forward_steps_taken_ + stat_upward_steps_taken_;
+  }
+  void reset_statistics() {
+    stat_forward_steps_taken_ = 0;
+    stat_upward_steps_taken_ = 0;
+    stat_num_failures_ = 0;
+  }
+
   /** @} */
 
   /** Computations can be acceletating by throwing out
