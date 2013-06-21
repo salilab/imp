@@ -59,14 +59,16 @@ if(DOXYGEN_FOUND)
 endif(DOXYGEN_FOUND)
 
 if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
-  set(IMP_DOXYGEN_URL "http://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.4.linux.bin.tar.gz" CACHE INTERNAL "")
+  set(doxygen_url "http://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.4.linux.bin.tar.gz" CACHE INTERNAL "")
+  set(doxygen_md5 7c3f656a198788bf0dd0936f8e525785)
 endif()
 if ("${CMAKE_SYSTEM_NAME}" STREQUAL "MacOS")
-  set(IMP_DOXYGEN_URL "http://ftp.stack.nl/pub/users/dimitri/Doxygen-1.8.4.dmg" CACHE INTERNAL "")
+  set(doxygen_url "http://ftp.stack.nl/pub/users/dimitri/Doxygen-1.8.4.dmg" CACHE INTERNAL "")
+  set(doxygen_md5 037b5d976c147caa0617781594cb189a)
 endif()
 
 if(NOT IMP_DOXYGEN_FOUND)
-  if(DEFINED IMP_DOXYGEN_URL)
+  if(DEFINED doxygen_url)
     file(DOWNLOAD "http://ftp.stack.nl/" ${PROJECT_BINARY_DIR}/internet_check STATUS download_status)
     list(GET download_status 0 download_success)
     if("${download_success}" STREQUAL "0")
@@ -80,7 +82,8 @@ if(IMP_FETCH_DOXYGEN)
     message(STATUS "Downloading doxygen from ${IMP_DOXYGEN_URL}")
     ExternalProject_Add( download_doxygen
             SOURCE_DIR "${PROJECT_BINARY_DIR}/tools/doxygen"
-            URL ${IMP_DOXYGEN_URL}
+            URL ${doxygen_url}
+            URL_MD5 ${doxygen_md5}
             CONFIGURE_COMMAND ${CMAKE_COMMAND} -E echo "configure"
             BUILD_COMMAND ${CMAKE_COMMAND} -E echo "build"
             INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "install"
