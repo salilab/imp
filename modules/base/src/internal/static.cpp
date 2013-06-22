@@ -172,12 +172,25 @@ AddIntFlag clf(
     "check_level",
     "The level of checking to use: 0 for NONE, 1 for USAGE and 2 for ALL.",
     &check_level);
+#else
+boost::int64_t junk_check = IMP_NONE;
+AddIntFlag clf(
+    "check_level",
+    "Checks are disabled, flag is for compatibility.",
+    &junk_check);
+
 #endif
 #if IMP_HAS_LOG != IMP_SILENT
 AddIntFlag llf(
     "log_level",
     "The log level, 0 for NONE, 1 for WARN, 2 for TERSE, 3 for VERBOSE",
     &log_level);
+#else
+boost::int64_t junk_log = IMP_SILENT;
+AddIntFlag llf(
+    "log_level",
+    "Logging is disabled, flag is for compatibility.",
+    &junk_log);
 #endif
 
 bool cpu_profile = false;
