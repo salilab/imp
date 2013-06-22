@@ -194,7 +194,7 @@ def setup_application(options, name, ordered):
     values["modules"]="\n".join(modules)
     values["tags"]="\n".join(["${IMP_%s_DOC}"%m.upper() for m in all_modules])
     values["dependencies"]="\n".join(dependencies)
-    values["module_deps"] = "\n".join("IMP.%s"%m for m in all_modules)
+    values["module_deps"] = "\n".join("${IMP_%s}"%m.upper() for m in all_modules)
     exes= tools.get_application_executables(path)
     exedirs = list(set(sum([x[1] for x in exes], [])))
     exedirs.sort()

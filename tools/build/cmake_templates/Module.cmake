@@ -49,11 +49,13 @@ if(${status} EQUAL 0)
   list(APPEND imp_%(name)s_libs %(modules)s)
   list(APPEND imp_%(name)s_libs %(dependencies)s)
   %(subdirs)s
+  set(IMP_%(NAME)s "IMP.%(name)s" CACHE INTERNAL "" FORCE)
 else()
 
   # make sure it is empty
   set(IMP_%(NAME)s_DOC "" CACHE INTERNAL "" FORCE)
   set(IMP_%(NAME)s_PYTHON "" CACHE INTERNAL "" FORCE)
+  set(IMP_%(NAME)s "" CACHE INTERNAL "" FORCE)
 
   if(${status} EQUAL 1)
     message("Module IMP.%(name)s disabled")
