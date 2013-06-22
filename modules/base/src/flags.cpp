@@ -195,7 +195,11 @@ Strings setup_from_argv_internal(int argc, char **argv, std::string description,
       exit(0);
     }
     if (!allow_unknown) {
-      if ((num_positional == 0 && !positional.empty()) ||
+      std::vector<std::string> unreq =
+        boost::program_options::collect_unrecognized(parsed.options,
+                        boost::program_options::exclude_positional);
+
+      if (!unreq.empty() || (num_positional == 0 && !positional.empty()) ||
           (num_positional > 0 &&
            positional.size() != static_cast<unsigned int>(num_positional)) ||
           (num_positional < 0 &&
