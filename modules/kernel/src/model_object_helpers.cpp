@@ -67,7 +67,6 @@ ModelObjectsTemp ParticleOutputs::do_get_outputs(
 ScoreStatesTemp get_required_score_states(const ModelObjectsTemp &mos,
                                           ScoreStatesTemp exclude) {
   if (mos.empty()) return ScoreStatesTemp();
-  Model *m = mos[0]->get_model();
   ScoreStatesTemp ret;
   for (unsigned int i = 0; i < mos.size(); ++i) {
     ret += mos[i]->get_required_score_states();
