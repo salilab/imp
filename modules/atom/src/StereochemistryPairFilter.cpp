@@ -23,7 +23,7 @@ int StereochemistryPairFilter::get_value_index(
 }
 
 ModelObjectsTemp StereochemistryPairFilter::do_get_inputs(
-    Model *m, const ParticleIndexes &pis) const {
+    Model *, const ParticleIndexes &) const {
   // evaluate doesn't actually read any particles
   return ModelObjectsTemp();
 }
