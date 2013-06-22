@@ -11,7 +11,7 @@
 #include <IMP/core/XYZR.h>
 #include <IMP/core/SphereDistancePairScore.h>
 #include <IMP/core/GridClosePairsFinder.h>
-#include <boost/range/algorithm/set_algorithm.hpp>
+#include <algorithm>
 #include <IMP/base/flags.h>
 #include <IMP/test/test_macros.h>
 
@@ -77,7 +77,8 @@ int main(int argc, char *argv[]) {
   std::sort(mcp.begin(), mcp.end());
   std::cout << "Lists are " << gcp << " and " << mcp << std::endl;
   IMP::kernel::ParticleIndexPairs out;
-  boost::set_intersection(gcp, mcp, std::back_inserter(out));
+  std::set_intersection(gcp.begin(), gcp.end(), mcp.begin(), mcp.end(),
+                        std::back_inserter(out));
   IMP_TEST_EQUAL(out.size(), mcp.size());
   IMP_TEST_EQUAL(out.size(), gcp.size());
   return 0;
