@@ -169,6 +169,7 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
   virtual ParticleIndexPairs get_close_pairs(Model *m,
                                              const ParticleIndexes &pc) const
     IMP_OVERRIDE {
+    IMP_OBJECT_LOG;
     if (pc.empty()) return ParticleIndexPairs();
     Index index = get_index(m, pc);
     return get_close_pairs_internal(m, index, index, true);
@@ -177,6 +178,7 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
                                              const ParticleIndexes &pca,
                                              const ParticleIndexes &pcb) const
     IMP_OVERRIDE {
+    IMP_OBJECT_LOG;
     if (pca.empty() || pcb.empty()) return ParticleIndexPairs();
     Index indexa = get_index(m, pca);
     Index indexb = get_index(m, pcb);
