@@ -29,7 +29,7 @@ IMPATOM_BEGIN_NAMESPACE
     \code
     Selection(hierarchy=h, molecule="myprotein", terminus=Selection.C)
     Selection(hierarchy=h, molecule="myprotein", residue_index=133)
-    Selection(hierarchy=h, molecule="myprotein", residue_indexes=[(133,134)])
+    Selection(hierarchy=h, molecule="myprotein", residue_indexes=range(133,138))
     \endcode
     each get the C-terminus of the protein "myprotein" (assuming the last
     residue index is 133).
