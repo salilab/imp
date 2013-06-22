@@ -198,14 +198,19 @@ Strings setup_from_argv_internal(int argc, char **argv, std::string description,
       std::vector<std::string> unreq =
         boost::program_options::collect_unrecognized(parsed.options,
                         boost::program_options::exclude_positional);
-
-      if (!unreq.empty() || (num_positional == 0 && !positional.empty()) ||
+      if (!unreq.empty()) {
+        std::ostringstream oss;
+        oss << "Unknown options: "
+            << Strings(unreq.begin(), unreq.end());
+        throw IMP::base::UsageException(oss.str().c_str());
+      }
+      if ((num_positional == 0 && !positional.empty()) ||
           (num_positional > 0 &&
            positional.size() != static_cast<unsigned int>(num_positional)) ||
           (num_positional < 0 &&
            positional.size() <
-               static_cast<unsigned int>(std::abs(num_positional)))) {
-        throw IMP::base::UsageException("Bad arguments");
+           static_cast<unsigned int>(std::abs(num_positional)))) {
+        throw IMP::base::UsageException("Wrong number of positional arguments");
       }
     }
 
@@ -229,11 +234,10 @@ Strings setup_from_argv_internal(int argc, char **argv, std::string description,
     } else {
       return Strings(positional.begin(), positional.end());
     }
-  }
-  catch (...) {
-    std::cerr << "Error parsing arguments" << std::endl;
+  } catch (const std::runtime_error &e) {
+    std::cerr << "Error parsing arguments: " << e.what() << std::endl;
     write_help(std::cerr);
-    throw IMP::base::UsageException("Bad arguments");
+    throw IMP::base::UsageException(e.what());
   }
 }
 }
