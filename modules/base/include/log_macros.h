@@ -199,10 +199,10 @@
   }
 #endif
 
-#define IMP_ERROR(expr)                           \
-  {                                               \
-    using IMP::base::internal::log::operator<< ;  \
-    LOG4CXX_ERROR(IMP::base::get_logger(), expr); \
+#define IMP_ERROR(expr)                                         \
+  {                                                             \
+    using IMP::base::internal::log::operator<< ;                \
+    LOG4CXX_ERROR(IMP::base::get_logger(), expr << std::endl);  \
   }
 
 #else  // log4cxx
