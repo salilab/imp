@@ -26,13 +26,14 @@ class LinearLowerBound : public Score {
   template <unsigned int D>
   double get_score(Model *, const base::Array<D, ParticleIndex> &,
                    double distance) const {
-    IMP_USAGE_CHECK(distance <= 0, "It is trivially 0.");
+    if (distance >= 0) return 0;
     return -k_ * distance;
   }
   template <unsigned int D>
   DerivativePair get_score_and_derivative(Model *,
                                           const base::Array<D, ParticleIndex> &,
                                           double distance) const {
+    if (distance >= 0) return DerivativePair(0,0);
     return DerivativePair(-k_ * distance, -k_);
   }
   template <unsigned int D>
