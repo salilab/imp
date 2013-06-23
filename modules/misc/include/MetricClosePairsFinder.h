@@ -32,7 +32,11 @@ IMPMISC_BEGIN_NAMESPACE
 
     The algorithm works by building an index used `sqrt(n)` of the `n` input
     particles, assigning each particle to a bucked based on the closest index
-    particle, and then checking for close pairs in buckets such that .
+    particle, and then checking for close pairs in buckets such that they can
+    be close enough.
+
+    If we need something more involved, we can try
+    [this paper](http://dimitris-agrafiotis.com/Papers/ci034150f.pdf).
  */
 template <class LowerBound, class UpperBound>
 class MetricClosePairsFinder : public core::ClosePairsFinder {
