@@ -31,7 +31,8 @@ core::MonteCarloMover *create_serial_mover(const ParticlesTemp &ps) {
   core::MonteCarloMovers movers;
   for (unsigned int i = 0; i < ps.size(); ++i) {
     double scale = core::XYZR(ps[i]).get_radius();
-    movers.push_back(new core::BallMover(ParticlesTemp(1, ps[i]), scale * 2));
+    movers.push_back(new core::BallMover(ps[i]->get_model(),
+                                         ps[i]->get_index(), scale * 2));
   }
   IMP_NEW(core::SerialMover, sm, (get_as<core::MonteCarloMoversTemp>(movers)));
   return sm.release();
