@@ -84,12 +84,13 @@ def add_excluded_volume(m, chains):
     restraints['excluded_volume']=rs
 
 
-def setup_move_them_all_MonteCarlo_internal(chains,mc_dx=0.3,mc_dang=0.1,mc_kt=1.0):
+def setup_move_them_all_MonteCarlo_internal(chains,scoring_function,
+                                            mc_dx=0.3,mc_dang=0.1,mc_kt=1.0):
     """setup rigid body monte carlo move set
     mc_dx is the traslation move
     mc_dang is the rotation angle"""
     mc=IMP.core.MonteCarlo(m)
-
+    mc.set_scoring_function(scoring_function)
     mc.set_return_best(False)
     mc.set_kt(10)
     for c in chains:
@@ -99,7 +100,8 @@ def setup_move_them_all_MonteCarlo_internal(chains,mc_dx=0.3,mc_dang=0.1,mc_kt=1
         mc.add_mover(mv)
     return mc
 
-def setup_move_them_all_MonteCarlo_external(connected_chain_list,rb_ext_list=[],
+def setup_move_them_all_MonteCarlo_external(connected_chain_list,scoring_function,
+                                            rb_ext_list=[],
                                             mc_dx=0.3,mc_dang=0.1,mc_kt=1.0,return_best=False):
     """setup rigid body monte carlo move set
     mc_dx is the traslation move
@@ -112,6 +114,7 @@ def setup_move_them_all_MonteCarlo_external(connected_chain_list,rb_ext_list=[],
     rb_ext_list=[]
 
     mc=IMP.core.MonteCarlo(m)
+    mc.set_scoring_function(scoring_function)
     mc.set_return_best(return_best)
     mc.set_kt(mc_kt)
 
@@ -132,7 +135,8 @@ def setup_move_them_all_MonteCarlo_external(connected_chain_list,rb_ext_list=[],
         mc.add_mover(mv)
     return mc,rb_ext_list
 
-def setup_move_them_all_MonteCarlo_internal_2(chains,rb_ext_list=[],
+def setup_move_them_all_MonteCarlo_internal_2(chains,scoring_function.
+                                              rb_ext_list=[],
                                               mc_dx=0.3,mc_dang=0.1,mc_kt=1.0):
     """setup rigid body monte carlo move set
     mc_dx is the traslation move
@@ -145,6 +149,7 @@ def setup_move_them_all_MonteCarlo_internal_2(chains,rb_ext_list=[],
     rb_ext_list=[]
 
     mc=IMP.core.MonteCarlo(m)
+    mc.set_scoring_function(scoring_function)
 
     mc.set_return_best(False)
     mc.set_kt(10)
@@ -171,11 +176,11 @@ def shuffle_configuration(chains,bounding_box_length=200.0):
         rb.set_reference_frame(IMP.algebra.ReferenceFrame3D(transformation))
 
 
-def add_restraints():
+def add_restraints(m):
     """Handle the restraints defined above
     sintax: resid1 chain1 resid2 chain2 max_distance strength_of_potential
     example:     226 H 272 N 15.0 10.0"""
-    rs=IMP.RestraintSet('cross_links')
+    rs=IMP.RestraintSet(m, 1.0, 'cross_links')
     restraints={}
     restraints_map={}
     for tokens in xlinks:
@@ -209,9 +214,8 @@ def add_restraints():
         restraints_map[a]=(c1,c2)
 
 
-    m.add_restraint(rs)
     restraints['cross_links']=rs
-    return restraints,restraints_map
+    return restraints,restraints_map,IMP.core.RestraintsScoringFunction(rs)
 
 def setup_md(temp=300.0, tau=0.01):
     md=IMP.atom.MolecularDynamics(m)
@@ -320,7 +324,7 @@ chains,chain_id=read_pdbs("pdb.list")
 write_pdb("best")
 setup_radii(chains)
 add_excluded_volume(m, chains)
-restraints,restraints_map=add_restraints()
+restraints,restraints_map,scoring_function = add_restraints(m)
 shuffle_configuration(chains,300.0)
 
 
@@ -332,7 +336,8 @@ delta_a_best=0.1
 temp=1.0
 
 
-mc_int=setup_move_them_all_MonteCarlo_internal(chains,delta_r,delta_a,temp)
+mc_int=setup_move_them_all_MonteCarlo_internal(chains,scoring_function,
+                                               delta_r,delta_a,temp)
 write_pdb("models")
 
 
@@ -352,17 +357,19 @@ for steps in range(number_of_steps):
 
     nop_cutoff=10000000
     connected_chains_list,nop_cutoff=create_graph(chains,nop_cutoff)
-    mc_int,rb_ext_list = setup_move_them_all_MonteCarlo_external(connected_chains_list,rb_ext_list,delta_r,delta_a,temp,return_best=False)
+    mc_int,rb_ext_list = setup_move_them_all_MonteCarlo_external(connected_chains_list,scoring_function,
+                                                                 rb_ext_list,delta_r,delta_a,temp,return_best=False)
     mc_int.optimize(nsteps_ext)
-    print ' INTERNAL', m.evaluate(False)
+    print ' INTERNAL', scoring_function.evaluate(False)
     write_pdb("models")
 
 
     nop_cutoff=0
     connected_chains_list,nop_cutoff=create_graph(chains,nop_cutoff)
-    mc_ext,rb_ext_list = setup_move_them_all_MonteCarlo_external(connected_chains_list,rb_ext_list,delta_r,delta_a,temp,return_best=False)
+    mc_ext,rb_ext_list = setup_move_them_all_MonteCarlo_external(connected_chains_list,scoring_function,
+                                                                 rb_ext_list,delta_r,delta_a,temp,return_best=False)
     mc_ext.optimize(nsteps_ext)
-    print ' EXTERNAL', m.evaluate(False)
+    print ' EXTERNAL', scoring_function.evaluate(False)
     write_pdb("models")
 
     nfs=mc_ext.get_number_of_forward_steps()
@@ -377,17 +384,19 @@ for steps in range(number_of_steps):
 
     nop_cutoff=10000000
     connected_chains_list,nop_cutoff=create_graph(chains,nop_cutoff)
-    mc_int,rb_ext_list = setup_move_them_all_MonteCarlo_external(connected_chains_list,rb_ext_list,delta_r_best,delta_a_best,temp,return_best=True)
+    mc_int,rb_ext_list = setup_move_them_all_MonteCarlo_external(connected_chains_list,scoring_function,
+                                                                 rb_ext_list,delta_r_best,delta_a_best,temp,return_best=True)
     mc_int.optimize(nsteps_ext)
-    print ' INTERNAL', m.evaluate(False)
+    print ' INTERNAL', scoring_function.evaluate(False)
     write_pdb("models")
 
 
     nop_cutoff=0
     connected_chains_list,nop_cutoff=create_graph(chains,nop_cutoff)
-    mc_ext,rb_ext_list = setup_move_them_all_MonteCarlo_external(connected_chains_list,rb_ext_list,delta_r_best,delta_a_best,temp,return_best=True)
+    mc_ext,rb_ext_list = setup_move_them_all_MonteCarlo_external(connected_chains_list,scoring_function,
+                                                                 rb_ext_list,delta_r_best,delta_a_best,temp,return_best=True)
     mc_ext.optimize(nsteps_ext)
-    print ' EXTERNAL', m.evaluate(False)
+    print ' EXTERNAL', scoring_function.evaluate(False)
     write_pdb("models")
 
     nfs=mc_ext.get_number_of_forward_steps()
@@ -402,9 +411,9 @@ for steps in range(number_of_steps):
 
     cg.optimize(10)
 
-    score=m.evaluate(False)
+    score=scoring_function.evaluate(False)
     for i in restraints.keys():
-        print i, restraints[i].evaluate(False)
+        print i, restraints[i].get_last_score()
 
 
     if score==0.0:
