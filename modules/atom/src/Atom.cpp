@@ -206,27 +206,24 @@ NAME_DEF(NO2, N);
 
 NAME_DEF(UNKNOWN, UNKNOWN_ELEMENT);
 
-Atom Atom::setup_particle(Model *m, ParticleIndex pi, AtomType t) {
-  Particle *p = m->get_particle(pi);
-  p->add_attribute(get_atom_type_key(), t.get_index());
-  if (!Hierarchy::particle_is_instance(p)) {
-    Hierarchy::setup_particle(p);
+void Atom::do_setup_particle(Model *m, ParticleIndex pi, AtomType t) {
+  m->add_attribute(get_atom_type_key(), pi, t.get_index());
+  if (!Hierarchy::get_is_setup(m, pi)) {
+    Hierarchy::setup_particle(m, pi);
   }
-  p->add_attribute(get_element_key(), UNKNOWN_ELEMENT);
+  m->add_attribute(get_element_key(), pi, UNKNOWN_ELEMENT);
   // p->add_attribute(get_occupancy_key(), 1.00);
   // p->add_attribute(get_tempFactor_key(), 0.00);
 
-  Atom ret(p);
-  if (!Mass::particle_is_instance(p)) {
-    Mass::setup_particle(p, 0);
+  Atom ret(m, pi);
+  if (!Mass::get_is_setup(m, pi)) {
+    Mass::setup_particle(m, pi, 0);
   }
   ret.set_atom_type(t);
-  return ret;
 }
 
-Atom Atom::setup_particle(Particle *p, Atom o) {
-  Atom ret = setup_particle(p, o.get_atom_type());
-  return ret;
+void Atom::do_setup_particle(Model *m, ParticleIndex pi, Atom o) {
+  do_setup_particle(m, pi, o.get_atom_type());
 }
 
 void Atom::show(std::ostream &out) const {
@@ -235,7 +232,7 @@ void Atom::show(std::ostream &out) const {
   if (get_input_index() != -1) {
     out << " input index: " << get_input_index();
   }
-  if (core::XYZ::particle_is_instance(get_particle())) {
+  if (core::XYZ::get_is_setup(get_particle())) {
     out << " coords: " << core::XYZ(get_particle());
   }
 }
@@ -284,7 +281,7 @@ Residue get_residue(Atom d, bool nothrow) {
         IMP_THROW("Atom is not the child of a residue " << d, ValueException);
       }
     }
-  } while (!Residue::particle_is_instance(mhd.get_particle()));
+  } while (!Residue::get_is_setup(mhd.get_particle()));
   Residue rd(mhd.get_particle());
   return rd;
 }

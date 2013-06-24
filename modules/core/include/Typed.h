@@ -33,23 +33,16 @@ IMP_VALUES(ParticleType, ParticleTypes);
 /** This decorator
  */
 class IMPCOREEXPORT Typed : public Decorator {
+  static void do_setup_particle(Model *m, ParticleIndex pi, ParticleType t) {
+    m->add_attribute(get_type_key(), pi, t.get_index());
+  }
  public:
-
   static IntKey get_type_key();
 
-  IMP_DECORATOR(Typed, Decorator);
+  IMP_DECORATOR_METHODS(Typed, Decorator);
+  IMP_DECORATOR_SETUP_1(Typed, ParticleType, t);
 
-  /** Create a decorator with the passed coordinates. */
-  static Typed setup_particle(Particle *p, ParticleType t) {
-    p->add_attribute(get_type_key(), t.get_index());
-    return Typed(p);
-  }
-
-  static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(get_type_key());
-  }
-
-  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_type_key(), pi);
   }
 

@@ -55,7 +55,7 @@ std::pair<int, double> compute_n(double V, double r, double f) {
 /*
 // ignores overlap
 double get_volume(Hierarchy h) {
-  if (core::XYZR::particle_is_instance(h)) {
+  if (core::XYZR::get_is_setup(h)) {
     return algebra::get_volume(core::XYZR(h).get_sphere());
   } else {
     double volume=0;
@@ -67,20 +67,20 @@ double get_volume(Hierarchy h) {
 }
 */
 void gather_residue_indices(Hierarchy h, Ints &inds) {
-  if (Residue::particle_is_instance(h)) {
+  if (Residue::get_is_setup(h)) {
     int i = Residue(h).get_index();
     inds.push_back(i);
-  } else if (Fragment::particle_is_instance(h) &&
+  } else if (Fragment::get_is_setup(h) &&
              h.get_number_of_children() != 0) {
     Ints v = Fragment(h).get_residue_indexes();
     inds.insert(inds.end(), v.begin(), v.end());
-  } else if (Domain::particle_is_instance(h) &&
+  } else if (Domain::get_is_setup(h) &&
              h.get_number_of_children() == 0) {
     Domain d(h);
     for (int i = d.get_begin_index(); i != d.get_end_index(); ++i) {
       inds.push_back(i);
     }
-  } else if (Atom::particle_is_instance(h)) {
+  } else if (Atom::get_is_setup(h)) {
     Residue r = get_residue(Atom(h));
     inds.push_back(r.get_index());
   } else {
@@ -139,12 +139,12 @@ void setup_as_approximation_internal(Particle *p, const ParticlesTemp &other,
   if (mass >= 0) {
     m = mass;
   }
-  if (!Residue::particle_is_instance(p) && !Fragment::particle_is_instance(p) &&
-      !Domain::particle_is_instance(p)) {
+  if (!Residue::get_is_setup(p) && !Fragment::get_is_setup(p) &&
+      !Domain::get_is_setup(p)) {
     Fragment f = Fragment::setup_particle(p);
     f.set_residue_indexes(inds);
   }
-  if (!Mass::particle_is_instance(p)) {
+  if (!Mass::get_is_setup(p)) {
     Mass::setup_particle(p, m);
   } else {
     Mass(p).set_mass(m);
@@ -160,7 +160,7 @@ void setup_as_approximation_internal(Particle *p, const ParticlesTemp &other,
     s = algebra::Sphere3D(center, algebra::get_ball_radius_from_volume_3d(v));
   }
 
-  if (core::XYZR::particle_is_instance(p)) {
+  if (core::XYZR::get_is_setup(p)) {
     core::XYZR(p).set_sphere(s);
   } else {
     core::XYZR::setup_particle(p, s);
@@ -234,7 +234,7 @@ Hierarchy create_approximation_of_residues(const Hierarchies &t) {
   static base::WarningContext wc;
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i = 0; i < t.size(); ++i) {
-      IMP_USAGE_CHECK(Residue::particle_is_instance(t[i]),
+      IMP_USAGE_CHECK(Residue::get_is_setup(t[i]),
                       "The residue is not a residue, it is " << t[i]);
     }
   }

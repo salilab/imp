@@ -20,7 +20,7 @@ DihedralSingletonScore::DihedralSingletonScore()
 double DihedralSingletonScore::evaluate_index(Model *mod, ParticleIndex pi,
                                               DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
-  IMP_USAGE_CHECK(Dihedral::particle_is_instance(mod, pi),
+  IMP_USAGE_CHECK(Dihedral::get_is_setup(mod, pi),
                   "Particle is not a dihedral particle");
   Dihedral ad(mod, pi);
   Float ideal = ad.get_ideal();

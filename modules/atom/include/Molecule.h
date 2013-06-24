@@ -23,39 +23,21 @@ IMPATOM_BEGIN_NAMESPACE
 /** */
 class IMPATOMEXPORT Molecule : public Hierarchy {
   static IntKey key();
-
- public:
-  IMP_DECORATOR(Molecule, Hierarchy);
-
-#ifndef IMP_DOXYGEN
-  //! Add the required attributes to the particle and create a Molecule
-  static Molecule setup_particle(Particle *p) {
-    if (!Hierarchy::particle_is_instance(p)) {
-      Hierarchy::setup_particle(p);
-    }
-    p->add_attribute(key(), 1);
-    return Molecule(p);
-  }
-
-  //! Copy data from the other Molecule to the particle p
-  static Molecule setup_particle(Particle *p, Molecule) {
-    return setup_particle(p);
-  }
-
-  static bool particle_is_instance(Particle *p) {
-    return particle_is_instance(p->get_model(), p->get_index());
-  }
-#endif
-
-  static Molecule setup_particle(Model *m, ParticleIndex pi) {
-    if (!Hierarchy::particle_is_instance(m, pi)) {
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                 Molecule = Molecule()) {
+    if (!Hierarchy::get_is_setup(m, pi)) {
       Hierarchy::setup_particle(m, pi);
     }
     m->add_attribute(key(), pi, 1);
-    return Molecule(m, pi);
   }
 
-  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+ public:
+  IMP_DECORATOR_METHODS(Molecule, Hierarchy);
+  /** Mark the particle as denoting a molecule. */
+  IMP_DECORATOR_SETUP_0(Molecule);
+  IMP_DECORATOR_SETUP_1(Molecule, Molecule, other);
+
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(key(), pi);
   }
 };

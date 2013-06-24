@@ -26,12 +26,12 @@ Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
 
   IMP::base::map<ParticleIndex, Particles> rigid_bodies;
   for(unsigned int i=0; i< particles.size(); ++i) {
-    if(core::RigidMember::particle_is_instance(particles[i])) {
+    if(core::RigidMember::get_is_setup(particles[i])) {
       ParticleIndex pi =
         core::RigidMember(particles[i]).get_rigid_body().get_particle_index();
       rigid_bodies[pi].push_back(particles[i]);
     } else {
-      if(atom::Atom::particle_is_instance(particles[i])) {
+      if(atom::Atom::get_is_setup(particles[i])) {
         particles_.push_back(particles[i]);
       }
     }

@@ -51,7 +51,7 @@ class Price(IMP.Decorator):
     price_key = IMP.IntKey("price")
 
     def __init__(self, p):
-        if not self.particle_is_instance(p):
+        if not self.get_is_setup(p):
             self.setup_particle(p)
         self.particle = p
 
@@ -65,7 +65,7 @@ class Price(IMP.Decorator):
     def set_price(self, x):
         self.particle.set_value(self.price_key, int(x))
 
-    def particle_is_instance(self, p):
+    def get_is_setup(self, p):
         return p.has_attribute(self.price_key)
 
 

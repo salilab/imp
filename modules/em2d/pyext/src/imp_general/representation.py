@@ -438,6 +438,6 @@ def get_all_members(rigid_bodies):
 def get_simple_members(rb):
     # Add members if they are not sub-rigid bodies
     members = filter(
-       lambda m: not core.RigidBody.particle_is_instance(m.get_particle()),
+       lambda m: not core.RigidBody.get_is_setup(m.get_particle()),
        rb.get_members() )
     return members

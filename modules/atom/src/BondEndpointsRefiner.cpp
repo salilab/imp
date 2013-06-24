@@ -13,7 +13,7 @@ IMPATOM_BEGIN_NAMESPACE
 BondEndpointsRefiner::BondEndpointsRefiner() {}
 
 bool BondEndpointsRefiner::get_can_refine(Particle *p) const {
-  return atom::Bond::particle_is_instance(p);
+  return atom::Bond::get_is_setup(p);
 }
 
 const ParticlesTemp BondEndpointsRefiner::get_refined(Particle *p) const {

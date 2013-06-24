@@ -460,23 +460,26 @@ void RigidBody::teardown_constraints(Particle *p) {
   }
 }
 
-RigidBody RigidBody::setup_particle(Particle *p, const ParticlesTemp &members) {
+void RigidBody::do_setup_particle(Model *m,
+                                  ParticleIndex pi,
+                                  ParticleIndexesAdaptor members) {
   IMP_FUNCTION_LOG;
   // IMP_LOG_VERBOSE( "Creating rigid body from other rigid bodies"<<std::endl);
   IMP_USAGE_CHECK(members.size() > 0, "Must provide members");
-  algebra::ReferenceFrame3D rf = get_initial_reference_frame(members);
-  RigidBody rb = setup_particle(p, rf);
+  algebra::ReferenceFrame3D rf = get_initial_reference_frame(m, members);
+  RigidBody rb = setup_particle(m, pi, rf);
   for (unsigned int i = 0; i < members.size(); ++i) {
     rb.add_member(members[i]);
     // IMP_LOG_VERBOSE( " " << cm << " | " << std::endl);
   }
   rb.on_change();
-  return rb;
 }
 
-RigidBody RigidBody::setup_particle(Particle *p,
-                                    const algebra::ReferenceFrame3D &rf) {
+void RigidBody::do_setup_particle(Model *m,
+                                  ParticleIndex pi,
+                                  const algebra::ReferenceFrame3D &rf) {
   IMP_FUNCTION_LOG;
+  Particle *p = m->get_particle(pi);
   internal::add_required_attributes_for_body(p);
   RigidBody d(p);
   d.set_reference_frame(rf);
@@ -499,7 +502,6 @@ RigidBody RigidBody::setup_particle(Particle *p,
     d.get_model()->add_score_state(c1);
     d.get_model()->add_data(mk, list);
   }
-  return d;
 }
 
 void RigidBody::teardown_particle(RigidBody rb) {
@@ -580,7 +582,7 @@ RigidMembers RigidBody::get_members() const {
   {
     ParticleIndexes pis = get_member_particle_indexes();
     for (unsigned int i = 0; i < pis.size(); ++i) {
-      if (RigidMember::particle_is_instance(
+      if (RigidMember::get_is_setup(
               get_model()->get_particle(pis[i]))) {
         ret.push_back(RigidMember(get_model(), pis[i]));
       }
@@ -611,7 +613,7 @@ void RigidBody::set_is_rigid_member(ParticleIndex pi, bool tf) {
 void RigidBody::add_member(ParticleIndexAdaptor pi) {
   IMP_FUNCTION_LOG;
   algebra::ReferenceFrame3D r = get_reference_frame();
-  if (RigidBody::particle_is_instance(get_model(), pi)) {
+  if (RigidBody::get_is_setup(get_model(), pi)) {
     /*IMP_LOG_TERSE( "Adding rigid body " << p->get_name()
       << " as member." << std::endl);*/
     RigidBody d(get_model(), pi);
@@ -862,7 +864,7 @@ RigidBody NonRigidMember::get_rigid_body() const {
 }
 
 bool RigidMembersRefiner::get_can_refine(Particle *p) const {
-  return RigidBody::particle_is_instance(p);
+  return RigidBody::get_is_setup(p);
 }
 const ParticlesTemp RigidMembersRefiner::get_refined(Particle *p) const {
   return RigidBody(p).get_members();
@@ -882,11 +884,16 @@ RigidMembersRefiner *get_rigid_members_refiner() {
 }
 
 namespace {
-bool check_rigid_body(Particle *p) {
-  algebra::Vector4D v(p->get_value(internal::rigid_body_data().quaternion_[0]),
-                      p->get_value(internal::rigid_body_data().quaternion_[1]),
-                      p->get_value(internal::rigid_body_data().quaternion_[2]),
-                      p->get_value(internal::rigid_body_data().quaternion_[3]));
+bool check_rigid_body(Model *m, ParticleIndex pi) {
+  algebra::Vector4D
+      v(m->get_attribute(internal::rigid_body_data().quaternion_[0],
+                         pi),
+        m->get_attribute(internal::rigid_body_data().quaternion_[1],
+                         pi),
+        m->get_attribute(internal::rigid_body_data().quaternion_[2],
+                         pi),
+        m->get_attribute(internal::rigid_body_data().quaternion_[3],
+                         pi));
   if (std::abs(v.get_magnitude() - 1) > .1) {
     IMP_THROW("Bad quaternion in rigid body: " << v, ValueException);
   }
@@ -896,13 +903,14 @@ bool check_rigid_body(Particle *p) {
 
 IMP_CHECK_DECORATOR(RigidBody, check_rigid_body);
 
-algebra::ReferenceFrame3D get_initial_reference_frame(const ParticlesTemp &ps) {
+algebra::ReferenceFrame3D get_initial_reference_frame(Model *m,
+                                                   const ParticleIndexes &ps) {
   if (ps.size() == 1) {
-    if (RigidBody::particle_is_instance(ps[0])) {
-      return RigidBody(ps[0]).get_reference_frame();
+    if (RigidBody::get_is_setup(m, ps[0])) {
+      return RigidBody(m, ps[0]).get_reference_frame();
     } else {
       algebra::Transformation3D tr(algebra::get_identity_rotation_3d(),
-                                   XYZ(ps[0]).get_coordinates());
+                                   XYZ(m, ps[0]).get_coordinates());
       return algebra::ReferenceFrame3D(tr);
     }
   }
@@ -914,10 +922,10 @@ algebra::ReferenceFrame3D get_initial_reference_frame(const ParticlesTemp &ps) {
   double mass = 0;
   for (unsigned int i = 0; i < ps.size(); ++i) {
     double cmass = 1.0;
-    if (XYZR::particle_is_instance(ps[i]) && XYZR(ps[i]).get_radius() > 0) {
-      cmass = std::pow(XYZR(ps[i]).get_radius(), 3);
+    if (XYZR::get_is_setup(m, ps[i]) && XYZR(m, ps[i]).get_radius() > 0) {
+      cmass = std::pow(XYZR(m, ps[i]).get_radius(), 3);
     }
-    v += XYZ(ps[i]).get_coordinates() * cmass /*cm.get_mass()*/;
+    v += XYZ(m, ps[i]).get_coordinates() * cmass /*cm.get_mass()*/;
     mass += cmass /*cm.get_mass()*/;
   }
   IMP_USAGE_CHECK(mass > 0, "Zero mass when computing axis.");
@@ -928,7 +936,7 @@ algebra::ReferenceFrame3D get_initial_reference_frame(const ParticlesTemp &ps) {
   // I'ij= Iij+M(v^2delta_ij-vi*vj)
   // compute I
   Matrix I =
-      compute_I(IMP::internal::get_model(ps), IMP::internal::get_index(ps), v,
+      compute_I(m, ps, v,
                 IMP::algebra::get_identity_rotation_3d());
   // IMP_LOG_VERBOSE( "Initial I is " << I << std::endl);
   // diagonalize it
@@ -953,9 +961,9 @@ algebra::ReferenceFrame3D get_initial_reference_frame(const ParticlesTemp &ps) {
 ParticlesTemp create_rigid_bodies(Model *m, unsigned int n, bool no_members) {
   ParticlesTemp ret(n);
   for (unsigned int i = 0; i < n; ++i) {
-    IMP_NEW(Particle, p, (m));
-    ret[i] = p;
-    RigidBody::setup_particle(p, algebra::ReferenceFrame3D());
+    ParticleIndex pi = m->add_particle("RB%1%");
+    ret[i] = m->get_particle(pi);
+    RigidBody::setup_particle(m, pi, algebra::ReferenceFrame3D());
   }
   IMP_NEW(IMP::internal::InternalListSingletonContainer, list,
           (m, "rigid body list"));

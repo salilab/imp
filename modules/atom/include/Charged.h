@@ -29,33 +29,31 @@ IMPATOM_BEGIN_NAMESPACE
     \see CoulombPairScore
  */
 class IMPATOMEXPORT Charged : public IMP::core::XYZ {
- public:
-  IMP_DECORATOR(Charged, IMP::core::XYZ);
-
-  /** Create a decorator with the passed coordinates and charge.
-   */
-  static Charged setup_particle(Particle *p, const algebra::Vector3D &v,
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                const algebra::Vector3D &v,
                                 Float charge) {
-    XYZ::setup_particle(p, v);
-    p->add_attribute(get_charge_key(), charge);
-    return Charged(p);
+    XYZ::setup_particle(m, pi, v);
+    do_setup_particle(m, pi, charge);
+  }
+  static void do_setup_particle(Model *m, ParticleIndex pi, Float charge = 0) {
+    IMP_USAGE_CHECK(XYZ::get_is_setup(m, pi),
+                    "Particle must already be an XYZ particle");
+    m->add_attribute(get_charge_key(), pi, charge);
   }
 
-  /** Create a decorator with the passed charge.
-      The particle is assumed to already have x,y,z attributes.
-   */
-  static Charged setup_particle(Particle *p, Float charge = 0) {
-    IMP_USAGE_CHECK(XYZ::particle_is_instance(p),
-                    "Particle must already be an XYZ particle");
-    p->add_attribute(get_charge_key(), charge);
-    return Charged(p);
-  }
+ public:
+  IMP_DECORATOR_METHODS(Charged, IMP::core::XYZ);
+  IMP_DECORATOR_SETUP_1(Charged,
+                        Float, charge);
+  IMP_DECORATOR_SETUP_2(Charged, algebra::Vector3D, v,
+                        Float, charge);
 
   IMP_DECORATOR_GET_SET(charge, get_charge_key(), Float, Float);
 
   //! Return true if the particle is an instance of a Charged
-  static bool particle_is_instance(Particle *p) {
-    return XYZ::particle_is_instance(p) && p->has_attribute(get_charge_key());
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
+    return XYZ::get_is_setup(m, pi)
+      && m->get_has_attribute(get_charge_key(), pi);
   }
 
   static FloatKey get_charge_key();

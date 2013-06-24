@@ -51,7 +51,7 @@ PCAFitRestraint::PCAFitRestraint(
   weight_key_=weight_key;
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< ps.size(); ++i) {
-      IMP_USAGE_CHECK(core::XYZR::particle_is_instance(ps[i]),
+      IMP_USAGE_CHECK(core::XYZR::get_is_setup(ps[i]),
                       "Particle " << ps[i]->get_name()
                       << " is not XYZR"
                       << std::endl);

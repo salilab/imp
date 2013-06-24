@@ -37,7 +37,7 @@ SecondaryStructureResidue setup_coarse_secondary_structure_residue(
   scores.push_back(0.0);
   int count = 0;
   for (Particles::const_iterator p = ssr_ps.begin(); p != ssr_ps.end(); ++p) {
-    IMP_USAGE_CHECK(SecondaryStructureResidue::particle_is_instance(*p),
+    IMP_USAGE_CHECK(SecondaryStructureResidue::get_is_setup(*p),
                     "all particles must be SecondaryStructureResidues");
     SecondaryStructureResidue ssr(*p);
     Floats tmp_scores;

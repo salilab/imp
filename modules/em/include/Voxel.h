@@ -24,30 +24,28 @@ IMPEM_BEGIN_NAMESPACE
  */
 class IMPEMEXPORT Voxel: public Decorator
 {
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                  const algebra::Vector3D &position,
+                  Float radius,
+                  Float density) {
+    core::XYZR::setup_particle(m, pi, algebra::Sphere3D(position,radius));
+    m->add_attribute(get_density_key(),pi, density,false);
+  }
  public:
 
   static const FloatKey get_density_key();
   static const FloatKeys get_keys();
 
-  IMP_DECORATOR(Voxel, Decorator);
-
-  /** Create a decorator with the passed coordinates. */
-  static Voxel setup_particle(Particle *p,
-                  const algebra::Vector3D &position,
-                  Float radius,
-                  Float density) {
-    core::XYZR::setup_particle(p,algebra::Sphere3D(position,radius));
-    p->add_attribute(get_density_key(),density,false);
-    return Voxel(p);
-  }
+  IMP_DECORATOR_METHODS(Voxel, Decorator);
+  IMP_DECORATOR_SETUP_3(Voxel, algebra::Vector3D, position,
+                        Float, radius,
+                        Float, density);
 
   IMP_DECORATOR_GET_SET(density, get_density_key(), Float, Float);
 
-  static bool particle_is_instance(Particle *p) {
-    core::XYZ::particle_is_instance(p);
-    IMP_USAGE_CHECK( p->has_attribute(get_density_key()),
-              "Particle is expected to have density attribute.");
-    return true;
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
+    if (!core::XYZ::get_is_setup(m, pi)) return false;
+    return m->get_has_attribute(get_density_key(), pi);
   }
 };
 

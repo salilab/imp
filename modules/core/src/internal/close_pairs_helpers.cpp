@@ -21,7 +21,7 @@ ModelObjectsTemp get_inputs(Model *m, SingletonContainer *sc_,
   }
   base::set<Particle *> rigid;
   for (unsigned int i = 0; i < all.size(); ++i) {
-    if (core::RigidMember::particle_is_instance(m, all[i])) {
+    if (core::RigidMember::get_is_setup(m, all[i])) {
       Particle *rbp = core::RigidMember(m, all[i]).get_rigid_body();
       if (rigid.find(rbp) == rigid.end()) {
         rigid.insert(rbp);

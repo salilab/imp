@@ -149,13 +149,13 @@ char get_one_letter_code(ResidueType c) {
 }
 
 namespace {
-bool check_residue(Particle *p) {
-  unsigned int t = p->get_value(Residue::get_residue_type_key());
-  if (t >= ResidueType::get_number_unique()) {
-    IMP_THROW("Invalid residue type: " << t, ValueException);
+  bool check_residue(Model *m, ParticleIndex pi) {
+    unsigned int t = m->get_attribute(Residue::get_residue_type_key(), pi);
+    if (t >= ResidueType::get_number_unique()) {
+      IMP_THROW("Invalid residue type: " << t, ValueException);
+    }
+    return true;
   }
-  return true;
-}
 }
 
 IMP_CHECK_DECORATOR(Residue, check_residue);

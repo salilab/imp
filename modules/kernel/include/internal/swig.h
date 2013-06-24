@@ -87,27 +87,29 @@ class IMPKERNELEXPORT _ConstPairScore : public PairScore {
 IMP_OBJECTS(_ConstPairScore, _ConstPairScores);
 
 class IMPKERNELEXPORT _TrivialDecorator : public Decorator {
- public:
-  IMP_DECORATOR(_TrivialDecorator, Decorator);
-  static _TrivialDecorator setup_particle(Particle *p) {
-    p->add_attribute(IntKey("trivial_attribute"), 1);
-    return _TrivialDecorator(p);
+  static void do_setup_particle(Model *m,
+                                ParticleIndex pi) {
+    m->add_attribute(IntKey("trivial_attribute"), pi, 1);
   }
-  static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(IntKey("trivial_attribute"));
+ public:
+  IMP_DECORATOR_METHODS(_TrivialDecorator, Decorator);
+  IMP_DECORATOR_SETUP_0(_TrivialDecorator);
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
+    return m->get_has_attribute(IntKey("trivial_attribute"), pi);
   }
 };
 
 class IMPKERNELEXPORT _TrivialDerivedDecorator : public _TrivialDecorator {
- public:
-  IMP_DECORATOR(_TrivialDerivedDecorator, _TrivialDecorator);
-  static _TrivialDerivedDecorator setup_particle(Particle *p) {
-    p->add_attribute(IntKey("trivial_attribute_2"), 2);
-    _TrivialDecorator::setup_particle(p);
-    return _TrivialDerivedDecorator(p);
+  static void do_setup_particle(Model *m,
+                                ParticleIndex pi) {
+    m->add_attribute(IntKey("trivial_attribute_2"), pi, 2);
+    _TrivialDecorator::setup_particle(m, pi);
   }
-  static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(IntKey("trivial_attribute_2"));
+ public:
+  IMP_DECORATOR_METHODS(_TrivialDerivedDecorator, _TrivialDecorator);
+  IMP_DECORATOR_SETUP_0(_TrivialDecorator);
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
+    return m->get_has_attribute(IntKey("trivial_attribute_2"), pi);
   }
 };
 
@@ -116,18 +118,20 @@ IMP_DECORATORS(_TrivialDerivedDecorator, _TrivialDerivedDecorators,
                _TrivialDecorators);
 
 class IMPKERNELEXPORT _TrivialTraitsDecorator : public Decorator {
- public:
-  IMP_DECORATOR_WITH_TRAITS(_TrivialTraitsDecorator, Decorator, StringKey, sk,
-                            get_default_key());
-  static _TrivialTraitsDecorator setup_particle(Particle *p,
-                                                StringKey k =
-                                                    get_default_key()) {
-    p->add_attribute(k, "hi");
-    return _TrivialTraitsDecorator(p, k);
+  static void do_setup_particle(Model *m,
+                             ParticleIndex pi,
+                             StringKey k) {
+    m->add_attribute(k, pi, "hi");
   }
-  static bool particle_is_instance(Particle *p,
-                                   StringKey k = get_default_key()) {
-    return p->has_attribute(k);
+ public:
+  IMP_DECORATOR_WITH_TRAITS_METHODS(_TrivialTraitsDecorator,
+                                    Decorator, StringKey, sk,
+                                    get_default_key());
+  IMP_DECORATOR_TRAITS_SETUP_0(_TrivialTraitsDecorator);
+  static bool get_is_setup(Model *m,
+                           ParticleIndex pi,
+                           StringKey k = get_default_key()) {
+    return m->get_has_attribute(k, pi);
   }
   static StringKey get_default_key() { return StringKey("traits dec"); }
 };
@@ -241,6 +245,8 @@ struct _ImplicitParticles {
   _ImplicitParticles(_TrivialDecorator) {}
 };
 inline void _implicit_particles(const _ImplicitParticles &) {}
+
+IMPKERNELEXPORT ParticleIndex _take_particle_adaptor(ParticleAdaptor pa);
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 

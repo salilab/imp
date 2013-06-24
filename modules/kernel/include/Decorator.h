@@ -21,12 +21,13 @@
 #include <IMP/base/Value.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
+class ParticleAdaptor;
 
 /**
 Representation of the structure in \imp is via a collection of
 Particle objects. However, since particles are general purpose, they
 provide a basic set of tools for managing the data (e.g.
-IMP::Particle::add_attribute(), IMP::Particle::get_value()
+IMP::kernel::Model::add_attribute(), IMP::kernel::Model::get_value()
 etc). Decorators wrap (or \quote{decorate}) particles to provide a much
 richer interface. For example, most particles have Cartesian
 coordinates. The class IMP::core::XYZ decorates such a particle to
@@ -41,13 +42,18 @@ print d0.get_coordinates()
 
 \par Decorator basics
 
+\note The `get_is_setup()` and `setup_particle()` functions mentioned below
+can take any of either an IMP::kernel::Model* and IMP::kernel::ParticleIndex
+pair, an IMP::kernel::Paricle* or another decorator to identify the particle.
+We use various of those below.
+
 Dealing with decorators and particles has two main parts
 -# setting up the particle to be used with that decorator
 -# decorating the particle.
 
 To set up a particle to be used with the IMP::core::XYZ decorator we do
 \code
-d0= IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(0,2,3))
+d0= IMP.core.XYZ.setup_particle(m, pi, IMP.algebra.Vector3D(0,2,3))
 \endcode
 The method calls also decorates the particle and returns the decorator
 which can now be used to manipulate the particle. For example we can
@@ -59,13 +65,13 @@ We now say the particle is an XYZ particle. If that particle is
 encountered later when we do not have the existing decorator available,
 we can decorate it again (since it is already set up) by doing
 \code
-d1= IMP.core.XYZ(p)
+d1= IMP.core.XYZ(m, pi)
 \endcode
 
 If you do not know if \c p has been set up for the XYZ decorator, you can
 ask with
 \code
-if IMP.core.XYZ.particle_is_instance(p):
+if IMP.core.XYZ.get_is_setup(m, pi):
 \endcode
 
 More abstractly, decorators can be used to
@@ -93,14 +99,7 @@ lazily (at the time of the first use), and not be created as static
 variables. The reason for this is that initialized attribute keys result
 in space being allocated in decorators, even before they are used.\n\n
 Implementors should consult IMP::example::ExampleDecorator,
-IMP_DECORATOR(), IMP_DECORATOR_WITH_TRAITS(), IMP_DECORATOR_GET().
-
-\advanceddoc Lists of decorators are reference counted even though the
-individual decorators are not. For more efficiency
-you can use the non-reference counted version, IMP::core::XYZs
-instead. This should only
-be done when it is known to be safe. If you can't figure out
-that it is, don't do it.
+IMP_DECORATOR_METHODS(), IMP_DECORATOR_WITH_TRAITS(), IMP_DECORATOR_GET().
 
 A decorator can be cast to a IMP::Particle* in C++. You have to
 use the Decorator::get_particle() function in Python.
@@ -127,9 +126,12 @@ class Decorator : public base::Value {
 
  protected:
   Decorator(Model* m, ParticleIndex pi);
-  Decorator(Particle* p);
   Decorator();
 
+#ifndef IMP_DOXYGEN
+ public:
+#endif
+  explicit Decorator(ParticleAdaptor p);
  public:
   ParticleIndex get_particle_index() const { return pi_; }
 #ifdef _MSC_VER
@@ -196,35 +198,35 @@ class Decorator : public base::Value {
       All decorators must have the following methods. Decorators
       which are parameterized (for example IMP::core::XYZR)
       take an (optional) extra parameter after the Particle in
-      setup_particle(), and particle_is_instance().
+      setup_particle(), and get_is_setup().
       \note these are
       not actually methods of the Decorator class itself.
       @{
   */
   /** \brief Return true if the particle can be cast to the decorator.
 
-  That is, if particle_is_instance() returns \c true, then it is
+  That is, if get_is_setup() returns \c true, then it is
   legal to construct an instance of the decorator with that particle.
   If not, setup_particle() must be called first.
   \code
   IMP::Particle *p = new IMP::Particle(m);
   // it is false
-  std::cout << IMP::core::XYZ::particle_is_instance(p) << std::endl;
+  std::cout << IMP::core::XYZ::get_is_setup(p) << std::endl;
   // As a result this is an error
   IMP::core::XYZ d(p);
   // now set it up
   IMP::core::XYZ(p);
   // now it is true
-  std::cout << IMP::core::XYZ::particle_is_instance(p) << std::endl;
+  std::cout << IMP::core::XYZ::get_is_setup(p) << std::endl;
   // and now this code is OK
   IMP::core::XYZ d(p);
   \endcode
   */
-  static bool particle_is_instance(Particle* p);
+  static bool get_is_setup(Particle* p);
 
   /** Create an instance of the Decorator from the particle that has
       already been set up. The particle must have been set up already
-      (eg particle_is_instance(p) must be true), but this is not
+      (eg get_is_setup(p) must be true), but this is not
       necessarily checked.
   */
   Decorator(Particle* p);
@@ -242,8 +244,6 @@ class Decorator : public base::Value {
 #ifndef IMP_DOXYGEN
 
 inline Decorator::Decorator(Model* m, ParticleIndex pi) : model_(m), pi_(pi) {};
-inline Decorator::Decorator(Particle* p)
-    : model_(p->get_model()), pi_(p->get_index()) {}
 inline Decorator::Decorator() : pi_(-1) {}
 
 #define IMP_CONSTRAINT_DECORATOR_DECL(Name)                                    \
@@ -293,7 +293,7 @@ inline Decorator::Decorator() : pi_(-1) {}
     This macro should only be used in a .cpp file.
 */
 #define IMP_CHECK_DECORATOR(Name, function)                                 \
-  IMP::kernel::internal::ParticleCheck Name##pc(Name::particle_is_instance, \
+  IMP::kernel::internal::ParticleCheck Name##pc(Name::get_is_setup, \
                                                 function);
 #endif
 

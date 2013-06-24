@@ -75,7 +75,7 @@ struct Convert<
                           SwigData decorator_st) {
     Particle *p = Convert<Particle>::get_cpp_object(o, particle_st, particle_st,
                                                     decorator_st);
-    if (!T::particle_is_instance(p)) {
+    if (!T::get_is_setup(p)) {
       IMP_THROW(
           "Not all objects in list have correct object type: " << p->get_name(),
           ValueException);
@@ -110,7 +110,7 @@ struct Convert<
     catch (ValueException) {
       Particle *p = Convert<Particle>::get_cpp_object(
           o, particle_st, particle_st, decorator_st);
-      if (!T::particle_is_instance(p)) {
+      if (!T::get_is_setup(p)) {
         IMP_THROW("Not all objects in list have correct object type: "
                       << p->get_name(),
                   ValueException);

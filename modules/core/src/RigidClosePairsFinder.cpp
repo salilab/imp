@@ -36,7 +36,7 @@ namespace {
 ParticlesTemp get_rigid_bodies(Model *m, const ParticleIndexes &pis) {
   IMP::base::set<Particle *> rets;
   for (unsigned int i = 0; i < pis.size(); ++i) {
-    if (RigidMember::particle_is_instance(m, pis[i])) {
+    if (RigidMember::get_is_setup(m, pis[i])) {
       rets.insert(RigidMember(m, pis[i]).get_rigid_body());
     }
   }
@@ -47,7 +47,7 @@ ParticlesTemp get_rigid_bodies(Model *m, const ParticleIndexes &pis) {
 /*ParticlesTemp get_non_rigid(SingletonContainer *sc) {
   ParticlesTemp ret;
   IMP_FOREACH_SINGLETON(sc, {
-      if (!RigidMember::particle_is_instance(_1)) {
+      if (!RigidMember::get_is_setup(_1)) {
         ret.push_back(_1);
       }
     });
@@ -63,7 +63,7 @@ void divvy_up_particles(Model *m, const ParticleIndexes &ps,
         "Duplicate particles in input: " << ups.size() << "!= " << ps.size());
   }
   for (unsigned int i = 0; i < ps.size(); ++i) {
-    if (RigidMember::particle_is_instance(m, ps[i])) {
+    if (RigidMember::get_is_setup(m, ps[i])) {
       RigidBody rb = RigidMember(m, ps[i]).get_rigid_body();
       if (members.find(rb) == members.end()) {
         out.push_back(rb);
@@ -92,7 +92,7 @@ void check_particles(Model *m, const ParticleIndexes &ps) {
   IMP_IF_CHECK(base::USAGE) {
     for (ParticleIndexes::const_iterator it = ps.begin(); it != ps.end();
          ++it) {
-      if (RigidBody::particle_is_instance(m, *it) &&
+      if (RigidBody::get_is_setup(m, *it) &&
           !m->get_has_attribute(XYZR::get_radius_key(), *it)) {
         IMP_WARN("Particle " << m->get_particle_name(*it) << " is a rigid body "
                              << "but does not have a radius. "
@@ -188,9 +188,9 @@ ParticleIndexPairs RigidClosePairsFinder::get_close_pairs(
     db = internal::get_rigid_body_hierarchy(RigidBody(m, b), mb, k_);
     IMP_INTERNAL_CHECK(db, "No hierarchy gotten");
   }
-  /*IMP_INTERNAL_CHECK(RigidBody::particle_is_instance(a)==(da!=nullptr),
+  /*IMP_INTERNAL_CHECK(RigidBody::get_is_setup(a)==(da!=nullptr),
                      "Rigid body does not imply hierarchy");
-  IMP_INTERNAL_CHECK(RigidBody::particle_is_instance(b)==(db!=nullptr),
+  IMP_INTERNAL_CHECK(RigidBody::get_is_setup(b)==(db!=nullptr),
   "Rigid body does not imply hierarchy");*/
   if (da && db) {
     out = IMP::get_indexes(internal::close_pairs(m, da, db, get_distance()));

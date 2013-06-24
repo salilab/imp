@@ -30,37 +30,7 @@ IMPCORE_BEGIN_NAMESPACE
     \see XYZR
  */
 class IMPCOREEXPORT XYZ : public Decorator {
- public:
-
-#ifndef IMP_DOXYGEN
-  static XYZ setup_particle(Particle *p,
-                            // See setup_particle, above, before touching this
-                            const algebra::Vector3D v =
-                                algebra::Vector3D(0, 0, 0)) {
-    return setup_particle(p->get_model(), p->get_index(), v);
-  }
-
-  static bool particle_is_instance(Particle *p) {
-    IMP_USAGE_CHECK((p->has_attribute(get_coordinate_key(2)) &&
-                     p->has_attribute(get_coordinate_key(0)) &&
-                     p->has_attribute(get_coordinate_key(1))) ||
-                        (!p->has_attribute(get_coordinate_key(2)) &&
-                         !p->has_attribute(get_coordinate_key(0)) &&
-                         !p->has_attribute(get_coordinate_key(1))),
-                    "Particle expected to either have all of x,y,z or none.");
-    return p->has_attribute(get_coordinate_key(2));
-  }
-#endif
-
-  static FloatKey get_coordinate_key(unsigned int i) {
-    IMP_USAGE_CHECK(i < 3, "Out of range coordinate");
-    return IMP::internal::xyzr_keys[i];
-  }
-
-  IMP_DECORATOR(XYZ, Decorator);
-
-  /** Create a decorator with the passed coordinates. */
-  static XYZ setup_particle(
+    static void do_setup_particle(
       Model *m, ParticleIndex pi,
       // This method and the next one need to take a vector (not a ref)
       // as otherwise, you can pass the vector from one and use it to
@@ -70,8 +40,17 @@ class IMPCOREEXPORT XYZ : public Decorator {
     m->add_attribute(get_coordinate_key(0), pi, v[0]);
     m->add_attribute(get_coordinate_key(1), pi, v[1]);
     m->add_attribute(get_coordinate_key(2), pi, v[2]);
-    return XYZ(m, pi);
   }
+ public:
+  static FloatKey get_coordinate_key(unsigned int i) {
+    IMP_USAGE_CHECK(i < 3, "Out of range coordinate");
+    return IMP::internal::xyzr_keys[i];
+  }
+
+  IMP_DECORATOR_METHODS(XYZ, Decorator);
+  /** Setup the particle with unspecified coordinates. */
+  IMP_DECORATOR_SETUP_0(XYZ);
+  IMP_DECORATOR_SETUP_1(XYZ, algebra::Vector3D, v);
 
   IMP_DECORATOR_GET_SET(x, get_coordinate_key(0), Float, Float);
   IMP_DECORATOR_GET_SET(y, get_coordinate_key(1), Float, Float);
@@ -137,7 +116,7 @@ class IMPCOREEXPORT XYZ : public Decorator {
     return get_model()->get_coordinate_derivatives(get_particle_index());
   }
 
-  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_coordinate_key(2), pi);
   }
 

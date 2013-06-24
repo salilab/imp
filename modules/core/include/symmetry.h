@@ -20,21 +20,21 @@ IMPCORE_BEGIN_NAMESPACE
     symmetry.
  */
 class IMPCOREEXPORT Reference : public Decorator {
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                ParticleIndex refi) {
+    m->add_attribute(get_reference_key(), pi, refi);
+  }
  public:
 
-  IMP_DECORATOR(Reference, Decorator);
-
-  /** Create a decorator with the passed reference particle. */
-  static Reference setup_particle(Particle *p, Particle *ref) {
-    p->add_attribute(get_reference_key(), ref);
-    return Reference(p);
-  }
+  IMP_DECORATOR_METHODS(Reference, Decorator);
+  /** Make the first particle reference the passed particle. */
+  IMP_DECORATOR_SETUP_1(Reference, ParticleIndexAdaptor, reference);
   Particle *get_reference_particle() const {
     return get_particle()->get_value(get_reference_key());
   }
 
-  static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(get_reference_key());
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
+    return m->get_has_attribute(get_reference_key(), pi);
   }
 
   static ParticleIndexKey get_reference_key();

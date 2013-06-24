@@ -685,7 +685,7 @@ String CHARMMParameters::get_force_field_atom_type(Atom atom) const {
   IMP_OBJECT_LOG;
   // Override base class to use CHARMMAtom decorator
   static String empty_atom_type;
-  if (CHARMMAtom::particle_is_instance(atom)) {
+  if (CHARMMAtom::get_is_setup(atom)) {
     return CHARMMAtom(atom).get_charmm_type();
   } else {
     IMP_WARN_ONCE(atom.get_atom_type().get_string(),

@@ -187,7 +187,7 @@ def get_configurations(model, restraints, excluded_volume_particles, optimized_p
     mc= IMP.core.MonteCarlo(model)
     movers=[]
     for p in optimized_particles:
-        if IMP.core.RigidBody.particle_is_instance(p):
+        if IMP.core.RigidBody.get_is_setup(p):
             mover= IMP.core.RigidBodyMover(p, IMP.core.XYZR(p).get_radius()*scale,
                                            .2*scale)
             movers.append(mover)

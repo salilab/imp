@@ -27,7 +27,7 @@ TransformationSymmetry::TransformationSymmetry(
 
 void TransformationSymmetry::apply_index(Model *m, ParticleIndex pi) const {
   set_was_used(true);
-  if (RigidBody::particle_is_instance(m, pi)) {
+  if (RigidBody::get_is_setup(m, pi)) {
     RigidBody rrb(Reference(m, pi).get_reference_particle());
     RigidBody rb(m, pi);
     // We do the non-lazy version in order as it is hard
@@ -64,7 +64,7 @@ TransformationAndReflectionSymmetry::TransformationAndReflectionSymmetry(
 
 void TransformationAndReflectionSymmetry::apply_index(Model *m,
                                                       ParticleIndex pi) const {
-  IMP_USAGE_CHECK(!RigidBody::particle_is_instance(m, pi),
+  IMP_USAGE_CHECK(!RigidBody::get_is_setup(m, pi),
                   "Particle must not be a rigid body particle");
   set_was_used(true);
   XYZ rd(Reference(m, pi).get_reference_particle());

@@ -23,7 +23,7 @@ Chain get_chain(Hierarchy h) {
       return Chain();
     }
 
-    if (Chain::particle_is_instance(h)) {
+    if (Chain::get_is_setup(h)) {
       return Chain(h);
     }
   } while ((h = h.get_parent()));

@@ -41,16 +41,9 @@ class IMPATOMEXPORT Bond : public Decorator {
   friend class Bonded;
 
  public:
-  IMP_DECORATOR(Bond, Decorator);
+  IMP_DECORATOR_METHODS(Bond, Decorator);
 
-#ifndef IMP_DOXYGEN
-  static bool particle_is_instance(Particle *p) {
-    return IMP::core::internal::graph_is_edge(p,
-                                              internal::get_bond_data().graph_);
-  }
-#endif
-
-  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return IMP::core::internal::graph_is_edge(m->get_particle(pi),
                                               internal::get_bond_data().graph_);
   }
@@ -112,14 +105,9 @@ class IMPATOMEXPORT Bonded : public Decorator {
   };
 
  public:
-  IMP_DECORATOR(Bonded, Decorator);
-#ifndef IMP_DOXYGEN
-  static bool particle_is_instance(Particle *p) {
-    return IMP::core::internal::graph_is_node(p,
-                                              internal::get_bond_data().graph_);
-  }
-#endif
-  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+  IMP_DECORATOR_METHODS(Bonded, Decorator);
+
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return IMP::core::internal::graph_is_node(m->get_particle(pi),
                                               internal::get_bond_data().graph_);
   }

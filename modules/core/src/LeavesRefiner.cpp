@@ -15,7 +15,7 @@ LeavesRefiner::LeavesRefiner(HierarchyTraits traits)
     : Refiner("LeavesRefiner%d"), traits_(traits) {}
 
 bool LeavesRefiner::get_can_refine(Particle *p) const {
-  return core::Hierarchy::particle_is_instance(p, traits_);
+  return core::Hierarchy::get_is_setup(p, traits_);
 }
 
 const ParticlesTemp LeavesRefiner::get_refined(Particle *p) const {

@@ -37,12 +37,12 @@ MolecularDynamics::MolecularDynamics(Model *m): atom::MolecularDynamics(m)
 bool MolecularDynamics::get_is_simulation_particle(ParticleIndex pi) const
 {
   Particle *p=get_model()->get_particle(pi);
-  bool ret=IMP::core::XYZ::particle_is_instance(p)
+  bool ret=IMP::core::XYZ::get_is_setup(p)
     && IMP::core::XYZ(p).get_coordinates_are_optimized()
-    && atom::Mass::particle_is_instance(p);
-  bool ret2=IMP::isd::Nuisance::particle_is_instance(p)
+    && atom::Mass::get_is_setup(p);
+  bool ret2=IMP::isd::Nuisance::get_is_setup(p)
     && IMP::isd::Nuisance(p).get_nuisance_is_optimized()
-    && atom::Mass::particle_is_instance(p);
+    && atom::Mass::get_is_setup(p);
   IMP_USAGE_CHECK(!(ret && ret2), "Particle "<<p<<" is both XYZ and Nuisance!");
 
   if (ret) {
@@ -68,7 +68,7 @@ void MolecularDynamics::setup_degrees_of_freedom(const ParticleIndexes &ps)
   for (unsigned i = 0; i<ps.size(); i++)
   {
       Particle *p=get_model()->get_particle(ps[i]);
-      if (Nuisance::particle_is_instance(p)) dof_nuisances += 1;
+      if (Nuisance::get_is_setup(p)) dof_nuisances += 1;
   }
   degrees_of_freedom_ -= 2*dof_nuisances;
 }
@@ -79,7 +79,7 @@ void MolecularDynamics::propagate_coordinates(const ParticleIndexes &ps,
   for (unsigned int i=0; i< ps.size(); ++i) {
     Float invmass = 1.0 / atom::Mass(get_model(), ps[i]).get_mass();
     Particle *p=get_model()->get_particle(ps[i]);
-    if (Nuisance::particle_is_instance(p))
+    if (Nuisance::get_is_setup(p))
     {
        Nuisance d(p);
 
@@ -125,7 +125,7 @@ void MolecularDynamics::propagate_velocities(const ParticleIndexes &ps,
   for (unsigned int i=0; i< ps.size(); ++i) {
     Float invmass = 1.0 / atom::Mass(get_model(), ps[i]).get_mass();
     Particle *p=get_model()->get_particle(ps[i]);
-    if (Nuisance::particle_is_instance(p))
+    if (Nuisance::get_is_setup(p))
     {
        Nuisance d(p);
        Float dcoord = d.get_nuisance_derivative();
@@ -162,7 +162,7 @@ Float MolecularDynamics::get_kinetic_energy() const
        iter != ps.end(); ++iter) {
     Particle *p = *iter;
     Float mass = atom::Mass(p).get_mass();
-    if (Nuisance::particle_is_instance(p)) {
+    if (Nuisance::get_is_setup(p)) {
         Float vel = p->get_value(vnuis_);
         ekinetic += mass * vel*vel;
     } else {
@@ -190,7 +190,7 @@ void MolecularDynamics::assign_velocities(Float temperature)
   for (ParticlesTemp::iterator iter = ps.begin();
        iter != ps.end(); ++iter) {
     Particle *p = *iter;
-    if (Nuisance::particle_is_instance(p)) {
+    if (Nuisance::get_is_setup(p)) {
         p->set_value(vnuis_, sampler());
     } else {
         for (int i = 0; i < 3; ++i) {
@@ -205,7 +205,7 @@ void MolecularDynamics::assign_velocities(Float temperature)
   for (ParticlesTemp::iterator iter = ps.begin();
        iter != ps.end(); ++iter) {
     Particle *p = *iter;
-    if (Nuisance::particle_is_instance(p)) {
+    if (Nuisance::get_is_setup(p)) {
       Float velocity = p->get_value(vnuis_);
       velocity *= rescale;
       p->set_value(vnuis_, velocity);

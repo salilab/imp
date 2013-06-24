@@ -39,7 +39,7 @@ void set_enclosing_sphere(XYZR out, const XYZs &v, double slack) {
 void set_enclosing_radius(XYZR out, const XYZs &v) {
   double r = 0;
   for (unsigned int i = 0; i < v.size(); ++i) {
-    if (XYZR::particle_is_instance(v[i])) {
+    if (XYZR::get_is_setup(v[i])) {
       XYZR d(v[i]);
       double dist = get_distance(static_cast<XYZ>(out), static_cast<XYZ>(d));
       dist += d.get_radius();
@@ -70,8 +70,8 @@ XYZRs create_xyzr_particles(Model *m, unsigned int num, Float radius,
 }
 
 namespace {
-bool check_radius(Particle *p) {
-  XYZR d(p);
+bool check_radius(Model *m, ParticleIndex pi) {
+  XYZR d(m, pi);
   if (d.get_radius() < 0) {
     IMP_THROW("Invalid radius: " << d.get_radius(), ValueException);
   }

@@ -517,8 +517,6 @@ IMP_SWIG_VOID_FORWARD_2(set_is_optimized, IMP::kernel::FloatKey, bool);
 IMP_SWIG_FORWARD_1(get_is_optimized, bool, IMP::kernel::FloatKey);
 IMP_SWIG_FORWARD_0(get_check_level, IMP::base::CheckLevel);
 }
-%pythonprepend Namespace::Name {
-}
 %extend Namespace::Name {
   bool __eq__(Name o) const {
      return *self ==o;

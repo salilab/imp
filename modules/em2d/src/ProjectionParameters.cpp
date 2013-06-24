@@ -10,19 +10,20 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-bool ProjectionParameters::particle_is_instance(Particle *p) {
+bool ProjectionParameters::get_is_setup(Model *m,
+                                        ParticleIndex pi) {
   // Check with only the first key
-  return p->has_attribute(get_keys()[0]);
+  return m->get_has_attribute(get_keys()[0], pi);
 }
 
-ProjectionParameters ProjectionParameters::setup_particle(Particle *p) {
-  p->add_attribute(get_keys()[0],0.0);
-  p->add_attribute(get_keys()[1],0.0);
-  p->add_attribute(get_keys()[2],0.0);
-  p->add_attribute(get_keys()[3],0.0);
-  p->add_attribute(get_keys()[4],0.0);
-  p->add_attribute(get_keys()[5],0.0);
-  return ProjectionParameters(p);
+void ProjectionParameters::do_setup_particle(Model *m,
+                                             ParticleIndex pi) {
+  m->add_attribute(get_keys()[0],pi,0.0);
+  m->add_attribute(get_keys()[1],pi,0.0);
+  m->add_attribute(get_keys()[2],pi,0.0);
+  m->add_attribute(get_keys()[3],pi,0.0);
+  m->add_attribute(get_keys()[4],pi,0.0);
+  m->add_attribute(get_keys()[5],pi,0.0);
 }
 
 

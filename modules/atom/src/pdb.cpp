@@ -270,7 +270,7 @@ struct RemoveCHARMMTypeVisitor {
   StringKey ctk;
   RemoveCHARMMTypeVisitor() { ctk = CHARMMAtom::get_charmm_type_key(); }
   bool operator()(Hierarchy h) {
-    if (CHARMMAtom::particle_is_instance(h)) {
+    if (CHARMMAtom::get_is_setup(h)) {
       h.get_particle()->remove_attribute(ctk);
     }
     return true;
@@ -426,7 +426,7 @@ void read_pdb(base::TextInput in, int model, Hierarchy h) {
   base::map<core::RigidBody, ParticleIndexes> rigid_bodies;
   for (unsigned int i = 0; i < atoms.size(); ++i) {
     atoms_map[atoms[i]->get_value(get_pdb_index_key())] = atoms[i];
-    if (core::RigidMember::particle_is_instance(atoms[i])) {
+    if (core::RigidMember::get_is_setup(atoms[i])) {
       rigid_bodies[core::RigidMember(atoms[i]).get_rigid_body()]
           .push_back(atoms[i]->get_index());
     }
@@ -514,7 +514,7 @@ void write_pdb(const ParticlesTemp& ps, base::TextOutput out) {
     }
   }
   for (unsigned int i = 0; i < ps.size(); ++i) {
-    if (Atom::particle_is_instance(ps[i])) {
+    if (Atom::get_is_setup(ps[i])) {
       Atom ad(ps[i]);
       Residue rd = get_residue(ad);
       // really dumb and slow, fix later
@@ -579,7 +579,7 @@ void write_pdb_of_c_alphas(const Selection& mhd, base::TextOutput out,
   int cur_residue = 0;
   for (unsigned int i = 0; i < leaves.size(); ++i) {
     ResidueType rt = ALA;
-    if (Residue::particle_is_instance(leaves[i])) {
+    if (Residue::get_is_setup(leaves[i])) {
       cur_residue = Residue(leaves[i]).get_index();
       rt = Residue(leaves[i]).get_residue_type();
     } else {

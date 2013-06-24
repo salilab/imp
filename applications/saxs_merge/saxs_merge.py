@@ -291,7 +291,7 @@ class SAXSProfile:
         if not isinstance(particles, dict):
             raise TypeError, "second argument should be dict"
         for p in particles.values():
-            if not IMP.isd.Nuisance.particle_is_instance(p):
+            if not IMP.isd.Nuisance.get_is_setup(p):
                 raise TypeError, "particles should all be ISD Nuisances"
         if not set(functions.keys()) == set(['mean','covariance']):
             raise TypeError, "expected mean and covariance functions"

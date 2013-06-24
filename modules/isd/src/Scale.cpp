@@ -9,13 +9,12 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-  Scale Scale::setup_particle(Particle *p, double scale)
-  {
-      if (!Nuisance::particle_is_instance(p))
-          Nuisance::setup_particle(p,scale);
-      Nuisance(p).set_lower(0.);
-      return Scale(p);
-  }
+void Scale::do_setup_particle(Model *m, ParticleIndex pi, double scale)
+{
+  if (!Nuisance::get_is_setup(m, pi))
+    Nuisance::setup_particle(m, pi,scale);
+  Nuisance(m, pi).set_lower(0.);
+}
 
 
 void Scale::show(std::ostream &out) const {

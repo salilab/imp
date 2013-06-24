@@ -24,58 +24,26 @@ class IMPATOMEXPORT Domain : public Hierarchy {
     IntKey begin, end;
   };
   static const Data &get_data();
-
- public:
-#ifndef IMP_DOXYGEN
-  //! Create a domain covering the range [b, e)
-  static Domain setup_particle(Particle *p, Int b, Int e) {
-    p->add_attribute(get_data().begin, b);
-    p->add_attribute(get_data().end, e);
-    if (!Hierarchy::particle_is_instance(p)) {
-      Hierarchy::setup_particle(p);
-    }
-    return Domain(p);
-  }
-
-  //! Create a domain covering the range [b, e)
-  static Domain setup_particle(Particle *p, IntRange r) {
-    p->add_attribute(get_data().begin, r.first);
-    p->add_attribute(get_data().end, r.second);
-    if (!Hierarchy::particle_is_instance(p)) {
-      Hierarchy::setup_particle(p);
-    }
-    return Domain(p);
-  }
-
-  //! Create a domain by copying from o
-  static Domain setup_particle(Particle *p, Domain o) {
-    p->add_attribute(get_data().begin, o.get_begin_index());
-    p->add_attribute(get_data().end, o.get_end_index());
-    if (!Hierarchy::particle_is_instance(p)) {
-      Hierarchy::setup_particle(p);
-    }
-    return Domain(p);
-  }
-
-  static bool particle_is_instance(Particle *p) {
-    return particle_is_instance(p->get_model(), p->get_index());
-  }
-
-#endif
-
-  static Domain setup_particle(Model *m, ParticleIndex pi, IntRange r) {
+  static void do_setup_particle(Model *m, ParticleIndex pi, IntRange r) {
     m->add_attribute(get_data().begin, pi, r.first);
     m->add_attribute(get_data().end, pi, r.second);
-    if (!Hierarchy::particle_is_instance(m, pi)) {
+    if (!Hierarchy::get_is_setup(m, pi)) {
       Hierarchy::setup_particle(m, pi);
     }
-    return Domain(m, pi);
+  }
+  static void do_setup_particle(Model *m, ParticleIndex pi, Int b, Int e) {
+    do_setup_particle(m, pi, IntRange(b,e));
+  }
+  static void do_setup_particle(Model *m, ParticleIndex pi, Domain o) {
+    do_setup_particle(m, pi, o.get_index_range());
   }
 
-  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+ public:
+
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_data().begin, pi) &&
            m->get_has_attribute(get_data().end, pi) &&
-           Hierarchy::particle_is_instance(m, pi);
+           Hierarchy::get_is_setup(m, pi);
   }
 
   void set_index_range(IntRange ir) {
@@ -84,22 +52,32 @@ class IMPATOMEXPORT Domain : public Hierarchy {
     get_particle()->set_value(get_data().begin, ir.first);
     get_particle()->set_value(get_data().end, ir.second);
   }
-
+  /** Get the range of indexes in the domain `[begin...end)` */
   IntRange get_index_range() const {
-    return IntRange(get_begin_index(), get_end_index());
+    return IntRange(get_model()->get_attribute(get_data().begin,
+                                               get_particle_index()),
+                    get_model()->get_attribute(get_data().end,
+                                               get_particle_index()));
   }
 
-  //! Get the index of the first residue in the domain
+  /** \deprecated_at{2.1} Use get_index_range() instead.*/
+  IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
   Int get_begin_index() const {
     return get_particle()->get_value(get_data().begin);
   }
 
-  //! Get the index of the first residue not in the domain
+  /** \deprecated_at{2.1} Use get_index_range() instead.*/
+  IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
   Int get_end_index() const {
     return get_particle()->get_value(get_data().end);
   }
 
-  IMP_DECORATOR(Domain, Hierarchy);
+  IMP_DECORATOR_METHODS(Domain, Hierarchy);
+  IMP_DECORATOR_SETUP_1(Domain, Domain, other);
+  IMP_DECORATOR_SETUP_1(Domain, IntRange, residues);
+  /** \deprecated_at{2.1} Use the IntRange setup_particle.*/
+  IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
+  IMP_DECORATOR_SETUP_2(Domain, Int, residues_begin, Int, residues_end);
 };
 
 IMP_DECORATORS(Domain, Domains, Hierarchies);

@@ -69,7 +69,7 @@ std::string mol2_string(Bond b, unsigned int count) {
   oss << std::setw(6) << (count + 1);
   Particle* pa = b.get_bonded(0).get_particle();
   Particle* pb = b.get_bonded(1).get_particle();
-  if (Atom::particle_is_instance(pa) && Atom::particle_is_instance(pb)) {
+  if (Atom::get_is_setup(pa) && Atom::get_is_setup(pb)) {
     Atom da(pa);
     Atom db(pb);
     Int atom_aid = da.get_input_index();
@@ -188,13 +188,13 @@ void bond_particle(Model*, const String& mol2_bondline,
   Bonded ad, bd;
 
   // bonded decorator
-  if (Bonded::particle_is_instance(ap)) {
+  if (Bonded::get_is_setup(ap)) {
     ad = Bonded(ap);
   } else {
     ad = Bonded::setup_particle(ap);
   }
 
-  if (Bonded::particle_is_instance(bp)) {
+  if (Bonded::get_is_setup(bp)) {
     bd = Bonded(bp);
   } else {
     bd = Bonded::setup_particle(bp);
@@ -317,7 +317,7 @@ void read_bond_mol2(Model* m, std::istream& mol2_file,
 // input molecule decorator, output compound informations to mol2 file
 void write_molecule_mol2(Hierarchy chd, std::ostream& mol2_file) {
   // check if current mhd is molecule
-  if (!Residue::particle_is_instance(chd)) {
+  if (!Residue::get_is_setup(chd)) {
     IMP_THROW("not a residue" << chd, ValueException);
   }
 
@@ -327,7 +327,7 @@ void write_molecule_mol2(Hierarchy chd, std::ostream& mol2_file) {
   // get the MoleculeDecorator of the molecule particle, output mol2 head
   // lines
   // get_mol2head_line should be in MoleculeDecorator.h, .cpp
-  if (Residue::particle_is_instance(molecule)) {
+  if (Residue::get_is_setup(molecule)) {
     Residue molecule_d = Residue(molecule);
     mol2_file << mol2_string(molecule_d);
   }
@@ -337,7 +337,7 @@ void write_molecule_mol2(Hierarchy chd, std::ostream& mol2_file) {
   ParticlesTemp atoms = get_leaves(chd);
   mol2_file << "@<TRIPOS>ATOM" << std::endl;
   for (unsigned int i = 0; i < atoms.size(); i++) {
-    if (Atom::particle_is_instance(atoms[i])) {
+    if (Atom::get_is_setup(atoms[i])) {
       Atom atom_d(atoms[i]);
       mol2_file << mol2_string(atom_d);
     }

@@ -23,7 +23,7 @@ ModelObjectsTemp SameResiduePairFilter::do_get_inputs(
     Model *m, const ParticleIndexes &pis) const {
   ModelObjectsTemp ret = IMP::kernel::get_particles(m, pis);
   for (unsigned int i = 0; i < pis.size(); ++i) {
-    if (Atom::particle_is_instance(m, pis[i])) {
+    if (Atom::get_is_setup(m, pis[i])) {
       Particle *parent = Hierarchy(m, pis[i]).get_parent();
       if (parent) {
         ret.push_back(parent);

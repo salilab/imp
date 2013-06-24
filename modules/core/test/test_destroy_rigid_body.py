@@ -28,7 +28,7 @@ class Tests(IMP.test.TestCase):
 
     def _perturb_all(self, all):
         for a in all:
-            if IMP.core.RigidBody.particle_is_instance(a):
+            if IMP.core.RigidBody.get_is_setup(a):
                 rb= IMP.core.RigidBody(a)
                 self._perturb_rb(rb)
             else:

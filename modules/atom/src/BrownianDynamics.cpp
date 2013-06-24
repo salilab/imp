@@ -51,7 +51,7 @@ BrownianDynamics::BrownianDynamics(Model *m, std::string name)
  */
 
 bool BrownianDynamics::get_is_simulation_particle(ParticleIndex pi) const {
-  return (Diffusion::particle_is_instance(get_model(), pi) &&
+  return (Diffusion::get_is_setup(get_model(), pi) &&
           IMP::core::XYZ(get_model(), pi).get_coordinates_are_optimized());
 }
 
@@ -207,16 +207,16 @@ void BrownianDynamics::advance_chunk(double dtfs, double ikT,
                                      unsigned int begin, unsigned int end) {
   IMP_LOG_TERSE("Advancing particles " << begin << " to " << end << std::endl);
   for (unsigned int i = begin; i < end; ++i) {
-    if (RigidBodyDiffusion::particle_is_instance(get_model(), ps[i])) {
+    if (RigidBodyDiffusion::get_is_setup(get_model(), ps[i])) {
       // std::cout << "rb" << std::endl;
       advance_orientation_0(ps[i], dtfs, ikT);
     } else {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
       Particle *p = get_model()->get_particle(ps[i]);
-      IMP_INTERNAL_CHECK(!core::RigidBody::particle_is_instance(p),
+      IMP_INTERNAL_CHECK(!core::RigidBody::get_is_setup(p),
                          "A rigid body without rigid body diffusion info"
                              << " was found: " << p->get_name());
-      IMP_INTERNAL_CHECK(!core::RigidMember::particle_is_instance(p),
+      IMP_INTERNAL_CHECK(!core::RigidMember::get_is_setup(p),
                          "A rigid member with diffusion info"
                              << " was found: " << p->get_name());
 #endif

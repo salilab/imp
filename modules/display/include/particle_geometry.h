@@ -28,7 +28,8 @@ class IMPDISPLAYEXPORT SingletonGeometry : public Geometry {
   SingletonGeometry(Particle *p);
 
   bool get_has_color() const {
-    return Geometry::get_has_color() || Colored::particle_is_instance(p_);
+    return Geometry::get_has_color()
+      || Colored::get_is_setup(p_);
   }
 
   Color get_color() const {
@@ -68,14 +69,14 @@ class IMPDISPLAYEXPORT PairGeometry : public Geometry {
   PairGeometry(const ParticlePair &pp);
 
   bool get_has_color() const {
-    return Geometry::get_has_color() || Colored::particle_is_instance(p0_) ||
-           Colored::particle_is_instance(p1_);
+    return Geometry::get_has_color() || Colored::get_is_setup(p0_) ||
+           Colored::get_is_setup(p1_);
   }
 
   Color get_color() const {
     if (Geometry::get_has_color()) {
       return Geometry::get_color();
-    } else if (Colored::particle_is_instance(p0_))
+    } else if (Colored::get_is_setup(p0_))
       return Colored(p0_).get_color();
     else
       return Colored(p1_).get_color();

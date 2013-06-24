@@ -25,59 +25,37 @@ IMPCORE_BEGIN_NAMESPACE
     \include XYZR_Decorator.py
  */
 class IMPCOREEXPORT XYZR : public XYZ {
- public:
-  IMP_DECORATOR(XYZR, XYZ);
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                const algebra::Sphere3D s) {
+    XYZ::setup_particle(m, pi, s.get_center());
+    do_setup_particle(m, pi, s.get_radius());
+  }
 
-#ifndef IMP_DOXYGEN
-  /** Create a decorator using radius_key to store the FloatKey.
-     \param[in] p The particle to wrap.
-   */
-  static XYZR setup_particle(Particle *p) {
-    if (!XYZ::particle_is_instance(p)) {
-      XYZ::setup_particle(p);
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                double r) {
+    m->add_attribute(get_radius_key(), pi, r, false);
+  }
+
+  static void do_setup_particle(Model *m, ParticleIndex pi) {
+    if (!XYZ::get_is_setup(m, pi)) {
+      XYZ::setup_particle(m, pi);
     }
-    p->add_attribute(get_radius_key(), 0, false);
-    return XYZR(p);
-  }
-  /** Create a decorator using radius_key to store the FloatKey.
-      The particle should already be an XYZ particle.
-      \param[in] p The particle to wrap.
-      \param[in] radius The radius to set initially
-    */
-  static XYZR setup_particle(Particle *p, Float radius) {
-    p->add_attribute(get_radius_key(), radius, false);
-    return XYZR(p);
-  }
-  /** Create a decorator using radius_key to store the FloatKey.
-     \param[in] p The particle to wrap.
-     \param[in] s The sphere to use to set the position and radius
-   */
-  static XYZR setup_particle(Particle *p,
-                             // See XYZ::setup_particle before you change this
-                             const algebra::Sphere3D s) {
-    XYZ::setup_particle(p, s.get_center());
-    p->add_attribute(get_radius_key(), s.get_radius(), false);
-    return XYZR(p);
+    m->add_attribute(get_radius_key(), pi, 0, false);
   }
 
-  //! Check if the particle has the required attributes
-  static bool particle_is_instance(Particle *p) {
-    return particle_is_instance(p->get_model(), p->get_index());
-  }
-#endif
+
+ public:
+  IMP_DECORATOR_METHODS(XYZR, XYZ);
+  IMP_DECORATOR_SETUP_0(XYZR);
+  /** Setup an XYZ particle as an XYZR particle. */
+  IMP_DECORATOR_SETUP_1(XYZR, Float, radius);
+  IMP_DECORATOR_SETUP_1(XYZR, algebra::Sphere3D, ball);
 
   /** Add the coordinates and radius from the sphere to the particle.
    */
-  static XYZR setup_particle(Model *m, ParticleIndex pi,
-                             // See XYZ::setup_particle before you change this
-                             const algebra::Sphere3D s) {
-    XYZ::setup_particle(m, pi, s.get_center());
-    m->add_attribute(get_radius_key(), pi, s.get_radius(), false);
-    return XYZR(m, pi);
-  }
 
   //! Check if the particle has the required attributes
-  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_radius_key(), pi);
   }
 

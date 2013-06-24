@@ -39,7 +39,7 @@ class Tests(IMP.test.TestCase):
             del f
             f= RMF.open_rmf_file_read_only(fn)
             r2=IMP.rmf.create_hierarchies(f, m)[0]
-            self.assert_(IMP.core.RigidMember.particle_is_instance(r2.get_child(0)))
+            self.assert_(IMP.core.RigidMember.get_is_setup(r2.get_child(0)))
             print frames
             for i in range(0,11):
                 IMP.rmf.load_frame(f, i)

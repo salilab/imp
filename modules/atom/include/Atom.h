@@ -232,34 +232,18 @@ IMPATOMEXPORT extern const AtomType AT_HB1;
    \see Hierarchy
  */
 class IMPATOMEXPORT Atom : public Hierarchy {
+  static void do_setup_particle(Model *m, ParticleIndex pi, Atom o);
+  static void do_setup_particle(Model *m, ParticleIndex pi, AtomType t);
  public:
-
-  IMP_DECORATOR(Atom, Hierarchy);
-
-#ifndef IMP_DOXYGEN
-  /** Create a decorator with the passed type.*/
-  static Atom setup_particle(Particle *p, AtomType t) {
-    return setup_particle(p->get_model(), p->get_index(), t);
-  }
-
-  /** Create a decorator by copying from o.*/
-  static Atom setup_particle(Particle *p, Atom o);
+  IMP_DECORATOR_METHODS(Atom, Hierarchy);
+  IMP_DECORATOR_SETUP_1(Atom, Atom, other);
+  /** Add the required attributes using the passed AtomType. */
+  IMP_DECORATOR_SETUP_1(Atom, AtomType, atom_type);
 
   //! return true if the particle has the needed attributes
-  static bool particle_is_instance(Particle *p) {
-    return particle_is_instance(p->get_model(), p->get_index());
-  }
-#endif
-
-  Particle *get_particle() const { return Hierarchy::get_particle(); }
-
-  /** Create a decorator with the passed type.*/
-  static Atom setup_particle(Model *m, ParticleIndex pi, AtomType t);
-
-  //! return true if the particle has the needed attributes
-  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_atom_type_key(), pi) &&
-           Hierarchy::particle_is_instance(m, pi);
+           Hierarchy::get_is_setup(m, pi);
   }
 
   AtomType get_atom_type() const {

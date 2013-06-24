@@ -20,54 +20,53 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT Fragment : public Hierarchy {
   static IntsKey get_begins_key();
   static IntsKey get_ends_key();
-  static void set_residue_indexes(Particle *p, Ints ris);
-  static void set_residue_indexes(Particle *p, const IntPairs &ris);
+  static void set_residue_indexes(Model *m, ParticleIndex pi, Ints ris);
+  static void set_residue_indexes(Model *m,
+                                  ParticleIndex pi, const IntPairs &ris);
   static IntKey get_marker_key();
 
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                    const Ints &ris = Ints()) {
+    if (!Hierarchy::get_is_setup(m, pi)) {
+      Hierarchy::setup_particle(m, pi);
+    }
+    set_residue_indexes(m, pi, ris);
+    m->add_attribute(get_marker_key(), pi, 1);
+  }
+
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                    Fragment o) {
+    do_setup_particle(m, pi, o.get_residue_indexes());
+  }
+
  public:
-  static Fragment setup_particle(Particle *p, const Ints &ris = Ints()) {
-    if (!Hierarchy::particle_is_instance(p)) {
-      Hierarchy::setup_particle(p);
-    }
-    set_residue_indexes(p, ris);
-    p->add_attribute(get_marker_key(), 1);
-    return Fragment(p);
-  }
 
-  //! Create a domain by copying from o
-  static Fragment setup_particle(Particle *p, Fragment o) {
-    if (!Hierarchy::particle_is_instance(p)) {
-      Hierarchy::setup_particle(p);
-    }
-    IntPairs ris = o.get_residue_index_ranges();
-    set_residue_indexes(p, ris);
-    p->add_attribute(get_marker_key(), 1);
-    return Fragment(p);
-  }
-
-  virtual ~Fragment();
-
-  static bool particle_is_instance(Particle *p) {
-    return particle_is_instance(p->get_model(), p->get_index());
-  }
-
-  static bool particle_is_instance(Model *m, ParticleIndex pi) {
-    return Hierarchy::particle_is_instance(m, pi) &&
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
+    return Hierarchy::get_is_setup(m, pi) &&
            m->get_has_attribute(get_marker_key(), pi);
   }
 
   //! Add the residues whose indexes are listed in the passed vector
-  void set_residue_indexes(Ints o) { set_residue_indexes(get_particle(), o); }
+  void set_residue_indexes(Ints o) {
+    set_residue_indexes(get_model(),
+                        get_particle_index(), o);
+  }
 
   Ints get_residue_indexes() const;
 
+  /** \deprecated_at{2.1} Use the get_residue_indexes() method instead. */
+  IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
   IntPairs get_residue_index_ranges() const;
 
   //! Return true if this fragment contains a given residue
   /** This could be made more efficient. */
   bool get_contains_residue(int rindex) const;
 
-  IMP_DECORATOR(Fragment, Hierarchy);
+  IMP_DECORATOR_METHODS(Fragment, Hierarchy);
+  IMP_DECORATOR_SETUP_0(Fragment);
+  IMP_DECORATOR_SETUP_1(Fragment, Fragment, other);
+  /** Setup a fragment with the passed residue indexes. */
+  IMP_DECORATOR_SETUP_1(Fragment, Ints, residue_indexes);
 };
 
 IMP_DECORATORS(Fragment, Fragments, Hierarchies);

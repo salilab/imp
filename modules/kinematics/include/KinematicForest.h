@@ -182,7 +182,7 @@ IMP_OBJECT_METHODS(KinematicForest);
   bool get_is_member(IMP::core::RigidBody rb) const{
     Particle* p = rb.get_particle();
     return
-      KinematicNode::particle_is_instance( p ) &&
+      KinematicNode::get_is_setup( p ) &&
       nodes_.find( KinematicNode( p ) ) != nodes_.end() ;
   }
 

@@ -11,8 +11,6 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-Fragment::~Fragment() {}
-
 void Fragment::show(std::ostream &out) const {
   out << "Fragment: ";
   IntPairs ps = get_residue_index_ranges();
@@ -73,7 +71,8 @@ IntPairs Fragment::get_residue_index_ranges() const {
   return ret;
 }
 
-void Fragment::set_residue_indexes(Particle *p, const IntPairs &ris) {
+void Fragment::set_residue_indexes(Model *m,
+                                   ParticleIndex pi, const IntPairs &ris) {
   Ints begins(ris.size());
   Ints ends(ris.size());
   for (unsigned int i = 0; i < ris.size(); ++i) {
@@ -83,24 +82,25 @@ void Fragment::set_residue_indexes(Particle *p, const IntPairs &ris) {
                     "Bad range for residue indexes");
   }
   if (begins.size() > 0) {
-    if (p->get_model()->get_has_attribute(get_begins_key(), p->get_index())) {
-      p->get_model()->set_attribute(get_begins_key(), p->get_index(), begins);
-      p->get_model()->set_attribute(get_ends_key(), p->get_index(), ends);
+    if (m->get_has_attribute(get_begins_key(), pi)) {
+      m->set_attribute(get_begins_key(), pi, begins);
+      m->set_attribute(get_ends_key(), pi, ends);
     } else {
-      p->get_model()->add_attribute(get_begins_key(), p->get_index(), begins);
-      p->get_model()->add_attribute(get_ends_key(), p->get_index(), ends);
+      m->add_attribute(get_begins_key(), pi, begins);
+      m->add_attribute(get_ends_key(), pi, ends);
     }
   } else {
-    if (p->get_model()->get_has_attribute(get_begins_key(), p->get_index())) {
-      p->get_model()->remove_attribute(get_begins_key(), p->get_index());
-      p->get_model()->remove_attribute(get_ends_key(), p->get_index());
+    if (m->get_has_attribute(get_begins_key(), pi)) {
+      m->remove_attribute(get_begins_key(), pi);
+      m->remove_attribute(get_ends_key(), pi);
     }
   }
 }
 
-void Fragment::set_residue_indexes(Particle *p, Ints o) {
+void Fragment::set_residue_indexes(Model *m,
+                                   ParticleIndex pi, Ints o) {
   if (o.empty()) {
-    set_residue_indexes(p, IntPairs());
+    set_residue_indexes(m, pi, IntPairs());
     return;
   }
   std::sort(o.begin(), o.end());
@@ -114,11 +114,11 @@ void Fragment::set_residue_indexes(Particle *p, Ints o) {
     }
   }
   pairs.push_back(IntPair(o[begin], o.back() + 1));
-  set_residue_indexes(p, pairs);
+  set_residue_indexes(m, pi, pairs);
   using IMP::operator<< ;
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i = 0; i < o.size(); ++i) {
-      IMP_INTERNAL_CHECK(Fragment(p).get_contains_residue(o[i]),
+      IMP_INTERNAL_CHECK(Fragment(m, pi).get_contains_residue(o[i]),
                          "Residue index not found after addition: "
                              << o << " became " << pairs);
     }

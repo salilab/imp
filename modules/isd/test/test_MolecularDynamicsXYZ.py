@@ -27,13 +27,13 @@ class XTransRestraint(IMP.Restraint):
     def unprotected_evaluate(self, accum):
         e = 0.
         for p in self.get_model().get_particles():
-            if IMP.isd.Nuisance.particle_is_instance(p):
+            if IMP.isd.Nuisance.get_is_setup(p):
                 e += p.get_value(nkey) * self.strength
             else:
                 e += p.get_value(xkey) * self.strength
         if accum:
             for p in self.get_model().get_particles():
-                if IMP.isd.Nuisance.particle_is_instance(p):
+                if IMP.isd.Nuisance.get_is_setup(p):
                     p.add_to_derivative(nkey, self.strength, accum)
                 else:
                     p.add_to_derivative(xkey, self.strength, accum)
@@ -56,7 +56,7 @@ class WriteTrajState(IMP.OptimizerState):
         model = self.get_optimizer().get_model()
         step = []
         for p in model.get_particles():
-            if IMP.isd.Nuisance.particle_is_instance(p):
+            if IMP.isd.Nuisance.get_is_setup(p):
                 step.append((p.get_value(nkey),p.get_value(vnkey)))
             else:
                 step.append((p.get_value(xkey), p.get_value(ykey),

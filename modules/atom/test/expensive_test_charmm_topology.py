@@ -294,7 +294,7 @@ class Tests(IMP.test.TestCase):
         topology.add_coordinates(pdb)
         # Every atom should now have XYZ coordinates
         for a in IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE):
-            self.assertTrue(IMP.core.XYZ.particle_is_instance(a))
+            self.assertTrue(IMP.core.XYZ.get_is_setup(a))
 
     def test_setup_hierarchy(self):
         """Test CHARMMTopology::setup_hierarchy() method"""
@@ -309,8 +309,8 @@ class Tests(IMP.test.TestCase):
         atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(atoms), 11)
         for a in atoms:
-            self.assertTrue(IMP.core.XYZ.particle_is_instance(a))
-            self.assertTrue(IMP.atom.CHARMMAtom.particle_is_instance(a))
+            self.assertTrue(IMP.core.XYZ.get_is_setup(a))
+            self.assertTrue(IMP.atom.CHARMMAtom.get_is_setup(a))
 
     def test_heme(self):
         """Test CHARMM topology handling of HEME residues"""
@@ -354,7 +354,7 @@ class Tests(IMP.test.TestCase):
         topology.add_coordinates(hierarchy)
         # Every atom should now have XYZ coordinates
         for a in IMP.atom.get_by_type(hierarchy, IMP.atom.ATOM_TYPE):
-            self.assertTrue(IMP.core.XYZ.particle_is_instance(a))
+            self.assertTrue(IMP.core.XYZ.get_is_setup(a))
 
     def test_add_sequence(self):
         """Test CHARMMTopology::add_sequence()"""
@@ -462,8 +462,8 @@ class Tests(IMP.test.TestCase):
         residues = IMP.atom.get_by_type(pdb, IMP.atom.RESIDUE_TYPE)
         last_atom = atoms[-1].get_particle()
         # PDB reader will have already set radii but not CHARMM type:
-        self.assertEqual(IMP.core.XYZR.particle_is_instance(last_atom), True)
-        self.assertEqual(IMP.atom.CHARMMAtom.particle_is_instance(last_atom),
+        self.assertEqual(IMP.core.XYZR.get_is_setup(last_atom), True)
+        self.assertEqual(IMP.atom.CHARMMAtom.get_is_setup(last_atom),
                          False)
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
@@ -474,9 +474,9 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(segment.get_number_of_residues(), 156)
         self.assertRaises(IMP.base.ValueException, segment.apply_default_patches, ff)
         for typ in (IMP.atom.Charged, IMP.atom.LennardJones):
-            self.assertEqual(typ.particle_is_instance(last_atom), False)
+            self.assertEqual(typ.get_is_setup(last_atom), False)
         topology.add_atom_types(pdb)
-        self.assertEqual(IMP.atom.CHARMMAtom.particle_is_instance(last_atom),
+        self.assertEqual(IMP.atom.CHARMMAtom.get_is_setup(last_atom),
                          True)
         self.assertEqual(IMP.atom.CHARMMAtom(last_atom).get_charmm_type(), 'OC')
         topology.add_charges(pdb)

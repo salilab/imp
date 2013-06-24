@@ -123,8 +123,8 @@ void ProjectionFinder::set_model_particles(const ParticlesTemp &ps) {
   model_particles_= ps;
   // Check the particles for coordinates, radius and mass
   for (unsigned int i=0; i<model_particles_.size() ; ++i) {
-    IMP_USAGE_CHECK((core::XYZR::particle_is_instance(model_particles_[i]) &&
-              atom::Mass::particle_is_instance(model_particles_[i])),
+    IMP_USAGE_CHECK((core::XYZR::get_is_setup(model_particles_[i]) &&
+              atom::Mass::get_is_setup(model_particles_[i])),
        "Particle " << i
        << " does not have the required attributes" << std::endl);
   }

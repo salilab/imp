@@ -188,7 +188,7 @@ void RigidMovedSingletonContainer::check_estimate(
 }
 
 void RigidMovedSingletonContainer::do_initialize_particle(ParticleIndex pi) {
-  if (core::RigidMember::particle_is_instance(get_model(), pi)) {
+  if (core::RigidMember::get_is_setup(get_model(), pi)) {
     core::RigidBody rb = core::RigidMember(get_model(), pi).get_rigid_body();
     ParticleIndex rbpi = rb.get_particle_index();
     if (rbs_members_.find(rbpi) == rbs_members_.end()) {
@@ -249,7 +249,7 @@ ParticlesTemp RigidMovedSingletonContainer::get_input_particles() const {
       MovedSingletonContainer::get_singleton_container()->get_indexes());
   int sz = ret.size();
   for (int i = 0; i < sz; ++i) {
-    if (RigidMember::particle_is_instance(ret[i])) {
+    if (RigidMember::get_is_setup(ret[i])) {
       ret.push_back(RigidMember(ret[i]).get_rigid_body());
     }
   }

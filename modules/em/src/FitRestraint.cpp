@@ -38,7 +38,7 @@ FitRestraint::FitRestraint(
   norm_factors_=norm_factors;
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< ps.size(); ++i) {
-      IMP_USAGE_CHECK(core::XYZR::particle_is_instance(ps[i]),
+      IMP_USAGE_CHECK(core::XYZR::get_is_setup(ps[i]),
                       "Particle " << ps[i]->get_name()
                       << " is not XYZR"
                       << std::endl);
@@ -252,7 +252,7 @@ void FitRestraint::store_particles(ParticlesTemp ps) {
   //sort to rigid and not rigid members
   if (use_rigid_bodies_) {
     for(Particles::iterator it = all_ps_.begin();it != all_ps_.end(); it++) {
-      if (core::RigidMember::particle_is_instance(*it)) {
+      if (core::RigidMember::get_is_setup(*it)) {
         core::RigidBody rb=core::RigidMember(*it).get_rigid_body();
         part_of_rb_.push_back(*it);
         if (member_map_.find(rb) == member_map_.end()) {

@@ -25,13 +25,16 @@ IMPISD_BEGIN_NAMESPACE
  */
 class IMPISDEXPORT Nuisance: public Decorator
 {
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                double nuisance=1.0);
+
 public:
-    IMP_DECORATOR(Nuisance, Decorator);
+  IMP_DECORATOR_METHODS(Nuisance, Decorator);
+  IMP_DECORATOR_SETUP_0(Nuisance);
+  IMP_DECORATOR_SETUP_1(Nuisance, double, nuisance);
 
-  static Nuisance setup_particle(Particle *p, double nuisance=1.0);
-
-  static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(get_nuisance_key());
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
+    return m->get_has_attribute(get_nuisance_key(), pi);
   }
 
   static FloatKey get_nuisance_key();

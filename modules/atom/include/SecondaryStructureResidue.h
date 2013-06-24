@@ -24,26 +24,29 @@ IMPATOM_BEGIN_NAMESPACE
    Contains probabilities for each sse type (helix, strand, coil)
  */
 class IMPATOMEXPORT SecondaryStructureResidue : public Decorator {
- public:
-  IMP_DECORATOR(SecondaryStructureResidue, Decorator);
-
-  //! Set up SecondaryStructureResidue when you know all three probabilities
-  static SecondaryStructureResidue setup_particle(Particle *res_p,
-                                                  Float prob_helix,
-                                                  Float prob_strand,
-                                                  Float prob_coil) {
-    res_p->add_attribute(get_prob_helix_key(), prob_helix);
-    res_p->add_attribute(get_prob_strand_key(), prob_strand);
-    res_p->add_attribute(get_prob_coil_key(), prob_coil);
-    if (!Hierarchy::particle_is_instance(res_p)) {
-      Hierarchy::setup_particle(res_p);
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                Float prob_helix,
+                                Float prob_strand,
+                                Float prob_coil) {
+    m->add_attribute(get_prob_helix_key(), pi, prob_helix);
+    m->add_attribute(get_prob_strand_key(), pi, prob_strand);
+    m->add_attribute(get_prob_coil_key(), pi, prob_coil);
+    if (!Hierarchy::get_is_setup(m, pi)) {
+      Hierarchy::setup_particle(m, pi);
     }
-    SecondaryStructureResidue ssr(res_p);
+    // seems redundant
+    SecondaryStructureResidue ssr(m, pi);
     ssr.set_prob_helix(prob_helix);
     ssr.set_prob_strand(prob_strand);
     ssr.set_prob_coil(prob_coil);
-    return ssr;
   }
+
+ public:
+  IMP_DECORATOR_METHODS(SecondaryStructureResidue, Decorator);
+  IMP_DECORATOR_SETUP_3(SecondaryStructureResidue,
+                        Float, prob_helix,
+                        Float, prob_strand,
+                        Float, prob_coil);
 
   //! Set up SecondaryStructureResidue with default probabilities
   static SecondaryStructureResidue setup_particle(Particle *res_p) {
@@ -55,10 +58,10 @@ class IMPATOMEXPORT SecondaryStructureResidue : public Decorator {
   }
 
   //! Return true if the particle is a secondary structure residue
-  static bool particle_is_instance(Particle *p) {
-    if (p->has_attribute(get_prob_helix_key()) &&
-        (p->has_attribute(get_prob_strand_key())) &&
-        (p->has_attribute(get_prob_coil_key())))
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
+    if (m->get_has_attribute(get_prob_helix_key(), pi) &&
+        (m->get_has_attribute(get_prob_strand_key(), pi)) &&
+        (m->get_has_attribute(get_prob_coil_key(), pi)))
       return true;
     return false;
   }

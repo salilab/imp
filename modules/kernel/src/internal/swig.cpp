@@ -165,4 +165,7 @@ ParticlePairsTemp _LogPairScore::get_particle_pairs() const {
   return ret;
 }
 
+ParticleIndex _take_particle_adaptor(ParticleAdaptor pa) {
+  return pa.get_particle_index();
+}
 IMPKERNEL_END_INTERNAL_NAMESPACE

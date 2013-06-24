@@ -29,48 +29,43 @@ IMPATOM_BEGIN_NAMESPACE
     D is assumed to be in \f$A^2/fs\f$
  */
 class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
- public:
-  IMP_DECORATOR(Diffusion, IMP::core::XYZ);
-
-  /** Create a decorator with the passed coordinates and D.
-  */
-  static Diffusion setup_particle(Particle *p, const algebra::Vector3D &v,
-                                  Float D) {
-    XYZ::setup_particle(p, v);
-    p->add_attribute(get_diffusion_coefficient_key(), D);
-    return Diffusion(p);
-  }
-
-  /** Create a decorator with the a given D.
-      The particle
-      is assumed to already have x,y,z attributes
-  */
-  static Diffusion setup_particle(Particle *p, Float D) {
-    IMP_USAGE_CHECK(XYZ::particle_is_instance(p),
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                Float D) {
+    IMP_USAGE_CHECK(XYZ::get_is_setup(m, pi),
                     "Particle must already be an XYZ particle");
-    p->add_attribute(get_diffusion_coefficient_key(), D);
-    return Diffusion(p);
+    m->add_attribute(get_diffusion_coefficient_key(), pi, D);
   }
-
-  /** Create a decorator with the D determined from its
-      radius.
-  */
-  static Diffusion setup_particle(Particle *p);
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                const algebra::Vector3D &v,
+                                Float D) {
+    XYZ::setup_particle(m, pi, v);
+    do_setup_particle(m, pi, D);
+  }
+  static void do_setup_particle(Model *m, ParticleIndex pi);
+ public:
+  IMP_DECORATOR_METHODS(Diffusion, IMP::core::XYZ);
+  IMP_DECORATOR_SETUP_1(Diffusion, Float, D);
+  IMP_DECORATOR_SETUP_2(Diffusion, algebra::Vector3D, v,
+                        Float, D);
+  /** Assume particle is already a core::XYZR particle. */
+  IMP_DECORATOR_SETUP_0(Diffusion);
 
   //! Return true if the particle is an instance of an Diffusion
-  static bool particle_is_instance(Particle *p) {
-    return XYZ::particle_is_instance(p) &&
-           p->has_attribute(get_diffusion_coefficient_key());
-  }
-
-  //! Return true if the particle is an instance of an Diffusion
-  static bool particle_is_instance(Model *m, ParticleIndex p) {
+  static bool get_is_setup(Model *m, ParticleIndex p) {
     return m->get_has_attribute(get_diffusion_coefficient_key(), p);
   }
-#ifndef IMP_DOXYGEN
-  void set_d(double d) { set_diffusion_coefficient(d); }
-  double get_d() const { return get_diffusion_coefficient(); }
-#endif
+  /** \deprecated_at{2.1} Use set_diffusion_coefficient(). */
+  IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
+  void set_d(double d) {
+    IMPATOM_DEPRECATED_FUNCTION_DEF(2.1, "Use set_diffusion_coefficient().");
+    set_diffusion_coefficient(d);
+  }
+  /** \deprecated_at{2.1} Use get_diffusion_coefficient(). */
+  IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
+    double get_d() const {
+    IMPATOM_DEPRECATED_FUNCTION_DEF(2.1, "Use set_diffusion_coefficient().");
+    return get_diffusion_coefficient();
+  }
   void set_diffusion_coefficient(double d) {
     get_particle()->set_value(get_diffusion_coefficient_key(), d);
   }
@@ -88,10 +83,11 @@ IMP_DECORATORS(Diffusion, Diffusions, core::XYZs);
 /** A rigid body that is diffusing, so it also has a rotation diffusion
     coefficient. The units on the rotational coefficient are radians^2/fs.*/
 class IMPATOMEXPORT RigidBodyDiffusion : public Diffusion {
+  static void do_setup_particle(Model *m, ParticleIndex pi);
  public:
-  IMP_DECORATOR(RigidBodyDiffusion, Diffusion);
+  IMP_DECORATOR_METHODS(RigidBodyDiffusion, Diffusion);
   /** All diffusion coefficients are determined from the radius */
-  static RigidBodyDiffusion setup_particle(Particle *p);
+  IMP_DECORATOR_SETUP_0(RigidBodyDiffusion);
 
   double get_rotational_diffusion_coefficient() const {
     return get_particle()->get_value(
@@ -103,13 +99,7 @@ class IMPATOMEXPORT RigidBodyDiffusion : public Diffusion {
   }
 
   //! Return true if the particle is an instance of an Diffusion
-  static bool particle_is_instance(Particle *p) {
-    return XYZ::particle_is_instance(p) &&
-           p->has_attribute(get_rotational_diffusion_coefficient_key());
-  }
-
-  //! Return true if the particle is an instance of an Diffusion
-  static bool particle_is_instance(Model *m, ParticleIndex p) {
+  static bool get_is_setup(Model *m, ParticleIndex p) {
     return m->get_has_attribute(get_rotational_diffusion_coefficient_key(), p);
   }
 

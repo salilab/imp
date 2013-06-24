@@ -252,7 +252,7 @@ base::Vector<base::Array<D, ParticleIndex> > get_index(const base::Vector<
   return ret;
 }
 
-inline Model *get_model(Particle *p) { return p->get_model(); }
+inline Model *get_model(Particle *p) { return p->get_model(); }\
 inline Model *get_model(ModelObject *p) { return p->get_model(); }
 inline Model *get_model(ScoreState *p) { return p->get_model(); }
 

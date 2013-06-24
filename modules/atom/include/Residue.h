@@ -131,48 +131,41 @@ IMPATOMEXPORT extern const ResidueType HEME;
    \ingroup decorators
  */
 class IMPATOMEXPORT Residue : public Hierarchy {
- public:
-  IMP_DECORATOR(Residue, Hierarchy);
-
-#ifndef IMP_DOXYGEN
-  static Residue setup_particle(Particle *p, ResidueType t = UNK,
-                                int index = -1, int insertion_code = 32) {
-    return setup_particle(p->get_model(), p->get_index(), t, index,
-                          insertion_code);
-  }
-
-  //! Copy data from the other Residue to the particle p
-  static Residue setup_particle(Particle *p, Residue o) {
-    return setup_particle(p, o.get_residue_type(), o.get_index(),
-                          o.get_insertion_code());
-  }
-
-  static bool particle_is_instance(Particle *p) {
-    return particle_is_instance(p->get_model(), p->get_index());
-  }
-
-#endif
-
-  //! Add the required attributes to the particle and create a Residue
-  static Residue setup_particle(Model *m, ParticleIndex pi, ResidueType t = UNK,
-                                int index = -1, int insertion_code = 32) {
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                ResidueType t = UNK,
+                                int index = -1,
+                                int insertion_code = 32) {
     m->add_attribute(get_residue_type_key(), pi, t.get_index());
     m->add_attribute(get_index_key(), pi, index);
     m->add_attribute(get_insertion_code_key(), pi, insertion_code);
     // insertion code 32 is for space
-    if (!Hierarchy::particle_is_instance(m, pi)) {
+    if (!Hierarchy::get_is_setup(m, pi)) {
       Hierarchy::setup_particle(m, pi);
     }
     Residue ret(m, pi);
     ret.set_residue_type(t);
-    return ret;
   }
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                const Residue &o) {
+    do_setup_particle(m, pi, o.get_residue_type(),
+                      o.get_index(),
+                      o.get_insertion_code());
+  }
+ public:
+  IMP_DECORATOR_METHODS(Residue, Hierarchy);
+  IMP_DECORATOR_SETUP_3(Residue, ResidueType, t,
+                        int, index, int, insertion_code);
+  /** Setup the particle as a Residue with teh passed type and index. */
+  IMP_DECORATOR_SETUP_2(Residue, ResidueType, t,
+                        int, index);
+  IMP_DECORATOR_SETUP_1(Residue, ResidueType, t);
+  IMP_DECORATOR_SETUP_1(Residue, Residue, other);
 
-  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_residue_type_key(), pi) &&
            m->get_has_attribute(get_index_key(), pi) &&
            m->get_has_attribute(get_insertion_code_key(), pi) &&
-           Hierarchy::particle_is_instance(m, pi);
+           Hierarchy::get_is_setup(m, pi);
   }
 
   ResidueType get_residue_type() const {

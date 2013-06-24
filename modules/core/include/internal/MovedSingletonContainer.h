@@ -95,7 +95,7 @@ class IMPCOREEXPORT RigidMovedSingletonContainer
 
   double get_distance_estimate(unsigned int i) const {
     core::XYZR xyz(get_model(), bodies_[i]);
-    if (!core::RigidBody::particle_is_instance(get_model(), bodies_[i])) {
+    if (!core::RigidBody::get_is_setup(get_model(), bodies_[i])) {
       return (xyz.get_coordinates() - backup_[i].first.get_center())
           .get_magnitude();
     } else {
@@ -119,7 +119,7 @@ class IMPCOREEXPORT RigidMovedSingletonContainer
   }
   std::pair<algebra::Sphere3D, algebra::Rotation3D> get_data(
       ParticleIndex p) const {
-    if (!core::RigidBody::particle_is_instance(get_model(), p)) {
+    if (!core::RigidBody::get_is_setup(get_model(), p)) {
       return std::make_pair(core::XYZR(get_model(), p).get_sphere(),
                             algebra::Rotation3D());
     } else {

@@ -111,12 +111,12 @@ void ForceFieldParameters::add_bonds(Residue rd1, Residue rd2) const {
   Particle* p2 = ad2.get_particle();
 
   Bonded b1, b2;
-  if (Bonded::particle_is_instance(p1))
+  if (Bonded::get_is_setup(p1))
     b1 = Bonded::decorate_particle(p1);
   else
     b1 = Bonded::setup_particle(p1);
 
-  if (Bonded::particle_is_instance(p2))
+  if (Bonded::get_is_setup(p2))
     b2 = Bonded::decorate_particle(p2);
   else
     b2 = Bonded::setup_particle(p2);
@@ -147,12 +147,12 @@ void ForceFieldParameters::add_bonds(Residue rd) const {
     Particle* p2 = ad2.get_particle();
 
     Bonded b1, b2;
-    if (Bonded::particle_is_instance(p1))
+    if (Bonded::get_is_setup(p1))
       b1 = Bonded::decorate_particle(p1);
     else
       b1 = Bonded::setup_particle(p1);
 
-    if (Bonded::particle_is_instance(p2))
+    if (Bonded::get_is_setup(p2))
       b2 = Bonded::decorate_particle(p2);
     else
       b2 = Bonded::setup_particle(p2);

@@ -22,21 +22,22 @@ IMPISD_BEGIN_NAMESPACE
  */
 class IMPISDEXPORT Switching: public Nuisance
 {
-public:
-    IMP_DECORATOR(Switching, Nuisance);
-
-  static Switching setup_particle(Particle *p, double switching=0.5)
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                double switching=0.5)
   {
-      if (!Nuisance::particle_is_instance(p))
-          Nuisance::setup_particle(p,switching);
-      Nuisance(p).set_lower(0.);
-      Nuisance(p).set_upper(1.);
-      return Switching(p);
+    if (!Nuisance::get_is_setup(m, pi))
+      Nuisance::setup_particle(m, pi,switching);
+    Nuisance(m, pi).set_lower(0.);
+    Nuisance(m, pi).set_upper(1.);
   }
+public:
+  IMP_DECORATOR_METHODS(Switching, Nuisance);
+  IMP_DECORATOR_SETUP_0(Switching);
+  IMP_DECORATOR_SETUP_1(Switching, double, switching);
 
-  static bool particle_is_instance(Particle *p) {
-    return Nuisance::particle_is_instance(p) && Nuisance(p).get_lower()>=0
-           && Nuisance(p).get_upper()<=1;
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
+    return Nuisance::get_is_setup(m, pi) && Nuisance(m, pi).get_lower()>=0
+      && Nuisance(m, pi).get_upper()<=1;
   }
 
   Float get_switching() const {

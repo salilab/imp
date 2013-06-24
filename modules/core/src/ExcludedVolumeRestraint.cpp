@@ -134,7 +134,7 @@ double ExcludedVolumeRestraint::unprotected_evaluate(
     IMP_IF_CHECK(base::USAGE) {
       Model *m = get_model();
       IMP_CONTAINER_FOREACH(SingletonContainer, sc_, {
-        if (RigidMember::particle_is_instance(m, _1)) {
+        if (RigidMember::get_is_setup(m, _1)) {
           RigidBody rb = RigidMember(m, _1).get_rigid_body();
           using IMP::operator<< ;
           IMP_USAGE_CHECK(
@@ -175,8 +175,8 @@ double ExcludedVolumeRestraint::unprotected_evaluate(
     int found = 0;
     for (unsigned int i = 0; i < all.size(); ++i) {
       for (unsigned int j = 0; j < i; ++j) {
-        if (!RigidMember::particle_is_instance(all[i]) ||
-            !RigidMember::particle_is_instance(all[j]) ||
+        if (!RigidMember::get_is_setup(all[i]) ||
+            !RigidMember::get_is_setup(all[j]) ||
             RigidMember(all[i]).get_rigid_body() !=
                 RigidMember(all[j]).get_rigid_body()) {
           if (internal::get_filters_contains(
@@ -231,8 +231,8 @@ double ExcludedVolumeRestraint::unprotected_evaluate_if_good(
     if (all.size() < 3000) {
       for (unsigned int i = 0; i < all.size(); ++i) {
         for (unsigned int j = 0; j < i; ++j) {
-          if (!RigidMember::particle_is_instance(all[i]) ||
-              !RigidMember::particle_is_instance(all[j]) ||
+          if (!RigidMember::get_is_setup(all[i]) ||
+              !RigidMember::get_is_setup(all[j]) ||
               RigidMember(all[i]).get_rigid_body() !=
                   RigidMember(all[j]).get_rigid_body()) {
             check += ssps_->evaluate(ParticlePair(all[i], all[j]), nullptr);

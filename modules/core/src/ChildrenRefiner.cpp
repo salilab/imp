@@ -15,7 +15,7 @@ ChildrenRefiner::ChildrenRefiner(HierarchyTraits traits)
     : Refiner("Children%d"), traits_(traits) {}
 
 bool ChildrenRefiner::get_can_refine(Particle *p) const {
-  if (!core::Hierarchy::particle_is_instance(p, traits_)) return false;
+  if (!core::Hierarchy::get_is_setup(p, traits_)) return false;
   return core::Hierarchy(p, traits_).get_number_of_children() != 0;
 }
 

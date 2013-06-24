@@ -1,6 +1,7 @@
 # ChangeLog
 
 # For IMP 2.1 # {#ChangeLog}
+- Decorators have been cleaned up to make them behave consistently regarding IMP::kernel::Particle vs IMP::kernel::ParticleIndexes. This change shouldn't break existing code, but decorators should move to the new macros IMP_DECORATOR_METHODS(), IMP_DECORATOR_SETUP_0() etc.
 - The IMP_GRAPH() and IMP_WEIGHTED_GRAPH() macros got an extra argument describing how to show the vertexes in the graph. They also now expose a method, eg IMP::kernel::show_as_graphviz() that writes the graph in graphviz format to an IMP::base::TextOutput.
 - Support and rules for deprecating code in IMP have been updated. There are new macros and instructions how to use them that should result in much better visibility about changes. See the C++ wiki for IMP for more information. And there is now an encoded policy of keeping deprecated things around for 1 release after deprecation.
 - IMP is now much more selective about when it invalidates the dependency graph. See [Dependencies](http://github.com/salilab/imp/wiki/Dependencies) for more information. This change should make evaluation of isolated restraints much faster in certain situations where they were unexpectedly slow before.

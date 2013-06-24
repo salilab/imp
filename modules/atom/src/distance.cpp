@@ -95,8 +95,8 @@ double get_weight(bool mass, bool radii, Particle* p) {
 
 double get_radius_of_gyration(const ParticlesTemp& ps) {
   IMP_USAGE_CHECK(ps.size() > 0, "No particles provided");
-  bool mass = Mass::particle_is_instance(ps[0]);
-  bool radii = core::XYZR::particle_is_instance(ps[0]);
+  bool mass = Mass::get_is_setup(ps[0]);
+  bool radii = core::XYZR::get_is_setup(ps[0]);
   algebra::Vector3D cm(0, 0, 0);
   double total = 0;
   for (unsigned int i = 0; i < ps.size(); ++i) {

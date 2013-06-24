@@ -19,7 +19,7 @@ BondSingletonScore::BondSingletonScore(UnaryFunction *f) : f_(f) {}
 double BondSingletonScore::evaluate_index(Model *m, ParticleIndex pi,
                                           DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
-  IMP_USAGE_CHECK(Bond::particle_is_instance(m, pi),
+  IMP_USAGE_CHECK(Bond::get_is_setup(m, pi),
                   "Particle is not a bond particle");
   Bond bd(m, pi);
   Float l = bd.get_length();

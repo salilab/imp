@@ -19,7 +19,7 @@ AngleSingletonScore::AngleSingletonScore(UnaryFunction *f)
 double AngleSingletonScore::evaluate_index(Model *m, ParticleIndex pi,
                                            DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
-  IMP_USAGE_CHECK(Angle::particle_is_instance(m, pi), "Not an angle particle");
+  IMP_USAGE_CHECK(Angle::get_is_setup(m, pi), "Not an angle particle");
   Angle ad(m, pi);
   Float ideal = ad.get_ideal();
   Float s = ad.get_stiffness();

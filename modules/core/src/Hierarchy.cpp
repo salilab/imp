@@ -28,14 +28,17 @@ int Hierarchy::get_child_index() const {
   if (!get_parent())
     return -1;
   else {
-    ParticleIndex pi = get_model()->get_attribute(get_traits().get_parent_key(),
+    ParticleIndex pi = get_model()->get_attribute(get_decorator_traits()
+                                                  .get_parent_key(),
                                                   get_particle_index());
     const ParticleIndexes &pis =
-        get_model()->get_attribute(get_traits().get_children_key(), pi);
+        get_model()->get_attribute(get_decorator_traits().get_children_key(),
+                                   pi);
     int ret =
         std::find(pis.begin(), pis.end(), get_particle_index()) - pis.begin();
     IMP_INTERNAL_CHECK(
-        Hierarchy(get_model(), pi, get_traits()).get_child(ret) == *this,
+        Hierarchy(get_model(), pi, get_decorator_traits()).get_child(ret)
+        == *this,
         "ith child isn't");
     return ret;
   }
@@ -56,7 +59,8 @@ struct MHDMatchingLeaves {
 
 GenericHierarchies get_leaves(Hierarchy mhd) {
   GenericHierarchies out;
-  gather(mhd, MHDMatchingLeaves(mhd.get_traits()), std::back_inserter(out));
+  gather(mhd, MHDMatchingLeaves(mhd.get_decorator_traits()),
+         std::back_inserter(out));
   return out;
 }
 
@@ -75,7 +79,8 @@ struct MHDNotMatchingLeaves {
 
 GenericHierarchies get_internal(Hierarchy mhd) {
   GenericHierarchies out;
-  gather(mhd, MHDNotMatchingLeaves(mhd.get_traits()), std::back_inserter(out));
+  gather(mhd, MHDNotMatchingLeaves(mhd.get_decorator_traits()),
+         std::back_inserter(out));
   return out;
 }
 

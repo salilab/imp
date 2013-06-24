@@ -78,7 +78,7 @@ class Tests(IMP.test.TestCase):
     def test_em_fit(self):
         """Check that correlation of particles with their own density is 1"""
         for p in self.particles:
-            print "is rigid body?",IMP.core.RigidBody.particle_is_instance(p)
+            print "is rigid body?",IMP.core.RigidBody.get_is_setup(p)
         r = IMP.em.FitRestraint(self.particles,self.scene)
         self.imp_model.add_restraint(r)
         score = self.imp_model.evaluate(False)

@@ -8,6 +8,8 @@
 #include <IMP/base/threads.h>
 #include <IMP/base/flags.h>
 
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+
 namespace {
 
 std::string get_module_version() { return std::string(); }
@@ -36,6 +38,7 @@ IMP::ModelObjectsTemp TouchyRestraint::do_get_inputs() const {
   return IMP::ModelObjectsTemp();
 }
 }
+#endif
 
 int main(int argc, char *argv[]) {
   IMP::base::setup_from_argv(argc, argv, "Testing protection of particles");

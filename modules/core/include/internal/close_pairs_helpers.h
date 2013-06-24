@@ -166,7 +166,7 @@ inline void initialize_particles(
     Model *m = sc->get_model();
     IMP_LOG_VERBOSE("Processing " << m->get_particle_name(_1) << " (" << _1
                                   << ")" << std::endl);
-    if (use_rigid_bodies && RigidMember::particle_is_instance(m, _1)) {
+    if (use_rigid_bodies && RigidMember::get_is_setup(m, _1)) {
       RigidBody rb = RigidMember(m, _1).get_rigid_body();
       ParticleIndex pi = rb.get_particle_index();
       rbs_.push_back(rb.get_particle_index());

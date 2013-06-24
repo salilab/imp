@@ -59,11 +59,11 @@ Model *setup(bool rpcpf, RigidBodies &rbs) {
     IMP_INTERNAL_CHECK(catoms.size() != 0, "What happened to the atoms?");
     atoms.insert(atoms.end(), catoms.begin(), catoms.end());
     IMP_NEW(Particle, rbp, (m));
-    RigidBody rbd = RigidBody::setup_particle(rbp, XYZs(catoms));
+    RigidBody rbd = RigidBody::setup_particle(rbp, catoms);
     rbs.push_back(rbd);
   }
   for (unsigned int i = 0; i < atoms.size(); ++i) {
-    XYZR::setup_particle(atoms[i], 1);
+    XYZR::setup_particle(atoms[i], 1.0);
   }
   IMP_NEW(IMP::internal::InternalListSingletonContainer, lsc, (m, "list"));
 

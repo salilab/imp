@@ -14,7 +14,7 @@ def create_representation():
 def add_dope(m, prot):
     ps=IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
     for p in ps:
-        if not IMP.atom.Atom.particle_is_instance(p):
+        if not IMP.atom.Atom.get_is_setup(p):
             print "Huh?", p
     dpc = IMP.container.ClosePairContainer(ps, 15.0, 0.0)
 # exclude pairs of atoms belonging to the same residue

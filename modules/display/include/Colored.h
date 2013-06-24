@@ -21,14 +21,13 @@ IMPDISPLAY_BEGIN_NAMESPACE
     if it is available.
  */
 class IMPDISPLAYEXPORT Colored : public Decorator {
- public:
-  static Colored setup_particle(Particle *p, Color c) {
-    p->add_attribute(get_color_keys()[0], c.get_red(), false);
-    p->add_attribute(get_color_keys()[1], c.get_green(), false);
-    p->add_attribute(get_color_keys()[2], c.get_blue(), false);
-    return Colored(p);
+  static void do_setup_particle(Model *m, ParticleIndex pi, Color c) {
+    m->add_attribute(get_color_keys()[0], pi, c.get_red(), false);
+    m->add_attribute(get_color_keys()[1], pi, c.get_green(), false);
+    m->add_attribute(get_color_keys()[2], pi, c.get_blue(), false);
   }
 
+ public:
   void set_color(const Color &c) {
     get_particle()->set_value(get_color_keys()[0], c.get_red());
     get_particle()->set_value(get_color_keys()[1], c.get_green());
@@ -41,20 +40,21 @@ class IMPDISPLAYEXPORT Colored : public Decorator {
                  get_particle()->get_value(get_color_keys()[2]));
   }
 
-  static bool particle_is_instance(Particle *p) {
-    IMP_USAGE_CHECK((!p->has_attribute(get_color_keys()[0]) &&
-                     !p->has_attribute(get_color_keys()[1]) &&
-                     !p->has_attribute(get_color_keys()[2])) ||
-                        (p->has_attribute(get_color_keys()[0]) &&
-                         p->has_attribute(get_color_keys()[1]) &&
-                         p->has_attribute(get_color_keys()[2])),
-                    "Only partially colored " << p->get_name());
-    return p->has_attribute(get_color_keys()[2]);
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
+    IMP_USAGE_CHECK((!m->get_has_attribute(get_color_keys()[0], pi) &&
+                     !m->get_has_attribute(get_color_keys()[1], pi) &&
+                     !m->get_has_attribute(get_color_keys()[2], pi)) ||
+                        (m->get_has_attribute(get_color_keys()[0], pi) &&
+                         m->get_has_attribute(get_color_keys()[1], pi) &&
+                         m->get_has_attribute(get_color_keys()[2], pi)),
+                    "Only partially colored " << m->get_particle_name(pi));
+    return m->get_has_attribute(get_color_keys()[2], pi);
   }
 
   static const FloatKeys &get_color_keys();
 
-  IMP_DECORATOR(Colored, Decorator);
+  IMP_DECORATOR_METHODS(Colored, Decorator);
+  IMP_DECORATOR_SETUP_1(Colored, Color, color);
 };
 
 IMP_DECORATORS(Colored, Coloreds, Particles);

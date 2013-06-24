@@ -25,24 +25,18 @@ IMPATOM_BEGIN_NAMESPACE
     Molecule particles.
  */
 class IMPATOMEXPORT Copy : public Molecule {
+  static void do_setup_particle(Model *m, ParticleIndex pi, int number) {
+    m->add_attribute(get_copy_index_key(), pi, number);
+    Molecule::setup_particle(m, pi);
+  }
  public:
-
   static IntKey get_copy_index_key();
 
-  IMP_DECORATOR(Copy, Molecule);
-
+  IMP_DECORATOR_METHODS(Copy, Molecule);
   /** Create a decorator for the numberth copy. */
-  static Copy setup_particle(Particle *p, int number) {
-    p->add_attribute(get_copy_index_key(), number);
-    Molecule::setup_particle(p);
-    return Copy(p);
-  }
+  IMP_DECORATOR_SETUP_1(Copy, Int, number);
 
-  static bool particle_is_instance(Particle *p) {
-    return particle_is_instance(p->get_model(), p->get_index());
-  }
-
-  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_copy_index_key(), pi);
   }
 

@@ -29,32 +29,26 @@ class KinematicForest;
 class IMPKINEMATICSEXPORT KinematicNode : public IMP::core::RigidBody{
   friend class KinematicForest;
 
-  IMP_DECORATOR(KinematicNode, IMP::core::RigidBody);
-
+  static void do_setup_particle( Model *m,
+                                 ParticleIndex p,
+                                 KinematicForest* owner,
+                                 Joint* in_joint = nullptr,
+                                 Joints out_joints = Joints() );
  public:
+  IMP_DECORATOR_METHODS(KinematicNode, IMP::core::RigidBody);
+  IMP_DECORATOR_SETUP_1(KinematicNode, KinematicForest*, owner);
+  IMP_DECORATOR_SETUP_2(KinematicNode, KinematicForest*, owner,
+                        Joint*, in_joint);
+  IMP_DECORATOR_SETUP_3(KinematicNode, KinematicForest*, owner,
+                        Joint*, in_joint, Joints, out_joints);
 
   /**
      @brief Return true if the particle is a kinematic nodea (has the
      appropriate properties).
   */
-  inline static
-    bool particle_is_instance(Particle *p);
+  inline static bool get_is_setup(Model *m, ParticleIndex pi);
 
  private:
-
-  /** sets up a node in a kinematic tree
-      @param p a particle to setup
-      @param owner a non-null kinematic forest pointer that will own this node
-      @param in_joint the joint upstream of this kinematic node.
-      Use nullptr for root nodes.
-      @param out_joints a list of joints directly downstream of this node
-
-      @note Private so as only KinematicForest can setup new kinematic nodes
-  */
-  static KinematicNode setup_particle( Particle*p,
-                                       KinematicForest* owner,
-                                       Joint* in_joint = nullptr,
-                                       Joints out_joints = Joints() );
 
   //! returns the kinematic forest associated with this node
   KinematicForest* get_owner();
@@ -94,11 +88,9 @@ class IMPKINEMATICSEXPORT KinematicNode : public IMP::core::RigidBody{
 /************** inlines ***********/
 
 bool
-KinematicNode::particle_is_instance
-(Particle *p)
+KinematicNode::get_is_setup(Model *m,
+                            ParticleIndex pi)
 {
-  ParticleIndex pi = p->get_index();
-  Model* m = p->get_model();
   return
     m->get_has_attribute( get_owner_key(), pi);
 }

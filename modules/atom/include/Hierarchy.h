@@ -29,7 +29,7 @@
 // figure out how to inline
 #define IMP_GET_AS_DEF(UCName, lcname, CAPSNAME)        \
   UCName Hierarchy::get_as_##lcname() const {           \
-    if (UCName::particle_is_instance(get_particle())) { \
+    if (UCName::get_is_setup(get_particle())) { \
       return UCName(get_particle());                    \
     } else {                                            \
       return UCName();                                  \
@@ -201,22 +201,22 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
  public:
 #ifndef IMP_DOXYGEN
   typedef boost::false_type DecoratorHasTraits;
-  explicit Hierarchy(Particle *p) : H(p, get_traits()) {}
 
   //! cast a particle which has the needed attributes
   static Hierarchy decorate_particle(Particle *p) {
-    H::decorate_particle(p, get_traits());
-    return Hierarchy(p);
+    if (get_is_setup(p)) return Hierarchy(p);
+    else return Hierarchy();
   }
 
-  static Hierarchy setup_particle(Particle *p, const ParticlesTemp &children) {
+  static Hierarchy setup_particle(Particle *p,
+                                  ParticleIndexesAdaptor children) {
     H::setup_particle(p, get_traits());
     Hierarchy ret(p);
     for (unsigned int i = 0; i < children.size(); ++i) {
-      if (!particle_is_instance(children[i])) {
-        setup_particle(children[i]);
+      if (!get_is_setup(p->get_model(), children[i])) {
+        setup_particle(p->get_model(), children[i]);
       }
-      ret.add_child(Hierarchy(children[i]));
+      ret.add_child(Hierarchy(p->get_model(), children[i]));
     }
     return ret;
   }
@@ -226,11 +226,21 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
   }
 
   static bool particle_is_instance(Particle *p) {
-    return H::particle_is_instance(p, get_traits());
+    return H::get_is_setup(p, get_traits());
+  }
+  static bool get_is_setup(Particle *p) {
+    return H::get_is_setup(p, get_traits());
+  }
+  static bool particle_is_instance(Model *m, ParticleIndex p) {
+    return H::get_is_setup(m->get_particle(p), get_traits());
   }
 #endif
 
   Hierarchy(Model *m, ParticleIndex pi) : H(m, pi, get_traits()) {}
+
+  Hierarchy(kernel::ParticleAdaptor pi) : H(pi.get_model(),
+                                            pi.get_particle_index(),
+                                            get_traits()) {}
 
   //! null constructor
   Hierarchy() {}
@@ -238,7 +248,7 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
   //! The traits must match
   explicit Hierarchy(IMP::core::Hierarchy h) : H(h) {
     IMP_USAGE_CHECK(
-        h != IMP::core::Hierarchy() || h.get_traits() == get_traits(),
+        h != IMP::core::Hierarchy() || h.get_decorator_traits() == get_traits(),
         "Cannot construct a IMP.atom.Hierarchy from a general "
         " IMP.core.Hierarchy");
   }
@@ -246,24 +256,23 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
   /** Create a Hierarchy of level t by adding the needed
       attributes. */
   static Hierarchy setup_particle(Model *m, ParticleIndex pi,
-                                  const ParticlesTemp &children =
-                                      ParticlesTemp()) {
-    Particle *p = m->get_particle(pi);
-    H::setup_particle(p, get_traits());
-    Hierarchy ret(p);
+                                  ParticleIndexesAdaptor children =
+                                      ParticleIndexesAdaptor()) {
+    H::setup_particle(m, pi, get_traits());
+    Hierarchy ret(m, pi);
     for (unsigned int i = 0; i < children.size(); ++i) {
-      if (!particle_is_instance(children[i])) {
-        setup_particle(children[i]);
+      if (!get_is_setup(m, children[i])) {
+        setup_particle(m, children[i]);
       }
-      ret.add_child(Hierarchy(children[i]));
+      ret.add_child(Hierarchy(m, children[i]));
     }
     return ret;
   }
 
   /** Check if the particle has the needed attributes for a
    cast to succeed */
-  static bool particle_is_instance(Model *m, ParticleIndex p) {
-    return H::particle_is_instance(m->get_particle(p), get_traits());
+ static bool get_is_setup(Model *m, ParticleIndex p) {
+    return H::get_is_setup(m->get_particle(p), get_traits());
   }
 
   //! Return true if the hierarchy is valid.

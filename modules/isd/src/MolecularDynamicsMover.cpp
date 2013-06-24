@@ -45,8 +45,8 @@ void MolecularDynamicsMover::save_coordinates()
     velocities_.reserve(nparts);
     for (unsigned i=0; i<nparts; i++)
     {
-        bool isnuisance = Nuisance::particle_is_instance(ps[i]);
-        bool isxyz = core::XYZ::particle_is_instance(ps[i]);
+        bool isnuisance = Nuisance::get_is_setup(ps[i]);
+        bool isxyz = core::XYZ::get_is_setup(ps[i]);
         IMP_USAGE_CHECK(isnuisance||isxyz,
                 "Particle " << ps[i] << " is neither nuisance nor xyz!");
         if (isnuisance)
@@ -86,8 +86,8 @@ void MolecularDynamicsMover::do_reject()
             "The list of particles that move has been changed!");
     for (unsigned i=0; i<nparts; i++)
     {
-        bool isnuisance = Nuisance::particle_is_instance(ps[i]);
-        bool isxyz = core::XYZ::particle_is_instance(ps[i]);
+        bool isnuisance = Nuisance::get_is_setup(ps[i]);
+        bool isxyz = core::XYZ::get_is_setup(ps[i]);
         IMP_USAGE_CHECK(isnuisance||isxyz,
                 "Particle " << ps[i] << " is neither nuisance nor xyz!");
         if (isnuisance)

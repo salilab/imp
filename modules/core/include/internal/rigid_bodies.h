@@ -70,7 +70,7 @@ inline bool get_has_required_attributes_for_body(Model *m, ParticleIndex pi) {
        m->get_has_attribute(rigid_body_data().quaternion_[1], pi) &&
        m->get_has_attribute(rigid_body_data().quaternion_[2], pi) &&
        m->get_has_attribute(rigid_body_data().quaternion_[3], pi) &&
-       XYZ::particle_is_instance(m->get_particle(pi))) ||
+       XYZ::get_is_setup(m->get_particle(pi))) ||
           (!m->get_has_attribute(rigid_body_data().quaternion_[0], pi) &&
            !m->get_has_attribute(rigid_body_data().quaternion_[1], pi) &&
            !m->get_has_attribute(rigid_body_data().quaternion_[2], pi) &&
@@ -88,7 +88,7 @@ inline bool get_has_required_attributes_for_member(Model *m, ParticleIndex p) {
           m->get_has_attribute(rigid_body_data().child_keys_[i], p),
           "Rigid member missing internal coords");
     }
-    IMP_INTERNAL_CHECK(XYZ::particle_is_instance(m, p),
+    IMP_INTERNAL_CHECK(XYZ::get_is_setup(m, p),
                        "Rigid member missing coordinates");
     return true;
   }
@@ -104,7 +104,7 @@ inline bool get_has_required_attributes_for_non_member(Model *m,
           m->get_has_attribute(rigid_body_data().child_keys_[i], p),
           "Rigid member missing internal coords");
     }
-    IMP_INTERNAL_CHECK(XYZ::particle_is_instance(m, p),
+    IMP_INTERNAL_CHECK(XYZ::get_is_setup(m, p),
                        "Rigid member missing coordinates");
     return true;
   }
@@ -127,7 +127,7 @@ inline void add_required_attributes_for_body(Particle *p) {
   for (unsigned int i = 0; i < 3; ++i) {
     p->add_attribute(rigid_body_data().torque_[i], 0);
   }
-  if (!XYZ::particle_is_instance(p)) {
+  if (!XYZ::get_is_setup(p)) {
     XYZ::setup_particle(p);
   }
 }
@@ -158,7 +158,6 @@ inline void add_required_attributes_for_member(Particle *p, Particle *rb) {
       p->get_model()->get_internal_coordinates(p->get_index()).get_magnitude() <
           .01,
       "Bad initialization");
-  XYZ::decorate_particle(p);
   p->add_attribute(internal::rigid_body_data().body_, rb);
 }
 
@@ -170,7 +169,6 @@ inline void add_required_attributes_for_non_member(Particle *p, Particle *rb) {
       p->get_model()->get_internal_coordinates(p->get_index()).get_magnitude() <
           .01,
       "Bad initialization");
-  XYZ::decorate_particle(p);
   p->add_attribute(internal::rigid_body_data().non_body_, rb);
 }
 

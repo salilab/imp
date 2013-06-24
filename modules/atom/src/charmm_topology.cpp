@@ -69,7 +69,7 @@ void add_residue_bonds(
     if (as.size() > 0) {
       Bonded b[2];
       for (unsigned int i = 0; i < 2; ++i) {
-        if (Bonded::particle_is_instance(as[i])) {
+        if (Bonded::get_is_setup(as[i])) {
           b[i] = Bonded::decorate_particle(as[i]);
         } else {
           b[i] = Bonded::setup_particle(as[i]);
@@ -532,7 +532,7 @@ void CHARMMTopology::add_atom_types(Hierarchy hierarchy) const {
     for (Hierarchies::iterator atit = atoms.begin(); atit != atoms.end();
          ++atit) {
       AtomType typ = Atom(*atit).get_atom_type();
-      if (!CHARMMAtom::particle_is_instance(*atit)) {
+      if (!CHARMMAtom::get_is_setup(*atit)) {
         try {
           CHARMMAtom::setup_particle(
               *atit, it->first->get_atom(typ).get_charmm_type());
@@ -668,8 +668,8 @@ void build_internal_coordinates(
 }
 
 float fill_distance(Atom i, Atom j, const CHARMMParameters *ff) {
-  if (CHARMMAtom::particle_is_instance(i) &&
-      CHARMMAtom::particle_is_instance(j)) {
+  if (CHARMMAtom::get_is_setup(i) &&
+      CHARMMAtom::get_is_setup(j)) {
     try {
       return ff->get_bond_parameters(CHARMMAtom(i).get_charmm_type(),
                                      CHARMMAtom(j).get_charmm_type()).ideal;
@@ -681,9 +681,9 @@ float fill_distance(Atom i, Atom j, const CHARMMParameters *ff) {
 }
 
 float fill_angle(Atom i, Atom j, Atom k, const CHARMMParameters *ff) {
-  if (CHARMMAtom::particle_is_instance(i) &&
-      CHARMMAtom::particle_is_instance(j) &&
-      CHARMMAtom::particle_is_instance(k)) {
+  if (CHARMMAtom::get_is_setup(i) &&
+      CHARMMAtom::get_is_setup(j) &&
+      CHARMMAtom::get_is_setup(k)) {
     try {
       return ff->get_angle_parameters(CHARMMAtom(i).get_charmm_type(),
                                       CHARMMAtom(j).get_charmm_type(),
@@ -766,10 +766,10 @@ void build_cartesian(Atom known1, Atom known2, Atom known3, Atom unknown,
 // distances and angles, build the Cartesian coordinates of the
 // remaining atom and return true. Otherwise, return false.
 bool build_cartesian_from_internal(const ModelInternalCoordinate &ic) {
-  if (core::XYZ::particle_is_instance(ic.atoms[1]) &&
-      core::XYZ::particle_is_instance(ic.atoms[2])) {
-    if (!core::XYZ::particle_is_instance(ic.atoms[3]) &&
-        core::XYZ::particle_is_instance(ic.atoms[0])) {
+  if (core::XYZ::get_is_setup(ic.atoms[1]) &&
+      core::XYZ::get_is_setup(ic.atoms[2])) {
+    if (!core::XYZ::get_is_setup(ic.atoms[3]) &&
+        core::XYZ::get_is_setup(ic.atoms[0])) {
       float phi = ic.dihedral;
       float r = ic.second_distance;
       float theta = ic.second_angle;
@@ -778,8 +778,8 @@ bool build_cartesian_from_internal(const ModelInternalCoordinate &ic) {
                         phi, theta);
         return true;
       }
-    } else if (!core::XYZ::particle_is_instance(ic.atoms[0]) &&
-               core::XYZ::particle_is_instance(ic.atoms[3])) {
+    } else if (!core::XYZ::get_is_setup(ic.atoms[0]) &&
+               core::XYZ::get_is_setup(ic.atoms[3])) {
       float phi = ic.dihedral;
       float r = ic.first_distance;
       float theta = ic.first_angle;
@@ -868,7 +868,7 @@ unsigned count_atoms_with_coordinates(
     Hierarchy h = resmap.find(*it)->second;
     for (unsigned int i = 0; i < h.get_number_of_children(); ++i) {
       Hierarchy child = h.get_child(i);
-      if (child.get_as_atom() && core::XYZ::particle_is_instance(child)) {
+      if (child.get_as_atom() && core::XYZ::get_is_setup(child)) {
         ++ct;
       }
     }
@@ -889,7 +889,7 @@ unsigned int assign_remaining_coordinates(
     for (unsigned int i = 0; i < h.get_number_of_children(); ++i) {
       Hierarchy child = h.get_child(i);
       if (child.get_as_atom()) {
-        if (core::XYZ::particle_is_instance(child)) {
+        if (core::XYZ::get_is_setup(child)) {
           seed = core::XYZ(child).get_coordinates();
         } else {
           ++assigned;

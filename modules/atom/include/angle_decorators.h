@@ -21,31 +21,20 @@ IMPATOM_BEGIN_NAMESPACE
     \see CHARMMParameters::create_angles(), AngleSingletonScore.
  */
 class IMPATOMEXPORT Angle : public Decorator {
+  static void do_setup_particle(Model *m, ParticleIndex p,
+                                core::XYZ a, core::XYZ b,
+                                core::XYZ c) {
+    m->add_attribute(get_particle_key(0), p, a);
+    m->add_attribute(get_particle_key(1), p, b);
+    m->add_attribute(get_particle_key(2), p, c);
+  }
  public:
-  IMP_DECORATOR(Angle, Decorator);
-
-  //! Create an angle with the given particles.
-  static Angle setup_particle(Particle* p, core::XYZ a, core::XYZ b,
-                              core::XYZ c) {
-    p->add_attribute(get_particle_key(0), a);
-    p->add_attribute(get_particle_key(1), b);
-    p->add_attribute(get_particle_key(2), c);
-    return Angle(p);
-  }
-
-#ifndef IMP_DOXYGEN
-  /** \deprecated_at{2.1} Use the particle index variant */
-  static bool particle_is_instance(Particle* p) {
-    IMPATOM_DEPRECATED_FUNCTION_DEF(2.1, "Use the index-based variant");
-    for (unsigned int i = 0; i < 3; ++i) {
-      if (!p->has_attribute(get_particle_key(i))) return false;
-    }
-    return true;
-  }
-#endif
+  IMP_DECORATOR_METHODS(Angle, Decorator);
+  IMP_DECORATOR_SETUP_3(Angle, core::XYZ, a, core::XYZ, b,
+                        core::XYZ, c);
 
   //! Return true if the particle is an angle.
-  static bool particle_is_instance(Model* m, ParticleIndex pi) {
+  static bool get_is_setup(Model* m, ParticleIndex pi) {
     for (unsigned int i = 0; i < 3; ++i) {
       if (!m->get_has_attribute(get_particle_key(i), pi)) return false;
     }
@@ -83,31 +72,24 @@ IMP_DECORATORS(Angle, Angles, ParticlesTemp);
          ImproperSingletonScore.
  */
 class IMPATOMEXPORT Dihedral : public Decorator {
- public:
-  IMP_DECORATOR(Dihedral, Decorator);
-
   //! Create a dihedral with the given particles.
-  static Dihedral setup_particle(Particle* p, core::XYZ a, core::XYZ b,
+  static void do_setup_particle(Model *m, ParticleIndex p,
+                                 core::XYZ a, core::XYZ b,
                                  core::XYZ c, core::XYZ d) {
-    p->add_attribute(get_particle_key(0), a);
-    p->add_attribute(get_particle_key(1), b);
-    p->add_attribute(get_particle_key(2), c);
-    p->add_attribute(get_particle_key(3), d);
-    return Dihedral(p);
+    m->add_attribute(get_particle_key(0), p, a);
+    m->add_attribute(get_particle_key(1), p, b);
+    m->add_attribute(get_particle_key(2), p, c);
+    m->add_attribute(get_particle_key(3), p, d);
   }
+ public:
+  IMP_DECORATOR_METHODS(Dihedral, Decorator);
+  IMP_DECORATOR_SETUP_4(Dihedral,
+                        core::XYZ, a,
+                        core::XYZ, b,
+                        core::XYZ, c,
+                        core::XYZ, d);
 
-#ifndef IMP_DOXYGEN
-  /** \deprecated_at{2.1} Use the index-based variant. */
-  static bool particle_is_instance(Particle* p) {
-    IMPATOM_DEPRECATED_FUNCTION_DEF(2.1, "Use the index-based variant.");
-    for (unsigned int i = 0; i < 4; ++i) {
-      if (!p->has_attribute(get_particle_key(i))) return false;
-    }
-    return true;
-  }
-#endif
-
-  static bool particle_is_instance(Model* m, ParticleIndex pi) {
+  static bool get_is_setup(Model* m, ParticleIndex pi) {
     for (unsigned int i = 0; i < 4; ++i) {
       if (!m->get_has_attribute(get_particle_key(i), pi)) return false;
     }

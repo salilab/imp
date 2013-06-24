@@ -24,10 +24,13 @@ IMPEM2D_BEGIN_NAMESPACE
 //! Rotation and tranlation. In this cases, the translation is the translation
 //! to apply to the model in 3D, in order to perform the registration
 class IMPEM2DEXPORT ProjectionParameters: public Decorator {
+  static void do_setup_particle(Model *m,
+                                ParticleIndex pi);
+
 public:
 
-  IMP_DECORATOR(ProjectionParameters,Decorator);
-
+  IMP_DECORATOR_METHODS(ProjectionParameters,Decorator);
+  IMP_DECORATOR_SETUP_0(ProjectionParameters);
 
   ~ProjectionParameters() {};
 
@@ -41,11 +44,8 @@ public:
                   const algebra::Vector3D &min_translation_values,
                   const algebra::Vector3D &max_translation_values);
 
-  //! Create the proper attributes for a particle
-  static ProjectionParameters setup_particle(Particle *p);
-
   //!Return true of the particle is a set of projection parameters
-  static bool particle_is_instance(Particle *p);
+  static bool get_is_setup(Model *m, ParticleIndex pi);
 
 
   //! Get whether the parameters are optimized

@@ -7,12 +7,12 @@
 
 #include "IMP/kernel/internal/static.h"
 #include "IMP/kernel/Particle.h"
+#include "IMP/kernel/internal/utility.h"
 #include "IMP/base//set.h"
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 // particle validation
-typedef bool (*ParticleFunction)(Particle*);
 base::Vector<std::pair<ParticleFunction, ParticleFunction> >
     particle_validators;
 

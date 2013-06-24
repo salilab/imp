@@ -47,17 +47,17 @@ void GaussianRestraint::check_particles()
     IMP_IF_CHECK(USAGE) {
         if (isx_)
         {
-            IMP_USAGE_CHECK(Nuisance::particle_is_instance(px_),
+            IMP_USAGE_CHECK(Nuisance::get_is_setup(px_),
                     "x particle should be a Nuisance!");
         }
         if (ismu_)
         {
-            IMP_USAGE_CHECK(Nuisance::particle_is_instance(pmu_),
+            IMP_USAGE_CHECK(Nuisance::get_is_setup(pmu_),
                     "mu particle should be a Nuisance!");
         }
         if (issigma_)
         {
-            IMP_USAGE_CHECK(Scale::particle_is_instance(psigma_),
+            IMP_USAGE_CHECK(Scale::get_is_setup(psigma_),
                     "sigma particle should be a Scale!");
         }
     }

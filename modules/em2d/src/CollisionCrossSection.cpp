@@ -47,8 +47,8 @@ void CollisionCrossSection::set_model_particles(const ParticlesTemp &ps) {
   IMP_LOG_TERSE("CollisionCrossSection: Model particles set" << std::endl);
 
   for (unsigned int i = 0; i < ps.size() ; ++i) {
-    IMP_USAGE_CHECK((core::XYZR::particle_is_instance(ps[i]) &&
-                     atom::Mass::particle_is_instance(ps[i])),
+    IMP_USAGE_CHECK((core::XYZR::get_is_setup(ps[i]) &&
+                     atom::Mass::get_is_setup(ps[i])),
        "Particle " << i
        << " does not have the required attributes" << std::endl);
   }

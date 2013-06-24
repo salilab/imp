@@ -17,9 +17,9 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 
 
 // sets up a node in a kinematic tree
-KinematicNode
-KinematicNode::setup_particle
-( Particle*p, KinematicForest* owner,
+void
+KinematicNode::do_setup_particle
+( Model*m, ParticleIndex pi, KinematicForest* owner,
   Joint* in_joint,  Joints out_joints)
 {
   // Checks:
@@ -27,30 +27,29 @@ KinematicNode::setup_particle
     IMP_THROW( "Kinematic node must have a valid owner kinematic forest",
                IMP::base::ValueException );
   }
-  if ( IMP::core::RigidMember::particle_is_instance(p) ) {
+  if ( IMP::core::RigidMember::get_is_setup(m, pi) ) {
     // see also RigidBody::add_member
     IMP_THROW("RigidMemer cannot be set as KinematicNode at this point,"
               << " in order to guarantee coherent coordinates update",
               IMP::base::ValueException);
   }
 
-  if ( ! IMP::core::RigidBody::particle_is_instance(p) ) {
-    IMP::core::RigidBody::setup_particle(p, ParticlesTemp() );
+  if ( ! IMP::core::RigidBody::get_is_setup(m, pi) ) {
+    IMP::core::RigidBody::setup_particle(m, pi, algebra::ReferenceFrame3D() );
   }
-  p->get_model()->add_attribute(get_owner_key(),
-                                p->get_index(),
-                                owner);
+  m->add_attribute(get_owner_key(),
+                   pi,
+                   owner);
   if( in_joint ){
-    p->get_model()->add_attribute(get_in_joint_key(),
-                                  p->get_index(),
-                                  in_joint);
+    m->add_attribute(get_in_joint_key(),
+                     pi,
+                     in_joint);
   }
   if( !out_joints.empty() ){
-    p->get_model()->add_attribute(get_out_joints_key(),
-                                  p->get_index(),
-                                  out_joints);
+    m->add_attribute(get_out_joints_key(),
+                     pi,
+                     out_joints);
   }
-  return KinematicNode(p);
 }
 
 

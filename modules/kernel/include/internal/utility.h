@@ -9,7 +9,7 @@
 #define IMPKERNEL_INTERNAL_UTILITY_H
 
 #include <IMP/kernel/kernel_config.h>
-#include "../Particle.h"
+#include "../particle_index.h"
 #include <boost/format.hpp>
 #include <sstream>
 
@@ -60,7 +60,7 @@ struct Counter {
     } while (!queue.empty());                                                  \
   }
 
-typedef bool (*ParticleFunction)(Particle *);
+typedef bool (*ParticleFunction)(Model *m, ParticleIndex pi);
 
 IMPKERNELEXPORT void add_particle_check(ParticleFunction instance,
                                         ParticleFunction check);

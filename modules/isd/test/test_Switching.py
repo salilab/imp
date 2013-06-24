@@ -41,15 +41,15 @@ class Tests(IMP.test.TestCase):
         n=Switching.setup_particle(IMP.Particle(self.m))
         n.set_lower(-10)
         n.set_upper(10)
-        self.assertTrue(Nuisance.particle_is_instance(n.get_particle()))
-        self.assertFalse(Switching.particle_is_instance(n.get_particle()))
+        self.assertTrue(Nuisance.get_is_setup(n.get_particle()))
+        self.assertFalse(Switching.get_is_setup(n.get_particle()))
 
     def test_Nuisance(self):
         "Test that a Nuisance can be converted to a Switching"
         n=Nuisance.setup_particle(IMP.Particle(self.m),0.5)
         n.set_lower(0)
         n.set_upper(1)
-        self.assertTrue(Switching.particle_is_instance(n.get_particle()))
+        self.assertTrue(Switching.get_is_setup(n.get_particle()))
 
     def test_Set(self):
         "Switching set returns nothing"

@@ -224,8 +224,8 @@ void ProteinKinematics::add_dihedral_joint(const IMP::atom::Residue r,
   IMP::Particle* p2 = atoms[2].get_particle();
 
   // TODO: check to DEBUG only check?
-  if(IMP::core::RigidMember::particle_is_instance(p1) &&
-     IMP::core::RigidMember::particle_is_instance(p2)) {
+  if(IMP::core::RigidMember::get_is_setup(p1) &&
+     IMP::core::RigidMember::get_is_setup(p2)) {
     IMP::core::RigidBody rb1 = IMP::core::RigidMember(p1).get_rigid_body();
     IMP::core::RigidBody rb2 = IMP::core::RigidMember(p2).get_rigid_body();
 

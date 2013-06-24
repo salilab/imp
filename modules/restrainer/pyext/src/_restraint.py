@@ -531,7 +531,7 @@ class _RestraintRestraint(_RestraintNode):
         for child in self.child_restraints:
             mhs.append(child)
         first_particle = self.child_restraints[0].get_particle()
-        if IMP.core.RigidBody.particle_is_instance(first_particle):
+        if IMP.core.RigidBody.get_is_setup(first_particle):
             rbs_tmp = []
             for mh in mhs:
                 rbs_tmp.append(mh.get_particle())
@@ -554,7 +554,7 @@ class _RestraintRestraint(_RestraintNode):
         for child in self.child_restraints:
             mhs.append(child)
         first_particle = self.child_restraints[0].get_particle()
-        if IMP.core.RigidBody.particle_is_instance(first_particle):
+        if IMP.core.RigidBody.get_is_setup(first_particle):
             rbs_tmp = []
             for mh in mhs:
                 rbs_tmp.append(mh.get_particle())

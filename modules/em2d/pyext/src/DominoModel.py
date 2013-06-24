@@ -875,10 +875,10 @@ class DominoModel:
         for rb,rn  in zip(self.components_rbs, self.native_rbs):
             # remove sub-rigid bodies
             rb_members = filter(
-                           lambda m: not core.RigidBody.particle_is_instance(
+                           lambda m: not core.RigidBody.get_is_setup(
                                      m.get_particle()), rb.get_members())
             rn_members =  filter(
-                           lambda m: not core.RigidBody.particle_is_instance(
+                           lambda m: not core.RigidBody.get_is_setup(
                                      m.get_particle()), rn.get_members())
             rb_coords = [m.get_coordinates() for m in rb_members]
             rn_coords = [m.get_coordinates() for m in rn_members]
@@ -1067,7 +1067,7 @@ def get_coordinates(rigid_bodies):
     for rb in rigid_bodies:
             # remove sub-rigid bodies
         rb_members = filter(
-                       lambda m: not core.RigidBody.particle_is_instance(
+                       lambda m: not core.RigidBody.get_is_setup(
                                  m.get_particle()), rb.get_members())
         coords.extend([m.get_coordinates() for m in rb_members])
     return coords

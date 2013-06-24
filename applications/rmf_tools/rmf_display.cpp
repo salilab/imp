@@ -92,7 +92,7 @@ int main(int argc, char **argv) {
         /*if (frame!= 0) {
           IMP::rmf::load_configuration(rh, hs[i], frame);
           }*/
-        if (IMP::core::XYZR::particle_is_instance(ps[i])) {
+        if (IMP::core::XYZR::get_is_setup(ps[i])) {
           IMP::core::XYZR d(ps[i]);
           IMP_NEW(IMP::core::XYZRGeometry, g, (ps[i]));
           if (recolor) {

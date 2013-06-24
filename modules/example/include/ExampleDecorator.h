@@ -35,27 +35,21 @@ class IMPEXAMPLEEXPORT ExampleDecorator : public Decorator {
      Particles do not have to allocate memory for ununsed keys.
   */
   static StringKey get_name_key();
-
- public:
-
   //! Add a name to the particle
   /** The create function should take arguments which allow
       the initial state of the Decorator to be reasonable (i.e.
       make sure there is a non-empty name).
    */
-  static ExampleDecorator setup_particle(Particle *p, std::string name) {
-    // use the object check macro to check that the particle is valid
-    IMP_CHECK_OBJECT(p);
+  static void do_setup_particle(Model *m, ParticleIndex pi, std::string name) {
     // use the usage check macro to make sure that arguments are correct
     IMP_USAGE_CHECK(!name.empty(), "The name cannot be empty.");
-    p->add_attribute(get_name_key(), name);
-    ExampleDecorator ret(p);
-    return ret;
+    m->add_attribute(get_name_key(), pi, name);
   }
 
+ public:
   //! return true if the particle has a name
-  static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(get_name_key());
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
+    return m->get_has_attribute(get_name_key(), pi);
   }
 
   //! Get the name added to the particle
@@ -71,7 +65,8 @@ class IMPEXAMPLEEXPORT ExampleDecorator : public Decorator {
   }
 
   /* Declare the basic constructors and the cast function.*/
-  IMP_DECORATOR(ExampleDecorator, Decorator);
+  IMP_DECORATOR_METHODS(ExampleDecorator, Decorator);
+  IMP_DECORATOR_SETUP_1(ExampleDecorator, std::string, name);
 };
 
 /** Define a collection of them. Also look at example.i*/

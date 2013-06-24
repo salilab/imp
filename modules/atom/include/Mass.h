@@ -21,31 +21,22 @@ IMPATOM_BEGIN_NAMESPACE
 /** The mass of the particle is assumed to be in Daltons.
  */
 class IMPATOMEXPORT Mass : public Decorator {
- public:
-  /** Setup the particle with the specified mass.*/
-  static Mass setup_particle(Particle *p, double mass) {
-    p->add_attribute(get_mass_key(), mass);
-    return Mass(p);
-  }
-
-  static bool particle_is_instance(Particle *p) {
-    return particle_is_instance(p->get_model(), p->get_index());
-  }
-
-  static bool particle_is_instance(Model *m, ParticleIndex pi) {
-    return m->get_has_attribute(get_mass_key(), pi);
-  }
-
-  static Mass setup_particle(Model *m, ParticleIndex pi, double mass) {
+  static void do_setup_particle(Model *m, ParticleIndex pi, double mass) {
     m->add_attribute(get_mass_key(), pi, mass);
-    return Mass(m, pi);
+  }
+ public:
+
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
+    return m->get_has_attribute(get_mass_key(), pi);
   }
 
   Float get_mass() const { return get_particle()->get_value(get_mass_key()); }
 
   void set_mass(Float d) { get_particle()->set_value(get_mass_key(), d); }
 
-  IMP_DECORATOR(Mass, Decorator);
+  IMP_DECORATOR_METHODS(Mass, Decorator);
+  /** Add the specified mass to the particle. */
+  IMP_DECORATOR_SETUP_1(Mass, Float, mass);
 
   static FloatKey get_mass_key();
 };

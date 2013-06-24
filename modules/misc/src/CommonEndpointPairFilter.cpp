@@ -15,8 +15,8 @@ CommonEndpointPairFilter::CommonEndpointPairFilter() {}
 
 int CommonEndpointPairFilter::get_value_index(
     Model *m, const ParticleIndexPair &p) const {
-  if (!IMP::atom::Bond::particle_is_instance(m, p[0]) ||
-      !IMP::atom::Bond::particle_is_instance(m, p[1])) {
+  if (!IMP::atom::Bond::get_is_setup(m, p[0]) ||
+      !IMP::atom::Bond::get_is_setup(m, p[1])) {
     return false;
   } else {
     IMP::atom::Bond b0(m, p[0]);
@@ -32,7 +32,7 @@ ModelObjectsTemp CommonEndpointPairFilter::do_get_inputs(
     Model *m, const ParticleIndexes &pis) const {
   ModelObjectsTemp ret = IMP::kernel::get_particles(m, pis);
   for (unsigned int i = 0; i < pis.size(); ++i) {
-    if (IMP::atom::Bond::particle_is_instance(m, pis[i])) {
+    if (IMP::atom::Bond::get_is_setup(m, pis[i])) {
       IMP::atom::Bond b(m, pis[i]);
       ret.push_back(b.get_bonded(0));
       ret.push_back(b.get_bonded(1));

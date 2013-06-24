@@ -85,13 +85,17 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   static ObjectKey get_constraint_key_0();
   static ObjectKey get_constraint_key_1();
 
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                ParticleIndexesAdaptor ps);
+
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                const algebra::ReferenceFrame3D &rf);
+
  public:
-#ifndef IMP_DOXYGEN
   RigidMembers get_members() const;
-#endif
+
   //! Return the members as particle pointers
-  /** This member function is here
-      for efficiency.*/
+  /** This member function is here for efficiency.*/
   const ParticleIndexes &get_member_particle_indexes() const {
     static ParticleIndexes empty;
     if (get_model()->get_has_attribute(internal::rigid_body_data().members_,
@@ -114,38 +118,19 @@ class IMPCOREEXPORT RigidBody : public XYZ {
     }
   }
 
-  IMP_DECORATOR(RigidBody, XYZ);
-
-  //! Create a new rigid body from a set of particles.
-  /** \param[in] p The particle to make into a rigid body
-      \param[in] ps The particles to use as members of the rigid body
-
-      The initial position and orientation of p is computed, as are the
-      relative positions of the member particles. The member particles
-      do not already need to be RigidMember particles, only
-      XYZ particles.
-   */
-  static RigidBody setup_particle(Particle *p, const ParticlesTemp &ps);
-
-  /** Set it up with the provided initial reference frame.*/
-  static RigidBody setup_particle(Particle *p,
-                                  const algebra::ReferenceFrame3D &rf);
+  IMP_DECORATOR_METHODS(RigidBody, XYZ);
+  IMP_DECORATOR_SETUP_1(RigidBody, ParticleIndexesAdaptor, ps);
+  /** Create a rigid body with the passed reference frame as its initial
+      position. */
+  IMP_DECORATOR_SETUP_1(RigidBody, algebra::ReferenceFrame3D, rf);
 
   //! Make the rigid body no longer rigid.
   static void teardown_particle(RigidBody rb);
 
   ~RigidBody();
 
-#ifndef IMP_DOXYGEN
   //!Return true of the particle is a rigid body
-  static bool particle_is_instance(Particle *p) {
-    return internal::get_has_required_attributes_for_body(p->get_model(),
-                                                          p->get_index());
-  }
-#endif
-
-  //!Return true of the particle is a rigid body
-  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return internal::get_has_required_attributes_for_body(m, pi);
   }
 
@@ -269,7 +254,7 @@ void IMPCOREEXPORT add_rigid_body_cache_key(ObjectKey k);
  */
 class IMPCOREEXPORT RigidMember : public XYZ {
  public:
-  IMP_DECORATOR(RigidMember, XYZ);
+  IMP_DECORATOR_METHODS(RigidMember, XYZ);
 
   RigidBody get_rigid_body() const;
 
@@ -330,15 +315,8 @@ class IMPCOREEXPORT RigidMember : public XYZ {
 #endif
   ~RigidMember();
 
-#ifndef IMP_DOXYGEN
   //! return true if it is a rigid member
-  static bool particle_is_instance(Particle *p) {
-    return particle_is_instance(p->get_model(), p->get_index());
-  }
-#endif
-
-  //! return true if it is a rigid member
-  static bool particle_is_instance(Model *m, ParticleIndex p) {
+  static bool get_is_setup(Model *m, ParticleIndex p) {
     return internal::get_has_required_attributes_for_member(m, p);
   }
 
@@ -357,7 +335,7 @@ class IMPCOREEXPORT RigidMember : public XYZ {
  */
 class IMPCOREEXPORT NonRigidMember : public XYZ {
  public:
-  IMP_DECORATOR(NonRigidMember, XYZ);
+  IMP_DECORATOR_METHODS(NonRigidMember, XYZ);
 
   RigidBody get_rigid_body() const;
 
@@ -421,11 +399,7 @@ class IMPCOREEXPORT NonRigidMember : public XYZ {
   ~NonRigidMember();
 
   //! return true if it is a rigid member
-  static bool particle_is_instance(Particle *p) {
-    return particle_is_instance(p->get_model(), p->get_index());
-  }
-  //! return true if it is a rigid member
-  static bool particle_is_instance(Model *m, ParticleIndex p) {
+  static bool get_is_setup(Model *m, ParticleIndex p) {
     return internal::get_has_required_attributes_for_non_member(m, p);
   }
 
@@ -470,8 +444,17 @@ inline void transform(RigidBody a, const algebra::Transformation3D &tr) {
 
 /** Compute the rigid body reference frame given a set of input particles.
  */
-IMPCOREEXPORT algebra::ReferenceFrame3D get_initial_reference_frame(
-    const ParticlesTemp &ps);
+IMPCOREEXPORT algebra::ReferenceFrame3D
+get_initial_reference_frame(Model *m, const ParticleIndexes &pis);
+
+inline algebra::ReferenceFrame3D
+get_initial_reference_frame(const ParticlesTemp &ps) {
+  if (ps.empty()) {
+    return algebra::ReferenceFrame3D();
+  }
+  return get_initial_reference_frame(ps[0]->get_model(),
+                                     kernel::get_indexes(ps));
+}
 
 /** Create a set of rigid bodies that are bound together for efficiency.
     These rigid bodies cannot nest or have other dependencies amongst them.

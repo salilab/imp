@@ -10,14 +10,14 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-Nuisance Nuisance::setup_particle(Particle *p, double nuisance) {
-    if (!Nuisance::particle_is_instance(p))
+void Nuisance::do_setup_particle(Model *m,
+                                 ParticleIndex pi, double nuisance) {
+  if (!Nuisance::get_is_setup(m, pi))
     {
-        p->add_attribute(get_nuisance_key(), nuisance);
+      m->add_attribute(get_nuisance_key(), pi, nuisance);
     } else {
-        Nuisance(p).set_nuisance(nuisance);
-    }
-    return Nuisance(p);
+    Nuisance(m, pi).set_nuisance(nuisance);
+  }
 }
 
 FloatKey Nuisance::get_nuisance_key() {

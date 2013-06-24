@@ -33,10 +33,10 @@ class Tests(IMP.test.TestCase):
             m.accept()
     def _check_close_pairs(self, m, cpcpps):
         m.update()
-        ps = [p.get_index() for p in m.get_particles() if not IMP.core.RigidBody.particle_is_instance(p)]
+        ps = [p.get_index() for p in m.get_particles() if not IMP.core.RigidBody.get_is_setup(p)]
         #print cpcpps
         for i in range(0, len(ps)):
-            if IMP.core.NonRigidMember.particle_is_instance(m, ps[i]):
+            if IMP.core.NonRigidMember.get_is_setup(m, ps[i]):
                 d= IMP.core.NonRigidMember(m, ps[i])
                 ic = d.get_internal_coordinates()
                 oc = d.get_coordinates()
@@ -51,7 +51,7 @@ class Tests(IMP.test.TestCase):
                 d0 = IMP.core.XYZR(m, pp[0])
                 d1 = IMP.core.XYZR(m, pp[1])
                 #print m.get_particle(ps[i]).get_name(), m.get_particle(ps[j]).get_name(), pp
-                if IMP.core.RigidMember.particle_is_instance(m, ps[i]) and IMP.core.RigidMember.particle_is_instance(m, ps[j])\
+                if IMP.core.RigidMember.get_is_setup(m, ps[i]) and IMP.core.RigidMember.get_is_setup(m, ps[j])\
                     and IMP.core.RigidMember(m, ps[i]).get_rigid_body() == IMP.core.RigidMember(m, ps[j]).get_rigid_body():
                     self.assert_(pp not in cpcpps and ppi not in cpcpps)
                 else:
@@ -86,7 +86,7 @@ class Tests(IMP.test.TestCase):
         r1 = self._create_rigid_body(m, "1")
         nr0 = self._add_non_rigid(m, r0, "0")
         nr1 = self._add_non_rigid(m, r1, "1")
-        cpc = IMP.container.ClosePairContainer([p for p in m.get_particles() if not IMP.core.RigidBody.particle_is_instance(p)],
+        cpc = IMP.container.ClosePairContainer([p for p in m.get_particles() if not IMP.core.RigidBody.get_is_setup(p)],
                                                0, IMP.core.RigidClosePairsFinder(), 0)
         movers = [IMP.core.RigidBodyMover(m, r0.get_particle_index(), 1, 1),
                   IMP.core.RigidBodyMover(m, r1.get_particle_index(), 1, 1)]\
@@ -105,7 +105,7 @@ class Tests(IMP.test.TestCase):
         r1 = self._create_rigid_body(m, "1")
         nr0 = self._add_non_rigid(m, r0, "0")
         nr1 = self._add_non_rigid(m, r1, "1")
-        evr = IMP.core.ExcludedVolumeRestraint([p for p in m.get_particles() if not IMP.core.RigidBody.particle_is_instance(p)])
+        evr = IMP.core.ExcludedVolumeRestraint([p for p in m.get_particles() if not IMP.core.RigidBody.get_is_setup(p)])
         movers = [IMP.core.RigidBodyMover(m, r0.get_particle_index(), 1, 1),
                   IMP.core.RigidBodyMover(m, r1.get_particle_index(), 1, 1)]\
                   + [ICMover(m, x, 1) for x in nr0 + nr1]
@@ -126,13 +126,13 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         r0 = self._create_rigid_body(m, "0")
         nr0 = self._add_non_rigid(m, r0, "0")
-        assert(IMP.core.NonRigidMember.particle_is_instance(m, nr0[0]))
+        assert(IMP.core.NonRigidMember.get_is_setup(m, nr0[0]))
         r0.set_is_rigid_member(nr0[0], True)
-        assert(IMP.core.RigidMember.particle_is_instance(m, nr0[0]))
-        assert(not IMP.core.NonRigidMember.particle_is_instance(m, nr0[0]))
+        assert(IMP.core.RigidMember.get_is_setup(m, nr0[0]))
+        assert(not IMP.core.NonRigidMember.get_is_setup(m, nr0[0]))
 
         r0.set_is_rigid_member(nr0[0], False)
-        assert(not IMP.core.RigidMember.particle_is_instance(m, nr0[0]))
-        assert(IMP.core.NonRigidMember.particle_is_instance(m, nr0[0]))
+        assert(not IMP.core.RigidMember.get_is_setup(m, nr0[0]))
+        assert(IMP.core.NonRigidMember.get_is_setup(m, nr0[0]))
 if __name__ == '__main__':
     IMP.test.main()

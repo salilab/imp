@@ -256,7 +256,7 @@ IMP::internal::InternalListSingletonContainer *MCCGSampler::set_up_movers(
   ParticlesTemp ps;
   for (Model::ParticleIterator pit = mc->get_model()->particles_begin();
        pit != mc->get_model()->particles_end(); ++pit) {
-    if (XYZ::particle_is_instance(*pit) &&
+    if (XYZ::get_is_setup(*pit) &&
         XYZ(*pit).get_coordinates_are_optimized()) {
       ps.push_back(*pit);
     }

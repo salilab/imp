@@ -19,38 +19,25 @@ IMPATOM_BEGIN_NAMESPACE
 /** \see Hierarchy
  */
 class IMPATOMEXPORT Chain : public Hierarchy {
-  IMP_DECORATOR(Chain, Hierarchy);
 
- public:
-#ifndef IMP_DOXYGEN
-  static Chain setup_particle(Particle *p, char id) {
-    return setup_particle(p->get_model(), p->get_index(), id);
-  }
-
-  static Chain setup_particle(Particle *p, Chain o) {
-    p->add_attribute(get_id_key(), o.get_id());
-    if (!Hierarchy::particle_is_instance(p)) {
-      Hierarchy::setup_particle(p);
-    }
-    return Chain(p);
-  }
-
-  static bool particle_is_instance(Particle *p) {
-    return particle_is_instance(p->get_model(), p->get_index());
-  }
-#endif
-
-  static Chain setup_particle(Model *m, ParticleIndex pi, char id) {
+  static void do_setup_particle(Model *m, ParticleIndex pi, char id) {
     m->add_attribute(get_id_key(), pi, id);
-    if (!Hierarchy::particle_is_instance(m, pi)) {
+    if (!Hierarchy::get_is_setup(m, pi)) {
       Hierarchy::setup_particle(m, pi);
     }
-    return Chain(m, pi);
+  }
+  static void do_setup_particle(Model *m, ParticleIndex pi, Chain o) {
+    do_setup_particle(m, pi, o.get_id());
   }
 
-  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+ public:
+  IMP_DECORATOR_METHODS(Chain, Hierarchy);
+  IMP_DECORATOR_SETUP_1(Chain, char, id);
+  IMP_DECORATOR_SETUP_1(Chain, Chain, other);
+
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_id_key(), pi) &&
-           Hierarchy::particle_is_instance(m, pi);
+           Hierarchy::get_is_setup(m, pi);
   }
 
   //! Return the chain id

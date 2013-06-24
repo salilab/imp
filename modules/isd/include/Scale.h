@@ -23,13 +23,15 @@ IMPISD_BEGIN_NAMESPACE
  */
 class IMPISDEXPORT Scale: public Nuisance
 {
+  static void do_setup_particle(Model *m, ParticleIndex pi, double scale=1.0);
+
 public:
-  IMP_DECORATOR(Scale, Nuisance);
+  IMP_DECORATOR_METHODS(Scale, Nuisance);
+  IMP_DECORATOR_SETUP_0(Scale);
+  IMP_DECORATOR_SETUP_1(Scale, double, scale);
 
-  static Scale setup_particle(Particle *p, double scale=1.0);
-
-  static bool particle_is_instance(Particle *p) {
-    return Nuisance::particle_is_instance(p) && Nuisance(p).get_lower()>=0;
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
+    return Nuisance::get_is_setup(m, pi) && Nuisance(m, pi).get_lower()>=0;
   }
 
   Float get_scale() const {

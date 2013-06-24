@@ -40,9 +40,9 @@ void MolecularDynamics::initialize() {
 
 bool MolecularDynamics::get_is_simulation_particle(ParticleIndex pi) const {
   Particle *p = get_model()->get_particle(pi);
-  bool ret = IMP::core::XYZ::particle_is_instance(p) &&
+  bool ret = IMP::core::XYZ::get_is_setup(p) &&
              IMP::core::XYZ(p).get_coordinates_are_optimized() &&
-             Mass::particle_is_instance(p);
+             Mass::get_is_setup(p);
   if (ret) {
     for (unsigned int i = 0; i < 3; ++i) {
       if (!p->has_attribute(vs_[i])) {

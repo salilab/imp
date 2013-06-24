@@ -100,7 +100,7 @@ void RigidBodiesImageFitRestraint::set_orientations(const core::RigidBody &rb,
 
   for (unsigned int i=0; i < rbm.size(); ++i) {
     // Discard particles that do not have mass
-    if (atom::Mass::particle_is_instance(rbm[i].get_particle()) ) {
+    if (atom::Mass::get_is_setup(rbm[i].get_particle()) ) {
       ps.push_back(rbm[i].get_particle());
     }
   }

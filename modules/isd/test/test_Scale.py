@@ -40,7 +40,7 @@ class Tests(IMP.test.TestCase):
         "Test that a Nuisance can be converted to a Scale"
         n=Nuisance.setup_particle(IMP.Particle(self.m),3.0)
         n.set_lower(0)
-        self.assertTrue(Scale.particle_is_instance(n.get_particle()))
+        self.assertTrue(Scale.get_is_setup(n.get_particle()))
 
     def test_Set(self):
         "Scale set returns nothing"

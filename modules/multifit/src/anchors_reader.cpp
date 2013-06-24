@@ -171,7 +171,7 @@ void AnchorsData::set_secondary_structure_probabilities(
   int anum;
   for (int ssnum=0;ssnum<(int)ssres_ps.size();ssnum++){
     IMP_USAGE_CHECK(atom::SecondaryStructureResidue::
-                    particle_is_instance(ssres_ps[ssnum]),
+                    get_is_setup(ssres_ps[ssnum]),
                     "SSE Particles must be decorated as"
                     "SecondaryStructureResidues");
     if (indices.size()==0) anum=ssnum;

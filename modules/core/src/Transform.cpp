@@ -16,7 +16,7 @@ Transform::Transform(const algebra::Transformation3D &t, bool ignore_non_xyz) {
 }
 
 void Transform::apply_index(Model *m, ParticleIndex pi) const {
-  if (!XYZ::particle_is_instance(m, pi)) {
+  if (!XYZ::get_is_setup(m, pi)) {
     IMP_INTERNAL_CHECK(ignore_non_xyz_,
                        "The particle does not have XYZ attributes");
     return;
