@@ -61,7 +61,8 @@ em::DensityMap* set_map(const std::string &density_filename,
     rmap = em::read_map(density_filename.c_str());
   }
   catch (const base::Exception &err){
-    std::cerr<<"Problem reading density map:"<<density_filename<<std::endl;
+    std::cerr<<"Problem reading density map:"<<density_filename
+             << ": " << err.what() <<std::endl;
     exit(-1);
   }
   if (rmap==nullptr){
