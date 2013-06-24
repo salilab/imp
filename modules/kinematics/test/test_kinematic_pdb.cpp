@@ -127,7 +127,7 @@ IMP::base::Pointer<IMP::Model> build_model_pdb
 
 void test_pdb_model(IMP::Model* model,
                     IMP::core::RigidBodies& rbs,
-                    bool print_hierarchy,
+                    bool /*print_hierarchy*/,
                     IMP::atom::Hierarchy mhd )
 {
   IMP_ALWAYS_CHECK(rbs.size() >=5,
