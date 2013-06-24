@@ -24,9 +24,6 @@ SlidingPriorRestraint::SlidingPriorRestraint(Particle *p, double qmin,
 double
 SlidingPriorRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    Scale::decorate_particle(p_);
-  }
   Scale q0(p_);
   double score;
   if (q0.get_scale() <= 0) {
