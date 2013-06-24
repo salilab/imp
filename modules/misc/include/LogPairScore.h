@@ -26,8 +26,8 @@ class LogPairScore : public PairScore {
   LogPairScore() {}
   virtual double evaluate_index(Model *m, const ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                         const ParticleIndexes &pis) const
+  virtual ModelObjectsTemp do_get_inputs(Model *,
+                                         const ParticleIndexes &) const
     IMP_OVERRIDE {
     return ModelObjectsTemp();
   }
