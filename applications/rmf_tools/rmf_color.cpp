@@ -47,9 +47,6 @@ int recolor(RMF::NodeHandle nh, int level, int total,
   return so_far;
 }
 }
-
-int main(int argc, char **argv) {
-  try {
     boost::int64_t level=0;
     std::string colormap="jet";
     IMP::base::AddIntFlag lf("level",
@@ -58,6 +55,9 @@ int main(int argc, char **argv) {
     IMP::base::AddStringFlag cf("colormap",
                                 "The colormap to use: display, jet",
                                 &colormap);
+
+int main(int argc, char **argv) {
+  try {
     IMP::Strings files
       = IMP::base::setup_from_argv(argc, argv, "Add color to an RMF file",
                                    "file0.rmf ...", -1);

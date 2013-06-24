@@ -22,7 +22,7 @@
 EMFit::EMFit(std::string rec_file_name, std::string lig_file_name,
              std::string map_file_name, float resolution,
              float dist_thr, float volume_scale) :
-  resolution_(resolution), dist_thr_(dist_thr) {
+   dist_thr_(dist_thr) {
 
   model_ = new IMP::Model();
 
@@ -49,7 +49,7 @@ EMFit::EMFit(std::string rec_file_name, std::string lig_file_name,
 
 EMFit::EMFit(std::string pdb_file_name, std::string map_file_name,
              float resolution, float dist_thr, float volume_scale) :
-  resolution_(resolution), dist_thr_(dist_thr) {
+  dist_thr_(dist_thr) {
 
   model_ = new IMP::Model();
 

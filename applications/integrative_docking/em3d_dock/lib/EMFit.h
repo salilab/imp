@@ -55,7 +55,6 @@ private:
   IMP::base::OwnerPointer<IMP::em::MapDistanceTransform> distance_transform_;
   IMP::base::OwnerPointer<IMP::em::EnvelopeScore> envelope_score_;
   MapScorer *cc_score_;
-  float resolution_;
   float dist_thr_;
   float density_threshold_;
   std::vector<FitResult> fit_results_;
