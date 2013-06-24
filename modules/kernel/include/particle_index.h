@@ -31,7 +31,7 @@ IMPKERNELEXPORT ParticleIndexPairs get_indexes(const ParticlePairsTemp &ps);
 class IMPKERNELEXPORT ParticleIndexAdaptor
 #ifndef SWIG
     // suppress swig warning that doesn't make sense and I can't make go away
-    : public ParticleIndex
+    : public ParticleIndex, base::InputAdaptor
 #endif
       {
  public:
@@ -42,6 +42,29 @@ class IMPKERNELEXPORT ParticleIndexAdaptor
   ParticleIndexAdaptor(base::WeakPointer<Particle> p);
   ParticleIndexAdaptor(base::Pointer<Particle> p);
 #endif
+};
+
+/** Take Decorator, Particle or ParticleIndex. */
+class IMPKERNELEXPORT ParticleIndexesAdaptor
+#ifndef SWIG
+    // suppress swig warning that doesn't make sense and I can't make go away
+  : public ParticleIndexes, base::InputAdaptor
+#endif
+      {
+ public:
+#if !defined(SWIG)
+  template <class PS>
+    ParticleIndexesAdaptor(const PS &ps) {
+    resize(ps.size());
+    for (unsigned int i = 0; i < ps.size(); ++i) {
+      operator[](i) = ps[i].get_particle_index();
+    }
+  }
+  ParticleIndexesAdaptor(const Particles &ps);
+#endif
+  ParticleIndexesAdaptor(const ParticlesTemp &ps);
+  ParticleIndexesAdaptor(const ParticleIndexes& pi) : ParticleIndexes(pi) {}
+  ParticleIndexesAdaptor() {}
 };
 
 IMPKERNEL_END_NAMESPACE

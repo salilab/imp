@@ -32,4 +32,11 @@ ParticleIndexAdaptor::ParticleIndexAdaptor(base::Pointer<Particle> p)
 
 ParticleIndexAdaptor::ParticleIndexAdaptor(const Decorator &d)
     : ParticleIndex(d.get_particle_index()) {}
+
+ParticleIndexesAdaptor::ParticleIndexesAdaptor(const Particles &ps):
+  ParticleIndexes(get_indexes(ParticlesTemp(ps.begin(), ps.end()))) {}
+
+ParticleIndexesAdaptor:: ParticleIndexesAdaptor(const ParticlesTemp &ps):
+  ParticleIndexes(get_indexes(ps)) {}
+
 IMPKERNEL_END_NAMESPACE
