@@ -69,6 +69,7 @@ Restraint *create_diameter_restraint(Model *, RigidBodies rbs, double d) {
   return dr.release();
 }
 
+#if 0
 Restraint *add_DOPE(Model *, atom::Hierarchy h) {
   add_dope_score_data(h);
   IMP_NEW(ListSingletonContainer, lsc, (atom::get_leaves(h)));
@@ -79,6 +80,7 @@ Restraint *add_DOPE(Model *, atom::Hierarchy h) {
   dope->set_name("DOPE");
   return dope.release();
 }
+#endif
 
 void benchmark_it(std::string name, bool incr, bool nbl, bool longr) {
   IMP_NEW(Model, m, ());
