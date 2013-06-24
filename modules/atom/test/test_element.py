@@ -26,7 +26,7 @@ class Tests(IMP.test.TestCase):
         """Check writing to pdb unknown elements"""
         m = IMP.Model()
         chain = IMP.atom.Chain.setup_particle(IMP.Particle(m), 'A')
-        residue = IMP.atom.Residue.setup_particle(IMP.Particle(m))
+        residue = IMP.atom.Residue.setup_particle(IMP.Particle(m), IMP.atom.ALA)
         atom = IMP.atom.Atom.setup_particle(IMP.Particle(m), IMP.atom.AT_CA)
         xyz = IMP.core.XYZ.setup_particle(atom.get_particle(), IMP.algebra.Vector3D(0,0,0))
         chain.add_child(residue)
