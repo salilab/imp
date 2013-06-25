@@ -54,6 +54,7 @@ IMP_SWIG_OBJECT(IMP::atom, CoulombPairScore, CoulombPairScores);
 IMP_SWIG_OBJECT(IMP::atom, CoverBond, CoverBonds);
 IMP_SWIG_OBJECT(IMP::atom, DihedralSingletonScore, DihedralSingletonScores);
 IMP_SWIG_OBJECT(IMP::atom, DopePairScore, DopePairScores);
+IMP_SWIG_OBJECT(IMP::atom, EzRestraint, EzRestraints);
 IMP_SWIG_OBJECT(IMP::atom, ForceFieldParameters, ForceFieldParametersList);
 IMP_SWIG_OBJECT(IMP::atom, ForceSwitch, ForceSwitches);
 IMP_SWIG_OBJECT(IMP::atom, HydrogenPDBSelector,HydrogenPDBSelectors);
@@ -203,6 +204,7 @@ namespace IMP {
 %include "IMP/atom/CHARMMStereochemistryRestraint.h"
 %include "IMP/atom/force_fields.h"
 %include "IMP/atom/estimates.h"
+%include "IMP/atom/EzRestraint.h"
 %include "IMP/atom/hierarchy_tools.h"
 %include "IMP/atom/DopePairScore.h"
 %include "IMP/atom/SameResiduePairFilter.h"
