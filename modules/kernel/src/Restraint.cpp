@@ -162,11 +162,14 @@ Restraint *Restraint::create_current_decomposition() const {
   for (unsigned int i = 0; i < rs.size(); ++i) {
     double old_score = rs[i]->get_last_score();
     double new_score = rs[i]->unprotected_evaluate(nullptr);
-    IMP_INTERNAL_CHECK(new_score != 0,
+    // sometimes one wants to fake the old score (eg ConnectivityRestraint)
+    IMP_INTERNAL_CHECK(old_score != 0,
                        "The score of the current decomposition term is 0."
                            << " This is unacceptable.");
     IMP_INTERNAL_CHECK_FLOAT_EQUAL(old_score, new_score,
-                                   "Old and new scores don't match");
+                                   "Old and new scores don't match. This may "
+                                   << "just mean that the restraint didn't "
+                                   << "evaluate the restraints it returns.");
   }
 #endif
   // need pointer to make sure destruction of rs doesn't free anything
