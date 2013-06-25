@@ -16,11 +16,12 @@ IMP_SWIG_OBJECT(IMP::statistics, EuclideanMetric, EuclideanMetrics);
 IMP_SWIG_OBJECT(IMP::statistics, ConfigurationSetRMSDMetric, ConfigurationSetRMSDMetrics);
 IMP_SWIG_OBJECT(IMP::statistics, RecursivePartitionalClusteringMetric, RecursivePartitionalClusteringMetrics);
 IMP_SWIG_OBJECT(IMP::statistics, RecursivePartitionalClusteringEmbedding, RecursivePartitionalClusteringEmbeddings);
-
+IMP_SWIG_OBJECT(IMP::statistics, ChiSquareMetric, ChiSquareMetrics);
 
 %include "IMP/statistics/PartitionalClustering.h"
 %include "IMP/statistics/Embedding.h"
 %include "IMP/statistics/Metric.h"
+%include "IMP/statistics/ChiSquareMetric.h"
 %include "IMP/statistics/PartitionalClusteringWithCenter.h"
 %include "IMP/statistics/embeddings.h"
 %include "IMP/statistics/metrics.h"
