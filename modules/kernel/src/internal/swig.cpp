@@ -168,4 +168,22 @@ ParticlePairsTemp _LogPairScore::get_particle_pairs() const {
 ParticleIndex _take_particle_adaptor(ParticleAdaptor pa) {
   return pa.get_particle_index();
 }
+
+void _TrivialTraitsDecorator::do_setup_particle(Model *m,
+                                                ParticleIndex pi,
+                                                StringKey k) {
+  m->add_attribute(k, pi, "hi");
+}
+
+void _TrivialDerivedDecorator::do_setup_particle(Model *m,
+                                                 ParticleIndex pi) {
+  m->add_attribute(IntKey("trivial_attribute_2"), pi, 2);
+  _TrivialDecorator::setup_particle(m, pi);
+}
+
+void _TrivialDecorator::do_setup_particle(Model *m,
+                                          ParticleIndex pi) {
+  m->add_attribute(IntKey("trivial_attribute"), pi, 1);
+}
+
 IMPKERNEL_END_INTERNAL_NAMESPACE
