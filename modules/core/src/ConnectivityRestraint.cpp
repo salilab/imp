@@ -150,14 +150,16 @@ double ConnectivityRestraint::unprotected_evaluate(
 
 Restraints ConnectivityRestraint::do_create_current_decomposition() const {
   ParticlePairsTemp pp = get_connected_pairs();
-  Restraints ret(pp.size());
+  Restraints ret;
   for (unsigned int i = 0; i < pp.size(); ++i) {
     IMP_NEW(PairRestraint, pr, (ps_, pp[i]));
+    double score = pr->evaluate(false);
+    /** We want to keep the edge even if it has weight 0 */
+    if (score == 0) pr->set_last_score(.00001);
     std::ostringstream oss;
     oss << get_name() << " " << i;
     pr->set_name(oss.str());
-    ret[i] = pr;
-    ret[i]->set_model(get_model());
+    ret.push_back(pr);
   }
   return ret;
 }
