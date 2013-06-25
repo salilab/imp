@@ -30,134 +30,58 @@
 #include <IMP/scratch/internal/helper_cuda.h>
 #include <IMP/scratch/internal/helper_functions.h>
 
-#ifndef MAX
-#define MAX(a,b) (a > b ? a : b)
-#endif
-
-////////////////////////////////////////////////////////////////////////////////
-// declaration, forward
-
-extern "C" void computeGold(char *reference, char *idata, const unsigned int len);
-extern "C" void computeGold2(int2 *reference, int2 *idata, const unsigned int len);
-
-///////////////////////////////////////////////////////////////////////////////
-//! Simple test kernel for device functionality
-//! @param g_odata  memory to process (in and out)
-///////////////////////////////////////////////////////////////////////////////
-__global__ void kernel(int *g_data)
-{
-    // write data to global memory
-    const unsigned int tid = threadIdx.x;
-    int data = g_data[tid];
-
-    // use integer arithmetic to process all four bytes with one thread
-    // this serializes the execution, but is the simplest solutions to avoid
-    // bank conflicts for this very low number of threads
-    // in general it is more efficient to process each byte by a separate thread,
-    // to avoid bank conflicts the access pattern should be
-    // g_data[4 * wtid + wid], where wtid is the thread id within the half warp
-    // and wid is the warp id
-    // see also the programming guide for a more in depth discussion.
-    g_data[tid] = ((((data <<  0) >> 24) - 10) << 24)
-                  | ((((data <<  8) >> 24) - 10) << 16)
-                  | ((((data << 16) >> 24) - 10) <<  8)
-                  | ((((data << 24) >> 24) - 10) <<  0);
-}
+#define SQ(x) (x)*(x)
 
 ///////////////////////////////////////////////////////////////////////////////
 //! Demonstration that int2 data can be used in the cpp code
 //! @param g_odata  memory to process (in and out)
 ///////////////////////////////////////////////////////////////////////////////
 __global__ void
-kernel2(int2 *g_data)
+kernel(int len, double3 *in, double *out)
 {
-    // write data to global memory
-    const unsigned int tid = threadIdx.x;
-    int2 data = g_data[tid];
-
-    // use integer arithmetic to process all four bytes with one thread
-    // this serializes the execution, but is the simplest solutions to avoid
-    // bank conflicts for this very low number of threads
-    // in general it is more efficient to process each byte by a separate thread,
-    // to avoid bank conflicts the access pattern should be
-    // g_data[4 * wtid + wid], where wtid is the thread id within the half warp
-    // and wid is the warp id
-    // see also the programming guide for a more in depth discussion.
-    g_data[tid].x = data.x - data.y;
+    // write data to global memor
+  const unsigned int i = blockIdx.x;
+  //const unsigned int j = threadIdx.y;
+  double3 a = in[i];
+  for (unsigned int j = 0; j < len; ++j) {
+    //const unsigned int j = threadIdx.x;
+    double3 b = in[j];
+    out[i * len + j] = sqrt(SQ(a.x - b.x) + SQ(a.y - b.y) + SQ(a.z - b.z));
+  }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//! Entry point for Cuda functionality on host side
-//! @param argc  command line argument count
-//! @param argv  command line arguments
-//! @param data  data to process on the device
-//! @param len   len of \a data
-////////////////////////////////////////////////////////////////////////////////
-extern "C" bool
-runTest(const int argc, const char **argv, char *data, int2 *data_int2, unsigned int len)
+extern "C" void
+get_distances_gpu(int argc, char ** argv, int len, double3 *coords, double *out)
 {
     // use command-line specified CUDA device, otherwise use device with highest Gflops/s
-    findCudaDevice(argc, (const char **)argv);
+  findCudaDevice(1, (const char **)argv);
 
-    const unsigned int num_threads = len / 4;
-    assert(0 == (len % 4));
-    const unsigned int mem_size = sizeof(char) * len;
-    const unsigned int mem_size_int2 = sizeof(int2) * len;
+  // allocate device memory
+    double3 *d_data;
+    checkCudaErrors(cudaMalloc((void **) &d_data, sizeof(double3) * len));
+    double *out_data;
+    checkCudaErrors(cudaMalloc((void **) &out_data, sizeof(double) * len * len));
 
-    // allocate device memory
-    char *d_data;
-    checkCudaErrors(cudaMalloc((void **) &d_data, mem_size));
     // copy host memory to device
-    checkCudaErrors(cudaMemcpy(d_data, data, mem_size,
-                               cudaMemcpyHostToDevice));
-    // allocate device memory for int2 version
-    int2 *d_data_int2;
-    checkCudaErrors(cudaMalloc((void **) &d_data_int2, mem_size_int2));
-    // copy host memory to device
-    checkCudaErrors(cudaMemcpy(d_data_int2, data_int2, mem_size_int2,
+    checkCudaErrors(cudaMemcpy(d_data, coords, sizeof(double3) * len,
                                cudaMemcpyHostToDevice));
 
+    checkCudaErrors(cudaMemcpy(out_data, out, sizeof(double) * len * len,
+      cudaMemcpyHostToDevice));
+
+
+    dim3 threads(1, 1, 1);
     // setup execution parameters
-    dim3 grid(1, 1, 1);
-    dim3 threads(num_threads, 1, 1);
-    dim3 threads2(len, 1, 1); // more threads needed fir separate int2 version
+    dim3 grid(len, 1, 1);
+
     // execute the kernel
-    kernel<<< grid, threads >>>((int *) d_data);
-    kernel2<<< grid, threads2 >>>(d_data_int2);
-
-    // check if kernel execution generated and error
-    getLastCudaError("Kernel execution failed");
-
-    // compute reference solutions
-    char *reference = (char *) malloc(mem_size);
-    computeGold(reference, data, len);
-    int2 *reference2 = (int2 *) malloc(mem_size_int2);
-    computeGold2(reference2, data_int2, len);
+    kernel<<< grid, threads >>>(len, d_data, out_data);
 
     // copy results from device to host
-    checkCudaErrors(cudaMemcpy(data, d_data, mem_size,
-                               cudaMemcpyDeviceToHost));
-    checkCudaErrors(cudaMemcpy(data_int2, d_data_int2, mem_size_int2,
+    checkCudaErrors(cudaMemcpy(out, out_data, sizeof(double) * len * len,
                                cudaMemcpyDeviceToHost));
 
-    // check result
-    bool success = true;
-
-    for (unsigned int i = 0; i < len; i++)
-    {
-        if (reference[i] != data[i] ||
-            reference2[i].x != data_int2[i].x ||
-            reference2[i].y != data_int2[i].y)
-        {
-            success = false;
-        }
-    }
-
-    // cleanup memory
     checkCudaErrors(cudaFree(d_data));
-    checkCudaErrors(cudaFree(d_data_int2));
-    free(reference);
-    free(reference2);
+    checkCudaErrors(cudaFree(out_data));
 
-    return success;
 }
