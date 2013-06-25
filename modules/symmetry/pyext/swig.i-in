@@ -1,0 +1,6 @@
+IMP_SWIG_OBJECT(IMP::symmetry, BallMover, BallMovers); 
+//IMP_SWIG_DECORATOR(IMP::example, ExampleDecorator, ExampleDecorators);
+//IMP_SWIG_VALUE_TEMPLATE(IMP::example, ExampleTemplateClassD)
+
+
+%include "IMP/symmetry/BallMover.h"
