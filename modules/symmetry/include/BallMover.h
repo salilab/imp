@@ -23,7 +23,7 @@ class IMPSYMMETRYEXPORT BallMover : public core::Mover
 public:
   /** The particle is moved within a primitive cell of a periodic lattice
       \param[in] p is the master particle
-      \param[in] ps are the master and slave particles
+      \param[in] ps are the slave particles
       \param[in] max_tr is the maximum translation during a step
       \param[in] ctrs is a list of all cell centers
       \param[in] trs is the list of transformations from primitive to all cells
