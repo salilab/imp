@@ -99,7 +99,7 @@ public:                                                                 \
                        << " missing required attributes for decorator " \
                        << #Name);                                       \
   }                                                                     \
-  Name(const IMP::kernel::ParticleAdaptor &d) : Parent(d) {             \
+  explicit Name(const IMP::kernel::ParticleAdaptor &d) : Parent(d) {    \
     IMP_INTERNAL_CHECK(                                                 \
                        get_is_setup(d.get_model(), d.get_particle_index()), \
                        "Particle "                                      \
@@ -217,7 +217,7 @@ public:                                                                 \
                       << " missing required attributes for decorator "  \
                       << #Name);                                        \
  }                                                                      \
- Name(const IMP::kernel::ParticleAdaptor &d,                            \
+ explicit Name(const IMP::kernel::ParticleAdaptor &d,                   \
       const TraitsType &tr = default_traits) : Parent(d),               \
                                                traits_(tr) {            \
    IMP_INTERNAL_CHECK(                                                  \
