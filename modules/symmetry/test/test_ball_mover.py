@@ -23,7 +23,7 @@ class Test(IMP.test.TestCase):
         self.trs=[]
         for ctr in self.ctrs:
             self.trs.append(IMP.algebra.Transformation3D(ctr))
-        self.bmv = IMP.symmetry.BallMover(self.ps[0],self.ps,1.0,self.ctrs,self.trs)
+        self.bmv = IMP.symmetry.BallMover(self.ps[0],[self.ps[1]],1.0,self.ctrs,self.trs)
 
     def test_propose(self):
         for i in range(100):

@@ -40,7 +40,7 @@ for ctr in ctrs:
 # movers
 movers=[]
 # symmetry mover with ps[0] being the master particle
-movers.append(IMP.symmetry.BallMover(ps[0], ps, 1.0, ctrs, trs))
+movers.append(IMP.symmetry.BallMover(ps[0], [ps[1]], 1.0, ctrs, trs))
 # normal BallMover for the other particle
 movers.append(IMP.core.BallMover([ps[1]], 1.0))
 # serial mover

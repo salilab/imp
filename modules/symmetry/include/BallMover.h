@@ -36,7 +36,7 @@ public:
 private:
   //! Master particle
   IMP::base::OwnerPointer<Particle> p_;
-  //! List of particles including master and slaves
+  //! List of slave particles
   Particles ps_;
   //! Maximum translation
   Float max_tr_;
@@ -44,6 +44,9 @@ private:
   algebra::Vector3Ds ctrs_;
   //! List of transformations from primitive to all (including primitive) cells
   algebra::Transformation3Ds trs_;
+  // master particle old coordinates
+  algebra::Vector3D  oldcoord_;
+  // slave particles old coordinates
   algebra::Vector3Ds oldcoords_;
 };
 

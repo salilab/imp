@@ -31,8 +31,12 @@ ParticlesTemp BallMover::propose_move(Float f) {
    algebra::get_random_vector_in(algebra::Sphere3D
                (algebra::Vector3D(0.0,0.0,0.0), max_tr_));
 
-  // proposed p_ coordinates
-  algebra::Vector3D nc = core::XYZ(p_).get_coordinates() + displacement;
+
+  // store old coordinates of master particle
+  oldcoord_ = core::XYZ(p_).get_coordinates();
+
+  // master particle coordinates after displacement
+  algebra::Vector3D nc = oldcoord_ + displacement;
 
   // find center of the closest cell
   double mindist=1.0e+24;
@@ -47,32 +51,39 @@ ParticlesTemp BallMover::propose_move(Float f) {
   // find inverse transformation
   algebra::Transformation3D cell_tr = trs_[icell].get_inverse();
 
-  // list of old coordinates
+  // set new coordinates for master particle
+  core::XYZ(p_).set_coordinates(cell_tr.get_transformed(nc));
+
+  // set new coordinates for slave particles
   oldcoords_.clear();
   for(unsigned i=0;i<ps_.size();++i){
    core::XYZ xyz = core::XYZ(ps_[i]);
    algebra::Vector3D oc = xyz.get_coordinates();
    // store old coordinates
    oldcoords_.push_back(oc);
-   // slave particles are not displaced, just moved in the right cell
-   algebra::Vector3D disp=algebra::Vector3D(0.0,0.0,0.0);
-   // master particle is displaced
-   if(ps_[i]==p_) disp=displacement;
    // apply transformation
-   algebra::Vector3D nc = cell_tr.get_transformed(oc+disp);
+   algebra::Vector3D nc = cell_tr.get_transformed(oc);
    xyz.set_coordinates(nc);
   }
 
- return ps_;
+  ParticlesTemp ret;
+  ret.push_back(p_);
+  ret.insert(ret.end(), ps_.begin(), ps_.end());
+
+  return ret;
 }
 
 ParticlesTemp BallMover::get_output_particles() const {
  ParticlesTemp ret;
+ ret.push_back(p_);
  ret.insert(ret.end(), ps_.begin(), ps_.end());
  return ret;
 }
 
 void BallMover::reset_move() {
+ // master particle old coordinates
+ core::XYZ(p_).set_coordinates(oldcoord_);
+ // slave particles old coordinates
  for(unsigned i=0;i<ps_.size();++i){
     core::XYZ(ps_[i]).set_coordinates(oldcoords_[i]);
  }
