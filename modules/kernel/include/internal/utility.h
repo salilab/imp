@@ -10,6 +10,7 @@
 
 #include <IMP/kernel/kernel_config.h>
 #include "../particle_index.h"
+#include <boost/dynamic_bitset.hpp>
 #include <boost/format.hpp>
 #include <sstream>
 
