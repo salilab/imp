@@ -88,18 +88,11 @@ double EzRestraint::unprotected_evaluate(DerivativeAccumulator *da) const
  return score;
 }
 
-ParticlesTemp EzRestraint::get_input_particles() const {
+ModelObjectsTemp EzRestraint::do_get_inputs() const {
   ParticlesTemp ret;
   ret.insert(ret.end(), ps_.begin(), ps_.end());
   return ret;
 }
 
-ContainersTemp EzRestraint::get_input_containers() const {
-  return ContainersTemp();
-}
-
-void EzRestraint::do_show(std::ostream &) const
-{
-}
 
 IMPATOM_END_NAMESPACE

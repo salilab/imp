@@ -8,7 +8,7 @@
 #ifndef IMPATOM_EZ_RESTRAINT_H
 #define IMPATOM_EZ_RESTRAINT_H
 
-#include <atom_config.h>
+#include <IMP/atom/atom_config.h>
 #include <IMP/Restraint.h>
 #include <IMP/restraint_macros.h>
 #include <IMP/Particle.h>
@@ -29,12 +29,14 @@ class IMPATOMEXPORT EzRestraint : public Restraint
  Particles ps_;
  UnaryFunctions ufs_;
  Floats get_parameters(std::string restype);
-
+protected:
+  virtual double
+      unprotected_evaluate(DerivativeAccumulator *da) const IMP_OVERRIDE;
+  virtual  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 public:
   EzRestraint(Particles ps);
 
-  IMP_RESTRAINT(EzRestraint);
-
+  IMP_OBJECT_METHODS(EzRestraint);
 };
 
 
