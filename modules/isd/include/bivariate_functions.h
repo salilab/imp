@@ -506,7 +506,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
             ret = IMP::square(tau_val_) *std::exp(-0.5*ret);
             if (do_jitter && dist<IMP_ISD_BIVARIATE_FUNCTIONS_MINIMUM)
             {
-                ret += J_;
+                ret +=IMP::square(tau_val_) * J_;
             }
             IMP_INTERNAL_CHECK(!base::isnan(ret),
                 "function value is nan. tau = "
