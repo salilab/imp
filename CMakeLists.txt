@@ -259,9 +259,11 @@ endforeach(mod)
 # build modules
 file(STRINGS "${PROJECT_BINARY_DIR}/data/build_info/sorted_modules" enabled_modules)
 
+if(NOT DEFINED IMP_NO_SWIG_DEPENDENCIES)
 imp_execute_process("setup_swig_dependencies" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_deps.py
                     "--swig=${SWIG_EXECUTABLE}")
+endif()
 
 # Static builds don't include Python extensions
 if(NOT IMP_STATIC)
