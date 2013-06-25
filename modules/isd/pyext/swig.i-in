@@ -18,6 +18,7 @@ IMP_SWIG_DECORATOR(IMP::isd, Nuisance, Nuisances);
 IMP_SWIG_DECORATOR(IMP::isd, Scale, Scales);
 IMP_SWIG_DECORATOR(IMP::isd, Switching, Switchings);
 IMP_SWIG_OBJECT(IMP::isd, NOERestraint, NOERestraints);
+IMP_SWIG_DECORATOR(IMP::isd, Weight, Weights);
 IMP_SWIG_OBJECT(IMP::isd, GaussianRestraint, GaussianRestraints);
 IMP_SWIG_OBJECT(IMP::isd, LognormalRestraint, LognormalRestraints);
 IMP_SWIG_OBJECT(IMP::isd, AmbiguousNOERestraint, AmbigousNOERestraints);
@@ -45,6 +46,11 @@ IMP_SWIG_OBJECT(IMP::isd, MolecularDynamicsMover, MolecularDynamicsMovers);
 IMP_SWIG_OBJECT(IMP::isd, HybridMonteCarlo, HybridMonteCarlos);
 IMP_SWIG_OBJECT(IMP::isd, FretData, FretDatas);
 IMP_SWIG_OBJECT(IMP::isd, FretRestraint, FretRestraints);
+IMP_SWIG_OBJECT(IMP::isd, CrossLinkData, CrossLinkDatas);
+IMP_SWIG_OBJECT(IMP::isd, CysteineCrossLinkData, CysteineCrossLinkDatas);
+IMP_SWIG_OBJECT(IMP::isd, CysteineCrossLinkRestraint, CysteineCrossLinkRestraints);
+IMP_SWIG_OBJECT(IMP::isd, WeightMover, WeightMovers);
+IMP_SWIG_OBJECT(IMP::isd, WeightRestraint, WeightRestraints);
 
 /* One can add python methods to your module by putting code in %pythoncode blocks
    This function can be called as IMP.isds.say_hello(). */
@@ -68,6 +74,7 @@ def create_model_and_particles():
 %include "IMP/isd/Nuisance.h"
 %include "IMP/isd/Scale.h"
 %include "IMP/isd/Switching.h"
+%include "IMP/isd/Weight.h"
 %include "IMP/isd/MaintainScaleOrderConstraint.h"
 %include "IMP/isd/JeffreysRestraint.h"
 %include "IMP/isd/SlidingPriorRestraint.h"
@@ -99,6 +106,11 @@ def create_model_and_particles():
 %include "IMP/isd/HybridMonteCarlo.h"
 %include "IMP/isd/FretData.h"
 %include "IMP/isd/FretRestraint.h"
+%include "IMP/isd/CysteineCrossLinkData.h"
+%include "IMP/isd/CrossLinkData.h"
+%include "IMP/isd/CysteineCrossLinkRestraint.h"
+%include "IMP/isd/WeightMover.h"
+%include "IMP/isd/WeightRestraint.h"
 
 namespace IMP {
   namespace atom {
