@@ -50,6 +50,14 @@ inline Float compute_max_distance(const kernel::Particles& particles) {
   return std::sqrt(max_dist2);
 }
 
+//! upper bound on Dmax
+inline Float estimate_max_distance(const Particles& particles) {
+  std::vector<algebra::Vector3D> coordinates(particles.size());
+  get_coordinates(particles, coordinates);
+  IMP::algebra::BoundingBox3D bb(coordinates);
+  return IMP::algebra::get_distance(bb.get_corner(0), bb.get_corner(1));
+}
+
 //! compute max distance between pairs of particles one from particles1
 //! and the other from particles2
 inline Float compute_max_distance(const kernel::Particles& particles1,
