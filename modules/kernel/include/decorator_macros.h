@@ -109,9 +109,7 @@ public:                                                                 \
                        << #Name);                                       \
   }                                                                     \
   /** \deprecated_at{2.1} Check explicitly instead. */                  \
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)                               \
   static Name decorate_particle(::IMP::kernel::Particle *p) {           \
-    IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Check explicitly instead."); \
     IMP_CHECK_OBJECT(p);                                                \
     if (!get_is_setup(p->get_model(), p->get_index())) {                \
       return Name();                                                    \
@@ -231,10 +229,8 @@ public:                                                                 \
                       << #Name);                                        \
                                                }                        \
  /** \deprecated_at{2.1} Check explicitly instead. */                   \
- IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)                                \
  static Name decorate_particle(::IMP::kernel::Particle *p,              \
                                const TraitsType &tr = default_traits) { \
-   IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Check explicitly instead."); \
    IMP_CHECK_OBJECT(p);                                                 \
    if (!get_is_setup(p->get_model(), p->get_index(), tr)) {             \
      return Name();                                                     \
