@@ -16,7 +16,7 @@ class Test(IMP.test.TestCase):
         self.ref_scores["4ej4.pdb"]=-35.0643840765
         self.rst={}
         for pdb in self.ref_scores:
-            prot=IMP.atom.read_pdb(IMP.atom.get_data_path(pdb),
+            prot=IMP.atom.read_pdb(self.get_input_file_name(pdb),
                                              self.m,IMP.atom.CBetaPDBSelector())
             ps=IMP.atom.get_leaves(prot)
             ez=IMP.atom.EzRestraint(ps)
