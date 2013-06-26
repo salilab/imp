@@ -727,6 +727,7 @@ class DominoModel:
             of the coarse assembly.See help for
             @param distance Maximum distance tolerated between particles
             @param weight Weight for the restraint
+            @param stddev
             @param max_score Maximum value for the restraint. If the parameter
                 is None, an automatic value is computed (using the ratio).
             @param ratio Fraction of the number of possible pairs of
