@@ -10,16 +10,13 @@
 
 IMPISD_BEGIN_NAMESPACE
 
- Weight Weight::setup_particle(Particle *p){
-  if(!Weight::particle_is_instance(p))
-   {
-     p->add_attribute(get_nstates_key(),0);
-     for(int i=0; i<nstates_max; ++i){
-      p->add_attribute(get_weight_key(i),0.0);
-     }
-   }
-   return Weight(p);
- }
+void Weight::do_setup_particle(Model *m,
+                               ParticleIndex pi){
+  m->add_attribute(get_nstates_key(), pi, 0);
+  for(int i=0; i<nstates_max; ++i){
+    m->add_attribute(get_weight_key(i), pi, 0.0);
+  }
+}
 
  IntKey Weight::get_nstates_key() {
   static IntKey k("nstates");

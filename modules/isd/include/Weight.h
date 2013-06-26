@@ -25,11 +25,12 @@ class IMPISDEXPORT Weight: public Decorator
 {
 
   static const int nstates_max = 20;
+  static void do_setup_particle(Model *m,
+                                ParticleIndex pi);
 public:
 
-  IMP_DECORATOR(Weight, Decorator);
-
-  static Weight setup_particle(Particle *p);
+  IMP_DECORATOR_METHODS(Weight, Decorator);
+  IMP_DECORATOR_SETUP_0(Weight);
 
 //! Get number of states key
   static IntKey get_nstates_key();
@@ -55,8 +56,9 @@ public:
 //! Get number of states
   Int get_number_of_states();
 
-  static bool particle_is_instance(Particle *p) {
-   return p->has_attribute(get_nstates_key());
+  static bool get_is_setup(Model *m,
+                           ParticleIndex pi) {
+    return m->get_has_attribute(get_nstates_key(), pi);
   }
 
 };
