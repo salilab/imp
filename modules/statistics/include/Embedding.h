@@ -25,11 +25,15 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 class IMPSTATISTICSEXPORT Embedding : public IMP::base::Object {
  protected:
   Embedding(std::string name);
-
+  //! By default return 1.0
+  virtual double do_get_weight(unsigned int i) const { return 1.0;}
  public:
   virtual algebra::VectorKD get_point(unsigned int i) const = 0;
   virtual unsigned int get_number_of_items() const = 0;
-  virtual double get_weight(unsigned int i) const { return 1.0;}
+  /** Return a weight between 0 and 1 for the point. */
+  double get_weight(unsigned int i) const {
+    return do_get_weight(i);
+  }
   virtual algebra::VectorKDs get_points() const {
     algebra::VectorKDs ret(get_number_of_items());
     for (unsigned int i = 0; i < ret.size(); ++i) {
