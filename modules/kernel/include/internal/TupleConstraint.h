@@ -27,6 +27,11 @@ class TupleConstraint : public Constraint {
                   const typename Before::Argument &vt,
                   std::string name = "TupleConstraint %1%");
 
+  TupleConstraint(Before *before, After *after,
+                  Model *m,
+                  const typename Before::IndexArgument &vt,
+                  std::string name = "TupleConstraint %1%");
+
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(After *f) { af_ = f; }
 
@@ -51,6 +56,16 @@ TupleConstraint<Before, After>::TupleConstraint(
     Before *before, After *after, const typename Before::Argument &vt,
     std::string name)
     : Constraint(internal::get_model(vt), name), v_(get_index(vt)) {
+  if (before) f_ = before;
+  if (after) af_ = after;
+}
+
+template <class Before, class After>
+TupleConstraint<Before, After>
+::TupleConstraint( Before *before, After *after, Model *m,
+                   const typename Before::IndexArgument &vt,
+    std::string name)
+    : Constraint(m, name), v_(vt) {
   if (before) f_ = before;
   if (after) af_ = after;
 }

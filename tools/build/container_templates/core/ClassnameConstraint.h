@@ -37,15 +37,26 @@ class ClassnameConstraint :
 #endif
     {
  public:
-  /** before and after are the modifiers to apply before and after
-      evaluate.
+  /** \deprecated_at{2.1} Use the model/index constructor.
    */
+      IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
   ClassnameConstraint(ClassnameModifier *before,
                       ClassnameDerivativeModifier *after, ARGUMENTTYPE vt,
                       std::string name = "ClassnameConstraint %1%")
       : IMP::kernel::internal::TupleConstraint<
             ClassnameModifier, ClassnameDerivativeModifier>(before, after, vt,
-                                                            name) {}
+                                                            name) {
+        IMPCORE_DEPRECATED_FUNCTION_DEF(2.1, "Use the model/index constructor.");
+      }
+
+  ClassnameConstraint(ClassnameModifier *before,
+                      ClassnameDerivativeModifier *after, Model *m,
+                      PASSINDEXTYPE vt,
+                      std::string name = "ClassnameConstraint %1%")
+      : IMP::kernel::internal::TupleConstraint<
+    ClassnameModifier, ClassnameDerivativeModifier>(before, after, m,
+                                                    vt, name) {
+      }
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
  protected:
