@@ -41,7 +41,6 @@ void after_protected_evaluate(Model *m, const ScoreStatesTemp &states,
       m->validate_computed_derivatives();
     }
   }
-  ++m->eval_count_;
   m->first_call_ = false;
 }
 

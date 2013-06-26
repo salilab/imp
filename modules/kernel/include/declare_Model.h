@@ -88,6 +88,56 @@ class IMPKERNELEXPORT Model : public base::Object
                               public internal::ParticlesAttributeTable
 #endif
                               {
+  typedef base::Tracker<ModelObject> ModelObjectTracker;
+
+  // basic representation
+  base::map<FloatKey, FloatRange> ranges_;
+
+  ParticleIndexes free_particles_;
+  base::IndexVector<ParticleIndexTag, base::Pointer<Particle> > particle_index_;
+  base::IndexVector<ParticleIndexTag, Undecorators> undecorators_index_;
+
+  bool has_dependencies_;
+  DependencyGraph dependency_graph_;
+  DependencyGraphVertexIndex dependency_graph_index_;
+
+ // for the update function
+  ScoreStatesTemp ordered_score_states_;
+
+  ////////////// DEPRECATED
+  base::Vector<base::OwnerPointer<base::Object> > model_data_;
+  // for old code that uses the model for the scoring function
+  base::OwnerPointer<RestraintSet> restraints_;
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  // things the evaluate template functions need, can't be bothered with friends
+ public:
+#endif
+  // check more things on the first call
+  bool first_call_;
+  // the stage of evaluation
+  internal::Stage cur_stage_;
+
+  void compute_required_score_states();
+
+  void validate_computed_derivatives() const {}
+  void compute_dependencies();
+  const DependencyGraph &get_dependency_graph();
+  const DependencyGraphVertexIndex &get_dependency_graph_vertex_index();
+  void set_has_dependencies(bool tf);
+  bool get_has_dependencies() const { return has_dependencies_; }
+
+  void before_evaluate(const ScoreStatesTemp &states);
+  void after_evaluate(const ScoreStatesTemp &states, bool calc_derivs);
+
+  internal::Stage get_stage() const { return cur_stage_; }
+  ParticleIndex add_particle_internal(Particle *p);
+
+ public:
+  /** Construct an empty model */
+  Model(std::string name = "Model %1%");
+
+
  public:
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   IMP_MODEL_IMPORT(internal::FloatAttributeTable);
@@ -101,67 +151,7 @@ class IMPKERNELEXPORT Model : public base::Object
   IMP_MODEL_IMPORT(internal::ParticlesAttributeTable);
 #endif
   /** Clear all the cache attributes of a given particle.*/
-  void clear_particle_caches(ParticleIndex pi) {
-    internal::FloatAttributeTable::clear_caches(pi);
-    internal::StringAttributeTable::clear_caches(pi);
-    internal::IntAttributeTable::clear_caches(pi);
-    internal::ObjectAttributeTable::clear_caches(pi);
-    internal::WeakObjectAttributeTable::clear_caches(pi);
-    internal::IntsAttributeTable::clear_caches(pi);
-    internal::ObjectsAttributeTable::clear_caches(pi);
-    internal::ParticleAttributeTable::clear_caches(pi);
-    internal::ParticlesAttributeTable::clear_caches(pi);
-  }
-
- private:
-  typedef base::Tracker<ModelObject> ModelObjectTracker;
-
-  // basic representation
-  base::map<FloatKey, FloatRange> ranges_;
-  ParticleIndexes free_particles_;
-  unsigned int next_particle_;
-  base::IndexVector<ParticleIndexTag, base::Pointer<Particle> > particle_index_;
-  base::IndexVector<ParticleIndexTag, Undecorators> undecorators_index_;
-  base::Vector<base::OwnerPointer<base::Object> > model_data_;
-  bool has_dependencies_;
-  DependencyGraph dependency_graph_;
-  DependencyGraphVertexIndex dependency_graph_index_;
-  void compute_required_score_states();
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  // things the evaluate template functions need, can't be bothered with friends
- public:
-  bool first_call_;
-  void validate_computed_derivatives() const {}
-  void compute_dependencies();
-  internal::Stage cur_stage_;
-  unsigned int eval_count_;
-  bool has_good_score_;
-  void before_evaluate(const ScoreStatesTemp &states);
-  void after_evaluate(const ScoreStatesTemp &states, bool calc_derivs);
-
-  internal::Stage get_stage() const { return cur_stage_; }
-  unsigned int get_evaluation() const {
-    IMP_USAGE_CHECK(get_stage() != internal::NOT_EVALUATING,
-                    "Can only call get_evaluation() during evaluation");
-    return eval_count_;
-  }
-  void add_particle_internal(Particle *p, bool set_name);
-#endif
-
- private:
-  void cleanup();
-  void show_it(std::ostream &out) const;
-
-  // dependencies
-  RestraintsTemp scoring_restraints_;
-  ScoreStatesTemp ordered_score_states_;
-
-  // for old code that uses the model for the scoring function
-  base::OwnerPointer<RestraintSet> restraints_;
-
- public:
-  /** Construct an empty model */
-  Model(std::string name = "Model %1%");
+  void clear_particle_caches(ParticleIndex pi);
 
   //! Add particle to the model
   ParticleIndex add_particle(std::string name);
@@ -170,11 +160,6 @@ class IMPKERNELEXPORT Model : public base::Object
   std::string get_particle_name(ParticleIndex pi) {
     return get_particle(pi)->get_name();
   }
-
-#ifndef IMP_DOXYGEN
-  const DependencyGraph &get_dependency_graph();
-  const DependencyGraphVertexIndex &get_dependency_graph_vertex_index();
-#endif
 
   /** Add the passed Undecorator to the particle.*/
   void add_undecorator(ParticleIndex pi, Undecorator *d);
@@ -194,7 +179,7 @@ class IMPKERNELEXPORT Model : public base::Object
     IMP_INTERNAL_CHECK(cur_stage_ == internal::NOT_EVALUATING,
                        "The set of score states cannot be changed during"
                            << "evaluation.");
-    obj->set_model(this);
+    if (!obj->get_model()) obj->set_model(this);
     obj->set_was_used(true);
     IMP_LOG_VERBOSE("Added score state " << obj->get_name() << std::endl);
     IMP_IF_CHECK(base::USAGE) {
@@ -213,76 +198,12 @@ class IMPKERNELEXPORT Model : public base::Object
   using Object::clear_caches;
 #endif
 
-  /** \deprecated_at{2.1} Get the maximum directly from the restraint.*/
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-  double get_maximum_score(Restraint *r) const;
-  /** \deprecated_at{2.1} Set get the maximum directly on the restraint.*/
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-  void set_maximum_score(Restraint *r, double s);
-  /** \deprecated_at{2.1} You should use a ScoringFunction or a RestraintSet.*/
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-  void set_maximum_score(double s);
-  /** \deprecated_at{2.1} You should use a ScoringFunction or a RestraintSet.*/
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-  double get_maximum_score() const;
-
-#if !defined(IMP_DOXYGEN)
-  ModelObjectsTemp get_optimized_particles() const;
-
-  RestraintSet *get_root_restraint_set() { return restraints_; }
-
-  void set_has_dependencies(bool tf);
-  bool get_has_dependencies() const;
-
-  // make sure the whole model is updated for backwards compat
-  /**
-     @param tf - calculate derivatives if true
-  */
-  double evaluate(bool tf, bool warn = true);
-
-  ScoringFunction *create_model_scoring_function() {
-    return restraints_->create_scoring_function();
-  }
-
-  void add_restraint(Restraint *r) { restraints_->add_restraint(r); }
-  void remove_restraint(Restraint *r) { restraints_->remove_restraint(r); }
-  RestraintsTemp get_restraints() const {
-    return restraints_->get_restraints();
-  }
-  ScoringFunction *create_scoring_function() const {
-    return restraints_->create_scoring_function();
-  }
-  unsigned int get_number_of_restraints() const {
-    return restraints_->get_number_of_restraints();
-  }
-  Restraint *get_restraint(unsigned int i) const {
-    return restraints_->get_restraint(i);
-  }
-#ifndef SWIG
-  operator Restraint *() const { return restraints_.get(); }
-  Restraint *get_root_restraint_set() const { return restraints_; }
-#endif
-#endif
-
   //! Sometimes it is useful to be able to make sure the model is up to date
   /** This method updates all the state but does not necessarily compute the
       score. Use this to make sure that your containers and rigid bodies are
       up to date.
   */
   void update();
-
-  IMP_OBJECT_METHODS(Model);
-
-#ifndef IMP_DOXYGEN
-  /** Remove a particle from the Model. The particle will then be inactive and
-      cannot be used for anything and all data stored in the particle is lost.
-  */
-  void remove_particle(Particle *p);
-#endif
-  /** Remove a particle from the Model. The particle will then be inactive and
-       cannot be used for anything and all data stored in the particle is lost.
-   */
-  void remove_particle(ParticleIndex pi);
 
 #ifdef IMP_DOXYGEN
   /** \name Accessing attributes
@@ -327,7 +248,6 @@ class IMPKERNELEXPORT Model : public base::Object
 /** @} */
 #endif
 
-// kind of icky
 #ifdef SWIG
 #define IMP_MODEL_ATTRIBUTE_METHODS(Type, Value)                            \
   void add_attribute(Type##Key attribute_key, ParticleIndex particle,       \
@@ -352,47 +272,103 @@ class IMPKERNELEXPORT Model : public base::Object
   void set_is_optimized(FloatKey, ParticleIndex, bool);
 #endif
 
-  /** \name Model Data
-      Arbitrary non-particle data can be associated with the Model. This can
-      be used for Model-level caches and such.
-      @{ */
-  void add_data(ModelKey mk, base::Object *o);
-  base::Object *get_data(ModelKey mk) const;
-  void remove_data(ModelKey mk);
-  bool get_has_data(ModelKey mk) const;
-  /** @} */
+  /** Get the particle from an index. */
+  Particle *get_particle(ParticleIndex p) const;
 
-  /** @name Methods to debug particles
-        It is sometimes useful to inspect the list of all particles when
-        debugging. These methods allow you to do that.
-        \note Only use this if you really know what you are doing as
-        Particles can be added to the object from many different places.
+  /** Get all particle indexes */
+  ParticleIndexes get_particle_indexes();
 
-        The value type for the iterators is a Particle*.
-        @{
-     */
-  unsigned int get_number_of_particles() const;
-  ParticlesTemp get_particles() const;
-  inline Particle *get_particle(ParticleIndex p) const;
-#ifndef SWIG
-#ifdef IMP_DOXYGEN
-  class ParticleIterator;
-#else
+  /** Get all the ModelObjects associated with this Model.
+   */
+  ModelObjectsTemp get_model_objects() const;
+
+  /** Remove a particle from the Model. The particle will then be inactive and
+       cannot be used for anything and all data stored in the particle is lost.
+   */
+  void remove_particle(ParticleIndex pi);
+
+  IMP_OBJECT_METHODS(Model);
+
+
+  // deprecated
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
   struct NotNull {
     bool operator()(const base::Pointer<Particle> &p) { return p; }
   };
   typedef boost::filter_iterator<
       NotNull, base::Vector<base::Pointer<Particle> >::const_iterator>
       ParticleIterator;
+#endif
 
+  // all deprecated but too used to add warnings about now
+#if !defined(IMP_DOXYGEN)
+  ScoringFunction *create_model_scoring_function();
+  void add_restraint(Restraint *r);
+  void remove_restraint(Restraint *r);
+  RestraintsTemp get_restraints() const;
+  ScoringFunction *create_scoring_function();
 #endif
+
+  /** \deprecated_at{2.1} Use a RestraintSet instead.*/
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+      unsigned int get_number_of_restraints() const;
+  /** \deprecated_at{2.1} Use a RestraintSet instead.*/
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+      Restraint *get_restraint(unsigned int i) const;
+   /** \deprecated_at{2.1} Use a ScoringFunction instead.*/
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  double evaluate(bool tf, bool warn = true);
+  /** \deprecated_at{2.1} Use the ParticleIndex version.*/
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  void remove_particle(Particle *p);
+  /** \deprecated_at{2.1} Use get_particle_indexes(). */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  unsigned int get_number_of_particles() const;
+  /** \deprecated_at{2.1} Use get_particle_indexes(). */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  ParticlesTemp get_particles() const;
+  /** \deprecated_at{2.1} Was not used, will be removed. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  void add_data(ModelKey mk, base::Object *o);
+  /** \deprecated_at{2.1} Was not used, will be removed. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  base::Object *get_data(ModelKey mk) const;
+  /** \deprecated_at{2.1} Was not used, will be removed. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  void remove_data(ModelKey mk);
+  /** \deprecated_at{2.1} Was not used, will be removed. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  bool get_has_data(ModelKey mk) const;
+  /** \deprecated_at{2.1} Do not use. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  ModelObjectsTemp get_optimized_particles() const;
+  /** \deprecated_at{2.1} Using a ScoringFunction instead. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+      RestraintSet *get_root_restraint_set();
+  /** \deprecated_at{2.1} Get the maximum directly from the restraint.*/
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  double get_maximum_score(Restraint *r) const;
+  /** \deprecated_at{2.1} Set get the maximum directly on the restraint.*/
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  void set_maximum_score(Restraint *r, double s);
+  /** \deprecated_at{2.1} You should use a ScoringFunction or a RestraintSet.*/
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  void set_maximum_score(double s);
+  /** \deprecated_at{2.1} You should use a ScoringFunction or a RestraintSet.*/
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  double get_maximum_score() const;
+#ifndef SWIG
+  /** \deprecated_at{2.1} Use get_particle_indexes(). */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   ParticleIterator particles_begin() const;
+  /** \deprecated_at{2.1} Use get_particle_indexes(). */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   ParticleIterator particles_end() const;
+  /** \deprecated_at{2.1} Use a ScoringFunction instead. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+   operator Restraint *() const { return restraints_.get(); }
 #endif
-  /** @} */
-  /** Get all the ModelObjects associated with this Model.
-   */
-  ModelObjectsTemp get_model_objects() const;
+
 };
 
 IMPKERNEL_END_NAMESPACE
