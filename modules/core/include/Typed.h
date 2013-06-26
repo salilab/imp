@@ -47,7 +47,8 @@ class IMPCOREEXPORT Typed : public Decorator {
   }
 
   ParticleType get_type() const {
-    return ParticleType(get_particle()->get_value(get_type_key()));
+    return ParticleType(get_model()->get_attribute(get_type_key(),
+                                                   get_particle_index()));
   }
 };
 
