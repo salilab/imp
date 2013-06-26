@@ -1,18 +1,18 @@
 show_exceptions=['ElementTable']
 value_object_exceptions=['ElementTable']
 function_name_exceptions=['transform',
-                                            'BrownianDynamics.simulate',
-                                            'MolecularDynamics.assign_velocities',
-                                            'VelocityScalingOptimizerState.rescale_velocities',
-                                            'BrownianDynamics.simulate',
-                                            'Simulator.simulate',
-                                            'MolecularDynamics.simulate',
-                                            'BerendsenThermostatOptimizerState.rescale_velocities',
-                                            'LangevinThermostatOptimizerState.rescale_velocities',
-                                            'get_all_atom_CHARMM_parameters',
-                                            'get_heavy_atom_CHARMM_parameters']
+                          'BrownianDynamics.simulate',
+                          'MolecularDynamics.assign_velocities',
+                          'VelocityScalingOptimizerState.rescale_velocities',
+                          'BrownianDynamics.simulate',
+                          'Simulator.simulate',
+                          'MolecularDynamics.simulate',
+                          'BerendsenThermostatOptimizerState.rescale_velocities',
+                          'LangevinThermostatOptimizerState.rescale_velocities',
+                          'get_all_atom_CHARMM_parameters',
+                          'get_heavy_atom_CHARMM_parameters']
 spelling_exceptions=['lennard', 'charmm', "jones",
-                                       "impropers",
-                                       "rmsd", "pdb", "multimodel", "conect",
-                                       'rescale',
-                                       'berendsen', 'langevin', 'runge', 'kutta']
+                     "impropers", "ez",
+                     "rmsd", "pdb", "multimodel", "conect",
+                     'rescale',
+                     'berendsen', 'langevin', 'runge', 'kutta']
