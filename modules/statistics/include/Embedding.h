@@ -30,7 +30,7 @@ class IMPSTATISTICSEXPORT Embedding : public IMP::base::Object {
  public:
   virtual algebra::VectorKD get_point(unsigned int i) const = 0;
   virtual unsigned int get_number_of_items() const = 0;
-  /** Return a weight between 0 and 1 for the point. */
+  /** Return a weight for the point. */
   double get_weight(unsigned int i) const {
     return do_get_weight(i);
   }

@@ -29,7 +29,7 @@ class IMPSTATISTICSEXPORT Metric : public IMP::base::Object {
   virtual double do_get_weight(unsigned int i) const { return 1.0;}
  public:
   virtual double get_distance(unsigned int i, unsigned int j) const = 0;
-  /** Return a weight between 0 and 1 for the point. */
+  /** Return a weight for the point. */
   double get_weight(unsigned int i) const {
     return do_get_weight(i);
   }
