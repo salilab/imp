@@ -7,7 +7,6 @@
  */
 #include <IMP/symmetry/RigidBodyMover.h>
 #include <IMP/core/XYZ.h>
-#include <IMP/isd2/Scale.h>
 #include <IMP/algebra/vector_generators.h>
 #include <list>
 
