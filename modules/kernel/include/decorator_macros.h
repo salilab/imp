@@ -266,25 +266,31 @@ public:                                                                 \
 */
 #define IMP_DECORATOR_SETUP_0(Name)                                     \
   static Name setup_particle(Model *m, ParticleIndex pi) {              \
+    IMP_USAGE_CHECK(!get_is_setup(m, pi), "Particle "                   \
+                    << m->get_particle_name(pi)                         \
+                    << " already set up as " << #Name);                 \
     do_setup_particle(m, pi);                                           \
     return Name(m, pi);                                                 \
   }                                                                     \
   static Name setup_particle(IMP::kernel::ParticleAdaptor decorator) {  \
-    do_setup_particle(decorator.get_model(), decorator.get_particle_index()); \
-    return Name(decorator.get_model(), decorator.get_particle_index()); \
+    return setup_particle(decorator.get_model(),                        \
+                          decorator.get_particle_index());              \
   }
 /** \see IMP_DECORATOR_SETUP_0() */
 #define IMP_DECORATOR_SETUP_1(Name, FirstArgumentType, first_argument_name) \
   static Name setup_particle(Model *m, ParticleIndex pi,                \
                              FirstArgumentType first_argument_name) {   \
+    IMP_USAGE_CHECK(!get_is_setup(m, pi), "Particle "                   \
+                    << m->get_particle_name(pi)                         \
+                    << " already set up as " << #Name);                 \
     do_setup_particle(m, pi, first_argument_name);                      \
     return Name(m, pi);                                                 \
   }                                                                     \
   static Name setup_particle(IMP::kernel::ParticleAdaptor decorator,    \
                              FirstArgumentType first_argument_name) {   \
-    do_setup_particle(decorator.get_model(), decorator.get_particle_index(), \
-                      first_argument_name);                             \
-    return Name(decorator.get_model(), decorator.get_particle_index()); \
+    return setup_particle(decorator.get_model(),                        \
+                          decorator.get_particle_index(),               \
+                          first_argument_name);                         \
   }
 /** \see IMP_DECORATOR_SETUP_0() */
 #define IMP_DECORATOR_SETUP_2(Name, FirstArgumentType, first_argument_name, \
@@ -292,15 +298,18 @@ public:                                                                 \
   static Name setup_particle(Model *m, ParticleIndex pi,                \
                              FirstArgumentType first_argument_name,     \
                              SecondArgumentType second_argument_name) { \
+    IMP_USAGE_CHECK(!get_is_setup(m, pi), "Particle "                   \
+                    << m->get_particle_name(pi)                         \
+                    << " already set up as " << #Name);                 \
     do_setup_particle(m, pi, first_argument_name, second_argument_name); \
     return Name(m, pi);                                                 \
   }                                                                     \
   static Name setup_particle(IMP::kernel::ParticleAdaptor decorator,    \
                              FirstArgumentType first_argument_name,     \
                              SecondArgumentType second_argument_name) { \
-    do_setup_particle(decorator.get_model(), decorator.get_particle_index(), \
-                      first_argument_name, second_argument_name);       \
-    return Name(decorator.get_model(), decorator.get_particle_index()); \
+    return setup_particle(decorator.get_model(),                        \
+                          decorator.get_particle_index(),               \
+                          first_argument_name, second_argument_name);   \
   }
 /** \see IMP_DECORATOR_SETUP_0() */
 #define IMP_DECORATOR_SETUP_3(Name, FirstArgumentType, first_argument_name, \
@@ -310,6 +319,9 @@ public:                                                                 \
                              FirstArgumentType first_argument_name,     \
                              SecondArgumentType second_argument_name,   \
                              ThirdArgumentType third_argument_name) {   \
+    IMP_USAGE_CHECK(!get_is_setup(m, pi), "Particle "                   \
+                    << m->get_particle_name(pi)                         \
+                    << " already set up as " << #Name);                 \
     do_setup_particle(m, pi, first_argument_name, second_argument_name, \
                       third_argument_name);                             \
     return Name(m, pi);                                                 \
@@ -318,10 +330,10 @@ public:                                                                 \
                              FirstArgumentType first_argument_name,     \
                              SecondArgumentType second_argument_name,   \
                              ThirdArgumentType third_argument_name) {   \
-    do_setup_particle(decorator.get_model(), decorator.get_particle_index(), \
-                      first_argument_name, second_argument_name,        \
-                      third_argument_name);                             \
-    return Name(decorator.get_model(), decorator.get_particle_index()); \
+    return setup_particle(decorator.get_model(),                        \
+                          decorator.get_particle_index(),               \
+                          first_argument_name, second_argument_name,    \
+                          third_argument_name);                         \
   }
 /** \see IMP_DECORATOR_SETUP_0() */
 #define IMP_DECORATOR_SETUP_4(Name, FirstArgumentType, first_argument_name, \
@@ -333,6 +345,9 @@ public:                                                                 \
                              SecondArgumentType second_argument_name,   \
                              ThirdArgumentType third_argument_name,     \
                              FourthArgumentType fourth_argument_name) { \
+    IMP_USAGE_CHECK(!get_is_setup(m, pi), "Particle "                   \
+                    << m->get_particle_name(pi)                         \
+                    << " already set up as " << #Name);                 \
     do_setup_particle(m, pi, first_argument_name, second_argument_name, \
                       third_argument_name, fourth_argument_name);       \
     return Name(m, pi);                                                 \
@@ -342,10 +357,10 @@ public:                                                                 \
                              SecondArgumentType second_argument_name,   \
                              ThirdArgumentType third_argument_name,     \
                              FourthArgumentType fourth_argument_name) { \
-    do_setup_particle(decorator.get_model(), decorator.get_particle_index(), \
-                      first_argument_name, second_argument_name,        \
-                      third_argument_name, fourth_argument_name);       \
-    return Name(decorator.get_model(), decorator.get_particle_index()); \
+    return setup_particle(decorator.get_model(),                        \
+                          decorator.get_particle_index(),               \
+                          first_argument_name, second_argument_name,    \
+                          third_argument_name, fourth_argument_name);   \
   }
 
 
