@@ -73,7 +73,7 @@ class Model;
 class IMPKERNELEXPORT Model : public base::Object
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
                               ,
-                              public base::Tracker<ModelObject>,
+                              public base::Tracker<Model, ModelObject>,
                               public internal::Masks,
                               // The attribute tables provide fast access to
                               // e.g. particle attributes, etc.
@@ -87,8 +87,8 @@ class IMPKERNELEXPORT Model : public base::Object
                               public internal::ParticleAttributeTable,
                               public internal::ParticlesAttributeTable
 #endif
-                              {
-  typedef base::Tracker<ModelObject> ModelObjectTracker;
+{
+  typedef base::Tracker<Model, ModelObject> ModelObjectTracker;
 
   // basic representation
   base::map<FloatKey, FloatRange> ranges_;

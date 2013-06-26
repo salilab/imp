@@ -136,10 +136,6 @@ void Model::compute_dependencies() {
   dependency_graph_index_ = IMP::kernel::get_vertex_index(dependency_graph_);
   // internal::show_as_graphviz(boost::make_reverse_graph(dg), std::cout);
   set_score_state_update_order(dependency_graph_, dependency_graph_index_);
-  // to prevent infinite recursion when updating ScoringFunctions
-  ModelObjectTracker::set_is_dirty(false);
-  IMP_INTERNAL_CHECK(!ModelObjectTracker::get_is_dirty(),
-                     "Cleaning the tracked list did not make it clean");
   IMP_LOG_TERSE("Score states are " << get_score_states() << std::endl);
   // must go after dependencies dirty to avoid recursion
   ScoreStatesTemp score_states;
