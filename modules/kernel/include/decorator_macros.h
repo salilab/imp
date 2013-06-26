@@ -19,48 +19,48 @@
 
 #ifdef IMP_DOXYGEN
 /** \deprecated_at{2.1} Use IMP_DECORATOR_METHODS() instead.
- */
+*/
 #define IMP_DECORATOR(Name, Parent)                                     \
   public:                                                               \
   /* Should be private but SWIG accesses it through the                 \
      comparison                                                         \
      macros*/ IMP_NO_DOXYGEN(                                           \
-                             typedef Parent ParentDecorator);           \
+         typedef Parent ParentDecorator);                               \
   Name() : Parent() {}                                                  \
   Name(Model *m, ParticleIndex id) : Parent(m, id) {                    \
     IMP_INTERNAL_CHECK(                                                 \
                        get_is_setup(m->get_particle(id)),               \
-                       "Particle " << m->get_particle(id)->get_name()   \
+        "Particle " << m->get_particle(id)->get_name()                  \
                        << " missing required attributes for decorator " \
                        << #Name                                         \
-                       << "\n" << base::ShowFull(m->get_particle(id))); \
+        << "\n" << base::ShowFull(m->get_particle(id)));                \
   }                                                                     \
   IMP_SHOWABLE(Name)
 
 #else
 #define IMP_DECORATOR(Name, Parent)                                     \
   IMPKERNEL_DEPRECATED_MACRO(2.1, "Use IMP_DECORATOR_METHODS()");       \
-public:                                                                 \
-/* Should be private but SWIG accesses it through the                   \
-   comparison                                                           \
-   macros*/ IMP_NO_DOXYGEN(                                             \
-                           typedef Parent ParentDecorator);             \
+  public:                                                               \
+  /* Should be private but SWIG accesses it through the                 \
+     comparison                                                         \
+     macros*/ IMP_NO_DOXYGEN(                                           \
+         typedef Parent ParentDecorator);                               \
   Name() : Parent() {}                                                  \
   Name(Model *m, ParticleIndex id) : Parent(m, id) {                    \
     IMP_INTERNAL_CHECK(                                                 \
                        get_is_setup(m->get_particle(id)),               \
-                       "Particle " << m->get_particle(id)->get_name()   \
+        "Particle " << m->get_particle(id)->get_name()                  \
                        << " missing required attributes for decorator "\
                        << #Name                                         \
-                       << "\n" << base::ShowFull(m->get_particle(id))); \
+        << "\n" << base::ShowFull(m->get_particle(id)));                \
   }                                                                     \
   explicit Name(::IMP::kernel::Particle *p) : Parent(p) {               \
     IMP_INTERNAL_CHECK(                                                 \
                        get_is_setup(p),                                 \
-                       "Particle " << p->get_name()                     \
+        "Particle " << p->get_name()                                    \
                        << " missing required attributes for decorator " \
                        << #Name                                         \
-                       << "\n" << base::ShowFull(p));                   \
+        << "\n" << base::ShowFull(p));                                  \
   }                                                                     \
   static bool get_is_setup(Particle *p) { return particle_is_instance(p);} \
   static bool get_is_setup(Model *m, ParticleIndex pi) {                \
@@ -138,52 +138,52 @@ public:                                                                 \
 
 /** \deprecated_at{2.1} Use IMP_DECORATOR_WITH_TRAITS_METHODS()
  */
-#define IMP_DECORATOR_WITH_TRAITS(Name, Parent, TraitsType, traits_name, \
-                                  default_traits)                       \
-  private:                                                              \
-  TraitsType traits_;                                                   \
-                                                                        \
-public:                                                                 \
+#define IMP_DECORATOR_WITH_TRAITS(Name, Parent, TraitsType, traits_name,      \
+                                  default_traits)                             \
+ private:                                                                     \
+  TraitsType traits_;                                                         \
+                                                                              \
+ public:                                                                      \
  IMPKERNEL_DEPRECATED_MACRO(2.1, "Use IMP_DECORATOR_METHODS()");        \
- IMP_NO_DOXYGEN(typedef Parent ParentDecorator);                        \
- Name() {}                                                              \
- Name(Model *m, ParticleIndex id, const TraitsType &tr)                 \
-   : Parent(m, id), traits_(tr) {                                       \
-   IMP_INTERNAL_CHECK(                                                  \
+  IMP_NO_DOXYGEN(typedef Parent ParentDecorator);                             \
+  Name() {}                                                                   \
+  Name(Model *m, ParticleIndex id, const TraitsType &tr)                      \
+      : Parent(m, id), traits_(tr) {                                          \
+    IMP_INTERNAL_CHECK(                                                       \
                       get_is_setup(m->get_particle(id), tr),            \
-                      "Particle " << m->get_particle(id)->get_name()    \
+        "Particle " << m->get_particle(id)->get_name()                        \
                       << " missing required attributes for decorator "  \
                       << #Name                                          \
-                      << "\n" << Showable(m->get_particle(id)));        \
- }                                                                      \
- Name(const TraitsType &tr) : traits_(tr) {}                            \
- explicit Name(::IMP::kernel::Particle *p,                              \
-               const TraitsType &tr = default_traits)                   \
-   : Parent(p), traits_(tr) {                                           \
-   IMP_INTERNAL_CHECK(                                                  \
+                    << "\n" << Showable(m->get_particle(id)));                \
+  }                                                                           \
+  Name(const TraitsType &tr) : traits_(tr) {}                                 \
+  explicit Name(::IMP::kernel::Particle *p,                                   \
+                const TraitsType &tr = default_traits)                        \
+      : Parent(p), traits_(tr) {                                              \
+    IMP_INTERNAL_CHECK(                                                       \
                       get_is_setup(p, tr),                              \
                       "Particle " << p->get_name()                      \
                       << " missing required attributes "                \
-                      << " for decorator " << #Name << "\n" << Showable(p)); \
- }                                                                      \
- static Name decorate_particle(::IMP::kernel::Particle *p,              \
-                               const TraitsType &tr = default_traits) { \
+                    << " for decorator " << #Name << "\n" << Showable(p));    \
+  }                                                                           \
+  static Name decorate_particle(::IMP::kernel::Particle *p,                   \
+                                const TraitsType &tr = default_traits) {      \
    if (!get_is_setup(p, tr))                                            \
-     return Name();                                                     \
-   else                                                                 \
-     return Name(p, tr);                                                \
- }                                                                      \
- IMP_SHOWABLE(Name);                                                    \
- const TraitsType &get_##traits_name()                                  \
-   const { return get_decorator_traits(); }                             \
- typedef Parent DecoratorTraitsBase;                                    \
- typedef TraitsType DecoratorTraits;                                    \
- const DecoratorTraits &get_decorator_traits() const { return traits_; } \
- static const DecoratorTraits &get_default_decorator_traits() {         \
-   static TraitsType dt = default_traits;                               \
-   return dt;                                                           \
- }                                                                      \
- IMP_NO_DOXYGEN(typedef boost::true_type DecoratorHasTraits)
+      return Name();                                                          \
+    else                                                                      \
+      return Name(p, tr);                                                     \
+  }                                                                           \
+  IMP_SHOWABLE(Name);                                                         \
+  const TraitsType &get_##traits_name()                                       \
+      const { return get_decorator_traits(); }                                \
+  typedef Parent DecoratorTraitsBase;                                         \
+  typedef TraitsType DecoratorTraits;                                         \
+  const DecoratorTraits &get_decorator_traits() const { return traits_; }     \
+  static const DecoratorTraits &get_default_decorator_traits() {              \
+    static TraitsType dt = default_traits;                                    \
+    return dt;                                                                \
+  }                                                                           \
+  IMP_NO_DOXYGEN(typedef boost::true_type DecoratorHasTraits)
 
 
 /** Implement the needed methods for a decorator based on
@@ -440,15 +440,15 @@ public:                                                                 \
     \see IMP_DECORATOR_GET_SET()
 
 */
-#define IMP_DECORATOR_GET(AttributeKey, Type, has_action, not_has_action) \
-  do {                                                                  \
+#define IMP_DECORATOR_GET(AttributeKey, Type, has_action, not_has_action)     \
+  do {                                                                        \
     if (get_model()->get_has_attribute(AttributeKey, get_particle_index())) { \
-      Type VALUE =                                                      \
-        get_model()->get_attribute(AttributeKey, get_particle_index()); \
-      has_action;                                                       \
-    } else {                                                            \
-      not_has_action;                                                   \
-    }                                                                   \
+      Type VALUE =                                                            \
+          get_model()->get_attribute(AttributeKey, get_particle_index());     \
+      has_action;                                                             \
+    } else {                                                                  \
+      not_has_action;                                                         \
+    }                                                                         \
   } while (false)
 
 //! Set an attribute, creating it if it does not already exist.
@@ -458,35 +458,35 @@ public:                                                                 \
     \see IMP_DECORATOR_GET()
     \see IMP_DECORATOR_GET_SET()
 */
-#define IMP_DECORATOR_SET(AttributeKey, value)                          \
-  do {                                                                  \
+#define IMP_DECORATOR_SET(AttributeKey, value)                                \
+  do {                                                                        \
     if (get_model()->get_has_attribute(AttributeKey, get_particle_index())) { \
-      get_model()->set_attribute(AttributeKey, get_particle_index(), value); \
-    } else {                                                            \
-      get_model()->add_attribute(AttributeKey, get_particle_index(), value); \
-    }                                                                   \
+      get_model()->set_attribute(AttributeKey, get_particle_index(), value);  \
+    } else {                                                                  \
+      get_model()->add_attribute(AttributeKey, get_particle_index(), value);  \
+    }                                                                         \
   } while (false)
 
 //! Define methods for getting and setting a particular simple field
 /** This macro defines methods to get and set a particular attribute.
 
-    \param[in] name The lower case name of the attribute
-    \param[in] AttributeKey The AttributeKey object controlling
-    the attribute.
-    \param[in] Type The type of the attribute (upper case).
-    \param[in] ReturnType The type to return from the get.
-    \see IMP_DECORATOR_GET()
-    \see IMP_DECORATOR_SET()
+   \param[in] name The lower case name of the attribute
+   \param[in] AttributeKey The AttributeKey object controlling
+   the attribute.
+   \param[in] Type The type of the attribute (upper case).
+   \param[in] ReturnType The type to return from the get.
+   \see IMP_DECORATOR_GET()
+   \see IMP_DECORATOR_SET()
 */
-#define IMP_DECORATOR_GET_SET(name, AttributeKey, Type, ReturnType)     \
-  ReturnType get_##name() const {                                       \
-    return static_cast<ReturnType>(                                     \
+#define IMP_DECORATOR_GET_SET(name, AttributeKey, Type, ReturnType)      \
+  ReturnType get_##name() const {                                        \
+    return static_cast<ReturnType>(                                      \
                                    get_model()->get_attribute(AttributeKey, \
                                                      get_particle_index())); \
-  }                                                                     \
-  void set_##name(ReturnType t) {                                       \
-    get_model()->set_attribute(AttributeKey, get_particle_index(), t);  \
-  }                                                                     \
+  }                                                                      \
+  void set_##name(ReturnType t) {                                        \
+    get_model()->set_attribute(AttributeKey, get_particle_index(), t);   \
+  }                                                                      \
   IMP_REQUIRE_SEMICOLON_CLASS(getset##name)
 
 //! Define methods for getting and setting an optional simple field.
@@ -509,33 +509,33 @@ public:                                                                 \
   void set_##name(ReturnType t) { IMP_DECORATOR_SET(AttributeKey, t); } \
   IMP_REQUIRE_SEMICOLON_CLASS(getset_##name)
 
-#define IMP_DECORATORS_DECL(Name, PluralName)   \
-  class Name;                                   \
+#define IMP_DECORATORS_DECL(Name, PluralName) \
+  class Name;                                 \
   typedef IMP::base::Vector<Name> PluralName
 
-#define IMP_DECORATORS_DEF(Name, PluralName)                    \
-  /* needed so there is no ambiguity with operator->*/          \
-  inline std::ostream &operator<<(std::ostream &out, Name n) {  \
-    n.show(out);                                                \
-    return out;                                                 \
+#define IMP_DECORATORS_DEF(Name, PluralName)                   \
+  /* needed so there is no ambiguity with operator->*/         \
+  inline std::ostream &operator<<(std::ostream &out, Name n) { \
+    n.show(out);                                               \
+    return out;                                                \
   }
 
 //! Define the types for storing sets of decorators
 /** The macro defines the types PluralName and PluralNameTemp.
  */
-#define IMP_DECORATORS(Name, PluralName, Parent)        \
-  IMP_DECORATORS_DECL(Name, PluralName);                \
+#define IMP_DECORATORS(Name, PluralName, Parent) \
+  IMP_DECORATORS_DECL(Name, PluralName);         \
   IMP_DECORATORS_DEF(Name, PluralName)
 
 //! Define the types for storing sets of decorators
 /** The macro defines the types PluralName and PluralNameTemp.
  */
-#define IMP_DECORATORS_WITH_TRAITS(Name, PluralName, Parent)    \
-  /* needed so there is no ambiguity with operator->*/          \
-  inline std::ostream &operator<<(std::ostream &out, Name n) {  \
-    n.show(out);                                                \
-    return out;                                                 \
-  }                                                             \
+#define IMP_DECORATORS_WITH_TRAITS(Name, PluralName, Parent)   \
+  /* needed so there is no ambiguity with operator->*/         \
+  inline std::ostream &operator<<(std::ostream &out, Name n) { \
+    n.show(out);                                               \
+    return out;                                                \
+  }                                                            \
   typedef IMP::base::Vector<Name> PluralName
 
 
@@ -546,9 +546,9 @@ public:                                                                 \
     \param[in] Parent the parent decorator type
     \param[in] Members the way to pass a set of particles in
 */
-#define IMP_SUMMARY_DECORATOR_DECL(Name, Parent, Members)               \
-  class IMPCOREEXPORT Name : public Parent {                            \
-    IMP_CONSTRAINT_DECORATOR_DECL(Name);                                \
+#define IMP_SUMMARY_DECORATOR_DECL(Name, Parent, Members)            \
+  class IMPCOREEXPORT Name : public Parent {                         \
+    IMP_CONSTRAINT_DECORATOR_DECL(Name);                             \
     static void do_setup_particle(Model *m, ParticleIndex pi,           \
                                   const ParticleIndexes &pis);          \
     static void do_setup_particle(Model *m, ParticleIndex pi,           \
@@ -560,15 +560,15 @@ public:                                                                 \
     static bool get_is_setup(Model *m, ParticleIndex pi) {              \
       return m->get_has_attribute(get_constraint_key(), pi);            \
     }                                                                   \
-    IMP_NO_DOXYGEN(typedef boost::false_type DecoratorHasTraits);       \
-                                                                        \
-  private:                                                              \
-    /* hide set methods*/                                               \
-    void set_coordinates() {};                                          \
-    void set_coordinates_are_optimized() const {}                       \
-    void set_coordinate() const {}                                      \
-    void set_radius() const {}                                          \
-  };                                                                    \
+    IMP_NO_DOXYGEN(typedef boost::false_type DecoratorHasTraits);    \
+                                                                     \
+   private:                                                          \
+    /* hide set methods*/                                            \
+    void set_coordinates() {};                                       \
+    void set_coordinates_are_optimized() const {}                    \
+    void set_coordinate() const {}                                   \
+    void set_radius() const {}                                       \
+  };                                                                 \
   IMP_DECORATORS(Name, Name##s, Parent##s)
 
 /** See IMP_SUMMARY_DECORATOR_DECL()
@@ -584,12 +584,12 @@ public:                                                                 \
     Refiner *ref = new FixedRefiner(IMP::kernel::get_particles(m, pis)); \
     create_modifier;                                                    \
     if (!Parent::get_is_setup(m, pi)) Parent::setup_particle(m, pi);    \
-    set_constraint(mod, new DerivativesToRefined(ref), m->get_particle(pi)); \
+    set_constraint(mod, new DerivativesToRefined(ref), m, pi);          \
   }                                                                     \
   void Name::do_setup_particle(Model *m, ParticleIndex pi, Refiner *ref) { \
     create_modifier;                                                    \
     if (!Parent::get_is_setup(m, pi)) Parent::setup_particle(m, pi);    \
-    set_constraint(mod, new DerivativesToRefined(ref), m->get_particle(pi)); \
+    set_constraint(mod, new DerivativesToRefined(ref), m, pi);          \
   }                                                                     \
   void Name::show(std::ostream &out) const {                            \
     out << #Name << " at " << static_cast<Parent>(*this);               \
