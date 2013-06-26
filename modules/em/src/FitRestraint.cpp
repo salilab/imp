@@ -42,7 +42,8 @@ FitRestraint::FitRestraint(
                       "Particle " << ps[i]->get_name()
                       << " is not XYZR"
                       << std::endl);
-      IMP_USAGE_CHECK(ps[i]->has_attribute(weight_key),
+      IMP_USAGE_CHECK(get_model()->get_has_attribute(weight_key,
+                                                     ps[i]->get_index()),
                 "Particle " << ps[i]->get_name()
                 << " is missing the mass "<< weight_key
                 << std::endl);
