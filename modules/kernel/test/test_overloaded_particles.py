@@ -12,12 +12,13 @@ class Tests(IMP.test.TestCase):
         IMP.kernel._overloaded_particles(m, [p.get_index()])
         IMP.kernel._overloaded_particles(p)
         IMP.kernel._overloaded_particles([p])
-        IMP.kernel._overloaded_particles([IMP.kernel._TrivialDecorator.setup_particle(p)])
+        td = IMP.kernel._TrivialDecorator.setup_particle(p)
+        IMP.kernel._overloaded_particles([td])
         IMP.kernel._overloaded_particles(IMP.kernel._TrivialDecorator(p))
         IMP.kernel._implicit_particles(IMP.kernel._ImplicitParticles(m, [p.get_index()]))
         IMP.kernel._implicit_particles(p)
         IMP.kernel._implicit_particles([p])
-        IMP.kernel._implicit_particles([IMP.kernel._TrivialDecorator.setup_particle(p)])
+        IMP.kernel._implicit_particles([td])
         IMP.kernel._implicit_particles(IMP.kernel._TrivialDecorator(p))
 
 
