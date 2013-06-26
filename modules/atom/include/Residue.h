@@ -169,7 +169,8 @@ class IMPATOMEXPORT Residue : public Hierarchy {
   }
 
   ResidueType get_residue_type() const {
-    return ResidueType(get_particle()->get_value(get_residue_type_key()));
+    return ResidueType(get_model()->get_attribute(get_residue_type_key(),
+                                                  get_particle_index()));
   }
 
   //! Update the stored ResidueType and the atom::Hierarchy::Name.
@@ -193,11 +194,14 @@ class IMPATOMEXPORT Residue : public Hierarchy {
   IMP_DECORATOR_GET_SET(index, get_index_key(), Int, Int);
 
   char get_insertion_code() const {
-    return char(get_particle()->get_value(get_insertion_code_key()));
+    return char(get_model()->get_attribute(get_insertion_code_key(),
+                                           get_particle_index()));
   }
 
   void set_insertion_code(char insertion_code) {
-    return get_particle()->set_value(get_insertion_code_key(), insertion_code);
+    return get_model()->set_attribute(get_insertion_code_key(),
+                                      get_particle_index(),
+                                      insertion_code);
   }
 
   static IntKey get_index_key();

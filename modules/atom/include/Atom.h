@@ -247,7 +247,8 @@ class IMPATOMEXPORT Atom : public Hierarchy {
   }
 
   AtomType get_atom_type() const {
-    return AtomType(get_particle()->get_value(get_atom_type_key()));
+    return AtomType(get_model()->get_attribute(get_atom_type_key(),
+                                               get_particle_index()));
   }
 
   //! Set the name and corresponding element and mass
@@ -255,41 +256,55 @@ class IMPATOMEXPORT Atom : public Hierarchy {
 
   //! get element
   Element get_element() const {
-    return Element(get_particle()->get_value(get_element_key()));
+    return Element(get_model()->get_attribute(get_element_key(),
+                                          get_particle_index()));
   }
 #ifndef IMP_DOXYGEN
   void set_element(Element e);
 #endif
 
   double get_occupancy() const {
-    if (!get_particle()->has_attribute(get_occupancy_key())) {
+    if (!get_model()->get_has_attribute(get_occupancy_key(),
+                                        get_particle_index())) {
       return 1;
     } else {
-      return get_particle()->get_value(get_occupancy_key());
+      return get_model()->get_attribute(get_occupancy_key(),
+                                        get_particle_index());
     }
   }
 
   void set_occupancy(double occupancy) {
-    if (!get_particle()->has_attribute(get_occupancy_key())) {
-      get_particle()->add_attribute(get_occupancy_key(), occupancy);
+    if (!get_model()->get_has_attribute(get_occupancy_key(),
+                                        get_particle_index())) {
+      get_model()->add_attribute(get_occupancy_key(),
+                                 get_particle_index(),
+                                 occupancy);
     } else {
-      get_particle()->set_value(get_occupancy_key(), occupancy);
+      get_model()->set_attribute(get_occupancy_key(),
+                             get_particle_index(), occupancy);
     }
   }
 
   double get_temperature_factor() const {
-    if (!get_particle()->has_attribute(get_temperature_factor_key())) {
+    if (!get_model()->get_has_attribute(get_temperature_factor_key(),
+                                        get_particle_index())) {
       return 0;
     } else {
-      return get_particle()->get_value(get_temperature_factor_key());
+      return get_model()->get_attribute(get_temperature_factor_key(),
+                                        get_particle_index());
     }
   }
 
   void set_temperature_factor(double tempFactor) {
-    if (!get_particle()->has_attribute(get_temperature_factor_key())) {
-      get_particle()->add_attribute(get_temperature_factor_key(), tempFactor);
+    if (!get_model()->get_has_attribute(get_temperature_factor_key(),
+                                        get_particle_index())) {
+      get_model()->add_attribute(get_temperature_factor_key(),
+                                 get_particle_index(),
+                                 tempFactor);
     } else {
-      get_particle()->set_value(get_temperature_factor_key(), tempFactor);
+      get_model()->set_attribute(get_temperature_factor_key(),
+                                 get_particle_index(),
+                                 tempFactor);
     }
   }
 

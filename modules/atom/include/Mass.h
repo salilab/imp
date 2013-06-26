@@ -30,9 +30,14 @@ class IMPATOMEXPORT Mass : public Decorator {
     return m->get_has_attribute(get_mass_key(), pi);
   }
 
-  Float get_mass() const { return get_particle()->get_value(get_mass_key()); }
+  Float get_mass() const {
+    return get_model()->get_attribute(get_mass_key(),
+                                      get_particle_index());
+  }
 
-  void set_mass(Float d) { get_particle()->set_value(get_mass_key(), d); }
+  void set_mass(Float d) { get_model()->set_attribute(get_mass_key(),
+                                                      get_particle_index(),
+                                                      d); }
 
   IMP_DECORATOR_METHODS(Mass, Decorator);
   /** Add the specified mass to the particle. */

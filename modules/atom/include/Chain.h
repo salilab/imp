@@ -42,11 +42,14 @@ class IMPATOMEXPORT Chain : public Hierarchy {
 
   //! Return the chain id
   char get_id() const {
-    return static_cast<char>(get_particle()->get_value(get_id_key()));
+    return static_cast<char>(get_model()->get_attribute(get_id_key(),
+                                                        get_particle_index()));
   }
 
   //! Set the chain id
-  void set_id(char c) { get_particle()->set_value(get_id_key(), c); }
+  void set_id(char c) { get_model()->set_attribute(get_id_key(),
+                                                   get_particle_index(),
+                                                   c); }
 
   //! The key used to store the chain
   static IntKey get_id_key();
