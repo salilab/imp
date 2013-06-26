@@ -73,13 +73,17 @@ if(NOT IMP_DOXYGEN_FOUND)
     list(GET download_status 0 download_success)
     if("${download_success}" STREQUAL "0")
       set(IMP_FETCH_DOXYGEN True CACHE INTERNAL "")
+    else()
+      set(IMP_FETCH_DOXYGEN False CACHE INTERNAL "")
     endif()
+  else()
+    set(IMP_FETCH_DOXYGEN False CACHE INTERNAL "")
   endif()
 endif()
 
 if(IMP_FETCH_DOXYGEN)
     include(ExternalProject)
-    message(STATUS "Downloading doxygen from ${IMP_DOXYGEN_URL}")
+    message(STATUS "Will download doxygen from ${doxygen_url}")
     ExternalProject_Add( download_doxygen
             SOURCE_DIR "${PROJECT_BINARY_DIR}/tools/doxygen"
             URL ${doxygen_url}
