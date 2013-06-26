@@ -172,8 +172,7 @@ inline void add_required_attributes_for_non_member(Model *m,
     m->add_attribute(rigid_body_data().child_keys_[i], p, 0);
   }
   IMP_INTERNAL_CHECK(m->get_internal_coordinates(p)
-                     .get_magnitude()
-          .01,
+                     .get_magnitude() < .01,
       "Bad initialization");
   m->add_attribute(internal::rigid_body_data().non_body_, p, rb);
 }
