@@ -64,7 +64,8 @@ inline void set_model_ranges(Model *m) {
   m->set_range(rigid_body_data().quaternion_[3], FloatRange(0, 1));
 }
 
-inline bool get_has_required_attributes_for_body(Model *m, ParticleIndex pi) {
+inline bool get_has_required_attributes_for_body(Model *m,
+                                                 ParticleIndexAdaptor pi) {
   IMP_USAGE_CHECK(
       (m->get_has_attribute(rigid_body_data().quaternion_[0], pi) &&
        m->get_has_attribute(rigid_body_data().quaternion_[1], pi) &&
@@ -79,7 +80,8 @@ inline bool get_has_required_attributes_for_body(Model *m, ParticleIndex pi) {
   return m->get_has_attribute(rigid_body_data().quaternion_[0], pi);
 }
 
-inline bool get_has_required_attributes_for_member(Model *m, ParticleIndex p) {
+inline bool get_has_required_attributes_for_member(Model *m,
+                                                   ParticleIndexAdaptor p) {
   if (!m->get_has_attribute(rigid_body_data().body_, p))
     return false;
   else {
@@ -95,7 +97,7 @@ inline bool get_has_required_attributes_for_member(Model *m, ParticleIndex p) {
 }
 
 inline bool get_has_required_attributes_for_non_member(Model *m,
-                                                       ParticleIndex p) {
+                                                   ParticleIndexAdaptor p) {
   if (!m->get_has_attribute(rigid_body_data().non_body_, p))
     return false;
   else {
@@ -110,86 +112,94 @@ inline bool get_has_required_attributes_for_non_member(Model *m,
   }
 }
 
-inline bool get_has_required_attributes_for_body_member(Particle *p) {
-  if (!p->has_attribute(rigid_body_data().body_)) return false;
+inline bool get_has_required_attributes_for_body_member(Model *m,
+                                                    ParticleIndexAdaptor p) {
+  if (!m->get_has_attribute(rigid_body_data().body_, p)) return false;
   for (unsigned int i = 0; i < 4; ++i) {
-    if (!p->has_attribute(rigid_body_data().lquaternion_[i])) return false;
+    if (!m->get_has_attribute(rigid_body_data().lquaternion_[i], p)) {
+      return false;
+    }
   }
-  return get_has_required_attributes_for_member(p->get_model(), p->get_index());
+  return get_has_required_attributes_for_member(m, p);
 }
 
-inline void add_required_attributes_for_body(Particle *p) {
+inline void add_required_attributes_for_body(Model *m,
+                                             ParticleIndexAdaptor p) {
   for (unsigned int i = 0; i < 4; ++i) {
-    p->add_attribute(rigid_body_data().quaternion_[i], 0);
-    p->get_model()
-        ->set_range(rigid_body_data().quaternion_[i], FloatRange(0, 1));
+    m->add_attribute(rigid_body_data().quaternion_[i], p, 0);
+    m->set_range(rigid_body_data().quaternion_[i], FloatRange(0, 1));
   }
   for (unsigned int i = 0; i < 3; ++i) {
-    p->add_attribute(rigid_body_data().torque_[i], 0);
+    m->add_attribute(rigid_body_data().torque_[i], p, 0);
   }
-  if (!XYZ::get_is_setup(p)) {
-    XYZ::setup_particle(p);
+  if (!XYZ::get_is_setup(m, p)) {
+    XYZ::setup_particle(m, p);
   }
 }
-inline void remove_required_attributes_for_body(Particle *p) {
+inline void remove_required_attributes_for_body(Model *m,
+                                                ParticleIndexAdaptor p) {
   for (unsigned int i = 0; i < 4; ++i) {
-    p->remove_attribute(rigid_body_data().quaternion_[i]);
+    m->remove_attribute(rigid_body_data().quaternion_[i], p);
   }
   for (unsigned int i = 0; i < 3; ++i) {
-    p->remove_attribute(rigid_body_data().torque_[i]);
+    m->remove_attribute(rigid_body_data().torque_[i], p);
   }
-  if (p->get_model()->get_has_attribute(internal::rigid_body_data().members_,
-                                        p->get_index())) {
-    p->get_model()->remove_attribute(internal::rigid_body_data().members_,
-                                     p->get_index());
+  if (m->get_has_attribute(internal::rigid_body_data().members_, p)) {
+    m->remove_attribute(internal::rigid_body_data().members_, p);
   }
-  if (p->get_model()->get_has_attribute(
-          internal::rigid_body_data().body_members_, p->get_index())) {
-    p->get_model()->remove_attribute(internal::rigid_body_data().body_members_,
-                                     p->get_index());
+  if (m->get_has_attribute(internal::rigid_body_data().body_members_, p)) {
+    m->remove_attribute(internal::rigid_body_data().body_members_, p);
   }
 }
 
-inline void add_required_attributes_for_member(Particle *p, Particle *rb) {
+inline void add_required_attributes_for_member(Model *m,
+                                               ParticleIndexAdaptor p,
+                                               ParticleIndexAdaptor rb) {
   for (unsigned int i = 0; i < 3; ++i) {
-    p->add_attribute(rigid_body_data().child_keys_[i], 0);
+    m->add_attribute(rigid_body_data().child_keys_[i], p, 0);
   }
-  IMP_INTERNAL_CHECK(
-      p->get_model()->get_internal_coordinates(p->get_index()).get_magnitude() <
+  IMP_INTERNAL_CHECK(m->get_internal_coordinates(p)
+                     .get_magnitude() <
           .01,
       "Bad initialization");
-  p->add_attribute(internal::rigid_body_data().body_, rb);
+  m->add_attribute(internal::rigid_body_data().body_, p, rb);
 }
 
-inline void add_required_attributes_for_non_member(Particle *p, Particle *rb) {
+inline void add_required_attributes_for_non_member(Model *m,
+                                                   ParticleIndexAdaptor p,
+                                                   ParticleIndexAdaptor rb) {
   for (unsigned int i = 0; i < 3; ++i) {
-    p->add_attribute(rigid_body_data().child_keys_[i], 0);
+    m->add_attribute(rigid_body_data().child_keys_[i], p, 0);
   }
-  IMP_INTERNAL_CHECK(
-      p->get_model()->get_internal_coordinates(p->get_index()).get_magnitude() <
+  IMP_INTERNAL_CHECK(m->get_internal_coordinates(p)
+                     .get_magnitude()
           .01,
       "Bad initialization");
-  p->add_attribute(internal::rigid_body_data().non_body_, rb);
+  m->add_attribute(internal::rigid_body_data().non_body_, p, rb);
 }
 
-inline void add_required_attributes_for_body_member(Particle *p, Particle *rb) {
-  add_required_attributes_for_member(p, rb);
+inline void add_required_attributes_for_body_member(Model *m,
+                                                    ParticleIndexAdaptor p,
+                                                    ParticleIndexAdaptor rb) {
+  add_required_attributes_for_member(m, p, rb);
   for (unsigned int i = 0; i < 4; ++i) {
-    p->add_attribute(rigid_body_data().lquaternion_[i], 0);
+    m->add_attribute(rigid_body_data().lquaternion_[i], p, 0);
   }
 }
 
-inline void remove_required_attributes_for_member(Particle *p) {
+inline void remove_required_attributes_for_member(Model *m,
+                                                  ParticleIndexAdaptor p) {
   for (unsigned int i = 0; i < 3; ++i) {
-    p->remove_attribute(rigid_body_data().child_keys_[i]);
+    m->remove_attribute(rigid_body_data().child_keys_[i], p);
   }
-  p->remove_attribute(internal::rigid_body_data().body_);
+  m->remove_attribute(internal::rigid_body_data().body_, p);
 }
 
-inline void remove_required_attributes_for_body_member(Particle *p) {
-  remove_required_attributes_for_member(p);
+inline void remove_required_attributes_for_body_member(Model *m,
+                                                       ParticleIndexAdaptor p) {
+  remove_required_attributes_for_member(m, p);
   for (unsigned int i = 0; i < 4; ++i) {
-    p->remove_attribute(rigid_body_data().lquaternion_[i]);
+    m->remove_attribute(rigid_body_data().lquaternion_[i], p);
   }
 }
 

@@ -480,7 +480,7 @@ void RigidBody::do_setup_particle(Model *m,
                                   const algebra::ReferenceFrame3D &rf) {
   IMP_FUNCTION_LOG;
   Particle *p = m->get_particle(pi);
-  internal::add_required_attributes_for_body(p);
+  internal::add_required_attributes_for_body(m, pi);
   RigidBody d(p);
   d.set_reference_frame(rf);
   ModelKey mk = get_rb_list_key();
@@ -512,18 +512,21 @@ void RigidBody::teardown_particle(RigidBody rb) {
     const ParticleIndexes &members = rb.get_member_particle_indexes();
     for (unsigned int i = 0; i < members.size(); ++i) {
       RigidMember rm(rb.get_model(), members[i]);
-      internal::remove_required_attributes_for_member(rm);
+      internal::remove_required_attributes_for_member(rb.get_model(),
+                                                      rm);
     }
   }
   {
     const ParticleIndexes &members = rb.get_body_member_particle_indexes();
     for (unsigned int i = 0; i < members.size(); ++i) {
       RigidMember rm(rb.get_model(), members[i]);
-      internal::remove_required_attributes_for_body_member(rm);
+      internal::remove_required_attributes_for_body_member(rb.get_model(),
+                                                           rm);
     }
   }
   teardown_constraints(rb.get_particle());
-  internal::remove_required_attributes_for_body(rb.get_particle());
+  internal::remove_required_attributes_for_body(rb.get_model(),
+                                                rb);
 }
 void RigidBody::set_reference_frame_from_members(const ParticleIndexes &rms) {
   algebra::Vector3Ds local(rms.size());
@@ -617,7 +620,8 @@ void RigidBody::add_member(ParticleIndexAdaptor pi) {
     /*IMP_LOG_TERSE( "Adding rigid body " << p->get_name()
       << " as member." << std::endl);*/
     RigidBody d(get_model(), pi);
-    internal::add_required_attributes_for_body_member(d, get_particle());
+    internal::add_required_attributes_for_body_member(get_model(), d,
+                                                      get_particle_index());
     RigidMember cm(d);
     if (get_model()->get_has_attribute(
             internal::rigid_body_data().body_members_, get_particle_index())) {
@@ -649,8 +653,9 @@ void RigidBody::add_member(ParticleIndexAdaptor pi) {
   } else {
     /*IMP_LOG_TERSE( "Adding XYZ " << p->get_name()
       << " as member." << std::endl);*/
-    internal::add_required_attributes_for_member(get_model()->get_particle(pi),
-                                                 get_particle());
+    internal::add_required_attributes_for_member(get_model(),
+                                                 pi,
+                                                 get_particle_index());
     RigidMember cm(get_model(), pi);
     if (get_model()->get_has_attribute(internal::rigid_body_data().members_,
                                        get_particle_index())) {
@@ -692,7 +697,8 @@ void RigidBody::add_non_rigid_member(ParticleIndex pi) {
   /*IMP_LOG_TERSE( "Adding XYZ " << p->get_name()
     << " as member." << std::endl);*/
   Particle *p = get_model()->get_particle(pi);
-  internal::add_required_attributes_for_non_member(p, get_particle());
+  internal::add_required_attributes_for_non_member(get_model(),
+                                                   pi, get_particle_index());
   NonRigidMember cm(p);
   if (get_model()->get_has_attribute(internal::rigid_body_data().members_,
                                      get_particle_index())) {
