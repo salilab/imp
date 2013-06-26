@@ -244,7 +244,7 @@ bool HierarchyLoadLink::setup_particle(Particle *root, RMF::NodeConstHandle nh,
     boost::tie(b, e) = domain_factory_.get(nh).get_indexes();
     if (e == b + 1) {
     } else {
-      atom::Domain::setup_particle(p, b, e);
+      atom::Domain::setup_particle(p, IntRange(b, e));
     }
   }
   if (colored_factory_.get_is(nh)) {
