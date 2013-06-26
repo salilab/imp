@@ -29,15 +29,21 @@ class IMPDISPLAYEXPORT Colored : public Decorator {
 
  public:
   void set_color(const Color &c) {
-    get_particle()->set_value(get_color_keys()[0], c.get_red());
-    get_particle()->set_value(get_color_keys()[1], c.get_green());
-    get_particle()->set_value(get_color_keys()[2], c.get_blue());
+    get_model()->set_attribute(get_color_keys()[0], get_particle_index(),
+                           c.get_red());
+    get_model()->set_attribute(get_color_keys()[1], get_particle_index(),
+                           c.get_green());
+    get_model()->set_attribute(get_color_keys()[2], get_particle_index(),
+                           c.get_blue());
   }
 
   Color get_color() const {
-    return Color(get_particle()->get_value(get_color_keys()[0]),
-                 get_particle()->get_value(get_color_keys()[1]),
-                 get_particle()->get_value(get_color_keys()[2]));
+    return Color(get_model()->get_attribute(get_color_keys()[0],
+                                        get_particle_index()),
+                 get_model()->get_attribute(get_color_keys()[1],
+                                        get_particle_index()),
+                 get_model()->get_attribute(get_color_keys()[2],
+                                        get_particle_index()));
   }
 
   static bool get_is_setup(Model *m, ParticleIndex pi) {
