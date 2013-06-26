@@ -21,12 +21,7 @@ IMPKERNEL_BEGIN_NAMESPACE
     when that occurs.
  */
 class IMPKERNELEXPORT ModelObject :
-#if defined(IMP_DOXYGEN) || defined(SWIG)
-    public base::Object
-#else
-    public base::TrackedObject<ModelObject, Model>
-#endif
-    {
+    public base::TrackedObject<ModelObject, Model> {
   typedef base::TrackedObject<ModelObject, Model> Tracked;
 
   friend class Model;
@@ -35,20 +30,12 @@ class IMPKERNELEXPORT ModelObject :
   ScoreStatesTemp required_score_states_;
 
  public:
-  ModelObject(Model *m, std::string name);
-#ifndef IMP_DOXYGEN
-#ifndef SWIG
+#if !defined(IMP_DOXYGEN)
   void set_has_dependencies(bool t, const ScoreStatesTemp &ss);
 #endif
-  ModelObject(std::string name);
-/** Do not override, use do_set_model() instead. */
-#ifndef IMP_DOXYGEN
-  virtual
-#endif
-      void
-          set_model(Model *m);
-  bool get_is_part_of_model() const { return Tracked::get_is_tracked(); }
-#endif
+
+  ModelObject(Model *m, std::string name);
+
   Model *get_model() const { return Tracked::get_tracker(); }
   /** Get any Particle, Container or other ModelObjects read by
       this during evaluation. If you read everything in a container,
@@ -78,8 +65,6 @@ class IMPKERNELEXPORT ModelObject :
   }
 
  protected:
-  /** Called when set_model() is called. */
-  virtual void do_set_model(Model *) {}
   /** Called when set_has_dependencies() is called.*/
   virtual void do_set_has_dependencies(bool) {}
   /** Override if this reads other objects during evaluate.*/
@@ -91,6 +76,20 @@ class IMPKERNELEXPORT ModelObject :
   virtual ModelObjectsTemps do_get_interactions() const;
 
   IMP_REF_COUNTED_DESTRUCTOR(ModelObject);
+
+
+  /** \deprecated_at{2.1} Use the constructor that takes a Model. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  ModelObject(std::string name);
+  /** \deprecated_at{2.1} Use the constructor that takes a Model. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  virtual void set_model(Model *m);
+  /** \deprecated_at{2.1} Should always be true. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  bool get_is_part_of_model() const;
+  /** \deprecated_at{2.1} As it should always be part of a model. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  virtual void do_set_model(Model *) {}
 };
 
 IMPKERNEL_END_NAMESPACE

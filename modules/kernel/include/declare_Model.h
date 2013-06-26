@@ -132,7 +132,8 @@ class IMPKERNELEXPORT Model : public base::Object
 
   internal::Stage get_stage() const { return cur_stage_; }
   ParticleIndex add_particle_internal(Particle *p);
-
+  static void do_remove_score_state(ScoreState *obj);
+  void do_add_score_state(ScoreState *obj);
  public:
   /** Construct an empty model */
   Model(std::string name = "Model %1%");
@@ -175,22 +176,8 @@ class IMPKERNELEXPORT Model : public base::Object
     */
     /**@{*/
   IMP_LIST_ACTION(public, ScoreState, ScoreStates, score_state, score_states,
-                  ScoreState *, ScoreStates, {
-    IMP_INTERNAL_CHECK(cur_stage_ == internal::NOT_EVALUATING,
-                       "The set of score states cannot be changed during"
-                           << "evaluation.");
-    if (!obj->get_model()) obj->set_model(this);
-    obj->set_was_used(true);
-    IMP_LOG_VERBOSE("Added score state " << obj->get_name() << std::endl);
-    IMP_IF_CHECK(base::USAGE) {
-      base::set<ScoreState *> in(score_states_begin(), score_states_end());
-      IMP_USAGE_CHECK(in.size() == get_number_of_score_states(),
-                      "Score state already in model " << obj->get_name());
-    }
-  },
-                  {}, {
-    obj->set_model(nullptr);
-  });
+                  ScoreState *, ScoreStates, do_add_score_state(obj),
+                  {}, do_remove_score_state(obj));
   /**@}*/
 
  public:

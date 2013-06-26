@@ -145,6 +145,24 @@ Particle* Model::get_particle(ParticleIndex p) const {
   return particle_index_[p];
 }
 
+void Model::do_add_score_state(ScoreState *obj) {
+  IMP_INTERNAL_CHECK(cur_stage_ == internal::NOT_EVALUATING,
+                     "The set of score states cannot be changed during"
+                     << "evaluation.");
+  if (!obj->get_model()) obj->set_model(this);
+  obj->set_was_used(true);
+  IMP_LOG_VERBOSE("Added score state " << obj->get_name() << std::endl);
+  IMP_IF_CHECK(base::USAGE) {
+    base::set<ScoreState *> in(score_states_begin(), score_states_end());
+    IMP_USAGE_CHECK(in.size() == get_number_of_score_states(),
+                    "Score state already in model " << obj->get_name());
+  }
+}
+
+void Model::do_remove_score_state(ScoreState *obj) {
+  obj->set_model(nullptr);
+}
+
 void Model::clear_particle_caches(ParticleIndex pi) {
   internal::FloatAttributeTable::clear_caches(pi);
   internal::StringAttributeTable::clear_caches(pi);

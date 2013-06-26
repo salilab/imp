@@ -92,6 +92,7 @@ IMP_SWIG_VALUE(IMP::base::internal, _Protection, _Protections);
 %include "IMP/base/live_objects.h"
 %include "IMP/base/deprecation.h"
 %include "IMP/base/threads.h"
+%include "IMP/base/tracking.h"
 
 %pythoncode %{
 

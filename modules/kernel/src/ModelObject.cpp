@@ -17,9 +17,6 @@ IMPKERNEL_BEGIN_NAMESPACE
 ModelObject::ModelObject(Model *m, std::string name)
     : Tracked(this, m, name), has_dependencies_(false) {}
 
-ModelObject::ModelObject(std::string name)
-    : Tracked(name), has_dependencies_(false) {}
-
 void ModelObject::set_has_dependencies(bool tf, const ScoreStatesTemp &ss) {
   has_dependencies_ = tf;
   IMP_USAGE_CHECK(
@@ -55,11 +52,6 @@ void ModelObject::set_has_dependencies(bool tf) {
     set_has_dependencies(true, get_update_order(ss));
   }
   do_set_has_dependencies(tf);
-}
-
-void ModelObject::set_model(Model *m) {
-  Tracked::set_tracker(this, m);
-  do_set_model(m);
 }
 
 ModelObjectsTemp ModelObject::get_inputs() const { return do_get_inputs(); }
@@ -128,5 +120,27 @@ ContainersTemp get_output_containers(const ModelObjectsTemp &mo) {
   }
   return ret;
 }
+
+
+///////////////////////////////////////// DEPRECATED
+
+bool ModelObject::get_is_part_of_model() const {
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1,
+                                    "Should always be true.");
+  return Tracked::get_is_tracked();
+}
+
+void ModelObject::set_model(Model *m) {
+  Tracked::set_tracker(this, m);
+  do_set_model(m);
+}
+
+ModelObject::ModelObject(std::string name)
+    : Tracked(name), has_dependencies_(false) {
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1,
+                                    "Pass the Model to the constructor.");
+
+}
+
 
 IMPKERNEL_END_NAMESPACE
