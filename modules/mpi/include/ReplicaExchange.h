@@ -9,7 +9,8 @@
 #define IMPMPI_REPLICA_EXCHANGE_H
 
 #include "mpi_config.h"
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
+#include <IMP/base/types.h>
 #include "mpi.h"
 #include <string>
 
@@ -45,6 +46,9 @@ private:
   //! Get the rank for a given replica index
   int    get_rank(int index);
 
+  virtual void do_destroy() IMP_OVERRIDE {
+    MPI_Finalize();
+  }
 public:
   ReplicaExchange();
   //! Set exchange parameter
@@ -67,8 +71,7 @@ public:
   //! Get number of replicas
   int get_number_of_replicas() const {return nproc_;}
 
-  IMP_OBJECT_INLINE(ReplicaExchange,,MPI_Finalize());
-
+  IMP_OBJECT_METHODS(ReplicaExchange);
 };
 
 IMPMPI_END_NAMESPACE
