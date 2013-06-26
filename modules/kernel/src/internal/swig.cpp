@@ -178,7 +178,9 @@ void _TrivialTraitsDecorator::do_setup_particle(Model *m,
 void _TrivialDerivedDecorator::do_setup_particle(Model *m,
                                                  ParticleIndex pi) {
   m->add_attribute(IntKey("trivial_attribute_2"), pi, 2);
-  _TrivialDecorator::setup_particle(m, pi);
+  if (!_TrivialDecorator::get_is_setup(m, pi)) {
+    _TrivialDecorator::setup_particle(m, pi);
+  }
 }
 
 void _TrivialDecorator::do_setup_particle(Model *m,
