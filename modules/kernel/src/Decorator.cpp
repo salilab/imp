@@ -8,6 +8,7 @@
 #include <cmath>
 
 #include "IMP/kernel/Decorator.h"
+#include "IMP/kernel/Particle.h"
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 extern base::Vector<std::pair<ParticleFunction, ParticleFunction> >

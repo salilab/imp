@@ -6,6 +6,7 @@
  */
 
 #include "IMP/kernel/Constraint.h"
+#include "IMP/kernel/Model.h"
 #include "IMP/kernel/internal/utility.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
