@@ -8,6 +8,7 @@ To build IMP source found in `imp-source` and install it in `path_to_install` do
 
       1. `cmake path/to/imp-source -DCMAKE_INSTALL_PREFIX=path_to_install`
       2. `make -j 8`
+      3. `make install`
 
 Run `ccmake` to see more variables that can be used to customize your build and
 install. Note, if you got IMP from `git` you need to run `setup_git.py` or at least
