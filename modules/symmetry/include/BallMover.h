@@ -1,5 +1,5 @@
 /**
- *  \file BallMover.h
+ *  \file symmetry/BallMover.h
  *  \brief A mover that keeps a particle in a box
  *
  *  Copyright 2013 IMP Inventors. All rights reserved.

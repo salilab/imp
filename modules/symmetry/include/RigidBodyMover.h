@@ -1,5 +1,5 @@
 /**
- *  \file RigidBodyMover.h
+ *  \file symmetry/RigidBodyMover.h
  *  \brief A mover that keeps a rigid body in a box
  *
  *  Copyright 2013 IMP Inventors. All rights reserved.
