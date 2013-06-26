@@ -16,8 +16,7 @@
 #include <sstream>
 IMPBASE_BEGIN_NAMESPACE
 /** By inheriting from this, an Object can keep track of
-    a list
-    of objects as long as they are alive.
+    a list of objects as long as they are alive.
 */
 template <class Tracked>
 class Tracker {
@@ -30,7 +29,6 @@ class Tracker {
   Vector<Tracked *> get_tracked() {
     return base::Vector<Tracked *>(tracked_.begin(), tracked_.end());
   }
-  ;
   void add_tracked(Tracked *tr) {
     IMP_USAGE_CHECK(tr, "Can't track nullptr object");
     IMP_CHECK_OBJECT(tr);
