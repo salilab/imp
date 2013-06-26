@@ -177,7 +177,9 @@ void add_to_log(LogLevel ll, std::string str) {
 
 #if !IMP_BASE_HAS_LOG4CXX
 void add_to_log(std::string str) {
+#ifdef _OPENMP
 #pragma omp critical(imp_log)
+#endif
   {
     if (!contexts.empty() &&
         context_initializeds != static_cast<int>(contexts.size())) {
