@@ -40,12 +40,12 @@ if ("${%(PKGNAME)s_LIBRARY}" MATCHES ".*NOTFOUND.*"
 else()
   check_compiles("_found" "%(pkgname)s" "%(PKGNAME)s" "%(includes)s" "${%(PKGNAME)s_INCLUDE_DIR}" "${%(PKGNAME)s_LIBRARIES}" %(PKGNAME)s_ok_ok)
   if(${%(PKGNAME)s_ok_ok} MATCHES "1")
-    message(STATUS "Found %(pkgname)s at \"${%(PKGNAME)s_INCLUDE_DIR}\" and \"${%(PKGNAME)s_LIBRARIES}\"")
+    message(STATUS "Found %(pkgname)s")
   else()
     %(on_failure)s
   endif()
 endif()
 else()
-message(STATUS "%(PKGNAME)s already setup")
+#message(STATUS "%(PKGNAME)s already setup")
 %(on_setup)s
 endif(NOT DEFINED %(PKGNAME)s_LIBRARIES)
