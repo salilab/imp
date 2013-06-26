@@ -46,6 +46,12 @@ IMPSTATISTICSEXPORT PartitionalClustering *create_diameter_clustering(
 IMPSTATISTICSEXPORT PartitionalClustering *create_connectivity_clustering(
     Metric *metric, double dist);
 
+/** Cutoff-based clustering as defined in
+    Daura et al. Angew. Chem. Int. Ed. 1999. 38(1‐2): p. 236-240.
+ */
+IMPSTATISTICSEXPORT PartitionalClustering *create_gromos_clustering(
+    Metric *d, double cutoff);
+
 IMPSTATISTICS_END_NAMESPACE
 
 #endif /* IMPSTATISTICS_METRIC_CLUSTERING_H */

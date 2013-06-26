@@ -84,7 +84,7 @@ double ChiSquareMetric::get_distance(unsigned i, unsigned j) const
  }
 }
 
-double ChiSquareMetric::get_weight(unsigned i) const
+double ChiSquareMetric::do_get_weight(unsigned i) const
 {
  return weight_[i];
 }
