@@ -46,7 +46,7 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
   EvaluationState es_;
   // hack for null scoring function
   friend class NullScoringFunction;
-  ScoringFunction() : ModelObject("NullScoringFunction%1%"), es_(0.0, true) {}
+  ScoringFunction();
   // later make things implement inputs and return restraints
  public:
   typedef std::pair<double, bool> ScoreIsGoodPair;

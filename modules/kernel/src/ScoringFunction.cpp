@@ -30,6 +30,10 @@ class NullScoringFunction : public ScoringFunction {
   IMP_OBJECT_METHODS(NullScoringFunction);
 };
 
+ScoringFunction::ScoringFunction()
+  : ModelObject("NullScoringFunction%1%"), es_(0.0, true) {}
+
+
 ScoringFunction::ScoringFunction(Model *m, std::string name)
     : ModelObject(m, name) {}
 
