@@ -52,7 +52,7 @@ class Tracker {
   TrackedIterator tracked_end() const { return tracked_.end(); }
  public:
   Tracker() {}
-  ~Tracker() {
+  virtual ~Tracker() {
     base::Vector<Tracked *> tracked(tracked_begin(), tracked_end());
     for (unsigned int i = 0; i < tracked_.size(); ++i) {
       IMP_CHECK_OBJECT(tracked[i]);
@@ -97,7 +97,7 @@ class TrackedObject : public Object {
     set_tracker(me, tracker);
   }
   TrackedObject(std::string name) : Object(name) {}
-  ~TrackedObject() { set_tracker(nullptr, nullptr); }
+  virtual ~TrackedObject() { set_tracker(nullptr, nullptr); }
 };
 
 IMPBASE_END_NAMESPACE
