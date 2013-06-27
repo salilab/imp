@@ -15,7 +15,7 @@
 /** Used to implement deprecation support.
     See [deprecation support](../devguide.html#devguide_deprecation). */
 #define IMP_DEPRECATED_MACRO(version, help_message)                    \
-  IMP_PRAGMA(message("This macro is deprecrecated as of IMP " #version \
+  IMP_PRAGMA(message("This macro is deprecated as of IMP " #version \
                      ": " help_message))
 
 /** Used to implement deprecation support.
