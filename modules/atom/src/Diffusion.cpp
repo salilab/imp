@@ -30,6 +30,16 @@ void Diffusion::show(std::ostream &out) const {
   out << "D= " << get_diffusion_coefficient() << "A^2/fs";
 }
 
+void Diffusion::set_d(double d) {
+  IMPATOM_DEPRECATED_METHOD_DEF(2.1, "Use set_diffusion_coefficient().");
+  set_diffusion_coefficient(d);
+}
+double Diffusion::get_d() const {
+  IMPATOM_DEPRECATED_METHOD_DEF(2.1, "Use set_diffusion_coefficient().");
+  return get_diffusion_coefficient();
+}
+
+
 double get_diffusion_coefficient_from_cm2_per_second(double din) {
   unit::SquareCentimeterPerSecond dinv(din);
   unit::SquareAngstromPerFemtosecond ret = dinv;

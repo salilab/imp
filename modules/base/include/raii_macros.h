@@ -52,13 +52,13 @@
     the deprecated macros oneself.*/
 #define IMP_DEPRECATED_RAII(version, help_message, MODULE, Name, args,         \
                             Initialize, Set, Reset, Show)                      \
-  IMP_HELPER_MACRO_PUSH_WARNINGS IMP##MODULE##_DEPRECATED_CLASS_DECL(version)  \
+  IMP_HELPER_MACRO_PUSH_WARNINGS IMP##MODULE##_DEPRECATED_VALUE_DECL(version)  \
       Name() {                                                                 \
-    IMP##MODULE##_DEPRECATED_CLASS_DEF(version, help_message);                 \
+    IMP##MODULE##_DEPRECATED_VALUE_DEF(version, help_message);                 \
     Initialize;                                                                \
   }                                                                            \
-  IMP##MODULE##_DEPRECATED_CLASS_DECL(version) explicit Name args {            \
-    IMP##MODULE##_DEPRECATED_CLASS_DEF(version, help_message);                 \
+  IMP##MODULE##_DEPRECATED_VALUE_DECL(version) explicit Name args {            \
+    IMP##MODULE##_DEPRECATED_VALUE_DEF(version, help_message);                 \
     Initialize;                                                                \
     Set;                                                                       \
   }                                                                            \

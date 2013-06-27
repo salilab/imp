@@ -26,7 +26,10 @@ class IMPSTATISTICSEXPORT Embedding : public IMP::base::Object {
  protected:
   Embedding(std::string name);
   //! By default return 1.0
-  virtual double do_get_weight(unsigned int i) const { return 1.0;}
+  virtual double do_get_weight(unsigned int i) const {
+    IMP_UNUSED(i);
+    return 1.0;
+  }
  public:
   virtual algebra::VectorKD get_point(unsigned int i) const = 0;
   virtual unsigned int get_number_of_items() const = 0;

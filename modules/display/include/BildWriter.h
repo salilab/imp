@@ -79,7 +79,7 @@ class IMPDISPLAYEXPORT BildWriter : public TextWriter {
   }
 
  public:
-  IMPDISPLAY_DEPRECATED_CLASS_DECL(2.1)
+  IMPDISPLAY_DEPRECATED_OBJECT_DECL(2.1)
   IMP_TEXT_WRITER(BildWriter);
 };
 

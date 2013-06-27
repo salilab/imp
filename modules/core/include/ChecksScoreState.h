@@ -24,7 +24,7 @@ class IMPCOREEXPORT ChecksScoreState : public ScoreState {
 
   ChecksScoreState(Model *m, double probability);
 
-  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPCORE_DEPRECATED_METHOD_DECL(2.1)
   ChecksScoreState(double probability);
 
   unsigned int get_number_of_checked() const { return num_checked_; }

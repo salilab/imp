@@ -198,59 +198,59 @@ ScoringFunction *Model::create_scoring_function() {
 /////////////////////////////////////////// DEPRECATED STUFF
 
 double Model::get_maximum_score(Restraint *r) const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(
+  IMPKERNEL_DEPRECATED_METHOD_DEF(
       2.1, "Get the maximum from the restraint itself.");
   return r->get_maximum_score();
 }
 void Model::set_maximum_score(Restraint *r, double s) {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1,
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
                                     "Set the maximum on the restraint itself.");
   r->set_maximum_score(s);
 }
 void Model::set_maximum_score(double s) {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use a ScoringFunction.");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use a ScoringFunction.");
   return restraints_->set_maximum_score(s);
 }
 double Model::get_maximum_score() const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use a ScoringFunction.");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use a ScoringFunction.");
   return restraints_->get_maximum_score();
 }
 
 ParticlesTemp Model::get_particles() const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_particle_indexes().");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_particle_indexes().");
   return ParticlesTemp(particles_begin(), particles_end());
 }
 
 Model::ParticleIterator Model::particles_begin() const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_particle_indexes().");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_particle_indexes().");
   return ParticleIterator(NotNull(), particle_index_.begin(),
                           particle_index_.end());
 }
 
 Model::ParticleIterator Model::particles_end() const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_particle_indexes().");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_particle_indexes().");
   return ParticleIterator(NotNull(), particle_index_.end(),
                           particle_index_.end());
 }
 
 void Model::add_data(ModelKey mk, Object *o) {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Not used, will be removed.");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Not used, will be removed.");
   model_data_.resize(std::max<int>(mk.get_index() + 1, model_data_.size()));
   model_data_[mk.get_index()] = o;
 }
 
 base::Object *Model::get_data(ModelKey mk) const {
- IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Not used, will be removed.");
+ IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Not used, will be removed.");
   return model_data_[mk.get_index()].get();
 }
 
 void Model::remove_data(ModelKey mk) {
- IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Not used, will be removed.");
+ IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Not used, will be removed.");
  model_data_[mk.get_index()] = nullptr;
 }
 
 bool Model::get_has_data(ModelKey mk) const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Not used, will be removed.");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Not used, will be removed.");
   if (model_data_.size() > mk.get_index()) {
     return model_data_[mk.get_index()];
   } else {
@@ -259,29 +259,29 @@ bool Model::get_has_data(ModelKey mk) const {
 }
 
 void Model::remove_particle(Particle *p) {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use the ParticleIndex version.");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use the ParticleIndex version.");
   remove_particle(p->get_index());
 }
 
 RestraintSet *Model::get_root_restraint_set() {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1,
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
                                "Use a scoring function instead of the Model.");
   return restraints_;
 }
 unsigned int Model::get_number_of_restraints() const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1,
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
                                "Use a scoring function instead of the Model.");
   return restraints_->get_number_of_restraints();
 }
 
 Restraint *Model::get_restraint(unsigned int i) const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1,
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
                                "Use a scoring function instead of the Model.");
   return restraints_->get_restraint(i);
 }
 
 unsigned int Model::get_number_of_particles() const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1,
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
                                     "Use get_particle_indexes() instead.");
   return get_particles().size();
 }

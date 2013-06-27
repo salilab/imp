@@ -55,14 +55,6 @@ IMPKERNEL_BEGIN_NAMESPACE
  */
 class IMPKERNELEXPORT ScoreState : public ModelObject {
  public:
-  /** \deprecated_at{2.1} Use version that takes a Model instead.
-   */
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-  ScoreState(std::string name = "ScoreState %1%");
-  /** \deprecated_at{2.1} Use version that takes a name too instead.
-   */
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-  ScoreState(Model *m);
   ScoreState(Model *m, std::string name);
   //! Force update of the structure.
   void before_evaluate();
@@ -93,17 +85,25 @@ class IMPKERNELEXPORT ScoreState : public ModelObject {
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(ScoreState);
 
  public:
+  /** \deprecated_at{2.1} Use version that takes a name too instead.
+   */
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
+  ScoreState(Model *m);
+  /** \deprecated_at{2.1} Use version that takes a Model instead.
+   */
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
+  ScoreState(std::string name = "ScoreState %1%");
   /** \deprecated_at{2.1} use get_inputs() instead.*/
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   ParticlesTemp get_input_particles() const;
   /** \deprecated_at{2.1} use get_inputs() instead.*/
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   ContainersTemp get_input_containers() const;
   /** \deprecated_at{2.1} use get_outputs() instead.*/
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   ParticlesTemp get_output_particles() const;
   /** \deprecated_at{2.1} use get_outputs() instead.*/
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   ContainersTemp get_output_containers() const;
 
  private:

@@ -297,62 +297,62 @@ class IMPKERNELEXPORT Model : public base::Object
 #endif
 
   /** \deprecated_at{2.1} Use a RestraintSet instead.*/
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
       unsigned int get_number_of_restraints() const;
   /** \deprecated_at{2.1} Use a RestraintSet instead.*/
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
       Restraint *get_restraint(unsigned int i) const;
    /** \deprecated_at{2.1} Use a ScoringFunction instead.*/
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   double evaluate(bool tf, bool warn = true);
   /** \deprecated_at{2.1} Use the ParticleIndex version.*/
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   void remove_particle(Particle *p);
   /** \deprecated_at{2.1} Use get_particle_indexes(). */
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   unsigned int get_number_of_particles() const;
   /** \deprecated_at{2.1} Use get_particle_indexes(). */
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   ParticlesTemp get_particles() const;
   /** \deprecated_at{2.1} Was not used, will be removed. */
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   void add_data(ModelKey mk, base::Object *o);
   /** \deprecated_at{2.1} Was not used, will be removed. */
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   base::Object *get_data(ModelKey mk) const;
   /** \deprecated_at{2.1} Was not used, will be removed. */
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   void remove_data(ModelKey mk);
   /** \deprecated_at{2.1} Was not used, will be removed. */
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   bool get_has_data(ModelKey mk) const;
   /** \deprecated_at{2.1} Do not use. */
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   ModelObjectsTemp get_optimized_particles() const;
   /** \deprecated_at{2.1} Using a ScoringFunction instead. */
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
       RestraintSet *get_root_restraint_set();
   /** \deprecated_at{2.1} Get the maximum directly from the restraint.*/
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   double get_maximum_score(Restraint *r) const;
   /** \deprecated_at{2.1} Set get the maximum directly on the restraint.*/
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   void set_maximum_score(Restraint *r, double s);
   /** \deprecated_at{2.1} You should use a ScoringFunction or a RestraintSet.*/
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   void set_maximum_score(double s);
   /** \deprecated_at{2.1} You should use a ScoringFunction or a RestraintSet.*/
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   double get_maximum_score() const;
 #ifndef SWIG
   /** \deprecated_at{2.1} Use get_particle_indexes(). */
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   ParticleIterator particles_begin() const;
   /** \deprecated_at{2.1} Use get_particle_indexes(). */
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   ParticleIterator particles_end() const;
   /** \deprecated_at{2.1} Use a ScoringFunction instead. */
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
    operator Restraint *() const { return restraints_.get(); }
 #endif
 

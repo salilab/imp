@@ -20,13 +20,46 @@
 
 /** Used to implement deprecation support.
     See [deprecation support](../devguide.html#devguide_deprecation). */
-#define IMP_DEPRECATED_RUNTIME_WARNING(version, help_message)       \
+#define IMP_DEPRECATED_OBJECT_RUNTIME_WARNING(version, help_message)       \
   {                                                                 \
     std::ostringstream oss;                                         \
-    oss << "WARNING: " << IMP_CURRENT_FUNCTION << " is deprecated." \
-        << std::endl;                                               \
-    oss << "WARNING: " << help_message << std::endl;                \
+    oss << "Object " << get_module_name() << "::"                   \
+        << get_type_name() << " is deprecated. "                   \
+        << help_message << std::endl;                               \
     IMP::base::handle_use_deprecated(oss.str());                    \
+  }
+
+/** Used to implement deprecation support.
+    See [deprecation support](../devguide.html#devguide_deprecation). */
+#define IMP_DEPRECATED_VALUE_RUNTIME_WARNING(version, help_message) \
+  {                                                                 \
+    std::ostringstream oss;                                         \
+    oss << "Class " << get_module_name() << "::"                    \
+        << IMP_CURRENT_FUNCTION << " is deprecated. "               \
+        << help_message << std::endl;                               \
+    IMP::base::handle_use_deprecated(oss.str());                    \
+  }
+
+/** Used to implement deprecation support.
+    See [deprecation support](../devguide.html#devguide_deprecation). */
+#define IMP_DEPRECATED_FUNCTION_RUNTIME_WARNING(version, help_message)       \
+  {                                                                     \
+    std::ostringstream oss;                                             \
+    oss << "Function " << IMP_CURRENT_PRETTY_FUNCTION                   \
+        << " is deprecated. "                                           \
+        << help_message << std::endl;                                   \
+    IMP::base::handle_use_deprecated(oss.str());                        \
+  }
+
+/** Used to implement deprecation support.
+    See [deprecation support](../devguide.html#devguide_deprecation). */
+#define IMP_DEPRECATED_METHOD_RUNTIME_WARNING(version, help_message)    \
+  {                                                                     \
+    std::ostringstream oss;                                             \
+    oss << "Method " << IMP_CURRENT_PRETTY_FUNCTION                     \
+        << " is deprecated. "                                           \
+        << "WARNING: " << help_message << std::endl;                    \
+    IMP::base::handle_use_deprecated(oss.str());                        \
   }
 
 /** \deprecated_at{2.1} Deprecated as of IMP 2.1. Use
@@ -34,7 +67,7 @@
  */
 #define IMP_DEPRECATED_OBJECT(replacement_classname)                    \
   IMP_DEPRECATED_MACRO(2.1,                                             \
-                       "Use IMP@MODULE@_DEPRECATED_CLASS_DECL()")       \
+                       "Use IMP@MODULE@_DEPRECATED_OBJECT_DECL()")       \
   if (::IMP::base::internal::                                           \
       get_print_deprecation_message(                                    \
           get_name())) {                                                \
@@ -50,7 +83,7 @@
 #define IMP_DEPRECATED_CLASS(classname, replacement_classname)                \
   IMP_DEPRECATED_MACRO(                                                       \
       2.1,                                                                    \
-      "Use IMP@MODULE@_DEPRECATED_CLASS_DEF "                                 \
+      "Use IMP@MODULE@_DEPRECATED_VALUE_DEF "                                 \
       "instead") if (::IMP::base::internal::get_print_deprecation_message(    \
                          #classname)) {                                       \
     IMP_WARN(#classname << " is deprecated "                                  \
@@ -63,7 +96,8 @@
     instead
  */
 #define IMP_DEPRECATED_FUNCTION(replacement)                                \
-  IMP_DEPRECATED_MACRO(2.1, "Use IMP@MODULE@_DEPRECATED_FUNCTION instead"); \
+  IMP_DEPRECATED_MACRO(2.1,                                                 \
+                   "Use IMP@MODULE@_DEPRECATED_FUNCTION_DECL/DEF instead"); \
   if (::IMP::base::internal::get_print_deprecation_message(                 \
           IMP_CURRENT_FUNCTION)) {                                          \
     IMP_WARN(IMP_CURRENT_FUNCTION << " is deprecated "                      \
@@ -86,5 +120,7 @@
 */
 #define IMP_DEPRECATED_WARN
 #endif
+
+#define IMP_DEPRECATED_FUNCTION_DEF(version, message) \
 
 #endif /* IMPBASE_DEPRECATION_MACROS_H */

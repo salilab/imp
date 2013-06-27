@@ -37,7 +37,7 @@ class GenericScopedScoreState : public base::RAII {
     m->add_score_state(ss);
   },
                       {
-    if (ss_ && ss_->get_is_part_of_model()) {
+    if (ss_ && ss_->get_model()) {
       IMP_CHECK_OBJECT(ss_);
       IMP_CHECK_OBJECT(ss_->get_model());
       ss_->get_model()->remove_score_state(ss_);
@@ -113,7 +113,7 @@ class GenericScopedRemoveRestraint : public base::RAII {
   base::Pointer<SS> ss_;
   base::Pointer<RestraintSet> rs_;
   void cleanup() {
-    if (rs_ && rs_->get_is_part_of_model()) {
+    if (rs_ && rs_->get_model()) {
       IMP_LOG_VERBOSE("Restoring restraint " << ss_->get_name() << " to "
                                              << rs_->get_name() << std::endl);
       IMP_CHECK_OBJECT(ss_);
@@ -186,7 +186,7 @@ class GenericScopedRemoveScoreState : public base::RAII {
  public:
   IMP_DEPRECATED_RAII(2.1, "This doesn't work any more", KERNEL,
                       GenericScopedRemoveScoreState, (SS* ss, Model* rs), {}, {
-    IMPKERNEL_DEPRECATED_CLASS_DEF(2.1, "This doesn't do anything any more");
+    IMPKERNEL_DEPRECATED_VALUE_DEF(2.1, "This doesn't do anything any more");
     setup(ss, rs);
   },
                       {

@@ -41,7 +41,7 @@ PLURALVARIABLETYPE ClassnameContainer::get_FUNCTIONNAMEs() const {
 }
 
 bool ClassnameContainer::get_contains_FUNCTIONNAME(VARIABLETYPE v) const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "You should build your own index instead");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "You should build your own index instead");
   INDEXTYPE iv = IMP::kernel::internal::get_index(v);
   IMP_CONTAINER_FOREACH(ClassnameContainer, this, {
     if (_1 == iv) return true;
@@ -50,12 +50,12 @@ bool ClassnameContainer::get_contains_FUNCTIONNAME(VARIABLETYPE v) const {
 }
 
 unsigned int ClassnameContainer::get_number_of_FUNCTIONNAMEs() const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_indexes()");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_indexes()");
   return get_number();
 }
 
 VARIABLETYPE ClassnameContainer::get_FUNCTIONNAME(unsigned int i) const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_indexes()");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_indexes()");
   return get(i);
 }
 
@@ -89,6 +89,12 @@ void ClassnameModifier::apply_index(Model *m, PASSINDEXTYPE v) const {
   apply(internal::get_particle(m, v));
 }
 
+void ClassnameModifier::apply(ARGUMENTTYPE vt) const {
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use index version");
+  return apply_index(internal::get_model(vt),
+                     internal::get_index(vt));
+}
+
 ClassnamePredicate::ClassnamePredicate(std::string name) : Object(name) {
   /* Implemented here rather than in the header so that PairPredicate
      symbols are present in the kernel DSO */
@@ -102,7 +108,7 @@ void ClassnamePredicate::remove_if_equal(Model *m, PLURALINDEXTYPE &ps,
 
 }
 Ints ClassnamePredicate::get_value(const PLURALVARIABLETYPE &o) const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use index version");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use index version");
   if (o.empty()) return Ints();
   Ints ret(o.size());
   Model *m = internal::get_model(o[0]);
@@ -123,6 +129,12 @@ void ClassnamePredicate::remove_if_not_equal(Model *m, PLURALINDEXTYPE &ps,
            ps.end());
 }
 
+int ClassnamePredicate::get_value(ARGUMENTTYPE vt) const {
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use index version");
+  return get_value_index(internal::get_model(vt),
+                         internal::get_index(vt));
+}
+
 ClassnameScore::ClassnameScore(std::string name) : Object(name) {
   /* Implemented here rather than in the header so that PairScore
      symbols are present in the kernel DSO */
@@ -130,7 +142,7 @@ ClassnameScore::ClassnameScore(std::string name) : Object(name) {
 
 double ClassnameScore::evaluate(ARGUMENTTYPE vt,
                                 DerivativeAccumulator *da) const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use index-based evaluation instead");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use index-based evaluation instead");
   return evaluate_index(internal::get_model(vt), internal::get_index(vt), da);
 }
 
@@ -244,13 +256,13 @@ void InternalDynamicListClassnameContainer::do_before_evaluate() {}
 
 ParticlesTemp InternalDynamicListClassnameContainer::get_input_particles()
     const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_inputs()");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_inputs()");
   return ParticlesTemp();
 }
 
 ContainersTemp InternalDynamicListClassnameContainer::get_input_containers()
     const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_inputs()");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_inputs()");
   return ContainersTemp();
 }
 
@@ -310,12 +322,12 @@ PLURALINDEXTYPE InternalListClassnameContainer::get_range_indexes() const {
 void InternalListClassnameContainer::do_before_evaluate() {}
 
 ParticlesTemp InternalListClassnameContainer::get_input_particles() const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_inputs()");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_inputs()");
   return ParticlesTemp();
 }
 
 ContainersTemp InternalListClassnameContainer::get_input_containers() const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_inputs()");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_inputs()");
   return ContainersTemp();
 }
 

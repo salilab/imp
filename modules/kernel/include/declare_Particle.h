@@ -21,46 +21,6 @@
 #include "particle_index.h"
 #include <utility>
 
-#define IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(UCName, lcname, Value) \
-  void add_attribute(UCName##Key name, Value initial_value);    \
-  void remove_attribute(UCName##Key name);                      \
-  bool has_attribute(UCName##Key name) const;                   \
-  Value get_value(UCName##Key name) const;                      \
-  void set_value(UCName##Key name, Value value);                \
-  void add_cache_attribute(UCName##Key name, Value value);      \
-  UCName##Keys get_##lcname##_keys() const
-
-#define IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(UCName, lcname, Value)                 \
-  inline void Particle::add_attribute(UCName##Key name, Value initial_value) { \
-    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");               \
-    get_model()->add_attribute(name, id_, initial_value);                      \
-  }                                                                            \
-  inline void Particle::remove_attribute(UCName##Key name) {                   \
-    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");               \
-    get_model()->remove_attribute(name, id_);                                  \
-  }                                                                            \
-  inline bool Particle::has_attribute(UCName##Key name) const {                \
-    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");               \
-    return get_model()->get_has_attribute(name, id_);                          \
-  }                                                                            \
-  inline Value Particle::get_value(UCName##Key name) const {                   \
-    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");               \
-    return get_model()->get_attribute(name, id_);                              \
-  }                                                                            \
-  inline void Particle::set_value(UCName##Key name, Value value) {             \
-    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");               \
-    get_model()->set_attribute(name, id_, value);                              \
-  }                                                                            \
-  inline UCName##Keys Particle::get_##lcname##_keys() const {                  \
-    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");               \
-    return get_model()->internal::UCName##AttributeTable::get_attribute_keys(  \
-        id_);                                                                  \
-  }                                                                            \
-  inline void Particle::add_cache_attribute(UCName##Key name, Value value) {   \
-    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");               \
-    return get_model()->add_cache_attribute(name, id_, value);                 \
-  }
-
 IMPKERNEL_BEGIN_NAMESPACE
 
 class Model;
@@ -89,6 +49,16 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   Particle(Model *m);
 
 #ifndef IMP_DOXYGEN
+
+#define IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(UCName, lcname, Value) \
+  void add_attribute(UCName##Key name, Value initial_value);    \
+  void remove_attribute(UCName##Key name);                      \
+  bool has_attribute(UCName##Key name) const;                   \
+  Value get_value(UCName##Key name) const;                      \
+  void set_value(UCName##Key name, Value value);                \
+  void add_cache_attribute(UCName##Key name, Value value);      \
+  UCName##Keys get_##lcname##_keys() const
+
   IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(Float, float, Float);
   IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(Int, int, Int);
   IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(String, string, String);

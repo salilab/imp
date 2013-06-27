@@ -156,7 +156,7 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
 }
 
 double Model::evaluate(bool tf, bool warn) {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1,
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
                       "Use a scoring function or Model::update() instead.");
   // disable warning for now
   static bool warned = true;

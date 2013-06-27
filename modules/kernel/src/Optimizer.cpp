@@ -23,7 +23,7 @@
 IMPKERNEL_BEGIN_NAMESPACE
 
 Optimizer::Optimizer() : Object("Optimizer%1%") {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1,
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
                                     "Use the constructor that takes a model.");
   set_was_used(true);
   min_score_ = -std::numeric_limits<double>::max();
@@ -40,7 +40,7 @@ Optimizer::Optimizer(Model *m, std::string name) : Object(name) {
 Optimizer::~Optimizer() {}
 
 void Optimizer::set_model(Model *m) {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1,
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
                                     "Use the constructor that takes a model.");
   cache_ = m->create_model_scoring_function();
   cache_->set_was_used(true);
@@ -92,7 +92,7 @@ void Optimizer::set_optimizer_state_optimizer(OptimizerState *os,
 }
 
 void Optimizer::set_restraints(const RestraintsTemp &rs) {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(
+  IMPKERNEL_DEPRECATED_METHOD_DEF(
       2.1, "Use Optimizer::set_scoring_function instead");
   if (rs.empty()) {
     // otherwise the SF can't figure out the model
@@ -107,7 +107,7 @@ void Optimizer::set_restraints(const RestraintsTemp &rs) {
 void Optimizer::set_scoring_function(ScoringFunctionAdaptor sf) { cache_ = sf; }
 
 Restraints Optimizer::get_restraints() const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(
+  IMPKERNEL_DEPRECATED_METHOD_DEF(
       2.1, "Use Optimizer::get_scoring_function instead");
   return cache_->create_restraints();
 }
@@ -128,9 +128,8 @@ Float Optimizer::get_derivative(FloatIndex fi) const {
   return get_model()->get_derivative(fi.get_key(), fi.get_particle());
 }
 
-IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
 double Optimizer::width(FloatKey k) const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_width instead");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_width instead");
   return get_width(k);
 }
 

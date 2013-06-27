@@ -26,22 +26,7 @@ class IMPCOREEXPORT MoverBase : public Mover {
   base::Vector<Floats> values_;
   base::Vector<FloatKey> keys_;
   ParticleIndexes particles_;
-  void do_propose_value(unsigned int i, unsigned int j, Float t) {
-    IMP_USAGE_CHECK(j < keys_.size(), "Out of range key");
-    IMP_USAGE_CHECK(i < particles_.size(), "Out of range particle");
-    if (get_model()->get_is_optimized(keys_[j], particles_[i])) {
-      get_model()->set_attribute(keys_[j], particles_[i], t);
-      IMP_USAGE_CHECK_FLOAT_EQUAL(
-          get_model()->get_attribute(keys_[j], particles_[i]), t,
-          "Tried to set, but it didn't work.");
-    } else {
-      IMP_LOG_TERSE("Dropping change to unoptimized attribute: "
-                    << keys_[j] << " of particle "
-                    << get_model()->get_particle(particles_[i])->get_name()
-                    << std::endl);
-    }
-  }
-
+  void do_propose_value(unsigned int i, unsigned int j, Float t);
  public:
   virtual void reset_move();
 
@@ -49,16 +34,12 @@ class IMPCOREEXPORT MoverBase : public Mover {
    */
   virtual ParticlesTemp propose_move(Float f);
 
-  ParticlesTemp get_output_particles() const {
-    return IMP::internal::get_particle(get_model(), particles_);
-  }
+  ParticlesTemp get_output_particles() const;
 
  protected:
   unsigned int get_number_of_particles() const { return particles_.size(); }
   unsigned int get_number_of_keys() const { return keys_.size(); }
-  std::string get_particle_name(unsigned int i) const {
-    return get_model()->get_particle(particles_[i])->get_name();
-  }
+  std::string get_particle_name(unsigned int i) const;
 
   //! implement this method to propose a move
   /** See NormalMover for a simple example.
@@ -69,22 +50,16 @@ class IMPCOREEXPORT MoverBase : public Mover {
   /** \param [in] i The index of the particle.
       \param [in] j The index of the attribute.
    */
-  Float get_value(unsigned int i, unsigned int j) const {
-    IMP_USAGE_CHECK(j < keys_.size(), "Out of range key");
-    IMP_USAGE_CHECK(i < particles_.size(), "Out of range particle");
-    return get_model()->get_attribute(keys_[j], particles_[i]);
-  }
+  Float get_value(unsigned int i, unsigned int j) const;
 
   //! Propose a value
   /** \param[in] i The index of the particle.
       \param[in] j The index of the key
       \param[in] t The value to propose
    */
-  void propose_value(unsigned int i, unsigned int j, Float t) {
-    do_propose_value(i, j, t);
-  }
+  void propose_value(unsigned int i, unsigned int j, Float t);
 
-  IMPCORE_DEPRECATED_CLASS_DECL(2.1)
+  IMPCORE_DEPRECATED_OBJECT_DECL(2.1)
   MoverBase(const ParticlesTemp &ps, const FloatKeys &keys, std::string name);
 };
 

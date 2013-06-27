@@ -24,8 +24,8 @@ void StateAdaptor::do_after_evaluate(DerivativeAccumulator *) {
 }
 
 ModelObjectsTemp StateAdaptor::do_get_outputs() const {
-  return ModelObjectsTemp(get_model()->particles_begin(),
-                          get_model()->particles_end());
+  return kernel::get_particles(get_model(),
+                               get_model()->get_particle_indexes());
 }
 
 ModelObjectsTemp StateAdaptor::do_get_inputs() const {

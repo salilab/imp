@@ -96,17 +96,17 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
       in the tuple.
 
       Return whether the container has the given element.*/
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
     bool get_contains_FUNCTIONNAME(VARIABLETYPE v) const;
 
   /** \deprecated_at{2.1} This can be very slow and is probably not useful
    */
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
     unsigned int get_number_of_FUNCTIONNAMEs() const;
 
   /** \deprecated_at{2.1}Use indexes instead and thing about using the
       IMP_CONTAINER_FOREACH() macro.*/
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
     VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const;
 
  protected:

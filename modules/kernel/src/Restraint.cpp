@@ -31,7 +31,7 @@ Restraint::Restraint(Model *m, std::string name)
 
 Restraint::Restraint(std::string name)
     : ModelObject(name), weight_(1), max_(NO_MAX), last_score_(BAD_SCORE) {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(
+  IMPKERNEL_DEPRECATED_METHOD_DEF(
       2.1, "You should pass the model to the Restraint constructor. "
                << "Constructing " << name);
 }
@@ -238,11 +238,11 @@ void Restraint::add_score_and_derivatives(ScoreAccumulator sa) const {
 }
 
 ParticlesTemp Restraint::get_input_particles() const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_inputs() instead");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_inputs() instead");
   return IMP::kernel::get_input_particles(get_inputs());
 }
 ContainersTemp Restraint::get_input_containers() const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_inputs() instead");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_inputs() instead");
   return IMP::kernel::get_input_containers(get_inputs());
 }
 

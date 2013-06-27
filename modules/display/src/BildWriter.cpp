@@ -12,7 +12,7 @@
 IMPDISPLAY_BEGIN_NAMESPACE
 
 void BildWriter::do_open() {
-  IMPDISPLAY_DEPRECATED_CLASS_DEF(2.1, "Use IMP::rmf");
+  IMPDISPLAY_DEPRECATED_OBJECT_DEF(2.1, "Use IMP::rmf");
 }
 
 void BildWriter::do_close() {}

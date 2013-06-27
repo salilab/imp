@@ -57,7 +57,7 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
       This version uses the container::create_restraint() function and so
       is more efficient than the non-template version.*/
   template <class Score> void set_score(int predicate_value, Score *score) {
-    IMP_USAGE_CHECK(get_is_part_of_model(),
+    IMP_USAGE_CHECK(get_model(),
                     "You must add this restraint to the model"
                         << " first, sorry, this can be fixed.");
     IMP_NEW(List, c, (input_, score->get_name() + " input"));
@@ -72,7 +72,7 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
   template <class Score> void set_unknown_score(Score *score) {
     // make sure it gets cleaned up if it is a temporary
     base::Pointer<Score> pscore(score);
-    IMP_USAGE_CHECK(get_is_part_of_model(),
+    IMP_USAGE_CHECK(get_model(),
                     "You must add this restraint to the model"
                         << " first, sorry, this can be fixed.");
     IMP_NEW(List, c, (input_, score->get_name() + " input"));

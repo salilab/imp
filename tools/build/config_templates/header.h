@@ -168,10 +168,14 @@ IMP_COMPILER_DISABLE_WARNINGS
 
 #ifdef %(cppprefix)s_DEPRECATED_HEADER
 #undef %(cppprefix)s_DEPRECATED_HEADER
-#undef %(cppprefix)s_DEPRECATED_CLASS_DEF
-#undef %(cppprefix)s_DEPRECATED_CLASS_DECL
+#undef %(cppprefix)s_DEPRECATED_VALUE_DEF
+#undef %(cppprefix)s_DEPRECATED_VALUE_DECL
+#undef %(cppprefix)s_DEPRECATED_OBJECT_DEF
+#undef %(cppprefix)s_DEPRECATED_OBJECT_DECL
 #undef %(cppprefix)s_DEPRECATED_FUNCTION_DEF
 #undef %(cppprefix)s_DEPRECATED_FUNCTION_DECL
+#undef %(cppprefix)s_DEPRECATED_METHOD_DEF
+#undef %(cppprefix)s_DEPRECATED_METHOD_DECL
 #undef %(cppprefix)s_DEPRECATED_MACRO
 #undef %(cppprefix)s_SHOW_WARNINGS
 #endif
@@ -194,18 +198,26 @@ IMP_COMPILER_DISABLE_WARNINGS
 #if %(cppprefix)s_SHOW_WARNINGS
 #define %(cppprefix)s_DEPRECATED_HEADER(version, help_message)          \
     IMP_PRAGMA(message(__FILE__ " is deprecated: " help_message))
-#define %(cppprefix)s_DEPRECATED_CLASS_DECL(version)    \
+#define %(cppprefix)s_DEPRECATED_VALUE_DECL(version)    \
+  IMP_DEPRECATED_ATTRIBUTE
+#define %(cppprefix)s_DEPRECATED_OBJECT_DECL(version)    \
   IMP_DEPRECATED_ATTRIBUTE
 #define %(cppprefix)s_DEPRECATED_FUNCTION_DECL(version) \
+  IMP_DEPRECATED_ATTRIBUTE
+#define %(cppprefix)s_DEPRECATED_METHOD_DECL(version) \
   IMP_DEPRECATED_ATTRIBUTE
 
 #else //%(cppprefix)s_SHOW_WARNINGS
 /** See [deprecation support](../developer_guide.html#deprecation). */
 #define %(cppprefix)s_DEPRECATED_HEADER(version, help_message) \
 /** See [deprecation support](../developer_guide.html#deprecation). */
-#define %(cppprefix)s_DEPRECATED_CLASS_DECL(version)
+#define %(cppprefix)s_DEPRECATED_VALUE_DECL(version)
+/** See [deprecation support](../developer_guide.html#deprecation). */
+#define %(cppprefix)s_DEPRECATED_OBJECT_DECL(version)
 /** See [deprecation support](../developer_guide.html#deprecation). */
 #define %(cppprefix)s_DEPRECATED_FUNCTION_DECL(version)
+/** See [deprecation support](../developer_guide.html#deprecation). */
+#define %(cppprefix)s_DEPRECATED_METHOD_DECL(version)
 
 #endif // %(cppprefix)s_SHOW_WARNINGS
 
@@ -225,11 +237,21 @@ IMP_COMPILER_DISABLE_WARNINGS
 #endif
 
 /** See [deprecation support](../developer_guide.html#deprecation). */
-#define %(cppprefix)s_DEPRECATED_CLASS_DEF(version, message) \
-  IMP_DEPRECATED_RUNTIME_WARNING(version, message)
+#define %(cppprefix)s_DEPRECATED_VALUE_DEF(version, message) \
+  IMP_DEPRECATED_VALUE_RUNTIME_WARNING(version, message)
+
+/** See [deprecation support](../developer_guide.html#deprecation). */
+#define %(cppprefix)s_DEPRECATED_OBJECT_DEF(version, message) \
+  IMP_DEPRECATED_OBJECT_RUNTIME_WARNING(version, message)
+
 /** See [deprecation support](../developer_guide.html#deprecation). */
 #define %(cppprefix)s_DEPRECATED_FUNCTION_DEF(version, message) \
-  IMP_DEPRECATED_RUNTIME_WARNING(version, message)
+  IMP_DEPRECATED_FUNCTION_RUNTIME_WARNING(version, message)
+
+/** See [deprecation support](../developer_guide.html#deprecation). */
+#define %(cppprefix)s_DEPRECATED_METHOD_DEF(version, message) \
+  IMP_DEPRECATED_METHOD_RUNTIME_WARNING(version, message)
+
 
 #include <IMP/base/compiler_macros.h>
 

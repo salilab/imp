@@ -18,12 +18,12 @@
 IMPKERNEL_BEGIN_NAMESPACE
 
 ScoreState::ScoreState(std::string name) : ModelObject(name) {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(
+  IMPKERNEL_DEPRECATED_METHOD_DEF(
       2.1, "Use the ScoreState constructor that takes the model and a name.");
   order_ = -1;
 }
 ScoreState::ScoreState(Model *m) : ModelObject(m, "ScoreState%1%") {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(
+  IMPKERNEL_DEPRECATED_METHOD_DEF(
       2.1, "Use the ScoreState constructor that takes the model and a name.");
   order_ = -1;
   m->set_has_dependencies(false);
@@ -77,19 +77,19 @@ void ScoreState::do_set_model(Model *m) {
 }
 
 ParticlesTemp ScoreState::get_input_particles() const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_inputs() instead");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_inputs() instead");
   return IMP::kernel::get_input_particles(get_inputs());
 }
 ContainersTemp ScoreState::get_input_containers() const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_inputs() instead");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_inputs() instead");
   return IMP::kernel::get_input_containers(get_inputs());
 }
 ParticlesTemp ScoreState::get_output_particles() const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_outputs() instead");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_outputs() instead");
   return IMP::kernel::get_output_particles(get_outputs());
 }
 ContainersTemp ScoreState::get_output_containers() const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_outputs() instead");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_outputs() instead");
   return IMP::kernel::get_output_containers(get_outputs());
 }
 

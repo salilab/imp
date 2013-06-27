@@ -38,7 +38,7 @@ class IMPDISPLAYEXPORT CMMWriter : public TextWriter {
   bool handle_point(PointGeometry *g, Color color, std::string name);
 
  public:
-  IMPDISPLAY_DEPRECATED_CLASS_DECL(2.1)
+  IMPDISPLAY_DEPRECATED_OBJECT_DECL(2.1)
   IMP_TEXT_WRITER(CMMWriter);
 
  public:

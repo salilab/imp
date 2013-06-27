@@ -22,9 +22,9 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT Mover : public MonteCarloMover {
  public:
-  IMPCORE_DEPRECATED_CLASS_DECL(2.1)
+  IMPCORE_DEPRECATED_OBJECT_DECL(2.1)
   Mover(Model *m, std::string name) : MonteCarloMover(m, name) {
-    IMPCORE_DEPRECATED_CLASS_DEF(2.1, "Use MonteCarloMover");
+    IMPCORE_DEPRECATED_OBJECT_DEF(2.1, "Use MonteCarloMover");
   }
 
   virtual ParticlesTemp propose_move(Float size) = 0;

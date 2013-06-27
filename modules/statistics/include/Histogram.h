@@ -31,7 +31,7 @@ class IMPSTATISTICSEXPORT Histogram {
   \param[in] end the end value of the range
   \param[in] num_bins the number of bins [start,end] is divided to
    */
-  IMPSTATISTICS_DEPRECATED_CLASS_DECL(2.0)
+  IMPSTATISTICS_DEPRECATED_VALUE_DECL(2.0)
   Histogram(double start, double end, unsigned int num_bins);
   //! Increase the count for the bin that holds a
   // value that is in range for this histogram.

@@ -19,4 +19,13 @@ void Domain::show(std::ostream& out) const {
   out << "Domain: " << get_begin_index() << " to " << get_end_index();
 }
 
+Int Domain::get_begin_index() const {
+    return get_particle()->get_value(get_data().begin);
+  }
+
+Int Domain::get_end_index() const {
+  return get_particle()->get_value(get_data().end);
+}
+
+
 IMPATOM_END_NAMESPACE

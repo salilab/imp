@@ -17,34 +17,28 @@
 #include <IMP/isd/CysteineCrossLinkData.h>
 
 IMPISD_BEGIN_NAMESPACE
-/** A restraint for cysteine cross-linking data. It models
-    the frequency fexp derived from gel separation of cross-linked
-    complexes. The experimental frequency fexp is derived as the fraction
-    of dimeric versus monomeric complex, upon cysteine cross-linking.
-    The forward model is derived from free energy calculations.
-    The likelyhood is modeled as a normal distribution function truncated over
-    the interval [0,1]. To contruct the restraint, the class CysteineCrossLinkData
-    and CrossLinkData have to be initialized (see for instance test_CysteineCrossLinkRestraint.py).
-    Input parameters and constructor. There are two different constructors
-    p1 and p2 are the two cross-linked sites.
-    \f$ \beta \f$ is the beta parameter in the distribution function.
-    The \f$ \alpha \f$ parameter is constrained by the condition that
-    the variance is gaussian by the formula
-    \f$ \omega \f$ is a scale factor for the beta parameter,
-    to allow for outlier detection.
-    Usage: Construct the ambiguous set using
-    CysteineCrossLinkRestraint(\f$ \beta \f$,
-    \f$ \omega \f$, xlyield, \f$ f_{exp} \f$) method.
-    The model frequencies of each individual copy
-    are summed, weighted and multiplied by the unknown
-    crosslink yield (epsilon).
-    Pass individual cross-linked pairs to
-    add_contribution(p0, p1, w) command,
-    where "w" is a state weight parameter.
-
-    The source code is as follows:
-    \include  CysteineCrossLinkRestraint.h
-    \include  CysteineCrossLinkRestraint.cpp
+/** A restraint for cysteine cross-linking data. It models the
+    frequency fexp derived from gel separation of cross-linked
+    complexes. The experimental frequency fexp is derived as the
+    fraction of dimeric versus monomeric complex, upon cysteine
+    cross-linking.  The forward model is derived from free energy
+    calculations.  The likelyhood is modeled as a normal distribution
+    function truncated over the interval [0,1]. To contruct the
+    restraint, the class CysteineCrossLinkData and CrossLinkData have
+    to be initialized (see for instance
+    test_CysteineCrossLinkRestraint.py).  Input parameters and
+    constructor. There are two different constructors p1 and p2 are
+    the two cross-linked sites.  \f$ \beta \f$ is the beta parameter
+    in the distribution function.  The \f$ \alpha \f$ parameter is
+    constrained by the condition that the variance is gaussian by the
+    formula \f$ \omega \f$ is a scale factor for the beta parameter,
+    to allow for outlier detection.  Usage: Construct the ambiguous
+    set using CysteineCrossLinkRestraint(\f$ \beta \f$, \f$ \omega
+    \f$, xlyield, \f$ f_{exp} \f$) method.  The model frequencies of
+    each individual copy are summed, weighted and multiplied by the
+    unknown crosslink yield (epsilon).  Pass individual cross-linked
+    pairs to add_contribution(p0, p1, w) command, where "w" is a state
+    weight parameter.
  */
 
 class IMPISDEXPORT  CysteineCrossLinkRestraint : public ISDRestraint

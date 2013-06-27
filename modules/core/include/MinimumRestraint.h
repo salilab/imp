@@ -47,7 +47,7 @@ class IMPCOREEXPORT MinimumRestraint : public Restraint {
 
   IMP_LIST_ACTION(public, Restraint, Restraints, restraint, restraints,
                   Restraint *, Restraints, {
-    if (get_is_part_of_model()) {
+                    if (get_model()) {
       obj->set_model(get_model());
     }
   },

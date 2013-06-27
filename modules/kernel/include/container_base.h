@@ -64,16 +64,6 @@ class IMPKERNELEXPORT Container : public ScoreState {
   */
   virtual ParticleIndexes get_all_possible_indexes() const = 0;
 
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-  /** \deprecated_at{2.1} use get_all_possible_indexes() instead
-   */
-  ParticlesTemp get_all_possible_particles() const {
-    IMPKERNEL_DEPRECATED_FUNCTION_DEF(
-        2.1, "Use IMP::Container::get_all_possible_indexes()"
-             "instead");
-    return IMP::kernel::get_particles(get_model(), get_all_possible_indexes());
-  }
-
   /** Return true if the container changed since the last evaluate.*/
   bool get_is_changed() const;
 
@@ -97,6 +87,17 @@ class IMPKERNELEXPORT Container : public ScoreState {
   void set_is_readable(bool tf);
   void set_is_writable(bool tf);
 #endif
+
+  /** \deprecated_at{2.1} use get_all_possible_indexes() instead
+   */
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
+  ParticlesTemp get_all_possible_particles() const {
+    IMPKERNEL_DEPRECATED_METHOD_DEF(
+        2.1, "Use IMP::Container::get_all_possible_indexes()"
+             "instead");
+    return IMP::kernel::get_particles(get_model(), get_all_possible_indexes());
+  }
+
   IMP_REF_COUNTED_DESTRUCTOR(Container);
 };
 

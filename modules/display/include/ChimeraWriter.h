@@ -37,7 +37,7 @@ class IMPDISPLAYEXPORT ChimeraWriter : public TextWriter {
   bool handle_ellipsoid(EllipsoidGeometry *g, Color color, std::string name);
 
  public:
-  IMPDISPLAY_DEPRECATED_CLASS_DECL(2.1)
+  IMPDISPLAY_DEPRECATED_OBJECT_DECL(2.1)
   IMP_TEXT_WRITER(ChimeraWriter);
 
   //! Add some arbitrary python code to the chimera file

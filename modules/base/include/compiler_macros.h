@@ -15,10 +15,13 @@
 // recommended by http://gcc.gnu.org/gcc/Function-Names.html
 #if defined(_MSC_VER)
 #define IMP_CURRENT_FUNCTION __FUNCTION__
+#define IMP_CURRENT_PRETTY_FUNCTION __FUNCTION__
 #elif defined(__STDC_VERSION__) && __STDC_VERSION__ < 199901L
 #define IMP_CURRENT_FUNCTION __FUNCTION__
+#define IMP_CURRENT_PRETTY_FUNCTION __PRETTY_FUNCTION__
 #else
 #define IMP_CURRENT_FUNCTION __func__
+#define IMP_CURRENT_PRETTY_FUNCTION __PRETTY_FUNCTION__
 #endif
 
 #ifndef IMP_DOXYGEN

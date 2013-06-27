@@ -132,7 +132,7 @@ bool ChimeraWriter::handle_ellipsoid(EllipsoidGeometry *g, Color,
 }
 
 void ChimeraWriter::do_open() {
-  IMPDISPLAY_DEPRECATED_CLASS_DEF(2.1, "Use IMP::rmf");
+  IMPDISPLAY_DEPRECATED_OBJECT_DEF(2.1, "Use IMP::rmf");
   get_stream() << "import _surface\n";
   get_stream() << "import chimera\n";
   get_stream() << "try:\n";

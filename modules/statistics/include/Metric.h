@@ -26,7 +26,10 @@ class IMPSTATISTICSEXPORT Metric : public IMP::base::Object {
  protected:
   Metric(std::string name);
   //! By default return 1.0
-  virtual double do_get_weight(unsigned int i) const { return 1.0;}
+  virtual double do_get_weight(unsigned int i) const {
+    IMP_UNUSED(i);
+    return 1.0;
+  }
  public:
   virtual double get_distance(unsigned int i, unsigned int j) const = 0;
   /** Return a weight for the point. */

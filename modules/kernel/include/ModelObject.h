@@ -77,18 +77,18 @@ class IMPKERNELEXPORT ModelObject :
 
   IMP_REF_COUNTED_DESTRUCTOR(ModelObject);
 
-
+ public:
   /** \deprecated_at{2.1} Use the constructor that takes a Model. */
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   ModelObject(std::string name);
   /** \deprecated_at{2.1} Use the constructor that takes a Model. */
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   virtual void set_model(Model *m);
   /** \deprecated_at{2.1} Should always be true. */
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   bool get_is_part_of_model() const;
   /** \deprecated_at{2.1} As it should always be part of a model. */
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   virtual void do_set_model(Model *) {}
 };
 

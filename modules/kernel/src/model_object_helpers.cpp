@@ -16,13 +16,13 @@ ModelObjectsTemp ParticleInputs::get_inputs(Model *m,
 }
 
 ContainersTemp ParticleInputs::get_input_containers(Particle *p) const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Call get_inputs instead.");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Call get_inputs instead.");
   return IMP::kernel::get_input_containers(
       get_inputs(p->get_model(), ParticleIndexes(1, p->get_index())));
 }
 
 ParticlesTemp ParticleInputs::get_input_particles(Particle *p) const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Call get_inputs instead.");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Call get_inputs instead.");
   return IMP::kernel::get_input_particles(
       get_inputs(p->get_model(), ParticleIndexes(1, p->get_index())));
 }
@@ -43,13 +43,13 @@ ModelObjectsTemp ParticleOutputs::get_outputs(
 }
 
 ContainersTemp ParticleOutputs::get_output_containers(Particle *p) const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Call get_outputs instead.");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Call get_outputs instead.");
   return IMP::kernel::get_output_containers(
       get_outputs(p->get_model(), ParticleIndexes(1, p->get_index())));
 }
 
 ParticlesTemp ParticleOutputs::get_output_particles(Particle *p) const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Call get_outputs instead.");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Call get_outputs instead.");
   return IMP::kernel::get_output_particles(
       get_outputs(p->get_model(), ParticleIndexes(1, p->get_index())));
 }

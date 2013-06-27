@@ -8,13 +8,14 @@
 #include "IMP/base/deprecation.h"
 #include "IMP/base/internal/static.h"
 #include "IMP/base/exception.h"
+#include "IMP/base/log_macros.h"
 
 IMPBASE_BEGIN_NAMESPACE
 void handle_use_deprecated(std::string message) {
   if (internal::print_deprecation_messages) {
     if (internal::printed_deprecation_messages.find(message) ==
         internal::printed_deprecation_messages.end()) {
-      std::cerr << message;
+      IMP_WARN(message);
       internal::printed_deprecation_messages.insert(message);
     }
   }

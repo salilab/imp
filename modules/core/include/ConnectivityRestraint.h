@@ -44,7 +44,7 @@ class IMPCOREEXPORT ConnectivityRestraint : public Restraint {
   ConnectivityRestraint(PairScore *ps, SingletonContainer *sc);
   /** \deprecated_at{2.1} Use constructor that takes a container instead.
    */
-  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPCORE_DEPRECATED_METHOD_DECL(2.1)
   ConnectivityRestraint(PairScore *ps);
 #ifndef IMP_DOXYGEN
   /** @name Particles to be connected

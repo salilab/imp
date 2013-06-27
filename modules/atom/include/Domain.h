@@ -60,23 +60,18 @@ class IMPATOMEXPORT Domain : public Hierarchy {
                                                get_particle_index()));
   }
 
-  /** \deprecated_at{2.1} Use get_index_range() instead.*/
-  IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
-  Int get_begin_index() const {
-    return get_particle()->get_value(get_data().begin);
-  }
-
-  /** \deprecated_at{2.1} Use get_index_range() instead.*/
-  IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
-  Int get_end_index() const {
-    return get_particle()->get_value(get_data().end);
-  }
-
   IMP_DECORATOR_METHODS(Domain, Hierarchy);
   IMP_DECORATOR_SETUP_1(Domain, Domain, other);
   IMP_DECORATOR_SETUP_1(Domain, IntRange, residues);
+
+  /** \deprecated_at{2.1} Use get_index_range() instead.*/
+  IMPATOM_DEPRECATED_METHOD_DECL(2.1)
+    Int get_begin_index() const;
+  /** \deprecated_at{2.1} Use get_index_range() instead.*/
+  IMPATOM_DEPRECATED_METHOD_DECL(2.1)
+    Int get_end_index() const;
   /** \deprecated_at{2.1} Use the IntRange setup_particle.*/
-  IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
+  IMPATOM_DEPRECATED_METHOD_DECL(2.1)
   IMP_DECORATOR_SETUP_2(Domain, Int, residues_begin, Int, residues_end);
 };
 

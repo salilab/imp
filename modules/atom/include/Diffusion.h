@@ -54,18 +54,6 @@ class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
   static bool get_is_setup(Model *m, ParticleIndex p) {
     return m->get_has_attribute(get_diffusion_coefficient_key(), p);
   }
-  /** \deprecated_at{2.1} Use set_diffusion_coefficient(). */
-  IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
-  void set_d(double d) {
-    IMPATOM_DEPRECATED_FUNCTION_DEF(2.1, "Use set_diffusion_coefficient().");
-    set_diffusion_coefficient(d);
-  }
-  /** \deprecated_at{2.1} Use get_diffusion_coefficient(). */
-  IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
-    double get_d() const {
-    IMPATOM_DEPRECATED_FUNCTION_DEF(2.1, "Use set_diffusion_coefficient().");
-    return get_diffusion_coefficient();
-  }
   void set_diffusion_coefficient(double d) {
     get_particle()->set_value(get_diffusion_coefficient_key(), d);
   }
@@ -74,6 +62,13 @@ class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
   }
   //! Get the D key
   static FloatKey get_diffusion_coefficient_key();
+
+  /** \deprecated_at{2.1} Use set_diffusion_coefficient(). */
+  IMPATOM_DEPRECATED_METHOD_DECL(2.1)
+    void set_d(double d);
+  /** \deprecated_at{2.1} Use get_diffusion_coefficient(). */
+  IMPATOM_DEPRECATED_METHOD_DECL(2.1)
+    double get_d() const;
 };
 
 IMPATOMEXPORT double get_diffusion_coefficient_from_cm2_per_second(double din);

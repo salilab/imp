@@ -7,6 +7,7 @@
  */
 #include <IMP/mpi/ReplicaExchange.h>
 #include "mpi.h"
+#include <boost/scoped_array.hpp>
 #include <time.h>
 
 IMPMPI_BEGIN_NAMESPACE
@@ -114,8 +115,9 @@ bool ReplicaExchange::do_exchange(double myscore0, double myscore1, int findex)
 
  bool do_accept=get_acceptance(myscore,fscore);
 
+ boost::scoped_array<int> sdel(new int[nproc_ - 1]);
+ boost::scoped_array<int> rdel(new int[nproc_ - 1]);
 
- int sdel[nproc_-1],rdel[nproc_-1];
  for(int i=0;i<nproc_-1;++i) {sdel[i]=0;}
 
  if(do_accept){
@@ -139,13 +141,14 @@ bool ReplicaExchange::do_exchange(double myscore0, double myscore1, int findex)
  MPI_Barrier(MPI_COMM_WORLD);
  //get the increment vector from all replicas and copy it to the
  //exchange array
- MPI_Allreduce(sdel,rdel,nproc_-1,MPI_INT,MPI_SUM,MPI_COMM_WORLD);
+ MPI_Allreduce(sdel.get(),rdel.get(),nproc_-1,MPI_INT,MPI_SUM,MPI_COMM_WORLD);
  for(int i=0;i<nproc_-1;++i) {exarray_[i]=rdel[i];}
  // in any case, update index vector
- int sbuf[nproc_],rbuf[nproc_];
+ boost::scoped_array<int> sbuf(new int[nproc_]);
+ boost::scoped_array<int> rbuf(new int[nproc_]);
  for(int i=0;i<nproc_;++i) {sbuf[i]=0;}
  sbuf[myrank_]=myindex;
- MPI_Allreduce(sbuf,rbuf,nproc_,MPI_INT,MPI_SUM,MPI_COMM_WORLD);
+ MPI_Allreduce(sbuf.get(),rbuf.get(),nproc_,MPI_INT,MPI_SUM,MPI_COMM_WORLD);
  for(int i=0;i<nproc_;++i){index_[i]=rbuf[i];}
  return do_accept;
 

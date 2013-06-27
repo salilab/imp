@@ -40,7 +40,7 @@ Particles RigidBodyMover::get_particles(Particles ps)
 {
  Particles ps_norb;
  for(unsigned i=0;i<ps.size();++i){
-  if(!core::RigidMember::particle_is_instance(ps[i])){
+  if(!core::RigidMember::get_is_setup(ps[i])){
    ps_norb.push_back(ps[i]);
   }
  }
@@ -51,7 +51,7 @@ std::vector<core::RigidBody> RigidBodyMover::get_rigid_bodies (Particles ps)
 {
  std::vector<core::RigidBody> rbs;
  for(unsigned i=0;i<ps.size();++i){
-  if(core::RigidMember::particle_is_instance(ps[i])){
+  if(core::RigidMember::get_is_setup(ps[i])){
    core::RigidBody rb = core::RigidMember(ps[i]).get_rigid_body();
    std::vector<core::RigidBody>::iterator it = find(rbs.begin(), rbs.end(), rb);
    if(it==rbs.end()){rbs.push_back(rb);}

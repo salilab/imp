@@ -125,7 +125,7 @@ ContainersTemp get_output_containers(const ModelObjectsTemp &mo) {
 ///////////////////////////////////////// DEPRECATED
 
 bool ModelObject::get_is_part_of_model() const {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1,
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
                                     "Should always be true.");
   return Tracked::get_is_tracked();
 }
@@ -137,7 +137,7 @@ void ModelObject::set_model(Model *m) {
 
 ModelObject::ModelObject(std::string name)
     : Tracked(name), has_dependencies_(false) {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1,
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
                                     "Pass the Model to the constructor.");
 
 }

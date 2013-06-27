@@ -10,7 +10,7 @@
 #include <IMP/base/deprecation_macros.h>
 IMPDISPLAY_BEGIN_NAMESPACE
 void CMMWriter::do_open() {
-  IMPDISPLAY_DEPRECATED_CLASS_DEF(2.1, "Use IMP::rmf");
+  IMPDISPLAY_DEPRECATED_OBJECT_DEF(2.1, "Use IMP::rmf");
   get_stream() << "<marker_set name=\"" << get_name() << "\">" << std::endl;
   // std::cout << "Initializing" << std::endl;
   marker_index_ = 0;

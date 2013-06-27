@@ -12,7 +12,7 @@
 IMPSTATISTICS_BEGIN_NAMESPACE
 
 Histogram::Histogram(double start, double end, unsigned int num_bins) {
-  IMPSTATISTICS_DEPRECATED_CLASS_DEF(2.0, "Use IMP::statistics::HistogramD");
+  IMPSTATISTICS_DEPRECATED_VALUE_DEF(2.0, "Use IMP::statistics::HistogramD");
   start_ = start;
   end_ = end;
   interval_size_ = (end - start) / num_bins;

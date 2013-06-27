@@ -36,7 +36,7 @@ ConnectivityRestraint::ConnectivityRestraint(PairScore *ps,
 
 ConnectivityRestraint::ConnectivityRestraint(PairScore *ps)
     : Restraint("ConnectivityRestraint %1%"), ps_(ps) {
-  IMPCORE_DEPRECATED_FUNCTION_DEF(2.1, "Use constructor that takes container.");
+  IMPCORE_DEPRECATED_METHOD_DEF(2.1, "Use constructor that takes container.");
 }
 
 namespace {

@@ -15,7 +15,6 @@
 
 IMPISD_BEGIN_NAMESPACE
 /** A restraint for in-vivo ensemble FRET data
-    \include  WeightRestraint.cpp
  */
 
 class IMPISDEXPORT  WeightRestraint : public Restraint
