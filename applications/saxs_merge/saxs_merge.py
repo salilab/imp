@@ -7,7 +7,7 @@ from random import sample
 from numpy import *
 import copy
 from scipy.stats import t as student_t
-from scipy import linalg
+from scipy import linalg,optimize
 import glob
 import tempfile
 
@@ -388,6 +388,9 @@ class SAXSProfile:
                 self.particles['d'].set_nuisance_is_optimized(True)
                 if self.mean == 'Generalized':
                     self.particles['s'].set_nuisance_is_optimized(False)
+                    self.particles['s'].set_lower(0)
+                    self.particles['s'].set_nuisance(0)
+                    self.particles['s'].set_upper(0)
                 else:
                     self.particles['s'].set_nuisance_is_optimized(True)
         self.particles['tau'].set_nuisance_is_optimized(True)
@@ -892,7 +895,7 @@ def ttest_two(mu1,s1,n1,mu2,s2,n2):
     pval = 2*(1-student_t.cdf(abs(t),nu))
     return pval, t, nu
 
-def setup_particles(initvals):
+def setup_particles(initvals, jitter=0.01):
     """ initvals : dict of initial values for the parameters
     returns: model, dict(*particles), dict(mean, covariance)
     """
@@ -910,23 +913,17 @@ def setup_particles(initvals):
     tau=IMP.isd.Scale.setup_particle(IMP.Particle(model,"tau"),initvals['tau'])
     lam=IMP.isd.Scale.setup_particle(IMP.Particle(model,"lambda"),
                                         initvals['lambda'])
-    w = IMP.isd.Covariance1DFunction(tau,lam,2.0)
+    w = IMP.isd.Covariance1DFunction(tau,lam,2.0,jitter)
     #sigma
     sigma=IMP.isd.Scale.setup_particle(IMP.Particle(model,"sigma2"),
                                     initvals['sigma2'])
     #prior on scales
-    #model.add_restraint(IMP.isd.JeffreysRestraint(tau))
+    model.add_restraint(IMP.isd.JeffreysRestraint(tau))
     model.add_restraint(IMP.isd.JeffreysRestraint(sigma))
-    #set lower and upper bounds for Rg, d and s
-    Rg.set_lower(0.1)
-    d.set_lower(0.1)
-    d.set_upper(8.)
-    s.set_upper(2.99999)
+    model.add_restraint(IMP.isd.JeffreysRestraint(lam))
+    #set upper bounds for s
+    s.set_upper(3)
     s.set_upper(d)
-    #set lower bounds for cov particles
-    tau.set_lower(0.01)
-    sigma.set_lower(0.01)
-    sigma.set_upper(1000.)
     #
     particles = {}
     particles['G'] = G
@@ -942,27 +939,8 @@ def setup_particles(initvals):
     functions['covariance'] = w
     return model, particles, functions
 
-def do_conjugategradients(model,nsteps):
-    cg=IMP.gsl.ConjugateGradients(model)
-    cg.optimize(nsteps)
-
-def do_quasinewton(model,nsteps):
-    qn=IMP.gsl.QuasiNewton(model)
-    #fl=open('qn.txt','w')
-    #write_header(fl)
-    #write_params(fl,model,a,b,tau,lam,sigma)
-    #for i in xrange(nsteps):
-    #    if print_steps >0 and i % print_steps == 0 :
-    #        print i,
-    #        sys.stdout.flush()
-    #    IMP.base.set_log_level(IMP.base.TERSE)
-    #    qn.optimize(1)
-    #    IMP.base.set_log_level(0)
-    #    write_params(fl,model,a,b,tau,lam,sigma)
-    qn.optimize(nsteps)
-
-def setup_process(data,initvals, subs, maxpoints=-1):
-    model,particles,functions = setup_particles(initvals)
+def setup_process(data,initvals, subs, maxpoints=-1, jitter=0.01):
+    model,particles,functions = setup_particles(initvals, jitter)
     q = [ [i] for i in data['q'][::subs]]
     I = data['I'][::subs]
     err = data['err'][::subs]
@@ -980,7 +958,11 @@ def _get_guinier_fit_fixed(qs,Is,errs):
     #weighted least squares estimator
     #beta = (X^T W X )^(-1) X^T W y
     XW=dot(X.transpose(),W)
-    beta = linalg.solve( dot(XW,X), dot(XW,y), sym_pos=True)
+    try:
+        beta = linalg.solve( dot(XW,X), dot(XW,y), sym_pos=True)
+    except linalg.LinAlgError:
+        print "Warning: singular matrix during guinier fit"
+        beta=atleast_2d(ones(2)).transpose()
     if beta[1,0]>0:
         rg=0
     else:
@@ -1005,19 +987,19 @@ def get_guinier_fit(data, end_q_rg=1.3):
     return rg,izero
 
 def set_defaults_mean(data, particles, mean_function):
-    #set initial value for G to be a rough estimate of I(0)
-    #take first 10 pc or 20 points at least
-    npoints=min(len(data['q'])/10,50)
-    Ivals = [data['I'][i] for i in xrange(len(data['q']))][:npoints]
-    particles['G'].set_nuisance(mean(Ivals))
-    particles['G'].set_lower(min(Ivals))
-    particles['G'].set_upper(2*max(Ivals))
-    #optimize mean particles only
+    Rg,I0 = get_guinier_fit(data)
+    particles['G'].set_lower(I0/5.)
+    particles['G'].set_upper(5*I0)
+    particles['G'].set_nuisance(I0)
+    particles['Rg'].set_lower(Rg/5.)
+    particles['Rg'].set_upper(5*Rg)
+    particles['Rg'].set_nuisance(Rg)
+    #
     particles['A'].set_nuisance_is_optimized(True)
     if mean_function == 'Flat':
         particles['G'].set_lower(0)
-        particles['G'].set_nuisance(0)
         particles['G'].set_upper(0)
+        particles['G'].set_nuisance(0)
         particles['G'].set_nuisance_is_optimized(False)
         particles['Rg'].set_nuisance_is_optimized(False)
         particles['d'].set_nuisance_is_optimized(False)
@@ -1025,368 +1007,236 @@ def set_defaults_mean(data, particles, mean_function):
     else:
         particles['G'].set_nuisance_is_optimized(True)
         particles['Rg'].set_nuisance_is_optimized(True)
-        particles['Rg'].set_nuisance(get_guinier_fit(data)[0])
         if mean_function == 'Simple':
             particles['d'].set_nuisance_is_optimized(False)
+            dmin=2/3.*(max(data['q'])*particles['Rg'].get_nuisance())**2
+            particles['d'].set_lower(dmin)
+            particles['d'].set_nuisance(dmin)
+            particles['d'].set_upper(8)
+            particles['s'].set_lower(0)
+            particles['s'].set_upper(0)
+            particles['s'].set_nuisance(0)
         else:
             particles['d'].set_nuisance_is_optimized(True)
+            particles['d'].set_lower(0)
+            particles['d'].set_upper(8)
             if mean_function == 'Generalized':
                 particles['s'].set_nuisance_is_optimized(False)
+                particles['s'].set_lower(0)
+                particles['s'].set_upper(0)
+                particles['s'].set_nuisance(0)
             else:
                 particles['s'].set_nuisance_is_optimized(True)
-    particles['tau'].set_nuisance_is_optimized(False)
-    particles['lambda'].set_nuisance_is_optimized(False)
-    particles['sigma2'].set_nuisance_is_optimized(False)
+                particles['s'].set_upper(3.)
+                particles['s'].set_upper(particles['d'])
 
-def find_fit_mean(data, initvals, verbose, mean_function):
+def set_defaults_cov(data,particles):
+    particles['tau'].set_nuisance_is_optimized(True)
+    particles['lambda'].set_nuisance_is_optimized(True)
+    particles['sigma2'].set_nuisance_is_optimized(True)
+    meandist = mean(array(data['q'][1:])-array(data['q'][:-1]))
+    lambdalow=0
+    particles['lambda'].set_lower(max(2*meandist,lambdalow))
+    particles['lambda'].set_upper(100)
+    particles['sigma2'].set_lower(0.001)
+    particles['sigma2'].set_upper(1000)
+    particles['tau'].set_lower(sqrt(0.001))
+    particles['tau'].set_upper(sqrt(1000))
+
+def transform(particle):
+    """return  
+    tan(pi/2*((d-dmin)-(dmax-d))/(dmax-dmin))
+    where d is the particle's value, and dmin,dmax are its bounds
+    """
+    d=particle.get_nuisance()
+    dmin=particle.get_lower()
+    dmax=particle.get_upper()
+    return tan(pi/2*((d-dmin)-(dmax-d))/(dmax-dmin))
+
+def untransform(x,particle):
+    """return the particle's value
+    (dmax-dmin)/pi * arctan(x) + (dmax+dmin)/2.
+    where x is the transform, and dmin,dmax are the particle's bounds
+    """
+    dmin=particle.get_lower()
+    dmax=particle.get_upper()
+    return (dmax-dmin)/pi * arctan(x) + (dmax+dmin)/2.
+
+def untransform_d(x,particle):
+    """return the reverse transform derivative
+    (dmax-dmin)/(pi * (1+x**2))
+    where x is the transform, and dmin,dmax are the particle's bounds
+    """
+    dmin=particle.get_lower()
+    dmax=particle.get_upper()
+    return (dmax-dmin)/(pi * (1+x**2))
+
+def target_function(point, mean, particles, model,
+        gpr, M, deriv=False, fl=None):
+    if mean == 'Flat':
+        A, cu, cv, cl = point
+    elif mean == 'Simple':
+        A, mu, mv, cu, cv, cl = point
+    elif mean == 'Generalized':
+        A, mu, mv, mw, cu, cv, cl = point
+    elif mean == 'Full':
+        A, mu, mv, mw, mx, cu, cv, cl = point
+    else:
+        raise ValueError, "unknown mean function %s" % mean
+    particles['A'].set_nuisance(A)
+    particles['tau'].set_scale(untransform(cu, particles['tau']))
+    particles['sigma2'].set_scale(untransform(cv, particles['sigma2']))
+    particles['lambda'].set_scale(untransform(cl, particles['lambda']))
+    if mean in ['Simple','Generalized','Full']:
+        particles['G'].set_scale(untransform(mu, particles['G']))
+        particles['Rg'].set_scale(untransform(mv, particles['Rg']))
+    if mean in ['Generalized','Full']:
+        particles['d'].set_scale(untransform(mw, particles['d']))
+    if mean == 'Full':
+        particles['s'].set_scale(untransform(mx, particles['s']))
+    #
+    retval = model.evaluate(deriv)
+    if not deriv:
+        if fl:
+            for i in particles.values():
+                fl.write('%G ' % (i.get_nuisance()))
+            fl.write('%G\n' % retval)
+        return retval
+    if fl:
+        for i in particles.values():
+            fl.write('%G ' % (i.get_nuisance()))
+    dA = particles['A'].get_nuisance_derivative()
+    dtau = particles['tau'].get_nuisance_derivative()
+    dsi2 = particles['sigma2'].get_nuisance_derivative()
+    dlam = particles['lambda'].get_nuisance_derivative()
+    dcu = untransform_d(cu, particles['tau'])*dtau
+    dcv = untransform_d(cv, particles['sigma2'])*dsi2
+    dcl = untransform_d(cl, particles['lambda'])*dlam
+    if mean == 'Flat':
+        if fl:
+            gradient = dcu**2+dcv**2+dcl**2+dA**2
+            fl.write(' %G %G\n' % (gradient**.5,retval))
+        return retval, array([dA,dcu,dcv,dcl])
+    dG = particles['G'].get_nuisance_derivative()
+    dRg = particles['Rg'].get_nuisance_derivative()
+    dmu = untransform_d(mu, particles['G'])*dG
+    dmv = untransform_d(mv, particles['Rg'])*dRg
+    if mean == 'Simple':
+        if fl:
+            gradient = dcu**2+dcv**2+dcl**2+dA**2\
+                    +dmu**2+dmv**2
+            fl.write(' %G %G\n' % (gradient**.5,retval))
+        return retval, array([dA,dmu,dmv,dcu,dcv,dcl])
+    dd = particles['d'].get_nuisance_derivative()
+    dmw = untransform_d(mw, particles['d'])*dd
+    if mean == 'Generalized':
+        if fl:
+            gradient = dcu**2+dcv**2+dcl**2+dA**2\
+                    +dmu**2+dmv**2+dmw**2
+            fl.write(' %G %G\n' % (gradient**.5,retval))
+        return retval, array([dA,dmu,dmv,dmw,dcu,dcv,dcl])
+    ds = particles['s'].get_nuisance_derivative()
+    dmx = untransform_d(mx, particles['s'])*ds
+    if fl:
+        gradient = dcu**2+dcv**2+dcl**2+dA**2\
+                +dmu**2+dmv**2+dmw**2+dmx**2
+        fl.write(' %G %G\n' % (gradient**.5,retval))
+    return retval, array([dA,dmu,dmv,dmw,dmx,dcu,dcv,dcl])
+
+def find_fit_all(data, initvals, verbose, mean_function):
+    """
+    Problem is unconstrained by the change of variables
+    A = A
+    mu = tan(pi/2*((G-Gmin)-(Gmax-G))/(Gmax-Gmin))
+    mv = tan(pi/2*((Rg-Rgmin)-(Rgmax-Rg))/(Rgmax-Rgmin))
+    mw = tan(pi/2*((d-dmin)-(dmax-d))/(dmax-dmin))
+    mx = tan(pi*s/min(3,d) - pi/2)
+    
+    cu = tau^2
+    cv = log(sigma^2/tau^2)
+    cl = log(lambda)
+    using jeffreys prior for sigma^2, lambda and tau.
+
+    In principle, we should compute
+    forall u  :    uhat = eps^T Omega^{-1} eps * u / M+2
+     -log p(uhat, v, l) = 1/2*log|Omega| + (M+2)/2*log(eps^T Omega^{-1} eps) +C
+     where C = log(u) + (M+2)/2*(1-log(M+2))
+     u can be arbitrary so we take the current value for u=tau^2
+    
+    Because we need the derivatives, we however compute
+    1/2*eps^T Omega^{-1} eps
+     in order to get a value for uhat. Then, we set tau and sigma2 to
+     the corresponding value,
+     then call evaluate(True) to collect the derivatives at uhat.
+     -log p(u, v, l) = log(u) + 1/2*log|Omega| + 1/2*eps^T Omega^{-1} eps +C
+    
+    """
     model, particles, functions, gp = \
-            setup_process(data, initvals, 1)
+            setup_process(data, initvals, 1, jitter=0.01)
     gpr = IMP.isd.GaussianProcessInterpolationRestraint(gp)
     model.add_restraint(gpr)
     set_defaults_mean(data, particles, mean_function)
-    #set tau to 0 allows for faster estimate (diagonal covariance matrix)
-    #no need to store its value since it will be reset later on
-    taulow = None
-    if particles['tau'].get_has_lower():
-        taulow = particles['tau'].get_lower()
-    particles['tau'].set_nuisance(0.)
-    particles['tau'].set_lower(0.)
-    #particles['A'].set_nuisance(-2.88)
-    #particles['G'].set_nuisance(5485.31)
-    #particles['Rg'].set_nuisance(42.09)
-    #particles['d'].set_nuisance(2.92)
-    #for q in linspace(0.001,0.3):
-    #    print "cmp",q,gp.get_posterior_mean([q])
-    #IMP.base.set_log_level(IMP.base.TERSE)
-    #for q in linspace(0.001,0.3):
-    #    print "cmp",q,gp.get_posterior_mean([q])
-    #sys.exit()
-    #optimize mean particles for 3x100 steps
-    #when getting initvals, calling model.evaluate() ensures constraints are met
-    #print particles['A'].get_nuisance()
-    #print [(a,b.get_nuisance()) for a,b in particles.items()]
-    #dg=IMP.get_dependency_graph(model)
-    #IMP.base.show_graphviz(dg)
-    #print IMP.get_required_score_states(gpr, [], dg,
-    #        IMP.get_dependency_graph_vertex_index(dg))
-    #sys.exit()
-    rgopt = particles['Rg'].get_nuisance_is_optimized()
-    particles['Rg'].set_nuisance_is_optimized(False)
-    for i in xrange(2):
-        model.evaluate(False)
-        do_conjugategradients(model,100)
-    particles['Rg'].set_nuisance_is_optimized(rgopt)
-    for i in xrange(2):
-        #print particles['A'].get_nuisance()
-        #print [(k,v.get_nuisance()) for (k,v) in particles.items()]
-        model.evaluate(False)
-        do_conjugategradients(model,100)
-    for i in xrange(2):
-        #print particles['A'].get_nuisance()
-        #print [(k,v.get_nuisance()) for (k,v) in particles.items()]
-        model.evaluate(False)
-        do_quasinewton(model,100)
-    #set_defaults_mean(data, particles, 'Full')
-    #for A in linspace(-100,100):
-    #    particles['A'].set_nuisance(A)
-    #    print "pyy",A,model.evaluate(False)
-    #set_defaults_mean(data, particles, 'Generalized')
-    #for A in linspace(-100,100):
-    #    particles['A'].set_nuisance(A)
-    #    print "pyy",A,model.evaluate(False)
-    #sys.exit()
-    #for q in linspace(0.001,0.3):
-    #    print "cmp",q,gp.get_posterior_mean([q])
-    #for i in particles:
-    #    print i,particles[i].get_nuisance()
-    #sys.exit()
-    #reset tau bounds
-    for i in particles.values():
-        if i.get_nuisance_is_optimized():
-            if isnan(i.get_nuisance()):
-                raise FittingError
-    if taulow:
-        particles['tau'].set_lower(taulow)
-    model.evaluate(False)
+    set_defaults_cov(data, particles)
+    M=len(data['I'])
+    #
+    fl=open('tmp2','w')
+    cu0 = transform(particles['tau'])
+    cv0 = transform(particles['sigma2'])
+    cl0 = transform(particles['lambda'])
+    A0 = particles['A'].get_nuisance()
+    #
+    options={'maxiter':100, 'disp':False,'gtol':1e-2}
+    #
+    if mean_function == 'Flat':
+        res = optimize.minimize(target_function, array([A0,cu0,cv0,cl0]),
+            args=(mean_function, particles, model, gpr, M,
+                True, fl), jac=True, options=options)
+        if not res.success:
+            raise FittingError, res.message
+        Af,cuf,cvf,clf = res.x
+    else:
+        mu0 = transform(particles['G'])
+        mv0 = transform(particles['Rg'])
+        if mean_function == 'Simple':
+            res = optimize.minimize(target_function,
+                array([A0,mu0,mv0,cu0,cv0,cl0]),
+                args=(mean_function, particles, model, gpr, M,
+                    True, fl), jac=True, options=options)
+            if not res.success:
+                raise FittingError, res.message
+            Af,muf,mvf,cuf,cvf,clf = res.x
+        else:
+            mw0 = transform(particles['d'])
+            if mean_function == 'Generalized':
+                res = optimize.minimize(target_function,
+                    array([A0,mu0,mv0,mw0,cu0,cv0,cl0]),
+                    args=(mean_function, particles, model, gpr, M,
+                        True, fl), jac=True, options=options)
+                if not res.success:
+                    raise FittingError, res.message
+                Af,muf,mvf,mwf,cuf,cvf,clf = res.x
+            else:
+                mx0 = transform(particles['s'])
+                res = optimize.minimize(target_function,
+                    array([A0,mu0,mv0,mw0,mx0,cu0,cv0,cl0]),
+                    args=(mean_function, particles, model, gpr, M,
+                        True, fl), jac=True, options=options)
+                if not res.success:
+                    raise FittingError, res.message
+                Af,muf,mvf,mwf,mxf,cuf,cvf,clf = res.x
+                particles['s'].set_nuisance(untransform(mxf,particles['s']))
+            particles['d'].set_nuisance(untransform(mwf,particles['d']))
+        particles['G'].set_nuisance(untransform(muf,particles['G']))
+        particles['Rg'].set_nuisance(untransform(muf,particles['Rg']))
+    particles['A'].set_nuisance(Af)
+    #
+    particles['tau'].set_scale(untransform(cuf, particles['tau']))
+    particles['sigma2'].set_scale(untransform(cvf, particles['sigma2']))
+    particles['lambda'].set_scale(untransform(clf, particles['lambda']))
+    #
     newvals = dict([(k,v.get_nuisance())
                     for (k,v) in particles.iteritems()])
     return newvals
-
-def set_defaults_covariance(data, particles, functions, args):
-    #set sigma to be equal to 10x the noise level, assuming mean has been fitted
-    chisquares = [functions['mean']([q])[0] for q in data['q']]
-    chisquares = [(data['I'][i]-chisquares[i])**2 + data['err'][i]**2
-                        for i in xrange(len(data['q']))]
-    noiselevel = (sum(chisquares)/len(chisquares))
-    errorlevel = (sum([data['err'][i]**2 for i in xrange(len(data['q']))])
-                    /len(data['err']))
-    sigmaval = 10*noiselevel/errorlevel
-    particles['sigma2'].set_nuisance(sigmaval)
-    #set tau to be equal to this value
-    particles['tau'].set_nuisance(sigmaval)
-
-def find_fit_lambda(data, initvals, args, verbose):
-    #optimize covariance, first on lambda by subsampling the curve
-    #print "lambda opt"
-    meandist = mean(array(data['q'][1:])-array(data['q'][:-1]))
-    initial=True
-    for subs,nsteps in [(10,1000),(5,500)]:
-        model, particles, functions, gp = \
-                setup_process(data, initvals, subs)
-        if initial:
-            initial=False
-            set_defaults_covariance(data, particles, functions, args)
-        model.evaluate(False)
-        #initvals = dict([(k,v.get_nuisance())
-        #                for (k,v) in particles.iteritems()])
-        #print " ".join(["%5s=%10G" % d for d in initvals.items()])
-        #set lambda to be bigger than the distance between points
-        particles['lambda'].set_lower(2*meandist)
-        particles['G'].set_nuisance_is_optimized(False)
-        particles['Rg'].set_nuisance_is_optimized(False)
-        particles['d'].set_nuisance_is_optimized(False)
-        particles['s'].set_nuisance_is_optimized(False)
-        particles['A'].set_nuisance_is_optimized(False)
-        particles['tau'].set_nuisance_is_optimized(False)
-        particles['lambda'].set_nuisance_is_optimized(True)
-        particles['sigma2'].set_nuisance_is_optimized(False)
-        gpr = IMP.isd.GaussianProcessInterpolationRestraint(gp)
-        model.add_restraint(gpr)
-        do_quasinewton(model,nsteps)
-        model.evaluate(False)
-        initvals = dict([(k,v.get_nuisance())
-                        for (k,v) in particles.iteritems()])
-        #print " ".join(["%5s=%10G" % d for d in initvals.items()])
-    return initvals
-
-def find_fit_covariance(data, initvals, args, verbose):
-    #then on all covariance particles
-    #print "cov opt"
-    model, particles, functions, gp = \
-            setup_process(data, initvals, 1, args)
-    set_defaults_covariance(data, particles, functions, args)
-    meandist = mean(array(data['q'][1:])-array(data['q'][:-1]))
-    particles['lambda'].set_lower(meandist)
-    #optimize all covariance particles for 3x10 steps and all data points
-    particles['G'].set_nuisance_is_optimized(False)
-    particles['Rg'].set_nuisance_is_optimized(False)
-    particles['d'].set_nuisance_is_optimized(False)
-    particles['s'].set_nuisance_is_optimized(False)
-    particles['A'].set_nuisance_is_optimized(False)
-    particles['tau'].set_nuisance_is_optimized(True)
-    particles['lambda'].set_nuisance_is_optimized(True)
-    particles['sigma2'].set_nuisance_is_optimized(True)
-    gpr = IMP.isd.GaussianProcessInterpolationRestraint(gp)
-    model.add_restraint(gpr)
-    for i in xrange(3):
-        do_quasinewton(model,30)
-    model.evaluate(False)
-    initvals = dict([(k,v.get_nuisance()) for (k,v) in particles.iteritems()])
-    #print " ".join(["%5s=%10G" % d for d in initvals.items()])
-    if False:
-        #plotrange
-        minval=(model.evaluate(False),particles['lambda'].get_nuisance())
-        initvals = dict([(k,v.get_nuisance()) for (k,v) in particles.iteritems()])
-        particles['lambda'].set_lower(0.)
-        for l in linspace(.01,10,num=100):
-            particles['lambda'].set_nuisance(l)
-            ene = model.evaluate(True)
-            deriv = psarticles['lambda'].get_nuisance_derivative()
-            if minval[0] > ene:
-                minval = (ene, l)
-            print "plotrange",l,ene,deriv
-        print "minimum: ene=%f lambda=%f" % minval
-    if False:
-        #residuals
-        for k,v in particles.items():
-            v.set_nuisance(initvals[k])
-        for q,I,err in zip(data['q'],data['I'],data['err']):
-            gpval=gp.get_posterior_mean([q])
-            avg=functions['mean']([q])[0]
-            print "residuals",q,I,err,gpval,avg,(gpval-avg),(I-avg)
-    return initvals
-
-def find_fit_by_minimizing(data, initvals, verbose, lambdalow):
-    model, particles, functions, gp = \
-            setup_process(data, initvals, 1)
-    gpr = IMP.isd.GaussianProcessInterpolationRestraint(gp)
-    model.add_restraint(gpr)
-    meandist = mean(array(data['q'][1:])-array(data['q'][:-1]))
-    particles['lambda'].set_lower(max(2*meandist,lambdalow))
-    particles['lambda'].set_upper(max(data['q'])/2.)
-    particles['lambda'].set_nuisance(max(data['q'])/10.)
-    lambdamin = particles['lambda'].get_lower()
-    lambdamax = particles['lambda'].get_upper()
-    particles['sigma2'].set_lower(1)
-    particles['sigma2'].set_upper(1000)
-    particles['sigma2'].set_nuisance(100.0)
-    sigmamin = particles['sigma2'].get_lower()
-    sigmamax = particles['sigma2'].get_upper()
-    particles['tau'].set_lower(0.001)
-    particles['tau'].set_nuisance(10.0)
-    taumin = particles['tau'].get_lower()
-    taumax = 100
-    #print "minimizing"
-    particles['lambda'].set_nuisance_is_optimized(True)
-    particles['sigma2'].set_nuisance_is_optimized(False)
-    particles['tau'].set_nuisance_is_optimized(True)
-    minimas = []
-    while len(minimas) < 5:
-        initm = model.evaluate(False)
-        initt = particles['tau'].get_nuisance()
-        inits = particles['sigma2'].get_nuisance()
-        initl = particles['lambda'].get_nuisance()
-        #steepest descent
-        sd = IMP.core.SteepestDescent(model)
-        sd.optimize(500)
-        #conjugate gradients
-        cg = IMP.core.ConjugateGradients(model)
-        cg.optimize(500)
-        #add to minimas
-        minimas.append((model.evaluate(False), initm,
-            particles['tau'].get_nuisance(), initt,
-            particles['sigma2'].get_nuisance(), inits,
-            particles['lambda'].get_nuisance(), initl))
-        print "--- new min"
-        print "   tau",initt, minimas[-1][2]
-        print "   sig",inits, minimas[-1][4]
-        print "   lam",initl, minimas[-1][6]
-        print "   mod",initm, minimas[-1][0]
-        #draw new random starting position
-        particles['tau'].set_nuisance(
-                exp(random.uniform(log(taumin)+1,log(taumax)-1)))
-        particles['sigma2'].set_nuisance(
-                exp(random.uniform(log(sigmamin)+1,log(sigmamax)-1)))
-        particles['lambda'].set_nuisance(
-                exp(random.uniform(log(lambdamin)+1,log(lambdamax)-1)))
-    minimas.sort(key=lambda a:a[0])
-    print "best is ",minimas[0][0]
-    particles['tau'].set_nuisance(minimas[0][2])
-    particles['sigma2'].set_nuisance(minimas[0][4])
-    particles['lambda'].set_nuisance(minimas[0][6])
-    ene = model.evaluate(False)
-    initvals = dict([(k,v.get_nuisance()) for (k,v) in particles.iteritems()])
-    return initvals
-
-def find_fit_by_gridding(data, initvals, verbose, lambdalow):
-    """use the fact that sigma2 can be factored out of the covariance matrix and
-    drawn from a gamma distribution. Calculates a 2D grid on lambda (D1) and
-    tau**2/sigma2 (D2) to get the minimum value.
-    """
-    model, particles, functions, gp = \
-            setup_process(data, initvals, 1)
-    gpr = IMP.isd.GaussianProcessInterpolationRestraint(gp)
-    model.add_restraint(gpr)
-    meandist = mean(array(data['q'][1:])-array(data['q'][:-1]))
-    particles['lambda'].set_lower(max(2*meandist,lambdalow))
-    lambdamin = particles['lambda'].get_lower()
-    lambdamax = 100
-    numpoints=30
-    gridvalues = []
-    particles['tau'].set_lower(0.)
-    particles['sigma2'].set_lower(0.)
-    #fl=open('grid.txt','w')
-    particles['sigma2'].set_nuisance(100.0)
-    particles['sigma2'].set_upper(1000.0)
-    particles['tau'].set_nuisance(10.0)
-    #print "gridding"
-    experror=0
-    for lambdaval in logspace(log(lambdamin),log(lambdamax),
-            base=exp(1),num=numpoints):
-        for rel in logspace(-2, 2, num=numpoints):
-            particles['lambda'].set_nuisance(lambdaval)
-            #set new value of tau**2/sigma
-            tauval = particles['tau'].get_nuisance()
-            if tauval**2/rel > particles['sigma2'].get_upper():
-                continue
-            particles['sigma2'].set_nuisance(tauval**2/rel)
-            #print "sigma2 has val",particles['sigma2'].get_nuisance(), \
-            #        "tau has val",particles['tau'].get_nuisance()
-            #get exponent and compute reduced exponent
-            exponent = gpr.get_minus_exponent()
-            if isnan(exponent) or exponent <=0:
-                if experror < 2:
-                    print "got invalid exponent at grid point "\
-                      "lambda=%f rel=%f exp=%s" % (lambdaval,rel, exponent)
-                experror += 1
-                continue
-            redexp = tauval * exponent
-            #compute maximum posterior value for tau**2 assuming jeffreys prior
-            tauval = (redexp/(len(data['q'])+2))**.5
-            sigmaval = tauval**2/rel
-            #print "sigma=",sigmaval,"tau=",tauval,\
-            #        "tau**2/sigma2=",rel,"lambda=",lambdaval
-            if sigmaval > particles['sigma2'].get_upper():
-                #skip value if outside of bounds for sigma
-                continue
-            particles['tau'].set_nuisance(tauval)
-            #reset tau to correct value and get minimized energy
-            if sigmaval > particles['sigma2'].get_upper():
-                #skip value if outside of bounds for sigma
-                continue
-            particles['sigma2'].set_nuisance(sigmaval)
-            ene = model.evaluate(False)
-            gridvalues.append((lambdaval,rel,sigmaval,tauval,ene))
-            #fl.write(" ".join(["%f" % i
-            #            for i in lambdaval,rel,sigmaval,tauval,ene]))
-            #fl.write('\n')
-        #fl.write('\n')
-    #print "minimizing"
-    if experror >=2:
-        print "skipped another " + str(experror-2) + " similar errors"
-    particles['tau'].set_lower(0.01)
-    particles['tau'].set_upper(100)
-    particles['sigma2'].set_lower(1.)
-    particles['sigma2'].set_upper(1000)
-    if len(gridvalues) == 0:
-        raise FittingError
-    minval = gridvalues[0][:]
-    for i in gridvalues:
-        if i[4] < minval[4]:
-            minval = i[:]
-    minval=list(minval)
-    #minval[0]=minval[0]
-    #minval[1]=minval[1]
-    #print "minimum",minval
-    particles['lambda'].set_nuisance_is_optimized(True)
-    particles['sigma2'].set_nuisance_is_optimized(True)
-    particles['tau'].set_nuisance_is_optimized(True)
-    #do 3 independent minimizations, pick best run
-    bestmin=[]
-    for i in xrange(3):
-        particles['lambda'].set_nuisance(minval[0])
-        particles['sigma2'].set_nuisance(minval[2])
-        particles['tau'].set_nuisance(minval[3])
-        do_quasinewton(model,10)
-        bestmin.append((model.evaluate(False),
-            particles['lambda'].get_nuisance(),
-            particles['sigma2'].get_nuisance(),
-            particles['tau'].get_nuisance()))
-    bestmin.sort()
-    particles['lambda'].set_nuisance(bestmin[0][1])
-    particles['sigma2'].set_nuisance(bestmin[0][2])
-    particles['tau'].set_nuisance(bestmin[0][3])
-    #print " "
-    #for i in bestmin:
-    #    print i
-    #for i,p in particles.items():
-    #    print i,p.get_nuisance(),p.get_lower(),p.get_upper()
-    #print " "
-    #global fitno
-    #fl=open('fit_%d.dat' % fitno,'w')
-    #fitno += 1
-    #for i,q in enumerate(data['q']):
-    #    fl.write('%s %s %s %s %s\n' % (q,data['I'][i],data['err'][i],
-    #                gp.get_posterior_mean([q]),
-    #                sqrt(gp.get_posterior_covariance([q],[q]))))
-    #ene = model.evaluate(False)
-    #newmin = [particles['lambda'].get_nuisance(),None,
-    #        particles['sigma2'].get_nuisance(),particles['tau'].get_nuisance(),
-    #        ene]
-    #newmin[1]=newmin[3]**2/newmin[2]
-    #newmin=tuple(newmin)
-    initvals = dict([(k,v.get_nuisance()) for (k,v) in particles.iteritems()])
-    return initvals
 
 def bayes_factor(data, initvals, verbose, mean_func, maxpoints):
     """given optimized values for the parameters (in initvals), the data, and
@@ -1405,27 +1255,9 @@ def bayes_factor(data, initvals, verbose, mean_func, maxpoints):
                                                         maxpoints=maxpoints)
     gpr = IMP.isd.GaussianProcessInterpolationRestraint(gp)
     model.add_restraint(gpr)
-    particles['A'].set_nuisance_is_optimized(True)
-    if mean_func == 'Flat':
-        particles['G'].set_nuisance_is_optimized(False)
-        particles['Rg'].set_nuisance_is_optimized(False)
-        particles['d'].set_nuisance_is_optimized(False)
-        particles['s'].set_nuisance_is_optimized(False)
-    else:
-        particles['G'].set_nuisance_is_optimized(True)
-        particles['Rg'].set_nuisance_is_optimized(True)
-        if mean_func == 'Simple':
-            particles['d'].set_nuisance_is_optimized(False)
-        else:
-            particles['d'].set_nuisance_is_optimized(True)
-            if mean_func == 'Generalized':
-                particles['s'].set_nuisance_is_optimized(False)
-            else:
-                particles['s'].set_nuisance_is_optimized(True)
-    particles['tau'].set_nuisance_is_optimized(True)
-    particles['lambda'].set_nuisance_is_optimized(True)
-    particles['sigma2'].set_nuisance_is_optimized(True)
-
+    set_defaults_mean(data, particles, mean_func)
+    set_defaults_cov(data, particles)
+    #
     H = matrix(gpr.get_hessian(False))
     Np = H.shape[0]
     MP = model.evaluate(False)
@@ -1455,7 +1287,7 @@ def bayes_factor(data, initvals, verbose, mean_func, maxpoints):
             MP - Np/2.*log(2*pi) + logdet)
 
 def find_fit(data, initvals, verbose, model_comp=False, model_comp_maxpoints=-1,
-        mean_function='Simple', lambdamin=0.025):
+        mean_function='Simple', lambdamin=0.005):
     #if verbose >2:
     #    print " %d:%d" % (subs,nsteps),
     #    sys.stdout.flush()
@@ -1475,11 +1307,15 @@ def find_fit(data, initvals, verbose, model_comp=False, model_comp_maxpoints=-1,
         print ""
     for mean_func in functions:
         if verbose > 2:
-            sys.stdout.write("     "+mean_func+": mean ")
+            sys.stdout.write("     "+mean_func+": ")
             sys.stdout.flush()
         try:
-            param_vals[mean_func] = \
-                find_fit_mean(data, initvals, verbose, mean_func)
+            if not model_comp or mean_func == 'Flat':
+                param_vals[mean_func] = \
+                    find_fit_all(data, initvals, verbose, mean_func)
+            else:
+                param_vals[mean_func] = \
+                    find_fit_all(data, param_vals['Flat'], verbose, mean_func)
         except FittingError:
             if model_comp:
                 print "error"
@@ -1489,33 +1325,16 @@ def find_fit(data, initvals, verbose, model_comp=False, model_comp_maxpoints=-1,
                 raise FittingError, "Error while fitting! Choose"\
                         " another model or do model comparison"
         if verbose > 2:
-            sys.stdout.write("A=%1.2f " % param_vals[mean_func]['A'])
+            sys.stdout.write("A=%1.3f " % param_vals[mean_func]['A'])
             if mean_func in ["Simple","Generalized","Full"]:
-                sys.stdout.write("G=%1.2f " % param_vals[mean_func]['G'])
-                sys.stdout.write("Rg=%1.2f " % param_vals[mean_func]['Rg'])
+                sys.stdout.write("G=%1.3f " % param_vals[mean_func]['G'])
+                sys.stdout.write("Rg=%1.3f " % param_vals[mean_func]['Rg'])
             if mean_func in ["Generalized","Full"]:
-                sys.stdout.write("d=%1.2f " % param_vals[mean_func]['d'])
+                sys.stdout.write("d=%1.3f " % param_vals[mean_func]['d'])
             if mean_func == "Full":
-                sys.stdout.write("s=%1.2f " % param_vals[mean_func]['s'])
-            sys.stdout.write("covariance ")
-            sys.stdout.flush()
-        #initvals = find_fit_lambda(data, initvals, args, verbose)
-        #initvals = find_fit_covariance(data, initvals, args, verbose)
-        try:
-            param_vals[mean_func] = \
-                find_fit_by_gridding(data, param_vals[mean_func], verbose,
-                        lambdamin)
-        except FittingError:
-            if model_comp:
-                print "error"
-                sys.stdout.flush()
-                continue
-            else:
-                raise FittingError, "Error while fitting! Choose"\
-                        " another model or do model comparison"
-        if verbose > 2:
+                sys.stdout.write("s=%1.3f " % param_vals[mean_func]['s'])
             for i in ['tau','lambda','sigma2']:
-                sys.stdout.write("%s=%1.2f " % (i,param_vals[mean_func][i]))
+                sys.stdout.write("%s=%1.3f " % (i,param_vals[mean_func][i]))
             print ""
             sys.stdout.flush()
     #compare functions via model comparison
@@ -2068,14 +1887,15 @@ def fitting(profiles, args):
         initvals['d']=args.bd
         initvals['s']=args.bs
         initvals['A']=0.
-        initvals['tau']=1.
-        initvals['lambda']=1.
-        initvals['sigma2']=1.
+        initvals['tau']=sqrt(10.)
+        initvals['lambda']=.1
+        initvals['sigma2']=10.
         mean, initvals, bayes = find_fit(data, initvals, #schedule,
                 verbose, model_comp=model_comp, model_comp_maxpoints=maxpointsH,
                 mean_function=mean_function,
                 lambdamin=args.lambdamin)
-        model, particles, functions, gp = setup_process(data,initvals,1)
+        model, particles, functions, gp = setup_process(data,initvals,1,
+                jitter=0)
         if bayes:
             p.set_interpolant(gp, particles, functions, mean, model, bayes,
                     hessian=bayes[mean][2])
@@ -2356,7 +2176,7 @@ def merging(profiles, args):
                     lambdamin=args.lambdamin)
     if verbose > 1 and model_comp:
         print "    => "+mean
-    model, particles, functions, gp = setup_process(data,initvals,1)
+    model, particles, functions, gp = setup_process(data,initvals,1, jitter=0.)
     if bayes:
         merge.set_interpolant(gp, particles, functions, mean, model, bayes,
                 hessian=bayes[mean][2])
