@@ -106,6 +106,9 @@ namespace kernel {
 %warnfilter(403) AttributeOptimizer;
 }
 }
+%warnfilter(403) IMP::base::TrackedObject< IMP::kernel::ModelObject,IMP::kernel::Model >;
+
+
 // to avoid extend clash
 IMP_SWIG_BASE_OBJECT(IMP::kernel,Constraint, Constraints);
 IMP_SWIG_BASE_OBJECT(IMP::kernel,Undecorator, Undecorators);
