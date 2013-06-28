@@ -42,14 +42,14 @@ IMPKERNEL_BEGIN_NAMESPACE
     parameters of the Particles contained in the Model.
 */
 class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
-  void set_is_optimizing_states(bool tf) const;
-  static void set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o);
   mutable Floats widths_;
   base::Pointer<Model> model_;
   double min_score_;
   bool stop_on_good_score_;
   base::Pointer<ScoringFunction> cache_;
 
+  void set_is_optimizing_states(bool tf) const;
+  static void set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o);
  public:
   Optimizer(Model *m, std::string name = "Optimizer %1%");
 
@@ -100,18 +100,7 @@ class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
   */
   virtual void set_scoring_function(ScoringFunctionAdaptor sf);
 
-
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Optimizer);
-
- protected:
-  //! override this function to do actual optimization
-  virtual double do_optimize(unsigned int ns) = 0;
-  //! Update optimizer states, should be called at each successful step
-  /** Make sure the scoring function restraints are up to date before this is
-      called (eg by calling evaluate).*/
-  void update_states() const;
-
-
 
   ///////////////////////// DEPRECATED METHODS
 
@@ -122,19 +111,14 @@ class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
   /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   void set_value(FloatIndex fi, double v) const;
-
   /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   Float get_value(FloatIndex fi) const;
-
   /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   Float get_derivative(FloatIndex fi) const;
-
-//!@}
-
 #if !defined(SWIG)
-  /** \deprecated_at{2.1} Use get_width instead.*/
+  /** \deprecated_at{2.1} Use AttributeOptimizer instead.*/
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   double width(FloatKey k) const;
 #endif
@@ -144,45 +128,44 @@ class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
   /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   void set_scaled_value(FloatIndex fi, Float v) const;
-
   /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   double get_scaled_value(FloatIndex fi) const;
-
   /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   double get_scaled_derivative(FloatIndex fi) const;
-
   /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   void clear_range_cache();
 #endif  // SWIG
-
   /** \deprecated_at{2.1} Use Optimizer::get_scoring_function() instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   Restraints get_restraints() const;
-
   /** \deprecated_at{2.1} Use the constructor with a Model and a name.*/
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   Optimizer();
   /** \deprecated_at{2.1} Do not use as it is not reliably supported. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  void set_score_threshold(double s) {
-    IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Not a reliable function.");
-    min_score_ = s;
-  }
+    void set_score_threshold(double s);
   /** \deprecated_at{2.1} Do not use as it is not reliably supported. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  double get_score_threshold() const {
-    IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Not a reliable function.");
-    return min_score_;
-  }
+    double get_score_threshold() const;
   //! \deprecated_at{2.1} Use the constructor that takes the model
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   void set_model(Model *m);
   /** \deprecated_at{2.1} Use set_scoring_function() instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   void set_restraints(const RestraintsTemp &rs);
+
+
+  // swig needs this at the end for some reason I don't understand
+ protected:
+  //! override this function to do actual optimization
+  virtual double do_optimize(unsigned int ns) = 0;
+  //! Update optimizer states, should be called at each successful step
+  /** Make sure the scoring function restraints are up to date before this is
+      called (eg by calling evaluate).*/
+  void update_states() const;
 };
 
 IMP_OBJECTS(Optimizer, Optimizers);

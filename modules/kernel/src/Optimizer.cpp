@@ -91,6 +91,16 @@ void Optimizer::set_optimizer_state_optimizer(OptimizerState *os,
   os->set_optimizer(o);
 }
 
+void Optimizer::set_scoring_function(ScoringFunctionAdaptor sf) { cache_ = sf; }
+
+////////////////////// DEPRECATED
+
+Restraints Optimizer::get_restraints() const {
+  IMPKERNEL_DEPRECATED_METHOD_DEF(
+      2.1, "Use Optimizer::get_scoring_function instead");
+  return cache_->create_restraints();
+}
+
 void Optimizer::set_restraints(const RestraintsTemp &rs) {
   IMPKERNEL_DEPRECATED_METHOD_DEF(
       2.1, "Use Optimizer::set_scoring_function instead");
@@ -104,12 +114,14 @@ void Optimizer::set_restraints(const RestraintsTemp &rs) {
   }
 }
 
-void Optimizer::set_scoring_function(ScoringFunctionAdaptor sf) { cache_ = sf; }
+double Optimizer::get_score_threshold() const {
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Not a reliable function.");
+  return min_score_;
+}
 
-Restraints Optimizer::get_restraints() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(
-      2.1, "Use Optimizer::get_scoring_function instead");
-  return cache_->create_restraints();
+void Optimizer::set_score_threshold(double s) {
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Not a reliable function.");
+  min_score_ = s;
 }
 
 FloatIndexes Optimizer::get_optimized_attributes() const {
