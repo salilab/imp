@@ -13,8 +13,7 @@ class Tests(IMP.test.TestCase):
         open(fname, "r")
     def _testit(self, writer, nm):
         m= IMP.Model()
-        o= IMP.core.SteepestDescent()
-        o.set_model(m)
+        o= IMP.core.SteepestDescent(m)
         p0= IMP.Particle(m)
         d0= IMP.core.XYZR.setup_particle(p0)
         d0.set_radius(1.5)
@@ -40,19 +39,13 @@ class Tests(IMP.test.TestCase):
         a.update()
         a.update()
         a.update()
-        open(nm.replace("%1%", "2"), "r").read()
-        self.assertRaises(IOError, self._testopen, nm)
-
+        # can check that file not created
 
     def test_3(self):
-        """Testing the Bild log"""
-        nm=self.get_tmp_file_name("testbild.%1%.bild")
-        self._testit(IMP.display.BildWriter(nm),
+        """Testing the Pymol log"""
+        nm=self.get_tmp_file_name("testpymol.pym")
+        self._testit(IMP.display.PymolWriter(nm),
                      nm)
-    def test_4(self):
-        """Testing the CMM log"""
-        nm=self.get_tmp_file_name("testcmm.%1%.cmm")
-        self._testit(IMP.display.CMMWriter(nm), nm)
 
 if __name__ == '__main__':
     IMP.test.main()
