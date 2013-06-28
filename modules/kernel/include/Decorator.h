@@ -111,7 +111,7 @@ and then would not have this problem.
 
 See example::ExampleDecorator to see what a minimal decorator looks like.
 */
-class Decorator : public base::Value {
+class IMPKERNELEXPORT Decorator : public base::Value {
  private:
   base::WeakPointer<Model> model_;
   ParticleIndex pi_;
