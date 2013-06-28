@@ -11,7 +11,7 @@ import IMP.container
 import random
 import sys
 try:
-    import networkx as nx
+    import networkx
     import networkx.algorithms
 except:
     print "Script requires networkx to run"
@@ -135,7 +135,7 @@ def setup_move_them_all_MonteCarlo_external(connected_chain_list,scoring_functio
         mc.add_mover(mv)
     return mc,rb_ext_list
 
-def setup_move_them_all_MonteCarlo_internal_2(chains,scoring_function.
+def setup_move_them_all_MonteCarlo_internal_2(chains,scoring_function,
                                               rb_ext_list=[],
                                               mc_dx=0.3,mc_dang=0.1,mc_kt=1.0):
     """setup rigid body monte carlo move set
@@ -293,10 +293,10 @@ def chain_pair_list_based_on_restraint(chains,nop_cutoff=0):
 def create_graph(chains,nop_cutoff=0):
     connected=[]
     while len(connected)<=1:
-        G=nx.Graph()
+        G=networkx.Graph()
         pair_list=chain_pair_list(chains,nop_cutoff)
         G.add_edges_from(pair_list)
-        connected=nx.algorithms.connected_components(G)
+        connected=networkx.algorithms.connected_components(G)
         G.clear()
         nop_cutoff+=10
     return connected,nop_cutoff
