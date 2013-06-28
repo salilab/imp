@@ -45,6 +45,10 @@ set(IMP_TIMEOUT_FACTOR ${timeout_factor} CACHE STRING "A factor to scale the tes
 
 include(FindCurrentDoxygen)
 
+if(${IMP_DOXYGEN_FOUND})
+imp_execute_process("setup_doxygen" ${PROJECT_BINARY_DIR} COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_doxygen.py "--source=${PROJECT_SOURCE_DIR}")
+endif()
+
 if(IMP_STATIC)
   SET(IMP_LIB_TYPE STATIC)
   SET(Boost_USE_STATIC_LIBS ON)
@@ -278,8 +282,6 @@ if(IMP_DOXYGEN_FOUND)
    ${PROJECT_SOURCE_DIR}/doc/*.md)
 
   add_custom_target(IMP-doc ALL
-    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_doxygen.py
-    --source=${PROJECT_SOURCE_DIR}
     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/make_cross_refs.py
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/Doxyfile.html
     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${PROJECT_BINARY_DIR}/doxygen/warnings.txt
