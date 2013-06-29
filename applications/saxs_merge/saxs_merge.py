@@ -718,9 +718,6 @@ Merging
             "In that case extrapolation flags are ignored, and extrapolation "
             "is performed when the data file's q values fall outside of the "
             "range of accepted data points. Default is NUM=200 points.")
-    group.add_option('--lambdamin', type="float", default=0.025, metavar="MIN",
-            help="lower bound for lambda parameter in steps 2 and 5 (default"
-            " 0.025)")
     #cleanup
     group = optparse.OptionGroup(parser, title="Cleanup (Step 1)",
                               description="Discard or keep SAXS curves' "
@@ -996,6 +993,7 @@ def set_defaults_mean(data, particles, mean_function):
     #
     particles['A'].set_nuisance_is_optimized(True)
     if mean_function == 'Flat':
+        particles['A'].set_nuisance(mean(data['I']))
         particles['G'].set_lower(0)
         particles['G'].set_upper(0)
         particles['G'].set_nuisance(0)
@@ -1004,6 +1002,7 @@ def set_defaults_mean(data, particles, mean_function):
         particles['d'].set_nuisance_is_optimized(False)
         particles['s'].set_nuisance_is_optimized(False)
     else:
+        particles['A'].set_nuisance(0.)
         particles['G'].set_nuisance_is_optimized(True)
         particles['Rg'].set_nuisance_is_optimized(True)
         if mean_function == 'Simple':
@@ -1235,9 +1234,27 @@ def find_fit_all(data, initvals, verbose, mean_function):
     #
     newvals = dict([(k,v.get_nuisance())
                     for (k,v) in particles.iteritems()])
-    return newvals
+    ene = model.evaluate(False)
+    #make sure the errors are defined
+    model, particles, functions, gp = \
+            setup_process(data, initvals, 1, jitter=0.)
+    set_defaults_mean(data, particles, mean_function)
+    set_defaults_cov(data, particles)
+    for k,v in newvals.items():
+        particles[k].set_nuisance(v)
+    for q in data['q']:
+        err = gp.get_posterior_covariance([q],[q])
+        if err <0 or isnan(err):
+            raise FittingError, "invalid variance at %f for model %s!" %\
+                    (q,mean_function)
+    #global ctr
+    #ctr += 1
+    #write_fit(data, newvals, 'profit_'+str(ctr)+'.dat', mean_function)
+    return newvals,ene
+ctr=0
 
-def bayes_factor(data, initvals, verbose, mean_func, maxpoints):
+def bayes_factor(data, initvals, verbose, mean_func, maxpoints,
+        calc_hessian=True):
     """given optimized values for the parameters (in initvals), the data, and
     the model specification (in mean_func), return
     0 the number of parameters (Np) that have been optimized
@@ -1286,7 +1303,7 @@ def bayes_factor(data, initvals, verbose, mean_func, maxpoints):
             MP - Np/2.*log(2*pi) + logdet)
 
 def find_fit(data, initvals, verbose, model_comp=False, model_comp_maxpoints=-1,
-        mean_function='Simple', lambdamin=0.005):
+        mean_function='Simple'):
     #if verbose >2:
     #    print " %d:%d" % (subs,nsteps),
     #    sys.stdout.flush()
@@ -1304,18 +1321,27 @@ def find_fit(data, initvals, verbose, model_comp=False, model_comp_maxpoints=-1,
     #optimize parameters for each function
     if verbose > 2:
         print ""
+    trysig = [10,100]
+    trylam = [.1,1,10]
     for mean_func in functions:
         if verbose > 2:
             sys.stdout.write("     "+mean_func+": ")
             sys.stdout.flush()
-        try:
-            if not model_comp or mean_func == 'Flat':
-                param_vals[mean_func] = \
-                    find_fit_all(data, initvals, verbose, mean_func)
-            else:
-                param_vals[mean_func] = \
-                    find_fit_all(data, param_vals['Flat'], verbose, mean_func)
-        except FittingError:
+        oldene = None
+        for sig in trysig:
+            initvals['tau'] = sqrt(sig)
+            initvals['sigma2'] = sig
+            for lam in trylam:
+                initvals['lambda'] = lam
+                try:
+                    endvals, ene = \
+                            find_fit_all(data, initvals, verbose, mean_func)
+                except FittingError:
+                    continue
+                if ((not oldene) or (oldene > ene)):
+                    oldene = ene
+                    param_vals[mean_func] = endvals
+        if mean_func not in param_vals:
             if model_comp:
                 print "error"
                 sys.stdout.flush()
@@ -1355,6 +1381,11 @@ def find_fit(data, initvals, verbose, model_comp=False, model_comp_maxpoints=-1,
             sys.stdout.flush()
     if verbose > 2:
         print ""
+    #must have at least one model with admissible bayes factor
+    if not (False in map(isinf, [free_energies[f][8] for f in functions])):
+        raise FittingError, "Error while fitting! All Bayes factors are "\
+             "undefined.\n"\
+             "Change initial parameters or disable model comparison."
     minf = sorted([(free_energies[i][8],i) for i in functions])[0][1]
     return minf,param_vals[minf],free_energies
 
@@ -1769,6 +1800,20 @@ def remove_redundant(profiles, verbose=0):
     pnew.insert(n2p[0], profiles[n2p[0]])
     return pnew
 
+def write_fit(data, initvals, outfile, mean_function, npoints=200):
+    fl=open(outfile,'w')
+    fl.write("#q I err gp sd gp_mean\n")
+    model, particles, functions, gp = setup_process(data,initvals,1, jitter=0.)
+    qs,Is,errs = data['q'],data['I'],data['err']
+    for q,I,err in zip(qs,Is,errs):
+        fl.write("%s\t" % q)
+        fl.write("%s\t" % I)
+        fl.write("%s\t" % err)
+        fl.write("%s\t" % gp.get_posterior_mean([q]))
+        fl.write("%s\t" % sqrt(gp.get_posterior_covariance([q],[q])))
+        fl.write("%s\n" % functions['mean']([q])[0])
+
+
 
 def initialize():
     args, files = parse_args()
@@ -1843,8 +1888,8 @@ def cleanup(profiles, args):
             continue
         qvals = data['q']
         if verbose > 2:
-            print "\tqmin = %.3f\tqmax = %.3f\tM = %d" % \
-                    (qvals[0], qvals[-1], M)
+            print "\tqmin = %.3f\tqmax = %.3f" % \
+                    (qvals[0], qvals[-1])
         elif verbose == 2:
             print ""
         good_profiles.append(p)
@@ -1889,8 +1934,7 @@ def fitting(profiles, args):
         initvals['sigma2']=10.
         mean, initvals, bayes = find_fit(data, initvals, #schedule,
                 verbose, model_comp=model_comp, model_comp_maxpoints=maxpointsH,
-                mean_function=mean_function,
-                lambdamin=args.lambdamin)
+                mean_function=mean_function)
         model, particles, functions, gp = setup_process(data,initvals,1,
                 jitter=0)
         if bayes:
@@ -2169,8 +2213,7 @@ def merging(profiles, args):
     mean, initvals, bayes = find_fit(data, initvals, #schedule,
                     verbose, model_comp=model_comp,
                     model_comp_maxpoints=maxpointsH,
-                    mean_function=mean_function,
-                    lambdamin=args.lambdamin)
+                    mean_function=mean_function)
     if verbose > 1 and model_comp:
         print "    => "+mean
     model, particles, functions, gp = setup_process(data,initvals,1, jitter=0.)
