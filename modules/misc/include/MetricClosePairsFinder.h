@@ -49,7 +49,7 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
   typedef base::map<kernel::ParticleIndex, Data> Index;
   Index get_index(Model *m, ParticleIndexes inputs) const {
     unsigned int index_size = std::min<unsigned int>(1U,
-                                                     std::sqrt(inputs.size()));
+                                std::sqrt(static_cast<double>(inputs.size())));
     std::random_shuffle(inputs.begin(), inputs.end());
     Index ret;
     kernel::ParticleIndexes indexes(inputs.begin(),
