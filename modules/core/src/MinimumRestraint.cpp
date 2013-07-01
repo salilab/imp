@@ -56,4 +56,8 @@ ModelObjectsTemp MinimumRestraint::do_get_inputs() const {
   return ret;
 }
 
+void MinimumRestraint::on_add(Restraint* r) const {
+  r->set_model(get_model());
+}
+
 IMPCORE_END_NAMESPACE

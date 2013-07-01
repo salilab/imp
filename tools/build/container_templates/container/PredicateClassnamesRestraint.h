@@ -62,7 +62,6 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
                         << " first, sorry, this can be fixed.");
     IMP_NEW(List, c, (input_, score->get_name() + " input"));
     restraints_.push_back(container::create_restraint(score, c.get()));
-    restraints_.back()->set_model(get_model());
     restraints_.back()->set_was_used(true);
     containers_[predicate_value] = c;
   }
@@ -77,7 +76,6 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
                         << " first, sorry, this can be fixed.");
     IMP_NEW(List, c, (input_, score->get_name() + " input"));
     restraints_.push_back(container::create_restraint(score, c.get()));
-    restraints_.back()->set_model(get_model());
     unknown_container_ = c;
   }
 #ifndef IMP_DOXYGEN

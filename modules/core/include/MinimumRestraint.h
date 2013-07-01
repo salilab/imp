@@ -22,7 +22,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT MinimumRestraint : public Restraint {
   unsigned int k_;
-
+  void on_add(Restraint *r) const;
  public:
   /** Score based on the num minimum restraints from rs. The restraints
       must already be registered with the model (either by being added
@@ -46,14 +46,8 @@ class IMPCOREEXPORT MinimumRestraint : public Restraint {
   ;
 
   IMP_LIST_ACTION(public, Restraint, Restraints, restraint, restraints,
-                  Restraint *, Restraints, {
-                    if (get_model()) {
-      obj->set_model(get_model());
-    }
-  },
-                  {}, {
-    obj->set_model(nullptr);
-  });
+                  Restraint *, Restraints, on_add(obj);,
+                  {}, {});
   void set_model(Model *m);
 };
 
