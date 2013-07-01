@@ -66,7 +66,14 @@ Float LowestRefinedPairScore::evaluate_index(Model *m,
 
 ModelObjectsTemp LowestRefinedPairScore::do_get_inputs(
     Model *m, const ParticleIndexes &pis) const {
-  return r_->get_inputs(m, pis) + f_->get_inputs(m, pis);
+  ModelObjectsTemp ret = r_->get_inputs(m, pis);
+  for (unsigned int i = 0; i < pis.size(); ++i) {
+    if (r_->get_can_refine(m->get_particle(pis[i]))) {
+      ParticleIndexes cur = r_->get_refined_indexes(m, pis[i]);
+      ret += f_->get_inputs(m, cur);
+    }
+  }
+  return ret;
 }
 
 IMPMISC_END_NAMESPACE
