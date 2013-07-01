@@ -33,7 +33,7 @@ IMPKERNEL_BEGIN_NAMESPACE
       \ref dependencies "Dependencies" for more information about dependencies.
   */
 IMP_GRAPH(DependencyGraph, bidirectional, ModelObject *, int, {
-  out << vertex->get_name() << "\n[" << vertex->get_type_name() << "]";
+  out << vertex->get_name() << "\\n[" << vertex->get_type_name() << "]";
 });
 
 class Model;
