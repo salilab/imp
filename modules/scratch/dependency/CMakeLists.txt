@@ -1,1 +1,0 @@
-include(${PROJECT_SOURCE_DIR}/modules/scratch/dependency/CUDA.cmake)

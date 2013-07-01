@@ -136,6 +136,7 @@ def setup_module(module, path, ordered):
     values["other_pythons"]="\n".join(["${IMP_%s_PYTHON}"%m for m in all_modules])
     values["dependencies"]=";".join(dependencies)
     values["sources"] = get_sources(module, path, "src", "*.cpp")
+    values["cuda_sources"] = get_sources(module, path, "src", "*.cu")
     values["headers"] = get_sources(module, path, "include", "*.h")
     values["cppbins"] = get_sources(module, path, "bin", "*.cpp")
     values["cppbenchmarks"] = get_sources(module, path, "benchmark", "*.cpp")

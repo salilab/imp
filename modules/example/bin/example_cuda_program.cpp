@@ -1,35 +1,26 @@
-/*
- * Copyright 1993-2012 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
+/** \example example_cuda_program.cpp
+    \brief Show how to call a cuda from from a .cpp file.
 
-/* Example of integrating CUDA functions into an existing
- * application / framework.
- * CPP code representing the existing application / framework.
- * Compiled with default CPP compiler.
- */
+    Copyright 2007-2013 IMP Inventors. All rights reserved.
+*/
 
-// includes, system
-#include <iostream>
-#include <stdlib.h>
-
-// Required to include CUDA vector types
-#include <cuda_runtime.h>
-#include <vector_types.h>
 
 #include <IMP/algebra/VectorD.h>
+#include <IMP/base/flags.h>
 #include <IMP/Model.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/benchmark/benchmark_macros.h>
 #include <boost/scoped_array.hpp>
 #include <IMP/base/utility.h>
+
+#include <iostream>
+
+#if IMP_HAS_CUDA
+// Required to include CUDA vector types
+#include <cuda_runtime.h>
+#include <vector_types.h>
+#include <cstdlib>
 
 ////////////////////////////////////////////////////////////////////////////////
 // declaration, forward
@@ -56,18 +47,22 @@ namespace {
 int
 main(int argc, char **argv)
 {
+  IMP::Strings file
+      = IMP::base::setup_from_argv(argc, argv,
+                                   "Compute a distance histogram with CUDA.",
+                                   "file.pdb", 1);
   IMP::base::Pointer<IMP::Model> model = new IMP::Model();
 
   // check if file exists
-  std::ifstream in_file(argv[1]);
+  std::ifstream in_file(file[0]);
   if(!in_file) {
-    std::cerr << "Can't open file " << argv[1] << std::endl;
+    std::cerr << "Can't open file " << file[0] << std::endl;
     exit(1);
   }
 
   // read pdb
   IMP::atom::Hierarchy mhd =
-    IMP::atom::read_pdb(argv[1], model,
+    IMP::atom::read_pdb(file[0], model,
                         new IMP::atom::NonWaterNonHydrogenPDBSelector(),
                         // don't add radii
                         true, true);
@@ -75,7 +70,7 @@ main(int argc, char **argv)
     = IMP::get_as<IMP::Particles>(get_by_type(mhd, IMP::atom::ATOM_TYPE));
   if(particles.size() > 0) { // pdb file
     std::cout << particles.size() << " atoms were read from PDB file "
-              << argv[1] << std::endl;
+              << file[0] << std::endl;
   }
   //unsigned int num = 1024;
 
@@ -137,3 +132,11 @@ main(int argc, char **argv)
   std::cout << "Errors: " << differ << " out of " << hist_size << std::endl;
   return 0;
 }
+
+#else
+int main(int argc, char *argv[]) {
+  IMP::base::setup_from_argv(argc, argv, "No CUDA available");
+  std::cerr << "No CUDA support." << std::endl;
+  return 1;
+}
+#endif
