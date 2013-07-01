@@ -60,4 +60,10 @@ void MinimumRestraint::on_add(Restraint* r) const {
   r->set_model(get_model());
 }
 
+void MinimumRestraint::clear_caches() {
+  if (get_is_part_of_model()) {
+    get_model()->clear_caches();
+  }
+
+}
 IMPCORE_END_NAMESPACE

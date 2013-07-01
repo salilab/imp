@@ -72,7 +72,12 @@ class IMPATOMEXPORT Domain : public Hierarchy {
     Int get_end_index() const;
   /** \deprecated_at{2.1} Use the IntRange setup_particle.*/
   IMPATOM_DEPRECATED_METHOD_DECL(2.1)
-  IMP_DECORATOR_SETUP_2(Domain, Int, residues_begin, Int, residues_end);
+        static Domain setup_particle(Model *m, ParticleIndex pi,
+                                     Int residues_begin, Int residues_end);
+  /** \deprecated_at{2.1} Use the IntRange setup_particle.*/
+  IMPATOM_DEPRECATED_METHOD_DECL(2.1)
+  static Domain setup_particle(IMP::kernel::ParticleAdaptor decorator,
+                               Int residues_begin, Int residues_end);
 };
 
 IMP_DECORATORS(Domain, Domains, Hierarchies);

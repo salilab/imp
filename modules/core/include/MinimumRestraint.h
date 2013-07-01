@@ -32,11 +32,7 @@ class IMPCOREEXPORT MinimumRestraint : public Restraint {
   MinimumRestraint(unsigned int num, const Restraints &rs = Restraints(),
                    std::string name = "MinimumRestraint %1%");
 
-  void clear_caches() {
-    if (get_is_part_of_model()) {
-      get_model()->clear_caches();
-    }
-  }
+  void clear_caches();
 
  public:
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
