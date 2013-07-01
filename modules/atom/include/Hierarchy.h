@@ -185,8 +185,6 @@ IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
     of type x, or an X decorator wrapping the current particle if
     it is.
 
-    \ingroup hierarchy
-    \ingroup decorators
     \see Atom
     \see Residue
     \see Chain
@@ -207,7 +205,8 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
     if (get_is_setup(p)) return Hierarchy(p);
     else return Hierarchy();
   }
-
+  /** Setup the particle as a hierarchy and add the passed particles
+      as children. */
   static Hierarchy setup_particle(Particle *p,
                                   ParticleIndexesAdaptor children) {
     H::setup_particle(p, get_traits());
@@ -367,8 +366,6 @@ enum GetByType {
 /**
    Gather all the molecular particles of a certain level
    in the molecular hierarchy.
-   \ingroup hierarchy
-   See Hierarchy
 */
 IMPATOMEXPORT Hierarchies get_by_type(Hierarchy mhd, GetByType t);
 
@@ -383,7 +380,6 @@ IMPATOMEXPORT Hierarchies get_by_type(Hierarchy mhd, GetByType t);
     \throw ValueException if mhd's type is not one of CHAIN, PROTEIN, NUCLEOTIDE
     \return Hierarchy() if that residue is not found.
 
-    \ingroup hierarchy
     See Hierarchy
  */
 IMPATOMEXPORT Hierarchy get_residue(Hierarchy mhd, unsigned int index);
@@ -395,7 +391,6 @@ IMPATOMEXPORT Hierarchy get_residue(Hierarchy mhd, unsigned int index);
     removed). The particles become children of the fragment.
 
     \throw ValueException If all the particles do not have the same parent.
-    \ingroup hierarchy
     See Hierarchy
  */
 IMPATOMEXPORT Hierarchy create_fragment(const Hierarchies &ps);

@@ -101,6 +101,7 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
                                     traits,
                                     get_default_traits());
   IMP_DECORATOR_TRAITS_SETUP_0(Hierarchy);
+  /** Setup the particle and add children. */
   IMP_DECORATOR_TRAITS_SETUP_1(Hierarchy, ParticleIndexes, children);
   IMP_DECORATOR_TRAITS_SETUP_1(Hierarchy, ParticlesTemp, children);
 
