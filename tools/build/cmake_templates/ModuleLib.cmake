@@ -22,13 +22,13 @@ set_source_files_properties(${CMAKE_BINARY_DIR}/src/%(name)s_config.cpp
   PROPERTIES GENERATED 1)
 
 if(IMP_HAS_CUDA)
-set(cuda_sources %(cuda_sources)s)
-foreach(src ${cuda_sources})
-cuda_compile(%(NAME)s_${src} ${src})
-list(APPEND cuda_targets ${%(NAME)s_${src}})
-endforach()
+  set(cuda_sources %(cuda_sources)s)
+  foreach(src ${cuda_sources})
+    cuda_compile(%(NAME)s_${src} ${src})
+    list(APPEND cuda_targets ${%(NAME)s_${src}})
+  endforeach()
 
-add_custom_target(IMP.%(name)s-cuda ${cuda_targets})
+  add_custom_target(IMP.%(name)s-cuda ${cuda_targets})
 endif()
 
 if(DEFINED IMP_%(name)s_IS_PER_CPP)
