@@ -451,9 +451,10 @@ def get_application_executables(path):
 
 _subprocesses = []
 
-def run_subprocess(command, *args):
+def run_subprocess(command, **kwargs):
     global _subprocesses
-    pro = subprocess.Popen( command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, preexec_fn = os.setsid, *args )
+    pro = subprocess.Popen( command, stdout = subprocess.PIPE,
+                            stderr = subprocess.PIPE, preexec_fn = os.setsid, **kwargs )
     _subprocesses.append(pro)
     ret = pro.wait()
     if ret != 0:
