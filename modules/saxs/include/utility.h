@@ -52,9 +52,10 @@ inline Float compute_max_distance(const kernel::Particles& particles) {
 
 //! upper bound on Dmax
 inline Float estimate_max_distance(const Particles& particles) {
-  std::vector<algebra::Vector3D> coordinates(particles.size());
-  get_coordinates(particles, coordinates);
-  IMP::algebra::BoundingBox3D bb(coordinates);
+  IMP::algebra::BoundingBox3D bb;
+  for (unsigned int i = 0; i < particles.size(); ++i) {
+    bb += algebra::get_bounding_box(core::XYZR(particles[i]).get_sphere());
+  }
   return IMP::algebra::get_distance(bb.get_corner(0), bb.get_corner(1));
 }
 
