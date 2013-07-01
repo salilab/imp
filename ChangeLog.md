@@ -1,10 +1,9 @@
 # ChangeLog
 
+- CUDA support has been added to IMP. To use it, have the CUDA tools installed and then drop `.cu` files into `src` in a module. You probably have to define `CUDA_TOOLKIT_ROOT_DIR` appropriately to get `cmake` to find it.
+
 # For IMP 2.1 # {#ChangeLog}
-- There is now some limited IMP-wide gathering of timing statistics. You can add `--statistics=filename` to the command line or use the IMP::base::show_timings() function to view of summary of where IMP has spent time.
-- Slack was being used inconsistently (and not always correctly) among the various containers and restraints. If you had heavily optimized the slack value for speed, you may want to revisit it.
-- class name OwnerPointer was switched to PointerMember, to denote more clearly a ref-counting pointer that is a class member
-- The dependency handling in IMP has been rewritten to simplify it and fix a bunch of bugs. There are now more checks of correctness, so behavior that might have silently worked (or not worked) before may now trigger errors. In particular, restraints/score states must have access to the IMP::kernel::Model to do much of anything, so either use constructors that take the model or call IMP::kernel::ModelObject::set_model(). Also, changing your set of inputs or outputs without calling IMP::kernel::ModelObject::set_has_dependencies(false) is now likely to trigger a check failure (it would just silently do the wrong thing before).
+- CUDA support has been added to IMP. To use it, have the CUDA tools installed and then drop `.cu` files into `src` in a module. You probably have to define `CUDA_TOOLKIT_ROOT_DIR` appropriately to get `cmake` to find it.
 - Decorators have been cleaned up to make them behave consistently regarding IMP::kernel::Particle vs IMP::kernel::ParticleIndexes. This change shouldn't break existing code, but decorators should move to the new macros IMP_DECORATOR_METHODS(), IMP_DECORATOR_SETUP_0() etc.
 - The IMP_GRAPH() and IMP_WEIGHTED_GRAPH() macros got an extra argument describing how to show the vertexes in the graph. They also now expose a method, eg IMP::kernel::show_as_graphviz() that writes the graph in graphviz format to an IMP::base::TextOutput.
 - Support and rules for deprecating code in IMP have been updated. There are new macros and instructions how to use them that should result in much better visibility about changes. See the C++ wiki for IMP for more information. And there is now an encoded policy of keeping deprecated things around for 1 release after deprecation.
