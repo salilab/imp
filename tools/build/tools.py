@@ -5,6 +5,8 @@ import copy
 import shutil
 import sys
 import difflib
+import subprocess
+import signal
 
 # cmake paths are always /-separated; on platforms where the path is not /
 # (e.g. Windows) convert a path to or from a form cmake will like
@@ -446,3 +448,28 @@ def get_application_executables(path):
             continue
         ret+= _handle_cpp_dir(d)
     return ret
+
+_subprocesses = []
+
+def run_subprocess(command, *args):
+    global _subprocesses
+    pro = subprocess.Popen( command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, preexec_fn = os.setsid, *args )
+    _subprocesses.append(pro)
+    ret = pro.wait()
+    if ret != 0:
+        raise OSError("subprocess failed with return code %d: %s" \
+                      % (ret, " ".join(command)))
+
+def _sigHandler( signum, frame ):
+    print "starting handler"
+    signal.signal( signal.SIGTERM, signal.SIG_DFL )
+    global _subprocesses
+    for p in _subprocesses:
+        print "killing", p
+        try:
+            os.kill( p.pid, signal.SIGTERM )
+        except:
+            pass
+    sys.exit(1)
+
+signal.signal( signal.SIGTERM, _sigHandler )

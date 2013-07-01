@@ -41,10 +41,7 @@ def run_swig(outputdir, options):
         args.append("-I%s" % tools.from_cmake_path(p))
     args.append(os.path.abspath("./swig/IMP_%s.i"%options.module))
 
-    ret = subprocess.call(args, cwd=outputdir)
-    if ret != 0:
-        raise OSError("subprocess failed with return code %d: %s" \
-                      % (ret, " ".join(args)))
+    ret = tools.run_subprocess(args, cwd=outputdir)
     if len(open("src/%s_swig/IMP.%s.py"%(options.module, options.module), "r").read()) < 10:
         raise IOError("Empty swig wrapper file")
     tools.link("src/%s_swig/IMP.%s.py"%(options.module, options.module),
