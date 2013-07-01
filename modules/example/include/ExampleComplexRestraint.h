@@ -33,7 +33,7 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 */
 class IMPEXAMPLEEXPORT ExampleComplexRestraint : public Restraint {
   base::Pointer<ScoreState> ss_;
-  base::Pointer<Particle> p_;
+  ParticleIndex p_;
   Float diameter_;
   base::Pointer<SingletonContainer> sc_;
   base::Pointer<UnaryFunction> f_;
@@ -44,15 +44,14 @@ class IMPEXAMPLEEXPORT ExampleComplexRestraint : public Restraint {
   /** f should have a minimum at 0 and be an upper bound-style function.
    */
   ExampleComplexRestraint(UnaryFunction *f, SingletonContainer *sc,
-                          Float diameter);
+                          Float diameter,
+                          std::string name = "ExampleComplexRestraint%1%");
 
   virtual double
   unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ExampleComplexRestraint);
-
-  void set_model(Model *m);
 };
 
 IMPEXAMPLE_END_NAMESPACE
