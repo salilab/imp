@@ -221,11 +221,6 @@ imp_execute_process("setup_swig_dependencies" ${PROJECT_BINARY_DIR}
                     "--swig=${SWIG_EXECUTABLE}")
 endif()
 
-if(${IMP_DOXYGEN_FOUND})
-imp_execute_process("setup_doxygen_config" ${PROJECT_BINARY_DIR} COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_doxygen_config.py "--source=${PROJECT_SOURCE_DIR}")
-endif()
-
-
 # Static builds don't include Python extensions
 if(NOT IMP_STATIC)
   # Can't set up pyext until we have SWIG dependencies
@@ -258,6 +253,10 @@ file(STRINGS "${PROJECT_BINARY_DIR}/data/build_info/applications" applications)
 foreach(app ${applications})
   add_subdirectory("${PROJECT_SOURCE_DIR}/applications/${app}")
 endforeach(app)
+
+if(${IMP_DOXYGEN_FOUND})
+  imp_execute_process("setup_doxygen_config" ${PROJECT_BINARY_DIR} COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_doxygen_config.py "--source=${PROJECT_SOURCE_DIR}")
+endif()
 
 list(INSERT IMP_PYTHONPATH 0 "${PROJECT_BINARY_DIR}/lib")
 list(INSERT IMP_LDPATH 0 "${PROJECT_BINARY_DIR}/lib")
