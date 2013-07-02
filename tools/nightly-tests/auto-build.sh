@@ -31,6 +31,9 @@ git checkout ${BRANCH} -f -q >& /tmp/$$.out
 grep -v "Version=" /tmp/$$.out
 # Make sure we're up to date with the remote
 git merge --ff-only -q origin/${BRANCH} || exit 1
+# Remove any untracked files
+git clean -q -f -d -x
+# Make sure VERSION file is generated
 git checkout ${BRANCH} -f -q >& /tmp/$$.out
 grep -v "Version=" /tmp/$$.out
 rm -f /tmp/$$.out
