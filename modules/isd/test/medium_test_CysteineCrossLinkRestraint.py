@@ -119,7 +119,8 @@ class TestCysteineCrossLinkRestraint(IMP.test.TestCase):
             cystrest.add_contribution(ps[0],ps[2])
             restdict[fexp]=cystrest
 
-        f = gzip.open(IMP.isd.get_input_file_name('test_CysteineCrosslink.data.gz'), 'rb')
+        f = gzip.open(
+              self.get_input_file_name('test_CysteineCrosslink.data.gz'), 'rb')
 
         testlist=[]
 
