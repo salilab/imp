@@ -62,27 +62,10 @@ class Tests(IMP.test.TestCase):
         pf.set_bonds(bonds)
         pf.set_angles(angles)
         pf.set_dihedrals(dihedrals)
+        # Inputs should always be empty
+        for p in ps:
+            self.assertEqual(pf.get_input_particles(p), [])
 
-        # If the atom is not bonded to anything, output == input
-        self.assertInputParticlesEqual(pf, ps[8], [ps[8]])
-        # If the atom is bonded, output should also contain the bond particle(s)
-        self.assertInputParticlesEqual(pf, ps[0], [ps[0], bonds[0]])
-        self.assertInputParticlesEqual(pf, ps[1], [ps[1], bonds[0], angles[0]])
-        self.assertInputParticlesEqual(pf, ps[4], [ps[4], dihedrals[0]])
-        # Particles within an angle/dihedral (but not the 1-3 or 1-4 pairs)
-        # don't count as bonded
-        self.assertInputParticlesEqual(pf, ps[2], [ps[2]])
-        self.assertInputParticlesEqual(pf, ps[5], [ps[5]])
-
-    def assertInputParticlesEqual(self, pf, inp, exp_outps):
-        outps = pf.get_input_particles(inp)
-        # Note that the order of outps is not predictable (since it is
-        # generated from a map of Particles, which compare based on their
-        # memory addresses, which are not predictable). So, sort both lists
-        # to ensure they are similarly ordered.
-        exp_outps.sort()
-        outps.sort()
-        self.assertEqual(outps, exp_outps)
 
 if __name__ == '__main__':
     IMP.test.main()
