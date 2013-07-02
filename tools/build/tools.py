@@ -453,8 +453,11 @@ _subprocesses = []
 
 def run_subprocess(command, **kwargs):
     global _subprocesses
-    pro = subprocess.Popen( command, stdout = subprocess.PIPE,
-                            stderr = subprocess.PIPE, preexec_fn = os.setsid, **kwargs )
+    if not kwargs.has_key("stdout"):
+        kwargs["stdout"] = subprocess.PIPE
+    if not kwargs.has_key("stderr"):
+        kwargs["stderr"] = subprocess.PIPE
+    pro = subprocess.Popen( command, preexec_fn = os.setsid, **kwargs )
     _subprocesses.append(pro)
     ret = pro.wait()
     if ret != 0:
