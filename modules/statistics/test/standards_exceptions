@@ -1,1 +1,1 @@
-spelling_exceptions=['lloyds', 'kmeans', 'stddev', 'chisquare']
+spelling_exceptions=['lloyds', 'kmeans']

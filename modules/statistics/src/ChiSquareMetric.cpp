@@ -40,7 +40,7 @@ void ChiSquareMetric::add_configuration
  return;
 }
 
-double ChiSquareMetric::get_chisquare_exp(unsigned i) const
+double ChiSquareMetric::get_chi_square_experimental(unsigned i) const
 {
  double chi2=0.0;
  if(constr_type_==0){
@@ -99,7 +99,7 @@ Floats ChiSquareMetric::get_data(unsigned i) const
  return datas_[i];
 }
 
-Floats ChiSquareMetric::get_stddev(unsigned i) const
+Floats ChiSquareMetric::get_standard_deviation(unsigned i) const
 {
  return stddev_[i];
 }

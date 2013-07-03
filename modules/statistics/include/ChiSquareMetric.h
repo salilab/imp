@@ -50,11 +50,11 @@ class IMPSTATISTICSEXPORT ChiSquareMetric : public Metric {
   //! get the list of data points for the i-th configuration
   Floats get_data(unsigned i) const;
   //! get the list of standard deviations for the i-th configuration
-  Floats get_stddev(unsigned i) const;
+  Floats get_standard_deviation(unsigned i) const;
   //! get the weight for the i-th configuration
   double do_get_weight(unsigned i) const IMP_OVERRIDE;
   //! get chi2 from experimental data for the i-th configuration
-  double get_chisquare_exp(unsigned i) const;
+  double get_chi_square_experimental(unsigned i) const;
 
   double get_distance(unsigned int i, unsigned int j) const IMP_OVERRIDE;
   unsigned int get_number_of_items() const IMP_OVERRIDE;
