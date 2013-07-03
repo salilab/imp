@@ -254,16 +254,9 @@ InternalDynamicListClassnameContainer::get_all_possible_indexes() const {
 
 void InternalDynamicListClassnameContainer::do_before_evaluate() {}
 
-ParticlesTemp InternalDynamicListClassnameContainer::get_input_particles()
+ModelObjectsTemp InternalDynamicListClassnameContainer::do_get_inputs()
     const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_inputs()");
-  return ParticlesTemp();
-}
-
-ContainersTemp InternalDynamicListClassnameContainer::get_input_containers()
-    const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_inputs()");
-  return ContainersTemp();
+  return ModelObjectsTemp();
 }
 
 PLURALINDEXTYPE
@@ -321,14 +314,8 @@ PLURALINDEXTYPE InternalListClassnameContainer::get_range_indexes() const {
 
 void InternalListClassnameContainer::do_before_evaluate() {}
 
-ParticlesTemp InternalListClassnameContainer::get_input_particles() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_inputs()");
-  return ParticlesTemp();
-}
-
-ContainersTemp InternalListClassnameContainer::get_input_containers() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_inputs()");
-  return ContainersTemp();
+ModelObjectsTemp InternalListClassnameContainer::do_get_inputs() const {
+  return ModelObjectsTemp();
 }
 
 IMPKERNEL_END_INTERNAL_NAMESPACE

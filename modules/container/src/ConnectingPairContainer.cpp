@@ -94,14 +94,10 @@ void ConnectingPairContainer::initialize(SingletonContainer *sc) {
   mv_ = new core::internal::XYZRMovedSingletonContainer(sc, error_bound_);
 }
 
-ParticlesTemp ConnectingPairContainer::get_input_particles() const {
-  return get_particles(get_model(), sc_->get_indexes());
-}
-
-ContainersTemp ConnectingPairContainer::get_input_containers() const {
-  ContainersTemp ret(2);
-  ret[0] = sc_;
-  ret[1] = mv_;
+ModelObjectsTemp ConnectingPairContainer::do_get_inputs() const {
+  ModelObjectsTemp ret = get_particles(get_model(), sc_->get_indexes());
+  ret.push_back(sc_);
+  ret.push_back(mv_);
   return ret;
 }
 

@@ -72,12 +72,10 @@ ParticleIndexes MovedSingletonContainer::get_range_indexes() const {
   return pc_->get_range_indexes();
 }
 
-ParticlesTemp MovedSingletonContainer::get_input_particles() const {
-  return IMP::get_particles(get_model(), pc_->get_indexes());
-}
-
-ContainersTemp MovedSingletonContainer::get_input_containers() const {
-  return ContainersTemp(1, pc_);
+ModelObjectsTemp MovedSingletonContainer::do_get_inputs() const {
+  ModelObjectsTemp ret = IMP::get_particles(get_model(), pc_->get_indexes());
+  ret.push_back(pc_);
+  return ret;
 }
 
 void MovedSingletonContainer::reset() { reset_all_ = true; }

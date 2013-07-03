@@ -66,7 +66,11 @@ class IMPCONTAINEREXPORT ConnectingPairContainer :
   ParticleIndexes get_all_possible_indexes() const;
   IMP_OBJECT_METHODS(ConnectingPairContainer);
 #else
-  IMP_LISTLIKE_PAIR_CONTAINER(ConnectingPairContainer);
+  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual void do_before_evaluate() IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ConnectingPairContainer);
   bool get_is_decomposable() const { return false; }
 #endif
 };

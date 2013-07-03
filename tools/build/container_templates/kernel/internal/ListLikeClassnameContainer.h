@@ -78,27 +78,29 @@ class IMPKERNELEXPORT ListLikeClassnameContainer : public ClassnameContainer {
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 
-#define IMP_LISTLIKE_CLASSNAME_CONTAINER(Name)      \
- public:                                            \
-  ParticleIndexes get_all_possible_indexes() const; \
-  ParticlesTemp get_input_particles() const;        \
-  ContainersTemp get_input_containers() const;      \
-  ModelObjectsTemp do_get_inputs() const {          \
-    ModelObjects ret;                               \
-    ret += get_input_containers();                  \
-    ret += get_input_particles();                   \
-    return ret;                                     \
-  }                                                 \
-  void do_before_evaluate();                        \
-  PLURALINDEXTYPE get_range_indexes() const;        \
+#define IMP_LISTLIKE_CLASSNAME_CONTAINER(Name)                  \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Just declare the methods."); \
+public:                                                         \
+ ParticleIndexes get_all_possible_indexes() const;              \
+ ParticlesTemp get_input_particles() const;                     \
+ ContainersTemp get_input_containers() const;                   \
+ ModelObjectsTemp do_get_inputs() const {                       \
+   ModelObjects ret;                                            \
+   ret += get_input_containers();                               \
+   ret += get_input_particles();                                \
+   return ret;                                                  \
+ }                                                              \
+ void do_before_evaluate();                                     \
+ PLURALINDEXTYPE get_range_indexes() const;                     \
   IMP_OBJECT_METHODS(Name)
 
-#define IMP_LISTLIKE_CLASSNAME_CONTAINER_2(Name)                         \
- public:                                                                 \
-  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE; \
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;           \
-  virtual void do_before_evaluate() IMP_OVERRIDE;                        \
-  virtual PLURALINDEXTYPE get_range_indexes() const IMP_OVERRIDE;        \
-  IMP_OBJECT_METHODS(Name)
+#define IMP_LISTLIKE_CLASSNAME_CONTAINER_2(Name)                        \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Just declare the methods.");         \
+public:                                                                 \
+ virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE; \
+ virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;           \
+ virtual void do_before_evaluate() IMP_OVERRIDE;                        \
+ virtual PLURALINDEXTYPE get_range_indexes() const IMP_OVERRIDE;        \
+ IMP_OBJECT_METHODS(Name)
 
 #endif /* IMPKERNEL_INTERNAL_LIST_LIKE_CLASSNAME_CONTAINER_H */

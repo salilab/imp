@@ -32,7 +32,6 @@ class IMPCOREEXPORT CoreClosePairContainer
   unsigned int moved_count_;
   bool first_call_;
   double distance_, slack_;
-  IMP_LISTLIKE_PAIR_CONTAINER_2(CoreClosePairContainer);
   void initialize(SingletonContainer *c, double distance, double slack,
                   ClosePairsFinder *cpf);
 
@@ -42,7 +41,15 @@ class IMPCOREEXPORT CoreClosePairContainer
   void do_incremental();
   void do_rebuild();
 
+ protected:
+  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(CoreClosePairContainer);
+
  public:
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual void do_before_evaluate() IMP_OVERRIDE;
+
   CoreClosePairContainer(SingletonContainer *c, double distance,
                          ClosePairsFinder *cpf, double slack = 1);
 

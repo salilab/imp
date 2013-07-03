@@ -107,7 +107,7 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
                                     const ScoreStatesTemp &ss) IMP_OVERRIDE;
   virtual Restraints create_restraints() const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual void do_set_has_dependencies(bool tf) IMP_OVERRIDE;
+  virtual void do_set_has_dependencies(bool) IMP_OVERRIDE;
   IMP_OBJECT_METHODS(IncrementalScoringFunction);
 };
 

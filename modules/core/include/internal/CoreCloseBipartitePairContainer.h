@@ -74,7 +74,11 @@ class IMPCOREEXPORT CoreCloseBipartitePairContainer
                   , , );
   /**@}*/
   void clear_caches() { reset_ = true; }
-  IMP_LISTLIKE_PAIR_CONTAINER_2(CoreCloseBipartitePairContainer);
+    virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual void do_before_evaluate() IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(CoreCloseBipartitePairContainer);
 };
 
 IMP_OBJECTS(CoreCloseBipartitePairContainer, CoreCloseBipartitePairContainers);
