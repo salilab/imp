@@ -274,6 +274,21 @@ class IMPKERNELEXPORT Model : public base::Object
    */
   void remove_particle(ParticleIndex pi);
 
+  /** \name Storing data in the model
+
+      One can store data associated with the model. This is used, for example,
+      to keep a central ScoreState to normalize rigid body rotational variables.
+      @{ */
+  /** Store a piece of data in the model referenced by the key. */
+  void add_data(ModelKey mk, base::Object *o);
+  /** Get back some data stored in the model. */
+  base::Object *get_data(ModelKey mk) const;
+  /** Remove data stored in the model. */
+  void remove_data(ModelKey mk);
+  /** Check if the model has a certain piece of data attached. */
+  bool get_has_data(ModelKey mk) const;
+  /** @} */
+
   IMP_OBJECT_METHODS(Model);
 
 
@@ -314,18 +329,6 @@ class IMPKERNELEXPORT Model : public base::Object
   /** \deprecated_at{2.1} Use get_particle_indexes(). */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   ParticlesTemp get_particles() const;
-  /** \deprecated_at{2.1} Was not used, will be removed. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  void add_data(ModelKey mk, base::Object *o);
-  /** \deprecated_at{2.1} Was not used, will be removed. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  base::Object *get_data(ModelKey mk) const;
-  /** \deprecated_at{2.1} Was not used, will be removed. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  void remove_data(ModelKey mk);
-  /** \deprecated_at{2.1} Was not used, will be removed. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  bool get_has_data(ModelKey mk) const;
   /** \deprecated_at{2.1} Do not use. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   ModelObjectsTemp get_optimized_particles() const;

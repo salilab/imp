@@ -175,7 +175,26 @@ void Model::clear_particle_caches(ParticleIndex pi) {
   internal::ParticlesAttributeTable::clear_caches(pi);
 }
 
+void Model::add_data(ModelKey mk, Object *o) {
+  model_data_.resize(std::max<int>(mk.get_index() + 1, model_data_.size()));
+  model_data_[mk.get_index()] = o;
+}
 
+base::Object *Model::get_data(ModelKey mk) const {
+  return model_data_[mk.get_index()].get();
+}
+
+void Model::remove_data(ModelKey mk) {
+ model_data_[mk.get_index()] = nullptr;
+}
+
+bool Model::get_has_data(ModelKey mk) const {
+  if (model_data_.size() > mk.get_index()) {
+    return model_data_[mk.get_index()];
+  } else {
+    return false;
+  }
+}
 
 
 /////////////////////////////////////////// NOT YET DEPRECATED STUFF
@@ -231,31 +250,6 @@ Model::ParticleIterator Model::particles_end() const {
   IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_particle_indexes().");
   return ParticleIterator(NotNull(), particle_index_.end(),
                           particle_index_.end());
-}
-
-void Model::add_data(ModelKey mk, Object *o) {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Not used, will be removed.");
-  model_data_.resize(std::max<int>(mk.get_index() + 1, model_data_.size()));
-  model_data_[mk.get_index()] = o;
-}
-
-base::Object *Model::get_data(ModelKey mk) const {
- IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Not used, will be removed.");
-  return model_data_[mk.get_index()].get();
-}
-
-void Model::remove_data(ModelKey mk) {
- IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Not used, will be removed.");
- model_data_[mk.get_index()] = nullptr;
-}
-
-bool Model::get_has_data(ModelKey mk) const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Not used, will be removed.");
-  if (model_data_.size() > mk.get_index()) {
-    return model_data_[mk.get_index()];
-  } else {
-    return false;
-  }
 }
 
 void Model::remove_particle(Particle *p) {
