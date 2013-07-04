@@ -298,8 +298,10 @@ ParticleIndexes Selection::get_selected_particle_indexes() const {
   int sz = predicates_.size();
   boost::dynamic_bitset<> base(sz);
   base.set();
-  IMP_LOG_TERSE("Processing selection on " << h_ << " with predicates "
-                                           << predicates_ << std::endl);
+  if (!predicates_.empty()) {
+    IMP_LOG_TERSE("Processing selection on " << h_ << " with predicates "
+                  << predicates_ << std::endl);
+  }
   for (unsigned int i = 0; i < h_.size(); ++i) {
     ret += search(m_, h_[i], base).second;
   }
