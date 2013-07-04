@@ -40,7 +40,8 @@ RestraintSet * add_restraints(Model *model, DensityMap *dmap,
                               Particle *p,Refiner *leaves_ref,
                 const FloatKey &wei_key,
                 bool fast=false) {
-  RestraintSet *rsrs = new RestraintSet();
+  RestraintSet *rsrs = new RestraintSet(model, 1.0,
+                                        "rigid fitting restraints %1%");
    model->add_restraint(rsrs);
    //add fitting restraint
    base::Pointer<FitRestraint> fit_rs;
