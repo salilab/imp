@@ -24,6 +24,11 @@ RestraintSet::RestraintSet(Model *m, double weight, const std::string &name)
   set_weight(weight);
 }
 
+RestraintSet::RestraintSet(Model *m, const std::string &name)
+    : Restraint(m, name) {
+  set_weight(1.0);
+}
+
 RestraintSet::RestraintSet(const RestraintsTemp &rs, double weight,
                            const std::string &name)
     : Restraint(internal::get_model(rs), name) {
@@ -97,7 +102,7 @@ void RestraintSet::show_it(std::ostream &out) const {
 }
 
 void RestraintSet::on_add(Restraint *obj) {
-  if (get_is_part_of_model()) {
+  if (get_model()) {
     obj->set_model(get_model());
   }
   obj->set_was_used(true);

@@ -44,16 +44,18 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
   //! Create an empty set that is registered with the model
   RestraintSet(Model *m, double weight,
                const std::string &name = "RestraintSet %1%");
-  //! Create a set that is registered with the model
+ //! Create an empty set that is registered with the model
+  RestraintSet(Model *m,
+               const std::string &name = "RestraintSet %1%");
+   //! Create a set that is registered with the model
   RestraintSet(const RestraintsTemp &rs, double weight,
                const std::string &name = "RestraintSet %1%");
-#ifndef IMP_DOXYGEN
-  //! Create an empty set
+  /** \deprecated_at{2.1} Use the constructor that takes a Model. */
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   RestraintSet(double weight, const std::string &name = "RestraintSet %1%");
-
-  //! Create an empty set
+  /** \deprecated_at{2.1} Use the constructor that takes a Model. */
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   RestraintSet(const std::string &name = "RestraintSet %1%");
-#endif
 
   double unprotected_evaluate(DerivativeAccumulator *da) const;
   IMP_OBJECT_METHODS(RestraintSet);
