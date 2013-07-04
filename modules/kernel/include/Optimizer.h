@@ -50,6 +50,7 @@ class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
 
   void set_is_optimizing_states(bool tf) const;
   static void set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o);
+  void do_set_model(Model *m);
  public:
   Optimizer(Model *m, std::string name = "Optimizer %1%");
 

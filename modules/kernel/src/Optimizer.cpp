@@ -31,7 +31,7 @@ Optimizer::Optimizer() : Object("Optimizer%1%") {
 }
 
 Optimizer::Optimizer(Model *m, std::string name) : Object(name) {
-  if (m) set_model(m);
+  if (m) do_set_model(m);
   set_was_used(true);
   min_score_ = -std::numeric_limits<double>::max();
   stop_on_good_score_ = false;
@@ -39,12 +39,18 @@ Optimizer::Optimizer(Model *m, std::string name) : Object(name) {
 
 Optimizer::~Optimizer() {}
 
-void Optimizer::set_model(Model *m) {
+void Optimizer::do_set_model(Model *m) {
   IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
                                     "Use the constructor that takes a model.");
   cache_ = m->create_model_scoring_function();
   cache_->set_was_used(true);
   model_ = m;
+}
+
+void Optimizer::set_model(Model *m) {
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
+                                    "Use the constructor that takes a model.");
+  do_set_model(m);
 }
 
 void Optimizer::update_states() const {
