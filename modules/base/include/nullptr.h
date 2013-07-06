@@ -9,6 +9,7 @@
 #define IMPBASE_NULLPTR_H
 
 #include <IMP/base/base_config.h>
+#include <boost/config.hpp>
 
 namespace IMP {
 #ifdef IMP_DOXYGEN
@@ -25,7 +26,7 @@ namespace IMP {
 */
 const std::nullptr_t nullptr;
 
-#elif !IMP_COMPILER_HAS_NULLPTR
+#elif defined(BOOST_NO_CXX11_NULLPTR)
 
 #if !defined(SWIG)
 
