@@ -11,17 +11,16 @@
 
 #include "symmetry_config.h"
 #include <IMP/core/MonteCarlo.h>
-#include <IMP/core/Mover.h>
+#include <IMP/core/MonteCarloMover.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/core/rigid_bodies.h>
-#include <IMP/core/mover_macros.h>
 
 IMPSYMMETRY_BEGIN_NAMESPACE
 
 //! Move a rigid body and keep it in the primitive cell of a periodic lattice
-class IMPSYMMETRYEXPORT RigidBodyMover : public core::Mover
+class IMPSYMMETRYEXPORT RigidBodyMover : public core::MonteCarloMover
 {
 public:
   /** The rigid body is rotated and translated to move
@@ -35,8 +34,11 @@ public:
   RigidBodyMover(core::RigidBody d, Particles ps, Float max_tr, Float max_ang,
                  algebra::Vector3Ds ctrs, algebra::Transformation3Ds trs);
 
-  IMP_MOVER(RigidBodyMover);
-
+ protected:
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
+  virtual void do_reject() IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(RigidBodyMover);
 private:
   core::RigidBody d_;
   Particles ps_;

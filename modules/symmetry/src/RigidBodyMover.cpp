@@ -16,7 +16,7 @@ RigidBodyMover::RigidBodyMover(core::RigidBody d, Particles ps,
                         Float max_tr, Float max_ang,
                         algebra::Vector3Ds ctrs,
                         algebra::Transformation3Ds trs):
-  Mover(d->get_model(), "RigidBodyMover%1%")
+  MonteCarloMover(d->get_model(), "RigidBodyMover%1%")
 {
  // master rigid body
  d_ = d;
@@ -60,13 +60,8 @@ std::vector<core::RigidBody> RigidBodyMover::get_rigid_bodies (Particles ps)
  return rbs;
 }
 
-ParticlesTemp RigidBodyMover::propose_move(Float f) {
-  IMP_LOG(VERBOSE,"RigidBodyMover::f is  : " << f <<std::endl);
-  {
-    ::boost::uniform_real<> rand(0,1);
-    double fc =rand(base::random_number_generator);
-    if (fc > f) return ParticlesTemp();
-  }
+core::MonteCarloMoverResult RigidBodyMover::do_propose() {
+  IMP_OBJECT_LOG;
 
   // store last reference frame of master rigid body
   oldtr_= d_.get_reference_frame().get_transformation_to();
@@ -143,10 +138,10 @@ ParticlesTemp RigidBodyMover::propose_move(Float f) {
   ParticlesTemp ret=ParticlesTemp(1, d_);
   ret.insert(ret.end(), ps_.begin(), ps_.end());
 
-  return ret;
+  return core::MonteCarloMoverResult(kernel::get_indexes(ret), 1.0);
 }
 
-void RigidBodyMover::reset_move() {
+void RigidBodyMover::do_reject() {
  // reset reference frame of master rb
  d_.set_reference_frame(algebra::ReferenceFrame3D(oldtr_));
  oldtr_ = algebra::Transformation3D();
@@ -160,15 +155,10 @@ void RigidBodyMover::reset_move() {
  }
 }
 
-ParticlesTemp RigidBodyMover::get_output_particles() const {
+ModelObjectsTemp RigidBodyMover::do_get_inputs() const {
  ParticlesTemp ret=ParticlesTemp(1, d_);
  ret.insert(ret.end(), ps_.begin(), ps_.end());
  return ret;
-}
-
-void RigidBodyMover::do_show(std::ostream &out) const {
-  out << "max translation: " << max_tr_ << "\n";
-  out << "max angle: " << max_ang_ << "\n";
 }
 
 IMPSYMMETRY_END_NAMESPACE

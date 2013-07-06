@@ -11,14 +11,13 @@
 
 #include "symmetry_config.h"
 #include <IMP/core/MonteCarlo.h>
-#include <IMP/core/Mover.h>
+#include <IMP/core/MonteCarloMover.h>
 #include <IMP/algebra.h>
-#include <IMP/core/mover_macros.h>
 
 IMPSYMMETRY_BEGIN_NAMESPACE
 
 //! Move a particle and keep it in the primitive cell of a periodic lattice
-class IMPSYMMETRYEXPORT BallMover : public core::Mover
+class IMPSYMMETRYEXPORT BallMover : public core::MonteCarloMover
 {
 public:
   /** The particle is moved within a primitive cell of a periodic lattice
@@ -31,8 +30,12 @@ public:
   BallMover(Particle *p, Particles ps, Float max_tr,
              algebra::Vector3Ds ctrs, algebra::Transformation3Ds trs);
 
-  IMP_MOVER(BallMover);
 
+protected:
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
+  virtual void do_reject() IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(BallMover);
 private:
   //! Master particle
   IMP::base::OwnerPointer<Particle> p_;

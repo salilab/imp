@@ -1,11 +1,13 @@
- /**
+/**
  *  \file BallMover.cpp
  *  \brief A mover that keeps a particle in a box
  *
  *  Copyright 2013 IMP Inventors. All rights reserved.
  *
  */
+
 #include <IMP/symmetry/BallMover.h>
+#include <IMP/base/log_macros.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra.h>
 
@@ -13,18 +15,13 @@ IMPSYMMETRY_BEGIN_NAMESPACE
 
 BallMover::BallMover(Particle *p, Particles ps, Float max_tr,
                      algebra::Vector3Ds ctrs, algebra::Transformation3Ds trs):
-  Mover(p->get_model(), "BallMover%1%"),
+  MonteCarloMover(p->get_model(), "BallMover%1%"),
   p_(p), ps_(ps), max_tr_(max_tr), ctrs_(ctrs), trs_(trs) {
   // check that p_ is among ps
   }
 
-ParticlesTemp BallMover::propose_move(Float f) {
-  IMP_LOG(VERBOSE,"BallMover:: propose move f is  : " << f <<std::endl);
-  {
-    ::boost::uniform_real<> rand(0,1);
-    double fc =rand(base::random_number_generator);
-    if (fc > f) return ParticlesTemp();
-  }
+core::MonteCarloMoverResult BallMover::do_propose() {
+  IMP_OBJECT_LOG;
 
   // random displacement
   algebra::Vector3D displacement =
@@ -70,27 +67,23 @@ ParticlesTemp BallMover::propose_move(Float f) {
   ret.push_back(p_);
   ret.insert(ret.end(), ps_.begin(), ps_.end());
 
-  return ret;
+  return core::MonteCarloMoverResult(kernel::get_indexes(ret), 1.0);
 }
 
-ParticlesTemp BallMover::get_output_particles() const {
+ModelObjectsTemp BallMover::do_get_inputs() const {
  ParticlesTemp ret;
  ret.push_back(p_);
  ret.insert(ret.end(), ps_.begin(), ps_.end());
  return ret;
 }
 
-void BallMover::reset_move() {
+void BallMover::do_reject() {
  // master particle old coordinates
  core::XYZ(p_).set_coordinates(oldcoord_);
  // slave particles old coordinates
  for(unsigned i=0;i<ps_.size();++i){
     core::XYZ(ps_[i]).set_coordinates(oldcoords_[i]);
  }
-}
-
-void BallMover::do_show(std::ostream &out) const {
-  out << "max translation: " << max_tr_ << "\n";
 }
 
 IMPSYMMETRY_END_NAMESPACE
