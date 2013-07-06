@@ -93,10 +93,30 @@ MonteCarloMoverResult MonteCarlo::do_move() {
   return MonteCarloMoverResult(ret, prob);
 }
 
+namespace {
+  // accept the moves if not reset
+  // to make things excpetion safe
+  struct MoverCleanup {
+    MonteCarlo* mc_;
+    MoverCleanup(MonteCarlo *mc): mc_(mc) {}
+    void reset() { mc_ = NULL;}
+    ~MoverCleanup() {
+      if (mc_) {
+        for (MonteCarlo::MoverIterator it = mc_->movers_begin();
+             it != mc_->movers_end(); ++it) {
+          (*it)->accept();
+        }
+      }
+    }
+  };
+}
+
 void MonteCarlo::do_step() {
   MonteCarloMoverResult moved = do_move();
+  MoverCleanup cleanup(this);
   double energy = do_evaluate(moved.get_moved_particles());
   do_accept_or_reject_move(energy, moved.get_proposal_ratio());
+  cleanup.reset();
 }
 
 ParticleIndexes MonteCarlo::get_movable_particles() const {
@@ -179,6 +199,7 @@ MonteCarloWithLocalOptimization::MonteCarloWithLocalOptimization(
 
 void MonteCarloWithLocalOptimization::do_step() {
   MonteCarloMoverResult moved = do_move();
+  MoverCleanup cleanup(this);
   IMP_LOG_TERSE("MC Performing local optimization from "
                 << do_evaluate(moved.get_moved_particles()) << std::endl);
   // non-Mover parts of the model can be moved by the local optimizer
@@ -188,6 +209,7 @@ void MonteCarloWithLocalOptimization::do_step() {
   if (!do_accept_or_reject_move(ne, moved.get_proposal_ratio())) {
     cs->swap_configuration();
   }
+  cleanup.reset();
 }
 
 MonteCarloWithBasinHopping::MonteCarloWithBasinHopping(Optimizer *opt,
@@ -196,12 +218,14 @@ MonteCarloWithBasinHopping::MonteCarloWithBasinHopping(Optimizer *opt,
 
 void MonteCarloWithBasinHopping::do_step() {
   MonteCarloMoverResult moved = do_move();
+  MoverCleanup cleanup(this);
   IMP_LOG_TERSE("MC Performing local optimization from "
                 << do_evaluate(moved.get_moved_particles()) << std::endl);
   base::Pointer<Configuration> cs = new Configuration(get_model());
   double ne = get_local_optimizer()->optimize(get_number_of_steps());
   cs->swap_configuration();
   do_accept_or_reject_move(ne, moved.get_proposal_ratio());
+  cleanup.reset();
 }
 
 IMPCORE_END_NAMESPACE
