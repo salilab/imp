@@ -16,7 +16,7 @@ class Tests(IMP.test.TestCase):
         chi2.add_configuration(data_ref, sigma_ref, w_ref)
         self.assertAlmostEqual(w_ref,chi2.get_weight(0), delta=0.00001)
         self.assertEqual(1,chi2.get_number_of_items())
-        data = chi2.get_data(0); sigma = chi2.get_stddev(0)
+        data = chi2.get_data(0); sigma = chi2.get_standard_deviation(0)
         for i in range(nitems):
             self.assertAlmostEqual(data[i],data_ref[i],delta=0.00001)
             self.assertAlmostEqual(sigma[i],sigma_ref[i],delta=0.00001)
@@ -53,7 +53,7 @@ class Tests(IMP.test.TestCase):
             for i in range(nitems):
                 dist_ref += (data[i]-data_exp[i]) * (data[i]-data_exp[i]) / sigma[i] / sigma[i]
             dist_ref /= float(nitems)
-            dist = chi2.get_chisquare_exp(0)
+            dist = chi2.get_chi_square_experimental(0)
             self.assertAlmostEqual(dist_ref, dist, delta=0.00001)
 
 if __name__ == '__main__':
