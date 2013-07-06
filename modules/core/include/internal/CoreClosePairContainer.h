@@ -41,12 +41,9 @@ class IMPCOREEXPORT CoreClosePairContainer
   void do_incremental();
   void do_rebuild();
 
- protected:
+ public:
   virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
   virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
-  IMP_OBJECT_METHODS(CoreClosePairContainer);
-
- public:
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual void do_before_evaluate() IMP_OVERRIDE;
 
@@ -58,8 +55,6 @@ class IMPCOREEXPORT CoreClosePairContainer
                   , , );
 
   void clear_caches() { first_call_ = true; }
-
- public:
   double get_slack() const { return slack_; }
   double get_distance() const { return distance_; }
   void update() { do_before_evaluate(); }
@@ -85,6 +80,7 @@ class IMPCOREEXPORT CoreClosePairContainer
     }
     return ret;
   }
+  IMP_OBJECT_METHODS(CoreClosePairContainer);
 };
 
 IMP_OBJECTS(CoreClosePairContainer, CoreClosePairContainers);
