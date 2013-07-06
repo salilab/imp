@@ -38,8 +38,7 @@ public:
   }
   //! Set the probability of a component to be located at each anchor position
   /**
-     \param[in] comp_ind the component index
-     \param[in] comp_cen the position of the component centroid
+     \param[in] p
      \param[in] sols the fitting solutions of the component
    */
   void set_particle_probabilities_on_anchors(

@@ -67,7 +67,7 @@ def get_components_placement_scores(assembly, native_assembly, align=False):
         @param native_assembly An atom.Molecule object with the native
                         conformation. Obviously the atoms in assembly and
                         native_assembly must be the same.
-        @param if True, the coordinates are aligned before the score is
+        @param align if True, the coordinates are aligned before the score is
                calculated.
         @return The function returns 2 lists. The first list contains the
                 placement distances of the children. The second list contains

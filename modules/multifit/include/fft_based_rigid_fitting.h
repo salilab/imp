@@ -159,8 +159,10 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
      \param[in] mol2fit the molecule to fit. The molecule has to be a rigid body
      \param[in] angle_sampling_interval_rad sample the mol
                 within the range of  +- this angle
+     \param[in] max_angle_sampling_rad
      \param[in] max_translation sample the mol within +-
                                 this translation is all directions
+     \param[in] num_fits_to_report
      \param[in] cluster_fits if true the fits are clustered.
                 Not recommended for refinement mode
      \param[in] num_angle_per_voxel number of rotations to save per voxel
