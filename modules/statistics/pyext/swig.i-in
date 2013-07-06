@@ -17,6 +17,8 @@ IMP_SWIG_OBJECT(IMP::statistics, ConfigurationSetRMSDMetric, ConfigurationSetRMS
 IMP_SWIG_OBJECT(IMP::statistics, RecursivePartitionalClusteringMetric, RecursivePartitionalClusteringMetrics);
 IMP_SWIG_OBJECT(IMP::statistics, RecursivePartitionalClusteringEmbedding, RecursivePartitionalClusteringEmbeddings);
 IMP_SWIG_OBJECT(IMP::statistics, ChiSquareMetric, ChiSquareMetrics);
+IMP_SWIG_VALUE(IMP::statistics,GaussianComponent,GaussianComponents);
+IMP_SWIG_VALUE(IMP::statistics,GaussianMixtureModel,GaussianMixtureModels);
 
 %include "IMP/statistics/PartitionalClustering.h"
 %include "IMP/statistics/Embedding.h"
@@ -32,6 +34,8 @@ IMP_SWIG_OBJECT(IMP::statistics, ChiSquareMetric, ChiSquareMetrics);
 %include "IMP/statistics/utility.h"
 %include "IMP/statistics/RecursivePartitionalClusteringEmbedding.h"
 %include "IMP/statistics/RecursivePartitionalClusteringMetric.h"
+%include "IMP/statistics/GaussianComponent.h"
+%include "IMP/statistics/GaussianMixtureModel.h"
 
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::statistics, Histogram);
 %define IMP_SWIG_STATISTICS_HISTOGRAM_TEMPLATE(DD, NN)
