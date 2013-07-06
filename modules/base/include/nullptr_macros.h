@@ -10,7 +10,7 @@
 
 #include <IMP/base/base_config.h>
 
-#if !defined(BOOST_NO_CXX11_NULLPTR)
+#if !defined(BOOST_NO_CXX11_NULLPTR)  && !defined(BOOST_NO_NULLPTR)
 #define IMP_NULLPTR nullptr
 #define IMP_NULLPTR_T std::nullptr_t
 #else

@@ -26,7 +26,8 @@ namespace IMP {
 */
 const std::nullptr_t nullptr;
 
-#elif defined(BOOST_NO_CXX11_NULLPTR)
+  // depending on boost version
+#elif defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)
 
 #if !defined(SWIG)
 
