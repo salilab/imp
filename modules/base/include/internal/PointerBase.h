@@ -67,7 +67,7 @@ struct GetPointer {
   static O* get_pointer(const OO& o) { return o; }
   static const O* get_const_pointer(const OO& o) { return o; }
 };
-#if !IMP_COMPILER_HAS_NULLPTR
+#if defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)
 template <class O, class OO>
 struct GetPointer<O, OO,
                   typename boost::enable_if<boost::mpl::and_<
@@ -238,7 +238,7 @@ class PointerBase {
     }
     return *this;
   }
-#if !IMP_COMPILER_HAS_NULLPTR
+#if defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)
   PointerBase<Traits>& operator=(nullptr_t) {
     set_pointer(nullptr);
     return *this;

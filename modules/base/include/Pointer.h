@@ -91,7 +91,7 @@ struct Pointer : internal::PointerBase<internal::RefCountedPointerTraits<O> > {
     P::operator=(o);
     return *this;
   }
-#if !IMP_COMPILER_HAS_NULLPTR
+#if defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)
   base::Pointer<O>& operator=(nullptr_t o) {
     P::operator=(o);
     return *this;
@@ -128,7 +128,7 @@ struct OwnerPointer : internal::PointerBase<internal::OwnerPointerTraits<O> > {
     P::operator=(o);
     return *this;
   }
-#if !IMP_COMPILER_HAS_NULLPTR
+#if defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)
   base::OwnerPointer<O>& operator=(nullptr_t o) {
     P::operator=(o);
     return *this;
