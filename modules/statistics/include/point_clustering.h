@@ -10,6 +10,7 @@
 #define IMPSTATISTICS_POINT_CLUSTERING_H
 
 #include <IMP/statistics/statistics_config.h>
+#include "GaussianMixtureModel.h"
 #include "PartitionalClusteringWithCenter.h"
 #include "Embedding.h"
 
@@ -48,6 +49,12 @@ IMPSTATISTICSEXPORT PartitionalClusteringWithCenter *
  */
 IMPSTATISTICSEXPORT PartitionalClustering *create_centrality_clustering(
     Embedding *d, double far, int k);
+
+/** Create Gaussian mixture model from some points
+ */
+IMPSTATISTICSEXPORT GaussianMixtureModel
+    create_gaussian_mixture_model(Embedding *d, int k);
+
 
 IMPSTATISTICS_END_NAMESPACE
 

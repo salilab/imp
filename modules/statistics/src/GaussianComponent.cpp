@@ -222,19 +222,19 @@ void GaussianComponent::update(const std::vector<Array1DD> &data,
 }
 
 //! Transform a 3D Gaussian to an ellipdoid
-IMP::algebra::Ellipsoid3D get_ellipsoid3D(const GaussianComponent &gc) {
-  IMP_INTERNAL_CHECK(gc.get_dim()==3,"The Gaussian is not of 3D");
-  Array1DD mean=gc.get_mean();
-  Array2DD sigma=gc.get_sigma();
+IMP::algebra::Ellipsoid3D get_ellipsoid3D(GaussianComponent * gc) {
+  IMP_INTERNAL_CHECK(gc->get_dim()==3,"The Gaussian is not of 3D");
+  Array1DD mean=gc->get_mean();
+  Array2DD sigma=gc->get_sigma();
   return IMP::algebra::Ellipsoid3D(
         IMP::algebra::Vector3D(mean[0],mean[1],mean[2]),
         sigma[0][0],sigma[1][1],sigma[2][2],
         IMP::algebra::get_identity_rotation_3d());
 }
 
-IMP::algebra::Sphere3D get_sphere3D(const GaussianComponent &gc) {
-  IMP_INTERNAL_CHECK(gc.get_dim()==3,"The Gaussian is not of 3D");
-  Array1DD mean=gc.get_mean();
+IMP::algebra::Sphere3D get_sphere3D(GaussianComponent * gc) {
+  IMP_INTERNAL_CHECK(gc->get_dim()==3,"The Gaussian is not of 3D");
+  Array1DD mean=gc->get_mean();
   return IMP::algebra::Sphere3D(
             IMP::algebra::Vector3D(mean[0],mean[1],mean[2]),5.);
 }

@@ -35,10 +35,10 @@ class IMPSTATISTICSEXPORT GaussianMixtureModel :
   GaussianMixtureModel(statistics::internal::DataPoints *data,int k);
   ~GaussianMixtureModel() {}
 
-  base::Pointer<GaussianComponent> get_gaussian_component(int i) {
+ GaussianComponent * get_gaussian_component(int i) {
     return components_[i];
   }
-  void set_gaussian_component(base::Pointer<GaussianComponent> g,int i) {
+  void set_gaussian_component(GaussianComponent * g,int i) {
     components_[i]=g;
     //todo - set invalid
   }
@@ -157,7 +157,7 @@ protected:
        //to belong to each of the clusters
   std::vector<base::Pointer<GaussianComponent> > components_;
   friend class HierarchicalGaussianMixtureModel;
-  const double GMM_EPS=0.00000000000000000000001; //TODO - change?
+  static const double GMM_EPS=0.00000000000000000000001; //TODO - change?
 };
 IMP_VALUES(GaussianMixtureModel, GaussianMixtureModels);
 

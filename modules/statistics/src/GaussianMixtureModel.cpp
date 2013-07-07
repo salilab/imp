@@ -51,9 +51,11 @@ Array1DD GaussianMixtureModel::get_center() const
 }
 
 void GaussianMixtureModel::setup() {
-  //calculate the maximum value for the first attribute
+  //calculate the min/max value for the first attribute
   double max_val=-1.*INT_MAX;
   double min_val=1.*INT_MAX;
+  IMP_LOG(VERBOSE,"GMM setup "<<std::endl);
+
   for(unsigned int i=0;i<data_n_;i++) {
     if ((*data_)[i][0] > max_val) {
       max_val = (*data_)[i][0];
@@ -62,24 +64,46 @@ void GaussianMixtureModel::setup() {
       min_val = (*data_)[i][0];
     }
   }
+
+  // setup k_means, which are initial centers for the GMM.
+  //  bin points uniformly within range of first coordinate
+  // TODO: allow input of these initial values, or 3D binning,
+  //   or find local maxima in 3d histo, etc
   std::vector<Array1DD> k_means;
   for(unsigned int k=0;k<k_;k++) {
     k_means.push_back(Array1DD(dim_,0.));
   }
-
   Array1DD k_means_n = Array1DD(k_,0.);
   std::vector<int> mapping;
+  IMP_LOG(VERBOSE,"min val: "<<min_val<<" max val: "<<max_val<<" denom "
+          <<(max_val-min_val)/k_<<std::endl);
   for(unsigned int i=0;i<data_n_;i++) {
     int ki = (int)floor(((*data_)[i][0]-min_val)/((max_val-min_val)/k_+0.0001));
+    IMP_LOG(VERBOSE,"First coord "<<(*data_)[i][0]<<" frac: "
+            <<((*data_)[i][0]-min_val)/((max_val-min_val)/k_+0.0001)
+            <<" ki "<<ki<<std::endl);
     k_means[ki] = algebra::internal::TNT::add(k_means[ki],(*data_)[i]);
-    k_means_n[ki] = k_means_n[ki]++;
+    k_means_n[ki]++;
     mapping.push_back(ki);
   }
+
   std::vector<Array2DD> k_sigmas;
   for(unsigned int k=0;k<k_;k++) {
-    k_means[k] = algebra::internal::TNT::multiply(1./k_means_n[k],k_means[k]);
+    IMP_LOG(VERBOSE,"Before normalization for k"<<k<<" = "<<k_means[k]
+            <<" using factor "<<k_means_n[k]<<std::endl);
+    if (k_means_n[k]>0){
+      k_means[k] = algebra::internal::TNT::multiply(1./k_means_n[k],k_means[k]);
+    }
+    else{ //KLUGE for bad initial data
+      IMP_LOG(VERBOSE,"Using bad initial positions kluge"<<std::endl);
+      //k_means[k] = Array1DD(dim_,0.);
+      //k_means[k][0]=1;
+      k_means_n[k]++;
+    }
     Array2DD sigma(dim_,dim_,0.);
     k_sigmas.push_back(sigma);
+    IMP_LOG(VERBOSE,"After normalization for k"<<k
+            <<" = "<<k_means[k]<<std::endl);
   }
   for(unsigned int i=0;i<data_->size();i++) {
     int ki = mapping[i];
@@ -98,6 +122,7 @@ void GaussianMixtureModel::setup() {
     }
     components_.push_back(new GaussianComponent(k_means[k],
                                                 k_sigmas[k],1./k_,k));
+
     //    components_[k]->show();
   }
 }

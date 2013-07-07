@@ -11,6 +11,7 @@
 #include <IMP/statistics/internal/KMLocalSearchLloyd.h>
 #include <IMP/statistics/internal/centrality_clustering.h>
 #include <IMP/statistics/internal/TrivialPartitionalClustering.h>
+#include <IMP/statistics/internal/DataPoints.h>
 #include <IMP/algebra/vector_search.h>
 #include <IMP/algebra/standard_grids.h>
 #include <IMP/algebra/geometric_alignment.h>
@@ -225,5 +226,16 @@ PartitionalClustering *create_centrality_clustering(Embedding *d, double far,
   }
   return internal::get_centrality_clustering(g, k);
 }
+
+GaussianMixtureModel create_gaussian_mixture_model(Embedding *d, int k){
+  IMP_LOG(VERBOSE,"Got "<<d->get_number_of_items()<<" points."<<std::endl);
+  IMP_NEW(internal::XYZDataPoints,dps,(d->get_points()));
+  IMP_LOG(VERBOSE,"Created XYZDataPoints with "<<
+          dps->get_number_of_data_points()<<" points."<<std::endl);
+  GaussianMixtureModel gmm(dps,k);
+  gmm.run();
+  return gmm;
+}
+
 
 IMPSTATISTICS_END_NAMESPACE

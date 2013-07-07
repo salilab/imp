@@ -88,8 +88,8 @@ protected:
 IMP_OBJECTS(GaussianComponent, GaussianComponents);
 
 //! Transform a 3D Gaussian to an ellipsoid
-IMP::algebra::Ellipsoid3D get_ellipsoid3D(const GaussianComponent &gc);
-IMP::algebra::Sphere3D get_sphere3D(const GaussianComponent &gc);
+IMP::algebra::Ellipsoid3D get_ellipsoid3D(GaussianComponent * gc);
+IMP::algebra::Sphere3D get_sphere3D(GaussianComponent * gc);
 
 // GaussianComponent * read_gaussian_component(const stringstream &data) {
 // }
