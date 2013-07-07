@@ -345,8 +345,7 @@ write_pdb("models")
 nsteps_int=100
 nsteps_ext=100
 
-cg=IMP.core.ConjugateGradients()
-cg.set_model(m)
+cg=IMP.core.ConjugateGradients(m)
 
 number_of_steps = 10000
 
