@@ -27,20 +27,20 @@ class Test(IMP.test.TestCase):
 
     def test_propose(self):
         for i in range(100):
-            ps=self.bmv.propose_move(1.0)
+            ps=self.bmv.propose(1.0)
             self.assertEqual(len(ps), len(self.ps))
             new0 = IMP.core.XYZ(self.ps[0]).get_coordinates()
             new1 = IMP.core.XYZ(self.ps[1]).get_coordinates()
             dist = IMP.algebra.get_distance(new0,new1)
             self.assertTrue(dist<1.0)
-            self.bmv.reset_move()
+            self.bmv.reject()
 
     def test_reject(self):
         old=[]
         for p in self.ps:
             old.append(IMP.core.XYZ(p).get_coordinates())
-        self.bmv.propose_move(1.0)
-        self.bmv.reset_move()
+        self.bmv.propose(1.0)
+        self.bmv.reject()
         new=[]
         for p in self.ps:
             new.append(IMP.core.XYZ(p).get_coordinates())
