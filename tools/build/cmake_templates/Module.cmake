@@ -43,11 +43,15 @@ if(${status} EQUAL 0)
     set(IMP_%(NAME)s_DOC "IMP.%(name)s-doc" CACHE INTERNAL "" FORCE)
 
     list(APPEND IMP_DOC_DEPENDS "${IMP_%(NAME)s_DOC}")
+    list(REMOVE_DUPLICATES IMP_DOC_DEPENDS)
     set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} CACHE INTERNAL "" FORCE)
+  else()
+    set(IMP_%(NAME)s_DOC "" CACHE INTERNAL "" FORCE)
   endif(IMP_DOXYGEN_FOUND)
 
   list(APPEND imp_%(name)s_libs %(modules)s)
   list(APPEND imp_%(name)s_libs %(dependencies)s)
+  list(REMOVE_DUPLICATES imp_%(name)s_libs)
   %(subdirs)s
   set(IMP_%(NAME)s "IMP.%(name)s" CACHE INTERNAL "" FORCE)
 else()

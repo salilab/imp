@@ -45,6 +45,8 @@ set(IMP_TIMEOUT_FACTOR ${timeout_factor} CACHE STRING "A factor to scale the tes
 
 include(FindCurrentDoxygen)
 
+# clear list
+set(IMP_DOC_DEPENDS "" CACHE INTERNAL "")
 if(${IMP_DOXYGEN_FOUND})
 imp_execute_process("setup_doxygen" ${PROJECT_BINARY_DIR} COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_doxygen.py "--source=${PROJECT_SOURCE_DIR}")
 endif()
