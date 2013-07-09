@@ -38,9 +38,17 @@ def check_readme():
             print >> sys.stderr, app, "does not."
             exit(1)
 
+def check_submodules():
+    path = os.path.join("modules", "rmf", "dependency", "RMF_source", "README.md")
+    if not os.path.exists(path):
+        print >> sys.stderr, "Could not find RMF source in", path
+        print >> sys.stderr, "You need to run ./setup_git.py first."
+        exit(1)
+
 def main():
     check_dependencies()
     check_readme()
+    check_submodules()
 
 if __name__ == '__main__':
     main()
