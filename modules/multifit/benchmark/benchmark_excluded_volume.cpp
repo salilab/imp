@@ -43,13 +43,10 @@ namespace {
   template <class Tag>
 void test_one(std::string name,
               int seed,
-              Model *m, ScoringFunction *sf,
+              Model *,
+              ScoringFunction *sf,
               XYZ to_move,
               bool eig) {
-  RestraintsTemp rs
-    = get_restraints(RestraintsTemp(1, m->get_root_restraint_set()));
-  Floats weights(rs.size(), 1);
-
   IMP::algebra::BoundingBox3D bb
     = IMP::algebra::BoundingBox3D(IMP::algebra::Vector3D(-100,-100,-100),
                                   IMP::algebra::Vector3D( 100, 100, 100));

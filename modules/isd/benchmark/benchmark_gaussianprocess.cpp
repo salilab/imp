@@ -130,15 +130,17 @@ void run_benchmark(std::string profile, unsigned subs, unsigned cut)
   IMP_TIME({ m->evaluate(true); }, time);
   IMP::benchmark::report("evaluate", time, 0.);
 }
-}
 
-int main(int argc, char **argv) {
   boost::int64_t subs = -1, cut = -1;
   std::string profile;
   IMP::base::AddStringFlag fprofile("profile", "The [optional] profile",
                                     &profile);
   IMP::base::AddIntFlag fsubs("subs", "Something or another", &subs);
   IMP::base::AddIntFlag fcut("cutoff", "Something else", &cut);
+
+}
+
+int main(int argc, char **argv) {
   IMP::base::setup_from_argv(argc, argv,
                              "Benchmark a gaussian process");
   if (cut == -1) {

@@ -13,8 +13,7 @@
 #include <IMP/rmf/frames.h>
 #include <IMP/base/flags.h>
 
-int main(int argc, char **argv) {
-  try {
+namespace {
     bool recolor = false;
     double score = std::numeric_limits<double>::max();
     std::string file_type = "auto";
@@ -35,6 +34,10 @@ int main(int argc, char **argv) {
                               " f frames", &frame);
     IMP::base::AddIntFlag aiff("frame_step",
                               "If non-zero output every n frames", &frame_step);
+}
+
+int main(int argc, char **argv) {
+  try {
     IMP::Strings io
       = IMP::base::setup_from_argv(argc, argv,
                                    "Export an RMF file to a viewer",
