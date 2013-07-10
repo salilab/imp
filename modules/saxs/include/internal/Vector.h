@@ -1,11 +1,18 @@
-#ifndef IMP_VECTOR_H
-#define IMP_VECTOR_H
+/**
+ * \file Vector class for vector representation for NNLS computation
+ *
+ * Copyright (c) 2006, 2008, 2011 Rondall E. Jones, Albuquerque NM, USA.
+ * see nnls.h for details
+ *
+ */
+
+#ifndef IMPSAXS_INTERNAL_VECTOR_H
+#define IMPSAXS_INTERNAL_VECTOR_H
 
 #include "Matrix.h"
 #include "Diagonal.h"
 
-class Vector : public Matrix
-{
+class Vector : public Matrix {
 public:
   //constructors
 
@@ -101,10 +108,12 @@ public:
   //for even lengths, return average of the two in the middle
   double median() const;
 
-  //return the moving average of the elements of the vector (slow/accurate method)
+  //return the moving average of the elements of the vector
+  //(slow/accurate method)
   Vector moving_average(int w);
 
-  //return the moving average of the elements of the vector (fast/inaccurate method)
+  //return the moving average of the elements of the vector
+  //(fast/inaccurate method)
   Vector moving_average_fast(int w);
 
   //limitations
@@ -122,10 +131,12 @@ public:
   //prohibitions
 private:
   void t()                              { Matrix::xerror(9,"Vector::t()"); }
-  void del_column(int r)                  { Matrix::xerror(9,"Vector::del_rcolumn()"); }
-  void add_columns(int m)                 { Matrix::xerror(9,"Vector::add_columns()"); }
-  void append_columns(const Matrix &B ) { Matrix::xerror(9,"Vector::append_columns()"); }
-  void prepend_columns(const Matrix &B) { Matrix::xerror(9,"Vector::prepend_columns()"); }
+  void del_column(int r)       { Matrix::xerror(9,"Vector::del_rcolumn()"); }
+  void add_columns(int m)      { Matrix::xerror(9,"Vector::add_columns()"); }
+  void append_columns(const Matrix &B )
+  { Matrix::xerror(9,"Vector::append_columns()"); }
+  void prepend_columns(const Matrix &B)
+  { Matrix::xerror(9,"Vector::prepend_columns()"); }
 
 private:
   //sort elements v[m] to v[n] in increasing order.
@@ -133,9 +144,7 @@ private:
   //If carry is true then the integer array p is carried along.
   //The array p must be the same length as v, and
   //the integer work array q must be at least as large as p.
-  static void sort(double *v, double *w, bool carry, int *p, int *q, int m, int n);
+  static void sort(double *v, double *w, bool carry, int *p,int *q,int m,int n);
 };
 
-
-
-#endif /* IMP_VECTOR_H */
+#endif /* IMPSAXS_INTERNAL_VECTOR_H */

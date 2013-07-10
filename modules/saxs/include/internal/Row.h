@@ -1,11 +1,18 @@
-#ifndef IMP_ROW_H
-#define IMP_ROW_H
+/**
+ * \file Row class for matrix row representation for NNLS computation
+ *
+ * Copyright (c) 2006, 2008, 2011 Rondall E. Jones, Albuquerque NM, USA.
+ * see nnls.h for details
+ *
+ */
+
+#ifndef IMPSAXS_INTERNAL_ROW_H
+#define IMPSAXS_INTERNAL_ROW_H
 
 #include "Matrix.h"
 #include "Diagonal.h"
 
-class Row : public Matrix
-{
+class Row : public Matrix {
 public:
   //constructors
 
@@ -70,7 +77,6 @@ private:
   void append_rows(const Matrix &B) { Matrix::xerror(9,"Row::append_rows()"); }
   void prepend_rows(const Matrix &B){ Matrix::xerror(9,"Row::prepend_rows()"); }
 
-};  //end class Row
+};
 
-
-#endif /* IMP_ROW_H */
+#endif /* IMPSAXS_INTERNAL_ROW_H */

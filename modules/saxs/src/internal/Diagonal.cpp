@@ -1,3 +1,11 @@
+/**
+ * \file Diagonal class for Diagonal matrix representation for NNLS computation
+ *
+ * Copyright (c) 2006, 2008, 2011 Rondall E. Jones, Albuquerque NM, USA.
+ * see nnls.h for details
+ *
+ */
+
 #include <IMP/saxs/internal/Diagonal.h>
 
 #include <cmath>
@@ -405,7 +413,6 @@ Matrix operator * (const Diagonal &D , const Matrix &B) {
   //any extra rows remain at 0.0
   return C;
 }
-
 
 //create a full Matrix of the same shape as D
 //with diagonal elements taken from D and zeros otherwise

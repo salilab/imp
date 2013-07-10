@@ -1,3 +1,11 @@
+/**
+ * \file nnls.cpp NNLS computation
+ *
+ * Copyright (c) 2006, 2008, 2011 Rondall E. Jones, Albuquerque NM, USA.
+ * see nnls.h for details
+ *
+ */
+
 #include <IMP/saxs/internal/nnls.h>
 
 #include <IMP/saxs/internal/Row.h>
@@ -138,8 +146,8 @@ static void svd (const Matrix& Arg, Matrix& U, Diagonal& s, Matrix& V) {
 
   //---end of interface changes
 
-  int wantu = 1;  					// boolean
-  int wantv = 1;  					// boolean
+  int wantu = 1;  // boolean
+  int wantv = 1;  // boolean
   int i=0, j=0, k=0;
 
   // Reduce A to bidiagonal form, storing the diagonal elements

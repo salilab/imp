@@ -1,3 +1,12 @@
+/**
+ * \file WeightedProfileFitter.cpp
+ * \brief
+ *
+ * \authors Dina Schneidman
+ * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *
+ */
+
 #include <IMP/saxs/WeightedProfileFitter.h>
 
 #include <IMP/saxs/internal/nnls.h>
@@ -24,7 +33,8 @@ Float WeightedProfileFitter::compute_score(
   int n = exp_profile_.size();
 
   // no need to compute weighted profile for ensemble of size 1
-  if(m == 1) return ProfileFitter::compute_score(*profiles[0], false, fit_file_name);
+  if(m == 1)
+    return ProfileFitter::compute_score(*profiles[0], false, fit_file_name);
 
   Matrix A(n,m); // for intensities
   for(int j=0; j<m; j++) {
@@ -54,7 +64,8 @@ Float WeightedProfileFitter::compute_score(
     weights_sum += x[i];
   }
 
-  double chi = ProfileFitter::compute_score(weighted_profile, false, fit_file_name);
+  double chi =
+    ProfileFitter::compute_score(weighted_profile, false, fit_file_name);
   std::cout << "Chi = " << chi << std::endl;
 
   double c =  ProfileFitter::compute_scale_factor(weighted_profile);

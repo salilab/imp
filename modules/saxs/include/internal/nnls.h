@@ -1,7 +1,5 @@
-#ifndef IMP_NNLS_H
-#define IMP_NNLS_H
-
-/* This code is taken from:
+/**
+   This code for non-negative least squares (NNLS) is taken from:
    http://www.rejonesconsulting.com/Overview.htm
    Version 2.15 January 2012.
 
@@ -62,6 +60,9 @@
   any such minor issue of efficiency in low level routines.
 */
 
+#ifndef IMPSAXS_INTERNAL_NNLS_H
+#define IMPSAXS_INTERNAL_NNLS_H
+
 #include "Matrix.h"
 #include "Vector.h"
 
@@ -74,4 +75,4 @@ Vector autoregn(const Matrix &A, const Vector &b);
 //Jones auto-regularization plus non-negativity constraint
 Vector autoregnn(const Matrix &A, const Vector &b, bool nonneg);
 
-#endif /* IMP_NNLS_H */
+#endif /* IMPSAXS_INTERNAL_NNLS_H */

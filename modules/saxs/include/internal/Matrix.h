@@ -1,5 +1,13 @@
-#ifndef IMP_MATRIX_H
-#define IMP_MATRIX_H
+/**
+ * \file Matrix class for matrix representation for NNLS computation
+ *
+ * Copyright (c) 2006, 2008, 2011 Rondall E. Jones, Albuquerque NM, USA.
+ * see nnls.h for details
+ *
+ */
+
+#ifndef IMPSAXS_INTERNAL_MATRIX_H
+#define IMPSAXS_INTERNAL_MATRIX_H
 
 #include <iostream>
 #include <algorithm>
@@ -20,7 +28,10 @@ private:
   friend class Vector;
 
   //internal use only
-  void checkdim(int m, int n) { if (m<0 || n<0) Matrix::xerror(4,"Matrix::checkdim"); return; }
+  void checkdim(int m, int n) {
+    if (m<0 || n<0) Matrix::xerror(4,"Matrix::checkdim");
+    return;
+  }
   void setup2(int m, int n);
   void setup() { setup2(m_,n_); }
 
@@ -36,14 +47,19 @@ public:
     else if (m==2)  std::cerr << "Dimensions do not match!" << std::endl;
     else if (m==3)  std::cerr << "Operation on an empty matrix!" << std::endl;
     else if (m==4)  std::cerr << "Invalid dimensions!" << std::endl;
-    else if (m==5)  std::cerr << "Taking vector norm of non-vector! Use matrix norm?" << std::endl;
+    else if (m==5)
+      std::cerr << "Taking vector norm of non-vector! Use matrix norm?"
+                << std::endl;
     else if (m==6)  std::cerr << "Divide by zero!" << std::endl;
     else if (m==7)  std::cerr << "Invalid input parameter" << std::endl;
     else if (m==8)  std::cerr << "Algorithm error" << std::endl;
-    else if (m==9)  std::cerr << "Prohibited operation for Rows and Vectors!" << std::endl;
-    else if (m==10) std::cerr << "Given row is too long for matrix!" << std::endl;
+    else if (m==9)  std::cerr << "Prohibited operation for Rows and Vectors!"
+                              << std::endl;
+    else if (m==10) std::cerr << "Given row is too long for matrix!"
+                              << std::endl;
     else if (m==11) std::cerr << "Invalid argument vector!" << std::endl;
-    else if (m==12) std::cerr << "Problem is too large for current limits!" << std::endl;
+    else if (m==12) std::cerr << "Problem is too large for current limits!"
+                              << std::endl;
     else            std::cerr << "Miscellaneous error: " << m << std::endl;
     //prompt();
     exit(1);
@@ -86,7 +102,8 @@ public:
   }
 
   //count the number of arguments less than BIG
-  static int countargs(double t1, double t2, double t3, double t4, double t5, double t6, double t7, double t8, double t9, double t10) {
+  static int countargs(double t1, double t2, double t3, double t4, double t5,
+                       double t6, double t7, double t8, double t9, double t10) {
     if (t2>BIG) return 1;
     if (t3>BIG) return 2;
     if (t4>BIG) return 3;
@@ -99,7 +116,7 @@ public:
     return 10;
   }
 
-  //constructors---------------------------------------------------
+  //constructors
   //default constructor: 0 by 0 matrix
   Matrix () : m_(0), n_(0) {}
 
@@ -115,7 +132,7 @@ public:
   //copy constructor
   Matrix (const Matrix &A);
 
-  //destructors----------------------------------------------------
+  //destructors
 
   //delete all data and set size to 0 by 0
   void clear() {
@@ -126,7 +143,7 @@ public:
 
   ~Matrix () { clear(); }
 
-  //assignment-----------------------------------------------------
+  //assignment
 
   //supports for example B = 3.14;
   Matrix operator=(const double x);
@@ -134,7 +151,7 @@ public:
   //supports for example B = A;
   Matrix operator=(const Matrix &A);
 
-  //accessors------------------------------------------------------
+  //accessors
 
   //get the row dimension
   int dim1() const { return m_; }
@@ -152,23 +169,19 @@ public:
   int dsize() const { return m_ * n_ ; }
 
   //get the 2-dimensional array representing the matrix
-  void get_array(double* A) { int sz=m_*n_; for (int i=0; i<sz; i++) A[i]=data_[i]; }
+  void get_array(double* A) {
+    int sz=m_*n_;
+    for (int i=0; i<sz; i++) A[i]=data_[i];
+  }
 
   //see if the two matrices have matching dimensions ... A.matching(B)
-  bool matches(const Matrix &B) const
-  { return m_==B.m_ && n_==B.n_; }
+  bool matches(const Matrix &B) const { return m_==B.m_ && n_==B.n_; }
 
   //index----------------------------------------------------------
 
-  inline double* operator[] (int i) {
-    if (i < 0 || i >= m_) { Matrix::xerror(1,"operator[]"); }; //DELETE for no debug
-    return v_[i];
-  }
+  inline double* operator[] (int i) { return v_[i]; }
 
-  inline const double* operator[] (int i) const {
-    if (i < 0 || i >= m_) { Matrix::xerror(1,"operator[]"); }; //DELETE for no debug
-    return v_[i];
-  }
+  inline const double* operator[] (int i) const { return v_[i]; }
 
   //Alternative index form... A(i,j) rather than A[i][j].
   //This checks both the indices for proper range.
@@ -293,26 +306,26 @@ public:
   //In the following integer utilities, the values are computed as integers,
   //but the TYPE remains floating point.
 
-  //truncates each element to integer                  -2.6 --> -2.0    2.6 --> 2.0
+  //truncates each element to integer                -2.6 --> -2.0  2.6 --> 2.0
   void trunc();
 
-  //rounds each element to the nearest integer         -2.6 --> -3.0    2.6 --> 3.0
+  //rounds each element to the nearest integer       -2.6 --> -3.0  2.6 --> 3.0
   void round();
 
-  //rounds each element toward +infinity               -2.6 --> -2.0    2.6 --> 3.0
+  //rounds each element toward +infinity             -2.6 --> -2.0  2.6 --> 3.0
   void ceil();
 
-  //rounds each element to +1 or -1; zero goes to +1   -2.6 --> -1.0    2.6 --> 1.0
+  //rounds each element to +1 or -1; zero goes to +1 -2.6 --> -1.0  2.6 --> 1.0
   void signum();
 
-  //rounds each element to +1 or -1; zero stays as 0   -2.6 --> -1.0    2.6 --> 1.0
+  //rounds each element to +1 or -1; zero stays as 0 -2.6 --> -1.0  2.6 --> 1.0
   void trinity();
 
   //convert each column to percentages based on the sum of the
   //(absolute values of the) elements of the column
   void to_percentages();
 
-  //min/max/sum functions------------------------------------------------
+  //min/max/sum functions
 
   //returns the element which is algebraically largest
   double maxval() const;
@@ -320,10 +333,12 @@ public:
   //returns the element which is algebraically smallest
   double minval() const;
 
-  //returns the (absolute value of the) element which is largest in absolute value
+  //returns the (absolute value of the) element which is
+  //largest in absolute value
   double maxabs() const;
 
-  //returns the (absolute value of the) element which is smallest in absolute value
+  //returns the (absolute value of the) element which is
+  //smallest in absolute value
   double minabs() const;
 
   //returns the smallest element greater than zero
@@ -353,7 +368,7 @@ public:
   //std::cout the number of non-negative elements
   int num_non_negative() const;
 
-  //1-D norms------------------------------------------------------
+  //1-D norms
   //These methods require that the object be 1-dimensional.
   //That is, a Row, a Vector, or a Matrix of size 1 by n, or m by 1.
   //For a row v, norm(v) = sqrt(v * v').
@@ -362,20 +377,28 @@ public:
   double norm2() const;
 
   //returns norm(*this)
-  double norm () const { return sqrt(norm2()); }
+  double norm() const { return sqrt(norm2()); }
 
   //returns root-mean-square(*this)
-  double rms  () const { return sqrt(norm2()/double(std::max(m_,std::max(n_,1)))); }
+  double rms() const {
+    return sqrt(norm2()/double(std::max(m_,std::max(n_,1))));
+  }
 
   //returns the population standard deviation
-  double popstddev() const { double a=average(); Matrix d=*this - a; return d.rms(); }
+  double popstddev() const {
+    double a=average();
+    Matrix d=*this - a;
+    return d.rms();
+  }
 
   //returns the sample standard deviation
-  double samstddev() const
-  { if (m_<2) return 0.0; return popstddev()*sqrt(double(n_)/double(n_-1)); }
+  double samstddev() const {
+    if (m_<2) return 0.0;
+    return popstddev()*sqrt(double(n_)/double(n_-1));
+  }
 
-  //norms of the elements of the matrix as if it were 1-D ---------
-  //These methods NO NOdouble require that the object be 1-dimensional.
+  //norms of the elements of the matrix as if it were 1-D
+  //These methods require that the object be 1-dimensional.
 
   //returns the sum of the squares of all the elements
   double norm2_as_vector() const;
@@ -389,7 +412,7 @@ public:
   //returns root-mean-square of the matrix elements
   double rms_as_vector() const { return sqrt(norm2_as_vector()/double(m_*n_)); }
 
-  //row/column operations-------------------------------------------
+  //row/column operations
 
   //returns the dot product of two rows of *this
   double rowdot(int i,int k) const;
@@ -422,7 +445,7 @@ public:
   //sets all values in column j to zero
   void set_column_zero(int j);
 
-  //matrix shape operations----------------------------------------
+  //matrix shape operations
 
   //transposes *this
   Matrix t();
@@ -455,7 +478,7 @@ public:
   //prepend the Matrix B to the left of *this
   void prepend_columns(const Matrix &B);
 
-  //common matrices------------------------------------------------
+  //common matrices
 
   void zeros();   //set *this to all zeros
   void ones();    //set *this to all ones
@@ -472,16 +495,16 @@ public:
   //following static methods create a Matrix of the given size and
   //call the appropriate routine above to define the elements of the Matrix.
 
-  static Matrix zeros   (int m, int n) { Matrix A(m,n); A.zeros();    return A; }
-  static Matrix ones    (int m, int n) { Matrix A(m,n); A.ones();     return A; }
-  static Matrix identity(int m, int n) { Matrix A(m,n); A.identity(); return A; }
-  static Matrix iota    (int m, int n) { Matrix A(m,n); A.iota();     return A; }
-  static Matrix iotazero(int m, int n) { Matrix A(m,n); A.iotazero(); return A; }
-  static Matrix random  (int m, int n) { Matrix A(m,n); A.random();   return A; }
-  static Matrix gauss   (int m, int n) { Matrix A(m,n); A.gauss();    return A; }
-  static Matrix hilbert (int m, int n) { Matrix A(m,n); A.hilbert();  return A; }
-  static Matrix heat    (int m, int n) { Matrix A(m,n); A.heat();     return A; }
-  static Matrix laplace (int m, int n) { Matrix A(m,n); A.laplace();  return A; }
+  static Matrix zeros   (int m, int n) { Matrix A(m,n); A.zeros();   return A; }
+  static Matrix ones    (int m, int n) { Matrix A(m,n); A.ones();    return A; }
+  static Matrix identity(int m, int n) { Matrix A(m,n); A.identity();return A; }
+  static Matrix iota    (int m, int n) { Matrix A(m,n); A.iota();    return A; }
+  static Matrix iotazero(int m, int n) { Matrix A(m,n); A.iotazero();return A; }
+  static Matrix random  (int m, int n) { Matrix A(m,n); A.random();  return A; }
+  static Matrix gauss   (int m, int n) { Matrix A(m,n); A.gauss();   return A; }
+  static Matrix hilbert (int m, int n) { Matrix A(m,n); A.hilbert(); return A; }
+  static Matrix heat    (int m, int n) { Matrix A(m,n); A.heat();    return A; }
+  static Matrix laplace (int m, int n) { Matrix A(m,n); A.laplace(); return A; }
 
   //displays-------------------------------------------------------
 
@@ -505,8 +528,8 @@ public:
   //and an error estimate vector e, in an 80-column wide format
   void printAbe(const Matrix &b, const Matrix &e) const;
 
-  //print a glimpse of the matrix, the solution, x, and the right hand side vector, b,
-  //in an 80-column wide format.
+  //print a glimpse of the matrix, the solution, x, and the right
+  //hand side vector, b, in an 80-column wide format.
   //x and b must be single column or single row matrices, or a Row or Vector.
   //By default, up to 25 rows will be printed.
   void printAxb(const Matrix &x, const Matrix &b, int maxrows=25) const;
@@ -518,7 +541,8 @@ public:
   //etc
   Matrix compute_star_magnitudes() const;
 
-  //show each element as Order of Magnitude 1 to 9 or blank for smaller than 9th magnitude
+  //show each element as Order of Magnitude 1 to 9 or blank for smaller
+  //than 9th magnitude
   void print_star_magnitudes() const;
 };
 
@@ -532,4 +556,4 @@ Matrix operator - (double x, const Matrix &A);
 
 Matrix transpose (const Matrix& A);
 
-#endif /* IMP_MATRIX_H */
+#endif /* IMPSAXS_INTERNAL_MATRIX_H */

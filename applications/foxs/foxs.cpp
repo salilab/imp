@@ -332,22 +332,7 @@ constant form factor (default = false)")
         fp = pf->fit_profile(*partial_profile,
                              min_c1, max_c1, MIN_C2, MAX_C2,
                              use_offset, fit_file_name2);
-      }
-      // else if(chi_free > 0) {
-      //   double dmax = compute_max_distance(particles_vec[i]);
-      //   unsigned int ns =
-      //     IMP::algebra::get_rounded(exp_saxs_profile->get_max_q()*dmax/IMP::PI);
-      //   int K = chi_free;
-      //   IMP::saxs::ChiFreeScore cfs(ns, K);
-      //   IMP::base::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiFreeScore> >
-      //     pf = new IMP::saxs::ProfileFitter<IMP::saxs::ChiFreeScore>
-      //     (*exp_saxs_profile,&cfs);
-      //   fp = pf->fit_profile(*partial_profile,
-      //                        min_c1, max_c1, MIN_C2, MAX_C2,
-      //                        use_offset, fit_file_name2);
-
-      // }
-      else {
+      } else {
         IMP::base::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiScore> > pf =
           new IMP::saxs::ProfileFitter<IMP::saxs::ChiScore>(*exp_saxs_profile);
         fp = pf->fit_profile(*partial_profile,
@@ -356,7 +341,8 @@ constant form factor (default = false)")
         if(chi_free > 0) {
           double dmax = IMP::saxs::compute_max_distance(particles_vec[i]);
           unsigned int ns =
-            IMP::algebra::get_rounded(exp_saxs_profile->get_max_q()*dmax/IMP::PI);
+            IMP::algebra::get_rounded(
+                                    exp_saxs_profile->get_max_q()*dmax/IMP::PI);
           int K = chi_free;
           IMP::saxs::ChiFreeScore cfs(ns, K);
           // resample the profile
@@ -364,14 +350,9 @@ constant form factor (default = false)")
                                                exp_saxs_profile->get_max_q(),
                                                exp_saxs_profile->get_delta_q());
           pf->resample(*partial_profile, resampled_profile);
-          double chi_free = cfs.compute_score(*exp_saxs_profile, resampled_profile);
+          double chi_free = cfs.compute_score(*exp_saxs_profile,
+                                              resampled_profile);
           fp.set_chi(chi_free);
-        // IMP::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiFreeScore> > pf =
-        //   new IMP::saxs::ProfileFitter<IMP::saxs::ChiFreeScore>
-        //   (*exp_saxs_profile,&cfs);
-        // fp = pf->fit_profile(*partial_profile,
-        //                      min_c1, max_c1, MIN_C2, MAX_C2,
-        //                      use_offset, fit_file_name2);
        }
 
         if(interval_chi) {

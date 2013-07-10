@@ -1,3 +1,11 @@
+/**
+ * \file Matrix class for matrix representation for NNLS computation
+ *
+ * Copyright (c) 2006, 2008, 2011 Rondall E. Jones, Albuquerque NM, USA.
+ * see nnls.h for details
+ *
+ */
+
 #include <IMP/saxs/internal/Matrix.h>
 
 #include <IMP/constants.h>
@@ -383,11 +391,16 @@ double Matrix::dot (Matrix &B) const {
   return sum;
 }
 
-Matrix Matrix::get_row (int i) const
-{ Matrix r(1,n_); for (int j=0; j<n_; j++) r[0][j] = data_[i*n_ + j]; return r; }
+Matrix Matrix::get_row (int i) const {
+  Matrix r(1,n_);
+  for (int j=0; j<n_; j++) r[0][j] = data_[i*n_ + j];
+  return r;
+}
 
-Matrix Matrix::get_column (int j) const
-{ Matrix c(m_,1); for (int i=0; i<m_; i++) c[i][0] = data_[i*n_ + j]; return c; }
+Matrix Matrix::get_column (int j) const {
+  Matrix c(m_,1);
+  for (int i=0; i<m_; i++) c[i][0] = data_[i*n_ + j];
+  return c; }
 
 void Matrix::set_row (int i, double val) {
   if (i<0 || i>=m_) Matrix::xerror(1,"Matrix::set_row(i,val)");
@@ -576,7 +589,8 @@ std::ostream& operator<<(std::ostream& os, const Matrix &A) {
   int n=A.dim2();
   os << "Matrix is " << m << " rows by " << n << " columns:" << std::endl;
   for (int i=0; i<m; i++) {
-    for (int j=0; j<n; j++) os << std::setw(12) << std::setprecision(6) << A(i,j) << " ";
+    for (int j=0; j<n; j++)
+      os << std::setw(12) << std::setprecision(6) << A(i,j) << " ";
     os << std::endl;
   }
   os << std::endl;
@@ -588,14 +602,16 @@ void Matrix::print() const {
 }
 
 void Matrix::print_by_row() const {
-  std::cout << "Matrix is " << m_ << " rows by " << n_ << " columns:" << std::endl;
+  std::cout << "Matrix is " << m_ << " rows by " << n_ << " columns:"
+            << std::endl;
   for (int i=0; i<m_; i++) {
     for (int j=0; j<n_; j++) {
       if (j%5==0) {
         if (j==0) std::cout         << "Row " << std::setw(4) << i;
         else      std::cout << std::endl << "        ";
       }
-      std::cout << std::setw(12) << std::setprecision(6) << data_[i*n_+j] << " ";
+      std::cout << std::setw(12) << std::setprecision(6)
+                << data_[i*n_+j] << " ";
     }
     std::cout << std::endl;
   }
@@ -603,14 +619,16 @@ void Matrix::print_by_row() const {
 }
 
 void Matrix::print_by_column() const {
-  std::cout << "Matrix is " << m_ << " rows by " << n_ << " columns:" << std::endl;
+  std::cout << "Matrix is " << m_ << " rows by " << n_ << " columns:"
+            << std::endl;
   for (int j=0; j<n_; j++) {
     for (int i=0; i<m_; i++) {
       if (i%5==0) {
         if (i==0) std::cout         << "Col " << std::setw(4) << j;
         else      std::cout << std::endl << "        ";
       }
-      std::cout << std::setw(12) << std::setprecision(6) << data_[i*n_+j] << " ";
+      std::cout << std::setw(12) << std::setprecision(6)
+                << data_[i*n_+j] << " ";
     }
     std::cout << std::endl;
   }
@@ -623,8 +641,8 @@ void Matrix::printA() const {
   double small=0.00001;
   int m=dim1();
   int n=dim2();
-  std::cout << "Matrix is " << m << " rows by " << n << " columns:" << std::endl;
-
+  std::cout << "Matrix is " << m << " rows by " << n << " columns:"
+            << std::endl;
   int mx=m; if (mx>15) mx=15;
   int nn=n; if (nn>6) nn=6;
   for (int i=0; i<mx; i++) {
@@ -641,7 +659,7 @@ void Matrix::printA() const {
   std::cout << std::endl;
 }
 
-void Matrix::printAb(const Matrix &b) const {  //revise like following routine???
+void Matrix::printAb(const Matrix &b) const {  //revise like following routine?
   if (dmin()==0) { std::cout << "(matrix is empty)" << std::endl; return; }
   double t;
   double small=0.00001;
@@ -649,8 +667,8 @@ void Matrix::printAb(const Matrix &b) const {  //revise like following routine??
   int n=dim2();
   if (dim1() != b.dim1()) Matrix::xerror(2,"Matrix::printAb");
 
-  std::cout << "Matrix is " << m << " rows by " << n << " columns:" << std::endl;
-
+  std::cout << "Matrix is " << m << " rows by " << n << " columns:"
+            << std::endl;
   int mx=m; if (mx>15) mx=15;
   int nn=n; if (nn>5) nn=5;
   for (int i=0; i<mx; i++) {
@@ -668,7 +686,8 @@ void Matrix::printAb(const Matrix &b) const {  //revise like following routine??
     std::cout << std::endl;
   }
 
-  if (mx<m) std::cout << "          ..." << std::setw(58) << " " << "..." << std::endl;
+  if (mx<m) std::cout << "          ..." << std::setw(58) << " " << "..."
+                      << std::endl;
   std::cout << std::setprecision(0) << std::endl;
 }
 
@@ -680,7 +699,8 @@ void Matrix::printAbe(const Matrix &b, const Matrix &e)const {
   if (dim1() != b.dim1()) Matrix::xerror(2,"Matrix::printAbe");
   if (dim1() != e.dim1()) Matrix::xerror(2,"Matrix::printAbe");
 
-  std::cout << "Matrix is " << m << " rows by " << n << " columns:" << std::endl;
+  std::cout << "Matrix is " << m << " rows by " << n << " columns:"
+            << std::endl;
 
   //format is... (i is in first 2 columns)
   //0000000111111111122222222223333333333444444444455555555556666666666777777777
@@ -724,8 +744,8 @@ void Matrix::printAxb(const Matrix &x, const Matrix &b, int maxrows) const {
   if (dim2() != x.dim1()) Matrix::xerror(2,"Matrix::printAxb");
   if (dim1() != b.dim1()) Matrix::xerror(2,"Matrix::printAxb");
 
-  std::cout << "Matrix is " << m << " rows by " << n << " columns:" << std::endl;
-
+  std::cout << "Matrix is " << m << " rows by " << n << " columns:"
+            << std::endl;
   int mx=m; if (n>m) mx=n; if (mx>maxrows) mx=maxrows;
   int nn=n; if (nn>4) nn=4;
   for (int i=0; i<mx; i++) {
@@ -781,14 +801,16 @@ void Matrix::print_star_magnitudes() const {
   if (dmin()==0) { std::cout << "(matrix is empty)" << std::endl; return; }
   int m=dim1();
   int n=dim2();
-  std::cout << "Printing star magnitudes with rows= " << m << "  columns= " << n << std::endl;
+  std::cout << "Printing star magnitudes with rows= "
+            << m << "  columns= " << n << std::endl;
   double scale = this->maxabs();
   if (scale==0.0) scale = 1.0;
   std::cout << "Magnitude 1 is " << scale << " to >" << scale/10.0 << std::endl;
   Matrix B = this->compute_star_magnitudes();
   int k;
 
-  std::cout << " "; for (int j=0; j<n; j++) std::cout << "-" ; std::cout << std::endl;
+  std::cout << " "; for (int j=0; j<n; j++) std::cout << "-" ;
+  std::cout << std::endl;
   for (int i=0; i<m; i++) {
     std::cout << "|";
     for (int j=0; j<n; j++) {
@@ -798,10 +820,11 @@ void Matrix::print_star_magnitudes() const {
     }
     std::cout << "|" << std::endl;
   }
-  std::cout << " "; for (int j=0; j<n; j++) std::cout << "-" ; std::cout << std::endl;
+  std::cout << " "; for (int j=0; j<n; j++) std::cout << "-" ;
+  std::cout << std::endl;
 };
 
-//Free functions for Matrix------------------------------------------
+//Free functions for Matrix
 
 //supports 2.0+A for example...returns element[i][j] = 2.0+A[i][j]
 Matrix operator + (double x, const Matrix &A) { Matrix B(A); B+=x; return B; }
