@@ -1,5 +1,5 @@
 /**
- *  \file Profile.h   \brief A class for profile storing and computation
+ *  \file Profile.cpp   \brief A class for profile storing and computation
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -159,6 +159,7 @@ void Profile::add_errors() {
     profile_[i].error_ =
       0.03 * profile_[i].intensity_ * 5.0*(profile_[i].q_+0.001) * ra;
   }
+  experimental_ = true;
 }
 
 void Profile::add_noise(Float percentage) {
@@ -906,9 +907,9 @@ void Profile::offset(Float c) {
 
 void Profile::copy_errors(const Profile& exp_profile) {
   if(profile_.size() != exp_profile.size()) {
-    std::cerr << "Profile::copy_errors is supported "
-              << "only for profiles with the same q values!" << std::endl;
-    return;
+    IMP_THROW("Profile::copy_errors is supported "
+              << "only for profiles with the same q values!",
+              ValueException);
   }
   // assumes same q values!!!
   for (unsigned int k = 0; k < profile_.size(); k++) {

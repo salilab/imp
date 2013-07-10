@@ -22,6 +22,12 @@ namespace {
 Float ChiFreeScore::compute_score(const Profile& exp_profile,
                                   const Profile& model_profile,
                                   bool use_offset) const {
+  if(model_profile.size() != exp_profile.size()) {
+    IMP_THROW("ChiFreeScore::compute_score is supported "
+              << "only for profiles with the same q values!",
+              ValueException);
+  }
+
   const_cast<ChiFreeScore*>(this)->last_scale_updated_=false;
   // init random number generator
   typedef boost::mt19937 base_generator_type;

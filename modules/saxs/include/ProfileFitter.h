@@ -112,7 +112,7 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(ProfileFitter);
   friend class DerivativeCalculator;
 
- private:
+ protected:
   const Profile exp_profile_;   //  experimental saxs profile
   ScoringFunctionT* scoring_function_;
 };

@@ -28,8 +28,36 @@ class Tests(IMP.test.TestCase):
         total_area = 0.0
         for area in surface_area:
             total_area += area
-        print 'Area = ' + str(total_area)
+        #print 'Area = ' + str(total_area)
         self.assertAlmostEqual(total_area, 37.728, delta=0.1)
+
+    def test_surface_area2(self):
+        """Check protein surface computation by atom"""
+        m = IMP.Model()
+
+        #! read PDB
+        mp= IMP.atom.read_pdb(self.get_input_file_name('1k3l.pdb'), m,
+                              IMP.atom.NonWaterNonHydrogenPDBSelector())
+        IMP.atom.add_radii(mp)
+
+        #! select atom particles from the model
+        particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
+
+        for p in particles:
+            xyzrp = IMP.core.XYZR(p)
+            xyzrp.set_radius(0.7*xyzrp.get_radius())
+            print 'Rad = ', xyzrp.get_radius()
+
+        #! calculate surface aceesability
+        s = IMP.saxs.SolventAccessibleSurface()
+        surface_area = s.get_solvent_accessibility(IMP.core.XYZRs(particles), 1.4)
+
+        #! sum up
+        total_area = 0.0
+        for area in surface_area:
+            print 'Area = ', area
+
+
 
     def test_corner_case(self):
         """Check the surface area handle points on boundary"""

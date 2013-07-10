@@ -26,7 +26,7 @@ int main(int argc, char **argv)
     ("help", "Any number of input profiles is supported. \
 The chi value is computed relative to the first profile using its error column")
     ("input-files", po::value< std::vector<std::string> >(),
-     "input PDB and profile files")
+     "input profile files")
      ("offset,o", "use offset in fitting (default = false)")
     ;
   po::positional_options_description p;
