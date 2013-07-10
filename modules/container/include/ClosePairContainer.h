@@ -50,6 +50,12 @@ the `distance_cutoff`.
 only be value during restraint evaluation, or immediately following
 a call to Model::update().
 
+\note The ClosePairContainer is strongly associated with the
+      SingletonContainerAdaptor provided to it in the constructor.
+      For instance, if the list of particles in the adaptor changes dynamically
+      (by e.g., changing them in the SingltonContainer), the close pair
+      container will also change dynamically.
+
     Here is a simple example of using this for a nonbonded list
     \include nonbonded_interactions.py
 
@@ -68,10 +74,33 @@ class IMPCONTAINEREXPORT ClosePairContainer :
 
  public:
   //! Get the individual particles from the passed SingletonContainer
+  /**
+     Creates a close pair container associated with c.
+
+     @param c an adaptor to a SingletonContainer. Note that if the contents
+              of c change dynamically, so will the contents of the
+              ClosePairContainer.
+     @param distance_cutoff the cutoff beneath which pairs are considerd
+                            close (returned by this container)
+     @param slack the slack parameter for close pair updating
+                  (affects performance but not results - see class description)
+   */
   ClosePairContainer(SingletonContainerAdaptor c, double distance_cutoff,
                      double slack = 1);
 
   //! Get the individual particles from the passed SingletonContainer
+  /**
+     Creates a close pair container associated with c.
+
+     @param c an adaptor to a SingletonContainer. Note that if the contents
+              of c change dynamically, so will the contents of the
+              ClosePairContainer
+     @param distance_cutoff the cutoff beneath which pairs are considerd
+                            close (returned by this container)
+     @param slack the slack parameter for close pair updating
+                  (affects performance but not results - see class description)
+
+   */
   ClosePairContainer(SingletonContainerAdaptor c, double distance_cutoff,
                      core::ClosePairsFinder *cpf, double slack = 1);
 

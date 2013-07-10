@@ -130,10 +130,24 @@ class IMPKERNELEXPORT ClassnameContainerAdaptor :
 
  public:
   ClassnameContainerAdaptor() {}
+
+  /**
+     Constructs the adaptor pointing to c (so if the contents of c are changed
+     dynamically, so do the contents of the adaptor, and vice versa)
+   */
   ClassnameContainerAdaptor(ClassnameContainer *c);
+
+  /**
+     Constructs the adaptor pointing to c (so if the contents of c are changed
+     dynamically, so do the contents of the adaptor, and vice versa)
+   */
   template <class C>
   ClassnameContainerAdaptor(base::internal::PointerBase<C> c)
       : P(c) {}
+
+  /**
+     Adapts the list t to ClassnameContainer
+   */
   ClassnameContainerAdaptor(const PLURALVARIABLETYPE &t,
                             std::string name = "ClassnameContainerAdaptor%1%");
 };
