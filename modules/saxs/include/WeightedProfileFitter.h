@@ -30,11 +30,13 @@ class IMPSAXSEXPORT WeightedProfileFitter : public ProfileFitter<ChiScore> {
 
   //! compute fit score
   Float compute_score(const std::vector<IMP::saxs::Profile *>& profiles,
+                      std::vector<double>& weights= empty_weights_,
                       const std::string fit_file_name = "") const;
 
   FitParameters fit_profile(std::vector<IMP::saxs::Profile *>& partial_profiles,
                             float min_c1=0.95, float max_c1=1.05,
                             float min_c2=-2.0, float max_c2=4.0,
+                            std::vector<double>& weights = empty_weights_,
                             const std::string fit_file_name = "") const;
 private:
   FitParameters search_fit_parameters(
@@ -44,8 +46,13 @@ private:
                                       float old_chi) const;
 
  private:
-  Diagonal W_;
-  Vector Wb_;
+  internal::Diagonal W_;  // weights matrix
+
+  // weights matrix multiplied by experimental intensities vector
+  internal::Vector Wb_;
+
+  //default, when weight are not needed
+  static std::vector<double> empty_weights_;
 };
 
 IMPSAXS_END_NAMESPACE

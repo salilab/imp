@@ -12,6 +12,8 @@
 
 #include <cmath>
 
+IMPSAXS_BEGIN_INTERNAL_NAMESPACE
+
 namespace {
 
 //***********************************************************************
@@ -689,3 +691,5 @@ Vector autoreg(const Matrix &A, const Vector &b) {
 Vector autoregn(const Matrix &A, const Vector &b) {
   return autoregnn(A,b,true);
 }
+
+IMPSAXS_END_INTERNAL_NAMESPACE

@@ -10,6 +10,8 @@
 
 #include <cmath>
 
+IMPSAXS_BEGIN_INTERNAL_NAMESPACE
+
 void Diagonal::setupd(int m, int n) {
   checkdim(m,n);
   m_ = m;
@@ -424,3 +426,5 @@ Matrix full(const Diagonal &D) {
   for (int i=0; i<mm; i++) A[i][i] = D[i];
   return A;
 }
+
+IMPSAXS_END_INTERNAL_NAMESPACE

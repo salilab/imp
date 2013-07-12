@@ -66,13 +66,17 @@
 #include "Matrix.h"
 #include "Vector.h"
 
+IMPSAXS_BEGIN_INTERNAL_NAMESPACE
+
 //Jones auto-regularization (easier call)
-Vector autoreg(const Matrix &A, const Vector &b);
+IMPSAXSEXPORT Vector autoreg(const Matrix &A, const Vector &b);
 
 //Jones auto-regularization with nonnegativity (easier call)
-Vector autoregn(const Matrix &A, const Vector &b);
+IMPSAXSEXPORT Vector autoregn(const Matrix &A, const Vector &b);
 
 //Jones auto-regularization plus non-negativity constraint
-Vector autoregnn(const Matrix &A, const Vector &b, bool nonneg);
+IMPSAXSEXPORT Vector autoregnn(const Matrix &A, const Vector &b, bool nonneg);
+
+IMPSAXS_END_INTERNAL_NAMESPACE
 
 #endif /* IMPSAXS_INTERNAL_NNLS_H */

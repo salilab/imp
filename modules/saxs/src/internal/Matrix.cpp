@@ -14,6 +14,8 @@
 #include <iomanip>
 #include <cmath>
 
+IMPSAXS_BEGIN_INTERNAL_NAMESPACE
+
 void Matrix::setup2(int m, int n) {
   checkdim(m,n);
   m_ = m;
@@ -850,3 +852,5 @@ Matrix transpose (const Matrix& A) {
       B[i][j] = A[j][i];
   return B;
 }
+
+IMPSAXS_END_INTERNAL_NAMESPACE

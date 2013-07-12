@@ -12,6 +12,8 @@
 #include "Matrix.h"
 #include "Diagonal.h"
 
+IMPSAXS_BEGIN_INTERNAL_NAMESPACE
+
 class Row : public Matrix {
 public:
   //constructors
@@ -78,5 +80,7 @@ private:
   void prepend_rows(const Matrix &B){ Matrix::xerror(9,"Row::prepend_rows()"); }
 
 };
+
+IMPSAXS_END_INTERNAL_NAMESPACE
 
 #endif /* IMPSAXS_INTERNAL_ROW_H */

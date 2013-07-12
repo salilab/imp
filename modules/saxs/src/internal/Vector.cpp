@@ -10,6 +10,8 @@
 
 #include <cmath>
 
+IMPSAXS_BEGIN_INTERNAL_NAMESPACE
+
 Vector::Vector(int m, const double* a) {
   setup2(m,1);
   if (m>0) for (int i=0; i<m; i++) data_[i] = a[i];
@@ -239,3 +241,5 @@ Vector Vector::moving_average_fast(int w) {
   }
   return avg;
 }
+
+IMPSAXS_END_INTERNAL_NAMESPACE

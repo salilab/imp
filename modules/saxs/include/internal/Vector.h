@@ -12,7 +12,9 @@
 #include "Matrix.h"
 #include "Diagonal.h"
 
-class Vector : public Matrix {
+IMPSAXS_BEGIN_INTERNAL_NAMESPACE
+
+class IMPSAXSEXPORT Vector : public Matrix {
 public:
   //constructors
 
@@ -146,5 +148,7 @@ private:
   //the integer work array q must be at least as large as p.
   static void sort(double *v, double *w, bool carry, int *p,int *q,int m,int n);
 };
+
+IMPSAXS_END_INTERNAL_NAMESPACE
 
 #endif /* IMPSAXS_INTERNAL_VECTOR_H */

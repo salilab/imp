@@ -8,6 +8,8 @@
 
 #include <IMP/saxs/internal/Row.h>
 
+IMPSAXS_BEGIN_INTERNAL_NAMESPACE
+
 Row::Row(int m, const double* a) {
   setup2(1,m);
   for (int i=0; i<m; i++) data_[i] = a[i];
@@ -48,3 +50,5 @@ Row Row::operator=(const Matrix &A) {
   for (int j=0; j<n; j++) data_[j] = A[0][j];
   return *this;
 }
+
+IMPSAXS_END_INTERNAL_NAMESPACE

@@ -11,10 +11,12 @@
 
 #include "Matrix.h"
 
+IMPSAXS_BEGIN_INTERNAL_NAMESPACE
+
 //The Diagonal Matrix class.
 //This is coded completely separately to avoid any possible
 //mix of Matrix functionality with Diagonal functionality.
-class Diagonal {
+class IMPSAXSEXPORT Diagonal {
 private:
 
   int m_;
@@ -270,5 +272,7 @@ Matrix operator * (const Matrix &A, const Diagonal &D);
 Matrix operator * (const Diagonal &D , const Matrix &B);
 
 Matrix full(const Diagonal &D);
+
+IMPSAXS_END_INTERNAL_NAMESPACE
 
 #endif /* IMPSAXS_INTERNAL_DIAGONAL_H */

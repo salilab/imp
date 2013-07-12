@@ -14,10 +14,12 @@
 
 #include <math.h>
 
+IMPSAXS_BEGIN_INTERNAL_NAMESPACE
+
 static const double BIG  =1.0E30;
 static const double BIG2 =2.0E30;
 
-class Matrix {
+class IMPSAXSEXPORT Matrix {
 private:
   int m_;
   int n_;
@@ -555,5 +557,7 @@ Matrix operator * (double x, const Matrix &A);
 Matrix operator - (double x, const Matrix &A);
 
 Matrix transpose (const Matrix& A);
+
+IMPSAXS_END_INTERNAL_NAMESPACE
 
 #endif /* IMPSAXS_INTERNAL_MATRIX_H */
