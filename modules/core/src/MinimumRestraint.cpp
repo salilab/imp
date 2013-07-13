@@ -61,7 +61,7 @@ void MinimumRestraint::on_add(Restraint* r) const {
 }
 
 void MinimumRestraint::clear_caches() {
-  if (get_is_part_of_model()) {
+  if (get_model()) {
     get_model()->clear_caches();
   }
 

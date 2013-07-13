@@ -79,7 +79,7 @@ class GenericScopedRestraint : public base::RAII {
     rs_->add_restraint(ss);
   },
                       {
-    if (ss_ && ss_->get_is_part_of_model()) {
+    if (ss_ && ss_->get_model()) {
       IMP_CHECK_OBJECT(ss_);
       IMP_CHECK_OBJECT(ss_->get_model());
       rs_->remove_restraint(ss_);

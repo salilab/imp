@@ -40,7 +40,7 @@ void ScoreState::after_evaluate(DerivativeAccumulator *da) {
 }
 
 ScoreState::~ScoreState() {
-  if (get_is_part_of_model()) {
+  if (get_model()) {
     // make sure I get removed from dependency graph
     get_model()->set_has_dependencies(false);
   }

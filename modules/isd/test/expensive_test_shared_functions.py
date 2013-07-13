@@ -82,7 +82,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(rs.get_number_of_restraints(), 1)
         #self.assertIsInstance(rs.get_restraint(0), IMP.isd.JeffreysRestraint)
         self.assertAlmostEqual(rs.get_weight(), 1.0)
-        self.assertTrue(rs.get_is_part_of_model())
+        self.assertTrue(rs.get_model())
         rs=IMP.RestraintSet('test')
         rs.add_restraint(IMP.isd.JeffreysRestraint(s))
         rs=self.sfo.init_model_jeffreys([s], rs)
@@ -92,7 +92,7 @@ class Tests(IMP.test.TestCase):
         #self.assertIsInstance(rs.get_restraint(0), IMP.isd.JeffreysRestraint)
         #self.assertIsInstance(rs.get_restraint(1), IMP.isd.JeffreysRestraint)
         self.assertAlmostEqual(rs.get_weight(), 1.0)
-        self.assertFalse(rs.get_is_part_of_model())
+        self.assertFalse(rs.get_model())
     test_init_model_Jeffreys = \
              IMP.test.expectedFailure(test_init_model_Jeffreys)
 
@@ -142,7 +142,7 @@ class Tests(IMP.test.TestCase):
         #self.assertIsInstance(data_rs.get_restraint(1),
         #        IMP.isd.NOERestraint)
         self.assertAlmostEqual(data_rs.get_weight(), 1.0)
-        self.assertTrue(data_rs.get_is_part_of_model())
+        self.assertTrue(data_rs.get_model())
         #check prior restraintset
         self.assertIsInstance(prior_rs, IMP.RestraintSet)
         #self.assertEqual(prior_rs.get_type_name(), 'prior')
@@ -152,7 +152,7 @@ class Tests(IMP.test.TestCase):
         #self.assertIsInstance(prior_rs.get_restraint(1),
         #        IMP.isd.JeffreysRestraint)
         self.assertAlmostEqual(prior_rs.get_weight(), 1.0)
-        self.assertTrue(prior_rs.get_is_part_of_model())
+        self.assertTrue(prior_rs.get_model())
         #check particles
         self.assertIsInstance(sigma, IMP.isd.Scale)
         self.assertIsInstance(gamma, IMP.isd.Scale)

@@ -89,7 +89,7 @@ void Particle::show(std::ostream &out) const {
          << (get_is_active() ? " (active)" : " (dead)");
   preout << std::endl;
 
-  if (get_is_part_of_model()) {
+  if (get_model()) {
     {
       FloatKeys fks = get_float_keys();
       if (!fks.empty()) {

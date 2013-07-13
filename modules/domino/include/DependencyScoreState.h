@@ -28,22 +28,22 @@ class IMPDOMINOEXPORT DependencyScoreState : public ScoreState {
  public:
   DependencyScoreState();
   void set_input_particles(const ParticlesTemp &pt) {
-    IMP_USAGE_CHECK(!get_is_part_of_model(),
+    IMP_USAGE_CHECK(!get_model(),
                     "Must set dependencies before adding to model.");
     inputp_ = pt;
   }
   void set_output_particles(const ParticlesTemp &pt) {
-    IMP_USAGE_CHECK(!get_is_part_of_model(),
+    IMP_USAGE_CHECK(!get_model(),
                     "Must set dependencies before adding to model.");
     outputp_ = pt;
   }
   void set_input_containers(const ContainersTemp &pt) {
-    IMP_USAGE_CHECK(!get_is_part_of_model(),
+    IMP_USAGE_CHECK(!get_model(),
                     "Must set dependencies before adding to model.");
     inputc_ = pt;
   }
   void set_output_containers(const ContainersTemp &pt) {
-    IMP_USAGE_CHECK(!get_is_part_of_model(),
+    IMP_USAGE_CHECK(!get_model(),
                     "Must set dependencies before adding to model.");
     outputc_ = pt;
   }

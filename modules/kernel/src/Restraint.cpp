@@ -66,7 +66,7 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator *da) const {
 
 void Restraint::set_weight(double w) {
   if (w != weight_) {
-    if (get_is_part_of_model()) {
+    if (get_model()) {
       get_model()->set_has_dependencies(false);
     }
     weight_ = w;
@@ -75,7 +75,7 @@ void Restraint::set_weight(double w) {
 
 void Restraint::set_maximum_score(double w) {
   if (w != max_) {
-    if (get_is_part_of_model()) {
+    if (get_model()) {
       get_model()->set_has_dependencies(false);
     }
     max_ = w;
@@ -85,7 +85,7 @@ void Restraint::set_maximum_score(double w) {
 namespace {
 void check_decomposition(Restraint *in, Restraint *out) {
   IMP_INTERNAL_CHECK(
-      out->get_is_part_of_model(),
+      out->get_model(),
       "Restraint " << out->get_name() << " produced from " << in->get_name()
                    << " is not already part of model.");
   IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
