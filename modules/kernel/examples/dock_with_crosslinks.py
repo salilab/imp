@@ -254,7 +254,7 @@ def chain_pair_list(chains,nop_cutoff=0):
                 sc2.add_particles(IMP.atom.get_leaves(s))
                 aaa= IMP.container.CloseBipartitePairContainer(sc1,sc2,0.0)
                 m.update()
-                nop=aaa.get_number_of_particle_pairs()
+                nop= len(aaa.get_indexes())
                 if nop > nop_cutoff :
                     pair_list.append((c,s))
                 else:
