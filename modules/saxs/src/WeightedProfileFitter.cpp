@@ -16,7 +16,7 @@ IMPSAXS_BEGIN_NAMESPACE
 std::vector<double> WeightedProfileFitter::empty_weights_;
 
 WeightedProfileFitter::WeightedProfileFitter(const Profile& exp_profile):
-  IMP::saxs::ProfileFitter(exp_profile),
+  IMP::saxs::ProfileFitter<ChiScore>(exp_profile),
   W_(exp_profile.size()), Wb_(exp_profile.size()) {
 
   for(unsigned int i=0; i<exp_profile_.size(); i++) {
