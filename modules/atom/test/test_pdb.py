@@ -20,8 +20,7 @@ class Tests(IMP.test.TestCase):
         """Check that read_pdb behaves OK on invalid files"""
         m= IMP.Model()
         self.assertRaises(IMP.base.IOException,
-                          IMP.atom.read_pdb,
-                          self.get_input_file_name("notafile.pdb"),
+                          IMP.atom.read_pdb, "notafile.pdb",
                           m)
         # we don't actually check if a file is a pdb or not
         # and can't conclude it is not due to not reading any atoms

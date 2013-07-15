@@ -151,24 +151,16 @@ class TestCase(unittest.TestCase):
     def get_input_file_name(self, filename):
         """Get the full name of an input file in the top-level
            test directory."""
-        # If we ran from run-all-tests.py, it set an env variable for us with
-        # the top-level test directory
-        if 'TEST_DIRECTORY' in os.environ:
-            top = os.environ['TEST_DIRECTORY']
-            return os.path.join(top, 'input', filename)
-        else:
-            # Otherwise, search up from the test's directory until we find
-            # the input directory
-            testdir = os.path.dirname(os.path.abspath(sys.argv[0]))
-            dirs = testdir.split(os.path.sep)
-            for i in range(len(dirs), 0, -1):
+        testdir = os.path.dirname(os.path.abspath(sys.argv[0]))
+        dirs = testdir.split(os.path.sep)
+        for i in range(len(dirs), 0, -1):
                 input = os.path.sep.join(dirs[:i] + ['input'])
                 if os.path.isdir(input):
-                    return os.path.join(input, filename)
-        # If not found, default to the current working directory:
-        ret= os.path.join('input', filename)
-        if not open(ret, "r"):
-            raise IOError("Test input file "+ret+" does not exist")
+                    ret = os.path.join(input, filename)
+                    if not open(ret, "r"):
+                         raise IOError("Test input file "+ret+" does not exist")
+                    return ret
+        raise IOError("No test input directory found")
 
     def open_input_file(self, filename, mode='rb'):
         """Open and return an input file in the top-level test directory."""
