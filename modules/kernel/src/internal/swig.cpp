@@ -44,7 +44,7 @@ double _ConstOptimizer::do_optimize(unsigned int n) {
     get_scoring_function()->evaluate(false);
     update_states();
   }
-  return get_model()->evaluate(false);
+  return get_scoring_function()->evaluate(false);
 }
 
 int _overloaded_decorator(_TrivialDecorator) { return 0; }

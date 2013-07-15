@@ -103,19 +103,27 @@ void RestraintSet::show_it(std::ostream &out) const {
 
 void RestraintSet::on_add(Restraint *obj) {
   if (get_model()) {
-    obj->set_model(get_model());
+    set_has_dependencies(false);
+    if (!obj->get_model()) {
+      obj->set_model(get_model());
+    }
   }
   obj->set_was_used(true);
   IMP_USAGE_CHECK(obj != this, "Cannot add a restraint set to itself");
-  set_has_dependencies(false);
 }
-void RestraintSet::on_change() { set_has_dependencies(false); }
+void RestraintSet::on_change() {
+  if (get_model()) {
+    set_has_dependencies(false);
+  }
+}
 
 ModelObjectsTemp RestraintSet::do_get_inputs() const {
   return ModelObjectsTemp(restraints_begin(), restraints_end());
 }
 void RestraintSet::on_remove(RestraintSet *container, Restraint *) {
-  if (container) container->set_has_dependencies(false);
+  if (container && container->get_model()) {
+    container->set_has_dependencies(false);
+  }
 }
 
 Restraints RestraintSet::do_create_decomposition() const {

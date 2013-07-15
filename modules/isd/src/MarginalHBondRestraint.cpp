@@ -21,6 +21,7 @@ IMPISD_BEGIN_NAMESPACE
 void MarginalHBondRestraint::add_contribution(Particle *p1, Particle *p2,
                                               double Iexp)
 {
+    set_has_dependencies(false);
     ParticlePair pc(p1,p2);
     ParticlePairsTemp pct(1,pc);
     IMP_NEW(container::ListPairContainer, cont, (pct));
@@ -31,6 +32,7 @@ void MarginalHBondRestraint::add_contribution(Particle *p1, Particle *p2,
 //add a contribution: general case
 void MarginalHBondRestraint::add_contribution(PairContainer *pc, double Iexp)
 {
+    set_has_dependencies(false);
     contribs_.push_back(pc);
     volumes_.push_back(Iexp);
 }

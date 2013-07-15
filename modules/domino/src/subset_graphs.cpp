@@ -405,7 +405,7 @@ InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
   /* Make sure that composite score states (eg the normalizer for
      rigid body rotations) don't induce interactions among unconnected
      particles.*/
-  ScoreStatesTemp ss = get_required_score_states(rs, dg, index);
+  ScoreStatesTemp ss = get_required_score_states(rs);
   for (ScoreStatesTemp::const_iterator it = ss.begin(); it != ss.end(); ++it) {
     ModelObjectsTemps interactions = (*it)->get_interactions();
     for (unsigned int i = 0; i < interactions.size(); ++i) {

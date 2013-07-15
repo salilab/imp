@@ -99,8 +99,8 @@ class Tests(IMP.test.TestCase):
         print "iscore"
         iscore=isf.evaluate(False)
         print "oscore"
-        sf.set_log_level(IMP.base.VERBOSE)
-        m.set_log_level(IMP.base.VERBOSE)
+        #sf.set_log_level(IMP.base.VERBOSE)
+        #m.set_log_level(IMP.base.VERBOSE)
         oscore=sf.evaluate(False)
         self.assertAlmostEqual(iscore,
                                oscore, delta=.1)

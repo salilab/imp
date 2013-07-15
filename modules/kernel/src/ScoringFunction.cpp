@@ -17,10 +17,14 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
+namespace {
+
 // in namespace so it can be made a friend.
 class NullScoringFunction : public ScoringFunction {
  public:
-  NullScoringFunction() {}
+  NullScoringFunction(Model *m,
+                      std::string name = "NullScoringFunction%1%"):
+      ScoringFunction(m, name) {}
   void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator,
                                     const ScoreStatesTemp &) IMP_OVERRIDE {}
   Restraints create_restraints() const IMP_OVERRIDE { return Restraints(); }
@@ -30,9 +34,13 @@ class NullScoringFunction : public ScoringFunction {
   IMP_OBJECT_METHODS(NullScoringFunction);
 };
 
-ScoringFunction::ScoringFunction()
-  : ModelObject("NullScoringFunction%1%"), es_(0.0, true) {}
-
+ScoringFunction *get_null_scoring_function() {
+  static base::OwnerPointer<Model> m = new Model("NullModel");
+  static base::OwnerPointer<ScoringFunction> sf
+      = new NullScoringFunction(m, "The Null Scoring Function");
+  return sf;
+}
+}
 
 ScoringFunction::ScoringFunction(Model *m, std::string name)
     : ModelObject(m, name) {}
@@ -40,7 +48,7 @@ ScoringFunction::ScoringFunction(Model *m, std::string name)
 double ScoringFunction::evaluate_if_good(bool derivatives) {
   IMP_OBJECT_LOG;
   set_was_used(true);
-  set_has_dependencies(true);
+  set_has_required_score_states(true);
   es_.score = 0;
   es_.good = true;
   const ScoreAccumulator sa = get_score_accumulator_if_good(derivatives);
@@ -51,7 +59,7 @@ double ScoringFunction::evaluate_if_good(bool derivatives) {
 double ScoringFunction::evaluate(bool derivatives) {
   IMP_OBJECT_LOG;
   set_was_used(true);
-  set_has_dependencies(true);
+  set_has_required_score_states(true);
   es_.score = 0;
   es_.good = true;
   const ScoreAccumulator sa = get_score_accumulator(derivatives);
@@ -62,7 +70,7 @@ double ScoringFunction::evaluate(bool derivatives) {
 double ScoringFunction::evaluate_if_below(bool derivatives, double max) {
   IMP_OBJECT_LOG;
   set_was_used(true);
-  set_has_dependencies(true);
+  set_has_required_score_states(true);
   es_.score = 0;
   es_.good = true;
   const ScoreAccumulator sa = get_score_accumulator_if_below(derivatives, max);
@@ -74,7 +82,7 @@ ScoringFunction *ScoringFunctionAdaptor::get(const RestraintsTemp &sf) {
   if (!sf.empty()) {
     return new internal::RestraintsScoringFunction(sf);
   } else {
-    return new NullScoringFunction();
+    return get_null_scoring_function();
   }
 }
 
@@ -82,7 +90,7 @@ ScoringFunction *ScoringFunctionAdaptor::get(const Restraints &sf) {
   if (!sf.empty()) {
     return new internal::RestraintsScoringFunction(sf);
   } else {
-    return new NullScoringFunction();
+    return get_null_scoring_function();
   }
 }
 ScoringFunction *ScoringFunctionAdaptor::get(Model *sf) {

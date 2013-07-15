@@ -44,9 +44,6 @@ being evaluated (this is cached)
 */
 class IMPKERNELEXPORT ScoringFunction : public ModelObject {
   EvaluationState es_;
-  // hack for null scoring function
-  friend class NullScoringFunction;
-  ScoringFunction();
   // later make things implement inputs and return restraints
  public:
   typedef std::pair<double, bool> ScoreIsGoodPair;

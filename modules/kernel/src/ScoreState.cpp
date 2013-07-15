@@ -17,41 +17,38 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-ScoreState::ScoreState(std::string name) : ModelObject(name) {
+ScoreState::ScoreState(std::string name) : ModelObject(name),
+                                           update_order_(-1) {
   IMPKERNEL_DEPRECATED_METHOD_DEF(
       2.1, "Use the ScoreState constructor that takes the model and a name.");
-  order_ = -1;
 }
-ScoreState::ScoreState(Model *m) : ModelObject(m, "ScoreState%1%") {
+ScoreState::ScoreState(Model *m) : ModelObject(m, "ScoreState%1%"),
+                                   update_order_(-1) {
   IMPKERNEL_DEPRECATED_METHOD_DEF(
       2.1, "Use the ScoreState constructor that takes the model and a name.");
-  order_ = -1;
-  m->set_has_dependencies(false);
 }
-ScoreState::ScoreState(Model *m, std::string name) : ModelObject(m, name) {
-  order_ = -1;
-  m->set_has_dependencies(false);
+ScoreState::ScoreState(Model *m, std::string name) : ModelObject(m, name),
+                                           update_order_(-1) {
 }
 
-void ScoreState::before_evaluate() { do_before_evaluate(); }
+void ScoreState::before_evaluate() {
+  IMP_OBJECT_LOG;
+  validate_inputs();
+  validate_outputs();
+  do_before_evaluate();
+}
 
 void ScoreState::after_evaluate(DerivativeAccumulator *da) {
+  IMP_OBJECT_LOG;
+  validate_inputs();
+  validate_outputs();
   do_after_evaluate(da);
-}
-
-ScoreState::~ScoreState() {
-  if (get_model()) {
-    // make sure I get removed from dependency graph
-    get_model()->set_has_dependencies(false);
-  }
 }
 
 namespace {
 struct CompOrder {
   bool operator()(const ScoreState *a, const ScoreState *b) const {
-    IMP_INTERNAL_CHECK(a->order_ != -1 && b->order_ != -1,
-                       "No order assigned yet.");
-    return a->order_ < b->order_;
+    return a->get_update_order() < b->get_update_order();
   }
 };
 }
@@ -61,18 +58,27 @@ ScoreStatesTemp get_update_order(ScoreStatesTemp in) {
   if (in.empty()) return in;
   std::sort(in.begin(), in.end());
   in.erase(std::unique(in.begin(), in.end()), in.end());
-  // make sure the order_ entries are up to date
-  if (!in[0]->get_model()->get_has_dependencies()) {
-    in[0]->get_model()->compute_dependencies();
-  }
   std::sort(in.begin(), in.end(), CompOrder());
   IMP_LOG_TERSE("Order: " << in << std::endl);
   return in;
 }
 
-void ScoreState::do_set_model(Model *m) {
-  if (m) {
-    m->set_has_dependencies(false);
+void ScoreState::handle_set_has_required_score_states(bool tf) {
+  if (tf) {
+    IMP_USAGE_CHECK(update_order_ == -1,
+                    "Already had update order");
+    if (!get_required_score_states().empty()) {
+      update_order_ = get_required_score_states().back()->get_update_order()
+        + 1;
+      IMP_LOG_VERBOSE("Update order for " << get_name()
+                      << " is " << update_order_ << " due to "
+                      << get_required_score_states().back()->get_name()
+                      << std::endl);
+    } else {
+      update_order_ = 0;
+    }
+  } else {
+    update_order_ = -1;
   }
 }
 

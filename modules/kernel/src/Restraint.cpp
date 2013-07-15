@@ -66,18 +66,14 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator *da) const {
 
 void Restraint::set_weight(double w) {
   if (w != weight_) {
-    if (get_model()) {
-      get_model()->set_has_dependencies(false);
-    }
+    set_has_dependencies(false);
     weight_ = w;
   }
 }
 
 void Restraint::set_maximum_score(double w) {
   if (w != max_) {
-    if (get_model()) {
-      get_model()->set_has_dependencies(false);
-    }
+    set_has_dependencies(false);
     max_ = w;
   }
 }
@@ -230,8 +226,11 @@ void Restraint::do_add_score_and_derivatives(ScoreAccumulator sa) const {
 double Restraint::get_score() const { return evaluate(false); }
 
 void Restraint::add_score_and_derivatives(ScoreAccumulator sa) const {
+  IMP_OBJECT_LOG;
   // implement these in macros to avoid extra virtual function call
   ScoreAccumulator nsa(sa, this);
+  validate_inputs();
+  validate_outputs();
   IMP_TASK((nsa), do_add_score_and_derivatives(nsa),
            "add score and derivatives");
   set_was_used(true);

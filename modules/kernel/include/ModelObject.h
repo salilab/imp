@@ -26,24 +26,23 @@ class IMPKERNELEXPORT ModelObject :
 
   friend class Model;
 
-  bool has_dependencies_;
+  bool has_required_score_states_, computing_required_score_states_;
+
   ScoreStatesTemp required_score_states_;
 
  public:
-#if !defined(IMP_DOXYGEN)
-  void set_has_dependencies(bool t, const ScoreStatesTemp &ss);
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  void do_set_has_required_score_states(bool tf);
+  void validate_inputs() const;
+  void validate_outputs() const;
 #endif
 
   ModelObject(Model *m, std::string name);
 
   Model *get_model() const { return Tracked::get_tracker(); }
-  /** Get any Particle, Container or other ModelObjects read by
-      this during evaluation. If you read everything in a container,
-  you can just return that container. */
+  /** get_has_dependencies() must be true. */
   ModelObjectsTemp get_inputs() const;
-  /** Get any Particle, Container or other ModelObjects changed by
-      this during evaluation. This is only useful for ScoreStates,
-      at the moment.*/
+  /** get_has_dependencies() must be true. */
   ModelObjectsTemp get_outputs() const;
   /** Get the interacting sets induce by this ModelObject. That is,
       the particles in each ModelObjectsTemp in the list have some
@@ -52,30 +51,41 @@ class IMPKERNELEXPORT ModelObject :
   ModelObjectsTemps get_interactions() const;
 
   //! Return whether this object has dependencies computed
-  bool get_has_dependencies() const { return has_dependencies_; }
+  bool get_has_dependencies() const;
 
   /** Either invalidate the dependncies or ensure they are correct.*/
   void set_has_dependencies(bool tf);
 
-  /** Get the score states that are ancestors of this in the dependency graph.
-   */
-  const ScoreStatesTemp &get_required_score_states() {
-    set_has_dependencies(true);
-    return required_score_states_;
+  /** Compute the required score states. */
+  void set_has_required_score_states(bool tf);
+
+  /** Return whether score states are computed.*/
+  bool get_has_required_score_states() const {
+    return get_has_dependencies() && has_required_score_states_;
   }
 
+  /** Get the score states that are ancestors of this in the dependency graph.
+   */
+  const ScoreStatesTemp &get_required_score_states() const {
+    IMP_USAGE_CHECK(get_has_required_score_states(),
+                    "Required score states have not been computed yet.");
+    return required_score_states_;
+  }
  protected:
-  /** Called when set_has_dependencies() is called.*/
-  virtual void do_set_has_dependencies(bool) {}
-  /** Override if this reads other objects during evaluate.*/
+  //virtual void do_destroy() IMP_OVERRIDE {set_has_dependencies(false);}
+  /** Called when set_has_required_score_states() is called.*/
+  virtual void handle_set_has_required_score_states(bool) {}
+  /** Get any Particle, Container or other ModelObjects read by
+      this during evaluation. If you read everything in a container,
+      you can just return that container. */
   virtual ModelObjectsTemp do_get_inputs() const = 0;
-  /** Override if this writes other objects during evaluate.*/
+  /** Get any Particle, Container or other ModelObjects changed by
+      this during evaluation. This is only useful for ScoreStates,
+      at the moment.*/
   virtual ModelObjectsTemp do_get_outputs() const = 0;
   /** Override if this if not all inputs interact with all outputs. This is
       rarely something you want to do.*/
   virtual ModelObjectsTemps do_get_interactions() const;
-
-  IMP_REF_COUNTED_DESTRUCTOR(ModelObject);
 
  public:
   /** \deprecated_at{2.1} Use the constructor that takes a Model. */

@@ -358,51 +358,26 @@ struct cycle_detector : public boost::default_dfs_visitor {
   }
 };
 
-ScoreStatesTemp get_required_score_states(
-    const ModelObjectsTemp &irs, const DependencyGraph &dg,
-    const DependencyGraphVertexIndex &index) {
-  ScoreStatesTemp sst = get_dependent<ScoreStatesTemp, ScoreState, true>(
-      irs, ModelObjectsTemp(), dg, index);
-  return get_update_order(sst);
+namespace {
+  RestraintsTemp do_get_dependent_restraints(ModelObject *mo) {
+    RestraintsTemp ret;
+    Restraint *r = dynamic_cast<Restraint*>(mo);
+    if (r) {
+      ret.push_back(r);
+    }
+    BOOST_FOREACH(ModelObject *cur,
+                  mo->get_model()->get_dependency_graph_outputs(mo)) {
+      ret += do_get_dependent_restraints(cur);
+    }
+    return ret;
+  }
 }
 
-void set_score_state_update_order(const DependencyGraph &dg,
-                                  const DependencyGraphVertexIndex &index) {
-  DependencyGraphConstVertexName map = boost::get(boost::vertex_name, dg);
-  /** Iteratively, add all score states with no score state input
-      to current set. Remove score states that have been added.
-
-      But we fake it by simply checking for each score state if
-      it has an input that is not already added.*/
-  // find all score states
-  ModelObjectsTemp added;
-  base::set<ModelObject *> not_added;
-  for (unsigned int i = 0; i < boost::num_vertices(dg); ++i) {
-    if (dynamic_cast<ScoreState *>(map[i])) {
-      not_added.insert(map[i]);
-    }
-  }
-  int round = 0;
-  while (!not_added.empty()) {
-    ScoreStatesTemp cur;
-    BOOST_FOREACH(ModelObject * s, not_added) {
-      ScoreStatesTemp inputs = get_required_score_states(s, added, dg, index);
-      IMP_LOG_TERSE(Showable(s) << " depends on " << inputs << std::endl);
-      // includes self
-      if (inputs.size() <= 1) {
-        cur.push_back(dynamic_cast<ScoreState *>(s));
-      }
-    }
-    IMP_INTERNAL_CHECK(!cur.empty(), "I think the score states form a loop");
-    for (unsigned int i = 0; i < cur.size(); ++i) {
-      cur[i]->order_ = round;
-    }
-    added.insert(added.end(), cur.begin(), cur.end());
-    for (unsigned int i = 0; i < cur.size(); ++i) {
-      not_added.erase(cur[i]);
-    }
-    ++round;
-  }
+RestraintsTemp get_dependent_restraints(Model *m,
+                                        ParticleIndex pi) {
+  m->set_has_all_dependencies(true);
+  ModelObject *cur = m->get_particle(pi);
+  return do_get_dependent_restraints(cur);
 }
 
 IMPKERNEL_END_NAMESPACE

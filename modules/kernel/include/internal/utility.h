@@ -93,6 +93,9 @@ struct SFResetBitset {
   }
 };
 
+IMPKERNELEXPORT void show_dg_node(ModelObject *mo,
+                                  base::TextOutput to);
+
 IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif /* IMPKERNEL_INTERNAL_UTILITY_H */

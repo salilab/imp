@@ -68,44 +68,43 @@ class IncrementalRestraintsScoringFunction
 IncrementalScoringFunction::Data IncrementalScoringFunction::create_data(
     ParticleIndex pi, const base::map<Restraint *, int> &all,
     const Restraints &dummies) const {
-  Particle *p = get_model()->get_particle(pi);
-  RestraintsTemp cr = get_dependent_restraints(
-      p, ParticlesTemp(), get_model()->get_dependency_graph(),
-      get_model()->get_dependency_graph_vertex_index());
-  IMP_LOG_TERSE("Dependent restraints for particle " << p->get_name() << " are "
-                                                     << cr << std::endl);
+  RestraintsTemp cr = get_dependent_restraints(get_model(),  pi);
+  IMP_LOG_TERSE("Dependent restraints for particle "
+                << get_model()->get_particle_name(pi) << " are "
+                << cr << std::endl);
   Data ret;
   for (unsigned int j = 0; j < cr.size(); ++j) {
     if (all.find(cr[j]) != all.end()) {
       int index = all.find(cr[j])->second;
       IMP_INTERNAL_CHECK(
-          std::find(ret.indexes.begin(), ret.indexes.end(), index) ==
-              ret.indexes.end(),
-          "Found duplicate restraint " << Showable(cr[j]) << " in list " << cr);
+                         std::find(ret.indexes.begin(),
+                                   ret.indexes.end(), index) ==
+                         ret.indexes.end(),
+                         "Found duplicate restraint " << Showable(cr[j])
+                         << " in list " << cr);
       ret.indexes.push_back(index);
     }
   }
   cr += RestraintsTemp(dummies.begin(), dummies.end());
   ret.sf = new IncrementalRestraintsScoringFunction(
-      cr, 1.0, NO_MAX, p->get_name() + " restraints");
+         cr, 1.0, NO_MAX,
+         get_model()->get_particle_name(pi) + " restraints");
   return ret;
 }
 
-void IncrementalScoringFunction::do_set_has_dependencies(bool tf) {
+void IncrementalScoringFunction::handle_set_has_required_score_states(bool tf) {
+  IMP_OBJECT_LOG;
   if (tf) {
     create_scoring_functions();
   } else {
-    scoring_functions_.clear();
+
   }
 }
 
 void IncrementalScoringFunction::create_scoring_functions() {
   IMP_OBJECT_LOG;
+  IMP_LOG_TERSE("Creating scoring functions" << std::endl);
   if (flattened_restraints_.empty()) return;
-  base::map<Restraint *, int> all_set;
-  for (unsigned int i = 0; i < flattened_restraints_.size(); ++i) {
-    all_set[flattened_restraints_[i]] = i;
-  }
 
   base::map<Restraint *, int> mp;
   IMP_LOG_TERSE("All restraints are " << flattened_restraints_ << std::endl);
@@ -210,10 +209,9 @@ void IncrementalScoringFunction::do_add_score_and_derivatives(
     do_non_incremental_evaluate();
   } else {
     IMP_LOG_TERSE("Doing incremental evaluate: " << dirty_ << std::endl);
-    while (!dirty_.empty()) {
+    for (unsigned int i = 0; i < dirty_.size(); ++i) {
       ScoringFunctionsMap::const_iterator it =
-          scoring_functions_.find(dirty_.back());
-      dirty_.pop_back();
+          scoring_functions_.find(dirty_[i]);
       if (it != scoring_functions_.end()) {
         it->second.sf->evaluate(sa.get_derivative_accumulator());
         for (unsigned int i = 0; i < it->second.indexes.size(); ++i) {
@@ -239,9 +237,28 @@ void IncrementalScoringFunction::do_add_score_and_derivatives(
     if (non_incremental_) {
       double niscore = non_incremental_->evaluate(false);
       IMP_UNUSED(niscore);
-      IMP_INTERNAL_CHECK_FLOAT_EQUAL(
-          niscore, score, "Incremental and non-incremental scores don't match: "
-                              << flattened_restraints_scores_);
+      if (std::abs(niscore - score) > .01 * (niscore + score)) {
+        IMP_WARN("Scores: " << niscore << " vs " << score << std::endl);
+        IMP_WARN("Dirty: " << dirty_ << " " << scoring_functions_.size()
+                 << std::endl);
+        for (unsigned int i = 0; i < dirty_.size(); ++i) {
+          ScoringFunctionsMap::const_iterator it =
+              scoring_functions_.find(dirty_[i]);
+          if (it != scoring_functions_.end()) {
+            IMP_WARN("Scoring function for " << dirty_[i] << " is "
+                     << it->second.sf->get_name() << std::endl);
+          }
+        }
+        Floats before = flattened_restraints_scores_;
+        do_non_incremental_evaluate();
+        for (unsigned int i = 0; i < before.size(); ++i) {
+          IMP_WARN(flattened_restraints_[i]->get_name() << ": "
+                   << before[i] << " vs " << flattened_restraints_scores_[i]
+                   << std::endl);
+        }
+        IMP_INTERNAL_CHECK( false,
+                          "Incremental and non-incremental scores don't match");
+      }
     }
   }
   // do nbl stuff
@@ -251,6 +268,7 @@ void IncrementalScoringFunction::do_add_score_and_derivatives(
     score += cscore;
   }
   sa.add_score(score);
+  dirty_.clear();
 }
 
 Restraints IncrementalScoringFunction::create_restraints() const {

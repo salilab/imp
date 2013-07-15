@@ -109,14 +109,6 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   bool get_is_active() const;
 #endif
 
-#if 0
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  void *operator new(std::size_t sz, void *p);
-  void operator delete(void *p);
-  void *operator new(std::size_t sz);
-#endif
-#endif
-
   ParticleIndex get_index() const;
 
 #if !defined(IMP_DOXYGEN)

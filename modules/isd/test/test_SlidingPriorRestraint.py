@@ -28,6 +28,7 @@ class Tests(IMP.test.TestCase):
         self.sq = 0.34
         self.J = IMP.isd.SlidingPriorRestraint(self.q0, self.qmin, self.qmax,
                 self.sq)
+        self.J.set_model(self.m)
 
     def testValueP(self):
         "Test SlidingPriorRestraint probability"

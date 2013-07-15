@@ -20,140 +20,12 @@
 #include "IMP/kernel/internal/evaluate_utility.h"
 #include "IMP/kernel/ScoringFunction.h"
 #include "IMP/kernel/ScoreState.h"
-#include <boost/timer.hpp>
+#include <boost/foreach.hpp>
 #include <IMP/kernel/utility.h>
-#include "IMP/base//set.h"
-#include <numeric>
-
-#include <boost/graph/graph_traits.hpp>
-#include <boost/graph/graph_concepts.hpp>
-#include <boost/graph/visitors.hpp>
-IMP_GCC_PRAGMA(diagnostic ignored "-Wunused-parameter")
-#include <boost/graph/topological_sort.hpp>
-#include <boost/graph/depth_first_search.hpp>
-#include <boost/graph/reverse_graph.hpp>
-#include <boost/dynamic_bitset.hpp>
-//#include <boost/graph/lookup_edge.hpp>
-#include <IMP/base/vector_property_map.h>
+#include "IMP/base/set.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-class ScoreDependencies : public boost::default_dfs_visitor {
-  Ints &bs_;
-  const base::map<base::Object *, int> &ssindex_;
-  DependencyGraphConstVertexName vm_;
-
- public:
-  ScoreDependencies(Ints &bs, const base::map<base::Object *, int> &ssindex,
-                    DependencyGraphConstVertexName vm)
-      : bs_(bs), ssindex_(ssindex), vm_(vm) {}
-  template <class G>
-  void discover_vertex(DependencyGraphTraits::vertex_descriptor u, const G &) {
-    base::Object *o = vm_[u];
-    base::map<base::Object *, int>::const_iterator it = ssindex_.find(o);
-    if (it != ssindex_.end()) {
-      bs_.push_back(it->second);
-    } else {
-      IMP_INTERNAL_CHECK(!dynamic_cast<ScoreState *>(o),
-                         "Score state jot in index");
-    }
-  }
-};
-
-const DependencyGraph &Model::get_dependency_graph() {
-  set_has_dependencies(true);
-  return dependency_graph_;
-}
-const DependencyGraphVertexIndex &Model::get_dependency_graph_vertex_index() {
-  set_has_dependencies(true);
-  return dependency_graph_index_;
-}
-
-void Model::compute_required_score_states() {
-  base::Vector<int> upstream_counts(boost::num_vertices(dependency_graph_));
-  // initialize upstream counts
-  typedef DependencyGraphTraits::in_edge_iterator IIT;
-  typedef DependencyGraphTraits::out_edge_iterator OIT;
-  for (unsigned int i = 0; i < upstream_counts.size(); ++i) {
-    std::pair<IIT, IIT> be = boost::in_edges(i, dependency_graph_);
-    upstream_counts[i] = std::distance(be.first, be.second);
-  }
-  // find all with counts of 0, add to queue
-  Ints queue;
-  for (unsigned int i = 0; i < boost::num_vertices(dependency_graph_); ++i) {
-    if (upstream_counts[i] == 0) {
-      queue.push_back(i);
-    }
-  }
-  DependencyGraphVertexName vm =
-      boost::get(boost::vertex_name, dependency_graph_);
-  // while queue is not empty, pop one
-  while (!queue.empty()) {
-    int cur = queue.back();
-    queue.pop_back();
-    // update it from its neighbors
-    ScoreStatesTemp required;
-    for (std::pair<IIT, IIT> be = boost::in_edges(cur, dependency_graph_);
-         be.first != be.second; ++be.first) {
-      int source = boost::source(*be.first, dependency_graph_);
-      required += vm[source]->get_required_score_states();
-      ScoreState *ss = dynamic_cast<ScoreState *>(vm[source]);
-      if (ss) {
-        IMP_LOG_VERBOSE(ss->get_name() << " is a score state" << std::endl);
-        required.push_back(ss);
-      } else {
-        IMP_LOG_VERBOSE(vm[source]->get_name() << " is not a score state"
-                                               << std::endl);
-      }
-    }
-    std::sort(required.begin(), required.end());
-    required.erase(std::unique(required.begin(), required.end()),
-                   required.end());
-    IMP_LOG_VERBOSE("Required states for " << *vm[cur] << " are " << required
-                                           << std::endl);
-
-    vm[cur]->set_has_dependencies(true, get_update_order(required));
-
-    // update its downstream neighbors
-    for (std::pair<OIT, OIT> be = boost::out_edges(cur, dependency_graph_);
-         be.first != be.second; ++be.first) {
-      int target = boost::target(*be.first, dependency_graph_);
-      --upstream_counts[target];
-      if (upstream_counts[target] == 0) {
-        queue.push_back(target);
-      }
-    }
-  }
-}
-
-void Model::compute_dependencies() {
-  IMP_OBJECT_LOG;
-  IMP_LOG_TERSE("Computing dependencies." << std::endl);
-  internal::SFSetIt<IMP::kernel::internal::Stage> reset(
-      &cur_stage_, internal::COMPUTING_DEPENDENCIES);
-  dependency_graph_ = IMP::kernel::get_dependency_graph(this);
-  // attempt to get around boost/gcc bug and the most vexing parse
-  dependency_graph_index_ = IMP::kernel::get_vertex_index(dependency_graph_);
-  // internal::show_as_graphviz(boost::make_reverse_graph(dg), std::cout);
-  set_score_state_update_order(dependency_graph_, dependency_graph_index_);
-  IMP_LOG_TERSE("Score states are " << get_score_states() << std::endl);
-  // must go after dependencies dirty to avoid recursion
-  ScoreStatesTemp score_states;
-  DependencyGraphVertexName name =
-      boost::get(boost::vertex_name, dependency_graph_);
-  for (unsigned int i = 0; i < boost::num_vertices(dependency_graph_); ++i) {
-    ModelObject *mo = name[i];
-    if (dynamic_cast<ScoreState *>(mo)) {
-      score_states.push_back(dynamic_cast<ScoreState *>(mo));
-    }
-  }
-
-  has_dependencies_ = true;
-
-  ordered_score_states_ = get_update_order(score_states);
-
-  compute_required_score_states();
-}
 
 ModelObjectsTemp Model::get_optimized_particles() const {
   base::set<ModelObject *> ret;
@@ -164,24 +36,375 @@ ModelObjectsTemp Model::get_optimized_particles() const {
   return ModelObjectsTemp(ret.begin(), ret.end());
 }
 
-void Model::set_has_dependencies(bool tf) {
-  if (tf == get_has_dependencies()) return;
-  if (tf) {
-    has_dependencies_ = true;
-    compute_dependencies();
-  } else {
-    IMP_LOG_TERSE("Resetting dependencies" << std::endl);
-    IMP_USAGE_CHECK(cur_stage_ == internal::NOT_EVALUATING,
-                    "The dependencies cannot be reset during evaluation or"
-                        << " dependency computation.");
-    has_dependencies_ = false;
-    for (ModelObjectTracker::TrackedIterator it =
-             ModelObjectTracker::tracked_begin();
-         it != ModelObjectTracker::tracked_end(); ++it) {
-      ModelObject *sf = *it;
-      sf->set_has_dependencies(false);
+ScoreStatesTemp Model::get_ancestor_score_states(const ModelObject *mo) const {
+  ModelObjectsTemp all_in = get_dependency_graph_inputs(mo);
+  ScoreStatesTemp ret;
+  for (unsigned int i = 0; i< all_in.size(); ++i) {
+    ScoreState *ss = dynamic_cast<ScoreState*>(all_in[i].get());
+    if (ss) ret.push_back(ss);
+      ret += get_ancestor_score_states(all_in[i]);
+  }
+  std::sort(ret.begin(), ret.end());
+  ret.erase(std::unique(ret.begin(), ret.end()), ret.end());
+  return ret;
+}
+
+ScoreStatesTemp
+Model::get_descendent_score_states(const ModelObject *mo) const {
+  ModelObjectsTemp all_out = get_dependency_graph_outputs(mo);
+  ScoreStatesTemp ret;
+  for (unsigned int i = 0; i< all_out.size(); ++i) {
+    ScoreState *ss = dynamic_cast<ScoreState*>(all_out[i].get());
+    if (ss) ret.push_back(ss);
+    ret += get_descendent_score_states(all_out[i]);
+  }
+  std::sort(ret.begin(), ret.end());
+  ret.erase(std::unique(ret.begin(), ret.end()), ret.end());
+  return ret;
+}
+
+
+void Model::do_check_inputs_and_outputs(const ModelObject *mo) const {
+  {
+    ModelObjectsTemp inputs = (mo)->get_inputs();
+    std::sort(inputs.begin(), inputs.end());
+    inputs.erase(std::unique(inputs.begin(), inputs.end()), inputs.end());
+    ModelObjectsTemp saved_inputs
+      = dependency_graph_.find(mo)->second.get_inputs()
+      +  dependency_graph_.find(mo)->second.get_input_outputs();
+    std::sort(saved_inputs.begin(), saved_inputs.end());
+    IMP_USAGE_CHECK(inputs.size() == saved_inputs.size(),
+                    "Input sizes don't match.");
+    IMP_USAGE_CHECK(std::equal(inputs.begin(), inputs.end(),
+                               saved_inputs.begin()),
+                    "Input sets don't match.");
+    BOOST_FOREACH(ModelObject *i, dependency_graph_.find(mo)
+                  ->second.get_inputs()) {
+      ModelObjectsTemp readers
+        = dependency_graph_.find(i)->second.get_readers();
+      IMP_INTERNAL_CHECK(std::find(readers.begin(), readers.end(), mo)
+                         != readers.end(),
+                         "Input not found in readers for " << mo->get_name()
+                         << " and " << i->get_name());
+    }
+  }
+  {
+    ModelObjectsTemp outputs = (mo)->get_outputs();
+    std::sort(outputs.begin(), outputs.end());
+    outputs.erase(std::unique(outputs.begin(), outputs.end()), outputs.end());
+    const ModelObjectsTemp &saved_outputs
+      = dependency_graph_.find(mo)->second.get_outputs();
+    IMP_USAGE_CHECK(outputs.size() == saved_outputs.size(),
+                    "Output sizes don't match.");
+    IMP_USAGE_CHECK(std::equal(outputs.begin(), outputs.end(),
+                               saved_outputs.begin()),
+                    "Output sets don't match.");
+    BOOST_FOREACH(ModelObject *o, outputs) {
+      ModelObjectsTemp writers
+        = dependency_graph_.find(o)->second.get_writers();
+      IMP_INTERNAL_CHECK(std::find(writers.begin(), writers.end(), mo)
+                         != writers.end(),
+                         "Input not found in writers for " << (mo)->get_name()
+                         << " and " << o->get_name());
     }
   }
 }
+
+void Model::do_check_update_order(const ScoreState *ss) const {
+  ScoreStatesTemp ancestors = get_ancestor_score_states(ss);
+  for (unsigned int j = 0; j < ancestors.size(); ++j) {
+    if (ancestors[j]->get_has_update_order()) {
+      IMP_INTERNAL_CHECK(ancestors[j]->get_update_order()
+                         < ss->get_update_order(),
+                         "Mis-ordered score states ancestors: "
+                         << ss->get_name()
+                         << " at " << ss->get_update_order()
+                         << " vs " << ancestors[j]->get_name()
+                         << " at " << ancestors[j]->get_update_order());
+    }
+  }
+  ScoreStatesTemp descendents = get_descendent_score_states(ss);
+  for (unsigned int j = 0; j < descendents.size(); ++j) {
+    if (descendents[j]->get_has_update_order()) {
+      IMP_INTERNAL_CHECK(descendents[j]->get_update_order()
+                         > ss->get_update_order(),
+                           "Mis-ordered score states descendents: "
+                         << ss->get_name()
+                         << " at " << ss->get_update_order()
+                         << " vs " << descendents[j]->get_name()
+                         << " at " << descendents[j]->get_update_order());
+    }
+  }
+}
+namespace {
+template <class It, class DG>
+  void check_not_in_readers_and_writers(const ModelObject *mo,
+                                        const DG& dg,
+                                        It b,
+                                        It e) {
+  IMP_UNUSED(mo); // for fast builds
+    for (It it = b; it != e; ++it) {
+      if (dg.find(*it) == dg.end()) continue;
+      ModelObjectsTemp readers = dg.find(*it)->second.get_readers();
+      IMP_INTERNAL_CHECK(std::find(readers.begin(), readers.end(), mo)
+                         == readers.end(),
+                         "ModelObject " << (mo)->get_name()
+                         << " has no dependencies but is in readers list for "
+                         << (*it)->get_name());
+      ModelObjectsTemp writers = dg.find(*it)->second.get_writers();
+      IMP_INTERNAL_CHECK(std::find(writers.begin(), writers.end(), mo)
+                         == writers.end(),
+                         "ModelObject " << (mo)->get_name()
+                         << " has no dependencies but is in writers list for "
+                         << (*it)->get_name());
+    }
+  }
+}
+void Model::do_check_required_score_states(const ModelObject *mo) const {
+    ScoreStatesTemp ancestors = get_ancestor_score_states(mo);
+    ScoreStatesTemp required = mo->get_required_score_states();
+    for (unsigned int i = 0; i < required.size(); ++i) {
+      IMP_INTERNAL_CHECK(required[i]->get_has_update_order(),
+                         "Required score state missing update order.");
+      if (i > 0) {
+        IMP_INTERNAL_CHECK(required[i - 1]->get_update_order()
+                           <= required[i]->get_update_order(),
+                           "Mis-ordered required scores states");
+      }
+    }
+    std::sort(required.begin(), required.end());
+    std::sort(ancestors.begin(), ancestors.end());
+    IMP_USAGE_CHECK(required.size() == ancestors.size(),
+                    "Bad required score states " << required << " vs "
+                    << ancestors);
+    IMP_USAGE_CHECK(std::equal(required.begin(), required.end(),
+                    ancestors.begin()),
+                    "Bad required score states " << required << " vs "
+                    << ancestors);
+  }
+
+void Model::check_dependency_invariants() const {
+  IMP_OBJECT_LOG;
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    IMP_LOG_TERSE("Checking dependency invariants" << std::endl);
+    ModelObjectsTemp without;
+    for (ModelObjectTracker::TrackedIterator it =
+             ModelObjectTracker::tracked_begin();
+         it != ModelObjectTracker::tracked_end(); ++it) {
+      if ((*it)->get_has_dependencies()) {
+        do_check_inputs_and_outputs(*it);
+      } else {
+        check_not_in_readers_and_writers(*it,
+                                         dependency_graph_,
+                                         tracked_begin(),
+                                         tracked_end());
+      }
+      if ((*it)->get_has_required_score_states()) {
+        ScoreState *ss = dynamic_cast<ScoreState*>(*it);
+        if (ss) {
+          IMP_INTERNAL_CHECK(ss->get_has_update_order(), "No update order for "
+                             << ss->get_name());
+          do_check_update_order(ss);
+        }
+        do_check_required_score_states(*it);
+      }
+    }
+    BOOST_FOREACH(const ModelObject *mo, no_dependencies_) {
+      IMP_INTERNAL_CHECK(std::find(tracked_begin(), tracked_end(),
+                                   mo) != tracked_end(),
+                         "The object " << mo->get_name()
+                         << " is in the no dependencies list but not "
+                         << "in the model.");
+    }
+  }
+}
+
+bool Model::get_has_all_dependencies() const {
+  check_dependency_invariants();
+  return no_dependencies_.empty();
+}
+
+void Model::do_set_has_all_dependencies(bool tf) {
+  if (tf) {
+    while (!no_dependencies_.empty()) {
+      do_set_has_dependencies(*no_dependencies_.begin(), true);
+    }
+  }
+}
+
+void Model::set_has_all_dependencies(bool tf) {
+  IMP_USAGE_CHECK(tf, "Only works for true.");
+  check_dependency_invariants();
+  do_set_has_all_dependencies(tf);
+  IMP_INTERNAL_CHECK(get_has_all_dependencies() == tf,
+                     "Post condition not satisfied");
+  check_dependency_invariants();
+}
+
+void Model::update() {
+  IMP_OBJECT_LOG;
+  IMP_CHECK_OBJECT(this);
+  set_has_all_dependencies(true);
+  ScoreStatesTemp sst;
+   for (ModelObjectTracker::TrackedIterator it =
+         ModelObjectTracker::tracked_begin();
+         it != ModelObjectTracker::tracked_end(); ++it) {
+     ScoreState *ss = dynamic_cast<ScoreState*>(*it);
+     if (ss) {
+       ss->set_has_required_score_states(true);
+       sst.push_back(ss);
+     }
+   }
+   ScoreStatesTemp ordered_score_states
+     = get_update_order(sst);
+  before_evaluate(ordered_score_states);
+}
+
+void Model::do_set_has_dependencies(const ModelObject *mo, bool tf) {
+  if (tf == do_get_has_dependencies(mo)) return;
+  IMP_OBJECT_LOG;
+  if (!tf) {
+    remove_dependency_graph_node(mo);
+    ModelObject *ncmo = const_cast<ModelObject*>(mo);
+    ncmo->do_set_has_required_score_states(false);
+  } else {
+    add_dependency_graph_node(mo);
+    mo->validate_inputs();
+    mo->validate_outputs();
+  }
+}
+
+void Model::add_dependency_graph_node(const ModelObject *cmo) {
+  IMP_USAGE_CHECK(!cmo->get_has_dependencies(),
+                 "Object " << cmo->get_name() << " does have dependencies.");
+  IMP_USAGE_CHECK(!cmo->get_has_required_score_states(),
+                 "Object " << cmo->get_name()
+                  << " has required score states before addition.");
+  IMP_LOG_VERBOSE("Add " << cmo->get_name() << " to dependency graph."
+                  << std::endl);
+  ModelObject *mo = const_cast<ModelObject*>(cmo);
+  ModelObjectsTemp outputs = mo->get_outputs();
+  {
+    std::sort(outputs.begin(), outputs.end());
+    outputs.erase(std::unique(outputs.begin(), outputs.end()),
+                   outputs.end());
+    BOOST_FOREACH(ModelObject *out, outputs) {
+      dependency_graph_[out].access_writers().push_back(mo);
+      do_set_has_dependencies(out, false);
+    }
+    dependency_graph_[mo].set_outputs(outputs);
+  }
+  {
+    ModelObjectsTemp inputs = mo->get_inputs();
+    std::sort(inputs.begin(), inputs.end());
+    inputs.erase(std::unique(inputs.begin(), inputs.end()),
+                   inputs.end());
+    ModelObjectsTemp filtered_inputs;
+    std::set_difference(inputs.begin(), inputs.end(),
+                        outputs.begin(), outputs.end(),
+                        std::back_inserter(filtered_inputs));
+    ModelObjectsTemp input_outputs;
+    std::set_difference(inputs.begin(), inputs.end(),
+                        filtered_inputs.begin(), filtered_inputs.end(),
+                        std::back_inserter(input_outputs));
+    IMP_INTERNAL_CHECK(filtered_inputs.size() + input_outputs.size()
+                       == inputs.size(), "Sizes don't add up");
+    BOOST_FOREACH(ModelObject *in, filtered_inputs) {
+      dependency_graph_[in].access_readers().push_back(mo);
+    }
+    dependency_graph_[mo].set_inputs(filtered_inputs);
+    dependency_graph_[mo].set_input_outputs(input_outputs);
+  }
+  if (no_dependencies_.find(mo) != no_dependencies_.end()) {
+    no_dependencies_.erase(mo);
+  }
+}
+
+void Model::do_clear_required_score_states(ModelObject *mo) {
+  // get_model() is for during shutdown, in case undecorators are not used
+  if (!mo->get_model() || !mo->get_has_required_score_states()) return;
+  mo->do_set_has_required_score_states(false);
+  BOOST_FOREACH(ModelObject *in,
+                dependency_graph_.find(mo)->second.get_readers()) {
+    do_clear_required_score_states(in);
+  }
+  BOOST_FOREACH(ModelObject *in,
+                dependency_graph_.find(mo)->second.get_outputs()) {
+    do_clear_required_score_states(in);
+  }
+}
+
+void Model::remove_dependency_graph_node(const ModelObject *cmo) {
+  IMP_INTERNAL_CHECK(dependency_graph_.find(cmo) != dependency_graph_.end(),
+                     "Model object " << cmo->get_name()
+                     << " not in graph.");
+  IMP_LOG_VERBOSE("Removing " << cmo->get_name() << " from dependency graph."
+                  << std::endl);
+  ModelObject *mo = const_cast<ModelObject*>(cmo);
+  BOOST_FOREACH(ModelObject *in,
+                dependency_graph_.find(mo)->second.get_inputs()) {
+    base::Vector<ModelObject*> &cur
+      = dependency_graph_.find(in)->second.access_readers();
+    IMP_INTERNAL_CHECK(std::find(cur.begin(), cur.end(), mo) != cur.end(),
+                       "Not in list");
+    cur.erase(std::find(cur.begin(), cur.end(), mo));
+  }
+  BOOST_FOREACH(ModelObject *out,
+                dependency_graph_.find(mo)->second.get_outputs()) {
+    base::Vector<ModelObject*> &cur
+      = dependency_graph_.find(out)->second.access_writers();
+    IMP_INTERNAL_CHECK(std::find(cur.begin(), cur.end(), mo) != cur.end(),
+                       "Not in list");
+    cur.erase(std::find(cur.begin(), cur.end(), mo));
+  }
+  // since it will be changed during the process
+  ModelObjectsTemp inreaders = dependency_graph_.find(mo)->second.get_readers();
+  BOOST_FOREACH(ModelObject *in, inreaders) {
+    // they can't have score states since they read an object without state
+    do_clear_required_score_states(in);
+    do_set_has_dependencies(in, false);
+  }
+
+  dependency_graph_.find(mo)->second.set_inputs(ModelObjectsTemp());
+  dependency_graph_.find(mo)->second.set_outputs(ModelObjectsTemp());
+  no_dependencies_.insert(mo);
+}
+
+ ModelObjectsTemp
+Model::get_dependency_graph_inputs(const ModelObject *mo) const {
+  IMP_USAGE_CHECK(do_get_has_dependencies(mo),
+                 "Object " << mo->get_name() << " does not have dependencies.");
+  IMP_INTERNAL_CHECK(dependency_graph_.find(mo) != dependency_graph_.end(),
+                     "Node not in dependency_graph.");
+  return dependency_graph_.find(mo)->second.get_inputs()
+    + dependency_graph_.find(mo)->second.get_writers();
+}
+
+ ModelObjectsTemp
+Model::get_dependency_graph_outputs(const ModelObject *mo) const {
+  IMP_USAGE_CHECK(mo->get_has_dependencies(),
+                 "Object " << mo->get_name() << " does not have dependencies.");
+  IMP_INTERNAL_CHECK(dependency_graph_.find(mo) != dependency_graph_.end(),
+                     "Node not in dependency_graph.");
+  return dependency_graph_.find(mo)->second.get_outputs()
+    + dependency_graph_.find(mo)->second.get_readers();
+}
+
+void Model::do_add_tracked(ModelObject*mo) {
+  IMP_LOG_VERBOSE("Adding " << mo->get_name() << " to model." << std::endl);
+  no_dependencies_.insert(mo);
+}
+
+void Model::do_remove_tracked(ModelObject*mo) {
+  IMP_LOG_VERBOSE("Removing " << mo->get_name() << " from model." << std::endl);
+  if (dependency_graph_.find(mo) != dependency_graph_.end()) {
+    remove_dependency_graph_node(mo);
+  }
+  // must be after to clean up
+  if (no_dependencies_.find(mo) != no_dependencies_.end()) {
+    no_dependencies_.erase(mo);
+  }
+}
+
 
 IMPKERNEL_END_NAMESPACE

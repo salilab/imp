@@ -30,7 +30,7 @@ class Tracker {
     IMP_USAGE_CHECK(tr, "Can't track nullptr object");
     IMP_CHECK_OBJECT(tr);
     tracked_.insert(tr);
-    do_add_tracked();
+    do_add_tracked(tr);
   }
   void remove_tracked(Tracked *tr) {
     IMP_USAGE_CHECK(tr, "Can't untrack nullptr");
@@ -39,11 +39,11 @@ class Tracker {
                     "Tracked object " << (tr ? tr->get_name() : "nullptr")
                                       << " not found.");
     tracked_.erase(tr);
-    do_remove_tracked();
+    do_remove_tracked(tr);
   }
  protected:
-  virtual void do_add_tracked() {}
-  virtual void do_remove_tracked() {}
+  virtual void do_add_tracked(Tracked*) {}
+  virtual void do_remove_tracked(Tracked*) {}
   Vector<Tracked *> get_tracked() {
     return base::Vector<Tracked *>(tracked_.begin(), tracked_.end());
   }

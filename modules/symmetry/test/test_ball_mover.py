@@ -27,8 +27,8 @@ class Test(IMP.test.TestCase):
 
     def test_propose(self):
         for i in range(100):
-            ps=self.bmv.propose(1.0)
-            self.assertEqual(len(ps), len(self.ps))
+            ps=self.bmv.propose()
+            self.assertEqual(len(ps.get_moved_particles()), len(self.ps))
             new0 = IMP.core.XYZ(self.ps[0]).get_coordinates()
             new1 = IMP.core.XYZ(self.ps[1]).get_coordinates()
             dist = IMP.algebra.get_distance(new0,new1)
@@ -39,7 +39,7 @@ class Test(IMP.test.TestCase):
         old=[]
         for p in self.ps:
             old.append(IMP.core.XYZ(p).get_coordinates())
-        self.bmv.propose(1.0)
+        self.bmv.propose()
         self.bmv.reject()
         new=[]
         for p in self.ps:

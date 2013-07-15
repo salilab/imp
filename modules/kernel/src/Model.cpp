@@ -10,6 +10,7 @@
 #include "IMP/kernel/Particle.h"
 #include "IMP/kernel/internal/scoring_functions.h"
 #include "IMP/base//set.h"
+#include <boost/foreach.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -18,7 +19,6 @@ Model::Model(std::string name) : base::Object(name) {
   cur_stage_ = internal::NOT_EVALUATING;
   set_was_used(true);
   first_call_ = true;
-  has_dependencies_ = false;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   internal::FloatAttributeTable::set_masks(
       &this->Masks::read_mask_, &this->Masks::write_mask_,
@@ -82,13 +82,6 @@ ParticleIndex Model::add_particle_internal(Particle *p) {
   Masks::write_derivatives_mask_.resize(particle_index_.size(), true);
 #endif
   return ret;
-}
-
-void Model::update() {
-  IMP_OBJECT_LOG;
-  IMP_CHECK_OBJECT(this);
-  set_has_dependencies(true);
-  before_evaluate(ordered_score_states_);
 }
 
 void Model::remove_particle(ParticleIndex pi) {
@@ -193,6 +186,13 @@ bool Model::get_has_data(ModelKey mk) const {
     return model_data_[mk.get_index()];
   } else {
     return false;
+  }
+}
+
+void Model::do_destroy() {
+  // make sure we clear their data to free model objects they are keeping alive
+  BOOST_FOREACH(Particle *p, particle_index_) {
+    if (p) remove_particle(p->get_index());
   }
 }
 

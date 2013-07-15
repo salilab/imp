@@ -28,7 +28,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 namespace {
 void check_order(const ScoreStatesTemp &ss) {
   for (unsigned int i = 1; i < ss.size(); ++i) {
-    IMP_USAGE_CHECK(ss[i - 1]->order_ <= ss[i]->order_,
+    IMP_USAGE_CHECK(ss[i - 1]->get_update_order() <= ss[i]->get_update_order(),
                     "Score states " << Showable(ss[i - 1]) << " and "
                                     << Showable(ss[i]) << " are out of order.");
   }
@@ -46,7 +46,7 @@ void check_order(const ScoreStatesTemp &ss) {
 
 void Model::before_evaluate(const ScoreStatesTemp &states) {
   IMP_OBJECT_LOG;
-  IMP_USAGE_CHECK(get_has_dependencies(),
+  IMP_USAGE_CHECK(get_has_all_dependencies(),
                   "Model must have dependencies before calling "
                       << "before_evaluate()");
   check_order(states);
@@ -62,7 +62,8 @@ void Model::before_evaluate(const ScoreStatesTemp &states) {
   while (cur_begin < states.size()) {
     unsigned int cur_end = cur_begin + 1;
     while (cur_end < states.size() &&
-           states[cur_begin]->order_ == states[cur_end]->order_) {
+           states[cur_begin]->get_update_order()
+           == states[cur_end]->get_update_order()) {
       ++cur_end;
     }
     for (unsigned int i = cur_begin; i < cur_end; ++i) {
@@ -116,7 +117,8 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
   while (cur_begin < states.size()) {
     unsigned int cur_end = cur_begin + 1;
     while (cur_end < states.size() &&
-           states[cur_begin]->order_ == states[cur_end]->order_) {
+           states[cur_begin]->get_update_order()
+           == states[cur_end]->get_update_order()) {
       ++cur_end;
     }
     for (unsigned int i = cur_begin; i < cur_end; ++i) {

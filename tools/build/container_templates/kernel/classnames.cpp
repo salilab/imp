@@ -272,7 +272,7 @@ InternalListClassnameContainer::InternalListClassnameContainer(Model *m,
                                                                const char *name)
     : P(m, name) {}
 void InternalListClassnameContainer::add(PASSINDEXTYPE vt) {
-  get_model()->set_has_dependencies(false);
+  set_has_dependencies(false);
   PLURALINDEXTYPE cur;
   swap(cur);
   cur.push_back(vt);
@@ -280,23 +280,23 @@ void InternalListClassnameContainer::add(PASSINDEXTYPE vt) {
 }
 void InternalListClassnameContainer::add(const PLURALINDEXTYPE &c) {
   if (c.empty()) return;
-  get_model()->set_has_dependencies(false);
+  set_has_dependencies(false);
   PLURALINDEXTYPE cur;
   swap(cur);
   cur += c;
   swap(cur);
 }
 void InternalListClassnameContainer::set(PLURALINDEXTYPE cp) {
-  get_model()->set_has_dependencies(false);
+  set_has_dependencies(false);
   swap(cp);
 }
 void InternalListClassnameContainer::clear() {
-  get_model()->set_has_dependencies(false);
+  set_has_dependencies(false);
   PLURALINDEXTYPE t;
   swap(t);
 }
 void InternalListClassnameContainer::remove(PASSINDEXTYPE vt) {
-  get_model()->set_has_dependencies(false);
+  set_has_dependencies(false);
   PLURALINDEXTYPE t;
   swap(t);
   t.erase(std::remove(t.begin(), t.end(), vt), t.end());

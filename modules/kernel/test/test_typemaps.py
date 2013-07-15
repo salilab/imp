@@ -257,7 +257,10 @@ class Tests(IMP.test.TestCase):
                     'get_required_score_states',
                     'update_dependencies',
                     'get_has_dependencies',
-                    'set_has_dependencies'
+                    'set_has_dependencies',
+                    'get_has_required_score_states',
+                    'handle_set_has_required_score_states',
+                    'set_has_required_score_states',
                     ]
         md= dir(IMP.kernel._TrivialDecorator)
         missing=[]

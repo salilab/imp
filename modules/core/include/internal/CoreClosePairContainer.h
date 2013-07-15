@@ -51,8 +51,13 @@ class IMPCOREEXPORT CoreClosePairContainer
                          ClosePairsFinder *cpf, double slack = 1);
 
   IMP_LIST_ACTION(public, PairFilter, PairFilters, pair_filter, pair_filters,
-                  PairPredicate *, PairPredicates, obj->set_was_used(true);
-                  , , );
+                  PairPredicate *, PairPredicates,
+                  {
+                    set_has_dependencies(false);
+                    obj->set_was_used(true);
+                  },
+                  { set_has_dependencies(false);}
+                  , );
 
   void clear_caches() { first_call_ = true; }
   double get_slack() const { return slack_; }

@@ -90,6 +90,16 @@ class IMPKERNELEXPORT Model : public base::Object
 {
   typedef base::Tracker<Model, ModelObject> ModelObjectTracker;
 
+  // must be up top
+  // we don't want any liveness checks
+  IMP_NAMED_TUPLE_5(NodeInfo, NodeInfos, base::Vector<ModelObject*>, inputs,
+                    base::Vector<ModelObject*>, input_outputs,
+                    base::Vector<ModelObject*>, outputs,
+                    base::Vector<ModelObject*>, readers,
+                    base::Vector<ModelObject*>, writers,);
+  base::map<const ModelObject*, NodeInfo> dependency_graph_;
+  base::set<const ModelObject*> no_dependencies_;
+
   // basic representation
   base::map<FloatKey, FloatRange> ranges_;
 
@@ -97,17 +107,20 @@ class IMPKERNELEXPORT Model : public base::Object
   base::IndexVector<ParticleIndexTag, base::Pointer<Particle> > particle_index_;
   base::IndexVector<ParticleIndexTag, Undecorators> undecorators_index_;
 
-  bool has_dependencies_;
-  DependencyGraph dependency_graph_;
-  DependencyGraphVertexIndex dependency_graph_index_;
 
- // for the update function
-  ScoreStatesTemp ordered_score_states_;
-
-  ////////////// DEPRECATED
   base::Vector<base::OwnerPointer<base::Object> > model_data_;
+  ////////////// DEPRECATED
   // for old code that uses the model for the scoring function
   base::OwnerPointer<RestraintSet> restraints_;
+
+  void add_dependency_graph_node(const ModelObject *mo);
+  void remove_dependency_graph_node(const ModelObject *mo);
+  void do_clear_required_score_states(ModelObject *mo);
+  virtual void do_add_tracked(ModelObject*mo) IMP_OVERRIDE;
+  virtual void do_remove_tracked(ModelObject*mo) IMP_OVERRIDE;
+  void do_check_required_score_states(const ModelObject *mo) const;
+  void do_check_update_order(const ScoreState *ss) const;
+  void do_check_inputs_and_outputs(const ModelObject *mo) const;
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   // things the evaluate template functions need, can't be bothered with friends
@@ -118,14 +131,20 @@ class IMPKERNELEXPORT Model : public base::Object
   // the stage of evaluation
   internal::Stage cur_stage_;
 
-  void compute_required_score_states();
+  ModelObjectsTemp get_dependency_graph_inputs(const ModelObject *mo) const;
+  ModelObjectsTemp get_dependency_graph_outputs(const ModelObject *mo) const;
+  bool do_get_has_dependencies(const ModelObject *mo) const {
+    return no_dependencies_.find(mo) == no_dependencies_.end();
+  }
+  void do_set_has_dependencies(const ModelObject *mo, bool tf);
+  void do_set_has_all_dependencies(bool tf);
 
   void validate_computed_derivatives() const {}
-  void compute_dependencies();
-  const DependencyGraph &get_dependency_graph();
-  const DependencyGraphVertexIndex &get_dependency_graph_vertex_index();
-  void set_has_dependencies(bool tf);
-  bool get_has_dependencies() const { return has_dependencies_; }
+  void set_has_all_dependencies(bool tf);
+  bool get_has_all_dependencies() const;
+  void check_dependency_invariants() const;
+  ScoreStatesTemp get_ancestor_score_states(const ModelObject *mo) const;
+  ScoreStatesTemp get_descendent_score_states(const ModelObject *mo) const;
 
   void before_evaluate(const ScoreStatesTemp &states);
   void after_evaluate(const ScoreStatesTemp &states, bool calc_derivs);
@@ -309,6 +328,7 @@ class IMPKERNELEXPORT Model : public base::Object
   void remove_restraint(Restraint *r);
   RestraintsTemp get_restraints() const;
   ScoringFunction *create_scoring_function();
+  virtual void do_destroy() IMP_OVERRIDE;
 #endif
 
   /** \deprecated_at{2.1} Use a RestraintSet instead.*/

@@ -12,6 +12,7 @@
 #include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
 #include <IMP/base/base_macros.h>
+#include "internal/utility.h"
 #include <boost/graph/adjacency_list.hpp>
 #include "ModelObject.h"
 
@@ -32,9 +33,8 @@ IMPKERNEL_BEGIN_NAMESPACE
       See
       \ref dependencies "Dependencies" for more information about dependencies.
   */
-IMP_GRAPH(DependencyGraph, bidirectional, ModelObject *, int, {
-  out << vertex->get_name() << "\\n[" << vertex->get_type_name() << "]";
-});
+IMP_GRAPH(DependencyGraph, bidirectional, ModelObject *, int,
+          internal::show_dg_node(vertex, out));
 
 class Model;
 
@@ -53,66 +53,43 @@ IMPKERNELEXPORT DependencyGraph get_dependency_graph(Model *m);
 */
 IMPKERNELEXPORT DependencyGraph get_pruned_dependency_graph(Model *m);
 
-/** \name Getting required values
-
-    These functions use the dependency graph to determine all the objects
-    of a given type that are needed by a particular object. An object is said
-    to be needed by another if there is a path from the object to the dependent
-    object through the dependency graph (see get_dependency_graph()) not passing
-    through a node in all.
-
-    @{
- */
+/** \deprecated_at{2.1} You should act directly on the ModelObjects instead. */
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
 IMPKERNELEXPORT ParticlesTemp get_required_particles(
     ModelObject *p, const ModelObjectsTemp &all, const DependencyGraph &dg,
     const DependencyGraphVertexIndex &index);
 
-/** Return all the score states that depend on p depends on as input, even
-    indirectly.
- */
+/** \deprecated_at{2.1} You should act directly on the ModelObjects instead. */
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
 IMPKERNELEXPORT ScoreStatesTemp get_required_score_states(
     ModelObject *p, const ModelObjectsTemp &all, const DependencyGraph &dg,
     const DependencyGraphVertexIndex &index);
 /** @} */
 
-/** \name Getting dependent values
-
-    These functions use the dependency graph to determine all the objects
-    of a given type that depend on a particular object. An object is said
-    to depend on another if there is a path from the object to the dependent
-    object through the reversed dependency graph (see get_dependency_graph()).
-
-    @{
- */
+/** \deprecated_at{2.1} You should act directly on the ModelObjects instead. */
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
 IMPKERNELEXPORT ParticlesTemp get_dependent_particles(
     ModelObject *p, const ModelObjectsTemp &all, const DependencyGraph &dg,
     const DependencyGraphVertexIndex &index);
 
-/** Return all the restraints that depend on p as an input, even indirectly.
- */
+/** \deprecated_at{2.1} You should act directly on the ModelObjects instead. */
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
 IMPKERNELEXPORT RestraintsTemp get_dependent_restraints(
     ModelObject *p, const ModelObjectsTemp &all, const DependencyGraph &dg,
     const DependencyGraphVertexIndex &index);
 
-/** Return all the score states that depend on p as an input, even indirectly.
- */
+/** \deprecated_at{2.1} You should act directly on the ModelObjects instead. */
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
 IMPKERNELEXPORT ScoreStatesTemp get_dependent_score_states(
     ModelObject *p, const ModelObjectsTemp &all, const DependencyGraph &dg,
     const DependencyGraphVertexIndex &index);
-/** @} */
 
-/** Return the required score states for the restraints ordered in
-    a valid evaluation order. Make sure you include any score states
-    that are simply needed to update optimized particles.
-*/
-IMPKERNELEXPORT ScoreStatesTemp get_required_score_states(
-    const ModelObjectsTemp &irs, const DependencyGraph &dg,
-    const DependencyGraphVertexIndex &index);
-
-/** Assign an order to the score states in the dependency graph in which
-    they can safetly be updated.*/
-IMPKERNELEXPORT void set_score_state_update_order(
-    const DependencyGraph &dg, const DependencyGraphVertexIndex &index);
+#ifndef IMP_DOXYGEN
+/** Return all Restraints that depend on this Particle.
+    Model::set_has_all_dependencies() must be called first.*/
+IMPKERNELEXPORT RestraintsTemp get_dependent_restraints(Model *m,
+                                                        ParticleIndex pi);
+#endif
 
 IMPKERNEL_END_NAMESPACE
 

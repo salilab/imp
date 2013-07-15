@@ -29,10 +29,13 @@ class TestNOERestraintSimple(IMP.test.TestCase):
             IMP.algebra.Vector3D(1,1,1))
         self.DA = IMP.DerivativeAccumulator()
         self.Jsi = IMP.isd.JeffreysRestraint(self.sigma)
+        self.Jsi.set_model(self.m)
         self.Jga = IMP.isd.JeffreysRestraint(self.gamma)
+        self.Jga.set_model(self.m)
         self.V_obs=3.0
         self.noe = IMP.isd.NOERestraint(self.p0,self.p1,
                 self.sigma, self.gamma, self.V_obs)
+        self.noe.set_model(self.m)
 
     def testValuePDist(self):
         "Test NOERestraint probability by changing distance"
