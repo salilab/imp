@@ -59,8 +59,8 @@ a call to Model::update().
     Here is a simple example of using this for a nonbonded list
     \include nonbonded_interactions.py
 
-    \see CloseBipartitePairContainer
-    \see core::ClosePairsFinder
+    See also AllPairContainer, CloseBipartitePairContainer,
+    AllBipartitePairContainer for variants on the functionality provided.
 
  */
 class IMPCONTAINEREXPORT ClosePairContainer :

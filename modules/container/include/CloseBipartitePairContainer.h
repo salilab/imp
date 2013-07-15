@@ -30,6 +30,9 @@ IMPCONTAINER_BEGIN_NAMESPACE
     taken from each of the input sets.
 
     \usesconstraint
+
+    See also AllPairContainer, ClosePairContainer,
+    AllBipartitePairContainer for variants on the functionality provided.
  */
 class IMPCONTAINEREXPORT CloseBipartitePairContainer :
 #if defined(IMP_DOXYGEN) || defined(SWIG)

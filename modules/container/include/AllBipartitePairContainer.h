@@ -23,7 +23,8 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 //! Return all bipartite pairs between two containers
-/** \see AllPairContainer
+/** See also AllPairContainer, ClosePairContainer,
+    CloseBipartitePairContainer for variants on the functionality provided.
 
     \usesconstraint
  */
