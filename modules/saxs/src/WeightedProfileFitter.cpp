@@ -16,7 +16,7 @@ IMPSAXS_BEGIN_NAMESPACE
 std::vector<double> WeightedProfileFitter::empty_weights_;
 
 WeightedProfileFitter::WeightedProfileFitter(const Profile& exp_profile):
-  ProfileFitter(exp_profile),
+  IMP::saxs::ProfileFitter(exp_profile),
   W_(exp_profile.size()), Wb_(exp_profile.size()) {
 
   for(unsigned int i=0; i<exp_profile_.size(); i++) {
@@ -66,10 +66,6 @@ Float WeightedProfileFitter::compute_score(
   double chi =
     ProfileFitter::compute_score(weighted_profile, false, fit_file_name);
 
-  // for(int i=0; i<w.size(); i++) {
-  //   std::cout << "w[" << i << "] = " << w[i] << ", ";
-  // }
-  // std::cout << "Chi = " << chi << std::endl;
 
   if(fit_file_name.size() > 0)
     for(int i=0; i<w.size(); i++)
