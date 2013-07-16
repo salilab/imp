@@ -113,7 +113,7 @@ IMP::Model *do_setup(std::string profile, unsigned subs, unsigned cut)
           (particles[5].get_particle(),particles[6].get_particle(),2.0));
   IMP_NEW(GaussianProcessInterpolation, gpi, (qvals,
           data[1], data[2], 10, mean, covariance, particles[7]));
-  IMP_NEW(GaussianProcessInterpolationRestraint, gpr, (gpi));
+  IMP_NEW(GaussianProcessInterpolationRestraint, gpr, (m,gpi));
   m->add_restraint(gpr);
   //gpi->get_posterior_covariance(qvals[0],qvals[0]); //precompute matrices
   m->evaluate(true);

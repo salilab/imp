@@ -16,6 +16,9 @@ JeffreysRestraint::JeffreysRestraint(Particle *p):
     ISDRestraint("JeffreysRestraint_"+p->get_name()), p_(p) {
 }
 
+JeffreysRestraint::JeffreysRestraint(Model *m, Particle *p):
+    ISDRestraint(m, "JeffreysRestraint_"+p->get_name()), p_(p) {
+}
 
 /* Apply the score if it's a scale decorator.
  */
