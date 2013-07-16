@@ -469,7 +469,9 @@ static void svd (const Matrix& Arg, Matrix& U, Diagonal& s, Matrix& V) {
      }
        break;
     }
-  };
+  }
+  delete[] work;
+  delete[] e;
 }
 
 //Jones auto-regularization with SVD provided

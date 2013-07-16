@@ -53,6 +53,7 @@ void Profile::init(bool variance)
 {
   profile_.clear();
   int number_of_q_entries = (int)std::ceil((max_q_ - min_q_) / delta_q_ )+1;
+  profile_.reserve(number_of_q_entries);
 
   for (int i=0; i<number_of_q_entries; i++) {
     IntensityEntry entry(min_q_ + i * delta_q_);
