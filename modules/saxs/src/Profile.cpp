@@ -474,42 +474,27 @@ void Profile::sum_partial_profiles(Float c1, Float c2, Profile& out_profile) {
   //Float coefficient =
   // - std::pow((4.0*PI/3.0), 3.0/2.0) * square(rm) * (c1*c1-1.0) / (4*PI);
   Float coefficient = -square(rm) * (c1*c1-1.0) / (4*PI);
+  Float square_c2 = c2*c2;
+  Float cube_c1 = c1*c1*c1;
 
-  //std::cerr << "coefficient " << coefficient << " c1 " << c1 << std::endl;
   if(partial_profiles_.size() > 0) {
     out_profile.init();
-    out_profile.add(partial_profiles_[0]);
-    Profile p1, p2;
-    p1.add(partial_profiles_[1]);
-    p2.add(partial_profiles_[2]);
-    for(unsigned int k=0; k<p1.size(); k++) {
-      Float q = p1.get_q(k);
-      Float G_q = (c1*c1*c1) * std::exp(coefficient*square(q));
-      p1.set_intensity(k, p1.get_intensity(k)*square(G_q));
-      p2.set_intensity(k, - p2.get_intensity(k)*G_q);
-      //if(k==p1.size()-1) std::cerr << q << " " << G_q << std::endl;
+
+    for(unsigned int k=0; k<out_profile.size(); k++) {
+      Float q = out_profile.get_q(k);
+      Float G_q = cube_c1 * std::exp(coefficient*square(q));
+
+      Float intensity = partial_profiles_[0].get_intensity(k);
+      intensity += square(G_q) * partial_profiles_[1].get_intensity(k);
+      intensity -= G_q * partial_profiles_[2].get_intensity(k);
+
+      if(partial_profiles_.size() > 3) {
+        intensity += square_c2 * partial_profiles_[3].get_intensity(k);
+        intensity += c2 * partial_profiles_[4].get_intensity(k);
+        intensity -= G_q*c2 * partial_profiles_[5].get_intensity(k);
+      }
+      out_profile.set_intensity(k, intensity);
     }
-    //p1.scale(c1*c1);
-    //p2.scale(-c1);
-    out_profile.add(p1);
-    out_profile.add(p2);
-  }
-  if(partial_profiles_.size() > 3) {
-    Profile p3, p4, p5;
-    p3.add(partial_profiles_[3]);
-    p4.add(partial_profiles_[4]);
-    p5.add(partial_profiles_[5]);
-    p3.scale(c2*c2);
-    p4.scale(c2);
-    for(unsigned int k=0; k<p5.size(); k++) {
-      Float q = p5.get_q(k);
-      Float G_q = (c1*c1*c1)*std::exp(coefficient*square(q));
-      p5.set_intensity(k, - p5.get_intensity(k)*G_q*c2);
-    }
-    //    p5.scale(-c1*c2);
-    out_profile.add(p3);
-    out_profile.add(p4);
-    out_profile.add(p5);
   }
 }
 
