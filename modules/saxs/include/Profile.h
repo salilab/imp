@@ -175,6 +175,39 @@ public:
 
   // Profile access functions
   Float get_intensity(unsigned int i) const { return profile_[i].intensity_; }
+
+  //! return a profile that is sampled on the q values of the exp_profile
+  void resample(const Profile& exp_profile,
+                Profile& resampled_profile) const {
+    if(q_mapping_.size() == 0)
+      for (unsigned int k=0; k<size(); k++)
+        const_cast<Profile*>(this)->q_mapping_[profile_[k].q_] = k;
+
+    for (unsigned int k=0; k<exp_profile.size(); k++) {
+      Float q = exp_profile.get_q(k);
+      if(q > max_q_) break;
+      std::map<float, unsigned int>::const_iterator it =
+        q_mapping_.lower_bound(q);
+      if(it == q_mapping_.end()) break;
+      unsigned int i = it->second;
+      if(i == 0) {
+        resampled_profile.add_entry(q, get_intensity(i));
+      } else {
+        Float delta_q = get_q(i)- get_q(i-1);
+        if(delta_q <= 1.0e-16) {
+          resampled_profile.add_entry(q, get_intensity(i));
+        } else {
+          // interpolate
+          Float alpha = (q - get_q(i-1)) / delta_q;
+          if(alpha > 1.0) alpha = 1.0; // handle rounding errors
+          Float intensity = get_intensity(i-1) +
+            alpha*(get_intensity(i) - get_intensity(i-1));
+          resampled_profile.add_entry(q, intensity);
+        }
+      }
+    }
+  }
+
   Float get_q(unsigned int i) const { return profile_[i].q_; }
   Float get_error(unsigned int i) const { return profile_[i].error_; }
   Float get_weight(unsigned int i) const { return profile_[i].weight_; }
@@ -255,6 +288,7 @@ public:
   bool experimental_; // experimental profile read from file
   Float average_radius_; // average radius of the particles
   Float average_volume_; // average volume
+  std::map<float, unsigned int> q_mapping_;
 };
 
 IMPSAXS_END_NAMESPACE

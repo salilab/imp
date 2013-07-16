@@ -121,34 +121,7 @@ template<class ScoringFunctionT>
 void ProfileFitter<ScoringFunctionT>::resample(const Profile& model_profile,
                                                Profile& resampled_profile) const
 {
-  // map of q values for fast search
-  std::map<float, unsigned int> q_mapping;
-  for (unsigned int k=0; k<model_profile.size(); k++) {
-    q_mapping[model_profile.get_q(k)] = k;
-  }
-
-  for (unsigned int k=0; k<exp_profile_.size(); k++) {
-    Float q = exp_profile_.get_q(k);
-    if(q>model_profile.get_max_q()) break;
-    std::map<float, unsigned int>::iterator it = q_mapping.lower_bound(q);
-    if(it == q_mapping.end()) break;
-    unsigned int i = it->second;
-    if(i == 0) {
-      resampled_profile.add_entry(q, model_profile.get_intensity(i));
-    } else {
-      Float delta_q = model_profile.get_q(i)-model_profile.get_q(i-1);
-      if(delta_q <= 1.0e-16) {
-        resampled_profile.add_entry(q, model_profile.get_intensity(i));
-      } else {
-        Float alpha = (q - model_profile.get_q(i-1)) / delta_q;
-        if(alpha > 1.0) alpha = 1.0; // handle rounding errors
-        Float intensity = model_profile.get_intensity(i-1)
-          + (alpha)*(model_profile.get_intensity(i)
-                     - model_profile.get_intensity(i-1));
-        resampled_profile.add_entry(q, intensity);
-      }
-    }
-  }
+  model_profile.resample(exp_profile_, resampled_profile);
 }
 
 template<class ScoringFunctionT>
