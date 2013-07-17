@@ -150,6 +150,7 @@ class Tests(IMP.test.TestCase):
         r = FailingRestraint(m)
         m.add_restraint(r)
         self.assertRaises(CustomError, m.evaluate, False)
+        #print "done"
 
     def test_restraints(self):
         """Check restraint methods"""

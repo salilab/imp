@@ -16,7 +16,6 @@
 #include "constants.h"
 #include "base_types.h"
 #include <IMP/base/InputAdaptor.h>
-#include <IMP/base/tracking.h>
 #include <IMP/base/deprecation_macros.h>
 
 IMPKERNEL_BEGIN_NAMESPACE

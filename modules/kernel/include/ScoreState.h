@@ -105,7 +105,7 @@ class IMPKERNELEXPORT ScoreState : public ModelObject {
 };
 /** Return an appropriate (topoligically sorted) order to update
     the score states in. */
-IMPKERNELEXPORT ScoreStatesTemp get_update_order(ScoreStatesTemp in);
+IMPKERNELEXPORT ScoreStatesTemp get_update_order(ScoreStatesTemp input);
 
 IMPKERNEL_END_NAMESPACE
 

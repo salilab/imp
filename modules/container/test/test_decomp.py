@@ -21,7 +21,10 @@ class Tests(IMP.test.TestCase):
         dr= r.create_decomposition()
         print dr.evaluate(False)
         cdr= IMP.RestraintSet.get_from(dr).get_restraints()
+        #IMP.base.set_log_level(IMP.base.VERBOSE)
+        print "deling"
         del dr
+        print "eval single"
         for rc in cdr:
             print rc.evaluate(False)
 if __name__ == '__main__':

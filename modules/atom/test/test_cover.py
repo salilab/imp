@@ -72,6 +72,8 @@ class Tests(IMP.test.TestCase):
         m.update()
         self._display(mp, "after_rigid", d, s)
         self._check(mp, s, d)
+        print "done"
+        IMP.base.set_log_level(IMP.base.MEMORY)
 
 if __name__ == '__main__':
     IMP.test.main()

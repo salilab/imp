@@ -17,10 +17,12 @@
 IMPKERNEL_BEGIN_NAMESPACE
 
 ModelObject::ModelObject(Model *m, std::string name)
-  : Tracked(this, m, name),
-    has_required_score_states_(false),
-    computing_required_score_states_(false) {
-  m->do_set_has_all_dependencies(false);
+  : base::Object(name), model_(m) {
+  m->do_add_model_object(this);
+}
+
+ModelObject::~ModelObject() {
+  if (get_model()) get_model()->do_remove_model_object(this);
 }
 
 bool ModelObject::get_has_dependencies() const {
@@ -34,43 +36,22 @@ void ModelObject::set_has_dependencies(bool tf) {
   get_model()->check_dependency_invariants();
 }
 
-void ModelObject::do_set_has_required_score_states(bool tf) {
-  IMP_USAGE_CHECK(!computing_required_score_states_,
-                "Already computing score states, probably a dependency loop.");
-
-  if (tf) {
-    // make sure everything is there as we invalidate lazily
-    get_model()->do_set_has_all_dependencies(true);
-  }
-  if (!tf && !has_required_score_states_) return;
-  else if (tf && get_has_required_score_states()) return;
-  computing_required_score_states_ = true;
-  IMP_OBJECT_LOG;
-  if (tf) {
-    has_required_score_states_ = true;
-    ScoreStates all;
-    BOOST_FOREACH(ModelObject *input,
-                  get_model()->get_dependency_graph_inputs(this)) {
-      input->do_set_has_required_score_states(true);
-      all += input->get_required_score_states();
-      ScoreState *ss = dynamic_cast<ScoreState*>(input);
-      if (ss) all.push_back(ss);
-    }
-    required_score_states_ = get_update_order(all);
-    IMP_LOG_VERBOSE("Score states for " << get_name()
-                    << " are " << required_score_states_ << std::endl);
-    handle_set_has_required_score_states(true);
-  } else {
-    has_required_score_states_ = false;
-    handle_set_has_required_score_states(false);
-  }
-  computing_required_score_states_ = false;
+bool ModelObject::get_has_required_score_states() const {
+  IMP_USAGE_CHECK(get_model(), "Must set model first");
+  return get_model() && get_model()->do_get_has_required_score_states(this);
 }
 
 void ModelObject::set_has_required_score_states(bool tf) {
   IMP_USAGE_CHECK(tf, "Can only set them this way.");
-  do_set_has_required_score_states(tf);
+  IMP_USAGE_CHECK(get_model(), "Must set model first");
+  get_model()->do_set_has_required_score_states(this, true);
   if (get_model()) get_model()->check_dependency_invariants();
+}
+
+const ScoreStatesTemp &ModelObject::get_required_score_states() const {
+  IMP_USAGE_CHECK(get_has_required_score_states(),
+                  "Required score states have not been computed yet.");
+  return get_model()->do_get_required_score_states(this);
 }
 
 void ModelObject::validate_inputs() const {
@@ -92,7 +73,7 @@ void ModelObject::validate_inputs() const {
                     << " Make sure you call set_has_dependencies(false) any "
                     << "time the list of dependencies changed. Object is "
                     << get_name() << " of type " << get_type_name());
-  }
+                    }
 }
 
 void ModelObject::validate_outputs() const {
@@ -112,7 +93,7 @@ void ModelObject::validate_outputs() const {
                     << " Make sure you call set_has_dependencies(false) any "
                     << "time the list of dependencies changed. Object is "
                     << get_name() << " of type " << get_type_name());
-  }
+                    }
 }
 
 ModelObjectsTemp ModelObject::get_inputs() const {
@@ -196,18 +177,22 @@ ContainersTemp get_output_containers(const ModelObjectsTemp &mo) {
 bool ModelObject::get_is_part_of_model() const {
   IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
                                     "Should always be true.");
-  return Tracked::get_is_tracked();
+  return get_model();
 }
 
 void ModelObject::set_model(Model *m) {
-  Tracked::set_tracker(this, m);
+  if (model_) {
+    model_->do_remove_model_object(this);
+  }
+  model_ = m;
+  if (model_) {
+    model_->do_add_model_object(this);
+  }
   do_set_model(m);
 }
 
 ModelObject::ModelObject(std::string name)
-  : Tracked(name),
-    has_required_score_states_(false),
-    computing_required_score_states_(false) {
+  : base::Object(name) {
   IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
                                     "Pass the Model to the constructor.");
 

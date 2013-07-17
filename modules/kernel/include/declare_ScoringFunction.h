@@ -16,7 +16,6 @@
 #include "declare_Restraint.h"
 #include "ModelObject.h"
 #include <IMP/base/InputAdaptor.h>
-#include <IMP/base/tracking.h>
 #include <IMP/base/Pointer.h>
 
 #include <limits>

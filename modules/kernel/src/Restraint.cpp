@@ -66,14 +66,14 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator *da) const {
 
 void Restraint::set_weight(double w) {
   if (w != weight_) {
-    set_has_dependencies(false);
+    if (get_model()) set_has_dependencies(false);
     weight_ = w;
   }
 }
 
 void Restraint::set_maximum_score(double w) {
   if (w != max_) {
-    set_has_dependencies(false);
+    if (get_model()) set_has_dependencies(false);
     max_ = w;
   }
 }

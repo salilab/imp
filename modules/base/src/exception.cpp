@@ -6,12 +6,7 @@
  */
 
 #include "IMP/base/exception.h"
-#include "IMP/base/log.h"
-#include "IMP/base/internal/static.h"
-#include "IMP/base/check_macros.h"
-#include "IMP/base/log_macros.h"
-#include <cstring>
-#include <boost/lambda/lambda.hpp>
+#include "IMP/base/warning_macros.h"
 
 IMPBASE_BEGIN_NAMESPACE
 void handle_error(const char *message) {

@@ -139,7 +139,7 @@ void Particle::clear_caches() { get_model()->clear_particle_caches(id_); }
 
 bool Particle::get_is_active() const {
   IMP_CHECK_OBJECT(this);
-  return get_model();
+  return get_model() && get_model()->get_has_particle(get_index());
 }
 
 ParticleIndex Particle::get_index() const { return id_; }

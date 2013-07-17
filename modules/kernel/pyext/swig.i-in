@@ -242,7 +242,6 @@ class Decorators;
 %include "IMP/kernel/FloatIndex.h"
 %include "IMP/kernel/base_types.h"
 %include "IMP/kernel/constants.h"
-%template(_TrackedModelObject) IMP::base::TrackedObject<IMP::kernel::ModelObject, IMP::kernel::Model>;
 %include "IMP/kernel/ModelObject.h"
 %rename(_ParticleInputs) ParticleInputs;
 %rename(_ParticleOutputs) ParticleOutputs;

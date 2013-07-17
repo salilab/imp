@@ -10,36 +10,30 @@
 #include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
 #include <IMP/base/ref_counted_macros.h>
-#include <IMP/base/tracking.h>
 #include <IMP/base/utility_macros.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
+
+class Model;
 
 /** These objects are associated with a particular Model
     and have a callback that is called whenever the dependencies
     in the model change. This allows them to update internal state
     when that occurs.
  */
-class IMPKERNELEXPORT ModelObject :
-    public base::TrackedObject<ModelObject, Model> {
-  typedef base::TrackedObject<ModelObject, Model> Tracked;
-
+class IMPKERNELEXPORT ModelObject: public base::Object {
   friend class Model;
-
-  bool has_required_score_states_, computing_required_score_states_;
-
-  ScoreStatesTemp required_score_states_;
-
+  base::WeakPointer<Model> model_;
  public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  void do_set_has_required_score_states(bool tf);
   void validate_inputs() const;
   void validate_outputs() const;
 #endif
 
   ModelObject(Model *m, std::string name);
+  ~ModelObject();
 
-  Model *get_model() const { return Tracked::get_tracker(); }
+  Model *get_model() const { return model_; }
   /** get_has_dependencies() must be true. */
   ModelObjectsTemp get_inputs() const;
   /** get_has_dependencies() must be true. */
@@ -60,17 +54,11 @@ class IMPKERNELEXPORT ModelObject :
   void set_has_required_score_states(bool tf);
 
   /** Return whether score states are computed.*/
-  bool get_has_required_score_states() const {
-    return get_has_dependencies() && has_required_score_states_;
-  }
+  bool get_has_required_score_states() const;
 
   /** Get the score states that are ancestors of this in the dependency graph.
    */
-  const ScoreStatesTemp &get_required_score_states() const {
-    IMP_USAGE_CHECK(get_has_required_score_states(),
-                    "Required score states have not been computed yet.");
-    return required_score_states_;
-  }
+  const ScoreStatesTemp &get_required_score_states() const;
  protected:
   //virtual void do_destroy() IMP_OVERRIDE {set_has_dependencies(false);}
   /** Called when set_has_required_score_states() is called.*/

@@ -24,7 +24,6 @@
 #include "internal/attribute_tables.h"
 #include <IMP/base/Object.h>
 #include <IMP/base/Pointer.h>
-#include <IMP/base/tracking.h>
 #include <IMP/base/map.h>
 #include <IMP/base/set.h>
 #include <IMP/base/tuple_macros.h>
@@ -73,7 +72,6 @@ class Model;
 class IMPKERNELEXPORT Model : public base::Object
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
                               ,
-                              public base::Tracker<Model, ModelObject>,
                               public internal::Masks,
                               // The attribute tables provide fast access to
                               // e.g. particle attributes, etc.
@@ -88,17 +86,19 @@ class IMPKERNELEXPORT Model : public base::Object
                               public internal::ParticlesAttributeTable
 #endif
 {
-  typedef base::Tracker<Model, ModelObject> ModelObjectTracker;
-
+  typedef base::Vector<ModelObject*> Edges;
   // must be up top
   // we don't want any liveness checks
-  IMP_NAMED_TUPLE_5(NodeInfo, NodeInfos, base::Vector<ModelObject*>, inputs,
-                    base::Vector<ModelObject*>, input_outputs,
-                    base::Vector<ModelObject*>, outputs,
-                    base::Vector<ModelObject*>, readers,
-                    base::Vector<ModelObject*>, writers,);
-  base::map<const ModelObject*, NodeInfo> dependency_graph_;
+  IMP_NAMED_TUPLE_5(NodeInfo, NodeInfos,
+                    Edges, inputs,
+                    Edges, input_outputs,
+                    Edges, outputs,
+                    Edges, readers,
+                    Edges, writers,);
+  typedef base::map<const ModelObject*, NodeInfo> DependencyGraph;
+  DependencyGraph dependency_graph_;
   base::set<const ModelObject*> no_dependencies_;
+  base::map<const ModelObject*, ScoreStatesTemp> required_score_states_;
 
   // basic representation
   base::map<FloatKey, FloatRange> ranges_;
@@ -113,15 +113,14 @@ class IMPKERNELEXPORT Model : public base::Object
   // for old code that uses the model for the scoring function
   base::OwnerPointer<RestraintSet> restraints_;
 
-  void add_dependency_graph_node(const ModelObject *mo);
-  void remove_dependency_graph_node(const ModelObject *mo);
+  void do_add_dependencies(const ModelObject *mo);
   void do_clear_required_score_states(ModelObject *mo);
-  virtual void do_add_tracked(ModelObject*mo) IMP_OVERRIDE;
-  virtual void do_remove_tracked(ModelObject*mo) IMP_OVERRIDE;
   void do_check_required_score_states(const ModelObject *mo) const;
   void do_check_update_order(const ScoreState *ss) const;
   void do_check_inputs_and_outputs(const ModelObject *mo) const;
-
+  void do_check_readers_and_writers(const ModelObject *mo) const;
+  void do_check_not_in_readers_and_writers(const ModelObject *mo) const;
+  void do_clear_dependencies(const ModelObject *mo);
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   // things the evaluate template functions need, can't be bothered with friends
  public:
@@ -153,6 +152,17 @@ class IMPKERNELEXPORT Model : public base::Object
   ParticleIndex add_particle_internal(Particle *p);
   static void do_remove_score_state(ScoreState *obj);
   void do_add_score_state(ScoreState *obj);
+  void do_remove_particle(ParticleIndex pi);
+  bool do_get_has_required_score_states(const ModelObject *mo) const;
+  void do_set_has_required_score_states(ModelObject *mo, bool tf);
+  const ScoreStatesTemp& do_get_required_score_states(const ModelObject *mo)
+      const {
+    IMP_USAGE_CHECK(do_get_has_required_score_states(mo),
+                    "Doesn't have score states");
+    return required_score_states_.find(mo)->second;
+  }
+  void do_add_model_object(ModelObject *mo);
+  void do_remove_model_object(ModelObject *mo);
  public:
   /** Construct an empty model */
   Model(std::string name = "Model %1%");
@@ -280,6 +290,9 @@ class IMPKERNELEXPORT Model : public base::Object
 
   /** Get the particle from an index. */
   Particle *get_particle(ParticleIndex p) const;
+
+  /** Get the particle from an index. */
+  bool get_has_particle(ParticleIndex p) const;
 
   /** Get all particle indexes */
   ParticleIndexes get_particle_indexes();

@@ -84,16 +84,13 @@ ParticleIndex Model::add_particle_internal(Particle *p) {
   return ret;
 }
 
-void Model::remove_particle(ParticleIndex pi) {
+void Model::do_remove_particle(ParticleIndex pi) {
   if (undecorators_index_.size() > static_cast<size_t>(pi.get_index())) {
     for (unsigned int i = 0; i < undecorators_index_[pi].size(); ++i) {
       undecorators_index_[pi][i]->teardown(pi);
     }
     undecorators_index_[pi].clear();
   }
-  particle_index_[pi]->set_tracker(particle_index_[pi], nullptr);
-  free_particles_.push_back(pi);
-  particle_index_[pi] = nullptr;
   internal::FloatAttributeTable::clear_attributes(pi);
   internal::StringAttributeTable::clear_attributes(pi);
   internal::IntAttributeTable::clear_attributes(pi);
@@ -103,6 +100,13 @@ void Model::remove_particle(ParticleIndex pi) {
   internal::ObjectsAttributeTable::clear_attributes(pi);
   internal::ParticleAttributeTable::clear_attributes(pi);
   internal::ParticlesAttributeTable::clear_attributes(pi);
+  free_particles_.push_back(pi);
+  particle_index_[pi]->set_model(nullptr);
+  particle_index_[pi] = nullptr;
+}
+
+void Model::remove_particle(ParticleIndex pi) {
+  do_remove_particle(pi);
 }
 
 ParticleIndexes Model::get_particle_indexes() {
@@ -116,8 +120,11 @@ ParticleIndexes Model::get_particle_indexes() {
 }
 
 ModelObjectsTemp Model::get_model_objects() const {
-  return ModelObjectsTemp(ModelObjectTracker::tracked_begin(),
-                          ModelObjectTracker::tracked_end());
+  ModelObjectsTemp ret; ret.reserve(dependency_graph_.size());
+  BOOST_FOREACH(const DependencyGraph::value_type& vt, dependency_graph_) {
+    ret.push_back(const_cast<ModelObject*>(vt.first));
+  }
+  return ret;
 }
 
 ParticleIndex Model::add_particle(std::string name) {
@@ -132,9 +139,13 @@ void Model::add_undecorator(ParticleIndex pi, Undecorator *d) {
 }
 
 Particle* Model::get_particle(ParticleIndex p) const {
-  IMP_USAGE_CHECK(particle_index_.size() > get_as_unsigned_int(p),
+  IMP_USAGE_CHECK(get_has_particle(p),
                   "Invalid particle requested");
-  IMP_USAGE_CHECK(particle_index_[p], "Invalid particle requested");
+  return particle_index_[p];
+}
+
+bool Model::get_has_particle(ParticleIndex p) const {
+  if (particle_index_.size() <= get_as_unsigned_int(p)) return false;
   return particle_index_[p];
 }
 
@@ -190,9 +201,18 @@ bool Model::get_has_data(ModelKey mk) const {
 }
 
 void Model::do_destroy() {
+  IMP_OBJECT_LOG;
+  IMP_LOG_TERSE("Destroying model" << std::endl);
   // make sure we clear their data to free model objects they are keeping alive
   BOOST_FOREACH(Particle *p, particle_index_) {
-    if (p) remove_particle(p->get_index());
+    if (p) {
+      remove_particle(p->get_index());
+    }
+  }
+  while (!dependency_graph_.empty()) {
+    ModelObject *mo
+        = const_cast<ModelObject*>(dependency_graph_.begin()->first);
+    mo->set_model(nullptr);
   }
 }
 
@@ -202,6 +222,7 @@ ScoringFunction *Model::create_model_scoring_function() {
   return restraints_->create_scoring_function();
 }
 void Model::add_restraint(Restraint *r) {
+  if (!r->get_model()) r->set_model(this);
   restraints_->add_restraint(r);
 }
 void Model::remove_restraint(Restraint *r) {
