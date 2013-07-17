@@ -136,7 +136,7 @@ IMPISD_BEGIN_NAMESPACE
 
   double GaussianProcessInterpolation::get_posterior_mean(Floats x) const
 {
-   // std::cerr << "posterior mean at q=" << x(0) << std::endl;
+    //std::cerr << "posterior mean at q=" << x(0) << std::endl;
     VectorXd wx(get_wx_vector(x));
     VectorXd OmiIm(get_OmiIm());
     double ret = wx.transpose()*OmiIm;
@@ -147,6 +147,7 @@ IMPISD_BEGIN_NAMESPACE
     std::cerr << std::endl << "mean func: " << (*mean_function_)(x)[0]
         << std::endl;
     std::cerr << "product " << ret << std::endl;*/
+    //std::cout << "sigma val = " << sigma_val_ << std::endl;
     return ret + (*mean_function_)(x)[0]; //licit because OmiIm is up to date
 }
 
@@ -458,7 +459,7 @@ MatrixXd GaussianProcessInterpolation::get_posterior_covariance_hessian(
   VectorXd GaussianProcessInterpolation::get_wx_vector(Floats xval) const
 {
     const_cast<GaussianProcessInterpolation *>(this)->update_flags_covariance();
-    IMP_LOG_TERSE("  get_wx_vector at q= " << xval[0] << " ");
+    IMP_LOG_TERSE("  get_wx_vector at q= " << xval[0] << " : ");
     VectorXd wx(M_);
     for (unsigned i=0; i<M_; i++)
     {
