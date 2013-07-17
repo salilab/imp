@@ -391,7 +391,7 @@ void Profile::calculate_profile_partial(const Particles& particles,
   squared_distributions_2_partial_profiles(r_dist);
 
   // compute default profile c1 = 1, c2 = 0
-  sum_partial_profiles(1.0, 0.0, *this);
+  sum_partial_profiles(1.0, 0.0);
 }
 
 void Profile::calculate_profile_partial(const Particles& particles1,
@@ -463,25 +463,27 @@ void Profile::calculate_profile_partial(const Particles& particles1,
   squared_distributions_2_partial_profiles(r_dist);
 
   // compute default profile c1 = 1, c2 = 0
-  sum_partial_profiles(1.0, 0.0, *this);
+  sum_partial_profiles(1.0, 0.0);
 }
 
-void Profile::sum_partial_profiles(Float c1, Float c2, Profile& out_profile) {
-  // implements volume fitting function G(s) as described in crysol paper eq. 13
-  Float rm = average_radius_;
-  // this exponent should match the exponent of g(s) which doesn't have
-  // (4pi/3)^3/2 part so it seems that this part is not needed here too.
-  //Float coefficient =
-  // - std::pow((4.0*PI/3.0), 3.0/2.0) * square(rm) * (c1*c1-1.0) / (4*PI);
-  Float coefficient = -square(rm) * (c1*c1-1.0) / (4*PI);
-  Float square_c2 = c2*c2;
-  Float cube_c1 = c1*c1*c1;
-
+void Profile::sum_partial_profiles(Float c1, Float c2) {
   if(partial_profiles_.size() > 0) {
-    out_profile.init();
 
-    for(unsigned int k=0; k<out_profile.size(); k++) {
-      Float q = out_profile.get_q(k);
+    // implements volume fitting function G(s) as described
+    // in crysol paper eq. 13
+    Float rm = average_radius_;
+    // this exponent should match the exponent of g(s) which doesn't have
+    // (4pi/3)^3/2 part so it seems that this part is not needed here too.
+    //Float coefficient =
+    // - std::pow((4.0*PI/3.0), 3.0/2.0) * square(rm) * (c1*c1-1.0) / (4*PI);
+    Float coefficient = -square(rm) * (c1*c1-1.0) / (4*PI);
+    Float square_c2 = c2*c2;
+    Float cube_c1 = c1*c1*c1;
+
+    if(size() != partial_profiles_[0].size()) init();
+
+    for(unsigned int k=0; k<size(); k++) {
+      Float q = get_q(k);
       Float G_q = cube_c1 * std::exp(coefficient*square(q));
 
       Float intensity = partial_profiles_[0].get_intensity(k);
@@ -493,10 +495,43 @@ void Profile::sum_partial_profiles(Float c1, Float c2, Profile& out_profile) {
         intensity += c2 * partial_profiles_[4].get_intensity(k);
         intensity -= G_q*c2 * partial_profiles_[5].get_intensity(k);
       }
-      out_profile.set_intensity(k, intensity);
+      set_intensity(k, intensity);
     }
   }
 }
+
+void Profile::resample(const Profile& exp_profile,
+                       Profile& resampled_profile) const {
+  if(q_mapping_.size() == 0)
+    for (unsigned int k=0; k<size(); k++)
+      const_cast<Profile*>(this)->q_mapping_[profile_[k].q_] = k;
+
+  for (unsigned int k=0; k<exp_profile.size(); k++) {
+    Float q = exp_profile.get_q(k);
+    if(q > max_q_) break;
+
+    std::map<float, unsigned int>::const_iterator it =q_mapping_.lower_bound(q);
+    if(it == q_mapping_.end()) break;
+
+    unsigned int i = it->second;
+    if(i == 0) {
+      resampled_profile.add_entry(q, get_intensity(i));
+    } else {
+      Float delta_q = get_q(i)- get_q(i-1);
+      if(delta_q <= 1.0e-16) {
+        resampled_profile.add_entry(q, get_intensity(i));
+      } else {
+        // interpolate
+        Float alpha = (q - get_q(i-1)) / delta_q;
+        if(alpha > 1.0) alpha = 1.0; // handle rounding errors
+        Float intensity = get_intensity(i-1) +
+          alpha*(get_intensity(i) - get_intensity(i-1));
+        resampled_profile.add_entry(q, intensity);
+      }
+    }
+  }
+}
+
 
 void Profile::calculate_profile_symmetric(const Particles& particles,
                                           unsigned int n,
@@ -1058,7 +1093,7 @@ void Profile::calculate_profile_reciprocal_partial(const Particles& particles,
   } // end of loop1
 
   // compute default profile c1 = 1, c2 = 0
-  sum_partial_profiles(1.0, 0.0, *this);
+  sum_partial_profiles(1.0, 0.0);
 }
 
 IMPSAXS_END_NAMESPACE

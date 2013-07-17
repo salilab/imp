@@ -289,7 +289,7 @@ constant form factor (default = false)")
         if(vacuum) {
           partial_profile->calculate_profile_partial(particles_vec[i],
                                                      surface_area, ff_type);
-          partial_profile->sum_partial_profiles(0.0, 0.0, *partial_profile);
+          partial_profile->sum_partial_profiles(0.0, 0.0);
         } else {
           partial_profile->calculate_profile(particles_vec[i],
                                              ff_type, reciprocal);

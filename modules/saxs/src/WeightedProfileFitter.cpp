@@ -32,12 +32,34 @@ Float WeightedProfileFitter::compute_score(
                          const std::vector<IMP::saxs::Profile *>& profiles,
                          std::vector<double>& weights,
                          const std::string fit_file_name) const {
-  int m = profiles.size();
-  int n = exp_profile_.size();
+
 
   // no need to compute weighted profile for ensemble of size 1
-  if(m == 1)
-    return ProfileFitter::compute_score(*profiles[0], false, fit_file_name);
+  if(profiles.size() == 1)
+    return ProfileFitter<ChiScore>::compute_score(*profiles[0],
+                                                  false, fit_file_name);
+
+  compute_weights(profiles, weights);
+
+  // computed weighted profile
+  IMP::saxs::Profile weighted_profile(exp_profile_.get_min_q(),
+                                      exp_profile_.get_max_q(),
+                                      exp_profile_.get_delta_q());
+
+  for(unsigned int i=0; i<weights.size(); i++)
+    weighted_profile.add(*profiles[i], weights[i]);
+
+  return ProfileFitter<ChiScore>::compute_score(weighted_profile,
+                                                false, fit_file_name);
+}
+
+void WeightedProfileFitter::compute_weights(
+                            const std::vector<IMP::saxs::Profile *>& profiles,
+                            std::vector<double>& weights) const {
+
+
+  int m = profiles.size();
+  int n = exp_profile_.size();
 
   internal::Matrix A(n,m); // for intensities
   for(int j=0; j<m; j++) {
@@ -55,23 +77,8 @@ Float WeightedProfileFitter::compute_score(
   // normalize weights so they sum up to 1.0
   w /= w.sum();
 
-
-  // computed weighted profile
-  IMP::saxs::Profile weighted_profile(exp_profile_.get_min_q(),
-                                      exp_profile_.get_max_q(),
-                                      exp_profile_.get_delta_q());
-
-  for(int i=0; i<w.size(); i++) weighted_profile.add(*profiles[i], w[i]);
-
-  double chi =
-    ProfileFitter::compute_score(weighted_profile, false, fit_file_name);
-
-
-  if(fit_file_name.size() > 0)
-    for(int i=0; i<w.size(); i++)
-      weights.push_back(w[i]);
-
-  return chi;
+  weights.resize(w.size());
+  for(int i=0; i<w.size(); i++) weights[i] = w[i];
 }
 
 FitParameters WeightedProfileFitter::fit_profile(
@@ -81,30 +88,40 @@ FitParameters WeightedProfileFitter::fit_profile(
                             std::vector<double>& weights,
                             const std::string fit_file_name) const {
 
-  // compute chi value for default c1/c1 (remove?)
-  float default_c1 = 1.0, default_c2 = 0.0;
-  for(unsigned int i=0; i<partial_profiles.size(); i++)
-    partial_profiles[i]->sum_partial_profiles(default_c1, default_c2,
-                                              *partial_profiles[i]);
-  float default_chi = compute_score(partial_profiles, empty_weights_);
-
   FitParameters fp = search_fit_parameters(partial_profiles,
                                            min_c1, max_c1, min_c2, max_c2,
-                                           std::numeric_limits<float>::max());
-  float best_c1 = fp.get_c1();
-  float best_c2 = fp.get_c2();
-  fp.set_default_chi(default_chi);
+                                           std::numeric_limits<float>::max(),
+                                           weights);
 
-  // compute a profile for best c1/c2 combination
-  for(unsigned int i=0; i<partial_profiles.size(); i++)
-    partial_profiles[i]->sum_partial_profiles(best_c1, best_c2,
-                                              *partial_profiles[i]);
+  if(fit_file_name.size() > 0) {
+    float best_c1 = fp.get_c1();
+    float best_c2 = fp.get_c2();
 
-  if(fit_file_name.size() > 0)
-    compute_score(partial_profiles, weights, fit_file_name);
+    // compute a profile for best c1/c2 combination
+    for(unsigned int i=0; i<partial_profiles.size(); i++)
+      partial_profiles[i]->sum_partial_profiles(best_c1, best_c2);
 
-  // std::cout << " Chi = " << fp.get_chi() << " c1 = " << best_c1 << " c2 = "
-  //           << best_c2 << " default chi = " << default_chi << std::endl;
+    // computed weighted profile
+    IMP::saxs::Profile weighted_profile(exp_profile_.get_min_q(),
+                                        exp_profile_.get_max_q(),
+                                        exp_profile_.get_delta_q());
+    for(unsigned int i=0; i<weights.size(); i++)
+      weighted_profile.add(*partial_profiles[i], weights[i]);
+
+    // resample on exp. profile
+    Profile resampled_profile(exp_profile_.get_min_q(),
+                            exp_profile_.get_max_q(),
+                            exp_profile_.get_delta_q());
+    weighted_profile.resample(exp_profile_, resampled_profile);
+
+    // compute scale
+    Float c = scoring_function_->compute_scale_factor(exp_profile_,
+                                                      resampled_profile);
+
+    ProfileFitter<ChiScore>::write_SAXS_fit_file(fit_file_name,
+                                                 resampled_profile,
+                                                 fp.get_chi(), c);
+  }
   return fp;
 }
 
@@ -113,7 +130,7 @@ FitParameters WeightedProfileFitter::search_fit_parameters(
                            std::vector<IMP::saxs::Profile *>& partial_profiles,
                            float min_c1, float max_c1,
                            float min_c2, float max_c2,
-                           float old_chi) const {
+                           float old_chi, std::vector<double>& weights) const {
   int c1_cells = 10;
   int c2_cells = 10;
   if(old_chi < (std::numeric_limits<float>::max()-1)) { // second iteration
@@ -139,14 +156,15 @@ FitParameters WeightedProfileFitter::search_fit_parameters(
     for(int j=0; j<=c2_cells; j++, c2+= delta_c2) {
       // sum up the profiles for c1/c2 combo
       for(unsigned int k=0; k<partial_profiles.size(); k++)
-        partial_profiles[k]->sum_partial_profiles(c1, c2, *partial_profiles[k]);
-      //partial_profile.sum_partial_profiles(c1, c2, partial_profile);
-      float curr_chi = compute_score(partial_profiles, empty_weights_);
+        partial_profiles[k]->sum_partial_profiles(c1, c2);
+      std::vector<double> curr_weights;
+      float curr_chi = compute_score(partial_profiles, curr_weights);
       if(!best_set || curr_chi < best_chi) {
         best_set = true;
         best_chi = curr_chi;
         best_c1 = c1;
         best_c2 = c2;
+        weights = curr_weights;
       }
     }
   }
@@ -159,7 +177,7 @@ FitParameters WeightedProfileFitter::search_fit_parameters(
     max_c2 = std::min(best_c2+delta_c2, max_c2);
     return search_fit_parameters(partial_profiles,
                                  min_c1, max_c1, min_c2, max_c2,
-                                 best_chi);
+                                 best_chi, weights);
   }
   return FitParameters(best_chi, best_c1, best_c2);
 }

@@ -113,6 +113,89 @@ public:
   //! convert to reciprocal space I(q) = Sum(P(r)*sin(qr)/qr)
   void distribution_2_profile(const RadialDistributionFunction& r_dist);
 
+
+  //! return a profile that is sampled on the q values of the exp_profile
+  void resample(const Profile& exp_profile,
+                Profile& resampled_profile) const;
+
+  //! compute radius of gyration with Guinier approximation
+  /** ln[I(q)]=ln[I(0)] - (q^2*rg^2)/3
+     \param[in] end_q_rg determines the range of profile used for approximation:
+      i.e. q*rg < end_q_rg. Use 1.3 for globular proteins, 0.8 for elongated
+  */
+  double radius_of_gyration(double end_q_rg = 1.3) const;
+
+
+  // IO functions
+
+  //! reads SAXS profile from file
+  /**
+     \param[in] file_name profile file name
+     \param[in] fit_file if true, intensities are read from column 3
+   */
+  void read_SAXS_file(const String& file_name, bool fit_file = false);
+
+  //! print to file
+  /** \param[in] file_name output file name
+      \param[in] max_q output till maximal q value = max_q, or all if max_q<=0
+  */
+  void write_SAXS_file(const String& file_name, Float max_q=0.0) const;
+
+  void write_partial_profiles(const String& file_name) const;
+
+
+  // Access functions
+
+  //! return sampling resolution
+  Float get_delta_q() const { return delta_q_; }
+
+  //! return minimal sampling point
+  Float get_min_q() const { return min_q_; }
+
+  //! return maximal sampling point
+  Float get_max_q() const { return max_q_; }
+
+  Float get_intensity(unsigned int i) const { return profile_[i].intensity_; }
+  Float get_q(unsigned int i) const { return profile_[i].q_; }
+  Float get_error(unsigned int i) const { return profile_[i].error_; }
+  Float get_weight(unsigned int i) const { return profile_[i].weight_; }
+  Float get_variance(unsigned int i, unsigned int j) const
+  { unsigned a=std::min(i,j); unsigned b=std::max(i,j);
+      return variances_[a][b-a]; }
+  Float get_average_radius() const { return average_radius_; }
+
+  //! return number of entries in SAXS profile
+  unsigned int size() const { return profile_.size(); }
+
+  //! checks the sampling of experimental profile
+  bool is_uniform_sampling() const;
+
+
+  // Modifiers
+
+  void set_intensity(unsigned int i, Float iq) { profile_[i].intensity_ = iq; }
+
+  //! required for reciprocal space calculation
+  void set_ff_table(FormFactorTable* ff_table) { ff_table_ = ff_table; }
+
+  void set_average_radius(Float r) { average_radius_ = r; }
+
+  void set_average_volume(Float v) { average_volume_ = v; }
+
+  //! add intensity entry to profile
+  void add_entry(Float q, Float intensity, Float error=1.0) {
+    profile_.push_back(IntensityEntry(q, intensity, error));
+  }
+
+  //! add simulated error
+  void add_errors();
+
+  //! add simulated noise
+  void add_noise(Float percentage = 0.03);
+
+  //! computes full profile for given fitting parameters
+  void sum_partial_profiles(Float c1, Float c2);
+
   //! add another profile - useful for rigid bodies
   void add(const Profile& other_profile, Float weight = 1.0);
 
@@ -138,110 +221,6 @@ public:
 
   // copy error bars from the matching experimental profile
   void copy_errors(const Profile& exp_profile);
-
-  //! reads SAXS profile from file
-  /**
-     \param[in] file_name profile file name
-     \param[in] fit_file if true, intensities are read from column 3
-   */
-  void read_SAXS_file(const String& file_name, bool fit_file = false);
-
-  //! print to file
-  /** \param[in] file_name output file name
-      \param[in] max_q output till maximal q value = max_q, or all if max_q<=0
-  */
-  void write_SAXS_file(const String& file_name, Float max_q=0.0) const;
-
-  void write_partial_profiles(const String& file_name) const;
-
-  //! compute radius of gyration with Guinier approximation
-  /** ln[I(q)]=ln[I(0)] - (q^2*rg^2)/3
-     \param[in] end_q_rg determines the range of profile used for approximation:
-      i.e. q*rg < end_q_rg. Use 1.3 for globular proteins, 0.8 for elongated
-  */
-  double radius_of_gyration(double end_q_rg = 1.3) const;
-
-  //! return sampling resolution
-  Float get_delta_q() const { return delta_q_; }
-
-  //! return minimal sampling point
-  Float get_min_q() const { return min_q_; }
-
-  //! return maximal sampling point
-  Float get_max_q() const { return max_q_; }
-
-  //! return number of entries in SAXS profile
-  unsigned int size() const { return profile_.size(); }
-
-  // Profile access functions
-  Float get_intensity(unsigned int i) const { return profile_[i].intensity_; }
-
-  //! return a profile that is sampled on the q values of the exp_profile
-  void resample(const Profile& exp_profile,
-                Profile& resampled_profile) const {
-    if(q_mapping_.size() == 0)
-      for (unsigned int k=0; k<size(); k++)
-        const_cast<Profile*>(this)->q_mapping_[profile_[k].q_] = k;
-
-    for (unsigned int k=0; k<exp_profile.size(); k++) {
-      Float q = exp_profile.get_q(k);
-      if(q > max_q_) break;
-      std::map<float, unsigned int>::const_iterator it =
-        q_mapping_.lower_bound(q);
-      if(it == q_mapping_.end()) break;
-      unsigned int i = it->second;
-      if(i == 0) {
-        resampled_profile.add_entry(q, get_intensity(i));
-      } else {
-        Float delta_q = get_q(i)- get_q(i-1);
-        if(delta_q <= 1.0e-16) {
-          resampled_profile.add_entry(q, get_intensity(i));
-        } else {
-          // interpolate
-          Float alpha = (q - get_q(i-1)) / delta_q;
-          if(alpha > 1.0) alpha = 1.0; // handle rounding errors
-          Float intensity = get_intensity(i-1) +
-            alpha*(get_intensity(i) - get_intensity(i-1));
-          resampled_profile.add_entry(q, intensity);
-        }
-      }
-    }
-  }
-
-  Float get_q(unsigned int i) const { return profile_[i].q_; }
-  Float get_error(unsigned int i) const { return profile_[i].error_; }
-  Float get_weight(unsigned int i) const { return profile_[i].weight_; }
-  Float get_variance(unsigned int i, unsigned int j) const
-  { unsigned a=std::min(i,j); unsigned b=std::max(i,j);
-      return variances_[a][b-a]; }
-
-  Float get_average_radius() const { return average_radius_; }
-
-  void set_intensity(unsigned int i, Float iq) { profile_[i].intensity_ = iq; }
-
-  //! required for reciprocal space calculation
-  void set_ff_table(FormFactorTable* ff_table) { ff_table_ = ff_table; }
-
-  void set_average_radius(Float r) { average_radius_ = r; }
-
-  void set_average_volume(Float v) { average_volume_ = v; }
-
-  //! add intensity entry to profile
-  void add_entry(Float q, Float intensity, Float error=1.0) {
-    profile_.push_back(IntensityEntry(q, intensity, error));
-  }
-
-  //! checks the sampling of experimental profile
-  bool is_uniform_sampling() const;
-
-  //! add simulated error
-  void add_errors();
-
-  //! add simulated noise
-  void add_noise(Float percentage = 0.03);
-
-  //! computes full profile for given fitting parameters
-  void sum_partial_profiles(Float c1, Float c2, Profile& out_profile);
 
   // parameter for E^2(q), used in faster calculation
   static const Float modulation_function_parameter_;

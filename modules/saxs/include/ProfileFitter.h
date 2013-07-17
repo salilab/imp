@@ -152,7 +152,7 @@ FitParameters ProfileFitter<ScoringFunctionT>::search_fit_parameters(
   for(int i=0; i<=c1_cells; i++, c1+= delta_c1) {
     float c2 = min_c2;
     for(int j=0; j<=c2_cells; j++, c2+= delta_c2) {
-      partial_profile.sum_partial_profiles(c1, c2, partial_profile);
+      partial_profile.sum_partial_profiles(c1, c2);
       float curr_chi = compute_score(partial_profile, use_offset);
       if(!best_set || curr_chi < best_chi) {
         best_set = true;
@@ -186,7 +186,7 @@ FitParameters ProfileFitter<ScoringFunctionT>::fit_profile(
 
   // compute chi value for default c1/c1 (remove?)
   float default_c1 = 1.0, default_c2 = 0.0;
-  partial_profile.sum_partial_profiles(default_c1, default_c2, partial_profile);
+  partial_profile.sum_partial_profiles(default_c1, default_c2);
   float default_chi = compute_score(partial_profile, use_offset);
 
   FitParameters fp = search_fit_parameters(partial_profile,
@@ -198,7 +198,7 @@ FitParameters ProfileFitter<ScoringFunctionT>::fit_profile(
   fp.set_default_chi(default_chi);
 
   // compute a profile for best c1/c2 combination
-  partial_profile.sum_partial_profiles(best_c1, best_c2, partial_profile);
+  partial_profile.sum_partial_profiles(best_c1, best_c2);
   compute_score(partial_profile, use_offset, fit_file_name);
 
   // std::cout << " Chi = " << best_chi << " c1 = " << best_c1 << " c2 = "
@@ -214,7 +214,7 @@ Float ProfileFitter<ScoringFunctionT>::compute_score(
   Profile resampled_profile(exp_profile_.get_min_q(),
                             exp_profile_.get_max_q(),
                             exp_profile_.get_delta_q());
-  resample(model_profile, resampled_profile);
+  model_profile.resample(exp_profile_, resampled_profile);
 
   Float score = scoring_function_->compute_score(exp_profile_,
                                                  resampled_profile,
@@ -231,7 +231,7 @@ Float ProfileFitter<ScoringFunctionT>::compute_score(
   Profile resampled_profile(exp_profile_.get_min_q(),
                             exp_profile_.get_max_q(),
                             exp_profile_.get_delta_q());
-  resample(model_profile, resampled_profile);
+  model_profile.resample(exp_profile_, resampled_profile);
 
   Float score = scoring_function_->compute_score(exp_profile_,
                                                  resampled_profile, use_offset);

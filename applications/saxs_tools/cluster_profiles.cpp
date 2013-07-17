@@ -127,7 +127,6 @@ to exp_profile. Please profile the exp_profile and at least two fit files.\n")
     }
 
     // cluster
-    std::multimap<float, int> clustered_profiles; //needed?
     std::multimap<float, int> &temp_profiles(scored_profiles);
     int cluster_number = 1;
     while(!temp_profiles.empty()) {
