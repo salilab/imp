@@ -120,6 +120,7 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction
             IMP_IF_CHECK(USAGE_AND_INTERNAL) { Nuisance::decorate_particle(b); }
             a_val_ = Nuisance(a).get_nuisance();
             b_val_ = Nuisance(b).get_nuisance();
+            update();
         }
 
         bool has_changed() const {
