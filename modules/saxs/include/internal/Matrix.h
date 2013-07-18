@@ -13,6 +13,7 @@
 #include <algorithm>
 
 #include <math.h>
+#include <IMP/saxs/saxs_config.h>
 
 IMPSAXS_BEGIN_INTERNAL_NAMESPACE
 
