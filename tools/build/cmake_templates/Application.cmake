@@ -17,11 +17,15 @@ foreach (pybin ${pybins})
   install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})
 endforeach(pybin)
 
+math(EXPR expensive_timeout "${IMP_TIMEOUT_FACTOR} * 120")
+
 set(pytests %(pytests)s)
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME)
   add_test("%(name)s.${name}" ${IMP_TEST_SETUP} python ${test})
   set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "IMP.%(name)s;test")
+  set_tests_properties("%(name)s.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
+  set_tests_properties("%(name)s.${name}" PROPERTIES COST 3)
 endforeach(test)
 
 if(IMP_DOXYGEN_FOUND)
