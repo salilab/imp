@@ -462,7 +462,6 @@ void Model::do_add_model_object(ModelObject*mo) {
     dependency_graph_[mo] = NodeInfo();
   }
   no_dependencies_.insert(mo);
-  check_dependency_invariants();
 }
 
 void Model::do_remove_model_object(ModelObject*mo) {
