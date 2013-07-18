@@ -16,7 +16,7 @@
 IMPBENCHMARK_BEGIN_NAMESPACE
 
 /** One can use the
-    \external{http://http://gperftools.google.com/,
+    \external{http://http://code.google.com/p/gperftools/
     the GPerfTools profiler} to profile code. On a mac, you should
     use the Instruments program instead (part of the mac os developer tools).
 */
