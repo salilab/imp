@@ -284,6 +284,11 @@ void Model::do_set_has_dependencies(const ModelObject *mo, bool tf) {
 }
 
 void Model::do_add_dependencies(const ModelObject *cmo) {
+  static base::set<const ModelObject *> computed;
+  if (computed.find(cmo) != computed.end()) {
+    IMP_THROW("Loop in dependencies at " << cmo->get_name(), ModelException);
+  }
+  computed.insert(cmo);
   IMP_LOG_VERBOSE("Add " << cmo->get_name() << " to dependency graph."
                   << std::endl);
   IMP_INTERNAL_CHECK(no_dependencies_.find(cmo) != no_dependencies_.end(),
@@ -323,6 +328,7 @@ void Model::do_add_dependencies(const ModelObject *cmo) {
   }
   // needs to be at end to not trigger input/output validation
   no_dependencies_.erase(cmo);
+  computed.erase(cmo);
 }
 
 void Model::do_clear_required_score_states(ModelObject *mo) {
@@ -412,6 +418,11 @@ bool Model::do_get_has_required_score_states(const ModelObject *mo) const {
 }
 
 void Model::do_set_has_required_score_states(ModelObject *mo, bool tf) {
+  static base::set<const ModelObject *> computed;
+  if (computed.find(mo) != computed.end()) {
+    IMP_THROW("Loop in dependencies at " << mo->get_name(), ModelException);
+  }
+  computed.insert(mo);
   if (tf) {
     // make sure everything is there as we invalidate lazily
     do_set_has_all_dependencies(true);
@@ -442,6 +453,7 @@ void Model::do_set_has_required_score_states(ModelObject *mo, bool tf) {
     required_score_states_.erase(mo);
   }
   mo->handle_set_has_required_score_states(tf);
+  computed.erase(mo);
 }
 
 void Model::do_add_model_object(ModelObject*mo) {

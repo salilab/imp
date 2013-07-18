@@ -25,15 +25,12 @@ class Tests(IMP.test.TestCase):
         dg.show()
     def test_loop_detection(self):
         """Test that reasonable errors are returned for dependency graph loops"""
-        IMP.base.set_check_level(IMP.base.USAGE_AND_INTERNAL)
-        if IMP.base.get_check_level() != IMP.base.USAGE_AND_INTERNAL:
-            self.skipTest("Only happens when checks are on")
         m = IMP.kernel.Model()
         p0 = m.get_particle(m.add_particle("p0"))
         p1 = m.get_particle(m.add_particle("p1"))
         s0 = NullConstraint(m, inputs = [p0], outputs = [p1])
         s1 = NullConstraint(m, inputs = [p1], outputs = [p0])
-        m.update()
+        self.assertRaises(IMP.base.ModelException, m.update)
 
 if __name__ == '__main__':
     IMP.test.main()
