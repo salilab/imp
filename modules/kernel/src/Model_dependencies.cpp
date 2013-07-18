@@ -422,12 +422,12 @@ void Model::do_set_has_required_score_states(ModelObject *mo, bool tf) {
   if (computed.find(mo) != computed.end()) {
     IMP_THROW("Loop in dependencies at " << mo->get_name(), ModelException);
   }
-  computed.insert(mo);
   if (tf) {
     // make sure everything is there as we invalidate lazily
     do_set_has_all_dependencies(true);
   }
   if (tf == do_get_has_required_score_states(mo)) return;
+  computed.insert(mo);
   IMP_OBJECT_LOG;
   if (tf) {
     ScoreStates all;
