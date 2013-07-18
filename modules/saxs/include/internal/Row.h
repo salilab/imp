@@ -9,6 +9,7 @@
 #ifndef IMPSAXS_INTERNAL_ROW_H
 #define IMPSAXS_INTERNAL_ROW_H
 
+#include <IMP/saxs/saxs_config.h>
 #include "Matrix.h"
 #include "Diagonal.h"
 

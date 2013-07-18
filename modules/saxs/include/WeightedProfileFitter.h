@@ -28,7 +28,11 @@ class IMPSAXSEXPORT WeightedProfileFitter : public ProfileFitter<ChiScore> {
   */
   WeightedProfileFitter(const Profile& exp_profile);
 
-  //! compute fit score
+  //! compute a weighted score that minimizes chi
+  /**
+     it is assumed that the q values of the profiles are the same as
+     the q values of the experimental profile. Use Profile::resample to resample
+  */
   Float compute_score(const std::vector<IMP::saxs::Profile *>& profiles,
                       std::vector<double>& weights= empty_weights_,
                       const std::string fit_file_name = "") const;
@@ -36,6 +40,11 @@ class IMPSAXSEXPORT WeightedProfileFitter : public ProfileFitter<ChiScore> {
   void compute_weights(const std::vector<IMP::saxs::Profile *>& profiles,
                        std::vector<double>& weights) const;
 
+  //! fit profiles by optimization of c1/c2 and weights
+  /**
+     it is assumed that the q values of the profiles are the same as
+     the q values of the experimental profile. Use Profile::resample to resample
+  */
   FitParameters fit_profile(std::vector<IMP::saxs::Profile *>& partial_profiles,
                             float min_c1=0.95, float max_c1=1.05,
                             float min_c2=-2.0, float max_c2=4.0,

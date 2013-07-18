@@ -116,7 +116,8 @@ public:
 
   //! return a profile that is sampled on the q values of the exp_profile
   void resample(const Profile& exp_profile,
-                Profile& resampled_profile) const;
+                Profile& resampled_profile,
+                bool partial_profiles=false) const;
 
   //! compute radius of gyration with Guinier approximation
   /** ln[I(q)]=ln[I(0)] - (q^2*rg^2)/3
@@ -140,6 +141,9 @@ public:
       \param[in] max_q output till maximal q value = max_q, or all if max_q<=0
   */
   void write_SAXS_file(const String& file_name, Float max_q=0.0) const;
+
+  // TODO
+  void read_partial_profiles(const String& file_name) const;
 
   void write_partial_profiles(const String& file_name) const;
 

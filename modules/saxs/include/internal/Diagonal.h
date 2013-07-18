@@ -9,6 +9,7 @@
 #ifndef IMPSAXS_INTERNAL_DIAGONAL_H
 #define IMPSAXS_INTERNAL_DIAGONAL_H
 
+#include <IMP/saxs/saxs_config.h>
 #include "Matrix.h"
 
 IMPSAXS_BEGIN_INTERNAL_NAMESPACE

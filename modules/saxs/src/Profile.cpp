@@ -501,12 +501,21 @@ void Profile::sum_partial_profiles(Float c1, Float c2) {
 }
 
 void Profile::resample(const Profile& exp_profile,
-                       Profile& resampled_profile) const {
+                       Profile& resampled_profile,
+                       bool partial_profiles) const {
   if(q_mapping_.size() == 0)
     for (unsigned int k=0; k<size(); k++)
       const_cast<Profile*>(this)->q_mapping_[profile_[k].q_] = k;
 
-  for (unsigned int k=0; k<exp_profile.size(); k++) {
+  if(partial_profiles) {
+    // init
+    resampled_profile.partial_profiles_.insert(
+                           resampled_profile.partial_profiles_.begin(),
+                           partial_profiles_.size(),
+                           Profile(min_q_, max_q_, delta_q_));
+  }
+
+  for(unsigned int k=0; k<exp_profile.size(); k++) {
     Float q = exp_profile.get_q(k);
     if(q > max_q_) break;
 
@@ -514,24 +523,34 @@ void Profile::resample(const Profile& exp_profile,
     if(it == q_mapping_.end()) break;
 
     unsigned int i = it->second;
-    if(i == 0) {
+    Float delta_q = 1.0;
+    if(i == 0 || (delta_q = get_q(i)- get_q(i-1)) <= 1.0e-16) {
+      if(partial_profiles) {
+        for(unsigned int r=0; r<partial_profiles_.size(); r++) {
+          resampled_profile.partial_profiles_[r].add_entry(q,
+                                   partial_profiles_[r].get_intensity(i));
+        }
+      }
       resampled_profile.add_entry(q, get_intensity(i));
     } else {
-      Float delta_q = get_q(i)- get_q(i-1);
-      if(delta_q <= 1.0e-16) {
-        resampled_profile.add_entry(q, get_intensity(i));
-      } else {
-        // interpolate
-        Float alpha = (q - get_q(i-1)) / delta_q;
-        if(alpha > 1.0) alpha = 1.0; // handle rounding errors
-        Float intensity = get_intensity(i-1) +
-          alpha*(get_intensity(i) - get_intensity(i-1));
-        resampled_profile.add_entry(q, intensity);
+      // interpolate
+      Float alpha = (q - get_q(i-1)) / delta_q;
+      if(alpha > 1.0) alpha = 1.0; // handle rounding errors
+
+      if(partial_profiles) {
+        for(unsigned int r=0; r<partial_profiles_.size(); r++) {
+          Float intensity = partial_profiles_[r].get_intensity(i-1) +
+            alpha*(partial_profiles_[r].get_intensity(i) -
+                   partial_profiles_[r].get_intensity(i-1));
+          resampled_profile.partial_profiles_[r].add_entry(q, intensity);
+        }
       }
+      Float intensity = get_intensity(i-1) +
+        alpha*(get_intensity(i) - get_intensity(i-1));
+      resampled_profile.add_entry(q, intensity);
     }
   }
 }
-
 
 void Profile::calculate_profile_symmetric(const Particles& particles,
                                           unsigned int n,

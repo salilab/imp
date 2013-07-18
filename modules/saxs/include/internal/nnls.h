@@ -63,6 +63,8 @@
 #ifndef IMPSAXS_INTERNAL_NNLS_H
 #define IMPSAXS_INTERNAL_NNLS_H
 
+#include <IMP/saxs/saxs_config.h>
+
 #include "Matrix.h"
 #include "Vector.h"
 

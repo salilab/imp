@@ -9,11 +9,12 @@
 #ifndef IMPSAXS_INTERNAL_MATRIX_H
 #define IMPSAXS_INTERNAL_MATRIX_H
 
+#include <IMP/saxs/saxs_config.h>
+
 #include <iostream>
 #include <algorithm>
 
 #include <math.h>
-#include <IMP/saxs/saxs_config.h>
 
 IMPSAXS_BEGIN_INTERNAL_NAMESPACE
 

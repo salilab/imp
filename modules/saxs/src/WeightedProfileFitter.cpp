@@ -36,8 +36,7 @@ Float WeightedProfileFitter::compute_score(
 
   // no need to compute weighted profile for ensemble of size 1
   if(profiles.size() == 1)
-    return ProfileFitter<ChiScore>::compute_score(*profiles[0],
-                                                  false, fit_file_name);
+    return scoring_function_->compute_score(exp_profile_, *profiles[0]);
 
   compute_weights(profiles, weights);
 
@@ -49,8 +48,9 @@ Float WeightedProfileFitter::compute_score(
   for(unsigned int i=0; i<weights.size(); i++)
     weighted_profile.add(*profiles[i], weights[i]);
 
-  return ProfileFitter<ChiScore>::compute_score(weighted_profile,
-                                                false, fit_file_name);
+  return scoring_function_->compute_score(exp_profile_,
+                                          weighted_profile);
+
 }
 
 void WeightedProfileFitter::compute_weights(
@@ -63,12 +63,8 @@ void WeightedProfileFitter::compute_weights(
 
   internal::Matrix A(n,m); // for intensities
   for(int j=0; j<m; j++) {
-    Profile resampled_profile(exp_profile_.get_min_q(),
-                              exp_profile_.get_max_q(),
-                              exp_profile_.get_delta_q());
-    resample(*profiles[j], resampled_profile);
     for(int i=0; i<n; i++) {
-      A[i][j] = resampled_profile.get_intensity(i);
+      A[i][j] = profiles[j]->get_intensity(i);
     }
   }
 
@@ -108,18 +104,18 @@ FitParameters WeightedProfileFitter::fit_profile(
     for(unsigned int i=0; i<weights.size(); i++)
       weighted_profile.add(*partial_profiles[i], weights[i]);
 
-    // resample on exp. profile
-    Profile resampled_profile(exp_profile_.get_min_q(),
-                            exp_profile_.get_max_q(),
-                            exp_profile_.get_delta_q());
-    weighted_profile.resample(exp_profile_, resampled_profile);
+    // // resample on exp. profile
+    // Profile resampled_profile(exp_profile_.get_min_q(),
+    //                         exp_profile_.get_max_q(),
+    //                         exp_profile_.get_delta_q());
+    // weighted_profile.resample(exp_profile_, resampled_profile);
 
     // compute scale
     Float c = scoring_function_->compute_scale_factor(exp_profile_,
-                                                      resampled_profile);
+                                                      weighted_profile);
 
     ProfileFitter<ChiScore>::write_SAXS_fit_file(fit_file_name,
-                                                 resampled_profile,
+                                                 weighted_profile,
                                                  fp.get_chi(), c);
   }
   return fp;
