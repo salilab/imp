@@ -29,6 +29,9 @@ IMPCORE_BEGIN_NAMESPACE
     restraint prevents the particles from interpenetrating. Such restraints
     are also known as steric clash restraints.
 
+    \note Pairs of particles within a single rigid body are not restrained
+    (and are ignored in the returned score).
+
     \note See IMP::container::ClosePairContainer for more information about
     close pair based scoring functions and \imp.
 
