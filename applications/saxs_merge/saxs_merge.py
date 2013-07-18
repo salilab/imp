@@ -398,7 +398,7 @@ class SAXSProfile:
         self.particles['sigma2'].set_nuisance_is_optimized(True)
         if self.recompute_hessian is False:
             return self._memoized_hessian
-        gpr=IMP.isd.GaussianProcessInterpolationRestraint(gp)
+        gpr=IMP.isd.GaussianProcessInterpolationRestraint(self.model,gp)
         self.model.add_restraint(gpr)
         Hessian = matrix(gpr.get_hessian(False))
         if linalg.det(Hessian) == 0:
@@ -736,10 +736,6 @@ Merging
                 description="Estimate the mean function and the noise level "
                 "of each SAXS curve.")
     parser.add_option_group(group)
-    group.add_option('--bd', help='Initial value for d (default 4)',
-                     type="float", default=4., metavar='D')
-    group.add_option('--bs', help='Initial value for s (default 0)',
-                     type="float", default=0., metavar='S')
     group.add_option('--bmean', help='Defines the most complex mean '
             'function that will be tried during model comparison.'
             " One of Flat (the offset parameter A is optimized), "
@@ -892,28 +888,27 @@ def ttest_two(mu1,s1,n1,mu2,s2,n2):
     pval = 2*(1-student_t.cdf(abs(t),nu))
     return pval, t, nu
 
-def setup_particles(initvals, jitter=0.01):
-    """ initvals : dict of initial values for the parameters
+def setup_particles():
+    """
     returns: model, dict(*particles), dict(mean, covariance)
     """
 
     model = IMP.Model()
     #mean function
-    G=IMP.isd.Scale.setup_particle(IMP.Particle(model,"G"),initvals['G'])
+    G=IMP.isd.Scale.setup_particle(IMP.Particle(model,"G"))
     #model.add_restraint(IMP.isd.JeffreysRestraint(G))
-    Rg=IMP.isd.Scale.setup_particle(IMP.Particle(model,"Rg"),initvals['Rg'])
-    d=IMP.isd.Scale.setup_particle(IMP.Particle(model,"d"),initvals['d'])
-    s=IMP.isd.Scale.setup_particle(IMP.Particle(model,"s"),initvals['s'])
-    A=IMP.isd.Nuisance.setup_particle(IMP.Particle(model,"A"),initvals['A'])
+    Rg=IMP.isd.Scale.setup_particle(IMP.Particle(model,"Rg"))
+    d=IMP.isd.Scale.setup_particle(IMP.Particle(model,"d"))
+    s=IMP.isd.Scale.setup_particle(IMP.Particle(model,"s"))
+    A=IMP.isd.Nuisance.setup_particle(IMP.Particle(model,"A"))
     m = IMP.isd.GeneralizedGuinierPorodFunction(G,Rg,d,s,A)
     #covariance function
-    tau=IMP.isd.Scale.setup_particle(IMP.Particle(model,"tau"),initvals['tau'])
-    lam=IMP.isd.Scale.setup_particle(IMP.Particle(model,"lambda"),
-                                        initvals['lambda'])
+    tau=IMP.isd.Scale.setup_particle(IMP.Particle(model,"tau"))
+    lam=IMP.isd.Scale.setup_particle(IMP.Particle(model,"lambda"))
+    jitter=0.
     w = IMP.isd.Covariance1DFunction(tau,lam,2.0,jitter)
     #sigma
-    sigma=IMP.isd.Scale.setup_particle(IMP.Particle(model,"sigma2"),
-                                    initvals['sigma2'])
+    sigma=IMP.isd.Scale.setup_particle(IMP.Particle(model,"sigma2"))
     #prior on scales
     model.add_restraint(IMP.isd.JeffreysRestraint(tau))
     model.add_restraint(IMP.isd.JeffreysRestraint(sigma))
@@ -936,8 +931,8 @@ def setup_particles(initvals, jitter=0.01):
     functions['covariance'] = w
     return model, particles, functions
 
-def setup_process(data,initvals, subs, maxpoints=-1, jitter=0.01):
-    model,particles,functions = setup_particles(initvals, jitter)
+def setup_process(data, subs, maxpoints=-1):
+    model,particles,functions = setup_particles()
     q = [ [i] for i in data['q'][::subs]]
     I = data['I'][::subs]
     err = data['err'][::subs]
@@ -994,16 +989,16 @@ def set_defaults_mean(data, particles, mean_function):
     #
     particles['A'].set_nuisance_is_optimized(True)
     if mean_function == 'Flat':
-        particles['A'].set_nuisance(mean(data['I']))
         particles['G'].set_lower(0)
         particles['G'].set_upper(0)
         particles['G'].set_nuisance(0)
+        particles['A'].set_nuisance(mean(data['I']))
         particles['G'].set_nuisance_is_optimized(False)
         particles['Rg'].set_nuisance_is_optimized(False)
         particles['d'].set_nuisance_is_optimized(False)
         particles['s'].set_nuisance_is_optimized(False)
     else:
-        particles['A'].set_nuisance(0.)
+        particles['A'].set_nuisance(mean(data['I'][-10:]))
         particles['G'].set_nuisance_is_optimized(True)
         particles['Rg'].set_nuisance_is_optimized(True)
         if mean_function == 'Simple':
@@ -1011,7 +1006,7 @@ def set_defaults_mean(data, particles, mean_function):
             dmin=2/3.*(max(data['q'])*particles['Rg'].get_nuisance())**2
             particles['d'].set_lower(dmin)
             particles['d'].set_nuisance(dmin)
-            particles['d'].set_upper(8)
+            particles['d'].set_upper(dmin+1)
             particles['s'].set_lower(0)
             particles['s'].set_upper(0)
             particles['s'].set_nuisance(0)
@@ -1019,6 +1014,7 @@ def set_defaults_mean(data, particles, mean_function):
             particles['d'].set_nuisance_is_optimized(True)
             particles['d'].set_lower(0)
             particles['d'].set_upper(8)
+            particles['d'].set_nuisance(4)
             if mean_function == 'Generalized':
                 particles['s'].set_nuisance_is_optimized(False)
                 particles['s'].set_lower(0)
@@ -1028,6 +1024,9 @@ def set_defaults_mean(data, particles, mean_function):
                 particles['s'].set_nuisance_is_optimized(True)
                 particles['s'].set_upper(3.)
                 particles['s'].set_upper(particles['d'])
+    particles['tau'].set_nuisance_is_optimized(False)
+    particles['lambda'].set_nuisance_is_optimized(False)
+    particles['sigma2'].set_nuisance_is_optimized(False)
 
 def set_defaults_cov(data,particles):
     particles['tau'].set_nuisance_is_optimized(True)
@@ -1036,14 +1035,17 @@ def set_defaults_cov(data,particles):
     meandist = mean(array(data['q'][1:])-array(data['q'][:-1]))
     lambdalow=0
     particles['lambda'].set_lower(max(2*meandist,lambdalow))
-    particles['lambda'].set_upper(100)
-    particles['sigma2'].set_lower(0.001)
-    particles['sigma2'].set_upper(1000)
-    particles['tau'].set_lower(sqrt(0.001))
-    particles['tau'].set_upper(sqrt(1000))
+    particles['lambda'].set_upper(1e8)
+    particles['lambda'].set_nuisance(max(data['q'])/10.)
+    particles['sigma2'].set_lower(1e-8)
+    particles['sigma2'].set_upper(1e8)
+    particles['sigma2'].set_nuisance(10.)
+    particles['tau'].set_lower(sqrt(1e-2))
+    particles['tau'].set_upper(sqrt(1e8))
+    particles['tau'].set_nuisance(sqrt(10))
 
 def transform(particle):
-    """return  
+    """return
     tan(pi/2*((d-dmin)-(dmax-d))/(dmax-dmin))
     where d is the particle's value, and dmin,dmax are its bounds
     """
@@ -1070,9 +1072,36 @@ def untransform_d(x,particle):
     dmax=particle.get_upper()
     return (dmax-dmin)/(pi * (1+x**2))
 
-def target_function(point, mean, particles, model,
-        gpr, M, deriv=False, fl=None):
+def residuals(point, mean, particles, mean_fn, data):
     if mean == 'Flat':
+        A = point
+    elif mean == 'Simple':
+        A, mu, mv = point
+    elif mean == 'Generalized':
+        A, mu, mv, mw = point
+    elif mean == 'Full':
+        A, mu, mv, mw, mx = point
+    else:
+        raise ValueError, "unknown mean function %s" % mean
+    particles['A'].set_nuisance(A)
+    if mean in ['Simple','Generalized','Full']:
+        particles['G'].set_scale(untransform(mu, particles['G']))
+        particles['Rg'].set_scale(untransform(mv, particles['Rg']))
+    if mean in ['Generalized','Full']:
+        particles['d'].set_scale(untransform(mw, particles['d']))
+    if mean == 'Full':
+        particles['s'].set_scale(untransform(mx, particles['s']))
+    #
+    mean_fn.update()
+    retval = (array([(I-mean_fn([q])[0])/err
+                    for q,I,err in zip(data['q'],data['I'],data['err'])
+            ])**2).sum()
+    return retval
+
+def target_function(point, mean, particles, model, gpr, M, deriv=False):
+    if mean == 'cov':
+        cu, cv, cl = point
+    elif mean == 'Flat':
         A, cu, cv, cl = point
     elif mean == 'Simple':
         A, mu, mv, cu, cv, cl = point
@@ -1082,10 +1111,11 @@ def target_function(point, mean, particles, model,
         A, mu, mv, mw, mx, cu, cv, cl = point
     else:
         raise ValueError, "unknown mean function %s" % mean
-    particles['A'].set_nuisance(A)
     particles['tau'].set_scale(untransform(cu, particles['tau']))
     particles['sigma2'].set_scale(untransform(cv, particles['sigma2']))
     particles['lambda'].set_scale(untransform(cl, particles['lambda']))
+    if mean != 'cov':
+        particles['A'].set_nuisance(A)
     if mean in ['Simple','Generalized','Full']:
         particles['G'].set_scale(untransform(mu, particles['G']))
         particles['Rg'].set_scale(untransform(mv, particles['Rg']))
@@ -1096,137 +1126,155 @@ def target_function(point, mean, particles, model,
     #
     retval = model.evaluate(deriv)
     if not deriv:
-        if fl:
-            for i in particles.values():
-                fl.write('%G ' % (i.get_nuisance()))
-            fl.write('%G\n' % retval)
         return retval
-    if fl:
-        for i in particles.values():
-            fl.write('%G ' % (i.get_nuisance()))
-    dA = particles['A'].get_nuisance_derivative()
     dtau = particles['tau'].get_nuisance_derivative()
     dsi2 = particles['sigma2'].get_nuisance_derivative()
     dlam = particles['lambda'].get_nuisance_derivative()
     dcu = untransform_d(cu, particles['tau'])*dtau
     dcv = untransform_d(cv, particles['sigma2'])*dsi2
     dcl = untransform_d(cl, particles['lambda'])*dlam
+    if mean == 'cov':
+        return retval, array([dcu,dcv,dcl])
+    dA = particles['A'].get_nuisance_derivative()
     if mean == 'Flat':
-        if fl:
-            gradient = dcu**2+dcv**2+dcl**2+dA**2
-            fl.write(' %G %G\n' % (gradient**.5,retval))
         return retval, array([dA,dcu,dcv,dcl])
     dG = particles['G'].get_nuisance_derivative()
     dRg = particles['Rg'].get_nuisance_derivative()
     dmu = untransform_d(mu, particles['G'])*dG
     dmv = untransform_d(mv, particles['Rg'])*dRg
     if mean == 'Simple':
-        if fl:
-            gradient = dcu**2+dcv**2+dcl**2+dA**2\
-                    +dmu**2+dmv**2
-            fl.write(' %G %G\n' % (gradient**.5,retval))
         return retval, array([dA,dmu,dmv,dcu,dcv,dcl])
     dd = particles['d'].get_nuisance_derivative()
     dmw = untransform_d(mw, particles['d'])*dd
     if mean == 'Generalized':
-        if fl:
-            gradient = dcu**2+dcv**2+dcl**2+dA**2\
-                    +dmu**2+dmv**2+dmw**2
-            fl.write(' %G %G\n' % (gradient**.5,retval))
         return retval, array([dA,dmu,dmv,dmw,dcu,dcv,dcl])
     ds = particles['s'].get_nuisance_derivative()
     dmx = untransform_d(mx, particles['s'])*ds
-    if fl:
-        gradient = dcu**2+dcv**2+dcl**2+dA**2\
-                +dmu**2+dmv**2+dmw**2+dmx**2
-        fl.write(' %G %G\n' % (gradient**.5,retval))
     return retval, array([dA,dmu,dmv,dmw,dmx,dcu,dcv,dcl])
 
-def find_fit_all(data, initvals, verbose, mean_function):
-    """
-    Problem is unconstrained by the change of variables
-    A = A
-    mu = tan(pi/2*((G-Gmin)-(Gmax-G))/(Gmax-Gmin))
-    mv = tan(pi/2*((Rg-Rgmin)-(Rgmax-Rg))/(Rgmax-Rgmin))
-    mw = tan(pi/2*((d-dmin)-(dmax-d))/(dmax-dmin))
-    mx = tan(pi*s/min(3,d) - pi/2)
-    
-    cu = tau^2
-    cv = log(sigma^2/tau^2)
-    cl = log(lambda)
-    using jeffreys prior for sigma^2, lambda and tau.
-
-    In principle, we should compute
-    forall u  :    uhat = eps^T Omega^{-1} eps * u / M+2
-     -log p(uhat, v, l) = 1/2*log|Omega| + (M+2)/2*log(eps^T Omega^{-1} eps) +C
-     where C = log(u) + (M+2)/2*(1-log(M+2))
-     u can be arbitrary so we take the current value for u=tau^2
-    
-    Because we need the derivatives, we however compute
-    1/2*eps^T Omega^{-1} eps
-     in order to get a value for uhat. Then, we set tau and sigma2 to
-     the corresponding value,
-     then call evaluate(True) to collect the derivatives at uhat.
-     -log p(u, v, l) = log(u) + 1/2*log|Omega| + 1/2*eps^T Omega^{-1} eps +C
-    
-    """
+def find_fit_mean(data, verbose, mean_function):
     model, particles, functions, gp = \
-            setup_process(data, initvals, 1, jitter=0.01)
-    gpr = IMP.isd.GaussianProcessInterpolationRestraint(gp)
+            setup_process(data, 1)
+    gpr = IMP.isd.GaussianProcessInterpolationRestraint(model,gp)
+    model.add_restraint(gpr)
+    #
+    set_defaults_mean(data, particles, mean_function)
+    #
+    options={'maxiter':100, 'disp':False}
+    #
+    A0 = particles['A'].get_nuisance()
+    if mean_function == 'Flat':
+        res = optimize.minimize(residuals,
+                array([A0]), method='Nelder-Mead',
+            args=(mean_function, particles, functions['mean'], data),
+            jac=False, options=options)
+        Af = res.x
+    else:
+        mu0 = transform(particles['G'])
+        mv0 = transform(particles['Rg'])
+        #only fit guinier region for now
+        dval = particles['d'].get_nuisance()
+        dlo = particles['d'].get_lower()
+        dmin=2/3.*(max(data['q'])*particles['Rg'].get_nuisance())**2
+        particles['d'].set_lower(dmin)
+        particles['d'].set_nuisance(dmin)
+        particles['d'].set_upper(dmin+1)
+        res = optimize.minimize(residuals,
+            array([A0,mu0,mv0]), method='Nelder-Mead',
+            args=('Simple', particles, functions['mean'], data),
+                jac=False, options=options)
+        Af,muf,mvf = res.x
+        #relax bounds on d
+        particles['d'].set_lower(0)
+        particles['d'].set_upper(max(dmin+1,8))
+        #
+        if mean_function != 'Simple':
+            mw0 = transform(particles['d'])
+            res = optimize.minimize(residuals,
+                array([Af,muf,mvf,mw0]), method='Nelder-Mead',
+                args=('Generalized', particles, functions['mean'], data),
+                jac=False, options=options)
+            Af,muf,mvf,mwf = res.x
+            if mean_function != 'Generalized':
+                options={'maxiter':300, 'disp':False}
+                particles['s'].set_nuisance(.1)
+                mx0 = transform(particles['s'])
+                res = optimize.minimize(residuals,
+                    array([Af,muf,mvf,mwf,mx0]), method='Nelder-Mead',
+                    args=('Full', particles, functions['mean'], data),
+                    jac=False, options=options)
+                Af,muf,mvf,mwf,mxf = res.x
+                particles['s'].set_nuisance(untransform(mxf,particles['s']))
+            particles['d'].set_nuisance(untransform(mwf,particles['d']))
+        particles['Rg'].set_nuisance(untransform(mvf,particles['Rg']))
+        particles['G'].set_nuisance(untransform(muf,particles['G']))
+    particles['A'].set_nuisance(Af)
+    #
+    newvals = dict([(k,v.get_nuisance())
+                    for (k,v) in particles.iteritems()])
+    ene = model.evaluate(False)
+    return newvals, ene
+
+def find_fit_all(data, initvals, verbose, mean_function):
+    model, particles, functions, gp = \
+            setup_process(data, 1)
+    gpr = IMP.isd.GaussianProcessInterpolationRestraint(model,gp)
     model.add_restraint(gpr)
     set_defaults_mean(data, particles, mean_function)
+    for p,v in initvals.items():
+        particles[p].set_nuisance(v)
     set_defaults_cov(data, particles)
     M=len(data['I'])
     #
-    fl=open('tmp2','w')
     cu0 = transform(particles['tau'])
     cv0 = transform(particles['sigma2'])
     cl0 = transform(particles['lambda'])
+    #
+    #
+    #first fit covariance particles only
+    options={'maxiter':100, 'disp':False}
+    res = optimize.minimize(target_function,
+            array([cu0,cv0,cl0]), method='Nelder-Mead',
+        args=('cov', particles, model, gpr, M, False),
+        jac=False, options=options)
+    cuf,cvf,clf = res.x
+    #refine all particles
+    options={'maxiter':100, 'disp':False,'gtol':1e-5}
     A0 = particles['A'].get_nuisance()
-    #
-    options={'maxiter':100, 'disp':False,'gtol':1e-2}
-    #
     if mean_function == 'Flat':
-        res = optimize.minimize(target_function, array([A0,cu0,cv0,cl0]),
-            args=(mean_function, particles, model, gpr, M,
-                True, fl), jac=True, options=options)
-        if not res.success:
-            raise FittingError, res.message
+        res = optimize.minimize(target_function,
+                array([A0,cuf,cvf,clf]), method='BFGS',
+            args=(mean_function, particles, model, gpr, M, True),
+            jac=True, options=options)
         Af,cuf,cvf,clf = res.x
     else:
         mu0 = transform(particles['G'])
         mv0 = transform(particles['Rg'])
         if mean_function == 'Simple':
             res = optimize.minimize(target_function,
-                array([A0,mu0,mv0,cu0,cv0,cl0]),
-                args=(mean_function, particles, model, gpr, M,
-                    True, fl), jac=True, options=options)
-            if not res.success:
-                raise FittingError, res.message
+                array([A0,mu0,mv0,cuf,cvf,clf]), method='BFGS',
+                args=(mean_function, particles, model, gpr, M, True),
+                jac=True, options=options)
             Af,muf,mvf,cuf,cvf,clf = res.x
         else:
             mw0 = transform(particles['d'])
             if mean_function == 'Generalized':
                 res = optimize.minimize(target_function,
-                    array([A0,mu0,mv0,mw0,cu0,cv0,cl0]),
-                    args=(mean_function, particles, model, gpr, M,
-                        True, fl), jac=True, options=options)
-                if not res.success:
-                    raise FittingError, res.message
+                    array([A0,mu0,mv0,mw0,cuf,cvf,clf]), method='BFGS',
+                    args=(mean_function, particles, model, gpr, M, True),
+                    jac=True, options=options)
                 Af,muf,mvf,mwf,cuf,cvf,clf = res.x
             else:
                 mx0 = transform(particles['s'])
                 res = optimize.minimize(target_function,
-                    array([A0,mu0,mv0,mw0,mx0,cu0,cv0,cl0]),
-                    args=(mean_function, particles, model, gpr, M,
-                        True, fl), jac=True, options=options)
-                if not res.success:
-                    raise FittingError, res.message
+                    array([A0,mu0,mv0,mw0,mx0,cuf,cvf,clf]), method='BFGS',
+                    args=(mean_function, particles, model, gpr, M, True),
+                    jac=True, options=options)
                 Af,muf,mvf,mwf,mxf,cuf,cvf,clf = res.x
                 particles['s'].set_nuisance(untransform(mxf,particles['s']))
             particles['d'].set_nuisance(untransform(mwf,particles['d']))
+        particles['Rg'].set_nuisance(untransform(mvf,particles['Rg']))
         particles['G'].set_nuisance(untransform(muf,particles['G']))
-        particles['Rg'].set_nuisance(untransform(muf,particles['Rg']))
     particles['A'].set_nuisance(Af)
     #
     particles['tau'].set_scale(untransform(cuf, particles['tau']))
@@ -1237,22 +1285,15 @@ def find_fit_all(data, initvals, verbose, mean_function):
                     for (k,v) in particles.iteritems()])
     ene = model.evaluate(False)
     #make sure the errors are defined
-    model, particles, functions, gp = \
-            setup_process(data, initvals, 1, jitter=0.)
-    set_defaults_mean(data, particles, mean_function)
-    set_defaults_cov(data, particles)
-    for k,v in newvals.items():
-        particles[k].set_nuisance(v)
-    for q in data['q']:
-        err = gp.get_posterior_covariance([q],[q])
-        if err <0 or isnan(err):
-            raise FittingError, "invalid variance at %f for model %s!" %\
-                    (q,mean_function)
-    #global ctr
-    #ctr += 1
-    #write_fit(data, newvals, 'profit_'+str(ctr)+'.dat', mean_function)
-    return newvals,ene
-ctr=0
+    if not res.success:
+        ene = inf
+    else:
+        for q in data['q']:
+            err = gp.get_posterior_covariance([q],[q])
+            if err <0 or isnan(err) or isinf(err):
+                ene=inf
+                break
+    return newvals, ene
 
 def bayes_factor(data, initvals, verbose, mean_func, maxpoints,
         calc_hessian=True):
@@ -1268,12 +1309,13 @@ def bayes_factor(data, initvals, verbose, mean_func, maxpoints,
     7 exp(-MP)*sqrt(2Pi)^Np*det(H)^(-1/2) (bayes factor)
     8 MP - Np/2*log(2Pi) + 1/2*log(det(H)) (minus log bayes factor)
     """
-    model, particles, functions, gp = setup_process(data, initvals, 1,
-                                                        maxpoints=maxpoints)
-    gpr = IMP.isd.GaussianProcessInterpolationRestraint(gp)
+    model, particles, functions, gp = setup_process(data, 1, maxpoints=maxpoints)
+    gpr = IMP.isd.GaussianProcessInterpolationRestraint(model,gp)
     model.add_restraint(gpr)
     set_defaults_mean(data, particles, mean_func)
     set_defaults_cov(data, particles)
+    for p,v in initvals.items():
+        particles[p].set_nuisance(v)
     #
     H = matrix(gpr.get_hessian(False))
     Np = H.shape[0]
@@ -1303,7 +1345,7 @@ def bayes_factor(data, initvals, verbose, mean_func, maxpoints,
             exp(-MP)*(2*pi)**(Np/2.)*exp(-logdet),
             MP - Np/2.*log(2*pi) + logdet)
 
-def find_fit(data, initvals, verbose, model_comp=False, model_comp_maxpoints=-1,
+def find_fit(data, verbose, model_comp=False, model_comp_maxpoints=-1,
         mean_function='Simple'):
     #if verbose >2:
     #    print " %d:%d" % (subs,nsteps),
@@ -1322,26 +1364,13 @@ def find_fit(data, initvals, verbose, model_comp=False, model_comp_maxpoints=-1,
     #optimize parameters for each function
     if verbose > 2:
         print ""
-    trysig = [10,100]
-    trylam = [.1,1,10]
     for mean_func in functions:
         if verbose > 2:
             sys.stdout.write("     "+mean_func+": ")
             sys.stdout.flush()
-        oldene = None
-        for sig in trysig:
-            initvals['tau'] = sqrt(sig)
-            initvals['sigma2'] = sig
-            for lam in trylam:
-                initvals['lambda'] = lam
-                try:
-                    endvals, ene = \
-                            find_fit_all(data, initvals, verbose, mean_func)
-                except FittingError:
-                    continue
-                if ((not oldene) or (oldene > ene)):
-                    oldene = ene
-                    param_vals[mean_func] = endvals
+        meanvals, ene = find_fit_mean(data, verbose, mean_func)
+        endvals, ene = find_fit_all(data, meanvals, verbose, mean_func)
+        param_vals[mean_func] = endvals
         if mean_func not in param_vals:
             if model_comp:
                 print "error"
@@ -1804,7 +1833,9 @@ def remove_redundant(profiles, verbose=0):
 def write_fit(data, initvals, outfile, mean_function, npoints=200):
     fl=open(outfile,'w')
     fl.write("#q I err gp sd gp_mean\n")
-    model, particles, functions, gp = setup_process(data,initvals,1, jitter=0.)
+    model, particles, functions, gp = setup_process(data, 1, jitter=0.)
+    for p,v in initvals.items():
+        particles[p].set_nuisance(v)
     qs,Is,errs = data['q'],data['I'],data['err']
     for q,I,err in zip(qs,Is,errs):
         fl.write("%s\t" % q)
@@ -1826,8 +1857,6 @@ def initialize():
     args.Nreps = Nreps
     scale = get_global_scaling_factor(filenames[-1])
     profiles = map(create_profile, filenames, Nreps, [scale]*len(filenames))
-    #args.bschedule = parse_schedule(args.bschedule)
-    #args.eschedule = parse_schedule(args.eschedule)
     return profiles, args
 
 def cleanup(profiles, args):
@@ -1905,7 +1934,6 @@ def fitting(profiles, args):
     """second stage of merge: gp fitting
     sets and optimizes the interpolant and enables calls to get_mean()
     """
-    #schedule = args.bschedule
     verbose = args.verbose
     maxpointsF = args.blimit_fitting
     maxpointsH = args.blimit_hessian
@@ -1926,20 +1954,12 @@ def fitting(profiles, args):
             if model_comp and maxpointsH > 0 and maxpointsH < len(data['q']):
                 print " (subsampled hessian: %d points) " % maxpointsH,
         data['N'] = p.get_Nreps()
-        initvals={}
-        initvals['G']=1. #will be calculated properly
-        initvals['Rg']=30. #same
-        initvals['d']=args.bd
-        initvals['s']=args.bs
-        initvals['A']=0.
-        initvals['tau']=sqrt(10.)
-        initvals['lambda']=.1
-        initvals['sigma2']=10.
-        mean, initvals, bayes = find_fit(data, initvals, #schedule,
-                verbose, model_comp=model_comp, model_comp_maxpoints=maxpointsH,
+        mean, initvals, bayes = find_fit(data, verbose,
+                model_comp=model_comp, model_comp_maxpoints=maxpointsH,
                 mean_function=mean_function)
-        model, particles, functions, gp = setup_process(data,initvals,1,
-                jitter=0)
+        model, particles, functions, gp = setup_process(data, 1)
+        for part,v in initvals.items():
+            particles[part].set_nuisance(v)
         if bayes:
             p.set_interpolant(gp, particles, functions, mean, model, bayes,
                     hessian=bayes[mean][2])
@@ -2139,7 +2159,6 @@ def merging(profiles, args):
         eoriname : associated filename
     it then sets and optimizes the interpolant and enables calls to get_mean()
     """
-    #schedule = args.eschedule
     verbose = args.verbose
     maxpointsF = args.elimit_fitting
     maxpointsH = args.elimit_hessian
@@ -2213,13 +2232,15 @@ def merging(profiles, args):
     data['N'] = merge.get_Nreps()
     #take initial values from the curve which has gamma == 1
     initvals = profiles[-1].get_params()
-    mean, initvals, bayes = find_fit(data, initvals, #schedule,
-                    verbose, model_comp=model_comp,
+    mean, initvals, bayes = find_fit(data, verbose,
+                    model_comp=model_comp,
                     model_comp_maxpoints=maxpointsH,
                     mean_function=mean_function)
     if verbose > 1 and model_comp:
         print "    => "+mean
-    model, particles, functions, gp = setup_process(data,initvals,1, jitter=0.)
+    model, particles, functions, gp = setup_process(data, 1)
+    for part,v in initvals.items():
+        particles[part].set_nuisance(v)
     if bayes:
         merge.set_interpolant(gp, particles, functions, mean, model, bayes,
                 hessian=bayes[mean][2])
@@ -2231,7 +2252,7 @@ def merging(profiles, args):
 
 def write_data(merge, profiles, args):
     if args.verbose > 0:
-        print "writing data to %s" % args.destdir 
+        print "writing data to %s" % args.destdir
     if not os.path.isdir(args.destdir):
         os.mkdir(args.destdir)
     qvals = array(profiles[0].get_raw_data(colwise=True)['q'])
