@@ -29,7 +29,7 @@ volume score,  as well as electrostatic and van der Waals potential
 terms.
 
 To increase the efficiency, the stored list actually includes all pairs that
-are closer than `distance_cutoff + slack`. This allows us to reuse the list
+are closer than `distance_cutoff + 2 * slack`. This allows us to reuse the list
 and only recompute it when a particle moves more than `slack`.
 The class keeps track
 internally of how far the particles have moved using a score state,
@@ -76,29 +76,15 @@ class IMPCONTAINEREXPORT ClosePairContainer :
   //! Get the individual particles from the passed SingletonContainer
   /**
      Creates a close pair container associated with c.
-
-     @param c an adaptor to a SingletonContainer. Note that if the contents
-              of c change dynamically, so will the contents of the
-              ClosePairContainer.
-     @param distance_cutoff the cutoff beneath which pairs are considerd
-                            close (returned by this container)
-     @param slack the slack parameter for close pair updating
-                  (affects performance but not results - see class description)
    */
   ClosePairContainer(SingletonContainerAdaptor c, double distance_cutoff,
                      double slack = 1);
 
   //! Get the individual particles from the passed SingletonContainer
   /**
-     Creates a close pair container associated with c.
-
-     @param c an adaptor to a SingletonContainer. Note that if the contents
-              of c change dynamically, so will the contents of the
-              ClosePairContainer
-     @param distance_cutoff the cutoff beneath which pairs are considerd
-                            close (returned by this container)
-     @param slack the slack parameter for close pair updating
-                  (affects performance but not results - see class description)
+     Creates a close pair container associated with c. The passed
+     core::ClosePairsFinder is used to generate the list of close
+     pairs, instead of the default.
 
    */
   ClosePairContainer(SingletonContainerAdaptor c, double distance_cutoff,
