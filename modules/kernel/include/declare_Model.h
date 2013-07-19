@@ -142,6 +142,7 @@ class IMPKERNELEXPORT Model : public base::Object
   void set_has_all_dependencies(bool tf);
   bool get_has_all_dependencies() const;
   void check_dependency_invariants() const;
+  void check_dependency_invariants(const ModelObject *mo) const;
   ScoreStatesTemp get_ancestor_score_states(const ModelObject *mo) const;
   ScoreStatesTemp get_descendent_score_states(const ModelObject *mo) const;
 

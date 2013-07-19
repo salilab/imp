@@ -173,7 +173,7 @@ void Model::do_check_not_in_readers_and_writers(const ModelObject *mo) const {
 
 void Model::do_check_required_score_states(const ModelObject *mo) const {
     ScoreStatesTemp ancestors = get_ancestor_score_states(mo);
-    ScoreStatesTemp required = mo->get_required_score_states();
+    ScoreStatesTemp required = do_get_required_score_states(mo);
     for (unsigned int i = 0; i < required.size(); ++i) {
       IMP_INTERNAL_CHECK(required[i]->get_has_update_order(),
                          "Required score state missing update order.");
@@ -194,27 +194,31 @@ void Model::do_check_required_score_states(const ModelObject *mo) const {
                     << ancestors);
   }
 
+void Model::check_dependency_invariants(const ModelObject *mo) const {
+  if (do_get_has_dependencies(mo)) {
+    do_check_inputs_and_outputs(mo);
+  } else {
+    do_check_not_in_readers_and_writers(mo);
+  }
+  do_check_readers_and_writers(mo);
+  if (do_get_has_required_score_states(mo)) {
+    const ScoreState *ss = dynamic_cast<const ScoreState*>(mo);
+    if (ss) {
+      IMP_INTERNAL_CHECK(ss->get_has_update_order(), "No update order for "
+                         << ss->get_name());
+      do_check_update_order(ss);
+    }
+    do_check_required_score_states(mo);
+  }
+}
+
 void Model::check_dependency_invariants() const {
   IMP_OBJECT_LOG;
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     IMP_LOG_TERSE("Checking dependency invariants" << std::endl);
     ModelObjectsTemp without;
     BOOST_FOREACH(const DependencyGraph::value_type& vt, dependency_graph_) {
-      if (do_get_has_dependencies(vt.first)) {
-        do_check_inputs_and_outputs(vt.first);
-      } else {
-        do_check_not_in_readers_and_writers(vt.first);
-      }
-      do_check_readers_and_writers(vt.first);
-      if (do_get_has_required_score_states(vt.first)) {
-        const ScoreState *ss = dynamic_cast<const ScoreState*>(vt.first);
-        if (ss) {
-          IMP_INTERNAL_CHECK(ss->get_has_update_order(), "No update order for "
-                             << ss->get_name());
-          do_check_update_order(ss);
-        }
-        do_check_required_score_states(vt.first);
-      }
+      check_dependency_invariants(vt.first);
     }
     BOOST_FOREACH(const ModelObject *mo, no_dependencies_) {
       IMP_INTERNAL_CHECK(dependency_graph_.find(mo) != dependency_graph_.end(),
@@ -256,7 +260,7 @@ void Model::update() {
     ModelObject *mo = const_cast<ModelObject*>(vt.first);
      ScoreState *ss = dynamic_cast<ScoreState*>(mo);
      if (ss) {
-       ss->set_has_required_score_states(true);
+       do_set_has_required_score_states(ss, true);
        sst.push_back(ss);
      }
    }
@@ -493,7 +497,6 @@ void Model::do_remove_model_object(ModelObject*mo) {
   }
   no_dependencies_.erase(mo);
   dependency_graph_.erase(mo);
-  check_dependency_invariants();
 }
 
 IMPKERNEL_END_NAMESPACE

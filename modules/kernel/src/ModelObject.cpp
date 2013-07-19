@@ -33,7 +33,7 @@ bool ModelObject::get_has_dependencies() const {
 void ModelObject::set_has_dependencies(bool tf) {
   IMP_USAGE_CHECK(get_model(), "Model not set");
   get_model()->do_set_has_dependencies(this, tf);
-  get_model()->check_dependency_invariants();
+  get_model()->check_dependency_invariants(this);
 }
 
 bool ModelObject::get_has_required_score_states() const {
@@ -45,7 +45,7 @@ void ModelObject::set_has_required_score_states(bool tf) {
   IMP_USAGE_CHECK(tf, "Can only set them this way.");
   IMP_USAGE_CHECK(get_model(), "Must set model first");
   get_model()->do_set_has_required_score_states(this, true);
-  if (get_model()) get_model()->check_dependency_invariants();
+  if (get_model()) get_model()->check_dependency_invariants(this);
 }
 
 const ScoreStatesTemp &ModelObject::get_required_score_states() const {

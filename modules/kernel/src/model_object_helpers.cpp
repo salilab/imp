@@ -69,7 +69,7 @@ ScoreStatesTemp get_required_score_states(const ModelObjectsTemp &mos,
   if (mos.empty()) return ScoreStatesTemp();
   ScoreStatesTemp ret;
   for (unsigned int i = 0; i < mos.size(); ++i) {
-    mos[i]->set_has_required_score_states(true);
+    mos[0]->get_model()->do_set_has_required_score_states(mos[i], true);
     ret += mos[i]->get_required_score_states();
   }
   std::sort(ret.begin(), ret.end());

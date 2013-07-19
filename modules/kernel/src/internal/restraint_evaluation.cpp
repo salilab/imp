@@ -49,6 +49,7 @@ void do_evaluate_one(IMP::kernel::ScoreAccumulator sa, RS *restraint,
                      Model *m) {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   if (m->first_call_) {
+    m->check_dependency_invariants();
     try {
       base::SetNumberOfThreads no(1);
       internal::SFResetBitset rbr(m->Masks::read_mask_, true);

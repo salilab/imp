@@ -67,12 +67,12 @@ void ScoreState::handle_set_has_required_score_states(bool tf) {
   if (tf) {
     IMP_USAGE_CHECK(update_order_ == -1,
                     "Already had update order");
-    if (!get_required_score_states().empty()) {
+    if (!get_model()->do_get_required_score_states(this).empty()) {
       update_order_ = get_required_score_states().back()->get_update_order()
         + 1;
       IMP_LOG_VERBOSE("Update order for " << get_name()
                       << " is " << update_order_ << " due to "
-                      << get_required_score_states().back()->get_name()
+     << get_model()->do_get_required_score_states(this).back()->get_name()
                       << std::endl);
     } else {
       update_order_ = 0;
