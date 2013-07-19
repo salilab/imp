@@ -151,7 +151,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   friend class GaussianProcessInterpolationRestraint;
   friend class GaussianProcessInterpolationScoreState;
 
-  IMP_OBJECT_METHODS(GaussianProcessInterpolation);
+  IMP_OBJECT(GaussianProcessInterpolation);
 
  protected:
   //returns updated data vector
