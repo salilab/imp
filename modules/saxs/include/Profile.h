@@ -119,6 +119,10 @@ public:
                 Profile& resampled_profile,
                 bool partial_profiles=false) const;
 
+
+  //! downsample the profile to a given number of points
+  void downsample(Profile& downsampled_profile,unsigned int point_number) const;
+
   //! compute radius of gyration with Guinier approximation
   /** ln[I(q)]=ln[I(0)] - (q^2*rg^2)/3
      \param[in] end_q_rg determines the range of profile used for approximation:
@@ -143,7 +147,7 @@ public:
   void write_SAXS_file(const String& file_name, Float max_q=0.0) const;
 
   // TODO
-  void read_partial_profiles(const String& file_name) const;
+  //void read_partial_profiles(const String& file_name) const;
 
   void write_partial_profiles(const String& file_name) const;
 

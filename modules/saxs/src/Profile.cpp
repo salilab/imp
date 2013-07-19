@@ -8,6 +8,7 @@
 #include <IMP/saxs/Distribution.h>
 #include <IMP/saxs/utility.h>
 #include <IMP/saxs/internal/sinc_function.h>
+#include <IMP/saxs/internal/exp_function.h>
 #include <IMP/saxs/internal/variance_helpers.h>
 
 #include <IMP/base/math.h>
@@ -155,7 +156,7 @@ void Profile::add_errors() {
 
   for(unsigned int i=0; i<profile_.size(); i++) {
     double ra = std::abs(poisson_rng()/10.0 - 1.0) + 1.0;
-    //std::cerr << "I " << profile_[i].intensity_ << "rand " << ra << std::endl;
+
     // 3% of error, scaled by 5q + poisson distribution
     profile_[i].error_ =
       0.03 * profile_[i].intensity_ * 5.0*(profile_[i].q_+0.001) * ra;
@@ -467,6 +468,9 @@ void Profile::calculate_profile_partial(const Particles& particles1,
 }
 
 void Profile::sum_partial_profiles(Float c1, Float c2) {
+  // precomputed exp function
+  static internal::ExpFunction ef(square(get_max_q())*0.3, 0.00001);
+
   if(partial_profiles_.size() > 0) {
 
     // implements volume fitting function G(s) as described
@@ -484,7 +488,10 @@ void Profile::sum_partial_profiles(Float c1, Float c2) {
 
     for(unsigned int k=0; k<size(); k++) {
       Float q = get_q(k);
-      Float G_q = cube_c1 * std::exp(coefficient*square(q));
+      Float x = coefficient*square(q);
+      Float G_q = cube_c1;
+      if(std::abs(x)>1.0e-8) G_q *= ef.exp(x);
+      //Float G_q = cube_c1 * std::exp(coefficient*square(q));
 
       Float intensity = partial_profiles_[0].get_intensity(k);
       intensity += square(G_q) * partial_profiles_[1].get_intensity(k);
@@ -550,6 +557,14 @@ void Profile::resample(const Profile& exp_profile,
       resampled_profile.add_entry(q, intensity);
     }
   }
+}
+
+void Profile::downsample(Profile& downsampled_profile,
+                         unsigned int point_number) const {
+
+  unsigned int points_delta = (int)std::ceil(size()/(float)point_number);
+  for(unsigned int k=0;k<size(); k+=points_delta)
+    downsampled_profile.add_entry(get_q(k), get_intensity(k), get_error(k));
 }
 
 void Profile::calculate_profile_symmetric(const Particles& particles,

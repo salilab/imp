@@ -33,7 +33,6 @@ Float WeightedProfileFitter::compute_score(
                          std::vector<double>& weights,
                          const std::string fit_file_name) const {
 
-
   // no need to compute weighted profile for ensemble of size 1
   if(profiles.size() == 1)
     return scoring_function_->compute_score(exp_profile_, *profiles[0]);
@@ -44,13 +43,8 @@ Float WeightedProfileFitter::compute_score(
   IMP::saxs::Profile weighted_profile(exp_profile_.get_min_q(),
                                       exp_profile_.get_max_q(),
                                       exp_profile_.get_delta_q());
-
-  for(unsigned int i=0; i<weights.size(); i++)
-    weighted_profile.add(*profiles[i], weights[i]);
-
-  return scoring_function_->compute_score(exp_profile_,
-                                          weighted_profile);
-
+  weighted_profile.add(profiles, weights);
+  return scoring_function_->compute_score(exp_profile_, weighted_profile);
 }
 
 void WeightedProfileFitter::compute_weights(
@@ -103,12 +97,6 @@ FitParameters WeightedProfileFitter::fit_profile(
                                         exp_profile_.get_delta_q());
     for(unsigned int i=0; i<weights.size(); i++)
       weighted_profile.add(*partial_profiles[i], weights[i]);
-
-    // // resample on exp. profile
-    // Profile resampled_profile(exp_profile_.get_min_q(),
-    //                         exp_profile_.get_max_q(),
-    //                         exp_profile_.get_delta_q());
-    // weighted_profile.resample(exp_profile_, resampled_profile);
 
     // compute scale
     Float c = scoring_function_->compute_scale_factor(exp_profile_,
