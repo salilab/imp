@@ -61,8 +61,16 @@ IMPBASEEXPORT void add_to_log(std::string to_write);
 IMPBASEEXPORT void add_to_log(LogLevel level, std::string to_write);
 
 //! Set the current global log level
-/** Note that this should not, currently, be used directly
-    during Model::evaluate() calls. */
+/** Set the current global log level
+
+    @note may be overriden by set_log_level of specific objects that inherit
+          from IMP::base::Object
+    @note this global method should not, currently, be used directly during
+    Model::evaluate() calls.
+
+    \see get_log_level()
+    \see IMP::base::Object::set_log_level()
+*/
 IMPBASEEXPORT void set_log_level(LogLevel l);
 
 //! Set whether log messages are tagged with the current log time
@@ -71,10 +79,16 @@ IMPBASEEXPORT void set_log_timer(bool tb);
 //! Reset the log timer
 IMPBASEEXPORT void reset_log_timer();
 
-//! Get the currently active log level
-/** This may not always match the value passed to set_log_level()
-    as objects can temporarily override the global level
-    while they are evaluating.
+//! Get the currently active global log level
+/** Get the currently active global log level
+
+    @note This may not always match the value passed to set_log_level()
+          as objects can temporarily override the global level
+          while they are evaluating.
+
+    \see set_log_level()
+    \see IMP::base::Object::set_log_level()
+
  */
 inline LogLevel get_log_level() { return LogLevel(internal::log_level); }
 

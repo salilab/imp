@@ -104,6 +104,9 @@ class IMPBASEEXPORT Object : public RefCounted {
       Object should start with IMP_OBJECT_LOG to change the log
       level to the local one for this object and increase
       the current indent.
+
+      \see IMP::base::set_log_level()
+      \see IMP::base::get_log_level()
    */
   void set_log_level(LogLevel l);
 
