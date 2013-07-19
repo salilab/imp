@@ -72,6 +72,7 @@ IMPISD_BEGIN_NAMESPACE
 
   void GaussianProcessInterpolation::force_covariance_update()
 {
+    flag_ldlt_ = false;
     flag_Omi_ = false;
     flag_OmiIm_ = false;
     flag_W_ = false;
@@ -156,7 +157,6 @@ IMPISD_BEGIN_NAMESPACE
 {
     //std::cerr << "posterior covariance at q=" << x1(0) << std::endl;
     VectorXd wx2(get_wx_vector(x2));
-    MatrixXd Omi(get_Omi());
     VectorXd wx1;
     if (x1 != x2)
     {
@@ -164,7 +164,7 @@ IMPISD_BEGIN_NAMESPACE
     } else {
          wx1=wx2;
     }
-    double ret = wx1.transpose()*Omi*wx2;
+    double ret = wx1.transpose()*get_ldlt().solve(wx2);
     return (*covariance_function_)(x1,x2)[0] - ret; //licit because Omi
                                                     //is up to date
 }
@@ -175,9 +175,10 @@ IMPISD_BEGIN_NAMESPACE
     unsigned N(x.size());
     MatrixXd Wpri(M_,N);
     for (unsigned i=0; i<N; i++) Wpri.col(i) = get_wx_vector(x[i]);
-    MatrixXd Omi(get_Omi()); // we can now use covariance_function_
+    Eigen::LDLT<MatrixXd, Eigen::Upper> ldlt(get_ldlt());
+    // we can now use covariance_function_ because it is up to date
     MatrixXd Wpost((*covariance_function_)(x));
-    return Wpost - Wpri.transpose()*Omi*Wpri;
+    return Wpost - Wpri.transpose()*ldlt.solve(Wpri);
 }
 
   FloatsList GaussianProcessInterpolation::get_posterior_covariance_matrix(
@@ -427,6 +428,7 @@ MatrixXd GaussianProcessInterpolation::get_posterior_covariance_hessian(
 {
     bool ret = covariance_function_->has_changed();
     if (ret) covariance_function_->update();
+    if (flag_ldlt_) flag_ldlt_ = !ret;
     if (flag_Omi_) flag_Omi_ = !ret;
     if (flag_OmiIm_) flag_OmiIm_ = !ret;
     if (flag_W_) flag_W_ = !ret;
@@ -444,10 +446,12 @@ MatrixXd GaussianProcessInterpolation::get_posterior_covariance_hessian(
         //and mark Omega as outdated
         flag_Omega_ = false;
         flag_Omega_gpir_ = false;
+        flag_ldlt_ = false;
         flag_Omi_ = false;
         flag_OmiIm_ = false;
     }
     IMP_LOG_TERSE( "update_flags_covariance: ret " << ret
+            << " flag_ldlt_ " << flag_ldlt_
             << " flag_Omi_ " << flag_Omi_
             << " flag_OmiIm_ " << flag_OmiIm_
             << " flag_W_ " << flag_W_
@@ -527,7 +531,7 @@ MatrixXd GaussianProcessInterpolation::get_posterior_covariance_hessian(
         VectorXd m(get_m());
         MatrixXd Omi(get_Omi());
         IMP_LOG_TERSE( "OmiIm ");
-        OmiIm_ = Omi*(I-m);
+        OmiIm_ = ldlt_.solve(I-m);
         IMP_LOG_TERSE( std::endl);
 }
 
@@ -664,6 +668,35 @@ void GaussianProcessInterpolation::add_to_Omega_particle_derivative(
     }
 }
 
+Eigen::LDLT<MatrixXd, Eigen::Upper>
+GaussianProcessInterpolation::get_ldlt() const
+{
+    IMP_LOG_TERSE( "get_ldlt()" << std::endl);
+    const_cast<GaussianProcessInterpolation *>(this)->update_flags_covariance();
+    if (!flag_ldlt_)
+    {
+        IMP_LOG_TERSE( "need to update ldlt" << std::endl);
+        const_cast<GaussianProcessInterpolation *>(this)->compute_ldlt();
+        const_cast<GaussianProcessInterpolation *>(this)->flag_ldlt_ = true;
+        IMP_LOG_TERSE( "done updating ldlt" << std::endl);
+    }
+    return ldlt_;
+}
+
+  void GaussianProcessInterpolation::compute_ldlt()
+{
+    //get Omega=W+S/N
+    MatrixXd WpS = get_Omega();
+    IMP_LOG_TERSE("  compute_ldlt: Cholesky" << std::endl);
+    //compute Cholesky decomp
+    Eigen::LDLT<MatrixXd, Eigen::Upper> ldlt;
+    ldlt.compute(WpS);
+    if (!ldlt.isPositive())
+            IMP_THROW("Matrix is not positive semidefinite!",
+                    ModelException);
+    ldlt_ = ldlt;
+}
+
   MatrixXd GaussianProcessInterpolation::get_Omi() const
 {
     IMP_LOG_TERSE( "get_Omi()" << std::endl);
@@ -678,19 +711,12 @@ void GaussianProcessInterpolation::add_to_Omega_particle_derivative(
     return Omi_;
 }
 
-  void GaussianProcessInterpolation::compute_Omi()
+
+void GaussianProcessInterpolation::compute_Omi()
 {
-    //get Omega=W+S/N
-    MatrixXd WpS = get_Omega();
-    IMP_LOG_TERSE("  compute_inverse: Cholesky" << std::endl);
-    //compute Cholesky decomp
-    Eigen::LDLT<MatrixXd> ldlt;
-    ldlt.compute(WpS);
-    if (!ldlt.isPositive())
-            IMP_THROW("Matrix is not positive semidefinite!",
-                    ModelException);
     //get inverse
-    IMP_LOG_TERSE("  compute_inverse: inverse" << std::endl);
+    IMP_LOG_TERSE("  compute_Omi: inverse" << std::endl);
+    Eigen::LDLT<MatrixXd, Eigen::Upper> ldlt(get_ldlt());
     Omi_= ldlt.solve(MatrixXd::Identity(M_,M_));
 }
 
@@ -716,15 +742,15 @@ void GaussianProcessInterpolation::add_to_Omega_particle_derivative(
 VectorXd GaussianProcessInterpolation::get_dcov_dwq(Floats q) const
 {
     VectorXd wq(get_wx_vector(q));
-    MatrixXd Omi(get_Omi());
-    return -2*Omi*wq;
+    Eigen::LDLT<MatrixXd, Eigen::Upper> ldlt(get_ldlt());
+    return -2*ldlt.solve(wq);
 }
 
 MatrixXd GaussianProcessInterpolation::get_dcov_dOm(Floats q) const
 {
     VectorXd wq(get_wx_vector(q));
-    MatrixXd Omi(get_Omi());
-    VectorXd ret(Omi*wq);
+    Eigen::LDLT<MatrixXd, Eigen::Upper> ldlt(get_ldlt());
+    VectorXd ret(ldlt.solve(wq));
     return ret*ret.transpose();
 }
 
@@ -736,9 +762,9 @@ MatrixXd GaussianProcessInterpolation::get_d2cov_dwq_dwq() const
 MatrixXd GaussianProcessInterpolation::get_d2cov_dwq_dOm(Floats q, unsigned m)
     const
 {
-    MatrixXd Omi(get_Omi());
     VectorXd wq(get_wx_vector(q));
-    VectorXd L(Omi*wq);
+    VectorXd L(get_ldlt().solve(wq));
+    MatrixXd Omi(get_Omi());
     MatrixXd ret(L*Omi.col(m).transpose());
     return ret + ret.transpose();
 }
@@ -746,9 +772,9 @@ MatrixXd GaussianProcessInterpolation::get_d2cov_dwq_dOm(Floats q, unsigned m)
 MatrixXd GaussianProcessInterpolation::get_d2cov_dOm_dOm(Floats q,
         unsigned m, unsigned n) const
 {
-    MatrixXd Omi(get_Omi());
     VectorXd wq(get_wx_vector(q));
-    VectorXd L(Omi*wq);
+    VectorXd L(get_ldlt().solve(wq));
+    MatrixXd Omi(get_Omi());
     MatrixXd tmp(Omi.col(m)*L.transpose());
     return -L(n)*(tmp + tmp.transpose());
 }

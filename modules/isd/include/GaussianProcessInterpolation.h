@@ -185,6 +185,8 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   // returns updated prior covariance vector
   void add_to_Omega_particle_derivative(unsigned particle, double value,
           DerivativeAccumulator &accum);
+  //returns LDLT decomp of omega
+  Eigen::LDLT<MatrixXd, Eigen::Upper> get_ldlt() const;
   //returns updated Omega^{-1}
   MatrixXd get_Omi() const;
   //returns updated Omega^{-1}(I-m)
@@ -202,6 +204,8 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   void compute_W();
   // compute \f$(\mathbf{W} + \frac{\sigma}{N}\mathbf{S})^{-1}\f$.
   void compute_Omega();
+  // compute LDLT decomposition of Omega
+  void compute_ldlt();
   // compute \f$(\mathbf{W} + \frac{\sigma}{N}\mathbf{S})^{-1}\f$.
   void compute_Omi();
   // compute (W+sigma*S/N)^{-1} (I-m)
@@ -245,10 +249,11 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
     Eigen::DiagonalMatrix<double, Eigen::Dynamic> S_;
     VectorXd OmiIm_; // Omi * (I - m)
     bool flag_m_, flag_m_gpir_, flag_Omi_, flag_OmiIm_, flag_W_,
-         flag_Omega_, flag_Omega_gpir_;
-    base::Pointer<Particle> sigma_;
+         flag_Omega_, flag_Omega_gpir_, flag_ldlt_;
+    Pointer<Particle> sigma_;
     double cutoff_;
     double sigma_val_; //to know if an update is needed
+    Eigen::LDLT<MatrixXd, Eigen::Upper> ldlt_;
 
 };
 
