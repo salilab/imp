@@ -11,6 +11,7 @@
 #include <IMP/base/base_config.h>
 #include <IMP/base/map.h>
 #include <IMP/base/set.h>
+#include <IMP/base/Vector.h>
 #include <boost/program_options.hpp>
 #include <boost/cstdint.hpp>
 #include <boost/progress.hpp>
@@ -28,6 +29,9 @@ extern IMPBASEEXPORT boost::program_options::variables_map variables_map;
 
 extern IMPBASEEXPORT boost::int64_t check_level;
 #if !IMP_BASE_HAS_LOG4CXX
+extern IMPBASEEXPORT base::Vector<std::pair<const char *, const void *> >
+log_contexts;
+extern IMPBASEEXPORT int log_context_initializeds;
 extern IMPBASEEXPORT unsigned int log_indent;
 class LogStream;
 extern IMPBASEEXPORT LogStream stream;

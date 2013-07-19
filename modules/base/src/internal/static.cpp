@@ -55,6 +55,8 @@ IMPBASE_BEGIN_INTERNAL_NAMESPACE
 bool print_time;
 boost::timer log_timer;
 #if !IMP_BASE_HAS_LOG4CXX
+base::Vector<std::pair<const char *, const void *> > log_contexts;
+int log_context_initializeds = -1;
 unsigned int log_indent = 0;
 std::ofstream fstream;
 internal::LogStream stream;

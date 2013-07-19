@@ -10,6 +10,7 @@
 #include "IMP/base/file.h"
 #include "IMP/base/internal/static.h"
 #include "IMP/base/Object.h"
+#include "IMP/base/internal/static.h"
 #include "IMP/base/thread_macros.h"
 #ifdef _OPENMP
 #include <omp.h>
@@ -28,32 +29,30 @@
 IMPBASE_BEGIN_NAMESPACE
 #if !IMP_BASE_HAS_LOG4CXX
 namespace {
-base::Vector<std::pair<const char *, const void *> > contexts;
-int context_initializeds = -1;
-
 std::string get_context_name(unsigned int i) {
   std::ostringstream oss;
-  if (contexts[i].second) {
-    const Object *o = reinterpret_cast<const Object *>(contexts[i].second);
+  if (internal::log_contexts[i].second) {
+    const Object *o
+      = reinterpret_cast<const Object *>(internal::log_contexts[i].second);
     // this is called on errors, so don't cause any more
     if (!o || !o->get_is_valid()) {
       oss << "InvalidObject"
-          << "::" << contexts[i].first;
+          << "::" << internal::log_contexts[i].first;
     } else {
-      oss << o->get_name() << "::" << contexts[i].first;
+      oss << o->get_name() << "::" << internal::log_contexts[i].first;
     }
   } else {
-    oss << contexts[i].first;
+    oss << internal::log_contexts[i].first;
   }
   return oss.str();
 }
 }
 
 std::string get_context_message() {
-  if (contexts.empty()) return std::string();
+  if (internal::log_contexts.empty()) return std::string();
   std::ostringstream oss;
   oss << "\nContext: ";
-  for (unsigned int i = 0; i < contexts.size(); ++i) {
+  for (unsigned int i = 0; i < internal::log_contexts.size(); ++i) {
     if (i != 0) {
       oss << "/";
     }
@@ -147,7 +146,7 @@ void push_log_context(const char *functionname, const void *classname) {
   if (!omp_in_parallel())
 #endif
       {
-    contexts.push_back(std::make_pair(functionname, classname));
+    internal::log_contexts.push_back(std::make_pair(functionname, classname));
   }
 }
 
@@ -156,15 +155,17 @@ void pop_log_context() {
   if (!omp_in_parallel())
 #endif
       {
-    if (context_initializeds >= static_cast<int>(contexts.size() - 1)) {
+    if (internal::log_context_initializeds
+        >= static_cast<int>(internal::log_contexts.size() - 1)) {
       internal::log_indent -= 2;
       std::string message =
-          std::string("end ") + get_context_name(contexts.size() - 1) + "\n";
+        std::string("end ")
+        + get_context_name(internal::log_contexts.size() - 1) + "\n";
       internal::stream.write(message.c_str(), message.size());
       internal::stream.strict_sync();
-      --context_initializeds;
+      --internal::log_context_initializeds;
     }
-    contexts.pop_back();
+    internal::log_contexts.pop_back();
   }
 }
 #endif
@@ -181,16 +182,17 @@ void add_to_log(std::string str) {
 #pragma omp critical(imp_log)
 #endif
   {
-    if (!contexts.empty() &&
-        context_initializeds != static_cast<int>(contexts.size())) {
-      for (unsigned int i = 0; i < contexts.size(); ++i) {
-        if (context_initializeds < static_cast<int>(i)) {
+    if (!internal::log_contexts.empty() &&
+        internal::log_context_initializeds
+        != static_cast<int>(internal::log_contexts.size())) {
+      for (unsigned int i = 0; i < internal::log_contexts.size(); ++i) {
+        if (internal::log_context_initializeds < static_cast<int>(i)) {
           std::string message =
               std::string("begin ") + get_context_name(i) + ":\n";
           internal::stream.write(message.c_str(), message.size());
           internal::stream.strict_sync();
           internal::log_indent += 2;
-          context_initializeds = i;
+          internal::log_context_initializeds = i;
         }
       }
     }
