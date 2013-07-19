@@ -18,6 +18,9 @@
 
 IMPSAXS_BEGIN_INTERNAL_NAMESPACE
 
+class Vector;
+class Row;
+
 static const double BIG  =1.0E30;
 static const double BIG2 =2.0E30;
 
