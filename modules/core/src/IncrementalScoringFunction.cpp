@@ -183,7 +183,7 @@ void IncrementalScoringFunction::clear_close_pair_scores() {
   nbl_.clear();
   set_has_dependencies(false);
 }
-ParticleIndexes IncrementalScoringFunction::get_movable_particles() const {
+ParticleIndexes IncrementalScoringFunction::get_movable_indexes() const {
   return all_;
 }
 
