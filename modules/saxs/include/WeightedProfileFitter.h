@@ -37,9 +37,6 @@ class IMPSAXSEXPORT WeightedProfileFitter : public ProfileFitter<ChiScore> {
                       std::vector<double>& weights= empty_weights_,
                       const std::string fit_file_name = "") const;
 
-  void compute_weights(const std::vector<IMP::saxs::Profile *>& profiles,
-                       std::vector<double>& weights) const;
-
   //! fit profiles by optimization of c1/c2 and weights
   /**
      it is assumed that the q values of the profiles are the same as
