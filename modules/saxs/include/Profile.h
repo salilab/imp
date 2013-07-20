@@ -27,31 +27,16 @@ class RadialDistributionFunction;
 */
 class IMPSAXSEXPORT Profile {
 public:
+  // Constructors
+
   //! init from file
   Profile(const String& file_name, bool fit_file = false);
 
   //! init for theoretical profile
   Profile(Float qmin = 0.0, Float qmax = 0.5, Float delta = 0.005);
 
-private:
-  class IntensityEntry {
-  public:
-    IntensityEntry() : q_(0.0), intensity_(0.0), error_(1.0), weight_(1.0) {}
-    IntensityEntry(Float q) : q_(q),intensity_(0.0),error_(1.0),weight_(1.0) {}
-    IntensityEntry(Float q, Float intensity, Float error)
-      : q_(q), intensity_(intensity), error_(error), weight_(1.0) {}
+  // Various ways to compute a profile
 
-    Float q_;
-    Float intensity_;
-    Float error_;
-    Float weight_;
-  };
-
-  friend std::ostream& operator<<(std::ostream& q, const IntensityEntry& e);
-
-  friend std::istream& operator>>(std::istream& q, IntensityEntry& e);
-
-public:
   //! computes theoretical profile
   void calculate_profile(const Particles& particles,
                          FormFactorType ff_type = HEAVY_ATOMS,
@@ -163,17 +148,17 @@ public:
   //! return maximal sampling point
   Float get_max_q() const { return max_q_; }
 
-  Float get_intensity(unsigned int i) const { return profile_[i].intensity_; }
-  Float get_q(unsigned int i) const { return profile_[i].q_; }
-  Float get_error(unsigned int i) const { return profile_[i].error_; }
-  Float get_weight(unsigned int i) const { return profile_[i].weight_; }
+  Float get_intensity(unsigned int i) const { return intensity_[i]; }
+  Float get_q(unsigned int i) const { return q_[i]; }
+  Float get_error(unsigned int i) const { return error_[i]; }
+  Float get_weight(unsigned int i) const { return 1.0; }
   Float get_variance(unsigned int i, unsigned int j) const
   { unsigned a=std::min(i,j); unsigned b=std::max(i,j);
       return variances_[a][b-a]; }
   Float get_average_radius() const { return average_radius_; }
 
   //! return number of entries in SAXS profile
-  unsigned int size() const { return profile_.size(); }
+  unsigned int size() const { return q_.size(); }
 
   //! checks the sampling of experimental profile
   bool is_uniform_sampling() const;
@@ -181,7 +166,7 @@ public:
 
   // Modifiers
 
-  void set_intensity(unsigned int i, Float iq) { profile_[i].intensity_ = iq; }
+  void set_intensity(unsigned int i, Float iq) { intensity_[i] = iq; }
 
   //! required for reciprocal space calculation
   void set_ff_table(FormFactorTable* ff_table) { ff_table_ = ff_table; }
@@ -191,8 +176,10 @@ public:
   void set_average_volume(Float v) { average_volume_ = v; }
 
   //! add intensity entry to profile
-  void add_entry(Float q, Float intensity, Float error=1.0) {
-    profile_.push_back(IntensityEntry(q, intensity, error));
+  void add_entry(Float q, Float intensity, Float error = 1.0) {
+    q_.push_back(q);
+    intensity_.push_back(intensity);
+    error_.push_back(error);
   }
 
   //! add simulated error
@@ -266,7 +253,10 @@ public:
   double radius_of_gyration_fixed_q(double end_q) const;
 
  protected:
-  std::vector<IntensityEntry> profile_; // the profile
+  std::vector<double> q_;
+  std::vector<double> intensity_;
+  std::vector<double> error_;
+
   std::vector<std::vector<double> > variances_; //profile variances
   Float min_q_, max_q_; // minimal and maximal s values  in the profile
   Float delta_q_; // profile sampling resolution
