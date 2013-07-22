@@ -18,6 +18,7 @@ namespace std {
 %include "IMP/saxs/ChiScore.h"
 %include "IMP/saxs/ChiScoreLog.h"
 %include "IMP/saxs/ProfileFitter.h"
+%include "IMP/saxs/WeightedProfileFitter.h"
 %include "IMP/saxs/DerivativeCalculator.h"
 %include "IMP/saxs/Restraint.h"
 %include "IMP/saxs/RadiusOfGyrationRestraint.h"
