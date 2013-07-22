@@ -59,6 +59,9 @@ private:
   // weights matrix multiplied by experimental intensities vector
   internal::Vector Wb_;
 
+  // intensities
+  internal::Matrix A_;
+
   //default, when weight are not needed
   static std::vector<double> empty_weights_;
 };

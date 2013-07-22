@@ -17,7 +17,7 @@ std::vector<double> WeightedProfileFitter::empty_weights_;
 
 WeightedProfileFitter::WeightedProfileFitter(const Profile& exp_profile):
   IMP::saxs::ProfileFitter<ChiScore>(exp_profile),
-  W_(exp_profile.size()), Wb_(exp_profile.size()) {
+  W_(exp_profile.size()), Wb_(exp_profile.size()), A_(exp_profile.size(), 2) {
 
   for(unsigned int i=0; i<exp_profile_.size(); i++) {
     Wb_[i] = exp_profile_.get_intensity(i);
@@ -41,15 +41,18 @@ Float WeightedProfileFitter::compute_score(
   int m = profiles.size();
   int n = exp_profile_.size();
 
-  internal::Matrix A(n,m); // for intensities
+  WeightedProfileFitter* non_const_this =
+    const_cast<WeightedProfileFitter*>(this);
+  if(A_.dim2() != m) non_const_this->A_.resize(n, m);
+
   for(int j=0; j<m; j++) {
     for(int i=0; i<n; i++) {
-      A[i][j] = profiles[j]->get_intensity(i);
+      (non_const_this->A_)[i][j] = profiles[j]->get_intensity(i);
     }
   }
 
   // compute weights
-  internal::Vector w = autoregn(W_*A, Wb_);
+  internal::Vector w = autoregn(W_*A_, Wb_);
   // normalize weights so they sum up to 1.0
   w /= w.sum();
 
@@ -57,7 +60,7 @@ Float WeightedProfileFitter::compute_score(
   IMP::saxs::Profile weighted_profile(exp_profile_.get_min_q(),
                                       exp_profile_.get_max_q(),
                                       exp_profile_.get_delta_q());
-  internal::Vector wp = A*w;
+  internal::Vector wp = A_*w;
 
   for(unsigned int k=0; k<profiles[0]->size(); k++)
     weighted_profile.add_entry(profiles[0]->get_q(k), wp[k]);
