@@ -1230,8 +1230,15 @@ def find_fit_all(data, initvals, verbose, mean_function):
     cv0 = transform(particles['sigma2'])
     cl0 = transform(particles['lambda'])
     #
-    #
-    #first fit covariance particles only
+    #first find minimum for lambda
+    vals=[]
+    for lam in logspace(log(particles['lambda'].get_lower())/log(10),2,num=100):
+        particles['lambda'].set_nuisance(lam)
+        ene = model.evaluate(False)
+        vals.append((ene,particles['lambda'].get_nuisance()))
+    vals.sort()
+    particles['lambda'].set_nuisance(vals[0][1])
+    #then fit covariance particles only
     options={'maxiter':100, 'disp':False}
     res = optimize.minimize(target_function,
             array([cu0,cv0,cl0]), method='Nelder-Mead',
@@ -1788,10 +1795,11 @@ def remove_redundant(profiles, verbose=0):
             tbd.append(i)
     tbd.reverse()
     for i in tbd:
-        profiles.pop(i)
+        pbye=profiles.pop(i)
         data.pop(i)
         if verbose>0:
-            print "    removed profile %d because it is redundant" % i
+            print "    removed profile %d (%s) because it is redundant" % \
+                    (i,os.path.basename(pbye.filename))
     if len(profiles) <= 1:
         return profiles
     #map noise levels to profiles
