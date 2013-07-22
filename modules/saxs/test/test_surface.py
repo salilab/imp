@@ -32,11 +32,11 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(total_area, 37.728, delta=0.1)
 
     def test_surface_area2(self):
-        """Check protein surface computation by atom"""
+        """Atom radii and probe radius parameters that work for SOAP"""
         m = IMP.Model()
 
         #! read PDB
-        mp= IMP.atom.read_pdb(self.get_input_file_name('1k3l.pdb'), m,
+        mp= IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,
                               IMP.atom.NonWaterNonHydrogenPDBSelector())
         IMP.atom.add_radii(mp)
 
@@ -46,7 +46,7 @@ class Tests(IMP.test.TestCase):
         for p in particles:
             xyzrp = IMP.core.XYZR(p)
             xyzrp.set_radius(0.7*xyzrp.get_radius())
-            print 'Rad = ', xyzrp.get_radius()
+
 
         #! calculate surface aceesability
         s = IMP.saxs.SolventAccessibleSurface()
@@ -55,8 +55,9 @@ class Tests(IMP.test.TestCase):
         #! sum up
         total_area = 0.0
         for area in surface_area:
-            print 'Area = ', area
-
+            total_area += area
+        print 'Area = ' + str(total_area)
+        self.assertAlmostEqual(total_area, 73.53, delta=0.1)
 
 
     def test_corner_case(self):
