@@ -20,15 +20,17 @@ class Tests(IMP.test.TestCase):
 
     def test_indexes_run(self):
         """Test indexes module run"""
+        indexes_input = self.get_input_file_name('indexes_test.input')
+        input_dir = os.path.dirname(indexes_input)
         self.run_python_module(indexes,
-                  ['foo', self.get_input_file_name('indexes_test.input'),
+                  ['foo', indexes_input,
                    '10', 'foo.indexes.mapping.input'])
         lines = open('foo.indexes.mapping.input').readlines()
         lines = [x.rstrip('\r\n') for x in lines]
         self.assertEqual(len(lines), 3)
         self.assertEqual(lines[0][:9], '|anchors|')
         self.assertEqual(os.path.realpath(lines[0][9:-1]),
-                         os.path.realpath(self.get_input_file_name('')))
+                         os.path.realpath(input_dir))
         self.assertEqual(lines[1], '|protein|A|foo.A.fit.indexes.txt|')
         self.assertEqual(lines[2], '|protein|B|foo.B.fit.indexes.txt|')
         self.assert_indexes_file('foo.A.fit.indexes.txt', range(10))
