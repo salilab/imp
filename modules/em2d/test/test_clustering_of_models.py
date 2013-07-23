@@ -46,15 +46,15 @@ class Tests(IMP.test.TestCase):
         """Test hierarchical clustering of models"""
         if sys.platform == 'win32':
             self.skipTest("clustering does not work on Windows")
-        full_fn_selection = self.get_input_file_name(
+        fn_selection = self.get_input_file_name(
                                      "clustering/all-models-1z5s.sel")
-        sub_dir, fn_selection = os.path.split(full_fn_selection)
-        os.chdir(sub_dir)
         # Load models
         model = IMP.Model()
         ssel = IMP.atom.ATOMPDBSelector()
         coords =[]
         fn_models = IMP.em2d.read_selection_file(fn_selection)
+        fn_models = [self.get_input_file_name('clustering/' + x) \
+                     for x in fn_models]
         n_models = len(fn_models)
         for fn in fn_models:
             h=IMP.atom.read_pdb(fn,model,ssel,True,True)
@@ -107,6 +107,8 @@ class Tests(IMP.test.TestCase):
         filenames = ["single_linkage_results.txt",
                      "complete_linkage_results.txt",
                      "average_distance_linkage_results.txt"]
+        filenames = [self.get_input_file_name("clustering/" + x) \
+                     for x in filenames]
 
         for i in range(0,len(linkage_mats)):
 #            print "checking linkage matrix"
