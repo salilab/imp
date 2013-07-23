@@ -22,7 +22,7 @@ class TestMonteCarloModeling(IMP.test.ApplicationTestCase):
         domino_model = self.import_python_application('emagefit.py')
         fn_config = self.get_input_file_name("config.py")
         exp = utility.get_experiment_params(fn_config)
-        fn_database = self.get_input_file_name("monte_carlo_output_database.db")
+        fn_database = "monte_carlo_output_database.db"
         domino_model.generate_monte_carlo_model(exp, fn_database, seed=-1,
                                                         write_solution=True)
         # test that the database and pdb files are generated and that they

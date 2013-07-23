@@ -26,7 +26,7 @@ class TestDominoModeling(IMP.test.ApplicationTestCase):
         IMP.base.set_log_level(IMP.base.SILENT)
         fn = self.get_input_file_name("config.py")
         exp = utility.get_experiment_params(fn)
-        fn_output_db = self.get_input_file_name("domino_solutions_temp.db")
+        fn_output_db = "domino_solutions_temp.db"
         domino_model.generate_domino_model(exp, fn_output_db)
         # assert that a database of results is created
         self.assertTrue(os.path.exists(fn_output_db))

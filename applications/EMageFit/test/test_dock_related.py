@@ -36,7 +36,7 @@ class TestDockRelated(IMP.test.ApplicationTestCase):
                                     "3sfdA", "A", residue_ligand, distance)
 
         xlinks_list = [xl]
-        fn_filtered = self.get_input_file_name("filtered_transforms.txt")
+        fn_filtered = "filtered_transforms.txt"
         dock.filter_docking_results(h_receptor, h_ligand, xlinks_list,
                                             fn, fn_filtered)
         fn_stored = self.get_input_file_name(
