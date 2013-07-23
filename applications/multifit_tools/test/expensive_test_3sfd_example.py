@@ -5,7 +5,6 @@ class Tests(IMP.test.ApplicationTestCase):
 
     def test_3sfd(self):
         """Test the 3sfd example"""
-        input_file_dir = self.get_input_file_name('')
         cmds = self.read_shell_commands('../3sfd.dox')
         d = IMP.test.RunInTempDir()
         for c in cmds[:-1]:
