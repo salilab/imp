@@ -23,7 +23,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 ClosePairsPairScore::ClosePairsPairScore(PairScore *f, Refiner *r, Float thre)
-    : PairScore("ClosePairsPirScore%1%"), r_(r), f_(f), th_(thre) {
+    : PairScore("ClosePairsPairScore%1%"), r_(r), f_(f), th_(thre) {
   IMP_USAGE_CHECK(thre >= 0, "The threshold must be non-negative.");
 
   cpf_ = new RigidClosePairsFinder();
