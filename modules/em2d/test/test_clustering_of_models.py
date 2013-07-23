@@ -46,10 +46,10 @@ class Tests(IMP.test.TestCase):
         """Test hierarchical clustering of models"""
         if sys.platform == 'win32':
             self.skipTest("clustering does not work on Windows")
-        input_dir=self.get_input_file_name("")
-        sub_dir = input_dir+"/clustering/"
+        full_fn_selection = self.get_input_file_name(
+                                     "clustering/all-models-1z5s.sel")
+        sub_dir, fn_selection = os.path.split(full_fn_selection)
         os.chdir(sub_dir)
-        fn_selection = "all-models-1z5s.sel"
         # Load models
         model = IMP.Model()
         ssel = IMP.atom.ATOMPDBSelector()
@@ -128,8 +128,6 @@ class Tests(IMP.test.TestCase):
                     "Clusters below 1.4 rmsd are not equal")
         self.assertEqual(complete_cls_elems,[[2,3],[0,4,1]],
                     "Clusters below 1.4 rmsd are not equal")
-
-        os.chdir(input_dir)
 
 
 if __name__ == '__main__':
