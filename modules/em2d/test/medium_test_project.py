@@ -14,9 +14,9 @@ import os
 class Tests(IMP.test.TestCase):
 
     def test_random_projection_generation(self):
-        """ Generation of random projection from a PDB file with em2d images"""
-        testfile=self.get_input_file_name("opencv_test.spi")
-        if(os.path.isfile(testfile)):
+        """Generation of random projection from a PDB file with em2d images"""
+        testfile = "opencv_test.spi"
+        if os.path.isfile(testfile):
             # delete the file to check
             os.remove(testfile)
         smodel = IMP.Model()

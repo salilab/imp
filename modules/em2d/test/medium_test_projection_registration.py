@@ -62,8 +62,7 @@ class Tests(IMP.test.TestCase):
         finder.get_complete_registration()
         # Recover the registration results:
         registration_parameters=finder.get_registration_results()
-        fn_registration_results=self.get_input_file_name(
-                                                "my_1gyt_registration.params")
+        fn_registration_results = "my_1gyt_registration.params"
         em2d.write_registration_results(fn_registration_results,
                                           registration_parameters)
         # Read the correct registration results:
