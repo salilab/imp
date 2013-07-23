@@ -1303,6 +1303,15 @@ def find_fit_all(data, initvals, verbose, mean_function):
             if err <0 or isnan(err) or isinf(err):
                 ene=inf
                 break
+    #global ctr
+    #fl=open('fit_%d.dat' % ctr, 'w')
+    #for q,I,err in zip(data['q'],data['I'],data['err']):
+    #    Ith = gp.get_posterior_mean([q])
+    #    errth = gp.get_posterior_covariance([q],[q])
+    #    mth = functions['mean']([q])[0]
+    #    fl.write('\t'.join(['%G' % i for i in [q,I,err,Ith,errth,mth]]))
+    #    fl.write('\n')
+    #ctr+=1
     return newvals, ene
 
 def bayes_factor(data, initvals, verbose, mean_func, maxpoints,
@@ -1334,7 +1343,7 @@ def bayes_factor(data, initvals, verbose, mean_func, maxpoints,
     try:
         retval = linalg.slogdet(H)
         if retval[0] == 0 and retval[1] == -inf:
-            print "Warning: skipping model %s" % mean_func
+            #print "Warning: skipping model %s" % mean_func
             logdet = inf
         else:
             logdet = retval[1]/2.
@@ -1344,12 +1353,12 @@ def bayes_factor(data, initvals, verbose, mean_func, maxpoints,
         try:
             retval = gpr.get_logdet_hessian()
             if isinf(retval):
-                print "Warning: re-skipping model %s" % mean_func
+                #print "Warning: re-skipping model %s" % mean_func
                 logdet = inf
             else:
                 logdet = retval/2.
         except IMP.base.ModelException:
-            print "Warning: Hessian is not positive definite"
+            #print "Warning: Hessian is not positive definite"
             logdet=inf
     return (Np, (2*pi)**(Np/2.), H, logdet, MP, ML, MP-ML,
             exp(-MP)*(2*pi)**(Np/2.)*exp(-logdet),
@@ -1426,7 +1435,8 @@ def find_fit(data, verbose, model_comp=False, model_comp_maxpoints=-1,
         raise FittingError, "Error while fitting! All Bayes factors are "\
              "undefined.\n"\
              "Change initial parameters or disable model comparison."
-    minf = sorted([(free_energies[i][8],i) for i in functions])[0][1]
+    minf = sorted([(free_energies[i][8],i) for i in functions if not
+        (isnan(free_energies[i][8]) or isinf(free_energies[i][8]))])[0][1]
     return minf,param_vals[minf],free_energies
 
 def create_intervals_from_data(profile, flag):
