@@ -28,12 +28,8 @@ class Tests(IMP.test.TestCase):
         IMP.em2d.get_transformed(image.get_data(),rotated.get_data(),
                                  transformation)
 
-        fn_rotated = self.get_input_file_name("rotated.spi")
-#        rotated.write(fn_rotated,srw)
         result=IMP.em2d.get_rotational_alignment(
                 image.get_data(),rotated.get_data(),True)
-        fn_aligned = self.get_input_file_name("rot_aligned.spi")
- #       rotated.write(fn_aligned,srw)
         determined_angle=result[0].get_rotation().get_angle()
         # approximately 6 degrees tolerance, 0.1 rad.
         x = angle+determined_angle
@@ -55,12 +51,8 @@ class Tests(IMP.test.TestCase):
         transformation = IMP.algebra.Transformation2D(trans)
         IMP.em2d.get_transformed(image.get_data(),translated.get_data(),
                                  transformation)
-        fn_translated = self.get_input_file_name("translated.spi")
-#        translated.write(fn_translated,srw)
         result=IMP.em2d.get_translational_alignment(
                 image.get_data(),translated.get_data(),True)
-        fn_aligned = self.get_input_file_name("trans_aligned.spi")
- #       translated.write(fn_aligned,srw)
         # -1 to get the translation applied to reference.
         # Result contains the translation required for align the second matrix
         determined_trans= (-1)*result[0].get_translation()
@@ -87,13 +79,9 @@ class Tests(IMP.test.TestCase):
 
         T=IMP.algebra.Transformation2D(rot,trans)
         IMP.em2d.get_transformed(image.get_data(),transformed.get_data(),T)
-        fn_transformed = self.get_input_file_name("transformed.spi")
-#       transformed.write(fn_transformed,srw)
 
         result=IMP.em2d.get_complete_alignment(image.get_data(),
                                          transformed.get_data(),True)
-        fn_aligned = self.get_input_file_name("aligned_complete.spi")
-#       transformed.write(fn_aligned,srw)
         cross_correlation_coefficient = result.second
         # Tolerate 1 pixel error
         self.assertAlmostEqual(cross_correlation_coefficient,1, delta=0.03,
