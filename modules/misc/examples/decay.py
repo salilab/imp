@@ -54,7 +54,7 @@ for i in range(0,nb):
 cf= IMP.core.CoinFlipPairPredicate(prob)
 dos= IMP.misc.DecayPairContainerOptimizerState(cf, bds, "decay")
 dos.set_period(period)
-dos.set_log_level(IMP.base.VERBOSE)
+dos.set_log_level(IMP.base.SILENT) #VERBOSE
 
 # create restraints
 rs=[]
@@ -68,9 +68,9 @@ ev= IMP.core.ExcludedVolumeRestraint(ps, 10,10)
 # equilibrate
 print "equilibrating"
 IMP.base.set_log_level(IMP.PROGRESS)
-
 #IMP.benchmark.set_is_profiling(True)
 IMP.example.optimize_balls(ps, rs)
+IMP.base.set_log_level(IMP.SILENT)
 
 # set up simulator
 bd= IMP.atom.BrownianDynamics(m)
