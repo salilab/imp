@@ -26,12 +26,6 @@ class EM2DDockApplicationTest(IMP.test.ApplicationTestCase):
 
     def test_simple_score(self):
         """Simple test of EM2D score application"""
-        print self.get_input_file_name('2p4e.pdb')
-        print self.get_input_file_name('model4.pdb')
-        print self.get_input_file_name('transforms10')
-        print self.get_input_file_name('image1.pgm')
-        print self.get_input_file_name('image2.pgm')
-        print self.get_input_file_name('image3.pgm')
         p = self.run_application('em2d_score',
                                  [self.get_input_file_name('2p4e.pdb'),
                                   self.get_input_file_name('model4.pdb'),
