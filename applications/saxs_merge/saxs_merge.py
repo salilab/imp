@@ -1160,15 +1160,13 @@ def find_fit_mean(data, verbose, mean_function):
     #
     set_defaults_mean(data, particles, mean_function)
     #
-    options={'maxiter':100, 'disp':False}
-    #
     A0 = particles['A'].get_nuisance()
     if mean_function == 'Flat':
-        res = optimize.minimize(residuals,
-                array([A0]), method='Nelder-Mead',
+        res = optimize.fmin(residuals,
+            array([A0]),
             args=(mean_function, particles, functions['mean'], data),
-            jac=False, options=options)
-        Af = res.x
+            maxiter=100, disp=False)
+        Af = res
     else:
         mu0 = transform(particles['G'])
         mv0 = transform(particles['Rg'])
@@ -1179,31 +1177,30 @@ def find_fit_mean(data, verbose, mean_function):
         particles['d'].set_lower(dmin)
         particles['d'].set_nuisance(dmin)
         particles['d'].set_upper(dmin+1)
-        res = optimize.minimize(residuals,
-            array([A0,mu0,mv0]), method='Nelder-Mead',
+        res = optimize.fmin(residuals,
+            array([A0,mu0,mv0]),
             args=('Simple', particles, functions['mean'], data),
-                jac=False, options=options)
-        Af,muf,mvf = res.x
+            maxiter=100, disp=False)
+        Af,muf,mvf = res
         #relax bounds on d
         particles['d'].set_lower(0)
         particles['d'].set_upper(max(dmin+1,8))
         #
         if mean_function != 'Simple':
             mw0 = transform(particles['d'])
-            res = optimize.minimize(residuals,
-                array([Af,muf,mvf,mw0]), method='Nelder-Mead',
+            res = optimize.fmin(residuals,
+                array([Af,muf,mvf,mw0]),
                 args=('Generalized', particles, functions['mean'], data),
-                jac=False, options=options)
-            Af,muf,mvf,mwf = res.x
+                maxiter=100, disp=False)
+            Af,muf,mvf,mwf = res
             if mean_function != 'Generalized':
-                options={'maxiter':300, 'disp':False}
                 particles['s'].set_nuisance(.1)
                 mx0 = transform(particles['s'])
-                res = optimize.minimize(residuals,
-                    array([Af,muf,mvf,mwf,mx0]), method='Nelder-Mead',
+                res = optimize.fmin(residuals,
+                    array([Af,muf,mvf,mwf,mx0]),
                     args=('Full', particles, functions['mean'], data),
-                    jac=False, options=options)
-                Af,muf,mvf,mwf,mxf = res.x
+                    maxiter=300, disp=False)
+                Af,muf,mvf,mwf,mxf = res
                 particles['s'].set_nuisance(untransform(mxf,particles['s']))
             particles['d'].set_nuisance(untransform(mwf,particles['d']))
         particles['Rg'].set_nuisance(untransform(mvf,particles['Rg']))
@@ -1239,45 +1236,51 @@ def find_fit_all(data, initvals, verbose, mean_function):
     vals.sort()
     particles['lambda'].set_nuisance(vals[0][1])
     #then fit covariance particles only
-    options={'maxiter':100, 'disp':False}
-    res = optimize.minimize(target_function,
-            array([cu0,cv0,cl0]), method='Nelder-Mead',
+    res = optimize.fmin(target_function,
+            array([cu0,cv0,cl0]),
         args=('cov', particles, model, gpr, M, False),
-        jac=False, options=options)
-    cuf,cvf,clf = res.x
+        maxiter=100,disp=False)
+    cuf,cvf,clf = res
     #refine all particles
-    options={'maxiter':100, 'disp':False,'gtol':1e-5}
     A0 = particles['A'].get_nuisance()
     if mean_function == 'Flat':
-        res = optimize.minimize(target_function,
-                array([A0,cuf,cvf,clf]), method='BFGS',
-            args=(mean_function, particles, model, gpr, M, True),
-            jac=True, options=options)
-        Af,cuf,cvf,clf = res.x
+        res = optimize.fmin_bfgs(lambda *a: target_function(*a)[0],
+                array([A0,cuf,cvf,clf]),
+                lambda *a: target_function(*a)[1],
+                args=(mean_function, particles, model, gpr, M, True),
+                gtol=1e-5, maxiter=100, disp=False, full_output=True)
+        Af,cuf,cvf,clf = res[0]
+        success = True if res[-1]==0 else False
     else:
         mu0 = transform(particles['G'])
         mv0 = transform(particles['Rg'])
         if mean_function == 'Simple':
-            res = optimize.minimize(target_function,
-                array([A0,mu0,mv0,cuf,cvf,clf]), method='BFGS',
+            res = optimize.fmin_bfgs(lambda *a: target_function(*a)[0],
+                array([A0,mu0,mv0,cuf,cvf,clf]),
+                lambda *a: target_function(*a)[1],
                 args=(mean_function, particles, model, gpr, M, True),
-                jac=True, options=options)
-            Af,muf,mvf,cuf,cvf,clf = res.x
+                gtol=1e-5, maxiter=100, disp=False, full_output=True)
+            Af,muf,mvf,cuf,cvf,clf = res[0]
+            success = True if res[-1]==0 else False
         else:
             mw0 = transform(particles['d'])
             if mean_function == 'Generalized':
-                res = optimize.minimize(target_function,
-                    array([A0,mu0,mv0,mw0,cuf,cvf,clf]), method='BFGS',
+                res = optimize.fmin_bfgs(lambda *a: target_function(*a)[0],
+                    array([A0,mu0,mv0,mw0,cuf,cvf,clf]),
+                    lambda *a: target_function(*a)[1],
                     args=(mean_function, particles, model, gpr, M, True),
-                    jac=True, options=options)
-                Af,muf,mvf,mwf,cuf,cvf,clf = res.x
+                    gtol=1e-5, maxiter=100, disp=False, full_output=True)
+                Af,muf,mvf,mwf,cuf,cvf,clf = res[0]
+                success = True if res[-1]==0 else False
             else:
                 mx0 = transform(particles['s'])
-                res = optimize.minimize(target_function,
-                    array([A0,mu0,mv0,mw0,mx0,cuf,cvf,clf]), method='BFGS',
+                res = optimize.fmin_bfgs(lambda *a: target_function(*a)[0],
+                    array([A0,mu0,mv0,mw0,mx0,cuf,cvf,clf]),
+                    lambda *a: target_function(*a)[1],
                     args=(mean_function, particles, model, gpr, M, True),
-                    jac=True, options=options)
-                Af,muf,mvf,mwf,mxf,cuf,cvf,clf = res.x
+                    gtol=1e-5, maxiter=100, disp=False, full_output=True)
+                Af,muf,mvf,mwf,mxf,cuf,cvf,clf = res[0]
+                success = True if res[-1]==0 else False
                 particles['s'].set_nuisance(untransform(mxf,particles['s']))
             particles['d'].set_nuisance(untransform(mwf,particles['d']))
         particles['Rg'].set_nuisance(untransform(mvf,particles['Rg']))
@@ -1292,7 +1295,7 @@ def find_fit_all(data, initvals, verbose, mean_function):
                     for (k,v) in particles.iteritems()])
     ene = model.evaluate(False)
     #make sure the errors are defined
-    if not res.success:
+    if not success:
         ene = inf
     else:
         for q in data['q']:
