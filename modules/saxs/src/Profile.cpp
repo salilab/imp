@@ -227,6 +227,65 @@ void Profile::write_SAXS_file(const String& file_name, Float max_q) const {
   out_file.close();
 }
 
+
+void Profile::read_partial_profiles(const String& file_name) {
+  std::ifstream in_file(file_name.c_str());
+  if (!in_file) {
+    IMP_THROW("Can't open file " << file_name, IOException);
+  }
+
+  unsigned int psize = 6;
+  // init
+  partial_profiles_.insert(partial_profiles_.begin(), psize,
+                           Profile(min_q_, max_q_, delta_q_));
+  std::string line;
+  double q, intensity, error;
+  while (!in_file.eof()) {
+    getline(in_file, line);
+    boost::trim(line); // remove all spaces
+    // skip comments
+    if (line[0] == '#' || line[0] == '\0' || !isdigit(line[0])) continue;
+    std::vector < std::string > split_results;
+    boost::split(split_results, line, boost::is_any_of("\t "),
+                 boost::token_compress_on);
+    if(split_results.size() != 7) continue;
+    q = atof(split_results[0].c_str());
+    for(unsigned int i=0; i<6; i++) {
+      partial_profiles_[i].add_entry(q, atof(split_results[i+1].c_str()));
+    }
+    // just add value for intensity. will be updated by sum_partial_profiles
+    add_entry(q, 1.0);
+  }
+  in_file.close();
+
+  sum_partial_profiles(1.0, 0.0);
+
+  // determine qmin, qmax and delta
+  if (size() > 1) {
+    min_q_ = q_[0];
+    max_q_ = q_[size() - 1];
+
+    if(is_uniform_sampling()) {
+      // To minimize rounding errors, by averaging differences of q
+      Float diff = 0.0;
+      for(unsigned int i=1; i<size(); i++) diff += q_[i] - q_[i-1];
+      delta_q_ = diff / (size()-1);
+    } else {
+      delta_q_ = (max_q_ - min_q_)/(size()-1);
+    }
+
+    for(unsigned int i=0; i<6; i++) {
+      partial_profiles_[i].min_q_ = min_q_;
+      partial_profiles_[i].max_q_ = max_q_;
+      partial_profiles_[i].delta_q_ = delta_q_;
+    }
+  }
+
+  IMP_LOG_TERSE( "read_partial_profiles: " << file_name
+                 << " size= " << size() << " delta= " << delta_q_
+                 << " min_q= " << min_q_ << " max_q= " << max_q_ << std::endl);
+}
+
 void Profile::write_partial_profiles(const String& file_name) const {
   std::ofstream out_file(file_name.c_str());
   if (!out_file) {

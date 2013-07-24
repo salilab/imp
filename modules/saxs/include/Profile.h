@@ -51,6 +51,12 @@ public:
   }
 
   //! compute profile for fitting with hydration layer and excluded volume
+  /**
+    A partial profile is a pre-computed profile, where intensities are
+    split into 6 parts that can be summed up into a regular profile
+    given a pair of c1/c2 values by sum_partial_profiles function.
+    see FoXS paper for details.
+  */
   void calculate_profile_partial(const Particles& particles,
                                  const Floats& surface = Floats(),
                                  FormFactorType ff_type = HEAVY_ATOMS);
@@ -131,9 +137,10 @@ public:
   */
   void write_SAXS_file(const String& file_name, Float max_q=0.0) const;
 
-  // TODO
-  //void read_partial_profiles(const String& file_name) const;
+  //! read a partial profile from file (7 columns)
+  void read_partial_profiles(const String& file_name);
 
+  //! write a partial profile to file
   void write_partial_profiles(const String& file_name) const;
 
 
