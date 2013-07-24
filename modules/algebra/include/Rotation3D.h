@@ -350,8 +350,9 @@ inline Rotation3D compose(const Rotation3D &a, const Rotation3D &b) {
     for a general description.
 
     - All Euler angles are specified in radians.
-    - The names are all \c rotation_from_{fixed/body}_abc() where abc is the
-    ordering of x,y,z.
+    - Only x-y-z order is currently supported.
+    - To convert Euler angles in a different order, one can compose a Rotation3D
+    from three rotations using get_rotation_about_axis function.
     @{
 */
 
@@ -390,54 +391,9 @@ IMPALGEBRAEXPORT Rotation3D get_rotation_from_fixed_zxz(double phi,
     \param[in] Tilt Second Euler angle (radians) defining the rotation (Y axis)
     \param[in] Psi Third Euler angle (radians) defining the rotation (Z axis)
     See Rotation3D
-    See FixedZYZ
 */
 IMPALGEBRAEXPORT Rotation3D get_rotation_from_fixed_zyz(double Rot, double Tilt,
                                                         double Psi);
-
-//! A simple class for returning ZYZ Euler angles
-/**
-*/
-class FixedZYZ : public GeometricPrimitiveD<3> {
-  double v_[3];
-
- public:
-  FixedZYZ() {}
-  FixedZYZ(double rot, double tilt, double psi) {
-    v_[0] = rot;
-    v_[1] = tilt;
-    v_[2] = psi;
-  }
-  double get_rot() const { return v_[0]; }
-  double get_tilt() const { return v_[1]; }
-  double get_psi() const { return v_[2]; }
-  IMP_SHOWABLE_INLINE(FixedZYZ, {
-    out << v_[0] << " " << v_[1] << " " << v_[2];
-  });
-};
-
-IMP_VALUES(FixedZYZ, FixedZYZs);
-
-//! A simple class for returning ZXZ Euler angles
-class FixedZXZ : public GeometricPrimitiveD<3> {
-  double v_[3];
-
- public:
-  FixedZXZ() {}
-  FixedZXZ(double psi, double theta, double phi) {
-    v_[0] = psi;
-    v_[1] = theta;
-    v_[2] = phi;
-  }
-  double get_psi() const { return v_[0]; }
-  double get_theta() const { return v_[1]; }
-  double get_phi() const { return v_[2]; }
-  IMP_SHOWABLE_INLINE(FixedZXZ, {
-    out << v_[0] << " " << v_[1] << " " << v_[2];
-  });
-};
-
-IMP_VALUES(FixedZXZ, FixedZXZs);
 
 //! A simple class for returning XYZ Euler angles
 class FixedXYZ : public GeometricPrimitiveD<3> {
@@ -459,22 +415,6 @@ class FixedXYZ : public GeometricPrimitiveD<3> {
 };
 
 IMP_VALUES(FixedXYZ, FixedXYZs);
-
-//! The inverse of rotation_from_fixed_zyz()
-/**
-   \see rotation_from_fixed_zyz()
-   See Rotation3D
-   See FixedZYZ
-*/
-IMPALGEBRAEXPORT FixedZYZ get_fixed_zyz_from_rotation(const Rotation3D &r);
-
-//! The inverse of rotation_from_fixed_zyz()
-/**
-   \see rotation_from_fixed_zxz()
-   See Rotation3D
-   See FixedZXZ
-*/
-IMPALGEBRAEXPORT FixedZXZ get_fixed_zxz_from_rotation(const Rotation3D &r);
 
 //! The inverse of rotation_from_fixed_xyz()
 /**

@@ -273,66 +273,6 @@ Rotation3D get_rotation_from_fixed_zyz(double Rot, double Tilt, double Psi) {
   return rot;
 }
 
-FixedZXZ get_fixed_zxz_from_rotation(const Rotation3D &r) {
-
-  Vector4D q = r.get_quaternion();
-  double q0 = q[0];
-  double q1 = q[1];
-  double q2 = q[2];
-  double q3 = q[3];
-  double phi =
-      std::atan2((2 * (q0 * q3 + q1 * q2)), (1 - 2 * (q2 * q2 + q3 * q3)));
-  double theta = std::asin(2 * ((q0 * q2) - (q3 * q1)));
-  double psi =
-      std::atan2((2 * (q0 * q1 + q2 * q3)), (1 - 2 * (q1 * q1 + q2 * q2)));
-  return FixedZXZ(phi, theta, psi);
-}
-
-FixedZYZ get_fixed_zyz_from_rotation(const Rotation3D &r) {
-  // double d22 = c2
-  double cos_tilt = r.get_rotated(Vector3D(0, 0, 1))[2];
-  // double d12 = s2 * s3;
-  double sin_tilt_sin_psi = r.get_rotated(Vector3D(0, 0, 1))[1];
-  // double d21 = s1 * s2;
-  double sin_rot_sin_tilt = r.get_rotated(Vector3D(0, 1, 0))[2];
-  // double d02 = c3 * s2;
-  double cos_psi_sin_tilt = r.get_rotated(Vector3D(0, 0, 1))[0];
-  // double d20 = (-1.0) * c1 * s2;
-  double cos_rot_sin_tilt = -r.get_rotated(Vector3D(1, 0, 0))[2];
-  double psi = std::atan2(sin_tilt_sin_psi, cos_psi_sin_tilt);
-  if (std::abs(sin(psi)) < .01) {
-    IMP_THROW("Attempting to divide by 0 in get_fixed_zyz_from_rotation"
-                  << " bug Daniel about getting a more stable implementation"
-                  << " or restructure your code to stay with quaternions.",
-              base::ValueException);
-  }
-  double sin_tilt = sin_tilt_sin_psi / std::sin(psi);
-  double tilt = std::atan2(sin_tilt, cos_tilt);
-  if (std::abs(sin_tilt) < .01) {
-    IMP_THROW("Attempting to divide by 0 in get_fixed_zyz_from_rotation"
-                  << " bug Daniel about getting a more stable implementation"
-                  << " or restructure your code to stay with quaternions.",
-              base::ValueException);
-  }
-  double cos_rot = cos_rot_sin_tilt / sin_tilt;
-  double sin_rot = sin_rot_sin_tilt / sin_tilt;
-  double rot = std::atan2(sin_rot, cos_rot);
-  /*IMP_LOG_VERBOSE( "Intermedites back: "
-          << cos_rot << " " << cos_tilt << " "
-          << cos_psi_sin_tilt/sin_tilt << "\n"
-          << sin_rot << " " << sin_tilt << " "
-          << sin_tilt_sin_psi/sin_tilt << std::endl);*/
-  IMP_IF_CHECK(base::USAGE) {
-    Rotation3D rrot = get_rotation_from_fixed_zyz(rot, tilt, psi);
-    IMP_LOG(base::VERBOSE,
-            "Input is " << r << " output results in " << rrot << std::endl);
-    IMP_INTERNAL_CHECK(get_distance(r, rrot) < .1,
-                       "The input and output rotations are far apart "
-                           << r << " and " << rrot << std::endl);
-  }
-  return FixedZYZ(rot, tilt, psi);
-}
-
 FixedXYZ get_fixed_xyz_from_rotation(const Rotation3D &r) {
   VectorD<4> quat = r.get_quaternion();
   double q00 = get_squared(quat[0]);

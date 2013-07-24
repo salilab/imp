@@ -50,9 +50,7 @@ IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  BoundedGridRange);
 IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  UnboundedGridRange);
 IMP_SWIG_VALUE(IMP::algebra, LinearFit2D, LinearFit2Ds);
 IMP_SWIG_VALUE(IMP::algebra, ParabolicFit2D, ParabolicFit2Ds);
-IMP_SWIG_VALUE(IMP::algebra, FixedZYZ, FixedZYZs);
 IMP_SWIG_VALUE(IMP::algebra, FixedXYZ, FixedXYZs);
-IMP_SWIG_VALUE(IMP::algebra, FixedZXZ, FixedZXZs);
 
 namespace boost {
 template <class T, int D> class multi_array{};
