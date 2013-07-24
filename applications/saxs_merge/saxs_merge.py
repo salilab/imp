@@ -2271,7 +2271,7 @@ def merging(profiles, args):
 
 def write_data(merge, profiles, args):
     if args.verbose > 0:
-        print "writing data to %s" % args.destdir 
+        print "writing data to %s" % args.destdir
     if not os.path.isdir(args.destdir):
         os.mkdir(args.destdir)
     qvals = array(profiles[0].get_raw_data(colwise=True)['q'])
