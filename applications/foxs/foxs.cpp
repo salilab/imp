@@ -170,6 +170,7 @@ int main(int argc, char **argv)
   float scale = 1.0;
   bool set_scale = false;
   bool use_offset = false;
+  bool write_partial_profile = false;
   bool fit = true;
   float MAX_C2 = 4.0; float MIN_C2 = -MAX_C2/2.0;
   float water_layer_c2 = MAX_C2;
@@ -206,6 +207,7 @@ Valid range: 0.95 < c1 < 1.05")
      "background adjustment, not used by default. if enabled, \
 recommended q value is 0.2")
     ("offset,o", "use offset in fitting (default = false)")
+    ("write-partial-profile,p", "write partial profile file (default = false)")
     ("multi-model-pdb,m", po::value<int>(&multi_model_pdb)->default_value(1),
      "1 - read the first MODEL only (default), \
 2 - read each MODEL into a separate structure, \
@@ -265,6 +267,7 @@ constant form factor (default = false)")
   if(vm.count("hydrogens")) heavy_atoms_only=false;
   if(vm.count("residues")) residue_level=true;
   if(vm.count("offset")) use_offset=true;
+  if(vm.count("write-partial-profile")) write_partial_profile=true;
   if(vm.count("score_log")) score_log=true;
   // no water layer or fitting in ab initio mode for now
   if(vm.count("ab_initio")) { ab_initio=true; water_layer_c2 = 0.0;
@@ -317,6 +320,7 @@ constant form factor (default = false)")
       exp_profiles[i]->background_adjust(background_adjustment_q);
   }
   if(dat_files.size() == 0) fit = false;
+  if(write_partial_profile) fit = true;
 
   // 2. compute profiles for input pdbs
   std::vector<IMP::saxs::Profile *> profiles;
@@ -332,9 +336,13 @@ constant form factor (default = false)")
     profiles.push_back(profile);
     // write profile file
     std::string profile_file_name = std::string(pdb_files[i]) + ".dat";
-    profile->add_errors();
-    profile->write_SAXS_file(profile_file_name);
-    Gnuplot::print_profile_script(pdb_files[i]);
+    if(write_partial_profile)
+      profile->write_partial_profiles(profile_file_name);
+    else { // write normal profile
+      profile->add_errors();
+      profile->write_SAXS_file(profile_file_name);
+      Gnuplot::print_profile_script(pdb_files[i]);
+    }
 
     // 3. fit experimental profiles
     for(unsigned int j=0; j<dat_files.size(); j++) {

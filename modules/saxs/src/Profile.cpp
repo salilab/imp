@@ -274,7 +274,7 @@ void Profile::read_partial_profiles(const String& file_name) {
       delta_q_ = (max_q_ - min_q_)/(size()-1);
     }
 
-    for(unsigned int i=0; i<6; i++) {
+    for(unsigned int i=0; i<psize; i++) {
       partial_profiles_[i].min_q_ = min_q_;
       partial_profiles_[i].max_q_ = max_q_;
       partial_profiles_[i].delta_q_ = delta_q_;
@@ -305,11 +305,21 @@ void Profile::write_partial_profiles(const String& file_name) const {
     out_file.width(10);
     out_file.precision(5);
     out_file << q_[i] << " ";
-    for(unsigned int j=0; j<partial_profiles_.size(); j++) {
-      out_file.setf(std::ios::left);
-      out_file.width(15);
-      out_file.precision(8);
-      out_file << partial_profiles_[j].intensity_[i] << " ";
+    if(partial_profiles_.size() > 0) {
+      for(unsigned int j=0; j<partial_profiles_.size(); j++) {
+        out_file.setf(std::ios::left);
+        out_file.width(15);
+        out_file.precision(8);
+        out_file << partial_profiles_[j].intensity_[i] << " ";
+      }
+    } else { // not a partial profile
+      out_file << intensity_[i] << " ";
+      if(experimental_) { // do not print error for theoretical profiles
+        out_file.setf(std::ios::left);
+        out_file.width(10);
+        out_file.precision(8);
+        out_file << error_[i];
+      }
     }
     out_file << std::endl;
   }
