@@ -10,7 +10,7 @@ In addition to the tabs above that take you to individual module, class and func
 - [Introduction](@ref introduction)
 - [Change history](@ref ChangeLog)
 - [Modules and Applications](md_doxygen_all.html)
-- [Biological systems modeled in IMP](https://github.com/salilab/imp_biological_systems)
+- [Biological systems modeled in IMP](http://salilab.org/imp/systems/)
 - [Wiki](https://github.com/salilab/imp/wiki)
 - [Mailing lists](@ref maillists)
 
