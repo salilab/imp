@@ -14,7 +14,7 @@ ring, and a cryo-electron microscopy (cryo-EM) map of the entire assembly.
 (For the purposes of this example, it is assumed that the single subunit
 structure is already available. In the more general case, this can be generated
 using a tool such as [MODELLER](http://salilab.org/modeller/). See the
-[GroEL biological system](https://github.com/salilab/imp_biological_systems/tree/master/groel)
+[GroEL biological system](http://salilab.org/multifit_groel)
 for a fully worked example.)
 
 All steps in the procedure use a command line tool called
