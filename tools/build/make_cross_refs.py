@@ -31,6 +31,9 @@ def _cleanup_name(n):
         if len(sp) == 2:
             sp = [sp[0], "kernel", sp[1]]
         return "::".join(sp)
+    if n == 'IMP_NEW()':
+        # Workaround for (unqualified) macro
+        return "IMP::base::" + n
     if n.find(".py") != -1 or n.find(".cpp") != -1:
         m = n.split("/")[0]
         return "[%s](%s/%s)"%(n, m, n.replace("/", "_2").replace(".", "_8")+"-example.html")
