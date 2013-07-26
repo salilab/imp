@@ -1,4 +1,4 @@
-## \example kernel/simple.py
+## \example core/simple.py
 ## Illustration of simple usage of the IMP library from Python.
 ##
 

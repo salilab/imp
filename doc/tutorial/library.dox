@@ -111,4 +111,22 @@ line, in the same directory as the script:
 The script will run the optimization, printing IMP log messages as it goes,
 and finally print the coordinates of the optimized particles.
 
+IMP is designed such that the C++ and Python interfaces are similar to use.
+Thus, IMP applications or protocols can be constructed either in C++ or in
+Python, and new IMP functionality (for example, new types of Restraint)
+can be implemented in either language. For a comparison, please inspect the
+<tt>simple.cpp</tt> file below. This file implements the same protocol as
+the first part of <tt>simple.py</tt> but uses the IMP C++ classes rather
+than their Python equivalents. The two programs are very similar; the only
+differences are in the language syntax (eg, the Python
+'<tt>import IMP.algebra</tt>' translates to
+'<tt>\#include \<IMP/algebra.h\></tt>'
+in C++) and in memory handling (Python handles memory automatically;
+in C++, memory handling must be done explicitly by using the
+\ref IMP::base::Pointer class or the \ref IMP::base::IMP_NEW "IMP_NEW" macro,
+which adds reference counting to automatically clean up after IMP objects
+when they are no longer in use).
+
+\include simple.cpp
+
 */
