@@ -75,7 +75,8 @@ def make_doxygen(name, source, modules):
     template = template.replace("@GENERATE_TAGFILE@", "tags")
     template = template.replace("@IS_XML@", "YES")
     template = template.replace("@XML_OUTPUT@", "xml")
-    template = template.replace("@LAYOUT_FILE@", "module_layout.xml")
+    template = template.replace("@LAYOUT_FILE@",
+                      "%s/doc/doxygen/module_layout.xml" % source)
     template = template.replace("@MAINPAGE@", "README.md")
     template = template.replace("@EXAMPLE_PATH@", "")
     template = template.replace("@EXCLUDE@", "")
