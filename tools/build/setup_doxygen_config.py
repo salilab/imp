@@ -35,6 +35,7 @@ def generate_doxyfile(source, tutorial=False):
         doxygen = doxygen.replace("@GENERATE_TAGFILE@", "")
         doxygen = doxygen.replace("@WARNINGS@", "doxygen/tutorial-warnings.txt")
         doxygen = doxygen.replace("@EXCLUDE_PATTERNS@", "")
+        doxygen = doxygen.replace("@EXAMPLE_PATH@", ".")
         out_fname = os.path.join("doxygen", "tutorial.in")
         def make_tag(subdir):
             return os.path.join("doxygen", subdir, "tags") \
@@ -51,6 +52,7 @@ def generate_doxyfile(source, tutorial=False):
         doxygen = doxygen.replace("@GENERATE_TAGFILE@", "doxygen/tags.html")
         doxygen = doxygen.replace("@WARNINGS@", "doxygen/warnings.txt")
         doxygen = doxygen.replace("@EXCLUDE_PATTERNS@", "*/tutorial/*")
+        doxygen = doxygen.replace("@EXAMPLE_PATH@", "")
         out_fname = os.path.join("doxygen", "Doxyfile.html")
         def make_tag(subdir):
             return os.path.join("doxygen", subdir, "tags") + "=" + subdir
@@ -59,10 +61,9 @@ def generate_doxyfile(source, tutorial=False):
     doxygen = doxygen.replace("@EXCLUDE@", "")
     doxygen = doxygen.replace("@INCLUDE_PATH@", "include")
     doxygen = doxygen.replace("@XML_OUTPUT@", "doc/xml/")
-    # EXAMPLE_PATH, TAGS, INPUT_PATH
+    # TAGS, INPUT_PATH
     doxygen = doxygen.replace( "@IS_HTML@", "YES").replace("@IS_XML@", "NO")
 
-    doxygen = doxygen.replace("@EXAMPLE_PATH@", "")
     tags = []
     for m, g in tools.get_modules(source):
         if tools.get_module_info(m, "")["ok"]:
