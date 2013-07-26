@@ -22,7 +22,7 @@ class TestClusterSolutions(IMP.test.ApplicationTestCase):
                 self.import_python_application('emagefit_cluster.py')
         fn_config = self.get_input_file_name("config.py")
         fn_database = self.get_input_file_name("domino_solutions.db")
-        fn_db_clusters = self.get_input_file_name("clusters.db")
+        fn_db_clusters = "clusters.db"
         # modify the names of the PDB files to include the proper name for testing
         exp = utility.get_experiment_params(fn_config)
         for i in range(len(exp.fn_pdbs)):
