@@ -66,7 +66,7 @@ IMPBASE_BEGIN_NAMESPACE
           file name is invalid, the core::LeavesRefiner will be deleted
           properly.
 
-        \note Do not pass Pointers as arguments to functions, pass raw C++
+        \note Do not pass Pointers as arguments to functions; pass raw C++
         pointers instead.
 
         \note Use an IMP::WeakPointer to break cycles or to point to

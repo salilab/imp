@@ -27,7 +27,7 @@ as any object that, given a set of Particles, returns a score, and an
 attributes of all Particles to yield an optimized score over all restraints.
 It is the \ref IMP::core "core module" that provides, for example, a
 \ref IMP::core::DistanceRestraint "concrete Restraint" acting like a harmonic
-‘spring’ between two point-like Particles, an Optimizer that
+'spring' between two point-like Particles, an Optimizer that
 \ref IMP::core::ConjugateGradients "utilizes the conjugate gradients minimization method",
 and much other functionality.
 

@@ -58,7 +58,7 @@ and use the macro to handle IMP::base::Object
 class IMPKERNELEXPORT Restraint : public ModelObject {
  public:
   /** Create a restraint and register it with the model. The restraint is
-      not added to implicit scoring function in the Model.*/
+      not added to the implicit scoring function in the Model.*/
   Restraint(Model *m, std::string name);
   /** \deprecated_at{2.1} Use the constructor that takes a model instead.
    */
