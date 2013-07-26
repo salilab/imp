@@ -12,27 +12,31 @@ some scripts may need some modification to work correctly. (If you use an
 older version, some of the applications demonstrated here may not be
 available.)
 
-   1. [Introduction](intro.html). Introduction to the problems that IMP
+   1. [Introduction](intro.html). Discussion of the problems that IMP
       is designed to solve, and the high-level design of the software. 
 
    2. [The IMP C++/Python library](library.html). Simple usage of basic
       parts of the IMP library.
 
    3. [FoXS](foxs_nup133.html).
-      Modeling with SAXS data.
+      Using IMP's FoXS application to use small-angle X-ray (SAXS) data
+      in combination with comparative modeling to improve the structure
+      of a protein.
 
    4. [Integrative docking](idock_pcsk9.html).
-      Using IMP's idock application to improve pairwise docking.
+      Improving the quality of computational pairwise docking by incorporating
+      additional experimental information.
 
    5. [EMageFit](emagefit_3sfd.html).
-      A simple example of modeling combining EM class averages and crystal
-      structures.
+      A simple example of modeling of a complex of 4 proteins, by
+      combining electron microscopy (EM) class averages of the complex
+      with crystal structures of the proteins.
 
    6. [MultiFit](multifit_3sfd.html).
-      A simple example of modeling combining EM maps and crystal
-      structures.
+      A similar example of modeling a complex, by multiple fitting of
+      individual proteins into a 3D cryo-EM density map of the complex.
 
    7. [MultiFit of symmetric complexes](cnmultifit_groel.html).
-      A simple example of modeling combining EM maps and crystal
-      structures.
+      Multiple fitting of a protein structure into a symmetric (ring) complex,
+      using a 3D cryo-EM density map of the complex.
 */
