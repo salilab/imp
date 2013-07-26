@@ -136,6 +136,7 @@ def make_doxygen(options, modules):
     template = template.replace("@PROJECT_BRIEF@",
                                 '"The Integrative Modeling Platform"')
     template = template.replace("@RECURSIVE@", "YES")
+    template = template.replace("@EXCLUDE_PATTERNS@", "*/tutorial/*")
     template = template.replace("@IS_HTML@", "YES")
     template = template.replace("@IS_XML@", "YES")
     template = template.replace("@PROJECT_NAME@", "IMP."+name)

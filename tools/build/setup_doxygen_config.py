@@ -34,6 +34,7 @@ def generate_doxyfile(source, tutorial=False):
         doxygen = doxygen.replace("@LAYOUT_FILE@", "")
         doxygen = doxygen.replace("@GENERATE_TAGFILE@", "")
         doxygen = doxygen.replace("@WARNINGS@", "doxygen/tutorial-warnings.txt")
+        doxygen = doxygen.replace("@EXCLUDE_PATTERNS@", "")
         out_fname = os.path.join("doxygen", "tutorial.in")
         def make_tag(subdir):
             return os.path.join("doxygen", subdir, "tags-tutorial") \
@@ -49,6 +50,7 @@ def generate_doxyfile(source, tutorial=False):
                                   "%s/doc/doxygen/main_layout.xml" % source)
         doxygen = doxygen.replace("@GENERATE_TAGFILE@", "doxygen/tags.html")
         doxygen = doxygen.replace("@WARNINGS@", "doxygen/warnings.txt")
+        doxygen = doxygen.replace("@EXCLUDE_PATTERNS@", "*/tutorial/*")
         out_fname = os.path.join("doxygen", "Doxyfile.html")
         def make_tag(subdir):
             return os.path.join("doxygen", subdir, "tags") + "=" + subdir

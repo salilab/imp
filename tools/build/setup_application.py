@@ -68,6 +68,7 @@ def make_doxygen(name, source, modules):
     template = template.replace("@PROJECT_BRIEF@",
                                 '"The Integrative Modeling Platform"')
     template = template.replace("@RECURSIVE@", "YES")
+    template = template.replace("@EXCLUDE_PATTERNS@", "*/tutorial/*")
     template = template.replace("@IS_HTML@", "YES")
     template = template.replace("@PROJECT_NAME@", "IMP."+name)
     template = template.replace("@HTML_OUTPUT@", "../../doc/html/" + name)
