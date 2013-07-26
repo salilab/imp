@@ -133,6 +133,9 @@ def make_doxygen(options, modules):
     template = template.replace("@IMP_SOURCE_PATH@", options.source)
     template = template.replace("@VERSION@", get_version(options))
     template = template.replace("@NAME@", name)
+    template = template.replace("@PROJECT_BRIEF@",
+                                '"The Integrative Modeling Platform"')
+    template = template.replace("@RECURSIVE@", "YES")
     template = template.replace("@IS_HTML@", "YES")
     template = template.replace("@IS_XML@", "YES")
     template = template.replace("@PROJECT_NAME@", "IMP."+name)

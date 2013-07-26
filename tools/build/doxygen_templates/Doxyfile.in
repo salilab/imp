@@ -40,7 +40,7 @@ PROJECT_NUMBER         = @VERSION@
 # for a project that appears at the top of each page and should give viewer
 # a quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          = "The Integrative Modeling Platform"
+PROJECT_BRIEF          = @PROJECT_BRIEF@
 
 # With the PROJECT_LOGO tag one can specify an logo or icon that is
 # included in the documentation. The maximum height of the logo should not
@@ -610,7 +610,7 @@ FILE_VERSION_FILTER    =
 # You can optionally specify a file name after the option, if omitted
 # DoxygenLayout.xml will be used as the name of the layout file.
 
-LAYOUT_FILE            = @IMP_SOURCE_PATH@/doc/doxygen/@LAYOUT_FILE@
+LAYOUT_FILE            = @LAYOUT_FILE@
 
 # The CITE_BIB_FILES tag can be used to specify one or more bib files
 # containing the references data. This must be a list of .bib files. The
@@ -707,7 +707,7 @@ FILE_PATTERNS          = @FILE_PATTERNS@
 # should be searched for input files as well. Possible values are YES and NO.
 # If left blank NO is used.
 
-RECURSIVE              = YES
+RECURSIVE              = @RECURSIVE@
 
 # The EXCLUDE tag can be used to specify files and/or directories that should be
 # excluded from the INPUT source files. This way you can easily exclude a
