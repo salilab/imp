@@ -1,0 +1,11 @@
+/**
+\page library The IMP C++/Python library
+
+The core of IMP is the C++/Python library, which provides all of the necessary
+components, as a set of classes and modules, to allow methods developers to
+build an integrative modeling protocol from scratch. Most users of IMP will
+use one of the higher-level interfaces described in later sections of this
+tutorial; however, we will briefly demonstrate this library here to illustrate
+the core IMP concepts that these interfaces rely on. 
+
+*/

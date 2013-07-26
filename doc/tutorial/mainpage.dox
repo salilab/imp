@@ -1,0 +1,38 @@
+/**
+\mainpage IMP Tutorial
+
+This tutorial aims to give a simple introduction to the IMP software itself
+and some specific applications. It cannot cover all parts of IMP in detail;
+for more information, please refer to the
+[IMP manual](../html/index.html).
+
+In order to follow along with the tutorial, you will first need to download
+and install IMP. Please note that if you choose to use a newer version of IMP,
+some scripts may need some modification to work correctly. (If you use an
+older version, some of the applications demonstrated here may not be
+available.)
+
+   1. [Introduction](intro.html). Introduction to the problems that IMP
+      is designed to solve, and the high-level design of the software. 
+
+   2. [The IMP C++/Python library](library.html). Simple usage of basic
+      parts of the IMP library.
+
+   3. [FoXS](foxs_nup133.html).
+      Modeling with SAXS data.
+
+   4. [Integrative docking](idock_pcsk9.html).
+      Using IMP's idock application to improve pairwise docking.
+
+   5. [EMageFit](emagefit_3sfd.html).
+      A simple example of modeling combining EM class averages and crystal
+      structures.
+
+   6. [MultiFit](multifit_3sfd.html).
+      A simple example of modeling combining EM maps and crystal
+      structures.
+
+   7. [MultiFit of symmetric complexes](cnmultifit_groel.html).
+      A simple example of modeling combining EM maps and crystal
+      structures.
+*/

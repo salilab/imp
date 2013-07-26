@@ -1,0 +1,17 @@
+/**
+\page intro Introduction
+
+To understand the function of a macromolecular assembly, we must know the
+structure of its components and the interactions between them. However,
+direct experimental determination of such a structure is generally rather
+difficult. While multiple methods do exist for structure determination,
+each has a drawback. For example, crystals suitable for X-ray crystallography
+cannot always be produced, especially for large assemblies of multiple
+components. Cryo-electron microscopy (cryo-EM), on the other hand, can be
+used to study large assemblies, but it is generally limited to worse than
+atomic resolution. Finally, proteomics techniques, such as yeast two-hybrid
+and mass spectrometry, yield information about the interactions between
+proteins, but not the positions of these proteins within the assembly or
+the structures of the proteins themselves.
+
+*/

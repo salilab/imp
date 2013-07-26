@@ -297,14 +297,18 @@ if(IMP_DOXYGEN_FOUND)
     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/make_cross_refs.py
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/Doxyfile.html
     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${PROJECT_BINARY_DIR}/doxygen/warnings.txt
+    COMMAND ${PROJECT_SOURCE_DIR}/doc/tutorial/setup.py
+    COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/tutorial
+    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${PROJECT_BINARY_DIR}/doxygen/tutorial-warnings.txt
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
     DEPENDS ${IMP_DOC_DEPENDS} ${docs} ${IMP_DOXYGEN_FETCH}
     COMMENT "Building documentation")
 
   add_custom_target(IMP-doc-install
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_BINARY_DIR}/doc/html" "${CMAKE_INSTALL_FULL_DOCDIR}/html"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_BINARY_DIR}/doc/tutorial" "${CMAKE_INSTALL_FULL_DOCDIR}/tutorial"
     DEPENDS "IMP-doc"
-    COMMENT "Installing documentation to ${CMAKE_INSTALL_FULL_DOCDIR}/html")
+    COMMENT "Installing documentation to ${CMAKE_INSTALL_FULL_DOCDIR}")
 endif(IMP_DOXYGEN_FOUND)
 
 # Install headers
