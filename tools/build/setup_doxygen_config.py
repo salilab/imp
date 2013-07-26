@@ -37,7 +37,7 @@ def generate_doxyfile(source, tutorial=False):
         doxygen = doxygen.replace("@EXCLUDE_PATTERNS@", "")
         out_fname = os.path.join("doxygen", "tutorial.in")
         def make_tag(subdir):
-            return os.path.join("doxygen", subdir, "tags-tutorial") \
+            return os.path.join("doxygen", subdir, "tags") \
                    + "=../html/" + subdir
     else:
         doxygen = doxygen.replace("@PROJECT_NAME@", "IMP")

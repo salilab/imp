@@ -87,6 +87,6 @@ This generates an image, <tt>fit.png</tt>, showing the theoretical profiles
 (lines in top panel), the experimental profile (points in top panel) and the
 ratios of the experimental to theoretical profiles (bottom panel):
 
-<img src="nup133_foxs.png" alt="FoXS plot of Nup133 and its SAXS profile">
+<img src="foxs_nup133.png" alt="FoXS plot of Nup133 and its SAXS profile">
 
 */

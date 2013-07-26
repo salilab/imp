@@ -5,7 +5,8 @@ class Tests(IMP.test.ApplicationTestCase):
 
     def test_3sfd(self):
         """Test the 3sfd example"""
-        cmds = self.read_shell_commands('../3sfd.dox')
+        cmds = self.read_shell_commands(
+                             '../../../doc/tutorial/multifit_3sfd.dox')
         d = IMP.test.RunInTempDir()
         for c in cmds[:-1]:
             # Skip the cluster command since it requires a nonstandard
