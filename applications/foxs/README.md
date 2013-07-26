@@ -11,7 +11,7 @@ files and/or SAXS profiles. There is also a \salilab{foxs/,web server}
 available.
 
 _Examples_:
- - [Determination of a Nup133 structure](@ref foxs_nup133)
+ - [Determination of a Nup133 structure](../../tutorial/foxs_nup133.html)
 
 # Info
 
