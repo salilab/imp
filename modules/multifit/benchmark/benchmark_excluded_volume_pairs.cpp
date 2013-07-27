@@ -19,15 +19,17 @@ void do_it() {
  IMP_EV_BENCHMARK_SETUP
 
   {
-
-    IMP_NEW(ExcludedVolumeRestraint, evr, (lsc,1, 5));
-    evr->set_maximum_score(.1);
-    test_one<ExcludedVolumeRestraint>("excluded volume", seed, m,
-                                      evr->create_scoring_function(), rb0,
-                                      false);
-    test_one<ExcludedVolumeRestraint>("excluded volume", seed, m,
-                                      evr->create_scoring_function(), rb0,
-                                      true);
+    IMP_NEW(ClosePairContainer, cpc, (lsc, 0, 5));
+    IMP_NEW(SoftSpherePairScore, ps, (1));
+    base::Pointer<Restraint>
+      sr(container::create_restraint(ps.get(), cpc.get()));
+    sr->set_maximum_score(.1);
+    test_one<ClosePairContainer>("pairs restraint", seed, m,
+                                 sr->create_scoring_function(), rb0,
+                                 false);
+    test_one<ClosePairContainer>("pairs restraint", seed, m,
+                                 sr->create_scoring_function(), rb0,
+                                 true);
   }
 }
 }
