@@ -12,7 +12,7 @@ The XML input data is divided into 3 parts:
       - Colors for the representation components can be defined and an output file can be generated in chimera format.
 
 The XML schema is provided to check the validation of the input data. The visualization of the XML schema can be seen
-<a href="IMP_Schema.png" target="_blank">here</a>.
+<a href="../IMP_Schema.png" target="_blank">here</a>.
 
 To check if the XML files are valid use the \c schema.xsd which can be found as part of the restrainer data.
 \code
