@@ -22,7 +22,7 @@ for line in sys.stdin.readlines():
         """Test the 3sfd example"""
         if sys.platform == 'win32':
             self.skipTest("does not work on Windows")
-        input_file_dir = self.get_input_file_name('')
+        input_file_dir = os.path.dirname(self.get_input_file_name('3sfdA.pdb'))
         cmds = self.read_shell_commands(
                         '../../../doc/tutorial/emagefit_3sfd.dox')
         d = IMP.test.RunInTempDir()
