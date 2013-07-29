@@ -8,7 +8,7 @@ _Author(s)_: Barak Raveh
 
 _Maintainer_: `barakr`
 
-_License_: [GPL](http://www.gnu.org/licenses/old-licenses/gpl-2.1.html)
+_License_: [GPL](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation; either
