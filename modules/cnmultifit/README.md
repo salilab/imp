@@ -5,7 +5,7 @@ See the IMP::multifit module for a similar protocol for handling non-symmetric
 complexes.
 
 Generally, this module is not used directly; instead, the
-[cnmultifit.py application](@ref IMP_cnmultifit_tools_overview) is used.
+[cnmmultifit.py application](../cnmultifit_tools/index.html) is used.
 
 # Info
 
