@@ -27,6 +27,7 @@ public:
 
   ISDRestraint() : Restraint() {}
   ISDRestraint(std::string name) : Restraint(name) {}
+  ISDRestraint(Model *m, std::string name) : Restraint(m,name) {}
 
   /* call for probability, pure method */
   virtual double get_probability() const = 0;

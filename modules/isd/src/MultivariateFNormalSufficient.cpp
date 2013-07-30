@@ -127,11 +127,10 @@ double MultivariateFNormalSufficient::density() const
 double MultivariateFNormalSufficient::evaluate() const
   {
       timer_.start(EVAL);
-      double e;
+      double e = get_norms()[1] + get_minus_log_jacobian();
       if (N_==1)
       {
-          e = get_norms()[1] + get_minus_log_jacobian()
-          + 0.5*get_mean_square_residuals()/IMP::square(factor_) ;
+          e += 0.5*get_mean_square_residuals()/IMP::square(factor_) ;
           /*std::cout << "mvn"
               << " " << e
               << " " << get_norms()[0]
@@ -140,10 +139,14 @@ double MultivariateFNormalSufficient::evaluate() const
               << " " << get_mean_square_residuals()/IMP::square(factor_)
               <<std::endl; */
       } else {
-          e = get_norms()[1] + get_minus_log_jacobian()
-          + 0.5*( trace_WP()
+          e += 0.5*( trace_WP()
                 + double(N_)*get_mean_square_residuals())/IMP::square(factor_) ;
       }
+      //if log(norm) is -inf, make the score bad, e.g. +inf.
+      //should check if epsilon==0 in which case we should return -inf
+      //to mimic the Dirac distribution, but this case has undefined derivatives
+      if (std::abs(e) > std::numeric_limits<double>::max())
+          e=std::numeric_limits<double>::infinity();
       IMP_LOG_TERSE( "MVN: evaluate() = " << e << std::endl);
       timer_.stop(EVAL);
       return e;

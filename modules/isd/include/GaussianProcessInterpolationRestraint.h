@@ -54,7 +54,7 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint : public ISDRestraint
         // multivariate normal distribution around it. Upon evaluation, it
         // checks if parameters have changed, reconstructs the matrix if
         // necessary, changes the DA weight and passes it to the functions.
-        GaussianProcessInterpolationRestraint(
+        GaussianProcessInterpolationRestraint(Model *m,
                 GaussianProcessInterpolation *gpi);
 
         //to call this, you need to update the scorestate before.
