@@ -68,7 +68,7 @@ class Tests(IMP.test.TestCase):
         self.cov = Covariance1DFunction(self.tau, self.lam, 2.0)
         self.gpi = IMP.isd.GaussianProcessInterpolation(self.q, self.I,
                 self.err, self.N, self.mean, self.cov, self.sig)
-        self.gpr = IMP.isd.GaussianProcessInterpolationRestraint(self.gpi)
+        self.gpr = IMP.isd.GaussianProcessInterpolationRestraint(self.m,self.gpi)
         self.m.add_restraint(self.gpr)
         self.particles=[self.G,self.Rg,self.d,self.s,self.sig,self.tau,self.lam]
 

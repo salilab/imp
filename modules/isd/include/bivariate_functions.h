@@ -140,20 +140,24 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
         do_jitter = (jitter>IMP_ISD_BIVARIATE_FUNCTIONS_MINIMUM);
         alpha_square_ = (std::abs(alpha-2) <
                 IMP_ISD_BIVARIATE_FUNCTIONS_MINIMUM);
+        update();
     }
 
         bool has_changed() const {
             double tmpt = Scale(tau_).get_nuisance();
             double tmpl = Scale(lambda_).get_nuisance();
+            IMP_LOG_VERBOSE( "Covariance1DFunction: has_changed(): ");
+            IMP_LOG_VERBOSE( tmpt << " " << tau_val_ << " " );
+            IMP_LOG_VERBOSE( tmpl << " " << lambda_val_ << " " );
             if ((std::abs(tmpt - tau_val_) >
                         IMP_ISD_BIVARIATE_FUNCTIONS_MINIMUM)
                 || (std::abs(tmpl - lambda_val_) >
                     IMP_ISD_BIVARIATE_FUNCTIONS_MINIMUM))
             {
-                IMP_LOG_TERSE( "Covariance1DFunction: has_changed():");
-                IMP_LOG_TERSE( "true" << std::endl);
+                IMP_LOG_VERBOSE( "true" << std::endl);
                 return true;
             } else {
+                IMP_LOG_VERBOSE( "false" << std::endl);
                 return false;
             }
         }
@@ -506,7 +510,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
             ret = IMP::square(tau_val_) *std::exp(-0.5*ret);
             if (do_jitter && dist<IMP_ISD_BIVARIATE_FUNCTIONS_MINIMUM)
             {
-                ret += J_;
+                ret +=IMP::square(tau_val_) * J_;
             }
             IMP_INTERNAL_CHECK(!base::isnan(ret),
                 "function value is nan. tau = "
