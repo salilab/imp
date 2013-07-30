@@ -6,16 +6,21 @@ possibly using results returned from completed tasks. The system is fault
 tolerant; if a slave fails, any tasks running on that slave are automatically
 moved to another slave.
 
-To use the module, first create a Manager object. Add one or
-more slaves to the Manager using its
+To use the module, first create a \link IMP::parallel::Manager Manager\endlink
+object. Add one or more slaves to the Manager using its
 \link IMP::parallel::Manager.add_slave() add_slave()\endlink method (example slaves are
-LocalSlave, which simply starts another IMP process on the
-same machine as the master, and SGEQsubSlaveArray, which starts
+\link IMP::parallel::LocalSlave LocalSlave\endlink, which simply starts another
+IMP process on the same machine as the master, and
+\link IMP::parallel::SGEQsubSlaveArray SGEQsubSlaveArray\endlink, which starts
 an array of multiple slaves on a Sun GridEngine cluster). Next, call the
-Manager.get_context() method, which creates and returns a new Context object.
-Add tasks to the Context with the Context.add_task() method (each task is
+\link IMP::parallel::Manager.get_context() get_context()\endlink
+method, which creates and returns a new
+\link IMP::parallel::Context Context\endlink object.
+Add tasks to the Context with the
+\link IMP::parallel::Context.add_task() Context.add_task()\endlink method
+(each task is
 simply a Python function or other callable object). Finally, call
-Context.get_results_unordered() to
+\link IMP::parallel::Context.get_results_unordered() Context.get_results_unordered()\endlink to
 send the tasks out to the slaves (a slave only runs a single task at a time;
 if there are more tasks than slaves later tasks will be queued until a slave
 is done with an earlier task). This method returns the results from each task
