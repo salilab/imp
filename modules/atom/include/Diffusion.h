@@ -76,7 +76,8 @@ IMPATOMEXPORT double get_diffusion_coefficient_from_cm2_per_second(double din);
 IMP_DECORATORS(Diffusion, Diffusions, core::XYZs);
 
 /** A rigid body that is diffusing, so it also has a rotation diffusion
-    coefficient. The units on the rotational coefficient are radians^2/fs.*/
+    coefficient. The units on the rotational coefficient are
+    \f$radians^2/fs\f$.*/
 class IMPATOMEXPORT RigidBodyDiffusion : public Diffusion {
   static void do_setup_particle(Model *m, ParticleIndex pi);
  public:
