@@ -58,7 +58,9 @@
 #define IMP_OVERRIDE
 #endif
 
-#ifdef __clang__
+#if defined(IMP_SWIG_WRAPPER)
+#define IMP_COMPILER_HAS_FINAL 0
+#elif defined(__clang__)
 #define IMP_COMPILER_HAS_FINAL 1
 #elif defined(__GNUC__) && __cplusplus >= 201103L
 // probably should be finer here
