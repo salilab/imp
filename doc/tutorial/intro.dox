@@ -51,7 +51,8 @@ statistical, and physical information that describes the system of
 interest. A suitable representation for the system is then chosen and
 the available information is translated to a set of spatial restraints
 on the components of the system. For example, in the case of characterizing
-the molecular architecture of the nuclear pore complex (NPC), atomic
+the molecular architecture of the <a href="http://salilab.org/npc/">nuclear
+pore complex</a> (NPC), atomic
 structures of the protein subunits were not available, but the approximate
 size and shape of each protein was known, so each protein was represented
 as a ‘string’ of connected spheres consistent with the protein size and
