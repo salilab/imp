@@ -16,8 +16,12 @@ structural information than X-ray crystallography; however, this is often
 sufficient to determine problems with the structure or to distinguish
 possible conformations.
 
-All steps in the procedure below use a command line tool called
-<tt>foxs</tt>. For full help on this tool, run from a command line:
+IMP includes a command line tool <tt>foxs</tt> for handling SAXS profiles,
+which will be demonstrated in this example.
+There is also a \salilab{foxs/,web interface} available, which functions
+similarly.
+
+For full help on the <tt>foxs</tt> tool, run from a command line:
 
 \code{.sh}
 foxs -h
