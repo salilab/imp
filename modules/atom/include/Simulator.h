@@ -61,8 +61,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
   double get_current_time() const { return current_time_; }
 
   /**
-     Sets the current simulation time in femtoseconds to ct
-     @relates get_current_time()
+     Sets the current simulation time in femtoseconds to ct.
   */
   void set_current_time(double ct) { current_time_ = ct; }
   /** Get the set of particles used in the simulation.
