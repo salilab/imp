@@ -81,10 +81,11 @@ class IMPATOMEXPORT Simulator : public Optimizer {
   */
   IMP_LIST(public, Particle, particle, Particle *, Particles);
   /** @} */
-  virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;
   IMP_OBJECT_METHODS(Simulator);
 
  protected:
+  virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE IMP_FINAL;
+
   /** A Simulator class can perform setup operations before a series
       of simulation steps is taken. */
   virtual void setup(const ParticleIndexes &) {};
