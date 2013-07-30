@@ -8,6 +8,7 @@ Welcome to the IMP library documentation.
 In addition to the tabs above that take you to individual module, class and function documentation, we have the following pages to help users get started:
 - [Installing IMP](@ref installation)
 - [Introduction](@ref introduction)
+- [Tutorial](../tutorial/)
 - [Change history](@ref ChangeLog)
 - [Modules and Applications](md_doxygen_all.html)
 - [Biological systems modeled in IMP](http://salilab.org/imp/systems/)
