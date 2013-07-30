@@ -24,9 +24,6 @@ class SimulationParameters;
 //! The base class for simulators.
 class IMPATOMEXPORT Simulator : public Optimizer {
  public:
-  //! Create the optimizer
-  /** If sc is not null, that container will be used to find particles
-      to move, otherwise the model will be searched.*/
   Simulator(Model *m, std::string name = "Simulator %1%");
 
   //! Simulate until the given time in fs
