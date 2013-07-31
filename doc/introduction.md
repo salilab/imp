@@ -3,10 +3,25 @@
 # Integrative modeling # {#introduction}
 [TOC]
 
-Detailed structural characterization of macromolecular assemblies is usually more difficult than that of single proteins because assemblies often don’t crystallize or are too large for NMR spectroscopy. This challenge can be addressed by an “integrative” or “hybrid” approach that simultaneously considers all available information about a given assembly. The integrative approach has several advantages. First, synergy among the input data minimizes the drawbacks of sparse, noisy, ambiguous and incoherent datasets. Each individual piece of data contains little structural information, but by simultaneously fitting a model to all data derived from independent experiments, the degeneracy of the structures that fit the data can be markedly reduced. Second, this approach has the potential to produce all structures that are consistent with the data, not only one structure. Third, an analysis of the structures allows us to estimate the precision of both the data and the structures. Last, this approach can make the process of structure determination more efficient, by indicating which measure-ments would be most informative.
+Detailed structural characterization of macromolecular assemblies is usually more difficult than that of single proteins because assemblies often don’t crystallize or are too large for NMR spectroscopy. This challenge can be addressed by an “integrative” or “hybrid” approach that simultaneously considers all available information about a given assembly. The integrative approach has several advantages. First, synergy among the input data minimizes the drawbacks of sparse, noisy, ambiguous and incoherent datasets. Each individual piece of data contains little structural information, but by simultaneously fitting a model to all data derived from independent experiments, the degeneracy of the structures that fit the data can be markedly reduced. Second, this approach has the potential to produce all structures that are consistent with the data, not only one structure. Third, an analysis of the structures allows us to estimate the precision of both the data and the structures. Last, this approach can make the process of structure determination more efficient, by indicating which measurements would be most informative.
 
 ## Example modeling efforts ## {#introduction_efforts}
-Hybrid structures based on our integrative approach. The E. coli ribosome, the first eukaryotic ribosome from S. cerevisiae; the first mammalian ribosome from C. lupus48 and a fungal ribosome; the E. coli Hsp90; the eukaryotic chap-eronin TRiC/CCT; the actin/scruin complex; Ryr1 voltage gated chan-nel; the baker’s yeast nuclear pore complex (NPC); the Nup84 complex; transport through the NPC; microtubule nucleation; the 26S proteasome; PCS9K-Fab complex; the yeast spindle pole body; chromatin globin domain; and the lymphoblastoid cell genome.
+Hybrid structures based on our integrative approach:
+ - The E. coli ribosome, the first eukaryotic ribosome from S. cerevisiae
+ - The first mammalian ribosome from C. lupus48 and a fungal ribosome
+ - The E. coli Hsp90
+ - The eukaryotic chaperonin TRiC/CCT
+ - The actin/scruin complex
+ - Ryr1 voltage gated channel
+ - The baker’s yeast [nuclear pore complex](http://salilab.org/npc) (NPC)
+ - The Nup84 complex
+ - Transport through the NPC
+ - Microtubule nucleation
+ - The 26S proteasome
+ - [PCS9K-Fab complex](../tutorial/idock_pcsk9.html)
+ - The yeast spindle pole body
+ - Chromatin globin domain
+ - The lymphoblastoid cell genome
 
 ## The four stage process ## {#introduction_four_stages}
 
@@ -18,11 +33,11 @@ The integrative structure determination is an iterative process consisting of fo
 
 # IMP # {#introduction_imp}
 
-IMP provides tools to implement the computational parts of the integrative modeling iterative process, steps 2-4. This computation can be driven from python scripts or C++ programs. The examples below will use python scripts.
+IMP provides tools to implement the computational parts of the integrative modeling iterative process, steps 2-4. This computation can be driven from Python scripts or C++ programs. The examples below will use Python scripts.
 
 ## Representation: IMP::Model ## {#introduction_representation}
 
-In IMP, the model is represented as a collection of data, called particles, each of which has associated attributes (eg an atom with associated coordinates, mass, radius etc). In IMP, the attributes can be numbers, strings, or lists of other particles, among other things. Each particle is identified by an index (IMP::kernel::ParticleIndex) and has an associated name, in order to make it easier to understand. Finally, attributes are identified by keys (eg IMP::kernel::StringKey for string attributes). The key identifies one type of data that may be contained in many particles.
+In IMP, the model is represented as a collection of data, called particles, each of which has associated attributes (e.g. an atom with associated coordinates, mass, radius etc). In IMP, the attributes can be numbers, strings, or lists of other particles, among other things. Each particle is identified by an index (IMP::kernel::ParticleIndex) and has an associated name, in order to make it easier to understand. Finally, attributes are identified by keys (e.g. IMP::kernel::StringKey for string attributes). The key identifies one type of data that may be contained in many particles.
 
 At the most basic, to create a particles and manipulate attributes you can do
 
@@ -44,7 +59,7 @@ Certain of the attributes can be marked as parameters of the model. These are at
 
 ## Decorators ## {#introduction_decorators}
 
-Accessing all your data at such a low level can get tiresome, so we provide decorators to make it easier. Each type of decorator provides an interface to manipulate a particular type of data easier. For example, an IMP.atom.Residue decorator provides access to residue associated information (eg the index of the residue, or its type) in particles that have it.
+Accessing all your data at such a low level can get tiresome, so we provide decorators to make it easier. Each type of decorator provides an interface to manipulate a particular type of data easier. For example, an IMP.atom.Residue decorator provides access to residue associated information (e.g. the index of the residue, or its type) in particles that have it.
 
     residue= IMP.atom.Residue(model, my_residue)
     print residue.get_residue_type()
@@ -160,7 +175,7 @@ in Python.
 A module contains classes,
 methods and data which are related and controlled by a set of authors. The names
 of the authors, the license for the module, its version and an overview of the
-module can be found on the module main page (eg IMP::example).
+module can be found on the module main page (e.g. IMP::example).
 See the "Namespaces" tab above for a complete list of modules in this version of \imp.
 
 ## Understanding what is going on ## {#introduction_understanding}
@@ -192,7 +207,7 @@ Unless documented otherwise, the following units are used
 
 - Names in `CamelCase` are class names, for %example IMP::RestraintSet
 - Lower case names with underscores (`_`) in them are functions or methods, for example IMP::Model::update().
-- Collections of data of a certain class, eg `ClassName` are passed using type type `ClassNames`. This type is a `list` in python and a IMP::base::Vector<ClassName> or, more or less,  IMP::base::Vector<ClassName*> in C++.
+- Collections of data of a certain class, e.g. `ClassName` are passed using type type `ClassNames`. This type is a `list` in Python and a IMP::base::Vector<ClassName> or, more or less,  IMP::base::Vector<ClassName*> in C++.
 - These function names start with a verb, which indicates what the method does. Methods starting with
    - `set_` change some stored value
    - `get_` create or return a \c value object or which
@@ -206,7 +221,7 @@ Unless documented otherwise, the following units are used
    - `do_` is a virtual method as part of a \external{http://en.wikipedia.org/wiki/Non-virtual_interface_pattern,non-virtual interface pattern}
    - `handle_` takes action when an event occurs
    - `validate_` checks the state of data and prints messages and throws exceptions if something is corrupted
-   - `setup_` and `teardown_` create or destroy some type of invariant (eg the constraints for a rigid body)
+   - `setup_` and `teardown_` create or destroy some type of invariant (e.g. the constraints for a rigid body)
    - `apply_` either applies a passed object to each piece of data in some collection or applies the object itself to a particular piece of passed data (yeah, it is a bit ambiguous).
 - names starting with `IMP_` are preprocessor symbols (C++ only)
 - names don't use abbreviations
@@ -216,29 +231,29 @@ Unless documented otherwise, the following units are used
 Graphs in IMP are represented in C++ using the \external{http://www.boost.org/doc/libs/release/libs/graph, Boost Graph Library}. All graphs used in IMP are \external{http://www.boost.org/doc/libs/1_43_0/libs/graph/doc/VertexAndEdgeListGraph.html, VertexAndEdgeListGraphs}, have vertex_name properties,
 are \external{http://www.boost.org/doc/libs/1_43_0/libs/graph/doc/BidirectionalGraph.html, BidirectionalGraphs} if they are directed.
 
-The Boost.Graph interface cannot be easily exported to Python so we instead provide a simple wrapper IMP::PythonDirectedGraph. There are methods to translate the graphs into various common python and other formats (eg graphviz).
+The Boost.Graph interface cannot be easily exported to Python so we instead provide a simple wrapper IMP::PythonDirectedGraph. There are methods to translate the graphs into various common Python and other formats (e.g. graphviz).
 
 
 ### Values and Objects (C++ only) ### {#introduction_values}
 
 As is conventional in C++, IMP classes are divided into broad, exclusive types
-- *Object classes*: They inherit from IMP::base::Object and are always passed by pointer. They are reference counted and so should only be stored using IMP::base::Pointer (in C++, in Python everything is reference counted). Never allocate these on the stack as very bad things can happen. Objects cannot be duplicated. Equality on objects is defined as identity (eg two different objects are different even if the data they contain is identical).
+- *Object classes*: They inherit from IMP::base::Object and are always passed by pointer. They are reference counted and so should only be stored using IMP::base::Pointer (in C++, in Python everything is reference counted). Never allocate these on the stack as very bad things can happen. Objects cannot be duplicated. Equality on objects is defined as identity (e.g. two different objects are different even if the data they contain is identical).
 
 - *Value classes* which are normal data types. They are passed by value (or `const&`), never by pointer. Equality is defined based on the data stored in the value. Most value types in IMP are always valid, but a few, mostly geometric types (IMP::algebra::Vector3D) are designed for fast, low-level use and are left in an uninitialized state by their default constructor
 
-- *RAII classes* control some particular resource. They grab control of a resource when created and then free it when they are destroyed. As a result, they cannot be copied. Non-IMP examples include things like files in python, which are automatically closed when the file object is deleted.
+- *RAII classes* control some particular resource. They grab control of a resource when created and then free it when they are destroyed. As a result, they cannot be copied. Non-IMP examples include things like files in Python, which are automatically closed when the file object is deleted.
 
 All types in IMP, with a few documented exceptions, can be
 - compared to other objects of the same type
-- output to a C++ stream or printed in python
-- meaningfully put into python dictionaries or C++ hash maps
+- output to a C++ stream or printed in Python
+- meaningfully put into Python dictionaries or C++ hash maps
 
 ### Backwards compatibility and deprecation ### {#introduction_backwards}
 
 IMP tries to maintain backwards compatibility, however, this is not always feasible. Our general
-policy is that functionality that is deprecated in one release (eg 2.1) is removed in the next one (2.2).
-Deprecated functionality should produce warnings when use (eg compile time messages for deprecated
-macros and runtime message for deprecated functions called from python). In addition, bugs discovered
+policy is that functionality that is deprecated in one release (e.g. 2.1) is removed in the next one (2.2).
+Deprecated functionality should produce warnings when use (e.g. compile time messages for deprecated
+macros and runtime messages for deprecated functions called from Python). In addition, bugs discovered
 in deprecated functionality are not fixed.
 
 # Where to go next # {#introduction_next}
