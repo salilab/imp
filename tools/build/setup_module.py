@@ -185,9 +185,8 @@ def make_version_check(options):
     template="""def check_version(myversion):
   def _check_one(name, expected, found):
     if expected != found:
-      raise RuntimeError('Expected version '+expected+' but got '+ found \
-           +' when loading module '+name\
-            +'. Please make sure IMP is properly built and installed and that matching python and C++ libraries are used.')
+      message = "Expected version " + expected + " but got " + found + " when loading module " + name + ". Please make sure IMP is properly built and installed and that matching python and C++ libraries are used."
+      raise RuntimeError(message)
   _check_one('%s', '%s', myversion)
   """
     tools.rewrite(outf, template%(options.name, get_version(options)))
