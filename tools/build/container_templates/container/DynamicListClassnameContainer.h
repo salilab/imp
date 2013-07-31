@@ -16,7 +16,7 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-//! Store a list of PLURALVARIABLETYPE
+//! Store a PLURALINDEXTYPE
 /** In contrast to ListClassnameContainer, this list is designed to act
     as the output of a ScoreState or another container. The key difference
     is that it uses the passed Container to define the list of all

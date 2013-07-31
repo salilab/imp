@@ -16,9 +16,14 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-//! Store a list of PLURALVARIABLETYPE
-/** \note The order can change when particles are inserted
+//! Store a PLURALINDEXTYPE
+/** \note The order may change when particles are inserted
     as the list is maintained in sorted order.
+
+    \note Changing the contents of the container is a fairly heavy
+    weight operation as it resets part of the dependency graph. Use
+    a DynamicListClassnameContainer if you want to change the contents
+    frequently (eg via a kernel::ScoreState).
  */
 class IMPCONTAINEREXPORT ListClassnameContainer :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
