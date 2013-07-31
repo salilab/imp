@@ -238,8 +238,9 @@ IMP_ATOM_SELECTION_PRED(Terminus, Int, {
     return get_is_terminus(m, pi, data_);
 });
 }
-std::pair<boost::dynamic_bitset<>, ParticleIndexes> Selection::search(
+std::pair<bool, ParticleIndexes> Selection::search(
     Model *m, ParticleIndex pi, boost::dynamic_bitset<> parent) const {
+  IMP_FUNCTION_LOG;
   IMP_LOG_VERBOSE("Searching " << m->get_particle_name(pi) << " missing "
                                << parent.count() << std::endl);
   for (unsigned int i = 0; i < predicates_.size(); ++i) {
@@ -252,30 +253,30 @@ std::pair<boost::dynamic_bitset<>, ParticleIndexes> Selection::search(
   Hierarchy cur(m, pi);
   ParticleIndexes children;
   bool children_covered = true;
-  boost::dynamic_bitset<> ret = parent;
+  bool ret = parent.none();
   for (unsigned int i = 0; i < cur.get_number_of_children(); ++i) {
-    std::pair<boost::dynamic_bitset<>, ParticleIndexes> curr =
+    std::pair<bool, ParticleIndexes> curr =
         search(m, cur.get_child(i).get_particle_index(), parent);
-    ret &= curr.first;
-    if (curr.first.none()) {
+    ret |= curr.first;
+    if (curr.first) {
       if (curr.second.empty()) {
         children_covered = false;
-      } else if (curr.first.none()) {
+      } else if (curr.first) {
         children += curr.second;
       }
     }
   }
-  IMP_LOG_VERBOSE("Found " << m->get_particle_name(pi) << " missing "
-                           << parent.count() << " selected " << children.size()
-                           << " missing children " << children_covered
-                           << std::endl);
-  if (ret.none()) {
+  if (ret) {
+    IMP_LOG_TERSE("Matched " << m->get_particle_name(pi)
+                    << " with " << children
+                    << " and " << children_covered
+                    << std::endl);
     if (children_covered && !children.empty()) {
-      return std::make_pair(ret, children);
+      return std::make_pair(true, children);
     } else {
       if (core::XYZR::get_is_setup(m, pi)) {
         if (core::XYZR(m, pi).get_radius() > radius_) {
-          return std::make_pair(ret, ParticleIndexes(1, pi));
+          return std::make_pair(true, ParticleIndexes(1, pi));
         }
       }
     }
