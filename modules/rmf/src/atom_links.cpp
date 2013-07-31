@@ -411,7 +411,8 @@ void HierarchySaveLink::setup_node(Particle *p, RMF::NodeHandle n) {
   if (atom::Domain::get_is_setup(p)) {
     atom::Domain d(p);
     domain_factory_.get(n)
-        .set_indexes(d.get_index_range().first, d.get_index_range().second);
+      .set_indexes(std::make_pair(d.get_index_range().first,
+                                  d.get_index_range().second));
   }
   if (display::Colored::get_is_setup(p)) {
     display::Colored d(p);
