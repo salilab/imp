@@ -27,13 +27,18 @@ IMPCORE_BEGIN_NAMESPACE
 #define IMP_CORE_HAS_MONTE_CARLO_MOVER 1
 
 //! A Monte Carlo optimizer.
-/** The optimizer uses a set of Mover objects to propose steps. Currently
-    each Mover is called at each Monte Carlo iteration. If you only want to
-    use one mover at a time, use a SerialMover.
-    The movers propose some modification, which is then
-    accepted or rejected based on the Metropolis criterion. Optionally, a
-    number of local optimization steps are taken before the MonteCarlo step
+/** The optimizer uses a set of Mover objects to propose steps.  At
+    each sampling iteration, all Movers added to MonteCarlo are called to
+    generate a new proposed configuration.
+
+    The movers propose some modification, which is then accepted or
+    rejected based on the Metropolis criterion. Optionally, a number
+    of local optimization steps are taken before the MonteCarlo step
     is accepted or rejected.
+
+    If you want to sequentially call one mover at every iteration, wrap
+    all movers into a SerialMover first, and then add the SerialMover to
+    MonteCarlo.
 
     By default, the lowest score state encountered is returned.
 
