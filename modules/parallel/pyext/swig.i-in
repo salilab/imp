@@ -334,9 +334,9 @@ class Context(object):
     def add_task(self, task):
         """Add a task to this context.
            Tasks are any Python callable object that can be pickled (e.g. a
-           function or a class that implements the __call__ method). When the
-           task is run on the slave its arguments are the return value from this
-           context's startup function."""
+           function or a class that implements the \_\_call\_\_ method). When
+           the task is run on the slave its arguments are the return value
+           from this context's startup function."""
         self._tasks.append(task)
 
     def get_results_unordered(self):
