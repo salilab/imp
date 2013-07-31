@@ -376,7 +376,7 @@ class Manager(object):
                      connections across the network.
        @param output A format string used to name slave output files. It is
                      given the numeric slave id, so for example the default
-                     value 'slave%d.output' will yield output files called
+                     value 'slave\%d.output' will yield output files called
                      slave0.output, slave1.output, etc.
     """
   
