@@ -224,7 +224,7 @@ class TestCase(unittest.TestCase):
         raise AssertError("Too many failures")
 
     def failure_probability(self, testcall):
-        """Estimate how like a given block of code is to raise an
+        """Estimate how likely a given block of code is to raise an
         AssertionError."""
         failures=0
         tries=0.0
@@ -786,8 +786,7 @@ class ApplicationTestCase(TestCase):
         return _SubprocessWrapper(sys.executable, [app]+args)
 
     def assertApplicationExitedCleanly(self, ret, error):
-        """Assert that the application exited cleanly, i.e. that the
-           return value is zero."""
+        """Assert that the application exited cleanly (return value = 0)."""
         if ret < 0:
             raise OSError("Application exited with signal %d\n" % -ret\
                           +error)
@@ -798,7 +797,7 @@ class ApplicationTestCase(TestCase):
 
     def read_shell_commands(self, doxfile):
         """Read and return a set of shell commands from a doxygen file.
-           Each command is assumed to be in a \code{.sh}...\endcode block.
+           Each command is assumed to be in a \\code{.sh}...\\endcode block.
            The doxygen file is specified relative to the test file itself.
            This is used to make sure the commands shown in an application
            example actually work (the testcase can also check the resulting
