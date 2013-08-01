@@ -140,8 +140,10 @@ class PointerBase {
 
   void set_pointer(O* p) {
     if (p) Traits::handle_set(p);
-    if (o_) Traits::handle_unset(o_);
+    // so the pointer is clear if inspected during cleanup
+    O* t = o_;
     o_ = p;
+    if (t) Traits::handle_unset(t);
   }
 
   struct UnusedClass {};
@@ -151,7 +153,8 @@ class PointerBase {
   PointerBase() : o_(nullptr) {}
   /** drop control of the object */
   ~PointerBase() {
-    if (o_) Traits::handle_unset(o_);
+    // to make sure it is cleared
+    set_pointer(nullptr);
   }
   //! Return true if the pointer is not nullptr
   bool operator!() const { return !o_; }
