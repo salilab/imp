@@ -125,6 +125,9 @@ IMPRESTRAINEREXPORT SimpleEMFit create_simple_em_fit(
 IMPRESTRAINEREXPORT em::DensityMap *load_em_density_map(
                 char const *map_fn, float spacing, float resolution);
 
+/** Set each of the given hierachies to be a rigid body.
+    \deprecated_at{2.1} Use atom::create_rigid_body() instead. */
+IMPRESTRAINER_DEPRECATED_FUNCTION_DECL(2.1)
 IMPRESTRAINEREXPORT core::RigidBodies set_rigid_bodies(
                 atom::Hierarchies const &mhs);
 

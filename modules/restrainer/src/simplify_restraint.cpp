@@ -185,6 +185,8 @@ SimpleExcludedVolume create_simple_excluded_volume_on_molecules(
 
 core::RigidBodies set_rigid_bodies(atom::Hierarchies const &mhs)
 {
+  IMPRESTRAINER_DEPRECATED_FUNCTION_DEF(2.1,
+                                      "Use atom::create_rigid_body() instead.");
   size_t mhs_size = mhs.size();
 
   IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given");
