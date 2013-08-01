@@ -25,14 +25,14 @@ class SimpleExcludedVolume;
 class SimpleEMFit;
 
 
-/* Having the default be RigidMembersRefiner is most likely a bad
-   idea, but it is needed to make things work. The refiner should
-   probably be exposed, otherwise this method cannot be used with the
-   rigid bodies created from molecular hierarchies, which is kind of
-   an unintuitive result. A better solution may be to ensure that
-   everything is an atom.Hierarchy and use the LeavesRefiner
-   implicitly.
+/** Creates ConnectivityRestraint on rigid bodies.
 
+    \note Having the default be RigidMembersRefiner is most likely a bad
+          idea, but it is needed to make things work. The refiner should
+          probably be exposed, otherwise this method cannot be used with the
+          rigid bodies created from molecular hierarchies, which is kind of
+          an unintuitive result. A better solution may be to ensure that
+          everything is an atom.Hierarchy and use the LeavesRefiner implicitly.
  */
 IMPRESTRAINEREXPORT SimpleConnectivity
 create_simple_connectivity_on_rigid_bodies(const core::RigidBodies &rbs,
