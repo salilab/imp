@@ -67,6 +67,31 @@ class IMPKERNELEXPORT ParticleIndexesAdaptor
   ParticleIndexesAdaptor() {}
 };
 
+
+/** Take ParticlePairs or ParticleIndexPairs. */
+class IMPKERNELEXPORT ParticleIndexPairsAdaptor
+#ifndef SWIG
+    // suppress swig warning that doesn't make sense and I can't make go away
+  : public ParticleIndexPairs, base::InputAdaptor
+#endif
+      {
+ public:
+#if !defined(SWIG)
+  template <class PS>
+    ParticleIndexPairsAdaptor(const PS &ps) {
+    resize(ps.size());
+    for (unsigned int i = 0; i < ps.size(); ++i) {
+      operator[](i) = ParticleIndexPair(ps[i][0].get_particle_index(),
+                                        ps[i][1].get_particle_index());
+    }
+  }
+#endif
+  ParticleIndexPairsAdaptor(const ParticlePairsTemp &ps);
+  ParticleIndexPairsAdaptor(const ParticleIndexPairs& pi)
+    : ParticleIndexPairs(pi) {}
+  ParticleIndexPairsAdaptor() {}
+};
+
 IMPKERNEL_END_NAMESPACE
 
 #endif /* IMPKERNEL_PARTICLE_INDEX_H */

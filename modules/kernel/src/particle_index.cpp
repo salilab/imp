@@ -39,4 +39,9 @@ ParticleIndexesAdaptor::ParticleIndexesAdaptor(const Particles &ps):
 ParticleIndexesAdaptor:: ParticleIndexesAdaptor(const ParticlesTemp &ps):
   ParticleIndexes(get_indexes(ps)) {}
 
+
+ParticleIndexPairsAdaptor::
+ParticleIndexPairsAdaptor(const ParticlePairsTemp &ps):
+  ParticleIndexPairs(get_indexes(ps)) {}
+
 IMPKERNEL_END_NAMESPACE

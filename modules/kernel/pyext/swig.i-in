@@ -237,6 +237,7 @@ class Decorators;
 %rename(_QuadContainerAdaptor) QuadContainerAdaptor;
 %rename(_ParticleIndexAdaptor) ParticleIndexAdaptor;
 %rename(_ParticleIndexesAdaptor) ParticleIndexesAdaptor;
+%rename(_ParticleIndexPairsAdaptor) ParticleIndexPairsAdaptor;
 %rename(_ParticleAdaptor) ParticleAdaptor;
 
 %include "IMP/kernel/FloatIndex.h"
