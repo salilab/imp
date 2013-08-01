@@ -15,6 +15,7 @@
 #include "utility.h"
 #include "Model.h"
 #include "Particle.h"
+#include "ModelObject.h"
 #include <IMP/base/Pointer.h>
 #include "OptimizerState.h"
 #include <IMP/base/Vector.h>
@@ -41,16 +42,26 @@ IMPKERNEL_BEGIN_NAMESPACE
     - the optimizer uses this information to update the optimizeable
     parameters of the Particles contained in the Model.
 */
-class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
+class IMPKERNELEXPORT Optimizer : public ModelObject {
   mutable Floats widths_;
-  base::Pointer<Model> model_;
+  base::Pointer<Model> my_model_;
   double min_score_;
   bool stop_on_good_score_;
-  base::Pointer<ScoringFunction> cache_;
+  mutable base::Pointer<ScoringFunction> cache_;
+   base::Pointer<ScoringFunction> scoring_function_;
 
   void set_is_optimizing_states(bool tf) const;
   static void set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o);
-  void do_set_model(Model *m);
+  virtual void do_set_model(Model *m) IMP_OVERRIDE {
+    my_model_ = m;
+  }
+protected:
+  ModelObjectsTemp get_optimizer_state_inputs() const;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+    return get_optimizer_state_inputs();
+  }
+  //! don't return anything here to avoid pointless dependencies
+  virtual ModelObjectsTemp do_get_outputs() const {return ModelObjectsTemp();}
  public:
   Optimizer(Model *m, std::string name = "Optimizer %1%");
 
@@ -74,10 +85,11 @@ class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
   double get_last_score() const { return cache_->get_last_score(); }
 
   //! Return the scoring function that is being used
-  ScoringFunction *get_scoring_function() const { return cache_; }
-
-  //! Get the model being optimized
-  Model *get_model() const { return model_.get(); }
+  ScoringFunction *get_scoring_function() const {
+    if (scoring_function_) return scoring_function_;
+    else if (cache_) return cache_;
+    else return cache_ = get_model()->create_model_scoring_function();
+  }
 
     /** @name States
 
@@ -151,9 +163,6 @@ class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
   /** \deprecated_at{2.1} Do not use as it is not reliably supported. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
     double get_score_threshold() const;
-  //! \deprecated_at{2.1} Use the constructor that takes the model
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  void set_model(Model *m);
   /** \deprecated_at{2.1} Use set_scoring_function() instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   void set_restraints(const RestraintsTemp &rs);

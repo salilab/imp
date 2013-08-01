@@ -11,7 +11,12 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-OptimizerState::OptimizerState(std::string name) : Object(name) {}
+OptimizerState::OptimizerState(std::string name) : ModelObject(name) {
+}
+
+OptimizerState::OptimizerState(Model *m, std::string name) :
+    ModelObject(m, name) {
+}
 
 //! Give accesss to optimizer.
 /** \param[in] optimizer The optimizer this state will act on.

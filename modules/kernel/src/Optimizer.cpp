@@ -22,7 +22,7 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-Optimizer::Optimizer() : Object("Optimizer%1%") {
+Optimizer::Optimizer() : ModelObject("Optimizer%1%") {
   IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
                                     "Use the constructor that takes a model.");
   set_was_used(true);
@@ -30,8 +30,7 @@ Optimizer::Optimizer() : Object("Optimizer%1%") {
   stop_on_good_score_ = false;
 }
 
-Optimizer::Optimizer(Model *m, std::string name) : Object(name) {
-  if (m) do_set_model(m);
+Optimizer::Optimizer(Model *m, std::string name) : ModelObject(m, name) {
   set_was_used(true);
   min_score_ = -std::numeric_limits<double>::max();
   stop_on_good_score_ = false;
@@ -39,20 +38,11 @@ Optimizer::Optimizer(Model *m, std::string name) : Object(name) {
 
 Optimizer::~Optimizer() {}
 
-void Optimizer::do_set_model(Model *m) {
-  cache_ = m->create_model_scoring_function();
-  cache_->set_was_used(true);
-  model_ = m;
-}
-
-void Optimizer::set_model(Model *m) {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
-                                    "Use the constructor that takes a model.");
-  do_set_model(m);
-}
-
 void Optimizer::update_states() const {
   IMP_LOG_VERBOSE("Updating OptimizerStates " << std::flush);
+  BOOST_FOREACH(ScoreState *ss, get_required_score_states()) {
+    ss->before_evaluate();
+  }
   for (OptimizerStateConstIterator it = optimizer_states_begin();
        it != optimizer_states_end(); ++it) {
     IMP_CHECK_OBJECT(*it);
@@ -75,7 +65,8 @@ void Optimizer::set_is_optimizing_states(bool tf) const {
 
 double Optimizer::optimize(unsigned int max_steps) {
   IMP_OBJECT_LOG;
-  if (!model_) {
+  set_has_required_score_states(true);
+  if (!get_model()) {
     IMP_THROW("Must give the optimizer a model to optimize",
               base::ValueException);
   }
@@ -95,7 +86,17 @@ void Optimizer::set_optimizer_state_optimizer(OptimizerState *os,
   os->set_optimizer(o);
 }
 
-void Optimizer::set_scoring_function(ScoringFunctionAdaptor sf) { cache_ = sf; }
+void Optimizer::set_scoring_function(ScoringFunctionAdaptor sf) {
+  scoring_function_ = sf;
+}
+
+ModelObjectsTemp Optimizer::get_optimizer_state_inputs() const {
+  ModelObjectsTemp ret;
+  for (unsigned int i = 0; i < get_number_of_optimizer_states(); ++i) {
+    ret += get_optimizer_state(i)->get_inputs();
+  }
+  return ret;
+}
 
 ////////////////////// DEPRECATED
 
@@ -151,7 +152,7 @@ double Optimizer::width(FloatKey k) const {
 
 double Optimizer::get_width(FloatKey k) const {
   if (widths_.size() <= k.get_index() || widths_[k.get_index()] == 0) {
-    FloatRange w = model_->get_range(k);
+    FloatRange w = get_model()->get_range(k);
     double wid = static_cast<double>(w.second) - w.first;
     widths_.resize(std::max(widths_.size(), size_t(k.get_index() + 1)), 0.0);
     if (wid > .0001) {

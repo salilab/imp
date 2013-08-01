@@ -10,6 +10,7 @@
 
 #include <IMP/kernel/kernel_config.h>
 #include "VersionInfo.h"
+#include "ModelObject.h"
 #include <IMP/base/WeakPointer.h>
 #include <IMP/base/Object.h>
 
@@ -31,11 +32,14 @@ class Optimizer;
     logging is TERSE the restraint should print out only a constant number
     of lines per update call.
  */
-class IMPKERNELEXPORT OptimizerState : public IMP::base::Object {
+class IMPKERNELEXPORT OptimizerState : public ModelObject {
   friend class Optimizer;
   void set_optimizer(Optimizer* optimizer);
 
  public:
+  OptimizerState(Model *m, std::string name);
+  /** \deprecated_at{2.1} Use the constructor that takes a Model. */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   OptimizerState(std::string name = "OptimizerState %1%");
 
   //! Called when the Optimizer accepts a new conformation
@@ -53,6 +57,12 @@ class IMPKERNELEXPORT OptimizerState : public IMP::base::Object {
   IMP_REF_COUNTED_DESTRUCTOR(OptimizerState);
 
  protected:
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+    return ModelObjectsTemp();
+  }
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE IMP_FINAL {
+    return ModelObjectsTemp();
+  }
   base::UncheckedWeakPointer<Optimizer> optimizer_;
 };
 
