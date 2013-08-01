@@ -30,7 +30,10 @@ IMPCORE_BEGIN_NAMESPACE
 */
 class IMPCOREEXPORT ConjugateGradients : public AttributeOptimizer {
  public:
-  ConjugateGradients(Model *m = nullptr);
+  /** \deprecated_at{2.1} Use the constructor that takes a Model. */
+  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
+  ConjugateGradients();
+  ConjugateGradients(Model *m, std::string name = "ConjugateGradients%1%");
 
   //! Set the threshold for the minimum gradient
   void set_gradient_threshold(Float t) { threshold_ = t; }

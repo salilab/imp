@@ -13,11 +13,17 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Constructor
-SteepestDescent::SteepestDescent(Model *m)
-    : step_size_(0.01),
+SteepestDescent::SteepestDescent()
+    : AttributeOptimizer(), step_size_(0.01),
       max_step_size_(std::numeric_limits<double>::max()),
       threshold_(0.) {
-  if (m) set_model(m);
+}
+
+SteepestDescent::SteepestDescent(Model *m, std::string name)
+    : AttributeOptimizer(m, name),
+      step_size_(0.01),
+      max_step_size_(std::numeric_limits<double>::max()),
+      threshold_(0.) {
 }
 
 double SteepestDescent::do_optimize(unsigned int max_steps) {

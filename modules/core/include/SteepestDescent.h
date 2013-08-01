@@ -22,7 +22,10 @@ IMPCORE_BEGIN_NAMESPACE
 */
 class IMPCOREEXPORT SteepestDescent : public AttributeOptimizer {
  public:
-  SteepestDescent(Model *m = nullptr);
+  /** \deprecated_at{2.1} Use the constructor that takes a Model. */
+  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
+  SteepestDescent();
+  SteepestDescent(Model *m, std::string name = "SteepestDescent%1%");
 
   virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;
   IMP_OBJECT_METHODS(SteepestDescent);
