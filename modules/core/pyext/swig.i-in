@@ -58,6 +58,7 @@ IMP_SWIG_OBJECT( IMP::core, MonteCarlo, MonteCarlos);
 IMP_SWIG_OBJECT( IMP::core, MonteCarloWithLocalOptimization, MonteCarloWithLocalOptimizations);
 IMP_SWIG_OBJECT( IMP::core, MonteCarloWithBasinHopping, MonteCarloWithBasinHoppings);
 IMP_SWIG_OBJECT( IMP::core, MSConnectivityRestraint, MSConnectivityRestraints);
+IMP_SWIG_OBJECT( IMP::core, NeighborsTable, NeighborsTables);
 IMP_SWIG_OBJECT( IMP::core, NormalMover, NormalMovers);
 IMP_SWIG_OBJECT( IMP::core, NormalizedSphereDistancePairScore, NormalizedSphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, OpenCubicSpline, OpenCubicSplines);
@@ -257,6 +258,7 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/Linear.h"
 %include "IMP/core/IncrementalScoringFunction.h"
 %include "IMP/core/MonteCarlo.h"
+%include "IMP/core/NeighborsTable.h"
 %include "IMP/core/NormalMover.h"
 %include "IMP/core/OpenCubicSpline.h"
 %include "IMP/core/QuadraticClosePairsFinder.h"
