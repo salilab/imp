@@ -752,6 +752,7 @@ EXAMPLE_PATH           = @EXAMPLE_PATH@
 
 EXAMPLE_PATTERNS       = *.py \
                          *.h \
+                         *.xml \
                          *.cpp
 
 # If the EXAMPLE_RECURSIVE tag is set to YES then subdirectories will be

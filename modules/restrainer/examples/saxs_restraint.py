@@ -1,8 +1,8 @@
 ## \example restrainer/saxs_restraint.py
 ## This example shows how to use IMP::saxs::Restraint.
 ##
-## \include restrainer/input/saxs_representation.xml
-## \include restrainer/input/saxs_restraint.xml
+## \include saxs_representation.xml
+## \include saxs_restraint.xml
 ##
 
 #-- File: saxs_restraint.py --#
