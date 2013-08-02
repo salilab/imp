@@ -32,14 +32,18 @@ namespace {
 std::string get_context_name(unsigned int i) {
   std::ostringstream oss;
   if (internal::log_contexts[i].second) {
-    const Object *o
-      = reinterpret_cast<const Object *>(internal::log_contexts[i].second);
-    // this is called on errors, so don't cause any more
-    if (!o || !o->get_is_valid()) {
-      oss << "InvalidObject"
-          << "::" << internal::log_contexts[i].first;
+    if (!internal::log_contexts[i].second) {
+      oss << internal::log_contexts[i].first;
     } else {
-      oss << o->get_name() << "::" << internal::log_contexts[i].first;
+      const Object *o
+        = reinterpret_cast<const Object *>(internal::log_contexts[i].second);
+      // this is called on errors, so don't cause any more
+      if (!o->get_is_valid()) {
+        oss << "InvalidObject"
+            << "::" << internal::log_contexts[i].first;
+      } else {
+        oss << o->get_name() << "::" << internal::log_contexts[i].first;
+      }
     }
   } else {
     oss << internal::log_contexts[i].first;
