@@ -20,6 +20,9 @@ class IMPCOREEXPORT PeriodicOptimizerState : public OptimizerState {
   unsigned int period_, call_number_, update_number_;
 
  public:
+  PeriodicOptimizerState(Model *m, std::string name);
+  /** \deprecated_at{2.1} Use the one that takes a model. */
+  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
   PeriodicOptimizerState(std::string name);
   /** Called when an optimization begins. It resets the current call number
       as well as making sure that the last frame is written.*/

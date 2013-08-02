@@ -8,8 +8,15 @@
 #include <IMP/core/PeriodicOptimizerState.h>
 
 IMPCORE_BEGIN_NAMESPACE
+PeriodicOptimizerState::PeriodicOptimizerState(Model *m, std::string name)
+  : OptimizerState(m, name) {
+  reset();
+  set_period(1);
+}
 PeriodicOptimizerState::PeriodicOptimizerState(std::string name)
     : OptimizerState(name) {
+  IMPCORE_DEPRECATED_FUNCTION_DEF(2.1,
+                                  "Use constructor that takes a Model.");
   reset();
   set_period(1);
 }
