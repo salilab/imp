@@ -27,7 +27,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 */
 class IMPSTATISTICSEXPORT ConfigurationSetXYZEmbedding : public Embedding {
   mutable base::Pointer<ConfigurationSet> cs_;
-  IMP::base::OwnerPointer<SingletonContainer> sc_;
+  IMP::base::PointerMember<SingletonContainer> sc_;
   bool align_;
 
  public:

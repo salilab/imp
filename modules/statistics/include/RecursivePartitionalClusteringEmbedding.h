@@ -23,8 +23,8 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 */
 class IMPSTATISTICSEXPORT RecursivePartitionalClusteringEmbedding
     : public Embedding {
-  IMP::base::OwnerPointer<Embedding> metric_;
-  IMP::base::OwnerPointer<PartitionalClustering> clustering_;
+  IMP::base::PointerMember<Embedding> metric_;
+  IMP::base::PointerMember<PartitionalClustering> clustering_;
 
  public:
   RecursivePartitionalClusteringEmbedding(Embedding *metric,

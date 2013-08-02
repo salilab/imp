@@ -38,7 +38,7 @@ protected:
   IMP_OBJECT_METHODS(BallMover);
 private:
   //! Master particle
-  IMP::base::OwnerPointer<Particle> p_;
+  IMP::base::PointerMember<Particle> p_;
   //! List of slave particles
   Particles ps_;
   //! Maximum translation

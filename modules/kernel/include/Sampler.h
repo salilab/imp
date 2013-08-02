@@ -29,8 +29,8 @@ IMPKERNEL_BEGIN_NAMESPACE
     function.
 */
 class IMPKERNELEXPORT Sampler : public IMP::base::Object {
-  base::OwnerPointer<Model> model_;
-  base::OwnerPointer<ScoringFunction> sf_;
+  base::PointerMember<Model> model_;
+  base::PointerMember<ScoringFunction> sf_;
 
  public:
   Sampler(Model *m, std::string name = "Sampler %1%");

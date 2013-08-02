@@ -108,12 +108,12 @@ IMPKERNELEXPORT ScoringFunctions create_decomposition(ScoringFunction *sf);
 */
 class IMPKERNELEXPORT ScoringFunctionAdaptor :
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-    public base::OwnerPointer<ScoringFunction>
+    public base::PointerMember<ScoringFunction>
 #else
     public base::InputAdaptor
 #endif
     {
-  typedef base::OwnerPointer<ScoringFunction> P;
+  typedef base::PointerMember<ScoringFunction> P;
   static ScoringFunction *get(ScoringFunction *sf) { return sf; }
 
   /**

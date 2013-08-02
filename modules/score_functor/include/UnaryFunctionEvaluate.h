@@ -17,7 +17,7 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
 /** A DistanceScore that uses a UnaryFunction.*/
 class UnaryFunctionEvaluate : public Score {
-  IMP::base::OwnerPointer<IMP::UnaryFunction> uf_;
+  IMP::base::PointerMember<IMP::UnaryFunction> uf_;
 
  public:
   UnaryFunctionEvaluate(IMP::UnaryFunction *uf) : uf_(uf) {}

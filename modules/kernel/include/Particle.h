@@ -35,7 +35,7 @@ class ParticleAdaptor: public base::InputAdaptor {
                                                    pi_(p->get_index()) {}
   ParticleAdaptor(IMP::base::WeakPointer<Particle> p): m_(p->get_model()),
                                                    pi_(p->get_index()) {}
-  ParticleAdaptor(IMP::base::OwnerPointer<Particle> p): m_(p->get_model()),
+  ParticleAdaptor(IMP::base::PointerMember<Particle> p): m_(p->get_model()),
                                                    pi_(p->get_index()) {}
 #endif
   Model *get_model() const {return m_;}

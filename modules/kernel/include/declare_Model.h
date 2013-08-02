@@ -108,10 +108,10 @@ class IMPKERNELEXPORT Model : public base::Object
   base::IndexVector<ParticleIndexTag, Undecorators> undecorators_index_;
 
 
-  base::Vector<base::OwnerPointer<base::Object> > model_data_;
+  base::Vector<base::PointerMember<base::Object> > model_data_;
   ////////////// DEPRECATED
   // for old code that uses the model for the scoring function
-  base::OwnerPointer<RestraintSet> restraints_;
+  base::PointerMember<RestraintSet> restraints_;
 
   void do_add_dependencies(const ModelObject *mo);
   void do_clear_required_score_states(ModelObject *mo);

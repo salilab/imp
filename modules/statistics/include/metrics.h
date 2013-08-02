@@ -20,7 +20,7 @@
 IMPSTATISTICS_BEGIN_NAMESPACE
 
 class IMPSTATISTICSEXPORT EuclideanMetric : public Metric {
-  IMP::base::OwnerPointer<Embedding> em_;
+  IMP::base::PointerMember<Embedding> em_;
 
  public:
   EuclideanMetric(Embedding *em);
@@ -33,8 +33,8 @@ class IMPSTATISTICSEXPORT EuclideanMetric : public Metric {
     in pairs of configurations, within a configuration set
  */
 class IMPSTATISTICSEXPORT ConfigurationSetRMSDMetric : public Metric {
-  IMP::base::OwnerPointer<ConfigurationSet> cs_;
-  IMP::base::OwnerPointer<SingletonContainer> sc_;
+  IMP::base::PointerMember<ConfigurationSet> cs_;
+  IMP::base::PointerMember<SingletonContainer> sc_;
   bool align_;
 
  public:

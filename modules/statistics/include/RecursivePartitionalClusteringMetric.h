@@ -23,8 +23,8 @@ IMPSTATISTICS_BEGIN_NAMESPACE
     clustering of the original elements using create_full_clustering().
 */
 class IMPSTATISTICSEXPORT RecursivePartitionalClusteringMetric : public Metric {
-  IMP::base::OwnerPointer<Metric> metric_;
-  IMP::base::OwnerPointer<PartitionalClustering> clustering_;
+  IMP::base::PointerMember<Metric> metric_;
+  IMP::base::PointerMember<PartitionalClustering> clustering_;
 
  public:
   RecursivePartitionalClusteringMetric(Metric *metric,

@@ -49,7 +49,7 @@ IMP_OBJECTS(ConfigurationSet, ConfigurationSets);
 
 IMP_MODEL_SAVE(SaveToConfigurationSet,
                (ConfigurationSet *cs, std::string file_name),
-               mutable base::OwnerPointer<ConfigurationSet> cs_;
+               mutable base::PointerMember<ConfigurationSet> cs_;
                , cs_ = cs;, , {
   IMP_LOG_VARIABLE(file_name);
   IMP_LOG_TERSE("Saving to configuration set " << file_name << std::endl);
