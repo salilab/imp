@@ -24,7 +24,7 @@ void load_merged_assignments(
     const SubsetFilterTables &filters, ListSubsetFilterTable *lsft,
     InferenceStatistics *stats, size_t max_states, AssignmentContainer *out) {
   base::Pointer<AssignmentContainer> outp(out);
-  IMP::base::OwnerPointer<AssignmentContainer> firstp(first), secondp(second);
+  IMP::base::PointerMember<AssignmentContainer> firstp(first), secondp(second);
   IMP_FUNCTION_LOG;
   EdgeData ed = get_edge_data(first_subset, second_subset, filters);
   load_union(first_subset, second_subset, first, second, ed, max_states, out);

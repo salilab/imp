@@ -39,7 +39,7 @@ void load_merged_assignments_random_order(const Subset &first_subset,
   IMP_FUNCTION_LOG;
   SubsetFilterTables ts(filters.begin(), filters.end());
   base::Pointer<AssignmentContainer> retp(ret);
-  IMP::base::OwnerPointer<AssignmentContainer> firstp(first), secondp(second);
+  IMP::base::PointerMember<AssignmentContainer> firstp(first), secondp(second);
   internal::EdgeData ed =
       internal::get_edge_data(first_subset, second_subset, filters);
   Ints ii0 = internal::get_index(first_subset, ed.intersection_subset);

@@ -17,8 +17,8 @@
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 namespace {
 class DummyPairContainer : public IMP::internal::ListLikePairContainer {
-  IMP::base::OwnerPointer<SingletonContainer> c_;
-  IMP::base::OwnerPointer<ClosePairsFinder> cpf_;
+  IMP::base::PointerMember<SingletonContainer> c_;
+  IMP::base::PointerMember<ClosePairsFinder> cpf_;
 
  public:
   DummyPairContainer(SingletonContainer *c, ClosePairsFinder *cpf);

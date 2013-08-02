@@ -223,7 +223,7 @@ em::DensityMap* build_cn_dens_assembly(
                             const em::DensityHeader &asmb_dens_header,
                             algebra::Transformation3D monomer_t,
                             int symm_deg){
-  base::OwnerPointer<em::DensityMap> ret(em::create_density_map(
+  base::PointerMember<em::DensityMap> ret(em::create_density_map(
                      asmb_dens_header.get_nx(),
                      asmb_dens_header.get_ny(),
                      asmb_dens_header.get_nz(),
@@ -235,7 +235,7 @@ em::DensityMap* build_cn_dens_assembly(
   ret->reset_data(0);
   algebra::Transformation3D curr_t=algebra::get_identity_transformation_3d();
   for (int i=0;i<symm_deg;i++){
-    base::OwnerPointer<em::DensityMap> trans_subunit
+    base::PointerMember<em::DensityMap> trans_subunit
                    = get_transformed(subunit_dens, curr_t);
     ret->add(subunit_dens);
     curr_t=curr_t*monomer_t;
@@ -398,7 +398,7 @@ multifit::FittingSolutionRecords prune_by_pca(
     mhs.push_back(mh);
   }
   //load the density map
-  base::OwnerPointer<em::DensityMap> dmap =
+  base::PointerMember<em::DensityMap> dmap =
                em::read_map(par.get_density_map_filename(),
                             new em::MRCReaderWriter());
   AlignSymmetric aligner(dmap,par.get_density_map_threshold(),

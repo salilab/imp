@@ -159,7 +159,7 @@ int main(int argc, char **argv) {
   //run the fitting
   IMP_NEW(multifit::FFTFitting, ff, ());
 
-  base::OwnerPointer<multifit::FFTFittingOutput> fits;
+  base::PointerMember<multifit::FFTFittingOutput> fits;
   if (!local_fitting) {
     std::cout<<"running global fitting"<<std::endl;
   fits=

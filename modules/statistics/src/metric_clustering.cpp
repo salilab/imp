@@ -80,7 +80,7 @@ int get_far(const Ints &unclaimed, const IMP::base::Vector<Ints> &clusters,
 
 PartitionalClustering *create_connectivity_clustering(Metric *d,
                                                       double maximum_distance) {
-  IMP::base::OwnerPointer<Metric> mp(d);
+  IMP::base::PointerMember<Metric> mp(d);
   IMP_FUNCTION_LOG;
   IMP::base::Vector<Floats> matrix;
   fill_distance_matrix(d, matrix);
@@ -119,7 +119,7 @@ PartitionalClustering *create_connectivity_clustering(Metric *d,
 
 PartitionalClustering *create_diameter_clustering(Metric *d,
                                                   double maximum_diameter) {
-  IMP::base::OwnerPointer<Metric> mp(d);
+  IMP::base::PointerMember<Metric> mp(d);
   IMP_FUNCTION_LOG;
   IMP::base::Vector<Floats> matrix;
   fill_distance_matrix(d, matrix);

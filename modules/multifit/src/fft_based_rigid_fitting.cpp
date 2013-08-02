@@ -1054,7 +1054,7 @@ FittingSolutionRecords fft_based_rigid_fitting(
   multifit::internal::EulerAnglesList rots=
     internal::get_uniformly_sampled_rotations(angle_sampling_interval);
   IMP_NEW(FFTFitting, ff, ());
-  base::OwnerPointer<FFTFittingOutput> fits
+  base::PointerMember<FFTFittingOutput> fits
     = ff->do_global_fitting(dmap,density_threshold,mol2fit,
                 angle_sampling_interval,
                 number_of_fits_to_report,

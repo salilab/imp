@@ -24,7 +24,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
 void GeometryProcessor::handle_geometry_internal(Geometry *g, bool has_color,
                                                  Color c, std::string name) {
-  IMP::base::OwnerPointer<Geometry> pg(g);
+  IMP::base::PointerMember<Geometry> pg(g);
   // use own color instead of default whenever it is specified
   if (g->get_has_color()) {
     c = g->get_color();

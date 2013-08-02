@@ -207,7 +207,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
   RMF::FloatKey weight_key_;
   base::map<Restraint *, RestraintSaveData> data_;
   Restraints all_;
-  base::OwnerPointer<core::RestraintsScoringFunction> rsf_;
+  base::PointerMember<core::RestraintsScoringFunction> rsf_;
   unsigned int max_terms_;
   base::set<Restraint *> no_terms_;
 

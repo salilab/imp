@@ -204,7 +204,7 @@ void MonteCarloWithLocalOptimization::do_step() {
                 << do_evaluate(moved.get_moved_particles()) << std::endl);
   // non-Mover parts of the model can be moved by the local optimizer
   // make sure they are cleaned up
-  base::OwnerPointer<Configuration> cs = new Configuration(get_model());
+  base::PointerMember<Configuration> cs = new Configuration(get_model());
   double ne = opt_->optimize(num_local_);
   if (!do_accept_or_reject_move(ne, moved.get_proposal_ratio())) {
     cs->swap_configuration();

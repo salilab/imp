@@ -35,8 +35,8 @@ class NullScoringFunction : public ScoringFunction {
 };
 
 ScoringFunction *get_null_scoring_function() {
-  static base::OwnerPointer<Model> m = new Model("NullModel");
-  static base::OwnerPointer<ScoringFunction> sf
+  static base::PointerMember<Model> m = new Model("NullModel");
+  static base::PointerMember<ScoringFunction> sf
       = new NullScoringFunction(m, "The Null Scoring Function");
   return sf;
 }

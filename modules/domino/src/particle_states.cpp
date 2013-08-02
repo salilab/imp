@@ -161,7 +161,7 @@ unsigned int RecursiveStates::get_number_of_particle_states() const {
 void RecursiveStates::load_particle_state(unsigned int i, Particle *) const {
   IMP_USAGE_CHECK(i < get_number_of_particle_states(), "Out of range");
   for (unsigned int j = 0; j < s_.size(); ++j) {
-    IMP::base::OwnerPointer<ParticleStates> ps =
+    IMP::base::PointerMember<ParticleStates> ps =
         pst_->get_particle_states(s_[j]);
     ps->load_particle_state(ss_[i][j], s_[j]);
   }

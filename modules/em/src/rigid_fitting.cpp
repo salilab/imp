@@ -152,7 +152,7 @@ FittingSolutions local_rigid_fitting_around_point(
    RestraintSet *rsrs = add_restraints(model, dmap, p,refiner,
                                        wei_key,fast);
    //create a rigid body mover and set the optimizer
-   base::OwnerPointer<core::MonteCarlo> opt = set_optimizer(model,
+   base::PointerMember<core::MonteCarlo> opt = set_optimizer(model,
                                                       display_log, p,refiner,
                            number_of_cg_steps, max_translation, max_rotation);
 
@@ -195,7 +195,7 @@ FittingSolutions local_rigid_fitting_around_points(
 
    RestraintSet *rsrs = add_restraints(model, dmap, p,refiner,
                                        wei_key);
-   base::OwnerPointer<core::MonteCarlo> opt = set_optimizer(model,
+   base::PointerMember<core::MonteCarlo> opt = set_optimizer(model,
                                                       display_log, p,refiner,
                            number_of_cg_steps,max_translation, max_rotation);
 
@@ -390,7 +390,7 @@ FittingSolutions compute_fitting_scores(const ParticlesTemp &ps,
               "running fast version of compute_fitting_scores"<<std::endl);
       for (algebra::Transformation3Ds::const_iterator it =
          trans_for_fit.begin(); it != trans_for_fit.end();it++) {
-        base::OwnerPointer<DensityMap> transformed_sampled_map
+        base::PointerMember<DensityMap> transformed_sampled_map
           = get_transformed(model_dens_map,*it);
         IMP_INTERNAL_CHECK(
            transformed_sampled_map->same_dimensions(model_dens_map),

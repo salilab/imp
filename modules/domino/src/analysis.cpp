@@ -52,9 +52,9 @@ unsigned int ParticleStatesEmbedding::get_number_of_items() const {
 
 Ints get_state_clusters(Particle *p, ParticleStates *ps,
                         const Ints &allowed_states, double resolution) {
-  IMP::base::OwnerPointer<ParticleStatesEmbedding> pse =
+  IMP::base::PointerMember<ParticleStatesEmbedding> pse =
       new ParticleStatesEmbedding(p, ps, allowed_states, "domino embedding");
-  IMP::base::OwnerPointer<statistics::PartitionalClusteringWithCenter> c =
+  IMP::base::PointerMember<statistics::PartitionalClusteringWithCenter> c =
       create_connectivity_clustering(pse, resolution);
   Ints ret(ps->get_number_of_particle_states(), -1);
   IMP_LOG_TERSE("For particle "
@@ -104,7 +104,7 @@ Assignments get_state_clusters(const Subset &subset, const Assignments &states,
   }
   base::Vector<Ints> clustering(states.size());
   for (unsigned int i = 0; i < subset.size(); ++i) {
-    IMP::base::OwnerPointer<ParticleStates> ps =
+    IMP::base::PointerMember<ParticleStates> ps =
         pst->get_particle_states(subset[i]);
     Ints c = get_state_clusters(subset[i], ps, rotated[i], resolution);
     clustering[i] = c;

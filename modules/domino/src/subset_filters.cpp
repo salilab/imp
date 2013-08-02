@@ -720,7 +720,7 @@ ProbabilisticSubsetFilterTable::ProbabilisticSubsetFilterTable(double p,
 
 namespace {
 class RestraintScoreSubsetFilter : public SubsetFilter {
-  base::OwnerPointer<RestraintCache> cache_;
+  base::PointerMember<RestraintCache> cache_;
   RestraintsTemp rs_;
   Slices slices_;
 

@@ -73,13 +73,13 @@ int main(int argc, char *argv[]) {
         DopeAndExcludedVolumeDistancePairScore;
 
     // create one
-    IMP::base::OwnerPointer<DopeAndExcludedVolumeDistancePairScore> score =
+    IMP::base::PointerMember<DopeAndExcludedVolumeDistancePairScore> score =
         new DopeAndExcludedVolumeDistancePairScore(
             Score(IMP::score_functor::Dope(dope_threshold),
                   SoftSphere(Harmonic(spring_constant))));
 
     // Now let's use it
-    IMP::base::OwnerPointer<IMP::Model> model = new IMP::Model();
+    IMP::base::PointerMember<IMP::Model> model = new IMP::Model();
     IMP::ParticleIndexPairs pips = setup_pairs(model);
 
     for (unsigned int i = 0; i < pips.size(); ++i) {

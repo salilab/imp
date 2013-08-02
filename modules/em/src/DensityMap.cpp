@@ -942,7 +942,7 @@ void get_transformed_into(const DensityMap *from,
    DensityMap *into,
    bool calc_rms) {
   algebra::BoundingBox3D obb(from->get_origin(),from->get_top());
-  base::OwnerPointer<DensityMap>
+  base::PointerMember<DensityMap>
     nmap(create_density_map(obb,into->get_spacing()));
   into->copy_map(nmap);
   get_transformed_internal(from,tr,into);

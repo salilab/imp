@@ -883,7 +883,7 @@ ModelObjectsTemp RigidMembersRefiner::do_get_inputs(
 
 namespace internal {
 RigidMembersRefiner *get_rigid_members_refiner() {
-  static IMP::base::OwnerPointer<RigidMembersRefiner> pt =
+  static IMP::base::PointerMember<RigidMembersRefiner> pt =
       new RigidMembersRefiner("The rigid members refiner");
   return pt;
 }

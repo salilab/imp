@@ -233,7 +233,7 @@ void do_all_fitting(const std::string param_filename,
 
 
   //load the density
-  base::OwnerPointer<em::DensityMap> dmap =
+  base::PointerMember<em::DensityMap> dmap =
                em::read_map(density_filename, new em::MRCReaderWriter());
   dmap->get_header_writable()->set_resolution(resolution);
   dmap->update_voxel_size(spacing);

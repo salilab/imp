@@ -296,7 +296,7 @@ Hierarchies read_pdb(std::istream& in, std::string name, Model* model,
                      PDBSelector* selector, bool select_first_model,
                      bool split_models, bool noradii) {
   IMP_FUNCTION_LOG;
-  IMP::base::OwnerPointer<PDBSelector> sp(selector);
+  IMP::base::PointerMember<PDBSelector> sp(selector);
   // hierarchy decorator
   Hierarchies ret;
   std::string root_name;
@@ -472,7 +472,7 @@ void read_pdb(base::TextInput in, int model, Hierarchy h) {
 
 Hierarchy read_pdb(base::TextInput in, Model* model, PDBSelector* selector,
                    bool select_first_model, bool no_radii) {
-  IMP::base::OwnerPointer<PDBSelector> sp(selector);
+  IMP::base::PointerMember<PDBSelector> sp(selector);
   Hierarchies ret = read_pdb(in, nicename(in.get_name()), model, selector,
                              select_first_model, false, no_radii);
   if (ret.empty()) {
@@ -483,7 +483,7 @@ Hierarchy read_pdb(base::TextInput in, Model* model, PDBSelector* selector,
 
 Hierarchies read_multimodel_pdb(base::TextInput in, Model* model,
                                 PDBSelector* selector, bool noradii) {
-  IMP::base::OwnerPointer<PDBSelector> sp(selector);
+  IMP::base::PointerMember<PDBSelector> sp(selector);
   Hierarchies ret = read_pdb(in, nicename(in.get_name()), model, selector,
                              false, true, noradii);
   if (ret.empty()) {

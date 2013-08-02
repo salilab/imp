@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
   }
   IMP_NEW(IMP::core::GridClosePairsFinder, gcpf, ());
   gcpf->set_distance(.1);
-  IMP::base::OwnerPointer<IMP::core::ClosePairsFinder> mcpf
+  IMP::base::PointerMember<IMP::core::ClosePairsFinder> mcpf
     = IMP::misc::create_metric_close_pairs_finder(LowerBound(), UpperBound());
   mcpf->set_distance(.1);
 
