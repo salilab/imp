@@ -7,6 +7,7 @@
 #
 # To enable this hook, rename this file to "pre-commit".
 
+echo "begin pre-commit"
 branch=`git rev-parse --abbrev-ref HEAD`
 
 if test "$branch" == "master"
@@ -30,14 +31,16 @@ exec 1>&2
 files=`git diff --cached --name-only --diff-filter=ACM`
 if test -n "$files"
 then
+  echo "checking standards on" $files
   if python `git rev-parse --show-toplevel`/tools/check-standards.py $files
   then
-    echo "Format checks OK."
+    echo "Standards checks OK."
   else
     exit 1
   fi
 fi
 
+echo "checking for untracked files"
 untracked=`git status -u --porcelain | grep '^??'`
 if test -n "$untracked"
 then
@@ -46,3 +49,5 @@ then
   echo "You can use --no-verify to skip checks if you are sure that is what you want."
   exit 1
 fi
+
+echo "end pre-commit"
