@@ -61,12 +61,13 @@ class CreateLogContext : public RAII {
   std::string name_;
 
  public:
-  CreateLogContext(std::string fname, const void* object = nullptr)
+  CreateLogContext(std::string fname, const Object* object = nullptr)
       : name_(fname) {
     // push log context does not copy the string, so we need to save it.
     push_log_context(name_.c_str(), object);
   }
-  IMP_RAII(CreateLogContext, (const char* fname, const void* object = nullptr),
+  IMP_RAII(CreateLogContext, (const char* fname,
+                              const Object* object = nullptr),
            , push_log_context(fname, object), pop_log_context(), );
 #endif
 };
