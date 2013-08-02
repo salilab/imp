@@ -49,7 +49,7 @@ class IMPDISPLAYEXPORT SingletonGeometry : public Geometry {
 /**
  */
 class IMPDISPLAYEXPORT SingletonsGeometry : public Geometry {
-  IMP::base::OwnerPointer<SingletonContainer> sc_;
+  IMP::base::PointerMember<SingletonContainer> sc_;
 
  public:
   SingletonsGeometry(SingletonContainer *pc, Color c);
@@ -91,7 +91,7 @@ class IMPDISPLAYEXPORT PairGeometry : public Geometry {
 /**
  */
 class IMPDISPLAYEXPORT PairsGeometry : public Geometry {
-  IMP::base::OwnerPointer<PairContainer> sc_;
+  IMP::base::PointerMember<PairContainer> sc_;
 
  public:
   PairsGeometry(PairContainer *pc, Color c);

@@ -20,7 +20,7 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 template <class Score>
 class TupleRestraint : public Restraint {
-  IMP::base::OwnerPointer<Score> ss_;
+  IMP::base::PointerMember<Score> ss_;
   typename Score::IndexArgument v_;
 
  public:

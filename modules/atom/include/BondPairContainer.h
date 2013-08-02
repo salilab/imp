@@ -28,7 +28,7 @@ IMPATOM_BEGIN_NAMESPACE
     \see Bonded
  */
 class IMPATOMEXPORT BondPairContainer : public PairContainer {
-  IMP::base::OwnerPointer<SingletonContainer> sc_;
+  IMP::base::PointerMember<SingletonContainer> sc_;
 
  public:
   template <class F>

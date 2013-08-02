@@ -235,7 +235,7 @@ class IMPCOREEXPORT HierarchyVisitor {
     \see Hierarchy
  */
 class IMPCOREEXPORT ModifierVisitor : public HierarchyVisitor {
-  IMP::base::OwnerPointer<SingletonModifier> sm_;
+  IMP::base::PointerMember<SingletonModifier> sm_;
 
  public:
   ModifierVisitor(SingletonModifier *sm) : sm_(sm) {}

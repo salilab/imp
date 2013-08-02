@@ -121,7 +121,8 @@ class IMPDOMINOEXPORT BranchAndBoundAssignmentsTable : public AssignmentsTable {
     in to domino.
 */
 class IMPDOMINOEXPORT ListAssignmentsTable : public AssignmentsTable {
-  IMP::base::map<Subset, IMP::base::OwnerPointer<AssignmentContainer> > states_;
+  IMP::base::map<Subset, IMP::base::PointerMember<AssignmentContainer> >
+    states_;
 
  public:
   ListAssignmentsTable(std::string name = "ListSubsetStatesTable %1%");

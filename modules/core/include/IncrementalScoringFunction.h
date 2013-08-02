@@ -37,7 +37,7 @@ class NBLScoring;
 */
 class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
   struct Data {
-    base::OwnerPointer<IMP::internal::RestraintsScoringFunction> sf;
+    base::PointerMember<IMP::internal::RestraintsScoringFunction> sf;
     Ints indexes;
   };
   /* have to make sure that when the dependencies are reset on destruction,
@@ -58,7 +58,7 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
   Restraints flattened_restraints_;
   Floats flattened_restraints_scores_;
   double weight_, max_;
-  base::OwnerPointer<ScoringFunction> non_incremental_;
+  base::PointerMember<ScoringFunction> non_incremental_;
   // move the destructor out of the header
   struct Wrapper : public base::Vector<internal::NBLScoring *> {
     ~Wrapper();

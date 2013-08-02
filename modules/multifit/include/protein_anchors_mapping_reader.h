@@ -59,7 +59,7 @@ class IMPMULTIFITEXPORT ProteinsAnchorsSamplingSpace {
   std::map<std::string, IntsList> paths_map_;
   std::map<std::string,std::string> paths_filename_;
   multifit::AnchorsData anchors_data_;
-  base::OwnerPointer<multifit::ProteomicsData> prots_;
+  base::PointerMember<multifit::ProteomicsData> prots_;
   std::string anchors_fn_;
 };
 IMP_VALUES(ProteinsAnchorsSamplingSpace, ProteinsAnchorsSamplingSpaces);

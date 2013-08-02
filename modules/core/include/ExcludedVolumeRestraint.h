@@ -41,12 +41,12 @@ IMPCORE_BEGIN_NAMESPACE
     \note Currently the radius of all particles is assumed to be constant
  */
 class IMPCOREEXPORT ExcludedVolumeRestraint : public Restraint {
-  base::OwnerPointer<SingletonContainer> sc_;
+  base::PointerMember<SingletonContainer> sc_;
   mutable ParticleIndexPairs cur_list_;
   mutable bool was_bad_;
   mutable bool initialized_;
   ObjectKey key_;
-  IMP::base::OwnerPointer<SoftSpherePairScore> ssps_;
+  IMP::base::PointerMember<SoftSpherePairScore> ssps_;
   // moved stuff
   mutable ParticleIndexes rbs_;
   mutable ParticleIndexes xyzrs_;

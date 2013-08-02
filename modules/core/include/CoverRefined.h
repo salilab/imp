@@ -40,7 +40,7 @@ class XYZR;
  \uses{class CoverRefined, CGAL}
  */
 class IMPCOREEXPORT CoverRefined : public SingletonModifier {
-  IMP::base::OwnerPointer<Refiner> refiner_;
+  IMP::base::PointerMember<Refiner> refiner_;
   Float slack_;
 
  public:

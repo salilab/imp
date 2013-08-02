@@ -103,7 +103,7 @@ class RestraintScoreSubsetFilterTable;
  */
 class IMPDOMINOEXPORT RestraintScoreSubsetFilterTable
     : public SubsetFilterTable {
-  base::OwnerPointer<RestraintCache> cache_;
+  base::PointerMember<RestraintCache> cache_;
   mutable Restraints rs_;
 
  public:
@@ -128,7 +128,7 @@ IMP_OBJECTS(RestraintScoreSubsetFilterTable, RestraintScoreSubsetFilterTables);
  */
 class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilterTable
     : public SubsetFilterTable {
-  base::OwnerPointer<RestraintCache> rc_;
+  base::PointerMember<RestraintCache> rc_;
   Restraints rs_;
   int max_violated_;
   RestraintsTemp get_restraints(const Subset &s, const Subsets &excluded) const;

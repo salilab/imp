@@ -27,7 +27,7 @@ IMPCORE_BEGIN_NAMESPACE
     neighbors will be returned.
 */
 class IMPCOREEXPORT NeighborsTable: public kernel::ScoreState {
-  base::OwnerPointer<kernel::PairContainer> input_;
+  base::PointerMember<kernel::PairContainer> input_;
   base::map<ParticleIndex, ParticleIndexes> data_;
   bool updated_;
  protected:

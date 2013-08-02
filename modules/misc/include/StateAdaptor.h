@@ -20,7 +20,7 @@ IMPMISC_BEGIN_NAMESPACE
 /** You can have up to two, one for before, and one for after.
  */
 class IMPMISCEXPORT StateAdaptor : public ScoreState {
-  IMP::base::OwnerPointer<OptimizerState> before_, after_;
+  IMP::base::PointerMember<OptimizerState> before_, after_;
 
  public:
   //! set the before and after states

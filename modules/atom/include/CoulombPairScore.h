@@ -27,7 +27,7 @@ IMPATOM_BEGIN_NAMESPACE
     and \f$|r_{ij}|\f$ the distance between them.
  */
 class IMPATOMEXPORT CoulombPairScore : public PairScore {
-  IMP::base::OwnerPointer<SmoothingFunction> smoothing_function_;
+  IMP::base::PointerMember<SmoothingFunction> smoothing_function_;
   double relative_dielectric_;
   double multiplication_factor_;
 

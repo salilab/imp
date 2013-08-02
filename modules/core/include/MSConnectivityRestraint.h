@@ -52,8 +52,8 @@ IMPCORE_BEGIN_NAMESPACE
     the value of the PairScore for the two endpoints of the edge.
  */
 class IMPCOREEXPORT MSConnectivityRestraint : public Restraint {
-  IMP::base::OwnerPointer<PairScore> ps_;
-  IMP::base::OwnerPointer<SingletonContainer> sc_;
+  IMP::base::PointerMember<PairScore> ps_;
+  IMP::base::PointerMember<SingletonContainer> sc_;
   double eps_;
 
  public:

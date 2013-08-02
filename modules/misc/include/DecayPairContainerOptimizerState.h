@@ -28,8 +28,8 @@ IMPMISC_BEGIN_NAMESPACE
  */
 class IMPMISCEXPORT DecayPairContainerOptimizerState
     : public core::PeriodicOptimizerState {
-  base::OwnerPointer<PairPredicate> pred_;
-  base::OwnerPointer<PairContainer> input_;
+  base::PointerMember<PairPredicate> pred_;
+  base::PointerMember<PairContainer> input_;
   base::Pointer<IMP::internal::InternalDynamicListPairContainer> output_;
 
  public:

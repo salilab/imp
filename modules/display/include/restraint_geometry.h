@@ -25,7 +25,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
     efficiency, it does not update the model.
 */
 class IMPDISPLAYEXPORT RestraintGeometry : public Geometry {
-  IMP::base::OwnerPointer<Restraint> r_;
+  IMP::base::PointerMember<Restraint> r_;
   IMP::base::Pointer<Model> m_;
   //! Use this if the restraint is not part of the model
   RestraintGeometry(Restraint *p, Model *m);

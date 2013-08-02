@@ -22,7 +22,7 @@ IMPCORE_BEGIN_NAMESPACE
     to a unary function.*/
 template <class UF>
 class GenericAttributeSingletonScore : public SingletonScore {
-  IMP::base::OwnerPointer<UF> f_;
+  IMP::base::PointerMember<UF> f_;
   FloatKey k_;
 
  public:

@@ -47,9 +47,9 @@ public:
   }
 
  protected:
-  base::OwnerPointer<Model> model_;
+  base::PointerMember<Model> model_;
   DOFsSampler* dofs_sampler_;
-  base::OwnerPointer<ScoringFunction> sf_;
+  base::PointerMember<ScoringFunction> sf_;
 };
 
 

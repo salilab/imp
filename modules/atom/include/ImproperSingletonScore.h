@@ -29,7 +29,7 @@ IMPATOM_BEGIN_NAMESPACE
     \see CHARMMTopology::add_impropers(), Dihedral.
  */
 class IMPATOMEXPORT ImproperSingletonScore : public SingletonScore {
-  IMP::base::OwnerPointer<UnaryFunction> f_;
+  IMP::base::PointerMember<UnaryFunction> f_;
 
  public:
   //! Use f to penalize deviations in angle

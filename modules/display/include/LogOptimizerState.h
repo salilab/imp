@@ -24,7 +24,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
  */
 class IMPDISPLAYEXPORT WriteOptimizerState : public OptimizerState {
   ::IMP::kernel::internal::Counter skip_steps_, call_number_, update_number_;
-  IMP::base::OwnerPointer<Writer> writer_;
+  IMP::base::PointerMember<Writer> writer_;
   void update();
 
  public:

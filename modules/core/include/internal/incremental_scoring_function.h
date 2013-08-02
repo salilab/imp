@@ -21,12 +21,12 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 struct IMPCOREEXPORT NBGenerator {
   base::Pointer<Model> m_;
-  base::OwnerPointer<PairScore> score_;
+  base::PointerMember<PairScore> score_;
   double distance_;
   ParticleIndexes pis_;
   PairPredicates filters_;
   base::map<ParticleIndex, int> to_dnn_;
-  base::OwnerPointer<algebra::DynamicNearestNeighbor3D> dnn_;
+  base::PointerMember<algebra::DynamicNearestNeighbor3D> dnn_;
 
   NBGenerator(Model *m, const ParticleIndexes &pis, PairScore *ps,
               double distance, const PairPredicates &pfs);
@@ -58,7 +58,7 @@ struct IMPCOREEXPORT NBChecker {
 
 class IMPCOREEXPORT NBLScoring {
   ParticleIndexes to_move_;
-  base::OwnerPointer<Restraint> dummy_restraint_;
+  base::PointerMember<Restraint> dummy_restraint_;
   typedef base::SparseSymmetricPairMemoizer<NBGenerator, NBChecker> Cache;
   Cache cache_;
 

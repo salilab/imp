@@ -41,7 +41,7 @@ inline Model *get_model(const RestraintsTemp &rs) {
  */
 template <class RestraintType>
 class RestraintScoringFunction : public ScoringFunction {
-  base::OwnerPointer<RestraintType> r_;
+  base::PointerMember<RestraintType> r_;
 
  public:
   RestraintScoringFunction(RestraintType *r)
@@ -78,7 +78,7 @@ ModelObjectsTemp RestraintScoringFunction<RestraintType>::do_get_inputs()
  */
 template <class RestraintType>
 class WrappedRestraintScoringFunction : public ScoringFunction {
-  base::OwnerPointer<RestraintType> r_;
+  base::PointerMember<RestraintType> r_;
   double weight_;
   double max_;
 

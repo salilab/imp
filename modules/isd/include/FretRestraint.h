@@ -35,7 +35,7 @@ class IMPISDEXPORT  FretRestraint : public ISDRestraint
     base::Pointer<Particle> sumFi_;
     base::Pointer<Particle> sigma0_;
     base::Pointer<Particle> Pbl_;
-    base::OwnerPointer<FretData> data_;
+    base::PointerMember<FretData> data_;
     double fexp_;
     double multi_d_;
     int constr_type_;

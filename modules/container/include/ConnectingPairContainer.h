@@ -44,8 +44,8 @@ class IMPCONTAINEREXPORT ConnectingPairContainer :
     public IMP::internal::ListLikePairContainer
 #endif
     {
-  IMP::base::OwnerPointer<SingletonContainer> sc_;
-  IMP::base::OwnerPointer<core::internal::MovedSingletonContainer> mv_;
+  IMP::base::PointerMember<SingletonContainer> sc_;
+  IMP::base::PointerMember<core::internal::MovedSingletonContainer> mv_;
   ParticlePairsTemp data_;
   double error_bound_;
   bool mst_;

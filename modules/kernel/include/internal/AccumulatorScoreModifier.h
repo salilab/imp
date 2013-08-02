@@ -20,7 +20,7 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 template <class Score>
 class AccumulatorScoreModifier : public Score::Modifier {
-  IMP::base::OwnerPointer<Score> ss_;
+  IMP::base::PointerMember<Score> ss_;
   mutable ScoreAccumulator sa_;
   mutable double score_;
 

@@ -28,7 +28,7 @@ IMPCORE_BEGIN_NAMESPACE
     second. This can be used to implement symmetry restraints.
  */
 class IMPCOREEXPORT TransformedDistancePairScore : public PairScore {
-  IMP::base::OwnerPointer<UnaryFunction> f_;
+  IMP::base::PointerMember<UnaryFunction> f_;
   algebra::Transformation3D t_;
   algebra::Rotation3D ri_;
 

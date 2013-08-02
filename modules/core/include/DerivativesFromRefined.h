@@ -28,7 +28,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT DerivativesFromRefined
     : public SingletonDerivativeModifier {
-  IMP::base::OwnerPointer<Refiner> refiner_;
+  IMP::base::PointerMember<Refiner> refiner_;
   FloatKeys ks_;
 
  public:

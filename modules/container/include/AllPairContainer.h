@@ -27,7 +27,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
     \usesconstraint
  */
 class IMPCONTAINEREXPORT AllPairContainer : public PairContainer {
-  IMP::base::OwnerPointer<SingletonContainer> c_;
+  IMP::base::PointerMember<SingletonContainer> c_;
   friend class AllBipartitePairContainer;
 
  public:

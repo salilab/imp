@@ -62,8 +62,8 @@ class AttributeSingletonPredicate : public SingletonPredicate {
     for example,  truncate a score using a bounding box.*/
 template <class Predicate, class Score = SingletonScore>
 class PredicateSingletonScore : public SingletonScore {
-  base::OwnerPointer<Predicate> pred_;
-  base::Vector<base::OwnerPointer<Score> > scores_;
+  base::PointerMember<Predicate> pred_;
+  base::Vector<base::PointerMember<Score> > scores_;
   int offset_;
   Score *get_score(int val) const {
     if (val < offset_ || val > scores_.size() + offset_) {

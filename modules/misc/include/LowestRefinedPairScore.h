@@ -21,8 +21,8 @@ IMPMISC_BEGIN_NAMESPACE
 /** Score on the lowest of the pairs defined by refining the two particles.
  */
 class IMPMISCEXPORT LowestRefinedPairScore : public PairScore {
-  IMP::base::OwnerPointer<Refiner> r_;
-  IMP::base::OwnerPointer<PairScore> f_;
+  IMP::base::PointerMember<Refiner> r_;
+  IMP::base::PointerMember<PairScore> f_;
 
  public:
   /** \param[in] r The Refiner to call on each particle

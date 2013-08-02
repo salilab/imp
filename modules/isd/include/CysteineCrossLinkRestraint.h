@@ -51,8 +51,8 @@ class IMPISDEXPORT  CysteineCrossLinkRestraint : public ISDRestraint
     base::Pointer<Particle> sigma_;
     base::Pointer<Particle> epsilon_; // k * t at the exponential
     base::Pointer<Particle> weight_;
-    base::OwnerPointer<CrossLinkData> data_;
-    base::OwnerPointer<CysteineCrossLinkData> ccldata_;
+    base::PointerMember<CrossLinkData> data_;
+    base::PointerMember<CysteineCrossLinkData> ccldata_;
     int constr_type_;
     double fexp_;
     bool use_CA_;

@@ -22,8 +22,8 @@ IMPCORE_BEGIN_NAMESPACE
     to all resulting pairs.
  */
 class IMPCOREEXPORT RefinedPairsPairScore : public PairScore {
-  IMP::base::OwnerPointer<Refiner> r_;
-  IMP::base::OwnerPointer<PairScore> f_;
+  IMP::base::PointerMember<Refiner> r_;
+  IMP::base::PointerMember<PairScore> f_;
 
  public:
   /** \param[in] r The Refiner to call on each particle

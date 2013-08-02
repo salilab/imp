@@ -39,7 +39,7 @@ IMPATOM_BEGIN_NAMESPACE
     particles.
  */
 class IMPATOMEXPORT LennardJonesPairScore : public PairScore {
-  IMP::base::OwnerPointer<SmoothingFunction> smoothing_function_;
+  IMP::base::PointerMember<SmoothingFunction> smoothing_function_;
   double repulsive_weight_, attractive_weight_;
 
   // Calculate A, B factors from particle well depths and radii

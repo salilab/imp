@@ -37,7 +37,7 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
   IMP_NAMED_TUPLE_2(Key, Keys, base::WeakPointer<Restraint>, restraint,
                     Assignment, assignment, );
   IMP_NAMED_TUPLE_3(RestraintData, RestraintDatas,
-                    base::OwnerPointer<ScoringFunction>, scoring_function,
+                    base::PointerMember<ScoringFunction>, scoring_function,
                     Subset, subset, double, max, );
   IMP_NAMED_TUPLE_2(RestraintSetData, RestraintSetDatas, Slice, slice,
                     base::WeakPointer<Restraint>, restraint, );
@@ -48,7 +48,7 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
     RMap rmap_;
     typedef base::map<Restraint *, SetData> SMap;
     SMap sets_;
-    base::OwnerPointer<ParticleStatesTable> pst_;
+    base::PointerMember<ParticleStatesTable> pst_;
 
    public:
     Generator(ParticleStatesTable *pst) : pst_(pst) {}

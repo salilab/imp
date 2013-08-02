@@ -178,7 +178,7 @@ public:
                   ComponentHeaders, obj->set_was_used(true);,,);
 
 protected:
-  IMP::base::OwnerPointer<AssemblyHeader> dens_data_;
+  IMP::base::PointerMember<AssemblyHeader> dens_data_;
   std::string asmb_fn_;
   std::string data_path_;
 };

@@ -71,7 +71,7 @@ IMP_OBJECTS(ParticleStates, ParticleStatesList);
     in the DominoSampler.
  */
 class IMPDOMINOEXPORT ParticleStatesTable : public IMP::base::Object {
-  typedef IMP::base::map<Particle *, IMP::base::OwnerPointer<ParticleStates> >
+  typedef IMP::base::map<Particle *, IMP::base::PointerMember<ParticleStates> >
       Map;
   Map enumerators_;
   friend class DominoSampler;
@@ -135,7 +135,7 @@ class IMPDOMINOEXPORT IndexStates : public ParticleStates {
 */
 class IMPDOMINOEXPORT XYZStates : public ParticleStates {
   algebra::Vector3Ds states_;
-  base::OwnerPointer<algebra::NearestNeighbor3D> nn_;
+  base::PointerMember<algebra::NearestNeighbor3D> nn_;
 
  public:
   XYZStates(const algebra::Vector3Ds &states)
@@ -164,7 +164,7 @@ class IMPDOMINOEXPORT XYZStates : public ParticleStates {
 class IMPDOMINOEXPORT RigidBodyStates : public ParticleStates {
   algebra::ReferenceFrame3Ds states_;
   double scale_;
-  base::OwnerPointer<algebra::NearestNeighbor6D> nn_;
+  base::PointerMember<algebra::NearestNeighbor6D> nn_;
 
  public:
   RigidBodyStates(const algebra::ReferenceFrame3Ds &states, double scale = 1);
@@ -185,7 +185,7 @@ class IMPDOMINOEXPORT RigidBodyStates : public ParticleStates {
 class IMPDOMINOEXPORT NestedRigidBodyStates : public ParticleStates {
   algebra::Transformation3Ds states_;  // states of a nested rigid body
   double scale_;
-  base::OwnerPointer<algebra::NearestNeighbor6D> nn_;
+  base::PointerMember<algebra::NearestNeighbor6D> nn_;
 
  public:
   /**
@@ -211,7 +211,7 @@ class IMPDOMINOEXPORT NestedRigidBodyStates : public ParticleStates {
     number of states.
 */
 class IMPDOMINOEXPORT CompoundStates : public ParticleStates {
-  IMP::base::OwnerPointer<ParticleStates> a_, b_;
+  IMP::base::PointerMember<ParticleStates> a_, b_;
 
  public:
   CompoundStates(ParticleStates *a, ParticleStates *b)
@@ -230,7 +230,7 @@ class IMPDOMINOEXPORT CompoundStates : public ParticleStates {
 class IMPDOMINOEXPORT RecursiveStates : public ParticleStates {
   Subset s_;
   Assignments ss_;
-  IMP::base::OwnerPointer<ParticleStatesTable> pst_;
+  IMP::base::PointerMember<ParticleStatesTable> pst_;
   ScopedScoreState sss_;
 
  public:
@@ -246,7 +246,7 @@ class IMPDOMINOEXPORT RecursiveStates : public ParticleStates {
     it will break many filters, so use with care.
 */
 class IMPDOMINOEXPORT PermutationStates : public ParticleStates {
-  IMP::base::OwnerPointer<ParticleStates> inner_;
+  IMP::base::PointerMember<ParticleStates> inner_;
   IMP::base::Vector<int> permutation_;
 
  public:

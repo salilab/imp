@@ -73,7 +73,7 @@ protected:
   void load_atomic_molecules();
   //  void sort_configurations();
   ProteinsAnchorsSamplingSpace mapping_data_;
-  base::OwnerPointer<multifit::ProteomicsData> prot_data_;
+  base::PointerMember<multifit::ProteomicsData> prot_data_;
   base::Pointer<em::DensityMap> dmap_;
   double threshold_;
   atom::Hierarchies mhs_;
@@ -96,10 +96,10 @@ protected:
   // base::Pointer<RestraintSet> rog_rs_;
   //Pointer<RestraintSet> other_rs_;//the other restraints
   //Pointer<RestraintSet> fit_rs_;//the other restraints
-  base::OwnerPointer<domino::RestraintScoreSubsetFilterTable> all_rs_filt_;
+  base::PointerMember<domino::RestraintScoreSubsetFilterTable> all_rs_filt_;
   IntKey fit_state_key_,order_key_;
   bool restraints_set_,states_set_,filters_set_;
-  base::OwnerPointer<domino::ParticleStatesTable> pst_;
+  base::PointerMember<domino::ParticleStatesTable> pst_;
   domino::SubsetFilterTables filters_;
   multifit::SettingsData *asmb_data_;
   IntPairs post_sampling_ev_pairs_;

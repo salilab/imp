@@ -32,7 +32,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 template <class UF>
 class GenericDistanceToSingletonScore : public SingletonScore {
-  IMP::base::OwnerPointer<UF> f_;
+  IMP::base::PointerMember<UF> f_;
   algebra::Vector3D pt_;
   struct StaticD {
     algebra::Vector3D v_;
@@ -91,7 +91,7 @@ IMP_GENERIC_OBJECT(DistanceToSingletonScore, distance_to_singleton_score,
     \include core/restrain_in_sphere.py
  */
 class IMPCOREEXPORT SphereDistanceToSingletonScore : public SingletonScore {
-  IMP::base::OwnerPointer<UnaryFunction> f_;
+  IMP::base::PointerMember<UnaryFunction> f_;
   algebra::Vector3D pt_;
   struct StaticD {
     algebra::Vector3D v_;

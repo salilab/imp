@@ -61,10 +61,10 @@ public:
 
  private:
   Particles ps_;
-  IMP::base::OwnerPointer<PCAAligner> pca_aligner_;
+  IMP::base::PointerMember<PCAAligner> pca_aligner_;
   double penetration_threshold_;
-  IMP::base::OwnerPointer<MapDistanceTransform> distance_transform_;
-  IMP::base::OwnerPointer<EnvelopeScore> envelope_score_;
+  IMP::base::PointerMember<MapDistanceTransform> distance_transform_;
+  IMP::base::PointerMember<EnvelopeScore> envelope_score_;
 
   // best scoring trans from last evaluate
   IMP::algebra::Transformation3D transformation_;

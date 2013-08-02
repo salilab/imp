@@ -25,7 +25,7 @@ IMPATOM_BEGIN_NAMESPACE
     \see Bonded
  */
 class IMPATOMEXPORT BondSingletonScore : public SingletonScore {
-  IMP::base::OwnerPointer<UnaryFunction> f_;
+  IMP::base::PointerMember<UnaryFunction> f_;
 
  public:
   //! Use f to penalize deviations in length
