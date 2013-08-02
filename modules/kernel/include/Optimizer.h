@@ -99,10 +99,8 @@ protected:
     */
     /**@{*/
   IMP_LIST_ACTION(public, OptimizerState, OptimizerStates, optimizer_state,
-                  optimizer_states, OptimizerState *, OptimizerStates, {
-    set_optimizer_state_optimizer(obj, this);
-    obj->set_was_used(true);
-  },
+                  optimizer_states, OptimizerState *, OptimizerStates,
+                  set_optimizer_state_optimizer(obj, this);,
                   {}, {
     Optimizer::set_optimizer_state_optimizer(obj, nullptr);
   });
