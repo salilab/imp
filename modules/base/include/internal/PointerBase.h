@@ -1,6 +1,6 @@
 /**
- *  \file base/internal/OwnerPointer.h
- *  \brief A nullptr-initialized pointer to an IMP Object.
+ *  \file base/internal/PointerBase.h
+ *  \brief A nullptr-initialized pointer to an IMP ref-counted Object.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -32,8 +32,8 @@ struct RefCountedPointerTraits {
   static void handle_unset(TT* t) { internal::unref(t); }
   static void check(const TT* o) { IMP_CHECK_OBJECT(o); }
 };
-template <class TT>
-struct OwnerPointerTraits : public RefCountedPointerTraits<TT> {
+template <class TT> // note: PointerMember replaces the old OwnerPointer
+struct PointerMemberTraits : public RefCountedPointerTraits<TT> {
   typedef TT Type;
   static void handle_set(TT* t) {
     t->set_was_used(true);

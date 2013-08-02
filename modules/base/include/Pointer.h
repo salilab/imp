@@ -15,14 +15,14 @@
 
 IMPBASE_BEGIN_NAMESPACE
 
-//! A reference counted pointer to an object.
+//! A smart pointer to a reference counted object
 /** Any time you store an Object in a C++ program, you should use a
-        Pointer, rather than a raw C++ pointer. Using a pointer manages
+        Pointer, rather than a raw C++ pointer (or PointerMember, if the pointer
+        is stored in a class). Using a pointer manages
         the reference counting and makes sure that the object is not deleted
         prematurely when, for example, all Python references go away and
-    that
-        it is deleted properly if an exception is thrown during the
-    function.
+        that it is deleted properly if an exception is thrown during the
+        function.
         Use the IMP_NEW() macro to aid creation of pointers to new objects.
 
         For example, when implementing a Restraint that uses a PairScore,
@@ -61,18 +61,25 @@ IMPBASE_BEGIN_NAMESPACE
           em::FitRestraint, notice the count is 0, and delete it, before
           passing the (now invalid) pointer back to the calling function
         - the use of reference counted pointers everywhere. This ensures
-    that
-          if, for example, em::read_map() throws an exception since the
+          that if, for example, em::read_map() throws an exception since the
           file name is invalid, the core::LeavesRefiner will be deleted
           properly.
 
         \note Do not pass Pointers as arguments to functions; pass raw C++
         pointers instead.
 
-        \note Use an IMP::WeakPointer to break cycles or to point to
+        \note Consider using IMP::base::PointerMember when storing pointers to
+              ref-counted objects as class members (the only difference is that
+              the object will be marked by the pointer as 'used')
+
+        \note Use IMP::base::WeakPointer to break cycles or to point to
         non-ref-counted objects.
 
         \param[in] O The type of IMP::RefCounted-derived object to point to
+
+        \see PointerMember
+        \see WeakPointer
+        \see UncheckedWeakPointer
     */
 template <class O>
 struct Pointer : internal::PointerBase<internal::RefCountedPointerTraits<O> > {
@@ -103,17 +110,70 @@ struct Pointer : internal::PointerBase<internal::RefCountedPointerTraits<O> > {
   }
 };
 
-//! A reference counted pointer to an Object.
-/** The object being pointed to must inherit from IMP::base::Object.
+
+//! A smart pointer to a ref-counted  Object that is a class memeber
+/** A smart pointer to a reference counted Object, which is
+    meant to be stored as a class member. This class is identical
+    to Pointer, but in addition, Object::set_was_used(true) will be called so
+    you don't get warnings about unused objects once the object is stored in the
+    owning class.
+
+    @note The object being pointed to must inherit from IMP::base::Object.
+
+    \param[in] O The type of IMP::RefCounted-derived object to point to
+
+    \see Pointer
+    \see WeakPointer
+    \see UncheckedWeakPointer
+ */
+template <class O>
+struct PointerMember : internal::PointerBase<internal::PointerMemberTraits<O> >
+{
+  typedef internal::PointerBase<internal::PointerMemberTraits<O> > P;
+  template <class Any>
+  PointerMember(const Any& o)
+      : P(o) {}
+  PointerMember() {}
+  template <class OT>
+  base::PointerMember<O>& operator=(const internal::PointerBase<OT>& o) {
+    P::operator=(o);
+    return *this;
+  }
+  template <class OT>
+  base::PointerMember<O>& operator=(OT* o) {
+    P::operator=(o);
+    return *this;
+  }
+#if defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)
+  base::PointerMember<O>& operator=(nullptr_t o) {
+    P::operator=(o);
+    return *this;
+  }
+#endif
+  base::PointerMember<O>& operator=(const P& o) {
+    P::operator=(o);
+    return *this;
+  }
+};
+
+
+
+//! A reference counted pointer to an Object
+//! \deprecated_at{2.1}
+/**
+    The object being pointed to must inherit from IMP::base::Object.
     In addition to reference counting the object like Pointer,
     Object::set_was_used(true) will be called so you don't get
     warnings about unused objects.
 
     \param[in] O The type of IMP::RefCounted-derived object to point to
+
+    \deprecated_at{2.1} Use ObjectMember instead
  */
 template <class O>
-struct OwnerPointer : internal::PointerBase<internal::OwnerPointerTraits<O> > {
-  typedef internal::PointerBase<internal::OwnerPointerTraits<O> > P;
+struct OwnerPointer : internal::PointerBase<internal::PointerMemberTraits<O> >
+{
+  typedef internal::PointerBase<internal::PointerMemberTraits<O> > P;
   template <class Any>
   OwnerPointer(const Any& o)
       : P(o) {}
@@ -138,8 +198,11 @@ struct OwnerPointer : internal::PointerBase<internal::OwnerPointerTraits<O> > {
     P::operator=(o);
     return *this;
   }
+  IMPBASE_DEPRECATED_VALUE_DECL(2.1);
 };
 
+
+/******* streaming ********/
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 template <class T>
 inline std::ostream& operator<<(std::ostream& out, base::Pointer<T> o) {
@@ -147,11 +210,18 @@ inline std::ostream& operator<<(std::ostream& out, base::Pointer<T> o) {
   return out;
 }
 template <class T>
+inline std::ostream& operator<<(std::ostream& out, base::PointerMember<T> o) {
+  out << Showable(o.get());
+  return out;
+}
+
+template <class T>
 inline std::ostream& operator<<(std::ostream& out, base::OwnerPointer<T> o) {
   out << Showable(o.get());
   return out;
 }
 #endif
+
 
 IMPBASE_END_NAMESPACE
 

@@ -14,7 +14,7 @@
 #include <IMP/base/Pointer.h>
 #include "Model.h"
 #include "Configuration.h"
-#include "internal/OwnerPointer.h"
+//#include "internal/OwnerPointer.h"
 #include "OptimizerState.h"
 #include "optimizer_state_macros.h"
 #include "internal/utility.h"

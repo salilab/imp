@@ -19,6 +19,7 @@ IMPKERNEL_DEPRECATED_HEADER(2.1, "Please use IMP/base/Pointer.h instead.");
 #ifndef IMP_DOXYGEN
 using IMP::base::Pointer;
 using IMP::base::OwnerPointer;
+using IMP::base::PointerMember;
 #endif
 IMPKERNEL_END_NAMESPACE
 

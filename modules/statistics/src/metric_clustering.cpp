@@ -12,12 +12,13 @@
 #include <IMP/statistics/internal/centrality_clustering.h>
 #include <IMP/base/vector_property_map.h>
 #include <boost/pending/disjoint_sets.hpp>
+#include <IMP/base/Pointer.h>
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
 PartitionalClustering *create_centrality_clustering(Metric *d, double far,
                                                     int k) {
-  IMP::base::OwnerPointer<Metric> dp(d);
+  IMP::base::Pointer<Metric> dp(d); // TODO: nothing is done with dp?
   unsigned int n = d->get_number_of_items();
   internal::CentralityGraph g(n);
   boost::property_map<internal::CentralityGraph, boost::edge_weight_t>::type w =
