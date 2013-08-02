@@ -19,7 +19,9 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 AllBipartitePairContainer::AllBipartitePairContainer(
     SingletonContainerAdaptor a, SingletonContainerAdaptor b, std::string name)
-    : PairContainer(a->get_model(), name), a_(a), b_(b) {}
+  : PairContainer(a->get_model(), name), a_(a), b_(b),
+    a_version_(a_->get_contents_version()),
+    b_version_(b_->get_contents_version()){}
 
 ParticleIndexPairs AllBipartitePairContainer::get_indexes() const {
   ParticleIndexes ia = a_->get_indexes();
@@ -61,7 +63,8 @@ ModelObjectsTemp AllBipartitePairContainer::do_get_inputs() const {
 }
 
 void AllBipartitePairContainer::do_before_evaluate() {
-  set_is_changed(a_->get_is_changed() || b_->get_is_changed());
+  set_is_changed(update_version(a_, a_version_)
+                 || update_version(b_, b_version_));
 }
 
 IMPCONTAINER_END_NAMESPACE

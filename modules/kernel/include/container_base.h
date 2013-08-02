@@ -47,25 +47,47 @@ class Model;
     \note Containers store \em sets and so are fundamentally unordered.
  */
 class IMPKERNELEXPORT Container : public ScoreState {
-  bool changed_;
+  int version_;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   bool readable_;
   bool writeable_;
 #endif
  protected:
-  //! This will be reset at the end of evaluate
+  //! Call this with true when the contents of the container change
+  /** See get_contents_version() to monitor the container for changes.
+
+      Static containers should call this in their constructor. */
   void set_is_changed(bool tf);
   Container(Model *m, std::string name = "Container %1%");
 
  public:
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  // lazy, should go in an internal header
+  static bool update_version(Container *c, int &version) {
+    int old = version;
+    version = c->get_contents_version();
+    return old != version;
+  }
+#endif
   //! Get contained particles
   /** Get a list of all particles contained in this one,
       given that the input containers are up to date.
   */
   virtual ParticleIndexes get_all_possible_indexes() const = 0;
 
-  /** Return true if the container changed since the last evaluate.*/
-  bool get_is_changed() const;
+  /** Return true if the container changed since the last evaluate.
+
+      \deprecated_at{2.1} Use get_contents_version() instead as that
+      is safer.*/
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+    bool get_is_changed() const;
+
+  /** Return a counter that can be used to detect when the contents
+      of the container changed. Store the value and then compare
+      against the version next time to detect if it is different. It
+      is initially 0.*/
+  int get_contents_version() const {return version_;}
 
   //! containers don't have outputs
   ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {

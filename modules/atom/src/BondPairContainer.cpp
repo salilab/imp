@@ -13,7 +13,8 @@
 IMPATOM_BEGIN_NAMESPACE
 
 BondPairContainer::BondPairContainer(SingletonContainer *sc)
-    : PairContainer(sc->get_model(), "BondPairContainer%1%"), sc_(sc) {}
+  : PairContainer(sc->get_model(), "BondPairContainer%1%"), sc_(sc),
+    sc_version_(sc_->get_contents_version()) {}
 
 ParticleIndexPairs BondPairContainer::get_indexes() const {
   ParticleIndexes ia = sc_->get_indexes();
@@ -53,7 +54,7 @@ ParticleIndexPairs BondPairContainer::get_range_indexes() const {
 }
 
 void BondPairContainer::do_before_evaluate() {
-  set_is_changed(sc_->get_is_changed());
+  set_is_changed(update_version(sc_,  sc_version_));
 }
 
 IMPATOM_END_NAMESPACE

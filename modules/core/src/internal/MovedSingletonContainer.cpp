@@ -14,6 +14,7 @@
 #include <IMP/SingletonScore.h>
 #include <IMP/PairScore.h>
 #include <IMP/base/utility.h>
+#include <boost/foreach.hpp>
 
 #include <algorithm>
 #include <sstream>
@@ -21,12 +22,14 @@
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 MovedSingletonContainer::MovedSingletonContainer(SingletonContainer *pc,
-                                                 double threshold)
+                                                 double threshold,
+                                                 std::string name)
     : IMP::internal::ListLikeSingletonContainer(pc->get_model(),
-                                                "MovedSingletonContainer%1%"),
+                                                name),
       threshold_(threshold),
       pc_(pc) {
-  first_call_ = true;
+  // make sure it doesn't match anything at the start
+  pc_version_ = -1;
   reset_all_ = false;
   reset_moved_ = false;
 }
@@ -50,10 +53,9 @@ void MovedSingletonContainer::do_after_evaluate(DerivativeAccumulator *da) {
 void MovedSingletonContainer::do_before_evaluate() {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(pc_);
-  if (first_call_ || pc_->get_is_changed()) {
+  if (update_version(pc_, pc_version_)) {
     IMP_LOG_TERSE("First call" << std::endl);
     initialize();
-    first_call_ = false;
   } else {
     ParticleIndexes mved = do_get_moved();
     IMP_LOG_TERSE("Adding to moved list: " << Showable(mved) << std::endl);
@@ -116,7 +118,7 @@ ParticleIndexes XYZRMovedSingletonContainer::do_initialize() {
     // backup_.resize(get_singleton_container()->get_number_of_particles());
   IMP_CONTAINER_FOREACH(SingletonContainer, get_singleton_container(), {
     backup_.push_back(XYZR(get_model(), _1).get_sphere());
-    moved_.push_back(_2);
+    moved_.insert(_2);
     ret.push_back(_1);
   });
   return ret;
@@ -124,14 +126,12 @@ ParticleIndexes XYZRMovedSingletonContainer::do_initialize() {
 
 void XYZRMovedSingletonContainer::do_reset_moved() {
   IMP_OBJECT_LOG;
-  std::sort(moved_.begin(), moved_.end());
+  IMP_LOG_TERSE("Resetting moved particles" << std::endl);
   IMP_CONTAINER_ACCESS(SingletonContainer, get_singleton_container(), {
-    for (unsigned int i = 0; i < moved_.size(); ++i) {
-      // skip duplicates
-      if (i > 0 && moved_[i - 1] == moved_[i]) continue;
-      backup_[moved_[i]] =
-          XYZR(get_model(), imp_indexes[moved_[i]]).get_sphere();
-    }
+      BOOST_FOREACH(int m, moved_) {
+        backup_[m] =
+            XYZR(get_model(), imp_indexes[m]).get_sphere();
+      }
   });
   moved_.clear();
 }
@@ -140,6 +140,7 @@ ParticleIndexes XYZRMovedSingletonContainer::do_get_moved() {
   ParticleIndexes ret;
   Model *m = get_model();
   IMP_CONTAINER_FOREACH(SingletonContainer, get_singleton_container(), {
+      if (moved_.find(_2) != moved_.end()) continue;
     XYZR d(m, _1);
     double dr = std::abs(d.get_radius() - backup_[_2].get_radius());
     if (!algebra::get_interiors_intersect(
@@ -147,7 +148,7 @@ ParticleIndexes XYZRMovedSingletonContainer::do_get_moved() {
             algebra::Sphere3D(backup_[_2].get_center(),
                               std::max<double>(0, get_threshold() - dr)))) {
       ret.push_back(_1);
-      moved_.push_back(_2);
+      moved_.insert(_2);
     }
   });
   return ret;
@@ -155,7 +156,8 @@ ParticleIndexes XYZRMovedSingletonContainer::do_get_moved() {
 
 XYZRMovedSingletonContainer::XYZRMovedSingletonContainer(SingletonContainer *pc,
                                                          double threshold)
-    : MovedSingletonContainer(pc, threshold) {}
+    : MovedSingletonContainer(pc, threshold, "XYZRMovedSingletonContainer%1%")
+{}
 
 void RigidMovedSingletonContainer::validate() const { IMP_OBJECT_LOG; }
 
@@ -209,7 +211,9 @@ ParticleIndexes RigidMovedSingletonContainer::do_initialize() {
   bodies_.clear();
   IMP_CONTAINER_FOREACH(SingletonContainer, get_singleton_container(), {
     do_initialize_particle(_1);
+    moved_.insert(_2);
   });
+
   return get_singleton_container()->get_indexes();
 }
 
@@ -219,8 +223,8 @@ void RigidMovedSingletonContainer::do_reset_all() {
 }
 void RigidMovedSingletonContainer::do_reset_moved() {
   IMP_OBJECT_LOG;
-  for (unsigned int i = 0; i < moved_.size(); ++i) {
-    backup_[moved_[i]] = get_data(bodies_[moved_[i]]);
+  BOOST_FOREACH(int m, moved_) {
+    backup_[m] = get_data(bodies_[m]);
   }
   moved_.clear();
 }
@@ -228,10 +232,12 @@ void RigidMovedSingletonContainer::do_reset_moved() {
 ParticleIndexes RigidMovedSingletonContainer::do_get_moved() {
   IMP_OBJECT_LOG;
   ParticleIndexes ret;
+  IMP_LOG_TERSE("Getting moved with " << moved_.size() << std::endl);
   for (unsigned int i = 0; i < bodies_.size(); ++i) {
-    if (get_distance_estimate(i) > get_threshold()) {
+    if (moved_.find(i) == moved_.end()
+        && get_distance_estimate(i) > get_threshold()) {
       ret += rbs_members_[bodies_[i]];
-      moved_.push_back(i);
+      moved_.insert(i);
     }
   }
   return ret;
@@ -239,7 +245,8 @@ ParticleIndexes RigidMovedSingletonContainer::do_get_moved() {
 
 RigidMovedSingletonContainer::RigidMovedSingletonContainer(
     SingletonContainer *pc, double threshold)
-    : MovedSingletonContainer(pc, threshold) {}
+    : MovedSingletonContainer(pc, threshold,
+                              "RigidMovedSingletonContainer%1%") {}
 
 ParticlesTemp RigidMovedSingletonContainer::get_input_particles() const {
   ParticlesTemp ret = IMP::get_particles(

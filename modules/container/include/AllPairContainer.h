@@ -23,12 +23,10 @@ IMPCONTAINER_BEGIN_NAMESPACE
 //! Return all unordered pairs of particles taken from the SingletonContainer
 /*  See also AllBipartitePairContainer, ClosePairContainer,
     CloseBipartitePairContainer for variants on the functionality provided.
-
-    \usesconstraint
  */
 class IMPCONTAINEREXPORT AllPairContainer : public PairContainer {
   IMP::base::PointerMember<SingletonContainer> c_;
-  friend class AllBipartitePairContainer;
+  int c_version_;
 
  public:
   template <class F>

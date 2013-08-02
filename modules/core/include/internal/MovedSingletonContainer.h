@@ -29,7 +29,7 @@ class IMPCOREEXPORT MovedSingletonContainer
  private:
   double threshold_;
   base::Pointer<SingletonContainer> pc_;
-  bool first_call_;
+  int pc_version_;
   bool reset_all_;
   bool reset_moved_;
   virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
@@ -47,7 +47,8 @@ class IMPCOREEXPORT MovedSingletonContainer
   void initialize();
   virtual void validate() const = 0;
   //! Track the changes with the specified keys.
-  MovedSingletonContainer(SingletonContainer *pc, double threshold);
+  MovedSingletonContainer(SingletonContainer *pc, double threshold,
+                          std::string name);
 
   //! Measure differences from the current value.
   void reset();
@@ -69,7 +70,7 @@ class IMPCOREEXPORT MovedSingletonContainer
 class IMPCOREEXPORT XYZRMovedSingletonContainer
     : public MovedSingletonContainer {
   base::Vector<algebra::Sphere3D> backup_;
-  Ints moved_;
+  base::set<int> moved_;
   virtual ParticleIndexes do_get_moved();
   virtual void do_reset_all();
   virtual void do_reset_moved();
@@ -85,7 +86,7 @@ class IMPCOREEXPORT RigidMovedSingletonContainer
     : public MovedSingletonContainer {
   base::Vector<std::pair<algebra::Sphere3D, algebra::Rotation3D> > backup_;
   ParticleIndexes bodies_;
-  Ints moved_;
+  base::set<int> moved_;
   IMP::base::map<ParticleIndex, ParticleIndexes> rbs_members_;
   virtual ParticleIndexes do_get_moved();
   virtual void do_reset_all();

@@ -29,8 +29,6 @@ IMPCONTAINER_BEGIN_NAMESPACE
     container lists all close pairs of particles where one particle is
     taken from each of the input sets.
 
-    \usesconstraint
-
     See also AllPairContainer, ClosePairContainer,
     AllBipartitePairContainer for variants on the functionality provided.
  */

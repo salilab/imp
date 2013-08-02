@@ -80,7 +80,7 @@ class Tests(IMP.test.TestCase):
         return ret
     def test_deriv(self):
         """Check non-rigid particles"""
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         m = IMP.Model()
         r0 = self._create_rigid_body(m, "0")
         r1 = self._create_rigid_body(m, "1")
@@ -93,6 +93,7 @@ class Tests(IMP.test.TestCase):
                   + [ICMover(m, x, 1) for x in nr0 + nr1]
         cpc.set_was_used(True)
         for i in range(0, 100):
+            print i
             m.update()
             self._check_close_pairs(m, cpc.get_indexes())
             self._move(movers)

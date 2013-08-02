@@ -18,7 +18,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 AllPairContainer::AllPairContainer(SingletonContainerAdaptor c,
                                    std::string name)
-    : PairContainer(c->get_model(), name), c_(c) {}
+  : PairContainer(c->get_model(), name), c_(c),
+    c_version_(c->get_contents_version()) {}
 
 ParticleIndexPairs AllPairContainer::get_indexes() const {
   ParticleIndexes ia = c_->get_indexes();
@@ -52,6 +53,6 @@ ModelObjectsTemp AllPairContainer::do_get_inputs() const {
   return ModelObjectsTemp(1, c_);
 }
 void AllPairContainer::do_before_evaluate() {
-  set_is_changed(c_->get_is_changed());
+  set_is_changed(update_version(c_, c_version_));
 }
 IMPCONTAINER_END_NAMESPACE

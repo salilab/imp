@@ -26,6 +26,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
     \usesconstraint
 */
 class IMPCONTAINEREXPORT ClassnameContainerSet : public ClassnameContainer {
+  Ints versions_;
   static ClassnameContainerSet *get_set(ClassnameContainer *c) {
     return dynamic_cast<ClassnameContainerSet *>(c);
   }
@@ -55,8 +56,7 @@ class IMPCONTAINEREXPORT ClassnameContainerSet : public ClassnameContainer {
   IMP_LIST_ACTION(public, ClassnameContainer, ClassnameContainers,
                   CLASSFUNCTIONNAME_container, CLASSFUNCTIONNAME_containers,
                   ClassnameContainer *, ClassnameContainers, {
-    obj->set_was_used(true);
-    set_is_changed(true);
+                    obj->set_was_used(true); versions_.clear();
   },
                   {
   }, );

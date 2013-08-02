@@ -11,8 +11,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 void NeighborsTable::do_before_evaluate() {
-  if (updated_ && !input_->get_is_changed()) return;
-  updated_ = true;
+  if (!kernel::Container::update_version(input_, input_version_)) return;
 
   data_.clear();
 
@@ -25,7 +24,7 @@ void NeighborsTable::do_before_evaluate() {
 NeighborsTable::NeighborsTable(kernel::PairContainer *input,
                                std::string name):
   ScoreState(input->get_model(), name),
-  input_(input), updated_(false) {
+  input_(input), input_version_(-1) {
 
 }
 

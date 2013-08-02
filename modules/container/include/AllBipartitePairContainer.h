@@ -25,12 +25,10 @@ IMPCONTAINER_BEGIN_NAMESPACE
 //! Return all bipartite pairs between two containers
 /** See also AllPairContainer, ClosePairContainer,
     CloseBipartitePairContainer for variants on the functionality provided.
-
-    \usesconstraint
  */
 class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer {
   IMP::base::PointerMember<SingletonContainer> a_, b_;
-  friend class AllPairContainer;
+  int a_version_, b_version_;
 
  public:
   template <class F>

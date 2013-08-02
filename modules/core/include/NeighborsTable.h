@@ -28,8 +28,8 @@ IMPCORE_BEGIN_NAMESPACE
 */
 class IMPCOREEXPORT NeighborsTable: public kernel::ScoreState {
   base::PointerMember<kernel::PairContainer> input_;
+  int input_version_;
   base::map<ParticleIndex, ParticleIndexes> data_;
-  bool updated_;
  protected:
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
     return ModelObjectsTemp(1, input_);

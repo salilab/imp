@@ -40,7 +40,7 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
   Map containers_;
   base::Pointer<List> unknown_container_;
   Restraints restraints_;
-  mutable bool updated_;
+  mutable int input_version_;
   bool error_on_unknown_;
   void update_lists_if_necessary() const;
   bool assign_pair(PASSINDEXTYPE index) const;

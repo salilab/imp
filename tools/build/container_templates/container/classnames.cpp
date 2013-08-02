@@ -40,7 +40,7 @@ IMPCONTAINER_BEGIN_INTERNAL_NAMESPACE
 ClassnameContainerIndex::ClassnameContainerIndex(ClassnameContainerAdaptor c,
                                                  bool handle_permutations)
     : ScoreState(c->get_model(), c->get_name() + " index"),
-      container_(c),
+      container_(c), container_version_(c->get_contents_version()),
       handle_permutations_(handle_permutations) {
   build();
 }
@@ -52,7 +52,7 @@ void ClassnameContainerIndex::build() {
 }
 
 void ClassnameContainerIndex::do_before_evaluate() {
-  if (container_->get_is_changed()) {
+  if (kernel::Container::update_version(container_, container_version_)) {
     build();
   }
 }
@@ -121,14 +121,13 @@ ParticleIndexes ClassnameContainerSet::get_all_possible_indexes() const {
 }
 
 void ClassnameContainerSet::do_before_evaluate() {
+  bool changed = false;
+  versions_.resize(get_number_of_CLASSFUNCTIONNAME_containers(), -1);
   for (unsigned int i = 0; i < get_number_of_CLASSFUNCTIONNAME_containers();
        ++i) {
-    if (get_CLASSFUNCTIONNAME_container(i)->get_is_changed()) {
-      set_is_changed(true);
-      return;
-    }
+    changed != update_version(get_CLASSFUNCTIONNAME_container(i), versions_[i]);
   }
-  set_is_changed(false);
+  set_is_changed(changed);
 }
 
 ModelObjectsTemp ClassnameContainerSet::do_get_inputs() const {
@@ -214,7 +213,7 @@ DistributeClassnamesScoreState::DistributeClassnamesScoreState(
     ClassnameContainerAdaptor input, std::string name)
     : ScoreState(input->get_model(), name) {
   input_ = input;
-  updated_ = false;
+  input_version_ = -1;
 }
 
 ModelObjectsTemp DistributeClassnamesScoreState::do_get_outputs() const {
@@ -242,8 +241,7 @@ void DistributeClassnamesScoreState::do_after_evaluate(
     DerivativeAccumulator *) {}
 
 void DistributeClassnamesScoreState::update_lists_if_necessary() const {
-  if (updated_ && !input_->get_is_changed()) return;
-  updated_ = true;
+  if (!kernel::Container::update_version(input_, input_version_)) return;
 
   base::Vector<PLURALINDEXTYPE> output(data_.size());
   IMP_CONTAINER_FOREACH(ClassnameContainer, input_, {
@@ -511,7 +509,7 @@ PredicateClassnamesRestraint::PredicateClassnamesRestraint(
     : Restraint(input->get_model(), name),
       predicate_(pred),
       input_(input),
-      updated_(false),
+      input_version_(-1),
       error_on_unknown_(true) {}
 
 void PredicateClassnamesRestraint::do_add_score_and_derivatives(
@@ -582,8 +580,7 @@ bool PredicateClassnamesRestraint::assign_pair(PASSINDEXTYPE index) const {
   }
 }
 void PredicateClassnamesRestraint::update_lists_if_necessary() const {
-  if (updated_ && !input_->get_is_changed()) return;
-  updated_ = true;
+  if (!kernel::Container::update_version(input_, input_version_)) return;
   if (unknown_container_) {
     unknown_container_->clear();
   }
