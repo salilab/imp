@@ -20,7 +20,7 @@
 #include <IMP/Model.h>
 #include <IMP/Restraint.h>
 #include <IMP/VersionInfo.h>
-#include <IMP/internal/OwnerPointer.h>
+#include <IMP/base/Pointer.h>
 
 IMPSAXS_BEGIN_NAMESPACE
 

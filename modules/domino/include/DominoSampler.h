@@ -16,7 +16,7 @@
 #include "internal/inference_utility.h"
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
-#include <IMP/internal/OwnerPointer.h>
+#include <IMP/base/Pointer.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 #ifdef SWIG

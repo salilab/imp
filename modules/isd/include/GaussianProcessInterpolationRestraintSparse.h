@@ -19,7 +19,7 @@
 #include <IMP/isd/ISDRestraint.h>
 #include <IMP/isd/GaussianProcessInterpolationSparse.h>
 #include <IMP/isd/MultivariateFNormalSufficientSparse.h>
-#include <IMP/internal/OwnerPointer.h>
+#include <IMP/base/Pointer.h>
 #include <Eigen/Dense>
 #define EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
 #include <Eigen/Sparse>
@@ -49,7 +49,7 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraintSparse
 
    private:
         base::Pointer<GaussianProcessInterpolationSparse> gpi_;
-        IMP::internal::OwnerPointer<MultivariateFNormalSufficientSparse> mvn_;
+        IMP::base::PointerMember<MultivariateFNormalSufficientSparse> mvn_;
         //number of observation points
         unsigned M_;
         cholmod_common *c_;

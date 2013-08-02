@@ -14,7 +14,7 @@
 #include <IMP/isd/ISDRestraint.h>
 #include <IMP/isd/GaussianProcessInterpolation.h>
 #include <IMP/isd/MultivariateFNormalSufficient.h>
-#include <IMP/internal/OwnerPointer.h>
+#include <IMP/base/Pointer.h>
 #include <Eigen/Dense>
 #include <Eigen/Cholesky>
 
@@ -43,8 +43,8 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint : public ISDRestraint
 
    private:
         base::Pointer<GaussianProcessInterpolation> gpi_;
-        IMP::internal::OwnerPointer<MultivariateFNormalSufficient> mvn_;
-        IMP::internal::OwnerPointer<GaussianProcessInterpolationScoreState> ss_;
+        IMP::base::PointerMember<MultivariateFNormalSufficient> mvn_;
+        IMP::base::PointerMember<GaussianProcessInterpolationScoreState> ss_;
         //number of observation points
         unsigned M_;
 

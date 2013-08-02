@@ -45,7 +45,7 @@ private:
   void save_coordinates();
 
   unsigned nsteps_;
-  IMP::internal::OwnerPointer<MolecularDynamics> md_;
+  IMP::base::PointerMember<MolecularDynamics> md_;
   std::vector<std::vector<double> > coordinates_;
   std::vector<std::vector<double> > velocities_;
 };

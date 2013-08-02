@@ -13,7 +13,7 @@
 #include <IMP/container_macros.h>
 #include <IMP/base/Pointer.h>
 #include <IMP/Model.h>
-#include <IMP/internal/OwnerPointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/algebra/Transformation3D.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE

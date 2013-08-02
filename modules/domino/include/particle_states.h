@@ -20,7 +20,7 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/algebra/ReferenceFrame3D.h>
-#include <IMP/internal/OwnerPointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/base/Vector.h>
 #include <IMP/base/map.h>
 #include <IMP/base/InputAdaptor.h>

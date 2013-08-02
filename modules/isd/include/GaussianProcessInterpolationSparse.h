@@ -158,9 +158,9 @@ class IMPISDEXPORT GaussianProcessInterpolationSparse : public base::Object
     FloatsList x_; // abscissa
     Ints n_obs_; // number of observations
     // pointer to the prior mean function
-    IMP::internal::OwnerPointer<UnivariateFunction> mean_function_;
+    IMP::base::PointerMember<UnivariateFunction> mean_function_;
     // pointer to the prior covariance function
-    IMP::internal::OwnerPointer<BivariateFunction> covariance_function_;
+    IMP::base::PointerMember<BivariateFunction> covariance_function_;
     VectorXd I_,m_;
     SparseMatrix<double> S_,W_,wx_;
     cholmod_sparse cwx_; //cholmod view of eigen object

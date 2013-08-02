@@ -16,7 +16,7 @@
 #include <IMP/base/utility_macros.h>
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
-#include <IMP/internal/OwnerPointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/base_types.h>
 IMPDOMINO_BEGIN_NAMESPACE
 

@@ -67,7 +67,7 @@ public:
 private:
   unsigned num_md_steps_,persistence_;
   unsigned persistence_counter_;
-  IMP::internal::OwnerPointer<MolecularDynamicsMover> mv_;
+  IMP::base::PointerMember<MolecularDynamicsMover> mv_;
   base::Pointer<MolecularDynamics> md_;
 
 };
