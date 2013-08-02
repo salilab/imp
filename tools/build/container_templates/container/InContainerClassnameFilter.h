@@ -30,7 +30,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
  */
 class IMPCONTAINEREXPORT InContainerClassnameFilter
     : public ClassnamePredicate {
-  IMP::base::OwnerPointer<internal::ClassnameContainerIndex> c_;
+  IMP::base::PointerMember<internal::ClassnameContainerIndex> c_;
 
  public:
   InContainerClassnameFilter(ClassnameContainer *c,

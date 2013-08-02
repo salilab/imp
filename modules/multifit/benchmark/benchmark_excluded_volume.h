@@ -52,7 +52,7 @@ void test_one(std::string name,
               XYZ to_move,
               bool eig) {
   // Take ownership of ScoringFunction object and make sure it's refcounted
-  base::OwnerPointer<ScoringFunction> osf = sf;
+  base::PointerMember<ScoringFunction> osf = sf;
   IMP::algebra::BoundingBox3D bb
     = IMP::algebra::BoundingBox3D(IMP::algebra::Vector3D(-100,-100,-100),
                                   IMP::algebra::Vector3D( 100, 100, 100));

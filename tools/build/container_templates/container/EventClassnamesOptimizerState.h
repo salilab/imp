@@ -24,8 +24,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
     range [min_count, max_count).
  */
 class IMPCONTAINEREXPORT EventClassnamesOptimizerState : public OptimizerState {
-  IMP::base::OwnerPointer<ClassnamePredicate> pred_;
-  IMP::base::OwnerPointer<ClassnameContainer> container_;
+  IMP::base::PointerMember<ClassnamePredicate> pred_;
+  IMP::base::PointerMember<ClassnameContainer> container_;
   int v_;
   int min_, max_;
 

@@ -48,12 +48,12 @@ private:
   void compute_zscores();
 
 private:
-  IMP::base::OwnerPointer<IMP::Model> model_;
+  IMP::base::PointerMember<IMP::Model> model_;
   IMP::Particles rec_particles_, lig_particles_;
   std::string rec_file_name_, lig_file_name_;
-  IMP::base::OwnerPointer<IMP::em::DensityMap> map_;
-  IMP::base::OwnerPointer<IMP::em::MapDistanceTransform> distance_transform_;
-  IMP::base::OwnerPointer<IMP::em::EnvelopeScore> envelope_score_;
+  IMP::base::PointerMember<IMP::em::DensityMap> map_;
+  IMP::base::PointerMember<IMP::em::MapDistanceTransform> distance_transform_;
+  IMP::base::PointerMember<IMP::em::EnvelopeScore> envelope_score_;
   MapScorer *cc_score_;
   float dist_thr_;
   float density_threshold_;

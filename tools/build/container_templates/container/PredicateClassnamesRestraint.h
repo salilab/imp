@@ -33,8 +33,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
     different predicate values for different orderings.
 */
 class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
-  base::OwnerPointer<ClassnamePredicate> predicate_;
-  base::OwnerPointer<ClassnameContainer> input_;
+  base::PointerMember<ClassnamePredicate> predicate_;
+  base::PointerMember<ClassnameContainer> input_;
   typedef IMP::kernel::internal::InternalDynamicListClassnameContainer List;
   typedef base::map<unsigned int, base::Pointer<List> > Map;
   Map containers_;

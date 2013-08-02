@@ -30,8 +30,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
     \see ClassnameOptimizerState
  */
 class IMPCONTAINEREXPORT ClassnamesOptimizerState : public OptimizerState {
-  IMP::base::OwnerPointer<ClassnameModifier> f_;
-  IMP::base::OwnerPointer<ClassnameContainer> c_;
+  IMP::base::PointerMember<ClassnameModifier> f_;
+  IMP::base::PointerMember<ClassnameContainer> c_;
 
  public:
   /** \param[in] c The Container to hold the elements to process

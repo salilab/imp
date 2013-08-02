@@ -33,9 +33,9 @@ IMPCONTAINER_BEGIN_NAMESPACE
     \note The output containers contents are not necessarily disjoint.
 */
 class IMPCONTAINEREXPORT DistributeClassnamesScoreState : public ScoreState {
-  base::OwnerPointer<ClassnameContainer> input_;
+  base::PointerMember<ClassnameContainer> input_;
   typedef boost::tuple<base::Pointer<DynamicListClassnameContainer>,
-                       base::OwnerPointer<ClassnamePredicate>, int> Data;
+                       base::PointerMember<ClassnamePredicate>, int> Data;
   base::Vector<Data> data_;
   mutable bool updated_;
   void update_lists_if_necessary() const;
