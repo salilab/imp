@@ -159,7 +159,6 @@ struct PointerMember : internal::PointerBase<internal::PointerMemberTraits<O> >
 
 
 //! A reference counted pointer to an Object
-//! \deprecated_at{2.1}
 /**
     The object being pointed to must inherit from IMP::base::Object.
     In addition to reference counting the object like Pointer,
@@ -174,9 +173,13 @@ template <class O>
 struct OwnerPointer : internal::PointerBase<internal::PointerMemberTraits<O> >
 {
   typedef internal::PointerBase<internal::PointerMemberTraits<O> > P;
+  /** \deprecated_at{2.1} Use ObjectMember instead */
+  IMPBASE_DEPRECATED_VALUE_DECL(2.1)
   template <class Any>
   OwnerPointer(const Any& o)
       : P(o) {}
+  /** \deprecated_at{2.1} Use ObjectMember instead */
+  IMPBASE_DEPRECATED_VALUE_DECL(2.1)
   OwnerPointer() {}
   template <class OT>
   base::OwnerPointer<O>& operator=(const internal::PointerBase<OT>& o) {
@@ -198,7 +201,6 @@ struct OwnerPointer : internal::PointerBase<internal::PointerMemberTraits<O> >
     P::operator=(o);
     return *this;
   }
-  IMPBASE_DEPRECATED_VALUE_DECL(2.1);
 };
 
 
