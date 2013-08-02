@@ -18,7 +18,6 @@
 #include <IMP/base/Object.h>
 #include <IMP/ConfigurationSet.h>
 #include <IMP/SingletonContainer.h>
-//#include <IMP/internal/OwnerPointer.h>
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
