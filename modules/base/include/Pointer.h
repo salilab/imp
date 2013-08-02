@@ -174,8 +174,8 @@ struct OwnerPointer : internal::PointerBase<internal::PointerMemberTraits<O> >
 {
   typedef internal::PointerBase<internal::PointerMemberTraits<O> > P;
   /** \deprecated_at{2.1} Use ObjectMember instead */
-  IMPBASE_DEPRECATED_VALUE_DECL(2.1)
   template <class Any>
+  IMPBASE_DEPRECATED_VALUE_DECL(2.1)
   OwnerPointer(const Any& o)
       : P(o) {}
   /** \deprecated_at{2.1} Use ObjectMember instead */
