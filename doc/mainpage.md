@@ -29,7 +29,7 @@ Additional developer documentation:
 An overview of some of the various modules currently available. Representative classes and functions are shown.
 | Module|Representation|Scoring|Sampling|Analysis|
 |-------|--------------|-------|--------|--------|
-| IMP.kernel | IMP::kernel::Particle, IMP::kernel::Model | IMP::kernel::Restraint, IMP::kernel::ScoringFunction, IMP::kernel::create_restraint() | IMP::kernel::Optimizer, IMP::kernel::Sampler | IMP::kernel::ConfigurationSet |
+| IMP::kernel | IMP::kernel::Particle, IMP::kernel::Model | IMP::kernel::Restraint, IMP::kernel::ScoringFunction, IMP::kernel::create_restraint() | IMP::kernel::Optimizer, IMP::kernel::Sampler | IMP::kernel::ConfigurationSet |
 | IMP::algebra | IMP::algebra::VectorD, IMP::algebra::SphereD, IMP::algebra::GridD, IMP::algebra::Transformation3D... | | IMP::algebra::get_random_vector_on() |  |
 |IMP::statistics | IMP::statistics::Embedding, IMP::statistics::Metric | | | IMP::statistics::create_lloyds_kmeans(), IMP::statistics::create_connectivity_clustering(), IMP::statistics::HistogramD,... |
 | IMP::display | IMP::display::Geometry | | | IMP::display::PymolWriter, IMP::display::WriteOptimizerState... |
