@@ -75,8 +75,11 @@ void ClassnameContainer::apply(const ClassnameModifier *sm) const {
 
 ClassnameContainerAdaptor::ClassnameContainerAdaptor(ClassnameContainer *c)
     : P(c) {}
+
 ClassnameContainerAdaptor::ClassnameContainerAdaptor(
     const PLURALVARIABLETYPE &t, std::string name) {
+  IMP_USAGE_CHECK(t.size() > 0,
+                  "An Empty PLURALVARIABLETYPE list cannot be adapted to container since it lacks model info");
   Model *m = internal::get_model(t);
   IMP_NEW(internal::InternalListClassnameContainer, c, (m, name));
   c->set(IMP::kernel::internal::get_index(t));

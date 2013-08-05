@@ -145,8 +145,11 @@ class IMPKERNELEXPORT ClassnameContainerAdaptor :
       : P(c) {}
 
   /**
-     Adapts the list t to ClassnameContainer
-   */
+     Adapts the non-empty list t to ClassnameContainer
+
+     @param t a non-empty list of PLURALVARIABLETYPE
+     @param name name for the constructed ClassnameContainer
+  */
   ClassnameContainerAdaptor(const PLURALVARIABLETYPE &t,
                             std::string name = "ClassnameContainerAdaptor%1%");
 };
