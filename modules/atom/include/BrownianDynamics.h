@@ -14,6 +14,9 @@
 #include "Simulator.h"
 #include "atom_macros.h"
 #include <IMP/kernel/Particle.h>
+#include <IMP/kernel/PairPredicate.h>
+#include <IMP/kernel/SingletonPredicate.h>
+#include <IMP/core/NeighborsTable.h>
 #include <IMP/Optimizer.h>
 #include <IMP/kernel/internal/units.h>
 #include <IMP/algebra/Vector3D.h>
@@ -64,7 +67,22 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
                        its default, see also Simulator::simulate_wave()
   */
   BrownianDynamics(kernel::Model *m, std::string name = "BrownianDynamics%1%",
-                   double wave_factor = 1.0);
+                   double wave_factor=1.0);
+ /** You can add predicates which will be applied to the neighbor list of
+      each particle after it has been moved. If any of the predicates returns
+      0, then the move will be rejected.
+      \note This is in active development and will change. Most likely to a
+      kernel::SingletonPredicate based mechanism which wraps up the neighbor
+      computations internally.
+
+      \note The neighbors list is updated _before_ any moves are made, for
+      efficiency. So make sure that your distance bounds include potential
+      moves. */
+  void add_move_predicate(kernel::PairPredicate *pp, int reject_value,
+                          double distance_bound,
+                          double slack);
+  /** See the other add_move_predicate */
+  void add_move_predicate(kernel::SingletonPredicate *sp, int reject_value);
   void set_maximum_move(double ms) { max_step_ = ms; }
   void set_use_stochastic_runge_kutta(bool tf) { srk_ = tf; }
 
@@ -85,6 +103,15 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
   void advance_coordinates_0(kernel::ParticleIndex pi, unsigned int i,
                              double dtfs, double ikT);
   void advance_orientation_0(kernel::ParticleIndex pi, double dtfs, double ikT);
+  IMP_NAMED_TUPLE_4(Data, Datas, base::PointerMember<kernel::PairPredicate>,
+                    predicate, int, value, double, distance, double, slack,);
+  Datas rejection_predicates_;
+  IMP_NAMED_TUPLE_2(SingletonData, SingletonDatas,
+                   base::PointerMember<kernel::SingletonPredicate>, predicate,
+                    int, value, );
+  SingletonDatas singleton_rejection_predicates_;
+  kernel::ScoreStates rejection_score_states_;
+  base::Vector<base::PointerMember<core::NeighborsTable> > rejection_tables_;
 
   double max_step_;
   bool srk_;

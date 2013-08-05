@@ -15,12 +15,15 @@
 #include <IMP/atom/constants.h>
 #include <IMP/base/warning_macros.h>
 #include <IMP/kernel/internal/constants.h>
-#include <IMP/kernel/internal/units.h>
+#include <IMP/core/GridClosePairsFinder.h>
+#include <IMP/internal/units.h>
+#include <IMP/kernel/internal/InternalListSingletonContainer.h>
 #include <boost/random/normal_distribution.hpp>
 #include <IMP/atom/Diffusion.h>
 #include <IMP/Configuration.h>
 #include <IMP/algebra/LinearFit.h>
 #include <IMP/base/thread_macros.h>
+#include <boost/foreach.hpp>
 
 #include <IMP/core/ConjugateGradients.h>
 #include <IMP/core/rigid_bodies.h>
@@ -177,7 +180,41 @@ void BrownianDynamics::advance_coordinates_0(kernel::ParticleIndex pi,
   if (!srk_) {
     check_delta(delta, max_step_);
   }
-  xd.set_coordinates(xd.get_coordinates() + delta);
+  algebra::Vector3D old_coordinates = xd.get_coordinates();
+  xd.set_coordinates(old_coordinates + delta);
+  bool reset = false;
+  BOOST_FOREACH(const SingletonData &sd, singleton_rejection_predicates_) {
+    if (sd.get_predicate()->get_value_index(get_model(), pi)
+        == sd.get_value()) {
+      IMP_LOG_TERSE("Rejected move of particle " << pi << " to "
+                    << old_coordinates + delta
+                    << " due to " << sd.get_predicate()->get_name()
+                    << std::endl);
+      reset = true;
+      break;
+    }
+  }
+  if (!reset) {
+    for (unsigned int i = 0; i < rejection_predicates_.size(); ++i) {
+      BOOST_FOREACH(ParticleIndex ni, rejection_tables_[i]->get_neighbors(pi)) {
+      if (rejection_predicates_[i].get_predicate()->get_value_index(get_model(),
+                                                   ParticleIndexPair(pi, ni))
+            == rejection_predicates_[i].get_value()) {
+          IMP_LOG_TERSE("Rejected move of particle " << pi << " to "
+                        << old_coordinates + delta
+                        << " due to "
+                        << rejection_predicates_[i].get_predicate()->get_name()
+                        << " with " << ni << core::XYZR(get_model(), ni)
+                        << std::endl);
+          reset = true;
+          break;
+        }
+      }
+    }
+  }
+  if (reset) {
+    xd.set_coordinates(old_coordinates);
+  }
 }
 
 void BrownianDynamics::advance_orientation_0(kernel::ParticleIndex pi,
@@ -234,7 +271,10 @@ void BrownianDynamics::advance_chunk(double dtfs, double ikT,
 /**
     dx= D/2kT*(F(x0)+F(x0+D/kTF(x0)dt +R)dt +R
  */
-double BrownianDynamics::do_step(const kernel::ParticleIndexes &ps, double dt) {
+double BrownianDynamics::do_step(const ParticleIndexes &ps, double dt) {
+  BOOST_FOREACH(ScoreState *ss, rejection_score_states_) {
+    ss->before_evaluate();
+  }
   double dtfs(dt);
   double ikT = 1.0 / get_kt();
   get_scoring_function()->evaluate(true);
@@ -255,6 +295,58 @@ double BrownianDynamics::do_step(const kernel::ParticleIndexes &ps, double dt) {
     }
   }
   return dt;
+}
+
+
+void BrownianDynamics::add_move_predicate(kernel::PairPredicate *pp,
+                                          int reject_value,
+                                          double distance_bound,
+                                          double slack) {
+  rejection_predicates_.push_back(Data(pp, reject_value,
+                                       distance_bound, slack));
+}
+
+void BrownianDynamics::add_move_predicate(kernel::SingletonPredicate *sp,
+                                          int reject_value) {
+  singleton_rejection_predicates_.push_back(SingletonData(sp, reject_value));
+}
+
+
+void BrownianDynamics::setup(const kernel::ParticleIndexes &pis) {
+  IMP_IF_LOG(TERSE) {
+    ParticlesTemp ps = IMP::internal::get_particle(get_model(), pis);
+    double dtfs = get_maximum_time_step();
+    double ikT = 1.0 / get_kt();
+    double ms = 0;
+    double mf = 0;
+    get_scoring_function()->evaluate(true);
+    for (unsigned int i = 0; i < ps.size(); ++i) {
+      double c = get_sigma(get_model(), pis[i], dtfs);
+      ms = std::max(ms, c);
+      for (unsigned int j = 0; j < 3; ++j) {
+        double f = get_force(get_model(), pis[i], j, dtfs, ikT);
+        mf = std::max(mf, f);
+      }
+    }
+    IMP_LOG_TERSE("Maximum sigma is " << ms << std::endl);
+    IMP_LOG_TERSE("Maximum force is " << mf << std::endl);
+  }
+  forces_.resize(pis.size());
+
+
+  rejection_score_states_.clear();
+  rejection_tables_.clear();
+  IMP_NEW(kernel::internal::InternalListSingletonContainer, lsc,
+          (get_model(), "BD Particles"));
+  lsc->set(pis);
+  BOOST_FOREACH(const Data &d, rejection_predicates_) {
+    IMP_NEW(core::internal::CoreClosePairContainer, cpc,
+            (lsc, d.get_distance(),
+             new core::GridClosePairsFinder(), d.get_slack()));
+    rejection_score_states_.push_back(cpc);
+    rejection_tables_.push_back(new core::NeighborsTable(cpc));
+    rejection_score_states_.push_back(rejection_tables_.back());
+  }
 }
 
 namespace {
