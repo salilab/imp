@@ -224,6 +224,7 @@ class IMPKERNELEXPORT Model : public base::Object
 
 #ifdef IMP_DOXYGEN
   /** \name Accessing attributes
+      \anchor model_attributes
       All the attribute data associated with each Particle is stored in the
       Model. For each type of attribute, there are the methods detailed below
       (where, eg, TypeKey is FloatKey or StringKey)
