@@ -64,11 +64,11 @@ tar -C ${GIT_TOP} --exclude .git -cf - imp | tar -xf -
 SORTDATE=`date -u "+%Y%m%d"`
 DATE=`date -u +'%Y/%m/%d'`
 IMPINSTALL=${IMPTOP}/${SORTDATE}-${shortrev}
-# Make sure VERSION is acceptable as a version number (no spaces or /, -)
-IMPVERSION="`cat imp/VERSION | sed -e 's/[ /-]/./g'`"
 if [ ${BRANCH} = "develop" ]; then
   # For nightly builds, prepend the date so the packages are upgradeable
-  IMPVERSION="${SORTDATE}.${IMPVERSION}"
+  IMPVERSION="${SORTDATE}.develop.${shortrev}"
+else
+  IMPVERSION="`cat imp/VERSION | sed -e 's/[ /-]/./g'`"
 fi
 IMPSRCTGZ=${IMPINSTALL}/build/sources/imp-${IMPVERSION}.tar.gz
 rm -rf ${IMPINSTALL}
@@ -80,7 +80,7 @@ ln -s ${IMPINSTALL} ${IMPTOP}/.SVN-new
 
 # Add build date to nightly docs
 if [ ${BRANCH} = "develop" ]; then
-  IMPVER="`sed -e 's/ /:/g' < imp/VERSION`"
+  IMPVER="develop.${shortrev}"
   (cd imp/tools/build/doxygen_templates && sed -e "s#^PROJECT_NUMBER.*#PROJECT_NUMBER = ${IMPVER}, ${DATE}#" < Doxyfile.in > .dox && mv .dox Doxyfile.in)
 fi
 
