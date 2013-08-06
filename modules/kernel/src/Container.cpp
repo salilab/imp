@@ -24,10 +24,12 @@ Container::Container(Model *m, std::string name) : ScoreState(m, name) {
 #endif
 }
 
-void Container::set_is_changed(bool tr) {
+void Container::set_is_changed(bool tf) {
   validate_writable();
-  ++version_;
-  if (version_ < 0) version_ = 0;
+  if (tf) {
+    ++version_;
+    if (version_ < 0) version_ = 0;
+  }
 }
 
 bool Container::get_is_changed() const {
