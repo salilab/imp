@@ -163,19 +163,13 @@ class Module(Component):
     """Represent an IMP module"""
     def __init__(self, name):
         Component.__init__(self, name)
-        self.target['build'] = 'imp_' + name + '_build'
-        # Build C++ tests/benchmarks/examples before running them
-        self.target['test'] = 'imp_' + name + '_tests'
-        self.target['benchmark'] = 'imp_' + name + '_benchmarks'
-        self.target['example'] = 'imp_' + name + '_examples'
+        self.target['build'] = 'IMP.' + name
 
 
 class RMFDependency(Component):
     def __init__(self, name):
         Component.__init__(self, name)
-        self.target['build'] = 'RMF_build'
-        self.target['test'] = 'RMF_tests'
-        self.target['benchmark'] = 'RMF_benchmarks'
+        self.target['build'] = 'RMF.all'
 
 
 class Builder(object):
