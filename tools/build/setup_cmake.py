@@ -72,7 +72,7 @@ def make_dependency_check(descr_path, module, module_path):
 %(cmake)s
 endif(DEFINED %(PKGNAME)s_INTERNAL)"""%descr
         else:
-            descr["on_failure"]="""message("%s not found")\nfile(WRITE "${PROJECT_BINARY_DIR}/data/build_info/%s" "ok=False")"""%(name, name)
+            descr["on_failure"]="""message("%s not found")\nfile(WRITE "${CMAKE_BINARY_DIR}/data/build_info/%s" "ok=False")"""%(name, name)
             descr["on_setup"]=""
         output=dep_template%descr
         tools.rewrite(filename, output)
@@ -81,12 +81,12 @@ endif(DEFINED %(PKGNAME)s_INTERNAL)"""%descr
 def get_sources(module, path, subdir, pattern):
     matching = tools.get_glob([os.path.join(path, subdir, pattern),
                               os.path.join(path, subdir, "*", pattern)])
-    return "\n".join(["${PROJECT_SOURCE_DIR}/%s" \
+    return "\n".join(["${CMAKE_SOURCE_DIR}/%s" \
                      % tools.to_cmake_path(x) for x in matching])
 
 def get_app_sources(path, patterns):
     matching = tools.get_glob([os.path.join(path, x) for x in patterns])
-    return "\n".join(["${PROJECT_SOURCE_DIR}/%s" \
+    return "\n".join(["${CMAKE_SOURCE_DIR}/%s" \
                      % tools.to_cmake_path(x) for x in matching \
                        if not x.endswith('dependencies.py')])
 
@@ -114,14 +114,14 @@ def setup_module(module, path, ordered):
             deps.append(ret)
 
     if len(checks) > 0:
-        tools.rewrite("modules/%s/compiler/CMakeLists.txt"%module, "\n".join(["include(${PROJECT_SOURCE_DIR}/%s)\n"%tools.to_cmake_path(x) for x in checks]))
-        contents.append("add_subdirectory(${PROJECT_SOURCE_DIR}/modules/%s/compiler)"%module)
+        tools.rewrite("modules/%s/compiler/CMakeLists.txt"%module, "\n".join(["include(${CMAKE_SOURCE_DIR}/%s)\n"%tools.to_cmake_path(x) for x in checks]))
+        contents.append("add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/compiler)"%module)
     if len(deps) > 0:
-        tools.rewrite("modules/%s/dependency/CMakeLists.txt"%module, "\n".join(["include(${PROJECT_SOURCE_DIR}/%s)"%tools.to_cmake_path(x) for x in deps]))
-        contents.append("add_subdirectory(${PROJECT_SOURCE_DIR}/modules/%s/dependency)"%module)
+        tools.rewrite("modules/%s/dependency/CMakeLists.txt"%module, "\n".join(["include(${CMAKE_SOURCE_DIR}/%s)"%tools.to_cmake_path(x) for x in deps]))
+        contents.append("add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/dependency)"%module)
     local=os.path.join(path, "Setup.cmake")
     if os.path.exists(local):
-        contents.append("include(${PROJECT_SOURCE_DIR}/%s)" \
+        contents.append("include(${CMAKE_SOURCE_DIR}/%s)" \
                         % tools.to_cmake_path(local))
 
     values= {"name":module}
@@ -129,7 +129,7 @@ def setup_module(module, path, ordered):
     values["CPPNAME"]=module.upper().replace('_', '')
     data=tools.get_module_description(".", module, "")
     all_modules = tools.get_all_modules(".", [module], "", ordered)
-    modules=["${IMP_%s_LIBRARY}"%s.upper() for s in all_modules]
+    modules=["${IMP_%s_LIBRARY}"%s for s in all_modules]
     dependencies=["${%s_LIBRARIES}"%s.upper() for s in tools.get_all_dependencies(".", [module], "", ordered)]
     values["modules"]=";".join(modules)
     values["tags"]="\n".join(["${IMP_%s_DOC}"%m.upper() for m in all_modules])
@@ -167,11 +167,11 @@ def setup_module(module, path, ordered):
     tools.rewrite(benchmark, benchmark_template%values)
     tools.rewrite(examples, examples_template%values)
     values["tests"] = "\n".join(contents)
-    values["subdirs"] = """add_subdirectory(${PROJECT_SOURCE_DIR}/modules/%s/src)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/%s/test)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/%s/examples)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/%s/benchmark)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/%s/bin)"""%((module,)*5)
+    values["subdirs"] = """add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/src)
+add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/test)
+add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/examples)
+add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/benchmark)
+add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/bin)"""%((module,)*5)
 
     out=os.path.join(path, "CMakeLists.txt")
     tools.rewrite(out, module_template%values)
@@ -189,7 +189,7 @@ def setup_application(options, name, ordered):
     data=tools.get_application_description(".", name, "")
     all_modules=data["required_modules"]+tools.get_all_modules(".", data["required_modules"], "", ordered)
     all_dependencies=tools.get_all_dependencies(".", all_modules, "", ordered)
-    modules=["${IMP_%s_LIBRARY}"%s.upper() for s in all_modules]
+    modules=["${IMP_%s_LIBRARY}"%s for s in all_modules]
     dependencies=["${%s_LIBRARIES}"%s.upper() for s in all_dependencies]
     values["modules"]="\n".join(modules)
     values["tags"]="\n".join(["${IMP_%s_DOC}"%m.upper() for m in all_modules])
@@ -198,22 +198,23 @@ def setup_application(options, name, ordered):
     exes= tools.get_application_executables(path)
     exedirs = list(set(sum([x[1] for x in exes], [])))
     exedirs.sort()
-    localincludes="\n     ".join(["${PROJECT_SOURCE_DIR}/"+tools.to_cmake_path(x) for x in exedirs])
+    localincludes="\n     ".join(["${CMAKE_SOURCE_DIR}/"+tools.to_cmake_path(x) for x in exedirs])
     bintmpl="""
-   add_executable("%(cname)s" %(cpps)s)
-   target_link_libraries(%(cname)s
+   add_executable("IMP.%(name)s-%(cname)s" %(cpps)s)
+   target_link_libraries(IMP.%(name)s-%(cname)s
     %(modules)s
     %(dependencies)s)
-   set_target_properties(%(cname)s PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
-   install(TARGETS %(cname)s DESTINATION ${CMAKE_INSTALL_BINDIR})
-   set(bins ${bins} %(cname)s)
+   set_target_properties(IMP.%(name)s-%(cname)s PROPERTIES OUTPUT_NAME %(cname)s RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+   set_property(TARGET "IMP.%(name)s-%(cname)s" PROPERTY FOLDER "IMP.%(name)s")
+   install(TARGETS IMP.%(name)s-%(cname)s DESTINATION ${CMAKE_INSTALL_BINDIR})
+   set(bins ${bins} IMP.%(name)s-%(cname)s)
 """
     bins=[]
     for e in exes:
         cpps= e[0]
         cname= os.path.splitext(os.path.split(cpps[0])[1])[0]
         values["cname"]=cname
-        values["cpps"]= "\n".join(["${PROJECT_SOURCE_DIR}/%s" \
+        values["cpps"]= "\n".join(["${CMAKE_SOURCE_DIR}/%s" \
                                   % tools.to_cmake_path(c) for c in cpps])
         bins.append(bintmpl%values)
     values["bins"] = "\n".join(bins)
@@ -245,7 +246,7 @@ def main():
 
     for a in [x for x in tools.get_glob([os.path.join("applications", "*")]) if os.path.isdir(x)]:
         main.append(setup_application(options, os.path.split(a)[1], ordered))
-    #contents=["include(${PROJECT_SOURCE_DIR}/%s)"%x for x in main]
+    #contents=["include(${CMAKE_SOURCE_DIR}/%s)"%x for x in main]
     #tools.rewrite(os.path.join("cmake", "CMakeLists.txt"), "\n".join(contents))
 
 if __name__ == '__main__':

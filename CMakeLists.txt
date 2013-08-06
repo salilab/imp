@@ -2,18 +2,20 @@ cmake_minimum_required(VERSION 2.8.3)
 
 project(IMP)
 
-if(${PROJECT_SOURCE_DIR} MATCHES ${PROJECT_BINARY_DIR})
-   message(FATAL_ERROR "In-source building not supported: " ${PROJECT_SOURCE_DIR} " == "${PROJECT_BINARY_DIR} )
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+if(${CMAKE_SOURCE_DIR} MATCHES ${CMAKE_BINARY_DIR})
+   message(FATAL_ERROR "In-source building not supported: " ${CMAKE_SOURCE_DIR} " == "${CMAKE_BINARY_DIR} )
 endif()
 
-include(${PROJECT_SOURCE_DIR}/CMakeModules/ExecuteProcess.cmake)
-include(${PROJECT_SOURCE_DIR}/CMakeModules/CheckCompiles.cmake)
+include(${CMAKE_SOURCE_DIR}/CMakeModules/ExecuteProcess.cmake)
+include(${CMAKE_SOURCE_DIR}/CMakeModules/CheckCompiles.cmake)
 
-imp_execute_process("check_common_problems" ${PROJECT_SOURCE_DIR} COMMAND ${PROJECT_SOURCE_DIR}/tools/build/check_common_problems.py)
+imp_execute_process("check_common_problems" ${CMAKE_SOURCE_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/check_common_problems.py)
 
-imp_execute_process("setup_cmake" ${PROJECT_SOURCE_DIR} COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_cmake.py)
+imp_execute_process("setup_cmake" ${CMAKE_SOURCE_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_cmake.py)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/CMakeModules)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/CMakeModules)
 
 enable_testing()
 
@@ -48,7 +50,7 @@ include(FindCurrentDoxygen)
 # clear list
 set(IMP_DOC_DEPENDS "" CACHE INTERNAL "")
 if(${IMP_DOXYGEN_FOUND})
-imp_execute_process("setup_doxygen" ${PROJECT_BINARY_DIR} COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_doxygen.py "--source=${PROJECT_SOURCE_DIR}")
+imp_execute_process("setup_doxygen" ${CMAKE_BINARY_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_doxygen.py "--source=${CMAKE_SOURCE_DIR}")
 endif()
 
 if(IMP_STATIC)
@@ -74,7 +76,7 @@ endforeach(m)
 
 if(NOT DEFINED PYTHON_INCLUDE_DIRS AND NOT IMP_STATIC)
   execute_process(COMMAND ${IMP_PYTHON} -c "import sys; print '%d.%d.%d' % sys.version_info[:3]"
-                WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                 OUTPUT_VARIABLE python_full_version
                 OUTPUT_STRIP_TRAILING_WHITESPACE)
   string(REGEX REPLACE "^([0-9]+\\.[0-9]+).*" "\\1" python_version
@@ -103,7 +105,7 @@ if(NOT DEFINED SETUP_EXT)
 endif()
 
 if("${SETUP_EXT}" STREQUAL "sh")
-  set(IMP_TEST_SETUP "${PROJECT_BINARY_DIR}/setup_environment.sh")
+  set(IMP_TEST_SETUP "${CMAKE_BINARY_DIR}/setup_environment.sh")
 else()
   # On Windows the batch file is run once to set up the test environment, not
   # per test
@@ -121,30 +123,30 @@ endif()
 
 include(InstallDeref)
 
-set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 
-include_directories("${PROJECT_BINARY_DIR}/include")
+include_directories("${CMAKE_BINARY_DIR}/include")
 
-imp_execute_process("setup" ${PROJECT_BINARY_DIR} COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup.py
-                    --source=${PROJECT_SOURCE_DIR}
+imp_execute_process("setup" ${CMAKE_BINARY_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup.py
+                    --source=${CMAKE_SOURCE_DIR}
                     --disabled=${IMP_DISABLED_MODULES}
                     --datapath=${IMP_DATAPATH})
 
-imp_execute_process("setup_containers" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_containers.py
-                    ${PROJECT_SOURCE_DIR})
+imp_execute_process("setup_containers" ${CMAKE_BINARY_DIR}
+                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_containers.py
+                    ${CMAKE_SOURCE_DIR})
 
-imp_execute_process("setup_all" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_all.py
-                    --source=${PROJECT_SOURCE_DIR})
+imp_execute_process("setup_all" ${CMAKE_BINARY_DIR}
+                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_all.py
+                    --source=${CMAKE_SOURCE_DIR})
 
-imp_execute_process("setup_module_alias for compatibility" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module_alias.py
-                    --source=${PROJECT_SOURCE_DIR} --module=base --alias=compatibility --deprecate=2.1)
+imp_execute_process("setup_module_alias for compatibility" ${CMAKE_BINARY_DIR}
+                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_module_alias.py
+                    --source=${CMAKE_SOURCE_DIR} --module=base --alias=compatibility --deprecate=2.1)
 
-imp_execute_process("setup_module_alias for kernel" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module_alias.py
-                    --source=${PROJECT_SOURCE_DIR} --module=kernel "--alias=")
+imp_execute_process("setup_module_alias for kernel" ${CMAKE_BINARY_DIR}
+                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_module_alias.py
+                    --source=${CMAKE_SOURCE_DIR} --module=kernel "--alias=")
 
 # Don't link in libpython (that prevents the extension from being used in
 # later compatible versions of Python), except on Windows where all DLL
@@ -154,11 +156,6 @@ IF(WIN32)
 ELSE(WIN32)
   set(SWIG_PYTHON_LIBRARIES )
 ENDIF(WIN32)
-# Apple linkers complain by default if there are undefined symbols
-IF(APPLE)
-  SET(CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS
-    "${CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS} -flat_namespace -undefined suppress")
-ENDIF(APPLE)
 
 # Visual Studio always adds Release or Debug to binary directories
 if (${CMAKE_GENERATOR} MATCHES "Visual Studio")
@@ -175,27 +172,27 @@ if("${Boost_RANDOM_LIBRARY}" MATCHES ".*NOTFOUND.*")
 set(Boost_RANDOM_LIBRARY "" CACHE INTERNAL "" FORCE)
 set(Boost_RANDOM_LIBRARY_RELEASE "" CACHE INTERNAL "" FORCE)
 set(Boost_RANDOM_LIBRARY_DEBUG "" CACHE INTERNAL "" FORCE)
-file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.Random" "ok=False")
+file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.Random" "ok=False")
 else()
-file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.Random" "ok=True")
+file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.Random" "ok=True")
 endif()
 
 if("${Boost_REGEX_LIBRARY}" MATCHES ".*NOTFOUND.*")
 set(Boost_REGEX_LIBRARY "" CACHE INTERNAL "" FORCE)
 set(Boost_REGEX_LIBRARY_RELEASE "" CACHE INTERNAL "" FORCE)
 set(Boost_REGEX_LIBRARY_DEBUG "" CACHE INTERNAL "" FORCE)
-file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.Regex" "ok=False")
+file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.Regex" "ok=False")
 else()
-file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.Regex" "ok=True")
+file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.Regex" "ok=True")
 endif()
 
 if("${Boost_GRAPH_LIBRARY}" MATCHES ".*NOTFOUND.*")
 set(Boost_GRAPH_LIBRARY "" CACHE INTERNAL "" FORCE)
 set(Boost_GRAPH_LIBRARY_RELEASE "" CACHE INTERNAL "" FORCE)
 set(Boost_GRAPH_LIBRARY_DEBUG "" CACHE INTERNAL "" FORCE)
-file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.Graph" "ok=False")
+file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.Graph" "ok=False")
 else()
-file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.Graph" "ok=True")
+file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.Graph" "ok=True")
 endif()
 
 include_directories(${Boost_INCLUDE_DIR})
@@ -209,23 +206,23 @@ set(BOOST.REGEX_LIBRARIES ${Boost_REGEX_LIBRARY_RELEASE})
 set(BOOST.GRAPH_LIBRARIES ${Boost_GRAPH_LIBRARY_RELEASE})
 set(BOOST.RANDOM_LIBRARIES ${Boost_RANDOM_LIBRARY_RELEASE})
 
-file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.FileSystem" "ok=True")
-file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.ProgramOptions" "ok=True")
-file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.System" "ok=True")
+file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.FileSystem" "ok=True")
+file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.ProgramOptions" "ok=True")
+file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.System" "ok=True")
 
 # configure modules
-file(STRINGS "${PROJECT_BINARY_DIR}/data/build_info/sorted_modules" modules)
+file(STRINGS "${CMAKE_BINARY_DIR}/data/build_info/sorted_modules" modules)
 
 foreach(mod ${modules})
-  add_subdirectory("${PROJECT_SOURCE_DIR}/modules/${mod}/")
+  add_subdirectory("${CMAKE_SOURCE_DIR}/modules/${mod}/")
 endforeach(mod)
 
 # build modules
-file(STRINGS "${PROJECT_BINARY_DIR}/data/build_info/sorted_modules" enabled_modules)
+file(STRINGS "${CMAKE_BINARY_DIR}/data/build_info/sorted_modules" enabled_modules)
 
 if(NOT DEFINED IMP_NO_SWIG_DEPENDENCIES)
-imp_execute_process("setup_swig_dependencies" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_deps.py
+imp_execute_process("setup_swig_dependencies" ${CMAKE_BINARY_DIR}
+                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_swig_deps.py
                     "--swig=${SWIG_EXECUTABLE}")
 endif()
 
@@ -233,42 +230,34 @@ endif()
 if(NOT IMP_STATIC)
   # Can't set up pyext until we have SWIG dependencies
   foreach(mod ${enabled_modules})
-    add_subdirectory("${PROJECT_SOURCE_DIR}/modules/${mod}/pyext")
+    add_subdirectory("${CMAKE_SOURCE_DIR}/modules/${mod}/pyext")
   endforeach(mod)
 endif()
 
 foreach(mod ${enabled_modules})
   add_custom_target(IMP.${mod} DEPENDS
-  imp_${mod}
-  imp_${mod}_bins
-  imp_${mod}_tests
-  ${IMP_${mod}_DOC}
-  imp_${mod}_benchmarks
-  imp_${mod}_examples)
-
-  add_custom_target(imp_${mod}_build DEPENDS
-  imp_${mod}
-  imp_${mod}_bins)
-
-  if(NOT IMP_STATIC)
-    add_dependencies(IMP.${mod} imp_${mod}_python)
-    add_dependencies(imp_${mod}_build imp_${mod}_python)
-  endif()
+  IMP.${mod}-lib
+  ${IMP_${mod}_BINS}
+  ${IMP_${mod}_TESTS}
+  ${IMP_${mod}_BENCHMARKS}
+  ${IMP_${mod}_PYTHON}
+  ${IMP_${mod}_EXAMPLES}
+  ${IMP_${mod}_DOC})
 endforeach(mod)
 
 
-file(STRINGS "${PROJECT_BINARY_DIR}/data/build_info/applications" applications)
+file(STRINGS "${CMAKE_BINARY_DIR}/data/build_info/applications" applications)
 foreach(app ${applications})
-  add_subdirectory("${PROJECT_SOURCE_DIR}/applications/${app}")
+  add_subdirectory("${CMAKE_SOURCE_DIR}/applications/${app}")
 endforeach(app)
 
 if(${IMP_DOXYGEN_FOUND})
-  imp_execute_process("setup_doxygen_config" ${PROJECT_BINARY_DIR} COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_doxygen_config.py "--source=${PROJECT_SOURCE_DIR}")
+  imp_execute_process("setup_doxygen_config" ${CMAKE_BINARY_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_doxygen_config.py "--source=${CMAKE_SOURCE_DIR}")
 endif()
 
-list(INSERT IMP_PYTHONPATH 0 "${PROJECT_BINARY_DIR}/lib")
-list(INSERT IMP_LDPATH 0 "${PROJECT_BINARY_DIR}/lib")
-list(INSERT IMP_PATH 0 "${PROJECT_BINARY_DIR}/bin")
+list(INSERT IMP_PYTHONPATH 0 "${CMAKE_BINARY_DIR}/lib")
+list(INSERT IMP_LDPATH 0 "${CMAKE_BINARY_DIR}/lib")
+list(INSERT IMP_PATH 0 "${CMAKE_BINARY_DIR}/bin")
 set(PATH_ARGS )
 foreach(path ${IMP_PYTHONPATH})
   list(APPEND PATH_ARGS "--python_path=${path}")
@@ -279,8 +268,8 @@ endforeach(path)
 foreach(path ${IMP_PATH})
   list(APPEND PATH_ARGS "--path=${path}")
 endforeach(path)
-imp_execute_process("setup_imppy" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_imppy.py
+imp_execute_process("setup_imppy" ${CMAKE_BINARY_DIR}
+                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_imppy.py
                     "--python=${IMP_PYTHON}"
                     "--precommand="
                     "--propagate=yes"
@@ -290,23 +279,23 @@ imp_execute_process("setup_imppy" ${PROJECT_BINARY_DIR}
 
 if(IMP_DOXYGEN_FOUND)
 
- file(GLOB docs ${PROJECT_SOURCE_DIR}/doc/*.dox
-   ${PROJECT_SOURCE_DIR}/doc/*.md)
+ file(GLOB docs ${CMAKE_SOURCE_DIR}/doc/*.dox
+   ${CMAKE_SOURCE_DIR}/doc/*.md)
 
   add_custom_target(IMP-doc ALL
-    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/make_cross_refs.py
+    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_cross_refs.py
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/Doxyfile.html
-    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${PROJECT_BINARY_DIR}/doxygen/warnings.txt
-    COMMAND ${PROJECT_SOURCE_DIR}/doc/tutorial/setup.py
+    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/warnings.txt
+    COMMAND ${CMAKE_SOURCE_DIR}/doc/tutorial/setup.py
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/tutorial
-    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${PROJECT_BINARY_DIR}/doxygen/tutorial-warnings.txt
-    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/tutorial-warnings.txt
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     DEPENDS ${IMP_DOC_DEPENDS} ${docs} ${IMP_DOXYGEN_FETCH}
     COMMENT "Building documentation")
 
   add_custom_target(IMP-doc-install
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_BINARY_DIR}/doc/html" "${CMAKE_INSTALL_FULL_DOCDIR}/html"
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_BINARY_DIR}/doc/tutorial" "${CMAKE_INSTALL_FULL_DOCDIR}/tutorial"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_BINARY_DIR}/doc/html" "${CMAKE_INSTALL_FULL_DOCDIR}/html"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_BINARY_DIR}/doc/tutorial" "${CMAKE_INSTALL_FULL_DOCDIR}/tutorial"
     DEPENDS "IMP-doc"
     COMMENT "Installing documentation to ${CMAKE_INSTALL_FULL_DOCDIR}")
 endif(IMP_DOXYGEN_FOUND)

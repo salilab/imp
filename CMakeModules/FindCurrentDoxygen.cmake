@@ -8,7 +8,7 @@ else()
 find_package(Doxygen QUIET)
 set(needed_doxygen_version "1.8.4")
 if(DOXYGEN_FOUND)
-  imp_get_process_output("Doxygen version" doxygen_version ${PROJECT_BINARY_DIR} COMMAND ${DOXYGEN_EXECUTABLE} --version)
+  imp_get_process_output("Doxygen version" doxygen_version ${CMAKE_BINARY_DIR} COMMAND ${DOXYGEN_EXECUTABLE} --version)
   if("${doxygen_version}" STREQUAL "${needed_doxygen_version}")
     message(STATUS "Doxygen is "${DOXYGEN_EXECUTABLE})
     set(IMP_DOXYGEN_FOUND True CACHE INTERNAL "")
@@ -32,7 +32,7 @@ endif()
 
 if(NOT IMP_DOXYGEN_FOUND)
   if(DEFINED doxygen_url)
-    file(DOWNLOAD "http://ftp.stack.nl/" ${PROJECT_BINARY_DIR}/internet_check STATUS download_status)
+    file(DOWNLOAD "http://ftp.stack.nl/" ${CMAKE_BINARY_DIR}/internet_check STATUS download_status)
     list(GET download_status 0 download_success)
     if("${download_success}" STREQUAL "0")
       set(IMP_FETCH_DOXYGEN True CACHE INTERNAL "")
@@ -47,8 +47,8 @@ endif()
 if(IMP_FETCH_DOXYGEN)
     include(ExternalProject)
     message(STATUS "Will download doxygen from ${doxygen_url}")
-    ExternalProject_Add( download_doxygen
-            SOURCE_DIR "${PROJECT_BINARY_DIR}/tools/doxygen"
+    ExternalCMAKE_Add( download_doxygen
+            SOURCE_DIR "${CMAKE_BINARY_DIR}/tools/doxygen"
             URL ${doxygen_url}
             URL_MD5 ${doxygen_md5}
             CONFIGURE_COMMAND ${CMAKE_COMMAND} -E echo "configure"
@@ -57,6 +57,6 @@ if(IMP_FETCH_DOXYGEN)
             )
     set(IMP_DOXYGEN_FETCH download_doxygen CACHE INTERNAL "")
     set(IMP_DOXYGEN_FOUND True CACHE INTERNAL "")
-    set(IMP_DOXYGEN_EXECUTABLE "${PROJECT_BINARY_DIR}/tools/doxygen/bin/doxygen" CACHE INTERNAL "")
+    set(IMP_DOXYGEN_EXECUTABLE "${CMAKE_BINARY_DIR}/tools/doxygen/bin/doxygen" CACHE INTERNAL "")
 endif()
 endif()

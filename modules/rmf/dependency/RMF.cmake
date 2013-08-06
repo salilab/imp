@@ -53,31 +53,31 @@ endif(NOT DEFINED RMF_LIBRARIES)
 if(DEFINED RMF_INTERNAL)
   if(IMP_STATIC)
     message(STATUS "RMF does not currently support static builds - skipping")
-    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=False")
+    file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/RMF" "ok=False")
   else(IMP_STATIC)
 
     message(STATUS "Building internal RMF")
 
-    set(RMF_BINARY_DIR ${PROJECT_BINARY_DIR}/src/dependency/RMF CACHE INTERNAL "" FORCE)
+    set(RMF_BINARY_DIR ${CMAKE_BINARY_DIR}/src/dependency/RMF CACHE INTERNAL "" FORCE)
 
-    add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF_source ${RMF_BINARY_DIR})
+    add_subdirectory(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source ${RMF_BINARY_DIR})
 
-    set(RMF_INCLUDE_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF_source/include ${RMF_BINARY_DIR}/include ${RMF_INCLUDE_PATH} CACHE INTERNAL "" FORCE)
-    set(RMF_SWIG_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF_source/swig CACHE INTERNAL "" FORCE)
+    set(RMF_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/include ${RMF_BINARY_DIR}/include ${RMF_INCLUDE_PATH} CACHE INTERNAL "" FORCE)
+    set(RMF_SWIG_PATH ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/swig CACHE INTERNAL "" FORCE)
 
     set(RMF_LIBRARIES RMF  CACHE INTERNAL "" FORCE)
 
-    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True\nincludepath=\"${RMF_INCLUDE_PATH}\"\nswigpath=\"${RMF_SWIG_PATH}\"\nlibpath=\"${RMF_SWIG_PATH}\"\n")
+    file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/RMF" "ok=True\nincludepath=\"${RMF_INCLUDE_PATH}\"\nswigpath=\"${RMF_SWIG_PATH}\"\nlibpath=\"${RMF_SWIG_PATH}\"\n")
 
     if(NOT DEFINED IMP_RMF_PATHS_UPDATED)
       message(STATUS "Updating paths for RMF <${IMP_RMF_PATHS_UPDATED}>")
-      set(IMP_PYTHONPATH ${PROJECT_BINARY_DIR}/src/dependency/RMF/ ${IMP_PYTHONPATH} CACHE INTERNAL "" FORCE)
-      set(IMP_LDPATH ${PROJECT_BINARY_DIR}/src/dependency/RMF/ ${IMP_LDPATH} CACHE INTERNAL "" FORCE)
-      set(IMP_PATH ${PROJECT_BINARY_DIR}/src/dependency/RMF/bin/ ${IMP_PATH} CACHE INTERNAL "" FORCE)
+      set(IMP_PYTHONPATH ${CMAKE_BINARY_DIR}/src/dependency/RMF/ ${IMP_PYTHONPATH} CACHE INTERNAL "" FORCE)
+      set(IMP_LDPATH ${CMAKE_BINARY_DIR}/src/dependency/RMF/ ${IMP_LDPATH} CACHE INTERNAL "" FORCE)
+      set(IMP_PATH ${CMAKE_BINARY_DIR}/src/dependency/RMF/bin/ ${IMP_PATH} CACHE INTERNAL "" FORCE)
       set(IMP_RMF_PATHS_UPDATED 1 CACHE INTERNAL "" FORCE)
     endif(NOT DEFINED IMP_RMF_PATHS_UPDATED)
 
-    file(TO_NATIVE_PATH "${PROJECT_BINARY_DIR}/src/dependency/RMF/" native_path)
+    file(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}/src/dependency/RMF/" native_path)
     set(ENV{PATH} "${native_path}${PATH_SEP}$ENV{PATH}")
 
   endif(IMP_STATIC)

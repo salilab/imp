@@ -9,8 +9,8 @@ set(IMP_BASE_CONFIG IMP_BUILD=IMP_${build}:IMP_HAS_LOG=IMP_${IMP_MAX_LOG}:IMP_HA
 
 
 imp_execute_process("generate paths.cpp"
-               ${PROJECT_BINARY_DIR}
-               COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_paths.py
+               ${CMAKE_BINARY_DIR}
+               COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_paths.py
                 "--datapath=${CMAKE_INSTALL_FULL_DATADIR}/IMP"
                 "--examplepath=${CMAKE_INSTALL_FULL_DOCDIR}/examples"
                 "--output=src/base/paths.cpp")
