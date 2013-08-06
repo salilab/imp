@@ -23,6 +23,10 @@ if(POLICY CMP0017)
 cmake_policy(SET CMP0017 NEW)
 endif(POLICY CMP0017)
 
+if(APPLE)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w" CACHE INTERNAL "" FORCE)
+endif(APPLE)
+
 set(timeout_factor 1)
 set(IMP_SWIG_PATH CACHE STRING "List of places for swig to search")
 set(SWIG_EXECUTABLE swig CACHE STRING "Swig program")
