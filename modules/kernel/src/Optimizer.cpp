@@ -84,9 +84,9 @@ IMP_LIST_IMPL(Optimizer, OptimizerState, optimizer_state, OptimizerState *,
 void Optimizer::set_optimizer_state_optimizer(OptimizerState *os,
                                               Optimizer *o) {
   os->set_was_used(true);
-  IMP_USAGE_CHECK(o->get_model(),
+  IMP_USAGE_CHECK(!o || o->get_model(),
                   "Can't add optimizer states until you set the model.");
-  if (!os->get_model()) os->set_model(o->get_model());
+  if (!os->get_model() && o) os->set_model(o->get_model());
   os->set_optimizer(o);
 }
 
