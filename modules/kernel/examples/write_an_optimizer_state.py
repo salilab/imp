@@ -2,12 +2,12 @@
 ## While we do not recomment doing serious work using optimizer states written it python, it is often useful when prototyping or testing code. Copy this example and modify as needed.
 
 import IMP
-import IMP.core
 
 # an optimizer state which prints out the last scores of some restraints.
 class MyOptimizerState(IMP.OptimizerState):
     def __init__(self, rs):
-        IMP.OptimizerState.__init__(self)
+        IMP.OptimizerState.__init__(self, rs[0].get_model(),
+                                    "MyOptimizerState%1%")
         self.rs = rs
     def update(self):
         for r in self.rs:
@@ -23,7 +23,8 @@ r0.set_name("restraint 0")
 r1=IMP.kernel._ConstRestraint(m, [], 2)
 r1.set_name("restraint 1")
 
-sf = IMP.core.RestraintsScoringFunction([r0, r1])
+rs = IMP.RestraintSet([r0, r1], 1.0)
+sf = rs.create_scoring_function()
 
 os= MyOptimizerState([r0, r1])
 os.set_name("python optimizer state")
