@@ -157,6 +157,7 @@ class Application(Component):
         Component.__init__(self, name)
         # No special targets to build tests
         self.target['build'] = 'IMP.' + name
+        self.test_regex = '^IMP\\.' + name + '\\-'
 
 
 class Module(Component):
@@ -164,12 +165,14 @@ class Module(Component):
     def __init__(self, name):
         Component.__init__(self, name)
         self.target['build'] = 'IMP.' + name
+        self.test_regex = '^IMP\\.' + name + '\\-'
 
 
 class RMFDependency(Component):
     def __init__(self, name):
         Component.__init__(self, name)
         self.target['build'] = 'RMF'
+        self.test_regex = '^RMF\\.'
 
 
 class Builder(object):
@@ -201,7 +204,7 @@ class Builder(object):
         commands = []
         if component.target[typ]:
             commands.append("%s %s" % (self.makecmd, component.target[typ]))
-        cmd = "%s -R '^%s\.' -L '^%s$'" % (self.testcmd, component.name, typ)
+        cmd = "%s -R '%s' -L '^%s$'" % (self.testcmd, component.test_regex, typ)
         if expensive == False:
             cmd += " -E expensive"
         if self.outdir:
