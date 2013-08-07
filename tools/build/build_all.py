@@ -169,7 +169,7 @@ class Module(Component):
 class RMFDependency(Component):
     def __init__(self, name):
         Component.__init__(self, name)
-        self.target['build'] = 'RMF.all'
+        self.target['build'] = 'RMF'
 
 
 class Builder(object):

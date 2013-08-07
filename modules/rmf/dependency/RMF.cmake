@@ -65,7 +65,7 @@ if(DEFINED RMF_INTERNAL)
     set(RMF_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/include ${RMF_BINARY_DIR}/include ${RMF_INCLUDE_PATH} CACHE INTERNAL "" FORCE)
     set(RMF_SWIG_PATH ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/swig CACHE INTERNAL "" FORCE)
 
-    set(RMF_LIBRARIES RMF  CACHE INTERNAL "" FORCE)
+    set(RMF_LIBRARIES RMF-lib  CACHE INTERNAL "" FORCE)
 
     file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/RMF" "ok=True\nincludepath=\"${RMF_INCLUDE_PATH}\"\nswigpath=\"${RMF_SWIG_PATH}\"\nlibpath=\"${RMF_SWIG_PATH}\"\n")
 
