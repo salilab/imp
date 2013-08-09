@@ -48,9 +48,9 @@ add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/doxygen/%(name)s/tags ${CMAKE_BINA
 add_custom_target("IMP.%(name)s-doc" ALL DEPENDS ${CMAKE_BINARY_DIR}/doxygen/%(name)s/tags)
 set_property(TARGET "IMP.%(name)s-doc" PROPERTY FOLDER "IMP.%(name)s")
 
-set(IMP_%(NAME)s_DOC "IMP.%(name)s-doc" CACHE INTERNAL "" FORCE)
+set(IMP_%(name)s_DOC "IMP.%(name)s-doc" CACHE INTERNAL "" FORCE)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} ${IMP_%(NAME)s_DOC} CACHE INTERNAL "" FORCE)
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} ${IMP_%(name)s_DOC} CACHE INTERNAL "" FORCE)
 endif(IMP_DOXYGEN_FOUND)
 
 add_custom_target(IMP.%(name)s DEPENDS
