@@ -23,20 +23,24 @@ TMPDIR=/var/tmp/imp-build-$$
 IMPTOP=/salilab/diva1/home/imp/$BRANCH
 mkdir -p ${IMPTOP}
 
-# Make sure VERSION reflects the head of the specified remote branch
 cd ${GIT_TOP}/imp
-./setup_git.py  >& /dev/null
+# Switch to the branch we're interested in
 git checkout ${BRANCH} -f -q >& /tmp/$$.out
 # Squash chatty output from git checkout
 grep -v "Version=" /tmp/$$.out
+
 # Make sure we're up to date with the remote
 git merge --ff-only -q origin/${BRANCH} || exit 1
 # Remove any untracked files
 git clean -q -f -d -x
-# Make sure VERSION file is generated
+
+# Run checkout again just to be sure everything is consistent
 git checkout ${BRANCH} -f -q >& /tmp/$$.out
 grep -v "Version=" /tmp/$$.out
 rm -f /tmp/$$.out
+
+# Update any submodules, etc. if necessary
+./setup_git.py  >& /dev/null
 
 # Get top-most revision
 rev=`git rev-parse HEAD`
