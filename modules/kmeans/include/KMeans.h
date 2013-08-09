@@ -12,12 +12,13 @@
 #include "IMP/kmeans/internal/KMlocal.h"     // k-means algorithms
 #include "IMP/kmeans/internal/KMdata.h"     // k-means algorithms
 #include "IMP/kmeans/internal/KMterm.h"
-#include "IMP/base/Pointer.h"
-#include "IMP/base/doxygen_macros.h"
-#include "IMP/base/object_macros.h"
-#include "IMP/base/warning_macros.h"
-#include "IMP/base/Object.h"
-#include "IMP/base/types.h"
+#include <IMP/base/Pointer.h>
+#include <IMP/base/doxygen_macros.h>
+#include <IMP/base/object_macros.h>
+#include <IMP/base/warning_macros.h>
+#include <IMP/base/Object.h>
+#include <IMP/base/types.h>
+#include <IMP/base/enums.h>
 #include <cstdlib>      // C standard includes
 #include <iostream>     // C++ I/O
 #include <string>     // C++ strings
@@ -146,9 +147,11 @@ KMeans : public IMP::base::Object {
   }
 
   /**
-      Print the centers (assuming exectute() was applied)
+      Print the centers (assuming exectute() was applied) to log
+
+      @param ll the log level for printout
    */
-  void print_centers() const;
+  void print_centers(base::LogLevel ll = base::PROGRESS) const;
 
   /** Returns the i'th center
       Must be called only following a succesful execute() invokation
@@ -209,7 +212,7 @@ KMeans : public IMP::base::Object {
      Read up to max_nPts from a stream
 
      @param[in] in       input stream to read from
-1     @param[in] dim      dimension of each data point
+     @param[in] dim      dimension of each data point
      @param[in] max_nPts maximal number of points to read from stream
   */
   void read_data_pts_from_stream
@@ -227,8 +230,14 @@ KMeans : public IMP::base::Object {
     (std::ostream& out,
      const IMP::Floats& p);
 
-  // print final summary using stored data and centers after execution
-  void print_summary(const internal::KMlocal&  theAlg);   // the algorithm
+  /* print final summary using stored data and centers after execution
+     to progress log
+
+     @param theAlg the algorithm used for running
+     @param ll the log level in which to print the summary
+  */
+  void print_summary(const internal::KMlocal&  theAlg,
+                     base::LogLevel ll = base::PROGRESS);   // the algorithm
 
   /*********************** Private Variables **************************/
  private:

@@ -47,6 +47,7 @@
 #define IMPKMEANS_INTERNAL_KMEANS_H
 
 #include <IMP/kmeans/kmeans_config.h>
+#include <IMP/base/log.h>
 #include "KM_ANN.h"                  // basic definitions
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
@@ -143,12 +144,31 @@ IMPKMEANSEXPORT void kmPrintPt(                        // print a point
   int                  dim,                           // the dimension
   bool            fancy = true);            // print plain or fancy?
 
+//! Log a point depending on log level (see base/log.h)
+IMPKMEANSEXPORT void kmLogPt
+( base::LogLevel ll,
+  KMpoint            p,                  // the point
+  int                  dim,                           // the dimension
+  bool            fancy = true);            // print plain or fancy?
+
 IMPKMEANSEXPORT void kmPrintPts(                  // print points
   std::string            title,                  // name of point set
   KMpointArray      pa,                  // the point array
   int                  n,                  // number of points
   int                  dim,                  // the dimension
   bool            fancy = true);            // print plain or fancy?
+
+//! Log points depending on log level (see base/log.h)
+IMPKMEANSEXPORT void kmLogPts
+( base::LogLevel ll,
+  std::string            title,                  // name of point set
+  KMpointArray      pa,                  // the point array
+  int                  n,                  // number of points
+  int                  dim,                  // the dimension
+  bool            fancy = true);            // print plain or fancy?
+
+
+
 
 //----------------------------------------------------------------------
 //  Utility function declarations

@@ -16,6 +16,7 @@ def add_points(km):
     km.add_data_pt([9.2, 11])
     km.add_data_pt([0, 0])
 
+IMP.set_log_level(IMP.base.PROGRESS)
 km = IMP.kmeans.KMeans()
 add_points(km)
 # cluster data

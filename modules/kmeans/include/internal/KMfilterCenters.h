@@ -28,7 +28,9 @@
 #define IMPKMEANS_INTERNAL_KMFILTER_CENTERS_H
 
 #include <IMP/kmeans/kmeans_config.h>
+#include <IMP/base/log.h>
 #include "KMcenters.h"                  // provides KMcenters
+#include <iostream>
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 
@@ -192,13 +194,32 @@ public:                              // public accessors
   }
 
   /**
-     print centers
+     print centers to shared kmean output stream kmOut (see KMeans.h)
      @param[in] fancy Dummy variable to support fancy printing in child
                       classes
   */
   virtual void print(bool fancy = true);
+
+  /**
+     print centers to specified output stream
+     @param out the output stream
+     @param[in] fancy Dummy variable to support fancy printing in child
+                      classes
+
+     @return the output stream following output
+  */
+  std::ostream& print_to_ostream(std::ostream& out, bool fancy=true);
+
+  /**
+     print centers to log
+     @param ll log level (e.g. IMP::base::PROGRESS)
+  */
+  void log(base::LogLevel ll);
+
 };
 
+
 IMPKMEANS_END_INTERNAL_NAMESPACE
+
 
 #endif /* IMPKMEANS_INTERNAL_KMFILTER_CENTERS_H */

@@ -88,4 +88,6 @@ public:                              // accessors
 
 IMPKMEANS_END_INTERNAL_NAMESPACE
 
+
+
 #endif /* IMPKMEANS_INTERNAL_KMCENTERS_H */
