@@ -42,32 +42,31 @@ if(${status} EQUAL 0)
 
     add_custom_target("IMP.%(name)s-doc" ALL DEPENDS ${CMAKE_BINARY_DIR}/doxygen/%(name)s/tags)
     set_property(TARGET "IMP.%(name)s-doc" PROPERTY FOLDER "IMP.%(name)s")
+    set(IMP_%(name)s_DOC "IMP.%(name)s-doc" CACHE INTERNAL "" FORCE)
 
-    set(IMP_%(NAME)s_DOC "IMP.%(name)s-doc" CACHE INTERNAL "" FORCE)
-
-    list(APPEND IMP_DOC_DEPENDS "${IMP_%(NAME)s_DOC}")
+    list(APPEND IMP_DOC_DEPENDS "${IMP_%(name)s_DOC}")
     list(REMOVE_DUPLICATES IMP_DOC_DEPENDS)
     set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} CACHE INTERNAL "" FORCE)
   else()
-    set(IMP_%(NAME)s_DOC "" CACHE INTERNAL "" FORCE)
+    set(IMP_%(name)s_DOC "" CACHE INTERNAL "" FORCE)
   endif(IMP_DOXYGEN_FOUND)
 
   list(APPEND imp_%(name)s_libs %(modules)s)
   list(APPEND imp_%(name)s_libs %(dependencies)s)
   list(REMOVE_DUPLICATES imp_%(name)s_libs)
   %(subdirs)s
-  set(IMP_%(NAME)s "IMP.%(name)s" CACHE INTERNAL "" FORCE)
+  set(IMP_%(name)s "IMP.%(name)s" CACHE INTERNAL "" FORCE)
 else()
 
   # make sure it is empty
-  set(IMP_%(NAME)s_DOC "" CACHE INTERNAL "" FORCE)
-  set(IMP_%(NAME)s_PYTHON "" CACHE INTERNAL "" FORCE)
-  set(IMP_%(NAME)s "" CACHE INTERNAL "" FORCE)
+  set(IMP_%(name)s_DOC "" CACHE INTERNAL "" FORCE)
+  set(IMP_%(name)s_PYTHON "" CACHE INTERNAL "" FORCE)
+  set(IMP_%(name)s "" CACHE INTERNAL "" FORCE)
 
   if(${status} EQUAL 1)
     message("Module IMP.%(name)s disabled")
   else()
     message(FATAL_ERROR "setup_module returned ${status}")
   endif()
-  set(IMP_%(NAME)s_LIBRARY CACHE INTERNAL "" FORCE)
+  set(IMP_%(name)s_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

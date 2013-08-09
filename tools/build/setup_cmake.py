@@ -132,8 +132,8 @@ def setup_module(module, path, ordered):
     modules=["${IMP_%s_LIBRARY}"%s for s in all_modules]
     dependencies=["${%s_LIBRARIES}"%s.upper() for s in tools.get_all_dependencies(".", [module], "", ordered)]
     values["modules"]=";".join(modules)
-    values["tags"]="\n".join(["${IMP_%s_DOC}"%m.upper() for m in all_modules])
-    values["other_pythons"]="\n".join(["${IMP_%s_PYTHON}"%m.upper() for m in all_modules])
+    values["tags"]="\n".join(["${IMP_%s_DOC}"%m for m in all_modules])
+    values["other_pythons"]="\n".join(["${IMP_%s_PYTHON}"%m for m in all_modules])
     values["dependencies"]=";".join(dependencies)
     values["sources"] = get_sources(module, path, "src", "*.cpp")
     values["headers"] = get_sources(module, path, "include", "*.h")
