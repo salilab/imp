@@ -158,6 +158,9 @@ IMP_SWIG_OBJECT(IMP::core, RigidBodyTorque, RigidBodyFramesTorques);
 IMP_SWIG_OBJECT(IMP::core, EdgePairGeometry, EdgePairGeometries);
 IMP_SWIG_OBJECT(IMP::core, EdgePairsGeometry, EdgePairsGeometries);
 
+IMP_SWIG_OBJECT(IMP::core, AttributeSingletonPredicate, AttributeSingletonPredicates);
+IMP_SWIG_OBJECT(IMP::core, InBoundingBox3DSingletonPredicate, InBoundingBox3DSingletonPredicates);
+IMP_SWIG_OBJECT(IMP::core, IsCollisionPairPredicate, IsCollisionPairPredicates);
 
 /* Don't wrap internal classes */
 %ignore IMP::core::internal::ChildArrayTraits;
@@ -292,6 +295,7 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/pair_predicates.h"
 %include "IMP/core/triplet_predicates.h"
 %include "IMP/core/quad_predicates.h"
+%include "IMP/core/predicates.h"
 
 %include "IMP/core/AngleRestraint.h"
 %include "IMP/core/RigidBodyMover.h"
