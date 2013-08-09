@@ -40,6 +40,7 @@ grep -v "Version=" /tmp/$$.out
 rm -f /tmp/$$.out
 
 # Update any submodules, etc. if necessary
+git submodule update
 ./setup_git.py  >& /dev/null
 
 # Get top-most revision
