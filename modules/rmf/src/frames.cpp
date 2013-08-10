@@ -35,7 +35,7 @@ unsigned int get_save_linker_index(std::string st) {
 
 void load_frame(RMF::FileConstHandle file, int frame) {
   try {
-    RMF::FrameConstHandle fr = file.get_frame(frame);
+    RMF::FrameConstHandle fr = file.get_frame(RMF::FrameID(frame));
     fr.set_as_current_frame();
     for (unsigned int i = 0; i < known_linkers.size(); ++i) {
       if (file.get_has_associated_data(2 * i)) {
@@ -63,7 +63,7 @@ void save_frame(RMF::FileHandle file, int frame, std::string name) {
         fr = file.get_root_frame();
       }
       fr.add_child(name, RMF::FRAME).set_as_current_frame();
-    } else if (frame == RMF::ALL_FRAMES) {
+    } else if (RMF::FrameID(frame) == RMF::ALL_FRAMES) {
       file.get_root_frame().set_as_current_frame();
     } else {
       RMF::FrameHandle fr = file.get_frame(frame);

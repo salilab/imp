@@ -120,7 +120,7 @@ RMF::NodeHandle get_node(Subset s, RestraintSaveData &d, RMF::ScoreFactory sf,
                          "Representation not set right");
     }
   }
-  return parent.get_file().get_node_from_id(d.map_.find(s)->second);
+  return parent.get_file().get_node(d.map_.find(s)->second);
 }
 
 // get_particles

@@ -31,7 +31,7 @@ class SimpleLoadLink : public LoadLink {
   virtual void do_load_one(RMF::NodeConstHandle nh, O *o) = 0;
   void do_load(RMF::FileConstHandle fh) {
     for (unsigned int i = 0; i < os_.size(); ++i) {
-      do_load_one(fh.get_node_from_id(nhs_[i]), os_[i]);
+      do_load_one(fh.get_node(nhs_[i]), os_[i]);
     }
   }
   virtual void do_add_link(O *, RMF::NodeConstHandle) {};
@@ -48,7 +48,7 @@ class SimpleLoadLink : public LoadLink {
   /** Create all the entities under the passed root.*/
   base::Vector<base::Pointer<O> > create(RMF::NodeConstHandle rt) {
     IMP_OBJECT_LOG;
-    RMF::SetCurrentFrame sf(rt.get_file(), 0);
+    RMF::SetCurrentFrame sf(rt.get_file(), RMF::FrameID(0));
     RMF::NodeConstHandles ch = rt.get_children();
     base::Vector<base::Pointer<O> > ret;
     for (unsigned int i = 0; i < ch.size(); ++i) {
@@ -66,7 +66,7 @@ class SimpleLoadLink : public LoadLink {
   void link(RMF::NodeConstHandle rt,
             const base::Vector<base::Pointer<O> > &ps) {
     IMP_OBJECT_LOG;
-    RMF::SetCurrentFrame sf(rt.get_file(), 0);
+    RMF::SetCurrentFrame sf(rt.get_file(), RMF::FrameID(0));
     set_was_used(true);
     RMF::NodeConstHandles ch = rt.get_children();
     int links = 0;
@@ -104,7 +104,7 @@ class SimpleSaveLink : public SaveLink {
     for (unsigned int i = 0; i < os_.size(); ++i) {
       os_[i]->set_was_used(true);
       IMP_LOG_VERBOSE("Saving " << Showable(os_[i]) << std::endl);
-      do_save_one(os_[i], fh.get_node_from_id(nhs_[i]));
+      do_save_one(os_[i], fh.get_node(nhs_[i]));
     }
   }
   virtual void do_add(O *o, RMF::NodeHandle c) { add_link(o, c); }

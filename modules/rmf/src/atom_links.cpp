@@ -72,7 +72,7 @@ void create_bonds(RMF::FileConstHandle fhc, const RMF::NodeIDs &nhs,
                   const ParticlesTemp &ps) {
   base::map<RMF::NodeConstHandle, Particle *> map;
   for (unsigned int i = 0; i < nhs.size(); ++i) {
-    map[fhc.get_node_from_id(nhs[i])] = ps[i];
+    map[fhc.get_node(nhs[i])] = ps[i];
   }
   RMF::AliasConstFactory af(fhc);
   create_bonds(fhc.get_root_node(), af, map);
@@ -179,7 +179,7 @@ void HierarchyLoadLink::do_load_one(RMF::NodeConstHandle nh, Particle *o) {
                   << atom::Hierarchies(d.get_particles()) << std::endl);
   base::map<core::RigidBody, ParticleIndexes> rbs;
   for (unsigned int i = 0; i < d.get_nodes().size(); ++i) {
-    do_load_node(fh.get_node_from_id(d.get_nodes()[i]), d.get_particles()[i]);
+    do_load_node(fh.get_node(d.get_nodes()[i]), d.get_particles()[i]);
     if (core::RigidMember::get_is_setup(d.get_particles()[i])) {
       rbs[core::RigidMember(d.get_particles()[i]).get_rigid_body()]
           .push_back(d.get_particles()[i]->get_index());
@@ -521,7 +521,7 @@ void HierarchySaveLink::do_save_one(Particle *o, RMF::NodeHandle nh) {
   RMF::FileHandle fh = nh.get_file();
   const Data &d = contents_.find(o)->second;
   for (unsigned int i = 0; i < d.get_nodes().size(); ++i) {
-    do_save_node(d.get_particles()[i], fh.get_node_from_id(d.get_nodes()[i]));
+    do_save_node(d.get_particles()[i], fh.get_node(d.get_nodes()[i]));
   }
 }
 

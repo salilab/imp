@@ -400,7 +400,7 @@ display::Geometries create_geometries(RMF::FileConstHandle fh) {
   base::Pointer<BoxLoadLink> bll = get_box_load_link(fh);
   display::GeometriesTemp ret;
   {
-    RMF::SetCurrentFrame scf(fh, 0);
+    RMF::SetCurrentFrame scf(fh, RMF::FrameID(0));
     ret += sll->create(fh.get_root_node());
     ret += cll->create(fh.get_root_node());
     ret += sgll->create(fh.get_root_node());

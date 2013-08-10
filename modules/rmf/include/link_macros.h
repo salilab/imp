@@ -139,7 +139,7 @@
     InTypes ret;                                                             \
     {                                                                        \
       /* to catch the type of everything.*/                                  \
-      RMF::SetCurrentFrame scf(fh, 0);                                       \
+      RMF::SetCurrentFrame scf(fh, RMF::FrameID(0));                    \
       ret = rsl->create(fh.get_root_node());                                 \
       rsl->load(fh);                                                         \
     }                                                                        \
