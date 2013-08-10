@@ -22,7 +22,10 @@ class IMPGSLEXPORT ConjugateGradients : public GSLOptimizer {
 
  public:
   //!
-  ConjugateGradients(Model *m = nullptr);
+  ConjugateGradients(Model *m);
+  /** \deprecated_at{2.1} Pass a model to the constructor. */
+  IMPGSL_DEPRECATED_FUNCTION_DECL(2.1)
+  ConjugateGradients();
 
   //! Set the gradient threshold
   void set_threshold(double mg) { min_gradient_ = mg; }

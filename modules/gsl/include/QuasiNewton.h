@@ -21,7 +21,10 @@ class IMPGSLEXPORT QuasiNewton : public GSLOptimizer {
   double initial_step_, line_step_, min_gradient_;
 
  public:
-  QuasiNewton(Model *m = nullptr);
+  QuasiNewton(Model *m);
+  /** \deprecated_at{2.1} Pass a model to the constructor. */
+  IMPGSL_DEPRECATED_FUNCTION_DECL(2.1)
+  QuasiNewton();
 
   // default 0.01
   void set_initial_step(double length) {

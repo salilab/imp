@@ -52,8 +52,7 @@ class Tests(IMP.test.TestCase):
             p.add_attribute(IMP.FloatKey("x"), value, True)
         rsr = WoodsFunc(model, particles)
         model.add_restraint(rsr)
-        opt = IMP.gsl.QuasiNewton()
-        opt.set_model(model)
+        opt = IMP.gsl.QuasiNewton(model)
         #opt.set_threshold(1e-5)
         e = opt.optimize(1000)
         for p in particles:
