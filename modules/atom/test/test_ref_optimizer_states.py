@@ -13,11 +13,11 @@ class Tests(IMP.test.TestCase):
         s = IMP.atom.VelocityScalingOptimizerState(ps, 300., 10)
         o = IMP.atom.MolecularDynamics(m)
         o.add_optimizer_state(s)
-        refcnt.assert_number(3)
+        refcnt.assert_number(2)
         # Optimizer should hold a ref to state, so nothing should be freed
         # until it is
         del s
-        refcnt.assert_number(3)
+        refcnt.assert_number(2)
         del o
         refcnt.assert_number(0)
 
@@ -30,7 +30,7 @@ class Tests(IMP.test.TestCase):
         s = IMP.atom.VelocityScalingOptimizerState(ps, 300., 10)
         o.add_optimizer_state(s)
         self.assertEqual(s.get_ref_count(), 2)
-        refcnt.assert_number(3)
+        refcnt.assert_number(2)
         # New state s should not go away until we free the Python reference
         del o
         refcnt.assert_number(1)
