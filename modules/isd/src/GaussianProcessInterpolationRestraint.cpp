@@ -44,6 +44,7 @@ void GaussianProcessInterpolationRestraint::do_set_model(Model *m)
     // I'm keeping it alive
     ss_ = new GaussianProcessInterpolationScoreState(this);
   } else {
+    IMP_LOG_TERSE( "GPIR: unregistering the model and scorestate"<<std::endl);
     // it will get cleaned up
     ss_ = nullptr;
   }
