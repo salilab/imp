@@ -1,7 +1,5 @@
 # SAXS Merge
 
-# SAXS Merge
-
 A method for merging SAXS profiles using Gaussian processes.
 
 Small-Angle X-ray Scattering (SAXS) is an experimental technique that allows
@@ -19,7 +17,7 @@ A [webserver](http://salilab.org/saxsmerge) is also available.
 
 # Info
 
-_Author(s)_: Yannick Spill
+_Author(s)_: Yannick Spill, Seong Joong Kim, Dina Schneidman-Duhovny
 
 _Maintainer_: `yannickspill`
 
@@ -30,4 +28,5 @@ License as published by the Free Software Foundation; either
 version 2 of the License, or (at your option) any later version.
 
 _Publications_:
- - See main IMP papers list.
+ - SAXS Merge: an Automated Webserver to Statistically Merge SAXS Profiles. Submitted.
+ - SAXS Merge: an Automated Statistical Method to Merge SAXS Profiles using Gaussian Processes. Accepted in the Journal of Synchrotron Radiation.
