@@ -230,7 +230,7 @@ void Model::check_dependency_invariants() const {
 }
 
 bool Model::get_has_all_dependencies() const {
-  check_dependency_invariants();
+  //check_dependency_invariants();
   return no_dependencies_.empty();
 }
 
@@ -244,7 +244,7 @@ void Model::do_set_has_all_dependencies(bool tf) {
 
 void Model::set_has_all_dependencies(bool tf) {
   IMP_USAGE_CHECK(tf, "Only works for true.");
-  check_dependency_invariants();
+  //check_dependency_invariants();
   do_set_has_all_dependencies(tf);
   IMP_INTERNAL_CHECK(get_has_all_dependencies() == tf,
                      "Post condition not satisfied");
