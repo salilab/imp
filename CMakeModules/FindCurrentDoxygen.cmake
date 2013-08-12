@@ -47,7 +47,7 @@ endif()
 if(IMP_FETCH_DOXYGEN)
     include(ExternalProject)
     message(STATUS "Will download doxygen from ${doxygen_url}")
-    ExternalCMAKE_Add( download_doxygen
+    ExternalProject_Add( download_doxygen
             SOURCE_DIR "${CMAKE_BINARY_DIR}/tools/doxygen"
             URL ${doxygen_url}
             URL_MD5 ${doxygen_md5}
