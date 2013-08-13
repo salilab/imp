@@ -47,6 +47,9 @@ git submodule update
 rev=`git rev-parse HEAD`
 shortrev=`git rev-parse --short HEAD`
 
+# Get submodule revisions
+RMF_rev=`(cd modules/rmf/dependency/RMF_source && git rev-parse HEAD)`
+
 # Get old revision
 oldrev_file=${IMPTOP}/.SVN-new/build/imp-gitrev
 if [ -f "${oldrev_file}" ]; then
@@ -92,9 +95,11 @@ fi
 # Write out version files
 verfile="${IMPINSTALL}/build/imp-version"
 revfile="${IMPINSTALL}/build/imp-gitrev"
+RMF_revfile="${IMPINSTALL}/build/rmf-gitrev"
 mkdir -p "${IMPINSTALL}/build"
 echo "${IMPVERSION}" > $verfile
 echo "${rev}" > $revfile
+echo "${RMF_rev}" > $RMF_revfile
 
 # Write out log from previous build to this one
 logfile="${IMPINSTALL}/build/imp-gitlog"
