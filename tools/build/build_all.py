@@ -47,7 +47,7 @@ class TestXMLHandler(XMLGenerator):
            additional test measurement."""
         # This assumes that the Results tag comes after the Name tag
         name = self._test.get('name', '')
-        splname = name.split('.', 1)[-1] # Also try without module. prefix
+        splname = name.split('-', 1)[-1] # Also try without module- prefix
         for n in (name, splname):
             fulln = os.path.join(self.detail_dir, n)
             if os.path.exists(fulln):
