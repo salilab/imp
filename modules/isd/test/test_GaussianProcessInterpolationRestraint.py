@@ -13,6 +13,8 @@ from IMP.isd import *
 
 #unit testing framework
 import IMP.test
+IMP.set_log_level(0)
+#IMP.set_log_level(IMP.VERBOSE)
 
 class MockFunc:
     def __init__(self, setval, evaluate, evalargs=1, update=None):
@@ -37,8 +39,6 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        #IMP.base.set_log_level(IMP.base.TERSE)
-        IMP.base.set_log_level(0)
         self.m = IMP.Model()
         self.q=[[0],[1]]
         self.I=[1,1]
@@ -385,7 +385,6 @@ class Tests(IMP.test.TestCase):
         #dg.show_graphviz(open('graph.dot','w'))
         #print IMP.get_dependent_score_states(self.m,mi,dg,dgi)
         #return
-        #IMP.base.set_log_level(IMP.base.TERSE)
         for a in logspace(-1,2,num=100):
             self.sig.set_nuisance(a)
             observed = self.m.evaluate(False)
@@ -736,7 +735,6 @@ class Tests(IMP.test.TestCase):
 
     def testDerivNumericTau(self):
         "Test the derivatives of the GPI restraint numerically for tau"
-        #IMP.base.set_log_level(IMP.base.TERSE)
         pnum=3
         values=linspace(.1,.9)
         particle=self.particles[pnum]

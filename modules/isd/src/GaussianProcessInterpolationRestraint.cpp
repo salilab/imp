@@ -39,16 +39,16 @@ GaussianProcessInterpolationRestraint::GaussianProcessInterpolationRestraint(
 }
 
 void GaussianProcessInterpolationRestraint::create_score_state() {
+    IMP_LOG_TERSE( "GPIR: create scorestate" <<std::endl);
     ss_ = new GaussianProcessInterpolationScoreState(this);
 }
 
 void GaussianProcessInterpolationRestraint::do_set_model(Model *m)
 {
   if (m) {
-    IMP_LOG_TERSE( "GPIR: registering the model and scorestate"<<std::endl);
     create_score_state();
   } else {
-    IMP_LOG_TERSE( "GPIR: unregistering the model and scorestate"<<std::endl);
+    IMP_LOG_TERSE( "GPIR: unregistering the scorestate"<<std::endl);
     // it will get cleaned up
     ss_ = nullptr;
   }
