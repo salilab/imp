@@ -27,6 +27,9 @@ class IMPRMFEXPORT SaveOptimizerState : public core::PeriodicOptimizerState {
   base::WeakPointer<atom::Simulator> sim_;
 
  public:
+  SaveOptimizerState(Model *m, RMF::FileHandle fh);
+  /** \deprecated_at{2.1} Use one that takes a model. */
+  IMPRMF_DEPRECATED_FUNCTION_DECL(2.1)
   SaveOptimizerState(RMF::FileHandle fh);
 #ifndef IMP_DOXYGEN
   IMP_LIST_ACTION(public, Hierarchy, Hierarchies, hierarchy, hierarchies,

@@ -86,7 +86,7 @@ IMP.rmf.add_hierarchies(rmf, ps)
 IMP.rmf.add_restraints(rmf, rs+[ev])
 g= IMP.display.BoundingBoxGeometry(bb)
 IMP.rmf.add_geometries(rmf, [g])
-os= IMP.rmf.SaveOptimizerState(rmf)
+os= IMP.rmf.SaveOptimizerState(m, rmf)
 os.set_period(max(steps/100, 1))
 bd.add_optimizer_state(os)
 
