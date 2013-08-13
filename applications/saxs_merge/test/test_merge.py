@@ -81,7 +81,8 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         data=[[0,0,1],[1,10,1]]
         p=self.SAXSProfile()
         p.add_data(data)
-        args=MockArgs(verbose=0, aalpha=0.05, acutoff=2)
+        args=MockArgs(verbose=0, aalpha=0.05, acutoff=2, remove_noisy=False,
+                auto=False)
         self.merge.cleanup([p],args)
         self.assertTrue(
                 set(p.get_flag_names()).issuperset(set(['agood','apvalue'])))
@@ -95,7 +96,7 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         data=[[0,0,1],[1,10,1],[2,0,1],[3,10,1]]
         p=self.SAXSProfile()
         p.add_data(data)
-        args=MockArgs(verbose=0, aalpha=0.05, acutoff=1.5)
+        args=MockArgs(verbose=0, aalpha=0.05, acutoff=1.5, remove_noisy=False)
         self.merge.cleanup([p],args)
         test = p.get_data(colwise=True)
         self.assertEqual(test['agood'],[False,True,False,False])
@@ -199,7 +200,8 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         gp2=self.set_interpolant(p2,2.5,10,MockGP2)
         self.merge.create_intervals_from_data(p2,'agood')
         #run classification
-        args=MockArgs(verbose=0, dalpha=0.05, baverage=False)
+        args=MockArgs(verbose=0, dalpha=0.05, baverage=False,auto=False,
+                remove_redundant=False)
         self.merge.classification([p1,p2],args)
         #p1
         self.assertTrue(
@@ -238,17 +240,18 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         gp2=self.set_interpolant(p2,2.5,10,MockGP2)
         self.merge.create_intervals_from_data(p2,'agood')
         #run classification and merging
-        args=MockArgs(verbose=0, mergename="merge",
+        args=MockArgs(verbose=0, mergename="merge", auto=False,
+                remove_redundant=False,
                 dalpha=0.05, eextrapolate=0, enoextrapolate=False,
                 baverage=False, enocomp=True, emean='Flat',
                 elimit_fitting=-1, elimit_hessian=-1,
                 lambdamin=0.005)
         self.merge.classification([p1,p2],args)
-        def find_fit(a,b,c,model_comp=None, mean_function=None,
+        def find_fit(a,b,model_comp=None, mean_function=None,
                         model_comp_maxpoints=None, lambdamin=0.005):
-            return 'test',b,None
+            return 'test',{'sigma':b},None
         self.merge.find_fit = find_fit
-        def setup_process(b,c,e):
+        def setup_process(b,c):
             m=IMP.Model()
             s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
             gp=MockGP(1,10)
