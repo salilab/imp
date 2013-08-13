@@ -30,6 +30,7 @@
 #include "IMP/kmeans/internal/KMeans.h"    // kmeans includes
 #include "IMP/kmeans/internal/KCtree.h"    // kc tree
 #include "IMP/kmeans/internal/KMrand.h"    // random number generators
+#include <IMP/base/log_macros.h>
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 
