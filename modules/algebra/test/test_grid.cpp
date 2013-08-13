@@ -45,7 +45,7 @@ int main(int, char * []) {
   BoundingBox3D gbb(get_random_vector_in(bb));
   gbb += get_random_vector_in(bb);
   Grid g(1, gbb, 0);
-  for (unsigned int i = 0; i < 5; ++i) {
+  for (unsigned int i = 0; i < 2; ++i) {
     std::cout << i << std::endl;
     BoundingBox3D qbb(get_random_vector_in(gbb));
     qbb += get_random_vector_in(gbb);
