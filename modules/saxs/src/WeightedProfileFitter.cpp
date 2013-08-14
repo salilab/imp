@@ -23,15 +23,12 @@ WeightedProfileFitter::WeightedProfileFitter(const Profile& exp_profile):
     Wb_[i] = exp_profile_.get_intensity(i);
     W_[i] = 1.0/(exp_profile_.get_error(i)*exp_profile_.get_error(i));
   }
-
   Wb_ = W_ * Wb_;
-
 }
 
 Float WeightedProfileFitter::compute_score(
                          const std::vector<IMP::saxs::Profile *>& profiles,
-                         std::vector<double>& weights,
-                         const std::string fit_file_name) const {
+                         std::vector<double>& weights) const {
 
   // no need to compute weighted profile for ensemble of size 1
   if(profiles.size() == 1)

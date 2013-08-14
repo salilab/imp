@@ -34,12 +34,12 @@ const Float Profile::modulation_function_parameter_ = 0.23;
 
 Profile::Profile(Float qmin, Float qmax, Float delta):
   min_q_(qmin), max_q_(qmax), delta_q_(delta), experimental_(false),
-  average_radius_(1.58), average_volume_(17.5) {
+  average_radius_(1.58), average_volume_(17.5), id_(0) {
   ff_table_ = default_form_factor_table();
 }
 
 Profile::Profile(const String& file_name, bool fit_file) :
-  experimental_(true) {
+  experimental_(true), name_(file_name), id_(0) {
 
   if(fit_file) experimental_ = false;
   read_SAXS_file(file_name, fit_file);

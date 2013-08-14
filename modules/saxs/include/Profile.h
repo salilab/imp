@@ -170,6 +170,9 @@ public:
   //! checks the sampling of experimental profile
   bool is_uniform_sampling() const;
 
+  std::string get_name() const { return name_; }
+
+  unsigned int get_id() const { return id_; }
 
   // Modifiers
 
@@ -181,6 +184,10 @@ public:
   void set_average_radius(Float r) { average_radius_ = r; }
 
   void set_average_volume(Float v) { average_volume_ = v; }
+
+  void set_name(std::string name) { name_ = name; }
+
+  void set_id(unsigned int id) { id_ = id; }
 
   //! add intensity entry to profile
   void add_entry(Float q, Float intensity, Float error = 1.0) {
@@ -273,6 +280,9 @@ public:
   Float average_radius_; // average radius of the particles
   Float average_volume_; // average volume
   std::map<float, unsigned int> q_mapping_;
+
+  std::string name_;
+  unsigned int id_;
 };
 
 IMPSAXS_END_NAMESPACE
