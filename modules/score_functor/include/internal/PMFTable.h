@@ -1,6 +1,6 @@
 /**
  *  \file PMFTable.h
- *  \brief Functions to read mol2s
+ *  \brief A table for storing potentials
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
