@@ -6,6 +6,7 @@
  * Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPSCORE_FUNCTOR_SAS_STATISTICAL_H
 #define IMPSCORE_FUNCTOR_SAS_STATISTICAL_H
 
@@ -45,7 +46,8 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 template <class Key, bool INTERPOLATE>
 class SASStatistical {
 public:
-  SASStatistical(IntKey k, base::TextInput data_file) : key_(k) {
+  SASStatistical(IntKey k, base::TextInput data_file =
+                 get_data_path("soap_score_sas.lib")) : key_(k) {
     table_.template initialize<Key>(data_file);
   }
 
