@@ -14,8 +14,6 @@ if [ $# -ne 1 ]; then
 fi
 
 GIT_TOP=/cowbell1/git
-GIT_DIR=${GIT_TOP}/imp/.git
-export GIT_DIR
 
 BRANCH=$1
 
@@ -60,6 +58,9 @@ fi
 if [ ${BRANCH} != "develop" -a "${oldrev}" = "${rev}" ]; then
   exit 0
 fi
+
+GIT_DIR=${GIT_TOP}/imp/.git
+export GIT_DIR
 
 rm -rf ${TMPDIR}
 mkdir ${TMPDIR}
