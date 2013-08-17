@@ -182,7 +182,6 @@ for a set of transformations in the trans_file.")
         }
       }
     }
-    std::cout << "Distance based score is " << score << std::endl;
 
     // SAS based score
     // compute surface accessibility
@@ -193,20 +192,17 @@ for a set of transformations in the trans_file.")
     IMP::IntKey ikey = IMP::score_functor::Dope::get_dope_type_key();
     IMP::score_functor::SASStatistical<IMP::score_functor::DopeType,
                                        false> sas_stat(ikey);
-
     double sas_score = 0.0;
     for(unsigned int i=0; i<particles.size(); i++) {
       sas_score += sas_stat.get_score(model,
                                       particles[i]->get_index(),
                                       surface_area[i]);
     }
-    std::cout << "SAS based score is " << sas_score << std::endl;
-    std::cout << "Total score is " << sas_score + score << std::endl;
+
 
     // save
     SOAPResult r(t+1, sas_score+score, false, sas_score, score, transforms[t]);
     results.push_back(r);
-    //std::cerr << r << std::endl;
     if((t+1) % 1000 == 0) std::cerr << t+1 << " transforms processed "
                                     << std::endl;
 
