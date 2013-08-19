@@ -12,11 +12,11 @@
 IMPRMF_BEGIN_NAMESPACE
 
 SaveOptimizerState::SaveOptimizerState(Model *m, RMF::FileHandle fh)
-  : PeriodicOptimizerState(m, std::string("Save to ") + fh.get_name()),
+  : kernel::OptimizerState(m, std::string("Save to ") + fh.get_name()),
     fh_(fh) {}
 
 SaveOptimizerState::SaveOptimizerState(RMF::FileHandle fh)
-    : PeriodicOptimizerState(std::string("Save to ") + fh.get_name()),
+  : kernel::OptimizerState(std::string("Save to ") + fh.get_name()),
       fh_(fh) {}
 
 void SaveOptimizerState::do_update(unsigned int k) {

@@ -64,7 +64,6 @@ IMP_SWIG_OBJECT( IMP::core, NormalizedSphereDistancePairScore, NormalizedSphereD
 IMP_SWIG_OBJECT( IMP::core, OpenCubicSpline, OpenCubicSplines);
 IMP_SWIG_OBJECT( IMP::core, PairConstraint, PairConstraints);
 IMP_SWIG_OBJECT( IMP::core, PairRestraint, PairRestraints);
-IMP_SWIG_BASE_OBJECT( IMP::core, PeriodicOptimizerState, PeriodicOptimizerStates);
 IMP_SWIG_OBJECT( IMP::core, QuadConstraint, QuadConstraints);
 IMP_SWIG_OBJECT( IMP::core, QuadRestraint, QuadRestraints);
 IMP_SWIG_OBJECT( IMP::core, QuadraticClosePairsFinder, QuadraticClosePairsFinders);

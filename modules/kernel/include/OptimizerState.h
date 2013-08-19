@@ -34,6 +34,8 @@ class Optimizer;
  */
 class IMPKERNELEXPORT OptimizerState : public ModelObject {
   friend class Optimizer;
+  unsigned int period_, call_number_, update_number_;
+
   void set_optimizer(Optimizer* optimizer);
 
  public:
@@ -43,20 +45,49 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
   OptimizerState(std::string name = "OptimizerState %1%");
 
   //! Called when the Optimizer accepts a new conformation
-  virtual void update() = 0;
+  /** Overriding this method is deprecated, override do_update() instead.
+  */
+  virtual void update();
 
   /** Called with true at the beginning of an optimizing run and with
-      false at the end.*/
-  virtual void set_is_optimizing(bool) {}
+      false at the end.
+
+      \note Do not override, override do_set_is_optimizing() instead.
+  */
+  virtual void set_is_optimizing(bool);
 
   Optimizer* get_optimizer() const {
     IMP_INTERNAL_CHECK(optimizer_,
                        "Must call set_optimizer before get_optimizer on state");
     return optimizer_.get();
   }
+
+  /** If is often useful to have the OptimizerState only take action on a subset
+      of the steps. */
+  void set_period(unsigned int p);
+  unsigned int get_period() const {return period_;}
+  /** Reset the phase to 0 and set the call number to 0 too.*/
+  virtual void reset();
+
+  /** Force the optimizer state to perform its action now, ignoring the
+      phase.
+   */
+  void update_always();
+  //! Return the number of times update has been called
+  unsigned int get_number_of_updates() const { return update_number_; }
+  //! Set the counter
+  void set_number_of_updates(unsigned int n) { update_number_ = n; }
+
   IMP_REF_COUNTED_DESTRUCTOR(OptimizerState);
 
  protected:
+  /** This method is called every get_period() update calls. The number of
+      times this method has been called since the last reset or start of the
+      optimization run is passed.*/
+  virtual void do_update(unsigned int call_number) {update();}
+
+  virtual void do_set_is_optimizing(bool) {}
+
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
     return ModelObjectsTemp();
   }

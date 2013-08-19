@@ -14,7 +14,7 @@
 #include "restraint_io.h"
 #include "particle_io.h"
 #include "geometry_io.h"
-#include <IMP/core/PeriodicOptimizerState.h>
+#include <IMP/kernel/OptimizerState.h>
 #include <IMP/atom/Simulator.h>
 
 IMPRMF_BEGIN_NAMESPACE
@@ -22,7 +22,7 @@ IMPRMF_BEGIN_NAMESPACE
 /** Periodically call the save_frame() method to save the everything
     associated with the RMF file to file.
 */
-class IMPRMFEXPORT SaveOptimizerState : public core::PeriodicOptimizerState {
+class IMPRMFEXPORT SaveOptimizerState : public kernel::OptimizerState {
   RMF::FileHandle fh_;
   base::WeakPointer<atom::Simulator> sim_;
 
@@ -61,7 +61,7 @@ class IMPRMFEXPORT SaveOptimizerState : public core::PeriodicOptimizerState {
   //! Write a frame with a given name
   void update_always(std::string name);
   // to prevent it from being hidden
-  void update_always() { core::PeriodicOptimizerState::update_always(); }
+  void update_always() { kernel::OptimizerState::update_always(); }
   virtual void do_update(unsigned int call_num) IMP_OVERRIDE;
   IMP_OBJECT_METHODS(SaveOptimizerState);
 };

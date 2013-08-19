@@ -12,7 +12,7 @@
 #include <IMP/OptimizerState.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairContainer.h>
-#include <IMP/core/PeriodicOptimizerState.h>
+#include <IMP/kernel/OptimizerState.h>
 #include <IMP/internal/InternalDynamicListPairContainer.h>
 #include <IMP/PairPredicate.h>
 #include <IMP/base/Pointer.h>
@@ -27,7 +27,7 @@ IMPMISC_BEGIN_NAMESPACE
     it evaluates to 0 are removed.
  */
 class IMPMISCEXPORT DecayPairContainerOptimizerState
-    : public core::PeriodicOptimizerState {
+  : public kernel::OptimizerState {
   base::PointerMember<PairPredicate> pred_;
   base::PointerMember<PairContainer> input_;
   base::Pointer<IMP::internal::InternalDynamicListPairContainer> output_;

@@ -104,6 +104,7 @@ namespace kernel {
 %warnfilter(403) TripletScore;
 %warnfilter(403) QuadScore;
 %warnfilter(403) AttributeOptimizer;
+%warnfilter(403) OptimizerState;
 }
 }
 %warnfilter(403) IMP::base::TrackedObject< IMP::kernel::ModelObject,IMP::kernel::Model >;

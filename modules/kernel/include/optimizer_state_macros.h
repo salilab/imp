@@ -21,7 +21,7 @@
   virtual void update() IMP_OVERRIDE;                              \
   IMP_OBJECT_NO_WARNING(Name)
 
-/** \deprecated_at{2.1} Please use IMP::core::PeriodicOptimizerState instead.
+/** \deprecated_at{2.1} Functionality is built into OptimizerState.
 */
 #define IMP_PERIODIC_OPTIMIZER_STATE(Name)                                   \
   IMPKERNEL_DEPRECATED_MACRO(2.1, "Use IMP::core::PeriodicOptimizerState."); \
@@ -81,29 +81,23 @@
  */
 #define IMP_MODEL_SAVE(Name, args, vars, constr, functs, save_action)        \
   class Name##OptimizerState : public OptimizerState {                       \
-    ::IMP::kernel::internal::Counter skip_steps_, call_number_,              \
-        update_number_;                                                      \
     std::string file_name_;                                                  \
-    vars IMP_IMPLEMENT_INLINE(virtual void update(), {                       \
-      if (call_number_ % (skip_steps_ + 1) == 0) {                           \
+    vars\
+    virtual void do_update(unsigned int update_number) IMP_OVERRIDE {   \
         std::ostringstream oss;                                              \
         bool formatted = false;                                              \
         try {                                                                \
-          oss << boost::format(file_name_) % update_number_;                 \
+          oss << boost::format(file_name_) % update_number;                 \
           formatted = true;                                                  \
         }                                                                    \
         catch (...) {                                                        \
         }                                                                    \
         if (formatted) {                                                     \
-          write(oss.str(), false);                                           \
+          write(oss.str(), update_number, false);                        \
         } else {                                                             \
-          write(file_name_, update_number_ != 0);                            \
+          write(file_name_, update_number, update_number != 0);          \
         }                                                                    \
-        ++update_number_;                                                    \
       }                                                                      \
-      ++call_number_;                                                        \
-    });                                                                      \
-                                                                             \
    public                                                                    \
        : /** Write to a file generated from the passed filename every        \
          skip_steps steps. The file_name constructor argument should contain \
@@ -114,22 +108,14 @@
           file_name_(file_name) {                                            \
       constr                                                                 \
     }                                                                        \
-    functs IMP_NO_DOXYGEN(void set_skip_steps(unsigned int k) {              \
-      set_period(k + 1);                                                     \
-    });                                                                      \
-    void set_period(unsigned int p) {                                        \
-      skip_steps_ = p - 1;                                                   \
-      call_number_ = 0;                                                      \
-    }                                                                        \
+    functs                                                              \
     void write(std::string file_name, unsigned int call = 0,                 \
                bool append = false) const {                                  \
       IMP_UNUSED(call);                                                      \
       IMP_UNUSED(append);                                                    \
       save_action                                                            \
     }                                                                        \
-                                                                             \
    private:                                                                  \
-    IMP_IMPLEMENT(void do_update(unsigned int call_number));                 \
     IMP_OBJECT_METHODS(Name##OptimizerState);                                \
   };                                                                         \
   IMP_OBJECTS(Name##OptimizerState, Name##OptimizerStates);
