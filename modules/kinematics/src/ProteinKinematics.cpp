@@ -68,7 +68,9 @@ void ProteinKinematics::init
     for(unsigned int i=0; i<flexible_residues.size(); i++) {
       IMP::atom::Atoms phi_atoms =
         IMP::atom::get_phi_dihedral_atoms(flexible_residues[i]);
-      if(phi_atoms.size() == 4) {
+      if(phi_atoms.size() == 4 &&
+         // proline residue has a fixed phi angle (-60 degrees)
+         flexible_residues[i].get_residue_type() != IMP::atom::PRO) {
         phi_angles.push_back(phi_atoms);
         phi_residues.push_back(flexible_residues[i]);
       }

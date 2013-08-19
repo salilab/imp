@@ -61,7 +61,7 @@ KinematicForest::add_edge(Joint* joint)
     }
   }
 
-  // decorare child and store here
+  // decorate child and store here
   Particle* child_p = child_rb.get_particle();
   if(!KinematicNode::get_is_setup( child_p ) ) {
     child_kn = KinematicNode::setup_particle( child_p, this, joint );
