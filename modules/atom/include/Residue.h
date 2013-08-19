@@ -155,7 +155,7 @@ class IMPATOMEXPORT Residue : public Hierarchy {
   IMP_DECORATOR_METHODS(Residue, Hierarchy);
   IMP_DECORATOR_SETUP_3(Residue, ResidueType, t,
                         int, index, int, insertion_code);
-  /** Setup the particle as a Residue with teh passed type and index. */
+  /** Setup the particle as a Residue with the passed type and index. */
   IMP_DECORATOR_SETUP_2(Residue, ResidueType, t,
                         int, index);
   IMP_DECORATOR_SETUP_1(Residue, ResidueType, t);

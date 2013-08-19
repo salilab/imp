@@ -15,7 +15,7 @@
 #include <IMP/atom/DopePairScore.h>
 
 #include <IMP/score_functor/Soap.h>
-#include <IMP/score_functor/SASStatistical.h>
+#include <IMP/score_functor/SingletonStatistical.h>
 
 #include <IMP/saxs/SolventAccessibleSurface.h>
 #include <IMP/saxs/FormFactorTable.h>
@@ -190,15 +190,14 @@ for a set of transformations in the trans_file.")
     surface_area = s.get_solvent_accessibility(IMP::core::XYZRs(particles),1.4);
 
     IMP::IntKey ikey = IMP::score_functor::Dope::get_dope_type_key();
-    IMP::score_functor::SASStatistical<IMP::score_functor::DopeType,
-                                       false> sas_stat(ikey);
+    IMP::score_functor::SingletonStatistical<IMP::score_functor::DopeType,
+                                             false> sas_stat(ikey);
     double sas_score = 0.0;
     for(unsigned int i=0; i<particles.size(); i++) {
       sas_score += sas_stat.get_score(model,
                                       particles[i]->get_index(),
                                       surface_area[i]);
     }
-
 
     // save
     SOAPResult r(t+1, sas_score+score, false, sas_score, score, transforms[t]);
