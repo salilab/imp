@@ -117,7 +117,7 @@ against IMP.
 %build
 # For now, bundle RMF with IMP (long term, may be better to put in a separate
 # RPM)
-mkdir imp && mv * imp
+mkdir imp && mv * imp || :
 mkdir build && cd build
 %{cmake} ../imp -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr \
                 -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/%{name}-%{version} \
