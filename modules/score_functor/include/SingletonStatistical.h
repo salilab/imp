@@ -1,25 +1,26 @@
 /**
- * \file SASStatistical
- * \brief statistical score based on solvent accessability
+ * \file SingletonStatistical.h
+ * \brief statistical score for a single particle based on one parameter,
+ * such as solvent accessability
  *
  * \authors Dina Schneidman
  * Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPSCORE_FUNCTOR_SAS_STATISTICAL_H
-#define IMPSCORE_FUNCTOR_SAS_STATISTICAL_H
+#ifndef IMPSCORE_FUNCTOR_SINGLETON_STATISTICAL_H
+#define IMPSCORE_FUNCTOR_SINGLETON_STATISTICAL_H
 
 #include <IMP/score_functor/score_functor_config.h>
 #include "internal/SASTable.h"
 
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
-/** Create a statistical potential from a file. The Key passed
-    as a template argument is used to determine how to map the name of
-    the type as described in the loaded file to table index. That is, if
-    atom::ResidueKey is passed as the Keys, the potential will expect a file
-    which has one line for each residue name.
+/** Create a single key/single particle statistical potential from a file.
+    The Key passed as a template argument is used to determine how to map
+    the name of the type as described in the loaded file to table index.
+    That is, if atom::ResidueKey is passed as the Keys, the potential will
+    expect a file which has one line for each residue name.
 
     The expected file format is:
 \verbatim
@@ -44,9 +45,9 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
     interpolated with a spline.
 */
 template <class Key, bool INTERPOLATE>
-class SASStatistical {
+class SingletonStatistical {
 public:
-  SASStatistical(IntKey k, base::TextInput data_file =
+  SingletonStatistical(IntKey k, base::TextInput data_file =
                  get_data_path("soap_score_sas.lib")) : key_(k) {
     table_.template initialize<Key>(data_file);
   }
@@ -63,4 +64,4 @@ private:
 
 IMPSCOREFUNCTOR_END_NAMESPACE
 
-#endif /* IMPSCORE_FUNCTOR_SAS_STATISTICAL_H */
+#endif /* IMPSCORE_FUNCTOR_SINGLETON_STATISTICAL_H */
