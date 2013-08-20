@@ -16,7 +16,10 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-Simulator::Simulator(Model *m, std::string name) : Optimizer(m, name) {
+Simulator::Simulator(Model *m, std::string name, double wave_factor)
+  : Optimizer(m, name),
+    wave_factor_(wave_factor)
+{
   temperature_ = strip_units(IMP::internal::DEFAULT_TEMPERATURE);
   max_time_step_ = 2;
   current_time_ = 0;
@@ -45,6 +48,86 @@ double Simulator::simulate(double time) {
   return Optimizer::get_scoring_function()->evaluate(false);
 }
 
+double Simulator::simulate_wave
+( double time,
+  double max_time_step_factor,
+  double base) {
+  IMP_FUNCTION_LOG;
+  set_was_used(true);
+  ParticleIndexes ps = get_simulation_particle_indexes();
+
+  setup(ps);
+  double target = current_time_ + time;
+  IMP_USAGE_CHECK(max_time_step_factor > 1.0,
+                  "simulate wave time step factor must be >1.0");
+
+  // build wave into cur_ts
+  double wave_max_ts = max_time_step_factor * max_time_step_;
+  std::vector<double> ts_seq;
+  {
+    int n_half = 2; // subwave length
+    bool max_reached = false;
+    double raw_wave_time = 0.0;
+    do {
+      double cur_ts = max_time_step_;
+      // go up
+      for(int i = 0; i < n_half; i++) {
+        ts_seq.push_back(cur_ts);
+        raw_wave_time += cur_ts;
+        cur_ts *= base;
+        if(cur_ts > wave_max_ts) {
+          max_reached = true;
+          break;
+        }
+      }
+      // go down
+      for(int i = 0; i < n_half; i++) {
+        cur_ts /= base;
+        ts_seq.push_back(cur_ts);
+        raw_wave_time += cur_ts;
+        if(cur_ts < max_time_step_){
+          break;
+        }
+      }
+      n_half++;
+    } while (!max_reached && raw_wave_time < time);
+    // adjust to fit into time precisely
+    unsigned int n = (unsigned int)std::ceil( time / raw_wave_time );
+    double wave_time = time / n;
+    double adjust = wave_time / raw_wave_time;
+    std::cout << "ts_seq: ";
+    for(unsigned int i = 0; i < ts_seq.size() ; i++) {
+      ts_seq[i] *= adjust;
+      std::cout << ts_seq[i] << ", ";
+    }
+    std::cout << std::endl;
+  }
+
+  unsigned int i = 0;
+  unsigned int k = ts_seq.size(); // n waves of k frames
+  int orig_nf_left = (int)(time / max_time_step_);
+  while (current_time_ < target) {
+    last_time_step_ = do_step(ps, ts_seq[i++ % k]);
+    current_time_ += last_time_step_;
+    // emulate state updating by frames for the origin max_time_step
+    // (for periodic optimizers)
+    int nf_left = (int)( (target - current_time_) / max_time_step_ );
+    while(orig_nf_left >= nf_left) {
+      IMP_LOG(VERBOSE,"Updating states: " << orig_nf_left << "," << nf_left
+              << " target time " << target <<  " current time "
+              << current_time_ << std::endl);
+      update_states();
+      orig_nf_left--;
+    }
+  }
+  std::cout <<  "Simulated for " << i << " actual frames with waves of "
+          << k << " frames each" << std::endl;
+  IMP_USAGE_CHECK(current_time_ >= target - 0.001 * max_time_step_,
+                  "simulations did not advance to target time for some reason");
+  return Optimizer::get_scoring_function()->evaluate(false);
+}
+
+
 ParticleIndexes Simulator::get_simulation_particle_indexes() const {
   IMP_FUNCTION_LOG;
   ParticleIndexes ps;
@@ -68,7 +151,11 @@ ParticlesTemp Simulator::get_simulation_particles() const {
 }
 
 double Simulator::do_optimize(unsigned int ns) {
-  return simulate(ns * max_time_step_);
+  if(wave_factor_ >= 1.001) {
+    return simulate_wave(ns * max_time_step_, wave_factor_);
+  } else {
+    return simulate(ns * max_time_step_);
+  }
 }
 
 double Simulator::get_kt() const {

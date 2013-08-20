@@ -52,8 +52,19 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
  public:
   //! Create the optimizer
   /** If sc is not null, that container will be used to find particles
-      to move, otherwise the model will be searched.*/
-  BrownianDynamics(Model *m, std::string name = "BrownianDynamics%1%");
+      to move, otherwise the model will be searched.
+      @param m model associated with bd
+      @param name name of bd object
+      @param wave_factor for wave step function, see Simulator object,
+                         if >1.001 or so, creates a wave of time steps
+                         that are larger by up to wave_factor from
+                         formal maximal time step
+
+     @note wave_factor is an advanced feature - if you're not sure, just use
+                       its default, see also Simulator::simulate_wave()
+  */
+  BrownianDynamics(Model *m, std::string name = "BrownianDynamics%1%",
+                   double wave_factor=1.0);
   void set_maximum_move(double ms) { max_step_ = ms; }
   void set_use_stochastic_runge_kutta(bool tf) { srk_ = tf; }
   IMP_SIMULATOR(BrownianDynamics);

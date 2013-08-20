@@ -22,12 +22,57 @@ IMPATOM_BEGIN_NAMESPACE
 class SimulationParameters;
 
 //! The base class for simulators.
+/**
+   A simulator is an optimizer with dynamic tracking of time,
+   such that each frame is associated with a (possibly variable size)
+   time step.
+
+   The simulation can be invoked directly by calling simulate(fs) for
+   a given time in femtoseconds, or by calling Optimizer::optimize(nf)
+   for a give number of frames, which would result in a call to simulate.
+ */
 class IMPATOMEXPORT Simulator : public Optimizer {
  public:
-  Simulator(Model *m, std::string name = "Simulator %1%");
+  /**
+     @param m model associated with simulater
+     @param name simulater name where %1% is a joker
+     @param wave_factor if >=1.001, use wave time step size with larger maximal
+                        time step, using simulate_wave() when calling optimize()
 
-  //! Simulate until the given time in fs
+     @note wave_factor is an advanced feature - if you're not sure, just use its
+                       default, see also simulate_wave()
+
+     \see simulate()
+   */
+  Simulator(Model *m, std::string name = "Simulator %1%",
+            double wave_factor=1.0);
+
+  //! Simulate for a given time in fs
+  /**
+     simulate for a given time, by calling the protected
+     method do_step() iteratively.
+
+     @param time_in_fs time in femtoseconds
+   */
   double simulate(double time_in_fs);
+
+  //! Simulate for a given time in fs using a wave step function
+  //! with maximal time step increased by up to max_time_step_factor
+  /**
+     simulate for a given time, by calling the protected
+     method do_step() iteratively, and using a self adjusting time
+     step that can grow up to max_time_step_factor times than
+     the default time step returned by get_maximum_time_step()
+
+     @param time_in_fs time_in_fs in femtoseconds
+     @param max_time_step_factor the maximal factor by which the
+                                 maximum time step is exceeded
+     @param base base by which time step increases or decreases
+                 during the wave
+   */
+  double simulate_wave(double time_in_fs,
+                       double max_time_step_factor = 10.0,
+                       double base = 1.5);
 
   double get_temperature() const { return temperature_; }
   void set_temperature(double d) { temperature_ = d; }
@@ -105,6 +150,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
   double max_time_step_;
   double current_time_;
   double last_time_step_;
+  double wave_factor_; // if >1.0, use simulate_wave() from do_optimize()
 };
 
 IMP_OBJECTS(Simulator, Simulators);

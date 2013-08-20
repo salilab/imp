@@ -36,8 +36,10 @@ namespace {
 typedef boost::variate_generator<base::RandomNumberGenerator &,
                                  boost::normal_distribution<double> > RNG;
 }
-BrownianDynamics::BrownianDynamics(Model *m, std::string name)
-    : Simulator(m, name),  // nd_(0,1),
+BrownianDynamics::BrownianDynamics(Model *m,
+                                   std::string name,
+                                   double wave_factor)
+  : Simulator(m, name, wave_factor),  // nd_(0,1),
       // sampler_(base::random_number_generator, nd_),
       max_step_(std::numeric_limits<double>::max()),
       srk_(false) {}
