@@ -22,6 +22,7 @@
 #include <boost/format.hpp>
 #include <locale>
 #include <fstream>
+#include <boost/foreach.hpp>
 #include <iomanip>
 
 #include <boost/version.hpp>
