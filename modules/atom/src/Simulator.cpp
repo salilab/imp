@@ -28,6 +28,14 @@ Simulator::Simulator(Model *m, std::string name, double wave_factor)
 
 double Simulator::simulate(double time) {
   IMP_FUNCTION_LOG;
+  set_is_optimizing_states(true);
+  double ret = do_simulate(time);
+  set_is_optimizing_states(false);
+  return ret;
+}
+
+double Simulator::do_simulate(double time) {
+  IMP_FUNCTION_LOG;
   set_was_used(true);
   ParticleIndexes ps = get_simulation_particle_indexes();
 
@@ -116,7 +124,7 @@ double Simulator::simulate_wave
       IMP_LOG(VERBOSE,"Updating states: " << orig_nf_left << "," << nf_left
               << " target time " << target <<  " current time "
               << current_time_ << std::endl);
-      update_states();
+      update_states(); // needs to move
       orig_nf_left--;
     }
   }
@@ -154,7 +162,7 @@ double Simulator::do_optimize(unsigned int ns) {
   if(wave_factor_ >= 1.001) {
     return simulate_wave(ns * max_time_step_, wave_factor_);
   } else {
-    return simulate(ns * max_time_step_);
+    return do_simulate(ns * max_time_step_);
   }
 }
 

@@ -146,6 +146,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
   virtual bool get_is_simulation_particle(ParticleIndex p) const = 0;
 
  private:
+  double do_simulate(double time);
   double temperature_;
   double max_time_step_;
   double current_time_;
