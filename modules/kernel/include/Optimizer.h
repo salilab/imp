@@ -50,12 +50,14 @@ class IMPKERNELEXPORT Optimizer : public ModelObject {
   mutable base::Pointer<ScoringFunction> cache_;
    base::Pointer<ScoringFunction> scoring_function_;
 
-  void set_is_optimizing_states(bool tf) const;
   static void set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o);
   virtual void do_set_model(Model *m) IMP_OVERRIDE {
     my_model_ = m;
   }
 protected:
+#ifndef IMP_DOXYGEN
+  void set_is_optimizing_states(bool tf) const;
+#endif
   ModelObjectsTemp get_optimizer_state_inputs() const;
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
     return get_optimizer_state_inputs();
