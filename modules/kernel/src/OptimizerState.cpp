@@ -33,7 +33,7 @@ void OptimizerState::update() {
   IMP_LOG_TERSE("Update called with " << call_number_ << " of " << period_
                                       << " and update " << update_number_
                                       << std::endl);
-  if (call_number_ % (period_) == 0) {
+  if (call_number_ % period_ == 0) {
     update_always();
   }
 }
