@@ -28,6 +28,8 @@
 #include "IMP/kmeans/internal/KCtree.h"          // kc-tree declarations
 #include "IMP/kmeans/internal/KMfilterCenters.h" // center set structure
 #include "IMP/kmeans/internal/KMrand.h"          // random number includes
+#include <iostream>
+#include <iomanip>
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 

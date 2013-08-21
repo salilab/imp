@@ -27,6 +27,8 @@
 
 #include "IMP/kmeans/internal/KMfilterCenters.h"
 #include "IMP/kmeans/internal/KMrand.h"
+#include <iostream>
+#include <iomanip>
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 

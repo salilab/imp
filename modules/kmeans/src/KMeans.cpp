@@ -7,7 +7,8 @@
 
 #include "IMP/kmeans/KMeans.h"
 #include <IMP/base/log.h>
-#include <iostream>     // C++ I/O
+#include <iostream>
+#include <iomanip>
 #include <string>
 
 IMPKMEANS_BEGIN_NAMESPACE

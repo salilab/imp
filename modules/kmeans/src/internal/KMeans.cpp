@@ -26,6 +26,7 @@
 //----------------------------------------------------------------------
 
 #include <iostream>                  // C++ I/O
+#include <iomanip>
 
 #include "IMP/kmeans/internal/KMeans.h"    // kmeans includes
 #include "IMP/kmeans/internal/KCtree.h"    // kc tree
