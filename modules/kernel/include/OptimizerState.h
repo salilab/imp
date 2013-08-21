@@ -67,7 +67,7 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
   /**
       This method is called by owning optimizers every time they commit.
       However, if set_period(p) was invoked, it calls do_update() only
-      every p times.
+      every p times it is called (by any optimizer).
 
       @note Overriding this method is deprecated, override do_update() instead.
   */
@@ -87,9 +87,9 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
   }
 
   /**
-     Causes update() invoke do_update() only every p calls (= p times
-     that one of its owning Optimizers commits to a new set of
-     coordinates), instead of the default p=1
+     Causes update() invoke do_update() only every p calls to update()
+     instead of the default p=1. Note that this periodicity is shared
+     by all optimizers that own this OptimizerState object.
 
      @param p periodicity
    */
@@ -100,6 +100,7 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
              are required to invoke do_update()
   */
   unsigned int get_period() const {return period_;}
+
   /** Reset the phase to 0 and set the call number to 0 too.*/
   virtual void reset();
 
@@ -107,8 +108,10 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
       phase.
    */
   void update_always();
+
   //! Return the number of times update has been called
   unsigned int get_number_of_updates() const { return update_number_; }
+
   //! Set the counter
   void set_number_of_updates(unsigned int n) { update_number_ = n; }
 
