@@ -20,17 +20,26 @@ IMPKERNEL_BEGIN_NAMESPACE
 
 class Optimizer;
 
-//! Shared optimizer state.
-/** The OptimizerState update method is called each time the Optimizer commits
-    to a new set of coordinates. Optimizer states may change the values of
-    particle attributes. However, changes to whether an attribute is optimized
-    or not may not be picked up by the Optimizer until the next call to
-    optimize.
+//! Shared optimizer state that is invoked upon commitment of new coordinates.
+/** An OptimizerState update() method is called every time that an
+    owning Optimizer commits to a new set of coordinates. The update()
+    method, in turn, invokes do_update(), which can be overridden by
+    inheriting classes.
+
+    @note An OptimizerState may have periodicity by its set_period() method
+
+    @note An OptimizerState is added to an Optimizer object by calling
+          Optimizer::add_optimizer_state().
+
+    @note Optimizer states may change the values of particle
+          attributes. However, changes to whether an attribute is optimized
+          or not may not be picked up by the Optimizer until the next call
+          to optimize.
 
     \note When logging is VERBOSE, state should print enough information
-    in evaluate to reproduce the the entire flow of data in update. When
-    logging is TERSE the restraint should print out only a constant number
-    of lines per update call.
+          in evaluate to reproduce the the entire flow of data in update. When
+          logging is TERSE the restraint should print out only a constant number
+          of lines per update call.
  */
 class IMPKERNELEXPORT OptimizerState : public ModelObject {
   friend class Optimizer;
@@ -39,13 +48,28 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
   void set_optimizer(Optimizer* optimizer);
 
  public:
+  /** constructs an optimizer state whose update() method  is invoked
+      every time that a set of model coordinates is committed
+      by an optimizer.
+
+      @param m the model to which this optimizer state is associated
+      @param name the name of the object
+      @note An optimizer state may become periodic via its set_period()
+            method.
+  */
   OptimizerState(Model *m, std::string name);
+
   /** \deprecated_at{2.1} Use the constructor that takes a Model. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   OptimizerState(std::string name = "OptimizerState %1%");
 
   //! Called when the Optimizer accepts a new conformation
-  /** Overriding this method is deprecated, override do_update() instead.
+  /**
+      This method is called by owning optimizers every time they commit.
+      However, if set_period(p) was invoked, it calls do_update() only
+      every p times.
+
+      @note Overriding this method is deprecated, override do_update() instead.
   */
   virtual void update();
 
@@ -62,9 +86,19 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
     return optimizer_.get();
   }
 
-  /** If is often useful to have the OptimizerState only take action on a subset
-      of the steps. */
+  /**
+     Causes update() invoke do_update() only every p calls (= p times
+     that one of its owning Optimizers commits to a new set of
+     coordinates), instead of the default p=1
+
+     @param p periodicity
+   */
   void set_period(unsigned int p);
+
+  /**
+     @return the periodicity of the optimizer (how many calls to update()
+             are required to invoke do_update()
+  */
   unsigned int get_period() const {return period_;}
   /** Reset the phase to 0 and set the call number to 0 too.*/
   virtual void reset();

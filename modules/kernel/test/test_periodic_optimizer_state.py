@@ -1,12 +1,11 @@
 import IMP
 import IMP.test
-import IMP.core
 import IMP.algebra
 import random
 
-class PeriodicOS(IMP.core.PeriodicOptimizerState):
+class PeriodicOS(IMP.OptimizerState):
     def __init__(self):
-        IMP.core.PeriodicOptimizerState.__init__(self, "MyPOS%1%")
+        IMP.OptimizerState.__init__(self, "MyPOS%1%")
         self.calls=[]
     def do_update(self, call):
         self.calls.append(call)
