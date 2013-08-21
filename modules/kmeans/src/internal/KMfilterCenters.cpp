@@ -29,6 +29,8 @@
 #include "IMP/kmeans/internal/KMrand.h"
 #include <iostream>
 #include <iomanip>
+#include <IMP/base/log.h>
+#include <IMP/base/log_macros.h>
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 

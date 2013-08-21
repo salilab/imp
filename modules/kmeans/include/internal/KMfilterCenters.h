@@ -28,7 +28,7 @@
 #define IMPKMEANS_INTERNAL_KMFILTER_CENTERS_H
 
 #include <IMP/kmeans/kmeans_config.h>
-#include <IMP/base/log.h>
+#include <IMP/base/enums.h>
 #include "KMcenters.h"                  // provides KMcenters
 #include <iostream>
 
