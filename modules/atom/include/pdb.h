@@ -19,7 +19,7 @@
 #include "Selection.h"
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
-#include <IMP/OptimizerState.h>
+#include <IMP/kernel/OptimizerState.h>
 #include <IMP/internal/utility.h>
 #include <boost/format.hpp>
 
@@ -404,13 +404,20 @@ IMPATOMEXPORT std::string get_pdb_conect_record_string(int, int);
       with the %1% replaced by the index. Otherwise a new model is written
       each time to the same file.
   */
-IMP_MODEL_SAVE(WritePDB, (const atom::Hierarchies &mh, std::string file_name),
-               atom::Hierarchies mh_;
-               , mh_ = mh;, , {
-  base::TextOutput to(file_name, append);
-  IMP_LOG_TERSE("Writing pdb file " << file_name << std::endl);
-  atom::write_pdb(mh_, to, append ? call : 0);
-});
+class WritePDBOptimizerState: public kernel::OptimizerState {
+  std::string filename_;
+  ParticleIndexes pis_;
+public:
+  WritePDBOptimizerState(kernel::Model *m,
+                         const kernel::ParticleIndexesAdaptor &pis,
+                         std::string filename);
+  WritePDBOptimizerState(const atom::Hierarchies mh,
+                         std::string filename);
+protected:
+  virtual void do_update(unsigned int call) IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(WritePDBOptimizerState);
+};
 
 IMPATOM_END_NAMESPACE
 

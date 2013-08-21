@@ -720,4 +720,50 @@ std::string get_pdb_conect_record_string(int a1_ind, int a2_ind) {
   return out.str();
 }
 
+WritePDBOptimizerState::
+WritePDBOptimizerState(kernel::Model *m,
+                       const kernel::ParticleIndexesAdaptor &pis,
+                       std::string filename):
+  kernel::OptimizerState(m, filename + "Writer"),
+  filename_(filename), pis_(pis) {
+
+}
+WritePDBOptimizerState::WritePDBOptimizerState(const atom::Hierarchies mh,
+                                               std::string filename):
+  kernel::OptimizerState(mh[0].get_model(), filename + "Writer"),
+  filename_(filename) {
+  BOOST_FOREACH(atom::Hierarchy h, mh) {
+    pis_.push_back(h.get_particle_index());
+  }
+}
+
+void WritePDBOptimizerState::do_update(unsigned int call) {
+     std::ostringstream oss;
+     bool append = (call != 0);
+     std::string filename;
+     Hierarchies hs;
+     BOOST_FOREACH(ParticleIndex pi, pis_) {
+       hs.push_back(Hierarchy(get_model(), pi));
+     }
+     try {
+       oss << boost::format(filename_) % call;
+       append = false;
+       filename = oss.str();
+     } catch (...) {
+     }
+     if (append) {
+       write_pdb(hs, base::TextOutput(filename, true), call);
+     } else {
+       write_pdb(hs, base::TextOutput(filename, false), 0);
+     }
+}
+
+ModelObjectsTemp WritePDBOptimizerState::do_get_inputs() const {
+  ModelObjectsTemp ret;
+  BOOST_FOREACH(ParticleIndex pi, pis_) {
+    ret += get_leaves(Hierarchy(get_model(), pi));
+  }
+  return ret;
+}
+
 IMPATOM_END_NAMESPACE

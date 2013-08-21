@@ -15,7 +15,6 @@
 #include "Model.h"
 #include "Configuration.h"
 #include "OptimizerState.h"
-#include "optimizer_state_macros.h"
 #include "internal/utility.h"
 #include <IMP/base/warning_macros.h>
 
@@ -46,14 +45,16 @@ class IMPKERNELEXPORT ConfigurationSet : public IMP::base::Object {
 
 IMP_OBJECTS(ConfigurationSet, ConfigurationSets);
 
-IMP_MODEL_SAVE(SaveToConfigurationSet,
-               (ConfigurationSet *cs, std::string file_name),
-               mutable base::PointerMember<ConfigurationSet> cs_;
-               , cs_ = cs;, , {
-  IMP_LOG_VARIABLE(file_name);
-  IMP_LOG_TERSE("Saving to configuration set " << file_name << std::endl);
-  cs_->save_configuration();
-});
+/** Save the model to a ConfigurationSet. */
+class SaveToConfigurationSetOptimizerState: public OptimizerState {
+  base::PointerMember<ConfigurationSet> cs_;
+public:
+  SaveToConfigurationSetOptimizerState(ConfigurationSet* cs);
+protected:
+  virtual void do_update(unsigned int update_number) IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(SaveToConfigurationSetOptimizerState);
+};
+
 
 IMPKERNEL_END_NAMESPACE
 

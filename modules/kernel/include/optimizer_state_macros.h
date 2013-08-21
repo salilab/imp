@@ -80,6 +80,7 @@
             name to save to is know as file_name
  */
 #define IMP_MODEL_SAVE(Name, args, vars, constr, functs, save_action)        \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Just expand in place.");             \
   class Name##OptimizerState : public OptimizerState {                       \
     std::string file_name_;                                                  \
     vars\
