@@ -13,20 +13,30 @@ IMPATOM_BEGIN_NAMESPACE
 
 VelocityScalingOptimizerState::VelocityScalingOptimizerState(
     const Particles &pis, Float temperature, unsigned skip_steps)
-    : pis_(pis),
-      temperature_(temperature),
-      skip_steps_(skip_steps),
-      call_number_(0) {
+  : kernel::OptimizerState(pis[0]->get_model(),
+                           "VelocityScalingOptimizerState%1%"),
+    pis_(pis),
+    temperature_(temperature) {
   vs_[0] = FloatKey("vx");
   vs_[1] = FloatKey("vy");
   vs_[2] = FloatKey("vz");
 }
 
-void VelocityScalingOptimizerState::update() {
-  if (skip_steps_ == 0 || (call_number_ % skip_steps_) == 0) {
-    rescale_velocities();
+VelocityScalingOptimizerState
+::VelocityScalingOptimizerState(Model *m, ParticleIndexesAdaptor pis,
+                                double temp):
+  kernel::OptimizerState(m, "VelocityScalingOptimizerState%1%"),
+  temperature_(temp) {
+  BOOST_FOREACH(kernel::ParticleIndex pi, pis) {
+    pis_.push_back(m->get_particle(pi));
   }
-  ++call_number_;
+  vs_[0] = FloatKey("vx");
+  vs_[1] = FloatKey("vy");
+  vs_[2] = FloatKey("vz");
+}
+
+void VelocityScalingOptimizerState::do_update(unsigned int) {
+  rescale_velocities();
 }
 
 void VelocityScalingOptimizerState::rescale_velocities() const {

@@ -42,8 +42,10 @@ class IMPATOMEXPORT LangevinThermostatOptimizerState : public OptimizerState {
   //! Rescale the velocities now
   void rescale_velocities() const;
 
-  virtual void update() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(LangevinThermostatOptimizerState);
+
+ protected:
+  virtual void do_update(unsigned int) IMP_OVERRIDE;
 
  private:
   Particles pis_;

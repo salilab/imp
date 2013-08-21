@@ -21,9 +21,13 @@ BerendsenThermostatOptimizerState::BerendsenThermostatOptimizerState(
   vs_[2] = FloatKey("vz");
 }
 
-void BerendsenThermostatOptimizerState::update() { rescale_velocities(); }
+void BerendsenThermostatOptimizerState::do_update(unsigned int) {
+  rescale_velocities();
+}
 
 void BerendsenThermostatOptimizerState::rescale_velocities() const {
+  IMP_OBJECT_LOG;
+  IMP_LOG_TERSE("Rescaling velocities" << std::endl);
   MolecularDynamics *md = dynamic_cast<MolecularDynamics *>(get_optimizer());
   IMP_INTERNAL_CHECK(md, "Can only use velocity scaling with "
                          "the molecular dynamics optimizer.");

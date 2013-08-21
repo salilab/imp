@@ -23,13 +23,10 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class IMPATOMEXPORT RemoveTranslationOptimizerState : public OptimizerState {
  public:
+   /** \deprecated_at{2.1} Use set_period() instead. */
+  IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
   RemoveTranslationOptimizerState(const Particles &pis, unsigned skip_steps);
-
-  //! Set the number of update calls to skip between removals.
-  void set_skip_steps(unsigned skip_steps) { skip_steps_ = skip_steps; }
-
-  //! Get the number of update calls to skip between removals.
-  unsigned int get_skip_steps() { return skip_steps_; }
+  RemoveTranslationOptimizerState(Model *m, ParticleIndexesAdaptor pis);
 
   //! Set the particles to use.
   void set_particles(const Particles &pis) { pis_ = pis; }
@@ -37,14 +34,11 @@ class IMPATOMEXPORT RemoveTranslationOptimizerState : public OptimizerState {
   //! Remove translation now
   void remove_translation() const;
 
-  virtual void update() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RemoveTranslationOptimizerState);
-
+ protected:
+   virtual void do_update(unsigned int call) IMP_OVERRIDE;
  private:
-  Particles pis_;
-  unsigned skip_steps_;
-  unsigned call_number_;
-};
+  Particles pis_;};
 
 IMP_OBJECTS(RemoveTranslationOptimizerState, RemoveTranslationOptimizerStates);
 

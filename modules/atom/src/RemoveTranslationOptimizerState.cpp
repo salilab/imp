@@ -15,16 +15,26 @@ IMPATOM_BEGIN_NAMESPACE
 
 RemoveTranslationOptimizerState::RemoveTranslationOptimizerState(
     const Particles &pis, unsigned skip_steps)
-    : pis_(pis), skip_steps_(skip_steps), call_number_(0) {}
+  : kernel::OptimizerState(pis[0]->get_model(),
+                           "RemoveTranslationOptimizerState%1%"),
+    pis_(pis) {
+  set_period(skip_steps + 1);
+}
 
-void RemoveTranslationOptimizerState::update() {
-  if (skip_steps_ == 0 || (call_number_ % skip_steps_) == 0) {
-    remove_translation();
+RemoveTranslationOptimizerState
+::RemoveTranslationOptimizerState(Model *m, ParticleIndexesAdaptor pis)
+  : kernel::OptimizerState(m, "RemoveTranslationOptimizerState%1%") {
+  BOOST_FOREACH(kernel::ParticleIndex pi, pis) {
+    pis_.push_back(m->get_particle(pi));
   }
-  ++call_number_;
+}
+
+void RemoveTranslationOptimizerState::do_update(unsigned int) {
+  remove_translation();
 }
 
 void RemoveTranslationOptimizerState::remove_translation() const {
+  set_was_used(true);
   Particle *p0 = *pis_.begin();
   core::XYZ d0(p0);
   algebra::Vector3D coords = d0.get_coordinates();

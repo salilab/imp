@@ -25,11 +25,12 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class IMPATOMEXPORT VelocityScalingOptimizerState : public OptimizerState {
  public:
-  VelocityScalingOptimizerState(const Particles &pis, Float temperature,
+   /** \deprecated_at{2.1} Use set_period() instead. */
+  IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
+    VelocityScalingOptimizerState(const Particles &pis, Float temperature,
                                 unsigned skip_steps);
-
-  //! Set the number of update calls to skip between rescaling.
-  void set_skip_steps(unsigned skip_steps) { skip_steps_ = skip_steps; }
+  VelocityScalingOptimizerState(Model *m, ParticleIndexesAdaptor pis,
+                                  double temperature);
 
   //! Set the particles to use.
   void set_particles(const Particles &pis) { pis_ = pis; }
@@ -40,9 +41,10 @@ class IMPATOMEXPORT VelocityScalingOptimizerState : public OptimizerState {
   //! Rescale the velocities now
   void rescale_velocities() const;
 
-  virtual void update() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(VelocityScalingOptimizerState);
 
+ protected:
+    virtual void do_update(unsigned int call) IMP_OVERRIDE;
  private:
   Particles pis_;
   Float temperature_;
