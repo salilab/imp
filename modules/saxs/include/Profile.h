@@ -10,6 +10,8 @@
 #define IMPSAXS_PROFILE_H
 
 #include <IMP/saxs/saxs_config.h>
+#include <IMP/base/Object.h>
+
 #include "FormFactorTable.h"
 #include "Distribution.h"
 
@@ -25,7 +27,7 @@ class RadialDistributionFunction;
    (experimental or theoretical) or computed from a set of Model
    Particles (theoretical)
 */
-class IMPSAXSEXPORT Profile {
+class IMPSAXSEXPORT Profile : public base::Object {
 public:
   // Constructors
 
@@ -34,6 +36,8 @@ public:
 
   //! init for theoretical profile
   Profile(Float qmin = 0.0, Float qmax = 0.5, Float delta = 0.005);
+
+  IMP_OBJECT_METHODS(Profile);
 
   // Various ways to compute a profile
 
@@ -106,13 +110,13 @@ public:
 
 
   //! return a profile that is sampled on the q values of the exp_profile
-  void resample(const Profile& exp_profile,
-                Profile& resampled_profile,
+  void resample(const Profile* exp_profile,
+                Profile* resampled_profile,
                 bool partial_profiles=false) const;
 
 
   //! downsample the profile to a given number of points
-  void downsample(Profile& downsampled_profile,unsigned int point_number) const;
+  void downsample(Profile* downsampled_profile,unsigned int point_number) const;
 
   //! compute radius of gyration with Guinier approximation
   /** ln[I(q)]=ln[I(0)] - (q^2*rg^2)/3
@@ -206,10 +210,10 @@ public:
   void sum_partial_profiles(Float c1, Float c2);
 
   //! add another profile - useful for rigid bodies
-  void add(const Profile& other_profile, Float weight = 1.0);
+  void add(const Profile* other_profile, Float weight = 1.0);
 
   //! add partial profiles
-  void add_partial_profiles(const Profile& other_profile, Float weight = 1.0);
+  void add_partial_profiles(const Profile* other_profile, Float weight = 1.0);
 
   //! add other profiles - useful for weighted ensembles
   void add(const std::vector<Profile*>& profiles,
@@ -229,7 +233,7 @@ public:
   void offset(Float c);
 
   // copy error bars from the matching experimental profile
-  void copy_errors(const Profile& exp_profile);
+  void copy_errors(const Profile* exp_profile);
 
   // parameter for E^2(q), used in faster calculation
   static const Float modulation_function_parameter_;
@@ -267,23 +271,31 @@ public:
   double radius_of_gyration_fixed_q(double end_q) const;
 
  protected:
-  std::vector<double> q_;
+  std::vector<double> q_; // q sampling points
   std::vector<double> intensity_;
-  std::vector<double> error_;
+  std::vector<double> error_; // error bar of each point
 
-  std::vector<std::vector<double> > variances_; //profile variances
   Float min_q_, max_q_; // minimal and maximal s values  in the profile
   Float delta_q_; // profile sampling resolution
   FormFactorTable* ff_table_; // pointer to form factors table
-  std::vector<Profile> partial_profiles_;
+
+  std::vector<std::vector<double> > variances_; //profile variances
+
+  // stores the intensity split into 6 for c1/c2 enumeration
+  std::vector<std::vector<double> > partial_profiles_;
+
   bool experimental_; // experimental profile read from file
   Float average_radius_; // average radius of the particles
   Float average_volume_; // average volume
+
+  // mapping from q values to vector index for fast profile resampling
   std::map<float, unsigned int> q_mapping_;
 
-  std::string name_;
-  unsigned int id_;
+  std::string name_; // file name
+  unsigned int id_;  // identifier
 };
+
+IMP_OBJECTS(Profile, Profiles);
 
 IMPSAXS_END_NAMESPACE
 

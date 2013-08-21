@@ -34,7 +34,7 @@ class IMPSAXSEXPORT RadiusOfGyrationRestraint : public IMP::Restraint
       i.e. q*rg < end_q_rg. Use 1.3 for globular proteins, 0.8 for elongated
   */
   RadiusOfGyrationRestraint(const Particles& particles,
-          const Profile& exp_profile, const double end_q_rg=1.3);
+          const Profile* exp_profile, const double end_q_rg=1.3);
 
   virtual double
   unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)

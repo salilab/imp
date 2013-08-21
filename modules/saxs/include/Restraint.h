@@ -51,7 +51,7 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint
                 HEAVY_ATOMS - no hydrogens, all other atoms included
                 CA_ATOMS - residue level, residue represented by CA
   */
-  Restraint(const Particles& particles, const Profile& exp_profile,
+  Restraint(const Particles& particles, const Profile* exp_profile,
             FormFactorType ff_type = HEAVY_ATOMS);
 
   virtual double
@@ -61,14 +61,13 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint
   IMP_OBJECT_METHODS(Restraint);
 
  protected:
-  void compute_profile(Profile& model_profile);
+  void compute_profile(Profile* model_profile);
 
  protected:
   Particles particles_; // non-rigid bodies particles
   std::vector<core::RigidBody> rigid_bodies_decorators_; //rigid bodies
   std::vector<Particles> rigid_bodies_; // rigid bodies particles
-  Profile rigid_bodies_profile_; // non-changing part of the profile
-  Profile exp_profile_; // experimental profile
+  Profile *rigid_bodies_profile_; // non-changing part of the profile
   base::Pointer<ProfileFitter<ChiScore> > profile_fitter_; // computes profiles
   // computes derivatives
   base::Pointer<DerivativeCalculator> derivative_calculator_;

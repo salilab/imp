@@ -26,7 +26,7 @@ class IMPSAXSEXPORT WeightedProfileFitter : public ProfileFitter<ChiScore> {
   /**
      \param[in] exp_profile Experimental profile we want to fit
   */
-  WeightedProfileFitter(const Profile& exp_profile);
+  WeightedProfileFitter(const Profile* exp_profile);
 
   //! compute a weighted score that minimizes chi
   /**

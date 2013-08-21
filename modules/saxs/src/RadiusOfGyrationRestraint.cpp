@@ -13,10 +13,10 @@
 IMPSAXS_BEGIN_NAMESPACE
 
 RadiusOfGyrationRestraint::RadiusOfGyrationRestraint(const Particles& particles,
-                            const Profile& exp_profile, const double end_q_rg) :
+                            const Profile* exp_profile, const double end_q_rg) :
     IMP::Restraint(IMP::internal::get_model(particles),
                    "SAXS Radius of Gyration restraint"), particles_(particles) {
-  exp_rg_ = exp_profile.radius_of_gyration(end_q_rg);
+  exp_rg_ = exp_profile->radius_of_gyration(end_q_rg);
 }
 
 

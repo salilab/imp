@@ -36,7 +36,7 @@ FloatsList read_profile(std::string name, unsigned subs, unsigned cut)
         I.push_back(prof->get_intensity(i));
         err.push_back(prof->get_error(i));
     }
-    delete prof;
+    //delete prof;
 
     ret.push_back(q);
     ret.push_back(I);

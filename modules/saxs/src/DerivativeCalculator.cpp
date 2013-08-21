@@ -14,26 +14,26 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-DerivativeCalculator::DerivativeCalculator(const Profile& exp_profile) :
+DerivativeCalculator::DerivativeCalculator(const Profile* exp_profile) :
   exp_profile_(exp_profile) {}
 
 //tabulates (sin(qr)/qr - cos(qr))/r^2 over the range of qs of the profile
 //and up to max_distance for r.
 void DerivativeCalculator::compute_sinc_cos(Float pr_resolution,
                                             Float max_distance,
-                                            const Profile& model_profile,
+                                            const Profile* model_profile,
                                 std::vector<Floats>& output_values) const
 {
   //can be input
   unsigned int nr=algebra::get_rounded(max_distance/pr_resolution) + 1;
   output_values.clear();
-  unsigned int profile_size = std::min(model_profile.size(),
-                                       exp_profile_.size());
+  unsigned int profile_size = std::min(model_profile->size(),
+                                       exp_profile_->size());
   Floats r_size(nr, 0.0);
   output_values.insert(output_values.begin(),
                        profile_size, r_size);
   for(unsigned int iq = 0; iq<profile_size; iq++) {
-    Float q = model_profile.get_q(iq);
+    Float q = model_profile->get_q(iq);
     for (unsigned int ir=0; ir<nr; ir++) {
       Float r = pr_resolution * ir;
       Float qr = q * r;
@@ -47,25 +47,25 @@ void DerivativeCalculator::compute_sinc_cos(Float pr_resolution,
 }
 
 void DerivativeCalculator::compute_profile_difference(
-                                       const Profile& model_profile,
+                                       const Profile* model_profile,
                                        const Float c, const Float offset,
                                        std::vector<double>& profile_diff) const
 {
   // compute difference of intensities and squares of weight
   // profile_diff[q] = -2 * c * weight_tilda * (I_exp[q] - c*I_mod[q] + offset)
-  unsigned int profile_size = std::min(model_profile.size(),
-                                       exp_profile_.size());
+  unsigned int profile_size = std::min(model_profile->size(),
+                                       exp_profile_->size());
   profile_diff.clear();
   profile_diff.resize(profile_size, 0.0);
 
   for (unsigned int iq=0; iq<profile_size; iq++) {
-    Float delta = exp_profile_.get_intensity(iq)
-                  - c * model_profile.get_intensity(iq) + offset;
-    Float square_error = square(exp_profile_.get_error(iq));
-    Float weight_tilda = model_profile.get_weight(iq) / square_error;
+    Float delta = exp_profile_->get_intensity(iq)
+                  - c * model_profile->get_intensity(iq) + offset;
+    Float square_error = square(exp_profile_->get_error(iq));
+    Float weight_tilda = model_profile->get_weight(iq) / square_error;
 
     // Exclude the uncertainty originated from limitation of floating number
-    if (fabs(delta/exp_profile_.get_intensity(iq)) < IMP_SAXS_DELTA_LIMIT)
+    if (fabs(delta/exp_profile_->get_intensity(iq)) < IMP_SAXS_DELTA_LIMIT)
       delta = 0.0;
     profile_diff[iq] = -2. * c * weight_tilda * delta;
   }
@@ -75,7 +75,7 @@ void DerivativeCalculator::compute_profile_difference(
  * -2 * c * w_tilda(q) * (Iexp(q)-c*Icalc(q) + o) for each q
  */
 std::vector<double> DerivativeCalculator::compute_gaussian_effect_size(
-        const Profile& model_profile,
+        const Profile* model_profile,
         const ProfileFitter<ChiScore>* pf, bool use_offset) const
 {
   Float offset = 0.0;
@@ -90,7 +90,7 @@ std::vector<double> DerivativeCalculator::compute_gaussian_effect_size(
  * precompute sinc_cos function and derivative of distance distribution
  */
 DeltaDistributionFunction DerivativeCalculator::precompute_derivative_helpers(
-        const Profile& resampled_model_profile,
+        const Profile* resampled_model_profile,
         const Particles& particles1, const Particles& particles2,
         std::vector<Floats>& sinc_cos_values) const
 {
@@ -121,8 +121,8 @@ void DerivativeCalculator::compute_intensity_derivatives(
       }
       // profile_diff = weight_tilda * (I_exp - c*I_model)
       // e_q = exp( -0.23 * q*q )
-      Float E_q = std::exp( - exp_profile_. modulation_function_parameter_
-                       * square( exp_profile_.get_q(iq)));
+      Float E_q = std::exp( - exp_profile_-> modulation_function_parameter_
+                       * square( exp_profile_->get_q(iq)));
       dIdx = - 2 * E_q * dIdx;
 
 }
@@ -136,7 +136,7 @@ Delta(r) = f_iatom * sum_i f_i delta(r-r_{i,iatom}) (x_iatom-x_i)
   // e_q = exp( -0.23 * q*q )
 */
 void DerivativeCalculator::compute_chisquare_derivative(
-        const Profile& model_profile,
+        const Profile* model_profile,
         const Particles& particles1,
         const Particles& particles2,
         std::vector<algebra::Vector3D>& derivatives,
@@ -150,8 +150,8 @@ void DerivativeCalculator::compute_chisquare_derivative(
       precompute_derivative_helpers(model_profile, particles1, particles2,
               sinc_cos_values);
 
-  unsigned int profile_size = std::min(model_profile.size(),
-                                       exp_profile_.size());
+  unsigned int profile_size = std::min(model_profile->size(),
+                                       exp_profile_->size());
   derivatives.clear();
   derivatives.resize(particles1.size());
   for (unsigned int iatom=0; iatom<particles1.size(); iatom++) {
@@ -174,7 +174,7 @@ void DerivativeCalculator::compute_chisquare_derivative(
 void DerivativeCalculator::compute_all_derivatives(const Particles& particles,
                const std::vector<Particles>& rigid_bodies,
                const std::vector<core::RigidBody>& rigid_bodies_decorators,
-               const Profile& model_profile,
+               const Profile* model_profile,
                const std::vector<double>& effect_size,
                DerivativeAccumulator *acc) const
 {

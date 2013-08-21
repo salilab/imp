@@ -361,15 +361,13 @@ constant form factor (default = false)")
       if(score_log) {
         IMP::base::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiScoreLog> > pf
           = new IMP::saxs::ProfileFitter
-          <IMP::saxs::ChiScoreLog>(*exp_saxs_profile);
-        fp = pf->fit_profile(*profile,
-                             min_c1, max_c1, MIN_C2, MAX_C2,
+          <IMP::saxs::ChiScoreLog>(exp_saxs_profile);
+        fp = pf->fit_profile(profile, min_c1, max_c1, MIN_C2, MAX_C2,
                              use_offset, fit_file_name2);
       } else {
         IMP::base::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiScore> > pf =
-          new IMP::saxs::ProfileFitter<IMP::saxs::ChiScore>(*exp_saxs_profile);
-        fp = pf->fit_profile(*profile,
-                             min_c1, max_c1, MIN_C2, MAX_C2,
+          new IMP::saxs::ProfileFitter<IMP::saxs::ChiScore>(exp_saxs_profile);
+        fp = pf->fit_profile(profile, min_c1, max_c1, MIN_C2, MAX_C2,
                              use_offset, fit_file_name2);
         if(chi_free > 0) {
           double dmax = compute_max_distance(particles_vec[i]);
@@ -379,31 +377,33 @@ constant form factor (default = false)")
           int K = chi_free;
           IMP::saxs::ChiFreeScore cfs(ns, K);
           // resample the profile
-          IMP::saxs::Profile resampled_profile(exp_saxs_profile->get_min_q(),
-                                               exp_saxs_profile->get_max_q(),
-                                               exp_saxs_profile->get_delta_q());
-          pf->resample(*profile, resampled_profile);
-          double chi_free = cfs.compute_score(*exp_saxs_profile,
+          IMP_NEW(IMP::saxs::Profile, resampled_profile,
+                  (exp_saxs_profile->get_min_q(),
+                   exp_saxs_profile->get_max_q(),
+                   exp_saxs_profile->get_delta_q()));
+          pf->resample(profile, resampled_profile);
+          double chi_free = cfs.compute_score(exp_saxs_profile,
                                               resampled_profile);
           fp.set_chi(chi_free);
        }
 
         if(interval_chi) {
           std::cout << "interval_chi " <<pdb_files[i] << " "
-                    << pf->compute_score(*profile, 0.0, 0.05) << " "
-                    << pf->compute_score(*profile, 0.0, 0.1) << " "
-                    << pf->compute_score(*profile, 0.0, 0.15) << " "
-                    << pf->compute_score(*profile, 0.0, 0.2) << " "
-                    << pf->compute_score(*profile) << std::endl;
+                    << pf->compute_score(profile, 0.0, 0.05) << " "
+                    << pf->compute_score(profile, 0.0, 0.1) << " "
+                    << pf->compute_score(profile, 0.0, 0.15) << " "
+                    << pf->compute_score(profile, 0.0, 0.2) << " "
+                    << pf->compute_score(profile) << std::endl;
         }
 
         if(set_scale) {
           std::cerr << "scale given by user " << scale << std::endl;
           // resample the profile
-          IMP::saxs::Profile resampled_profile(exp_saxs_profile->get_min_q(),
-                                               exp_saxs_profile->get_max_q(),
-                                               exp_saxs_profile->get_delta_q());
-          pf->resample(*profile, resampled_profile);
+          IMP_NEW(IMP::saxs::Profile, resampled_profile,
+                  (exp_saxs_profile->get_min_q(),
+                   exp_saxs_profile->get_max_q(),
+                   exp_saxs_profile->get_delta_q()));
+          pf->resample(profile, resampled_profile);
           pf->write_SAXS_fit_file(fit_file_name2, resampled_profile,
                                   fp.get_chi(), scale);
         }

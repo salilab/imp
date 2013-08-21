@@ -15,13 +15,15 @@ IMPSAXS_BEGIN_NAMESPACE
 
 std::vector<double> WeightedProfileFitter::empty_weights_;
 
-WeightedProfileFitter::WeightedProfileFitter(const Profile& exp_profile):
+WeightedProfileFitter::WeightedProfileFitter(const Profile* exp_profile):
   IMP::saxs::ProfileFitter<ChiScore>(exp_profile),
-  W_(exp_profile.size()), Wb_(exp_profile.size()), A_(exp_profile.size(), 2) {
+  W_(exp_profile->size()),
+  Wb_(exp_profile->size()),
+  A_(exp_profile->size(), 2) {
 
-  for(unsigned int i=0; i<exp_profile_.size(); i++) {
-    Wb_[i] = exp_profile_.get_intensity(i);
-    W_[i] = 1.0/(exp_profile_.get_error(i)*exp_profile_.get_error(i));
+  for(unsigned int i=0; i<exp_profile_->size(); i++) {
+    Wb_[i] = exp_profile_->get_intensity(i);
+    W_[i] = 1.0/(exp_profile_->get_error(i)*exp_profile_->get_error(i));
   }
   Wb_ = W_ * Wb_;
 }
@@ -32,11 +34,11 @@ Float WeightedProfileFitter::compute_score(
 
   // no need to compute weighted profile for ensemble of size 1
   if(profiles.size() == 1)
-    return scoring_function_->compute_score(exp_profile_, *profiles[0]);
+    return scoring_function_->compute_score(exp_profile_, profiles[0]);
 
   //compute_weights(profiles, weights);
   int m = profiles.size();
-  int n = exp_profile_.size();
+  int n = exp_profile_->size();
 
   WeightedProfileFitter* non_const_this =
     const_cast<WeightedProfileFitter*>(this);
@@ -54,13 +56,13 @@ Float WeightedProfileFitter::compute_score(
   w /= w.sum();
 
   // computed weighted profile
-  IMP::saxs::Profile weighted_profile(exp_profile_.get_min_q(),
-                                      exp_profile_.get_max_q(),
-                                      exp_profile_.get_delta_q());
+  IMP_NEW(IMP::saxs::Profile, weighted_profile, (exp_profile_->get_min_q(),
+                                                 exp_profile_->get_max_q(),
+                                                 exp_profile_->get_delta_q()));
   internal::Vector wp = A_*w;
 
   for(unsigned int k=0; k<profiles[0]->size(); k++)
-    weighted_profile.add_entry(profiles[0]->get_q(k), wp[k]);
+    weighted_profile->add_entry(profiles[0]->get_q(k), wp[k]);
 
   weights.resize(w.size()); for(int i=0; i<w.size(); i++) weights[i] = w[i];
   return scoring_function_->compute_score(exp_profile_, weighted_profile);
@@ -87,11 +89,11 @@ FitParameters WeightedProfileFitter::fit_profile(
       partial_profiles[i]->sum_partial_profiles(best_c1, best_c2);
 
     // computed weighted profile
-    IMP::saxs::Profile weighted_profile(exp_profile_.get_min_q(),
-                                        exp_profile_.get_max_q(),
-                                        exp_profile_.get_delta_q());
+    IMP_NEW(IMP::saxs::Profile, weighted_profile, (exp_profile_->get_min_q(),
+                                                   exp_profile_->get_max_q(),
+                                                  exp_profile_->get_delta_q()));
     for(unsigned int i=0; i<weights.size(); i++)
-      weighted_profile.add(*partial_profiles[i], weights[i]);
+      weighted_profile->add(partial_profiles[i], weights[i]);
 
     // compute scale
     Float c = scoring_function_->compute_scale_factor(exp_profile_,

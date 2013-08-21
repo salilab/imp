@@ -14,12 +14,10 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
+Restraint::Restraint(const Particles& particles, const Profile* exp_profile,
                      FormFactorType ff_type) :
     IMP::Restraint(IMP::internal::get_model(particles), "SAXS restraint"),
-    exp_profile_(exp_profile),
-    ff_type_(ff_type)
-{
+    ff_type_(ff_type) {
 
   profile_fitter_ = new ProfileFitter<ChiScore>(exp_profile);
   derivative_calculator_ = new DerivativeCalculator(exp_profile);
@@ -37,13 +35,14 @@ Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
     }
   }
 
+  rigid_bodies_profile_ = new Profile();
   for(IMP::base::map<ParticleIndex, Particles>::iterator it =
         rigid_bodies.begin(); it!= rigid_bodies.end(); it++) {
     rigid_bodies_.push_back(it->second);
     // compute non-changing profile
-    Profile rigid_part_profile;
-    rigid_part_profile.calculate_profile(rigid_bodies_.back(), ff_type);
-    rigid_bodies_profile_.add(rigid_part_profile);
+    IMP_NEW(Profile, rigid_part_profile, ());
+    rigid_part_profile->calculate_profile(rigid_bodies_.back(), ff_type);
+    rigid_bodies_profile_->add(rigid_part_profile);
   }
 
   IMP_LOG_TERSE("SAXS Restraint constructor: " << particles_.size()
@@ -51,8 +50,7 @@ Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
 }
 
 
-ModelObjectsTemp Restraint::do_get_inputs() const
-{
+ModelObjectsTemp Restraint::do_get_inputs() const {
   ModelObjectsTemp pts(particles_.begin(), particles_.end());
   unsigned int sz=pts.size();
   for (unsigned int i=0; i< sz; ++i) {
@@ -68,30 +66,27 @@ ModelObjectsTemp Restraint::do_get_inputs() const
   return pts;
 }
 
-
-
-
-void Restraint::compute_profile(Profile& model_profile) {
+void Restraint::compute_profile(Profile* model_profile) {
   // add non-changing profile
-  model_profile.add(rigid_bodies_profile_);
-  Profile profile(model_profile.get_min_q(),
-                  model_profile.get_max_q(),
-                  model_profile.get_delta_q());
+  model_profile->add(rigid_bodies_profile_);
+  IMP_NEW(Profile, profile, (model_profile->get_min_q(),
+                             model_profile->get_max_q(),
+                             model_profile->get_delta_q()));
   // compute inter-rigid bodies contribution
   for(unsigned int i=0; i<rigid_bodies_.size(); i++) {
     for(unsigned int j=i+1; j<rigid_bodies_.size(); j++) {
-      profile.calculate_profile(rigid_bodies_[i], rigid_bodies_[j], ff_type_);
-      model_profile.add(profile);
+      profile->calculate_profile(rigid_bodies_[i], rigid_bodies_[j], ff_type_);
+      model_profile->add(profile);
     }
   }
   // compute non rigid body particles contribution
   if(particles_.size() > 0) {
-    profile.calculate_profile(particles_, ff_type_);
-    model_profile.add(profile);
+    profile->calculate_profile(particles_, ff_type_);
+    model_profile->add(profile);
     // compute non rigid body particles - rigid bodies contribution
     for(unsigned int i=0; i<rigid_bodies_.size(); i++) {
-      profile.calculate_profile(rigid_bodies_[i], particles_, ff_type_);
-      model_profile.add(profile);
+      profile->calculate_profile(rigid_bodies_[i], particles_, ff_type_);
+      model_profile->add(profile);
     }
   }
 }
@@ -102,11 +97,11 @@ void Restraint::compute_profile(Profile& model_profile) {
     \return score associated with this restraint for the given state of
             the model.
 */
-double Restraint::unprotected_evaluate(DerivativeAccumulator *acc) const
-{
+double Restraint::unprotected_evaluate(DerivativeAccumulator *acc) const {
+
   IMP_LOG_TERSE("SAXS Restraint::evaluate score\n");
 
-  Profile model_profile;
+  IMP_NEW(Profile, model_profile,());
   const_cast<Restraint*>(this)->compute_profile(model_profile);
   Float score = profile_fitter_->compute_score(model_profile);
   bool calc_deriv = acc? true: false;
@@ -116,16 +111,15 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator *acc) const
 
   // do we need to resample the curve since it's just been created??
   // yes, since it does not correspond to the experimental one
-  Profile resampled_profile(exp_profile_.get_min_q(),exp_profile_.get_max_q(),
-                            exp_profile_.get_delta_q());
+  IMP_NEW(Profile, resampled_profile, ());
   profile_fitter_->resample(model_profile, resampled_profile);
 
   bool use_offset = false;
   std::vector<double> effect_size; //gaussian model-specific derivative weights
   effect_size = derivative_calculator_->compute_gaussian_effect_size(
-          model_profile, profile_fitter_, use_offset);
+          resampled_profile, profile_fitter_, use_offset);
   derivative_calculator_->compute_all_derivatives(particles_, rigid_bodies_,
-          rigid_bodies_decorators_, model_profile, effect_size, acc);
+          rigid_bodies_decorators_, resampled_profile, effect_size, acc);
 
   IMP_LOG_TERSE("SAXS Restraint::done derivatives, score " << score << "\n");
   return score;
