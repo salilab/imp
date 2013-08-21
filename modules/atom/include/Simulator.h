@@ -109,13 +109,16 @@ class IMPATOMEXPORT Simulator : public Optimizer {
      Sets the current simulation time in femtoseconds to ct.
   */
   void set_current_time(double ct) { current_time_ = ct; }
+
   /** Get the set of particles used in the simulation.
       This may be different then the stored set, eg if
       no particles are stored, the Model is searched for
       appropriate particles.
   */
   ParticlesTemp get_simulation_particles() const;
+
   ParticleIndexes get_simulation_particle_indexes() const;
+
   /** \name Explicitly specifying particles
 
       One can explicitly specify which particles should be used for
@@ -125,10 +128,11 @@ class IMPATOMEXPORT Simulator : public Optimizer {
       @{
   */
   IMP_LIST(public, Particle, particle, Particle *, Particles);
-  /** @} */
+
   IMP_OBJECT_METHODS(Simulator);
 
  protected:
+  /** @} */
   virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE IMP_FINAL;
 
   /** A Simulator class can perform setup operations before a series
