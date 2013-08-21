@@ -13,10 +13,10 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-std::vector<double> WeightedProfileFitter::empty_weights_;
+Floats WeightedProfileFitter::empty_weights_;
 
 WeightedProfileFitter::WeightedProfileFitter(const Profile* exp_profile):
-  IMP::saxs::ProfileFitter<ChiScore>(exp_profile),
+  ProfileFitter<ChiScore>(exp_profile),
   W_(exp_profile->size()),
   Wb_(exp_profile->size()),
   A_(exp_profile->size(), 2) {
@@ -28,9 +28,8 @@ WeightedProfileFitter::WeightedProfileFitter(const Profile* exp_profile):
   Wb_ = W_ * Wb_;
 }
 
-Float WeightedProfileFitter::compute_score(
-                         const std::vector<IMP::saxs::Profile *>& profiles,
-                         std::vector<double>& weights) const {
+Float WeightedProfileFitter::compute_score(const ProfilesTemp& profiles,
+                                           std::vector<double>& weights) const {
 
   // no need to compute weighted profile for ensemble of size 1
   if(profiles.size() == 1)
@@ -56,9 +55,9 @@ Float WeightedProfileFitter::compute_score(
   w /= w.sum();
 
   // computed weighted profile
-  IMP_NEW(IMP::saxs::Profile, weighted_profile, (exp_profile_->get_min_q(),
-                                                 exp_profile_->get_max_q(),
-                                                 exp_profile_->get_delta_q()));
+  IMP_NEW(Profile, weighted_profile, (exp_profile_->get_min_q(),
+                                      exp_profile_->get_max_q(),
+                                      exp_profile_->get_delta_q()));
   internal::Vector wp = A_*w;
 
   for(unsigned int k=0; k<profiles[0]->size(); k++)
@@ -68,14 +67,14 @@ Float WeightedProfileFitter::compute_score(
   return scoring_function_->compute_score(exp_profile_, weighted_profile);
 }
 
-FitParameters WeightedProfileFitter::fit_profile(
-                            std::vector<IMP::saxs::Profile *>& partial_profiles,
+WeightedFitParameters WeightedProfileFitter::fit_profile(
+                            ProfilesTemp partial_profiles,
                             float min_c1, float max_c1,
                             float min_c2, float max_c2,
-                            std::vector<double>& weights,
                             const std::string fit_file_name) const {
 
-  FitParameters fp = search_fit_parameters(partial_profiles,
+  std::vector<double> weights;
+  WeightedFitParameters fp = search_fit_parameters(partial_profiles,
                                            min_c1, max_c1, min_c2, max_c2,
                                            std::numeric_limits<float>::max(),
                                            weights);
@@ -107,8 +106,8 @@ FitParameters WeightedProfileFitter::fit_profile(
 }
 
 
-FitParameters WeightedProfileFitter::search_fit_parameters(
-                           std::vector<IMP::saxs::Profile *>& partial_profiles,
+WeightedFitParameters WeightedProfileFitter::search_fit_parameters(
+                           ProfilesTemp& partial_profiles,
                            float min_c1, float max_c1,
                            float min_c2, float max_c2,
                            float old_chi, std::vector<double>& weights) const {
@@ -160,7 +159,7 @@ FitParameters WeightedProfileFitter::search_fit_parameters(
                                  min_c1, max_c1, min_c2, max_c2,
                                  best_chi, weights);
   }
-  return FitParameters(best_chi, best_c1, best_c2);
+  return WeightedFitParameters(best_chi, best_c1, best_c2, (Floats)weights);
 }
 
 IMPSAXS_END_NAMESPACE

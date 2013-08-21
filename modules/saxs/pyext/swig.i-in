@@ -17,6 +17,7 @@ IMP_SWIG_OBJECT(IMP::saxs, Profile, Profiles);
 %include "IMP/saxs/FormFactorTable.h"
 %include "IMP/saxs/Profile.h"
 %include "IMP/saxs/FitParameters.h"
+%include "IMP/saxs/WeightedFitParameters.h"
 %include "IMP/saxs/ChiScore.h"
 %include "IMP/saxs/ChiScoreLog.h"
 %include "IMP/saxs/ProfileFitter.h"

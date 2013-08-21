@@ -69,11 +69,11 @@ The chi value is computed relative to the first profile using its error column")
 
   IMP::saxs::Profile* exp_saxs_profile = exp_profiles[0];
   IMP::base::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiScore> >saxs_score =
-    new IMP::saxs::ProfileFitter<IMP::saxs::ChiScore>(*exp_saxs_profile);
+    new IMP::saxs::ProfileFitter<IMP::saxs::ChiScore>(exp_saxs_profile);
   for(unsigned int i=1; i<exp_profiles.size(); i++) {
     std::string fit_file = "fit" +
       std::string(boost::lexical_cast<std::string>(i)) + ".dat";
-    float chi = saxs_score->compute_score(*exp_profiles[i], use_offset, "fit");
+    float chi = saxs_score->compute_score(exp_profiles[i], use_offset, "fit");
     std::cout << "File " << files[i] << " chi=" << chi << std::endl;
   }
   return 0;

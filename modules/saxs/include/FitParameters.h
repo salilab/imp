@@ -51,7 +51,7 @@ class IMPSAXSEXPORT FitParameters {
   };
 #endif
 
- private:
+ protected:
   float chi_; // fit score
   float c1_; // excluded volume fit
   float c2_; // water layer fit
