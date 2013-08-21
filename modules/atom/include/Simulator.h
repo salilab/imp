@@ -150,7 +150,12 @@ class IMPATOMEXPORT Simulator : public Optimizer {
   virtual bool get_is_simulation_particle(ParticleIndex p) const = 0;
 
  private:
+  // see simulate() documentation
   double do_simulate(double time);
+  // see simulate_wave() documentation
+  double do_simulate_wave(double time_in_fs,
+                       double max_time_step_factor = 10.0,
+                       double base = 1.5);
   double temperature_;
   double max_time_step_;
   double current_time_;

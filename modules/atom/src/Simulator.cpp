@@ -34,6 +34,17 @@ double Simulator::simulate(double time) {
   return ret;
 }
 
+double Simulator::simulate_wave
+( double time,
+  double max_time_step_factor,
+  double base) {
+  IMP_FUNCTION_LOG;
+  set_is_optimizing_states(true);
+  double ret = do_simulate_wave(time);
+  set_is_optimizing_states(false);
+  return ret;
+}
+
 double Simulator::do_simulate(double time) {
   IMP_FUNCTION_LOG;
   set_was_used(true);
@@ -56,7 +67,7 @@ double Simulator::do_simulate(double time) {
   return Optimizer::get_scoring_function()->evaluate(false);
 }
 
-double Simulator::simulate_wave
+double Simulator::do_simulate_wave
 ( double time,
   double max_time_step_factor,
   double base) {
@@ -160,7 +171,7 @@ ParticlesTemp Simulator::get_simulation_particles() const {
 
 double Simulator::do_optimize(unsigned int ns) {
   if(wave_factor_ >= 1.001) {
-    return simulate_wave(ns * max_time_step_, wave_factor_);
+    return do_simulate_wave(ns * max_time_step_, wave_factor_);
   } else {
     return do_simulate(ns * max_time_step_);
   }
