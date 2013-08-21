@@ -10,7 +10,8 @@ class Tests(IMP.test.TestCase):
         ps = []
         m= IMP.Model()
         refcnt = IMP.test.RefCountChecker(self)
-        s = IMP.atom.VelocityScalingOptimizerState(ps, 300., 10)
+        s = IMP.atom.VelocityScalingOptimizerState(m, [], 300.)
+        s.set_period(11)
         o = IMP.atom.MolecularDynamics(m)
         o.add_optimizer_state(s)
         refcnt.assert_number(2)
@@ -27,7 +28,8 @@ class Tests(IMP.test.TestCase):
         refcnt = IMP.test.RefCountChecker(self)
         o = IMP.atom.MolecularDynamics(m)
         ps = []
-        s = IMP.atom.VelocityScalingOptimizerState(ps, 300., 10)
+        s = IMP.atom.VelocityScalingOptimizerState(m, [], 300.)
+        s.set_period(11)
         o.add_optimizer_state(s)
         self.assertEqual(s.get_ref_count(), 2)
         refcnt.assert_number(2)
@@ -44,7 +46,8 @@ class Tests(IMP.test.TestCase):
         refcnt = IMP.test.RefCountChecker(self)
         o = IMP.atom.MolecularDynamics(m)
         ps = []
-        s = IMP.atom.VelocityScalingOptimizerState(ps, 300., 10)
+        s = IMP.atom.VelocityScalingOptimizerState(m, [], 300.)
+        s.set_period(11)
         o.add_optimizer_state(s)
         del s
         # Now create new Python OptimizerState s from a C++ vector accessor
