@@ -46,7 +46,8 @@ class IMPKERNELEXPORT ConfigurationSet : public IMP::base::Object {
 IMP_OBJECTS(ConfigurationSet, ConfigurationSets);
 
 /** Save the model to a ConfigurationSet. */
-class SaveToConfigurationSetOptimizerState: public OptimizerState {
+class IMPKERNELEXPORT SaveToConfigurationSetOptimizerState:
+  public OptimizerState {
   base::PointerMember<ConfigurationSet> cs_;
 public:
   SaveToConfigurationSetOptimizerState(ConfigurationSet* cs);
