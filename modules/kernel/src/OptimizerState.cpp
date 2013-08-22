@@ -44,8 +44,9 @@ void OptimizerState::update_always() {
 }
 void OptimizerState::set_is_optimizing(bool tf) {
   if (!tf) {
-    do_update(update_number_);
-    ++update_number_;
+    if (call_number_ % period_ != 0) {
+      update_always();
+    }
   } else {
     call_number_ = 0;
   }
