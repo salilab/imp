@@ -15,12 +15,14 @@ class Tests(IMP.test.TestCase):
 
         #! read PDB
         mp1 = IMP.atom.read_pdb(self.get_input_file_name('4cln.pdb'), m,
-                                IMP.atom.NonWaterNonHydrogenPDBSelector())
+                                IMP.atom.NonWaterNonHydrogenPDBSelector(),
+                                True, True)
 
         particles1 = IMP.atom.get_by_type(mp1, IMP.atom.ATOM_TYPE)
 
         mp2 = IMP.atom.read_pdb(self.get_input_file_name('2bbm.pdb'), m,
-                                IMP.atom.NonWaterNonHydrogenPDBSelector())
+                                IMP.atom.NonWaterNonHydrogenPDBSelector(),
+                                True, True)
 
         particles2 = IMP.atom.get_by_type(mp2, IMP.atom.ATOM_TYPE)
 
