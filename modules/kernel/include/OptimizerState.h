@@ -131,6 +131,7 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
   virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE IMP_FINAL {
     return ModelObjectsTemp();
   }
+ private:
   base::UncheckedWeakPointer<Optimizer> optimizer_;
 };
 
