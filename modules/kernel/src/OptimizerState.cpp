@@ -12,6 +12,7 @@
 IMPKERNEL_BEGIN_NAMESPACE
 
 OptimizerState::OptimizerState(std::string name) : ModelObject(name) {
+  is_optimizing_ = false;
   reset();
   set_period(1);
 
@@ -19,6 +20,7 @@ OptimizerState::OptimizerState(std::string name) : ModelObject(name) {
 
 OptimizerState::OptimizerState(Model *m, std::string name) :
     ModelObject(m, name) {
+  is_optimizing_ = false;
   reset();
   set_period(1);
 }
@@ -44,10 +46,18 @@ void OptimizerState::update_always() {
 }
 void OptimizerState::set_is_optimizing(bool tf) {
   if (!tf) {
+    IMP_USAGE_CHECK(is_optimizing_,
+                    "OptimizerState " << get_name()
+                    << " is not optimizing.");
+    is_optimizing_ = false;
     if (call_number_ % period_ != 0) {
       update_always();
     }
   } else {
+    IMP_USAGE_CHECK(!is_optimizing_,
+                    "OptimizerState " << get_name()
+                    << " is already optimizing.");
+    is_optimizing_ = true;
     call_number_ = 0;
   }
   do_set_is_optimizing(tf);

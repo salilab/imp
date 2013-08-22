@@ -133,6 +133,7 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
   }
  private:
   base::UncheckedWeakPointer<Optimizer> optimizer_;
+  bool is_optimizing_;
 };
 
 IMPKERNEL_END_NAMESPACE
