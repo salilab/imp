@@ -4,9 +4,9 @@ import IMP.core
 import IMP.algebra
 import random
 
-class PeriodicOS(IMP.kernel.OptimizerState):
+class PeriodicOS(IMP.core.PeriodicOptimizerState):
     def __init__(self):
-        IMP.kernel.OptimizerState.__init__(self, "MyPOS%1%")
+        IMP.core.PeriodicOptimizerState.__init__(self, "MyPOS%1%")
         self.calls=[]
     def do_update(self, call):
         self.calls.append(call)
