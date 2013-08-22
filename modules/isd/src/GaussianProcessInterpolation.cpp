@@ -814,9 +814,4 @@ MatrixXd GaussianProcessInterpolation::get_d2cov_dOm_dOm(Floats q,
     return ret;
 }
 
-void GaussianProcessInterpolation::do_show(std::ostream& out) const
-{
-    out << "Gaussian Process Interpolation instance" << std::endl;
-}
-
 IMPISD_END_NAMESPACE
