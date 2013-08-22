@@ -84,7 +84,7 @@ to exp_profile. Please profile the exp_profile and at least two fit files.\n")
       if(profile_counter == 0) {
         exp_profile = profile;
       } else {
-        profile->copy_errors(*exp_profile);
+        profile->copy_errors(exp_profile);
         fit_profiles[profile_counter] = std::make_pair(curr_file_name, profile);
       }
       profile_counter++;
@@ -101,7 +101,7 @@ to exp_profile. Please profile the exp_profile and at least two fit files.\n")
       IMP_THROW("Can't parse reference input file "
                 << reference_profile_file, IOException);
     }
-    reference_profile->copy_errors(*exp_profile);
+    reference_profile->copy_errors(exp_profile);
 
     // compare to other profiles
     IMP::saxs::ChiScore chi_score;
@@ -109,7 +109,7 @@ to exp_profile. Please profile the exp_profile and at least two fit files.\n")
     for(it = fit_profiles.begin(); it != fit_profiles.end(); it++) {
       IMP::saxs::Profile *curr_profile = it->second.second;
       std::string curr_file_name = it->second.first;
-      float score = chi_score.compute_score(*reference_profile, *curr_profile);
+      float score = chi_score.compute_score(reference_profile, curr_profile);
       if(score < threshold) {
         std::cerr << it->first << " score " << score
                   << " file " << curr_file_name << std::endl;
@@ -122,7 +122,7 @@ to exp_profile. Please profile the exp_profile and at least two fit files.\n")
     std::map<int , std::pair<std::string, IMP::saxs::Profile *> >::iterator it;
     for(it = fit_profiles.begin(); it != fit_profiles.end(); it++) {
       IMP::saxs::Profile *curr_profile = it->second.second;
-      float score = chi_score.compute_score(*exp_profile, *curr_profile);
+      float score = chi_score.compute_score(exp_profile, curr_profile);
       scored_profiles.insert(std::make_pair(score, it->first));
     }
 
@@ -149,7 +149,7 @@ to exp_profile. Please profile the exp_profile and at least two fit files.\n")
         IMP::saxs::Profile *curr_profile = fit_profiles[curr_profile_id].second;
         std::string curr_file_name = fit_profiles[curr_profile_id].first;
 
-        float score = chi_score.compute_score(*cluster_profile, *curr_profile);
+        float score = chi_score.compute_score(cluster_profile, curr_profile);
         if(score < threshold) {
           std::cerr << curr_profile_id << " score " << score
                     << " file " << curr_file_name << std::endl;
