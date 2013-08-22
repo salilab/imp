@@ -133,12 +133,10 @@ void optimize_assembly(Model *m, const ParticlesTemp &components,
   IMP_NEW(core::SoftSpherePairScore, ssps, (10));
   base::Pointer<Restraint> evr
     = container::create_restraint(ssps.get(), cpc.get());
-  evr->set_model(m);
   IMP_NEW(core::HarmonicUpperBound, hub, (0, 10));
   IMP_NEW(core::BoundingBox3DSingletonScore, bbss, (hub, bb));
   base::Pointer<Restraint> bbr =
       container::create_restraint(bbss.get(), active.get());
-  bbr->set_model(m);
   do {
     Particle *add = ad.get_highest_degree_unused_particle(cur);
     cur.push_back(add);
