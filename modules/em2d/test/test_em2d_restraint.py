@@ -125,7 +125,7 @@ class Tests(IMP.test.TestCase):
         # Optimizer state to save intermediate configurations
         o_state=IMP.atom.WritePDBOptimizerState(chains,
                                                 "intermediate-step-%1%.pdb")
-        o_state.set_skip_steps(10)
+        o_state.set_period(11)
         s.add_optimizer_state(o_state)
 
         ostate2 = WriteStatisticsOptimizerScore()
