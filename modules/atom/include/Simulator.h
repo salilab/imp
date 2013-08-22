@@ -41,6 +41,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
 
      @note wave_factor is an advanced feature - if you're not sure, just use its
                        default, see also simulate_wave()
+     @note wave_factor is experimental and liable to change at any time.
 
      \see simulate()
    */
@@ -69,6 +70,9 @@ class IMPATOMEXPORT Simulator : public Optimizer {
                                  maximum time step is exceeded
      @param base base by which time step increases or decreases
                  during the wave
+
+     @note This function is experimental and liable to change at any
+         time.
    */
   double simulate_wave(double time_in_fs,
                        double max_time_step_factor = 10.0,
