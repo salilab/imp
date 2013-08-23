@@ -404,7 +404,7 @@ IMPATOMEXPORT std::string get_pdb_conect_record_string(int, int);
       with the %1% replaced by the index. Otherwise a new model is written
       each time to the same file.
   */
-class WritePDBOptimizerState: public kernel::OptimizerState {
+class IMPATOMEXPORT WritePDBOptimizerState: public kernel::OptimizerState {
   std::string filename_;
   ParticleIndexes pis_;
 public:
