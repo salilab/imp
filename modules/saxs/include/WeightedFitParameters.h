@@ -7,7 +7,13 @@
 
 #ifndef IMPSAXS_WEIGHTED_FIT_PARAMETERS_H
 #define IMPSAXS_WEIGHTED_FIT_PARAMETERS_H
+
 #include <IMP/saxs/saxs_config.h>
+
+#include "FitParameters.h"
+
+#include <IMP/base_types.h>
+
 #include <iostream>
 
 IMPSAXS_BEGIN_NAMESPACE
