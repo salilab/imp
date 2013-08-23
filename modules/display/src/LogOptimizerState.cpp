@@ -27,7 +27,8 @@ void WriteOptimizerState::write(WriterAdaptor w) const {
   }
 }
 
-void WriteOptimizerState::do_update(unsigned int) {
+void WriteOptimizerState::do_update(unsigned int frame) {
+  writer_->set_frame(frame);
   write(writer_.get());
 }
 
