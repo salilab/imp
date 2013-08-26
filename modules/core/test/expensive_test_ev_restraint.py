@@ -74,7 +74,7 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
         """Testing excluded volume serial restraint"""
         (m,r, xyzrs, rbs)= self._setup_ev_restraint()
         print "mc"
-        o= IMP.core.MonteCarlo()
+        o= IMP.core.MonteCarlo(m)
         mvs= self._setup_movers(xyzrs, rbs)
         sm= IMP.core.SerialMover(mvs)
         o.set_movers([sm])
