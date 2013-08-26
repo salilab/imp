@@ -43,11 +43,6 @@ public:
   //construct a Vector from a Diagonal
   explicit Vector(const Diagonal &D);
 
-  //construct a Vector from a list of values (each less than BIG)
-  explicit Vector(double t1, double t2, double t3=BIG2, double t4=BIG2,
-                  double t5=BIG2, double t6=BIG2, double t7=BIG2,
-                  double t8=BIG2, double t9=BIG2, double t10=BIG2);
-
   //supports for example R = 3.14;
   Vector operator=(double x);
 
@@ -130,16 +125,6 @@ public:
   void prepend_rows(const Matrix &B)
   { if (B.dim2()==1) Matrix::prepend_rows(B);
     else Matrix::xerror(2,"Vector::prepend_rows()"); }
-
-  //prohibitions
-private:
-  void t()                              { Matrix::xerror(9,"Vector::t()"); }
-  void del_column(int r)       { Matrix::xerror(9,"Vector::del_rcolumn()"); }
-  void add_columns(int m)      { Matrix::xerror(9,"Vector::add_columns()"); }
-  void append_columns(const Matrix &B )
-  { Matrix::xerror(9,"Vector::append_columns()"); }
-  void prepend_columns(const Matrix &B)
-  { Matrix::xerror(9,"Vector::prepend_columns()"); }
 
 private:
   //sort elements v[m] to v[n] in increasing order.

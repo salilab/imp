@@ -108,21 +108,6 @@ public:
     return sum/3.0;
   }
 
-  //count the number of arguments less than BIG
-  static int countargs(double t1, double t2, double t3, double t4, double t5,
-                       double t6, double t7, double t8, double t9, double t10) {
-    if (t2>BIG) return 1;
-    if (t3>BIG) return 2;
-    if (t4>BIG) return 3;
-    if (t5>BIG) return 4;
-    if (t6>BIG) return 5;
-    if (t7>BIG) return 6;
-    if (t8>BIG) return 7;
-    if (t9>BIG) return 8;
-    if (t10>BIG) return 9;
-    return 10;
-  }
-
   //constructors
   //default constructor: 0 by 0 matrix
   Matrix () : m_(0), n_(0) {}

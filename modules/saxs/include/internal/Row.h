@@ -41,11 +41,6 @@ public:
   //construct a Row from a Diagonal
   explicit Row(const Diagonal &D);
 
-  //construct a row from a list of at least 2 values (must be less than BIG)
-  explicit Row(double t1, double t2, double t3=BIG2, double t4=BIG2,
-               double t5=BIG2, double t6=BIG2, double t7=BIG2,
-               double t8=BIG2, double t9=BIG2, double t10=BIG2);
-
   //supports for example R = 3.14;
   Row operator=(double x);
 
@@ -71,15 +66,6 @@ public:
   void prepend_columns(const Matrix &B)
   { if (B.dim1()==1) Matrix::prepend_columns(B);
     else Matrix::xerror(2,"Vector::prepend_columns()"); }
-
-  //prohibitions
-private:
-  void t() { Matrix::xerror(9,"Row::t()"); }
-  void del_row(int r) { Matrix::xerror(9,"Row::del_row()"); }
-  void add_rows(int m) { Matrix::xerror(9,"Row::add_row()"); }
-  void append_rows(const Matrix &B) { Matrix::xerror(9,"Row::append_rows()"); }
-  void prepend_rows(const Matrix &B){ Matrix::xerror(9,"Row::prepend_rows()"); }
-
 };
 
 IMPSAXS_END_INTERNAL_NAMESPACE

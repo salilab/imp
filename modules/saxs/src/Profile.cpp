@@ -240,7 +240,6 @@ void Profile::read_partial_profiles(const String& file_name) {
   partial_profiles_.insert(partial_profiles_.begin(), psize,
                            std::vector<double>());
   std::string line;
-  double q, intensity, error;
   while (!in_file.eof()) {
     getline(in_file, line);
     boost::trim(line); // remove all spaces
@@ -250,7 +249,7 @@ void Profile::read_partial_profiles(const String& file_name) {
     boost::split(split_results, line, boost::is_any_of("\t "),
                  boost::token_compress_on);
     if(split_results.size() != 7) continue;
-    q = atof(split_results[0].c_str());
+    double q = atof(split_results[0].c_str());
     for(unsigned int i=0; i<6; i++) {
       partial_profiles_[i].push_back(atof(split_results[i+1].c_str()));
     }

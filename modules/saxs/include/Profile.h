@@ -11,6 +11,7 @@
 
 #include <IMP/saxs/saxs_config.h>
 #include <IMP/base/Object.h>
+#include <IMP/base/warning_macros.h>
 
 #include "FormFactorTable.h"
 #include "Distribution.h"
@@ -162,7 +163,7 @@ public:
   Float get_intensity(unsigned int i) const { return intensity_[i]; }
   Float get_q(unsigned int i) const { return q_[i]; }
   Float get_error(unsigned int i) const { return error_[i]; }
-  Float get_weight(unsigned int i) const { return 1.0; }
+  Float get_weight(unsigned int i) const { IMP_UNUSED(i); return 1.0; }
   Float get_variance(unsigned int i, unsigned int j) const
   { unsigned a=std::min(i,j); unsigned b=std::max(i,j);
       return variances_[a][b-a]; }
