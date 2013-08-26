@@ -127,7 +127,8 @@ class IMPCOREEXPORT XYZ : public Decorator {
 };
 
 //! Compute the distance between a pair of particles
-/** \ingroup helper
+/** compute the ditance between the x,y,z coordinates of a and b
+    \ingroup helper
     See XYZ
  */
 inline double get_distance(XYZ a, XYZ b) {

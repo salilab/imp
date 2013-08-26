@@ -82,8 +82,9 @@ class IMPCOREEXPORT XYZR : public XYZ {
 
 IMP_DECORATORS(XYZR, XYZRs, XYZs);
 
-//! Compute the distance between a pair of particles
-/** See XYZR
+//! Compute the sphere distance between a and b
+/** Compute the spere distance between a and b
+    See XYZR
  */
 inline double get_distance(XYZR a, XYZR b) {
   return IMP::algebra::get_distance(a.get_sphere(), b.get_sphere());
