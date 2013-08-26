@@ -203,7 +203,7 @@ class NonWaterPDBSelector : public NonAlternativePDBSelector {
         ws_(new WaterPDBSelector()) {}
 };
 
-//! Select all P ATOM records
+//! Select all P (= phosphate) ATOM records
 class PPDBSelector : public NonAlternativePDBSelector {
  public:
   IMP_PDB_SELECTOR(PPDBSelector, NonAlternativePDBSelector,
