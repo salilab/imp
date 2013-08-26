@@ -29,6 +29,7 @@ Transformation3D compose(const Transformation3D &a, const Transformation3D &b);
 */
 class IMPALGEBRAEXPORT Transformation3D : public GeometricPrimitiveD<3> {
  public:
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Transformation3D);
   //! construct an invalid transformation
   Transformation3D() {}
   /** basic constructor*/

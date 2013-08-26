@@ -17,6 +17,7 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 struct IMPKERNELEXPORT AncestorException {
   base::Object *o;
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(AncestorException);
   AncestorException(base::Object *oi) : o(oi) {};
   virtual ~AncestorException();
 };

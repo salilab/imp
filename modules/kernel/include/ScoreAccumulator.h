@@ -62,6 +62,7 @@ class IMPKERNELEXPORT ScoreAccumulator : public base::Value {
         abort_on_bad_(abort_on_bad) {}
 
  public:
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(ScoreAccumulator);
   /** For swig, makes invalid (not null) state.*/
   ScoreAccumulator() : score_(nullptr) {}
   /** Compose outer accumulator with one for this restraint. */

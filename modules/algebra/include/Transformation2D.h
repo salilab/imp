@@ -27,6 +27,7 @@ Transformation2D compose(const Transformation2D &a, const Transformation2D &b);
 */
 class IMPALGEBRAEXPORT Transformation2D : public GeometricPrimitiveD<2> {
  public:
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Transformation2D);
 
   //! constructor. An invalid transformation is built
   Transformation2D() {}

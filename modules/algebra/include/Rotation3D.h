@@ -71,6 +71,7 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
   }
 
  public:
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Rotation3D);
   //! Create a rotation from an unnormalized vector 4
   Rotation3D(const VectorD<4> &v)
       : v_(v.get_unit_vector()), has_cache_(false) {}

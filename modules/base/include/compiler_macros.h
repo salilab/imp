@@ -75,6 +75,17 @@
 #define IMP_FINAL
 #endif
 
+#if defined(__clang__) || defined(__GNUC__) && __cplusplus >= 201103L
+#define IMP_NOEXCEPT noexcept
+#define IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Name) \
+  Name(const Name &) = default;                  \
+  Name& operator=(const Name &) = default
+#else
+// probably should be finer here
+#define IMP_NOEXCEPT throw()
+#define IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Name)
+#endif
+
 #if defined(__clang__) || defined(__GNUC__)
 #define IMP_PRAGMA(x) _Pragma(IMP_STRINGIFY(x))
 

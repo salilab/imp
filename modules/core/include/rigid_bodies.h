@@ -127,6 +127,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   //! Make the rigid body no longer rigid.
   static void teardown_particle(RigidBody rb);
 
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(RigidBody);
   ~RigidBody();
 
   //!Return true of the particle is a rigid body
@@ -328,6 +329,7 @@ class IMPCOREEXPORT RigidMember : public XYZ {
     set_coordinates(tr.get_transformed(get_internal_coordinates()));
   }
 #endif
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(RigidMember);
   ~RigidMember();
 
   //! return true if it is a rigid member
@@ -421,6 +423,7 @@ class IMPCOREEXPORT NonRigidMember : public XYZ {
     set_coordinates(tr.get_transformed(get_internal_coordinates()));
   }
 #endif
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(NonRigidMember);
   ~NonRigidMember();
 
   //! return true if it is a rigid member

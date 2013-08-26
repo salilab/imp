@@ -40,6 +40,7 @@ class IMPDISPLAYEXPORT Color : public base::Value {
   }
 
  public:
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Color);
 
   Color();
 

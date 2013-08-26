@@ -60,10 +60,11 @@ class IMPBASEEXPORT Exception
       {
  public:
 #if defined(SWIG) || defined(IMP_DOXYGEN)
-  const char *what() const throw();
+  const char *what() const IMP_NOEXCEPT;
 #endif
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Exception);
   Exception(const char *message);
-  ~Exception() throw();
+  ~Exception() IMP_NOEXCEPT;
 };
 
 #endif
@@ -110,9 +111,10 @@ struct IMPBASEEXPORT InternalException
     : public std::runtime_error
 #endif
       {
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(InternalException);
   InternalException(const char *msg = "Fatal error")
       : std::runtime_error(msg) {}
-  ~InternalException() throw();
+  ~InternalException() IMP_NOEXCEPT;
 };
 
 //! An exception for an invalid usage of \imp
@@ -131,8 +133,9 @@ class IMPBASEEXPORT UsageException
 #endif
       {
  public:
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(UsageException);
   UsageException(const char *t) : std::runtime_error(t) {}
-  ~UsageException() throw();
+  ~UsageException() IMP_NOEXCEPT;
 };
 
 //! An exception for an invalid value being passed to \imp
@@ -140,8 +143,9 @@ class IMPBASEEXPORT UsageException
  */
 class IMPBASEEXPORT ValueException : public Exception {
  public:
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(ValueException);
   ValueException(const char *t) : Exception(t) {}
-  ~ValueException() throw();
+  ~ValueException() IMP_NOEXCEPT;
 };
 
 //! An exception for a request for an invalid member of a container
@@ -149,9 +153,10 @@ class IMPBASEEXPORT ValueException : public Exception {
  */
 class IMPBASEEXPORT IndexException : public Exception {
  public:
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(IndexException);
   //! Create exception with an error message
   IndexException(const char *t) : Exception(t) {}
-  ~IndexException() throw();
+  ~IndexException() IMP_NOEXCEPT;
 };
 
 //! An input/output exception
@@ -165,8 +170,9 @@ class IMPBASEEXPORT IndexException : public Exception {
  */
 class IMPBASEEXPORT IOException : public Exception {
  public:
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(IOException);
   IOException(const char *t) : Exception(t) {}
-  ~IOException() throw();
+  ~IOException() IMP_NOEXCEPT;
 };
 
 /** \brief An exception which is thrown when the Model has
@@ -179,9 +185,10 @@ class IMPBASEEXPORT IOException : public Exception {
  */
 class IMPBASEEXPORT ModelException : public Exception {
  public:
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(ModelException);
   //! Create exception with an error message
   ModelException(const char *t) : Exception(t) {}
-  ~ModelException() throw();
+  ~ModelException() IMP_NOEXCEPT;
 };
 
 /** \brief An exception that signifies some event occurred.
@@ -194,9 +201,10 @@ class IMPBASEEXPORT ModelException : public Exception {
  */
 class IMPBASEEXPORT EventException : public Exception {
  public:
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(EventException);
   //! Create exception with an error message
   EventException(const char *t = "") : Exception(t) {}
-  ~EventException() throw();
+  ~EventException() IMP_NOEXCEPT;
 };
 #endif
 

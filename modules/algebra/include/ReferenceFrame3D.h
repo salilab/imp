@@ -30,6 +30,7 @@ class IMPALGEBRAEXPORT ReferenceFrame3D {
   }
 
  public:
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(ReferenceFrame3D);
   //! Create the default reference frame
   /** That is, the origin with x,y,z axis as the principal axes.*/
   ReferenceFrame3D()

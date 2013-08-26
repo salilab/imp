@@ -50,6 +50,7 @@ class IMPBASEEXPORT Showable {
   explicit Showable(T *o) {
     show_ptr(o);
   }
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Showable);
   Showable(const std::string &str) : str_(str) {}
   Showable(const char *str) : str_(str) {}
   template <class T, class TT>

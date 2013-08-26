@@ -24,11 +24,12 @@ IMPKERNEL_BEGIN_NAMESPACE
     a RestraintSet and that the derivatives would be scaled appropriately */
 class IMPKERNELEXPORT DerivativeAccumulator {
  public:
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(DerivativeAccumulator);
   //! the weight is one by default
   DerivativeAccumulator(double weight = 1.0) : weight_(weight) {}
 
   //! The weight is multiplied by the new weight
-  DerivativeAccumulator(const DerivativeAccumulator &copy, double weight = 1.0)
+  DerivativeAccumulator(const DerivativeAccumulator &copy, double weight)
       : weight_(copy.weight_ * weight) {}
 
   //! Scale a value appropriately.
