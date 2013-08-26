@@ -46,7 +46,11 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT MonteCarlo : public Optimizer {
  public:
-  MonteCarlo(Model *m = nullptr);
+  MonteCarlo(Model *m);
+
+  /** \deprecated_at{2.1} Use the one that takes a model. */
+  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
+  MonteCarlo();
 
  protected:
   virtual Float do_optimize(unsigned int max_steps);

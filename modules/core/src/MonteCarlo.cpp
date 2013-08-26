@@ -31,6 +31,17 @@ MonteCarlo::MonteCarlo(Model *m)
       return_best_(true),
       rand_(0, 1) {}
 
+/* deprecated */
+MonteCarlo::MonteCarlo()
+    :
+      temp_(1),
+      max_difference_(std::numeric_limits<double>::max()),
+      stat_forward_steps_taken_(0),
+      stat_upward_steps_taken_(0),
+      stat_num_failures_(0),
+      return_best_(true),
+      rand_(0, 1) {}
+
 bool MonteCarlo::do_accept_or_reject_move(double score, double last,
                                           double proposal_ratio) {
   bool ok = false;
