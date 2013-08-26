@@ -121,7 +121,7 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
   /** This method is called every get_period() update calls. The number of
       times this method has been called since the last reset or start of the
       optimization run is passed.*/
-  virtual void do_update(unsigned int call_number) {update();}
+  virtual void do_update(unsigned int ) {update();}
 
   virtual void do_set_is_optimizing(bool) {}
 
