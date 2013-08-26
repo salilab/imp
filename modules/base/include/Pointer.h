@@ -13,6 +13,8 @@
 #include "internal/PointerBase.h"
 #include "WeakPointer.h"
 
+
+
 IMPBASE_BEGIN_NAMESPACE
 
 //! A smart pointer to a reference counted object
@@ -108,6 +110,21 @@ struct Pointer : internal::PointerBase<internal::RefCountedPointerTraits<O> > {
     P::operator=(o);
     return *this;
   }
+
+#ifdef IMP_DOXYGEN
+  //! Relinquish control of the raw pointer stored in the Pointer
+  /** Relinquish control of the raw pointer stored in the Pointer.
+      Use this to safely return objects allocated within functions.
+      The reference count of the object will be decreased by one,
+      but even it it becomes 0, the object will not be destroyed.
+
+      @return a valid raw pointer to the object stored in Pointer
+  */
+  O* release();
+
+  //! get the raw pointer to the object
+  O* get() const;
+#endif
 };
 
 
@@ -154,6 +171,22 @@ struct PointerMember : internal::PointerBase<internal::PointerMemberTraits<O> >
     P::operator=(o);
     return *this;
   }
+
+
+#ifdef IMP_DOXYGEN
+  //! Relinquish control of the raw pointer stored in the PointerMember
+  /** Relinquish control of the raw pointer stored in the PointerMember.
+      Use this to safely return objects allocated within functions.
+      The reference count of the object will be decreased by one,
+      but even it it becomes 0, the object will not be destroyed.
+
+      @return a valid raw pointer to the object stored in the PointerMember
+  */
+  O* release();
+
+  //! get the raw pointer to the object
+  O* get() const;
+#endif
 };
 
 
@@ -201,6 +234,21 @@ struct OwnerPointer : internal::PointerBase<internal::PointerMemberTraits<O> >
     P::operator=(o);
     return *this;
   }
+
+#ifdef IMP_DOXYGEN
+  //! Relinquish control of the raw pointer stored in the OwnerPointer
+  /** Relinquish control of the raw pointer stored in the OwnerPointer.
+      Use this to safely return objects allocated within functions.
+      The reference count of the object will be decreased by one,
+      but even it it becomes 0, the object will not be destroyed.
+
+      @return a valid raw pointer to the object stored in the OwnerPointer
+  */
+  O* release();
+
+  //! get the raw pointer to the object
+  O* get() const;
+#endif
 };
 
 
