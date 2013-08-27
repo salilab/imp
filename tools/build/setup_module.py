@@ -137,7 +137,7 @@ def make_doxygen(options, modules):
                                 '"The Integrative Modeling Platform"')
     template = template.replace("@RECURSIVE@", "YES")
     template = template.replace("@EXCLUDE_PATTERNS@", "*/tutorial/*")
-    template = template.replace("@IS_HTML@", "YES")
+    template = template.replace("@IS_HTML@", "NO")
     template = template.replace("@IS_XML@", "YES")
     template = template.replace("@PROJECT_NAME@", "IMP."+name)
     template = template.replace("@HTML_OUTPUT@", "../../doc/html/" + name)
@@ -270,6 +270,17 @@ def link_benchmark(options):
         os.unlink(old)
     tools.link_dir(os.path.join(options.source, "modules", options.name, "benchmark"), path, clean=False, match=["*.py"])
 
+def make_overview(options):
+    rmd = open(os.path.join(options.source, "modules", options.name, "README.md"), "r").read()
+    tools.rewrite(os.path.join("doxygen", "generated", "IMP_%s.dox" % options.name),
+                  """/** \\page imp%s IMP.%s
+\\tableofcontents
+
+%s
+*/
+""" %(options.name, options.name, rmd))
+
+
 def main():
     (options, args) = parser.parse_args()
     disabled= tools.split(open("data/build_info/disabled", "r").read(), "\n")
@@ -285,6 +296,7 @@ def main():
         make_cpp(options)
         make_version_check(options)
         make_doxygen(options, modules)
+        make_overview(options)
         link_bin(options)
         link_benchmark(options)
         sys.exit(0)

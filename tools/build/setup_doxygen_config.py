@@ -16,7 +16,7 @@ import platform
 import tools
 from optparse import OptionParser
 
-def generate_doxyfile(source, tutorial=False):
+def generate_doxyfile(source, target, is_xml = False, is_html = False, tutorial=False):
     doxyin=os.path.join(source, "tools", "build", "doxygen_templates", "Doxyfile.in")
     version="develop"
     versionpath=os.path.join(source, "VERSION")
@@ -36,7 +36,6 @@ def generate_doxyfile(source, tutorial=False):
         doxygen = doxygen.replace("@WARNINGS@", "doxygen/tutorial-warnings.txt")
         doxygen = doxygen.replace("@EXCLUDE_PATTERNS@", "")
         doxygen = doxygen.replace("@EXAMPLE_PATH@", ".")
-        out_fname = os.path.join("doxygen", "tutorial.in")
         def make_tag(subdir):
             return os.path.join("doxygen", subdir, "tags") \
                    + "=../html/" + subdir
@@ -52,46 +51,58 @@ def generate_doxyfile(source, tutorial=False):
         doxygen = doxygen.replace("@GENERATE_TAGFILE@", "doxygen/tags.html")
         doxygen = doxygen.replace("@WARNINGS@", "doxygen/warnings.txt")
         doxygen = doxygen.replace("@EXCLUDE_PATTERNS@", "*/tutorial/*")
-        doxygen = doxygen.replace("@EXAMPLE_PATH@", "")
-        out_fname = os.path.join("doxygen", "Doxyfile.html")
+        doxygen = doxygen.replace("@EXAMPLE_PATH@", "doc/examples %s/modules/example"%source)
         def make_tag(subdir):
             return os.path.join("doxygen", subdir, "tags") + "=" + subdir
     doxygen = doxygen.replace( "@NAME@", "IMP")
     doxygen = doxygen.replace( "@IMP_SOURCE_PATH@", source).replace("@VERSION@", version)
     doxygen = doxygen.replace("@EXCLUDE@", "")
     doxygen = doxygen.replace("@INCLUDE_PATH@", "include")
-    doxygen = doxygen.replace("@XML_OUTPUT@", "doc/xml/")
+    doxygen = doxygen.replace("@XML_OUTPUT@", "doxygen/xml/")
     # TAGS, INPUT_PATH
-    doxygen = doxygen.replace( "@IS_HTML@", "YES").replace("@IS_XML@", "NO")
+    if is_xml:
+        doxygen = doxygen.replace("@IS_XML@", "YES")
+    else:
+        doxygen = doxygen.replace("@IS_XML@", "NO")
+    if is_html:
+        doxygen = doxygen.replace( "@IS_HTML@", "YES")
+    else:
+        doxygen = doxygen.replace( "@IS_HTML@", "NO")
 
     tags = []
-    for m, g in tools.get_modules(source):
-        if tools.get_module_info(m, "")["ok"]:
-            tags.append(make_tag(m))
-    for a, g in tools.get_applications(source):
-        if tools.get_application_info(a, "")["ok"]:
-            tags.append(make_tag(a))
-    doxygen = doxygen.replace("@TAGS@", " ".join(tags))
+    doxygen = doxygen.replace("@TAGS@", "")
     # skip linking later
-    inputsh = ["doxygen", source + "/doc", source + "/ChangeLog.md",
-               source + "/tools/README.md"]
+    inputsh = ["doxygen/generated", source + "/doc", source + "/ChangeLog.md",
+               source + "/tools/README.md", "include", "doc/examples"]
+    for m, p in tools.get_modules(source):
+        doc = os.path.join(p, "doc")
+        inputsh.append(os.path.join("lib", "IMP", m))
+        if os.path.exists(doc):
+            inputsh.append(doc + "/")
+    for m, p in tools.get_applications(source):
+        doc = os.path.join(p, "doc")
+        if os.path.exists(doc):
+            inputsh.append(doc + "/")
     if not tutorial:
         doxygen = doxygen.replace("@INPUT_PATH@", " ".join(inputsh))
-    doxygen = doxygen.replace("@FILE_PATTERNS@", "*.md *.dox")
-    open(out_fname, "w").write(doxygen)
+    open(target, "w").write(doxygen)
 
 # generate the pages that list biological systems and applications
 def generate_overview_pages(source):
-    ai= open(os.path.join("doxygen", "all.md"), "w")
-    ai.write("# All IMP Modules and Applications # {#all}\n")
-    ai.write("<table><tr>\n")
-    ai.write("<th>Modules</th><th>Applications</th></tr><tr><td>\n")
+    name = os.path.join("doxygen", "generated", "all.dox")
+    contents = []
+    contents.append("/** ")
+    contents.append("\\page All IMP Modules and Applications")
+    contents.append("<table><tr>")
+    contents.append("<th>Modules</th><th>Applications</th></tr><tr><td>")
     for bs, g in tools.get_modules(source):
-        ai.write("- [IMP.%s](%s/index.html)\n"%(bs,bs))
-    ai.write("</td><td style=\"vertical-align:top;\">\n")
+        contents.append("- \\subpage imp%s \"IMP.%s\""%(bs,bs))
+    contents.append("</td><td style=\"vertical-align:top;\">")
     for bs, g in tools.get_applications(source):
-        ai.write("- [IMP.%s](%s/index.html)\n"%(bs,bs))
-    ai.write("</td></tr></table>\n")
+        contents.append("- \subpage imp%s \"IMP.%s\""%(bs,bs))
+    contents.append("</td></tr></table>")
+    contents.append("*/")
+    tools.rewrite(name, "\n".join(contents))
 
 parser = OptionParser()
 parser.add_option("-s", "--source", dest="source",
@@ -100,8 +111,16 @@ def main():
     (options, args) = parser.parse_args()
 
     generate_overview_pages(options.source)
-    generate_doxyfile(options.source)
-    generate_doxyfile(options.source, tutorial=True)
+    generate_doxyfile(options.source,
+                      os.path.join("doxygen", "Doxyfile.html"),
+                      is_html = True, is_xml = False)
+    generate_doxyfile(options.source,
+                      os.path.join("doxygen", "Doxyfile.xml"),
+                      is_html = False, is_xml = True)
+    generate_doxyfile(options.source,
+                      os.path.join("doxygen", "tutorial.in"),
+                      is_html = True, is_xml = False,
+                      tutorial=True)
 
 if __name__ == '__main__':
     main()

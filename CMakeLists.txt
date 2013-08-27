@@ -288,6 +288,7 @@ if(IMP_DOXYGEN_FOUND)
    ${CMAKE_SOURCE_DIR}/doc/*.md)
 
   add_custom_target(IMP-doc ALL
+    COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/Doxyfile.xml
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_cross_refs.py
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/Doxyfile.html
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/warnings.txt

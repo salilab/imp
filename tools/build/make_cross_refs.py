@@ -202,7 +202,7 @@ def main():
     if len(sys.argv) > 1:
         files= sys.argv[1:]
     else:
-        files=tools.get_glob([os.path.join("doxygen", "*", "xml", "*.xml")])
+        files=tools.get_glob([os.path.join("doxygen", "xml", "*.xml")])
     for f in files:
     #for f in ["doxygen/xml/classIMP_1_1atom_1_1LennardJones.xml"]:
         #["doxygen/xml/namespacetiny.xml",
@@ -238,13 +238,13 @@ def main():
                ("Class Examples", "class_example_index"),
                ("Function Examples", "function_example_index")]
     create_index(indexes[0][0], indexes[0][1], indexes[1:], "Functions that create objects of a given type:",
-                 creates, "doxygen/factory_index.md", "Class", "Factories")
+                 creates, "doxygen/generated/factory_index.md", "Class", "Factories")
     create_index(indexes[1][0], indexes[1][1], indexes, "Functions that take objects of a given type as arguments:",
-                 takes, "doxygen/argument_index.md", "Class", "Users")
+                 takes, "doxygen/generated/argument_index.md", "Class", "Users")
     create_index(indexes[2][0], indexes[2][1], indexes, "Examples that use a given class:",
-                 examples_classes, "doxygen/class_example_index.md", "Class", "Examples")
+                 examples_classes, "doxygen/generated/class_example_index.md", "Class", "Examples")
     create_index(indexes[3][0], indexes[3][1], indexes[:-1], "Examples that use a given function:",
-                 examples_functions, "doxygen/function_example_index.md", "Function", "Examples")
+                 examples_functions, "doxygen/generated/function_example_index.md", "Function", "Examples")
 
 if __name__ == '__main__':
     main()

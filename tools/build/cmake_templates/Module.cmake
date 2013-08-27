@@ -44,7 +44,7 @@ if(${status} EQUAL 0)
     set_property(TARGET "IMP.%(name)s-doc" PROPERTY FOLDER "IMP.%(name)s")
     set(IMP_%(name)s_DOC "IMP.%(name)s-doc" CACHE INTERNAL "" FORCE)
 
-    list(APPEND IMP_DOC_DEPENDS "${IMP_%(name)s_DOC}")
+    list(APPEND IMP_DOC_DEPENDS "${IMP.%(name)s-python}")
     list(REMOVE_DUPLICATES IMP_DOC_DEPENDS)
     set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} CACHE INTERNAL "" FORCE)
   else()

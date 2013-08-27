@@ -93,6 +93,16 @@ def make_doxygen(name, source, modules):
     template = template.replace("@TAGS@", " \\\n                         ".join(tags))
     tools.rewrite(file, template)
 
+def make_overview(app, source):
+    rmd = open(os.path.join(source, "applications", app, "README.md"), "r").read()
+    tools.rewrite(os.path.join("doxygen", "generated", "IMP_%s.dox" % app),
+                  """/** \\page imp%s IMP.%s
+\\tableofcontents
+
+%s
+*/
+""" %(app, app, rmd))
+
 
 def setup_application(application, source, datapath):
     print "Configuring application", application, "...",
@@ -122,6 +132,7 @@ def setup_application(application, source, datapath):
     all_modules=tools.get_dependent_modules(modules, datapath)
     link_py(os.path.join(source, "applications", application))
     make_doxygen(application, source, all_modules)
+    make_overview(application, source)
     write_ok(application, all_modules,
              unfound_modules,
         tools.get_dependent_dependencies(all_modules, dependencies, datapath),
