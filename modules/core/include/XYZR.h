@@ -168,11 +168,11 @@ IMP_PARTICLE_GEOMETRY(XYZDerivative, core::XYZ, {
 });
 
   /** \class EdgePairGeometry
-      \brief Display an IMP::atom::Bond particle as a segment.
+      \brief Display a segment connecting a pair of particles.
 
       \class EdgePairsGeometry
-      \brief Display an IMP::SingletonContainer of IMP::atom::Bond particles
-      as segments.
+      \brief Display a segment for each pair in a
+      IMP::kernel::PairContainer.
   */
 IMP_PARTICLE_PAIR_GEOMETRY(EdgePair, core::XYZ, {
   ret.push_back(new display::SegmentGeometry(
