@@ -75,7 +75,15 @@
 #define IMP_FINAL
 #endif
 
-#if defined(__clang__) || defined(__GNUC__) && __cplusplus >= 201103L
+#if defined(__GNUC__) && __cplusplus >= 201103L
+#define IMP_HAS_NOEXCEPT 1
+#elif defined(__clang__) && defined(__has_feature)
+#define IMP_HAS_NOEXCEPT __has_feature(cxx_noexcept)
+#else
+#define IMP_HAS_NOEXCEPT 0
+#endif
+
+#if IMP_HAS_NOEXCEPT
 #define IMP_NOEXCEPT noexcept
 #define IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Name) \
   Name(const Name &) = default;                  \
