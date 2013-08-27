@@ -11,6 +11,7 @@
 
 #include <IMP/base/base_config.h>
 #include "random.h"
+#include "compiler_macros.h"
 #include "enums.h"
 #include <IMP/base/nullptr.h>
 #include "internal/static.h"
