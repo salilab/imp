@@ -158,7 +158,7 @@ IMP_COMPILER_DISABLE_WARNINGS
 
 #ifdef IMP_DOXYGEN
 /** \namespace IMP::%(name)s
-    \brief See [main page](index.html) for more information.
+    \brief See [IMP.%(name)s](\ref imp%(name)s) for more information.
     */
 #endif
 
