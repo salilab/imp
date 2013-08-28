@@ -79,9 +79,8 @@ def make_doxygen(name, source, modules):
                       "%s/doc/doxygen/module_layout.xml" % source)
     template = template.replace("@MAINPAGE@", "README.md")
     template = template.replace("@EXAMPLE_PATH@", "")
-    template = template.replace("@EXCLUDE@", "")
+    template = template.replace("@EXCLUDE@", "*.h *.cpp *.py")
     template = template.replace("@INCLUDE_PATH@", "")
-    template = template.replace("@FILE_PATTERNS@", "*.md *.dox")
     template = template.replace("@WARNINGS@", "warnings.txt")
     # include lib and doxygen in imput
     inputs = []
