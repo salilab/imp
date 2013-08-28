@@ -22,6 +22,6 @@ class OptionParser(optparse.OptionParser):
         return optparse.OptionParser.format_epilog(self, formatter) + """
 This program is part of IMP, the Integrative Modeling Platform,
 which is Copyright 2007-2013 IMP Inventors.
-For additional information about IMP, see http://salilab.org/imp/
+For additional information about IMP, see http://integrativemodeling.org/
 """
 %}
