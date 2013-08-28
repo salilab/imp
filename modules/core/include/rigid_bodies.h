@@ -130,7 +130,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(RigidBody);
   ~RigidBody();
 
-  //!Return true of the particle is a rigid body
+  /** Return true of the particle is a rigid body */
   static bool get_is_setup(Model *m, ParticleIndex pi) {
     return internal::get_has_required_attributes_for_body(m, pi);
   }

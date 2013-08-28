@@ -240,7 +240,7 @@ class IMPATOMEXPORT Atom : public Hierarchy {
   /** Add the required attributes using the passed AtomType. */
   IMP_DECORATOR_SETUP_1(Atom, AtomType, atom_type);
 
-  //! return true if the particle has the needed attributes
+  /** return true if the particle has the needed attributes */
   static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_atom_type_key(), pi) &&
            Hierarchy::get_is_setup(m, pi);
