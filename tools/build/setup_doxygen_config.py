@@ -55,6 +55,7 @@ def generate_doxyfile(source, target, is_xml = False, is_html = False, tutorial=
     doxygen = doxygen.replace( "@IMP_SOURCE_PATH@", source).replace("@VERSION@", version)
     doxygen = doxygen.replace("@EXCLUDE@", "")
     doxygen = doxygen.replace("@INCLUDE_PATH@", "include")
+    doxygen = doxygen.replace("@FILE_PATTERNS@", "*.cpp *.h *.py *.md *.dox")
     doxygen = doxygen.replace("@XML_OUTPUT@", "doxygen/xml/")
     # TAGS, INPUT_PATH
     if is_xml:
