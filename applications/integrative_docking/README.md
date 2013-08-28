@@ -29,7 +29,7 @@ Third, good-scoring representatives of clusters of models are picked as
 final models.
 
 _Examples_:
- - [Docking of PCSK9](../../tutorial/idock_pcsk9.html)
+ - [Docking of PCSK9](../tutorial/idock_pcsk9.html)
 
 # Info
 

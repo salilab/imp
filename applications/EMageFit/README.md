@@ -36,7 +36,7 @@ More detail on the functioning of EMageFit can be found on the
 are documented on the [scripts page](@ref emagefit_scripts).
 
 _Examples_:
- - [Modeling of 3sfd](../../tutorial/emagefit_3sfd.html)
+ - [Modeling of 3sfd](../tutorial/emagefit_3sfd.html)
 
 # Info
 

@@ -5,7 +5,7 @@
 This page gives a full description of running EMageFit, from the collection
 of data to the final production of models. For a demonstration of actually
 applying it to an example complex, see the
-[EMageFit tutorial](../../tutorial/emagefit_3sfd.html).
+[EMageFit tutorial](../tutorial/emagefit_3sfd.html).
 
 \section input Input data
 
@@ -50,7 +50,7 @@ An EMageFit configuration file is just a Python file with classes that
 describe all the parameters and restraints for the modeling. Using a Python
 file as configuration file makes adding new parameters to the simulation
 trivial. An example configuration file is included as part of the
-[EMageFit tutorial](../../tutorial/emagefit_3sfd.html).
+[EMageFit tutorial](../tutorial/emagefit_3sfd.html).
 
 \section models Producing models
 
@@ -113,7 +113,7 @@ This is what EMageFit does:
 
 This procedure is run with the <tt>--dock</tt> argument to the
 <tt>emagefit.py</tt> command line tool. (See the
-[EMageFit tutorial](../../tutorial/emagefit_3sfd.html)
+[EMageFit tutorial](../tutorial/emagefit_3sfd.html)
 for an example command line.)
 
 Once this step is complete, the user must take the information from the
@@ -121,7 +121,7 @@ dockings and put it in the configuration file, indicating which component is
 anchored and referencing the files of relative transformations from the
 dockings. The options to modify are <tt>self.anchor</tt> and
 <tt>self.dock_transforms</tt>. See the
-[EMageFit tutorial](../../tutorial/emagefit_3sfd.html) for an example.
+[EMageFit tutorial](../tutorial/emagefit_3sfd.html) for an example.
 As mentioned before, the pairwise dockings are optional; EMageFit can work
 without them. In that case all the Monte Carlo moves will be random. The user
 should indicate that docking solutions are not available by setting the option

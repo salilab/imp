@@ -11,7 +11,7 @@ operating on non-symmetric complexes.
 A \salilab{/multifit/,webserver} is also available.
 
 _Examples_:
- - [Modeling of GroEL](../../tutorial/cnmultifit_groel.html)
+ - [Modeling of GroEL](../tutorial/cnmultifit_groel.html)
 
 # Info
 

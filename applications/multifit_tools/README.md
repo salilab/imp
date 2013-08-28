@@ -20,7 +20,7 @@ The protocol employs the IMP::multifit module.
 A [webserver](http://www.salilab.org/multifit) is also available.
 
 _Examples_:
- - [Modeling of 3sfd](../../tutorial/multifit_3sfd.html)
+ - [Modeling of 3sfd](../tutorial/multifit_3sfd.html)
 
 # Info
 
