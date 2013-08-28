@@ -30,9 +30,17 @@ def check_c_file(filename, errors):
     url = re.compile('https?://')
     configh=False
     blank = False
+    file_line = False
     exported= filename.find("internal")==-1 and filename.endswith(".h")
+    name = os.path.split(filename)[1]
+    module = None
+    # modules/name/include/header.h
+    if os.path.split(os.path.split(os.path.split(os.path.split(filename)[0])[0])[0])[1] == "modules":
+        module = os.path.split(os.path.split(os.path.split(filename)[0])[0])[1]
     for (num, line) in enumerate(fh):
         line = line.rstrip('\r\n')
+        if line.find("\\file %s/%s"%(module, name)) != -1 or line.find("\\file IMP/%s/%s"%(module, name)) != -1:
+            file_line = True
         # No way to split URLs, so let them exceed 80 characters:
         if line.startswith(">>>>>>> "):
             errors.append("%s:%d: error: Incomplete merge found."% (filename, num+1))
@@ -64,6 +72,8 @@ def check_c_file(filename, errors):
             errors.append('%s:1: File has leading blank line(s)' % filename)
     if len(fh)>0 and len(fh[-2])==0:
         errors.append('%s:%d: File has trailing blank line(s)' % (filename, len(fh)))
+    if exported and filename.endswith(".h") and not file_line and module:
+        errors.append('%s Exported header must have a line \\file %s/%s'% (filename, module, name))
 
 def check_python_file(filename, errors):
     """Check each modified Python file to make sure it adheres to the
