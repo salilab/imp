@@ -77,7 +77,7 @@ IMPBASE_BEGIN_NAMESPACE
         \note Use IMP::base::WeakPointer to break cycles or to point to
         non-ref-counted objects.
 
-        \param[in] O The type of IMP::RefCounted-derived object to point to
+        \param[in] O The type of RefCounted-derived object to point to
 
         \see PointerMember
         \see WeakPointer

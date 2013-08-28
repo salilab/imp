@@ -35,10 +35,10 @@ IMPBASE_BEGIN_NAMESPACE
 
 //! Common base class for ref counted objects.
 /** This base class implements reference counting when used in
-        conjunction with IMP::Pointer or IMP::WeakPointer objects.
-        Objects which inherit from IMP::RefCounted should be passed
+        conjunction with Pointer or WeakPointer objects.
+        Objects which inherit from RefCounted should be passed
         using pointers and stored using IMP::Pointer and
-        IMP::WeakPointer objects. Users must be careful to avoid
+        WeakPointer objects. Users must be careful to avoid
         cycles of reference counted pointers, otherwise memory will
         never be reclaimed.
 
@@ -59,12 +59,12 @@ IMPBASE_BEGIN_NAMESPACE
         Any time one is using reference counting, one needs to be aware
         of cycles, since if, for example, object A contains an IMP::Pointer
     to
-        object B and object B contains an IMP::Pointer to object A,
+        object B and object B contains an IMP::base::Pointer to object A,
         their reference counts will never go to 0 even if both A
         and B are no longer used. To avoid this, use an
-        IMP::WeakPointer in one of A or B.
+        IMP::base::WeakPointer in one of A or B.
 
-        IMP::RefCounted provides no public methods or constructors.
+        RefCounted provides no public methods or constructors.
         It makes objects that inherit from it non-copyable.
 
         \see IMP_REF_COUNTED_DESTRUCTOR()

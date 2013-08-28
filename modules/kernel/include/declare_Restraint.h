@@ -23,12 +23,11 @@ class DerivativeAccumulator;
 
 //!  A restraint is a term in an \imp ScoringFunction.
 /**
-To implement a new restraint, just implement the two methods:
-- IMP::Restraint::do_add_score_and_derivatives()
-  (or IMP::Restraint::unprotected_evaluate())
-- IMP::ModelObject::do_get_inputs();
-and use the macro to handle IMP::base::Object
-- IMP_OBJECT_METHODS()
+    To implement a new restraint, just implement the two methods:
+    - IMP::Restraint::do_add_score_and_derivatives()
+    - IMP::ModelObject::do_get_inputs();
+    and use the macro to handle IMP::base::Object
+    - IMP_OBJECT_METHODS()
 
     \note When logging is VERBOSE, restraints should print enough information
     in evaluate to reproduce the the entire flow of data in evaluate. When
