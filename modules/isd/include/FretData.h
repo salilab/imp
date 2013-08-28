@@ -1,5 +1,5 @@
 /**
- *  \file FretData.h    \brief Auxiliary class useful for FRET_R restraint
+ *  \file isd/FretData.h    \brief Auxiliary class useful for FRET_R restraint
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
