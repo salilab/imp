@@ -158,7 +158,6 @@ def make_doxygen(options, modules):
     else:
         template = template.replace("@EXCLUDE@", "")
     inputs.append("include/IMP/"+options.name)
-    inputs.append(options.source + "/modules/" + options.name + "/README.md")
     inputs.append("lib/IMP/"+options.name)
     inputs.append("examples/"+options.name)
     # suppress a warning since git removes empty dirs and doxygen gets confused
