@@ -63,9 +63,9 @@ IMPBASE_BEGIN_NAMESPACE
         \advanceddoc Types inheriting from Object should always be created
     using
         \c new in C++ and passed using pointers and stored using
-        IMP::Pointer objects. Note that you have to be careful of cycles
-        and so must use IMP::WeakPointer objects to break cycles. See
-        IMP::RefCounted for more information on reference counting.
+        Pointer objects. Note that you have to be careful of cycles
+        and so must use WeakPointer objects to break cycles. See
+        RefCounted for more information on reference counting.
     IMP_NEW()
         can help shorten creating a ref counted pointer. See IMP::Pointer
     for
