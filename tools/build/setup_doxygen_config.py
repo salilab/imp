@@ -36,9 +36,7 @@ def generate_doxyfile(source, target, is_xml = False, is_html = False, tutorial=
         doxygen = doxygen.replace("@WARNINGS@", "doxygen/tutorial-warnings.txt")
         doxygen = doxygen.replace("@EXCLUDE_PATTERNS@", "")
         doxygen = doxygen.replace("@EXAMPLE_PATH@", ".")
-        def make_tag(subdir):
-            return os.path.join("doxygen", subdir, "tags") \
-                   + "=../html/" + subdir
+        doxygen = doxygen.replace("@TAGS@", "doxygen/tags.html=../html")
     else:
         doxygen = doxygen.replace("@PROJECT_NAME@", "IMP")
         doxygen = doxygen.replace("@PROJECT_BRIEF@",
@@ -52,8 +50,7 @@ def generate_doxyfile(source, target, is_xml = False, is_html = False, tutorial=
         doxygen = doxygen.replace("@WARNINGS@", "doxygen/warnings.txt")
         doxygen = doxygen.replace("@EXCLUDE_PATTERNS@", "*/tutorial/*")
         doxygen = doxygen.replace("@EXAMPLE_PATH@", "doc/examples %s/modules/example"%source)
-        def make_tag(subdir):
-            return os.path.join("doxygen", subdir, "tags") + "=" + subdir
+        doxygen = doxygen.replace("@TAGS@", "")
     doxygen = doxygen.replace( "@NAME@", "IMP")
     doxygen = doxygen.replace( "@IMP_SOURCE_PATH@", source).replace("@VERSION@", version)
     doxygen = doxygen.replace("@EXCLUDE@", "")
@@ -69,8 +66,6 @@ def generate_doxyfile(source, target, is_xml = False, is_html = False, tutorial=
     else:
         doxygen = doxygen.replace( "@IS_HTML@", "NO")
 
-    tags = []
-    doxygen = doxygen.replace("@TAGS@", "")
     # skip linking later
     inputsh = ["doxygen/generated", source + "/doc", source + "/ChangeLog.md",
                source + "/tools/README.md", "include", "doc/examples"]
