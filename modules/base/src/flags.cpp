@@ -134,6 +134,11 @@ void write_help(std::ostream &out) {
       << std::endl;
   out << internal::exe_description << std::endl;
   out << internal::flags << std::endl;
+  out << "This program is part of IMP, the Integrative Modeling Platform,"
+      << std::endl;
+  out << "which is Copyright 2007-2013 IMP Inventors." << std::endl;
+  out << "For additional information about IMP, "
+      << "see <http://integrativemodeling.org>." << std::endl;
 }
 
 namespace {
