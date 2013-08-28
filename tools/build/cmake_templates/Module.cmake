@@ -28,7 +28,7 @@ if(${status} EQUAL 0)
     file(GLOB examples ${CMAKE_BINARY_DIR}/doc/examples/%(name)s/*.py
       ${CMAKE_BINARY_DIR}/doc/examples/%(name)s/*.cpp)
 
-    add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/doxygen/%(name)s/tags ${CMAKE_BINARY_DIR}/doc/html/%(name)s/index.html
+    add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/doxygen/%(name)s/tags ${CMAKE_BINARY_DIR}/doxygen/%(name)s/xml/index.xml
       COMMAND mkdir -p ${CMAKE_BINARY_DIR}/doc/html
       COMMAND ln -s -f ../../include
       COMMAND ln -s -f ../../doc/examples

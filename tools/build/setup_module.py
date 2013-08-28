@@ -166,6 +166,8 @@ def make_doxygen(options, modules):
     docpath = os.path.join(options.source, "modules", options.name, "doc")
     if os.path.exists(docpath):
         inputs.append(docpath)
+    # overview for module
+    inputs.append("../generated/IMP_%s.dox"%options.name)
     template = template.replace("@INPUT_PATH@", " \\\n                         ".join(inputs))
     tags = []
     for m in modules:
