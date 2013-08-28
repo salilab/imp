@@ -74,6 +74,17 @@ IMPBASE_BEGIN_NAMESPACE
 class IMPBASEEXPORT Object : public RefCounted {
   std::string name_;
   boost::scoped_array<char> quoted_name_;
+#if IMP_HAS_LOG != IMP_NONE
+  LogLevel log_level_;
+#endif
+#if IMP_HAS_CHECKS >= IMP_USAGE
+  CheckLevel check_level_;
+  mutable bool was_owned_;
+#endif
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+  static void add_live_object(Object* o);
+  static void remove_live_object(Object* o);
+#endif
   int compare(const Object& o) const {
     if (&o < this)
       return 1;
@@ -190,19 +201,6 @@ class IMPBASEEXPORT Object : public RefCounted {
 
   /** Overide this method to take action on destruction. */
   virtual void do_destroy() {}
-
- private:
-#if IMP_HAS_CHECKS >= IMP_INTERNAL
-  static void add_live_object(Object* o);
-  static void remove_live_object(Object* o);
-#endif
-#if IMP_HAS_LOG != IMP_NONE
-  LogLevel log_level_;
-#endif
-#if IMP_HAS_CHECKS >= IMP_USAGE
-  CheckLevel check_level_;
-  mutable bool was_owned_;
-#endif
 };
 
 IMPBASE_END_NAMESPACE
