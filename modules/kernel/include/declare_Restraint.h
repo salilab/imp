@@ -23,11 +23,6 @@ class DerivativeAccumulator;
 
 //!  A restraint is a term in an \imp ScoringFunction.
 /**
-    \note Restraints will print a warning message if they are destroyed
-    without ever having been added to a model as this is an easy mistake
-    to make. To disable this warning for a particular restraint, call
-    set_was_used(true).
-
 To implement a new restraint, just implement the two methods:
 - IMP::Restraint::do_add_score_and_derivatives()
   (or IMP::Restraint::unprotected_evaluate())
