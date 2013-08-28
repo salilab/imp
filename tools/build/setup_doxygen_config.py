@@ -88,7 +88,7 @@ def generate_overview_pages(source):
     name = os.path.join("doxygen", "generated", "all.dox")
     contents = []
     contents.append("/** ")
-    contents.append("\\page All IMP Modules and Applications")
+    contents.append("\\page allmod All IMP Modules and Applications")
     contents.append("<table><tr>")
     contents.append("<th>Modules</th><th>Applications</th></tr><tr><td>")
     for bs, g in tools.get_modules(source):
