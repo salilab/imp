@@ -1,5 +1,5 @@
 /**
- *  \file CrossLinkData.h    \brief Normal distribution of Function
+ *  \file isd/CrossLinkData.h    \brief Normal distribution of Function
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */

@@ -1,5 +1,5 @@
 /**
- *  \file WeightMover.h
+ *  \file isd/WeightMover.h
  *  \brief A mover that transform a rigid body
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
