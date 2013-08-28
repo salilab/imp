@@ -43,6 +43,7 @@ class IMPATOMEXPORT Mass : public Decorator {
   /** Add the specified mass to the particle. */
   IMP_DECORATOR_SETUP_1(Mass, Float, mass);
 
+  /** Get the key used to store the mass. */
   static FloatKey get_mass_key();
 };
 

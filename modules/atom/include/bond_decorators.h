@@ -103,18 +103,17 @@ class IMPATOMEXPORT Bonded : public Decorator {
     Bonded operator()(unsigned int i) const;
     bool operator==(const GetBonded &o) const { return d_ == o.d_; }
   };
-
+  static void do_setup_particle(Model *m, ParticleIndex pi) {
+    graph_initialize_node(m->get_particle(pi),
+                          internal::get_bond_data().graph_);
+  }
  public:
   IMP_DECORATOR_METHODS(Bonded, Decorator);
+  IMP_DECORATOR_SETUP_0(Bonded);
 
   static bool get_is_setup(Model *m, ParticleIndex pi) {
     return IMP::core::internal::graph_is_node(m->get_particle(pi),
                                               internal::get_bond_data().graph_);
-  }
-
-  static Bonded setup_particle(Particle *p) {
-    graph_initialize_node(p, internal::get_bond_data().graph_);
-    return Bonded(p);
   }
 
   /** */
