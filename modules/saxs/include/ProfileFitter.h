@@ -113,7 +113,8 @@ public:
   friend class DerivativeCalculator;
 
  protected:
-  const Profile *exp_profile_;   //  experimental saxs profile
+  //  experimental saxs profile
+  base::PointerMember<const Profile> exp_profile_;
   ScoringFunctionT* scoring_function_;
 };
 

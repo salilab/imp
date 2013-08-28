@@ -67,7 +67,8 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint
   Particles particles_; // non-rigid bodies particles
   std::vector<core::RigidBody> rigid_bodies_decorators_; //rigid bodies
   std::vector<Particles> rigid_bodies_; // rigid bodies particles
-  Profile *rigid_bodies_profile_; // non-changing part of the profile
+  // non-changing part of the profile
+  base::PointerMember<Profile> rigid_bodies_profile_;
   base::Pointer<ProfileFitter<ChiScore> > profile_fitter_; // computes profiles
   // computes derivatives
   base::Pointer<DerivativeCalculator> derivative_calculator_;
