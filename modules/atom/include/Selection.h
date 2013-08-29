@@ -153,7 +153,7 @@ IMP_VALUES(Selection, Selections);
     to accelerate the computation.
     See Selection
  */
-IMPATOMEXPORT Restraint *create_distance_restraint(const Selection &n0,
+IMPATOMEXPORT kernel::Restraint *create_distance_restraint(const Selection &n0,
                                                    const Selection &n1,
                                                    double x0, double k,
                                                    std::string name =
@@ -165,10 +165,10 @@ IMPATOMEXPORT Restraint *create_distance_restraint(const Selection &n0,
     to accelerate the computation.
     See Selection
 */
-IMPATOMEXPORT Restraint *create_connectivity_restraint(const Selections &s,
-                                                       double k,
-                                                       std::string name =
-                                                           "Connectivity%1%");
+IMPATOMEXPORT kernel::Restraint *
+create_connectivity_restraint(const Selections &s,
+                              double k,
+                              std::string name = "Connectivity%1%");
 
 /** Create a restraint connecting the selections. The particles are
  allowed to be appart by x0 and still count as connected.
@@ -177,10 +177,10 @@ IMPATOMEXPORT Restraint *create_connectivity_restraint(const Selections &s,
     to accelerate the computation.
      See Selection
 */
-IMPATOMEXPORT Restraint *create_connectivity_restraint(const Selections &s,
-                                                       double x0, double k,
-                                                       std::string name =
-                                                           "Connectivity%1%");
+IMPATOMEXPORT kernel::Restraint *
+create_connectivity_restraint(const Selections &s,
+                              double x0, double k,
+                              std::string name = "Connectivity%1%");
 
 /** Create a restraint connecting the selection.
 
@@ -189,7 +189,7 @@ IMPATOMEXPORT Restraint *create_connectivity_restraint(const Selections &s,
 
     See Selection
 */
-IMPATOMEXPORT Restraint *create_internal_connectivity_restraint(
+IMPATOMEXPORT kernel::Restraint *create_internal_connectivity_restraint(
     const Selection &s, double k, std::string name = "Connectivity%1%");
 
 /** Create a restraint connecting the selection. The particles are
@@ -200,7 +200,7 @@ IMPATOMEXPORT Restraint *create_internal_connectivity_restraint(
 
  See Selection
 */
-IMPATOMEXPORT Restraint *create_internal_connectivity_restraint(
+IMPATOMEXPORT kernel::Restraint *create_internal_connectivity_restraint(
     const Selection &s, double x0, double k,
     std::string name = "Connectivity%1%");
 
@@ -244,7 +244,8 @@ IMPATOMEXPORT double get_surface_area(const Selection &s);
 IMPATOMEXPORT double get_radius_of_gyration(const Selection &s);
 
 /** Create an excluded volume restraint for a list of selections.*/
-IMPATOMEXPORT Restraint *create_excluded_volume_restraint(const Selections &s);
+IMPATOMEXPORT kernel::Restraint *
+create_excluded_volume_restraint(const Selections &s);
 
 /** See Hierarchy */
 IMPATOMEXPORT Hierarchies get_leaves(const Selection &h);

@@ -104,12 +104,12 @@ class RestraintScoreSubsetFilterTable;
 class IMPDOMINOEXPORT RestraintScoreSubsetFilterTable
     : public SubsetFilterTable {
   base::PointerMember<RestraintCache> cache_;
-  mutable Restraints rs_;
+  mutable kernel::Restraints rs_;
 
  public:
   RestraintScoreSubsetFilterTable(RestraintCache *rc);
   /** Create the RestraintCache internally with unbounded size.*/
-  RestraintScoreSubsetFilterTable(RestraintsAdaptor rs,
+  RestraintScoreSubsetFilterTable(kernel::RestraintsAdaptor rs,
                                   ParticleStatesTable *pst);
   virtual IMP::domino::SubsetFilter *get_subset_filter(
       const IMP::domino::Subset &s, const IMP::domino::Subsets &excluded) const
@@ -129,12 +129,13 @@ IMP_OBJECTS(RestraintScoreSubsetFilterTable, RestraintScoreSubsetFilterTables);
 class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilterTable
     : public SubsetFilterTable {
   base::PointerMember<RestraintCache> rc_;
-  Restraints rs_;
+  kernel::Restraints rs_;
   int max_violated_;
-  RestraintsTemp get_restraints(const Subset &s, const Subsets &excluded) const;
+  kernel::RestraintsTemp get_restraints(const Subset &s,
+                                        const Subsets &excluded) const;
 
  public:
-  MinimumRestraintScoreSubsetFilterTable(const RestraintsTemp &rs,
+  MinimumRestraintScoreSubsetFilterTable(const kernel::RestraintsTemp &rs,
                                          RestraintCache *rc,
                                          int max_number_allowed_violations);
   int get_maximum_number_of_violated_restraints() const {

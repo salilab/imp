@@ -24,12 +24,12 @@ m = IMP.Model()
 loader = IMP.modeller.ModelLoader(modmodel)
 protein = loader.load_atoms(m)
 
-# Load each Modeller static restraint in as an IMP Restraint
+# Load each Modeller static restraint in as an IMP.kernel.Restraint
 for r in loader.load_static_restraints():
     m.add_restraint(r)
 
 # Load each Modeller dynamic restraint (soft-sphere in this case) in as an
-# equivalent IMP Restraint
+# equivalent IMP.kernel.Restraint
 for r in loader.load_dynamic_restraints():
     m.add_restraint(r)
 

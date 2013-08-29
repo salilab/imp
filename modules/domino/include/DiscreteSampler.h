@@ -32,7 +32,7 @@ IMPDOMINO_BEGIN_NAMESPACE
     Defaults are provided for all the parameters:
     - if no SubsetFilterTables are provided, then the
     ExclusionSubsetFilterTable and the
-    RestraintScoreSubsetFilterTable are used.
+    kernel::RestraintScoreSubsetFilterTable are used.
 
     \note the restraint scores must be non-negative in general.
     If you are using restraints which can produce negative values,
@@ -54,7 +54,7 @@ class IMPDOMINOEXPORT DiscreteSampler : public Sampler {
 
  protected:
   SubsetFilterTables get_subset_filter_tables_to_use(
-      const RestraintsTemp &rs, ParticleStatesTable *pst) const;
+      const kernel::RestraintsTemp &rs, ParticleStatesTable *pst) const;
   AssignmentsTable *get_assignments_table_to_use(
       const SubsetFilterTables &sfts,
       unsigned int max = std::numeric_limits<int>::max()) const;

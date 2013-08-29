@@ -54,7 +54,7 @@ class DominoModel:
     def add_restraint(self, r, name, weight, max_score=False):
         """
             Adds a restraint to the model
-            @param r An IMP.Restraint object
+            @param r An IMP.kernel.Restraint object
             @param name Name for the restraint
             @param weight Weight for the restraint
             @param max_score Maximum score allowed for the restraint. If

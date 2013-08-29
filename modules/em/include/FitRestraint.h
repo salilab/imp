@@ -19,7 +19,7 @@
 #include <IMP/atom/Mass.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/Model.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/VersionInfo.h>
 #include <IMP/Refiner.h>
 
@@ -29,7 +29,7 @@ IMPEM_BEGIN_NAMESPACE
 /** \ingroup exp_restraint
 
  */
-class IMPEMEXPORT FitRestraint : public Restraint
+class IMPEMEXPORT FitRestraint : public kernel::Restraint
 {
 public:
   //! Constructor

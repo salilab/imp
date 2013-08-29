@@ -1,6 +1,6 @@
 /**
  *  \file IMP/isd/GaussianProcessInterpolationRestraint.h
- *  \brief Restraint and ScoreState for GaussianProcessInterpolation
+ *  \brief kernel::Restraint and ScoreState for GaussianProcessInterpolation
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */

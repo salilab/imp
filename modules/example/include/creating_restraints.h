@@ -19,7 +19,7 @@
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
-/** Restraint the passed particles to be connected in a chain. The distance
+/** Restrain the passed particles to be connected in a chain. The distance
     between consecutive particles is length_factor*the sum of the radii.
 
     Note, this assumes that all such chains will be disjoint and so you can
@@ -28,7 +28,7 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 
     The restraint is not added to the model.
 */
-inline Restraint *create_chain_restraint(const ParticlesTemp &ps,
+inline kernel::Restraint *create_chain_restraint(const ParticlesTemp &ps,
                                          double length_factor, double k,
                                          std::string name) {
   IMP_USAGE_CHECK(!ps.empty(), "No Particles passed.");
@@ -40,7 +40,7 @@ inline Restraint *create_chain_restraint(const ParticlesTemp &ps,
   // this assumption accelerates certain computations
   IMP_NEW(container::ExclusiveConsecutivePairContainer, cpc,
           (ps, name + " consecutive pairs"));
-  base::Pointer<Restraint> r =
+  base::Pointer<kernel::Restraint> r =
       container::create_restraint(hdps.get(), cpc.get(), "chain restraint %1%");
   // make sure it is not freed
   return r.release();
@@ -58,7 +58,7 @@ inline container::ClosePairContainer *create_excluded_volume(
   // that is proportional to the particle radius
   IMP_NEW(container::ClosePairContainer, cpc, (cores_container, 0, scale * .3));
   IMP_NEW(core::SoftSpherePairScore, hlb, (k));
-  base::Pointer<Restraint> r
+  base::Pointer<kernel::Restraint> r
     = container::create_restraint(hlb.get(), cpc.get());
   m->add_restraint(r);
   return cpc.release();

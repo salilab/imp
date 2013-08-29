@@ -1,5 +1,5 @@
 /**
- *  \file RestraintGraph.h
+ *  \file kernel::RestraintGraph.h
  *  \brief creates a MRF from a set of particles and restraints
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.

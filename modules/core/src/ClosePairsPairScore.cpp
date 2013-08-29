@@ -223,7 +223,7 @@ ModelObjectsTemp KClosePairsPairScore::do_get_inputs(
 Restraints ClosePairsPairScore::create_current_decomposition(
     Model *m, const ParticleIndexPair &vt) const {
   ParticleIndexPairs ppt = get_close_pairs(m, vt);
-  Restraints ret(ppt.size());
+  kernel::Restraints ret(ppt.size());
   for (unsigned int i = 0; i < ret.size(); ++i) {
     ret[i] = new PairRestraint(f_, IMP::internal::get_particle(m, ppt[i]));
   }
@@ -233,7 +233,7 @@ Restraints ClosePairsPairScore::create_current_decomposition(
 Restraints KClosePairsPairScore::create_current_decomposition(
     Model *m, const ParticleIndexPair &vt) const {
   ParticleIndexPairs ppt = get_close_pairs(m, vt);
-  Restraints ret(ppt.size());
+  kernel::Restraints ret(ppt.size());
   for (unsigned int i = 0; i < ret.size(); ++i) {
     ret[i] = new PairRestraint(f_, IMP::internal::get_particle(m, ppt[i]));
   }

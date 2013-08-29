@@ -6,7 +6,7 @@
  *
  */
 #include "IMP/core/blame.h"
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/core/RestraintsScoringFunction.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/display/Color.h>
@@ -15,9 +15,9 @@
 IMPCORE_BEGIN_NAMESPACE
 namespace {
 typedef base::map<Particle *, Particle *> ControlledBy;
-void distribute_blame(Restraint *r, const ControlledBy &cb, FloatKey fk,
+void distribute_blame(kernel::Restraint *r, const ControlledBy &cb, FloatKey fk,
                       double weight) {
-  RestraintSet *rs = dynamic_cast<RestraintSet *>(r);
+  kernel::RestraintSet *rs = dynamic_cast<kernel::RestraintSet *>(r);
   if (rs) {
     weight *= rs->get_weight();
     for (unsigned int i = 0; i < rs->get_number_of_restraints(); ++i) {
@@ -44,7 +44,7 @@ void distribute_blame(Restraint *r, const ControlledBy &cb, FloatKey fk,
 }
 }
 
-void assign_blame(const RestraintsTemp &rs, const ParticlesTemp &ps,
+void assign_blame(const kernel::RestraintsTemp &rs, const ParticlesTemp &ps,
                   FloatKey attribute) {
   IMP_FUNCTION_LOG;
   for (unsigned int i = 0; i < ps.size(); ++i) {
@@ -54,9 +54,9 @@ void assign_blame(const RestraintsTemp &rs, const ParticlesTemp &ps,
       ps[i]->add_attribute(attribute, 0, false);
     }
   }
-  Restraints drs;
+  kernel::Restraints drs;
   for (unsigned int i = 0; i < rs.size(); ++i) {
-    base::Pointer<Restraint> rd = rs[i]->create_decomposition();
+    base::Pointer<kernel::Restraint> rd = rs[i]->create_decomposition();
     if (rd) {
       drs.push_back(rd);
     }
@@ -79,7 +79,7 @@ void assign_blame(const RestraintsTemp &rs, const ParticlesTemp &ps,
   }
 }
 
-display::Geometries create_blame_geometries(const RestraintsTemp &rs,
+display::Geometries create_blame_geometries(const kernel::RestraintsTemp &rs,
                                             const ParticlesTemp &ps, double max,
                                             std::string name) {
   IMP_FUNCTION_LOG;

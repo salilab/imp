@@ -11,20 +11,20 @@
 #define IMPISD_LOGICAL_ORRESTRAINT_H
 
 #include <IMP/isd/isd_config.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/isd/ISDRestraint.h>
 #include <IMP/restraint_macros.h>
 
 IMPISD_BEGIN_NAMESPACE
 
 //! Apply an NOE distance restraint between two particles.
-class IMPISDEXPORT LogicalORRestraint : public Restraint
+class IMPISDEXPORT LogicalORRestraint : public kernel::Restraint
 {
   base::Pointer<ISDRestraint> r0_;
   base::Pointer<ISDRestraint> r1_;
 public:
   //! Create the restraint.
-  /** Restraints should store the particles they are to act on,
+  /** kernel::Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
    */
   LogicalORRestraint(ISDRestraint *r0, ISDRestraint *r1);

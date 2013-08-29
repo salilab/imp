@@ -94,7 +94,7 @@ void benchmark_it(std::string name, bool incr, bool nbl, bool longr) {
     rbs.back().set_coordinates(algebra::Vector3D(0, 1000 * i, 0));
   }
   IMP_NEW(MonteCarlo, mc, (m));
-  Restraints rs;
+  kernel::Restraints rs;
   if (!incr && nbl) {
     rs.push_back(create_excluded_volume(h, rbs, 1.0));
   }

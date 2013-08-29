@@ -29,7 +29,8 @@ IMPEXAMPLEEXPORT core::MonteCarloMover *create_serial_mover(
     \include optimize_balls.cpp
 */
 IMPEXAMPLEEXPORT void optimize_balls(
-    const ParticlesTemp &ps, const RestraintsTemp &rs = RestraintsTemp(),
+    const ParticlesTemp &ps,
+    const kernel::RestraintsTemp &rs = kernel::RestraintsTemp(),
     const PairPredicates &excluded = PairPredicates(),
     const OptimizerStates &opt_states = OptimizerStates(),
     base::LogLevel ll = base::DEFAULT);

@@ -3,10 +3,10 @@ import IMP.test
 import StringIO
 import random
 
-class DummyRestraint(IMP.Restraint):
+class DummyRestraint(IMP.kernel.Restraint):
     """Dummy do-nothing restraint"""
     def __init__(self, m, ps=[], cs=[], name = "DummyRestraint %1%"):
-        IMP.Restraint.__init__(self, m, name)
+        IMP.kernel.Restraint.__init__(self, m, name)
         self.ps=ps
         self.cs=cs
     def unprotected_evaluate(self, accum):
@@ -20,10 +20,10 @@ class DummyRestraint(IMP.Restraint):
 class CustomError(Exception):
     pass
 
-class FailingRestraint(IMP.Restraint):
+class FailingRestraint(IMP.kernel.Restraint):
     """Restraint that fails in evaluate"""
     def __init__(self, m):
-        IMP.Restraint.__init__(self, m, "FailingRestraint %1%")
+        IMP.kernel.Restraint.__init__(self, m, "FailingRestraint %1%")
     def unprotected_evaluate(self, accum):
         raise CustomError("Custom error message")
     def get_version_info(self):
@@ -162,7 +162,7 @@ class Tests(IMP.test.TestCase):
         m.add_restraint(r)
         self.assertEqual(m.get_number_of_restraints(), 1)
         newr = m.get_restraint(0)
-        self.assertIsInstance(newr, IMP.Restraint)
+        self.assertIsInstance(newr, IMP.kernel.Restraint)
         #self.assertRaises(IndexError, m.get_restraint,1);
         for s in m.get_restraints():
             s.show()
@@ -257,7 +257,7 @@ class Tests(IMP.test.TestCase):
         for r in rs:
             r.set_was_used(True)
         selected= self._select(rs, 4)
-        rss= IMP.RestraintSet(selected, 1.0)
+        rss= IMP.kernel.RestraintSet(selected, 1.0)
         sf= rss.create_scoring_function()
 
         dg= IMP.get_dependency_graph(m)

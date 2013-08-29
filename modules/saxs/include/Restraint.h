@@ -18,7 +18,7 @@
 #include <IMP/core/rigid_bodies.h>
 
 #include <IMP/Model.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/VersionInfo.h>
 #include <IMP/base/Pointer.h>
 
@@ -39,7 +39,7 @@ IMPSAXS_BEGIN_NAMESPACE
     The distances between the atoms of rigid body do not change, therefore
     their contribution to the profile is pre-computed and stored.
  */
-class IMPSAXSEXPORT Restraint : public IMP::Restraint
+class IMPSAXSEXPORT Restraint : public kernel::Restraint
 {
  public:
   //! Constructor

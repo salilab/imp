@@ -23,7 +23,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 DiameterRestraint::DiameterRestraint(UnaryFunction *f, SingletonContainer *sc,
                                      Float diameter)
-    : Restraint(sc->get_model(), "DiameterRestraint%1%"),
+    : kernel::Restraint(sc->get_model(), "DiameterRestraint%1%"),
       diameter_(diameter),
       sc_(sc),
       f_(f) {
@@ -72,7 +72,7 @@ ModelObjectsTemp DiameterRestraint::do_get_inputs() const {
 }
 
 Restraints DiameterRestraint::do_create_decomposition() const {
-  Restraints ret;
+  kernel::Restraints ret;
   ParticlesTemp ps = IMP::get_particles(get_model(), sc_->get_indexes());
   // since we are adding two deviations before squaring, make k=.25
   IMP_NEW(HarmonicUpperBoundSphereDiameterPairScore, sps, (diameter_, .25));
@@ -91,7 +91,7 @@ Restraints DiameterRestraint::do_create_decomposition() const {
 }
 
 Restraints DiameterRestraint::do_create_current_decomposition() const {
-  Restraints ret;
+  kernel::Restraints ret;
   ParticlesTemp ps = IMP::get_particles(get_model(), sc_->get_indexes());
   IMP_NEW(HarmonicUpperBoundSphereDiameterPairScore, sps, (diameter_, 1));
   for (unsigned int i = 0; i < ps.size(); ++i) {

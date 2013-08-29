@@ -389,7 +389,7 @@ Restraint *create_distance_restraint(const Selection &n0, const Selection &n1,
     IMP_USAGE_CHECK(all.size() == p0.size() + p1.size(),
                     "The two selections cannot overlap.");
   }
-  base::Pointer<Restraint> ret;
+  base::Pointer<kernel::Restraint> ret;
   IMP_USAGE_CHECK(!p0.empty(),
                   "Selection " << n0 << " does not refer to any particles.");
   IMP_USAGE_CHECK(!p1.empty(),
@@ -429,7 +429,8 @@ Restraint *create_connectivity_restraint(const Selections &s, double x0,
   if (s.size() < 2) return nullptr;
   if (s.size() == 2) {
     IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, ps, (x0, k));
-    Restraint *r = create_distance_restraint(s[0], s[1], ps.get(), name);
+    kernel::Restraint *r = create_distance_restraint(s[0], s[1], ps.get(),
+                                                     name);
     return r;
   } else {
     unsigned int max = 0;
@@ -448,7 +449,7 @@ Restraint *create_connectivity_restraint(const Selections &s, double x0,
       IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0, k));
       IMP_NEW(container::ListSingletonContainer, lsc, (particles));
       IMP_NEW(container::ConnectingPairContainer, cpc, (lsc, 0));
-      base::Pointer<Restraint> cr =
+      base::Pointer<kernel::Restraint> cr =
           container::create_restraint(hdps.get(), cpc.get(), name);
       return cr.release();
     } else {
@@ -494,7 +495,7 @@ Restraint *create_internal_connectivity_restraint(const Selection &ss,
     IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0, k));
     IMP_NEW(container::ListSingletonContainer, lsc, (s));
     IMP_NEW(container::ConnectingPairContainer, cpc, (lsc, 0));
-    base::Pointer<Restraint> cr =
+    base::Pointer<kernel::Restraint> cr =
         container::create_restraint(hdps.get(), cpc.get(), name);
     return cr.release();
   }

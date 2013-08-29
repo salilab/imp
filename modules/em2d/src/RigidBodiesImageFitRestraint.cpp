@@ -31,7 +31,7 @@ RigidBodiesImageFitRestraint::RigidBodiesImageFitRestraint(
                           ScoreFunction *scf,
                           const core::RigidBodies &rbs,
                           Image *img):
-    Restraint(rbs[0]->get_model(), "RigidBodiesImageFitRestraint%1%"),
+    kernel::Restraint(rbs[0]->get_model(), "RigidBodiesImageFitRestraint%1%"),
     score_function_(scf),
     rigid_bodies_(rbs),
     image_(img),

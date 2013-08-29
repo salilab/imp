@@ -17,7 +17,7 @@ class Tests(IMP.test.TestCase):
             IMP.atom.Mass.setup_particle(p, 1)
             IMP.core.XYZR.setup_particle(p).set_radius(1)
             IMP.rmf.add_hierarchies(f, [p]);
-            rs= IMP.RestraintSet(m, 1.0)
+            rs= IMP.kernel.RestraintSet(m, 1.0)
             r= IMP.kernel._ConstRestraint(1, [p])
             r.set_name("restraint")
             rs.add_restraint(r)
@@ -30,7 +30,7 @@ class Tests(IMP.test.TestCase):
             nrs= IMP.rmf.create_restraints(f, m)
             print nrs
             self.assertEqual(len(nrs), 1)
-            rsnrs0= IMP.RestraintSet.get_from(nrs[0])
+            rsnrs0= IMP.kernel.RestraintSet.get_from(nrs[0])
             self.assertEqual(len(rsnrs0.get_restraints()), 1)
             self.assertEqual(rsnrs0.get_name(), rs.get_name())
             rb= rsnrs0.get_restraints()[0]
@@ -48,8 +48,8 @@ class Tests(IMP.test.TestCase):
             IMP.atom.Mass.setup_particle(p, 1)
             IMP.core.XYZR.setup_particle(p).set_radius(1)
             IMP.rmf.add_hierarchies(f, [p]);
-            rs0= IMP.RestraintSet(m, 1.0)
-            rs1= IMP.RestraintSet(m, 1.0)
+            rs0= IMP.kernel.RestraintSet(m, 1.0)
+            rs1= IMP.kernel.RestraintSet(m, 1.0)
             r= IMP.kernel._ConstRestraint(1, [p])
             r.set_name("restraint")
             rs0.add_restraint(r)
@@ -64,8 +64,8 @@ class Tests(IMP.test.TestCase):
             nrs= IMP.rmf.create_restraints(f, m)
             print nrs
             self.assertEqual(len(nrs), 2)
-            rsnrs0= IMP.RestraintSet.get_from(nrs[0])
-            rsnrs1= IMP.RestraintSet.get_from(nrs[1])
+            rsnrs0= IMP.kernel.RestraintSet.get_from(nrs[0])
+            rsnrs1= IMP.kernel.RestraintSet.get_from(nrs[1])
             self.assertEqual(len(rsnrs0.get_restraints()), 1)
             self.assertEqual(rsnrs0.get_name(), rs0.get_name())
             rb0= rsnrs0.get_restraints()[0]

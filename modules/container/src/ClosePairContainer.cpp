@@ -39,7 +39,7 @@ struct Data {
 }
 
 double get_slack_estimate(const ParticlesTemp &ps, double upper_bound,
-                          double step, const RestraintsTemp &restraints,
+                          double step, const kernel::RestraintsTemp &restraints,
                           bool derivatives, Optimizer *opt,
                           ClosePairContainer *cpc) {
   std::vector<Data> datas;

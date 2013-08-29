@@ -126,7 +126,7 @@ class Tests(IMP.test.TestCase):
             modmodel.restraints.clear()
             modmodel.restraints.add(r)
 
-            rset = IMP.RestraintSet()
+            rset = IMP.kernel.RestraintSet()
             m.add_restraint(rset)
             for rsr in loader.load_static_restraints():
                 rset.add_restraint(rsr)

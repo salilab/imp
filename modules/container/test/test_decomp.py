@@ -20,7 +20,7 @@ class Tests(IMP.test.TestCase):
         r.set_model(m)
         dr= r.create_decomposition()
         print dr.evaluate(False)
-        cdr= IMP.RestraintSet.get_from(dr).get_restraints()
+        cdr= IMP.kernel.RestraintSet.get_from(dr).get_restraints()
         #IMP.base.set_log_level(IMP.base.VERBOSE)
         print "deling"
         del dr

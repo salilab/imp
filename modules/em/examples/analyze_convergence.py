@@ -48,7 +48,7 @@ dmap.resample()
 # computes statistic stuff about the map and insert it in the header
 dmap.calcRMS()
 IMP.em.write_map(dmap,"map.mrc",IMP.em.MRCReaderWriter())
-rs= IMP.RestraintSet()
+rs= IMP.kernel.RestraintSet()
 m.add_restraint(rs)
 #rs.set_weight(.003)
 

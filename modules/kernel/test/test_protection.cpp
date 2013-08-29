@@ -3,7 +3,7 @@
  */
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/restraint_macros.h>
 #include <IMP/base/threads.h>
 #include <IMP/base/flags.h>

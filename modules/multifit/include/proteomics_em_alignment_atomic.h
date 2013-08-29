@@ -65,7 +65,7 @@ public:
   IMP_OBJECT_METHODS(ProteomicsEMAlignmentAtomic);
 
 protected:
-  RestraintsTemp get_alignment_restraints() const;
+  kernel::RestraintsTemp get_alignment_restraints() const;
   base::Pointer<domino::RestraintCache> rc_;
   bool fast_scoring_;
   domino::ParticleStatesTable*
@@ -84,18 +84,18 @@ protected:
   domino::Assignments sampled_assignments_;//instead of sampled_solutions
   //configurations sorted by score
   std::vector<std::pair<int,float> >cg_sorted_;
-  base::Pointer<RestraintSet> conn_rs_;
-  base::Pointer<RestraintSet> conn_rs_with_filter_;
-  base::Pointer<RestraintSet> xlink_rs_;
-  base::Pointer<RestraintSet> xlink_rs_with_filter_;
-  base::Pointer<RestraintSet> dummy_rs_;
-  base::Pointer<RestraintSet> em_rs_;
-  base::Pointer<RestraintSet> ev_rs_;
-  RestraintsTemp jt_rs_;
-  // base::Pointer<RestraintSet> ev_pruned_rs_;
-  // base::Pointer<RestraintSet> rog_rs_;
-  //Pointer<RestraintSet> other_rs_;//the other restraints
-  //Pointer<RestraintSet> fit_rs_;//the other restraints
+  base::Pointer<kernel::RestraintSet> conn_rs_;
+  base::Pointer<kernel::RestraintSet> conn_rs_with_filter_;
+  base::Pointer<kernel::RestraintSet> xlink_rs_;
+  base::Pointer<kernel::RestraintSet> xlink_rs_with_filter_;
+  base::Pointer<kernel::RestraintSet> dummy_rs_;
+  base::Pointer<kernel::RestraintSet> em_rs_;
+  base::Pointer<kernel::RestraintSet> ev_rs_;
+  kernel::RestraintsTemp jt_rs_;
+  // base::Pointer<kernel::RestraintSet> ev_pruned_rs_;
+  // base::Pointer<kernel::RestraintSet> rog_rs_;
+  //Pointer<kernel::RestraintSet> other_rs_;//the other restraints
+  //Pointer<kernel::RestraintSet> fit_rs_;//the other restraints
   base::PointerMember<domino::RestraintScoreSubsetFilterTable> all_rs_filt_;
   IntKey fit_state_key_,order_key_;
   bool restraints_set_,states_set_,filters_set_;

@@ -13,7 +13,7 @@ IMPATOM_BEGIN_NAMESPACE
 
 CHARMMStereochemistryRestraint::CHARMMStereochemistryRestraint(
     Hierarchy h, CHARMMTopology *topology)
-    : Restraint(h->get_model(), "CHARMMStereochemistryRestraint%1%") {
+    : kernel::Restraint(h->get_model(), "CHARMMStereochemistryRestraint%1%") {
   bonds_ = topology->add_bonds(h);
   angles_ = topology->get_parameters()->create_angles(bonds_);
   dihedrals_ = topology->get_parameters()->create_dihedrals(bonds_);

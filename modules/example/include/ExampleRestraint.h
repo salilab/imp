@@ -11,7 +11,7 @@
 
 #include <IMP/example/example_config.h>
 #include <IMP/SingletonScore.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairScore.h>
 #include <IMP/restraint_macros.h>
@@ -26,13 +26,13 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     \include ExampleRestraint.h
     \include ExampleRestraint.cpp
 */
-class IMPEXAMPLEEXPORT ExampleRestraint : public Restraint {
+class IMPEXAMPLEEXPORT ExampleRestraint : public kernel::Restraint {
   base::Pointer<Particle> p_;
   double k_;
 
  public:
   //! Create the restraint.
-  /** Restraints should store the particles they are to act on,
+  /** kernel::Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
    */
   ExampleRestraint(Particle *p, double k);

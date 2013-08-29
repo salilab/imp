@@ -20,7 +20,7 @@ IMPISD_BEGIN_NAMESPACE
 
 WeightRestraint::WeightRestraint
   (Particle *w, Float wmin, Float wmax, Float kappa):
-      Restraint(w->get_model(), "WeightRestraint%1%"),
+      kernel::Restraint(w->get_model(), "WeightRestraint%1%"),
    w_(w), wmin_(wmin), wmax_(wmax), kappa_(kappa) {}
 
 double WeightRestraint::

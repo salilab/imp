@@ -16,9 +16,9 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-RestraintGeometry::RestraintGeometry(Restraint *r)
+RestraintGeometry::RestraintGeometry(kernel::Restraint *r)
     : Geometry(r->get_name()), r_(r), m_(r_->get_model()) {}
-RestraintGeometry::RestraintGeometry(Restraint *r, Model *m)
+RestraintGeometry::RestraintGeometry(kernel::Restraint *r, Model *m)
     : Geometry(r->get_name()), r_(r), m_(m) {}
 
 namespace {
@@ -30,9 +30,9 @@ algebra::Vector3D get_coordinates(Particle *p) {
 
 IMP::display::Geometries RestraintGeometry::get_components() const {
   IMP_CHECK_OBJECT(r_);
-  base::Pointer<Restraint> rd = r_->create_current_decomposition();
+  base::Pointer<kernel::Restraint> rd = r_->create_current_decomposition();
   if (!rd) return IMP::display::Geometries();
-  RestraintSet *rs = dynamic_cast<RestraintSet *>(rd.get());
+  kernel::RestraintSet *rs = dynamic_cast<kernel::RestraintSet *>(rd.get());
   rd->set_was_used(true);
   IMP::display::Geometries ret;
   if (!rs) {
@@ -48,7 +48,7 @@ IMP::display::Geometries RestraintGeometry::get_components() const {
     }
   } else {
     for (unsigned int i = 0; i < rs->get_number_of_restraints(); ++i) {
-      Restraint *rc = rs->get_restraint(i);
+      kernel::Restraint *rc = rs->get_restraint(i);
       rc->set_was_used(true);
       ret.push_back(new RestraintGeometry(rc, m_));
     }
@@ -56,7 +56,7 @@ IMP::display::Geometries RestraintGeometry::get_components() const {
   return ret;
 }
 
-RestraintSetGeometry::RestraintSetGeometry(RestraintSet *r)
+RestraintSetGeometry::RestraintSetGeometry(kernel::RestraintSet *r)
     : Geometry(r->get_name()), r_(r) {}
 
 IMP::display::Geometries RestraintSetGeometry::get_components() const {

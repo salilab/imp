@@ -112,7 +112,7 @@ class Tests(IMP.test.TestCase):
         prd=pr.create_decomposition()
         IMP.show_restraint_hierarchy(prd)
         print prd.get_input_particles()
-        rs=IMP.RestraintSet.get_from(prd)
+        rs=IMP.kernel.RestraintSet.get_from(prd)
         #create particles state table
         pst=IMP.domino.ParticleStatesTable()
         states=IMP.domino.XYZStates([IMP.algebra.Vector3D(i,i,i) for i in range(3)])

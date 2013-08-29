@@ -37,9 +37,9 @@ class IMPRMFEXPORT SaveOptimizerState : public kernel::OptimizerState {
     rmf::add_hierarchy(fh_, atom::Hierarchy(obj));
   },
                   {}, {});
-  IMP_LIST_ACTION(public, Restraint, Restraints, restraint, restraints,
-                  Restraint *, Restraints, {
-    rmf::add_restraints(fh_, RestraintsTemp(1, obj));
+  IMP_LIST_ACTION(public, Restraint, estraints, restraint, restraints,
+                  kernel::Restraint *, kernel::Restraints, {
+    rmf::add_restraints(fh_, kernel::RestraintsTemp(1, obj));
   },
                   {}, {});
   IMP_LIST_ACTION(public, Particle, Particles, particle, particles, Particle *,

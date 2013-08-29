@@ -46,7 +46,7 @@ class IMPCOREEXPORT KClosePairsPairScore : public PairScore {
         get_close_pairs(pp[0]->get_model(), IMP::internal::get_index(pp)));
   }
 
-  Restraints create_current_decomposition(Model *m,
+  kernel::Restraints create_current_decomposition(Model *m,
                                           const ParticleIndexPair &vt) const;
 
   virtual double evaluate_index(Model *m, const ParticleIndexPair &p,
@@ -87,7 +87,7 @@ class IMPCOREEXPORT ClosePairsPairScore : public PairScore {
         pp[0]->get_model(),
         get_close_pairs(pp[0]->get_model(), IMP::internal::get_index(pp)));
   }
-  Restraints create_current_decomposition(Model *m,
+  kernel::Restraints create_current_decomposition(Model *m,
                                           const ParticleIndexPair &vt) const;
 
   virtual double evaluate_index(Model *m, const ParticleIndexPair &p,

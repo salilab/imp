@@ -12,7 +12,7 @@
 
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/restraint_macros.h>
 #include <IMP/ScoreState.h>
 #include <IMP/UnaryFunction.h>
@@ -31,7 +31,7 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     \include ExampleComplexRestraint.cpp
 
 */
-class IMPEXAMPLEEXPORT ExampleComplexRestraint : public Restraint {
+class IMPEXAMPLEEXPORT ExampleComplexRestraint : public kernel::Restraint {
   base::Pointer<ScoreState> ss_;
   ParticleIndex p_;
   Float diameter_;

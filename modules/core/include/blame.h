@@ -23,7 +23,7 @@ IMPCORE_BEGIN_NAMESPACE
 
     The main cost is evaluating the restraints.
 */
-IMPCOREEXPORT void assign_blame(const RestraintsTemp &rs,
+IMPCOREEXPORT void assign_blame(const kernel::RestraintsTemp &rs,
                                 const ParticlesTemp &ps, FloatKey attribute);
 
 /** Create a set of geometry objects colored by the blame as described in
@@ -34,7 +34,8 @@ IMPCOREEXPORT void assign_blame(const RestraintsTemp &rs,
     If max is NO_MAX, then the max is found automatically.
 */
 IMPCOREEXPORT display::Geometries create_blame_geometries(
-    const RestraintsTemp &rs, const ParticlesTemp &ps, double max = NO_MAX,
+    const kernel::RestraintsTemp &rs, const ParticlesTemp &ps,
+    double max = NO_MAX,
     std::string name = std::string());
 
 IMPCORE_END_NAMESPACE

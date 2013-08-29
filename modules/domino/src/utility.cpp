@@ -10,7 +10,7 @@
 #include <IMP/domino/internal/inference_utility.h>
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/ScoreState.h>
 #include <IMP/domino/assignment_containers.h>
 #include <IMP/base/map.h>
@@ -52,8 +52,9 @@ void load_particle_states(const Subset &s, const Assignment &ss,
   }
 }
 RestraintsTemp get_restraints(const Subset &s, const ParticleStatesTable *pst,
-                              const DependencyGraph &dg, RestraintSet *rs) {
-  RestraintsTemp rw = get_restraints(RestraintsTemp(1, rs));
+                              const DependencyGraph &dg,
+                              kernel::RestraintSet *rs) {
+  kernel::RestraintsTemp rw = get_restraints(kernel::RestraintsTemp(1, rs));
   Subset other = pst->get_subset();
   ParticlesTemp oms;
   std::set_difference(other.begin(), other.end(), s.begin(), s.end(),

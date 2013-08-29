@@ -2,10 +2,10 @@ import IMP
 import IMP.test
 import IMP.core
 
-class WoodsFunc(IMP.Restraint):
+class WoodsFunc(IMP.kernel.Restraint):
     """Woods function for four input values, defined as an IMP restraint"""
     def __init__(self, model, particles):
-        IMP.Restraint.__init__(self, model, "WoodsFunc %1%")
+        IMP.kernel.Restraint.__init__(self, model, "WoodsFunc %1%")
         self.particles= particles
         self.index= IMP.FloatKey("x")
     def do_show(self, fh):

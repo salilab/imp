@@ -61,7 +61,7 @@ class IMPCOREEXPORT MovedSingletonContainer
   void set_threshold(double d);
   double get_threshold() const { return threshold_; }
 #ifndef IMP_DOXYGEN
-  Restraints create_decomposition(SingletonScore *) const {
+  kernel::Restraints create_decomposition(SingletonScore *) const {
     IMP_NOT_IMPLEMENTED;
   }
 #endif

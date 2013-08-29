@@ -45,7 +45,8 @@ Subsets get_subsets(const SubsetGraph &g) {
 
 SubsetGraph get_restraint_graph(ScoringFunctionAdaptor in,
                                 const ParticleStatesTable *pst) {
-  RestraintsTemp rs = IMP::create_decomposition(in->create_restraints());
+  kernel::RestraintsTemp rs
+    = IMP::create_decomposition(in->create_restraints());
   // ScoreStatesTemp ss= get_required_score_states(rs);
   SubsetGraph ret(rs.size());  // + ss.size());
   IMP_LOG_TERSE("Creating restraint graph on " << rs.size() << " restraints."
@@ -363,7 +364,7 @@ InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
                                        const ParticlesTemp &ps) {
   if (ps.empty()) return InteractionGraph();
   InteractionGraph ret(ps.size());
-  Restraints rs = IMP::create_decomposition(rsi->create_restraints());
+  kernel::Restraints rs = IMP::create_decomposition(rsi->create_restraints());
   // Model *m= ps[0]->get_model();
   IMP::base::map<ModelObject *, int> map;
   InteractionGraphVertexName pm = boost::get(boost::vertex_name, ret);
@@ -397,7 +398,8 @@ InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
     pm[i] = ps[i];
   }
   IMP::Restraints all_rs = IMP::get_restraints(rs);
-  for (Restraints::const_iterator it = all_rs.begin(); it != all_rs.end();
+  for (kernel::Restraints::const_iterator it = all_rs.begin();
+       it != all_rs.end();
        ++it) {
     ModelObjectsTemp pl = (*it)->get_inputs();
     add_edges(ps, pl, map, *it, ret);

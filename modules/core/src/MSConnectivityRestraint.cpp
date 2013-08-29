@@ -154,7 +154,7 @@ void MSConnectivityRestraint::ExperimentalTree::desc_to_label(
 }
 
 MSConnectivityRestraint::MSConnectivityRestraint(PairScore *ps, double eps)
-    : Restraint("MSConnectivityRestraint %1%"), ps_(ps), eps_(eps) {}
+    : kernel::Restraint("MSConnectivityRestraint %1%"), ps_(ps), eps_(eps) {}
 
 unsigned int MSConnectivityRestraint::ParticleMatrix::add_type(
     const ParticlesTemp &ps) {
@@ -700,7 +700,7 @@ double MSConnectivityRestraint::unprotected_evaluate(
 
 Restraints MSConnectivityRestraint::do_create_current_decomposition() const {
   ParticlePairsTemp pp = get_connected_pairs();
-  Restraints ret(pp.size());
+  kernel::Restraints ret(pp.size());
   for (unsigned int i = 0; i < pp.size(); ++i) {
     IMP_NEW(PairRestraint, pr, (ps_, pp[i]));
     std::ostringstream oss;

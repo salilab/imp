@@ -30,7 +30,7 @@ namespace MTU {
   typedef base::map<DGVertex,Particle *> VPMAP;
 };
 
-class IMPMULTIFITEXPORT DummyRestraint : public Restraint {
+class IMPMULTIFITEXPORT DummyRestraint : public kernel::Restraint {
 public:
   DummyRestraint(Particle *a,Particle *b) : p1_(a),p2_(b){}
   virtual double

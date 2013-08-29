@@ -31,7 +31,7 @@ public:
     return atom::get_rmsd(second_xyz,xyz_);}
   Ensemble(multifit::SettingsData *sd,
            const ProteinsAnchorsSamplingSpace &mapping_data);
-  std::vector<Floats> score_by_restraints(Restraints rs,
+  std::vector<Floats> score_by_restraints(kernel::Restraints rs,
                                           const IntsList &combinations);
 
   IMP_OBJECT_METHODS(Ensemble);

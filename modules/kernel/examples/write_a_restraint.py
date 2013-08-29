@@ -6,10 +6,10 @@ import IMP
 
 # a restraint which checks if particles are sorted in
 # increasing order on k.
-class MyRestraint(IMP.Restraint):
+class MyRestraint(IMP.kernel.Restraint):
     # take the list of particles and the key to use
     def __init__(self, m, ps, k):
-        IMP.Restraint.__init__(self, m, "MyRestraint %1%")
+        IMP.kernel.Restraint.__init__(self, m, "MyRestraint %1%")
         self.ps=ps
         self.k=k
     def unprotected_evaluate(self, da):

@@ -21,7 +21,7 @@ class RMFRestraint;
 IMP_OBJECTS(RMFRestraint, RMFRestraints);
 /** A dummy restraint object to represent restraints loaded from
     an RMF file.*/
-class IMPRMFEXPORT RMFRestraint : public Restraint {
+class IMPRMFEXPORT RMFRestraint : public kernel::Restraint {
   ParticlesTemp ps_;
 
  public:
@@ -31,7 +31,7 @@ class IMPRMFEXPORT RMFRestraint : public Restraint {
 #endif
   double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum) const;
   ModelObjectsTemp do_get_inputs() const;
-  Restraints do_create_current_decomposition() const;
+  kernel::Restraints do_create_current_decomposition() const;
   IMP_OBJECT_METHODS(RMFRestraint);
 };
 
@@ -45,14 +45,15 @@ ModelObjectsTemp RMFRestraint::do_get_inputs() const { return ps_; }
 Restraints RMFRestraint::do_create_current_decomposition() const {
   set_was_used(true);
   if (get_last_score() != 0) {
-    const Restraint *rp = this;
-    return Restraints(1, const_cast<Restraint *>(rp));
+    const kernel::Restraint *rp = this;
+    return kernel::Restraints(1, const_cast<kernel::Restraint *>(rp));
   } else {
-    return Restraints();
+    return kernel::Restraints();
   }
 }
 
-RMFRestraint::RMFRestraint(Model *m, std::string name) : Restraint(m, name) {}
+RMFRestraint::RMFRestraint(Model *m, std::string name) :
+  kernel::Restraint(m, name) {}
 
 class Subset
     : public base::ConstVector<base::WeakPointer<Particle>, Particle *> {
@@ -125,15 +126,15 @@ RMF::NodeHandle get_node(Subset s, RestraintSaveData &d, RMF::ScoreFactory sf,
 
 // get_particles
 //
-class RestraintLoadLink : public SimpleLoadLink<Restraint> {
-  typedef SimpleLoadLink<Restraint> P;
+class RestraintLoadLink : public SimpleLoadLink<kernel::Restraint> {
+  typedef SimpleLoadLink<kernel::Restraint> P;
   RMF::ScoreConstFactory sf_;
   RMF::AliasConstFactory af_;
   Model *m_;
   RMF::Category imp_cat_;
   RMF::FloatKey weight_key_;
 
-  void do_load_one(RMF::NodeConstHandle nh, Restraint *oi) {
+  void do_load_one(RMF::NodeConstHandle nh, kernel::Restraint *oi) {
     if (sf_.get_is(nh)) {
       RMF::ScoreConst d = sf_.get(nh);
       oi->set_last_score(d.get_score());
@@ -144,9 +145,9 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
   bool get_is(RMF::NodeConstHandle nh) const {
     return nh.get_type() == RMF::FEATURE;
   }
-  Restraint *do_create(RMF::NodeConstHandle name) {
+  kernel::Restraint *do_create(RMF::NodeConstHandle name) {
     RMF::NodeConstHandles chs = name.get_children();
-    Restraints childr;
+    kernel::Restraints childr;
     ParticlesTemp inputs;
     for (unsigned int i = 0; i < chs.size(); ++i) {
       if (chs[i].get_type() == RMF::FEATURE) {
@@ -160,7 +161,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
         if (p) {
           inputs.push_back(p);
         } else {
-          Restraint *r = get_association<Restraint>(an);
+          kernel::Restraint *r = get_association<kernel::Restraint>(an);
           if (r) {
             childr.push_back(do_create(an));
             add_link(r, an);
@@ -174,9 +175,9 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
                                                            << std::endl);
       }
     }
-    base::Pointer<Restraint> ret;
+    base::Pointer<kernel::Restraint> ret;
     if (!childr.empty()) {
-      ret = new RestraintSet(childr, 1.0, name.get_name());
+      ret = new kernel::RestraintSet(childr, 1.0, name.get_name());
     } else {
       IMP_NEW(RMFRestraint, r, (m_, name.get_name()));
       ret = r;
@@ -199,28 +200,28 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
   IMP_OBJECT_METHODS(RestraintLoadLink);
 };
 
-class RestraintSaveLink : public SimpleSaveLink<Restraint> {
-  typedef SimpleSaveLink<Restraint> P;
+class RestraintSaveLink : public SimpleSaveLink<kernel::Restraint> {
+  typedef SimpleSaveLink<kernel::Restraint> P;
   RMF::ScoreFactory sf_;
   RMF::AliasFactory af_;
   RMF::Category imp_cat_;
   RMF::FloatKey weight_key_;
-  base::map<Restraint *, RestraintSaveData> data_;
-  Restraints all_;
+  base::map<kernel::Restraint *, RestraintSaveData> data_;
+  kernel::Restraints all_;
   base::PointerMember<core::RestraintsScoringFunction> rsf_;
   unsigned int max_terms_;
-  base::set<Restraint *> no_terms_;
+  base::set<kernel::Restraint *> no_terms_;
 
-  void do_add(Restraint *r, RMF::NodeHandle nh) {
+  void do_add(kernel::Restraint *r, RMF::NodeHandle nh) {
     // handle restraints being in multiple sets
     all_.push_back(r);
     rsf_ = new core::RestraintsScoringFunction(all_);
     nh.set_value(weight_key_, r->get_weight());
     add_link(r, nh);
-    RestraintSet *rs = dynamic_cast<RestraintSet *>(r);
+    kernel::RestraintSet *rs = dynamic_cast<kernel::RestraintSet *>(r);
     if (rs) {
       for (unsigned int i = 0; i < rs->get_number_of_restraints(); ++i) {
-        Restraint *rc = rs->get_restraint(i);
+        kernel::Restraint *rc = rs->get_restraint(i);
         if (get_has_associated_node(nh.get_file(), rc)) {
           RMF::NodeHandle an = get_node_from_association(nh.get_file(), rc);
           RMF::NodeHandle c =
@@ -235,7 +236,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
       }
     }
   }
-  void do_save_one(Restraint *o, RMF::NodeHandle nh) {
+  void do_save_one(kernel::Restraint *o, RMF::NodeHandle nh) {
     IMP_OBJECT_LOG;
     IMP_LOG_TERSE("Saving restraint info for " << o->get_name() << std::endl);
     RestraintSaveData &d = data_[o];
@@ -262,9 +263,9 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
       sd.set_score(score);
       if (no_terms_.find(o) != no_terms_.end()) {
         // too big, do nothing
-      } else if (!dynamic_cast<RestraintSet *>(o)) {
+      } else if (!dynamic_cast<kernel::RestraintSet *>(o)) {
         // required to set last score
-        base::Pointer<Restraint> rd = o->create_current_decomposition();
+        base::Pointer<kernel::Restraint> rd = o->create_current_decomposition();
         // set all child scores to 0 for this frame, we will over
         // right below
         RMF::NodeHandles chs = nh.get_children();
@@ -276,7 +277,8 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
         }
         if (rd && rd != o) {
           rd->set_was_used(true);
-          RestraintsTemp rs = IMP::get_restraints(RestraintsTemp(1, rd));
+          kernel::RestraintsTemp rs
+            = IMP::get_restraints(kernel::RestraintsTemp(1, rd));
           if (rs.size() > max_terms_) {
             no_terms_.insert(o);
             // delete old children
@@ -302,7 +304,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
     rsf_->evaluate(false);
     P::do_save(fh);
   }
-  RMF::NodeType get_type(Restraint *) const { return RMF::FEATURE; }
+  RMF::NodeType get_type(kernel::Restraint *) const { return RMF::FEATURE; }
 
  public:
   RestraintSaveLink(RMF::FileHandle fh)
@@ -317,8 +319,10 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
 };
 }
 
-IMP_DEFINE_LINKERS(Restraint, restraint, restraints, Restraint *, Restraints,
-                   Restraint *, RestraintsTemp, (RMF::FileHandle fh),
+IMP_DEFINE_LINKERS(Restraint, restraint, restraints, kernel::Restraint *,
+                   kernel::Restraints,
+                   kernel::Restraint *, kernel::RestraintsTemp,
+                   (RMF::FileHandle fh),
                    (RMF::FileConstHandle fh, Model *m), (fh), (fh, m),
                    (fh, IMP::internal::get_model(hs)));
 

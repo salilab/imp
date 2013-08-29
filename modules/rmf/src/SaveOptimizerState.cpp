@@ -35,8 +35,8 @@ void SaveOptimizerState::update_always(std::string name) {
 }
 
 IMP_LIST_IMPL(SaveOptimizerState, Hierarchy, hierarchy, Particle *, Particles);
-IMP_LIST_IMPL(SaveOptimizerState, Restraint, restraint, Restraint *,
-              Restraints);
+IMP_LIST_IMPL(SaveOptimizerState, Restraint, restraint, kernel::Restraint *,
+              kernel::Restraints);
 IMP_LIST_IMPL(SaveOptimizerState, Particle, particle, Particle *, Particles);
 IMP_LIST_IMPL(SaveOptimizerState, Geometry, geometry, display::Geometry *,
               display::Geometries);

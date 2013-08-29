@@ -69,7 +69,7 @@ ComplementarityRestraint
                                    const ParticlesTemp &b,
                                    std::string name)
  :
-    Restraint(IMP::internal::get_model(a), name), a_(a), b_(b),
+    kernel::Restraint(IMP::internal::get_model(a), name), a_(a), b_(b),
   rba_(core::RigidMember(a[0]).get_rigid_body()),
   rbb_(core::RigidMember(b[0]).get_rigid_body()),
   ok_("wev grid"),

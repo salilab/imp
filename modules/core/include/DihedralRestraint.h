@@ -12,14 +12,14 @@
 #include <IMP/core/core_config.h>
 
 #include <IMP/UnaryFunction.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/Particle.h>
 #include <IMP/generic.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
 //! Dihedral restraint between four particles
-class IMPCOREEXPORT DihedralRestraint : public Restraint {
+class IMPCOREEXPORT DihedralRestraint : public kernel::Restraint {
  public:
   //! Create the dihedral restraint.
   /** \param[in] score_func Scoring function for the restraint.

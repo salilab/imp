@@ -1,5 +1,5 @@
 /**
- * \file EnvelopeFitRestraint.h
+ * \file em/EnvelopeFitRestraint.h
  * \brief score envelope fit based on map distance transform
  *
  * \authors Dina Schneidman
@@ -16,7 +16,7 @@
 #include <IMP/em/EnvelopeScore.h>
 #include <IMP/base/object_macros.h>
 
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 
 IMPEM_BEGIN_NAMESPACE
 

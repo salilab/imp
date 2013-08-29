@@ -62,7 +62,8 @@ float get_actual_radius_of_gyration(ParticlesTemp ps) {
 RadiusOfGyrationRestraint::RadiusOfGyrationRestraint(Particles ps,
                                                      int num_residues,
                                                      Float scale):
-    Restraint(IMP::internal::get_model(ps), "RadiusOfGyrationRestraint"){
+    kernel::Restraint(IMP::internal::get_model(ps),
+                      "RadiusOfGyrationRestraint"){
   if (ps.size()==0) return;
   add_particles(ps);
   mdl_=ps[0]->get_model();

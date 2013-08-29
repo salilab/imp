@@ -160,9 +160,9 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(IMP.kernel._overloaded_decorator(d0), 0)
 
 
-    class _TestRestraint(IMP.Restraint):
+    class _TestRestraint(IMP.kernel.Restraint):
         def __init__(self, ps):
-            IMP.Restraint.__init__(self, ps[0].get_model(), "TestRestraint %1%")
+            IMP.kernel.Restraint.__init__(self, ps[0].get_model(), "TestRestraint %1%")
             self.ps=ps
         def do_show(self, fh):
             fh.write("Test Particle")

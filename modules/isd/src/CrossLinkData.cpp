@@ -49,22 +49,21 @@ CrossLinkData::CrossLinkData(
 
   for(unsigned j=1;j<omega_grid_.size();++j){
 
-    
     double omj=omega_grid_[j];
     double omjm1=omega_grid_[j-1];
 
     double dom = omj - omjm1;
-     
+
     double pj;
     double pjm1;
-     
+
     if (prior_type_==0){
-	 pj=get_biased_element(dist,omj*sigma)/omj;
-	 pjm1=get_biased_element(dist,omjm1*sigma)/omjm1;
+      pj=get_biased_element(dist,omj*sigma)/omj;
+      pjm1=get_biased_element(dist,omjm1*sigma)/omjm1;
     }
     else{
-         pj=get_biased_element(dist,omj)*get_omega_prior(omj,sigma);
-	 pjm1=get_biased_element(dist,omjm1)*get_omega_prior(omjm1,sigma);
+      pj=get_biased_element(dist,omj)*get_omega_prior(omj,sigma);
+      pjm1=get_biased_element(dist,omjm1)*get_omega_prior(omjm1,sigma);
     }
     cumul+= (pj+pjm1)/2.0*dom;
 
@@ -140,10 +139,10 @@ CrossLinkData::CrossLinkData(Floats dist_grid,
      double omjm1=omega_grid_[j-1];
 
      double dom = omj - omjm1;
-     
+
      double pj;
      double pjm1;
-     
+
      if (prior_type_==0){
 	 pj=get_biased_element(dist,omj*sigma)/omj;
 	 pjm1=get_biased_element(dist,omjm1*sigma)/omjm1;
@@ -153,7 +152,7 @@ CrossLinkData::CrossLinkData(Floats dist_grid,
 	 pjm1=get_biased_element(dist,omjm1)*get_omega_prior(omjm1,sigma);
      }
      cumul+= (pj+pjm1)/2.0*dom;
-     
+
    }
 
 // switching cumul to zero between don and doff

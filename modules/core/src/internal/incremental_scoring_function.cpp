@@ -31,9 +31,9 @@ class DummyPairContainer : public IMP::internal::ListLikePairContainer {
   IMP_CLANG_PRAGMA(diagnostic ignored "-Wunused-member-function")
   SingletonContainer *get_singleton_container() const { return c_; }
   ClosePairsFinder *get_close_pairs_finder() const { return cpf_; }
-  Restraints create_decomposition(PairScore *ps) const {
+  kernel::Restraints create_decomposition(PairScore *ps) const {
     ParticleIndexPairs all = get_range_indexes();
-    Restraints ret(all.size());
+    kernel::Restraints ret(all.size());
     for (unsigned int i = 0; i < all.size(); ++i) {
       ret[i] = new PairRestraint(
           ps, IMP::internal::get_particle(get_model(), all[i]));
@@ -42,9 +42,9 @@ class DummyPairContainer : public IMP::internal::ListLikePairContainer {
   }
   IMP_CLANG_PRAGMA(diagnostic pop)
   template <class PS>
-  Restraints create_decomposition_t(PS *ps) const {
+  kernel::Restraints create_decomposition_t(PS *ps) const {
     ParticleIndexPairs all = get_range_indexes();
-    Restraints ret(all.size());
+    kernel::Restraints ret(all.size());
     for (unsigned int i = 0; i < all.size(); ++i) {
       ret[i] = IMP::create_restraint(
           ps, IMP::internal::get_particle(get_model(), all[i]),
@@ -185,7 +185,8 @@ Restraint *NBLScoring::create_restraint() const {
   lsc->set(cache_.get_generator().pis_);
   IMP_NEW(DummyPairContainer, cpc, (lsc, default_cpf(1000)));
 
-  base::Pointer<Restraint> ret = new IMP::internal::InternalPairsRestraint(
+  base::Pointer<kernel::Restraint> ret
+    = new IMP::internal::InternalPairsRestraint(
       cache_.get_generator().score_.get(), cpc.get());
   ret->set_model(cache_.get_generator().m_);
   return ret.release();

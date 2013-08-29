@@ -27,10 +27,10 @@ IMPBASE_BEGIN_NAMESPACE
         function.
         Use the IMP_NEW() macro to aid creation of pointers to new objects.
 
-        For example, when implementing a Restraint that uses a PairScore,
-        store the PairScore like this:
+        For example, when implementing a kernel::Restraint that uses a
+        kernel::PairScore, store the kernel::PairScore like this:
         \code
-        base::Pointer<PairScore> ps_;
+        base::PointerMember<PairScore> ps_;
         \endcode
 
         When creating Object instances in C++, you should write code like:

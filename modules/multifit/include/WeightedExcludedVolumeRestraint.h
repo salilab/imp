@@ -17,7 +17,7 @@
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/Model.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/VersionInfo.h>
 #include <IMP/Refiner.h>
 
@@ -27,7 +27,8 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 /** \ingroup exp_restraint
 
  */
-class IMPMULTIFITEXPORT WeightedExcludedVolumeRestraint : public Restraint
+class IMPMULTIFITEXPORT WeightedExcludedVolumeRestraint
+  : public kernel::Restraint
 {
 public:
   //! Constructor

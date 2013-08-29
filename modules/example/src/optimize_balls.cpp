@@ -41,7 +41,7 @@ core::MonteCarloMover *create_serial_mover(const ParticlesTemp &ps) {
 /** Take a set of core::XYZR particles and relax them relative to a set of
     restraints. Excluded volume is handle separately, so don't include it
 in the passed list of restraints. */
-void optimize_balls(const ParticlesTemp &ps, const RestraintsTemp &rs,
+void optimize_balls(const ParticlesTemp &ps, const kernel::RestraintsTemp &rs,
                     const PairPredicates &excluded,
                     const OptimizerStates &opt_states, base::LogLevel ll) {
   // make sure that errors and log messages are marked as coming from this
@@ -61,9 +61,9 @@ void optimize_balls(const ParticlesTemp &ps, const RestraintsTemp &rs,
     IMP_NEW(container::ClosePairContainer, cpc,
             (lsc, 0, core::XYZR(ps[0]).get_radius()));
     cpc->add_pair_filters(excluded);
-    base::Pointer<Restraint> r
+    base::Pointer<kernel::Restraint> r
       = container::create_restraint(ssps.get(), cpc.get());
-    cg->set_scoring_function(rs + RestraintsTemp(1, r.get()));
+    cg->set_scoring_function(rs + kernel::RestraintsTemp(1, r.get()));
     cg->set_optimizer_states(opt_states);
   }
   IMP_NEW(core::MonteCarlo, mc, (m));

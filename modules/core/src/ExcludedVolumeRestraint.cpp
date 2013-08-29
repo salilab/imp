@@ -31,7 +31,7 @@ IMPCORE_BEGIN_NAMESPACE
 ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainerAdaptor sc,
                                                  double k, double s,
                                                  std::string name)
-    : Restraint(sc->get_model(), name),
+    : kernel::Restraint(sc->get_model(), name),
       sc_(sc),
       initialized_(false),
       ssps_(new SoftSpherePairScore(k)) {
@@ -44,7 +44,7 @@ ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainerAdaptor sc,
 ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainerAdaptor sc,
                                                  SoftSpherePairScore *ssps,
                                                  ObjectKey ok, double s)
-    : Restraint(sc->get_model(), "ExcludedVolumeRestraint %1%"),
+    : kernel::Restraint(sc->get_model(), "ExcludedVolumeRestraint %1%"),
       sc_(sc),
       initialized_(false),
       ssps_(ssps) {
@@ -283,7 +283,7 @@ ModelObjectsTemp ExcludedVolumeRestraint::do_get_inputs() const {
 
 Restraints ExcludedVolumeRestraint::do_create_decomposition() const {
   if (!initialized_) initialize();
-  Restraints ret;
+  kernel::Restraints ret;
   for (unsigned int i = 0; i < xyzrs_.size(); ++i) {
     for (unsigned int j = 0; j < i; ++j) {
       ret.push_back(IMP::create_restraint(
@@ -335,9 +335,9 @@ Restraints ExcludedVolumeRestraint::do_create_decomposition() const {
 }
 
 Restraints ExcludedVolumeRestraint::do_create_current_decomposition() const {
-  Restraints ret;
+  kernel::Restraints ret;
   for (unsigned int i = 0; i < cur_list_.size(); ++i) {
-    base::Pointer<Restraint> rc = IMP::create_restraint(
+    base::Pointer<kernel::Restraint> rc = IMP::create_restraint(
         ssps_.get(), IMP::internal::get_particle(get_model(), cur_list_[i]));
     rc->set_was_used(true);
     double score = rc->unprotected_evaluate(nullptr);

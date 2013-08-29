@@ -13,7 +13,7 @@
 #include "Scale.h"
 #include "vonMisesSufficient.h"
 
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/Particle.h>
 
 IMPISD_BEGIN_NAMESPACE
@@ -29,7 +29,7 @@ IMPISD_BEGIN_NAMESPACE
     \f$R\f$ and \f$\chi_{exp}\f$.
     \see vonMisesSufficient.h for further detail.
 */
-class IMPISDEXPORT TALOSRestraint : public Restraint
+class IMPISDEXPORT TALOSRestraint : public kernel::Restraint
 {
 public:
 

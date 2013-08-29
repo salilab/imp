@@ -42,7 +42,7 @@ class Tests(IMP.test.TestCase):
         ## -  create a set of three particles in imp
         for i in range(3):
             self.particles.append(IMP.Particle(self.imp_model))
-        #add IMP Restraints into the modeller scoring function
+        #add IMP.kernel.Restraints into the modeller scoring function
         t = self.env.edat.energy_terms
         t.append(IMP.modeller.IMPRestraints(self.particles))
 
@@ -123,7 +123,7 @@ class Tests(IMP.test.TestCase):
         for i in range(3):
             self.particles.append(IMP.Particle(self.imp_model))
 
-        #add IMP Restraints into the modeller scoring function
+        #add IMP.kernel.Restraints into the modeller scoring function
         t = self.env.edat.energy_terms
         t.append(IMP.modeller.IMPRestraints(self.particles))
 
@@ -213,7 +213,7 @@ class Tests(IMP.test.TestCase):
         dmap.calcRMS()
         print "AFTER calcRMS",dmap.get_rms_calculated()
         IMP.em.write_map(dmap,"map.mrc",IMP.em.MRCReaderWriter())
-        rs= IMP.RestraintSet()
+        rs= IMP.kernel.RestraintSet()
         m.add_restraint(rs)
 
         r= IMP.em.FitRestraint([fp], dmap)

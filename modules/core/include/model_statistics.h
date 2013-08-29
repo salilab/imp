@@ -23,11 +23,11 @@ IMPCORE_BEGIN_NAMESPACE
 */
 class IMPCOREEXPORT WriteRestraintScoresOptimizerState
     : public kernel::OptimizerState {
-  Restraints rs_;
+  kernel::Restraints rs_;
   base::TextOutput out_;
 
  public:
-  WriteRestraintScoresOptimizerState(const Restraints &rs,
+  WriteRestraintScoresOptimizerState(const kernel::Restraints &rs,
                                      base::TextOutput out);
 
  protected:

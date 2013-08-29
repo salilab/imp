@@ -438,7 +438,7 @@ class PeptideDocker:
 
         #Restraint decomposition has been a little touchy; a couple workarounds contained
         decomposedRestraintTemp = listBondRestraint.create_decomposition()
-        decomposedRestraints = IMP.RestraintSet.get_from(decomposedRestraintTemp)
+        decomposedRestraints = IMP.kernel.RestraintSet.get_from(decomposedRestraintTemp)
         rs_restraints= decomposedRestraints.get_restraints()
 
         #manually remove the full restraint after getting the decomposition

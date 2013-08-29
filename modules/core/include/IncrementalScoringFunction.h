@@ -55,7 +55,7 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
   ParticleIndexes all_;
   ParticleIndexes last_move_;
   ParticleIndexes dirty_;
-  Restraints flattened_restraints_;
+  kernel::Restraints flattened_restraints_;
   Floats flattened_restraints_scores_;
   double weight_, max_;
   base::PointerMember<ScoringFunction> non_incremental_;
@@ -64,11 +64,12 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
     ~Wrapper();
   };
   Wrapper nbl_;
-  void create_flattened_restraints(const RestraintsTemp &rs);
+  void create_flattened_restraints(const kernel::RestraintsTemp &rs);
   void create_scoring_functions();
   void do_non_incremental_evaluate();
-  Data create_data(ParticleIndex pi, const base::map<Restraint *, int> &all,
-                   const Restraints &dummies) const;
+  Data create_data(ParticleIndex pi,
+                   const base::map<kernel::Restraint *, int> &all,
+                   const kernel::Restraints &dummies) const;
 
  public:
   /** Pass the particles that will be individuall mode, and the list of
@@ -83,7 +84,8 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
       @param name The name template to use for the scoring function.
 */
   IncrementalScoringFunction(const ParticlesTemp &to_move,
-                             const RestraintsTemp &rs, double weight = 1.0,
+                             const kernel::RestraintsTemp &rs,
+                             double weight = 1.0,
                              double max = NO_MAX,
                              std::string name =
                                  "IncrementalScoringFunction%1%");
@@ -111,7 +113,7 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
   ParticleIndexes get_movable_indexes() const;
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
                                     const ScoreStatesTemp &ss) IMP_OVERRIDE;
-  virtual Restraints create_restraints() const IMP_OVERRIDE;
+  virtual kernel::Restraints create_restraints() const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual void handle_set_has_required_score_states(bool) IMP_OVERRIDE;
   IMP_OBJECT_METHODS(IncrementalScoringFunction);

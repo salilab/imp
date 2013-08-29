@@ -23,7 +23,7 @@ ExampleComplexRestraint::ExampleComplexRestraint(UnaryFunction *f,
                                                  SingletonContainer *sc,
                                                  Float diameter,
                                                  std::string name)
-    : Restraint(sc->get_model(), name),
+    : kernel::Restraint(sc->get_model(), name),
       diameter_(diameter),
       sc_(sc),
       f_(f) {

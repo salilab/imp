@@ -21,7 +21,7 @@ class Tests(IMP.test.TestCase):
         f= RMF.open_rmf_file_read_only(name)
         m= IMP.Model()
         ps=IMP.rmf.create_particles(f, m);
-        rs=IMP.RestraintSet.get_from(IMP.rmf.create_restraints(f, m)[0])
+        rs=IMP.kernel.RestraintSet.get_from(IMP.rmf.create_restraints(f, m)[0])
         IMP.rmf.load_frame(f, 0)
         r= rs.get_restraints()[0]
         print [IMP.Particle.get_from(x).get_index() for x in r.get_inputs()]

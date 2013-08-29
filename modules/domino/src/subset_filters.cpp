@@ -27,12 +27,12 @@ namespace {
  */
 class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilter : public SubsetFilter {
   base::Pointer<RestraintCache> rc_;
-  RestraintsTemp rs_;
+  kernel::RestraintsTemp rs_;
   Slices slices_;
   unsigned int max_;
   friend class IMP::domino::MinimumRestraintScoreSubsetFilterTable;
   MinimumRestraintScoreSubsetFilter(RestraintCache *rc, Subset s,
-                                    const RestraintsTemp &rs, int max)
+                                    const kernel::RestraintsTemp &rs, int max)
       : SubsetFilter("Minimum restraint score filter"),
         rc_(rc),
         rs_(rs),
@@ -65,7 +65,7 @@ bool MinimumRestraintScoreSubsetFilter::get_is_ok(
 }
 
 MinimumRestraintScoreSubsetFilterTable::MinimumRestraintScoreSubsetFilterTable(
-    const RestraintsTemp &rs, RestraintCache *rc, int max)
+    const kernel::RestraintsTemp &rs, RestraintCache *rc, int max)
     : SubsetFilterTable("MinimumRestraintScoreSubsetFilterTable%1%"),
       rc_(rc),
       rs_(rs.begin(), rs.end()),
@@ -76,10 +76,10 @@ MinimumRestraintScoreSubsetFilterTable::MinimumRestraintScoreSubsetFilterTable(
 
 namespace {
 RestraintsTemp get_needed(RestraintCache *rc, const Subset &s,
-                          const Restraints &all) {
-  RestraintsTemp cur = rc->get_restraints(s, Subsets());
+                          const kernel::Restraints &all) {
+  kernel::RestraintsTemp cur = rc->get_restraints(s, Subsets());
   std::sort(cur.begin(), cur.end());
-  RestraintsTemp ret;
+  kernel::RestraintsTemp ret;
   std::set_intersection(cur.begin(), cur.end(), all.begin(), all.end(),
                         std::back_inserter(ret));
   return ret;
@@ -88,10 +88,10 @@ RestraintsTemp get_needed(RestraintCache *rc, const Subset &s,
 
 RestraintsTemp MinimumRestraintScoreSubsetFilterTable::get_restraints(
     const Subset &s, const Subsets &excluded) const {
-  RestraintsTemp all = get_needed(rc_, s, rs_);
+  kernel::RestraintsTemp all = get_needed(rc_, s, rs_);
   for (unsigned int i = 0; i < excluded.size(); ++i) {
-    RestraintsTemp cur = get_needed(rc_, excluded[i], rs_);
-    if (cur.size() == all.size()) return RestraintsTemp();
+    kernel::RestraintsTemp cur = get_needed(rc_, excluded[i], rs_);
+    if (cur.size() == all.size()) return kernel::RestraintsTemp();
   }
   return all;
 }
@@ -100,7 +100,7 @@ SubsetFilter *MinimumRestraintScoreSubsetFilterTable::get_subset_filter(
     const Subset &s, const Subsets &excluded) const {
   IMP_OBJECT_LOG;
   set_was_used(true);
-  RestraintsTemp rs = get_restraints(s, excluded);
+  kernel::RestraintsTemp rs = get_restraints(s, excluded);
   if (rs.empty())
     return nullptr;
   else {
@@ -721,11 +721,12 @@ ProbabilisticSubsetFilterTable::ProbabilisticSubsetFilterTable(double p,
 namespace {
 class RestraintScoreSubsetFilter : public SubsetFilter {
   base::PointerMember<RestraintCache> cache_;
-  RestraintsTemp rs_;
+  kernel::RestraintsTemp rs_;
   Slices slices_;
 
  public:
-  RestraintScoreSubsetFilter(RestraintCache *cache, const RestraintsTemp rs,
+  RestraintScoreSubsetFilter(RestraintCache *cache,
+                             const kernel::RestraintsTemp rs,
                              const Subset &s, const Subsets &)
       : SubsetFilter("RestraintScoreSubsetFilter%1%"), cache_(cache), rs_(rs) {
     for (unsigned int i = 0; i < rs_.size(); ++i) {
@@ -757,7 +758,7 @@ RestraintScoreSubsetFilterTable::RestraintScoreSubsetFilterTable(
     : SubsetFilterTable("RestraintScoreSubsetFilterTable%1%"), cache_(cache) {}
 
 RestraintScoreSubsetFilterTable::RestraintScoreSubsetFilterTable(
-    RestraintsAdaptor rs, ParticleStatesTable *pst)
+    kernel::RestraintsAdaptor rs, ParticleStatesTable *pst)
     : SubsetFilterTable("RestraintScoreSubsetFilterTable%1%"),
       cache_(new RestraintCache(pst)),
       rs_(rs.begin(), rs.end()) {}
@@ -765,10 +766,10 @@ RestraintScoreSubsetFilterTable::RestraintScoreSubsetFilterTable(
 SubsetFilter *RestraintScoreSubsetFilterTable::get_subset_filter(
     const Subset &s, const Subsets &excluded) const {
   if (!rs_.empty()) {
-    cache_->add_restraints(get_as<RestraintsTemp>(rs_));
+    cache_->add_restraints(get_as<kernel::RestraintsTemp>(rs_));
     rs_.clear();
   }
-  RestraintsTemp rs = cache_->get_restraints(s, excluded);
+  kernel::RestraintsTemp rs = cache_->get_restraints(s, excluded);
   if (rs.empty()) {
     IMP_LOG_TERSE("No restraints on subset " << s << " with excluded "
                                              << excluded << std::endl);

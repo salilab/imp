@@ -349,7 +349,7 @@ HeapAssignmentContainer::HeapAssignmentContainer(Subset subset, unsigned int k,
                                                  RestraintCache *rssf,
                                                  std::string name)
     : AssignmentContainer(name), subset_(subset), k_(k), rssf_(rssf) {
-  rs_ = get_as<Restraints>(rssf_->get_restraints(subset_, Subsets()));
+  rs_ = get_as<kernel::Restraints>(rssf_->get_restraints(subset_, Subsets()));
   for (unsigned int i = 0; i < rs_.size(); ++i) {
     slices_.push_back(rssf_->get_slice(rs_[i], subset_));
   }

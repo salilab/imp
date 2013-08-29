@@ -1,4 +1,4 @@
-"""Interface between XML Restraint and IMP Restraint."""
+"""Interface between XML Restraint and IMP.kernel.Restraint."""
 
 import IMP.core
 import IMP.em
@@ -22,7 +22,7 @@ class _RestraintSets(object):
         try:
             current_set = set_by_weight[restraint_type]
         except KeyError:
-            current_set = set_by_weight[restraint_type] = IMP.RestraintSet()
+            current_set = set_by_weight[restraint_type] = IMP.kernel.RestraintSet()
             if model:
                 model.add_restraint(current_set)
         current_set.add_restraint(restraint)

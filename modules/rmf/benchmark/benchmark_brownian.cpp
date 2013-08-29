@@ -79,7 +79,7 @@ struct It {
 
   base::Pointer<ListSingletonContainer> lsc;
   base::Pointer<ClosePairContainer> cpc;
-  Restraints rss;
+  kernel::Restraints rss;
   base::Pointer<PairScore> lb;
   base::Pointer<container::ExclusiveConsecutivePairFilter> filt;
   base::Pointer<BrownianDynamics> bd;
@@ -170,7 +170,7 @@ It create_restraints(PS0 *link, PS1 *lb, SS *bottom, It in) {
   // ret.rss.push_back(pr);
   IMP_NEW(SingletonsRestraint, sr, (bottom, ret.lsc));
   ret.rss.push_back(sr);
-  Restraints all_restraints = ret.rss;
+  kernel::Restraints all_restraints = ret.rss;
   all_restraints.push_back(pr);
   ret.bd = new BrownianDynamics(ret.m);
   ret.bd->set_log_level(SILENT);
@@ -190,7 +190,7 @@ double simulate(It it, int ns, bool verbose = false) {
 void update_slack_estimate(It it) {
   std::cout << "Estimating slack " << std::endl;
   SetLogState sl(VERBOSE);
-  Restraints rt = it.bd->get_scoring_function()->create_restraints();
+  kernel::Restraints rt = it.bd->get_scoring_function()->create_restraints();
   double slack = get_slack_estimate(it.lsc->get_particles(), 20, 1,
                                     get_restraints(rt), true, it.bd, it.cpc);
   it.sp->set_value(FloatKey("slack"), slack);
@@ -288,7 +288,7 @@ int main(int argc, char **argv) {
         std::cout << it.bd->get_scoring_function()->evaluate(false)
                   << " is the score " << std::endl;
         IMP::rmf::save_frame(fh, 0);
-        Restraints all =
+        kernel::Restraints all =
             get_restraints(it.bd->get_scoring_function()->create_restraints());
         for (unsigned int i = 0; i < all.size(); ++i) {
           std::cout << Showable(all[i]) << " " << all[i]->get_last_score()

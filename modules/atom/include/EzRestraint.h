@@ -1,5 +1,5 @@
 /**
- *  \file EzRestraint.h
+ *  \file atom/EzRestraint.h
  *  \brief Ez potential. A statistical scoring function for atom proteins
  *
  *  Copyright 2013 IMP Inventors. All rights reserved.
@@ -9,7 +9,7 @@
 #define IMPATOM_EZ_RESTRAINT_H
 
 #include <IMP/atom/atom_config.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/restraint_macros.h>
 #include <IMP/Particle.h>
 #include <IMP/UnaryFunction.h>
@@ -18,12 +18,12 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-//! Ez Potential Restraint
+//! Ez Potential kernel::Restraint
 /** Ez, a Depth-dependent Potential for Assessing the Energies of
     Insertion of Amino Acid Side-chains into Membranes.
     Senes et al. J. Mol. Biol. (2007) 366, 436–448
  */
-class IMPATOMEXPORT EzRestraint : public Restraint
+class IMPATOMEXPORT EzRestraint : public kernel::Restraint
 {
 
  Particles ps_;

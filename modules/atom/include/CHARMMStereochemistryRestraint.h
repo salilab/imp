@@ -11,7 +11,7 @@
 
 #include <IMP/atom/atom_config.h>
 #include <IMP/base/Pointer.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include "StereochemistryPairFilter.h"
 #include "Hierarchy.h"
 #include "charmm_segment_topology.h"
@@ -34,7 +34,7 @@ IMPATOM_BEGIN_NAMESPACE
           and then evaluated using an AngleSingletonScore in combination
           with a container::SingletonsRestraint.
  */
-class IMPATOMEXPORT CHARMMStereochemistryRestraint : public Restraint {
+class IMPATOMEXPORT CHARMMStereochemistryRestraint : public kernel::Restraint {
   Particles bonds_, angles_, dihedrals_, impropers_;
   IMP::base::PointerMember<BondSingletonScore> bond_score_;
   IMP::base::PointerMember<AngleSingletonScore> angle_score_;

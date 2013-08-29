@@ -13,7 +13,7 @@
 #include "internal/remove_pointers.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/restraint_macros.h>
 #include <IMP/UnaryFunction.h>
 
@@ -30,7 +30,7 @@ IMPCORE_BEGIN_NAMESPACE
     score deviations from the diameter with a harmonic upper bound of strength
     1.
  */
-class IMPCOREEXPORT DiameterRestraint : public Restraint {
+class IMPCOREEXPORT DiameterRestraint : public kernel::Restraint {
   IMP::base::PointerMember<ScoreState> ss_;
   IMP::base::PointerMember<Particle> p_;
   Float diameter_;
@@ -50,8 +50,8 @@ class IMPCOREEXPORT DiameterRestraint : public Restraint {
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(DiameterRestraint);
 #ifndef IMP_DOXYGEN
-  Restraints do_create_decomposition() const;
-  Restraints do_create_current_decomposition() const;
+  kernel::Restraints do_create_decomposition() const;
+  kernel::Restraints do_create_current_decomposition() const;
 #endif
 };
 

@@ -14,10 +14,10 @@ kcal2mod = 4.1868e-4
 # Mass of Carbon-12 (g/mol)
 cmass = 12.011
 
-class XTransRestraint(IMP.Restraint):
+class XTransRestraint(IMP.kernel.Restraint):
     """Attempt to move the whole system along the x axis"""
     def __init__(self, m, strength):
-        IMP.Restraint.__init__(self, m, "XTransRestraint %1%")
+        IMP.kernel.Restraint.__init__(self, m, "XTransRestraint %1%")
         self.strength = strength
         self.set_log_level(IMP.base.SILENT)
 

@@ -110,7 +110,7 @@ class Tests(IMP.test.TestCase):
         "Python Restraints from vector accessors should survive model deletion"
         refcnt = IMP.test.RefCountChecker(self)
         m= IMP.Model("restraint survival")
-        r = IMP.RestraintSet()
+        r = IMP.kernel.RestraintSet()
         m.add_restraint(r)
         del r
         # Now create new Python Restraint r from a C++ vector accessor
@@ -133,7 +133,7 @@ class Tests(IMP.test.TestCase):
         m= IMP.Model("M")
         r= IMP.kernel._ConstRestraint(1)
         r.set_name("R")
-        s= IMP.RestraintSet("S")
+        s= IMP.kernel.RestraintSet("S")
         print "add s to m"
         m.add_restraint(s)
         print "add r to m"
@@ -160,7 +160,7 @@ class Tests(IMP.test.TestCase):
         """Python Restraints from iterators should survive model deletion"""
         refcnt = IMP.test.RefCountChecker(self)
         m= IMP.Model("python restraint survival")
-        r = IMP.RestraintSet()
+        r = IMP.kernel.RestraintSet()
         m.add_restraint(r)
         del r
         # Now create new Python Restraint r from C++ iterator

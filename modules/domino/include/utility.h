@@ -55,10 +55,10 @@ IMPDOMINOEXPORT void load_particle_states(const Subset &s, const Assignment &ss,
     - do not depend on any particle in pst->get_particles() that is not in s
     The dependency graph is passed for efficiency.
 */
-IMPDOMINOEXPORT RestraintsTemp get_restraints(const Subset &s,
+IMPDOMINOEXPORT kernel::RestraintsTemp get_restraints(const Subset &s,
                                               const ParticleStatesTable *pst,
                                               const DependencyGraph &dg,
-                                              RestraintSet *rs);
+                                              kernel::RestraintSet *rs);
 
 /** @} */
 

@@ -12,14 +12,16 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-AmbiguousRestraint::AmbiguousRestraint(int d, Restraint *r0, Restraint *r1)
+AmbiguousRestraint::AmbiguousRestraint(int d, kernel::Restraint *r0,
+                                       kernel::Restraint *r1)
 : d_(d)
 {
     rs_.push_back(r0);
     rs_.push_back(r1);
 }
 
-AmbiguousRestraint::AmbiguousRestraint(int d, Restraints rs) : d_(d),rs_(rs) {}
+AmbiguousRestraint::AmbiguousRestraint(int d,
+                                       kernel::Restraints rs) : d_(d),rs_(rs) {}
 
 /* Apply the restraint by computing the d-norm
  */

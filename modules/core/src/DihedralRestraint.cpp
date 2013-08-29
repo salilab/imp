@@ -21,7 +21,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 DihedralRestraint::DihedralRestraint(UnaryFunction* score_func, Particle* p1,
                                      Particle* p2, Particle* p3, Particle* p4)
-    : Restraint(p1->get_model(), "DihedralRestraint%1%") {
+    : kernel::Restraint(p1->get_model(), "DihedralRestraint%1%") {
   p_[0] = p1;
   p_[1] = p2;
   p_[2] = p3;

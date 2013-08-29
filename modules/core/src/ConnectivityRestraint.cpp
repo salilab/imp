@@ -30,12 +30,12 @@ IMPCORE_BEGIN_NAMESPACE
 
 ConnectivityRestraint::ConnectivityRestraint(PairScore *ps,
                                              SingletonContainer *sc)
-    : Restraint(sc->get_model(), "ConnectivityRestraint %1%"), ps_(ps) {
+    : kernel::Restraint(sc->get_model(), "ConnectivityRestraint %1%"), ps_(ps) {
   sc_ = sc;
 }
 
 ConnectivityRestraint::ConnectivityRestraint(PairScore *ps)
-    : Restraint("ConnectivityRestraint %1%"), ps_(ps) {
+    : kernel::Restraint("ConnectivityRestraint %1%"), ps_(ps) {
   IMPCORE_DEPRECATED_METHOD_DEF(2.1, "Use constructor that takes container.");
 }
 
@@ -150,7 +150,7 @@ double ConnectivityRestraint::unprotected_evaluate(
 
 Restraints ConnectivityRestraint::do_create_current_decomposition() const {
   ParticlePairsTemp pp = get_connected_pairs();
-  Restraints ret;
+  kernel::Restraints ret;
   for (unsigned int i = 0; i < pp.size(); ++i) {
     IMP_NEW(PairRestraint, pr, (ps_, pp[i]));
     double score = pr->evaluate(false);

@@ -106,7 +106,7 @@ class Tests(IMP.test.TestCase):
         container = IMP.container.ListSingletonContainer(
                                               IMP.core.get_leaves(prot))
         em2d_restraint.set_particles(container)
-        em2d_restraints_set=IMP.RestraintSet()
+        em2d_restraints_set=IMP.kernel.RestraintSet()
         em2d_restraints_set.add_restraint(em2d_restraint)
         em2d_restraints_set.set_weight(1000) # weight for the em2D restraint
         m.add_restraint(em2d_restraints_set)

@@ -18,7 +18,7 @@
 #include "DistanceRestraint.h"
 
 #include <IMP/SingletonContainer.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/PairScore.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -51,7 +51,7 @@ IMPCORE_BEGIN_NAMESPACE
     graph connecting all the particles. The edge weights are given by
     the value of the PairScore for the two endpoints of the edge.
  */
-class IMPCOREEXPORT MSConnectivityRestraint : public Restraint {
+class IMPCOREEXPORT MSConnectivityRestraint : public kernel::Restraint {
   IMP::base::PointerMember<PairScore> ps_;
   IMP::base::PointerMember<SingletonContainer> sc_;
   double eps_;
@@ -90,7 +90,7 @@ class IMPCOREEXPORT MSConnectivityRestraint : public Restraint {
   //! Return the pair score used for scoring
   PairScore *get_pair_score() const { return ps_; }
 
-  Restraints do_create_current_decomposition() const;
+  kernel::Restraints do_create_current_decomposition() const;
 
   double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum) const;
 

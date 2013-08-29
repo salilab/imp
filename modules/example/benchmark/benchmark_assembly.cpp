@@ -35,17 +35,18 @@ Sphere3Ds get_residues(std::string fname) {
   return ret;
 }
 
-std::pair<Restraints, PairPredicates> create_restraints(Model *m,
+std::pair<kernel::Restraints, PairPredicates> create_restraints(Model *m,
                                                         const ParticlesTemp &ps,
                                                         double threshold) {
   IMP_NEW(GridClosePairsFinder, cpf, ());
   cpf->set_distance(threshold);
   ParticlePairsTemp close = cpf->get_close_pairs(ps);
-  Restraints ret;
+  kernel::Restraints ret;
   for (unsigned int i = 0; i < close.size(); ++i) {
     double d = get_distance(XYZ(close[i][0]), XYZ(close[i][1]));
     IMP_NEW(HarmonicDistancePairScore, hdps, (d, 10));
-    base::Pointer<Restraint> r = IMP::create_restraint(hdps.get(), close[i]);
+    base::Pointer<kernel::Restraint> r = IMP::create_restraint(hdps.get(),
+    close[i]);
     m->add_restraint(r);
     ret.push_back(r);
   }
@@ -70,7 +71,7 @@ ParticlesTemp create_particles(Model *m, const Sphere3Ds &input) {
 }
 
 void display_model(const Sphere3Ds &input, const ParticlesTemp &output,
-                   const Restraints &rs, std::string fname) {
+                   const kernel::Restraints &rs, std::string fname) {
   IMP_NEW(PymolWriter, w, (fname));
   for (unsigned int i = 0; i < input.size(); ++i) {
     double f = static_cast<double>(i) / input.size();
@@ -87,7 +88,7 @@ void display_model(const Sphere3Ds &input, const ParticlesTemp &output,
     w->add_geometry(sg);
   }
   for (unsigned int i = 0; i < rs.size(); ++i) {
-    IMP_NEW(RestraintGeometry, rg, (rs[i]));
+    IMP_NEW(kernel::RestraintGeometry, rg, (rs[i]));
     rg->set_name("restraint");
     w->add_geometry(rg);
   }
@@ -119,7 +120,7 @@ int main(int, char * []) {
 
   IMP_NEW(Model, m, ());
   ParticlesTemp ps = create_particles(m, s3);
-  Restraints rs;
+  kernel::Restraints rs;
   PairPredicates interactions;
   boost::tie(rs, interactions) = create_restraints(m, ps, threshold);
   display_model(s3, ps, rs, "in.pym");
@@ -148,8 +149,8 @@ int main(int, char * []) {
     XYZ(ps[i]).set_coordinates(get_zero_vector_d<3>());
   }
   try {
-    example::optimize_assembly(m, ps, get_as<RestraintsTemp>(rs),
-                               RestraintsTemp(), bb + 20, ssps,
+    example::optimize_assembly(m, ps, get_as<kernel::RestraintsTemp>(rs),
+                               kernel::RestraintsTemp(), bb + 20, ssps,
                                20000 * s3.size(), interactions);
   }
   catch (base::Exception e) {

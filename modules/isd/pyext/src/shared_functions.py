@@ -233,7 +233,7 @@ class sfo_common:
             hdps = IMP.core.Harmonic(0,1)
             bs = IMP.atom.BondSingletonScore(hdps)
             br = IMP.container.SingletonsRestraint(bs, bonds_container)
-            rsb = IMP.RestraintSet("bonded")
+            rsb = IMP.kernel.RestraintSet("bonded")
             rsb.add_restraint(br)
             rsb.set_weight(1.0/(kB*ff_temp))
             m.add_restraint(rsb)
@@ -274,7 +274,7 @@ class sfo_common:
             # Set up and evaluate the stereochemical part (bonds, angles, dihedrals,
             # impropers) of the CHARMM forcefield
             r = IMP.atom.CHARMMStereochemistryRestraint(prot, topology)
-            rsb = IMP.RestraintSet("bonded")
+            rsb = IMP.kernel.RestraintSet("bonded")
             rsb.add_restraint(r)
             m.add_restraint(rsb)
             #
@@ -299,7 +299,7 @@ class sfo_common:
         nbl.add_pair_filter(nonbonded_pair_filter)
         #should weight the ff restraint by a temperature, set to 300K.
         pr = IMP.container.PairsRestraint(pairscore, nbl)
-        rs = IMP.RestraintSet('phys')
+        rs = IMP.kernel.RestraintSet('phys')
         rs.add_restraint(pr)
         rs.set_weight(1.0/(kB*ff_temp))
         m.add_restraint(rs)
@@ -324,7 +324,7 @@ class sfo_common:
         If argument prior_rs is used, add them to that RestraintSet instead.
         """
         if not prior_rs:
-            prior_rs = IMP.RestraintSet('prior')
+            prior_rs = IMP.kernel.RestraintSet('prior')
             self._m.add_restraint(prior_rs)
             prior_rs.set_weight(1.0)
         for i in scales:
@@ -337,7 +337,7 @@ class sfo_common:
         If argument prior_rs is used, add them to that RestraintSet instead.
         """
         if not prior_rs:
-            prior_rs = IMP.RestraintSet('prior')
+            prior_rs = IMP.kernel.RestraintSet('prior')
             self._m.add_restraint(prior_rs)
             prior_rs.set_weight(1.0)
         for i in scales:
@@ -353,7 +353,7 @@ class sfo_common:
         if not (0 <= R <= c):
             raise ValueError, "parameters R and c should satisfy 0 <= R <= c"
         if not prior_rs:
-            prior_rs = IMP.RestraintSet('prior')
+            prior_rs = IMP.kernel.RestraintSet('prior')
             self._m.add_restraint(prior_rs)
             prior_rs.set_weight(1.0)
         for i in scales:
@@ -457,7 +457,7 @@ class sfo_common:
         gamma=self.init_model_setup_scale(*bounds_gamma)
         prior_rs = self.init_model_jeffreys([sigma,gamma], prior_rs)
         #likelihood
-        rs = IMP.RestraintSet(name)
+        rs = IMP.kernel.RestraintSet(name)
         #use the TBLReader to parse the TBL file.
         sequence = IMP.isd.utils.read_sequence_file(seqfile,
                 first_residue_number=sequence_match[1])
@@ -499,7 +499,7 @@ class sfo_common:
         Returns: data_rs
         """
         #likelihood
-        rs = IMP.RestraintSet(name)
+        rs = IMP.kernel.RestraintSet(name)
         #use the TBLReader to parse the TBL file.
         sequence = IMP.isd.utils.read_sequence_file(seqfile,
                 first_residue_number=sequence_match[1])
@@ -539,7 +539,7 @@ class sfo_common:
         Returns: data_rs
         """
         #likelihood
-        rs = IMP.RestraintSet(name)
+        rs = IMP.kernel.RestraintSet(name)
         #use the TBLReader to parse the TBL file.
         sequence = IMP.isd.utils.read_sequence_file(seqfile)
         tblr = IMP.isd.TBLReader.TBLReader(sequence)
@@ -604,7 +604,7 @@ class sfo_common:
         #likelihood
         if verbose:
             print "reading data"
-        rs=IMP.RestraintSet(name)
+        rs=IMP.kernel.RestraintSet(name)
         sequence= IMP.isd.utils.read_sequence_file(seqfile,
                 first_residue_no=sequence_match[1])
         if fulldata:
@@ -669,7 +669,7 @@ class sfo_common:
         way (like foxs)
         Returns: a restraintset and the experimental profile
         """
-        rs = IMP.RestraintSet(name)
+        rs = IMP.kernel.RestraintSet(name)
         saxs_profile = IMP.saxs.Profile(profilefile)
         particles = IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
         saxs_restraint = IMP.saxs.Restraint(particles, saxs_profile, ff_type)

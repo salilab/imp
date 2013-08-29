@@ -14,7 +14,7 @@
 #include <IMP/saxs/Profile.h>
 
 #include <IMP/Model.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/VersionInfo.h>
 
 IMPSAXS_BEGIN_NAMESPACE

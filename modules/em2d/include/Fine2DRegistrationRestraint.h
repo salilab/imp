@@ -23,7 +23,7 @@ IMPEM2D_BEGIN_NAMESPACE
 
 //! Performs the fine search for the registration values in order to register
 //! a model projection with an image
-class IMPEM2DEXPORT Fine2DRegistrationRestraint : public Restraint
+class IMPEM2DEXPORT Fine2DRegistrationRestraint : public kernel::Restraint
 {
 public:
 

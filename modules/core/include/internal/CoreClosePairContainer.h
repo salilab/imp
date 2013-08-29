@@ -66,9 +66,9 @@ class IMPCOREEXPORT CoreClosePairContainer
   SingletonContainer *get_singleton_container() const { return c_; }
   ClosePairsFinder *get_close_pairs_finder() const { return cpf_; }
   void set_slack(double d);
-  Restraints create_decomposition(PairScore *ps) const {
+  kernel::Restraints create_decomposition(PairScore *ps) const {
     ParticleIndexPairs all = get_range_indexes();
-    Restraints ret(all.size());
+    kernel::Restraints ret(all.size());
     for (unsigned int i = 0; i < all.size(); ++i) {
       ret[i] = new PairRestraint(
           ps, IMP::internal::get_particle(get_model(), all[i]));
@@ -76,9 +76,9 @@ class IMPCOREEXPORT CoreClosePairContainer
     return ret;
   }
   template <class PS>
-  Restraints create_decomposition_t(PS *ps) const {
+  kernel::Restraints create_decomposition_t(PS *ps) const {
     ParticleIndexPairs all = get_range_indexes();
-    Restraints ret(all.size());
+    kernel::Restraints ret(all.size());
     for (unsigned int i = 0; i < all.size(); ++i) {
       ret[i] = IMP::create_restraint(
           ps, IMP::internal::get_particle(get_model(), all[i]));

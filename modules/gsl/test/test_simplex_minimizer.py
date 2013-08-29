@@ -5,9 +5,9 @@ import IMP.gsl
 corners=[[0,0,0],[0,1,0], [0,0,1], [0,1,1],
          [1,0,0],[1,1,0], [1,0,1], [1,1,1]]
 
-class EasyCubeFunc(IMP.Restraint):
+class EasyCubeFunc(IMP.kernel.Restraint):
     def __init__(self, model, particles):
-        IMP.Restraint.__init__(self, "EasyCubeFunc %1%")
+        IMP.kernel.Restraint.__init__(self, "EasyCubeFunc %1%")
         self.particles= particles
         self.index= IMP.FloatKey("x")
     def do_show(self, junk):

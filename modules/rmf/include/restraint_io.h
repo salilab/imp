@@ -12,27 +12,29 @@
 #include <IMP/rmf/rmf_config.h>
 #include "link_macros.h"
 #include <IMP/base/object_macros.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/restraint_macros.h>
 
 IMPRMF_BEGIN_NAMESPACE
 
-/** \name Restraint I/O
-    Restraints are written as am RMF::FEATURE node with subnodes for
-    the decomposed restraints (Restraint::create_current_decompositon()).
-    The Restraints::get_last_score() value is what is saved to the file,
+/** \name kernel::Restraint I/O
+    kernel::Restraints are written as am RMF::FEATURE node with subnodes for
+    the decomposed restraints
+    (kernel::Restraint::create_current_decompositon()).
+    The kernel::Restraints::get_last_score() value is what is saved to the file,
     so make sure that the restraints have been evaluated before saving
     a frame.
 
-    Any particles returnd by Restraint::get_input_particles() that are
+    Any particles returnd by kernel::Restraint::get_input_particles() that are
     also linked in the RMF file will be included in the RMF file as
-    inputs for the Restraint. This allows external software like e.g.,
+    inputs for the kernel::Restraint. This allows external software like e.g.,
     Chimera to associate these restrains with a certain set of particles.
     @{
 */
-IMP_DECLARE_LINKERS(Restraint, restraint, restraints, Restraint *,
-                    Restraints,                   // InType
-                    Restraint *, RestraintsTemp,  // OutType
+IMP_DECLARE_LINKERS(kernel::Restraint, restraint, restraints,
+                    kernel::Restraint *,
+                    kernel::Restraints,                   // InType
+                    kernel::Restraint *, kernel::RestraintsTemp,  // OutType
                     (RMF::FileConstHandle fh, Model *m), );
 
 /** Certain restraint are made from a really large number of terms.

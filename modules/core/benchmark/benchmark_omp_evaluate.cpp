@@ -15,12 +15,12 @@ namespace {
 std::string get_module_name() { return "benchmark omp"; }
 std::string get_module_version() { return IMP::core::get_module_version(); }
 
-class ExpensiveRestraint : public IMP::Restraint {
+  class ExpensiveRestraint : public IMP::kernel::Restraint {
   IMP::ParticleIndexes pis_;
 
  public:
   ExpensiveRestraint(IMP::Model *m, const IMP::ParticleIndexes &pis)
-      : Restraint(m, "ExpensiveRestraint%1%"), pis_(pis) {}
+    : IMP::kernel::Restraint(m, "ExpensiveRestraint%1%"), pis_(pis) {}
   void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator sa) const
       IMP_OVERRIDE;
   IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;

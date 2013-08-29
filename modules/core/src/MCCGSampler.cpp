@@ -73,7 +73,7 @@ class ScoreWeightedIncrementalBallMover : public MonteCarloMover {
   Float radius_;
   ParticlesTemp moved_;
   algebra::Vector3Ds old_coords_;
-  base::Vector<std::pair<Restraint *, Ints> > deps_;
+  base::Vector<std::pair<kernel::Restraint *, Ints> > deps_;
 };
 
 ScoreWeightedIncrementalBallMover::ScoreWeightedIncrementalBallMover(
@@ -96,7 +96,7 @@ ScoreWeightedIncrementalBallMover::ScoreWeightedIncrementalBallMover(
   for (std::pair<DGTraits::vertex_iterator, DGTraits::vertex_iterator> be =
            boost::vertices(dg);
        be.first != be.second; ++be.first) {
-    Restraint *r = dynamic_cast<Restraint *>(vm[*be.first]);
+    kernel::Restraint *r = dynamic_cast<kernel::Restraint *>(vm[*be.first]);
     if (r) {
       boost::vector_property_map<int> color(boost::num_vertices(dg));
       Ints out;

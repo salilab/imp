@@ -1,6 +1,6 @@
 /**
  *  \file RigidBodiesImageFitRestraint.h
- *  \brief Fit Restraint
+ *  \brief Fit kernel::Restraint
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -41,7 +41,7 @@ typedef std::vector< KeyIndexMap > KeyIndexMaps;
 
 
 
-class IMPEM2DEXPORT RigidBodiesImageFitRestraint: public Restraint {
+class IMPEM2DEXPORT RigidBodiesImageFitRestraint: public kernel::Restraint {
   virtual double
   unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
      const IMP_OVERRIDE;

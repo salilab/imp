@@ -7,7 +7,7 @@
 
 #include <IMP/core/IncrementalScoringFunction.h>
 #include <IMP/RestraintSet.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/dependency_graph.h>
 #include <IMP/base/set.h>
 #include <IMP/core/XYZ.h>
@@ -33,7 +33,7 @@ IMP::Model *extract_model(const ParticlesTemp &ps) {
 }
 
 IncrementalScoringFunction::IncrementalScoringFunction(const ParticlesTemp &ps,
-                                                       const RestraintsTemp &rs,
+                                              const kernel::RestraintsTemp &rs,
                                                        double weight,
                                                        double max,
                                                        std::string name)
@@ -54,8 +54,9 @@ namespace {
 class IncrementalRestraintsScoringFunction
     : public IMP::internal::RestraintsScoringFunction {
  public:
-  IncrementalRestraintsScoringFunction(
-      const RestraintsTemp &rs, double weight = 1.0, double max = NO_MAX,
+  IncrementalRestraintsScoringFunction(const kernel::RestraintsTemp &rs,
+                                       double weight = 1.0,
+                                       double max = NO_MAX,
       std::string name = "IncrementalRestraintsScoringFunction%1%")
       : IMP::internal::RestraintsScoringFunction(rs, weight, max, name) {}
   // don't depend on optimized particles
@@ -66,9 +67,9 @@ class IncrementalRestraintsScoringFunction
 }
 
 IncrementalScoringFunction::Data IncrementalScoringFunction::create_data(
-    ParticleIndex pi, const base::map<Restraint *, int> &all,
-    const Restraints &dummies) const {
-  RestraintsTemp cr = get_dependent_restraints(get_model(),  pi);
+    ParticleIndex pi, const base::map<kernel::Restraint *, int> &all,
+    const kernel::Restraints &dummies) const {
+  kernel::RestraintsTemp cr = get_dependent_restraints(get_model(),  pi);
   IMP_LOG_TERSE("Dependent restraints for particle "
                 << get_model()->get_particle_name(pi) << " are "
                 << cr << std::endl);
@@ -85,7 +86,7 @@ IncrementalScoringFunction::Data IncrementalScoringFunction::create_data(
       ret.indexes.push_back(index);
     }
   }
-  cr += RestraintsTemp(dummies.begin(), dummies.end());
+  cr += kernel::RestraintsTemp(dummies.begin(), dummies.end());
   ret.sf = new IncrementalRestraintsScoringFunction(
          cr, 1.0, NO_MAX,
          get_model()->get_particle_name(pi) + " restraints");
@@ -106,13 +107,13 @@ void IncrementalScoringFunction::create_scoring_functions() {
   IMP_LOG_TERSE("Creating scoring functions" << std::endl);
   if (flattened_restraints_.empty()) return;
 
-  base::map<Restraint *, int> mp;
+  base::map<kernel::Restraint *, int> mp;
   IMP_LOG_TERSE("All restraints are " << flattened_restraints_ << std::endl);
   for (unsigned int i = 0; i < flattened_restraints_.size(); ++i) {
     mp[flattened_restraints_[i]] = i;
   }
 
-  Restraints drs;
+  kernel::Restraints drs;
   for (unsigned int i = 0; i < nbl_.size(); ++i) {
     // This ensures that the score states needed for the non-bonded terms
     drs.push_back(nbl_[i]->get_dummy_restraint());
@@ -124,10 +125,10 @@ void IncrementalScoringFunction::create_scoring_functions() {
 }
 
 void IncrementalScoringFunction::create_flattened_restraints(
-    const RestraintsTemp &rs) {
-  Restraints decomposed;
+    const kernel::RestraintsTemp &rs) {
+  kernel::Restraints decomposed;
   for (unsigned int i = 0; i < rs.size(); ++i) {
-    base::Pointer<Restraint> cur = rs[i]->create_decomposition();
+    base::Pointer<kernel::Restraint> cur = rs[i]->create_decomposition();
     if (cur) {
       decomposed.push_back(cur);
       cur->set_was_used(true);  // suppress message about the score states
@@ -272,7 +273,7 @@ void IncrementalScoringFunction::do_add_score_and_derivatives(
 }
 
 Restraints IncrementalScoringFunction::create_restraints() const {
-  Restraints ret;
+  kernel::Restraints ret;
   for (ScoringFunctionsMap::const_iterator it = scoring_functions_.begin();
        it != scoring_functions_.end(); ++it) {
     ret += it->second.sf->create_restraints();

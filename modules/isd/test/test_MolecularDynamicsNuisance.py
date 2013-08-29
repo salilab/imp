@@ -18,10 +18,10 @@ kcal2mod = 4.1868e-4
 # Mass of Carbon-12 (g/mol)
 cmass = 12.011
 
-class XTransRestraint(IMP.Restraint):
+class XTransRestraint(IMP.kernel.Restraint):
     """Attempt to move the whole system along the x axis"""
     def __init__(self, strength):
-        IMP.Restraint.__init__(self, "XTransRestraint %1%")
+        IMP.kernel.Restraint.__init__(self, "XTransRestraint %1%")
         self.strength = strength
 
     def unprotected_evaluate(self, accum):

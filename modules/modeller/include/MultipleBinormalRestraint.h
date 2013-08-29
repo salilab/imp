@@ -11,7 +11,7 @@
 
 #include <IMP/modeller/modeller_config.h>
 
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/Particle.h>
 #include <IMP/ParticleTuple.h>
 #include <IMP/generic.h>
@@ -27,7 +27,7 @@ class BinormalTerm;
     \external{http://salilab.org/modeller/9v7/manual/node441.html, Modeller manual}.
     The two angles are typically the phi and psi dihedrals of a residue.
  */
-class IMPMODELLEREXPORT MultipleBinormalRestraint : public Restraint
+class IMPMODELLEREXPORT MultipleBinormalRestraint : public kernel::Restraint
 {
   std::vector<BinormalTerm> terms_;
   ParticleQuad q1_, q2_;

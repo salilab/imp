@@ -177,7 +177,7 @@ def run(asmb_fn,proteomics_fn,mapping_fn,params_fn,combs_fn,
     print "Get number of restraints:",len(mdl.get_restraints())
     rs=mdl.get_restraints()
     for r in mdl.get_restraints():
-        rr=IMP.RestraintSet.get_from(r)
+        rr=IMP.kernel.RestraintSet.get_from(r)
         for i in range(rr.get_number_of_restraints()):
             print rr.get_restraint(i).get_name()
     output = open(scored_comb_output_fn,"w")
@@ -191,7 +191,7 @@ def run(asmb_fn,proteomics_fn,mapping_fn,params_fn,combs_fn,
             ref_mhs.append(IMP.atom.read_pdb(fn,mdl))
             all_ref_leaves+=IMP.core.get_leaves(ref_mhs[-1])
     for r in rs:
-        rr=IMP.RestraintSet.get_from(r)
+        rr=IMP.kernel.RestraintSet.get_from(r)
         for i in range(rr.get_number_of_restraints()):
             output.write(rr.get_restraint(i).get_name()+"|")
     output.write("\n")
@@ -203,7 +203,7 @@ def run(asmb_fn,proteomics_fn,mapping_fn,params_fn,combs_fn,
     print "native score"
     num_violated=0
     for r in rs:
-        rr=IMP.RestraintSet.get_from(r)
+        rr=IMP.kernel.RestraintSet.get_from(r)
         for j in range(rr.get_number_of_restraints()):
             print rr.get_restraint(j).get_name(),rr.evaluate(False)
 
@@ -213,7 +213,7 @@ def run(asmb_fn,proteomics_fn,mapping_fn,params_fn,combs_fn,
         ensmb.load_combination(comb)
         num_violated=0
         for r in rs:
-            rr=IMP.RestraintSet.get_from(r)
+            rr=IMP.kernel.RestraintSet.get_from(r)
             for j in range(rr.get_number_of_restraints()):
                 print rr.get_restraint(j).get_name()
                 rscore=rr.evaluate(False)
@@ -225,7 +225,7 @@ def run(asmb_fn,proteomics_fn,mapping_fn,params_fn,combs_fn,
         num_violated=0
         msg="COMB"+str(i)+"|"
         for r in rs:
-            rr=IMP.RestraintSet.get_from(r)
+            rr=IMP.kernel.RestraintSet.get_from(r)
             for j in range(rr.get_number_of_restraints()):
                 current_name=rr.get_restraint(j).get_name()
                 if current_name!=prev_name:

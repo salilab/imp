@@ -20,7 +20,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
     is, in general, more efficient than creating an, eg, PairsRestraint.
 */
 template <class Score, class Container>
-inline Restraint *create_restraint(Score *s, Container *c,
+inline kernel::Restraint *create_restraint(Score *s, Container *c,
                                    std::string name = std::string()) {
   return IMP::internal::create_container_restraint(s, c, name);
 }

@@ -109,9 +109,9 @@ IMPATOMEXPORT int get_copy_index(Hierarchy h);
     to accelerate the computation.
     See Hierarchy
  */
-IMPATOMEXPORT Restraint *create_excluded_volume_restraint(const Hierarchies &hs,
-                                                          double resolution =
-                                                              -1);
+IMPATOMEXPORT kernel::Restraint *
+create_excluded_volume_restraint(const Hierarchies &hs,
+                                 double resolution = -1);
 
 /** Set the mass, radius, residues, and coordinates to approximate the passed
     particles.

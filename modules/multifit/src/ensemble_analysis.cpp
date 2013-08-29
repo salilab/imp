@@ -51,7 +51,7 @@ atom::Hierarchy create_protein(
   // //TODO - do we need this restraint
    if (sel.size()>1){
 
-     Restraint *r = atom::create_connectivity_restraint(sel,k);
+     kernel::Restraint *r = atom::create_connectivity_restraint(sel,k);
      IMP_INTERNAL_CHECK(r!=NULL,
                         "Create connectivity failed for protein:"<<name
                         <<" failed \n");
@@ -155,7 +155,7 @@ Ensemble::Ensemble(multifit::SettingsData *sd,
 }
 
 std::vector<Floats> Ensemble::score_by_restraints(
-                        Restraints rs, const IntsList &combinations ) {
+                        kernel::Restraints rs, const IntsList &combinations ) {
   std::vector<Floats> scores(combinations.size());
   boost::progress_display show_progress(combinations.size());
   for(int i=0;i<(int)combinations.size();i++) {

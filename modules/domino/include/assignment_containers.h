@@ -324,7 +324,7 @@ class IMPDOMINOEXPORT HeapAssignmentContainer : public AssignmentContainer {
   C d_;
   Subset subset_;
   Slices slices_;
-  Restraints rs_;
+  kernel::Restraints rs_;
   unsigned int k_;  // max number of assignments (heap size)
   base::Pointer<RestraintCache> rssf_;  // to score candidate assignments
  public:

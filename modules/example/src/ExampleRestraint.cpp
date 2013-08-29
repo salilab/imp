@@ -12,7 +12,7 @@
 IMPEXAMPLE_BEGIN_NAMESPACE
 
 ExampleRestraint::ExampleRestraint(Particle *p, double k)
-    : Restraint(p->get_model(), "ExampleRestraint%1%"), p_(p), k_(k) {}
+    : kernel::Restraint(p->get_model(), "ExampleRestraint%1%"), p_(p), k_(k) {}
 
 /* Apply the pair score to each particle pair listed in the container.
  */

@@ -12,7 +12,7 @@
 #define IMPMULTIFIT_RADIUS_OF_GYRATION_RESTRAINT_H
 
 #include <IMP/multifit/multifit_config.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/restraint_macros.h>
 #include <IMP/core/HarmonicUpperBound.h>
 #include <IMP/Particle.h>
@@ -23,7 +23,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 /note a harmonic upper bound is applied between
       the predicted radius and the actual radius
  */
-class IMPMULTIFITEXPORT RadiusOfGyrationRestraint : public Restraint
+class IMPMULTIFITEXPORT RadiusOfGyrationRestraint : public kernel::Restraint
 {
 public:
   //! Constructor

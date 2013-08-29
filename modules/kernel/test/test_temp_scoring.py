@@ -3,10 +3,10 @@ import IMP.test
 import StringIO
 import random
 
-class DummyRestraint(IMP.Restraint):
+class DummyRestraint(IMP.kernel.Restraint):
     """Dummy do-nothing restraint"""
     def __init__(self, m, ps=[], cs=[]):
-        IMP.Restraint.__init__(self, m, "DummyRestraint %1%")
+        IMP.kernel.Restraint.__init__(self, m, "DummyRestraint %1%")
         self.ps=ps
         self.cs=cs
     def unprotected_evaluate(self, accum):

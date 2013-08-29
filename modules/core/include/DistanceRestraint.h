@@ -14,7 +14,7 @@
 #include "XYZ.h"
 #include <IMP/generic.h>
 
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 
 #include <iostream>
 
@@ -31,7 +31,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT DistanceRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
-    public Restraint
+    public kernel::Restraint
 #else
     public IMP::internal::TupleRestraint<DistancePairScore>
 #endif

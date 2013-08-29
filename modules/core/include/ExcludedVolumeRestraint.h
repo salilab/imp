@@ -16,7 +16,7 @@
 #include "rigid_bodies.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/Refiner.h>
 #include "RigidClosePairsFinder.h"
@@ -40,7 +40,7 @@ IMPCORE_BEGIN_NAMESPACE
 
     \note Currently the radius of all particles is assumed to be constant
  */
-class IMPCOREEXPORT ExcludedVolumeRestraint : public Restraint {
+class IMPCOREEXPORT ExcludedVolumeRestraint : public kernel::Restraint {
   base::PointerMember<SingletonContainer> sc_;
   mutable ParticleIndexPairs cur_list_;
   mutable bool was_bad_;
@@ -89,8 +89,8 @@ class IMPCOREEXPORT ExcludedVolumeRestraint : public Restraint {
   IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ExcludedVolumeRestraint);
   ;
-  Restraints do_create_decomposition() const;
-  Restraints do_create_current_decomposition() const;
+  kernel::Restraints do_create_decomposition() const;
+  kernel::Restraints do_create_current_decomposition() const;
 #ifndef IMP_DOXYGEN
   const ParticleIndexPairs &get_indexes() const { return cur_list_; }
 #endif

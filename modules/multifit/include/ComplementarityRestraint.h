@@ -37,7 +37,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
     returns infinity for many cases. Monte Carlo might make sense with certain
     parameters.
 */
-class IMPMULTIFITEXPORT ComplementarityRestraint : public Restraint
+class IMPMULTIFITEXPORT ComplementarityRestraint : public kernel::Restraint
 {
 public:
   ComplementarityRestraint(const ParticlesTemp &a, const ParticlesTemp &b,

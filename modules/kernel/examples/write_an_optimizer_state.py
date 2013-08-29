@@ -23,7 +23,7 @@ r0.set_name("restraint 0")
 r1=IMP.kernel._ConstRestraint(m, [], 2)
 r1.set_name("restraint 1")
 
-rs = IMP.RestraintSet([r0, r1], 1.0)
+rs = IMP.kernel.RestraintSet([r0, r1], 1.0)
 sf = rs.create_scoring_function()
 
 os= MyOptimizerState([r0, r1])

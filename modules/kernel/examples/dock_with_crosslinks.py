@@ -72,7 +72,7 @@ def setup_radii(chains):
 def add_excluded_volume(m, chains):
     """add excluded volume score on the coarse grained c-alpha model
     residues are represented by beads with conveniently defined excluded volume radius"""
-    rs = IMP.RestraintSet(m, 1.0, 'excluded_volume')
+    rs = IMP.kernel.RestraintSet(m, 1.0, 'excluded_volume')
     kappa_=0.1
     lsc= IMP.container.ListSingletonContainer(m)
     IMP.atom.get_by_type
@@ -180,7 +180,7 @@ def add_restraints(m):
     """Handle the restraints defined above
     sintax: resid1 chain1 resid2 chain2 max_distance strength_of_potential
     example:     226 H 272 N 15.0 10.0"""
-    rs=IMP.RestraintSet(m, 1.0, 'cross_links')
+    rs=IMP.kernel.RestraintSet(m, 1.0, 'cross_links')
     restraints={}
     restraints_map={}
     for tokens in xlinks:

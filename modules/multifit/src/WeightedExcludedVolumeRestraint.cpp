@@ -15,8 +15,8 @@ WeightedExcludedVolumeRestraint::WeightedExcludedVolumeRestraint(
   core::RigidBodies rbs,
   Refiner *refiner,
   FloatKey weight_key):
-    Restraint(IMP::internal::get_model(rbs),
-              "Weighted Excluded Volume Restraint") {
+    kernel::Restraint(IMP::internal::get_model(rbs),
+              "Weighted Excluded Volume kernel::Restraint") {
   IMP_LOG_TERSE("Load WeightedExcludedVolumeRestraint \n");
   rb_refiner_=refiner;
   add_particles(rbs);

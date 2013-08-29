@@ -41,7 +41,7 @@ PCAFitRestraint::PCAFitRestraint(
    DensityMap *em_map, float threshold,
    float max_pca_size_diff,float max_angle_diff,
    float max_centroid_diff,
-   FloatKey weight_key): Restraint(IMP::internal::get_model(ps),
+   FloatKey weight_key): kernel::Restraint(IMP::internal::get_model(ps),
       "Fit restraint%1%"),
       max_angle_diff_(algebra::PI*max_angle_diff/180.),
       max_pca_size_diff_(max_pca_size_diff*max_pca_size_diff),

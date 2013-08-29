@@ -15,9 +15,9 @@ from IMP.isd import Nuisance,Scale,Switching
 #unit testing framework
 import IMP.test
 
-class XTransRestraint(IMP.Restraint):
+class XTransRestraint(IMP.kernel.Restraint):
     def __init__(self):
-        IMP.Restraint.__init__(self, "XTransRestraint %1%")
+        IMP.kernel.Restraint.__init__(self, "XTransRestraint %1%")
 
     def unprotected_evaluate(self, accum):
         e=0

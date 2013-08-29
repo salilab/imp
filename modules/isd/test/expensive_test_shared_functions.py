@@ -56,7 +56,7 @@ class Tests(IMP.test.TestCase):
         self.init_protein('1G6J_MODEL1.pdb')
         self.assertIsInstance(ff, IMP.atom.CHARMMParameters)
         self.assertIsInstance(prot,IMP.atom.Hierarchy)
-        self.assertIsInstance(rsb, IMP.RestraintSet)
+        self.assertIsInstance(rsb, IMP.kernel.RestraintSet)
         #self.assertEqual(rsb.get_type_name(), 'phys_bonded')
         self.assertTrue(prot.get_is_valid(False))
     test_init_model_charmm_protein_and_ff = \
@@ -77,16 +77,16 @@ class Tests(IMP.test.TestCase):
         self.sfo.init_model_base('./')
         s=self.sfo.init_model_setup_scale(3.0,1.0,5.0)
         rs=self.sfo.init_model_jeffreys([s])
-        self.assertIsInstance(rs, IMP.RestraintSet)
+        self.assertIsInstance(rs, IMP.kernel.RestraintSet)
         #self.assertEqual(rs.get_type_name(), 'prior')
         self.assertEqual(rs.get_number_of_restraints(), 1)
         #self.assertIsInstance(rs.get_restraint(0), IMP.isd.JeffreysRestraint)
         self.assertAlmostEqual(rs.get_weight(), 1.0)
         self.assertTrue(rs.get_model())
-        rs=IMP.RestraintSet('test')
+        rs=IMP.kernel.RestraintSet('test')
         rs.add_restraint(IMP.isd.JeffreysRestraint(s))
         rs=self.sfo.init_model_jeffreys([s], rs)
-        self.assertIsInstance(rs, IMP.RestraintSet)
+        self.assertIsInstance(rs, IMP.kernel.RestraintSet)
         #self.assertEqual(rs.get_type_name(), 'test')
         self.assertEqual(rs.get_number_of_restraints(), 2)
         #self.assertIsInstance(rs.get_restraint(0), IMP.isd.JeffreysRestraint)
@@ -134,7 +134,7 @@ class Tests(IMP.test.TestCase):
                 self.sfo.init_model_NOEs(prot, seqfile,
                 tblfile, name='test')
         #check data restraintset
-        self.assertIsInstance(data_rs, IMP.RestraintSet)
+        self.assertIsInstance(data_rs, IMP.kernel.RestraintSet)
         #self.assertEqual(data_rs.get_type_name(), 'test')
         self.assertEqual(data_rs.get_number_of_restraints(), 2)
         #self.assertIsInstance(data_rs.get_restraint(0),
@@ -144,7 +144,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(data_rs.get_weight(), 1.0)
         self.assertTrue(data_rs.get_model())
         #check prior restraintset
-        self.assertIsInstance(prior_rs, IMP.RestraintSet)
+        self.assertIsInstance(prior_rs, IMP.kernel.RestraintSet)
         #self.assertEqual(prior_rs.get_type_name(), 'prior')
         self.assertEqual(prior_rs.get_number_of_restraints(), 2)
         #self.assertIsInstance(prior_rs.get_restraint(0),
@@ -162,7 +162,7 @@ class Tests(IMP.test.TestCase):
         prot,ff,rsb,rs = self.init_protein('6lyz.pdb')
         profile=self.get_input_file_name('lyzexp.dat')
         rs=self.init_model_standard_SAXS_restraint(prot, profile, name='test')
-        self.assertIsInstance(rs, IMP.RestraintSet)
+        self.assertIsInstance(rs, IMP.kernel.RestraintSet)
         #self.assertEqual(rs.get_type_name(), 'test')
         self.assertEqual(rs.get_number_of_restraints(), 1)
         self.assertIsInstance(prior_rs.get_restraint(0),

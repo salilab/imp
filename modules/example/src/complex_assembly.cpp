@@ -41,7 +41,7 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 class AssemblyData {
   ParticlesTemp ps_;
   base::map<Particle *, int> index_;
-  Restraints rs_;
+  kernel::Restraints rs_;
   ParticlesTemps particles_;
   domino::InteractionGraph interactions_;
 
@@ -61,7 +61,7 @@ class AssemblyData {
   }
 
  public:
-  AssemblyData(ParticlesTemp ps, const RestraintsTemp &rs)
+  AssemblyData(ParticlesTemp ps, const kernel::RestraintsTemp &rs)
       : ps_(ps), rs_(rs.begin(), rs.end()) {
     std::sort(ps_.begin(), ps_.end());
     interactions_ = domino::get_interaction_graph(rs, ps);
@@ -75,9 +75,9 @@ class AssemblyData {
       particles_.push_back(used);
     }
   }
-  RestraintsTemp get_restraints(ParticlesTemp ps) const {
+  kernel::RestraintsTemp get_restraints(ParticlesTemp ps) const {
     std::sort(ps.begin(), ps.end());
-    RestraintsTemp ret;
+    kernel::RestraintsTemp ret;
     for (unsigned int i = 0; i < rs_.size(); ++i) {
       ParticlesTemp used;
       std::set_intersection(particles_[i].begin(), particles_[i].end(),
@@ -113,8 +113,8 @@ class AssemblyData {
     assembling the residues of a protein from a truncated distance matrix.
 */
 void optimize_assembly(Model *m, const ParticlesTemp &components,
-                       const RestraintsTemp &interactions,
-                       const RestraintsTemp &other_restraints,
+                       const kernel::RestraintsTemp &interactions,
+                       const kernel::RestraintsTemp &other_restraints,
                        const algebra::BoundingBox3D &bb, PairScore *ev,
                        double cutoff, const PairPredicates &excluded) {
   IMP_NEW(core::ConjugateGradients, cg, (m));
@@ -131,11 +131,11 @@ void optimize_assembly(Model *m, const ParticlesTemp &components,
   IMP_NEW(container::ClosePairContainer, cpc, (active, 0, 4));
   cpc->set_pair_filters(excluded);
   IMP_NEW(core::SoftSpherePairScore, ssps, (10));
-  base::Pointer<Restraint> evr
+  base::Pointer<kernel::Restraint> evr
     = container::create_restraint(ssps.get(), cpc.get());
   IMP_NEW(core::HarmonicUpperBound, hub, (0, 10));
   IMP_NEW(core::BoundingBox3DSingletonScore, bbss, (hub, bb));
-  base::Pointer<Restraint> bbr =
+  base::Pointer<kernel::Restraint> bbr =
       container::create_restraint(bbss.get(), active.get());
   do {
     Particle *add = ad.get_highest_degree_unused_particle(cur);
@@ -145,12 +145,12 @@ void optimize_assembly(Model *m, const ParticlesTemp &components,
     mc->add_mover(create_serial_mover(cur));
     isf->clear_close_pair_scores();
     isf->add_close_pair_score(ev, 0, cur, excluded);
-    RestraintsTemp rs = other_restraints + ad.get_restraints(cur);
+    kernel::RestraintsTemp rs = other_restraints + ad.get_restraints(cur);
     IMP_LOG_TERSE("Current restraints are " << rs << " and particles " << cur
                                             << std::endl);
     mc->set_scoring_function(rs);
-    cg->set_scoring_function(rs + RestraintsTemp(1, evr.get()) +
-                       RestraintsTemp(1, bbr.get()));
+    cg->set_scoring_function(rs + kernel::RestraintsTemp(1, evr.get()) +
+                       kernel::RestraintsTemp(1, bbr.get()));
     active->set_particles(cur);
     double e;
     for (int j = 0; j < 5; ++j) {

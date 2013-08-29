@@ -3,10 +3,10 @@ import IMP.test
 import IMP.core
 import IMP.container
 
-class WoodsFunc(IMP.Restraint):
+class WoodsFunc(IMP.kernel.Restraint):
     """Woods function for four input values, defined as an IMP restraint"""
     def __init__(self, m):
-        IMP.Restraint.__init__(self, m, "WoodsFunc%1%")
+        IMP.kernel.Restraint.__init__(self, m, "WoodsFunc%1%")
         self.index= IMP.FloatKey("x")
     def unprotected_evaluate(self, accum):
         #print "Evaluating in python\n"

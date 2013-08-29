@@ -21,7 +21,7 @@ void do_it() {
   {
     IMP_NEW(ClosePairContainer, cpc, (lsc, 0, 5));
     IMP_NEW(SoftSpherePairScore, ps, (1));
-    base::Pointer<Restraint>
+    base::Pointer<kernel::Restraint>
       sr(container::create_restraint(ps.get(), cpc.get()));
     sr->set_maximum_score(.1);
     test_one<ClosePairContainer>("pairs restraint", seed, m,

@@ -40,7 +40,7 @@ RestraintSet * add_restraints(Model *model, DensityMap *dmap,
                               Particle *p,Refiner *leaves_ref,
                 const FloatKey &wei_key,
                 bool fast=false) {
-  RestraintSet *rsrs = new RestraintSet(model, 1.0,
+  kernel::RestraintSet *rsrs = new kernel::RestraintSet(model, 1.0,
                                         "rigid fitting restraints %1%");
    model->add_restraint(rsrs);
    //add fitting restraint
@@ -149,7 +149,7 @@ FittingSolutions local_rigid_fitting_around_point(
    }
    //add restraints
    Model *model = p->get_model();
-   RestraintSet *rsrs = add_restraints(model, dmap, p,refiner,
+   kernel::RestraintSet *rsrs = add_restraints(model, dmap, p,refiner,
                                        wei_key,fast);
    //create a rigid body mover and set the optimizer
    base::PointerMember<core::MonteCarlo> opt = set_optimizer(model,
@@ -193,7 +193,7 @@ FittingSolutions local_rigid_fitting_around_points(
            " Conjugate Gradients rounds. " << std::endl);
    Model *model = p->get_model();
 
-   RestraintSet *rsrs = add_restraints(model, dmap, p,refiner,
+   kernel::RestraintSet *rsrs = add_restraints(model, dmap, p,refiner,
                                        wei_key);
    base::PointerMember<core::MonteCarlo> opt = set_optimizer(model,
                                                       display_log, p,refiner,

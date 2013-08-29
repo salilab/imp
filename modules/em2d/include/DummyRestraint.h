@@ -11,12 +11,12 @@
 
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/base/log.h"
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include "IMP/restraint_macros.h"
 #include "IMP/base/Pointer.h"
 
 
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/base/log.h>
 #include <IMP/SingletonContainer.h>
 
@@ -34,7 +34,7 @@ IMPEM2D_BEGIN_NAMESPACE
     NOTE: Using this restraint for DOMINO requires a fairly good knowledge of
         the works of merge trees.
 */
-class IMPEM2DEXPORT DummyRestraint: public Restraint {
+class IMPEM2DEXPORT DummyRestraint: public kernel::Restraint {
   base::Pointer<Particle> p0_;
   base::Pointer<Particle> p1_;
 
@@ -46,7 +46,7 @@ public:
    * @param q Second particle
    */
   DummyRestraint(IMP::Particle *p, IMP::Particle *q):
-      Restraint(p->get_model(), "DummyRestraint%1%") {
+      kernel::Restraint(p->get_model(), "DummyRestraint%1%") {
     p0_ = p;
     p1_ = q;
   }
@@ -56,7 +56,7 @@ public:
    * @param out Stream used to show the information
    */
   void show(std::ostream &out = std::cout) const {
-    out << "Dummy Restraint" << std::endl;
+    out << "Dummy kernel::Restraint" << std::endl;
   }
 
   virtual double
@@ -71,7 +71,7 @@ IMP_OBJECTS(DummyRestraint,DummyRestraints);
 
 
 //! Dummy restraint for a set of particles. Same use as DummyRestraint
-class IMPEM2DEXPORT ParticlesDummyRestraint: public Restraint {
+class IMPEM2DEXPORT ParticlesDummyRestraint: public kernel::Restraint {
   base::Pointer<SingletonContainer> container_;
 
 public:
@@ -81,7 +81,7 @@ public:
    * @param sc Must contain all the particles that are going to be restrained
    */
   ParticlesDummyRestraint(SingletonContainer *sc):
-      Restraint(sc->get_model(), "ParticlesDummyRestraint%1%") {
+      kernel::Restraint(sc->get_model(), "ParticlesDummyRestraint%1%") {
     container_ = sc;
   }
 

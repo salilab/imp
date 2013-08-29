@@ -22,7 +22,7 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-EzRestraint::EzRestraint(Particles ps): Restraint("Ez Potential")
+EzRestraint::EzRestraint(Particles ps): kernel::Restraint("Ez Potential")
 {
  ps_ = ps;
  for(unsigned i=0; i<ps_.size(); ++i){

@@ -23,7 +23,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 IMP_GRAPH(SubsetGraph, undirected, Subset, int, out << vertex);
 
 /** An undirected graph with one vertex per particle of interest.
-    Two particles are connected by an edge if a Restraint
+    Two particles are connected by an edge if a kernel::Restraint
     or ScoreState creates and interaction between the two particles.
 
     See \ref graphs "Graphs in IMP" for more information.
@@ -122,7 +122,7 @@ IMP_GRAPH(MergeTree, bidirectional, Subset, int, out << vertex);
 IMPDOMINOEXPORT MergeTree get_merge_tree(ScoringFunctionAdaptor input,
                                          const ParticleStatesTable *pst);
 
-/** \see get_merge_tree(RestraintSet*,const ParticleStatesTable*)
+/** \see get_merge_tree(kernel::RestraintSet*,const ParticleStatesTable*)
 
     Compute the merge tree from a junction tree.
 
@@ -131,7 +131,7 @@ IMPDOMINOEXPORT MergeTree get_merge_tree(ScoringFunctionAdaptor input,
  */
 IMPDOMINOEXPORT MergeTree get_merge_tree(const SubsetGraph &junction_tree);
 
-/** \see get_merge_tree(RestraintSet*,const ParticleStatesTable*)
+/** \see get_merge_tree(kernel::RestraintSet*,const ParticleStatesTable*)
 
     Compute the merge tree from a junction tree, attempting to keep it fairly
     balanced.

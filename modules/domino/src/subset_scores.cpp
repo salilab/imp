@@ -19,19 +19,19 @@ RestraintCache::RestraintCache(ParticleStatesTable *pst, unsigned int size)
       cache_(Generator(pst), size, ApproximatelyEqual()) {
   next_index_ = 0;
 }
-void RestraintCache::add_restraint_set_internal(RestraintSet *rs,
+void RestraintCache::add_restraint_set_internal(kernel::RestraintSet *rs,
                                                 unsigned int index,
                                                 const Subset &cur_subset,
                                                 double cur_max,
                                                 const DepMap &dependencies) {
   IMP_LOG_TERSE("Parsing restraint set " << Showable(rs) << std::endl);
   if (cur_max < std::numeric_limits<double>::max()) {
-    for (RestraintSet::RestraintIterator it = rs->restraints_begin();
+    for (kernel::RestraintSet::RestraintIterator it = rs->restraints_begin();
          it != rs->restraints_end(); ++it) {
       add_restraint_internal(*it, index, rs, cur_max, cur_subset, dependencies);
     }
   } else {
-    for (RestraintSet::RestraintIterator it = rs->restraints_begin();
+    for (kernel::RestraintSet::RestraintIterator it = rs->restraints_begin();
          it != rs->restraints_end(); ++it) {
       add_restraint_internal(*it, index, nullptr,
                              std::numeric_limits<double>::max(), Subset(),
@@ -40,9 +40,9 @@ void RestraintCache::add_restraint_set_internal(RestraintSet *rs,
   }
 }
 
-void RestraintCache::add_restraint_set_child_internal(Restraint *r,
+void RestraintCache::add_restraint_set_child_internal(kernel::Restraint *r,
                                                       const Subset &cur_subset,
-                                                      RestraintSet *parent,
+                                                  kernel::RestraintSet *parent,
                                                       double parent_max,
                                                       Subset parent_subset) {
   if (!parent) return;
@@ -51,7 +51,7 @@ void RestraintCache::add_restraint_set_child_internal(Restraint *r,
   cache_.access_generator()
       .add_to_set(parent, r, Slice(parent_subset, cur_subset), parent_max);
 }
-Subset RestraintCache::get_subset(Restraint *r,
+Subset RestraintCache::get_subset(kernel::Restraint *r,
                                   const DepMap &dependencies) const {
   ParticlesTemp ups = IMP::get_input_particles(r->get_inputs());
   std::sort(ups.begin(), ups.end());
@@ -68,8 +68,9 @@ Subset RestraintCache::get_subset(Restraint *r,
   return Subset(outps);
 }
 
-void RestraintCache::add_restraint_internal(Restraint *r, unsigned int index,
-                                            RestraintSet *parent,
+void RestraintCache::add_restraint_internal(kernel::Restraint *r,
+                                            unsigned int index,
+                                            kernel::RestraintSet *parent,
                                             double parent_max,
                                             Subset parent_subset,
                                             const DepMap &dependencies) {
@@ -93,7 +94,7 @@ void RestraintCache::add_restraint_internal(Restraint *r, unsigned int index,
   }
   add_restraint_set_child_internal(r, cur_subset, parent, parent_max,
                                    parent_subset);
-  RestraintSet *rs = dynamic_cast<RestraintSet *>(r);
+  kernel::RestraintSet *rs = dynamic_cast<kernel::RestraintSet *>(r);
   if (rs) {
     add_restraint_set_internal(rs, index, cur_subset, cur_max, dependencies);
   } else {
@@ -103,7 +104,7 @@ void RestraintCache::add_restraint_internal(Restraint *r, unsigned int index,
   }
 }
 
-void RestraintCache::add_restraints(const RestraintsAdaptor &rs) {
+void RestraintCache::add_restraints(const kernel::RestraintsAdaptor &rs) {
   IMP_OBJECT_LOG;
   if (rs.empty()) return;
   Model *m = rs[0]->get_model();
@@ -123,7 +124,7 @@ void RestraintCache::add_restraints(const RestraintsAdaptor &rs) {
   }
 
   for (unsigned int i = 0; i < rs.size(); ++i) {
-    base::Pointer<Restraint> r = rs[i]->create_decomposition();
+    base::Pointer<kernel::Restraint> r = rs[i]->create_decomposition();
     IMP_IF_LOG(TERSE) {
       IMP_LOG_TERSE("Before:" << std::endl);
       IMP_LOG_WRITE(TERSE, show_restraint_hierarchy(rs[i]));
@@ -145,7 +146,7 @@ void RestraintCache::add_restraints(const RestraintsAdaptor &rs) {
 RestraintsTemp RestraintCache::get_restraints(const Subset &s,
                                               const Subsets &exclusions) const {
   IMP_OBJECT_LOG;
-  RestraintsTemp ret;
+  kernel::RestraintsTemp ret;
   for (KnownRestraints::const_iterator it = known_restraints_.begin();
        it != known_restraints_.end(); ++it) {
     if (s.get_contains(it->second)) {
@@ -165,7 +166,7 @@ RestraintsTemp RestraintCache::get_restraints(const Subset &s,
 }
 RestraintsTemp RestraintCache::get_restraints() const {
   IMP_OBJECT_LOG;
-  RestraintsTemp ret;
+  kernel::RestraintsTemp ret;
   for (KnownRestraints::const_iterator it = known_restraints_.begin();
        it != known_restraints_.end(); ++it) {
     ret.push_back(it->first);
@@ -173,7 +174,7 @@ RestraintsTemp RestraintCache::get_restraints() const {
   return ret;
 }
 
-Slice RestraintCache::get_slice(Restraint *r, const Subset &s) const {
+Slice RestraintCache::get_slice(kernel::Restraint *r, const Subset &s) const {
   Subset rs = known_restraints_.find(r)->second;
   return Slice(s, rs);
 }
@@ -192,7 +193,7 @@ void RestraintCache::show_restraint_information(std::ostream &out) const {
   cache_.get_generator().show_restraint_information(out);
 }
 
-double RestraintCache::get_score(Restraint *r, const Subset &s,
+double RestraintCache::get_score(kernel::Restraint *r, const Subset &s,
                                  const Assignment &a) const {
   IMP_OBJECT_LOG;
   set_was_used(true);
@@ -201,7 +202,7 @@ double RestraintCache::get_score(Restraint *r, const Subset &s,
   return get_score(r, ra);
 }
 
-void RestraintCache::load_last_score(Restraint *r, const Subset &s,
+void RestraintCache::load_last_score(kernel::Restraint *r, const Subset &s,
                                      const Assignment &a) {
   IMP_OBJECT_LOG;
   double ss = get_score(r, s, a);
@@ -257,8 +258,9 @@ ParticleIndex get_particle_index(const ParticlesTemp &particle_ordering) {
   return map;
 }
 Orders get_orders(
-    const base::map<base::Pointer<Restraint>, Subset> &known_restraints,
-    const RestraintsTemp &restraints, const ParticlesTemp &particle_ordering) {
+    const base::map<base::Pointer<kernel::Restraint>, Subset> &known_restraints,
+    const kernel::RestraintsTemp &restraints,
+    const ParticlesTemp &particle_ordering) {
   Orders ret(restraints.size());
   for (unsigned int i = 0; i < restraints.size(); ++i) {
     ret[i] =
@@ -269,17 +271,17 @@ Orders get_orders(
 }
 
 void RestraintCache::save_cache(const ParticlesTemp &particle_ordering,
-                                const RestraintsTemp &restraints,
+                                const kernel::RestraintsTemp &restraints,
                                 RMF::HDF5::Group group,
                                 unsigned int max_entries) {
   RMF::HDF5::FloatDataSet1Ds scores;
   RMF::HDF5::IntDataSet2Ds assignments;
-  base::map<Restraint *, int> restraint_index;
+  base::map<kernel::Restraint *, int> restraint_index;
   ParticleIndex particle_index = get_particle_index(particle_ordering);
   Orders orders = get_orders(known_restraints_, restraints, particle_ordering);
   // create data sets for restraints
   for (unsigned int i = 0; i < restraints.size(); ++i) {
-    Restraint *r = restraints[i];
+    kernel::Restraint *r = restraints[i];
     RestraintID rid =
         get_restraint_id(particle_index, known_restraints_.find(r)->second,
                          restraint_index_.find(r)->second);
@@ -320,14 +322,14 @@ void RestraintCache::save_cache(const ParticlesTemp &particle_ordering,
 void RestraintCache::load_cache(const ParticlesTemp &particle_ordering,
                                 RMF::HDF5::ConstGroup group) {
   ParticleIndex particle_index = get_particle_index(particle_ordering);
-  base::map<RestraintID, Restraint *> index;
+  base::map<RestraintID, kernel::Restraint *> index;
   for (KnownRestraints::const_iterator it = known_restraints_.begin();
        it != known_restraints_.end(); ++it) {
     index[get_restraint_id(particle_index, it->second,
                            restraint_index_.find(it->first)->second)] =
         it->first;
   }
-  RestraintsTemp restraints;
+  kernel::RestraintsTemp restraints;
   for (unsigned int i = 0; i < group.get_number_of_children(); ++i) {
     RMF::HDF5::ConstGroup ch = group.get_child_group(i);
     int restraint_index =
@@ -337,7 +339,7 @@ void RestraintCache::load_cache(const ParticlesTemp &particle_ordering,
     RestraintID rid(restraint_index,
                     base::ConstVector<unsigned int>(Ints(
                         particle_indexes.begin(), particle_indexes.end())));
-    Restraint *r = index.find(rid)->second;
+    kernel::Restraint *r = index.find(rid)->second;
     restraints.push_back(r);
     IMP_LOG_TERSE("Matching " << Showable(r) << " with " << ch.get_name()
                               << std::endl);

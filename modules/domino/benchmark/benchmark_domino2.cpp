@@ -47,7 +47,7 @@ int main(int argc, char * []) {
   ParticleIndexPairs ppt = cpf->get_close_pairs(m, lsc->get_indexes());
   for (unsigned int i = 0; i < ppt.size(); ++i) {
     double d = get_distance(XYZ(m, ppt[i][0]), XYZ(m, ppt[i][1]));
-    Restraint *r =
+    kernel::Restraint *r =
         new DistanceRestraint(new Harmonic(d, 1), m->get_particle(ppt[i][0]),
                               m->get_particle(ppt[i][1]));
     std::ostringstream oss;

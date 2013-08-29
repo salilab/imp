@@ -15,7 +15,8 @@ DensityFillingRestraint::DensityFillingRestraint(
    Particles ps,
    DensityMap *em_map,Float threshold
                                                  ):
-    Restraint(IMP::internal::get_model(ps),"Envelope penetration restraint")
+    kernel::Restraint(IMP::internal::get_model(ps),
+                      "Envelope penetration restraint")
 {
   IMP_LOG_TERSE("Load envelope penetration with the following input:"<<
           "number of particles:"<<ps.size()<<

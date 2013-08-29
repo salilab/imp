@@ -12,7 +12,7 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/Model.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/ScoreState.h>
 #include <IMP/base/Pointer.h>
 

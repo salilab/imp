@@ -51,7 +51,7 @@ class IMPISDEXPORT  FretRestraint : public ISDRestraint
 public:
 
   //! Create the restraint.
-  /** Restraints should store the particles they are to act on,
+  /** kernel::Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
    */
 

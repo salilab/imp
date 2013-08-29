@@ -60,7 +60,7 @@ atom::Hierarchy create_coarse_molecule_from_molecule(
   }
   if (add_conn_restraint){
   int k=1;//todo - make this a parameter
-  Restraint *r = atom::create_connectivity_restraint(sel,k);
+  kernel::Restraint *r = atom::create_connectivity_restraint(sel,k);
   if (r != nullptr){
     mdl->add_restraint(r);}
   }

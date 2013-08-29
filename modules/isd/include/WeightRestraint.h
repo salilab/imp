@@ -10,14 +10,14 @@
 #define IMPISD_WEIGHT_RESTRAINT_H
 #include <IMP/isd/Scale.h>
 #include "isd_config.h"
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/restraint_macros.h>
 
 IMPISD_BEGIN_NAMESPACE
 /** A restraint for in-vivo ensemble FRET data
  */
 
-class IMPISDEXPORT  WeightRestraint : public Restraint
+class IMPISDEXPORT  WeightRestraint : public kernel::Restraint
 {
     Particle *w_;
     Float wmin_;
@@ -27,7 +27,7 @@ class IMPISDEXPORT  WeightRestraint : public Restraint
 public:
 
   //! Create the restraint.
-  /** Restraints should store the particles they are to act on,
+  /** kernel::Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
    */
 

@@ -11,16 +11,18 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-MinimumRestraint::MinimumRestraint(unsigned int num, const Restraints &rs,
+MinimumRestraint::MinimumRestraint(unsigned int num,
+                                   const kernel::Restraints &rs,
                                    std::string name)
-    : Restraint(rs[0]->get_model(), name), k_(num) {
+    : kernel::Restraint(rs[0]->get_model(), name), k_(num) {
   set_restraints(rs);
 }
 
-IMP_LIST_IMPL(MinimumRestraint, Restraint, restraint, Restraint *, Restraints);
+IMP_LIST_IMPL(MinimumRestraint, Restraint, restraint, kernel::Restraint *,
+              kernel::Restraints);
 
 double MinimumRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
-  algebra::internal::MinimalSet<double, Restraint *> ms(k_);
+  algebra::internal::MinimalSet<double, kernel::Restraint *> ms(k_);
   for (RestraintConstIterator it = restraints_begin(); it != restraints_end();
        ++it) {
     ms.insert((*it)->unprotected_evaluate(nullptr), *it);
@@ -41,7 +43,7 @@ double MinimumRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
 }
 
 void MinimumRestraint::set_model(Model *m) {
-  Restraint::set_model(m);
+  kernel::Restraint::set_model(m);
   for (RestraintConstIterator it = restraints_begin(); it != restraints_end();
        ++it) {
     (*it)->set_model(m);
@@ -56,7 +58,7 @@ ModelObjectsTemp MinimumRestraint::do_get_inputs() const {
   return ret;
 }
 
-void MinimumRestraint::on_add(Restraint* r) const {
+void MinimumRestraint::on_add(kernel::Restraint* r) const {
   r->set_model(get_model());
 }
 

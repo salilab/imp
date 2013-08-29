@@ -28,15 +28,15 @@ IMPISD_BEGIN_NAMESPACE
 class IMPISDEXPORT AmbiguousRestraint : public ISDRestraint
 {
   int d_;
-  Restraints rs_;
+  kernel::Restraints rs_;
 public:
   //! Create the restraint.
-  /** Restraints should store the particles they are to act on,
+  /** kernel::Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
       Two ways to call it: pass it two restraints, or a list of restraints.
    */
-  AmbiguousRestraint(int d, Restraint *r0, Restraint *r1);
-  AmbiguousRestraint(int d, Restraints rs);
+  AmbiguousRestraint(int d, kernel::Restraint *r0, kernel::Restraint *r1);
+  AmbiguousRestraint(int d, kernel::Restraints rs);
 
   double get_probability() const
   {

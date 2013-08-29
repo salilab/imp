@@ -16,7 +16,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 VolumeRestraint::VolumeRestraint(UnaryFunction *f, SingletonContainer *sc,
                                  double volume)
-    : Restraint(sc->get_model(), "VolumeRestraint%1%"),
+    : kernel::Restraint(sc->get_model(), "VolumeRestraint%1%"),
       sc_(sc),
       f_(f),
       volume_(volume) {}

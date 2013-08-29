@@ -10,7 +10,7 @@
 #define IMPCORE_MINIMUM_RESTRAINT_H
 
 #include <IMP/core/core_config.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/Model.h>
 #include <IMP/macros.h>
 #include <IMP/generic.h>
@@ -20,16 +20,17 @@ IMPCORE_BEGIN_NAMESPACE
 //! Score based on the minimum scoring members of a set of restraints
 /**
  */
-class IMPCOREEXPORT MinimumRestraint : public Restraint {
+class IMPCOREEXPORT MinimumRestraint : public kernel::Restraint {
   unsigned int k_;
-  void on_add(Restraint *r) const;
+  void on_add(kernel::Restraint *r) const;
  public:
   /** Score based on the num minimum restraints from rs. The restraints
       must already be registered with the model (either by being added
       to the model scoring function, upon constructior or having
-      Restraint::set_model() called on them.
+      kernel::Restraint::set_model() called on them.
    */
-  MinimumRestraint(unsigned int num, const Restraints &rs = Restraints(),
+  MinimumRestraint(unsigned int num,
+                   const kernel::Restraints &rs = kernel::Restraints(),
                    std::string name = "MinimumRestraint %1%");
 
   void clear_caches();
@@ -42,7 +43,7 @@ class IMPCOREEXPORT MinimumRestraint : public Restraint {
   ;
 
   IMP_LIST_ACTION(public, Restraint, Restraints, restraint, restraints,
-                  Restraint *, Restraints, on_add(obj);,
+                  kernel::Restraint *, kernel::Restraints, on_add(obj);,
                   {}, {});
   void set_model(Model *m);
 };

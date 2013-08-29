@@ -25,25 +25,25 @@ IMPDISPLAY_BEGIN_NAMESPACE
     efficiency, it does not update the model.
 */
 class IMPDISPLAYEXPORT RestraintGeometry : public Geometry {
-  IMP::base::PointerMember<Restraint> r_;
+  IMP::base::PointerMember<kernel::Restraint> r_;
   IMP::base::Pointer<Model> m_;
   //! Use this if the restraint is not part of the model
-  RestraintGeometry(Restraint *p, Model *m);
+  RestraintGeometry(kernel::Restraint *p, Model *m);
 
  public:
-  RestraintGeometry(Restraint *p);
-  Restraint *get_restraint() const { return r_; }
+  RestraintGeometry(kernel::Restraint *p);
+  kernel::Restraint *get_restraint() const { return r_; }
   virtual IMP::display::Geometries get_components() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RestraintGeometry);
 };
 
 //! Geometry for a whole set of restraints
 class IMPDISPLAYEXPORT RestraintSetGeometry : public Geometry {
-  IMP::base::Pointer<RestraintSet> r_;
+  IMP::base::Pointer<kernel::RestraintSet> r_;
 
  public:
-  RestraintSetGeometry(RestraintSet *p);
-  RestraintSet *get_restraint_set() const { return r_; }
+  RestraintSetGeometry(kernel::RestraintSet *p);
+  kernel::RestraintSet *get_restraint_set() const { return r_; }
   virtual IMP::display::Geometries get_components() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RestraintSetGeometry);
 };

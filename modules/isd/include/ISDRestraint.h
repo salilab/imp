@@ -13,7 +13,7 @@
 #include <IMP/isd/isd_config.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/core/XYZ.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairScore.h>
 #include <string>
@@ -21,13 +21,13 @@
 IMPISD_BEGIN_NAMESPACE
 
 //! Apply an NOE distance restraint between two particles.
-class IMPISDEXPORT ISDRestraint : public Restraint
+class IMPISDEXPORT ISDRestraint : public kernel::Restraint
 {
 public:
 
-  ISDRestraint() : Restraint() {}
-  ISDRestraint(std::string name) : Restraint(name) {}
-  ISDRestraint(Model *m, std::string name) : Restraint(m,name) {}
+  ISDRestraint() : kernel::Restraint() {}
+  ISDRestraint(std::string name) : kernel::Restraint(name) {}
+  ISDRestraint(Model *m, std::string name) : kernel::Restraint(m,name) {}
 
   /* call for probability, pure method */
   virtual double get_probability() const = 0;
