@@ -24,10 +24,12 @@ namespace internal {
 struct IMPCOREEXPORT GraphData {
   GraphData() {}
   GraphData(std::string prefix) {
+    setup_key_ = IntKey((prefix + " setup").c_str());
     node_keys_[0] = ParticleIndexKey((prefix + " node 0").c_str());
     node_keys_[1] = ParticleIndexKey((prefix + " node 1").c_str());
     edges_key_ = ParticleIndexesKey(prefix + " edges");
   }
+  IntKey setup_key_;
   ParticleIndexKey node_keys_[2];
   ParticleIndexesKey edges_key_;
 };

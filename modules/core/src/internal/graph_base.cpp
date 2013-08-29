@@ -12,10 +12,14 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-void graph_initialize_node(Particle *, const GraphData &) {}
+void graph_initialize_node(Particle *p, const GraphData &d) {
+  p->add_attribute(d.setup_key_, 1);
+}
 
 /** \internal */
-bool graph_is_node(Particle *, const GraphData &) { return true; }
+bool graph_is_node(Particle *p, const GraphData &d) {
+  return p->has_attribute(d.setup_key_);
+}
 
 Particle *graph_connect(Particle *a, Particle *b, GraphData &d) {
   Model *m = a->get_model();
