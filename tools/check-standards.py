@@ -70,10 +70,10 @@ def check_c_file(filename, errors):
             configh=True;
         if blank and num == 0:
             errors.append('%s:1: File has leading blank line(s)' % filename)
-    if len(fh)>0 and len(fh[-2])==0:
+    if len(fh)>0 and len(fh) > 2 and len(fh[-2])==0:
         errors.append('%s:%d: File has trailing blank line(s)' % (filename, len(fh)))
     if exported and filename.endswith(".h") and not file_line and module:
-        errors.append('%s Exported header must have a line \\file %s/%s'% (filename, module, name))
+        errors.append('%s:2: Exported header must have a line \\file %s/%s'% (filename, module, name))
 
 def check_python_file(filename, errors):
     """Check each modified Python file to make sure it adheres to the
