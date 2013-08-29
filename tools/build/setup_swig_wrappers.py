@@ -49,8 +49,7 @@ def build_wrapper(module, module_path, source, sorted, info, target, datapath):
     contents.append("""%%module(directors="1", allprotected="1") "%s"
 %%feature("autodoc", 1);
 // turn off the warning as it mostly triggers on methods (and lots of them)
-%%warnfilter(321);
-%%warnfilter(302);
+%%warnfilter(321,302);
 
 %%inline %%{
 namespace IMP {
