@@ -305,7 +305,7 @@
 #define IMP_FUNCTION_LOG \
   IMP::base::CreateLogContext log_context__(IMP_CURRENT_FUNCTION)
 
-//! Create a new long context from a streamed name
+//! Create a new log context from a streamed name
 #define IMP_LOG_CONTEXT(name) \
   IMP::base::CreateLogContext imp_log_context(name, nullptr)
 
