@@ -114,12 +114,12 @@ double Simulator::do_simulate_wave
     unsigned int n = (unsigned int)std::ceil( time / raw_wave_time );
     double wave_time = time / n;
     double adjust = wave_time / raw_wave_time;
-    std::cout << "ts_seq: ";
+    IMP_LOG(PROGRESS, "Wave time step seq: ");
     for(unsigned int i = 0; i < ts_seq.size() ; i++) {
       ts_seq[i] *= adjust;
-      std::cout << ts_seq[i] << ", ";
+      IMP_LOG(PROGRESS, ts_seq[i] << ", ");
     }
-    std::cout << std::endl;
+    IMP_LOG(PROGRESS, std::endl);
   }
 
   unsigned int i = 0;
@@ -132,15 +132,15 @@ double Simulator::do_simulate_wave
     // (for periodic optimizers)
     int nf_left = (int)( (target - current_time_) / max_time_step_ );
     while(orig_nf_left >= nf_left) {
-      IMP_LOG(VERBOSE,"Updating states: " << orig_nf_left << "," << nf_left
+      IMP_LOG(PROGRESS,"Updating states: " << orig_nf_left << "," << nf_left
               << " target time " << target <<  " current time "
               << current_time_ << std::endl);
       update_states(); // needs to move
       orig_nf_left--;
     }
   }
-  std::cout <<  "Simulated for " << i << " actual frames with waves of "
-          << k << " frames each" << std::endl;
+  IMP_LOG( PROGRESS, "Simulated for " << i << " actual frames with waves of "
+           << k << " frames each" << std::endl);
   IMP_USAGE_CHECK(current_time_ >= target - 0.001 * max_time_step_,
                   "simulations did not advance to target time for some reason");
   return Optimizer::get_scoring_function()->evaluate(false);
