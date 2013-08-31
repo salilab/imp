@@ -34,7 +34,7 @@ algebra::Vector3Ds density2vectors(DensityMap *dmap,
 
 Particles density2particles(DensityMap *dmap, Float threshold,
                             Model *m,int step) {
-  Particles ps;
+  kernel::Particles ps;
   Float x,y,z,val;
   Float voxel_size=dmap->get_header()->get_spacing();
   Float r=sqrt(3.*voxel_size*voxel_size);
@@ -46,7 +46,7 @@ Particles density2particles(DensityMap *dmap, Float threshold,
         ind = dmap->xyz_ind2voxel(i,j,k);
         val = dmap->get_value(ind);
         if (val > threshold) {
-          IMP_NEW(Particle,p,(m));
+          IMP_NEW(kernel::Particle,p,(m));
           x = dmap->get_location_in_dim_by_voxel(ind,0);
           y = dmap->get_location_in_dim_by_voxel(ind,1);
           z = dmap->get_location_in_dim_by_voxel(ind,2);
@@ -62,7 +62,7 @@ Particles density2particles(DensityMap *dmap, Float threshold,
 
 
 SampledDensityMap * particles2density(
-   const ParticlesTemp &ps,
+   const kernel::ParticlesTemp &ps,
    Float resolution, Float apix,
    int sig_cuttoff,
    const FloatKey &weight_key)
@@ -74,7 +74,7 @@ SampledDensityMap * particles2density(
 }
 
 SurfaceShellDensityMap * particles2surface(
-   const ParticlesTemp &ps,Float apix,
+   const kernel::ParticlesTemp &ps,Float apix,
    const FloatKey &weight_key){
   base::Pointer<SurfaceShellDensityMap> dmap(new SurfaceShellDensityMap(
                                      ps,

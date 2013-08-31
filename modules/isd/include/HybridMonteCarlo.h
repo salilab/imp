@@ -49,7 +49,7 @@ public:
   MolecularDynamics* get_md() const;
 
   //evaluate should return the total energy
-  double do_evaluate(const ParticleIndexes &) const
+  double do_evaluate(const kernel::ParticleIndexes &) const
 {
     double ekin = md_->get_kinetic_energy();
     double epot;

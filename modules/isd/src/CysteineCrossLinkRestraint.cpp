@@ -27,7 +27,7 @@ IMPISD_BEGIN_NAMESPACE
 
 //first constructor, beta is unmarginalized and need to be sampled
 CysteineCrossLinkRestraint::CysteineCrossLinkRestraint
-  (Particle *beta, Particle *sigma, Particle *epsilon, Particle *weight,
+  (kernel::Particle *beta, kernel::Particle *sigma, kernel::Particle *epsilon, kernel::Particle *weight,
    CrossLinkData *data, double fexp):
    beta_(beta), sigma_(sigma), epsilon_(epsilon), weight_(weight),
    data_(data), fexp_(fexp) {constr_type_=0;}
@@ -35,14 +35,14 @@ CysteineCrossLinkRestraint::CysteineCrossLinkRestraint
 //second constructor, marginalize the omega on the beat variable
 //using the support of the CysteineCrossLinkData
 CysteineCrossLinkRestraint::CysteineCrossLinkRestraint
-  (Particle *beta, Particle *sigma, Particle *epsilon, Particle *weight,
+  (kernel::Particle *beta, kernel::Particle *sigma, kernel::Particle *epsilon, kernel::Particle *weight,
    CrossLinkData *data, CysteineCrossLinkData *ccldata):
    beta_(beta), sigma_(sigma), epsilon_(epsilon), weight_(weight),
    data_(data), ccldata_(ccldata) {constr_type_=1;}
 
 
 void  CysteineCrossLinkRestraint::
- add_contribution(Particle *p1, Particle *p2)
+ add_contribution(kernel::Particle *p1, kernel::Particle *p2)
 {
   if(get_number_of_contributions()==0) use_CA_=true;
   else if(use_CA_==false) {IMP_THROW("Use either CA or CB, not both!",
@@ -56,7 +56,7 @@ void  CysteineCrossLinkRestraint::
 }
 
 void  CysteineCrossLinkRestraint::
- add_contribution(Particles p1, Particles p2)
+ add_contribution(kernel::Particles p1, kernel::Particles p2)
 {
   if(get_number_of_contributions()==0) use_CA_=false;
   else if(use_CA_==true) {IMP_THROW("Use either CA or CB, not both!",
@@ -92,7 +92,7 @@ double CysteineCrossLinkRestraint::get_standard_error() const
 }
 
 algebra::Vector3D
- CysteineCrossLinkRestraint::get_CB_coordinates(const Particles& ps) const
+ CysteineCrossLinkRestraint::get_CB_coordinates(const kernel::Particles& ps) const
 {
 // get coordinates of central CA
   algebra::Vector3D x1 = core::XYZ(ps[1]).get_coordinates();
@@ -258,7 +258,7 @@ unsigned CysteineCrossLinkRestraint::get_number_of_contributions() const
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp  CysteineCrossLinkRestraint::do_get_inputs() const
 {
-  ParticlesTemp ret;
+  kernel::ParticlesTemp ret;
   ret.push_back(beta_);
   ret.push_back(sigma_);
   ret.push_back(epsilon_);

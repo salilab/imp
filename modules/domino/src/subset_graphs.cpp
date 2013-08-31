@@ -10,7 +10,7 @@
 #include <IMP/domino/internal/inference_utility.h>
 #include <IMP/domino/utility.h>
 #include <IMP/domino/particle_states.h>
-#include <IMP/internal/graph_utility.h>
+#include <IMP/kernel/internal/graph_utility.h>
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/graph/copy.hpp>
@@ -51,7 +51,7 @@ SubsetGraph get_restraint_graph(ScoringFunctionAdaptor in,
   SubsetGraph ret(rs.size());  // + ss.size());
   IMP_LOG_TERSE("Creating restraint graph on " << rs.size() << " restraints."
                                                << std::endl);
-  IMP::base::map<Particle *, int> map;
+  IMP::base::map<kernel::Particle *, int> map;
   SubsetGraphVertexName pm = boost::get(boost::vertex_name, ret);
   DependencyGraph dg = get_dependency_graph(rs[0]->get_model());
   DependencyGraphVertexIndex index = IMP::get_vertex_index(dg);
@@ -61,15 +61,15 @@ SubsetGraph get_restraint_graph(ScoringFunctionAdaptor in,
     }*/
   Subset ps = pst->get_subset();
   for (unsigned int i = 0; i < ps.size(); ++i) {
-    ParticlesTemp t = get_dependent_particles(
-        ps[i], ParticlesTemp(ps.begin(), ps.end()), dg, index);
+    kernel::ParticlesTemp t = get_dependent_particles(
+        ps[i], kernel::ParticlesTemp(ps.begin(), ps.end()), dg, index);
     for (unsigned int j = 0; j < t.size(); ++j) {
       IMP_USAGE_CHECK(
           map.find(t[j]) == map.end(),
           "Currently particles which depend on more "
               << "than one particle "
               << "from the input set are not supported."
-              << "  Particle \"" << t[j]->get_name() << "\" depends on \""
+              << "  kernel::Particle \"" << t[j]->get_name() << "\" depends on \""
               << ps[i]->get_name() << "\" and \""
               << ps[map.find(t[j])->second]->get_name() << "\"");
       map[t[j]] = i;
@@ -83,7 +83,7 @@ SubsetGraph get_restraint_graph(ScoringFunctionAdaptor in,
     }
   }
   for (unsigned int i = 0; i < rs.size(); ++i) {
-    ParticlesTemp pl = IMP::get_input_particles(rs[i]->get_inputs());
+    kernel::ParticlesTemp pl = IMP::get_input_particles(rs[i]->get_inputs());
     std::sort(pl.begin(), pl.end());
     pl.erase(std::unique(pl.begin(), pl.end()), pl.end());
     Subset os(pl);
@@ -100,9 +100,9 @@ SubsetGraph get_restraint_graph(ScoringFunctionAdaptor in,
   /*ScoreStatesTemp ss= get_required_score_states(rs);
     for (ScoreStatesTemp::const_iterator it= ss.begin();
     it != ss.end(); ++it) {
-    ParticlesTemp pl= (*it)->get_input_particles();
+    kernel::ParticlesTemp pl= (*it)->get_input_particles();
     add_edges(ps, pl, map, *it, ret);
-    ParticlesTemp opl= (*it)->get_output_particles();
+    kernel::ParticlesTemp opl= (*it)->get_output_particles();
     add_edges(ps, opl, map, *it, ret);
     }
     IMP_INTERNAL_CHECK(boost::num_vertices(ret) == ps.size(),
@@ -136,7 +136,7 @@ IMPDOMINOEXPORT CliqueGraph get_clique_graph(const InteractionGraph &cig) {
   CliqueGraph cg(cliques.size());
   CliqueGraphVertexName cm = boost::get(boost::vertex_name, cg);
   for (unsigned int i = 0; i < cliques.size(); ++i) {
-    ParticlesTemp cur;
+    kernel::ParticlesTemp cur;
     for (unsigned int j = 0; j < cliques[i].size(); ++j) {
       cur.push_back(pm[cliques[i][j]]);
     }
@@ -169,7 +169,7 @@ void triangulate(InteractionGraph &ig) {
                     InteractionGraphTraits::out_edge_iterator> EdgeRange;
   InteractionGraph mig;
   boost::copy_graph(ig, mig);
-  IMP::base::map<Particle *, int> vmap;
+  IMP::base::map<kernel::Particle *, int> vmap;
   InteractionGraphVertexName mpm = boost::get(boost::vertex_name, mig);
   for (VertexRange be = boost::vertices(ig); be.first != be.second;
        ++be.first) {
@@ -324,7 +324,7 @@ bool get_has_edge(InteractionGraph &graph, InteractionGraphVertex va,
   return false;
 }
 
-void add_edges(const ParticlesTemp &ps, ModelObjects pt,
+void add_edges(const kernel::ParticlesTemp &ps, ModelObjects pt,
                const IMP::base::map<ModelObject *, int> &map,
                base::Object *blame, InteractionGraph &g) {
   IMP_LOG_VARIABLE(ps);
@@ -356,12 +356,12 @@ void add_edges(const ParticlesTemp &ps, ModelObjects pt,
 
 InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
                                        const ParticleStatesTable *pst) {
-  ParticlesTemp ps = get_as<ParticlesTemp>(pst->get_subset());
+  kernel::ParticlesTemp ps = get_as<kernel::ParticlesTemp>(pst->get_subset());
   return get_interaction_graph(rsi, ps);
 }
 
 InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
-                                       const ParticlesTemp &ps) {
+                                       const kernel::ParticlesTemp &ps) {
   if (ps.empty()) return InteractionGraph();
   InteractionGraph ret(ps.size());
   kernel::Restraints rs = IMP::create_decomposition(rsi->create_restraints());
@@ -375,15 +375,15 @@ InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
     IMP::internal::show_as_graphviz(dg, std::cout);
     }*/
   for (unsigned int i = 0; i < ps.size(); ++i) {
-    ParticlesTemp t = get_dependent_particles(
-        ps[i], ParticlesTemp(ps.begin(), ps.end()), dg, index);
+    kernel::ParticlesTemp t = get_dependent_particles(
+        ps[i], kernel::ParticlesTemp(ps.begin(), ps.end()), dg, index);
     for (unsigned int j = 0; j < t.size(); ++j) {
       IMP_USAGE_CHECK(
           map.find(t[j]) == map.end(),
           "Currently particles which depend on more "
               << "than one particle "
               << "from the input set are not supported."
-              << "  Particle \"" << t[j]->get_name() << "\" depends on \""
+              << "  kernel::Particle \"" << t[j]->get_name() << "\" depends on \""
               << ps[i]->get_name() << "\" and \""
               << ps[map.find(t[j])->second]->get_name() << "\"");
       map[t[j]] = i;
@@ -429,7 +429,7 @@ display::Geometries get_interaction_graph_geometry(const InteractionGraph &ig) {
                  InteractionGraphTraits::vertex_iterator> be =
            boost::vertices(ig);
        be.first != be.second; ++be.first) {
-    Particle *p = dynamic_cast<Particle *>(vm[*be.first]);
+    kernel::Particle *p = dynamic_cast<kernel::Particle *>(vm[*be.first]);
     core::XYZ pd(p);
     for (std::pair<InteractionGraphTraits::out_edge_iterator,
                    InteractionGraphTraits::out_edge_iterator> ebe =
@@ -437,7 +437,7 @@ display::Geometries get_interaction_graph_geometry(const InteractionGraph &ig) {
          ebe.first != ebe.second; ++ebe.first) {
       unsigned int target = boost::target(*ebe.first, ig);
       if (target > *be.first) continue;
-      Particle *op = dynamic_cast<Particle *>(vm[target]);
+      kernel::Particle *op = dynamic_cast<kernel::Particle *>(vm[target]);
       core::XYZ od(op);
       std::string on = em[*ebe.first]->get_name();
       IMP_NEW(display::SegmentGeometry, cg,
@@ -704,9 +704,9 @@ MergeTree get_balanced_merge_tree(const SubsetGraph &jti) {
 
 namespace {
 struct NameWriter {
-  const base::map<Particle *, int> &index_;
+  const base::map<kernel::Particle *, int> &index_;
   MergeTreeConstVertexName vm_;
-  NameWriter(const base::map<Particle *, int> &index,
+  NameWriter(const base::map<kernel::Particle *, int> &index,
              const MergeTreeConstVertexName &vm)
       : index_(index), vm_(vm) {}
   void operator()(std::ostream &out, int v) const {
@@ -722,9 +722,9 @@ struct NameWriter {
 };
 }
 
-void write_merge_tree(const MergeTree &tree, const ParticlesTemp &ps,
+void write_merge_tree(const MergeTree &tree, const kernel::ParticlesTemp &ps,
                       std::ostream &out) {
-  base::map<Particle *, int> index;
+  base::map<kernel::Particle *, int> index;
   for (unsigned int i = 0; i < ps.size(); ++i) {
     index[ps[i]] = i;
   }
@@ -754,7 +754,7 @@ MergeTree get_fixed_order(const MergeTree &mt,
 }
 }
 
-MergeTree read_merge_tree(std::istream &in, const ParticlesTemp &ps) {
+MergeTree read_merge_tree(std::istream &in, const kernel::ParticlesTemp &ps) {
 
   boost::dynamic_properties dp;
   MergeTree graph;
@@ -789,7 +789,7 @@ MergeTree read_merge_tree(std::istream &in, const ParticlesTemp &ps) {
   for (unsigned int i = 0; i < boost::num_vertices(graph); ++i) {
     std::string cnm = name[i];
     std::istringstream iss(cnm);
-    ParticlesTemp cur;
+    kernel::ParticlesTemp cur;
     do {
       int c;
       iss >> c;

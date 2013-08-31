@@ -109,7 +109,7 @@ public:
 
 
   //! Set the particles where the em2D restraint is applied
-  void set_model_particles(const ParticlesTemp &ps);
+  void set_model_particles(const kernel::ParticlesTemp &ps);
 
   //! The projections of the model that best match the subject EM images
   //! are saved.
@@ -196,7 +196,7 @@ protected:
   em2d::Images variances_;
   em2d::Images projections_;
   RegistrationResults registration_results_;
-  ParticlesTemp model_particles_;
+  kernel::ParticlesTemp model_particles_;
   Ints n_members_;
   base::Pointer<ScoreFunction> score_function_;
 

@@ -24,16 +24,16 @@ class IMPCOREEXPORT RigidBodyHierarchy : public IMP::base::Object {
     algebra::Sphere3D s_;
   };
   base::Vector<Data> tree_;
-  ParticleIndexes constituents_;
+  kernel::ParticleIndexes constituents_;
 
   typedef base::Vector<unsigned int> SphereIndexes;
   typedef base::Vector<SphereIndexes> SpheresSplit;
   SpheresSplit divide_spheres(const algebra::Sphere3Ds &ss,
                               const SphereIndexes &s);
   void set_sphere(unsigned int ni, const algebra::Sphere3D &s);
-  void set_leaf(unsigned int ni, const ParticleIndexes &ids);
+  void set_leaf(unsigned int ni, const kernel::ParticleIndexes &ids);
   unsigned int add_children(unsigned int ni, unsigned int num_children);
-  ParticleIndexes validate_internal(Model *m, int cur,
+  kernel::ParticleIndexes validate_internal(Model *m, int cur,
                                     algebra::Sphere3Ds bounds) const;
   typedef std::pair<unsigned int, SphereIndexes> Node;
   void build_tree(Model *m, const Node &n, const algebra::Sphere3Ds &spheres,
@@ -77,29 +77,29 @@ class IMPCOREEXPORT RigidBodyHierarchy : public IMP::base::Object {
       return ni;
     }
   }
-  ParticleIndex get_particle(unsigned int ni, unsigned int i) const {
+  kernel::ParticleIndex get_particle(unsigned int ni, unsigned int i) const {
     IMP_INTERNAL_CHECK(ni < tree_.size(), "Out of range");
     IMP_INTERNAL_CHECK(tree_[ni].children_.size() > i,
                        "Out of range in particle");
     IMP_INTERNAL_CHECK(tree_[ni].children_[i] < 0, "Not a leaf node");
-    ParticleIndex index(std::abs(tree_[ni].children_[i]) - 1);
+    kernel::ParticleIndex index(std::abs(tree_[ni].children_[i]) - 1);
     return index;
   }
   algebra::Sphere3Ds get_all_spheres() const;
-  RigidBodyHierarchy(RigidBody rb, const ParticleIndexes &constituents);
+  RigidBodyHierarchy(RigidBody rb, const kernel::ParticleIndexes &constituents);
   algebra::Sphere3Ds get_tree() const;
-  bool get_constituents_match(const ParticleIndexes &ps) const {
+  bool get_constituents_match(const kernel::ParticleIndexes &ps) const {
     if (ps.size() != constituents_.size()) return false;
-    ParticleIndexes un;
+    kernel::ParticleIndexes un;
     std::set_union(ps.begin(), ps.end(), constituents_.begin(),
                    constituents_.end(), std::back_inserter(un));
     return (un.size() == ps.size());
   }
-  const ParticleIndexes &get_constituents() const { return constituents_; }
+  const kernel::ParticleIndexes &get_constituents() const { return constituents_; }
   IMP_OBJECT_METHODS(RigidBodyHierarchy);
   // for testing
-  ParticleIndexes get_particles(unsigned int i) const {
-    ParticleIndexes ret;
+  kernel::ParticleIndexes get_particles(unsigned int i) const {
+    kernel::ParticleIndexes ret;
     Ints stack(1, i);
     do {
       unsigned int i = stack.back();
@@ -121,16 +121,16 @@ class IMPCOREEXPORT RigidBodyHierarchy : public IMP::base::Object {
   Model *get_model() const { return rb_->get_model(); }
 };
 
-IMPCOREEXPORT Particle *closest_particle(Model *m, const RigidBodyHierarchy *da,
+IMPCOREEXPORT kernel::Particle *closest_particle(Model *m, const RigidBodyHierarchy *da,
                                          XYZR pt);
 
-IMPCOREEXPORT Particle *closest_particle(
+IMPCOREEXPORT kernel::Particle *closest_particle(
     Model *m, const RigidBodyHierarchy *da, XYZR pt,
     double dist = std::numeric_limits<double>::max());
 
-IMPCOREEXPORT ParticlePair closest_pair(Model *m, const RigidBodyHierarchy *da,
+IMPCOREEXPORT kernel::ParticlePair closest_pair(Model *m, const RigidBodyHierarchy *da,
                                         const RigidBodyHierarchy *db);
-IMPCOREEXPORT ParticlePair closest_pair(Model *m, const RigidBodyHierarchy *da,
+IMPCOREEXPORT kernel::ParticlePair closest_pair(Model *m, const RigidBodyHierarchy *da,
                                         const RigidBodyHierarchy *db,
                                         double dist =
                                             std::numeric_limits<double>::max());
@@ -142,7 +142,7 @@ struct LessFirst {
   }
 };
 inline double distance_bound(Model *m, const RigidBodyHierarchy *da,
-                             unsigned int i, ParticleIndex b) {
+                             unsigned int i, kernel::ParticleIndex b) {
   algebra::Sphere3D s = da->get_sphere(i);
   double rd = algebra::get_distance(s, m->get_sphere(b));
   return rd;
@@ -180,10 +180,10 @@ inline void fill_close_pairs(Model *m, const RigidBodyHierarchy *da,
     if (da->get_is_leaf(v.second.first) && db->get_is_leaf(v.second.second)) {
       for (unsigned int i = 0; i < da->get_number_of_particles(v.second.first);
            ++i) {
-        ParticleIndex deca(da->get_particle(v.second.first, i));
+        kernel::ParticleIndex deca(da->get_particle(v.second.first, i));
         for (unsigned int j = 0;
              j < db->get_number_of_particles(v.second.second); ++j) {
-          ParticleIndex decb(db->get_particle(v.second.second, j));
+          kernel::ParticleIndex decb(db->get_particle(v.second.second, j));
           double d =
               algebra::get_distance(m->get_sphere(deca), m->get_sphere(decb));
           if (d < dist) {
@@ -243,14 +243,14 @@ inline void fill_close_pairs(Model *m, const RigidBodyHierarchy *da,
   }
 }
 
-IMPCOREEXPORT ParticlePairsTemp close_pairs(Model *m,
+IMPCOREEXPORT kernel::ParticlePairsTemp close_pairs(Model *m,
                                             const RigidBodyHierarchy *da,
                                             const RigidBodyHierarchy *db,
                                             double dist);
 
 template <class Sink>
 inline void fill_close_particles(Model *m, const RigidBodyHierarchy *da,
-                                 ParticleIndex pt, double dist, Sink sink) {
+                                 kernel::ParticleIndex pt, double dist, Sink sink) {
   typedef std::pair<double, int> QP;
   std::priority_queue<QP, base::Vector<QP>, LessFirst> queue;
   double d = distance_bound(m, da, 0, pt);
@@ -261,7 +261,7 @@ inline void fill_close_particles(Model *m, const RigidBodyHierarchy *da,
     queue.pop();
     if (da->get_is_leaf(v.second)) {
       for (unsigned int i = 0; i < da->get_number_of_particles(v.second); ++i) {
-        ParticleIndex p = da->get_particle(v.second, i);
+        kernel::ParticleIndex p = da->get_particle(v.second, i);
         double d = algebra::get_distance(m->get_sphere(p), m->get_sphere(pt));
         if (d < dist) {
           if (!sink(p)) {
@@ -290,12 +290,12 @@ inline void fill_close_particles(Model *m, const RigidBodyHierarchy *da,
   }
 }
 
-IMPCOREEXPORT ParticlesTemp close_particles(Model *m,
+IMPCOREEXPORT kernel::ParticlesTemp close_particles(Model *m,
                                             const RigidBodyHierarchy *da,
                                             XYZR pt, double dist);
 
 IMPCOREEXPORT RigidBodyHierarchy *get_rigid_body_hierarchy(
-    RigidBody rb, ParticleIndexes constituents, ObjectKey mykey = ObjectKey());
+    RigidBody rb, kernel::ParticleIndexes constituents, ObjectKey mykey = ObjectKey());
 
 IMPCORE_END_INTERNAL_NAMESPACE
 

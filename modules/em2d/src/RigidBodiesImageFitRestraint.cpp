@@ -96,7 +96,7 @@ void RigidBodiesImageFitRestraint::set_orientations(const core::RigidBody &rb,
 
   // Get the particles of the rigid body
   core::RigidMembers rbm = rb.get_members();
-  ParticlesTemp ps;
+  kernel::ParticlesTemp ps;
 
   for (unsigned int i=0; i < rbm.size(); ++i) {
     // Discard particles that do not have mass
@@ -159,7 +159,7 @@ void RigidBodiesImageFitRestraint::set_projecting_parameters(
 
 ModelObjectsTemp RigidBodiesImageFitRestraint::do_get_inputs() const
 {
-  ParticlesTemp ret;
+  kernel::ParticlesTemp ret;
   for (unsigned int i=0; i < rigid_bodies_.size(); ++i) {
     ret.push_back( rigid_bodies_[i].get_particle());
   }

@@ -73,7 +73,7 @@ class Tests(IMP.test.TestCase):
         self.model = IMP.Model()
         self.particles = []
         self.particles.append(IMP.isd.Nuisance.setup_particle(
-            IMP.Particle(self.model), -43.0))
+            IMP.kernel.Particle(self.model), -43.0))
         self.particles[-1].set_nuisance_is_optimized(True)
         self.particles[-1].add_attribute(masskey, cmass, False)
         self.md = IMP.isd.MolecularDynamics(self.model)
@@ -137,7 +137,7 @@ class Tests(IMP.test.TestCase):
 
     def test_non_xyz(self):
         """Should skip nuisance particles without xyz attributes"""
-        p = IMP.Particle(self.model)
+        p = IMP.kernel.Particle(self.model)
         p.add_attribute(IMP.FloatKey("attr"), 0.0, True)
         self.md.optimize(100)
 
@@ -162,7 +162,7 @@ class Tests(IMP.test.TestCase):
         # large number of particles:
         for i in range(500):
             self.particles.append(IMP.isd.Nuisance.setup_particle(
-                IMP.Particle(self.model), random.uniform(-100,100)))
+                IMP.kernel.Particle(self.model), random.uniform(-100,100)))
             self.particles[-1].set_nuisance_is_optimized(True)
             self.particles[-1].add_attribute(masskey, cmass, False)
         # Initial temperature should be zero:

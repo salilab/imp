@@ -11,7 +11,7 @@
 #define IMPATOM_LANGEVIN_THERMOSTAT_OPTIMIZER_STATE_H
 
 #include <IMP/atom/atom_config.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/base_types.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/optimizer_state_macros.h>
@@ -25,11 +25,11 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class IMPATOMEXPORT LangevinThermostatOptimizerState : public OptimizerState {
  public:
-  LangevinThermostatOptimizerState(const ParticlesTemp &pis, double temperature,
+  LangevinThermostatOptimizerState(const kernel::ParticlesTemp &pis, double temperature,
                                    double gamma);
 
   //! Set the particles to use.
-  void set_particles(const Particles &pis) { pis_ = pis; }
+  void set_particles(const kernel::Particles &pis) { pis_ = pis; }
 
   double get_temperature() { return temperature_; }
 
@@ -48,7 +48,7 @@ class IMPATOMEXPORT LangevinThermostatOptimizerState : public OptimizerState {
   virtual void do_update(unsigned int) IMP_OVERRIDE;
 
  private:
-  Particles pis_;
+  kernel::Particles pis_;
   double temperature_;
   double gamma_;
 

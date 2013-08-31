@@ -11,18 +11,18 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-FixedRefiner::FixedRefiner(const ParticlesTemp &ps)
+FixedRefiner::FixedRefiner(const kernel::ParticlesTemp &ps)
     : Refiner("FixedRefiner%d"), ps_(ps) {
   IMP_LOG_VERBOSE("Created fixed particle refiner with "
                   << ps.size() << " particles" << std::endl);
 }
 
-bool FixedRefiner::get_can_refine(Particle *) const { return true; }
+bool FixedRefiner::get_can_refine(kernel::Particle *) const { return true; }
 
-const ParticlesTemp FixedRefiner::get_refined(Particle *) const { return ps_; }
+const kernel::ParticlesTemp FixedRefiner::get_refined(kernel::Particle *) const { return ps_; }
 
 ModelObjectsTemp FixedRefiner::do_get_inputs(Model *,
-                                             const ParticleIndexes &) const {
+                                             const kernel::ParticleIndexes &) const {
   return ModelObjectsTemp();
 }
 

@@ -23,10 +23,10 @@ IMPISD_BEGIN_NAMESPACE
 //! Apply an NOE distance restraint between two particles.
 class IMPISDEXPORT NOERestraint : public ISDRestraint
 {
-  base::Pointer<Particle> p0_;
-  base::Pointer<Particle> p1_;
-  base::Pointer<Particle> sigma_;
-  base::Pointer<Particle> gamma_;
+  base::Pointer<kernel::Particle> p0_;
+  base::Pointer<kernel::Particle> p1_;
+  base::Pointer<kernel::Particle> sigma_;
+  base::Pointer<kernel::Particle> gamma_;
   double Vexp_;
   double chi_;
   void set_chi(double chi) { chi_ = chi; }
@@ -36,8 +36,8 @@ public:
   /** kernel::Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
    */
-  NOERestraint(Particle *p0, Particle *p1, Particle *sigma,
-               Particle *gamma,double Iexp);
+  NOERestraint(kernel::Particle *p0, kernel::Particle *p1, kernel::Particle *sigma,
+               kernel::Particle *gamma,double Iexp);
 
   /* call for probability */
   double get_probability() const

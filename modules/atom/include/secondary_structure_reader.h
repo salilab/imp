@@ -28,7 +28,7 @@ IMPATOMEXPORT SecondaryStructureResidues read_psipred(base::TextInput inf,
     SecondaryStructureResidues. Currently assuming order of ps matches file.
 */
 IMPATOMEXPORT SecondaryStructureResidues read_psipred(base::TextInput inf,
-                                                      Particles ps);
+                                                      kernel::Particles ps);
 
 IMPATOM_END_NAMESPACE
 

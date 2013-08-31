@@ -29,8 +29,8 @@ class IMPCOREEXPORT AngleRestraint : public TripletRestraint {
       \param[in] p2 Pointer to second particle in angle restraint.
       \param[in] p3 Pointer to third particle in angle restraint.
    */
-  AngleRestraint(UnaryFunction* score_func, Particle* p1, Particle* p2,
-                 Particle* p3);
+  AngleRestraint(UnaryFunction* score_func, kernel::Particle* p1, kernel::Particle* p2,
+                 kernel::Particle* p3);
 
   AngleRestraint(UnaryFunction* score_func, XYZ p0, XYZ p1, XYZ p2);
 

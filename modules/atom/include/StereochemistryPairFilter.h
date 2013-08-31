@@ -12,7 +12,7 @@
 #include <IMP/PairPredicate.h>
 #include <IMP/pair_macros.h>
 #include <IMP/atom/internal/ExcludedPair.h>
-#include <IMP/internal/container_helpers.h>
+#include <IMP/kernel/internal/container_helpers.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -24,33 +24,33 @@ IMPATOM_BEGIN_NAMESPACE
     dihedrals (1-4 interactions).
  */
 class IMPATOMEXPORT StereochemistryPairFilter : public PairPredicate {
-  typedef std::map<internal::ExcludedPair, Particle *> ExcludedMap;
+  typedef std::map<internal::ExcludedPair, kernel::Particle *> ExcludedMap;
   ExcludedMap excluded_map_;
 
-  Particles bonds_, angles_, dihedrals_;
+  kernel::Particles bonds_, angles_, dihedrals_;
 
   void rebuild_map();
 
  public:
   StereochemistryPairFilter();
 
-  void set_bonds(const Particles &bonds) {
+  void set_bonds(const kernel::Particles &bonds) {
     bonds_ = bonds;
     rebuild_map();
   }
-  void set_angles(const Particles &angles) {
+  void set_angles(const kernel::Particles &angles) {
     angles_ = angles;
     rebuild_map();
   }
-  void set_dihedrals(const Particles &dihedrals) {
+  void set_dihedrals(const kernel::Particles &dihedrals) {
     dihedrals_ = dihedrals;
     rebuild_map();
   }
 
-  virtual int get_value_index(Model *m, const ParticleIndexPair &p) const
+  virtual int get_value_index(Model *m, const kernel::ParticleIndexPair &p) const
       IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                         const ParticleIndexes &pis) const
+                                         const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
   IMP_PAIR_PREDICATE_METHODS(StereochemistryPairFilter);
   IMP_OBJECT_METHODS(StereochemistryPairFilter);

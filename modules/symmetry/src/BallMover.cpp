@@ -13,7 +13,7 @@
 
 IMPSYMMETRY_BEGIN_NAMESPACE
 
-BallMover::BallMover(Particle *p, Particles ps, Float max_tr,
+BallMover::BallMover(kernel::Particle *p, kernel::Particles ps, Float max_tr,
                      algebra::Vector3Ds ctrs, algebra::Transformation3Ds trs):
   MonteCarloMover(p->get_model(), "BallMover%1%"),
   p_(p), ps_(ps), max_tr_(max_tr), ctrs_(ctrs), trs_(trs) {
@@ -63,7 +63,7 @@ core::MonteCarloMoverResult BallMover::do_propose() {
    xyz.set_coordinates(nc);
   }
 
-  ParticlesTemp ret;
+  kernel::ParticlesTemp ret;
   ret.push_back(p_);
   ret.insert(ret.end(), ps_.begin(), ps_.end());
 
@@ -71,7 +71,7 @@ core::MonteCarloMoverResult BallMover::do_propose() {
 }
 
 ModelObjectsTemp BallMover::do_get_inputs() const {
- ParticlesTemp ret;
+ kernel::ParticlesTemp ret;
  ret.push_back(p_);
  ret.insert(ret.end(), ps_.begin(), ps_.end());
  return ret;

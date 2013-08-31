@@ -13,7 +13,7 @@ def custom_hierarchy(parent_particle, children_particles):
     pd.show()
 
 m = IMP.Model()
-p1 = IMP.Particle(m)
-p2 = IMP.Particle(m)
-p3 = IMP.Particle(m)
+p1 = IMP.kernel.Particle(m)
+p2 = IMP.kernel.Particle(m)
+p3 = IMP.kernel.Particle(m)
 custom_hierarchy(p1, (p2, p3))

@@ -146,10 +146,10 @@ multifit::FittingSolutionRecords fit_models_to_density(
 
   int cn_symm_deg=params.get_cn_symm();
   int dn_symm_deg=params.get_dn_symm();
-  Particles mhs_particles;
+  kernel::Particles mhs_particles;
   for(atom::Hierarchies::const_iterator it = mhs.begin();
       it != mhs.end(); it++) {
-    Particles temp=core::get_leaves(*it);
+    kernel::Particles temp=core::get_leaves(*it);
     mhs_particles.insert(mhs_particles.end(),temp.begin(),temp.end());
   }
   //calculate the density map PCA

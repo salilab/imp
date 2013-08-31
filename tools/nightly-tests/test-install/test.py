@@ -15,7 +15,7 @@ class IMPInstallTests(unittest.TestCase):
 
         m = IMP.Model()
 
-        p0 = IMP.Particle(m)
+        p0 = IMP.kernel.Particle(m)
         d0 = IMP.core.XYZ.setup_particle(p0)
         d0.set_coordinates(IMP.algebra.Vector3D(0,0,2))
 

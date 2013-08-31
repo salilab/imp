@@ -28,7 +28,7 @@ void WeightedExcludedVolumeRestraint::initialize_model_density_map(
   for (core::RigidBodies::const_iterator it = rbs_.begin();
        it != rbs_.end();it++){
     core::RigidBody rb=*it;
-    ParticlesTemp rb_ps=rb_refiner_->get_refined(rb);
+    kernel::ParticlesTemp rb_ps=rb_refiner_->get_refined(rb);
     std::cout<<"Creating a density map for:"
              <<rb_ps.size()<<" particles"<<std::endl;
     rbs_surface_maps_.push_back(
@@ -75,7 +75,7 @@ double WeightedExcludedVolumeRestraint::unprotected_evaluate(
   // }
   em::SurfaceShellDensityMaps resampled_surfaces;
   for(unsigned int i=0;i<rbs_.size();i++){
-    ParticlesTemp rb_ps=rb_refiner_->get_refined(rbs_[i]);
+    kernel::ParticlesTemp rb_ps=rb_refiner_->get_refined(rbs_[i]);
     resampled_surfaces.push_back(new em::SurfaceShellDensityMap(rb_ps,1.));
   }
   for(unsigned int i=0;i<rbs_.size();i++){
@@ -103,18 +103,18 @@ ModelObjectsTemp WeightedExcludedVolumeRestraint::do_get_inputs() const
 {
   ModelObjectsTemp ret
     = rb_refiner_->get_inputs(get_model(),
-                              IMP::get_indexes(ParticlesTemp(particles_begin(),
+                              IMP::get_indexes(kernel::ParticlesTemp(particles_begin(),
                                                              particles_end())));
   for (ParticleConstIterator it= particles_begin();
        it != particles_end(); ++it) {
-      ParticlesTemp curr= rb_refiner_->get_refined(*it);
+      kernel::ParticlesTemp curr= rb_refiner_->get_refined(*it);
       ret += curr;
   }
   return ret;
 }
 
 IMP_LIST_IMPL(WeightedExcludedVolumeRestraint,
-              Particle, particle,Particle*, Particles);
+              Particle, particle,Particle*, kernel::Particles);
 
 
 IMPMULTIFIT_END_NAMESPACE

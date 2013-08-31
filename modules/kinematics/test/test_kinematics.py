@@ -9,7 +9,7 @@ class Test(IMP.test.TestCase):
     """Tests for kinematic structure"""
 
     def create_rigidbody(self, model, coords):
-        p = IMP.Particle(model)
+        p = IMP.kernel.Particle(model)
         tr = IMP.algebra.Transformation3D( coords )
         rf = IMP.algebra.ReferenceFrame3D( tr )
         return IMP.core.RigidBody.setup_particle(p, rf)

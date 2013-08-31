@@ -22,17 +22,17 @@ IMPCORE_BEGIN_NAMESPACE
     \see MonteCarlo
  */
 class IMPCOREEXPORT BallMover : public MonteCarloMover {
-  ParticleIndexes pis_;
+  kernel::ParticleIndexes pis_;
   FloatKeys keys_;
   double radius_;
   algebra::VectorKDs originals_;
 
-  void initialize(ParticleIndexes pis, FloatKeys keys, double radius);
+  void initialize(kernel::ParticleIndexes pis, FloatKeys keys, double radius);
 
  public:
-  BallMover(Model *m, ParticleIndex pi, const FloatKeys &vars, double radius);
+  BallMover(Model *m, kernel::ParticleIndex pi, const FloatKeys &vars, double radius);
   //! Move the x,y,z coordinates
-  BallMover(Model *m, ParticleIndex pi, double radius);
+  BallMover(Model *m, kernel::ParticleIndex pi, double radius);
 
 #ifndef IMP_DOXYGEN
   /** The attributes are perturbed within a ball whose dimensionality is
@@ -41,13 +41,13 @@ class IMPCOREEXPORT BallMover : public MonteCarloMover {
       \param[in] vars The variables to use (normally the keys for x,y,z)
       \param[in] radius The radius deviation to use.
    */
-  BallMover(const ParticlesTemp &sc, const FloatKeys &vars, Float radius);
+  BallMover(const kernel::ParticlesTemp &sc, const FloatKeys &vars, Float radius);
 
   /** The x,y,z coordinates are perturbed within a ball.
       \param[in] sc The set of particles to perturb.
       \param[in] radius The radius deviation to use.
    */
-  BallMover(const ParticlesTemp &sc, Float radius);
+  BallMover(const kernel::ParticlesTemp &sc, Float radius);
 #endif
 
   void set_radius(Float radius) {

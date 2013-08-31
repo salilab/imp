@@ -9,7 +9,7 @@ m.set_log_level(IMP.base.SILENT)
 ps =[]
 # create 4 xyz particles
 for i in range(0,4):
-    p = IMP.Particle(m)
+    p = IMP.kernel.Particle(m)
     ps.append(p)
     d= IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(.5,0,0))
     IMP.core.XYZR.setup_particle(p, 1)

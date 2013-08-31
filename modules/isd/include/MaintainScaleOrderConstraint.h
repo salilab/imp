@@ -11,7 +11,7 @@
 #include <IMP/isd/isd_config.h>
 #include <IMP/Constraint.h>
 #include <IMP/score_state_macros.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/isd/Scale.h>
 
 /*
@@ -30,9 +30,9 @@ IMPISD_BEGIN_NAMESPACE
  */
 class IMPISDEXPORT MaintainScaleOrderConstraint : public Constraint
 {
-  Particles p_;
+  kernel::Particles p_;
 public:
-  MaintainScaleOrderConstraint(const Particles& p,
+  MaintainScaleOrderConstraint(const kernel::Particles& p,
                       std::string name="MaintainScaleOrderConstraint %1%");
 
   virtual void do_update_attributes() IMP_OVERRIDE;

@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
     def test_global_min1(self):
         """Test close pairs list generation"""
         m= IMP.Model()
-        ps= [IMP.Particle(m) for i in range(0,10)]
+        ps= [IMP.kernel.Particle(m) for i in range(0,10)]
         ds= [IMP.core.XYZR.setup_particle(p) for p in ps]
         for d in ds:
             d.set_radius(6)

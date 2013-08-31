@@ -8,7 +8,7 @@ class Tests(IMP.test.TestCase):
     """Tests for bond refiner"""
 
     def _random_hierarchy(self, m, depth=2, width=4):
-        p= IMP.Particle(m)
+        p= IMP.kernel.Particle(m)
         h = IMP.core.Hierarchy.setup_particle(p)
         if depth== 0:
             d = IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()),

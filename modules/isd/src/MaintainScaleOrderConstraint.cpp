@@ -11,7 +11,7 @@
 IMPISD_BEGIN_NAMESPACE
 
 MaintainScaleOrderConstraint::MaintainScaleOrderConstraint(
-                                         const Particles& p,
+                                         const kernel::Particles& p,
                                          std::string name):
   Constraint(name), p_(p){}
 

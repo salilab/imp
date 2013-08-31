@@ -29,7 +29,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 */
 class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer {
   friend class ConsecutivePairFilter;
-  const ParticleIndexes ps_;
+  const kernel::ParticleIndexes ps_;
   IntKey key_;
   /**
      add the key of this container as an attribute to all particles
@@ -37,7 +37,7 @@ class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer {
   */
   void init();
 
-  bool get_contains(const ParticleIndexPair &p) const {
+  bool get_contains(const kernel::ParticleIndexPair &p) const {
     if (!get_model()->get_has_attribute(key_, p[0])) return false;
     int ia = get_model()->get_attribute(key_, p[0]);
     if (!get_model()->get_has_attribute(key_, p[1])) return false;
@@ -50,16 +50,16 @@ class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer {
   template <class F>
   void apply_generic(F *f) const {
     for (unsigned int i = 1; i < ps_.size(); ++i) {
-      f->apply_index(get_model(), ParticleIndexPair(ps_[i - 1], ps_[i]));
+      f->apply_index(get_model(), kernel::ParticleIndexPair(ps_[i - 1], ps_[i]));
     }
   }
   //! Get the individual particles from the passed SingletonContainer
-  ConsecutivePairContainer(const ParticlesTemp &ps,
+  ConsecutivePairContainer(const kernel::ParticlesTemp &ps,
                            std::string name = "ConsecutivePairContainer%1%");
-  virtual ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
-  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  virtual kernel::ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
+  virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
   virtual void do_before_evaluate() IMP_OVERRIDE;
   IMP_PAIR_CONTAINER_METHODS(ConsecutivePairContainer);
   IMP_OBJECT_METHODS(ConsecutivePairContainer);
@@ -75,12 +75,12 @@ class IMPCONTAINEREXPORT ConsecutivePairFilter : public PairPredicate {
  public:
   ConsecutivePairFilter(ConsecutivePairContainer *cpc);
 
-  virtual int get_value_index(Model *, const ParticleIndexPair &pip) const
+  virtual int get_value_index(Model *, const kernel::ParticleIndexPair &pip) const
       IMP_OVERRIDE {
     return cpc_->get_contains(pip);
   }
   virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                         const ParticleIndexes &pi) const
+                                         const kernel::ParticleIndexes &pi) const
       IMP_OVERRIDE {
     ModelObjectsTemp ret;
     ret += IMP::get_particles(m, pi);
@@ -98,7 +98,7 @@ class IMPCONTAINEREXPORT ConsecutivePairFilter : public PairPredicate {
 class IMPCONTAINEREXPORT ExclusiveConsecutivePairContainer
     : public PairContainer {
   friend class ExclusiveConsecutivePairFilter;
-  const ParticleIndexes ps_;
+  const kernel::ParticleIndexes ps_;
   static IntKey get_exclusive_key() {
     static IntKey k("exclusive consecutive numbering");
     return k;
@@ -107,7 +107,7 @@ class IMPCONTAINEREXPORT ExclusiveConsecutivePairContainer
     static ObjectKey k("exclusive consecutive container");
     return k;
   }
-  static bool get_contains(Model *m, const ParticleIndexPair &pp) {
+  static bool get_contains(Model *m, const kernel::ParticleIndexPair &pp) {
     ObjectKey ok =
         ExclusiveConsecutivePairContainer::get_exclusive_object_key();
     if (!m->get_has_attribute(ok, pp[0]) || !m->get_has_attribute(ok, pp[1]))
@@ -127,18 +127,18 @@ class IMPCONTAINEREXPORT ExclusiveConsecutivePairContainer
   template <class F>
   void apply_generic(F *f) const {
     for (unsigned int i = 1; i < ps_.size(); ++i) {
-      f->apply_index(get_model(), ParticleIndexPair(ps_[i - 1], ps_[i]));
+      f->apply_index(get_model(), kernel::ParticleIndexPair(ps_[i - 1], ps_[i]));
     }
   }
 
   //! Get the individual particles from the passed SingletonContainer
-  ExclusiveConsecutivePairContainer(const ParticlesTemp &ps,
+  ExclusiveConsecutivePairContainer(const kernel::ParticlesTemp &ps,
                                     std::string name =
                                         "ExclusiveConsecutivePairContainer%1%");
-  virtual ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
-  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  virtual kernel::ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
+  virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
   virtual void do_before_evaluate() IMP_OVERRIDE;
   IMP_PAIR_CONTAINER_METHODS(ExclusiveConsecutivePairContainer);
   IMP_OBJECT_METHODS(ExclusiveConsecutivePairContainer);
@@ -151,12 +151,12 @@ class IMPCONTAINEREXPORT ExclusiveConsecutivePairFilter : public PairPredicate {
   ExclusiveConsecutivePairFilter()
       : PairPredicate("ExclusiveConsecutivePairFilter %1%") {}
 
-  virtual int get_value_index(Model *m, const ParticleIndexPair &pip) const
+  virtual int get_value_index(Model *m, const kernel::ParticleIndexPair &pip) const
       IMP_OVERRIDE {
     return ExclusiveConsecutivePairContainer::get_contains(m, pip);
   }
   virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                         const ParticleIndexes &pi) const
+                                         const kernel::ParticleIndexes &pi) const
       IMP_OVERRIDE {
     ModelObjectsTemp ret;
     ret += IMP::get_particles(m, pi);

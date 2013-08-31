@@ -31,8 +31,8 @@ public:
   * loop over all particles and rigid bodies, and call
   * compute_chisquare_derivative on them
   */
-  void compute_all_derivatives(const Particles& particles,
-       const std::vector<Particles>& rigid_bodies,
+  void compute_all_derivatives(const kernel::Particles& particles,
+       const std::vector<kernel::Particles>& rigid_bodies,
        const std::vector<core::RigidBody>& rigid_bodies_decorators,
        const Profile* model_profile, const std::vector<double>& effect_size,
        DerivativeAccumulator *acc) const;
@@ -42,8 +42,8 @@ protected:
   * precompute sinc_cos function and derivative of distance distribution
   */
   DeltaDistributionFunction precompute_derivative_helpers(const Profile*
-          resampled_model_profile, const Particles& particles1,
-          const Particles& particles2, std::vector<Floats>& sinc_cos_values)
+          resampled_model_profile, const kernel::Particles& particles1,
+          const kernel::Particles& particles2, std::vector<Floats>& sinc_cos_values)
       const ;
 
   /* compute dI(q)/dx_k for given q and k
@@ -66,8 +66,8 @@ protected:
      \param[in] effect_size Effect size
   */
   void compute_chisquare_derivative(const Profile* model_profile,
-                              const Particles& particles1,
-                              const Particles& particles2,
+                              const kernel::Particles& particles1,
+                              const kernel::Particles& particles2,
                               std::vector<algebra::Vector3D >& derivatives,
                               const std::vector<double>& effect_size) const;
 
@@ -79,7 +79,7 @@ protected:
      \param[in] effect_size Effect size
   */
   void compute_chisquare_derivative(const Profile* model_profile,
-                              const Particles& particles,
+                              const kernel::Particles& particles,
                               std::vector<algebra::Vector3D >& derivatives,
                               const std::vector<double>& effect_size) const
     {

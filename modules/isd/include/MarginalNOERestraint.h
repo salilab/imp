@@ -46,7 +46,7 @@ public:
 
 
   // add a contribution: simple case
-  void add_contribution(Particle *p1, Particle *p2, double Iexp);
+  void add_contribution(kernel::Particle *p1, kernel::Particle *p2, double Iexp);
 
   //add a contribution: general case
   void add_contribution(PairContainer *pc, double Iexp);

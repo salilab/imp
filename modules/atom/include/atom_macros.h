@@ -49,9 +49,9 @@
  */
 #define IMP_SIMULATOR(Name)                                       \
  private:                                                         \
-  virtual void setup(const ParticleIndexes& ps);                  \
-  virtual double do_step(const ParticleIndexes& sc, double dt);   \
-  virtual bool get_is_simulation_particle(ParticleIndex p) const; \
+  virtual void setup(const kernel::ParticleIndexes& ps);                  \
+  virtual double do_step(const kernel::ParticleIndexes& sc, double dt);   \
+  virtual bool get_is_simulation_particle(kernel::ParticleIndex p) const; \
                                                                   \
  public:
 

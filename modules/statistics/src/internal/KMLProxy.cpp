@@ -12,9 +12,9 @@ KMLProxy::KMLProxy() {
   set_default_values();
   is_init_ = false;
 }
-void KMLProxy::initialize(Model *m, const Particles &ps, const FloatKeys &atts,
+void KMLProxy::initialize(Model *m, const kernel::Particles &ps, const FloatKeys &atts,
                           unsigned int num_centers) {
-  for (Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
+  for (kernel::Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
     ps_.push_back(*it);
   }
   for (FloatKeys::const_iterator it = atts.begin(); it != atts.end(); it++) {
@@ -23,7 +23,7 @@ void KMLProxy::initialize(Model *m, const Particles &ps, const FloatKeys &atts,
   m_ = m;
   kcenters_ = num_centers;
   dim_ = atts.size();
-  centroids_ = Particles();
+  centroids_ = kernel::Particles();
   data_ = new KMData(dim_, ps_.size());
   for (unsigned int i = 0; i < ps_.size(); i++) {
     for (unsigned int j = 0; j < atts.size(); j++) {
@@ -33,7 +33,7 @@ void KMLProxy::initialize(Model *m, const Particles &ps, const FloatKeys &atts,
   is_init_ = true;
 }
 
-void KMLProxy::run(Particles *initial_centers) {
+void KMLProxy::run(kernel::Particles *initial_centers) {
   IMP_INTERNAL_CHECK(is_init_, "The proxy was not initialized");
   IMP_LOG_VERBOSE("KMLProxy::run start \n");
   // use the initial centers if provided
@@ -46,7 +46,7 @@ void KMLProxy::run(Particles *initial_centers) {
     IMP_LOG_VERBOSE("KMLProxy::run initial centers provided : \n");
     kmc = allocate_points(kcenters_, atts_.size());
     for (unsigned int i = 0; i < kcenters_; i++) {
-      Particle *cen = (*initial_centers)[i];
+      kernel::Particle *cen = (*initial_centers)[i];
       for (unsigned int j = 0; j < atts_.size(); j++) {
         (*(*kmc)[i])[j] = cen->get_value(atts_[j]);
       }
@@ -75,12 +75,12 @@ void KMLProxy::run(Particles *initial_centers) {
                      "The dimension of the final clusters is wrong");
   // TODO clear the centroids list
   // set the centroids:
-  Particle *p;
+  kernel::Particle *p;
   IMP_LOG_VERBOSE("KMLProxy::run load best results \n");
   for (unsigned int ctr_ind = 0; ctr_ind < kcenters_; ctr_ind++) {
     KMPoint *kmp = best_clusters[ctr_ind];
     // create a new particle
-    p = new Particle(m_);
+    p = new kernel::Particle(m_);
     centroids_.push_back(p);
     for (unsigned int att_ind = 0; att_ind < dim_; att_ind++) {
       p->add_attribute(atts_[att_ind], (*kmp)[att_ind], false);
@@ -155,7 +155,7 @@ std::string KMLProxy::get_cmm_string() const {
   // TODO - add the edges
   return std::string();
 }
-unsigned int KMLProxy::get_particle_assignment(Particle *p) const {
+unsigned int KMLProxy::get_particle_assignment(kernel::Particle *p) const {
   return assignment_.find(p)->second;
 }
 

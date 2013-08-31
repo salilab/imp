@@ -25,7 +25,7 @@ IMPISD_BEGIN_NAMESPACE
  */
 class IMPISDEXPORT Nuisance: public Decorator
 {
-  static void do_setup_particle(Model *m, ParticleIndex pi,
+  static void do_setup_particle(Model *m, kernel::ParticleIndex pi,
                                 double nuisance=1.0);
 
 public:
@@ -33,7 +33,7 @@ public:
   IMP_DECORATOR_SETUP_0(Nuisance);
   IMP_DECORATOR_SETUP_1(Nuisance, double, nuisance);
 
-  static bool get_is_setup(Model *m, ParticleIndex pi) {
+  static bool get_is_setup(Model *m, kernel::ParticleIndex pi) {
     return m->get_has_attribute(get_nuisance_key(), pi);
   }
 
@@ -52,17 +52,17 @@ public:
   bool get_has_lower() const;
   Float get_lower() const;
   static FloatKey get_lower_key();
-  static ParticleIndexKey get_lower_particle_key();
+  static kernel::ParticleIndexKey get_lower_particle_key();
   void set_lower(Float d);
-  void set_lower(Particle * d);
+  void set_lower(kernel::Particle * d);
   void remove_lower();
 
   bool get_has_upper() const;
   Float get_upper() const;
   static FloatKey get_upper_key();
-  static ParticleIndexKey get_upper_particle_key();
+  static kernel::ParticleIndexKey get_upper_particle_key();
   void set_upper(Float d);
-  void set_upper(Particle * d);
+  void set_upper(kernel::Particle * d);
   void remove_upper();
 
   Float get_nuisance_derivative() const {
@@ -91,16 +91,16 @@ private:
 
 };
 
-IMP_DECORATORS(Nuisance, Nuisances, ParticlesTemp);
+IMP_DECORATORS(Nuisance, Nuisances, kernel::ParticlesTemp);
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 class IMPISDEXPORT NuisanceScoreState : public ScoreState
 {
     private:
-        IMP::base::WeakPointer<Particle> p_;
+        IMP::base::WeakPointer<kernel::Particle> p_;
 
     private:
-        NuisanceScoreState(Particle *p) :
+        NuisanceScoreState(kernel::Particle *p) :
             ScoreState(p->get_model(), "NuisanceScoreState%1%"), p_(p) {}
 
     public:

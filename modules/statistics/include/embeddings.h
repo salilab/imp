@@ -51,13 +51,13 @@ class IMPSTATISTICSEXPORT ConfigurationSetXYZEmbedding : public Embedding {
     done by passing rescale=true to the constructor.
 */
 class IMPSTATISTICSEXPORT ParticleEmbedding : public Embedding {
-  Particles ps_;
+  kernel::Particles ps_;
   FloatKeys ks_;
   bool rescale_;
   base::Vector<FloatRange> ranges_;
 
  public:
-  ParticleEmbedding(const ParticlesTemp &ps,
+  ParticleEmbedding(const kernel::ParticlesTemp &ps,
                     const FloatKeys &ks
 #if defined(IMP_DOXYGEN)
                     = core::XYZ::get_xyz_keys()

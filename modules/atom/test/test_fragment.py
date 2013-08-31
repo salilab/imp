@@ -7,7 +7,7 @@ class Tests(IMP.test.TestCase):
     def test_bonded(self):
         """Check Fragment """
         m = IMP.Model()
-        p=IMP.Particle(m)
+        p=IMP.kernel.Particle(m)
         f= IMP.atom.Fragment.setup_particle(p)
         rs=[0,1,2,6]
         f.set_residue_indexes(rs)

@@ -56,13 +56,13 @@ int main(int argc, char *argv[]) {
   IMP_NEW(IMP::core::GridClosePairsFinder, gcpf, ());
   gcpf->set_distance(d);
 
-  IMP::ParticlesTemp patoms= IMP::atom::get_leaves(p);
-  IMP::ParticleIndexes ipatoms= IMP::get_indexes(patoms);
+  IMP::kernel::ParticlesTemp patoms= IMP::atom::get_leaves(p);
+  IMP::kernel::ParticleIndexes ipatoms= IMP::get_indexes(patoms);
   for (unsigned int i=0; i< mols.size(); ++i) {
     //IMP::SetLogState ss(i==0? TERSE: IMP::SILENT);
-    IMP::ParticlesTemp latoms= IMP::atom::get_leaves(mols[i]);
-    IMP::ParticleIndexes ilatoms= IMP::get_indexes(latoms);
-    IMP::ParticleIndexPairs ppt= gcpf->get_close_pairs(m, ipatoms, ilatoms);
+    IMP::kernel::ParticlesTemp latoms= IMP::atom::get_leaves(mols[i]);
+    IMP::kernel::ParticleIndexes ilatoms= IMP::get_indexes(latoms);
+    IMP::kernel::ParticleIndexPairs ppt= gcpf->get_close_pairs(m, ipatoms, ilatoms);
     double score=ps->evaluate_indexes(m, ppt, NULL, 0, ppt.size());
     std::cout << "Score for " << mols[i]->get_name() << " is "
               << score << std::endl;

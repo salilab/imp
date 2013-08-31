@@ -20,14 +20,14 @@ const double radius = 4;
 
 RigidBody create_rb(atom::Hierarchy hr) {
   Model *m = hr.get_model();
-  Molecule h = Molecule::setup_particle(new Particle(m));
+  Molecule h = Molecule::setup_particle(new kernel::Particle(m));
   XYZRs rbs;
   Sphere3D last(Vector3D(0, 0, 0), radius);
   for (unsigned int i = 0; i < np; ++i) {
-    IMP_NEW(Particle, p, (m));
+    IMP_NEW(kernel::Particle, p, (m));
     p->set_name("residue g");
     Residue r = Residue::setup_particle(p, get_residue_type('G'), i);
-    IMP_NEW(Particle, p1, (m));
+    IMP_NEW(kernel::Particle, p1, (m));
     p1->set_name("atom");
     Atom a = Atom::setup_particle(p1, AT_CA);
     XYZR xyz =
@@ -38,7 +38,7 @@ RigidBody create_rb(atom::Hierarchy hr) {
     h.add_child(r);
   }
   hr.add_child(h);
-  IMP_NEW(Particle, prb, (m));
+  IMP_NEW(kernel::Particle, prb, (m));
   prb->set_name(h->get_name() + " rb");
   RigidBody rb = RigidBody::setup_particle(prb, rbs);
   return rb;
@@ -86,7 +86,7 @@ void benchmark_it(std::string name, bool incr, bool nbl, bool longr) {
   IMP_NEW(Model, m, ());
   m->set_log_level(IMP::SILENT);
   set_check_level(IMP::USAGE_AND_INTERNAL);
-  atom::Hierarchy h = atom::Hierarchy::setup_particle(new Particle(m));
+  atom::Hierarchy h = atom::Hierarchy::setup_particle(new kernel::Particle(m));
   h->set_name("root");
   RigidBodies rbs;
   for (unsigned int i = 0; i < nrb; ++i) {

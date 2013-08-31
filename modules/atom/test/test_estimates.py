@@ -20,7 +20,7 @@ class Tests(IMP.test.TestCase):
     def test_d(self):
         """Testing the diffusion coeff estimate"""
         m= IMP.Model()
-        p= IMP.Particle(m)
+        p= IMP.kernel.Particle(m)
         d= IMP.core.XYZR.setup_particle(p)
         d.set_coordinates_are_optimized(True)
         d.set_radius(10)

@@ -35,8 +35,8 @@ IMPEM2D_BEGIN_NAMESPACE
         the works of merge trees.
 */
 class IMPEM2DEXPORT DummyRestraint: public kernel::Restraint {
-  base::Pointer<Particle> p0_;
-  base::Pointer<Particle> p1_;
+  base::Pointer<kernel::Particle> p0_;
+  base::Pointer<kernel::Particle> p1_;
 
 public:
 
@@ -45,7 +45,7 @@ public:
    * @param p First particle
    * @param q Second particle
    */
-  DummyRestraint(IMP::Particle *p, IMP::Particle *q):
+  DummyRestraint(IMP::kernel::Particle *p, IMP::kernel::Particle *q):
       kernel::Restraint(p->get_model(), "DummyRestraint%1%") {
     p0_ = p;
     p1_ = q;

@@ -32,20 +32,20 @@ class IMPCONTAINEREXPORT AllPairContainer : public PairContainer {
   template <class F>
   void apply_generic(F* f) const {
     validate_readable();
-    ParticleIndexes pis = c_->get_indexes();
+    kernel::ParticleIndexes pis = c_->get_indexes();
     for (unsigned int i = 0; i < pis.size(); ++i) {
       for (unsigned int j = 0; j < i; ++j) {
-        f->apply_index(get_model(), ParticleIndexPair(pis[i], pis[j]));
+        f->apply_index(get_model(), kernel::ParticleIndexPair(pis[i], pis[j]));
       }
     }
   }
   //! Get the individual particles from the passed SingletonContainer
   AllPairContainer(SingletonContainerAdaptor c,
                    std::string name = "AllPairContainer%1%");
-  virtual ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
-  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  virtual kernel::ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
+  virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
   virtual void do_before_evaluate() IMP_OVERRIDE;
   IMP_PAIR_CONTAINER_METHODS(AllPairContainer);
   IMP_OBJECT_METHODS(AllPairContainer);

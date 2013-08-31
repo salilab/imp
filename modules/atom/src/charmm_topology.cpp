@@ -61,7 +61,7 @@ void add_residue_bonds(
     const CHARMMResidueTopology *previous_residue,
     const CHARMMResidueTopology *next_residue,
     const std::map<const CHARMMResidueTopology *, Hierarchy> &resmap,
-    const CHARMMParameters *ff, Particles &ps) {
+    const CHARMMParameters *ff, kernel::Particles &ps) {
   for (unsigned int nbond = 0; nbond < current_residue->get_number_of_bonds();
        ++nbond) {
     Atoms as = current_residue->get_bond(nbond)
@@ -101,7 +101,7 @@ void add_residue_dihedrals(
     const CHARMMResidueTopology *previous_residue,
     const CHARMMResidueTopology *next_residue,
     const std::map<const CHARMMResidueTopology *, Hierarchy> &resmap,
-    const CHARMMParameters *ff, Particles &ps) {
+    const CHARMMParameters *ff, kernel::Particles &ps) {
   for (unsigned int ndih = 0; ndih < current_residue->get_number_of_dihedrals();
        ++ndih) {
     Atoms as = current_residue->get_dihedral(ndih)
@@ -117,7 +117,7 @@ void add_residue_impropers(
     const CHARMMResidueTopology *previous_residue,
     const CHARMMResidueTopology *next_residue,
     const std::map<const CHARMMResidueTopology *, Hierarchy> &resmap,
-    const CHARMMParameters *ff, Particles &ps) {
+    const CHARMMParameters *ff, kernel::Particles &ps) {
   for (unsigned int nimpr = 0;
        nimpr < current_residue->get_number_of_impropers(); ++nimpr) {
     Atoms as = current_residue->get_improper(nimpr)
@@ -130,7 +130,7 @@ void add_residue_impropers(
                                         CHARMMAtom(as[2]).get_charmm_type(),
                                         CHARMMAtom(as[3]).get_charmm_type());
         Dihedral id = Dihedral::setup_particle(
-            new Particle(as[0]->get_model()), core::XYZ(as[0]),
+            new kernel::Particle(as[0]->get_model()), core::XYZ(as[0]),
             core::XYZ(as[1]), core::XYZ(as[2]), core::XYZ(as[3]));
         // CHARMM ideal value is in angles; convert to radians
         id.set_ideal(p.ideal / 180.0 * PI);
@@ -588,7 +588,7 @@ void CHARMMTopology::add_missing_atoms(Hierarchy hierarchy) const {
           name = "HET:" + name;
         }
         AtomType typ = AtomType(name);
-        Atom atm = Atom::setup_particle(new Particle(model), typ);
+        Atom atm = Atom::setup_particle(new kernel::Particle(model), typ);
         CHARMMAtom::setup_particle(atm, atomtop.get_charmm_type());
         it->second.add_child(atm);
       }
@@ -976,7 +976,7 @@ void CHARMMTopology::add_charges(Hierarchy hierarchy) const {
 Particles CHARMMTopology::add_bonds(Hierarchy hierarchy) const {
   ResMap resmap;
   map_residue_topology_to_hierarchy(hierarchy, resmap);
-  Particles ps;
+  kernel::Particles ps;
 
   for (CHARMMSegmentTopologyConstIterator segit = segments_begin();
        segit != segments_end(); ++segit) {
@@ -997,7 +997,7 @@ Particles CHARMMTopology::add_bonds(Hierarchy hierarchy) const {
 Particles CHARMMTopology::add_impropers(Hierarchy hierarchy) const {
   ResMap resmap;
   map_residue_topology_to_hierarchy(hierarchy, resmap);
-  Particles ps;
+  kernel::Particles ps;
 
   for (CHARMMSegmentTopologyConstIterator segit = segments_begin();
        segit != segments_end(); ++segit) {
@@ -1018,7 +1018,7 @@ Particles CHARMMTopology::add_impropers(Hierarchy hierarchy) const {
 Particles CHARMMTopology::add_dihedrals(Hierarchy hierarchy) const {
   ResMap resmap;
   map_residue_topology_to_hierarchy(hierarchy, resmap);
-  Particles ps;
+  kernel::Particles ps;
 
   for (CHARMMSegmentTopologyConstIterator segit = segments_begin();
        segit != segments_end(); ++segit) {
@@ -1038,18 +1038,18 @@ Particles CHARMMTopology::add_dihedrals(Hierarchy hierarchy) const {
 
 Hierarchy CHARMMTopology::create_hierarchy(Model *model) const {
   char chain_id = 'A';
-  Hierarchy root = Hierarchy::setup_particle(new Particle(model));
+  Hierarchy root = Hierarchy::setup_particle(new kernel::Particle(model));
   for (CHARMMSegmentTopologyConstIterator segit = segments_begin();
        segit != segments_end(); ++segit) {
     int residue_index = 1;
     const CHARMMSegmentTopology *seg = *segit;
-    Chain chain = Chain::setup_particle(new Particle(model), chain_id++);
+    Chain chain = Chain::setup_particle(new kernel::Particle(model), chain_id++);
     root.add_child(chain);
     for (unsigned int nres = 0; nres < seg->get_number_of_residues(); ++nres) {
       const CHARMMResidueTopology *res = seg->get_residue(nres);
       ResidueType restyp = ResidueType(res->get_type());
       Residue residue =
-          Residue::setup_particle(new Particle(model), restyp, residue_index++);
+          Residue::setup_particle(new kernel::Particle(model), restyp, residue_index++);
       chain.add_child(residue);
       bool is_ligand = !(residue.get_is_protein() || residue.get_is_rna() ||
                          residue.get_is_dna());
@@ -1060,7 +1060,7 @@ Hierarchy CHARMMTopology::create_hierarchy(Model *model) const {
           name = "HET:" + name;
         }
         AtomType atmtyp = AtomType(name);
-        Atom atm = Atom::setup_particle(new Particle(model), atmtyp);
+        Atom atm = Atom::setup_particle(new kernel::Particle(model), atmtyp);
         residue.add_child(atm);
       }
     }

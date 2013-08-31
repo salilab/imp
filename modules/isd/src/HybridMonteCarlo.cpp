@@ -43,11 +43,11 @@ void HybridMonteCarlo::do_step()
         static const double kB = 8.31441 / 4186.6;
         md_->assign_velocities(get_kt() / kB);
     }
-    ParticleIndexes all_optimized_particles;
+    kernel::ParticleIndexes all_optimized_particles;
     {
       ModelObjectsTemp op = get_model()->get_optimized_particles();
       for (unsigned int i = 0; i< op.size(); ++i) {
-        all_optimized_particles.push_back(dynamic_cast<Particle*>(op[i].get())
+        all_optimized_particles.push_back(dynamic_cast<kernel::Particle*>(op[i].get())
                                           ->get_index());
       }
     }

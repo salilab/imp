@@ -18,7 +18,7 @@ class Tests(IMP.test.TestCase):
         rbs=[]
         for i in range(3):
             ps= IMP.kernel._create_particles_from_pdb(self.get_input_file_name("small_protein.pdb"), m)
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             p.set_name("protein"+str(i))
             aps.extend(ps)
             rb=IMP.core.RigidBody.setup_particle(p, ps)
@@ -83,7 +83,7 @@ class Tests(IMP.test.TestCase):
         IMP.base.set_log_level(IMP.base.SILENT)
         m.set_log_level(IMP.base.SILENT)
         for i in range(3):
-            p = IMP.Particle(m)
+            p = IMP.kernel.Particle(m)
             d= IMP.core.XYZ.setup_particle(p)
             d.set_coordinates(IMP.algebra.Vector3D(0,i,0))
             ps.append(p)
@@ -115,7 +115,7 @@ class Tests(IMP.test.TestCase):
     def test_list_ig(self):
         """Test that interaction graphs of lists decompose"""
         m= IMP.Model();
-        ps=[IMP.Particle(m) for i in range(0,3)]
+        ps=[IMP.kernel.Particle(m) for i in range(0,3)]
         score= IMP.core.SoftSpherePairScore(1)
         r= IMP.container.PairsRestraint(score, [(ps[0], ps[1]), (ps[1], ps[2])])
         for p in ps:

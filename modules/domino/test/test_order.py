@@ -15,7 +15,7 @@ class Tests(IMP.test.TestCase):
         pst= IMP.domino.ParticleStatesTable()
         state= IMP.domino.IndexStates(10)
         for i in range(0,10):
-            ps.append(IMP.Particle(m))
+            ps.append(IMP.kernel.Particle(m))
             pst.set_particle_states(ps[-1], state)
         eqft= IMP.domino.EquivalenceSubsetFilterTable(pst)
         ps.sort()
@@ -38,7 +38,7 @@ class Tests(IMP.test.TestCase):
         pst= IMP.domino.ParticleStatesTable()
         state= IMP.domino.IndexStates(8)
         for i in range(0,5):
-            ps.append(IMP.Particle(m))
+            ps.append(IMP.kernel.Particle(m))
             pst.set_particle_states(ps[-1], state)
         eqft= IMP.domino.EquivalenceSubsetFilterTable(pst)
         exft= IMP.domino.ExclusionSubsetFilterTable(pst)
@@ -60,7 +60,7 @@ class Tests(IMP.test.TestCase):
         pst= IMP.domino.ParticleStatesTable()
         state= IMP.domino.IndexStates(11)
         for i in range(0,10):
-            ps.append(IMP.Particle(m))
+            ps.append(IMP.kernel.Particle(m))
             pst.set_particle_states(ps[-1], state)
         eqft= IMP.domino.EquivalenceAndExclusionSubsetFilterTable(pst)
         ps.sort()
@@ -80,10 +80,10 @@ class Tests(IMP.test.TestCase):
         pst= IMP.domino.ParticleStatesTable()
         state= IMP.domino.IndexStates(10)
         for i in range(0,4):
-            ps.append(IMP.Particle(m))
+            ps.append(IMP.kernel.Particle(m))
             pst.set_particle_states(ps[-1], state)
         statep= IMP.domino.IndexStates(8)
-        pp=IMP.Particle(m)
+        pp=IMP.kernel.Particle(m)
         pst.set_particle_states(pp, statep)
         eqft= IMP.domino.EquivalenceSubsetFilterTable(pst)
         ps.sort()

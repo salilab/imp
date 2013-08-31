@@ -14,8 +14,8 @@
 #include <IMP/constants.h>
 #include <IMP/atom/constants.h>
 #include <IMP/base/warning_macros.h>
-#include <IMP/internal/constants.h>
-#include <IMP/internal/units.h>
+#include <IMP/kernel/internal/constants.h>
+#include <IMP/kernel/internal/units.h>
 #include <boost/random/normal_distribution.hpp>
 #include <IMP/atom/Diffusion.h>
 #include <IMP/Configuration.h>
@@ -52,13 +52,13 @@ BrownianDynamics::BrownianDynamics(Model *m,
   T* is
  */
 
-bool BrownianDynamics::get_is_simulation_particle(ParticleIndex pi) const {
+bool BrownianDynamics::get_is_simulation_particle(kernel::ParticleIndex pi) const {
   return (Diffusion::get_is_setup(get_model(), pi) &&
           IMP::core::XYZ(get_model(), pi).get_coordinates_are_optimized());
 }
 
 namespace {
-inline double get_force(Model *m, ParticleIndex p, unsigned int i, double dt,
+inline double get_force(Model *m, kernel::ParticleIndex p, unsigned int i, double dt,
                         double ikT) {
   Diffusion d(m, p);
   double nforce(-d.get_derivative(i));
@@ -77,7 +77,7 @@ inline double get_force(Model *m, ParticleIndex p, unsigned int i, double dt,
   return force_term;
 }
 // radians
-inline double get_torque(Model *m, ParticleIndex p, unsigned int i, double dt,
+inline double get_torque(Model *m, kernel::ParticleIndex p, unsigned int i, double dt,
                          double ikT) {
   RigidBodyDiffusion d(m, p);
   core::RigidBody rb(m, p);
@@ -95,20 +95,20 @@ inline double get_torque(Model *m, ParticleIndex p, unsigned int i, double dt,
   return -force_term;
 }
 
-inline double get_sigma(Model *m, ParticleIndex p, double dtfs) {
+inline double get_sigma(Model *m, kernel::ParticleIndex p, double dtfs) {
   // 6.0 since we are picking radius rather than the coordinates
   double dd = Diffusion(m, p).get_diffusion_coefficient();
   return sqrt(6.0 * dd * dtfs);
 }
-inline double get_rotational_sigma(Model *m, ParticleIndex p, double dtfs) {
+inline double get_rotational_sigma(Model *m, kernel::ParticleIndex p, double dtfs) {
   double dr = RigidBodyDiffusion(m, p).get_rotational_diffusion_coefficient();
   return sqrt(6.0 * dr * dtfs);
 }
 }
 
-void BrownianDynamics::setup(const ParticleIndexes &ips) {
+void BrownianDynamics::setup(const kernel::ParticleIndexes &ips) {
   IMP_IF_LOG(TERSE) {
-    ParticlesTemp ps = IMP::internal::get_particle(get_model(), ips);
+    kernel::ParticlesTemp ps = IMP::internal::get_particle(get_model(), ips);
     double dtfs = get_maximum_time_step();
     double ikT = 1.0 / get_kt();
     double ms = 0;
@@ -142,7 +142,7 @@ void check_delta(algebra::Vector3D &delta, double max_step) {
 }
 }
 
-void BrownianDynamics::advance_coordinates_1(ParticleIndex pi, unsigned int i,
+void BrownianDynamics::advance_coordinates_1(kernel::ParticleIndex pi, unsigned int i,
                                              double dt, double ikT) {
   Diffusion d(get_model(), pi);
   core::XYZ xd(get_model(), pi);
@@ -154,7 +154,7 @@ void BrownianDynamics::advance_coordinates_1(ParticleIndex pi, unsigned int i,
   xd.set_coordinates(xd.get_coordinates() + delta);
 }
 
-void BrownianDynamics::advance_coordinates_0(ParticleIndex pi, unsigned int i,
+void BrownianDynamics::advance_coordinates_0(kernel::ParticleIndex pi, unsigned int i,
                                              double dtfs, double ikT) {
   core::XYZ xd(get_model(), pi);
   double sigma = get_sigma(get_model(), pi, dtfs);
@@ -176,7 +176,7 @@ void BrownianDynamics::advance_coordinates_0(ParticleIndex pi, unsigned int i,
   xd.set_coordinates(xd.get_coordinates() + delta);
 }
 
-void BrownianDynamics::advance_orientation_0(ParticleIndex pi, double dtfs,
+void BrownianDynamics::advance_orientation_0(kernel::ParticleIndex pi, double dtfs,
                                              double ikT) {
   core::RigidBody rb(get_model(), pi);
   double sigma = get_rotational_sigma(get_model(), pi, dtfs);
@@ -205,7 +205,7 @@ void BrownianDynamics::advance_orientation_0(ParticleIndex pi, double dtfs,
 }
 
 void BrownianDynamics::advance_chunk(double dtfs, double ikT,
-                                     const ParticleIndexes &ps,
+                                     const kernel::ParticleIndexes &ps,
                                      unsigned int begin, unsigned int end) {
   IMP_LOG_TERSE("Advancing particles " << begin << " to " << end << std::endl);
   for (unsigned int i = begin; i < end; ++i) {
@@ -214,7 +214,7 @@ void BrownianDynamics::advance_chunk(double dtfs, double ikT,
       advance_orientation_0(ps[i], dtfs, ikT);
     } else {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-      Particle *p = get_model()->get_particle(ps[i]);
+      kernel::Particle *p = get_model()->get_particle(ps[i]);
       IMP_INTERNAL_CHECK(!core::RigidBody::get_is_setup(p),
                          "A rigid body without rigid body diffusion info"
                              << " was found: " << p->get_name());
@@ -230,7 +230,7 @@ void BrownianDynamics::advance_chunk(double dtfs, double ikT,
 /**
     dx= D/2kT*(F(x0)+F(x0+D/kTF(x0)dt +R)dt +R
  */
-double BrownianDynamics::do_step(const ParticleIndexes &ps, double dt) {
+double BrownianDynamics::do_step(const kernel::ParticleIndexes &ps, double dt) {
   double dtfs(dt);
   double ikT = 1.0 / get_kt();
   get_scoring_function()->evaluate(true);
@@ -281,7 +281,7 @@ bool is_constant(It b, It e) {
 
 bool is_ok_step(BrownianDynamics *bd, Configuration *c, double step) {
   // std::cout << "Trying time step " << step << std::endl;
-  ParticlesTemp ps = bd->get_simulation_particles();
+  kernel::ParticlesTemp ps = bd->get_simulation_particles();
   c->load_configuration();
   bd->set_maximum_time_step(step);
   IMP_LOG_TERSE("Trying step " << step << "(" << bd->get_maximum_time_step()

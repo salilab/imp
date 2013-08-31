@@ -7,7 +7,7 @@
 
 #include <IMP/atom/ForceFieldParameters.h>
 #include <IMP/core/XYZR.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/atom/CHARMMParameters.h>
 #include <IMP/atom/LennardJones.h>
 
@@ -25,7 +25,7 @@ Float ForceFieldParameters::get_epsilon(Atom atom) const {
 
 void ForceFieldParameters::add_radii(Hierarchy mhd, double scale,
                                      FloatKey radius_key) const {
-  ParticlesTemp ps = get_by_type(mhd, ATOM_TYPE);
+  kernel::ParticlesTemp ps = get_by_type(mhd, ATOM_TYPE);
   for (unsigned int i = 0; i < ps.size(); i++) {
     Float radius = get_radius(Atom(ps[i])) * scale;
     if (ps[i]->has_attribute(radius_key)) {
@@ -39,7 +39,7 @@ void ForceFieldParameters::add_radii(Hierarchy mhd, double scale,
 }
 
 void ForceFieldParameters::add_well_depths(Hierarchy mhd) const {
-  ParticlesTemp ps = get_by_type(mhd, ATOM_TYPE);
+  kernel::ParticlesTemp ps = get_by_type(mhd, ATOM_TYPE);
   for (unsigned int i = 0; i < ps.size(); i++) {
     Float epsilon = get_epsilon(Atom(ps[i]));
     LennardJones::setup_particle(ps[i], -epsilon);
@@ -107,8 +107,8 @@ void ForceFieldParameters::add_bonds(Residue rd1, Residue rd2) const {
     IMP_WARN("Residues incomplete: " << rd1 << " and " << rd2 << std::endl);
     return;
   }
-  Particle* p1 = ad1.get_particle();
-  Particle* p2 = ad2.get_particle();
+  kernel::Particle* p1 = ad1.get_particle();
+  kernel::Particle* p2 = ad2.get_particle();
 
   Bonded b1, b2;
   if (Bonded::get_is_setup(p1))
@@ -143,8 +143,8 @@ void ForceFieldParameters::add_bonds(Residue rd) const {
       continue;
     }
 
-    Particle* p1 = ad1.get_particle();
-    Particle* p2 = ad2.get_particle();
+    kernel::Particle* p1 = ad1.get_particle();
+    kernel::Particle* p2 = ad2.get_particle();
 
     Bonded b1, b2;
     if (Bonded::get_is_setup(p1))

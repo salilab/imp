@@ -21,20 +21,20 @@ IMPISD_BEGIN_NAMESPACE
 
 class IMPISDEXPORT  FretRestraint : public ISDRestraint
 {
-    Particles pd_;
-    Particles pa_;
-    base::Pointer<Particle> prd_;
+    kernel::Particles pd_;
+    kernel::Particles pa_;
+    base::Pointer<kernel::Particle> prd_;
     algebra::Vector3D  GMMterd_;
     algebra::Vector3Ds GMMctrd_;
-    base::Pointer<Particle> pra_;
+    base::Pointer<kernel::Particle> pra_;
     algebra::Vector3D  GMMtera_;
     algebra::Vector3Ds GMMctra_;
-    base::Pointer<Particle> kda_;
-    base::Pointer<Particle> Ida_;
-    base::Pointer<Particle> R0_;
-    base::Pointer<Particle> sumFi_;
-    base::Pointer<Particle> sigma0_;
-    base::Pointer<Particle> Pbl_;
+    base::Pointer<kernel::Particle> kda_;
+    base::Pointer<kernel::Particle> Ida_;
+    base::Pointer<kernel::Particle> R0_;
+    base::Pointer<kernel::Particle> sumFi_;
+    base::Pointer<kernel::Particle> sigma0_;
+    base::Pointer<kernel::Particle> Pbl_;
     base::PointerMember<FretData> data_;
     double fexp_;
     double multi_d_;
@@ -55,20 +55,20 @@ public:
       preferably in a Singleton or PairContainer as appropriate.
    */
 
-  FretRestraint (Particles pd, Particles pa,
-   Particle *kda, Particle *Ida, Particle *R0, Particle* sigma0,
-   Particle *Pbl, double fexp, double m_d=1.0, double m_a=1.0);
+  FretRestraint (kernel::Particles pd, kernel::Particles pa,
+   kernel::Particle *kda, kernel::Particle *Ida, kernel::Particle *R0, kernel::Particle* sigma0,
+   kernel::Particle *Pbl, double fexp, double m_d=1.0, double m_a=1.0);
 
   FretRestraint
-  (Particle *kda, Particle *Ida, Particle *sumFi, Particle* sigma0,
-   Particle *Pbl, double fexp);
+  (kernel::Particle *kda, kernel::Particle *Ida, kernel::Particle *sumFi, kernel::Particle* sigma0,
+   kernel::Particle *Pbl, double fexp);
 
   FretRestraint
-  (Particle *prd, algebra::Vector3D GMMterd,
+  (kernel::Particle *prd, algebra::Vector3D GMMterd,
    algebra::Vector3Ds GMMctrd, Floats GMMwd, Floats GMMsigd,
-   Particle *pra, algebra::Vector3D GMMtera,
+   kernel::Particle *pra, algebra::Vector3D GMMtera,
    algebra::Vector3Ds GMMctra, Floats GMMwa, Floats GMMsiga,
-   Particle *kda, Particle *Ida, Particle* sigma0, Particle *Pbl,
+   kernel::Particle *kda, kernel::Particle *Ida, kernel::Particle* sigma0, kernel::Particle *Pbl,
    FretData *data, double fexp);
 
   // get sumFi
@@ -104,10 +104,10 @@ private:
   double get_model_fretr_type_0() const;
   double get_model_fretr_type_1() const;
   algebra::Vector3Ds get_current_centers
-                            (Particle *p, const algebra::Vector3Ds& ctrs) const;
+                            (kernel::Particle *p, const algebra::Vector3Ds& ctrs) const;
 
   algebra::Vector3D get_current_center
-                            (Particle *p, const algebra::Vector3D& ctr) const;
+                            (kernel::Particle *p, const algebra::Vector3D& ctr) const;
 };
 
 IMPISD_END_NAMESPACE

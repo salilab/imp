@@ -19,8 +19,8 @@ void XYZDataPoints::populate_data_points(const algebra::Vector3Ds &vecs) {
   }
 }
 
-void ParticlesDataPoints::populate_data_points(ParticlesTemp ps) {
-  ps_ = get_as<Particles>(ps);
+void ParticlesDataPoints::populate_data_points(kernel::ParticlesTemp ps) {
+  ps_ = get_as<kernel::Particles>(ps);
   for (unsigned int i = 0; i < ps.size(); i++) {
     data_.push_back(Array1DD(3));
     for (int d = 0; d < 3; d++) {

@@ -10,8 +10,8 @@ import IMP.algebra
 m= IMP.Model()
 
 # create two particles to optimize
-d0= IMP.core.XYZ.setup_particle(IMP.Particle(m), IMP.algebra.Vector3D(0,0,0))
-d1= IMP.core.XYZ.setup_particle(IMP.Particle(m), IMP.algebra.Vector3D(3,4,5))
+d0= IMP.core.XYZ.setup_particle(IMP.kernel.Particle(m), IMP.algebra.Vector3D(0,0,0))
+d1= IMP.core.XYZ.setup_particle(IMP.kernel.Particle(m), IMP.algebra.Vector3D(3,4,5))
 d0.set_coordinates_are_optimized(True)
 d1.set_coordinates_are_optimized(True)
 

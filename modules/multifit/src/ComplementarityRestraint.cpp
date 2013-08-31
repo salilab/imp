@@ -13,7 +13,7 @@
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 IMP::algebra::DenseGrid3D<float>
-ComplementarityRestraint::get_grid(const ParticlesTemp &a,
+ComplementarityRestraint::get_grid(const kernel::ParticlesTemp &a,
                                            double thickness,
                                            double value,
                                            double interior_thickness,
@@ -31,7 +31,7 @@ ComplementarityRestraint::get_grid(const ParticlesTemp &a,
 
 ComplementarityRestraint::GridObject *
 ComplementarityRestraint::get_grid_object(core::RigidBody rb,
-                                                  const ParticlesTemp &a,
+                                                  const kernel::ParticlesTemp &a,
                                                   ObjectKey ok,
                                                   double thickness,
                                                   double value,
@@ -65,8 +65,8 @@ ComplementarityRestraint::get_grid_object(core::RigidBody rb,
   }
 ComplementarityRestraint
 ::ComplementarityRestraint(
-                                   const ParticlesTemp &a,
-                                   const ParticlesTemp &b,
+                                   const kernel::ParticlesTemp &a,
+                                   const kernel::ParticlesTemp &b,
                                    std::string name)
  :
     kernel::Restraint(IMP::internal::get_model(a), name), a_(a), b_(b),
@@ -178,7 +178,7 @@ void ComplementarityRestraint::update_voxel() {
 
 ModelObjectsTemp ComplementarityRestraint::do_get_inputs() const
 {
-  ParticlesTemp ret= a_;
+  kernel::ParticlesTemp ret= a_;
   ret.insert(ret.end(), b_.begin(), b_.end());
   ret.push_back(rba_);
   ret.push_back(rbb_);

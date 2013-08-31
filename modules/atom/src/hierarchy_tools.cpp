@@ -110,7 +110,7 @@ double get_volume_measurement(algebra::Sphere3Ds ss, double resolution) {
 #endif
 }
 
-void setup_as_approximation_internal(Particle *p, const ParticlesTemp &other,
+void setup_as_approximation_internal(kernel::Particle *p, const kernel::ParticlesTemp &other,
                                      double resolution = -1, double volume = -1,
                                      double mass = -1) {
   IMP_USAGE_CHECK(volume == -1 || volume > 0,
@@ -179,12 +179,12 @@ Hierarchy create_protein(Model *m, std::string name, double resolution,
   // assume a 20% overlap in the beads to make the protein not too bumpy
   double overlap_frac = .2;
   std::pair<int, double> nr = compute_n(volume, resolution, overlap_frac);
-  Hierarchy pd = Hierarchy::setup_particle(new Particle(m));
+  Hierarchy pd = Hierarchy::setup_particle(new kernel::Particle(m));
   if (ismol) Molecule::setup_particle(pd);
   pd->set_name(name);
-  Particles ps;
+  kernel::Particles ps;
   for (int i = 0; i < nr.first; ++i) {
-    Particle *pc = new Particle(m);
+    kernel::Particle *pc = new kernel::Particle(m);
     std::ostringstream oss;
     oss << name << "-" << i;
     pc->set_name(oss.str());
@@ -210,7 +210,7 @@ Hierarchy create_protein(Model *m, std::string name, double resolution,
 
 Hierarchy create_protein(Model *m, std::string name, double resolution,
                          const Ints db) {
-  Hierarchy root = Hierarchy::setup_particle(new Particle(m));
+  Hierarchy root = Hierarchy::setup_particle(new kernel::Particle(m));
   Domain::setup_particle(root, db.front(), db.back());
   for (unsigned int i = 1; i < db.size(); ++i) {
     std::ostringstream oss;
@@ -259,8 +259,8 @@ Hierarchy create_approximation_of_residues(const Hierarchies &t) {
     }
   }
   Model *mm = t[0]->get_model();
-  Particle *p = new Particle(mm);
-  ParticlesTemp children;
+  kernel::Particle *p = new kernel::Particle(mm);
+  kernel::ParticlesTemp children;
   for (unsigned int i = 0; i < t.size(); ++i) {
     Hierarchies cur = t[i].get_children();
     children.insert(children.end(), cur.begin(), cur.end());
@@ -302,7 +302,7 @@ Hierarchy create_simplified_along_backbone(Hierarchy in, int num_res,
   Hierarchies chains = get_by_type(in, CHAIN_TYPE);
   if (chains.size() > 1) {
     Hierarchy root = Hierarchy::setup_particle(
-        new Particle(in->get_model(), in->get_name()));
+        new kernel::Particle(in->get_model(), in->get_name()));
     for (unsigned int i = 0; i < chains.size(); ++i) {
       Chain chain(chains[i].get_particle());
       root.add_child(create_simplified_along_backbone(chain, num_res));
@@ -374,7 +374,7 @@ Hierarchy create_simplified_along_backbone(Chain in,
   double ov= get_volume(in);
   double cv= get_volume(root);
   double scale=1;
-  ParticlesTemp rt= get_by_type(root, XYZR_TYPE);
+  kernel::ParticlesTemp rt= get_by_type(root, XYZR_TYPE);
   Floats radii(rt.size());
   for (unsigned int i=0; i< rt.size(); ++i) {
     core::XYZR d(rt[i]);
@@ -402,7 +402,7 @@ Hierarchy create_simplified_along_backbone(Chain in,
   return root;
 }
 
-void setup_as_approximation(Particle *p, const ParticlesTemp &other,
+void setup_as_approximation(kernel::Particle *p, const kernel::ParticlesTemp &other,
                             double resolution) {
   setup_as_approximation_internal(p, other, resolution);
 }

@@ -8,14 +8,14 @@
 #include <IMP/domino/utility.h>
 #include <IMP/domino/internal/tree_inference.h>
 #include <IMP/domino/internal/inference_utility.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/Model.h>
 #include <IMP/kernel/Restraint.h>
 #include <IMP/ScoreState.h>
 #include <IMP/domino/assignment_containers.h>
 #include <IMP/base/map.h>
 #include <boost/graph/graphviz.hpp>
-#include <IMP/internal/graph_utility.h>
+#include <IMP/kernel/internal/graph_utility.h>
 #include <IMP/domino/internal/tree_inference.h>
 #include <IMP/RestraintSet.h>
 #include <IMP/domino/particle_states.h>
@@ -35,7 +35,7 @@ inline void load_particle_states(It b, It e, const Assignment &ss,
           static_cast<typename std::iterator_traits<It>::difference_type>(
               ss.size()),
       "Sizes don't match in load particle states: "
-          << Subset(ParticlesTemp(b, e)) << " vs " << ss);
+          << Subset(kernel::ParticlesTemp(b, e)) << " vs " << ss);
   unsigned int i = 0;
   for (It c = b; c != e; ++c) {
     pst->get_particle_states(*c)->load_particle_state(ss[i], *c);
@@ -56,7 +56,7 @@ RestraintsTemp get_restraints(const Subset &s, const ParticleStatesTable *pst,
                               kernel::RestraintSet *rs) {
   kernel::RestraintsTemp rw = get_restraints(kernel::RestraintsTemp(1, rs));
   Subset other = pst->get_subset();
-  ParticlesTemp oms;
+  kernel::ParticlesTemp oms;
   std::set_difference(other.begin(), other.end(), s.begin(), s.end(),
                       std::back_inserter(oms));
   DependencyGraphVertexIndex dgvi = get_vertex_index(dg);
@@ -72,7 +72,7 @@ RestraintsTemp get_restraints(const Subset &s, const ParticleStatesTable *pst,
   return rw;
 }
 
-Ints get_partial_index(const ParticlesTemp &particles, const Subset &subset,
+Ints get_partial_index(const kernel::ParticlesTemp &particles, const Subset &subset,
                        const Subsets &excluded) {
   for (unsigned int i = 0; i < excluded.size(); ++i) {
     bool all = true;
@@ -109,7 +109,7 @@ Ints get_partial_index(const ParticlesTemp &particles, const Subset &subset,
   return ret;
 }
 
-Ints get_index(const ParticlesTemp &particles, const Subset &subset,
+Ints get_index(const kernel::ParticlesTemp &particles, const Subset &subset,
                const Subsets &excluded) {
   Ints pi = get_partial_index(particles, subset, excluded);
   if (std::find(pi.begin(), pi.end(), -1) != pi.end())
@@ -118,12 +118,12 @@ Ints get_index(const ParticlesTemp &particles, const Subset &subset,
     return pi;
 }
 
-ParticlePairsTemp get_possible_interactions(const ParticlesTemp &ps,
+ParticlePairsTemp get_possible_interactions(const kernel::ParticlesTemp &ps,
                                             double max_distance,
                                             ParticleStatesTable *pst) {
-  if (ps.empty()) return ParticlePairsTemp();
+  if (ps.empty()) return kernel::ParticlePairsTemp();
   ParticleStatesList psl;
-  ParticlesTemp all = pst->get_particles();
+  kernel::ParticlesTemp all = pst->get_particles();
   unsigned int max = 0;
   for (unsigned int i = 0; i < all.size(); ++i) {
     psl.push_back(pst->get_particle_states(all[i]));
@@ -148,9 +148,9 @@ ParticlePairsTemp get_possible_interactions(const ParticlesTemp &ps,
   IMP_NEW(core::GridClosePairsFinder, gcpf, ());
   gcpf->set_distance(max_distance);
   IntPairs ips = gcpf->get_close_pairs(bbs);
-  ParticlePairsTemp ret(ips.size());
+  kernel::ParticlePairsTemp ret(ips.size());
   for (unsigned int i = 0; i < ips.size(); ++i) {
-    ret[i] = ParticlePair(ps[ips[i].first], ps[ips[i].second]);
+    ret[i] = kernel::ParticlePair(ps[ips[i].first], ps[ips[i].second]);
   }
   return ret;
 }

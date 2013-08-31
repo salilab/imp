@@ -7,9 +7,9 @@ import IMP.core
 
 def make_test_pair_score(min_distance=9.0, max_distance=10.0):
     m = IMP.Model()
-    p0 = IMP.Particle(m)
+    p0 = IMP.kernel.Particle(m)
     d0 = IMP.atom.Charged.setup_particle(p0, IMP.algebra.Vector3D(0,0,0), 0.0)
-    p1 = IMP.Particle(m)
+    p1 = IMP.kernel.Particle(m)
     d1 = IMP.atom.Charged.setup_particle(p1, IMP.algebra.Vector3D(0,0,0), 0.0)
     sm = IMP.atom.ForceSwitch(min_distance, max_distance)
     c = IMP.atom.CoulombPairScore(sm)

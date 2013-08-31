@@ -150,7 +150,7 @@ class Tests(IMP.test.TestCase):
         """Test that two selections are disjoint"""
         IMP.base.set_log_level(IMP.base.SILENT)
         m= IMP.Model()
-        all=IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        all=IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
         all.set_name("the universe")
         def create_protein(name, ds):
             h=IMP.atom.create_protein(m, name, 10, ds)

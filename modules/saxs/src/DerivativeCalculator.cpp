@@ -91,7 +91,7 @@ std::vector<double> DerivativeCalculator::compute_gaussian_effect_size(
  */
 DeltaDistributionFunction DerivativeCalculator::precompute_derivative_helpers(
         const Profile* resampled_model_profile,
-        const Particles& particles1, const Particles& particles2,
+        const kernel::Particles& particles1, const kernel::Particles& particles2,
         std::vector<Floats>& sinc_cos_values) const
 {
 
@@ -137,8 +137,8 @@ Delta(r) = f_iatom * sum_i f_i delta(r-r_{i,iatom}) (x_iatom-x_i)
 */
 void DerivativeCalculator::compute_chisquare_derivative(
         const Profile* model_profile,
-        const Particles& particles1,
-        const Particles& particles2,
+        const kernel::Particles& particles1,
+        const kernel::Particles& particles2,
         std::vector<algebra::Vector3D>& derivatives,
         const std::vector<double>& effect_size) const
 {
@@ -171,8 +171,8 @@ void DerivativeCalculator::compute_chisquare_derivative(
  * loop over all particles and rigid bodies, and call compute_chi_derivative on
  * them
  */
-void DerivativeCalculator::compute_all_derivatives(const Particles& particles,
-               const std::vector<Particles>& rigid_bodies,
+void DerivativeCalculator::compute_all_derivatives(const kernel::Particles& particles,
+               const std::vector<kernel::Particles>& rigid_bodies,
                const std::vector<core::RigidBody>& rigid_bodies_decorators,
                const Profile* model_profile,
                const std::vector<double>& effect_size,

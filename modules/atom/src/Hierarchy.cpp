@@ -93,7 +93,7 @@ namespace {
 struct MHDMatchingType {
   MHDMatchingType(GetByType t) : t_(t) {}
 
-  bool operator()(Particle *p) const {
+  bool operator()(kernel::Particle *p) const {
     Hierarchy h = Hierarchy::decorate_particle(p);
     switch (t_) { IMP_FOREACH_HIERARCHY_TYPE_STATEMENTS(IMP_IMPL_MATCH_TYPE); }
     IMP_FAILURE("Unhandled type in get_by_type.");
@@ -116,7 +116,7 @@ namespace {
 struct MatchResidueIndex {
   int index_;
   MatchResidueIndex(int i) : index_(i) {}
-  bool operator()(Particle *p) const {
+  bool operator()(kernel::Particle *p) const {
     Hierarchy mhd(p);
     if (mhd.get_as_residue()) {
       return (mhd.get_as_residue().get_index() == index_);
@@ -286,7 +286,7 @@ Hierarchy create_fragment(const Hierarchies &ps) {
     }
   }
 
-  Particle *fp = new Particle(parent.get_particle()->get_model());
+  kernel::Particle *fp = new kernel::Particle(parent.get_particle()->get_model());
   Hierarchy fd = Fragment::setup_particle(fp);
 
   for (unsigned int i = 0; i < ps.size(); ++i) {
@@ -299,15 +299,15 @@ Hierarchy create_fragment(const Hierarchies &ps) {
 }
 
 Bonds get_internal_bonds(Hierarchy mhd) {
-  ParticlesTemp ps = core::get_all_descendants(mhd);
-  IMP::base::set<Particle *> sps(ps.begin(), ps.end());
+  kernel::ParticlesTemp ps = core::get_all_descendants(mhd);
+  IMP::base::set<kernel::Particle *> sps(ps.begin(), ps.end());
   Bonds ret;
-  for (ParticlesTemp::iterator pit = ps.begin(); pit != ps.end(); ++pit) {
-    Particle *p = *pit;
+  for (kernel::ParticlesTemp::iterator pit = ps.begin(); pit != ps.end(); ++pit) {
+    kernel::Particle *p = *pit;
     if (Bonded::get_is_setup(p)) {
       Bonded b(p);
       for (unsigned int i = 0; i < b.get_number_of_bonds(); ++i) {
-        Particle *op = b.get_bonded(i).get_particle();
+        kernel::Particle *op = b.get_bonded(i).get_particle();
         if (op < p && sps.find(op) != sps.end()) {
           ret.push_back(b.get_bond(i));
         }
@@ -336,13 +336,13 @@ core::RigidBody setup_as_rigid_body(Hierarchy h) {
            << " levels of detail.");
   core::RigidBody rbd = core::RigidBody::setup_particle(h, get_leaves(h));
   rbd.set_coordinates_are_optimized(true);
-  ParticlesTemp internal = core::get_internal(h);
+  kernel::ParticlesTemp internal = core::get_internal(h);
   for (unsigned int i = 0; i < internal.size(); ++i) {
     if (internal[i] != h) {
       core::RigidMembers leaves(get_leaves(Hierarchy(internal[i])));
       if (!leaves.empty()) {
         algebra::ReferenceFrame3D rf =
-            core::get_initial_reference_frame(get_as<ParticlesTemp>(leaves));
+            core::get_initial_reference_frame(get_as<kernel::ParticlesTemp>(leaves));
         core::RigidBody::setup_particle(internal[i], rf);
       }
     }
@@ -353,10 +353,10 @@ core::RigidBody setup_as_rigid_body(Hierarchy h) {
 
 namespace {
 ParticlesTemp rb_process(Hierarchy h) {
-  ParticlesTemp internal = core::get_internal(h);
-  ParticlesTemp all = get_leaves(h);
+  kernel::ParticlesTemp internal = core::get_internal(h);
+  kernel::ParticlesTemp all = get_leaves(h);
   for (unsigned int i = 0; i < internal.size(); ++i) {
-    ParticlesTemp leaves(get_leaves(Hierarchy(internal[i])));
+    kernel::ParticlesTemp leaves(get_leaves(Hierarchy(internal[i])));
     if (!leaves.empty() && !core::XYZR::get_is_setup(internal[i])) {
       setup_as_approximation(internal[i], leaves);
       all.push_back(internal[i]);
@@ -372,11 +372,11 @@ core::RigidBody create_rigid_body(const Hierarchies &h, std::string name) {
   for (unsigned int i = 0; i < h.size(); ++i) {
     IMP_USAGE_CHECK(h[i].get_is_valid(true), "Invalid hierarchy passed.");
   }
-  Particle *rbp = new Particle(h[0]->get_model());
+  kernel::Particle *rbp = new kernel::Particle(h[0]->get_model());
   rbp->set_name(name);
-  ParticlesTemp all;
+  kernel::ParticlesTemp all;
   for (unsigned int i = 0; i < h.size(); ++i) {
-    ParticlesTemp cur = rb_process(h[i]);
+    kernel::ParticlesTemp cur = rb_process(h[i]);
     all.insert(all.end(), cur.begin(), cur.end());
   }
   core::RigidBody rbd = core::RigidBody::setup_particle(rbp,all);
@@ -393,17 +393,17 @@ core::RigidBody create_rigid_body(Hierarchy h) {
 
 IMP::core::RigidBody create_compatible_rigid_body(Hierarchy h,
                                                   Hierarchy reference) {
-  ParticlesTemp hl = get_leaves(h);
-  ParticlesTemp rl = get_leaves(reference);
+  kernel::ParticlesTemp hl = get_leaves(h);
+  kernel::ParticlesTemp rl = get_leaves(reference);
   algebra::Transformation3D tr =
       algebra::get_transformation_aligning_first_to_second(rl, hl);
   algebra::Transformation3D rtr = core::RigidMember(reference).get_rigid_body()
       .get_reference_frame().get_transformation_to();
   algebra::Transformation3D rbtr = tr * rtr;
 
-  Particle *rbp = new Particle(h->get_model());
+  kernel::Particle *rbp = new kernel::Particle(h->get_model());
   rbp->set_name(h->get_name() + " rigid body");
-  ParticlesTemp all = rb_process(h);
+  kernel::ParticlesTemp all = rb_process(h);
   core::RigidBody rbd =
       core::RigidBody::setup_particle(rbp, algebra::ReferenceFrame3D(rbtr));
   for (unsigned int i = 0; i < all.size(); ++i) {
@@ -416,9 +416,9 @@ IMP::core::RigidBody create_compatible_rigid_body(Hierarchy h,
 
 namespace {
 
-Hierarchy clone_internal(Hierarchy d, std::map<Particle *, Particle *> &map,
+Hierarchy clone_internal(Hierarchy d, std::map<kernel::Particle *, kernel::Particle *> &map,
                          bool recurse) {
-  Particle *p = new Particle(d.get_model());
+  kernel::Particle *p = new kernel::Particle(d.get_model());
   p->set_name(d->get_name());
   map[d.get_particle()] = p;
   Hierarchy nd;
@@ -462,14 +462,14 @@ Hierarchy clone_internal(Hierarchy d, std::map<Particle *, Particle *> &map,
 }
 
 Hierarchy create_clone(Hierarchy d) {
-  std::map<Particle *, Particle *> map;
+  std::map<kernel::Particle *, kernel::Particle *> map;
   Hierarchy nh = clone_internal(d, map, true);
   Bonds bds = get_internal_bonds(d);
   for (unsigned int i = 0; i < bds.size(); ++i) {
     Bonded e0 = bds[i].get_bonded(0);
     Bonded e1 = bds[i].get_bonded(1);
-    Particle *np0 = map[e0.get_particle()];
-    Particle *np1 = map[e1.get_particle()];
+    kernel::Particle *np0 = map[e0.get_particle()];
+    kernel::Particle *np1 = map[e1.get_particle()];
     Bonded ne0, ne1;
     if (Bonded::get_is_setup(np0)) {
       ne0 = Bonded(np0);
@@ -487,7 +487,7 @@ Hierarchy create_clone(Hierarchy d) {
 }
 
 Hierarchy create_clone_one(Hierarchy d) {
-  std::map<Particle *, Particle *> map;
+  std::map<kernel::Particle *, kernel::Particle *> map;
   return clone_internal(d, map, false);
 }
 
@@ -499,7 +499,7 @@ struct True {
 };
 
 void destroy(Hierarchy d) {
-  ParticlesTemp all;
+  kernel::ParticlesTemp all;
   // core::Hierarchy h=d;
 
   core::gather(d, True(), std::back_inserter(all));
@@ -546,7 +546,7 @@ bool get_is_heterogen(Hierarchy h) {
 }
 
 algebra::BoundingBox3D get_bounding_box(const Hierarchy &h) {
-  ParticlesTemp rep = get_leaves(h);
+  kernel::ParticlesTemp rep = get_leaves(h);
   algebra::BoundingBox3D bb;
   for (unsigned int i = 0; i < rep.size(); ++i) {
     core::XYZR xyzr = core::XYZR::decorate_particle(rep[i]);
@@ -561,7 +561,7 @@ algebra::BoundingBox3D get_bounding_box(const Hierarchy &h) {
 }
 
 algebra::Sphere3D get_bounding_sphere(const Hierarchy &h) {
-  ParticlesTemp rep = get_leaves(h);
+  kernel::ParticlesTemp rep = get_leaves(h);
   algebra::Sphere3Ds ss;
   for (unsigned int i = 0; i < rep.size(); ++i) {
     core::XYZR xyzr = core::XYZR::decorate_particle(rep[i]);

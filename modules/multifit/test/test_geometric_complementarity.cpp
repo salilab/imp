@@ -30,14 +30,14 @@ double sphere_intersection(double radius, double dist)
 }
 
 
-IMP::ParticlesTemp create_balls(IMP::Model *m,
+IMP::kernel::ParticlesTemp create_balls(IMP::Model *m,
     const std::vector<double> &radii,
     const std::vector<IMP::algebra::Vector3D> &coords)
 {
-  IMP::ParticlesTemp res;
+  IMP::kernel::ParticlesTemp res;
   for ( size_t i = 0; i < radii.size(); ++i )
   {
-    IMP::Particle *p = new IMP::Particle(m);
+    IMP::kernel::Particle *p = new IMP::kernel::Particle(m);
     IMP::core::XYZR d = IMP::core::XYZR::setup_particle(p);
     d.set_radius(radii[i]);
     d.set_coordinates(coords[i]);
@@ -55,7 +55,7 @@ double approx_sphere_intersection(double radius, double dist)
   std::vector<IMP::algebra::Vector3D> coords;
   coords.push_back(IMP::algebra::Vector3D(0, 0, 0));
   IMP_NEW(IMP::Model, m, ());
-  IMP::ParticlesTemp particles0 = create_balls(m, radii, coords);
+  IMP::kernel::ParticlesTemp particles0 = create_balls(m, radii, coords);
   IMP::multifit::internal::ComplementarityGridParameters cgpar;
   cgpar.voxel_size = 1;
   cgpar.interior_thickness = radius;

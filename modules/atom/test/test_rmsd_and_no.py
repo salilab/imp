@@ -39,8 +39,8 @@ class Tests(IMP.test.TestCase):
         v2 = IMP.algebra.Vector3D(1,0,0)
 
         m = IMP.Model()
-        p1 = IMP.Particle(m)
-        p2 = IMP.Particle(m)
+        p1 = IMP.kernel.Particle(m)
+        p2 = IMP.kernel.Particle(m)
         x1 = IMP.core.XYZ.setup_particle(p1, v1)
         x2 = IMP.core.XYZ.setup_particle(p2, v2)
 

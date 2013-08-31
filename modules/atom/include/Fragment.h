@@ -20,12 +20,12 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT Fragment : public Hierarchy {
   static IntsKey get_begins_key();
   static IntsKey get_ends_key();
-  static void set_residue_indexes(Model *m, ParticleIndex pi, Ints ris);
+  static void set_residue_indexes(Model *m, kernel::ParticleIndex pi, Ints ris);
   static void set_residue_indexes(Model *m,
-                                  ParticleIndex pi, const IntPairs &ris);
+                                  kernel::ParticleIndex pi, const IntPairs &ris);
   static IntKey get_marker_key();
 
-  static void do_setup_particle(Model *m, ParticleIndex pi,
+  static void do_setup_particle(Model *m, kernel::ParticleIndex pi,
                                     const Ints &ris = Ints()) {
     if (!Hierarchy::get_is_setup(m, pi)) {
       Hierarchy::setup_particle(m, pi);
@@ -34,14 +34,14 @@ class IMPATOMEXPORT Fragment : public Hierarchy {
     set_residue_indexes(m, pi, ris);
   }
 
-  static void do_setup_particle(Model *m, ParticleIndex pi,
+  static void do_setup_particle(Model *m, kernel::ParticleIndex pi,
                                     Fragment o) {
     do_setup_particle(m, pi, o.get_residue_indexes());
   }
 
  public:
 
-  static bool get_is_setup(Model *m, ParticleIndex pi) {
+  static bool get_is_setup(Model *m, kernel::ParticleIndex pi) {
     return Hierarchy::get_is_setup(m, pi) &&
            m->get_has_attribute(get_marker_key(), pi);
   }

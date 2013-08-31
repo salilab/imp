@@ -34,7 +34,7 @@ bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                               IMP.algebra.Vector3D(100,100,100))
 ps=[]
 for i in range(0,np):
-    p= IMP.Particle(m)
+    p= IMP.kernel.Particle(m)
     d= IMP.core.XYZR.setup_particle(p)
     d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
     d.set_radius(10)

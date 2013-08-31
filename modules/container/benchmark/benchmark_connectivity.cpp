@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
   // set_check_level(NONE);
   IMP_NEW(Model, m, ());
   IMP_NEW(HarmonicUpperBoundSphereDistancePairScore, ss, (0, 1));
-  ParticlesTemp ps = create_xyzr_particles(m, npart, .1);
+  kernel::ParticlesTemp ps = create_xyzr_particles(m, npart, .1);
   IMP_NEW(ListSingletonContainer, lsc, (ps));
   {
     ConnectivityRestraint *r = new ConnectivityRestraint(ss, lsc);
@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
     MSConnectivityRestraint *r = new MSConnectivityRestraint(ss);
     Ints composite;
     for (unsigned int i = 0; i < ps.size(); ++i) {
-      composite.push_back(r->add_type(ParticlesTemp(1, ps[i])));
+      composite.push_back(r->add_type(kernel::ParticlesTemp(1, ps[i])));
     }
     r->add_composite(composite);
     m->add_restraint(r);

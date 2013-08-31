@@ -24,7 +24,7 @@ class Tests(IMP.test.TestCase):
         IMP.base.set_log_level(IMP.MEMORY)
         n= random.randrange(1,10)
         ps=IMP.core.create_xyzr_particles(m, 10, 1)
-        p=IMP.Particle(m)
+        p=IMP.kernel.Particle(m)
         ss= IMP.core.Cover.setup_particle(p,
                                           IMP.core.FixedRefiner(ps))
         m.update()

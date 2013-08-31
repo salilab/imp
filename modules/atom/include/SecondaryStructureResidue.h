@@ -13,7 +13,7 @@
 #include "Hierarchy.h"
 
 #include <IMP/base_types.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/Model.h>
 #include <IMP/Decorator.h>
 
@@ -24,7 +24,7 @@ IMPATOM_BEGIN_NAMESPACE
    Contains probabilities for each sse type (helix, strand, coil)
  */
 class IMPATOMEXPORT SecondaryStructureResidue : public Decorator {
-  static void do_setup_particle(Model *m, ParticleIndex pi,
+  static void do_setup_particle(Model *m, kernel::ParticleIndex pi,
                                 Float prob_helix,
                                 Float prob_strand,
                                 Float prob_coil) {
@@ -49,7 +49,7 @@ class IMPATOMEXPORT SecondaryStructureResidue : public Decorator {
                         Float, prob_coil);
 
   //! Set up SecondaryStructureResidue with default probabilities
-  static SecondaryStructureResidue setup_particle(Particle *res_p) {
+  static SecondaryStructureResidue setup_particle(kernel::Particle *res_p) {
     Float prob_helix = 1.0 / 3.0, prob_strand = 1.0 / 3.0,
           prob_coil = 1.0 / 3.0;
     SecondaryStructureResidue ssr =
@@ -58,7 +58,7 @@ class IMPATOMEXPORT SecondaryStructureResidue : public Decorator {
   }
 
   //! Return true if the particle is a secondary structure residue
-  static bool get_is_setup(Model *m, ParticleIndex pi) {
+  static bool get_is_setup(Model *m, kernel::ParticleIndex pi) {
     if (m->get_has_attribute(get_prob_helix_key(), pi) &&
         (m->get_has_attribute(get_prob_strand_key(), pi)) &&
         (m->get_has_attribute(get_prob_coil_key(), pi)))
@@ -66,7 +66,7 @@ class IMPATOMEXPORT SecondaryStructureResidue : public Decorator {
     return false;
   }
 
-  Particle *get_particle() const { return Decorator::get_particle(); }
+  kernel::Particle *get_particle() const { return Decorator::get_particle(); }
 
   //! Return all probabilities in one vector
   Floats get_all_probabilities() {
@@ -89,7 +89,7 @@ class IMPATOMEXPORT SecondaryStructureResidue : public Decorator {
   static FloatKey get_prob_coil_key();
 };
 IMP_DECORATORS(SecondaryStructureResidue, SecondaryStructureResidues,
-               ParticlesTemp);
+               kernel::ParticlesTemp);
 
 /** Coarsen some SecondaryStructureResidues. Returns a
     SecondaryStructureResidue whose probabilities reflect those of the
@@ -101,7 +101,7 @@ IMP_DECORATORS(SecondaryStructureResidue, SecondaryStructureResidues,
                scoring secondary structure type
  */
 IMPATOMEXPORT SecondaryStructureResidue
-    setup_coarse_secondary_structure_residue(const Particles &ssr_ps,
+    setup_coarse_secondary_structure_residue(const kernel::Particles &ssr_ps,
                                              Model *mdl,
                                              bool winner_takes_all_per_res =
                                                  false);
@@ -116,7 +116,7 @@ IMPATOMEXPORT SecondaryStructureResidue
                scoring secondary structure type
  */
 IMPATOMEXPORT SecondaryStructureResidues
-    setup_coarse_secondary_structure_residues(const Particles &ssr_ps,
+    setup_coarse_secondary_structure_residues(const kernel::Particles &ssr_ps,
                                               Model *mdl, int coarse_factor,
                                               int start_res_num,
                                               bool winner_takes_all_per_res =

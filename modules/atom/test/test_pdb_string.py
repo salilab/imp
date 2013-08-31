@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
         f=open(name,"w")
         #create a pdb file of 5 CA atoms
         for i in range(5):
-            p=IMP.Particle(m)
+            p=IMP.kernel.Particle(m)
             IMP.core.XYZ.setup_particle(p,IMP.algebra.Vector3D(i,i,i))
             f.write(IMP.atom.get_pdb_string(IMP.core.XYZ(p).get_coordinates(),
                              i,IMP.atom.AT_CA,IMP.atom.ALA,'A',i))

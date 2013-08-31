@@ -117,10 +117,10 @@ double GaussianProcessInterpolationRestraintSparse::unprotected_evaluate(
 ParticlesTemp
 GaussianProcessInterpolationRestraintSparse::get_input_particles() const
 {
-    ParticlesTemp ret;
-    ParticlesTemp ret1 = gpi_->mean_function_->get_input_particles();
+    kernel::ParticlesTemp ret;
+    kernel::ParticlesTemp ret1 = gpi_->mean_function_->get_input_particles();
     ret.insert(ret.end(),ret1.begin(),ret1.end());
-    ParticlesTemp ret2 = gpi_->covariance_function_->get_input_particles();
+    kernel::ParticlesTemp ret2 = gpi_->covariance_function_->get_input_particles();
     ret.insert(ret.end(),ret2.begin(),ret2.end());
     return ret;
 }

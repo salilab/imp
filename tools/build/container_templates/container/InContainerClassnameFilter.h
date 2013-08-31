@@ -14,7 +14,7 @@
 #include <IMP/container/container_config.h>
 #include <IMP/ClassnamePredicate.h>
 #include <IMP/ClassnameContainer.h>
-#include <IMP/internal/container_helpers.h>
+#include <IMP/kernel/internal/container_helpers.h>
 #include "internal/ClassnameContainerIndex.h"
 #include <IMP/classname_macros.h>
 #include <IMP/base/object_macros.h>
@@ -41,7 +41,7 @@ class IMPCONTAINEREXPORT InContainerClassnameFilter
   virtual int get_value_index(Model *, PASSINDEXTYPE vt) const IMP_OVERRIDE {
     return c_->get_contains(vt);
   }
-  virtual ModelObjectsTemp do_get_inputs(Model *m, const ParticleIndexes &pi)
+  virtual ModelObjectsTemp do_get_inputs(Model *m, const kernel::ParticleIndexes &pi)
     const IMP_OVERRIDE {
     ModelObjectsTemp ret = IMP::get_particles(m, pi);
     ret.push_back(c_);

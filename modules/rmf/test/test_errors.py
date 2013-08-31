@@ -12,7 +12,7 @@ class Tests(IMP.test.TestCase):
         """Test that exceptions are transformed"""
         m= IMP.Model()
         rmf= RMF.create_rmf_file(self.get_tmp_file_name("zillion.rmf"))
-        h= IMP.atom.Fragment.setup_particle(IMP.Particle(m))
+        h= IMP.atom.Fragment.setup_particle(IMP.kernel.Particle(m))
         IMP.core.XYZR.setup_particle(h)
         IMP.atom.Mass.setup_particle(h, 1)
         IMP.rmf.add_hierarchies(rmf, [h])

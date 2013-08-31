@@ -16,7 +16,7 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 ExamplePairScore::ExamplePairScore(double x0, double k) : x0_(x0), k_(k) {}
 
 Float ExamplePairScore::evaluate_index(Model *m,
-                                       const ParticleIndexPair &pip,
+                                       const kernel::ParticleIndexPair &pip,
                                        DerivativeAccumulator *da) const {
   // turn on logging for this method
   IMP_OBJECT_LOG;
@@ -41,7 +41,7 @@ Float ExamplePairScore::evaluate_index(Model *m,
 }
 
 ModelObjectsTemp ExamplePairScore::do_get_inputs(Model *m,
-                                               const ParticleIndexes &pis)
+                                               const kernel::ParticleIndexes &pis)
     const {
   return IMP::kernel::get_particles(m, pis);
 }

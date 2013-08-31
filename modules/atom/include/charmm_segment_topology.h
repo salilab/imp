@@ -200,7 +200,7 @@ class IMPATOMEXPORT CHARMMTopology : public IMP::base::Object {
 
       \return a list of the generated Bond decorators.
    */
-  Particles add_bonds(Hierarchy hierarchy) const;
+  kernel::Particles add_bonds(Hierarchy hierarchy) const;
 
   //! Add dihedrals to the given Hierarchy using this topology, and return them.
   /** The primary sequence of the Hierarchy must match that of the topology.
@@ -213,7 +213,7 @@ class IMPATOMEXPORT CHARMMTopology : public IMP::base::Object {
 
       \see add_bonds().
    */
-  Particles add_dihedrals(Hierarchy hierarchy) const;
+  kernel::Particles add_dihedrals(Hierarchy hierarchy) const;
 
   //! Add impropers to the given Hierarchy using this topology, and return them.
   /** The primary sequence of the Hierarchy must match that of the topology.
@@ -225,7 +225,7 @@ class IMPATOMEXPORT CHARMMTopology : public IMP::base::Object {
 
       \see add_bonds().
    */
-  Particles add_impropers(Hierarchy hierarchy) const;
+  kernel::Particles add_impropers(Hierarchy hierarchy) const;
 
   /** @name Segments
 

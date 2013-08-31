@@ -11,7 +11,7 @@
 #include <IMP/core/core_config.h>
 #include "Mover.h"
 
-#include <IMP/internal/container_helpers.h>
+#include <IMP/kernel/internal/container_helpers.h>
 #include <IMP/macros.h>
 
 #include <vector>
@@ -25,16 +25,16 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT MoverBase : public Mover {
   base::Vector<Floats> values_;
   base::Vector<FloatKey> keys_;
-  ParticleIndexes particles_;
+  kernel::ParticleIndexes particles_;
   void do_propose_value(unsigned int i, unsigned int j, Float t);
  public:
   virtual void reset_move();
 
   /** This sets everything up and then calls the generate_move method.
    */
-  virtual ParticlesTemp propose_move(Float f);
+  virtual kernel::ParticlesTemp propose_move(Float f);
 
-  ParticlesTemp get_output_particles() const;
+  kernel::ParticlesTemp get_output_particles() const;
 
  protected:
   unsigned int get_number_of_particles() const { return particles_.size(); }
@@ -60,7 +60,7 @@ class IMPCOREEXPORT MoverBase : public Mover {
   void propose_value(unsigned int i, unsigned int j, Float t);
 
   IMPCORE_DEPRECATED_OBJECT_DECL(2.1)
-  MoverBase(const ParticlesTemp &ps, const FloatKeys &keys, std::string name);
+  MoverBase(const kernel::ParticlesTemp &ps, const FloatKeys &keys, std::string name);
 };
 
 IMP_OBJECTS(MoverBase, MoverBases);

@@ -11,7 +11,7 @@
 #include <IMP/dependency_graph.h>
 #include <IMP/base/set.h>
 #include <IMP/core/XYZ.h>
-#include <IMP/internal/container_helpers.h>
+#include <IMP/kernel/internal/container_helpers.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/core/internal/incremental_scoring_function.h>
 #include <IMP/base/check_macros.h>
@@ -25,15 +25,15 @@ IMPCORE_BEGIN_NAMESPACE
 
 namespace {
 // TODO: this can be made a general library function at some point
-IMP::Model *extract_model(const ParticlesTemp &ps) {
+IMP::Model *extract_model(const kernel::ParticlesTemp &ps) {
   IMP_USAGE_CHECK(ps.size() > 0,
                   "needs at least one particle to extract a model");
   return ps[0]->get_model();
 }
 }
 
-IncrementalScoringFunction::IncrementalScoringFunction(const ParticlesTemp &ps,
-                                              const kernel::RestraintsTemp &rs,
+IncrementalScoringFunction::IncrementalScoringFunction(const kernel::ParticlesTemp &ps,
+                                                       const kernel::RestraintsTemp &rs,
                                                        double weight,
                                                        double max,
                                                        std::string name)
@@ -67,7 +67,7 @@ class IncrementalRestraintsScoringFunction
 }
 
 IncrementalScoringFunction::Data IncrementalScoringFunction::create_data(
-    ParticleIndex pi, const base::map<kernel::Restraint *, int> &all,
+    kernel::ParticleIndex pi, const base::map<Restraint *, int> &all,
     const kernel::Restraints &dummies) const {
   kernel::RestraintsTemp cr = get_dependent_restraints(get_model(),  pi);
   IMP_LOG_TERSE("Dependent restraints for particle "
@@ -146,7 +146,7 @@ void IncrementalScoringFunction::reset_moved_particles() {
   set_moved_particles(last_move_);
   last_move_.clear();
 }
-void IncrementalScoringFunction::set_moved_particles(const ParticleIndexes &p) {
+void IncrementalScoringFunction::set_moved_particles(const kernel::ParticleIndexes &p) {
   IMP_OBJECT_LOG;
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i = 0; i < p.size(); ++i) {
@@ -164,12 +164,12 @@ void IncrementalScoringFunction::set_moved_particles(const ParticleIndexes &p) {
 }
 
 void IncrementalScoringFunction::add_close_pair_score(
-    PairScore *ps, double distance, const ParticlesTemp &particles) {
+    PairScore *ps, double distance, const kernel::ParticlesTemp &particles) {
   add_close_pair_score(ps, distance, particles, PairPredicates());
 }
 
 void IncrementalScoringFunction::add_close_pair_score(
-    PairScore *ps, double distance, const ParticlesTemp &particles,
+    PairScore *ps, double distance, const kernel::ParticlesTemp &particles,
     const PairPredicates &filters) {
   IMP_OBJECT_LOG;
   for (unsigned int i = 0; i < filters.size(); ++i) {
@@ -297,7 +297,7 @@ ModelObjectsTemp IncrementalScoringFunction::do_get_inputs() const {
 
 IncrementalScoringFunction::ScoringFunctionsMap::~ScoringFunctionsMap() {
   // move it to a temp so a second attempt to destoy it succeeds
-  base::map<ParticleIndex, Data> t;
-  std::swap<base::map<ParticleIndex, Data> >(*this, t);
+  base::map<kernel::ParticleIndex, Data> t;
+  std::swap<base::map<kernel::ParticleIndex, Data> >(*this, t);
 }
 IMPCORE_END_NAMESPACE

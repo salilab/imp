@@ -18,7 +18,7 @@ MonteCarloMover::MonteCarloMover(Model *m, std::string name)
 
 ///////////////////////////// DEPRECATED_STUFF
 
-MoverBase::MoverBase(const ParticlesTemp &ps, const FloatKeys &keys,
+MoverBase::MoverBase(const kernel::ParticlesTemp &ps, const FloatKeys &keys,
                      std::string name)
     : Mover(IMP::internal::get_model(ps), name),
       keys_(keys),

@@ -67,10 +67,10 @@ Each docked complex will be compared against cross links in cross_links_file.")
     IMP::atom::read_pdb(pdb, model,
                         new IMP::atom::NonWaterNonHydrogenPDBSelector(),
                         true, true);
-  IMP::Particles residue_particles = get_by_type(mhd, IMP::atom::RESIDUE_TYPE);
+  IMP::kernel::Particles residue_particles = get_by_type(mhd, IMP::atom::RESIDUE_TYPE);
 
   // get CA atoms for residues
-  IMP::Particles ca_atoms;
+  IMP::kernel::Particles ca_atoms;
   for(unsigned int i=0; i<residue_particles.size(); i++) {
     IMP::atom::Atom at =
       IMP::atom::get_atom(IMP::atom::Residue(residue_particles[i]),

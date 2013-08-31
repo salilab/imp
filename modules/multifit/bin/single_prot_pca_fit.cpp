@@ -203,7 +203,7 @@ int main(int argc, char **argv) {
   atom::Hierarchy mh;
   mh = atom::read_pdb(protein_filename,mdl,new atom::CAlphaPDBSelector());
   core::RigidBody rb=atom::setup_as_rigid_body(mh);
-  ParticlesTemp mh_ps=core::get_leaves(mh);
+  kernel::ParticlesTemp mh_ps=core::get_leaves(mh);
   core::XYZs mh_xyz;
   mh_xyz = core::XYZs(mh_ps);
   //load the reference protein

@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
         ps=[]
         ds=[]
         for i in range(0,3):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             d= IMP.core.XYZ.setup_particle(p)
             print d
             ds.append(d)

@@ -12,7 +12,7 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-EnvelopeFitRestraint::EnvelopeFitRestraint(Particles ps,
+EnvelopeFitRestraint::EnvelopeFitRestraint(kernel::Particles ps,
                                            DensityMap *em_map,
                                            double density_threshold,
                                            double penetration_threshold) :

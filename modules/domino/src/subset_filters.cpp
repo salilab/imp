@@ -194,7 +194,7 @@ double get_disjoint_set_strength(const IMP::domino::Subset &s,
 }
 }
 
-int DisjointSetsSubsetFilterTable::get_index(Particle *p) {
+int DisjointSetsSubsetFilterTable::get_index(kernel::Particle *p) {
   if (index_.find(p) == index_.end()) {
     index_[p] = elements_.size();
     disjoint_sets_.make_set(elements_.size());
@@ -207,13 +207,13 @@ void DisjointSetsSubsetFilterTable::build_sets() const {
   if (!sets_.empty()) return;
   if (pst_) {
     IMP::base::map<ParticleStates *, int> map;
-    ParticlesTemp allps = pst_->get_particles();
-    base::Vector<ParticlesTemp> allsets;
+    kernel::ParticlesTemp allps = pst_->get_particles();
+    base::Vector<kernel::ParticlesTemp> allsets;
     for (unsigned int i = 0; i < allps.size(); ++i) {
       ParticleStates *ps = pst_->get_particle_states(allps[i]);
       if (map.find(ps) == map.end()) {
         map[pst_->get_particle_states(allps[i])] = allsets.size();
-        allsets.push_back(ParticlesTemp());
+        allsets.push_back(kernel::ParticlesTemp());
       }
       allsets[map.find(ps)->second].push_back(allps[i]);
     }
@@ -224,7 +224,7 @@ void DisjointSetsSubsetFilterTable::build_sets() const {
     }
   }
 
-  base::Vector<ParticlesTemp> all(elements_.size());
+  base::Vector<kernel::ParticlesTemp> all(elements_.size());
   for (unsigned int i = 0; i < elements_.size(); ++i) {
     int set = disjoint_sets_.find_set(i);
     all[set].push_back(elements_[i]);
@@ -255,7 +255,7 @@ void DisjointSetsSubsetFilterTable::get_indexes(const Subset &s,
                                                 Ints &used) const {
   for (unsigned int i = 0; i < get_number_of_sets(); ++i) {
     Ints index = IMP::domino::get_partial_index(get_set(i), s, excluded);
-    /*std::cout << "Index of " << s << " wrt " << Particles(get_set(i))
+    /*std::cout << "Index of " << s << " wrt " << kernel::Particles(get_set(i))
       << " is " << internal::AsIndexes(index) << std::endl;*/
     int ct = 0;
     for (unsigned int j = 0; j < index.size(); ++j) {
@@ -270,7 +270,7 @@ void DisjointSetsSubsetFilterTable::get_indexes(const Subset &s,
   }
 }
 
-void DisjointSetsSubsetFilterTable::add_set(const ParticlesTemp &ps) {
+void DisjointSetsSubsetFilterTable::add_set(const kernel::ParticlesTemp &ps) {
   IMP_USAGE_CHECK(!pst_, "Defining sets through the ParticleStatesTable"
                              << " and explicitly are mutually exclusive.");
   if (ps.empty()) return;
@@ -281,7 +281,7 @@ void DisjointSetsSubsetFilterTable::add_set(const ParticlesTemp &ps) {
   }
   sets_.clear();
 }
-void DisjointSetsSubsetFilterTable::add_pair(const ParticlePair &pp) {
+void DisjointSetsSubsetFilterTable::add_pair(const kernel::ParticlePair &pp) {
   IMP_USAGE_CHECK(!pst_, "Defining sets through the ParticleStatesTable"
                              << " and explicitly are mutually exclusive.");
   int set_index = get_index(pp[0]);
@@ -501,7 +501,7 @@ ListSubsetFilterTable::ListSubsetFilterTable(ParticleStatesTable *pst)
   num_test_ = 0;
 }
 
-int ListSubsetFilterTable::get_index(Particle *p) const {
+int ListSubsetFilterTable::get_index(kernel::Particle *p) const {
   if (map_.find(p) == map_.end()) {
     return -1;
   } else {
@@ -510,7 +510,7 @@ int ListSubsetFilterTable::get_index(Particle *p) const {
 }
 
 void ListSubsetFilterTable::load_indexes(const Subset &s, Ints &indexes) const {
-  ParticlesTemp cur(s.begin(), s.end());
+  kernel::ParticlesTemp cur(s.begin(), s.end());
   indexes.resize(cur.size(), -1);
   for (unsigned int i = 0; i < cur.size(); ++i) {
     indexes[i] = get_index(cur[i]);
@@ -540,7 +540,7 @@ double ListSubsetFilterTable::get_strength(const Subset &s,
   return 1 - std::pow(.5, static_cast<int>(sz));
 }
 
-void ListSubsetFilterTable::set_allowed_states(Particle *p,
+void ListSubsetFilterTable::set_allowed_states(kernel::Particle *p,
                                                const Ints &states) {
   int index;
   if (map_.find(p) != map_.end()) {
@@ -559,7 +559,7 @@ void ListSubsetFilterTable::set_allowed_states(Particle *p,
 }
 
 void ListSubsetFilterTable::mask_allowed_states(
-    Particle *p, const boost::dynamic_bitset<> &bs) {
+    kernel::Particle *p, const boost::dynamic_bitset<> &bs) {
   if (map_.find(p) == map_.end()) {
     map_[p] = states_.size();
     states_.push_back(bs);
@@ -613,7 +613,7 @@ void PairListSubsetFilterTable::fill(const Subset &s, const Subsets &e,
                                      base::Vector<IntPairs> &allowed) const {
   for (unsigned int i = 0; i < s.size(); ++i) {
     for (unsigned int j = 0; j < i; ++j) {
-      ParticlePair pp(s[j], s[i]);
+      kernel::ParticlePair pp(s[j], s[i]);
       if (allowed_.find(pp) == allowed_.end()) continue;
       bool fp = false;
       for (unsigned int k = 0; k < e.size(); ++k) {
@@ -661,11 +661,11 @@ double PairListSubsetFilterTable::get_strength(const Subset &s,
 
 PairListSubsetFilterTable::PairListSubsetFilterTable() {}
 
-void PairListSubsetFilterTable::set_allowed_states(ParticlePair p,
+void PairListSubsetFilterTable::set_allowed_states(kernel::ParticlePair p,
                                                    const IntPairs &states) {
   IMP_USAGE_CHECK(allowed_.find(p) == allowed_.end(),
                   "Allowed states for " << p << " already set.");
-  if (p[0] < p[1]) p = ParticlePair(p[1], p[0]);
+  if (p[0] < p[1]) p = kernel::ParticlePair(p[1], p[0]);
   allowed_[p] = states;
   std::sort(allowed_[p].begin(), allowed_[p].end(), CP());
 }

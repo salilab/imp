@@ -15,8 +15,8 @@
 IMPRMF_BEGIN_NAMESPACE
 
 namespace {
-class ParticleLoadLink : public SimpleLoadLink<Particle> {
-  typedef SimpleLoadLink<Particle> P;
+class ParticleLoadLink : public SimpleLoadLink<kernel::Particle> {
+  typedef SimpleLoadLink<kernel::Particle> P;
   base::Pointer<Model> m_;
 
   template <class IK, class RK>
@@ -36,7 +36,7 @@ class ParticleLoadLink : public SimpleLoadLink<Particle> {
     }
   }
   template <class IK, class RK>
-  void load_one(Particle *o, RMF::NodeConstHandle nh, RMF::Category cat) {
+  void load_one(kernel::Particle *o, RMF::NodeConstHandle nh, RMF::Category cat) {
     base::map<RK, IK> map;
     load_keys(nh.get_file(), cat, map);
     /*RMF::show_hierarchy_with_values(nh,
@@ -58,7 +58,7 @@ class ParticleLoadLink : public SimpleLoadLink<Particle> {
       }
     }
   }
-  void do_load_one(RMF::NodeConstHandle nh, Particle *o) {
+  void do_load_one(RMF::NodeConstHandle nh, kernel::Particle *o) {
     RMF::Category cat = nh.get_file().get_category("IMP");
     load_one<IMP::FloatKey, RMF::FloatKey>(o, nh, cat);
     load_one<IMP::IntKey, RMF::IntKey>(o, nh, cat);
@@ -67,8 +67,8 @@ class ParticleLoadLink : public SimpleLoadLink<Particle> {
   bool get_is(RMF::NodeConstHandle nh) const {
     return nh.get_type() == RMF::CUSTOM;
   }
-  Particle *do_create(RMF::NodeConstHandle name) {
-    return new Particle(m_, name.get_name());
+  kernel::Particle *do_create(RMF::NodeConstHandle name) {
+    return new kernel::Particle(m_, name.get_name());
   }
 
  public:
@@ -79,14 +79,14 @@ class ParticleLoadLink : public SimpleLoadLink<Particle> {
   IMP_OBJECT_METHODS(ParticleLoadLink);
 };
 
-class ParticleSaveLink : public SimpleSaveLink<Particle> {
-  typedef SimpleSaveLink<Particle> P;
+class ParticleSaveLink : public SimpleSaveLink<kernel::Particle> {
+  typedef SimpleSaveLink<kernel::Particle> P;
   RMF::Category cat_;
   base::map<FloatKey, RMF::FloatKey> float_;
   base::map<IntKey, RMF::IntKey> int_;
   base::map<StringKey, RMF::StringKey> string_;
   template <class IK, class RK>
-  void save_one(Particle *o, const base::Vector<IK> &ks, RMF::NodeHandle nh,
+  void save_one(kernel::Particle *o, const base::Vector<IK> &ks, RMF::NodeHandle nh,
                 base::map<IK, RK> &map) {
     for (unsigned int i = 0; i < ks.size(); ++i) {
       if (map.find(ks[i]) == map.end()) {
@@ -97,12 +97,12 @@ class ParticleSaveLink : public SimpleSaveLink<Particle> {
     }
   }
 
-  void do_save_one(Particle *o, RMF::NodeHandle nh) {
+  void do_save_one(kernel::Particle *o, RMF::NodeHandle nh) {
     save_one(o, o->get_float_keys(), nh, float_);
     save_one(o, o->get_int_keys(), nh, int_);
     save_one(o, o->get_string_keys(), nh, string_);
   }
-  RMF::NodeType get_type(Particle *) const { return RMF::CUSTOM; }
+  RMF::NodeType get_type(kernel::Particle *) const { return RMF::CUSTOM; }
 
  public:
   ParticleSaveLink(RMF::FileHandle fh) : P("ParticleSaveLink%1%") {
@@ -112,8 +112,8 @@ class ParticleSaveLink : public SimpleSaveLink<Particle> {
 };
 }
 
-IMP_DEFINE_LINKERS(Particle, particle, particles, Particle *, ParticlesTemp,
-                   Particle *, ParticlesTemp, (RMF::FileHandle fh),
+IMP_DEFINE_LINKERS(Particle, particle, particles, kernel::Particle *, kernel::ParticlesTemp,
+                   kernel::Particle *, kernel::ParticlesTemp, (RMF::FileHandle fh),
                    (RMF::FileConstHandle fh, Model *m), (fh), (fh, m),
                    (fh, IMP::internal::get_model(hs)));
 

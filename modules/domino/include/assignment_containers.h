@@ -192,12 +192,12 @@ class IMPDOMINOEXPORT WriteHDF5AssignmentContainer
 
  public:
   WriteHDF5AssignmentContainer(RMF::HDF5::Group parent, const Subset &s,
-                               const ParticlesTemp &all_particles,
+                               const kernel::ParticlesTemp &all_particles,
                                std::string name);
 
   WriteHDF5AssignmentContainer(RMF::HDF5::IndexDataSet2D dataset,
                                const Subset &s,
-                               const ParticlesTemp &all_particles,
+                               const kernel::ParticlesTemp &all_particles,
                                std::string name);
   void set_cache_size(unsigned int words);
   virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;
@@ -221,7 +221,7 @@ class IMPDOMINOEXPORT ReadHDF5AssignmentContainer : public AssignmentContainer {
 
   ReadHDF5AssignmentContainer(RMF::HDF5::IndexConstDataSet2D dataset,
                               const Subset &s,
-                              const ParticlesTemp &all_particles,
+                              const kernel::ParticlesTemp &all_particles,
                               std::string name);
   void set_cache_size(unsigned int words);
   virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;
@@ -255,7 +255,7 @@ class IMPDOMINOEXPORT WriteAssignmentContainer : public AssignmentContainer {
 
  public:
   WriteAssignmentContainer(std::string out_file, const Subset &s,
-                           const ParticlesTemp &all_particles,
+                           const kernel::ParticlesTemp &all_particles,
                            std::string name);
   void set_cache_size(unsigned int words);
   virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;
@@ -286,7 +286,7 @@ class IMPDOMINOEXPORT ReadAssignmentContainer : public AssignmentContainer {
 
  public:
   ReadAssignmentContainer(std::string out_file, const Subset &s,
-                          const ParticlesTemp &all_particles, std::string name);
+                          const kernel::ParticlesTemp &all_particles, std::string name);
   void set_cache_size(unsigned int words);
   virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;
   virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE;

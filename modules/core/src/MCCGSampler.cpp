@@ -14,7 +14,7 @@
 #include <IMP/utility.h>
 #include <IMP/base/log.h>
 #include <IMP/dependency_graph.h>
-#include <IMP/internal/InternalListSingletonContainer.h>
+#include <IMP/kernel/internal/InternalListSingletonContainer.h>
 #include <IMP/algebra/vector_generators.h>
 #include <boost/random/uniform_real.hpp>
 #include <boost/graph/depth_first_search.hpp>
@@ -29,7 +29,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 class CollectVisitor : public boost::default_dfs_visitor {
-  const std::map<Particle *, int> &lu_;
+  const std::map<kernel::Particle *, int> &lu_;
   boost::property_map<DependencyGraph, boost::vertex_name_t>::const_type vm_;
   Ints &vals_;
 
@@ -39,17 +39,17 @@ class CollectVisitor : public boost::default_dfs_visitor {
     vals_.erase(std::unique(vals_.begin(), vals_.end()), vals_.end());
     return vals_;
   }
-  CollectVisitor(const DependencyGraph &g, const std::map<Particle *, int> &lu,
+  CollectVisitor(const DependencyGraph &g, const std::map<kernel::Particle *, int> &lu,
                  Ints &vals)
       : lu_(lu), vm_(boost::get(boost::vertex_name, g)), vals_(vals) {}
   template <class G>
   void discover_vertex(typename boost::graph_traits<G>::vertex_descriptor u,
                        const G &) {
     base::Object *o = vm_[u];
-    Particle *p = dynamic_cast<Particle *>(o);
+    kernel::Particle *p = dynamic_cast<kernel::Particle *>(o);
     if (p) {
       // std::cout << "Checking particle " << p->get_name() << std::endl;
-      typename std::map<Particle *, int>::const_iterator it = lu_.find(p);
+      typename std::map<kernel::Particle *, int>::const_iterator it = lu_.find(p);
       if (it != lu_.end()) {
         vals_.push_back(it->second);
       }
@@ -60,7 +60,7 @@ class CollectVisitor : public boost::default_dfs_visitor {
 namespace {
 class ScoreWeightedIncrementalBallMover : public MonteCarloMover {
  public:
-  ScoreWeightedIncrementalBallMover(const ParticlesTemp &ps, unsigned int n,
+  ScoreWeightedIncrementalBallMover(const kernel::ParticlesTemp &ps, unsigned int n,
                                     Float radius);
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
@@ -68,16 +68,16 @@ class ScoreWeightedIncrementalBallMover : public MonteCarloMover {
   IMP_OBJECT_METHODS(ScoreWeightedIncrementalBallMover);
 
  private:
-  const ParticlesTemp ps_;
+  const kernel::ParticlesTemp ps_;
   unsigned int n_;
   Float radius_;
-  ParticlesTemp moved_;
+  kernel::ParticlesTemp moved_;
   algebra::Vector3Ds old_coords_;
   base::Vector<std::pair<kernel::Restraint *, Ints> > deps_;
 };
 
 ScoreWeightedIncrementalBallMover::ScoreWeightedIncrementalBallMover(
-    const ParticlesTemp &sc, unsigned int n, Float radius)
+    const kernel::ParticlesTemp &sc, unsigned int n, Float radius)
     : MonteCarloMover(sc[0]->get_model(), "IncrementalBallMover%1%"),
       ps_(sc),
       n_(n),
@@ -89,7 +89,7 @@ ScoreWeightedIncrementalBallMover::ScoreWeightedIncrementalBallMover(
   typedef boost::property_map<DependencyGraph, boost::vertex_name_t>::const_type
       DGVMap;
   DGVMap vm = boost::get(boost::vertex_name, dg);
-  std::map<Particle *, int> index;
+  std::map<kernel::Particle *, int> index;
   for (unsigned int i = 0; i < ps_.size(); ++i) {
     index[ps_[i]] = i;
   }
@@ -141,7 +141,7 @@ MonteCarloMoverResult ScoreWeightedIncrementalBallMover::do_propose() {
   moved_.clear();
   old_coords_.clear();
   if (total < .0001) {
-    return MonteCarloMoverResult(ParticleIndexes(), 1.0);
+    return MonteCarloMoverResult(kernel::ParticleIndexes(), 1.0);
   }
   for (unsigned int i = 0; i < weights.size(); ++i) {
     weights[i] /= (total / n_);
@@ -253,7 +253,7 @@ IMP::internal::InternalListSingletonContainer *MCCGSampler::set_up_movers(
                   << "cartesian coordinates",
               ValueException);
   }
-  ParticlesTemp ps;
+  kernel::ParticlesTemp ps;
   for (Model::ParticleIterator pit = mc->get_model()->particles_begin();
        pit != mc->get_model()->particles_end(); ++pit) {
     if (XYZ::get_is_setup(*pit) &&
@@ -282,7 +282,7 @@ void MCCGSampler::randomize(
                         pms.bounds_.find(YK)->second.second,
                         pms.bounds_.find(ZK)->second.second));
   IMP_CONTAINER_FOREACH(IMP::internal::InternalListSingletonContainer, sc, {
-    // _1 is the ParticleIndex for a singleton container
+    // _1 is the kernel::ParticleIndex for a singleton container
     IMP::core::XYZ d(get_model(), _1);
     d.set_coordinates(algebra::get_random_vector_in(bb));
   });

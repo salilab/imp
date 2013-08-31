@@ -49,7 +49,7 @@ class IMPDOMINOEXPORT Slice : public base::ConstVector<unsigned int> {
     return Assignment(ret);
   }
   Subset get_sliced(const Subset& a) const {
-    ParticlesTemp ret(size());
+    kernel::ParticlesTemp ret(size());
     for (unsigned int i = 0; i < size(); ++i) {
       ret[i] = a[operator[](i)];
     }

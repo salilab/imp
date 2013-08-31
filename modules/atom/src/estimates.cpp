@@ -8,9 +8,9 @@
 #include "IMP/atom/estimates.h"
 #include <IMP/atom/Simulator.h>
 #include <IMP/algebra/Rotation3D.h>
-#include <IMP/internal/units.h>
+#include <IMP/kernel/internal/units.h>
 #include <IMP/constants.h>
-#include <IMP/internal/constants.h>
+#include <IMP/kernel/internal/constants.h>
 
 IMPATOM_BEGIN_NAMESPACE
 

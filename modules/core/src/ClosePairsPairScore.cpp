@@ -13,10 +13,10 @@
 #include <IMP/algebra/vector_search.h>
 #include <IMP/core/internal/rigid_body_tree.h>
 #include <IMP/core/internal/close_pairs_helpers.h>
-#include <IMP/internal/InternalListSingletonContainer.h>
+#include <IMP/kernel/internal/InternalListSingletonContainer.h>
 #include <IMP/core/RigidClosePairsFinder.h>
 #include <IMP/algebra/internal/MinimalSet.h>
-#include <IMP/internal/container_helpers.h>
+#include <IMP/kernel/internal/container_helpers.h>
 #include <IMP/core/PairRestraint.h>
 #include <cmath>
 
@@ -37,23 +37,23 @@ KClosePairsPairScore::KClosePairsPairScore(PairScore *f, Refiner *r, int k)
 }
 
 namespace {
-ParticleIndexes expand(Particle *p, Refiner *r) {
+ParticleIndexes expand(kernel::Particle *p, Refiner *r) {
   if (r->get_can_refine(p)) {
-    ParticleIndexes ret = IMP::internal::get_index(r->get_refined(p));
+    kernel::ParticleIndexes ret = IMP::internal::get_index(r->get_refined(p));
     IMP_IF_CHECK(USAGE) {
-      base::set<ParticleIndex> uret(ret.begin(), ret.end());
+      base::set<kernel::ParticleIndex> uret(ret.begin(), ret.end());
       IMP_USAGE_CHECK(uret.size() == ret.size(),
                       "Duplicate particles in refined result: "
                           << uret.size() << " != " << ret.size());
     }
     return ret;
   } else {
-    return IMP::internal::get_index(ParticlesTemp(1, p));
+    return IMP::internal::get_index(kernel::ParticlesTemp(1, p));
   }
 }
 void fill_close_pairs(ClosePairsFinder *cpf, Model *m, double dist,
-                      const ParticleIndexes &pa, const ParticleIndexes &pb,
-                      ParticleIndexPairs &pairs) {
+                      const kernel::ParticleIndexes &pa, const kernel::ParticleIndexes &pb,
+                      kernel::ParticleIndexPairs &pairs) {
   cpf->set_distance(dist);
   pairs = cpf->get_close_pairs(m, pa, pb);
   /*for (unsigned int i=0; i< ppt.size(); ++i) {
@@ -67,39 +67,39 @@ void fill_close_pairs(ClosePairsFinder *cpf, Model *m, double dist,
 }
 
 ParticleIndexPairs ClosePairsPairScore::get_close_pairs(
-    Model *m, const ParticleIndexPair &p) const {
-  ParticleIndexPairs ppt;
+    Model *m, const kernel::ParticleIndexPair &p) const {
+  kernel::ParticleIndexPairs ppt;
   Floats dists;
-  ParticleIndexes ps0 = expand(m->get_particle(p[0]), r_);
-  ParticleIndexes ps1 = expand(m->get_particle(p[1]), r_);
+  kernel::ParticleIndexes ps0 = expand(m->get_particle(p[0]), r_);
+  kernel::ParticleIndexes ps1 = expand(m->get_particle(p[1]), r_);
   fill_close_pairs(cpf_, m, th_, ps0, ps1, ppt);
   return ppt;
 }
 
 double ClosePairsPairScore::evaluate_index(Model *m,
-                                           const ParticleIndexPair &pp,
+                                           const kernel::ParticleIndexPair &pp,
                                            DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
-  ParticleIndexPairs cps = get_close_pairs(m, pp);
+  kernel::ParticleIndexPairs cps = get_close_pairs(m, pp);
   return f_->evaluate_indexes(m, cps, da, 0, cps.size());
 }
 
 double ClosePairsPairScore::evaluate_if_good_index(Model *m,
-                                                   const ParticleIndexPair &pp,
+                                                   const kernel::ParticleIndexPair &pp,
                                                    DerivativeAccumulator *da,
                                                    double max) const {
   IMP_OBJECT_LOG;
-  ParticleIndexPairs cps = get_close_pairs(m, pp);
+  kernel::ParticleIndexPairs cps = get_close_pairs(m, pp);
   return f_->evaluate_if_good_indexes(m, cps, da, max, 0, cps.size());
 }
 
 ParticleIndexPairs KClosePairsPairScore::get_close_pairs(
-    Model *m, const ParticleIndexPair &p) const {
+    Model *m, const kernel::ParticleIndexPair &p) const {
   IMP_OBJECT_LOG;
   // double mr= std::max(max_radius(psa), max_radius(psb));
-  ParticleIndexPairs ppt;
-  ParticleIndexes ps0 = expand(m->get_particle(p[0]), r_);
-  ParticleIndexes ps1 = expand(m->get_particle(p[1]), r_);
+  kernel::ParticleIndexPairs ppt;
+  kernel::ParticleIndexes ps0 = expand(m->get_particle(p[0]), r_);
+  kernel::ParticleIndexes ps1 = expand(m->get_particle(p[1]), r_);
 
   if (ps0.size() + ps1.size() > 50) {
     Floats dists;
@@ -113,7 +113,7 @@ ParticleIndexPairs KClosePairsPairScore::get_close_pairs(
       IMP_INTERNAL_CHECK(dist < std::numeric_limits<double>::max(),
                          "Something is not working for find pairs");
     } while (ppt.size() < static_cast<unsigned int>(k_));
-    algebra::internal::MinimalSet<double, ParticleIndexPair> ms(k_);
+    algebra::internal::MinimalSet<double, kernel::ParticleIndexPair> ms(k_);
     for (unsigned int i = 0; i < ppt.size(); ++i) {
       double d = algebra::get_distance(m->get_sphere(ppt[i][0]),
                                        m->get_sphere(ppt[i][1]));
@@ -126,7 +126,7 @@ ParticleIndexPairs KClosePairsPairScore::get_close_pairs(
       last_distance_ = dist * .5;
     }
     last_distance_ = std::max(1.0, last_distance_);
-    ParticleIndexPairs retps;
+    kernel::ParticleIndexPairs retps;
     for (unsigned int i = 0; i < ms.size(); ++i) {
       // std::cout << "Got " << ms[i].second << std::endl;
       retps.push_back(ms[i].second);
@@ -152,18 +152,18 @@ ParticleIndexPairs KClosePairsPairScore::get_close_pairs(
     }
     return retps;
   } else {
-    algebra::internal::MinimalSet<double, ParticleIndexPair> ms(k_);
+    algebra::internal::MinimalSet<double, kernel::ParticleIndexPair> ms(k_);
     for (unsigned int i = 0; i < ps0.size(); ++i) {
       algebra::Sphere3D c0 = m->get_sphere(ps0[i]);
       for (unsigned int j = 0; j < ps1.size(); ++j) {
         algebra::Sphere3D c1 = m->get_sphere(ps1[j]);
         double d = get_distance(c0, c1);
         /*std::cout << "Trying " << d << " "
-          <<  ParticlePair(ps0[i], ps1[j]) << std::endl;*/
-        ms.insert(d, ParticleIndexPair(ps0[i], ps1[j]));
+          <<  kernel::ParticlePair(ps0[i], ps1[j]) << std::endl;*/
+        ms.insert(d, kernel::ParticleIndexPair(ps0[i], ps1[j]));
       }
     }
-    ParticleIndexPairs retps;
+    kernel::ParticleIndexPairs retps;
     for (unsigned int i = 0; i < ms.size(); ++i) {
       // std::cout << "Got " << ms[i].second << std::endl;
       retps.push_back(ms[i].second);
@@ -173,30 +173,30 @@ ParticleIndexPairs KClosePairsPairScore::get_close_pairs(
 }
 
 double KClosePairsPairScore::evaluate_index(Model *m,
-                                            const ParticleIndexPair &pp,
+                                            const kernel::ParticleIndexPair &pp,
                                             DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
-  ParticleIndexPairs cps = get_close_pairs(m, pp);
+  kernel::ParticleIndexPairs cps = get_close_pairs(m, pp);
   return f_->evaluate_indexes(m, cps, da, 0, cps.size());
 }
 
 double KClosePairsPairScore::evaluate_if_good_index(Model *m,
-                                                    const ParticleIndexPair &pp,
+                                                    const kernel::ParticleIndexPair &pp,
                                                     DerivativeAccumulator *da,
                                                     double max) const {
   IMP_OBJECT_LOG;
-  ParticleIndexPairs cps = get_close_pairs(m, pp);
+  kernel::ParticleIndexPairs cps = get_close_pairs(m, pp);
   return f_->evaluate_if_good_indexes(m, cps, da, max, 0, cps.size());
 }
 
 namespace {
-ModelObjectsTemp real_get_inputs(Model *m, const ParticleIndexes &pis,
+ModelObjectsTemp real_get_inputs(Model *m, const kernel::ParticleIndexes &pis,
                                  Refiner *r, PairScore *f,
                                  ClosePairsFinder *cpf) {
   ModelObjectsTemp ret;
-  ParticleIndexes allpis;
+  kernel::ParticleIndexes allpis;
   for (unsigned int i = 0; i < pis.size(); ++i) {
-    Particle *p = m->get_particle(pis[i]);
+    kernel::Particle *p = m->get_particle(pis[i]);
     if (r->get_can_refine(p)) {
       allpis += IMP::internal::get_index(r->get_refined(p));
     } else {
@@ -211,18 +211,18 @@ ModelObjectsTemp real_get_inputs(Model *m, const ParticleIndexes &pis,
 }
 
 ModelObjectsTemp ClosePairsPairScore::do_get_inputs(
-    Model *m, const ParticleIndexes &pis) const {
+    Model *m, const kernel::ParticleIndexes &pis) const {
   return real_get_inputs(m, pis, r_, f_, cpf_);
 }
 
 ModelObjectsTemp KClosePairsPairScore::do_get_inputs(
-    Model *m, const ParticleIndexes &pis) const {
+    Model *m, const kernel::ParticleIndexes &pis) const {
   return real_get_inputs(m, pis, r_, f_, cpf_);
 }
 
-Restraints ClosePairsPairScore::create_current_decomposition(
-    Model *m, const ParticleIndexPair &vt) const {
-  ParticleIndexPairs ppt = get_close_pairs(m, vt);
+kernel::Restraints ClosePairsPairScore::create_current_decomposition(
+    kernel::Model *m, const kernel::ParticleIndexPair &vt) const {
+  kernel::ParticleIndexPairs ppt = get_close_pairs(m, vt);
   kernel::Restraints ret(ppt.size());
   for (unsigned int i = 0; i < ret.size(); ++i) {
     ret[i] = new PairRestraint(f_, IMP::internal::get_particle(m, ppt[i]));
@@ -230,9 +230,9 @@ Restraints ClosePairsPairScore::create_current_decomposition(
   return ret;
 }
 
-Restraints KClosePairsPairScore::create_current_decomposition(
-    Model *m, const ParticleIndexPair &vt) const {
-  ParticleIndexPairs ppt = get_close_pairs(m, vt);
+kernel::Restraints KClosePairsPairScore::create_current_decomposition(
+    kernel::Model *m, const kernel::ParticleIndexPair &vt) const {
+  kernel::ParticleIndexPairs ppt = get_close_pairs(m, vt);
   kernel::Restraints ret(ppt.size());
   for (unsigned int i = 0; i < ret.size(); ++i) {
     ret[i] = new PairRestraint(f_, IMP::internal::get_particle(m, ppt[i]));

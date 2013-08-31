@@ -19,7 +19,7 @@ class Tests(IMP.test.TestCase):
         """Check AllPairContainer"""
         m= IMP.Model()
         for i in range(0,50):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
         lp= IMP.container.ListSingletonContainer(m.get_particles())
         apc= IMP.container.AllPairContainer(lp)
         #self.assertEqual(lp.get_ref_count(), 2)

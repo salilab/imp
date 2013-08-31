@@ -22,13 +22,13 @@ class UnaryFunctionEvaluate : public Score {
  public:
   UnaryFunctionEvaluate(IMP::UnaryFunction *uf) : uf_(uf) {}
   template <unsigned int D>
-  double get_score(Model *, const base::Array<D, ParticleIndex> &,
+  double get_score(Model *, const base::Array<D, kernel::ParticleIndex> &,
                    double distance) const {
     return uf_->evaluate(distance);
   }
   template <unsigned int D>
   DerivativePair get_score_and_derivative(Model *,
-                                          const base::Array<D, ParticleIndex> &,
+                                          const base::Array<D, kernel::ParticleIndex> &,
                                           double distance) const {
     return uf_->evaluate_with_derivative(distance);
   }

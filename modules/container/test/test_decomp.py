@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
         """Checking decomposition of plural restraints"""
         m= IMP.Model()
         for i in range(0,10):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             IMP.core.XYZR.setup_particle(p)
         lp= IMP.container.ListSingletonContainer(m.get_particles())
         apc= IMP.container.AllPairContainer(lp)

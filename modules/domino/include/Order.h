@@ -31,7 +31,7 @@ class IMPDOMINOEXPORT Order : public base::ConstVector<unsigned int> {
 
  public:
   Order() {}
-  Order(Subset outer, const ParticlesTemp &order);
+  Order(Subset outer, const kernel::ParticlesTemp &order);
   template <class It>
   Ints get_list_ordered(It b, It e) const {
     IMP_USAGE_CHECK(static_cast<unsigned int>(std::distance(b, e)) == size(),

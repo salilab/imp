@@ -116,8 +116,8 @@ create_excluded_volume_restraint(const Hierarchies &hs,
 /** Set the mass, radius, residues, and coordinates to approximate the passed
     particles.
  */
-IMPATOMEXPORT void setup_as_approximation(Particle *h,
-                                          const ParticlesTemp &other
+IMPATOMEXPORT void setup_as_approximation(kernel::Particle *h,
+                                          const kernel::ParticlesTemp &other
 #ifndef IMP_DOXYGEN
                                           ,
                                           double resolution = -1
@@ -158,7 +158,7 @@ IMPATOMEXPORT HierarchyTree get_hierarchy_tree(Hierarchy h);
 */
 class HierarchyGeometry : public display::SingletonGeometry {
   double res_;
-  mutable IMP::base::map<Particle *, base::Pointer<display::Geometry> >
+  mutable IMP::base::map<kernel::Particle *, base::Pointer<display::Geometry> >
       components_;
 
  public:
@@ -169,7 +169,7 @@ class HierarchyGeometry : public display::SingletonGeometry {
     atom::Hierarchy d(get_particle());
     atom::Selection sel(d);
     sel.set_target_radius(res_);
-    ParticlesTemp ps = sel.get_selected_particles();
+    kernel::ParticlesTemp ps = sel.get_selected_particles();
     for (unsigned int i = 0; i < ps.size(); ++i) {
       if (components_.find(ps[i]) == components_.end()) {
         IMP_NEW(core::XYZRGeometry, g, (core::XYZR(ps[i])));
@@ -183,7 +183,7 @@ class HierarchyGeometry : public display::SingletonGeometry {
 };
 class HierarchiesGeometry : public display::SingletonsGeometry {
   double res_;
-  mutable IMP::base::map<ParticleIndex, base::Pointer<display::Geometry> >
+  mutable IMP::base::map<kernel::ParticleIndex, base::Pointer<display::Geometry> >
       components_;
 
  public:

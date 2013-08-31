@@ -12,11 +12,11 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-JeffreysRestraint::JeffreysRestraint(Particle *p):
+JeffreysRestraint::JeffreysRestraint(kernel::Particle *p):
     ISDRestraint("JeffreysRestraint_"+p->get_name()), p_(p) {
 }
 
-JeffreysRestraint::JeffreysRestraint(Model *m, Particle *p):
+JeffreysRestraint::JeffreysRestraint(Model *m, kernel::Particle *p):
     ISDRestraint(m, "JeffreysRestraint_"+p->get_name()), p_(p) {
 }
 
@@ -48,7 +48,7 @@ JeffreysRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp JeffreysRestraint::do_get_inputs() const
 {
-  return ParticlesTemp(1,p_);
+  return kernel::ParticlesTemp(1,p_);
 }
 
 IMPISD_END_NAMESPACE

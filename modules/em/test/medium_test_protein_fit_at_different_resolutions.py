@@ -38,7 +38,7 @@ class Tests(IMP.test.TestCase):
                                     self.imp_model,IMP.atom.CAlphaPDBSelector())
         IMP.atom.add_radii(self.mh)
         IMP.atom.create_rigid_body(self.mh)
-        #self.particles = IMP.Particles(IMP.core.get_leaves(self.mh))
+        #self.particles = IMP.kernel.Particles(IMP.core.get_leaves(self.mh))
         self.particles = []
         self.particles+=IMP.core.get_leaves(self.mh)
 if __name__ == '__main__':

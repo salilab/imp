@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
     def broken_until_swig_hierarchies_gets_fixed_test_cp(self):
         """Testing create_protein"""
         m= IMP.Model()
-        rp= IMP.Particle(m)
+        rp= IMP.kernel.Particle(m)
         r= IMP.atom.create_protein(rp, "hi", 10.0, 150)
         print "back"
         r.show()

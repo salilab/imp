@@ -206,7 +206,7 @@ int main(int argc, char **argv) {
   IMP_NEW(IMP::Model,model, ());
   IMP::base::Pointer<atom::ATOMPDBSelector> sel=new atom::ATOMPDBSelector();
   atom::Hierarchy mh =atom::read_pdb(fn_model,model,sel);
-  IMP::ParticlesTemp ps = core::get_leaves(mh);
+  IMP::kernel::ParticlesTemp ps = core::get_leaves(mh);
 
   // Deal with the generation of projections
   digest_parameter("projs",vm,opt);

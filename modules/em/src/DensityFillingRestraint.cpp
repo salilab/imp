@@ -12,7 +12,7 @@
 IMPEM_BEGIN_NAMESPACE
 
 DensityFillingRestraint::DensityFillingRestraint(
-   Particles ps,
+   kernel::Particles ps,
    DensityMap *em_map,Float threshold
                                                  ):
     kernel::Restraint(IMP::internal::get_model(ps),
@@ -65,7 +65,7 @@ ModelObjectsTemp DensityFillingRestraint::do_get_inputs() const
 }
 
 IMP_LIST_IMPL(
-  DensityFillingRestraint, Particle, particle,Particle*, Particles);
+  DensityFillingRestraint, Particle, particle,Particle*, kernel::Particles);
 
 
 

@@ -16,14 +16,14 @@ IMPDOMINO_BEGIN_NAMESPACE
 ParticleStates::~ParticleStates() {}
 
 unsigned IndexStates::get_number_of_particle_states() const { return n_; }
-void IndexStates::load_particle_state(unsigned int i, Particle *p) const {
+void IndexStates::load_particle_state(unsigned int i, kernel::Particle *p) const {
   p->set_value(k_, i);
 }
 
 unsigned int XYZStates::get_number_of_particle_states() const {
   return states_.size();
 }
-void XYZStates::load_particle_state(unsigned int i, Particle *p) const {
+void XYZStates::load_particle_state(unsigned int i, kernel::Particle *p) const {
   IMP_USAGE_CHECK(i < states_.size(),
                   "XYZStates::load_particle_state "
                       << "Out of range " << i << ">= " << states_.size());
@@ -33,7 +33,7 @@ void XYZStates::load_particle_state(unsigned int i, Particle *p) const {
 unsigned int RigidBodyStates::get_number_of_particle_states() const {
   return states_.size();
 }
-void RigidBodyStates::load_particle_state(unsigned int i, Particle *p) const {
+void RigidBodyStates::load_particle_state(unsigned int i, kernel::Particle *p) const {
   IMP_USAGE_CHECK(i < states_.size(), "Out of range " << i);
   core::RigidBody(p).set_reference_frame(states_[i]);
 }
@@ -98,7 +98,7 @@ unsigned int NestedRigidBodyStates::get_number_of_particle_states() const {
   return states_.size();
 }
 void NestedRigidBodyStates::load_particle_state(unsigned int i,
-                                                Particle *p) const {
+                                                kernel::Particle *p) const {
   core::RigidMember(p).set_internal_transformation(states_[i]);
 }
 algebra::VectorKD NestedRigidBodyStates::get_embedding(unsigned int i) const {
@@ -118,18 +118,19 @@ unsigned int CompoundStates::get_number_of_particle_states() const {
                       << b_->get_number_of_particle_states());
   return a_->get_number_of_particle_states();
 }
-void CompoundStates::load_particle_state(unsigned int i, Particle *p) const {
+void CompoundStates::load_particle_state(unsigned int i,
+                                         kernel::Particle *p) const {
   a_->load_particle_state(i, p);
   b_->load_particle_state(i, p);
 }
 
 namespace {
 class DummyConstraint : public Constraint {
-  Particle *in_;
-  ParticlesTemp out_;
+  kernel::Particle *in_;
+  kernel::ParticlesTemp out_;
 
  public:
-  DummyConstraint(Particle *in, const ParticlesTemp &out)
+  DummyConstraint(kernel::Particle *in, const kernel::ParticlesTemp &out)
       : in_(in), out_(out) {}
   virtual void do_update_attributes() IMP_OVERRIDE;
   virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE;
@@ -147,18 +148,20 @@ ModelObjectsTemp DummyConstraint::do_get_inputs() const {
 }
 }
 
-RecursiveStates::RecursiveStates(Particle *p, Subset s, const Assignments &ss,
+RecursiveStates::RecursiveStates(kernel::Particle *p, Subset s,
+                                 const Assignments &ss,
                                  ParticleStatesTable *pst)
     : ParticleStates("RecursiveStates %1%"),
       s_(s),
       ss_(ss),
       pst_(pst),
-      sss_(new DummyConstraint(p, ParticlesTemp(s.begin(), s.end())),
+      sss_(new DummyConstraint(p, kernel::ParticlesTemp(s.begin(), s.end())),
            p->get_model()) {}
 unsigned int RecursiveStates::get_number_of_particle_states() const {
   return ss_.size();
 }
-void RecursiveStates::load_particle_state(unsigned int i, Particle *) const {
+void RecursiveStates::load_particle_state(unsigned int i,
+                                          kernel::Particle *) const {
   IMP_USAGE_CHECK(i < get_number_of_particle_states(), "Out of range");
   for (unsigned int j = 0; j < s_.size(); ++j) {
     IMP::base::PointerMember<ParticleStates> ps =

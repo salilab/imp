@@ -107,8 +107,8 @@ class Tests(IMP.test.TestCase):
 
     def test_init_model_NOE_restraint(self):
         prot,ff,rsb,rs = self.init_protein('1G6J_MODEL1.pdb')
-        sigma=IMP.isd.Scale.setup_particle(IMP.Particle(self.sfo._m),1.0)
-        gamma=IMP.isd.Scale.setup_particle(IMP.Particle(self.sfo._m),1.0)
+        sigma=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(self.sfo._m),1.0)
+        gamma=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(self.sfo._m),1.0)
         ln=self.sfo.init_model_NOE_restraint(prot, ((1, 'HE22'), (2, 'O')),
                 1.0, sigma, gamma)
         self.assertIsInstance(ln, IMP.isd.NOERestraint)
@@ -250,7 +250,7 @@ class Tests(IMP.test.TestCase):
 
     def test__setup_normal_mover(self):
         self.sfo.init_model_base('./')
-        p0=IMP.isd.Scale.setup_particle(IMP.Particle(self.sfo._m), 1.0)
+        p0=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(self.sfo._m), 1.0)
         nm = self.sfo._setup_normal_mover(p0, IMP.FloatKey("scale"), 0.1)
         self.assertIsInstance(nm, IMP.core.NormalMover)
         self.assertTrue(nm.get_container().get_contains_particle(p0))
@@ -262,7 +262,7 @@ class Tests(IMP.test.TestCase):
 
     def test__setup_md_mover(self):
         prot,ff,rsb,rs = self.init_protein('1G6J_MODEL1.pdb')
-        p0=IMP.isd.Scale.setup_particle(IMP.Particle(self.sfo._m), 1.0)
+        p0=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(self.sfo._m), 1.0)
         md, os = self.sfo._setup_md(prot)
         mdmv = self.sfo._setup_md_mover(md, IMP.atom.get_leaves(prot),
                 100.0, n_md_steps = 50)
@@ -273,7 +273,7 @@ class Tests(IMP.test.TestCase):
 
     def test__setup_mc(self):
         self.sfo.init_model_base('./')
-        p0=IMP.isd.Scale.setup_particle(IMP.Particle(self.sfo._m), 1.0)
+        p0=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(self.sfo._m), 1.0)
         nm = self.sfo._setup_normal_mover(p0, IMP.FloatKey("scale"), 0.1)
         mc=self.sfo._setup_mc(nm, temperature=200.0)
         self.assertAlmostEqual(mc.get_temperature(), self.kB*200.0, delta=1e-6)
@@ -283,7 +283,7 @@ class Tests(IMP.test.TestCase):
 
     def test__setup_mc_restraints(self):
         self.sfo.init_model_base('./')
-        p0=IMP.isd.Scale.setup_particle(IMP.Particle(self.sfo._m), 1.0)
+        p0=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(self.sfo._m), 1.0)
         prior_rs = self.sfo.init_model_jeffreys([p0])
         nm = self.sfo._setup_normal_mover(p0, IMP.FloatKey("scale"), 0.1)
         mc=self.sfo._setup_mc(nm, mc_restraints=[prior_rs])

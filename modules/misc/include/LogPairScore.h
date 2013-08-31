@@ -19,15 +19,15 @@ IMPMISC_BEGIN_NAMESPACE
 /** Primarily for testing.
  */
 class LogPairScore : public PairScore {
-  mutable base::map<ParticlePair, unsigned int> map_;
+  mutable base::map<kernel::ParticlePair, unsigned int> map_;
 
  public:
   //! create with an empty map
   LogPairScore() {}
-  virtual double evaluate_index(Model *m, const ParticleIndexPair &p,
+  virtual double evaluate_index(Model *m, const kernel::ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs(Model *,
-                                         const ParticleIndexes &) const
+                                         const kernel::ParticleIndexes &) const
     IMP_OVERRIDE {
     return ModelObjectsTemp();
   }
@@ -35,9 +35,9 @@ class LogPairScore : public PairScore {
   IMP_OBJECT_METHODS(LogPairScore);
 
   //! Get a list of all pairs (without multiplicity)
-  ParticlePairsTemp get_particle_pairs() const {
-    ParticlePairsTemp ret;
-    for (base::map<ParticlePair, unsigned int>::const_iterator it =
+  kernel::ParticlePairsTemp get_particle_pairs() const {
+    kernel::ParticlePairsTemp ret;
+    for (base::map<kernel::ParticlePair, unsigned int>::const_iterator it =
              map_.begin();
          it != map_.end(); ++it) {
       ret.push_back(it->first);
@@ -47,7 +47,7 @@ class LogPairScore : public PairScore {
   //! Clear the lst of pairs
   void clear() { map_.clear(); }
   //! Return true if the pair is in the list
-  bool get_contains(const ParticlePair &pp) const {
+  bool get_contains(const kernel::ParticlePair &pp) const {
     return map_.find(pp) != map_.end();
   }
 };
@@ -55,9 +55,9 @@ class LogPairScore : public PairScore {
 // doxygen spits out warnings
 #ifndef IMP_DOXYGEN
 
-inline Float LogPairScore::evaluate_index(Model *m, const ParticleIndexPair &p,
+inline Float LogPairScore::evaluate_index(Model *m, const kernel::ParticleIndexPair &p,
                                           DerivativeAccumulator *) const {
-  ParticlePair pp(m->get_particle(p[0]), m->get_particle(p[1]));
+  kernel::ParticlePair pp(m->get_particle(p[0]), m->get_particle(p[1]));
   if (map_.find(pp) == map_.end()) {
     map_[pp] = 0;
   }

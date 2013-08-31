@@ -47,7 +47,7 @@ class IMPCOREEXPORT ConnectivityRestraint : public kernel::Restraint {
   IMPCORE_DEPRECATED_METHOD_DECL(2.1)
   ConnectivityRestraint(PairScore *ps);
 #ifndef IMP_DOXYGEN
-  /** @name Particles to be connected
+  /** @name kernel::Particles to be connected
 
        The following methods are used to manipulate the list of particles
        that are to be connected. Each particle should have all the
@@ -57,9 +57,9 @@ class IMPCOREEXPORT ConnectivityRestraint : public kernel::Restraint {
        can only be used if none is passed.
   */
   /*@{*/
-  void add_particle(Particle *p);
-  void add_particles(const ParticlesTemp &ps);
-  void set_particles(const ParticlesTemp &ps);
+  void add_particle(kernel::Particle *p);
+  void add_particles(const kernel::ParticlesTemp &ps);
+  void set_particles(const kernel::ParticlesTemp &ps);
 /*@}*/
 #endif
 
@@ -68,7 +68,7 @@ class IMPCOREEXPORT ConnectivityRestraint : public kernel::Restraint {
       the get_connected_pairs() call, not the set at the time of the last
       evaluate() call.
   */
-  ParticlePairsTemp get_connected_pairs() const;
+  kernel::ParticlePairsTemp get_connected_pairs() const;
 
   //! Return the pair score used for scoring
   PairScore *get_pair_score() const { return ps_; }

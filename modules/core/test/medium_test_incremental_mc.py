@@ -14,7 +14,7 @@ class Tests(IMP.test.TestCase):
         ps=[]
         bb= IMP.algebra.get_unit_bounding_box_3d()
         for i in range(0,10):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             d= IMP.core.XYZR.setup_particle(p)
             ps.append(d)
             d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
@@ -54,7 +54,7 @@ class Tests(IMP.test.TestCase):
         ps=[]
         bb= IMP.algebra.get_unit_bounding_box_3d()
         for i in range(0,10):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             d= IMP.core.XYZR.setup_particle(p)
             ps.append(d)
             d.set_coordinates(IMP.algebra.get_random_vector_in(bb))

@@ -21,7 +21,7 @@ class Tests(IMP.test.TestCase):
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
         self.m = IMP.Model()
-        self.q0 = Scale.setup_particle(IMP.Particle(self.m), 0.1)
+        self.q0 = Scale.setup_particle(IMP.kernel.Particle(self.m), 0.1)
         self.DA = IMP.DerivativeAccumulator()
         self.qmin = 0.01
         self.qmax = 0.8

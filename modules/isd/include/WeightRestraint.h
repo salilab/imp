@@ -19,7 +19,7 @@ IMPISD_BEGIN_NAMESPACE
 
 class IMPISDEXPORT  WeightRestraint : public kernel::Restraint
 {
-    Particle *w_;
+    kernel::Particle *w_;
     Float wmin_;
     Float wmax_;
     Float kappa_;
@@ -31,7 +31,7 @@ public:
       preferably in a Singleton or PairContainer as appropriate.
    */
 
-  WeightRestraint(Particle *w, Float wmin, Float wmax, Float kappa);
+  WeightRestraint(kernel::Particle *w, Float wmin, Float wmax, Float kappa);
 
   /** This macro declares the basic needed methods: evaluate and show
    */

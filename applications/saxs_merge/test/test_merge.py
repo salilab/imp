@@ -68,7 +68,7 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
 
     def set_interpolant(self, profile, a, b, interpolant=MockGP):
         m=IMP.Model()
-        s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
+        s=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(m),3.0)
         gp=interpolant(a,b)
         functions={}
         functions['mean']=MockFunction()
@@ -256,7 +256,7 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         self.merge.find_fit = find_fit
         def setup_process(b,c):
             m=IMP.Model()
-            s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
+            s=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(m),3.0)
             gp=MockGP(1,10)
             functions={'mean':MockFunction(),'covariance':MockFunction()}
             return m,{'sigma':s},functions,gp

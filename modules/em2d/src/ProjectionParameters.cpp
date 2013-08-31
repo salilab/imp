@@ -5,19 +5,19 @@
 */
 
 #include "IMP/em2d/ProjectionParameters.h"
-#include "IMP/Model.h" // ParticleIterator
+#include "IMP/Model.h" // kernel::ParticleIterator
 #include "IMP/base/log.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 
 bool ProjectionParameters::get_is_setup(Model *m,
-                                        ParticleIndex pi) {
+                                        kernel::ParticleIndex pi) {
   // Check with only the first key
   return m->get_has_attribute(get_keys()[0], pi);
 }
 
 void ProjectionParameters::do_setup_particle(Model *m,
-                                             ParticleIndex pi) {
+                                             kernel::ParticleIndex pi) {
   m->add_attribute(get_keys()[0],pi,0.0);
   m->add_attribute(get_keys()[1],pi,0.0);
   m->add_attribute(get_keys()[2],pi,0.0);

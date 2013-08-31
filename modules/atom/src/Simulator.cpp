@@ -7,9 +7,9 @@
 
 #include <IMP/base/log.h>
 #include <IMP/atom/Simulator.h>
-#include <IMP/internal/constants.h>
-#include <IMP/internal/container_helpers.h>
-#include <IMP/internal/units.h>
+#include <IMP/kernel/internal/constants.h>
+#include <IMP/kernel/internal/container_helpers.h>
+#include <IMP/kernel/internal/units.h>
 #include <boost/progress.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <IMP/atom/constants.h>
@@ -48,7 +48,7 @@ double Simulator::simulate_wave
 double Simulator::do_simulate(double time) {
   IMP_FUNCTION_LOG;
   set_was_used(true);
-  ParticleIndexes ps = get_simulation_particle_indexes();
+  kernel::ParticleIndexes ps = get_simulation_particle_indexes();
 
   setup(ps);
   double target = current_time_ + time;
@@ -73,7 +73,7 @@ double Simulator::do_simulate_wave
   double base) {
   IMP_FUNCTION_LOG;
   set_was_used(true);
-  ParticleIndexes ps = get_simulation_particle_indexes();
+  kernel::ParticleIndexes ps = get_simulation_particle_indexes();
 
   setup(ps);
   double target = current_time_ + time;
@@ -149,7 +149,7 @@ double Simulator::do_simulate_wave
 
 ParticleIndexes Simulator::get_simulation_particle_indexes() const {
   IMP_FUNCTION_LOG;
-  ParticleIndexes ps;
+  kernel::ParticleIndexes ps;
   if (get_number_of_particles() == 0) {
     for (Model::ParticleIterator it = get_model()->particles_begin();
          it != get_model()->particles_end(); ++it) {
@@ -159,13 +159,13 @@ ParticleIndexes Simulator::get_simulation_particle_indexes() const {
     }
   } else {
     ps = IMP::internal::get_index(
-        ParticlesTemp(particles_begin(), particles_end()));
+        kernel::ParticlesTemp(particles_begin(), particles_end()));
   }
   return ps;
 }
 
 ParticlesTemp Simulator::get_simulation_particles() const {
-  ParticleIndexes p = get_simulation_particle_indexes();
+  kernel::ParticleIndexes p = get_simulation_particle_indexes();
   return IMP::internal::get_particle(get_model(), p);
 }
 
@@ -181,7 +181,8 @@ double Simulator::get_kt() const {
   return IMP::atom::get_kt(get_temperature());
 }
 
-IMP_LIST_IMPL(Simulator, Particle, particle, Particle *, Particles);
+IMP_LIST_IMPL(Simulator, Particle, particle, kernel::Particle *,
+              kernel::Particles);
 
 double get_energy_in_femto_joules(double energy_in_kcal_per_mol) {
   unit::KilocaloriePerMol cforce(energy_in_kcal_per_mol);

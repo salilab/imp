@@ -12,8 +12,8 @@
 #include <IMP/modeller/modeller_config.h>
 
 #include <IMP/kernel/Restraint.h>
-#include <IMP/Particle.h>
-#include <IMP/ParticleTuple.h>
+#include <IMP/kernel/Particle.h>
+#include <IMP/kernel/ParticleTuple.h>
 #include <IMP/generic.h>
 
 IMPMODELLER_BEGIN_NAMESPACE
@@ -22,7 +22,7 @@ class BinormalTerm;
 
 //! Modeller-style multiple binormal (phi/psi) restraint.
 /** This implements a multiple binormal restraint on the two dihedral angles
-    between the two quads of Particles passed to the restraint, by implementing
+    between the two quads of kernel::Particles passed to the restraint, by implementing
     equation A.76 in the
     \external{http://salilab.org/modeller/9v7/manual/node441.html, Modeller manual}.
     The two angles are typically the phi and psi dihedrals of a residue.
@@ -30,7 +30,7 @@ class BinormalTerm;
 class IMPMODELLEREXPORT MultipleBinormalRestraint : public kernel::Restraint
 {
   std::vector<BinormalTerm> terms_;
-  ParticleQuad q1_, q2_;
+  kernel::ParticleQuad q1_, q2_;
 public:
   //! Create the multiple binormal restraint.
   /** After creating the restraint, call add_term one or more times to add
@@ -38,7 +38,7 @@ public:
       \param[in] q1 First quad of particles.
       \param[in] q2 Second quad of particles.
    */
-  MultipleBinormalRestraint(const ParticleQuad &q1, const ParticleQuad &q2);
+  MultipleBinormalRestraint(const kernel::ParticleQuad &q1, const kernel::ParticleQuad &q2);
 
   //! Add a single BinormalTerm to the restraint.
   void add_term(const BinormalTerm &term) {

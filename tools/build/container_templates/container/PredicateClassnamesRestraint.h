@@ -13,7 +13,7 @@
 
 #include <IMP/container/container_config.h>
 
-#include <IMP/internal/InternalDynamicListClassnameContainer.h>
+#include <IMP/kernel/internal/InternalDynamicListClassnameContainer.h>
 #include <IMP/base/map.h>
 #include <IMP/ClassnamePredicate.h>
 #include <IMP/restraint_macros.h>

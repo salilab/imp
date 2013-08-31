@@ -29,7 +29,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT NeighborsTable: public kernel::ScoreState {
   base::PointerMember<kernel::PairContainer> input_;
   int input_version_;
-  base::map<ParticleIndex, ParticleIndexes> data_;
+  base::map<kernel::ParticleIndex, kernel::ParticleIndexes> data_;
  protected:
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
     return ModelObjectsTemp(1, input_);
@@ -42,7 +42,7 @@ class IMPCOREEXPORT NeighborsTable: public kernel::ScoreState {
  public:
   NeighborsTable(kernel::PairContainer *input,
                  std::string name = "CloseNeighborsTable%1%");
-  /** Return all ParticleIndexes that are within the distance threshold
+  /** Return all kernel::ParticleIndexes that are within the distance threshold
       of this one (plus some that are aren't, for efficiency). */
   const kernel::ParticleIndexes& get_neighbors(kernel::ParticleIndex pi) const {
     set_was_used(true);

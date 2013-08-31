@@ -14,15 +14,15 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 ModelObjectsTemp get_inputs(Model *m, SingletonContainer *sc_,
                             const PairPredicates &filters_) {
-  ParticleIndexes all = sc_->get_all_possible_indexes();
+  kernel::ParticleIndexes all = sc_->get_all_possible_indexes();
   ModelObjectsTemp ret = IMP::get_particles(m, all);
   for (unsigned int i = 0; i < filters_.size(); ++i) {
     ret += filters_[i]->get_inputs(m, all);
   }
-  base::set<Particle *> rigid;
+  base::set<kernel::Particle *> rigid;
   for (unsigned int i = 0; i < all.size(); ++i) {
     if (core::RigidMember::get_is_setup(m, all[i])) {
-      Particle *rbp = core::RigidMember(m, all[i]).get_rigid_body();
+      kernel::Particle *rbp = core::RigidMember(m, all[i]).get_rigid_body();
       if (rigid.find(rbp) == rigid.end()) {
         rigid.insert(rbp);
         ret.push_back(rbp);

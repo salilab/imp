@@ -16,7 +16,7 @@ class Tests(IMP.test.TestCase):
         ps = []
         for i in range(copies):
             for c in coords:
-                p = IMP.Particle(m)
+                p = IMP.kernel.Particle(m)
                 x = IMP.core.XYZ.setup_particle(p, c[0])
                 x.set_coordinates_are_optimized(True)
                 IMP.atom.Mass.setup_particle(p, 1.0)

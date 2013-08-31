@@ -33,7 +33,7 @@ class IMPRMFEXPORT SaveOptimizerState : public kernel::OptimizerState {
   SaveOptimizerState(RMF::FileHandle fh);
 #ifndef IMP_DOXYGEN
   IMP_LIST_ACTION(public, Hierarchy, Hierarchies, hierarchy, hierarchies,
-                  Particle *, Particles, {
+                  kernel::Particle *, kernel::Particles, {
     rmf::add_hierarchy(fh_, atom::Hierarchy(obj));
   },
                   {}, {});
@@ -42,9 +42,10 @@ class IMPRMFEXPORT SaveOptimizerState : public kernel::OptimizerState {
     rmf::add_restraints(fh_, kernel::RestraintsTemp(1, obj));
   },
                   {}, {});
-  IMP_LIST_ACTION(public, Particle, Particles, particle, particles, Particle *,
-                  Particles, {
-    rmf::add_particles(fh_, ParticlesTemp(1, obj));
+  IMP_LIST_ACTION(public, Particle, Particles, particle,
+                  particles, kernel::Particle *,
+                  kernel::Particles, {
+    rmf::add_particles(fh_, kernel::ParticlesTemp(1, obj));
   },
                   {}, {});
   IMP_LIST_ACTION(public, Geometry, Geometries, geometry, geometries,

@@ -7,15 +7,15 @@ import IMP.algebra
 import IMP.display
 
 def create_rigid_body(m, name):
-    prb= IMP.core.RigidBody.setup_particle(IMP.Particle(m), IMP.algebra.ReferenceFrame3D())
+    prb= IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m), IMP.algebra.ReferenceFrame3D())
     prb.set_coordinates_are_optimized(True)
     prb.set_name(name+" rb")
-    ph= IMP.atom.Molecule.setup_particle(IMP.Particle(m))
+    ph= IMP.atom.Molecule.setup_particle(IMP.kernel.Particle(m))
     ph.set_name(name)
     for i in range(0,2):
         for j in range(0,2):
             for k in range(0,2):
-                d= IMP.core.XYZR.setup_particle(IMP.Particle(m),
+                d= IMP.core.XYZR.setup_particle(IMP.kernel.Particle(m),
                                                 IMP.algebra.Sphere3D(IMP.algebra.Vector3D(i,j,k)*10.0,
                                                                      10))
                 ph.add_child(IMP.atom.Fragment.setup_particle(d))

@@ -9,8 +9,8 @@ import IMP.core
 m = IMP.Model()
 
 # Create two "untyped" Particles
-p1 = IMP.Particle(m)
-p2 = IMP.Particle(m)
+p1 = IMP.kernel.Particle(m)
+p2 = IMP.kernel.Particle(m)
 
 # "Decorate" the Particles with x,y,z attributes (point-like particles)
 d1 = IMP.core.XYZ.setup_particle(p1)

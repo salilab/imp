@@ -24,8 +24,8 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
   {
     Vector3D minc(0, 0, 0), maxc(10, 10, 10);
     IMP_NEW(Model, m, ());
-    ParticlesTemp ps = create_xyzr_particles(m, n, rmin);
-    ParticleIndexes psi = IMP::internal::get_index(ps);
+    kernel::ParticlesTemp ps = create_xyzr_particles(m, n, rmin);
+    kernel::ParticleIndexes psi = IMP::internal::get_index(ps);
     ::boost::uniform_real<> rand(rmin, rmax);
     for (unsigned int i = 0; i < ps.size(); ++i) {
       XYZ(ps[i])
@@ -46,7 +46,7 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
   {
     Vector3D minc(0, 0, 0), maxc(10, 10, 10);
     IMP_NEW(Model, m, ());
-    ParticlesTemp ps = create_xyzr_particles(m, n, rmin);
+    kernel::ParticlesTemp ps = create_xyzr_particles(m, n, rmin);
     ::boost::uniform_real<> rand(rmin, rmax);
     for (unsigned int i = 0; i < ps.size(); ++i) {
       XYZ(ps[i])
@@ -67,10 +67,10 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
   if (!nobi) {
     Vector3D minc(0, 0, 0), maxc(10, 10, 10);
     IMP_NEW(Model, m, ());
-    ParticlesTemp ps0 = create_xyzr_particles(m, n, rmin);
-    ParticlesTemp ps1 = create_xyzr_particles(m, n, rmin);
-    ParticleIndexes ps0i = IMP::internal::get_index(ps0);
-    ParticleIndexes ps1i = IMP::internal::get_index(ps1);
+    kernel::ParticlesTemp ps0 = create_xyzr_particles(m, n, rmin);
+    kernel::ParticlesTemp ps1 = create_xyzr_particles(m, n, rmin);
+    kernel::ParticleIndexes ps0i = IMP::internal::get_index(ps0);
+    kernel::ParticleIndexes ps1i = IMP::internal::get_index(ps1);
     ::boost::uniform_real<> rand(rmin, rmax);
     for (unsigned int i = 0; i < ps0.size(); ++i) {
       XYZ(ps0[i])

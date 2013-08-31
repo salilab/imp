@@ -12,7 +12,7 @@
 IMPATOM_BEGIN_NAMESPACE
 
 VelocityScalingOptimizerState::VelocityScalingOptimizerState(
-    const Particles &pis, Float temperature, unsigned skip_steps)
+    const kernel::Particles &pis, Float temperature, unsigned skip_steps)
   : kernel::OptimizerState(pis[0]->get_model(),
                            "VelocityScalingOptimizerState%1%"),
     pis_(pis),
@@ -23,7 +23,7 @@ VelocityScalingOptimizerState::VelocityScalingOptimizerState(
 }
 
 VelocityScalingOptimizerState
-::VelocityScalingOptimizerState(Model *m, ParticleIndexesAdaptor pis,
+::VelocityScalingOptimizerState(Model *m, kernel::ParticleIndexesAdaptor pis,
                                 double temp):
   kernel::OptimizerState(m, "VelocityScalingOptimizerState%1%"),
   temperature_(temp) {

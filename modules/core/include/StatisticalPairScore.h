@@ -14,7 +14,7 @@
 #include <IMP/Model.h>
 #include <IMP/score_functor/DistancePairScore.h>
 #include <IMP/score_functor/Statistical.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/PairScore.h>
 #include <IMP/algebra/Vector3D.h>
 #include "XYZ.h"

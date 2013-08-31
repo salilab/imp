@@ -14,7 +14,7 @@
 #include <IMP/core/internal/dihedral_helpers.h>
 #include <IMP/algebra/Vector3D.h>
 
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/Model.h>
 #include <IMP/base/log.h>
 
@@ -23,58 +23,58 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-TALOSRestraint::TALOSRestraint(Particles p, Floats data, Particle *kappa)
+TALOSRestraint::TALOSRestraint(kernel::Particles p, Floats data, kernel::Particle *kappa)
     : kappa_(kappa) {
   if (p.size() != 4) {
     IMP_THROW("please provide a list with 4 particles!", ModelException);
   }
-  p_[0]=static_cast<Particle*>(p[0]);
-  p_[1]=static_cast<Particle*>(p[1]);
-  p_[2]=static_cast<Particle*>(p[2]);
-  p_[3]=static_cast<Particle*>(p[3]);
+  p_[0]=static_cast<kernel::Particle*>(p[0]);
+  p_[1]=static_cast<kernel::Particle*>(p[1]);
+  p_[2]=static_cast<kernel::Particle*>(p[2]);
+  p_[3]=static_cast<kernel::Particle*>(p[3]);
   // create von Mises
   double kappaval=Scale(kappa_).get_scale();
   mises_ = new vonMisesSufficient(0, data, kappaval);
   //mises_->set_was_used(true);
   }
 
-TALOSRestraint::TALOSRestraint(Particles p, unsigned N, double R0, double
-          chiexp, Particle *kappa) : kappa_(kappa) {
+TALOSRestraint::TALOSRestraint(kernel::Particles p, unsigned N, double R0, double
+          chiexp, kernel::Particle *kappa) : kappa_(kappa) {
   if (p.size() != 4) {
     IMP_THROW("please provide a list with 4 particles!", ModelException);
   }
-  p_[0]=static_cast<Particle*>(p[0]);
-  p_[1]=static_cast<Particle*>(p[1]);
-  p_[2]=static_cast<Particle*>(p[2]);
-  p_[3]=static_cast<Particle*>(p[3]);
+  p_[0]=static_cast<kernel::Particle*>(p[0]);
+  p_[1]=static_cast<kernel::Particle*>(p[1]);
+  p_[2]=static_cast<kernel::Particle*>(p[2]);
+  p_[3]=static_cast<kernel::Particle*>(p[3]);
   // create von Mises
   double kappaval=Scale(kappa_).get_scale();
   mises_ = new vonMisesSufficient(0, N, R0, chiexp, kappaval);
   //mises_->set_was_used(true);
   }
 
-TALOSRestraint::TALOSRestraint(Particle* p1, Particle* p2, Particle* p3,
-                               Particle *p4, Floats data, Particle *kappa)
+TALOSRestraint::TALOSRestraint(kernel::Particle* p1, kernel::Particle* p2, kernel::Particle* p3,
+                               kernel::Particle *p4, Floats data, kernel::Particle *kappa)
     : kappa_(kappa)
 {
-  p_[0]=static_cast<Particle*>(p1);
-  p_[1]=static_cast<Particle*>(p2);
-  p_[2]=static_cast<Particle*>(p3);
-  p_[3]=static_cast<Particle*>(p4);
+  p_[0]=static_cast<kernel::Particle*>(p1);
+  p_[1]=static_cast<kernel::Particle*>(p2);
+  p_[2]=static_cast<kernel::Particle*>(p3);
+  p_[3]=static_cast<kernel::Particle*>(p4);
   // create von Mises
   double kappaval=Scale(kappa_).get_scale();
   mises_ = new vonMisesSufficient(0, data, kappaval);
   //mises_->set_was_used(true);
 }
 
-TALOSRestraint::TALOSRestraint(Particle* p1, Particle* p2, Particle* p3,
-                               Particle *p4, unsigned N, double R0,
-                               double chiexp, Particle *kappa) : kappa_(kappa)
+TALOSRestraint::TALOSRestraint(kernel::Particle* p1, kernel::Particle* p2, kernel::Particle* p3,
+                               kernel::Particle *p4, unsigned N, double R0,
+                               double chiexp, kernel::Particle *kappa) : kappa_(kappa)
 {
-  p_[0]=static_cast<Particle*>(p1);
-  p_[1]=static_cast<Particle*>(p2);
-  p_[2]=static_cast<Particle*>(p3);
-  p_[3]=static_cast<Particle*>(p4);
+  p_[0]=static_cast<kernel::Particle*>(p1);
+  p_[1]=static_cast<kernel::Particle*>(p2);
+  p_[2]=static_cast<kernel::Particle*>(p3);
+  p_[3]=static_cast<kernel::Particle*>(p4);
   // create von Mises
   double kappaval=Scale(kappa_).get_scale();
   mises_ = new vonMisesSufficient(0, N, R0, chiexp, kappaval);
@@ -129,7 +129,7 @@ TALOSRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 }
 
 ModelObjectsTemp TALOSRestraint::do_get_inputs() const {
-  ParticlesTemp ret(p_, p_+4);
+  kernel::ParticlesTemp ret(p_, p_+4);
   ret.push_back(kappa_);
   return ret;
 }

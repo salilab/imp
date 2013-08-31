@@ -15,8 +15,8 @@ m= IMP.Model()
 rbps0= IMP.core.create_xyzr_particles(m, 3, 1)
 rbps1= IMP.core.create_xyzr_particles(m, 3, 1)
 
-rbp0= IMP.Particle(m)
-rbp1= IMP.Particle(m)
+rbp0= IMP.kernel.Particle(m)
+rbp1= IMP.kernel.Particle(m)
 
 rbss0 = IMP.core.RigidBody.setup_particle(rbp0, IMP.core.XYZs(rbps0))
 

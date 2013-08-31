@@ -40,7 +40,7 @@ class RestraintsScoringFunction :
                              const kernel::ScoreStatesTemp &ss) IMP_OVERRIDE;
   virtual kernel::Restraints create_restraints() const IMP_OVERRIDE;
       virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-      IMP_OBJECT_METHODS(RestraintsScoringFunction);
+  IMP_OBJECT_METHODS(RestraintsScoringFunction);
 #endif
 };
 

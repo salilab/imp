@@ -132,7 +132,7 @@ import IMP.container
 
 def create_representation():
     m= IMP.Model()
-    all=IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+    all=IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
     all.set_name("the universe")
     def create_protein(name, ds):
         h=IMP.atom.create_protein(m, name, 10, ds)
@@ -162,7 +162,7 @@ def create_representation():
             rb.set_coordinates_are_optimized(True)
             return s
         if len(files) >1:
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             h= IMP.atom.Hierarchy.setup_particle(p)
             h.set_name(name)
             for i, f in enumerate(files):

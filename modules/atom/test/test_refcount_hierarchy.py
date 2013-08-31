@@ -8,13 +8,13 @@ class Tests(IMP.test.TestCase):
         """Check that hierarchies don't have circular ref counts """
         # make sure internal things are created
         m= IMP.Model()
-        h= IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        h= IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
         del m
         del h
         refcnt = IMP.test.RefCountChecker(self)
         m= IMP.Model()
-        h= IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
-        hc= IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        h= IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
+        hc= IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
         h.add_child(hc)
         del m
         del hc
@@ -23,13 +23,13 @@ class Tests(IMP.test.TestCase):
     def _test_simple_bond(self):
         """Check that bonded don't have circular ref counts """
         m= IMP.Model()
-        h= IMP.atom.Bonded.setup_particle(IMP.Particle(m))
+        h= IMP.atom.Bonded.setup_particle(IMP.kernel.Particle(m))
         del m
         del h
         refcnt = IMP.test.RefCountChecker(self)
         m= IMP.Model()
-        h= IMP.atom.Bonded.setup_particle(IMP.Particle(m))
-        hc= IMP.atom.Bonded.setup_particle(IMP.Particle(m))
+        h= IMP.atom.Bonded.setup_particle(IMP.kernel.Particle(m))
+        hc= IMP.atom.Bonded.setup_particle(IMP.kernel.Particle(m))
         IMP.atom.create_bond(h, hc, 0)
         del m
         del hc
@@ -65,7 +65,7 @@ class Tests(IMP.test.TestCase):
             # charm creates all sorts of things
             refcnt = IMP.test.RefCountChecker(self)
             m= IMP.Model()
-            p = IMP.Particle(m)
+            p = IMP.kernel.Particle(m)
             p.set_name("TEST")
             del p
             h= IMP.atom.read_pdb(self.get_input_file_name("mini.pdb"), m)

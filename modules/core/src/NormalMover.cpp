@@ -16,12 +16,12 @@
 IMPCORE_BEGIN_NAMESPACE
 
 namespace {
-std::string get_normal_mover_name(Model *m, ParticleIndex pi) {
+std::string get_normal_mover_name(Model *m, kernel::ParticleIndex pi) {
   return "NormalMover-" + m->get_particle(pi)->get_name();
 }
 }
 
-void NormalMover::initialize(ParticleIndexes pis, FloatKeys keys,
+void NormalMover::initialize(kernel::ParticleIndexes pis, FloatKeys keys,
                              double radius) {
   pis_ = pis;
   keys_ = keys;
@@ -29,26 +29,26 @@ void NormalMover::initialize(ParticleIndexes pis, FloatKeys keys,
   originals_.resize(pis.size(), algebra::get_zero_vector_kd(keys.size()));
 }
 
-NormalMover::NormalMover(Model *m, ParticleIndex pi, const FloatKeys &keys,
+NormalMover::NormalMover(Model *m, kernel::ParticleIndex pi, const FloatKeys &keys,
                          double radius)
     : MonteCarloMover(m, get_normal_mover_name(m, pi)) {
-  initialize(ParticleIndexes(1, pi), keys, radius);
+  initialize(kernel::ParticleIndexes(1, pi), keys, radius);
 }
 
-NormalMover::NormalMover(Model *m, ParticleIndex pi, double radius)
+NormalMover::NormalMover(Model *m, kernel::ParticleIndex pi, double radius)
     : MonteCarloMover(m, get_normal_mover_name(m, pi)) {
-  initialize(ParticleIndexes(1, pi), XYZ::get_xyz_keys(), radius);
+  initialize(kernel::ParticleIndexes(1, pi), XYZ::get_xyz_keys(), radius);
 }
 
 // backwards compat
-NormalMover::NormalMover(const ParticlesTemp &sc, const FloatKeys &vars,
+NormalMover::NormalMover(const kernel::ParticlesTemp &sc, const FloatKeys &vars,
                          double max)
     : MonteCarloMover(sc[0]->get_model(), "NormalMover%1%") {
   initialize(kernel::get_indexes(sc), vars, max);
 }
 
 // backwards compat
-NormalMover::NormalMover(const ParticlesTemp &sc, double max)
+NormalMover::NormalMover(const kernel::ParticlesTemp &sc, double max)
     : MonteCarloMover(sc[0]->get_model(), "XYZNormalMover%1%") {
   initialize(kernel::get_indexes(sc), XYZ::get_xyz_keys(), max);
 }

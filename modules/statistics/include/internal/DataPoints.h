@@ -69,17 +69,17 @@ class IMPSTATISTICSEXPORT ParticlesDataPoints : public XYZDataPoints {
  public:
   ParticlesDataPoints() : XYZDataPoints() {}
 
-  ParticlesDataPoints(ParticlesTemp ps) : XYZDataPoints() {
+  ParticlesDataPoints(kernel::ParticlesTemp ps) : XYZDataPoints() {
     populate_data_points(ps);
   }
-  void populate_data_points(ParticlesTemp ps);
-  Particle *get_particle(int i) const { return ps_[i]; }
-  const Particles &get_particles() const { return ps_; }
+  void populate_data_points(kernel::ParticlesTemp ps);
+  kernel::Particle *get_particle(int i) const { return ps_[i]; }
+  const kernel::Particles &get_particles() const { return ps_; }
 
   IMP_OBJECT_METHODS(ParticlesDataPoints);
 
  protected:
-  Particles ps_;
+  kernel::Particles ps_;
 };
 IMP_OBJECTS(ParticlesDataPoints, ParticlesDataPointsList);
 

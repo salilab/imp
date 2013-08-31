@@ -20,9 +20,9 @@ class TestGaussianRestraintSimple3(IMP.test.TestCase):
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
         self.m = IMP.Model()
-        self.sigma = Scale.setup_particle(IMP.Particle(self.m), 2.0)
-        self.mu = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
-        self.x = Nuisance.setup_particle(IMP.Particle(self.m), 2.0)
+        self.sigma = Scale.setup_particle(IMP.kernel.Particle(self.m), 2.0)
+        self.mu = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 1.0)
+        self.x = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 2.0)
         self.locations=[self.x, self.mu]
         self.all = self.locations+[self.sigma]
         self.DA = IMP.DerivativeAccumulator()
@@ -138,7 +138,7 @@ class TestGaussianRestraintSimple3(IMP.test.TestCase):
     def testFail(self):
         "Test failures of GaussianRestraint(3)"
         if IMP.base.get_check_level() >= IMP.base.USAGE:
-            dummy=IMP.Particle(self.m)
+            dummy=IMP.kernel.Particle(self.m)
             self.assertRaises(IMP.base.UsageException, GaussianRestraint, dummy,
                               self.all[1], self.all[2])
             self.assertRaises(IMP.base.UsageException, GaussianRestraint,
@@ -154,8 +154,8 @@ class TestGaussianRestraintSimple21(IMP.test.TestCase):
         IMP.base.set_log_level(0)
         self.m = IMP.Model()
         self.sigma = 2.0
-        self.mu = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
-        self.x = Nuisance.setup_particle(IMP.Particle(self.m), 2.0)
+        self.mu = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 1.0)
+        self.x = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 2.0)
         self.locations=[self.x, self.mu]
         self.all = self.locations+[self.sigma]
         self.DA = IMP.DerivativeAccumulator()
@@ -259,9 +259,9 @@ class TestGaussianRestraintSimple22(IMP.test.TestCase):
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
         self.m = IMP.Model()
-        self.sigma = Scale.setup_particle(IMP.Particle(self.m), 2.0)
+        self.sigma = Scale.setup_particle(IMP.kernel.Particle(self.m), 2.0)
         self.mu = 1.0
-        self.x = Nuisance.setup_particle(IMP.Particle(self.m), 2.0)
+        self.x = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 2.0)
         self.locations=[self.x, self.mu]
         self.all = self.locations+[self.sigma]
         self.DA = IMP.DerivativeAccumulator()
@@ -366,8 +366,8 @@ class TestGaussianRestraintSimple23(IMP.test.TestCase):
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
         self.m = IMP.Model()
-        self.sigma = Scale.setup_particle(IMP.Particle(self.m), 2.0)
-        self.mu = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
+        self.sigma = Scale.setup_particle(IMP.kernel.Particle(self.m), 2.0)
+        self.mu = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 1.0)
         self.x = 2.0
         self.locations=[self.x, self.mu]
         self.all = self.locations+[self.sigma]
@@ -473,7 +473,7 @@ class TestGaussianRestraintSimple11(IMP.test.TestCase):
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
         self.m = IMP.Model()
-        self.sigma = Scale.setup_particle(IMP.Particle(self.m), 2.0)
+        self.sigma = Scale.setup_particle(IMP.kernel.Particle(self.m), 2.0)
         self.mu = 1.0
         self.x = 2.0
         self.locations=[self.x, self.mu]
@@ -566,7 +566,7 @@ class TestGaussianRestraintSimple12(IMP.test.TestCase):
         IMP.base.set_log_level(0)
         self.m = IMP.Model()
         self.sigma = 2.0
-        self.mu = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
+        self.mu = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 1.0)
         self.x = 2.0
         self.locations=[self.x, self.mu]
         self.all = self.locations+[self.sigma]
@@ -658,7 +658,7 @@ class TestGaussianRestraintSimple13(IMP.test.TestCase):
         self.m = IMP.Model()
         self.sigma = 2.0
         self.mu = 1.0
-        self.x = Nuisance.setup_particle(IMP.Particle(self.m), 2.0)
+        self.x = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 2.0)
         self.locations=[self.x, self.mu]
         self.all = self.locations+[self.sigma]
         self.DA = IMP.DerivativeAccumulator()

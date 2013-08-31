@@ -61,13 +61,13 @@ class Tests(IMP.test.TestCase):
     """Tests for ClassnameContainer related objects"""
 
     def create_particle(self,m):
-        p= IMP.Particle(m)
+        p= IMP.kernel.Particle(m)
         p.add_attribute(IMP.FloatKey("thekey"), float(1))
         return p
 
     def create_particle_pair(self,m):
-        p0= IMP.Particle(m)
-        p1= IMP.Particle(m)
+        p0= IMP.kernel.Particle(m)
+        p1= IMP.kernel.Particle(m)
         d0= IMP.core.XYZ.setup_particle(p0)
         d1= IMP.core.XYZ.setup_particle(p1)
         d0.set_coordinates(IMP.algebra.Vector3D(0,0,1))

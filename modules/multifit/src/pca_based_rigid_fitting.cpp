@@ -25,13 +25,13 @@ em::FittingSolutions pca_based_rigid_fitting(
     Float threshold,
   FloatKey wei_key,
     algebra::PrincipalComponentAnalysis dens_pca_input) {
-  ParticlesTemp ps = rb_refiner->get_refined(rb);
+  kernel::ParticlesTemp ps = rb_refiner->get_refined(rb);
   return pca_based_rigid_fitting(ps,
                           em_map,threshold,wei_key,dens_pca_input);
 }
 
 em::FittingSolutions pca_based_rigid_fitting(
-  ParticlesTemp ps,
+  kernel::ParticlesTemp ps,
   em::DensityMap *em_map,Float threshold,
   FloatKey ,
   algebra::PrincipalComponentAnalysis dens_pca_input) {

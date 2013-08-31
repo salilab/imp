@@ -22,11 +22,11 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 /**
 */
 class IMPEXAMPLEEXPORT ExampleConstraint : public Constraint {
-  base::Pointer<Particle> p_;
+  base::Pointer<kernel::Particle> p_;
   IntKey k_;
 
  public:
-  ExampleConstraint(Particle *p);
+  ExampleConstraint(kernel::Particle *p);
 
   virtual void do_update_attributes() IMP_OVERRIDE;
   virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE;

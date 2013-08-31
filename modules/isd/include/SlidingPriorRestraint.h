@@ -23,12 +23,12 @@ IMPISD_BEGIN_NAMESPACE
  */
 class IMPISDEXPORT SlidingPriorRestraint : public ISDRestraint
 {
-  base::Pointer<Particle> p_;
+  base::Pointer<kernel::Particle> p_;
   double qmin_, qmax_, sq_;
 
 public:
   //! Create the restraint.
-  SlidingPriorRestraint(Particle *p, double qmin, double qmax, double sq);
+  SlidingPriorRestraint(kernel::Particle *p, double qmin, double qmax, double sq);
 
   /** This macro declares the basic needed methods: evaluate and show
    */

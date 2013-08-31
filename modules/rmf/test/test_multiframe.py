@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
         """Test multi frame files"""
         for suffix in RMF.suffixes:
             m= IMP.Model()
-            p =IMP.Particle(m)
+            p =IMP.kernel.Particle(m)
             h= IMP.atom.Hierarchy.setup_particle(p)
             d= IMP.core.XYZR.setup_particle(p)
             md= IMP.atom.Mass.setup_particle(p, 1)

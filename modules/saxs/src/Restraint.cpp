@@ -14,7 +14,7 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-Restraint::Restraint(const Particles& particles, const Profile* exp_profile,
+Restraint::Restraint(const kernel::Particles& particles, const Profile* exp_profile,
                      FormFactorType ff_type) :
     IMP::Restraint(IMP::internal::get_model(particles), "SAXS restraint"),
     ff_type_(ff_type) {
@@ -22,10 +22,10 @@ Restraint::Restraint(const Particles& particles, const Profile* exp_profile,
   profile_fitter_ = new ProfileFitter<ChiScore>(exp_profile);
   derivative_calculator_ = new DerivativeCalculator(exp_profile);
 
-  IMP::base::map<ParticleIndex, Particles> rigid_bodies;
+  IMP::base::map<kernel::ParticleIndex, kernel::Particles> rigid_bodies;
   for(unsigned int i=0; i< particles.size(); ++i) {
     if(core::RigidMember::get_is_setup(particles[i])) {
-      ParticleIndex pi =
+      kernel::ParticleIndex pi =
         core::RigidMember(particles[i]).get_rigid_body().get_particle_index();
       rigid_bodies[pi].push_back(particles[i]);
     } else {
@@ -36,7 +36,7 @@ Restraint::Restraint(const Particles& particles, const Profile* exp_profile,
   }
 
   rigid_bodies_profile_ = new Profile();
-  for(IMP::base::map<ParticleIndex, Particles>::iterator it =
+  for(IMP::base::map<kernel::ParticleIndex, kernel::Particles>::iterator it =
         rigid_bodies.begin(); it!= rigid_bodies.end(); it++) {
     rigid_bodies_.push_back(it->second);
     // compute non-changing profile

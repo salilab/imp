@@ -26,9 +26,9 @@ IMPISD_BEGIN_NAMESPACE
 // Bayesian parameters are: kda, Ida, R0, uncertainty,
 // and photobleaching survival rate
 FretRestraint::FretRestraint
-  (Particles pd, Particles pa,
-   Particle *kda, Particle *Ida, Particle *R0, Particle *sigma0,
-   Particle *Pbl, double fexp, double m_d, double m_a):
+  (kernel::Particles pd, kernel::Particles pa,
+   kernel::Particle *kda, kernel::Particle *Ida, kernel::Particle *R0, kernel::Particle *sigma0,
+   kernel::Particle *Pbl, double fexp, double m_d, double m_a):
    pd_(pd), pa_(pa), kda_(kda), Ida_(Ida),
    R0_(R0), sigma0_(sigma0), Pbl_(Pbl), fexp_(fexp),
    multi_d_(m_d), constr_type_(0) {
@@ -49,8 +49,8 @@ FretRestraint::FretRestraint
 // Bayesian parameters: kda, Ida, sumFi, uncertainty,
 // and photobleaching survival rate
 FretRestraint::FretRestraint
-  (Particle *kda, Particle *Ida, Particle *sumFi,
-   Particle *sigma0, Particle *Pbl, double fexp):
+  (kernel::Particle *kda, kernel::Particle *Ida, kernel::Particle *sumFi,
+   kernel::Particle *sigma0, kernel::Particle *Pbl, double fexp):
    kda_(kda), Ida_(Ida), sumFi_(sumFi), sigma0_(sigma0),
    Pbl_(Pbl), fexp_(fexp), constr_type_(1) {};
 
@@ -58,12 +58,12 @@ FretRestraint::FretRestraint
 // Bayesian parameters: kda, Ida, uncertainty,
 // and photobleaching survival rate
 FretRestraint::FretRestraint
-  (Particle *prd, algebra::Vector3D GMMterd,
+  (kernel::Particle *prd, algebra::Vector3D GMMterd,
    algebra::Vector3Ds GMMctrd, Floats GMMwd, Floats GMMsigd,
-   Particle *pra, algebra::Vector3D GMMtera,
+   kernel::Particle *pra, algebra::Vector3D GMMtera,
    algebra::Vector3Ds GMMctra, Floats GMMwa, Floats GMMsiga,
-   Particle *kda, Particle *Ida, Particle *sigma0,
-   Particle *Pbl, FretData *data, double fexp):
+   kernel::Particle *kda, kernel::Particle *Ida, kernel::Particle *sigma0,
+   kernel::Particle *Pbl, FretData *data, double fexp):
    prd_(prd), GMMterd_(GMMterd), GMMctrd_(GMMctrd),
    pra_(pra), GMMtera_(GMMtera), GMMctra_(GMMctra),
    kda_(kda), Ida_(Ida), sigma0_(sigma0), Pbl_(Pbl),
@@ -214,7 +214,7 @@ double FretRestraint::get_model_fretr_type_0() const
 }
 
 algebra::Vector3Ds FretRestraint::get_current_centers
-                      (Particle *p, const algebra::Vector3Ds& ctrs) const {
+                      (kernel::Particle *p, const algebra::Vector3Ds& ctrs) const {
 
  algebra::Vector3Ds new_ctrs;
  for(unsigned i=0; i<ctrs.size(); ++i){
@@ -224,7 +224,7 @@ algebra::Vector3Ds FretRestraint::get_current_centers
 }
 
 algebra::Vector3D FretRestraint::get_current_center
-                      (Particle *p, const algebra::Vector3D& ctr) const {
+                      (kernel::Particle *p, const algebra::Vector3D& ctr) const {
 
  algebra::ReferenceFrame3D rf=core::RigidBody(p).get_reference_frame();
  return rf.get_global_coordinates(ctr);
@@ -313,7 +313,7 @@ double FretRestraint::
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp  FretRestraint::do_get_inputs() const
 {
-  ParticlesTemp ret;
+  kernel::ParticlesTemp ret;
   ret.push_back(Ida_);
   ret.push_back(kda_);
   ret.push_back(sigma0_);

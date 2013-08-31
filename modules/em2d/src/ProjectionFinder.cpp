@@ -114,7 +114,7 @@ void ProjectionFinder::set_projections(const em2d::Images &projections) {
 }
 
 
-void ProjectionFinder::set_model_particles(const ParticlesTemp &ps) {
+void ProjectionFinder::set_model_particles(const kernel::ParticlesTemp &ps) {
   IMP_LOG_TERSE( "ProjectionFinder: Setting model particles" << std::endl);
 
   if(parameters_setup_==false) {

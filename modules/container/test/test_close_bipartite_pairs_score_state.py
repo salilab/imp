@@ -39,9 +39,9 @@ class Tests(IMP.test.TestCase):
             d.set_radius(random.uniform(0,2))
 
         if rb0:
-            IMP.core.RigidBody.setup_particle(IMP.Particle(m), ps0)
+            IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m), ps0)
         if rb1:
-            IMP.core.RigidBody.setup_particle(IMP.Particle(m), ps1)
+            IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m), ps1)
         # test rebuilding under move, set input and change radius
         pc0= IMP.container.ListSingletonContainer(ps0)
         pc1= IMP.container.ListSingletonContainer(ps1)

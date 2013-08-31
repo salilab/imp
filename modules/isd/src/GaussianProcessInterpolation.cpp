@@ -24,7 +24,7 @@ IMPISD_BEGIN_NAMESPACE
                                unsigned n_obs,
                                UnivariateFunction *mean_function,
                                BivariateFunction *covariance_function,
-                               Particle *sigma,
+                               kernel::Particle *sigma,
                                double sparse_cutoff) :
         Object("GaussianProcessInterpolation%1%"), x_(x), n_obs_(n_obs),
         mean_function_(mean_function),
@@ -793,13 +793,13 @@ MatrixXd GaussianProcessInterpolation::get_d2cov_dOm_dOm(Floats q,
 }
 */
 
-  ParticlesTemp GaussianProcessInterpolation::get_input_particles() const
+  kernel::ParticlesTemp GaussianProcessInterpolation::get_input_particles() const
 {
-    ParticlesTemp ret;
-    ParticlesTemp ret1 = mean_function_->get_input_particles();
+    kernel::ParticlesTemp ret;
+    kernel::ParticlesTemp ret1 = mean_function_->get_input_particles();
     ret.insert(ret.end(),ret1.begin(),ret1.end());
     ret.push_back(sigma_);
-    ParticlesTemp ret2 = covariance_function_->get_input_particles();
+    kernel::ParticlesTemp ret2 = covariance_function_->get_input_particles();
     ret.insert(ret.end(),ret2.begin(),ret2.end());
     return ret;
 }

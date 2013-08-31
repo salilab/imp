@@ -9,7 +9,7 @@
 #include <boost/format.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
-MoveStatisticsScoreState::MoveStatisticsScoreState(const ParticlesTemp &ps)
+MoveStatisticsScoreState::MoveStatisticsScoreState(const kernel::ParticlesTemp &ps)
     : ScoreState(ps[0]->get_model(), "MoveStatisticsScoreState%1%"),
       ps_(ps.begin(), ps.end()) {
   reset();

@@ -59,7 +59,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
                                unsigned n_obs,
                                UnivariateFunction *mean_function,
                                BivariateFunction *covariance_function,
-                               Particle *sigma,
+                               kernel::Particle *sigma,
                                double sparse_cutoff=1e-7);
 
   /** Get posterior mean and covariance functions, at the points requested
@@ -119,7 +119,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   FloatsList get_posterior_covariance_hessian(Floats x, bool) const;
 
   //needed for restraints using gpi
-  ParticlesTemp get_input_particles() const;
+  kernel::ParticlesTemp get_input_particles() const;
   ContainersTemp get_input_containers() const;
 
   // call these if you called update() on the mean or covariance function.
@@ -250,7 +250,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
     VectorXd OmiIm_; // Omi * (I - m)
     bool flag_m_, flag_m_gpir_, flag_Omi_, flag_OmiIm_, flag_W_,
          flag_Omega_, flag_Omega_gpir_, flag_ldlt_;
-    IMP::base::Pointer<IMP::Particle> sigma_;
+    IMP::base::Pointer<IMP::kernel::Particle> sigma_;
     double cutoff_;
     double sigma_val_; //to know if an update is needed
     Eigen::LDLT<MatrixXd, Eigen::Upper> ldlt_;

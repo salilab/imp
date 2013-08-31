@@ -24,7 +24,7 @@ IMPISD_BEGIN_NAMESPACE
  */
 class IMPISDEXPORT vonMisesKappaConjugateRestraint : public ISDRestraint
 {
-  base::Pointer<Particle> kappa_;
+  base::Pointer<kernel::Particle> kappa_;
   double old_kappaval;
   bool bessel_init_;
   double I0_,I1_;
@@ -32,7 +32,7 @@ class IMPISDEXPORT vonMisesKappaConjugateRestraint : public ISDRestraint
 
 public:
   //! Create the restraint.
-  vonMisesKappaConjugateRestraint(Particle *kappa, double c=10.0,
+  vonMisesKappaConjugateRestraint(kernel::Particle *kappa, double c=10.0,
                                   double R0=0.0);
 
   /** This macro declares the basic needed methods: evaluate and show

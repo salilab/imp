@@ -19,7 +19,7 @@ IMPATOM_BEGIN_INTERNAL_NAMESPACE
 typedef std::pair<Bonded, Bonded> EdgeDescriptor;
 
 struct MakeBonded {
-  typedef Particle *argument_type;
+  typedef kernel::Particle *argument_type;
   typedef Bonded result_type;
   result_type operator()(argument_type p) const { return result_type(p); }
 };
@@ -47,7 +47,7 @@ struct MakeInEdgeDescriptor {
 
 struct NestedTraits {
   typedef Bonded::BondIterator Inner;
-  typedef Particles::iterator Outer;
+  typedef kernel::Particles::iterator Outer;
   struct Get_inner {
     std::pair<Inner, Inner> operator()(Outer out) const {
       Bonded bd(*out);

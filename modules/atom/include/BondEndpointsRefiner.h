@@ -24,13 +24,13 @@ class IMPATOMEXPORT BondEndpointsRefiner : public Refiner {
   //! no arguments
   BondEndpointsRefiner();
 
-  virtual bool get_can_refine(Particle *) const IMP_OVERRIDE;
-  virtual const ParticlesTemp get_refined(Particle *) const IMP_OVERRIDE;
+  virtual bool get_can_refine(kernel::Particle *) const IMP_OVERRIDE;
+  virtual const kernel::ParticlesTemp get_refined(kernel::Particle *) const IMP_OVERRIDE;
 #ifndef SWIG
   using Refiner::get_refined;
 #endif
   virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                         const ParticleIndexes &pis) const
+                                         const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
   IMP_OBJECT_METHODS(BondEndpointsRefiner);
 };

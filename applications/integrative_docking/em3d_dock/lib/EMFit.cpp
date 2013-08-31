@@ -79,7 +79,7 @@ EMFit::EMFit(std::string pdb_file_name, std::string map_file_name,
   cc_score_ = new MapScorer(rec_particles_, *map_);
 }
 
-float EMFit::compute_volume(const IMP::Particles& particles) {
+float EMFit::compute_volume(const IMP::kernel::Particles& particles) {
   IMP::saxs::FormFactorTable* ft = IMP::saxs::default_form_factor_table();
   float volume = 0.0;
   float c = (4.0/3.0)*IMP::algebra::PI;
@@ -150,16 +150,16 @@ void EMFit::output(std::string out_file_name, std::string out_pdb_file_name) {
   out_file.close();
   if(fit_results_.size() == 1) { // output PDB
     IMP::algebra::Transformation3D tr = fit_results_[0].get_map_trans();
-    IMP::Particles ps = rec_particles_;
+    IMP::kernel::Particles ps = rec_particles_;
     ps.insert(ps.end(), lig_particles_.begin(), lig_particles_.end());
     // transform
-    for(IMP::Particles::iterator it = ps.begin(); it != ps.end(); it++) {
+    for(IMP::kernel::Particles::iterator it = ps.begin(); it != ps.end(); it++) {
       IMP::core::XYZ d(*it);
       d.set_coordinates(tr * d.get_coordinates());
     }
     // output
     std::ofstream out_file2(out_pdb_file_name.c_str());
-    IMP::ParticlesTemp pst = ps;
+    IMP::kernel::ParticlesTemp pst = ps;
     IMP::atom::write_pdb(pst, out_file2);
     out_file2.close();
   }
@@ -304,7 +304,7 @@ void EMFit::read_trans_file(const std::string file_name,
 
 void EMFit::read_pdb_atoms(IMP::Model *model,
                            const std::string file_name,
-                           IMP::Particles& particles) {
+                           IMP::kernel::Particles& particles) {
   IMP::atom::Hierarchy mhd =
     IMP::atom::read_pdb(file_name, model,
                         new IMP::atom::NonWaterNonHydrogenPDBSelector(),

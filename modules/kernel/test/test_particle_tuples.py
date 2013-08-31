@@ -7,8 +7,8 @@ class Tests(IMP.test.TestCase):
     def test_pairs(self):
         """Test ParticlePair objects"""
         m = IMP.Model("pairs")
-        p1 = IMP.Particle(m)
-        p2 = IMP.Particle(m)
+        p1 = IMP.kernel.Particle(m)
+        p2 = IMP.kernel.Particle(m)
         p = (p1, p2)
         #self.assertEqual(p.get_dimension(), 2)
         self.assertEqual(p[0], p1)
@@ -19,10 +19,10 @@ class Tests(IMP.test.TestCase):
     def test_triplets(self):
         """Test ParticleTriplet objects"""
         m = IMP.Model("triplets")
-        p1 = IMP.Particle(m)
-        p2 = IMP.Particle(m)
-        p3 = IMP.Particle(m)
-        p = IMP.ParticleTriplet(p1, p2, p3)
+        p1 = IMP.kernel.Particle(m)
+        p2 = IMP.kernel.Particle(m)
+        p3 = IMP.kernel.Particle(m)
+        p = IMP.kernel.ParticleTriplet(p1, p2, p3)
         #self.assertEqual(p.get_dimension(), 3)
         self.assertEqual(p[0], p1)
         self.assertEqual(p[1], p2)
@@ -33,11 +33,11 @@ class Tests(IMP.test.TestCase):
     def test_quads(self):
         """Test ParticleQuad objects"""
         m = IMP.Model("quads")
-        p1 = IMP.Particle(m)
-        p2 = IMP.Particle(m)
-        p3 = IMP.Particle(m)
-        p4 = IMP.Particle(m)
-        p = IMP.ParticleQuad(p1, p2, p3, p4)
+        p1 = IMP.kernel.Particle(m)
+        p2 = IMP.kernel.Particle(m)
+        p3 = IMP.kernel.Particle(m)
+        p4 = IMP.kernel.Particle(m)
+        p = IMP.kernel.ParticleQuad(p1, p2, p3, p4)
         #self.assertEqual(p.get_dimension(), 4)
         self.assertEqual(p[0], p1)
         self.assertEqual(p[1], p2)

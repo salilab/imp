@@ -121,7 +121,7 @@ class Tests(IMP.test.TestCase):
         mh = IMP.atom.read_pdb(self.open_input_file("1atiB01.pdb"),self.imp_model,sel)
         IMP.atom.add_radii(mh)
         rb=IMP.atom.setup_as_rigid_body(mh)
-        ps=IMP.Particles(IMP.core.get_leaves(IMP.atom.Hierarchy(mh)))
+        ps=IMP.kernel.Particles(IMP.core.get_leaves(IMP.atom.Hierarchy(mh)))
         score_before=IMP.em.compute_fitting_score(ps,d_map)
         rand_t = IMP.algebra.Transformation3D(
             IMP.algebra.get_random_rotation_3d(),

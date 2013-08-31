@@ -48,13 +48,13 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
      -> IncrementalScoringFunction::do_set_has_dependencies()
      -> map destructor -> boom
   */
-  struct ScoringFunctionsMap : public base::map<ParticleIndex, Data> {
+  struct ScoringFunctionsMap : public base::map<kernel::ParticleIndex, Data> {
     ~ScoringFunctionsMap();
   };
   ScoringFunctionsMap scoring_functions_;
-  ParticleIndexes all_;
-  ParticleIndexes last_move_;
-  ParticleIndexes dirty_;
+  kernel::ParticleIndexes all_;
+  kernel::ParticleIndexes last_move_;
+  kernel::ParticleIndexes dirty_;
   kernel::Restraints flattened_restraints_;
   Floats flattened_restraints_scores_;
   double weight_, max_;
@@ -67,8 +67,7 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
   void create_flattened_restraints(const kernel::RestraintsTemp &rs);
   void create_scoring_functions();
   void do_non_incremental_evaluate();
-  Data create_data(ParticleIndex pi,
-                   const base::map<kernel::Restraint *, int> &all,
+  Data create_data(kernel::ParticleIndex pi, const base::map<kernel::Restraint *, int> &all,
                    const kernel::Restraints &dummies) const;
 
  public:
@@ -83,9 +82,8 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
                  can be ignored for most purposes
       @param name The name template to use for the scoring function.
 */
-  IncrementalScoringFunction(const ParticlesTemp &to_move,
-                             const kernel::RestraintsTemp &rs,
-                             double weight = 1.0,
+  IncrementalScoringFunction(const kernel::ParticlesTemp &to_move,
+                             const kernel::RestraintsTemp &rs, double weight = 1.0,
                              double max = NO_MAX,
                              std::string name =
                                  "IncrementalScoringFunction%1%");
@@ -95,22 +93,22 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
   */
   void reset_moved_particles();
   /** Set which particles have moved since the last evaluate. */
-  void set_moved_particles(const ParticleIndexes &p);
+  void set_moved_particles(const kernel::ParticleIndexes &p);
   /** Close pairs scores can be handled separately for efficiency, to do that,
       add a pair score here to act on the list of particles.*/
   void add_close_pair_score(PairScore *ps, double distance,
-                            const ParticlesTemp &particles,
+                            const kernel::ParticlesTemp &particles,
                             const PairPredicates &filters);
   void add_close_pair_score(PairScore *ps, double distance,
-                            const ParticlesTemp &particles);
+                            const kernel::ParticlesTemp &particles);
   void clear_close_pair_scores();
   /** \deprecated_at{2.1} Use get_movable_indexes() instead. */
   IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
-    ParticleIndexes get_movable_particles() const {
+    kernel::ParticleIndexes get_movable_particles() const {
     IMPCORE_DEPRECATED_FUNCTION_DEF(2.1, "Use get_movable_indexes()");
     return get_movable_indexes();
   }
-  ParticleIndexes get_movable_indexes() const;
+  kernel::ParticleIndexes get_movable_indexes() const;
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
                                     const ScoreStatesTemp &ss) IMP_OVERRIDE;
   virtual kernel::Restraints create_restraints() const IMP_OVERRIDE;

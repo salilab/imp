@@ -25,18 +25,18 @@ IMPCORE_BEGIN_NAMESPACE
     \include XYZR_Decorator.py
  */
 class IMPCOREEXPORT XYZR : public XYZ {
-  static void do_setup_particle(Model *m, ParticleIndex pi,
+  static void do_setup_particle(Model *m, kernel::ParticleIndex pi,
                                 const algebra::Sphere3D s) {
     XYZ::setup_particle(m, pi, s.get_center());
     do_setup_particle(m, pi, s.get_radius());
   }
 
-  static void do_setup_particle(Model *m, ParticleIndex pi,
+  static void do_setup_particle(Model *m, kernel::ParticleIndex pi,
                                 double r) {
     m->add_attribute(get_radius_key(), pi, r, false);
   }
 
-  static void do_setup_particle(Model *m, ParticleIndex pi) {
+  static void do_setup_particle(Model *m, kernel::ParticleIndex pi) {
     if (!XYZ::get_is_setup(m, pi)) {
       XYZ::setup_particle(m, pi);
     }
@@ -55,7 +55,7 @@ class IMPCOREEXPORT XYZR : public XYZ {
    */
 
   //! Check if the particle has the required attributes
-  static bool get_is_setup(Model *m, ParticleIndex pi) {
+  static bool get_is_setup(Model *m, kernel::ParticleIndex pi) {
     return m->get_has_attribute(get_radius_key(), pi);
   }
 
@@ -186,17 +186,17 @@ IMPCORE_END_NAMESPACE
 // it will do the conversion implicitly anyway
 IMPKERNEL_BEGIN_NAMESPACE
 /** \genericgeometry */
-inline const algebra::Sphere3D get_sphere_d_geometry(Particle *p) {
+inline const algebra::Sphere3D get_sphere_d_geometry(kernel::Particle *p) {
   return core::XYZR(p).get_sphere();
 }
 
 /** \genericgeometry */
-inline void set_sphere_d_geometry(Particle *p, const algebra::Sphere3D &v) {
+inline void set_sphere_d_geometry(kernel::Particle *p, const algebra::Sphere3D &v) {
   core::XYZR(p).set_sphere(v);
 }
 
 /** \genericgeometry */
-inline const algebra::BoundingBoxD<3> get_bounding_box_d_geometry(Particle *p) {
+inline const algebra::BoundingBoxD<3> get_bounding_box_d_geometry(kernel::Particle *p) {
   return get_bounding_box(core::XYZR(p).get_sphere());
 }
 IMPKERNEL_END_NAMESPACE

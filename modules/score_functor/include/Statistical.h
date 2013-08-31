@@ -81,7 +81,7 @@ class Statistical : public Score {
   }
 
   // depend on get_is_trivially_zero
-  double get_score(Model *m, const base::Array<2, ParticleIndex> &pp,
+  double get_score(Model *m, const base::Array<2, kernel::ParticleIndex> &pp,
                    double distance) const {
     if (distance >= threshold_ || distance < 0.001) {
       return 0;
@@ -92,7 +92,7 @@ class Statistical : public Score {
     return table_.get_score(pt, lt, distance);
   }
   DerivativePair get_score_and_derivative(
-      Model *m, const base::Array<2, ParticleIndex> &pp,
+      Model *m, const base::Array<2, kernel::ParticleIndex> &pp,
       double distance) const {
     if (distance >= threshold_ || distance < 0.001) {
       return DerivativePair(0, 0);
@@ -103,10 +103,10 @@ class Statistical : public Score {
     return table_.get_score_with_derivative(pt, lt, distance);
   }
   double get_maximum_range(Model *,
-                           const base::Array<2, ParticleIndex> &) const {
+                           const base::Array<2, kernel::ParticleIndex> &) const {
     return std::min(threshold_, table_.get_max());
   }
-  bool get_is_trivially_zero(Model *m, const base::Array<2, ParticleIndex> &p,
+  bool get_is_trivially_zero(Model *m, const base::Array<2, kernel::ParticleIndex> &p,
                              double squared_distance) const {
     return squared_distance > algebra::get_squared(get_maximum_range(m, p));
   }

@@ -12,7 +12,7 @@ class Tests(IMP.test.TestCase):
         ### read in anchors data and set the secondary structure
         anchors_data=IMP.multifit.read_anchors_data(self.get_input_file_name("anchors.input"))
         anchors_data.setup_secondary_structure(m)
-        anchor_ssres_ps=[IMP.Particle(m),IMP.Particle(m)]
+        anchor_ssres_ps=[IMP.kernel.Particle(m),IMP.kernel.Particle(m)]
         IMP.atom.SecondaryStructureResidue.setup_particle(anchor_ssres_ps[0],1.0,0.0,0.0)
         IMP.atom.SecondaryStructureResidue.setup_particle(anchor_ssres_ps[1],0.0,1.0,0.0)
         anchors_data.set_secondary_structure_probabilities(anchor_ssres_ps,[0,2])
@@ -36,7 +36,7 @@ class Tests(IMP.test.TestCase):
         ### read in anchors data and set the secondary structure
         anchors_data=IMP.multifit.read_anchors_data(self.get_input_file_name("anchors.input"))
         anchors_data.setup_secondary_structure(m)
-        anchor_ssres_ps=[IMP.Particle(m),IMP.Particle(m)]
+        anchor_ssres_ps=[IMP.kernel.Particle(m),IMP.kernel.Particle(m)]
         IMP.atom.SecondaryStructureResidue.setup_particle(anchor_ssres_ps[0],1.0,0.0,0.0)
         IMP.atom.SecondaryStructureResidue.setup_particle(anchor_ssres_ps[1],0.0,1.0,0.0)
         anchors_data.set_secondary_structure_probabilities(anchor_ssres_ps,[0,2])
@@ -44,7 +44,7 @@ class Tests(IMP.test.TestCase):
                       anchors_data.get_secondary_structure_particles())
 
         ### make query ssres and check match
-        query_ps=[IMP.Particle(m),IMP.Particle(m)]
+        query_ps=[IMP.kernel.Particle(m),IMP.kernel.Particle(m)]
         IMP.atom.SecondaryStructureResidue.setup_particle(query_ps[0],1.0,0.0,0.0)
         IMP.atom.SecondaryStructureResidue.setup_particle(query_ps[1],0.0,1.0,0.0)
         matches=IMP.multifit.get_anchor_indices_matching_secondary_structure(

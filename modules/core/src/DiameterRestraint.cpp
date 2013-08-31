@@ -38,7 +38,7 @@ void DiameterRestraint::init() {
   Model *m = sc_->get_model();
 
   // make pairs from special generator
-  p_ = new Particle(m);
+  p_ = new kernel::Particle(m);
   XYZR d = XYZR::setup_particle(p_);
   p_->set_name("DiameterRestraint center");
   d.set_coordinates_are_optimized(false);
@@ -71,15 +71,15 @@ ModelObjectsTemp DiameterRestraint::do_get_inputs() const {
   return t;
 }
 
-Restraints DiameterRestraint::do_create_decomposition() const {
+kernel::Restraints DiameterRestraint::do_create_decomposition() const {
   kernel::Restraints ret;
-  ParticlesTemp ps = IMP::get_particles(get_model(), sc_->get_indexes());
+  kernel::ParticlesTemp ps = kernel::get_particles(get_model(), sc_->get_indexes());
   // since we are adding two deviations before squaring, make k=.25
   IMP_NEW(HarmonicUpperBoundSphereDiameterPairScore, sps, (diameter_, .25));
   for (unsigned int i = 0; i < ps.size(); ++i) {
     for (unsigned int j = 0; j < i; ++j) {
       ret.push_back(
-          IMP::create_restraint(sps.get(), ParticlePair(ps[i], ps[j])));
+          IMP::create_restraint(sps.get(), kernel::ParticlePair(ps[i], ps[j])));
       ret.back()->set_maximum_score(get_maximum_score());
       std::ostringstream oss;
       oss << get_name() << " " << i << " " << j;
@@ -90,15 +90,15 @@ Restraints DiameterRestraint::do_create_decomposition() const {
   return ret;
 }
 
-Restraints DiameterRestraint::do_create_current_decomposition() const {
+kernel::Restraints DiameterRestraint::do_create_current_decomposition() const {
   kernel::Restraints ret;
-  ParticlesTemp ps = IMP::get_particles(get_model(), sc_->get_indexes());
+  kernel::ParticlesTemp ps = kernel::get_particles(get_model(), sc_->get_indexes());
   IMP_NEW(HarmonicUpperBoundSphereDiameterPairScore, sps, (diameter_, 1));
   for (unsigned int i = 0; i < ps.size(); ++i) {
     for (unsigned int j = 0; j < i; ++j) {
-      if (sps->evaluate(ParticlePair(ps[i], ps[j]), nullptr) > 0) {
+      if (sps->evaluate(kernel::ParticlePair(ps[i], ps[j]), nullptr) > 0) {
         ret.push_back(
-            IMP::create_restraint(sps.get(), ParticlePair(ps[i], ps[j])));
+            IMP::create_restraint(sps.get(), kernel::ParticlePair(ps[i], ps[j])));
         ret.back()->set_maximum_score(get_maximum_score());
         std::ostringstream oss;
         oss << get_name() << " " << i << " " << j;

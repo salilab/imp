@@ -154,7 +154,7 @@ void write_cmm(const std::string &cmm_filename,
 
 void AnchorsData::setup_secondary_structure(Model *mdl){
   for (int anum=0;anum<(int)points_.size();anum++){
-    IMP_NEW(Particle,ssr_p,(mdl));
+    IMP_NEW(kernel::Particle,ssr_p,(mdl));
     atom::SecondaryStructureResidue default_ssr=
       atom::SecondaryStructureResidue::setup_particle(ssr_p);
     secondary_structure_ps_.push_back(ssr_p);
@@ -162,7 +162,7 @@ void AnchorsData::setup_secondary_structure(Model *mdl){
 }
 
 void AnchorsData::set_secondary_structure_probabilities(
-                                                 const Particles &ssres_ps,
+                                                 const kernel::Particles &ssres_ps,
                                                  const Ints &indices){
 
   IMP_USAGE_CHECK(secondary_structure_ps_.size()==points_.size(),
@@ -172,7 +172,7 @@ void AnchorsData::set_secondary_structure_probabilities(
   for (int ssnum=0;ssnum<(int)ssres_ps.size();ssnum++){
     IMP_USAGE_CHECK(atom::SecondaryStructureResidue::
                     get_is_setup(ssres_ps[ssnum]),
-                    "SSE Particles must be decorated as"
+                    "SSE kernel::Particles must be decorated as"
                     "SecondaryStructureResidues");
     if (indices.size()==0) anum=ssnum;
     else anum=indices[ssnum];

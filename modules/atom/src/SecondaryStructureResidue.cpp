@@ -30,13 +30,13 @@ void SecondaryStructureResidue::show(std::ostream &out) const {
 }
 
 SecondaryStructureResidue setup_coarse_secondary_structure_residue(
-    const Particles &ssr_ps, Model *mdl, bool winner_takes_all_per_res) {
+    const kernel::Particles &ssr_ps, Model *mdl, bool winner_takes_all_per_res) {
   Floats scores;
   scores.push_back(0.0);
   scores.push_back(0.0);
   scores.push_back(0.0);
   int count = 0;
-  for (Particles::const_iterator p = ssr_ps.begin(); p != ssr_ps.end(); ++p) {
+  for (kernel::Particles::const_iterator p = ssr_ps.begin(); p != ssr_ps.end(); ++p) {
     IMP_USAGE_CHECK(SecondaryStructureResidue::get_is_setup(*p),
                     "all particles must be SecondaryStructureResidues");
     SecondaryStructureResidue ssr(*p);
@@ -56,14 +56,14 @@ SecondaryStructureResidue setup_coarse_secondary_structure_residue(
     if (winner_takes_all_per_res) scores[max_i] += 1.0;
     count++;
   }
-  IMP_NEW(Particle, coarse_p, (mdl));
+  IMP_NEW(kernel::Particle, coarse_p, (mdl));
   SecondaryStructureResidue ssres = SecondaryStructureResidue::setup_particle(
       coarse_p, scores[0] / count, scores[1] / count, scores[2] / count);
   return ssres;
 }
 
 SecondaryStructureResidues setup_coarse_secondary_structure_residues(
-    const Particles &ssr_ps, Model *mdl, int coarse_factor, int start_res_num,
+    const kernel::Particles &ssr_ps, Model *mdl, int coarse_factor, int start_res_num,
     bool winner_takes_all_per_res) {
   /* We're presuming that the coarsening starts from 0.
       So if start_res_num%coarse_factor<coarse_factor/2, this
@@ -84,7 +84,7 @@ SecondaryStructureResidues setup_coarse_secondary_structure_residues(
 
   // now start grouping
   int prev_coarse = (start_idx + start_res_num) / coarse_factor;
-  Particles tmp_ps;
+  kernel::Particles tmp_ps;
   for (int nr = start_idx; nr < stop_idx; nr++) {
     int this_coarse = (nr + start_res_num) / coarse_factor;
     if (this_coarse != prev_coarse) {

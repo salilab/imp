@@ -32,7 +32,7 @@ def recursive_approximation(res):
             +recursive_approximation(res[3*lr/4: lr])
     else:
         me= res
-    p= IMP.Particle(m)
+    p= IMP.kernel.Particle(m)
     hc=IMP.atom.Hierarchy.setup_particle(p)
     IMP.atom.setup_as_approximation(p, res)
     nm= str(IMP.atom.Residue(res[0]).get_index())+"-"\

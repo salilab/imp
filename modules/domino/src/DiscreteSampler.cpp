@@ -75,7 +75,7 @@ ConfigurationSet *DiscreteSampler::do_sample() const {
             << final_solutions[i].size() << " != " << known_particles.size());
     ret->load_configuration(-1);
     for (unsigned int j = 0; j < known_particles.size(); ++j) {
-      Particle *p = known_particles[j];
+      kernel::Particle *p = known_particles[j];
       base::Pointer<ParticleStates> ps =
           get_particle_states_table()->get_particle_states(p);
       ps->load_particle_state(final_solutions[i][j], p);

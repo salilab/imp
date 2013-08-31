@@ -6,7 +6,7 @@
  */
 
 #include <IMP/domino/DependencyScoreState.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 IMPDOMINO_BEGIN_NAMESPACE
 DependencyScoreState::DependencyScoreState() {}
 

@@ -21,11 +21,11 @@ class TestNOERestraintSimple(IMP.test.TestCase):
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
         self.m = IMP.Model()
-        self.sigma = Scale.setup_particle(IMP.Particle(self.m), 2.0)
-        self.gamma = Scale.setup_particle(IMP.Particle(self.m), 1.0)
-        self.p0=IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
+        self.sigma = Scale.setup_particle(IMP.kernel.Particle(self.m), 2.0)
+        self.gamma = Scale.setup_particle(IMP.kernel.Particle(self.m), 1.0)
+        self.p0=IMP.core.XYZ.setup_particle(IMP.kernel.Particle(self.m),
             IMP.algebra.Vector3D(0,0,0))
-        self.p1=IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
+        self.p1=IMP.core.XYZ.setup_particle(IMP.kernel.Particle(self.m),
             IMP.algebra.Vector3D(1,1,1))
         self.DA = IMP.DerivativeAccumulator()
         self.Jsi = IMP.isd.JeffreysRestraint(self.sigma)
@@ -241,11 +241,11 @@ class TestNOERestraintApplied(IMP.test.TestCase):
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
         self.m = IMP.Model()
-        self.sigma = Scale.setup_particle(IMP.Particle(self.m), 2.0)
-        self.gamma = Scale.setup_particle(IMP.Particle(self.m), 1.0)
-        self.p0=IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
+        self.sigma = Scale.setup_particle(IMP.kernel.Particle(self.m), 2.0)
+        self.gamma = Scale.setup_particle(IMP.kernel.Particle(self.m), 1.0)
+        self.p0=IMP.core.XYZ.setup_particle(IMP.kernel.Particle(self.m),
             IMP.algebra.Vector3D(0,0,0))
-        self.p1=IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
+        self.p1=IMP.core.XYZ.setup_particle(IMP.kernel.Particle(self.m),
             IMP.algebra.Vector3D(1,1,1))
         self.DA = IMP.DerivativeAccumulator()
         self.Jsi = IMP.isd.JeffreysRestraint(self.sigma)

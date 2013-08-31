@@ -28,7 +28,7 @@ IMPMISC_BEGIN_NAMESPACE
     distance between two balls is the center distance minus the radii,
     and the upperbound distance is the center distance plus the
     radii. They signature should be `double operator()(Model *m, const
-    ParticleIndexPair &pip) const`
+    kernel::ParticleIndexPair &pip) const`
 
     The algorithm works by building an index used `sqrt(n)` of the `n` input
     particles, assigning each particle to a bucked based on the closest index
@@ -47,7 +47,7 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
                     double, width, );
 
   typedef base::map<kernel::ParticleIndex, Data> Index;
-  Index get_index(Model *m, ParticleIndexes inputs) const {
+  Index get_index(Model *m, kernel::ParticleIndexes inputs) const {
     unsigned int index_size = std::min<unsigned int>(1U,
                                 std::sqrt(static_cast<double>(inputs.size())));
     std::random_shuffle(inputs.begin(), inputs.end());
@@ -83,42 +83,42 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
     }
     return ret;
   }
-  ParticleIndexPairs get_close_pairs_internal(Model *m,
-                                              const ParticleIndexes &p) const {
-    ParticleIndexPairs ret;
+  kernel::ParticleIndexPairs get_close_pairs_internal(Model *m,
+                                              const kernel::ParticleIndexes &p) const {
+    kernel::ParticleIndexPairs ret;
     for (unsigned int i = 0; i< p.size(); ++i) {
       for (unsigned int j = 0; j < i; ++j) {
         IMP_USAGE_CHECK(lb_(m, kernel::ParticleIndexPair(p[i], p[j]))
                         <= ub_(m, kernel::ParticleIndexPair(p[i], p[j])),
                         "The bounds are not ordered.");
         if (lb_(m, kernel::ParticleIndexPair(p[i], p[j])) < get_distance()) {
-          ret.push_back(ParticleIndexPair(p[i], p[j]));
+          ret.push_back(kernel::ParticleIndexPair(p[i], p[j]));
         }
       }
     }
     return ret;
   }
-  ParticleIndexPairs get_close_pairs_internal(Model *m,
-                                              const ParticleIndexes &pa,
-                                              const ParticleIndexes &pb) const {
-    ParticleIndexPairs ret;
+  kernel::ParticleIndexPairs get_close_pairs_internal(Model *m,
+                                              const kernel::ParticleIndexes &pa,
+                                              const kernel::ParticleIndexes &pb) const {
+    kernel::ParticleIndexPairs ret;
     for (unsigned int i = 0; i< pa.size(); ++i) {
       for (unsigned int j = 0; j < pb.size(); ++j) {
         IMP_USAGE_CHECK(lb_(m, kernel::ParticleIndexPair(pa[i], pb[j]))
                         <= ub_(m, kernel::ParticleIndexPair(pa[i], pb[j])),
                         "The bounds are not ordered.");
         if (lb_(m, kernel::ParticleIndexPair(pa[i], pb[j])) < get_distance()) {
-          ret.push_back(ParticleIndexPair(pa[i], pb[j]));
+          ret.push_back(kernel::ParticleIndexPair(pa[i], pb[j]));
         }
       }
     }
     return ret;
   }
-  ParticleIndexPairs get_close_pairs_internal(Model *m,
+  kernel::ParticleIndexPairs get_close_pairs_internal(Model *m,
                                               const Index &ia,
                                               const Index &ib,
                                               bool is_same) const {
-    ParticleIndexPairs ret;
+    kernel::ParticleIndexPairs ret;
     for (typename Index::const_iterator ita = ia.begin();
          ita != ia.end(); ++ita) {
       for (typename Index::const_iterator itb = ib.begin();
@@ -154,9 +154,9 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
 #ifndef SWIG
   using ClosePairsFinder::get_close_pairs;
 #else
-  ParticlePairsTemp get_close_pairs(const ParticlesTemp &pc) const;
-  ParticlePairsTemp get_close_pairs(const ParticlesTemp &pca,
-                                    const ParticlesTemp &pcb) const;
+  kernel::ParticlePairsTemp get_close_pairs(const kernel::ParticlesTemp &pc) const;
+  kernel::ParticlePairsTemp get_close_pairs(const kernel::ParticlesTemp &pca,
+                                    const kernel::ParticlesTemp &pcb) const;
 #endif
   /** Not supported.*/
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &) const
@@ -170,27 +170,27 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
     IMP_FAILURE("Bounding boxes are not supported.");
   }
 
-  virtual ParticleIndexPairs get_close_pairs(Model *m,
-                                             const ParticleIndexes &pc) const
+  virtual kernel::ParticleIndexPairs get_close_pairs(Model *m,
+                                             const kernel::ParticleIndexes &pc) const
     IMP_OVERRIDE {
     IMP_OBJECT_LOG;
-    if (pc.empty()) return ParticleIndexPairs();
+    if (pc.empty()) return kernel::ParticleIndexPairs();
     Index index = get_index(m, pc);
     return get_close_pairs_internal(m, index, index, true);
   }
-  virtual ParticleIndexPairs get_close_pairs(Model *m,
-                                             const ParticleIndexes &pca,
-                                             const ParticleIndexes &pcb) const
+  virtual kernel::ParticleIndexPairs get_close_pairs(Model *m,
+                                             const kernel::ParticleIndexes &pca,
+                                             const kernel::ParticleIndexes &pcb) const
     IMP_OVERRIDE {
     IMP_OBJECT_LOG;
-    if (pca.empty() || pcb.empty()) return ParticleIndexPairs();
+    if (pca.empty() || pcb.empty()) return kernel::ParticleIndexPairs();
     Index indexa = get_index(m, pca);
     Index indexb = get_index(m, pcb);
     return get_close_pairs_internal(m, indexa, indexb, false);
 
   }
   virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                         const ParticleIndexes &pis) const
+                                         const kernel::ParticleIndexes &pis) const
     IMP_OVERRIDE {
     // for now assume we just read the particles
     return IMP::kernel::get_particles(m, pis);

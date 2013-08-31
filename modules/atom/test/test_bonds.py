@@ -7,8 +7,8 @@ class Tests(IMP.test.TestCase):
     def test_bonded(self):
         """Check bonds """
         m = IMP.Model()
-        pa=IMP.Particle(m)
-        pb=IMP.Particle(m)
+        pa=IMP.kernel.Particle(m)
+        pb=IMP.kernel.Particle(m)
         da= IMP.atom.Bonded.setup_particle(pa)
         db= IMP.atom.Bonded.setup_particle(pb)
         self.assertEqual(da.get_number_of_bonds(), 0,

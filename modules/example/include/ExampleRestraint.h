@@ -27,7 +27,7 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     \include ExampleRestraint.cpp
 */
 class IMPEXAMPLEEXPORT ExampleRestraint : public kernel::Restraint {
-  base::Pointer<Particle> p_;
+  base::Pointer<kernel::Particle> p_;
   double k_;
 
  public:
@@ -35,7 +35,7 @@ class IMPEXAMPLEEXPORT ExampleRestraint : public kernel::Restraint {
   /** kernel::Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
    */
-  ExampleRestraint(Particle *p, double k);
+  ExampleRestraint(kernel::Particle *p, double k);
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa) const
       IMP_OVERRIDE;
   IMP::ModelObjectsTemp do_get_inputs() const;

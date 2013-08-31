@@ -7,7 +7,7 @@
 
 #include <IMP.h>
 #include <IMP/Model.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/base.h>
 #include <IMP/core.h>
 #include <IMP/macros.h>
@@ -46,21 +46,21 @@ FloatsList read_profile(std::string name, unsigned subs, unsigned cut)
 
 Scales setup_particles(IMP::Model *m)
 {
-    IMP_NEW(Particle, pG, (m));
+    IMP_NEW(kernel::Particle, pG, (m));
     Scale G = Scale(Scale::setup_particle(pG, 300.));
-    IMP_NEW(Particle, pRg, (m));
+    IMP_NEW(kernel::Particle, pRg, (m));
     Scale Rg = Scale(Scale::setup_particle(pRg, 30.));
-    IMP_NEW(Particle, pd, (m));
+    IMP_NEW(kernel::Particle, pd, (m));
     Scale d = Scale(Scale::setup_particle(pd, 4.));
-    IMP_NEW(Particle, ps, (m));
+    IMP_NEW(kernel::Particle, ps, (m));
     Scale s = Scale(Scale::setup_particle(ps, 0.));
-    IMP_NEW(Particle, pA, (m));
+    IMP_NEW(kernel::Particle, pA, (m));
     Scale A = Scale(Scale::setup_particle(pA, 0.));
-    IMP_NEW(Particle, ptau, (m));
+    IMP_NEW(kernel::Particle, ptau, (m));
     Scale tau = Scale(Scale::setup_particle(ptau, 10.));
-    IMP_NEW(Particle, plambda, (m));
+    IMP_NEW(kernel::Particle, plambda, (m));
     Scale lambda = Scale(Scale::setup_particle(plambda, 0.08));
-    IMP_NEW(Particle, psigma, (m));
+    IMP_NEW(kernel::Particle, psigma, (m));
     Scale sigma = Scale(Scale::setup_particle(psigma, 10.));
     s.set_upper(3.);
     s.set_upper(d);

@@ -1,5 +1,5 @@
 /**
- *  \file AllPairContainer.cpp   \brief A list of ParticlePairs.
+ *  \file AllPairContainer.cpp   \brief A list of kernel::ParticlePairs.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -7,7 +7,7 @@
 
 #include "IMP/container/ConsecutivePairContainer.h"
 #include <IMP/PairModifier.h>
-#include <IMP/internal/container_helpers.h>
+#include <IMP/kernel/internal/container_helpers.h>
 #include <algorithm>
 
 IMPCONTAINER_BEGIN_NAMESPACE
@@ -16,7 +16,7 @@ namespace {
 // TODO: why not a static class variable?
 unsigned int key_count = 0;
 }
-ConsecutivePairContainer::ConsecutivePairContainer(const ParticlesTemp &ps,
+ConsecutivePairContainer::ConsecutivePairContainer(const kernel::ParticlesTemp &ps,
                                                    std::string name)
     : PairContainer(ps[0]->get_model(), name),
       ps_(IMP::internal::get_index(ps)) {
@@ -42,13 +42,13 @@ void ConsecutivePairContainer::init() {
 void ConsecutivePairContainer::do_before_evaluate() { set_is_changed(false); }
 
 ModelObjectsTemp ConsecutivePairContainer::do_get_inputs() const {
-  return ParticlesTemp();
+  return kernel::ParticlesTemp();
 }
 
 ParticleIndexPairs ConsecutivePairContainer::get_indexes() const {
-  ParticleIndexPairs ret(ps_.size() - 1);
+  kernel::ParticleIndexPairs ret(ps_.size() - 1);
   for (unsigned int i = 1; i < ps_.size(); ++i) {
-    ret[i - 1] = ParticleIndexPair(ps_[i - 1], ps_[i]);
+    ret[i - 1] = kernel::ParticleIndexPair(ps_[i - 1], ps_[i]);
   }
   return ret;
 }
@@ -65,7 +65,7 @@ ConsecutivePairFilter::ConsecutivePairFilter(ConsecutivePairContainer *cpc)
     : PairPredicate("ConsecutivePairFilter %1%"), cpc_(cpc) {}
 
 ExclusiveConsecutivePairContainer::ExclusiveConsecutivePairContainer(
-    const ParticlesTemp &ps, std::string name)
+    const kernel::ParticlesTemp &ps, std::string name)
     : PairContainer(ps[0]->get_model(), name),
       ps_(IMP::internal::get_index(ps)) {
   init();
@@ -90,13 +90,13 @@ void ExclusiveConsecutivePairContainer::do_before_evaluate() {
 }
 
 ModelObjectsTemp ExclusiveConsecutivePairContainer::do_get_inputs() const {
-  return ParticlesTemp();
+  return kernel::ParticlesTemp();
 }
 
 ParticleIndexPairs ExclusiveConsecutivePairContainer::get_indexes() const {
-  ParticleIndexPairs ret(ps_.size() - 1);
+  kernel::ParticleIndexPairs ret(ps_.size() - 1);
   for (unsigned int i = 1; i < ps_.size(); ++i) {
-    ret[i - 1] = ParticleIndexPair(ps_[i - 1], ps_[i]);
+    ret[i - 1] = kernel::ParticleIndexPair(ps_[i - 1], ps_[i]);
   }
   return ret;
 }

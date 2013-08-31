@@ -23,7 +23,7 @@ class Tests(IMP.test.TestCase):
         m= IMP.Model()
         ps=[]
         for i in range(0,10):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             ps.append(p)
             p.add_attribute(ik, i)
         lp= IMP.container.ListSingletonContainer(ps)

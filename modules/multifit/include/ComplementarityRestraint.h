@@ -40,7 +40,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 class IMPMULTIFITEXPORT ComplementarityRestraint : public kernel::Restraint
 {
 public:
-  ComplementarityRestraint(const ParticlesTemp &a, const ParticlesTemp &b,
+  ComplementarityRestraint(const kernel::ParticlesTemp &a, const kernel::ParticlesTemp &b,
                            std::string name="ComplementarityRestraint %1%");
   /** If the two molecules have a penetration score of more than this,
       infinity is returned as the score. This score is roughly the number of
@@ -105,20 +105,20 @@ public:
                     algebra::DenseGrid3D<float> > GridPair;
   typedef core::DataObject<GridPair> GridObject;
   GridObject *get_grid_object(core::RigidBody rb,
-                              const ParticlesTemp &a,
+                              const kernel::ParticlesTemp &a,
                               ObjectKey ok,
                               double thickness,
                               double value,
                               double interior_thickness,
                               double voxel) const;
   IMP::algebra::DenseGrid3D<float>
-    get_grid(const ParticlesTemp &a,
+    get_grid(const kernel::ParticlesTemp &a,
              double thickness,
              double value,
              double interior_thickness,
              double voxel) const;
   void update_voxel();
-  ParticlesTemp a_, b_;
+  kernel::ParticlesTemp a_, b_;
   core::RigidBody rba_, rbb_;
   ObjectKey ok_;
   // parameters

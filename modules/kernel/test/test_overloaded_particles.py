@@ -8,7 +8,7 @@ class Tests(IMP.test.TestCase):
     def test_simple(self):
         """Check overloading of particle methods works"""
         m= IMP.Model()
-        p= IMP.Particle(m)
+        p= IMP.kernel.Particle(m)
         IMP.kernel._overloaded_particles(m, [p.get_index()])
         IMP.kernel._overloaded_particles(p)
         IMP.kernel._overloaded_particles([p])

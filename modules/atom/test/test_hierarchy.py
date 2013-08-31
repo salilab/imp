@@ -5,7 +5,7 @@ import IMP.atom
 def _make_hierarchy_decorators(m, *types):
     decorators = []
     for t in types:
-        p = IMP.Particle(m)
+        p = IMP.kernel.Particle(m)
         d = t[0].setup_particle(p, t[1])
         decorators.append(d)
     return decorators

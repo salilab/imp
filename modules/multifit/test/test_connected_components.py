@@ -30,7 +30,7 @@ class Tests(IMP.test.TestCase):
                     IMP.algebra.Vector3D(-1*(j+1),-1*(j+1),-1*(j+1)),
                     IMP.algebra.Vector3D(1*(j+1),1*(j+1),1*(j+1)))
                 for k in range(10):
-                    p=IMP.Particle(mdl)
+                    p=IMP.kernel.Particle(mdl)
                     IMP.core.XYZR.setup_particle(p,
                                    IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb)+IMP.algebra.Vector3D(j*20,j*20,j*20),2))
                     IMP.atom.Mass.setup_particle(p,1)

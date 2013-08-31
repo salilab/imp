@@ -23,7 +23,7 @@ def create_scoring(m, ps):
 def create_representation(m):
     ps=[]
     for i in range(0,6):
-        p=IMP.Particle(m)
+        p=IMP.kernel.Particle(m)
         IMP.core.XYZ.setup_particle(p,IMP.algebra.Vector3D(i,0.,0.))
         ps.append(p)
     return ps

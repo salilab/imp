@@ -19,7 +19,7 @@
 IMPISD_BEGIN_NAMESPACE
 
 AmbiguousNOERestraint::AmbiguousNOERestraint(PairContainer *pc,
-                           Particle *sigma, Particle *gamma,
+                           kernel::Particle *sigma, kernel::Particle *gamma,
                            double Vexp) : pc_(pc), sigma_(sigma),
                                           gamma_(gamma), Vexp_(Vexp) {}
 

@@ -25,7 +25,7 @@ class EasyCubeFunc(IMP.kernel.Restraint):
             e =e+dist2
         return e
     def do_get_inputs(self):
-        return IMP.ParticlesTemp(self.particles)
+        return IMP.kernel.ParticlesTemp(self.particles)
 
 
 
@@ -35,7 +35,7 @@ class Tests(IMP.test.TestCase):
         particles = []
 
         for i in range(0,2):
-            p = IMP.Particle(model)
+            p = IMP.kernel.Particle(model)
             particles.append(p)
             IMP.core.XYZ.setup_particle(p, IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())).set_coordinates_are_optimized(True)
         rsr = EasyCubeFunc(model, particles)

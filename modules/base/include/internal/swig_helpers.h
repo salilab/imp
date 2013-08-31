@@ -260,7 +260,7 @@ struct ConvertRAII : public ConvertAllBase<T> {
     - create_python_object takes the C++ object and creates a python object
 
     Decorators are a special case in order to provide the implicit conversion
-    from Decorator to Particle* (so their swig type info is passed around
+    from Decorator to kernel::Particle* (so their swig type info is passed around
     even when it is not needed).
   */
 template <class T, class Enabled = void>

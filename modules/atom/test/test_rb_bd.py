@@ -7,15 +7,15 @@ import RMF
 
 class Tests(IMP.test.TestCase):
     def _create_rb(self, m):
-        prb= IMP.Particle(m, "body")
+        prb= IMP.kernel.Particle(m, "body")
         h0= IMP.atom.Hierarchy.setup_particle(prb)
-        core= IMP.Particle(m, "core")
+        core= IMP.kernel.Particle(m, "core")
         IMP.core.XYZR.setup_particle(core).set_radius(1)
         h0.add_child(IMP.atom.Hierarchy.setup_particle(core))
         ps=[core]
         IMP.atom.Mass.setup_particle(core, 1)
         for i in range(0,3):
-            ep= IMP.Particle(m, "ep"+str(i))
+            ep= IMP.kernel.Particle(m, "ep"+str(i))
             d=IMP.core.XYZR.setup_particle(ep)
             d.set_coordinate(i, 1)
             d.set_radius(.1)

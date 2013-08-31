@@ -34,7 +34,7 @@ k= IMP.FloatKey("a key")
 m= IMP.Model()
 ps=[]
 for i in range(0,10):
-    p = IMP.Particle(m)
+    p = IMP.kernel.Particle(m)
     p.add_attribute(k, i)
     ps.append(p)
 r= MyRestraint(m, ps, k)

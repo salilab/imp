@@ -263,7 +263,7 @@ IMPATOMEXPORT double get_pairwise_rmsd_score(const core::XYZs& ref1,
     radii and mass and (non-optional) coordinates. Either all particles
     must have mass or none of them.
 */
-IMPATOMEXPORT double get_radius_of_gyration(const ParticlesTemp& ps);
+IMPATOMEXPORT double get_radius_of_gyration(const kernel::ParticlesTemp& ps);
 
 IMPATOM_END_NAMESPACE
 

@@ -28,13 +28,13 @@ IMPISD_BEGIN_NAMESPACE
 
 class IMPISDEXPORT vonMisesKappaJeffreysRestraint : public ISDRestraint
 {
-  base::Pointer<Particle> kappa_;
+  base::Pointer<kernel::Particle> kappa_;
   double old_kappaval;
   double I0_,I1_;
 
 public:
   //! Create the restraint.
-  vonMisesKappaJeffreysRestraint(Particle *kappa);
+  vonMisesKappaJeffreysRestraint(kernel::Particle *kappa);
 
   /** This macro declares the basic needed methods: evaluate and show
    */

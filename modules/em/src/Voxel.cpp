@@ -12,7 +12,7 @@ IMPEM_BEGIN_NAMESPACE
 void Voxel::show(std::ostream &out) const
 {
   algebra::VectorD<5> v;
-  Particle *p=get_particle();
+  kernel::Particle *p=get_particle();
   core::XYZR xyzr(p);
   v[0]=xyzr.get_x();
   v[1]=xyzr.get_y();

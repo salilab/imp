@@ -7,7 +7,7 @@
  *
  */
 
-#include <IMP/internal/container_helpers.h>
+#include <IMP/kernel/internal/container_helpers.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/multifit/RadiusOfGyrationRestraint.h>
 
@@ -44,7 +44,7 @@ float get_approximated_radius(int len) {
   float rad=3.478*pow(len,1./3.);
   return rad;
 }
-float get_actual_radius_of_gyration(ParticlesTemp ps) {
+float get_actual_radius_of_gyration(kernel::ParticlesTemp ps) {
   algebra::Vector3D cm(0,0,0);
   for (unsigned int i=0; i< ps.size(); ++i) {
     cm+= core::XYZ(ps[i]).get_coordinates();
@@ -59,7 +59,7 @@ float get_actual_radius_of_gyration(ParticlesTemp ps) {
 }
 
 
-RadiusOfGyrationRestraint::RadiusOfGyrationRestraint(Particles ps,
+RadiusOfGyrationRestraint::RadiusOfGyrationRestraint(kernel::Particles ps,
                                                      int num_residues,
                                                      Float scale):
     kernel::Restraint(IMP::internal::get_model(ps),
@@ -91,13 +91,13 @@ const {
 
 
 IMP_LIST_IMPL(RadiusOfGyrationRestraint,
-              Particle, particle,Particle*, Particles);
+              Particle, particle,Particle*, kernel::Particles);
 
 
 
 ModelObjectsTemp RadiusOfGyrationRestraint::do_get_inputs() const
 {
-  ParticlesTemp pt;
+  kernel::ParticlesTemp pt;
   for (ParticleConstIterator it= particles_begin();
        it != particles_end(); ++it) {
       pt.push_back(*it);

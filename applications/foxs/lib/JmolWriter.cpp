@@ -26,7 +26,7 @@ unsigned int JmolWriter::MAX_DISPLAY_NUM_ = 30;
 
 void JmolWriter::prepare_jmol_script(
                               const std::vector<IMP::saxs::FitParameters>& fps,
-                              const std::vector<IMP::Particles>& particles_vec,
+                      const std::vector<IMP::kernel::Particles>& particles_vec,
                               const std::string filename) {
 
   std::string html_filename = filename + ".html";
@@ -98,7 +98,7 @@ void JmolWriter::prepare_jmol_script(
 }
 
 void JmolWriter::prepare_jmol_script(const std::vector<std::string>& pdbs,
-                              const std::vector<IMP::Particles>& particles_vec,
+                     const std::vector<IMP::kernel::Particles>& particles_vec,
                               const std::string filename) {
 
   std::string html_filename = filename + ".html";
@@ -163,7 +163,7 @@ void JmolWriter::prepare_jmol_script(const std::vector<std::string>& pdbs,
 
 void JmolWriter::prepare_PDB_file(
                             const std::vector<IMP::saxs::FitParameters>& fps,
-                            const std::vector<IMP::Particles>& particles_vec,
+                    const std::vector<IMP::kernel::Particles>& particles_vec,
                             const std::string filename) {
   std::ofstream out_file(filename.c_str());
   // center coordinates and join into a single PDB
@@ -200,7 +200,7 @@ void JmolWriter::prepare_PDB_file(
 }
 
 void JmolWriter::prepare_PDB_file(
-                            const std::vector<IMP::Particles>& particles_vec,
+                  const std::vector<IMP::kernel::Particles>& particles_vec,
                             const std::string filename) {
   std::ofstream out_file(filename.c_str());
   // center coordinates and join into a single PDB
@@ -328,6 +328,6 @@ std::string JmolWriter::group_checkbox(unsigned int model_num) {
 // definitions of std::vector<algebra::Vector3D>:~vector). This seems to be
 // caused by creating instances of such vectors in multiple foxs
 // compilation units.
-IMP::Float compute_max_distance(const IMP::Particles& particles) {
+IMP::Float compute_max_distance(const IMP::kernel::Particles& particles) {
   return IMP::saxs::compute_max_distance(particles);
 }

@@ -16,7 +16,7 @@
 #include <IMP/container_macros.h>
 #include <IMP/Optimizer.h>
 #include <IMP/algebra/BoundingBoxD.h>
-#include <IMP/internal/InternalListSingletonContainer.h>
+#include <IMP/kernel/internal/InternalListSingletonContainer.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

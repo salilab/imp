@@ -37,7 +37,7 @@ core::MonteCarloMoverResult MolecularDynamicsMover::do_propose()
 void MolecularDynamicsMover::save_coordinates()
 {
     IMP_OBJECT_LOG;
-    ParticlesTemp ps = md_->get_simulation_particles();
+    kernel::ParticlesTemp ps = md_->get_simulation_particles();
     unsigned nparts = ps.size();
     coordinates_.clear();
     coordinates_.reserve(nparts);
@@ -78,7 +78,7 @@ void MolecularDynamicsMover::save_coordinates()
 void MolecularDynamicsMover::do_reject()
 {
     IMP_OBJECT_LOG;
-    ParticlesTemp ps = md_->get_simulation_particles();
+    kernel::ParticlesTemp ps = md_->get_simulation_particles();
     unsigned nparts = ps.size();
     IMP_USAGE_CHECK(coordinates_.size() == ps.size(),
             "The list of particles that move has been changed!");
@@ -116,7 +116,7 @@ void MolecularDynamicsMover::do_reject()
 }
 
 kernel::ModelObjectsTemp MolecularDynamicsMover::do_get_inputs() const {
-    ParticleIndexes pis(md_->get_simulation_particle_indexes());
+    kernel::ParticleIndexes pis(md_->get_simulation_particle_indexes());
     kernel::ModelObjectsTemp ret(pis.size());
     for (unsigned int i=0; i< pis.size(); ++i) {
         ret[i] = get_model()->get_particle(pis[i]);

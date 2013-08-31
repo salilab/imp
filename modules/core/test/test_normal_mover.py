@@ -9,7 +9,7 @@ class NormalMoverTest(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
         m = IMP.Model()
-        pa=IMP.Particle(m)
+        pa=IMP.kernel.Particle(m)
         att=IMP.FloatKey("test")
         pa.add_attribute(att,5.0)
         mv=IMP.core.NormalMover(m, pa.get_index(), [att], 1.0)

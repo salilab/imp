@@ -3,7 +3,7 @@
 
 */
 #include <IMP/Model.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/atom/Hierarchy.h>
@@ -65,7 +65,7 @@ IMP::core::RigidBody create_rigid_particle
 (IMP::Model* m, double x, double y, double z)
 {
   using namespace IMP::algebra;
-  IMP_NEW( IMP::Particle, p,  (m) );
+  IMP_NEW( IMP::kernel::Particle, p,  (m) );
   Vector3D v(x,y,z);
   Transformation3D T(v);
   ReferenceFrame3D RF(T);
@@ -76,9 +76,9 @@ IMP::base::Pointer<IMP::Model> build_model_no_pdb
 (IMP::core::RigidBodies& rbs)
 {
   IMP_NEW( IMP::Model, m, () );
-  IMP_NEW( IMP::Particle, p0, (m) );
-  IMP_NEW( IMP::Particle, p1, (m) );
-  IMP_NEW( IMP::Particle, p2, (m) );
+  IMP_NEW( IMP::kernel::Particle, p0, (m) );
+  IMP_NEW( IMP::kernel::Particle, p1, (m) );
+  IMP_NEW( IMP::kernel::Particle, p2, (m) );
 
   rbs.push_back( create_rigid_particle ( m, 0, 0, 0 ) );
   rbs.push_back( create_rigid_particle ( m, 1, 0, 0 ) );
@@ -104,10 +104,10 @@ IMP::base::Pointer<IMP::Model> build_model_pdb
    IMP::FloatKey radius_key= IMP::FloatKey("radius");
 
    // create rigid bodies
-   IMP::ParticlesTemp hr =
+   IMP::kernel::ParticlesTemp hr =
      IMP::atom::get_by_type(mhd, IMP::atom::RESIDUE_TYPE);
 
-   IMP::ParticlesTemp ps = get_by_type(mhd, IMP::atom::ATOM_TYPE);
+   IMP::kernel::ParticlesTemp ps = get_by_type(mhd, IMP::atom::ATOM_TYPE);
    for(unsigned int i = 0; i < ps.size(); i++) {
      ps[i]->add_attribute(radius_key, 1.5);
      std::cout << IMP::core::XYZ(ps[i]).get_coordinates() << std::endl;

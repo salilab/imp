@@ -15,7 +15,7 @@
 #include <IMP/kernel/Restraint.h>
 #include <IMP/restraint_macros.h>
 #include <IMP/core/HarmonicUpperBound.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 //! Ensure the radius of gyration of particles fits the predicted one
@@ -33,7 +33,7 @@ public:
     \param[in] scale allow the radius of gyration of the particles
                       to be at most scale times the predicted one
    */
-  RadiusOfGyrationRestraint(Particles ps,int num_residues,Float scale=1.);
+  RadiusOfGyrationRestraint(kernel::Particles ps,int num_residues,Float scale=1.);
   virtual double
   unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
      const IMP_OVERRIDE;
@@ -47,7 +47,7 @@ public:
   inline Float get_radius_of_gyration() {return predicted_rog_;}
 
 #ifndef SWIG
-  IMP_LIST(private, Particle, particle, Particle*, Particles);
+  IMP_LIST(private, Particle, particle, kernel::Particle*, kernel::Particles);
 #endif
  protected:
   Model *mdl_;
@@ -59,7 +59,7 @@ public:
 IMPMULTIFITEXPORT
 float get_approximated_radius_of_gyration(int len);
 IMPMULTIFITEXPORT
-float get_actual_radius_of_gyration(ParticlesTemp ps);
+float get_actual_radius_of_gyration(kernel::ParticlesTemp ps);
 IMPMULTIFITEXPORT
 float get_approximated_radius(int len);
 IMPMULTIFIT_END_NAMESPACE

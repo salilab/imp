@@ -18,13 +18,13 @@ namespace {
                                   float bead_radius,float bead_mass,Model *mdl)
   {
   atom::Hierarchy ret_prot=
-    atom::Hierarchy::setup_particle(new Particle(mdl));
+    atom::Hierarchy::setup_particle(new kernel::Particle(mdl));
   for (unsigned int i=0;i<vecs.size();i++){
     core::XYZR bead_child=core::XYZR::setup_particle(
-             new Particle(mdl),
+             new kernel::Particle(mdl),
              algebra::Sphere3D(vecs[i],bead_radius));
     atom::Residue residue_child=atom::Residue::setup_particle(
-                                 new Particle(mdl),atom::ALA,i);
+                                 new kernel::Particle(mdl),atom::ALA,i);
     atom::Hierarchy::setup_particle(bead_child);
     atom::Atom::setup_particle(bead_child,atom::AT_CA);
     atom::Mass(bead_child).set_mass(bead_mass);
@@ -54,8 +54,8 @@ atom::Hierarchy create_coarse_molecule_from_molecule(
   }
   //todo - mass should be a parameter
   atom::Hierarchy ret_prot=create_molecule(vecs,bead_radius,3,mdl);
-  ParticlesTemp leaves=core::get_leaves(ret_prot);
-  for (ParticlesTemp::iterator it = leaves.begin();it != leaves.end();it++){
+  kernel::ParticlesTemp leaves=core::get_leaves(ret_prot);
+  for (kernel::ParticlesTemp::iterator it = leaves.begin();it != leaves.end();it++){
     sel.push_back(atom::Selection(atom::Hierarchy(*it)));
   }
   if (add_conn_restraint){

@@ -51,7 +51,7 @@ mdl=IMP.Model()
 mdl.set_log_level(IMP.base.SILENT)
 ps=[]
 for i in range(0,6):
-    p=IMP.Particle(mdl)
+    p=IMP.kernel.Particle(mdl)
     IMP.core.XYZ.setup_particle(p,IMP.algebra.Vector3D(0.,0.,0.))
     ps.append(p)
 

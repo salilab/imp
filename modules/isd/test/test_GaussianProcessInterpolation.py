@@ -28,12 +28,12 @@ class Tests(IMP.test.TestCase):
         self.I=[1,1]
         self.err=[sqrt(10),sqrt(20)]
         self.N=10
-        self.alpha = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
-        self.beta = Nuisance.setup_particle(IMP.Particle(self.m),  1.0)
+        self.alpha = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 1.0)
+        self.beta = Nuisance.setup_particle(IMP.kernel.Particle(self.m),  1.0)
         self.mean = Linear1DFunction(self.alpha,self.beta)
-        self.tau = Scale.setup_particle(IMP.Particle(self.m), 1.0)
-        self.lam = Scale.setup_particle(IMP.Particle(self.m), 1.0)
-        self.sig = Scale.setup_particle(IMP.Particle(self.m), 1.0)
+        self.tau = Scale.setup_particle(IMP.kernel.Particle(self.m), 1.0)
+        self.lam = Scale.setup_particle(IMP.kernel.Particle(self.m), 1.0)
+        self.sig = Scale.setup_particle(IMP.kernel.Particle(self.m), 1.0)
         self.cov = Covariance1DFunction(self.tau, self.lam)
         self.gpi = IMP.isd.GaussianProcessInterpolation(self.q, self.I,
                 self.err, self.N, self.mean, self.cov, self.sig)

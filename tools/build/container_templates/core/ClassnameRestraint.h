@@ -13,7 +13,7 @@
 
 #include <IMP/core/core_config.h>
 
-#include <IMP/internal/TupleRestraint.h>
+#include <IMP/kernel/internal/TupleRestraint.h>
 #include <IMP/ClassnameScore.h>
 #include <IMP/restraint_macros.h>
 

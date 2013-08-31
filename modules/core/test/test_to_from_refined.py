@@ -6,7 +6,7 @@ class Tests(IMP.test.TestCase):
     """Tests copying derivatives to and from refined"""
 
     def _create_particle(self, m, ks):
-        p= IMP.Particle(m)
+        p= IMP.kernel.Particle(m)
         for k in ks:
             p.add_attribute(k, 0.0)
         return p

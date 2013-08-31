@@ -30,7 +30,7 @@ class Tests(IMP.test.TestCase):
     def test_weights(self):
         """Test that restraints decompose ok"""
         m= IMP.Model()
-        p= IMP.Particle(m)
+        p= IMP.kernel.Particle(m)
         r= IMP.kernel._ConstRestraint(1, [p])
         m.add_restraint(r)
         rd= r.create_decomposition()

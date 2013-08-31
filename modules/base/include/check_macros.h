@@ -104,7 +104,7 @@
    For example:
     \code
     IMP_IF_CHECK(USAGE) {
-        base::Vector<Particle*> testp(input.begin(), input.end());
+        base::Vector<kernel::Particle*> testp(input.begin(), input.end());
         std::sort(testp.begin(), testp.end());
         IMP_USAGE_CHECK(std::unique(testp.begin(), testp.end()) == testp.end(),
                         "Duplicate particles found in the input list.");
@@ -117,7 +117,7 @@
 /** For example
     \code
     IMP_CHECK_CODE({
-        base::Vector<Particle*> testp(input.begin(), input.end());
+        base::Vector<kernel::Particle*> testp(input.begin(), input.end());
         std::sort(testp.begin(), testp.end());
         IMP_USAGE_CHECK(std::unique(testp.begin(), testp.end()) == testp.end(),
                         "Duplicate particles found in the input list.");

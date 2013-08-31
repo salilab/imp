@@ -34,7 +34,7 @@ class IMPCOREEXPORT TypedPairScore : public PairScore {
   // Whether to throw an exception for invalid particle types.
   bool allow_invalid_types_;
 
-  PairScore *get_pair_score(const ParticlePair &pp) const;
+  PairScore *get_pair_score(const kernel::ParticlePair &pp) const;
 
  public:
   //! Constructor.
@@ -52,7 +52,7 @@ class IMPCOREEXPORT TypedPairScore : public PairScore {
       be overridden in a subclass to automatically set the type of a particle,
       e.g. from other particle attributes such as an atom or residue name.
    */
-  virtual void set_particle_type(Particle *) const {}
+  virtual void set_particle_type(kernel::Particle *) const {}
 
   //! Set the PairScore to delegate to for a given pair of particle types.
   /** \param[in] ps PairScore to use at evaluate time.
@@ -65,10 +65,10 @@ class IMPCOREEXPORT TypedPairScore : public PairScore {
         IMP::base::PointerMember<PairScore>(ps);
   }
 
-  virtual double evaluate_index(Model *m, const ParticleIndexPair &p,
+  virtual double evaluate_index(Model *m, const kernel::ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                         const ParticleIndexes &pis) const
+                                         const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
   IMP_PAIR_SCORE_METHODS(TypedPairScore);
   IMP_OBJECT_METHODS(TypedPairScore);

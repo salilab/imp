@@ -23,7 +23,7 @@ IMPRMF_BEGIN_NAMESPACE
 
 namespace {
 
-std::string get_good_name(Particle *h) {
+std::string get_good_name(kernel::Particle *h) {
   if (atom::Atom::get_is_setup(h)) {
     return atom::Atom(h).get_atom_type().get_string();
   } else if (atom::Residue::get_is_setup(h)) {
@@ -36,7 +36,7 @@ std::string get_good_name(Particle *h) {
     return h->get_name();
   }
 }
-atom::Bonded get_bonded(Particle *p) {
+atom::Bonded get_bonded(kernel::Particle *p) {
   if (atom::Bonded::get_is_setup(p)) {
     return atom::Bonded(p);
   } else {
@@ -45,7 +45,7 @@ atom::Bonded get_bonded(Particle *p) {
 }
 
 void create_bonds(RMF::NodeConstHandle fhc, RMF::AliasConstFactory af,
-                  const base::map<RMF::NodeConstHandle, Particle *> &map) {
+                  const base::map<RMF::NodeConstHandle, kernel::Particle *> &map) {
   RMF::NodeConstHandles children = fhc.get_children();
   if (fhc.get_type() == RMF::BOND && children.size() == 2) {
     RMF::NodeConstHandle bd0, bd1;
@@ -69,8 +69,8 @@ void create_bonds(RMF::NodeConstHandle fhc, RMF::AliasConstFactory af,
 }
 
 void create_bonds(RMF::FileConstHandle fhc, const RMF::NodeIDs &nhs,
-                  const ParticlesTemp &ps) {
-  base::map<RMF::NodeConstHandle, Particle *> map;
+                  const kernel::ParticlesTemp &ps) {
+  base::map<RMF::NodeConstHandle, kernel::Particle *> map;
   for (unsigned int i = 0; i < nhs.size(); ++i) {
     map[fhc.get_node(nhs[i])] = ps[i];
   }
@@ -79,9 +79,9 @@ void create_bonds(RMF::FileConstHandle fhc, const RMF::NodeIDs &nhs,
 }
 
 void create_rigid_bodies(Model *m,
-                         const base::map<unsigned int, ParticlesTemp> &rbs) {
+                         const base::map<unsigned int, kernel::ParticlesTemp> &rbs) {
   IMP_FUNCTION_LOG;
-  for (base::map<unsigned int, ParticlesTemp>::const_iterator it = rbs.begin();
+  for (base::map<unsigned int, kernel::ParticlesTemp>::const_iterator it = rbs.begin();
        it != rbs.end(); ++it) {
     // skip already created rigid bodies eg when there are multiple hierarchies
     // so we get here twice
@@ -90,13 +90,13 @@ void create_rigid_bodies(Model *m,
                                          << std::endl);
     std::ostringstream oss;
     oss << "rigid body " << it->first;
-    IMP_NEW(Particle, rbp, (m, oss.str()));
+    IMP_NEW(kernel::Particle, rbp, (m, oss.str()));
     core::RigidBody::setup_particle(rbp, it->second);
   }
 }
 
 void fix_internal_coordinates(core::RigidBody rb, algebra::ReferenceFrame3D rf,
-                              ParticleIndex pi) {
+                              kernel::ParticleIndex pi) {
   // Make sure the internal coordinates of the particles match
   // This is needed to handle scripts that change them during optimation
   // and save the result out to RMF.
@@ -117,7 +117,7 @@ void fix_internal_coordinates(core::RigidBody rb, algebra::ReferenceFrame3D rf,
   }
 }
 
-void fix_rigid_body(const std::pair<core::RigidBody, ParticleIndexes> &in) {
+void fix_rigid_body(const std::pair<core::RigidBody, kernel::ParticleIndexes> &in) {
   // core::RigidMembers rms=in.second;
   core::RigidBody rb = in.first;
   rb.set_reference_frame_from_members(in.second);
@@ -128,7 +128,7 @@ void fix_rigid_body(const std::pair<core::RigidBody, ParticleIndexes> &in) {
   }
 }
 }
-void HierarchyLoadLink::do_load_node(RMF::NodeConstHandle nh, Particle *o) {
+void HierarchyLoadLink::do_load_node(RMF::NodeConstHandle nh, kernel::Particle *o) {
   if (rigid_factory_.get_is(nh)) {
     RMF::RigidParticleConst p = rigid_factory_.get(nh);
     RMF::Floats cs = p.get_coordinates();
@@ -171,13 +171,13 @@ void HierarchyLoadLink::do_load_node(RMF::NodeConstHandle nh, Particle *o) {
   }
 }
 
-void HierarchyLoadLink::do_load_one(RMF::NodeConstHandle nh, Particle *o) {
+void HierarchyLoadLink::do_load_one(RMF::NodeConstHandle nh, kernel::Particle *o) {
   RMF::FileConstHandle fh = nh.get_file();
   const ConstData &d = contents_.find(o)->second;
   IMP_LOG_VERBOSE("Loading hierarchy "
                   << atom::Hierarchy(o) << " with contents "
                   << atom::Hierarchies(d.get_particles()) << std::endl);
-  base::map<core::RigidBody, ParticleIndexes> rbs;
+  base::map<core::RigidBody, kernel::ParticleIndexes> rbs;
   for (unsigned int i = 0; i < d.get_nodes().size(); ++i) {
     do_load_node(fh.get_node(d.get_nodes()[i]), d.get_particles()[i]);
     if (core::RigidMember::get_is_setup(d.get_particles()[i])) {
@@ -192,8 +192,8 @@ void HierarchyLoadLink::do_load_one(RMF::NodeConstHandle nh, Particle *o) {
                      "Invalid hierarchy loaded");
 }
 
-bool HierarchyLoadLink::setup_particle(Particle *root, RMF::NodeConstHandle nh,
-                                       Particle *p, Particle *rbp) {
+bool HierarchyLoadLink::setup_particle(kernel::Particle *root, RMF::NodeConstHandle nh,
+                                       kernel::Particle *p, kernel::Particle *rbp) {
   contents_[root].access_particles().push_back(p);
   contents_[root].access_nodes().push_back(nh.get_id());
   atom::Hierarchy hp = atom::Hierarchy::setup_particle(p);
@@ -284,10 +284,10 @@ bool HierarchyLoadLink::setup_particle(Particle *root, RMF::NodeConstHandle nh,
   return crbp;
 }
 
-Particle *HierarchyLoadLink::do_create_recursive(Particle *root,
+Particle *HierarchyLoadLink::do_create_recursive(kernel::Particle *root,
                                                  RMF::NodeConstHandle name,
-                                                 Particle *rb) {
-  IMP_NEW(Particle, p, (m_, name.get_name()));
+                                                 kernel::Particle *rb) {
+  IMP_NEW(kernel::Particle, p, (m_, name.get_name()));
   if (!root) {
     root = p;
   } else {
@@ -300,7 +300,7 @@ Particle *HierarchyLoadLink::do_create_recursive(Particle *root,
   RMF::NodeConstHandles ch = name.get_children();
   for (unsigned int i = 0; i < ch.size(); ++i) {
     if (ch[i].get_type() == RMF::REPRESENTATION) {
-      Particle *c = do_create_recursive(root, ch[i], rb);
+      kernel::Particle *c = do_create_recursive(root, ch[i], rb);
       atom::Hierarchy(p).add_child(atom::Hierarchy(c));
     }
   }
@@ -308,7 +308,7 @@ Particle *HierarchyLoadLink::do_create_recursive(Particle *root,
 }
 
 Particle *HierarchyLoadLink::do_create(RMF::NodeConstHandle name) {
-  Particle *ret = do_create_recursive(nullptr, name, nullptr);
+  kernel::Particle *ret = do_create_recursive(nullptr, name, nullptr);
   create_bonds(name.get_file(), contents_[ret].get_nodes(),
                contents_[ret].get_particles());
   create_rigid_bodies(ret->get_model(), rigid_bodies_);
@@ -321,7 +321,7 @@ Particle *HierarchyLoadLink::do_create(RMF::NodeConstHandle name) {
   return ret;
 }
 
-void HierarchyLoadLink::do_add_link_recursive(Particle *root, Particle *o,
+void HierarchyLoadLink::do_add_link_recursive(kernel::Particle *root, kernel::Particle *o,
                                               RMF::NodeConstHandle node) {
   IMP_LOG_VERBOSE("Linking " << Showable(o) << " and " << node << std::endl);
   contents_[root].access_particles().push_back(o);
@@ -337,7 +337,7 @@ void HierarchyLoadLink::do_add_link_recursive(Particle *root, Particle *o,
   }
 }
 
-void HierarchyLoadLink::do_add_link(Particle *o, RMF::NodeConstHandle node) {
+void HierarchyLoadLink::do_add_link(kernel::Particle *o, RMF::NodeConstHandle node) {
   do_add_link_recursive(o, o, node);
 }
 HierarchyLoadLink::HierarchyLoadLink(RMF::FileConstHandle fh, Model *m)
@@ -360,7 +360,7 @@ HierarchyLoadLink::HierarchyLoadLink(RMF::FileConstHandle fh, Model *m)
 }
 
 namespace {
-void copy_bonds(Particle *root, RMF::NodeHandle fhc) {
+void copy_bonds(kernel::Particle *root, RMF::NodeHandle fhc) {
   IMP_FUNCTION_LOG;
   atom::Bonds bds = atom::get_internal_bonds(atom::Hierarchy(root));
   if (bds.empty()) return;
@@ -368,8 +368,8 @@ void copy_bonds(Particle *root, RMF::NodeHandle fhc) {
   RMF::NodeHandle bonds = fhc.add_child("bonds", RMF::ORGANIZATIONAL);
   RMF::AliasFactory af(fhc.get_file());
   for (unsigned int i = 0; i < bds.size(); ++i) {
-    Particle *p0 = bds[i].get_bonded(0);
-    Particle *p1 = bds[i].get_bonded(1);
+    kernel::Particle *p0 = bds[i].get_bonded(0);
+    kernel::Particle *p1 = bds[i].get_bonded(1);
     IMP_LOG_VERBOSE("Adding bond for pair " << Showable(p0) << " and "
                                             << Showable(p1) << std::endl);
     RMF::NodeHandle n0 = get_node_from_association(fhc.get_file(), p0);
@@ -381,7 +381,7 @@ void copy_bonds(Particle *root, RMF::NodeHandle fhc) {
 }
 }
 
-void HierarchySaveLink::setup_node(Particle *p, RMF::NodeHandle n) {
+void HierarchySaveLink::setup_node(kernel::Particle *p, RMF::NodeHandle n) {
   if (core::XYZR::get_is_setup(p)) {
     core::XYZR d(p);
     intermediate_particle_factory_.get(n).set_radius(d.get_radius());
@@ -442,7 +442,7 @@ void HierarchySaveLink::setup_node(Particle *p, RMF::NodeHandle n) {
     copy_factory_.get(n).set_copy_index(d.get_copy_index());
   }
   if (core::RigidMember::get_is_setup(p)) {
-    Particle *rb = core::RigidMember(p).get_rigid_body();
+    kernel::Particle *rb = core::RigidMember(p).get_rigid_body();
     if (rigid_bodies_.find(rb) == rigid_bodies_.end()) {
       int index = rigid_bodies_.size();
       rigid_bodies_[rb] = index;
@@ -451,7 +451,7 @@ void HierarchySaveLink::setup_node(Particle *p, RMF::NodeHandle n) {
     n.set_value(rigid_body_key_, index);
   }
 }
-void HierarchySaveLink::do_add_recursive(Particle *root, Particle *p,
+void HierarchySaveLink::do_add_recursive(kernel::Particle *root, kernel::Particle *p,
                                          RMF::NodeHandle cur) {
   IMP_LOG_VERBOSE("Adding " << atom::Hierarchy(p) << std::endl);
   contents_[root].access_particles().push_back(p);
@@ -461,20 +461,20 @@ void HierarchySaveLink::do_add_recursive(Particle *root, Particle *p,
   setup_node(p, cur);
   for (unsigned int i = 0; i < atom::Hierarchy(p).get_number_of_children();
        ++i) {
-    Particle *pc = atom::Hierarchy(p).get_child(i);
+    kernel::Particle *pc = atom::Hierarchy(p).get_child(i);
     RMF::NodeHandle curc =
         cur.add_child(get_good_name(pc), RMF::REPRESENTATION);
     do_add_recursive(root, pc, curc);
   }
 }
-void HierarchySaveLink::do_add(Particle *p, RMF::NodeHandle cur) {
+void HierarchySaveLink::do_add(kernel::Particle *p, RMF::NodeHandle cur) {
   IMP_USAGE_CHECK(atom::Hierarchy(p).get_is_valid(true),
                   "Invalid hierarchy passed.");
   do_add_recursive(p, p, cur);
   P::add_link(p, cur);
   copy_bonds(p, cur);
 }
-void HierarchySaveLink::do_save_node(Particle *p, RMF::NodeHandle n) {
+void HierarchySaveLink::do_save_node(kernel::Particle *p, RMF::NodeHandle n) {
   if (core::RigidBody::get_is_setup(p)) {
     if (atom::Hierarchy(p).get_number_of_children() == 0) {
       // evil special case for now
@@ -517,7 +517,7 @@ void HierarchySaveLink::do_save_node(Particle *p, RMF::NodeHandle n) {
     }
   }
 }
-void HierarchySaveLink::do_save_one(Particle *o, RMF::NodeHandle nh) {
+void HierarchySaveLink::do_save_one(kernel::Particle *o, RMF::NodeHandle nh) {
   RMF::FileHandle fh = nh.get_file();
   const Data &d = contents_.find(o)->second;
   for (unsigned int i = 0; i < d.get_nodes().size(); ++i) {

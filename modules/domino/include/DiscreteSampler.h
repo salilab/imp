@@ -66,12 +66,12 @@ class IMPDOMINOEXPORT DiscreteSampler : public Sampler {
 
   ~DiscreteSampler();
 
-  /** Particle states can be set either using this method,
+  /** kernel::Particle states can be set either using this method,
       or equivalently, by accessing the table itself
       using get_particle_states_table(). This method
       is provided for users who want to use the default values
       and want a simple inferface.*/
-  void set_particle_states(Particle *p, ParticleStates *se) {
+  void set_particle_states(kernel::Particle *p, ParticleStates *se) {
     pst_->set_particle_states(p, se);
   }
 

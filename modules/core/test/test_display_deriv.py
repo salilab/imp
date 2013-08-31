@@ -18,10 +18,10 @@ class Tests(IMP.test.TestCase):
 
         ps= []
         for i in range(0,4):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             d= IMP.core.XYZ.setup_particle(p, pts[i])
             ps.append(p)
-        p= IMP.Particle(m)
+        p= IMP.kernel.Particle(m)
         d= IMP.core.XYZ.setup_particle(p)
         hd= IMP.core.Hierarchy.setup_particle(p, ps)
 

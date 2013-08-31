@@ -15,7 +15,7 @@ IMPMISC_BEGIN_NAMESPACE
 
 SoftCylinderPairScore::SoftCylinderPairScore(double k) : k_(k) {}
 Float SoftCylinderPairScore::evaluate_index(Model *m,
-                                            const ParticleIndexPair &pip,
+                                            const kernel::ParticleIndexPair &pip,
                                             DerivativeAccumulator *da) const {
   atom::Bond b[2] = {atom::Bond(m, pip[0]), atom::Bond(m, pip[1])};
 
@@ -46,7 +46,7 @@ Float SoftCylinderPairScore::evaluate_index(Model *m,
 }
 
 ModelObjectsTemp SoftCylinderPairScore::do_get_inputs(
-    Model *m, const ParticleIndexes &pis) const {
+    Model *m, const kernel::ParticleIndexes &pis) const {
   ModelObjectsTemp ret(pis.size() * 3);
   for (unsigned int i = 0; i < pis.size(); ++i) {
     ret[3 * i + 0] = m->get_particle(pis[i]);

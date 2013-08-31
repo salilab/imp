@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
         ps=[]
         print 1
         for i in range(0,3):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             d= IMP.core.XYZ.setup_particle(p)
             ps.append(p)
             print 2
@@ -54,7 +54,7 @@ class Tests(IMP.test.TestCase):
         m.set_log_level(IMP.base.SILENT)
         ps=[]
         for i in range(0,3):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             d= IMP.core.XYZ.setup_particle(p)
             ps.append(p)
         pts=[IMP.algebra.Vector3D(0,0,0),

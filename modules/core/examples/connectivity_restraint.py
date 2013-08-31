@@ -13,11 +13,11 @@ hs=[]
 
 # create the molecules, with 5 particles for each of 10 molecules
 for i in range(0,10):
-    pr=IMP.Particle(m)
+    pr=IMP.kernel.Particle(m)
     pr.set_name("root "+str(i))
     d= IMP.atom.Hierarchy.setup_particle(pr)
     for j in range(0,5):
-        p=IMP.Particle(m)
+        p=IMP.kernel.Particle(m)
         p.set_name("fragment "+str(i) + " " + str(j))
         cd= IMP.atom.Fragment.setup_particle(p)
         d.add_child(cd)

@@ -28,7 +28,7 @@ IMP_GRAPH(SubsetGraph, undirected, Subset, int, out << vertex);
 
     See \ref graphs "Graphs in IMP" for more information.
  */
-IMP_GRAPH(InteractionGraph, undirected, Particle *, base::Pointer<base::Object>,
+IMP_GRAPH(InteractionGraph, undirected, kernel::Particle *, base::Pointer<base::Object>,
           out << vertex->get_name() << "\n[" << vertex->get_index() << "]");
 
 //! Gets all of the Subsets of a SubsetGraph
@@ -93,7 +93,7 @@ IMPDOMINOEXPORT InteractionGraph get_interaction_graph(
     ScoringFunctionAdaptor rs, const ParticleStatesTable *pst);
 
 IMPDOMINOEXPORT InteractionGraph get_interaction_graph(
-    ScoringFunctionAdaptor rs, const ParticlesTemp &pst);
+    ScoringFunctionAdaptor rs, const kernel::ParticlesTemp &pst);
 
 /** Assuming that all the particles have Cartesian coordinates,
     output edges corresponding to the edges in the interaction graph.
@@ -153,10 +153,10 @@ IMPDOMINOEXPORT bool get_is_merge_tree(const MergeTree &tree, Subset all,
 */
 
 IMPDOMINOEXPORT void write_merge_tree(const MergeTree &tree,
-                                      const ParticlesTemp &ps,
+                                      const kernel::ParticlesTemp &ps,
                                       std::ostream &out);
 IMPDOMINOEXPORT MergeTree read_merge_tree(std::istream &input,
-                                          const ParticlesTemp &ps);
+                                          const kernel::ParticlesTemp &ps);
 /** @} */
 
 IMPDOMINO_END_NAMESPACE

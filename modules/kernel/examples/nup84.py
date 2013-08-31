@@ -85,7 +85,7 @@ def add_protein_from_pdb(model, name, file, parent, restraints,
 ## Create protein as a rigid body from several pdb file
 def add_protein_from_pdbs(model, name, files, parent, restraints,
                           excluded_volume_particles, optimized_particles):
-    h= IMP.atom.Hierarchy.setup_particle(IMP.Particle(model, name))
+    h= IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(model, name))
     for i, f in enumerate(files):
         add_protein_from_pdb(model, name+str(i), f, h, restraints,
                              excluded_volume_particles, optimized_particles)
@@ -101,7 +101,7 @@ def create_representation(model):
     restraints = []
     optimized_particles = []
     excluded_volume_particles = []
-    universe=IMP.atom.Hierarchy.setup_particle(IMP.Particle(model, "the universe"))
+    universe=IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(model, "the universe"))
 
     add_protein_from_length(model, "Nup85", 570, universe, restraints,
                             excluded_volume_particles, optimized_particles)

@@ -46,24 +46,24 @@ class Tests(IMP.test.TestCase):
         self.I=[i[1] for i in data]
         self.err=[i[2] for i in data]
         self.N=10
-        self.G = Scale.setup_particle(IMP.Particle(self.m), 3.0)
+        self.G = Scale.setup_particle(IMP.kernel.Particle(self.m), 3.0)
         self.G.set_nuisance_is_optimized(False)
-        self.Rg = Scale.setup_particle(IMP.Particle(self.m),  10.0)
+        self.Rg = Scale.setup_particle(IMP.kernel.Particle(self.m),  10.0)
         self.Rg.set_nuisance_is_optimized(False)
         #put d=15 so we don't use the porod region
-        self.d = Scale.setup_particle(IMP.Particle(self.m),  15.0)
+        self.d = Scale.setup_particle(IMP.kernel.Particle(self.m),  15.0)
         self.d.set_nuisance_is_optimized(False)
-        self.s = Scale.setup_particle(IMP.Particle(self.m),  0.0)
+        self.s = Scale.setup_particle(IMP.kernel.Particle(self.m),  0.0)
         self.s.set_nuisance_is_optimized(False)
-        self.A = Scale.setup_particle(IMP.Particle(self.m),  0.0)
+        self.A = Scale.setup_particle(IMP.kernel.Particle(self.m),  0.0)
         self.A.set_nuisance_is_optimized(False)
         self.mean = GeneralizedGuinierPorodFunction(
                 self.G,self.Rg,self.d,self.s, self.A)
-        self.tau = Switching.setup_particle(IMP.Particle(self.m), 1.0)
+        self.tau = Switching.setup_particle(IMP.kernel.Particle(self.m), 1.0)
         self.tau.set_nuisance_is_optimized(True)
-        self.lam = Scale.setup_particle(IMP.Particle(self.m), 1.0)
+        self.lam = Scale.setup_particle(IMP.kernel.Particle(self.m), 1.0)
         self.lam.set_nuisance_is_optimized(True)
-        self.sig = Scale.setup_particle(IMP.Particle(self.m), 1.0)
+        self.sig = Scale.setup_particle(IMP.kernel.Particle(self.m), 1.0)
         self.sig.set_nuisance_is_optimized(True)
         self.cov = Covariance1DFunction(self.tau, self.lam, 2.0)
         self.gpi = IMP.isd.GaussianProcessInterpolation(self.q, self.I,

@@ -15,31 +15,31 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-  LognormalRestraint::LognormalRestraint(Particle *x, Particle *mu,
-          Particle *sigma) : px_(x), pmu_(mu), psigma_(sigma), isx_(true),
+  LognormalRestraint::LognormalRestraint(kernel::Particle *x, kernel::Particle *mu,
+          kernel::Particle *sigma) : px_(x), pmu_(mu), psigma_(sigma), isx_(true),
     ismu_(true), issigma_(true) {check_particles();}
 
-  LognormalRestraint::LognormalRestraint(double x, Particle *mu,
-          Particle *sigma) : x_(x), pmu_(mu), psigma_(sigma), isx_(false),
+  LognormalRestraint::LognormalRestraint(double x, kernel::Particle *mu,
+          kernel::Particle *sigma) : x_(x), pmu_(mu), psigma_(sigma), isx_(false),
     ismu_(true), issigma_(true) {check_particles();}
 
-  LognormalRestraint::LognormalRestraint(Particle *x, double mu,
-          Particle *sigma) : px_(x), mu_(mu), psigma_(sigma), isx_(true),
+  LognormalRestraint::LognormalRestraint(kernel::Particle *x, double mu,
+          kernel::Particle *sigma) : px_(x), mu_(mu), psigma_(sigma), isx_(true),
     ismu_(false), issigma_(true) {check_particles();}
 
-  LognormalRestraint::LognormalRestraint(Particle *x, Particle *mu,
+  LognormalRestraint::LognormalRestraint(kernel::Particle *x, kernel::Particle *mu,
           double sigma) : px_(x), pmu_(mu), sigma_(sigma), isx_(true),
     ismu_(true), issigma_(false) {check_particles();}
 
-  LognormalRestraint::LognormalRestraint(Particle *x, double mu,
+  LognormalRestraint::LognormalRestraint(kernel::Particle *x, double mu,
           double sigma) : px_(x), mu_(mu), sigma_(sigma), isx_(true),
     ismu_(false), issigma_(false) {check_particles();}
 
   LognormalRestraint::LognormalRestraint(double x, double mu,
-          Particle *sigma) : x_(x), mu_(mu), psigma_(sigma), isx_(false),
+          kernel::Particle *sigma) : x_(x), mu_(mu), psigma_(sigma), isx_(false),
     ismu_(false), issigma_(true) {check_particles();}
 
-  LognormalRestraint::LognormalRestraint(double x, Particle *mu,
+  LognormalRestraint::LognormalRestraint(double x, kernel::Particle *mu,
           double sigma) : x_(x), pmu_(mu), sigma_(sigma), isx_(false),
     ismu_(true), issigma_(false) {check_particles();}
 
@@ -104,7 +104,7 @@ LognormalRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp LognormalRestraint::do_get_inputs() const
 {
-  ParticlesTemp ret;
+  kernel::ParticlesTemp ret;
   if (isx_) ret.push_back(px_);
   if (ismu_) ret.push_back(pmu_);
   if (issigma_) ret.push_back(psigma_);

@@ -89,7 +89,7 @@ IMP_OBJECT_METHODS(KinematicForest);
   }
 
   // rebuild tree (same topology but change directionality)
-  void reset_root(IMP::Particle* new_root){
+  void reset_root(IMP::kernel::Particle* new_root){
     // TODO: implement
     IMP_NOT_IMPLEMENTED;
     IMP_UNUSED(new_root);
@@ -180,7 +180,7 @@ IMP_OBJECT_METHODS(KinematicForest);
   /**
    */
   bool get_is_member(IMP::core::RigidBody rb) const{
-    Particle* p = rb.get_particle();
+    kernel::Particle* p = rb.get_particle();
     return
       KinematicNode::get_is_setup( p ) &&
       nodes_.find( KinematicNode( p ) ) != nodes_.end() ;
@@ -219,9 +219,9 @@ IMP_OBJECT_METHODS(KinematicForest);
   // TODO: handle derivatives, and safe getting / setting of them
 
  private:
-  IMP::Particles get_children(IMP::Particle parent) const;
+  IMP::kernel::Particles get_children(IMP::kernel::Particle parent) const;
 
-  IMP::Particle get_parent(IMP::Particle child) const;
+  IMP::kernel::Particle get_parent(IMP::kernel::Particle child) const;
 
 #ifndef SWIG
   friend std::ostream& operator<<(std::ostream& s,

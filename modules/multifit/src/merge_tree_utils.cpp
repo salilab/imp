@@ -13,7 +13,7 @@ double DummyRestraint::unprotected_evaluate(DerivativeAccumulator *) const
 }
 ModelObjectsTemp DummyRestraint::do_get_inputs() const
 {
-  ParticlesTemp pt;
+  kernel::ParticlesTemp pt;
   pt.push_back(p1_);
   pt.push_back(p2_);
   return pt;

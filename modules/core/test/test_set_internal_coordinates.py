@@ -7,9 +7,9 @@ class Tests(IMP.test.TestCase):
     def test_symmetry(self):
         """Test setting internal coordinates through float keys"""
         m= IMP.Model()
-        p= IMP.Particle(m)
+        p= IMP.kernel.Particle(m)
         rb=IMP.core.RigidBody.setup_particle(p, IMP.algebra.ReferenceFrame3D())
-        pm= IMP.Particle(m)
+        pm= IMP.kernel.Particle(m)
         IMP.core.XYZ.setup_particle(pm)
         rb.add_member(pm)
 

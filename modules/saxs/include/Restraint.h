@@ -29,7 +29,7 @@ IMPSAXS_BEGIN_NAMESPACE
 
     The restraint takes rigid bodies into account, in order
     to speed up the calculations. Rigid body should be gived as single
-    RigidBody Particle. Other, non-rigid body Particles can also be given.
+    RigidBody kernel::Particle. Other, non-rigid body kernel::Particles can also be given.
 
     The shape of a rigid body is assumed to be defined by the set of
     atom::Hierarchy leaves of the atom::Hierarchy rooted at the rigid body
@@ -51,7 +51,7 @@ class IMPSAXSEXPORT Restraint : public kernel::Restraint
                 HEAVY_ATOMS - no hydrogens, all other atoms included
                 CA_ATOMS - residue level, residue represented by CA
   */
-  Restraint(const Particles& particles, const Profile* exp_profile,
+  Restraint(const kernel::Particles& particles, const Profile* exp_profile,
             FormFactorType ff_type = HEAVY_ATOMS);
 
   virtual double
@@ -64,9 +64,9 @@ class IMPSAXSEXPORT Restraint : public kernel::Restraint
   void compute_profile(Profile* model_profile);
 
  protected:
-  Particles particles_; // non-rigid bodies particles
+  kernel::Particles particles_; // non-rigid bodies particles
   std::vector<core::RigidBody> rigid_bodies_decorators_; //rigid bodies
-  std::vector<Particles> rigid_bodies_; // rigid bodies particles
+  std::vector<kernel::Particles> rigid_bodies_; // rigid bodies particles
   // non-changing part of the profile
   base::PointerMember<Profile> rigid_bodies_profile_;
   base::Pointer<ProfileFitter<ChiScore> > profile_fitter_; // computes profiles

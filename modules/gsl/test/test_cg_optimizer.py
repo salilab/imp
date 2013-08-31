@@ -47,7 +47,7 @@ class Tests(IMP.test.TestCase):
         particles = []
 
         for value in starting_values:
-            p = IMP.Particle(model)
+            p = IMP.kernel.Particle(model)
             particles.append(p)
             p.add_attribute(IMP.FloatKey("x"), value, True)
         rsr = WoodsFunc(model, particles)

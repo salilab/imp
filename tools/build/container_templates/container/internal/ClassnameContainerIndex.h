@@ -12,7 +12,7 @@
 
 #include <IMP/container/container_config.h>
 #include <IMP/ClassnameContainer.h>
-#include <IMP/internal/container_helpers.h>
+#include <IMP/kernel/internal/container_helpers.h>
 #include <IMP/ScoreState.h>
 #include <IMP/score_state_macros.h>
 #include <IMP/base/set.h>

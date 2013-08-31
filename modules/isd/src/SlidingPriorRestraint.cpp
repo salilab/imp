@@ -12,7 +12,7 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-SlidingPriorRestraint::SlidingPriorRestraint(Particle *p, double qmin,
+SlidingPriorRestraint::SlidingPriorRestraint(kernel::Particle *p, double qmin,
                                              double qmax, double sq)
   : p_(p), qmin_(qmin), qmax_(qmax) {
   sq_ = sq*(qmax_-qmin_);
@@ -44,7 +44,7 @@ SlidingPriorRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp SlidingPriorRestraint::do_get_inputs() const
 {
-  return ParticlesTemp(1,p_);
+  return kernel::ParticlesTemp(1,p_);
 }
 
 IMPISD_END_NAMESPACE

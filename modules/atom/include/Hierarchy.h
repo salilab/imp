@@ -17,7 +17,7 @@
 #include <IMP/core/XYZR.h>
 #include <IMP/core/rigid_bodies.h>
 
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/Model.h>
 
 #include <vector>
@@ -201,14 +201,14 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
   typedef boost::false_type DecoratorHasTraits;
 
   //! cast a particle which has the needed attributes
-  static Hierarchy decorate_particle(Particle *p) {
+  static Hierarchy decorate_particle(kernel::Particle *p) {
     if (get_is_setup(p)) return Hierarchy(p);
     else return Hierarchy();
   }
   /** Setup the particle as a hierarchy and add the passed particles
       as children. */
-  static Hierarchy setup_particle(Particle *p,
-                                  ParticleIndexesAdaptor children) {
+  static Hierarchy setup_particle(kernel::Particle *p,
+                                  kernel::ParticleIndexesAdaptor children) {
     H::setup_particle(p, get_traits());
     Hierarchy ret(p);
     for (unsigned int i = 0; i < children.size(); ++i) {
@@ -220,22 +220,22 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
     return ret;
   }
 
-  static Hierarchy setup_particle(Particle *p) {
+  static Hierarchy setup_particle(kernel::Particle *p) {
     return setup_particle(p->get_model(), p->get_index());
   }
 
-  static bool particle_is_instance(Particle *p) {
+  static bool particle_is_instance(kernel::Particle *p) {
     return H::get_is_setup(p, get_traits());
   }
-  static bool get_is_setup(Particle *p) {
+  static bool get_is_setup(kernel::Particle *p) {
     return H::get_is_setup(p, get_traits());
   }
-  static bool particle_is_instance(Model *m, ParticleIndex p) {
+  static bool particle_is_instance(Model *m, kernel::ParticleIndex p) {
     return H::get_is_setup(m->get_particle(p), get_traits());
   }
 #endif
 
-  Hierarchy(Model *m, ParticleIndex pi) : H(m, pi, get_traits()) {}
+  Hierarchy(Model *m, kernel::ParticleIndex pi) : H(m, pi, get_traits()) {}
 
   Hierarchy(kernel::ParticleAdaptor pi) : H(pi.get_model(),
                                             pi.get_particle_index(),
@@ -254,9 +254,9 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
 
   /** Create a Hierarchy of level t by adding the needed
       attributes. */
-  static Hierarchy setup_particle(Model *m, ParticleIndex pi,
-                                  ParticleIndexesAdaptor children =
-                                      ParticleIndexesAdaptor()) {
+  static Hierarchy setup_particle(Model *m, kernel::ParticleIndex pi,
+                                  kernel::ParticleIndexesAdaptor children =
+                                      kernel::ParticleIndexesAdaptor()) {
     H::setup_particle(m, pi, get_traits());
     Hierarchy ret(m, pi);
     for (unsigned int i = 0; i < children.size(); ++i) {
@@ -270,7 +270,7 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
 
   /** Check if the particle has the needed attributes for a
    cast to succeed */
- static bool get_is_setup(Model *m, ParticleIndex p) {
+ static bool get_is_setup(Model *m, kernel::ParticleIndex p) {
     return H::get_is_setup(m->get_particle(p), get_traits());
   }
 
@@ -303,7 +303,7 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
     return ret;
   }
 
-  //! Get the children in a container of your choosing, eg ParticlesTemp
+  //! Get the children in a container of your choosing, eg kernel::ParticlesTemp
   template <class C>
   C get_children() const {
     C ret(get_number_of_children());
@@ -418,7 +418,7 @@ inline Hierarchies get_leaves(Hierarchy h) {
 
 /** See Hierarchy */
 inline Hierarchies get_leaves(const Hierarchies &h) {
-  ParticlesTemp ret;
+  kernel::ParticlesTemp ret;
   for (unsigned int i = 0; i < h.size(); ++i) {
     core::GenericHierarchies cur = IMP::core::get_leaves(h[i]);
     ret.insert(ret.end(), cur.begin(), cur.end());

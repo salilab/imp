@@ -13,7 +13,7 @@
 #include "Hierarchy.h"
 #include <IMP/core/StatisticalPairScore.h>
 #include <IMP/Model.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/kernel/Restraint.h>
 #include <IMP/PairScore.h>
 #include <IMP/container/PairsRestraint.h>

@@ -35,7 +35,7 @@ std::vector<IMP::algebra::Vector3D> read_points_from_pdb(
     IMP::atom::read_pdb(pdb_file_name, model,
                         new IMP::atom::NonWaterNonHydrogenPDBSelector(),
                         true, true);
-  IMP::ParticlesTemp particles = get_by_type(mhd, IMP::atom::ATOM_TYPE);
+  IMP::kernel::ParticlesTemp particles = get_by_type(mhd, IMP::atom::ATOM_TYPE);
   for(unsigned int i=0; i<particles.size(); i++)
     points.push_back(IMP::core::XYZ(particles[i]).get_coordinates());
   std::cerr << points.size() << " atoms were read from file "

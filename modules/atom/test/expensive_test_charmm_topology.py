@@ -319,9 +319,9 @@ class Tests(IMP.test.TestCase):
                         self.get_input_file_name('HEM_model.pdb'), m)
         residue = IMP.atom.get_by_type(pdb, IMP.atom.RESIDUE_TYPE)[0]
         # Add some dummy atoms, to make sure they get removed
-        a = IMP.atom.Atom.setup_particle(IMP.Particle(m), IMP.atom.AT_CA)
+        a = IMP.atom.Atom.setup_particle(IMP.kernel.Particle(m), IMP.atom.AT_CA)
         residue.add_child(a)
-        a = IMP.atom.Atom.setup_particle(IMP.Particle(m), IMP.atom.AT_CB)
+        a = IMP.atom.Atom.setup_particle(IMP.kernel.Particle(m), IMP.atom.AT_CB)
         residue.add_child(a)
         # Remove some needed atoms, to make sure they get added
         residue.remove_child(0)

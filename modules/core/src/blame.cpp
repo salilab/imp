@@ -14,7 +14,7 @@
 #include <IMP/base/map.h>
 IMPCORE_BEGIN_NAMESPACE
 namespace {
-typedef base::map<Particle *, Particle *> ControlledBy;
+typedef base::map<kernel::Particle *, kernel::Particle *> ControlledBy;
 void distribute_blame(kernel::Restraint *r, const ControlledBy &cb, FloatKey fk,
                       double weight) {
   kernel::RestraintSet *rs = dynamic_cast<kernel::RestraintSet *>(r);
@@ -24,11 +24,11 @@ void distribute_blame(kernel::Restraint *r, const ControlledBy &cb, FloatKey fk,
       distribute_blame(rs->get_restraint(i), cb, fk, weight);
     }
   } else {
-    ParticlesTemp ips = IMP::get_input_particles(r->get_inputs());
-    ParticlesTemp mips;
+    kernel::ParticlesTemp ips = IMP::get_input_particles(r->get_inputs());
+    kernel::ParticlesTemp mips;
     for (unsigned int i = 0; i < ips.size(); ++i) {
       if (cb.find(ips[i]) != cb.end()) {
-        Particle *p = cb.find(ips[i])->second;
+        kernel::Particle *p = cb.find(ips[i])->second;
         mips.push_back(p);
       }
     }
@@ -44,8 +44,8 @@ void distribute_blame(kernel::Restraint *r, const ControlledBy &cb, FloatKey fk,
 }
 }
 
-void assign_blame(const kernel::RestraintsTemp &rs, const ParticlesTemp &ps,
-                  FloatKey attribute) {
+void assign_blame(const kernel::RestraintsTemp &rs, const kernel::ParticlesTemp &ps,
+                  kernel::FloatKey attribute) {
   IMP_FUNCTION_LOG;
   for (unsigned int i = 0; i < ps.size(); ++i) {
     if (ps[i]->has_attribute(attribute)) {
@@ -68,7 +68,7 @@ void assign_blame(const kernel::RestraintsTemp &rs, const ParticlesTemp &ps,
   DependencyGraphVertexIndex dgi((IMP::get_vertex_index(dg)));
   ControlledBy controlled_by;
   for (unsigned int i = 0; i < ps.size(); ++i) {
-    ParticlesTemp cps = get_dependent_particles(ps[i], ps, dg, dgi);
+    kernel::ParticlesTemp cps = get_dependent_particles(ps[i], ps, dg, dgi);
     IMP_INTERNAL_CHECK(cps.size() > 0, "No dependent particles for " << ps[i]);
     for (unsigned int j = 0; j < cps.size(); ++j) {
       controlled_by[cps[j]] = ps[i];
@@ -80,7 +80,7 @@ void assign_blame(const kernel::RestraintsTemp &rs, const ParticlesTemp &ps,
 }
 
 display::Geometries create_blame_geometries(const kernel::RestraintsTemp &rs,
-                                            const ParticlesTemp &ps, double max,
+                                            const kernel::ParticlesTemp &ps, double max,
                                             std::string name) {
   IMP_FUNCTION_LOG;
   FloatKey key("blame temporary key");

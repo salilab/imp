@@ -3,11 +3,11 @@
  */
 #include <IMP/base_types.h>
 #include <IMP/Model.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/base/utility_macros.h>
 int main(int, char * []) {
   IMP_NEW(IMP::Model, m, ());
-  IMP_NEW(IMP::Particle, p, (m));
+  IMP_NEW(IMP::kernel::Particle, p, (m));
   // special cased FloatKey
   for (unsigned int i = 4; i < 7; ++i) {
     IMP::FloatKey k(i);

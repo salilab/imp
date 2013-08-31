@@ -106,7 +106,7 @@ all_possible_states = PriceStates(prices)
 
 # set_states
 for i in range(n_girls):
-    p = IMP.Particle(model, "girl-%d" % i)
+    p = IMP.kernel.Particle(model, "girl-%d" % i)
     pr = Price(p)
     girls.append(p)
     # add possible dresses
@@ -131,7 +131,7 @@ for z in xrange(n_edges):
     # pair of friends
     i = random.randrange(0,n_girls)
     j = random.randrange(0,n_girls)
-    friends = IMP.ParticlePair(girls[i], girls[j])
+    friends = IMP.kernel.ParticlePair(girls[i], girls[j])
     # restraint
     score =  SumPricePairScore()
     r = IMP.core.PairRestraint(score, friends)

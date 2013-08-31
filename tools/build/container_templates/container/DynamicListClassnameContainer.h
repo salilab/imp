@@ -12,7 +12,7 @@
 
 #include <IMP/container/container_config.h>
 #include <IMP/base/object_macros.h>
-#include <IMP/internal/InternalDynamicListClassnameContainer.h>
+#include <IMP/kernel/internal/InternalDynamicListClassnameContainer.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -52,7 +52,7 @@ class IMPCONTAINEREXPORT DynamicListClassnameContainer :
   void do_before_evaluate();
   ModelObjectsTemp do_get_inputs() const;
   void do_apply(const ClassnameModifier *sm) const;
-  ParticleIndexes get_all_possible_indexes() const;
+  kernel::ParticleIndexes get_all_possible_indexes() const;
 #endif
   IMP_OBJECT_METHODS(DynamicListClassnameContainer);
 };

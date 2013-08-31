@@ -23,7 +23,7 @@ class Tests(IMP.test.TestCase):
         """Check getting a residue from a cg protein"""
         IMP.base.set_log_level(IMP.base.VERBOSE)
         m= IMP.Model()
-        p= IMP.Particle(m)
+        p= IMP.kernel.Particle(m)
         mp=IMP.atom.create_protein(m, "a protein", 10, 100)
         r = IMP.atom.get_residue(mp, 10)
         r.show()

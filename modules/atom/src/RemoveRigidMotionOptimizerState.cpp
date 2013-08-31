@@ -15,7 +15,7 @@
 IMPATOM_BEGIN_NAMESPACE
 
 RemoveRigidMotionOptimizerState::RemoveRigidMotionOptimizerState(
-    const ParticlesTemp &pis, unsigned skip_steps)
+    const kernel::ParticlesTemp &pis, unsigned skip_steps)
   : kernel::OptimizerState(pis[0]->get_model(),
                            "RemoveRigidMotionOptimizerState%1%"),
     pis_(pis.begin(), pis.end()) {
@@ -53,8 +53,8 @@ void RemoveRigidMotionOptimizerState::remove_linear() const {
   Float cm[3] = {0., 0., 0.};
   Float cm_mass = 0.;
 
-  for (Particles::const_iterator pi = pis_.begin(); pi != pis_.end(); ++pi) {
-    Particle *p = *pi;
+  for (kernel::Particles::const_iterator pi = pis_.begin(); pi != pis_.end(); ++pi) {
+    kernel::Particle *p = *pi;
 
     Float mass = Mass(p).get_mass();
     cm_mass += mass;
@@ -65,8 +65,8 @@ void RemoveRigidMotionOptimizerState::remove_linear() const {
     }
   }
 
-  for (Particles::const_iterator pi = pis_.begin(); pi != pis_.end(); ++pi) {
-    Particle *p = *pi;
+  for (kernel::Particles::const_iterator pi = pis_.begin(); pi != pis_.end(); ++pi) {
+    kernel::Particle *p = *pi;
 
     for (unsigned i = 0; i < 3; ++i) {
       Float velocity = p->get_value(vs_[i]);
@@ -89,8 +89,8 @@ void RemoveRigidMotionOptimizerState::remove_angular() const {
     }
   }
 
-  for (Particles::const_iterator pi = pis_.begin(); pi != pis_.end(); ++pi) {
-    Particle *p = *pi;
+  for (kernel::Particles::const_iterator pi = pis_.begin(); pi != pis_.end(); ++pi) {
+    kernel::Particle *p = *pi;
 
     Float mass = Mass(p).get_mass();
 
@@ -137,8 +137,8 @@ void RemoveRigidMotionOptimizerState::remove_angular() const {
   oo[1] = (aq_eo - oo[2] * ac_ee) / af_de;
   oo[0] = (o - d * oo[1] - e * oo[2]) / a;
 
-  for (Particles::const_iterator pi = pis_.begin(); pi != pis_.end(); ++pi) {
-    Particle *p = *pi;
+  for (kernel::Particles::const_iterator pi = pis_.begin(); pi != pis_.end(); ++pi) {
+    kernel::Particle *p = *pi;
 
     for (unsigned i = 0; i < 3; ++i) {
       x[i] = core::XYZ(p).get_coordinate(i);

@@ -53,10 +53,10 @@ class IMPATOMEXPORT Selection : public base::InputAdaptor {
   Model *m_;
   double radius_;
 
-  ParticleIndexes h_;
-  std::pair<bool, ParticleIndexes> search(
-      Model *m, ParticleIndex pi, boost::dynamic_bitset<> parent) const;
-  void set_hierarchies(Model *m, const ParticleIndexes &pis);
+  kernel::ParticleIndexes h_;
+  std::pair<bool, kernel::ParticleIndexes> search(
+      Model *m, kernel::ParticleIndex pi, boost::dynamic_bitset<> parent) const;
+  void set_hierarchies(Model *m, const kernel::ParticleIndexes &pis);
 
  public:
 #ifdef IMP_DOXYGEN
@@ -79,12 +79,12 @@ class IMPATOMEXPORT Selection : public base::InputAdaptor {
 #endif
   Selection();
   Selection(Hierarchy h);
-  Selection(Particle *h);
-  Selection(Model *m, const ParticleIndexes &pis);
+  Selection(kernel::Particle *h);
+  Selection(Model *m, const kernel::ParticleIndexes &pis);
 #ifndef SWIG
   Selection(const Hierarchies &h);
 #endif
-  Selection(const ParticlesTemp &h);
+  Selection(const kernel::ParticlesTemp &h);
 // for C++
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   Selection(Hierarchy h, std::string molname, int residue_index);
@@ -135,9 +135,9 @@ class IMPATOMEXPORT Selection : public base::InputAdaptor {
       specify the types. Ints are used to make swig happy.*/
   void set_hierarchy_types(Ints types);
   //! Get the selected particles
-  ParticlesTemp get_selected_particles() const;
+  kernel::ParticlesTemp get_selected_particles() const;
   //! Get the indexes of the selected particles
-  ParticleIndexes get_selected_particle_indexes() const;
+  kernel::ParticleIndexes get_selected_particle_indexes() const;
   IMP_SHOWABLE(Selection);
 };
 
@@ -255,7 +255,7 @@ IMPATOMEXPORT Hierarchies get_leaves(const Selection &h);
 */
 class IMPATOMEXPORT SelectionGeometry : public display::Geometry {
   atom::Selection res_;
-  mutable IMP::base::map<Particle *, base::Pointer<Geometry> > components_;
+  mutable IMP::base::map<kernel::Particle *, base::Pointer<Geometry> > components_;
 
  public:
   SelectionGeometry(atom::Selection d, std::string name = "Selection")

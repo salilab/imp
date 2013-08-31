@@ -35,7 +35,7 @@ IMPATOM_BEGIN_NAMESPACE
           with a container::SingletonsRestraint.
  */
 class IMPATOMEXPORT CHARMMStereochemistryRestraint : public kernel::Restraint {
-  Particles bonds_, angles_, dihedrals_, impropers_;
+  kernel::Particles bonds_, angles_, dihedrals_, impropers_;
   IMP::base::PointerMember<BondSingletonScore> bond_score_;
   IMP::base::PointerMember<AngleSingletonScore> angle_score_;
   IMP::base::PointerMember<DihedralSingletonScore> dihedral_score_;

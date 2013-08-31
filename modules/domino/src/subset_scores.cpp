@@ -53,10 +53,10 @@ void RestraintCache::add_restraint_set_child_internal(kernel::Restraint *r,
 }
 Subset RestraintCache::get_subset(kernel::Restraint *r,
                                   const DepMap &dependencies) const {
-  ParticlesTemp ups = IMP::get_input_particles(r->get_inputs());
+  kernel::ParticlesTemp ups = IMP::get_input_particles(r->get_inputs());
   std::sort(ups.begin(), ups.end());
   ups.erase(std::unique(ups.begin(), ups.end()), ups.end());
-  ParticlesTemp outps;
+  kernel::ParticlesTemp outps;
   for (unsigned int i = 0; i < ups.size(); ++i) {
     DepMap::const_iterator it = dependencies.find(ups[i]);
     if (it != dependencies.end()) {
@@ -111,10 +111,10 @@ void RestraintCache::add_restraints(const kernel::RestraintsAdaptor &rs) {
   DependencyGraph dg = get_dependency_graph(m);
   ParticleStatesTable *pst = cache_.get_generator().get_particle_states_table();
   DepMap dependencies;
-  ParticlesTemp allps = pst->get_particles();
+  kernel::ParticlesTemp allps = pst->get_particles();
   DependencyGraphVertexIndex index = IMP::get_vertex_index(dg);
   for (unsigned int i = 0; i < allps.size(); ++i) {
-    ParticlesTemp depp = get_dependent_particles(allps[i], allps, dg, index);
+    kernel::ParticlesTemp depp = get_dependent_particles(allps[i], allps, dg, index);
     for (unsigned int j = 0; j < depp.size(); ++j) {
       dependencies[depp[j]].push_back(allps[i]);
     }
@@ -230,7 +230,7 @@ void RestraintCache::validate() const {
  */
 #if IMP_DOMINO_HAS_RMF
 namespace {
-Ints get_ids(const base::map<Particle *, int> &map, const Subset &s) {
+Ints get_ids(const base::map<kernel::Particle *, int> &map, const Subset &s) {
   Ints ret(s.size());
   for (unsigned int i = 0; i < s.size(); ++i) {
     ret[i] = map.find(s[i])->second;
@@ -241,7 +241,7 @@ Ints get_ids(const base::map<Particle *, int> &map, const Subset &s) {
 IMP_NAMED_TUPLE_2(RestraintID, RestraintIDs, int, restraint_index,
                   base::ConstVector<unsigned int>, particle_indexes, );
 
-typedef base::map<Particle *, int> ParticleIndex;
+typedef base::map<kernel::Particle *, int> ParticleIndex;
 RestraintID get_restraint_id(const ParticleIndex &map, const Subset &s,
                              unsigned int restraint_index) {
   RestraintID ret;
@@ -250,7 +250,7 @@ RestraintID get_restraint_id(const ParticleIndex &map, const Subset &s,
   ret.set_particle_indexes(base::ConstVector<unsigned int>(pis));
   return ret;
 }
-ParticleIndex get_particle_index(const ParticlesTemp &particle_ordering) {
+ParticleIndex get_particle_index(const kernel::ParticlesTemp &particle_ordering) {
   ParticleIndex map;
   for (unsigned int i = 0; i < particle_ordering.size(); ++i) {
     map[particle_ordering[i]] = i;
@@ -260,7 +260,7 @@ ParticleIndex get_particle_index(const ParticlesTemp &particle_ordering) {
 Orders get_orders(
     const base::map<base::Pointer<kernel::Restraint>, Subset> &known_restraints,
     const kernel::RestraintsTemp &restraints,
-    const ParticlesTemp &particle_ordering) {
+    const kernel::ParticlesTemp &particle_ordering) {
   Orders ret(restraints.size());
   for (unsigned int i = 0; i < restraints.size(); ++i) {
     ret[i] =
@@ -270,7 +270,7 @@ Orders get_orders(
 }
 }
 
-void RestraintCache::save_cache(const ParticlesTemp &particle_ordering,
+void RestraintCache::save_cache(const kernel::ParticlesTemp &particle_ordering,
                                 const kernel::RestraintsTemp &restraints,
                                 RMF::HDF5::Group group,
                                 unsigned int max_entries) {
@@ -319,7 +319,7 @@ void RestraintCache::save_cache(const ParticlesTemp &particle_ordering,
   }
 }
 
-void RestraintCache::load_cache(const ParticlesTemp &particle_ordering,
+void RestraintCache::load_cache(const kernel::ParticlesTemp &particle_ordering,
                                 RMF::HDF5::ConstGroup group) {
   ParticleIndex particle_index = get_particle_index(particle_ordering);
   base::map<RestraintID, kernel::Restraint *> index;

@@ -3,7 +3,7 @@
 
 */
 #include <IMP/Model.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/atom/Hierarchy.h>
@@ -62,12 +62,12 @@ int main(int argc, char **argv)
   topology->setup_hierarchy(mhd);
   //IMP::atom::CHARMMStereochemistryRestraint* r
   //   = new IMP::atom::CHARMMStereochemistryRestraint(mhd, topology);
-  IMP::ParticlesTemp bonds =  topology->add_bonds(mhd);
+  IMP::kernel::ParticlesTemp bonds =  topology->add_bonds(mhd);
 
   ProteinKinematics pk(mhd, true, false);
   std::cerr << "ProteinKinematics done" << std::endl;
 
-  IMP::Particles residue_particles
+  IMP::kernel::Particles residue_particles
     = IMP::atom::get_by_type(mhd, IMP::atom::RESIDUE_TYPE);
 
   std::cerr << "Psi of the first residue "

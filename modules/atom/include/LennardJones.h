@@ -24,7 +24,7 @@ IMPATOM_BEGIN_NAMESPACE
     \see LennardJonesPairScore
  */
 class IMPATOMEXPORT LennardJones : public IMP::core::XYZR {
-  static void do_setup_particle(Model *m, ParticleIndex pi,
+  static void do_setup_particle(Model *m, kernel::ParticleIndex pi,
                                 Float well_depth = 0) {
     IMP_USAGE_CHECK(XYZR::get_is_setup(m, pi),
                     "Particle must already be an XYZR particle");
@@ -45,7 +45,7 @@ class IMPATOMEXPORT LennardJones : public IMP::core::XYZR {
   }
 
   //! Return true if the particle is an instance of a LennardJones
-  static bool get_is_setup(Model *m, ParticleIndex pi) {
+  static bool get_is_setup(Model *m, kernel::ParticleIndex pi) {
     return XYZR::get_is_setup(m, pi) &&
       m->get_has_attribute(get_well_depth_key(), pi);
   }

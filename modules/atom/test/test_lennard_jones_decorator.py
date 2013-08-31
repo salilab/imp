@@ -5,7 +5,7 @@ import IMP.atom
 import IMP.algebra
 
 def _make_test_decorator(m):
-    p = IMP.Particle(m)
+    p = IMP.kernel.Particle(m)
     v = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
     s = IMP.algebra.Sphere3D(v, 4.0)
     IMP.core.XYZR.setup_particle(p, s)
@@ -18,14 +18,14 @@ class Tests(IMP.test.TestCase):
     def test_create(self):
         """Check creation of LennardJones decorators"""
         m = IMP.Model()
-        p = IMP.Particle(m)
+        p = IMP.kernel.Particle(m)
         s = IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1.0, 2.0, 3.0), 4.0)
         # Can create decorators using well depth, only if the particle is
         # already an XYZ
-        p = IMP.Particle(m)
+        p = IMP.kernel.Particle(m)
         IMP.core.XYZR.setup_particle(p, s)
         IMP.atom.LennardJones.setup_particle(p, 0.5)
-        p = IMP.Particle(m)
+        p = IMP.kernel.Particle(m)
         if IMP.base.get_check_level() != IMP.base.NONE:
             self.assertRaises(IMP.base.UsageException,
                               IMP.atom.LennardJones.setup_particle, p, 0.5)

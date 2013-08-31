@@ -20,7 +20,7 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 /** Create a serial mover from a list of core::XYZR particles.
  */
 IMPEXAMPLEEXPORT core::MonteCarloMover *create_serial_mover(
-    const ParticlesTemp &ps);
+    const kernel::ParticlesTemp &ps);
 
 /** Take a set of core::XYZR particles and relax them relative to a set of
     restraints. Excluded volume is handle separately, so don't include it
@@ -29,7 +29,7 @@ IMPEXAMPLEEXPORT core::MonteCarloMover *create_serial_mover(
     \include optimize_balls.cpp
 */
 IMPEXAMPLEEXPORT void optimize_balls(
-    const ParticlesTemp &ps,
+    const kernel::ParticlesTemp &ps,
     const kernel::RestraintsTemp &rs = kernel::RestraintsTemp(),
     const PairPredicates &excluded = PairPredicates(),
     const OptimizerStates &opt_states = OptimizerStates(),

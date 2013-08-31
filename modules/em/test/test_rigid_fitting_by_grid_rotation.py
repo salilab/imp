@@ -39,7 +39,7 @@ class Tests(IMP.test.TestCase):
         check = IMP.base.get_check_level()
         mrw=IMP.em.MRCReaderWriter()
         #create a rigid body
-        rb_p = IMP.Particle(self.imp_model)
+        rb_p = IMP.kernel.Particle(self.imp_model)
         #sample density map
         sampled_density_map = IMP.em.SampledDensityMap(self.scene.get_header())
         sampled_density_map.set_particles(self.particles)

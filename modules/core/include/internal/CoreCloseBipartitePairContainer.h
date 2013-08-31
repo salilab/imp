@@ -17,7 +17,7 @@
 #include <IMP/PairContainer.h>
 #include <IMP/PairPredicate.h>
 #include <IMP/SingletonContainer.h>
-#include <IMP/internal/ListLikePairContainer.h>
+#include <IMP/kernel/internal/ListLikePairContainer.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
@@ -39,16 +39,16 @@ class IMPCOREEXPORT CoreCloseBipartitePairContainer
   bool were_close_, reset_;
   ObjectKey key_;
   // moved stuff
-  ParticleIndexes rbs_[2];
-  ParticleIndexes xyzrs_[2];
-  IMP::base::map<ParticleIndex, ParticleIndexes> constituents_;
+  kernel::ParticleIndexes rbs_[2];
+  kernel::ParticleIndexes xyzrs_[2];
+  IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> constituents_;
   double slack_, distance_;
   algebra::Sphere3Ds rbs_backup_sphere_[2];
   algebra::Rotation3Ds rbs_backup_rot_[2];
   algebra::Sphere3Ds xyzrs_backup_[2];
   ParticleIndex covers_[2];
   void initialize(SingletonContainer *a, SingletonContainer *b,
-                  ParticleIndex cover_a, ParticleIndex cover_b, double distance,
+                  kernel::ParticleIndex cover_a, kernel::ParticleIndex cover_b, double distance,
                   double slack, ObjectKey key);
 
  public:
@@ -60,7 +60,7 @@ class IMPCOREEXPORT CoreCloseBipartitePairContainer
 
   //! make sure you know what you are doing
   CoreCloseBipartitePairContainer(SingletonContainer *a, SingletonContainer *b,
-                                  ParticleIndex cover_a, ParticleIndex cover_b,
+                                  kernel::ParticleIndex cover_a, kernel::ParticleIndex cover_b,
                                   ObjectKey key, double distance,
                                   double slack = 1,
                                   std::string name
@@ -83,10 +83,10 @@ class IMPCOREEXPORT CoreCloseBipartitePairContainer
                   ,{ set_has_dependencies(false);} , );
   /**@}*/
   void clear_caches() { reset_ = true; }
-    virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+    virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual void do_before_evaluate() IMP_OVERRIDE;
-  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(CoreCloseBipartitePairContainer);
 };
 

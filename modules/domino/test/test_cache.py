@@ -25,7 +25,7 @@ class Tests(IMP.test.TestCase):
     def test_global_min1(self):
         """Test caching of restraint scores"""
         m= IMP.Model()
-        p= IMP.Particle(m)
+        p= IMP.kernel.Particle(m)
         IMP.core.XYZ.setup_particle(p)
         lr= LogRestraint(m, [p])
         lr.set_maximum_score(0)
@@ -45,7 +45,7 @@ class Tests(IMP.test.TestCase):
     def test_global_min2(self):
         """Test non-caching of restraint scores"""
         m= IMP.Model()
-        p= IMP.Particle(m)
+        p= IMP.kernel.Particle(m)
         IMP.core.XYZ.setup_particle(p)
         lr= LogRestraint(m, [p])
         lr.set_maximum_score(0)
@@ -65,7 +65,7 @@ class Tests(IMP.test.TestCase):
     def test_global_min3(self):
         """Test capped caching of restraint scores"""
         m= IMP.Model()
-        p= IMP.Particle(m)
+        p= IMP.kernel.Particle(m)
         IMP.core.XYZ.setup_particle(p)
         lr= LogRestraint(m, [p])
         lr.set_maximum_score(0)

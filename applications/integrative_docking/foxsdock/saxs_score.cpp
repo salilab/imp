@@ -111,7 +111,7 @@ recommended q value is 0.2")
   float delta_q = max_q / profile_size;
 
   // read pdb  files, prepare particles
-  IMP::Particles particles1, particles2;
+  IMP::kernel::Particles particles1, particles2;
   if(!residue_level) {
     read_pdb_atoms(static_pdb, particles1);
     read_pdb_atoms(transformed_pdb, particles2);
@@ -195,7 +195,7 @@ recommended q value is 0.2")
   }
 
   // prepare vec with all particles for d_max/rg computation
-  IMP::Particles particles(particles1);
+  IMP::kernel::Particles particles(particles1);
   particles.insert(particles.end(), particles2.begin(), particles2.end());
 
   // output file header

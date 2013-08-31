@@ -14,7 +14,7 @@
 #include <IMP/kernel/OptimizerState.h>
 #include <IMP/display/geometry.h>
 #include <IMP/base/Pointer.h>
-#include <IMP/internal/utility.h>
+#include <IMP/kernel/internal/utility.h>
 #include <vector>
 
 IMPDISPLAY_BEGIN_NAMESPACE

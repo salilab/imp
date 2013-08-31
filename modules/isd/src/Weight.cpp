@@ -11,7 +11,7 @@
 IMPISD_BEGIN_NAMESPACE
 
 void Weight::do_setup_particle(Model *m,
-                               ParticleIndex pi){
+                               kernel::ParticleIndex pi){
   m->add_attribute(get_nstates_key(), pi, 0);
   for(int i=0; i<nstates_max; ++i){
     m->add_attribute(get_weight_key(i), pi, 0.0);

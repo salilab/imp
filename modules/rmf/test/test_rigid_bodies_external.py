@@ -9,12 +9,12 @@ class Tests(IMP.test.TestCase):
         """Test loading and saving of rigid bodies external"""
         for suffix in RMF.suffixes:
             m= IMP.Model()
-            h= IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+            h= IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
             h.set_name("rt")
-            rbd= IMP.core.RigidBody.setup_particle(IMP.Particle(m, "rb"),
+            rbd= IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m, "rb"),
                                                    IMP.algebra.ReferenceFrame3D())
             for i in range(0,3):
-                p = IMP.Particle(m)
+                p = IMP.kernel.Particle(m)
                 v= IMP.algebra.Vector3D(0,0,0)
                 v[i]=1
                 d=IMP.core.XYZR.setup_particle(p)

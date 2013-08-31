@@ -135,7 +135,7 @@
   /** Display a particle.*/                                            \
   class Name##Geometry : public display::SingletonGeometry {           \
    public:                                                             \
-    Name##Geometry(Particle *p) : display::SingletonGeometry(p) {}     \
+    Name##Geometry(kernel::Particle *p) : display::SingletonGeometry(p) {}     \
     Name##Geometry(Decorator d) : display::SingletonGeometry(d) {}     \
     IMP_IMPLEMENT_INLINE(display::Geometries get_components() const, { \
       display::Geometries ret;                                         \
@@ -165,7 +165,7 @@
   /** Display a pair of particles.*/                                      \
   class Name##Geometry : public display::PairGeometry {                   \
    public:                                                                \
-    Name##Geometry(const ParticlePair &pp) : display::PairGeometry(pp) {} \
+    Name##Geometry(const kernel::ParticlePair &pp) : display::PairGeometry(pp) {} \
     IMP_IMPLEMENT_INLINE(display::Geometries get_components() const, {    \
       display::Geometries ret;                                            \
       Decorator d0(get_particle_pair()[0]);                               \

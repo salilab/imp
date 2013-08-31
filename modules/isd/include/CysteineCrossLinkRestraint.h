@@ -43,14 +43,14 @@ IMPISD_BEGIN_NAMESPACE
 
 class IMPISDEXPORT  CysteineCrossLinkRestraint : public ISDRestraint
 {
-    Particles ps1_;
-    Particles ps2_;
-    std::vector<Particles> pslist1_;
-    std::vector<Particles> pslist2_;
-    base::Pointer<Particle> beta_;
-    base::Pointer<Particle> sigma_;
-    base::Pointer<Particle> epsilon_; // k * t at the exponential
-    base::Pointer<Particle> weight_;
+    kernel::Particles ps1_;
+    kernel::Particles ps2_;
+    std::vector<kernel::Particles> pslist1_;
+    std::vector<kernel::Particles> pslist2_;
+    base::Pointer<kernel::Particle> beta_;
+    base::Pointer<kernel::Particle> sigma_;
+    base::Pointer<kernel::Particle> epsilon_; // k * t at the exponential
+    base::Pointer<kernel::Particle> weight_;
     base::PointerMember<CrossLinkData> data_;
     base::PointerMember<CysteineCrossLinkData> ccldata_;
     int constr_type_;
@@ -63,11 +63,11 @@ public:
   /** kernel::Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
    */
-   CysteineCrossLinkRestraint(Particle *beta, Particle *sigma,
-    Particle *epsilon, Particle *weight, CrossLinkData *data, double fexp);
+   CysteineCrossLinkRestraint(kernel::Particle *beta, kernel::Particle *sigma,
+    kernel::Particle *epsilon, kernel::Particle *weight, CrossLinkData *data, double fexp);
 
-   CysteineCrossLinkRestraint(Particle *beta, Particle *sigma,
-    Particle *epsilon, Particle *weight, CrossLinkData *data,
+   CysteineCrossLinkRestraint(kernel::Particle *beta, kernel::Particle *sigma,
+    kernel::Particle *epsilon, kernel::Particle *weight, CrossLinkData *data,
     CysteineCrossLinkData *ccldata);
 
   /* call for probability */
@@ -85,10 +85,10 @@ public:
 
   double get_normal_pdf(double mean, double sigma, double x) const;
 
-  void add_contribution(Particle *p1, Particle *p2);
-  void add_contribution(Particles p1, Particles p2);
+  void add_contribution(kernel::Particle *p1, kernel::Particle *p2);
+  void add_contribution(kernel::Particles p1, kernel::Particles p2);
 
-  algebra::Vector3D get_CB_coordinates(const Particles& ps) const;
+  algebra::Vector3D get_CB_coordinates(const kernel::Particles& ps) const;
 
   unsigned get_number_of_contributions() const;
 

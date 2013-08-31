@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
     RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(io[0]);
     IMP_NEW(IMP::Model, m, ());
     IMP::atom::Hierarchies hs= IMP::rmf::create_hierarchies(rh, m);
-    IMP::ParticlesTemp ps= IMP::rmf::create_particles(rh, m);
+    IMP::kernel::ParticlesTemp ps= IMP::rmf::create_particles(rh, m);
     IMP::Restraints rs= IMP::rmf::create_restraints(rh, m);
     IMP::display::Geometries gs= IMP::rmf::create_geometries(rh);
 

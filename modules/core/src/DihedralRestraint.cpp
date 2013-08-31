@@ -11,7 +11,7 @@
 #include <IMP/core/internal/dihedral_helpers.h>
 #include <IMP/algebra/Vector3D.h>
 
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/Model.h>
 #include <IMP/base/log.h>
 
@@ -19,8 +19,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-DihedralRestraint::DihedralRestraint(UnaryFunction* score_func, Particle* p1,
-                                     Particle* p2, Particle* p3, Particle* p4)
+DihedralRestraint::DihedralRestraint(kernel::UnaryFunction* score_func, kernel::Particle* p1,
+                                     kernel::Particle* p2, kernel::Particle* p3, kernel::Particle* p4)
     : kernel::Restraint(p1->get_model(), "DihedralRestraint%1%") {
   p_[0] = p1;
   p_[1] = p2;

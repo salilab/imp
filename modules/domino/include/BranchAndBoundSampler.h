@@ -21,7 +21,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 //! Sample best solutions using BranchAndBound
 /** Find all good configurations of the model using branch and bound.
     Searches are truncated when the score is worse than the the thresholds
-    in the Sampler or when two particles with the same ParticlesState
+    in the Sampler or when two particles with the same kernel::ParticlesState
     are assigned the same state.
  */
 class IMPDOMINOEXPORT BranchAndBoundSampler : public DiscreteSampler {

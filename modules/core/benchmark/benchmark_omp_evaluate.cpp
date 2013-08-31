@@ -15,12 +15,12 @@ namespace {
 std::string get_module_name() { return "benchmark omp"; }
 std::string get_module_version() { return IMP::core::get_module_version(); }
 
-  class ExpensiveRestraint : public IMP::kernel::Restraint {
-  IMP::ParticleIndexes pis_;
+class ExpensiveRestraint : public IMP::kernel::Restraint {
+  IMP::kernel::ParticleIndexes pis_;
 
  public:
-  ExpensiveRestraint(IMP::Model *m, const IMP::ParticleIndexes &pis)
-    : IMP::kernel::Restraint(m, "ExpensiveRestraint%1%"), pis_(pis) {}
+  ExpensiveRestraint(IMP::Model *m, const IMP::kernel::ParticleIndexes &pis)
+      : Restraint(m, "ExpensiveRestraint%1%"), pis_(pis) {}
   void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator sa) const
       IMP_OVERRIDE;
   IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
@@ -105,9 +105,9 @@ int main(int argc, char **argv) {
   IMP_NEW(IMP::Model, m, ());
   IMP::Restraints rs;
   for (unsigned int i = 0; i < 15; ++i) {
-    IMP::ParticleIndexes pis;
+    IMP::kernel::ParticleIndexes pis;
     for (unsigned int j = 0; j < 5000; ++j) {
-      IMP_NEW(IMP::Particle, p, (m));
+      IMP_NEW(IMP::kernel::Particle, p, (m));
       IMP::core::XYZ::setup_particle(p, IMP::algebra::get_random_vector_in(bb));
       pis.push_back(p->get_index());
     }

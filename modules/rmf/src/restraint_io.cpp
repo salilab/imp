@@ -22,12 +22,12 @@ IMP_OBJECTS(RMFRestraint, RMFRestraints);
 /** A dummy restraint object to represent restraints loaded from
     an RMF file.*/
 class IMPRMFEXPORT RMFRestraint : public kernel::Restraint {
-  ParticlesTemp ps_;
+  kernel::ParticlesTemp ps_;
 
  public:
 #ifndef IMP_DOXYGEN
   RMFRestraint(Model *m, std::string name);
-  void set_particles(const ParticlesTemp &ps) { ps_ = ps; }
+  void set_particles(const kernel::ParticlesTemp &ps) { ps_ = ps; }
 #endif
   double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum) const;
   ModelObjectsTemp do_get_inputs() const;
@@ -56,9 +56,9 @@ RMFRestraint::RMFRestraint(Model *m, std::string name) :
   kernel::Restraint(m, name) {}
 
 class Subset
-    : public base::ConstVector<base::WeakPointer<Particle>, Particle *> {
-  typedef base::ConstVector<base::WeakPointer<Particle>, Particle *> P;
-  static ParticlesTemp get_sorted(ParticlesTemp ps) {
+    : public base::ConstVector<base::WeakPointer<kernel::Particle>, kernel::Particle *> {
+  typedef base::ConstVector<base::WeakPointer<kernel::Particle>, kernel::Particle *> P;
+  static kernel::ParticlesTemp get_sorted(kernel::ParticlesTemp ps) {
     std::sort(ps.begin(), ps.end());
     ps.erase(std::unique(ps.begin(), ps.end()), ps.end());
     return ps;
@@ -67,7 +67,7 @@ class Subset
  public:
   /** Construct a subset from a non-empty list of particles.
    */
-  explicit Subset(const ParticlesTemp &ps) : P(get_sorted(ps)) {}
+  explicit Subset(const kernel::ParticlesTemp &ps) : P(get_sorted(ps)) {}
   std::string get_name() const {
     std::ostringstream oss;
     for (unsigned int i = 0; i < size(); ++i) {
@@ -148,7 +148,7 @@ class RestraintLoadLink : public SimpleLoadLink<kernel::Restraint> {
   kernel::Restraint *do_create(RMF::NodeConstHandle name) {
     RMF::NodeConstHandles chs = name.get_children();
     kernel::Restraints childr;
-    ParticlesTemp inputs;
+    kernel::ParticlesTemp inputs;
     for (unsigned int i = 0; i < chs.size(); ++i) {
       if (chs[i].get_type() == RMF::FEATURE) {
         childr.push_back(do_create(chs[i]));
@@ -157,7 +157,7 @@ class RestraintLoadLink : public SimpleLoadLink<kernel::Restraint> {
         RMF::NodeConstHandle an = af_.get(chs[i]).get_aliased();
         IMP_LOG_TERSE("Found alias child to " << an.get_name() << " of type "
                                               << an.get_type() << std::endl);
-        Particle *p = get_association<Particle>(an);
+        kernel::Particle *p = get_association<kernel::Particle>(an);
         if (p) {
           inputs.push_back(p);
         } else {
@@ -245,7 +245,7 @@ class RestraintSaveLink : public SimpleSaveLink<kernel::Restraint> {
       if (sdnf.get_representation().empty()) {
         RMF::SetCurrentFrame scf(nh.get_file(), RMF::ALL_FRAMES);
         // be lazy about it
-        ParticlesTemp inputs = get_input_particles(o->get_inputs());
+        kernel::ParticlesTemp inputs = get_input_particles(o->get_inputs());
         std::sort(inputs.begin(), inputs.end());
         inputs.erase(std::unique(inputs.begin(), inputs.end()), inputs.end());
         RMF::NodeConstHandles nhs = get_node_ids(nh.get_file(), inputs);

@@ -23,7 +23,7 @@ m=IMP.Model()
 # add 2 particles
 ps=[]
 for i in range(2):
-    p=IMP.Particle(m)
+    p=IMP.kernel.Particle(m)
     IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(0.0, 0.0, 0.0))
     ps.append(p)
 

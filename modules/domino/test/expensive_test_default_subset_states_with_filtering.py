@@ -33,7 +33,7 @@ class Tests(IMP.test.TestCase):
         ns=5
         np=4
         for i in range(0,np):
-            ps.append(IMP.Particle(m))
+            ps.append(IMP.kernel.Particle(m))
             IMP.core.XYZ.setup_particle(ps[-1])
         pst= IMP.domino.ParticleStatesTable()
         print "creating subset"

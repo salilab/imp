@@ -15,7 +15,7 @@ class Tests(IMP.test.TestCase):
                                        (IMP.atom.HOH, False, False, False),
                                        # user-added residues are also ligands
                                        (user, False, False, False)):
-            p = IMP.Particle(m)
+            p = IMP.kernel.Particle(m)
             r = IMP.atom.Residue.setup_particle(p, typ)
             self.assertEqual(r.get_is_rna(), rna)
             self.assertEqual(r.get_is_dna(), dna)

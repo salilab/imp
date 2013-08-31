@@ -12,7 +12,7 @@
 #include "Assignment.h"
 #include "Subset.h"
 #include "particle_states.h"
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/RestraintSet.h>
 #include <IMP/Model.h>
@@ -74,7 +74,7 @@ IMPDOMINOEXPORT kernel::RestraintsTemp get_restraints(const Subset &s,
     This function is designed to be used for implementing SubsetFilterTable
     classes.
 */
-IMPDOMINOEXPORT Ints get_index(const ParticlesTemp &particles,
+IMPDOMINOEXPORT Ints get_index(const kernel::ParticlesTemp &particles,
                                const Subset &subset, const Subsets &excluded);
 
 /** All of the passed particles are not contained in an ofthe Subsets
@@ -84,15 +84,15 @@ IMPDOMINOEXPORT Ints get_index(const ParticlesTemp &particles,
     This function is designed to be used for implementing SubsetFilterTable
     classes.
 */
-IMPDOMINOEXPORT Ints get_partial_index(const ParticlesTemp &particles,
+IMPDOMINOEXPORT Ints get_partial_index(const kernel::ParticlesTemp &particles,
                                        const Subset &subset,
                                        const Subsets &excluded);
 
 /** Return the list of interactions implied by the passed balls
     given the allowed positions specified by the ParticleStatesTable.
 */
-IMPDOMINOEXPORT ParticlePairsTemp get_possible_interactions(
-    const ParticlesTemp &ps, double max_distance, ParticleStatesTable *pst);
+IMPDOMINOEXPORT kernel::ParticlePairsTemp get_possible_interactions(
+    const kernel::ParticlesTemp &ps, double max_distance, ParticleStatesTable *pst);
 
 //! Return an embedding for an assignment
 IMPDOMINOEXPORT algebra::VectorKD get_embedding(const Subset &s,

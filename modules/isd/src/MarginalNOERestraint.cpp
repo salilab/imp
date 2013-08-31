@@ -19,11 +19,11 @@ IMPISD_BEGIN_NAMESPACE
 //MarginalNOERestraint::MarginalNOERestraint() {}
 
 // add a contribution: simple case
-void MarginalNOERestraint::add_contribution(Particle *p1, Particle *p2,
+void MarginalNOERestraint::add_contribution(kernel::Particle *p1, kernel::Particle *p2,
                                             double Iexp)
 {
-    ParticlePair pc(p1,p2);
-    ParticlePairsTemp pct(1,pc);
+    kernel::ParticlePair pc(p1,p2);
+    kernel::ParticlePairsTemp pct(1,pc);
     IMP_NEW(container::ListPairContainer, cont, (pct));
     //container::ListPairContainer cont(pct);
     add_contribution(cont,Iexp);

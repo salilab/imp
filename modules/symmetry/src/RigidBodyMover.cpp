@@ -12,7 +12,7 @@
 
 IMPSYMMETRY_BEGIN_NAMESPACE
 
-RigidBodyMover::RigidBodyMover(core::RigidBody d, Particles ps,
+RigidBodyMover::RigidBodyMover(core::RigidBody d, kernel::Particles ps,
                         Float max_tr, Float max_ang,
                         algebra::Vector3Ds ctrs,
                         algebra::Transformation3Ds trs):
@@ -36,9 +36,9 @@ RigidBodyMover::RigidBodyMover(core::RigidBody d, Particles ps,
  trs_ = trs;
 }
 
-Particles RigidBodyMover::get_particles(Particles ps)
+Particles RigidBodyMover::get_particles(kernel::Particles ps)
 {
- Particles ps_norb;
+ kernel::Particles ps_norb;
  for(unsigned i=0;i<ps.size();++i){
   if(!core::RigidMember::get_is_setup(ps[i])){
    ps_norb.push_back(ps[i]);
@@ -47,7 +47,7 @@ Particles RigidBodyMover::get_particles(Particles ps)
  return ps_norb;
 }
 
-std::vector<core::RigidBody> RigidBodyMover::get_rigid_bodies (Particles ps)
+std::vector<core::RigidBody> RigidBodyMover::get_rigid_bodies (kernel::Particles ps)
 {
  std::vector<core::RigidBody> rbs;
  for(unsigned i=0;i<ps.size();++i){
@@ -135,7 +135,7 @@ core::MonteCarloMoverResult RigidBodyMover::do_propose() {
                                              algebra::Transformation3D(rr,tt)));
   }
 
-  ParticlesTemp ret=ParticlesTemp(1, d_);
+  kernel::ParticlesTemp ret=ParticlesTemp(1, d_);
   ret.insert(ret.end(), ps_.begin(), ps_.end());
 
   return core::MonteCarloMoverResult(kernel::get_indexes(ret), 1.0);
@@ -156,7 +156,7 @@ void RigidBodyMover::do_reject() {
 }
 
 ModelObjectsTemp RigidBodyMover::do_get_inputs() const {
- ParticlesTemp ret=ParticlesTemp(1, d_);
+ kernel::ParticlesTemp ret=ParticlesTemp(1, d_);
  ret.insert(ret.end(), ps_.begin(), ps_.end());
  return ret;
 }

@@ -23,8 +23,8 @@ IMPCORE_BEGIN_NAMESPACE
 // TODO: why this number? how can we tell it's unique
 #define IMP_PARTICLE_TYPE_INDEX 34897493
 
-/** A ParticleType is an IMP::kernel::Key object for identifying types of
-    particles by strings. The ParticleType key is used to type particles within
+/** A kernel::ParticleType is an IMP::kernel::Key object for identifying types of
+    particles by strings. The kernel::ParticleType key is used to type particles within
     the Typed decorator */
 typedef Key<IMP_PARTICLE_TYPE_INDEX, true> ParticleType;
 IMP_VALUES(ParticleType, ParticleTypes);
@@ -33,7 +33,8 @@ IMP_VALUES(ParticleType, ParticleTypes);
 /** This decorator
  */
 class IMPCOREEXPORT Typed : public Decorator {
-  static void do_setup_particle(Model *m, ParticleIndex pi, ParticleType t) {
+  static void do_setup_particle(Model *m, kernel::ParticleIndex pi,
+                                ParticleType t) {
     m->add_attribute(get_type_key(), pi, t.get_index());
   }
  public:
@@ -42,7 +43,7 @@ class IMPCOREEXPORT Typed : public Decorator {
   IMP_DECORATOR_METHODS(Typed, Decorator);
   IMP_DECORATOR_SETUP_1(Typed, ParticleType, t);
 
-  static bool get_is_setup(Model *m, ParticleIndex pi) {
+  static bool get_is_setup(Model *m, kernel::ParticleIndex pi) {
     return m->get_has_attribute(get_type_key(), pi);
   }
 
@@ -52,7 +53,7 @@ class IMPCOREEXPORT Typed : public Decorator {
   }
 };
 
-IMP_DECORATORS(Typed, Typeds, ParticlesTemp);
+IMP_DECORATORS(Typed, Typeds, kernel::ParticlesTemp);
 
 IMPCORE_END_NAMESPACE
 

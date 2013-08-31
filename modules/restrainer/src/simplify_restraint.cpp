@@ -51,7 +51,7 @@ SimpleConnectivity create_simple_connectivity_on_molecules(
 
   IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given");
 
-  ParticlesTemp ps;
+  kernel::ParticlesTemp ps;
 
   for ( size_t i=0; i<mhs_size; ++i )
   {
@@ -85,7 +85,7 @@ SimpleConnectivity create_simple_connectivity_on_molecules(
   return SimpleConnectivity(cr, h, sdps);
 }
 
-SimpleDistance create_simple_distance(const Particles &ps)
+SimpleDistance create_simple_distance(const kernel::Particles &ps)
 {
   IMP_USAGE_CHECK(ps.size() == 2, "Two particles should be given");
 
@@ -104,14 +104,14 @@ SimpleDistance create_simple_distance(const Particles &ps)
   return SimpleDistance(dr, h);
 }
 
-SimpleDiameter create_simple_diameter(const Particles &ps, Float diameter)
+SimpleDiameter create_simple_diameter(const kernel::Particles &ps, Float diameter)
 {
   IMP_USAGE_CHECK(ps.size() >= 2, "At least two particles should be given");
 
   /****** Set the restraint ******/
 
   IMP_NEW(core::HarmonicUpperBound, h, (0, 1));
-  IMP_NEW(container::ListSingletonContainer, lsc, (get_as<ParticlesTemp>(ps)));
+  IMP_NEW(container::ListSingletonContainer, lsc, (get_as<kernel::ParticlesTemp>(ps)));
   IMP_NEW(core::DiameterRestraint, dr, (h, lsc, diameter));
 
   /****** Add restraint to the model ******/
@@ -132,9 +132,9 @@ SimpleExcludedVolume create_simple_excluded_volume_on_rigid_bodies(
 
   /****** Set the restraint ******/
 
-  ParticlesTemp all;
+  kernel::ParticlesTemp all;
   for (unsigned int i=0; i< rbs.size(); ++i) {
-    ParticlesTemp cur= ref->get_refined(rbs[i]);
+    kernel::ParticlesTemp cur= ref->get_refined(rbs[i]);
     all.insert(all.end(), cur.begin(), cur.end());
   }
 
@@ -159,11 +159,11 @@ SimpleExcludedVolume create_simple_excluded_volume_on_molecules(
 
   IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given");
 
-  ParticlesTemp ps;
+  kernel::ParticlesTemp ps;
 
   for ( size_t i=0; i<mhs.size(); ++i )
   {
-    ParticlesTemp leaves= IMP::atom::get_leaves(mhs[i]);
+    kernel::ParticlesTemp leaves= IMP::atom::get_leaves(mhs[i]);
     ps.insert(ps.end(), leaves.begin(), leaves.end());
   }
 
@@ -191,7 +191,7 @@ core::RigidBodies set_rigid_bodies(atom::Hierarchies const &mhs)
 
   IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given");
 
-  Particles rbps;
+  kernel::Particles rbps;
 
   for ( size_t i=0; i<mhs_size; ++i )
   {
@@ -224,10 +224,10 @@ SimpleEMFit create_simple_em_fit(atom::Hierarchies const &mhs,
   size_t mhs_size = mhs.size();
 
   IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given");
-  ParticlesTemp ps;
+  kernel::ParticlesTemp ps;
   for ( size_t i=0; i<mhs_size; ++i )
   {
-    ParticlesTemp pss = core::get_leaves(mhs[i]);
+    kernel::ParticlesTemp pss = core::get_leaves(mhs[i]);
     ps.insert(ps.end(),pss.begin(),pss.end());
   }
 

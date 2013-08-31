@@ -20,7 +20,7 @@ RigidBodyHierarchyGeometry::RigidBodyHierarchyGeometry(
 }
 
 RigidBodyHierarchyGeometry::RigidBodyHierarchyGeometry(
-    RigidBody rb, const ParticlesTemp &constituents)
+    RigidBody rb, const kernel::ParticlesTemp &constituents)
     : display::SingletonGeometry(rb) {
   h_ = internal::get_rigid_body_hierarchy(
       rb, IMP::internal::get_index(constituents), ObjectKey());
@@ -49,14 +49,14 @@ display::Geometries RigidBodyHierarchyGeometry::get_components() const {
   return ret;
 }
 
-RigidBodyTorque::RigidBodyTorque(Particle *p)
+RigidBodyTorque::RigidBodyTorque(kernel::Particle *p)
     : display::SegmentGeometry(extract_geometry(p), p->get_name()), p_(p) {}
 const algebra::Segment3D &RigidBodyTorque::get_geometry() const {
   cache_ = extract_geometry(p_);
   return cache_;
 }
 
-algebra::Segment3D RigidBodyTorque::extract_geometry(Particle *p) {
+algebra::Segment3D RigidBodyTorque::extract_geometry(kernel::Particle *p) {
   RigidBody rb(p);
   algebra::Vector3D o = rb.get_coordinates();
   algebra::Vector3D ep = o + rb.get_torque();

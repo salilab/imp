@@ -13,9 +13,9 @@
 
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
 
-void add_dihedral_to_list(const CHARMMParameters *param, Particle *p1,
-                          Particle *p2, Particle *p3, Particle *p4,
-                          Particles &ps) {
+void add_dihedral_to_list(const CHARMMParameters *param, kernel::Particle *p1,
+                          kernel::Particle *p2, kernel::Particle *p3, kernel::Particle *p4,
+                          kernel::Particles &ps) {
   try {
     base::Vector<CHARMMDihedralParameters> p = param->get_dihedral_parameters(
         CHARMMAtom(p1).get_charmm_type(), CHARMMAtom(p2).get_charmm_type(),
@@ -23,7 +23,7 @@ void add_dihedral_to_list(const CHARMMParameters *param, Particle *p1,
     for (base::Vector<CHARMMDihedralParameters>::const_iterator it = p.begin();
          it != p.end(); ++it) {
       Dihedral dd =
-          Dihedral::setup_particle(new Particle(p1->get_model()), core::XYZ(p1),
+          Dihedral::setup_particle(new kernel::Particle(p1->get_model()), core::XYZ(p1),
                                    core::XYZ(p2), core::XYZ(p3), core::XYZ(p4));
       dd.set_ideal(it->ideal / 180.0 * PI);
       dd.set_multiplicity(it->multiplicity);
@@ -39,7 +39,7 @@ void add_dihedral_to_list(const CHARMMParameters *param, Particle *p1,
     // If no parameters, warn, and create an empty dihedral
     IMP_WARN(e.what() << std::endl);
     Dihedral dd =
-        Dihedral::setup_particle(new Particle(p1->get_model()), core::XYZ(p1),
+        Dihedral::setup_particle(new kernel::Particle(p1->get_model()), core::XYZ(p1),
                                  core::XYZ(p2), core::XYZ(p3), core::XYZ(p4));
     ps.push_back(dd);
   }

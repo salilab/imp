@@ -15,7 +15,7 @@
 
 IMPRMF_BEGIN_NAMESPACE
 
-/** \name Particle I/O
+/** \name kernel::Particle I/O
     Arbitrary (non IMP::atom::Hierarchy) particles can be written to
     the file and read back from them. All non IMP::base::Object attributes are
     supported. Note that currently particles must be added so that
@@ -25,8 +25,8 @@ IMPRMF_BEGIN_NAMESPACE
     The data is stored in a category named IMP.
     @{
 */
-IMP_DECLARE_LINKERS(Particle, particle, particles, Particle *, ParticlesTemp,
-                    Particle *, ParticlesTemp,
+IMP_DECLARE_LINKERS(kernel::Particle, particle, particles, kernel::Particle *, kernel::ParticlesTemp,
+                    kernel::Particle *, kernel::ParticlesTemp,
                     (RMF::FileConstHandle fh, Model *m), );
 
 /** @} */

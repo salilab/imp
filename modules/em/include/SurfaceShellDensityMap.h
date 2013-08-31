@@ -45,7 +45,7 @@ public:
       /note the voxel size and the number of shells determines
             the resolution/accuracy of the surface rasterization._
    */
-  SurfaceShellDensityMap(const ParticlesTemp &ps,
+  SurfaceShellDensityMap(const kernel::ParticlesTemp &ps,
                          float voxel_size,
      IMP::FloatKey mass_key = IMP::atom::Mass::get_mass_key(),
      int num_shells=IMP_DEFAULT_NUM_SHELLS);

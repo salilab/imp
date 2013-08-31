@@ -15,7 +15,7 @@
 #include "internal/mol2.h"
 
 #include <IMP/Model.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/file.h>
 
 IMPATOM_BEGIN_NAMESPACE

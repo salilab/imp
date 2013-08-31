@@ -29,7 +29,7 @@ class IMPCOREEXPORT ConstantClassnamePredicate : public ClassnamePredicate {
   virtual int get_value_index(Model *, PASSINDEXTYPE ) const IMP_OVERRIDE {
     return v_;
   }
-  virtual ModelObjectsTemp do_get_inputs(Model *, const ParticleIndexes &)
+  virtual ModelObjectsTemp do_get_inputs(Model *, const kernel::ParticleIndexes &)
       const IMP_OVERRIDE {
     return ModelObjectsTemp();
   }
@@ -37,7 +37,7 @@ class IMPCOREEXPORT ConstantClassnamePredicate : public ClassnamePredicate {
   IMP_OBJECT_METHODS(ConstantClassnamePredicate);
 };
 
-/** Return a unique predicate value for each unordered set of ParticleTypes
+/** Return a unique predicate value for each unordered set of kernel::ParticleTypes
     (see Typed).
 */
 
@@ -49,7 +49,7 @@ class IMPCOREEXPORT UnorderedTypeClassnamePredicate
   virtual int get_value_index(Model *m, PASSINDEXTYPE pi) const IMP_OVERRIDE {
     return internal::get_type_hash(m, pi);
   }
-  virtual ModelObjectsTemp do_get_inputs(Model *m, const ParticleIndexes &pis)
+  virtual ModelObjectsTemp do_get_inputs(Model *m, const kernel::ParticleIndexes &pis)
       const IMP_OVERRIDE {
     ModelObjectsTemp ret;
     ret += IMP::get_particles(m, pis);
@@ -60,7 +60,7 @@ class IMPCOREEXPORT UnorderedTypeClassnamePredicate
 };
 
 /** Return a unique predicate value for each ordered classname of
-    ParticleTypes (see Typed).
+    kernel::ParticleTypes (see Typed).
 */
 class IMPCOREEXPORT OrderedTypeClassnamePredicate : public ClassnamePredicate {
  public:
@@ -75,7 +75,7 @@ class IMPCOREEXPORT OrderedTypeClassnamePredicate : public ClassnamePredicate {
   virtual int get_value_index(Model *m, PASSINDEXTYPE pi) const IMP_OVERRIDE {
     return internal::get_ordered_type_hash(m, pi);
   }
-  virtual ModelObjectsTemp do_get_inputs(Model *m, const ParticleIndexes &pis)
+  virtual ModelObjectsTemp do_get_inputs(Model *m, const kernel::ParticleIndexes &pis)
       const IMP_OVERRIDE {
     ModelObjectsTemp ret;
     ret += IMP::get_particles(m, pis);
@@ -92,7 +92,7 @@ class IMPCOREEXPORT AllSameClassnamePredicate : public ClassnamePredicate {
   virtual int get_value_index(Model *m, PASSINDEXTYPE pi) const IMP_OVERRIDE {
     return internal::get_all_same(m, pi);
   }
-  virtual ModelObjectsTemp do_get_inputs(Model *, const ParticleIndexes &)
+  virtual ModelObjectsTemp do_get_inputs(Model *, const kernel::ParticleIndexes &)
       const IMP_OVERRIDE {
     return ModelObjectsTemp();
   }
@@ -114,7 +114,7 @@ class IMPCOREEXPORT CoinFlipClassnamePredicate : public ClassnamePredicate {
     else
       return 0;
   }
-  virtual ModelObjectsTemp do_get_inputs(Model *, const ParticleIndexes &)
+  virtual ModelObjectsTemp do_get_inputs(Model *, const kernel::ParticleIndexes &)
       const IMP_OVERRIDE {
     return ModelObjectsTemp();
   }

@@ -31,7 +31,7 @@ public:
       \param[in] ctrs is a list of all cell centers
       \param[in] trs is the list of transformations from primitive to all cells
    */
-  RigidBodyMover(core::RigidBody d, Particles ps, Float max_tr, Float max_ang,
+  RigidBodyMover(core::RigidBody d, kernel::Particles ps, Float max_tr, Float max_ang,
                  algebra::Vector3Ds ctrs, algebra::Transformation3Ds trs);
 
  protected:
@@ -41,19 +41,19 @@ public:
   IMP_OBJECT_METHODS(RigidBodyMover);
 private:
   core::RigidBody d_;
-  Particles ps_;
+  kernel::Particles ps_;
   Float max_tr_;
   Float max_ang_;
   algebra::Vector3Ds ctrs_;
   algebra::Transformation3Ds trs_;
-  Particles ps_norb_;
+  kernel::Particles ps_norb_;
   std::vector<core::RigidBody> rbs_;
   algebra::Transformation3D oldtr_;
   algebra::Vector3Ds oldcoords_;
   algebra::Transformation3Ds oldtrs_;
 
-  Particles         get_particles(Particles ps);
-  std::vector<core::RigidBody> get_rigid_bodies(Particles ps);
+  kernel::Particles         get_particles(kernel::Particles ps);
+  std::vector<core::RigidBody> get_rigid_bodies(kernel::Particles ps);
 };
 
 IMPSYMMETRY_END_NAMESPACE

@@ -14,31 +14,31 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-  GaussianRestraint::GaussianRestraint(Particle *x, Particle *mu,
-          Particle *sigma) : px_(x), pmu_(mu), psigma_(sigma), isx_(true),
+  GaussianRestraint::GaussianRestraint(kernel::Particle *x, kernel::Particle *mu,
+          kernel::Particle *sigma) : px_(x), pmu_(mu), psigma_(sigma), isx_(true),
     ismu_(true), issigma_(true) {check_particles();}
 
-  GaussianRestraint::GaussianRestraint(double x, Particle *mu,
-          Particle *sigma) : x_(x), pmu_(mu), psigma_(sigma), isx_(false),
+  GaussianRestraint::GaussianRestraint(double x, kernel::Particle *mu,
+          kernel::Particle *sigma) : x_(x), pmu_(mu), psigma_(sigma), isx_(false),
     ismu_(true), issigma_(true) {check_particles();}
 
-  GaussianRestraint::GaussianRestraint(Particle *x, double mu,
-          Particle *sigma) : px_(x), mu_(mu), psigma_(sigma), isx_(true),
+  GaussianRestraint::GaussianRestraint(kernel::Particle *x, double mu,
+          kernel::Particle *sigma) : px_(x), mu_(mu), psigma_(sigma), isx_(true),
     ismu_(false), issigma_(true) {check_particles();}
 
-  GaussianRestraint::GaussianRestraint(Particle *x, Particle *mu,
+  GaussianRestraint::GaussianRestraint(kernel::Particle *x, kernel::Particle *mu,
           double sigma) : px_(x), pmu_(mu), sigma_(sigma), isx_(true),
     ismu_(true), issigma_(false) {check_particles();}
 
-  GaussianRestraint::GaussianRestraint(Particle *x, double mu,
+  GaussianRestraint::GaussianRestraint(kernel::Particle *x, double mu,
           double sigma) : px_(x), mu_(mu), sigma_(sigma), isx_(true),
     ismu_(false), issigma_(false) {check_particles();}
 
   GaussianRestraint::GaussianRestraint(double x, double mu,
-          Particle *sigma) : x_(x), mu_(mu), psigma_(sigma), isx_(false),
+          kernel::Particle *sigma) : x_(x), mu_(mu), psigma_(sigma), isx_(false),
     ismu_(false), issigma_(true) {check_particles();}
 
-  GaussianRestraint::GaussianRestraint(double x, Particle *mu,
+  GaussianRestraint::GaussianRestraint(double x, kernel::Particle *mu,
           double sigma) : x_(x), pmu_(mu), sigma_(sigma), isx_(false),
     ismu_(true), issigma_(false) {check_particles();}
 
@@ -100,7 +100,7 @@ GaussianRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp GaussianRestraint::do_get_inputs() const
 {
-  ParticlesTemp ret;
+  kernel::ParticlesTemp ret;
   if (isx_) ret.push_back(px_);
   if (ismu_) ret.push_back(pmu_);
   if (issigma_) ret.push_back(psigma_);

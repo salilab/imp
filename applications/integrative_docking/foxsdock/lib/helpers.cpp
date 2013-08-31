@@ -35,25 +35,25 @@ void read_trans_file(const std::string file_name,
             << file_name << std::endl;
 }
 
-void read_pdb_atoms(const std::string file_name, IMP::Particles& particles) {
+void read_pdb_atoms(const std::string file_name, IMP::kernel::Particles& particles) {
   IMP::Model *model = new IMP::Model();
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(file_name, model,
                              new IMP::atom::NonWaterNonHydrogenPDBSelector(),
                                                  true, true);
-  particles=IMP::get_as<IMP::Particles>(get_by_type(mhd, IMP::atom::ATOM_TYPE));
+  particles=IMP::get_as<IMP::kernel::Particles>(get_by_type(mhd, IMP::atom::ATOM_TYPE));
   std::cout << "Number of atom particles " << particles.size() << std::endl;
 }
 
-void read_pdb_ca_atoms(const std::string file_name, IMP::Particles& particles) {
+void read_pdb_ca_atoms(const std::string file_name, IMP::kernel::Particles& particles) {
   IMP::Model *model = new IMP::Model();
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(file_name, model,
                              new IMP::atom::CAlphaPDBSelector(), true, true);
-  particles=IMP::get_as<IMP::Particles>(get_by_type(mhd, IMP::atom::ATOM_TYPE));
+  particles=IMP::get_as<IMP::kernel::Particles>(get_by_type(mhd, IMP::atom::ATOM_TYPE));
   std::cout << "Number of CA atom particles " << particles.size() << std::endl;
 }
 
-void transform(IMP::Particles& ps, IMP::algebra::Transformation3D& t) {
-  for(IMP::Particles::iterator it = ps.begin(); it != ps.end(); it++) {
+void transform(IMP::kernel::Particles& ps, IMP::algebra::Transformation3D& t) {
+  for(IMP::kernel::Particles::iterator it = ps.begin(); it != ps.end(); it++) {
     IMP::core::XYZ d(*it);
     d.set_coordinates(t * d.get_coordinates());
   }

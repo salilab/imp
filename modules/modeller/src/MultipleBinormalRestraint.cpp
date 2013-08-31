@@ -44,7 +44,7 @@ double BinormalTerm::evaluate(const double dihedral[2], double &sin1,
 }
 
 MultipleBinormalRestraint::MultipleBinormalRestraint(
-    const ParticleQuad &q1, const ParticleQuad &q2) :
+    const kernel::ParticleQuad &q1, const kernel::ParticleQuad &q2) :
     kernel::Restraint(q1[0]->get_model(), "MultipleBinormalRestraint%1%"),
     terms_(), q1_(q1),
     q2_(q2)

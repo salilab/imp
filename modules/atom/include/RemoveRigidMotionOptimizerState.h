@@ -10,7 +10,7 @@
 #define IMPATOM_REMOVE_RIGID_MOTION_OPTIMIZER_STATE_H
 
 #include <IMP/atom/atom_config.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/base_types.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/optimizer_state_macros.h>
@@ -22,12 +22,12 @@ class IMPATOMEXPORT RemoveRigidMotionOptimizerState : public OptimizerState {
  public:
   /** \deprecated_at{2.1} Use set_period() instead. */
   IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
-  RemoveRigidMotionOptimizerState(const ParticlesTemp &pis,
+  RemoveRigidMotionOptimizerState(const kernel::ParticlesTemp &pis,
                                   unsigned skip_steps);
-  RemoveRigidMotionOptimizerState(Model *m, ParticleIndexesAdaptor pis);
+  RemoveRigidMotionOptimizerState(Model *m, kernel::ParticleIndexesAdaptor pis);
 
   //! Set the particles to use.
-  void set_particles(const Particles &pis) { pis_ = pis; }
+  void set_particles(const kernel::Particles &pis) { pis_ = pis; }
 
   //! Remove rigid motion now
   void remove_rigid_motion() const;
@@ -40,7 +40,7 @@ class IMPATOMEXPORT RemoveRigidMotionOptimizerState : public OptimizerState {
  private:
   void remove_linear() const;
   void remove_angular() const;
-  Particles pis_;
+  kernel::Particles pis_;
 
   //! Keys of the xyz velocities
   FloatKey vs_[3];

@@ -12,7 +12,7 @@
 #include <IMP/core/core_config.h>
 #include "MonteCarloMover.h"
 #include <IMP/Model.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 
 IMPCORE_DEPRECATED_HEADER(2.1, "Use MonteCarloMover");
 
@@ -27,13 +27,13 @@ class IMPCOREEXPORT Mover : public MonteCarloMover {
     IMPCORE_DEPRECATED_OBJECT_DEF(2.1, "Use MonteCarloMover");
   }
 
-  virtual ParticlesTemp propose_move(Float size) = 0;
+  virtual kernel::ParticlesTemp propose_move(Float size) = 0;
 
-  //! Roll back any changes made to the Particles
+  //! Roll back any changes made to the kernel::Particles
   virtual void reset_move() = 0;
 
   //! Return the set of particles over which moves can be proposed
-  virtual ParticlesTemp get_output_particles() const = 0;
+  virtual kernel::ParticlesTemp get_output_particles() const = 0;
 
  protected:
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {

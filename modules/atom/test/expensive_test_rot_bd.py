@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
     def _do_test_rot(self, dt):
         """Check rigid body brownian dynamics correlation time"""
         m= IMP.Model()
-        p =IMP.Particle(m)
+        p =IMP.kernel.Particle(m)
         d=IMP.core.XYZR.setup_particle(p)
         d.set_radius(10)
         rb= IMP.core.RigidBody.setup_particle(p, IMP.algebra.ReferenceFrame3D())

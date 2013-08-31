@@ -73,17 +73,17 @@ class IMPMULTIFITEXPORT AnchorsData {
      \param[in] indices (Optional) List of which anchor point numbers the
                 provided ssres_ps belong to.
   */
-  void set_secondary_structure_probabilities(const Particles &ssres_ps,
+  void set_secondary_structure_probabilities(const kernel::Particles &ssres_ps,
                                              const Ints &indices=Ints());
 
-  inline Particles get_secondary_structure_particles() const {
+  inline kernel::Particles get_secondary_structure_particles() const {
     return secondary_structure_ps_;
   }
   algebra::Vector3Ds points_;
   std::vector<bool> consider_point_;
   IntPairs edges_;
  protected:
-  Particles secondary_structure_ps_;
+  kernel::Particles secondary_structure_ps_;
 };
 IMP_VALUES(AnchorsData, AnchorsDataList);
 

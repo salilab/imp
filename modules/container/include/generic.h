@@ -10,8 +10,8 @@
 #define IMPCONTAINER_GENERIC_H
 
 #include <IMP/container/container_config.h>
-#include <IMP/internal/ContainerRestraint.h>
-#include <IMP/internal/ContainerConstraint.h>
+#include <IMP/kernel/internal/ContainerRestraint.h>
+#include <IMP/kernel/internal/ContainerConstraint.h>
 #include "InContainerPairFilter.h"
 
 IMPCONTAINER_BEGIN_NAMESPACE

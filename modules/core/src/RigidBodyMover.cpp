@@ -11,7 +11,7 @@
 #include <IMP/algebra/vector_generators.h>
 IMPCORE_BEGIN_NAMESPACE
 
-RigidBodyMover::RigidBodyMover(Model *m, ParticleIndex pi,
+RigidBodyMover::RigidBodyMover(Model *m, kernel::ParticleIndex pi,
                                Float max_translation, Float max_angle)
     : MonteCarloMover(m, m->get_particle(pi)->get_name() + " mover") {
   IMP_LOG_VERBOSE("start RigidBodyMover constructor");
@@ -48,7 +48,7 @@ MonteCarloMoverResult RigidBodyMover::do_propose() {
   IMP_LOG_VERBOSE("proposed move " << t << std::endl);
   d.set_reference_frame(algebra::ReferenceFrame3D(t));
 
-  return MonteCarloMoverResult(ParticleIndexes(1, pi_), 1.0);
+  return MonteCarloMoverResult(kernel::ParticleIndexes(1, pi_), 1.0);
 }
 
 void RigidBodyMover::do_reject() {

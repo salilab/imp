@@ -281,7 +281,7 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
 
       \see CHARMMTopology::add_bonds().
    */
-  Particles create_angles(Particles bonds) const;
+  kernel::Particles create_angles(kernel::Particles bonds) const;
 
   //! Auto-generate Dihedral particles from the passed list of Bond particles.
   /** The dihedrals consist of all unique triples of bonds which form
@@ -302,7 +302,7 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
 
       \see CHARMMTopology::add_bonds().
    */
-  Particles create_dihedrals(Particles bonds) const;
+  kernel::Particles create_dihedrals(kernel::Particles bonds) const;
 
   IMP_FORCE_FIELD_PARAMETERS(CHARMMParameters);
 
@@ -315,9 +315,9 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
   void read_topology_file(base::TextInput input_file,
                           bool translate_names_to_pdb);
 
-  void add_angle(Particle *p1, Particle *p2, Particle *p3, Particles &ps) const;
-  void add_dihedral(Particle *p1, Particle *p2, Particle *p3, Particle *p4,
-                    Particles &ps) const;
+  void add_angle(kernel::Particle *p1, kernel::Particle *p2, kernel::Particle *p3, kernel::Particles &ps) const;
+  void add_dihedral(kernel::Particle *p1, kernel::Particle *p2, kernel::Particle *p3, kernel::Particle *p4,
+                    kernel::Particles &ps) const;
 
   ResidueType parse_residue_line(const String &line,
                                  bool translate_names_to_pdb);

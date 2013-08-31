@@ -101,7 +101,7 @@ in space being allocated in decorators, even before they are used.\n\n
 Implementors should consult IMP::example::ExampleDecorator,
 IMP_DECORATOR_METHODS(), IMP_DECORATOR_WITH_TRAITS(), IMP_DECORATOR_GET().
 
-A decorator can be cast to a IMP::Particle* in C++. You have to
+A decorator can be cast to a IMP::kernel::Particle* in C++. You have to
 use the Decorator::get_particle() function in Python.
 
 \note It is undefined behavior to use a decorator constructed on
@@ -209,7 +209,7 @@ class IMPKERNELEXPORT Decorator : public base::Value {
   legal to construct an instance of the decorator with that particle.
   If not, setup_particle() must be called first.
   \code
-  IMP::Particle *p = new IMP::Particle(m);
+  IMP::kernel::Particle *p = new IMP::kernel::Particle(m);
   // it is false
   std::cout << IMP::core::XYZ::get_is_setup(p) << std::endl;
   // As a result this is an error

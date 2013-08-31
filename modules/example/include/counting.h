@@ -20,8 +20,8 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     \note This method uses the distance between the centers of
     the particles and does not use their radii.
 */
-inline unsigned int get_number_of_incidences(const ParticlesTemp &psa,
-                                             const ParticlesTemp &psb,
+inline unsigned int get_number_of_incidences(const kernel::ParticlesTemp &psa,
+                                             const kernel::ParticlesTemp &psb,
                                              double point_distance) {
   algebra::Vector3Ds vsa(psa.size());
   for (unsigned int i = 0; i < vsa.size(); ++i) {

@@ -13,11 +13,11 @@ class Tests(IMP.test.TestCase):
         n= random.randrange(1,10)
         ps=[]
         ds=IMP.core.XYZRs()
-        pp= IMP.Particle(m)
+        pp= IMP.kernel.Particle(m)
         hd= IMP.core.Hierarchy.setup_particle(pp)
         dd= IMP.core.XYZR.setup_particle(pp)
         for i in range(0,n):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             d=IMP.core.XYZR.setup_particle(p)
             ps.append(p)
             ds.append(d)

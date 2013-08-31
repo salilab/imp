@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
         refcnt = IMP.test.RefCountChecker(self)
         m= IMP.Model("ref counting particles")
         refcnt.assert_number(2)
-        p= IMP.Particle(m)
+        p= IMP.kernel.Particle(m)
         refcnt.assert_number(3)
         del p
         refcnt.assert_number(3)
@@ -24,10 +24,10 @@ class Tests(IMP.test.TestCase):
         IMP.base.set_log_level(IMP.MEMORY)
         refcnt = IMP.test.RefCountChecker(self)
         m= IMP.Model("test model")
-        IMP.Particle(m)
+        IMP.kernel.Particle(m)
         # Now create new Python particle p from a C++ vector accessor
         # (front(), back(), [], etc.)
-        # (not the Python IMP.Particle() constructor)
+        # (not the Python IMP.kernel.Particle() constructor)
         # These accessors call specific methods in the SWIG wrapper which
         # are modified by typemaps in our interface.
         print "getting particles"
@@ -60,7 +60,7 @@ class Tests(IMP.test.TestCase):
         print r.__del__
         # Now create new Python particle p from a C++ vector accessor
         # (front(), back(), [], etc.)
-        # (not the Python IMP.Particle() constructor)
+        # (not the Python IMP.kernel.Particle() constructor)
         # These accessors call specific methods in the SWIG wrapper which
         # are modified by typemaps in our interface.
         print "getting restraints"
@@ -180,7 +180,7 @@ class Tests(IMP.test.TestCase):
         """Check that ref counting works with removing particles"""
         refcnt = IMP.test.RefCountChecker(self)
         m= IMP.Model("ref counting and particle removal")
-        p= IMP.Particle(m)
+        p= IMP.kernel.Particle(m)
         refcnt.assert_number(3)
         m.remove_particle(p)
         # Particle should not disappear yet since Python still has a reference
@@ -195,7 +195,7 @@ class Tests(IMP.test.TestCase):
         """Constructed Python Particles should survive model deletion"""
         refcnt = IMP.test.RefCountChecker(self)
         m= IMP.Model("python restraint survival")
-        p= IMP.Particle(m)
+        p= IMP.kernel.Particle(m)
         self.assertEqual(p.get_ref_count(), 2)
         refcnt.assert_number(3)
         # New particle p should not go away until we free the Python reference
@@ -209,7 +209,7 @@ class Tests(IMP.test.TestCase):
     def test_skip(self):
         """Check that removed particles are skipped"""
         m= IMP.Model("skipping removed particles")
-        p= IMP.Particle(m)
+        p= IMP.kernel.Particle(m)
         ps= m.get_particles()
         self.assertEqual(len(ps), 1, "Should only be 1 particle")
         m.remove_particle(p)
@@ -221,7 +221,7 @@ class Tests(IMP.test.TestCase):
         """Test that sequences are refcounted properly"""
         refcnt = IMP.test.RefCountChecker(self)
         m= IMP.Model("sequence ref counting")
-        p= IMP.Particle(m)
+        p= IMP.kernel.Particle(m)
         ps= m.get_particles()
         print IMP.kernel._take_particles(ps)
         del m

@@ -13,7 +13,7 @@
 IMPATOM_BEGIN_NAMESPACE
 
 LangevinThermostatOptimizerState::LangevinThermostatOptimizerState(
-    const ParticlesTemp &pis, Float temperature, double gamma)
+    const kernel::ParticlesTemp &pis, Float temperature, double gamma)
     : pis_(pis.begin(), pis.end()), temperature_(temperature), gamma_(gamma) {
   vs_[0] = FloatKey("vx");
   vs_[1] = FloatKey("vy");
@@ -37,7 +37,7 @@ void LangevinThermostatOptimizerState::rescale_velocities() const {
                            boost::normal_distribution<Float> > sampler(
       base::random_number_generator, mrng);
   for (unsigned int i = 0; i < pis_.size(); ++i) {
-    Particle *p = pis_[i];
+    kernel::Particle *p = pis_[i];
     double mass = Mass(p).get_mass();
     for (int i = 0; i < 3; ++i) {
       double velocity = p->get_value(vs_[i]);

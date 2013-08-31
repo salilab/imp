@@ -17,12 +17,12 @@ IMPDOMINO_BEGIN_NAMESPACE
 namespace {
 
 class ParticleStatesEmbedding : public statistics::Embedding {
-  base::Pointer<Particle> p_;
+  base::Pointer<kernel::Particle> p_;
   base::Pointer<ParticleStates> ps_;
   Ints allowed_;
 
  public:
-  ParticleStatesEmbedding(Particle *p, ParticleStates *ps, const Ints &allowed,
+  ParticleStatesEmbedding(kernel::Particle *p, ParticleStates *ps, const Ints &allowed,
                           std::string name)
       : Embedding(name), p_(p), ps_(ps), allowed_(allowed) {}
   algebra::VectorKD get_point(unsigned int i) const;
@@ -50,7 +50,7 @@ unsigned int ParticleStatesEmbedding::get_number_of_items() const {
   return allowed_.size();
 }
 
-Ints get_state_clusters(Particle *p, ParticleStates *ps,
+Ints get_state_clusters(kernel::Particle *p, ParticleStates *ps,
                         const Ints &allowed_states, double resolution) {
   IMP::base::PointerMember<ParticleStatesEmbedding> pse =
       new ParticleStatesEmbedding(p, ps, allowed_states, "domino embedding");

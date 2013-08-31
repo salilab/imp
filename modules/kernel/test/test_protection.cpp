@@ -2,7 +2,7 @@
  *   Copyright 2007-2013 IMP Inventors. All rights reserved
  */
 #include <IMP/Model.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/kernel/Restraint.h>
 #include <IMP/restraint_macros.h>
 #include <IMP/base/threads.h>
@@ -17,11 +17,11 @@ std::string get_module_version() { return std::string(); }
 std::string get_module_name() { return std::string(); }
 
 class TouchyRestraint : public IMP::Restraint {
-  IMP::Particle *p_;
+  IMP::kernel::Particle *p_;
   IMP::FloatKey fk_;
 
  public:
-  TouchyRestraint(IMP::Particle *p, IMP::FloatKey fk)
+  TouchyRestraint(IMP::kernel::Particle *p, IMP::FloatKey fk)
       : IMP::Restraint(p->get_model(), "Touchy"), p_(p), fk_(fk) {}
   virtual double unprotected_evaluate(
       IMP::kernel::DerivativeAccumulator *accum) const IMP_OVERRIDE;
@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 // no checks in fast mode
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   IMP_NEW(IMP::Model, m, ());
-  IMP_NEW(IMP::Particle, p, (m));
+  IMP_NEW(IMP::kernel::Particle, p, (m));
   IMP::base::SetNumberOfThreads no(1);
   IMP_NEW(TouchyRestraint, r, (p, IMP::FloatKey(0)));
   try {

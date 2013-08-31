@@ -55,8 +55,8 @@ void read_trans_file(const std::string file_name,
             << file_name << std::endl;
 }
 
-void transform(IMP::Particles& ps, IMP::algebra::Transformation3D& t) {
-  for(IMP::Particles::iterator it = ps.begin(); it != ps.end(); it++) {
+void transform(IMP::kernel::Particles& ps, IMP::algebra::Transformation3D& t) {
+  for(IMP::kernel::Particles::iterator it = ps.begin(); it != ps.end(); it++) {
     IMP::core::XYZ d(*it);
     d.set_coordinates(t * d.get_coordinates());
   }
@@ -109,16 +109,16 @@ for a set of transformations in the trans_file.")
   IMP::atom::Hierarchy mhd2 = IMP::atom::read_pdb(pdb2, model,
                         new IMP::atom::NonWaterNonHydrogenPDBSelector(),
                                                   true, true);
-  IMP::Particles particles1 =
-    IMP::get_as<IMP::Particles>(get_by_type(mhd1, IMP::atom::ATOM_TYPE));
-  IMP::Particles particles2 =
-    IMP::get_as<IMP::Particles>(get_by_type(mhd2, IMP::atom::ATOM_TYPE));
+  IMP::kernel::Particles particles1 =
+    IMP::get_as<IMP::kernel::Particles>(get_by_type(mhd1, IMP::atom::ATOM_TYPE));
+  IMP::kernel::Particles particles2 =
+    IMP::get_as<IMP::kernel::Particles>(get_by_type(mhd2, IMP::atom::ATOM_TYPE));
 
-  IMP::ParticleIndexes pis1(particles1.size());
+  IMP::kernel::ParticleIndexes pis1(particles1.size());
   for(unsigned int i=0; i<pis1.size(); ++i) {
     pis1[i] = particles1[i]->get_index();
   }
-  IMP::ParticleIndexes pis2(particles2.size());
+  IMP::kernel::ParticleIndexes pis2(particles2.size());
   for(unsigned int i=0; i<pis2.size(); ++i) {
     pis2[i] = particles2[i]->get_index();
   }
@@ -135,7 +135,7 @@ for a set of transformations in the trans_file.")
     coordinates2.push_back(IMP::core::XYZ(particles2[i]).get_coordinates());
   }
 
-  IMP::Particles particles(particles1);
+  IMP::kernel::Particles particles(particles1);
   particles.insert(particles.end(), particles2.begin(), particles2.end());
   IMP::saxs::FormFactorTable* ft = IMP::saxs::default_form_factor_table();
   // add radius
@@ -177,7 +177,7 @@ for a set of transformations in the trans_file.")
         double dist = IMP::algebra::get_distance(v1, v2);
         if(dist < distance_threshold) {
           score += soap.get_score(model,
-                                  IMP::ParticleIndexPair(pis1[i], pis2[j]),
+                                  IMP::kernel::ParticleIndexPair(pis1[i], pis2[j]),
                                   dist);
         }
       }

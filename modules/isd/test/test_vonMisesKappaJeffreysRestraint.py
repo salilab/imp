@@ -20,7 +20,7 @@ class Tests(IMP.test.TestCase):
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
         self.m = IMP.Model()
-        self.kappa = Scale.setup_particle(IMP.Particle(self.m), 1.0)
+        self.kappa = Scale.setup_particle(IMP.kernel.Particle(self.m), 1.0)
         self.DA = IMP.DerivativeAccumulator()
         self.J = IMP.isd.vonMisesKappaJeffreysRestraint(self.kappa)
         self.m.add_restraint(self.J)

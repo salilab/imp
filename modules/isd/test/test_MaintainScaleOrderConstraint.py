@@ -24,7 +24,7 @@ class Tests(IMP.test.TestCase):
         self.n_sigmas = 20
         self.lower=0.1
         self.upper=100
-        self.sigmas = [Scale.setup_particle(IMP.Particle(self.m), 1.0+i) \
+        self.sigmas = [Scale.setup_particle(IMP.kernel.Particle(self.m), 1.0+i) \
                        for i in xrange(self.n_sigmas)]
         for s in self.sigmas:
             s.set_lower(self.lower)

@@ -22,7 +22,7 @@ IMPISD_BEGIN_NAMESPACE
  */
 class IMPISDEXPORT Switching: public Nuisance
 {
-  static void do_setup_particle(Model *m, ParticleIndex pi,
+  static void do_setup_particle(Model *m, kernel::ParticleIndex pi,
                                 double switching=0.5)
   {
     if (!Nuisance::get_is_setup(m, pi))
@@ -35,7 +35,7 @@ public:
   IMP_DECORATOR_SETUP_0(Switching);
   IMP_DECORATOR_SETUP_1(Switching, double, switching);
 
-  static bool get_is_setup(Model *m, ParticleIndex pi) {
+  static bool get_is_setup(Model *m, kernel::ParticleIndex pi) {
     return Nuisance::get_is_setup(m, pi) && Nuisance(m, pi).get_lower()>=0
       && Nuisance(m, pi).get_upper()<=1;
   }

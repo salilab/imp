@@ -10,8 +10,8 @@
 
 #include <IMP/misc/misc_config.h>
 #include <IMP/UnaryFunction.h>
-#include <IMP/internal/constants.h>
-#include <IMP/internal/units.h>
+#include <IMP/kernel/internal/constants.h>
+#include <IMP/kernel/internal/units.h>
 
 IMPMISC_BEGIN_NAMESPACE
 

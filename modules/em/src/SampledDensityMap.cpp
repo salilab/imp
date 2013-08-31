@@ -23,13 +23,13 @@ SampledDensityMap::SampledDensityMap(const DensityHeader &header,
 }
 
 IMP::algebra::BoundingBox3D
-SampledDensityMap::calculate_particles_bounding_box(const Particles &ps) {
+SampledDensityMap::calculate_particles_bounding_box(const kernel::Particles &ps) {
   IMP_INTERNAL_CHECK(ps.size()>0,
         "Can not calculate a particles bounding box "
                      <<" for zero particles"<<std::endl);
   //read the points and determine the dimensions of the map
   algebra::Vector3Ds all_points;
-  for(IMP::Particles::const_iterator it = ps.begin(); it != ps.end(); it++ ){
+  for(IMP::kernel::Particles::const_iterator it = ps.begin(); it != ps.end(); it++ ){
     all_points.push_back(IMP::core::XYZ(*it).get_coordinates());
   }
   return IMP::algebra::BoundingBox3D(all_points);
@@ -69,7 +69,7 @@ void SampledDensityMap::set_header(const algebra::Vector3D &lower_bound,
   header_.compute_xyz_top();
   header_.update_cell_dimensions();
 }
-SampledDensityMap::SampledDensityMap(const IMP::ParticlesTemp &ps,
+SampledDensityMap::SampledDensityMap(const IMP::kernel::ParticlesTemp &ps,
                     emreal resolution, emreal voxel_size,IMP::FloatKey mass_key,
                     int sig_cutoff,KernelType kt) : kt_(kt){
   IMP_LOG_VERBOSE( "start SampledDensityMap with resolution: "<<resolution<<
@@ -78,7 +78,7 @@ SampledDensityMap::SampledDensityMap(const IMP::ParticlesTemp &ps,
   y_key_=IMP::core::XYZ::get_coordinate_key(1);
   z_key_=IMP::core::XYZ::get_coordinate_key(2);
   weight_key_=mass_key;
-  ps_=get_as<Particles>(ps);
+  ps_=get_as<kernel::Particles>(ps);
   xyzr_=IMP::core::XYZRs(ps_);
   determine_grid_size(resolution,voxel_size,sig_cutoff);
   header_.set_resolution(resolution);
@@ -93,13 +93,13 @@ namespace {
 
 
   IMP::algebra::BoundingBox3D
-  calculate_particles_bounding_box_internal(const Particles &ps) {
+  calculate_particles_bounding_box_internal(const kernel::Particles &ps) {
     IMP_INTERNAL_CHECK(ps.size()>0,
            "Can not calculate a particles bounding box for "
                        <<"zero particles"<<std::endl);
     //read the points and determine the dimensions of the map
     algebra::Vector3Ds all_points;
-    for(IMP::Particles::const_iterator it = ps.begin(); it != ps.end(); it++ ){
+    for(IMP::kernel::Particles::const_iterator it = ps.begin(); it != ps.end(); it++ ){
       all_points.push_back(IMP::core::XYZ(*it).get_coordinates());
     }
     return IMP::algebra::BoundingBox3D(all_points);
@@ -116,13 +116,13 @@ namespace {
       voxel_size_cube_(voxel_size*voxel_size*voxel_size),
       mass_key_(mass_key)
     {};
-    double get_radius(Particle *p) const {
+    double get_radius(kernel::Particle *p) const {
       return core::XYZR(p).get_radius();
     }
-    algebra::Vector3D get_center(Particle *p) const {
+    algebra::Vector3D get_center(kernel::Particle *p) const {
       return core::XYZ(p).get_coordinates();
     }
-    double get_value(Particle *p, const algebra::Vector3D &pt) const {
+    double get_value(kernel::Particle *p, const algebra::Vector3D &pt) const {
       double wmass = p->get_value(mass_key_)
         /(algebra::get_volume(core::XYZR(p).get_sphere())/voxel_size_cube_);
       if (algebra::get_squared_distance(get_center(p),pt)<
@@ -138,13 +138,13 @@ namespace {
     FloatKey mass_key_;
   public:
     BinarizedSphereKernel(const FloatKey mass_key):mass_key_(mass_key){}
-    double get_radius(Particle *p) const {
+    double get_radius(kernel::Particle *p) const {
       return core::XYZR(p).get_radius();
     }
-    algebra::Vector3D get_center(Particle *p) const {
+    algebra::Vector3D get_center(kernel::Particle *p) const {
       return core::XYZ(p).get_coordinates();
     }
-    double get_value(Particle *p, const algebra::Vector3D &pt) const {
+    double get_value(kernel::Particle *p, const algebra::Vector3D &pt) const {
       if (algebra::get_squared_distance(get_center(p),pt)<
           square(get_radius(p))) {
         return 1.;
@@ -157,7 +157,7 @@ namespace {
     KernelParameters *kps_;
     FloatKey mass_key_;
     const RadiusDependentKernelParameters&
-    get_radius_dependent_parameters(Particle *p) const {
+    get_radius_dependent_parameters(kernel::Particle *p) const {
       double r=core::XYZR(p).get_radius();
       return kps_->get_params(r);
     }
@@ -165,15 +165,15 @@ namespace {
     GaussianKernel(KernelParameters& kps,
                    const FloatKey &mass_key):
       kps_(&kps),mass_key_(mass_key){}
-    double get_radius(Particle *p) const {
+    double get_radius(kernel::Particle *p) const {
       const RadiusDependentKernelParameters& kernel_params
         =get_radius_dependent_parameters(p);
       return kernel_params.get_kdist();
     }
-    algebra::Vector3D get_center(Particle *p) const {
+    algebra::Vector3D get_center(kernel::Particle *p) const {
       return core::XYZ(p).get_coordinates();
     }
-    double get_value(Particle *p, const algebra::Vector3D &pt) const {
+    double get_value(kernel::Particle *p, const algebra::Vector3D &pt) const {
       core::XYZR d(p);
       algebra::Vector3D cs=d.get_coordinates();
       double rsq= (cs-pt).get_squared_magnitude();
@@ -193,7 +193,7 @@ namespace {
 
   template <class F>
   void internal_resample(em::DensityMap *dmap,
-                         Particles ps,
+                         kernel::Particles ps,
                          const F &f) {
     emreal*data=dmap->get_data();
     IMP_LOG_VERBOSE("going to resample particles " <<std::endl);
@@ -265,17 +265,17 @@ void SampledDensityMap::resample() {
   IMP_LOG_VERBOSE("finish resampling particles " <<std::endl);
 }
 
-void SampledDensityMap::set_particles(const IMP::ParticlesTemp &ps,
+void SampledDensityMap::set_particles(const IMP::kernel::ParticlesTemp &ps,
                                       IMP::FloatKey mass_key) {
   IMP_INTERNAL_CHECK(ps_.size()==0,"Particles have already been set");
   IMP_INTERNAL_CHECK(xyzr_.size()==0,"data inconsistency in SampledDensityMap");
-  ps_=get_as<Particles>(ps);
+  ps_=get_as<kernel::Particles>(ps);
   weight_key_=mass_key;
   xyzr_=IMP::core::XYZRs(ps_);
 }
 
 
-void SampledDensityMap::project(const ParticlesTemp &ps,
+void SampledDensityMap::project(const kernel::ParticlesTemp &ps,
                                        int x_margin,int y_margin,int z_margin,
                                        algebra::Vector3D shift,
                                        FloatKey mass_key){

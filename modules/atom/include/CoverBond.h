@@ -25,12 +25,12 @@ class IMPATOMEXPORT CoverBond : public SingletonModifier {
  public:
   CoverBond();
 
-  virtual void apply_index(Model *m, ParticleIndex p) const IMP_OVERRIDE;
+  virtual void apply_index(Model *m, kernel::ParticleIndex p) const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                         const ParticleIndexes &pis) const
+                                         const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_outputs(Model *m,
-                                          const ParticleIndexes &pis) const
+                                          const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
   IMP_SINGLETON_MODIFIER_METHODS(CoverBond);
   IMP_OBJECT_METHODS(CoverBond);

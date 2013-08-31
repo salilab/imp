@@ -12,41 +12,41 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-void graph_initialize_node(Particle *p, const GraphData &d) {
+void graph_initialize_node(kernel::Particle *p, const GraphData &d) {
   p->add_attribute(d.setup_key_, 1);
 }
 
 /** \internal */
-bool graph_is_node(Particle *p, const GraphData &d) {
+bool graph_is_node(kernel::Particle *p, const GraphData &d) {
   return p->has_attribute(d.setup_key_);
 }
 
-Particle *graph_connect(Particle *a, Particle *b, GraphData &d) {
+Particle *graph_connect(kernel::Particle *a, kernel::Particle *b, GraphData &d) {
   Model *m = a->get_model();
-  Particle *p = new Particle(m);
+  kernel::Particle *p = new kernel::Particle(m);
   p->add_attribute(d.node_keys_[0], a);
   p->add_attribute(d.node_keys_[1], b);
   for (int i = 0; i < 2; ++i) {
-    Particle *cp = ((i == 0) ? a : b);
+    kernel::Particle *cp = ((i == 0) ? a : b);
     if (m->get_has_attribute(d.edges_key_, cp->get_index())) {
-      ParticleIndexes c = m->get_attribute(d.edges_key_, cp->get_index());
+      kernel::ParticleIndexes c = m->get_attribute(d.edges_key_, cp->get_index());
       c.push_back(p->get_index());
       m->set_attribute(d.edges_key_, cp->get_index(), c);
     } else {
       m->add_attribute(d.edges_key_, cp->get_index(),
-                       ParticleIndexes(1, p->get_index()));
+                       kernel::ParticleIndexes(1, p->get_index()));
     }
   }
 
   return p;
 }
 
-void graph_disconnect(Particle *e, const GraphData &d) {
-  Particle *p[2];
+void graph_disconnect(kernel::Particle *e, const GraphData &d) {
+  kernel::Particle *p[2];
   p[0] = graph_get_node(e, 0, d);
   p[1] = graph_get_node(e, 1, d);
   for (int i = 0; i < 2; ++i) {
-    ParticleIndexes pis =
+    kernel::ParticleIndexes pis =
         e->get_model()->get_attribute(d.edges_key_, p[i]->get_index());
     pis.erase(std::find(pis.begin(), pis.end(), e->get_index()));
     if (!pis.empty()) {
@@ -58,12 +58,12 @@ void graph_disconnect(Particle *e, const GraphData &d) {
   e->get_model()->remove_particle(e);
 }
 
-Particle *graph_get_edge(Particle *a, int i, const GraphData &d) {
+Particle *graph_get_edge(kernel::Particle *a, int i, const GraphData &d) {
   IMP_USAGE_CHECK(
       a->get_model()->get_has_attribute(d.edges_key_, a->get_index()),
       "Particle " << a->get_name() << " does not have "
                   << "enough edges");
-  ParticleIndexes all =
+  kernel::ParticleIndexes all =
       a->get_model()->get_attribute(d.edges_key_, a->get_index());
   IMP_USAGE_CHECK(
       all.size() > static_cast<unsigned int>(i),
@@ -71,17 +71,17 @@ Particle *graph_get_edge(Particle *a, int i, const GraphData &d) {
   return a->get_model()->get_particle(all[i]);
 }
 
-ParticleIndexes graph_get_edges(Particle *a, const GraphData &d) {
+ParticleIndexes graph_get_edges(kernel::Particle *a, const GraphData &d) {
   if (!a->get_model()->get_has_attribute(d.edges_key_, a->get_index())) {
-    return ParticleIndexes();
+    return kernel::ParticleIndexes();
   }
-  ParticleIndexes all =
+  kernel::ParticleIndexes all =
       a->get_model()->get_attribute(d.edges_key_, a->get_index());
   return all;
 }
 
-Particle *graph_get_neighbor(Particle *a, int i, const GraphData &d) {
-  Particle *edge = graph_get_edge(a, i, d);
+Particle *graph_get_neighbor(kernel::Particle *a, int i, const GraphData &d) {
+  kernel::Particle *edge = graph_get_edge(a, i, d);
   if (graph_get_node(edge, 0, d) == a) {
     return graph_get_node(edge, 1, d);
   } else {
@@ -90,14 +90,14 @@ Particle *graph_get_neighbor(Particle *a, int i, const GraphData &d) {
   }
 }
 
-unsigned int graph_get_number_of_edges(Particle *a, const GraphData &d) {
+unsigned int graph_get_number_of_edges(kernel::Particle *a, const GraphData &d) {
   if (!a->get_model()->get_has_attribute(d.edges_key_, a->get_index()))
     return 0;
   else
     return a->get_model()->get_attribute(d.edges_key_, a->get_index()).size();
 }
 
-void graph_initialize_edge(Particle *a, const GraphData &d) {
+void graph_initialize_edge(kernel::Particle *a, const GraphData &d) {
   a->add_attribute(d.node_keys_[0], nullptr);
   a->add_attribute(d.node_keys_[1], nullptr);
 }

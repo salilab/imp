@@ -20,7 +20,7 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 
 namespace {
 Model *extract_model(const IMP::core::RigidBodies& rbs,
-                     const IMP::ParticlesTemp& atoms) {
+                     const IMP::kernel::ParticlesTemp& atoms) {
   if (!rbs.empty()) return rbs[0].get_model();
   else if (!atoms.empty()) return atoms[0]->get_model();
   else {
@@ -36,7 +36,7 @@ class IMPKINEMATICSEXPORT KinematicForestScoreState : public IMP::ScoreState {
 
   KinematicForestScoreState(KinematicForest *kf,
                             IMP::core::RigidBodies rbs,
-                            IMP::ParticlesTemp atoms) :
+                            IMP::kernel::ParticlesTemp atoms) :
       ScoreState(extract_model(rbs, atoms),
                  "KinematicForestScoreState%1%"),
     kf_(kf), rbs_(rbs), atoms_(atoms) {}
@@ -55,7 +55,7 @@ class IMPKINEMATICSEXPORT KinematicForestScoreState : public IMP::ScoreState {
  private:
   KinematicForest *kf_;
   IMP::core::RigidBodies rbs_;
-  IMP::ParticlesTemp atoms_;
+  IMP::kernel::ParticlesTemp atoms_;
 };
 
 IMPKINEMATICS_END_NAMESPACE

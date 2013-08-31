@@ -39,10 +39,10 @@ public:
 
 
   /**
-   * Particles used to calculate their collision cross section
+   * kernel::Particles used to calculate their collision cross section
    * @param ps The particles
    */
-  void set_model_particles(const ParticlesTemp &ps);
+  void set_model_particles(const kernel::ParticlesTemp &ps);
 
   /**
    * Returns the collision cross section. Before using this function you need

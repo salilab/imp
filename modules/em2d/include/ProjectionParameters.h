@@ -25,7 +25,7 @@ IMPEM2D_BEGIN_NAMESPACE
 //! to apply to the model in 3D, in order to perform the registration
 class IMPEM2DEXPORT ProjectionParameters: public Decorator {
   static void do_setup_particle(Model *m,
-                                ParticleIndex pi);
+                                kernel::ParticleIndex pi);
 
 public:
 
@@ -45,7 +45,7 @@ public:
                   const algebra::Vector3D &max_translation_values);
 
   //!Return true of the particle is a set of projection parameters
-  static bool get_is_setup(Model *m, ParticleIndex pi);
+  static bool get_is_setup(Model *m, kernel::ParticleIndex pi);
 
 
   //! Get whether the parameters are optimized
@@ -116,7 +116,7 @@ private:
 
 };
 
-IMP_DECORATORS(ProjectionParameters, ProjectionParametersList, Particles);
+IMP_DECORATORS(ProjectionParameters, ProjectionParametersList, kernel::Particles);
 
 
 
@@ -125,7 +125,7 @@ IMP_DECORATORS(ProjectionParameters, ProjectionParametersList, Particles);
 //! Decorator
 class IMPEM2DEXPORT ProjectionParametersScoreState : public ScoreState {
 public:
-  ProjectionParametersScoreState(Particle *p):
+  ProjectionParametersScoreState(kernel::Particle *p):
       ScoreState(p->get_model(),
                  "ProjectionParametersScoreState%1%") {
     proj_params_ = p;
@@ -137,8 +137,8 @@ public:
   IMP_OBJECT_METHODS(ProjectionParametersScoreState);
 
 private:
-  // Particle to store the projection params
-  base::Pointer<Particle> proj_params_;
+  // kernel::Particle to store the projection params
+  base::Pointer<kernel::Particle> proj_params_;
 };
 
 

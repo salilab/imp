@@ -32,7 +32,7 @@ for i in range(0,ni):
         base=IMP.algebra.Vector3D(i,j,0)
         chain=[]
         for k in range(0,np):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             p.set_name("P"+str(i)+" "+str(j)+" "+str(k))
             s=IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb), radius)
             d= IMP.core.XYZR.setup_particle(p,s)

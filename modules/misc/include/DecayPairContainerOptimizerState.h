@@ -13,7 +13,7 @@
 #include <IMP/PairContainer.h>
 #include <IMP/PairContainer.h>
 #include <IMP/kernel/OptimizerState.h>
-#include <IMP/internal/InternalDynamicListPairContainer.h>
+#include <IMP/kernel/internal/InternalDynamicListPairContainer.h>
 #include <IMP/PairPredicate.h>
 #include <IMP/base/Pointer.h>
 #include <IMP/optimizer_state_macros.h>
@@ -34,7 +34,7 @@ class IMPMISCEXPORT DecayPairContainerOptimizerState
 
  public:
   DecayPairContainerOptimizerState(PairPredicate *pred,
-                                   const ParticlePairsTemp &initial_list,
+                                   const kernel::ParticlePairsTemp &initial_list,
                                    std::string name =
                                        "DecayPairContainerOptimizerState%1%");
   PairContainer *get_output_container() const { return output_; }

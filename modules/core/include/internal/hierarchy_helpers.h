@@ -12,7 +12,7 @@
 #include <IMP/core/core_config.h>
 
 #include <IMP/base_types.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 
 IMPCORE_BEGIN_NAMESPACE
 class HierarchyTraits;
@@ -25,7 +25,7 @@ struct MatchAttribute {
   K k_;
   V v_;
   MatchAttribute(K k, V v) : k_(k), v_(v) {}
-  bool operator()(Particle *o) {
+  bool operator()(kernel::Particle *o) {
     if (!o->has_attribute(k_))
       return false;
     else
@@ -41,7 +41,7 @@ struct MatchAttributes {
   V1 v1_;
   MatchAttributes(K0 k0, V0 v0, K1 k1, V1 v1)
       : k0_(k0), v0_(v0), k1_(k1), v1_(v1) {}
-  bool operator()(Particle *o) {
+  bool operator()(kernel::Particle *o) {
     if (!o->has_attribute(k0_))
       return false;
     else if (o->get_value(k0_) != v0_)
@@ -55,7 +55,7 @@ struct MatchAttributes {
 };
 
 struct HierarchyData {
-  ParticleIndexKey parent_key_;
+  kernel::ParticleIndexKey parent_key_;
   IntKey parent_index_key_;
   ObjectKey cache_key_;
 };

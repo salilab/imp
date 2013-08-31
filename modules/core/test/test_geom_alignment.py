@@ -18,7 +18,7 @@ class Tests(IMP.test.TestCase):
     def _convert_to_xyzs(self, m, vs):
         ret=[]
         for v in vs:
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             d= IMP.core.XYZ.setup_particle(p, v)
             ret.append(d)
         return ret

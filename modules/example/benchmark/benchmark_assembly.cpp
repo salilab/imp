@@ -27,7 +27,7 @@ Sphere3Ds get_residues(std::string fname) {
   atom::Hierarchy h = read_pdb(fname, m);
   atom::Hierarchy hs =
       create_simplified_along_backbone(Chain(get_by_type(h, CHAIN_TYPE)[0]), 1);
-  ParticlesTemp ps = get_as<ParticlesTemp>(atom::get_leaves(hs));
+  kernel::ParticlesTemp ps = get_as<kernel::ParticlesTemp>(atom::get_leaves(hs));
   Sphere3Ds ret;
   for (unsigned int i = 0; i < ps.size(); ++i) {
     ret.push_back(XYZR(ps[i]).get_sphere());
@@ -35,13 +35,13 @@ Sphere3Ds get_residues(std::string fname) {
   return ret;
 }
 
-std::pair<kernel::Restraints, PairPredicates> create_restraints(Model *m,
-                                                        const ParticlesTemp &ps,
+std::pair<Restraints, PairPredicates> create_restraints(Model *m,
+                                                        const kernel::ParticlesTemp &ps,
                                                         double threshold) {
   IMP_NEW(GridClosePairsFinder, cpf, ());
   cpf->set_distance(threshold);
-  ParticlePairsTemp close = cpf->get_close_pairs(ps);
-  kernel::Restraints ret;
+  kernel::ParticlePairsTemp close = cpf->get_close_pairs(ps);
+  Restraints ret;
   for (unsigned int i = 0; i < close.size(); ++i) {
     double d = get_distance(XYZ(close[i][0]), XYZ(close[i][1]));
     IMP_NEW(HarmonicDistancePairScore, hdps, (d, 10));
@@ -57,9 +57,9 @@ std::pair<kernel::Restraints, PairPredicates> create_restraints(Model *m,
 }
 
 ParticlesTemp create_particles(Model *m, const Sphere3Ds &input) {
-  ParticlesTemp ret;
+  kernel::ParticlesTemp ret;
   for (unsigned int i = 0; i < input.size(); ++i) {
-    IMP_NEW(Particle, p, (m));
+    IMP_NEW(kernel::Particle, p, (m));
     std::ostringstream oss;
     oss << "P" << i;
     p->set_name(oss.str());
@@ -70,8 +70,8 @@ ParticlesTemp create_particles(Model *m, const Sphere3Ds &input) {
   return ret;
 }
 
-void display_model(const Sphere3Ds &input, const ParticlesTemp &output,
-                   const kernel::Restraints &rs, std::string fname) {
+void display_model(const Sphere3Ds &input, const kernel::ParticlesTemp &output,
+                   const Restraints &rs, std::string fname) {
   IMP_NEW(PymolWriter, w, (fname));
   for (unsigned int i = 0; i < input.size(); ++i) {
     double f = static_cast<double>(i) / input.size();
@@ -94,7 +94,7 @@ void display_model(const Sphere3Ds &input, const ParticlesTemp &output,
   }
 }
 
-void align_input_and_output(const ParticlesTemp &output,
+void align_input_and_output(const kernel::ParticlesTemp &output,
                             const Sphere3Ds &input) {
   Transformation3D tr =
       get_transformation_aligning_first_to_second(output, input);
@@ -119,8 +119,8 @@ int main(int, char * []) {
   }
 
   IMP_NEW(Model, m, ());
-  ParticlesTemp ps = create_particles(m, s3);
-  kernel::Restraints rs;
+  kernel::ParticlesTemp ps = create_particles(m, s3);
+  Restraints rs;
   PairPredicates interactions;
   boost::tie(rs, interactions) = create_restraints(m, ps, threshold);
   display_model(s3, ps, rs, "in.pym");
@@ -135,7 +135,7 @@ int main(int, char * []) {
     }
     for (unsigned int i = 0; i < ps.size(); ++i) {
       for (unsigned int j = 0; j < i; ++j) {
-        ParticlePair pp(ps[i], ps[j]);
+        kernel::ParticlePair pp(ps[i], ps[j]);
         if (!interactions[0]->get_value(pp)) {
           double cur = ssps->evaluate(pp, nullptr);
           IMP_USAGE_CHECK(cur < .01, "Huf? " << cur);
@@ -169,7 +169,7 @@ int main(int, char * []) {
   double tot1 = 0;
   for (unsigned int i = 0; i < ps.size(); ++i) {
     for (unsigned int j = 0; j < i; ++j) {
-      ParticlePair pp(ps[i], ps[j]);
+      kernel::ParticlePair pp(ps[i], ps[j]);
       if (!interactions[0]->get_value(pp)) {
         double cur = ssps->evaluate(pp, nullptr);
         tot1 += cur;

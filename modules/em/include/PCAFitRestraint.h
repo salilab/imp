@@ -44,7 +44,7 @@ public:
     \param[in] max_angle_diff
     \param[in] max_centroid_diff
    */
-  PCAFitRestraint(ParticlesTemp ps,
+  PCAFitRestraint(kernel::ParticlesTemp ps,
        DensityMap *em_map, float threahold,
        float max_pca_size_diff,float max_angle_diff,float max_centroid_diff,
        FloatKey weight_key= atom::Mass::get_mass_key());
@@ -56,11 +56,11 @@ public:
   IMP_OBJECT_METHODS(PCAFitRestraint);
 
 #ifndef SWIG
-  IMP_LIST(private, Particle, particle, Particle*, Particles);
+  IMP_LIST(private, Particle, particle, kernel::Particle*, kernel::Particles);
 #endif
 private:
   //! Store particles
-  void store_particles(ParticlesTemp ps);
+  void store_particles(kernel::ParticlesTemp ps);
 
   IMP::base::PointerMember<DensityMap> target_dens_map_;
   float threshold_;
@@ -68,7 +68,7 @@ private:
   // reference to the IMP environment
   core::XYZs xyz_;
   FloatKey weight_key_;
-  Particles all_ps_;
+  kernel::Particles all_ps_;
   KernelType kt_;
   algebra::PrincipalComponentAnalysis dens_pca_;
   float max_angle_diff_,max_pca_size_diff_;

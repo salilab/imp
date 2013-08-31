@@ -64,16 +64,16 @@ int main(int argc, char **argv) {
   IMP::atom::Hierarchy mhd2 = IMP::atom::read_pdb(pdb2, model,
                         new IMP::atom::NonWaterNonHydrogenPDBSelector(),
                                                   true, true);
-  IMP::Particles particles1 =
-    IMP::get_as<IMP::Particles>(get_by_type(mhd1, IMP::atom::ATOM_TYPE));
-  IMP::Particles particles2 =
-    IMP::get_as<IMP::Particles>(get_by_type(mhd2, IMP::atom::ATOM_TYPE));
+  IMP::kernel::Particles particles1 =
+    IMP::get_as<IMP::kernel::Particles>(get_by_type(mhd1, IMP::atom::ATOM_TYPE));
+  IMP::kernel::Particles particles2 =
+    IMP::get_as<IMP::kernel::Particles>(get_by_type(mhd2, IMP::atom::ATOM_TYPE));
 
-  IMP::ParticleIndexes pis1(particles1.size());
+  IMP::kernel::ParticleIndexes pis1(particles1.size());
   for(unsigned int i=0; i<pis1.size(); ++i) {
     pis1[i] = particles1[i]->get_index();
   }
-  IMP::ParticleIndexes pis2(particles2.size());
+  IMP::kernel::ParticleIndexes pis2(particles2.size());
   for(unsigned int i=0; i<pis2.size(); ++i) {
     pis2[i] = particles2[i]->get_index();
   }
@@ -97,7 +97,7 @@ int main(int argc, char **argv) {
       double dist = IMP::algebra::get_distance(v1, v2);
       if(dist < distance_threshold) {
         score += soap.get_score(model,
-                                IMP::ParticleIndexPair(pis1[i], pis2[j]), dist);
+                                IMP::kernel::ParticleIndexPair(pis1[i], pis2[j]), dist);
       }
     }
   }
@@ -105,7 +105,7 @@ int main(int argc, char **argv) {
 
   // SAS based score
   // compute surface accessibility and average radius
-  IMP::Particles particles(particles1);
+  IMP::kernel::Particles particles(particles1);
   particles.insert(particles.end(), particles2.begin(), particles2.end());
   IMP::saxs::FormFactorTable* ft = IMP::saxs::default_form_factor_table();
   // add radius

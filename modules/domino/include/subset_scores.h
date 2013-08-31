@@ -126,7 +126,7 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
       return std::abs(a - b) < .1 * (a + b) + .1;
     }
   };
-  typedef base::map<Particle *, ParticlesTemp> DepMap;
+  typedef base::map<kernel::Particle *, kernel::ParticlesTemp> DepMap;
   void add_restraint_internal(kernel::Restraint *r, unsigned int index,
                               kernel::RestraintSet *parent, double max,
                               Subset parent_subset, const DepMap &dependencies);
@@ -195,11 +195,11 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
       \param[in] max_entries How many entries to write out at most.
       \param[in] group Where to put the entries.
   */
-  void save_cache(const ParticlesTemp &particle_ordering,
+  void save_cache(const kernel::ParticlesTemp &particle_ordering,
                   const kernel::RestraintsTemp &restraints,
                   RMF::HDF5::Group group,
                   unsigned int max_entries);
-  void load_cache(const ParticlesTemp &ps, RMF::HDF5::ConstGroup group);
+  void load_cache(const kernel::ParticlesTemp &ps, RMF::HDF5::ConstGroup group);
 #endif
 
   /** Return the slice for that restraint given the subset. */

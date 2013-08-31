@@ -306,7 +306,7 @@ class Tests(IMP.test.TestCase):
                                      ('HET:CGD', 'C'),
                                      ('HET:CMB', 'C')):
             self.assertTrue(IMP.atom.AtomType.get_key_exists(charmm_name))
-            p = IMP.Particle(m)
+            p = IMP.kernel.Particle(m)
             a = IMP.atom.Atom.setup_particle(p, IMP.atom.AtomType(charmm_name))
             # Make sure each new atom type has the correct element
             self.assertEqual(a.get_element(), t.get_element(element))

@@ -101,7 +101,7 @@ class IMPDOMINOEXPORT BranchAndBoundAssignmentsTable : public AssignmentsTable {
   SubsetFilterTables sft_;
   unsigned int max_;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-  IMP::base::map<Particle *, ParticlesTemp> rls_;
+  IMP::base::map<kernel::Particle *, kernel::ParticlesTemp> rls_;
 #endif
 #endif
  public:
@@ -139,7 +139,7 @@ class IMPDOMINOEXPORT ListAssignmentsTable : public AssignmentsTable {
     enumeration. This function is there in order to expose internal
     functionality for easier testing and should not be depended upon.
 */
-IMPDOMINOEXPORT ParticlesTemp get_order(const Subset &s,
+IMPDOMINOEXPORT kernel::ParticlesTemp get_order(const Subset &s,
                                         const SubsetFilterTables &sft);
 
 IMPDOMINO_END_NAMESPACE

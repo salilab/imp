@@ -15,10 +15,10 @@ class Tests(IMP.test.TestCase):
                                       IMP.algebra.Vector3D(10,10,10))
         slack = 1
         def create_rb():
-            rbp= IMP.Particle(m)
+            rbp= IMP.kernel.Particle(m)
             ps= []
             for i in range(0,10):
-                p = IMP.Particle(m)
+                p = IMP.kernel.Particle(m)
                 d= IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb), 3))
                 ps.append(p)
             return (IMP.core.RigidBody.setup_particle(rbp, ps), ps)

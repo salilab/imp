@@ -115,7 +115,7 @@ IMP_VALUES(ProjectingOptions,ProjectingOptionsList);
   \param[in] options Options for control the projecting
   \param[in] names names of the images
 */
-IMPEM2DEXPORT em2d::Images get_projections(const ParticlesTemp &ps,
+IMPEM2DEXPORT em2d::Images get_projections(const kernel::ParticlesTemp &ps,
         const algebra::SphericalVector3Ds &vs,
         int rows, int cols, const ProjectingOptions &options,
         Strings names=Strings());
@@ -128,7 +128,7 @@ IMPEM2DEXPORT em2d::Images get_projections(const ParticlesTemp &ps,
 
   \note See the function get_projections() for the rest of the parameters
 */
-IMPEM2DEXPORT em2d::Images get_projections(const ParticlesTemp &ps,
+IMPEM2DEXPORT em2d::Images get_projections(const kernel::ParticlesTemp &ps,
         const RegistrationResults &registration_values,
         int rows, int cols, const ProjectingOptions &options,
         Strings names=Strings());
@@ -147,7 +147,7 @@ IMPEM2DEXPORT em2d::Images get_projections(const ParticlesTemp &ps,
   \return img the projection will be stored here
   \note See the function get_projections() for the rest of the parameters
 */
-IMPEM2DEXPORT void get_projection(em2d::Image *img,const ParticlesTemp &ps,
+IMPEM2DEXPORT void get_projection(em2d::Image *img,const kernel::ParticlesTemp &ps,
         const RegistrationResult &reg, const ProjectingOptions &options,
         MasksManagerPtr masks=MasksManagerPtr(), String name="");
 
@@ -162,7 +162,7 @@ IMPEM2DEXPORT void get_projection(em2d::Image *img,const ParticlesTemp &ps,
   \param[in] masks
   \note See the function get_projection() for the rest of the parameters
 */
-IMPEM2DEXPORT void do_project_particles(const ParticlesTemp &ps,
+IMPEM2DEXPORT void do_project_particles(const kernel::ParticlesTemp &ps,
              cv::Mat &m2,
              const algebra::Rotation3D &R,
              const algebra::Vector3D &translation,
@@ -176,7 +176,7 @@ IMPEM2DEXPORT void do_project_particles(const ParticlesTemp &ps,
     exactly what you want.
 */
 IMPEM2DEXPORT Images create_evenly_distributed_projections(
-                                             const ParticlesTemp &ps,
+                                             const kernel::ParticlesTemp &ps,
                                              unsigned int n,
                                              const ProjectingOptions &options);
 
@@ -217,7 +217,7 @@ IMPEM2DEXPORT algebra::Vector2Ds do_project_vectors(
 
   slack is the number of pixels left as border
 */
-IMPEM2DEXPORT unsigned int get_enclosing_image_size(const ParticlesTemp &ps,
+IMPEM2DEXPORT unsigned int get_enclosing_image_size(const kernel::ParticlesTemp &ps,
                                                     double pixel_size,
                                                     unsigned int slack);
 

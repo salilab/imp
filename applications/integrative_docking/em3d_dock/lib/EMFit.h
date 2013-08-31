@@ -15,7 +15,7 @@
 #include <IMP/em/MapDistanceTransform.h>
 #include <IMP/em/DensityMap.h>
 
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 
 class EMFit {
 public:
@@ -37,19 +37,19 @@ public:
   void output(std::string out_file_name, std::string out_pdb_file_name="");
 
 private:
-  float compute_volume(const IMP::Particles& particles);
+  float compute_volume(const IMP::kernel::Particles& particles);
   float estimate_density_threshold(float object_volume) const;
   void read_trans_file(const std::string file_name,
                        std::vector<IMP::algebra::Transformation3D>& transforms);
 
   void read_pdb_atoms(IMP::Model *model, const std::string file_name,
-                      IMP::Particles& particles);
+                      IMP::kernel::Particles& particles);
 
   void compute_zscores();
 
 private:
   IMP::base::PointerMember<IMP::Model> model_;
-  IMP::Particles rec_particles_, lig_particles_;
+  IMP::kernel::Particles rec_particles_, lig_particles_;
   std::string rec_file_name_, lig_file_name_;
   IMP::base::PointerMember<IMP::em::DensityMap> map_;
   IMP::base::PointerMember<IMP::em::MapDistanceTransform> distance_transform_;

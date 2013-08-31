@@ -9,7 +9,7 @@
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
 #include <IMP/core/internal/CoreClosePairContainer.h>
-#include <IMP/internal/pdb.h>
+#include <IMP/kernel/internal/pdb.h>
 
 using namespace IMP;
 using namespace IMP::core;
@@ -52,13 +52,13 @@ Model *setup(bool rpcpf, RigidBodies &rbs) {
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
   Model *m = new Model();
-  Particles atoms;
+  kernel::Particles atoms;
   for (int i = 0; i < 5; ++i) {
     std::string path = IMP::benchmark::get_data_path("small_protein.pdb");
-    ParticlesTemp catoms = IMP::internal::create_particles_from_pdb(path, m);
+    kernel::ParticlesTemp catoms = IMP::internal::create_particles_from_pdb(path, m);
     IMP_INTERNAL_CHECK(catoms.size() != 0, "What happened to the atoms?");
     atoms.insert(atoms.end(), catoms.begin(), catoms.end());
-    IMP_NEW(Particle, rbp, (m));
+    IMP_NEW(kernel::Particle, rbp, (m));
     RigidBody rbd = RigidBody::setup_particle(rbp, catoms);
     rbs.push_back(rbd);
   }
@@ -69,7 +69,7 @@ Model *setup(bool rpcpf, RigidBodies &rbs) {
 
   PairContainer *cpc;
   if (rpcpf) {
-    ParticleIndexes rbsp(rbs.size());
+    kernel::ParticleIndexes rbsp(rbs.size());
     for (unsigned int i = 0; i < rbs.size(); ++i) {
       rbsp[i] = rbs[i].get_particle()->get_index();
     }
@@ -78,7 +78,7 @@ Model *setup(bool rpcpf, RigidBodies &rbs) {
     cpc = new core::internal::CoreClosePairContainer(lsc, 0.0, rcps);
   } else {
     IMP_NEW(GridClosePairsFinder, cpf, ());
-    lsc->set(IMP::get_indexes(get_as<ParticlesTemp>(atoms)));
+    lsc->set(IMP::get_indexes(get_as<kernel::ParticlesTemp>(atoms)));
     cpc = new core::internal::CoreClosePairContainer(lsc, 0.0, cpf, 1.0);
   }
   IMP_NEW(IMP::internal::InternalPairsRestraint, pr,

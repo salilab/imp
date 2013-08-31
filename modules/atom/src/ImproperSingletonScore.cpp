@@ -16,7 +16,7 @@ IMPATOM_BEGIN_NAMESPACE
 
 ImproperSingletonScore::ImproperSingletonScore(UnaryFunction *f) : f_(f) {}
 
-double ImproperSingletonScore::evaluate_index(Model *m, ParticleIndex pi,
+double ImproperSingletonScore::evaluate_index(Model *m, kernel::ParticleIndex pi,
                                               DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
   IMP_USAGE_CHECK(Dihedral::get_is_setup(m, pi),
@@ -50,7 +50,7 @@ double ImproperSingletonScore::evaluate_index(Model *m, ParticleIndex pi,
 }
 
 ModelObjectsTemp ImproperSingletonScore::do_get_inputs(
-    Model *m, const ParticleIndexes &pi) const {
+    Model *m, const kernel::ParticleIndexes &pi) const {
   ModelObjectsTemp ret(5 * pi.size());
   for (unsigned int i = 0; i < pi.size(); ++i) {
     Dihedral ad(m, pi[i]);

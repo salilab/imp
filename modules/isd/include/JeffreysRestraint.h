@@ -21,12 +21,12 @@ IMPISD_BEGIN_NAMESPACE
 
 class IMPISDEXPORT JeffreysRestraint : public ISDRestraint
 {
-  base::Pointer<Particle> p_;
+  base::Pointer<kernel::Particle> p_;
 
 public:
   //! Create the restraint.
-  JeffreysRestraint(Particle *p);
-  JeffreysRestraint(Model *m, Particle *p);
+  JeffreysRestraint(kernel::Particle *p);
+  JeffreysRestraint(Model *m, kernel::Particle *p);
 
   /** This macro declares the basic needed methods: evaluate and show
    */

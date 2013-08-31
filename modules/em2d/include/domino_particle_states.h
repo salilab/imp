@@ -1,6 +1,6 @@
 /**
  *  \file domino_particle_states.h
- *  \brief Particles states for a rigid body that is going to be projected
+ *  \brief kernel::Particles states for a rigid body that is going to be projected
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -23,7 +23,7 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
 
-/*! States that a set of Particles can have according to their positions
+/*! States that a set of kernel::Particles can have according to their positions
     and orientations in a grid. The orientations also determine the orientation
     of the projections of the particles.
 */
@@ -50,7 +50,7 @@ public:
   GridStates(const algebra::Vector3Ds &positions,
                             const algebra::Rotation3Ds &orientations,
                             const String &name="GridStates") :
-                            ParticleStates(name),
+                            domino::ParticleStates(name),
                            positions_(positions),
                            orientations_(orientations) {
     number_of_states_ = positions_.size()*orientations_.size();
@@ -72,7 +72,7 @@ public:
 IMP_OBJECTS(GridStates, GridStatesList);
 
 
-/*! States that a set of Particles can have according to their positions
+/*! States that a set of kernel::Particles can have according to their positions
     and orientations in a grid. The orientations also determine the orientation
     of the projections of the particles.
 */

@@ -41,8 +41,8 @@ class Tests(IMP.test.TestCase):
         self.particles = []
         ## -  create a set of three particles in imp
         for i in range(3):
-            self.particles.append(IMP.Particle(self.imp_model))
-        #add IMP.kernel.Restraints into the modeller scoring function
+            self.particles.append(IMP.kernel.Particle(self.imp_model))
+        #add IMP Restraints into the modeller scoring function
         t = self.env.edat.energy_terms
         t.append(IMP.modeller.IMPRestraints(self.particles))
 
@@ -121,7 +121,7 @@ class Tests(IMP.test.TestCase):
 
         ## -  create a set of three particles in imp
         for i in range(3):
-            self.particles.append(IMP.Particle(self.imp_model))
+            self.particles.append(IMP.kernel.Particle(self.imp_model))
 
         #add IMP.kernel.Restraints into the modeller scoring function
         t = self.env.edat.energy_terms
@@ -192,7 +192,7 @@ class Tests(IMP.test.TestCase):
         bd= 10
         radius=10
         m= IMP.Model()
-        p= IMP.Particle(m)
+        p= IMP.kernel.Particle(m)
         IMP.atom.Mass.setup_particle(p, 10000)
         d= IMP.core.XYZR.setup_particle(p)
         d.set_radius(radius)

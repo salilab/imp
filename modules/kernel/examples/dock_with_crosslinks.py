@@ -127,7 +127,7 @@ def setup_move_them_all_MonteCarlo_external(connected_chain_list,scoring_functio
             rb_tmp_list.append(rba)
 
         print 'RIGID BODY LIST', [r.get_name( ) for r in rb_tmp_list]
-        p=IMP.Particle(m)
+        p=IMP.kernel.Particle(m)
         p.set_name("root rigid body "+str(chain_id[s]))
         rb=IMP.core.RigidBody.setup_particle(p,rb_tmp_list)
         rb_ext_list.append(rb)

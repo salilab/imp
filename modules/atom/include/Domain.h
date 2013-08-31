@@ -24,23 +24,23 @@ class IMPATOMEXPORT Domain : public Hierarchy {
     IntKey begin, end;
   };
   static const Data &get_data();
-  static void do_setup_particle(Model *m, ParticleIndex pi, IntRange r) {
+  static void do_setup_particle(Model *m, kernel::ParticleIndex pi, IntRange r) {
     m->add_attribute(get_data().begin, pi, r.first);
     m->add_attribute(get_data().end, pi, r.second);
     if (!Hierarchy::get_is_setup(m, pi)) {
       Hierarchy::setup_particle(m, pi);
     }
   }
-  static void do_setup_particle(Model *m, ParticleIndex pi, Int b, Int e) {
+  static void do_setup_particle(Model *m, kernel::ParticleIndex pi, Int b, Int e) {
     do_setup_particle(m, pi, IntRange(b,e));
   }
-  static void do_setup_particle(Model *m, ParticleIndex pi, Domain o) {
+  static void do_setup_particle(Model *m, kernel::ParticleIndex pi, Domain o) {
     do_setup_particle(m, pi, o.get_index_range());
   }
 
  public:
 
-  static bool get_is_setup(Model *m, ParticleIndex pi) {
+  static bool get_is_setup(Model *m, kernel::ParticleIndex pi) {
     return m->get_has_attribute(get_data().begin, pi) &&
            m->get_has_attribute(get_data().end, pi) &&
            Hierarchy::get_is_setup(m, pi);
@@ -72,7 +72,7 @@ class IMPATOMEXPORT Domain : public Hierarchy {
     Int get_end_index() const;
   /** \deprecated_at{2.1} Use the IntRange setup_particle.*/
   IMPATOM_DEPRECATED_METHOD_DECL(2.1)
-        static Domain setup_particle(Model *m, ParticleIndex pi,
+        static Domain setup_particle(Model *m, kernel::ParticleIndex pi,
                                      Int residues_begin, Int residues_end);
   /** \deprecated_at{2.1} Use the IntRange setup_particle.*/
   IMPATOM_DEPRECATED_METHOD_DECL(2.1)

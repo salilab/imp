@@ -154,8 +154,8 @@ class Tests(IMP.test.TestCase):
             else:
                 fps.append(ps[i])
                 free_ps.append(ps[i])
-        rba= IMP.core.RigidBody.setup_particle(IMP.Particle(m), rbpsa)
-        rbb= IMP.core.RigidBody.setup_particle(IMP.Particle(m), rbpsb)
+        rba= IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m), rbpsa)
+        rbb= IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m), rbpsb)
         rba.get_particle().set_name("rba")
         rbb.get_particle().set_name("rbb")
         print "before", [IMP.core.XYZR(p) for p in rbpsa]
@@ -185,8 +185,8 @@ class Tests(IMP.test.TestCase):
                 rbpsb2.append(ps2[i])
             else:
                 fps2.append(ps2[i])
-        rba2= IMP.core.RigidBody.setup_particle(IMP.Particle(m), IMP.core.XYZs(rbpsa2))
-        rbb2= IMP.core.RigidBody.setup_particle(IMP.Particle(m), IMP.core.XYZs(rbpsb2))
+        rba2= IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m), IMP.core.XYZs(rbpsa2))
+        rbb2= IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m), IMP.core.XYZs(rbpsb2))
         fps.append(rba2.get_particle())
         fps.append(rbb2.get_particle())
         rba2.get_particle().set_name("rba2")

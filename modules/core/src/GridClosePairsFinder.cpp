@@ -40,12 +40,12 @@ IntPairs GridClosePairsFinder::get_close_pairs(
 }
 
 ParticleIndexPairs GridClosePairsFinder::get_close_pairs(
-    Model *m, const ParticleIndexes &c) const {
+    Model *m, const kernel::ParticleIndexes &c) const {
   IMP_OBJECT_LOG;
   set_was_used(true);
   IMP_LOG_TERSE("Rebuilding NBL with Grid and cutoff " << get_distance()
                                                        << std::endl);
-  ParticleIndexPairs out;
+  kernel::ParticleIndexPairs out;
   internal::ParticleIndexHelper::fill_close_pairs(
       internal::ParticleIndexHelper::get_particle_set(c.begin(), c.end(), 0),
       internal::ParticleIndexTraits(m, get_distance()),
@@ -53,10 +53,10 @@ ParticleIndexPairs GridClosePairsFinder::get_close_pairs(
   return out;
 }
 ParticleIndexPairs GridClosePairsFinder::get_close_pairs(
-    Model *m, const ParticleIndexes &ca, const ParticleIndexes &cb) const {
+    Model *m, const kernel::ParticleIndexes &ca, const kernel::ParticleIndexes &cb) const {
   IMP_OBJECT_LOG;
   set_was_used(true);
-  ParticleIndexPairs out;
+  kernel::ParticleIndexPairs out;
   internal::ParticleIndexHelper::fill_close_pairs(
       internal::ParticleIndexHelper::get_particle_set(ca.begin(), ca.end(), 0),
       internal::ParticleIndexHelper::get_particle_set(cb.begin(), cb.end(), 1),
@@ -66,7 +66,7 @@ ParticleIndexPairs GridClosePairsFinder::get_close_pairs(
 }
 
 ModelObjectsTemp GridClosePairsFinder::do_get_inputs(
-    Model *m, const ParticleIndexes &pis) const {
+    Model *m, const kernel::ParticleIndexes &pis) const {
   ModelObjectsTemp ret;
   ret += IMP::get_particles(m, pis);
   for (PairFilterConstIterator it = pair_filters_begin();

@@ -12,7 +12,7 @@
 IMPSTATISTICS_BEGIN_NAMESPACE
 
 namespace {
-algebra::Vector3D get_coordinates(Model *m, ParticleIndex pi) {
+algebra::Vector3D get_coordinates(Model *m, kernel::ParticleIndex pi) {
   algebra::Vector3D ret(
       m->get_attribute(IMP::kernel::internal::xyzr_keys[0], pi),
       m->get_attribute(IMP::kernel::internal::xyzr_keys[1], pi),
@@ -66,7 +66,7 @@ unsigned int ConfigurationSetXYZEmbedding::get_number_of_items() const {
   return cs_->get_number_of_configurations();
 }
 
-ParticleEmbedding::ParticleEmbedding(const ParticlesTemp &ps,
+ParticleEmbedding::ParticleEmbedding(const kernel::ParticlesTemp &ps,
                                      const FloatKeys &ks, bool rescale)
     : Embedding("ParticleEmbedding"),
       ps_(ps.begin(), ps.end()),

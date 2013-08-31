@@ -23,10 +23,10 @@
 #include <IMP/base/map.h>
 IMPRMF_BEGIN_NAMESPACE
 
-class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<Particle> {
-  IMP_NAMED_TUPLE_2(ConstData, ConstDatas, RMF::NodeIDs, nodes, ParticlesTemp,
+class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<kernel::Particle> {
+  IMP_NAMED_TUPLE_2(ConstData, ConstDatas, RMF::NodeIDs, nodes, kernel::ParticlesTemp,
                     particles, );
-  typedef SimpleLoadLink<Particle> P;
+  typedef SimpleLoadLink<kernel::Particle> P;
   base::Pointer<Model> m_;
   RMF::ParticleConstFactory particle_factory_;
   RMF::IntermediateParticleConstFactory intermediate_particle_factory_;
@@ -42,35 +42,35 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<Particle> {
   RMF::ReferenceFrameConstFactory reference_frame_factory_;
   RMF::IndexKey rigid_body_key_;
 
-  base::map<Particle *, ConstData> contents_;
-  base::map<unsigned int, ParticlesTemp> rigid_bodies_;
+  base::map<kernel::Particle *, ConstData> contents_;
+  base::map<unsigned int, kernel::ParticlesTemp> rigid_bodies_;
   bool get_is(RMF::NodeConstHandle nh) const {
     return nh.get_type() == RMF::REPRESENTATION;
   }
-  bool setup_particle(Particle *root, RMF::NodeConstHandle nh, Particle *p,
-                      Particle *rbp);
+  bool setup_particle(kernel::Particle *root, RMF::NodeConstHandle nh, kernel::Particle *p,
+                      kernel::Particle *rbp);
 
  protected:
   /** This method is called for each particle in the hierarchy.*/
-  virtual void do_load_node(RMF::NodeConstHandle nh, Particle *o);
+  virtual void do_load_node(RMF::NodeConstHandle nh, kernel::Particle *o);
   /** Overload this method to take specific action on loading a hierarchy.
    */
-  virtual void do_load_one(RMF::NodeConstHandle nh, Particle *o);
+  virtual void do_load_one(RMF::NodeConstHandle nh, kernel::Particle *o);
   /** Overload this to take specific action on creating
       a member of the hierarchy.
       \unstable{do_create_recursive} */
-  virtual Particle *do_create_recursive(Particle *root,
+  virtual kernel::Particle *do_create_recursive(kernel::Particle *root,
                                         RMF::NodeConstHandle name,
-                                        Particle *rbp = nullptr);
+                                        kernel::Particle *rbp = nullptr);
 
-  Particle *do_create(RMF::NodeConstHandle name);
+  kernel::Particle *do_create(RMF::NodeConstHandle name);
   /** Overload this to take specific action on linking
       a member of the hierarchy.
       \unstable{do_add_link_recursive} */
-  virtual void do_add_link_recursive(Particle *root, Particle *o,
+  virtual void do_add_link_recursive(kernel::Particle *root, kernel::Particle *o,
                                      RMF::NodeConstHandle node);
 
-  void do_add_link(Particle *o, RMF::NodeConstHandle node);
+  void do_add_link(kernel::Particle *o, RMF::NodeConstHandle node);
 
  public:
   HierarchyLoadLink(RMF::FileConstHandle fh, Model *m);
@@ -78,9 +78,9 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<Particle> {
   IMP_OBJECT_METHODS(HierarchyLoadLink);
 };
 
-class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<Particle> {
-  typedef SimpleSaveLink<Particle> P;
-  IMP_NAMED_TUPLE_2(Data, Datas, RMF::NodeIDs, nodes, ParticlesTemp,
+class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<kernel::Particle> {
+  typedef SimpleSaveLink<kernel::Particle> P;
+  IMP_NAMED_TUPLE_2(Data, Datas, RMF::NodeIDs, nodes, kernel::ParticlesTemp,
                     particles, );
 
   RMF::ParticleFactory particle_factory_;
@@ -102,18 +102,18 @@ class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<Particle> {
   RMF::TorqueFactory torque_factory_;
 
   // ones in this set have their internal coordinates saved
-  base::set<Particle *> internal_;
-  base::map<Particle *, Data> contents_;
-  base::map<Particle *, unsigned int> rigid_bodies_;
-  void setup_node(Particle *p, RMF::NodeHandle n);
-  void do_add(Particle *p, RMF::NodeHandle cur);
-  void do_save_one(Particle *o, RMF::NodeHandle nh);
-  RMF::NodeType get_type(Particle *) const { return RMF::REPRESENTATION; }
+  base::set<kernel::Particle *> internal_;
+  base::map<kernel::Particle *, Data> contents_;
+  base::map<kernel::Particle *, unsigned int> rigid_bodies_;
+  void setup_node(kernel::Particle *p, RMF::NodeHandle n);
+  void do_add(kernel::Particle *p, RMF::NodeHandle cur);
+  void do_save_one(kernel::Particle *o, RMF::NodeHandle nh);
+  RMF::NodeType get_type(kernel::Particle *) const { return RMF::REPRESENTATION; }
 
  protected:
-  virtual void do_add_recursive(Particle *root, Particle *p,
+  virtual void do_add_recursive(kernel::Particle *root, kernel::Particle *p,
                                 RMF::NodeHandle cur);
-  virtual void do_save_node(Particle *p, RMF::NodeHandle n);
+  virtual void do_save_node(kernel::Particle *p, RMF::NodeHandle n);
 
  public:
   HierarchySaveLink(RMF::FileHandle fh);

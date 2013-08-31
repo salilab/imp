@@ -58,7 +58,7 @@ void SampleAssignmentContainer::add_assignment(const Assignment &a) {
 #if IMP_DOMINO_HAS_RMF
 WriteHDF5AssignmentContainer::WriteHDF5AssignmentContainer(
     RMF::HDF5::Group parent, const Subset &s,
-    const ParticlesTemp &all_particles, std::string name)
+    const kernel::ParticlesTemp &all_particles, std::string name)
     : AssignmentContainer(name),
       ds_(parent.add_child_index_data_set_2d(name)),
       order_(s, all_particles),
@@ -71,7 +71,7 @@ WriteHDF5AssignmentContainer::WriteHDF5AssignmentContainer(
 
 WriteHDF5AssignmentContainer::WriteHDF5AssignmentContainer(
     RMF::HDF5::IndexDataSet2D dataset, const Subset &s,
-    const ParticlesTemp &all_particles, std::string name)
+    const kernel::ParticlesTemp &all_particles, std::string name)
     : AssignmentContainer(name),
       ds_(dataset),
       order_(s, all_particles),
@@ -143,7 +143,7 @@ void WriteHDF5AssignmentContainer::add_assignment(const Assignment &a) {
 
 ReadHDF5AssignmentContainer::ReadHDF5AssignmentContainer(
     RMF::HDF5::IndexConstDataSet2D dataset, const Subset &s,
-    const ParticlesTemp &all_particles, std::string name)
+    const kernel::ParticlesTemp &all_particles, std::string name)
     : AssignmentContainer(name),
       ds_(dataset),
       order_(s, all_particles),
@@ -170,7 +170,7 @@ void ReadHDF5AssignmentContainer::add_assignment(const Assignment &) {
 #endif
 
 WriteAssignmentContainer::WriteAssignmentContainer(
-    std::string dataset, const Subset &s, const ParticlesTemp &all_particles,
+    std::string dataset, const Subset &s, const kernel::ParticlesTemp &all_particles,
     std::string name)
     : AssignmentContainer(name), order_(s, all_particles), max_cache_(10000) {
   cache_.reserve(max_cache_);
@@ -258,7 +258,7 @@ void CappedAssignmentContainer::add_assignment(const Assignment &a) {
 ///
 
 ReadAssignmentContainer::ReadAssignmentContainer(
-    std::string dataset, const Subset &s, const ParticlesTemp &all_particles,
+    std::string dataset, const Subset &s, const kernel::ParticlesTemp &all_particles,
     std::string name)
     : AssignmentContainer(name), order_(s, all_particles) {
   // must be done first to initialize max_cache_

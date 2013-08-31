@@ -105,12 +105,12 @@ class IMPCONTAINEREXPORT ClosePairContainer :
   /**@}*/
   void set_slack(double s);
   double get_slack() const;
-  ParticleIndexPairs get_indexes() const;
-  ParticleIndexPairs get_range_indexes() const;
+  kernel::ParticleIndexPairs get_indexes() const;
+  kernel::ParticleIndexPairs get_range_indexes() const;
   void do_before_evaluate();
   ModelObjectsTemp do_get_inputs() const;
   void do_apply(const PairModifier *sm) const;
-  ParticleIndexes get_all_possible_indexes() const;
+  kernel::ParticleIndexes get_all_possible_indexes() const;
 #endif
   IMP_OBJECT_METHODS(ClosePairContainer);
 };
@@ -128,8 +128,8 @@ IMP_OBJECTS(ClosePairContainer, ClosePairContainers);
     For best results, make the particles start in a
     that is "typical" for the optimization.
 */
-IMPCONTAINEREXPORT double
-get_slack_estimate(const ParticlesTemp &ps,
+IMPCONTAINEREXPORT double 
+get_slack_estimate(const kernel::ParticlesTemp &ps,
                    double upper_bound, double step,
                    const kernel::RestraintsTemp &restraints,
                    bool derivatives, Optimizer *opt,

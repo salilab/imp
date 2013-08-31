@@ -11,9 +11,9 @@
 
 #include <IMP/atom/atom_config.h>
 
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/Optimizer.h>
-#include <IMP/internal/units.h>
+#include <IMP/kernel/internal/units.h>
 #include <IMP/algebra/Vector3D.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -119,9 +119,9 @@ class IMPATOMEXPORT Simulator : public Optimizer {
       no particles are stored, the Model is searched for
       appropriate particles.
   */
-  ParticlesTemp get_simulation_particles() const;
+  kernel::ParticlesTemp get_simulation_particles() const;
 
-  ParticleIndexes get_simulation_particle_indexes() const;
+  kernel::ParticleIndexes get_simulation_particle_indexes() const;
 
   /** \name Explicitly specifying particles
 
@@ -131,7 +131,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
       is searched for appropriate particles.
       @{
   */
-  IMP_LIST(public, Particle, particle, Particle *, Particles);
+  IMP_LIST(public, Particle, particle, kernel::Particle *, kernel::Particles);
 
   IMP_OBJECT_METHODS(Simulator);
 
@@ -141,17 +141,17 @@ class IMPATOMEXPORT Simulator : public Optimizer {
 
   /** A Simulator class can perform setup operations before a series
       of simulation steps is taken. */
-  virtual void setup(const ParticleIndexes &) {};
+  virtual void setup(const kernel::ParticleIndexes &) {};
 
   /** Perform a single time step and return the amount that time
       should be advanced. A maximum time step value is passed.
   */
-  virtual double do_step(const ParticleIndexes &sc, double dt) = 0;
+  virtual double do_step(const kernel::ParticleIndexes &sc, double dt) = 0;
 
   /** Return true if the passed particle is appropriate for
       the simulation.
   */
-  virtual bool get_is_simulation_particle(ParticleIndex p) const = 0;
+  virtual bool get_is_simulation_particle(kernel::ParticleIndex p) const = 0;
 
  private:
   // see simulate() documentation

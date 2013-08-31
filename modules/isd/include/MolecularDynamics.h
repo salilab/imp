@@ -10,7 +10,7 @@
 #define IMPISD_MOLECULAR_DYNAMICS_H
 
 #include <IMP/isd/isd_config.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/Optimizer.h>
 #include <IMP/atom/MolecularDynamics.h>
 #include <IMP/isd/Nuisance.h>
@@ -35,15 +35,15 @@ public:
   void assign_velocities(Float temperature);
 
 protected:
-  bool get_is_simulation_particle(ParticleIndex pi) const;
+  bool get_is_simulation_particle(kernel::ParticleIndex pi) const;
 
-  void setup_degrees_of_freedom(const ParticleIndexes &ps);
+  void setup_degrees_of_freedom(const kernel::ParticleIndexes &ps);
 
   //! First part of velocity Verlet (update coordinates and half-step velocity)
-  void propagate_coordinates(const ParticleIndexes &ps, double step_size);
+  void propagate_coordinates(const kernel::ParticleIndexes &ps, double step_size);
 
   //! Second part of velocity Verlet (update velocity)
-  void propagate_velocities(const ParticleIndexes &ps, double step_size);
+  void propagate_velocities(const kernel::ParticleIndexes &ps, double step_size);
 
   //! Keys of the xyz velocities
   FloatKey vnuis_;

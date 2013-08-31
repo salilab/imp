@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
         mdl=IMP.Model()
         self.weight_key=IMP.FloatKey("mass")
         for val in [[9.,5.,5.,1.,1.],[12.,9.,4.,1.,1.],[4.,5.,5.,1.,1.]]:
-            p=IMP.Particle(mdl)
+            p=IMP.kernel.Particle(mdl)
             IMP.core.XYZR.setup_particle(p,IMP.algebra.Sphere3D(IMP.algebra.Vector3D(val[0],val[1],val[2]),val[3]))
             p.add_attribute(self.weight_key,5.)
             self.particles.append(p)

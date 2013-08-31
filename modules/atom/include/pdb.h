@@ -18,9 +18,9 @@
 #include <IMP/file.h>
 #include "Selection.h"
 #include <IMP/Model.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/kernel/OptimizerState.h>
-#include <IMP/internal/utility.h>
+#include <IMP/kernel/internal/utility.h>
 #include <boost/format.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -406,7 +406,7 @@ IMPATOMEXPORT std::string get_pdb_conect_record_string(int, int);
   */
 class IMPATOMEXPORT WritePDBOptimizerState: public kernel::OptimizerState {
   std::string filename_;
-  ParticleIndexes pis_;
+  kernel::ParticleIndexes pis_;
 public:
   WritePDBOptimizerState(kernel::Model *m,
                          const kernel::ParticleIndexesAdaptor &pis,

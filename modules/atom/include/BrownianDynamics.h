@@ -13,9 +13,9 @@
 #include "Diffusion.h"
 #include "Simulator.h"
 #include "atom_macros.h"
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/Optimizer.h>
-#include <IMP/internal/units.h>
+#include <IMP/kernel/internal/units.h>
 #include <IMP/algebra/Vector3D.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -29,7 +29,7 @@ class SimulationParameters;
     the score to be energy in kcal/mol, the xyz coordinates to be in
     angstroms and the diffusion coefficent be in cm^2/s
 
-    Particles without optimized x,y,z and nonoptimized D are skipped.
+    kernel::Particles without optimized x,y,z and nonoptimized D are skipped.
 
     Rigid bodies are supported.
 
@@ -70,13 +70,13 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
   IMP_SIMULATOR(BrownianDynamics);
 
  private:
-  void advance_chunk(double dtfs, double ikt, const ParticleIndexes &ps,
+  void advance_chunk(double dtfs, double ikt, const kernel::ParticleIndexes &ps,
                      unsigned int begin, unsigned int end);
-  void advance_coordinates_1(ParticleIndex pi, unsigned int i, double dtfs,
+  void advance_coordinates_1(kernel::ParticleIndex pi, unsigned int i, double dtfs,
                              double ikT);
-  void advance_coordinates_0(ParticleIndex pi, unsigned int i, double dtfs,
+  void advance_coordinates_0(kernel::ParticleIndex pi, unsigned int i, double dtfs,
                              double ikT);
-  void advance_orientation_0(ParticleIndex pi, double dtfs, double ikT);
+  void advance_orientation_0(kernel::ParticleIndex pi, double dtfs, double ikT);
 
   double max_step_;
   bool srk_;

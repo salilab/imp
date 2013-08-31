@@ -16,7 +16,7 @@ except NameError:
 
 m= IMP.Model()
 m.set_log_level(IMP.base.SILENT)
-ds= [IMP.core.XYZR.setup_particle(IMP.Particle(m)) for i in range(0,3)]
+ds= [IMP.core.XYZR.setup_particle(IMP.kernel.Particle(m)) for i in range(0,3)]
 for i,d in enumerate(ds):
     d.set_radius(1)
     IMP.display.Colored.setup_particle(d, IMP.display.get_display_color(i))

@@ -25,9 +25,9 @@ m= IMP.Model()
 
 # create some particles and a restraint that scores based on the
 # length of the chain
-ps= [IMP.core.XYZR.setup_particle(IMP.Particle(m))
+ps= [IMP.core.XYZR.setup_particle(IMP.kernel.Particle(m))
      for i in range(0,int(2.0/resolution))]
-eps= [IMP.core.XYZR.setup_particle(IMP.Particle(m)) for i in range(0,2)]
+eps= [IMP.core.XYZR.setup_particle(IMP.kernel.Particle(m)) for i in range(0,2)]
 eps[0].set_coordinates(IMP.algebra.Vector3D(-1,0,0))
 eps[1].set_coordinates(IMP.algebra.Vector3D(1,0,0))
 for p in ps:
@@ -36,7 +36,7 @@ for p in eps:
     p.set_radius(.4*resolution)
 order=[eps[0]]+ps+[eps[1]]
 # create a hierarchy with the particles to aid writing them to RMF
-h= IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+h= IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
 for i,p in enumerate(order):
     IMP.atom.Mass.setup_particle(p,1)
     h.add_child(IMP.atom.Hierarchy.setup_particle(p))

@@ -43,7 +43,7 @@ public:
    * between a projection of the model and the EM image
    * @param masks A manager containing the masks used for projecting.
    */
-  void setup(ParticlesTemp &ps, const ProjectingParameters &params,
+  void setup(kernel::ParticlesTemp &ps, const ProjectingParameters &params,
                  Model *scoring_model,
                  ScoreFunction *score_function,
                  MasksManagerPtr masks=MasksManagerPtr());
@@ -81,11 +81,11 @@ private:
   base::Pointer<Image> subject_;
   mutable base::Pointer<Image> projection_;
   // Subject particle (it is going to be the parameters for the subject)
-  mutable base::Pointer<Particle> subj_params_particle_;
+  mutable base::Pointer<kernel::Particle> subj_params_particle_;
   // Decorator for the subject particle
   ProjectionParameters PP_;
   // Access point for the particles
-  ParticlesTemp ps_;
+  kernel::ParticlesTemp ps_;
   // Projection masks for the particles
   MasksManagerPtr  masks_;
   double resolution_,pixelsize_;

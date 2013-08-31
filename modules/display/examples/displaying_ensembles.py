@@ -17,7 +17,7 @@ def read(m, beyond_file):
         # create a simplified version for each chain to speed up computations
         name= IMP.display.get_example_path("ensemble/aligned-"+str(i)+".pdb")
         h= IMP.atom.read_pdb(name, m, IMP.atom.CAlphaPDBSelector())
-        hr= IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        hr= IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
         hs.append(hr)
         for c in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE):
             simp= IMP.atom.create_simplified_along_backbone(IMP.atom.Chain(c), 4)

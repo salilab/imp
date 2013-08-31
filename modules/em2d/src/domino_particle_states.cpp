@@ -19,7 +19,7 @@ IMPEM2D_BEGIN_NAMESPACE
   }
 
  void ProjectionStates::load_particle_state(unsigned int i,
-                                            Particle *p) const {
+                                            kernel::Particle *p) const {
    GridStates::load_particle_state(i, p);
  }
 
@@ -62,7 +62,7 @@ void GridStates::do_show(std::ostream &out) const {
 }
 
 void GridStates::load_particle_state(unsigned int i,
-                                            Particle *p) const {
+                                            kernel::Particle *p) const {
   algebra::Transformation3D T(get_orientation(i), get_position(i));
   core::XYZ xyz(p);
   core::transform(xyz,T);

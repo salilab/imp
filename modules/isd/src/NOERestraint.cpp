@@ -16,8 +16,8 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-NOERestraint::NOERestraint(Particle *p0, Particle *p1, Particle *sigma,
-                           Particle *gamma, double Vexp)
+NOERestraint::NOERestraint(kernel::Particle *p0, kernel::Particle *p1, kernel::Particle *sigma,
+                           kernel::Particle *gamma, double Vexp)
     : p0_(p0), p1_(p1), sigma_(sigma), gamma_(gamma), Vexp_(Vexp) {}
 
 /* Apply the restraint to two atoms, two Scales, one experimental value.
@@ -67,7 +67,7 @@ NOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp NOERestraint::do_get_inputs() const
 {
-  ParticlesTemp ret;
+  kernel::ParticlesTemp ret;
   ret.push_back(p0_);
   ret.push_back(p1_);
   ret.push_back(sigma_);

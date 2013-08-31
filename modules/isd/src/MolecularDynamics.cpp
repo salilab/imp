@@ -34,9 +34,9 @@ MolecularDynamics::MolecularDynamics(Model *m): atom::MolecularDynamics(m)
 
 
 
-bool MolecularDynamics::get_is_simulation_particle(ParticleIndex pi) const
+bool MolecularDynamics::get_is_simulation_particle(kernel::ParticleIndex pi) const
 {
-  Particle *p=get_model()->get_particle(pi);
+  kernel::Particle *p=get_model()->get_particle(pi);
   bool ret=IMP::core::XYZ::get_is_setup(p)
     && IMP::core::XYZ(p).get_coordinates_are_optimized()
     && atom::Mass::get_is_setup(p);
@@ -60,25 +60,25 @@ bool MolecularDynamics::get_is_simulation_particle(ParticleIndex pi) const
   return ret || ret2;
 }
 
-void MolecularDynamics::setup_degrees_of_freedom(const ParticleIndexes &ps)
+void MolecularDynamics::setup_degrees_of_freedom(const kernel::ParticleIndexes &ps)
 {
   atom::MolecularDynamics::setup_degrees_of_freedom(ps);
 
   unsigned dof_nuisances = 0;
   for (unsigned i = 0; i<ps.size(); i++)
   {
-      Particle *p=get_model()->get_particle(ps[i]);
+      kernel::Particle *p=get_model()->get_particle(ps[i]);
       if (Nuisance::get_is_setup(p)) dof_nuisances += 1;
   }
   degrees_of_freedom_ -= 2*dof_nuisances;
 }
 
-void MolecularDynamics::propagate_coordinates(const ParticleIndexes &ps,
+void MolecularDynamics::propagate_coordinates(const kernel::ParticleIndexes &ps,
                                               double ts)
 {
   for (unsigned int i=0; i< ps.size(); ++i) {
     Float invmass = 1.0 / atom::Mass(get_model(), ps[i]).get_mass();
-    Particle *p=get_model()->get_particle(ps[i]);
+    kernel::Particle *p=get_model()->get_particle(ps[i]);
     if (Nuisance::get_is_setup(p))
     {
        Nuisance d(p);
@@ -119,12 +119,12 @@ void MolecularDynamics::propagate_coordinates(const ParticleIndexes &ps,
   }
 }
 
-void MolecularDynamics::propagate_velocities(const ParticleIndexes &ps,
+void MolecularDynamics::propagate_velocities(const kernel::ParticleIndexes &ps,
                                              double ts)
 {
   for (unsigned int i=0; i< ps.size(); ++i) {
     Float invmass = 1.0 / atom::Mass(get_model(), ps[i]).get_mass();
-    Particle *p=get_model()->get_particle(ps[i]);
+    kernel::Particle *p=get_model()->get_particle(ps[i]);
     if (Nuisance::get_is_setup(p))
     {
        Nuisance d(p);
@@ -157,10 +157,10 @@ Float MolecularDynamics::get_kinetic_energy() const
   static const Float conversion = 1.0 / 4.1868e-4;
 
   Float ekinetic = 0.;
-  ParticlesTemp ps=get_simulation_particles();
-  for (ParticlesTemp::iterator iter = ps.begin();
+  kernel::ParticlesTemp ps=get_simulation_particles();
+  for (kernel::ParticlesTemp::iterator iter = ps.begin();
        iter != ps.end(); ++iter) {
-    Particle *p = *iter;
+    kernel::Particle *p = *iter;
     Float mass = atom::Mass(p).get_mass();
     if (Nuisance::get_is_setup(p)) {
         Float vel = p->get_value(vnuis_);
@@ -178,18 +178,18 @@ Float MolecularDynamics::get_kinetic_energy() const
 
 void MolecularDynamics::assign_velocities(Float temperature)
 {
-  ParticleIndexes ips=get_simulation_particle_indexes();
+  kernel::ParticleIndexes ips=get_simulation_particle_indexes();
   setup_degrees_of_freedom(ips);
-  ParticlesTemp ps= IMP::internal::get_particle(get_model(), ips);
+  kernel::ParticlesTemp ps= IMP::internal::get_particle(get_model(), ips);
 
   boost::normal_distribution<Float> mrng(0., 1.);
   boost::variate_generator<base::RandomNumberGenerator&,
                            boost::normal_distribution<Float> >
       sampler(base::random_number_generator, mrng);
 
-  for (ParticlesTemp::iterator iter = ps.begin();
+  for (kernel::ParticlesTemp::iterator iter = ps.begin();
        iter != ps.end(); ++iter) {
-    Particle *p = *iter;
+    kernel::Particle *p = *iter;
     if (Nuisance::get_is_setup(p)) {
         p->set_value(vnuis_, sampler());
     } else {
@@ -202,9 +202,9 @@ void MolecularDynamics::assign_velocities(Float temperature)
   Float rescale = sqrt(temperature/
                   get_kinetic_temperature(get_kinetic_energy()));
 
-  for (ParticlesTemp::iterator iter = ps.begin();
+  for (kernel::ParticlesTemp::iterator iter = ps.begin();
        iter != ps.end(); ++iter) {
-    Particle *p = *iter;
+    kernel::Particle *p = *iter;
     if (Nuisance::get_is_setup(p)) {
       Float velocity = p->get_value(vnuis_);
       velocity *= rescale;

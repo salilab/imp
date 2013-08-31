@@ -32,7 +32,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT DiameterRestraint : public kernel::Restraint {
   IMP::base::PointerMember<ScoreState> ss_;
-  IMP::base::PointerMember<Particle> p_;
+  IMP::base::PointerMember<kernel::Particle> p_;
   Float diameter_;
   IMP::base::PointerMember<SingletonContainer> sc_;
   IMP::base::PointerMember<UnaryFunction> f_;

@@ -9,7 +9,7 @@ from IMP.algebra import ReferenceFrame3D
 from IMP.algebra import Transformation3D
 
 m = IMP.Model()
-p = IMP.Particle(m)
+p = IMP.kernel.Particle(m)
 rbd = IMP.core.RigidBody.setup_particle(p, ReferenceFrame3D())
 translation=IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())
 

@@ -59,7 +59,7 @@ Bond create_bond(Bonded a, Bonded b, Int t) {
   IMP_USAGE_CHECK(a.get_particle() != b.get_particle(),
                   "The endpoints of a bond must be disjoint");
 
-  Particle *p = IMP::core::internal::graph_connect(
+  kernel::Particle *p = IMP::core::internal::graph_connect(
       a.get_particle(), b.get_particle(), internal::get_bond_data().graph_);
   Bond bd(p);
   bd.set_type(t);
@@ -76,8 +76,8 @@ void destroy_bond(Bond b) {
 */
 Bond get_bond(Bonded a, Bonded b) {
   if (a == b) return Bond();
-  ParticleIndexes ba = a.get_bonds();
-  ParticleIndexes bb = b.get_bonds();
+  kernel::ParticleIndexes ba = a.get_bonds();
+  kernel::ParticleIndexes bb = b.get_bonds();
   std::sort(bb.begin(), bb.end());
   for (unsigned int i = 0; i < ba.size(); ++i) {
     if (std::binary_search(bb.begin(), bb.end(), ba[i])) {
@@ -88,8 +88,8 @@ Bond get_bond(Bonded a, Bonded b) {
 }
 
 namespace {
-  bool check_bond(Model *m, ParticleIndex pi) {
-    Particle *p = m->get_particle(pi);
+  bool check_bond(Model *m, kernel::ParticleIndex pi) {
+    kernel::Particle *p = m->get_particle(pi);
   if (p->get_value(internal::get_bond_data().length_) < 0) {
     IMP_THROW("Invalid bond length: "
                   << p->get_value(internal::get_bond_data().length_),
@@ -121,7 +121,7 @@ namespace {
 IMP_CHECK_DECORATOR(Bond, check_bond);
 
 namespace {
-bool check_bonded(Model *m, ParticleIndex pi) {
+bool check_bonded(Model *m, kernel::ParticleIndex pi) {
   Bonded bdd(m, pi);
   for (unsigned int i = 0; i < bdd.get_number_of_bonds(); ++i) {
     if (bdd.get_bond(i).get_bonded(0) != bdd &&

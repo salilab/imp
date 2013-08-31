@@ -36,7 +36,7 @@ IMPBASE_BEGIN_NAMESPACE
         When creating Object instances in C++, you should write code like:
         \code
         em::FitRestraint* create_fit_restraint(std::string mapname,
-                                               const ParticlesTemp &ps) {
+                                               const kernel::ParticlesTemp &ps) {
           IMP_NEW(core::LeavesRefiner, lr, (atom::Hierarchy::get_traits()));
           base::Pointer<em::DensityMap> map= em::read_map("file_name.mrc");
           IMP_NEW(em::FitRestraint, fr, (ps, map, lr));
@@ -46,7 +46,7 @@ IMPBASE_BEGIN_NAMESPACE
         which is equivalent to
         \code
         IMP::em::FitRestraint* create_fit_restraint(std::string mapname,
-                                                    const ParticlesTemp &ps)
+                                                    const kernel::ParticlesTemp &ps)
     {
           base::Pointer<core::LeavesRefiner> lr
               = new core::LeavesRefiner(atom::Hierarchy::get_traits());

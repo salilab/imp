@@ -29,7 +29,7 @@ public:
       \param[in] w particle
       \param[in] radius maximum radius of displacement
    */
-  WeightMover(Particle *w, Float radius);
+  WeightMover(kernel::Particle *w, Float radius);
 
 protected:
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;

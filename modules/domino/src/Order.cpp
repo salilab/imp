@@ -11,7 +11,7 @@
 IMPDOMINO_BEGIN_NAMESPACE
 
 namespace {
-Ints get_order_it(const Subset &s, const ParticlesTemp &all_particles) {
+Ints get_order_it(const Subset &s, const kernel::ParticlesTemp &all_particles) {
   Ints ret(s.size(), -1);
   int cur = 0;
   for (unsigned int i = 0; i < all_particles.size(); ++i) {
@@ -25,7 +25,7 @@ Ints get_order_it(const Subset &s, const ParticlesTemp &all_particles) {
   return ret;
 }
 }
-Order::Order(Subset outer, const ParticlesTemp &order)
+Order::Order(Subset outer, const kernel::ParticlesTemp &order)
     : P(get_order_it(outer, order)) {}
 
 IMPDOMINO_END_NAMESPACE

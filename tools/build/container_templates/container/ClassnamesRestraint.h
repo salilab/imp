@@ -13,7 +13,7 @@
 
 #include <IMP/container/container_config.h>
 
-#include <IMP/internal/InternalClassnamesRestraint.h>
+#include <IMP/kernel/internal/InternalClassnamesRestraint.h>
 
 #include <iostream>
 

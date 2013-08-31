@@ -15,10 +15,10 @@
 
 class MapScorer {
 public:
-  MapScorer(IMP::Particles& rec_particles, IMP::Particles& lig_particles,
+  MapScorer(IMP::kernel::Particles& rec_particles, IMP::kernel::Particles& lig_particles,
             const IMP::em::DensityMap& map);
 
-  MapScorer(IMP::Particles& particles, const IMP::em::DensityMap& map);
+  MapScorer(IMP::kernel::Particles& particles, const IMP::em::DensityMap& map);
 
   float score(const IMP::algebra::Transformation3D& rec_trans,
               const IMP::algebra::Transformation3D& lig_trans) const;

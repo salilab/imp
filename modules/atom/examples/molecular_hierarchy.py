@@ -48,7 +48,7 @@ except:
 IMP.atom.create_rigid_body(mp1)
 
 # create a hierarchy which contains the two proteins
-p = IMP.Particle(m)
+p = IMP.kernel.Particle(m)
 rmp= IMP.atom.Hierarchy.setup_particle(p)
 rmp.add_child(smp0)
 rmp.add_child(mp1)

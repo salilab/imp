@@ -10,7 +10,7 @@
 #define IMPATOM_VELOCITY_SCALING_OPTIMIZER_STATE_H
 
 #include <IMP/atom/atom_config.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/base_types.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/optimizer_state_macros.h>
@@ -27,13 +27,13 @@ class IMPATOMEXPORT VelocityScalingOptimizerState : public OptimizerState {
  public:
    /** \deprecated_at{2.1} Use set_period() instead. */
   IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
-    VelocityScalingOptimizerState(const Particles &pis, Float temperature,
+    VelocityScalingOptimizerState(const kernel::Particles &pis, Float temperature,
                                 unsigned skip_steps);
-  VelocityScalingOptimizerState(Model *m, ParticleIndexesAdaptor pis,
+  VelocityScalingOptimizerState(Model *m, kernel::ParticleIndexesAdaptor pis,
                                   double temperature);
 
   //! Set the particles to use.
-  void set_particles(const Particles &pis) { pis_ = pis; }
+  void set_particles(const kernel::Particles &pis) { pis_ = pis; }
 
   //! Set the temperature to use.
   void set_temperature(Float temperature) { temperature_ = temperature; }
@@ -46,7 +46,7 @@ class IMPATOMEXPORT VelocityScalingOptimizerState : public OptimizerState {
  protected:
     virtual void do_update(unsigned int call) IMP_OVERRIDE;
  private:
-  Particles pis_;
+  kernel::Particles pis_;
   Float temperature_;
   unsigned skip_steps_;
   unsigned call_number_;

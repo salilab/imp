@@ -31,7 +31,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT XYZ : public Decorator {
     static void do_setup_particle(
-      Model *m, ParticleIndex pi,
+      Model *m, kernel::ParticleIndex pi,
       // This method and the next one need to take a vector (not a ref)
       // as otherwise, you can pass the vector from one and use it to
       // create another. But this would resize the vector and so invalidate
@@ -116,7 +116,7 @@ class IMPCOREEXPORT XYZ : public Decorator {
     return get_model()->get_coordinate_derivatives(get_particle_index());
   }
 
-  static bool get_is_setup(Model *m, ParticleIndex pi) {
+  static bool get_is_setup(Model *m, kernel::ParticleIndex pi) {
     return m->get_has_attribute(get_coordinate_key(2), pi);
   }
 
@@ -158,7 +158,7 @@ inline void set_vector_d_geometry(XYZ d, const algebra::Vector3D &v) {
   d.set_coordinates(v);
 }
 
-IMP_DECORATORS(XYZ, XYZs, ParticlesTemp);
+IMP_DECORATORS(XYZ, XYZs, kernel::ParticlesTemp);
 
 IMPCORE_END_NAMESPACE
 
@@ -168,11 +168,11 @@ IMPCORE_END_NAMESPACE
 // it will do the conversion implicitly anyway
 IMPKERNEL_BEGIN_NAMESPACE
 /** \genericgeometry */
-inline const algebra::Vector3D get_vector_d_geometry(Particle *p) {
+inline const algebra::Vector3D get_vector_d_geometry(kernel::Particle *p) {
   return core::XYZ(p).get_coordinates();
 }
 /** \genericgeometry */
-inline void set_vector_d_geometry(Particle *p, const algebra::Vector3D &v) {
+inline void set_vector_d_geometry(kernel::Particle *p, const algebra::Vector3D &v) {
   core::XYZ(p).set_coordinates(v);
 }
 

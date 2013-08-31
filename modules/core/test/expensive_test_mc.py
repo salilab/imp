@@ -60,7 +60,7 @@ class MCOptimizerTest(IMP.test.TestCase):
         opt.set_score_threshold(.01)
         opt.set_model(model)
         for value in (-3.0, -1.0, -3.0, -1.0):
-            p = IMP.Particle(model)
+            p = IMP.kernel.Particle(model)
             p.add_attribute(self.xkey, value, True)
         fk=IMP.FloatKeys([self.xkey])
         mod= IMP.core.BallMover(model.get_particles(), fk, .25)

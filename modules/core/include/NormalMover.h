@@ -18,25 +18,25 @@ IMPCORE_BEGIN_NAMESPACE
 /** \see MonteCarlo
  */
 class IMPCOREEXPORT NormalMover : public MonteCarloMover {
-  ParticleIndexes pis_;
+  kernel::ParticleIndexes pis_;
   FloatKeys keys_;
   Float stddev_;
   algebra::VectorKDs originals_;
 
-  void initialize(ParticleIndexes pis, FloatKeys keys, double radius);
+  void initialize(kernel::ParticleIndexes pis, FloatKeys keys, double radius);
 
  public:
-  NormalMover(Model *m, ParticleIndex pi, const FloatKeys &vars, double stddev);
+  NormalMover(Model *m, kernel::ParticleIndex pi, const FloatKeys &vars, double stddev);
   //! Move the x,y,z coordinates
-  NormalMover(Model *m, ParticleIndex pi, double stddev);
+  NormalMover(Model *m, kernel::ParticleIndex pi, double stddev);
 #ifndef IMP_DOXYGEN
   /**  \param[in] sc The set of particles to perturb.
        \param[in] vars The variables to use (normally the keys for x,y,z)
        \param[in] sigma The standard deviation to use.
    */
-  NormalMover(const ParticlesTemp &sc, const FloatKeys &vars, Float sigma);
+  NormalMover(const kernel::ParticlesTemp &sc, const FloatKeys &vars, Float sigma);
 
-  NormalMover(const ParticlesTemp &sc, Float radius);
+  NormalMover(const kernel::ParticlesTemp &sc, Float radius);
 #endif
 
   void set_sigma(Float sigma) {

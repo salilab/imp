@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
 
     def _make_particles(self, m, types):
         """Make particles with the given types"""
-        ps = [IMP.Particle(m) for i in types]
+        ps = [IMP.kernel.Particle(m) for i in types]
         for p, typ in zip(ps, types):
             p.add_attribute(typekey, typ)
         return ps

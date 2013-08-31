@@ -28,10 +28,10 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 
     The restraint is not added to the model.
 */
-inline kernel::Restraint *create_chain_restraint(const ParticlesTemp &ps,
+inline kernel::Restraint *create_chain_restraint(const kernel::ParticlesTemp &ps,
                                          double length_factor, double k,
                                          std::string name) {
-  IMP_USAGE_CHECK(!ps.empty(), "No Particles passed.");
+  IMP_USAGE_CHECK(!ps.empty(), "No kernel::Particles passed.");
   double scale = core::XYZR(ps[0]).get_radius();
   IMP_NEW(core::HarmonicDistancePairScore, hdps,
           (length_factor * 2.0 * scale, k, "chain linker %1%"));
@@ -48,8 +48,8 @@ inline kernel::Restraint *create_chain_restraint(const ParticlesTemp &ps,
 
 /** Create an excluded-volume style ClosePairsContainer based score. */
 inline container::ClosePairContainer *create_excluded_volume(
-    const ParticlesTemp &ps, double k, std::string name) {
-  IMP_USAGE_CHECK(!ps.empty(), "No Particles passed.");
+    const kernel::ParticlesTemp &ps, double k, std::string name) {
+  IMP_USAGE_CHECK(!ps.empty(), "No kernel::Particles passed.");
   Model *m = ps[0]->get_model();
   double scale = core::XYZR(ps[0]).get_radius();
   IMP_NEW(container::ListSingletonContainer, cores_container,

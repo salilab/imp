@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
         ps= []
         psr= []
         for i in range(0,50):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             ps.append(p)
             if i%5== 0:
                 psr.append(p)
@@ -30,7 +30,7 @@ class Tests(IMP.test.TestCase):
         ps= []
         psr= []
         for i in range(0,50):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             ps.append(p)
             if i%5== 0:
                 psr.append(p)

@@ -9,13 +9,13 @@ class Tests(IMP.test.TestCase):
     def _create_rb(self, name, m, np=1):
         ps=[]
         for i in range(0, np):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             p.set_name(name+"particle"+str(i))
             d=IMP.core.XYZR.setup_particle(p)
             d.set_radius(1)
             d.set_coordinates(get_random_vector_in(get_unit_sphere_3d()))
             ps.append(p)
-        rbp= IMP.Particle(m)
+        rbp= IMP.kernel.Particle(m)
         rbp.set_name(name+"rb")
         rbd=IMP.core.RigidBody.setup_particle(rbp, ps)
         return rbd
@@ -116,9 +116,9 @@ class Tests(IMP.test.TestCase):
             print r.get_name()
         self.assertEqual(len(allr), 3)
     def _create_rigid_body(self, m):
-        p= IMP.Particle(m, "rb")
+        p= IMP.kernel.Particle(m, "rb")
         rb= IMP.core.RigidBody.setup_particle(p, IMP.algebra.ReferenceFrame3D())
-        pm= IMP.Particle(m, "m")
+        pm= IMP.kernel.Particle(m, "m")
         IMP.core.XYZ.setup_particle(pm)
         rb.add_member(pm)
         return p

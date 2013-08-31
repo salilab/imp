@@ -367,8 +367,8 @@
 
     The macros take the name of the container and the operation to
     peform. In operation, _1 is used to refer to the item using its
-    ContainedIndexType (e.g., IMP::ParticleIndex in SingletonContainer,
-    or IMP::ParticleIndexPair in PairContainer).
+    ContainedIndexType (e.g., IMP::kernel::ParticleIndex in SingletonContainer,
+    or IMP::kernel::ParticleIndexPair in PairContainer).
     The location of this item in the container itself is _2.
     Use it like:
     \code

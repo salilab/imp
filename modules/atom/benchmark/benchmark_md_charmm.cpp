@@ -64,7 +64,7 @@ int do_benchmark() {
   /* Add a restraint for the Lennard-Jones interaction. This is built from
      a collection of building blocks. First, a
      ClosePairContainer maintains a list
-     of all pairs of Particles that are close. Next, all 1-2, 1-3 and 1-4 pairs
+     of all pairs of kernel::Particles that are close. Next, all 1-2, 1-3 and 1-4 pairs
      from the stereochemistry created above are filtered out.
      Then, a LennardJonesPairScore scores a pair of atoms with the Lennard-Jones
      potential. Finally, a PairsRestraint is used which simply applies the
@@ -99,10 +99,10 @@ int do_benchmark() {
 
     # GO! */
   IMP_NEW(atom::RemoveRigidMotionOptimizerState, rmos,
-          (get_as<ParticlesTemp>(atoms), 10));
+          (get_as<kernel::ParticlesTemp>(atoms), 10));
   md->add_optimizer_state(rmos);
   IMP_NEW(atom::LangevinThermostatOptimizerState, therm,
-          (get_as<ParticlesTemp>(atoms), 300, 500));
+          (get_as<kernel::ParticlesTemp>(atoms), 300, 500));
   md->add_optimizer_state(therm);
   double time, score = 0;
   IMP_TIME({

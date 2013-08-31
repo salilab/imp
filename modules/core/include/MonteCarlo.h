@@ -15,7 +15,7 @@
 #include <IMP/Optimizer.h>
 #include <IMP/optimizer_macros.h>
 #include <IMP/container_macros.h>
-#include <IMP/internal/container_helpers.h>
+#include <IMP/kernel/internal/container_helpers.h>
 #include <IMP/algebra/vector_search.h>
 #include <IMP/Configuration.h>
 
@@ -149,7 +149,7 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
  protected:
   /** Get all movable particles (those that can be moved by the current
       movers.*/
-  ParticleIndexes get_movable_particles() const;
+  kernel::ParticleIndexes get_movable_particles() const;
   /** Note that if return best is true, this will save the current
       state of the model. Also, if the move is accepted, the
       optimizer states will be updated.
@@ -177,7 +177,7 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
 
       The list of moved particles is passed.
    */
-  virtual double do_evaluate(const ParticleIndexes &moved) const {
+  virtual double do_evaluate(const kernel::ParticleIndexes &moved) const {
     IMP_UNUSED(moved);
     if (isf_) {
       isf_->set_moved_particles(moved);

@@ -75,7 +75,7 @@ void dummy_f_destructor() {}
 struct It {
   base::Pointer<Model> m;
   atom::Hierarchies chains;
-  base::Pointer<Particle> sp;
+  base::Pointer<kernel::Particle> sp;
 
   base::Pointer<ListSingletonContainer> lsc;
   base::Pointer<ClosePairContainer> cpc;
@@ -98,13 +98,13 @@ It create_particles() {
   for (unsigned int i = 0; i < num_x; ++i) {
     for (unsigned int j = 0; j < num_y; ++j) {
       atom::Hierarchy parent =
-          atom::Hierarchy::setup_particle(new Particle(ret.m));
+          atom::Hierarchy::setup_particle(new kernel::Particle(ret.m));
       std::ostringstream oss;
       oss << "chain " << i << " " << j;
       parent->set_name(oss.str());
       ret.chains.push_back(parent);
       for (unsigned int k = 0; k < num_per_chain; ++k) {
-        IMP_NEW(Particle, p, (ret.m));
+        IMP_NEW(kernel::Particle, p, (ret.m));
         std::ostringstream oss;
         oss << "bead " << k;
         p->set_name(oss.str());
@@ -120,7 +120,7 @@ It create_particles() {
       }
     }
   }
-  ret.sp = new Particle(ret.m);
+  ret.sp = new kernel::Particle(ret.m);
   ret.sp->set_name("parameters");
   ret.sp->add_attribute(sk, 4);
   ret.sp->add_attribute(tsk, 50);
@@ -132,7 +132,7 @@ It create_particles(std::string name) {
   It ret;
   ret.m = new Model();
   ret.chains = IMP::rmf::create_hierarchies(r, ret.m);
-  ParticlesTemp ps = IMP::rmf::create_particles(r, ret.m);
+  kernel::ParticlesTemp ps = IMP::rmf::create_particles(r, ret.m);
   IMP_USAGE_CHECK(ps.size() == 1, "Wrong number: " << ps);
   IMP::rmf::load_frame(r, r.get_number_of_frames() - 1);
   if (ps.empty()) {
@@ -150,9 +150,9 @@ It create_restraints(PS0 *link, PS1 *lb, SS *bottom, It in) {
   It ret = in;
 
   PairPredicates pfs;
-  ParticlesTemp all;
+  kernel::ParticlesTemp all;
   for (unsigned int i = 0; i < ret.chains.size(); ++i) {
-    ParticlesTemp cur = ret.chains[i].get_children();
+    kernel::ParticlesTemp cur = ret.chains[i].get_children();
     all.insert(all.end(), cur.begin(), cur.end());
     IMP_NEW(ExclusiveConsecutivePairContainer, cpc, (cur));
     // since they all use the same key
@@ -218,7 +218,7 @@ void initialize(It it) {
   update_slack_estimate(it);
 }
 
-void rigidify(const ParticlesTemp &ps, bool no_members) {
+void rigidify(const kernel::ParticlesTemp &ps, bool no_members) {
   Model *m = ps[0]->get_model();
   for (unsigned int i = 0; i < ps.size(); ++i) {
     XYZR d(ps[i]);
@@ -226,7 +226,7 @@ void rigidify(const ParticlesTemp &ps, bool no_members) {
                                          d.get_coordinates()));
     RigidBody rb = RigidBody::setup_particle(ps[i], rf);
     if (!no_members) {
-      IMP_NEW(Particle, op, (m));
+      IMP_NEW(kernel::Particle, op, (m));
       XYZR::setup_particle(op, d.get_sphere());
       rb.add_member(op);
     }
@@ -249,7 +249,7 @@ void do_benchmark(std::string name, PS0 *link, PS1 *lb, SS *bottom, bool rigid,
   It o = create_particles(in);
   if (rigid) {
     for (unsigned int i = 0; i < o.chains.size(); ++i) {
-      rigidify(get_as<ParticlesTemp>(get_leaves(o.chains[i])), no_members);
+      rigidify(get_as<kernel::ParticlesTemp>(get_leaves(o.chains[i])), no_members);
     }
   }
   It it = create_restraints<PR>(link, lb, bottom, o);

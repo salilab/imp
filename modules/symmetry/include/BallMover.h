@@ -27,7 +27,7 @@ public:
       \param[in] ctrs is a list of all cell centers
       \param[in] trs is the list of transformations from primitive to all cells
    */
-  BallMover(Particle *p, Particles ps, Float max_tr,
+  BallMover(kernel::Particle *p, kernel::Particles ps, Float max_tr,
              algebra::Vector3Ds ctrs, algebra::Transformation3Ds trs);
 
 
@@ -38,9 +38,9 @@ protected:
   IMP_OBJECT_METHODS(BallMover);
 private:
   //! Master particle
-  IMP::base::PointerMember<Particle> p_;
+  IMP::base::PointerMember<kernel::Particle> p_;
   //! List of slave particles
-  Particles ps_;
+  kernel::Particles ps_;
   //! Maximum translation
   Float max_tr_;
   //! List of centers of all (including primitive) cells

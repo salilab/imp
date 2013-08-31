@@ -7,10 +7,10 @@
 
 #include <IMP/core/internal/MovedSingletonContainer.h>
 #include <IMP/core/XYZR.h>
-#include <IMP/internal/utility.h>
+#include <IMP/kernel/internal/utility.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/PairModifier.h>
-#include <IMP/internal/InternalListSingletonContainer.h>
+#include <IMP/kernel/internal/InternalListSingletonContainer.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/PairScore.h>
 #include <IMP/base/utility.h>
@@ -38,11 +38,11 @@ void MovedSingletonContainer::do_after_evaluate(DerivativeAccumulator *da) {
   IMP::internal::ListLikeSingletonContainer::do_after_evaluate(da);
   if (reset_all_) {
     do_reset_all();
-    ParticleIndexes t;
+    kernel::ParticleIndexes t;
     swap(t);
   } else if (reset_moved_) {
     do_reset_moved();
-    ParticleIndexes t;
+    kernel::ParticleIndexes t;
     swap(t);
   }
   reset_moved_ = false;
@@ -57,9 +57,9 @@ void MovedSingletonContainer::do_before_evaluate() {
     IMP_LOG_TERSE("First call" << std::endl);
     initialize();
   } else {
-    ParticleIndexes mved = do_get_moved();
+    kernel::ParticleIndexes mved = do_get_moved();
     IMP_LOG_TERSE("Adding to moved list: " << Showable(mved) << std::endl);
-    ParticleIndexes old;
+    kernel::ParticleIndexes old;
     swap(old);
     old += mved;
     swap(old);
@@ -83,7 +83,7 @@ ModelObjectsTemp MovedSingletonContainer::do_get_inputs() const {
 void MovedSingletonContainer::reset() { reset_all_ = true; }
 
 void MovedSingletonContainer::initialize() {
-  ParticleIndexes pt = do_initialize();
+  kernel::ParticleIndexes pt = do_initialize();
   swap(pt);
 }
 
@@ -97,7 +97,7 @@ void MovedSingletonContainer::set_threshold(double d) {
 
 void XYZRMovedSingletonContainer::validate() const {
   IMP_OBJECT_LOG;
-  ParticleIndexes pis = get_singleton_container()->get_indexes();
+  kernel::ParticleIndexes pis = get_singleton_container()->get_indexes();
   IMP_USAGE_CHECK(pis.size() == backup_.size(), "Backup is not the right size");
 }
 
@@ -114,7 +114,7 @@ ParticleIndexes XYZRMovedSingletonContainer::do_initialize() {
   IMP_OBJECT_LOG;
   backup_.clear();
   moved_.clear();
-  ParticleIndexes ret;
+  kernel::ParticleIndexes ret;
     // backup_.resize(get_singleton_container()->get_number_of_particles());
   IMP_CONTAINER_FOREACH(SingletonContainer, get_singleton_container(), {
     backup_.push_back(XYZR(get_model(), _1).get_sphere());
@@ -137,7 +137,7 @@ void XYZRMovedSingletonContainer::do_reset_moved() {
 }
 ParticleIndexes XYZRMovedSingletonContainer::do_get_moved() {
   IMP_OBJECT_LOG;
-  ParticleIndexes ret;
+  kernel::ParticleIndexes ret;
   Model *m = get_model();
   IMP_CONTAINER_FOREACH(SingletonContainer, get_singleton_container(), {
       if (moved_.find(_2) != moved_.end()) continue;
@@ -187,10 +187,10 @@ void RigidMovedSingletonContainer::check_estimate(
 #endif
 }
 
-void RigidMovedSingletonContainer::do_initialize_particle(ParticleIndex pi) {
+void RigidMovedSingletonContainer::do_initialize_particle(kernel::ParticleIndex pi) {
   if (core::RigidMember::get_is_setup(get_model(), pi)) {
     core::RigidBody rb = core::RigidMember(get_model(), pi).get_rigid_body();
-    ParticleIndex rbpi = rb.get_particle_index();
+    kernel::ParticleIndex rbpi = rb.get_particle_index();
     if (rbs_members_.find(rbpi) == rbs_members_.end()) {
       bodies_.push_back(pi);
       backup_.push_back(get_data(pi));
@@ -198,14 +198,14 @@ void RigidMovedSingletonContainer::do_initialize_particle(ParticleIndex pi) {
     rbs_members_[rb.get_particle_index()].push_back(pi);
   } else {
     bodies_.push_back(pi);
-    rbs_members_[pi] = ParticleIndexes(1, pi);
+    rbs_members_[pi] = kernel::ParticleIndexes(1, pi);
     backup_.push_back(get_data(pi));
   }
 }
 
 ParticleIndexes RigidMovedSingletonContainer::do_initialize() {
   IMP_OBJECT_LOG;
-  ParticleIndexes normal;
+  kernel::ParticleIndexes normal;
   backup_.clear();
   rbs_members_.clear();
   bodies_.clear();
@@ -231,7 +231,7 @@ void RigidMovedSingletonContainer::do_reset_moved() {
 
 ParticleIndexes RigidMovedSingletonContainer::do_get_moved() {
   IMP_OBJECT_LOG;
-  ParticleIndexes ret;
+  kernel::ParticleIndexes ret;
   IMP_LOG_TERSE("Getting moved with " << moved_.size() << std::endl);
   for (unsigned int i = 0; i < bodies_.size(); ++i) {
     if (moved_.find(i) == moved_.end()
@@ -249,7 +249,7 @@ RigidMovedSingletonContainer::RigidMovedSingletonContainer(
                               "RigidMovedSingletonContainer%1%") {}
 
 ParticlesTemp RigidMovedSingletonContainer::get_input_particles() const {
-  ParticlesTemp ret = IMP::get_particles(
+  kernel::ParticlesTemp ret = IMP::get_particles(
       get_model(),
       MovedSingletonContainer::get_singleton_container()->get_indexes());
   int sz = ret.size();

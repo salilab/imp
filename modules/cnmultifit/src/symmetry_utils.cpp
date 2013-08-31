@@ -153,9 +153,9 @@ em::FittingSolutions symmetry_local_fitting(atom::Hierarchies mhs,
   em::FittingSolutions return_fit_sols;
   return_fit_sols.add_solution(algebra::get_identity_transformation_3d(),0.);
   return return_fit_sols;
-  Particles ps;
+  kernel::Particles ps;
   for(unsigned int i=0;i<mhs.size();i++) {
-    Particles temp_ps = core::get_leaves(mhs[i]);
+    kernel::Particles temp_ps = core::get_leaves(mhs[i]);
     ps.insert(ps.end(),temp_ps.begin(),temp_ps.end());
   }
   em::FittingSolutions fit_sols;
@@ -251,10 +251,10 @@ em::FittingSolutions fit_cn_assembly(
             float threshold,
             const AlignSymmetric &aligner,
             bool sample_translation,bool fine_rotational_sampling) {
-  Particles ps;
+  kernel::Particles ps;
   //here change to CA !!
   for(unsigned int i=0;i<mhs.size();i++) {
-    //    Particles temp_ps;
+    //    kernel::Particles temp_ps;
     //TODO - is there a better way to do this?
     atom::Atoms atoms = atom::Atoms(atom::get_by_type(mhs[i],atom::ATOM_TYPE));
     for (atom::Atoms::iterator it = atoms.begin(); it != atoms.end(); it++) {

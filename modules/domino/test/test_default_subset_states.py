@@ -23,7 +23,7 @@ class Tests(IMP.test.TestCase):
         ns=5
         np=4
         for i in range(0,np):
-            ps.append(IMP.Particle(m))
+            ps.append(IMP.kernel.Particle(m))
         pst= IMP.domino.ParticleStatesTable()
         pft= IMP.domino.ExclusionSubsetFilterTable(pst)
         dsst= nm(pst, [pft])
@@ -48,7 +48,7 @@ class Tests(IMP.test.TestCase):
         ns=5
         np=4
         for i in range(0,np):
-            ps.append(IMP.Particle(m))
+            ps.append(IMP.kernel.Particle(m))
         pst= IMP.domino.ParticleStatesTable()
         tps=TrivialParticleStates(ns)
         pst.set_particle_states(ps[0], tps)
@@ -78,7 +78,7 @@ class Tests(IMP.test.TestCase):
         ns=5
         np=4
         for i in range(0,np):
-            ps.append(IMP.Particle(m))
+            ps.append(IMP.kernel.Particle(m))
         pst= IMP.domino.ParticleStatesTable()
         tps=TrivialParticleStates(ns)
         pst.set_particle_states(ps[0], tps)

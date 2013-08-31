@@ -9,14 +9,14 @@ bd= 10
 radius=10
 
 m= IMP.Model()
-p= IMP.Particle(m)
+p= IMP.kernel.Particle(m)
 IMP.atom.Mass.setup_particle(p, 10000)
 d= IMP.core.XYZR.setup_particle(p)
 d.set_radius(radius)
 
 # Set up the particle as either a rigid body or a simple ball
 if use_rigid_bodies:
-    prb= IMP.Particle(m)
+    prb= IMP.kernel.Particle(m)
     prb.set_name("rigid body")
     d.set_coordinates(IMP.algebra.Vector3D(0,0,0))
     drb= IMP.core.RigidBody.setup_particle(prb, IMP.algebra.ReferenceFrame3D())

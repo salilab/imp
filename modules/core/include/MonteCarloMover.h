@@ -25,7 +25,7 @@ IMPCORE_BEGIN_NAMESPACE
     many or most move sets this is 1.0).
 */
 IMP_NAMED_TUPLE_2(MonteCarloMoverResult, MonteCarloMoverResults,
-                  ParticleIndexes, moved_particles, double, proposal_ratio, );
+                  kernel::ParticleIndexes, moved_particles, double, proposal_ratio, );
 
 //! A base class for classes which perturb particles.
 /** Mover objects propose a move, which can then be either accepted or rejected
@@ -60,7 +60,7 @@ class IMPCOREEXPORT MonteCarloMover : public ModelObject {
     return do_propose();
   }
 
-  //! Roll back any changes made to the Particles
+  //! Roll back any changes made to the kernel::Particles
   void reject() {
     IMP_OBJECT_LOG;
     ++num_rejected_;
@@ -68,7 +68,7 @@ class IMPCOREEXPORT MonteCarloMover : public ModelObject {
     do_reject();
   }
 
-  //! Roll back any changes made to the Particles
+  //! Roll back any changes made to the kernel::Particles
   void accept() {
     IMP_OBJECT_LOG;
     has_move_ = false;

@@ -50,8 +50,8 @@ Floats get_rmsd_for_models(const std::string param_filename,
     atom::add_radii(h);
     atom::setup_as_rigid_body(h);
     mhs.push_back(h);
-    Particles leaves = core::get_leaves(h);
-    for(Particles::iterator it = leaves.begin(); it != leaves.end(); it++) {
+    kernel::Particles leaves = core::get_leaves(h);
+    for(kernel::Particles::iterator it = leaves.begin(); it != leaves.end(); it++) {
       model_xyzs.push_back(core::XYZ(*it));
     }
   }

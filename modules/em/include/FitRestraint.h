@@ -52,7 +52,7 @@ public:
           If the user prefers to get more accurate results, provide
           its members as input particles and not the rigid body.
    */
-  FitRestraint(ParticlesTemp ps,
+  FitRestraint(kernel::ParticlesTemp ps,
                DensityMap *em_map,
                FloatPair norm_factors=FloatPair(0.,0.),
                FloatKey weight_key= atom::Mass::get_mass_key(),
@@ -72,11 +72,11 @@ public:
   IMP_OBJECT_METHODS(FitRestraint);
 
 #ifndef SWIG
-  IMP_LIST(private, Particle, particle, Particle*, Particles);
+  IMP_LIST(private, Particle, particle, kernel::Particle*, kernel::Particles);
 #endif
 private:
   //! Store particles
-  void store_particles(ParticlesTemp ps);
+  void store_particles(kernel::ParticlesTemp ps);
   //! Resample the model density map
   void resample() const;
   //! Create density maps: one for each rigid body and one for the rest.
@@ -100,10 +100,10 @@ private:
   bool use_rigid_bodies_;
   //particle handling
   //map particles to their rigid bodies
-  IMP::base::map<core::RigidBody, Particles> member_map_;
-  Particles all_ps_;
-  Particles not_part_of_rb_; //all particles that are not part of a rigid body
-  Particles part_of_rb_;
+  IMP::base::map<core::RigidBody, kernel::Particles> member_map_;
+  kernel::Particles all_ps_;
+  kernel::Particles not_part_of_rb_; //all particles that are not part of a rigid body
+  kernel::Particles part_of_rb_;
   core::RigidBodies rbs_;
   KernelType kt_;
 };

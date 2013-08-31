@@ -28,9 +28,9 @@
 #include <IMP/container/MinimumClassnameScore.h>
 #include <IMP/container_macros.h>
 #include <IMP/core/ClassnameRestraint.h>
-#include <IMP/internal/container_helpers.h>
-#include <IMP/internal/InternalListClassnameContainer.h>
-#include <IMP/internal/TupleRestraint.h>
+#include <IMP/kernel/internal/container_helpers.h>
+#include <IMP/kernel/internal/InternalListClassnameContainer.h>
+#include <IMP/kernel/internal/TupleRestraint.h>
 #include <IMP/Optimizer.h>
 #include <limits>
 #include <utility>
@@ -112,7 +112,7 @@ void ClassnameContainerSet::do_apply(const ClassnameModifier *sm) const {
 }
 
 ParticleIndexes ClassnameContainerSet::get_all_possible_indexes() const {
-  ParticleIndexes ret;
+  kernel::ParticleIndexes ret;
   for (unsigned int i = 0; i < get_number_of_CLASSFUNCTIONNAME_containers();
        ++i) {
     ret += get_CLASSFUNCTIONNAME_container(i)->get_all_possible_indexes();
@@ -226,7 +226,7 @@ ModelObjectsTemp DistributeClassnamesScoreState::do_get_outputs() const {
 
 ModelObjectsTemp DistributeClassnamesScoreState::do_get_inputs() const {
   ModelObjectsTemp ret;
-  ParticleIndexes pis = input_->get_all_possible_indexes();
+  kernel::ParticleIndexes pis = input_->get_all_possible_indexes();
   for (unsigned int i = 0; i < data_.size(); ++i) {
     ret += data_[i].get<1>()->get_inputs(get_model(), pis);
   }
@@ -479,7 +479,7 @@ double MinimumClassnameScore::evaluate_index(Model *m, PASSINDEXTYPE v,
 }
 
 ModelObjectsTemp MinimumClassnameScore::do_get_inputs(
-    Model *m, const ParticleIndexes &pis) const {
+    Model *m, const kernel::ParticleIndexes &pis) const {
   ModelObjectsTemp ret;
   for (unsigned int i = 0; i < scores_.size(); ++i) {
     ret += scores_[i]->get_inputs(m, pis);

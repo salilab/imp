@@ -11,11 +11,11 @@
 #include <IMP/core/ConnectivityRestraint.h>
 
 #include <IMP/Model.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/base/log.h>
 #include <IMP/PairScore.h>
 #include <IMP/core/PairRestraint.h>
-#include <IMP/internal/InternalListSingletonContainer.h>
+#include <IMP/kernel/internal/InternalListSingletonContainer.h>
 
 #include <climits>
 
@@ -53,7 +53,7 @@ IMP::internal::InternalListSingletonContainer *get_list(
 }
 }
 
-void ConnectivityRestraint::set_particles(const ParticlesTemp &ps) {
+void ConnectivityRestraint::set_particles(const kernel::ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
     sc_ = new IMP::internal::InternalListSingletonContainer(
         ps[0]->get_model(), "connectivity list");
@@ -61,7 +61,7 @@ void ConnectivityRestraint::set_particles(const ParticlesTemp &ps) {
   get_list(sc_)->set(IMP::internal::get_index(ps));
 }
 
-void ConnectivityRestraint::add_particles(const ParticlesTemp &ps) {
+void ConnectivityRestraint::add_particles(const kernel::ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
     sc_ = new IMP::internal::InternalListSingletonContainer(
         ps[0]->get_model(), "connectivity list");
@@ -69,7 +69,7 @@ void ConnectivityRestraint::add_particles(const ParticlesTemp &ps) {
   get_list(sc_)->add(IMP::internal::get_index(ps));
 }
 
-void ConnectivityRestraint::add_particle(Particle *ps) {
+void ConnectivityRestraint::add_particle(kernel::Particle *ps) {
   if (!sc_) {
     sc_ = new IMP::internal::InternalListSingletonContainer(
         ps->get_model(), "connectivity list");
@@ -88,15 +88,15 @@ typedef boost::graph_traits<Graph>::edge_descriptor Edge;
 typedef Graph::edge_property_type Weight;
 typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
 
-void compute_mst(Model *m, const ParticleIndexes &pis, PairScore *ps, Graph &g,
+void compute_mst(Model *m, const kernel::ParticleIndexes &pis, PairScore *ps, Graph &g,
                  base::Vector<Edge> &mst) {
   try {
     for (unsigned int i = 0; i < pis.size(); ++i) {
       for (unsigned int j = 0; j < i; ++j) {
         double d =
-            ps->evaluate_index(m, ParticleIndexPair(pis[i], pis[j]), nullptr);
+            ps->evaluate_index(m, kernel::ParticleIndexPair(pis[i], pis[j]), nullptr);
         IMP_LOG_VERBOSE("ConnectivityRestraint edge between "
-                        << ParticleIndexPair(pis[i], pis[j]) << " with weight "
+                        << kernel::ParticleIndexPair(pis[i], pis[j]) << " with weight "
                         << d << std::endl);
         /*Edge e =*/ boost::add_edge(i, j, Weight(d), g);
         // boost::put(boost::edge_weight_t(), g, e, d);
@@ -122,17 +122,17 @@ void compute_mst(Model *m, const ParticleIndexes &pis, PairScore *ps, Graph &g,
 }
 
 ParticleIndexPairs get_edges(const SingletonContainer *a, PairScore *ps) {
-  ParticleIndexes pis = a->get_indexes();
+  kernel::ParticleIndexes pis = a->get_indexes();
   Graph g(pis.size());
   base::Vector<Edge> mst;
   compute_mst(a->get_model(), pis, ps, g, mst);
-  ParticleIndexPairs ret(mst.size());
+  kernel::ParticleIndexPairs ret(mst.size());
   for (unsigned int index = 0; index < mst.size(); ++index) {
     int i = boost::target(mst[index], g);
     int j = boost::source(mst[index], g);
     IMP_LOG_VERBOSE("ConnectivityRestraint edge between "
                     << pis[i] << " and " << pis[j] << std::endl);
-    ret[index] = ParticleIndexPair(pis[i], pis[j]);
+    ret[index] = kernel::ParticleIndexPair(pis[i], pis[j]);
   }
   return ret;
 }
@@ -144,12 +144,12 @@ double ConnectivityRestraint::unprotected_evaluate(
   IMP_OBJECT_LOG;
   base::Vector<Edge> mst;
   if (!sc_) return 0;
-  ParticleIndexPairs edges = get_edges(sc_, ps_);
+  kernel::ParticleIndexPairs edges = get_edges(sc_, ps_);
   return ps_->evaluate_indexes(get_model(), edges, accum, 0, edges.size());
 }
 
-Restraints ConnectivityRestraint::do_create_current_decomposition() const {
-  ParticlePairsTemp pp = get_connected_pairs();
+kernel::Restraints ConnectivityRestraint::do_create_current_decomposition() const {
+  kernel::ParticlePairsTemp pp = get_connected_pairs();
   kernel::Restraints ret;
   for (unsigned int i = 0; i < pp.size(); ++i) {
     IMP_NEW(PairRestraint, pr, (ps_, pp[i]));
@@ -166,7 +166,7 @@ Restraints ConnectivityRestraint::do_create_current_decomposition() const {
 
 ParticlePairsTemp ConnectivityRestraint::get_connected_pairs() const {
   IMP_CHECK_OBJECT(ps_.get());
-  ParticleIndexPairs edges = get_edges(sc_, ps_);
+  kernel::ParticleIndexPairs edges = get_edges(sc_, ps_);
   return IMP::internal::get_particle(get_model(), edges);
 }
 

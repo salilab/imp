@@ -16,7 +16,7 @@ ExampleSingletonModifier::ExampleSingletonModifier(
     : bb_(bb) {}
 
 void ExampleSingletonModifier::apply_index(Model *m,
-                                           ParticleIndex pi) const {
+                                           kernel::ParticleIndex pi) const {
   core::XYZ d(m, pi);
   for (unsigned int i = 0; i < 3; ++i) {
     // shift the coordinate until it is in the box
@@ -33,12 +33,12 @@ void ExampleSingletonModifier::apply_index(Model *m,
 
 /* Only the passed particle is used */
 ModelObjectsTemp ExampleSingletonModifier::do_get_inputs(Model *m,
-                                          const ParticleIndexes &pis) const {
+                                          const kernel::ParticleIndexes &pis) const {
   return IMP::kernel::get_particles(m, pis);
 }
 
 ModelObjectsTemp ExampleSingletonModifier::do_get_outputs(Model *m,
-                                          const ParticleIndexes &pis) const {
+                                          const kernel::ParticleIndexes &pis) const {
   return do_get_inputs(m, pis);
 }
 

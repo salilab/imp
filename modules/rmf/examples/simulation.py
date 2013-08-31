@@ -15,8 +15,8 @@ m= IMP.Model()
 bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                               IMP.algebra.Vector3D(10,10,10))
 
-ps= [IMP.core.XYZR.setup_particle(IMP.Particle(m)) for i in range(0,np)]
-h= IMP.atom.Hierarchy.setup_particle(IMP.Particle(m, "root"))
+ps= [IMP.core.XYZR.setup_particle(IMP.kernel.Particle(m)) for i in range(0,np)]
+h= IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m, "root"))
 for p in ps:
     p.set_radius(1)
     p.set_coordinates_are_optimized(True)
@@ -33,7 +33,7 @@ for i in range(0, len(ps)/2):
     pp[1].set_coordinates(IMP.algebra.get_random_vector_on(pp[0].get_sphere()))
     IMP.display.Colored.setup_particle(pp[0], IMP.display.get_display_color(i))
     IMP.display.Colored.setup_particle(pp[1], IMP.display.get_display_color(i))
-    hr= IMP.atom.Hierarchy.setup_particle(IMP.Particle(m, "molecule "+str(i)))
+    hr= IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m, "molecule "+str(i)))
     hr.add_child(IMP.atom.Hierarchy.setup_particle(pp[0]))
     hr.add_child(IMP.atom.Hierarchy.setup_particle(pp[1]))
     h.add_child(hr)

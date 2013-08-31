@@ -311,7 +311,7 @@ class sfo_common:
         range  is 0 to infinity.
         """
         m=self._m
-        scale = IMP.isd.Scale.setup_particle(IMP.Particle(m),default,lower,upper)
+        scale = IMP.isd.Scale.setup_particle(IMP.kernel.Particle(m),default,lower,upper)
         #constrain it also for the optimizers
         if lower != -1 or upper != -1:
             m.add_score_state(IMP.core.SingletonConstraint(

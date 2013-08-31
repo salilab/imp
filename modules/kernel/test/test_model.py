@@ -202,7 +202,7 @@ class Tests(IMP.test.TestCase):
         """Check particle methods"""
         m = IMP.Model("particle methods")
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        p = IMP.Particle(m)
+        p = IMP.kernel.Particle(m)
         self.assertEqual(m.get_number_of_particles(), 1)
         for s in m.get_particles():
             s.show()
@@ -216,7 +216,7 @@ class Tests(IMP.test.TestCase):
         """Test float attribute ranges"""
         m=IMP.Model("float ranges")
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        ps=[IMP.Particle(m) for i in range(0,2)]
+        ps=[IMP.kernel.Particle(m) for i in range(0,2)]
         for k in [IMP.FloatKey(0), IMP.FloatKey(4), IMP.FloatKey(7)]:
             ps[0].add_attribute(k, k.get_index())
             ps[1].add_attribute(k, k.get_index()+1)
@@ -235,14 +235,14 @@ class Tests(IMP.test.TestCase):
                 m.set_is_optimized(IMP.FloatKey(i%8), pi, True)
                 opt.append(pi)
         mopt= m.get_optimized_particles()
-        mopti= [IMP.Particle.get_from(p).get_index() for p in mopt]
+        mopti= [IMP.kernel.Particle.get_from(p).get_index() for p in mopt]
         mopti.sort()
         self.assertEqual(mopti, opt)
     def test_dependencies(self):
         """Check dependencies with restraints and score states"""
         IMP.base.set_log_level(IMP.base.VERBOSE)
         m= IMP.Model("dependencies")
-        ps=[IMP.Particle(m) for i in range(0,20)]
+        ps=[IMP.kernel.Particle(m) for i in range(0,20)]
         cs=[DummyScoreState(m, ips=self._select(ps[:5], 2),
                             ops= self._select(ps[5:], 2),
             name = "BSS%1%")

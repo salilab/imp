@@ -14,7 +14,7 @@ RepulsiveDistancePairScore::RepulsiveDistancePairScore(double d0, double k) :
     x0_(d0), k_(k) {}
 
 double RepulsiveDistancePairScore::evaluate_index(Model *m,
-                                                  const ParticleIndexPair &p,
+                                                  const kernel::ParticleIndexPair &p,
                             DerivativeAccumulator *da) const {
   core::XYZR d0(m, p[0]), d1(m, p[1]);
   algebra::VectorD<3> delta;
@@ -37,7 +37,7 @@ double RepulsiveDistancePairScore::evaluate_index(Model *m,
 }
 
 ModelObjectsTemp RepulsiveDistancePairScore::do_get_inputs(Model *m,
-                                               const ParticleIndexes &pis)
+                                               const kernel::ParticleIndexes &pis)
     const {
   return IMP::kernel::get_particles(m, pis);
 }

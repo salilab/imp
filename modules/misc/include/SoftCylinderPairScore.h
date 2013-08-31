@@ -25,10 +25,10 @@ class IMPMISCEXPORT SoftCylinderPairScore : public PairScore {
 
  public:
   SoftCylinderPairScore(double k);
-  virtual double evaluate_index(Model *m, const ParticleIndexPair &p,
+  virtual double evaluate_index(Model *m, const kernel::ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs(Model *m,
-                                         const ParticleIndexes &pis) const
+                                         const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
   IMP_PAIR_SCORE_METHODS(SoftCylinderPairScore);
   IMP_OBJECT_METHODS(SoftCylinderPairScore);

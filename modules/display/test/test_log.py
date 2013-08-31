@@ -14,14 +14,14 @@ class Tests(IMP.test.TestCase):
     def _testit(self, writer, nm):
         m= IMP.Model()
         o= IMP.core.SteepestDescent(m)
-        p0= IMP.Particle(m)
+        p0= IMP.kernel.Particle(m)
         d0= IMP.core.XYZR.setup_particle(p0)
         d0.set_radius(1.5)
         d0.set_x(0)
         d0.set_y(0)
         d0.set_z(0)
 
-        p1= IMP.Particle(m)
+        p1= IMP.kernel.Particle(m)
         d1= IMP.core.XYZR.setup_particle(p1)
         d1.set_x(1)
         d1.set_y(1)

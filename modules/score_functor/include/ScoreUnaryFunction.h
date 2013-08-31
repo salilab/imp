@@ -15,7 +15,7 @@
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
 /** A UnaryFunction that uses a Score. This can only be used with
-    Scores that ignore their model and ParticleIndex arguments.*/
+    Scores that ignore their model and kernel::ParticleIndex arguments.*/
 template <class Score, int D = 2>
 class ScoreUnaryFunction : public IMP::UnaryFunction {
   Score score_;
@@ -27,11 +27,11 @@ class ScoreUnaryFunction : public IMP::UnaryFunction {
   virtual DerivativePair evaluate_with_derivative(double feature) const
       IMP_OVERRIDE {
     return score_.get_score_and_derivative(
-        nullptr, base::Array<D, ParticleIndex>(), feature);
+        nullptr, base::Array<D, kernel::ParticleIndex>(), feature);
   }
 
   virtual double evaluate(double feature) const IMP_OVERRIDE {
-    return score_.get_score(nullptr, base::Array<D, ParticleIndex>(), feature);
+    return score_.get_score(nullptr, base::Array<D, kernel::ParticleIndex>(), feature);
   }
 
   IMP_OBJECT_METHODS(ScoreUnaryFunction);

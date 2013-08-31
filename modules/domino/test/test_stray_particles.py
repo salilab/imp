@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
     def test_global_min1(self):
         """Test handling of unattached particles"""
         m= IMP.Model()
-        p= IMP.Particle(m)
+        p= IMP.kernel.Particle(m)
         IMP.core.XYZ.setup_particle(p)
         pst= IMP.domino.ParticleStatesTable()
         s= IMP.domino.XYZStates([IMP.algebra.Vector3D(0,0,0)])

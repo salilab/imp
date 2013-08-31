@@ -13,9 +13,9 @@ class MCOptimizerTest(IMP.test.TestCase):
         self.m2 = IMP.kernel._create_particles_from_pdb(self.get_input_file_name("1z5s_C.pdb"),
                                                 self.m)
         #create rigid bodies
-        self.rb0=IMP.core.RigidBody.setup_particle(IMP.Particle(self.m), self.m1)
+        self.rb0=IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(self.m), self.m1)
         self.rb0.set_coordinates_are_optimized(True)
-        self.rb1=IMP.core.RigidBody.setup_particle(IMP.Particle(self.m), self.m2)
+        self.rb1=IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(self.m), self.m2)
         self.rb1.set_coordinates_are_optimized(True)
         #add restraints
         self.h = IMP.core.HarmonicUpperBound(0,3.)

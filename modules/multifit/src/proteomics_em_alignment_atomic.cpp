@@ -13,7 +13,7 @@
 #include <IMP/container/PairsRestraint.h>
 #include <IMP/multifit/proteomics_em_alignment_atomic.h>
 #include <IMP/multifit/merge_tree_utils.h>
-#include <IMP/internal/graph_utility.h>
+#include <IMP/kernel/internal/graph_utility.h>
 #include <IMP/multifit/fitting_states.h>
 #include <IMP/multifit/fitting_solutions_reader_writer.h>
 #include <IMP/domino/particle_states.h>
@@ -358,9 +358,9 @@ void ProteomicsEMAlignmentAtomic::align(){
   std::cout<<"=============4"<<std::endl;
   //  IMP_NEW(domino::BranchAndBoundSampler,ds,(mdl_,pst));
   IMP_LOG_VERBOSE("going to sample\n");
-  Particles ps;
+  kernel::Particles ps;
   for(int i=0;i<(int)mhs_.size();i++){
-    ParticlesTemp temp=core::get_leaves(mhs_[i]);
+    kernel::ParticlesTemp temp=core::get_leaves(mhs_[i]);
     ps.insert(ps.end(),temp.begin(),temp.end());
   }
   std::cout<<"=============5 number of restraints:"<<jt_rs_.size()<<std::endl;
@@ -458,7 +458,7 @@ void ProteomicsEMAlignmentAtomic::add_states_and_filters(){
   //filters
   IMP_LOG_VERBOSE("settings filters\n");
   // two particles cannot
-  //    be in the same state if they have the same ParticleStates,
+  //    be in the same state if they have the same kernel::ParticleStates,
   IMP_NEW(domino::ExclusionSubsetFilterTable,dist_filt,(pst_));
   filters_.push_back(dist_filt);
   // IMP_NEW(domino::RestraintScoreSubsetFilterTable,rs_filt,(mdl_,pst_));
@@ -560,7 +560,7 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints(){
     //get all of the relevant rigid bodies
     std::pair<IntPair,IntPair> xpair=prot_data_->get_cross_link(i);
     std::stringstream ss1;
-    Particles pairx(2);
+    kernel::Particles pairx(2);
     ss1<<"xlink";
     std::cout<<"First key:"<<xpair.first.first<<" Second key:"
              <<xpair.second.first<<std::endl;
@@ -664,7 +664,7 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints(){
                params_.get_xlink_params().k_));
 
       rx = IMP::create_restraint(hub_updated.get(),
-                                 ParticlePair(pairx[0],pairx[1]));
+                                 kernel::ParticlePair(pairx[0],pairx[1]));
     }
     else { //treat as a connectivity restraint
       std::cout<<"treat as connectivity restraint"<<std::endl;
@@ -763,16 +763,16 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints(){
     std::cout<<"=====map is:"<<std::endl;
     dmap_->get_header()->show();
     std::cout<<"================="<<std::endl;
-    ParticlesTemp all_leaves,all_ca;
+    kernel::ParticlesTemp all_leaves,all_ca;
     atom::AtomTypes atom_types;
     atom_types.push_back(atom::AtomType("CA"));
     for(unsigned int i=0;i<mhs_.size();i++) {
-      ParticlesTemp mol_leaves=atom::get_leaves(mhs_[i]);
+      kernel::ParticlesTemp mol_leaves=atom::get_leaves(mhs_[i]);
       all_leaves.insert(all_leaves.end(),mol_leaves.begin(),mol_leaves.end());
       atom::Hierarchies mh_res=atom::get_by_type(mhs_[i],atom::RESIDUE_TYPE);
       atom::Selection s1(mh_res);
       s1.set_atom_types(atom_types);
-      ParticlesTemp pt = s1.get_selected_particles();
+      kernel::ParticlesTemp pt = s1.get_selected_particles();
       all_ca.insert(all_ca.end(),pt.begin(),pt.end());
     }
     std::cout<<"after adding leaves"<<std::endl;
@@ -935,8 +935,8 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints(){
   //=====create jt_rs:
   std::cout<<"========4"<<std::endl;
   mtb.show();
-  ParticlePairsTemp pps=mtb.get_mst_dependency();
-  for(ParticlePairsTemp::iterator it = pps.begin(); it != pps.end(); it++){
+  kernel::ParticlePairsTemp pps=mtb.get_mst_dependency();
+  for(kernel::ParticlePairsTemp::iterator it = pps.begin(); it != pps.end(); it++){
     std::stringstream name;
     name<<"dummy."<<(*it)[0]->get_name()<<"."<<(*it)[1]->get_name();
     std::cout<<"Adding dummy restraint: "<< name.str()<<std::endl;
@@ -972,14 +972,14 @@ ProteomicsEMAlignmentAtomic::get_combinations(bool /*uniques*/) const {
   /*
   //set the right order of the assignment.
   IntsList ret(sampled_assignments_.size());
-  std::map<Particle *,FittingStates*> mps;
+  std::map<kernel::Particle *,FittingStates*> mps;
   for (core::RigidBodies::const_iterator it = rbs_.begin();
        it != rbs_.end();it++) {
     mps[*it]=FittingStates::get_from(pst_->get_particle_states(*it));
   }
   std::cout<<"Get sampled assignments for particles:"<<std::endl;
-  ParticlesTemp ps=pst_->get_particles();
-  std::map<Particle*,int> ps_order_map;
+  kernel::ParticlesTemp ps=pst_->get_particles();
+  std::map<kernel::Particle*,int> ps_order_map;
   std::cout<<"Correct order:"<<std::endl;
   for(int i=0;i<(int)rbs_.size();i++) {
     ps_order_map[rbs_[i].get_particle()]=i;

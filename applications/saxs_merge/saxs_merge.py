@@ -895,20 +895,20 @@ def setup_particles():
 
     model = IMP.Model()
     #mean function
-    G=IMP.isd.Scale.setup_particle(IMP.Particle(model,"G"))
+    G=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(model,"G"))
     #model.add_restraint(IMP.isd.JeffreysRestraint(G))
-    Rg=IMP.isd.Scale.setup_particle(IMP.Particle(model,"Rg"))
-    d=IMP.isd.Scale.setup_particle(IMP.Particle(model,"d"))
-    s=IMP.isd.Scale.setup_particle(IMP.Particle(model,"s"))
-    A=IMP.isd.Nuisance.setup_particle(IMP.Particle(model,"A"))
+    Rg=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(model,"Rg"))
+    d=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(model,"d"))
+    s=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(model,"s"))
+    A=IMP.isd.Nuisance.setup_particle(IMP.kernel.Particle(model,"A"))
     m = IMP.isd.GeneralizedGuinierPorodFunction(G,Rg,d,s,A)
     #covariance function
-    tau=IMP.isd.Scale.setup_particle(IMP.Particle(model,"tau"))
-    lam=IMP.isd.Scale.setup_particle(IMP.Particle(model,"lambda"))
+    tau=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(model,"tau"))
+    lam=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(model,"lambda"))
     jitter=0.
     w = IMP.isd.Covariance1DFunction(tau,lam,2.0,jitter)
     #sigma
-    sigma=IMP.isd.Scale.setup_particle(IMP.Particle(model,"sigma2"))
+    sigma=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(model,"sigma2"))
     #prior on scales
     model.add_restraint(IMP.isd.JeffreysRestraint(tau))
     model.add_restraint(IMP.isd.JeffreysRestraint(sigma))

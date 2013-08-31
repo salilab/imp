@@ -48,7 +48,7 @@ class Tests(IMP.test.TestCase):
         ig= IMP.domino.InteractionGraph()
         vs=[]
         for i in range(0,np):
-            ps.append(IMP.Particle(m))
+            ps.append(IMP.kernel.Particle(m))
             vs.append(ig.add_vertex(ps[-1]))
         for i in range(1, np):
             ig.add_edge(vs[i-1], vs[i])
@@ -75,7 +75,7 @@ class Tests(IMP.test.TestCase):
         ps=[]
         ig= IMP.domino.InteractionGraph()
         for i in range(0,8):
-            ps.append(IMP.Particle(m))
+            ps.append(IMP.kernel.Particle(m))
             ig.add_vertex(ps[-1])
         ig.add_edge(0,1)
         ig.add_edge(0,2)

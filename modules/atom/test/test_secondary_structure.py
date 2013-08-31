@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
     """Test the SecondaryStructureResidue decorator and reader"""
     def test_get_set(self):
         m = IMP.Model()
-        p = IMP.Particle(m)
+        p = IMP.kernel.Particle(m)
         ssr = IMP.atom.SecondaryStructureResidue.setup_particle(p,0.5,0.25,0.25)
         self.assertAlmostEqual(ssr.get_prob_helix(), 0.5, delta=1e-6)
         self.assertAlmostEqual(ssr.get_prob_strand(), 0.25, delta=1e-6)
@@ -28,7 +28,7 @@ class Tests(IMP.test.TestCase):
         ps=[]
 
         for i in range(3):
-            p=IMP.Particle(m)
+            p=IMP.kernel.Particle(m)
             ssr=IMP.atom.SecondaryStructureResidue.setup_particle(p,
                                            helices[i],coils[i],strands[i])
             av[0]+=helices[i]/3
@@ -59,10 +59,10 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         ssr_vals=[[0.5,0.25,0.25],
                   [0.9,0.05,0.05]]
-        p1 = IMP.Particle(m)
+        p1 = IMP.kernel.Particle(m)
         ssr1 = IMP.atom.SecondaryStructureResidue.setup_particle(p1,
                                    ssr_vals[0][0],ssr_vals[0][1],ssr_vals[0][2])
-        p2 = IMP.Particle(m)
+        p2 = IMP.kernel.Particle(m)
         ssr2 = IMP.atom.SecondaryStructureResidue.setup_particle(p2,
                                    ssr_vals[1][0],ssr_vals[1][1],ssr_vals[1][2])
         rmsd=0.0
@@ -89,7 +89,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         ps=[]
         for i in range(769):
-            p=IMP.Particle(m)
+            p=IMP.kernel.Particle(m)
             ps.append(p)
 
         ssres=IMP.atom.read_psipred(self.open_input_file("yGCP2.psipred"),ps)

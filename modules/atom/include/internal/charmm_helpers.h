@@ -12,7 +12,7 @@
 #include <IMP/atom/atom_config.h>
 
 #include <IMP/base_types.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 
 IMPATOM_BEGIN_NAMESPACE
 class CHARMMParameters;
@@ -91,11 +91,11 @@ class CHARMMDihedralNames {
   }
 };
 
-//! Create a Dihedral on the given Particles, and add it to the list
+//! Create a Dihedral on the given kernel::Particles, and add it to the list
 IMPATOMEXPORT void add_dihedral_to_list(const CHARMMParameters *param,
-                                        Particle *p1, Particle *p2,
-                                        Particle *p3, Particle *p4,
-                                        Particles &ps);
+                                        kernel::Particle *p1, kernel::Particle *p2,
+                                        kernel::Particle *p3, kernel::Particle *p4,
+                                        kernel::Particles &ps);
 
 IMPATOM_END_INTERNAL_NAMESPACE
 

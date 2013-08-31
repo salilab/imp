@@ -40,7 +40,7 @@ public:
     of particles out of the map envelope (as defined by density_threshold)
     is allowed. Recommended value is approximately map resolution
   */
-  EnvelopeFitRestraint(Particles particles,
+  EnvelopeFitRestraint(kernel::Particles particles,
                        DensityMap *em_map,
                        double density_threshold,
                        double penetration_threshold);
@@ -60,7 +60,7 @@ public:
   IMP_OBJECT_METHODS(EnvelopeFitRestraint);
 
  private:
-  Particles ps_;
+  kernel::Particles ps_;
   IMP::base::PointerMember<PCAAligner> pca_aligner_;
   double penetration_threshold_;
   IMP::base::PointerMember<MapDistanceTransform> distance_transform_;

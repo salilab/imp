@@ -11,7 +11,7 @@
 #include <IMP/atom/atom_config.h>
 #include <IMP/kernel/Restraint.h>
 #include <IMP/restraint_macros.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/base_types.h>
 #include <string>
@@ -26,7 +26,7 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT EzRestraint : public kernel::Restraint
 {
 
- Particles ps_;
+ kernel::Particles ps_;
  UnaryFunctions ufs_;
  Floats get_parameters(std::string restype);
 protected:
@@ -34,7 +34,7 @@ protected:
       unprotected_evaluate(DerivativeAccumulator *da) const IMP_OVERRIDE;
   virtual  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 public:
-  EzRestraint(Particles ps);
+  EzRestraint(kernel::Particles ps);
 
   IMP_OBJECT_METHODS(EzRestraint);
 };

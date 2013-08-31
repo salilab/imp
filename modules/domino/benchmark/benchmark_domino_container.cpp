@@ -46,7 +46,7 @@ void benchmark_table(AssignmentContainer *ac, std::string name) {
 int main(int, char * []) {
   IMP_NEW(Model, m, ());
   for (unsigned int i = 0; i < 10; ++i) {
-    IMP_NEW(Particle, p, (m));
+    IMP_NEW(kernel::Particle, p, (m));
   }
   Subset s(m->get_particles());
 #ifdef IMP_DOMINO_USE_IMP_RMF

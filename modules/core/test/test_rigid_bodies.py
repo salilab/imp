@@ -21,12 +21,12 @@ class Tests(IMP.test.TestCase):
             r= IMP.core.SingletonRestraint(dt, mb.get_particle())
             m.add_restraint(r)
     def _create_hierarchy(self, m, n=10):
-        rd= IMP.core.XYZ.setup_particle(IMP.Particle(m),
+        rd= IMP.core.XYZ.setup_particle(IMP.kernel.Particle(m),
                                          IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
         rd.set_name("rigid body")
         hd= IMP.core.Hierarchy.setup_particle(rd.get_particle())
         for i in range(0,n):
-            crd= IMP.core.XYZ.setup_particle(IMP.Particle(m),
+            crd= IMP.core.XYZ.setup_particle(IMP.kernel.Particle(m),
                                               IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
             chd= IMP.core.Hierarchy.setup_particle(crd.get_particle())
             hd.add_child(chd)
@@ -89,7 +89,7 @@ class Tests(IMP.test.TestCase):
         m= IMP.Model()
         hs= IMP.kernel._create_particles_from_pdb(self.get_input_file_name("input.pdb"), m)
         print "done reading"
-        rb= IMP.core.RigidBody.setup_particle(IMP.Particle(m), hs)
+        rb= IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m), hs)
         rb.set_coordinates_are_optimized(True)
         print "done setting up"
         ls= hs
@@ -113,10 +113,10 @@ class Tests(IMP.test.TestCase):
     def test_teardown(self):
         """Testing tearing down rigid bodies"""
         m= IMP.Model()
-        ps=[IMP.core.XYZ.setup_particle(IMP.Particle(m)) for i in range(3)]
-        rbp0= IMP.Particle(m)
+        ps=[IMP.core.XYZ.setup_particle(IMP.kernel.Particle(m)) for i in range(3)]
+        rbp0= IMP.kernel.Particle(m)
         rbp0.set_name("rb0")
-        rbp1= IMP.Particle(m)
+        rbp1= IMP.kernel.Particle(m)
         rbp1.set_name("rb1")
         try:
             before= IMP.base.RefCounted.get_number_of_live_objects()

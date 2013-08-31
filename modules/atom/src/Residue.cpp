@@ -149,7 +149,7 @@ char get_one_letter_code(ResidueType c) {
 }
 
 namespace {
-  bool check_residue(Model *m, ParticleIndex pi) {
+  bool check_residue(Model *m, kernel::ParticleIndex pi) {
     unsigned int t = m->get_attribute(Residue::get_residue_type_key(), pi);
     if (t >= ResidueType::get_number_unique()) {
       IMP_THROW("Invalid residue type: " << t, ValueException);

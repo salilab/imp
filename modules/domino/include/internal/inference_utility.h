@@ -64,7 +64,7 @@ struct AsIndexes {
 };
 IMP_VALUES(AsIndexes, AsIndexesList);
 
-typedef IMP::base::map<Particle *, int> ParticleIndex;
+typedef IMP::base::map<kernel::Particle *, int> ParticleIndex;
 
 inline ParticleIndex get_index(const Subset &s) {
   ParticleIndex ret;

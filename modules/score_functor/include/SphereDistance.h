@@ -24,25 +24,25 @@ class SphereDistance : public BaseDistanceScore {
      isn't necessarily called first). I don't see how to fix the nontrivial
      cases and, since they are the point of this module, disabled it.*/
   typedef BaseDistanceScore P;
-  static double get_rsum(Model *m, const ParticleIndexPair &pi) {
+  static double get_rsum(Model *m, const kernel::ParticleIndexPair &pi) {
     return m->get_sphere(pi[0]).get_radius() +
            m->get_sphere(pi[1]).get_radius();
   }
 
  public:
   SphereDistance(BaseDistanceScore base) : P(base) {}
-  double get_score(Model *m, const ParticleIndexPair &pi,
+  double get_score(Model *m, const kernel::ParticleIndexPair &pi,
                    double distance) const {
     return P::get_score(m, pi, distance - get_rsum(m, pi));
   }
-  DerivativePair get_score_and_derivative(Model *m, const ParticleIndexPair &pi,
+  DerivativePair get_score_and_derivative(Model *m, const kernel::ParticleIndexPair &pi,
                                           double distance) const {
     return P::get_score_and_derivative(m, pi, distance - get_rsum(m, pi));
   }
-  double get_maximum_range(Model *m, const ParticleIndexPair &pi) const {
+  double get_maximum_range(Model *m, const kernel::ParticleIndexPair &pi) const {
     return P::get_maximum_range(m, pi) + get_rsum(m, pi);
   }
-  bool get_is_trivially_zero(Model *m, const ParticleIndexPair &pi,
+  bool get_is_trivially_zero(Model *m, const kernel::ParticleIndexPair &pi,
                              double squared_distance) const {
     return squared_distance >
            algebra::get_squared(P::get_maximum_range(m, pi) + get_rsum(m, pi));

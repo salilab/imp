@@ -33,7 +33,7 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 */
 class IMPEXAMPLEEXPORT ExampleComplexRestraint : public kernel::Restraint {
   base::Pointer<ScoreState> ss_;
-  ParticleIndex p_;
+  kernel::ParticleIndex p_;
   Float diameter_;
   base::Pointer<SingletonContainer> sc_;
   base::Pointer<UnaryFunction> f_;

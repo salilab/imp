@@ -30,7 +30,7 @@ void do_benchmark(std::string name, Model *, const PT &ps, Refiner *r, double) {
   double total = 0;
   IMP_TIME({
     for (unsigned int i = 0; i < ps.size(); ++i) {
-      ParticlesTemp nps = r->get_refined(ps[i]);
+      kernel::ParticlesTemp nps = r->get_refined(ps[i]);
       total += nps.size();
     }
   },
@@ -50,13 +50,13 @@ int main(int argc, char **argv) {
   }
 
   {
-    ParticlesTemp ps;
+    kernel::ParticlesTemp ps;
     core::HierarchyTraits tr = core::Hierarchy::get_default_traits();
     for (unsigned int i = 0; i < hs.size(); ++i) {
-      IMP_NEW(Particle, p, (m));
+      IMP_NEW(kernel::Particle, p, (m));
       ps.push_back(p);
       core::Hierarchy h0 = core::Hierarchy::setup_particle(p, tr);
-      ParticlesTemp lps = lr->get_refined(hs[i]);
+      kernel::ParticlesTemp lps = lr->get_refined(hs[i]);
       for (unsigned int i = 0; i < lps.size(); ++i) {
         h0.add_child(core::Hierarchy::setup_particle(lps[i], tr));
       }

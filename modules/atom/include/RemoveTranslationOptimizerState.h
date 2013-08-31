@@ -10,7 +10,7 @@
 #define IMPATOM_REMOVE_TRANSLATION_OPTIMIZER_STATE_H
 
 #include <IMP/atom/atom_config.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/base_types.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/optimizer_state_macros.h>
@@ -25,11 +25,11 @@ class IMPATOMEXPORT RemoveTranslationOptimizerState : public OptimizerState {
  public:
    /** \deprecated_at{2.1} Use set_period() instead. */
   IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
-  RemoveTranslationOptimizerState(const Particles &pis, unsigned skip_steps);
-  RemoveTranslationOptimizerState(Model *m, ParticleIndexesAdaptor pis);
+  RemoveTranslationOptimizerState(const kernel::Particles &pis, unsigned skip_steps);
+  RemoveTranslationOptimizerState(Model *m, kernel::ParticleIndexesAdaptor pis);
 
   //! Set the particles to use.
-  void set_particles(const Particles &pis) { pis_ = pis; }
+  void set_particles(const kernel::Particles &pis) { pis_ = pis; }
 
   //! Remove translation now
   void remove_translation() const;
@@ -38,7 +38,7 @@ class IMPATOMEXPORT RemoveTranslationOptimizerState : public OptimizerState {
  protected:
    virtual void do_update(unsigned int call) IMP_OVERRIDE;
  private:
-  Particles pis_;};
+  kernel::Particles pis_;};
 
 IMP_OBJECTS(RemoveTranslationOptimizerState, RemoveTranslationOptimizerStates);
 

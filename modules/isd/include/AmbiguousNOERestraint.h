@@ -24,8 +24,8 @@ IMPISD_BEGIN_NAMESPACE
 class IMPISDEXPORT AmbiguousNOERestraint : public ISDRestraint
 {
   base::Pointer<PairContainer> pc_;
-  base::Pointer<Particle> sigma_;
-  base::Pointer<Particle> gamma_;
+  base::Pointer<kernel::Particle> sigma_;
+  base::Pointer<kernel::Particle> gamma_;
   double Vexp_;
   double chi_;
   void set_chi(double chi) { chi_ = chi; }
@@ -34,7 +34,7 @@ public:
   /** kernel::Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
    */
-  AmbiguousNOERestraint(PairContainer *pc, Particle *sigma, Particle *gamma,
+  AmbiguousNOERestraint(PairContainer *pc, kernel::Particle *sigma, kernel::Particle *gamma,
                         double Iexp);
 
   /* call for probability */

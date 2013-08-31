@@ -20,7 +20,7 @@
 #include <IMP/generic.h>
 #include <IMP/base/Pointer.h>
 #include <IMP/SingletonContainer.h>
-#include <IMP/internal/ListLikePairContainer.h>
+#include <IMP/kernel/internal/ListLikePairContainer.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
@@ -42,8 +42,8 @@ class IMPCOREEXPORT CoreClosePairContainer
   void do_rebuild();
 
  public:
-  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
-  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual void do_before_evaluate() IMP_OVERRIDE;
 
@@ -67,8 +67,8 @@ class IMPCOREEXPORT CoreClosePairContainer
   SingletonContainer *get_singleton_container() const { return c_; }
   ClosePairsFinder *get_close_pairs_finder() const { return cpf_; }
   void set_slack(double d);
-  kernel::Restraints create_decomposition(PairScore *ps) const {
-    ParticleIndexPairs all = get_range_indexes();
+  kernel::Restraints create_decomposition(kernel::PairScore *ps) const {
+    kernel::ParticleIndexPairs all = get_range_indexes();
     kernel::Restraints ret(all.size());
     for (unsigned int i = 0; i < all.size(); ++i) {
       ret[i] = new PairRestraint(
@@ -78,7 +78,7 @@ class IMPCOREEXPORT CoreClosePairContainer
   }
   template <class PS>
   kernel::Restraints create_decomposition_t(PS *ps) const {
-    ParticleIndexPairs all = get_range_indexes();
+    kernel::ParticleIndexPairs all = get_range_indexes();
     kernel::Restraints ret(all.size());
     for (unsigned int i = 0; i < all.size(); ++i) {
       ret[i] = IMP::create_restraint(

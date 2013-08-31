@@ -37,7 +37,7 @@ algebra::PrincipalComponentAnalysis get_pca_from_density(
 }
 
 PCAFitRestraint::PCAFitRestraint(
-   ParticlesTemp ps,
+   kernel::ParticlesTemp ps,
    DensityMap *em_map, float threshold,
    float max_pca_size_diff,float max_angle_diff,
    float max_centroid_diff,
@@ -66,7 +66,7 @@ PCAFitRestraint::PCAFitRestraint(
   IMP_LOG_TERSE( "Finish initialization" << std::endl);
 }
 
-IMP_LIST_IMPL(PCAFitRestraint, Particle, particle,Particle*, Particles);
+IMP_LIST_IMPL(PCAFitRestraint, Particle, particle,Particle*, kernel::Particles);
 
 double PCAFitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
@@ -121,8 +121,8 @@ ModelObjectsTemp PCAFitRestraint::do_get_inputs() const
   return pt;
 }
 
-void PCAFitRestraint::store_particles(ParticlesTemp ps) {
-  all_ps_=get_as<Particles>(ps);
+void PCAFitRestraint::store_particles(kernel::ParticlesTemp ps) {
+  all_ps_=get_as<kernel::Particles>(ps);
   add_particles(ps);
 }
 IMPEM_END_NAMESPACE

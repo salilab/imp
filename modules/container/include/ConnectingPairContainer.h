@@ -10,7 +10,7 @@
 
 #include <IMP/container/container_config.h>
 #include <IMP/core/internal/MovedSingletonContainer.h>
-#include <IMP/internal/ListLikePairContainer.h>
+#include <IMP/kernel/internal/ListLikePairContainer.h>
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/macros.h>
@@ -46,7 +46,7 @@ class IMPCONTAINEREXPORT ConnectingPairContainer :
     {
   IMP::base::PointerMember<SingletonContainer> sc_;
   IMP::base::PointerMember<core::internal::MovedSingletonContainer> mv_;
-  ParticlePairsTemp data_;
+  kernel::ParticlePairsTemp data_;
   double error_bound_;
   bool mst_;
   void initialize(SingletonContainer *sc);
@@ -58,18 +58,18 @@ class IMPCONTAINEREXPORT ConnectingPairContainer :
   ConnectingPairContainer(SingletonContainer *sc, double error);
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-  ParticleIndexPairs get_indexes() const;
-  ParticleIndexPairs get_range_indexes() const;
+  kernel::ParticleIndexPairs get_indexes() const;
+  kernel::ParticleIndexPairs get_range_indexes() const;
   void do_before_evaluate();
   ModelObjectsTemp do_get_inputs() const;
   void do_apply(const PairModifier *sm) const;
-  ParticleIndexes get_all_possible_indexes() const;
+  kernel::ParticleIndexes get_all_possible_indexes() const;
   IMP_OBJECT_METHODS(ConnectingPairContainer);
 #else
-  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual void do_before_evaluate() IMP_OVERRIDE;
-  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ConnectingPairContainer);
   bool get_is_decomposable() const { return false; }
 #endif

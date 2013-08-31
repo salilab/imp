@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
         IMP.base.set_log_level(IMP.MEMORY)
         m= IMP.Model()
         print "creating particle"
-        p= IMP.Particle(m)
+        p= IMP.kernel.Particle(m)
         print "created"
         bbb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                        IMP.algebra.Vector3D(100,100,100))

@@ -15,16 +15,16 @@ IMPATOM_BEGIN_NAMESPACE
 SameResiduePairFilter::SameResiduePairFilter() {}
 
 int SameResiduePairFilter::get_value_index(Model *m,
-                                           const ParticleIndexPair &p) const {
+                                           const kernel::ParticleIndexPair &p) const {
   return Hierarchy(m, p[0]).get_parent() == Hierarchy(m, p[1]).get_parent();
 }
 
 ModelObjectsTemp SameResiduePairFilter::do_get_inputs(
-    Model *m, const ParticleIndexes &pis) const {
+    Model *m, const kernel::ParticleIndexes &pis) const {
   ModelObjectsTemp ret = IMP::kernel::get_particles(m, pis);
   for (unsigned int i = 0; i < pis.size(); ++i) {
     if (Atom::get_is_setup(m, pis[i])) {
-      Particle *parent = Hierarchy(m, pis[i]).get_parent();
+      kernel::Particle *parent = Hierarchy(m, pis[i]).get_parent();
       if (parent) {
         ret.push_back(parent);
       }

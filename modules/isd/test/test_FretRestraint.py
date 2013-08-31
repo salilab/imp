@@ -22,16 +22,16 @@ class TestFretRestraint(IMP.test.TestCase):
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
         self.m = IMP.Model()
-        self.kda =   Scale.setup_particle(IMP.Particle(self.m), 4.0)
-        self.Ida =   Scale.setup_particle(IMP.Particle(self.m), 3.0)
-        self.R0  =   Scale.setup_particle(IMP.Particle(self.m), 50.0)
-        self.sigma = Scale.setup_particle(IMP.Particle(self.m), 0.005)
-        self.Pbl   = Scale.setup_particle(IMP.Particle(self.m), 0.7)
-        self.p0=IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
+        self.kda =   Scale.setup_particle(IMP.kernel.Particle(self.m), 4.0)
+        self.Ida =   Scale.setup_particle(IMP.kernel.Particle(self.m), 3.0)
+        self.R0  =   Scale.setup_particle(IMP.kernel.Particle(self.m), 50.0)
+        self.sigma = Scale.setup_particle(IMP.kernel.Particle(self.m), 0.005)
+        self.Pbl   = Scale.setup_particle(IMP.kernel.Particle(self.m), 0.7)
+        self.p0=IMP.core.XYZ.setup_particle(IMP.kernel.Particle(self.m),
             IMP.algebra.Vector3D(50,0,0))
-        self.p1=IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
+        self.p1=IMP.core.XYZ.setup_particle(IMP.kernel.Particle(self.m),
             IMP.algebra.Vector3D(0,50,0))
-        self.p2=IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
+        self.p2=IMP.core.XYZ.setup_particle(IMP.kernel.Particle(self.m),
             IMP.algebra.Vector3D(0,0,0))
         self.fexp = 1.5
         self.fret0 = IMP.isd.FretRestraint([self.p0],[self.p1,self.p2],

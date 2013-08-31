@@ -12,7 +12,7 @@
 IMPEM_BEGIN_NAMESPACE
 
 EnvelopePenetrationRestraint::EnvelopePenetrationRestraint(
-   Particles ps,
+   kernel::Particles ps,
    DensityMap *em_map,Float threshold
                                                            ):
     kernel::Restraint(ps[0]->get_model(), "Envelope penetration restraint")
@@ -63,7 +63,7 @@ ModelObjectsTemp EnvelopePenetrationRestraint::do_get_inputs() const
 }
 
 IMP_LIST_IMPL(
-  EnvelopePenetrationRestraint, Particle, particle,Particle*, Particles);
+  EnvelopePenetrationRestraint, Particle, particle,Particle*, kernel::Particles);
 
 
 

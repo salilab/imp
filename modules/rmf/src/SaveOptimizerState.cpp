@@ -34,10 +34,10 @@ void SaveOptimizerState::update_always(std::string name) {
   set_number_of_updates(get_number_of_updates() + 1);
 }
 
-IMP_LIST_IMPL(SaveOptimizerState, Hierarchy, hierarchy, Particle *, Particles);
+IMP_LIST_IMPL(SaveOptimizerState, Hierarchy, hierarchy, kernel::Particle *, kernel::Particles);
 IMP_LIST_IMPL(SaveOptimizerState, Restraint, restraint, kernel::Restraint *,
               kernel::Restraints);
-IMP_LIST_IMPL(SaveOptimizerState, Particle, particle, Particle *, Particles);
+IMP_LIST_IMPL(SaveOptimizerState, Particle, particle, kernel::Particle *, kernel::Particles);
 IMP_LIST_IMPL(SaveOptimizerState, Geometry, geometry, display::Geometry *,
               display::Geometries);
 

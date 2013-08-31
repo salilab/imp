@@ -12,7 +12,7 @@
 #include "isd_config.h"
 
 #include <IMP/core/core_macros.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/decorator_macros.h>
 #include <IMP/Model.h>
 #include <IMP/Decorator.h>
@@ -26,7 +26,7 @@ class IMPISDEXPORT Weight: public Decorator
 
   static const int nstates_max = 20;
   static void do_setup_particle(Model *m,
-                                ParticleIndex pi);
+                                kernel::ParticleIndex pi);
 public:
 
   IMP_DECORATOR_METHODS(Weight, Decorator);
@@ -57,7 +57,7 @@ public:
   Int get_number_of_states();
 
   static bool get_is_setup(Model *m,
-                           ParticleIndex pi) {
+                           kernel::ParticleIndex pi) {
     return m->get_has_attribute(get_nstates_key(), pi);
   }
 

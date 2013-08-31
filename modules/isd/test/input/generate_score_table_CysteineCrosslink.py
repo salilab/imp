@@ -41,7 +41,7 @@ cysteine_FES_dat=[(0.230424407, 7.0381e-28), (0.2365070296, 7.25201e-28), (0.242
 
 
 def SetupNuisance(initialvalue,minvalue,maxvalue,isoptimized=True):
-    nuisance=IMP.isd.Scale.setup_particle(IMP.Particle(m),initialvalue)
+    nuisance=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(m),initialvalue)
     nuisance.set_lower(minvalue)
     nuisance.set_upper(maxvalue)
 
@@ -49,7 +49,7 @@ def SetupNuisance(initialvalue,minvalue,maxvalue,isoptimized=True):
     return nuisance
 
 def SetupWeight(isoptimized=True):
-    pw=IMP.Particle(m)
+    pw=IMP.kernel.Particle(m)
     weight=IMP.isd.Weight.setup_particle(pw)
     weight.set_weights_are_optimized(True)
     return weight
@@ -107,17 +107,17 @@ def get_log_grid(gmin,gmax,ngrid):
 
 ps=[]
 #setting up ps
-p0=IMP.Particle(m)
+p0=IMP.kernel.Particle(m)
 xyz=IMP.core.XYZR.setup_particle(p0,IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0),3.0))
 xyz.set_coordinates_are_optimized(True)
 ps.append(p0)
 
-p0=IMP.Particle(m)
+p0=IMP.kernel.Particle(m)
 xyz0=IMP.core.XYZR.setup_particle(p0,IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0),3.0))
 xyz0.set_coordinates_are_optimized(True)
 ps.append(p0)
 
-p0=IMP.Particle(m)
+p0=IMP.kernel.Particle(m)
 xyz0=IMP.core.XYZR.setup_particle(p0,IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0),3.0))
 xyz0.set_coordinates_are_optimized(True)
 ps.append(p0)

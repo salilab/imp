@@ -9,7 +9,7 @@
 #include <IMP/domino/internal/inference_utility.h>
 #include <IMP/domino/internal/tree_inference.h>
 #include <IMP/domino/assignment_tables.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/base/log.h>
 #include <algorithm>
 #include <boost/graph/copy.hpp>

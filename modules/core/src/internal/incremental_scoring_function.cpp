@@ -6,10 +6,10 @@
  */
 
 #include <IMP/core/internal/incremental_scoring_function.h>
-#include <IMP/internal/InternalListSingletonContainer.h>
+#include <IMP/kernel/internal/InternalListSingletonContainer.h>
 #include <IMP/core/internal/CoreClosePairContainer.h>
 #include <IMP/core/GridClosePairsFinder.h>
-#include <IMP/internal/InternalPairsRestraint.h>
+#include <IMP/kernel/internal/InternalPairsRestraint.h>
 #include <IMP/core/internal/close_pairs_helpers.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/core/XYZR.h>
@@ -22,17 +22,17 @@ class DummyPairContainer : public IMP::internal::ListLikePairContainer {
 
  public:
   DummyPairContainer(SingletonContainer *c, ClosePairsFinder *cpf);
-  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual void do_before_evaluate() IMP_OVERRIDE;
-  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
 
   IMP_CLANG_PRAGMA(diagnostic push)
   IMP_CLANG_PRAGMA(diagnostic ignored "-Wunused-member-function")
   SingletonContainer *get_singleton_container() const { return c_; }
   ClosePairsFinder *get_close_pairs_finder() const { return cpf_; }
-  kernel::Restraints create_decomposition(PairScore *ps) const {
-    ParticleIndexPairs all = get_range_indexes();
+  kernel::Restraints create_decomposition(kernel::PairScore *ps) const {
+    kernel::ParticleIndexPairs all = get_range_indexes();
     kernel::Restraints ret(all.size());
     for (unsigned int i = 0; i < all.size(); ++i) {
       ret[i] = new PairRestraint(
@@ -43,7 +43,7 @@ class DummyPairContainer : public IMP::internal::ListLikePairContainer {
   IMP_CLANG_PRAGMA(diagnostic pop)
   template <class PS>
   kernel::Restraints create_decomposition_t(PS *ps) const {
-    ParticleIndexPairs all = get_range_indexes();
+    kernel::ParticleIndexPairs all = get_range_indexes();
     kernel::Restraints ret(all.size());
     for (unsigned int i = 0; i < all.size(); ++i) {
       ret[i] = IMP::create_restraint(
@@ -72,23 +72,23 @@ ModelObjectsTemp DummyPairContainer::do_get_inputs() const {
 void DummyPairContainer::do_before_evaluate() {}
 
 ParticleIndexPairs DummyPairContainer::get_range_indexes() const {
-  ParticleIndexes pis = c_->get_range_indexes();
-  ParticleIndexPairs ret;
+  kernel::ParticleIndexes pis = c_->get_range_indexes();
+  kernel::ParticleIndexPairs ret;
   ret.reserve(pis.size() * (pis.size() - 1) / 2);
   for (unsigned int i = 0; i < pis.size(); ++i) {
     for (unsigned int j = 0; j < i; ++j) {
-      ret.push_back(ParticleIndexPair(pis[i], pis[j]));
+      ret.push_back(kernel::ParticleIndexPair(pis[i], pis[j]));
     }
   }
   return ret;
 }
 
 ParticleIndexes DummyPairContainer::get_all_possible_indexes() const {
-  ParticleIndexes ret = c_->get_all_possible_indexes();
+  kernel::ParticleIndexes ret = c_->get_all_possible_indexes();
   ModelObjectsTemp mos = cpf_->get_inputs(get_model(), c_->get_indexes());
   for (unsigned int i = 0; i < mos.size(); ++i) {
     ModelObject *o = mos[i];
-    Particle *p = dynamic_cast<Particle *>(o);
+    kernel::Particle *p = dynamic_cast<kernel::Particle *>(o);
     if (p) ret.push_back(p->get_index());
   }
   return ret;
@@ -100,8 +100,8 @@ ParticleIndexes DummyPairContainer::get_all_possible_indexes() const {
     set are bad.*/
 
 NBLScoring::NBLScoring(PairScore *ps, double distance,
-                       const ParticleIndexes &to_move,
-                       const ParticlesTemp &particles,
+                       const kernel::ParticleIndexes &to_move,
+                       const kernel::ParticlesTemp &particles,
                        const PairPredicates &filters, double weight, double max)
     : cache_(IMP::internal::get_index(particles),
              NBGenerator(IMP::internal::get_model(particles),
@@ -122,12 +122,12 @@ NBLScoring::NBLScoring(PairScore *ps, double distance,
 void NBLScoring::update_dependencies(const DependencyGraph &dg,
                                      const DependencyGraphVertexIndex &index) {
   for (unsigned int i = 0; i < to_move_.size(); ++i) {
-    Particle *p = cache_.get_generator().m_->get_particle(to_move_[i]);
-    ParticlesTemp ps = get_dependent_particles(p, ParticlesTemp(), dg, index);
+    kernel::Particle *p = cache_.get_generator().m_->get_particle(to_move_[i]);
+    kernel::ParticlesTemp ps = get_dependent_particles(p, kernel::ParticlesTemp(), dg, index);
     // intersect that with the ones I care about
-    ParticleIndexes pis = IMP::internal::get_index(ps);
+    kernel::ParticleIndexes pis = IMP::internal::get_index(ps);
     std::sort(pis.begin(), pis.end());
-    ParticleIndexes deps;
+    kernel::ParticleIndexes deps;
     std::set_intersection(
         pis.begin(), pis.end(), cache_.get_generator().pis_.begin(),
         cache_.get_generator().pis_.end(), std::back_inserter(deps));
@@ -157,11 +157,11 @@ struct NBShow {
 };
 }
 
-void NBLScoring::set_moved(const ParticleIndexes &moved) {
+void NBLScoring::set_moved(const kernel::ParticleIndexes &moved) {
   IMP_FUNCTION_LOG;
 
   for (unsigned int i = 0; i < moved.size(); ++i) {
-    ParticleIndexes c = controlled_.find(moved[i])->second;
+    kernel::ParticleIndexes c = controlled_.find(moved[i])->second;
     IMP_LOG_TERSE("Got input particle " << moved[i] << " that controls " << c
                                         << std::endl);
     for (unsigned int i = 0; i < c.size(); ++i) {
@@ -192,7 +192,7 @@ Restraint *NBLScoring::create_restraint() const {
   return ret.release();
 }
 
-NBGenerator::NBGenerator(Model *m, const ParticleIndexes &pis, PairScore *ps,
+NBGenerator::NBGenerator(Model *m, const kernel::ParticleIndexes &pis, PairScore *ps,
                          double distance, const PairPredicates &pfs) {
   m_ = m;
   score_ = ps;
@@ -232,10 +232,10 @@ NBGenerator::result_type NBGenerator::operator()(argument_type a) const {
     IMP_LOG_TERSE("Neighbors are " << n << std::endl);
     for (unsigned int j = 0; j < n.size(); ++j) {
       // if the partner is not in the list or is a lower index
-      ParticleIndex ppi = pis_[n[j]];
+      kernel::ParticleIndex ppi = pis_[n[j]];
       IMP_LOG_VERBOSE("Checking out pair " << a[i] << " " << ppi << std::endl);
       if (std::find(a.begin(), a.end(), ppi) == a.end() || ppi < a[i]) {
-        ParticleIndexPair pp(a[i], ppi);
+        kernel::ParticleIndexPair pp(a[i], ppi);
         bool filtered = false;
         for (unsigned int k = 0; k < filters_.size(); ++k) {
           if (filters_[k]->get_value_index(m_, pp)) {
@@ -262,25 +262,25 @@ NBGenerator::result_type NBGenerator::operator()(argument_type a) const {
   return ret;
 }
 
-NBChecker::NBChecker(Model *m, const ParticleIndexes &pis, PairScore *score,
+NBChecker::NBChecker(Model *m, const kernel::ParticleIndexes &pis, PairScore *score,
                      double d, const PairPredicates &filt)
     : m_(m), pis_(pis), score_(score), distance_(d), filt_(filt) {}
 bool NBChecker::operator()(const NBGenerator::result_type &vals) const {
   IMP_NEW(GridClosePairsFinder, gcpf, ());
   gcpf->set_distance(.9 * distance_);
-  ParticleIndexPairs found = gcpf->get_close_pairs(m_, pis_);
+  kernel::ParticleIndexPairs found = gcpf->get_close_pairs(m_, pis_);
   for (unsigned int i = 0; i < filt_.size(); ++i) {
     filt_[i]->remove_if_equal(m_, found, 1);
   }
-  base::set<ParticleIndexPair> vals_index;
+  base::set<kernel::ParticleIndexPair> vals_index;
   for (unsigned int i = 0; i < vals.size(); ++i) {
-    vals_index.insert(ParticleIndexPair(vals[i][0], vals[i][1]));
+    vals_index.insert(kernel::ParticleIndexPair(vals[i][0], vals[i][1]));
   }
   for (unsigned int i = 0; i < found.size(); ++i) {
     double score = score_->evaluate_index(m_, found[i], nullptr);
     if (score == 0) continue;
     bool has = vals_index.find(found[i]) != vals_index.end() ||
-               vals_index.find(ParticleIndexPair(found[i][1], found[i][0])) !=
+               vals_index.find(kernel::ParticleIndexPair(found[i][1], found[i][0])) !=
                    vals_index.end();
     if (!has) {
       IMP_WARN("Can't find pair "
@@ -291,7 +291,7 @@ bool NBChecker::operator()(const NBGenerator::result_type &vals) const {
     }
   }
   for (unsigned int i = 0; i < vals.size(); ++i) {
-    ParticleIndexPair pip(vals[i][0], vals[i][1]);
+    kernel::ParticleIndexPair pip(vals[i][0], vals[i][1]);
     double nscore = score_->evaluate_index(m_, pip, nullptr);
     if (std::abs(nscore - vals[i].score) > .1) {
       IMP_WARN("Scores don't match for " << pip << " had " << vals[i].score

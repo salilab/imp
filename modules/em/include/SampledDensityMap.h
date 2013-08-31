@@ -53,7 +53,7 @@ public:
                  (ii) to determine the voxels around the coords participating
                       in the sampling procedure.
    */
-  SampledDensityMap(const ParticlesTemp &ps, emreal resolution,
+  SampledDensityMap(const kernel::ParticlesTemp &ps, emreal resolution,
                     emreal voxel_size,
                     IMP::FloatKey mass_key=IMP::atom::Mass::get_mass_key(),
                     int sig_cuttoff=3, KernelType kt=GAUSSIAN);
@@ -79,13 +79,13 @@ public:
                    this value before projection
   \param[in] mass_key key to obtain particle mass
   */
-  void project(const ParticlesTemp &ps,
+  void project(const kernel::ParticlesTemp &ps,
                int x_margin,int y_margin,int z_margin,
                algebra::Vector3D shift=algebra::Vector3D(0.,0.,0.),
                FloatKey mass_key=atom::Mass::get_mass_key());
 
   //! setting particles in case they were not set by the constructor
-  void set_particles(const ParticlesTemp &ps,
+  void set_particles(const kernel::ParticlesTemp &ps,
      IMP::FloatKey mass_key = IMP::atom::Mass::get_mass_key());
 
 #if !defined(DOXYGEN) && !defined(SWIG)
@@ -94,7 +94,7 @@ public:
 
   inline const core::XYZRs & get_xyzr_particles() const {return xyzr_;}
  // would go away on§ce we have a XYZRW decorator and the next function as well
-  inline const Particles & get_sampled_particles() const {return ps_;}
+  inline const kernel::Particles & get_sampled_particles() const {return ps_;}
   inline FloatKey  get_weight_key() const {return weight_key_;}
 
   //! Get minimum density value between voxels that correspond to particles
@@ -107,7 +107,7 @@ protected:
       \return the particles bounding box
    */
   IMP::algebra::BoundingBoxD<3>
-     calculate_particles_bounding_box(const Particles &ps);
+     calculate_particles_bounding_box(const kernel::Particles &ps);
 
 
   //! Determine the size of the grid as a function of the particles
@@ -123,7 +123,7 @@ protected:
   //! kernel handling
   KernelParameters kernel_params_;
   //  DistanceMask distance_mask_;
-  Particles ps_;
+  kernel::Particles ps_;
   core::XYZRs xyzr_; //each voxel decorator would contain X,Y,Z,R
   FloatKey weight_key_;
   FloatKey x_key_,y_key_,z_key_;

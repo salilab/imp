@@ -165,7 +165,7 @@ class DominoModel:
         k = core.Harmonic.get_k_from_standard_deviation(stddev)
         score = core.HarmonicUpperBound(xlink.distance, k)
         pair_score = IMP.core.DistancePairScore(score)
-        r = IMP.core.PairRestraint(pair_score, IMP.ParticlePair(p1, p2))
+        r = IMP.core.PairRestraint(pair_score, IMP.kernel.ParticlePair(p1, p2))
         if not max_score:
             error_distance_allowed = 100
             max_score = weight * score.evaluate(distance + error_distance_allowed)
@@ -749,8 +749,8 @@ class DominoModel:
                     possible_pairs = len(ls1) * len(ls2)
                     n_pairs = possible_pairs * ratio
 
-                    marker1 = IMP.Particle(self.model, "marker1 " + name)
-                    marker2 = IMP.Particle(self.model, "marker2 " + name)
+                    marker1 = IMP.kernel.Particle(self.model, "marker1 " + name)
+                    marker2 = IMP.kernel.Particle(self.model, "marker2 " + name)
                     table_refiner = core.TableRefiner()
                     table_refiner.add_particle(marker1, ls1)
                     table_refiner.add_particle(marker2, ls2)
@@ -760,7 +760,7 @@ class DominoModel:
                                                                 table_refiner,
                                                                 distance)
                     r = core.PairRestraint(close_pair_score,
-                                           IMP.ParticlePair(marker1,marker2))
+                                           IMP.kernel.ParticlePair(marker1,marker2))
 
                     if not max_score:
                         minimum_distance_allowed = 0
@@ -792,11 +792,11 @@ class DominoModel:
         # When the refiner gets a request for marker1, it returns the attached
         # particles
         A = representation.get_component(self.coarse_assembly, name1)
-        marker1 = IMP.Particle(self.model, "marker1 "+restraint_name)
+        marker1 = IMP.kernel.Particle(self.model, "marker1 "+restraint_name)
         table_refiner.add_particle(marker1, atom.get_leaves(A))
         # same for B
         B = representation.get_component(self.coarse_assembly, name2)
-        marker2 = IMP.Particle(self.model, "marker2 "+restraint_name)
+        marker2 = IMP.kernel.Particle(self.model, "marker2 "+restraint_name)
         table_refiner.add_particle(marker2, atom.get_leaves(B))
 
         k = core.Harmonic.get_k_from_standard_deviation(stddev)
@@ -815,7 +815,7 @@ class DominoModel:
 
         log.info("Setting pair score restraint for %s %s. k = %s, max_score " \
             "= %s, stddev %s", name1, name2, k, max_score,stddev)
-        r = core.PairRestraint(pair_score, IMP.ParticlePair( marker1, marker2 ) )
+        r = core.PairRestraint(pair_score, IMP.kernel.ParticlePair( marker1, marker2 ) )
         self.add_restraint(r, restraint_name, weight, max_score)
 
 

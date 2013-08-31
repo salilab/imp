@@ -14,7 +14,7 @@
 IMPISD_BEGIN_NAMESPACE
 
 
-WeightMover::WeightMover(Particle *w, double radius):
+WeightMover::WeightMover(kernel::Particle *w, double radius):
   core::MonteCarloMover(w->get_model(), "WeightMover%1%"), radius_(radius)
 {
 // store decorator. If the particle *w has not been decorated,
@@ -73,7 +73,7 @@ core::MonteCarloMoverResult WeightMover::do_propose() {
   w_.set_weights(newweights);
 
   return core::MonteCarloMoverResult(
-          ParticleIndexes(1, w_.get_particle()->get_index()),1.0);
+          kernel::ParticleIndexes(1, w_.get_particle()->get_index()),1.0);
 
 }
 

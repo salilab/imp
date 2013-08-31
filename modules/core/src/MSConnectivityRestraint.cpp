@@ -13,12 +13,12 @@
 #include <IMP/core/MSConnectivityRestraint.h>
 
 #include <IMP/Model.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/base/log.h>
 #include <IMP/singleton_macros.h>
 #include <IMP/PairScore.h>
 #include <IMP/core/PairRestraint.h>
-#include <IMP/internal/InternalListSingletonContainer.h>
+#include <IMP/kernel/internal/InternalListSingletonContainer.h>
 
 #include <climits>
 
@@ -157,7 +157,7 @@ MSConnectivityRestraint::MSConnectivityRestraint(PairScore *ps, double eps)
     : kernel::Restraint("MSConnectivityRestraint %1%"), ps_(ps), eps_(eps) {}
 
 unsigned int MSConnectivityRestraint::ParticleMatrix::add_type(
-    const ParticlesTemp &ps) {
+    const kernel::ParticlesTemp &ps) {
   protein_by_class_.push_back(Ints());
   for (unsigned int i = 0; i < ps.size(); ++i) {
     unsigned int n = particles_.size();
@@ -168,10 +168,10 @@ unsigned int MSConnectivityRestraint::ParticleMatrix::add_type(
 }
 
 namespace {
-double my_evaluate(const PairScore *ps, Particle *a, Particle *b,
+double my_evaluate(const PairScore *ps, kernel::Particle *a, kernel::Particle *b,
                    DerivativeAccumulator *da) {
   return ps->evaluate_index(
-      a->get_model(), ParticleIndexPair(a->get_index(), b->get_index()), da);
+      a->get_model(), kernel::ParticleIndexPair(a->get_index(), b->get_index()), da);
 }
 }
 
@@ -310,7 +310,7 @@ class MSConnectivityScore {
                       MSConnectivityRestraint &restraint);
   double score(DerivativeAccumulator *accum) const;
   EdgeSet get_connected_pairs() const;
-  Particle *get_particle(unsigned int p) const {
+  kernel::Particle *get_particle(unsigned int p) const {
     return restraint_.particle_matrix_.get_particle(p).get_particle();
   }
   void add_edges_to_set(NNGraph &G, EdgeSet &edge_set) const;
@@ -670,7 +670,7 @@ IMP::internal::InternalListSingletonContainer *ms_get_list(
 }
 }
 
-unsigned int MSConnectivityRestraint::add_type(const ParticlesTemp &ps) {
+unsigned int MSConnectivityRestraint::add_type(const kernel::ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
     sc_ = new IMP::internal::InternalListSingletonContainer(
         ps[0]->get_model(), "msconnectivity list");
@@ -699,8 +699,13 @@ double MSConnectivityRestraint::unprotected_evaluate(
 }
 
 Restraints MSConnectivityRestraint::do_create_current_decomposition() const {
+<<<<<<< HEAD
   ParticlePairsTemp pp = get_connected_pairs();
   kernel::Restraints ret(pp.size());
+=======
+  kernel::ParticlePairsTemp pp = get_connected_pairs();
+  Restraints ret(pp.size());
+>>>>>>> reference Partice names in kernel namespace
   for (unsigned int i = 0; i < pp.size(); ++i) {
     IMP_NEW(PairRestraint, pr, (ps_, pp[i]));
     std::ostringstream oss;
@@ -718,11 +723,11 @@ ParticlePairsTemp MSConnectivityRestraint::get_connected_pairs() const {
   MSConnectivityScore mcs(tree_, ps_.get(), eps_,
                           *const_cast<MSConnectivityRestraint *>(this));
   EdgeSet edges = mcs.get_connected_pairs();
-  ParticlePairsTemp ret(edges.size());
+  kernel::ParticlePairsTemp ret(edges.size());
   unsigned index = 0;
   for (EdgeSet::iterator p = edges.begin(); p != edges.end(); ++p) {
     ret[index++] =
-        ParticlePair(mcs.get_particle(p->first), mcs.get_particle(p->second));
+        kernel::ParticlePair(mcs.get_particle(p->first), mcs.get_particle(p->second));
   }
   return ret;
 }

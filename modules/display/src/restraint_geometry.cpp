@@ -22,8 +22,8 @@ RestraintGeometry::RestraintGeometry(kernel::Restraint *r, Model *m)
     : Geometry(r->get_name()), r_(r), m_(m) {}
 
 namespace {
-bool get_has_coordinates(Particle *p) { return p->has_attribute(FloatKey(0)); }
-algebra::Vector3D get_coordinates(Particle *p) {
+bool get_has_coordinates(kernel::Particle *p) { return p->has_attribute(FloatKey(0)); }
+algebra::Vector3D get_coordinates(kernel::Particle *p) {
   return p->get_model()->get_sphere(p->get_index()).get_center();
 }
 }
@@ -36,7 +36,7 @@ IMP::display::Geometries RestraintGeometry::get_components() const {
   rd->set_was_used(true);
   IMP::display::Geometries ret;
   if (!rs) {
-    ParticlesTemp ps = IMP::get_input_particles(r_->get_inputs());
+    kernel::ParticlesTemp ps = IMP::get_input_particles(r_->get_inputs());
     r_->set_was_used(true);
     for (unsigned int i = 0; i < ps.size(); ++i) {
       if (!get_has_coordinates(ps[i])) continue;

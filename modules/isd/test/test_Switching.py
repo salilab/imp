@@ -18,18 +18,18 @@ class Tests(IMP.test.TestCase):
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
         self.m = IMP.Model()
-        self.sigma = Switching.setup_particle(IMP.Particle(self.m), .5)
+        self.sigma = Switching.setup_particle(IMP.kernel.Particle(self.m), .5)
 
     def test_Setup1(self):
         "Test Switching setup without upper/lower"
-        si = Switching.setup_particle(IMP.Particle(self.m))
+        si = Switching.setup_particle(IMP.kernel.Particle(self.m))
         self.assertAlmostEqual(float(si.get_switching()),.5, delta=1e-6)
         self.assertAlmostEqual(float(si.get_lower()),0.0, delta=1e-6)
         self.assertAlmostEqual(float(si.get_upper()),1.0, delta=1e-6)
 
     def test_Setup2(self):
         "Test Switching setup with upper/lower"
-        si = Switching.setup_particle(IMP.Particle(self.m), 0.2)
+        si = Switching.setup_particle(IMP.kernel.Particle(self.m), 0.2)
         si.set_lower(0.1)
         si.set_upper(0.8)
         self.assertAlmostEqual(float(si.get_switching()),.2, delta=1e-6)
@@ -38,7 +38,7 @@ class Tests(IMP.test.TestCase):
 
     def test_Switching(self):
         "Test that a Switching can be converted to a Nuisance"
-        n=Switching.setup_particle(IMP.Particle(self.m))
+        n=Switching.setup_particle(IMP.kernel.Particle(self.m))
         n.set_lower(-10)
         n.set_upper(10)
         self.assertTrue(Nuisance.get_is_setup(n.get_particle()))
@@ -46,7 +46,7 @@ class Tests(IMP.test.TestCase):
 
     def test_Nuisance(self):
         "Test that a Nuisance can be converted to a Switching"
-        n=Nuisance.setup_particle(IMP.Particle(self.m),0.5)
+        n=Nuisance.setup_particle(IMP.kernel.Particle(self.m),0.5)
         n.set_lower(0)
         n.set_upper(1)
         self.assertTrue(Switching.get_is_setup(n.get_particle()))
@@ -75,7 +75,7 @@ class Tests(IMP.test.TestCase):
 
     def test_GetSet2(self):
         "Test Switching get and set (border check)"
-        switching = Switching.setup_particle(IMP.Particle(self.m))
+        switching = Switching.setup_particle(IMP.kernel.Particle(self.m))
         for i in range(-10,20):
             si = i/10.
             switching.set_switching(si)

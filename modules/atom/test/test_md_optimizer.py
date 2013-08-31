@@ -126,7 +126,7 @@ class Tests(IMP.test.TestCase):
 
     def test_non_xyz(self):
         """Should skip particles without xyz attributes"""
-        p = IMP.Particle(self.model)
+        p = IMP.kernel.Particle(self.model)
         p.add_attribute(IMP.FloatKey("attr"), 0.0, True)
         self.md.optimize(100)
 

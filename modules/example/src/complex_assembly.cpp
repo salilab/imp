@@ -39,13 +39,13 @@
 IMPEXAMPLE_BEGIN_NAMESPACE
 
 class AssemblyData {
-  ParticlesTemp ps_;
-  base::map<Particle *, int> index_;
+  kernel::ParticlesTemp ps_;
+  base::map<kernel::Particle *, int> index_;
   kernel::Restraints rs_;
-  ParticlesTemps particles_;
+  kernel::ParticlesTemps particles_;
   domino::InteractionGraph interactions_;
 
-  int get_degree(unsigned int i, const ParticlesTemp &ps) const {
+  int get_degree(unsigned int i, const kernel::ParticlesTemp &ps) const {
     int ret = 0;
     domino::InteractionGraphConstVertexName vm =
         boost::get(boost::vertex_name, interactions_);
@@ -61,25 +61,25 @@ class AssemblyData {
   }
 
  public:
-  AssemblyData(ParticlesTemp ps, const kernel::RestraintsTemp &rs)
+  AssemblyData(kernel::ParticlesTemp ps, const kernel::RestraintsTemp &rs)
       : ps_(ps), rs_(rs.begin(), rs.end()) {
     std::sort(ps_.begin(), ps_.end());
     interactions_ = domino::get_interaction_graph(rs, ps);
     for (unsigned int i = 0; i < rs.size(); ++i) {
-      ParticlesTemp cur = IMP::get_input_particles(rs[i]->get_inputs());
+      kernel::ParticlesTemp cur = IMP::get_input_particles(rs[i]->get_inputs());
       std::sort(cur.begin(), cur.end());
       cur.erase(std::unique(cur.begin(), cur.end()), cur.end());
-      ParticlesTemp used;
+      kernel::ParticlesTemp used;
       std::set_intersection(cur.begin(), cur.end(), ps_.begin(), ps_.end(),
                             std::back_inserter(used));
       particles_.push_back(used);
     }
   }
-  kernel::RestraintsTemp get_restraints(ParticlesTemp ps) const {
+  kernel::RestraintsTemp get_restraints(kernel::ParticlesTemp ps) const {
     std::sort(ps.begin(), ps.end());
     kernel::RestraintsTemp ret;
     for (unsigned int i = 0; i < rs_.size(); ++i) {
-      ParticlesTemp used;
+      kernel::ParticlesTemp used;
       std::set_intersection(particles_[i].begin(), particles_[i].end(),
                             ps.begin(), ps.end(), std::back_inserter(used));
       if (used.size() == particles_[i].size()) {
@@ -88,7 +88,7 @@ class AssemblyData {
     }
     return ret;
   }
-  Particle *get_highest_degree_unused_particle(ParticlesTemp ps) const {
+  kernel::Particle *get_highest_degree_unused_particle(kernel::ParticlesTemp ps) const {
     std::sort(ps.begin(), ps.end());
     int md = 0;
     int mi = -1;
@@ -112,7 +112,7 @@ class AssemblyData {
     addition, the assembly is optimized. The protocol seems to work at
     assembling the residues of a protein from a truncated distance matrix.
 */
-void optimize_assembly(Model *m, const ParticlesTemp &components,
+void optimize_assembly(kernel::Model *m, const kernel::ParticlesTemp &components,
                        const kernel::RestraintsTemp &interactions,
                        const kernel::RestraintsTemp &other_restraints,
                        const algebra::BoundingBox3D &bb, PairScore *ev,
@@ -125,7 +125,7 @@ void optimize_assembly(Model *m, const ParticlesTemp &components,
           (components, m->get_restraints()));
   mc->set_incremental_scoring_function(isf);
   AssemblyData ad(components, interactions);
-  ParticlesTemp cur;
+  kernel::ParticlesTemp cur;
   IMP_NEW(container::ListSingletonContainer, active, (m));
   // fix distance
   IMP_NEW(container::ClosePairContainer, cpc, (active, 0, 4));
@@ -138,7 +138,7 @@ void optimize_assembly(Model *m, const ParticlesTemp &components,
   base::Pointer<kernel::Restraint> bbr =
       container::create_restraint(bbss.get(), active.get());
   do {
-    Particle *add = ad.get_highest_degree_unused_particle(cur);
+    kernel::Particle *add = ad.get_highest_degree_unused_particle(cur);
     cur.push_back(add);
     core::XYZ(add).set_coordinates(algebra::get_random_vector_in(bb));
     mc->clear_movers();

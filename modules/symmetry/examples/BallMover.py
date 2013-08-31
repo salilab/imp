@@ -14,7 +14,7 @@ m=IMP.Model()
 # add 2 particles
 ps=[]
 for i in range(2):
-    p=IMP.Particle(m)
+    p=IMP.kernel.Particle(m)
     IMP.core.XYZR.setup_particle(p,
          IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0.,0.,0.), 1.0))
     ps.append(p)
@@ -22,7 +22,7 @@ for i in range(2):
 # add harmonic restraint to distance
 h=IMP.core.Harmonic(0.0, K_)
 sps=IMP.core.SphereDistancePairScore(h)
-pr=IMP.core.PairRestraint(sps,IMP.ParticlePair(ps[0],ps[1]))
+pr=IMP.core.PairRestraint(sps,IMP.kernel.ParticlePair(ps[0],ps[1]))
 m.add_restraint(pr)
 
 # define cell centers
