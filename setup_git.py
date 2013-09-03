@@ -124,3 +124,6 @@ else:
     if not "VERSION" in ignored:
         ignored.append("VERSION")
         open(path, "w").writelines(ignored)
+
+#make sure version is updated
+os.system(os.path.join(".", ".git", "hooks", "post-commit"))
