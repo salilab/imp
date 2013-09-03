@@ -303,7 +303,6 @@ inline std::size_t hash_value(const Connections &t) { return t.__hash__(); }
 DependencyGraph get_pruned_dependency_graph(Model *m) {
   IMP_FUNCTION_LOG;
   DependencyGraph full = get_dependency_graph(m);
-  typedef boost::graph_traits<DependencyGraph> T;
   bool changed = true;
   while (changed) {
     changed = false;

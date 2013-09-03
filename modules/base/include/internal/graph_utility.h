@@ -42,8 +42,6 @@ class ObjectNameWriter {
   ObjectNameWriter(ShowFunction f, const Graph &g)
       : f_(f), om_(boost::get(boost::vertex_name, g)) {}
   void operator()(std::ostream &out, int v) const {
-    typedef typename boost::property_traits<typename boost::property_map<
-        Graph, boost::vertex_name_t>::const_type>::value_type VT;
     std::ostringstream oss;
     f_(boost::get(om_, v), oss);
     // oss << "\\n[" << boost::get(om_, v)->get_type_name() << "]";

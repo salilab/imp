@@ -25,7 +25,7 @@ template <>
 struct Convert<Particle> : public ConvertObjectBase<Particle> {
   static const int converter = 2;
   template <class SwigData>
-  static Particle *get_cpp_object(PyObject *o, SwigData st,
+  static Particle *get_cpp_object(PyObject *o, SwigData ,
                                   SwigData particle_st, SwigData decorator_st) {
     void *vp;
     int res = SWIG_ConvertPtr(o, &vp, particle_st, 0);
@@ -71,7 +71,7 @@ struct Convert<
            type> : public ConvertValueBase<T> {
   static const int converter = 3;
   template <class SwigData>
-  static T get_cpp_object(PyObject *o, SwigData st, SwigData particle_st,
+  static T get_cpp_object(PyObject *o, SwigData , SwigData particle_st,
                           SwigData decorator_st) {
     Particle *p = Convert<Particle>::get_cpp_object(o, particle_st, particle_st,
                                                     decorator_st);

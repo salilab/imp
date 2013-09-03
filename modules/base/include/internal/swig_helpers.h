@@ -94,7 +94,7 @@ void delete_if_pointer(T*& t) {
   }
 }
 template <class T>
-void delete_if_pointer(SwigValueWrapper<T>& v) {}
+void delete_if_pointer(SwigValueWrapper<T>& ) {}
 
 /*
   Handle assignment into a container. Swig always provides the
@@ -165,8 +165,8 @@ template <class T>
 struct ConvertAllBase {
   BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
   template <class SwigData>
-  static bool get_is_cpp_object(PyObject* o, SwigData st, SwigData particle_st,
-                                SwigData decorator_st) {
+  static bool get_is_cpp_object(PyObject* o, SwigData st, SwigData ,
+                                SwigData ) {
     void* vp;
     int res = SWIG_ConvertPtr(o, &vp, st, 0);
     return SWIG_IsOK(res) && vp;
@@ -461,9 +461,9 @@ template <>
 struct Convert<std::string> {
   static const int converter = 10;
   template <class SwigData>
-  static std::string get_cpp_object(PyObject* o, SwigData st,
-                                    SwigData particle_st,
-                                    SwigData decorator_st) {
+  static std::string get_cpp_object(PyObject* o, SwigData ,
+                                    SwigData ,
+                                    SwigData ) {
     if (!o || !PyString_Check(o)) {
       IMP_THROW("Not all objects in list have correct type.", ValueException);
     } else {
@@ -471,20 +471,20 @@ struct Convert<std::string> {
     }
   }
   template <class SwigData>
-  static bool get_is_cpp_object(PyObject* o, SwigData st, SwigData particle_st,
-                                SwigData decorator_st) {
+  static bool get_is_cpp_object(PyObject* o, SwigData , SwigData ,
+                                SwigData ) {
     return PyString_Check(o);
   }
   template <class SwigData>
-  static PyObject* create_python_object(std::string f, SwigData st, int OWN) {
+  static PyObject* create_python_object(std::string f, SwigData , int ) {
     return PyString_FromString(f.c_str());
   }
 };
 
 struct ConvertFloatBase {
   template <class SwigData>
-  static double get_cpp_object(PyObject* o, SwigData st, SwigData particle_st,
-                               SwigData decorator_st) {
+  static double get_cpp_object(PyObject* o, SwigData , SwigData ,
+                               SwigData ) {
     if (!o || !PyNumber_Check(o)) {
       IMP_THROW("Not all objects in list have correct type.", ValueException);
     } else {
@@ -492,12 +492,12 @@ struct ConvertFloatBase {
     }
   }
   template <class SwigData>
-  static bool get_is_cpp_object(PyObject* o, SwigData st, SwigData particle_st,
-                                SwigData decorator_st) {
+  static bool get_is_cpp_object(PyObject* o, SwigData , SwigData ,
+                                SwigData ) {
     return PyNumber_Check(o);
   }
   template <class SwigData>
-  static PyObject* create_python_object(float f, SwigData st, int OWN) {
+  static PyObject* create_python_object(float f, SwigData, int ) {
     // these may or may not have a refcount
     return PyFloat_FromDouble(f);
   }
@@ -517,8 +517,8 @@ template <>
 struct Convert<int> {
   static const int converter = 13;
   template <class SwigData>
-  static int get_cpp_object(PyObject* o, SwigData st, SwigData particle_st,
-                            SwigData decorator_st) {
+  static int get_cpp_object(PyObject* o, SwigData , SwigData ,
+                            SwigData ) {
     if (PyInt_Check(o)) {
       return PyInt_AsLong(o);
     } else if (PyLong_Check(o)) {
@@ -529,12 +529,12 @@ struct Convert<int> {
     }
   }
   template <class SwigData>
-  static bool get_is_cpp_object(PyObject* o, SwigData st, SwigData particle_st,
-                                SwigData decorator_st) {
+  static bool get_is_cpp_object(PyObject* o, SwigData , SwigData ,
+                                SwigData ) {
     return PyLong_Check(o) || PyInt_Check(o);
   }
   template <class SwigData>
-  static PyObject* create_python_object(int f, SwigData st, int OWN) {
+  static PyObject* create_python_object(int f, SwigData , int ) {
     // These may or may not have a ref count
     return PyInt_FromLong(f);
   }

@@ -95,6 +95,7 @@ void Model::do_check_readers_and_writers(const ModelObject *mo) const {
   {
      ModelObjectsTemp readers
          = dependency_graph_.find(mo)->second.get_readers();
+     IMP_UNUSED(readers);
     BOOST_FOREACH(ModelObject *r, readers) {
       IMP_INTERNAL_CHECK(dependency_graph_.find(r) != dependency_graph_.end(),
                          "Reader " << r->get_name()
@@ -102,6 +103,7 @@ void Model::do_check_readers_and_writers(const ModelObject *mo) const {
                          << std::endl);
       const ModelObjectsTemp& inputs
         = dependency_graph_.find(r)->second.get_inputs();
+      IMP_UNUSED(inputs);
       IMP_INTERNAL_CHECK(std::find(inputs.begin(), inputs.end(), mo)
                          != inputs.end(),
                          "Reader not found in inputs for " << mo->get_name()
@@ -111,6 +113,7 @@ void Model::do_check_readers_and_writers(const ModelObject *mo) const {
   {
     const ModelObjectsTemp &writers
       = dependency_graph_.find(mo)->second.get_writers();
+    IMP_UNUSED(writers);
     BOOST_FOREACH(ModelObject *w, writers) {
       IMP_INTERNAL_CHECK(dependency_graph_.find(w) != dependency_graph_.end(),
                          "Reader " << w->get_name()
@@ -118,6 +121,7 @@ void Model::do_check_readers_and_writers(const ModelObject *mo) const {
                          << std::endl);
       const ModelObjectsTemp& outputs
         = dependency_graph_.find(w)->second.get_outputs();
+      IMP_UNUSED(outputs);
       IMP_INTERNAL_CHECK(std::find(outputs.begin(), outputs.end(), mo)
                          != outputs.end(),
                          "Writer not found in outputs for " << (mo)->get_name()
@@ -221,6 +225,7 @@ void Model::check_dependency_invariants() const {
       check_dependency_invariants(vt.first);
     }
     BOOST_FOREACH(const ModelObject *mo, no_dependencies_) {
+      IMP_UNUSED(mo);
       IMP_INTERNAL_CHECK(dependency_graph_.find(mo) != dependency_graph_.end(),
                          "The object " << mo->get_name()
                          << " is in the no dependencies list but not "
