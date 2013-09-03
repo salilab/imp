@@ -325,7 +325,7 @@ def get_applications(source):
 
 # a version of split that doesn't return empty strings when there are no items
 def split(string, sep=":"):
-    return [x for x in string.split(sep) if x != ""]
+    return [x.replace("@", ":") for x in string.replace("\:", "@").split(sep) if x != ""]
 
 
 def toposort2(data):
