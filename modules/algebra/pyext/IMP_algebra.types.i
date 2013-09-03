@@ -48,6 +48,7 @@ IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<-1>, IMP::base::Vector<Nam
 IMP_SWIG_VALUE(Namespace, Name, PluralName);
 %extend Namespace::Name {
   int __cmp__(const Name &) const {
+    IMP_UNUSED(self);
     IMP_THROW("Geometric primitives cannot be compared",
               IMP::ValueException);
   }
