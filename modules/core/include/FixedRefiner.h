@@ -32,7 +32,7 @@ class IMPCOREEXPORT FixedRefiner : public Refiner {
 #ifndef SWIG
   using Refiner::get_refined;
 #endif
-  virtual ModelObjectsTemp do_get_inputs(Model *m,
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
                                          const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
   IMP_OBJECT_METHODS(FixedRefiner);

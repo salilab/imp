@@ -31,7 +31,7 @@ class IMPKERNELEXPORT ConfigurationSet : public IMP::base::Object {
   base::Vector<base::Pointer<Configuration> > configurations_;
 
  public:
-  ConfigurationSet(Model *m, std::string name = "ConfigurationSet %1%");
+  ConfigurationSet(kernel::Model *m, std::string name = "ConfigurationSet %1%");
   //! Save the current configuration of the Model
   void save_configuration();
   unsigned int get_number_of_configurations() const;

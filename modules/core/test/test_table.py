@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
         """Make sure the Table PR works"""
         IMP.base.set_log_level(IMP.base.VERBOSE)
         print "hello"
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         p= IMP.kernel.Particle(m)
         tpr= IMP.core.TableRefiner()
         ps= []

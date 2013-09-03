@@ -85,10 +85,10 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   static ObjectKey get_constraint_key_0();
   static ObjectKey get_constraint_key_1();
 
-  static void do_setup_particle(Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                                 kernel::ParticleIndexesAdaptor ps);
 
-  static void do_setup_particle(Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                                 const algebra::ReferenceFrame3D &rf);
 
  public:
@@ -131,7 +131,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   ~RigidBody();
 
   /** Return true of the particle is a rigid body */
-  static bool get_is_setup(Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
     return internal::get_has_required_attributes_for_body(m, pi);
   }
 
@@ -333,7 +333,7 @@ class IMPCOREEXPORT RigidMember : public XYZ {
   ~RigidMember();
 
   //! return true if it is a rigid member
-  static bool get_is_setup(Model *m, kernel::ParticleIndexAdaptor p) {
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndexAdaptor p) {
     return internal::get_has_required_attributes_for_member(m, p);
   }
 
@@ -427,7 +427,7 @@ class IMPCOREEXPORT NonRigidMember : public XYZ {
   ~NonRigidMember();
 
   //! return true if it is a rigid member
-  static bool get_is_setup(Model *m, kernel::ParticleIndex p) {
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex p) {
     return internal::get_has_required_attributes_for_non_member(m, p);
   }
 
@@ -447,7 +447,7 @@ class IMPCOREEXPORT RigidMembersRefiner : public Refiner {
   using Refiner::get_refined;
 #endif
   virtual const kernel::ParticlesTemp get_refined(kernel::Particle *) const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs(Model *m,
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
                                          const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RigidMembersRefiner);
@@ -473,7 +473,7 @@ inline void transform(RigidBody a, const algebra::Transformation3D &tr) {
 /** Compute the rigid body reference frame given a set of input particles.
  */
 IMPCOREEXPORT algebra::ReferenceFrame3D
-get_initial_reference_frame(Model *m, const kernel::ParticleIndexes &pis);
+get_initial_reference_frame(kernel::Model *m, const kernel::ParticleIndexes &pis);
 
 inline algebra::ReferenceFrame3D
 get_initial_reference_frame(const kernel::ParticlesTemp &ps) {
@@ -492,7 +492,7 @@ get_initial_reference_frame(const kernel::ParticlesTemp &ps) {
     \note Do not use this with DOMINO as all the rigid bodies use the same
     ScoreState and so will be considered inter-dependent.
 */
-IMPCOREEXPORT kernel::ParticlesTemp create_rigid_bodies(Model *m, unsigned int n,
+IMPCOREEXPORT kernel::ParticlesTemp create_rigid_bodies(kernel::Model *m, unsigned int n,
                                                 bool no_members = false);
 
 IMP_DECORATORS_DEF(RigidMember, RigidMembers);

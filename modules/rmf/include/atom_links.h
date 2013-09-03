@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/atom_links.h
- *  \brief Handle read/write of Model data from/to files.
+ *  \brief Handle read/write of kernel::Model data from/to files.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -73,7 +73,7 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<kernel::Particle> {
   void do_add_link(kernel::Particle *o, RMF::NodeConstHandle node);
 
  public:
-  HierarchyLoadLink(RMF::FileConstHandle fh, Model *m);
+  HierarchyLoadLink(RMF::FileConstHandle fh, kernel::Model *m);
 
   IMP_OBJECT_METHODS(HierarchyLoadLink);
 };

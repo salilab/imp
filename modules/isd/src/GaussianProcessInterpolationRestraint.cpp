@@ -16,7 +16,7 @@
 IMPISD_BEGIN_NAMESPACE
 
 GaussianProcessInterpolationRestraint::GaussianProcessInterpolationRestraint(
-        Model *m, GaussianProcessInterpolation *gpi) :
+        kernel::Model *m, GaussianProcessInterpolation *gpi) :
     ISDRestraint(m, "GaussianProcessInterpolationRestraint %1%"), gpi_(gpi)
 {
     //O(M^2)
@@ -43,7 +43,7 @@ void GaussianProcessInterpolationRestraint::create_score_state() {
     ss_ = new GaussianProcessInterpolationScoreState(this);
 }
 
-void GaussianProcessInterpolationRestraint::do_set_model(Model *m)
+void GaussianProcessInterpolationRestraint::do_set_model(kernel::Model *m)
 {
   if (m) {
     create_score_state();
@@ -56,7 +56,7 @@ void GaussianProcessInterpolationRestraint::do_set_model(Model *m)
 
 ModelObjectsTemp GaussianProcessInterpolationRestraint::do_get_inputs() const {
   // call the existing implementation
-  ModelObjectsTemp ret;
+  kernel::ModelObjectsTemp ret;
   ret+=gpi_->get_input_particles();
   ret+=gpi_->get_input_containers();
   // add the score state
@@ -310,14 +310,14 @@ void GaussianProcessInterpolationScoreState::do_after_evaluate(
 
 ModelObjectsTemp
 GaussianProcessInterpolationScoreState::do_get_inputs() const {
-  ModelObjectsTemp ret = gpir_->gpi_->get_input_particles();
+  kernel::ModelObjectsTemp ret = gpir_->gpi_->get_input_particles();
   ret += gpir_->gpi_->get_input_containers();
   return ret;
 }
 
 ModelObjectsTemp
 GaussianProcessInterpolationScoreState::do_get_outputs() const {
-  return ModelObjectsTemp();
+  return kernel::ModelObjectsTemp();
 }
 
 IMPISD_END_NAMESPACE

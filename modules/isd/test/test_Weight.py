@@ -16,7 +16,7 @@ class TestWeightParam(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         #IMP.set_log_level(IMP.MEMORY)
         IMP.set_log_level(0)
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         self.w = Weight.setup_particle(IMP.kernel.Particle(self.m))
 
     def test_Setup_iw(self):

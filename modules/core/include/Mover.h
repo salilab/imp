@@ -11,7 +11,7 @@
 
 #include <IMP/core/core_config.h>
 #include "MonteCarloMover.h"
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/kernel/Particle.h>
 
 IMPCORE_DEPRECATED_HEADER(2.1, "Use MonteCarloMover");
@@ -23,7 +23,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT Mover : public MonteCarloMover {
  public:
   IMPCORE_DEPRECATED_OBJECT_DECL(2.1)
-  Mover(Model *m, std::string name) : MonteCarloMover(m, name) {
+  Mover(kernel::Model *m, std::string name) : MonteCarloMover(m, name) {
     IMPCORE_DEPRECATED_OBJECT_DEF(2.1, "Use MonteCarloMover");
   }
 
@@ -36,7 +36,7 @@ class IMPCOREEXPORT Mover : public MonteCarloMover {
   virtual kernel::ParticlesTemp get_output_particles() const = 0;
 
  protected:
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
     return get_as<ModelObjectsTemp>(get_output_particles());
   }
   virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE {

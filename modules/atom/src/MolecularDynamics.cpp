@@ -25,7 +25,7 @@ namespace {
 static const double deriv_to_acceleration = -4.1868e-4;
 }
 
-MolecularDynamics::MolecularDynamics(Model *m) : Simulator(m, "MD %1%") {
+MolecularDynamics::MolecularDynamics(kernel::Model *m) : Simulator(m, "MD %1%") {
   initialize();
 }
 

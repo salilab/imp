@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
 
     def test_surface_area(self):
         """Check protein surface computation"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
 
         #! read PDB
         mp= IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,
@@ -33,7 +33,7 @@ class Tests(IMP.test.TestCase):
 
     def test_surface_area2(self):
         """Atom radii and probe radius parameters that work for SOAP"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
 
         #! read PDB
         mp= IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,
@@ -65,7 +65,7 @@ class Tests(IMP.test.TestCase):
         # this test could be simplified probably, but it is fast enough
         # if we move to non-grid based SA, it should go away
         ensemble = ["./433.pdb","./434.pdb"]
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         #! read PDBs
         for struc in ensemble:
             print " ... Fitting structure %s"%struc

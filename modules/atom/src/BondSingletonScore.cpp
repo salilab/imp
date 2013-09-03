@@ -16,7 +16,7 @@ IMPATOM_BEGIN_NAMESPACE
 
 BondSingletonScore::BondSingletonScore(UnaryFunction *f) : f_(f) {}
 
-double BondSingletonScore::evaluate_index(Model *m, kernel::ParticleIndex pi,
+double BondSingletonScore::evaluate_index(kernel::Model *m, kernel::ParticleIndex pi,
                                           DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
   IMP_USAGE_CHECK(Bond::get_is_setup(m, pi),
@@ -45,8 +45,8 @@ double BondSingletonScore::evaluate_index(Model *m, kernel::ParticleIndex pi,
 }
 
 ModelObjectsTemp BondSingletonScore::do_get_inputs(
-    Model *m, const kernel::ParticleIndexes &pi) const {
-  ModelObjectsTemp ret(3 * pi.size());
+    kernel::Model *m, const kernel::ParticleIndexes &pi) const {
+  kernel::ModelObjectsTemp ret(3 * pi.size());
   for (unsigned int i = 0; i < pi.size(); ++i) {
     Bond ad(m, pi[i]);
     ret[3 * i + 0] = ad.get_bonded(0);

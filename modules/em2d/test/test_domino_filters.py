@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
     def test_distance_filter(self):
         """Test filtering distances with domino """
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         particles = [IMP.kernel.Particle(m) for i in range(0,3)]
         for i, p in enumerate(particles):
             p.set_name("pparticle_%d" % i)

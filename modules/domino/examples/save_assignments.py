@@ -6,7 +6,7 @@
 import IMP.domino
 
 # create a model and some particles, they are just used as markers here
-m= IMP.Model()
+m= IMP.kernel.Model()
 ps= [IMP.kernel.Particle(m) for i in range(0,10)]
 
 # create a subset with a few of the particles
@@ -43,7 +43,7 @@ else:
 
 
 # More interestingly, we can create a new model and read back the assignments for that
-mp= IMP.Model()
+mp= IMP.kernel.Model()
 psp= [IMP.kernel.Particle(mp) for i in range(0,10)]
 
 # create a subset with a few of the particles

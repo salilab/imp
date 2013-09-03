@@ -105,7 +105,7 @@ def create_sampler(m, ps, rs, pst):
     return s
 
 IMP.base.set_log_level(IMP.base.TERSE)
-m=IMP.Model()
+m=IMP.kernel.Model()
 m.set_log_level(IMP.base.SILENT)
 
 print "creating representation"

@@ -5,7 +5,7 @@ import IMP.core
 import IMP.container
 import IMP.algebra
 import IMP.display
-m= IMP.Model()
+m= IMP.kernel.Model()
 bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                               IMP.algebra.Vector3D(30, 30, 30))
 ps=[]

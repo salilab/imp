@@ -9,7 +9,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/kinematics/KinematicForest.h>
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/base/warning_macros.h>
@@ -17,7 +17,7 @@
 IMPKINEMATICS_BEGIN_NAMESPACE
 
 
-KinematicForest::KinematicForest(Model* m) :
+KinematicForest::KinematicForest(kernel::Model* m) :
   Object("IMP_KINEMATICS_KINEMATIC_FOREST"),
   m_(m),
   is_internal_coords_updated_(true),
@@ -26,7 +26,7 @@ KinematicForest::KinematicForest(Model* m) :
 }
 
 // build an entire tree from an existing hierarchy
-KinematicForest::KinematicForest(Model* m, IMP::atom::Hierarchy hierarchy) :
+KinematicForest::KinematicForest(kernel::Model* m, IMP::atom::Hierarchy hierarchy) :
   Object("IMP_KINEMATICS_KINEMATIC_FOREST"),
   m_(m){
   // TODO: implement

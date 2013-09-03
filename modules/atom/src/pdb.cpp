@@ -183,7 +183,7 @@ IntKey get_pdb_index_key() {
   return pdb_index_key;
 }
 
-Particle* atom_particle(Model* m, const std::string& pdb_line) {
+Particle* atom_particle(kernel::Model* m, const std::string& pdb_line) {
   AtomType atom_name;
   std::string string_name = internal::atom_type(pdb_line);
   // determine element
@@ -238,7 +238,7 @@ Particle* atom_particle(Model* m, const std::string& pdb_line) {
   return p;
 }
 
-Particle* residue_particle(Model* m, const std::string& pdb_line) {
+Particle* residue_particle(kernel::Model* m, const std::string& pdb_line) {
   kernel::Particle* p = new kernel::Particle(m);
 
   int residue_index = internal::atom_residue_number(pdb_line);
@@ -256,7 +256,7 @@ Particle* residue_particle(Model* m, const std::string& pdb_line) {
   return p;
 }
 
-Particle* chain_particle(Model* m, char chain_id) {
+Particle* chain_particle(kernel::Model* m, char chain_id) {
   kernel::Particle* p = new kernel::Particle(m);
   Chain::setup_particle(p, chain_id);
   p->set_name(std::string("Chain " + std::string(1, chain_id)));
@@ -293,7 +293,7 @@ void add_pdb_radii(Hierarchy d) {
   IMP::core::visit_depth_first(d, visitor);
 }
 
-Hierarchies read_pdb(std::istream& in, std::string name, Model* model,
+Hierarchies read_pdb(std::istream& in, std::string name, kernel::Model* model,
                      PDBSelector* selector, bool select_first_model,
                      bool split_models, bool noradii) {
   IMP_FUNCTION_LOG;
@@ -332,7 +332,7 @@ Hierarchies read_pdb(std::istream& in, std::string name, Model* model,
 
     // check that line is an HETATM or ATOM rec and that selector accepts line.
     // if this is the case construct a new kernel::Particle using line and add the
-    // kernel::Particle to the Model
+    // kernel::Particle to the kernel::Model
     if (internal::is_ATOM_rec(line) || internal::is_HETATM_rec(line)) {
       if (!selector->get_is_selected(line)) {
         IMP_LOG_VERBOSE("Selector rejected line " << line << std::endl);
@@ -411,7 +411,7 @@ Hierarchies read_pdb(std::istream& in, std::string name, Model* model,
 }
 }
 
-Hierarchy read_pdb(base::TextInput in, Model* model) {
+Hierarchy read_pdb(base::TextInput in, kernel::Model* model) {
   IMP_NEW(NonWaterPDBSelector, sel, ());
   Hierarchies ret =
       read_pdb(in, nicename(in.get_name()), model, sel, true, false, false);
@@ -471,7 +471,7 @@ void read_pdb(base::TextInput in, int model, Hierarchy h) {
   }
 }
 
-Hierarchy read_pdb(base::TextInput in, Model* model, PDBSelector* selector,
+Hierarchy read_pdb(base::TextInput in, kernel::Model* model, PDBSelector* selector,
                    bool select_first_model, bool no_radii) {
   IMP::base::PointerMember<PDBSelector> sp(selector);
   Hierarchies ret = read_pdb(in, nicename(in.get_name()), model, selector,
@@ -482,7 +482,7 @@ Hierarchy read_pdb(base::TextInput in, Model* model, PDBSelector* selector,
   return ret[0];
 }
 
-Hierarchies read_multimodel_pdb(base::TextInput in, Model* model,
+Hierarchies read_multimodel_pdb(base::TextInput in, kernel::Model* model,
                                 PDBSelector* selector, bool noradii) {
   IMP::base::PointerMember<PDBSelector> sp(selector);
   Hierarchies ret = read_pdb(in, nicename(in.get_name()), model, selector,
@@ -493,7 +493,7 @@ Hierarchies read_multimodel_pdb(base::TextInput in, Model* model,
   return ret;
 }
 
-Hierarchies read_multimodel_pdb(base::TextInput in, Model* model) {
+Hierarchies read_multimodel_pdb(base::TextInput in, kernel::Model* model) {
   IMP_NEW(AllPDBSelector, s, ());
   return read_multimodel_pdb(in, model, s);
 }
@@ -760,7 +760,7 @@ void WritePDBOptimizerState::do_update(unsigned int call) {
 }
 
 ModelObjectsTemp WritePDBOptimizerState::do_get_inputs() const {
-  ModelObjectsTemp ret;
+  kernel::ModelObjectsTemp ret;
   BOOST_FOREACH(kernel::ParticleIndex pi, pis_) {
     ret += get_leaves(Hierarchy(get_model(), pi));
   }

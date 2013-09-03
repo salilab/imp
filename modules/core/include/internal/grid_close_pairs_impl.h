@@ -34,9 +34,9 @@ inline bool get_interiors_intersect(const algebra::Vector3D &v, double ra,
 }
 struct ParticleTraits {
   typedef kernel::ParticleIndex ID;
-  Model *m_;
+  kernel::Model *m_;
   double d_;
-  ParticleTraits(Model *m, double d) : m_(m), d_(d) {}
+  ParticleTraits(kernel::Model *m, double d) : m_(m), d_(d) {}
   kernel::ParticleIndex get_id(kernel::Particle *p, int) const { return p->get_index(); }
   algebra::Vector3D get_center(kernel::ParticleIndex p, int) const {
     return m_->get_sphere(p).get_center();
@@ -57,7 +57,7 @@ struct ParticleTraits {
 };
 
 struct ParticleIndexTraits : ParticleTraits {
-  ParticleIndexTraits(Model *m, double d) : ParticleTraits(m, d) {}
+  ParticleIndexTraits(kernel::Model *m, double d) : ParticleTraits(m, d) {}
   kernel::ParticleIndex get_id(kernel::ParticleIndex p, int) const { return p; }
 };
 

@@ -41,7 +41,7 @@ const kernel::ParticlesTemp TableRefiner::get_refined(kernel::Particle *p) const
                        map_.find(p)->second.end());
 }
 
-ModelObjectsTemp TableRefiner::do_get_inputs(Model *m,
+ModelObjectsTemp TableRefiner::do_get_inputs(kernel::Model *m,
                                              const kernel::ParticleIndexes &pis) const {
   return IMP::kernel::get_particles(m, pis);
 }

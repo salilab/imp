@@ -14,7 +14,7 @@ using namespace IMP::container;
 using namespace IMP::base;
 
 int main(int argc, char * []) {
-  IMP_NEW(Model, m, ());
+  IMP_NEW(kernel::Model, m, ());
   set_log_level(SILENT);
   m->set_log_level(SILENT);
   std::string path = IMP::benchmark::get_data_path("small_protein.pdb");

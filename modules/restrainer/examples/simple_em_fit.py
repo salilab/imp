@@ -8,7 +8,7 @@ import IMP
 import IMP.atom
 import IMP.restrainer
 
-imp_model = IMP.Model()
+imp_model = IMP.kernel.Model()
 
 # Create particle point 1
 p1 = IMP.kernel.Particle(imp_model)

@@ -17,7 +17,7 @@ class Tests(IMP.test.TestCase):
 
     def test_create(self):
         """Check creation of LennardJones decorators"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         p = IMP.kernel.Particle(m)
         s = IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1.0, 2.0, 3.0), 4.0)
         # Can create decorators using well depth, only if the particle is
@@ -32,7 +32,7 @@ class Tests(IMP.test.TestCase):
 
     def test_get_set(self):
         """Check get/set methods of LennardJones decorators"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         c = _make_test_decorator(m)
         self.assertAlmostEqual(c.get_well_depth(), 0.5, delta=1e-6)
         c.set_well_depth(2.5)
@@ -40,7 +40,7 @@ class Tests(IMP.test.TestCase):
 
     def test_show(self):
         """Check show method of LennardJones decorators"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         c = _make_test_decorator(m)
         self.assertIn(' well depth= ', str(c))
 

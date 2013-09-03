@@ -2,7 +2,7 @@
    This is the program for creating a simple kinematic tree
 
 */
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/kernel/Particle.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/atom/pdb.h>
@@ -32,7 +32,7 @@ int main(int argc, char **argv)
   std::cout << fname << std::endl;
 
   // read in the input protein
-  IMP::Model *model = new IMP::Model();
+  IMP::kernel::Model *model = new IMP::kernel::Model();
   std::cerr << "Starting reading pdb file " << fname << std::endl;
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb
     (fname, model,

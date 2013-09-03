@@ -9,7 +9,7 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min2(self):
         """Test clustering of states"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         p0= IMP.kernel.Particle(m)
         IMP.core.XYZ.setup_particle(p0)
         p1= IMP.kernel.Particle(m)

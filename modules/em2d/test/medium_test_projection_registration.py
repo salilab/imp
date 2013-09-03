@@ -12,7 +12,7 @@ class Tests(IMP.test.TestCase):
     def test_registration(self):
         """Test the registration of 3 subjects from 1gyt.pdb at 0.5 SNR"""
         # Get model from PDB file
-        smodel = IMP.Model()
+        smodel = IMP.kernel.Model()
         ssel = IMP.atom.ATOMPDBSelector()
         fn_model = self.get_input_file_name("1gyt.pdb")
         prot =  IMP.atom.read_pdb(fn_model,smodel,ssel)

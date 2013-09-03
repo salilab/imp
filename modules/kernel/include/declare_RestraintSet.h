@@ -42,10 +42,10 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
 
  public:
   //! Create an empty set that is registered with the model
-  RestraintSet(Model *m, double weight,
+  RestraintSet(kernel::Model *m, double weight,
                const std::string &name = "RestraintSet %1%");
  //! Create an empty set that is registered with the model
-  RestraintSet(Model *m,
+  RestraintSet(kernel::Model *m,
                const std::string &name = "RestraintSet %1%");
    //! Create a set that is registered with the model
   RestraintSet(const RestraintsTemp &rs, double weight,
@@ -84,7 +84,7 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 
  protected:
-  virtual void do_set_model(Model *m) IMP_OVERRIDE;
+  virtual void do_set_model(kernel::Model *m) IMP_OVERRIDE;
 
   Restraints do_create_decomposition() const;
   Restraints do_create_current_decomposition() const;

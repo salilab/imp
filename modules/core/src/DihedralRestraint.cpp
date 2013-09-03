@@ -12,7 +12,7 @@
 #include <IMP/algebra/Vector3D.h>
 
 #include <IMP/kernel/Particle.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/base/log.h>
 
 #include <boost/tuple/tuple.hpp>
@@ -66,7 +66,7 @@ double DihedralRestraint::unprotected_evaluate(
 }
 
 ModelObjectsTemp DihedralRestraint::do_get_inputs() const {
-  ModelObjectsTemp ret(p_, p_ + 4);
+  kernel::ModelObjectsTemp ret(p_, p_ + 4);
   return ret;
 }
 

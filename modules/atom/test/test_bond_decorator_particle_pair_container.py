@@ -6,7 +6,7 @@ import IMP.atom
 class Tests(IMP.test.TestCase):
     def test_it(self):
         """Test bond decorator pair container"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         p0=IMP.kernel.Particle(m)
         p1= IMP.kernel.Particle(m)
         p2= IMP.kernel.Particle(m)

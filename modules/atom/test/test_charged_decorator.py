@@ -9,7 +9,7 @@ class Tests(IMP.test.TestCase):
 
     def test_create(self):
         """Check creation of Charged decorators"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         p = IMP.kernel.Particle(m)
         v = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
         # Can create decorators using a Vector3D and charge, or just charge
@@ -25,7 +25,7 @@ class Tests(IMP.test.TestCase):
 
     def test_get_set(self):
         """Check get/set methods of Charged decorators"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         p = IMP.kernel.Particle(m)
         v = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
         c = IMP.atom.Charged.setup_particle(p, v, -0.5)
@@ -35,7 +35,7 @@ class Tests(IMP.test.TestCase):
 
     def test_show(self):
         """Check show method of Charged decorators"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         p = IMP.kernel.Particle(m)
         v = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
         c = IMP.atom.Charged.setup_particle(p, v, -0.5)

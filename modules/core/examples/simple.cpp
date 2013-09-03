@@ -13,7 +13,7 @@
 
 int main()
 {
-  IMP_NEW(IMP::Model, m, ());
+  IMP_NEW(IMP::kernel::Model, m, ());
 
   // Create two "untyped" kernel::Particles
   IMP_NEW(IMP::kernel::Particle, p1, (m));

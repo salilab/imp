@@ -9,7 +9,7 @@ import IMP.algebra
 class Tests(IMP.test.TestCase):
     def test_rmsd(self):
         """Testing proper results for RMSD"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         # read PDB
         mp= IMP.atom.read_pdb(self.open_input_file("input.pdb"),
                               m, IMP.atom.NonWaterPDBSelector())
@@ -38,7 +38,7 @@ class Tests(IMP.test.TestCase):
         v1 = IMP.algebra.Vector3D(0,0,0)
         v2 = IMP.algebra.Vector3D(1,0,0)
 
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         p1 = IMP.kernel.Particle(m)
         p2 = IMP.kernel.Particle(m)
         x1 = IMP.core.XYZ.setup_particle(p1, v1)
@@ -49,7 +49,7 @@ class Tests(IMP.test.TestCase):
 
     def test_native_overlap(self):
         """Testing proper results for native overlap"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         # read PDB
         mp= IMP.atom.read_pdb(self.open_input_file("input.pdb"),
                               m, IMP.atom.NonWaterPDBSelector())

@@ -29,7 +29,7 @@ struct Score {
       across those calls.
   */
   template <unsigned int D>
-  double get_score(Model *m, const kernel::ParticleIndexTuple<D> &p,
+  double get_score(kernel::Model *m, const kernel::ParticleIndexTuple<D> &p,
                    double distance) const;
   /** Return the score and derivative at the passed feature size (eg distance).
       The derivative is for the feature decreasing.
@@ -39,7 +39,7 @@ struct Score {
       across those calls.
   */
   template <unsigned int D>
-  DerivativePair get_score_and_derivative(Model *m,
+  DerivativePair get_score_and_derivative(kernel::Model *m,
                                           const kernel::ParticleIndexTuple<D> &p,
                                           double distance) const;
 #endif
@@ -50,7 +50,7 @@ struct Score {
       \note That it is squared distance, not distance.
   */
   template <unsigned int D>
-  bool get_is_trivially_zero(Model *m, const base::Array<D, kernel::ParticleIndex> &p,
+  bool get_is_trivially_zero(kernel::Model *m, const base::Array<D, kernel::ParticleIndex> &p,
                              double squared_distance) const {
     IMP_UNUSED(m);
     IMP_UNUSED(p);
@@ -60,7 +60,7 @@ struct Score {
   /** Return an upper bound on the distance at which the score can be
       non-zero. The default implementation provided here returns infinity.*/
   template <unsigned int D>
-  double get_maximum_range(Model *m,
+  double get_maximum_range(kernel::Model *m,
                            const base::Array<D, kernel::ParticleIndex> &p) const {
     IMP_UNUSED(m);
     IMP_UNUSED(p);
@@ -69,7 +69,7 @@ struct Score {
   /** Return the set of particles read when particle p is part of the passed
       tuples. The default implementation provided here just returns the list
       containing p.*/
-  ModelObjectsTemp get_inputs(Model *m, const kernel::ParticleIndexes &pis) const {
+  kernel::ModelObjectsTemp get_inputs(kernel::Model *m, const kernel::ParticleIndexes &pis) const {
     return IMP::get_particles(m, pis);
   }
   void show(std::ostream &) const {}

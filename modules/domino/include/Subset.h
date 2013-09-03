@@ -66,7 +66,7 @@ class IMPDOMINOEXPORT Subset
       }
     }
   }
-  Model *get_model() const { return operator[](0)->get_model(); }
+  kernel::Model *get_model() const { return operator[](0)->get_model(); }
   std::string get_name() const;
   bool get_contains(const Subset &o) const {
     return std::includes(begin(), end(), o.begin(), o.end());

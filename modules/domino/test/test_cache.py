@@ -24,7 +24,7 @@ class LogRestraint(IMP.kernel.Restraint):
 class Tests(IMP.test.TestCase):
     def test_global_min1(self):
         """Test caching of restraint scores"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         p= IMP.kernel.Particle(m)
         IMP.core.XYZ.setup_particle(p)
         lr= LogRestraint(m, [p])
@@ -44,7 +44,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(lr.count, 1)
     def test_global_min2(self):
         """Test non-caching of restraint scores"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         p= IMP.kernel.Particle(m)
         IMP.core.XYZ.setup_particle(p)
         lr= LogRestraint(m, [p])
@@ -64,7 +64,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(lr.count, 2)
     def test_global_min3(self):
         """Test capped caching of restraint scores"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         p= IMP.kernel.Particle(m)
         IMP.core.XYZ.setup_particle(p)
         lr= LogRestraint(m, [p])

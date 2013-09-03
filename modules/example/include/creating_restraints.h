@@ -50,7 +50,7 @@ inline kernel::Restraint *create_chain_restraint(const kernel::ParticlesTemp &ps
 inline container::ClosePairContainer *create_excluded_volume(
     const kernel::ParticlesTemp &ps, double k, std::string name) {
   IMP_USAGE_CHECK(!ps.empty(), "No kernel::Particles passed.");
-  Model *m = ps[0]->get_model();
+  kernel::Model *m = ps[0]->get_model();
   double scale = core::XYZR(ps[0]).get_radius();
   IMP_NEW(container::ListSingletonContainer, cores_container,
           (ps, name + " list"));

@@ -7,7 +7,7 @@ class Tests(IMP.test.TestCase):
     """Testing methods for adding secondary structure to anchor points"""
     def test_set_ssres(self):
         """Test if you can assign ssres to anchors"""
-        m=IMP.Model()
+        m=IMP.kernel.Model()
 
         ### read in anchors data and set the secondary structure
         anchors_data=IMP.multifit.read_anchors_data(self.get_input_file_name("anchors.input"))
@@ -31,7 +31,7 @@ class Tests(IMP.test.TestCase):
 
     def test_query_ssres(self):
         """Test if you can query anchors ssres"""
-        m=IMP.Model()
+        m=IMP.kernel.Model()
 
         ### read in anchors data and set the secondary structure
         anchors_data=IMP.multifit.read_anchors_data(self.get_input_file_name("anchors.input"))

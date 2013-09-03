@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/Category.h
- *  \brief Handle read/write of Model data from/to files.
+ *  \brief Handle read/write of kernel::Model data from/to files.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -78,7 +78,7 @@ void create_bonds(RMF::FileConstHandle fhc, const RMF::NodeIDs &nhs,
   create_bonds(fhc.get_root_node(), af, map);
 }
 
-void create_rigid_bodies(Model *m,
+void create_rigid_bodies(kernel::Model *m,
                          const base::map<unsigned int, kernel::ParticlesTemp> &rbs) {
   IMP_FUNCTION_LOG;
   for (base::map<unsigned int, kernel::ParticlesTemp>::const_iterator it = rbs.begin();
@@ -340,7 +340,7 @@ void HierarchyLoadLink::do_add_link_recursive(kernel::Particle *root, kernel::Pa
 void HierarchyLoadLink::do_add_link(kernel::Particle *o, RMF::NodeConstHandle node) {
   do_add_link_recursive(o, o, node);
 }
-HierarchyLoadLink::HierarchyLoadLink(RMF::FileConstHandle fh, Model *m)
+HierarchyLoadLink::HierarchyLoadLink(RMF::FileConstHandle fh, kernel::Model *m)
     : P("HierarchyLoadLink%1%"),
       m_(m),
       particle_factory_(fh),

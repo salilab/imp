@@ -32,7 +32,7 @@ ParticlesDummyRestraint::unprotected_evaluate(
 
 ModelObjectsTemp ParticlesDummyRestraint::do_get_inputs() const
 {
-  ModelObjectsTemp ret= container_->get_particles();
+  kernel::ModelObjectsTemp ret= container_->get_particles();
   ret.push_back(container_);
   return ret;
 }

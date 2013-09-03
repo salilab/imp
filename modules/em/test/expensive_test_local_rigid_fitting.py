@@ -6,7 +6,7 @@ resolution=15.
 dmap=IMP.em.read_map(IMP.multifit.get_example_path('3sfd/3sfd_15.mrc'),IMP.em.MRCReaderWriter())
 dmap.get_header_writable().set_resolution(resolution)
 
-m= IMP.Model()
+m= IMP.kernel.Model()
 
 sel=IMP.atom.CAlphaPDBSelector()
 mh=IMP.atom.read_pdb(IMP.multifit.get_example_path('3sfd/3sfd.A.pdb'),m,sel)

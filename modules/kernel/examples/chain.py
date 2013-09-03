@@ -13,7 +13,7 @@ import IMP.container
 # another.
 
 IMP.base.set_log_level(IMP.base.TERSE)
-m= IMP.Model()
+m= IMP.kernel.Model()
 m.set_log_level(IMP.base.SILENT)
 # The particles in the chain
 ps=IMP.core.create_xyzr_particles(m, 10, 1.0)

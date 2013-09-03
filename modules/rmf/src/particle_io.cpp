@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/Category.h
- *  \brief Handle read/write of Model data from/to files.
+ *  \brief Handle read/write of kernel::Model data from/to files.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -72,7 +72,7 @@ class ParticleLoadLink : public SimpleLoadLink<kernel::Particle> {
   }
 
  public:
-  ParticleLoadLink(RMF::FileConstHandle, Model *m) : P("ParticleLoadLink%1%") {
+  ParticleLoadLink(RMF::FileConstHandle, kernel::Model *m) : P("ParticleLoadLink%1%") {
 
     m_ = m;
   }
@@ -114,7 +114,7 @@ class ParticleSaveLink : public SimpleSaveLink<kernel::Particle> {
 
 IMP_DEFINE_LINKERS(Particle, particle, particles, kernel::Particle *, kernel::ParticlesTemp,
                    kernel::Particle *, kernel::ParticlesTemp, (RMF::FileHandle fh),
-                   (RMF::FileConstHandle fh, Model *m), (fh), (fh, m),
+                   (RMF::FileConstHandle fh, kernel::Model *m), (fh), (fh, m),
                    (fh, IMP::internal::get_model(hs)));
 
 IMPRMF_END_NAMESPACE

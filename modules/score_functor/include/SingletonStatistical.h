@@ -52,7 +52,7 @@ public:
     table_.template initialize<Key>(data_file);
   }
 
-  double get_score(Model *m, const kernel::ParticleIndex pi, double area) const {
+  double get_score(kernel::Model *m, const kernel::ParticleIndex pi, double area) const {
     int table_index = m->get_attribute(key_, pi);
     if(table_index == -1) return 0;
     return table_.get_score(table_index, area);

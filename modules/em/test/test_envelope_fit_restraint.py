@@ -9,7 +9,7 @@ class Tests(IMP.test.TestCase):
 
     def test_envelope_fit_restraint(self):
         """Test EM EnvelopeFitRestraint restraint"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
 
         #! read PDB
         mh = IMP.atom.read_pdb(self.get_input_file_name('mini.pdb'), m,

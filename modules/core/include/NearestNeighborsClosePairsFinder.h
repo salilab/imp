@@ -34,14 +34,14 @@ class IMPCOREEXPORT NearestNeighborsClosePairsFinder : public ClosePairsFinder {
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas,
                                    const algebra::BoundingBox3Ds &bbs) const
       IMP_OVERRIDE;
-  virtual kernel::ParticleIndexPairs get_close_pairs(Model *m,
+  virtual kernel::ParticleIndexPairs get_close_pairs(kernel::Model *m,
                                              const kernel::ParticleIndexes &pc) const
       IMP_OVERRIDE;
-  virtual kernel::ParticleIndexPairs get_close_pairs(Model *m,
+  virtual kernel::ParticleIndexPairs get_close_pairs(kernel::Model *m,
                                              const kernel::ParticleIndexes &pca,
                                              const kernel::ParticleIndexes &pcb) const
       IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs(Model *m,
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
                                          const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
 

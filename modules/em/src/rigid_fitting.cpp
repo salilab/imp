@@ -36,8 +36,8 @@ void FittingSolutions::sort(bool reverse) {
 }
 
 namespace {
-RestraintSet * add_restraints(Model *model, DensityMap *dmap,
-                              kernel::Particle *p,Refiner *leaves_ref,
+kernel::RestraintSet * add_restraints(kernel::Model *model, DensityMap *dmap,
+                              kernel::Particle *p,kernel::Refiner *leaves_ref,
                 const FloatKey &wei_key,
                 bool fast=false) {
   kernel::RestraintSet *rsrs = new kernel::RestraintSet(model, 1.0,
@@ -60,7 +60,7 @@ RestraintSet * add_restraints(Model *model, DensityMap *dmap,
    return rsrs;
 }
 
-core::MonteCarlo* set_optimizer(Model *model, OptimizerStates display_log,
+core::MonteCarlo* set_optimizer(kernel::Model *model, OptimizerStates display_log,
                                 kernel::Particle *p,Refiner *refiner,
    Int number_of_cg_steps, Float max_translation, Float max_rotation) {
   core::RigidBody rb =
@@ -92,7 +92,7 @@ core::MonteCarlo* set_optimizer(Model *model, OptimizerStates display_log,
 void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
               const algebra::Vector3D &anchor_centroid,
               kernel::Particle *p, Refiner *refiner, core::MonteCarlo *opt,
-              FittingSolutions &fr, Model *) {
+              FittingSolutions &fr, kernel::Model *) {
   Float e;
   core::RigidBody rb =
     core::RigidMember(refiner->get_refined(p)[0]).get_rigid_body();
@@ -148,7 +148,7 @@ FittingSolutions local_rigid_fitting_around_point(
               <<"of the density"<<std::endl);
    }
    //add restraints
-   Model *model = p->get_model();
+   kernel::Model *model = p->get_model();
    kernel::RestraintSet *rsrs = add_restraints(model, dmap, p,refiner,
                                        wei_key,fast);
    //create a rigid body mover and set the optimizer
@@ -191,7 +191,7 @@ FittingSolutions local_rigid_fitting_around_points(
            " MC optimization runs, each with " << number_of_mc_steps <<
            " Monte Carlo steps , each with " << number_of_cg_steps <<
            " Conjugate Gradients rounds. " << std::endl);
-   Model *model = p->get_model();
+   kernel::Model *model = p->get_model();
 
    kernel::RestraintSet *rsrs = add_restraints(model, dmap, p,refiner,
                                        wei_key);

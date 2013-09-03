@@ -9,7 +9,7 @@ class Tests(IMP.test.TestCase):
     def test_symmetry(self):
         """Test example modifier"""
         IMP.base.set_log_level(IMP.MEMORY)
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         print "creating particle"
         p= IMP.kernel.Particle(m)
         print "created"

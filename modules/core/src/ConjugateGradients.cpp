@@ -8,7 +8,7 @@
 #include <IMP/core/ConjugateGradients.h>
 #include <IMP/core/utility.h>
 #include <IMP/base/log.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/io.h>
 
 #include <limits>
@@ -47,7 +47,7 @@ void ConjugateGradients::failure() {
 
 //! Get the score for a given model state.
 /** \param[in] model The model to score.
-    \param[in] model_data The corresponding ModelData.
+    \param[in] model_data The corresponding kernel::ModelData.
     \param[in] float_indices Indices of optimizable variables.
     \param[in] x Current value of optimizable variables.
     \param[out] dscore First derivatives for current state.
@@ -245,7 +245,7 @@ bool ConjugateGradients::line_search(
 }
 
 //! Constructor
-ConjugateGradients::ConjugateGradients(Model *m, std::string name)
+ConjugateGradients::ConjugateGradients(kernel::Model *m, std::string name)
     : AttributeOptimizer(m, name) {
   threshold_ = std::numeric_limits<Float>::epsilon();
   max_change_ = std::numeric_limits<Float>::max() / 100.0;
@@ -264,7 +264,7 @@ Float ConjugateGradients::do_optimize(unsigned int max_steps) {
   clear_range_cache();
   base::Vector<NT> x, dx;
   int i;
-  // ModelData* model_data = get_model()->get_model_data();
+  // kernel::ModelData* model_data = get_model()->get_model_data();
 
   FloatIndexes float_indices = get_optimized_attributes();
 

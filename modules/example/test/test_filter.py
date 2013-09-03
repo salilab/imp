@@ -8,7 +8,7 @@ class Tests(IMP.test.TestCase):
     """Test the symmetry restraint"""
     def test_symmetry(self):
         """Test example filter"""
-        m=IMP.Model()
+        m=IMP.kernel.Model()
         ps=[IMP.kernel.Particle(m) for i in xrange(10)]
         sft= IMP.example.ExampleSubsetFilterTable(3, [ps[0], ps[4]])
         self.assertEqual(sft.get_subset_filter(IMP.domino.Subset([ps[0], ps[1], ps[6]]), []),

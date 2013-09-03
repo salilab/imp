@@ -5,7 +5,7 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 
 #include "nmr_helpers.h"
 #include "ResidueContent.h"
@@ -72,7 +72,7 @@ put '-' if there is no file for one of the molecules.")
   }
 
   // read pdb  files, prepare particles
-  IMP::Model *model = new IMP::Model();
+  IMP::kernel::Model *model = new IMP::kernel::Model();
   IMP::atom::Hierarchy mhd =
     IMP::atom::read_pdb(receptor_pdb, model,
                         new IMP::atom::NonWaterNonHydrogenPDBSelector(),

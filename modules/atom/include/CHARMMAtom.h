@@ -22,7 +22,7 @@ IMPATOM_BEGIN_NAMESPACE
 
 //! A decorator for an atom that has a defined CHARMM type.
 class IMPATOMEXPORT CHARMMAtom : public Atom {
-  static void do_setup_particle(Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                                    String charmm_type) {
     IMP_USAGE_CHECK(Atom::get_is_setup(m, pi),
                     "Particle must already be an Atom particle");
@@ -39,7 +39,7 @@ class IMPATOMEXPORT CHARMMAtom : public Atom {
   IMP_DECORATOR_GET_SET(charmm_type, get_charmm_type_key(), String, String);
 
   //! Return true if the particle is an instance of a CHARMMAtom
-  static bool get_is_setup(Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
     return Atom::get_is_setup(m, pi) &&
         m->get_has_attribute(get_charmm_type_key(), pi);
   }

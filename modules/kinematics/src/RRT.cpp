@@ -12,7 +12,7 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 
 int RRT::RRTNode::node_counter_ = 0;
 
-RRT::RRT(Model *m, DOFsSampler* dofs_sampler, LocalPlanner* planner,
+RRT::RRT(kernel::Model *m, DOFsSampler* dofs_sampler, LocalPlanner* planner,
          const DOFs& cspace_dofs) :
   Sampler(m, "rrt_sampler"),
   dofs_sampler_(dofs_sampler),

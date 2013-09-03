@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
         """initialize IMP environment create particles"""
         IMP.test.TestCase.setUp(self)
         #init IMP model ( the environment)
-        self.imp_model = IMP.Model()
+        self.imp_model = IMP.kernel.Model()
         self.particles = []
         ## -  create a set of three particles in imp
         npart = 3

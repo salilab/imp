@@ -46,10 +46,10 @@ void MaintainScaleOrderConstraint::do_update_derivatives(
                                                DerivativeAccumulator *){}
 
 ModelObjectsTemp MaintainScaleOrderConstraint::do_get_outputs() const {
-  return ModelObjectsTemp(p_.begin(), p_.end());
+  return kernel::ModelObjectsTemp(p_.begin(), p_.end());
 }
 
 ModelObjectsTemp MaintainScaleOrderConstraint::do_get_inputs() const {
-  return ModelObjectsTemp(p_.begin(), p_.end());
+  return kernel::ModelObjectsTemp(p_.begin(), p_.end());
 }
 IMPISD_END_NAMESPACE

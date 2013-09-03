@@ -46,7 +46,7 @@ class ClassnameRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
  protected:
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  IMP::ModelObjectsTemp do_get_inputs() const;
+  IMP::kernel::ModelObjectsTemp do_get_inputs() const;
   IMP_OBJECT_METHODS(ClassnameRestraint)
 #endif
 };

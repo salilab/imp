@@ -26,7 +26,7 @@ namespace {
 }
 
 
-MolecularDynamics::MolecularDynamics(Model *m): atom::MolecularDynamics(m)
+MolecularDynamics::MolecularDynamics(kernel::Model *m): atom::MolecularDynamics(m)
 {
   vnuis_ = FloatKey("vel");
 }

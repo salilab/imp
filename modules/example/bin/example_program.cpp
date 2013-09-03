@@ -10,7 +10,7 @@
 using namespace IMP;
 int main() {
   set_log_level(VERBOSE);
-  WeakPointer<Model> m(new Model());
+  WeakPointer<Model> m(new kernel::Model());
   kernel::Particle* p0 = new kernel::Particle(m);
   core::XYZ d0 = core::XYZ::setup_particle(p0);
   kernel::Particle* p1 = new kernel::Particle(m);

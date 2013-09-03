@@ -12,7 +12,7 @@
 #include <IMP/atom/pdb.h>
 
 #include <IMP/constants.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 
 #include "Gnuplot.h"
 #include "JmolWriter.h"
@@ -31,7 +31,7 @@ void read_pdb(const std::string file,
               std::vector<IMP::kernel::Particles>& particles_vec,
               bool residue_level, bool heavy_atoms_only, int multi_model_pdb) {
 
-  IMP::Model *model = new IMP::Model();
+  IMP::kernel::Model *model = new IMP::kernel::Model();
 
   IMP::atom::Hierarchies mhds;
   IMP::atom::PDBSelector* selector;

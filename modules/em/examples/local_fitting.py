@@ -14,7 +14,7 @@ import random,math
 
 IMP.base.set_log_level(IMP.base.SILENT)
 IMP.base.set_check_level(IMP.base.NONE)
-m= IMP.Model()
+m= IMP.kernel.Model()
 #1. setup the input protein
 ##1.1 select a selector.
 #using NonWater selector is more accurate but slower

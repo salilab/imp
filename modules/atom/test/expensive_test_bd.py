@@ -37,7 +37,7 @@ else:
 
 class Tests(IMP.test.TestCase):
     def _setup(self):
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         IMP.base.set_log_level(IMP.base.SILENT)
         p= IMP.kernel.Particle(m)
         xyzr= IMP.core.XYZR.setup_particle(p)

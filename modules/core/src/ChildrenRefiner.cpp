@@ -29,7 +29,7 @@ const kernel::ParticlesTemp ChildrenRefiner::get_refined(kernel::Particle *p) co
 }
 
 ModelObjectsTemp ChildrenRefiner::do_get_inputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
   return IMP::kernel::get_particles(m, pis);
 }
 

@@ -16,7 +16,7 @@ class Tests(IMP.test.TestCase):
         self.scene.set_origin(34.0,8.0,-92.0)
 
     def load_protein(self,pdb_filename):
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         self.mp= IMP.atom.read_pdb(self.open_input_file(pdb_filename),
                               self.m, IMP.atom.CAlphaPDBSelector())#IMP.atom.NonWaterSelector())
         self.mps = IMP.atom.Hierarchies()
@@ -32,7 +32,7 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         IMP.base.set_log_level(IMP.base.SILENT)
         #IMP.base.set_check_level(IMP.base.NONE)
-        self.imp_model = IMP.Model()
+        self.imp_model = IMP.kernel.Model()
         self.load_density_map()
         self.load_protein("1z5s_A.pdb")
 

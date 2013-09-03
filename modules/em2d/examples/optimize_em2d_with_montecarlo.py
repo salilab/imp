@@ -36,7 +36,7 @@ class WriteStatisticsOptimizerScore(IMP.OptimizerState):
 
 # Get model from PDB file
 IMP.base.set_log_level(IMP.base.TERSE)
-m = IMP.Model()
+m = IMP.kernel.Model()
 prot =  IMP.atom.read_pdb(IMP.em2d.get_example_path("1z5s.pdb"),m,IMP.atom.ATOMPDBSelector())
 IMP.atom.add_radii(prot)
 

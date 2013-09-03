@@ -1,6 +1,6 @@
 /**
  *  \file MultipleBinormalRestraint.cpp
- *  \brief Modeller-style multiple binormal (phi/psi) restraint.
+ *  \brief kernel::Modeller-style multiple binormal (phi/psi) restraint.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -112,7 +112,7 @@ double MultipleBinormalRestraint::unprotected_evaluate(
 }
 
 ModelObjectsTemp MultipleBinormalRestraint::do_get_inputs() const {
-  ModelObjectsTemp r(8);
+  kernel::ModelObjectsTemp r(8);
   r[0] = q1_[0]; r[1] = q1_[1]; r[2] = q1_[2]; r[3] = q1_[3];
   r[4] = q2_[0]; r[5] = q2_[1]; r[6] = q2_[2]; r[7] = q2_[3];
   return r;

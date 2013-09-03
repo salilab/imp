@@ -6,7 +6,7 @@ import IMP.atom
 class Tests(IMP.test.TestCase):
     def test_bonded(self):
         """Check radius of gyration """
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         bb=IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(20,20,20),
                                      IMP.algebra.Vector3D(120, 120, 120))
         ps = []
@@ -23,7 +23,7 @@ class Tests(IMP.test.TestCase):
 
     def test_ball(self):
         """Check radius of gyration of a ball"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         bb=IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(20,20,20),
                                      IMP.algebra.Vector3D(120, 120, 120))
         s= IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb), 20)
@@ -39,7 +39,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(rg0, rg1, delta=1)
     def test_ball2(self):
         """Check radius of gyration with two balls"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         bb=IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(20,20,20),
                                      IMP.algebra.Vector3D(120, 120, 120))
         s0= IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb), 20)

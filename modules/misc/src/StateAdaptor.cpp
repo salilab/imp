@@ -7,11 +7,11 @@
  */
 
 #include "IMP/misc/StateAdaptor.h"
-#include "IMP/Model.h"
+#include "IMP/kernel/Model.h"
 
 IMPMISC_BEGIN_NAMESPACE
 
-StateAdaptor::StateAdaptor(Model *m, OptimizerState *before,
+StateAdaptor::StateAdaptor(kernel::Model *m, OptimizerState *before,
                            OptimizerState *after)
     : ScoreState(m, "StateAdaptor%1%"), before_(before), after_(after) {}
 
@@ -29,7 +29,7 @@ ModelObjectsTemp StateAdaptor::do_get_outputs() const {
 }
 
 ModelObjectsTemp StateAdaptor::do_get_inputs() const {
-  return ModelObjectsTemp();
+  return kernel::ModelObjectsTemp();
 }
 
 IMPMISC_END_NAMESPACE

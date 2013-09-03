@@ -29,7 +29,7 @@ InputOutputException::InputOutputException(std::string container_name,
 
 InputOutputException::~InputOutputException() throw() {}
 
-std::string InputOutputException::get_message(ModelObject *o) const {
+std::string InputOutputException::get_message(kernel::ModelObject *o) const {
   std::ostringstream oss;
   switch (get_entity()) {
     case DERIVATIVE:

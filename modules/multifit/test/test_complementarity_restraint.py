@@ -8,7 +8,7 @@ class Tests(IMP.test.TestCase):
 
     def _setup(self):
         """Set up two simple rigid bodies (spheres) and a restraint"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         sph = IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0.,0.,0.), 10.0)
         p0 = IMP.kernel.Particle(m)
         IMP.core.XYZR.setup_particle(p0, sph)

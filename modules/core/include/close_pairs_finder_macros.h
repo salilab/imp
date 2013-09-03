@@ -28,8 +28,8 @@
                                    const algebra::BoundingBox3Ds &bbs) const \
       IMP_OVERRIDE;                                                          \
   using ClosePairsFinder::get_close_pairs;                                   \
-  virtual ModelObjectsTemp do_get_inputs(                                    \
-      Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;              \
+  virtual kernel::ModelObjectsTemp do_get_inputs(                                    \
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;              \
   IMP_OBJECT_METHODS(Name)
 
 #endif /* IMPCORE_CLOSE_PAIRS_FINDER_MACROS_H */

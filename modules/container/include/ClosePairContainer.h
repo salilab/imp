@@ -48,7 +48,7 @@ the `distance_cutoff`.
 
 \note As with any invariant in \imp, the contents of the container will
 only be value during restraint evaluation, or immediately following
-a call to Model::update().
+a call to kernel::Model::update().
 
 \note The ClosePairContainer is strongly associated with the
       SingletonContainerAdaptor provided to it in the constructor.
@@ -108,7 +108,7 @@ class IMPCONTAINEREXPORT ClosePairContainer :
   kernel::ParticleIndexPairs get_indexes() const;
   kernel::ParticleIndexPairs get_range_indexes() const;
   void do_before_evaluate();
-  ModelObjectsTemp do_get_inputs() const;
+  kernel::ModelObjectsTemp do_get_inputs() const;
   void do_apply(const PairModifier *sm) const;
   kernel::ParticleIndexes get_all_possible_indexes() const;
 #endif

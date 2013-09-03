@@ -16,7 +16,7 @@ class Tests(IMP.test.TestCase):
         ks= IMP.FloatKeys()
         ks.append(k0)
         ks.append(k1)
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         p0= self._create_particle(m, ks)
         p1= self._create_particle(m, ks)
         p2= self._create_particle(m, ks)

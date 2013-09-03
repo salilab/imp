@@ -33,7 +33,7 @@ class Tests(IMP.test.TestCase):
     def test_score_state_update(self):
         """Test that score states are updated"""
         log = []
-        m=IMP.Model()
+        m=IMP.kernel.Model()
         ss = LoggingScoreState(m, log)
         m.update()
         self.assertEqual(ss.log, ["update"])

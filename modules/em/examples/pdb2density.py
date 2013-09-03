@@ -6,7 +6,7 @@
 import IMP.em
 import IMP.core
 import IMP.atom
-m= IMP.Model()
+m= IMP.kernel.Model()
 #read protein
 sel=IMP.atom.NonWaterPDBSelector()
 mh=IMP.atom.read_pdb(IMP.em.get_example_path("input.pdb"),m,sel)

@@ -10,7 +10,7 @@ from math import exp,log,pi
 Crosslink fraction, the noise, epsilon, the distance between particle and the weights.
 It currently creates only data for the two state case.'''
 
-m=IMP.Model()
+m=IMP.kernel.Model()
 betatuple=(0.03, 0.1,30)
 disttuple=(0.0,25.0, 1000)
 omegatuple=(1.0, 1000.0, 50)

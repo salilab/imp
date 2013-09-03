@@ -28,7 +28,7 @@ else:
     period=10
     steps=10000
 
-m= IMP.Model()
+m= IMP.kernel.Model()
 
 bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                               IMP.algebra.Vector3D(100,100,100))

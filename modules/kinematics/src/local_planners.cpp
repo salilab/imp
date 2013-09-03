@@ -13,7 +13,7 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 
 /***************** LocalPlanner **************/
 
-LocalPlanner::LocalPlanner(Model* model, DOFsSampler* dofs_sampler) :
+LocalPlanner::LocalPlanner(kernel::Model* model, DOFsSampler* dofs_sampler) :
   Object("IMP_KINEMATICS_LOCALPLANNER"),
   model_(model), dofs_sampler_(dofs_sampler)
 {
@@ -24,7 +24,7 @@ LocalPlanner::LocalPlanner(Model* model, DOFsSampler* dofs_sampler) :
 /***************** PathLocalPlanner **************/
 
 // default path sampling is linear
-PathLocalPlanner::PathLocalPlanner(Model* model, DOFsSampler* dofs_sampler,
+PathLocalPlanner::PathLocalPlanner(kernel::Model* model, DOFsSampler* dofs_sampler,
                  DirectionalDOF* directional_dof,
                  int save_step_interval) :
   LocalPlanner(model, dofs_sampler),

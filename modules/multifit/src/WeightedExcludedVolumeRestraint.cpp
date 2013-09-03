@@ -101,7 +101,7 @@ double WeightedExcludedVolumeRestraint::unprotected_evaluate(
 
 ModelObjectsTemp WeightedExcludedVolumeRestraint::do_get_inputs() const
 {
-  ModelObjectsTemp ret
+  kernel::ModelObjectsTemp ret
     = rb_refiner_->get_inputs(get_model(),
                               IMP::get_indexes(kernel::ParticlesTemp(particles_begin(),
                                                              particles_end())));

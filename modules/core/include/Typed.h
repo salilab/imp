@@ -33,7 +33,7 @@ IMP_VALUES(ParticleType, ParticleTypes);
 /** This decorator
  */
 class IMPCOREEXPORT Typed : public Decorator {
-  static void do_setup_particle(Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                                 ParticleType t) {
     m->add_attribute(get_type_key(), pi, t.get_index());
   }
@@ -43,7 +43,7 @@ class IMPCOREEXPORT Typed : public Decorator {
   IMP_DECORATOR_METHODS(Typed, Decorator);
   IMP_DECORATOR_SETUP_1(Typed, ParticleType, t);
 
-  static bool get_is_setup(Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
     return m->get_has_attribute(get_type_key(), pi);
   }
 

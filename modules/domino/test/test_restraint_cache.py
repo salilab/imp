@@ -8,7 +8,7 @@ key= IMP.IntKey("assignment")
 
 class Tests(IMP.test.TestCase):
     def _create_stuff(self):
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps =[IMP.kernel.Particle(m) for i in range(0,10)]
         r= IMP.kernel._ConstRestraint(1, ps)
         r.set_model(m)

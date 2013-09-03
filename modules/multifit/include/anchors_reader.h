@@ -11,7 +11,7 @@
 
 #include <IMP/atom/SecondaryStructureResidue.h>
 #include <IMP/algebra/Transformation3D.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/core/Hierarchy.h>
 #include <IMP/file.h>
 #include <IMP/multifit/multifit_config.h>
@@ -65,7 +65,7 @@ class IMPMULTIFITEXPORT AnchorsData {
   }
 
   //!Sets up default secondary structure particles for every anchor (run first)
-  void setup_secondary_structure(Model *mdl);
+  void setup_secondary_structure(kernel::Model *mdl);
 
   //!Assign secondary structure particles. Provide indices if out of order.
   /**

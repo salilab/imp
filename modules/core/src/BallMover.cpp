@@ -15,7 +15,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 namespace {
-std::string get_ball_mover_name(Model *m, kernel::ParticleIndex pi) {
+std::string get_ball_mover_name(kernel::Model *m, kernel::ParticleIndex pi) {
   return "BallMover-" + m->get_particle(pi)->get_name();
 }
 }
@@ -27,13 +27,13 @@ void BallMover::initialize(kernel::ParticleIndexes pis, FloatKeys keys, double r
   originals_.resize(pis.size(), algebra::get_zero_vector_kd(keys.size()));
 }
 
-BallMover::BallMover(Model *m, kernel::ParticleIndex pi, const FloatKeys &keys,
+BallMover::BallMover(kernel::Model *m, kernel::ParticleIndex pi, const FloatKeys &keys,
                      double radius)
     : MonteCarloMover(m, get_ball_mover_name(m, pi)) {
   initialize(kernel::ParticleIndexes(1, pi), keys, radius);
 }
 
-BallMover::BallMover(Model *m, kernel::ParticleIndex pi, double radius)
+BallMover::BallMover(kernel::Model *m, kernel::ParticleIndex pi, double radius)
     : MonteCarloMover(m, get_ball_mover_name(m, pi)) {
   initialize(kernel::ParticleIndexes(1, pi), XYZ::get_xyz_keys(), radius);
 }

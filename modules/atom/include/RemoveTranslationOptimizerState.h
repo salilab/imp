@@ -26,7 +26,7 @@ class IMPATOMEXPORT RemoveTranslationOptimizerState : public OptimizerState {
    /** \deprecated_at{2.1} Use set_period() instead. */
   IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
   RemoveTranslationOptimizerState(const kernel::Particles &pis, unsigned skip_steps);
-  RemoveTranslationOptimizerState(Model *m, kernel::ParticleIndexesAdaptor pis);
+  RemoveTranslationOptimizerState(kernel::Model *m, kernel::ParticleIndexesAdaptor pis);
 
   //! Set the particles to use.
   void set_particles(const kernel::Particles &pis) { pis_ = pis; }

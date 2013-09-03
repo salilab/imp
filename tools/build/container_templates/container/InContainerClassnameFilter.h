@@ -38,12 +38,12 @@ class IMPCONTAINEREXPORT InContainerClassnameFilter
   InContainerClassnameFilter(ClassnameContainer *c, bool handle_permutations,
                              std::string name = "ClassnameFilter %1%");
 
-  virtual int get_value_index(Model *, PASSINDEXTYPE vt) const IMP_OVERRIDE {
+  virtual int get_value_index(kernel::Model *, PASSINDEXTYPE vt) const IMP_OVERRIDE {
     return c_->get_contains(vt);
   }
-  virtual ModelObjectsTemp do_get_inputs(Model *m, const kernel::ParticleIndexes &pi)
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m, const kernel::ParticleIndexes &pi)
     const IMP_OVERRIDE {
-    ModelObjectsTemp ret = IMP::get_particles(m, pi);
+    kernel::ModelObjectsTemp ret = IMP::get_particles(m, pi);
     ret.push_back(c_);
     return ret;
   }

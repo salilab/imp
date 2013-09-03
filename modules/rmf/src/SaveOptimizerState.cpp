@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/Category.h
- *  \brief Handle read/write of Model data from/to files.
+ *  \brief Handle read/write of kernel::Model data from/to files.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -11,7 +11,7 @@
 #include <IMP/rmf/frames.h>
 IMPRMF_BEGIN_NAMESPACE
 
-SaveOptimizerState::SaveOptimizerState(Model *m, RMF::FileHandle fh)
+SaveOptimizerState::SaveOptimizerState(kernel::Model *m, RMF::FileHandle fh)
   : kernel::OptimizerState(m, std::string("Save to ") + fh.get_name()),
     fh_(fh) {}
 

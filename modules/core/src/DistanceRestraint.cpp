@@ -10,7 +10,7 @@
 #include <IMP/core/XYZ.h>
 
 #include <IMP/kernel/Particle.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/base/log.h>
 
 IMPCORE_BEGIN_NAMESPACE

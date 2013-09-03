@@ -26,7 +26,7 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
         return ap
     def _setup_ev_restraint(self):
         #IMP.base.set_log_level(IMP.base.VERBOSE)
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         m.set_log_level(IMP.base.SILENT)
         all=[]
         rbs=[]

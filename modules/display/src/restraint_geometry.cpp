@@ -18,7 +18,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
 RestraintGeometry::RestraintGeometry(kernel::Restraint *r)
     : Geometry(r->get_name()), r_(r), m_(r_->get_model()) {}
-RestraintGeometry::RestraintGeometry(kernel::Restraint *r, Model *m)
+RestraintGeometry::RestraintGeometry(kernel::Restraint *r, kernel::Model *m)
     : Geometry(r->get_name()), r_(r), m_(m) {}
 
 namespace {

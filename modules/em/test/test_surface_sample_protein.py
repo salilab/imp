@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
         """initialize IMP environment create particles"""
         IMP.test.TestCase.setUp(self)
         #init IMP model ( the environment)
-        self.mdl = IMP.Model()
+        self.mdl = IMP.kernel.Model()
         self.mh=IMP.atom.read_pdb(self.get_input_file_name("1z5s_A.pdb"),
                              self.mdl,IMP.atom.CAlphaPDBSelector())
         IMP.atom.add_radii(self.mh)

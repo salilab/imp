@@ -12,7 +12,7 @@ class Tests(IMP.test.TestCase):
     def _testopen(self, fname):
         open(fname, "r")
     def _testit(self, writer, nm):
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         o= IMP.core.SteepestDescent(m)
         p0= IMP.kernel.Particle(m)
         d0= IMP.core.XYZR.setup_particle(p0)

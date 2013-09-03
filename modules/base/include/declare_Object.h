@@ -178,7 +178,7 @@ class IMPBASEEXPORT Object : public RefCounted {
 
   /** \imp provides warnings when objects are never used before they are
       destroyed. Examples of use include adding an IMP::Restraint to an
-      IMP::Model. If an object is not properly marked as used, or your
+      IMP::kernel::Model. If an object is not properly marked as used, or your
       code is the one using it, call set_was_used(true) on the object.
   */
   void set_was_used(bool tf) const {

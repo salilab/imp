@@ -8,7 +8,7 @@ use_rigid_bodies=True
 bd= 10
 radius=10
 
-m= IMP.Model()
+m= IMP.kernel.Model()
 p= IMP.kernel.Particle(m)
 IMP.atom.Mass.setup_particle(p, 10000)
 d= IMP.core.XYZR.setup_particle(p)

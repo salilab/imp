@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
             print s[order[i]].get_name(),
     def _test_global_min2(self):
         """Testing ordering"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps=[]
         pst= IMP.domino.ParticleStatesTable()
         state= IMP.domino.IndexStates(10)
@@ -32,7 +32,7 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min4(self):
         """Testing enumeration with ordering"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps=[]
         IMP.base.set_log_level(IMP.base.SILENT)
         pst= IMP.domino.ParticleStatesTable()
@@ -54,7 +54,7 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min5(self):
         """Testing enumeration with equiv excl ordering"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps=[]
         IMP.base.set_log_level(IMP.base.SILENT)
         pst= IMP.domino.ParticleStatesTable()
@@ -75,7 +75,7 @@ class Tests(IMP.test.TestCase):
 
     def _test_global_min3(self):
         """Testing ordering with other node"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps=[]
         pst= IMP.domino.ParticleStatesTable()
         state= IMP.domino.IndexStates(10)

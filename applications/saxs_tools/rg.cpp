@@ -1,7 +1,7 @@
 /**
    This is the program for computation of radius of gyration from SAXS profiles.
  */
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/atom/pdb.h>
 
 #include <IMP/saxs/Profile.h>
@@ -49,7 +49,7 @@ use 0.8 for elongated proteins")
   }
 
   // 1. read pdbs and profiles, prepare particles
-  IMP::Model *model = new IMP::Model();
+  IMP::kernel::Model *model = new IMP::kernel::Model();
   std::vector<IMP::kernel::Particles> particles_vec;
   std::vector<IMP::saxs::Profile *> exp_profiles;
   for(unsigned int i=0; i<files.size(); i++) {

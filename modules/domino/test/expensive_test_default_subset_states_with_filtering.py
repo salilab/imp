@@ -27,7 +27,7 @@ class Tests(IMP.test.TestCase):
         return vs
     def _get_stuff(self):
         IMP.base.set_log_level(IMP.base.SILENT)
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         m.set_log_level(IMP.base.SILENT)
         ps=[]
         ns=5

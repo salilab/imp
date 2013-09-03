@@ -23,7 +23,7 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
   set_check_level(IMP::NONE);
   {
     Vector3D minc(0, 0, 0), maxc(10, 10, 10);
-    IMP_NEW(Model, m, ());
+    IMP_NEW(kernel::Model, m, ());
     kernel::ParticlesTemp ps = create_xyzr_particles(m, n, rmin);
     kernel::ParticleIndexes psi = IMP::internal::get_index(ps);
     ::boost::uniform_real<> rand(rmin, rmax);
@@ -45,7 +45,7 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
   }
   {
     Vector3D minc(0, 0, 0), maxc(10, 10, 10);
-    IMP_NEW(Model, m, ());
+    IMP_NEW(kernel::Model, m, ());
     kernel::ParticlesTemp ps = create_xyzr_particles(m, n, rmin);
     ::boost::uniform_real<> rand(rmin, rmax);
     for (unsigned int i = 0; i < ps.size(); ++i) {
@@ -66,7 +66,7 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
   }
   if (!nobi) {
     Vector3D minc(0, 0, 0), maxc(10, 10, 10);
-    IMP_NEW(Model, m, ());
+    IMP_NEW(kernel::Model, m, ());
     kernel::ParticlesTemp ps0 = create_xyzr_particles(m, n, rmin);
     kernel::ParticlesTemp ps1 = create_xyzr_particles(m, n, rmin);
     kernel::ParticleIndexes ps0i = IMP::internal::get_index(ps0);

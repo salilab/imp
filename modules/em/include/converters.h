@@ -33,7 +33,7 @@ type Float.
 \return particles corresponding to all voxels above the threshold
  */
 IMPEMEXPORT kernel::Particles density2particles(DensityMap *dmap, Float threshold,
-                                        Model *m,int step=1);
+                                        kernel::Model *m,int step=1);
 
 
 //! Converts a density grid to a set of paritlces

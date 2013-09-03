@@ -33,7 +33,7 @@ algebra::Vector3Ds density2vectors(DensityMap *dmap,
 
 
 Particles density2particles(DensityMap *dmap, Float threshold,
-                            Model *m,int step) {
+                            kernel::Model *m,int step) {
   kernel::Particles ps;
   Float x,y,z,val;
   Float voxel_size=dmap->get_header()->get_spacing();

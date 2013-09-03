@@ -13,7 +13,7 @@
 #include <boost/iostreams/stream.hpp>
 
 #define IMP_CHECK_MODEL_PARTICLES(m)                       \
-  for (Model::ParticleIterator pit = m->particles_begin(); \
+  for (kernel::Model::ParticleIterator pit = m->particles_begin(); \
        pit != m->particles_end(); ++pit) {                 \
     IMP::kernel::check_particle(*pit);                     \
   }

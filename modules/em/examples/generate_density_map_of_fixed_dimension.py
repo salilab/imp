@@ -4,7 +4,7 @@
 import IMP
 import IMP.atom
 import IMP.em
-m= IMP.Model()
+m= IMP.kernel.Model()
 #1. read a protein and get its bounding box dimension
 sel=IMP.atom.CAlphaPDBSelector()
 # read protein

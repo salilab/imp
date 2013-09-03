@@ -81,7 +81,7 @@ def create_sampler(m, r, pst):
     return s
 
 IMP.base.set_log_level(IMP.base.TERSE)
-m=IMP.Model()
+m=IMP.kernel.Model()
 # don't print information during Model.evaluate
 m.set_log_level(IMP.base.SILENT)
 

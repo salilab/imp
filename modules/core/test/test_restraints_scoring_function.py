@@ -5,7 +5,7 @@ import IMP.core
 class Tests(IMP.test.TestCase):
     """Test RestraintSets"""
     def _make_stuff(self):
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         rs= IMP.kernel.RestraintSet(.5)
         r0= IMP.kernel._ConstRestraint(1)
         rs.add_restraint(r0)
@@ -29,7 +29,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(m.get_root_restraint_set().get_restraint(0).evaluate(False), 2)
     def test_weights(self):
         """Test that restraints decompose ok"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         p= IMP.kernel.Particle(m)
         r= IMP.kernel._ConstRestraint(1, [p])
         m.add_restraint(r)

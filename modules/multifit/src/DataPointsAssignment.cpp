@@ -59,7 +59,7 @@ DataPointsAssignment::get_cluster_vectors(int cluster_id) const {
 algebra::Vector3Ds
   DataPointsAssignment::set_cluster(int cluster_ind) {
   //remove outliers
-  base::Pointer<Model> mdl = new Model();
+  base::Pointer<Model> mdl = new kernel::Model();
   kernel::ParticlesTemp full_set;//all points of the cluster
   for (int i=0;i<data_->get_number_of_data_points();i++) {
     if (cluster_engine_->is_part_of_cluster(i,cluster_ind)) {
@@ -126,7 +126,7 @@ void DataPointsAssignment::set_edges(double voxel_size) {
   //create projected density maps for each cluster
   std::vector<base::Pointer<em::SampledDensityMap> > dmaps;
   std::vector<algebra::BoundingBox3D> boxes;
-  base::Pointer<Model> mdl = new Model();
+  base::Pointer<Model> mdl = new kernel::Model();
   for(int i=0;i<cluster_engine_->get_number_of_clusters();i++) {
     algebra::Vector3Ds vecs =get_cluster_vectors(i);
     kernel::ParticlesTemp ps(vecs.size());

@@ -45,7 +45,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
 
      \see simulate()
    */
-  Simulator(Model *m, std::string name = "Simulator %1%",
+  Simulator(kernel::Model *m, std::string name = "Simulator %1%",
             double wave_factor=1.0);
 
   //! Simulate for a given time in fs
@@ -116,7 +116,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
 
   /** Get the set of particles used in the simulation.
       This may be different then the stored set, eg if
-      no particles are stored, the Model is searched for
+      no particles are stored, the kernel::Model is searched for
       appropriate particles.
   */
   kernel::ParticlesTemp get_simulation_particles() const;

@@ -9,7 +9,7 @@ import IMP.core
 from test_coulomb import place_xyzs
 
 def make_test_pair_score(min_distance=9.0, max_distance=10.0):
-    m = IMP.Model()
+    m = IMP.kernel.Model()
     p0 = IMP.kernel.Particle(m)
     sph = IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0), 1.0)
     IMP.core.XYZR.setup_particle(p0, sph)

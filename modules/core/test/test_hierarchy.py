@@ -5,7 +5,7 @@ import IMP.core
 class Tests(IMP.test.TestCase):
     def test_hierarchy(self):
         """Check that the hierarchy works fine"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         pp=IMP.kernel.Particle(m)
         ppd= IMP.core.Hierarchy.setup_particle(pp)
         pp.set_name("root")
@@ -20,7 +20,7 @@ class Tests(IMP.test.TestCase):
     def test_alt_hierarchy(self):
         """Check that an alternate hierarchy works fine"""
         t= IMP.core.HierarchyTraits("my_hierarchy")
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         pp=IMP.kernel.Particle(m)
         ppd= IMP.core.Hierarchy.setup_particle(pp, t)
         pp.set_name("root")

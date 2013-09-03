@@ -5,7 +5,7 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/kernel/Particle.h>
 #include <IMP/generic.h>
 #include <IMP/core/SphereDistancePairScore.h>
@@ -13,7 +13,7 @@
 
 int main(int argc, char* argv[]) {
   IMP::base::setup_from_argv(argc, argv, "Test IMP::create_restraint");
-  IMP_NEW(IMP::Model, m, ());
+  IMP_NEW(IMP::kernel::Model, m, ());
   IMP_NEW(IMP::kernel::Particle, p, (m));
   IMP_NEW(IMP::core::SoftSpherePairScore, ps, (1));
   // check the call

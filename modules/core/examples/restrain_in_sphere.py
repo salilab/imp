@@ -6,7 +6,7 @@ import IMP.core
 radius=10
 stiffness=2
 center= IMP.algebra.Vector3D(1,2,3)
-m = IMP.Model()
+m = IMP.kernel.Model()
 p = m.add_particle("particle")
 IMP.core.XYZR.setup_particle(m, p, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(100,0,0), 1))
 

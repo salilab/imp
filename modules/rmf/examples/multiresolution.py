@@ -11,7 +11,7 @@ IMP.base.setup_from_argv(sys.argv, "Create a multiresolution rmf file")
 
 pdbname= IMP.rmf.get_example_path("big.pdb")
 
-m= IMP.Model()
+m= IMP.kernel.Model()
 h= IMP.atom.read_pdb(pdbname, m)
 IMP.atom.add_bonds(h)
 

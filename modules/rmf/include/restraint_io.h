@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/restraint_io.h
- *  \brief Handle read/write of Model data from/to files.
+ *  \brief Handle read/write of kernel::Model data from/to files.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -31,11 +31,10 @@ IMPRMF_BEGIN_NAMESPACE
     Chimera to associate these restrains with a certain set of particles.
     @{
 */
-IMP_DECLARE_LINKERS(kernel::Restraint, restraint, restraints,
-                    kernel::Restraint *,
+IMP_DECLARE_LINKERS(Restraint, restraint, restraints, kernel::Restraint *,
                     kernel::Restraints,                   // InType
                     kernel::Restraint *, kernel::RestraintsTemp,  // OutType
-                    (RMF::FileConstHandle fh, Model *m), );
+                    (RMF::FileConstHandle fh, kernel::Model *m), );
 
 /** Certain restraint are made from a really large number of terms.
     Tracking and displaying all those

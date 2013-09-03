@@ -50,7 +50,7 @@ class ClassnameConstraint :
       }
 
   ClassnameConstraint(ClassnameModifier *before,
-                      ClassnameDerivativeModifier *after, Model *m,
+                      ClassnameDerivativeModifier *after, kernel::Model *m,
                       PASSINDEXTYPE vt,
                       std::string name = "ClassnameConstraint %1%")
       : IMP::kernel::internal::TupleConstraint<
@@ -62,8 +62,8 @@ class ClassnameConstraint :
  protected:
   void do_update_attributes();
   void do_update_derivatives(DerivativeAccumulator *da);
-  virtual ModelObjectsTemp do_get_inputs() const;
-  virtual ModelObjectsTemp do_get_outputs() const;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const;
+  virtual kernel::ModelObjectsTemp do_get_outputs() const;
   IMP_OBJECT_METHODS(ClassnameConstraint);
 #endif
 };

@@ -10,7 +10,7 @@ import IMP.container
 # This example addes a restraint on nonbonded interactions
 # Since it is between two rigid bodies, internal interactions are ignored
 
-m= IMP.Model()
+m= IMP.kernel.Model()
 # The particles in the rigid bodies
 rbps0= IMP.core.create_xyzr_particles(m, 3, 1)
 rbps1= IMP.core.create_xyzr_particles(m, 3, 1)

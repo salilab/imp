@@ -6,7 +6,7 @@ import IMP.atom
 class Tests(IMP.test.TestCase):
     def test_bonded(self):
         """Check Fragment """
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         p=IMP.kernel.Particle(m)
         f= IMP.atom.Fragment.setup_particle(p)
         rs=[0,1,2,6]

@@ -16,7 +16,7 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-ModelObject::ModelObject(Model *m, std::string name)
+ModelObject::ModelObject(kernel::Model *m, std::string name)
   : base::Object(name), model_(m) {
   m->do_add_model_object(this);
 }
@@ -181,7 +181,7 @@ bool ModelObject::get_is_part_of_model() const {
   return get_model();
 }
 
-void ModelObject::set_model(Model *m) {
+void ModelObject::set_model(kernel::Model *m) {
   if (model_) {
     model_->do_remove_model_object(this);
   }

@@ -34,7 +34,7 @@ class WriteStatisticsOptimizerScore(IMP.OptimizerState):
 class Tests(IMP.test.TestCase):
     def test_building_an_optimization_problem_with_em2d_restraint(self):
         """Test that an a optimization with em2d restraint is properly built"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         prot =  IMP.atom.read_pdb(self.get_input_file_name("1z5s.pdb"),
                             m,IMP.atom.ATOMPDBSelector())
         # get the chains

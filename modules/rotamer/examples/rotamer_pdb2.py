@@ -31,7 +31,7 @@ def transform(input_pdb, input_lib, output_pdb):
     rc = IMP.rotamer.RotamerCalculator(rl)
 
     # read the original PDB
-    m = IMP.Model()
+    m = IMP.kernel.Model()
     orig_h = IMP.atom.read_pdb(input_pdb, m)
     mh = IMP.atom.get_by_type(orig_h, IMP.atom.RESIDUE_TYPE)
 

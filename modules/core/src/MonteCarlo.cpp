@@ -8,7 +8,7 @@
 #include <IMP/core/MonteCarlo.h>
 
 #include <IMP/base/random.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/ConfigurationSet.h>
 #include <IMP/core/GridClosePairsFinder.h>
 #include <IMP/dependency_graph.h>
@@ -21,7 +21,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 IMP_LIST_IMPL(MonteCarlo, Mover, mover, MonteCarloMover *, MonteCarloMovers);
 
-MonteCarlo::MonteCarlo(Model *m)
+MonteCarlo::MonteCarlo(kernel::Model *m)
     : Optimizer(m, "MonteCarlo%1%"),
       temp_(1),
       max_difference_(std::numeric_limits<double>::max()),
@@ -133,9 +133,9 @@ void MonteCarlo::do_step() {
 ParticleIndexes MonteCarlo::get_movable_particles() const {
   kernel::ParticleIndexes movable;
   for (unsigned int i = 0; i < get_number_of_movers(); ++i) {
-    ModelObjectsTemp t = get_mover(i)->get_outputs();
+    kernel::ModelObjectsTemp t = get_mover(i)->get_outputs();
     for (unsigned int j = 0; j < t.size(); ++j) {
-      ModelObject *mo = t[j];
+      kernel::ModelObject *mo = t[j];
       if (dynamic_cast<kernel::Particle *>(mo)) {
         movable.push_back(dynamic_cast<kernel::Particle *>(mo)->get_index());
       }

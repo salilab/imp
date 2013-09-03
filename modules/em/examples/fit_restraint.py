@@ -5,7 +5,7 @@ import IMP.em
 import IMP.core
 import IMP.atom
 IMP.base.set_log_level(IMP.base.SILENT)
-m= IMP.Model()
+m= IMP.kernel.Model()
 #1. setup the input protein
 ##1.1 select a selector.
 sel=IMP.atom.NonWaterPDBSelector()

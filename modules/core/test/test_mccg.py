@@ -26,7 +26,7 @@ class Tests(IMP.test.TestCase):
                         self.assertGreaterEqual(d, -.2)
     def test_cg_woods_func(self):
         """Check that MCCG can make spheres connect not penetrate"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         n=10
         print 1
         ds= IMP.core.create_xyzr_particles(m, n, 2)

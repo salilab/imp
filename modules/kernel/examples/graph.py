@@ -3,7 +3,7 @@
 
 import IMP
 
-m= IMP.Model()
+m= IMP.kernel.Model()
 # An undirected graph with an IMP::Object for each node
 g= IMP.DependencyGraph()
 vs=[]

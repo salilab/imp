@@ -61,7 +61,7 @@ struct Counter {
     } while (!queue.empty());                                                  \
   }
 
-typedef bool (*ParticleFunction)(Model *m, ParticleIndex pi);
+typedef bool (*ParticleFunction)(kernel::Model *m, ParticleIndex pi);
 
 IMPKERNELEXPORT void add_particle_check(ParticleFunction instance,
                                         ParticleFunction check);
@@ -93,7 +93,7 @@ struct SFResetBitset {
   }
 };
 
-IMPKERNELEXPORT void show_dg_node(ModelObject *mo,
+IMPKERNELEXPORT void show_dg_node(kernel::ModelObject *mo,
                                   base::TextOutput to);
 
 IMPKERNEL_END_INTERNAL_NAMESPACE

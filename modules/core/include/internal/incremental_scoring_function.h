@@ -28,7 +28,7 @@ struct IMPCOREEXPORT NBGenerator {
   base::map<kernel::ParticleIndex, int> to_dnn_;
   base::PointerMember<algebra::DynamicNearestNeighbor3D> dnn_;
 
-  NBGenerator(Model *m, const kernel::ParticleIndexes &pis, PairScore *ps,
+  NBGenerator(kernel::Model *m, const kernel::ParticleIndexes &pis, PairScore *ps,
               double distance, const PairPredicates &pfs);
   struct single_result_type : public kernel::ParticleIndexPair {
     double score;
@@ -51,7 +51,7 @@ struct IMPCOREEXPORT NBChecker {
   base::Pointer<PairScore> score_;
   double distance_;
   PairPredicates filt_;
-  NBChecker(Model *m, const kernel::ParticleIndexes &pis, PairScore *score, double d,
+  NBChecker(kernel::Model *m, const kernel::ParticleIndexes &pis, PairScore *score, double d,
             const PairPredicates &filt);
   bool operator()(const NBGenerator::result_type &vals) const;
 };

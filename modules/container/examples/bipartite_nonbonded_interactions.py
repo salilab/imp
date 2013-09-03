@@ -8,7 +8,7 @@ import IMP.container
 # This example addes a restraint on bipartite nonbonded interactions
 # after excluding a set of bonded interactions.
 
-m= IMP.Model()
+m= IMP.kernel.Model()
 # The set of particles
 ps0 = IMP.container.ListSingletonContainer(IMP.core.create_xyzr_particles(m, 20, 1.0))
 ps1 = IMP.container.ListSingletonContainer(IMP.core.create_xyzr_particles(m, 20, 2.0))

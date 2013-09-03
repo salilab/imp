@@ -28,7 +28,7 @@ Int Domain::get_end_index() const {
 }
 
 ////////////////////////////// DEPRECATED
-Domain Domain::setup_particle(Model *m, kernel::ParticleIndex pi,
+Domain Domain::setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                               Int residues_begin, Int residues_end) {
   IMP_USAGE_CHECK(!get_is_setup(m, pi), "Particle "
                   << m->get_particle_name(pi)

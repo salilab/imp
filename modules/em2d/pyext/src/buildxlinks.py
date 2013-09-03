@@ -248,9 +248,9 @@ class InitialDockingFromXlinks:
             @param fn_ligand
         """
         sel = atom.ATOMPDBSelector()
-        self.m_receptor = IMP.Model()
+        self.m_receptor = IMP.kernel.Model()
         self.h_receptor = atom.read_pdb(fn_receptor, self.m_receptor, sel)
-        self.m_ligand = IMP.Model()
+        self.m_ligand = IMP.kernel.Model()
         self.h_ligand = atom.read_pdb(fn_ligand, self.m_ligand, sel)
 
     def set_hierarchies(self, h_receptor, h_ligand):

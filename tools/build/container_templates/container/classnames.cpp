@@ -59,17 +59,17 @@ void ClassnameContainerIndex::do_before_evaluate() {
 
 void ClassnameContainerIndex::do_after_evaluate(DerivativeAccumulator *) {}
 ModelObjectsTemp ClassnameContainerIndex::do_get_inputs() const {
-  return ModelObjectsTemp(1, container_);
+  return kernel::ModelObjectsTemp(1, container_);
 }
 ModelObjectsTemp ClassnameContainerIndex::do_get_outputs() const {
-  return ModelObjectsTemp();
+  return kernel::ModelObjectsTemp();
 }
 
 IMPCONTAINER_END_INTERNAL_NAMESPACE
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-ClassnameContainerSet::ClassnameContainerSet(Model *m, std::string name)
+ClassnameContainerSet::ClassnameContainerSet(kernel::Model *m, std::string name)
     : ClassnameContainer(m, name) {}
 
 ClassnameContainerSet::ClassnameContainerSet(const ClassnameContainersTemp &in,
@@ -131,7 +131,7 @@ void ClassnameContainerSet::do_before_evaluate() {
 }
 
 ModelObjectsTemp ClassnameContainerSet::do_get_inputs() const {
-  return ModelObjectsTemp(CLASSFUNCTIONNAME_containers_begin(),
+  return kernel::ModelObjectsTemp(CLASSFUNCTIONNAME_containers_begin(),
                           CLASSFUNCTIONNAME_containers_end());
 }
 
@@ -178,10 +178,10 @@ void ClassnameContainerStatistics::do_before_evaluate() {
 void ClassnameContainerStatistics::do_after_evaluate(DerivativeAccumulator *) {}
 
 ModelObjectsTemp ClassnameContainerStatistics::do_get_inputs() const {
-  return ModelObjectsTemp(1, container_);
+  return kernel::ModelObjectsTemp(1, container_);
 }
 ModelObjectsTemp ClassnameContainerStatistics::do_get_outputs() const {
-  return ModelObjectsTemp();
+  return kernel::ModelObjectsTemp();
 }
 
 IMPCONTAINER_END_NAMESPACE
@@ -217,7 +217,7 @@ DistributeClassnamesScoreState::DistributeClassnamesScoreState(
 }
 
 ModelObjectsTemp DistributeClassnamesScoreState::do_get_outputs() const {
-  ModelObjectsTemp ret;
+  kernel::ModelObjectsTemp ret;
   for (unsigned int i = 0; i < data_.size(); ++i) {
     ret.push_back(data_[i].get<0>());
   }
@@ -225,7 +225,7 @@ ModelObjectsTemp DistributeClassnamesScoreState::do_get_outputs() const {
 }
 
 ModelObjectsTemp DistributeClassnamesScoreState::do_get_inputs() const {
-  ModelObjectsTemp ret;
+  kernel::ModelObjectsTemp ret;
   kernel::ParticleIndexes pis = input_->get_all_possible_indexes();
   for (unsigned int i = 0; i < data_.size(); ++i) {
     ret += data_[i].get<1>()->get_inputs(get_model(), pis);
@@ -291,7 +291,7 @@ EventClassnamesOptimizerState::EventClassnamesOptimizerState(
 
 void EventClassnamesOptimizerState::update() {
   int met = 0;
-  Model *m = get_optimizer()->get_model();
+  kernel::Model *m = get_optimizer()->get_model();
   IMP_CONTAINER_FOREACH(ClassnameContainer, container_,
                               if (pred_->get_value_index(m, _1) == v_) {
     ++met;
@@ -327,17 +327,17 @@ ListClassnameContainer::ListClassnameContainer(const PLURALVARIABLETYPE &ps,
   set_FUNCTIONNAMEs(ps);
 }
 
-ListClassnameContainer::ListClassnameContainer(Model *m,
+ListClassnameContainer::ListClassnameContainer(kernel::Model *m,
                                                const PLURALINDEXTYPE &ps,
                                                std::string name)
     : P(m, name) {
   set(ps);
 }
 
-ListClassnameContainer::ListClassnameContainer(Model *m, std::string name)
+ListClassnameContainer::ListClassnameContainer(kernel::Model *m, std::string name)
     : P(m, name) {}
 
-ListClassnameContainer::ListClassnameContainer(Model *m, const char *name)
+ListClassnameContainer::ListClassnameContainer(kernel::Model *m, const char *name)
     : P(m, name) {}
 
 void ListClassnameContainer::add_FUNCTIONNAME(ARGUMENTTYPE vt) {
@@ -430,7 +430,7 @@ Restraints MinimumClassnameRestraint::do_create_current_decomposition() const {
 }
 
 ModelObjectsTemp MinimumClassnameRestraint::do_get_inputs() const {
-  ModelObjectsTemp ret;
+  kernel::ModelObjectsTemp ret;
   ret += f_->get_inputs(get_model(), c_->get_all_possible_indexes());
   ret.push_back(c_);
   return ret;
@@ -449,7 +449,7 @@ typedef algebra::internal::MinimalSet<
     double, ClassnameScore *, std::less<double> > MinimumClassnameScoreMS;
 template <class It>
 MinimumClassnameScoreMS find_minimal_set_MinimumClassnameScore(It b, It e,
-                                                               Model *m,
+                                                               kernel::Model *m,
                                                                PASSINDEXTYPE v,
                                                                unsigned int n) {
   IMP_LOG_TERSE("Finding Minimum " << n << " of " << std::distance(b, e)
@@ -463,7 +463,7 @@ MinimumClassnameScoreMS find_minimal_set_MinimumClassnameScore(It b, It e,
 }
 }
 
-double MinimumClassnameScore::evaluate_index(Model *m, PASSINDEXTYPE v,
+double MinimumClassnameScore::evaluate_index(kernel::Model *m, PASSINDEXTYPE v,
                                              DerivativeAccumulator *da) const {
   MinimumClassnameScoreMS bestn = find_minimal_set_MinimumClassnameScore(
       scores_.begin(), scores_.end(), m, v, n_);
@@ -479,8 +479,8 @@ double MinimumClassnameScore::evaluate_index(Model *m, PASSINDEXTYPE v,
 }
 
 ModelObjectsTemp MinimumClassnameScore::do_get_inputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
-  ModelObjectsTemp ret;
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
+  kernel::ModelObjectsTemp ret;
   for (unsigned int i = 0; i < scores_.size(); ++i) {
     ret += scores_[i]->get_inputs(m, pis);
   }
@@ -488,7 +488,7 @@ ModelObjectsTemp MinimumClassnameScore::do_get_inputs(
 }
 
 Restraints MinimumClassnameScore::do_create_current_decomposition(
-    Model *m, PASSINDEXTYPE vt) const {
+    kernel::Model *m, PASSINDEXTYPE vt) const {
   Restraints ret;
   MinimumClassnameScoreMS bestn = find_minimal_set_MinimumClassnameScore(
       scores_.begin(), scores_.end(), m, vt, n_);
@@ -530,7 +530,7 @@ double PredicateClassnamesRestraint::get_last_score() const {
 }
 
 ModelObjectsTemp PredicateClassnamesRestraint::do_get_inputs() const {
-  ModelObjectsTemp ret;
+  kernel::ModelObjectsTemp ret;
   ret +=
       predicate_->get_inputs(get_model(), input_->get_all_possible_indexes());
   for (unsigned int i = 0; i < restraints_.size(); ++i) {

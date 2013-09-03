@@ -15,7 +15,7 @@ class Test(IMP.test.TestCase):
         return IMP.core.RigidBody.setup_particle(p, rf)
 
     def create_model_with_rbs(self, coords_list):
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         rbs = []
         for coords in coords_list:
             rbs.append( self.create_rigidbody(m, coords) )

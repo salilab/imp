@@ -9,7 +9,7 @@
 #include "Projection.h"
 
 #include <IMP/algebra/Vector3D.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/core/XYZ.h>
 #include <boost/lexical_cast.hpp>
@@ -30,7 +30,7 @@ std::vector<IMP::algebra::Vector3D> read_points_from_pdb(
     exit(1);
   }
   std::vector<IMP::algebra::Vector3D> points;
-  IMP::Model *model = new IMP::Model();
+  IMP::kernel::Model *model = new IMP::kernel::Model();
   IMP::atom::Hierarchy mhd =
     IMP::atom::read_pdb(pdb_file_name, model,
                         new IMP::atom::NonWaterNonHydrogenPDBSelector(),

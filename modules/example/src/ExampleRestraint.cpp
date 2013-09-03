@@ -32,7 +32,7 @@ void ExampleRestraint::do_add_score_and_derivatives(ScoreAccumulator sa) const {
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp ExampleRestraint::do_get_inputs() const {
-  return ModelObjectsTemp(1, p_);
+  return kernel::ModelObjectsTemp(1, p_);
 }
 
 IMPEXAMPLE_END_NAMESPACE

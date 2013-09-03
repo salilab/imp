@@ -21,7 +21,7 @@ IMPATOM_BEGIN_NAMESPACE
     \see CHARMMParameters::create_angles(), AngleSingletonScore.
  */
 class IMPATOMEXPORT Angle : public Decorator {
-  static void do_setup_particle(Model *m, kernel::ParticleIndex p,
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex p,
                                 core::XYZ a, core::XYZ b,
                                 core::XYZ c) {
     m->add_attribute(get_particle_key(0), p, a);
@@ -34,7 +34,7 @@ class IMPATOMEXPORT Angle : public Decorator {
                         core::XYZ, c);
 
   //! Return true if the particle is an angle.
-  static bool get_is_setup(Model* m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(kernel::Model* m, kernel::ParticleIndex pi) {
     for (unsigned int i = 0; i < 3; ++i) {
       if (!m->get_has_attribute(get_particle_key(i), pi)) return false;
     }
@@ -73,7 +73,7 @@ IMP_DECORATORS(Angle, Angles, kernel::ParticlesTemp);
  */
 class IMPATOMEXPORT Dihedral : public Decorator {
   //! Create a dihedral with the given particles.
-  static void do_setup_particle(Model *m, kernel::ParticleIndex p,
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex p,
                                  core::XYZ a, core::XYZ b,
                                  core::XYZ c, core::XYZ d) {
     m->add_attribute(get_particle_key(0), p, a);
@@ -89,7 +89,7 @@ class IMPATOMEXPORT Dihedral : public Decorator {
                         core::XYZ, c,
                         core::XYZ, d);
 
-  static bool get_is_setup(Model* m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(kernel::Model* m, kernel::ParticleIndex pi) {
     for (unsigned int i = 0; i < 4; ++i) {
       if (!m->get_has_attribute(get_particle_key(i), pi)) return false;
     }

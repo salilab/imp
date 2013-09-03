@@ -22,7 +22,7 @@ bool graph_is_node(kernel::Particle *p, const GraphData &d) {
 }
 
 Particle *graph_connect(kernel::Particle *a, kernel::Particle *b, GraphData &d) {
-  Model *m = a->get_model();
+  kernel::Model *m = a->get_model();
   kernel::Particle *p = new kernel::Particle(m);
   p->add_attribute(d.node_keys_[0], a);
   p->add_attribute(d.node_keys_[1], b);

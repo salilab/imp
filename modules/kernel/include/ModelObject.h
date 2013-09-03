@@ -30,7 +30,7 @@ class IMPKERNELEXPORT ModelObject: public base::Object {
   void validate_outputs() const;
 #endif
 
-  ModelObject(Model *m, std::string name);
+  ModelObject(kernel::Model *m, std::string name);
   ~ModelObject();
 
   Model *get_model() const { return model_; }
@@ -81,13 +81,13 @@ class IMPKERNELEXPORT ModelObject: public base::Object {
   ModelObject(std::string name);
   /** \deprecated_at{2.1} Use the constructor that takes a Model. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  virtual void set_model(Model *m);
+  virtual void set_model(kernel::Model *m);
   /** \deprecated_at{2.1} Should always be true. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   bool get_is_part_of_model() const;
   /** \deprecated_at{2.1} As it should always be part of a model. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  virtual void do_set_model(Model *) {}
+  virtual void do_set_model(kernel::Model *) {}
 };
 
 IMPKERNEL_END_NAMESPACE

@@ -23,7 +23,7 @@ VelocityScalingOptimizerState::VelocityScalingOptimizerState(
 }
 
 VelocityScalingOptimizerState
-::VelocityScalingOptimizerState(Model *m, kernel::ParticleIndexesAdaptor pis,
+::VelocityScalingOptimizerState(kernel::Model *m, kernel::ParticleIndexesAdaptor pis,
                                 double temp):
   kernel::OptimizerState(m, "VelocityScalingOptimizerState%1%"),
   temperature_(temp) {

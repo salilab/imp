@@ -9,7 +9,7 @@ class Tests(IMP.test.TestCase):
 
     def test_rigid(self):
         """Test ClosePairContainer with rigid finder"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         m.set_log_level(IMP.base.SILENT)
         bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                       IMP.algebra.Vector3D(10,10,10))

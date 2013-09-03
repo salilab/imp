@@ -17,7 +17,7 @@ IMPCORE_BEGIN_NAMESPACE
 CentroidOfRefined::CentroidOfRefined(Refiner *r, FloatKey weight, FloatKeys ks)
     : refiner_(r), ks_(ks), w_(weight) {}
 
-void CentroidOfRefined::apply_index(Model *m, kernel::ParticleIndex pi) const {
+void CentroidOfRefined::apply_index(kernel::Model *m, kernel::ParticleIndex pi) const {
   kernel::Particle *p = m->get_particle(pi);
   kernel::ParticlesTemp ps = refiner_->get_refined(p);
   unsigned int n = ps.size();
@@ -45,8 +45,8 @@ void CentroidOfRefined::apply_index(Model *m, kernel::ParticleIndex pi) const {
 }
 
 ModelObjectsTemp CentroidOfRefined::do_get_inputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
-  ModelObjectsTemp ret = refiner_->get_inputs(m, pis);
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
+  kernel::ModelObjectsTemp ret = refiner_->get_inputs(m, pis);
   ret += IMP::kernel::get_particles(m, pis);
   for (unsigned int i = 0; i < pis.size(); ++i) {
     ret +=
@@ -55,8 +55,8 @@ ModelObjectsTemp CentroidOfRefined::do_get_inputs(
   return ret;
 }
 ModelObjectsTemp CentroidOfRefined::do_get_outputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
-  ModelObjectsTemp ret = IMP::kernel::get_particles(m, pis);
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
+  kernel::ModelObjectsTemp ret = IMP::kernel::get_particles(m, pis);
   return ret;
 }
 

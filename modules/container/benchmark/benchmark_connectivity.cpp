@@ -22,7 +22,7 @@ using namespace IMP::container;
 
 namespace {
 void benchmark_it(std::string name, std::string algorithm,
-                  ListSingletonContainer *lsc, Model *m) {
+                  ListSingletonContainer *lsc, kernel::Model *m) {
   double runtime;
   double value = 0;
   m->evaluate(false);
@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
   unsigned int npart = 1000;
   set_log_level(SILENT);
   // set_check_level(NONE);
-  IMP_NEW(Model, m, ());
+  IMP_NEW(kernel::Model, m, ());
   IMP_NEW(HarmonicUpperBoundSphereDistancePairScore, ss, (0, 1));
   kernel::ParticlesTemp ps = create_xyzr_particles(m, npart, .1);
   IMP_NEW(ListSingletonContainer, lsc, (ps));

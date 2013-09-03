@@ -25,7 +25,7 @@ class RadialDistributionFunction;
 
 /**
    Basic profile class, can be initialized from the input file
-   (experimental or theoretical) or computed from a set of Model
+   (experimental or theoretical) or computed from a set of kernel::Model
    kernel::Particles (theoretical)
 */
 class IMPSAXSEXPORT Profile : public base::Object {

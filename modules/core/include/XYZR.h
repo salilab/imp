@@ -25,18 +25,18 @@ IMPCORE_BEGIN_NAMESPACE
     \include XYZR_Decorator.py
  */
 class IMPCOREEXPORT XYZR : public XYZ {
-  static void do_setup_particle(Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                                 const algebra::Sphere3D s) {
     XYZ::setup_particle(m, pi, s.get_center());
     do_setup_particle(m, pi, s.get_radius());
   }
 
-  static void do_setup_particle(Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                                 double r) {
     m->add_attribute(get_radius_key(), pi, r, false);
   }
 
-  static void do_setup_particle(Model *m, kernel::ParticleIndex pi) {
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi) {
     if (!XYZ::get_is_setup(m, pi)) {
       XYZ::setup_particle(m, pi);
     }
@@ -55,7 +55,7 @@ class IMPCOREEXPORT XYZR : public XYZ {
    */
 
   //! Check if the particle has the required attributes
-  static bool get_is_setup(Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
     return m->get_has_attribute(get_radius_key(), pi);
   }
 
@@ -135,7 +135,7 @@ IMPCOREEXPORT algebra::Sphere3D get_enclosing_sphere(const XYZs &v);
 
     The particles coordinates are optimized.
  */
-IMPCOREEXPORT XYZRs create_xyzr_particles(Model *m, unsigned int num,
+IMPCOREEXPORT XYZRs create_xyzr_particles(kernel::Model *m, unsigned int num,
                                           Float radius, Float box_side = 10);
 
 /** \genericgeometry */

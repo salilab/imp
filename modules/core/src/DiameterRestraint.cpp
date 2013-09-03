@@ -35,7 +35,7 @@ DiameterRestraint::DiameterRestraint(UnaryFunction *f, SingletonContainer *sc,
 
 void DiameterRestraint::init() {
   IMP_LOG_TERSE("Creating components of DiameterRestraint" << std::endl);
-  Model *m = sc_->get_model();
+  kernel::Model *m = sc_->get_model();
 
   // make pairs from special generator
   p_ = new kernel::Particle(m);
@@ -55,7 +55,7 @@ double DiameterRestraint::unprotected_evaluate(
   double v = 0;
   XYZ dp(p_);
   double radius = diameter_ / 2.0;
-  Model *m = get_model();
+  kernel::Model *m = get_model();
   IMP_CONTAINER_FOREACH(SingletonContainer, sc_, {
     double dc = XYZR(m, _1).get_radius();
     v += internal::evaluate_distance_pair_score(
@@ -65,7 +65,7 @@ double DiameterRestraint::unprotected_evaluate(
 }
 
 ModelObjectsTemp DiameterRestraint::do_get_inputs() const {
-  ModelObjectsTemp t = IMP::get_particles(get_model(), sc_->get_indexes());
+  kernel::ModelObjectsTemp t = IMP::get_particles(get_model(), sc_->get_indexes());
   t.push_back(p_);
   t.push_back(sc_);
   return t;

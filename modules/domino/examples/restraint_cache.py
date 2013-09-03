@@ -21,7 +21,7 @@ resolution=.5
 
 sls=IMP.base.SetLogState(IMP.base.SILENT)
 
-m= IMP.Model()
+m= IMP.kernel.Model()
 
 # create some particles and a restraint that scores based on the
 # length of the chain

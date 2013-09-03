@@ -87,18 +87,18 @@ ResultType get_dependent(const ModelObjectsTemp &p, const ModelObjectsTemp &all,
 }
 }
 
-ParticlesTemp get_dependent_particles(ModelObject *p,
+ParticlesTemp get_dependent_particles(kernel::ModelObject *p,
                                       const ModelObjectsTemp &all,
                                       const DependencyGraph &dg,
                                       const DependencyGraphVertexIndex &index) {
-  return get_dependent<ParticlesTemp, Particle, false>(ModelObjectsTemp(1, p),
+  return get_dependent<ParticlesTemp, Particle, false>(kernel::ModelObjectsTemp(1, p),
                                                        all, dg, index);
 }
 
 RestraintsTemp get_dependent_restraints(
     ModelObject *p, const ModelObjectsTemp &all, const DependencyGraph &dg,
     const DependencyGraphVertexIndex &index) {
-  return get_dependent<RestraintsTemp, Restraint, false>(ModelObjectsTemp(1, p),
+  return get_dependent<RestraintsTemp, Restraint, false>(kernel::ModelObjectsTemp(1, p),
                                                          all, dg, index);
 }
 ScoreStatesTemp get_dependent_score_states(
@@ -108,11 +108,11 @@ ScoreStatesTemp get_dependent_score_states(
       ModelObjectsTemp(1, p), all, dg, index);
 }
 
-ParticlesTemp get_required_particles(ModelObject *p,
+ParticlesTemp get_required_particles(kernel::ModelObject *p,
                                      const ModelObjectsTemp &all,
                                      const DependencyGraph &dg,
                                      const DependencyGraphVertexIndex &index) {
-  return get_dependent<ParticlesTemp, Particle, true>(ModelObjectsTemp(1, p),
+  return get_dependent<ParticlesTemp, Particle, true>(kernel::ModelObjectsTemp(1, p),
                                                       all, dg, index);
 }
 
@@ -215,7 +215,7 @@ void build_outputs_graph(const ModelObjectsTemp mos, DependencyGraph &dg,
   }
 }
 }
-DependencyGraph get_dependency_graph(Model *m) {
+DependencyGraph get_dependency_graph(kernel::Model *m) {
   ModelObjectsTemp mos = m->get_model_objects();
   DependencyGraphVertexIndex index;
   DependencyGraph ret(mos.size());
@@ -300,7 +300,7 @@ struct Connections {
 inline std::size_t hash_value(const Connections &t) { return t.__hash__(); }
 }
 
-DependencyGraph get_pruned_dependency_graph(Model *m) {
+DependencyGraph get_pruned_dependency_graph(kernel::Model *m) {
   IMP_FUNCTION_LOG;
   DependencyGraph full = get_dependency_graph(m);
   bool changed = true;
@@ -358,13 +358,13 @@ struct cycle_detector : public boost::default_dfs_visitor {
 };
 
 namespace {
-  RestraintsTemp do_get_dependent_restraints(ModelObject *mo) {
+  RestraintsTemp do_get_dependent_restraints(kernel::ModelObject *mo) {
     RestraintsTemp ret;
     Restraint *r = dynamic_cast<Restraint*>(mo);
     if (r) {
       ret.push_back(r);
     }
-    BOOST_FOREACH(ModelObject *cur,
+    BOOST_FOREACH(kernel::ModelObject *cur,
                   mo->get_model()->get_dependency_graph_outputs(mo)) {
       ret += do_get_dependent_restraints(cur);
     }
@@ -372,7 +372,7 @@ namespace {
   }
 }
 
-RestraintsTemp get_dependent_restraints(Model *m,
+RestraintsTemp get_dependent_restraints(kernel::Model *m,
                                         ParticleIndex pi) {
   m->set_has_all_dependencies(true);
   ModelObject *cur = m->get_particle(pi);

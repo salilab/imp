@@ -8,7 +8,7 @@ class Tests(IMP.test.TestCase):
 
     def test_no_model(self):
         """Check particle typemaps"""
-        m= IMP.Model("particle typemaps")
+        m= IMP.kernel.Model("particle typemaps")
         ps= []
         for i in range(0,10):
             ps.append(IMP.kernel.Particle(m))
@@ -30,7 +30,7 @@ class Tests(IMP.test.TestCase):
         rps= IMP.kernel._take_particles(di.values())
     def test_particles_temps(self):
         """Test passing of ParticlesTemp"""
-        m= IMP.Model("particle temps")
+        m= IMP.kernel.Model("particle temps")
         ps= []
         for i in range(0,10):
             ps.append(IMP.kernel.Particle(m))
@@ -53,7 +53,7 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(va[i], vb[i], delta=.01)
     def _test_o(self):
         """Check overloaded"""
-        m= IMP.Model("overloaded")
+        m= IMP.kernel.Model("overloaded")
         ps= []
         for i in range(10):
             ps.append(IMP.kernel.Particle(m))
@@ -61,7 +61,7 @@ class Tests(IMP.test.TestCase):
         self._equal_lists(ps, pso)
     def test_dec(self):
         """Check decorators"""
-        m= IMP.Model("decorators")
+        m= IMP.kernel.Model("decorators")
         ps= IMP.kernel._TrivialDecorators()
         for i in range(10):
             ps.append(IMP.kernel._TrivialDecorator.setup_particle(IMP.kernel.Particle(m)))
@@ -69,7 +69,7 @@ class Tests(IMP.test.TestCase):
         self._equal_lists(ps, pso)
     def test_dect(self):
         """Check decorators traits"""
-        m= IMP.Model("traits decorator")
+        m= IMP.kernel.Model("traits decorator")
         ps= IMP.kernel._TrivialTraitsDecorators()
         tr= IMP.StringKey("ttd")
         for i in range(10):
@@ -79,7 +79,7 @@ class Tests(IMP.test.TestCase):
 
     def test_pairs(self):
         """Check pairs"""
-        m= IMP.Model("pairs")
+        m= IMP.kernel.Model("pairs")
         ps= []
         for i in range(10):
             pp = (IMP.kernel.Particle(m), IMP.kernel.Particle(m));
@@ -97,7 +97,7 @@ class Tests(IMP.test.TestCase):
         self.assertRaises(TypeError, IMP.kernel._pass_particle_pairs, [1])
     def test_dec_to_part(self):
         """Checking conversion of decorators to particles"""
-        m= IMP.Model("particle decorator conversion")
+        m= IMP.kernel.Model("particle decorator conversion")
         ps= IMP.kernel._TrivialDecorators()
         rps= []
         for i in range(10):
@@ -107,14 +107,14 @@ class Tests(IMP.test.TestCase):
         self._equal_lists(rps, pso)
     def test_dec_to_part_2(self):
         """Checking conversion of decorator to particle"""
-        m= IMP.Model("decorator particle conversion")
+        m= IMP.kernel.Model("decorator particle conversion")
         d=IMP.kernel._TrivialDecorator.setup_particle(IMP.kernel.Particle(m))
         pso=IMP.kernel._pass_particle(d)
         self.assertEqual(d.get_particle(), pso)
 
     def test_overload(self):
         """Checking that overloading works"""
-        m= IMP.Model("overloading")
+        m= IMP.kernel.Model("overloading")
         p = IMP.kernel.Particle(m)
         r = IMP.kernel._ConstRestraint(1)
         pi= IMP.kernel._test_overload([p])
@@ -123,7 +123,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(ri, 1)
     def test_dec_conv(self):
         """Checking decorator conversions work"""
-        m= IMP.Model("decorator conversion")
+        m= IMP.kernel.Model("decorator conversion")
         p0= IMP.kernel.Particle(m)
         p1= IMP.kernel.Particle(m)
         print p0
@@ -142,7 +142,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(pso[1], d1p)
     def test_tuple_conv(self):
         """Checking tuple conversions work"""
-        m= IMP.Model("tuple conversion")
+        m= IMP.kernel.Model("tuple conversion")
         p0= IMP.kernel.Particle(m)
         p1= IMP.kernel.Particle(m)
         pp= (p0, p1)
@@ -153,7 +153,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(ppo[1], pp[1])
     def test_overload_dec(self):
         """Check overloaded functions with decorators"""
-        m= IMP.Model("overloaded decorators")
+        m= IMP.kernel.Model("overloaded decorators")
         d0= IMP.kernel._TrivialDecorator.setup_particle(IMP.kernel.Particle(m))
         d1= IMP.kernel._TrivialDerivedDecorator.setup_particle(IMP.kernel.Particle(m))
         self.assertEqual(IMP.kernel._overloaded_decorator(d1), 1)
@@ -176,7 +176,7 @@ class Tests(IMP.test.TestCase):
             return [[self.ps[0], self.ps[1]]]
     def test_dir_tms_0(self):
         """Test director methods in restraint"""
-        m= IMP.Model("directors in restraints")
+        m= IMP.kernel.Model("directors in restraints")
         p0= IMP.kernel.Particle(m)
         p1= IMP.kernel.Particle(m)
         r= self._TestRestraint([p0, p1])
@@ -185,13 +185,13 @@ class Tests(IMP.test.TestCase):
         r.evaluate(False)
     def test_dir_tms(self):
         """Test that decorator particle methods can be called"""
-        m= IMP.Model("decorator particle methos")
+        m= IMP.kernel.Model("decorator particle methos")
         p0= IMP.kernel.Particle(m)
         d= IMP.kernel._TrivialDecorator.setup_particle(p0)
         d.add_attribute(IMP.IntKey("Hi"), 1)
     def test_cast(self):
         """Test that casting objects works"""
-        m=IMP.Model("object cast")
+        m=IMP.kernel.Model("object cast")
         r= IMP.kernel._ConstRestraint(1)
         m.add_restraint(r)
         rb= m.get_restraints()[0]
@@ -200,14 +200,14 @@ class Tests(IMP.test.TestCase):
         print rc.get_value()
     def test_model_objects(self):
         """Test that model objects can get passed from python"""
-        m= IMP.Model("model objets")
+        m= IMP.kernel.Model("model objets")
         r= IMP.kernel._ConstRestraint(1)
         p= IMP.kernel.Particle(m)
         self.assertEqual([p],IMP.kernel._pass_model_objects([p]))
         self.assertEqual([r,p],IMP.kernel._pass_model_objects([r, p]))
     def test_restraint_cast(self):
         """Test that restraints can be cast"""
-        m= IMP.Model("model objets")
+        m= IMP.kernel.Model("model objets")
         r= IMP.kernel._ConstRestraint(1)
         m.add_restraint(r)
         rb= m.get_restraints()[0]

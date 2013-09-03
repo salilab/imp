@@ -16,7 +16,7 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-Simulator::Simulator(Model *m, std::string name, double wave_factor)
+Simulator::Simulator(kernel::Model *m, std::string name, double wave_factor)
   : Optimizer(m, name),
     wave_factor_(wave_factor)
 {
@@ -151,7 +151,7 @@ ParticleIndexes Simulator::get_simulation_particle_indexes() const {
   IMP_FUNCTION_LOG;
   kernel::ParticleIndexes ps;
   if (get_number_of_particles() == 0) {
-    for (Model::ParticleIterator it = get_model()->particles_begin();
+    for (kernel::Model::ParticleIterator it = get_model()->particles_begin();
          it != get_model()->particles_end(); ++it) {
       if (get_is_simulation_particle((*it)->get_index())) {
         ps.push_back((*it)->get_index());

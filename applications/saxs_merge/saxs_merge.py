@@ -297,8 +297,8 @@ class SAXSProfile:
                 raise TypeError, "particles should all be ISD Nuisances"
         if not set(functions.keys()) == set(['mean','covariance']):
             raise TypeError, "expected mean and covariance functions"
-        if not isinstance(model, IMP.Model):
-            raise TypeError, "fourth argument is expected to be an IMP.Model()"
+        if not isinstance(model, IMP.kernel.Model):
+            raise TypeError, "fourth argument is expected to be an IMP.kernel.Model()"
         self.gp = gp
         self.particles = particles
         self.functions=functions
@@ -893,7 +893,7 @@ def setup_particles():
     returns: model, dict(*particles), dict(mean, covariance)
     """
 
-    model = IMP.Model()
+    model = IMP.kernel.Model()
     #mean function
     G=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(model,"G"))
     #model.add_restraint(IMP.isd.JeffreysRestraint(G))

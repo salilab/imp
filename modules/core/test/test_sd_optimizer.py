@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
         """set up distance restraints and create optimizer """
         IMP.test.TestCase.setUp(self)
 
-        self.imp_model = IMP.Model()
+        self.imp_model = IMP.kernel.Model()
         self.particles = []
         self.restraint_sets = []
         self.rsrs = []

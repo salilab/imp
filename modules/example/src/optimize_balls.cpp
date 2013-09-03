@@ -49,7 +49,7 @@ void optimize_balls(const kernel::ParticlesTemp &ps, const kernel::RestraintsTem
   IMP_FUNCTION_LOG;
   base::SetLogState sls(ll);
   IMP_ALWAYS_CHECK(!ps.empty(), "No kernel::Particles passed.", ValueException);
-  Model *m = ps[0]->get_model();
+  kernel::Model *m = ps[0]->get_model();
   //double scale = core::XYZR(ps[0]).get_radius();
 
   IMP_NEW(core::SoftSpherePairScore, ssps, (10));

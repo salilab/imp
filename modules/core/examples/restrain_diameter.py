@@ -8,7 +8,7 @@ import IMP.container
 # This example restraints the diameter of a set of particles to be smaller than 10
 
 diameter=10
-m= IMP.Model()
+m= IMP.kernel.Model()
 lc= IMP.container.ListSingletonContainer(IMP.core.create_xyzr_particles(m, 50, 1.0))
 h=IMP.core.HarmonicUpperBound(0,1)
 r=IMP.core.DiameterRestraint(h, lc, diameter)

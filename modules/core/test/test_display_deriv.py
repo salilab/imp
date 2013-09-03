@@ -12,7 +12,7 @@ class Tests(IMP.test.TestCase):
     def test_derivs(self):
         """Testing execution of derivative display support"""
         # note that there are no actual checks here at this point
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         pts=[IMP.algebra.Vector3D(1,0,0), IMP.algebra.Vector3D(0,1,0),
              IMP.algebra.Vector3D(-1,0,0), IMP.algebra.Vector3D(0,-1,0)]
 

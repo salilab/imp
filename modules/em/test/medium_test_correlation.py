@@ -17,7 +17,7 @@ class Tests(IMP.test.TestCase):
         self.EM_map = IMP.em.read_map(self.fn_in,self.mrc_rw)
         self.EM_map.std_normalize()
         self.EM_map.get_header_writable().compute_xyz_top()
-        self.mdl=IMP.Model()
+        self.mdl=IMP.kernel.Model()
         mh=IMP.atom.read_pdb(self.fn_coords,self.mdl,IMP.atom.CAlphaPDBSelector())
         IMP.atom.add_radii(mh)
         self.atoms=IMP.core.get_leaves(mh)

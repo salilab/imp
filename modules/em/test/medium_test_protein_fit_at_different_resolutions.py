@@ -31,7 +31,7 @@ class Tests(IMP.test.TestCase):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
         self.mrw=IMP.em.MRCReaderWriter()
-        self.imp_model = IMP.Model()
+        self.imp_model = IMP.kernel.Model()
         name=self.get_input_file_name("1z5s.pdb")
         print name
         self.mh = IMP.atom.read_pdb(name,

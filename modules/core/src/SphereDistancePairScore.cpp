@@ -20,8 +20,8 @@ HarmonicUpperBoundSphereDiameterPairScore::
     : x0_(d0), k_(k) {}
 
 ModelObjectsTemp HarmonicUpperBoundSphereDiameterPairScore::do_get_inputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
-  ModelObjectsTemp ret;
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
+  kernel::ModelObjectsTemp ret;
   ret += IMP::get_particles(m, pis);
   return ret;
 }
@@ -31,7 +31,7 @@ NormalizedSphereDistancePairScore::NormalizedSphereDistancePairScore(
     : f_(f), radius_(radius) {}
 
 double NormalizedSphereDistancePairScore::evaluate_index(
-    Model *m, const kernel::ParticleIndexPair &pip, DerivativeAccumulator *da) const {
+    kernel::Model *m, const kernel::ParticleIndexPair &pip, DerivativeAccumulator *da) const {
   Float ra = m->get_attribute(radius_, pip[0]);
   Float rb = m->get_attribute(radius_, pip[1]);
   Float mr = std::min(ra, rb);
@@ -42,7 +42,7 @@ double NormalizedSphereDistancePairScore::evaluate_index(
 }
 
 ModelObjectsTemp NormalizedSphereDistancePairScore::do_get_inputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
   return IMP::kernel::get_particles(m, pis);
 }
 
@@ -51,7 +51,7 @@ WeightedSphereDistancePairScore::WeightedSphereDistancePairScore(
     : f_(f), radius_(radius), weight_(weight) {}
 
 double WeightedSphereDistancePairScore::evaluate_index(
-    Model *m, const kernel::ParticleIndexPair &p, DerivativeAccumulator *da) const {
+    kernel::Model *m, const kernel::ParticleIndexPair &p, DerivativeAccumulator *da) const {
   Float ra = m->get_attribute(radius_, p[0]);
   Float rb = m->get_attribute(radius_, p[1]);
   Float wa = m->get_attribute(weight_, p[0]);
@@ -63,7 +63,7 @@ double WeightedSphereDistancePairScore::evaluate_index(
 }
 
 ModelObjectsTemp WeightedSphereDistancePairScore::do_get_inputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
   return IMP::kernel::get_particles(m, pis);
 }
 

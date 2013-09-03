@@ -6,7 +6,7 @@ import IMP.display
 import IMP.core
 import IMP.container
 
-m= IMP.Model()
+m= IMP.kernel.Model()
 ps=IMP.core.create_xyzr_particles(m, 20, 5)
 c= IMP.container.ListSingletonContainer(ps)
 

@@ -51,7 +51,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 class IMPKERNELEXPORT ScoreState : public ModelObject {
   int update_order_;
  public:
-  ScoreState(Model *m, std::string name);
+  ScoreState(kernel::Model *m, std::string name);
   //! Force update of the structure.
   void before_evaluate();
 
@@ -85,7 +85,7 @@ class IMPKERNELEXPORT ScoreState : public ModelObject {
   /** \deprecated_at{2.1} Use version that takes a name too.
    */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  ScoreState(Model *m);
+  ScoreState(kernel::Model *m);
   /** \deprecated_at{2.1} Use version that takes a Model instead.
    */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)

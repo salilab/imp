@@ -33,10 +33,10 @@ class IMPCOREEXPORT RigidBodyHierarchy : public IMP::base::Object {
   void set_sphere(unsigned int ni, const algebra::Sphere3D &s);
   void set_leaf(unsigned int ni, const kernel::ParticleIndexes &ids);
   unsigned int add_children(unsigned int ni, unsigned int num_children);
-  kernel::ParticleIndexes validate_internal(Model *m, int cur,
+  kernel::ParticleIndexes validate_internal(kernel::Model *m, int cur,
                                     algebra::Sphere3Ds bounds) const;
   typedef std::pair<unsigned int, SphereIndexes> Node;
-  void build_tree(Model *m, const Node &n, const algebra::Sphere3Ds &spheres,
+  void build_tree(kernel::Model *m, const Node &n, const algebra::Sphere3Ds &spheres,
                   base::Vector<Node> &stack);
 
  public:
@@ -116,21 +116,21 @@ class IMPCOREEXPORT RigidBodyHierarchy : public IMP::base::Object {
     } while (!stack.empty());
     return ret;
   }
-  void validate(Model *m) const;
+  void validate(kernel::Model *m) const;
   RigidBody get_rigid_body() const { return rb_; }
-  Model *get_model() const { return rb_->get_model(); }
+  kernel::Model *get_model() const { return rb_->get_model(); }
 };
 
-IMPCOREEXPORT kernel::Particle *closest_particle(Model *m, const RigidBodyHierarchy *da,
+IMPCOREEXPORT kernel::Particle *closest_particle(kernel::Model *m, const RigidBodyHierarchy *da,
                                          XYZR pt);
 
 IMPCOREEXPORT kernel::Particle *closest_particle(
-    Model *m, const RigidBodyHierarchy *da, XYZR pt,
+    kernel::Model *m, const RigidBodyHierarchy *da, XYZR pt,
     double dist = std::numeric_limits<double>::max());
 
-IMPCOREEXPORT kernel::ParticlePair closest_pair(Model *m, const RigidBodyHierarchy *da,
+IMPCOREEXPORT kernel::ParticlePair closest_pair(kernel::Model *m, const RigidBodyHierarchy *da,
                                         const RigidBodyHierarchy *db);
-IMPCOREEXPORT kernel::ParticlePair closest_pair(Model *m, const RigidBodyHierarchy *da,
+IMPCOREEXPORT kernel::ParticlePair closest_pair(kernel::Model *m, const RigidBodyHierarchy *da,
                                         const RigidBodyHierarchy *db,
                                         double dist =
                                             std::numeric_limits<double>::max());
@@ -141,14 +141,14 @@ struct LessFirst {
     return a.first < b.first;
   }
 };
-inline double distance_bound(Model *m, const RigidBodyHierarchy *da,
+inline double distance_bound(kernel::Model *m, const RigidBodyHierarchy *da,
                              unsigned int i, kernel::ParticleIndex b) {
   algebra::Sphere3D s = da->get_sphere(i);
   double rd = algebra::get_distance(s, m->get_sphere(b));
   return rd;
 }
 
-inline double distance_bound(Model *, const RigidBodyHierarchy *da,
+inline double distance_bound(kernel::Model *, const RigidBodyHierarchy *da,
                              unsigned int i, const RigidBodyHierarchy *db,
                              unsigned int j) {
   algebra::Sphere3D sa = da->get_sphere(i);
@@ -158,7 +158,7 @@ inline double distance_bound(Model *, const RigidBodyHierarchy *da,
 }
 
 template <class Sink>
-inline void fill_close_pairs(Model *m, const RigidBodyHierarchy *da,
+inline void fill_close_pairs(kernel::Model *m, const RigidBodyHierarchy *da,
                              const RigidBodyHierarchy *db, double dist,
                              Sink sink) {
   IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
@@ -243,13 +243,13 @@ inline void fill_close_pairs(Model *m, const RigidBodyHierarchy *da,
   }
 }
 
-IMPCOREEXPORT kernel::ParticlePairsTemp close_pairs(Model *m,
+IMPCOREEXPORT kernel::ParticlePairsTemp close_pairs(kernel::Model *m,
                                             const RigidBodyHierarchy *da,
                                             const RigidBodyHierarchy *db,
                                             double dist);
 
 template <class Sink>
-inline void fill_close_particles(Model *m, const RigidBodyHierarchy *da,
+inline void fill_close_particles(kernel::Model *m, const RigidBodyHierarchy *da,
                                  kernel::ParticleIndex pt, double dist, Sink sink) {
   typedef std::pair<double, int> QP;
   std::priority_queue<QP, base::Vector<QP>, LessFirst> queue;
@@ -290,7 +290,7 @@ inline void fill_close_particles(Model *m, const RigidBodyHierarchy *da,
   }
 }
 
-IMPCOREEXPORT kernel::ParticlesTemp close_particles(Model *m,
+IMPCOREEXPORT kernel::ParticlesTemp close_particles(kernel::Model *m,
                                             const RigidBodyHierarchy *da,
                                             XYZR pt, double dist);
 

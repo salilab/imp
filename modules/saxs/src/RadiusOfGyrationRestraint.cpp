@@ -22,7 +22,7 @@ RadiusOfGyrationRestraint::RadiusOfGyrationRestraint(const kernel::Particles& pa
 
 ModelObjectsTemp RadiusOfGyrationRestraint::do_get_inputs() const
 {
-  ModelObjectsTemp pts(particles_.begin(), particles_.end());
+  kernel::ModelObjectsTemp pts(particles_.begin(), particles_.end());
   return pts;
 }
 

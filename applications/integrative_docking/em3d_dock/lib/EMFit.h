@@ -42,13 +42,13 @@ private:
   void read_trans_file(const std::string file_name,
                        std::vector<IMP::algebra::Transformation3D>& transforms);
 
-  void read_pdb_atoms(IMP::Model *model, const std::string file_name,
+  void read_pdb_atoms(IMP::kernel::Model *model, const std::string file_name,
                       IMP::kernel::Particles& particles);
 
   void compute_zscores();
 
 private:
-  IMP::base::PointerMember<IMP::Model> model_;
+  IMP::base::PointerMember<IMP::kernel::Model> model_;
   IMP::kernel::Particles rec_particles_, lig_particles_;
   std::string rec_file_name_, lig_file_name_;
   IMP::base::PointerMember<IMP::em::DensityMap> map_;

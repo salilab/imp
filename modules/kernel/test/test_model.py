@@ -75,7 +75,7 @@ class ClassScoreState(IMP.ScoreState):
 class Tests(IMP.test.TestCase):
     def test_state_show(self):
         """Test score state show method"""
-        m = IMP.Model("score state show")
+        m = IMP.kernel.Model("score state show")
         IMP.base.set_log_level(IMP.base.VERBOSE)
         s = ClassScoreState(m)
         sio = StringIO.StringIO()
@@ -90,7 +90,7 @@ class Tests(IMP.test.TestCase):
 
     def test_score_state(self):
         """Check score state methods"""
-        m = IMP.Model("score state model")
+        m = IMP.kernel.Model("score state model")
         IMP.base.set_log_level(IMP.base.VERBOSE)
         #self.assertRaises(IndexError, m.get_score_state,
         #                  0);
@@ -109,7 +109,7 @@ class Tests(IMP.test.TestCase):
         class BrokenFile(object):
             def write(self, str):
                 raise NotImplementedError()
-        m = IMP.Model("model show")
+        m = IMP.kernel.Model("model show")
         IMP.base.set_log_level(IMP.base.VERBOSE)
         self.assertRaises(NotImplementedError, m.show, BrokenFile())
         self.assertRaises(AttributeError, m.show, None)
@@ -120,7 +120,7 @@ class Tests(IMP.test.TestCase):
     def test_refcount_director_score_state(self):
         """Refcounting should prevent director ScoreStates from being deleted"""
         dirchk = IMP.test.DirectorObjectChecker(self)
-        m = IMP.Model("ref counting score states")
+        m = IMP.kernel.Model("ref counting score states")
         IMP.base.set_log_level(IMP.base.VERBOSE)
         s = DummyScoreState(m)
         s.python_member = 'test string'
@@ -145,7 +145,7 @@ class Tests(IMP.test.TestCase):
     def test_director_python_exceptions(self):
         """Check that exceptions raised in directors are handled"""
         no= IMP.base.SetNumberOfThreads(1)
-        m = IMP.Model("director exceptions")
+        m = IMP.kernel.Model("director exceptions")
         IMP.base.set_log_level(IMP.base.VERBOSE)
         r = FailingRestraint(m)
         m.add_restraint(r)
@@ -154,7 +154,7 @@ class Tests(IMP.test.TestCase):
 
     def test_restraints(self):
         """Check restraint methods"""
-        m = IMP.Model("restraint methods in model")
+        m = IMP.kernel.Model("restraint methods in model")
         IMP.base.set_log_level(IMP.base.VERBOSE)
         #self.assertRaises(IndexError, m.get_restraint, 0);
         self.assertEqual(m.get_number_of_restraints(), 0)
@@ -168,7 +168,7 @@ class Tests(IMP.test.TestCase):
             s.show()
     def test_temp_restraints(self):
         """Check free restraint methods"""
-        m = IMP.Model("free restraint methods")
+        m = IMP.kernel.Model("free restraint methods")
         IMP.base.set_log_level(IMP.base.VERBOSE)
         #self.assertRaises(IndexError, m.get_restraint, 0);
         self.assertEqual(m.get_number_of_restraints(), 0)
@@ -182,7 +182,7 @@ class Tests(IMP.test.TestCase):
     def test_refcount_director_restraints(self):
         """Refcounting should prevent director Restraints from being deleted"""
         dirchk = IMP.test.DirectorObjectChecker(self)
-        m = IMP.Model("ref count dir restraitns")
+        m = IMP.kernel.Model("ref count dir restraitns")
         IMP.base.set_log_level(IMP.base.VERBOSE)
         r = DummyRestraint(m)
         r.python_member = 'test string'
@@ -200,7 +200,7 @@ class Tests(IMP.test.TestCase):
 
     def test_particles(self):
         """Check particle methods"""
-        m = IMP.Model("particle methods")
+        m = IMP.kernel.Model("particle methods")
         IMP.base.set_log_level(IMP.base.VERBOSE)
         p = IMP.kernel.Particle(m)
         self.assertEqual(m.get_number_of_particles(), 1)
@@ -214,7 +214,7 @@ class Tests(IMP.test.TestCase):
         return ret
     def test_ranges(self):
         """Test float attribute ranges"""
-        m=IMP.Model("float ranges")
+        m=IMP.kernel.Model("float ranges")
         IMP.base.set_log_level(IMP.base.VERBOSE)
         ps=[IMP.kernel.Particle(m) for i in range(0,2)]
         for k in [IMP.FloatKey(0), IMP.FloatKey(4), IMP.FloatKey(7)]:
@@ -225,7 +225,7 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(rg[1], k.get_index()+1)
     def test_optimized_particles(self):
         """Test that model returns the right list of optimized particles"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         IMP.base.set_log_level(IMP.base.VERBOSE)
         opt=[]
         for i in range(0, 100):
@@ -241,7 +241,7 @@ class Tests(IMP.test.TestCase):
     def test_dependencies(self):
         """Check dependencies with restraints and score states"""
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        m= IMP.Model("dependencies")
+        m= IMP.kernel.Model("dependencies")
         ps=[IMP.kernel.Particle(m) for i in range(0,20)]
         cs=[DummyScoreState(m, ips=self._select(ps[:5], 2),
                             ops= self._select(ps[5:], 2),

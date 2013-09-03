@@ -10,7 +10,7 @@
 #include <IMP/atom/mol2.h>
 #include <IMP/core/GridClosePairsFinder.h>
 #include <IMP/particle_index.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 
 int main(int argc, char *argv[]) {
   IMP::base::set_log_level(IMP::base::SILENT);
@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
     lib= IMP::base::TextInput(argv[3]);
   }
 
-  IMP_NEW(IMP::Model, m, ());
+  IMP_NEW(IMP::kernel::Model, m, ());
   IMP::atom::Hierarchy p, l;
   {
     IMP::base::SetLogState ss(IMP::base::SILENT);

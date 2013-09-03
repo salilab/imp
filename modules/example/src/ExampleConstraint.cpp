@@ -26,10 +26,10 @@ void ExampleConstraint::do_update_attributes() {
 }
 void ExampleConstraint::do_update_derivatives(DerivativeAccumulator *) {}
 ModelObjectsTemp ExampleConstraint::do_get_inputs() const {
-  return ModelObjectsTemp(1, p_);
+  return kernel::ModelObjectsTemp(1, p_);
 }
 ModelObjectsTemp ExampleConstraint::do_get_outputs() const {
-  return ModelObjectsTemp(1, p_);
+  return kernel::ModelObjectsTemp(1, p_);
 }
 
 IMPEXAMPLE_END_NAMESPACE

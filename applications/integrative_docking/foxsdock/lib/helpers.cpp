@@ -36,7 +36,7 @@ void read_trans_file(const std::string file_name,
 }
 
 void read_pdb_atoms(const std::string file_name, IMP::kernel::Particles& particles) {
-  IMP::Model *model = new IMP::Model();
+  IMP::kernel::Model *model = new IMP::kernel::Model();
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(file_name, model,
                              new IMP::atom::NonWaterNonHydrogenPDBSelector(),
                                                  true, true);
@@ -45,7 +45,7 @@ void read_pdb_atoms(const std::string file_name, IMP::kernel::Particles& particl
 }
 
 void read_pdb_ca_atoms(const std::string file_name, IMP::kernel::Particles& particles) {
-  IMP::Model *model = new IMP::Model();
+  IMP::kernel::Model *model = new IMP::kernel::Model();
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(file_name, model,
                              new IMP::atom::CAlphaPDBSelector(), true, true);
   particles=IMP::get_as<IMP::kernel::Particles>(get_by_type(mhd, IMP::atom::ATOM_TYPE));

@@ -35,7 +35,7 @@ class IMPCONTAINEREXPORT ListClassnameContainer :
   typedef IMP::kernel::internal::InternalListClassnameContainer P;
 
  public:
-  ListClassnameContainer(Model *m, const PLURALINDEXTYPE &contents,
+  ListClassnameContainer(kernel::Model *m, const PLURALINDEXTYPE &contents,
                          std::string name = "ListClassnameContainer%1%");
 
   ListClassnameContainer(const PLURALVARIABLETYPE &ps,
@@ -44,9 +44,9 @@ class IMPCONTAINEREXPORT ListClassnameContainer :
   void set_FUNCTIONNAMEs(const PLURALVARIABLETYPE &ps);
   void set_FUNCTIONNAMEs(const PLURALINDEXTYPE &contents);
 #ifndef IMP_DOXYGEN
-  ListClassnameContainer(Model *m,
+  ListClassnameContainer(kernel::Model *m,
                          std::string name = "ListClassnameContainer %1%");
-  ListClassnameContainer(Model *m, const char *name);
+  ListClassnameContainer(kernel::Model *m, const char *name);
 
   void add_FUNCTIONNAME(ARGUMENTTYPE vt);
   void add_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c);
@@ -56,7 +56,7 @@ class IMPCONTAINEREXPORT ListClassnameContainer :
   PLURALINDEXTYPE get_indexes() const;
   PLURALINDEXTYPE get_range_indexes() const;
   void do_before_evaluate();
-  ModelObjectsTemp do_get_inputs() const;
+  kernel::ModelObjectsTemp do_get_inputs() const;
   void do_apply(const ClassnameModifier *sm) const;
   kernel::ParticleIndexes get_all_possible_indexes() const;
 #endif

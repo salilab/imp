@@ -37,7 +37,7 @@ class Tests(IMP.test.TestCase):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
 
-        self.imp_model = IMP.Model()
+        self.imp_model = IMP.kernel.Model()
 
         origin =  3.0
         self.load_particles(self.imp_model,

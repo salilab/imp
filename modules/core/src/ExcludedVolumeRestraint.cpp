@@ -137,7 +137,7 @@ double ExcludedVolumeRestraint::unprotected_evaluate(
     initialize();
   } else {
     IMP_IF_CHECK(base::USAGE) {
-      Model *m = get_model();
+      kernel::Model *m = get_model();
       IMP_CONTAINER_FOREACH(SingletonContainer, sc_, {
         if (RigidMember::get_is_setup(m, _1)) {
           RigidBody rb = RigidMember(m, _1).get_rigid_body();

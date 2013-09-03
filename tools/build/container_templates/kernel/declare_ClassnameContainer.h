@@ -36,7 +36,7 @@ class ClassnameScore;
  */
 class IMPKERNELEXPORT ClassnameContainer : public Container {
  protected:
-  ClassnameContainer(Model *m, std::string name = "ClassnameContainer %1%");
+  ClassnameContainer(kernel::Model *m, std::string name = "ClassnameContainer %1%");
 
  public:
   typedef VARIABLETYPE ContainedType;

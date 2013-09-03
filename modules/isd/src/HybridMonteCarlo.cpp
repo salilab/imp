@@ -10,7 +10,7 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-HybridMonteCarlo::HybridMonteCarlo(Model *m, Float kT, unsigned steps, Float
+HybridMonteCarlo::HybridMonteCarlo(kernel::Model *m, Float kT, unsigned steps, Float
         timestep, unsigned persistence) : MonteCarlo(m)
 {
 
@@ -45,7 +45,7 @@ void HybridMonteCarlo::do_step()
     }
     kernel::ParticleIndexes all_optimized_particles;
     {
-      ModelObjectsTemp op = get_model()->get_optimized_particles();
+      kernel::ModelObjectsTemp op = get_model()->get_optimized_particles();
       for (unsigned int i = 0; i< op.size(); ++i) {
         all_optimized_particles.push_back(dynamic_cast<kernel::Particle*>(op[i].get())
                                           ->get_index());

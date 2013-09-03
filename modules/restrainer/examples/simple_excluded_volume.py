@@ -9,7 +9,7 @@ import IMP.core
 import IMP.atom
 import IMP.restrainer
 
-m= IMP.Model()
+m= IMP.kernel.Model()
 
 sel = IMP.atom.CAlphaPDBSelector()
 p0 = IMP.atom.read_pdb(

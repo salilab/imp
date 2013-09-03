@@ -26,7 +26,7 @@ class IMPISDEXPORT JeffreysRestraint : public ISDRestraint
 public:
   //! Create the restraint.
   JeffreysRestraint(kernel::Particle *p);
-  JeffreysRestraint(Model *m, kernel::Particle *p);
+  JeffreysRestraint(kernel::Model *m, kernel::Particle *p);
 
   /** This macro declares the basic needed methods: evaluate and show
    */

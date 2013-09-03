@@ -484,7 +484,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
     def get_foxs_data(self, destdir, pdb, automerge, manualmerge,
             factor=1, chi_wt=True, chi_qmax=None, chi_ln=False):
         """get chi and radius of gyration of pdb using foxs"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         mp =IMP.atom.read_pdb(pdb, m,
                       IMP.atom.NonWaterNonHydrogenPDBSelector())
         particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)

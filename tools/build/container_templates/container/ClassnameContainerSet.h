@@ -33,7 +33,7 @@ class IMPCONTAINEREXPORT ClassnameContainerSet : public ClassnameContainer {
 
  public:
   //! Construct and empty set
-  ClassnameContainerSet(Model *m,
+  ClassnameContainerSet(kernel::Model *m,
                         std::string name = "ClassnameContainerSet %1%");
 
   ClassnameContainerSet(const ClassnameContainersTemp &pc,
@@ -65,7 +65,7 @@ class IMPCONTAINEREXPORT ClassnameContainerSet : public ClassnameContainer {
 #ifndef IMP_DOXYGEN
   PLURALINDEXTYPE get_indexes() const;
   PLURALINDEXTYPE get_range_indexes() const;
-  ModelObjectsTemp do_get_inputs() const;
+  kernel::ModelObjectsTemp do_get_inputs() const;
 #endif
 
   IMP_IMPLEMENT(void do_before_evaluate());

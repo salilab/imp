@@ -6,7 +6,7 @@ import IMP.atom
 class Tests(IMP.test.TestCase):
     def test_bonded(self):
         """Check use of Selection """
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         mh= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"),
                               m)
         pat=IMP.atom.Selection(mh, residue_index=10)

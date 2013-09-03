@@ -46,12 +46,12 @@ class Model;
     its particles from the Container.
     \see get_pruned_dependency_graph()
 */
-IMPKERNELEXPORT DependencyGraph get_dependency_graph(Model *m);
+IMPKERNELEXPORT DependencyGraph get_dependency_graph(kernel::Model *m);
 
 /** The pruned dependency graph merges all particles which have the
     same dependencies to produce a simpler graph.
 */
-IMPKERNELEXPORT DependencyGraph get_pruned_dependency_graph(Model *m);
+IMPKERNELEXPORT DependencyGraph get_pruned_dependency_graph(kernel::Model *m);
 
 /** \deprecated_at{2.1} You should act directly on the ModelObjects instead. */
 IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
@@ -87,7 +87,7 @@ IMPKERNELEXPORT ScoreStatesTemp get_dependent_score_states(
 #ifndef IMP_DOXYGEN
 /** Return all Restraints that depend on this Particle.
     Model::set_has_all_dependencies() must be called first.*/
-IMPKERNELEXPORT RestraintsTemp get_dependent_restraints(Model *m,
+IMPKERNELEXPORT RestraintsTemp get_dependent_restraints(kernel::Model *m,
                                                         ParticleIndex pi);
 #endif
 

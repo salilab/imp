@@ -9,7 +9,7 @@ import IMP
 import IMP.core
 import IMP.atom
 
-m = IMP.Model()
+m = IMP.kernel.Model()
 mp0= IMP.atom.read_pdb(IMP.atom.get_example_path('example_protein.pdb'), m)
 # get the 16th residue of the first chain
 hchain= IMP.atom.get_by_type(mp0, IMP.atom.CHAIN_TYPE)[0]

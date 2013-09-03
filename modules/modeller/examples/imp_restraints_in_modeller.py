@@ -18,7 +18,7 @@ modmodel = modeller.model(e)
 modmodel.build_sequence('GGCC')
 
 # Set up IMP and load the Modeller model in as a new Hierarchy
-m = IMP.Model()
+m = IMP.kernel.Model()
 protein = IMP.modeller.ModelLoader(modmodel).load_atoms(m)
 
 # Create a simple IMP distance restraint between the first and last atoms

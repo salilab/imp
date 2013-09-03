@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
     def setUp(self):
         """ create particles """
         IMP.test.TestCase.setUp(self)
-        self.mdl=IMP.Model()
+        self.mdl=IMP.kernel.Model()
         self.particles_p = []
         self.rad_key=IMP.core.XYZR.get_radius_key()
         self.mass_key=IMP.FloatKey("mass")

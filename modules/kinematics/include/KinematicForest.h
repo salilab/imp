@@ -13,7 +13,7 @@
 #define IMPKINEMATICS_KINEMATIC_FOREST_H
 
 #include "kinematics_config.h"
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/kinematics/KinematicNode.h>
 #include <IMP/kinematics/Joint.h>
 #include <IMP/kinematics/TransformationJoint.h>
@@ -32,12 +32,12 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 
 
 class IMPKINEMATICSEXPORT KinematicForest
-: public base::Object // or ModelObject?
+: public base::Object // or kernel::ModelObject?
 {
  public:
 IMP_OBJECT_METHODS(KinematicForest);
 
-  KinematicForest(Model* m);
+  KinematicForest(kernel::Model* m);
 
   /**
      Builds a kinematic tree automatically from a hierarchy that
@@ -46,7 +46,7 @@ IMP_OBJECT_METHODS(KinematicForest);
      before model updating
      TODO: think about what foldtree scheme to use (star?),
   */
-  KinematicForest(Model* m, IMP::atom::Hierarchy hierarchy);
+  KinematicForest(kernel::Model* m, IMP::atom::Hierarchy hierarchy);
 
 
   /**
@@ -229,7 +229,7 @@ IMP_OBJECT_METHODS(KinematicForest);
 #endif
 
  private:
-  Model* m_;
+  kernel::Model* m_;
 
   bool is_internal_coords_updated_;
   bool is_external_coords_updated_;

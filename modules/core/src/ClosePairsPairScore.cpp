@@ -51,7 +51,7 @@ ParticleIndexes expand(kernel::Particle *p, Refiner *r) {
     return IMP::internal::get_index(kernel::ParticlesTemp(1, p));
   }
 }
-void fill_close_pairs(ClosePairsFinder *cpf, Model *m, double dist,
+void fill_close_pairs(ClosePairsFinder *cpf, kernel::Model *m, double dist,
                       const kernel::ParticleIndexes &pa, const kernel::ParticleIndexes &pb,
                       kernel::ParticleIndexPairs &pairs) {
   cpf->set_distance(dist);
@@ -67,7 +67,7 @@ void fill_close_pairs(ClosePairsFinder *cpf, Model *m, double dist,
 }
 
 ParticleIndexPairs ClosePairsPairScore::get_close_pairs(
-    Model *m, const kernel::ParticleIndexPair &p) const {
+    kernel::Model *m, const kernel::ParticleIndexPair &p) const {
   kernel::ParticleIndexPairs ppt;
   Floats dists;
   kernel::ParticleIndexes ps0 = expand(m->get_particle(p[0]), r_);
@@ -76,7 +76,7 @@ ParticleIndexPairs ClosePairsPairScore::get_close_pairs(
   return ppt;
 }
 
-double ClosePairsPairScore::evaluate_index(Model *m,
+double ClosePairsPairScore::evaluate_index(kernel::Model *m,
                                            const kernel::ParticleIndexPair &pp,
                                            DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
@@ -84,7 +84,7 @@ double ClosePairsPairScore::evaluate_index(Model *m,
   return f_->evaluate_indexes(m, cps, da, 0, cps.size());
 }
 
-double ClosePairsPairScore::evaluate_if_good_index(Model *m,
+double ClosePairsPairScore::evaluate_if_good_index(kernel::Model *m,
                                                    const kernel::ParticleIndexPair &pp,
                                                    DerivativeAccumulator *da,
                                                    double max) const {
@@ -94,7 +94,7 @@ double ClosePairsPairScore::evaluate_if_good_index(Model *m,
 }
 
 ParticleIndexPairs KClosePairsPairScore::get_close_pairs(
-    Model *m, const kernel::ParticleIndexPair &p) const {
+    kernel::Model *m, const kernel::ParticleIndexPair &p) const {
   IMP_OBJECT_LOG;
   // double mr= std::max(max_radius(psa), max_radius(psb));
   kernel::ParticleIndexPairs ppt;
@@ -172,7 +172,7 @@ ParticleIndexPairs KClosePairsPairScore::get_close_pairs(
   }
 }
 
-double KClosePairsPairScore::evaluate_index(Model *m,
+double KClosePairsPairScore::evaluate_index(kernel::Model *m,
                                             const kernel::ParticleIndexPair &pp,
                                             DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
@@ -180,7 +180,7 @@ double KClosePairsPairScore::evaluate_index(Model *m,
   return f_->evaluate_indexes(m, cps, da, 0, cps.size());
 }
 
-double KClosePairsPairScore::evaluate_if_good_index(Model *m,
+double KClosePairsPairScore::evaluate_if_good_index(kernel::Model *m,
                                                     const kernel::ParticleIndexPair &pp,
                                                     DerivativeAccumulator *da,
                                                     double max) const {
@@ -190,10 +190,10 @@ double KClosePairsPairScore::evaluate_if_good_index(Model *m,
 }
 
 namespace {
-ModelObjectsTemp real_get_inputs(Model *m, const kernel::ParticleIndexes &pis,
+ModelObjectsTemp real_get_inputs(kernel::Model *m, const kernel::ParticleIndexes &pis,
                                  Refiner *r, PairScore *f,
                                  ClosePairsFinder *cpf) {
-  ModelObjectsTemp ret;
+  kernel::ModelObjectsTemp ret;
   kernel::ParticleIndexes allpis;
   for (unsigned int i = 0; i < pis.size(); ++i) {
     kernel::Particle *p = m->get_particle(pis[i]);
@@ -211,12 +211,12 @@ ModelObjectsTemp real_get_inputs(Model *m, const kernel::ParticleIndexes &pis,
 }
 
 ModelObjectsTemp ClosePairsPairScore::do_get_inputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
   return real_get_inputs(m, pis, r_, f_, cpf_);
 }
 
 ModelObjectsTemp KClosePairsPairScore::do_get_inputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
   return real_get_inputs(m, pis, r_, f_, cpf_);
 }
 

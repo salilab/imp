@@ -30,7 +30,7 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-ClassnameContainer::ClassnameContainer(Model *m, std::string name)
+ClassnameContainer::ClassnameContainer(kernel::Model *m, std::string name)
     : Container(m, name) {}
 
 // here for gcc
@@ -80,7 +80,7 @@ ClassnameContainerAdaptor::ClassnameContainerAdaptor(
     const PLURALVARIABLETYPE &t, std::string name) {
   IMP_USAGE_CHECK(t.size() > 0,
                   "An Empty PLURALVARIABLETYPE list cannot be adapted to container since it lacks model info");
-  Model *m = internal::get_model(t);
+  kernel::Model *m = internal::get_model(t);
   IMP_NEW(internal::InternalListClassnameContainer, c, (m, name));
   c->set(IMP::kernel::internal::get_index(t));
   P::operator=(c);
@@ -88,7 +88,7 @@ ClassnameContainerAdaptor::ClassnameContainerAdaptor(
 
 ClassnameModifier::ClassnameModifier(std::string name) : Object(name) {}
 
-void ClassnameModifier::apply_index(Model *m, PASSINDEXTYPE v) const {
+void ClassnameModifier::apply_index(kernel::Model *m, PASSINDEXTYPE v) const {
   apply(internal::get_particle(m, v));
 }
 
@@ -103,7 +103,7 @@ ClassnamePredicate::ClassnamePredicate(std::string name) : Object(name) {
      symbols are present in the kernel DSO */
 }
 
-void ClassnamePredicate::remove_if_equal(Model *m, PLURALINDEXTYPE &ps,
+void ClassnamePredicate::remove_if_equal(kernel::Model *m, PLURALINDEXTYPE &ps,
                                          int value) const {
   ps.erase(std::remove_if(ps.begin(), ps.end(),
                           make_predicate_equal(this, m, value)),
@@ -114,18 +114,18 @@ Ints ClassnamePredicate::get_value(const PLURALVARIABLETYPE &o) const {
   IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use index version");
   if (o.empty()) return Ints();
   Ints ret(o.size());
-  Model *m = internal::get_model(o[0]);
+  kernel::Model *m = internal::get_model(o[0]);
   for (unsigned int i = 0; i < o.size(); ++i) {
     ret[i] += get_value_index(m, internal::get_index(o[i]));
   }
   return ret;
 }
 
-int ClassnamePredicate::get_value_index(Model *m, PASSINDEXTYPE vt) const {
+int ClassnamePredicate::get_value_index(kernel::Model *m, PASSINDEXTYPE vt) const {
   return get_value(internal::get_particle(m, vt));
 }
 
-void ClassnamePredicate::remove_if_not_equal(Model *m, PLURALINDEXTYPE &ps,
+void ClassnamePredicate::remove_if_not_equal(kernel::Model *m, PLURALINDEXTYPE &ps,
                                              int value) const {
   ps.erase(std::remove_if(ps.begin(), ps.end(),
                           make_predicate_not_equal(this, m, value)),
@@ -151,13 +151,13 @@ double ClassnameScore::evaluate(ARGUMENTTYPE vt,
 
   // old versions of gcc don't like having the pragma inside the function
 double ClassnameScore::evaluate_index(
-    Model *m, PASSINDEXTYPE vt, DerivativeAccumulator *da)
+    kernel::Model *m, PASSINDEXTYPE vt, DerivativeAccumulator *da)
                       const {
   // see http://gcc.gnu.org/bugzilla/show_bug.cgi?id=53469
   return evaluate(internal::get_particle(m, vt), da);
 }
 
-double ClassnameScore::evaluate_indexes(Model *m, const PLURALINDEXTYPE &o,
+double ClassnameScore::evaluate_indexes(kernel::Model *m, const PLURALINDEXTYPE &o,
                                         DerivativeAccumulator *da,
                                         unsigned int lower_bound,
                                         unsigned int upper_bound) const {
@@ -168,7 +168,7 @@ double ClassnameScore::evaluate_indexes(Model *m, const PLURALINDEXTYPE &o,
   return ret;
 }
 
-double ClassnameScore::evaluate_if_good_index(Model *m, PASSINDEXTYPE vt,
+double ClassnameScore::evaluate_if_good_index(kernel::Model *m, PASSINDEXTYPE vt,
                                               DerivativeAccumulator *da,
                                               double max) const {
   IMP_UNUSED(max);
@@ -176,7 +176,7 @@ double ClassnameScore::evaluate_if_good_index(Model *m, PASSINDEXTYPE vt,
 }
 
 double ClassnameScore::evaluate_if_good_indexes(
-    Model *m, const PLURALINDEXTYPE &o, DerivativeAccumulator *da, double max,
+    kernel::Model *m, const PLURALINDEXTYPE &o, DerivativeAccumulator *da, double max,
     unsigned int lower_bound, unsigned int upper_bound) const {
   double ret = 0;
   for (unsigned int i = lower_bound; i < upper_bound; ++i) {
@@ -189,7 +189,7 @@ double ClassnameScore::evaluate_if_good_indexes(
 }
 
 Restraints ClassnameScore::do_create_current_decomposition(
-    Model *m, PASSINDEXTYPE vt) const {
+    kernel::Model *m, PASSINDEXTYPE vt) const {
   double score = evaluate_index(m, vt, nullptr);
   if (score == 0) {
     return Restraints();
@@ -200,7 +200,7 @@ Restraints ClassnameScore::do_create_current_decomposition(
 }
 
 Restraints ClassnameScore::create_current_decomposition(
-    Model *m, PASSINDEXTYPE vt) const {
+    kernel::Model *m, PASSINDEXTYPE vt) const {
   return do_create_current_decomposition(m, vt);
 }
 
@@ -259,7 +259,7 @@ void InternalDynamicListClassnameContainer::do_before_evaluate() {}
 
 ModelObjectsTemp InternalDynamicListClassnameContainer::do_get_inputs()
     const {
-  return ModelObjectsTemp();
+  return kernel::ModelObjectsTemp();
 }
 
 PLURALINDEXTYPE
@@ -267,11 +267,11 @@ InternalDynamicListClassnameContainer::get_range_indexes() const {
   return get_indexes();
 }
 
-InternalListClassnameContainer::InternalListClassnameContainer(Model *m,
+InternalListClassnameContainer::InternalListClassnameContainer(kernel::Model *m,
                                                                std::string name)
     : P(m, name) {}
 
-InternalListClassnameContainer::InternalListClassnameContainer(Model *m,
+InternalListClassnameContainer::InternalListClassnameContainer(kernel::Model *m,
                                                                const char *name)
     : P(m, name) {}
 void InternalListClassnameContainer::add(PASSINDEXTYPE vt) {
@@ -318,7 +318,7 @@ PLURALINDEXTYPE InternalListClassnameContainer::get_range_indexes() const {
 void InternalListClassnameContainer::do_before_evaluate() {}
 
 ModelObjectsTemp InternalListClassnameContainer::do_get_inputs() const {
-  return ModelObjectsTemp();
+  return kernel::ModelObjectsTemp();
 }
 
 IMPKERNEL_END_INTERNAL_NAMESPACE

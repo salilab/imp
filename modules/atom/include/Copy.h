@@ -25,7 +25,7 @@ IMPATOM_BEGIN_NAMESPACE
     Molecule particles.
  */
 class IMPATOMEXPORT Copy : public Molecule {
-  static void do_setup_particle(Model *m, kernel::ParticleIndex pi, int number) {
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi, int number) {
     m->add_attribute(get_copy_index_key(), pi, number);
     Molecule::setup_particle(m, pi);
   }
@@ -36,7 +36,7 @@ class IMPATOMEXPORT Copy : public Molecule {
   /** Create a decorator for the numberth copy. */
   IMP_DECORATOR_SETUP_1(Copy, Int, number);
 
-  static bool get_is_setup(Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
     return m->get_has_attribute(get_copy_index_key(), pi);
   }
 

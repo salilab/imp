@@ -30,9 +30,9 @@ class IMPCOREEXPORT BallMover : public MonteCarloMover {
   void initialize(kernel::ParticleIndexes pis, FloatKeys keys, double radius);
 
  public:
-  BallMover(Model *m, kernel::ParticleIndex pi, const FloatKeys &vars, double radius);
+  BallMover(kernel::Model *m, kernel::ParticleIndex pi, const FloatKeys &vars, double radius);
   //! Move the x,y,z coordinates
-  BallMover(Model *m, kernel::ParticleIndex pi, double radius);
+  BallMover(kernel::Model *m, kernel::ParticleIndex pi, double radius);
 
 #ifndef IMP_DOXYGEN
   /** The attributes are perturbed within a ball whose dimensionality is

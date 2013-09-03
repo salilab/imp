@@ -54,7 +54,7 @@ class MCOptimizerTest(IMP.test.TestCase):
         self._test_starting_conditions(model, opt, (2.0, 3.0, 8.0, -5.0), 5)
 
     def _setup_opt(self):
-        model = IMP.Model()
+        model = IMP.kernel.Model()
         lopt= IMP.core.ConjugateGradients(model)
         opt = IMP.core.MonteCarloWithLocalOptimization(lopt, 1000)
         opt.set_score_threshold(.01)

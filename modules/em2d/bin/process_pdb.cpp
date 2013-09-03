@@ -161,7 +161,7 @@ int main(int argc, char **argv) {
   std::vector<str> opt;
 
   // Read PDB
-  IMP_NEW(IMP::Model, smodel, ());
+  IMP_NEW(IMP::kernel::Model, smodel, ());
   IMP::base::Pointer<atom::ATOMPDBSelector> ssel= new atom::ATOMPDBSelector();
   // Read only first model
   if(digest_parameter("i",vm,opt) == false) {

@@ -8,7 +8,7 @@ class Tests(IMP.test.TestCase):
     def test_navigation(self):
         """Test loading and saving of rigid bodies implicitly"""
         for suffix in RMF.suffixes:
-            m= IMP.Model()
+            m= IMP.kernel.Model()
             r= IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
             r.set_name("rt")
             rbd= IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m, "rb"), IMP.algebra.ReferenceFrame3D())

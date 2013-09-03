@@ -7,7 +7,7 @@ from math import *
 class Test(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         self.ref_scores={}
         self.ref_scores["1h68.pdb"]=-36.4341363762
         self.ref_scores["1ors.pdb"]=-13.1726910037

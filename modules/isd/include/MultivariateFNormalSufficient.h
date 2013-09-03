@@ -11,7 +11,7 @@
 #include <IMP/isd/isd_config.h>
 #include "internal/timer.h"
 #include <IMP/macros.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/constants.h>
 #include <IMP/base/Object.h>
 #include <math.h>

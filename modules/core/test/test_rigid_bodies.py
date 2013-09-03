@@ -35,7 +35,7 @@ class Tests(IMP.test.TestCase):
 
     def test_dependencies(self):
         """Test dependencies"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         p= self._create_hierarchy(m)
         h=IMP.core.Hierarchy(p)
         children=h.get_children()
@@ -58,7 +58,7 @@ class Tests(IMP.test.TestCase):
         count=1
         success=0
         for i in range(0, count):
-            m= IMP.Model()
+            m= IMP.kernel.Model()
             IMP.base.set_log_level(IMP.base.SILENT)
             print "creating"
             p= self._create_hierarchy(m)
@@ -86,7 +86,7 @@ class Tests(IMP.test.TestCase):
 
     def test_create_one_from_pdb(self):
         """Testing create_rigid_bodies"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         hs= IMP.kernel._create_particles_from_pdb(self.get_input_file_name("input.pdb"), m)
         print "done reading"
         rb= IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m), hs)
@@ -112,7 +112,7 @@ class Tests(IMP.test.TestCase):
         self.assertLess((ntr.get_translation()- tr.get_translation()).get_magnitude(), 2.2)
     def test_teardown(self):
         """Testing tearing down rigid bodies"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps=[IMP.core.XYZ.setup_particle(IMP.kernel.Particle(m)) for i in range(3)]
         rbp0= IMP.kernel.Particle(m)
         rbp0.set_name("rb0")

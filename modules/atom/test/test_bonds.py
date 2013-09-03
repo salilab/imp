@@ -6,7 +6,7 @@ import IMP.atom
 class Tests(IMP.test.TestCase):
     def test_bonded(self):
         """Check bonds """
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         pa=IMP.kernel.Particle(m)
         pb=IMP.kernel.Particle(m)
         da= IMP.atom.Bonded.setup_particle(pa)

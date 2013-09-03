@@ -23,7 +23,7 @@ r = modeller.forms.gaussian(feature=feat, mean=10.0, stdev=1.0,
 modmodel.restraints.add(r)
 
 # Set up IMP and load the Modeller model in as a new Hierarchy
-m = IMP.Model()
+m = IMP.kernel.Model()
 protein = IMP.modeller.ModelLoader(modmodel).load_atoms(m)
 atoms = IMP.atom.get_by_type(protein, IMP.atom.ATOM_TYPE)
 

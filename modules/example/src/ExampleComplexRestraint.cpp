@@ -57,7 +57,7 @@ double ExampleComplexRestraint::unprotected_evaluate(
 }
 
 ModelObjectsTemp ExampleComplexRestraint::do_get_inputs() const {
-  ModelObjectsTemp
+  kernel::ModelObjectsTemp
       ret(IMP::get_particles(get_model(), sc_->get_all_possible_indexes()));
   ret.push_back(get_model()->get_particle(p_));
   ret.push_back(sc_);

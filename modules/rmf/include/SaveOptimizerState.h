@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/SaveOptimizerState.h
- *  \brief Handle read/write of Model data from/to files.
+ *  \brief Handle read/write of kernel::Model data from/to files.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -27,7 +27,7 @@ class IMPRMFEXPORT SaveOptimizerState : public kernel::OptimizerState {
   base::WeakPointer<atom::Simulator> sim_;
 
  public:
-  SaveOptimizerState(Model *m, RMF::FileHandle fh);
+  SaveOptimizerState(kernel::Model *m, RMF::FileHandle fh);
   /** \deprecated_at{2.1} Use one that takes a model. */
   IMPRMF_DEPRECATED_FUNCTION_DECL(2.1)
   SaveOptimizerState(RMF::FileHandle fh);

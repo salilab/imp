@@ -21,7 +21,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 */
 class IMPKERNELEXPORT AttributeOptimizer : public Optimizer {
  public:
-  AttributeOptimizer(Model *m, std::string name = "Optimizer %1%");
+  AttributeOptimizer(kernel::Model *m, std::string name = "Optimizer %1%");
 
   /** \deprecated_at{2.1} Use the constructor with a Model and a name.*/
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)

@@ -33,7 +33,7 @@ class Tests(IMP.test.TestCase):
         w.add_geometry(gs)
     def test_nonrigid(self):
         """Check cover from selection"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
 
         #! read PDB
         mp= IMP.atom.read_pdb(self.open_input_file("input.pdb"),
@@ -49,7 +49,7 @@ class Tests(IMP.test.TestCase):
         self._check(mp, s, d)
     def test_rigid(self):
         """Check cover from rigid selection"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         #! read PDB
         IMP.base.set_log_level(IMP.base.SILENT)
         mp= IMP.atom.read_pdb(self.open_input_file("input.pdb"),

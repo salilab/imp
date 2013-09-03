@@ -2,7 +2,7 @@
    This is the program for creating a simple kinematic tree from a protein
    and running rrt on phi psi angle
 */
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/kernel/Particle.h>
 
 #include <IMP/algebra/Vector3D.h>
@@ -59,7 +59,7 @@ int main(int argc, char **argv)
   if(argc == 3) scale = atof(argv[2]);
 
   // read in the input protein
-  IMP::base::Pointer<IMP::Model> model = new IMP::Model();
+  IMP::base::Pointer<IMP::kernel::Model> model = new IMP::kernel::Model();
   std::cerr << "Starting reading pdb file " << fname << std::endl;
   IMP::atom::Hierarchy mhd =
     IMP::atom::read_pdb(fname, model,

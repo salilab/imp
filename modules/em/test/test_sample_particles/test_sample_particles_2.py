@@ -14,7 +14,7 @@ class Tests(IMP.test.TestCase):
         """ create particles """
         self.particles = []
         self.mass_key=IMP.atom.Mass.get_mass_key()
-        self.mdl=IMP.Model()
+        self.mdl=IMP.kernel.Model()
         for val in [[9.,5.,5.,1.,1.],[12.,9.,4.,1.,1.],[4.,5.,5.,1.,1.]]:
             p=IMP.kernel.Particle(self.mdl)
             IMP.core.XYZR.setup_particle(p,IMP.algebra.Sphere3D(IMP.algebra.Vector3D(val[0],val[1],val[2]),val[3]))

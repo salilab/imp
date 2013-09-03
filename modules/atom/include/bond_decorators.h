@@ -14,7 +14,7 @@
 #include <IMP/display/particle_geometry.h>
 #include <IMP/display/primitive_geometries.h>
 #include <IMP/kernel/Particle.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/Decorator.h>
 #include <IMP/core/XYZ.h>
 
@@ -43,7 +43,7 @@ class IMPATOMEXPORT Bond : public Decorator {
  public:
   IMP_DECORATOR_METHODS(Bond, Decorator);
 
-  static bool get_is_setup(Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
     return IMP::core::internal::graph_is_edge(m->get_particle(pi),
                                               internal::get_bond_data().graph_);
   }
@@ -103,7 +103,7 @@ class IMPATOMEXPORT Bonded : public Decorator {
     Bonded operator()(unsigned int i) const;
     bool operator==(const GetBonded &o) const { return d_ == o.d_; }
   };
-  static void do_setup_particle(Model *m, kernel::ParticleIndex pi) {
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi) {
     graph_initialize_node(m->get_particle(pi),
                           internal::get_bond_data().graph_);
   }
@@ -111,7 +111,7 @@ class IMPATOMEXPORT Bonded : public Decorator {
   IMP_DECORATOR_METHODS(Bonded, Decorator);
   IMP_DECORATOR_SETUP_0(Bonded);
 
-  static bool get_is_setup(Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
     return IMP::core::internal::graph_is_node(m->get_particle(pi),
                                               internal::get_bond_data().graph_);
   }

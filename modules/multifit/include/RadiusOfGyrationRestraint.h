@@ -50,7 +50,7 @@ public:
   IMP_LIST(private, Particle, particle, kernel::Particle*, kernel::Particles);
 #endif
  protected:
-  Model *mdl_;
+  kernel::Model *mdl_;
   Float predicted_rog_;
   Float scale_;
   base::Pointer<core::HarmonicUpperBound> hub_;

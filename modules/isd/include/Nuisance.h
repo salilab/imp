@@ -25,7 +25,7 @@ IMPISD_BEGIN_NAMESPACE
  */
 class IMPISDEXPORT Nuisance: public Decorator
 {
-  static void do_setup_particle(Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                                 double nuisance=1.0);
 
 public:
@@ -33,7 +33,7 @@ public:
   IMP_DECORATOR_SETUP_0(Nuisance);
   IMP_DECORATOR_SETUP_1(Nuisance, double, nuisance);
 
-  static bool get_is_setup(Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
     return m->get_has_attribute(get_nuisance_key(), pi);
   }
 
@@ -107,8 +107,8 @@ class IMPISDEXPORT NuisanceScoreState : public ScoreState
         friend class Nuisance;
         virtual void do_before_evaluate() IMP_OVERRIDE;
   virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(NuisanceScoreState);
 };
 #endif

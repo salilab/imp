@@ -3,7 +3,7 @@
 
 import IMP
 import IMP.core
-m= IMP.Model()
+m= IMP.kernel.Model()
 
 # stuff to create some XYZR particles
 ds0= IMP.core.create_xyzr_particles(m, 10, 1, 50)

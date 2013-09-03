@@ -40,7 +40,7 @@ IntPairs GridClosePairsFinder::get_close_pairs(
 }
 
 ParticleIndexPairs GridClosePairsFinder::get_close_pairs(
-    Model *m, const kernel::ParticleIndexes &c) const {
+    kernel::Model *m, const kernel::ParticleIndexes &c) const {
   IMP_OBJECT_LOG;
   set_was_used(true);
   IMP_LOG_TERSE("Rebuilding NBL with Grid and cutoff " << get_distance()
@@ -53,7 +53,7 @@ ParticleIndexPairs GridClosePairsFinder::get_close_pairs(
   return out;
 }
 ParticleIndexPairs GridClosePairsFinder::get_close_pairs(
-    Model *m, const kernel::ParticleIndexes &ca, const kernel::ParticleIndexes &cb) const {
+    kernel::Model *m, const kernel::ParticleIndexes &ca, const kernel::ParticleIndexes &cb) const {
   IMP_OBJECT_LOG;
   set_was_used(true);
   kernel::ParticleIndexPairs out;
@@ -66,8 +66,8 @@ ParticleIndexPairs GridClosePairsFinder::get_close_pairs(
 }
 
 ModelObjectsTemp GridClosePairsFinder::do_get_inputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
-  ModelObjectsTemp ret;
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
+  kernel::ModelObjectsTemp ret;
   ret += IMP::get_particles(m, pis);
   for (PairFilterConstIterator it = pair_filters_begin();
        it != pair_filters_end(); ++it) {

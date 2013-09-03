@@ -8,7 +8,7 @@ from numpy import *
 
 tau = .1
 
-m = IMP.Model()
+m = IMP.kernel.Model()
 
 #! read PDB
 mp= IMP.atom.read_pdb('6lyz.pdb', m,

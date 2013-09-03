@@ -295,7 +295,7 @@ class Tests(IMP.test.TestCase):
     def test_charmm_elements(self):
         """Test that new atom types from CHARMM get elements assigned"""
         ff = IMP.atom.get_heavy_atom_CHARMM_parameters()
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         t = IMP.atom.get_element_table()
         # None of these atom names are used in standard PDB amino acids,
         # so should have been created when we read in the CHARMM topology

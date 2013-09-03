@@ -9,7 +9,7 @@
 
 #include <IMP/isd/isd_config.h>
 #include <IMP/macros.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/constants.h>
 #include <math.h>
 #include <boost/math/special_functions/bessel.hpp>

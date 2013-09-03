@@ -8,7 +8,7 @@
 #include "nmr_helpers.h"
 #include "ResidueContent.h"
 
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/algebra/standard_grids.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/atom/Atom.h>
@@ -112,7 +112,7 @@ defined by two molecules.")
   ligand_pdb = files[1];
 
   // read pdb  files, prepare particles
-  IMP::Model *model = new IMP::Model();
+  IMP::kernel::Model *model = new IMP::kernel::Model();
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(receptor_pdb, model,
                    new IMP::atom::NonWaterNonHydrogenPDBSelector(), true, true);
   IMP::kernel::Particles atom_particles1 = get_by_type(mhd, IMP::atom::ATOM_TYPE);

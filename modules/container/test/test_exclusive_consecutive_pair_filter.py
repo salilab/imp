@@ -8,7 +8,7 @@ class Tests(IMP.test.TestCase):
     """Tests for tunnel scores"""
     def test_connectivity_zero_set(self):
         """Test exclusive consecutive pair filter"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps0=[IMP.kernel.Particle(m) for i in range(0,15)]
         cpc0= IMP.container.ExclusiveConsecutivePairContainer(ps0)
         ps1=[IMP.kernel.Particle(m) for i in range(0,15)]

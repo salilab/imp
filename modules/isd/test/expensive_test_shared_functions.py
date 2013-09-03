@@ -48,7 +48,7 @@ class Tests(IMP.test.TestCase):
 
     def test_init_model_base(self):
         self.sfo.init_model_base('./')
-        self.assertIsInstance(self._m,IMP.Model)
+        self.assertIsInstance(self._m,IMP.kernel.Model)
     test_init_model_base = IMP.test.expectedFailure(test_init_model_base)
 
     def test_init_model_charmm_protein_and_ff(self):

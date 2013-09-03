@@ -9,7 +9,7 @@ class Tests(IMP.test.TestCase):
 
     def test_score(self):
         """Test common endpoints container"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         lbp=None
         bonds=[]
         ps=[]

@@ -26,9 +26,9 @@ IMPDOMINO_BEGIN_NAMESPACE
  */
 class IMPDOMINOEXPORT BranchAndBoundSampler : public DiscreteSampler {
  public:
-  BranchAndBoundSampler(Model *m,
+  BranchAndBoundSampler(kernel::Model *m,
                         std::string name = "BranchAndBoundSampler %1%");
-  BranchAndBoundSampler(Model *m, ParticleStatesTable *pst,
+  BranchAndBoundSampler(kernel::Model *m, ParticleStatesTable *pst,
                         std::string name = "BranchAndBoundSampler %1%");
   Assignments do_get_sample_assignments(const IMP::domino::Subset &known) const
       IMP_OVERRIDE;

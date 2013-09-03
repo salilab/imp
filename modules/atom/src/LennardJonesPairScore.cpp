@@ -11,7 +11,7 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-Float LennardJonesPairScore::evaluate_index(Model *m,
+Float LennardJonesPairScore::evaluate_index(kernel::Model *m,
                                             const kernel::ParticleIndexPair &p,
                                             DerivativeAccumulator *da) const {
   LennardJones lj0(m, p[0]);
@@ -42,7 +42,7 @@ Float LennardJonesPairScore::evaluate_index(Model *m,
 }
 
 ModelObjectsTemp LennardJonesPairScore::do_get_inputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
   return IMP::kernel::get_particles(m, pis);
 }
 

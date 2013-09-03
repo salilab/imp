@@ -30,7 +30,7 @@ class IMPCOREEXPORT RigidBodyMover : public MonteCarloMover {
   kernel::ParticleIndex pi_;
 
  public:
-  RigidBodyMover(Model *m, kernel::ParticleIndex pi, Float max_translation,
+  RigidBodyMover(kernel::Model *m, kernel::ParticleIndex pi, Float max_translation,
                  Float max_rotation);
 
 #ifndef IMP_DOXYGEN

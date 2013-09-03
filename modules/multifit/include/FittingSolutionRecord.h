@@ -11,7 +11,7 @@
 
 
 #include <IMP/algebra/Transformation3D.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/core/Hierarchy.h>
 #include <IMP/multifit/multifit_config.h>
 IMPMULTIFIT_BEGIN_NAMESPACE

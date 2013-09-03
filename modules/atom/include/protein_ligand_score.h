@@ -12,7 +12,7 @@
 #include <IMP/atom/atom_config.h>
 #include "Hierarchy.h"
 #include <IMP/core/StatisticalPairScore.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/kernel/Particle.h>
 #include <IMP/kernel/Restraint.h>
 #include <IMP/PairScore.h>

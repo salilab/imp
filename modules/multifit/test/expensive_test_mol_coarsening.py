@@ -5,7 +5,7 @@ import sys
 class Tests(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        self.mdl=IMP.Model()
+        self.mdl=IMP.kernel.Model()
         self.mhs=[]
         self.mhs.append(IMP.atom.read_pdb(
             self.get_input_file_name("1z5s_A.pdb"),

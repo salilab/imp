@@ -49,7 +49,7 @@ def score_model(complete_fn_model,
     rows = test_imgs[0].get_header().get_number_of_columns()
     cols = test_imgs[0].get_header().get_number_of_rows()
 
-    model = IMP.Model()
+    model = IMP.kernel.Model()
     ssel = atom.ATOMPDBSelector()
     prot =  atom.read_pdb(complete_fn_model, model, ssel)
     particles = IMP.core.get_leaves(prot)

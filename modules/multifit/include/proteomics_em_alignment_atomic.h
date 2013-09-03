@@ -55,7 +55,7 @@ public:
   /*  void show_scores(const domino::Assignment &a,
                    std::ostream& out=std::cout) const;
   */
-  Model * get_model() {return mdl_;}
+  kernel::Model * get_model() {return mdl_;}
   //! If set to fast EV is calculated as penetration score and Fit
   //! restraint is decomposed
   void set_fast_scoring(bool state) {

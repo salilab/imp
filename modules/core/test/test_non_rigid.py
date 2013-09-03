@@ -81,7 +81,7 @@ class Tests(IMP.test.TestCase):
     def test_deriv(self):
         """Check non-rigid particles"""
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         r0 = self._create_rigid_body(m, "0")
         r1 = self._create_rigid_body(m, "1")
         nr0 = self._add_non_rigid(m, r0, "0")
@@ -101,7 +101,7 @@ class Tests(IMP.test.TestCase):
     def test_2(self):
         """Check non-rigid particles with ExcludedVolumeRestraint"""
         IMP.base.set_log_level(IMP.base.SILENT)
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         r0 = self._create_rigid_body(m, "0")
         r1 = self._create_rigid_body(m, "1")
         nr0 = self._add_non_rigid(m, r0, "0")
@@ -124,7 +124,7 @@ class Tests(IMP.test.TestCase):
     def test_3(self):
         """Check that particles can be converted between rigid and non-rigid"""
         IMP.base.set_log_level(IMP.base.SILENT)
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         r0 = self._create_rigid_body(m, "0")
         nr0 = self._add_non_rigid(m, r0, "0")
         assert(IMP.core.NonRigidMember.get_is_setup(m, nr0[0]))

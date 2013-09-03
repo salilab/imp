@@ -41,7 +41,7 @@ class Tests(IMP.test.TestCase):
                         self.assertIn(i, set)
     def test_global_min2(self):
         """Testing random junction tree"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps=[]
         np=20
         ne=np*3
@@ -71,7 +71,7 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min0(self):
         """Testing junction tree algorithm"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps=[]
         ig= IMP.domino.InteractionGraph()
         for i in range(0,8):

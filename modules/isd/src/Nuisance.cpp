@@ -10,7 +10,7 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-void Nuisance::do_setup_particle(Model *m,
+void Nuisance::do_setup_particle(kernel::Model *m,
                                  kernel::ParticleIndex pi, double nuisance) {
   if (!Nuisance::get_is_setup(m, pi))
     {

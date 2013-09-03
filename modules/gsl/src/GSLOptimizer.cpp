@@ -16,7 +16,7 @@ namespace {
 struct AllDone {};
 }
 
-GSLOptimizer::GSLOptimizer(Model *m)
+GSLOptimizer::GSLOptimizer(kernel::Model *m)
     : AttributeOptimizer(m, "GSLOptimizer%1%"),
       stop_score_(-std::numeric_limits<double>::max()),
       best_score_(std::numeric_limits<double>::max()) {}

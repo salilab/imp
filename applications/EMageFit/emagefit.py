@@ -340,7 +340,7 @@ def create_dockings_from_xlinks(params):
                          fn_initial_docking, fn_transforms, fn_docked, False)
 
         sel = atom.ATOMPDBSelector()
-        new_m = IMP.Model()
+        new_m = IMP.kernel.Model()
         # After reading the file with the initial solution, the reference frame
         # for the rigid body of the ligand is not necessarily the  same one
         # that it had when saved.

@@ -23,7 +23,7 @@ class IMPISDEXPORT HybridMonteCarlo : public core::MonteCarlo
 {
 
 public:
-  HybridMonteCarlo(Model *m, Float kT=1.0, unsigned steps=100,
+  HybridMonteCarlo(kernel::Model *m, Float kT=1.0, unsigned steps=100,
           Float timestep=1.0, unsigned persistence=1);
 
   Float get_kinetic_energy() const;

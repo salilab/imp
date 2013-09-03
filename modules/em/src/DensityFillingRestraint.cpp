@@ -56,7 +56,7 @@ double
 
 ModelObjectsTemp DensityFillingRestraint::do_get_inputs() const
 {
-  ModelObjectsTemp pt;
+  kernel::ModelObjectsTemp pt;
   for (ParticleConstIterator it= particles_begin();
        it != particles_end(); ++it) {
       pt.push_back(*it);

@@ -26,7 +26,7 @@ class Tests(IMP.test.TestCase):
                     self.assertTrue((a,b) in out.get_particle_pairs())
 
     def _test_one(self, rb0, rb1):
-        m=IMP.Model()
+        m=IMP.kernel.Model()
         IMP.base.set_log_level(IMP.base.VERBOSE)
         ps0= self.create_particles_in_box(m, 10)
         ps1= self.create_particles_in_box(m, 10)
@@ -81,7 +81,7 @@ class Tests(IMP.test.TestCase):
         self._test_one(True, True)
     def test_filtering(self):
         """Testing that CloseBipartitePairContainer responds to changes in filters"""
-        m=IMP.Model()
+        m=IMP.kernel.Model()
         ps0= self.create_particles_in_box(m, 30)
         ps1= self.create_particles_in_box(m, 30)
         for p in ps0+ps1:

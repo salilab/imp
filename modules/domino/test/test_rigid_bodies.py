@@ -21,7 +21,7 @@ class Tests(IMP.test.TestCase):
         return rbd
     def test_global_min2(self):
         """Testing finding minima with rigid bodies"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         rbs= [self._create_rb("1",m), self._create_rb("2", m)]
         trs= [ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
                                                 Vector3D(0,0,0))),
@@ -56,7 +56,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual( cg.get_number_of_configurations(), 4)
     def test_global_min1(self):
         """Testing splitting restraints with rigid bodies"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         rbs= [self._create_rb("1",m), self._create_rb("2", m),
               self._create_rb("3",m)]
         trs= [ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
@@ -85,7 +85,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(allr), 3)
     def test_global_min3(self):
         """Testing splitting restraints with rigid bodies and interestings scores"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         rbs= [self._create_rb("1",m, 4), self._create_rb("2", m, 4),
               self._create_rb("3",m, 4)]
         trs= [ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
@@ -124,7 +124,7 @@ class Tests(IMP.test.TestCase):
         return p
     def test_interaction_graph(self):
         """Testing the interaction graph with rigid bodies"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         rb0 = self._create_rigid_body(m)
         rb1 = self._create_rigid_body(m)
         rb2 = self._create_rigid_body(m)

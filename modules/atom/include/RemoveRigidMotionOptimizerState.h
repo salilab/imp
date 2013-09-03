@@ -24,7 +24,7 @@ class IMPATOMEXPORT RemoveRigidMotionOptimizerState : public OptimizerState {
   IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
   RemoveRigidMotionOptimizerState(const kernel::ParticlesTemp &pis,
                                   unsigned skip_steps);
-  RemoveRigidMotionOptimizerState(Model *m, kernel::ParticleIndexesAdaptor pis);
+  RemoveRigidMotionOptimizerState(kernel::Model *m, kernel::ParticleIndexesAdaptor pis);
 
   //! Set the particles to use.
   void set_particles(const kernel::Particles &pis) { pis_ = pis; }

@@ -262,7 +262,7 @@ receptor and ligand, respectively.""",
     logging.root.setLevel(logging.DEBUG)
 
     sel = atom.ATOMPDBSelector()
-    m = IMP.Model()
+    m = IMP.kernel.Model()
     h_receptor =  atom.read_pdb(fn_receptor, m, sel)
     rb_receptor = atom.create_rigid_body(h_receptor)
     h_ligand =  atom.read_pdb(fn_ligand, m, sel)

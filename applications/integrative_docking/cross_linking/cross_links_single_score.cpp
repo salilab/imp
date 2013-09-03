@@ -5,7 +5,7 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 
 #include "helpers.h"
 #include "CrossLink.h"
@@ -62,7 +62,7 @@ Each docked complex will be compared against cross links in cross_links_file.")
   cross_links_file = files[1];
 
   // read pdb  files, prepare particles
-  IMP::Model *model = new IMP::Model();
+  IMP::kernel::Model *model = new IMP::kernel::Model();
   IMP::atom::Hierarchy mhd =
     IMP::atom::read_pdb(pdb, model,
                         new IMP::atom::NonWaterNonHydrogenPDBSelector(),

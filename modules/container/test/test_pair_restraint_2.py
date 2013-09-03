@@ -16,7 +16,7 @@ class Tests(IMP.test.TestCase):
 
     def test_restraint(self):
         """Simple test of the PairsRestraint"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         cps= IMP.kernel._ConstPairScore(1)
         ps= [IMP.kernel.Particle(m) for i in range(0,10)]
         psc= IMP.container.ListSingletonContainer(ps)

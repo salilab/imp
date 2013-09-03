@@ -388,7 +388,7 @@ multifit::FittingSolutionRecords prune_by_pca(
   multifit::FittingSolutionRecords pruned_sols;
   internal::Parameters par(param_fn.c_str());
   //load the protein
-  IMP_NEW(Model,mdl,());
+  IMP_NEW(kernel::Model,mdl,());
   atom::CAlphaPDBSelector *sel = new atom::CAlphaPDBSelector();
   atom::Hierarchies mhs;
   for(int i=0;i<par.get_cn_symm();i++) {

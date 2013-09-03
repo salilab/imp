@@ -19,7 +19,7 @@ using namespace IMP::display;
 
 namespace {
 int do_benchmark() {
-  IMP_NEW(Model, m, ());
+  IMP_NEW(kernel::Model, m, ());
   atom::Hierarchy prot =
       read_pdb(IMP::benchmark::get_data_path("extended.pdb"), m);
   // Read in the CHARMM heavy atom topology and parameter files

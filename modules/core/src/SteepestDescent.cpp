@@ -8,7 +8,7 @@
 #include <IMP/core/SteepestDescent.h>
 
 #include <IMP/base/log.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -19,7 +19,7 @@ SteepestDescent::SteepestDescent()
       threshold_(0.) {
 }
 
-SteepestDescent::SteepestDescent(Model *m, std::string name)
+SteepestDescent::SteepestDescent(kernel::Model *m, std::string name)
     : AttributeOptimizer(m, name),
       step_size_(0.01),
       max_step_size_(std::numeric_limits<double>::max()),

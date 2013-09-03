@@ -28,22 +28,22 @@ std::string get_module_version() {
 class ConstPairScore : public PairScore {
  public:
   ConstPairScore() {}
-  double evaluate_index(Model *m, const kernel::ParticleIndexPair &p,
+  double evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &p,
                         DerivativeAccumulator *da) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs(Model *m, const kernel::ParticleIndexes &pis) const;
+  kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m, const kernel::ParticleIndexes &pis) const;
   IMP_PAIR_SCORE_METHODS(ConstPairScore);
   IMP_OBJECT_METHODS(ConstPairScore);
   ;
 };
 
-double ConstPairScore::evaluate_index(Model *, const kernel::ParticleIndexPair &,
+double ConstPairScore::evaluate_index(kernel::Model *, const kernel::ParticleIndexPair &,
                                       DerivativeAccumulator *) const {
   return 1;
 }
 
 ModelObjectsTemp ConstPairScore::do_get_inputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
-  ModelObjectsTemp ret;
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
+  kernel::ModelObjectsTemp ret;
   ret += IMP::get_particles(m, pis);
   return ret;
 }
@@ -56,7 +56,7 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
   Vector3D minc(0, 0, 0), maxc(10, 10, 10);
-  IMP_NEW(Model, m, ());
+  IMP_NEW(kernel::Model, m, ());
   kernel::ParticlesTemp ps = create_xyzr_particles(m, n, rmin);
   kernel::ParticleIndexes pis = IMP::internal::get_index(ps);
   ::boost::uniform_real<> rand(rmin, rmax);

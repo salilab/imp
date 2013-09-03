@@ -24,7 +24,7 @@ class Tests(IMP.test.TestCase):
         print 'Distance is ' + str(dist)
         #cpf.set_radius_key(rk)
         cpf.set_distance(dist)
-        m=IMP.Model()
+        m=IMP.kernel.Model()
         ps= self.create_particles_in_box(m, num)
         for i in range(0, len(ps)):
             IMP.core.XYZR.setup_particle(ps[i], random.uniform(rmin, rmax))
@@ -41,7 +41,7 @@ class Tests(IMP.test.TestCase):
         print 'Distance is ' + str(dist)
         #cpf.set_radius_key(rk)
         cpf.set_distance(dist)
-        m=IMP.Model()
+        m=IMP.kernel.Model()
         ps= self.create_particles_in_box(m, num)
         for i in range(0, len(ps)):
             IMP.core.XYZR.setup_particle(ps[i], random.uniform(rmin, rmax))
@@ -138,7 +138,7 @@ class Tests(IMP.test.TestCase):
         #cpf.set_distance(dist)
         print 'Distance is ' + str(dist)
         #cpf.set_radius_key(rk)
-        m=IMP.Model()
+        m=IMP.kernel.Model()
         ps= IMP.core.create_xyzr_particles(m, nump, 1)
         rbpsa= []
         rbpsb= []

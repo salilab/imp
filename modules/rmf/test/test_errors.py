@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
         return 1+sum([self._get_num_nodes(c) for c in n.get_children()])
     def test_round_trip(self):
         """Test that exceptions are transformed"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         rmf= RMF.create_rmf_file(self.get_tmp_file_name("zillion.rmf"))
         h= IMP.atom.Fragment.setup_particle(IMP.kernel.Particle(m))
         IMP.core.XYZR.setup_particle(h)

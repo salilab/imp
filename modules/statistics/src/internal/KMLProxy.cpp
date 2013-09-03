@@ -12,7 +12,7 @@ KMLProxy::KMLProxy() {
   set_default_values();
   is_init_ = false;
 }
-void KMLProxy::initialize(Model *m, const kernel::Particles &ps, const FloatKeys &atts,
+void KMLProxy::initialize(kernel::Model *m, const kernel::Particles &ps, const FloatKeys &atts,
                           unsigned int num_centers) {
   for (kernel::Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
     ps_.push_back(*it);

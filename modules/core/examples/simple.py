@@ -6,7 +6,7 @@ import IMP
 import IMP.algebra
 import IMP.core
 
-m = IMP.Model()
+m = IMP.kernel.Model()
 
 # Create two "untyped" Particles
 p1 = IMP.kernel.Particle(m)

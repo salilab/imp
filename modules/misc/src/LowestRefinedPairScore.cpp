@@ -47,7 +47,7 @@ std::pair<double, kernel::ParticlePair> get_lowest(kernel::ParticlesTemp ps[2], 
 }
 }
 
-Float LowestRefinedPairScore::evaluate_index(Model *m,
+Float LowestRefinedPairScore::evaluate_index(kernel::Model *m,
                                              const kernel::ParticleIndexPair &pi,
                                              DerivativeAccumulator *da) const {
   kernel::ParticlesTemp ps[2] = {get_set(m->get_particle(pi[0]), r_),
@@ -65,8 +65,8 @@ Float LowestRefinedPairScore::evaluate_index(Model *m,
 }
 
 ModelObjectsTemp LowestRefinedPairScore::do_get_inputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
-  ModelObjectsTemp ret = r_->get_inputs(m, pis);
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
+  kernel::ModelObjectsTemp ret = r_->get_inputs(m, pis);
   for (unsigned int i = 0; i < pis.size(); ++i) {
     if (r_->get_can_refine(m->get_particle(pis[i]))) {
       kernel::ParticleIndexes cur = r_->get_refined_indexes(m, pis[i]);

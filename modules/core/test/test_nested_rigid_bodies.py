@@ -8,7 +8,7 @@ class Tests(IMP.test.TestCase):
     """Tests for RigidBody function"""
     def test_nested(self):
         """Test nested rigid bodies and close pairs"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps=[IMP.kernel.Particle(m) for i in range(0,10)]
         bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                       IMP.algebra.Vector3D(10,10,10))

@@ -47,7 +47,7 @@ def initiate_configuration(domino_smp,ps):
 sys.exit()
 #### REPRESENTATION
 #1. setting up the representation (6 particles)
-mdl=IMP.Model()
+mdl=IMP.kernel.Model()
 mdl.set_log_level(IMP.base.SILENT)
 ps=[]
 for i in range(0,6):

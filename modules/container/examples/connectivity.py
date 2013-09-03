@@ -4,7 +4,7 @@
 import IMP.container
 import IMP.display
 
-m= IMP.Model()
+m= IMP.kernel.Model()
 ds=IMP.core.create_xyzr_particles(m, 20, .1)
 sc= IMP.container.ListSingletonContainer(ds)
 cpc= IMP.container.ConnectingPairContainer(sc, .1)

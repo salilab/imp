@@ -25,7 +25,7 @@ class Model;
 
 /** A ScoringFunction represents a scoring function on the model.
     The Model has a default scoring function
-    (Model::get_model_scoring_function()), but it can be useful to use
+    (kernel::Model::get_model_scoring_function()), but it can be useful to use
     others in different contexts during a samping process.
 
 A call to the evaluate() method prompts the following events:
@@ -64,7 +64,7 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
   }
 
  public:
-  ScoringFunction(Model *m, std::string name);
+  ScoringFunction(kernel::Model *m, std::string name);
 
   virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
     return ModelObjectsTemp();
@@ -129,7 +129,7 @@ class IMPKERNELEXPORT ScoringFunctionAdaptor :
      that always returns 0.
    */
   static ScoringFunction *get(const Restraints &sf);
-  static ScoringFunction *get(Model *sf);
+  static ScoringFunction *get(kernel::Model *sf);
   static ScoringFunction *get(Restraint *sf);
 
  public:
@@ -144,7 +144,7 @@ class IMPKERNELEXPORT ScoringFunctionAdaptor :
   ScoringFunctionAdaptor(const Restraints &sf) : P(get(sf)) {}
   ScoringFunctionAdaptor(Restraint *sf) : P(get(sf)) {}
 #ifndef IMP_DOXYGEN
-  ScoringFunctionAdaptor(Model *sf) : P(get(sf)) {}
+  ScoringFunctionAdaptor(kernel::Model *sf) : P(get(sf)) {}
 #endif
 };
 

@@ -22,7 +22,7 @@ class sfo(sfo_common):
         IMP.base.set_check_level(IMP.base.NONE)
         os.chdir(wd)
         print "harmonic restraint on a unit mass particle at origin"
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         p1=IMP.core.XYZ.setup_particle(IMP.kernel.Particle(m))
         p1.set_coordinates(IMP.algebra.Vector3D(0,0,0))
         #IMP.atom.Mass.setup_particle(p1,1.0)

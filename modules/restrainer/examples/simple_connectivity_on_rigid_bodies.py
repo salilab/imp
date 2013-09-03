@@ -8,7 +8,7 @@ import IMP
 import IMP.atom
 import IMP.restrainer
 
-m = IMP.Model()
+m = IMP.kernel.Model()
 sel = IMP.atom.CAlphaPDBSelector()
 
 mh1 = IMP.atom.read_pdb(IMP.restrainer.get_example_path("input.pdb"), m, sel)

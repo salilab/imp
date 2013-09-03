@@ -63,7 +63,7 @@ void CoreCloseBipartitePairContainer::initialize(
 }
 
 ModelObjectsTemp CoreCloseBipartitePairContainer::do_get_inputs() const {
-  ModelObjectsTemp ret;
+  kernel::ModelObjectsTemp ret;
   ret += internal::get_inputs(get_model(), sc_[0], access_pair_filters());
   ret += internal::get_inputs(get_model(), sc_[1], access_pair_filters());
   if (covers_[0] != base::get_invalid_index<kernel::ParticleIndexTag>()) {

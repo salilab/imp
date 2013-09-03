@@ -19,7 +19,7 @@ class Tests(IMP.test.TestCase):
         if os.path.isfile(testfile):
             # delete the file to check
             os.remove(testfile)
-        smodel = IMP.Model()
+        smodel = IMP.kernel.Model()
         ssel = IMP.atom.ATOMPDBSelector()
         prot =  IMP.atom.read_pdb(self.get_input_file_name("1z5s.pdb"), smodel,ssel)
         IMP.atom.add_radii(prot)
@@ -43,7 +43,7 @@ class Tests(IMP.test.TestCase):
 
     def test_even_projections(self):
         """ Evenly distributed em2d image projections from a PDB file"""
-        smodel = IMP.Model()
+        smodel = IMP.kernel.Model()
         ssel = IMP.atom.ATOMPDBSelector()
         prot =  IMP.atom.read_pdb(self.get_input_file_name("1z5s.pdb"),
                                                                    smodel,ssel)
@@ -78,7 +78,7 @@ class Tests(IMP.test.TestCase):
 
     def test_noisy_projections(self):
         """ Test the generation of noisy projections"""
-        smodel = IMP.Model()
+        smodel = IMP.kernel.Model()
         ssel = IMP.atom.ATOMPDBSelector()
         fn_model = self.get_input_file_name("1e6v.pdb")
         prot =IMP.atom.read_pdb(fn_model,smodel,ssel)

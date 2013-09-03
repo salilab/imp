@@ -51,7 +51,7 @@ class IMPKERNELEXPORT Optimizer : public ModelObject {
    base::Pointer<ScoringFunction> scoring_function_;
 
   static void set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o);
-  virtual void do_set_model(Model *m) IMP_OVERRIDE {
+  virtual void do_set_model(kernel::Model *m) IMP_OVERRIDE {
     my_model_ = m;
   }
 protected:
@@ -65,7 +65,7 @@ protected:
   //! don't return anything here to avoid pointless dependencies
   virtual ModelObjectsTemp do_get_outputs() const {return ModelObjectsTemp();}
  public:
-  Optimizer(Model *m, std::string name = "Optimizer %1%");
+  Optimizer(kernel::Model *m, std::string name = "Optimizer %1%");
 
   //! Optimize the model for up to max_steps iterations
   /** Optimize the model

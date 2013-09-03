@@ -16,7 +16,7 @@ double ConstantRestraint::unprotected_evaluate(DerivativeAccumulator*) const {
 }
 
 ModelObjectsTemp ConstantRestraint::do_get_inputs() const {
-  return ModelObjectsTemp();
+  return kernel::ModelObjectsTemp();
 }
 
 IMPCORE_END_NAMESPACE

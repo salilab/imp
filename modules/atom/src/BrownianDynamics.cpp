@@ -36,7 +36,7 @@ namespace {
 typedef boost::variate_generator<base::RandomNumberGenerator &,
                                  boost::normal_distribution<double> > RNG;
 }
-BrownianDynamics::BrownianDynamics(Model *m,
+BrownianDynamics::BrownianDynamics(kernel::Model *m,
                                    std::string name,
                                    double wave_factor)
   : Simulator(m, name, wave_factor),  // nd_(0,1),
@@ -58,7 +58,7 @@ bool BrownianDynamics::get_is_simulation_particle(kernel::ParticleIndex pi) cons
 }
 
 namespace {
-inline double get_force(Model *m, kernel::ParticleIndex p, unsigned int i, double dt,
+inline double get_force(kernel::Model *m, kernel::ParticleIndex p, unsigned int i, double dt,
                         double ikT) {
   Diffusion d(m, p);
   double nforce(-d.get_derivative(i));
@@ -77,7 +77,7 @@ inline double get_force(Model *m, kernel::ParticleIndex p, unsigned int i, doubl
   return force_term;
 }
 // radians
-inline double get_torque(Model *m, kernel::ParticleIndex p, unsigned int i, double dt,
+inline double get_torque(kernel::Model *m, kernel::ParticleIndex p, unsigned int i, double dt,
                          double ikT) {
   RigidBodyDiffusion d(m, p);
   core::RigidBody rb(m, p);
@@ -95,12 +95,12 @@ inline double get_torque(Model *m, kernel::ParticleIndex p, unsigned int i, doub
   return -force_term;
 }
 
-inline double get_sigma(Model *m, kernel::ParticleIndex p, double dtfs) {
+inline double get_sigma(kernel::Model *m, kernel::ParticleIndex p, double dtfs) {
   // 6.0 since we are picking radius rather than the coordinates
   double dd = Diffusion(m, p).get_diffusion_coefficient();
   return sqrt(6.0 * dd * dtfs);
 }
-inline double get_rotational_sigma(Model *m, kernel::ParticleIndex p, double dtfs) {
+inline double get_rotational_sigma(kernel::Model *m, kernel::ParticleIndex p, double dtfs) {
   double dr = RigidBodyDiffusion(m, p).get_rotational_diffusion_coefficient();
   return sqrt(6.0 * dr * dtfs);
 }

@@ -24,7 +24,7 @@ class IMPISDEXPORT MolecularDynamicsMover : public core::MonteCarloMover
 {
 public:
 
-  MolecularDynamicsMover(Model *m, unsigned nsteps=100, Float timestep=1.);
+  MolecularDynamicsMover(kernel::Model *m, unsigned nsteps=100, Float timestep=1.);
 
   MolecularDynamics * get_md() const { return md_; }
 

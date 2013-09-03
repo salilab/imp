@@ -7,7 +7,7 @@ class Tests(IMP.test.TestCase):
 
     def test_rna_dna_protein(self):
         """Check Residue get_is_*() methods"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         user = IMP.atom.ResidueType('foo')
         for typ, rna, dna, protein in ((IMP.atom.ALA, False, False, True),
                                        (IMP.atom.ADE, True, False, False),

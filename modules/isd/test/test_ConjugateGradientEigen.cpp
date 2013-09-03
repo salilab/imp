@@ -6,7 +6,7 @@
 #include <IMP/isd/internal/cg_eigen.h>
 #include <IMP/macros.h>
 #include <IMP/base/Pointer.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/constants.h>
 #include <IMP/base/exception.h>
 #include <IMP/base/random.h>

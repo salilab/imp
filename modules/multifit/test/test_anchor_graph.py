@@ -15,7 +15,7 @@ class Tests(IMP.test.TestCase):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
         IMP.base.set_log_level(IMP.base.SILENT)
-        self.imp_model = IMP.Model()
+        self.imp_model = IMP.kernel.Model()
         self.load_data()
     def test_anchor_graph_formation(self):
         self.assertEqual(4,self.anchor_graph.get_number_of_anchors())

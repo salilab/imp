@@ -19,7 +19,7 @@ QuadraticClosePairsFinder::QuadraticClosePairsFinder()
     : ClosePairsFinder("QuadraticCPF") {}
 
 ParticleIndexPairs QuadraticClosePairsFinder::get_close_pairs(
-    Model *m, const kernel::ParticleIndexes &pta, const kernel::ParticleIndexes &ptb) const {
+    kernel::Model *m, const kernel::ParticleIndexes &pta, const kernel::ParticleIndexes &ptb) const {
   set_was_used(true);
   IMP_OBJECT_LOG;
   IMP_LOG_TERSE("Quadratic add_close_pairs called with "
@@ -36,7 +36,7 @@ ParticleIndexPairs QuadraticClosePairsFinder::get_close_pairs(
 }
 
 ParticleIndexPairs QuadraticClosePairsFinder::get_close_pairs(
-    Model *m, const kernel::ParticleIndexes &pt) const {
+    kernel::Model *m, const kernel::ParticleIndexes &pt) const {
   set_was_used(true);
   IMP_OBJECT_LOG;
   IMP_LOG_TERSE("Adding close pairs from "
@@ -95,15 +95,15 @@ IntPairs QuadraticClosePairsFinder::get_close_pairs(
   return ret;
 }
 
-bool QuadraticClosePairsFinder::get_are_close(Model *m, kernel::ParticleIndex a,
+bool QuadraticClosePairsFinder::get_are_close(kernel::Model *m, kernel::ParticleIndex a,
                                               kernel::ParticleIndex b) const {
   return internal::get_are_close(m, access_pair_filters(), a, b,
                                  get_distance());
 }
 
 ModelObjectsTemp QuadraticClosePairsFinder::do_get_inputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
-  ModelObjectsTemp ret;
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
+  kernel::ModelObjectsTemp ret;
   ret += IMP::get_particles(m, pis);
   for (PairFilterConstIterator it = pair_filters_begin();
        it != pair_filters_end(); ++it) {

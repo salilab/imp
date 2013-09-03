@@ -17,11 +17,11 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 
-DominoSampler::DominoSampler(Model *m, ParticleStatesTable *pst,
+DominoSampler::DominoSampler(kernel::Model *m, ParticleStatesTable *pst,
                              std::string name)
     : DiscreteSampler(m, pst, name), has_mt_(false), csf_(false) {}
 
-DominoSampler::DominoSampler(Model *m, std::string name)
+DominoSampler::DominoSampler(kernel::Model *m, std::string name)
     : DiscreteSampler(m, new ParticleStatesTable(), name), csf_(false) {}
 
 template <class G>

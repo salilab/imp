@@ -47,7 +47,7 @@ class IMPSTATISTICSEXPORT ConfigurationSetXYZEmbedding : public Embedding {
     set of attributes can be chosen. When using attributes that
     are not equivalent (for example, angular degrees of freedom),
     it is probably useful to rescale the attributes according
-    to their ranges (see IMP::Model::get_range()). This is
+    to their ranges (see IMP::kernel::Model::get_range()). This is
     done by passing rescale=true to the constructor.
 */
 class IMPSTATISTICSEXPORT ParticleEmbedding : public Embedding {

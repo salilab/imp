@@ -5,7 +5,7 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/pdb.h>
@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
   pdb2 = files[1];
 
   // read pdb  files, prepare particles
-  IMP::Model *model = new IMP::Model();
+  IMP::kernel::Model *model = new IMP::kernel::Model();
   IMP::atom::Hierarchy mhd1 = IMP::atom::read_pdb(pdb1, model,
                         new IMP::atom::NonWaterNonHydrogenPDBSelector(),
                                                   true, true);

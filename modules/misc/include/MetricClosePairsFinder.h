@@ -27,7 +27,7 @@ IMPMISC_BEGIN_NAMESPACE
     distance between two particles. For example the LowerBound
     distance between two balls is the center distance minus the radii,
     and the upperbound distance is the center distance plus the
-    radii. They signature should be `double operator()(Model *m, const
+    radii. They signature should be `double operator()(kernel::Model *m, const
     kernel::ParticleIndexPair &pip) const`
 
     The algorithm works by building an index used `sqrt(n)` of the `n` input
@@ -47,7 +47,7 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
                     double, width, );
 
   typedef base::map<kernel::ParticleIndex, Data> Index;
-  Index get_index(Model *m, kernel::ParticleIndexes inputs) const {
+  Index get_index(kernel::Model *m, kernel::ParticleIndexes inputs) const {
     unsigned int index_size = std::min<unsigned int>(1U,
                                 std::sqrt(static_cast<double>(inputs.size())));
     std::random_shuffle(inputs.begin(), inputs.end());
@@ -83,7 +83,7 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
     }
     return ret;
   }
-  kernel::ParticleIndexPairs get_close_pairs_internal(Model *m,
+  kernel::ParticleIndexPairs get_close_pairs_internal(kernel::Model *m,
                                               const kernel::ParticleIndexes &p) const {
     kernel::ParticleIndexPairs ret;
     for (unsigned int i = 0; i< p.size(); ++i) {
@@ -98,7 +98,7 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
     }
     return ret;
   }
-  kernel::ParticleIndexPairs get_close_pairs_internal(Model *m,
+  kernel::ParticleIndexPairs get_close_pairs_internal(kernel::Model *m,
                                               const kernel::ParticleIndexes &pa,
                                               const kernel::ParticleIndexes &pb) const {
     kernel::ParticleIndexPairs ret;
@@ -114,7 +114,7 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
     }
     return ret;
   }
-  kernel::ParticleIndexPairs get_close_pairs_internal(Model *m,
+  kernel::ParticleIndexPairs get_close_pairs_internal(kernel::Model *m,
                                               const Index &ia,
                                               const Index &ib,
                                               bool is_same) const {
@@ -170,7 +170,7 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
     IMP_FAILURE("Bounding boxes are not supported.");
   }
 
-  virtual kernel::ParticleIndexPairs get_close_pairs(Model *m,
+  virtual kernel::ParticleIndexPairs get_close_pairs(kernel::Model *m,
                                              const kernel::ParticleIndexes &pc) const
     IMP_OVERRIDE {
     IMP_OBJECT_LOG;
@@ -178,7 +178,7 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
     Index index = get_index(m, pc);
     return get_close_pairs_internal(m, index, index, true);
   }
-  virtual kernel::ParticleIndexPairs get_close_pairs(Model *m,
+  virtual kernel::ParticleIndexPairs get_close_pairs(kernel::Model *m,
                                              const kernel::ParticleIndexes &pca,
                                              const kernel::ParticleIndexes &pcb) const
     IMP_OVERRIDE {
@@ -189,7 +189,7 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
     return get_close_pairs_internal(m, indexa, indexb, false);
 
   }
-  virtual ModelObjectsTemp do_get_inputs(Model *m,
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
                                          const kernel::ParticleIndexes &pis) const
     IMP_OVERRIDE {
     // for now assume we just read the particles

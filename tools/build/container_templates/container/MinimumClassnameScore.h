@@ -28,14 +28,14 @@ class IMPCONTAINEREXPORT MinimumClassnameScore : public ClassnameScore {
  public:
   MinimumClassnameScore(const ClassnameScoresTemp &scores, unsigned int n = 1,
                         std::string name = "ClassnameScore %1%");
-  virtual double evaluate_index(Model *m, PASSINDEXTYPE vt,
+  virtual double evaluate_index(kernel::Model *m, PASSINDEXTYPE vt,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs(Model *m, const kernel::ParticleIndexes &pis)
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m, const kernel::ParticleIndexes &pis)
       const IMP_OVERRIDE;
   IMP_CLASSNAME_SCORE_METHODS(MinimumClassnameScore);
   IMP_OBJECT_METHODS(MinimumClassnameScore);
 
-  Restraints do_create_current_decomposition( Model *m, PASSINDEXTYPE vt)
+  Restraints do_create_current_decomposition( kernel::Model *m, PASSINDEXTYPE vt)
       const IMP_OVERRIDE;
 };
 

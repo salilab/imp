@@ -43,7 +43,7 @@ struct IMPKERNELEXPORT InputOutputException : public std::runtime_error {
   int get_operation() const { return operation_; }
   int get_entity() const { return entity_; }
   std::string get_key_name() const { return key_name_; }
-  std::string get_message(ModelObject *o) const;
+  std::string get_message(kernel::ModelObject *o) const;
 
  private:
   int particle_index_;

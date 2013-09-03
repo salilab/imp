@@ -36,7 +36,7 @@ Floats get_rmsd_for_models(const std::string param_filename,
   protein_filename = params.get_unit_pdb_fn();
   cn_symm_deg = params.get_cn_symm();
 
-  IMP_NEW(Model, mdl, ());
+  IMP_NEW(kernel::Model, mdl, ());
   atom::Hierarchy asmb_ref;
   atom::Hierarchies mhs;
   //read the monomer

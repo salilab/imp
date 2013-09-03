@@ -36,7 +36,7 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         self.alpha = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 1.0)
         self.beta = Nuisance.setup_particle(IMP.kernel.Particle(self.m),  1.0)
         self.mean = Linear1DFunction(self.alpha,self.beta)

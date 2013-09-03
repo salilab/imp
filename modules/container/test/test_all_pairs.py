@@ -17,7 +17,7 @@ class Tests(IMP.test.TestCase):
 
     def test_allp(self):
         """Check AllPairContainer"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         for i in range(0,50):
             p= IMP.kernel.Particle(m)
         lp= IMP.container.ListSingletonContainer(m.get_particles())

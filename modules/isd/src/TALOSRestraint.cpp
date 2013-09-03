@@ -15,7 +15,7 @@
 #include <IMP/algebra/Vector3D.h>
 
 #include <IMP/kernel/Particle.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/base/log.h>
 
 #include <math.h>

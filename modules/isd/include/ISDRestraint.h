@@ -27,7 +27,7 @@ public:
 
   ISDRestraint() : kernel::Restraint() {}
   ISDRestraint(std::string name) : kernel::Restraint(name) {}
-  ISDRestraint(Model *m, std::string name) : kernel::Restraint(m,name) {}
+  ISDRestraint(kernel::Model *m, std::string name) : kernel::Restraint(m,name) {}
 
   /* call for probability, pure method */
   virtual double get_probability() const = 0;

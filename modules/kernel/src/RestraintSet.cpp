@@ -19,12 +19,12 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-RestraintSet::RestraintSet(Model *m, double weight, const std::string &name)
+RestraintSet::RestraintSet(kernel::Model *m, double weight, const std::string &name)
     : Restraint(m, name) {
   set_weight(weight);
 }
 
-RestraintSet::RestraintSet(Model *m, const std::string &name)
+RestraintSet::RestraintSet(kernel::Model *m, const std::string &name)
     : Restraint(m, name) {
   set_weight(1.0);
 }
@@ -85,7 +85,7 @@ RestraintSet::get_non_sets_and_sets() const {
   return ret;
 }
 
-void RestraintSet::do_set_model(Model *m) {
+void RestraintSet::do_set_model(kernel::Model *m) {
   for (RestraintConstIterator it = restraints_begin(); it != restraints_end();
        ++it) {
     (*it)->set_model(m);

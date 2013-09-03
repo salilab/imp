@@ -37,7 +37,7 @@ class Tests(IMP.test.TestCase):
         self.env.libs.topology.read(file='$(LIB)/top_heav.lib')
         self.env.libs.parameters.read(file='$(LIB)/par.lib')
         #init IMP model ( the environment)
-        self.imp_model = IMP.Model()
+        self.imp_model = IMP.kernel.Model()
         self.particles = []
         ## -  create a set of three particles in imp
         for i in range(3):
@@ -116,7 +116,7 @@ class Tests(IMP.test.TestCase):
         self.env.libs.topology.read(file='$(LIB)/top_heav.lib')
         self.env.libs.parameters.read(file='$(LIB)/par.lib')
         #init IMP model ( the environment)
-        self.imp_model = IMP.Model()
+        self.imp_model = IMP.kernel.Model()
         self.particles = []
 
         ## -  create a set of three particles in imp
@@ -191,7 +191,7 @@ class Tests(IMP.test.TestCase):
         use_rigid_bodies=True
         bd= 10
         radius=10
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         p= IMP.kernel.Particle(m)
         IMP.atom.Mass.setup_particle(p, 10000)
         d= IMP.core.XYZR.setup_particle(p)

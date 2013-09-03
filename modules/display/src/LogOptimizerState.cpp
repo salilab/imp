@@ -16,7 +16,7 @@ WriteOptimizerState::WriteOptimizerState(kernel::Model *m, WriterAdaptor w)
 WriteOptimizerState::WriteOptimizerState(WriterAdaptor w)
   : kernel::OptimizerState("WriteOptimizerState%1%"), writer_(w) {
   IMPDISPLAY_DEPRECATED_FUNCTION_DEF(2.1,
-                                     "Use constructor that takes the Model.");
+                                     "Use constructor that takes the kernel::Model.");
 }
 
 void WriteOptimizerState::write(WriterAdaptor w) const {

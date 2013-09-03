@@ -14,7 +14,7 @@
 
 #include <IMP/SingletonModifier.h>
 #include <IMP/kernel/Particle.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/Decorator.h>
 #include <IMP/decorator_macros.h>
 #include <IMP/kernel/internal/utility.h>
@@ -77,10 +77,10 @@ typedef IMP::base::Vector<Hierarchy> GenericHierarchies;
     \see HierarchyTraits
  */
 class IMPCOREEXPORT Hierarchy : public Decorator {
-  static void do_setup_particle(Model *, kernel::ParticleIndex ,
+  static void do_setup_particle(kernel::Model *, kernel::ParticleIndex ,
                                 HierarchyTraits ) {
   }
-  static void do_setup_particle(Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                                 const kernel::ParticleIndexes &children,
                                 HierarchyTraits traits) {
     for (unsigned int i = 0; i < children.size(); ++i) {
@@ -90,7 +90,7 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
     m->add_attribute(traits.get_children_key(), pi,
                      children);
   }
-  static void do_setup_particle(Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                                 const kernel::ParticlesTemp &children,
                                 HierarchyTraits traits) {
     do_setup_particle(m, pi, kernel::get_indexes(children), traits);
@@ -107,7 +107,7 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
 
   /** Check if the particle has the needed attributes for a
    cast to succeed */
-  static bool get_is_setup(Model *, kernel::ParticleIndex,
+  static bool get_is_setup(kernel::Model *, kernel::ParticleIndex,
                            HierarchyTraits =
                            Hierarchy::get_default_traits()) {
     return true;

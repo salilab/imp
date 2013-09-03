@@ -12,7 +12,7 @@
 
 #include <IMP/core/MSConnectivityRestraint.h>
 
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/kernel/Particle.h>
 #include <IMP/base/log.h>
 #include <IMP/singleton_macros.h>
@@ -733,8 +733,8 @@ ParticlePairsTemp MSConnectivityRestraint::get_connected_pairs() const {
 }
 
 ModelObjectsTemp MSConnectivityRestraint::do_get_inputs() const {
-  if (!sc_) return ModelObjectsTemp();
-  ModelObjectsTemp ret;
+  if (!sc_) return kernel::ModelObjectsTemp();
+  kernel::ModelObjectsTemp ret;
   IMP_CONTAINER_ACCESS(SingletonContainer, sc_, {
     ret += ps_->get_inputs(get_model(), imp_indexes);
   });

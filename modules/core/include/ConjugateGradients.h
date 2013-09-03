@@ -23,17 +23,17 @@ IMPCORE_BEGIN_NAMESPACE
     derivatives of the various attributes being optimized. By default,
     the scales are estimated from the range of values found for the attribute
     upon initialization. These estimates can be viewed either by calling
-    Model::get_range(my_float_key) or by turning on TERSE logging and looking
+    kernel::Model::get_range(my_float_key) or by turning on TERSE logging and looking
     at logged messages. If this estimate does not accurately reflect the
-    scale, then you can use Model::set_range to set a more accurate range
+    scale, then you can use kernel::Model::set_range to set a more accurate range
     for the parameters.
 */
 class IMPCOREEXPORT ConjugateGradients : public AttributeOptimizer {
  public:
-  /** \deprecated_at{2.1} Use the constructor that takes a Model. */
+  /** \deprecated_at{2.1} Use the constructor that takes a kernel::Model. */
   IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
   ConjugateGradients();
-  ConjugateGradients(Model *m, std::string name = "ConjugateGradients%1%");
+  ConjugateGradients(kernel::Model *m, std::string name = "ConjugateGradients%1%");
 
   //! Set the threshold for the minimum gradient
   void set_gradient_threshold(Float t) { threshold_ = t; }

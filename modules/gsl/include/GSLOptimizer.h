@@ -25,7 +25,7 @@ class IMPGSLEXPORT GSLOptimizer : public AttributeOptimizer {
   mutable FloatIndexes fis_;
 
  public:
-  GSLOptimizer(Model *m);
+  GSLOptimizer(kernel::Model *m);
   GSLOptimizer();
 
   virtual ~GSLOptimizer();

@@ -51,11 +51,11 @@ class IMPCOREEXPORT CoverRefined : public SingletonModifier {
   //! Set how nmuch extra to add to the radius.
   void set_slack(Float slack) { slack_ = slack; }
 
-  virtual void apply_index(Model *m, kernel::ParticleIndex a) const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs(Model *m,
+  virtual void apply_index(kernel::Model *m, kernel::ParticleIndex a) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
                                          const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_outputs(Model *m,
+  virtual kernel::ModelObjectsTemp do_get_outputs(kernel::Model *m,
                                           const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
   IMP_SINGLETON_MODIFIER_METHODS(CoverRefined);

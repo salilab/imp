@@ -92,7 +92,7 @@ FloatKey sk("slack");
 
 It create_particles() {
   It ret;
-  ret.m = new Model();
+  ret.m = new kernel::Model();
   ret.m->set_log_level(SILENT);
   Sphere3D perturb(Vector3D(0, 0, 0), pertub_amount);
   for (unsigned int i = 0; i < num_x; ++i) {
@@ -130,7 +130,7 @@ It create_particles() {
 It create_particles(std::string name) {
   RMF::FileConstHandle r = RMF::open_rmf_file_read_only(name);
   It ret;
-  ret.m = new Model();
+  ret.m = new kernel::Model();
   ret.chains = IMP::rmf::create_hierarchies(r, ret.m);
   kernel::ParticlesTemp ps = IMP::rmf::create_particles(r, ret.m);
   IMP_USAGE_CHECK(ps.size() == 1, "Wrong number: " << ps);
@@ -219,7 +219,7 @@ void initialize(It it) {
 }
 
 void rigidify(const kernel::ParticlesTemp &ps, bool no_members) {
-  Model *m = ps[0]->get_model();
+  kernel::Model *m = ps[0]->get_model();
   for (unsigned int i = 0; i < ps.size(); ++i) {
     XYZR d(ps[i]);
     ReferenceFrame3D rf(Transformation3D(algebra::get_identity_rotation_3d(),

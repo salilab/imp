@@ -19,7 +19,7 @@
   ParticlesTemp get_input_particles(Particle *) const;                         \
   /** \deprecated_at{2.1} Use get_inputs() instead. */                         \
   ContainersTemp get_input_containers(Particle *) const;                       \
-  ModelObjectsTemp do_get_inputs(Model *m, const ParticleIndexes &pis) const { \
+  ModelObjectsTemp do_get_inputs(kernel::Model *m, const ParticleIndexes &pis) const { \
     ModelObjectsTemp ret;                                                      \
     for (unsigned int i = 0; i < pis.size(); ++i) {                            \
       ret += get_input_particles(m->get_particle(pis[i]));                     \
@@ -34,7 +34,7 @@
   ParticlesTemp get_output_particles(Particle *) const;               \
   /** \deprecated_at{2.1} Use get_inputs() instead. */                \
   ContainersTemp get_output_containers(Particle *) const;             \
-  ModelObjectsTemp do_get_outputs(Model *m,                           \
+  ModelObjectsTemp do_get_outputs(kernel::Model *m,                           \
                                   const ParticleIndexes &pis) const { \
     ModelObjectsTemp ret;                                             \
     for (unsigned int i = 0; i < pis.size(); ++i) {                   \
@@ -142,10 +142,10 @@ public:                                                                 \
 /** Get all the ModelObject objects that are read when the              \
     referenced                                                          \
     particles are passed in.*/ ModelObjectsTemp                         \
-  get_inputs(Model *m, const ParticleIndexes &pis) const;               \
+  get_inputs(kernel::Model *m, const ParticleIndexes &pis) const;               \
                                                                         \
 protected: /** Override if this reads other objects during evaluate.*/  \
-virtual ModelObjectsTemp do_get_inputs(Model *m,                        \
+virtual ModelObjectsTemp do_get_inputs(kernel::Model *m,                        \
                                        const ParticleIndexes &pis) const = 0
 
 /** Define standard input methods for things that take particles as arguments
@@ -153,7 +153,7 @@ virtual ModelObjectsTemp do_get_inputs(Model *m,                        \
 #define IMP_INPUTS_DEF(Name)                                            \
   IMP_INPUTS_DEF_BACKWARDS(Name) IMPKERNEL_DEPRECATED_MACRO(            \
       2.1, "Inherit from IMP::kernel::ParticleInputs.");                \
-  ModelObjectsTemp Name::get_inputs(Model *m,                           \
+  ModelObjectsTemp Name::get_inputs(kernel::Model *m,                           \
                                     const ParticleIndexes &pis) const { \
     return do_get_inputs(m, pis);                                       \
   }
@@ -167,7 +167,7 @@ virtual ModelObjectsTemp do_get_inputs(Model *m,                        \
 public                                                                  \
 : /** Get all the ModelObject objects that are read when the referenced \
       particles are passed in.*/                                        \
-ModelObjectsTemp get_outputs(Model *m, const ParticleIndexes &pis) const; \
+ModelObjectsTemp get_outputs(kernel::Model *m, const ParticleIndexes &pis) const; \
                                                                              \
  protected: /** Override if this reads other objects during evaluate.*/      \
   virtual ModelObjectsTemp do_get_outputs(                                   \

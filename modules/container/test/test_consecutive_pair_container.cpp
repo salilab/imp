@@ -14,7 +14,7 @@
 #include <IMP/container/generic.h>
 
 int main(int, char * []) {
-  IMP_NEW(IMP::Model, m, ());
+  IMP_NEW(IMP::kernel::Model, m, ());
   IMP::kernel::ParticlesTemp ps;
   IMP::algebra::BoundingBox3D bb(IMP::algebra::Vector3D(0, 0, 0),
                                  IMP::algebra::Vector3D(10, 10, 10));

@@ -117,7 +117,7 @@ double PCAFitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 
 ModelObjectsTemp PCAFitRestraint::do_get_inputs() const
 {
-  ModelObjectsTemp pt(all_ps_.begin(), all_ps_.end());
+  kernel::ModelObjectsTemp pt(all_ps_.begin(), all_ps_.end());
   return pt;
 }
 

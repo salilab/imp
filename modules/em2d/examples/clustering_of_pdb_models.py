@@ -70,7 +70,7 @@ fn_selection = em2d.get_example_path("all-models-1z5s.sel")
 fn_em2d_scores = em2d.get_example_path("em2d_scores_for_clustering.data")
 # Load models
 print "Reading models ..."
-model = IMP.Model()
+model = IMP.kernel.Model()
 ssel = atom.ATOMPDBSelector()
 coords =[]
 fn_models = em2d.read_selection_file(fn_selection)

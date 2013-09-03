@@ -50,7 +50,7 @@ ParticleIndexes AllPairContainer::get_all_possible_indexes() const {
 }
 
 ModelObjectsTemp AllPairContainer::do_get_inputs() const {
-  return ModelObjectsTemp(1, c_);
+  return kernel::ModelObjectsTemp(1, c_);
 }
 void AllPairContainer::do_before_evaluate() {
   set_is_changed(update_version(c_, c_version_));

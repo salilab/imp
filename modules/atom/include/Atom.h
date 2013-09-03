@@ -18,7 +18,7 @@
 
 #include <IMP/base_types.h>
 #include <IMP/kernel/Particle.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 
 #include <vector>
 #include <deque>
@@ -232,8 +232,8 @@ IMPATOMEXPORT extern const AtomType AT_HB1;
    \see Hierarchy
  */
 class IMPATOMEXPORT Atom : public Hierarchy {
-  static void do_setup_particle(Model *m, kernel::ParticleIndex pi, Atom o);
-  static void do_setup_particle(Model *m, kernel::ParticleIndex pi, AtomType t);
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi, Atom o);
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi, AtomType t);
  public:
   IMP_DECORATOR_METHODS(Atom, Hierarchy);
   IMP_DECORATOR_SETUP_1(Atom, Atom, other);
@@ -241,7 +241,7 @@ class IMPATOMEXPORT Atom : public Hierarchy {
   IMP_DECORATOR_SETUP_1(Atom, AtomType, atom_type);
 
   /** return true if the particle has the needed attributes */
-  static bool get_is_setup(Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
     return m->get_has_attribute(get_atom_type_key(), pi) &&
            Hierarchy::get_is_setup(m, pi);
   }

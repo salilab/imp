@@ -43,7 +43,7 @@ class Tests(IMP.test.TestCase):
 
     def _test_starting_conditions(self, starting_values):
         """Test the optimizer with given starting conditions"""
-        model = IMP.Model()
+        model = IMP.kernel.Model()
         particles = []
 
         for value in starting_values:

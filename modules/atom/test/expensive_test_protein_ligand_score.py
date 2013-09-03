@@ -9,7 +9,7 @@ class Tests(IMP.test.TestCase):
 
     def _test_score(self):
         """Test protein ligand restraint 1"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         IMP.base.set_log_level(IMP.base.SILENT)
         p= IMP.atom.read_pdb(self.get_input_file_name("1d3d-protein.pdb"),
                              m)
@@ -39,7 +39,7 @@ class Tests(IMP.test.TestCase):
         print r.evaluate(False)
     def test_score_2(self):
         """Test protein ligand restraint 2"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         IMP.base.set_log_level(IMP.base.SILENT)
         p= IMP.atom.read_pdb(self.get_input_file_name("1d3d-protein.pdb"),
                              m, IMP.atom.NonWaterNonHydrogenPDBSelector())

@@ -11,7 +11,7 @@ k=10.0
 np=10
 frames=10
 
-m= IMP.Model()
+m= IMP.kernel.Model()
 bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                               IMP.algebra.Vector3D(10,10,10))
 

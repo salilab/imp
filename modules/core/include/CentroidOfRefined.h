@@ -37,11 +37,11 @@ class IMPCOREEXPORT CentroidOfRefined : public SingletonModifier {
   //! Set the keys ks to be the average of the refined particles.
   CentroidOfRefined(Refiner *r, FloatKey weight = FloatKey(),
                     FloatKeys ks = XYZ::get_xyz_keys());
-  virtual void apply_index(Model *m, kernel::ParticleIndex a) const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs(Model *m,
+  virtual void apply_index(kernel::Model *m, kernel::ParticleIndex a) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
                                          const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_outputs(Model *m,
+  virtual kernel::ModelObjectsTemp do_get_outputs(kernel::Model *m,
                                           const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
   IMP_SINGLETON_MODIFIER_METHODS(CentroidOfRefined);

@@ -42,21 +42,21 @@ class IMPKERNELEXPORT ClassnamePredicate : public ParticleInputs,
       virtual Ints get_value(const PLURALVARIABLETYPE &o) const;
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  virtual void remove_if_equal(Model *m, PLURALINDEXTYPE &ps, int v) const;
-  virtual void remove_if_not_equal(Model *m, PLURALINDEXTYPE &ps, int v) const;
+  virtual void remove_if_equal(kernel::Model *m, PLURALINDEXTYPE &ps, int v) const;
+  virtual void remove_if_not_equal(kernel::Model *m, PLURALINDEXTYPE &ps, int v) const;
 #endif
 
   //! Compute the predicate and the derivative if needed.
-  virtual int get_value_index(Model *m, PASSINDEXTYPE vt) const;
+  virtual int get_value_index(kernel::Model *m, PASSINDEXTYPE vt) const;
 
   //! Enable them to be use as functors
   /** But beware of slicing.
    */
-  int operator()(Model *m, PASSINDEXTYPE vt) const {
+  int operator()(kernel::Model *m, PASSINDEXTYPE vt) const {
     return get_value_index(m, vt);
   }
 
-  virtual Ints get_value_index(Model *m, const PLURALINDEXTYPE &o) const {
+  virtual Ints get_value_index(kernel::Model *m, const PLURALINDEXTYPE &o) const {
     Ints ret(o.size());
     for (unsigned int i = 0; i < o.size(); ++i) {
       ret[i] += get_value_index(m, o[i]);

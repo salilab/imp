@@ -71,7 +71,7 @@ IntPairs Fragment::get_residue_index_ranges() const {
   return ret;
 }
 
-void Fragment::set_residue_indexes(Model *m,
+void Fragment::set_residue_indexes(kernel::Model *m,
                                    kernel::ParticleIndex pi, const IntPairs &ris) {
   Ints begins(ris.size());
   Ints ends(ris.size());
@@ -97,7 +97,7 @@ void Fragment::set_residue_indexes(Model *m,
   }
 }
 
-void Fragment::set_residue_indexes(Model *m,
+void Fragment::set_residue_indexes(kernel::Model *m,
                                    kernel::ParticleIndex pi, Ints o) {
   if (o.empty()) {
     set_residue_indexes(m, pi, IntPairs());

@@ -8,7 +8,7 @@ class Tests(IMP.test.TestCase):
     """Tests for RefinerCover"""
     def test_it(self):
         """Test cover refined"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         IMP.base.set_log_level(IMP.MEMORY)
         n= random.randrange(1,10)
         ps=[]

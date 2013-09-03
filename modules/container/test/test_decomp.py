@@ -9,7 +9,7 @@ class Tests(IMP.test.TestCase):
 
     def test_allp(self):
         """Checking decomposition of plural restraints"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         for i in range(0,10):
             p= IMP.kernel.Particle(m)
             IMP.core.XYZR.setup_particle(p)

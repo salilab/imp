@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
         IMP.base.set_log_level(IMP.base.SILENT)
 
         #init IMP model ( the environment)
-        self.mdl = IMP.Model()
+        self.mdl = IMP.kernel.Model()
         self.sel=IMP.atom.CAlphaPDBSelector()
         self.mhs=IMP.atom.Hierarchies()
         self.mhs.append(IMP.atom.read_pdb(self.get_input_file_name("1tyq_A.pdb"),

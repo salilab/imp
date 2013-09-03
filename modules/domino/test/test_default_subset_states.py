@@ -18,7 +18,7 @@ class Tests(IMP.test.TestCase):
 
     def _test_basic(self, nm):
         """Testing default subset states"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps=[]
         ns=5
         np=4
@@ -43,7 +43,7 @@ class Tests(IMP.test.TestCase):
 
     def _test_equivalencies(self, nm):
         """Testing default subset states with equivalencies"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps=[]
         ns=5
         np=4
@@ -73,7 +73,7 @@ class Tests(IMP.test.TestCase):
 
     def _test_explicit(self, nm):
         """Testing default subset states with explicit equivalencies"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps=[]
         ns=5
         np=4

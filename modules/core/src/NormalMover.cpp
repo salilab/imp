@@ -16,7 +16,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 namespace {
-std::string get_normal_mover_name(Model *m, kernel::ParticleIndex pi) {
+std::string get_normal_mover_name(kernel::Model *m, kernel::ParticleIndex pi) {
   return "NormalMover-" + m->get_particle(pi)->get_name();
 }
 }
@@ -29,13 +29,13 @@ void NormalMover::initialize(kernel::ParticleIndexes pis, FloatKeys keys,
   originals_.resize(pis.size(), algebra::get_zero_vector_kd(keys.size()));
 }
 
-NormalMover::NormalMover(Model *m, kernel::ParticleIndex pi, const FloatKeys &keys,
+NormalMover::NormalMover(kernel::Model *m, kernel::ParticleIndex pi, const FloatKeys &keys,
                          double radius)
     : MonteCarloMover(m, get_normal_mover_name(m, pi)) {
   initialize(kernel::ParticleIndexes(1, pi), keys, radius);
 }
 
-NormalMover::NormalMover(Model *m, kernel::ParticleIndex pi, double radius)
+NormalMover::NormalMover(kernel::Model *m, kernel::ParticleIndex pi, double radius)
     : MonteCarloMover(m, get_normal_mover_name(m, pi)) {
   initialize(kernel::ParticleIndexes(1, pi), XYZ::get_xyz_keys(), radius);
 }

@@ -32,7 +32,7 @@ class IMPATOMEXPORT EzRestraint : public kernel::Restraint
 protected:
   virtual double
       unprotected_evaluate(DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual  kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 public:
   EzRestraint(kernel::Particles ps);
 

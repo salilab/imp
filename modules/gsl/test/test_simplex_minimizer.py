@@ -31,7 +31,7 @@ class EasyCubeFunc(IMP.kernel.Restraint):
 
 class Tests(IMP.test.TestCase):
     def _test_it(self):
-        model = IMP.Model()
+        model = IMP.kernel.Model()
         particles = []
 
         for i in range(0,2):

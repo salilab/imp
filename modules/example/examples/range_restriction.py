@@ -17,7 +17,7 @@ IMP.base.setup_from_argv(sys.argv, "A trivial example of an example.")
 bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                               IMP.algebra.Vector3D(10,10,10))
 
-m= IMP.Model()
+m= IMP.kernel.Model()
 ps= IMP.core.create_xyzr_particles(m, 20, 1)
 sc= IMP.container.ListSingletonContainer(ps)
 

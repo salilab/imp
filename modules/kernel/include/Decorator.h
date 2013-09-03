@@ -125,7 +125,7 @@ class IMPKERNELEXPORT Decorator : public base::Value {
   }
 
  protected:
-  Decorator(Model* m, ParticleIndex pi);
+  Decorator(kernel::Model* m, ParticleIndex pi);
   Decorator();
 
 #ifndef IMP_DOXYGEN
@@ -243,7 +243,7 @@ class IMPKERNELEXPORT Decorator : public base::Value {
 
 #ifndef IMP_DOXYGEN
 
-inline Decorator::Decorator(Model* m, ParticleIndex pi) : model_(m), pi_(pi) {};
+inline Decorator::Decorator(kernel::Model* m, ParticleIndex pi) : model_(m), pi_(pi) {};
 inline Decorator::Decorator() : pi_(-1) {}
 
 #define IMP_CONSTRAINT_DECORATOR_DECL(Name)                                    \

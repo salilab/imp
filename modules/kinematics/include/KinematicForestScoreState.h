@@ -48,9 +48,9 @@ class IMPKINEMATICSEXPORT KinematicForestScoreState : public IMP::ScoreState {
 
   void do_after_evaluate(DerivativeAccumulator *da) { IMP_UNUSED(da); }
 
-  ModelObjectsTemp do_get_inputs() const;
+  kernel::ModelObjectsTemp do_get_inputs() const;
 
-  ModelObjectsTemp do_get_outputs() const;
+  kernel::ModelObjectsTemp do_get_outputs() const;
 
  private:
   KinematicForest *kf_;

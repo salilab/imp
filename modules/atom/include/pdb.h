@@ -17,7 +17,7 @@
 #include "atom_macros.h"
 #include <IMP/file.h>
 #include "Selection.h"
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/kernel/Particle.h>
 #include <IMP/kernel/OptimizerState.h>
 #include <IMP/kernel/internal/utility.h>
@@ -292,7 +292,7 @@ class NotPDBSelector : public PDBSelector {
 /** Read a all the molecules in the first model of the
     pdb file.
  */
-IMPATOMEXPORT Hierarchy read_pdb(base::TextInput input, Model *model);
+IMPATOMEXPORT Hierarchy read_pdb(base::TextInput input, kernel::Model *model);
 
 /** Rewrite the coordinates of the passed hierarchy based
     on the contents of the first model in the pdb file.
@@ -313,7 +313,7 @@ IMPATOMEXPORT void read_pdb(base::TextInput input, int model, Hierarchy h);
 
 /** See Hierarchy
  */
-IMPATOMEXPORT Hierarchy read_pdb(base::TextInput input, Model *model,
+IMPATOMEXPORT Hierarchy read_pdb(base::TextInput input, kernel::Model *model,
                                  PDBSelector *selector,
                                  bool select_first_model = true
 #ifndef IMP_DOXYGEN
@@ -325,7 +325,7 @@ IMPATOMEXPORT Hierarchy read_pdb(base::TextInput input, Model *model,
 /** Read all models from the pdb file.
  */
 IMPATOMEXPORT Hierarchies read_multimodel_pdb(base::TextInput input,
-                                              Model *model,
+                                              kernel::Model *model,
                                               PDBSelector *selector
 #ifndef IMP_DOXYGEN
                                               ,
@@ -335,7 +335,7 @@ IMPATOMEXPORT Hierarchies read_multimodel_pdb(base::TextInput input,
 /** Read all models from the pdb file.
  */
 IMPATOMEXPORT Hierarchies read_multimodel_pdb(base::TextInput input,
-                                              Model *model);
+                                              kernel::Model *model);
 /** @} */
 
 /** @name PDB Writing
@@ -415,7 +415,7 @@ public:
                          std::string filename);
 protected:
   virtual void do_update(unsigned int call) IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(WritePDBOptimizerState);
 };
 

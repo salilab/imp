@@ -15,7 +15,7 @@ class MyOptimizerState(IMP.OptimizerState):
 
 # some code to create and evaluate it
 k= IMP.FloatKey("a key")
-m= IMP.Model()
+m= IMP.kernel.Model()
 # we don't have any real restraints in the kernel
 r0=IMP.kernel._ConstRestraint(m, [], 1)
 r0.set_name("restraint 0")

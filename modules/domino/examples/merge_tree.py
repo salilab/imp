@@ -8,7 +8,7 @@ import IMP.container
 import IMP.algebra
 
 IMP.base.set_log_level(IMP.base.TERSE)
-m=IMP.Model()
+m=IMP.kernel.Model()
 # don't print messages about evaluation
 m.set_log_level(IMP.base.SILENT)
 

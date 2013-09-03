@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
         for suffix in RMF.suffixes:
             fn=self.get_tmp_file_name("restsets."+suffix)
             f= RMF.create_rmf_file(fn)
-            m= IMP.Model()
+            m= IMP.kernel.Model()
             p= IMP.kernel.Particle(m)
             IMP.atom.Hierarchy.setup_particle(p)
             IMP.atom.Mass.setup_particle(p, 1)
@@ -42,7 +42,7 @@ class Tests(IMP.test.TestCase):
         for suffix in RMF.suffixes:
             fn=self.get_tmp_file_name("ndrestsets."+suffix)
             f= RMF.create_rmf_file(fn)
-            m= IMP.Model()
+            m= IMP.kernel.Model()
             p= IMP.kernel.Particle(m)
             IMP.atom.Hierarchy.setup_particle(p)
             IMP.atom.Mass.setup_particle(p, 1)

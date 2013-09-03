@@ -101,7 +101,7 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
  public:
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa) const
       IMP_OVERRIDE;
-  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(PredicateClassnamesRestraint);
   ;
 

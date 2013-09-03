@@ -8,7 +8,7 @@
 
 #include "lib/SOAPResult.h"
 
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/pdb.h>
@@ -101,7 +101,7 @@ for a set of transformations in the trans_file.")
   trans_file = files[2];
 
   // read pdb  files, prepare particles
-  IMP::Model *model = new IMP::Model();
+  IMP::kernel::Model *model = new IMP::kernel::Model();
   IMP::atom::Hierarchy mhd1 = IMP::atom::read_pdb(pdb1, model,
                         new IMP::atom::NonWaterNonHydrogenPDBSelector(),
                                                   true, true);

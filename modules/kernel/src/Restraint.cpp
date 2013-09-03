@@ -26,7 +26,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 const double NO_MAX = std::numeric_limits<double>::max();
 const double BAD_SCORE = NO_MAX;
 
-Restraint::Restraint(Model *m, std::string name)
+Restraint::Restraint(kernel::Model *m, std::string name)
     : ModelObject(m, name), weight_(1), max_(NO_MAX), last_score_(BAD_SCORE) {}
 
 Restraint::Restraint(std::string name)
@@ -245,10 +245,10 @@ ContainersTemp Restraint::get_input_containers() const {
   return IMP::kernel::get_input_containers(get_inputs());
 }
 
-Restraint *RestraintsAdaptor::get(Model *sf) {
+Restraint *RestraintsAdaptor::get(kernel::Model *sf) {
   return sf->get_root_restraint_set();
 }
-RestraintsAdaptor::RestraintsAdaptor(Model *sf)
+RestraintsAdaptor::RestraintsAdaptor(kernel::Model *sf)
     : Restraints(1, sf->get_root_restraint_set()) {}
 RestraintsAdaptor::RestraintsAdaptor(const ModelsTemp &sf)
     : Restraints(1, sf[0]->get_root_restraint_set()) {}

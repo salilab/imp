@@ -44,7 +44,7 @@ public:
    * @param masks A manager containing the masks used for projecting.
    */
   void setup(kernel::ParticlesTemp &ps, const ProjectingParameters &params,
-                 Model *scoring_model,
+                 kernel::Model *scoring_model,
                  ScoreFunction *score_function,
                  MasksManagerPtr masks=MasksManagerPtr());
 

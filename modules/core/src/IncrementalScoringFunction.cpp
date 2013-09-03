@@ -25,7 +25,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 namespace {
 // TODO: this can be made a general library function at some point
-IMP::Model *extract_model(const kernel::ParticlesTemp &ps) {
+IMP::kernel::Model *extract_model(const kernel::ParticlesTemp &ps) {
   IMP_USAGE_CHECK(ps.size() > 0,
                   "needs at least one particle to extract a model");
   return ps[0]->get_model();
@@ -60,7 +60,7 @@ class IncrementalRestraintsScoringFunction
       std::string name = "IncrementalRestraintsScoringFunction%1%")
       : IMP::internal::RestraintsScoringFunction(rs, weight, max, name) {}
   // don't depend on optimized particles
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
     return get_restraints();
   }
 };
@@ -292,7 +292,7 @@ IncrementalScoringFunction::Wrapper::~Wrapper() {
 
 //! all real work is passed off to other ScoringFunctions
 ModelObjectsTemp IncrementalScoringFunction::do_get_inputs() const {
-  return ModelObjectsTemp();
+  return kernel::ModelObjectsTemp();
 }
 
 IncrementalScoringFunction::ScoringFunctionsMap::~ScoringFunctionsMap() {

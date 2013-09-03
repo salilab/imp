@@ -114,7 +114,7 @@ class IMPKERNELEXPORT Model : public base::Object
   base::PointerMember<RestraintSet> restraints_;
 
   void do_add_dependencies(const ModelObject *mo);
-  void do_clear_required_score_states(ModelObject *mo);
+  void do_clear_required_score_states(kernel::ModelObject *mo);
   void do_check_required_score_states(const ModelObject *mo) const;
   void do_check_update_order(const ScoreState *ss) const;
   void do_check_inputs_and_outputs(const ModelObject *mo) const;
@@ -155,15 +155,15 @@ class IMPKERNELEXPORT Model : public base::Object
   void do_add_score_state(ScoreState *obj);
   void do_remove_particle(ParticleIndex pi);
   bool do_get_has_required_score_states(const ModelObject *mo) const;
-  void do_set_has_required_score_states(ModelObject *mo, bool tf);
+  void do_set_has_required_score_states(kernel::ModelObject *mo, bool tf);
   const ScoreStatesTemp& do_get_required_score_states(const ModelObject *mo)
       const {
     IMP_USAGE_CHECK(do_get_has_required_score_states(mo),
                     "Doesn't have score states");
     return required_score_states_.find(mo)->second;
   }
-  void do_add_model_object(ModelObject *mo);
-  void do_remove_model_object(ModelObject *mo);
+  void do_add_model_object(kernel::ModelObject *mo);
+  void do_remove_model_object(kernel::ModelObject *mo);
  public:
   /** Construct an empty model */
   Model(std::string name = "Model %1%");
@@ -314,13 +314,13 @@ class IMPKERNELEXPORT Model : public base::Object
       to keep a central ScoreState to normalize rigid body rotational variables.
       @{ */
   /** Store a piece of data in the model referenced by the key. */
-  void add_data(ModelKey mk, base::Object *o);
+  void add_data(kernel::ModelKey mk, base::Object *o);
   /** Get back some data stored in the model. */
-  base::Object *get_data(ModelKey mk) const;
+  base::Object *get_data(kernel::ModelKey mk) const;
   /** Remove data stored in the model. */
-  void remove_data(ModelKey mk);
+  void remove_data(kernel::ModelKey mk);
   /** Check if the model has a certain piece of data attached. */
-  bool get_has_data(ModelKey mk) const;
+  bool get_has_data(kernel::ModelKey mk) const;
   /** @} */
 
   IMP_OBJECT_METHODS(Model);

@@ -45,9 +45,9 @@ class IMPATOMEXPORT CoulombPairScore : public PairScore {
 
   double get_relative_dielectric() const { return relative_dielectric_; }
 
-  virtual double evaluate_index(Model *m, const kernel::ParticleIndexPair &p,
+  virtual double evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs(Model *m,
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
                                          const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
   IMP_PAIR_SCORE_METHODS(CoulombPairScore);

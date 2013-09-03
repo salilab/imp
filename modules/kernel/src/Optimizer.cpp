@@ -30,7 +30,7 @@ Optimizer::Optimizer() : ModelObject("Optimizer%1%") {
   stop_on_good_score_ = false;
 }
 
-Optimizer::Optimizer(Model *m, std::string name) : ModelObject(m, name) {
+Optimizer::Optimizer(kernel::Model *m, std::string name) : ModelObject(m, name) {
   set_was_used(true);
   min_score_ = -std::numeric_limits<double>::max();
   stop_on_good_score_ = false;

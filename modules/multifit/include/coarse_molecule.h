@@ -27,7 +27,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 IMPMULTIFITEXPORT
 atom::Hierarchy create_coarse_molecule_from_molecule(
          const atom::Hierarchy &mh,int num_beads,
-         Model *mdl,
+         kernel::Model *mdl,
          float bead_radius,
          bool add_conn_restraint = false);
 
@@ -45,7 +45,7 @@ IMPMULTIFITEXPORT
 atom::Hierarchies create_coarse_molecules_from_molecules(
                   const atom::Hierarchies &mhs,
                   int frag_len,
-                  Model *mdl,
+                  kernel::Model *mdl,
                   float bead_radius,
                   bool add_conn_restraint = false);
 
@@ -63,7 +63,7 @@ atom::Hierarchy create_coarse_molecule_from_density(
     em::DensityMap *dmap,
     float dens_threshold,
     int num_beads,
-    Model *mdl,
+    kernel::Model *mdl,
     float bead_radius);
 
 IMPMULTIFIT_END_NAMESPACE

@@ -25,8 +25,8 @@ const kernel::ParticlesTemp LeavesRefiner::get_refined(kernel::Particle *p) cons
 }
 
 ModelObjectsTemp LeavesRefiner::do_get_inputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
-  ModelObjectsTemp ret;
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
+  kernel::ModelObjectsTemp ret;
   for (unsigned int i = 0; i < pis.size(); ++i) {
     ret += get_all_descendants(Hierarchy(m, pis[i], traits_));
   }

@@ -9,7 +9,7 @@ class Tests(IMP.test.TestCase):
 
     def test_allp2(self):
         """Check the event optimizer states"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps= []
         for i in range(0,5):
             p= IMP.kernel.Particle(m)

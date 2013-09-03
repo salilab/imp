@@ -12,7 +12,7 @@
 IMPKINEMATICS_BEGIN_NAMESPACE
 
 ModelObjectsTemp KinematicForestScoreState::do_get_inputs() const {
-  ModelObjectsTemp ret;
+  kernel::ModelObjectsTemp ret;
   ret += atoms_;
   for(unsigned int i=0; i<rbs_.size(); i++) {
     ret.push_back(rbs_[i]);
@@ -21,7 +21,7 @@ ModelObjectsTemp KinematicForestScoreState::do_get_inputs() const {
 }
 
 ModelObjectsTemp KinematicForestScoreState::do_get_outputs() const {
-  ModelObjectsTemp ret;
+  kernel::ModelObjectsTemp ret;
   ret+= atoms_;
   for(unsigned int i=0; i<rbs_.size(); i++) {
     ret.push_back(rbs_[i]);

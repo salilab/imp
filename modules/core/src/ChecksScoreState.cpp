@@ -13,7 +13,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-ChecksScoreState::ChecksScoreState(Model *m, double prob)
+ChecksScoreState::ChecksScoreState(kernel::Model *m, double prob)
     : ScoreState(m, "ChecksScoreState %1%"),
       probability_(prob),
       num_checked_(0) {
@@ -23,7 +23,7 @@ ChecksScoreState::ChecksScoreState(Model *m, double prob)
 
 ChecksScoreState::ChecksScoreState(double prob)
     : ScoreState("ChecksScoreState %1%"), probability_(prob), num_checked_(0) {
-  IMPCORE_DEPRECATED_METHOD_DEF(2.1, "Use constructor with Model argument.");
+  IMPCORE_DEPRECATED_METHOD_DEF(2.1, "Use constructor with kernel::Model argument.");
   IMP_USAGE_CHECK(prob >= 0 && prob <= 1,
                   "Probability must be a number between 0 and 1.");
 }
@@ -40,11 +40,11 @@ void ChecksScoreState::do_before_evaluate() {
 void ChecksScoreState::do_after_evaluate(DerivativeAccumulator *) {}
 
 ModelObjectsTemp ChecksScoreState::do_get_inputs() const {
-  return ModelObjectsTemp();
+  return kernel::ModelObjectsTemp();
 }
 
 ModelObjectsTemp ChecksScoreState::do_get_outputs() const {
-  return ModelObjectsTemp();
+  return kernel::ModelObjectsTemp();
 }
 
 IMPCORE_END_NAMESPACE

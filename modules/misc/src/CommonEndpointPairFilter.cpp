@@ -14,7 +14,7 @@ IMPMISC_BEGIN_NAMESPACE
 CommonEndpointPairFilter::CommonEndpointPairFilter() {}
 
 int CommonEndpointPairFilter::get_value_index(
-    Model *m, const kernel::ParticleIndexPair &p) const {
+    kernel::Model *m, const kernel::ParticleIndexPair &p) const {
   if (!IMP::atom::Bond::get_is_setup(m, p[0]) ||
       !IMP::atom::Bond::get_is_setup(m, p[1])) {
     return false;
@@ -29,8 +29,8 @@ int CommonEndpointPairFilter::get_value_index(
 }
 
 ModelObjectsTemp CommonEndpointPairFilter::do_get_inputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
-  ModelObjectsTemp ret = IMP::kernel::get_particles(m, pis);
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
+  kernel::ModelObjectsTemp ret = IMP::kernel::get_particles(m, pis);
   for (unsigned int i = 0; i < pis.size(); ++i) {
     if (IMP::atom::Bond::get_is_setup(m, pis[i])) {
       IMP::atom::Bond b(m, pis[i]);

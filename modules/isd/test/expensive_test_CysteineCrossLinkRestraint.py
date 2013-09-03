@@ -66,7 +66,7 @@ class TestCysteineCrossLinkRestraint(IMP.test.TestCase):
 
     def testSetupAndEvaluate(self):
         "test the restraint on precalculated parameter grid"
-        m=IMP.Model()
+        m=IMP.kernel.Model()
 
         ps=[]
         #setting up particles

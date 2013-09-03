@@ -25,7 +25,7 @@ const double dope_threshold = 16;
 const double spring_constant = 1;
 
 // create some pairs that can be score with dope
-IMP::kernel::ParticleIndexPairs setup_pairs(IMP::Model *m) {
+IMP::kernel::ParticleIndexPairs setup_pairs(IMP::kernel::Model *m) {
   IMP::kernel::ParticleIndex rpi = m->add_particle("root");
   IMP::atom::Chain chain = IMP::atom::Chain::setup_particle(m, rpi, 'A');
   IMP::kernel::ParticleIndexes atoms;
@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
                   SoftSphere(Harmonic(spring_constant))));
 
     // Now let's use it
-    IMP::base::PointerMember<IMP::Model> model = new IMP::Model();
+    IMP::base::PointerMember<IMP::kernel::Model> model = new IMP::kernel::Model();
     IMP::kernel::ParticleIndexPairs pips = setup_pairs(model);
 
     for (unsigned int i = 0; i < pips.size(); ++i) {

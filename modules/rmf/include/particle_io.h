@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/particle_io.h
- *  \brief Handle read/write of Model data from/to files.
+ *  \brief Handle read/write of kernel::Model data from/to files.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -27,7 +27,7 @@ IMPRMF_BEGIN_NAMESPACE
 */
 IMP_DECLARE_LINKERS(kernel::Particle, particle, particles, kernel::Particle *, kernel::ParticlesTemp,
                     kernel::Particle *, kernel::ParticlesTemp,
-                    (RMF::FileConstHandle fh, Model *m), );
+                    (RMF::FileConstHandle fh, kernel::Model *m), );
 
 /** @} */
 

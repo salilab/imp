@@ -36,7 +36,7 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         self.G = Scale.setup_particle(IMP.kernel.Particle(self.m), 10.0)
         self.Rg = Scale.setup_particle(IMP.kernel.Particle(self.m), 10.0)
         self.d = Scale.setup_particle(IMP.kernel.Particle(self.m), 4.0)

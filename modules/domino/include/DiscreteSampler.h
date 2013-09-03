@@ -62,7 +62,7 @@ class IMPDOMINOEXPORT DiscreteSampler : public Sampler {
   virtual Assignments do_get_sample_assignments(const Subset &all) const = 0;
 
  public:
-  DiscreteSampler(Model *m, ParticleStatesTable *pst, std::string name);
+  DiscreteSampler(kernel::Model *m, ParticleStatesTable *pst, std::string name);
 
   ~DiscreteSampler();
 

@@ -10,7 +10,7 @@
 
 #include <IMP/score_functor/score_functor_config.h>
 #include <IMP/algebra/utility.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/particle_index.h>
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
@@ -24,21 +24,21 @@ class Shift : public BaseDistanceScore {
  public:
   Shift(double x0, BaseDistanceScore base) : P(base), x0_(x0) {}
   template <unsigned int D>
-  double get_score(Model *m, const base::Array<D, kernel::ParticleIndex> &pi,
+  double get_score(kernel::Model *m, const base::Array<D, kernel::ParticleIndex> &pi,
                    double distance) const {
     return P::get_score(m, pi, distance - x0_);
   }
   template <unsigned int D>
   DerivativePair get_score_and_derivative(
-      Model *m, const base::Array<D, kernel::ParticleIndex> &p, double distance) const {
+      kernel::Model *m, const base::Array<D, kernel::ParticleIndex> &p, double distance) const {
     return P::get_score_and_derivative(m, p, distance - x0_);
   }
   template <unsigned int D>
-  double get_maximum_range(Model *m,
+  double get_maximum_range(kernel::Model *m,
                            const base::Array<D, kernel::ParticleIndex> &pi) const {
     return P::get_maximum_range(m, pi) - x0_;
   }
-  bool get_is_trivially_zero(Model *m, const kernel::ParticleIndexPair &pi,
+  bool get_is_trivially_zero(kernel::Model *m, const kernel::ParticleIndexPair &pi,
                              double squared_distance) const {
     return squared_distance >
            algebra::get_squared(P::get_maximum_range(m, pi) + x0_);

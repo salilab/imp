@@ -111,7 +111,7 @@ MarginalNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp MarginalNOERestraint::do_get_inputs() const
 {
-  ModelObjectsTemp ret;
+  kernel::ModelObjectsTemp ret;
   for (unsigned i=0; i<volumes_.size(); ++i)
   {
     ret+= IMP::get_particles(get_model(),

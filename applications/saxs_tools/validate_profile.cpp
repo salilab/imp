@@ -1,7 +1,7 @@
 /**
    This is the program for validation of SAXS profiles.
  */
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/atom/pdb.h>
 
 #include <IMP/saxs/Profile.h>

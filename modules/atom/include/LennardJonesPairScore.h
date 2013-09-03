@@ -76,9 +76,9 @@ class IMPATOMEXPORT LennardJonesPairScore : public PairScore {
 
   double get_attractive_weight() const { return attractive_weight_; }
 
-  virtual double evaluate_index(Model *m, const kernel::ParticleIndexPair &p,
+  virtual double evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs(Model *m,
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
                                          const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
   IMP_PAIR_SCORE_METHODS(LennardJonesPairScore);

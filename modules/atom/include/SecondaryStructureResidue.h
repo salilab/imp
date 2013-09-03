@@ -14,7 +14,7 @@
 
 #include <IMP/base_types.h>
 #include <IMP/kernel/Particle.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/Decorator.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -24,7 +24,7 @@ IMPATOM_BEGIN_NAMESPACE
    Contains probabilities for each sse type (helix, strand, coil)
  */
 class IMPATOMEXPORT SecondaryStructureResidue : public Decorator {
-  static void do_setup_particle(Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                                 Float prob_helix,
                                 Float prob_strand,
                                 Float prob_coil) {
@@ -58,7 +58,7 @@ class IMPATOMEXPORT SecondaryStructureResidue : public Decorator {
   }
 
   //! Return true if the particle is a secondary structure residue
-  static bool get_is_setup(Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
     if (m->get_has_attribute(get_prob_helix_key(), pi) &&
         (m->get_has_attribute(get_prob_strand_key(), pi)) &&
         (m->get_has_attribute(get_prob_coil_key(), pi)))
@@ -96,20 +96,20 @@ IMP_DECORATORS(SecondaryStructureResidue, SecondaryStructureResidues,
     underlying residues. Useful if you want to represent the secondary
     structure contents at a coarser level.
     \param[in] ssr_ps The SSR-decorated particles to be combined
-    \param[in] mdl The IMP Model
+    \param[in] mdl The IMP kernel::Model
     \param[in] winner_takes_all_per_res Whether to set prob=1.0 for top
                scoring secondary structure type
  */
 IMPATOMEXPORT SecondaryStructureResidue
     setup_coarse_secondary_structure_residue(const kernel::Particles &ssr_ps,
-                                             Model *mdl,
+                                             kernel::Model *mdl,
                                              bool winner_takes_all_per_res =
                                                  false);
 
 /** Groups SecondaryStructureResidues into segments and then coarsens them.
     Useful if you have a long sequence and want to make several coarse nodes.
     \param[in] ssr_ps The SSR-decorated particles to be combined
-    \param[in] mdl The IMP Model
+    \param[in] mdl The IMP kernel::Model
     \param[in] coarse_factor Group size
     \param[in] start_res_num Starting residue number for the provided sequence
     \param[in] winner_takes_all_per_res Whether to set prob=1.0 for top
@@ -117,7 +117,7 @@ IMPATOMEXPORT SecondaryStructureResidue
  */
 IMPATOMEXPORT SecondaryStructureResidues
     setup_coarse_secondary_structure_residues(const kernel::Particles &ssr_ps,
-                                              Model *mdl, int coarse_factor,
+                                              kernel::Model *mdl, int coarse_factor,
                                               int start_res_num,
                                               bool winner_takes_all_per_res =
                                                   false);

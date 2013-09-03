@@ -46,7 +46,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
 
     def test_restraint(self):
         """Test the ClassnamesRestraint"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         gs=self.create_CLASSFUNCTIONNAME_score()
         c= IMP.container.ListClassnameContainer(m)
         f=0
@@ -68,7 +68,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
 
     def test_srestraint(self):
         """Test the ClassnameRestraint"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         gs=self.create_CLASSFUNCTIONNAME_score()
         p=self.create_FUNCTIONNAME(m)
         f= gs.evaluate(p, None)
@@ -79,7 +79,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
 
     def test_min_restraint(self):
         """Test the MinimumClassnameRestraint"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         c= IMP.container.ListClassnameContainer(m)
         self.assertEqual(c.get_ref_count(), 1)
         for i in range(0,10):
@@ -110,7 +110,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
 
     def test_min_score(self):
         """Test the MinimumClassnameScore"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         s= []
         for i in range(0,5):
             s.append(IMP.kernel._ConstClassnameScore(i))
@@ -123,7 +123,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
     def test_set(self):
         """Testing ClassnameContainerSet"""
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         print "hi"
         c= IMP.container.ClassnameContainerSet(m)
         ls=[]

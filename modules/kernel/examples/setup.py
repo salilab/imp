@@ -4,7 +4,7 @@
 import IMP.core
 
 def create_model_and_particles():
-    m= IMP.Model()
+    m= IMP.kernel.Model()
     ps= [IMP.kernel.Particle(m) for i in range(0,100)]
     bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                  IMP.algebra.Vector3D(10,10,10))

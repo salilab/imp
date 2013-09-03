@@ -7,7 +7,7 @@ import IMP.gsl
 import IMP.algebra
 
 
-m= IMP.Model()
+m= IMP.kernel.Model()
 
 # create two particles to optimize
 d0= IMP.core.XYZ.setup_particle(IMP.kernel.Particle(m), IMP.algebra.Vector3D(0,0,0))

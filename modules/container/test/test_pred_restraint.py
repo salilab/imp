@@ -30,7 +30,7 @@ class Score(IMP.PairScore):
 class Tests(IMP.test.TestCase):
     def test_it(self):
         """Test PredicatePairsRestraints"""
-        m=IMP.Model()
+        m=IMP.kernel.Model()
         IMP.base.set_log_level(IMP.base.VERBOSE)
         ps= self.create_particles_in_box(m, 20)
         for i, p in enumerate(ps):

@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
     """Tests for sampled density maps"""
     def test_filters(self):
         """Test filters on excluded volume"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         m.set_log_level(IMP.base.SILENT)
         print "pdb"
         h0s=IMP.kernel._create_particles_from_pdb(self.get_input_file_name("1z5s_A.pdb"),

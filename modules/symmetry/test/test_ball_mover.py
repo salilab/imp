@@ -9,7 +9,7 @@ from math import *
 class Test(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         self.ps = []
         for i in range(2):
             p = IMP.kernel.Particle(self.m)

@@ -8,7 +8,7 @@ class Tests(IMP.test.TestCase):
     """Tests for tunnel scores"""
     def test_connectivity_zero_set(self):
         """Test consecutive pair container decomposition"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps=[IMP.kernel.Particle(m) for i in range(0,15)]
         ds=[IMP.core.XYZR.setup_particle(p) for p in ps]
         bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
@@ -34,7 +34,7 @@ class Tests(IMP.test.TestCase):
 
     def test_pair_filter(self):
         """Test consecutive pair filter"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps=[IMP.kernel.Particle(m) for i in range(0,15)]
         ecpc= IMP.container.ExclusiveConsecutivePairContainer(ps)
         ef= IMP.container.ExclusiveConsecutivePairFilter();

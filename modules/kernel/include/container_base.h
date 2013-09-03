@@ -58,7 +58,7 @@ class IMPKERNELEXPORT Container : public ScoreState {
 
       Static containers should call this in their constructor. */
   void set_is_changed(bool tf);
-  Container(Model *m, std::string name = "Container %1%");
+  Container(kernel::Model *m, std::string name = "Container %1%");
 
  public:
 

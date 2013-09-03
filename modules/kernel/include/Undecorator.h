@@ -26,7 +26,7 @@ class IMPKERNELEXPORT Undecorator : public base::Object {
   Model *m_;
 
  public:
-  Undecorator(Model *m, std::string name);
+  Undecorator(kernel::Model *m, std::string name);
   virtual void teardown(ParticleIndex pi) const = 0;
 };
 

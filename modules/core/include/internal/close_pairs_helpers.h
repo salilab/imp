@@ -67,7 +67,7 @@ struct SameParticle {
   }
   };*/
 
-inline bool get_are_close(Model *m, const PairPredicates &filters,
+inline bool get_are_close(kernel::Model *m, const PairPredicates &filters,
                           kernel::ParticleIndex a, kernel::ParticleIndex b, double distance) {
   XYZ da(m, a);
   XYZ db(m, b);
@@ -88,14 +88,14 @@ inline bool get_are_close(Model *m, const PairPredicates &filters,
 
 struct FarParticle {
   double d_;
-  Model *m_;
-  FarParticle(Model *m, double d) : d_(d), m_(m) {}
+  kernel::Model *m_;
+  FarParticle(kernel::Model *m, double d) : d_(d), m_(m) {}
   bool operator()(const kernel::ParticleIndexPair &pp) const {
     return !get_are_close(m_, PairPredicates(), pp[0], pp[1], d_);
   }
 };
 
-inline void filter_far(Model *m, kernel::ParticleIndexPairs &c, double d) {
+inline void filter_far(kernel::Model *m, kernel::ParticleIndexPairs &c, double d) {
   c.erase(std::remove_if(c.begin(), c.end(), FarParticle(m, d)), c.end());
 }
 
@@ -166,7 +166,7 @@ inline void initialize_particles(
   rbs_.clear();
   using IMP::operator<< ;
   IMP_CONTAINER_FOREACH(SingletonContainer, sc, {
-    Model *m = sc->get_model();
+    kernel::Model *m = sc->get_model();
     IMP_LOG_VERBOSE("Processing " << m->get_particle_name(_1) << " (" << _1
                                   << ")" << std::endl);
     if (use_rigid_bodies && RigidMember::get_is_setup(m, _1)) {
@@ -292,7 +292,7 @@ inline bool get_if_moved(
 }
 
 inline void fill_list(
-    Model *m, const PairPredicates &filters, ObjectKey key_, double slack_,
+    kernel::Model *m, const PairPredicates &filters, ObjectKey key_, double slack_,
     kernel::ParticleIndexes &xyzrs_, kernel::ParticleIndexes &rbs_,
     IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &constituents_,
     kernel::ParticleIndexPairs &cur_list_) {
@@ -323,7 +323,7 @@ inline void fill_list(
 }
 
 inline void fill_list(
-    Model *m, const PairPredicates &filters, ObjectKey key_, double slack_,
+    kernel::Model *m, const PairPredicates &filters, ObjectKey key_, double slack_,
     kernel::ParticleIndexes xyzrs_[], kernel::ParticleIndexes rbs_[],
     IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &constituents_,
     kernel::ParticleIndexPairs &cur_list_) {
@@ -365,11 +365,11 @@ inline void fill_list(
   IMP_LOG_VERBOSE("found " << cur_list_.size() << std::endl);
 }
 
-IMPCOREEXPORT kernel::ParticlesTemp get_input_particles(Model *,
+IMPCOREEXPORT kernel::ParticlesTemp get_input_particles(kernel::Model *,
                                                 SingletonContainer *sc_,
                                                 const PairPredicates &filters_);
 
-IMPCOREEXPORT ModelObjectsTemp get_inputs(Model *, SingletonContainer *sc_,
+IMPCOREEXPORT kernel::ModelObjectsTemp get_inputs(kernel::Model *, SingletonContainer *sc_,
                                           const PairPredicates &filters_);
 
 IMPCORE_END_INTERNAL_NAMESPACE

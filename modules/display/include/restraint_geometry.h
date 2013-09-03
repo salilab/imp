@@ -28,7 +28,7 @@ class IMPDISPLAYEXPORT RestraintGeometry : public Geometry {
   IMP::base::PointerMember<kernel::Restraint> r_;
   IMP::base::Pointer<Model> m_;
   //! Use this if the restraint is not part of the model
-  RestraintGeometry(kernel::Restraint *p, Model *m);
+  RestraintGeometry(kernel::Restraint *p, kernel::Model *m);
 
  public:
   RestraintGeometry(kernel::Restraint *p);

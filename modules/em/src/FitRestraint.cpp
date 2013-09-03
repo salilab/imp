@@ -240,7 +240,7 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 
 ModelObjectsTemp FitRestraint::do_get_inputs() const
 {
-  ModelObjectsTemp pt(all_ps_.begin(), all_ps_.end());
+  kernel::ModelObjectsTemp pt(all_ps_.begin(), all_ps_.end());
   for(int i=0;i<(int)rbs_.size();i++) {
     pt.push_back(rbs_[i]);
   }

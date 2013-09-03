@@ -6,7 +6,7 @@ from IMP.algebra import *
 class Tests(IMP.test.TestCase):
     def test_navigation(self):
         """Test loading of rigid bodies from pdbs"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         h= IMP.atom.read_pdb(self.get_input_file_name("dna.pdb"),
                              m)
         rbp= IMP.atom.create_rigid_body(h)

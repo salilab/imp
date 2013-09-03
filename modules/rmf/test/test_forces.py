@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
     def test_forces(self):
         """Test saving forces"""
         for suffix in RMF.suffixes:
-            m= IMP.Model()
+            m= IMP.kernel.Model()
             print "reading pdb"
             name=self.get_tmp_file_name("test_round_trip."+suffix)
             h= IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,

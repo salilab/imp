@@ -79,7 +79,7 @@ void ProbabilisticAnchorGraph::show(std::ostream& out) const {
 //                ProbabilisticAnchorGraph *anchor_g,
 //                domino1::RestraintGraph *rest_g) {
 //   //setup a domino optimization
-//   IMP_NEW(Model,mdl,());
+//   IMP_NEW(kernel::Model,mdl,());
 
 // }
 IntRanges ProbabilisticAnchorGraph::get_edge_list() const {

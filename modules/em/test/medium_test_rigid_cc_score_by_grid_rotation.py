@@ -31,7 +31,7 @@ class Tests(IMP.test.TestCase):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
         IMP.base.set_log_level(IMP.base.SILENT)
-        self.imp_model = IMP.Model()
+        self.imp_model = IMP.kernel.Model()
         self.load_density_map()
         self.load_protein("1z5s_A.pdb")
     def test_compute_fitting_scores(self):

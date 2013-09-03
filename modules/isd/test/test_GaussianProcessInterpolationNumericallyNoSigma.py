@@ -40,7 +40,7 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         #IMP.base.set_log_level(IMP.base.TERSE)
         IMP.base.set_log_level(0)
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         data=open(self.get_input_file_name('lyzexp_gpir.dat')).readlines()
         data=[map(float,d.split()) for d in data]
         self.q=[[i[0]] for i in data]

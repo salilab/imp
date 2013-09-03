@@ -38,9 +38,9 @@ class IMPCOREEXPORT TransformedDistancePairScore : public PairScore {
 
   /** Set the transformation object.*/
   void set_transformation(const algebra::Transformation3D &rot);
-  virtual double evaluate_index(Model *m, const kernel::ParticleIndexPair &p,
+  virtual double evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs(Model *m,
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
                                          const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
   IMP_PAIR_SCORE_METHODS(TransformedDistancePairScore);

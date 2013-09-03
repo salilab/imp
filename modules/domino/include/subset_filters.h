@@ -20,7 +20,7 @@
 #include <IMP/base/Pointer.h>
 #include <IMP/base/map.h>
 #include <IMP/Configuration.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/macros.h>
 #include <boost/dynamic_bitset.hpp>
 #include <IMP/base/utility_macros.h>
@@ -97,9 +97,9 @@ class IMPDOMINOEXPORT SubsetFilterTable : public IMP::base::Object {
 
 class RestraintScoreSubsetFilterTable;
 
-//! Filter a configuration of the subset using the Model thresholds
+//! Filter a configuration of the subset using the kernel::Model thresholds
 /** This filter table creates filters using the maximum scores
-    set in the Model for various restraints.
+    set in the kernel::Model for various restraints.
  */
 class IMPDOMINOEXPORT RestraintScoreSubsetFilterTable
     : public SubsetFilterTable {
@@ -122,7 +122,7 @@ class IMPDOMINOEXPORT RestraintScoreSubsetFilterTable
 
 IMP_OBJECTS(RestraintScoreSubsetFilterTable, RestraintScoreSubsetFilterTables);
 
-//! Filter a configuration of the subset using the Model thresholds
+//! Filter a configuration of the subset using the kernel::Model thresholds
 /** Filter based on an allowed number of failures for the restraints
     in a list passed.
  */

@@ -25,7 +25,7 @@ class Tests(IMP.test.TestCase):
         """Check that scoring functions are cleaned up"""
         dirchk = IMP.test.RefCountChecker(self)
         IMP.base.set_log_level(IMP.base.MEMORY)
-        m = IMP.Model("M")
+        m = IMP.kernel.Model("M")
         #self.assertRaises(IndexError, m.get_restraint, 0);
         self.assertEqual(m.get_number_of_restraints(), 0)
         r = DummyRestraint(m)

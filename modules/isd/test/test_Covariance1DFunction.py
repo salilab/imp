@@ -34,7 +34,7 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         IMP.base.set_log_level(0)
         self.tau = Scale.setup_particle(IMP.kernel.Particle(self.m), 1.0)
         self.lam = Scale.setup_particle(IMP.kernel.Particle(self.m),  1.0)

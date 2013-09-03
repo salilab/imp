@@ -23,7 +23,7 @@ using namespace atom;
 double threshold = 10;
 
 Sphere3Ds get_residues(std::string fname) {
-  IMP_NEW(Model, m, ());
+  IMP_NEW(kernel::Model, m, ());
   atom::Hierarchy h = read_pdb(fname, m);
   atom::Hierarchy hs =
       create_simplified_along_backbone(Chain(get_by_type(h, CHAIN_TYPE)[0]), 1);
@@ -35,7 +35,7 @@ Sphere3Ds get_residues(std::string fname) {
   return ret;
 }
 
-std::pair<Restraints, PairPredicates> create_restraints(Model *m,
+std::pair<Restraints, PairPredicates> create_restraints(kernel::Model *m,
                                                         const kernel::ParticlesTemp &ps,
                                                         double threshold) {
   IMP_NEW(GridClosePairsFinder, cpf, ());
@@ -56,7 +56,7 @@ std::pair<Restraints, PairPredicates> create_restraints(Model *m,
   return std::make_pair(ret, PairPredicates(1, filter));
 }
 
-ParticlesTemp create_particles(Model *m, const Sphere3Ds &input) {
+ParticlesTemp create_particles(kernel::Model *m, const Sphere3Ds &input) {
   kernel::ParticlesTemp ret;
   for (unsigned int i = 0; i < input.size(); ++i) {
     IMP_NEW(kernel::Particle, p, (m));
@@ -118,7 +118,7 @@ int main(int, char * []) {
     bb += get_bounding_box(s3[i]);
   }
 
-  IMP_NEW(Model, m, ());
+  IMP_NEW(kernel::Model, m, ());
   kernel::ParticlesTemp ps = create_particles(m, s3);
   Restraints rs;
   PairPredicates interactions;

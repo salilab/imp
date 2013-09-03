@@ -50,7 +50,7 @@ class IMPKERNELEXPORT Constraint : public ScoreState {
 #ifndef IMP_DOXYGEN
   Constraint(std::string name = "Constraint %1%");
 #endif
-  Constraint(Model *m, std::string name = "Constraint %1%");
+  Constraint(kernel::Model *m, std::string name = "Constraint %1%");
   virtual void do_update_attributes() = 0;
   virtual void do_update_derivatives(DerivativeAccumulator *da) = 0;
 

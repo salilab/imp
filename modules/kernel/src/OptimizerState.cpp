@@ -18,7 +18,7 @@ OptimizerState::OptimizerState(std::string name) : ModelObject(name) {
 
 }
 
-OptimizerState::OptimizerState(Model *m, std::string name) :
+OptimizerState::OptimizerState(kernel::Model *m, std::string name) :
     ModelObject(m, name) {
   is_optimizing_ = false;
   reset();

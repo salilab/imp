@@ -17,7 +17,7 @@
 
 #include <IMP/core/rigid_bodies.h>
 
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/kernel/Restraint.h>
 #include <IMP/VersionInfo.h>
 #include <IMP/base/Pointer.h>

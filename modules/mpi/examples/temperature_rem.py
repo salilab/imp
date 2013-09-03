@@ -18,7 +18,7 @@ myindex=rem.get_my_index()
 rem.set_my_parameter("temp",[temp[myindex]])
 
 # create model
-m=IMP.Model()
+m=IMP.kernel.Model()
 
 # add 2 particles
 ps=[]

@@ -10,7 +10,7 @@ import random
 class Tests(IMP.test.TestCase):
     def test_global_min1(self):
         """Test handling of unattached particles"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         p= IMP.kernel.Particle(m)
         IMP.core.XYZ.setup_particle(p)
         pst= IMP.domino.ParticleStatesTable()

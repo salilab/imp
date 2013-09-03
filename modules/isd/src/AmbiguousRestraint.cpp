@@ -49,7 +49,7 @@ AmbiguousRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp AmbiguousRestraint::do_get_inputs() const
 {
-  ModelObjectsTemp ret;
+  kernel::ModelObjectsTemp ret;
   for (unsigned int i=0; i<rs_.size(); ++i){
     ret+=rs_[i]->get_inputs();
   }

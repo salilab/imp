@@ -20,7 +20,7 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         #setup dihedral angle of pi/2
         self.p0 = IMP.core.XYZ.setup_particle(IMP.kernel.Particle(self.m),
                 IMP.algebra.Vector3D(1,0,0))

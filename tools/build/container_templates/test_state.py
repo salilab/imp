@@ -97,7 +97,7 @@ class Tests(IMP.test.TestCase):
         # call evaluate and check that it is incremented
         IMP.base.set_log_level(IMP.base.VERBOSE)
         print "start"
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         print "hi"
         c= IMP.container.ListClassnameContainer(m)
         cs=[]
@@ -123,7 +123,7 @@ class Tests(IMP.test.TestCase):
         # call evaluate and check that it is incremented
         IMP.base.set_log_level(IMP.base.VERBOSE)
         print "start"
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         print "hi"
         t=self.create_FUNCTIONNAME(m)
         print "dl"

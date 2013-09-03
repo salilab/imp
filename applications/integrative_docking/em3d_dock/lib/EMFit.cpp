@@ -24,7 +24,7 @@ EMFit::EMFit(std::string rec_file_name, std::string lig_file_name,
              float dist_thr, float volume_scale) :
    dist_thr_(dist_thr) {
 
-  model_ = new IMP::Model();
+  model_ = new IMP::kernel::Model();
 
   rec_file_name_ = rec_file_name;
   lig_file_name_ = lig_file_name;
@@ -51,7 +51,7 @@ EMFit::EMFit(std::string pdb_file_name, std::string map_file_name,
              float resolution, float dist_thr, float volume_scale) :
   dist_thr_(dist_thr) {
 
-  model_ = new IMP::Model();
+  model_ = new IMP::kernel::Model();
 
   // read pdb
   read_pdb_atoms(model_, pdb_file_name, rec_particles_);
@@ -302,7 +302,7 @@ void EMFit::read_trans_file(const std::string file_name,
             << file_name << std::endl;
 }
 
-void EMFit::read_pdb_atoms(IMP::Model *model,
+void EMFit::read_pdb_atoms(IMP::kernel::Model *model,
                            const std::string file_name,
                            IMP::kernel::Particles& particles) {
   IMP::atom::Hierarchy mhd =

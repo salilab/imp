@@ -104,11 +104,11 @@ class AccumulateRigidBodyDerivatives : public SingletonDerivativeModifier {
   AccumulateRigidBodyDerivatives(std::string name =
                                      "AccumulateRigidBodyDerivatives%1%")
       : SingletonDerivativeModifier(name) {}
-  virtual void apply_index(Model *m, kernel::ParticleIndex pi) const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs(Model *m,
+  virtual void apply_index(kernel::Model *m, kernel::ParticleIndex pi) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
                                          const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_outputs(Model *m,
+  virtual kernel::ModelObjectsTemp do_get_outputs(kernel::Model *m,
                                           const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
   IMP_SINGLETON_MODIFIER_METHODS(AccumulateRigidBodyDerivatives);
@@ -130,11 +130,11 @@ class UpdateRigidBodyMembers : public SingletonModifier {
  public:
   UpdateRigidBodyMembers(std::string name = "UpdateRigidBodyMembers%1%")
       : SingletonModifier(name) {}
-  virtual void apply_index(Model *m, kernel::ParticleIndex pi) const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs(Model *m,
+  virtual void apply_index(kernel::Model *m, kernel::ParticleIndex pi) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
                                          const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_outputs(Model *m,
+  virtual kernel::ModelObjectsTemp do_get_outputs(kernel::Model *m,
                                           const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
   IMP_SINGLETON_MODIFIER_METHODS(UpdateRigidBodyMembers);
@@ -146,11 +146,11 @@ class NormalizeRotation : public SingletonModifier {
  public:
   NormalizeRotation(std::string name = "NormalizeRotation%1%")
       : SingletonModifier(name) {}
-  virtual void apply_index(Model *m, kernel::ParticleIndex pi) const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs(Model *m,
+  virtual void apply_index(kernel::Model *m, kernel::ParticleIndex pi) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
                                          const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_outputs(Model *m,
+  virtual kernel::ModelObjectsTemp do_get_outputs(kernel::Model *m,
                                           const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
   IMP_SINGLETON_MODIFIER_METHODS(NormalizeRotation);
@@ -162,18 +162,18 @@ class NullSDM : public SingletonDerivativeModifier {
  public:
   NullSDM(std::string name = "NullModifier%1%")
       : SingletonDerivativeModifier(name) {}
-  virtual void apply_index(Model *m, kernel::ParticleIndex pi) const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs(Model *m,
+  virtual void apply_index(kernel::Model *m, kernel::ParticleIndex pi) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
                                          const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_outputs(Model *m,
+  virtual kernel::ModelObjectsTemp do_get_outputs(kernel::Model *m,
                                           const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
   IMP_SINGLETON_MODIFIER_METHODS(NullSDM);
   IMP_OBJECT_METHODS(NullSDM);
 };
 
-void AccumulateRigidBodyDerivatives::apply_index(Model *m,
+void AccumulateRigidBodyDerivatives::apply_index(kernel::Model *m,
                                                  kernel::ParticleIndex pi) const {
   IMP_OBJECT_LOG;
   DerivativeAccumulator da;
@@ -270,9 +270,9 @@ void AccumulateRigidBodyDerivatives::apply_index(Model *m,
 }
 
 ModelObjectsTemp AccumulateRigidBodyDerivatives::do_get_inputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
   Refiner *refiner = internal::get_rigid_members_refiner();
-  ModelObjectsTemp ret = refiner->get_inputs(m, pis);
+  kernel::ModelObjectsTemp ret = refiner->get_inputs(m, pis);
   ret += IMP::kernel::get_particles(m, pis);
   for (unsigned int i = 0; i < pis.size(); ++i) {
     ret +=
@@ -281,24 +281,24 @@ ModelObjectsTemp AccumulateRigidBodyDerivatives::do_get_inputs(
   return ret;
 }
 ModelObjectsTemp AccumulateRigidBodyDerivatives::do_get_outputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
-  ModelObjectsTemp ret = IMP::kernel::get_particles(m, pis);
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
+  kernel::ModelObjectsTemp ret = IMP::kernel::get_particles(m, pis);
   return ret;
 }
 
-void UpdateRigidBodyMembers::apply_index(Model *m, kernel::ParticleIndex pi) const {
+void UpdateRigidBodyMembers::apply_index(kernel::Model *m, kernel::ParticleIndex pi) const {
   RigidBody rb(m, pi);
   rb.update_members();
 }
 ModelObjectsTemp UpdateRigidBodyMembers::do_get_inputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
-  ModelObjectsTemp ret;
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
+  kernel::ModelObjectsTemp ret;
   ret += IMP::get_particles(m, pis);
   return ret;
 }
 ModelObjectsTemp UpdateRigidBodyMembers::do_get_outputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
-  ModelObjectsTemp ret;
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
+  kernel::ModelObjectsTemp ret;
   for (unsigned int i = 0; i < pis.size(); ++i) {
     RigidBody rb(m, pis[i]);
     ret += IMP::get_particles(m, rb.get_member_particle_indexes());
@@ -307,7 +307,7 @@ ModelObjectsTemp UpdateRigidBodyMembers::do_get_outputs(
   return ret;
 }
 
-inline void NormalizeRotation::apply_index(Model *m, kernel::ParticleIndex p) const {
+inline void NormalizeRotation::apply_index(kernel::Model *m, kernel::ParticleIndex p) const {
   double &q0 =
       m->access_attribute(internal::rigid_body_data().quaternion_[0], p);
   double &q1 =
@@ -341,22 +341,22 @@ inline void NormalizeRotation::apply_index(Model *m, kernel::ParticleIndex p) co
   m->set_attribute(internal::rigid_body_data().torque_[2], p, 0);
 }
 ModelObjectsTemp NormalizeRotation::do_get_inputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
   return IMP::get_particles(m, pis);
 }
 ModelObjectsTemp NormalizeRotation::do_get_outputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
   return IMP::get_particles(m, pis);
 }
 
-inline void NullSDM::apply_index(Model *, kernel::ParticleIndex) const {}
-ModelObjectsTemp NullSDM::do_get_inputs(Model *,
+inline void NullSDM::apply_index(kernel::Model *, kernel::ParticleIndex) const {}
+ModelObjectsTemp NullSDM::do_get_inputs(kernel::Model *,
                                         const kernel::ParticleIndexes &) const {
-  return ModelObjectsTemp();
+  return kernel::ModelObjectsTemp();
 }
-ModelObjectsTemp NullSDM::do_get_outputs(Model *,
+ModelObjectsTemp NullSDM::do_get_outputs(kernel::Model *,
                                          const kernel::ParticleIndexes &) const {
-  return ModelObjectsTemp();
+  return kernel::ModelObjectsTemp();
 }
 
 ObjectKey get_rb_score_state_0_key() {
@@ -365,7 +365,7 @@ ObjectKey get_rb_score_state_0_key() {
 }
 
 ModelKey get_rb_list_key() {
-  static ModelKey key("rigid body list");
+  static kernel::ModelKey key("rigid body list");
   return key;
 }
 }
@@ -373,7 +373,7 @@ ModelKey get_rb_list_key() {
 typedef IMP::algebra::internal::TNT::Array2D<double> Matrix;
 
 namespace {
-Matrix compute_I(Model *model, const kernel::ParticleIndexes &ds,
+Matrix compute_I(kernel::Model *model, const kernel::ParticleIndexes &ds,
                  const algebra::Vector3D &center,
                  const IMP::algebra::Rotation3D &rot) {
   Matrix I(3, 3, 0.0);
@@ -444,7 +444,7 @@ void RigidBody::teardown_constraints(kernel::Particle *p) {
     p->get_model()->remove_score_state(dynamic_cast<ScoreState *>(o0));
     p->remove_attribute(get_rb_score_state_0_key());
   }
-  ModelKey mk = get_rb_list_key();
+  kernel::ModelKey mk = get_rb_list_key();
   if (p->get_model()->get_has_data(mk)) {
     IMP_LOG_TERSE("Remove from normalize list" << std::endl);
     base::Object *o = p->get_model()->get_data(mk);
@@ -460,7 +460,7 @@ void RigidBody::teardown_constraints(kernel::Particle *p) {
   }
 }
 
-void RigidBody::do_setup_particle(Model *m,
+void RigidBody::do_setup_particle(kernel::Model *m,
                                   kernel::ParticleIndex pi,
                                   kernel::ParticleIndexesAdaptor members) {
   IMP_FUNCTION_LOG;
@@ -475,7 +475,7 @@ void RigidBody::do_setup_particle(Model *m,
   rb.on_change();
 }
 
-void RigidBody::do_setup_particle(Model *m,
+void RigidBody::do_setup_particle(kernel::Model *m,
                                   kernel::ParticleIndex pi,
                                   const algebra::ReferenceFrame3D &rf) {
   IMP_FUNCTION_LOG;
@@ -483,7 +483,7 @@ void RigidBody::do_setup_particle(Model *m,
   internal::add_required_attributes_for_body(m, pi);
   RigidBody d(p);
   d.set_reference_frame(rf);
-  ModelKey mk = get_rb_list_key();
+  kernel::ModelKey mk = get_rb_list_key();
   if (d.get_model()->get_has_data(mk)) {
     // IMP_LOG_TERSE( "Adding particle to list of rigid bodies" << std::endl);
     base::Object *o = d.get_model()->get_data(mk);
@@ -534,7 +534,7 @@ void RigidBody::set_reference_frame_from_members(const kernel::ParticleIndexes &
   if (rms.size() < 3) {
     return;
   }
-  Model *m = get_model();
+  kernel::Model *m = get_model();
   for (unsigned int i = 0; i < rms.size(); ++i) {
     local[i] = RigidMember(m, rms[i]).get_internal_coordinates();
     global[i] = RigidMember(m, rms[i]).get_coordinates();
@@ -562,7 +562,7 @@ void RigidBody::update_members() {
   algebra::Transformation3D tr = get_reference_frame().get_transformation_to();
   {
     const kernel::ParticleIndexes &members = get_member_particle_indexes();
-    Model *m = get_model();
+    kernel::Model *m = get_model();
     for (unsigned int i = 0; i < members.size(); ++i) {
       XYZ rm(get_model(), members[i]);
       algebra::Vector3D v = m->get_internal_coordinates(members[i]);
@@ -877,7 +877,7 @@ const kernel::ParticlesTemp RigidMembersRefiner::get_refined(kernel::Particle *p
 }
 
 ModelObjectsTemp RigidMembersRefiner::do_get_inputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
   return IMP::kernel::get_particles(m, pis);
 }
 
@@ -890,7 +890,7 @@ RigidMembersRefiner *get_rigid_members_refiner() {
 }
 
 namespace {
-bool check_rigid_body(Model *m, kernel::ParticleIndex pi) {
+bool check_rigid_body(kernel::Model *m, kernel::ParticleIndex pi) {
   algebra::Vector4D
       v(m->get_attribute(internal::rigid_body_data().quaternion_[0],
                          pi),
@@ -909,7 +909,7 @@ bool check_rigid_body(Model *m, kernel::ParticleIndex pi) {
 
 IMP_CHECK_DECORATOR(RigidBody, check_rigid_body);
 
-algebra::ReferenceFrame3D get_initial_reference_frame(Model *m,
+algebra::ReferenceFrame3D get_initial_reference_frame(kernel::Model *m,
                                                    const kernel::ParticleIndexes &ps) {
   if (ps.size() == 1) {
     if (RigidBody::get_is_setup(m, ps[0])) {
@@ -964,7 +964,7 @@ algebra::ReferenceFrame3D get_initial_reference_frame(Model *m,
   return algebra::ReferenceFrame3D(algebra::Transformation3D(rot, v));
 }
 
-ParticlesTemp create_rigid_bodies(Model *m, unsigned int n, bool no_members) {
+ParticlesTemp create_rigid_bodies(kernel::Model *m, unsigned int n, bool no_members) {
   kernel::ParticlesTemp ret(n);
   for (unsigned int i = 0; i < n; ++i) {
     kernel::ParticleIndex pi = m->add_particle("RB%1%");

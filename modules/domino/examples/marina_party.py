@@ -96,7 +96,7 @@ girls = []
 prices = [100, 200, 400, 600, 800 ]
 
 
-model = IMP.Model()
+model = IMP.kernel.Model()
 
 # prepare filter tables for DOMINO
 states_table = IMP.domino.ParticleStatesTable()

@@ -16,7 +16,7 @@ JeffreysRestraint::JeffreysRestraint(kernel::Particle *p):
     ISDRestraint("JeffreysRestraint_"+p->get_name()), p_(p) {
 }
 
-JeffreysRestraint::JeffreysRestraint(Model *m, kernel::Particle *p):
+JeffreysRestraint::JeffreysRestraint(kernel::Model *m, kernel::Particle *p):
     ISDRestraint(m, "JeffreysRestraint_"+p->get_name()), p_(p) {
 }
 

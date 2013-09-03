@@ -7,7 +7,7 @@ import IMP.core
 class Tests(IMP.test.TestCase):
     def _test_global_min2(self):
         """Testing static container"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps=[]
         for i in range(0, 20):
             p= IMP.kernel.Particle(m)

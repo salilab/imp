@@ -12,7 +12,7 @@
 #include <IMP/base_types.h>
 #include <IMP/container_macros.h>
 #include <IMP/base/Pointer.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/base/Pointer.h>
 #include <IMP/algebra/Transformation3D.h>
 

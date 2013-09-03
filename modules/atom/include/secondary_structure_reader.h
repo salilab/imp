@@ -22,7 +22,7 @@ IMPATOM_BEGIN_NAMESPACE
     decorates them as SecondaryStructureResidues
 */
 IMPATOMEXPORT SecondaryStructureResidues read_psipred(base::TextInput inf,
-                                                      Model* mdl);
+                                                      kernel::Model* mdl);
 /** @name PSIPRED reading
     Reads in PSIPRED results and decorates particles as
     SecondaryStructureResidues. Currently assuming order of ps matches file.

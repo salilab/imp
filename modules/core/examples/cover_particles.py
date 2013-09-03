@@ -9,7 +9,7 @@ import IMP.core
 import IMP.atom
 import IMP.atom
 
-m= IMP.Model()
+m= IMP.kernel.Model()
 prot= IMP.atom.read_pdb(IMP.core.get_example_path('example_protein.pdb'), m)
 res= IMP.atom.get_by_type(prot, IMP.atom.RESIDUE_TYPE)
 pr= IMP.core.ChildrenRefiner(IMP.atom.Hierarchy.get_traits())

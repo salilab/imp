@@ -9,7 +9,7 @@
 #include <IMP/domino/internal/tree_inference.h>
 #include <IMP/domino/internal/inference_utility.h>
 #include <IMP/kernel/Particle.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/kernel/Restraint.h>
 #include <IMP/ScoreState.h>
 #include <IMP/domino/assignment_containers.h>

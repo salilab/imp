@@ -40,7 +40,13 @@ IMPATOM_BEGIN_NAMESPACE
     target_radius parameter to select the desired radius (pass a very large
     number to get the coarsest representation).
 */
-class IMPATOMEXPORT Selection : public base::InputAdaptor {
+class IMPATOMEXPORT Selection :
+#ifdef SWIG
+  public kernel::ParticleIndexesAdaptor, public kernel::Particles
+#else
+public base::InputAdaptor
+#endif
+{
  public:
   enum Terminus {
     NONE,
@@ -50,13 +56,13 @@ class IMPATOMEXPORT Selection : public base::InputAdaptor {
 
  private:
   SingletonPredicates predicates_;
-  Model *m_;
+  kernel::Model *m_;
   double radius_;
 
   kernel::ParticleIndexes h_;
   std::pair<bool, kernel::ParticleIndexes> search(
-      Model *m, kernel::ParticleIndex pi, boost::dynamic_bitset<> parent) const;
-  void set_hierarchies(Model *m, const kernel::ParticleIndexes &pis);
+      kernel::Model *m, kernel::ParticleIndex pi, boost::dynamic_bitset<> parent) const;
+  void set_hierarchies(kernel::Model *m, const kernel::ParticleIndexes &pis);
 
  public:
 #ifdef IMP_DOXYGEN
@@ -80,7 +86,7 @@ class IMPATOMEXPORT Selection : public base::InputAdaptor {
   Selection();
   Selection(Hierarchy h);
   Selection(kernel::Particle *h);
-  Selection(Model *m, const kernel::ParticleIndexes &pis);
+  Selection(kernel::Model *m, const kernel::ParticleIndexes &pis);
 #ifndef SWIG
   Selection(const Hierarchies &h);
 #endif
@@ -138,6 +144,12 @@ class IMPATOMEXPORT Selection : public base::InputAdaptor {
   kernel::ParticlesTemp get_selected_particles() const;
   //! Get the indexes of the selected particles
   kernel::ParticleIndexes get_selected_particle_indexes() const;
+
+#ifndef SWIG
+  operator ParticleIndexes () const { return get_selected_particle_indexes();}
+  operator ParticlesTemp () const {return get_selected_particles();}
+#endif
+
   IMP_SHOWABLE(Selection);
 };
 

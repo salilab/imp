@@ -85,7 +85,7 @@ class Tests(IMP.test.TestCase):
     def _make_things(self):
         IMP.base.set_log_level(IMP.MEMORY)
         print "starting"
-        m= IMP.Model("config set")
+        m= IMP.kernel.Model("config set")
         print "adding"
         ps=[IMP.kernel.Particle(m), IMP.kernel.Particle(m), IMP.kernel.Particle(m)]
         print "adding attribute"

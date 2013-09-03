@@ -102,7 +102,7 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
  public:
 
   // Constructor
-  RRT(Model *m, DOFsSampler* sampler, LocalPlanner* planner,
+  RRT(kernel::Model *m, DOFsSampler* sampler, LocalPlanner* planner,
       const DOFs& cspace_dofs);
 
   // function required by Sampler

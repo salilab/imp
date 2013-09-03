@@ -11,7 +11,7 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/kernel/Restraint.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/macros.h>
 #include <IMP/generic.h>
 
@@ -38,14 +38,14 @@ class IMPCOREEXPORT MinimumRestraint : public kernel::Restraint {
  public:
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
       IMP_OVERRIDE;
-  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(MinimumRestraint);
   ;
 
   IMP_LIST_ACTION(public, Restraint, Restraints, restraint, restraints,
                   kernel::Restraint *, kernel::Restraints, on_add(obj);,
                   {}, {});
-  void set_model(Model *m);
+  void set_model(kernel::Model *m);
 };
 
 IMPCORE_END_NAMESPACE

@@ -16,7 +16,7 @@
 
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/core/XYZR.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/kernel/Restraint.h>
 #include <IMP/VersionInfo.h>
 #include <IMP/Refiner.h>

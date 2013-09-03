@@ -37,7 +37,7 @@ class DominoModel:
         Management of a model using DOMINO
     """
     def __init__(self, name="my model"):
-        self.model = IMP.Model()
+        self.model = IMP.kernel.Model()
         self.model.set_name(name)
         self.configuration_sampling_done = False
         self.assignments_sampling_done = False
@@ -410,7 +410,7 @@ class DominoModel:
             structure and set the rigid bodies.
         """
         self.measure_models = True
-        self.native_model = IMP.Model()
+        self.native_model = IMP.kernel.Model()
         if hasattr(params.benchmark, "fn_pdb_native"):
             self.native_assembly = \
                 representation.create_assembly_from_pdb(self.native_model,

@@ -4,7 +4,7 @@
 import IMP.core
 import IMP.container
 
-m= IMP.Model()
+m= IMP.kernel.Model()
 m.set_log_level(IMP.base.SILENT)
 ps =[]
 # create 4 xyz particles

@@ -24,7 +24,7 @@ IMPEM2D_BEGIN_NAMESPACE
 //! Rotation and tranlation. In this cases, the translation is the translation
 //! to apply to the model in 3D, in order to perform the registration
 class IMPEM2DEXPORT ProjectionParameters: public Decorator {
-  static void do_setup_particle(Model *m,
+  static void do_setup_particle(kernel::Model *m,
                                 kernel::ParticleIndex pi);
 
 public:
@@ -40,12 +40,12 @@ public:
 
   //! ranges for the keys. Only adjust the translations, the rotations are
   //! self adjusted
-  void set_proper_ranges_for_keys(Model *m,
+  void set_proper_ranges_for_keys(kernel::Model *m,
                   const algebra::Vector3D &min_translation_values,
                   const algebra::Vector3D &max_translation_values);
 
   //!Return true of the particle is a set of projection parameters
-  static bool get_is_setup(Model *m, kernel::ParticleIndex pi);
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi);
 
 
   //! Get whether the parameters are optimized
@@ -132,8 +132,8 @@ public:
   }
   virtual void do_before_evaluate() IMP_OVERRIDE;
   virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ProjectionParametersScoreState);
 
 private:

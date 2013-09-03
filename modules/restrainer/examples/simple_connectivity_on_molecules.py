@@ -8,7 +8,7 @@ import IMP
 import IMP.core
 import IMP.restrainer
 
-m = IMP.Model()
+m = IMP.kernel.Model()
 
 IMP.core.create_xyzr_particles(m, 4, 1.0)
 ps = m.get_particles()

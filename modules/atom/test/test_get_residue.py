@@ -7,7 +7,7 @@ class Tests(IMP.test.TestCase):
 
     def test_read(self):
         """Check getting a residue from an atomic protein"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
 
         #! read PDB
         mp= IMP.atom.read_pdb(self.open_input_file("input.pdb"),
@@ -22,7 +22,7 @@ class Tests(IMP.test.TestCase):
     def test_chain(self):
         """Check getting a residue from a cg protein"""
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         p= IMP.kernel.Particle(m)
         mp=IMP.atom.create_protein(m, "a protein", 10, 100)
         r = IMP.atom.get_residue(mp, 10)

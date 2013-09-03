@@ -29,9 +29,9 @@ class IMPMISCEXPORT LowestRefinedPairScore : public PairScore {
       \param[in] f The pair score to apply to the generated pairs
    */
   LowestRefinedPairScore(Refiner *r, PairScore *f);
-  double evaluate_index(Model *m, const kernel::ParticleIndexPair &p,
+  double evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &p,
                         DerivativeAccumulator *da) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs(Model *m, const kernel::ParticleIndexes &pis) const;
+  kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m, const kernel::ParticleIndexes &pis) const;
   IMP_PAIR_SCORE_METHODS(LowestRefinedPairScore);
   IMP_OBJECT_METHODS(LowestRefinedPairScore);
   ;

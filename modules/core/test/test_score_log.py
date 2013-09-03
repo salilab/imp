@@ -8,7 +8,7 @@ class Tests(IMP.test.TestCase):
 
     def test_restraint_score(self):
         """Test restraint score log"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         r0= IMP.kernel._ConstRestraint(1)
         r0.set_name("r0")
         r1= IMP.kernel._ConstRestraint(2)

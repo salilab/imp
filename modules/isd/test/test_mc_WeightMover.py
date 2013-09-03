@@ -17,7 +17,7 @@ class TestWeightMover(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         #IMP.set_log_level(IMP.MEMORY)
         IMP.set_log_level(0)
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         self.w = Weight.setup_particle(IMP.kernel.Particle(self.m))
         self.w.set_weights_are_optimized(True)
         self.w.add_weight()

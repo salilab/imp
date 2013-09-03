@@ -8,7 +8,7 @@ from math import *
 class NormalMoverTest(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         pa=IMP.kernel.Particle(m)
         att=IMP.FloatKey("test")
         pa.add_attribute(att,5.0)

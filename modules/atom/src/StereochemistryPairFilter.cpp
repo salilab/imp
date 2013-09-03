@@ -16,16 +16,16 @@ IMPATOM_BEGIN_NAMESPACE
 StereochemistryPairFilter::StereochemistryPairFilter() {}
 
 int StereochemistryPairFilter::get_value_index(
-    Model *m, const kernel::ParticleIndexPair &pp) const {
+    kernel::Model *m, const kernel::ParticleIndexPair &pp) const {
   return excluded_map_.find(internal::ExcludedPair(m->get_particle(pp[0]),
                                                    m->get_particle(pp[1]))) !=
          excluded_map_.end();
 }
 
 ModelObjectsTemp StereochemistryPairFilter::do_get_inputs(
-    Model *, const kernel::ParticleIndexes &) const {
+    kernel::Model *, const kernel::ParticleIndexes &) const {
   // evaluate doesn't actually read any particles
-  return ModelObjectsTemp();
+  return kernel::ModelObjectsTemp();
 }
 
 void StereochemistryPairFilter::rebuild_map() {

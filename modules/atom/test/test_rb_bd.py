@@ -28,7 +28,7 @@ class Tests(IMP.test.TestCase):
         return prb, ep, core
     def test_bonded(self):
         """Check brownian dynamics with rigid bodies"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         RMF.set_log_level("Off")
         m.set_log_level(IMP.base.SILENT)
         pa, ma, ca=self._create_rb(m)

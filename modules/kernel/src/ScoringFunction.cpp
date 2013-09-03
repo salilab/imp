@@ -22,7 +22,7 @@ namespace {
 // in namespace so it can be made a friend.
 class NullScoringFunction : public ScoringFunction {
  public:
-  NullScoringFunction(Model *m,
+  NullScoringFunction(kernel::Model *m,
                       std::string name = "NullScoringFunction%1%"):
       ScoringFunction(m, name) {}
   void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator,
@@ -42,7 +42,7 @@ ScoringFunction *get_null_scoring_function() {
 }
 }
 
-ScoringFunction::ScoringFunction(Model *m, std::string name)
+ScoringFunction::ScoringFunction(kernel::Model *m, std::string name)
     : ModelObject(m, name) {}
 
 double ScoringFunction::evaluate_if_good(bool derivatives) {
@@ -93,7 +93,7 @@ ScoringFunction *ScoringFunctionAdaptor::get(const Restraints &sf) {
     return get_null_scoring_function();
   }
 }
-ScoringFunction *ScoringFunctionAdaptor::get(Model *sf) {
+ScoringFunction *ScoringFunctionAdaptor::get(kernel::Model *sf) {
   return sf->create_scoring_function();
 }
 ScoringFunction *ScoringFunctionAdaptor::get(Restraint *sf) {

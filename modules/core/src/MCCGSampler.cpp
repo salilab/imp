@@ -83,7 +83,7 @@ ScoreWeightedIncrementalBallMover::ScoreWeightedIncrementalBallMover(
       n_(n),
       radius_(radius),
       moved_(n_) {
-  Model *m = sc[0]->get_model();
+  kernel::Model *m = sc[0]->get_model();
   const DependencyGraph dg = get_dependency_graph(m);
   typedef boost::graph_traits<DependencyGraph> DGTraits;
   typedef boost::property_map<DependencyGraph, boost::vertex_name_t>::const_type
@@ -210,7 +210,7 @@ MCCGSampler::Parameters::Parameters() {
   mc_steps_ = 100;
 }
 
-MCCGSampler::MCCGSampler(Model *m, std::string name)
+MCCGSampler::MCCGSampler(kernel::Model *m, std::string name)
     : Sampler(m, name), is_refining_(false) {}
 
 void MCCGSampler::set_bounding_box(const algebra::BoundingBox3D &bb) {
@@ -254,7 +254,7 @@ IMP::internal::InternalListSingletonContainer *MCCGSampler::set_up_movers(
               ValueException);
   }
   kernel::ParticlesTemp ps;
-  for (Model::ParticleIterator pit = mc->get_model()->particles_begin();
+  for (kernel::Model::ParticleIterator pit = mc->get_model()->particles_begin();
        pit != mc->get_model()->particles_end(); ++pit) {
     if (XYZ::get_is_setup(*pit) &&
         XYZ(*pit).get_coordinates_are_optimized()) {

@@ -51,7 +51,7 @@ def get_protein_data(pdb_list,coarse_level,anchor_dir_name,fit_dir_name,fit_fn_h
     sd=IMP.multifit.SettingsData()
     sd.set_was_used(True)
     msg=sd.get_component_header_line()
-    mdl=IMP.Model()
+    mdl=IMP.kernel.Model()
     for i,fnn in enumerate(open(pdb_list)):
         name=fnn[:-1].split()[0]
         fn=fnn[:-1].split()[1]

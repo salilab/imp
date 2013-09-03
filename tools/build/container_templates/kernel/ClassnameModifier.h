@@ -41,12 +41,12 @@ class IMPKERNELEXPORT ClassnameModifier : public ParticleInputs,
     virtual void apply(ARGUMENTTYPE vt) const;
 
   /** Apply the function to a single value*/
-  virtual void apply_index(Model *m, PASSINDEXTYPE v) const;
+  virtual void apply_index(kernel::Model *m, PASSINDEXTYPE v) const;
 
   /** Apply the function to a collection of PLURALVARIABLETYPE */
   /** If bounds are passed, only apply to ones between the upper and
       lower bounds.*/
-  virtual void apply_indexes(Model *m, const PLURALINDEXTYPE &o,
+  virtual void apply_indexes(kernel::Model *m, const PLURALINDEXTYPE &o,
                              unsigned int lower_bound,
                              unsigned int upper_bound) const {
     for (unsigned int i = lower_bound; i < upper_bound; ++i) {

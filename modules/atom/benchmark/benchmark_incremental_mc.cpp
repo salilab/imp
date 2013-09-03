@@ -19,7 +19,7 @@ const unsigned int nrb = 10;
 const double radius = 4;
 
 RigidBody create_rb(atom::Hierarchy hr) {
-  Model *m = hr.get_model();
+  kernel::Model *m = hr.get_model();
   Molecule h = Molecule::setup_particle(new kernel::Particle(m));
   XYZRs rbs;
   Sphere3D last(Vector3D(0, 0, 0), radius);
@@ -61,7 +61,7 @@ PairScore *create_pair_score(atom::Hierarchy, RigidBodies rbs, double k) {
   return cpps.release();
 }
 
-Restraint *create_diameter_restraint(Model *, RigidBodies rbs, double d) {
+Restraint *create_diameter_restraint(kernel::Model *, RigidBodies rbs, double d) {
   IMP_NEW(ListSingletonContainer, lsc, (rbs));
   IMP_NEW(HarmonicUpperBound, hub, (0, 1.0));
   IMP_NEW(DiameterRestraint, dr, (hub, lsc, d));
@@ -70,7 +70,7 @@ Restraint *create_diameter_restraint(Model *, RigidBodies rbs, double d) {
 }
 
 #if 0
-Restraint *add_DOPE(Model *, atom::Hierarchy h) {
+Restraint *add_DOPE(kernel::Model *, atom::Hierarchy h) {
   add_dope_score_data(h);
   IMP_NEW(ListSingletonContainer, lsc, (atom::get_leaves(h)));
   IMP_NEW(ClosePairContainer, cpc, (lsc, 15.0));
@@ -83,7 +83,7 @@ Restraint *add_DOPE(Model *, atom::Hierarchy h) {
 #endif
 
 void benchmark_it(std::string name, bool incr, bool nbl, bool longr) {
-  IMP_NEW(Model, m, ());
+  IMP_NEW(kernel::Model, m, ());
   m->set_log_level(IMP::SILENT);
   set_check_level(IMP::USAGE_AND_INTERNAL);
   atom::Hierarchy h = atom::Hierarchy::setup_particle(new kernel::Particle(m));

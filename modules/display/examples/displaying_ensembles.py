@@ -89,7 +89,7 @@ def add_skeleton(h, c, r, w, chain_colors):
                 w.add_geometry(g)
 
 IMP.base.set_log_level(IMP.base.TERSE)
-m= IMP.Model()
+m= IMP.kernel.Model()
 
 # change to 46 to display all of them
 hs= read(m, 3)

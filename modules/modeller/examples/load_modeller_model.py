@@ -20,7 +20,7 @@ modmodel.restraints.make(sel, restraint_type='STEREO', spline_on_site=False)
 
 # Set up IMP and use the ModelLoader class to load the atom coordinates
 # from Modeller into IMP as a new Hierarchy
-m = IMP.Model()
+m = IMP.kernel.Model()
 loader = IMP.modeller.ModelLoader(modmodel)
 protein = loader.load_atoms(m)
 

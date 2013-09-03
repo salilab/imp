@@ -23,7 +23,7 @@ class Tests(IMP.test.TestCase):
         return ret
     def test_global_min2(self):
         """Test exclusion filtering pairs"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps= [IMP.kernel.Particle(m) for i in range(0,10)]
         ss= IMP.domino.Subset(ps)
         print ps, ss
@@ -49,7 +49,7 @@ class Tests(IMP.test.TestCase):
                         self.assertNotEqual(s[i], s[j])
     def test_global_min3(self):
         """Test exclusion filtering all"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps= [IMP.kernel.Particle(m) for i in range(0,10)]
         ss= IMP.domino.Subset(ps)
         print [x.get_name() for x in ps], ss
@@ -71,7 +71,7 @@ class Tests(IMP.test.TestCase):
                     self.assertNotEqual(s[i], s[j])
     def test_global_min4(self):
         """Test equivalence filtering"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps= [IMP.kernel.Particle(m) for i in range(0,10)]
         ss= IMP.domino.Subset(ps)
         print [x.get_name() for x in ps], ss
@@ -94,7 +94,7 @@ class Tests(IMP.test.TestCase):
 
     def test_min_filter(self):
         """Test minimum filtering"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps= [IMP.kernel.Particle(m) for i in range(0,3)]
         for i in range(0,3):
             IMP.core.XYZR.setup_particle(ps[i],IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0),2))

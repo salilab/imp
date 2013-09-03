@@ -28,7 +28,7 @@ void test_it(std::string file_name, std::string test_name,
 int main(int argc, char *argv[]) {
   IMP::base::setup_from_argv(argc, argv, "Benchmark RMF saving");
   try {
-    IMP_NEW(IMP::Model, m, ());
+    IMP_NEW(IMP::kernel::Model, m, ());
     IMP::atom::Hierarchy h =
         IMP::atom::read_pdb(IMP::rmf::get_data_path("huge.pdb"), m);
     test_it(IMP::base::create_temporary_file_name("benchmark_save", ".rmf"),

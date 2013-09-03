@@ -34,9 +34,9 @@ class GenericBoundingBox3DSingletonScore : public SingletonScore {
  public:
   GenericBoundingBox3DSingletonScore(UF *f, const algebra::BoundingBoxD<3> &bb);
 
-  virtual double evaluate_index(Model *m, kernel::ParticleIndex p,
+  virtual double evaluate_index(kernel::Model *m, kernel::ParticleIndex p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs(Model *m,
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
                                          const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE {
     return IMP::kernel::get_particles(m, pis);
@@ -57,7 +57,7 @@ GenericBoundingBox3DSingletonScore<UF>::GenericBoundingBox3DSingletonScore(
 }
 template <class UF>
 double GenericBoundingBox3DSingletonScore<UF>::evaluate_index(
-    Model *m, kernel::ParticleIndex pi, DerivativeAccumulator *da) const {
+    kernel::Model *m, kernel::ParticleIndex pi, DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
   core::XYZ d(m, pi);
   algebra::Vector3D cp;

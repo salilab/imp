@@ -21,7 +21,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
     if it is available.
  */
 class IMPDISPLAYEXPORT Colored : public Decorator {
-  static void do_setup_particle(Model *m, kernel::ParticleIndex pi, Color c) {
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi, Color c) {
     m->add_attribute(get_color_keys()[0], pi, c.get_red(), false);
     m->add_attribute(get_color_keys()[1], pi, c.get_green(), false);
     m->add_attribute(get_color_keys()[2], pi, c.get_blue(), false);
@@ -46,7 +46,7 @@ class IMPDISPLAYEXPORT Colored : public Decorator {
                                         get_particle_index()));
   }
 
-  static bool get_is_setup(Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
     IMP_USAGE_CHECK((!m->get_has_attribute(get_color_keys()[0], pi) &&
                      !m->get_has_attribute(get_color_keys()[1], pi) &&
                      !m->get_has_attribute(get_color_keys()[2], pi)) ||

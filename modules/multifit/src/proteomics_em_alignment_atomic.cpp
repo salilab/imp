@@ -32,7 +32,7 @@ namespace {
   kernel::Restraint * add_core_ev_restraint(atom::Hierarchy mh1,
                                atom::Hierarchy mh2,
                                const AlignmentParams &params) {
-    Model *mdl=mh1->get_model();
+    kernel::Model *mdl=mh1->get_model();
     IMP_NEW(container::ListSingletonContainer,lsc,(mdl));
     atom::AtomTypes atom_types;
     atom_types.push_back(atom::AtomType("CA"));
@@ -57,7 +57,7 @@ namespace {
   kernel::Restraint * add_ev_restraint(atom::Hierarchy mh1,
                                atom::Hierarchy mh2,
                                const AlignmentParams &params) {
-    Model *mdl=mh1->get_model();
+    kernel::Model *mdl=mh1->get_model();
     atom::AtomTypes atom_types;
     atom_types.push_back(atom::AtomType("CA"));
     //make a container of ca atoms of the first molecule
@@ -204,7 +204,7 @@ ProteomicsEMAlignmentAtomic::ProteomicsEMAlignmentAtomic(
 
   std::cout<<"here0.2\n";
   //initialize everything
-  mdl_=new Model();
+  mdl_=new kernel::Model();
   IMP_LOG_VERBOSE("get proteomics data\n");
   std::cout<<"get proteomics data\n";
   prot_data_=mapping_data_.get_proteomics_data();

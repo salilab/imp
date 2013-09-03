@@ -61,13 +61,13 @@ class IMPCONTAINEREXPORT ConnectingPairContainer :
   kernel::ParticleIndexPairs get_indexes() const;
   kernel::ParticleIndexPairs get_range_indexes() const;
   void do_before_evaluate();
-  ModelObjectsTemp do_get_inputs() const;
+  kernel::ModelObjectsTemp do_get_inputs() const;
   void do_apply(const PairModifier *sm) const;
   kernel::ParticleIndexes get_all_possible_indexes() const;
   IMP_OBJECT_METHODS(ConnectingPairContainer);
 #else
   virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual void do_before_evaluate() IMP_OVERRIDE;
   virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ConnectingPairContainer);

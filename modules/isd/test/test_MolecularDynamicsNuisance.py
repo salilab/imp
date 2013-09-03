@@ -70,7 +70,7 @@ class Tests(IMP.test.TestCase):
         """Set up particles and optimizer"""
         IMP.test.TestCase.setUp(self)
         IMP.base.set_log_level(0)
-        self.model = IMP.Model()
+        self.model = IMP.kernel.Model()
         self.particles = []
         self.particles.append(IMP.isd.Nuisance.setup_particle(
             IMP.kernel.Particle(self.model), -43.0))

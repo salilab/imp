@@ -20,7 +20,7 @@ class Tests(IMP.test.TestCase):
 
     def test_allp(self):
         """Checking distribute particles"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps=[]
         for i in range(0,10):
             p= IMP.kernel.Particle(m)

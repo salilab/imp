@@ -11,7 +11,7 @@
 
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/domino/DominoSampler.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/core/Hierarchy.h>
 #include <IMP/file.h>
 #include <IMP/multifit/multifit_config.h>

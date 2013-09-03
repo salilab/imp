@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/Category.h
- *  \brief Handle read/write of Model data from/to files.
+ *  \brief Handle read/write of kernel::Model data from/to files.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -26,11 +26,11 @@ class IMPRMFEXPORT RMFRestraint : public kernel::Restraint {
 
  public:
 #ifndef IMP_DOXYGEN
-  RMFRestraint(Model *m, std::string name);
+  RMFRestraint(kernel::Model *m, std::string name);
   void set_particles(const kernel::ParticlesTemp &ps) { ps_ = ps; }
 #endif
   double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum) const;
-  ModelObjectsTemp do_get_inputs() const;
+  kernel::ModelObjectsTemp do_get_inputs() const;
   kernel::Restraints do_create_current_decomposition() const;
   IMP_OBJECT_METHODS(RMFRestraint);
 };
@@ -52,8 +52,7 @@ Restraints RMFRestraint::do_create_current_decomposition() const {
   }
 }
 
-RMFRestraint::RMFRestraint(Model *m, std::string name) :
-  kernel::Restraint(m, name) {}
+RMFRestraint::RMFRestraint(kernel::Model *m, std::string name) : kernel::Restraint(m, name) {}
 
 class Subset
     : public base::ConstVector<base::WeakPointer<kernel::Particle>, kernel::Particle *> {
@@ -130,7 +129,7 @@ class RestraintLoadLink : public SimpleLoadLink<kernel::Restraint> {
   typedef SimpleLoadLink<kernel::Restraint> P;
   RMF::ScoreConstFactory sf_;
   RMF::AliasConstFactory af_;
-  Model *m_;
+  kernel::Model *m_;
   RMF::Category imp_cat_;
   RMF::FloatKey weight_key_;
 
@@ -190,7 +189,7 @@ class RestraintLoadLink : public SimpleLoadLink<kernel::Restraint> {
   }
 
  public:
-  RestraintLoadLink(RMF::FileConstHandle fh, Model *m)
+  RestraintLoadLink(RMF::FileConstHandle fh, kernel::Model *m)
       : P("RestraintLoadLink%1%"),
         sf_(fh),
         af_(fh),
@@ -319,11 +318,9 @@ class RestraintSaveLink : public SimpleSaveLink<kernel::Restraint> {
 };
 }
 
-IMP_DEFINE_LINKERS(Restraint, restraint, restraints, kernel::Restraint *,
-                   kernel::Restraints,
-                   kernel::Restraint *, kernel::RestraintsTemp,
-                   (RMF::FileHandle fh),
-                   (RMF::FileConstHandle fh, Model *m), (fh), (fh, m),
+IMP_DEFINE_LINKERS(Restraint, restraint, restraints, kernel::Restraint *, kernel::Restraints,
+                   kernel::Restraint *, kernel::RestraintsTemp, (RMF::FileHandle fh),
+                   (RMF::FileConstHandle fh, kernel::Model *m), (fh), (fh, m),
                    (fh, IMP::internal::get_model(hs)));
 
 void set_maximum_number_of_terms(RMF::FileHandle fh, unsigned int num) {

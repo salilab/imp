@@ -21,7 +21,7 @@ k=100
 lps= IMP.core.HarmonicDistancePairScore(1.5*radius, k)
 sps= IMP.core.SoftSpherePairScore(k)
 
-m= IMP.Model()
+m= IMP.kernel.Model()
 IMP.base.set_log_level(IMP.base.SILENT)
 aps=[]
 filters=[]

@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
     def test_docking_solutions(self):
         """Test nested rigid bodies"""
         #load components
-        mdl=IMP.Model()
+        mdl=IMP.kernel.Model()
         mhs=[]
         rbs=[]
         aps=[]

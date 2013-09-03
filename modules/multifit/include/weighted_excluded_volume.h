@@ -11,7 +11,7 @@
 #define IMPMULTIFIT_WEIGHTED_EXCLUDED_VOLUME_H
 
 #include <IMP/algebra/Transformation3D.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/core/Hierarchy.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/atom/Mass.h>

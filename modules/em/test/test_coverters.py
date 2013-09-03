@@ -16,7 +16,7 @@ class Tests(IMP.test.TestCase):
         self.scene_threshold=0.01
         self.scene_centroid=self.scene.get_centroid()
     def test_covert_to_particles(self):
-        mdl = IMP.Model()
+        mdl = IMP.kernel.Model()
         ps = IMP.em.density2particles(self.scene,self.scene_threshold,mdl)
         self.assertAlmostEqual(
             IMP.algebra.get_distance(IMP.core.get_centroid(ps),
@@ -26,7 +26,7 @@ class Tests(IMP.test.TestCase):
 
 
     def test_covert_to_vectors(self):
-        mdl = IMP.Model()
+        mdl = IMP.kernel.Model()
         vecs = IMP.em.density2vectors(self.scene,self.scene_threshold)
         vecs_mean=IMP.algebra.Vector3D(0.,0.,0.)
         for v in vecs:

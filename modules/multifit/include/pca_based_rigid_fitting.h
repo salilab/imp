@@ -12,7 +12,7 @@
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/VersionInfo.h>
 #include <IMP/kernel/Particle.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/em/rigid_fitting.h>
 #include <IMP/multifit/multifit_config.h>

@@ -43,7 +43,7 @@ LogicalORRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp LogicalORRestraint::do_get_inputs() const
 {
-  ModelObjectsTemp ret;
+  kernel::ModelObjectsTemp ret;
   ret+=r0_->get_inputs();
   ret+=r1_->get_inputs();
   return ret;

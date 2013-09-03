@@ -6,7 +6,7 @@
 #include <cstdlib>
 
 #include <IMP.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/kernel/Particle.h>
 #include <IMP/base.h>
 #include <IMP/core.h>
@@ -44,7 +44,7 @@ FloatsList read_profile(std::string name, unsigned subs, unsigned cut)
     return ret;
 }
 
-Scales setup_particles(IMP::Model *m)
+Scales setup_particles(IMP::kernel::Model *m)
 {
     IMP_NEW(kernel::Particle, pG, (m));
     Scale G = Scale(Scale::setup_particle(pG, 300.));
@@ -90,7 +90,7 @@ Scales setup_particles(IMP::Model *m)
     return scales;
 }
 
-IMP::Model *do_setup(std::string profile, unsigned subs, unsigned cut)
+IMP::kernel::Model *do_setup(std::string profile, unsigned subs, unsigned cut)
 {
   FloatsList data(read_profile(profile,subs,cut));
   FloatsList qvals;
@@ -104,7 +104,7 @@ IMP::Model *do_setup(std::string profile, unsigned subs, unsigned cut)
       if (q[0] > qmax) qmax = q[0];
   }
   //start gpi instance and possibly gpr also
-  IMP_NEW(Model, m, ());
+  IMP_NEW(kernel::Model, m, ());
   Scales particles(setup_particles(m));
   IMP_NEW(GeneralizedGuinierPorodFunction, mean, (particles[0].get_particle(),
               particles[1].get_particle(), particles[2].get_particle() ,
@@ -123,7 +123,7 @@ IMP::Model *do_setup(std::string profile, unsigned subs, unsigned cut)
 void run_benchmark(std::string profile, unsigned subs, unsigned cut)
 {
   double time;
-  base::Pointer<IMP::Model> m;
+  base::Pointer<IMP::kernel::Model> m;
   IMP_TIME({ m = do_setup(profile, subs, cut); }, time);
   IMP::benchmark::report("setup", time, 0.);
 

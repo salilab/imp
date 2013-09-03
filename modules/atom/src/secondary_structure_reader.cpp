@@ -70,7 +70,7 @@ SecondaryStructureResidues create_sses_from_strings(Strings ss, kernel::Particle
 }
 }
 
-SecondaryStructureResidues read_psipred(base::TextInput inf, Model* mdl) {
+SecondaryStructureResidues read_psipred(base::TextInput inf, kernel::Model* mdl) {
   Strings ss = parse_psipred_file(inf);
   int nres = ss[0].size();
   kernel::Particles ps;

@@ -40,7 +40,7 @@ IMPATOM_BEGIN_NAMESPACE
     \unstable{create_protein}
     See Hierarchy
  */
-IMPATOMEXPORT Hierarchy create_protein(Model *m, std::string name,
+IMPATOMEXPORT Hierarchy create_protein(kernel::Model *m, std::string name,
                                        double resolution,
                                        int number_of_residues,
                                        int first_residue_index = 0,
@@ -55,7 +55,7 @@ IMPATOMEXPORT Hierarchy create_protein(Model *m, std::string name,
     the start of the first domain, any boundies, and then one past
     the end of the last domain.
  */
-IMPATOMEXPORT Hierarchy create_protein(Model *m, std::string name,
+IMPATOMEXPORT Hierarchy create_protein(kernel::Model *m, std::string name,
                                        double resolution,
                                        const Ints domain_boundaries);
 
@@ -192,7 +192,7 @@ class HierarchiesGeometry : public display::SingletonsGeometry {
   display::Geometries get_components() const {
     display::Geometries ret;
     IMP_CONTAINER_FOREACH(SingletonContainer, get_container(), {
-      Model *m = get_container()->get_model();
+      kernel::Model *m = get_container()->get_model();
       if (components_.find(_1) == components_.end()) {
         IMP_NEW(HierarchyGeometry, g, (atom::Hierarchy(m, _1), res_));
         components_[_1] = g;

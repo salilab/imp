@@ -25,7 +25,7 @@ class Tests(IMP.test.TestCase):
 
     def test_align(self):
         """Testing rigid alignment of xyz sets"""
-        m=IMP.Model()
+        m=IMP.kernel.Model()
         r= IMP.algebra.get_random_rotation_3d()
         t= IMP.algebra.Vector3D(0,0,0) #IMP.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())
         tr= IMP.algebra.Transformation3D(r, t)

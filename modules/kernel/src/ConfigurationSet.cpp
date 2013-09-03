@@ -13,7 +13,7 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-ConfigurationSet::ConfigurationSet(Model *m, std::string nm)
+ConfigurationSet::ConfigurationSet(kernel::Model *m, std::string nm)
     : Object(nm), model_(m), base_(new Configuration(m)) {}
 
 void ConfigurationSet::save_configuration() {

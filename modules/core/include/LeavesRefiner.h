@@ -31,7 +31,7 @@ class IMPCOREEXPORT LeavesRefiner : public Refiner {
 
   virtual bool get_can_refine(kernel::Particle *) const IMP_OVERRIDE;
   virtual const kernel::ParticlesTemp get_refined(kernel::Particle *) const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs(Model *m,
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
                                          const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
 #ifndef SWIG

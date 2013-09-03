@@ -57,7 +57,7 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
       @note An optimizer state may become periodic via its set_period()
             method.
   */
-  OptimizerState(Model *m, std::string name);
+  OptimizerState(kernel::Model *m, std::string name);
 
   /** \deprecated_at{2.1} Use the constructor that takes a Model. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)

@@ -11,7 +11,7 @@
 //#include <iostream>
 #include <boost/algorithm/string.hpp>
 #include <IMP/constants.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/kernel/Particle.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/atom/Atom.h>
@@ -323,7 +323,7 @@ ResidueRotamer RotamerCalculator::get_rotamer(const IMP::atom::Residue &rd,
 
   // we need to create fake particles representing rotated atoms
   // (for get_dihedral)
-  IMP_NEW(IMP::Model, model, ());
+  IMP_NEW(IMP::kernel::Model, model, ());
   IMP_NEW(IMP::kernel::Particle, p_a, (model));
   IMP_NEW(IMP::kernel::Particle, p_b, (model));
   IMP_NEW(IMP::kernel::Particle, p_c, (model));

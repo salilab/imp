@@ -66,7 +66,7 @@ IMPBASEEXPORT void add_to_log(LogLevel level, std::string to_write);
     @note may be overriden by set_log_level of specific objects that inherit
           from IMP::base::Object
     @note this global method should not, currently, be used directly during
-    Model::evaluate() calls.
+    kernel::Model::evaluate() calls.
 
     \see get_log_level()
     \see IMP::base::Object::set_log_level()

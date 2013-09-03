@@ -7,7 +7,7 @@
 
 #include <IMP/core/MinimumRestraint.h>
 #include <IMP/algebra/internal/MinimalSet.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -42,7 +42,7 @@ double MinimumRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   }
 }
 
-void MinimumRestraint::set_model(Model *m) {
+void MinimumRestraint::set_model(kernel::Model *m) {
   kernel::Restraint::set_model(m);
   for (RestraintConstIterator it = restraints_begin(); it != restraints_end();
        ++it) {
@@ -51,7 +51,7 @@ void MinimumRestraint::set_model(Model *m) {
 }
 
 ModelObjectsTemp MinimumRestraint::do_get_inputs() const {
-  ModelObjectsTemp ret;
+  kernel::ModelObjectsTemp ret;
   for (unsigned int i = 0; i < get_number_of_restraints(); ++i) {
     ret += get_restraint(i)->get_inputs();
   }

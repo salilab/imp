@@ -14,7 +14,7 @@
 #include <IMP/core/core_macros.h>
 #include <IMP/kernel/Particle.h>
 #include <IMP/decorator_macros.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/Decorator.h>
 #include <IMP/base/exception.h>
 #include <sstream>
@@ -25,7 +25,7 @@ class IMPISDEXPORT Weight: public Decorator
 {
 
   static const int nstates_max = 20;
-  static void do_setup_particle(Model *m,
+  static void do_setup_particle(kernel::Model *m,
                                 kernel::ParticleIndex pi);
 public:
 
@@ -56,7 +56,7 @@ public:
 //! Get number of states
   Int get_number_of_states();
 
-  static bool get_is_setup(Model *m,
+  static bool get_is_setup(kernel::Model *m,
                            kernel::ParticleIndex pi) {
     return m->get_has_attribute(get_nstates_key(), pi);
   }

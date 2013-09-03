@@ -9,7 +9,7 @@ class Tests(IMP.test.TestCase):
     """Tests for nested RigidBody function"""
     def test_nested2(self):
         """Test nested with transformations"""
-        mdl=IMP.Model()
+        mdl=IMP.kernel.Model()
         mhs=[]
         rbs=[]
         orig_rfs=[]

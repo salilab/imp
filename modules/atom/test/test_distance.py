@@ -8,7 +8,7 @@ import math
 class Tests(IMP.test.TestCase):
     def test_placement_score(self):
         """Test placement score"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         # read PDB
         mp= atom.read_pdb(self.open_input_file("mini.pdb"),
                               m, atom.NonWaterPDBSelector())
@@ -28,7 +28,7 @@ class Tests(IMP.test.TestCase):
 
     def test_drms(self):
         """ Test drms measure """
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         sel = atom.CAlphaPDBSelector()
         prot1 = atom.read_pdb(self.open_input_file("mini.pdb"), m, sel)
         prot2 = atom.read_pdb(self.open_input_file("mini.pdb"), m, sel)
@@ -55,7 +55,7 @@ class Tests(IMP.test.TestCase):
 
     def test__rigid_bodies_drms(self):
         """ Test drms measure taking into account rigid bodies"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         sel = atom.CAlphaPDBSelector()
         prot1 = atom.read_pdb(self.open_input_file("mini.pdb"), m, sel)
         prot2 = atom.read_pdb(self.open_input_file("mini.pdb"), m, sel)
@@ -89,7 +89,7 @@ class Tests(IMP.test.TestCase):
 
     def test__rigid_bodies_drmsd(self):
         """ Test drmsd measure"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         sel = atom.CAlphaPDBSelector()
         prot1 = atom.read_pdb(self.open_input_file("mini.pdb"), m, sel)
         prot2 = atom.read_pdb(self.open_input_file("mini.pdb"), m, sel)

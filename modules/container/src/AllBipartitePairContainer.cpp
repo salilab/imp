@@ -56,7 +56,7 @@ ParticleIndexes AllBipartitePairContainer::get_all_possible_indexes() const {
 }
 
 ModelObjectsTemp AllBipartitePairContainer::do_get_inputs() const {
-  ModelObjectsTemp ret;
+  kernel::ModelObjectsTemp ret;
   ret.push_back(a_);
   ret.push_back(b_);
   return ret;

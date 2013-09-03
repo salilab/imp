@@ -35,7 +35,7 @@ void check_particle(Particle *p) {
   }
 }
 
-Undecorator::Undecorator(Model *m, std::string name)
+Undecorator::Undecorator(kernel::Model *m, std::string name)
     : base::Object(name), m_(m) {}
 
 IMPKERNEL_END_NAMESPACE

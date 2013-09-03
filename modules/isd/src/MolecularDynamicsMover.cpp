@@ -15,7 +15,7 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-MolecularDynamicsMover::MolecularDynamicsMover(Model *m,
+MolecularDynamicsMover::MolecularDynamicsMover(kernel::Model *m,
                                                unsigned nsteps,
                                                Float timestep) :
   core::MonteCarloMover(m, "MolecularDynamicsMover%1%"),

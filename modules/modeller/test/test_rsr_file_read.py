@@ -56,7 +56,7 @@ class Tests(IMP.test.TestCase):
         modmodel = model(e)
         modmodel.build_sequence('GGCC')
 
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         protein = loader.load_atoms(m)
 
@@ -143,7 +143,7 @@ class Tests(IMP.test.TestCase):
                                     '     2       1.5380    0.0364')
         modmodel.restraints.append('test.rsr')
         # Deprecated interface
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         protein = loader.load_atoms(m)
         r = IMP.modeller.load_restraints_file('test.rsr', protein)
@@ -153,7 +153,7 @@ class Tests(IMP.test.TestCase):
         assertSimilarModellerIMPScores(self, modmodel, protein)
 
         # Need atoms before loading restraints
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         self.assertRaises(ValueError, loader.load_static_restraints_file,
                           'test.rsr')
@@ -173,7 +173,7 @@ class Tests(IMP.test.TestCase):
                                  spline_on_site=False,
                                  residue_span_range=(0, 99999))
 
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         protein = loader.load_atoms(m)
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path('top.lib'),
@@ -198,7 +198,7 @@ class Tests(IMP.test.TestCase):
                                  spline_on_site=False,
                                  residue_span_range=(0, 99999))
 
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         protein = loader.load_atoms(m)
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path('top.lib'),
@@ -223,7 +223,7 @@ class Tests(IMP.test.TestCase):
                                  spline_on_site=False,
                                  residue_span_range=(0, 99999))
 
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         protein = loader.load_atoms(m)
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path('top.lib'),
@@ -249,7 +249,7 @@ class Tests(IMP.test.TestCase):
                                  spline_on_site=False,
                                  residue_span_range=(0, 99999))
 
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         protein = loader.load_atoms(m)
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path('top.lib'),

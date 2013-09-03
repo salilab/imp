@@ -5,7 +5,7 @@
 
 import IMP.atom
 import IMP.container
-m= IMP.Model()
+m= IMP.kernel.Model()
 prot= IMP.atom.read_pdb(IMP.atom.get_example_path("example_protein.pdb"), m)
 IMP.atom.add_bonds(prot)
 bds= IMP.atom.get_internal_bonds(prot)

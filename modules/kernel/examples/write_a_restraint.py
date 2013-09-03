@@ -31,7 +31,7 @@ class MyRestraint(IMP.kernel.Restraint):
 
 # some code to create and evaluate it
 k= IMP.FloatKey("a key")
-m= IMP.Model()
+m= IMP.kernel.Model()
 ps=[]
 for i in range(0,10):
     p = IMP.kernel.Particle(m)

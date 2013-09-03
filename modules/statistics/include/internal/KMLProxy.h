@@ -15,7 +15,7 @@
 #include "KMLocalSearch.h"
 #include "KMLocalSearchLloyd.h"
 #include <IMP/kernel/Particle.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <vector>
 #include <iostream>
 #include <ctime>
@@ -43,7 +43,7 @@ class IMPSTATISTICSEXPORT KMLProxy {
                   participating in the clustering
   \param[in] num_centers  The number of clusters
    */
-  void initialize(Model *m, const kernel::Particles &ps, const FloatKeys &atts,
+  void initialize(kernel::Model *m, const kernel::Particles &ps, const FloatKeys &atts,
                   unsigned int num_centers);
   //! Run the k-means algorithm
   /**
@@ -91,7 +91,7 @@ class IMPSTATISTICSEXPORT KMLProxy {
   KMTerminationCondition term_;    // termination parameters
 
   // our data
-  Model *m_;
+  kernel::Model *m_;
   kernel::Particles ps_;                 // input particles
   kernel::Particles centroids_;          // the k means as particles
   base::Vector<FloatKey> atts_;  // the attributes k-means in minimized on

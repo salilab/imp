@@ -7,7 +7,7 @@ import IMP.container
 import IMP
 import RMF
 
-m = IMP.Model()
+m = IMP.kernel.Model()
 
 # create some particles
 ps=[IMP.core.XYZ.setup_particle(IMP.kernel.Particle(m)) for x in range(0,3)]

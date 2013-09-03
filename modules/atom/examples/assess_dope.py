@@ -6,7 +6,7 @@ import IMP.atom
 import IMP.container
 
 def create_representation():
-    m=IMP.Model()
+    m=IMP.kernel.Model()
     mp0= IMP.atom.read_pdb(IMP.atom.get_example_path('1fdx.B99990001.pdb'), m, IMP.atom.NonWaterNonHydrogenPDBSelector())
     prot=IMP.atom.get_by_type(mp0, IMP.atom.CHAIN_TYPE)[0]
     return (m, prot)

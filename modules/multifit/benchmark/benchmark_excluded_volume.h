@@ -8,7 +8,7 @@
 #include <IMP/core/ExcludedVolumeRestraint.h>
 #include <IMP/container/generic.h>
 #include <IMP/container/ClosePairContainer.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
 #include <IMP/base/flags.h>
@@ -47,7 +47,7 @@ namespace {
   template <class Tag>
 void test_one(std::string name,
               int seed,
-              Model *,
+              kernel::Model *,
               ScoringFunction *sf,
               XYZ to_move,
               bool eig) {
@@ -142,7 +142,7 @@ void test_one(std::string name,
 }
 
 #define IMP_EV_BENCHMARK_SETUP  \
- IMP_NEW(Model, m, ()); \
+ IMP_NEW(kernel::Model, m, ()); \
  int seed = IMP::base::random_number_generator(); \
   atom::Hierarchy h0 \
     = read_pdb(IMP::benchmark::get_data_path("small_protein.pdb"), m); \

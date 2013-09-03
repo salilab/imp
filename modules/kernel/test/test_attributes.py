@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
 
     def test_no_model(self):
         """Check access of attributes from python"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         p= IMP.kernel.Particle(m)
         ik= IMP.IntKey("hi")
         m.add_attribute(ik, p.get_index(), 1)

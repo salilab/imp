@@ -6,7 +6,7 @@ import IMP.core
 import IMP.algebra
 import IMP.atom
 
-m= IMP.Model()
+m= IMP.kernel.Model()
 
 # Put the parent particles for each molecule
 hs=[]

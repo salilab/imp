@@ -60,7 +60,7 @@ class Tests(IMP.test.TestCase):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        self.imp_model = IMP.Model()
+        self.imp_model = IMP.kernel.Model()
 
         self.restraint_sets = []
         self.rsrs = []

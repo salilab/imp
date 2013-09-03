@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
     IMP::Strings files
       = IMP::base::setup_from_argv(argc, argv, "Add color to an RMF file",
                                    "input.pdb output.rmf", 2);
-      IMP_NEW(IMP::Model, m, ());
+      IMP_NEW(IMP::kernel::Model, m, ());
       IMP::atom::Hierarchy h = IMP::atom::read_pdb(files[0], m);
       IMP::atom::add_bonds(h);
       RMF::FileHandle out = RMF::create_rmf_file(files[1]);

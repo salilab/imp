@@ -16,7 +16,7 @@ using namespace IMP::core;
 using namespace IMP::algebra;
 
 namespace {
-void test_one(std::string name, Model *m, RigidBodies rbs, float side, double) {
+void test_one(std::string name, kernel::Model *m, RigidBodies rbs, float side, double) {
   Vector3D minc(0, 0, 0), maxc(side, side, side);
   m->evaluate(false);
   double runtime, inittime;
@@ -51,7 +51,7 @@ void test_one(std::string name, Model *m, RigidBodies rbs, float side, double) {
 Model *setup(bool rpcpf, RigidBodies &rbs) {
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
-  Model *m = new Model();
+  kernel::Model *m = new kernel::Model();
   kernel::Particles atoms;
   for (int i = 0; i < 5; ++i) {
     std::string path = IMP::benchmark::get_data_path("small_protein.pdb");

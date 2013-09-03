@@ -26,7 +26,7 @@ double VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   IMP_CHECK_VARIABLE(da);
   IMP_USAGE_CHECK(!da, "VolumeRestraint does not support derivatives.");
   algebra::Sphere3Ds spheres;
-  Model *m = get_model();
+  kernel::Model *m = get_model();
   IMP_CONTAINER_FOREACH(SingletonContainer, sc_, {
     spheres.push_back(XYZR(m, _1).get_sphere());
   });
@@ -184,7 +184,7 @@ double VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
 }
 
 ModelObjectsTemp VolumeRestraint::do_get_inputs() const {
-  ModelObjectsTemp ret =
+  kernel::ModelObjectsTemp ret =
       IMP::kernel::get_particles(get_model(), sc_->get_all_possible_indexes());
   ret.push_back(sc_);
   return ret;

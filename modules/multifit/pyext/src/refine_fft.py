@@ -117,8 +117,8 @@ Fit subunits locally around a combination solution with FFT."""
 
 def run(asmb_fn, asmb_refined_fn, proteomics_fn,mapping_fn,combs_fn,comb_ind,options):
     #get rmsd for subunits
-    mdl1=IMP.Model()
-    mdl2=IMP.Model()
+    mdl1=IMP.kernel.Model()
+    mdl2=IMP.kernel.Model()
     combs=IMP.multifit.read_paths(combs_fn)
     asmb_input=IMP.multifit.read_settings(asmb_fn)
     asmb_input.set_was_used(True)

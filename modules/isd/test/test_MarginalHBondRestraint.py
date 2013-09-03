@@ -20,7 +20,7 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         self.p0=IMP.core.XYZ.setup_particle(IMP.kernel.Particle(self.m),
             IMP.algebra.Vector3D(0,0,0))
         self.p1=IMP.core.XYZ.setup_particle(IMP.kernel.Particle(self.m),

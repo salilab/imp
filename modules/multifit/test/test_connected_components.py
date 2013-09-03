@@ -23,7 +23,7 @@ class Tests(IMP.test.TestCase):
 
         for i in range(5):
             #sample i populations
-            mdl=IMP.Model()
+            mdl=IMP.kernel.Model()
             ps=[]
             for j in range(i+1):
                 bb=IMP.algebra.BoundingBox3D(

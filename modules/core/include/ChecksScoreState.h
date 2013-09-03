@@ -22,7 +22,7 @@ class IMPCOREEXPORT ChecksScoreState : public ScoreState {
 
  public:
 
-  ChecksScoreState(Model *m, double probability);
+  ChecksScoreState(kernel::Model *m, double probability);
 
   IMPCORE_DEPRECATED_METHOD_DECL(2.1)
   ChecksScoreState(double probability);
@@ -31,8 +31,8 @@ class IMPCOREEXPORT ChecksScoreState : public ScoreState {
 
   virtual void do_before_evaluate() IMP_OVERRIDE;
   virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ChecksScoreState);
 };
 

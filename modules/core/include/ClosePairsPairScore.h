@@ -32,7 +32,7 @@ class IMPCOREEXPORT KClosePairsPairScore : public PairScore {
   int k_;
   mutable double last_distance_;
   IMP::base::PointerMember<RigidClosePairsFinder> cpf_;
-  kernel::ParticleIndexPairs get_close_pairs(Model *m,
+  kernel::ParticleIndexPairs get_close_pairs(kernel::Model *m,
                                      const kernel::ParticleIndexPair &pp) const;
 
  public:
@@ -47,14 +47,14 @@ class IMPCOREEXPORT KClosePairsPairScore : public PairScore {
   }
 
   kernel::Restraints create_current_decomposition(kernel::Model *m,
-                                                  const kernel::ParticleIndexPair &vt) const;
+                                          const kernel::ParticleIndexPair &vt) const;
 
-  virtual double evaluate_index(Model *m, const kernel::ParticleIndexPair &p,
+  virtual double evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs(Model *m,
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
                                          const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
-  virtual double evaluate_if_good_index(Model *m, const kernel::ParticleIndexPair &vt,
+  virtual double evaluate_if_good_index(kernel::Model *m, const kernel::ParticleIndexPair &vt,
                                         DerivativeAccumulator *da,
                                         double max) const IMP_OVERRIDE;
   IMP_PAIR_SCORE_METHODS(KClosePairsPairScore);
@@ -71,7 +71,7 @@ class IMPCOREEXPORT ClosePairsPairScore : public PairScore {
   IMP::base::PointerMember<PairScore> f_;
   Float th_;
   IMP::base::PointerMember<RigidClosePairsFinder> cpf_;
-  kernel::ParticleIndexPairs get_close_pairs(Model *m,
+  kernel::ParticleIndexPairs get_close_pairs(kernel::Model *m,
                                      const kernel::ParticleIndexPair &pp) const;
 
  public:
@@ -88,14 +88,14 @@ class IMPCOREEXPORT ClosePairsPairScore : public PairScore {
         get_close_pairs(pp[0]->get_model(), IMP::internal::get_index(pp)));
   }
   kernel::Restraints create_current_decomposition(kernel::Model *m,
-                                                  const kernel::ParticleIndexPair &vt) const;
+                                          const kernel::ParticleIndexPair &vt) const;
 
-  virtual double evaluate_index(Model *m, const kernel::ParticleIndexPair &p,
+  virtual double evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual double evaluate_if_good_index(Model *m, const kernel::ParticleIndexPair &vt,
+  virtual double evaluate_if_good_index(kernel::Model *m, const kernel::ParticleIndexPair &vt,
                                         DerivativeAccumulator *da,
                                         double max) const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs(Model *m,
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
                                          const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
   IMP_PAIR_SCORE_METHODS(KClosePairsPairScore);

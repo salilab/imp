@@ -15,7 +15,7 @@
 #include "../assignment_tables.h"
 #include "../subset_graphs.h"
 
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/ScoreState.h>
 #include <IMP/kernel/Restraint.h>
 

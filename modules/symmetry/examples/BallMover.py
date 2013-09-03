@@ -9,7 +9,7 @@ K_=1.0      # intensity harmonic restraint
 KBT_=1.0    # temperature
 
 # create model
-m=IMP.Model()
+m=IMP.kernel.Model()
 
 # add 2 particles
 ps=[]

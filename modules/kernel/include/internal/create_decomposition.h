@@ -17,7 +17,7 @@
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 template <class Container, class Score>
-Restraints create_current_decomposition(Model *m, Score *score, Container *c,
+Restraints create_current_decomposition(kernel::Model *m, Score *score, Container *c,
                                         std::string name) {
   IMP_CHECK_VARIABLE(m);
   IMP_USAGE_CHECK(m, "nullptr passed for the Model.");
@@ -39,7 +39,7 @@ Restraints create_current_decomposition(Model *m, Score *score, Container *c,
 }
 
 template <class Container, class Score>
-Restraints create_decomposition(Model *m, Score *score, Container *c,
+Restraints create_decomposition(kernel::Model *m, Score *score, Container *c,
                                 std::string name) {
   IMP_USAGE_CHECK(m, "nullptr passed for the Model.");
   IMP_USAGE_CHECK(score, "nullptr passed for the Score.");

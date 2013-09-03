@@ -562,7 +562,7 @@ void CHARMMTopology::add_atom_types(Hierarchy hierarchy) const {
 }
 
 void CHARMMTopology::add_missing_atoms(Hierarchy hierarchy) const {
-  Model *model = hierarchy.get_particle()->get_model();
+  kernel::Model *model = hierarchy.get_particle()->get_model();
   ResMap resmap;
   map_residue_topology_to_hierarchy(hierarchy, resmap);
 
@@ -1036,7 +1036,7 @@ Particles CHARMMTopology::add_dihedrals(Hierarchy hierarchy) const {
   return ps;
 }
 
-Hierarchy CHARMMTopology::create_hierarchy(Model *model) const {
+Hierarchy CHARMMTopology::create_hierarchy(kernel::Model *model) const {
   char chain_id = 'A';
   Hierarchy root = Hierarchy::setup_particle(new kernel::Particle(model));
   for (CHARMMSegmentTopologyConstIterator segit = segments_begin();

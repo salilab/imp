@@ -15,7 +15,7 @@ ExampleSingletonModifier::ExampleSingletonModifier(
     const algebra::BoundingBox3D &bb)
     : bb_(bb) {}
 
-void ExampleSingletonModifier::apply_index(Model *m,
+void ExampleSingletonModifier::apply_index(kernel::Model *m,
                                            kernel::ParticleIndex pi) const {
   core::XYZ d(m, pi);
   for (unsigned int i = 0; i < 3; ++i) {
@@ -32,12 +32,12 @@ void ExampleSingletonModifier::apply_index(Model *m,
 }
 
 /* Only the passed particle is used */
-ModelObjectsTemp ExampleSingletonModifier::do_get_inputs(Model *m,
+ModelObjectsTemp ExampleSingletonModifier::do_get_inputs(kernel::Model *m,
                                           const kernel::ParticleIndexes &pis) const {
   return IMP::kernel::get_particles(m, pis);
 }
 
-ModelObjectsTemp ExampleSingletonModifier::do_get_outputs(Model *m,
+ModelObjectsTemp ExampleSingletonModifier::do_get_outputs(kernel::Model *m,
                                           const kernel::ParticleIndexes &pis) const {
   return do_get_inputs(m, pis);
 }

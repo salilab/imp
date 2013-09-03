@@ -60,7 +60,7 @@ void CoreClosePairContainer::set_slack(double s) {
 
 ModelObjectsTemp CoreClosePairContainer::do_get_inputs() const {
   kernel::ParticleIndexes all = c_->get_all_possible_indexes();
-  ModelObjectsTemp ret = IMP::get_particles(get_model(), all);
+  kernel::ModelObjectsTemp ret = IMP::get_particles(get_model(), all);
   for (unsigned int i = 0; i < get_number_of_pair_filters(); ++i) {
     ret += get_pair_filter(i)->get_inputs(get_model(), all);
   }

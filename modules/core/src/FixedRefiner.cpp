@@ -21,9 +21,9 @@ bool FixedRefiner::get_can_refine(kernel::Particle *) const { return true; }
 
 const kernel::ParticlesTemp FixedRefiner::get_refined(kernel::Particle *) const { return ps_; }
 
-ModelObjectsTemp FixedRefiner::do_get_inputs(Model *,
+ModelObjectsTemp FixedRefiner::do_get_inputs(kernel::Model *,
                                              const kernel::ParticleIndexes &) const {
-  return ModelObjectsTemp();
+  return kernel::ModelObjectsTemp();
 }
 
 IMPCORE_END_NAMESPACE

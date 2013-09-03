@@ -72,18 +72,18 @@ IMP_VALUES(ObjectsKey, ObjectsKeys);
 
 //! The type used to identify data stored directly in the model.
 typedef Key<8, true> ModelKey;
-IMP_VALUES(ModelKey, ModelKeys);
+IMP_VALUES(kernel::ModelKey, ModelKeys);
 
 /** @} */
 
 class Restraint;
 IMP_OBJECTS(Restraint, Restraints);
 class ModelObject;
-IMP_OBJECTS(ModelObject, ModelObjects);
+IMP_OBJECTS(kernel::ModelObject, ModelObjects);
 typedef base::Vector<ModelObjectsTemp> ModelObjectsTemps;
 
 class Model;
-IMP_OBJECTS(Model, Models);
+IMP_OBJECTS(kernel::Model, Models);
 class RestraintSet;
 IMP_OBJECTS(RestraintSet, RestraintSets);
 class ScoreState;

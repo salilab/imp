@@ -32,7 +32,7 @@ class IMPKERNELEXPORT InternalDynamicListClassnameContainer
   void set(PLURALINDEXTYPE cp);
   void clear();
   virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual void do_before_evaluate() IMP_OVERRIDE;
   virtual PLURALINDEXTYPE get_range_indexes() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(InternalDynamicListClassnameContainer);

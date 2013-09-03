@@ -56,7 +56,7 @@ public:
   // compute best scoring transformation and apply it on the particles
   void apply_transformation();
 
-  IMP::ModelObjectsTemp do_get_inputs() const { return ps_; }
+  IMP::kernel::ModelObjectsTemp do_get_inputs() const { return ps_; }
   IMP_OBJECT_METHODS(EnvelopeFitRestraint);
 
  private:

@@ -27,7 +27,7 @@ Fine2DRegistrationRestraint::Fine2DRegistrationRestraint(): calls_(0) {
 void Fine2DRegistrationRestraint::setup(
                        kernel::ParticlesTemp &ps,
                        const ProjectingParameters &params,
-                       Model *scoring_model,
+                       kernel::Model *scoring_model,
 //                       ScoreFunctionPtr score_function,
                        ScoreFunction *score_function,
                        MasksManagerPtr masks) {
@@ -129,7 +129,7 @@ double Fine2DRegistrationRestraint::unprotected_evaluate(
 }
 
 ModelObjectsTemp Fine2DRegistrationRestraint::do_get_inputs() const {
-  ModelObjectsTemp ps_subjects(1);
+  kernel::ModelObjectsTemp ps_subjects(1);
   ps_subjects[0]=subj_params_particle_;
   return ps_subjects;
 }

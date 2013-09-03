@@ -12,7 +12,7 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 
-DiscreteSampler::DiscreteSampler(Model *m, ParticleStatesTable *pst,
+DiscreteSampler::DiscreteSampler(kernel::Model *m, ParticleStatesTable *pst,
                                  std::string name)
     : Sampler(m, name),
       pst_(pst),

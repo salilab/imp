@@ -259,7 +259,7 @@ void do_all_fitting(const std::string param_filename,
   //                                   pca_pruned_asmb_sols);
 
   //load the protein
-  IMP_NEW(Model, mdl, ());
+  IMP_NEW(kernel::Model, mdl, ());
   atom::Hierarchy asmb;
   atom::Hierarchies mhs;
   //atom::CAlphaPDBSelector sel;

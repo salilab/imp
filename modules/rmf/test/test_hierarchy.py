@@ -32,7 +32,7 @@ class Tests(IMP.test.TestCase):
     def test_perturbed(self):
         """Test writing a simple hierarchy"""
         for suffix in RMF.suffixes:
-            m= IMP.Model()
+            m= IMP.kernel.Model()
             h= IMP.atom.read_pdb(self.get_input_file_name("small.pdb"), m)
             IMP.base.set_log_level(IMP.base.SILENT)
             IMP.atom.add_bonds(h)
@@ -43,7 +43,7 @@ class Tests(IMP.test.TestCase):
     def _test_huge(self):
         """Test writing a huge hierarchy"""
         for suffix in RMF.suffixes:
-            m= IMP.Model()
+            m= IMP.kernel.Model()
             print "reading pdb"
             h= IMP.atom.read_pdb(self.get_input_file_name("huge_protein.pdb"), m,
                                  IMP.atom.NonAlternativePDBSelector())
@@ -58,7 +58,7 @@ class Tests(IMP.test.TestCase):
     def test_large(self):
         """Test writing a large hierarchy"""
         for suffix in RMF.suffixes:
-            m= IMP.Model()
+            m= IMP.kernel.Model()
             print "reading pdb"
             h= IMP.atom.read_pdb(self.get_input_file_name("large.pdb"), m,
                                  IMP.atom.NonAlternativePDBSelector())
@@ -74,7 +74,7 @@ class Tests(IMP.test.TestCase):
     def test_navigation(self):
         """Test that navigation of read hierarchies works"""
         for suffix in RMF.suffixes:
-            m= IMP.Model()
+            m= IMP.kernel.Model()
             print "reading pdb"
             h= IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
                                  IMP.atom.NonAlternativePDBSelector())
@@ -94,7 +94,7 @@ class Tests(IMP.test.TestCase):
     def test_linking(self):
         """Test that linking hierarchies works"""
         for suffix in RMF.suffixes:
-            m= IMP.Model()
+            m= IMP.kernel.Model()
             print "reading pdb"
             h= IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
                                  IMP.atom.NonAlternativePDBSelector())

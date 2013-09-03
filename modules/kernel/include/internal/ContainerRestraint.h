@@ -34,7 +34,7 @@ class ContainerRestraint : public Restraint {
  public:
   void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator sa) const
       IMP_OVERRIDE;
-  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ContainerRestraint);
   ;
 

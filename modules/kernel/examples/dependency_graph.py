@@ -131,7 +131,7 @@ import IMP.atom
 import IMP.container
 
 def create_representation():
-    m= IMP.Model()
+    m= IMP.kernel.Model()
     all=IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
     all.set_name("the universe")
     def create_protein(name, ds):

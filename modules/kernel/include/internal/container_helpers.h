@@ -183,7 +183,7 @@ get_input_containers(S *s, base::Pointer<Particle> p) {
   return s->get_input_containers(p);
 }
 
-inline Particle *get_particle(Model *m, ParticleIndex pi) {
+inline Particle *get_particle(kernel::Model *m, ParticleIndex pi) {
   IMP_USAGE_CHECK(m, "nullptr passed for the Model.");
   return m->get_particle(pi);
 }
@@ -198,7 +198,7 @@ base::Array<D, base::WeakPointer<Particle>, Particle *> get_particle(
   return ret;
 }
 
-inline ParticlesTemp get_particle(Model *m, const ParticleIndexes &ps) {
+inline ParticlesTemp get_particle(kernel::Model *m, const ParticleIndexes &ps) {
   ParticlesTemp ret(ps.size());
   for (unsigned int i = 0; i < ps.size(); ++i) {
     ret[i] = get_particle(m, ps[i]);
@@ -208,7 +208,7 @@ inline ParticlesTemp get_particle(Model *m, const ParticleIndexes &ps) {
 
 template <unsigned int D>
 inline base::Vector<base::Array<D, base::WeakPointer<Particle>, Particle *> >
-get_particle(Model *m, const base::Vector<base::Array<D, ParticleIndex> > &ps) {
+get_particle(kernel::Model *m, const base::Vector<base::Array<D, ParticleIndex> > &ps) {
   base::Vector<base::Array<D, base::WeakPointer<Particle>, Particle *> > ret(
       ps.size());
   for (unsigned int i = 0; i < ps.size(); ++i) {
@@ -253,7 +253,7 @@ base::Vector<base::Array<D, ParticleIndex> > get_index(const base::Vector<
 }
 
 inline Model *get_model(Particle *p) { return p->get_model(); }\
-inline Model *get_model(ModelObject *p) { return p->get_model(); }
+inline Model *get_model(kernel::ModelObject *p) { return p->get_model(); }
 inline Model *get_model(ScoreState *p) { return p->get_model(); }
 
 inline Model *get_model(const ParticlesTemp &p) {

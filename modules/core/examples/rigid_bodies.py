@@ -8,7 +8,7 @@ import IMP.core
 import IMP.atom
 import IMP.container
 
-m= IMP.Model()
+m= IMP.kernel.Model()
 # create a new IMP.atom.Hierarchy for the pdb file
 mp1= IMP.atom.read_pdb(IMP.core.get_example_path('example_protein.pdb'), m)
 chains= IMP.atom.get_by_type(mp1, IMP.atom.CHAIN_TYPE)

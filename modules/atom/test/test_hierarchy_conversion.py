@@ -6,7 +6,7 @@ import IMP.atom
 class Tests(IMP.test.TestCase):
     def test_conversion(self):
         """Test conversion from atom.hierarchy"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         p =IMP.kernel.Particle(m)
         h= IMP.atom.Hierarchy.setup_particle(p)
         c= IMP.core.get_leaves(h)

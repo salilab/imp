@@ -18,7 +18,7 @@
 #include <IMP/core/rigid_bodies.h>
 
 #include <IMP/kernel/Particle.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 
 #include <vector>
 #include <deque>
@@ -230,12 +230,12 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
   static bool get_is_setup(kernel::Particle *p) {
     return H::get_is_setup(p, get_traits());
   }
-  static bool particle_is_instance(Model *m, kernel::ParticleIndex p) {
+  static bool particle_is_instance(kernel::Model *m, kernel::ParticleIndex p) {
     return H::get_is_setup(m->get_particle(p), get_traits());
   }
 #endif
 
-  Hierarchy(Model *m, kernel::ParticleIndex pi) : H(m, pi, get_traits()) {}
+  Hierarchy(kernel::Model *m, kernel::ParticleIndex pi) : H(m, pi, get_traits()) {}
 
   Hierarchy(kernel::ParticleAdaptor pi) : H(pi.get_model(),
                                             pi.get_particle_index(),
@@ -254,7 +254,7 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
 
   /** Create a Hierarchy of level t by adding the needed
       attributes. */
-  static Hierarchy setup_particle(Model *m, kernel::ParticleIndex pi,
+  static Hierarchy setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                                   kernel::ParticleIndexesAdaptor children =
                                       kernel::ParticleIndexesAdaptor()) {
     H::setup_particle(m, pi, get_traits());
@@ -270,7 +270,7 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
 
   /** Check if the particle has the needed attributes for a
    cast to succeed */
- static bool get_is_setup(Model *m, kernel::ParticleIndex p) {
+ static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex p) {
     return H::get_is_setup(m->get_particle(p), get_traits());
   }
 
@@ -498,7 +498,7 @@ IMPATOMEXPORT Hierarchy create_clone_one(Hierarchy d);
 //! Delete the Hierarchy
 /** All bonds connecting to these atoms are destroyed as are
     hierarchy links in the Hierarchy and the particles are
-    removed from the Model. If this particle has a parent, it is
+    removed from the kernel::Model. If this particle has a parent, it is
     removed from the parent.
     See Hierarchy
 */

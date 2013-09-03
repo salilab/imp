@@ -53,7 +53,7 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
  public:
   /** Create a restraint and register it with the model. The restraint is
       not added to the implicit scoring function in the Model.*/
-  Restraint(Model *m, std::string name);
+  Restraint(kernel::Model *m, std::string name);
   /** \deprecated_at{2.1} Use the constructor that takes a model instead.
    */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
@@ -256,7 +256,7 @@ class IMPKERNELEXPORT RestraintsAdaptor :
     public base::InputAdaptor
 #endif
     {
-  static Restraint *get(Model *sf);
+  static Restraint *get(kernel::Model *sf);
   static Restraint *get(Restraint *r) { return r; }
 
  public:
@@ -266,7 +266,7 @@ class IMPKERNELEXPORT RestraintsAdaptor :
       : Restraints(sf.begin(), sf.end()) {}
   RestraintsAdaptor(Restraint *sf) : Restraints(1, sf) {}
 #ifndef IMP_DOXYGEN
-  RestraintsAdaptor(Model *sf);
+  RestraintsAdaptor(kernel::Model *sf);
   RestraintsAdaptor(const ModelsTemp &sf);
   template <class T>
   RestraintsAdaptor(base::internal::PointerBase<T> t)

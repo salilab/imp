@@ -13,7 +13,7 @@ class IMPInstallTests(unittest.TestCase):
         """Check install of basic set of modules"""
         IMP.base.set_log_level(IMP.base.VERBOSE)
 
-        m = IMP.Model()
+        m = IMP.kernel.Model()
 
         p0 = IMP.kernel.Particle(m)
         d0 = IMP.core.XYZ.setup_particle(p0)

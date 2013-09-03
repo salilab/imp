@@ -11,7 +11,7 @@
 #include <IMP/algebra/vector_generators.h>
 IMPCORE_BEGIN_NAMESPACE
 
-RigidBodyMover::RigidBodyMover(Model *m, kernel::ParticleIndex pi,
+RigidBodyMover::RigidBodyMover(kernel::Model *m, kernel::ParticleIndex pi,
                                Float max_translation, Float max_angle)
     : MonteCarloMover(m, m->get_particle(pi)->get_name() + " mover") {
   IMP_LOG_VERBOSE("start RigidBodyMover constructor");

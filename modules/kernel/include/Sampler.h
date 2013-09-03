@@ -33,7 +33,7 @@ class IMPKERNELEXPORT Sampler : public IMP::base::Object {
   base::PointerMember<ScoringFunction> sf_;
 
  public:
-  Sampler(Model *m, std::string name = "Sampler %1%");
+  Sampler(kernel::Model *m, std::string name = "Sampler %1%");
   ConfigurationSet *create_sample() const;
 
   ScoringFunction *get_scoring_function() const { return sf_; }

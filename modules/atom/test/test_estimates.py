@@ -19,7 +19,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(r, rc, delta=.1*r)
     def test_d(self):
         """Testing the diffusion coeff estimate"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         p= IMP.kernel.Particle(m)
         d= IMP.core.XYZR.setup_particle(p)
         d.set_coordinates_are_optimized(True)

@@ -9,7 +9,7 @@ class Tests(IMP.test.TestCase):
     """Test the symmetry restraint"""
     def test_bd_ss(self):
         """Test the bond decorator score"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         p0= IMP.kernel.Particle(m)
         p1= IMP.kernel.Particle(m)
         d0= IMP.core.XYZ.setup_particle(p0)
@@ -33,7 +33,7 @@ class Tests(IMP.test.TestCase):
 
     def test_bd_deriv(self):
         """Test derivatives of the bond SingletonScore"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         p0= IMP.kernel.Particle(m)
         p1= IMP.kernel.Particle(m)
         d0= IMP.core.XYZ.setup_particle(p0)

@@ -11,7 +11,7 @@
 #include <IMP/core/core_config.h>
 
 #include <IMP/kernel/Particle.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 
 #include <vector>
 #include <set>
@@ -24,12 +24,12 @@ namespace internal {
 struct IMPCOREEXPORT GraphData {
   GraphData() {}
   GraphData(std::string prefix) {
-    setup_key_ = IntKey((prefix + " setup").c_str());
+    setup_key_ = kernel::IntKey((prefix + " setup").c_str());
     node_keys_[0] = kernel::ParticleIndexKey((prefix + " node 0").c_str());
     node_keys_[1] = kernel::ParticleIndexKey((prefix + " node 1").c_str());
     edges_key_ = kernel::ParticleIndexesKey(prefix + " edges");
   }
-  IntKey setup_key_;
+  kernel::IntKey setup_key_;
   kernel::ParticleIndexKey node_keys_[2];
   kernel::ParticleIndexesKey edges_key_;
 };

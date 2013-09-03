@@ -14,7 +14,7 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-Container::Container(Model *m, std::string name) : ScoreState(m, name) {
+Container::Container(kernel::Model *m, std::string name) : ScoreState(m, name) {
   IMP_USAGE_CHECK(m, "Must pass model to container constructor.");
   // incremented to 0 at start
   version_ = -1;

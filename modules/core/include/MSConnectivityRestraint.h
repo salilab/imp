@@ -94,7 +94,7 @@ class IMPCOREEXPORT MSConnectivityRestraint : public kernel::Restraint {
 
   double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum) const;
 
-  ModelObjectsTemp do_get_inputs() const;
+  kernel::ModelObjectsTemp do_get_inputs() const;
 
   IMP_OBJECT_METHODS(MSConnectivityRestraint);
 

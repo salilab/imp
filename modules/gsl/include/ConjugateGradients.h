@@ -22,7 +22,7 @@ class IMPGSLEXPORT ConjugateGradients : public GSLOptimizer {
 
  public:
   //!
-  ConjugateGradients(Model *m);
+  ConjugateGradients(kernel::Model *m);
   /** \deprecated_at{2.1} Pass a model to the constructor. */
   IMPGSL_DEPRECATED_FUNCTION_DECL(2.1)
   ConjugateGradients();

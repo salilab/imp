@@ -34,7 +34,7 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT MolecularDynamics : public Simulator {
  public:
   /** Score based on the provided model */
-  MolecularDynamics(Model *m = nullptr);
+  MolecularDynamics(kernel::Model *m = nullptr);
 
   //! \return the current kinetic energy of the system, in kcal/mol
   virtual Float get_kinetic_energy() const;

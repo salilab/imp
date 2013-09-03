@@ -33,11 +33,11 @@ class IMPKERNELEXPORT Configuration : public IMP::base::Object {
   internal::ParticlesAttributeTable particle_lists_;
 
  public:
-  Configuration(Model *m, std::string name = "Configuration %1%");
+  Configuration(kernel::Model *m, std::string name = "Configuration %1%");
   //! Only store parts of the configuration that have changed from base
   /** At the moment, this does not play well with adding and removing
       attributes.*/
-  Configuration(Model *m, Configuration *base,
+  Configuration(kernel::Model *m, Configuration *base,
                 std::string name = "Configuration %1%");
   void load_configuration() const;
   //! Swap the current configuration with that in the Model

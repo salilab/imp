@@ -47,9 +47,9 @@ class IMPATOMEXPORT StereochemistryPairFilter : public PairPredicate {
     rebuild_map();
   }
 
-  virtual int get_value_index(Model *m, const kernel::ParticleIndexPair &p) const
+  virtual int get_value_index(kernel::Model *m, const kernel::ParticleIndexPair &p) const
       IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs(Model *m,
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
                                          const kernel::ParticleIndexes &pis) const
       IMP_OVERRIDE;
   IMP_PAIR_PREDICATE_METHODS(StereochemistryPairFilter);

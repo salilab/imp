@@ -48,7 +48,7 @@ double CHARMMStereochemistryRestraint::unprotected_evaluate(
 }
 
 ModelObjectsTemp CHARMMStereochemistryRestraint::do_get_inputs() const {
-  ModelObjectsTemp ps;
+  kernel::ModelObjectsTemp ps;
   for (kernel::Particles::const_iterator b = bonds_.begin(); b != bonds_.end(); ++b) {
     ps.push_back(*b);
     kernel::ParticlesTemp bps = bond_score_->get_input_particles(*b);

@@ -19,7 +19,7 @@ class IMPKERNELEXPORT ParticleInputs {
  public:
   /** Get the list of ModelObjects read when passed the given list of particles
       is used.*/
-  ModelObjectsTemp get_inputs(Model *m, const ParticleIndexes &pis) const;
+  ModelObjectsTemp get_inputs(kernel::Model *m, const ParticleIndexes &pis) const;
 
   /** \deprecated_at{2.1} Use get_inputs instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
@@ -30,7 +30,7 @@ class IMPKERNELEXPORT ParticleInputs {
 
  protected:
   /** Overload this method to specify the inputs.*/
-  virtual ModelObjectsTemp do_get_inputs(Model *m,
+  virtual ModelObjectsTemp do_get_inputs(kernel::Model *m,
                                          const ParticleIndexes &pis) const;
   virtual ~ParticleInputs() {}
 };
@@ -41,7 +41,7 @@ class IMPKERNELEXPORT ParticleOutputs {
  public:
   /** Get the list of ModelObjects changed when passed the given list of
       particles is used.*/
-  ModelObjectsTemp get_outputs(Model *m, const ParticleIndexes &pis) const;
+  ModelObjectsTemp get_outputs(kernel::Model *m, const ParticleIndexes &pis) const;
 
   /** \deprecated_at{2.1} Use get_inputs instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
@@ -52,7 +52,7 @@ class IMPKERNELEXPORT ParticleOutputs {
 
  protected:
   /** Overload this method to specify the outputs.*/
-  virtual ModelObjectsTemp do_get_outputs(Model *m,
+  virtual ModelObjectsTemp do_get_outputs(kernel::Model *m,
                                           const ParticleIndexes &pis) const;
   virtual ~ParticleOutputs() {}
 };

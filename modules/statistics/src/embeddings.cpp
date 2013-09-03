@@ -12,7 +12,7 @@
 IMPSTATISTICS_BEGIN_NAMESPACE
 
 namespace {
-algebra::Vector3D get_coordinates(Model *m, kernel::ParticleIndex pi) {
+algebra::Vector3D get_coordinates(kernel::Model *m, kernel::ParticleIndex pi) {
   algebra::Vector3D ret(
       m->get_attribute(IMP::kernel::internal::xyzr_keys[0], pi),
       m->get_attribute(IMP::kernel::internal::xyzr_keys[1], pi),

@@ -1,7 +1,7 @@
 /**
  *   Copyright 2007-2013 IMP Inventors. All rights reserved
  */
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/kernel/Particle.h>
 #include <IMP/kernel/Restraint.h>
 #include <IMP/restraint_macros.h>
@@ -34,8 +34,8 @@ double TouchyRestraint::unprotected_evaluate(
   return p_->get_value(fk_);
 }
 
-IMP::ModelObjectsTemp TouchyRestraint::do_get_inputs() const {
-  return IMP::ModelObjectsTemp();
+IMP::kernel::ModelObjectsTemp TouchyRestraint::do_get_inputs() const {
+  return IMP::kernel::ModelObjectsTemp();
 }
 }
 #endif
@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
   IMP::base::setup_from_argv(argc, argv, "Testing protection of particles");
 // no checks in fast mode
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-  IMP_NEW(IMP::Model, m, ());
+  IMP_NEW(IMP::kernel::Model, m, ());
   IMP_NEW(IMP::kernel::Particle, p, (m));
   IMP::base::SetNumberOfThreads no(1);
   IMP_NEW(TouchyRestraint, r, (p, IMP::FloatKey(0)));

@@ -48,9 +48,9 @@ class IMPCOREEXPORT ClosePairsFinder : public kernel::ParticleInputs,
   kernel::ParticlePairsTemp get_close_pairs(const kernel::ParticlesTemp &pca,
                                     const kernel::ParticlesTemp &pcb) const;
   virtual kernel::ParticleIndexPairs get_close_pairs(
-      Model *m, const kernel::ParticleIndexes &pc) const = 0;
+      kernel::Model *m, const kernel::ParticleIndexes &pc) const = 0;
   virtual kernel::ParticleIndexPairs get_close_pairs(
-      Model *m, const kernel::ParticleIndexes &pca,
+      kernel::Model *m, const kernel::ParticleIndexes &pca,
       const kernel::ParticleIndexes &pcb) const = 0;
   virtual IntPairs get_close_pairs(
       const algebra::BoundingBox3Ds &bbs) const = 0;

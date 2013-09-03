@@ -21,7 +21,7 @@ class Tests(IMP.test.TestCase):
                                     group=modeller.physical.xy_distance)
         modmodel.restraints.add(r)
 
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         protein = IMP.modeller.ModelLoader(modmodel).load_atoms(m)
         atoms = IMP.atom.get_by_type(protein, IMP.atom.ATOM_TYPE)
         m.add_restraint(IMP.modeller.ModellerRestraints(m, modmodel,

@@ -63,20 +63,20 @@ unsigned int _take_particles(const Particles &ps) {
   return ps.size();
 }
 
-unsigned int _take_particles(Model *, const Particles &ps) {
+unsigned int _take_particles(kernel::Model *, const Particles &ps) {
   for (unsigned int i = 0; i < ps.size(); ++i) {
     IMP_CHECK_OBJECT(ps[i]);
   }
   return ps.size();
 }
 
-unsigned int _take_particles(Model *, const Particles &ps, base::TextOutput) {
+unsigned int _take_particles(kernel::Model *, const Particles &ps, base::TextOutput) {
   for (unsigned int i = 0; i < ps.size(); ++i) {
     IMP_CHECK_OBJECT(ps[i]);
   }
   return ps.size();
 }
-const Particles &_give_particles(Model *m) {
+const Particles &_give_particles(kernel::Model *m) {
   static Particles ret;
   while (ret.size() < 10) {
     ret.push_back(new Particle(m));
@@ -92,7 +92,7 @@ const ParticlePair &_pass_particle_pair(const ParticlePair &pp) {
   std::cout << std::endl;
   return pp;
 }
-Particles _give_particles_copy(Model *m) {
+Particles _give_particles_copy(kernel::Model *m) {
   Particles ret;
   while (ret.size() < 10) {
     ret.push_back(new Particle(m));
@@ -145,7 +145,7 @@ ParticlesTemp _create_particles_from_pdb(std::string name, Model *m) {
   return create_particles_from_pdb(name, m);
 }
 
-Float _LogPairScore::evaluate_index(Model *m, const ParticleIndexPair &ipp,
+Float _LogPairScore::evaluate_index(kernel::Model *m, const ParticleIndexPair &ipp,
                                     DerivativeAccumulator *) const {
   ParticlePair pp(m->get_particle(ipp[0]), m->get_particle(ipp[1]));
   if (map_.find(pp) == map_.end()) {
@@ -169,13 +169,13 @@ ParticleIndex _take_particle_adaptor(ParticleAdaptor pa) {
   return pa.get_particle_index();
 }
 
-void _TrivialTraitsDecorator::do_setup_particle(Model *m,
+void _TrivialTraitsDecorator::do_setup_particle(kernel::Model *m,
                                                 ParticleIndex pi,
                                                 StringKey k) {
   m->add_attribute(k, pi, "hi");
 }
 
-void _TrivialDerivedDecorator::do_setup_particle(Model *m,
+void _TrivialDerivedDecorator::do_setup_particle(kernel::Model *m,
                                                  ParticleIndex pi) {
   m->add_attribute(IntKey("trivial_attribute_2"), pi, 2);
   if (!_TrivialDecorator::get_is_setup(m, pi)) {
@@ -183,7 +183,7 @@ void _TrivialDerivedDecorator::do_setup_particle(Model *m,
   }
 }
 
-void _TrivialDecorator::do_setup_particle(Model *m,
+void _TrivialDecorator::do_setup_particle(kernel::Model *m,
                                           ParticleIndex pi) {
   m->add_attribute(IntKey("trivial_attribute"), pi, 1);
 }

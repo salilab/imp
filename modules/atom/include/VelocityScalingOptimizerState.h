@@ -29,7 +29,7 @@ class IMPATOMEXPORT VelocityScalingOptimizerState : public OptimizerState {
   IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
     VelocityScalingOptimizerState(const kernel::Particles &pis, Float temperature,
                                 unsigned skip_steps);
-  VelocityScalingOptimizerState(Model *m, kernel::ParticleIndexesAdaptor pis,
+  VelocityScalingOptimizerState(kernel::Model *m, kernel::ParticleIndexesAdaptor pis,
                                   double temperature);
 
   //! Set the particles to use.

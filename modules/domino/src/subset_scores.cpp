@@ -107,7 +107,7 @@ void RestraintCache::add_restraint_internal(kernel::Restraint *r,
 void RestraintCache::add_restraints(const kernel::RestraintsAdaptor &rs) {
   IMP_OBJECT_LOG;
   if (rs.empty()) return;
-  Model *m = rs[0]->get_model();
+  kernel::Model *m = rs[0]->get_model();
   DependencyGraph dg = get_dependency_graph(m);
   ParticleStatesTable *pst = cache_.get_generator().get_particle_states_table();
   DepMap dependencies;

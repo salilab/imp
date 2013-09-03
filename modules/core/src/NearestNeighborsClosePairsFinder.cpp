@@ -31,7 +31,7 @@ NearestNeighborsClosePairsFinder::NearestNeighborsClosePairsFinder()
     : ClosePairsFinder("NearestNeighborsCPF") {}
 
 ParticleIndexPairs NearestNeighborsClosePairsFinder::get_close_pairs(
-    Model *m, const kernel::ParticleIndexes &pai, const kernel::ParticleIndexes &pbi) const {
+    kernel::Model *m, const kernel::ParticleIndexes &pai, const kernel::ParticleIndexes &pbi) const {
   kernel::ParticlesTemp pa = IMP::get_particles(m, pai);
   kernel::ParticlesTemp pb = IMP::get_particles(m, pbi);
   IMP_NEW(algebra::NearestNeighborD<3>, nn, (pa.begin(), pa.end(), 0));
@@ -48,7 +48,7 @@ ParticleIndexPairs NearestNeighborsClosePairsFinder::get_close_pairs(
   return ret;
 }
 ParticleIndexPairs NearestNeighborsClosePairsFinder::get_close_pairs(
-    Model *m, const kernel::ParticleIndexes &pai) const {
+    kernel::Model *m, const kernel::ParticleIndexes &pai) const {
   kernel::ParticlesTemp c = IMP::get_particles(m, pai);
   IMP_NEW(algebra::NearestNeighborD<3>, nn, (c.begin(), c.end(), 0));
   double rm = max_radius(c.begin(), c.end());
@@ -109,7 +109,7 @@ IntPairs NearestNeighborsClosePairsFinder::get_close_pairs(
 }
 
 ModelObjectsTemp NearestNeighborsClosePairsFinder::do_get_inputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
   return get_particles(m, pis);
 }
 

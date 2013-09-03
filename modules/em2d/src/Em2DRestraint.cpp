@@ -46,7 +46,7 @@ Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   IMP_UNUSED(accum);
   IMP_USAGE_CHECK(!accum, "No derivatives provided");
-  IMP_NEW(Model,model,());
+  IMP_NEW(kernel::Model,model,());
   model = get_model();
   // Project the model
   RegistrationResults regs = get_evenly_distributed_registration_results(
@@ -81,7 +81,7 @@ Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 //   used, but don't create interactions).
 ModelObjectsTemp Em2DRestraint::do_get_inputs() const
 {
-  ModelObjectsTemp ret= particles_container_->get_particles();
+  kernel::ModelObjectsTemp ret= particles_container_->get_particles();
   ret.push_back(particles_container_);
   return ret;
 }

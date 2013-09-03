@@ -10,7 +10,7 @@ import math
 
 # create a rigid body per helix
 def create_representation():
-    m=IMP.Model()
+    m=IMP.kernel.Model()
     h0= IMP.atom.read_pdb(IMP.domino.get_example_path('helix_0.pdb'), m, IMP.atom.CAlphaPDBSelector())
     h1= IMP.atom.read_pdb(IMP.domino.get_example_path('helix_1.pdb'), m, IMP.atom.CAlphaPDBSelector())
     for h in [h0, h1]:

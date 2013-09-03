@@ -10,7 +10,7 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-ModelObjectsTemp ParticleInputs::get_inputs(Model *m,
+ModelObjectsTemp ParticleInputs::get_inputs(kernel::Model *m,
                                             const ParticleIndexes &pis) const {
   return do_get_inputs(m, pis);
 }

@@ -44,7 +44,7 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
      the map is in a well defined state (and not in the middle of its
      destructor.
      Otherwise, ~IncrementalScoringFunction -> map destructor
-     -> Model::set_has_dependencies()
+     -> kernel::Model::set_has_dependencies()
      -> IncrementalScoringFunction::do_set_has_dependencies()
      -> map destructor -> boom
   */
@@ -112,7 +112,7 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
                                     const ScoreStatesTemp &ss) IMP_OVERRIDE;
   virtual kernel::Restraints create_restraints() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual void handle_set_has_required_score_states(bool) IMP_OVERRIDE;
   IMP_OBJECT_METHODS(IncrementalScoringFunction);
 };

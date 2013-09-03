@@ -25,7 +25,7 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(meth(mh1, mh2[::-1]),
                                    expected_rmsd, delta=1e-2)
 
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         mh_ref = IMP.atom.read_pdb(self.get_input_file_name('mini.pdb'), m)
         mh = IMP.atom.read_pdb(self.get_input_file_name('mini.pdb'), m)
 
@@ -43,7 +43,7 @@ class Tests(IMP.test.TestCase):
         check_rmsd(mh_ref_chains, mh_chains, 1.690)
 
     def test_symmetry_score_calculation_for_molecule(self):
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         mh = IMP.atom.read_pdb(self.get_input_file_name('trimer-ref.pdb'), m)
         mhs = IMP.atom.get_by_type(mh, IMP.atom.CHAIN_TYPE)
         dec = IMP.cnmultifit.MolCnSymmAxisDetector(3, mhs)

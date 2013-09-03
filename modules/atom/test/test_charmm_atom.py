@@ -9,7 +9,7 @@ class Tests(IMP.test.TestCase):
 
     def test_create(self):
         """Check creation of CHARMMAtom decorators"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         p = IMP.kernel.Particle(m)
         IMP.atom.Atom.setup_particle(p, IMP.atom.AT_CA)
 
@@ -21,7 +21,7 @@ class Tests(IMP.test.TestCase):
 
     def test_get_set(self):
         """Check get/set methods of CHARMMAtom decorators"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         p = IMP.kernel.Particle(m)
         IMP.atom.Atom.setup_particle(p, IMP.atom.AT_CA)
         c = IMP.atom.CHARMMAtom.setup_particle(p, 'CT1')
@@ -32,7 +32,7 @@ class Tests(IMP.test.TestCase):
 
     def test_show(self):
         """Check show method of CHARMMAtom decorators"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         p = IMP.kernel.Particle(m)
         IMP.atom.Atom.setup_particle(p, IMP.atom.AT_CA)
         c = IMP.atom.CHARMMAtom.setup_particle(p, 'CT1')

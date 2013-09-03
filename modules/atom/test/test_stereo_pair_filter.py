@@ -4,7 +4,7 @@ import IMP.core
 import IMP.atom
 
 def setup_filter():
-    m = IMP.Model()
+    m = IMP.kernel.Model()
     ps = []
     for i in range(10):
         p = IMP.kernel.Particle(m)

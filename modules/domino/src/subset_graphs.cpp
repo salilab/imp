@@ -324,7 +324,7 @@ bool get_has_edge(InteractionGraph &graph, InteractionGraphVertex va,
   return false;
 }
 
-void add_edges(const kernel::ParticlesTemp &ps, ModelObjects pt,
+void add_edges(const kernel::ParticlesTemp &ps, kernel::ModelObjects pt,
                const IMP::base::map<ModelObject *, int> &map,
                base::Object *blame, InteractionGraph &g) {
   IMP_LOG_VARIABLE(ps);
@@ -364,8 +364,8 @@ InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
                                        const kernel::ParticlesTemp &ps) {
   if (ps.empty()) return InteractionGraph();
   InteractionGraph ret(ps.size());
-  kernel::Restraints rs = IMP::create_decomposition(rsi->create_restraints());
-  // Model *m= ps[0]->get_model();
+  kernel::Restraints rs = kernel::create_decomposition(rsi->create_restraints());
+  // kernel::Model *m= ps[0]->get_model();
   IMP::base::map<ModelObject *, int> map;
   InteractionGraphVertexName pm = boost::get(boost::vertex_name, ret);
   DependencyGraph dg = get_dependency_graph(ps[0]->get_model());
@@ -401,7 +401,7 @@ InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
   for (kernel::Restraints::const_iterator it = all_rs.begin();
        it != all_rs.end();
        ++it) {
-    ModelObjectsTemp pl = (*it)->get_inputs();
+    kernel::ModelObjectsTemp pl = (*it)->get_inputs();
     add_edges(ps, pl, map, *it, ret);
   }
   /* Make sure that composite score states (eg the normalizer for
@@ -409,7 +409,7 @@ InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
      particles.*/
   ScoreStatesTemp ss = get_required_score_states(rs);
   for (ScoreStatesTemp::const_iterator it = ss.begin(); it != ss.end(); ++it) {
-    ModelObjectsTemps interactions = (*it)->get_interactions();
+    kernel::ModelObjectsTemps interactions = (*it)->get_interactions();
     for (unsigned int i = 0; i < interactions.size(); ++i) {
       add_edges(ps, interactions[i], map, *it, ret);
     }

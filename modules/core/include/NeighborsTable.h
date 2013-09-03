@@ -31,11 +31,11 @@ class IMPCOREEXPORT NeighborsTable: public kernel::ScoreState {
   int input_version_;
   base::map<kernel::ParticleIndex, kernel::ParticleIndexes> data_;
  protected:
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
-    return ModelObjectsTemp(1, input_);
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+    return kernel::ModelObjectsTemp(1, input_);
   }
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
-    return ModelObjectsTemp();
+  virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+    return kernel::ModelObjectsTemp();
   }
   virtual void do_before_evaluate() IMP_OVERRIDE;
   virtual void do_after_evaluate(DerivativeAccumulator *) IMP_OVERRIDE {}

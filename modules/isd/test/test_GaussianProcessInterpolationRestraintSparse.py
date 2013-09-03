@@ -26,7 +26,7 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         self.q=[[0],[1]]
         self.I=[1,1]
         self.err=array([sqrt(10),sqrt(20)])

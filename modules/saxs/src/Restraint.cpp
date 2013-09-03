@@ -51,7 +51,7 @@ Restraint::Restraint(const kernel::Particles& particles, const Profile* exp_prof
 
 
 ModelObjectsTemp Restraint::do_get_inputs() const {
-  ModelObjectsTemp pts(particles_.begin(), particles_.end());
+  kernel::ModelObjectsTemp pts(particles_.begin(), particles_.end());
   unsigned int sz=pts.size();
   for (unsigned int i=0; i< sz; ++i) {
     pts.push_back(atom::Hierarchy(particles_[i]).get_parent());

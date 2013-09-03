@@ -15,7 +15,7 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-inline bool get_filters_contains(Model *m, const PairPredicates &filters,
+inline bool get_filters_contains(kernel::Model *m, const PairPredicates &filters,
                                  kernel::ParticleIndexPair pip) {
   for (unsigned int i = 0; i < filters.size(); ++i) {
     if (filters[i]->get_value_index(m, pip)) return true;
@@ -24,9 +24,9 @@ inline bool get_filters_contains(Model *m, const PairPredicates &filters,
 }
 
 struct ParticleSink {
-  Model *m_;
+  kernel::Model *m_;
   kernel::ParticlesTemp &out_;
-  ParticleSink(Model *m, kernel::ParticlesTemp &out) : m_(m), out_(out) {}
+  ParticleSink(kernel::Model *m, kernel::ParticlesTemp &out) : m_(m), out_(out) {}
   typedef kernel::ParticleIndex argument_type;
   bool operator()(kernel::ParticleIndex c) {
     out_.push_back(m_->get_particle(c));
@@ -43,10 +43,10 @@ struct ParticleSink {
 };
 
 struct ParticlePairSink {
-  Model *m_;
+  kernel::Model *m_;
   const PairPredicates &filters_;
   kernel::ParticlePairsTemp &out_;
-  ParticlePairSink(Model *m, const PairPredicates &filters,
+  ParticlePairSink(kernel::Model *m, const PairPredicates &filters,
                    kernel::ParticlePairsTemp &out)
       : m_(m), filters_(filters), out_(out) {}
   bool add(kernel::ParticleIndex a, kernel::ParticleIndex b) {
@@ -76,10 +76,10 @@ struct ParticlePairSink {
 };
 
 struct ParticleIndexPairSink {
-  Model *m_;
+  kernel::Model *m_;
   const PairPredicates &filters_;
   kernel::ParticleIndexPairs &out_;
-  ParticleIndexPairSink(Model *m, const PairPredicates &filters,
+  ParticleIndexPairSink(kernel::Model *m, const PairPredicates &filters,
                         kernel::ParticleIndexPairs &out)
       : m_(m), filters_(filters), out_(out) {}
   bool add(kernel::ParticleIndex a, kernel::ParticleIndex b) {
@@ -110,7 +110,7 @@ struct ParticlePairSinkWithMax : public ParticlePairSink {
   double max_;
   PS *ssps_;
   DerivativeAccumulator *da_;
-  ParticlePairSinkWithMax(Model *m, const PairPredicates &filters,
+  ParticlePairSinkWithMax(kernel::Model *m, const PairPredicates &filters,
                           kernel::ParticlePairsTemp &out, PS *ssps,
                           DerivativeAccumulator *da, double &score, double max)
       : ParticlePairSink(m, filters, out),
@@ -137,7 +137,7 @@ struct ParticleIndexPairSinkWithMax : public ParticleIndexPairSink {
   double max_;
   PS *ssps_;
   DerivativeAccumulator *da_;
-  ParticleIndexPairSinkWithMax(Model *m, const PairPredicates &filters,
+  ParticleIndexPairSinkWithMax(kernel::Model *m, const PairPredicates &filters,
                                kernel::ParticleIndexPairs &out, PS *ssps,
                                DerivativeAccumulator *da, double &score,
                                double max)
@@ -162,7 +162,7 @@ struct ParticleIndexPairSinkWithMax : public ParticleIndexPairSink {
 
 struct HalfParticlePairSink : public ParticlePairSink {
   kernel::ParticleIndex p_;
-  HalfParticlePairSink(Model *m, const PairPredicates &filters,
+  HalfParticlePairSink(kernel::Model *m, const PairPredicates &filters,
                        kernel::ParticlePairsTemp &out, kernel::ParticleIndex p)
       : ParticlePairSink(m, filters, out), p_(p) {}
   bool operator()(kernel::ParticleIndex c) {
@@ -175,7 +175,7 @@ struct HalfParticlePairSink : public ParticlePairSink {
 
 struct HalfParticleIndexPairSink : public ParticleIndexPairSink {
   kernel::ParticleIndex p_;
-  HalfParticleIndexPairSink(Model *m, const PairPredicates &filters,
+  HalfParticleIndexPairSink(kernel::Model *m, const PairPredicates &filters,
                             kernel::ParticleIndexPairs &out,
                             kernel::ParticleIndex p)
       : ParticleIndexPairSink(m, filters, out), p_(p) {}
@@ -189,7 +189,7 @@ struct HalfParticleIndexPairSink : public ParticleIndexPairSink {
 
 struct SwappedHalfParticleIndexPairSink : public ParticleIndexPairSink {
   kernel::ParticleIndex p_;
-  SwappedHalfParticleIndexPairSink(Model *m, const PairPredicates &filters,
+  SwappedHalfParticleIndexPairSink(kernel::Model *m, const PairPredicates &filters,
                                    kernel::ParticleIndexPairs &out,
                                    kernel::ParticleIndex p)
       : ParticleIndexPairSink(m, filters, out), p_(p) {}
@@ -204,7 +204,7 @@ struct SwappedHalfParticleIndexPairSink : public ParticleIndexPairSink {
 template <class PS>
 struct HalfParticlePairSinkWithMax : public ParticlePairSinkWithMax<PS> {
   kernel::ParticleIndex p_;
-  HalfParticlePairSinkWithMax(Model *m, const PairPredicates &filters,
+  HalfParticlePairSinkWithMax(kernel::Model *m, const PairPredicates &filters,
                               kernel::ParticlePairsTemp &out, PS *ssps,
                               DerivativeAccumulator *da, double &score,
                               double max, kernel::ParticleIndex p)
@@ -223,7 +223,7 @@ template <class PS>
 struct HalfParticleIndexPairSinkWithMax
     : public ParticleIndexPairSinkWithMax<PS> {
   kernel::ParticleIndex p_;
-  HalfParticleIndexPairSinkWithMax(Model *m, const PairPredicates &filters,
+  HalfParticleIndexPairSinkWithMax(kernel::Model *m, const PairPredicates &filters,
                                    kernel::ParticleIndexPairs &out, PS *ssps,
                                    DerivativeAccumulator *da, double &score,
                                    double max, kernel::ParticleIndex p)
@@ -242,7 +242,7 @@ struct RigidBodyRigidBodyParticleIndexPairSink : public ParticleIndexPairSink {
   double dist_;
   const IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &map_;
   RigidBodyRigidBodyParticleIndexPairSink(
-      Model *m, const PairPredicates &filters, kernel::ParticleIndexPairs &out,
+      kernel::Model *m, const PairPredicates &filters, kernel::ParticleIndexPairs &out,
       ObjectKey key, double dist,
       const IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &map)
       : ParticleIndexPairSink(m, filters, out),
@@ -270,7 +270,7 @@ struct RigidBodyParticleParticleIndexPairSink : public ParticleIndexPairSink {
   double dist_;
   const IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &map_;
   RigidBodyParticleParticleIndexPairSink(
-      Model *m, const PairPredicates &filters, kernel::ParticleIndexPairs &out,
+      kernel::Model *m, const PairPredicates &filters, kernel::ParticleIndexPairs &out,
       ObjectKey key, double dist,
       const IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &map)
       : ParticleIndexPairSink(m, filters, out),
@@ -298,7 +298,7 @@ struct ParticleRigidBodyParticleIndexPairSink : public ParticleIndexPairSink {
   double dist_;
   const IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &map_;
   ParticleRigidBodyParticleIndexPairSink(
-      Model *m, const PairPredicates &filters, kernel::ParticleIndexPairs &out,
+      kernel::Model *m, const PairPredicates &filters, kernel::ParticleIndexPairs &out,
       ObjectKey key, double dist,
       const IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &map)
       : ParticleIndexPairSink(m, filters, out),
@@ -328,7 +328,7 @@ struct RigidBodyParticleIndexPairSinkWithMax
   double dist_;
   const IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &map_;
   RigidBodyParticleIndexPairSinkWithMax(
-      Model *m, const PairPredicates &filters, kernel::ParticleIndexPairs &out,
+      kernel::Model *m, const PairPredicates &filters, kernel::ParticleIndexPairs &out,
       PS *ssps, DerivativeAccumulator *da, double &score, double max,
       ObjectKey key, double dist,
       const IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &map)
@@ -350,7 +350,7 @@ struct RigidBodyRigidBodyParticleIndexPairSinkWithMax
     : public RigidBodyParticleIndexPairSinkWithMax<PS> {
   typedef RigidBodyParticleIndexPairSinkWithMax<PS> P;
   RigidBodyRigidBodyParticleIndexPairSinkWithMax(
-      Model *m, const PairPredicates &filters, kernel::ParticleIndexPairs &out,
+      kernel::Model *m, const PairPredicates &filters, kernel::ParticleIndexPairs &out,
       PS *ssps, DerivativeAccumulator *da, double &score, double max,
       ObjectKey key, double dist,
       const IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &map)
@@ -372,7 +372,7 @@ struct RigidBodyParticleParticleIndexPairSinkWithMax
     : public RigidBodyParticleIndexPairSinkWithMax<PS> {
   typedef RigidBodyParticleIndexPairSinkWithMax<PS> P;
   RigidBodyParticleParticleIndexPairSinkWithMax(
-      Model *m, const PairPredicates &filters, kernel::ParticleIndexPairs &out,
+      kernel::Model *m, const PairPredicates &filters, kernel::ParticleIndexPairs &out,
       PS *ssps, DerivativeAccumulator *da, double &score, double max,
       ObjectKey key, double dist,
       const IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &map)

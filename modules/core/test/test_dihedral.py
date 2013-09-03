@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
         """Build a system of 4 xyz particles that form (by construction) the
            angle `system_angle`, and add a dihedral restraint with mean
            `scored_angle`."""
-        model = IMP.Model()
+        model = IMP.kernel.Model()
         particles = []
         particles.append(self.create_point_particle(model, 1.0, 0.0, -1.0))
         particles.append(self.create_point_particle(model, 0.0, 0.0, -1.0))

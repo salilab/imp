@@ -29,7 +29,7 @@ def run(asmb_fn,anchors_fn,proteomics_fn):
     ad=IMP.multifit.read_anchors_data(anchors_fn)
 
     #read molecules
-    mdl=IMP.Model()
+    mdl=IMP.kernel.Model()
     mhs=[]
     centroids=[]
     for i in range(asmb.get_number_of_component_headers()):

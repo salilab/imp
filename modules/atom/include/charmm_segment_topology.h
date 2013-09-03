@@ -111,7 +111,7 @@ class IMPATOMEXPORT CHARMMTopology : public IMP::base::Object {
       each chain.
       \see add_coordinates.
    */
-  Hierarchy create_hierarchy(Model *model) const;
+  Hierarchy create_hierarchy(kernel::Model *model) const;
 
   //! Add CHARMM atom types to the given Hierarchy using this topology.
   /** The primary sequence of the Hierarchy must match that of the topology.

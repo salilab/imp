@@ -29,7 +29,7 @@ class KinematicForest;
 class IMPKINEMATICSEXPORT KinematicNode : public IMP::core::RigidBody{
   friend class KinematicForest;
 
-  static void do_setup_particle( Model *m,
+  static void do_setup_particle( kernel::Model *m,
                                  kernel::ParticleIndex p,
                                  KinematicForest* owner,
                                  Joint* in_joint = nullptr,
@@ -46,7 +46,7 @@ class IMPKINEMATICSEXPORT KinematicNode : public IMP::core::RigidBody{
      @brief Return true if the particle is a kinematic nodea (has the
      appropriate properties).
   */
-  inline static bool get_is_setup(Model *m, kernel::ParticleIndex pi);
+  inline static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi);
 
  private:
 
@@ -88,7 +88,7 @@ class IMPKINEMATICSEXPORT KinematicNode : public IMP::core::RigidBody{
 /************** inlines ***********/
 
 bool
-KinematicNode::get_is_setup(Model *m,
+KinematicNode::get_is_setup(kernel::Model *m,
                             kernel::ParticleIndex pi)
 {
   return

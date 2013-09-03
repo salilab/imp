@@ -22,12 +22,12 @@ ScoreState::ScoreState(std::string name) : ModelObject(name),
   IMPKERNEL_DEPRECATED_METHOD_DEF(
       2.1, "Use the ScoreState constructor that takes the model and a name.");
 }
-ScoreState::ScoreState(Model *m) : ModelObject(m, "ScoreState%1%"),
+ScoreState::ScoreState(kernel::Model *m) : ModelObject(m, "ScoreState%1%"),
                                    update_order_(-1) {
   IMPKERNEL_DEPRECATED_METHOD_DEF(
       2.1, "Use the ScoreState constructor that takes the model and a name.");
 }
-ScoreState::ScoreState(Model *m, std::string name) : ModelObject(m, name),
+ScoreState::ScoreState(kernel::Model *m, std::string name) : ModelObject(m, name),
                                            update_order_(-1) {
 }
 

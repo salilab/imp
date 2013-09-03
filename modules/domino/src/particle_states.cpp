@@ -134,17 +134,17 @@ class DummyConstraint : public Constraint {
       : in_(in), out_(out) {}
   virtual void do_update_attributes() IMP_OVERRIDE;
   virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const;
-  virtual ModelObjectsTemp do_get_outputs() const;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const;
+  virtual kernel::ModelObjectsTemp do_get_outputs() const;
   IMP_OBJECT_METHODS(DummyConstraint);
 };
 void DummyConstraint::do_update_attributes() {}
 void DummyConstraint::do_update_derivatives(DerivativeAccumulator *) {}
 ModelObjectsTemp DummyConstraint::do_get_outputs() const {
-  return ModelObjectsTemp(out_.begin(), out_.end());
+  return kernel::ModelObjectsTemp(out_.begin(), out_.end());
 }
 ModelObjectsTemp DummyConstraint::do_get_inputs() const {
-  return ModelObjectsTemp(1, in_);
+  return kernel::ModelObjectsTemp(1, in_);
 }
 }
 

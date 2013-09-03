@@ -38,7 +38,7 @@ class IMPEXAMPLEEXPORT ExampleRestraint : public kernel::Restraint {
   ExampleRestraint(kernel::Particle *p, double k);
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa) const
       IMP_OVERRIDE;
-  IMP::ModelObjectsTemp do_get_inputs() const;
+  IMP::kernel::ModelObjectsTemp do_get_inputs() const;
   IMP_OBJECT_METHODS(ExampleRestraint);
 };
 

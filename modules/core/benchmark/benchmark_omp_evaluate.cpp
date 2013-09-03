@@ -19,7 +19,7 @@ class ExpensiveRestraint : public IMP::kernel::Restraint {
   IMP::kernel::ParticleIndexes pis_;
 
  public:
-  ExpensiveRestraint(IMP::Model *m, const IMP::kernel::ParticleIndexes &pis)
+  ExpensiveRestraint(IMP::kernel::Model *m, const IMP::kernel::ParticleIndexes &pis)
       : Restraint(m, "ExpensiveRestraint%1%"), pis_(pis) {}
   void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator sa) const
       IMP_OVERRIDE;
@@ -30,7 +30,7 @@ class ExpensiveRestraint : public IMP::kernel::Restraint {
 void ExpensiveRestraint::do_add_score_and_derivatives(
     IMP::ScoreAccumulator sa) const {
   double score = 0;
-  IMP::Model *m = get_model();
+  IMP::kernel::Model *m = get_model();
   for (unsigned int i = 0; i < pis_.size(); ++i) {
     IMP::core::XYZ di(m, pis_[i]);
     IMP::algebra::Vector3D vi = di.get_coordinates();
@@ -49,7 +49,7 @@ void ExpensiveRestraint::do_add_score_and_derivatives(
   sa.add_score(score);
 }
 
-IMP::ModelObjectsTemp ExpensiveRestraint::do_get_inputs() const {
+IMP::kernel::ModelObjectsTemp ExpensiveRestraint::do_get_inputs() const {
   return IMP::get_particles(get_model(), pis_);
 }
 
@@ -102,7 +102,7 @@ void benchmark_serial(IMP::core::RestraintsScoringFunction *sf) {
 int main(int argc, char **argv) {
   IMP::base::setup_from_argv(argc, argv, "Benchmark OpenMP evaluations");
   IMP::algebra::BoundingBox3D bb = IMP::algebra::get_unit_bounding_box_d<3>();
-  IMP_NEW(IMP::Model, m, ());
+  IMP_NEW(IMP::kernel::Model, m, ());
   IMP::Restraints rs;
   for (unsigned int i = 0; i < 15; ++i) {
     IMP::kernel::ParticleIndexes pis;

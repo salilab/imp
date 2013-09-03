@@ -111,7 +111,7 @@ of the asmb.input file.
 
 def run(asmb_fn,proteomics_fn,mapping_fn,combs_fn,max_comb):
     #get rmsd for subunits
-    mdl=IMP.Model()
+    mdl=IMP.kernel.Model()
     combs=IMP.multifit.read_paths(combs_fn)
     sd=IMP.multifit.read_settings(asmb_fn)
     sd.set_was_used(True)

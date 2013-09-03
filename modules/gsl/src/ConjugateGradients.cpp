@@ -11,7 +11,7 @@
 
 IMPGSL_BEGIN_NAMESPACE
 
-ConjugateGradients::ConjugateGradients(Model *m) : GSLOptimizer(m) {
+ConjugateGradients::ConjugateGradients(kernel::Model *m) : GSLOptimizer(m) {
   initial_step_ = .01;
   line_step_ = .0001;
   min_gradient_ = .001;

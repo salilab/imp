@@ -66,10 +66,10 @@ double compute_distances_particle_access(const IMP::kernel::ParticlesTemp &parti
 
 // TEST 2
 double compute_distances_no_particle_access(
-    Model *m, const IMP::kernel::ParticleIndexes &particles) ATTRIBUTES;
+    kernel::Model *m, const IMP::kernel::ParticleIndexes &particles) ATTRIBUTES;
 
 double compute_distances_no_particle_access(
-    Model *m, const IMP::kernel::ParticleIndexes &particles) {
+    kernel::Model *m, const IMP::kernel::ParticleIndexes &particles) {
   double tdist = 0;
   for (unsigned int i = 0; i < particles.size(); i++) {
     IMP::core::XYZ d1(m, particles[i]);
@@ -138,7 +138,7 @@ double compute_distances_direct_access_space(
 
 void do_benchmark(std::string descr, unsigned int n) {
   // read pdb, prepare particles
-  Model *model = new IMP::Model();
+  kernel::Model *model = new IMP::kernel::Model();
   kernel::ParticlesTemp particles;
   algebra::BoundingBox3D bb = algebra::get_cube_d<3>(100);
   for (unsigned int i = 0; i < n; ++i) {

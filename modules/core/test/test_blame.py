@@ -9,7 +9,7 @@ import math
 class Tests(IMP.test.TestCase):
     def test_score(self):
         """Check that code to display blame runs"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         IMP.base.set_log_level(IMP.base.SILENT)
         bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                       IMP.algebra.Vector3D(100, 100, 100))

@@ -10,7 +10,7 @@
 
 #include <IMP/core/ConnectivityRestraint.h>
 
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/kernel/Particle.h>
 #include <IMP/base/log.h>
 #include <IMP/PairScore.h>
@@ -88,7 +88,7 @@ typedef boost::graph_traits<Graph>::edge_descriptor Edge;
 typedef Graph::edge_property_type Weight;
 typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
 
-void compute_mst(Model *m, const kernel::ParticleIndexes &pis, PairScore *ps, Graph &g,
+void compute_mst(kernel::Model *m, const kernel::ParticleIndexes &pis, PairScore *ps, Graph &g,
                  base::Vector<Edge> &mst) {
   try {
     for (unsigned int i = 0; i < pis.size(); ++i) {
@@ -171,8 +171,8 @@ ParticlePairsTemp ConnectivityRestraint::get_connected_pairs() const {
 }
 
 ModelObjectsTemp ConnectivityRestraint::do_get_inputs() const {
-  if (!sc_) return ModelObjectsTemp();
-  ModelObjectsTemp ret;
+  if (!sc_) return kernel::ModelObjectsTemp();
+  kernel::ModelObjectsTemp ret;
   ret += ps_->get_inputs(get_model(), sc_->get_all_possible_indexes());
   ret.push_back(sc_);
   return ret;

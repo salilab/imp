@@ -118,7 +118,7 @@ std::string mol2_string(Residue r) {
   return oss.str();
 }
 
-Particle* m2_atom_particle(Model* m, const std::string& mol2_atomline) {
+Particle* m2_atom_particle(kernel::Model* m, const std::string& mol2_atomline) {
   Int atom_number, molecule_number;
   std::string atom_name_field, type_field, molecule_name_field;
   Float x_coord, y_coord, z_coord, atom_charge;
@@ -153,7 +153,7 @@ Particle* m2_atom_particle(Model* m, const std::string& mol2_atomline) {
   return p;
 }
 
-void bond_particle(Model*, const String& mol2_bondline,
+void bond_particle(kernel::Model*, const String& mol2_bondline,
                    const base::map<Int, kernel::Particle*>& molecule_atoms) {
   //  kernel::Particle* p = new kernel::Particle(m);
   std::istringstream ins(mol2_bondline);
@@ -204,7 +204,7 @@ void bond_particle(Model*, const String& mol2_bondline,
   /*Bond ab_d =*/ create_bond(ad, bd, type);
 }
 
-Hierarchy molecule_particle(Model* m, const std::string& molecule_name,
+Hierarchy molecule_particle(kernel::Model* m, const std::string& molecule_name,
                             const std::string& molecule_type) {
   kernel::Particle* p = new kernel::Particle(m);
   ResidueType rt(molecule_type);
@@ -213,7 +213,7 @@ Hierarchy molecule_particle(Model* m, const std::string& molecule_name,
   return r;
 }
 
-Hierarchy root_particle(Model* m, const String& mol2_file_name) {
+Hierarchy root_particle(kernel::Model* m, const String& mol2_file_name) {
   kernel::Particle* p = new kernel::Particle(m);
 
   p->set_name(mol2_file_name);
@@ -223,7 +223,7 @@ Hierarchy root_particle(Model* m, const String& mol2_file_name) {
   return hd;
 }
 
-Hierarchy read_molecule_mol2(Model* model, std::istream& mol2_file,
+Hierarchy read_molecule_mol2(kernel::Model* model, std::istream& mol2_file,
                              Hierarchy& root_d) {
   std::string line;
   std::string molecule_name, molecule_type;
@@ -253,7 +253,7 @@ Hierarchy read_molecule_mol2(Model* model, std::istream& mol2_file,
   return molecule_d;
 }
 
-void read_atom_mol2(Model* model, std::istream& mol2_file,
+void read_atom_mol2(kernel::Model* model, std::istream& mol2_file,
                     Hierarchy& molecule_d,
                     base::map<Int, kernel::Particle*>& molecule_atoms,
                     Mol2Selector* mol2sel) {
@@ -284,7 +284,7 @@ void read_atom_mol2(Model* model, std::istream& mol2_file,
   } while (!mol2_file.eof());
 }
 
-void read_bond_mol2(Model* m, std::istream& mol2_file,
+void read_bond_mol2(kernel::Model* m, std::istream& mol2_file,
                     Hierarchy& /*molecule_d*/,
                     const base::map<Int, kernel::Particle*>& molecule_atoms) {
   std::string line;
@@ -356,7 +356,7 @@ void write_molecule_mol2(Hierarchy chd, std::ostream& mol2_file) {
 }
 }
 
-Hierarchy read_mol2(base::TextInput mol2_file, Model* model,
+Hierarchy read_mol2(base::TextInput mol2_file, kernel::Model* model,
                     Mol2Selector* mol2sel) {
   if (!mol2sel) {
     mol2sel = new AllMol2Selector();

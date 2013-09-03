@@ -40,7 +40,7 @@ typedef boost::graph_traits<Graph>::edge_descriptor Edge;
 typedef Graph::edge_property_type Weight;
 typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
 
-void compute_mst(Model *m, const kernel::ParticleIndexes &imp_indexes,
+void compute_mst(kernel::Model *m, const kernel::ParticleIndexes &imp_indexes,
                  kernel::ParticleIndexPairs &out) {
   static unsigned int nnn = 10;
   algebra::Vector3Ds vs(imp_indexes.size());
@@ -95,7 +95,7 @@ void ConnectingPairContainer::initialize(SingletonContainer *sc) {
 }
 
 ModelObjectsTemp ConnectingPairContainer::do_get_inputs() const {
-  ModelObjectsTemp ret = get_particles(get_model(), sc_->get_indexes());
+  kernel::ModelObjectsTemp ret = get_particles(get_model(), sc_->get_indexes());
   ret.push_back(sc_);
   ret.push_back(mv_);
   return ret;

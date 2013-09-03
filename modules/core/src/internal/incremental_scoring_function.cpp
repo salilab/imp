@@ -23,7 +23,7 @@ class DummyPairContainer : public IMP::internal::ListLikePairContainer {
  public:
   DummyPairContainer(SingletonContainer *c, ClosePairsFinder *cpf);
   virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual void do_before_evaluate() IMP_OVERRIDE;
   virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
 
@@ -64,7 +64,7 @@ DummyPairContainer::DummyPairContainer(SingletonContainer *c,
 }
 
 ModelObjectsTemp DummyPairContainer::do_get_inputs() const {
-  ModelObjectsTemp ret = cpf_->get_inputs(get_model(), c_->get_indexes());
+  kernel::ModelObjectsTemp ret = cpf_->get_inputs(get_model(), c_->get_indexes());
   ret.push_back(c_);
   return ret;
 }
@@ -85,9 +85,9 @@ ParticleIndexPairs DummyPairContainer::get_range_indexes() const {
 
 ParticleIndexes DummyPairContainer::get_all_possible_indexes() const {
   kernel::ParticleIndexes ret = c_->get_all_possible_indexes();
-  ModelObjectsTemp mos = cpf_->get_inputs(get_model(), c_->get_indexes());
+  kernel::ModelObjectsTemp mos = cpf_->get_inputs(get_model(), c_->get_indexes());
   for (unsigned int i = 0; i < mos.size(); ++i) {
-    ModelObject *o = mos[i];
+    kernel::ModelObject *o = mos[i];
     kernel::Particle *p = dynamic_cast<kernel::Particle *>(o);
     if (p) ret.push_back(p->get_index());
   }
@@ -192,7 +192,7 @@ Restraint *NBLScoring::create_restraint() const {
   return ret.release();
 }
 
-NBGenerator::NBGenerator(Model *m, const kernel::ParticleIndexes &pis, PairScore *ps,
+NBGenerator::NBGenerator(kernel::Model *m, const kernel::ParticleIndexes &pis, PairScore *ps,
                          double distance, const PairPredicates &pfs) {
   m_ = m;
   score_ = ps;
@@ -262,7 +262,7 @@ NBGenerator::result_type NBGenerator::operator()(argument_type a) const {
   return ret;
 }
 
-NBChecker::NBChecker(Model *m, const kernel::ParticleIndexes &pis, PairScore *score,
+NBChecker::NBChecker(kernel::Model *m, const kernel::ParticleIndexes &pis, PairScore *score,
                      double d, const PairPredicates &filt)
     : m_(m), pis_(pis), score_(score), distance_(d), filt_(filt) {}
 bool NBChecker::operator()(const NBGenerator::result_type &vals) const {

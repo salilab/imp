@@ -309,7 +309,7 @@ def invert_dict(d):
     return inv
 
 
-m = IMP.Model()
+m = IMP.kernel.Model()
 chain_id={}
 rb_ext_list=[]
 restraints={}

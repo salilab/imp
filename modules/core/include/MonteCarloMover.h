@@ -12,7 +12,7 @@
 #include <IMP/core/core_config.h>
 
 #include <IMP/ModelObject.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/particle_index.h>
 #include <IMP/base/tuple_macros.h>
 
@@ -31,16 +31,16 @@ IMP_NAMED_TUPLE_2(MonteCarloMoverResult, MonteCarloMoverResults,
 /** Mover objects propose a move, which can then be either accepted or rejected
     based on some criteria. For example, in a Monte-Carlo evaluation scheme.
 
-    The output particles (ModelObject::do_get_outputs()) are assummed to be
-    equal to the inputs (ModelObject::do_get_inputs()).
+    The output particles (kernel::ModelObject::do_get_outputs()) are assummed to be
+    equal to the inputs (kernel::ModelObject::do_get_inputs()).
  */
-class IMPCOREEXPORT MonteCarloMover : public ModelObject {
+class IMPCOREEXPORT MonteCarloMover : public kernel::ModelObject {
   unsigned int num_proposed_;
   unsigned int num_rejected_;
   bool has_move_;
 
  public:
-  MonteCarloMover(Model *m, std::string name);
+  MonteCarloMover(kernel::Model *m, std::string name);
 
   //! propose a modification
   /** The method should return the list of all particles that were
@@ -96,7 +96,7 @@ class IMPCOREEXPORT MonteCarloMover : public ModelObject {
   //! Implement accept_proposed_move(), default impl is empty
   virtual void do_accept() {}
 
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+  virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
     return get_inputs();
   }
 };

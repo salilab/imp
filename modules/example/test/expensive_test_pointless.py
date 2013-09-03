@@ -8,7 +8,7 @@ class DistanceTests(IMP.test.TestCase):
     """Test the symmetry restraint"""
     def test_symmetry(self):
         """Test something pointless and slow"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         for i in range(0,100000):
             p= IMP.kernel.Particle(m)
 

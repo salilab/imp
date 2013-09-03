@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
         """ create particles """
         IMP.test.TestCase.setUp(self)
         self.particles = []
-        mdl=IMP.Model()
+        mdl=IMP.kernel.Model()
         self.weight_key=IMP.FloatKey("mass")
         for val in [[9.,5.,5.,1.,1.],[12.,9.,4.,1.,1.],[4.,5.,5.,1.,1.]]:
             p=IMP.kernel.Particle(mdl)

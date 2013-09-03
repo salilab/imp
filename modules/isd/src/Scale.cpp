@@ -9,7 +9,7 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-void Scale::do_setup_particle(Model *m, kernel::ParticleIndex pi, double scale)
+void Scale::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi, double scale)
 {
   if (!Nuisance::get_is_setup(m, pi))
     Nuisance::setup_particle(m, pi,scale);

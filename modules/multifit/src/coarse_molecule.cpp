@@ -37,7 +37,7 @@ namespace {
 }
 atom::Hierarchy create_coarse_molecule_from_molecule(
                const atom::Hierarchy &mh,int num_beads,
-               Model *mdl,
+               kernel::Model *mdl,
                float bead_radius,
                bool add_conn_restraint) {
   IMP_NEW(IMP::statistics::internal::ParticlesDataPoints, ddp,
@@ -69,7 +69,7 @@ atom::Hierarchy create_coarse_molecule_from_molecule(
 atom::Hierarchies create_coarse_molecules_from_molecules(
        const atom::Hierarchies &mhs,
        int frag_len,
-       Model *mdl,
+       kernel::Model *mdl,
        float bead_radius,
        bool add_conn_restraint){
   atom::Hierarchies ret;
@@ -87,7 +87,7 @@ atom::Hierarchy create_coarse_molecule_from_density(
     em::DensityMap* dmap,
     float dens_threshold,
     int num_beads,
-    Model *mdl,
+    kernel::Model *mdl,
     float bead_radius){
 
   IMP_NEW(DensityDataPoints, ddp, (dmap,dens_threshold));

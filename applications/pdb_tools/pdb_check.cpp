@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
 
     IMP::base::set_log_level(IMP::base::WARNING);
     for (unsigned int i=0; i< argcs.size(); ++i) {
-      IMP_NEW(IMP::Model, m, ());
+      IMP_NEW(IMP::kernel::Model, m, ());
       m->set_log_level(IMP::base::SILENT);
       IMP::atom::Hierarchies inhs;
       IMP_CATCH_AND_TERMINATE(inhs= IMP::atom::read_multimodel_pdb(argcs[i],

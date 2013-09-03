@@ -101,7 +101,7 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
                     "Duplicate particles passed to rigid body tree: "
                         << constituents.size() << " > " << uc.size());
   }
-  Model *m = d.get_model();
+  kernel::Model *m = d.get_model();
   // make sure children are up to date
   if (m->get_stage() == IMP::internal::NOT_EVALUATING) {
     d.set_reference_frame(d.get_reference_frame());
@@ -155,7 +155,7 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
   }
 }
 
-void RigidBodyHierarchy::build_tree(Model *m, const Node &cur,
+void RigidBodyHierarchy::build_tree(kernel::Model *m, const Node &cur,
                                     const algebra::Sphere3Ds &spheres,
                                     base::Vector<Node> &stack) {
   IMP_INTERNAL_CHECK(!cur.second.empty(), "Don't call me with no spheres");
@@ -219,7 +219,7 @@ unsigned int RigidBodyHierarchy::add_children(unsigned int ni,
 }
 
 ParticleIndexes RigidBodyHierarchy::validate_internal(
-    Model *m, int cur, algebra::Sphere3Ds bounds) const {
+    kernel::Model *m, int cur, algebra::Sphere3Ds bounds) const {
   bounds.push_back(algebra::Sphere3D(get_sphere(cur).get_center(),
                                      get_sphere(cur).get_radius() * 1.1));
   if (get_is_leaf(cur)) {
@@ -267,7 +267,7 @@ ParticleIndexes RigidBodyHierarchy::validate_internal(
   }
 }
 
-void RigidBodyHierarchy::validate(Model *m) const {
+void RigidBodyHierarchy::validate(kernel::Model *m) const {
   IMP_CHECK_OBJECT(this);
   kernel::ParticleIndexes all = validate_internal(m, 0, algebra::Sphere3Ds());
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
@@ -291,7 +291,7 @@ algebra::Sphere3Ds RigidBodyHierarchy::get_tree() const {
   return ret;
 }
 
-Particle *closest_particle(Model *m, const RigidBodyHierarchy *da, XYZR pt,
+Particle *closest_particle(kernel::Model *m, const RigidBodyHierarchy *da, XYZR pt,
                            double dist) {
   typedef std::pair<double, int> QP;
   std::priority_queue<QP, base::Vector<QP>, LessFirst> queue;
@@ -339,7 +339,7 @@ Particle *closest_particle(Model *m, const RigidBodyHierarchy *da, XYZR pt,
   return m->get_particle(bp);
 }
 
-ParticlePair closest_pair(Model *m, const RigidBodyHierarchy *da,
+ParticlePair closest_pair(kernel::Model *m, const RigidBodyHierarchy *da,
                           const RigidBodyHierarchy *db, double dist) {
   typedef std::pair<int, int> IP;
   typedef std::pair<double, IP> QP;
@@ -488,7 +488,7 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
   return h;
 }
 
-ParticlePairsTemp close_pairs(Model *m, const RigidBodyHierarchy *da,
+ParticlePairsTemp close_pairs(kernel::Model *m, const RigidBodyHierarchy *da,
                               const RigidBodyHierarchy *db, double dist) {
   kernel::ParticlePairsTemp ret;
   fill_close_pairs(m, da, db, dist, ParticlePairSink(m, PairPredicates(), ret));
@@ -514,7 +514,7 @@ ParticlePairsTemp close_pairs(Model *m, const RigidBodyHierarchy *da,
   return ret;
 }
 
-ParticlesTemp close_particles(Model *m, const RigidBodyHierarchy *da, XYZR pt,
+ParticlesTemp close_particles(kernel::Model *m, const RigidBodyHierarchy *da, XYZR pt,
                               double dist) {
   kernel::ParticlesTemp ret;
   fill_close_particles(m, da, pt.get_particle_index(), dist,

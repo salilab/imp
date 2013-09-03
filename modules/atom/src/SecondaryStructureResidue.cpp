@@ -30,7 +30,7 @@ void SecondaryStructureResidue::show(std::ostream &out) const {
 }
 
 SecondaryStructureResidue setup_coarse_secondary_structure_residue(
-    const kernel::Particles &ssr_ps, Model *mdl, bool winner_takes_all_per_res) {
+    const kernel::Particles &ssr_ps, kernel::Model *mdl, bool winner_takes_all_per_res) {
   Floats scores;
   scores.push_back(0.0);
   scores.push_back(0.0);
@@ -63,7 +63,7 @@ SecondaryStructureResidue setup_coarse_secondary_structure_residue(
 }
 
 SecondaryStructureResidues setup_coarse_secondary_structure_residues(
-    const kernel::Particles &ssr_ps, Model *mdl, int coarse_factor, int start_res_num,
+    const kernel::Particles &ssr_ps, kernel::Model *mdl, int coarse_factor, int start_res_num,
     bool winner_takes_all_per_res) {
   /* We're presuming that the coarsening starts from 0.
       So if start_res_num%coarse_factor<coarse_factor/2, this

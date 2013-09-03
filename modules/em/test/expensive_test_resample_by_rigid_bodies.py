@@ -42,7 +42,7 @@ class Tests(IMP.test.TestCase):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
         IMP.base.set_log_level(IMP.base.SILENT)#VERBOSE)
-        self.imp_model = IMP.Model()
+        self.imp_model = IMP.kernel.Model()
         self.load_proteins()
     def test_resample(self):
         """test resampling with and without rigid bodies"""

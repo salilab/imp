@@ -211,7 +211,7 @@ def get_configurations(model, restraints, excluded_volume_particles, optimized_p
     return configuration_set
 
 
-model= IMP.Model()
+model= IMP.kernel.Model()
 universe, restraints, excluded_volume_particles, optimized_particles= create_representation(model)
 encode_data_as_restraints(universe, restraints)
 

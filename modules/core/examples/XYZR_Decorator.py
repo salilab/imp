@@ -5,7 +5,7 @@ import IMP
 import IMP.core
 import IMP.algebra
 
-m= IMP.Model()
+m= IMP.kernel.Model()
 p0= IMP.kernel.Particle(m)
 d0= IMP.core.XYZR.setup_particle(p0, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,1,2),
                                                            1.0))

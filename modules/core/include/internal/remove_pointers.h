@@ -11,7 +11,7 @@
 #define IMPCORE_INTERNAL_REMOVE_POINTERS_H
 
 #include <IMP/core/core_config.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/kernel/Restraint.h>
 #include <IMP/ScoreState.h>
 #include <IMP/base/Pointer.h>
@@ -26,7 +26,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
    public:                                       \
     Manage##UCName() {}                          \
     ~Manage##UCName() { set(nullptr, nullptr); } \
-    void set(UCName *r, Model *m) {              \
+    void set(UCName *r, kernel::Model *m) {              \
       if (r_) {                                  \
         r_->get_model()->remove_##lcname(r_);    \
       }                                          \

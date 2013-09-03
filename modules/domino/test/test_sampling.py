@@ -8,7 +8,7 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min2(self):
         """Test sampling"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         m.set_log_level(IMP.base.SILENT)
         ps=[]
         print 1
@@ -50,7 +50,7 @@ class Tests(IMP.test.TestCase):
             self.assertLess((IMP.core.get_distance(d1,d2)-1)**2, .1)
     def test_global_min3(self):
         """Test sampling with edge scores"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         m.set_log_level(IMP.base.SILENT)
         ps=[]
         for i in range(0,3):

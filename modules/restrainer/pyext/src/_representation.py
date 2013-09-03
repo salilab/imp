@@ -60,7 +60,7 @@ class Representation(object):
         if model is None:
             model = self._model
             if model is None:
-                self._model = model = IMP.Model()
+                self._model = model = IMP.kernel.Model()
             else:
                 return model
         else:

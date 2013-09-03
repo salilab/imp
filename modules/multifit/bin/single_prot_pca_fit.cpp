@@ -199,7 +199,7 @@ int main(int argc, char **argv) {
   set_log_target(log_file);
 
 
-  Model *mdl = new Model();
+  kernel::Model *mdl = new kernel::Model();
   atom::Hierarchy mh;
   mh = atom::read_pdb(protein_filename,mdl,new atom::CAlphaPDBSelector());
   core::RigidBody rb=atom::setup_as_rigid_body(mh);

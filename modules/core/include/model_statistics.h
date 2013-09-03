@@ -9,7 +9,7 @@
 #define IMPCORE_MODEL_STATISTICS_H
 
 #include <IMP/core/core_config.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/kernel/OptimizerState.h>
 #include <IMP/io.h>
 

@@ -37,7 +37,7 @@ class Tests(IMP.test.TestCase):
 
     def test_create_one_from_pdb(self):
         """Testing destroy rigid body"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps=[]
         ds=[]
         for i in range(0,4):

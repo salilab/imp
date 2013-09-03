@@ -40,7 +40,7 @@ ModelObjectsTemp MoveStatisticsScoreState::do_get_inputs() const {
   return get_as<ModelObjectsTemp>(ps_);
 }
 ModelObjectsTemp MoveStatisticsScoreState::do_get_outputs() const {
-  return ModelObjectsTemp();
+  return kernel::ModelObjectsTemp();
 }
 void MoveStatisticsScoreState::reset() {
   max_move_ = 0;

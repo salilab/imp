@@ -46,7 +46,7 @@ Selection::Selection(kernel::Particle *h) : radius_(-1) {
 Selection::Selection(Hierarchy h) : radius_(-1) {
   set_hierarchies(h.get_model(), kernel::ParticleIndexes(1, h.get_particle_index()));
 }
-Selection::Selection(Model *m, const kernel::ParticleIndexes &pis) : radius_(-1) {
+Selection::Selection(kernel::Model *m, const kernel::ParticleIndexes &pis) : radius_(-1) {
   set_hierarchies(m, pis);
 }
 Selection::Selection(const Hierarchies &h) : radius_(-1) {
@@ -73,7 +73,7 @@ Selection::Selection(Hierarchy h, std::string molname, int residue_index)
   set_residue_indexes(Ints(1, residue_index));
 }
 
-void Selection::set_hierarchies(Model *m, const kernel::ParticleIndexes &pi) {
+void Selection::set_hierarchies(kernel::Model *m, const kernel::ParticleIndexes &pi) {
   m_ = m;
   h_ = pi;
   for (unsigned int i = 0; i < pi.size(); ++i) {
@@ -92,11 +92,11 @@ namespace {
     Name##SingletonPredicate(const DataType &data,                             \
                              std::string name = #Name "SingletonPredicate%1%") \
         : SingletonPredicate(name), data_(data) {}                             \
-    virtual int get_value_index(Model *m, kernel::ParticleIndex pi) const              \
+    virtual int get_value_index(kernel::Model *m, kernel::ParticleIndex pi) const              \
         IMP_OVERRIDE {                                                         \
       check;                                                                   \
     }                                                                          \
-    virtual ModelObjectsTemp do_get_inputs(Model *m,                           \
+    virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,                           \
                                            const kernel::ParticleIndexes &pis) const   \
         IMP_OVERRIDE {                                                         \
       return IMP::get_particles(m, pis);                                       \
@@ -105,7 +105,7 @@ namespace {
     IMP_OBJECT_METHODS(Name##SingletonPredicate);                              \
   };
 
-bool get_is_residue_index_match(const Ints &data, Model *m, kernel::ParticleIndex pi) {
+bool get_is_residue_index_match(const Ints &data, kernel::Model *m, kernel::ParticleIndex pi) {
   if (Residue::get_is_setup(m, pi)) {
     return std::binary_search(data.begin(), data.end(),
                               Residue(m, pi).get_index());
@@ -201,7 +201,7 @@ IMP_ATOM_SELECTION_PRED(HierarchyType, Ints, {
   return 0;
 });
 
-bool get_is_terminus(Model *m, kernel::ParticleIndex pi, int t) {
+bool get_is_terminus(kernel::Model *m, kernel::ParticleIndex pi, int t) {
   if (Atom::get_is_setup(m, pi)) {
     // ignore order with atoms
     Atom a(m, pi);
@@ -239,7 +239,7 @@ IMP_ATOM_SELECTION_PRED(Terminus, Int, {
 });
 }
 std::pair<bool, kernel::ParticleIndexes> Selection::search(
-    Model *m, kernel::ParticleIndex pi, boost::dynamic_bitset<> parent) const {
+    kernel::Model *m, kernel::ParticleIndex pi, boost::dynamic_bitset<> parent) const {
   IMP_FUNCTION_LOG;
   IMP_LOG_VERBOSE("Searching " << m->get_particle_name(pi) << " missing "
                                << parent.count() << std::endl);

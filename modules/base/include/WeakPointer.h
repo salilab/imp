@@ -60,9 +60,9 @@ struct UncheckedWeakPointer
 
 /** WeakPointers do not do reference counting and do not claim ownership
     of the pointed object. As a result, they can be used to break cycles
-    in reference counted pointers. For example, since an IMP::Model
+    in reference counted pointers. For example, since an IMP::kernel::Model
     contains a reference counted pointer to an IMP::kernel::Particle, the
-    IMP::kernel::Particle has a WeakPointer back to the Model.
+    IMP::kernel::Particle has a WeakPointer back to the kernel::Model.
 
     This version of a WeakPointer only works on complete types, but adds
     additional checks of correct usage (eg that the Object has not bee

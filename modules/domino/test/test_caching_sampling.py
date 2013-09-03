@@ -8,7 +8,7 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min3(self):
         """Test caching sampling with edge scores"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         m.set_log_level(IMP.base.SILENT)
         ps=[]
         ds=[]

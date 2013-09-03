@@ -102,7 +102,7 @@ def write_points_to_chimera(points,radius, fn, name="points"):
     """ Writes a bunch o particles to the file fn
         It is assumed that the particles can be decorated with XYZR
     """
-    m = IMP.Model()
+    m = IMP.kernel.Model()
     ps = []
     for p in points:
         pa = IMP.kernel.Particle(m)
@@ -117,7 +117,7 @@ def write_vectors_to_chimera(vs, radius, fn, name="vectors"):
         Writes vectors as points in chimera
     """
 
-    m = IMP.Model()
+    m = IMP.kernel.Model()
     ps = []
     for v in vs:
         pa = IMP.kernel.Particle(m)
@@ -236,7 +236,7 @@ def write_pdb_for_reference_frames(fn_pdbs, refs_texts, fn_output):
     """
         Read the PDB files, apply reference frames to them, and write a pdb
     """
-    model = IMP.Model()
+    model = IMP.kernel.Model()
     assembly = representation.create_assembly(model, fn_pdbs)
     rbs = representation.create_rigid_bodies(assembly)
     for t, rb in zip(refs_texts, rbs):

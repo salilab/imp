@@ -9,7 +9,7 @@ num_particles=3
 num_states=2
 class Tests(IMP.test.TestCase):
     def _create_stuff(self):
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         m.set_log_level(IMP.base.SILENT)
         ps =[IMP.kernel.Particle(m) for i in range(0,num_particles)]
         for p in ps:

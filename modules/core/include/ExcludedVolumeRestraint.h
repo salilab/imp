@@ -85,7 +85,7 @@ class IMPCOREEXPORT ExcludedVolumeRestraint : public kernel::Restraint {
  public:
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
       IMP_OVERRIDE;
-  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ExcludedVolumeRestraint);
   ;
   kernel::Restraints do_create_decomposition() const;

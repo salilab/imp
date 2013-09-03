@@ -15,7 +15,7 @@
 #include "DOFsSampler.h"
 #include <IMP/base/Object.h>
 #include <IMP/base/Pointer.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
@@ -28,7 +28,7 @@ class IMPKINEMATICSEXPORT LocalPlanner
   IMP_OBJECT_METHODS(LocalPlanner);
 
 public:
-  LocalPlanner(Model* model, DOFsSampler* dofs_sampler);
+  LocalPlanner(kernel::Model* model, DOFsSampler* dofs_sampler);
 
   // plan a path of valid intermediate nodes
   // from existing node q_from until the valid node that is
@@ -71,7 +71,7 @@ public:
                                For instance, 2 would mean save every second node
                                in the local plan.
    */
-  PathLocalPlanner(Model* model, DOFsSampler* dofs_sampler,
+  PathLocalPlanner(kernel::Model* model, DOFsSampler* dofs_sampler,
                    DirectionalDOF* directional_dof,
                    int save_step_interval = 1);
 

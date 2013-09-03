@@ -27,7 +27,7 @@ RemoveRigidMotionOptimizerState::RemoveRigidMotionOptimizerState(
 }
 
 RemoveRigidMotionOptimizerState
-::RemoveRigidMotionOptimizerState(Model *m, kernel::ParticleIndexesAdaptor pis)
+::RemoveRigidMotionOptimizerState(kernel::Model *m, kernel::ParticleIndexesAdaptor pis)
   : kernel::OptimizerState(m,
                            "RemoveRigidMotionOptimizerState%1%") {
   BOOST_FOREACH(kernel::ParticleIndex pi, pis) {

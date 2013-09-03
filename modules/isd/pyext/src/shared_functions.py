@@ -150,7 +150,7 @@ class sfo_common:
         "moves to wd and creates model"
         os.chdir(wd)
         # Create an IMP model
-        self._m = IMP.Model()
+        self._m = IMP.kernel.Model()
 
     def init_model_charmm_protein_and_ff(self, initpdb, top, par, selector, pairscore,
             ff_temp=300.0, disulfides=None, representation='custom'):

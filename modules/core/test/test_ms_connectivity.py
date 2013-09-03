@@ -12,7 +12,7 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
 
         # Setup for example 1
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         self.ps= self.create_particles_in_box(self.m,6)
         self.ds= map(lambda p: IMP.core.XYZ.decorate_particle(p), self.ps)
         ub = IMP.core.HarmonicUpperBound(1.0, 0.1)
@@ -40,7 +40,7 @@ class Tests(IMP.test.TestCase):
         self.m.add_restraint(self.r)
 
         # Setup for example 2
-        self.m2 = IMP.Model()
+        self.m2 = IMP.kernel.Model()
         self.ps2= self.create_particles_in_box(self.m2,8)
         self.ds2= map(lambda p: IMP.core.XYZ.decorate_particle(p), self.ps2)
         self.r2= IMP.core.MSConnectivityRestraint(self.ss)

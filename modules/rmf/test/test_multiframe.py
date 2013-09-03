@@ -12,7 +12,7 @@ class Tests(IMP.test.TestCase):
     def test_large(self):
         """Test multi frame files"""
         for suffix in RMF.suffixes:
-            m= IMP.Model()
+            m= IMP.kernel.Model()
             p =IMP.kernel.Particle(m)
             h= IMP.atom.Hierarchy.setup_particle(p)
             d= IMP.core.XYZR.setup_particle(p)

@@ -168,7 +168,7 @@ void setup_as_approximation_internal(kernel::Particle *p, const kernel::Particle
 }
 }
 
-Hierarchy create_protein(Model *m, std::string name, double resolution,
+Hierarchy create_protein(kernel::Model *m, std::string name, double resolution,
                          int number_of_residues, int first_residue_index,
                          double volume, bool ismol) {
   double mass =
@@ -208,7 +208,7 @@ Hierarchy create_protein(Model *m, std::string name, double resolution,
   return pd;
 }
 
-Hierarchy create_protein(Model *m, std::string name, double resolution,
+Hierarchy create_protein(kernel::Model *m, std::string name, double resolution,
                          const Ints db) {
   Hierarchy root = Hierarchy::setup_particle(new kernel::Particle(m));
   Domain::setup_particle(root, db.front(), db.back());
@@ -258,7 +258,7 @@ Hierarchy create_approximation_of_residues(const Hierarchies &t) {
       v += get_volume_measurement(ss, 5.0);
     }
   }
-  Model *mm = t[0]->get_model();
+  kernel::Model *mm = t[0]->get_model();
   kernel::Particle *p = new kernel::Particle(mm);
   kernel::ParticlesTemp children;
   for (unsigned int i = 0; i < t.size(); ++i) {

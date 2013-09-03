@@ -7,7 +7,7 @@ import os
 class Tests(IMP.test.TestCase):
     def test_incr(self):
         """Testing incremental scoring with Monte Carlo"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         IMP.base.set_log_level(IMP.base.SILENT)
         mc= IMP.core.MonteCarlo(m)
         mc.set_log_level(IMP.base.SILENT)
@@ -47,7 +47,7 @@ class Tests(IMP.test.TestCase):
         self.assertLess(m.evaluate(False), 3)
     def test_incr_nbl(self):
         """Testing incremental scoring with Monte Carlo and a nbl"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         IMP.base.set_log_level(IMP.base.SILENT)
         mc= IMP.core.MonteCarlo(m)
         mc.set_log_level(IMP.base.SILENT)

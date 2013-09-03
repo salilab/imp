@@ -44,7 +44,7 @@ class IMPCOREEXPORT CoreClosePairContainer
  public:
   virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
   virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual void do_before_evaluate() IMP_OVERRIDE;
 
   CoreClosePairContainer(SingletonContainer *c, double distance,

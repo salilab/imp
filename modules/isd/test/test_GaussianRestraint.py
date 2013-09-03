@@ -19,7 +19,7 @@ class TestGaussianRestraintSimple3(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         self.sigma = Scale.setup_particle(IMP.kernel.Particle(self.m), 2.0)
         self.mu = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 1.0)
         self.x = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 2.0)
@@ -152,7 +152,7 @@ class TestGaussianRestraintSimple21(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         self.sigma = 2.0
         self.mu = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 1.0)
         self.x = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 2.0)
@@ -258,7 +258,7 @@ class TestGaussianRestraintSimple22(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         self.sigma = Scale.setup_particle(IMP.kernel.Particle(self.m), 2.0)
         self.mu = 1.0
         self.x = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 2.0)
@@ -365,7 +365,7 @@ class TestGaussianRestraintSimple23(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         self.sigma = Scale.setup_particle(IMP.kernel.Particle(self.m), 2.0)
         self.mu = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 1.0)
         self.x = 2.0
@@ -472,7 +472,7 @@ class TestGaussianRestraintSimple11(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         self.sigma = Scale.setup_particle(IMP.kernel.Particle(self.m), 2.0)
         self.mu = 1.0
         self.x = 2.0
@@ -564,7 +564,7 @@ class TestGaussianRestraintSimple12(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         self.sigma = 2.0
         self.mu = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 1.0)
         self.x = 2.0
@@ -655,7 +655,7 @@ class TestGaussianRestraintSimple13(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         self.sigma = 2.0
         self.mu = 1.0
         self.x = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 2.0)

@@ -152,7 +152,7 @@ void write_cmm(const std::string &cmm_filename,
   out.close();
 }
 
-void AnchorsData::setup_secondary_structure(Model *mdl){
+void AnchorsData::setup_secondary_structure(kernel::Model *mdl){
   for (int anum=0;anum<(int)points_.size();anum++){
     IMP_NEW(kernel::Particle,ssr_p,(mdl));
     atom::SecondaryStructureResidue default_ssr=

@@ -24,7 +24,7 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 namespace {
 
-void before_protected_evaluate(Model *m, const ScoreStatesTemp &states,
+void before_protected_evaluate(kernel::Model *m, const ScoreStatesTemp &states,
                                bool derivative) {
   IMP_CHECK_OBJECT(m);
   m->before_evaluate(states);
@@ -32,7 +32,7 @@ void before_protected_evaluate(Model *m, const ScoreStatesTemp &states,
     m->zero_derivatives();
   }
 }
-void after_protected_evaluate(Model *m, const ScoreStatesTemp &states,
+void after_protected_evaluate(kernel::Model *m, const ScoreStatesTemp &states,
                               bool derivative) {
   m->after_evaluate(states, derivative);
   // validate derivatives

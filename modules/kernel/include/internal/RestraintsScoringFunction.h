@@ -31,7 +31,7 @@ class GenericRestraintsScoringFunction : public ScoringFunction {
   Storage restraints_;
 
  protected:
-  GenericRestraintsScoringFunction(Model *m, double weight = 1.0,
+  GenericRestraintsScoringFunction(kernel::Model *m, double weight = 1.0,
                                    double max = NO_MAX,
                                    std::string name =
                                        "RestraintsScoringFunction%1%")

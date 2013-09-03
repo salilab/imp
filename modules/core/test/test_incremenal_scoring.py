@@ -7,7 +7,7 @@ import random
 class Tests(IMP.test.TestCase):
     def test_incr(self):
         """Testing incremental scoring with non-bonded"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         m.set_log_level(IMP.base.SILENT)
         ps=[]
         bb= IMP.algebra.get_unit_bounding_box_3d()
@@ -75,7 +75,7 @@ class Tests(IMP.test.TestCase):
                                        rscore, delta=.1)
     def test_incr_no_restraints(self):
         """Testing incremental scoring with no restraints"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         m.set_log_level(IMP.base.SILENT)
         ps=[]
         bb= IMP.algebra.get_unit_bounding_box_3d()
@@ -134,7 +134,7 @@ class Tests(IMP.test.TestCase):
                                        rscore, delta=.1)
     def test_incrnonb(self):
         """Testing incremental scoring"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         #mc.set_log_level(IMP.base.TERSE)
         ps=[]
         bb= IMP.algebra.get_unit_bounding_box_3d()
@@ -234,7 +234,7 @@ class Tests(IMP.test.TestCase):
 
     def test_incrigid(self):
         """Testing incremental scoring with rigid bodies"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         #m.set_log_level(IMP.base.SILENT)
         #mc.set_log_level(IMP.base.TERSE)
         ps=[]

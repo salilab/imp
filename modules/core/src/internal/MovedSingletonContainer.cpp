@@ -75,7 +75,7 @@ ParticleIndexes MovedSingletonContainer::get_range_indexes() const {
 }
 
 ModelObjectsTemp MovedSingletonContainer::do_get_inputs() const {
-  ModelObjectsTemp ret = IMP::get_particles(get_model(), pc_->get_indexes());
+  kernel::ModelObjectsTemp ret = IMP::get_particles(get_model(), pc_->get_indexes());
   ret.push_back(pc_);
   return ret;
 }
@@ -138,7 +138,7 @@ void XYZRMovedSingletonContainer::do_reset_moved() {
 ParticleIndexes XYZRMovedSingletonContainer::do_get_moved() {
   IMP_OBJECT_LOG;
   kernel::ParticleIndexes ret;
-  Model *m = get_model();
+  kernel::Model *m = get_model();
   IMP_CONTAINER_FOREACH(SingletonContainer, get_singleton_container(), {
       if (moved_.find(_2) != moved_.end()) continue;
     XYZR d(m, _1);

@@ -14,7 +14,7 @@ except NameError:
     import sets
     set = sets.Set
 
-m= IMP.Model()
+m= IMP.kernel.Model()
 m.set_log_level(IMP.base.SILENT)
 ds= [IMP.core.XYZR.setup_particle(IMP.kernel.Particle(m)) for i in range(0,3)]
 for i,d in enumerate(ds):

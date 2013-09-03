@@ -8,7 +8,7 @@ class Tests(IMP.test.TestCase):
     def test_simple(self):
         """Check that ref counting of particles works within python"""
         refcnt = IMP.test.RefCountChecker(self)
-        m= IMP.Model("ref counting particles")
+        m= IMP.kernel.Model("ref counting particles")
         refcnt.assert_number(2)
         p= IMP.kernel.Particle(m)
         refcnt.assert_number(3)
@@ -23,7 +23,7 @@ class Tests(IMP.test.TestCase):
         "Python Particles from vector accessors should survive model deletion"
         IMP.base.set_log_level(IMP.MEMORY)
         refcnt = IMP.test.RefCountChecker(self)
-        m= IMP.Model("test model")
+        m= IMP.kernel.Model("test model")
         IMP.kernel.Particle(m)
         # Now create new Python particle p from a C++ vector accessor
         # (front(), back(), [], etc.)
@@ -52,7 +52,7 @@ class Tests(IMP.test.TestCase):
         "Python restraints from vector accessors should survive model deletion"
         IMP.base.set_log_level(IMP.MEMORY)
         refcnt = IMP.test.RefCountChecker(self)
-        m= IMP.Model("test model")
+        m= IMP.kernel.Model("test model")
         r=IMP.kernel._ConstRestraint(1)
         print "adding"
         m.add_restraint(r)
@@ -109,7 +109,7 @@ class Tests(IMP.test.TestCase):
     def test_delete_model_accessor_2(self):
         "Python Restraints from vector accessors should survive model deletion"
         refcnt = IMP.test.RefCountChecker(self)
-        m= IMP.Model("restraint survival")
+        m= IMP.kernel.Model("restraint survival")
         r = IMP.kernel.RestraintSet()
         m.add_restraint(r)
         del r
@@ -130,7 +130,7 @@ class Tests(IMP.test.TestCase):
         """Check reference counting of restraints"""
         refcnt = IMP.test.RefCountChecker(self)
         IMP.base.set_log_level(IMP.base.MEMORY)
-        m= IMP.Model("M")
+        m= IMP.kernel.Model("M")
         r= IMP.kernel._ConstRestraint(1)
         r.set_name("R")
         s= IMP.kernel.RestraintSet("S")
@@ -159,7 +159,7 @@ class Tests(IMP.test.TestCase):
     def test_delete_model_iterator(self):
         """Python Restraints from iterators should survive model deletion"""
         refcnt = IMP.test.RefCountChecker(self)
-        m= IMP.Model("python restraint survival")
+        m= IMP.kernel.Model("python restraint survival")
         r = IMP.kernel.RestraintSet()
         m.add_restraint(r)
         del r
@@ -179,7 +179,7 @@ class Tests(IMP.test.TestCase):
     def test_removal(self):
         """Check that ref counting works with removing particles"""
         refcnt = IMP.test.RefCountChecker(self)
-        m= IMP.Model("ref counting and particle removal")
+        m= IMP.kernel.Model("ref counting and particle removal")
         p= IMP.kernel.Particle(m)
         refcnt.assert_number(3)
         m.remove_particle(p)
@@ -194,7 +194,7 @@ class Tests(IMP.test.TestCase):
     def test_delete_model_constructor(self):
         """Constructed Python Particles should survive model deletion"""
         refcnt = IMP.test.RefCountChecker(self)
-        m= IMP.Model("python restraint survival")
+        m= IMP.kernel.Model("python restraint survival")
         p= IMP.kernel.Particle(m)
         self.assertEqual(p.get_ref_count(), 2)
         refcnt.assert_number(3)
@@ -208,7 +208,7 @@ class Tests(IMP.test.TestCase):
 
     def test_skip(self):
         """Check that removed particles are skipped"""
-        m= IMP.Model("skipping removed particles")
+        m= IMP.kernel.Model("skipping removed particles")
         p= IMP.kernel.Particle(m)
         ps= m.get_particles()
         self.assertEqual(len(ps), 1, "Should only be 1 particle")
@@ -220,7 +220,7 @@ class Tests(IMP.test.TestCase):
     def test_sequence(self):
         """Test that sequences are refcounted properly"""
         refcnt = IMP.test.RefCountChecker(self)
-        m= IMP.Model("sequence ref counting")
+        m= IMP.kernel.Model("sequence ref counting")
         p= IMP.kernel.Particle(m)
         ps= m.get_particles()
         print IMP.kernel._take_particles(ps)

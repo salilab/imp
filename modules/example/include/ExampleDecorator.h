@@ -11,7 +11,7 @@
 #include <IMP/example/example_config.h>
 
 #include <IMP/kernel/Particle.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/Decorator.h>
 #include <IMP/decorator_macros.h>
 #include <IMP/base/exception.h>
@@ -40,7 +40,7 @@ class IMPEXAMPLEEXPORT ExampleDecorator : public Decorator {
       the initial state of the Decorator to be reasonable (i.e.
       make sure there is a non-empty name).
    */
-  static void do_setup_particle(Model *m, kernel::ParticleIndex pi, std::string name) {
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi, std::string name) {
     // use the usage check macro to make sure that arguments are correct
     IMP_USAGE_CHECK(!name.empty(), "The name cannot be empty.");
     m->add_attribute(get_name_key(), pi, name);
@@ -48,7 +48,7 @@ class IMPEXAMPLEEXPORT ExampleDecorator : public Decorator {
 
  public:
   //! return true if the particle has a name
-  static bool get_is_setup(Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
     return m->get_has_attribute(get_name_key(), pi);
   }
 

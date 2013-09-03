@@ -18,7 +18,7 @@ SphereDistanceToSingletonScore::SphereDistanceToSingletonScore(
     : f_(f), pt_(v) {}
 
 Float SphereDistanceToSingletonScore::evaluate_index(
-    Model *m, kernel::ParticleIndex pi, DerivativeAccumulator *da) const {
+    kernel::Model *m, kernel::ParticleIndex pi, DerivativeAccumulator *da) const {
   Float v = internal::evaluate_distance_pair_score(
       XYZR(m, pi), StaticD(pt_), da, f_.get(),
       boost::lambda::_1 - XYZR(m, pi).get_radius());

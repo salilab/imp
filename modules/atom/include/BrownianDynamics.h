@@ -63,7 +63,7 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
      @note wave_factor is an advanced feature - if you're not sure, just use
                        its default, see also Simulator::simulate_wave()
   */
-  BrownianDynamics(Model *m, std::string name = "BrownianDynamics%1%",
+  BrownianDynamics(kernel::Model *m, std::string name = "BrownianDynamics%1%",
                    double wave_factor=1.0);
   void set_maximum_move(double ms) { max_step_ = ms; }
   void set_use_stochastic_runge_kutta(bool tf) { srk_ = tf; }

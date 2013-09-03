@@ -31,7 +31,7 @@ ParticlesTemp get_set(kernel::Particle *a, Refiner *r) {
 }
 }
 
-Float RefinedPairsPairScore::evaluate_index(Model *m,
+Float RefinedPairsPairScore::evaluate_index(kernel::Model *m,
                                             const kernel::ParticleIndexPair &p,
                                             DerivativeAccumulator *da) const {
   kernel::ParticlesTemp ps[2] = {get_set(m->get_particle(p[0]), r_),
@@ -48,12 +48,12 @@ Float RefinedPairsPairScore::evaluate_index(Model *m,
 }
 
 ModelObjectsTemp RefinedPairsPairScore::do_get_inputs(
-    Model *m, const kernel::ParticleIndexes &pis) const {
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
   kernel::ParticleIndexes ps;
   for (unsigned int i = 0; i < pis.size(); ++i) {
     ps += get_indexes(get_set(m->get_particle(pis[i]), r_));
   }
-  ModelObjectsTemp ret;
+  kernel::ModelObjectsTemp ret;
   ret += f_->get_inputs(m, ps);
   ret += r_->get_inputs(m, ps);
   return ret;
