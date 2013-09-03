@@ -42,7 +42,7 @@ IMPATOM_BEGIN_NAMESPACE
 */
 class IMPATOMEXPORT Selection :
 #ifdef SWIG
-  public kernel::ParticleIndexesAdaptor, public kernel::Particles
+  public kernel::ParticleIndexesAdaptor, public kernel::ParticlesTemp
 #else
 public base::InputAdaptor
 #endif
@@ -61,7 +61,8 @@ public base::InputAdaptor
 
   kernel::ParticleIndexes h_;
   std::pair<bool, kernel::ParticleIndexes> search(
-      kernel::Model *m, kernel::ParticleIndex pi, boost::dynamic_bitset<> parent) const;
+      kernel::Model *m, kernel::ParticleIndex pi,
+      boost::dynamic_bitset<> parent) const;
   void set_hierarchies(kernel::Model *m, const kernel::ParticleIndexes &pis);
 
  public:
@@ -267,7 +268,8 @@ IMPATOMEXPORT Hierarchies get_leaves(const Selection &h);
 */
 class IMPATOMEXPORT SelectionGeometry : public display::Geometry {
   atom::Selection res_;
-  mutable IMP::base::map<kernel::Particle *, base::Pointer<Geometry> > components_;
+  mutable IMP::base::map<kernel::Particle *,
+                         base::Pointer<Geometry> > components_;
 
  public:
   SelectionGeometry(atom::Selection d, std::string name = "Selection")
