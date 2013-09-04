@@ -128,16 +128,19 @@ struct InList {
 inline void reset_moved(
     Model *m, ParticleIndexes &xyzrs_, ParticleIndexes &rbs_,
     IMP::base::map<ParticleIndex, ParticleIndexes> &/*constituents_*/,
-    algebra::Transformation3Ds &rbs_backup_,
-    algebra::Vector3Ds &xyzrs_backup_) {
+    algebra::Sphere3Ds &rbs_backup_sphere_,
+    algebra::Rotation3Ds &rbs_backup_rot_,
+    algebra::Sphere3Ds &xyzrs_backup_) {
   xyzrs_backup_.resize(xyzrs_.size());
   for (unsigned int i = 0; i < xyzrs_.size(); ++i) {
-    xyzrs_backup_[i] = m->get_sphere(xyzrs_[i]).get_center();
+    xyzrs_backup_[i] = m->get_sphere(xyzrs_[i]);
   }
-  rbs_backup_.resize(rbs_.size());
+  rbs_backup_sphere_.resize(rbs_.size());
+  rbs_backup_rot_.resize(rbs_.size());
   for (unsigned int i = 0; i < rbs_.size(); ++i) {
-    rbs_backup_[i] =
-        RigidBody(m, rbs_[i]).get_reference_frame().get_transformation_to();
+    rbs_backup_sphere_[i] = m->get_sphere(rbs_[i]);
+    rbs_backup_rot_[i] = RigidBody(m, rbs_[i])
+      .get_reference_frame().get_transformation_to().get_rotation();
   }
 }
 
@@ -145,7 +148,9 @@ inline void initialize_particles(
     SingletonContainer *sc, ObjectKey key, ParticleIndexes &xyzrs_,
     ParticleIndexes &rbs_,
     IMP::base::map<ParticleIndex, ParticleIndexes> &constituents_,
-    algebra::Transformation3Ds &rbs_backup_, algebra::Vector3Ds &xyzrs_backup_,
+    algebra::Sphere3Ds &rbs_backup_sphere_,
+    algebra::Rotation3Ds &rbs_backup_rot_,
+    algebra::Sphere3Ds &xyzrs_backup_,
     bool use_rigid_bodies = true) {
   IMP_IF_CHECK(base::USAGE) {
     ParticleIndexes pis = sc->get_indexes();
@@ -195,10 +200,12 @@ inline void initialize_particles(
     internal::get_rigid_body_hierarchy(RigidBody(sc->get_model(), rbs_[i]),
                                        constituents_[rbs_[i]], key);
   }
-  reset_moved(sc->get_model(), xyzrs_, rbs_, constituents_, rbs_backup_,
+  reset_moved(sc->get_model(), xyzrs_, rbs_, constituents_, rbs_backup_sphere_,
+              rbs_backup_rot_,
               xyzrs_backup_);
   xyzrs_backup_.clear();
-  rbs_backup_.clear();
+  rbs_backup_sphere_.clear();
+  rbs_backup_rot_.clear();
   IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     for (IMP::base::map<ParticleIndex, ParticleIndexes>::const_iterator it =
              constituents_.begin();
@@ -216,41 +223,47 @@ inline void initialize_particles(
 }
 
 inline bool get_if_moved(
-    Model *m, double slack_, ParticleIndexes &xyzrs_, ParticleIndexes &rbs_,
-    IMP::base::map<ParticleIndex, ParticleIndexes> &/*constituents_*/,
-    algebra::Transformation3Ds &rbs_backup_,
-    algebra::Vector3Ds &xyzrs_backup_) {
+    Model *m, double slack_,
+    const ParticleIndexes &xyzrs_,
+    const ParticleIndexes &rbs_,
+    const IMP::base::map<ParticleIndex, ParticleIndexes> &/*constituents_*/,
+    const algebra::Sphere3Ds &rbs_backup_sphere_,
+    const algebra::Rotation3Ds &rbs_backup_rot_,
+    const algebra::Sphere3Ds &xyzrs_backup_) {
   IMP_INTERNAL_CHECK(xyzrs_.size() == xyzrs_backup_.size(),
                      "Backup is not a backup");
-  const double s22 = square(slack_ / 2);
+  const double s22 = algebra::get_squared(slack_);
   for (unsigned int i = 0; i < xyzrs_.size(); ++i) {
-    double diff2 = 0;
-    for (unsigned int j = 0; j < 3; ++j) {
-      double diffc2 = square(m->get_sphere(xyzrs_[i]).get_center()[j] -
-                             xyzrs_backup_[i][j]);
-      diff2 += diffc2;
-      if (diff2 > s22) {
-        return true;
-      }
-    }
+    double diff2 =
+      algebra::get_squared_distance(m->get_sphere(xyzrs_[i]).get_center(),
+                                    xyzrs_backup_[i].get_center());
+    if (diff2 >= s22) return true;
+    double rdiff = std::abs(m->get_sphere(xyzrs_[i]).get_radius()
+                            - xyzrs_backup_[i].get_radius());
+    if (rdiff == 0) continue;
+    double diff = std::sqrt(diff2);
+    if (algebra::get_squared(rdiff + diff) >= s22) return true;
   }
   for (unsigned int i = 0; i < rbs_.size(); ++i) {
-    double diff2 = 0;
-    for (unsigned int j = 0; j < 3; ++j) {
-      double diffc2 = square(m->get_sphere(rbs_[i]).get_center()[j] -
-                             rbs_backup_[i].get_translation()[j]);
-      diff2 += diffc2;
-      if (diff2 > s22) {
-        return true;
-      }
+    double diff2
+      = algebra::get_squared_distance(m->get_sphere(rbs_[i]).get_center(),
+                                      rbs_backup_sphere_[i].get_center());
+    if (diff2 >= s22) {
+      return true;
+    }
+    double rdiff = std::abs(m->get_sphere(rbs_[i]).get_radius()
+                            - rbs_backup_sphere_[i].get_radius());
+    if (rdiff != 0) {
+      double diff = std::sqrt(diff2);
+      if (algebra::get_squared(rdiff + diff) >= s22) return true;
     }
     algebra::Rotation3D nrot = RigidBody(m, rbs_[i]).get_reference_frame()
-        .get_transformation_to().get_rotation();
+      .get_transformation_to().get_rotation();
     algebra::Rotation3D diffrot =
-        rbs_backup_[i].get_rotation().get_inverse() * nrot;
+      rbs_backup_rot_[i].get_inverse() * nrot;
     double angle = algebra::get_axis_and_angle(diffrot).second;
     double drot = std::abs(angle * m->get_sphere(rbs_[i]).get_radius());
-    if (s22 < square(drot) + drot * std::sqrt(diff2) + diff2) {
+    if (s22 < algebra::get_squared(drot) + drot * std::sqrt(diff2) + diff2) {
       return true;
     }
 

@@ -19,15 +19,17 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 ClosePairContainer::ClosePairContainer(SingletonContainerAdaptor c,
-                                       double distance, double slack)
+                                       double distance, double slack,
+                                       std::string name)
     : P(c, distance, core::internal::default_cpf(c->get_indexes().size()),
-        slack) {}
+        slack, name) {}
 
 ClosePairContainer::ClosePairContainer(SingletonContainerAdaptor c,
                                        double distance,
                                        core::ClosePairsFinder *cpf,
-                                       double slack)
-    : P(c, distance, cpf, slack) {}
+                                       double slack,
+                                       std::string name)
+  : P(c, distance, cpf, slack, name) {}
 
 namespace {
 struct Data {

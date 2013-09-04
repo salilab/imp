@@ -59,14 +59,16 @@ void ExcludedVolumeRestraint::initialize() const {
   IMP_LOG_TERSE("Initializing ExcludedVolumeRestraint with " << sc_->get_name()
                                                              << std::endl);
   internal::initialize_particles(sc_, key_, xyzrs_, rbs_, constituents_,
-                                 rbs_backup_, xyzrs_backup_);
+                                 rbs_backup_sphere_, rbs_backup_rot_,
+                                 xyzrs_backup_);
   was_bad_ = true;
   initialized_ = true;
 }
 
 double ExcludedVolumeRestraint::fill_list_if_good(double max) const {
   xyzrs_backup_.clear();
-  rbs_backup_.clear();
+  rbs_backup_sphere_.clear();
+  rbs_backup_rot_.clear();
   was_bad_ = true;
   cur_list_.clear();
   double score = 0;
@@ -116,13 +118,16 @@ void ExcludedVolumeRestraint::fill_list() const {
 }
 
 void ExcludedVolumeRestraint::reset_moved() const {
-  internal::reset_moved(get_model(), xyzrs_, rbs_, constituents_, rbs_backup_,
+  internal::reset_moved(get_model(), xyzrs_, rbs_, constituents_,
+                        rbs_backup_sphere_, rbs_backup_rot_,
                         xyzrs_backup_);
 }
 
 int ExcludedVolumeRestraint::get_if_moved() const {
   return internal::get_if_moved(get_model(), slack_, xyzrs_, rbs_,
-                                constituents_, rbs_backup_, xyzrs_backup_);
+                                constituents_, rbs_backup_sphere_,
+                                rbs_backup_rot_,
+                                xyzrs_backup_);
 }
 
 double ExcludedVolumeRestraint::unprotected_evaluate(

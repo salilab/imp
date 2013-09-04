@@ -37,8 +37,6 @@ IMPCORE_BEGIN_NAMESPACE
 
     \note Changing the set of particles in the SingletonContainer is not
     currently supported after the first evaluate call.
-
-    \note Currently the radius of all particles is assumed to be constant
  */
 class IMPCOREEXPORT ExcludedVolumeRestraint : public kernel::Restraint {
   base::PointerMember<SingletonContainer> sc_;
@@ -52,8 +50,9 @@ class IMPCOREEXPORT ExcludedVolumeRestraint : public kernel::Restraint {
   mutable ParticleIndexes xyzrs_;
   mutable IMP::base::map<ParticleIndex, ParticleIndexes> constituents_;
   double slack_;
-  mutable algebra::Transformation3Ds rbs_backup_;
-  mutable algebra::Vector3Ds xyzrs_backup_;
+  mutable algebra::Sphere3Ds rbs_backup_sphere_;
+  mutable algebra::Rotation3Ds rbs_backup_rot_;
+  mutable algebra::Sphere3Ds xyzrs_backup_;
 
   void reset_moved() const;
   void initialize() const;

@@ -78,7 +78,8 @@ class IMPCONTAINEREXPORT ClosePairContainer :
      Creates a close pair container associated with c.
    */
   ClosePairContainer(SingletonContainerAdaptor c, double distance_cutoff,
-                     double slack = 1);
+                     double slack = 1,
+                     std::string name = "ClosePairContainer%1%");
 
   //! Get the individual particles from the passed SingletonContainer
   /**
@@ -88,7 +89,8 @@ class IMPCONTAINEREXPORT ClosePairContainer :
 
    */
   ClosePairContainer(SingletonContainerAdaptor c, double distance_cutoff,
-                     core::ClosePairsFinder *cpf, double slack = 1);
+                     core::ClosePairsFinder *cpf, double slack = 1,
+                     std::string name = "ClosePairContainer%1%");
 
 #if defined(SWIG) || defined(IMP_DOXYGEN)
   /** @name Methods to control the set of filters

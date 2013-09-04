@@ -43,8 +43,9 @@ class IMPCOREEXPORT CoreCloseBipartitePairContainer
   ParticleIndexes xyzrs_[2];
   IMP::base::map<ParticleIndex, ParticleIndexes> constituents_;
   double slack_, distance_;
-  algebra::Transformation3Ds rbs_backup_[2];
-  algebra::Vector3Ds xyzrs_backup_[2];
+  algebra::Sphere3Ds rbs_backup_sphere_[2];
+  algebra::Rotation3Ds rbs_backup_rot_[2];
+  algebra::Sphere3Ds xyzrs_backup_[2];
   ParticleIndex covers_[2];
   void initialize(SingletonContainer *a, SingletonContainer *b,
                   ParticleIndex cover_a, ParticleIndex cover_b, double distance,
@@ -53,13 +54,17 @@ class IMPCOREEXPORT CoreCloseBipartitePairContainer
  public:
   //! Get the individual particles from the passed SingletonContainer
   CoreCloseBipartitePairContainer(SingletonContainer *a, SingletonContainer *b,
-                                  double distance, double slack = 1);
+                                  double distance, double slack = 1,
+                                  std::string name
+                                  = "CoreBipartiteClosePairContainer%1%");
 
   //! make sure you know what you are doing
   CoreCloseBipartitePairContainer(SingletonContainer *a, SingletonContainer *b,
                                   ParticleIndex cover_a, ParticleIndex cover_b,
                                   ObjectKey key, double distance,
-                                  double slack = 1);
+                                  double slack = 1,
+                                  std::string name
+                                  = "CoreCloseBipartitePairContainer%1%");
 
   /** @name Methods to control the set of filters
 

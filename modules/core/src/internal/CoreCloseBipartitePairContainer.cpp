@@ -23,8 +23,9 @@ IMP_LIST_IMPL(CoreCloseBipartitePairContainer, PairFilter, pair_filter,
               PairFilter *, PairFilters);
 
 CoreCloseBipartitePairContainer::CoreCloseBipartitePairContainer(
-    SingletonContainer *a, SingletonContainer *b, double distance, double slack)
-    : P(a->get_model(), "CoreCloseBipartitePairContainer") {
+   SingletonContainer *a, SingletonContainer *b, double distance, double slack,
+   std::string name)
+    : P(a->get_model(), name) {
   std::ostringstream oss;
   oss << "BCPC " << get_name() << " hierarchy " << this;
   ObjectKey key = ObjectKey(oss.str());
@@ -34,14 +35,16 @@ CoreCloseBipartitePairContainer::CoreCloseBipartitePairContainer(
 
 CoreCloseBipartitePairContainer::CoreCloseBipartitePairContainer(
     SingletonContainer *a, SingletonContainer *b, ParticleIndex cover_a,
-    ParticleIndex cover_b, ObjectKey key, double distance, double slack)
-    : P(a->get_model(), "CoreCloseBipartitePairContainer") {
+    ParticleIndex cover_b, ObjectKey key, double distance, double slack,
+    std::string name)
+    : P(a->get_model(), name) {
   initialize(a, b, cover_a, cover_b, distance, slack, key);
 }
 
 void CoreCloseBipartitePairContainer::initialize(
     SingletonContainer *a, SingletonContainer *b, ParticleIndex cover_a,
     ParticleIndex cover_b, double distance, double slack, ObjectKey key) {
+  IMP_OBJECT_LOG;
   slack_ = slack;
   distance_ = distance;
   key_ = key;
@@ -53,7 +56,8 @@ void CoreCloseBipartitePairContainer::initialize(
   covers_[1] = cover_b;
   for (unsigned int i = 0; i < 2; ++i) {
     internal::initialize_particles(sc_[i], key_, xyzrs_[i], rbs_[i],
-                                   constituents_, rbs_backup_[i],
+                                   constituents_, rbs_backup_sphere_[i],
+                                   rbs_backup_rot_[i],
                                    xyzrs_backup_[i]);
   }
 }
@@ -71,49 +75,108 @@ ModelObjectsTemp CoreCloseBipartitePairContainer::do_get_inputs() const {
 
 void CoreCloseBipartitePairContainer::do_before_evaluate() {
   IMP_OBJECT_LOG;
-  if (covers_[0] == base::get_invalid_index<ParticleIndexTag>() ||
+  IMP_IF_LOG(VERBOSE) {
+    algebra::Sphere3Ds coords[2];
+    for (unsigned int i = 0; i < 2; ++i) {
+      for (unsigned int j = 0; j < xyzrs_[i].size(); ++j) {
+        coords[i].push_back(get_model()->get_sphere(xyzrs_[i][j]));
+      }
+    }
+    Floats distances;
+    for (unsigned int i = 0; i < coords[0].size(); ++i) {
+      for (unsigned int j = 0; j < coords[1].size(); ++j) {
+        distances.push_back(algebra::get_distance(coords[0][i], coords[1][j]));
+      }
+    }
+    IMP_LOG_VERBOSE(xyzrs_[0] << " " << coords[0]
+                    << " " << xyzrs_backup_[0] << std::endl);
+    IMP_LOG_VERBOSE(xyzrs_[1] << " " << coords[1]
+                    << " " << xyzrs_backup_[1] << std::endl);
+    IMP_LOG_VERBOSE(distances << std::endl);
+  }
+    if (covers_[0] == base::get_invalid_index<ParticleIndexTag>() ||
       algebra::get_distance(get_model()->get_sphere(covers_[0]),
                             get_model()->get_sphere(covers_[1])) <
           distance_ ||
       reset_) {
     if (!reset_ && were_close_ &&
         !internal::get_if_moved(get_model(), slack_, xyzrs_[0], rbs_[0],
-                                constituents_, rbs_backup_[0],
+                                constituents_, rbs_backup_sphere_[0],
+                                rbs_backup_rot_[0],
                                 xyzrs_backup_[0]) &&
         !internal::get_if_moved(get_model(), slack_, xyzrs_[1], rbs_[1],
-                                constituents_, rbs_backup_[1],
+                                constituents_, rbs_backup_sphere_[1],
+                                rbs_backup_rot_[1],
                                 xyzrs_backup_[1])) {
+      IMP_LOG_TERSE("Nothing to update" << std::endl);
       // all ok
     } else {
       // rebuild
       IMP_LOG_TERSE("Recomputing bipartite close pairs list." << std::endl);
       internal::reset_moved(get_model(), xyzrs_[0], rbs_[0], constituents_,
-                            rbs_backup_[0], xyzrs_backup_[0]);
+                            rbs_backup_sphere_[0], rbs_backup_rot_[0],
+                            xyzrs_backup_[0]);
       internal::reset_moved(get_model(), xyzrs_[1], rbs_[1], constituents_,
-                            rbs_backup_[1], xyzrs_backup_[1]);
+                            rbs_backup_sphere_[1], rbs_backup_rot_[1],
+                            xyzrs_backup_[1]);
       ParticleIndexPairs pips;
       internal::fill_list(get_model(), access_pair_filters(), key_,
                           2 * slack_ + distance_, xyzrs_, rbs_, constituents_,
                           pips);
       reset_ = false;
+
       swap(pips);
+
+      IMP_LOG_VERBOSE("List is " << get_access() << std::endl);
+      IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+        kernel::ParticleIndexes sc0p = sc_[0]->get_indexes();
+        kernel::ParticleIndexes sc1p = sc_[1]->get_indexes();
+        kernel::ParticleIndexPairs unfound;
+        for (unsigned int i = 0; i < sc0p.size(); ++i) {
+          XYZR d0(get_model(), sc0p[i]);
+          for (unsigned int j = 0; j < sc1p.size(); ++j) {
+            XYZR d1(get_model(), sc1p[j]);
+            double dist = get_distance(d0, d1);
+            if (dist < .9 * (distance_ + 2 * slack_)) {
+              ParticleIndexPair pip(sc0p[i], sc1p[j]);
+              bool filtered = false;
+              IMP_CHECK_VARIABLE(filtered);
+              for (unsigned int i = 0; i < get_number_of_pair_filters(); ++i) {
+                if (get_pair_filter(i)->get_value_index(get_model(), pip)) {
+                  filtered = true;
+                  break;
+                }
+              }
+              if (!filtered
+                  && std::find(get_access().begin(), get_access().end(), pip) ==
+                  get_access().end()) {
+                unfound.push_back(pip);
+              }
+            }
+          }
+        }
+        IMP_INTERNAL_CHECK(unfound.empty(),
+                           "Missing particle pairs: " << unfound);
+      }
     }
     were_close_ = true;
   } else {
+    IMP_LOG_TERSE("Covers are well separated." << std::endl);
     ParticleIndexPairs none;
     swap(none);
   }
+    IMP_LOG_VERBOSE("List is " << get_access() << std::endl);
   IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
-    ParticlesTemp sc0p = IMP::get_particles(get_model(), sc_[0]->get_indexes());
-    ParticlesTemp sc1p = IMP::get_particles(get_model(), sc_[1]->get_indexes());
+    kernel::ParticleIndexes sc0p = sc_[0]->get_indexes();
+    kernel::ParticleIndexes sc1p = sc_[1]->get_indexes();
+    kernel::ParticleIndexPairs unfound;
     for (unsigned int i = 0; i < sc0p.size(); ++i) {
-      XYZR d0(sc0p[i]);
+      XYZR d0(get_model(), sc0p[i]);
       for (unsigned int j = 0; j < sc1p.size(); ++j) {
-        XYZR d1(sc1p[j]);
+        XYZR d1(get_model(), sc1p[j]);
         double dist = get_distance(d0, d1);
         if (dist < .9 * distance_) {
-          ParticleIndexPair pip(d0.get_particle_index(),
-                                d1.get_particle_index());
+          ParticleIndexPair pip(sc0p[i], sc1p[j]);
           bool filtered = false;
           IMP_CHECK_VARIABLE(filtered);
           for (unsigned int i = 0; i < get_number_of_pair_filters(); ++i) {
@@ -122,15 +185,16 @@ void CoreCloseBipartitePairContainer::do_before_evaluate() {
               break;
             }
           }
-          IMP_INTERNAL_CHECK(
-              filtered ||
-                  std::find(get_access().begin(), get_access().end(), pip) !=
-                      get_access().end(),
-              "Pair " << pip << " not found in list with coordinates " << d0
-                      << " and " << d1 << " list is " << get_access());
+          if (!filtered
+              && std::find(get_access().begin(), get_access().end(), pip) ==
+              get_access().end()) {
+            unfound.push_back(pip);
+          }
         }
       }
     }
+    IMP_INTERNAL_CHECK(unfound.empty(),
+                       "Missing particle pairs: " << unfound);
   }
 }
 

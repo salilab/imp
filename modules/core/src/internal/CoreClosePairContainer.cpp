@@ -31,9 +31,10 @@ IMP_LIST_IMPL(CoreClosePairContainer, PairFilter, pair_filter, PairFilter *,
 CoreClosePairContainer::CoreClosePairContainer(SingletonContainer *c,
                                                double distance,
                                                ClosePairsFinder *cpf,
-                                               double slack)
+                                               double slack,
+                                               std::string name)
     : IMP::internal::ListLikePairContainer(c->get_model(),
-                                           "ClosePairContainer") {
+                                           name) {
   initialize(c, distance, slack, cpf);
 }
 

@@ -48,7 +48,8 @@ class IMPCOREEXPORT CoreClosePairContainer
   virtual void do_before_evaluate() IMP_OVERRIDE;
 
   CoreClosePairContainer(SingletonContainer *c, double distance,
-                         ClosePairsFinder *cpf, double slack = 1);
+                         ClosePairsFinder *cpf, double slack = 1,
+                         std::string name = "CoreClosePairContainer%1%");
 
   IMP_LIST_ACTION(public, PairFilter, PairFilters, pair_filter, pair_filters,
                   PairPredicate *, PairPredicates,
