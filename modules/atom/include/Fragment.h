@@ -30,8 +30,8 @@ class IMPATOMEXPORT Fragment : public Hierarchy {
     if (!Hierarchy::get_is_setup(m, pi)) {
       Hierarchy::setup_particle(m, pi);
     }
-    set_residue_indexes(m, pi, ris);
     m->add_attribute(get_marker_key(), pi, 1);
+    set_residue_indexes(m, pi, ris);
   }
 
   static void do_setup_particle(Model *m, ParticleIndex pi,
