@@ -88,6 +88,7 @@ class IMPKERNELEXPORT ParticleIndexesAdaptor
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   ParticleIndexesAdaptor& operator=(const ParticleIndexesAdaptor &o) {
     val_ = o.val_;
+    return *this;
   }
   ParticleIndexesAdaptor(const ParticleIndexesAdaptor &o):
     val_(o.val_) {}
