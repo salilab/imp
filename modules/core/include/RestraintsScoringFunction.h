@@ -29,7 +29,7 @@ class RestraintsScoringFunction :
  public:
   RestraintsScoringFunction(const kernel::RestraintsAdaptor &rs,
                             double weight = 1.0,
-                            double max = NO_MAX,
+                            double max = kernel::NO_MAX,
                             std::string name = "RestraintsScoringFunction%1%")
     : kernel::internal::RestraintsScoringFunction(rs, weight, max, name) {}
   RestraintsScoringFunction(const kernel::RestraintsAdaptor &rs,
