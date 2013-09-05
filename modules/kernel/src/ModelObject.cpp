@@ -45,6 +45,10 @@ void ModelObject::set_has_required_score_states(bool tf) {
   IMP_UNUSED(tf);
   IMP_USAGE_CHECK(tf, "Can only set them this way.");
   IMP_USAGE_CHECK(get_model(), "Must set model first");
+  if (!tf) {
+    // they almost certainly depend on upstream things
+    clear_caches();
+  }
   get_model()->do_set_has_required_score_states(this, true);
   //if (get_model()) get_model()->check_dependency_invariants(this);
 }
