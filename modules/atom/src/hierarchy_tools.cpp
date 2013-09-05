@@ -110,7 +110,8 @@ double get_volume_measurement(algebra::Sphere3Ds ss, double resolution) {
 #endif
 }
 
-void setup_as_approximation_internal(kernel::Particle *p, const kernel::ParticlesTemp &other,
+void setup_as_approximation_internal(kernel::Particle *p,
+                                     const kernel::ParticlesTemp &other,
                                      double resolution = -1, double volume = -1,
                                      double mass = -1) {
   IMP_USAGE_CHECK(volume == -1 || volume > 0,
@@ -305,7 +306,8 @@ Hierarchy create_simplified_along_backbone(Hierarchy in, int num_res,
         new kernel::Particle(in->get_model(), in->get_name()));
     for (unsigned int i = 0; i < chains.size(); ++i) {
       Chain chain(chains[i].get_particle());
-      root.add_child(create_simplified_along_backbone(chain, num_res));
+      root.add_child(create_simplified_along_backbone(chain, num_res,
+                                                      keep_detailed));
     }
     return root;
   } else if (chains.size() == 1) {
@@ -402,7 +404,8 @@ Hierarchy create_simplified_along_backbone(Chain in,
   return root;
 }
 
-void setup_as_approximation(kernel::Particle *p, const kernel::ParticlesTemp &other,
+void setup_as_approximation(kernel::Particle *p,
+                            const kernel::ParticlesTemp &other,
                             double resolution) {
   setup_as_approximation_internal(p, other, resolution);
 }
