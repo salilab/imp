@@ -30,7 +30,7 @@
 #include <IMP/kmeans/kmeans_config.h>
 #include "KMeans.h"                  // kmeans includes
 #include "KCtree.h"                  // kc-tree includes
-#include "IMP/RefCounted.h"
+#include "IMP/base/Object.h"
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 
@@ -56,7 +56,7 @@ IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 //       (if it exists), and then assign to it a new set of points.
 //----------------------------------------------------------------------
 
-class IMPKMEANSEXPORT KMdata : public IMP::RefCounted
+class IMPKMEANSEXPORT KMdata : public base::Object
 // RefCounted for smart pointers
 {
 private:
@@ -65,15 +65,6 @@ private:
   int                  nPts;            // number of data points
   KMdataArray            pts;            // the data points
   KCtree*            kcTree;            // kc-tree for the points
-
-private:
-  // **** copy functions (not implemented) ****
-
-  // copy constructor (not implemented)
-  KMdata(const KMdata& p);
-
-  // assignment operator (not implemented)
-  KMdata& operator=(const KMdata& p);
 
 public:
   KMdata(int d, int n);            // standard constructor

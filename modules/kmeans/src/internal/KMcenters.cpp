@@ -31,13 +31,13 @@ IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 
 // standard constructor
 KMcenters::KMcenters(int k, KMdata& p)
-  : IMP::RefCounted(), kCtrs(k), pts(&p)
+  : base::Object("KMCenters%1%"), kCtrs(k), pts(&p)
 {
   ctrs = kmAllocPts(kCtrs, p.getDim());
 }
 // copy constructor
 KMcenters::KMcenters(const KMcenters& s)
-  : IMP::RefCounted(), kCtrs(s.kCtrs), pts(s.pts)
+  :  base::Object("KMCenters%1%"), kCtrs(s.kCtrs), pts(s.pts)
 {
   ctrs = kmAllocCopyPts(kCtrs, s.getDim(), s.ctrs);
 }

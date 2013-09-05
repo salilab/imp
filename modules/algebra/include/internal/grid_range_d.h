@@ -9,17 +9,18 @@
 #define IMPALGEBRA_INTERNAL_GRID_RANGE_D_H
 
 #include "../VectorD.h"
-#include <IMP/base/RefCounted.h>
+#include <IMP/base/Object.h>
 #include <IMP/base/Pointer.h>
 #include <boost/range.hpp>
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
 template <int D>
-struct GridRangeData : public base::RefCounted {
+struct GridRangeData : public base::Object {
   const BoundingBoxD<D> bb;
   double step;
-  GridRangeData(const BoundingBoxD<D> &ibb, double stp) : bb(ibb), step(stp) {}
+  GridRangeData(const BoundingBoxD<D> &ibb, double stp) :
+    base::Object("GridRangeD%1%"), bb(ibb), step(stp) {}
 };
 
 template <int D>

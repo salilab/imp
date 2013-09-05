@@ -30,7 +30,7 @@
 #include <IMP/kmeans/kmeans_config.h>
 #include "KMeans.h"                  // kmeans includes
 #include "KMdata.h"                  // provides KMdata
-#include "IMP/RefCounted.h"
+#include <IMP/base/Object.h>
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 
@@ -43,7 +43,7 @@ IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 //      points, but we just copy the pointer to the data set.
 //----------------------------------------------------------------------
 
-class IMPKMEANSEXPORT KMcenters : public IMP::RefCounted
+class IMPKMEANSEXPORT KMcenters : public base::Object
 {
 protected:
   int                  kCtrs;            // number of centers
