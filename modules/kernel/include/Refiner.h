@@ -12,7 +12,6 @@
 #include "base_types.h"
 #include "Particle.h"
 #include "VersionInfo.h"
-#include "RefCounted.h"
 #include "internal/IndexingIterator.h"
 #include <IMP/base/deprecation_macros.h>
 #include "model_object_helpers.h"
@@ -30,7 +29,7 @@ class DerivativeAccumulator;
     for a particular purpose, such as IMP::core::TableRefiner.
 */
 class IMPKERNELEXPORT Refiner : public ParticleInputs,
-                                public IMP::base::Object {
+                                public base::Object {
   struct Accessor;
 
  public:
@@ -45,7 +44,8 @@ class IMPKERNELEXPORT Refiner : public ParticleInputs,
    */
   virtual const ParticlesTemp get_refined(Particle *a) const = 0;
 
-  virtual ParticleIndexes get_refined_indexes(kernel::Model *m, ParticleIndex pi) const;
+  virtual ParticleIndexes get_refined_indexes(Model *m,
+                                              ParticleIndex pi) const;
 
   //! Get the ith refined particle.
   /** As a precondition can_refine_particle(a) should be true.
