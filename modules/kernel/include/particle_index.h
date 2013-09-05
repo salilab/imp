@@ -54,7 +54,7 @@ class IMPKERNELEXPORT ParticleIndexesAdaptor
   : public base::InputAdaptor
 #endif
       {
-        boost::scoped_ptr<ParticleIndexes> tmp_;
+        boost::shared_ptr<ParticleIndexes> tmp_;
         const ParticleIndexes *val_;
  public:
 #if !defined(SWIG)
@@ -87,11 +87,12 @@ class IMPKERNELEXPORT ParticleIndexesAdaptor
 #endif
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   ParticleIndexesAdaptor& operator=(const ParticleIndexesAdaptor &o) {
+    tmp_ = o.tmp_;
     val_ = o.val_;
     return *this;
   }
   ParticleIndexesAdaptor(const ParticleIndexesAdaptor &o):
-    val_(o.val_) {}
+    tmp_(o.tmp_), val_(o.val_) {}
 #endif
 };
 
