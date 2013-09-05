@@ -9,7 +9,7 @@
 #define IMPDISPLAY_INTERNAL_WRITERS_H
 
 #include <IMP/display/display_config.h>
-#include <IMP/file.h>
+#include <IMP/base/file.h>
 IMPDISPLAY_BEGIN_NAMESPACE
 class Writer;
 IMPDISPLAY_END_NAMESPACE

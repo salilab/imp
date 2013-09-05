@@ -18,7 +18,7 @@
 #include <IMP/PairScore.h>
 #include <IMP/container/PairsRestraint.h>
 #include <IMP/algebra/Vector3D.h>
-#include <IMP/file.h>
+#include <IMP/base/file.h>
 #include <limits>
 
 IMPATOM_BEGIN_NAMESPACE

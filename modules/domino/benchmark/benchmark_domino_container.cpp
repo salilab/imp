@@ -52,7 +52,7 @@ int main(int, char * []) {
 #ifdef IMP_DOMINO_USE_IMP_RMF
   {
     RMF::HDF5::File file = RMF::HDF5::create_file(
-        create_temporary_file_name("benchmark", ".hdf5"));
+        base::create_temporary_file_name("benchmark", ".hdf5"));
     RMF::HDF5::IndexDataSet2D ds = file.add_child_index_data_set_2d("data");
     IMP_NEW(WriteHDF5AssignmentContainer, ac, (ds, s, m->get_particles(), "c"));
     ac->set_cache_size(1);
@@ -60,7 +60,7 @@ int main(int, char * []) {
   }
   {
     RMF::HDF5::File file = RMF::HDF5::create_file(
-        create_temporary_file_name("benchmark", ".hdf5"));
+        base::create_temporary_file_name("benchmark", ".hdf5"));
     RMF::HDF5::IndexDataSet2D ds = file.add_child_index_data_set_2d("data");
     IMP_NEW(WriteHDF5AssignmentContainer, ac, (ds, s, m->get_particles(), "c"));
     ac->set_cache_size(1000000);
@@ -68,7 +68,8 @@ int main(int, char * []) {
   }
 #endif
   {
-    std::string name = create_temporary_file_name("benchmark", ".assignments");
+    std::string name = base::create_temporary_file_name("benchmark",
+                                                        ".assignments");
     IMP_NEW(WriteAssignmentContainer, ac, (name, s, m->get_particles(), "c"));
     ac->set_cache_size(1000000);
     benchmark_table<WriteAssignmentContainer>(ac, "direct");

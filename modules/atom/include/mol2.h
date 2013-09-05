@@ -16,7 +16,7 @@
 
 #include <IMP/kernel/Model.h>
 #include <IMP/kernel/Particle.h>
-#include <IMP/file.h>
+#include <IMP/base/file.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -55,7 +55,8 @@ class IMPATOMEXPORT NonHydrogenMol2Selector : public Mol2Selector {
     @{
 */
 //! Create a hierarchy from a Mol2 file.
-IMPATOMEXPORT Hierarchy read_mol2(base::TextInput mol2_file, kernel::Model* model,
+IMPATOMEXPORT Hierarchy read_mol2(base::TextInput mol2_file,
+                                  kernel::Model* model,
                                   Mol2Selector* mol2sel = nullptr);
 
 //! Write a lignand hierarchy as a mol2 file

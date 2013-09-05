@@ -10,7 +10,6 @@
 #define IMPKERNEL_IO_H
 
 #include <IMP/kernel/kernel_config.h>
-#include "file.h"
 #include "OptimizerState.h"
 #include "internal/utility.h"
 #include <boost/format.hpp>

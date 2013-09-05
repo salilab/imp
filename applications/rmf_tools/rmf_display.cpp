@@ -59,9 +59,9 @@ int main(int argc, char **argv) {
         return 1;
       }
       if (file_type=="pymol") {
-        output= IMP::create_temporary_file_name("display", ".pym");
+        output= IMP::base::create_temporary_file_name("display", ".pym");
       } else if (file_type=="chimera") {
-        output= IMP::create_temporary_file_name("display", ".py");
+        output= IMP::base::create_temporary_file_name("display", ".py");
       } else {
         IMP::base::write_help();
         return 1;

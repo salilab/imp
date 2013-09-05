@@ -14,7 +14,7 @@
 #include "RawOpenCubicSpline.h"
 
 #include <IMP/base/exception.h>
-#include <IMP/file.h>
+#include <IMP/base/file.h>
 
 #include <vector>
 

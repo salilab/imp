@@ -10,7 +10,6 @@
 
 #include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
-#include "VersionInfo.h"
 #include <IMP/base/Object.h>
 #include "utility.h"
 #include "Model.h"

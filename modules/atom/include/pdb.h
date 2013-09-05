@@ -15,7 +15,7 @@
 #include "element.h"
 #include "internal/pdb.h"
 #include "atom_macros.h"
-#include <IMP/file.h>
+#include <IMP/base/file.h>
 #include "Selection.h"
 #include <IMP/kernel/Model.h>
 #include <IMP/kernel/Particle.h>

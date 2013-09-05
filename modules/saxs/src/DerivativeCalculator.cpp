@@ -15,6 +15,7 @@
 IMPSAXS_BEGIN_NAMESPACE
 
 DerivativeCalculator::DerivativeCalculator(const Profile* exp_profile) :
+  base::Object("DerivativeCalculator%1%"),
   exp_profile_(exp_profile) {}
 
 //tabulates (sin(qr)/qr - cos(qr))/r^2 over the range of qs of the profile
@@ -91,7 +92,8 @@ std::vector<double> DerivativeCalculator::compute_gaussian_effect_size(
  */
 DeltaDistributionFunction DerivativeCalculator::precompute_derivative_helpers(
         const Profile* resampled_model_profile,
-        const kernel::Particles& particles1, const kernel::Particles& particles2,
+        const kernel::Particles& particles1,
+        const kernel::Particles& particles2,
         std::vector<Floats>& sinc_cos_values) const
 {
 
@@ -171,7 +173,8 @@ void DerivativeCalculator::compute_chisquare_derivative(
  * loop over all particles and rigid bodies, and call compute_chi_derivative on
  * them
  */
-void DerivativeCalculator::compute_all_derivatives(const kernel::Particles& particles,
+void DerivativeCalculator::compute_all_derivatives(
+               const kernel::Particles& particles,
                const std::vector<kernel::Particles>& rigid_bodies,
                const std::vector<core::RigidBody>& rigid_bodies_decorators,
                const Profile* model_profile,

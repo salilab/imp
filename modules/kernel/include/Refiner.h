@@ -11,7 +11,6 @@
 #include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
 #include "Particle.h"
-#include "VersionInfo.h"
 #include "internal/IndexingIterator.h"
 #include <IMP/base/deprecation_macros.h>
 #include "model_object_helpers.h"

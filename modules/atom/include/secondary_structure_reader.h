@@ -13,7 +13,7 @@
 #include "Hierarchy.h"
 #include "Atom.h"
 #include "SecondaryStructureResidue.h"
-#include <IMP/file.h>
+#include <IMP/base/file.h>
 
 IMPATOM_BEGIN_NAMESPACE
 

@@ -11,6 +11,7 @@
 #include "ChiScore.h"
 #include "FitParameters.h"
 #include "Profile.h"
+#include <IMP/base/Object.h>
 
 #include <fstream>
 
@@ -26,18 +27,20 @@ IMPSAXS_BEGIN_NAMESPACE
    Currently two scoring functions are implemented: ChiScore and LogChiScore.
  */
 template<class ScoringFunctionT = ChiScore>
-class ProfileFitter: public base::RefCounted  {
+class ProfileFitter: public base::Object  {
 public:
   //! Constructor
   /**
      \param[in] exp_profile Experimental profile we want to fit
   */
-  ProfileFitter(const Profile* exp_profile): exp_profile_(exp_profile) {
+  ProfileFitter(const Profile* exp_profile): base::Object("ProfileFitter%1%"),
+                                             exp_profile_(exp_profile) {
     scoring_function_ = new ScoringFunctionT();
   }
 
   ProfileFitter(const Profile* exp_profile,
-                ScoringFunctionT* sf): exp_profile_(exp_profile) {
+                ScoringFunctionT* sf): base::Object("ProfileFitter%1%"),
+                                       exp_profile_(exp_profile) {
     scoring_function_ = sf;
   }
 

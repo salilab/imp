@@ -14,7 +14,7 @@
 #include <IMP/algebra/GridD.h>
 #include <IMP/algebra/grid_storages.h>
 #include <IMP/base/exception.h>
-#include <IMP/file.h>
+#include <IMP/base/file.h>
 #include <cmath>
 #include <vector>
 

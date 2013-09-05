@@ -10,7 +10,6 @@
 
 #include <IMP/core/XYZR.h>
 #include <IMP/algebra/Transformation3D.h>
-#include <IMP/VersionInfo.h>
 #include <IMP/kernel/Particle.h>
 #include <IMP/kernel/Model.h>
 #include <IMP/em/DensityMap.h>

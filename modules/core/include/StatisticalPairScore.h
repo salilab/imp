@@ -18,7 +18,7 @@
 #include <IMP/PairScore.h>
 #include <IMP/algebra/Vector3D.h>
 #include "XYZ.h"
-#include <IMP/file.h>
+#include <IMP/base/file.h>
 #include <limits>
 
 IMPCORE_BEGIN_NAMESPACE

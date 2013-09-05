@@ -13,7 +13,7 @@
 #include "ForceFieldParameters.h"
 #include "charmm_topology.h"
 #include "atom_macros.h"
-#include <IMP/file.h>
+#include <IMP/base/file.h>
 
 #include <string>
 // swig is being dumb
@@ -315,8 +315,10 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
   void read_topology_file(base::TextInput input_file,
                           bool translate_names_to_pdb);
 
-  void add_angle(kernel::Particle *p1, kernel::Particle *p2, kernel::Particle *p3, kernel::Particles &ps) const;
-  void add_dihedral(kernel::Particle *p1, kernel::Particle *p2, kernel::Particle *p3, kernel::Particle *p4,
+  void add_angle(kernel::Particle *p1, kernel::Particle *p2,
+                 kernel::Particle *p3, kernel::Particles &ps) const;
+  void add_dihedral(kernel::Particle *p1, kernel::Particle *p2,
+                    kernel::Particle *p3, kernel::Particle *p4,
                     kernel::Particles &ps) const;
 
   ResidueType parse_residue_line(const String &line,

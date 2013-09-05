@@ -9,7 +9,6 @@
 #define IMPKERNEL_OPTIMIZER_STATE_H
 
 #include <IMP/kernel/kernel_config.h>
-#include "VersionInfo.h"
 #include "ModelObject.h"
 #include <IMP/base/WeakPointer.h>
 #include <IMP/base/Object.h>

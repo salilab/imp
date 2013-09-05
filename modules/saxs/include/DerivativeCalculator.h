@@ -12,10 +12,11 @@
 #include "Profile.h"
 #include "ProfileFitter.h"
 #include "Distribution.h"
+#include <IMP/base/Object.h>
 
 IMPSAXS_BEGIN_NAMESPACE
 
-class IMPSAXSEXPORT DerivativeCalculator : public base::RefCounted {
+class IMPSAXSEXPORT DerivativeCalculator : public base::Object {
 public:
   DerivativeCalculator(const Profile* exp_profile);
 
@@ -43,7 +44,8 @@ protected:
   */
   DeltaDistributionFunction precompute_derivative_helpers(const Profile*
           resampled_model_profile, const kernel::Particles& particles1,
-          const kernel::Particles& particles2, std::vector<Floats>& sinc_cos_values)
+          const kernel::Particles& particles2,
+          std::vector<Floats>& sinc_cos_values)
       const ;
 
   /* compute dI(q)/dx_k for given q and k

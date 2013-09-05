@@ -196,7 +196,7 @@ int main(int argc, char **argv) {
   std::cout<<"solution filename : " << sol_filename << std::endl;
   std::cout<<"individual fits : " << pdb_fit_filename << std::endl;
 
-  set_log_target(log_file);
+  base::set_log_target(log_file);
 
 
   kernel::Model *mdl = new kernel::Model();

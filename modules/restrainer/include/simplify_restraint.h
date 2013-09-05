@@ -15,6 +15,7 @@
 #include <IMP/em/FitRestraint.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/core/rigid_bodies.h>
+#include <IMP/base/VersionInfo.h>
 
 IMPRESTRAINER_BEGIN_NAMESPACE
 
@@ -58,7 +59,8 @@ IMPRESTRAINEREXPORT SimpleConnectivity create_simple_connectivity_on_molecules(
     \param[in] ps Pointer to two particles in distance restraint.
     See SimpleDistance
 */
-IMPRESTRAINEREXPORT SimpleDistance create_simple_distance(const kernel::Particles &ps);
+IMPRESTRAINEREXPORT SimpleDistance
+create_simple_distance(const kernel::Particles &ps);
 
 
 
@@ -188,9 +190,9 @@ class IMPRESTRAINEREXPORT SimpleConnectivity
      harmonic_upper_bound_->set_k(k);
   }
 
-  VersionInfo get_version_info() const
+  base::VersionInfo get_version_info() const
   {
-    return IMP::VersionInfo("restrainer",
+    return base::VersionInfo("restrainer",
                             get_module_version());
   }
 
@@ -266,9 +268,9 @@ class IMPRESTRAINEREXPORT SimpleDistance
      harmonic_upper_bound_->set_k(k);
   }
 
-  VersionInfo get_version_info() const
+  base::VersionInfo get_version_info() const
   {
-    return VersionInfo("restrainer",
+    return base::VersionInfo("restrainer",
                        get_module_version());
   }
 
@@ -342,9 +344,9 @@ class IMPRESTRAINEREXPORT SimpleDiameter
      harmonic_upper_bound_->set_k(k);
   }
 
-  VersionInfo get_version_info() const
+  base::VersionInfo get_version_info() const
   {
-    return VersionInfo("restrainer",
+    return base::VersionInfo("restrainer",
                        get_module_version());
   }
 
@@ -391,9 +393,9 @@ class IMPRESTRAINEREXPORT SimpleExcludedVolume
     return excluded_volume_restraint_;
   }
 
-  VersionInfo get_version_info() const
+  base::VersionInfo get_version_info() const
   {
-    return VersionInfo("restrainer",
+    return base::VersionInfo("restrainer",
                        get_module_version());
   }
 
@@ -431,9 +433,9 @@ public:
     return fit_restraint_;
   }
 
-  VersionInfo get_version_info() const
+  base::VersionInfo get_version_info() const
   {
-    return VersionInfo("restrainer",
+    return base::VersionInfo("restrainer",
                        get_module_version());
   }
 

@@ -17,7 +17,6 @@
 #include <IMP/core/XYZR.h>
 #include <IMP/kernel/Model.h>
 #include <IMP/kernel/Restraint.h>
-#include <IMP/VersionInfo.h>
 #include <IMP/Refiner.h>
 
 IMPEM_BEGIN_NAMESPACE
@@ -34,10 +33,10 @@ public:
     \param[in] ps The particles participating in the fitting score
     \param[in] em_map  The density map used in the fitting score
     \param[in] threshold
-    \note kernel::Particles that are rigid-bodies are interpolated and not resampled.
-          This significantly reduces the running time but is less accurate.
-          If the user prefers to get more accurate results, provide
-          its members as input particles and not the rigid body.
+    \note kernel::Particles that are rigid-bodies are interpolated and
+    not resampled.  This significantly reduces the running time but is
+    less accurate.  If the user prefers to get more accurate results,
+    provide its members as input particles and not the rigid body.
     \todo we currently assume rigid bodies are also molecular hierarchies.
    */
   DensityFillingRestraint(kernel::Particles ps,

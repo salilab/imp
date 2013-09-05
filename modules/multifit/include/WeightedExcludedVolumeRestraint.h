@@ -18,7 +18,6 @@
 #include <IMP/core/XYZR.h>
 #include <IMP/kernel/Model.h>
 #include <IMP/kernel/Restraint.h>
-#include <IMP/VersionInfo.h>
 #include <IMP/Refiner.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
@@ -36,8 +35,9 @@ public:
     \param[in] rbs Excluded volume will be calculated between these Rigid bodies
     \param[in] refiner rigid body refiner
     \param[in] weight_key the name of the weight attribute of the particles
-    \note kernel::Particles that are rigid-bodies are interpolated and not resampled.
-          This significantly reduces the running time but is less accurate.
+    \note kernel::Particles that are rigid-bodies are interpolated and
+    not resampled. This significantly reduces the running time but is less
+    accurate.
    */
   WeightedExcludedVolumeRestraint(
                core::RigidBodies rbs,

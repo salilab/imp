@@ -20,7 +20,6 @@
 #include <IMP/core/XYZR.h>
 #include <IMP/kernel/Model.h>
 #include <IMP/kernel/Restraint.h>
-#include <IMP/VersionInfo.h>
 #include <IMP/Refiner.h>
 
 IMPEM_BEGIN_NAMESPACE
@@ -102,7 +101,8 @@ private:
   //map particles to their rigid bodies
   IMP::base::map<core::RigidBody, kernel::Particles> member_map_;
   kernel::Particles all_ps_;
-  kernel::Particles not_part_of_rb_; //all particles that are not part of a rigid body
+  //all particles that are not part of a rigid body
+  kernel::Particles not_part_of_rb_;
   kernel::Particles part_of_rb_;
   core::RigidBodies rbs_;
   KernelType kt_;

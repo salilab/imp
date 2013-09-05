@@ -1,17 +1,19 @@
 /**
- *  \file ExampleRefCounted.cpp
+ *  \file ExampleObject.cpp
  *  \brief An example reference counted object.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 
-#include "IMP/example/ExampleRefCounted.h"
+#include "IMP/example/ExampleObject.h"
 #include "IMP/base/Pointer.h"
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
-ExampleRefCounted::ExampleRefCounted(const Floats &data) : data_(data) {}
+ExampleObject::ExampleObject(const Floats &data) :
+  base::Object("ExampleObject%1%"),
+  data_(data) {}
 namespace {
 
 #ifdef __clang__
@@ -22,21 +24,21 @@ void usage_example() {
   Floats data(1000, -1);
 
   // this would not compile
-  // ExampleRefCounted rcstack;
+  // ExampleObject rcstack;
 
   // create a new object and store it in a ref counted pointer
-  IMP_NEW(ExampleRefCounted, rc, (data));
+  IMP_NEW(ExampleObject, rc, (data));
   // reference count is 1
 
   // another object with another copy of the data
-  base::Pointer<ExampleRefCounted> rc_other = new ExampleRefCounted(data);
+  base::Pointer<ExampleObject> rc_other = new ExampleObject(data);
 
   // have two pointers point to the object
-  base::Pointer<ExampleRefCounted> rc2 = rc;
+  base::Pointer<ExampleObject> rc2 = rc;
   // reference count is 2
 
   // the object is still around since rc2 points to it
-  rc = static_cast<ExampleRefCounted *>(nullptr);
+  rc = static_cast<ExampleObject *>(nullptr);
   // reference count is 1
 
   std::cout << rc2->get_data(100);

@@ -14,10 +14,6 @@
 #include "GeometryProcessor.h"
 #include <IMP/base/Pointer.h>
 #include <IMP/base/InputAdaptor.h>
-#include <IMP/file.h>
-#include <IMP/PairContainer.h>
-#include <IMP/SingletonContainer.h>
-#include <IMP/RefCounted.h>
 
 #include <boost/format.hpp>
 

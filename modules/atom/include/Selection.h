@@ -42,7 +42,7 @@ IMPATOM_BEGIN_NAMESPACE
 */
 class IMPATOMEXPORT Selection :
 #ifdef SWIG
-  public kernel::ParticleIndexesAdaptor, public kernel::ParticlesTemp
+  public kernel::ParticleIndexesAdaptor
 #else
 public base::InputAdaptor
 #endif

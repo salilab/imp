@@ -14,6 +14,8 @@
 #include <fstream>
 #include <iostream>
 
+IMPKERNEL_DEPRECATED_HEADER(2.1, "Use base/file.h");
+
 IMPKERNEL_BEGIN_NAMESPACE
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 // swig can't deal with things

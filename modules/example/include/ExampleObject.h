@@ -1,18 +1,17 @@
 /**
- *  \file IMP/example/ExampleRefCounted.h
+ *  \file IMP/example/ExampleObject.h
  *  \brief An example showing how to make a simple ref counted object
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPEXAMPLE_EXAMPLE_REF_COUNTED_H
-#define IMPEXAMPLE_EXAMPLE_REF_COUNTED_H
+#ifndef IMPEXAMPLE_EXAMPLE_OBJECT_H
+#define IMPEXAMPLE_EXAMPLE_OBJECT_H
 
 #include <IMP/example/example_config.h>
 
-#include <IMP/RefCounted.h>
-#include <IMP/macros.h>
 #include <IMP/base/Object.h>
+#include <IMP/base/object_macros.h>
 #include <IMP/base/Pointer.h>
 #include <vector>
 
@@ -23,34 +22,34 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     instances of these objects.
 
     The source code is as follows:
-    \include ExampleRefCounted.h
-    \include ExampleRefCounted.cpp
+    \include ExampleObject.h
+    \include ExampleObject.cpp
  */
-class IMPEXAMPLEEXPORT ExampleRefCounted : public base::RefCounted {
+class IMPEXAMPLEEXPORT ExampleObject : public base::Object {
   Floats data_;
 
  public:
-  ExampleRefCounted(const Floats &data);
+  ExampleObject(const Floats &data);
 
   double get_data(unsigned int i) const {
     IMP_USAGE_CHECK(i < data_.size(), "Index " << i << " out of range.");
     return data_[i];
   }
 
-  IMP_SHOWABLE_INLINE(ExampleRefCounted, out << data_.size());
+  IMP_SHOWABLE_INLINE(ExampleObject, out << data_.size());
 
   /* Make sure that it can't be allocated on the stack
      The macro defines an empty destructor. In general,
      you want destructors to be empty since they are hard
      to maintain.
   */
-  IMP_REF_COUNTED_DESTRUCTOR(ExampleRefCounted);
+  IMP_OBJECT_METHODS(ExampleObject);
 };
 
-typedef base::Vector<base::Pointer<ExampleRefCounted> > ExampleRefCounteds;
-typedef base::Vector<base::WeakPointer<ExampleRefCounted> >
-          ExampleRefCountedsTemp;
+typedef base::Vector<base::Pointer<ExampleObject> > ExampleObjects;
+typedef base::Vector<base::WeakPointer<ExampleObject> >
+          ExampleObjectsTemp;
 
 IMPEXAMPLE_END_NAMESPACE
 
-#endif /* IMPEXAMPLE_EXAMPLE_REF_COUNTED_H */
+#endif /* IMPEXAMPLE_EXAMPLE_OBJECT_H */

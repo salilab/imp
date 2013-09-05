@@ -12,7 +12,6 @@
 #include <IMP/core/ConjugateGradients.h>
 #include <IMP/RestraintSet.h>
 #include <IMP/algebra/Transformation3D.h>
-#include <IMP/VersionInfo.h>
 #include <IMP/kernel/Particle.h>
 #include <IMP/kernel/Model.h>
 #include "DensityMap.h"
@@ -264,7 +263,8 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_grid_search(
 \return The scored fitting solutions
 \note the function assumes the density map holds its density
  */
-IMPEMEXPORT FittingSolutions compute_fitting_scores(const kernel::ParticlesTemp &ps,
+IMPEMEXPORT FittingSolutions
+compute_fitting_scores(const kernel::ParticlesTemp &ps,
    DensityMap *em_map,
    const algebra::Transformation3Ds &transformations,
    bool fast_version=false, bool local_score=false,
