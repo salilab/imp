@@ -34,7 +34,8 @@ class RestraintsScoringFunction :
     : kernel::internal::RestraintsScoringFunction(rs, weight, max, name) {}
   RestraintsScoringFunction(const kernel::RestraintsAdaptor &rs,
                             std::string name)
-    : kernel::internal::RestraintsScoringFunction(rs, 1.0, NO_MAX, name) {}
+    : kernel::internal::RestraintsScoringFunction(rs, 1.0,
+                                                  kernel::NO_MAX, name) {}
 #if defined(SWIG)
       void do_add_score_and_derivatives(kernel::ScoreAccumulator sa,
                              const kernel::ScoreStatesTemp &ss) IMP_OVERRIDE;
