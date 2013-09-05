@@ -54,6 +54,25 @@ if(${status} EQUAL 0)
   list(APPEND imp_%(name)s_libs %(modules)s)
   list(APPEND imp_%(name)s_libs %(dependencies)s)
   list(REMOVE_DUPLICATES imp_%(name)s_libs)
+
+  if(EXISTS ${CMAKE_SOURCE_DIR}/modules/%(name)s/VERSION)
+    set(version ${CMAKE_SOURCE_DIR}/modules/%(name)s/VERSION)
+  else()
+    set(version ${CMAKE_SOURCE_DIR}/VERSION)
+  endif()
+
+  add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/lib/IMP/%(name)s/_version_check.py
+                            ${CMAKE_BINARY_DIR}/src/%(name)s_config.cpp
+    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_module_version.py --name=%(name)s --version=${version} --datapath=${IMP_DATAPATH} --source=${CMAKE_SOURCE_DIR}
+    DEPENDS ${version}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/
+    COMMENT "Building module version info")
+
+  add_custom_target("IMP.%(name)s-version" ALL DEPENDS
+                          ${CMAKE_BINARY_DIR}/lib/IMP/%(name)s/_version_check.py
+                          ${CMAKE_BINARY_DIR}/src/%(name)s_config.cpp)
+  set_property(TARGET "IMP.%(name)s-version" PROPERTY FOLDER "IMP.%(name)s")
+
   %(subdirs)s
   set(IMP_%(name)s "IMP.%(name)s" CACHE INTERNAL "" FORCE)
 else()

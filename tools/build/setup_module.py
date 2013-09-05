@@ -294,8 +294,6 @@ def main():
     success, modules = setup_module(options.name, options.source, options.datapath)
     if success:
         make_header(options)
-        make_cpp(options)
-        make_version_check(options)
         make_doxygen(options, modules)
         make_overview(options)
         link_bin(options)

@@ -13,6 +13,8 @@ include(${CMAKE_SOURCE_DIR}/CMakeModules/CheckCompiles.cmake)
 
 imp_execute_process("check_common_problems" ${CMAKE_SOURCE_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/check_common_problems.py)
 
+imp_execute_process("clean_build_dir" ${CMAKE_BINARY_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/clean_build_dir.py)
+
 imp_execute_process("setup_cmake" ${CMAKE_SOURCE_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_cmake.py)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/CMakeModules)
