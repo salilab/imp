@@ -9,7 +9,7 @@
 #ifndef IMPBASE_REF_COUNTING_H
 #define IMPBASE_REF_COUNTING_H
 
-#include "../RefCounted.h"
+#include "../declare_Object.h"
 #include "../declare_Object.h"
 #include "../log_macros.h"
 #include "../check_macros.h"
@@ -27,7 +27,7 @@ struct RefStuff<T, typename boost::enable_if<boost::mpl::not_<
                        typename boost::is_base_of<Object, T> > >::type> {
   static void ref(T* o) {
     if (!o) return;
-    const RefCounted* r = o;
+    const Object* r = o;
     IMP_LOG_MEMORY("Refing object \"" << r << "\" (" << r->count_ << ")"
                                       << std::endl);
     ++r->count_;
@@ -36,7 +36,7 @@ struct RefStuff<T, typename boost::enable_if<boost::mpl::not_<
     if (!o) return;
     // need to know about possible virtual destructors
     // or the correct non-virtual one
-    const RefCounted* rc = o;
+    const Object* rc = o;
     IMP_INTERNAL_CHECK(rc->count_ != 0, "Too many unrefs on object");
     IMP_LOG_MEMORY("Unrefing object \"" << rc << "\" (" << rc->count_ << ")"
                                         << std::endl);
@@ -50,7 +50,7 @@ struct RefStuff<T, typename boost::enable_if<boost::mpl::not_<
     if (!o) return;
     // need to know about possible virtual destructors
     // or the correct non-virtual one
-    const RefCounted* rc = o;
+    const Object* rc = o;
     IMP_INTERNAL_CHECK(rc->count_ != 0, "Release called on unowned object");
     --rc->count_;
     // IMP_INTERNAL_CHECK(rc->count_ == 0, "Release called on shared object.");

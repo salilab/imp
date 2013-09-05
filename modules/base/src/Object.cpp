@@ -7,25 +7,31 @@
  */
 
 #include "IMP/base/Object.h"
-#include "IMP/base/RefCounted.h"
 #include "IMP/base/log.h"
 #include "IMP/base/exception.h"
 #include "IMP/base/utility.h"
 #include <exception>
 
 IMPBASE_BEGIN_NAMESPACE
-RefCounted::~RefCounted() {
-  IMP_INTERNAL_CHECK(get_ref_count() == 0,
-                     "Deleting object which still has references");
-#if IMP_HAS_CHECKS >= IMP_USAGE
-  check_value_ = 666666666;
-#endif
-#if IMP_HAS_CHECKS >= IMP_INTERNAL
-  --live_objects_;
-#endif
-}
 
 Object::Object(std::string name) {
+  initialize(name);
+}
+
+Object::Object() {
+  IMPBASE_DEPRECATED_FUNCTION_DEF(2.1, "provide a name");
+  initialize("NoName%1%");
+}
+
+void Object::initialize(std::string name) {
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+    ++live_objects_;
+#endif
+#if IMP_HAS_CHECKS >= IMP_USAGE
+    check_value_ = 111111111;
+#endif
+    count_ = 0;
+
 #if IMP_HAS_LOG >= IMP_PROGRESS
   log_level_ = DEFAULT;
 #endif
@@ -67,6 +73,15 @@ Object::~Object() {
   if (log_level_ != DEFAULT) {
     IMP::base::set_log_level(log_level_);
   }
+#endif
+
+ IMP_INTERNAL_CHECK(get_ref_count() == 0,
+                     "Deleting object which still has references");
+#if IMP_HAS_CHECKS >= IMP_USAGE
+  check_value_ = 666666666;
+#endif
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+  --live_objects_;
 #endif
 }
 

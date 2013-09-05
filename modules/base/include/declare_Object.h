@@ -10,7 +10,12 @@
 #define IMPBASE_DECLARE_OBJECT_H
 
 #include <IMP/base/base_config.h>
-#include "RefCounted.h"
+#include <IMP/base/base_config.h>
+#include "exception.h"
+#include "utility_macros.h"
+#include <boost/static_assert.hpp>
+#include <boost/type_traits.hpp>
+#include "NonCopyable.h"
 #include "ref_counted_macros.h"
 #include "enums.h"
 #include "hash_macros.h"
@@ -34,6 +39,24 @@
 #if !defined(IMP_SILENT)
 #error "IMP_SILENT not defined, something is broken"
 #endif
+
+
+#ifndef IMP_DOXYGEN
+#ifndef SWIG
+
+namespace IMP {
+namespace base {
+class Object;
+namespace internal {
+template <class R, class E>
+struct RefStuff;
+}
+}
+}
+#endif
+#endif
+
+
 IMPBASE_BEGIN_NAMESPACE
 
 //! Common base class for heavy weight \imp objects.
@@ -54,37 +77,67 @@ IMPBASE_BEGIN_NAMESPACE
           fails.
         - the object keeps track of whether it has been been used. See the
           IMP::Object::set_was_used() method for an explanation.
+        - It is ref counted
 
         Objects can be outputted to standard streams using operator<<()
         which will call the Object::show() method.
 
-        \headerfile Object.h "IMP/base/Object.h"
+        Types inheriting from Object should always be created using \c
+        new in C++ and passed using pointers and stored using Pointer
+        objects. Note that you have to be careful of cycles and so
+        must use WeakPointer objects to break cycles. See RefCounted
+        for more information on reference counting.  IMP_NEW() can
+        help shorten creating a ref counted pointer. See IMP::Pointer
+        for more information.
 
-        \advanceddoc Types inheriting from Object should always be created
-    using
-        \c new in C++ and passed using pointers and stored using
-        Pointer objects. Note that you have to be careful of cycles
-        and so must use WeakPointer objects to break cycles. See
-        RefCounted for more information on reference counting.
-    IMP_NEW()
-        can help shorten creating a ref counted pointer. See IMP::Pointer
-    for
-        more information.
+        Reference counting is a technique for managing memory and
+        automatically freeing memory (destroying objects) when it
+        is no longer needed. In reference counting, each object has a
+    reference
+        count, which tracks how many different places are using the
+        object. When this count goes to 0, the object is freed.\n\n
+        Python internally refence counts everything. C++, on the other hand,
+        requires extra steps be taken to ensure that objects
+        are reference counted properly.\n\n
+        In \imp, reference counting is done through the IMP::Pointer
+        and IMP::RefCounted classes. The former should be used instead of
+        a raw C++ pointer when storing a pointer to any object
+        inheriting from IMP::RefCounted.\n\n
+        Any time one is using reference counting, one needs to be aware
+        of cycles, since if, for example, object A contains an IMP::Pointer
+    to
+        object B and object B contains an IMP::base::Pointer to object A,
+        their reference counts will never go to 0 even if both A
+        and B are no longer used. To avoid this, use an
+        IMP::base::WeakPointer in one of A or B.
+
+       \headerfile Object.h "IMP/base/Object.h"
+
      */
-class IMPBASEEXPORT Object : public RefCounted {
+class IMPBASEEXPORT Object : public NonCopyable {
   std::string name_;
   boost::scoped_array<char> quoted_name_;
+
+  static unsigned int live_objects_;
+  mutable int count_;
+
 #if IMP_HAS_LOG != IMP_NONE
   LogLevel log_level_;
 #endif
+
 #if IMP_HAS_CHECKS >= IMP_USAGE
   CheckLevel check_level_;
   mutable bool was_owned_;
+  double check_value_;
 #endif
+
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   static void add_live_object(Object* o);
   static void remove_live_object(Object* o);
 #endif
+
+  void initialize(std::string name);
+
   int compare(const Object& o) const {
     if (&o < this)
       return 1;
@@ -101,6 +154,10 @@ class IMPBASEEXPORT Object : public RefCounted {
       index.
    */
   Object(std::string name);
+
+  /** \deprecated_at{2.1} Provide a name. */
+  IMPBASE_DEPRECATED_FUNCTION_DECL(2.1)
+    Object();
 
  public:
   // needed for python to make sure all wrapper objects are equivalent
@@ -159,7 +216,9 @@ class IMPBASEEXPORT Object : public RefCounted {
 #endif  // IMP_DOXYGEN
 
   //! Get information about the module and version of the object
-  virtual IMP::base::VersionInfo get_version_info() const = 0;
+  virtual VersionInfo get_version_info() const {
+    return VersionInfo("none", "none");
+  }
 
   /** @name Names
        All objects have names to aid in debugging and inspection
@@ -193,6 +252,24 @@ class IMPBASEEXPORT Object : public RefCounted {
 #ifndef IMP_DOXYGEN
   void _on_destruction();
 #endif
+
+#ifndef IMP_DOXYGEN
+  // Return whether the object already been freed
+  bool get_is_valid() const {
+#if IMP_HAS_CHECKS == IMP_NONE
+    return true;
+#else
+    return static_cast<int>(check_value_) == 111111111;
+#endif
+  }
+
+  unsigned int get_ref_count() const { return count_; }
+  static unsigned int get_number_of_live_objects() {
+    // for debugging purposes only
+    return live_objects_;
+  }
+  bool get_is_shared() const { return count_ > 1; }
+#endif // IMP_DOXYGEN
 
   /** Objects can have internal caches. This method resets them returning
       the object to its just-initialized state.

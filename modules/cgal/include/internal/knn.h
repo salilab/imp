@@ -12,7 +12,7 @@
 #include <IMP/base/Pointer.h>
 #include <IMP/algebra/VectorD.h>
 #include <boost/static_assert.hpp>
-#include <IMP/base/RefCounted.h>
+#include <IMP/base/Object.h>
 
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
 struct VectorWithIndex : public algebra::VectorKD {
@@ -35,7 +35,8 @@ base::Vector<VectorWithIndex> create_vectors_with_index(It b, It e) {
   return v;
 }
 
-struct IMPCGALEXPORT RCTree : public base::RefCounted {
+struct IMPCGALEXPORT RCTree : public base::Object {
+  RCTree(): Object("RCTree%1%") {}
   virtual ~RCTree();
 };
 
