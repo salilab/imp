@@ -168,10 +168,13 @@ unsigned int MSConnectivityRestraint::ParticleMatrix::add_type(
 }
 
 namespace {
-double my_evaluate(const PairScore *ps, kernel::Particle *a, kernel::Particle *b,
-                   DerivativeAccumulator *da) {
+  double my_evaluate(const kernel::PairScore *ps,
+                     kernel::Particle *a,
+                     kernel::Particle *b,
+                     kernel::DerivativeAccumulator *da) {
   return ps->evaluate_index(
-      a->get_model(), kernel::ParticleIndexPair(a->get_index(), b->get_index()), da);
+      a->get_model(), kernel::ParticleIndexPair(a->get_index(),
+                                                b->get_index()), da);
 }
 }
 
@@ -670,7 +673,8 @@ IMP::internal::InternalListSingletonContainer *ms_get_list(
 }
 }
 
-unsigned int MSConnectivityRestraint::add_type(const kernel::ParticlesTemp &ps) {
+unsigned int
+MSConnectivityRestraint::add_type(const kernel::ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
     sc_ = new IMP::internal::InternalListSingletonContainer(
         ps[0]->get_model(), "msconnectivity list");
@@ -699,13 +703,8 @@ double MSConnectivityRestraint::unprotected_evaluate(
 }
 
 Restraints MSConnectivityRestraint::do_create_current_decomposition() const {
-<<<<<<< HEAD
-  ParticlePairsTemp pp = get_connected_pairs();
-  kernel::Restraints ret(pp.size());
-=======
   kernel::ParticlePairsTemp pp = get_connected_pairs();
-  Restraints ret(pp.size());
->>>>>>> reference Partice names in kernel namespace
+  kernel::Restraints ret(pp.size());
   for (unsigned int i = 0; i < pp.size(); ++i) {
     IMP_NEW(PairRestraint, pr, (ps_, pp[i]));
     std::ostringstream oss;
@@ -727,7 +726,8 @@ ParticlePairsTemp MSConnectivityRestraint::get_connected_pairs() const {
   unsigned index = 0;
   for (EdgeSet::iterator p = edges.begin(); p != edges.end(); ++p) {
     ret[index++] =
-        kernel::ParticlePair(mcs.get_particle(p->first), mcs.get_particle(p->second));
+        kernel::ParticlePair(mcs.get_particle(p->first),
+                             mcs.get_particle(p->second));
   }
   return ret;
 }

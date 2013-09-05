@@ -68,7 +68,8 @@ struct SameParticle {
   };*/
 
 inline bool get_are_close(kernel::Model *m, const PairPredicates &filters,
-                          kernel::ParticleIndex a, kernel::ParticleIndex b, double distance) {
+                          kernel::ParticleIndex a, kernel::ParticleIndex b,
+                          double distance) {
   XYZ da(m, a);
   XYZ db(m, b);
   Float ra = XYZR(m, a).get_radius();
@@ -95,7 +96,8 @@ struct FarParticle {
   }
 };
 
-inline void filter_far(kernel::Model *m, kernel::ParticleIndexPairs &c, double d) {
+inline void filter_far(kernel::Model *m, kernel::ParticleIndexPairs &c,
+                       double d) {
   c.erase(std::remove_if(c.begin(), c.end(), FarParticle(m, d)), c.end());
 }
 
@@ -126,8 +128,10 @@ struct InList {
 };
 
 inline void reset_moved(
-    kernel::Model *m, kernel::ParticleIndexes &xyzrs_, kernel::ParticleIndexes &rbs_,
-    IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &/*constituents_*/,
+    kernel::Model *m, kernel::ParticleIndexes &xyzrs_,
+    kernel::ParticleIndexes &rbs_,
+    IMP::base::map<kernel::ParticleIndex,
+                   kernel::ParticleIndexes> &/*constituents_*/,
     algebra::Sphere3Ds &rbs_backup_sphere_,
     algebra::Rotation3Ds &rbs_backup_rot_,
     algebra::Sphere3Ds &xyzrs_backup_) {
@@ -147,8 +151,11 @@ inline void reset_moved(
 inline void initialize_particles(
     SingletonContainer *sc, ObjectKey key, kernel::ParticleIndexes &xyzrs_,
     kernel::ParticleIndexes &rbs_,
-    IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &constituents_,
-    algebra::Transformation3Ds &rbs_backup_, algebra::Vector3Ds &xyzrs_backup_,
+    IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes>
+    &constituents_,
+    algebra::Sphere3Ds &rbs_backup_sphere_,
+    algebra::Rotation3Ds &rbs_backup_rot_,
+    algebra::Sphere3Ds &xyzrs_backup_,
     bool use_rigid_bodies = true) {
   IMP_IF_CHECK(base::USAGE) {
     kernel::ParticleIndexes pis = sc->get_indexes();
@@ -174,7 +181,8 @@ inline void initialize_particles(
       kernel::ParticleIndex pi = rb.get_particle_index();
       rbs_.push_back(rb.get_particle_index());
       if (constituents_.find(pi) == constituents_.end()) {
-        constituents_.insert(std::make_pair(pi, kernel::ParticleIndexes(1, _1)));
+        constituents_.insert(std::make_pair(pi,
+                                            kernel::ParticleIndexes(1, _1)));
       } else {
         constituents_[pi].push_back(_1);
       }
@@ -198,14 +206,16 @@ inline void initialize_particles(
     internal::get_rigid_body_hierarchy(RigidBody(sc->get_model(), rbs_[i]),
                                        constituents_[rbs_[i]], key);
   }
-  reset_moved(sc->get_model(), xyzrs_, rbs_, constituents_, rbs_backup_sphere_,
+  reset_moved(sc->get_model(), xyzrs_, rbs_, constituents_,
+              rbs_backup_sphere_,
               rbs_backup_rot_,
               xyzrs_backup_);
   xyzrs_backup_.clear();
   rbs_backup_sphere_.clear();
   rbs_backup_rot_.clear();
   IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
-    for (IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes>::const_iterator it =
+    for (IMP::base::map<kernel::ParticleIndex,
+                        kernel::ParticleIndexes>::const_iterator it =
              constituents_.begin();
          it != constituents_.end(); ++it) {
       kernel::ParticleIndexes cur = it->second;
@@ -224,7 +234,8 @@ inline bool get_if_moved(
     kernel::Model *m, double slack_,
     const kernel::ParticleIndexes &xyzrs_,
     const kernel::ParticleIndexes &rbs_,
-    const IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &/*constituents_*/,
+    const IMP::base::map<kernel::ParticleIndex,
+                         kernel::ParticleIndexes> &/*constituents_*/,
     const algebra::Sphere3Ds &rbs_backup_sphere_,
     const algebra::Rotation3Ds &rbs_backup_rot_,
     const algebra::Sphere3Ds &xyzrs_backup_) {
@@ -291,10 +302,13 @@ inline bool get_if_moved(
   return false;
 }
 
-inline void fill_list(
-    kernel::Model *m, const PairPredicates &filters, ObjectKey key_, double slack_,
-    kernel::ParticleIndexes &xyzrs_, kernel::ParticleIndexes &rbs_,
-    IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &constituents_,
+inline void fill_list(kernel::Model *m,
+                      const PairPredicates &filters, ObjectKey key_,
+                      double slack_,
+                      kernel::ParticleIndexes &xyzrs_,
+                      kernel::ParticleIndexes &rbs_,
+                      IMP::base::map<kernel::ParticleIndex,
+                   kernel::ParticleIndexes> &constituents_,
     kernel::ParticleIndexPairs &cur_list_) {
   IMP_INTERNAL_CHECK(slack_ >= 0, "Slack must not be negative");
   /*IMP_LOG_VERBOSE( "filling particle list with slack " << slack_
@@ -323,9 +337,11 @@ inline void fill_list(
 }
 
 inline void fill_list(
-    kernel::Model *m, const PairPredicates &filters, ObjectKey key_, double slack_,
+    kernel::Model *m, const PairPredicates &filters, ObjectKey key_,
+    double slack_,
     kernel::ParticleIndexes xyzrs_[], kernel::ParticleIndexes rbs_[],
-    IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &constituents_,
+    IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes>
+    &constituents_,
     kernel::ParticleIndexPairs &cur_list_) {
   IMP_INTERNAL_CHECK(slack_ >= 0, "Slack must not be negative");
   /*IMP_LOG_VERBOSE( "filling particle list with slack " << slack_
@@ -365,12 +381,15 @@ inline void fill_list(
   IMP_LOG_VERBOSE("found " << cur_list_.size() << std::endl);
 }
 
-IMPCOREEXPORT kernel::ParticlesTemp get_input_particles(kernel::Model *,
-                                                SingletonContainer *sc_,
-                                                const PairPredicates &filters_);
+IMPCOREEXPORT kernel::ParticlesTemp
+get_input_particles(kernel::Model *,
+                    kernel::SingletonContainer *sc_,
+                    const kernel::PairPredicates &filters_);
 
-IMPCOREEXPORT kernel::ModelObjectsTemp get_inputs(kernel::Model *, SingletonContainer *sc_,
-                                          const PairPredicates &filters_);
+IMPCOREEXPORT kernel::ModelObjectsTemp
+get_inputs(kernel::Model *,
+           kernel::SingletonContainer *sc_,
+           const kernel::PairPredicates &filters_);
 
 IMPCORE_END_INTERNAL_NAMESPACE
 
