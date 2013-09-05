@@ -20,12 +20,16 @@ IMP_CLANG_PRAGMA(diagnostic ignored "-Wmismatched-tags")
 IMP_CLANG_PRAGMA(diagnostic pop)
 #endif
 
-#include "compiler_macros.h"
-IMP_GCC_PUSH_POP(GCC diagnostic push)
-IMP_GCC_PRAGMA(diagnostic ignored "-Wdeprecated")
+// evil hack to suppress warning on cluster
+// the expected pragmas don't work
+#ifdef __GNUC__
+#undef __DEPRECATED
+#endif
 // this specializes some hash methods
 #include <boost/graph/adjacency_list.hpp>
-IMP_GCC_PUSH_POP(GCC diagnostic pop)
+#ifdef __GNUC__
+#define __DEPRECATED
+#endif
 
 IMPBASE_BEGIN_NAMESPACE
 template <class T>
