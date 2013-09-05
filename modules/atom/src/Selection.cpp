@@ -44,9 +44,11 @@ Selection::Selection(kernel::Particle *h) : radius_(-1) {
   set_hierarchies(h->get_model(), kernel::ParticleIndexes(1, h->get_index()));
 }
 Selection::Selection(Hierarchy h) : radius_(-1) {
-  set_hierarchies(h.get_model(), kernel::ParticleIndexes(1, h.get_particle_index()));
+  set_hierarchies(h.get_model(),
+                  kernel::ParticleIndexes(1, h.get_particle_index()));
 }
-Selection::Selection(kernel::Model *m, const kernel::ParticleIndexes &pis) : radius_(-1) {
+Selection::Selection(kernel::Model *m,
+                     const kernel::ParticleIndexes &pis) : radius_(-1) {
   set_hierarchies(m, pis);
 }
 Selection::Selection(const Hierarchies &h) : radius_(-1) {
@@ -68,12 +70,14 @@ Selection::Selection(const kernel::ParticlesTemp &h) : radius_(-1) {
 // for C++
 Selection::Selection(Hierarchy h, std::string molname, int residue_index)
     : radius_(-1) {
-  set_hierarchies(h.get_model(), kernel::ParticleIndexes(1, h.get_particle_index()));
+  set_hierarchies(h.get_model(),
+                  kernel::ParticleIndexes(1, h.get_particle_index()));
   set_molecules(Strings(1, molname));
   set_residue_indexes(Ints(1, residue_index));
 }
 
-void Selection::set_hierarchies(kernel::Model *m, const kernel::ParticleIndexes &pi) {
+void Selection::set_hierarchies(kernel::Model *m,
+                                const kernel::ParticleIndexes &pi) {
   m_ = m;
   h_ = pi;
   for (unsigned int i = 0; i < pi.size(); ++i) {
@@ -91,13 +95,14 @@ namespace {
    public:                                                                     \
     Name##SingletonPredicate(const DataType &data,                             \
                              std::string name = #Name "SingletonPredicate%1%") \
-        : SingletonPredicate(name), data_(data) {}                             \
-    virtual int get_value_index(kernel::Model *m, kernel::ParticleIndex pi) const              \
+    : SingletonPredicate(name), data_(data) {}                          \
+    virtual int get_value_index(kernel::Model *m,                       \
+                                kernel::ParticleIndex pi) const         \
         IMP_OVERRIDE {                                                         \
       check;                                                                   \
     }                                                                          \
-    virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,                           \
-                                           const kernel::ParticleIndexes &pis) const   \
+    virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,    \
+                                    const kernel::ParticleIndexes &pis) const \
         IMP_OVERRIDE {                                                         \
       return IMP::get_particles(m, pis);                                       \
     }                                                                          \
@@ -105,7 +110,8 @@ namespace {
     IMP_OBJECT_METHODS(Name##SingletonPredicate);                              \
   };
 
-bool get_is_residue_index_match(const Ints &data, kernel::Model *m, kernel::ParticleIndex pi) {
+bool get_is_residue_index_match(const Ints &data, kernel::Model *m,
+                                kernel::ParticleIndex pi) {
   if (Residue::get_is_setup(m, pi)) {
     return std::binary_search(data.begin(), data.end(),
                               Residue(m, pi).get_index());
@@ -132,7 +138,8 @@ IMP_ATOM_SELECTION_PRED(ResidueIndex, Ints, {
     // if any children match, push it until then
     for (unsigned int i = 0; i < Hierarchy(m, pi).get_number_of_children();
          ++i) {
-      kernel::ParticleIndex cpi = Hierarchy(m, pi).get_child(i).get_particle_index();
+      kernel::ParticleIndex cpi
+        = Hierarchy(m, pi).get_child(i).get_particle_index();
       bool cur = get_is_residue_index_match(data_, m, cpi);
       if (cur) {
         return 0;
@@ -239,7 +246,8 @@ IMP_ATOM_SELECTION_PRED(Terminus, Int, {
 });
 }
 std::pair<bool, kernel::ParticleIndexes> Selection::search(
-    kernel::Model *m, kernel::ParticleIndex pi, boost::dynamic_bitset<> parent) const {
+    kernel::Model *m, kernel::ParticleIndex pi,
+    boost::dynamic_bitset<> parent) const {
   IMP_FUNCTION_LOG;
   IMP_LOG_VERBOSE("Searching " << m->get_particle_name(pi) << " missing "
                                << parent.count() << std::endl);
@@ -411,7 +419,9 @@ Restraint *create_distance_restraint(const Selection &n0, const Selection &n1,
     r->add_particle(p0[0], p0);
     r->add_particle(p1[0], p1);
     IMP_NEW(core::KClosePairsPairScore, nps, (ps, r, 1));
-    ret = IMP::create_restraint(nps.get(), kernel::ParticlePair(p0[0], p1[0]), name);
+    ret = IMP::kernel::create_restraint(nps.get(),
+                                        kernel::ParticlePair(p0[0], p1[0]),
+                                        name);
     //}
   }
   return ret.release();
@@ -426,6 +436,16 @@ Restraint *create_distance_restraint(const Selection &n0, const Selection &n1,
 
 Restraint *create_connectivity_restraint(const Selections &s, double x0,
                                          double k, std::string name) {
+  IMP_IF_CHECK(USAGE) {
+    base::set<kernel::ParticleIndex> used;
+    BOOST_FOREACH(const Selection &sel, s) {
+      kernel::ParticleIndexes cur = sel.get_selected_particle_indexes();
+      int old = used.size();
+      used.insert(cur.begin(), cur.end());
+      IMP_USAGE_CHECK(used.size() == old + cur.size(),
+                      "Input selections are not disjoint. This won't work.");
+    }
+  }
   if (s.size() < 2) return nullptr;
   if (s.size() == 2) {
     IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, ps, (x0, k));
@@ -489,7 +509,8 @@ Restraint *create_internal_connectivity_restraint(const Selection &ss,
   if (s.size() < 2) return nullptr;
   if (s.size() == 2) {
     IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, ps, (x0, k));
-    IMP_NEW(core::PairRestraint, r, (ps, kernel::ParticlePair(s[0], s[1]), name));
+    IMP_NEW(core::PairRestraint, r,
+            (ps, kernel::ParticlePair(s[0], s[1]), name));
     return r.release();
   } else {
     IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0, k));
