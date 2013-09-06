@@ -36,12 +36,14 @@ Profile::Profile(Float qmin, Float qmax, Float delta):
   base::Object("profile%1%"),
   min_q_(qmin), max_q_(qmax), delta_q_(delta), experimental_(false),
   average_radius_(1.58), average_volume_(17.5), id_(0) {
+  set_was_used(true);
   ff_table_ = default_form_factor_table();
 }
 
 Profile::Profile(const String& file_name, bool fit_file) :
   base::Object("profile%1%"),
   experimental_(true), name_(file_name), id_(0) {
+  set_was_used(true);
   if(fit_file) experimental_ = false;
   read_SAXS_file(file_name, fit_file);
 }
@@ -360,8 +362,9 @@ Float Profile::calculate_I0(const kernel::Particles& particles,
   return square(I0);
 }
 
-void Profile::calculate_profile_constant_form_factor(const kernel::Particles& particles,
-                                                     Float form_factor) {
+void Profile::calculate_profile_constant_form_factor(
+                                    const kernel::Particles& particles,
+                                    Float form_factor) {
   IMP_LOG_TERSE("start real profile calculation for "
                  << particles.size() << " particles" << std::endl);
   RadialDistributionFunction r_dist;
@@ -1041,9 +1044,10 @@ void Profile::calculate_profile_reciprocal(const kernel::Particles& particles,
   } // end of loop1
 }
 
-void Profile::calculate_profile_reciprocal_partial(const kernel::Particles& particles,
-                                                   const Floats& surface,
-                                                   FormFactorType ff_type) {
+void Profile::calculate_profile_reciprocal_partial(
+                                             const kernel::Particles& particles,
+                                             const Floats& surface,
+                                             FormFactorType ff_type) {
   if(ff_type == CA_ATOMS) {
     IMP_WARN("Reciprocal space profile calculation is not suported for"
              << "residue level" << std::endl);

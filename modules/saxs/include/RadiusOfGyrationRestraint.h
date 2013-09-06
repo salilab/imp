@@ -15,7 +15,7 @@
 
 #include <IMP/kernel/Model.h>
 #include <IMP/kernel/Restraint.h>
-#include <IMP/VersionInfo.h>
+#include <IMP/base/Object.h>
 
 IMPSAXS_BEGIN_NAMESPACE
 
@@ -23,7 +23,7 @@ IMPSAXS_BEGIN_NAMESPACE
 /** \ingroup exp_restraint
 
  */
-class IMPSAXSEXPORT RadiusOfGyrationRestraint : public IMP::Restraint
+class IMPSAXSEXPORT RadiusOfGyrationRestraint : public kernel::Restraint
 {
  public:
   //! Constructor

@@ -19,7 +19,7 @@
 
 #include <IMP/kernel/Model.h>
 #include <IMP/kernel/Restraint.h>
-#include <IMP/VersionInfo.h>
+#include <IMP/base/Object.h>
 #include <IMP/base/Pointer.h>
 
 IMPSAXS_BEGIN_NAMESPACE
@@ -29,7 +29,7 @@ IMPSAXS_BEGIN_NAMESPACE
 
     The restraint takes rigid bodies into account, in order
     to speed up the calculations. Rigid body should be gived as single
-    RigidBody kernel::Particle. Other, non-rigid body kernel::Particles can also be given.
+    RigidBody Particle. Other, non-rigid body Particles can also be given.
 
     The shape of a rigid body is assumed to be defined by the set of
     atom::Hierarchy leaves of the atom::Hierarchy rooted at the rigid body

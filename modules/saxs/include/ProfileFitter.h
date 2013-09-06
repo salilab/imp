@@ -35,12 +35,14 @@ public:
   */
   ProfileFitter(const Profile* exp_profile): base::Object("ProfileFitter%1%"),
                                              exp_profile_(exp_profile) {
+    set_was_used(true);
     scoring_function_ = new ScoringFunctionT();
   }
 
   ProfileFitter(const Profile* exp_profile,
                 ScoringFunctionT* sf): base::Object("ProfileFitter%1%"),
                                        exp_profile_(exp_profile) {
+    set_was_used(true);
     scoring_function_ = sf;
   }
 

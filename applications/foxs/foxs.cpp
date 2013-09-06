@@ -24,6 +24,8 @@
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 
+using namespace IMP::saxs;
+
 namespace {
 
 void read_pdb(const std::string file,
@@ -79,7 +81,7 @@ void read_files(const std::vector<std::string>& files,
                 std::vector<std::string>& pdb_file_names,
                 std::vector<std::string>& dat_files,
                 std::vector<IMP::kernel::Particles>& particles_vec,
-                std::vector<IMP::saxs::Profile *>& exp_profiles,
+                Profiles& exp_profiles,
                 bool residue_level, bool heavy_atoms_only,
                 int multi_model_pdb) {
 
@@ -95,7 +97,7 @@ void read_files(const std::vector<std::string>& files,
                residue_level, heavy_atoms_only, multi_model_pdb);
     } catch(IMP::base::ValueException e) { // not a pdb file
       // 2. try as a dat profile file
-      IMP::saxs::Profile *profile = new IMP::saxs::Profile(files[i]);
+      IMP_NEW(Profile, profile, (files[i]));
       if(profile->size() == 0) {
         std::cerr << "can't parse input file " << files[i] << std::endl;
         return;
@@ -109,19 +111,18 @@ void read_files(const std::vector<std::string>& files,
   }
 }
 
-IMP::saxs::Profile* compute_profile(IMP::kernel::Particles particles,
-                                    float min_q, float max_q, float delta_q,
-                                    IMP::saxs::FormFactorTable* ft,
-                                    IMP::saxs::FormFactorType ff_type,
-                                    float water_layer_c2, bool fit,
-                                    bool reciprocal, bool ab_initio,
-                                    bool vacuum) {
-  IMP::saxs::Profile *profile = new IMP::saxs::Profile(min_q, max_q, delta_q);
+Profile* compute_profile(IMP::kernel::Particles particles,
+                         float min_q, float max_q, float delta_q,
+                         FormFactorTable* ft, FormFactorType ff_type,
+                         float water_layer_c2, bool fit,
+                         bool reciprocal, bool ab_initio,
+                         bool vacuum) {
+  IMP_NEW(Profile, profile, (min_q, max_q, delta_q));
   if(reciprocal) profile->set_ff_table(ft);
 
   // compute surface accessibility and average radius
   IMP::Floats surface_area;
-  IMP::saxs::SolventAccessibleSurface s;
+  SolventAccessibleSurface s;
   float average_radius = 0.0;
   if(water_layer_c2 != 0.0) {
     // add radius
@@ -152,7 +153,7 @@ IMP::saxs::Profile* compute_profile(IMP::kernel::Particles particles,
     else
       profile->calculate_profile_partial(particles, surface_area, ff_type);
   }
-  return profile;
+  return profile.release();
 }
 
 }
@@ -291,26 +292,25 @@ constant form factor (default = false)")
 
   // read in or use default form factor table
   bool reciprocal = false;
-  IMP::saxs::FormFactorTable* ft = NULL;
+  FormFactorTable* ft = NULL;
   if(form_factor_table_file.length() > 0) {
     //reciprocal space calculation, requires form factor file
-    ft = new IMP::saxs::FormFactorTable(form_factor_table_file,
-                                        0.0, max_q, delta_q);
+    ft = new FormFactorTable(form_factor_table_file, 0.0, max_q, delta_q);
     reciprocal = true;
   } else {
-    ft = IMP::saxs::default_form_factor_table();
+    ft = default_form_factor_table();
   }
 
   // determine form factor type
-  IMP::saxs::FormFactorType ff_type = IMP::saxs::HEAVY_ATOMS;
-  if(!heavy_atoms_only) ff_type = IMP::saxs::ALL_ATOMS;
-  if(residue_level) ff_type = IMP::saxs::CA_ATOMS;
+  FormFactorType ff_type = HEAVY_ATOMS;
+  if(!heavy_atoms_only) ff_type = ALL_ATOMS;
+  if(residue_level) ff_type = CA_ATOMS;
 
   if(excluded_volume_c1 == 1.0 && water_layer_c2 == 0.0) fit = false;
 
   // 1. read pdbs and profiles, prepare particles
   std::vector<IMP::kernel::Particles> particles_vec;
-  std::vector<IMP::saxs::Profile *> exp_profiles;
+  Profiles exp_profiles;
 
   read_files(files, pdb_files, dat_files,
              particles_vec, exp_profiles,
@@ -324,12 +324,12 @@ constant form factor (default = false)")
   if(write_partial_profile) fit = true;
 
   // 2. compute profiles for input pdbs
-  std::vector<IMP::saxs::Profile *> profiles;
-  std::vector<IMP::saxs::FitParameters> fps;
+  Profiles profiles;
+  std::vector<FitParameters> fps;
   for(unsigned int i=0; i<particles_vec.size(); i++) {
     std::cerr << "Computing profile for " << pdb_files[i]
               << " "  << particles_vec[i].size() << " atoms "<< std::endl;
-    IMP::saxs::Profile* profile =
+    IMP::base::Pointer<Profile> profile =
       compute_profile(particles_vec[i], 0.0, max_q, delta_q, ft, ff_type,
                       water_layer_c2, fit, reciprocal, ab_initio, vacuum);
 
@@ -347,7 +347,7 @@ constant form factor (default = false)")
 
     // 3. fit experimental profiles
     for(unsigned int j=0; j<dat_files.size(); j++) {
-      IMP::saxs::Profile* exp_saxs_profile = exp_profiles[j];
+      Profile* exp_saxs_profile = exp_profiles[j];
 
       std::string fit_file_name2 = trim_extension(pdb_files[i]) + "_" +
         trim_extension(basename(const_cast<char *>(dat_files[j].c_str())))
@@ -358,27 +358,23 @@ constant form factor (default = false)")
       if(std::fabs(water_layer_c2 - MAX_C2) < 0.00000000001) { // enumerate
       } else { MIN_C2 = MAX_C2 = water_layer_c2; } // set specific value
 
-      IMP::saxs::FitParameters fp;
+      FitParameters fp;
       if(score_log) {
-        IMP::base::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiScoreLog> > pf
-          = new IMP::saxs::ProfileFitter
-          <IMP::saxs::ChiScoreLog>(exp_saxs_profile);
+        IMP_NEW(ProfileFitter<ChiScoreLog>, pf, (exp_saxs_profile));
         fp = pf->fit_profile(profile, min_c1, max_c1, MIN_C2, MAX_C2,
                              use_offset, fit_file_name2);
       } else {
-        IMP::base::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiScore> > pf =
-          new IMP::saxs::ProfileFitter<IMP::saxs::ChiScore>(exp_saxs_profile);
+        IMP_NEW(ProfileFitter<ChiScore>, pf, (exp_saxs_profile));
         fp = pf->fit_profile(profile, min_c1, max_c1, MIN_C2, MAX_C2,
                              use_offset, fit_file_name2);
         if(chi_free > 0) {
           double dmax = compute_max_distance(particles_vec[i]);
-          unsigned int ns =
-            IMP::algebra::get_rounded(
-                                    exp_saxs_profile->get_max_q()*dmax/IMP::PI);
+          unsigned int ns = IMP::algebra::get_rounded(
+                                 exp_saxs_profile->get_max_q()*dmax/IMP::PI);
           int K = chi_free;
-          IMP::saxs::ChiFreeScore cfs(ns, K);
+          ChiFreeScore cfs(ns, K);
           // resample the profile
-          IMP_NEW(IMP::saxs::Profile, resampled_profile,
+          IMP_NEW(Profile, resampled_profile,
                   (exp_saxs_profile->get_min_q(),
                    exp_saxs_profile->get_max_q(),
                    exp_saxs_profile->get_delta_q()));
@@ -386,7 +382,7 @@ constant form factor (default = false)")
           double chi_free = cfs.compute_score(exp_saxs_profile,
                                               resampled_profile);
           fp.set_chi(chi_free);
-       }
+        }
 
         if(interval_chi) {
           std::cout << "interval_chi " <<pdb_files[i] << " "
@@ -400,7 +396,7 @@ constant form factor (default = false)")
         if(set_scale) {
           std::cerr << "scale given by user " << scale << std::endl;
           // resample the profile
-          IMP_NEW(IMP::saxs::Profile, resampled_profile,
+          IMP_NEW(Profile, resampled_profile,
                   (exp_saxs_profile->get_min_q(),
                    exp_saxs_profile->get_max_q(),
                    exp_saxs_profile->get_delta_q()));
@@ -422,8 +418,7 @@ constant form factor (default = false)")
     }
   }
 
-  std::sort(fps.begin(), fps.end(),
-            IMP::saxs::FitParameters::compare_fit_parameters());
+  std::sort(fps.begin(), fps.end(), FitParameters::compare_fit_parameters());
 
   if(pdb_files.size() > 1) {
     Gnuplot::print_profile_script(pdb_files);
