@@ -110,6 +110,8 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
 %pythoncode %{
   def __init__(self, hierarchy=None,
                hierarchies=None, **params):
+      if hierarchy and hierarchies:
+        raise RuntimeError("You can't pass both hierarchy and hierarchies to Selection")
       if hierarchy:
         this = _IMP_atom.new_Selection(hierarchy)
         try: self.this.append(this)
