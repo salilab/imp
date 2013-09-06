@@ -20,6 +20,15 @@ namespace {
 IMP_CLANG_PRAGMA(diagnostic ignored "-Wunused-function")
 #endif
 
+/** An example of how to return a new object. */
+ExampleObject* create_example_object(const Floats &data) {
+  IMP_NEW(ExampleObject, ret, (data));
+  // one could do some work here
+
+  // make sure it is not freed
+  return ret.release();
+}
+
 void usage_example() {
   Floats data(1000, -1);
 

@@ -30,16 +30,15 @@ class Model;
     is a set of pairs of particles etc.
 
     These sets can come from a variety of sources, such as
-    - user-provided lists, e.g. IMP::core::ListSingletonContainer
-    - operations on other containers e.g. IMP::core::PairContainerSet
+    - user-provided lists, e.g. IMP::container::ListSingletonContainer
+    - operations on other containers e.g. IMP::container::PairContainerSet
     - computations based on particle attributes
-      e.g. IMP::Core::ClosePairContainer
+      e.g. IMP::container::ClosePairContainer
 
-    Containers provide a variety of methods to
-    - get the number of tuples
-    - get the ith tuple
-    - iterate through the tuples
-    - determine if a tuple is contained in the set
+    Most basically, containers allow you to get their contents
+    (eg SingletonContainer::get_indexes()) or do an operation on their contents
+    IMP_CONTAINER_FOREACH().
+
 
     \note If nothing uses the added and removed containers they may not
     be updated.

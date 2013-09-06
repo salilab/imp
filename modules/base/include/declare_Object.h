@@ -60,60 +60,68 @@ struct RefStuff;
 IMPBASE_BEGIN_NAMESPACE
 
 //! Common base class for heavy weight \imp objects.
-/** The base class for non value-type objects in \imp.
-        Anything inheriting from IMP::Object has the following
-        properties:
-        - has a method Object::show() which writes one or more lines of text
-          to a stream
-        - has embedded information about the module and version which can be
-          accessed using Object::get_version_info(). This information can be
-          used to log what version of software is used to compute a result.
-        - it has a local logging level which can override the global one
-          allowing fine grained logging control.
-        - in python, there is a method Class::get_from(Object *o) that
-    attempts
-          to case o to an object of type Class and throws and exception if
-    it
-          fails.
-        - the object keeps track of whether it has been been used. See the
-          IMP::Object::set_was_used() method for an explanation.
-        - It is ref counted
+/**
+The base class for non \ref introduction_values "value-type classes" in
+\imp. Anything inheriting from Object has the following properties:
 
-        Objects can be outputted to standard streams using operator<<()
-        which will call the Object::show() method.
+- has embedded information about the module and version which can
+be accessed using Object::get_version_info(). This information can
+be used to log what version of software is used to compute a
+result.
 
-        Types inheriting from Object should always be created using \c
-        new in C++ and passed using pointers and stored using Pointer
-        objects. Note that you have to be careful of cycles and so
-        must use WeakPointer objects to break cycles. See RefCounted
-        for more information on reference counting.  IMP_NEW() can
-        help shorten creating a ref counted pointer. See IMP::Pointer
-        for more information.
+- it has a local logging level which can override the global one
+allowing fine grained logging control.
 
-        Reference counting is a technique for managing memory and
-        automatically freeing memory (destroying objects) when it
-        is no longer needed. In reference counting, each object has a
-    reference
-        count, which tracks how many different places are using the
-        object. When this count goes to 0, the object is freed.\n\n
-        Python internally refence counts everything. C++, on the other hand,
-        requires extra steps be taken to ensure that objects
-        are reference counted properly.\n\n
-        In \imp, reference counting is done through the IMP::Pointer
-        and IMP::RefCounted classes. The former should be used instead of
-        a raw C++ pointer when storing a pointer to any object
-        inheriting from IMP::RefCounted.\n\n
-        Any time one is using reference counting, one needs to be aware
-        of cycles, since if, for example, object A contains an IMP::Pointer
-    to
-        object B and object B contains an IMP::base::Pointer to object A,
-        their reference counts will never go to 0 even if both A
-        and B are no longer used. To avoid this, use an
-        IMP::base::WeakPointer in one of A or B.
+- in python, there is a method Class::get_from(Object *o) that
+attempts to case o to an object of type Class and throws and
+exception if it fails.
 
-       \headerfile Object.h "IMP/base/Object.h"
+- the object keeps track of whether it has been been used. See the
+Object::set_was_used() method for an explanation.
 
-     */
+- It is reference counted
+
+Types inheriting from Object should always be created using \c new
+in C++ and passed using pointers and stored using Pointer
+objects. Note that you have to be careful of cycles and so must
+use WeakPointer objects to break cycles. IMP_NEW() can help shorten
+creating a ref counted pointer. See Pointer for more
+information.
+
+See example::ExampleObject for a simple example.
+
+Reference counting is a technique for managing memory and
+automatically freeing memory (destroying objects) when it is no
+longer needed. In reference counting, each object has a reference
+count, which tracks how many different places are using the
+object. When this count goes to 0, the object is freed.
+
+Python internally refence counts everything. C++, on the other
+hand, requires extra steps be taken to ensure that objects are
+reference counted properly.
+
+In \imp, reference counting is done through the Pointer,
+PointerMember and Object classes. The former should be used
+instead of a raw C++ pointer when storing a pointer to any object
+inheriting from Object.
+
+Any time one is using reference
+counting, one needs to be aware of cycles, since if, for example,
+object A contains an IMP::Pointer to object B and object B
+contains an Pointer to object A, their reference counts will never
+go to 0 even if both A and B are no longer used. To avoid this,
+use an WeakPointer in one of A or B.
+
+Functions that create new objects should follow the following pattern
+
+      ObjectType *create_object(arguments) {
+         IMP_NEW(ObjectType, ret, (args));
+         do_stuff;
+         return ret.release();
+       }
+
+using Pointer::release() to safely return the new object without freeing it.
+*/
 class IMPBASEEXPORT Object : public NonCopyable {
   std::string name_;
   boost::scoped_array<char> quoted_name_;
@@ -180,40 +188,9 @@ class IMPBASEEXPORT Object : public NonCopyable {
 
   /** Each object can be assigned a different check level too.
    */
-  void set_check_level(CheckLevel l) {
-    IMP_CHECK_VARIABLE(l);
-#if IMP_HAS_CHECKS != IMP_NONE
-    check_level_ = l;
-#endif
-  }
-
-#ifndef IMP_DOXYGEN
-  LogLevel get_log_level() const {
-#if IMP_HAS_LOG == IMP_SILENT
-    return SILENT;
-#else
-    return log_level_;
-#endif
-  }
-  CheckLevel get_check_level() const {
-#if IMP_HAS_CHECKS == IMP_NONE
-    return NONE;
-#else
-    return check_level_;
-#endif
-  }
-#endif  // IMP_DOXYGEN
-
-#ifndef IMP_DOXYGEN
-  void _debugger_show() const { show(std::cout); }
-
-  //! Return a string version of the object, can be used in the debugger
-  std::string get_string() const {
-    std::ostringstream oss;
-    show(oss);
-    return oss.str();
-  }
-#endif  // IMP_DOXYGEN
+  void set_check_level(CheckLevel l);
+  LogLevel get_log_level() const;
+  CheckLevel get_check_level() const;
 
   //! Get information about the module and version of the object
   virtual VersionInfo get_version_info() const {
@@ -228,9 +205,6 @@ class IMPBASEEXPORT Object : public NonCopyable {
        @{
    */
   const std::string& get_name() const { return name_; }
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  const char* get_quoted_name_c_string() const { return quoted_name_.get(); }
-#endif
   void set_name(std::string name);
   virtual std::string get_type_name() const { return "unknown object type"; }
   /* @} */
@@ -240,34 +214,32 @@ class IMPBASEEXPORT Object : public NonCopyable {
       IMP::kernel::Model. If an object is not properly marked as used, or your
       code is the one using it, call set_was_used(true) on the object.
   */
-  void set_was_used(bool tf) const {
-    IMP_CHECK_VARIABLE(tf);
-#if IMP_HAS_CHECKS >= IMP_USAGE
-    was_owned_ = tf;
-#endif
-  }
+  void set_was_used(bool tf) const;
 
   IMP_SHOWABLE(Object);
 
-#ifndef IMP_DOXYGEN
-  void _on_destruction();
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  const char* get_quoted_name_c_string() const { return quoted_name_.get(); }
 #endif
 
 #ifndef IMP_DOXYGEN
-  // Return whether the object already been freed
-  bool get_is_valid() const {
-#if IMP_HAS_CHECKS == IMP_NONE
-    return true;
-#else
-    return static_cast<int>(check_value_) == 111111111;
-#endif
+  void _debugger_show() const { show(std::cout); }
+
+  //! Return a string version of the object, can be used in the debugger
+  std::string get_string() const {
+    std::ostringstream oss;
+    show(oss);
+    return oss.str();
   }
+
+  void _on_destruction();
+
+  // Return whether the object already been freed
+  bool get_is_valid() const;
 
   unsigned int get_ref_count() const { return count_; }
-  static unsigned int get_number_of_live_objects() {
-    // for debugging purposes only
-    return live_objects_;
-  }
+
+  static unsigned int get_number_of_live_objects() { return live_objects_; }
   bool get_is_shared() const { return count_ > 1; }
 #endif // IMP_DOXYGEN
 
@@ -279,6 +251,44 @@ class IMPBASEEXPORT Object : public NonCopyable {
   /** Overide this method to take action on destruction. */
   virtual void do_destroy() {}
 };
+
+
+inline void Object::set_check_level(CheckLevel l) {
+  IMP_CHECK_VARIABLE(l);
+#if IMP_HAS_CHECKS != IMP_NONE
+  check_level_ = l;
+#endif
+}
+
+inline LogLevel Object::get_log_level() const {
+#if IMP_HAS_LOG == IMP_SILENT
+  return SILENT;
+#else
+  return log_level_;
+#endif
+}
+inline CheckLevel Object::get_check_level() const {
+#if IMP_HAS_CHECKS == IMP_NONE
+  return NONE;
+#else
+  return check_level_;
+#endif
+}
+
+inline void Object::set_was_used(bool tf) const {
+  IMP_CHECK_VARIABLE(tf);
+#if IMP_HAS_CHECKS >= IMP_USAGE
+  was_owned_ = tf;
+#endif
+}
+
+inline bool Object::get_is_valid() const {
+#if IMP_HAS_CHECKS == IMP_NONE
+  return true;
+#else
+  return static_cast<int>(check_value_) == 111111111;
+#endif
+}
 
 IMPBASE_END_NAMESPACE
 
