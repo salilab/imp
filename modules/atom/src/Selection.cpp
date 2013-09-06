@@ -441,11 +441,13 @@ Restraint *create_connectivity_restraint(const Selections &s, double x0,
     BOOST_FOREACH(const Selection &sel, s) {
       kernel::ParticleIndexes cur = sel.get_selected_particle_indexes();
       int old = used.size();
+      IMP_UNUSED(old);
       used.insert(cur.begin(), cur.end());
       IMP_USAGE_CHECK(used.size() == old + cur.size(),
                       "Input selections are not disjoint. This won't work.");
     }
   }
+
   if (s.size() < 2) return nullptr;
   if (s.size() == 2) {
     IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, ps, (x0, k));

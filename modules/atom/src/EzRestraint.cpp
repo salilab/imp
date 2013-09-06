@@ -70,6 +70,7 @@ Floats EzRestraint::get_parameters(std::string restype)
 
 double EzRestraint::unprotected_evaluate(DerivativeAccumulator *da) const
 {
+  IMP_UNUSED(da);
  // check if derivatives are requested
  IMP_USAGE_CHECK(!da, "Derivatives not available");
 
