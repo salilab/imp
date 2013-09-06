@@ -40,11 +40,11 @@ class ClassnamesConstraint :
     public Constraint
 #else
     public IMP::kernel::internal::ContainerConstraint<
-        ClassnameModifier, ClassnameDerivativeModifier, ClassnameContainer>
+        ClassnameModifier, ClassnameModifier, ClassnameContainer>
 #endif
     {
   typedef IMP::kernel::internal::ContainerConstraint<
-      ClassnameModifier, ClassnameDerivativeModifier, ClassnameContainer> P;
+      ClassnameModifier, ClassnameModifier, ClassnameContainer> P;
 
  public:
   /** \param[in] c The Container to hold the elements to process
@@ -55,7 +55,7 @@ class ClassnamesConstraint :
       \param[in] name The object name
    */
   ClassnamesConstraint(ClassnameModifier *before,
-                       ClassnameDerivativeModifier *after,
+                       ClassnameModifier *after,
                        ClassnameContainerAdaptor c,
                        std::string name = "ClassnameConstraint %1%")
       : P(before, after, c, name) {}
