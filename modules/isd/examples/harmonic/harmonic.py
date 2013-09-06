@@ -14,7 +14,7 @@ except ImportError:
 from IMP.isd.hosts import create_host_list
 import IMP.container
 import IMP.isd
-import shared_functions as sf
+import _shared_functions as sf
 from IMP.isd.Replica import ReplicaTracker
 
 IMP.base.set_log_level(IMP.base.NONE)
@@ -38,7 +38,7 @@ tau=[500.0]*nreps
 #(in units of gibbs sampling steps)
 stat_rate=[1]*nreps
 #list of files relative to the current dir to copy over to all nodes
-filelist=['shared_functions.py'] #add whatever you want
+filelist=['_shared_functions.py'] #add whatever you want
 #prefix of output files
 nums=[os.path.join(outfolder,'r%02d' % (i+1)) for i in xrange(nreps)]
 #number of gibbs sampling steps
@@ -96,7 +96,7 @@ def launch_grid():
     if showX11:
         grid.window_size = window_size
     grid.copy_files('./', filelist)
-    #grid.copy_files(src_path,["shared_functions.py"])
+    #grid.copy_files(src_path,["_shared_functions.py"])
 
     #start grid on all nodes
     grid.start()

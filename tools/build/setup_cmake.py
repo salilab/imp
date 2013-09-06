@@ -146,7 +146,7 @@ def setup_module(module, path, ordered):
     values["cpptests"] = get_sources(module, path, "test", "test_*.cpp")
     values["mdcpptests"] = get_sources(module, path, "test", "medium_test_*.cpp")
     values["excpptests"] = get_sources(module, path, "test", "expensive_test_*.cpp")
-    values["pyexamples"] = get_sources(module, path, "examples", "*.py")
+    values["pyexamples"] = get_sources(module, path, "examples", "[a-zA-Z]*.py")
     values["cppexamples"] = get_sources(module, path, "examples", "*.cpp")
     values["excpptests"] = get_sources(module, path, "test", "expensive_test_*.cpp")
     values["includepath"] = get_dep_merged([module], "include_path", ordered)

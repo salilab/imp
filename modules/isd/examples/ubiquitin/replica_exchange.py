@@ -18,7 +18,7 @@ import IMP.container
 import IMP.isd
 from IMP.isd.Replica import ReplicaTracker
 
-import shared_functions as sf
+import _shared_functions as sf
 
 IMP.base.set_log_level(IMP.base.NONE)
 
@@ -48,7 +48,7 @@ restraints = "NOE_HN-full_7A_sparse100.tbl"
 sequence='sequence.dat'
 #export the files in a local tmp directory
 filelist=[initpdb,charmmtop,charmmpar,sequence,
-          restraints,'shared_functions.py'] #add whatever you want
+          restraints,'_shared_functions.py'] #add whatever you want
 #prefix of output files
 nums=[os.path.join(outfolder,'r%02d' % (i+1)) for i in xrange(nreps)]
 #thermalization (mc parameters stay fixed)
@@ -125,7 +125,7 @@ def launch_grid():
     if showX11:
         grid.window_size = window_size
     grid.copy_files('./', filelist)
-    #grid.copy_files(src_path,["shared_functions.py"])
+    #grid.copy_files(src_path,["_shared_functions.py"])
 
     #start grid on all nodes
     grid.start()
