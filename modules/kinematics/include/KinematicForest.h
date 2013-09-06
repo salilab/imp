@@ -1,10 +1,10 @@
 /**
- *  \file KinematicForest.h
- *  \brief Wrapper class for a kinematic forest (collection of trees)
+ * \file kinematics/KinematicForest.h
+ * \brief Wrapper class for a kinematic forest (collection of trees)
           made of KinematicNode objects, interconnected by joints. This data
           structure allows for kinematic control of the tree and
           interconversion between internal and external coordinates.
- *  \authors Dina Schneidman, Barak Raveh
+ * \authors Dina Schneidman, Barak Raveh
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
@@ -131,6 +131,28 @@ IMP_OBJECT_METHODS(KinematicForest);
     is_external_coords_updated_ = true;
   }
 
+  // return joints sorted by BFS traversal
+  Joints get_ordered_joints() const {
+    Joints ret;
+    // tree BFS traversal from roots
+    std::queue<KinematicNode> q;
+    IMP::base::set<KinematicNode>::iterator it;
+    for(it = roots_.begin(); it != roots_.end(); it++) q.push(*it);
+
+    while(!q.empty()) {
+      KinematicNode n = q.front();
+      q.pop();
+      if(n.get_in_joint() != nullptr) ret.push_back(n.get_in_joint());
+
+      JointsTemp out_joints = n.get_out_joints();
+      for(unsigned int i = 0; i < out_joints.size(); i++) {
+        Joint* joint_i = out_joints[i];
+        q.push(KinematicNode(joint_i->get_child_node()));
+      }
+    }
+    return ret;
+  }
+
   /**
      notifies the tree that joint (internal) coordinates
      have changed and therefore external coordinates are not
@@ -241,7 +263,6 @@ IMP_OBJECT_METHODS(KinematicForest);
   /** the set of nodes in the tree */
   IMP::base::set<KinematicNode> nodes_;
 
-  // TODO: do we really need this?
   Joints joints_;
 
 };

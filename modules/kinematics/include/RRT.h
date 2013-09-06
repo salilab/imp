@@ -103,7 +103,7 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
 
   // Constructor
   RRT(kernel::Model *m, DOFsSampler* sampler, LocalPlanner* planner,
-      const DOFs& cspace_dofs);
+      const DOFs& cspace_dofs, unsigned int iteration_number = 1000);
 
   // function required by Sampler
   // TODO: think how to save configurations in internal coords

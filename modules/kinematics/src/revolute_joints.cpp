@@ -27,10 +27,7 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 RevoluteJoint::RevoluteJoint
 ( IMP::core::RigidBody parent, IMP::core::RigidBody child  )
   : Joint(parent, child)
-{
-  //      ss=new RevoluteJointScoreState(p, ...); // TODO: implement that?
-  //p->get_model()->add_score_state(ss); // TODO: implement that?
-}
+{}
 
 // definition of dummy pure virtual, just for SWIG
 RevoluteJoint::~RevoluteJoint()
@@ -103,7 +100,6 @@ DihedralAngleRevoluteJoint
   RevoluteJoint(parent, child),
   a_(a), b_(b), c_(c), d_(d) // TODO: are b_ and c_ redundant?
 {
-  // TODO: scorestate for udpating the model? see revolute joint
   update_axis_of_rotation_from_cartesian_witnesses();
   update_joint_from_cartesian_witnesses(); // angle only
 }
@@ -129,7 +125,6 @@ BondAngleRevoluteJoint
   RevoluteJoint(parent, child),
   a_(a), b_(b), c_(c)
 {
-  // TODO: scorestate for udpating the model? see revolute joint
   update_axis_of_rotation_from_cartesian_witnesses();
   update_joint_from_cartesian_witnesses();
 }

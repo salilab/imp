@@ -13,12 +13,12 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 int RRT::RRTNode::node_counter_ = 0;
 
 RRT::RRT(kernel::Model *m, DOFsSampler* dofs_sampler, LocalPlanner* planner,
-         const DOFs& cspace_dofs) :
+         const DOFs& cspace_dofs, unsigned int iteration_number) :
   Sampler(m, "rrt_sampler"),
   dofs_sampler_(dofs_sampler),
   local_planner_(planner),
   cspace_dofs_(cspace_dofs),
-  default_parameters_(100) // 100 iterations by default
+  default_parameters_(iteration_number)
 {
   // define q_init and check if it is a valid configuration
   DOFValues q_init(cspace_dofs_);

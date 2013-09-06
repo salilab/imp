@@ -47,9 +47,9 @@ public:
   }
 
  protected:
-  base::PointerMember<Model> model_;
+  base::PointerMember<kernel::Model> model_;
   DOFsSampler* dofs_sampler_;
-  base::PointerMember<ScoringFunction> sf_;
+  base::PointerMember<kernel::ScoringFunction> sf_;
 };
 
 
