@@ -39,10 +39,6 @@ class Model;
     (eg SingletonContainer::get_indexes()) or do an operation on their contents
     IMP_CONTAINER_FOREACH().
 
-
-    \note If nothing uses the added and removed containers they may not
-    be updated.
-
     \note Containers store \em sets and so are fundamentally unordered.
  */
 class IMPKERNELEXPORT Container : public ScoreState {
