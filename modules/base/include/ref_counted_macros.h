@@ -80,8 +80,7 @@
  protected:                                    \
   template <class T, class E>                  \
   friend struct IMP::base::internal::RefStuff; \
-  ~Name() {}                                   \
-                                               \
+  virtual ~Name() {}                           \
  public:                                       \
   IMP_REQUIRE_SEMICOLON_CLASS(destructor)
 
@@ -89,8 +88,7 @@
  protected:                                           \
   template <class T, class E>                         \
   friend struct IMP::base::internal::RefStuff;        \
-  ~Name() { dest }                                    \
-                                                      \
+  virtual ~Name() { dest }                            \
  public:                                              \
   IMP_REQUIRE_SEMICOLON_CLASS(destructor)
 
@@ -98,8 +96,7 @@
  protected:                                         \
   template <class T, class E>                       \
   friend struct IMP::base::internal::RefStuff;      \
-  ~Name();                                          \
-                                                    \
+  virtual ~Name();                                  \
  public:                                            \
   IMP_REQUIRE_SEMICOLON_CLASS(destructor)
 
@@ -108,7 +105,6 @@
   template <class T, class E>                               \
   friend struct IMP::base::internal::RefStuff;              \
   virtual ~Name();                                          \
-                                                            \
  public:                                                    \
   IMP_REQUIRE_SEMICOLON_CLASS(destructor)
 #endif
