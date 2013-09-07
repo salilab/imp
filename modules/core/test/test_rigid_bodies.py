@@ -119,7 +119,7 @@ class Tests(IMP.test.TestCase):
         rbp1= IMP.kernel.Particle(m)
         rbp1.set_name("rb1")
         try:
-            before= IMP.base.RefCounted.get_number_of_live_objects()
+            before= IMP.base.Object.get_number_of_live_objects()
             names_before= IMP.base.Object.get_live_object_names()
         except:
             pass
@@ -135,7 +135,7 @@ class Tests(IMP.test.TestCase):
         failure=False
         # check cleanup
         try:
-            after= IMP.base.RefCounted.get_number_of_live_objects()
+            after= IMP.base.Object.get_number_of_live_objects()
             names_after= IMP.base.Object.get_live_object_names()
             for n in names_after:
                 if n not in names_before:

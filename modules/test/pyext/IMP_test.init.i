@@ -846,7 +846,7 @@ class RefCountChecker(object):
         IMP.base._director_objects.cleanup()
         self.__testcase = testcase
         if IMP.base.get_check_level() >= IMP.base.USAGE_AND_INTERNAL:
-            self.__basenum = IMP.base.RefCounted.get_number_of_live_objects()
+            self.__basenum = IMP.base.Object.get_number_of_live_objects()
             self.__names= IMP.base.get_live_object_names()
 
     def assert_number(self, expected):
@@ -855,7 +855,7 @@ class RefCountChecker(object):
         IMP.base._director_objects.cleanup()
         if IMP.base.get_check_level() >= IMP.base.USAGE_AND_INTERNAL:
             newnames=[x for x in IMP.base.get_live_object_names() if x not in self.__names]
-            newnum=IMP.base.RefCounted.get_number_of_live_objects()-self.__basenum
+            newnum=IMP.base.Object.get_number_of_live_objects()-self.__basenum
             t.assertEqual(newnum, expected,
                           "Number of objects don't match: "\
                            +str(newnum)\
