@@ -12,6 +12,7 @@
 
 #include <IMP/base/Object.h>
 #include <IMP/base/object_macros.h>
+#include <IMP/base/types.h>
 #include <IMP/base/Pointer.h>
 #include <vector>
 
@@ -35,8 +36,6 @@ class IMPEXAMPLEEXPORT ExampleObject : public base::Object {
     IMP_USAGE_CHECK(i < data_.size(), "Index " << i << " out of range.");
     return data_[i];
   }
-
-  IMP_SHOWABLE_INLINE(ExampleObject, out << data_.size());
 
   /* Make sure that it can't be allocated on the stack
      The macro defines an empty destructor. In general,
