@@ -1,6 +1,7 @@
 # ChangeLog
 
 # For IMP 2.1 # {#ChangeLog}
+- Slack was being used inconsistently (and not always correctly) among the various containers and restraints. If you had heavily optimized the slack value for speed, you may want to revisit it.
 - class name OwnerPointer was switched to PointerMember, to denote more clearly a ref-counting pointer that is a class member
 - The dependency handling in IMP has been rewritten to simplify it and fix a bunch of bugs. There are now more checks of correctness, so behavior that might have silently worked (or not worked) before may now trigger errors. In particular, restraints/score states must have access to the IMP::kernel::Model to do much of anything, so either use constructors that take the model or call IMP::kernel::ModelObject::set_model(). Also, changing your set of inputs or outputs without calling IMP::kernel::ModelObject::set_has_dependencies(false) is now likely to trigger a check failure (it would just silently do the wrong thing before).
 - Decorators have been cleaned up to make them behave consistently regarding IMP::kernel::Particle vs IMP::kernel::ParticleIndexes. This change shouldn't break existing code, but decorators should move to the new macros IMP_DECORATOR_METHODS(), IMP_DECORATOR_SETUP_0() etc.

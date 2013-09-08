@@ -48,7 +48,8 @@ class IMPCOREEXPORT ExcludedVolumeRestraint : public kernel::Restraint {
   // moved stuff
   mutable kernel::ParticleIndexes rbs_;
   mutable kernel::ParticleIndexes xyzrs_;
-  mutable IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> constituents_;
+  mutable IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes>
+    constituents_;
   double slack_;
   mutable algebra::Sphere3Ds rbs_backup_sphere_;
   mutable algebra::Rotation3Ds rbs_backup_rot_;
@@ -56,7 +57,7 @@ class IMPCOREEXPORT ExcludedVolumeRestraint : public kernel::Restraint {
 
   void reset_moved() const;
   void initialize() const;
-  int get_if_moved() const;
+  bool get_if_moved() const;
   void fill_list() const;
   double fill_list_if_good(double max) const;
   ExcludedVolumeRestraint(SingletonContainerAdaptor sc,
