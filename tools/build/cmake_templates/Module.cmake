@@ -72,6 +72,7 @@ if(${status} EQUAL 0)
                           ${CMAKE_BINARY_DIR}/lib/IMP/%(name)s/_version_check.py
                           ${CMAKE_BINARY_DIR}/src/%(name)s_config.cpp)
   set_property(TARGET "IMP.%(name)s-version" PROPERTY FOLDER "IMP.%(name)s")
+  install(FILES "${CMAKE_BINARY_DIR}/lib/IMP/%(name)s/_version_check.py" DESTINATION "${CMAKE_INSTALL_PYTHONDIR}/IMP/%(name)s/")
 
   %(subdirs)s
   set(IMP_%(name)s "IMP.%(name)s" CACHE INTERNAL "" FORCE)
