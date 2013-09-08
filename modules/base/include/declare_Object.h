@@ -127,7 +127,13 @@ class IMPBASEEXPORT Object : public NonCopyable {
   boost::scoped_array<char> quoted_name_;
 
   static unsigned int live_objects_;
+#ifdef _MSC_VER
+ public:
+#endif
   mutable int count_;
+#ifdef _MSC_VER
+ private:
+#endif
 
 #if IMP_HAS_LOG != IMP_NONE
   LogLevel log_level_;
@@ -234,7 +240,7 @@ class IMPBASEEXPORT Object : public NonCopyable {
 
   void _on_destruction();
 
-  // Return whether the object already been freed
+  //! Return whether the object already been freed
   bool get_is_valid() const;
 
   unsigned int get_ref_count() const { return count_; }
@@ -252,7 +258,7 @@ class IMPBASEEXPORT Object : public NonCopyable {
   virtual void do_destroy() {}
 };
 
-
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
 inline void Object::set_check_level(CheckLevel l) {
   IMP_CHECK_VARIABLE(l);
 #if IMP_HAS_CHECKS != IMP_NONE
@@ -289,6 +295,7 @@ inline bool Object::get_is_valid() const {
   return static_cast<int>(check_value_) == 111111111;
 #endif
 }
+#endif
 
 IMPBASE_END_NAMESPACE
 
