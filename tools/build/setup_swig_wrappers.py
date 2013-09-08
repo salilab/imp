@@ -48,8 +48,8 @@ def build_wrapper(module, module_path, source, sorted, info, target, datapath):
 
     contents.append("""%%module(directors="1", allprotected="1") "%s"
 %%feature("autodoc", 1);
-// turn off the warning as it mostly triggers on methods (and lots of them)
-%%warnfilter(321,302);
+// Warning 314: 'lambda' is a python keyword, renaming to '_lambda'
+%%warnfilter(321,302,314);
 
 %%inline %%{
 namespace IMP {
