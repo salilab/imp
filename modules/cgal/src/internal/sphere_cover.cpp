@@ -33,8 +33,6 @@ void refine_unit_sphere_cover_d(base::Vector<algebra::VectorD<D> > &ret,
   typedef ::CGAL::Cartesian_d< ::CGAL::Lazy_exact_nt< ::CGAL::Gmpq> > K;
   typedef typename K::Point_d P;
   typedef ::CGAL::Convex_hull_d<K> CH;
-  typedef ::CGAL::Optimisation_d_traits_d<K> Traits;
-  typedef ::CGAL::Min_sphere_d<Traits> Min_sphere;
   std::map<typename CH::Vertex_handle, int> indexes;
   for (unsigned int rep = 0; rep < 10 * D; ++rep) {
     CH ch(D);

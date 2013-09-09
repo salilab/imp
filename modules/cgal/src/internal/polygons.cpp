@@ -45,7 +45,6 @@ algebra::Vector3Ds get_intersection(const algebra::Vector3D &normal, double d,
   typedef Kernel::Point_2 Point_2;
   typedef Kernel::Point_3 Point_3;
   typedef Kernel::Direction_3 Direction_3;
-  typedef Kernel::Vector_3 Vector_3;
   typedef Kernel::Plane_3 Plane_3;
   typedef Kernel::Segment_3 Segment_3;
   Plane_3 plane(tr<Point_3>(normal * d), tr<Direction_3>(normal));
