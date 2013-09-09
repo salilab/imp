@@ -168,7 +168,7 @@ double ExcludedVolumeRestraint::unprotected_evaluate(
     reset_moved();
     recomputed = true;
   }
-  IMP_CHECK_VARIABLE(recomputed);
+  IMP_UNUSED(recomputed);
   double ret = 0;
   BOOST_FOREACH(kernel::ParticleIndexPair pi, cur_list_) {
     ret += ssps_->evaluate_index(get_model(),pi, da);
