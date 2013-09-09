@@ -36,52 +36,43 @@ const IMP::core::HierarchyTraits &Hierarchy::get_traits() {
 }
 
 void Hierarchy::show(std::ostream &out) const {
+  show(out, " ");
+}
+
+void Hierarchy::show(std::ostream &out, std::string delimiter) const {
   if (*this == Hierarchy()) {
     out << "nullptr Molecular Hierarchy node";
     return;
   }
-  bool found = false;
+  out << "\"" << get_particle()->get_name() << "\"" << delimiter;
   if (get_as_atom()) {
-    found = true;
-    out << get_as_atom() << " ";
+    out << get_as_atom() << delimiter;
   }
   if (get_as_residue()) {
-    found = true;
-    out << get_as_residue() << " ";
+    out << get_as_residue() << delimiter;
   }
   if (get_as_chain()) {
-    found = true;
-    out << get_as_chain() << " ";
+    out << get_as_chain() << delimiter;
   } else if (get_as_molecule()) {
-    found = true;
-    out << get_as_molecule() << " ";
+    out << get_as_molecule() << delimiter;
   }
   if (get_as_fragment()) {
-    found = true;
-    out << get_as_fragment() << " ";
+    out << get_as_fragment() << delimiter;
   }
   if (get_as_domain()) {
-    found = true;
-    out << get_as_domain() << " ";
+    out << get_as_domain() << delimiter;
   }
   if (core::RigidBody::get_is_setup(get_particle())) {
-    found = true;
     out << core::RigidBody(get_particle());
   }
   if (core::RigidMember::get_is_setup(get_particle())) {
-    found = true;
     out << " rigid member: " << core::RigidMember(get_particle())
                                     .get_rigid_body()->get_name();
   }
   if (get_as_xyzr()) {
-    found = true;
-    out << " sphere: " << get_as_xyzr().get_sphere();
+    out << get_as_xyzr().get_sphere();
   } else if (get_as_xyz()) {
-    found = true;
-    out << " coordinates: " << get_as_xyz().get_coordinates();
-  }
-  if (!found) {
-    out << "Hierarchy \"" << get_particle()->get_name() << "\"";
+    out  << get_as_xyz().get_coordinates();
   }
 }
 
@@ -286,7 +277,8 @@ Hierarchy create_fragment(const Hierarchies &ps) {
     }
   }
 
-  kernel::Particle *fp = new kernel::Particle(parent.get_particle()->get_model());
+  kernel::Particle *fp
+    = new kernel::Particle(parent.get_particle()->get_model());
   Hierarchy fd = Fragment::setup_particle(fp);
 
   for (unsigned int i = 0; i < ps.size(); ++i) {
@@ -302,7 +294,8 @@ Bonds get_internal_bonds(Hierarchy mhd) {
   kernel::ParticlesTemp ps = core::get_all_descendants(mhd);
   IMP::base::set<kernel::Particle *> sps(ps.begin(), ps.end());
   Bonds ret;
-  for (kernel::ParticlesTemp::iterator pit = ps.begin(); pit != ps.end(); ++pit) {
+  for (kernel::ParticlesTemp::iterator pit = ps.begin();
+       pit != ps.end(); ++pit) {
     kernel::Particle *p = *pit;
     if (Bonded::get_is_setup(p)) {
       Bonded b(p);
@@ -342,7 +335,7 @@ core::RigidBody setup_as_rigid_body(Hierarchy h) {
       core::RigidMembers leaves(get_leaves(Hierarchy(internal[i])));
       if (!leaves.empty()) {
         algebra::ReferenceFrame3D rf =
-            core::get_initial_reference_frame(get_as<kernel::ParticlesTemp>(leaves));
+       core::get_initial_reference_frame(get_as<kernel::ParticlesTemp>(leaves));
         core::RigidBody::setup_particle(internal[i], rf);
       }
     }
@@ -416,7 +409,8 @@ IMP::core::RigidBody create_compatible_rigid_body(Hierarchy h,
 
 namespace {
 
-Hierarchy clone_internal(Hierarchy d, std::map<kernel::Particle *, kernel::Particle *> &map,
+Hierarchy clone_internal(Hierarchy d, std::map<kernel::Particle *,
+                                               kernel::Particle *> &map,
                          bool recurse) {
   kernel::Particle *p = new kernel::Particle(d.get_model());
   p->set_name(d->get_name());

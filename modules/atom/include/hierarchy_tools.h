@@ -142,7 +142,8 @@ IMPATOMEXPORT void transform(Hierarchy h, const algebra::Transformation3D &tr);
 /** A graph for representing a Hierarchy so you can view it
     nicely.
 */
-IMP_GRAPH(HierarchyTree, bidirectional, Hierarchy, int, out << vertex);
+IMP_GRAPH(HierarchyTree, bidirectional, Hierarchy, int,
+          vertex.show(out, "\\n"));
 /** Get a graph for the passed Hierarchy. This can be used,
     for example, to graphically display the hierarchy in 2D.
     See Hierarchy
@@ -183,7 +184,8 @@ class HierarchyGeometry : public display::SingletonGeometry {
 };
 class HierarchiesGeometry : public display::SingletonsGeometry {
   double res_;
-  mutable IMP::base::map<kernel::ParticleIndex, base::Pointer<display::Geometry> >
+  mutable IMP::base::map<kernel::ParticleIndex,
+                         base::Pointer<display::Geometry> >
       components_;
 
  public:

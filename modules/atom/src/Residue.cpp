@@ -75,7 +75,7 @@ RNAME_DEF(HEME);
 RNAME_ALIAS(HEME, HEME_OLD, "HEM");
 
 void Residue::show(std::ostream &out) const {
-  out << "residue #" << get_index() << " of name " << get_residue_type();
+  out << "#" << get_index() << " " << get_residue_type();
 }
 
 void Residue::set_residue_type(ResidueType t) {

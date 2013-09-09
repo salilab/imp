@@ -206,7 +206,8 @@ NAME_DEF(NO2, N);
 
 NAME_DEF(UNKNOWN, UNKNOWN_ELEMENT);
 
-void Atom::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi, AtomType t) {
+void Atom::do_setup_particle(kernel::Model *m,
+                             kernel::ParticleIndex pi, AtomType t) {
   m->add_attribute(get_atom_type_key(), pi, t.get_index());
   if (!Hierarchy::get_is_setup(m, pi)) {
     Hierarchy::setup_particle(m, pi);
@@ -222,19 +223,17 @@ void Atom::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi, AtomTyp
   ret.set_atom_type(t);
 }
 
-void Atom::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi, Atom o) {
+void Atom::do_setup_particle(kernel::Model *m,
+                             kernel::ParticleIndex pi, Atom o) {
   do_setup_particle(m, pi, o.get_atom_type());
 }
 
 void Atom::show(std::ostream &out) const {
-  out << "  element:" << get_element_table().get_name(get_element());
-  out << " type: " << get_atom_type();
   if (get_input_index() != -1) {
-    out << " input index: " << get_input_index();
+    out << "#" << get_input_index() << " ";
   }
-  if (core::XYZ::get_is_setup(get_particle())) {
-    out << " coords: " << core::XYZ(get_particle());
-  }
+  out << get_atom_type();
+  out << " (" << get_element_table().get_name(get_element()) << ")";
 }
 
 void Atom::set_atom_type(AtomType t) {

@@ -195,7 +195,6 @@ IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
  */
 class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
   typedef core::Hierarchy H;
-
  public:
 #ifndef IMP_DOXYGEN
   typedef boost::false_type DecoratorHasTraits;
@@ -235,7 +234,8 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
   }
 #endif
 
-  Hierarchy(kernel::Model *m, kernel::ParticleIndex pi) : H(m, pi, get_traits()) {}
+  Hierarchy(kernel::Model *m, kernel::ParticleIndex pi)
+    : H(m, pi, get_traits()) {}
 
   Hierarchy(kernel::ParticleAdaptor pi) : H(pi.get_model(),
                                             pi.get_particle_index(),
@@ -288,6 +288,10 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
     IMP_USAGE_CHECK(o != *this, "Can't add something as its own child");
     H::add_child(o);
   }
+
+#ifndef IMP_DOXYGEN
+  void show(std::ostream &out, std::string delimiter) const;
+#endif
 
   /** Get the ith child based on the order they were added. */
   Hierarchy get_child(unsigned int i) const {
