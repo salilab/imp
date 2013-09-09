@@ -113,7 +113,6 @@ void IK_GX(const Graph& graph, CliqueOutputIterator& out, Vector& R, Vector& P,
            Vector& X) {
   typedef boost::graph_traits<Graph> graph_traits;
   typedef typename graph_traits::vertex_descriptor vertex_descriptor;
-  typedef typename graph_traits::vertex_iterator vertex_iterator;
   typedef typename graph_traits::adjacency_iterator adjacency_iterator;
 #ifdef DCLIQUE
   // std::cout << R.size() << " " << P.size() << " " << X.size() << std::endl;
@@ -187,7 +186,6 @@ void GX(const Graph& graph, Vector& P, Vector& X,
         typename boost::graph_traits<Graph>::vertex_descriptor& pivot) {
   typedef boost::graph_traits<Graph> graph_traits;
   typedef typename graph_traits::vertex_descriptor vertex_descriptor;
-  typedef typename graph_traits::degree_size_type degree_size_type;
 
   Degree_less<Graph> degree_less(graph);
 
