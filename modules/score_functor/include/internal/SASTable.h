@@ -59,6 +59,7 @@ public:
       std::string pname;
       ins >> pname;
       unsigned int i = Key(pname).get_index();
+      IMP_UNUSED(i);
       IMP_INTERNAL_CHECK(Key(pname) == Key(i),
                          "Expected and found protein types don't match: "
                          << "expected \"" << Key(i).get_string() << " got "
