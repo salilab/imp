@@ -40,7 +40,7 @@ double Simulator::simulate_wave
   double base) {
   IMP_FUNCTION_LOG;
   set_is_optimizing_states(true);
-  double ret = do_simulate_wave(time);
+  double ret = do_simulate_wave(time, max_time_step_factor, base);
   set_is_optimizing_states(false);
   return ret;
 }
