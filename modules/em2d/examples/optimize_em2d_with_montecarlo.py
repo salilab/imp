@@ -149,7 +149,7 @@ s.add_movers(movers)
 print "MonteCarlo sampler has",s.get_number_of_movers(),"movers"
 # Add an optimizer state to save intermediate configurations of the hierarchy
 o_state=IMP.atom.WritePDBOptimizerState(chains,"intermediate-step-%1%.pdb")
-o_state.set_skip_steps(10)
+o_state.set_period(10)
 s.add_optimizer_state(o_state)
 
 ostate2 = WriteStatisticsOptimizerScore(m.get_restraints())
