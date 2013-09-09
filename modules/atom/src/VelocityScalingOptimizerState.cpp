@@ -20,10 +20,12 @@ VelocityScalingOptimizerState::VelocityScalingOptimizerState(
   vs_[0] = FloatKey("vx");
   vs_[1] = FloatKey("vy");
   vs_[2] = FloatKey("vz");
+  set_period(skip_steps + 1);
 }
 
 VelocityScalingOptimizerState
-::VelocityScalingOptimizerState(kernel::Model *m, kernel::ParticleIndexesAdaptor pis,
+::VelocityScalingOptimizerState(kernel::Model *m,
+                                kernel::ParticleIndexesAdaptor pis,
                                 double temp):
   kernel::OptimizerState(m, "VelocityScalingOptimizerState%1%"),
   temperature_(temp) {
