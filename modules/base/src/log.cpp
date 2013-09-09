@@ -35,8 +35,8 @@ std::string get_context_name(unsigned int i) {
     if (!internal::log_contexts[i].second) {
       oss << internal::log_contexts[i].first;
     } else {
-      const Object *o
-        = reinterpret_cast<const Object *>(internal::log_contexts[i].second);
+      const Object *o =
+          reinterpret_cast<const Object *>(internal::log_contexts[i].second);
       // this is called on errors, so don't cause any more
       if (!o->get_is_valid()) {
         oss << "InvalidObject"
@@ -159,12 +159,12 @@ void pop_log_context() {
   if (!omp_in_parallel())
 #endif
       {
-    if (internal::log_context_initializeds
-        >= static_cast<int>(internal::log_contexts.size() - 1)) {
+    if (internal::log_context_initializeds >=
+        static_cast<int>(internal::log_contexts.size() - 1)) {
       internal::log_indent -= 2;
       std::string message =
-        std::string("end ")
-        + get_context_name(internal::log_contexts.size() - 1) + "\n";
+          std::string("end ") +
+          get_context_name(internal::log_contexts.size() - 1) + "\n";
       internal::stream.write(message.c_str(), message.size());
       internal::stream.strict_sync();
       --internal::log_context_initializeds;
@@ -187,8 +187,8 @@ void add_to_log(std::string str) {
 #endif
   {
     if (!internal::log_contexts.empty() &&
-        internal::log_context_initializeds
-        != static_cast<int>(internal::log_contexts.size())) {
+        internal::log_context_initializeds !=
+            static_cast<int>(internal::log_contexts.size())) {
       for (unsigned int i = 0; i < internal::log_contexts.size(); ++i) {
         if (internal::log_context_initializeds < static_cast<int>(i)) {
           std::string message =

@@ -85,8 +85,7 @@ class Memoizer {
 /** Implement a cache on sparse pairs of values. The cache
     is infinite (or at least n^2).
 */
-template <class Generator, class Checker>
-class SparseSymmetricPairMemoizer {
+template <class Generator, class Checker> class SparseSymmetricPairMemoizer {
  public:
   typedef typename Generator::argument_type::value_type Key;
   typedef typename Generator::result_type::value_type Entry;
@@ -116,8 +115,7 @@ class SparseSymmetricPairMemoizer {
   struct EntryEqual {
     Array<2, Key> v;
     EntryEqual(Key t0, Key t1) : v(t0, t1) {}
-    template <class O>
-    bool operator()(const O &o) const {
+    template <class O> bool operator()(const O &o) const {
       return v[0] == o[0] && v[1] == o[1];
     }
   };
@@ -186,8 +184,7 @@ class SparseSymmetricPairMemoizer {
                               << std::endl);
     cleared_.clear();
   }
-  template <class F, class It>
-  F do_apply(It b, It e, F f) const {
+  template <class F, class It> F do_apply(It b, It e, F f) const {
     for (It c = b; c != e; ++c) {
       f(*c);
     }
@@ -201,16 +198,14 @@ class SparseSymmetricPairMemoizer {
       : gen_(gen), checker_(check), cleared_(domain), domain_(domain) {
     IMP_LOG_TERSE("Domain for memoizer is " << domain << std::endl);
   }
-  template <class F>
-  F apply(F f) {
+  template <class F> F apply(F f) {
     IMP_FUNCTION_LOG;
     if (!cleared_.empty()) fill_it();
     check_it();
     return do_apply(cache_.begin(), cache_.end(), f);
   }
   /** Apply a function to the current (unfilled) state of the memoizer.*/
-  template <class F>
-  F apply_to_current_contents(F f) {
+  template <class F> F apply_to_current_contents(F f) {
     IMP_FUNCTION_LOG;
     return do_apply(cache_.begin(), cache_.end(), f);
   }

@@ -23,8 +23,7 @@
 IMPBASE_BEGIN_NAMESPACE
 
 #if !defined(IMP_DOXYGEN)
-template <class Stream>
-struct TextProxy {
+template <class Stream> struct TextProxy {
   Stream *str_;
   base::PointerMember<Object> ptr_;
   TextProxy(Stream *str, Object *ptr) : str_(str), ptr_(ptr) {}

@@ -55,7 +55,7 @@ IMPBASE_BEGIN_INTERNAL_NAMESPACE
 bool print_time;
 boost::timer log_timer;
 #if !IMP_BASE_HAS_LOG4CXX
-base::Vector<std::pair<const char *, const void *> > log_contexts;
+base::Vector<std::pair<const char*, const void*> > log_contexts;
 int log_context_initializeds = -1;
 unsigned int log_indent = 0;
 std::ofstream fstream;
@@ -161,9 +161,7 @@ std::string exe_name, exe_usage, exe_description;
 
 boost::program_options::options_description flags;
 boost::program_options::variables_map variables_map;
-namespace {
-int default_check_level = IMP_HAS_CHECKS;
-}
+namespace { int default_check_level = IMP_HAS_CHECKS; }
 
 boost::int64_t check_level = default_check_level;
 
@@ -176,10 +174,8 @@ AddIntFlag clf(
     &check_level);
 #else
 boost::int64_t junk_check = IMP_NONE;
-AddIntFlag clf(
-    "check_level",
-    "Checks are disabled, flag is for compatibility.",
-    &junk_check);
+AddIntFlag clf("check_level", "Checks are disabled, flag is for compatibility.",
+               &junk_check);
 
 #endif
 #if IMP_HAS_LOG != IMP_SILENT
@@ -189,10 +185,8 @@ AddIntFlag llf(
     &log_level);
 #else
 boost::int64_t junk_log = IMP_SILENT;
-AddIntFlag llf(
-    "log_level",
-    "Logging is disabled, flag is for compatibility.",
-    &junk_log);
+AddIntFlag llf("log_level", "Logging is disabled, flag is for compatibility.",
+               &junk_log);
 #endif
 
 bool cpu_profile = false;

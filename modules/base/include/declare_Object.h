@@ -40,22 +40,17 @@
 #error "IMP_SILENT not defined, something is broken"
 #endif
 
-
 #ifndef IMP_DOXYGEN
 #ifndef SWIG
 
 namespace IMP {
 namespace base {
 class Object;
-namespace internal {
-template <class R, class E>
-struct RefStuff;
-}
+namespace internal { template <class R, class E> struct RefStuff; }
 }
 }
 #endif
 #endif
-
 
 IMPBASE_BEGIN_NAMESPACE
 
@@ -171,7 +166,7 @@ class IMPBASEEXPORT Object : public NonCopyable {
 
   /** \deprecated_at{2.1} Provide a name. */
   IMPBASE_DEPRECATED_FUNCTION_DECL(2.1)
-    Object();
+  Object();
 
  public:
   // needed for python to make sure all wrapper objects are equivalent
@@ -247,7 +242,7 @@ class IMPBASEEXPORT Object : public NonCopyable {
 
   static unsigned int get_number_of_live_objects() { return live_objects_; }
   bool get_is_shared() const { return count_ > 1; }
-#endif // IMP_DOXYGEN
+#endif  // IMP_DOXYGEN
 
   /** Objects can have internal caches. This method resets them returning
       the object to its just-initialized state.

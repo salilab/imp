@@ -31,8 +31,7 @@ class BoostDigraph : public IMP::base::Object {
   VertexMap vm_;
   // keep vertex indices stable under removals
   Ints index_map_;
-  template <class It>
-  int distance(std::pair<It, It> r) const {
+  template <class It> int distance(std::pair<It, It> r) const {
     return std::distance(r.first, r.second);
   }
   int get_vertex(int v) const {

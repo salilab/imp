@@ -30,7 +30,7 @@ extern IMPBASEEXPORT boost::program_options::variables_map variables_map;
 extern IMPBASEEXPORT boost::int64_t check_level;
 #if !IMP_BASE_HAS_LOG4CXX
 extern IMPBASEEXPORT base::Vector<std::pair<const char *, const void *> >
-log_contexts;
+    log_contexts;
 extern IMPBASEEXPORT int log_context_initializeds;
 extern IMPBASEEXPORT unsigned int log_indent;
 class LogStream;

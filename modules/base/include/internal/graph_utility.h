@@ -31,8 +31,7 @@ using boost::is_convertible;
 using boost::is_base_of;
 using boost::is_pointer;
 
-template <class Graph, class ShowFunction>
-class ObjectNameWriter {
+template <class Graph, class ShowFunction> class ObjectNameWriter {
   ShowFunction f_;
   typedef typename boost::property_map<Graph, boost::vertex_name_t>::const_type
       VertexMap;

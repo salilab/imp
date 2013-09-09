@@ -13,8 +13,7 @@
 
 IMPBASE_BEGIN_NAMESPACE
 namespace internal {
-template <class BaseStream>
-struct IOStorage {
+template <class BaseStream> struct IOStorage {
   std::string name_;
   IOStorage(std::string name) : name_(name) {}
   virtual BaseStream &get_stream() = 0;

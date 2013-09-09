@@ -34,24 +34,26 @@
   typedef boost::graph_traits<Name> Name##Traits;                         \
   typedef Name::vertex_descriptor Name##Vertex;                           \
   typedef Name::edge_descriptor Name##Edge;                               \
-  class Name##VertexIndex {};                                             \
-  inline void show_as_graphviz(const Name &name, base::TextOutput out);   \
-  Name##VertexIndex get_vertex_index(const Name &g)
+  class Name##VertexIndex {                                               \
+  };                                                                      \
+  inline void show_as_graphviz(const Name & name, base::TextOutput out);  \
+  Name##VertexIndex get_vertex_index(const Name & g)
 
 #elif defined(SWIG)
 #if defined(__GNUC__) && __GNUC__ == 4 && __GNUC_MINOR__ == 2 && \
     BOOST_VERSION <= 104800
 #define IMP_GRAPH(Name, directionality, VertexData, EdgeData, ShowVertex) \
   class Name;                                                             \
-  inline void show_as_graphviz(const Name &name, base::TextOutput out);   \
+  inline void show_as_graphviz(const Name & name, base::TextOutput out);  \
   class Name##VertexIndex {}
 
 #else  // GCC VERSION
 #define IMP_GRAPH(Name, directionality, VertexData, EdgeData, ShowVertex) \
   class Name;                                                             \
-  class Name##VertexIndex {};                                             \
-  inline void show_as_graphviz(const Name &name, base::TextOutput out);   \
-  inline Name##VertexIndex get_vertex_index(const Name &g)
+  class Name##VertexIndex {                                               \
+  };                                                                      \
+  inline void show_as_graphviz(const Name & name, base::TextOutput out);  \
+  inline Name##VertexIndex get_vertex_index(const Name & g)
 #endif  // GCC VERSION
 
 #else  // swig and doxygen
@@ -79,7 +81,7 @@
   typedef Name##Traits::vertex_descriptor Name##Vertex;                       \
   typedef Name##Traits::edge_descriptor Name##Edge;                           \
   typedef IMP_GRAPH_MAP_TYPE<VertexData, Name##Vertex> Name##VertexIndex;     \
-  inline Name##VertexIndex get_vertex_index(const Name &g) {                  \
+  inline Name##VertexIndex get_vertex_index(const Name & g) {                 \
     return IMP::base::internal::get_graph_vertex_index<                       \
         Name, VertexData, Name##Vertex, Name##Traits>(g);                     \
   }                                                                           \
@@ -88,7 +90,7 @@
       ShowVertex;                                                             \
     }                                                                         \
   };                                                                          \
-  inline void show_as_graphviz(const Name &graph, base::TextOutput out) {     \
+  inline void show_as_graphviz(const Name & graph, base::TextOutput out) {    \
     IMP::base::internal::show_as_graphviz(graph, Show##Name##Vertex(), out);  \
   }                                                                           \
   typedef boost::property_map<Name, boost::edge_name_t>::type Name##EdgeName; \
@@ -120,7 +122,7 @@
   typedef Name##Traits::vertex_descriptor Name##Vertex;                      \
   typedef Name##Traits::edge_descriptor Name##Edge;                          \
   typedef base::map<VertexData, Name##Vertex> Name##VertexIndex;             \
-  inline Name##VertexIndex get_vertex_index(const Name &g) {                 \
+  inline Name##VertexIndex get_vertex_index(const Name & g) {                \
     return IMP::base::internal::get_graph_vertex_index<                      \
         Name, VertexData, Name##Vertex, Name##Traits>(g);                    \
   }                                                                          \
@@ -129,7 +131,7 @@
       ShowVertex;                                                            \
     }                                                                        \
   };                                                                         \
-  inline void show_as_graphviz(const Name &graph, base::TextOutput out) {    \
+  inline void show_as_graphviz(const Name & graph, base::TextOutput out) {   \
     IMP::base::internal::show_as_graphviz(graph, Show##Name##Vertex(), out); \
   }                                                                          \
   typedef boost::property_map<Name, boost::edge_weight_t>::type              \

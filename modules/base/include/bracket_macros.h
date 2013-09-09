@@ -47,7 +47,7 @@
     IMP_USAGE_CHECK((bounds_check_expr), "Index out of range: " << i); \
     expr;                                                              \
   }                                                                    \
-  void __setitem__(Index i, const Value& v) { operator[](i) = v; }     \
+  void __setitem__(Index i, const Value & v) { operator[](i) = v; }    \
   IMP_CONST_BRACKET(Value, Index, bounds_check_expr, expr)
 
 #else
@@ -59,8 +59,8 @@
     expr;                                                        \
   }
 
-#define IMP_BRACKET(Value, Index, bounds_check_expr, expr)         \
-  void __setitem__(Index i, const Value& v) { operator[](i) = v; } \
+#define IMP_BRACKET(Value, Index, bounds_check_expr, expr)          \
+  void __setitem__(Index i, const Value & v) { operator[](i) = v; } \
   IMP_CONST_BRACKET(Value, Index, bounds_check_expr, expr)
 
 #endif

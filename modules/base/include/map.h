@@ -28,9 +28,7 @@ class map : public boost::unordered_map<Key, Data> {
 
  public:
   map() {}
-  template <class It>
-  map(It b, It e)
-      : P(b, e) {}
+  template <class It> map(It b, It e) : P(b, e) {}
 };
 
 IMPBASE_END_NAMESPACE

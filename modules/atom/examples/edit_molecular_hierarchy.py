@@ -1,6 +1,6 @@
 ## \example atom/edit_molecular_hierarchy.py
-## In this example, we read a protein from a PDB file and then add a layer of atom::Fragments below the chain.
-##
+## In this example, we read a protein from a PDB file and then add a
+##layer of atom::Fragments below the chain.
 
 import IMP.kernel
 import IMP.core
@@ -13,16 +13,19 @@ hchain= IMP.atom.get_by_type(ep, IMP.atom.CHAIN_TYPE)[0]
 
 children = hchain.get_children()
 
-# create two fragments with 10 residues each and transfer the residues to be their children
+# create two fragments with 10 residues each and transfer the residues
+# to be their children
 
 f0 = IMP.atom.Fragment.setup_particle(m, m.add_particle("F0"),
-                                      [IMP.atom.Residue(x).get_index() for x in children[:10]])
+                                      [IMP.atom.Residue(x).get_index()
+                                       for x in children[:10]])
 for c in children[:10]:
     hchain.remove_child(c)
     f0.add_child(c)
 
 f1 = IMP.atom.Fragment.setup_particle(m, m.add_particle("F1"),
-                                      [IMP.atom.Residue(x).get_index() for x in children[10:20]])
+                                      [IMP.atom.Residue(x).get_index()
+                                       for x in children[10:20]])
 for c in children[10:20]:
     hchain.remove_child(c)
     f1.add_child(c)

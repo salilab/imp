@@ -21,15 +21,12 @@ IMPBASE_BEGIN_NAMESPACE
        if it
        is available or std::set if it is not.
    */
-template <class Key>
-class set : public boost::unordered_set<Key> {
+template <class Key> class set : public boost::unordered_set<Key> {
   typedef boost::unordered_set<Key> P;
 
  public:
   set() {}
-  template <class It>
-  set(It b, It e)
-      : P(b, e) {}
+  template <class It> set(It b, It e) : P(b, e) {}
 };
 
 IMPBASE_END_NAMESPACE

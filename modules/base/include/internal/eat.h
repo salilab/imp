@@ -11,8 +11,7 @@
 #include <IMP/base/base_config.h>
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
-template <class T>
-void eat(const T&) {}
+template <class T> void eat(const T&) {}
 
 IMPBASE_END_INTERNAL_NAMESPACE
 

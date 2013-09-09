@@ -13,8 +13,7 @@
 struct PlusOne {
   typedef int result_type;
   typedef int argument_type;
-  template <class T>
-  result_type operator()(argument_type a, const T &) const {
+  template <class T> result_type operator()(argument_type a, const T &) const {
     return a + 1;
   }
 };

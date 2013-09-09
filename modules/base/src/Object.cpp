@@ -14,9 +14,7 @@
 
 IMPBASE_BEGIN_NAMESPACE
 
-Object::Object(std::string name) {
-  initialize(name);
-}
+Object::Object(std::string name) { initialize(name); }
 
 Object::Object() {
   IMPBASE_DEPRECATED_FUNCTION_DEF(2.1, "provide a name");
@@ -25,12 +23,12 @@ Object::Object() {
 
 void Object::initialize(std::string name) {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-    ++live_objects_;
+  ++live_objects_;
 #endif
 #if IMP_HAS_CHECKS >= IMP_USAGE
-    check_value_ = 111111111;
+  check_value_ = 111111111;
 #endif
-    count_ = 0;
+  count_ = 0;
 
 #if IMP_HAS_LOG >= IMP_PROGRESS
   log_level_ = DEFAULT;
@@ -75,7 +73,7 @@ Object::~Object() {
   }
 #endif
 
- IMP_INTERNAL_CHECK(get_ref_count() == 0,
+  IMP_INTERNAL_CHECK(get_ref_count() == 0,
                      "Deleting object which still has references");
 #if IMP_HAS_CHECKS >= IMP_USAGE
   check_value_ = 666666666;

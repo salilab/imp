@@ -27,8 +27,8 @@
   IMP_HELPER_MACRO_PUSH_WARNINGS const type_name &get_##data_name() const { \
     return var_name;                                                        \
   }                                                                         \
-  void set_##data_name(const type_name &v) { var_name = v; }                \
-  IMP_NO_SWIG(type_name &access_##data_name() {                             \
+  void set_##data_name(const type_name & v) { var_name = v; }               \
+  IMP_NO_SWIG(type_name & access_##data_name() {                            \
     return var_name;                                                        \
   }) IMP_HELPER_MACRO_POP_WARNINGS
 
@@ -70,7 +70,7 @@
     IMP_HASHABLE_INLINE(Name, {                                               \
       std::size_t value = IMP::base::hash_value(var0##_);                     \
       boost::hash_combine(value, IMP::base::hash_value(var1##_));             \
-      return value;                                                           \
+      return value;                                               \
     });                                                                       \
     IMP_SHOWABLE_INLINE(                                                      \
         Name,                                                                 \
@@ -95,12 +95,12 @@
     Name(type0 i0 = type0(), type1 i1 = type1(), type2 i2 = type2())          \
         : var0##_(i0), var1##_(i1), var2##_(i2) {                             \
       invariant;                                                              \
-    }                                                                         \
-    IMP_HASHABLE_INLINE(Name, {                                               \
+    }                                                           \
+    IMP_HASHABLE_INLINE(Name, {                                         \
       std::size_t value = IMP::base::hash_value(var0##_);                     \
       boost::hash_combine(value, IMP::base::hash_value(var1##_));             \
       boost::hash_combine(value, IMP::base::hash_value(var2##_));             \
-      return value;                                                           \
+      return value;                                               \
     });                                                                       \
     IMP_COMPARISONS(Name);                                                    \
     IMP_SHOWABLE_INLINE(                                                      \
@@ -129,13 +129,13 @@
          type3 i3 = type3())                                                  \
         : var0##_(i0), var1##_(i1), var2##_(i2), var3##_(i3) {                \
       invariant;                                                              \
-    }                                                                         \
-    IMP_HASHABLE_INLINE(Name, {                                               \
+    }                                                           \
+    IMP_HASHABLE_INLINE(Name, {                                         \
       std::size_t value = IMP::base::hash_value(var0##_);                     \
       boost::hash_combine(value, IMP::base::hash_value(var1##_));             \
       boost::hash_combine(value, IMP::base::hash_value(var2##_));             \
       boost::hash_combine(value, IMP::base::hash_value(var3##_));             \
-      return value;                                                           \
+      return value;                                               \
     });                                                                       \
     IMP_COMPARISONS(Name);                                                    \
     IMP_SHOWABLE_INLINE(                                                      \
@@ -167,14 +167,14 @@
          type3 i3 = type3(), type4 i4 = type4())                              \
         : var0##_(i0), var1##_(i1), var2##_(i2), var3##_(i3), var4##_(i4) {   \
       invariant;                                                              \
-    }                                                                         \
-    IMP_HASHABLE_INLINE(Name, {                                               \
+    }                                                           \
+    IMP_HASHABLE_INLINE(Name, {                                         \
       std::size_t value = IMP::base::hash_value(var0##_);                     \
       boost::hash_combine(value, IMP::base::hash_value(var1##_));             \
       boost::hash_combine(value, IMP::base::hash_value(var2##_));             \
       boost::hash_combine(value, IMP::base::hash_value(var3##_));             \
       boost::hash_combine(value, IMP::base::hash_value(var4##_));             \
-      return value;                                                           \
+      return value;                                               \
     });                                                                       \
     IMP_COMPARISONS(Name);                                                    \
     IMP_SHOWABLE_INLINE(                                                      \

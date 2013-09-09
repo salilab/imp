@@ -13,8 +13,6 @@
 #include "internal/PointerBase.h"
 #include "WeakPointer.h"
 
-
-
 IMPBASE_BEGIN_NAMESPACE
 
 //! A smart pointer to a reference counted object
@@ -36,7 +34,8 @@ IMPBASE_BEGIN_NAMESPACE
         When creating Object instances in C++, you should write code like:
         \code
         em::FitRestraint* create_fit_restraint(std::string mapname,
-                                               const kernel::ParticlesTemp &ps) {
+                                               const kernel::ParticlesTemp &ps)
+    {
           IMP_NEW(core::LeavesRefiner, lr, (atom::Hierarchy::get_traits()));
           base::Pointer<em::DensityMap> map= em::read_map("file_name.mrc");
           IMP_NEW(em::FitRestraint, fr, (ps, map, lr));
@@ -46,7 +45,8 @@ IMPBASE_BEGIN_NAMESPACE
         which is equivalent to
         \code
         IMP::em::FitRestraint* create_fit_restraint(std::string mapname,
-                                                    const kernel::ParticlesTemp &ps)
+                                                    const kernel::ParticlesTemp
+    &ps)
     {
           base::Pointer<core::LeavesRefiner> lr
               = new core::LeavesRefiner(atom::Hierarchy::get_traits());
@@ -86,17 +86,14 @@ IMPBASE_BEGIN_NAMESPACE
 template <class O>
 struct Pointer : internal::PointerBase<internal::RefCountedPointerTraits<O> > {
   typedef internal::PointerBase<internal::RefCountedPointerTraits<O> > P;
-  template <class Any>
-  Pointer(const Any& o)
-      : P(o) {}
+  template <class Any> Pointer(const Any& o) : P(o) {}
   Pointer() {}
   template <class OT>
   base::Pointer<O>& operator=(const internal::PointerBase<OT>& o) {
     P::operator=(o);
     return *this;
   }
-  template <class OT>
-  base::Pointer<O>& operator=(OT* o) {
+  template <class OT> base::Pointer<O>& operator=(OT* o) {
     P::operator=(o);
     return *this;
   }
@@ -127,7 +124,6 @@ struct Pointer : internal::PointerBase<internal::RefCountedPointerTraits<O> > {
 #endif
 };
 
-
 //! A smart pointer to a ref-counted  Object that is a class memeber
 /** A smart pointer to a reference counted Object, which is
     meant to be stored as a class member. This class is identical
@@ -144,20 +140,17 @@ struct Pointer : internal::PointerBase<internal::RefCountedPointerTraits<O> > {
     \see UncheckedWeakPointer
  */
 template <class O>
-struct PointerMember : internal::PointerBase<internal::PointerMemberTraits<O> >
-{
+struct PointerMember
+    : internal::PointerBase<internal::PointerMemberTraits<O> > {
   typedef internal::PointerBase<internal::PointerMemberTraits<O> > P;
-  template <class Any>
-  PointerMember(const Any& o)
-      : P(o) {}
+  template <class Any> PointerMember(const Any& o) : P(o) {}
   PointerMember() {}
   template <class OT>
   base::PointerMember<O>& operator=(const internal::PointerBase<OT>& o) {
     P::operator=(o);
     return *this;
   }
-  template <class OT>
-  base::PointerMember<O>& operator=(OT* o) {
+  template <class OT> base::PointerMember<O>& operator=(OT* o) {
     P::operator=(o);
     return *this;
   }
@@ -171,7 +164,6 @@ struct PointerMember : internal::PointerBase<internal::PointerMemberTraits<O> >
     P::operator=(o);
     return *this;
   }
-
 
 #ifdef IMP_DOXYGEN
   //! Relinquish control of the raw pointer stored in the PointerMember
@@ -189,8 +181,6 @@ struct PointerMember : internal::PointerBase<internal::PointerMemberTraits<O> >
 #endif
 };
 
-
-
 //! A reference counted pointer to an Object
 /**
     The object being pointed to must inherit from IMP::base::Object.
@@ -203,13 +193,11 @@ struct PointerMember : internal::PointerBase<internal::PointerMemberTraits<O> >
     \deprecated_at{2.1} Use ObjectMember instead
  */
 template <class O>
-struct OwnerPointer : internal::PointerBase<internal::PointerMemberTraits<O> >
-{
+struct OwnerPointer : internal::PointerBase<internal::PointerMemberTraits<O> > {
   typedef internal::PointerBase<internal::PointerMemberTraits<O> > P;
   /** \deprecated_at{2.1} Use ObjectMember instead */
   template <class Any>
-  IMPBASE_DEPRECATED_VALUE_DECL(2.1)
-  OwnerPointer(const Any& o)
+  IMPBASE_DEPRECATED_VALUE_DECL(2.1) OwnerPointer(const Any& o)
       : P(o) {}
   /** \deprecated_at{2.1} Use ObjectMember instead */
   IMPBASE_DEPRECATED_VALUE_DECL(2.1)
@@ -219,8 +207,7 @@ struct OwnerPointer : internal::PointerBase<internal::PointerMemberTraits<O> >
     P::operator=(o);
     return *this;
   }
-  template <class OT>
-  base::OwnerPointer<O>& operator=(OT* o) {
+  template <class OT> base::OwnerPointer<O>& operator=(OT* o) {
     P::operator=(o);
     return *this;
   }
@@ -251,27 +238,27 @@ struct OwnerPointer : internal::PointerBase<internal::PointerMemberTraits<O> >
 #endif
 };
 
-
 /******* streaming ********/
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 template <class T>
-inline std::ostream& operator<<(std::ostream& out, base::Pointer<T> o) {
+    inline std::ostream& operator<<(std::ostream& out, base::Pointer<T> o) {
   out << Showable(o.get());
   return out;
 }
 template <class T>
-inline std::ostream& operator<<(std::ostream& out, base::PointerMember<T> o) {
+    inline std::ostream& operator<<(std::ostream& out,
+                                    base::PointerMember<T> o) {
   out << Showable(o.get());
   return out;
 }
 
 template <class T>
-inline std::ostream& operator<<(std::ostream& out, base::OwnerPointer<T> o) {
+    inline std::ostream& operator<<(std::ostream& out,
+                                    base::OwnerPointer<T> o) {
   out << Showable(o.get());
   return out;
 }
 #endif
-
 
 IMPBASE_END_NAMESPACE
 

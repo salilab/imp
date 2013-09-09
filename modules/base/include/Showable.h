@@ -24,8 +24,7 @@ IMPBASE_BEGIN_NAMESPACE
    */
 class IMPBASEEXPORT Showable {
   std::string str_;
-  template <class T>
-  void show_ptr(const T *o) {
+  template <class T> void show_ptr(const T *o) {
     std::ostringstream oss;
     if (o) {
       oss << '"' << o->get_name() << '"';
@@ -36,25 +35,17 @@ class IMPBASEEXPORT Showable {
   }
 
  public:
-  template <class T>
-  explicit Showable(const T &t) {
+  template <class T> explicit Showable(const T &t) {
     std::ostringstream oss;
     oss << t;
     str_ = oss.str();
   }
-  template <class T>
-  explicit Showable(const T *o) {
-    show_ptr(o);
-  }
-  template <class T>
-  explicit Showable(T *o) {
-    show_ptr(o);
-  }
+  template <class T> explicit Showable(const T *o) { show_ptr(o); }
+  template <class T> explicit Showable(T *o) { show_ptr(o); }
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Showable);
   Showable(const std::string &str) : str_(str) {}
   Showable(const char *str) : str_(str) {}
-  template <class T, class TT>
-  Showable(const std::pair<T, TT> &p) {
+  template <class T, class TT> Showable(const std::pair<T, TT> &p) {
     std::ostringstream oss;
     oss << "(" << p.first << ", " << p.second << ")";
     str_ = oss.str();

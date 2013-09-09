@@ -26,7 +26,7 @@ namespace IMP {
 */
 const std::nullptr_t nullptr;
 
-  // depending on boost version
+// depending on boost version
 #elif defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)
 
 #if !defined(SWIG)
@@ -37,21 +37,16 @@ IMP_GCC_PRAGMA(diagnostic ignored "-Wc++0x-compat")
 #endif
 
 struct nullptr_t {
-  template <class O>
-  operator O *() const {
-    return static_cast<O *>(NULL);
-  }
+  template <class O> operator O *() const { return static_cast<O *>(NULL); }
   /*template <class O, class C>
   operator O C::*() const {
     return static_cast<const O*>(NULL);
     }*/
 };
-template <class O>
-inline bool operator==(O *a, nullptr_t o) {
+template <class O> inline bool operator==(O *a, nullptr_t o) {
   return a == static_cast<O *>(o);
 }
-template <class O>
-inline bool operator!=(O *a, nullptr_t o) {
+template <class O> inline bool operator!=(O *a, nullptr_t o) {
   return a != static_cast<O *>(o);
 }
 extern IMPBASEEXPORT const nullptr_t nullptr;

@@ -22,8 +22,7 @@ IMPBASE_BEGIN_NAMESPACE /** Define a typed index. This can help disambiguate
                             that it can be replaced by an integer everywhere, if
                             needed.
                         */
-template <class Tag>
-class Index : public Value {
+template <class Tag> class Index : public Value {
   int i_;
 
  public:
@@ -44,19 +43,16 @@ class Index : public Value {
     return i_;
   });
 };
-template <class Tag>
-inline unsigned int get_as_unsigned_int(Index<Tag> i) {
+template <class Tag> inline unsigned int get_as_unsigned_int(Index<Tag> i) {
   return i.get_index();
 }
-template <class Tag>
-inline Index<Tag> get_invalid_index() {
+template <class Tag> inline Index<Tag> get_invalid_index() {
   return Index<Tag>(-1);
 }
 
 /** This class implements a vector tied to a particular index.
  */
-template <class Tag, class T>
-class IndexVector : public Vector<T> {
+template <class Tag, class T> class IndexVector : public Vector<T> {
   typedef Vector<T> P;
 
  public:
