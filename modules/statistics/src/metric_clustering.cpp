@@ -166,61 +166,61 @@ PartitionalClustering *create_gromos_clustering (Metric *d, double cutoff)
   std::vector<Ints> neighbors(nitems);
   Floats weights(nitems);
   for(unsigned i=0;i<nitems;++i){
-   neighbors[i].push_back(static_cast<int>(i));
-   weights[i]=d->get_weight(i);
+    neighbors[i].push_back(static_cast<int>(i));
+    weights[i]=d->get_weight(i);
   }
   for(unsigned i=0;i<nitems-1;++i){
-   for(unsigned j=i+1;j<nitems;++j){
-    if(d->get_distance(i,j)<cutoff){
-     neighbors[i].push_back(static_cast<int>(j));
-     neighbors[j].push_back(static_cast<int>(i));
-     weights[i]+=d->get_weight(j);
-     weights[j]+=d->get_weight(i);
+    for(unsigned j=i+1;j<nitems;++j){
+      if(d->get_distance(i,j)<cutoff){
+        neighbors[i].push_back(static_cast<int>(j));
+        neighbors[j].push_back(static_cast<int>(i));
+        weights[i]+=d->get_weight(j);
+        weights[j]+=d->get_weight(i);
+      }
     }
-   }
   }
 
   double maxweight=1.0;
   while(maxweight>0.0)
-  {
-   // find the conf with maximum weight
-   maxweight=-1.0;
-   unsigned icenter;
-   for(unsigned i=0;i<weights.size();++i){
-    if(weights[i]>maxweight){
-     maxweight=weights[i];
-     icenter=i;
-    }
-   }
-
-   // no more clusters to find
-   if(maxweight<0.){break;}
-
-   // create the new cluster
-   Ints newcluster=neighbors[icenter];
-   clusters.push_back(newcluster);
-
-   // remove from pool
-   for(unsigned i=0;i<newcluster.size();++i){
-    unsigned k=0;
-    while(k<neighbors.size()){
-     if(neighbors[k][0]==newcluster[i]){
-      // eliminate the entire neighbor list
-      neighbors.erase(neighbors.begin()+k);
-      weights.erase(weights.begin()+k);
-     }else{
-      // and the element in all the other neighbor lists
-      Ints::iterator it=
-       find (neighbors[k].begin(), neighbors[k].end(), newcluster[i]);
-      if(it!=neighbors[k].end()){
-       neighbors[k].erase(it);
-       weights[k]-=d->get_weight(newcluster[i]);
+    {
+      // find the conf with maximum weight
+      maxweight=-1.0;
+      int icenter = -1;
+      for(unsigned i=0;i<weights.size();++i){
+        if(weights[i]>maxweight){
+          maxweight=weights[i];
+          icenter=i;
+        }
       }
-      k++;
-     }
+      IMP_INTERNAL_CHECK(icenter >= 0, "No center found");
+      // no more clusters to find
+      if(maxweight<0.){break;}
+
+      // create the new cluster
+      Ints newcluster=neighbors[icenter];
+      clusters.push_back(newcluster);
+
+      // remove from pool
+      for(unsigned i=0;i<newcluster.size();++i){
+        unsigned k=0;
+        while(k<neighbors.size()){
+          if(neighbors[k][0]==newcluster[i]){
+            // eliminate the entire neighbor list
+            neighbors.erase(neighbors.begin()+k);
+            weights.erase(weights.begin()+k);
+          }else{
+            // and the element in all the other neighbor lists
+            Ints::iterator it=
+              find (neighbors[k].begin(), neighbors[k].end(), newcluster[i]);
+            if(it!=neighbors[k].end()){
+              neighbors[k].erase(it);
+              weights[k]-=d->get_weight(newcluster[i]);
+            }
+            k++;
+          }
+        }
+      }
     }
-   }
-  }
   IMP_NEW(statistics::internal::TrivialPartitionalClustering,ret,(clusters));
   statistics::validate_partitional_clustering(ret, d->get_number_of_items());
   return ret.release();
