@@ -246,7 +246,7 @@ em::DensityMap* build_cn_dens_assembly(
 
 em::FittingSolutions fit_cn_assembly(
             atom::Hierarchies mhs,
-            int dn_symm_deg,
+            int /*dn_symm_deg*/,
             em::DensityMap *dmap,
             float threshold,
             const AlignSymmetric &aligner,
@@ -305,7 +305,7 @@ em::FittingSolutions fit_cn_assembly(
             const MolCnSymmAxisDetector &symm_mol,
             em::DensityMap *dmap,
             const CnSymmAxisDetector &symm_map,
-            int symm_deg, float threshold)
+            int symm_deg, float /*threshold*/)
 {
   //get all different ways of aligning the complex pca to the map pca
   algebra::Transformation3Ds all_trans =
@@ -384,7 +384,7 @@ float cn_symm_score(atom::Hierarchies mhs,
 multifit::FittingSolutionRecords prune_by_pca(
                              const std::string &param_fn,
                              const multifit::FittingSolutionRecords &sols,
-                             int dn) {
+                             int /*dn*/) {
   multifit::FittingSolutionRecords pruned_sols;
   internal::Parameters par(param_fn.c_str());
   //load the protein

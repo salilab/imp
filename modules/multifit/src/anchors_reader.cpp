@@ -16,7 +16,6 @@
 IMPMULTIFIT_BEGIN_NAMESPACE
 namespace {
 bool is_edges_line(const std::string &line) {
-  typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
   IMP_LOG_VERBOSE("going to parse:"<<line);
   std::vector<std::string> line_split;
@@ -32,7 +31,6 @@ bool is_edges_line(const std::string &line) {
 
 algebra::Vector3D parse_point_line(
                                    const std::string &line){
-  typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
   IMP_LOG_VERBOSE("going to parse:"<<line);
   std::vector<std::string> line_split;
@@ -50,7 +48,6 @@ algebra::Vector3D parse_point_line(
 }
 
 IntPair parse_edge_line(const std::string &line){
-  typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
   IMP_LOG_VERBOSE("going to parse:"<<line);
   std::vector<std::string> line_split;
@@ -162,8 +159,8 @@ void AnchorsData::setup_secondary_structure(kernel::Model *mdl){
 }
 
 void AnchorsData::set_secondary_structure_probabilities(
-                                                 const kernel::Particles &ssres_ps,
-                                                 const Ints &indices){
+                                            const kernel::Particles &ssres_ps,
+                                            const Ints &indices){
 
   IMP_USAGE_CHECK(secondary_structure_ps_.size()==points_.size(),
                   "Secondary structure has not been set up, "

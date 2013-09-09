@@ -6,6 +6,7 @@
 #include <IMP/core/RigidClosePairsFinder.h>
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/kernel/internal/InternalListSingletonContainer.h>
+#include <IMP/test/test_macros.h>
 #include <IMP/core/internal/CoreClosePairContainer.h>
 #include <boost/foreach.hpp>
 
@@ -119,7 +120,8 @@ namespace {
           = d.get_rigid_body().get_reference_frame();
         IMP::algebra::Vector3D oic = rf.get_global_coordinates(ic);
         double dist = IMP::algebra::get_distance(oic, oc);
-        assert(dist < .1);
+
+        IMP_TEST_LESS_THAN(dist, .1);
       }
       for (unsigned int j = 0; j < i; ++j) {
         IMP::kernel::ParticleIndexPair pp(ps[i], ps[j]);
@@ -130,15 +132,17 @@ namespace {
             && IMP::core::RigidMember::get_is_setup(m, ps[j])
             && IMP::core::RigidMember(m, ps[i]).get_rigid_body()
             == IMP::core::RigidMember(m, ps[j]).get_rigid_body()) {
-          assert(std::find(cpcpps.begin(), cpcpps.end(), pp) == cpcpps.end()
-                 && std::find(cpcpps.begin(), cpcpps.end(), ppi)
-                 == cpcpps.end());
+          IMP_TEST_TRUE(std::find(cpcpps.begin(), cpcpps.end(), pp)
+                        == cpcpps.end()
+                        && std::find(cpcpps.begin(), cpcpps.end(), ppi)
+                        == cpcpps.end());
         } else {
           double d = IMP::core::get_distance(d0, d1);
           if (d < 0) {
-            assert(std::find(cpcpps.begin(), cpcpps.end(), pp) != cpcpps.end()
-                   || std::find(cpcpps.begin(), cpcpps.end(), ppi)
-                   != cpcpps.end());
+            IMP_TEST_TRUE(std::find(cpcpps.begin(), cpcpps.end(), pp)
+                          != cpcpps.end()
+                          || std::find(cpcpps.begin(), cpcpps.end(), ppi)
+                          != cpcpps.end());
           }
         }
       }

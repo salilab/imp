@@ -23,7 +23,6 @@ namespace {
 
 internal::EulerAnglesList parse_angles_file(const std::string &filename) {
   internal::EulerAnglesList output;
-  typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   std::ifstream afile (filename.c_str());
   if (!afile.is_open()) {
     IMP_THROW("problem opening angles file"<<filename, IOException);

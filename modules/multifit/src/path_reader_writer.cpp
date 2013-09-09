@@ -19,7 +19,6 @@ namespace {
 Ints parse_path_line(
                      const std::string &line){
   Ints ret;
-  typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
   IMP_LOG_VERBOSE("going to parse:"<<line);
   std::vector<std::string> line_split;

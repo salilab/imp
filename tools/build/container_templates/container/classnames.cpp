@@ -125,7 +125,8 @@ void ClassnameContainerSet::do_before_evaluate() {
   versions_.resize(get_number_of_CLASSFUNCTIONNAME_containers(), -1);
   for (unsigned int i = 0; i < get_number_of_CLASSFUNCTIONNAME_containers();
        ++i) {
-    changed != update_version(get_CLASSFUNCTIONNAME_container(i), versions_[i]);
+    changed |= update_version(get_CLASSFUNCTIONNAME_container(i),
+                              versions_[i]);
   }
   set_is_changed(changed);
 }

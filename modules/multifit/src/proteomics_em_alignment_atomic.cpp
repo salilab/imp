@@ -470,19 +470,22 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints(){
   IMP_USAGE_CHECK(params_.get_fragments_params().frag_len_==1,
        "In atomic mode the fragment length can not be higher than one!\n");
   //====== initialize the two restraint sets
-  conn_rs_=new kernel::RestraintSet("connectivity");
+  conn_rs_=new kernel::RestraintSet(mdl_, 1.0, "connectivity");
   mdl_->add_restraint(conn_rs_);
-  conn_rs_with_filter_=new kernel::RestraintSet("connectivity_filtered");
+  conn_rs_with_filter_=new kernel::RestraintSet(mdl_, 1.0,
+                                                "connectivity_filtered");
   mdl_->add_restraint(conn_rs_with_filter_);
-  xlink_rs_=new kernel::RestraintSet("xlinks");
+  xlink_rs_=new kernel::RestraintSet(mdl_, 1.0,
+                                     "xlinks");
   mdl_->add_restraint(xlink_rs_);
-  xlink_rs_with_filter_=new kernel::RestraintSet("xlinks_filtered");
+  xlink_rs_with_filter_=new kernel::RestraintSet(mdl_, 1.0,
+                                                 "xlinks_filtered");
   mdl_->add_restraint(xlink_rs_with_filter_);
-  em_rs_=new kernel::RestraintSet("em");
+  em_rs_=new kernel::RestraintSet(mdl_, 1.0, "em");
   mdl_->add_restraint(em_rs_);
-  ev_rs_=new kernel::RestraintSet("ev");
+  ev_rs_=new kernel::RestraintSet(mdl_, 1.0, "ev");
   mdl_->add_restraint(ev_rs_);
-  dummy_rs_=new kernel::RestraintSet("dummy");
+  dummy_rs_=new kernel::RestraintSet(mdl_, 1.0, "dummy");
   mdl_->add_restraint(dummy_rs_);
   //====== set proteins map
   std::map<int,Particle *> prot_ind_to_particle_map;
@@ -936,7 +939,8 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints(){
   std::cout<<"========4"<<std::endl;
   mtb.show();
   kernel::ParticlePairsTemp pps=mtb.get_mst_dependency();
-  for(kernel::ParticlePairsTemp::iterator it = pps.begin(); it != pps.end(); it++){
+  for(kernel::ParticlePairsTemp::iterator it = pps.begin();
+      it != pps.end(); it++){
     std::stringstream name;
     name<<"dummy."<<(*it)[0]->get_name()<<"."<<(*it)[1]->get_name();
     std::cout<<"Adding dummy restraint: "<< name.str()<<std::endl;

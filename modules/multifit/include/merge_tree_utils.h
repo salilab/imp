@@ -1,5 +1,5 @@
 /**
- *  \file merge_tree_utils.h
+ *  \file multifit/merge_tree_utils.h
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
@@ -32,7 +32,8 @@ namespace MTU {
 
 class IMPMULTIFITEXPORT DummyRestraint : public kernel::Restraint {
 public:
-  DummyRestraint(kernel::Particle *a,Particle *b) : p1_(a),p2_(b){}
+  DummyRestraint(kernel::Particle *a, kernel::Particle *b) :
+    kernel::Restraint(a->get_model(), "DummyRestraint%1%"), p1_(a),p2_(b){}
   virtual double
   unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
      const IMP_OVERRIDE;
