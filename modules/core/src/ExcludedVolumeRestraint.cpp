@@ -24,7 +24,7 @@
 #include <IMP/core/internal/CoreCloseBipartitePairContainer.h>
 #include <IMP/core/internal/close_pairs_helpers.h>
 #include <IMP/algebra/eigen_analysis.h>
-#include <boost/lambda/lambda.hpp>
+#include <boost/foreach.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
