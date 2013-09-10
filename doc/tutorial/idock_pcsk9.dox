@@ -5,7 +5,7 @@
 \section idock_pcsk9_intro Introduction
 
 This example demonstrates the
-[integrative docking protocol](../html/integrative_docking/)
+[integrative docking protocol](../html/impintegrative_docking.html)
 by application
 to the PCSK9 antigen–J16 Fab antibody complex. It uses a command line tool
 called <tt>idock.py</tt>. For full help on this tool, run from a command line:
