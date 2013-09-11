@@ -586,26 +586,8 @@ class _TestResult(unittest.TextTestResult):
     def __init__(self, stream=None, descriptions=None, verbosity=None):
         super(_TestResult, self).__init__(stream, descriptions, verbosity)
         self.all_tests = []
-        self._test_names = {}
-        self._duplicated_tests = {}
 
     def stopTestRun(self):
-        # Check for multiple tests which have the same name. Since tests are
-        # tracked by name, duplicates will make it difficult for developers
-        # to figure out which tests are failing. Report duplicates as an
-        # extra test failure.
-        class _DuplicateTest(object):
-            def shortDescription(self):
-                return 'Duplicate test names found'
-
-        if len(self._duplicated_tests) > 0:
-            self.errors.append((_DuplicateTest(),
-                                'Test case names must be unique, so that '
-                                'failures can be easily tracked.\n'
-                                'Please rename test(s) so that they are. '
-                                'The following test case names\n'
-                                'are duplicated:\n' \
-                                + '\n'.join(self._duplicated_tests.keys())))
         if 'IMP_TEST_DETAIL_DIR' in os.environ:
             fname = os.path.join(os.environ['IMP_TEST_DETAIL_DIR'],
                                  os.path.basename(sys.argv[0]))
@@ -628,10 +610,6 @@ class _TestResult(unittest.TextTestResult):
         if detail is not None and not isinstance(detail, str):
             detail = self._exc_info_to_string(detail, test)
         test_name = self.getDescription(test)
-        if test_name in self._test_names:
-            self._duplicated_tests[test_name] = None
-        else:
-            self._test_names[test_name] = None
         self.all_tests.append({'name': test_name,
                                'time': pv, 'state': state, 'detail': detail})
 
