@@ -17,6 +17,7 @@
 #!/usr/bin/env python
 
 import IMP
+import IMP.base
 import IMP.core
 import IMP.atom
 import IMP.algebra
@@ -66,9 +67,8 @@ def quick_test():
 if __name__ == '__main__':
 
     import sys
-    import optparse
 
-    P = optparse.OptionParser()
+    P = IMP.OptionParser()
     P.add_option('--input_pdb', '-i', action='store', type='string',
         help='input PDB file (required)')
     P.add_option('--input_lib', '-l', action='store', type='string',
@@ -77,10 +77,8 @@ if __name__ == '__main__':
         help='output PDB file (required)')
     P.add_option('--verbose', '-v', action='store_true',
         help='show more messages')
-    P.add_option('--run_quick_test', action='store_true',
-        help='run quick test')
     opts, args = P.parse_args()
-    if opts.run_quick_test or \
+    if IMP.base.get_bool_flag('run_quick_test') or \
        not (opts.input_pdb or opts.input_lib or opts.output_pdb):
         quick_test()
         sys.exit(0)
