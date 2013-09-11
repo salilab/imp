@@ -4,7 +4,7 @@ __doc__ = "Generate a Connolly surface for a PDB."
 
 import IMP.atom
 import IMP.multifit
-from optparse import OptionParser
+from IMP import OptionParser
 
 def parse_args():
     usage = """%prog [options] <pdb file name>

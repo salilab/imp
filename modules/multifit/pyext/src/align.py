@@ -5,7 +5,7 @@ __doc__ = "Align proteomics graph with the EM map."
 #analyse the ensemble, first we will do the rmsd stuff
 import sys
 import IMP.multifit
-from optparse import OptionParser
+from IMP import OptionParser
 
 class progressBar:
     def __init__(self, minValue = 0, maxValue = 10, totalWidth=12):

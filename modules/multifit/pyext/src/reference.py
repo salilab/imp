@@ -4,7 +4,7 @@ __doc__ = "Compare output models to a reference structure."
 
 #analyse the ensemble, first we will do the rmsd stuff
 import IMP.multifit
-from optparse import OptionParser
+from IMP import OptionParser
 
 
 def get_placement_scores_from_coordinates(model_components_coords,

@@ -5,7 +5,7 @@ __doc__ = "Generate complete models from Chimera transformations file."
 import sys
 import IMP
 import IMP.atom
-from optparse import OptionParser
+from IMP import OptionParser
 
 def parse_args():
     usage = """%prog [options] <subunit> <symmetry degree>

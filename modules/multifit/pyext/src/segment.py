@@ -4,7 +4,7 @@ __doc__ = "Anchor graph segmentation of a density map."
 
 import IMP.multifit
 import IMP.em
-from optparse import OptionParser
+from IMP import OptionParser
 
 def parse_args():
     usage = """%prog [options] <density.mrc> <number of clusters>

@@ -4,7 +4,7 @@ __doc__ = "Score each of a set of combinations."
 
 #analyse the ensemble, first we will do the rmsd stuff
 import IMP.multifit
-from optparse import OptionParser
+from IMP import OptionParser
 
 def get_color_map():
     colors={}

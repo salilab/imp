@@ -4,7 +4,7 @@ __doc__ = "Write assembly transformation file in other formats."
 
 import IMP
 import IMP.multifit
-from optparse import OptionParser
+from IMP import OptionParser
 
 class Formatter(object):
     def __init__(self, fh):

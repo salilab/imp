@@ -2,7 +2,7 @@
 
 __doc__ = "Cluster assembly solutions."
 
-from optparse import OptionParser
+from IMP import OptionParser
 import itertools
 import math
 import IMP.multifit

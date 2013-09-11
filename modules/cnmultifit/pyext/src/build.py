@@ -3,7 +3,7 @@
 __doc__ = "Build cyclic symmetric complexes in their density map."
 
 import IMP.cnmultifit
-from optparse import OptionParser
+from IMP import OptionParser
 
 def parse_args():
     usage = """%prog [options] <parameter file>

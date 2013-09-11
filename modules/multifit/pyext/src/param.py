@@ -4,7 +4,7 @@ __doc__ = 'Build initial parameters files.'
 
 import shutil
 import IMP.multifit
-from optparse import OptionParser
+from IMP import OptionParser
 
 def parse_args():
     usage = """%prog [options] <assembly name> <subunits file>

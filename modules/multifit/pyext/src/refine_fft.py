@@ -6,7 +6,7 @@ import math
 import IMP.multifit
 import IMP.atom
 import IMP.em
-from optparse import OptionParser
+from IMP import OptionParser
 import os
 import sys
 
