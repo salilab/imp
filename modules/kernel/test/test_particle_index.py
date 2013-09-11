@@ -10,5 +10,11 @@ class Tests(IMP.test.TestCase):
         print strpi
         self.assertEqual(strpi, "1")
 
+    def test_indexes(self):
+        """Check that ParticleIndexesAdaptor works"""
+        pis = [IMP.kernel.ParticleIndex(i) for i in range(0,10)]
+        opis = IMP.kernel._take_particle_indexes_adaptor(pis)
+        self.assertEqual(pis, opis)
+
 if __name__ == '__main__':
     IMP.test.main()

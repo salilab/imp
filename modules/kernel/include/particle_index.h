@@ -68,13 +68,9 @@ class IMPKERNELEXPORT ParticleIndexesAdaptor
   ParticleIndexesAdaptor(const Particles &ps);
 #endif
   ParticleIndexesAdaptor(const ParticlesTemp &ps);
-#if defined(IMP_SWIG_WRAPPER)
-  // make sure we copy it in the swig wrapper
-  ParticleIndexesAdaptor(const ParticleIndexes& pi, bool = true) :
-    tmp_(new ParticleIndexes(pi)), val_(tmp_.get()) {}
-#else
-  ParticleIndexesAdaptor(const ParticleIndexes& pi) : val_(&pi) {}
-#endif
+  ParticleIndexesAdaptor(const ParticleIndexes& pi) :
+    tmp_(new ParticleIndexes(pi)),
+    val_(tmp_.get()) {}
   ParticleIndexesAdaptor(): tmp_(new ParticleIndexes()), val_(tmp_.get()) {}
 #ifndef SWIG
   typedef ParticleIndexes::value_type value_type;
