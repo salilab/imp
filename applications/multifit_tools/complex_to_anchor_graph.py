@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from optparse import OptionParser
+from IMP import OptionParser
 import IMP.em
 import IMP.multifit
 def main():
