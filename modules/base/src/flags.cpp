@@ -89,7 +89,7 @@ void add_bool_flag(std::string name, std::string description) {
 }
 
 bool get_bool_flag(std::string name) {
-  return internal::variables_map.count(name);
+  return internal::variables_map[name].as<bool>();
 }
 
 void add_float_flag(std::string name, double default_value,
