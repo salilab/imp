@@ -4,13 +4,13 @@
 
 \section multifit_3sfd_intro Introduction
 
-In this example, [MultiFit](../html/impmultifit_tools.html)
+In this example, [MultiFit](@ref impmultifit_tools)
 is used to build a model of porcine mitochondrial
 respiratory complex II (PDB id 3sfd), using crystal structures of its
 4 constituent proteins, a cryo-electron microscopy (EM) map of the entire
 complex, and information from proteomics.
 
-(See also the [EMageFit example](emagefit_3sfd.html) for building models
+(See also the [EMageFit example](@ref emagefit_3sfd) for building models
 using 2D EM class averages instead of 3D maps.)
 
 All steps in the procedure use a command line tool called
