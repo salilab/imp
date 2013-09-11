@@ -331,5 +331,4 @@ install_deref(${CMAKE_BINARY_DIR}/doc/examples *
 # Try to ensure that ctest doesn't truncate benchmark output
 file(WRITE "${CMAKE_BINARY_DIR}/CTestCustom.cmake"
 "SET(CTEST_CUSTOM_MAXIMUM_PASSED_TEST_OUTPUT_SIZE 4096)
-SET(CTEST_CUSTOM_MAXIMUM_FAILED_TEST_OUTPUT_SIZE 4096)
 ")
