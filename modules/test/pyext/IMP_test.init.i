@@ -551,8 +551,8 @@ class TestCase(unittest.TestCase):
         r = self.run_python_module(module, ['--help'])
         out, err = r.communicate()
         self.assertEqual(r.returncode, 0)
-        self.assertEqual(err, "")
-        self.assertNotEqual(out, "")
+        self.assertNotEqual(err, "")
+        self.assertEqual(out, "")
 
 
 class _ExecDictProxy(object):
