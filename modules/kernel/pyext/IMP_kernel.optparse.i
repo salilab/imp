@@ -9,6 +9,8 @@ class OptionParser(optparse.OptionParser):
        (see IMP::base::setup_from_argv()).
     """
 
+    _use_boost_parser = True
+
     def __init__(self, *args, **kwargs):
         # Don't add --help or --version options (since the Boost
         # option parser handles those)
@@ -22,28 +24,37 @@ class OptionParser(optparse.OptionParser):
     # Don't complain if invalid options are encountered; pass them through
     # unmodified
     def _process_long_opt(self, rargs, values):
-        try:
+        if self._use_boost_parser:
+            try:
+                optparse.OptionParser._process_long_opt(self, rargs, values)
+            except optparse.BadOptionError, err:
+                self.largs.append(err.opt_str)
+        else:
             optparse.OptionParser._process_long_opt(self, rargs, values)
-        except optparse.BadOptionError, err:
-            self.largs.append(err.opt_str)
     def _process_short_opts(self, rargs, values):
-        try:
+        if self._use_boost_parser:
+            try:
+                optparse.OptionParser._process_short_opts(self, rargs, values)
+            except optparse.BadOptionError, err:
+                self.largs.append(err.opt_str)
+        else:
             optparse.OptionParser._process_short_opts(self, rargs, values)
-        except optparse.BadOptionError, err:
-            self.largs.append(err.opt_str)
 
     def _process_args(self, largs, rargs, values):
-        # If the special argument -- is present, preserve it (by default
-        # optparse will remove it). Otherwise, the Boost option parser will
-        # not treat positional arguments after -- correctly.
-        try:
-            dashdash = rargs.index('--')
-        except ValueError:
-            dashdash = len(rargs)
-        saved_args = rargs[dashdash:]
-        del rargs[dashdash:]
-        optparse.OptionParser._process_args(self, largs, rargs, values)
-        rargs.extend(saved_args)
+        if self._use_boost_parser:
+            # If the special argument -- is present, preserve it (by default
+            # optparse will remove it). Otherwise, the Boost option parser will
+            # not treat positional arguments after -- correctly.
+            try:
+                dashdash = rargs.index('--')
+            except ValueError:
+                dashdash = len(rargs)
+            saved_args = rargs[dashdash:]
+            del rargs[dashdash:]
+            optparse.OptionParser._process_args(self, largs, rargs, values)
+            rargs.extend(saved_args)
+        else:
+            optparse.OptionParser._process_args(self, largs, rargs, values)
 
     def parse_args(self, num_positional=None):
         """Parse the command line and return options and positional arguments.
@@ -62,6 +73,8 @@ class OptionParser(optparse.OptionParser):
         import IMP.base
         # First, parse the command line with optparse
         opts, args = optparse.OptionParser.parse_args(self)
+        if not self._use_boost_parser:
+            return opts, args
         orig_desc = self.description
         orig_usage = self.usage
         if self.usage:

@@ -527,6 +527,7 @@ class TestCase(unittest.TestCase):
            a subprocess.Popen-like object containing the child stdin,
            stdout and stderr.
         """
+        import IMP.kernel
         if type(module) == type(os):
             mod = module
         else:
@@ -536,10 +537,13 @@ class TestCase(unittest.TestCase):
             modpath = modpath[:-1]
         if type(module) == type(os):
             old_sys_argv = sys.argv
+            # boost parser doesn't like being called multiple times per process
+            IMP.kernel.OptionParser._use_boost_parser = False
             try:
                 sys.argv = [modpath] + args
                 return module.main()
             finally:
+                IMP.kernel.OptionParser._use_boost_parser = True
                 sys.argv = old_sys_argv
         else:
             return _SubprocessWrapper(sys.executable, [modpath] + args)
