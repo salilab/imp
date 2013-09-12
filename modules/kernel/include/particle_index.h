@@ -46,13 +46,7 @@ class IMPKERNELEXPORT ParticleIndexAdaptor
 };
 
 /** Take Decorator, Particle or ParticleIndex. */
-class IMPKERNELEXPORT ParticleIndexesAdaptor
-#ifndef SWIG
-    // suppress swig warning that doesn't make sense and I can't make go away
-  : public base::InputAdaptor
-#else
-  : public base::InputAdaptor
-#endif
+class IMPKERNELEXPORT ParticleIndexesAdaptor: public base::InputAdaptor
       {
         boost::shared_ptr<ParticleIndexes> tmp_;
         const ParticleIndexes *val_;
