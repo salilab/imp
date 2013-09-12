@@ -300,9 +300,9 @@ namespace kernel {
 %include "IMP/kernel/TripletPredicate.h"
 %include "IMP/kernel/TripletContainer.h"
 %include "IMP/kernel/io.h"
+%include "IMP/kernel/particle_index.h"
 %include "IMP/kernel/internal/swig.h"
 %include "IMP/kernel/scoped.h"
-%include "IMP/kernel/particle_index.h"
 
 
 namespace IMP {
