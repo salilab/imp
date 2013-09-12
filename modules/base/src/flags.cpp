@@ -89,6 +89,9 @@ void add_bool_flag(std::string name, std::string description) {
 }
 
 bool get_bool_flag(std::string name) {
+  if (!internal::variables_map.count(name)) {
+    return false;
+  }
   return internal::variables_map[name].as<bool>();
 }
 
