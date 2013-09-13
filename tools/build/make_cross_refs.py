@@ -53,7 +53,7 @@ def get_function_link(name, et, mname):
     split= refid.split("_1")
     fname= "_1".join(split[:-1])+".html"
     tag= split[-1]
-    return "<a href=\""+mname + "/" + fname+"#"+tag+"\">"+nicename+"()</a>"
+    return "<a href=\"" + fname+"#"+tag+"\">"+nicename+"()</a>"
 
 def _add_to_list(table, key, value):
     _cleanup_name(key)
