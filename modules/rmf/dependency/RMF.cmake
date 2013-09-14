@@ -65,20 +65,9 @@ if(DEFINED RMF_INTERNAL)
     set(RMF_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/include ${RMF_BINARY_DIR}/include ${RMF_INCLUDE_PATH} CACHE INTERNAL "" FORCE)
     set(RMF_SWIG_PATH ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/swig CACHE INTERNAL "" FORCE)
 
+
     set(RMF_LIBRARIES RMF-lib  CACHE INTERNAL "" FORCE)
 
-    file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/RMF" "ok=True\nincludepath=\"${RMF_INCLUDE_PATH}\"\nswigpath=\"${RMF_SWIG_PATH}\"\nlibpath=\"${RMF_SWIG_PATH}\"\n")
-
-    if(NOT DEFINED IMP_RMF_PATHS_UPDATED)
-      message(STATUS "Updating paths for RMF <${IMP_RMF_PATHS_UPDATED}>")
-      set(IMP_PYTHONPATH ${CMAKE_BINARY_DIR}/src/dependency/RMF/ ${IMP_PYTHONPATH} CACHE INTERNAL "" FORCE)
-      set(IMP_LDPATH ${CMAKE_BINARY_DIR}/src/dependency/RMF/ ${IMP_LDPATH} CACHE INTERNAL "" FORCE)
-      set(IMP_PATH ${CMAKE_BINARY_DIR}/src/dependency/RMF/bin/ ${IMP_PATH} CACHE INTERNAL "" FORCE)
-      set(IMP_RMF_PATHS_UPDATED 1 CACHE INTERNAL "" FORCE)
-    endif(NOT DEFINED IMP_RMF_PATHS_UPDATED)
-
-    file(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}/src/dependency/RMF/" native_path)
-    set(ENV{PATH} "${native_path}${PATH_SEP}$ENV{PATH}")
-
+    file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/RMF" "ok=True\nincludepath=\"${RMF_INCLUDE_PATH}\"\nswigpath=\"${RMF_SWIG_PATH}\"\n")
   endif(IMP_STATIC)
 endif(DEFINED RMF_INTERNAL)
