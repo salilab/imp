@@ -45,7 +45,8 @@ atom::Bonded get_bonded(kernel::Particle *p) {
 }
 
 void create_bonds(RMF::NodeConstHandle fhc, RMF::AliasConstFactory af,
-                  const base::map<RMF::NodeConstHandle, kernel::Particle *> &map) {
+                  const base::map<RMF::NodeConstHandle,
+                  kernel::Particle *> &map) {
   RMF::NodeConstHandles children = fhc.get_children();
   if (fhc.get_type() == RMF::BOND && children.size() == 2) {
     RMF::NodeConstHandle bd0, bd1;
@@ -79,13 +80,16 @@ void create_bonds(RMF::FileConstHandle fhc, const RMF::NodeIDs &nhs,
 }
 
 void create_rigid_bodies(kernel::Model *m,
-                         const base::map<unsigned int, kernel::ParticlesTemp> &rbs) {
+                         const base::map<unsigned int,
+                         kernel::ParticlesTemp> &rbs) {
   IMP_FUNCTION_LOG;
-  for (base::map<unsigned int, kernel::ParticlesTemp>::const_iterator it = rbs.begin();
+  for (base::map<unsigned int, kernel::ParticlesTemp>::const_iterator it
+         = rbs.begin();
        it != rbs.end(); ++it) {
     // skip already created rigid bodies eg when there are multiple hierarchies
     // so we get here twice
     if (core::RigidMember::get_is_setup(it->second.front())) continue;
+    if (core::NonRigidMember::get_is_setup(it->second.front())) continue;
     IMP_LOG_TERSE("Creating rigid body " << it->first << " on " << it->second
                                          << std::endl);
     std::ostringstream oss;
@@ -95,12 +99,13 @@ void create_rigid_bodies(kernel::Model *m,
   }
 }
 
+  template<class Member>
 void fix_internal_coordinates(core::RigidBody rb, algebra::ReferenceFrame3D rf,
                               kernel::ParticleIndex pi) {
   // Make sure the internal coordinates of the particles match
   // This is needed to handle scripts that change them during optimation
   // and save the result out to RMF.
-  core::RigidMember rm(rb.get_model(), pi);
+  Member rm(rb.get_model(), pi);
   if (core::RigidBody::get_is_setup(rb.get_model(), pi)) {
     core::RigidBody crb(rb.get_model(), pi);
     algebra::ReferenceFrame3D crf = crb.get_reference_frame();
@@ -117,18 +122,24 @@ void fix_internal_coordinates(core::RigidBody rb, algebra::ReferenceFrame3D rf,
   }
 }
 
-void fix_rigid_body(const std::pair<core::RigidBody, kernel::ParticleIndexes> &in) {
+void fix_rigid_body(const std::pair<core::RigidBody,
+                    kernel::ParticleIndexes> &in) {
   // core::RigidMembers rms=in.second;
   core::RigidBody rb = in.first;
   rb.set_reference_frame_from_members(in.second);
   algebra::ReferenceFrame3D rf = rb.get_reference_frame();
   // fix rigid bodies that aren't rigid
   for (unsigned int i = 0; i < in.second.size(); ++i) {
-    fix_internal_coordinates(rb, rf, in.second[i]);
+    if (core::RigidMember::get_is_setup(rb.get_model(), in.second[i])) {
+      fix_internal_coordinates<core::RigidMember>(rb, rf, in.second[i]);
+    } else {
+      fix_internal_coordinates<core::NonRigidMember>(rb, rf, in.second[i]);
+    }
   }
 }
 }
-void HierarchyLoadLink::do_load_node(RMF::NodeConstHandle nh, kernel::Particle *o) {
+void HierarchyLoadLink::do_load_node(RMF::NodeConstHandle nh,
+                                     kernel::Particle *o) {
   if (rigid_factory_.get_is(nh)) {
     RMF::RigidParticleConst p = rigid_factory_.get(nh);
     RMF::Floats cs = p.get_coordinates();
@@ -171,7 +182,8 @@ void HierarchyLoadLink::do_load_node(RMF::NodeConstHandle nh, kernel::Particle *
   }
 }
 
-void HierarchyLoadLink::do_load_one(RMF::NodeConstHandle nh, kernel::Particle *o) {
+void HierarchyLoadLink::do_load_one(RMF::NodeConstHandle nh,
+                                    kernel::Particle *o) {
   RMF::FileConstHandle fh = nh.get_file();
   const ConstData &d = contents_.find(o)->second;
   IMP_LOG_VERBOSE("Loading hierarchy "
@@ -183,6 +195,9 @@ void HierarchyLoadLink::do_load_one(RMF::NodeConstHandle nh, kernel::Particle *o
     if (core::RigidMember::get_is_setup(d.get_particles()[i])) {
       rbs[core::RigidMember(d.get_particles()[i]).get_rigid_body()]
           .push_back(d.get_particles()[i]->get_index());
+    } else if (core::NonRigidMember::get_is_setup(d.get_particles()[i])) {
+      rbs[core::NonRigidMember(d.get_particles()[i]).get_rigid_body()]
+          .push_back(d.get_particles()[i]->get_index());
     }
   }
   std::for_each(rbs.begin(), rbs.end(), fix_rigid_body);
@@ -192,8 +207,10 @@ void HierarchyLoadLink::do_load_one(RMF::NodeConstHandle nh, kernel::Particle *o
                      "Invalid hierarchy loaded");
 }
 
-bool HierarchyLoadLink::setup_particle(kernel::Particle *root, RMF::NodeConstHandle nh,
-                                       kernel::Particle *p, kernel::Particle *rbp) {
+bool HierarchyLoadLink::setup_particle(kernel::Particle *root,
+                                       RMF::NodeConstHandle nh,
+                                       kernel::Particle *p,
+                                       kernel::Particle *rbp) {
   contents_[root].access_particles().push_back(p);
   contents_[root].access_nodes().push_back(nh.get_id());
   atom::Hierarchy hp = atom::Hierarchy::setup_particle(p);
@@ -321,7 +338,8 @@ Particle *HierarchyLoadLink::do_create(RMF::NodeConstHandle name) {
   return ret;
 }
 
-void HierarchyLoadLink::do_add_link_recursive(kernel::Particle *root, kernel::Particle *o,
+void HierarchyLoadLink::do_add_link_recursive(kernel::Particle *root,
+                                              kernel::Particle *o,
                                               RMF::NodeConstHandle node) {
   IMP_LOG_VERBOSE("Linking " << Showable(o) << " and " << node << std::endl);
   contents_[root].access_particles().push_back(o);
@@ -337,7 +355,8 @@ void HierarchyLoadLink::do_add_link_recursive(kernel::Particle *root, kernel::Pa
   }
 }
 
-void HierarchyLoadLink::do_add_link(kernel::Particle *o, RMF::NodeConstHandle node) {
+void HierarchyLoadLink::do_add_link(kernel::Particle *o,
+                                    RMF::NodeConstHandle node) {
   do_add_link_recursive(o, o, node);
 }
 HierarchyLoadLink::HierarchyLoadLink(RMF::FileConstHandle fh, kernel::Model *m)
@@ -449,9 +468,18 @@ void HierarchySaveLink::setup_node(kernel::Particle *p, RMF::NodeHandle n) {
     }
     unsigned int index = rigid_bodies_.find(rb)->second;
     n.set_value(rigid_body_key_, index);
+  } else if (core::NonRigidMember::get_is_setup(p)) {
+    kernel::Particle *rb = core::NonRigidMember(p).get_rigid_body();
+    if (rigid_bodies_.find(rb) == rigid_bodies_.end()) {
+      int index = rigid_bodies_.size();
+      rigid_bodies_[rb] = index;
+    }
+    unsigned int index = rigid_bodies_.find(rb)->second;
+    n.set_value(rigid_body_key_, index);
   }
 }
-void HierarchySaveLink::do_add_recursive(kernel::Particle *root, kernel::Particle *p,
+void HierarchySaveLink::do_add_recursive(kernel::Particle *root,
+                                         kernel::Particle *p,
                                          RMF::NodeHandle cur) {
   IMP_LOG_VERBOSE("Adding " << atom::Hierarchy(p) << std::endl);
   contents_[root].access_particles().push_back(p);

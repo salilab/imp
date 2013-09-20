@@ -22,6 +22,16 @@ class Tests(IMP.test.TestCase):
                 IMP.atom.Mass.setup_particle(p, .1)
                 r.add_child(IMP.atom.Hierarchy.setup_particle(p))
                 rbd.add_member(p)
+            for i in range(0,2):
+                p = IMP.kernel.Particle(m)
+                v= IMP.algebra.Vector3D(0,0,0)
+                v[i]=1
+                d=IMP.core.XYZR.setup_particle(p)
+                d.set_coordinates(v)
+                d.set_radius(.5)
+                IMP.atom.Mass.setup_particle(p, .1)
+                r.add_child(IMP.atom.Hierarchy.setup_particle(p))
+                rbd.add_non_rigid_member(p.get_index())
             fn= self.get_tmp_file_name("rigid_implicit."+suffix)
             f= RMF.create_rmf_file(fn)
             IMP.rmf.add_hierarchies(f, [r])
