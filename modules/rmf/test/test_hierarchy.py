@@ -111,6 +111,24 @@ class Tests(IMP.test.TestCase):
             res= IMP.atom.get_by_type(h, IMP.atom.RESIDUE_TYPE)
             nres= IMP.atom.get_next_residue(IMP.atom.Residue(res[0]))
 
+    def test_fragment(self):
+        """Test fragments"""
+        for suffix in RMF.suffixes:
+            m= IMP.kernel.Model()
+            p = m.add_particle("frag")
+            idxs =  [0,3,5,6,7]
+            fr = IMP.atom.Fragment.setup_particle(m, p, idxs)
+            d = IMP.core.XYZR.setup_particle(m, p)
+            IMP.atom.Mass.setup_particle(m, p, 1)
+            name=self.get_tmp_file_name("test_frag."+suffix)
+            f= RMF.create_rmf_file(name)
+            IMP.rmf.add_hierarchy(f, fr)
+            IMP.rmf.save_frame(f, 0);
+            del f
+            f= RMF.open_rmf_file_read_only(name)
+            frb = IMP.rmf.create_hierarchies(f, m)[0]
+            nidxs = IMP.atom.Fragment(frb).get_residue_indexes()
+
 
 if __name__ == '__main__':
     unittest.main()

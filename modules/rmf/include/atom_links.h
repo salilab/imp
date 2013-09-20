@@ -24,8 +24,8 @@
 IMPRMF_BEGIN_NAMESPACE
 
 class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<kernel::Particle> {
-  IMP_NAMED_TUPLE_2(ConstData, ConstDatas, RMF::NodeIDs, nodes, kernel::ParticlesTemp,
-                    particles, );
+  IMP_NAMED_TUPLE_2(ConstData, ConstDatas, RMF::NodeIDs, nodes,
+                    kernel::ParticlesTemp, particles, );
   typedef SimpleLoadLink<kernel::Particle> P;
   base::Pointer<Model> m_;
   RMF::ParticleConstFactory particle_factory_;
@@ -39,6 +39,7 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<kernel::Particle> {
   RMF::DiffuserConstFactory diffuser_factory_;
   RMF::TypedConstFactory typed_factory_;
   RMF::DomainConstFactory domain_factory_;
+  RMF::FragmentConstFactory fragment_factory_;
   RMF::ReferenceFrameConstFactory reference_frame_factory_;
   RMF::IndexKey rigid_body_key_;
 
@@ -47,7 +48,9 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<kernel::Particle> {
   bool get_is(RMF::NodeConstHandle nh) const {
     return nh.get_type() == RMF::REPRESENTATION;
   }
-  bool setup_particle(kernel::Particle *root, RMF::NodeConstHandle nh, kernel::Particle *p,
+  bool setup_particle(kernel::Particle *root,
+                      RMF::NodeConstHandle nh,
+                      kernel::Particle *p,
                       kernel::Particle *rbp);
 
  protected:
@@ -67,7 +70,8 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<kernel::Particle> {
   /** Overload this to take specific action on linking
       a member of the hierarchy.
       \unstable{do_add_link_recursive} */
-  virtual void do_add_link_recursive(kernel::Particle *root, kernel::Particle *o,
+  virtual void do_add_link_recursive(kernel::Particle *root,
+                                     kernel::Particle *o,
                                      RMF::NodeConstHandle node);
 
   void do_add_link(kernel::Particle *o, RMF::NodeConstHandle node);
@@ -94,6 +98,7 @@ class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<kernel::Particle> {
   RMF::DiffuserFactory diffuser_factory_;
   RMF::TypedFactory typed_factory_;
   RMF::DomainFactory domain_factory_;
+  RMF::FragmentFactory fragment_factory_;
   RMF::ReferenceFrameFactory reference_frame_factory_;
   RMF::IndexKey rigid_body_key_;
 
@@ -108,7 +113,9 @@ class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<kernel::Particle> {
   void setup_node(kernel::Particle *p, RMF::NodeHandle n);
   void do_add(kernel::Particle *p, RMF::NodeHandle cur);
   void do_save_one(kernel::Particle *o, RMF::NodeHandle nh);
-  RMF::NodeType get_type(kernel::Particle *) const { return RMF::REPRESENTATION; }
+  RMF::NodeType get_type(kernel::Particle *) const {
+    return RMF::REPRESENTATION;
+  }
 
  protected:
   virtual void do_add_recursive(kernel::Particle *root, kernel::Particle *p,

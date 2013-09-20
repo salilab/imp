@@ -13,6 +13,7 @@
 #include <IMP/atom/Domain.h>
 #include <IMP/atom/Diffusion.h>
 #include <IMP/atom/Copy.h>
+#include <IMP/atom/Fragment.h>
 #include <IMP/core/Typed.h>
 #include <IMP/display/Colored.h>
 #include <algorithm>
@@ -256,13 +257,17 @@ bool HierarchyLoadLink::setup_particle(kernel::Particle *root,
                        "Setup failed for residue");
   }
   if (domain_factory_.get_is(nh)) {
-    IMP_LOG_VERBOSE("domian " << std::endl);
+    IMP_LOG_VERBOSE("domain " << std::endl);
     int b, e;
     boost::tie(b, e) = domain_factory_.get(nh).get_indexes();
     if (e == b + 1) {
     } else {
       atom::Domain::setup_particle(p, IntRange(b, e));
     }
+  }
+  if (fragment_factory_.get_is(nh)) {
+    RMF::Indexes idx = fragment_factory_.get(nh).get_indexes();
+    atom::Fragment::setup_particle(p, Ints(idx.begin(), idx.end()));
   }
   if (colored_factory_.get_is(nh)) {
     IMP_LOG_VERBOSE("colored " << std::endl);
@@ -373,6 +378,7 @@ HierarchyLoadLink::HierarchyLoadLink(RMF::FileConstHandle fh, kernel::Model *m)
       diffuser_factory_(fh),
       typed_factory_(fh),
       domain_factory_(fh),
+      fragment_factory_(fh),
       reference_frame_factory_(fh) {
   RMF::Category cat = fh.get_category("IMP");
   rigid_body_key_ = fh.get_key<RMF::IndexTraits>(cat, "rigid body");
@@ -432,6 +438,12 @@ void HierarchySaveLink::setup_node(kernel::Particle *p, RMF::NodeHandle n) {
     domain_factory_.get(n)
       .set_indexes(std::make_pair(d.get_index_range().first,
                                   d.get_index_range().second));
+  }
+  if (atom::Fragment::get_is_setup(p)) {
+    atom::Fragment d(p);
+    Ints idx = d.get_residue_indexes();
+    fragment_factory_.get(n)
+      .set_indexes(RMF::Indexes(idx.begin(), idx.end()));
   }
   if (display::Colored::get_is_setup(p)) {
     display::Colored d(p);
@@ -566,6 +578,7 @@ HierarchySaveLink::HierarchySaveLink(RMF::FileHandle fh)
       diffuser_factory_(fh),
       typed_factory_(fh),
       domain_factory_(fh),
+      fragment_factory_(fh),
       reference_frame_factory_(fh),
       forces_(false),
       force_factory_(fh),
