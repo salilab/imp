@@ -442,8 +442,10 @@ void HierarchySaveLink::setup_node(kernel::Particle *p, RMF::NodeHandle n) {
   if (atom::Fragment::get_is_setup(p)) {
     atom::Fragment d(p);
     Ints idx = d.get_residue_indexes();
-    fragment_factory_.get(n)
-      .set_indexes(RMF::Indexes(idx.begin(), idx.end()));
+    if (!idx.empty()) {
+      fragment_factory_.get(n)
+        .set_indexes(RMF::Indexes(idx.begin(), idx.end()));
+    }
   }
   if (display::Colored::get_is_setup(p)) {
     display::Colored d(p);
