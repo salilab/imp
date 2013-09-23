@@ -7,6 +7,8 @@ import copy
 import IMP.test
 import IMP.isd
 
+IMP.set_log_level(0)
+
 class MockArgs:
     def __init__(self,**kwargs):
         for k,v in kwargs.iteritems():

@@ -5,11 +5,14 @@ import IMP
 import IMP.atom
 import IMP.container
 import IMP.isd
-from IMP.isd.shared_functions import sfo_common
-from IMP.isd.Statistics import Statistics
-from IMP.isd.Entry import Entry
+import IMP.isd.shared_functions import sfo_common
+import IMP.isd.Statistics import Statistics
+import IMP.isd.Entry import Entry
+sfo_common = IMP.isd.shared_functions.sfo_common
+Statistics = IMP.isd.Statistics.Statistics
+Entry = IMP.isd.Entry.Entry
 
-from math import sqrt
+import math
 
 kB= (1.381 * 6.02214) / 4184.0
 
@@ -48,16 +51,17 @@ class sfo(sfo_common):
         "prepare md and mc sims"
         self.inv_temp = lambda_temp
         self.md_tau = tau
-        self._md = self._setup_md(thermostat = 'berendsen',
+        self._md, self._os = self._setup_md(self._p['prot'],
+                         thermostat = 'berendsen',
                          temperature = 1/(kB*lambda_temp),
                          coupling = tau)
         rs_scales=[self._rs['NOE'],self._rs['prior']]
         self._mc_sigma, self._nm_sigma = \
-                self.init_simulation_setup_scale_mc(
+                self.init_simulation_setup_nuisance_mc(
                         self._p['sigma'], 1/(kB*lambda_temp),
                             mc_restraints=rs_scales, nm_stepsize=0.1)
         self._mc_gamma, self._nm_gamma = \
-                self.init_simulation_setup_scale_mc(
+                self.init_simulation_setup_nuisance_mc(
                         self._p['gamma'], 1/(kB*lambda_temp),
                             mc_restraints=rs_scales, nm_stepsize=0.1)
 
@@ -70,6 +74,7 @@ class sfo(sfo_common):
         def get_ephys():
             return self._rs['phys_bonded'].evaluate(False) \
                     + self._rs['phys'].evaluate(False)
+        #the following line will raise a warning in debug mode, but it's ok.
         stat.add_entry('global', entry=Entry('E_phys', '%10f', get_ephys))
         stat.add_entry('global', entry=Entry('E_NOE', '%10f',
                                         self._rs['NOE'].evaluate, False))
@@ -127,7 +132,7 @@ class sfo(sfo_common):
         "sets inverse temperature of mc and md sims (used in replica exchange)"
         #MD: temperature and rescale velocities
         self._md.set_thermostat(2, 1.0/(kB*inv_temp), self.md_tau)
-        self._md.rescale_velocities(sqrt(self.inv_temp/inv_temp))
+        self._md.rescale_velocities(math.sqrt(self.inv_temp/inv_temp))
         #MC: temperature
         self._mc_sigma.set_temperature(1.0/inv_temp)
         self._mc_gamma.set_temperature(1.0/inv_temp)
@@ -168,6 +173,6 @@ if __name__ == '__main__':
     for i in xrange(100):
         print "\r%d" % i,
         sys.stdout.flush()
-        sfo.do_md(10)
         sfo.do_mc(10)
+        sfo.do_md(10)
         sfo.write_stats()

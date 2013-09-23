@@ -31,8 +31,7 @@ class Tests(IMP.test.TestCase):
         self.V_obs=3.0
         self.ls = \
            IMP.container.ListPairContainer([(self.p0,self.p1),(self.p0,self.p2)])
-        self.noe = IMP.isd.MarginalNOERestraint()
-        self.noe.set_model(self.m)
+        self.noe = IMP.isd.MarginalNOERestraint(self.m)
 
     def testValuePDist1(self):
         """Test MarginalNOERestraint probability on three particles"""

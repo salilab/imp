@@ -14,8 +14,9 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-vonMisesKappaJeffreysRestraint::vonMisesKappaJeffreysRestraint(kernel::Particle *p)
-  : kappa_(p) {}
+vonMisesKappaJeffreysRestraint::vonMisesKappaJeffreysRestraint(
+        kernel::Model *m, kernel::Particle *p) :
+    Restraint(m, "vonMisesKappaJeffreysRestraint%1%"), kappa_(p) {}
 
 void vonMisesKappaJeffreysRestraint::update_bessel(double kappaval) {
   //compute bessel functions

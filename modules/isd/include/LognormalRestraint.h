@@ -13,12 +13,12 @@
 #include <IMP/restraint_macros.h>
 #include <IMP/isd/isd_config.h>
 #include <IMP/kernel/Particle.h>
-#include <IMP/isd/ISDRestraint.h>
+#include <IMP/kernel/Restraint.h>
 
 IMPISD_BEGIN_NAMESPACE
 
 //! Normal probability distribution as a restraint
-class IMPISDEXPORT LognormalRestraint : public ISDRestraint
+class IMPISDEXPORT LognormalRestraint : public kernel::Restraint
 {
 private:
   base::Pointer<kernel::Particle> px_;
@@ -41,7 +41,8 @@ public:
    * If F is the identity function, this is a gaussian (e.g. harmonic)
    * restraint.
    */
-  LognormalRestraint(kernel::Particle *x, kernel::Particle *mu, kernel::Particle *sigma);
+  LognormalRestraint(kernel::Particle *x, kernel::Particle *mu, kernel::Particle
+          *sigma);
   LognormalRestraint(double x, kernel::Particle *mu, kernel::Particle *sigma);
   LognormalRestraint(kernel::Particle *x, double mu, kernel::Particle *sigma);
   LognormalRestraint(kernel::Particle *x, kernel::Particle *mu, double sigma);

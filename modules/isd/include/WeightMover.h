@@ -12,7 +12,6 @@
 #include "isd_config.h"
 #include <IMP/core/Mover.h>
 #include <IMP/algebra/VectorD.h>
-#include <IMP/core/mover_macros.h>
 #include <IMP/isd/Weight.h>
 
 IMPISD_BEGIN_NAMESPACE

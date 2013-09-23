@@ -23,7 +23,7 @@ class Tests(IMP.test.TestCase):
         self.m = IMP.kernel.Model()
         self.sigma = Scale.setup_particle(IMP.kernel.Particle(self.m), 1.0)
         self.DA = IMP.DerivativeAccumulator()
-        self.J = IMP.isd.JeffreysRestraint(self.sigma)
+        self.J = IMP.isd.JeffreysRestraint(self.m, self.sigma)
         self.J.set_model(self.m)
 
     def testValueP(self):

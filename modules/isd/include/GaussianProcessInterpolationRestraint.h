@@ -11,7 +11,7 @@
 #include <IMP/isd/isd_config.h>
 #include <IMP/macros.h>
 #include <boost/scoped_ptr.hpp>
-#include <IMP/isd/ISDRestraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/isd/GaussianProcessInterpolation.h>
 #include <IMP/isd/MultivariateFNormalSufficient.h>
 #include <IMP/base/Pointer.h>
@@ -35,7 +35,8 @@ class GaussianProcessInterpolationScoreState;
 * observations with mean and standard deviation given by the posterior of the
 * gaussian process.
 */
-class IMPISDEXPORT GaussianProcessInterpolationRestraint : public ISDRestraint
+class IMPISDEXPORT GaussianProcessInterpolationRestraint :
+    public kernel::Restraint
 {
    private:
         // checks and makes necessary updates

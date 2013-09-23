@@ -33,8 +33,8 @@ class Tests(IMP.test.TestCase):
         self.V_obs=3.0
         self.ls = \
            IMP.container.ListPairContainer([(self.p0,self.p1),(self.p0,self.p2)])
-        self.noe = IMP.isd.AmbiguousNOERestraint(self.ls, self.sigma, self.gamma, self.V_obs)
-        self.noe.set_model(self.m)
+        self.noe = IMP.isd.AmbiguousNOERestraint(self.m, self.ls, self.sigma,
+                self.gamma, self.V_obs)
 
     def testValuePDist1(self):
         "Test AmbiguousNOERestraint probability by changing distance 1"

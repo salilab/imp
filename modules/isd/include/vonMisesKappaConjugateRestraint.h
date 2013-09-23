@@ -11,7 +11,7 @@
 
 #include <IMP/isd/isd_config.h>
 #include <IMP/SingletonScore.h>
-#include "ISDRestraint.h"
+#include <IMP/kernel/Restraint.h>
 #include <IMP/restraint_macros.h>
 
 IMPISD_BEGIN_NAMESPACE
@@ -22,7 +22,7 @@ IMPISD_BEGIN_NAMESPACE
     where \f$kappa\f$ is the concentration parameter.
     Default values: \f$R_0=1\f$ and \f$c=10\f$
  */
-class IMPISDEXPORT vonMisesKappaConjugateRestraint : public ISDRestraint
+class IMPISDEXPORT vonMisesKappaConjugateRestraint : public kernel::Restraint
 {
   base::Pointer<kernel::Particle> kappa_;
   double old_kappaval;
@@ -32,8 +32,8 @@ class IMPISDEXPORT vonMisesKappaConjugateRestraint : public ISDRestraint
 
 public:
   //! Create the restraint.
-  vonMisesKappaConjugateRestraint(kernel::Particle *kappa, double c=10.0,
-                                  double R0=0.0);
+  vonMisesKappaConjugateRestraint(kernel::Model *m, kernel::Particle *kappa,
+          double c=10.0, double R0=0.0);
 
   /** This macro declares the basic needed methods: evaluate and show
    */

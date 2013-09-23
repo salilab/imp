@@ -47,16 +47,15 @@ class Tests(IMP.test.TestCase):
         self.chiexp=acos(self.cosbar/R)
         if self.sinbar <0:
             self.chiexp = -self.chiexp
-        self.talos = IMP.isd.TALOSRestraint(self.p0, self.p1, self.p2, self.p3,
-                self.obs, self.kappa)
-        #self.talos = IMP.isd.TALOSRestraint(self.p0, self.p1, self.p2, self.p3,
-        #        N, self.R, self.chiexp, self.kappa)
+        self.talos = IMP.isd.TALOSRestraint(self.m, self.p0, self.p1, self.p2,
+                self.p3, self.obs, self.kappa)
         self.m.add_restraint(self.talos)
 
     def testAlternatives(self):
         "Test make TALOSRestraint with particle list and sufficient stats"
         self.setup_restraint()
-        talos1=IMP.isd.TALOSRestraint([self.p0, self.p1, self.p2, self.p3],
+        talos1=IMP.isd.TALOSRestraint(self.m,
+                [self.p0, self.p1, self.p2, self.p3],
                 self.N, self.R, self.chiexp, self.kappa)
         self.m.add_restraint(talos1)
         self.assertAlmostEqual(self.talos.evaluate(None), talos1.evaluate(None),
@@ -65,8 +64,8 @@ class Tests(IMP.test.TestCase):
     def testAlternatives2(self):
         "Test make TALOSRestraint with 4 particles and the data"
         self.setup_restraint()
-        talos1=IMP.isd.TALOSRestraint(self.p0, self.p1, self.p2, self.p3,
-                self.obs, self.kappa)
+        talos1=IMP.isd.TALOSRestraint(self.m, self.p0, self.p1, self.p2,
+                self.p3, self.obs, self.kappa)
         self.m.add_restraint(talos1)
         self.assertAlmostEqual(self.talos.evaluate(None), talos1.evaluate(None),
                                delta=1e-5)
@@ -74,7 +73,8 @@ class Tests(IMP.test.TestCase):
     def testAlternatives3(self):
         "Test make TALOSRestraint with particle list and the data"
         self.setup_restraint()
-        talos1=IMP.isd.TALOSRestraint([self.p0, self.p1, self.p2, self.p3],
+        talos1=IMP.isd.TALOSRestraint(self.m,
+                [self.p0, self.p1, self.p2, self.p3],
                 self.obs, self.kappa)
         self.m.add_restraint(talos1)
         self.assertAlmostEqual(self.talos.evaluate(None), talos1.evaluate(None),
@@ -85,8 +85,8 @@ class Tests(IMP.test.TestCase):
         self.N=10
         self.R=3
         self.chiexp = pi/3
-        self.talos = IMP.isd.TALOSRestraint(self.p0,self.p1, self.p2, self.p3,
-                self.N, self.R, self.chiexp, self.kappa)
+        self.talos = IMP.isd.TALOSRestraint(self.m, self.p0, self.p1,
+                self.p2, self.p3, self.N, self.R, self.chiexp, self.kappa)
         self.m.add_restraint(self.talos)
         #constrain particles to a fixed "bondlength" of 1
         uf=IMP.core.Harmonic(1,100)
@@ -230,8 +230,8 @@ class Tests(IMP.test.TestCase):
         self.N=10
         self.R=9
         self.chiexp = -pi/2
-        self.talos = IMP.isd.TALOSRestraint(self.p0,self.p1, self.p2, self.p3,
-                self.N, self.R, self.chiexp, self.kappa)
+        self.talos = IMP.isd.TALOSRestraint(self.m, self.p0,self.p1, self.p2,
+                self.p3, self.N, self.R, self.chiexp, self.kappa)
         self.m.add_restraint(self.talos)
         #constrain particles to a fixed "bondlength" of 1
         self.p3.set_coordinates_are_optimized(False)

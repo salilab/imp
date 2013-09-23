@@ -23,8 +23,9 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-TALOSRestraint::TALOSRestraint(kernel::Particles p, Floats data, kernel::Particle *kappa)
-    : kappa_(kappa) {
+TALOSRestraint::TALOSRestraint(kernel::Model *m, kernel::Particles p,
+        Floats data, kernel::Particle *kappa) :
+    Restraint(m, "TALOSRestraint%1%"), kappa_(kappa) {
   if (p.size() != 4) {
     IMP_THROW("please provide a list with 4 particles!", ModelException);
   }
@@ -38,8 +39,9 @@ TALOSRestraint::TALOSRestraint(kernel::Particles p, Floats data, kernel::Particl
   //mises_->set_was_used(true);
   }
 
-TALOSRestraint::TALOSRestraint(kernel::Particles p, unsigned N, double R0, double
-          chiexp, kernel::Particle *kappa) : kappa_(kappa) {
+TALOSRestraint::TALOSRestraint(kernel::Model *m, kernel::Particles p,
+        unsigned N, double R0, double chiexp, kernel::Particle *kappa) :
+    Restraint(m, "TALOSRestraint%1%"), kappa_(kappa) {
   if (p.size() != 4) {
     IMP_THROW("please provide a list with 4 particles!", ModelException);
   }
@@ -53,9 +55,10 @@ TALOSRestraint::TALOSRestraint(kernel::Particles p, unsigned N, double R0, doubl
   //mises_->set_was_used(true);
   }
 
-TALOSRestraint::TALOSRestraint(kernel::Particle* p1, kernel::Particle* p2, kernel::Particle* p3,
-                               kernel::Particle *p4, Floats data, kernel::Particle *kappa)
-    : kappa_(kappa)
+TALOSRestraint::TALOSRestraint(kernel::Model *m, kernel::Particle* p1,
+        kernel::Particle* p2, kernel::Particle* p3, kernel::Particle *p4,
+        Floats data, kernel::Particle *kappa)
+    : Restraint(m, "TALOSRestraint%1%"), kappa_(kappa)
 {
   p_[0]=static_cast<kernel::Particle*>(p1);
   p_[1]=static_cast<kernel::Particle*>(p2);
@@ -67,9 +70,10 @@ TALOSRestraint::TALOSRestraint(kernel::Particle* p1, kernel::Particle* p2, kerne
   //mises_->set_was_used(true);
 }
 
-TALOSRestraint::TALOSRestraint(kernel::Particle* p1, kernel::Particle* p2, kernel::Particle* p3,
-                               kernel::Particle *p4, unsigned N, double R0,
-                               double chiexp, kernel::Particle *kappa) : kappa_(kappa)
+TALOSRestraint::TALOSRestraint(kernel::Model *m, kernel::Particle* p1,
+        kernel::Particle* p2, kernel::Particle* p3, kernel::Particle *p4,
+        unsigned N, double R0, double chiexp, kernel::Particle *kappa) :
+    Restraint(m, "TALOSRestraint%1%"), kappa_(kappa)
 {
   p_[0]=static_cast<kernel::Particle*>(p1);
   p_[1]=static_cast<kernel::Particle*>(p2);

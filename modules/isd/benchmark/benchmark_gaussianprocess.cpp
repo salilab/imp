@@ -64,9 +64,9 @@ Scales setup_particles(IMP::kernel::Model *m)
     Scale sigma = Scale(Scale::setup_particle(psigma, 10.));
     s.set_upper(3.);
     s.set_upper(d);
-    IMP_NEW(JeffreysRestraint, jrs, (sigma));
+    IMP_NEW(JeffreysRestraint, jrs, (m, sigma));
     m->add_restraint(jrs);
-    IMP_NEW(JeffreysRestraint, jrl, (lambda));
+    IMP_NEW(JeffreysRestraint, jrl, (m, lambda));
     m->add_restraint(jrl);
     lambda.set_lower(0.001);
     sigma.set_lower(1.);

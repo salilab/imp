@@ -10,7 +10,7 @@
 #define IMPISD_AMBIGUOUS_RESTRAINT_H
 
 #include <IMP/isd/isd_config.h>
-#include <IMP/isd/ISDRestraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/restraint_macros.h>
 
 IMPISD_BEGIN_NAMESPACE
@@ -25,7 +25,7 @@ IMPISD_BEGIN_NAMESPACE
     \include AmbiguousRestraint.h
     \include AmbiguousRestraint.cpp
 */
-class IMPISDEXPORT AmbiguousRestraint : public ISDRestraint
+class IMPISDEXPORT AmbiguousRestraint : public kernel::Restraint
 {
   int d_;
   kernel::Restraints rs_;
@@ -35,8 +35,9 @@ public:
       preferably in a Singleton or PairContainer as appropriate.
       Two ways to call it: pass it two restraints, or a list of restraints.
    */
-  AmbiguousRestraint(int d, kernel::Restraint *r0, kernel::Restraint *r1);
-  AmbiguousRestraint(int d, kernel::Restraints rs);
+  AmbiguousRestraint(kernel::Model *m, int d, kernel::Restraint *r0,
+          kernel::Restraint *r1);
+  AmbiguousRestraint(kernel::Model *m, int d, kernel::Restraints rs);
 
   double get_probability() const
   {

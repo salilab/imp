@@ -12,7 +12,7 @@
 #ifndef IMPISD_CYSTEINE_CROSS_LINK_RESTRAINT_H
 #define IMPISD_CYSTEINE_CROSS_LINK_RESTRAINT_H
 #include "isd_config.h"
-#include <IMP/isd/ISDRestraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/isd/CrossLinkData.h>
 #include <IMP/isd/CysteineCrossLinkData.h>
 
@@ -41,7 +41,7 @@ IMPISD_BEGIN_NAMESPACE
     weight parameter.
  */
 
-class IMPISDEXPORT  CysteineCrossLinkRestraint : public ISDRestraint
+class IMPISDEXPORT  CysteineCrossLinkRestraint : public kernel::Restraint
 {
     kernel::Particles ps1_;
     kernel::Particles ps2_;
@@ -63,10 +63,11 @@ public:
   /** kernel::Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
    */
-   CysteineCrossLinkRestraint(kernel::Particle *beta, kernel::Particle *sigma,
-    kernel::Particle *epsilon, kernel::Particle *weight, CrossLinkData *data, double fexp);
+CysteineCrossLinkRestraint(kernel::Particle *beta, kernel::Particle *sigma,
+        kernel::Particle *epsilon, kernel::Particle *weight, CrossLinkData
+        *data, double fexp);
 
-   CysteineCrossLinkRestraint(kernel::Particle *beta, kernel::Particle *sigma,
+CysteineCrossLinkRestraint(kernel::Particle *beta, kernel::Particle *sigma,
     kernel::Particle *epsilon, kernel::Particle *weight, CrossLinkData *data,
     CysteineCrossLinkData *ccldata);
 

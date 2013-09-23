@@ -17,7 +17,7 @@ IMPISD_BEGIN_NAMESPACE
 
 GaussianProcessInterpolationRestraint::GaussianProcessInterpolationRestraint(
         kernel::Model *m, GaussianProcessInterpolation *gpi) :
-    ISDRestraint(m, "GaussianProcessInterpolationRestraint %1%"), gpi_(gpi)
+    Restraint(m, "GaussianProcessInterpolationRestraint %1%"), gpi_(gpi)
 {
     //O(M^2)
     //number of observation points
@@ -156,7 +156,7 @@ MatrixXd GaussianProcessInterpolationRestraint::get_hessian() const
         for (unsigned j=i; j<mnum_opt; ++j)
             Hessian(i,j) += tmp.transpose()*funcm[j];
     }
-    dmdm.resize(0,0); // free up some space
+    //dmdm.resize(0,0); // free up some space
 
     //d2E/(dOm_kl dOm_mn) * dOm_kl/dTheta_i * dOm_mn/dTheta_j
     std::vector<std::vector<MatrixXd> > dodo;
@@ -183,9 +183,8 @@ MatrixXd GaussianProcessInterpolationRestraint::get_hessian() const
             Hessian(i,j) +=
                 (tmp*funcO[j-mnum_opt]).trace();
     }
-    for (unsigned i=0; i < dodo.size(); ++i)
-        for (unsigned j=0; j < dodo[i].size(); ++j)
-            dodo[i][j].resize(0,0);
+    for (unsigned i=0; i < dodo.size(); ++i) dodo[i].clear();
+    dodo.clear();
 
     //d2E/(dm_k dOm_lm) * (  dm^k/dTheta_j dOm^lm/dTheta_i
     //                     + dm^k/dTheta_i dOm^lm/dTheta_j)
@@ -206,12 +205,9 @@ MatrixXd GaussianProcessInterpolationRestraint::get_hessian() const
             Hessian(i,j) += funcm[i].transpose()*tmp;
     }
     //deallocate both dmdo and all function derivatives
-    for (unsigned k=0; k<dmdo.size(); ++k)
-        dmdo[k].resize(0,0);
-    for (unsigned i=0; i<funcm.size(); ++i)
-        funcm[i].resize(0);
-    for (unsigned i=0; i<funcO.size(); ++i)
-            funcO[i].resize(0,0);
+    dmdo.clear();
+    funcm.clear();
+    funcO.clear();
 
     // dE/dm_k * d2m^k/(dTheta_i dTheta_j)
     VectorXd dem(mvn_->evaluate_derivative_FM());
@@ -226,7 +222,7 @@ MatrixXd GaussianProcessInterpolationRestraint::get_hessian() const
         iopt++;
     }
 
-    dem.resize(0);
+    //dem.resize(0);
 
     // dE/dOm_kl * d2Om^kl/(dTheta_i dTheta_j)
     MatrixXd dOm(mvn_->evaluate_derivative_Sigma());
@@ -240,7 +236,7 @@ MatrixXd GaussianProcessInterpolationRestraint::get_hessian() const
         }
         iopt++;
     }
-    dOm.resize(0,0);
+    //dOm.resize(0,0);
 
     //return hessian as full matrix
     for (unsigned i=0; i<num_opt; ++i)

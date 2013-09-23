@@ -34,35 +34,41 @@ class IMPISDEXPORT TALOSRestraint : public kernel::Restraint
 public:
 
   //! Create restraint from a list of particles and the data.
-  /** \param[in] p list of 4 particles that make the dihedral angle.
+  /** \param[in] m the Model
+      \param[in] p list of 4 particles that make the dihedral angle.
       \param[in] data list of observations for that angle.
       \param[in] kappa Pointer to the \f$\kappa\f$ concentration particle.
    */
-  TALOSRestraint(kernel::Particles p, Floats data, kernel::Particle *kappa);
+  TALOSRestraint(kernel::Model *m, kernel::Particles p, Floats data,
+          kernel::Particle *kappa);
 
   //! Create restraint from 4 particles and the data.
-  /** \param[in] p1 Pointer to first particle in dihedral restraint.
+  /** \param[in] m the Model
+      \param[in] p1 Pointer to first particle in dihedral restraint.
       \param[in] p2 Pointer to second particle in dihedral restraint.
       \param[in] p3 Pointer to third particle in dihedral restraint.
       \param[in] p4 Pointer to fourth particle in dihedral restraint.
       \param[in] data list of observations for that angle.
       \param[in] kappa Pointer to the \f$\kappa\f$ concentration particle.
    */
-  TALOSRestraint(kernel::Particle* p1, kernel::Particle* p2, kernel::Particle* p3, kernel::Particle *p4,
-                 Floats data, kernel::Particle *kappa);
+  TALOSRestraint(kernel::Model *m, kernel::Particle* p1, kernel::Particle* p2,
+          kernel::Particle* p3, kernel::Particle *p4, Floats data,
+          kernel::Particle *kappa);
 
   //! Create restraint from a list of particles and the sufficient statistics.
-  /** \param[in] p list of 4 particles that make the dihedral angle.
+  /** \param[in] m the Model
+      \param[in] p list of 4 particles that make the dihedral angle.
       \param[in] N Number of observations
       \param[in] R0 component on the x axis
       \param[in] chiexp average observed angle.
       \param[in] kappa Pointer to the \f$\kappa\f$ concentration particle.
    */
-  TALOSRestraint(kernel::Particles p, unsigned N, double R0, double chiexp,
-                 kernel::Particle *kappa);
+  TALOSRestraint(kernel::Model *m, kernel::Particles p, unsigned N, double R0,
+          double chiexp, kernel::Particle *kappa);
 
   //! Create restraint from 4 particles and the sufficient statistics.
-  /** \param[in] p1 Pointer to first particle in dihedral restraint.
+  /** \param[in] m the Model
+      \param[in] p1 Pointer to first particle in dihedral restraint.
       \param[in] p2 Pointer to second particle in dihedral restraint.
       \param[in] p3 Pointer to third particle in dihedral restraint.
       \param[in] p4 Pointer to fourth particle in dihedral restraint.
@@ -71,8 +77,9 @@ public:
       \param[in] chiexp average observed angle.
       \param[in] kappa Pointer to the \f$\kappa\f$ concentration particle.
    */
-  TALOSRestraint(kernel::Particle* p1, kernel::Particle* p2, kernel::Particle* p3, kernel::Particle *p4,
-          unsigned N, double R0, double chiexp, kernel::Particle *kappa);
+  TALOSRestraint(kernel::Model *m, kernel::Particle* p1, kernel::Particle* p2,
+          kernel::Particle* p3, kernel::Particle *p4, unsigned N, double R0,
+          double chiexp, kernel::Particle *kappa);
 
 
   //! Call for probability

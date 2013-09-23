@@ -18,10 +18,10 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-AmbiguousNOERestraint::AmbiguousNOERestraint(PairContainer *pc,
-                           kernel::Particle *sigma, kernel::Particle *gamma,
-                           double Vexp) : pc_(pc), sigma_(sigma),
-                                          gamma_(gamma), Vexp_(Vexp) {}
+AmbiguousNOERestraint::AmbiguousNOERestraint(kernel::Model *m,
+        PairContainer *pc, kernel::Particle *sigma, kernel::Particle *gamma,
+        double Vexp) : Restraint(m, "AmbiguousNOERestraint%1%"), pc_(pc),
+    sigma_(sigma), gamma_(gamma), Vexp_(Vexp) {}
 
 /* Apply the restraint to two atoms, two Scales, one experimental value.
  */

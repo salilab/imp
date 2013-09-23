@@ -11,6 +11,8 @@ try:
 except ImportError:
     numpy = None
 
+IMP.set_log_level(0)
+
 class MockGP:
     def __init__(self,a,b):
         self.a=a

@@ -14,9 +14,10 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-vonMisesKappaConjugateRestraint::vonMisesKappaConjugateRestraint(kernel::Particle *p,
-                                                      double c, double R0):
-    kappa_(p), bessel_init_(false), c_(c), R0_(R0) {
+vonMisesKappaConjugateRestraint::vonMisesKappaConjugateRestraint(
+        kernel::Model *m, kernel::Particle *p, double c, double R0):
+    Restraint(m, "vonMisesKappaConjugateRestraint%1%"), kappa_(p),
+    bessel_init_(false), c_(c), R0_(R0) {
     if (!(0<=R0 && 0<c && R0<=c)) {
         IMP_THROW("Must have 0 < R0 <= c", ModelException);
     }

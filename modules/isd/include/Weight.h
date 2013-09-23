@@ -11,7 +11,6 @@
 
 #include "isd_config.h"
 
-#include <IMP/core/core_macros.h>
 #include <IMP/kernel/Particle.h>
 #include <IMP/decorator_macros.h>
 #include <IMP/kernel/Model.h>

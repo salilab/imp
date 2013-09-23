@@ -84,7 +84,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(rs.get_weight(), 1.0)
         self.assertTrue(rs.get_model())
         rs=IMP.kernel.RestraintSet('test')
-        rs.add_restraint(IMP.isd.JeffreysRestraint(s))
+        rs.add_restraint(IMP.isd.JeffreysRestraint(self.m,s))
         rs=self.sfo.init_model_jeffreys([s], rs)
         self.assertIsInstance(rs, IMP.kernel.RestraintSet)
         #self.assertEqual(rs.get_type_name(), 'test')

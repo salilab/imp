@@ -50,7 +50,7 @@ class TestHybridMonteCarlo(IMP.test.TestCase):
         b=self.setup_xyz(IMP.algebra.Vector3D((1,1,1)),1.0)
         si=self.setup_scale(1.0, 1.0)
         ga=self.setup_scale(1.0, 1.0)
-        ln=IMP.isd.NOERestraint(a,b,si,ga,1.0)
+        ln=IMP.isd.NOERestraint(self.m,a,b,si,ga,1.0)
         self.m.add_restraint(ln)
         self.xyzs.append(a)
         self.xyzs.append(b)

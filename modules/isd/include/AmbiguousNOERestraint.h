@@ -14,14 +14,14 @@
 #include <IMP/SingletonScore.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/restraint_macros.h>
-#include <IMP/isd/ISDRestraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/PairContainer.h>
 #include <IMP/isd/Scale.h>
 
 IMPISD_BEGIN_NAMESPACE
 
 //! Ambiguous NOE distance restraint between a number of pairs of particles.
-class IMPISDEXPORT AmbiguousNOERestraint : public ISDRestraint
+class IMPISDEXPORT AmbiguousNOERestraint : public kernel::Restraint
 {
   base::Pointer<PairContainer> pc_;
   base::Pointer<kernel::Particle> sigma_;
@@ -34,8 +34,8 @@ public:
   /** kernel::Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
    */
-  AmbiguousNOERestraint(PairContainer *pc, kernel::Particle *sigma, kernel::Particle *gamma,
-                        double Iexp);
+  AmbiguousNOERestraint(kernel::Model *m, PairContainer *pc,
+          kernel::Particle *sigma, kernel::Particle *gamma, double Iexp);
 
   /* call for probability */
   double get_probability() const

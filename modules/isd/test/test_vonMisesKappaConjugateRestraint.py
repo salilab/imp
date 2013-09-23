@@ -31,10 +31,10 @@ class Tests(IMP.test.TestCase):
             self.skipTest("this test requires the scipy Python module")
         c=10
         R0=1
-        self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
+        self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.m,self.kappa,c,R0)
         self.m.add_restraint(self.J)
         for i in xrange(100):
-            no=uniform(0.1,75)
+            no=uniform(0.1,60)
             self.kappa.set_scale(no)
             ratio=i1(no)/i0(no)
             py=exp(no*R0)/i0(no)**c
@@ -52,7 +52,8 @@ class Tests(IMP.test.TestCase):
         self.kappa.set_scale(no)
         for i in xrange(100):
             c=uniform(2.0,75)
-            self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
+            self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.m,
+                    self.kappa,c,R0)
             self.m.add_restraint(self.J)
             ratio=i1(no)/i0(no)
             py=exp(no*R0)/i0(no)**c
@@ -71,7 +72,8 @@ class Tests(IMP.test.TestCase):
         self.kappa.set_scale(no)
         for i in xrange(100):
             R0=uniform(0.0,10.0)
-            self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
+            self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.m,
+                    self.kappa,c,R0)
             self.m.add_restraint(self.J)
             ratio=i1(no)/i0(no)
             py=exp(no*R0)/i0(no)**c
@@ -87,7 +89,8 @@ class Tests(IMP.test.TestCase):
             self.skipTest("this test requires the scipy Python module")
         c=10
         R0=1
-        self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
+        self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.m,
+                self.kappa,c,R0)
         self.m.add_restraint(self.J)
         for i in xrange(100):
             no=uniform(0.1,100)
@@ -108,7 +111,8 @@ class Tests(IMP.test.TestCase):
         self.kappa.set_scale(no)
         for i in xrange(100):
             c=uniform(1.0,100)
-            self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
+            self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.m,
+                    self.kappa,c,R0)
             self.m.add_restraint(self.J)
             ratio=i1(no)/i0(no)
             py=-no*R0 + c*log(i0(no))
@@ -127,7 +131,8 @@ class Tests(IMP.test.TestCase):
         self.kappa.set_scale(no)
         for i in xrange(100):
             R0=uniform(0.0,10.0)
-            self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
+            self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.m,
+                    self.kappa,c,R0)
             self.m.add_restraint(self.J)
             ratio=i1(no)/i0(no)
             py=-no*R0 + c*log(i0(no))
@@ -143,7 +148,8 @@ class Tests(IMP.test.TestCase):
             self.skipTest("this test requires the scipy Python module")
         c=10
         R0=1
-        self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
+        self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.m,
+                self.kappa,c,R0)
         self.m.add_restraint(self.J)
         for i in xrange(100):
             no=uniform(0.1,100)
@@ -157,7 +163,8 @@ class Tests(IMP.test.TestCase):
         "Test vonMisesKappaConjugateRestraint::get_input_particles()"
         c=10
         R0=1
-        self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
+        self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.m,
+                self.kappa,c,R0)
         self.m.add_restraint(self.J)
         self.assertEqual(self.J.get_input_particles(),[self.kappa])
 
@@ -165,7 +172,8 @@ class Tests(IMP.test.TestCase):
         "Test vonMisesKappaConjugateRestraint::get_input_containers()"
         c=10
         R0=1
-        self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
+        self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.m,
+                self.kappa,c,R0)
         self.m.add_restraint(self.J)
         self.assertEqual(self.J.get_input_containers(),[])
 
@@ -173,7 +181,8 @@ class Tests(IMP.test.TestCase):
         "vonMisesKappaConjugate errors on evaluate with zero scale"
         c=10
         R0=1
-        self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
+        self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.m,
+                self.kappa,c,R0)
         self.m.add_restraint(self.J)
         self.kappa.set_scale(0.0)
         self.assertRaises(IMP.base.ModelException, self.J.unprotected_evaluate, self.DA)
@@ -182,7 +191,8 @@ class Tests(IMP.test.TestCase):
         "vonMisesKappaConjugate errors on evaluate with negative scale"
         c=10
         R0=1
-        self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
+        self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.m,
+                self.kappa,c,R0)
         self.m.add_restraint(self.J)
         self.kappa.set_scale(-1.0)
         self.assertRaises(IMP.base.ModelException, self.J.unprotected_evaluate, self.DA)
@@ -192,27 +202,27 @@ class Tests(IMP.test.TestCase):
         c=10
         R0=-1
         self.assertRaises(IMP.base.ModelException,
-                IMP.isd.vonMisesKappaConjugateRestraint, self.kappa,c,R0)
+                IMP.isd.vonMisesKappaConjugateRestraint, self.m,self.kappa,c,R0)
 
     def testR0c(self):
         "vonMisesKappaConjugate constructor error with R0 > c"
         c=10
         R0=20
         self.assertRaises(IMP.base.ModelException,
-                IMP.isd.vonMisesKappaConjugateRestraint, self.kappa,c,R0)
+                IMP.isd.vonMisesKappaConjugateRestraint, self.m,self.kappa,c,R0)
 
     def testc(self):
         "vonMisesKappaConjugate constructor error with c < 0"
         c=-1
         R0=c
         self.assertRaises(IMP.base.ModelException,
-                IMP.isd.vonMisesKappaConjugateRestraint, self.kappa,c,R0)
+                IMP.isd.vonMisesKappaConjugateRestraint, self.m,self.kappa,c,R0)
 
     def testNonzeroP(self):
         "Test vonMisesKappaConjugate get_prob with zero scale"
         c=10
         R0=1
-        self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
+        self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.m,self.kappa,c,R0)
         self.m.add_restraint(self.J)
         self.kappa.set_scale(0.0)
         self.assertRaises(IMP.base.ModelException, self.J.get_probability)
@@ -221,7 +231,7 @@ class Tests(IMP.test.TestCase):
         "Test vonMisesKappaConjugate get_prob with negative scale"
         c=10
         R0=1
-        self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
+        self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.m,self.kappa,c,R0)
         self.m.add_restraint(self.J)
         self.kappa.set_scale(-1.0)
         self.assertRaises(IMP.base.ModelException, self.J.get_probability)
@@ -230,7 +240,7 @@ class Tests(IMP.test.TestCase):
         "Test if vonMisesKappaConjugate score is -log(prob)"
         c=10
         R0=1
-        self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
+        self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.m,self.kappa,c,R0)
         self.m.add_restraint(self.J)
         for i in xrange(100):
             no=uniform(0.1,75)  #can't go higher because overflow errors
@@ -243,7 +253,7 @@ class Tests(IMP.test.TestCase):
         "Test if vonMisesKappaConjugate prob is exp(-score)"
         c=10
         R0=1
-        self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
+        self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.m,self.kappa,c,R0)
         self.m.add_restraint(self.J)
         for i in xrange(100):
             no=uniform(0.1,100)

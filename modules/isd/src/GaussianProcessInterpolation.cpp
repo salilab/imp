@@ -342,9 +342,8 @@ MatrixXd GaussianProcessInterpolation::get_posterior_covariance_hessian(
             ret.bottomRightCorner(Onum_opt, Onum_opt)(i,j)
                 += (dOmdp[j].transpose()*tmp).trace();
     }
-    for (unsigned i=0; i<d2covdo.size(); i++)
-        for (unsigned j=0; j<d2covdo[i].size(); j++)
-            d2covdo[i][j].resize(0,0);
+    for (unsigned i=0; i<d2covdo.size(); i++) d2covdo[i].clear();
+    d2covdo.clear();
 
     //compute cross-term
     std::vector<MatrixXd> d2covdwdo;
@@ -363,12 +362,10 @@ MatrixXd GaussianProcessInterpolation::get_posterior_covariance_hessian(
     ret.bottomRightCorner(Onum_opt,Onum_opt) += tmpH+tmpH.transpose();
 
     //deallocate unused stuff
-    tmpH.resize(0,0);
-    for (unsigned i=0; i<d2covdwdo.size(); i++)
-        d2covdwdo[i].resize(0,0);
-    for (unsigned i=0; i<dOmdp.size(); i++)
-        dOmdp[i].resize(0,0);
-    dwqdp.resize(0,0);
+    //tmpH.resize(0,0);
+    d2covdwdo.clear();
+    dOmdp.clear();
+    //dwqdp.resize(0,0);
 
     //dcov/dw_k * d2w^k/(dp_i dp_j)
     VectorXd dcwq(get_dcov_dwq(x));
@@ -377,7 +374,7 @@ MatrixXd GaussianProcessInterpolation::get_posterior_covariance_hessian(
             ret.bottomRightCorner(cov_opt,cov_opt)(i,j)
                 += dcwq.transpose()*get_wx_vector_second_derivative(
                         x, mnum+1+i, mnum+1+j);
-    dcwq.resize(0,0);
+    //dcwq.resize(0,0);
 
     //dcov/dOm_kl * d2Om^kl/(dp_i dp_j), zero when p_i or p_j is sigma or mean
     MatrixXd dcOm(get_dcov_dOm(x));
@@ -386,7 +383,7 @@ MatrixXd GaussianProcessInterpolation::get_posterior_covariance_hessian(
             ret.bottomRightCorner(cov_opt,cov_opt)(i,j)
                 += (dcOm.transpose()*get_Omega_second_derivative(
                             i+1,j+1)).trace();
-    dcOm.resize(0,0);
+    //dcOm.resize(0,0);
 
     //return as symmetric matrix
     for (unsigned i=mnum_opt; i<num_opt; ++i)
@@ -683,7 +680,7 @@ GaussianProcessInterpolation::get_ldlt() const
     return ldlt_;
 }
 
-  void GaussianProcessInterpolation::compute_ldlt()
+void GaussianProcessInterpolation::compute_ldlt()
 {
     //get Omega=W+S/N
     MatrixXd WpS = get_Omega();
@@ -697,7 +694,7 @@ GaussianProcessInterpolation::get_ldlt() const
     ldlt_ = ldlt;
 }
 
-  MatrixXd GaussianProcessInterpolation::get_Omi() const
+MatrixXd GaussianProcessInterpolation::get_Omi() const
 {
     IMP_LOG_TERSE( "get_Omi()" << std::endl);
     const_cast<GaussianProcessInterpolation *>(this)->update_flags_covariance();
@@ -720,7 +717,7 @@ void GaussianProcessInterpolation::compute_Omi()
     Omi_= ldlt.solve(MatrixXd::Identity(M_,M_));
 }
 
-  MatrixXd GaussianProcessInterpolation::get_W() const
+MatrixXd GaussianProcessInterpolation::get_W() const
 {
     IMP_LOG_TERSE( "get_W()" << std::endl);
     const_cast<GaussianProcessInterpolation *>(this)->update_flags_covariance();
@@ -793,7 +790,7 @@ MatrixXd GaussianProcessInterpolation::get_d2cov_dOm_dOm(Floats q,
 }
 */
 
-  kernel::ParticlesTemp GaussianProcessInterpolation::get_input_particles() const
+kernel::ParticlesTemp GaussianProcessInterpolation::get_input_particles() const
 {
     kernel::ParticlesTemp ret;
     kernel::ParticlesTemp ret1 = mean_function_->get_input_particles();

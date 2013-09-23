@@ -69,13 +69,13 @@ class TestvonMisesSufficient(IMP.test.TestCase):
             self.skipTest("this test requires the scipy Python module")
         for i in xrange(100):
             x=uniform(-4*pi,4*pi)
-            N=randint(1,20)
+            N=randint(1,10)
             R=randint(1,N)
             chiexp=uniform(-pi,pi)
-            kappa=uniform(0.1,100)
+            kappa=uniform(0.1,10)
             fn=vonMisesSufficient(x,N,R,chiexp,kappa)
             self.assertAlmostEqual(fn.evaluate(),
-                    log(2*pi*i0(kappa)**N) - R*kappa*cos(x-chiexp),
+                    log(2*pi)+N*log(i0(kappa)) - R*kappa*cos(x-chiexp),
                     delta=0.001)
 
     def testEvaluateDX(self):

@@ -16,8 +16,8 @@ import IMP.isd
 import IMP.gsl
 import IMP.saxs
 
-#IMP.base.set_log_level(IMP.base.SILENT)
-IMP.base.set_log_level(IMP.base.VERBOSE)
+IMP.base.set_log_level(IMP.base.SILENT)
+#IMP.base.set_log_level(IMP.base.VERBOSE)
 #fitno=0
 
 def subsample(idx, data, npoints):
@@ -896,7 +896,6 @@ def setup_particles():
     model = IMP.kernel.Model()
     #mean function
     G=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(model,"G"))
-    #model.add_restraint(IMP.isd.JeffreysRestraint(G))
     Rg=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(model,"Rg"))
     d=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(model,"d"))
     s=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(model,"s"))
@@ -910,9 +909,9 @@ def setup_particles():
     #sigma
     sigma=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(model,"sigma2"))
     #prior on scales
-    model.add_restraint(IMP.isd.JeffreysRestraint(tau))
-    model.add_restraint(IMP.isd.JeffreysRestraint(sigma))
-    model.add_restraint(IMP.isd.JeffreysRestraint(lam))
+    model.add_restraint(IMP.isd.JeffreysRestraint(model,tau))
+    model.add_restraint(IMP.isd.JeffreysRestraint(model,sigma))
+    model.add_restraint(IMP.isd.JeffreysRestraint(model,lam))
     #set upper bounds for s
     s.set_upper(3)
     s.set_upper(d)

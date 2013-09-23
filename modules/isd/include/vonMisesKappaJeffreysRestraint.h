@@ -11,7 +11,7 @@
 
 #include <IMP/isd/isd_config.h>
 #include <IMP/SingletonScore.h>
-#include "ISDRestraint.h"
+#include <IMP/kernel/Restraint.h>
 #include <IMP/restraint_macros.h>
 
 IMPISD_BEGIN_NAMESPACE
@@ -26,7 +26,7 @@ IMPISD_BEGIN_NAMESPACE
 //  \right]}\f]
 //!
 
-class IMPISDEXPORT vonMisesKappaJeffreysRestraint : public ISDRestraint
+class IMPISDEXPORT vonMisesKappaJeffreysRestraint : public kernel::Restraint
 {
   base::Pointer<kernel::Particle> kappa_;
   double old_kappaval;
@@ -34,7 +34,7 @@ class IMPISDEXPORT vonMisesKappaJeffreysRestraint : public ISDRestraint
 
 public:
   //! Create the restraint.
-  vonMisesKappaJeffreysRestraint(kernel::Particle *kappa);
+  vonMisesKappaJeffreysRestraint(kernel::Model *m, kernel::Particle *kappa);
 
   /** This macro declares the basic needed methods: evaluate and show
    */

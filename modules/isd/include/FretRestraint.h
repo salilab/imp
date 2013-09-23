@@ -11,7 +11,7 @@
 #define IMPISD_FRET_RESTRAINT_H
 #include <IMP/isd/Scale.h>
 #include "isd_config.h"
-#include <IMP/isd/ISDRestraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/isd/FretData.h>
 
 IMPISD_BEGIN_NAMESPACE
@@ -19,7 +19,7 @@ IMPISD_BEGIN_NAMESPACE
     see Muller et al. Mol Biol Cell 16, 3341, 2005 for more info.
  */
 
-class IMPISDEXPORT  FretRestraint : public ISDRestraint
+class IMPISDEXPORT  FretRestraint : public kernel::Restraint
 {
     kernel::Particles pd_;
     kernel::Particles pa_;
@@ -55,21 +55,20 @@ public:
       preferably in a Singleton or PairContainer as appropriate.
    */
 
-  FretRestraint (kernel::Particles pd, kernel::Particles pa,
-   kernel::Particle *kda, kernel::Particle *Ida, kernel::Particle *R0, kernel::Particle* sigma0,
-   kernel::Particle *Pbl, double fexp, double m_d=1.0, double m_a=1.0);
+  FretRestraint(kernel::Particles pd, kernel::Particles pa, kernel::Particle
+          *kda, kernel::Particle *Ida, kernel::Particle *R0, kernel::Particle*
+          sigma0, kernel::Particle *Pbl, double fexp, double m_d=1.0, double
+          m_a=1.0);
 
-  FretRestraint
-  (kernel::Particle *kda, kernel::Particle *Ida, kernel::Particle *sumFi, kernel::Particle* sigma0,
-   kernel::Particle *Pbl, double fexp);
+  FretRestraint(kernel::Particle *kda, kernel::Particle *Ida, kernel::Particle
+          *sumFi, kernel::Particle* sigma0, kernel::Particle *Pbl, double fexp);
 
-  FretRestraint
-  (kernel::Particle *prd, algebra::Vector3D GMMterd,
-   algebra::Vector3Ds GMMctrd, Floats GMMwd, Floats GMMsigd,
-   kernel::Particle *pra, algebra::Vector3D GMMtera,
-   algebra::Vector3Ds GMMctra, Floats GMMwa, Floats GMMsiga,
-   kernel::Particle *kda, kernel::Particle *Ida, kernel::Particle* sigma0, kernel::Particle *Pbl,
-   FretData *data, double fexp);
+  FretRestraint(kernel::Particle *prd, algebra::Vector3D GMMterd,
+          algebra::Vector3Ds GMMctrd, Floats GMMwd, Floats GMMsigd,
+          kernel::Particle *pra, algebra::Vector3D GMMtera, algebra::Vector3Ds
+          GMMctra, Floats GMMwa, Floats GMMsiga, kernel::Particle *kda,
+          kernel::Particle *Ida, kernel::Particle* sigma0, kernel::Particle
+          *Pbl, FretData *data, double fexp);
 
   // get sumFi
   double get_sumFi() const;
@@ -103,11 +102,11 @@ public:
 private:
   double get_model_fretr_type_0() const;
   double get_model_fretr_type_1() const;
-  algebra::Vector3Ds get_current_centers
-                            (kernel::Particle *p, const algebra::Vector3Ds& ctrs) const;
+  algebra::Vector3Ds get_current_centers(kernel::Particle *p, const
+          algebra::Vector3Ds& ctrs) const;
 
-  algebra::Vector3D get_current_center
-                            (kernel::Particle *p, const algebra::Vector3D& ctr) const;
+  algebra::Vector3D get_current_center(kernel::Particle *p, const
+          algebra::Vector3D& ctr) const;
 };
 
 IMPISD_END_NAMESPACE

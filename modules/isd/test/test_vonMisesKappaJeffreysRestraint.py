@@ -22,7 +22,7 @@ class Tests(IMP.test.TestCase):
         self.m = IMP.kernel.Model()
         self.kappa = Scale.setup_particle(IMP.kernel.Particle(self.m), 1.0)
         self.DA = IMP.DerivativeAccumulator()
-        self.J = IMP.isd.vonMisesKappaJeffreysRestraint(self.kappa)
+        self.J = IMP.isd.vonMisesKappaJeffreysRestraint(self.m,self.kappa)
         self.m.add_restraint(self.J)
 
     def testValueP(self):
