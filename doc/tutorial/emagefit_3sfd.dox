@@ -19,7 +19,7 @@ All steps in the procedure use a command line tool called
 <tt>emagefit.py</tt>. For full help on this tool, run from a command line:
 
 \code{.sh}
-emagefit.py -h
+emagefit.py --help
 \endcode
 
 \section emagefit_3sfd_setup Setup
