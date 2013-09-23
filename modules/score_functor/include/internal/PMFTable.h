@@ -15,6 +15,7 @@
 #include <IMP/algebra/grid_storages.h>
 #include <IMP/base/exception.h>
 #include <IMP/base/Object.h>
+#include <IMP/base/Array.h>
 #include <IMP/base/file.h>
 #include <cmath>
 #include <vector>
@@ -52,10 +53,10 @@ struct PMFTable: public base::Object {
     j -= split_;
   }
   const RawOpenCubicSpline &get(int i, int j) const {
-    Ints is(2);
+    base::Array<2, int> is;
     is[0] = i;
     is[1] = j;
-    typename Storage::ExtendedIndex ei(is);
+    typename Storage::ExtendedIndex ei(is.begin(), is.end());
     return data_[data_.get_index(ei)];
   }
   template <class Key>
@@ -136,10 +137,10 @@ struct PMFTable: public base::Object {
         }
       }
       order(i, j);
-      Ints is(2);
+      base::Array<2, int> is;
       is[0] = i;
       is[1] = j;
-      typename Storage::ExtendedIndex ei(is);
+      typename Storage::ExtendedIndex ei(is.begin(), is.end());
       if (!data_.get_has_index(ei)) {
         data_.add_voxel(ei, score_functor::internal::RawOpenCubicSpline(
                                 data, bin_width_, inverse_bin_width_));

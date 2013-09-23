@@ -102,9 +102,8 @@ class BoundedGridRangeD {
   void set_number_of_voxels(Ints bds) {
     IMP_USAGE_CHECK(D == -1 || static_cast<int>(bds.size()) == D,
                     "Wrong number of dimensions");
-    d_ = ExtendedGridIndexD<D>(bds);
+    d_ = ExtendedGridIndexD<D>(bds.begin(), bds.end());
   }
-
  public:
   typedef GridIndexD<D> Index;
   typedef ExtendedGridIndexD<D> ExtendedIndex;
@@ -147,11 +146,13 @@ class BoundedGridRangeD {
       AllIndexIterator;
 #endif
   AllIndexIterator all_indexes_begin() const {
-    return indexes_begin(ExtendedGridIndexD<D>(Ints(d_.get_dimension(), 0)),
+    return indexes_begin(ExtendedGridIndexD<D>(typename ExtendedGridIndexD<D>
+                                               ::Filled(),
+                                               d_.get_dimension(), 0),
                          d_);
   }
   AllIndexIterator all_indexes_end() const {
-    return indexes_end(ExtendedGridIndexD<D>(Ints(d_.get_dimension(), 0)), d_);
+    return indexes_end(d_, d_);
   }
 #endif
   base::Vector<GridIndexD<D> > get_all_indexes() const {
@@ -250,7 +251,11 @@ class BoundedGridRangeD {
   }
   //! Return the ExtendedGridIndexD of all zeros
   ExtendedGridIndexD<D> get_minimum_extended_index() const {
-    return ExtendedGridIndexD<D>(Ints(d_.get_dimension(), 0));
+    ExtendedGridIndexD<D> ret(d_);
+    for (unsigned int i = 0; i < ret.get_dimension(); ++i) {
+      ret.access_data().get_data()[i] = 0;
+    }
+    return ret;
   }
   //! Return the index of the maximumal cell
   ExtendedGridIndexD<D> get_maximum_extended_index() const {

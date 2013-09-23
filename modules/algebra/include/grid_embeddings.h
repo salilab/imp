@@ -92,22 +92,24 @@ class DefaultEmbeddingD {
       succeed.
   */
   ExtendedGridIndexD<D> get_extended_index(const VectorD<D> &o) const {
-    boost::scoped_array<int> index(new int[origin_.get_dimension()]);
+    ExtendedGridIndexD<D> ret(typename ExtendedGridIndexD<D>::Uninitialized(),
+                              origin_.get_dimension());
     for (unsigned int i = 0; i < get_dimension(); ++i) {
       double d = o[i] - origin_[i];
       double fi = d * inverse_unit_cell_[i];
-      index[i] = static_cast<int>(std::floor(fi));
+      ret.access_data().get_data()[i] = static_cast<int>(std::floor(fi));
     }
-    return ExtendedGridIndexD<D>(index.get(), index.get() + get_dimension());
+    return ret;
   }
   GridIndexD<D> get_index(const VectorD<D> &o) const {
-    boost::scoped_array<int> index(new int[origin_.get_dimension()]);
+    GridIndexD<D> ret(typename GridIndexD<D>::Uninitialized(),
+                      origin_.get_dimension());
     for (unsigned int i = 0; i < get_dimension(); ++i) {
       double d = o[i] - origin_[i];
       double fi = d * inverse_unit_cell_[i];
-      index[i] = static_cast<int>(std::floor(fi));
+      ret.access_data().get_data()[i] = static_cast<int>(std::floor(fi));
     }
-    return GridIndexD<D>(index.get(), index.get() + get_dimension());
+    return ret;
   }
   /** \name Center
       Return the coordinates of the center of the voxel.
@@ -249,9 +251,11 @@ class LogEmbeddingD {
     set_unit_cell(cell, bases);
     if (bound_centers) {
       VectorD<D> lower_corner =
-          get_center(GridIndexD<D>(Ints(bases.get_dimension(), 0)));
+          get_center(GridIndexD<D>(typename GridIndexD<D>::Filled(),
+                                   bases.get_dimension(), 0));
       VectorD<D> upper_corner =
-          get_coordinates(get_uniform_offset(GridIndexD<D>(counts), -.5));
+          get_coordinates(get_uniform_offset(GridIndexD<D>(counts.begin(),
+                                                           counts.end()), -.5));
       VectorD<D> extents = upper_corner - lower_corner;
       VectorD<D> uc = cell;
       VectorD<D> orig = uc;
@@ -296,15 +300,16 @@ class LogEmbeddingD {
       succeed.
   */
   ExtendedGridIndexD<D> get_extended_index(const VectorD<D> &o) const {
-    boost::scoped_array<int> index(new int[origin_.get_dimension()]);
+    ExtendedGridIndexD<D> ret(typename ExtendedGridIndexD<D>::Uninitialized(),
+                              origin_.get_dimension());
     for (unsigned int i = 0; i < get_dimension(); ++i) {
       double d = o[i] - origin_[i];
       // cache everything
       double fi = d / unit_cell_[i];
       double li = std::log(fi) / std::log(base_[i]);
-      index[i] = static_cast<int>(std::floor(li));
+      ret.access_data().get_data()[i] = static_cast<int>(std::floor(li));
     }
-    return ExtendedGridIndexD<D>(index.get(), index.get() + get_dimension());
+    return ret;
   }
   GridIndexD<D> get_index(const VectorD<D> &o) const {
     ExtendedGridIndexD<D> ei = get_extended_index(o);

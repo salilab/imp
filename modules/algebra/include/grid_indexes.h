@@ -46,10 +46,22 @@ class ExtendedGridIndexD : public base::Value {
 
  public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  struct Uninitialized{};
+  ExtendedGridIndexD(Uninitialized, int dim): data_(dim) {
+  }
+  struct Filled{};
+  ExtendedGridIndexD(Filled, int dim, int value): data_(dim) {
+    std::fill(data_.get_data(),
+              data_.get_data() + dim, value);
+  }
   const internal::VectorData<int, D, true>& get_data() const { return data_; }
   internal::VectorData<int, D, true>& access_data() { return data_; }
 #endif
   //! Create a grid cell from three arbitrary indexes
+  /** \note Only use this from python. */
+#ifndef SWIG
+  IMP_DEPRECATED_ATTRIBUTE
+#endif
   explicit ExtendedGridIndexD(Ints vals) {
     data_.set_coordinates(vals.begin(), vals.end());
   }
@@ -92,12 +104,13 @@ class ExtendedGridIndexD : public base::Value {
   IMP_HASHABLE_INLINE(ExtendedGridIndexD,
                       return boost::hash_range(begin(), end()));
   ExtendedGridIndexD<D> get_uniform_offset(int ii) const {
-    Ints ret(get_dimension(), 0);
+    ExtendedGridIndexD<D> ret(typename ExtendedGridIndexD<D>::Filled(),
+                              get_dimension(), 0);
     for (unsigned int i = 0; i < get_dimension(); ++i) {
-      ret[i] = operator[](i) + ii;
+      ret.access_data().get_data()[i] = operator[](i) + ii;
     }
     // std::cout << "Offset " << *this << " to get " << ret << std::endl;
-    return ExtendedGridIndexD<D>(ret);
+    return ret;
   }
   ExtendedGridIndexD<D> get_offset(int i, int j, int k) const {
     IMP_USAGE_CHECK(D == 3, "Only for 3D");
@@ -144,6 +157,13 @@ class GridIndexD : public base::Value {
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   const internal::VectorData<int, D, true>& get_data() const { return data_; }
   internal::VectorData<int, D, true>& access_data() { return data_; }
+  struct Uninitialized{};
+  GridIndexD(Uninitialized, int dim): data_(dim) {}
+  struct Filled{};
+  GridIndexD(Filled, int dim, int value): data_(dim) {
+    std::fill(data_.get_data(),
+              data_.get_data() + dim, value);
+  }
 #endif
   GridIndexD() {}
 
@@ -167,6 +187,10 @@ class GridIndexD : public base::Value {
   typedef const int* iterator;
   iterator begin() const { return data_.get_data(); }
   iterator end() const { return data_.get_data() + get_dimension(); }
+  /** \note Only use this from python. */
+#ifndef SWIG
+  IMP_DEPRECATED_ATTRIBUTE
+#endif
   explicit GridIndexD(Ints vals) {
     data_.set_coordinates(vals.begin(), vals.end());
   }

@@ -13,7 +13,7 @@ double get_quantile(const Histogram1D &h, double fraction) {
   double stop_count = h.get_total_count() * fraction;
   int partial_count = 0;
   for (unsigned int i = 0; i < h.get_counts().get_number_of_voxels(); i++) {
-    algebra::GridIndexD<1> gi(Ints(1, i));
+    algebra::GridIndexD<1> gi(&i, &i + 1);
     partial_count += h.get_counts()[i];
     if (partial_count > stop_count) {
       return h.get_counts().get_center(gi)[0];

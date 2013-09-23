@@ -102,10 +102,11 @@ class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
     }
   };
 
-  Floats get_sides(const Ints &ns, const BoundingBoxD<D> &bb) const {
-    Floats ret(bb.get_dimension());
-    for (unsigned int i = 0; i < ret.size(); ++i) {
-      ret[i] = (bb.get_corner(1)[i] - bb.get_corner(0)[i]) / ns[i];
+  VectorD<D> get_sides(const Ints &ns, const BoundingBoxD<D> &bb) const {
+    VectorD<D> ret = bb.get_corner(1);
+    for (unsigned int i = 0; i < ret.get_dimension(); ++i) {
+      ret[i] -= bb.get_corner(0)[i];
+      ret[i] /= ns[i];
     }
     return ret;
   }
@@ -141,7 +142,7 @@ class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
         const Value &default_value = Value())
       : Storage(get_ns(Floats(bb.get_dimension(), side), bb), default_value),
         Embedding(bb.get_corner(0),
-                  VectorD<D>(Floats(bb.get_dimension(), side))) {
+                  get_ones_vector_kd(bb.get_dimension(), side)) {
     IMP_USAGE_CHECK(
         Storage::get_is_bounded(),
         "This grid constructor can only be used with bounded grids.");
@@ -154,7 +155,8 @@ class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
   GridD(double side, const VectorD<D> &origin,
         const Value &default_value = Value())
       : Storage(default_value),
-        Embedding(origin, VectorD<D>(Floats(origin.get_dimension(), side))) {}
+        Embedding(origin, get_ones_vector_kd(origin.get_dimension(),
+                                                        side)) {}
   //! An empty, undefined grid.
   GridD() : Storage(Value()) {}
   /* \name Indexing
@@ -258,12 +260,12 @@ class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
                     "get_nearest_index "
                         << "only works on bounded grids.");
     ExtendedGridIndexD<D> ei = Embedding::get_extended_index(pt);
-    boost::scoped_array<int> is(new int[pt.get_dimension()]);
     for (unsigned int i = 0; i < pt.get_dimension(); ++i) {
-      is[i] = std::max(0, ei[i]);
-      is[i] = std::min<int>(Storage::get_number_of_voxels(i) - 1, is[i]);
+      ei.access_data().get_data()[i] = std::max(0, ei[i]);
+      ei.access_data().get_data()[i]
+          = std::min<int>(Storage::get_number_of_voxels(i) - 1, ei[i]);
     }
-    return ExtendedGridIndexD<D>(is.get(), is.get() + pt.get_dimension());
+    return ei;
   }
 /** @} */
 

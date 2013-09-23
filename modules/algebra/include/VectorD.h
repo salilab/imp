@@ -68,6 +68,14 @@ class VectorD : public GeometricPrimitiveD<D> {
 
  public:
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  // to shut off deprecation warning
+  VectorD(const Floats &f, bool) {
+    if (D != -1 && static_cast<int>(f.size()) != D) {
+      IMP_THROW("Expected " << D << " but got " << f.size(),
+                base::ValueException);
+    }
+    data_.set_coordinates(f.begin(), f.end());
+  }
   template <int OD>
   VectorD(const VectorD<OD> &o) {
     BOOST_STATIC_ASSERT(D == -1 || OD == -1 || D == OD);
@@ -85,7 +93,11 @@ class VectorD : public GeometricPrimitiveD<D> {
   }
 #endif
 
-  /** \throw base::ValueException if f.size() is not appropriate.*/
+  /** \throw base::ValueException if f.size() is not appropriate.
+      \note Only use this from python. */
+#ifndef SWIG
+  IMP_DEPRECATED_ATTRIBUTE
+#endif
   VectorD(const Floats &f) {
     if (D != -1 && static_cast<int>(f.size()) != D) {
       IMP_THROW("Expected " << D << " but got " << f.size(),
@@ -198,14 +210,14 @@ class VectorD : public GeometricPrimitiveD<D> {
       // avoid division by zero - return random unit v
       // NOTE: (1) avoids vector_generators / SphereD to prevent recursiveness
       //       (2) D might be -1, so use get_dimension()
-      Floats rand_v(get_dimension());
+      VectorD<D> ret(*this);
       boost::variate_generator<boost::rand48, boost::normal_distribution<> >
           generator(IMP::base::random_number_generator,
                     ::boost::normal_distribution<>(0, 1.0));
       for (unsigned int i = 0; i < get_dimension(); ++i) {
-        rand_v[i] = generator();
+        ret[i] = generator();
       }
-      return VectorD<D>(rand_v).get_unit_vector();
+      return ret.get_unit_vector();
     }
   }
 
@@ -430,8 +442,20 @@ inline VectorD<-1> get_basis_vector_kd(int D, unsigned int coordinate) {
 template <int D>
 inline VectorD<D> get_zero_vector_d() {
   IMP_USAGE_CHECK(D > 0, "D must be positive");
-  Floats vs(D, 0);
-  return VectorD<D>(vs.begin(), vs.end());
+  VectorD<D> ret;
+  for (int i = 0; i< D; ++i) {
+    ret[i] = 0;
+  }
+  return ret;
+}
+
+
+//! Return a dynamically sized vector of zeros
+template <int D>
+inline VectorD<D> get_zero_vector_kd(int Di) {
+  IMP_USAGE_CHECK(D == Di, "D must be positive");
+  IMP_UNUSED(Di);
+  return get_zero_vector_d<D>();
 }
 
 //! Return a dynamically sized vector of zeros
@@ -442,6 +466,26 @@ inline VectorD<-1> get_zero_vector_kd(int D) {
 }
 
 //! Return a vector of ones (or another constant)
+template <int D>
+inline VectorD<D> get_ones_vector_d(double v = 1) {
+  IMP_USAGE_CHECK(D > 0, "D must be positive");
+  VectorD<D> ret;
+  for (unsigned int i = 0; i < D; ++i) {
+    ret[i] = v;
+  }
+  return ret;
+}
+
+//! Return a vector of ones (or another constant)
+/** Di must equal D. */
+template <int D>
+inline VectorD<D> get_ones_vector_kd(unsigned int Di, double v = 1) {
+  IMP_USAGE_CHECK(D == Di, "D must be equal");
+  IMP_UNUSED(Di);
+  return get_ones_vector_d<D>(v);
+}
+
+//! Return a vector of ones (or another constant)
 inline VectorD<-1> get_ones_vector_kd(unsigned int D, double v = 1) {
   IMP_USAGE_CHECK(D > 0, "D must be positive");
   boost::scoped_array<double> vv(new double[D]);
@@ -449,17 +493,6 @@ inline VectorD<-1> get_ones_vector_kd(unsigned int D, double v = 1) {
     vv[i] = v;
   }
   return VectorD<-1>(vv.get(), vv.get() + D);
-}
-
-//! Return a vector of ones (or another constant)
-template <int D>
-inline VectorD<D> get_ones_vector_d(double v = 1) {
-  IMP_USAGE_CHECK(D > 0, "D must be positive");
-  boost::scoped_array<double> vv(new double[D]);
-  for (unsigned int i = 0; i < D; ++i) {
-    vv[i] = v;
-  }
-  return VectorD<D>(vv.get(), vv.get() + D);
 }
 
 #ifndef SWIG
@@ -617,7 +650,7 @@ template <int D>
 class VectorInputD : public VectorD<D>, public base::InputAdaptor {
  public:
   VectorInputD(const VectorD<D> &v) : VectorD<D>(v) {}
-  VectorInputD(const Floats &v) : VectorD<D>(v) {}
+  VectorInputD(const Floats &v) : VectorD<D>(v, true) {}
 };
 
 /** Also accept floating point values for Vector1Ds
@@ -628,7 +661,7 @@ template <>
 class VectorInputD<1> : public VectorD<1>, public base::InputAdaptor {
  public:
   VectorInputD(const VectorD<1> &v) : VectorD<1>(v) {}
-  VectorInputD(const Floats &v) : VectorD<1>(v) {}
+  VectorInputD(const Floats &v) : VectorD<1>(v, true) {}
   VectorInputD(double v) : VectorD<1>(v) {}
 };
 

@@ -34,6 +34,7 @@ class VectorData {
 
  public:
   unsigned int get_dimension() const { return D; }
+  VectorData(int) {}
   VectorData() {
 #if IMP_HAS_CHECKS >= IMP_USAGE
     for (unsigned int i = 0; i < D; ++i) {
@@ -72,6 +73,8 @@ class VectorData<T, -1, KNOWN_DEFAULT> {
   unsigned int d_;
 
  public:
+  VectorData(int d): storage_(new T[d]), d_(d) {
+  }
   VectorData(const VectorData &o) {
     set_coordinates(o.get_data(), o.get_data() + o.get_dimension());
   }
