@@ -13,7 +13,6 @@
 #include <IMP/isd/isd_config.h>
 #include <IMP/core/MonteCarloMover.h>
 #include <IMP/isd/MolecularDynamics.h>
-#include <IMP/core/mover_macros.h>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -24,7 +23,8 @@ class IMPISDEXPORT MolecularDynamicsMover : public core::MonteCarloMover
 {
 public:
 
-  MolecularDynamicsMover(kernel::Model *m, unsigned nsteps=100, Float timestep=1.);
+  MolecularDynamicsMover(kernel::Model *m, unsigned nsteps=100,
+          Float timestep=1.);
 
   MolecularDynamics * get_md() const { return md_; }
 
