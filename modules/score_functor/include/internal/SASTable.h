@@ -12,6 +12,7 @@
 
 #include <IMP/score_functor/score_functor_config.h>
 #include "RawOpenCubicSpline.h"
+#include <IMP/base/Object.h>
 
 #include <IMP/base/exception.h>
 #include <IMP/base/file.h>
@@ -21,10 +22,7 @@
 IMPSCOREFUNCTOR_BEGIN_INTERNAL_NAMESPACE
 
 template <bool INTERPOLATE>
-class SASTable {
-public:
-  SASTable() {}
-
+class SASTable: public base::Object {
   template <class Key>
   void initialize(base::TextInput tin) {
     std::istream &in = tin;
@@ -93,6 +91,11 @@ public:
 
     IMP_LOG_TERSE("PMF table entries have " << bins_read << " bins with width "
                                             << bin_width_ << std::endl);
+  }
+public:
+  template <class Key>
+  SASTable(base::TextInput tin, Key): base::Object("SASTable:"+tin.get_name()) {
+    initialize<Key>(tin);
   }
 
   double get_score(unsigned int i, double area) const {

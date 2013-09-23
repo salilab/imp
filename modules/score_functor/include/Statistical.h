@@ -12,6 +12,7 @@
 #include "Score.h"
 #include <IMP/kernel/Model.h>
 #include "internal/PMFTable.h"
+#include <IMP/base/Pointer.h>
 #include <IMP/algebra/utility.h>
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
@@ -50,7 +51,8 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 */
 template <class Key, bool BIPARTITE, bool INTERPOLATE, bool SPARSE = false>
 class Statistical : public Score {
-  internal::PMFTable<BIPARTITE, INTERPOLATE, SPARSE> table_;
+  typedef internal::PMFTable<BIPARTITE, INTERPOLATE, SPARSE>  Table;
+  base::PointerMember<Table > table_;
   double threshold_;
   IntKey key_;
 
@@ -60,10 +62,11 @@ class Statistical : public Score {
      \param[in] data_file Where to load the file from.
  */
   Statistical(IntKey k, double threshold, base::TextInput data_file)
-      : table_(0), threshold_(threshold), key_(k) {
+      : table_( new Table(data_file, 0, Key())),
+        threshold_(threshold),
+        key_(k) {
     IMP_USAGE_CHECK(!BIPARTITE,
                     "Constructor can only be used for non-bipartite scores.");
-    table_.template initialize<Key>(data_file);
   }
   /** \param[in] k The attribute to use for determining the particle types
       \param[in] threshold The maximum distance to score
@@ -74,14 +77,16 @@ class Statistical : public Score {
   */
   Statistical(IntKey k, double threshold, base::TextInput data_file,
               unsigned int shift)
-      : table_(shift), threshold_(threshold), key_(k) {
+      : table_(new Table(data_file, shift, Key())),
+        threshold_(threshold),
+        key_(k) {
     IMP_USAGE_CHECK(BIPARTITE,
                     "Constructor can only be used for bipartite scores.");
-    table_.template initialize<Key>(data_file);
   }
 
   // depend on get_is_trivially_zero
-  double get_score(kernel::Model *m, const base::Array<2, kernel::ParticleIndex> &pp,
+  double get_score(kernel::Model *m,
+                   const ParticleIndexPair &pp,
                    double distance) const {
     if (distance >= threshold_ || distance < 0.001) {
       return 0;
@@ -89,7 +94,7 @@ class Statistical : public Score {
     int pt = m->get_attribute(key_, pp[0]);
     int lt = m->get_attribute(key_, pp[1]);
     if (pt == -1 || lt == -1) return 0;
-    return table_.get_score(pt, lt, distance);
+    return table_->get_score(pt, lt, distance);
   }
   DerivativePair get_score_and_derivative(
       kernel::Model *m, const base::Array<2, kernel::ParticleIndex> &pp,
@@ -100,13 +105,13 @@ class Statistical : public Score {
     int pt = m->get_attribute(key_, pp[0]);
     int lt = m->get_attribute(key_, pp[1]);
     if (pt == -1 || lt == -1) return DerivativePair(0, 0);
-    return table_.get_score_with_derivative(pt, lt, distance);
+    return table_->get_score_with_derivative(pt, lt, distance);
   }
   double get_maximum_range(kernel::Model *,
-                           const base::Array<2, kernel::ParticleIndex> &) const {
-    return std::min(threshold_, table_.get_max());
+                           const ParticleIndexPair &) const {
+    return std::min(threshold_, table_->get_max());
   }
-  bool get_is_trivially_zero(kernel::Model *m, const base::Array<2, kernel::ParticleIndex> &p,
+  bool get_is_trivially_zero(kernel::Model *m, const ParticleIndexPair &p,
                              double squared_distance) const {
     return squared_distance > algebra::get_squared(get_maximum_range(m, p));
   }

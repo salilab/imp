@@ -1,5 +1,5 @@
 /**
- * \file SingletonStatistical.h
+ * \file score_functor/SingletonStatistical.h
  * \brief statistical score for a single particle based on one parameter,
  * such as solvent accessability
  *
@@ -12,6 +12,7 @@
 #define IMPSCORE_FUNCTOR_SINGLETON_STATISTICAL_H
 
 #include <IMP/score_functor/score_functor_config.h>
+#include <IMP/base/Pointer.h>
 #include "internal/SASTable.h"
 
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
@@ -46,20 +47,22 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 */
 template <class Key, bool INTERPOLATE>
 class SingletonStatistical {
+  typedef internal::SASTable<INTERPOLATE> Table;
+  base::PointerMember<Table> table_;
+  IntKey key_;
 public:
   SingletonStatistical(IntKey k, base::TextInput data_file =
-                 get_data_path("soap_score_sas.lib")) : key_(k) {
-    table_.template initialize<Key>(data_file);
+                 get_data_path("soap_score_sas.lib")) :
+      table_(new Table(data_file, Key())),
+      key_(k) {
   }
 
-  double get_score(kernel::Model *m, const kernel::ParticleIndex pi, double area) const {
+  double get_score(kernel::Model *m, const kernel::ParticleIndex pi,
+                   double area) const {
     int table_index = m->get_attribute(key_, pi);
     if(table_index == -1) return 0;
-    return table_.get_score(table_index, area);
+    return table_->get_score(table_index, area);
   }
-private:
-  internal::SASTable<INTERPOLATE> table_;
-  IntKey key_;
 };
 
 IMPSCOREFUNCTOR_END_NAMESPACE

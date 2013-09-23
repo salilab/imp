@@ -14,6 +14,7 @@
 #include <IMP/algebra/GridD.h>
 #include <IMP/algebra/grid_storages.h>
 #include <IMP/base/exception.h>
+#include <IMP/base/Object.h>
 #include <IMP/base/file.h>
 #include <cmath>
 #include <vector>
@@ -33,8 +34,7 @@ struct StorageSelector<true> {
 };
 
 template <bool BIPARTITE, bool INTERPOLATE, bool SPARSE = false>
-struct PMFTable {
- private:
+struct PMFTable: public base::Object {
   unsigned int split_;
   double inverse_bin_width_;
   double bin_width_;
@@ -58,9 +58,6 @@ struct PMFTable {
     typename Storage::ExtendedIndex ei(is);
     return data_[data_.get_index(ei)];
   }
-
- public:
-  PMFTable(unsigned int split) : split_(split) {}
   template <class Key>
   void initialize(base::TextInput tin) {
     std::istream &in = tin;
@@ -178,6 +175,13 @@ struct PMFTable {
     IMP_LOG_TERSE("PMF table entries have " << bins_read << " bins with width "
                                             << bin_width_ << std::endl);
   }
+ public:
+  template <class Key>
+  PMFTable(base::TextInput name, unsigned int split, Key) :
+      Object("PMFTable-"+name.get_name()), split_(split) {
+    initialize<Key>(name);
+  }
+
   double get_score(unsigned int i, unsigned int j, double dist) const {
     if (dist >= max_ || dist <= offset_) return 0;
     order(i, j);
