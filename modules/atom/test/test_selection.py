@@ -112,7 +112,7 @@ class Tests(IMP.test.TestCase):
         d2 = IMP.core.XYZR.setup_particle(c2)
         d2.set_radius(1)
         self.assert_(h.get_is_valid(True))
-        s = IMP.atom.Selection([h], target_radius=4)
+        s = IMP.atom.Selection([h], target_radius=6)
         ps = s.get_selected_particle_indexes()
         self.assertEqual(ps, [c1.get_particle_index()])
     def test_mol(self):

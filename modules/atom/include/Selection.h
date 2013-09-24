@@ -60,7 +60,11 @@ public base::InputAdaptor
   double radius_;
 
   kernel::ParticleIndexes h_;
-  std::pair<bool, kernel::ParticleIndexes> search(
+  IMP_NAMED_TUPLE_3(SearchResult, SearchResults,
+                    bool, match,
+                    double, radius,
+                    kernel::ParticleIndexes, indexes,);
+  SearchResult search(
       kernel::Model *m, kernel::ParticleIndex pi,
       boost::dynamic_bitset<> parent) const;
   void set_hierarchies(kernel::Model *m, const kernel::ParticleIndexes &pis);

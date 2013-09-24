@@ -245,7 +245,7 @@ IMP_ATOM_SELECTION_PRED(Terminus, Int, {
     return get_is_terminus(m, pi, data_);
 });
 }
-std::pair<bool, kernel::ParticleIndexes> Selection::search(
+Selection::SearchResult Selection::search(
     kernel::Model *m, kernel::ParticleIndex pi,
     boost::dynamic_bitset<> parent) const {
   IMP_FUNCTION_LOG;
@@ -261,35 +261,45 @@ std::pair<bool, kernel::ParticleIndexes> Selection::search(
   Hierarchy cur(m, pi);
   kernel::ParticleIndexes children;
   bool children_covered = true;
-  bool ret = parent.none();
+  bool matched = parent.none();
+  double sum_radii = 0;
+  int num_radii = 0;
   for (unsigned int i = 0; i < cur.get_number_of_children(); ++i) {
-    std::pair<bool, kernel::ParticleIndexes> curr =
+    SearchResult curr =
         search(m, cur.get_child(i).get_particle_index(), parent);
-    ret |= curr.first;
-    if (curr.first) {
-      if (curr.second.empty()) {
+    matched |= curr.get_match();
+    if (curr.get_radius() >= 0) {
+      sum_radii += curr.get_radius();
+      ++num_radii;
+    }
+    if (curr.get_match()) {
+      if (curr.get_indexes().empty()) {
         children_covered = false;
-      } else if (curr.first) {
-        children += curr.second;
+      } else if (curr.get_match()) {
+        children += curr.get_indexes();
       }
     }
   }
-  if (ret) {
+  if (matched) {
     IMP_LOG_TERSE("Matched " << m->get_particle_name(pi)
                     << " with " << children
                     << " and " << children_covered
                     << std::endl);
-    if (children_covered && !children.empty()) {
-      return std::make_pair(true, children);
+    double my_radius = -std::numeric_limits<double>::max();
+    if (core::XYZR::get_is_setup(m, pi)) {
+      my_radius = core::XYZR(m, pi).get_radius();
+    }
+    double their_radius = sum_radii/num_radii;
+    if (children_covered && !children.empty()
+        && std::abs(my_radius - radius_) > std::abs(their_radius - radius_) ) {
+      return SearchResult(true, their_radius, children);
     } else {
-      if (core::XYZR::get_is_setup(m, pi)) {
-        if (core::XYZR(m, pi).get_radius() > radius_) {
-          return std::make_pair(true, kernel::ParticleIndexes(1, pi));
-        }
-      }
+      return SearchResult(true, my_radius,
+                          kernel::ParticleIndexes(1, pi));
     }
   }
-  return std::make_pair(ret, kernel::ParticleIndexes());
+  return SearchResult(false, -1,
+                      kernel::ParticleIndexes());
 }
 
 ParticlesTemp Selection::get_selected_particles() const {
@@ -312,7 +322,7 @@ ParticleIndexes Selection::get_selected_particle_indexes() const {
                   << predicates_ << std::endl);
   }
   for (unsigned int i = 0; i < h_.size(); ++i) {
-    ret += search(m_, h_[i], base).second;
+    ret += search(m_, h_[i], base).get_indexes();
   }
   return ret;
 }
