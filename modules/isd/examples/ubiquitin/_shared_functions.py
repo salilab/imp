@@ -5,9 +5,9 @@ import IMP
 import IMP.atom
 import IMP.container
 import IMP.isd
-import IMP.isd.shared_functions import sfo_common
-import IMP.isd.Statistics import Statistics
-import IMP.isd.Entry import Entry
+import IMP.isd.shared_functions
+import IMP.isd.Statistics
+import IMP.isd.Entry
 sfo_common = IMP.isd.shared_functions.sfo_common
 Statistics = IMP.isd.Statistics.Statistics
 Entry = IMP.isd.Entry.Entry
