@@ -45,7 +45,9 @@ If you wish to build the Python interfaces, you will also need:
 
 Mac users must first install Xcode (previously known as Developer Tools)
 which is not installed by default with OS X, but is available from the App store
-(or from the Mac OS install DVD for old versions of Mac OS).
+(or from the Mac OS install DVD for old versions of Mac OS). They will also
+need the Xcode command line tools (install by going to Xcode Preferences, then
+Downloads, then Components, and select "Command Line Tools").
 
 Then Mac users should use one of the available collections of Unix tools,
 either
@@ -54,7 +56,7 @@ either
 
     `brew install boost gmp google-perftools cgal graphviz gsl cmake doxygen hdf5 swig eigen fftw mpfr`
 
-  to install everything IMP finds useful (or that you will want for installing various useful python libs that IMP finds useful).
+  to install everything IMP finds useful (or that you will want for installing various useful python libs that IMP finds useful). On older Macs, you may also need to `brew install git` if you want to use git (newer Macs include git).
 - [Macports](http://www.macports.org/) If you use MacPorts, you must add `/opt/local/bin` to your path (either by modifying your shell's
   config file or by making an `environment.plist` file) and then do
 
