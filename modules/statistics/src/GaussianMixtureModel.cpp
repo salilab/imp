@@ -41,8 +41,34 @@ GaussianMixtureModel::GaussianMixtureModel(
   //data_p_ = Array2DD(data_n_,k_);
   setup();
 }
-Array1DD GaussianMixtureModel::get_center() const
-{
+
+GaussianMixtureModel::GaussianMixtureModel(
+                statistics::internal::DataPoints *data,int k,
+                algebra::Ellipsoid3Ds guesses) {
+  full_data_ = data;
+  data_=full_data_->get_data();
+  dim_ = (*data_)[0].dim1();
+  IMP_IF_LOG(VERBOSE) {
+    IMP_LOG(VERBOSE,"number of data points  : " <<
+            full_data_->get_number_of_data_points() << std::endl);
+    IMP_LOG(VERBOSE,"data dimension  : " << dim_ << std::endl);
+  }
+  k_=k;
+  data_n_ = data_->size();
+  data_r_ = Array2DD(data_n_,k_,1./k_);
+  num_steps_=300;
+  //data_p_ = Array2DD(data_n_,k_);
+  for(unsigned int k=0;k<k_;k++) {
+    components_.push_back(new GaussianComponent(guesses[k],1./k_,k));
+  }
+}
+
+GaussianMixtureModel::GaussianMixtureModel(Embedding * e,
+                            PartitionalClusteringWithCenter * init_clusters){
+  std::cout<<"Hello world"<<std::endl;
+}
+
+Array1DD GaussianMixtureModel::get_center() const {
   Array1DD m(dim_,0.);
   for(unsigned int i=0;i<k_;i++) {
     m = algebra::internal::TNT::add(m,components_[i]->get_mean());

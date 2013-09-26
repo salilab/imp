@@ -1,3 +1,3 @@
-Describe this branch
-
-This message will be used as the commit merge when the branch is merged into develop. Reference any relevant issues like #123
+GMM_clustering branch
+Incorporating and expanding upon Keren's original GMM code.
+Specific application is for density maps: will be able to take anchor points as initial centers and then use the EM algorithm to optimize means and covariance matrices.

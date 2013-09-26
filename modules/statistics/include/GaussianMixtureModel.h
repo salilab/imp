@@ -9,12 +9,15 @@
 #ifndef IMPSTATISTICS_GAUSSIAN_MIXURE_MODEL_H
 #define IMPSTATISTICS_GAUSSIAN_MIXURE_MODEL_H
 
-#include <IMP/base_types.h>
-#include <IMP/Particle.h>
+#include <IMP/statistics/statistics_config.h>
+#include <IMP/statistics/Embedding.h>
+#include "GaussianComponent.h"
+#include "PartitionalClusteringWithCenter.h"
 #include "internal/DataPoints.h"
 #include "internal/ClusteringEngine.h"
-#include "GaussianComponent.h"
-#include <IMP/statistics/statistics_config.h>
+#include <IMP/base_types.h>
+#include <IMP/Particle.h>
+
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
@@ -23,7 +26,7 @@ class IMPSTATISTICSEXPORT GaussianMixtureModel :
  public :
   GaussianMixtureModel(){}
   /**
-  /param[in] data the data to model using the GMM
+  /param[in] dim  the size of the data to be added
   /param[in] k    the number of Gaussians to use
    */
   GaussianMixtureModel(int dim,int k);
@@ -33,6 +36,20 @@ class IMPSTATISTICSEXPORT GaussianMixtureModel :
   /param[in] k    the number of Gaussians to use
    */
   GaussianMixtureModel(statistics::internal::DataPoints *data,int k);
+  /**
+  /param[in] data the data to model using the GMM
+  /param[in] k the number of Gaussians to use
+  /param[in] guesses initial ellipsoidal guesses for the Gaussians
+   */
+  GaussianMixtureModel(statistics::internal::DataPoints *data,int k,
+                       algebra::Ellipsoid3Ds guesses);
+  /**
+  /param[in] e Embedding from which to extract data
+  /param[in] init_clusters Initial clustering
+   */
+  GaussianMixtureModel(Embedding * e,
+                       PartitionalClusteringWithCenter * init_clusters);
+
   ~GaussianMixtureModel() {}
 
  GaussianComponent * get_gaussian_component(int i) {

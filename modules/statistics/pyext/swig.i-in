@@ -20,13 +20,13 @@ IMP_SWIG_OBJECT(IMP::statistics, ChiSquareMetric, ChiSquareMetrics);
 IMP_SWIG_OBJECT(IMP::statistics,GaussianComponent,GaussianComponents);
 IMP_SWIG_VALUE(IMP::statistics,GaussianMixtureModel,GaussianMixtureModels);
 
+%include "IMP/statistics/Embedding.h"
+%include "IMP/statistics/PartitionalClustering.h"
+%include "IMP/statistics/PartitionalClusteringWithCenter.h"
 %include "IMP/statistics/GaussianComponent.h"
 %include "IMP/statistics/GaussianMixtureModel.h"
-%include "IMP/statistics/PartitionalClustering.h"
-%include "IMP/statistics/Embedding.h"
 %include "IMP/statistics/Metric.h"
 %include "IMP/statistics/ChiSquareMetric.h"
-%include "IMP/statistics/PartitionalClusteringWithCenter.h"
 %include "IMP/statistics/embeddings.h"
 %include "IMP/statistics/metrics.h"
 %include "IMP/statistics/point_clustering.h"
