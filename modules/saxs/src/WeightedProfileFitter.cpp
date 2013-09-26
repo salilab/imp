@@ -95,22 +95,32 @@ void WeightedProfileFitter::write_fit_file(ProfilesTemp partial_profiles,
   for(unsigned int i=0; i<partial_profiles.size(); i++)
     partial_profiles[i]->sum_partial_profiles(best_c1, best_c2);
 
-  // computed weighted profile
-  IMP_NEW(IMP::saxs::Profile, weighted_profile, (exp_profile_->get_min_q(),
-                                                 exp_profile_->get_max_q(),
-                                                 exp_profile_->get_delta_q()));
+  if(partial_profiles.size() == 1) {
+    // compute scale
+    Float c = scoring_function_->compute_scale_factor(exp_profile_,
+                                                      partial_profiles[0]);
+    ProfileFitter<ChiScore>::write_SAXS_fit_file(fit_file_name,
+                                                 partial_profiles[0],
+                                                 fp.get_chi(), c);
+  } else {
 
-  const std::vector<double>& weights = fp.get_weights();
-  for(unsigned int i=0; i<weights.size(); i++)
-    weighted_profile->add(partial_profiles[i], weights[i]);
+    // computed weighted profile
+    IMP_NEW(IMP::saxs::Profile, weighted_profile, (exp_profile_->get_min_q(),
+                                                   exp_profile_->get_max_q(),
+                                                  exp_profile_->get_delta_q()));
 
-  // compute scale
-  Float c = scoring_function_->compute_scale_factor(exp_profile_,
-                                                    weighted_profile);
+    const std::vector<double>& weights = fp.get_weights();
+    for(unsigned int i=0; i<weights.size(); i++)
+      weighted_profile->add(partial_profiles[i], weights[i]);
 
-  ProfileFitter<ChiScore>::write_SAXS_fit_file(fit_file_name,
-                                               weighted_profile,
-                                               fp.get_chi(), c);
+    // compute scale
+    Float c = scoring_function_->compute_scale_factor(exp_profile_,
+                                                      weighted_profile);
+
+    ProfileFitter<ChiScore>::write_SAXS_fit_file(fit_file_name,
+                                                 weighted_profile,
+                                                 fp.get_chi(), c);
+  }
 }
 
 
