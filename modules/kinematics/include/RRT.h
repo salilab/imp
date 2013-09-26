@@ -99,11 +99,14 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
     unsigned int number_of_collisions_;
   };
 
+  friend std::ostream& operator<<(std::ostream& s, const Parameters& p);
+
  public:
 
   // Constructor
   RRT(kernel::Model *m, DOFsSampler* sampler, LocalPlanner* planner,
-      const DOFs& cspace_dofs, unsigned int iteration_number = 1000);
+      const DOFs& cspace_dofs, unsigned int iteration_number = 1000,
+      unsigned int tree_size = 100);
 
   // function required by Sampler
   // TODO: think how to save configurations in internal coords

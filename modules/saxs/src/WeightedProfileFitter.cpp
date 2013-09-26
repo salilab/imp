@@ -79,31 +79,40 @@ WeightedFitParameters WeightedProfileFitter::fit_profile(
                                            std::numeric_limits<float>::max(),
                                            weights);
 
-  if(fit_file_name.size() > 0) {
-    float best_c1 = fp.get_c1();
-    float best_c2 = fp.get_c2();
+  if(fit_file_name.size() > 0)
+    write_fit_file(partial_profiles, fp, fit_file_name);
 
-    // compute a profile for best c1/c2 combination
-    for(unsigned int i=0; i<partial_profiles.size(); i++)
-      partial_profiles[i]->sum_partial_profiles(best_c1, best_c2);
-
-    // computed weighted profile
-    IMP_NEW(IMP::saxs::Profile, weighted_profile, (exp_profile_->get_min_q(),
-                                                   exp_profile_->get_max_q(),
-                                                  exp_profile_->get_delta_q()));
-    for(unsigned int i=0; i<weights.size(); i++)
-      weighted_profile->add(partial_profiles[i], weights[i]);
-
-    // compute scale
-    Float c = scoring_function_->compute_scale_factor(exp_profile_,
-                                                      weighted_profile);
-
-    ProfileFitter<ChiScore>::write_SAXS_fit_file(fit_file_name,
-                                                 weighted_profile,
-                                                 fp.get_chi(), c);
-  }
   return fp;
 }
+
+void WeightedProfileFitter::write_fit_file(ProfilesTemp partial_profiles,
+                                       const WeightedFitParameters& fp,
+                                       const std::string fit_file_name) const {
+  float best_c1 = fp.get_c1();
+  float best_c2 = fp.get_c2();
+
+  // compute a profile for best c1/c2 combination
+  for(unsigned int i=0; i<partial_profiles.size(); i++)
+    partial_profiles[i]->sum_partial_profiles(best_c1, best_c2);
+
+  // computed weighted profile
+  IMP_NEW(IMP::saxs::Profile, weighted_profile, (exp_profile_->get_min_q(),
+                                                 exp_profile_->get_max_q(),
+                                                 exp_profile_->get_delta_q()));
+
+  const std::vector<double>& weights = fp.get_weights();
+  for(unsigned int i=0; i<weights.size(); i++)
+    weighted_profile->add(partial_profiles[i], weights[i]);
+
+  // compute scale
+  Float c = scoring_function_->compute_scale_factor(exp_profile_,
+                                                    weighted_profile);
+
+  ProfileFitter<ChiScore>::write_SAXS_fit_file(fit_file_name,
+                                               weighted_profile,
+                                               fp.get_chi(), c);
+}
+
 
 
 WeightedFitParameters WeightedProfileFitter::search_fit_parameters(

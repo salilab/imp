@@ -1,5 +1,5 @@
 /**
- * \file WeightedProfileFitter.h
+ * \file saxs/WeightedProfileFitter.h
  * \brief  Fitting of multiple profiles to the experimental one.
  * The weights of the profiles are computed analytically using
  * non-negative least squares fitting (NNLS)
@@ -46,6 +46,11 @@ class IMPSAXSEXPORT WeightedProfileFitter : public ProfileFitter<ChiScore> {
                                     float min_c1=0.95, float max_c1=1.05,
                                     float min_c2=-2.0, float max_c2=4.0,
                                     const std::string fit_file_name = "") const;
+
+  //! write a fit file
+  void write_fit_file(ProfilesTemp partial_profiles,
+                      const WeightedFitParameters& fp,
+                      const std::string fit_file_name) const;
 private:
   WeightedFitParameters search_fit_parameters(
              ProfilesTemp& partial_profiles,

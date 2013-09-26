@@ -12,13 +12,21 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 
 int RRT::RRTNode::node_counter_ = 0;
 
-RRT::RRT(kernel::Model *m, DOFsSampler* dofs_sampler, LocalPlanner* planner,
-         const DOFs& cspace_dofs, unsigned int iteration_number) :
+std::ostream & operator<<(std::ostream & s, const RRT::Parameters& p) {
+  s << "Number_of_iterations = " << p.number_of_iterations_
+    << " actual_tree_size = " << p.actual_tree_size_
+    << " tree_size = " << p.tree_size_;
+  return s;
+}
+
+RRT::RRT(kernel::Model *m, DOFsSampler* dofs_sampler,
+         LocalPlanner* planner, const DOFs& cspace_dofs,
+         unsigned int iteration_number, unsigned int tree_size) :
   Sampler(m, "rrt_sampler"),
   dofs_sampler_(dofs_sampler),
   local_planner_(planner),
   cspace_dofs_(cspace_dofs),
-  default_parameters_(iteration_number)
+  default_parameters_(iteration_number, tree_size, tree_size)
 {
   // define q_init and check if it is a valid configuration
   DOFValues q_init(cspace_dofs_);
@@ -61,7 +69,6 @@ void RRT::add_nodes(RRTNode* q_near, const std::vector<DOFValues>& new_nodes) {
 void RRT::run() {
   Parameters current_counters;
   while( ! is_stop_condition(default_parameters_, current_counters) ){
-    std::cerr << "RRT " << current_counters.number_of_iterations_ << std::endl;
     DOFValues q_rand = dofs_sampler_->get_sample();
     RRTNode* q_near_node = get_q_near(q_rand);
     std::vector<DOFValues> new_nodes =
@@ -71,9 +78,11 @@ void RRT::run() {
     current_counters.number_of_iterations_++;
     if(new_nodes.size() > 0) current_counters.actual_tree_size_++;
     current_counters.tree_size_ = tree_.size();
-    std::cerr << "RRT done iteration "
-              <<  current_counters.number_of_iterations_-1 << " added "
-              << new_nodes.size() << " new nodes " << std::endl;
+    if(current_counters.number_of_iterations_%100 == 0 || new_nodes.size()>0) {
+      std::cerr << "RRT done iteration, added " << new_nodes.size()
+                << " new nodes " << current_counters << " q_near "
+                << q_near_node->get_id()<< std::endl;
+    }
   }
 }
 
