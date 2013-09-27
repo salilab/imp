@@ -50,10 +50,16 @@ class TestXMLHandler(XMLGenerator):
         splname = name.split('-', 1)[-1] # Also try without module- prefix
         for n in (name, splname):
             fulln = os.path.join(self.detail_dir, n)
-            if os.path.exists(fulln):
+            try:
+                testpickle = pickle.load(open(fulln, 'rb'))
+            except (IOError, EOFError):
+                # Ignore incomplete pickles (e.g. if ctest killed Python when
+                # the timeout was reached while the pickle was being written)
+                testpickle = None
+            if testpickle is not None:
                 self.fh.write('\t\t\t<NamedMeasurement type="text/string" ' \
                               'name="Python unittest detail"><Value>')
-                for test in pickle.load(open(fulln, 'rb')):
+                for test in testpickle:
                     if test['detail'] is not None:
                         self.write_test_detail(test)
                 self.fh.write('</Value>\n\t\t\t</NamedMeasurement>\n')
