@@ -13,8 +13,21 @@
 IMPATOM_BEGIN_NAMESPACE
 
 LangevinThermostatOptimizerState::LangevinThermostatOptimizerState(
+    Model*m,
+    ParticleIndexesAdaptor pis, Float temperature, double gamma)
+    : pis_(kernel::get_particles(m, pis)), temperature_(temperature),
+      gamma_(gamma) {
+  vs_[0] = FloatKey("vx");
+  vs_[1] = FloatKey("vy");
+  vs_[2] = FloatKey("vz");
+  IMP_LOG_VERBOSE("Thermostat on " << pis_ << std::endl);
+}
+
+LangevinThermostatOptimizerState::LangevinThermostatOptimizerState(
     const kernel::ParticlesTemp &pis, Float temperature, double gamma)
     : pis_(pis.begin(), pis.end()), temperature_(temperature), gamma_(gamma) {
+  IMPATOM_DEPRECATED_FUNCTION_DEF(2.1,
+                                  "Use the constructor with particle indexes.");
   vs_[0] = FloatKey("vx");
   vs_[1] = FloatKey("vy");
   vs_[2] = FloatKey("vz");

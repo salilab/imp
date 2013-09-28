@@ -34,7 +34,7 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT MolecularDynamics : public Simulator {
  public:
   /** Score based on the provided model */
-  MolecularDynamics(kernel::Model *m = nullptr);
+  MolecularDynamics(kernel::Model *m);
 
   //! \return the current kinetic energy of the system, in kcal/mol
   virtual Float get_kinetic_energy() const;
@@ -58,7 +58,13 @@ class IMPATOMEXPORT MolecularDynamics : public Simulator {
 
   //! Assign velocities representative of the given temperature
   virtual void assign_velocities(Float temperature);
-  IMP_SIMULATOR(MolecularDynamics);
+  virtual void setup(const kernel::ParticleIndexes& ps) IMP_OVERRIDE;
+  virtual double do_step(const kernel::ParticleIndexes& sc,
+                         double dt) IMP_OVERRIDE;
+  virtual bool
+      get_is_simulation_particle(kernel::ParticleIndex p) const IMP_OVERRIDE;
+
+  IMP_OBJECT_METHODS(MolecularDynamics);
 
  protected:
   void initialize();
