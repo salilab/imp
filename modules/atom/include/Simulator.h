@@ -133,8 +133,6 @@ class IMPATOMEXPORT Simulator : public Optimizer {
   */
   IMP_LIST(public, Particle, particle, kernel::Particle *, kernel::Particles);
 
-  IMP_OBJECT_METHODS(Simulator);
-
  protected:
   /** @} */
   virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE IMP_FINAL;
