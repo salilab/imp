@@ -148,7 +148,7 @@ double Simulator::do_simulate_wave
 
 
 ParticleIndexes Simulator::get_simulation_particle_indexes() const {
-  IMP_FUNCTION_LOG;
+  IMP_OBJECT_LOG;
   kernel::ParticleIndexes ps;
   if (get_number_of_particles() == 0) {
     for (kernel::Model::ParticleIterator it = get_model()->particles_begin();
