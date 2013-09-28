@@ -9,6 +9,7 @@
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
 #include <IMP/container.h>
+#include <boost/foreach.hpp>
 
 using namespace IMP;
 using namespace IMP::core;
@@ -19,6 +20,7 @@ using namespace IMP::display;
 
 namespace {
 int do_benchmark() {
+  try {
   IMP_NEW(kernel::Model, m, ());
   atom::Hierarchy prot =
       read_pdb(IMP::benchmark::get_data_path("extended.pdb"), m);
@@ -59,12 +61,17 @@ int do_benchmark() {
 
   // Get a list of all atoms in the protein, and put it in a container
   atom::Hierarchies atoms = get_by_type(prot, ATOM_TYPE);
+  // work around added atoms not being marked as optimized
+  BOOST_FOREACH(atom::Hierarchy atom, atoms) {
+    core::XYZ(atom).set_coordinates_are_optimized(true);
+  }
   IMP_NEW(ListSingletonContainer, cont, (atoms));
 
   /* Add a restraint for the Lennard-Jones interaction. This is built from
      a collection of building blocks. First, a
      ClosePairContainer maintains a list
-     of all pairs of kernel::Particles that are close. Next, all 1-2, 1-3 and 1-4 pairs
+     of all pairs of kernel::Particles that are close.
+     Next, all 1-2, 1-3 and 1-4 pairs
      from the stereochemistry created above are filtered out.
      Then, a LennardJonesPairScore scores a pair of atoms with the Lennard-Jones
      potential. Finally, a PairsRestraint is used which simply applies the
@@ -78,7 +85,11 @@ int do_benchmark() {
 
   // Finally, evaluate the score of the whole system (without derivatives)
   IMP_NEW(ConjugateGradients, cg, (m));
-  cg->optimize(1000);
+  if (IMP::base::run_quick_test) {
+    cg->optimize(1);
+  } else {
+    cg->optimize(1000);
+  }
 
   //## Molecular Dynamics
   IMP_NEW(MolecularDynamics, md, (m));
@@ -99,18 +110,28 @@ int do_benchmark() {
 
     # GO! */
   IMP_NEW(atom::RemoveRigidMotionOptimizerState, rmos,
-          (get_as<kernel::ParticlesTemp>(atoms), 10));
+          (m, md->get_simulation_particle_indexes()));
+  rmos->set_period(10);
   md->add_optimizer_state(rmos);
   IMP_NEW(atom::LangevinThermostatOptimizerState, therm,
-          (get_as<kernel::ParticlesTemp>(atoms), 300, 500));
+          (m, md->get_simulation_particle_indexes(), 300, 500));
   md->add_optimizer_state(therm);
   double time, score = 0;
-  IMP_TIME({
-    score += md->optimize(100);
-  },
-           time);
+  if (IMP::base::run_quick_test) {
+    time = 0;
+    score += md->optimize(2);
+  } else {
+    IMP_TIME({
+        score += md->optimize(100);
+      },
+      time);
+  }
   IMP::benchmark::report("md charmm", time, score);
   return 0;
+  } catch (base::Exception e) {
+    std::cerr << "Exception " << e.what() << std::endl;
+    return 1;
+  }
 }
 }
 
