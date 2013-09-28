@@ -11,6 +11,7 @@
 #include "IMP/kernel/container_base.h"
 #include "IMP/kernel/input_output.h"
 #include "IMP/kernel/internal/utility.h"
+#include <IMP/base/statistics.h>
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -27,12 +28,14 @@ ScoreState::ScoreState(kernel::Model *m) : ModelObject(m, "ScoreState%1%"),
   IMPKERNEL_DEPRECATED_METHOD_DEF(
       2.1, "Use the ScoreState constructor that takes the model and a name.");
 }
-ScoreState::ScoreState(kernel::Model *m, std::string name) : ModelObject(m, name),
+ScoreState::ScoreState(kernel::Model *m,
+                       std::string name) : ModelObject(m, name),
                                            update_order_(-1) {
 }
 
 void ScoreState::before_evaluate() {
   IMP_OBJECT_LOG;
+  base::Timer t(this, "before_evaluate");
   validate_inputs();
   validate_outputs();
   do_before_evaluate();
@@ -40,6 +43,7 @@ void ScoreState::before_evaluate() {
 
 void ScoreState::after_evaluate(DerivativeAccumulator *da) {
   IMP_OBJECT_LOG;
+  base::Timer t(this, "after_evaluate");
   validate_inputs();
   validate_outputs();
   do_after_evaluate(da);

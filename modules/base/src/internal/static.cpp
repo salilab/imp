@@ -9,21 +9,22 @@
 #if !IMP_BASE_HAS_LOG4CXX
 #include "IMP/base/internal/log_stream.h"
 #endif
-#include "IMP/base/RefCounted.h"
-#include "IMP/base/Object.h"
-#include <IMP/base/set.h>
-#include "IMP/base/Showable.h"
 #include "IMP/base//Pointer.h"
+#include "IMP/base/Object.h"
 #include "IMP/base/RefCounted.h"
+#include "IMP/base/RefCounted.h"
+#include "IMP/base/Showable.h"
+#include "IMP/base/Vector.h"
 #include "IMP/base/base_macros.h"
-#include "IMP/base/types.h"
+#include "IMP/base/flags.h"
 #include "IMP/base/live_objects.h"
 #include "IMP/base/map.h"
-#include "IMP/base/Vector.h"
-#include "IMP/base/flags.h"
-#include <cmath>
-#include <boost/timer.hpp>
+#include "IMP/base/statistics.h"
+#include "IMP/base/types.h"
+#include <IMP/base/set.h>
 #include <boost/cstdint.hpp>
+#include <boost/timer.hpp>
+#include <cmath>
 #include <ostream>
 #if IMP_BASE_HAS_BOOST_RANDOM
 #include <boost/nondet_random.hpp>
@@ -260,4 +261,26 @@ AddBoolFlag printed_deprecation_messages_adder(
 AddBoolFlag exceptions_depre_adder(
     "deprecation_exceptions", "Throw an exception on runtime deprecation use",
     &exceptions_on_deprecation);
+
+
+base::map<std::string, Timing> timings;
+
+namespace {
+std::string timings_name;
+AddStringFlag exceptions_depre_adder(
+    "statistics",
+    "Writing statistics about various aspects to a file (or stdout)",
+    &timings_name);
+
+struct TimingsWriter {
+  ~TimingsWriter() {
+    if (timings_name == "stdout") {
+      show_timings(std::cout);
+    } else if (!timings_name.empty()) {
+      show_timings(TextOutput(timings_name));
+    }
+  }
+} tw;
+}
+
 IMPBASE_END_INTERNAL_NAMESPACE

@@ -18,7 +18,8 @@
 #include <IMP/base/thread_macros.h>
 #include "IMP/kernel/input_output.h"
 #include "IMP/kernel/internal/RestraintsScoringFunction.h"
-#include "IMP/base//Pointer.h"
+#include "IMP/base/Pointer.h"
+#include "IMP/base/statistics.h"
 #include <IMP/base/check_macros.h>
 #include <numeric>
 
@@ -227,6 +228,7 @@ double Restraint::get_score() const { return evaluate(false); }
 
 void Restraint::add_score_and_derivatives(ScoreAccumulator sa) const {
   IMP_OBJECT_LOG;
+  base::Timer t(this, "evaluate");
   // implement these in macros to avoid extra virtual function call
   ScoreAccumulator nsa(sa, this);
   validate_inputs();

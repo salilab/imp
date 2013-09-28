@@ -8,18 +8,19 @@
 
 #include "IMP/core/rigid_bodies.h"
 #include "IMP/core/SingletonConstraint.h"
-#include <IMP/kernel/internal/ContainerConstraint.h>
-#include <IMP/algebra/Vector3D.h>
-#include <IMP/algebra/internal/tnt_array2d.h>
-#include <IMP/algebra/internal/tnt_array2d_utils.h>
-#include <IMP/algebra/internal/jama_eig.h>
-#include <IMP/algebra/geometric_alignment.h>
 #include "IMP/generic.h"
 #include <IMP/SingletonContainer.h>
+#include <IMP/algebra/Vector3D.h>
+#include <IMP/algebra/geometric_alignment.h>
+#include <IMP/algebra/geometric_alignment.h>
+#include <IMP/algebra/internal/jama_eig.h>
+#include <IMP/algebra/internal/tnt_array2d.h>
+#include <IMP/algebra/internal/tnt_array2d_utils.h>
+#include <IMP/base/statistics.h>
 #include <IMP/core/FixedRefiner.h>
 #include <IMP/core/internal/rigid_body_tree.h>
+#include <IMP/kernel/internal/ContainerConstraint.h>
 #include <IMP/kernel/internal/InternalListSingletonContainer.h>
-#include <IMP/algebra/geometric_alignment.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
@@ -538,6 +539,7 @@ void RigidBody::teardown_particle(RigidBody rb) {
 }
 void RigidBody::set_reference_frame_from_members(
                                           const kernel::ParticleIndexes &rms) {
+  base::Timer t("set_up_rigid_body_reference_frame");
   algebra::Vector3Ds local(rms.size());
   algebra::Vector3Ds global(rms.size());
   if (rms.size() < 3) {

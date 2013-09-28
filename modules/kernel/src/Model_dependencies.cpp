@@ -6,23 +6,24 @@
  *
  */
 
+#include "IMP/kernel/DerivativeAccumulator.h"
 #include "IMP/kernel/Model.h"
 #include "IMP/kernel/Particle.h"
-#include "IMP/base/log.h"
 #include "IMP/kernel/Restraint.h"
-#include "IMP/kernel/DerivativeAccumulator.h"
-#include "IMP/kernel/ScoreState.h"
 #include "IMP/kernel/RestraintSet.h"
-#include "IMP/kernel/internal/graph_utility.h"
-#include "IMP/kernel/file.h"
-#include "IMP/base//map.h"
-#include "IMP/kernel/dependency_graph.h"
-#include "IMP/kernel/internal/evaluate_utility.h"
-#include "IMP/kernel/ScoringFunction.h"
 #include "IMP/kernel/ScoreState.h"
-#include <boost/foreach.hpp>
+#include "IMP/kernel/ScoreState.h"
+#include "IMP/kernel/ScoringFunction.h"
+#include "IMP/kernel/dependency_graph.h"
+#include "IMP/kernel/file.h"
+#include "IMP/kernel/internal/evaluate_utility.h"
+#include "IMP/kernel/internal/graph_utility.h"
 #include <IMP/kernel/utility.h>
+#include "IMP/base/map.h"
+#include "IMP/base/log.h"
 #include "IMP/base/set.h"
+#include "IMP/base/statistics.h"
+#include <boost/foreach.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -247,6 +248,7 @@ void Model::do_set_has_all_dependencies(bool tf) {
 }
 
 void Model::set_has_all_dependencies(bool tf) {
+  base::Timer t(this, "set_has_all_dependencies");
   IMP_USAGE_CHECK(tf, "Only works for true.");
   //check_dependency_invariants();
   do_set_has_all_dependencies(tf);
