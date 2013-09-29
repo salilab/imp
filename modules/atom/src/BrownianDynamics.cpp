@@ -110,28 +110,6 @@ inline double get_rotational_sigma(kernel::Model *m, kernel::ParticleIndex p,
   return sqrt(6.0 * dr * dtfs);
 }
 }
-
-void BrownianDynamics::setup(const kernel::ParticleIndexes &ips) {
-  IMP_IF_LOG(TERSE) {
-    kernel::ParticlesTemp ps = IMP::internal::get_particle(get_model(), ips);
-    double dtfs = get_maximum_time_step();
-    double ikT = 1.0 / get_kt();
-    double ms = 0;
-    double mf = 0;
-    get_scoring_function()->evaluate(true);
-    for (unsigned int i = 0; i < ps.size(); ++i) {
-      double c = get_sigma(get_model(), ips[i], dtfs);
-      ms = std::max(ms, c);
-      for (unsigned int j = 0; j < 3; ++j) {
-        double f = get_force(get_model(), ips[i], j, dtfs, ikT);
-        mf = std::max(mf, f);
-      }
-    }
-    IMP_LOG_TERSE("Maximum sigma is " << ms << std::endl);
-    IMP_LOG_TERSE("Maximum force is " << mf << std::endl);
-  }
-  forces_.resize(ips.size());
-}
 IMP_GCC_DISABLE_WARNING(-Wuninitialized)
 
 namespace {
