@@ -557,7 +557,7 @@ void RigidBody::set_reference_frame_from_members(
   }
   algebra::Transformation3D t3 =
       algebra::get_transformation_aligning_first_to_second(local, global);
-  set_reference_frame(algebra::ReferenceFrame3D(t3));
+  set_reference_frame_lazy(algebra::ReferenceFrame3D(t3));
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     for (unsigned int i = 0; i < rms.size(); ++i) {
       if (RigidMember::get_is_setup(m, rms[i])) {

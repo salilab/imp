@@ -127,7 +127,15 @@ void fix_rigid_body(const std::pair<core::RigidBody,
                     kernel::ParticleIndexes> &in) {
   // core::RigidMembers rms=in.second;
   core::RigidBody rb = in.first;
-  rb.set_reference_frame_from_members(in.second);
+  kernel::ParticleIndexes rigid_bits;
+  for (unsigned int i = 0; i < in.second.size(); ++i) {
+    if (core::RigidMember::get_is_setup(rb.get_model(), in.second[i])) {
+      rigid_bits.push_back(in.second[i]);
+    }
+  }
+  IMP_USAGE_CHECK(!rigid_bits.empty(), "No rigid particles to align rigid"
+                  << " body with");
+  rb.set_reference_frame_from_members(rigid_bits);
   algebra::ReferenceFrame3D rf = rb.get_reference_frame();
   // fix rigid bodies that aren't rigid
   for (unsigned int i = 0; i < in.second.size(); ++i) {
