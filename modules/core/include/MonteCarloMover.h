@@ -25,14 +25,18 @@ IMPCORE_BEGIN_NAMESPACE
     many or most move sets this is 1.0).
 */
 IMP_NAMED_TUPLE_2(MonteCarloMoverResult, MonteCarloMoverResults,
-                  kernel::ParticleIndexes, moved_particles, double, proposal_ratio, );
+                  kernel::ParticleIndexes, moved_particles,
+                  double, proposal_ratio, );
 
 //! A base class for classes which perturb particles.
 /** Mover objects propose a move, which can then be either accepted or rejected
     based on some criteria. For example, in a Monte-Carlo evaluation scheme.
 
-    The output particles (kernel::ModelObject::do_get_outputs()) are assummed to be
-    equal to the inputs (kernel::ModelObject::do_get_inputs()).
+    All changed attributes should be optimizable, it is undefined behavior to
+    try to optimize an attribute which is not.
+
+    The output particles (kernel::ModelObject::do_get_outputs()) are assummed
+    to be equal to the inputs (kernel::ModelObject::do_get_inputs()).
  */
 class IMPCOREEXPORT MonteCarloMover : public kernel::ModelObject {
   unsigned int num_proposed_;

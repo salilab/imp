@@ -46,6 +46,10 @@ MonteCarloMoverResult RigidBodyMover::do_propose() {
       r * d.get_reference_frame().get_transformation_to().get_rotation();
   algebra::Transformation3D t(rc, translation);
   IMP_LOG_VERBOSE("proposed move " << t << std::endl);
+  IMP_USAGE_CHECK(d.get_coordinates_are_optimized(),
+                  "Rigid body passed to RigidBodyMover"
+                  << " must be set to be optimized. particle: "
+                  << d->get_name());
   d.set_reference_frame(algebra::ReferenceFrame3D(t));
 
   return MonteCarloMoverResult(kernel::ParticleIndexes(1, pi_), 1.0);

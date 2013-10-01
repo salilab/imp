@@ -61,6 +61,7 @@ class Tests(IMP.test.TestCase):
     def _create_rigid_body(self, m, name):
         rbp = m.add_particle("rb"+name)
         rbd = IMP.core.RigidBody.setup_particle(m.get_particle(rbp), IMP.algebra.ReferenceFrame3D())
+        rbd.set_coordinates_are_optimized(True)
         for i in range(0, 3):
             pi = m.add_particle("p"+name+str(i))
             c = IMP.algebra.get_zero_vector_3d()
@@ -80,10 +81,12 @@ class Tests(IMP.test.TestCase):
         return ret
     def test_deriv(self):
         """Check non-rigid particles"""
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.base.set_log_level(IMP.base.SILENT)
         m = IMP.kernel.Model()
         r0 = self._create_rigid_body(m, "0")
+        r0.set_coordinates_are_optimized(True)
         r1 = self._create_rigid_body(m, "1")
+        r1.set_coordinates_are_optimized(True)
         nr0 = self._add_non_rigid(m, r0, "0")
         nr1 = self._add_non_rigid(m, r1, "1")
         cpc = IMP.container.ClosePairContainer([p for p in m.get_particles() if not IMP.core.RigidBody.get_is_setup(p)],

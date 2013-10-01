@@ -29,13 +29,15 @@ void NormalMover::initialize(kernel::ParticleIndexes pis, FloatKeys keys,
   originals_.resize(pis.size(), algebra::get_zero_vector_kd(keys.size()));
 }
 
-NormalMover::NormalMover(kernel::Model *m, kernel::ParticleIndex pi, const FloatKeys &keys,
+NormalMover::NormalMover(kernel::Model *m, kernel::ParticleIndex pi,
+                         const FloatKeys &keys,
                          double radius)
     : MonteCarloMover(m, get_normal_mover_name(m, pi)) {
   initialize(kernel::ParticleIndexes(1, pi), keys, radius);
 }
 
-NormalMover::NormalMover(kernel::Model *m, kernel::ParticleIndex pi, double radius)
+NormalMover::NormalMover(kernel::Model *m,
+                         kernel::ParticleIndex pi, double radius)
     : MonteCarloMover(m, get_normal_mover_name(m, pi)) {
   initialize(kernel::ParticleIndexes(1, pi), XYZ::get_xyz_keys(), radius);
 }
@@ -67,6 +69,11 @@ MonteCarloMoverResult NormalMover::do_propose() {
       originals_[i][j] = get_model()->get_attribute(keys_[j], pis_[i]);
     }
     for (unsigned int j = 0; j < keys_.size(); ++j) {
+      IMP_USAGE_CHECK(get_model()->get_is_optimized(keys_[j], pis_[i]),
+                      "NormalMover can't move non-optimized attribute. "
+                      << "particle: "
+                      << get_model()->get_particle_name(pis_[i])
+                      << "attribute: " << keys_[j]);
       get_model()->set_attribute(keys_[j], pis_[i],
                                  originals_[i][j] + sampler());
     }

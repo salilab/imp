@@ -6,32 +6,32 @@ import IMP.container
 from math import *
 
 class NormalMoverTest(IMP.test.TestCase):
-    def setUp(self):
+    def _make_stuff(self):
         IMP.test.TestCase.setUp(self)
         m = IMP.kernel.Model()
-        pa=IMP.kernel.Particle(m)
+        pa=m.add_particle("p")
         att=IMP.FloatKey("test")
-        pa.add_attribute(att,5.0)
-        mv=IMP.core.NormalMover(m, pa.get_index(), [att], 1.0)
-        self.m = m
-        self.mv = mv
-        self.pa = pa
-        self.att = att
+        m.add_attribute(att,pa,5.0)
+        m.set_is_optimized(att, pa, True)
+        mv=IMP.core.NormalMover(m, pa, [att], 1.0)
+        return m, mv, pa, att
 
     def test_propose(self):
-        old=self.pa.get_value(self.att)
-        result=self.mv.propose()
-        new=self.pa.get_value(self.att)
+        m, mv, pa, att = self._make_stuff()
+        old=m.get_attribute(att, pa)
+        result=mv.propose()
+        new=m.get_attribute(att, pa)
         parts=result.get_moved_particles()
         self.assertEqual(len(parts), 1)
-        self.assertEqual(parts[0], self.pa.get_index())
+        self.assertEqual(parts[0], pa)
         self.assertTrue(abs(old-new)>1e-7)
 
     def test_reject(self):
-        old=self.pa.get_value(self.att)
-        self.mv.propose()
-        self.mv.reject()
-        new=self.pa.get_value(self.att)
+        m, mv, pa, att = self._make_stuff()
+        old=m.get_attribute(att, pa)
+        mv.propose()
+        mv.reject()
+        new=m.get_attribute(att, pa)
         self.assertAlmostEqual(new,old)
 
 if __name__ == '__main__':

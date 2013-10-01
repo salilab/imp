@@ -72,7 +72,7 @@ namespace {
     IMP::core::RigidBody ret
       = IMP::core::RigidBody::setup_particle(m, pi,
                                              IMP::algebra::ReferenceFrame3D());
-
+    ret.set_coordinates_are_optimized(true);
     for (unsigned int i = 0; i < 3; ++i) {
       IMP::kernel::ParticleIndex cpi = m->add_particle("pm" + name);
       IMP::algebra::Vector3D v = IMP::algebra::get_zero_vector_d<3>();
@@ -151,6 +151,7 @@ namespace {
 }
 
 int main(int argc, char *argv[]) {
+  try {
   IMP::base::setup_from_argv(argc, argv,
                "Test non rigid first test in a way that works with valgrind.");
   IMP_NEW(IMP::kernel::Model, m, ());
@@ -175,4 +176,9 @@ int main(int argc, char *argv[]) {
     check_close_pairs(m, cpc->get_indexes());
     move(movers);
   }
+  } catch (IMP::base::Exception e) {
+    std::cerr << "Failed with exception " << e.what() << std::endl;
+    return 1;
+  }
+  return 0;
 }
