@@ -60,9 +60,7 @@ class IMPALGEBRAEXPORT Cylinder3D : public GeometricPrimitiveD<3> {
   const Vector3D get_inner_point_at(double relative_height,
                                     double relative_radius, double angle) const;
 
-  IMP_SHOWABLE_INLINE(Cylinder3D, {
-    out << s_ << ": " << radius_;
-  });
+  IMP_SHOWABLE_INLINE(Cylinder3D, { out << s_ << ": " << radius_; });
 
  private:
   Segment3D s_;

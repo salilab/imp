@@ -43,7 +43,8 @@ class IMPKERNELEXPORT Sampler : public IMP::base::Object {
 
   /** \deprecated_at{2.1} Use create_sample */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-    ConfigurationSet *get_sample() const ;
+  ConfigurationSet *get_sample() const;
+
  protected:
   virtual ConfigurationSet *do_sample() const = 0;
 

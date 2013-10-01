@@ -67,8 +67,8 @@ class IMPSTATISTICSEXPORT VQClustering : public ClusteringEngine {
   }
 
   int get_cluster_assignment(int data_point_ind) const {
-    IMP_USAGE_CHECK(is_set_,
-                    " the clusters have not been assigned " << std::endl);
+    IMP_USAGE_CHECK(is_set_, " the clusters have not been assigned "
+                                 << std::endl);
     IMP_USAGE_CHECK((unsigned int)data_point_ind < assignment_.size(),
                     " no cluster has been assigned to data point "
                         << data_point_ind << std::endl);
@@ -76,8 +76,8 @@ class IMPSTATISTICSEXPORT VQClustering : public ClusteringEngine {
   }
 
   Array1DD get_center(int center_ind) const {
-    IMP_USAGE_CHECK(is_set_,
-                    " the clusters have not been assigned " << std::endl);
+    IMP_USAGE_CHECK(is_set_, " the clusters have not been assigned "
+                                 << std::endl);
     return centers_[center_ind];
   }
   int get_number_of_clusters() const { return k_; }

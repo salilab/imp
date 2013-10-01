@@ -98,9 +98,10 @@ void MSConnectivityRestraint::ExperimentalTree::finalize() {
     IMP_THROW("Experimental tree has a cycle", IMP::base::ValueException);
   for (unsigned int i = 0; i < nodes_.size(); ++i)
     if (!is_consistent(i)) {
-      IMP_THROW("Experimental tree is inconsistent: a child has to "
-                "have fewer proteins than its parent",
-                IMP::base::ValueException);
+      IMP_THROW(
+          "Experimental tree is inconsistent: a child has to "
+          "have fewer proteins than its parent",
+          IMP::base::ValueException);
     }
   finalized_ = true;
 }
@@ -168,13 +169,11 @@ unsigned int MSConnectivityRestraint::ParticleMatrix::add_type(
 }
 
 namespace {
-  double my_evaluate(const kernel::PairScore *ps,
-                     kernel::Particle *a,
-                     kernel::Particle *b,
-                     kernel::DerivativeAccumulator *da) {
+double my_evaluate(const kernel::PairScore *ps, kernel::Particle *a,
+                   kernel::Particle *b, kernel::DerivativeAccumulator *da) {
   return ps->evaluate_index(
-      a->get_model(), kernel::ParticleIndexPair(a->get_index(),
-                                                b->get_index()), da);
+      a->get_model(), kernel::ParticleIndexPair(a->get_index(), b->get_index()),
+      da);
 }
 }
 
@@ -673,8 +672,8 @@ IMP::internal::InternalListSingletonContainer *ms_get_list(
 }
 }
 
-unsigned int
-MSConnectivityRestraint::add_type(const kernel::ParticlesTemp &ps) {
+unsigned int MSConnectivityRestraint::add_type(
+    const kernel::ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
     sc_ = new IMP::internal::InternalListSingletonContainer(
         ps[0]->get_model(), "msconnectivity list");
@@ -725,9 +724,8 @@ ParticlePairsTemp MSConnectivityRestraint::get_connected_pairs() const {
   kernel::ParticlePairsTemp ret(edges.size());
   unsigned index = 0;
   for (EdgeSet::iterator p = edges.begin(); p != edges.end(); ++p) {
-    ret[index++] =
-        kernel::ParticlePair(mcs.get_particle(p->first),
-                             mcs.get_particle(p->second));
+    ret[index++] = kernel::ParticlePair(mcs.get_particle(p->first),
+                                        mcs.get_particle(p->second));
   }
   return ret;
 }
@@ -735,9 +733,8 @@ ParticlePairsTemp MSConnectivityRestraint::get_connected_pairs() const {
 ModelObjectsTemp MSConnectivityRestraint::do_get_inputs() const {
   if (!sc_) return kernel::ModelObjectsTemp();
   kernel::ModelObjectsTemp ret;
-  IMP_CONTAINER_ACCESS(SingletonContainer, sc_, {
-    ret += ps_->get_inputs(get_model(), imp_indexes);
-  });
+  IMP_CONTAINER_ACCESS(SingletonContainer, sc_,
+                       { ret += ps_->get_inputs(get_model(), imp_indexes); });
   return ret;
 }
 

@@ -22,7 +22,7 @@
 IMPSCOREFUNCTOR_BEGIN_INTERNAL_NAMESPACE
 
 template <bool INTERPOLATE>
-class SASTable: public base::Object {
+class SASTable : public base::Object {
   template <class Key>
   void initialize(base::TextInput tin) {
     std::istream &in = tin;
@@ -33,12 +33,14 @@ class SASTable: public base::Object {
     std::getline(in, line);
     std::istringstream iss(line);
     iss >> bin;
-    if(!iss) IMP_THROW("Error reading bin size from line " << line,IOException);
+    if (!iss)
+      IMP_THROW("Error reading bin size from line " << line, IOException);
     unsigned int np;
     iss >> np;
-    if(!iss) IMP_THROW("Error number of types from line " << line, IOException);
+    if (!iss)
+      IMP_THROW("Error number of types from line " << line, IOException);
     iss >> offset_;
-    if(!iss) offset_ = 0;
+    if (!iss) offset_ = 0;
     IMP_LOG_TERSE("Reading " << np << " from " << tin.get_name() << std::endl);
 
     // init table parameters
@@ -60,14 +62,14 @@ class SASTable: public base::Object {
       IMP_UNUSED(i);
       IMP_INTERNAL_CHECK(Key(pname) == Key(i),
                          "Expected and found protein types don't match: "
-                         << "expected \"" << Key(i).get_string() << " got "
-                         << pname << " at " << i << std::endl);
+                             << "expected \"" << Key(i).get_string() << " got "
+                             << pname << " at " << i << std::endl);
       int cur_bins_read = 0;
       Floats data;
-      while(true) {
+      while (true) {
         double potentialvalue;
         ins >> potentialvalue;
-        if(ins) {
+        if (ins) {
           data.push_back(potentialvalue);
           ++cur_bins_read;
         } else {
@@ -76,12 +78,13 @@ class SASTable: public base::Object {
       }
 
       data_[read_entries] =
-        RawOpenCubicSpline(data, bin_width_, inverse_bin_width_);
+          RawOpenCubicSpline(data, bin_width_, inverse_bin_width_);
 
       if (bins_read != -1 && cur_bins_read != bins_read) {
         IMP_THROW("Read wrong number of bins from line: "
-                  << line << "\nExpected " << bins_read << " got "
-                  << cur_bins_read, IOException);
+                      << line << "\nExpected " << bins_read << " got "
+                      << cur_bins_read,
+                  IOException);
       }
       bins_read = cur_bins_read;
       ins.clear();
@@ -92,15 +95,17 @@ class SASTable: public base::Object {
     IMP_LOG_TERSE("PMF table entries have " << bins_read << " bins with width "
                                             << bin_width_ << std::endl);
   }
-public:
+
+ public:
   template <class Key>
-  SASTable(base::TextInput tin, Key): base::Object("SASTable:"+tin.get_name()) {
+  SASTable(base::TextInput tin, Key)
+      : base::Object("SASTable:" + tin.get_name()) {
     initialize<Key>(tin);
   }
 
   double get_score(unsigned int i, double area) const {
-    if(area >= max_ || area < offset_) return 0;
-    if(INTERPOLATE) {
+    if (area >= max_ || area < offset_) return 0;
+    if (INTERPOLATE) {
       return data_[i].evaluate(area - .5 * bin_width_ - offset_, bin_width_,
                                inverse_bin_width_);
     } else {
@@ -109,7 +114,6 @@ public:
   }
 
   double get_max() const { return max_; }
-
 
  private:
   double inverse_bin_width_;

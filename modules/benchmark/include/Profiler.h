@@ -27,7 +27,6 @@ class IMPBENCHMARKEXPORT Profiler : public base::RAII {
  public:
   IMP_RAII(Profiler, (std::string name), , start(name), stop(),
            out << "profiling");
-
 };
 
 IMPBENCHMARK_END_NAMESPACE

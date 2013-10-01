@@ -48,23 +48,23 @@ class IMPCOREEXPORT CoreCloseBipartitePairContainer
   algebra::Sphere3Ds xyzrs_backup_[2];
   ParticleIndex covers_[2];
   void initialize(SingletonContainer *a, SingletonContainer *b,
-                  kernel::ParticleIndex cover_a, kernel::ParticleIndex cover_b, double distance,
-                  double slack, ObjectKey key);
+                  kernel::ParticleIndex cover_a, kernel::ParticleIndex cover_b,
+                  double distance, double slack, ObjectKey key);
 
  public:
   //! Get the individual particles from the passed SingletonContainer
   CoreCloseBipartitePairContainer(SingletonContainer *a, SingletonContainer *b,
                                   double distance, double slack = 1,
-                                  std::string name
-                                  = "CoreBipartiteClosePairContainer%1%");
+                                  std::string name =
+                                      "CoreBipartiteClosePairContainer%1%");
 
   //! make sure you know what you are doing
   CoreCloseBipartitePairContainer(SingletonContainer *a, SingletonContainer *b,
-                                  kernel::ParticleIndex cover_a, kernel::ParticleIndex cover_b,
-                                  ObjectKey key, double distance,
-                                  double slack = 1,
-                                  std::string name
-                                  = "CoreCloseBipartitePairContainer%1%");
+                                  kernel::ParticleIndex cover_a,
+                                  kernel::ParticleIndex cover_b, ObjectKey key,
+                                  double distance, double slack = 1,
+                                  std::string name =
+                                      "CoreCloseBipartitePairContainer%1%");
 
   /** @name Methods to control the set of filters
 
@@ -79,11 +79,11 @@ class IMPCOREEXPORT CoreCloseBipartitePairContainer
                   {
                     set_has_dependencies(false);
                     obj->set_was_used(true);
-                  }
-                  ,{ set_has_dependencies(false);} , );
+                  },
+                  { set_has_dependencies(false); }, );
   /**@}*/
   void clear_caches() { reset_ = true; }
-    virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual void do_before_evaluate() IMP_OVERRIDE;
   virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;

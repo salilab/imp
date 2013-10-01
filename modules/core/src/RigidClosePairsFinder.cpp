@@ -33,7 +33,8 @@ RigidClosePairsFinder::RigidClosePairsFinder(ClosePairsFinder *cpf)
 }
 
 namespace {
-ParticlesTemp get_rigid_bodies(kernel::Model *m, const kernel::ParticleIndexes &pis) {
+ParticlesTemp get_rigid_bodies(kernel::Model *m,
+                               const kernel::ParticleIndexes &pis) {
   IMP::base::set<kernel::Particle *> rets;
   for (unsigned int i = 0; i < pis.size(); ++i) {
     if (RigidMember::get_is_setup(m, pis[i])) {
@@ -58,9 +59,9 @@ void divvy_up_particles(kernel::Model *m, const kernel::ParticleIndexes &ps,
                         kernel::ParticleIndexes &out, RBM &members) {
   IMP_IF_CHECK(base::USAGE) {
     base::set<kernel::ParticleIndex> ups(ps.begin(), ps.end());
-    IMP_USAGE_CHECK(
-        ups.size() == ps.size(),
-        "Duplicate particles in input: " << ups.size() << "!= " << ps.size());
+    IMP_USAGE_CHECK(ups.size() == ps.size(),
+                    "Duplicate particles in input: " << ups.size()
+                                                     << "!= " << ps.size());
   }
   for (unsigned int i = 0; i < ps.size(); ++i) {
     if (RigidMember::get_is_setup(m, ps[i])) {
@@ -78,10 +79,10 @@ void divvy_up_particles(kernel::Model *m, const kernel::ParticleIndexes &ps,
     std::sort(check_out.begin(), check_out.end());
     check_out.erase(std::unique(check_out.begin(), check_out.end()),
                     check_out.end());
-    IMP_INTERNAL_CHECK(
-        check_out.size() == out.size(),
-        "Values added twice: " << check_out.size() << " vs " << out.size()
-                               << ": " << out << " vs " << check_out);
+    IMP_INTERNAL_CHECK(check_out.size() == out.size(),
+                       "Values added twice: " << check_out.size() << " vs "
+                                              << out.size() << ": " << out
+                                              << " vs " << check_out);
   }
   /*std::cout << "Found " << members.size() << " rigid bodies and "
             << insc->get_number_of_particles()
@@ -90,8 +91,8 @@ void divvy_up_particles(kernel::Model *m, const kernel::ParticleIndexes &ps,
 
 void check_particles(kernel::Model *m, const kernel::ParticleIndexes &ps) {
   IMP_IF_CHECK(base::USAGE) {
-    for (kernel::ParticleIndexes::const_iterator it = ps.begin(); it != ps.end();
-         ++it) {
+    for (kernel::ParticleIndexes::const_iterator it = ps.begin();
+         it != ps.end(); ++it) {
       if (RigidBody::get_is_setup(m, *it) &&
           !m->get_has_attribute(XYZR::get_radius_key(), *it)) {
         IMP_WARN("Particle " << m->get_particle_name(*it) << " is a rigid body "
@@ -105,7 +106,8 @@ void check_particles(kernel::Model *m, const kernel::ParticleIndexes &ps) {
 }
 
 ParticleIndexPairs RigidClosePairsFinder::get_close_pairs(
-    kernel::Model *m, const kernel::ParticleIndexes &pia, const kernel::ParticleIndexes &pib) const {
+    kernel::Model *m, const kernel::ParticleIndexes &pia,
+    const kernel::ParticleIndexes &pib) const {
   IMP_OBJECT_LOG;
   IMP_LOG_TERSE("Rigid add_close_pairs called with "
                 << pia.size() << " and " << pib.size() << " and distance "
@@ -118,8 +120,8 @@ ParticleIndexPairs RigidClosePairsFinder::get_close_pairs(
   divvy_up_particles(m, pib, fb, mb);
   kernel::ParticleIndexPairs ppt = cpf_->get_close_pairs(m, fa, fb);
   kernel::ParticleIndexPairs ret;
-  for (kernel::ParticleIndexPairs::const_iterator it = ppt.begin(); it != ppt.end();
-       ++it) {
+  for (kernel::ParticleIndexPairs::const_iterator it = ppt.begin();
+       it != ppt.end(); ++it) {
     // skip within one rigid body
     if (it->get(0) == it->get(1)) continue;
     kernel::ParticleIndexes ps0, ps1;
@@ -155,8 +157,8 @@ ParticleIndexPairs RigidClosePairsFinder::get_close_pairs(
     }
   }
   kernel::ParticleIndexPairs ret;
-  for (kernel::ParticleIndexPairs::const_iterator it = ppt.begin(); it != ppt.end();
-       ++it) {
+  for (kernel::ParticleIndexPairs::const_iterator it = ppt.begin();
+       it != ppt.end(); ++it) {
     kernel::ParticleIndexes ps0, ps1;
     IMP_LOG_VERBOSE("Processing close pair " << *it << std::endl);
     if (map.find(it->get(0)) != map.end()) {
@@ -175,7 +177,8 @@ ParticleIndexPairs RigidClosePairsFinder::get_close_pairs(
 }
 
 ParticleIndexPairs RigidClosePairsFinder::get_close_pairs(
-    kernel::Model *m, kernel::ParticleIndex a, kernel::ParticleIndex b, const kernel::ParticleIndexes &ma,
+    kernel::Model *m, kernel::ParticleIndex a, kernel::ParticleIndex b,
+    const kernel::ParticleIndexes &ma,
     const kernel::ParticleIndexes &mb) const {
   IMP_INTERNAL_CHECK(a != b, "Can't pass equal particles");
   internal::RigidBodyHierarchy *da = nullptr, *db = nullptr;
@@ -231,7 +234,8 @@ IntPairs RigidClosePairsFinder::get_close_pairs(
 
 /*
 std::pair<algebra::Sphere3D, algebra::Sphere3D>
-RigidClosePairsFinder::get_close_sphere_pair(kernel::Particle *a, kernel::Particle *b) const {
+RigidClosePairsFinder::get_close_sphere_pair(kernel::Particle *a,
+kernel::Particle *b) const {
 
 }*/
 

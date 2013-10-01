@@ -65,7 +65,8 @@ double DiameterRestraint::unprotected_evaluate(
 }
 
 ModelObjectsTemp DiameterRestraint::do_get_inputs() const {
-  kernel::ModelObjectsTemp t = IMP::get_particles(get_model(), sc_->get_indexes());
+  kernel::ModelObjectsTemp t =
+      IMP::get_particles(get_model(), sc_->get_indexes());
   t.push_back(p_);
   t.push_back(sc_);
   return t;
@@ -73,7 +74,8 @@ ModelObjectsTemp DiameterRestraint::do_get_inputs() const {
 
 kernel::Restraints DiameterRestraint::do_create_decomposition() const {
   kernel::Restraints ret;
-  kernel::ParticlesTemp ps = kernel::get_particles(get_model(), sc_->get_indexes());
+  kernel::ParticlesTemp ps =
+      kernel::get_particles(get_model(), sc_->get_indexes());
   // since we are adding two deviations before squaring, make k=.25
   IMP_NEW(HarmonicUpperBoundSphereDiameterPairScore, sps, (diameter_, .25));
   for (unsigned int i = 0; i < ps.size(); ++i) {
@@ -92,13 +94,14 @@ kernel::Restraints DiameterRestraint::do_create_decomposition() const {
 
 kernel::Restraints DiameterRestraint::do_create_current_decomposition() const {
   kernel::Restraints ret;
-  kernel::ParticlesTemp ps = kernel::get_particles(get_model(), sc_->get_indexes());
+  kernel::ParticlesTemp ps =
+      kernel::get_particles(get_model(), sc_->get_indexes());
   IMP_NEW(HarmonicUpperBoundSphereDiameterPairScore, sps, (diameter_, 1));
   for (unsigned int i = 0; i < ps.size(); ++i) {
     for (unsigned int j = 0; j < i; ++j) {
       if (sps->evaluate(kernel::ParticlePair(ps[i], ps[j]), nullptr) > 0) {
-        ret.push_back(
-            IMP::create_restraint(sps.get(), kernel::ParticlePair(ps[i], ps[j])));
+        ret.push_back(IMP::create_restraint(
+            sps.get(), kernel::ParticlePair(ps[i], ps[j])));
         ret.back()->set_maximum_score(get_maximum_score());
         std::ostringstream oss;
         oss << get_name() << " " << i << " " << j;

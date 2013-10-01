@@ -131,10 +131,9 @@ inline void reset_moved(
     kernel::Model *m, kernel::ParticleIndexes &xyzrs_,
     kernel::ParticleIndexes &rbs_,
     IMP::base::map<kernel::ParticleIndex,
-                   kernel::ParticleIndexes> &/*constituents_*/,
+                   kernel::ParticleIndexes> & /*constituents_*/,
     algebra::Sphere3Ds &rbs_backup_sphere_,
-    algebra::Rotation3Ds &rbs_backup_rot_,
-    algebra::Sphere3Ds &xyzrs_backup_) {
+    algebra::Rotation3Ds &rbs_backup_rot_, algebra::Sphere3Ds &xyzrs_backup_) {
   xyzrs_backup_.resize(xyzrs_.size());
   for (unsigned int i = 0; i < xyzrs_.size(); ++i) {
     xyzrs_backup_[i] = m->get_sphere(xyzrs_[i]);
@@ -144,18 +143,19 @@ inline void reset_moved(
   for (unsigned int i = 0; i < rbs_.size(); ++i) {
     rbs_backup_sphere_[i] = m->get_sphere(rbs_[i]);
     rbs_backup_rot_[i] = RigidBody(m, rbs_[i])
-      .get_reference_frame().get_transformation_to().get_rotation();
+                             .get_reference_frame()
+                             .get_transformation_to()
+                             .get_rotation();
   }
 }
 
 inline void initialize_particles(
     SingletonContainer *sc, ObjectKey key, kernel::ParticleIndexes &xyzrs_,
     kernel::ParticleIndexes &rbs_,
-    IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes>
-    &constituents_,
+    IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &
+        constituents_,
     algebra::Sphere3Ds &rbs_backup_sphere_,
-    algebra::Rotation3Ds &rbs_backup_rot_,
-    algebra::Sphere3Ds &xyzrs_backup_,
+    algebra::Rotation3Ds &rbs_backup_rot_, algebra::Sphere3Ds &xyzrs_backup_,
     bool use_rigid_bodies = true) {
   IMP_IF_CHECK(base::USAGE) {
     kernel::ParticleIndexes pis = sc->get_indexes();
@@ -171,7 +171,7 @@ inline void initialize_particles(
   // constituents_.clear();
   xyzrs_.clear();
   rbs_.clear();
-  using IMP::operator<< ;
+  using IMP::operator<<;
   IMP_CONTAINER_FOREACH(SingletonContainer, sc, {
     kernel::Model *m = sc->get_model();
     IMP_LOG_VERBOSE("Processing " << m->get_particle_name(_1) << " (" << _1
@@ -181,8 +181,8 @@ inline void initialize_particles(
       kernel::ParticleIndex pi = rb.get_particle_index();
       rbs_.push_back(rb.get_particle_index());
       if (constituents_.find(pi) == constituents_.end()) {
-        constituents_.insert(std::make_pair(pi,
-                                            kernel::ParticleIndexes(1, _1)));
+        constituents_.insert(
+            std::make_pair(pi, kernel::ParticleIndexes(1, _1)));
       } else {
         constituents_[pi].push_back(_1);
       }
@@ -191,10 +191,10 @@ inline void initialize_particles(
         IMP_USAGE_CHECK(std::find(cur.begin(), cur.end(), pi) == cur.end(),
                         "A rigid body cann't be its own constituent.");
         IMP::base::set<kernel::ParticleIndex> scur(cur.begin(), cur.end());
-        IMP_USAGE_CHECK(
-            cur.size() == scur.size(),
-            "Duplicate constituents for " << sc->get_model()->get_particle(pi)
-                                                 ->get_name() << ": " << cur);
+        IMP_USAGE_CHECK(cur.size() == scur.size(),
+                        "Duplicate constituents for "
+                            << sc->get_model()->get_particle(pi)->get_name()
+                            << ": " << cur);
       }
     } else {
       xyzrs_.push_back(_1);
@@ -206,10 +206,8 @@ inline void initialize_particles(
     internal::get_rigid_body_hierarchy(RigidBody(sc->get_model(), rbs_[i]),
                                        constituents_[rbs_[i]], key);
   }
-  reset_moved(sc->get_model(), xyzrs_, rbs_, constituents_,
-              rbs_backup_sphere_,
-              rbs_backup_rot_,
-              xyzrs_backup_);
+  reset_moved(sc->get_model(), xyzrs_, rbs_, constituents_, rbs_backup_sphere_,
+              rbs_backup_rot_, xyzrs_backup_);
   xyzrs_backup_.clear();
   rbs_backup_sphere_.clear();
   rbs_backup_rot_.clear();
@@ -222,20 +220,20 @@ inline void initialize_particles(
       IMP_USAGE_CHECK(std::find(cur.begin(), cur.end(), it->first) == cur.end(),
                       "A rigid body cann't be its own constituent.");
       IMP::base::set<kernel::ParticleIndex> scur(cur.begin(), cur.end());
-      IMP_USAGE_CHECK(cur.size() == scur.size(),
-                      "Duplicate constituents for "
-                          << sc->get_model()->get_particle(it->first)
-                                 ->get_name() << ": " << Showable(cur));
+      IMP_USAGE_CHECK(
+          cur.size() == scur.size(),
+          "Duplicate constituents for "
+              << sc->get_model()->get_particle(it->first)->get_name() << ": "
+              << Showable(cur));
     }
   }
 }
 
 inline bool get_if_moved(
-    kernel::Model *m, double slack_,
-    const kernel::ParticleIndexes &xyzrs_,
+    kernel::Model *m, double slack_, const kernel::ParticleIndexes &xyzrs_,
     const kernel::ParticleIndexes &rbs_,
     const IMP::base::map<kernel::ParticleIndex,
-                         kernel::ParticleIndexes> &/*constituents_*/,
+                         kernel::ParticleIndexes> & /*constituents_*/,
     const algebra::Sphere3Ds &rbs_backup_sphere_,
     const algebra::Rotation3Ds &rbs_backup_rot_,
     const algebra::Sphere3Ds &xyzrs_backup_) {
@@ -243,33 +241,33 @@ inline bool get_if_moved(
                      "Backup is not a backup");
   const double s22 = algebra::get_squared(slack_);
   for (unsigned int i = 0; i < xyzrs_.size(); ++i) {
-    double diff2 =
-      algebra::get_squared_distance(m->get_sphere(xyzrs_[i]).get_center(),
-                                    xyzrs_backup_[i].get_center());
+    double diff2 = algebra::get_squared_distance(
+        m->get_sphere(xyzrs_[i]).get_center(), xyzrs_backup_[i].get_center());
     if (diff2 >= s22) return true;
-    double rdiff = std::abs(m->get_sphere(xyzrs_[i]).get_radius()
-                            - xyzrs_backup_[i].get_radius());
+    double rdiff = std::abs(m->get_sphere(xyzrs_[i]).get_radius() -
+                            xyzrs_backup_[i].get_radius());
     if (rdiff == 0) continue;
     double diff = std::sqrt(diff2);
     if (algebra::get_squared(rdiff + diff) >= s22) return true;
-      }
+  }
   for (unsigned int i = 0; i < rbs_.size(); ++i) {
-    double diff2
-      = algebra::get_squared_distance(m->get_sphere(rbs_[i]).get_center(),
+    double diff2 =
+        algebra::get_squared_distance(m->get_sphere(rbs_[i]).get_center(),
                                       rbs_backup_sphere_[i].get_center());
     if (diff2 >= s22) {
-        return true;
-      }
-    double rdiff = std::abs(m->get_sphere(rbs_[i]).get_radius()
-                            - rbs_backup_sphere_[i].get_radius());
+      return true;
+    }
+    double rdiff = std::abs(m->get_sphere(rbs_[i]).get_radius() -
+                            rbs_backup_sphere_[i].get_radius());
     if (rdiff != 0) {
       double diff = std::sqrt(diff2);
       if (algebra::get_squared(rdiff + diff) >= s22) return true;
     }
-    algebra::Rotation3D nrot = RigidBody(m, rbs_[i]).get_reference_frame()
-        .get_transformation_to().get_rotation();
-    algebra::Rotation3D diffrot =
-      rbs_backup_rot_[i].get_inverse() * nrot;
+    algebra::Rotation3D nrot = RigidBody(m, rbs_[i])
+                                   .get_reference_frame()
+                                   .get_transformation_to()
+                                   .get_rotation();
+    algebra::Rotation3D diffrot = rbs_backup_rot_[i].get_inverse() * nrot;
     double angle = algebra::get_axis_and_angle(diffrot).second;
     double drot = std::abs(angle * m->get_sphere(rbs_[i]).get_radius());
     if (s22 < algebra::get_squared(drot) + drot * std::sqrt(diff2) + diff2) {
@@ -302,14 +300,13 @@ inline bool get_if_moved(
   return false;
 }
 
-inline void fill_list(kernel::Model *m,
-                      const PairPredicates &filters, ObjectKey key_,
-                      double slack_,
+inline void fill_list(kernel::Model *m, const PairPredicates &filters,
+                      ObjectKey key_, double slack_,
                       kernel::ParticleIndexes &xyzrs_,
                       kernel::ParticleIndexes &rbs_,
                       IMP::base::map<kernel::ParticleIndex,
-                   kernel::ParticleIndexes> &constituents_,
-    kernel::ParticleIndexPairs &cur_list_) {
+                                     kernel::ParticleIndexes> &constituents_,
+                      kernel::ParticleIndexPairs &cur_list_) {
   IMP_INTERNAL_CHECK(slack_ >= 0, "Slack must not be negative");
   /*IMP_LOG_VERBOSE( "filling particle list with slack " << slack_
     << " on " << sc_->get_name());*/
@@ -336,13 +333,13 @@ inline void fill_list(kernel::Model *m,
   IMP_LOG_VERBOSE("found " << cur_list_.size() << std::endl);
 }
 
-inline void fill_list(
-    kernel::Model *m, const PairPredicates &filters, ObjectKey key_,
-    double slack_,
-    kernel::ParticleIndexes xyzrs_[], kernel::ParticleIndexes rbs_[],
-    IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes>
-    &constituents_,
-    kernel::ParticleIndexPairs &cur_list_) {
+inline void fill_list(kernel::Model *m, const PairPredicates &filters,
+                      ObjectKey key_, double slack_,
+                      kernel::ParticleIndexes xyzrs_[],
+                      kernel::ParticleIndexes rbs_[],
+                      IMP::base::map<kernel::ParticleIndex,
+                                     kernel::ParticleIndexes> &constituents_,
+                      kernel::ParticleIndexPairs &cur_list_) {
   IMP_INTERNAL_CHECK(slack_ >= 0, "Slack must not be negative");
   /*IMP_LOG_VERBOSE( "filling particle list with slack " << slack_
     << " on " << sc_->get_name());*/
@@ -381,15 +378,13 @@ inline void fill_list(
   IMP_LOG_VERBOSE("found " << cur_list_.size() << std::endl);
 }
 
-IMPCOREEXPORT kernel::ParticlesTemp
-get_input_particles(kernel::Model *,
-                    kernel::SingletonContainer *sc_,
-                    const kernel::PairPredicates &filters_);
+IMPCOREEXPORT kernel::ParticlesTemp get_input_particles(
+    kernel::Model *, kernel::SingletonContainer *sc_,
+    const kernel::PairPredicates &filters_);
 
-IMPCOREEXPORT kernel::ModelObjectsTemp
-get_inputs(kernel::Model *,
-           kernel::SingletonContainer *sc_,
-           const kernel::PairPredicates &filters_);
+IMPCOREEXPORT kernel::ModelObjectsTemp get_inputs(
+    kernel::Model *, kernel::SingletonContainer *sc_,
+    const kernel::PairPredicates &filters_);
 
 IMPCORE_END_INTERNAL_NAMESPACE
 

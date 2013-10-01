@@ -31,7 +31,8 @@ IMPBASE_BEGIN_NAMESPACE
        available, but
        that is just due to lack of boost 1.47 to test on.
    */
-template <class T = double> class piecewise_linear_distribution {
+template <class T = double>
+class piecewise_linear_distribution {
   Vector<T> dividers_;
   Vector<T> accum_;
   Vector<T> weights_;
@@ -117,7 +118,8 @@ template <class T = double> class piecewise_linear_distribution {
               std::ostream_iterator<double>(std::cout, ", "));
               std::cout << std::endl;*/
   }
-  template <class RNG> double operator()(RNG& rng) const {
+  template <class RNG>
+  double operator()(RNG& rng) const {
     double rn = un_(rng);
     typename Vector<T>::const_iterator it =
         std::upper_bound(accum_.begin() + 1, accum_.end(), rn);

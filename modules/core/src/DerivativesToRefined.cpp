@@ -14,7 +14,8 @@ IMPCORE_BEGIN_NAMESPACE
 DerivativesToRefined::DerivativesToRefined(Refiner *r, FloatKeys ks)
     : refiner_(r), ks_(ks) {}
 
-void DerivativesToRefined::apply_index(kernel::Model *m, kernel::ParticleIndex pi) const {
+void DerivativesToRefined::apply_index(kernel::Model *m,
+                                       kernel::ParticleIndex pi) const {
   kernel::Particle *p = m->get_particle(pi);
   DerivativeAccumulator da;
   kernel::ParticlesTemp ps = refiner_->get_refined(p);

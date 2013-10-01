@@ -22,11 +22,11 @@
     (\external{http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization,
     wikipedia entry}).
 */
-#define IMP_COPY_CONSTRUCTOR(Name, Base)          \
-  Name(const Name & o) : Base() { copy_from(o); } \
-  IMP_NO_SWIG(Name & operator=(const Name & o) { \
-    copy_from(o);                                 \
-    return *this;  \
+#define IMP_COPY_CONSTRUCTOR(Name, Base)         \
+  Name(const Name& o) : Base() { copy_from(o); } \
+  IMP_NO_SWIG(Name& operator=(const Name& o) {   \
+    copy_from(o);                                \
+    return *this;                                \
   }) IMP_REQUIRE_SEMICOLON_CLASS(copy)
 
 /** \deprecated_at{2.1} Don't use this */

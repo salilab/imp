@@ -14,8 +14,8 @@ IMPATOM_BEGIN_NAMESPACE
 
 SameResiduePairFilter::SameResiduePairFilter() {}
 
-int SameResiduePairFilter::get_value_index(kernel::Model *m,
-                                           const kernel::ParticleIndexPair &p) const {
+int SameResiduePairFilter::get_value_index(
+    kernel::Model *m, const kernel::ParticleIndexPair &p) const {
   return Hierarchy(m, p[0]).get_parent() == Hierarchy(m, p[1]).get_parent();
 }
 

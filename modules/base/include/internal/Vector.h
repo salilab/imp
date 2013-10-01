@@ -16,7 +16,8 @@
 #include <algorithm>
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
-template <class T> struct ListContains {
+template <class T>
+struct ListContains {
   const T& t_;
   ListContains(const T& t) : t_(t) {}
   bool operator()(typename T::value_type t) const {
@@ -24,7 +25,8 @@ template <class T> struct ListContains {
   }
 };
 
-template <class T> inline ListContains<T> list_contains(const T& t) {
+template <class T>
+inline ListContains<T> list_contains(const T& t) {
   return ListContains<T>(t);
 }
 

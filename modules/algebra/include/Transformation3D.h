@@ -119,8 +119,8 @@ class Transformation2D;
   \note The 3D transformation is built with the 2D rotation becoming a rotation
   around the z axis.
   **/
-IMPALGEBRAEXPORT Transformation3D get_transformation_3d(
-    const Transformation2D &t2d);
+IMPALGEBRAEXPORT Transformation3D
+    get_transformation_3d(const Transformation2D &t2d);
 
 //! Get a local transformation
 /**
@@ -130,9 +130,10 @@ IMPALGEBRAEXPORT Transformation3D get_transformation_3d(
   \param[in] max_translation detault value is 5
   \param[in] max_angle_in_rad default value is 15 degree in radians
   **/
-IMPALGEBRAEXPORT Transformation3D get_random_local_transformation(
-    Vector3D origin, double max_translation = 5.,
-    double max_angle_in_rad = 0.26);
+IMPALGEBRAEXPORT Transformation3D
+    get_random_local_transformation(Vector3D origin,
+                                    double max_translation = 5.,
+                                    double max_angle_in_rad = 0.26);
 
 //! Return a bounding box containing the transformed box
 inline BoundingBoxD<3> get_transformed(const BoundingBoxD<3> &bb,

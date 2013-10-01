@@ -341,17 +341,16 @@ inline Unit<Tag, EXP, Units> operator*(int d, Unit<Tag, EXP, Units> o) {
 
 template <class Tag, int EXP0, int EXP1, class Units0, class Units1>
 inline typename Multiply<Unit<Tag, EXP0, Units0>,
-                         Unit<Tag, EXP1, Units1> >::type operator*(
-    Unit<Tag, EXP0, Units0> a, Unit<Tag, EXP1, Units1> b) {
+                         Unit<Tag, EXP1, Units1> >::type
+operator*(Unit<Tag, EXP0, Units0> a, Unit<Tag, EXP1, Units1> b) {
   return typename Multiply<Unit<Tag, EXP0, Units0>,
                            Unit<Tag, EXP1, Units1> >::type(a.get_value() *
                                                            b.get_value());
 }
 
 template <class Tag, int EXP0, int EXP1, class Units0, class Units1>
-inline typename Divide<Unit<Tag, EXP0, Units0>,
-                       Unit<Tag, EXP1, Units1> >::type operator/(
-    Unit<Tag, EXP0, Units0> a, Unit<Tag, EXP1, Units1> b) {
+inline typename Divide<Unit<Tag, EXP0, Units0>, Unit<Tag, EXP1, Units1> >::type
+operator/(Unit<Tag, EXP0, Units0> a, Unit<Tag, EXP1, Units1> b) {
   return typename Divide<Unit<Tag, EXP0, Units0>,
                          Unit<Tag, EXP1, Units1> >::type(a.get_value() /
                                                          b.get_value());
@@ -375,14 +374,12 @@ inline Unit<Tag, EXP - EXP2, Units> operator/(Unit<Tag, EXP, Units> u,
 }
 
 template <class Tag, int EXP, int EXP2, class Units>
-inline Unit<Tag, EXP2 - EXP,
-            typename internal::Normalize<
-                typename internal::Inverse<Units>::type>::type> operator/(
-    ExponentialNumber<EXP2> o, Unit<Tag, EXP, Units> u) {
+inline Unit<Tag, EXP2 - EXP, typename internal::Normalize<
+                                 typename internal::Inverse<Units>::type>::type>
+operator/(ExponentialNumber<EXP2> o, Unit<Tag, EXP, Units> u) {
   return Unit<Tag, EXP2 - EXP,
-              typename internal::Normalize<
-                  typename internal::Inverse<Units>::type>::type>(
-      o / u.get_exponential_value());
+              typename internal::Normalize<typename internal::Inverse<
+                  Units>::type>::type>(o / u.get_exponential_value());
 }
 
 }  // namespace unit

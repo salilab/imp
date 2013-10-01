@@ -20,13 +20,13 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 #define IMP_MANAGER(UCName, lcname)              \
   class Manage##UCName : boost::noncopyable {    \
-    typedef IMP::base::PointerMember<UCName> P;   \
+    typedef IMP::base::PointerMember<UCName> P;  \
     P r_;                                        \
                                                  \
    public:                                       \
     Manage##UCName() {}                          \
     ~Manage##UCName() { set(nullptr, nullptr); } \
-    void set(UCName *r, kernel::Model *m) {              \
+    void set(UCName *r, kernel::Model *m) {      \
       if (r_) {                                  \
         r_->get_model()->remove_##lcname(r_);    \
       }                                          \

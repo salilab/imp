@@ -33,8 +33,7 @@ MonteCarlo::MonteCarlo(kernel::Model *m)
 
 /* deprecated */
 MonteCarlo::MonteCarlo()
-    :
-      temp_(1),
+    : temp_(1),
       max_difference_(std::numeric_limits<double>::max()),
       stat_forward_steps_taken_(0),
       stat_upward_steps_taken_(0),
@@ -105,21 +104,21 @@ MonteCarloMoverResult MonteCarlo::do_move() {
 }
 
 namespace {
-  // accept the moves if not reset
-  // to make things excpetion safe
-  struct MoverCleanup {
-    MonteCarlo* mc_;
-    MoverCleanup(MonteCarlo *mc): mc_(mc) {}
-    void reset() { mc_ = NULL;}
-    ~MoverCleanup() {
-      if (mc_) {
-        for (MonteCarlo::MoverIterator it = mc_->movers_begin();
-             it != mc_->movers_end(); ++it) {
-          (*it)->accept();
-        }
+// accept the moves if not reset
+// to make things excpetion safe
+struct MoverCleanup {
+  MonteCarlo *mc_;
+  MoverCleanup(MonteCarlo *mc) : mc_(mc) {}
+  void reset() { mc_ = NULL; }
+  ~MoverCleanup() {
+    if (mc_) {
+      for (MonteCarlo::MoverIterator it = mc_->movers_begin();
+           it != mc_->movers_end(); ++it) {
+        (*it)->accept();
       }
     }
-  };
+  }
+};
 }
 
 void MonteCarlo::do_step() {

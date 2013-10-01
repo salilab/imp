@@ -86,14 +86,17 @@ IMPBASE_BEGIN_NAMESPACE
 template <class O>
 struct Pointer : internal::PointerBase<internal::RefCountedPointerTraits<O> > {
   typedef internal::PointerBase<internal::RefCountedPointerTraits<O> > P;
-  template <class Any> Pointer(const Any& o) : P(o) {}
+  template <class Any>
+  Pointer(const Any& o)
+      : P(o) {}
   Pointer() {}
   template <class OT>
   base::Pointer<O>& operator=(const internal::PointerBase<OT>& o) {
     P::operator=(o);
     return *this;
   }
-  template <class OT> base::Pointer<O>& operator=(OT* o) {
+  template <class OT>
+  base::Pointer<O>& operator=(OT* o) {
     P::operator=(o);
     return *this;
   }
@@ -143,14 +146,17 @@ template <class O>
 struct PointerMember
     : internal::PointerBase<internal::PointerMemberTraits<O> > {
   typedef internal::PointerBase<internal::PointerMemberTraits<O> > P;
-  template <class Any> PointerMember(const Any& o) : P(o) {}
+  template <class Any>
+  PointerMember(const Any& o)
+      : P(o) {}
   PointerMember() {}
   template <class OT>
   base::PointerMember<O>& operator=(const internal::PointerBase<OT>& o) {
     P::operator=(o);
     return *this;
   }
-  template <class OT> base::PointerMember<O>& operator=(OT* o) {
+  template <class OT>
+  base::PointerMember<O>& operator=(OT* o) {
     P::operator=(o);
     return *this;
   }
@@ -207,7 +213,8 @@ struct OwnerPointer : internal::PointerBase<internal::PointerMemberTraits<O> > {
     P::operator=(o);
     return *this;
   }
-  template <class OT> base::OwnerPointer<O>& operator=(OT* o) {
+  template <class OT>
+  base::OwnerPointer<O>& operator=(OT* o) {
     P::operator=(o);
     return *this;
   }
@@ -241,20 +248,18 @@ struct OwnerPointer : internal::PointerBase<internal::PointerMemberTraits<O> > {
 /******* streaming ********/
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 template <class T>
-    inline std::ostream& operator<<(std::ostream& out, base::Pointer<T> o) {
+inline std::ostream& operator<<(std::ostream& out, base::Pointer<T> o) {
   out << Showable(o.get());
   return out;
 }
 template <class T>
-    inline std::ostream& operator<<(std::ostream& out,
-                                    base::PointerMember<T> o) {
+inline std::ostream& operator<<(std::ostream& out, base::PointerMember<T> o) {
   out << Showable(o.get());
   return out;
 }
 
 template <class T>
-    inline std::ostream& operator<<(std::ostream& out,
-                                    base::OwnerPointer<T> o) {
+inline std::ostream& operator<<(std::ostream& out, base::OwnerPointer<T> o) {
   out << Showable(o.get());
   return out;
 }

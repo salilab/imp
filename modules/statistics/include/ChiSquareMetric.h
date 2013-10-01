@@ -43,10 +43,10 @@ class IMPSTATISTICSEXPORT ChiSquareMetric : public Metric {
 
  public:
 
-  ChiSquareMetric(Floats data_exp, int constr_type=0);
+  ChiSquareMetric(Floats data_exp, int constr_type = 0);
   //! add a configuration, defined by a list of data points,
   //! a list of standard deviations, and one weight.
-  void add_configuration(Floats data, Floats stddev, double weight=1.0);
+  void add_configuration(Floats data, Floats stddev, double weight = 1.0);
   //! get the list of data points for the i-th configuration
   Floats get_data(unsigned i) const;
   //! get the list of standard deviations for the i-th configuration
@@ -64,4 +64,4 @@ class IMPSTATISTICSEXPORT ChiSquareMetric : public Metric {
 
 IMPSTATISTICS_END_NAMESPACE
 
-#endif  /* IMPSTATISTICS_CHI_SQUARE_METRIC_H */
+#endif /* IMPSTATISTICS_CHI_SQUARE_METRIC_H */

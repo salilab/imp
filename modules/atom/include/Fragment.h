@@ -20,13 +20,14 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT Fragment : public Hierarchy {
   static IntsKey get_begins_key();
   static IntsKey get_ends_key();
-  static void set_residue_indexes(kernel::Model *m, kernel::ParticleIndex pi, Ints ris);
-  static void set_residue_indexes(kernel::Model *m,
-                                  kernel::ParticleIndex pi, const IntPairs &ris);
+  static void set_residue_indexes(kernel::Model *m, kernel::ParticleIndex pi,
+                                  Ints ris);
+  static void set_residue_indexes(kernel::Model *m, kernel::ParticleIndex pi,
+                                  const IntPairs &ris);
   static IntKey get_marker_key();
 
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
-                                    const Ints &ris = Ints()) {
+                                const Ints &ris = Ints()) {
     if (!Hierarchy::get_is_setup(m, pi)) {
       Hierarchy::setup_particle(m, pi);
     }
@@ -35,7 +36,7 @@ class IMPATOMEXPORT Fragment : public Hierarchy {
   }
 
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
-                                    Fragment o) {
+                                Fragment o) {
     do_setup_particle(m, pi, o.get_residue_indexes());
   }
 
@@ -48,8 +49,7 @@ class IMPATOMEXPORT Fragment : public Hierarchy {
 
   //! Add the residues whose indexes are listed in the passed vector
   void set_residue_indexes(Ints o) {
-    set_residue_indexes(get_model(),
-                        get_particle_index(), o);
+    set_residue_indexes(get_model(), get_particle_index(), o);
   }
 
   Ints get_residue_indexes() const;

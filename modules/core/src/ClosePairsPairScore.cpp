@@ -52,7 +52,8 @@ ParticleIndexes expand(kernel::Particle *p, Refiner *r) {
   }
 }
 void fill_close_pairs(ClosePairsFinder *cpf, kernel::Model *m, double dist,
-                      const kernel::ParticleIndexes &pa, const kernel::ParticleIndexes &pb,
+                      const kernel::ParticleIndexes &pa,
+                      const kernel::ParticleIndexes &pb,
                       kernel::ParticleIndexPairs &pairs) {
   cpf->set_distance(dist);
   pairs = cpf->get_close_pairs(m, pa, pb);
@@ -84,10 +85,9 @@ double ClosePairsPairScore::evaluate_index(kernel::Model *m,
   return f_->evaluate_indexes(m, cps, da, 0, cps.size());
 }
 
-double ClosePairsPairScore::evaluate_if_good_index(kernel::Model *m,
-                                                   const kernel::ParticleIndexPair &pp,
-                                                   DerivativeAccumulator *da,
-                                                   double max) const {
+double ClosePairsPairScore::evaluate_if_good_index(
+    kernel::Model *m, const kernel::ParticleIndexPair &pp,
+    DerivativeAccumulator *da, double max) const {
   IMP_OBJECT_LOG;
   kernel::ParticleIndexPairs cps = get_close_pairs(m, pp);
   return f_->evaluate_if_good_indexes(m, cps, da, max, 0, cps.size());
@@ -142,10 +142,10 @@ ParticleIndexPairs KClosePairsPairScore::get_close_pairs(
             double cdistance = get_distance(XYZR(m, ps0[i]), XYZR(m, ps1[j]));
             // mark as used
             if (0) std::cout << distance << cdistance;
-            IMP_USAGE_CHECK(
-                cdistance >= distance - .1,
-                "Missed shortest distance."
-                    << " Got " << distance << " but just found " << cdistance);
+            IMP_USAGE_CHECK(cdistance >= distance - .1,
+                            "Missed shortest distance."
+                                << " Got " << distance << " but just found "
+                                << cdistance);
           }
         }
       }
@@ -180,19 +180,18 @@ double KClosePairsPairScore::evaluate_index(kernel::Model *m,
   return f_->evaluate_indexes(m, cps, da, 0, cps.size());
 }
 
-double KClosePairsPairScore::evaluate_if_good_index(kernel::Model *m,
-                                                    const kernel::ParticleIndexPair &pp,
-                                                    DerivativeAccumulator *da,
-                                                    double max) const {
+double KClosePairsPairScore::evaluate_if_good_index(
+    kernel::Model *m, const kernel::ParticleIndexPair &pp,
+    DerivativeAccumulator *da, double max) const {
   IMP_OBJECT_LOG;
   kernel::ParticleIndexPairs cps = get_close_pairs(m, pp);
   return f_->evaluate_if_good_indexes(m, cps, da, max, 0, cps.size());
 }
 
 namespace {
-ModelObjectsTemp real_get_inputs(kernel::Model *m, const kernel::ParticleIndexes &pis,
-                                 Refiner *r, PairScore *f,
-                                 ClosePairsFinder *cpf) {
+ModelObjectsTemp real_get_inputs(kernel::Model *m,
+                                 const kernel::ParticleIndexes &pis, Refiner *r,
+                                 PairScore *f, ClosePairsFinder *cpf) {
   kernel::ModelObjectsTemp ret;
   kernel::ParticleIndexes allpis;
   for (unsigned int i = 0; i < pis.size(); ++i) {

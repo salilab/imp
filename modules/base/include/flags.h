@@ -63,10 +63,9 @@ IMPBASEEXPORT Strings setup_from_argv_allowing_unknown(int argc, char **argv,
     many positional arguments, or a negative integer to require at
     least that many.
     */
-IMPBASEEXPORT Strings setup_from_argv(int argc, char **argv,
-                                      std::string description,
-                                      std::string positional_description,
-                                      int num_positional);
+IMPBASEEXPORT Strings
+    setup_from_argv(int argc, char **argv, std::string description,
+                    std::string positional_description, int num_positional);
 #endif
 
 /** Parse the command line flags and return the
@@ -89,10 +88,9 @@ IMPBASEEXPORT void setup_from_argv(const Strings &argv,
     many positional arguments, or a negative integer to require at
     least that many.
     */
-IMPBASEEXPORT Strings setup_from_argv(const Strings &argv,
-                                      std::string description,
-                                      std::string positional_description,
-                                      int num_positional);
+IMPBASEEXPORT Strings
+    setup_from_argv(const Strings &argv, std::string description,
+                    std::string positional_description, int num_positional);
 
 #ifndef SWIG
 /** Define one of these in C++ to add a new int flag storing

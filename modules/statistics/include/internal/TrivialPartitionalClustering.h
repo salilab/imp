@@ -43,18 +43,18 @@ inline unsigned int TrivialPartitionalClustering::get_number_of_clusters()
 inline const Ints &TrivialPartitionalClustering::get_cluster(
     unsigned int i) const {
   IMP_CHECK_OBJECT(this);
-  IMP_USAGE_CHECK(
-      i < get_number_of_clusters(),
-      "There are only " << get_number_of_clusters() << " clusters. Not " << i);
+  IMP_USAGE_CHECK(i < get_number_of_clusters(), "There are only "
+                                                    << get_number_of_clusters()
+                                                    << " clusters. Not " << i);
   set_was_used(true);
   return clusters_[i];
 }
 inline int TrivialPartitionalClustering::get_cluster_representative(
     unsigned int i) const {
   IMP_CHECK_OBJECT(this);
-  IMP_USAGE_CHECK(
-      i < get_number_of_clusters(),
-      "There are only " << get_number_of_clusters() << " clusters. Not " << i);
+  IMP_USAGE_CHECK(i < get_number_of_clusters(), "There are only "
+                                                    << get_number_of_clusters()
+                                                    << " clusters. Not " << i);
   return reps_[i];
 }
 

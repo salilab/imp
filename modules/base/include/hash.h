@@ -32,7 +32,8 @@ IMP_CLANG_PRAGMA(diagnostic pop)
 #endif
 
 IMPBASE_BEGIN_NAMESPACE
-template <class T> inline std::size_t hash_value(const T &t) {
+template <class T>
+inline std::size_t hash_value(const T &t) {
   return t.__hash__();
 }
 inline std::size_t hash_value(double d) { return boost::hash_value(d); }
@@ -43,7 +44,8 @@ inline std::size_t hash_value(const std::string &d) {
 }
 
 // for RMF
-template <class T> inline std::size_t hash_value(const std::vector<T> &t) {
+template <class T>
+inline std::size_t hash_value(const std::vector<T> &t) {
   return boost::hash_range(t.begin(), t.end());
 }
 IMPBASE_END_NAMESPACE

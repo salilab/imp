@@ -30,25 +30,25 @@ ModelObjectsTemp StereochemistryPairFilter::do_get_inputs(
 
 void StereochemistryPairFilter::rebuild_map() {
   excluded_map_.clear();
-  for (kernel::Particles::const_iterator it = bonds_.begin(); it != bonds_.end();
-       ++it) {
+  for (kernel::Particles::const_iterator it = bonds_.begin();
+       it != bonds_.end(); ++it) {
     Bond b(*it);
     excluded_map_[internal::ExcludedPair(b.get_bonded(0), b.get_bonded(1))] =
         *it;
   }
 
-  for (kernel::Particles::const_iterator it = angles_.begin(); it != angles_.end();
-       ++it) {
+  for (kernel::Particles::const_iterator it = angles_.begin();
+       it != angles_.end(); ++it) {
     Angle b(*it);
-    excluded_map_[
-        internal::ExcludedPair(b.get_particle(0), b.get_particle(2))] = *it;
+    excluded_map_
+        [internal::ExcludedPair(b.get_particle(0), b.get_particle(2))] = *it;
   }
 
   for (kernel::Particles::const_iterator it = dihedrals_.begin();
        it != dihedrals_.end(); ++it) {
     Dihedral b(*it);
-    excluded_map_[
-        internal::ExcludedPair(b.get_particle(0), b.get_particle(3))] = *it;
+    excluded_map_
+        [internal::ExcludedPair(b.get_particle(0), b.get_particle(3))] = *it;
   }
 }
 

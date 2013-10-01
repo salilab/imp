@@ -27,8 +27,7 @@ class TupleConstraint : public Constraint {
                   const typename Before::Argument &vt,
                   std::string name = "TupleConstraint %1%");
 
-  TupleConstraint(Before *before, After *after,
-                  Model *m,
+  TupleConstraint(Before *before, After *after, Model *m,
                   const typename Before::IndexArgument &vt,
                   std::string name = "TupleConstraint %1%");
 
@@ -61,10 +60,9 @@ TupleConstraint<Before, After>::TupleConstraint(
 }
 
 template <class Before, class After>
-TupleConstraint<Before, After>
-::TupleConstraint( Before *before, After *after, Model *m,
-                   const typename Before::IndexArgument &vt,
-    std::string name)
+TupleConstraint<Before, After>::TupleConstraint(
+    Before *before, After *after, Model *m,
+    const typename Before::IndexArgument &vt, std::string name)
     : Constraint(m, name), v_(vt) {
   if (before) f_ = before;
   if (after) af_ = after;

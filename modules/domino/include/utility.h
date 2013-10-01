@@ -55,10 +55,9 @@ IMPDOMINOEXPORT void load_particle_states(const Subset &s, const Assignment &ss,
     - do not depend on any particle in pst->get_particles() that is not in s
     The dependency graph is passed for efficiency.
 */
-IMPDOMINOEXPORT kernel::RestraintsTemp get_restraints(const Subset &s,
-                                              const ParticleStatesTable *pst,
-                                              const DependencyGraph &dg,
-                                              kernel::RestraintSet *rs);
+IMPDOMINOEXPORT kernel::RestraintsTemp get_restraints(
+    const Subset &s, const ParticleStatesTable *pst, const DependencyGraph &dg,
+    kernel::RestraintSet *rs);
 
 /** @} */
 
@@ -92,7 +91,8 @@ IMPDOMINOEXPORT Ints get_partial_index(const kernel::ParticlesTemp &particles,
     given the allowed positions specified by the ParticleStatesTable.
 */
 IMPDOMINOEXPORT kernel::ParticlePairsTemp get_possible_interactions(
-    const kernel::ParticlesTemp &ps, double max_distance, ParticleStatesTable *pst);
+    const kernel::ParticlesTemp &ps, double max_distance,
+    ParticleStatesTable *pst);
 
 //! Return an embedding for an assignment
 IMPDOMINOEXPORT algebra::VectorKD get_embedding(const Subset &s,
@@ -100,9 +100,9 @@ IMPDOMINOEXPORT algebra::VectorKD get_embedding(const Subset &s,
                                                 ParticleStatesTable *pst);
 
 //! Return the nearest assignment from an embedding
-IMPDOMINOEXPORT Assignment get_nearest_assignment(
-    const Subset &s, const algebra::VectorKD &embedding,
-    ParticleStatesTable *pst);
+IMPDOMINOEXPORT Assignment
+    get_nearest_assignment(const Subset &s, const algebra::VectorKD &embedding,
+                           ParticleStatesTable *pst);
 
 /** Return a distance between two assignments if they are less than
     a threshold. The distance returned is the l2 norm on the distances

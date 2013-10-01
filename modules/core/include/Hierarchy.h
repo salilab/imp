@@ -77,18 +77,15 @@ typedef IMP::base::Vector<Hierarchy> GenericHierarchies;
     \see HierarchyTraits
  */
 class IMPCOREEXPORT Hierarchy : public Decorator {
-  static void do_setup_particle(kernel::Model *, kernel::ParticleIndex ,
-                                HierarchyTraits ) {
-  }
+  static void do_setup_particle(kernel::Model *, kernel::ParticleIndex,
+                                HierarchyTraits) {}
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                                 const kernel::ParticleIndexes &children,
                                 HierarchyTraits traits) {
     for (unsigned int i = 0; i < children.size(); ++i) {
-      m->add_attribute(traits.get_parent_key(), children[i],
-                       pi);
+      m->add_attribute(traits.get_parent_key(), children[i], pi);
     }
-    m->add_attribute(traits.get_children_key(), pi,
-                     children);
+    m->add_attribute(traits.get_children_key(), pi, children);
   }
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                                 const kernel::ParticlesTemp &children,
@@ -98,8 +95,7 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
 
  public:
   IMP_DECORATOR_WITH_TRAITS_METHODS(Hierarchy, Decorator, HierarchyTraits,
-                                    traits,
-                                    get_default_traits());
+                                    traits, get_default_traits());
   IMP_DECORATOR_TRAITS_SETUP_0(Hierarchy);
   /** Setup the particle and add children. */
   IMP_DECORATOR_TRAITS_SETUP_1(Hierarchy, kernel::ParticleIndexes, children);
@@ -108,8 +104,7 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
   /** Check if the particle has the needed attributes for a
    cast to succeed */
   static bool get_is_setup(kernel::Model *, kernel::ParticleIndex,
-                           HierarchyTraits =
-                           Hierarchy::get_default_traits()) {
+                           HierarchyTraits = Hierarchy::get_default_traits()) {
     return true;
   }
   /** \return the parent particle, or Hierarchy()
@@ -127,22 +122,21 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
   }
 
   unsigned int get_number_of_children() const {
-    if (get_model()
-        ->get_has_attribute(get_decorator_traits().get_children_key(),
-                            get_particle_index())) {
+    if (get_model()->get_has_attribute(
+            get_decorator_traits().get_children_key(), get_particle_index())) {
       return get_model()
-        ->get_attribute(get_decorator_traits().get_children_key(),
-                        get_particle_index()).size();
+          ->get_attribute(get_decorator_traits().get_children_key(),
+                          get_particle_index())
+          .size();
     } else {
       return 0;
     }
   }
   Hierarchy get_child(unsigned int i) const {
     IMP_USAGE_CHECK(i < get_number_of_children(), "Invalid child requested");
-    return Hierarchy(get_model(),
-                     get_model()->get_attribute(get_decorator_traits()
-                                                .get_children_key(),
-                                                get_particle_index())[i],
+    return Hierarchy(get_model(), get_model()->get_attribute(
+                                      get_decorator_traits().get_children_key(),
+                                      get_particle_index())[i],
                      get_decorator_traits());
   }
   GenericHierarchies get_children() const {
@@ -173,32 +167,31 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
                                   get_particle_index());
   }
   void add_child(Hierarchy h) const {
-    if (get_model()
-        ->get_has_attribute(get_decorator_traits().get_children_key(),
-                            get_particle_index())) {
-      get_model()->access_attribute(get_decorator_traits().get_children_key(),
-                                    get_particle_index())
+    if (get_model()->get_has_attribute(
+            get_decorator_traits().get_children_key(), get_particle_index())) {
+      get_model()
+          ->access_attribute(get_decorator_traits().get_children_key(),
+                             get_particle_index())
           .push_back(h.get_particle_index());
     } else {
-      get_model()->add_attribute(get_decorator_traits().get_children_key(),
-                                 get_particle_index(),
-                                 kernel::ParticleIndexes(1, h.get_particle_index()));
+      get_model()->add_attribute(
+          get_decorator_traits().get_children_key(), get_particle_index(),
+          kernel::ParticleIndexes(1, h.get_particle_index()));
     }
     get_model()->add_attribute(get_decorator_traits().get_parent_key(),
                                h.get_particle_index(), get_particle_index());
   }
   void add_child_at(Hierarchy h, unsigned int pos) {
     IMP_USAGE_CHECK(get_number_of_children() >= pos, "Invalid position");
-    if (get_model()
-        ->get_has_attribute(get_decorator_traits().get_children_key(),
-                            get_particle_index())) {
+    if (get_model()->get_has_attribute(
+            get_decorator_traits().get_children_key(), get_particle_index())) {
       kernel::ParticleIndexes &pis = get_model()->access_attribute(
           get_decorator_traits().get_children_key(), get_particle_index());
       pis.insert(pis.begin() + pos, h.get_particle_index());
     } else {
-      get_model()->add_attribute(get_decorator_traits().get_children_key(),
-                                 get_particle_index(),
-                                 kernel::ParticleIndexes(1, h.get_particle_index()));
+      get_model()->add_attribute(
+          get_decorator_traits().get_children_key(), get_particle_index(),
+          kernel::ParticleIndexes(1, h.get_particle_index()));
     }
     get_model()->add_attribute(get_decorator_traits().get_parent_key(),
                                h.get_particle_index(), get_particle_index());
@@ -208,9 +201,7 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
   //! Get the default hierarchy traits
   static const HierarchyTraits &get_default_traits();
 
-  HierarchyTraits get_traits() {
-    return get_decorator_traits();
-  }
+  HierarchyTraits get_traits() { return get_decorator_traits(); }
 };
 
 //! A visitor for traversal of a hierarchy

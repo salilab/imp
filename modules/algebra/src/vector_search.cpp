@@ -35,15 +35,16 @@ Ints DynamicNearestNeighbor3D::get_in_ball(int id, double distance) const {
   bb += distance;
   Ints ret;
   double distance2 = get_squared(distance);
-  IMP_LOG_VERBOSE("Searching from "
-                  << bb << " which is "
-                  << grid_.get_extended_index(bb.get_corner(0)) << " to "
-                  << grid_.get_extended_index(bb.get_corner(1)) << std::endl);
+  IMP_LOG_VERBOSE(
+      "Searching from " << bb << " which is "
+                        << grid_.get_extended_index(bb.get_corner(0)) << " to "
+                        << grid_.get_extended_index(bb.get_corner(1))
+                        << std::endl);
   for (Grid::IndexIterator it = grid_.indexes_begin(bb);
        it != grid_.indexes_end(bb); ++it) {
     Grid::Index ind = *it;
     const Ints cur = grid_[ind];
-    using base::operator<< ;
+    using base::operator<<;
     IMP_LOG_VERBOSE("Investigating " << ind << ": " << cur << std::endl);
     for (unsigned int j = 0; j < cur.size(); ++j) {
       if (get_squared_distance(coords_[cur[j]], coords_[id]) < distance2) {
@@ -95,15 +96,15 @@ void DynamicNearestNeighbor3D::audit() const {
        ++it) {
     found.insert(found.end(), it->second.begin(), it->second.end());
   }
-  using base::operator<< ;
+  using base::operator<<;
   for (unsigned int i = 0; i < coords_.size(); ++i) {
     IMP_INTERNAL_CHECK(
         std::find(grid_[indexes_[i]].begin(), grid_[indexes_[i]].end(), i) !=
             grid_[indexes_[i]].end(),
         "Item " << i << " not found in list: " << grid_[indexes_[i]]);
     Grid::ExtendedIndex ei = grid_.get_extended_index(coords_[i]);
-    IMP_INTERNAL_CHECK(grid_.get_has_index(ei),
-                       "Voxel for " << i << " is empty.");
+    IMP_INTERNAL_CHECK(grid_.get_has_index(ei), "Voxel for " << i
+                                                             << " is empty.");
     Grid::Index ind = grid_.get_index(ei);
     IMP_INTERNAL_CHECK(ind == indexes_[i],
                        "Indexes don't match: " << ind << " vs " << indexes_[i]);

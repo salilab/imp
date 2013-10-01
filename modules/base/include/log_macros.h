@@ -111,33 +111,33 @@
 
 #else  // IMP_DOXYGEN
 
-#define IMP_LOG(level, expr)                                   \
-  {                                                            \
-    IMP_LOG_USING;                                             \
-    switch (level) {                                           \
-      case SILENT:                                             \
-        break;                                                 \
-      case PROGRESS:                                           \
-        IMP_LOG_PROGRESS(expr);                                \
-        break;                                                 \
-      case TERSE:                                              \
-        IMP_LOG_TERSE(expr);                                   \
-        break;                                                 \
-      case WARNING:                                            \
-        IMP_WARN(expr);                                        \
-        break;                                                 \
-      case VERBOSE:                                            \
-        IMP_LOG_VERBOSE(expr);                                 \
-        break;                                                 \
-      case MEMORY:                                             \
-        IMP_LOG_MEMORY(expr);                                  \
-        break;                                                 \
-      case IMP::base::DEFAULT:                                 \
-      case IMP::base::ALL_LOG:                                 \
-      default:                                                 \
-        IMP_ERROR("Unknown log level "                         \
-                  << boost::lexical_cast<std::string>(level)); \
-    }                                                          \
+#define IMP_LOG(level, expr)                                                  \
+  {                                                                           \
+    IMP_LOG_USING;                                                            \
+    switch (level) {                                                          \
+      case SILENT:                                                            \
+        break;                                                                \
+      case PROGRESS:                                                          \
+        IMP_LOG_PROGRESS(expr);                                               \
+        break;                                                                \
+      case TERSE:                                                             \
+        IMP_LOG_TERSE(expr);                                                  \
+        break;                                                                \
+      case WARNING:                                                           \
+        IMP_WARN(expr);                                                       \
+        break;                                                                \
+      case VERBOSE:                                                           \
+        IMP_LOG_VERBOSE(expr);                                                \
+        break;                                                                \
+      case MEMORY:                                                            \
+        IMP_LOG_MEMORY(expr);                                                 \
+        break;                                                                \
+      case IMP::base::DEFAULT:                                                \
+      case IMP::base::ALL_LOG:                                                \
+      default:                                                                \
+        IMP_ERROR(                                                            \
+            "Unknown log level " << boost::lexical_cast<std::string>(level)); \
+    }                                                                         \
   }
 
 #if IMP_HAS_LOG < IMP_PROGRESS
@@ -167,12 +167,12 @@
 #define IMP_IF_LOG(level) if (true)
 #define IMP_LOG_PROGRESS(expr)                   \
   {                                              \
-    using IMP::base::internal::log::operator<< ; \
+    using IMP::base::internal::log::operator<<;  \
     LOG4CXX_INFO(IMP::base::get_logger(), expr); \
   }
 #define IMP_WARN(expr)                           \
   {                                              \
-    using IMP::base::internal::log::operator<< ; \
+    using IMP::base::internal::log::operator<<;  \
     LOG4CXX_WARN(IMP::base::get_logger(), expr); \
   }
 #endif
@@ -180,7 +180,7 @@
 #if IMP_HAS_LOG >= IMP_TERSE
 #define IMP_LOG_TERSE(expr)                      \
   {                                              \
-    using IMP::base::internal::log::operator<< ; \
+    using IMP::base::internal::log::operator<<;  \
     LOG4CXX_INFO(IMP::base::get_logger(), expr); \
   }
 #endif
@@ -188,20 +188,20 @@
 #if IMP_HAS_LOG >= IMP_VERBOSE
 #define IMP_LOG_VERBOSE(expr)                     \
   {                                               \
-    using IMP::base::internal::log::operator<< ;  \
+    using IMP::base::internal::log::operator<<;   \
     LOG4CXX_DEBUG(IMP::base::get_logger(), expr); \
   }
 
 #define IMP_LOG_MEMORY(expr)                      \
   {                                               \
-    using IMP::base::internal::log::operator<< ;  \
+    using IMP::base::internal::log::operator<<;   \
     LOG4CXX_TRACE(IMP::base::get_logger(), expr); \
   }
 #endif
 
 #define IMP_ERROR(expr)                                        \
   {                                                            \
-    using IMP::base::internal::log::operator<< ;               \
+    using IMP::base::internal::log::operator<<;                \
     LOG4CXX_ERROR(IMP::base::get_logger(), expr << std::endl); \
   }
 

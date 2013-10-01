@@ -69,12 +69,12 @@ class IMPDISPLAYEXPORT BildWriter : public TextWriter {
   }
   bool handle_cylinder(CylinderGeometry *g, Color color, std::string) {
     handle(color);
-    get_stream()
-        << ".cylinder "
-        << algebra::spaces_io(g->get_geometry().get_segment().get_point(0))
-        << " "
-        << algebra::spaces_io(g->get_geometry().get_segment().get_point(1))
-        << " " << g->get_geometry().get_radius() << "\n";
+    get_stream() << ".cylinder "
+                 << algebra::spaces_io(
+                        g->get_geometry().get_segment().get_point(0)) << " "
+                 << algebra::spaces_io(
+                        g->get_geometry().get_segment().get_point(1)) << " "
+                 << g->get_geometry().get_radius() << "\n";
     return true;
   }
 

@@ -45,7 +45,7 @@
 */
 #define IMP_SINGLETON_MODIFIER_FROM_REFINED(Name, refiner)                     \
   IMPKERNEL_DEPRECATED_MACRO(2.1, "Define methods yourself");                  \
-  ModelObjectsTemp Name::do_get_inputs(kernel::Model *m,                               \
+  ModelObjectsTemp Name::do_get_inputs(kernel::Model *m,                       \
                                        const ParticleIndexes &pis) const {     \
     ModelObjectsTemp ret = refiner->get_inputs(m, pis);                        \
     ret += IMP::kernel::get_particles(m, pis);                                 \
@@ -55,7 +55,7 @@
     }                                                                          \
     return ret;                                                                \
   }                                                                            \
-  ModelObjectsTemp Name::do_get_outputs(kernel::Model *m,                              \
+  ModelObjectsTemp Name::do_get_outputs(kernel::Model *m,                      \
                                         const ParticleIndexes &pis) const {    \
     ModelObjectsTemp ret = IMP::kernel::get_particles(m, pis);                 \
     return ret;                                                                \
@@ -66,7 +66,7 @@
 */
 #define IMP_SINGLETON_MODIFIER_TO_REFINED(Name, refiner)                       \
   IMPKERNEL_DEPRECATED_MACRO(2.1, "Define methods yourself");                  \
-  ModelObjectsTemp Name::do_get_inputs(kernel::Model *m,                               \
+  ModelObjectsTemp Name::do_get_inputs(kernel::Model *m,                       \
                                        const ParticleIndexes &pis) const {     \
     ModelObjectsTemp ret = refiner->get_inputs(m, pis);                        \
     for (unsigned int i = 0; i < pis.size(); ++i) {                            \
@@ -76,7 +76,7 @@
     ret += IMP::kernel::get_particles(m, pis);                                 \
     return ret;                                                                \
   }                                                                            \
-  ModelObjectsTemp Name::do_get_outputs(kernel::Model *m,                              \
+  ModelObjectsTemp Name::do_get_outputs(kernel::Model *m,                      \
                                         const ParticleIndexes &pis) const {    \
     ModelObjectsTemp ret;                                                      \
     for (unsigned int i = 0; i < pis.size(); ++i) {                            \

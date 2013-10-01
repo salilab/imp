@@ -19,8 +19,8 @@ template <int D>
 struct GridRangeData : public base::Object {
   const BoundingBoxD<D> bb;
   double step;
-  GridRangeData(const BoundingBoxD<D> &ibb, double stp) :
-    base::Object("GridRangeD%1%"), bb(ibb), step(stp) {}
+  GridRangeData(const BoundingBoxD<D> &ibb, double stp)
+      : base::Object("GridRangeD%1%"), bb(ibb), step(stp) {}
 };
 
 template <int D>

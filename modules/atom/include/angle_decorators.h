@@ -21,17 +21,16 @@ IMPATOM_BEGIN_NAMESPACE
     \see CHARMMParameters::create_angles(), AngleSingletonScore.
  */
 class IMPATOMEXPORT Angle : public Decorator {
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex p,
-                                core::XYZ a, core::XYZ b,
-                                core::XYZ c) {
+  static void do_setup_particle(kernel::Model* m, kernel::ParticleIndex p,
+                                core::XYZ a, core::XYZ b, core::XYZ c) {
     m->add_attribute(get_particle_key(0), p, a);
     m->add_attribute(get_particle_key(1), p, b);
     m->add_attribute(get_particle_key(2), p, c);
   }
+
  public:
   IMP_DECORATOR_METHODS(Angle, Decorator);
-  IMP_DECORATOR_SETUP_3(Angle, core::XYZ, a, core::XYZ, b,
-                        core::XYZ, c);
+  IMP_DECORATOR_SETUP_3(Angle, core::XYZ, a, core::XYZ, b, core::XYZ, c);
 
   //! Return true if the particle is an angle.
   static bool get_is_setup(kernel::Model* m, kernel::ParticleIndex pi) {
@@ -73,20 +72,18 @@ IMP_DECORATORS(Angle, Angles, kernel::ParticlesTemp);
  */
 class IMPATOMEXPORT Dihedral : public Decorator {
   //! Create a dihedral with the given particles.
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex p,
-                                 core::XYZ a, core::XYZ b,
-                                 core::XYZ c, core::XYZ d) {
+  static void do_setup_particle(kernel::Model* m, kernel::ParticleIndex p,
+                                core::XYZ a, core::XYZ b, core::XYZ c,
+                                core::XYZ d) {
     m->add_attribute(get_particle_key(0), p, a);
     m->add_attribute(get_particle_key(1), p, b);
     m->add_attribute(get_particle_key(2), p, c);
     m->add_attribute(get_particle_key(3), p, d);
   }
+
  public:
   IMP_DECORATOR_METHODS(Dihedral, Decorator);
-  IMP_DECORATOR_SETUP_4(Dihedral,
-                        core::XYZ, a,
-                        core::XYZ, b,
-                        core::XYZ, c,
+  IMP_DECORATOR_SETUP_4(Dihedral, core::XYZ, a, core::XYZ, b, core::XYZ, c,
                         core::XYZ, d);
 
   static bool get_is_setup(kernel::Model* m, kernel::ParticleIndex pi) {

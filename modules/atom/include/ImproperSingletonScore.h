@@ -36,9 +36,8 @@ class IMPATOMEXPORT ImproperSingletonScore : public SingletonScore {
   ImproperSingletonScore(UnaryFunction *f);
   virtual double evaluate_index(kernel::Model *m, kernel::ParticleIndex p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                         const kernel::ParticleIndexes &pis) const
-      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_SINGLETON_SCORE_METHODS(ImproperSingletonScore);
   IMP_OBJECT_METHODS(ImproperSingletonScore);
   ;

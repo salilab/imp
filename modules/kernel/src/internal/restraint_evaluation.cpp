@@ -68,7 +68,7 @@ void do_evaluate_one(IMP::kernel::ScoreAccumulator sa, RS *restraint,
       IMP_CHECK_OBJECT(restraint);
       restraint->add_score_and_derivatives(sa);
     }
-    catch (const InputOutputException & d) {
+    catch (const InputOutputException &d) {
       IMP_FAILURE(d.get_message(restraint));
     }
   } else {

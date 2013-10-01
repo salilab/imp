@@ -48,10 +48,8 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<kernel::Particle> {
   bool get_is(RMF::NodeConstHandle nh) const {
     return nh.get_type() == RMF::REPRESENTATION;
   }
-  bool setup_particle(kernel::Particle *root,
-                      RMF::NodeConstHandle nh,
-                      kernel::Particle *p,
-                      kernel::Particle *rbp);
+  bool setup_particle(kernel::Particle *root, RMF::NodeConstHandle nh,
+                      kernel::Particle *p, kernel::Particle *rbp);
 
  protected:
   /** This method is called for each particle in the hierarchy.*/
@@ -62,9 +60,9 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<kernel::Particle> {
   /** Overload this to take specific action on creating
       a member of the hierarchy.
       \unstable{do_create_recursive} */
-  virtual kernel::Particle *do_create_recursive(kernel::Particle *root,
-                                        RMF::NodeConstHandle name,
-                                        kernel::Particle *rbp = nullptr);
+  virtual kernel::Particle *do_create_recursive(
+      kernel::Particle *root, RMF::NodeConstHandle name,
+      kernel::Particle *rbp = nullptr);
 
   kernel::Particle *do_create(RMF::NodeConstHandle name);
   /** Overload this to take specific action on linking

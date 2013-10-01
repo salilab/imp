@@ -33,26 +33,20 @@ class IMPRMFEXPORT SaveOptimizerState : public kernel::OptimizerState {
   SaveOptimizerState(RMF::FileHandle fh);
 #ifndef IMP_DOXYGEN
   IMP_LIST_ACTION(public, Hierarchy, Hierarchies, hierarchy, hierarchies,
-                  kernel::Particle *, kernel::Particles, {
-    rmf::add_hierarchy(fh_, atom::Hierarchy(obj));
-  },
-                  {}, {});
+                  kernel::Particle *, kernel::Particles,
+                  { rmf::add_hierarchy(fh_, atom::Hierarchy(obj)); }, {}, {});
   IMP_LIST_ACTION(public, Restraint, estraints, restraint, restraints,
-                  kernel::Restraint *, kernel::Restraints, {
-    rmf::add_restraints(fh_, kernel::RestraintsTemp(1, obj));
-  },
+                  kernel::Restraint *, kernel::Restraints,
+                  { rmf::add_restraints(fh_, kernel::RestraintsTemp(1, obj)); },
                   {}, {});
-  IMP_LIST_ACTION(public, Particle, Particles, particle,
-                  particles, kernel::Particle *,
-                  kernel::Particles, {
-    rmf::add_particles(fh_, kernel::ParticlesTemp(1, obj));
-  },
+  IMP_LIST_ACTION(public, Particle, Particles, particle, particles,
+                  kernel::Particle *, kernel::Particles,
+                  { rmf::add_particles(fh_, kernel::ParticlesTemp(1, obj)); },
                   {}, {});
-  IMP_LIST_ACTION(public, Geometry, Geometries, geometry, geometries,
-                  display::Geometry *, display::Geometries, {
-    rmf::add_geometries(fh_, display::GeometriesTemp(1, obj));
-  },
-                  {}, {});
+  IMP_LIST_ACTION(
+      public, Geometry, Geometries, geometry, geometries, display::Geometry *,
+      display::Geometries,
+      { rmf::add_geometries(fh_, display::GeometriesTemp(1, obj)); }, {}, {});
 #endif
   //! Use the simulator to tag frames with current time
   /** \note This may change to a more general mechanism at some point

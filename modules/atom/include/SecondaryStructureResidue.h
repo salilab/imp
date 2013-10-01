@@ -25,8 +25,7 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class IMPATOMEXPORT SecondaryStructureResidue : public Decorator {
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
-                                Float prob_helix,
-                                Float prob_strand,
+                                Float prob_helix, Float prob_strand,
                                 Float prob_coil) {
     m->add_attribute(get_prob_helix_key(), pi, prob_helix);
     m->add_attribute(get_prob_strand_key(), pi, prob_strand);
@@ -43,10 +42,8 @@ class IMPATOMEXPORT SecondaryStructureResidue : public Decorator {
 
  public:
   IMP_DECORATOR_METHODS(SecondaryStructureResidue, Decorator);
-  IMP_DECORATOR_SETUP_3(SecondaryStructureResidue,
-                        Float, prob_helix,
-                        Float, prob_strand,
-                        Float, prob_coil);
+  IMP_DECORATOR_SETUP_3(SecondaryStructureResidue, Float, prob_helix, Float,
+                        prob_strand, Float, prob_coil);
 
   //! Set up SecondaryStructureResidue with default probabilities
   static SecondaryStructureResidue setup_particle(kernel::Particle *res_p) {
@@ -116,18 +113,17 @@ IMPATOMEXPORT SecondaryStructureResidue
                scoring secondary structure type
  */
 IMPATOMEXPORT SecondaryStructureResidues
-    setup_coarse_secondary_structure_residues(const kernel::Particles &ssr_ps,
-                                              kernel::Model *mdl, int coarse_factor,
-                                              int start_res_num,
-                                              bool winner_takes_all_per_res =
-                                                  false);
+    setup_coarse_secondary_structure_residues(
+        const kernel::Particles &ssr_ps, kernel::Model *mdl, int coarse_factor,
+        int start_res_num, bool winner_takes_all_per_res = false);
 
 /** Compares the secondary structure probabilities of two
     SecondaryStructureResidues. Returns the RMSD of the three probabilities
     (lower is better match).
  */
-IMPATOMEXPORT Float get_secondary_structure_match_score(
-    SecondaryStructureResidue ssr1, SecondaryStructureResidue ssr2);
+IMPATOMEXPORT Float
+    get_secondary_structure_match_score(SecondaryStructureResidue ssr1,
+                                        SecondaryStructureResidue ssr2);
 
 IMPATOM_END_NAMESPACE
 

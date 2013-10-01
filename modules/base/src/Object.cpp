@@ -55,10 +55,10 @@ Object::~Object() {
 #if IMP_HAS_CHECKS >= IMP_USAGE
   // if there is no exception currently being handled warn if it was not owned
   if (!was_owned_ && !std::uncaught_exception()) {
-    IMP_WARN("Object \""
-             << get_name() << "\" was never used."
-             << " See the IMP::Object documentation for an explanation."
-             << std::endl);
+    IMP_WARN(
+        "Object \"" << get_name() << "\" was never used."
+                    << " See the IMP::Object documentation for an explanation."
+                    << std::endl);
   }
 #endif
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
@@ -97,8 +97,8 @@ void Object::_on_destruction() {
 
 void Object::set_log_level(LogLevel l) {
   IMP_CHECK_VARIABLE(l);
-  IMP_USAGE_CHECK(l <= MEMORY && l >= DEFAULT,
-                  "Setting to invalid log level " << l);
+  IMP_USAGE_CHECK(l <= MEMORY && l >= DEFAULT, "Setting to invalid log level "
+                                                   << l);
 #if IMP_HAS_LOG != IMP_SILENT
   if (l != log_level_) {
     log_level_ = l;

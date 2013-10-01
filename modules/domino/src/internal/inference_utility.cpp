@@ -79,14 +79,14 @@ Assignment get_merged_assignment(const Subset &s, const Assignment &ss0,
                                  const Ints &i0, const Assignment &ss1,
                                  const Ints &i1) {
   Ints ret(s.size(), -1);
-  IMP_USAGE_CHECK(
-      ss0.size() == i0.size(),
-      "The size of the subset and "
-          << "the index don't match: " << ss0.size() << " vs " << i0.size());
-  IMP_USAGE_CHECK(
-      ss1.size() == i1.size(),
-      "The size of the subset and "
-          << "the index don't match: " << ss1.size() << " vs " << i1.size());
+  IMP_USAGE_CHECK(ss0.size() == i0.size(),
+                  "The size of the subset and "
+                      << "the index don't match: " << ss0.size() << " vs "
+                      << i0.size());
+  IMP_USAGE_CHECK(ss1.size() == i1.size(),
+                  "The size of the subset and "
+                      << "the index don't match: " << ss1.size() << " vs "
+                      << i1.size());
   for (unsigned int i = 0; i < i0.size(); ++i) {
     ret[i0[i]] = ss0[i];
   }

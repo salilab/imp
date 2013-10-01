@@ -76,13 +76,13 @@ class IMPKERNELEXPORT Container : public ScoreState {
       \deprecated_at{2.1} Use get_contents_version() instead as that
       is safer.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-    bool get_is_changed() const;
+  bool get_is_changed() const;
 
   /** Return a counter that can be used to detect when the contents
       of the container changed. Store the value and then compare
       against the version next time to detect if it is different. It
       is initially 0.*/
-  int get_contents_version() const {return version_;}
+  int get_contents_version() const { return version_; }
 
   //! containers don't have outputs
   ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
@@ -110,8 +110,9 @@ class IMPKERNELEXPORT Container : public ScoreState {
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   ParticlesTemp get_all_possible_particles() const {
     IMPKERNEL_DEPRECATED_METHOD_DEF(
-        2.1, "Use IMP::Container::get_all_possible_indexes()"
-             "instead");
+        2.1,
+        "Use IMP::Container::get_all_possible_indexes()"
+        "instead");
     return IMP::kernel::get_particles(get_model(), get_all_possible_indexes());
   }
 

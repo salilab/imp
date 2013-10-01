@@ -49,7 +49,7 @@ class IMPCOREEXPORT ExcludedVolumeRestraint : public kernel::Restraint {
   mutable kernel::ParticleIndexes rbs_;
   mutable kernel::ParticleIndexes xyzrs_;
   mutable IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes>
-    constituents_;
+      constituents_;
   double slack_;
   mutable algebra::Sphere3Ds rbs_backup_sphere_;
   mutable algebra::Rotation3Ds rbs_backup_rot_;

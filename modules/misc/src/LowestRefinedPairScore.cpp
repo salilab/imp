@@ -28,15 +28,17 @@ ParticlesTemp get_set(kernel::Particle *a, Refiner *r) {
   return ret;
 }
 
-std::pair<double, kernel::ParticlePair> get_lowest(kernel::ParticlesTemp ps[2], PairScore *f) {
+std::pair<double, kernel::ParticlePair> get_lowest(kernel::ParticlesTemp ps[2],
+                                                   PairScore *f) {
   double ret = std::numeric_limits<Float>::max();
   kernel::ParticlePair lowest;
   for (unsigned int i = 0; i < ps[0].size(); ++i) {
     for (unsigned int j = 0; j < ps[1].size(); ++j) {
-      Float v = f->evaluate_index(
-          ps[0][0]->get_model(),
-          kernel::ParticleIndexPair(ps[0][i]->get_index(), ps[1][j]->get_index()),
-          nullptr);
+      Float v =
+          f->evaluate_index(ps[0][0]->get_model(),
+                            kernel::ParticleIndexPair(ps[0][i]->get_index(),
+                                                      ps[1][j]->get_index()),
+                            nullptr);
       if (v < ret) {
         ret = v;
         lowest = kernel::ParticlePair(ps[0][i], ps[1][j]);
@@ -47,17 +49,17 @@ std::pair<double, kernel::ParticlePair> get_lowest(kernel::ParticlesTemp ps[2], 
 }
 }
 
-Float LowestRefinedPairScore::evaluate_index(kernel::Model *m,
-                                             const kernel::ParticleIndexPair &pi,
-                                             DerivativeAccumulator *da) const {
+Float LowestRefinedPairScore::evaluate_index(
+    kernel::Model *m, const kernel::ParticleIndexPair &pi,
+    DerivativeAccumulator *da) const {
   kernel::ParticlesTemp ps[2] = {get_set(m->get_particle(pi[0]), r_),
-                         get_set(m->get_particle(pi[1]), r_)};
+                                 get_set(m->get_particle(pi[1]), r_)};
 
   std::pair<double, kernel::ParticlePair> r = get_lowest(ps, f_);
 
   if (da) {
     f_->evaluate_index(m, kernel::ParticleIndexPair(r.second[0]->get_index(),
-                                            r.second[1]->get_index()),
+                                                    r.second[1]->get_index()),
                        da);
   }
 

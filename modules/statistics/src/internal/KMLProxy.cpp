@@ -12,9 +12,10 @@ KMLProxy::KMLProxy() {
   set_default_values();
   is_init_ = false;
 }
-void KMLProxy::initialize(kernel::Model *m, const kernel::Particles &ps, const FloatKeys &atts,
-                          unsigned int num_centers) {
-  for (kernel::Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
+void KMLProxy::initialize(kernel::Model *m, const kernel::Particles &ps,
+                          const FloatKeys &atts, unsigned int num_centers) {
+  for (kernel::Particles::const_iterator it = ps.begin(); it != ps.end();
+       it++) {
     ps_.push_back(*it);
   }
   for (FloatKeys::const_iterator it = atts.begin(); it != atts.end(); it++) {

@@ -93,8 +93,7 @@ struct SFResetBitset {
   }
 };
 
-IMPKERNELEXPORT void show_dg_node(kernel::ModelObject *mo,
-                                  base::TextOutput to);
+IMPKERNELEXPORT void show_dg_node(kernel::ModelObject *mo, base::TextOutput to);
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 

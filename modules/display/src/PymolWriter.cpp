@@ -101,15 +101,16 @@ bool PymolWriter::handle_label(LabelGeometry *g, Color, std::string name) {
   setup(name, OTHER, false);
 
   // write_color(get_stream(), color);
-  get_stream()
-      << "cyl_text(curdata,plain, ["
-      << g->get_location().get_center()[0] + g->get_location().get_radius()
-      << ", " << g->get_location().get_center()[1] +
-                     g->get_location().get_radius() << ", "
-      << g->get_location().get_center()[2] + g->get_location().get_radius()
-      << "], '" << g->get_text() << "', 0.05,"
-      << " axes=[[1,0,0],[0,1,0],[0,0,1]])"
-      << "\n";
+  get_stream() << "cyl_text(curdata,plain, ["
+               << g->get_location().get_center()[0] +
+                      g->get_location().get_radius() << ", "
+               << g->get_location().get_center()[1] +
+                      g->get_location().get_radius() << ", "
+               << g->get_location().get_center()[2] +
+                      g->get_location().get_radius() << "], '" << g->get_text()
+               << "', 0.05,"
+               << " axes=[[1,0,0],[0,1,0],[0,0,1]])"
+               << "\n";
   return true;
 }
 bool PymolWriter::handle_cylinder(CylinderGeometry *g, Color color,
@@ -117,12 +118,11 @@ bool PymolWriter::handle_cylinder(CylinderGeometry *g, Color color,
   setup(name, OTHER);
   write_color(get_stream(), color);
   //  cleanup(name, false);
-  get_stream()
-      << "CYLINDER,\n"
-      << algebra::commas_io(g->get_geometry().get_segment().get_point(0))
-      << ",\n"
-      << algebra::commas_io(g->get_geometry().get_segment().get_point(1))
-      << ",\n" << g->get_geometry().get_radius() << ",\n";
+  get_stream() << "CYLINDER,\n"
+               << algebra::commas_io(
+                      g->get_geometry().get_segment().get_point(0)) << ",\n"
+               << algebra::commas_io(g->get_geometry().get_segment().get_point(
+                      1)) << ",\n" << g->get_geometry().get_radius() << ",\n";
   get_stream() << color.get_red() << ", " << color.get_green() << ", "
                << color.get_blue() << ",\n";
   get_stream() << color.get_red() << ", " << color.get_green() << ", "

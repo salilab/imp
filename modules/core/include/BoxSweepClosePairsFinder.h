@@ -29,25 +29,23 @@ class IMPCOREEXPORT BoxSweepClosePairsFinder : public ClosePairsFinder {
 #ifndef SWIG
   using ClosePairsFinder::get_close_pairs;
 #else
-  kernel::ParticlePairsTemp get_close_pairs(const kernel::ParticlesTemp &pc) const;
-  kernel::ParticlePairsTemp get_close_pairs(const kernel::ParticlesTemp &pca,
-                                    const kernel::ParticlesTemp &pcb) const;
+  kernel::ParticlePairsTemp get_close_pairs(
+      const kernel::ParticlesTemp &pc) const;
+  kernel::ParticlePairsTemp get_close_pairs(
+      const kernel::ParticlesTemp &pca, const kernel::ParticlesTemp &pcb) const;
 #endif
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const
       IMP_OVERRIDE;
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas,
                                    const algebra::BoundingBox3Ds &bbs) const
       IMP_OVERRIDE;
-  virtual kernel::ParticleIndexPairs get_close_pairs(kernel::Model *m,
-                                             const kernel::ParticleIndexes &pc) const
-      IMP_OVERRIDE;
-  virtual kernel::ParticleIndexPairs get_close_pairs(kernel::Model *m,
-                                             const kernel::ParticleIndexes &pca,
-                                             const kernel::ParticleIndexes &pcb) const
-      IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                         const kernel::ParticleIndexes &pis) const
-      IMP_OVERRIDE;
+  virtual kernel::ParticleIndexPairs get_close_pairs(
+      kernel::Model *m, const kernel::ParticleIndexes &pc) const IMP_OVERRIDE;
+  virtual kernel::ParticleIndexPairs get_close_pairs(
+      kernel::Model *m, const kernel::ParticleIndexes &pca,
+      const kernel::ParticleIndexes &pcb) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(BoxSweepClosePairsFinder);
 };
 #endif /* IMP_USE_CGAL */

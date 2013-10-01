@@ -27,6 +27,7 @@ class IMPCOREEXPORT MoverBase : public Mover {
   base::Vector<FloatKey> keys_;
   kernel::ParticleIndexes particles_;
   void do_propose_value(unsigned int i, unsigned int j, Float t);
+
  public:
   virtual void reset_move();
 
@@ -60,7 +61,8 @@ class IMPCOREEXPORT MoverBase : public Mover {
   void propose_value(unsigned int i, unsigned int j, Float t);
 
   IMPCORE_DEPRECATED_OBJECT_DECL(2.1)
-  MoverBase(const kernel::ParticlesTemp &ps, const FloatKeys &keys, std::string name);
+  MoverBase(const kernel::ParticlesTemp &ps, const FloatKeys &keys,
+            std::string name);
 };
 
 IMP_OBJECTS(MoverBase, MoverBases);

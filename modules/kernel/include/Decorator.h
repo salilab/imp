@@ -132,6 +132,7 @@ class IMPKERNELEXPORT Decorator : public base::Value {
  public:
 #endif
   explicit Decorator(ParticleAdaptor p);
+
  public:
   ParticleIndex get_particle_index() const { return pi_; }
 #ifdef _MSC_VER
@@ -243,44 +244,46 @@ class IMPKERNELEXPORT Decorator : public base::Value {
 
 #ifndef IMP_DOXYGEN
 
-inline Decorator::Decorator(kernel::Model* m, ParticleIndex pi) : model_(m), pi_(pi) {};
+inline Decorator::Decorator(kernel::Model* m, ParticleIndex pi)
+    : model_(m), pi_(pi) {};
 inline Decorator::Decorator() : pi_(-1) {}
 
-#define IMP_CONSTRAINT_DECORATOR_DECL(Name)                                    \
- private:                                                                      \
-  static ObjectKey get_constraint_key();                                       \
-  static void set_constraint(SingletonModifier* before,                        \
-                             SingletonDerivativeModifier* after, Model *m, \
-                             ParticleIndex pi);                         \
-                                                                               \
- public:                                                                       \
-  Constraint* get_constraint() const {                                         \
-    return dynamic_cast<Constraint*>(                                          \
-        get_particle()->get_value(get_constraint_key()));                      \
-  }                                                                            \
+#define IMP_CONSTRAINT_DECORATOR_DECL(Name)                                \
+ private:                                                                  \
+  static ObjectKey get_constraint_key();                                   \
+  static void set_constraint(SingletonModifier* before,                    \
+                             SingletonDerivativeModifier* after, Model* m, \
+                             ParticleIndex pi);                            \
+                                                                           \
+ public:                                                                   \
+  Constraint* get_constraint() const {                                     \
+    return dynamic_cast<Constraint*>(                                      \
+        get_particle()->get_value(get_constraint_key()));                  \
+  }                                                                        \
   IMP_REQUIRE_SEMICOLON_CLASS(constraint)
 
-#define IMP_CONSTRAINT_DECORATOR_DEF(Name)                                     \
-  ObjectKey Name::get_constraint_key() {                                       \
-    static ObjectKey ret(#Name " score state");                                \
-    return ret;                                                                \
-  }                                                                            \
-  void Name::set_constraint(SingletonModifier* before,                         \
-                            SingletonDerivativeModifier* after, Model *m,\
-                            ParticleIndex pi) {                         \
-    if (!after && !before) {                                                   \
-      if (m->get_has_attribute(get_constraint_key(), pi)) {                \
-        m->remove_score_state(                                    \
-       dynamic_cast<ScoreState*>(m->get_attribute(get_constraint_key(), pi))); \
-        m->remove_attribute(get_constraint_key(), pi);                  \
-      }                                                                        \
-    } else {                                                                   \
-      Constraint* ss = new core::SingletonConstraint(before, after, m, pi, \
-                std::string(#Name "updater for ") + m->get_particle_name(pi)); \
-      m->add_attribute(get_constraint_key(), pi, ss);                   \
-      m->add_score_state(ss);                                           \
-    }                                                                   \
-  }                                                                            \
+#define IMP_CONSTRAINT_DECORATOR_DEF(Name)                                \
+  ObjectKey Name::get_constraint_key() {                                  \
+    static ObjectKey ret(#Name " score state");                           \
+    return ret;                                                           \
+  }                                                                       \
+  void Name::set_constraint(SingletonModifier* before,                    \
+                            SingletonDerivativeModifier* after, Model* m, \
+                            ParticleIndex pi) {                           \
+    if (!after && !before) {                                              \
+      if (m->get_has_attribute(get_constraint_key(), pi)) {               \
+        m->remove_score_state(dynamic_cast<ScoreState*>(                  \
+            m->get_attribute(get_constraint_key(), pi)));                 \
+        m->remove_attribute(get_constraint_key(), pi);                    \
+      }                                                                   \
+    } else {                                                              \
+      Constraint* ss = new core::SingletonConstraint(                     \
+          before, after, m, pi,                                           \
+          std::string(#Name "updater for ") + m->get_particle_name(pi));  \
+      m->add_attribute(get_constraint_key(), pi, ss);                     \
+      m->add_score_state(ss);                                             \
+    }                                                                     \
+  }                                                                       \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 #endif
@@ -293,9 +296,8 @@ inline Decorator::Decorator() : pi_(-1) {}
 
     This macro should only be used in a .cpp file.
 */
-#define IMP_CHECK_DECORATOR(Name, function)                                 \
-  IMP::kernel::internal::ParticleCheck Name##pc(Name::get_is_setup, \
-                                                function);
+#define IMP_CHECK_DECORATOR(Name, function) \
+  IMP::kernel::internal::ParticleCheck Name##pc(Name::get_is_setup, function);
 #endif
 
 #ifndef IMP_DOXYGEN

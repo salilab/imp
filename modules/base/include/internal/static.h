@@ -61,7 +61,7 @@ extern IMPBASEEXPORT base::set<std::string> printed_deprecation_messages;
 struct Timing {
   double total_time;
   unsigned int calls;
-  Timing(): total_time(0), calls(0) {}
+  Timing() : total_time(0), calls(0) {}
 };
 extern IMPBASEEXPORT base::map<std::string, Timing> timings;
 IMPBASE_END_INTERNAL_NAMESPACE

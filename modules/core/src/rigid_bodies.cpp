@@ -105,14 +105,12 @@ class AccumulateRigidBodyDerivatives : public SingletonDerivativeModifier {
   AccumulateRigidBodyDerivatives(std::string name =
                                      "AccumulateRigidBodyDerivatives%1%")
       : SingletonDerivativeModifier(name) {}
-  virtual void apply_index(kernel::Model *m,
-                           kernel::ParticleIndex pi) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                     const kernel::ParticleIndexes &pis) const
+  virtual void apply_index(kernel::Model *m, kernel::ParticleIndex pi) const
       IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_outputs(kernel::Model *m,
-                                     const kernel::ParticleIndexes &pis) const
-      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_outputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_SINGLETON_MODIFIER_METHODS(AccumulateRigidBodyDerivatives);
   IMP_OBJECT_METHODS(AccumulateRigidBodyDerivatives);
 };
@@ -132,14 +130,12 @@ class UpdateRigidBodyMembers : public SingletonModifier {
  public:
   UpdateRigidBodyMembers(std::string name = "UpdateRigidBodyMembers%1%")
       : SingletonModifier(name) {}
-  virtual void apply_index(kernel::Model *m,
-                           kernel::ParticleIndex pi) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                    const kernel::ParticleIndexes &pis) const
+  virtual void apply_index(kernel::Model *m, kernel::ParticleIndex pi) const
       IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_outputs(kernel::Model *m,
-                                    const kernel::ParticleIndexes &pis) const
-      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_outputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_SINGLETON_MODIFIER_METHODS(UpdateRigidBodyMembers);
   IMP_OBJECT_METHODS(UpdateRigidBodyMembers);
 };
@@ -149,14 +145,12 @@ class NormalizeRotation : public SingletonModifier {
  public:
   NormalizeRotation(std::string name = "NormalizeRotation%1%")
       : SingletonModifier(name) {}
-  virtual void apply_index(kernel::Model *m,
-                           kernel::ParticleIndex pi) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                     const kernel::ParticleIndexes &pis) const
+  virtual void apply_index(kernel::Model *m, kernel::ParticleIndex pi) const
       IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_outputs(kernel::Model *m,
-                                     const kernel::ParticleIndexes &pis) const
-      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_outputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_SINGLETON_MODIFIER_METHODS(NormalizeRotation);
   IMP_OBJECT_METHODS(NormalizeRotation);
 };
@@ -166,20 +160,18 @@ class NullSDM : public SingletonDerivativeModifier {
  public:
   NullSDM(std::string name = "NullModifier%1%")
       : SingletonDerivativeModifier(name) {}
-  virtual void apply_index(kernel::Model *m,
-                           kernel::ParticleIndex pi) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                     const kernel::ParticleIndexes &pis) const
+  virtual void apply_index(kernel::Model *m, kernel::ParticleIndex pi) const
       IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_outputs(kernel::Model *m,
-                                     const kernel::ParticleIndexes &pis) const
-      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_outputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_SINGLETON_MODIFIER_METHODS(NullSDM);
   IMP_OBJECT_METHODS(NullSDM);
 };
 
-void AccumulateRigidBodyDerivatives::apply_index(kernel::Model *m,
-                                            kernel::ParticleIndex pi) const {
+void AccumulateRigidBodyDerivatives::apply_index(
+    kernel::Model *m, kernel::ParticleIndex pi) const {
   IMP_OBJECT_LOG;
   DerivativeAccumulator da;
   RigidBody rb(m, pi);
@@ -187,8 +179,8 @@ void AccumulateRigidBodyDerivatives::apply_index(kernel::Model *m,
   algebra::Vector4D oldderiv;
   algebra::Vector3D oldcartesian = rb.get_derivatives();
   for (unsigned int j = 0; j < 4; ++j) {
-    oldderiv[j] = rb.get_particle()
-        ->get_derivative(internal::rigid_body_data().quaternion_[j]);
+    oldderiv[j] = rb.get_particle()->get_derivative(
+        internal::rigid_body_data().quaternion_[j]);
   }
 #endif
   algebra::Rotation3D rot =
@@ -224,8 +216,9 @@ void AccumulateRigidBodyDerivatives::apply_index(kernel::Model *m,
                 << m->get_particle(pi)->get_derivative(
                        internal::rigid_body_data().quaternion_[3]) << " and ");
 
-  IMP_LOG_TERSE("Translation deriv is "
-                << static_cast<XYZ>(rb).get_derivatives() << "" << std::endl);
+  IMP_LOG_TERSE(
+      "Translation deriv is " << static_cast<XYZ>(rb).get_derivatives() << ""
+                              << std::endl);
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     algebra::Rotation3D rot =
         rb.get_reference_frame().get_transformation_to().get_rotation();
@@ -251,18 +244,21 @@ void AccumulateRigidBodyDerivatives::apply_index(kernel::Model *m,
                      internal::rigid_body_data().quaternion_[j]) -
                  oldderiv[j];
 #endif
-      IMP_INTERNAL_CHECK(
-          std::abs(d - q[j]) < .05 * std::abs(d + q[j]) + .05,
-          "Derivatives do not match "
-              << oldderiv << ": "
-              << rb.get_particle()->get_derivative(
-                     internal::rigid_body_data().quaternion_[0]) << " "
-              << rb.get_particle()->get_derivative(
-                     internal::rigid_body_data().quaternion_[1]) << " "
-              << rb.get_particle()->get_derivative(
-                     internal::rigid_body_data().quaternion_[1]) << " "
-              << rb.get_particle()->get_derivative(
-                     internal::rigid_body_data().quaternion_[2]) << ": " << q);
+      IMP_INTERNAL_CHECK(std::abs(d - q[j]) < .05 * std::abs(d + q[j]) + .05,
+                         "Derivatives do not match "
+                             << oldderiv << ": "
+                             << rb.get_particle()->get_derivative(
+                                    internal::rigid_body_data().quaternion_[0])
+                             << " "
+                             << rb.get_particle()->get_derivative(
+                                    internal::rigid_body_data().quaternion_[1])
+                             << " "
+                             << rb.get_particle()->get_derivative(
+                                    internal::rigid_body_data().quaternion_[1])
+                             << " "
+                             << rb.get_particle()->get_derivative(
+                                    internal::rigid_body_data().quaternion_[2])
+                             << ": " << q);
     }
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
     algebra::Vector3D deltacartesian = rb.get_derivatives() - oldcartesian;
@@ -356,14 +352,14 @@ ModelObjectsTemp NormalizeRotation::do_get_outputs(
   return IMP::get_particles(m, pis);
 }
 
-inline void NullSDM::apply_index(kernel::Model *,
-                                 kernel::ParticleIndex) const {}
+inline void NullSDM::apply_index(kernel::Model *, kernel::ParticleIndex) const {
+}
 ModelObjectsTemp NullSDM::do_get_inputs(kernel::Model *,
                                         const kernel::ParticleIndexes &) const {
   return kernel::ModelObjectsTemp();
 }
-ModelObjectsTemp NullSDM::do_get_outputs(kernel::Model *,
-                                      const kernel::ParticleIndexes &) const {
+ModelObjectsTemp NullSDM::do_get_outputs(
+    kernel::Model *, const kernel::ParticleIndexes &) const {
   return kernel::ModelObjectsTemp();
 }
 
@@ -468,8 +464,7 @@ void RigidBody::teardown_constraints(kernel::Particle *p) {
   }
 }
 
-void RigidBody::do_setup_particle(kernel::Model *m,
-                                  kernel::ParticleIndex pi,
+void RigidBody::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                                   kernel::ParticleIndexesAdaptor members) {
   IMP_FUNCTION_LOG;
   // IMP_LOG_VERBOSE( "Creating rigid body from other rigid bodies"<<std::endl);
@@ -483,8 +478,7 @@ void RigidBody::do_setup_particle(kernel::Model *m,
   rb.on_change();
 }
 
-void RigidBody::do_setup_particle(kernel::Model *m,
-                                  kernel::ParticleIndex pi,
+void RigidBody::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                                   const algebra::ReferenceFrame3D &rf) {
   IMP_FUNCTION_LOG;
   kernel::Particle *p = m->get_particle(pi);
@@ -520,25 +514,22 @@ void RigidBody::teardown_particle(RigidBody rb) {
     const kernel::ParticleIndexes &members = rb.get_member_particle_indexes();
     for (unsigned int i = 0; i < members.size(); ++i) {
       RigidMember rm(rb.get_model(), members[i]);
-      internal::remove_required_attributes_for_member(rb.get_model(),
-                                                      rm);
+      internal::remove_required_attributes_for_member(rb.get_model(), rm);
     }
   }
   {
     const kernel::ParticleIndexes &members =
-      rb.get_body_member_particle_indexes();
+        rb.get_body_member_particle_indexes();
     for (unsigned int i = 0; i < members.size(); ++i) {
       RigidMember rm(rb.get_model(), members[i]);
-      internal::remove_required_attributes_for_body_member(rb.get_model(),
-                                                           rm);
+      internal::remove_required_attributes_for_body_member(rb.get_model(), rm);
     }
   }
   teardown_constraints(rb.get_particle());
-  internal::remove_required_attributes_for_body(rb.get_model(),
-                                                rb);
+  internal::remove_required_attributes_for_body(rb.get_model(), rb);
 }
 void RigidBody::set_reference_frame_from_members(
-                                          const kernel::ParticleIndexes &rms) {
+    const kernel::ParticleIndexes &rms) {
   base::Timer t("set_up_rigid_body_reference_frame");
   algebra::Vector3Ds local(rms.size());
   algebra::Vector3Ds global(rms.size());
@@ -562,23 +553,24 @@ void RigidBody::set_reference_frame_from_members(
     for (unsigned int i = 0; i < rms.size(); ++i) {
       if (RigidMember::get_is_setup(m, rms[i])) {
         algebra::Vector3D local =
-          RigidMember(m, rms[i]).get_internal_coordinates();
+            RigidMember(m, rms[i]).get_internal_coordinates();
         algebra::Vector3D back = t3.get_transformed(local);
         algebra::Vector3D global = RigidMember(m, rms[i]).get_coordinates();
         IMP_INTERNAL_CHECK(get_distance(back, global) < 1,
                            "Coordinates don't match: read "
-                           << global << " had local " << local << " but got "
-                           << back << " with transform " << t3);
+                               << global << " had local " << local
+                               << " but got " << back << " with transform "
+                               << t3);
       } else {
-       algebra::Vector3D local =
-          NonRigidMember(m, rms[i]).get_internal_coordinates();
+        algebra::Vector3D local =
+            NonRigidMember(m, rms[i]).get_internal_coordinates();
         algebra::Vector3D back = t3.get_transformed(local);
         algebra::Vector3D global = NonRigidMember(m, rms[i]).get_coordinates();
         IMP_INTERNAL_CHECK(get_distance(back, global) < 1,
                            "Coordinates don't match: read "
-                           << global << " had local " << local << " but got "
-                           << back << " with transform " << t3);
-
+                               << global << " had local " << local
+                               << " but got " << back << " with transform "
+                               << t3);
       }
     }
   }
@@ -613,8 +605,7 @@ RigidMembers RigidBody::get_members() const {
   {
     kernel::ParticleIndexes pis = get_member_particle_indexes();
     for (unsigned int i = 0; i < pis.size(); ++i) {
-      if (RigidMember::get_is_setup(
-              get_model()->get_particle(pis[i]))) {
+      if (RigidMember::get_is_setup(get_model()->get_particle(pis[i]))) {
         ret.push_back(RigidMember(get_model(), pis[i]));
       }
     }
@@ -682,8 +673,7 @@ void RigidBody::add_member(kernel::ParticleIndexAdaptor pi) {
   } else {
     /*IMP_LOG_TERSE( "Adding XYZ " << p->get_name()
       << " as member." << std::endl);*/
-    internal::add_required_attributes_for_member(get_model(),
-                                                 pi,
+    internal::add_required_attributes_for_member(get_model(), pi,
                                                  get_particle_index());
     RigidMember cm(get_model(), pi);
     if (get_model()->get_has_attribute(internal::rigid_body_data().members_,
@@ -727,8 +717,8 @@ void RigidBody::add_non_rigid_member(kernel::ParticleIndex pi) {
   /*IMP_LOG_TERSE( "Adding XYZ " << p->get_name()
     << " as member." << std::endl);*/
   kernel::Particle *p = get_model()->get_particle(pi);
-  internal::add_required_attributes_for_non_member(get_model(),
-                                                   pi, get_particle_index());
+  internal::add_required_attributes_for_non_member(get_model(), pi,
+                                                   get_particle_index());
   NonRigidMember cm(p);
   if (get_model()->get_has_attribute(internal::rigid_body_data().members_,
                                      get_particle_index())) {
@@ -778,7 +768,7 @@ algebra::VectorD<4> RigidBody::get_rotational_derivatives() const {
 bool RigidBody::get_coordinates_are_optimized() const {
   for (unsigned int i = 0; i < 4; ++i) {
     if (!get_particle()->get_is_optimized(
-            internal::rigid_body_data().quaternion_[i]))
+             internal::rigid_body_data().quaternion_[i]))
       return false;
   }
   return XYZ::get_coordinates_are_optimized();
@@ -902,8 +892,8 @@ RigidBody NonRigidMember::get_rigid_body() const {
 bool RigidMembersRefiner::get_can_refine(kernel::Particle *p) const {
   return RigidBody::get_is_setup(p);
 }
-const kernel::ParticlesTemp
-RigidMembersRefiner::get_refined(kernel::Particle *p) const {
+const kernel::ParticlesTemp RigidMembersRefiner::get_refined(
+    kernel::Particle *p) const {
   return RigidBody(p).get_members();
 }
 
@@ -922,15 +912,11 @@ RigidMembersRefiner *get_rigid_members_refiner() {
 
 namespace {
 bool check_rigid_body(kernel::Model *m, kernel::ParticleIndex pi) {
-  algebra::Vector4D
-      v(m->get_attribute(internal::rigid_body_data().quaternion_[0],
-                         pi),
-        m->get_attribute(internal::rigid_body_data().quaternion_[1],
-                         pi),
-        m->get_attribute(internal::rigid_body_data().quaternion_[2],
-                         pi),
-        m->get_attribute(internal::rigid_body_data().quaternion_[3],
-                         pi));
+  algebra::Vector4D v(
+      m->get_attribute(internal::rigid_body_data().quaternion_[0], pi),
+      m->get_attribute(internal::rigid_body_data().quaternion_[1], pi),
+      m->get_attribute(internal::rigid_body_data().quaternion_[2], pi),
+      m->get_attribute(internal::rigid_body_data().quaternion_[3], pi));
   if (std::abs(v.get_magnitude() - 1) > .1) {
     IMP_THROW("Bad quaternion in rigid body: " << v, ValueException);
   }
@@ -940,8 +926,8 @@ bool check_rigid_body(kernel::Model *m, kernel::ParticleIndex pi) {
 
 IMP_CHECK_DECORATOR(RigidBody, check_rigid_body);
 
-algebra::ReferenceFrame3D get_initial_reference_frame(kernel::Model *m,
-                                          const kernel::ParticleIndexes &ps) {
+algebra::ReferenceFrame3D get_initial_reference_frame(
+    kernel::Model *m, const kernel::ParticleIndexes &ps) {
   if (ps.size() == 1) {
     if (RigidBody::get_is_setup(m, ps[0])) {
       return RigidBody(m, ps[0]).get_reference_frame();
@@ -972,9 +958,7 @@ algebra::ReferenceFrame3D get_initial_reference_frame(kernel::Model *m,
   // parallel axis theorem
   // I'ij= Iij+M(v^2delta_ij-vi*vj)
   // compute I
-  Matrix I =
-      compute_I(m, ps, v,
-                IMP::algebra::get_identity_rotation_3d());
+  Matrix I = compute_I(m, ps, v, IMP::algebra::get_identity_rotation_3d());
   // IMP_LOG_VERBOSE( "Initial I is " << I << std::endl);
   // diagonalize it
   IMP::algebra::internal::JAMA::Eigenvalue<double> eig(I);
@@ -995,8 +979,7 @@ algebra::ReferenceFrame3D get_initial_reference_frame(kernel::Model *m,
   return algebra::ReferenceFrame3D(algebra::Transformation3D(rot, v));
 }
 
-ParticlesTemp create_rigid_bodies(kernel::Model *m,
-                                  unsigned int n,
+ParticlesTemp create_rigid_bodies(kernel::Model *m, unsigned int n,
                                   bool no_members) {
   kernel::ParticlesTemp ret(n);
   for (unsigned int i = 0; i < n; ++i) {

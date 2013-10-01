@@ -45,9 +45,9 @@ atom::Bonded get_bonded(kernel::Particle *p) {
   }
 }
 
-void create_bonds(RMF::NodeConstHandle fhc, RMF::AliasConstFactory af,
-                  const base::map<RMF::NodeConstHandle,
-                  kernel::Particle *> &map) {
+void create_bonds(
+    RMF::NodeConstHandle fhc, RMF::AliasConstFactory af,
+    const base::map<RMF::NodeConstHandle, kernel::Particle *> &map) {
   RMF::NodeConstHandles children = fhc.get_children();
   if (fhc.get_type() == RMF::BOND && children.size() == 2) {
     RMF::NodeConstHandle bd0, bd1;
@@ -80,12 +80,12 @@ void create_bonds(RMF::FileConstHandle fhc, const RMF::NodeIDs &nhs,
   create_bonds(fhc.get_root_node(), af, map);
 }
 
-void create_rigid_bodies(kernel::Model *m,
-                         const base::map<unsigned int,
-                         kernel::ParticlesTemp> &rbs) {
+void create_rigid_bodies(
+    kernel::Model *m,
+    const base::map<unsigned int, kernel::ParticlesTemp> &rbs) {
   IMP_FUNCTION_LOG;
-  for (base::map<unsigned int, kernel::ParticlesTemp>::const_iterator it
-         = rbs.begin();
+  for (base::map<unsigned int, kernel::ParticlesTemp>::const_iterator it =
+           rbs.begin();
        it != rbs.end(); ++it) {
     // skip already created rigid bodies eg when there are multiple hierarchies
     // so we get here twice
@@ -100,7 +100,7 @@ void create_rigid_bodies(kernel::Model *m,
   }
 }
 
-  template<class Member>
+template <class Member>
 void fix_internal_coordinates(core::RigidBody rb, algebra::ReferenceFrame3D rf,
                               kernel::ParticleIndex pi) {
   // Make sure the internal coordinates of the particles match
@@ -123,8 +123,8 @@ void fix_internal_coordinates(core::RigidBody rb, algebra::ReferenceFrame3D rf,
   }
 }
 
-void fix_rigid_body(const std::pair<core::RigidBody,
-                    kernel::ParticleIndexes> &in) {
+void fix_rigid_body(
+    const std::pair<core::RigidBody, kernel::ParticleIndexes> &in) {
   // core::RigidMembers rms=in.second;
   core::RigidBody rb = in.first;
   kernel::ParticleIndexes rigid_bits;
@@ -134,7 +134,7 @@ void fix_rigid_body(const std::pair<core::RigidBody,
     }
   }
   IMP_USAGE_CHECK(!rigid_bits.empty(), "No rigid particles to align rigid"
-                  << " body with");
+                                           << " body with");
   rb.set_reference_frame_from_members(rigid_bits);
   algebra::ReferenceFrame3D rf = rb.get_reference_frame();
   // fix rigid bodies that aren't rigid
@@ -195,9 +195,10 @@ void HierarchyLoadLink::do_load_one(RMF::NodeConstHandle nh,
                                     kernel::Particle *o) {
   RMF::FileConstHandle fh = nh.get_file();
   const ConstData &d = contents_.find(o)->second;
-  IMP_LOG_VERBOSE("Loading hierarchy "
-                  << atom::Hierarchy(o) << " with contents "
-                  << atom::Hierarchies(d.get_particles()) << std::endl);
+  IMP_LOG_VERBOSE("Loading hierarchy " << atom::Hierarchy(o)
+                                       << " with contents "
+                                       << atom::Hierarchies(d.get_particles())
+                                       << std::endl);
   base::map<core::RigidBody, kernel::ParticleIndexes> rbs;
   for (unsigned int i = 0; i < d.get_nodes().size(); ++i) {
     do_load_node(fh.get_node(d.get_nodes()[i]), d.get_particles()[i]);
@@ -443,16 +444,15 @@ void HierarchySaveLink::setup_node(kernel::Particle *p, RMF::NodeHandle n) {
   }
   if (atom::Domain::get_is_setup(p)) {
     atom::Domain d(p);
-    domain_factory_.get(n)
-      .set_indexes(std::make_pair(d.get_index_range().first,
-                                  d.get_index_range().second));
+    domain_factory_.get(n).set_indexes(
+        std::make_pair(d.get_index_range().first, d.get_index_range().second));
   }
   if (atom::Fragment::get_is_setup(p)) {
     atom::Fragment d(p);
     Ints idx = d.get_residue_indexes();
     if (!idx.empty()) {
       fragment_factory_.get(n)
-        .set_indexes(RMF::Indexes(idx.begin(), idx.end()));
+          .set_indexes(RMF::Indexes(idx.begin(), idx.end()));
     }
   }
   if (display::Colored::get_is_setup(p)) {
@@ -530,8 +530,10 @@ void HierarchySaveLink::do_save_node(kernel::Particle *p, RMF::NodeHandle n) {
       // evil special case for now
       core::RigidBody bd(p);
       RMF::ReferenceFrame p = reference_frame_factory_.get(n);
-      algebra::Vector4D q = bd.get_reference_frame().get_transformation_to()
-          .get_rotation().get_quaternion();
+      algebra::Vector4D q = bd.get_reference_frame()
+                                .get_transformation_to()
+                                .get_rotation()
+                                .get_quaternion();
       p.set_rotation(RMF::Floats(q.coordinates_begin(), q.coordinates_end()));
       algebra::Vector3D t =
           bd.get_reference_frame().get_transformation_to().get_translation();
@@ -540,8 +542,10 @@ void HierarchySaveLink::do_save_node(kernel::Particle *p, RMF::NodeHandle n) {
     } else {
       core::RigidBody bd(p);
       RMF::RigidParticle p = rigid_factory_.get(n);
-      algebra::Vector4D q = bd.get_reference_frame().get_transformation_to()
-          .get_rotation().get_quaternion();
+      algebra::Vector4D q = bd.get_reference_frame()
+                                .get_transformation_to()
+                                .get_rotation()
+                                .get_quaternion();
       p.set_orientation(
           RMF::Floats(q.coordinates_begin(), q.coordinates_end()));
     }

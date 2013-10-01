@@ -38,10 +38,12 @@
   virtual ::IMP::base::VersionInfo get_version_info() const IMP_OVERRIDE {    \
     return ::IMP::base::VersionInfo(get_module_name(), get_module_version()); \
   }                                                                           \
-  IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, try {                               \
-    IMP::base::Object::_on_destruction();                                     \
-    destructor;                                                               \
-  } catch (const std::exception &e) {                                         \
+  IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                                     \
+                                    try {                                     \
+                                      IMP::base::Object::_on_destruction();   \
+                                      destructor;                             \
+                                    } catch (const std::exception &           \
+                                                 e) {                         \
     IMP_LOG_VARIABLE(e);                                                      \
     IMP_WARN("Caught exception " << e.what() << " in destructor.");           \
   })
@@ -72,14 +74,13 @@
     PluralName should be Names unless the English spelling is
     different.
  */
-#define IMP_OBJECTS(Name, PluralName)                  \
-  /** Store a set of objects.*/                        \
-  typedef IMP::base::Vector<IMP::base::Pointer<Name> > \
-      PluralName; /** Pass a                           \
-                     set of                            \
-                     objects.                          \
-                      See                              \
-                     Name */                           \
+#define IMP_OBJECTS(Name, PluralName)                                          \
+  /** Store a set of objects.*/                                                \
+  typedef IMP::base::Vector<IMP::base::Pointer<Name> > PluralName; /** Pass a  \
+                                                                      set of   \
+                                                                      objects. \
+                                                                       See     \
+                                                                      Name */  \
   typedef IMP::base::Vector<IMP::base::WeakPointer<Name> > PluralName##Temp;
 
 #define IMP_GENERIC_OBJECT(Name, lcname, targument, carguments, cparguments) \

@@ -56,8 +56,7 @@ class AccumulatorScoreModifier : public Score::Modifier {
                 IMP::kernel::internal::get_index(a));
   }
 
-  virtual void apply_index(Model *m,
-                           typename Score::PassIndexArgument a) const
+  virtual void apply_index(Model *m, typename Score::PassIndexArgument a) const
       IMP_OVERRIDE {
     double score =
         (ss_->evaluate_index(m, a, sa_.get_derivative_accumulator()));

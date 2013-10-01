@@ -53,7 +53,8 @@ ParticleIndexPairs GridClosePairsFinder::get_close_pairs(
   return out;
 }
 ParticleIndexPairs GridClosePairsFinder::get_close_pairs(
-    kernel::Model *m, const kernel::ParticleIndexes &ca, const kernel::ParticleIndexes &cb) const {
+    kernel::Model *m, const kernel::ParticleIndexes &ca,
+    const kernel::ParticleIndexes &cb) const {
   IMP_OBJECT_LOG;
   set_was_used(true);
   kernel::ParticleIndexPairs out;

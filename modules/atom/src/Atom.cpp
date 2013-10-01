@@ -206,8 +206,8 @@ NAME_DEF(NO2, N);
 
 NAME_DEF(UNKNOWN, UNKNOWN_ELEMENT);
 
-void Atom::do_setup_particle(kernel::Model *m,
-                             kernel::ParticleIndex pi, AtomType t) {
+void Atom::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                             AtomType t) {
   m->add_attribute(get_atom_type_key(), pi, t.get_index());
   if (!Hierarchy::get_is_setup(m, pi)) {
     Hierarchy::setup_particle(m, pi);
@@ -223,8 +223,8 @@ void Atom::do_setup_particle(kernel::Model *m,
   ret.set_atom_type(t);
 }
 
-void Atom::do_setup_particle(kernel::Model *m,
-                             kernel::ParticleIndex pi, Atom o) {
+void Atom::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                             Atom o) {
   do_setup_particle(m, pi, o.get_atom_type());
 }
 

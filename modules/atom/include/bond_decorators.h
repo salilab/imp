@@ -107,6 +107,7 @@ class IMPATOMEXPORT Bonded : public Decorator {
     graph_initialize_node(m->get_particle(pi),
                           internal::get_bond_data().graph_);
   }
+
  public:
   IMP_DECORATOR_METHODS(Bonded, Decorator);
   IMP_DECORATOR_SETUP_0(Bonded);
@@ -244,9 +245,9 @@ IMPATOMEXPORT inline Bond create_custom_bond(Bonded a, Bonded b, Float length,
   IMP_INTERNAL_CHECK(length >= 0, "Length must be positive");
   Bond bd = create_bond(a, b, Bond::NONBIOLOGICAL);
   bd.set_length(length);
-  bd.get_particle()
-      ->set_name(std::string("bond ") + a.get_particle()->get_name() + " and " +
-                 b.get_particle()->get_name());
+  bd.get_particle()->set_name(std::string("bond ") +
+                              a.get_particle()->get_name() + " and " +
+                              b.get_particle()->get_name());
   if (stiffness >= 0) bd.set_stiffness(stiffness);
   return bd;
 }
@@ -261,9 +262,9 @@ IMPATOMEXPORT inline Bond create_custom_bond(Bonded a, Bonded b, Float length,
 IMPATOMEXPORT inline Bond create_bond(Bonded a, Bonded b, Bond o) {
   Bond bd = create_bond(a, b, o.get_type());
   if (o.get_length() > 0) bd.set_length(o.get_length());
-  bd.get_particle()
-      ->set_name(std::string("bond ") + a.get_particle()->get_name() + " and " +
-                 b.get_particle()->get_name());
+  bd.get_particle()->set_name(std::string("bond ") +
+                              a.get_particle()->get_name() + " and " +
+                              b.get_particle()->get_name());
   if (o.get_stiffness() >= 0) bd.set_stiffness(o.get_stiffness());
   return bd;
 }
@@ -284,13 +285,13 @@ IMPATOMEXPORT void destroy_bond(Bond b);
  */
 IMPATOMEXPORT Bond get_bond(Bonded a, Bonded b);
 
-  /** \class BondGeometry
-      \brief Display an Bond particle as a segment.
+/** \class BondGeometry
+    \brief Display an Bond particle as a segment.
 
-      \class BondsGeometry
-      \brief Display an IMP::SingletonContainer of Bond particles
-      as segments.
-  */
+    \class BondsGeometry
+    \brief Display an IMP::SingletonContainer of Bond particles
+    as segments.
+*/
 IMP_PARTICLE_GEOMETRY(Bond, Bond, {
   atom::Bonded ep0 = d.get_bonded(0);
   core::XYZ epi0(ep0.get_particle());

@@ -9,7 +9,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-Float TypedPairScore::evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &pip,
+Float TypedPairScore::evaluate_index(kernel::Model *m,
+                                     const kernel::ParticleIndexPair &pip,
                                      DerivativeAccumulator *da) const {
   kernel::ParticlePair p(m->get_particle(pip[0]), m->get_particle(pip[1]));
   PairScore *ps = get_pair_score(p);
@@ -17,8 +18,9 @@ Float TypedPairScore::evaluate_index(kernel::Model *m, const kernel::ParticleInd
     if (!allow_invalid_types_) {
       IMP_THROW(
           "Attempt to evaluate TypedPairScore on "
-          "particles with invalid types (" << p[0]->get_value(typekey_) << ", "
-                                           << p[1]->get_value(typekey_) << ")",
+          "particles with invalid types ("
+              << p[0]->get_value(typekey_) << ", " << p[1]->get_value(typekey_)
+              << ")",
           ValueException);
     } else {
       return 0.0;

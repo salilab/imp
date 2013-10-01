@@ -31,7 +31,8 @@ NearestNeighborsClosePairsFinder::NearestNeighborsClosePairsFinder()
     : ClosePairsFinder("NearestNeighborsCPF") {}
 
 ParticleIndexPairs NearestNeighborsClosePairsFinder::get_close_pairs(
-    kernel::Model *m, const kernel::ParticleIndexes &pai, const kernel::ParticleIndexes &pbi) const {
+    kernel::Model *m, const kernel::ParticleIndexes &pai,
+    const kernel::ParticleIndexes &pbi) const {
   kernel::ParticlesTemp pa = IMP::get_particles(m, pai);
   kernel::ParticlesTemp pb = IMP::get_particles(m, pbi);
   IMP_NEW(algebra::NearestNeighborD<3>, nn, (pa.begin(), pa.end(), 0));
@@ -42,7 +43,8 @@ ParticleIndexPairs NearestNeighborsClosePairsFinder::get_close_pairs(
     Ints cur = nn->get_in_ball(d.get_coordinates(),
                                rm + get_distance() + d.get_radius());
     for (unsigned int j = 0; j < cur.size(); ++j) {
-      ret.push_back(kernel::ParticleIndexPair(pai[cur[j]], d.get_particle_index()));
+      ret.push_back(
+          kernel::ParticleIndexPair(pai[cur[j]], d.get_particle_index()));
     }
   }
   return ret;
@@ -59,7 +61,8 @@ ParticleIndexPairs NearestNeighborsClosePairsFinder::get_close_pairs(
                                rm + get_distance() + d.get_radius());
     for (unsigned int j = 0; j < cur.size(); ++j) {
       if (d < c[cur[j]]) {
-        ret.push_back(kernel::ParticleIndexPair(pai[cur[j]], d.get_particle_index()));
+        ret.push_back(
+            kernel::ParticleIndexPair(pai[cur[j]], d.get_particle_index()));
       }
     }
   }

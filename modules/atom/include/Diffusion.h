@@ -36,17 +36,16 @@ class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
     m->add_attribute(get_diffusion_coefficient_key(), pi, D);
   }
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
-                                const algebra::Vector3D &v,
-                                Float D) {
+                                const algebra::Vector3D &v, Float D) {
     XYZ::setup_particle(m, pi, v);
     do_setup_particle(m, pi, D);
   }
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi);
+
  public:
   IMP_DECORATOR_METHODS(Diffusion, IMP::core::XYZ);
   IMP_DECORATOR_SETUP_1(Diffusion, Float, D);
-  IMP_DECORATOR_SETUP_2(Diffusion, algebra::Vector3D, v,
-                        Float, D);
+  IMP_DECORATOR_SETUP_2(Diffusion, algebra::Vector3D, v, Float, D);
   /** Assume particle is already a core::XYZR particle. */
   IMP_DECORATOR_SETUP_0(Diffusion);
 
@@ -65,10 +64,10 @@ class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
 
   /** \deprecated_at{2.1} Use set_diffusion_coefficient(). */
   IMPATOM_DEPRECATED_METHOD_DECL(2.1)
-    void set_d(double d);
+  void set_d(double d);
   /** \deprecated_at{2.1} Use get_diffusion_coefficient(). */
   IMPATOM_DEPRECATED_METHOD_DECL(2.1)
-    double get_d() const;
+  double get_d() const;
 };
 
 IMPATOMEXPORT double get_diffusion_coefficient_from_cm2_per_second(double din);
@@ -80,6 +79,7 @@ IMP_DECORATORS(Diffusion, Diffusions, core::XYZs);
     \f$radians^2/fs\f$.*/
 class IMPATOMEXPORT RigidBodyDiffusion : public Diffusion {
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi);
+
  public:
   IMP_DECORATOR_METHODS(RigidBodyDiffusion, Diffusion);
   /** All diffusion coefficients are determined from the radius */

@@ -60,11 +60,11 @@ IMPRMFEXPORT void set_linker(RMF::FileConstHandle nh, unsigned int id,
 IMPRMFEXPORT void set_linker(RMF::FileConstHandle nh, unsigned int id,
                              LoadLinkAssociationType l);
 
-IMPRMFEXPORT SaveLinkAssociationType get_save_linker(RMF::FileConstHandle nh,
-                                                     unsigned int id);
+IMPRMFEXPORT SaveLinkAssociationType
+    get_save_linker(RMF::FileConstHandle nh, unsigned int id);
 
-IMPRMFEXPORT LoadLinkAssociationType get_load_linker(RMF::FileConstHandle nh,
-                                                     unsigned int id);
+IMPRMFEXPORT LoadLinkAssociationType
+    get_load_linker(RMF::FileConstHandle nh, unsigned int id);
 #endif
 
 IMPRMF_END_NAMESPACE

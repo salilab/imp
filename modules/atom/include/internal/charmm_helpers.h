@@ -92,10 +92,9 @@ class CHARMMDihedralNames {
 };
 
 //! Create a Dihedral on the given kernel::Particles, and add it to the list
-IMPATOMEXPORT void add_dihedral_to_list(const CHARMMParameters *param,
-                                        kernel::Particle *p1, kernel::Particle *p2,
-                                        kernel::Particle *p3, kernel::Particle *p4,
-                                        kernel::Particles &ps);
+IMPATOMEXPORT void add_dihedral_to_list(
+    const CHARMMParameters *param, kernel::Particle *p1, kernel::Particle *p2,
+    kernel::Particle *p3, kernel::Particle *p4, kernel::Particles &ps);
 
 IMPATOM_END_INTERNAL_NAMESPACE
 

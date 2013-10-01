@@ -62,9 +62,9 @@ class BasicAttributeTable {
 
   void do_add_attribute(Key k, ParticleIndex particle,
                         typename Traits::PassValue value) {
-    IMP_USAGE_CHECK(
-        Traits::get_is_valid(value),
-        "Can't set to invalid value: " << value << " for attribute " << k);
+    IMP_USAGE_CHECK(Traits::get_is_valid(value),
+                    "Can't set to invalid value: " << value << " for attribute "
+                                                   << k);
     if (data_.size() <= k.get_index()) {
       data_.resize(k.get_index() + 1);
     }
@@ -138,13 +138,13 @@ class BasicAttributeTable {
       IMP_CHECK_MASK(write_mask_, particle, k, SET, ATTRIBUTE);
     }
 #endif
-    IMP_USAGE_CHECK(
-        get_has_attribute(k, particle),
-        "Setting invalid attribute: " << k << " of particle " << particle);
-    IMP_USAGE_CHECK(
-        value != Traits::get_invalid(),
-        "Cannot set attribute to value of "
-            << Traits::get_invalid() << " as it is reserved for a null value.");
+    IMP_USAGE_CHECK(get_has_attribute(k, particle),
+                    "Setting invalid attribute: " << k << " of particle "
+                                                  << particle);
+    IMP_USAGE_CHECK(value != Traits::get_invalid(),
+                    "Cannot set attribute to value of "
+                        << Traits::get_invalid()
+                        << " as it is reserved for a null value.");
     data_[k.get_index()][particle] = value;
   }
   typename Traits::PassValue get_attribute(Key k, ParticleIndex particle,
@@ -152,17 +152,17 @@ class BasicAttributeTable {
     if (checked) {
       IMP_CHECK_MASK(read_mask_, particle, k, GET, ATTRIBUTE);
     }
-    IMP_USAGE_CHECK(
-        get_has_attribute(k, particle),
-        "Requested invalid attribute: " << k << " of particle " << particle);
+    IMP_USAGE_CHECK(get_has_attribute(k, particle),
+                    "Requested invalid attribute: " << k << " of particle "
+                                                    << particle);
     return data_[k.get_index()][particle];
   }
   typename Traits::Container::reference access_attribute(
       Key k, ParticleIndex particle) {
     IMP_CHECK_MASK(write_mask_, particle, k, SET, ATTRIBUTE);
-    IMP_USAGE_CHECK(
-        get_has_attribute(k, particle),
-        "Requested invalid attribute: " << k << " of particle " << particle);
+    IMP_USAGE_CHECK(get_has_attribute(k, particle),
+                    "Requested invalid attribute: " << k << " of particle "
+                                                    << particle);
     return data_[k.get_index()][particle];
   }
   std::pair<typename Traits::Value, typename Traits::Value> get_range_internal(
@@ -421,9 +421,9 @@ class FloatAttributeTable {
     IMP_USAGE_CHECK(!get_has_attribute(k, particle),
                     "Can't add attribute that is there: "
                         << k.get_string() << " on particle " << particle);
-    IMP_USAGE_CHECK(
-        FloatAttributeTableTraits::get_is_valid(v),
-        "Can't set float attribute to " << v << " that is a special value.");
+    IMP_USAGE_CHECK(FloatAttributeTableTraits::get_is_valid(v),
+                    "Can't set float attribute to "
+                        << v << " that is a special value.");
     if (k.get_index() < 4) {
       if (spheres_.size() <= get_as_unsigned_int(particle)) {
         spheres_.resize(get_as_unsigned_int(particle) + 1,
@@ -459,7 +459,7 @@ class FloatAttributeTable {
       if (spheres_.size() <= get_as_unsigned_int(particle))
         return false;
       else if (!internal::FloatAttributeTableTraits::get_is_valid(
-                   spheres_[particle][k.get_index()])) {
+                    spheres_[particle][k.get_index()])) {
         return false;
       }
       return true;
@@ -467,7 +467,7 @@ class FloatAttributeTable {
       if (internal_coordinates_.size() <= get_as_unsigned_int(particle)) {
         return false;
       } else if (!internal::FloatAttributeTableTraits::get_is_valid(
-                     internal_coordinates_[particle][k.get_index() - 4])) {
+                      internal_coordinates_[particle][k.get_index() - 4])) {
         return false;
       }
       return true;

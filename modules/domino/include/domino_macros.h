@@ -18,18 +18,17 @@
   IMPDOMINO_DEPRECATED_MACRO(2.1,                                             \
                              "Expand the macro inline.") virtual unsigned int \
       get_number_of_particle_states() const IMP_OVERRIDE;                     \
-  virtual void load_particle_state(unsigned int, kernel::Particle *) const            \
+  virtual void load_particle_state(unsigned int, kernel::Particle *) const    \
       IMP_OVERRIDE;                                                           \
   IMP_OBJECT_NO_WARNING(Name)
 
 /** \deprecated_at{2.1} Expand the macro inline
 */
-#define IMP_ASSIGNMENTS_TABLE(Name)                                   \
- public:                                                              \
-  IMPDOMINO_DEPRECATED_MACRO(                                         \
-      2.1, "Expand the macro inline.") virtual void load_assignments( \
-      const IMP::domino::Subset &s, AssignmentContainer *ac) const    \
-      IMP_OVERRIDE;                                                   \
+#define IMP_ASSIGNMENTS_TABLE(Name)                                        \
+ public:                                                                   \
+  IMPDOMINO_DEPRECATED_MACRO(2.1, "Expand the macro inline.") virtual void \
+      load_assignments(const IMP::domino::Subset &s,                       \
+                       AssignmentContainer *ac) const IMP_OVERRIDE;        \
   IMP_OBJECT_NO_WARNING(Name)
 
 /**  \deprecated_at{2.1} Expand the macro inline

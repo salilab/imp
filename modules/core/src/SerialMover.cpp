@@ -37,18 +37,15 @@ kernel::ModelObjectsTemp SerialMover::do_get_inputs() const {
   return ret;
 }
 
-
-
-
 double SerialMover::get_acceptance_probability(int i) const {
   IMPCORE_DEPRECATED_METHOD_DEF(
-         2.1, "Use statistics functions on individual movers");
+      2.1, "Use statistics functions on individual movers");
   return static_cast<double>(movers_[i]->get_number_of_accepted()) /
-    movers_[i]->get_number_of_proposed();
+         movers_[i]->get_number_of_proposed();
 }
 void SerialMover::reset_acceptance_probabilities() {
   IMPCORE_DEPRECATED_METHOD_DEF(
-         2.1, "Use statistics functions on individual movers");
+      2.1, "Use statistics functions on individual movers");
   for (unsigned int i = 0; i < movers_.size(); ++i) {
     movers_[i]->reset_statistics();
   }
@@ -58,7 +55,5 @@ unsigned int SerialMover::get_number_of_movers() const {
       2.1, "Use statistics functions on individual movers");
   return movers_.size();
 }
-
-
 
 IMPCORE_END_NAMESPACE

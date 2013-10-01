@@ -45,7 +45,7 @@ inline std::ostream &operator<<(std::ostream &s, const Array1D<T> &A) {
 }
 
 template <class T>
-    inline std::istream &operator>>(std::istream &s, Array1D<T> &A) {
+inline std::istream &operator>>(std::istream &s, Array1D<T> &A) {
   int N;
   s >> N;
 

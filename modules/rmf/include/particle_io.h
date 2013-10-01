@@ -25,8 +25,9 @@ IMPRMF_BEGIN_NAMESPACE
     The data is stored in a category named IMP.
     @{
 */
-IMP_DECLARE_LINKERS(kernel::Particle, particle, particles, kernel::Particle *, kernel::ParticlesTemp,
-                    kernel::Particle *, kernel::ParticlesTemp,
+IMP_DECLARE_LINKERS(kernel::Particle, particle, particles, kernel::Particle *,
+                    kernel::ParticlesTemp, kernel::Particle *,
+                    kernel::ParticlesTemp,
                     (RMF::FileConstHandle fh, kernel::Model *m), );
 
 /** @} */

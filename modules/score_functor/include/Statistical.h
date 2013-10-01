@@ -51,8 +51,8 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 */
 template <class Key, bool BIPARTITE, bool INTERPOLATE, bool SPARSE = false>
 class Statistical : public Score {
-  typedef internal::PMFTable<BIPARTITE, INTERPOLATE, SPARSE>  Table;
-  base::PointerMember<Table > table_;
+  typedef internal::PMFTable<BIPARTITE, INTERPOLATE, SPARSE> Table;
+  base::PointerMember<Table> table_;
   double threshold_;
   IntKey key_;
 
@@ -62,9 +62,7 @@ class Statistical : public Score {
      \param[in] data_file Where to load the file from.
  */
   Statistical(IntKey k, double threshold, base::TextInput data_file)
-      : table_( new Table(data_file, 0, Key())),
-        threshold_(threshold),
-        key_(k) {
+      : table_(new Table(data_file, 0, Key())), threshold_(threshold), key_(k) {
     IMP_USAGE_CHECK(!BIPARTITE,
                     "Constructor can only be used for non-bipartite scores.");
   }
@@ -85,8 +83,7 @@ class Statistical : public Score {
   }
 
   // depend on get_is_trivially_zero
-  double get_score(kernel::Model *m,
-                   const ParticleIndexPair &pp,
+  double get_score(kernel::Model *m, const ParticleIndexPair &pp,
                    double distance) const {
     if (distance >= threshold_ || distance < 0.001) {
       return 0;
@@ -107,8 +104,7 @@ class Statistical : public Score {
     if (pt == -1 || lt == -1) return DerivativePair(0, 0);
     return table_->get_score_with_derivative(pt, lt, distance);
   }
-  double get_maximum_range(kernel::Model *,
-                           const ParticleIndexPair &) const {
+  double get_maximum_range(kernel::Model *, const ParticleIndexPair &) const {
     return std::min(threshold_, table_->get_max());
   }
   bool get_is_trivially_zero(kernel::Model *m, const ParticleIndexPair &p,

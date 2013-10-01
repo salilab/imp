@@ -58,37 +58,35 @@
    @param link_custom_documentation
  */
 #define IMP_DECLARE_LINKERS(Name, name, names, InType, InTypes, OutType, \
-                            OutTypes, cargs, link_custom_documentation) \
-  /** Add objects to the file.                                          \
-      \note This does not save a configuration, make sure you use       \
-      save_frame() to do that. */                                       \
+                            OutTypes, cargs, link_custom_documentation)  \
+  /** Add objects to the file.                                           \
+      \note This does not save a configuration, make sure you use        \
+      save_frame() to do that. */                                        \
   IMPRMFEXPORT void add_##names(RMF::FileHandle fh, const OutTypes& hs); \
-  /** Add objects to the file under the specified node.                 \
-      \note This does not save a configuration, make sure you           \
-      use                                                               \
-      save_frame() to do that. */                                       \
-  IMPRMFEXPORT void add_##names(                                        \
-      RMF::NodeHandle fh,                                               \
-      const OutTypes& hs);                                              \
-  /** Add a single Name object to the RMF file.                         \
-      \note This does not save a configuration, make                    \
-      sure you use                                                      \
-      save_frame() to do that. */                                       \
-  IMPRMFEXPORT void add_##name(RMF::FileHandle fh, OutType hs);         \
-  /** Create Name objects from the RMF file.                            \
-      \note This does not load a frame. Make sure you call              \
-      IMP::rmf::load_frame() before using.*/                            \
-  IMPRMFEXPORT InTypes create_##names cargs;                            \
-  /** Link Name objects with the RMF file,                              \
-      possibly overwriting an                                           \
-      existing link for loading from the                                \
-      file. This does not alter the                                     \
-      object, but will affect the behaviour                             \
-      of functions like load_frame()                                    \
-      and save_frame().                                                 \
-                                                                        \
-      link_custom_documentation \
-  */                                                                    \
+  /** Add objects to the file under the specified node.                  \
+      \note This does not save a configuration, make sure you            \
+      use                                                                \
+      save_frame() to do that. */                                        \
+  IMPRMFEXPORT void add_##names(RMF::NodeHandle fh, const OutTypes& hs); \
+  /** Add a single Name object to the RMF file.                          \
+      \note This does not save a configuration, make                     \
+      sure you use                                                       \
+      save_frame() to do that. */                                        \
+  IMPRMFEXPORT void add_##name(RMF::FileHandle fh, OutType hs);          \
+  /** Create Name objects from the RMF file.                             \
+      \note This does not load a frame. Make sure you call               \
+      IMP::rmf::load_frame() before using.*/                             \
+  IMPRMFEXPORT InTypes create_##names cargs;                             \
+  /** Link Name objects with the RMF file,                               \
+      possibly overwriting an                                            \
+      existing link for loading from the                                 \
+      file. This does not alter the                                      \
+      object, but will affect the behaviour                              \
+      of functions like load_frame()                                     \
+      and save_frame().                                                  \
+                                                                         \
+      link_custom_documentation                                          \
+  */                                                                     \
   IMPRMFEXPORT void link_##names(RMF::FileConstHandle fh, const InTypes& hs)
 
 // TODO: is there any good reason for the difference between InType(s)
@@ -139,7 +137,7 @@
     InTypes ret;                                                             \
     {                                                                        \
       /* to catch the type of everything.*/                                  \
-      RMF::SetCurrentFrame scf(fh, RMF::FrameID(0));                    \
+      RMF::SetCurrentFrame scf(fh, RMF::FrameID(0));                         \
       ret = rsl->create(fh.get_root_node());                                 \
       rsl->load(fh);                                                         \
     }                                                                        \

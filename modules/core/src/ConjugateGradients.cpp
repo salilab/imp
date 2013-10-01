@@ -251,8 +251,7 @@ ConjugateGradients::ConjugateGradients(kernel::Model *m, std::string name)
   max_change_ = std::numeric_limits<Float>::max() / 100.0;
 }
 
-ConjugateGradients::ConjugateGradients()
-    : AttributeOptimizer() {
+ConjugateGradients::ConjugateGradients() : AttributeOptimizer() {
   threshold_ = std::numeric_limits<Float>::epsilon();
   max_change_ = std::numeric_limits<Float>::max() / 100.0;
 }

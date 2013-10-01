@@ -19,8 +19,8 @@ void report(std::string name, std::string algorithm, double value,
     // disabled
   } else {
     std::cout << boost::format("%s, %s, %30t%.2e, %50t%1.1e, %d") % name %
-                     algorithm % value % check % (internal::current_benchmark)
-              << std::endl;
+                     algorithm % value % check %
+                     (internal::current_benchmark) << std::endl;
   }
 }
 void report(std::string name, double value, double check) {

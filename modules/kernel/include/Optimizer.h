@@ -47,13 +47,12 @@ class IMPKERNELEXPORT Optimizer : public ModelObject {
   double min_score_;
   bool stop_on_good_score_;
   mutable base::Pointer<ScoringFunction> cache_;
-   base::Pointer<ScoringFunction> scoring_function_;
+  base::Pointer<ScoringFunction> scoring_function_;
 
   static void set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o);
-  virtual void do_set_model(kernel::Model *m) IMP_OVERRIDE {
-    my_model_ = m;
-  }
-protected:
+  virtual void do_set_model(kernel::Model *m) IMP_OVERRIDE { my_model_ = m; }
+
+ protected:
 #ifndef IMP_DOXYGEN
   void set_is_optimizing_states(bool tf) const;
 #endif
@@ -62,7 +61,8 @@ protected:
     return get_optimizer_state_inputs();
   }
   //! don't return anything here to avoid pointless dependencies
-  virtual ModelObjectsTemp do_get_outputs() const {return ModelObjectsTemp();}
+  virtual ModelObjectsTemp do_get_outputs() const { return ModelObjectsTemp(); }
+
  public:
   Optimizer(kernel::Model *m, std::string name = "Optimizer %1%");
 
@@ -87,24 +87,26 @@ protected:
 
   //! Return the scoring function that is being used
   ScoringFunction *get_scoring_function() const {
-    if (scoring_function_) return scoring_function_;
-    else if (cache_) return cache_;
-    else return cache_ = get_model()->create_model_scoring_function();
+    if (scoring_function_)
+      return scoring_function_;
+    else if (cache_)
+      return cache_;
+    else
+      return cache_ = get_model()->create_model_scoring_function();
   }
 
-    /** @name States
+  /** @name States
 
-        The stored OptimizerState objects are updated each time the
-        Optimizer decides to accept a new configuration of the Model.
-        To manipulate the list of optimizer states use the methods below.
-    */
-    /**@{*/
+      The stored OptimizerState objects are updated each time the
+      Optimizer decides to accept a new configuration of the Model.
+      To manipulate the list of optimizer states use the methods below.
+  */
+  /**@{*/
   IMP_LIST_ACTION(public, OptimizerState, OptimizerStates, optimizer_state,
                   optimizer_states, OptimizerState *, OptimizerStates,
-                  set_optimizer_state_optimizer(obj, this);,
-                  {}, {
-    Optimizer::set_optimizer_state_optimizer(obj, nullptr);
-  });
+                  set_optimizer_state_optimizer(obj, this);
+                  , {},
+                  { Optimizer::set_optimizer_state_optimizer(obj, nullptr); });
   /**@}*/
 
   /** By default, the Optimizer uses the scoring function provided by
@@ -114,7 +116,7 @@ protected:
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Optimizer);
 
-  ///////////////////////// DEPRECATED METHODS
+///////////////////////// DEPRECATED METHODS
 
 #ifndef SWIG
   /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
@@ -158,14 +160,13 @@ protected:
   Optimizer();
   /** \deprecated_at{2.1} Do not use as it is not reliably supported. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-    void set_score_threshold(double s);
+  void set_score_threshold(double s);
   /** \deprecated_at{2.1} Do not use as it is not reliably supported. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-    double get_score_threshold() const;
+  double get_score_threshold() const;
   /** \deprecated_at{2.1} Use set_scoring_function() instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   void set_restraints(const RestraintsTemp &rs);
-
 
   // swig needs this at the end for some reason I don't understand
  protected:

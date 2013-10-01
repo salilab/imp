@@ -58,11 +58,11 @@ class IMPATOMEXPORT MolecularDynamics : public Simulator {
 
   //! Assign velocities representative of the given temperature
   virtual void assign_velocities(Float temperature);
-  virtual void setup(const kernel::ParticleIndexes& ps) IMP_OVERRIDE;
-  virtual double do_step(const kernel::ParticleIndexes& sc,
+  virtual void setup(const kernel::ParticleIndexes &ps) IMP_OVERRIDE;
+  virtual double do_step(const kernel::ParticleIndexes &sc,
                          double dt) IMP_OVERRIDE;
-  virtual bool
-      get_is_simulation_particle(kernel::ParticleIndex p) const IMP_OVERRIDE;
+  virtual bool get_is_simulation_particle(kernel::ParticleIndex p) const
+      IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(MolecularDynamics);
 

@@ -50,7 +50,8 @@ class OpenCubicSpline : public Score {
   }
   // depend on get_is_trivially_zero
   template <unsigned int D>
-  double get_score(kernel::Model *, const base::Array<D, kernel::ParticleIndex> &,
+  double get_score(kernel::Model *,
+                   const base::Array<D, kernel::ParticleIndex> &,
                    double distance) const {
     // check for feature in range
     if (distance < minrange_ || distance > maxrange_) {
@@ -66,9 +67,9 @@ class OpenCubicSpline : public Score {
     return spline_.evaluate(distance - minrange_, spacing_, inverse_spacing_);
   }
   template <unsigned int D>
-  DerivativePair get_score_and_derivative(kernel::Model *,
-                                          const base::Array<D, kernel::ParticleIndex> &,
-                                          double distance) const {
+  DerivativePair get_score_and_derivative(
+      kernel::Model *, const base::Array<D, kernel::ParticleIndex> &,
+      double distance) const {
     // check for distance in range
     if (distance < minrange_ || distance > maxrange_) {
       if (extend_) {
@@ -84,15 +85,16 @@ class OpenCubicSpline : public Score {
                                             inverse_spacing_);
   }
   template <unsigned int D>
-  double get_maximum_range(kernel::Model *,
-                           const base::Array<D, kernel::ParticleIndex> &) const {
+  double get_maximum_range(
+      kernel::Model *, const base::Array<D, kernel::ParticleIndex> &) const {
     if (!extend_ || spline_.get_last() == 0)
       return maxrange_;
     else
       return std::numeric_limits<double>::max();
   }
   template <unsigned int D>
-  bool get_is_trivially_zero(kernel::Model *, const base::Array<D, kernel::ParticleIndex> &,
+  bool get_is_trivially_zero(kernel::Model *,
+                             const base::Array<D, kernel::ParticleIndex> &,
                              double squared_distance) const {
     if (!extend_ || spline_.get_last() == 0) {
       return squared_distance > algebra::get_squared(maxrange_);

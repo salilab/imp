@@ -16,11 +16,11 @@ IMPATOM_BEGIN_NAMESPACE
 
 BondSingletonScore::BondSingletonScore(UnaryFunction *f) : f_(f) {}
 
-double BondSingletonScore::evaluate_index(kernel::Model *m, kernel::ParticleIndex pi,
+double BondSingletonScore::evaluate_index(kernel::Model *m,
+                                          kernel::ParticleIndex pi,
                                           DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
-  IMP_USAGE_CHECK(Bond::get_is_setup(m, pi),
-                  "Particle is not a bond particle");
+  IMP_USAGE_CHECK(Bond::get_is_setup(m, pi), "Particle is not a bond particle");
   Bond bd(m, pi);
   Float l = bd.get_length();
   Float s = bd.get_stiffness();
@@ -34,7 +34,7 @@ double BondSingletonScore::evaluate_index(kernel::Model *m, kernel::ParticleInde
     pa = bd.get_bonded(0).get_particle();
     pb = bd.get_bonded(1).get_particle();
   }
-  catch (const base::IndexException & e) {
+  catch (const base::IndexException &e) {
     IMP_WARN("Problem processing bond: " << bd << std::endl);
     IMP_WARN(e.what() << std::endl);
     return 0;

@@ -46,9 +46,8 @@ class IMPALGEBRAEXPORT SpherePatch3D : public GeometricPrimitiveD<3> {
 };
 
 IMP_AREA_GEOMETRY_METHODS(SpherePatch3D, sphere_patch_3d, IMP_UNUSED(g);
-                          IMP_NOT_IMPLEMENTED;, {
-  return get_bounding_box(g.get_sphere());
-});
+                          IMP_NOT_IMPLEMENTED;
+                          , { return get_bounding_box(g.get_sphere()); });
 
 IMPALGEBRA_END_NAMESPACE
 

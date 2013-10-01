@@ -21,7 +21,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 */
 template <class Score, class Container>
 inline kernel::Restraint *create_restraint(Score *s, Container *c,
-                                   std::string name = std::string()) {
+                                           std::string name = std::string()) {
   return IMP::internal::create_container_restraint(s, c, name);
 }
 

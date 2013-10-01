@@ -46,19 +46,17 @@ class ExtendedGridIndexD : public base::Value {
 
  public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  struct Uninitialized{};
-  ExtendedGridIndexD(Uninitialized, int dim): data_(dim) {
-  }
-  struct Filled{};
-  ExtendedGridIndexD(Filled, int dim, int value): data_(dim) {
-    std::fill(data_.get_data(),
-              data_.get_data() + dim, value);
+  struct Uninitialized {};
+  ExtendedGridIndexD(Uninitialized, int dim) : data_(dim) {}
+  struct Filled {};
+  ExtendedGridIndexD(Filled, int dim, int value) : data_(dim) {
+    std::fill(data_.get_data(), data_.get_data() + dim, value);
   }
   const internal::VectorData<int, D, true>& get_data() const { return data_; }
   internal::VectorData<int, D, true>& access_data() { return data_; }
 #endif
-  //! Create a grid cell from three arbitrary indexes
-  /** \note Only use this from python. */
+//! Create a grid cell from three arbitrary indexes
+/** \note Only use this from python. */
 #ifndef SWIG
   IMP_DEPRECATED_ATTRIBUTE
 #endif
@@ -88,7 +86,8 @@ class ExtendedGridIndexD : public base::Value {
     out << "(";
     for (unsigned int i = 0; i < get_dimension(); ++i) {
       out << operator[](i);
-      if (i != get_dimension() - 1) out << ", ";
+      if (i != get_dimension() - 1)
+        out << ", ";
     }
     out << ")";
   });
@@ -157,12 +156,11 @@ class GridIndexD : public base::Value {
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   const internal::VectorData<int, D, true>& get_data() const { return data_; }
   internal::VectorData<int, D, true>& access_data() { return data_; }
-  struct Uninitialized{};
-  GridIndexD(Uninitialized, int dim): data_(dim) {}
-  struct Filled{};
-  GridIndexD(Filled, int dim, int value): data_(dim) {
-    std::fill(data_.get_data(),
-              data_.get_data() + dim, value);
+  struct Uninitialized {};
+  GridIndexD(Uninitialized, int dim) : data_(dim) {}
+  struct Filled {};
+  GridIndexD(Filled, int dim, int value) : data_(dim) {
+    std::fill(data_.get_data(), data_.get_data() + dim, value);
   }
 #endif
   GridIndexD() {}
@@ -179,7 +177,8 @@ class GridIndexD : public base::Value {
     out << "(";
     for (unsigned int i = 0; i < get_dimension(); ++i) {
       out << operator[](i);
-      if (i != get_dimension() - 1) out << ", ";
+      if (i != get_dimension() - 1)
+        out << ", ";
     }
     out << ")";
   });
@@ -187,7 +186,7 @@ class GridIndexD : public base::Value {
   typedef const int* iterator;
   iterator begin() const { return data_.get_data(); }
   iterator end() const { return data_.get_data() + get_dimension(); }
-  /** \note Only use this from python. */
+/** \note Only use this from python. */
 #ifndef SWIG
   IMP_DEPRECATED_ATTRIBUTE
 #endif

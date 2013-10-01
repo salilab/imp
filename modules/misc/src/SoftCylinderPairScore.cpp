@@ -14,15 +14,14 @@
 IMPMISC_BEGIN_NAMESPACE
 
 SoftCylinderPairScore::SoftCylinderPairScore(double k) : k_(k) {}
-Float SoftCylinderPairScore::evaluate_index(kernel::Model *m,
-                                            const kernel::ParticleIndexPair &pip,
-                                            DerivativeAccumulator *da) const {
+Float SoftCylinderPairScore::evaluate_index(
+    kernel::Model *m, const kernel::ParticleIndexPair &pip,
+    DerivativeAccumulator *da) const {
   atom::Bond b[2] = {atom::Bond(m, pip[0]), atom::Bond(m, pip[1])};
 
   core::XYZR d[2][2] = {
-    {core::XYZR(b[0].get_bonded(0)), core::XYZR(b[0].get_bonded(1))},
-    {core::XYZR(b[1].get_bonded(0)), core::XYZR(b[1].get_bonded(1))}
-  };
+      {core::XYZR(b[0].get_bonded(0)), core::XYZR(b[0].get_bonded(1))},
+      {core::XYZR(b[1].get_bonded(0)), core::XYZR(b[1].get_bonded(1))}};
   algebra::Segment3D s0(d[0][0].get_coordinates(), d[0][1].get_coordinates());
   algebra::Segment3D s1(d[1][0].get_coordinates(), d[1][1].get_coordinates());
   algebra::Segment3D ss = algebra::get_shortest_segment(s0, s1);

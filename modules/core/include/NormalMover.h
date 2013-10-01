@@ -26,7 +26,8 @@ class IMPCOREEXPORT NormalMover : public MonteCarloMover {
   void initialize(kernel::ParticleIndexes pis, FloatKeys keys, double radius);
 
  public:
-  NormalMover(kernel::Model *m, kernel::ParticleIndex pi, const FloatKeys &vars, double stddev);
+  NormalMover(kernel::Model *m, kernel::ParticleIndex pi, const FloatKeys &vars,
+              double stddev);
   //! Move the x,y,z coordinates
   NormalMover(kernel::Model *m, kernel::ParticleIndex pi, double stddev);
 #ifndef IMP_DOXYGEN
@@ -34,7 +35,8 @@ class IMPCOREEXPORT NormalMover : public MonteCarloMover {
        \param[in] vars The variables to use (normally the keys for x,y,z)
        \param[in] sigma The standard deviation to use.
    */
-  NormalMover(const kernel::ParticlesTemp &sc, const FloatKeys &vars, Float sigma);
+  NormalMover(const kernel::ParticlesTemp &sc, const FloatKeys &vars,
+              Float sigma);
 
   NormalMover(const kernel::ParticlesTemp &sc, Float radius);
 #endif

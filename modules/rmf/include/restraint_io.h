@@ -32,7 +32,7 @@ IMPRMF_BEGIN_NAMESPACE
     @{
 */
 IMP_DECLARE_LINKERS(Restraint, restraint, restraints, kernel::Restraint *,
-                    kernel::Restraints,                   // InType
+                    kernel::Restraints,                           // InType
                     kernel::Restraint *, kernel::RestraintsTemp,  // OutType
                     (RMF::FileConstHandle fh, kernel::Model *m), );
 

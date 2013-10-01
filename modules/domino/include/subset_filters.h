@@ -259,7 +259,8 @@ class IMPDOMINOEXPORT ListSubsetFilterTable : public SubsetFilterTable {
   mutable double num_ok_, num_test_;
   int get_index(kernel::Particle *p) const;
   void load_indexes(const Subset &s, Ints &indexes) const;
-  void mask_allowed_states(kernel::Particle *p, const boost::dynamic_bitset<> &bs);
+  void mask_allowed_states(kernel::Particle *p,
+                           const boost::dynamic_bitset<> &bs);
 #endif
  public:
   ListSubsetFilterTable(ParticleStatesTable *pst);

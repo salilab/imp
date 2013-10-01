@@ -37,7 +37,7 @@ bool Container::get_is_changed() const {
   return true;
 }
 
-void Container::do_after_evaluate(DerivativeAccumulator *) { }
+void Container::do_after_evaluate(DerivativeAccumulator *) {}
 
 void Container::validate_readable() const {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL

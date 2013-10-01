@@ -35,32 +35,38 @@ struct IMPCOREEXPORT GraphData {
 };
 
 /** \internal */
-IMPCOREEXPORT void graph_initialize_node(kernel::Particle *a, const GraphData &d);
+IMPCOREEXPORT void graph_initialize_node(kernel::Particle *a,
+                                         const GraphData &d);
 
 /** \internal */
 IMPCOREEXPORT bool graph_is_node(kernel::Particle *a, const GraphData &d);
 
 /** \internal */
-IMPCOREEXPORT kernel::Particle *graph_connect(kernel::Particle *a, kernel::Particle *b, GraphData &d);
+IMPCOREEXPORT kernel::Particle *graph_connect(kernel::Particle *a,
+                                              kernel::Particle *b,
+                                              GraphData &d);
 
 /** \internal */
 IMPCOREEXPORT void graph_disconnect(kernel::Particle *bond, const GraphData &d);
 
 /** \internal */
-IMPCOREEXPORT kernel::Particle *graph_get_edge(kernel::Particle *a, int i, const GraphData &d);
+IMPCOREEXPORT kernel::Particle *graph_get_edge(kernel::Particle *a, int i,
+                                               const GraphData &d);
 
 /** \internal */
-IMPCOREEXPORT kernel::ParticleIndexes graph_get_edges(kernel::Particle *a, const GraphData &d);
+IMPCOREEXPORT kernel::ParticleIndexes graph_get_edges(kernel::Particle *a,
+                                                      const GraphData &d);
 
 IMPCOREEXPORT kernel::Particle *graph_get_neighbor(kernel::Particle *a, int i,
-                                           const GraphData &d);
+                                                   const GraphData &d);
 
 /** \internal */
 IMPCOREEXPORT unsigned int graph_get_number_of_edges(kernel::Particle *a,
                                                      const GraphData &d);
 
 /** \internal */
-inline kernel::Particle *graph_get_node(kernel::Particle *a, int i, const GraphData &d) {
+inline kernel::Particle *graph_get_node(kernel::Particle *a, int i,
+                                        const GraphData &d) {
   IMP_INTERNAL_CHECK(i < 2, "bad node requested");
   return a->get_value(d.node_keys_[i]);
 }
@@ -76,7 +82,8 @@ inline bool graph_is_edge(kernel::Particle *a, const GraphData &d) {
 }
 
 /** \internal */
-IMPCOREEXPORT void graph_initialize_edge(kernel::Particle *a, const GraphData &d);
+IMPCOREEXPORT void graph_initialize_edge(kernel::Particle *a,
+                                         const GraphData &d);
 
 /** \internal */
 template <class F>
@@ -115,8 +122,8 @@ struct GraphGather {
 
 /** \internal */
 template <class Oit>
-inline void graph_connected_component(kernel::Particle *start, const GraphData &d,
-                                      Oit out) {
+inline void graph_connected_component(kernel::Particle *start,
+                                      const GraphData &d, Oit out) {
   graph_traverse(start, GraphGather<Oit>(out), d);
 }
 

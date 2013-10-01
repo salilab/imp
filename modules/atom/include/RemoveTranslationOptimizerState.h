@@ -23,10 +23,12 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class IMPATOMEXPORT RemoveTranslationOptimizerState : public OptimizerState {
  public:
-   /** \deprecated_at{2.1} Use set_period() instead. */
+  /** \deprecated_at{2.1} Use set_period() instead. */
   IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
-  RemoveTranslationOptimizerState(const kernel::Particles &pis, unsigned skip_steps);
-  RemoveTranslationOptimizerState(kernel::Model *m, kernel::ParticleIndexesAdaptor pis);
+  RemoveTranslationOptimizerState(const kernel::Particles &pis,
+                                  unsigned skip_steps);
+  RemoveTranslationOptimizerState(kernel::Model *m,
+                                  kernel::ParticleIndexesAdaptor pis);
 
   //! Set the particles to use.
   void set_particles(const kernel::Particles &pis) { pis_ = pis; }
@@ -35,10 +37,13 @@ class IMPATOMEXPORT RemoveTranslationOptimizerState : public OptimizerState {
   void remove_translation() const;
 
   IMP_OBJECT_METHODS(RemoveTranslationOptimizerState);
+
  protected:
-   virtual void do_update(unsigned int call) IMP_OVERRIDE;
+  virtual void do_update(unsigned int call) IMP_OVERRIDE;
+
  private:
-  kernel::Particles pis_;};
+  kernel::Particles pis_;
+};
 
 IMP_OBJECTS(RemoveTranslationOptimizerState, RemoveTranslationOptimizerStates);
 

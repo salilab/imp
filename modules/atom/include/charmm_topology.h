@@ -84,9 +84,7 @@ class IMPATOMEXPORT CHARMMBondEndpoint {
       const CHARMMResidueTopology *next_residue,
       const std::map<const CHARMMResidueTopology *, Hierarchy> &resmap) const;
 
-  IMP_SHOWABLE_INLINE(CHARMMBondEndpoint, {
-    out << atom_name_;
-  });
+  IMP_SHOWABLE_INLINE(CHARMMBondEndpoint, { out << atom_name_; });
 };
 
 IMP_VALUES(CHARMMBondEndpoint, CHARMMBondEndpoints);

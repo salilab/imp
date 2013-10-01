@@ -12,10 +12,10 @@
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream.hpp>
 
-#define IMP_CHECK_MODEL_PARTICLES(m)                       \
+#define IMP_CHECK_MODEL_PARTICLES(m)                               \
   for (kernel::Model::ParticleIterator pit = m->particles_begin(); \
-       pit != m->particles_end(); ++pit) {                 \
-    IMP::kernel::check_particle(*pit);                     \
+       pit != m->particles_end(); ++pit) {                         \
+    IMP::kernel::check_particle(*pit);                             \
   }
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -48,10 +48,10 @@ void write_particles_to_buffer(const ParticlesTemp &particles,
 void read_particles_from_buffer(const char *buffer, unsigned int size,
                                 const ParticlesTemp &particles,
                                 const FloatKeys &keys) {
-  IMP_USAGE_CHECK(
-      size == particles.size() * keys.size() * sizeof(double),
-      "Not enough data to read: "
-          << size << " vs " << particles.size() * keys.size() * sizeof(double));
+  IMP_USAGE_CHECK(size == particles.size() * keys.size() * sizeof(double),
+                  "Not enough data to read: "
+                      << size << " vs "
+                      << particles.size() * keys.size() * sizeof(double));
   boost::iostreams::stream<boost::iostreams::array_source> in(buffer, size);
   for (unsigned int i = 0; i < particles.size(); ++i) {
     for (unsigned int j = 0; j < keys.size(); ++j) {

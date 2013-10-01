@@ -104,6 +104,7 @@ class BoundedGridRangeD {
                     "Wrong number of dimensions");
     d_ = ExtendedGridIndexD<D>(bds.begin(), bds.end());
   }
+
  public:
   typedef GridIndexD<D> Index;
   typedef ExtendedGridIndexD<D> ExtendedIndex;
@@ -146,14 +147,12 @@ class BoundedGridRangeD {
       AllIndexIterator;
 #endif
   AllIndexIterator all_indexes_begin() const {
-    return indexes_begin(ExtendedGridIndexD<D>(typename ExtendedGridIndexD<D>
-                                               ::Filled(),
-                                               d_.get_dimension(), 0),
-                         d_);
+    return indexes_begin(
+        ExtendedGridIndexD<D>(typename ExtendedGridIndexD<D>::Filled(),
+                              d_.get_dimension(), 0),
+        d_);
   }
-  AllIndexIterator all_indexes_end() const {
-    return indexes_end(d_, d_);
-  }
+  AllIndexIterator all_indexes_end() const { return indexes_end(d_, d_); }
 #endif
   base::Vector<GridIndexD<D> > get_all_indexes() const {
     base::Vector<GridIndexD<D> > ret(all_indexes_begin(), all_indexes_end());

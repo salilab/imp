@@ -26,7 +26,8 @@
 using namespace IMP::base;
 using namespace IMP;
 #ifndef SWIG
-template <bool REFED> struct PyPointer : boost::noncopyable {
+template <bool REFED>
+struct PyPointer : boost::noncopyable {
   PyObject* ptr_;
   PyPointer(PyObject* ptr) : ptr_(ptr) {
     IMP_INTERNAL_CHECK(ptr, "nullptr pointer passed");
@@ -53,13 +54,13 @@ template <bool REFED> struct PyPointer : boost::noncopyable {
 typedef PyPointer<true> PyReceivePointer;
 typedef PyPointer<false> PyOwnerPointer;
 
-#define IMP_PYTHON_CALL(call)                                                \
-  {                                                                          \
-    int rc = call;                                                           \
-    if (rc != 0) {                                                           \
-      IMP_INTERNAL_CHECK(0,                                                  \
-                         "Python call failed: " << #call << " with " << rc); \
-    }                                                                        \
+#define IMP_PYTHON_CALL(call)                                           \
+  {                                                                     \
+    int rc = call;                                                      \
+    if (rc != 0) {                                                      \
+      IMP_INTERNAL_CHECK(0, "Python call failed: " << #call << " with " \
+                                                   << rc);              \
+    }                                                                   \
   }
 
 using boost::enable_if;
@@ -69,24 +70,39 @@ using boost::is_convertible;
 // using namespace boost;
 // using namespace boost::mpl;
 
-template <class V> void assign(V*& a, const V& b) { a = new V(b); }
-template <class V> void assign(V& a, const V& b) { a = b; }
-template <class V> void assign(SwigValueWrapper<V>& a, const V& b) { a = b; }
-template <class T> void delete_if_pointer(T& t) { t = T(); }
-template <class T> void delete_if_pointer(T*& t) {
+template <class V>
+void assign(V*& a, const V& b) {
+  a = new V(b);
+}
+template <class V>
+void assign(V& a, const V& b) {
+  a = b;
+}
+template <class V>
+void assign(SwigValueWrapper<V>& a, const V& b) {
+  a = b;
+}
+template <class T>
+void delete_if_pointer(T& t) {
+  t = T();
+}
+template <class T>
+void delete_if_pointer(T*& t) {
   if (t) {
     *t = T();
     delete t;
   }
 }
-template <class T> void delete_if_pointer(SwigValueWrapper<T>&) {}
+template <class T>
+void delete_if_pointer(SwigValueWrapper<T>&) {}
 
 /*
   Handle assignment into a container. Swig always provides the
   values by reference so we need to determine if the container wants
   them by value or reference and dereference if necessary.
 */
-template <class Container, class Value> struct Assign {
+template <class Container, class Value>
+struct Assign {
   static void assign(Container& c, unsigned int i, Value* v) { c[i] = *v; }
   static void assign(Container& c, unsigned int i, const Value& v) { c[i] = v; }
 };
@@ -97,7 +113,8 @@ template <class Container, class Value> struct Assign {
   pointer for objects, but just want the object type).
 */
 
-template <class T, class Enabled = void> struct ValueOrObject {
+template <class T, class Enabled = void>
+struct ValueOrObject {
   static const T& get(const T& t) { return t; }
   static const T& get(const T* t) { return *t; }
   typedef T type;
@@ -144,7 +161,8 @@ struct ValueOrObject<UncheckedWeakPointer<T>,
   typedef T* store_type;
 };
 
-template <class T> struct ConvertAllBase {
+template <class T>
+struct ConvertAllBase {
   BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
   template <class SwigData>
   static bool get_is_cpp_object(PyObject* o, SwigData st, SwigData, SwigData) {
@@ -154,7 +172,8 @@ template <class T> struct ConvertAllBase {
   }
 };
 
-template <class T> struct ConvertValueBase : public ConvertAllBase<T> {
+template <class T>
+struct ConvertValueBase : public ConvertAllBase<T> {
   BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
   BOOST_STATIC_ASSERT(!(boost::is_base_of<Object, T>::value));
   template <class SwigData>
@@ -177,7 +196,8 @@ template <class T> struct ConvertValueBase : public ConvertAllBase<T> {
 };
 
 // T should not be a pointer to the object
-template <class T> struct ConvertObjectBase : public ConvertAllBase<T> {
+template <class T>
+struct ConvertObjectBase : public ConvertAllBase<T> {
   BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
   BOOST_STATIC_ASSERT((boost::is_base_of<Object, T>::value) ||
                       (boost::is_same<Object, T>::value));
@@ -205,7 +225,8 @@ template <class T> struct ConvertObjectBase : public ConvertAllBase<T> {
 };
 
 // T should not be a pointer to the object
-template <class T> struct ConvertRAII : public ConvertAllBase<T> {
+template <class T>
+struct ConvertRAII : public ConvertAllBase<T> {
   BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
   template <class SwigData>
   static T* get_cpp_object(PyObject* o, SwigData st, SwigData, SwigData) {
@@ -255,7 +276,8 @@ struct Convert<T, typename enable_if<boost::is_base_of<
 
 /* Older Boosts return false for is_base_of<Object,Object> so provide
    a specialization for Object */
-template <> struct Convert<Object> : public ConvertObjectBase<Object> {
+template <>
+struct Convert<Object> : public ConvertObjectBase<Object> {
   static const int converter = 1;
 };
 
@@ -270,7 +292,8 @@ struct Convert<T*, typename enable_if<boost::is_base_of<
   These all result in more than one layer of python objects being created
   instead of a single one as in the above cases.
 */
-template <class T, class VT, class ConvertVT> struct ConvertSequenceHelper {
+template <class T, class VT, class ConvertVT>
+struct ConvertSequenceHelper {
   typedef typename ValueOrObject<VT>::type V;
   BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
   template <class SwigData>
@@ -308,8 +331,7 @@ template <class T, class VT, class ConvertVT> struct ConvertSequenceHelper {
  */
 
 template <class T, class ConvertValue, class Enabled = void>
-struct ConvertSequence {
-};
+struct ConvertSequence {};
 
 // use an array as an intermediate since pair is not a sequence
 template <class T, class ConvertT>
@@ -352,7 +374,8 @@ struct ConvertSequence<std::pair<T, T>, ConvertT> {
   }
 };
 
-template <class T, class ConvertT> struct ConvertVectorBase {
+template <class T, class ConvertT>
+struct ConvertVectorBase {
   typedef ConvertSequenceHelper<T, typename T::value_type, ConvertT> Helper;
   typedef typename ValueOrObject<typename T::value_type>::type VT;
   template <class SwigData>
@@ -428,13 +451,14 @@ struct ConvertSequence<base::Array<D, T, TS>, ConvertT> {
 };
 
 template <class T, class TS, class ConvertT>
-struct ConvertSequence<base::ConstVector<T, TS>,
-                       ConvertT> : public ConvertVectorBase<
-    base::ConstVector<T, TS>, ConvertT> {
+struct ConvertSequence<
+    base::ConstVector<T, TS>,
+    ConvertT> : public ConvertVectorBase<base::ConstVector<T, TS>, ConvertT> {
   static const int converter = 31;
 };
 
-template <> struct Convert<std::string> {
+template <>
+struct Convert<std::string> {
   static const int converter = 10;
   template <class SwigData>
   static std::string get_cpp_object(PyObject* o, SwigData, SwigData, SwigData) {
@@ -474,15 +498,18 @@ struct ConvertFloatBase {
   }
 };
 
-template <> struct Convert<float> : public ConvertFloatBase {
+template <>
+struct Convert<float> : public ConvertFloatBase {
   static const int converter = 11;
 };
-template <> struct Convert<double> : public ConvertFloatBase {
+template <>
+struct Convert<double> : public ConvertFloatBase {
   static const int converter = 12;
 };
 
 /* with swig 2.0.6 we seem to need both the Int and Long checks */
-template <> struct Convert<int> {
+template <>
+struct Convert<int> {
   static const int converter = 13;
   template <class SwigData>
   static int get_cpp_object(PyObject* o, SwigData, SwigData, SwigData) {

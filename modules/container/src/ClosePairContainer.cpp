@@ -27,9 +27,8 @@ ClosePairContainer::ClosePairContainer(SingletonContainerAdaptor c,
 ClosePairContainer::ClosePairContainer(SingletonContainerAdaptor c,
                                        double distance,
                                        core::ClosePairsFinder *cpf,
-                                       double slack,
-                                       std::string name)
-  : P(c, distance, cpf, slack, name) {}
+                                       double slack, std::string name)
+    : P(c, distance, cpf, slack, name) {}
 
 namespace {
 struct Data {

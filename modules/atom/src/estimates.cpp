@@ -64,17 +64,16 @@ double get_mass_from_number_of_residues(unsigned int num_aa) {
 double get_volume_from_residue_type(ResidueType rt) {
   typedef std::pair<ResidueType, double> RP;
   static const RP radii[] = {
-    RP(ResidueType("ALA"), 2.516), RP(ResidueType("ARG"), 3.244),
-    RP(ResidueType("ASN"), 2.887), RP(ResidueType("ASP"), 2.866),
-    RP(ResidueType("CYS"), 2.710), RP(ResidueType("GLN"), 3.008),
-    RP(ResidueType("GLU"), 2.997), RP(ResidueType("GLY"), 2.273),
-    RP(ResidueType("HIS"), 3.051), RP(ResidueType("ILE"), 3.047),
-    RP(ResidueType("LEU"), 3.052), RP(ResidueType("LYS"), 3.047),
-    RP(ResidueType("MET"), 3.068), RP(ResidueType("PHE"), 3.259),
-    RP(ResidueType("PRO"), 2.780), RP(ResidueType("SER"), 2.609),
-    RP(ResidueType("THR"), 2.799), RP(ResidueType("TRP"), 3.456),
-    RP(ResidueType("TYR"), 3.318), RP(ResidueType("VAL"), 2.888)
-  };
+      RP(ResidueType("ALA"), 2.516), RP(ResidueType("ARG"), 3.244),
+      RP(ResidueType("ASN"), 2.887), RP(ResidueType("ASP"), 2.866),
+      RP(ResidueType("CYS"), 2.710), RP(ResidueType("GLN"), 3.008),
+      RP(ResidueType("GLU"), 2.997), RP(ResidueType("GLY"), 2.273),
+      RP(ResidueType("HIS"), 3.051), RP(ResidueType("ILE"), 3.047),
+      RP(ResidueType("LEU"), 3.052), RP(ResidueType("LYS"), 3.047),
+      RP(ResidueType("MET"), 3.068), RP(ResidueType("PHE"), 3.259),
+      RP(ResidueType("PRO"), 2.780), RP(ResidueType("SER"), 2.609),
+      RP(ResidueType("THR"), 2.799), RP(ResidueType("TRP"), 3.456),
+      RP(ResidueType("TYR"), 3.318), RP(ResidueType("VAL"), 2.888)};
   static const IMP::base::map<ResidueType, double> radii_map(
       radii, radii + sizeof(radii) / sizeof(RP));
   if (radii_map.find(rt) == radii_map.end()) {
@@ -92,19 +91,18 @@ typedef unit::Shift<unit::Multiply<unit::Pascal, unit::Second>::type, -3>::type
 
 static MillipascalSecond eta(unit::Kelvin T) {
   const std::pair<unit::Kelvin, MillipascalSecond> points[] = {
-    std::make_pair(unit::Kelvin(273 + 10.0), MillipascalSecond(1.308)),
-    std::make_pair(unit::Kelvin(273 + 20.0), MillipascalSecond(1.003)),
-    std::make_pair(unit::Kelvin(273 + 30.0), MillipascalSecond(0.7978)),
-    std::make_pair(unit::Kelvin(273 + 40.0), MillipascalSecond(0.6531)),
-    std::make_pair(unit::Kelvin(273 + 50.0), MillipascalSecond(0.5471)),
-    std::make_pair(unit::Kelvin(273 + 60.0), MillipascalSecond(0.4668)),
-    std::make_pair(unit::Kelvin(273 + 70.0), MillipascalSecond(0.4044)),
-    std::make_pair(unit::Kelvin(273 + 80.0), MillipascalSecond(0.3550)),
-    std::make_pair(unit::Kelvin(273 + 90.0), MillipascalSecond(0.3150)),
-    std::make_pair(unit::Kelvin(273 + 100.0), MillipascalSecond(0.2822)),
-    std::make_pair(unit::Kelvin(std::numeric_limits<Float>::max()),
-                   MillipascalSecond(0.2822))
-  };
+      std::make_pair(unit::Kelvin(273 + 10.0), MillipascalSecond(1.308)),
+      std::make_pair(unit::Kelvin(273 + 20.0), MillipascalSecond(1.003)),
+      std::make_pair(unit::Kelvin(273 + 30.0), MillipascalSecond(0.7978)),
+      std::make_pair(unit::Kelvin(273 + 40.0), MillipascalSecond(0.6531)),
+      std::make_pair(unit::Kelvin(273 + 50.0), MillipascalSecond(0.5471)),
+      std::make_pair(unit::Kelvin(273 + 60.0), MillipascalSecond(0.4668)),
+      std::make_pair(unit::Kelvin(273 + 70.0), MillipascalSecond(0.4044)),
+      std::make_pair(unit::Kelvin(273 + 80.0), MillipascalSecond(0.3550)),
+      std::make_pair(unit::Kelvin(273 + 90.0), MillipascalSecond(0.3150)),
+      std::make_pair(unit::Kelvin(273 + 100.0), MillipascalSecond(0.2822)),
+      std::make_pair(unit::Kelvin(std::numeric_limits<Float>::max()),
+                     MillipascalSecond(0.2822))};
 
   // const unsigned int npoints= sizeof(points)/sizeof(std::pair<float,float>);
   if (T < points[0].first) {

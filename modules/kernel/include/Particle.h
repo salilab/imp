@@ -21,27 +21,26 @@ class Decorator;
 class Particle;
 
 /** Take Decorator or Particle. */
-class ParticleAdaptor: public base::InputAdaptor {
+class ParticleAdaptor : public base::InputAdaptor {
   Model *m_;
   ParticleIndex pi_;
- public:
-  ParticleAdaptor(): m_(nullptr), pi_() {}
-  ParticleAdaptor(Particle *p): m_(p->get_model()),
-    pi_(p->get_index()) {}
-  ParticleAdaptor(const Decorator& d) : m_(d.get_model()),
-    pi_(d.get_particle_index()){}
-#ifndef SWIG
-  ParticleAdaptor(IMP::base::Pointer<Particle> p): m_(p->get_model()),
-                                                   pi_(p->get_index()) {}
-  ParticleAdaptor(IMP::base::WeakPointer<Particle> p): m_(p->get_model()),
-                                                   pi_(p->get_index()) {}
-  ParticleAdaptor(IMP::base::PointerMember<Particle> p): m_(p->get_model()),
-                                                   pi_(p->get_index()) {}
-#endif
-  Model *get_model() const {return m_;}
-  ParticleIndex get_particle_index() const {return pi_;}
-};
 
+ public:
+  ParticleAdaptor() : m_(nullptr), pi_() {}
+  ParticleAdaptor(Particle *p) : m_(p->get_model()), pi_(p->get_index()) {}
+  ParticleAdaptor(const Decorator &d)
+      : m_(d.get_model()), pi_(d.get_particle_index()) {}
+#ifndef SWIG
+  ParticleAdaptor(IMP::base::Pointer<Particle> p)
+      : m_(p->get_model()), pi_(p->get_index()) {}
+  ParticleAdaptor(IMP::base::WeakPointer<Particle> p)
+      : m_(p->get_model()), pi_(p->get_index()) {}
+  ParticleAdaptor(IMP::base::PointerMember<Particle> p)
+      : m_(p->get_model()), pi_(p->get_index()) {}
+#endif
+  Model *get_model() const { return m_; }
+  ParticleIndex get_particle_index() const { return pi_; }
+};
 
 IMPKERNEL_END_NAMESPACE
 

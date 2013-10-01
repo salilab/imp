@@ -28,9 +28,7 @@ class Reflection3D : public GeometricPrimitiveD<3> {
     Vector3D p = pl_.get_projection(v);
     return v + 2 * (p - v);
   }
-  IMP_SHOWABLE_INLINE(Transformation3D, {
-    out << pl_;
-  });
+  IMP_SHOWABLE_INLINE(Transformation3D, { out << pl_; });
 };
 
 IMP_VALUES(Reflection3D, Reflection3Ds);

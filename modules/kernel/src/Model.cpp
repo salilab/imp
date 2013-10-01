@@ -53,8 +53,8 @@ Model::Model(std::string name) : base::Object(name) {
   restraints_ = new RestraintSet(this, 1.0, "Model Restraints");
 }
 
-IMP_LIST_ACTION_IMPL(kernel::Model, ScoreState, ScoreStates, score_state, score_states,
-                     ScoreState *, ScoreStates);
+IMP_LIST_ACTION_IMPL(kernel::Model, ScoreState, ScoreStates, score_state,
+                     score_states, ScoreState *, ScoreStates);
 
 ParticleIndex Model::add_particle_internal(Particle *p) {
   IMP_CHECK_OBJECT(this);
@@ -105,9 +105,7 @@ void Model::do_remove_particle(ParticleIndex pi) {
   particle_index_[pi] = nullptr;
 }
 
-void Model::remove_particle(ParticleIndex pi) {
-  do_remove_particle(pi);
-}
+void Model::remove_particle(ParticleIndex pi) { do_remove_particle(pi); }
 
 ParticleIndexes Model::get_particle_indexes() {
   ParticleIndexes ret;
@@ -120,9 +118,10 @@ ParticleIndexes Model::get_particle_indexes() {
 }
 
 ModelObjectsTemp Model::get_model_objects() const {
-  ModelObjectsTemp ret; ret.reserve(dependency_graph_.size());
-  BOOST_FOREACH(const DependencyGraph::value_type& vt, dependency_graph_) {
-    ret.push_back(const_cast<ModelObject*>(vt.first));
+  ModelObjectsTemp ret;
+  ret.reserve(dependency_graph_.size());
+  BOOST_FOREACH(const DependencyGraph::value_type & vt, dependency_graph_) {
+    ret.push_back(const_cast<ModelObject *>(vt.first));
   }
   return ret;
 }
@@ -138,9 +137,8 @@ void Model::add_undecorator(ParticleIndex pi, Undecorator *d) {
   undecorators_index_[pi].push_back(d);
 }
 
-Particle* Model::get_particle(ParticleIndex p) const {
-  IMP_USAGE_CHECK(get_has_particle(p),
-                  "Invalid particle requested");
+Particle *Model::get_particle(ParticleIndex p) const {
+  IMP_USAGE_CHECK(get_has_particle(p), "Invalid particle requested");
   return particle_index_[p];
 }
 
@@ -152,7 +150,7 @@ bool Model::get_has_particle(ParticleIndex p) const {
 void Model::do_add_score_state(ScoreState *obj) {
   IMP_INTERNAL_CHECK(cur_stage_ == internal::NOT_EVALUATING,
                      "The set of score states cannot be changed during"
-                     << "evaluation.");
+                         << "evaluation.");
   if (!obj->get_model()) obj->set_model(this);
   obj->set_was_used(true);
   IMP_LOG_VERBOSE("Added score state " << obj->get_name() << std::endl);
@@ -163,9 +161,7 @@ void Model::do_add_score_state(ScoreState *obj) {
   }
 }
 
-void Model::do_remove_score_state(ScoreState *obj) {
-  obj->set_model(nullptr);
-}
+void Model::do_remove_score_state(ScoreState *obj) { obj->set_model(nullptr); }
 
 void Model::clear_particle_caches(ParticleIndex pi) {
   internal::FloatAttributeTable::clear_caches(pi);
@@ -189,7 +185,7 @@ base::Object *Model::get_data(kernel::ModelKey mk) const {
 }
 
 void Model::remove_data(kernel::ModelKey mk) {
- model_data_[mk.get_index()] = nullptr;
+  model_data_[mk.get_index()] = nullptr;
 }
 
 bool Model::get_has_data(kernel::ModelKey mk) const {
@@ -204,18 +200,17 @@ void Model::do_destroy() {
   IMP_OBJECT_LOG;
   IMP_LOG_TERSE("Destroying model" << std::endl);
   // make sure we clear their data to free model objects they are keeping alive
-  BOOST_FOREACH(Particle *p, particle_index_) {
+  BOOST_FOREACH(Particle * p, particle_index_) {
     if (p) {
       remove_particle(p->get_index());
     }
   }
   while (!dependency_graph_.empty()) {
-    ModelObject *mo
-        = const_cast<ModelObject*>(dependency_graph_.begin()->first);
+    ModelObject *mo =
+        const_cast<ModelObject *>(dependency_graph_.begin()->first);
     mo->set_model(nullptr);
   }
 }
-
 
 /////////////////////////////////////////// NOT YET DEPRECATED STUFF
 ScoringFunction *Model::create_model_scoring_function() {
@@ -225,9 +220,7 @@ void Model::add_restraint(Restraint *r) {
   if (!r->get_model()) r->set_model(this);
   restraints_->add_restraint(r);
 }
-void Model::remove_restraint(Restraint *r) {
-  restraints_->remove_restraint(r);
-}
+void Model::remove_restraint(Restraint *r) { restraints_->remove_restraint(r); }
 RestraintsTemp Model::get_restraints() const {
   return restraints_->get_restraints();
 }
@@ -238,13 +231,13 @@ ScoringFunction *Model::create_scoring_function() {
 /////////////////////////////////////////// DEPRECATED STUFF
 
 double Model::get_maximum_score(Restraint *r) const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(
-      2.1, "Get the maximum from the restraint itself.");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
+                                  "Get the maximum from the restraint itself.");
   return r->get_maximum_score();
 }
 void Model::set_maximum_score(Restraint *r, double s) {
   IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
-                                    "Set the maximum on the restraint itself.");
+                                  "Set the maximum on the restraint itself.");
   r->set_maximum_score(s);
 }
 void Model::set_maximum_score(double s) {
@@ -279,25 +272,24 @@ void Model::remove_particle(Particle *p) {
 }
 
 RestraintSet *Model::get_root_restraint_set() {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
-                               "Use a scoring function instead of the Model.");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(
+      2.1, "Use a scoring function instead of the Model.");
   return restraints_;
 }
 unsigned int Model::get_number_of_restraints() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
-                               "Use a scoring function instead of the Model.");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(
+      2.1, "Use a scoring function instead of the Model.");
   return restraints_->get_number_of_restraints();
 }
 
 Restraint *Model::get_restraint(unsigned int i) const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
-                               "Use a scoring function instead of the Model.");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(
+      2.1, "Use a scoring function instead of the Model.");
   return restraints_->get_restraint(i);
 }
 
 unsigned int Model::get_number_of_particles() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
-                                    "Use get_particle_indexes() instead.");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_particle_indexes() instead.");
   return get_particles().size();
 }
 

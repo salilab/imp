@@ -53,10 +53,10 @@
 #endif
 
 #if IMP_BASE_HAS_TCMALLOC_HEAPPROFILER
-#define IMP_BENCHMARK_HEAP_PROFILING_BEGIN                              \
-  if (IMP::benchmark::internal::heap_profile_benchmarks) {              \
-    HeapProfilerStart(IMP::benchmark::internal::get_file_name(".hprof") \
-                          .c_str());                                    \
+#define IMP_BENCHMARK_HEAP_PROFILING_BEGIN                          \
+  if (IMP::benchmark::internal::heap_profile_benchmarks) {          \
+    HeapProfilerStart(                                              \
+        IMP::benchmark::internal::get_file_name(".hprof").c_str()); \
   }
 #define IMP_BENCHMARK_HEAP_PROFILING_END                   \
   if (IMP::benchmark::internal::heap_profile_benchmarks) { \
@@ -77,7 +77,7 @@
 #define IMP_BENCHMARK_HEAP_CHECKING_END                         \
   if (IMP::benchmark::internal::heap_check_benchmarks) {        \
     if (!heap_checker->NoLeaks()) std::cerr << "Leaks found\n"; \
-    heap_checker.reset(IMP_NULLPTR);                                \
+    heap_checker.reset(IMP_NULLPTR);                            \
   }
 #else
 #define IMP_BENCHMARK_HEAP_CHECKING_BEGIN
@@ -105,7 +105,7 @@
         ++imp_reps;                                                      \
       } while (imp_timer.elapsed() < 2.5 && !IMP::base::run_quick_test); \
     }                                                                    \
-    catch (const IMP::base::Exception & e) {                             \
+    catch (const IMP::base::Exception& e) {                              \
       std::cerr << "Caught exception " << e.what() << std::endl;         \
     }                                                                    \
     IMP_BENCHMARK_PROFILING_END;                                         \
@@ -130,7 +130,7 @@
       } while (microsec_clock::local_time() - start < seconds(2) &&       \
                !IMP::base::run_quick_test);                               \
     }                                                                     \
-    catch (const IMP::base::Exception & e) {                              \
+    catch (const IMP::base::Exception& e) {                               \
       std::cerr << "Caught exception " << e.what() << std::endl;          \
     }                                                                     \
     IMP_BENCHMARK_PROFILING_END;                                          \
@@ -152,7 +152,7 @@
       try {                                                        \
         block;                                                     \
       }                                                            \
-      catch (const IMP::base::Exception & e) {                     \
+      catch (const IMP::base::Exception& e) {                      \
         std::cerr << "Caught exception " << e.what() << std::endl; \
         break;                                                     \
       }                                                            \

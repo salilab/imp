@@ -87,8 +87,8 @@ class IMPKERNELEXPORT _ConstPairScore : public PairScore {
 IMP_OBJECTS(_ConstPairScore, _ConstPairScores);
 
 class IMPKERNELEXPORT _TrivialDecorator : public Decorator {
-  static void do_setup_particle(Model *m,
-                                ParticleIndex pi);
+  static void do_setup_particle(Model *m, ParticleIndex pi);
+
  public:
   IMP_DECORATOR_METHODS(_TrivialDecorator, Decorator);
   IMP_DECORATOR_SETUP_0(_TrivialDecorator);
@@ -98,8 +98,8 @@ class IMPKERNELEXPORT _TrivialDecorator : public Decorator {
 };
 
 class IMPKERNELEXPORT _TrivialDerivedDecorator : public _TrivialDecorator {
-  static void do_setup_particle(Model *m,
-                                ParticleIndex pi);
+  static void do_setup_particle(Model *m, ParticleIndex pi);
+
  public:
   IMP_DECORATOR_METHODS(_TrivialDerivedDecorator, _TrivialDecorator);
   IMP_DECORATOR_SETUP_0(_TrivialDerivedDecorator);
@@ -113,16 +113,13 @@ IMP_DECORATORS(_TrivialDerivedDecorator, _TrivialDerivedDecorators,
                _TrivialDecorators);
 
 class IMPKERNELEXPORT _TrivialTraitsDecorator : public Decorator {
-  static void do_setup_particle(Model *m,
-                             ParticleIndex pi,
-                                StringKey k);
+  static void do_setup_particle(Model *m, ParticleIndex pi, StringKey k);
+
  public:
-  IMP_DECORATOR_WITH_TRAITS_METHODS(_TrivialTraitsDecorator,
-                                    Decorator, StringKey, sk,
-                                    get_default_key());
+  IMP_DECORATOR_WITH_TRAITS_METHODS(_TrivialTraitsDecorator, Decorator,
+                                    StringKey, sk, get_default_key());
   IMP_DECORATOR_TRAITS_SETUP_0(_TrivialTraitsDecorator);
-  static bool get_is_setup(Model *m,
-                           ParticleIndex pi,
+  static bool get_is_setup(Model *m, ParticleIndex pi,
                            StringKey k = get_default_key()) {
     return m->get_has_attribute(k, pi);
   }
@@ -168,11 +165,11 @@ IMPKERNELEXPORT const _TrivialDecorators &_pass_decorators(
 IMPKERNELEXPORT const _TrivialTraitsDecorators &_pass_decorator_traits(
     const _TrivialTraitsDecorators &p);
 
-IMPKERNELEXPORT ParticlePairsTemp _pass_particle_pairs(
-    const ParticlePairsTemp &p);
+IMPKERNELEXPORT ParticlePairsTemp
+    _pass_particle_pairs(const ParticlePairsTemp &p);
 
-IMPKERNELEXPORT ParticleIndexPairs _pass_particle_index_pairs(
-    const ParticleIndexPairs &p);
+IMPKERNELEXPORT ParticleIndexPairs
+    _pass_particle_index_pairs(const ParticleIndexPairs &p);
 
 IMPKERNELEXPORT ModelObjectsTemp _pass_model_objects(const ModelObjectsTemp &p);
 
@@ -191,8 +188,8 @@ inline void bad_pass(FloatKeys *) {}
 
 inline FloatRange _get_range(Model *m, FloatKey k) { return m->get_range(k); }
 
-IMPKERNELEXPORT ParticlesTemp _create_particles_from_pdb(std::string name,
-                                                         Model *m);
+IMPKERNELEXPORT ParticlesTemp
+    _create_particles_from_pdb(std::string name, Model *m);
 
 //! Track the pairs of particles passed.
 /** Primarily for testing.
@@ -242,7 +239,7 @@ inline void _implicit_particles(const _ImplicitParticles &) {}
 IMPKERNELEXPORT ParticleIndex _take_particle_adaptor(ParticleAdaptor pa);
 
 IMPKERNELEXPORT ParticleIndexes
-_take_particle_indexes_adaptor(ParticleIndexesAdaptor pa);
+    _take_particle_indexes_adaptor(ParticleIndexesAdaptor pa);
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 

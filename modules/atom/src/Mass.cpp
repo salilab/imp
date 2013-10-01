@@ -20,8 +20,8 @@ void Mass::show(std::ostream &out) const {
 }
 
 namespace {
-  bool check_mass(kernel::Model *m, kernel::ParticleIndex pi) {
-    if (m->get_attribute(Mass::get_mass_key(), pi) < 0) {
+bool check_mass(kernel::Model *m, kernel::ParticleIndex pi) {
+  if (m->get_attribute(Mass::get_mass_key(), pi) < 0) {
     IMP_THROW("Mass must be non-negative.", ValueException);
   }
   return true;

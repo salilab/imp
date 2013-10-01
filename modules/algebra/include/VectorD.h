@@ -93,8 +93,8 @@ class VectorD : public GeometricPrimitiveD<D> {
   }
 #endif
 
-  /** \throw base::ValueException if f.size() is not appropriate.
-      \note Only use this from python. */
+/** \throw base::ValueException if f.size() is not appropriate.
+    \note Only use this from python. */
 #ifndef SWIG
   IMP_DEPRECATED_ATTRIBUTE
 #endif
@@ -119,8 +119,8 @@ class VectorD : public GeometricPrimitiveD<D> {
    VectorD, as we do for example in the various IMP::display Geometry
    subclasses, so replace with runtime checks. */
 #if defined(IMP_SWIG_WRAPPER) || defined(_MSC_VER)
-    IMP_USAGE_CHECK(D == 1 || D == -1,
-                    "Need " << D << " to construct a " << D << "-vector.");
+    IMP_USAGE_CHECK(D == 1 || D == -1, "Need " << D << " to construct a " << D
+                                               << "-vector.");
 #else
     BOOST_STATIC_ASSERT(D == 1);
 #endif
@@ -130,8 +130,8 @@ class VectorD : public GeometricPrimitiveD<D> {
   //! Initialize a 2-vector from separate x,y values.
   VectorD(double x, double y) {
 #if defined(IMP_SWIG_WRAPPER) || defined(_MSC_VER)
-    IMP_USAGE_CHECK(D == 2 || D == -1,
-                    "Need " << D << " to construct a " << D << "-vector.");
+    IMP_USAGE_CHECK(D == 2 || D == -1, "Need " << D << " to construct a " << D
+                                               << "-vector.");
 #else
     BOOST_STATIC_ASSERT(D == 2);
 #endif
@@ -142,8 +142,8 @@ class VectorD : public GeometricPrimitiveD<D> {
   //! Initialize a 3-vector from separate x,y,z values.
   VectorD(double x, double y, double z) {
 #ifdef IMP_SWIG_WRAPPER
-    IMP_USAGE_CHECK(D == 3 || D == -1,
-                    "Need " << D << " to construct a " << D << "-vector.");
+    IMP_USAGE_CHECK(D == 3 || D == -1, "Need " << D << " to construct a " << D
+                                               << "-vector.");
 #else
     BOOST_STATIC_ASSERT(D == 3);
 #endif
@@ -154,8 +154,8 @@ class VectorD : public GeometricPrimitiveD<D> {
   //! Initialize a 4-vector from separate w,x,y,z values.
   VectorD(double x0, double x1, double x2, double x3) {
 #if defined(IMP_SWIG_WRAPPER) || defined(_MSC_VER)
-    IMP_USAGE_CHECK(D == 4 || D == -1,
-                    "Need " << D << " to construct a " << D << "-vector.");
+    IMP_USAGE_CHECK(D == 4 || D == -1, "Need " << D << " to construct a " << D
+                                               << "-vector.");
 #else
     BOOST_STATIC_ASSERT(D == 4);
 #endif
@@ -354,7 +354,7 @@ inline std::ostream &operator<<(std::ostream &out, const VectorD<D> &v) {
 }
 
 template <int D>
-    inline std::istream &operator>>(std::istream &in, VectorD<D> &v) {
+inline std::istream &operator>>(std::istream &in, VectorD<D> &v) {
   for (unsigned int i = 0; i < D; ++i) {
     in >> v[i];
   }
@@ -443,12 +443,11 @@ template <int D>
 inline VectorD<D> get_zero_vector_d() {
   IMP_USAGE_CHECK(D > 0, "D must be positive");
   VectorD<D> ret;
-  for (int i = 0; i< D; ++i) {
+  for (int i = 0; i < D; ++i) {
     ret[i] = 0;
   }
   return ret;
 }
-
 
 //! Return a dynamically sized vector of zeros
 template <int D>

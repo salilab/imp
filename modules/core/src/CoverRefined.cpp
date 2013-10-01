@@ -18,8 +18,8 @@ CoverRefined::CoverRefined(Refiner *ref, Float slack) : slack_(slack) {
   refiner_ = ref;
 }
 
-ModelObjectsTemp CoverRefined::do_get_inputs(kernel::Model *m,
-                                             const kernel::ParticleIndexes &pis) const {
+ModelObjectsTemp CoverRefined::do_get_inputs(
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
   kernel::ModelObjectsTemp ret = refiner_->get_inputs(m, pis);
   ret += IMP::kernel::get_particles(m, pis);
   for (unsigned int i = 0; i < pis.size(); ++i) {
@@ -35,7 +35,8 @@ ModelObjectsTemp CoverRefined::do_get_outputs(
   return ret;
 }
 
-void CoverRefined::apply_index(kernel::Model *m, kernel::ParticleIndex pi) const {
+void CoverRefined::apply_index(kernel::Model *m,
+                               kernel::ParticleIndex pi) const {
   XYZR dp(m, pi);
   XYZs ps(refiner_->get_refined(dp));
   set_enclosing_sphere(dp, ps, slack_);

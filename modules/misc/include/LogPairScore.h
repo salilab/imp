@@ -24,11 +24,11 @@ class LogPairScore : public PairScore {
  public:
   //! create with an empty map
   LogPairScore() {}
-  virtual double evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &p,
+  virtual double evaluate_index(kernel::Model *m,
+                                const kernel::ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *,
-                                         const kernel::ParticleIndexes &) const
-    IMP_OVERRIDE {
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *, const kernel::ParticleIndexes &) const IMP_OVERRIDE {
     return kernel::ModelObjectsTemp();
   }
   IMP_PAIR_SCORE_METHODS(LogPairScore);
@@ -55,7 +55,8 @@ class LogPairScore : public PairScore {
 // doxygen spits out warnings
 #ifndef IMP_DOXYGEN
 
-inline Float LogPairScore::evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &p,
+inline Float LogPairScore::evaluate_index(kernel::Model *m,
+                                          const kernel::ParticleIndexPair &p,
                                           DerivativeAccumulator *) const {
   kernel::ParticlePair pp(m->get_particle(p[0]), m->get_particle(p[1]));
   if (map_.find(pp) == map_.end()) {

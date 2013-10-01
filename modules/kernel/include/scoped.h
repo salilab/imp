@@ -32,18 +32,19 @@ class GenericScopedScoreState : public base::RAII {
  public:
 
   IMP_DEPRECATED_RAII(2.1, "Just create/destroy the ScoreState itself", KERNEL,
-                      GenericScopedScoreState, (SS* ss, Model* m), {}, {
-    ss_ = ss;
-    m->add_score_state(ss);
-  },
+                      GenericScopedScoreState, (SS* ss, Model* m), {},
                       {
-    if (ss_ && ss_->get_model()) {
-      IMP_CHECK_OBJECT(ss_);
-      IMP_CHECK_OBJECT(ss_->get_model());
-      ss_->get_model()->remove_score_state(ss_);
-      ss_ = nullptr;
-    }
-  },
+                        ss_ = ss;
+                        m->add_score_state(ss);
+                      },
+                      {
+                        if (ss_ && ss_->get_model()) {
+                          IMP_CHECK_OBJECT(ss_);
+                          IMP_CHECK_OBJECT(ss_->get_model());
+                          ss_->get_model()->remove_score_state(ss_);
+                          ss_ = nullptr;
+                        }
+                      },
                       {
     if (ss_)
       out << "(Scoped " << ss_->get_name() << ")";
@@ -73,20 +74,21 @@ class GenericScopedRestraint : public base::RAII {
  public:
 
   IMP_DEPRECATED_RAII(2.1, "Just use an IMP::kernel::ScoringFunction", KERNEL,
-                      GenericScopedRestraint, (SS* ss, RestraintSet* rs), {}, {
-    ss_ = ss;
-    rs_ = rs;
-    rs_->add_restraint(ss);
-  },
+                      GenericScopedRestraint, (SS* ss, RestraintSet* rs), {},
                       {
-    if (ss_ && ss_->get_model()) {
-      IMP_CHECK_OBJECT(ss_);
-      IMP_CHECK_OBJECT(ss_->get_model());
-      rs_->remove_restraint(ss_);
-      ss_ = nullptr;
-      rs_ = nullptr;
-    }
-  },
+                        ss_ = ss;
+                        rs_ = rs;
+                        rs_->add_restraint(ss);
+                      },
+                      {
+                        if (ss_ && ss_->get_model()) {
+                          IMP_CHECK_OBJECT(ss_);
+                          IMP_CHECK_OBJECT(ss_->get_model());
+                          rs_->remove_restraint(ss_);
+                          ss_ = nullptr;
+                          rs_ = nullptr;
+                        }
+                      },
                       {
     if (ss_)
       out << "(Scoped " << ss_->get_name() << ")";
@@ -137,13 +139,7 @@ class GenericScopedRemoveRestraint : public base::RAII {
  public:
   IMP_DEPRECATED_RAII(2.1, "Just use an IMP::kernel::ScoringFunction", KERNEL,
                       GenericScopedRemoveRestraint, (SS* ss, RestraintSet* rs),
-                      {}, {
-    setup(ss, rs);
-  },
-                      {
-    cleanup();
-  },
-                      {
+                      {}, { setup(ss, rs); }, { cleanup(); }, {
     if (ss_)
       out << "(Scoped removal of " << ss_->get_name() << ")";
     else
@@ -185,14 +181,13 @@ class GenericScopedRemoveScoreState : public base::RAII {
 
  public:
   IMP_DEPRECATED_RAII(2.1, "This doesn't work any more", KERNEL,
-                      GenericScopedRemoveScoreState, (SS* ss, Model* rs), {}, {
-    IMPKERNEL_DEPRECATED_VALUE_DEF(2.1, "This doesn't do anything any more");
-    setup(ss, rs);
-  },
+                      GenericScopedRemoveScoreState, (SS* ss, Model* rs), {},
                       {
-    cleanup();
-  },
-                      {
+                        IMPKERNEL_DEPRECATED_VALUE_DEF(
+                            2.1, "This doesn't do anything any more");
+                        setup(ss, rs);
+                      },
+                      { cleanup(); }, {
     if (ss_)
       out << "(Scoped removal of " << ss_->get_name() << ")";
     else
@@ -227,20 +222,18 @@ class ScopedAddCacheAttribute : public base::RAII {
 
  public:
   IMP_RAII(ScopedAddCacheAttribute, (Particle* p, Key key, const Value& value),
+           { pi_ = base::get_invalid_index<ParticleIndexTag>(); },
            {
-    pi_ = base::get_invalid_index<ParticleIndexTag>();
-  },
+             m_ = p->get_model();
+             pi_ = p->get_index();
+             key_ = key;
+             m_->add_cache_attribute(key_, pi_, value);
+           },
            {
-    m_ = p->get_model();
-    pi_ = p->get_index();
-    key_ = key;
-    m_->add_cache_attribute(key_, pi_, value);
-  },
-           {
-    if (pi_ != base::get_invalid_index<ParticleIndexTag>()) {
-      m_->remove_attribute(key_, pi_);
-    }
-  }, );
+             if (pi_ != base::get_invalid_index<ParticleIndexTag>()) {
+               m_->remove_attribute(key_, pi_);
+             }
+           }, );
 };
 
 /** Set an attribute to a given value and restore the old
@@ -254,21 +247,20 @@ class ScopedSetAttribute : public base::RAII {
   Value old_;
 
  public:
-  IMP_RAII(ScopedSetAttribute, (Particle* p, Key key, const Value& value), {
-    pi_ = base::get_invalid_index<ParticleIndexTag>();
-  },
+  IMP_RAII(ScopedSetAttribute, (Particle* p, Key key, const Value& value),
+           { pi_ = base::get_invalid_index<ParticleIndexTag>(); },
            {
-    m_ = p->get_model();
-    pi_ = p->get_index();
-    key_ = key;
-    old_ = m_->get_attribute(key_, pi_);
-    m_->set_attribute(key_, pi_, value);
-  },
+             m_ = p->get_model();
+             pi_ = p->get_index();
+             key_ = key;
+             old_ = m_->get_attribute(key_, pi_);
+             m_->set_attribute(key_, pi_, value);
+           },
            {
-    if (pi_ != base::get_invalid_index<ParticleIndexTag>()) {
-      m_->set_attribute(key_, pi_, old_);
-    }
-  }, );
+             if (pi_ != base::get_invalid_index<ParticleIndexTag>()) {
+               m_->set_attribute(key_, pi_, old_);
+             }
+           }, );
 };
 
 typedef ScopedSetAttribute<FloatKey, Float> ScopedSetFloatAttribute;

@@ -20,7 +20,8 @@ class HarmonicUpperBound : public Score {
  public:
   HarmonicUpperBound(double k) : k_(k) {}
   template <unsigned int D>
-  double get_score(kernel::Model *, const base::Array<D, kernel::ParticleIndex> &,
+  double get_score(kernel::Model *,
+                   const base::Array<D, kernel::ParticleIndex> &,
                    double distance) const {
     if (distance < 0)
       return 0;
@@ -29,7 +30,8 @@ class HarmonicUpperBound : public Score {
   }
   template <unsigned int D>
   DerivativePair get_score_and_derivative(
-      kernel::Model *m, const base::Array<D, kernel::ParticleIndex> &p, double distance) const {
+      kernel::Model *m, const base::Array<D, kernel::ParticleIndex> &p,
+      double distance) const {
     if (distance < 0)
       return DerivativePair(0, 0);
     else

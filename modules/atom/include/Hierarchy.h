@@ -27,13 +27,13 @@
   UCName get_as_##lcname() const;
 
 // figure out how to inline
-#define IMP_GET_AS_DEF(UCName, lcname, CAPSNAME)        \
-  UCName Hierarchy::get_as_##lcname() const {           \
-    if (UCName::get_is_setup(get_particle())) { \
-      return UCName(get_particle());                    \
-    } else {                                            \
-      return UCName();                                  \
-    }                                                   \
+#define IMP_GET_AS_DEF(UCName, lcname, CAPSNAME) \
+  UCName Hierarchy::get_as_##lcname() const {    \
+    if (UCName::get_is_setup(get_particle())) {  \
+      return UCName(get_particle());             \
+    } else {                                     \
+      return UCName();                           \
+    }                                            \
   }
 
 // DOMAIN is defined to be 1 by a fedora math header
@@ -195,14 +195,17 @@ IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
  */
 class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
   typedef core::Hierarchy H;
+
  public:
 #ifndef IMP_DOXYGEN
   typedef boost::false_type DecoratorHasTraits;
 
   //! cast a particle which has the needed attributes
   static Hierarchy decorate_particle(kernel::Particle *p) {
-    if (get_is_setup(p)) return Hierarchy(p);
-    else return Hierarchy();
+    if (get_is_setup(p))
+      return Hierarchy(p);
+    else
+      return Hierarchy();
   }
   /** Setup the particle as a hierarchy and add the passed particles
       as children. */
@@ -235,11 +238,10 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
 #endif
 
   Hierarchy(kernel::Model *m, kernel::ParticleIndex pi)
-    : H(m, pi, get_traits()) {}
+      : H(m, pi, get_traits()) {}
 
-  Hierarchy(kernel::ParticleAdaptor pi) : H(pi.get_model(),
-                                            pi.get_particle_index(),
-                                            get_traits()) {}
+  Hierarchy(kernel::ParticleAdaptor pi)
+      : H(pi.get_model(), pi.get_particle_index(), get_traits()) {}
 
   //! null constructor
   Hierarchy() {}
@@ -270,7 +272,7 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
 
   /** Check if the particle has the needed attributes for a
    cast to succeed */
- static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex p) {
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex p) {
     return H::get_is_setup(m->get_particle(p), get_traits());
   }
 

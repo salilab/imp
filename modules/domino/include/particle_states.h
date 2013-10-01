@@ -71,8 +71,8 @@ IMP_OBJECTS(ParticleStates, ParticleStatesList);
     in the DominoSampler.
  */
 class IMPDOMINOEXPORT ParticleStatesTable : public IMP::base::Object {
-  typedef IMP::base::map<kernel::Particle *, IMP::base::PointerMember<ParticleStates> >
-      Map;
+  typedef IMP::base::map<kernel::Particle *,
+                         IMP::base::PointerMember<ParticleStates> > Map;
   Map enumerators_;
   friend class DominoSampler;
 
@@ -103,9 +103,9 @@ class IMPDOMINOEXPORT ParticleStatesTable : public IMP::base::Object {
       careful.
   */
   void set_particle_states(kernel::Particle *p, ParticleStates *e) {
-    IMP_USAGE_CHECK(
-        e->get_number_of_particle_states() > 0,
-        "Cannot have 0 states for a particle: \"" << p->get_name() << "\"\n");
+    IMP_USAGE_CHECK(e->get_number_of_particle_states() > 0,
+                    "Cannot have 0 states for a particle: \"" << p->get_name()
+                                                              << "\"\n");
     enumerators_[p] = e;
   }
   IMP_OBJECT_METHODS(ParticleStatesTable);
@@ -126,7 +126,8 @@ class IMPDOMINOEXPORT IndexStates : public ParticleStates {
   IndexStates(unsigned int n, IntKey k = IntKey("state"))
       : ParticleStates("IndexStates %1%"), n_(n), k_(k) {}
   virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
-  virtual void load_particle_state(unsigned int, kernel::Particle *) const IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, kernel::Particle *) const
+      IMP_OVERRIDE;
   IMP_OBJECT_METHODS(IndexStates);
 };
 
@@ -154,7 +155,8 @@ class IMPDOMINOEXPORT XYZStates : public ParticleStates {
     return nn_->get_nearest_neighbors(v, 1)[0];
   }
   virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
-  virtual void load_particle_state(unsigned int, kernel::Particle *) const IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, kernel::Particle *) const
+      IMP_OVERRIDE;
   IMP_OBJECT_METHODS(XYZStates);
 };
 
@@ -175,7 +177,8 @@ class IMPDOMINOEXPORT RigidBodyStates : public ParticleStates {
   algebra::VectorKD get_embedding(unsigned int i) const;
   unsigned int get_nearest_state(const algebra::VectorKD &v) const;
   virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
-  virtual void load_particle_state(unsigned int, kernel::Particle *) const IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, kernel::Particle *) const
+      IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RigidBodyStates);
 };
 
@@ -203,7 +206,8 @@ class IMPDOMINOEXPORT NestedRigidBodyStates : public ParticleStates {
   algebra::VectorKD get_embedding(unsigned int i) const;
   unsigned int get_nearest_state(const algebra::VectorKD &v) const;
   virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
-  virtual void load_particle_state(unsigned int, kernel::Particle *) const IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, kernel::Particle *) const
+      IMP_OVERRIDE;
   IMP_OBJECT_METHODS(NestedRigidBodyStates);
 };
 
@@ -217,7 +221,8 @@ class IMPDOMINOEXPORT CompoundStates : public ParticleStates {
   CompoundStates(ParticleStates *a, ParticleStates *b)
       : ParticleStates("CompoundStates %1%"), a_(a), b_(b) {}
   virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
-  virtual void load_particle_state(unsigned int, kernel::Particle *) const IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, kernel::Particle *) const
+      IMP_OVERRIDE;
   IMP_OBJECT_METHODS(CompoundStates);
 };
 
@@ -237,7 +242,8 @@ class IMPDOMINOEXPORT RecursiveStates : public ParticleStates {
   RecursiveStates(kernel::Particle *p, Subset s, const Assignments &ss,
                   ParticleStatesTable *pst);
   virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
-  virtual void load_particle_state(unsigned int, kernel::Particle *) const IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, kernel::Particle *) const
+      IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RecursiveStates);
 };
 
@@ -262,7 +268,8 @@ class IMPDOMINOEXPORT PermutationStates : public ParticleStates {
     return cur;
   }
   virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
-  virtual void load_particle_state(unsigned int, kernel::Particle *) const IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, kernel::Particle *) const
+      IMP_OVERRIDE;
   IMP_OBJECT_METHODS(PermutationStates);
 };
 
@@ -289,7 +296,7 @@ class ParticlesAdaptor :
  public:
   ParticlesAdaptor(ParticleStatesTable *pst)
       : kernel::ParticlesTemp(pst->get_particles()) {}
-      ParticlesAdaptor(const kernel::ParticlesTemp &ps)
+  ParticlesAdaptor(const kernel::ParticlesTemp &ps)
       : kernel::ParticlesTemp(ps.begin(), ps.end()) {}
 };
 

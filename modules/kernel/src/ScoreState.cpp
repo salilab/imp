@@ -18,20 +18,18 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-ScoreState::ScoreState(std::string name) : ModelObject(name),
-                                           update_order_(-1) {
+ScoreState::ScoreState(std::string name)
+    : ModelObject(name), update_order_(-1) {
   IMPKERNEL_DEPRECATED_METHOD_DEF(
       2.1, "Use the ScoreState constructor that takes the model and a name.");
 }
-ScoreState::ScoreState(kernel::Model *m) : ModelObject(m, "ScoreState%1%"),
-                                   update_order_(-1) {
+ScoreState::ScoreState(kernel::Model *m)
+    : ModelObject(m, "ScoreState%1%"), update_order_(-1) {
   IMPKERNEL_DEPRECATED_METHOD_DEF(
       2.1, "Use the ScoreState constructor that takes the model and a name.");
 }
-ScoreState::ScoreState(kernel::Model *m,
-                       std::string name) : ModelObject(m, name),
-                                           update_order_(-1) {
-}
+ScoreState::ScoreState(kernel::Model *m, std::string name)
+    : ModelObject(m, name), update_order_(-1) {}
 
 void ScoreState::before_evaluate() {
   IMP_OBJECT_LOG;
@@ -69,15 +67,15 @@ ScoreStatesTemp get_update_order(ScoreStatesTemp in) {
 
 void ScoreState::handle_set_has_required_score_states(bool tf) {
   if (tf) {
-    IMP_USAGE_CHECK(update_order_ == -1,
-                    "Already had update order");
+    IMP_USAGE_CHECK(update_order_ == -1, "Already had update order");
     if (!get_model()->do_get_required_score_states(this).empty()) {
-      update_order_ = get_required_score_states().back()->get_update_order()
-        + 1;
-      IMP_LOG_VERBOSE("Update order for " << get_name()
-                      << " is " << update_order_ << " due to "
-     << get_model()->do_get_required_score_states(this).back()->get_name()
-                      << std::endl);
+      update_order_ =
+          get_required_score_states().back()->get_update_order() + 1;
+      IMP_LOG_VERBOSE(
+          "Update order for "
+          << get_name() << " is " << update_order_ << " due to "
+          << get_model()->do_get_required_score_states(this).back()->get_name()
+          << std::endl);
     } else {
       update_order_ = 0;
     }

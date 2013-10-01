@@ -52,11 +52,13 @@ Restraints RMFRestraint::do_create_current_decomposition() const {
   }
 }
 
-RMFRestraint::RMFRestraint(kernel::Model *m, std::string name) : kernel::Restraint(m, name) {}
+RMFRestraint::RMFRestraint(kernel::Model *m, std::string name)
+    : kernel::Restraint(m, name) {}
 
-class Subset
-    : public base::ConstVector<base::WeakPointer<kernel::Particle>, kernel::Particle *> {
-  typedef base::ConstVector<base::WeakPointer<kernel::Particle>, kernel::Particle *> P;
+class Subset : public base::ConstVector<base::WeakPointer<kernel::Particle>,
+                                        kernel::Particle *> {
+  typedef base::ConstVector<base::WeakPointer<kernel::Particle>,
+                            kernel::Particle *> P;
   static kernel::ParticlesTemp get_sorted(kernel::ParticlesTemp ps) {
     std::sort(ps.begin(), ps.end());
     ps.erase(std::unique(ps.begin(), ps.end()), ps.end());
@@ -276,8 +278,8 @@ class RestraintSaveLink : public SimpleSaveLink<kernel::Restraint> {
         }
         if (rd && rd != o) {
           rd->set_was_used(true);
-          kernel::RestraintsTemp rs
-            = IMP::get_restraints(kernel::RestraintsTemp(1, rd));
+          kernel::RestraintsTemp rs =
+              IMP::get_restraints(kernel::RestraintsTemp(1, rd));
           if (rs.size() > max_terms_) {
             no_terms_.insert(o);
             // delete old children
@@ -318,8 +320,9 @@ class RestraintSaveLink : public SimpleSaveLink<kernel::Restraint> {
 };
 }
 
-IMP_DEFINE_LINKERS(Restraint, restraint, restraints, kernel::Restraint *, kernel::Restraints,
-                   kernel::Restraint *, kernel::RestraintsTemp, (RMF::FileHandle fh),
+IMP_DEFINE_LINKERS(Restraint, restraint, restraints, kernel::Restraint *,
+                   kernel::Restraints, kernel::Restraint *,
+                   kernel::RestraintsTemp, (RMF::FileHandle fh),
                    (RMF::FileConstHandle fh, kernel::Model *m), (fh), (fh, m),
                    (fh, IMP::internal::get_model(hs)));
 

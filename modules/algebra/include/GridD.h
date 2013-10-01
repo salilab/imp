@@ -155,8 +155,7 @@ class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
   GridD(double side, const VectorD<D> &origin,
         const Value &default_value = Value())
       : Storage(default_value),
-        Embedding(origin, get_ones_vector_kd(origin.get_dimension(),
-                                                        side)) {}
+        Embedding(origin, get_ones_vector_kd(origin.get_dimension(), side)) {}
   //! An empty, undefined grid.
   GridD() : Storage(Value()) {}
   /* \name Indexing
@@ -249,21 +248,21 @@ class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
       @{
   */
   GridIndexD<D> get_nearest_index(const VectorD<D> &pt) const {
-    IMP_USAGE_CHECK(Storage::get_is_dense(),
-                    "get_nearest_index "
-                        << "only works on dense grids.");
+    IMP_USAGE_CHECK(
+        Storage::get_is_dense(), "get_nearest_index "
+                                     << "only works on dense grids.");
     ExtendedGridIndexD<D> ei = get_nearest_extended_index(pt);
     return get_index(ei);
   }
   ExtendedGridIndexD<D> get_nearest_extended_index(const VectorD<D> &pt) const {
-    IMP_USAGE_CHECK(Storage::get_is_bounded(),
-                    "get_nearest_index "
-                        << "only works on bounded grids.");
+    IMP_USAGE_CHECK(
+        Storage::get_is_bounded(), "get_nearest_index "
+                                       << "only works on bounded grids.");
     ExtendedGridIndexD<D> ei = Embedding::get_extended_index(pt);
     for (unsigned int i = 0; i < pt.get_dimension(); ++i) {
       ei.access_data().get_data()[i] = std::max(0, ei[i]);
-      ei.access_data().get_data()[i]
-          = std::min<int>(Storage::get_number_of_voxels(i) - 1, ei[i]);
+      ei.access_data().get_data()[i] =
+          std::min<int>(Storage::get_number_of_voxels(i) - 1, ei[i]);
     }
     return ei;
   }

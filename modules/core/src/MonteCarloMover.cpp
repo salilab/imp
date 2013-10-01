@@ -15,7 +15,6 @@ MonteCarloMover::MonteCarloMover(kernel::Model *m, std::string name)
   reset_statistics();
 }
 
-
 ///////////////////////////// DEPRECATED_STUFF
 
 MoverBase::MoverBase(const kernel::ParticlesTemp &ps, const FloatKeys &keys,
@@ -51,13 +50,13 @@ void MoverBase::do_propose_value(unsigned int i, unsigned int j, Float t) {
   if (get_model()->get_is_optimized(keys_[j], particles_[i])) {
     get_model()->set_attribute(keys_[j], particles_[i], t);
     IMP_USAGE_CHECK_FLOAT_EQUAL(
-                        get_model()->get_attribute(keys_[j], particles_[i]), t,
-                                "Tried to set, but it didn't work.");
+        get_model()->get_attribute(keys_[j], particles_[i]), t,
+        "Tried to set, but it didn't work.");
   } else {
-      IMP_LOG_TERSE("Dropping change to unoptimized attribute: "
-                    << keys_[j] << " of particle "
-                    << get_model()->get_particle(particles_[i])->get_name()
-                    << std::endl);
+    IMP_LOG_TERSE("Dropping change to unoptimized attribute: "
+                  << keys_[j] << " of particle "
+                  << get_model()->get_particle(particles_[i])->get_name()
+                  << std::endl);
   }
 }
 

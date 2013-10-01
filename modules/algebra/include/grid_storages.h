@@ -157,9 +157,8 @@ class DenseGridStorageD : public BoundedGridRangeD<D> {
   template <class Functor, class Grid>
   Functor apply(const Grid &g, const Functor &fi) const {
     Functor f = fi;
-    typename Grid::ExtendedIndex
-        lb(typename Grid::ExtendedIndex::Filled(),
-           g.get_dimension(), 0);
+    typename Grid::ExtendedIndex lb(typename Grid::ExtendedIndex::Filled(),
+                                    g.get_dimension(), 0);
     typename Grid::ExtendedIndex ub(BoundedGridRangeD<D>::get_end_index());
     typename Grid::Vector corner = g.get_bounding_box().get_corner(0);
     typename Grid::Vector cell = g.get_unit_cell();

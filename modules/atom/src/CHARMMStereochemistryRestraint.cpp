@@ -29,18 +29,20 @@ double CHARMMStereochemistryRestraint::unprotected_evaluate(
     DerivativeAccumulator *accum) const {
   double score = 0.;
 
-  for (kernel::Particles::const_iterator b = bonds_.begin(); b != bonds_.end(); ++b) {
+  for (kernel::Particles::const_iterator b = bonds_.begin(); b != bonds_.end();
+       ++b) {
     score += bond_score_->evaluate(*b, accum);
   }
-  for (kernel::Particles::const_iterator a = angles_.begin(); a != angles_.end(); ++a) {
+  for (kernel::Particles::const_iterator a = angles_.begin();
+       a != angles_.end(); ++a) {
     score += angle_score_->evaluate(*a, accum);
   }
-  for (kernel::Particles::const_iterator d = dihedrals_.begin(); d != dihedrals_.end();
-       ++d) {
+  for (kernel::Particles::const_iterator d = dihedrals_.begin();
+       d != dihedrals_.end(); ++d) {
     score += dihedral_score_->evaluate(*d, accum);
   }
-  for (kernel::Particles::const_iterator i = impropers_.begin(); i != impropers_.end();
-       ++i) {
+  for (kernel::Particles::const_iterator i = impropers_.begin();
+       i != impropers_.end(); ++i) {
     score += improper_score_->evaluate(*i, accum);
   }
 
@@ -49,24 +51,26 @@ double CHARMMStereochemistryRestraint::unprotected_evaluate(
 
 ModelObjectsTemp CHARMMStereochemistryRestraint::do_get_inputs() const {
   kernel::ModelObjectsTemp ps;
-  for (kernel::Particles::const_iterator b = bonds_.begin(); b != bonds_.end(); ++b) {
+  for (kernel::Particles::const_iterator b = bonds_.begin(); b != bonds_.end();
+       ++b) {
     ps.push_back(*b);
     kernel::ParticlesTemp bps = bond_score_->get_input_particles(*b);
     ps.insert(ps.end(), bps.begin(), bps.end());
   }
-  for (kernel::Particles::const_iterator a = angles_.begin(); a != angles_.end(); ++a) {
+  for (kernel::Particles::const_iterator a = angles_.begin();
+       a != angles_.end(); ++a) {
     ps.push_back(*a);
     kernel::ParticlesTemp bps = angle_score_->get_input_particles(*a);
     ps.insert(ps.end(), bps.begin(), bps.end());
   }
-  for (kernel::Particles::const_iterator d = dihedrals_.begin(); d != dihedrals_.end();
-       ++d) {
+  for (kernel::Particles::const_iterator d = dihedrals_.begin();
+       d != dihedrals_.end(); ++d) {
     ps.push_back(*d);
     kernel::ParticlesTemp bps = dihedral_score_->get_input_particles(*d);
     ps.insert(ps.end(), bps.begin(), bps.end());
   }
-  for (kernel::Particles::const_iterator i = impropers_.begin(); i != impropers_.end();
-       ++i) {
+  for (kernel::Particles::const_iterator i = impropers_.begin();
+       i != impropers_.end(); ++i) {
     ps.push_back(*i);
     kernel::ParticlesTemp bps = improper_score_->get_input_particles(*i);
     ps.insert(ps.end(), bps.begin(), bps.end());

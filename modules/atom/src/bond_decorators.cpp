@@ -12,9 +12,10 @@ IMPATOM_BEGIN_NAMESPACE
 namespace internal {
 
 BondData &get_bond_data() {
-  static BondData d = {IntKey("bond type"), IntKey("bond order"),
-                       FloatKey("bond length"), FloatKey("bond stiffness"),
-                       IMP::core::internal::GraphData("bond")};
+  static BondData d = {
+      IntKey("bond type"),                   IntKey("bond order"),
+      FloatKey("bond length"),               FloatKey("bond stiffness"),
+      IMP::core::internal::GraphData("bond")};
   return d;
 }
 
@@ -88,17 +89,18 @@ Bond get_bond(Bonded a, Bonded b) {
 }
 
 namespace {
-  bool check_bond(kernel::Model *m, kernel::ParticleIndex pi) {
-    kernel::Particle *p = m->get_particle(pi);
+bool check_bond(kernel::Model *m, kernel::ParticleIndex pi) {
+  kernel::Particle *p = m->get_particle(pi);
   if (p->get_value(internal::get_bond_data().length_) < 0) {
-    IMP_THROW("Invalid bond length: "
-                  << p->get_value(internal::get_bond_data().length_),
+    IMP_THROW("Invalid bond length: " << p->get_value(
+                                             internal::get_bond_data().length_),
               ValueException);
   }
   if (p->get_value(internal::get_bond_data().stiffness_) < 0) {
-    IMP_THROW("Invalid bond stiffness: "
-                  << p->get_value(internal::get_bond_data().stiffness_),
-              ValueException);
+    IMP_THROW(
+        "Invalid bond stiffness: " << p->get_value(
+                                          internal::get_bond_data().stiffness_),
+        ValueException);
   }
   Bond bd(p);
   for (unsigned int j = 0; j < 2; ++j) {

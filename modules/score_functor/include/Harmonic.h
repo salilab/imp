@@ -21,13 +21,15 @@ class Harmonic : public Score {
  public:
   Harmonic(double k) : k_(k) {}
   template <unsigned int D>
-  double get_score(kernel::Model *, const base::Array<D, kernel::ParticleIndex> &,
+  double get_score(kernel::Model *,
+                   const base::Array<D, kernel::ParticleIndex> &,
                    double distance) const {
     return .5 * k_ * algebra::get_squared(distance);
   }
   template <unsigned int D>
   DerivativePair get_score_and_derivative(
-      kernel::Model *m, const base::Array<D, kernel::ParticleIndex> &p, double distance) const {
+      kernel::Model *m, const base::Array<D, kernel::ParticleIndex> &p,
+      double distance) const {
     return DerivativePair(get_score(m, p, distance), k_ * (distance));
   }
 };

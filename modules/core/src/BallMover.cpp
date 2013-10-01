@@ -20,8 +20,8 @@ std::string get_ball_mover_name(kernel::Model *m, kernel::ParticleIndex pi) {
 }
 }
 
-void BallMover::initialize(kernel::ParticleIndexes pis,
-                           FloatKeys keys, double radius) {
+void BallMover::initialize(kernel::ParticleIndexes pis, FloatKeys keys,
+                           double radius) {
   pis_ = pis;
   keys_ = keys;
   set_radius(radius);
@@ -29,8 +29,7 @@ void BallMover::initialize(kernel::ParticleIndexes pis,
 }
 
 BallMover::BallMover(kernel::Model *m, kernel::ParticleIndex pi,
-                     const FloatKeys &keys,
-                     double radius)
+                     const FloatKeys &keys, double radius)
     : MonteCarloMover(m, get_ball_mover_name(m, pi)) {
   initialize(kernel::ParticleIndexes(1, pi), keys, radius);
 }
@@ -41,8 +40,8 @@ BallMover::BallMover(kernel::Model *m, kernel::ParticleIndex pi, double radius)
 }
 
 // backwards compat
-BallMover::BallMover(const kernel::ParticlesTemp &sc,
-                     const FloatKeys &vars, double max)
+BallMover::BallMover(const kernel::ParticlesTemp &sc, const FloatKeys &vars,
+                     double max)
     : MonteCarloMover(sc[0]->get_model(), "BallMover%1%") {
   initialize(kernel::get_indexes(sc), vars, max);
 }
@@ -63,11 +62,11 @@ MonteCarloMoverResult BallMover::do_propose() {
     algebra::VectorKD nv =
         originals_[i] + IMP::algebra::get_random_vector_in(ball);
     for (unsigned int j = 0; j < keys_.size(); ++j) {
-      IMP_USAGE_CHECK(get_model()->get_is_optimized(keys_[j], pis_[i]),
-                      "BallMover can't move non-optimized attribute. "
-                      << "particle: "
-                      << get_model()->get_particle_name(pis_[i])
-                      << "attribute: " << keys_[j]);
+      IMP_USAGE_CHECK(
+          get_model()->get_is_optimized(keys_[j], pis_[i]),
+          "BallMover can't move non-optimized attribute. "
+              << "particle: " << get_model()->get_particle_name(pis_[i])
+              << "attribute: " << keys_[j]);
       get_model()->set_attribute(keys_[j], pis_[i], nv[j]);
     }
   }

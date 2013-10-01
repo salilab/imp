@@ -19,7 +19,8 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-RestraintSet::RestraintSet(kernel::Model *m, double weight, const std::string &name)
+RestraintSet::RestraintSet(kernel::Model *m, double weight,
+                           const std::string &name)
     : Restraint(m, name) {
   set_weight(weight);
 }

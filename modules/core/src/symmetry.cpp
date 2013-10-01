@@ -25,7 +25,8 @@ TransformationSymmetry::TransformationSymmetry(
   t_ = t;
 }
 
-void TransformationSymmetry::apply_index(kernel::Model *m, kernel::ParticleIndex pi) const {
+void TransformationSymmetry::apply_index(kernel::Model *m,
+                                         kernel::ParticleIndex pi) const {
   set_was_used(true);
   if (RigidBody::get_is_setup(m, pi)) {
     RigidBody rrb(Reference(m, pi).get_reference_particle());
@@ -62,8 +63,8 @@ TransformationAndReflectionSymmetry::TransformationAndReflectionSymmetry(
   r_ = r;
 }
 
-void TransformationAndReflectionSymmetry::apply_index(kernel::Model *m,
-                                                      kernel::ParticleIndex pi) const {
+void TransformationAndReflectionSymmetry::apply_index(
+    kernel::Model *m, kernel::ParticleIndex pi) const {
   IMP_USAGE_CHECK(!RigidBody::get_is_setup(m, pi),
                   "Particle must not be a rigid body particle");
   set_was_used(true);

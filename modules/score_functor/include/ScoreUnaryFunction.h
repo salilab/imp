@@ -31,7 +31,8 @@ class ScoreUnaryFunction : public IMP::UnaryFunction {
   }
 
   virtual double evaluate(double feature) const IMP_OVERRIDE {
-    return score_.get_score(nullptr, base::Array<D, kernel::ParticleIndex>(), feature);
+    return score_.get_score(nullptr, base::Array<D, kernel::ParticleIndex>(),
+                            feature);
   }
 
   IMP_OBJECT_METHODS(ScoreUnaryFunction);

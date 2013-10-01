@@ -24,13 +24,14 @@ IMPKERNEL_BEGIN_NAMESPACE
 
 Optimizer::Optimizer() : ModelObject("Optimizer%1%") {
   IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
-                                    "Use the constructor that takes a model.");
+                                  "Use the constructor that takes a model.");
   set_was_used(true);
   min_score_ = -std::numeric_limits<double>::max();
   stop_on_good_score_ = false;
 }
 
-Optimizer::Optimizer(kernel::Model *m, std::string name) : ModelObject(m, name) {
+Optimizer::Optimizer(kernel::Model *m, std::string name)
+    : ModelObject(m, name) {
   set_was_used(true);
   min_score_ = -std::numeric_limits<double>::max();
   stop_on_good_score_ = false;
@@ -40,7 +41,7 @@ Optimizer::~Optimizer() {}
 
 void Optimizer::update_states() const {
   IMP_LOG_VERBOSE("Updating OptimizerStates " << std::flush);
-  BOOST_FOREACH(ScoreState *ss, get_required_score_states()) {
+  BOOST_FOREACH(ScoreState * ss, get_required_score_states()) {
     ss->before_evaluate();
   }
   for (OptimizerStateConstIterator it = optimizer_states_begin();

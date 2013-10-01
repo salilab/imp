@@ -35,8 +35,8 @@ inline int get_ordered_type_hash(kernel::Model *m, kernel::ParticleIndex pi) {
 }
 
 template <unsigned int D>
-inline int get_ordered_type_hash(kernel::Model *m,
-                                 const base::Array<D, kernel::ParticleIndex> &pi) {
+inline int get_ordered_type_hash(
+    kernel::Model *m, const base::Array<D, kernel::ParticleIndex> &pi) {
   ParticleTypes rets(D);
   for (unsigned int i = 0; i < D; ++i) {
     Typed td(m, pi[i]);
@@ -48,7 +48,8 @@ inline int get_ordered_type_hash(kernel::Model *m,
 inline int get_all_same(kernel::Model *, kernel::ParticleIndex) { return true; }
 
 template <unsigned int D>
-inline int get_all_same(kernel::Model *, const base::Array<D, kernel::ParticleIndex> &pi) {
+inline int get_all_same(kernel::Model *,
+                        const base::Array<D, kernel::ParticleIndex> &pi) {
   for (unsigned int i = 1; i < D; ++i) {
     if (pi[i - 1] != pi[i]) return false;
   }
@@ -60,7 +61,8 @@ inline int get_type_hash(kernel::Model *m, kernel::ParticleIndex pi) {
 }
 
 template <unsigned int D>
-inline int get_type_hash(kernel::Model *m, const base::Array<D, kernel::ParticleIndex> &pi) {
+inline int get_type_hash(kernel::Model *m,
+                         const base::Array<D, kernel::ParticleIndex> &pi) {
   int max = ParticleType::get_number_unique();
   Ints rets(D);
   for (unsigned int i = 0; i < D; ++i) {

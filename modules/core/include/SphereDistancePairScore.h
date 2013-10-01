@@ -72,7 +72,8 @@ class IMPCOREEXPORT HarmonicUpperBoundSphereDiameterPairScore
   double get_stiffness() const { return k_; }
   double evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &p,
                         DerivativeAccumulator *da) const IMP_OVERRIDE;
-  kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m, const kernel::ParticleIndexes &pis) const;
+  kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const;
   IMP_PAIR_SCORE_METHODS(HarmonicUpperBoundSphereDiameterPairScore);
   IMP_OBJECT_METHODS(HarmonicUpperBoundSphereDiameterPairScore);
 };
@@ -98,7 +99,8 @@ IMP_FUNCTOR_DISTANCE_PAIR_SCORE(HarmonicSphereDistancePairScore,
 
 #ifndef IMP_DOXYGEN
 inline double HarmonicUpperBoundSphereDiameterPairScore::evaluate_index(
-    kernel::Model *m, const kernel::ParticleIndexPair &p, DerivativeAccumulator *da) const {
+    kernel::Model *m, const kernel::ParticleIndexPair &p,
+    DerivativeAccumulator *da) const {
   algebra::Vector3D delta =
       m->get_sphere(p[0]).get_center() - m->get_sphere(p[1]).get_center();
   static const double MIN_DISTANCE = .00001;
@@ -131,11 +133,11 @@ class IMPCOREEXPORT NormalizedSphereDistancePairScore : public PairScore {
  public:
   NormalizedSphereDistancePairScore(UnaryFunction *f,
                                     FloatKey radius = FloatKey("radius"));
-  virtual double evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &p,
+  virtual double evaluate_index(kernel::Model *m,
+                                const kernel::ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                         const kernel::ParticleIndexes &pis) const
-      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_PAIR_SCORE_METHODS(NormalizedSphereDistancePairScore);
   IMP_OBJECT_METHODS(NormalizedSphereDistancePairScore);
   ;
@@ -156,11 +158,11 @@ class IMPCOREEXPORT WeightedSphereDistancePairScore : public PairScore {
  public:
   WeightedSphereDistancePairScore(UnaryFunction *f, FloatKey weight,
                                   FloatKey radius = FloatKey("radius"));
-  virtual double evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &p,
+  virtual double evaluate_index(kernel::Model *m,
+                                const kernel::ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                         const kernel::ParticleIndexes &pis) const
-      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_PAIR_SCORE_METHODS(WeightedSphereDistancePairScore);
   IMP_OBJECT_METHODS(WeightedSphereDistancePairScore);
   ;

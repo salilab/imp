@@ -51,21 +51,21 @@ class Array : public Value {
   ;
   Array() {}
   Array(SwigData x, SwigData y) {
-    IMP_USAGE_CHECK(D == 2,
-                    "Need " << D << " to construct a " << D << "-tuple.");
+    IMP_USAGE_CHECK(D == 2, "Need " << D << " to construct a " << D
+                                    << "-tuple.");
     d_[0] = x;
     d_[1] = y;
   }
   Array(SwigData x, SwigData y, SwigData z) {
-    IMP_USAGE_CHECK(D == 3,
-                    "Need " << D << " to construct a " << D << "-tuple.");
+    IMP_USAGE_CHECK(D == 3, "Need " << D << " to construct a " << D
+                                    << "-tuple.");
     d_[0] = x;
     d_[1] = y;
     d_[2] = z;
   }
   Array(SwigData x0, SwigData x1, SwigData x2, SwigData x3) {
-    IMP_USAGE_CHECK(D == 4,
-                    "Need " << D << " to construct a " << D << "-tuple.");
+    IMP_USAGE_CHECK(D == 4, "Need " << D << " to construct a " << D
+                                    << "-tuple.");
     d_[0] = x0;
     d_[1] = x1;
     d_[2] = x2;
@@ -74,8 +74,8 @@ class Array : public Value {
   SwigData get(unsigned int i) const { return d_[i]; }
   IMP_HASHABLE_INLINE(Array, std::size_t seed = 0;
                       for (unsigned int i = 0; i < D; ++i) {
-    boost::hash_combine(seed, d_[i]);
-  } return seed;);
+                             boost::hash_combine(seed, d_[i]);
+                           } return seed;);
   IMP_COMPARISONS(Array);
 #ifndef SWIG
   const Data operator[](unsigned int i) const {
@@ -115,9 +115,7 @@ class Array : public Value {
     oss << "\"";
     return oss.str();
   }
-  IMP_SHOWABLE_INLINE(Array, {
-    out << get_name();
-  });
+  IMP_SHOWABLE_INLINE(Array, { out << get_name(); });
   typedef typename Storage::iterator iterator;
   iterator begin() { return d_.begin(); }
   iterator end() { return d_.end(); }

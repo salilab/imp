@@ -15,15 +15,15 @@ IMPATOM_BEGIN_NAMESPACE
 
 RemoveTranslationOptimizerState::RemoveTranslationOptimizerState(
     const kernel::Particles &pis, unsigned skip_steps)
-  : kernel::OptimizerState(pis[0]->get_model(),
-                           "RemoveTranslationOptimizerState%1%"),
-    pis_(pis) {
+    : kernel::OptimizerState(pis[0]->get_model(),
+                             "RemoveTranslationOptimizerState%1%"),
+      pis_(pis) {
   set_period(skip_steps + 1);
 }
 
-RemoveTranslationOptimizerState
-::RemoveTranslationOptimizerState(kernel::Model *m, kernel::ParticleIndexesAdaptor pis)
-  : kernel::OptimizerState(m, "RemoveTranslationOptimizerState%1%") {
+RemoveTranslationOptimizerState::RemoveTranslationOptimizerState(
+    kernel::Model *m, kernel::ParticleIndexesAdaptor pis)
+    : kernel::OptimizerState(m, "RemoveTranslationOptimizerState%1%") {
   BOOST_FOREACH(kernel::ParticleIndex pi, pis) {
     pis_.push_back(m->get_particle(pi));
   }
@@ -39,7 +39,8 @@ void RemoveTranslationOptimizerState::remove_translation() const {
   core::XYZ d0(p0);
   algebra::Vector3D coords = d0.get_coordinates();
 
-  for (kernel::Particles::const_iterator pi = pis_.begin(); pi != pis_.end(); ++pi) {
+  for (kernel::Particles::const_iterator pi = pis_.begin(); pi != pis_.end();
+       ++pi) {
     kernel::Particle *p = *pi;
     core::XYZ d(p);
     d.set_coordinates(d.get_coordinates() - coords);

@@ -79,7 +79,8 @@ class IMPCOREEXPORT RigidBody : public XYZ {
    */
   algebra::Vector3D get_coordinates(RigidMember p) const;
 
-  void add_member_internal(kernel::Particle *p, const algebra::ReferenceFrame3D &rf);
+  void add_member_internal(kernel::Particle *p,
+                           const algebra::ReferenceFrame3D &rf);
   void on_change();
   static void teardown_constraints(kernel::Particle *p);
   static ObjectKey get_constraint_key_0();
@@ -141,15 +142,15 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 
   //! Get the reference frame for the local coordinates
   IMP::algebra::ReferenceFrame3D get_reference_frame() const {
-    algebra::VectorD<4>
-      v(get_model()->get_attribute(internal::rigid_body_data().quaternion_[0],
-                               get_particle_index()),
+    algebra::VectorD<4> v(
+        get_model()->get_attribute(internal::rigid_body_data().quaternion_[0],
+                                   get_particle_index()),
         get_model()->get_attribute(internal::rigid_body_data().quaternion_[1],
-                               get_particle_index()),
+                                   get_particle_index()),
         get_model()->get_attribute(internal::rigid_body_data().quaternion_[2],
-                               get_particle_index()),
+                                   get_particle_index()),
         get_model()->get_attribute(internal::rigid_body_data().quaternion_[3],
-                               get_particle_index()));
+                                   get_particle_index()));
     IMP_USAGE_CHECK_FLOAT_EQUAL(v.get_squared_magnitude(), 1,
                                 "Rotation is not a unit vector: " << v);
     /*if (v.get_squared_magnitude() > 0){
@@ -207,9 +208,8 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   algebra::Vector3D get_torque() const {
     algebra::Vector3D ret;
     for (unsigned int i = 0; i < 3; ++i) {
-      ret[i] =
-        get_model()->get_derivative(internal::rigid_body_data().torque_[i],
-                                    get_particle_index());
+      ret[i] = get_model()->get_derivative(
+          internal::rigid_body_data().torque_[i], get_particle_index());
     }
     return ret;
   }
@@ -276,45 +276,45 @@ class IMPCOREEXPORT RigidMember : public XYZ {
   }
   //! Member must be a rigid body
   void set_internal_transformation(const algebra::Transformation3D &v) {
-    IMP_USAGE_CHECK(get_model()->get_has_attribute(
-                               internal::rigid_body_data().lquaternion_[0],
-                                                   get_particle_index()),
-                    "Can only set the internal transformation if member is"
-                        << " a rigid body itself.");
+    IMP_USAGE_CHECK(
+        get_model()->get_has_attribute(
+            internal::rigid_body_data().lquaternion_[0], get_particle_index()),
+        "Can only set the internal transformation if member is"
+            << " a rigid body itself.");
     set_internal_coordinates(v.get_translation());
 
     get_model()->set_attribute(internal::rigid_body_data().lquaternion_[0],
                                get_particle_index(),
-                              v.get_rotation().get_quaternion()[0]);
+                               v.get_rotation().get_quaternion()[0]);
     get_model()->set_attribute(internal::rigid_body_data().lquaternion_[1],
                                get_particle_index(),
-                              v.get_rotation().get_quaternion()[1]);
+                               v.get_rotation().get_quaternion()[1]);
     get_model()->set_attribute(internal::rigid_body_data().lquaternion_[2],
                                get_particle_index(),
-                              v.get_rotation().get_quaternion()[2]);
+                               v.get_rotation().get_quaternion()[2]);
     get_model()->set_attribute(internal::rigid_body_data().lquaternion_[3],
                                get_particle_index(),
-                              v.get_rotation().get_quaternion()[3]);
+                               v.get_rotation().get_quaternion()[3]);
     get_rigid_body().get_model()->clear_particle_caches(get_particle_index());
   }
 
   algebra::Transformation3D get_internal_transformation() const {
-    IMP_USAGE_CHECK(get_model()->get_has_attribute(
-                        internal::rigid_body_data().lquaternion_[0],
-                               get_particle_index()),
-                    "Can only set the internal transformation if member is a "
-                        << "rigid body itself.");
+    IMP_USAGE_CHECK(
+        get_model()->get_has_attribute(
+            internal::rigid_body_data().lquaternion_[0], get_particle_index()),
+        "Can only set the internal transformation if member is a "
+            << "rigid body itself.");
     algebra::Vector3D tr =
         get_model()->get_internal_coordinates(get_particle_index());
     algebra::Rotation3D rot(
         get_model()->get_attribute(internal::rigid_body_data().lquaternion_[0],
-                               get_particle_index()),
+                                   get_particle_index()),
         get_model()->get_attribute(internal::rigid_body_data().lquaternion_[1],
-                               get_particle_index()),
+                                   get_particle_index()),
         get_model()->get_attribute(internal::rigid_body_data().lquaternion_[2],
-                               get_particle_index()),
+                                   get_particle_index()),
         get_model()->get_attribute(internal::rigid_body_data().lquaternion_[3],
-                               get_particle_index()));
+                                   get_particle_index()));
     return algebra::Transformation3D(rot, tr);
   }
 
@@ -369,45 +369,45 @@ class IMPCOREEXPORT NonRigidMember : public XYZ {
 
   //! Member must be a rigid body
   void set_internal_transformation(const algebra::Transformation3D &v) {
-    IMP_USAGE_CHECK(get_model()->get_has_attribute(
-                        internal::rigid_body_data().lquaternion_[0],
-                               get_particle_index()),
-                    "Can only set the internal transformation if member is"
-                        << " a rigid body itself.");
+    IMP_USAGE_CHECK(
+        get_model()->get_has_attribute(
+            internal::rigid_body_data().lquaternion_[0], get_particle_index()),
+        "Can only set the internal transformation if member is"
+            << " a rigid body itself.");
     set_internal_coordinates(v.get_translation());
 
     get_model()->set_attribute(internal::rigid_body_data().lquaternion_[0],
                                get_particle_index(),
-                              v.get_rotation().get_quaternion()[0]);
+                               v.get_rotation().get_quaternion()[0]);
     get_model()->set_attribute(internal::rigid_body_data().lquaternion_[1],
                                get_particle_index(),
-                              v.get_rotation().get_quaternion()[1]);
+                               v.get_rotation().get_quaternion()[1]);
     get_model()->set_attribute(internal::rigid_body_data().lquaternion_[2],
                                get_particle_index(),
-                              v.get_rotation().get_quaternion()[2]);
+                               v.get_rotation().get_quaternion()[2]);
     get_model()->set_attribute(internal::rigid_body_data().lquaternion_[3],
                                get_particle_index(),
-                              v.get_rotation().get_quaternion()[3]);
+                               v.get_rotation().get_quaternion()[3]);
     get_rigid_body().get_model()->clear_particle_caches(get_particle_index());
   }
 
   algebra::Transformation3D get_internal_transformation() const {
-    IMP_USAGE_CHECK(get_model()->get_has_attribute(
-                        internal::rigid_body_data().lquaternion_[0],
-                        get_particle_index()),
-                    "Can only set the internal transformation if member is a "
-                        << "rigid body itself.");
+    IMP_USAGE_CHECK(
+        get_model()->get_has_attribute(
+            internal::rigid_body_data().lquaternion_[0], get_particle_index()),
+        "Can only set the internal transformation if member is a "
+            << "rigid body itself.");
     algebra::Vector3D tr =
         get_model()->get_internal_coordinates(get_particle_index());
     algebra::Rotation3D rot(
         get_model()->get_attribute(internal::rigid_body_data().lquaternion_[0],
-                               get_particle_index()),
+                                   get_particle_index()),
         get_model()->get_attribute(internal::rigid_body_data().lquaternion_[1],
-                               get_particle_index()),
+                                   get_particle_index()),
         get_model()->get_attribute(internal::rigid_body_data().lquaternion_[2],
-                               get_particle_index()),
+                                   get_particle_index()),
         get_model()->get_attribute(internal::rigid_body_data().lquaternion_[3],
-                               get_particle_index()));
+                                   get_particle_index()));
     return algebra::Transformation3D(rot, tr);
   }
 
@@ -446,10 +446,10 @@ class IMPCOREEXPORT RigidMembersRefiner : public Refiner {
 #ifndef SWIG
   using Refiner::get_refined;
 #endif
-  virtual const kernel::ParticlesTemp get_refined(kernel::Particle *) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                         const kernel::ParticleIndexes &pis) const
+  virtual const kernel::ParticlesTemp get_refined(kernel::Particle *) const
       IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RigidMembersRefiner);
 };
 
@@ -472,11 +472,11 @@ inline void transform(RigidBody a, const algebra::Transformation3D &tr) {
 
 /** Compute the rigid body reference frame given a set of input particles.
  */
-IMPCOREEXPORT algebra::ReferenceFrame3D
-get_initial_reference_frame(kernel::Model *m, const kernel::ParticleIndexes &pis);
+IMPCOREEXPORT algebra::ReferenceFrame3D get_initial_reference_frame(
+    kernel::Model *m, const kernel::ParticleIndexes &pis);
 
-inline algebra::ReferenceFrame3D
-get_initial_reference_frame(const kernel::ParticlesTemp &ps) {
+inline algebra::ReferenceFrame3D get_initial_reference_frame(
+    const kernel::ParticlesTemp &ps) {
   if (ps.empty()) {
     return algebra::ReferenceFrame3D();
   }
@@ -492,8 +492,10 @@ get_initial_reference_frame(const kernel::ParticlesTemp &ps) {
     \note Do not use this with DOMINO as all the rigid bodies use the same
     ScoreState and so will be considered inter-dependent.
 */
-IMPCOREEXPORT kernel::ParticlesTemp create_rigid_bodies(kernel::Model *m, unsigned int n,
-                                                bool no_members = false);
+IMPCOREEXPORT kernel::ParticlesTemp create_rigid_bodies(kernel::Model *m,
+                                                        unsigned int n,
+                                                        bool no_members =
+                                                            false);
 
 IMP_DECORATORS_DEF(RigidMember, RigidMembers);
 IMP_DECORATORS(RigidBody, RigidBodies, XYZs);

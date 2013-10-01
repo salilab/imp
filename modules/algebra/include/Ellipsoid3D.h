@@ -55,10 +55,10 @@ IMP_VOLUME_GEOMETRY_METHODS(
     IMP_NOT_IMPLEMENTED,
     return 4.0 / 3.0 * PI * g.get_radius(0) * g.get_radius(1) * g.get_radius(2),
     {
-  Vector3D v(g.get_radius(0), g.get_radius(1), g.get_radius(2));
-  BoundingBoxD<3> b(-v, v);
-  return get_transformed(b, g.get_transformation());
-});
+      Vector3D v(g.get_radius(0), g.get_radius(1), g.get_radius(2));
+      BoundingBoxD<3> b(-v, v);
+      return get_transformed(b, g.get_transformation());
+    });
 
 IMPALGEBRA_END_NAMESPACE
 

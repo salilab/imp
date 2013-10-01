@@ -21,7 +21,8 @@ bool graph_is_node(kernel::Particle *p, const GraphData &d) {
   return p->has_attribute(d.setup_key_);
 }
 
-Particle *graph_connect(kernel::Particle *a, kernel::Particle *b, GraphData &d) {
+Particle *graph_connect(kernel::Particle *a, kernel::Particle *b,
+                        GraphData &d) {
   kernel::Model *m = a->get_model();
   kernel::Particle *p = new kernel::Particle(m);
   p->add_attribute(d.node_keys_[0], a);
@@ -29,7 +30,8 @@ Particle *graph_connect(kernel::Particle *a, kernel::Particle *b, GraphData &d) 
   for (int i = 0; i < 2; ++i) {
     kernel::Particle *cp = ((i == 0) ? a : b);
     if (m->get_has_attribute(d.edges_key_, cp->get_index())) {
-      kernel::ParticleIndexes c = m->get_attribute(d.edges_key_, cp->get_index());
+      kernel::ParticleIndexes c =
+          m->get_attribute(d.edges_key_, cp->get_index());
       c.push_back(p->get_index());
       m->set_attribute(d.edges_key_, cp->get_index(), c);
     } else {
@@ -65,9 +67,9 @@ Particle *graph_get_edge(kernel::Particle *a, int i, const GraphData &d) {
                   << "enough edges");
   kernel::ParticleIndexes all =
       a->get_model()->get_attribute(d.edges_key_, a->get_index());
-  IMP_USAGE_CHECK(
-      all.size() > static_cast<unsigned int>(i),
-      "Particle " << a->get_name() << " does not have enough edges");
+  IMP_USAGE_CHECK(all.size() > static_cast<unsigned int>(i),
+                  "Particle " << a->get_name()
+                              << " does not have enough edges");
   return a->get_model()->get_particle(all[i]);
 }
 
@@ -90,7 +92,8 @@ Particle *graph_get_neighbor(kernel::Particle *a, int i, const GraphData &d) {
   }
 }
 
-unsigned int graph_get_number_of_edges(kernel::Particle *a, const GraphData &d) {
+unsigned int graph_get_number_of_edges(kernel::Particle *a,
+                                       const GraphData &d) {
   if (!a->get_model()->get_has_attribute(d.edges_key_, a->get_index()))
     return 0;
   else

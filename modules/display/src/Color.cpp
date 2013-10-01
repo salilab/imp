@@ -70,8 +70,8 @@ Color get_rgb_color(double f) {
 }
 
 Color get_hot_color(double f) {
-  static Color colors[] = {Color(0, 0, 0), Color(1, 0, 0), Color(1, 1, 0),
-                           Color(1, 1, 1)};
+  static Color colors[] = {Color(0, 0, 0), Color(1, 0, 0),
+                           Color(1, 1, 0), Color(1, 1, 1)};
   return get_color_map_color(f, colors, sizeof(colors) / sizeof(Color));
 }
 
@@ -81,9 +81,9 @@ Color get_grey_color(double f) {
 }
 
 Color get_gnuplot_color(double f) {
-  static Color colors[] = {Color(0, 0, 0), Color(.5, 0, 1), Color(.6, 0, .6),
-                           Color(.75, .25, 0), Color(.9, .5, 0),
-                           Color(1, 1, 0)};
+  static Color colors[] = {Color(0, 0, 0),   Color(.5, 0, 1),
+                           Color(.6, 0, .6), Color(.75, .25, 0),
+                           Color(.9, .5, 0), Color(1, 1, 0)};
   return get_color_map_color(f, colors, sizeof(colors) / sizeof(Color));
 }
 

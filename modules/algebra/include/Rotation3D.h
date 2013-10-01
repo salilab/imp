@@ -253,8 +253,8 @@ inline double get_distance(const Rotation3D &r0, const Rotation3D &r1) {
    angleToQuaternion/index.htm
    See Rotation3D
 */
-IMPALGEBRAEXPORT Rotation3D get_rotation_about_normalized_axis(
-    const Vector3D &axis_norm, double angle);
+IMPALGEBRAEXPORT Rotation3D
+    get_rotation_about_normalized_axis(const Vector3D &axis_norm, double angle);
 
 //! Generate a Rotation3D object from a rotation around an axis
 /**
@@ -266,24 +266,23 @@ IMPALGEBRAEXPORT Rotation3D get_rotation_about_normalized_axis(
    angleToQuaternion/index.htm
    See Rotation3D
 */
-IMPALGEBRAEXPORT Rotation3D get_rotation_about_axis(const Vector3D &axis,
-                                                    double angle);
+IMPALGEBRAEXPORT Rotation3D
+    get_rotation_about_axis(const Vector3D &axis, double angle);
 
 //! Create a rotation from the first vector to the second one.
 /** See Rotation3D
  */
-IMPALGEBRAEXPORT Rotation3D get_rotation_taking_first_to_second(
-    const Vector3D &v1, const Vector3D &v2);
+IMPALGEBRAEXPORT Rotation3D
+    get_rotation_taking_first_to_second(const Vector3D &v1, const Vector3D &v2);
 
 //! Generate a Rotation3D object from a rotation matrix
 /**
    See Rotation3D
 */
-IMPALGEBRAEXPORT Rotation3D get_rotation_from_matrix(double m00, double m01,
-                                                     double m02, double m10,
-                                                     double m11, double m12,
-                                                     double m20, double m21,
-                                                     double m22);
+IMPALGEBRAEXPORT Rotation3D
+    get_rotation_from_matrix(double m00, double m01, double m02, double m10,
+                             double m11, double m12, double m20, double m21,
+                             double m22);
 
 //! Pick a rotation at random from all possible rotations
 /** See Rotation3D */
@@ -301,8 +300,8 @@ IMPALGEBRAEXPORT Rotation3D get_random_rotation_3d();
 
     See Rotation3D
 */
-IMPALGEBRAEXPORT Rotation3D get_random_rotation_3d(const Rotation3D &center,
-                                                   double distance);
+IMPALGEBRAEXPORT Rotation3D
+    get_random_rotation_3d(const Rotation3D &center, double distance);
 
 //! Cover the space of rotations evenly
 /** If you care about the distance between samples instead of the number
@@ -312,8 +311,8 @@ IMPALGEBRAEXPORT Rotation3D get_random_rotation_3d(const Rotation3D &center,
 
     Creates at least num_points rotations.
 */
-IMPALGEBRAEXPORT Rotation3Ds get_uniform_cover_rotations_3d(
-    unsigned int num_points);
+IMPALGEBRAEXPORT Rotation3Ds
+    get_uniform_cover_rotations_3d(unsigned int num_points);
 
 //! Generates a nondegenerate set of Euler angles with a delta resolution
 /**
@@ -366,8 +365,8 @@ inline Rotation3D compose(const Rotation3D &a, const Rotation3D &b) {
     See Rotation3D
     See FixedXYZ
 */
-IMPALGEBRAEXPORT Rotation3D get_rotation_from_fixed_xyz(double xr, double yr,
-                                                        double zr);
+IMPALGEBRAEXPORT Rotation3D
+    get_rotation_from_fixed_xyz(double xr, double yr, double zr);
 
 //! Initialize a rotation from euler angles
 /**
@@ -380,9 +379,8 @@ IMPALGEBRAEXPORT Rotation3D get_rotation_from_fixed_xyz(double xr, double yr,
    about the former z-axis.
    See Rotation3D
 */
-IMPALGEBRAEXPORT Rotation3D get_rotation_from_fixed_zxz(double phi,
-                                                        double theta,
-                                                        double psi);
+IMPALGEBRAEXPORT Rotation3D
+    get_rotation_from_fixed_zxz(double phi, double theta, double psi);
 
 //! Generate a rotation object from Euler Angles
 /** \note The first rotation is by an angle about the z-axis.
@@ -393,8 +391,8 @@ IMPALGEBRAEXPORT Rotation3D get_rotation_from_fixed_zxz(double phi,
     \param[in] Psi Third Euler angle (radians) defining the rotation (Z axis)
     See Rotation3D
 */
-IMPALGEBRAEXPORT Rotation3D get_rotation_from_fixed_zyz(double Rot, double Tilt,
-                                                        double Psi);
+IMPALGEBRAEXPORT Rotation3D
+    get_rotation_from_fixed_zyz(double Rot, double Tilt, double Psi);
 
 //! A simple class for returning XYZ Euler angles
 class FixedXYZ : public GeometricPrimitiveD<3> {
@@ -410,9 +408,8 @@ class FixedXYZ : public GeometricPrimitiveD<3> {
   double get_x() const { return v_[0]; }
   double get_y() const { return v_[1]; }
   double get_z() const { return v_[2]; }
-  IMP_SHOWABLE_INLINE(FixedXYZ, {
-    out << v_[0] << " " << v_[1] << " " << v_[2];
-  });
+  IMP_SHOWABLE_INLINE(FixedXYZ,
+                      { out << v_[0] << " " << v_[1] << " " << v_[2]; });
 };
 
 IMP_VALUES(FixedXYZ, FixedXYZs);
@@ -441,8 +438,8 @@ inline Rotation3D get_interpolated(const Rotation3D &a, const Rotation3D &b,
     given x and y axes.
     The two axis must be perpendicular unit vectors.
 */
-IMPALGEBRAEXPORT Rotation3D get_rotation_from_x_y_axes(const Vector3D &x,
-                                                       const Vector3D &y);
+IMPALGEBRAEXPORT Rotation3D
+    get_rotation_from_x_y_axes(const Vector3D &x, const Vector3D &y);
 
 //! Decompose a Rotation3D object into a rotation around an axis
 /**

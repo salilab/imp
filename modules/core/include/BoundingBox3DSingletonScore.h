@@ -36,9 +36,8 @@ class GenericBoundingBox3DSingletonScore : public SingletonScore {
 
   virtual double evaluate_index(kernel::Model *m, kernel::ParticleIndex p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                         const kernel::ParticleIndexes &pis) const
-      IMP_OVERRIDE {
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE {
     return IMP::kernel::get_particles(m, pis);
   }
   IMP_SINGLETON_SCORE_METHODS(GenericBoundingBox3DSingletonScore);
@@ -53,11 +52,13 @@ GenericBoundingBox3DSingletonScore<UF>::GenericBoundingBox3DSingletonScore(
     : f_(f), bb_(bb) {
   IMP_USAGE_CHECK(std::abs(f_->evaluate(0)) < .1,
                   "The unary function should return "
-                  " 0 when passed a value of 0. Not " << f_->evaluate(0));
+                  " 0 when passed a value of 0. Not "
+                      << f_->evaluate(0));
 }
 template <class UF>
 double GenericBoundingBox3DSingletonScore<UF>::evaluate_index(
-    kernel::Model *m, kernel::ParticleIndex pi, DerivativeAccumulator *da) const {
+    kernel::Model *m, kernel::ParticleIndex pi,
+    DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
   core::XYZ d(m, pi);
   algebra::Vector3D cp;

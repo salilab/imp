@@ -43,8 +43,8 @@ class IMPSTATISTICSEXPORT KMLProxy {
                   participating in the clustering
   \param[in] num_centers  The number of clusters
    */
-  void initialize(kernel::Model *m, const kernel::Particles &ps, const FloatKeys &atts,
-                  unsigned int num_centers);
+  void initialize(kernel::Model *m, const kernel::Particles &ps,
+                  const FloatKeys &atts, unsigned int num_centers);
   //! Run the k-means algorithm
   /**
   \param[in] ps a set of particles which are the initial k-means.
@@ -92,8 +92,8 @@ class IMPSTATISTICSEXPORT KMLProxy {
 
   // our data
   kernel::Model *m_;
-  kernel::Particles ps_;                 // input particles
-  kernel::Particles centroids_;          // the k means as particles
+  kernel::Particles ps_;         // input particles
+  kernel::Particles centroids_;  // the k means as particles
   base::Vector<FloatKey> atts_;  // the attributes k-means in minimized on
   std::map<kernel::Particle *, unsigned int> assignment_;
   // the assignment of input data to centers

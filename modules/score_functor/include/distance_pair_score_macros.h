@@ -29,10 +29,11 @@
                                                                        \
    public:                                                             \
     Name Args;                                                         \
-    double evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &pip,      \
+    double evaluate_index(kernel::Model *m,                            \
+                          const kernel::ParticleIndexPair &pip,        \
                           DerivativeAccumulator *da) const;            \
-    kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,                           \
-                                   const kernel::ParticleIndexes &pis) const;  \
+    kernel::ModelObjectsTemp do_get_inputs(                            \
+        kernel::Model *m, const kernel::ParticleIndexes &pis) const;   \
     IMP_OBJECT_METHODS(Name);                                          \
   }
 

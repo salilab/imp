@@ -21,9 +21,9 @@ void validate_partitional_clustering(PartitionalClustering* pc,
       Ints cluster = pc->get_cluster(i);
       for (unsigned int j = 0; j < cluster.size(); ++j) {
         int e = cluster[j];
-        IMP_USAGE_CHECK(
-            used.find(e) == used.end(),
-            "Element " << e << " has been used twice: " << Showable(pc));
+        IMP_USAGE_CHECK(used.find(e) == used.end(),
+                        "Element " << e
+                                   << " has been used twice: " << Showable(pc));
         used.insert(e);
       }
     }

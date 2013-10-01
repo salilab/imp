@@ -15,8 +15,7 @@ IMPMISC_BEGIN_NAMESPACE
 DecayPairContainerOptimizerState::DecayPairContainerOptimizerState(
     PairPredicate *pred, const kernel::ParticlePairsTemp &initial_list,
     std::string name)
-  : OptimizerState(initial_list[0][0]->get_model(),
-                           name),
+    : OptimizerState(initial_list[0][0]->get_model(), name),
       pred_(pred),
       input_(new container::ListPairContainer(initial_list, "decay input")) {
   output_ = new IMP::internal::InternalDynamicListPairContainer(

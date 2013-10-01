@@ -44,7 +44,7 @@ void load_frame(RMF::FileConstHandle file, int frame) {
       }
     }
   }
-  catch (const std::exception & e) {
+  catch (const std::exception& e) {
     IMP_THROW(e.what(), IOException);
   }
 }
@@ -86,7 +86,7 @@ void save_frame(RMF::FileHandle file, int frame, std::string name) {
                  << " frames after writing frame " << frame);
     file.flush();
   }
-  catch (const std::exception & e) {
+  catch (const std::exception& e) {
     IMP_THROW(e.what(), IOException);
   }
 }

@@ -67,7 +67,8 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
   void create_flattened_restraints(const kernel::RestraintsTemp &rs);
   void create_scoring_functions();
   void do_non_incremental_evaluate();
-  Data create_data(kernel::ParticleIndex pi, const base::map<kernel::Restraint *, int> &all,
+  Data create_data(kernel::ParticleIndex pi,
+                   const base::map<kernel::Restraint *, int> &all,
                    const kernel::Restraints &dummies) const;
 
  public:
@@ -83,8 +84,8 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
       @param name The name template to use for the scoring function.
 */
   IncrementalScoringFunction(const kernel::ParticlesTemp &to_move,
-                             const kernel::RestraintsTemp &rs, double weight = 1.0,
-                             double max = NO_MAX,
+                             const kernel::RestraintsTemp &rs,
+                             double weight = 1.0, double max = NO_MAX,
                              std::string name =
                                  "IncrementalScoringFunction%1%");
   /** Undo the last moved particles. This is similar in effect to, but perhaps
@@ -104,7 +105,7 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
   void clear_close_pair_scores();
   /** \deprecated_at{2.1} Use get_movable_indexes() instead. */
   IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
-    kernel::ParticleIndexes get_movable_particles() const {
+  kernel::ParticleIndexes get_movable_particles() const {
     IMPCORE_DEPRECATED_FUNCTION_DEF(2.1, "Use get_movable_indexes()");
     return get_movable_indexes();
   }

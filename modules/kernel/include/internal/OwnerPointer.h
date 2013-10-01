@@ -12,8 +12,8 @@
 #include <IMP/kernel/kernel_config.h>
 #include <IMP/base/internal/PointerBase.h>
 
-IMPKERNEL_DEPRECATED_HEADER
-  (2.1, "Use base::PointerMember instead of OwnerPointer");
+IMPKERNEL_DEPRECATED_HEADER(2.1,
+                            "Use base::PointerMember instead of OwnerPointer");
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 

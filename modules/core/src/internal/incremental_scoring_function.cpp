@@ -64,7 +64,8 @@ DummyPairContainer::DummyPairContainer(SingletonContainer *c,
 }
 
 ModelObjectsTemp DummyPairContainer::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret = cpf_->get_inputs(get_model(), c_->get_indexes());
+  kernel::ModelObjectsTemp ret =
+      cpf_->get_inputs(get_model(), c_->get_indexes());
   ret.push_back(c_);
   return ret;
 }
@@ -85,7 +86,8 @@ ParticleIndexPairs DummyPairContainer::get_range_indexes() const {
 
 ParticleIndexes DummyPairContainer::get_all_possible_indexes() const {
   kernel::ParticleIndexes ret = c_->get_all_possible_indexes();
-  kernel::ModelObjectsTemp mos = cpf_->get_inputs(get_model(), c_->get_indexes());
+  kernel::ModelObjectsTemp mos =
+      cpf_->get_inputs(get_model(), c_->get_indexes());
   for (unsigned int i = 0; i < mos.size(); ++i) {
     kernel::ModelObject *o = mos[i];
     kernel::Particle *p = dynamic_cast<kernel::Particle *>(o);
@@ -123,7 +125,8 @@ void NBLScoring::update_dependencies(const DependencyGraph &dg,
                                      const DependencyGraphVertexIndex &index) {
   for (unsigned int i = 0; i < to_move_.size(); ++i) {
     kernel::Particle *p = cache_.get_generator().m_->get_particle(to_move_[i]);
-    kernel::ParticlesTemp ps = get_dependent_particles(p, kernel::ParticlesTemp(), dg, index);
+    kernel::ParticlesTemp ps =
+        get_dependent_particles(p, kernel::ParticlesTemp(), dg, index);
     // intersect that with the ones I care about
     kernel::ParticleIndexes pis = IMP::internal::get_index(ps);
     std::sort(pis.begin(), pis.end());
@@ -185,15 +188,16 @@ Restraint *NBLScoring::create_restraint() const {
   lsc->set(cache_.get_generator().pis_);
   IMP_NEW(DummyPairContainer, cpc, (lsc, default_cpf(1000)));
 
-  base::Pointer<kernel::Restraint> ret
-    = new IMP::internal::InternalPairsRestraint(
-      cache_.get_generator().score_.get(), cpc.get());
+  base::Pointer<kernel::Restraint> ret =
+      new IMP::internal::InternalPairsRestraint(
+          cache_.get_generator().score_.get(), cpc.get());
   ret->set_model(cache_.get_generator().m_);
   return ret.release();
 }
 
-NBGenerator::NBGenerator(kernel::Model *m, const kernel::ParticleIndexes &pis, PairScore *ps,
-                         double distance, const PairPredicates &pfs) {
+NBGenerator::NBGenerator(kernel::Model *m, const kernel::ParticleIndexes &pis,
+                         PairScore *ps, double distance,
+                         const PairPredicates &pfs) {
   m_ = m;
   score_ = ps;
   pis_ = pis;
@@ -262,8 +266,8 @@ NBGenerator::result_type NBGenerator::operator()(argument_type a) const {
   return ret;
 }
 
-NBChecker::NBChecker(kernel::Model *m, const kernel::ParticleIndexes &pis, PairScore *score,
-                     double d, const PairPredicates &filt)
+NBChecker::NBChecker(kernel::Model *m, const kernel::ParticleIndexes &pis,
+                     PairScore *score, double d, const PairPredicates &filt)
     : m_(m), pis_(pis), score_(score), distance_(d), filt_(filt) {}
 bool NBChecker::operator()(const NBGenerator::result_type &vals) const {
   IMP_NEW(GridClosePairsFinder, gcpf, ());
@@ -280,13 +284,15 @@ bool NBChecker::operator()(const NBGenerator::result_type &vals) const {
     double score = score_->evaluate_index(m_, found[i], nullptr);
     if (score == 0) continue;
     bool has = vals_index.find(found[i]) != vals_index.end() ||
-               vals_index.find(kernel::ParticleIndexPair(found[i][1], found[i][0])) !=
-                   vals_index.end();
+               vals_index.find(kernel::ParticleIndexPair(
+                   found[i][1], found[i][0])) != vals_index.end();
     if (!has) {
-      IMP_WARN("Can't find pair "
-               << found[i] << " in list " << vals << " at distance "
-               << get_distance(XYZR(m_, found[i][0]), XYZR(m_, found[i][1]))
-               << " with threshold " << distance_ << std::endl);
+      IMP_WARN("Can't find pair " << found[i] << " in list " << vals
+                                  << " at distance "
+                                  << get_distance(XYZR(m_, found[i][0]),
+                                                  XYZR(m_, found[i][1]))
+                                  << " with threshold " << distance_
+                                  << std::endl);
       return false;
     }
   }

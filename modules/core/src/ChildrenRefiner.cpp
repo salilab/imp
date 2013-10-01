@@ -19,7 +19,8 @@ bool ChildrenRefiner::get_can_refine(kernel::Particle *p) const {
   return core::Hierarchy(p, traits_).get_number_of_children() != 0;
 }
 
-const kernel::ParticlesTemp ChildrenRefiner::get_refined(kernel::Particle *p) const {
+const kernel::ParticlesTemp ChildrenRefiner::get_refined(
+    kernel::Particle *p) const {
   Hierarchy hd(p, traits_);
   kernel::ParticlesTemp ret(hd.get_number_of_children());
   for (unsigned int i = 0; i < ret.size(); ++i) {

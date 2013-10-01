@@ -45,8 +45,8 @@ Subsets get_subsets(const SubsetGraph &g) {
 
 SubsetGraph get_restraint_graph(ScoringFunctionAdaptor in,
                                 const ParticleStatesTable *pst) {
-  kernel::RestraintsTemp rs
-    = IMP::create_decomposition(in->create_restraints());
+  kernel::RestraintsTemp rs =
+      IMP::create_decomposition(in->create_restraints());
   // ScoreStatesTemp ss= get_required_score_states(rs);
   SubsetGraph ret(rs.size());  // + ss.size());
   IMP_LOG_TERSE("Creating restraint graph on " << rs.size() << " restraints."
@@ -64,14 +64,14 @@ SubsetGraph get_restraint_graph(ScoringFunctionAdaptor in,
     kernel::ParticlesTemp t = get_dependent_particles(
         ps[i], kernel::ParticlesTemp(ps.begin(), ps.end()), dg, index);
     for (unsigned int j = 0; j < t.size(); ++j) {
-      IMP_USAGE_CHECK(
-          map.find(t[j]) == map.end(),
-          "Currently particles which depend on more "
-              << "than one particle "
-              << "from the input set are not supported."
-              << "  kernel::Particle \"" << t[j]->get_name() << "\" depends on \""
-              << ps[i]->get_name() << "\" and \""
-              << ps[map.find(t[j])->second]->get_name() << "\"");
+      IMP_USAGE_CHECK(map.find(t[j]) == map.end(),
+                      "Currently particles which depend on more "
+                          << "than one particle "
+                          << "from the input set are not supported."
+                          << "  kernel::Particle \"" << t[j]->get_name()
+                          << "\" depends on \"" << ps[i]->get_name()
+                          << "\" and \""
+                          << ps[map.find(t[j])->second]->get_name() << "\"");
       map[t[j]] = i;
     }
     IMP_IF_LOG(VERBOSE) {
@@ -364,7 +364,8 @@ InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
                                        const kernel::ParticlesTemp &ps) {
   if (ps.empty()) return InteractionGraph();
   InteractionGraph ret(ps.size());
-  kernel::Restraints rs = kernel::create_decomposition(rsi->create_restraints());
+  kernel::Restraints rs =
+      kernel::create_decomposition(rsi->create_restraints());
   // kernel::Model *m= ps[0]->get_model();
   IMP::base::map<ModelObject *, int> map;
   InteractionGraphVertexName pm = boost::get(boost::vertex_name, ret);
@@ -378,14 +379,14 @@ InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
     kernel::ParticlesTemp t = get_dependent_particles(
         ps[i], kernel::ParticlesTemp(ps.begin(), ps.end()), dg, index);
     for (unsigned int j = 0; j < t.size(); ++j) {
-      IMP_USAGE_CHECK(
-          map.find(t[j]) == map.end(),
-          "Currently particles which depend on more "
-              << "than one particle "
-              << "from the input set are not supported."
-              << "  kernel::Particle \"" << t[j]->get_name() << "\" depends on \""
-              << ps[i]->get_name() << "\" and \""
-              << ps[map.find(t[j])->second]->get_name() << "\"");
+      IMP_USAGE_CHECK(map.find(t[j]) == map.end(),
+                      "Currently particles which depend on more "
+                          << "than one particle "
+                          << "from the input set are not supported."
+                          << "  kernel::Particle \"" << t[j]->get_name()
+                          << "\" depends on \"" << ps[i]->get_name()
+                          << "\" and \""
+                          << ps[map.find(t[j])->second]->get_name() << "\"");
       map[t[j]] = i;
     }
     IMP_IF_LOG(VERBOSE) {
@@ -399,8 +400,7 @@ InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
   }
   IMP::Restraints all_rs = IMP::get_restraints(rs);
   for (kernel::Restraints::const_iterator it = all_rs.begin();
-       it != all_rs.end();
-       ++it) {
+       it != all_rs.end(); ++it) {
     kernel::ModelObjectsTemp pl = (*it)->get_inputs();
     add_edges(ps, pl, map, *it, ret);
   }

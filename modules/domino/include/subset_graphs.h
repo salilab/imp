@@ -28,7 +28,8 @@ IMP_GRAPH(SubsetGraph, undirected, Subset, int, out << vertex);
 
     See \ref graphs "Graphs in IMP" for more information.
  */
-IMP_GRAPH(InteractionGraph, undirected, kernel::Particle *, base::Pointer<base::Object>,
+IMP_GRAPH(InteractionGraph, undirected, kernel::Particle *,
+          base::Pointer<base::Object>,
           out << vertex->get_name() << "\n[" << vertex->get_index() << "]");
 
 //! Gets all of the Subsets of a SubsetGraph
@@ -50,8 +51,8 @@ IMPDOMINOEXPORT SubsetGraph get_junction_tree(const InteractionGraph &ig);
 #ifndef IMP_DOXYGEN
 /** \name Debugging Junction Trees
     @{ */
-IMPDOMINOEXPORT InteractionGraph get_triangulated(
-    const InteractionGraph &input);
+IMPDOMINOEXPORT InteractionGraph
+    get_triangulated(const InteractionGraph &input);
 
 IMP_WEIGHTED_GRAPH(CliqueGraph, undirected, Subset, out << vertex);
 
@@ -89,11 +90,13 @@ IMPDOMINOEXPORT SubsetGraph get_restraint_graph(ScoringFunctionAdaptor rs,
     functionality may change without notice.
     @{
  */
-IMPDOMINOEXPORT InteractionGraph get_interaction_graph(
-    ScoringFunctionAdaptor rs, const ParticleStatesTable *pst);
+IMPDOMINOEXPORT InteractionGraph
+    get_interaction_graph(ScoringFunctionAdaptor rs,
+                          const ParticleStatesTable *pst);
 
-IMPDOMINOEXPORT InteractionGraph get_interaction_graph(
-    ScoringFunctionAdaptor rs, const kernel::ParticlesTemp &pst);
+IMPDOMINOEXPORT InteractionGraph
+    get_interaction_graph(ScoringFunctionAdaptor rs,
+                          const kernel::ParticlesTemp &pst);
 
 /** Assuming that all the particles have Cartesian coordinates,
     output edges corresponding to the edges in the interaction graph.
@@ -139,8 +142,8 @@ IMPDOMINOEXPORT MergeTree get_merge_tree(const SubsetGraph &junction_tree);
     \note the merge tree is not nececessarily deterministic (you can
     get different answers if you run it different times with the same inputs).
  */
-IMPDOMINOEXPORT MergeTree get_balanced_merge_tree(
-    const SubsetGraph &junction_tree);
+IMPDOMINOEXPORT MergeTree
+    get_balanced_merge_tree(const SubsetGraph &junction_tree);
 
 IMPDOMINOEXPORT bool get_is_merge_tree(const MergeTree &tree, Subset all,
                                        bool verbose = true);
@@ -155,8 +158,8 @@ IMPDOMINOEXPORT bool get_is_merge_tree(const MergeTree &tree, Subset all,
 IMPDOMINOEXPORT void write_merge_tree(const MergeTree &tree,
                                       const kernel::ParticlesTemp &ps,
                                       std::ostream &out);
-IMPDOMINOEXPORT MergeTree read_merge_tree(std::istream &input,
-                                          const kernel::ParticlesTemp &ps);
+IMPDOMINOEXPORT MergeTree
+    read_merge_tree(std::istream &input, const kernel::ParticlesTemp &ps);
 /** @} */
 
 IMPDOMINO_END_NAMESPACE

@@ -71,8 +71,8 @@ IntPairs Fragment::get_residue_index_ranges() const {
   return ret;
 }
 
-void Fragment::set_residue_indexes(kernel::Model *m,
-                                   kernel::ParticleIndex pi, const IntPairs &ris) {
+void Fragment::set_residue_indexes(kernel::Model *m, kernel::ParticleIndex pi,
+                                   const IntPairs &ris) {
   Ints begins(ris.size());
   Ints ends(ris.size());
   for (unsigned int i = 0; i < ris.size(); ++i) {
@@ -97,8 +97,8 @@ void Fragment::set_residue_indexes(kernel::Model *m,
   }
 }
 
-void Fragment::set_residue_indexes(kernel::Model *m,
-                                   kernel::ParticleIndex pi, Ints o) {
+void Fragment::set_residue_indexes(kernel::Model *m, kernel::ParticleIndex pi,
+                                   Ints o) {
   if (o.empty()) {
     set_residue_indexes(m, pi, IntPairs());
     return;
@@ -115,7 +115,7 @@ void Fragment::set_residue_indexes(kernel::Model *m,
   }
   pairs.push_back(IntPair(o[begin], o.back() + 1));
   set_residue_indexes(m, pi, pairs);
-  using IMP::operator<< ;
+  using IMP::operator<<;
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i = 0; i < o.size(); ++i) {
       IMP_INTERNAL_CHECK(Fragment(m, pi).get_contains_residue(o[i]),

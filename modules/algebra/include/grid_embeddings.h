@@ -250,12 +250,10 @@ class LogEmbeddingD {
     }
     set_unit_cell(cell, bases);
     if (bound_centers) {
-      VectorD<D> lower_corner =
-          get_center(GridIndexD<D>(typename GridIndexD<D>::Filled(),
-                                   bases.get_dimension(), 0));
-      VectorD<D> upper_corner =
-          get_coordinates(get_uniform_offset(GridIndexD<D>(counts.begin(),
-                                                           counts.end()), -.5));
+      VectorD<D> lower_corner = get_center(GridIndexD<D>(
+          typename GridIndexD<D>::Filled(), bases.get_dimension(), 0));
+      VectorD<D> upper_corner = get_coordinates(
+          get_uniform_offset(GridIndexD<D>(counts.begin(), counts.end()), -.5));
       VectorD<D> extents = upper_corner - lower_corner;
       VectorD<D> uc = cell;
       VectorD<D> orig = uc;
@@ -339,8 +337,8 @@ class LogEmbeddingD {
     return get_bounding_box(ExtendedGridIndexD<D>(ei.begin(), ei.end()));
   }
   /** @} */
-  IMP_SHOWABLE_INLINE(LogEmbeddingD,
-                      out << "origin: " << origin_ << " base: " << base_);
+  IMP_SHOWABLE_INLINE(LogEmbeddingD, out << "origin: " << origin_
+                                         << " base: " << base_);
 };
 
 #if !defined(IMP_DOXYGEN)

@@ -64,8 +64,8 @@ inline void set_model_ranges(kernel::Model *m) {
   m->set_range(rigid_body_data().quaternion_[3], FloatRange(0, 1));
 }
 
-inline bool get_has_required_attributes_for_body(kernel::Model *m,
-                                                 kernel::ParticleIndexAdaptor pi) {
+inline bool get_has_required_attributes_for_body(
+    kernel::Model *m, kernel::ParticleIndexAdaptor pi) {
   IMP_USAGE_CHECK(
       (m->get_has_attribute(rigid_body_data().quaternion_[0], pi) &&
        m->get_has_attribute(rigid_body_data().quaternion_[1], pi) &&
@@ -80,8 +80,8 @@ inline bool get_has_required_attributes_for_body(kernel::Model *m,
   return m->get_has_attribute(rigid_body_data().quaternion_[0], pi);
 }
 
-inline bool get_has_required_attributes_for_member(kernel::Model *m,
-                                                   kernel::ParticleIndexAdaptor p) {
+inline bool get_has_required_attributes_for_member(
+    kernel::Model *m, kernel::ParticleIndexAdaptor p) {
   if (!m->get_has_attribute(rigid_body_data().body_, p))
     return false;
   else {
@@ -96,8 +96,8 @@ inline bool get_has_required_attributes_for_member(kernel::Model *m,
   }
 }
 
-inline bool get_has_required_attributes_for_non_member(kernel::Model *m,
-                                                   kernel::ParticleIndexAdaptor p) {
+inline bool get_has_required_attributes_for_non_member(
+    kernel::Model *m, kernel::ParticleIndexAdaptor p) {
   if (!m->get_has_attribute(rigid_body_data().non_body_, p))
     return false;
   else {
@@ -112,8 +112,8 @@ inline bool get_has_required_attributes_for_non_member(kernel::Model *m,
   }
 }
 
-inline bool get_has_required_attributes_for_body_member(kernel::Model *m,
-                                                    kernel::ParticleIndexAdaptor p) {
+inline bool get_has_required_attributes_for_body_member(
+    kernel::Model *m, kernel::ParticleIndexAdaptor p) {
   if (!m->get_has_attribute(rigid_body_data().body_, p)) return false;
   for (unsigned int i = 0; i < 4; ++i) {
     if (!m->get_has_attribute(rigid_body_data().lquaternion_[i], p)) {
@@ -136,8 +136,8 @@ inline void add_required_attributes_for_body(kernel::Model *m,
     XYZ::setup_particle(m, p);
   }
 }
-inline void remove_required_attributes_for_body(kernel::Model *m,
-                                                kernel::ParticleIndexAdaptor p) {
+inline void remove_required_attributes_for_body(
+    kernel::Model *m, kernel::ParticleIndexAdaptor p) {
   for (unsigned int i = 0; i < 4; ++i) {
     m->remove_attribute(rigid_body_data().quaternion_[i], p);
   }
@@ -152,50 +152,47 @@ inline void remove_required_attributes_for_body(kernel::Model *m,
   }
 }
 
-inline void add_required_attributes_for_member(kernel::Model *m,
-                                               kernel::ParticleIndexAdaptor p,
-                                               kernel::ParticleIndexAdaptor rb) {
+inline void add_required_attributes_for_member(
+    kernel::Model *m, kernel::ParticleIndexAdaptor p,
+    kernel::ParticleIndexAdaptor rb) {
   for (unsigned int i = 0; i < 3; ++i) {
     m->add_attribute(rigid_body_data().child_keys_[i], p, 0);
   }
-  IMP_INTERNAL_CHECK(m->get_internal_coordinates(p)
-                     .get_magnitude() <
-          .01,
-      "Bad initialization");
+  IMP_INTERNAL_CHECK(m->get_internal_coordinates(p).get_magnitude() < .01,
+                     "Bad initialization");
   m->add_attribute(internal::rigid_body_data().body_, p, rb);
 }
 
-inline void add_required_attributes_for_non_member(kernel::Model *m,
-                                                   kernel::ParticleIndexAdaptor p,
-                                                   kernel::ParticleIndexAdaptor rb) {
+inline void add_required_attributes_for_non_member(
+    kernel::Model *m, kernel::ParticleIndexAdaptor p,
+    kernel::ParticleIndexAdaptor rb) {
   for (unsigned int i = 0; i < 3; ++i) {
     m->add_attribute(rigid_body_data().child_keys_[i], p, 0);
   }
-  IMP_INTERNAL_CHECK(m->get_internal_coordinates(p)
-                     .get_magnitude() < .01,
-      "Bad initialization");
+  IMP_INTERNAL_CHECK(m->get_internal_coordinates(p).get_magnitude() < .01,
+                     "Bad initialization");
   m->add_attribute(internal::rigid_body_data().non_body_, p, rb);
 }
 
-inline void add_required_attributes_for_body_member(kernel::Model *m,
-                                                    kernel::ParticleIndexAdaptor p,
-                                                    kernel::ParticleIndexAdaptor rb) {
+inline void add_required_attributes_for_body_member(
+    kernel::Model *m, kernel::ParticleIndexAdaptor p,
+    kernel::ParticleIndexAdaptor rb) {
   add_required_attributes_for_member(m, p, rb);
   for (unsigned int i = 0; i < 4; ++i) {
     m->add_attribute(rigid_body_data().lquaternion_[i], p, 0);
   }
 }
 
-inline void remove_required_attributes_for_member(kernel::Model *m,
-                                                  kernel::ParticleIndexAdaptor p) {
+inline void remove_required_attributes_for_member(
+    kernel::Model *m, kernel::ParticleIndexAdaptor p) {
   for (unsigned int i = 0; i < 3; ++i) {
     m->remove_attribute(rigid_body_data().child_keys_[i], p);
   }
   m->remove_attribute(internal::rigid_body_data().body_, p);
 }
 
-inline void remove_required_attributes_for_body_member(kernel::Model *m,
-                                                       kernel::ParticleIndexAdaptor p) {
+inline void remove_required_attributes_for_body_member(
+    kernel::Model *m, kernel::ParticleIndexAdaptor p) {
   remove_required_attributes_for_member(m, p);
   for (unsigned int i = 0; i < 4; ++i) {
     m->remove_attribute(rigid_body_data().lquaternion_[i], p);

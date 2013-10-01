@@ -16,7 +16,8 @@ IMPATOM_BEGIN_NAMESPACE
 AngleSingletonScore::AngleSingletonScore(UnaryFunction *f)
     : SingletonScore("AngleSingletonScore%1%"), f_(f) {}
 
-double AngleSingletonScore::evaluate_index(kernel::Model *m, kernel::ParticleIndex pi,
+double AngleSingletonScore::evaluate_index(kernel::Model *m,
+                                           kernel::ParticleIndex pi,
                                            DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
   IMP_USAGE_CHECK(Angle::get_is_setup(m, pi), "Not an angle particle");

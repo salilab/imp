@@ -30,6 +30,7 @@ class IMPATOMEXPORT LennardJones : public IMP::core::XYZR {
                     "Particle must already be an XYZR particle");
     m->add_attribute(get_well_depth_key(), pi, well_depth);
   }
+
  public:
   IMP_DECORATOR_METHODS(LennardJones, IMP::core::XYZR);
   IMP_DECORATOR_SETUP_0(LennardJones);
@@ -47,7 +48,7 @@ class IMPATOMEXPORT LennardJones : public IMP::core::XYZR {
   //! Return true if the particle is an instance of a LennardJones
   static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
     return XYZR::get_is_setup(m, pi) &&
-      m->get_has_attribute(get_well_depth_key(), pi);
+           m->get_has_attribute(get_well_depth_key(), pi);
   }
 
   static FloatKey get_well_depth_key();

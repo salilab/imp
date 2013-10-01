@@ -28,13 +28,10 @@ class IMPATOMEXPORT LangevinThermostatOptimizerState : public OptimizerState {
   /** \deprecated_at{2.1} Use constructor that takes indexes. */
   IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
   LangevinThermostatOptimizerState(const kernel::ParticlesTemp &pis,
-                                   double temperature,
-                                   double gamma);
+                                   double temperature, double gamma);
 
-  LangevinThermostatOptimizerState(Model*m,
-                                   ParticleIndexesAdaptor pis,
-                                   double temperature,
-                                   double gamma);
+  LangevinThermostatOptimizerState(Model *m, ParticleIndexesAdaptor pis,
+                                   double temperature, double gamma);
 
   //! Set the particles to use.
   void set_particles(const kernel::Particles &pis) { pis_ = pis; }

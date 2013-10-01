@@ -91,15 +91,15 @@ ParticlesTemp get_dependent_particles(kernel::ModelObject *p,
                                       const ModelObjectsTemp &all,
                                       const DependencyGraph &dg,
                                       const DependencyGraphVertexIndex &index) {
-  return get_dependent<ParticlesTemp, Particle, false>(kernel::ModelObjectsTemp(1, p),
-                                                       all, dg, index);
+  return get_dependent<ParticlesTemp, Particle, false>(
+      kernel::ModelObjectsTemp(1, p), all, dg, index);
 }
 
 RestraintsTemp get_dependent_restraints(
     ModelObject *p, const ModelObjectsTemp &all, const DependencyGraph &dg,
     const DependencyGraphVertexIndex &index) {
-  return get_dependent<RestraintsTemp, Restraint, false>(kernel::ModelObjectsTemp(1, p),
-                                                         all, dg, index);
+  return get_dependent<RestraintsTemp, Restraint, false>(
+      kernel::ModelObjectsTemp(1, p), all, dg, index);
 }
 ScoreStatesTemp get_dependent_score_states(
     ModelObject *p, const ModelObjectsTemp &all, const DependencyGraph &dg,
@@ -112,8 +112,8 @@ ParticlesTemp get_required_particles(kernel::ModelObject *p,
                                      const ModelObjectsTemp &all,
                                      const DependencyGraph &dg,
                                      const DependencyGraphVertexIndex &index) {
-  return get_dependent<ParticlesTemp, Particle, true>(kernel::ModelObjectsTemp(1, p),
-                                                      all, dg, index);
+  return get_dependent<ParticlesTemp, Particle, true>(
+      kernel::ModelObjectsTemp(1, p), all, dg, index);
 }
 
 ScoreStatesTemp get_required_score_states(
@@ -130,9 +130,9 @@ C filter(C c, O *o) {
   std::sort(c.begin(), c.end());
   c.erase(std::unique(c.begin(), c.end()), c.end());
   IMP_INTERNAL_CHECK_VARIABLE(o);
-  IMP_INTERNAL_CHECK(c.empty() || c[0],
-                     "nullptr returned for dependencies of "
-                         << o->get_name() << " of type " << o->get_type_name());
+  IMP_INTERNAL_CHECK(c.empty() || c[0], "nullptr returned for dependencies of "
+                                            << o->get_name() << " of type "
+                                            << o->get_type_name());
   return c;
 }
 
@@ -156,23 +156,23 @@ void add_edge(DependencyGraph &graph,
 // const conversion broken
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   DependencyGraphVertexName names = boost::get(boost::vertex_name, graph);
-  IMP_INTERNAL_CHECK(va != vb,
-                     "Can't depend on itself " << names[va]->get_name());
-  IMP_INTERNAL_CHECK(
-      !get_has_edge(graph, va, vb),
-      "Already has edge between " << names[va]->get_name() << " and "
-                                  << names[vb]->get_name());
+  IMP_INTERNAL_CHECK(va != vb, "Can't depend on itself "
+                                   << names[va]->get_name());
+  IMP_INTERNAL_CHECK(!get_has_edge(graph, va, vb),
+                     "Already has edge between " << names[va]->get_name()
+                                                 << " and "
+                                                 << names[vb]->get_name());
 #endif
   boost::add_edge(va, vb, graph);
-  IMP_INTERNAL_CHECK(get_has_edge(graph, va, vb),
-                     "No has edge between " << va << " and " << vb);
+  IMP_INTERNAL_CHECK(get_has_edge(graph, va, vb), "No has edge between "
+                                                      << va << " and " << vb);
 }
 
 DependencyGraphTraits::vertex_descriptor get_vertex(
     DependencyGraph &, const DependencyGraphVertexIndex &dgi, ModelObject *o) {
   DependencyGraphVertexIndex::const_iterator it = dgi.find(o);
-  IMP_USAGE_CHECK(it != dgi.end(),
-                  "Found unregistered ModelObject " << Showable(o));
+  IMP_USAGE_CHECK(it != dgi.end(), "Found unregistered ModelObject "
+                                       << Showable(o));
   return it->second;
 }
 
@@ -358,22 +358,21 @@ struct cycle_detector : public boost::default_dfs_visitor {
 };
 
 namespace {
-  RestraintsTemp do_get_dependent_restraints(kernel::ModelObject *mo) {
-    RestraintsTemp ret;
-    Restraint *r = dynamic_cast<Restraint*>(mo);
-    if (r) {
-      ret.push_back(r);
-    }
-    BOOST_FOREACH(kernel::ModelObject *cur,
-                  mo->get_model()->get_dependency_graph_outputs(mo)) {
-      ret += do_get_dependent_restraints(cur);
-    }
-    return ret;
+RestraintsTemp do_get_dependent_restraints(kernel::ModelObject *mo) {
+  RestraintsTemp ret;
+  Restraint *r = dynamic_cast<Restraint *>(mo);
+  if (r) {
+    ret.push_back(r);
   }
+  BOOST_FOREACH(kernel::ModelObject * cur,
+                mo->get_model()->get_dependency_graph_outputs(mo)) {
+    ret += do_get_dependent_restraints(cur);
+  }
+  return ret;
+}
 }
 
-RestraintsTemp get_dependent_restraints(kernel::Model *m,
-                                        ParticleIndex pi) {
+RestraintsTemp get_dependent_restraints(kernel::Model *m, ParticleIndex pi) {
   m->set_has_all_dependencies(true);
   ModelObject *cur = m->get_particle(pi);
   return do_get_dependent_restraints(cur);

@@ -16,7 +16,8 @@ IMPDOMINO_BEGIN_NAMESPACE
 ParticleStates::~ParticleStates() {}
 
 unsigned IndexStates::get_number_of_particle_states() const { return n_; }
-void IndexStates::load_particle_state(unsigned int i, kernel::Particle *p) const {
+void IndexStates::load_particle_state(unsigned int i,
+                                      kernel::Particle *p) const {
   p->set_value(k_, i);
 }
 
@@ -24,16 +25,17 @@ unsigned int XYZStates::get_number_of_particle_states() const {
   return states_.size();
 }
 void XYZStates::load_particle_state(unsigned int i, kernel::Particle *p) const {
-  IMP_USAGE_CHECK(i < states_.size(),
-                  "XYZStates::load_particle_state "
-                      << "Out of range " << i << ">= " << states_.size());
+  IMP_USAGE_CHECK(i < states_.size(), "XYZStates::load_particle_state "
+                                          << "Out of range " << i
+                                          << ">= " << states_.size());
   core::XYZ(p).set_coordinates(states_[i]);
 }
 
 unsigned int RigidBodyStates::get_number_of_particle_states() const {
   return states_.size();
 }
-void RigidBodyStates::load_particle_state(unsigned int i, kernel::Particle *p) const {
+void RigidBodyStates::load_particle_state(unsigned int i,
+                                          kernel::Particle *p) const {
   IMP_USAGE_CHECK(i < states_.size(), "Out of range " << i);
   core::RigidBody(p).set_reference_frame(states_[i]);
 }

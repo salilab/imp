@@ -87,7 +87,7 @@
 #define IMP_NOEXCEPT noexcept
 #define IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Name) \
   Name(const Name &) = default;                  \
-  Name& operator=(const Name &) = default
+  Name &operator=(const Name &) = default
 #else
 // probably should be finer here
 #define IMP_NOEXCEPT throw()
@@ -133,9 +133,11 @@
 #define IMP_GCC_PUSH_POP(x)
 
 #define IMP_COMPILER_ENABLE_WARNINGS                                          \
-  IMP_CLANG_PRAGMA(diagnostic push)                                     \
-  /*IMP_CLANG_PRAGMA( diagnostic warning                                \
-    "-Wall")*/                                                          \
+  ;                                                                           \
+  ;                                                                           \
+  IMP_CLANG_PRAGMA(diagnostic push)                                           \
+      /*IMP_CLANG_PRAGMA( diagnostic warning                                  \
+        "-Wall")*/                                                            \
       /*IMP_CLANG_PRAGMA( diagnostic warning "-Wextra") */                    \
       IMP_CLANG_PRAGMA(diagnostic warning "-Wabi")                            \
       IMP_CLANG_PRAGMA(diagnostic warning "-Waddress-of-temporary")           \
@@ -315,6 +317,8 @@
     IMP_CLANG_PRAGMA( diagnostic ignored "-Wc++98-compat")*/
 
 #define IMP_COMPILER_DISABLE_WARNINGS \
+  ;                                   \
+  ;                                   \
   IMP_CLANG_PRAGMA(diagnostic pop)
 
 #elif defined(__GNUC__)
@@ -324,9 +328,10 @@
   -fno-operator-names",]*/
 #if __GNUC__ > 4 || __GNUC_MINOR__ >= 6
 #define IMP_GCC_PUSH_POP(x) IMP_PRAGMA(x)
-#define IMP_GCC_CXX0X_COMPAT                        \
-  IMP_GCC_PRAGMA(diagnostic ignored "-Wc++0x-compa" \
-                                    "t")
+#define IMP_GCC_CXX0X_COMPAT        \
+  IMP_GCC_PRAGMA(diagnostic ignored \
+                 "-Wc++0x-compa"    \
+                 "t")
 #define IMP_GCC_PROTOTYPES \
   IMP_GCC_PRAGMA(diagnostic warning "-Wmissing-declarations")
 
@@ -343,6 +348,8 @@
 #endif
 
 #define IMP_COMPILER_ENABLE_WARNINGS                                 \
+  ;                                                                  \
+  ;                                                                  \
   IMP_GCC_PUSH_POP(GCC diagnostic push)                              \
       IMP_GCC_PRAGMA(diagnostic warning "-Wall")                     \
       IMP_GCC_PRAGMA(diagnostic warning "-Wextra")                   \
@@ -350,19 +357,25 @@
       IMP_GCC_PRAGMA(diagnostic warning "-Wcast-align")              \
       IMP_GCC_PRAGMA(diagnostic warning "-Woverloaded-virtual")      \
       IMP_GCC_PRAGMA(diagnostic warning "-Wdeprecated-declarations") \
-      IMP_GCC_PRAGMA(diagnostic warning "-Wundef")                   \
-      IMP_GCC_PROTOTYPES IMP_GCC_CXX0X_COMPAT
+      IMP_GCC_PRAGMA(diagnostic warning                              \
+                     "-Wundef") IMP_GCC_PROTOTYPES IMP_GCC_CXX0X_COMPAT
 
 #define IMP_COMPILER_DISABLE_WARNINGS \
+  ;                                   \
+  ;                                   \
   IMP_GCC_PUSH_POP(GCC diagnostic pop)
 
 #elif defined(_MSC_VER)
 #define IMP_GCC_PUSH_POP(x)
 
 #define IMP_COMPILER_ENABLE_WARNINGS \
+  ;                                  \
+  ;                                  \
   IMP_VC_PRAGMA(warning(push)) IMP_VC_PRAGMA(warning(disable : 4273))
 
 #define IMP_COMPILER_DISABLE_WARNINGS \
+  ;                                   \
+  ;                                   \
   IMP_VC_PRAGMA(warning(pop))
 
 #define IMP_HELPER_MACRO_PUSH_WARNINGS

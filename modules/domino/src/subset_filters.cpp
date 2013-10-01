@@ -326,32 +326,35 @@ int get_next_equality(int pos, const Assignment &state, const Ints &set) {
 
 IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(
     Exclusion, {
-  for (unsigned int i = 0; i < members.size(); ++i) {
-    if (members[i] != -1) {
-      int si = state[members[i]];
-      for (unsigned int j = 0; j < i; ++j) {
-        if (members[j] != -1) {
-          if (si == state[members[j]]) return false;
-        }
-      }
-    }
-  }
-  return true;
-},
+                 for (unsigned int i = 0; i < members.size(); ++i) {
+                   if (members[i] != -1) {
+                     int si = state[members[i]];
+                     for (unsigned int j = 0; j < i; ++j) {
+                       if (members[j] != -1) {
+                         if (si == state[members[j]])
+                           return false;
+                       }
+                     }
+                   }
+                 }
+                 return true;
+               },
     return get_default_strength(s, excluded, members),
     return get_next_exclusion(pos, state, set));
 
 IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(
     Equality, {
-  unsigned int base = 0;
-  while (base < members.size() && members[base] == -1) ++base;
-  for (unsigned int i = base + 1; i < members.size(); ++i) {
-    if (members[i] != -1) {
-      if (state[members[i]] != state[members[base]]) return false;
-    }
-  }
-  return true;
-},
+                unsigned int base = 0;
+                while (base < members.size() && members[base] == -1)
+                  ++base;
+                for (unsigned int i = base + 1; i < members.size(); ++i) {
+                  if (members[i] != -1) {
+                    if (state[members[i]] != state[members[base]])
+                      return false;
+                  }
+                }
+                return true;
+              },
     return get_default_strength(s, excluded, members),
     return get_next_equality(pos, state, set));
 
@@ -395,30 +398,32 @@ int get_next_permutation(int pos, const Assignment &state, const Ints &set) {
 
 IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(
     Equivalence, {
-  IMP_LOG_TERSE("State is " << state << " and ");
-  IMP_LOG_TERSE(members);
-  IMP_LOG_TERSE(" are the members." << std::endl);
-  int last = -1;
-  for (unsigned int i = 0; i < members.size(); ++i) {
-    if (members[i] == -1) continue;
-    // it is too low an index to work globally
-    /*if (state[members[i]] < members[i]) {
-      IMP_LOG_VERBOSE( "Rejected due to index being too low"
-              << state << " at " << members[i]
-              << std::endl);
-      return false;
-      }*/
-    if (last > state[members[i]]) {
-      IMP_LOG_VERBOSE("Rejected due order" << state << " at " << i
-                                           << " that is " << state[members[i]]
-                                           << " vs " << last << std::endl);
-      return false;
-    }
-    last = state[members[i]];
-  }
-  // IMP_LOG_TERSE( "ok" << std::endl);
-  return true;
-},
+                   IMP_LOG_TERSE("State is " << state << " and ");
+                   IMP_LOG_TERSE(members);
+                   IMP_LOG_TERSE(" are the members." << std::endl);
+                   int last = -1;
+                   for (unsigned int i = 0; i < members.size(); ++i) {
+                     if (members[i] == -1)
+                       continue;
+                     // it is too low an index to work globally
+                     /*if (state[members[i]] < members[i]) {
+                       IMP_LOG_VERBOSE( "Rejected due to index being too low"
+                               << state << " at " << members[i]
+                               << std::endl);
+                       return false;
+                       }*/
+                     if (last > state[members[i]]) {
+                       IMP_LOG_VERBOSE("Rejected due order"
+                                       << state << " at " << i << " that is "
+                                       << state[members[i]] << " vs " << last
+                                       << std::endl);
+                       return false;
+                     }
+                     last = state[members[i]];
+                   }
+                   // IMP_LOG_TERSE( "ok" << std::endl);
+                   return true;
+                 },
     return get_sorted_strength(s, excluded, members),
     return get_next_permutation(pos, state, set));
 
@@ -442,17 +447,19 @@ int get_next_equivalence_exclusion(int pos, const Assignment &state,
 }
 
 IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(
-    EquivalenceAndExclusion, {
-  int last = -1;
-  for (unsigned int i = 0; i < members.size(); ++i) {
-    if (members[i] != -1) {
-      unsigned int si = state[members[i]];
-      if (si < i || static_cast<int>(si) <= last) return false;
-      last = state[members[i]];
-    }
-  }
-  return true;
-},
+    EquivalenceAndExclusion,
+    {
+      int last = -1;
+      for (unsigned int i = 0; i < members.size(); ++i) {
+        if (members[i] != -1) {
+          unsigned int si = state[members[i]];
+          if (si < i || static_cast<int>(si) <= last)
+            return false;
+          last = state[members[i]];
+        }
+      }
+      return true;
+    },
     return get_sorted_strength(s, excluded, members),
     return get_next_equivalence_exclusion(pos, state, set));
 
@@ -726,8 +733,8 @@ class RestraintScoreSubsetFilter : public SubsetFilter {
 
  public:
   RestraintScoreSubsetFilter(RestraintCache *cache,
-                             const kernel::RestraintsTemp rs,
-                             const Subset &s, const Subsets &)
+                             const kernel::RestraintsTemp rs, const Subset &s,
+                             const Subsets &)
       : SubsetFilter("RestraintScoreSubsetFilter%1%"), cache_(cache), rs_(rs) {
     for (unsigned int i = 0; i < rs_.size(); ++i) {
       slices_.push_back(cache->get_slice(rs_[i], s));

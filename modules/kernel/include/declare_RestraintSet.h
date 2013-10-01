@@ -44,10 +44,9 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
   //! Create an empty set that is registered with the model
   RestraintSet(kernel::Model *m, double weight,
                const std::string &name = "RestraintSet %1%");
- //! Create an empty set that is registered with the model
-  RestraintSet(kernel::Model *m,
-               const std::string &name = "RestraintSet %1%");
-   //! Create a set that is registered with the model
+  //! Create an empty set that is registered with the model
+  RestraintSet(kernel::Model *m, const std::string &name = "RestraintSet %1%");
+  //! Create a set that is registered with the model
   RestraintSet(const RestraintsTemp &rs, double weight,
                const std::string &name = "RestraintSet %1%");
   /** \deprecated_at{2.1} Use the constructor that takes a Model. */

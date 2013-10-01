@@ -20,12 +20,13 @@ void CoulombPairScore::calculate_multiplication_factor() {
   static const double permittivity_vacuum = 8.854187818e-12;  // C/V/m
   static const double kcal2joule = 4186.8;
 
-  multiplication_factor_ =
-      avogadro * electron_charge * electron_charge * 1.0e10 /
-      permittivity_vacuum / kcal2joule / (4.0 * PI * relative_dielectric_);
+  multiplication_factor_ = avogadro * electron_charge * electron_charge *
+                           1.0e10 / permittivity_vacuum / kcal2joule /
+                           (4.0 * PI * relative_dielectric_);
 }
 
-double CoulombPairScore::evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &p,
+double CoulombPairScore::evaluate_index(kernel::Model *m,
+                                        const kernel::ParticleIndexPair &p,
                                         DerivativeAccumulator *da) const {
   Charged c0(m, p[0]);
   Charged c1(m, p[1]);

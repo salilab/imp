@@ -21,48 +21,49 @@
 /** \deprecated_at{2.1} Use IMP_DECORATOR_METHODS() instead.
 */
 #define IMP_DECORATOR(Name, Parent)                                     \
-  public:                                                               \
+ public:                                                                \
   /* Should be private but SWIG accesses it through the                 \
      comparison                                                         \
      macros*/ IMP_NO_DOXYGEN(                                           \
-         typedef Parent ParentDecorator);                               \
+      typedef Parent ParentDecorator);                                  \
   Name() : Parent() {}                                                  \
   Name(kernel::Model *m, ParticleIndex id) : Parent(m, id) {            \
     IMP_INTERNAL_CHECK(                                                 \
-                       get_is_setup(m->get_particle(id)),               \
+        get_is_setup(m->get_particle(id)),                              \
         "Particle " << m->get_particle(id)->get_name()                  \
-                       << " missing required attributes for decorator " \
-                       << #Name                                         \
-        << "\n" << base::ShowFull(m->get_particle(id)));                \
+                    << " missing required attributes for decorator "    \
+                    << #Name                                            \
+                    << "\n" << base::ShowFull(m->get_particle(id)));    \
   }                                                                     \
   IMP_SHOWABLE(Name)
 
 #else
 #define IMP_DECORATOR(Name, Parent)                                     \
   IMPKERNEL_DEPRECATED_MACRO(2.1, "Use IMP_DECORATOR_METHODS()");       \
-  public:                                                               \
+                                                                        \
+ public:                                                                \
   /* Should be private but SWIG accesses it through the                 \
      comparison                                                         \
      macros*/ IMP_NO_DOXYGEN(                                           \
-         typedef Parent ParentDecorator);                               \
+      typedef Parent ParentDecorator);                                  \
   Name() : Parent() {}                                                  \
   Name(kernel::Model *m, ParticleIndex id) : Parent(m, id) {            \
     IMP_INTERNAL_CHECK(                                                 \
-                       get_is_setup(m->get_particle(id)),               \
+        get_is_setup(m->get_particle(id)),                              \
         "Particle " << m->get_particle(id)->get_name()                  \
-                       << " missing required attributes for decorator "\
-                       << #Name                                         \
-        << "\n" << base::ShowFull(m->get_particle(id)));                \
+                    << " missing required attributes for decorator "    \
+                    << #Name                                            \
+                    << "\n" << base::ShowFull(m->get_particle(id)));    \
   }                                                                     \
   explicit Name(::IMP::kernel::Particle *p) : Parent(p) {               \
     IMP_INTERNAL_CHECK(                                                 \
-                       get_is_setup(p),                                 \
+        get_is_setup(p),                                                \
         "Particle " << p->get_name()                                    \
-                       << " missing required attributes for decorator " \
-                       << #Name                                         \
-        << "\n" << base::ShowFull(p));                                  \
+                    << " missing required attributes for decorator "    \
+                    << #Name                                            \
+                    << "\n" << base::ShowFull(p));                      \
   }                                                                     \
-  static bool get_is_setup(Particle *p) { return particle_is_instance(p);} \
+  static bool get_is_setup(Particle *p) { return particle_is_instance(p); } \
   static bool get_is_setup(kernel::Model *m, ParticleIndex pi) {        \
     return particle_is_instance(m->get_particle(pi));                   \
   }                                                                     \
@@ -89,10 +90,10 @@
   /* Should be private but SWIG accesses it through the                 \
      comparison                                                         \
      macros*/ IMP_NO_DOXYGEN(                                           \
-                             typedef Parent ParentDecorator);           \
+      typedef Parent ParentDecorator);                                  \
   Name() : Parent() {}                                                  \
-  Name(::IMP::kernel::Model *m, ::IMP::kernel::ParticleIndex id) :      \
-    Parent(m, id) {                                                     \
+  Name(::IMP::kernel::Model *m, ::IMP::kernel::ParticleIndex id)        \
+    : Parent(m, id) {                                                   \
     IMP_INTERNAL_CHECK(                                                 \
                        get_is_setup(m, id),                             \
                        "Particle " << m->get_particle_name(id)          \
@@ -102,9 +103,8 @@
   explicit Name(const IMP::kernel::ParticleAdaptor &d) : Parent(d) {    \
     IMP_INTERNAL_CHECK(                                                 \
                        get_is_setup(d.get_model(), d.get_particle_index()), \
-                       "Particle "                                      \
-                       << d.get_model()                                 \
-                       ->get_particle_name(d.get_particle_index())      \
+                       "Particle " << d.get_model()->get_particle_name( \
+                               d.get_particle_index()) \
                        << " missing required attributes for decorator " \
                        << #Name);                                       \
   }                                                                     \
@@ -117,24 +117,21 @@
     return Name(p);                                                     \
   }                                                                     \
   /** \deprecated_at{2.1} Use get_is_setup() instead. */                \
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)                               \
-  static bool particle_is_instance(::IMP::kernel::Particle *p) {        \
-    IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_is_setup instead."); \
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1) static bool particle_is_instance( \
+                                          ::IMP::kernel::Particle *p) { \
+    IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_is_setup instead.");  \
     return get_is_setup(p->get_model(), p->get_index());                \
   }                                                                     \
   /** \deprecated_at{2.1} Use get_is_setup() instead. */                \
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)                               \
-  static bool particle_is_instance(IMP::kernel::Model *m,               \
-                                   IMP::kernel::ParticleIndex pi) {     \
-    IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_is_setup instead."); \
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1) static bool particle_is_instance( \
+                IMP::kernel::Model *m, IMP::kernel::ParticleIndex pi) { \
+    IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_is_setup instead.");  \
     return get_is_setup(m, pi);                                         \
   }                                                                     \
   static bool get_is_setup(const IMP::kernel::ParticleAdaptor &p) {     \
     return get_is_setup(p.get_model(), p.get_particle_index());         \
   }                                                                     \
   IMP_SHOWABLE(Name)
-
-
 
 /** \deprecated_at{2.1} Use IMP_DECORATOR_WITH_TRAITS_METHODS()
  */
@@ -144,16 +141,15 @@
   TraitsType traits_;                                                         \
                                                                               \
  public:                                                                      \
- IMPKERNEL_DEPRECATED_MACRO(2.1, "Use IMP_DECORATOR_METHODS()");        \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Use IMP_DECORATOR_METHODS()");             \
   IMP_NO_DOXYGEN(typedef Parent ParentDecorator);                             \
   Name() {}                                                                   \
-  Name(kernel::Model *m, ParticleIndex id, const TraitsType &tr)        \
+  Name(kernel::Model *m, ParticleIndex id, const TraitsType &tr)              \
       : Parent(m, id), traits_(tr) {                                          \
     IMP_INTERNAL_CHECK(                                                       \
-                      get_is_setup(m->get_particle(id), tr),            \
+        get_is_setup(m->get_particle(id), tr),                                \
         "Particle " << m->get_particle(id)->get_name()                        \
-                      << " missing required attributes for decorator "  \
-                      << #Name                                          \
+                    << " missing required attributes for decorator " << #Name \
                     << "\n" << Showable(m->get_particle(id)));                \
   }                                                                           \
   Name(const TraitsType &tr) : traits_(tr) {}                                 \
@@ -161,14 +157,13 @@
                 const TraitsType &tr = default_traits)                        \
       : Parent(p), traits_(tr) {                                              \
     IMP_INTERNAL_CHECK(                                                       \
-                      get_is_setup(p, tr),                              \
-                      "Particle " << p->get_name()                      \
-                      << " missing required attributes "                \
+        get_is_setup(p, tr),                                                  \
+        "Particle " << p->get_name() << " missing required attributes "       \
                     << " for decorator " << #Name << "\n" << Showable(p));    \
   }                                                                           \
   static Name decorate_particle(::IMP::kernel::Particle *p,                   \
                                 const TraitsType &tr = default_traits) {      \
-   if (!get_is_setup(p, tr))                                            \
+    if (!get_is_setup(p, tr))                                                 \
       return Name();                                                          \
     else                                                                      \
       return Name(p, tr);                                                     \
@@ -185,78 +180,74 @@
   }                                                                           \
   IMP_NO_DOXYGEN(typedef boost::true_type DecoratorHasTraits)
 
-
 /** Implement the needed methods for a decorator based on
     - setup_particle()
     - get_is_setup()
     methods that you provide.
 */
-#define IMP_DECORATOR_WITH_TRAITS_METHODS(Name, Parent, TraitsType,     \
-                                          traits_name, default_traits)  \
-  private:                                                              \
-  TraitsType traits_;                                                   \
-public:                                                                 \
- typedef TraitsType DecoratorTraits;                                    \
- const DecoratorTraits &get_decorator_traits() const { return traits_; } \
- static const DecoratorTraits &get_default_decorator_traits() {         \
-   static TraitsType dt = default_traits;                               \
-   return dt;                                                           \
- }                                                                      \
- /* Should be private but SWIG accesses it through the                  \
+#define IMP_DECORATOR_WITH_TRAITS_METHODS(Name, Parent, TraitsType,                        \
+                                          traits_name, default_traits)                     \
+ private:                                                                                  \
+  TraitsType traits_;                                                                      \
+ public:                                                                                   \
+  typedef TraitsType DecoratorTraits;                                                      \
+  const DecoratorTraits &get_decorator_traits() const { return traits_; }                  \
+  static const DecoratorTraits &get_default_decorator_traits() {                           \
+    static TraitsType dt = default_traits;                                                 \
+    return dt;                                                                             \
+  }                                                                                        \
+  /* Should be private but SWIG accesses it through the                  \
     comparison                                                          \
-    macros*/ IMP_NO_DOXYGEN(                                            \
-                            typedef Parent ParentDecorator);            \
- IMP_NO_DOXYGEN(typedef boost::true_type DecoratorHasTraits);           \
- Name() : Parent() {}                                                   \
- Name(::IMP::kernel::Model *m, ::IMP::kernel::ParticleIndex id,         \
-      const TraitsType &tr = default_traits) :                          \
-   Parent(m, id), traits_(tr) {                                         \
-   IMP_INTERNAL_CHECK(                                                  \
-                      get_is_setup(m, id, tr),                          \
-                      "Particle " << m->get_particle_name(id)           \
-                      << " missing required attributes for decorator "  \
-                      << #Name);                                        \
- }                                                                      \
- explicit Name(const IMP::kernel::ParticleAdaptor &d,                   \
-      const TraitsType &tr = default_traits) : Parent(d),               \
-                                               traits_(tr) {            \
-   IMP_INTERNAL_CHECK(                                                  \
-                      get_is_setup(d.get_model(), d.get_particle_index(), tr), \
-                      "Particle "                                       \
-                      << d.get_model()                                  \
-                      ->get_particle_name(d.get_particle_index())       \
-                      << " missing required attributes for decorator "  \
-                      << #Name);                                        \
-                                               }                        \
- /** \deprecated_at{2.1} Check explicitly instead. */                   \
- static Name decorate_particle(::IMP::kernel::Particle *p,              \
-                               const TraitsType &tr = default_traits) { \
-   IMP_CHECK_OBJECT(p);                                                 \
-   if (!get_is_setup(p->get_model(), p->get_index(), tr)) {             \
-     return Name();                                                     \
-   }                                                                    \
-   return Name(p);                                                      \
- }                                                                      \
- /** \deprecated_at{2.1} Use get_is_setup() instead. */                 \
- IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)                                \
- static bool particle_is_instance(::IMP::kernel::Particle *p,           \
-                                  const TraitsType &tr = default_traits) { \
-   IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_is_setup instead."); \
-   return get_is_setup(p->get_model(), p->get_index(), tr);             \
- }                                                                      \
- /** \deprecated_at{2.1} Use get_is_setup() instead. */                 \
- IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)                                \
- static bool particle_is_instance(IMP::kernel::Model *m,                \
-                                  IMP::kernel::ParticleIndex pi,        \
-                                  const TraitsType &tr = default_traits) { \
-   IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_is_setup instead."); \
-   return get_is_setup(m, pi, tr);                                      \
- }                                                                      \
- static bool get_is_setup(const IMP::kernel::ParticleAdaptor &p,        \
-                          const TraitsType &tr = default_traits) {      \
-   return get_is_setup(p.get_model(), p.get_particle_index(), tr);      \
- }                                                                      \
- IMP_SHOWABLE(Name)
+    macros*/ IMP_NO_DOXYGEN( \
+      typedef Parent ParentDecorator);                                                     \
+  IMP_NO_DOXYGEN(typedef boost::true_type DecoratorHasTraits);                             \
+  Name() : Parent() {}                                                                     \
+  Name(::IMP::kernel::Model *m, ::IMP::kernel::ParticleIndex id,                           \
+       const TraitsType &tr = default_traits)                                              \
+      : Parent(m, id), traits_(tr) {                                                       \
+    IMP_INTERNAL_CHECK(                                                                    \
+        get_is_setup(m, id, tr),                                                           \
+        "Particle " << m->get_particle_name(id)                                            \
+                    << " missing required attributes for decorator "                       \
+                    << #Name);                                                             \
+  }                                                                                        \
+  explicit Name(const IMP::kernel::ParticleAdaptor &d,                                     \
+                const TraitsType &tr = default_traits)                                     \
+      : Parent(d), traits_(tr) {                                                           \
+    IMP_INTERNAL_CHECK(                                                                    \
+        get_is_setup(d.get_model(), d.get_particle_index(), tr),                           \
+        "Particle " << d.get_model()->get_particle_name(                                   \
+                           d.get_particle_index())                                         \
+                    << " missing required attributes for decorator "                       \
+                    << #Name);                                                             \
+  }                                                                                        \
+  /** \deprecated_at{2.1} Check explicitly instead. */                                     \
+  static Name decorate_particle(::IMP::kernel::Particle *p,                                \
+                                const TraitsType &tr = default_traits) {                   \
+    IMP_CHECK_OBJECT(p);                                                                   \
+    if (!get_is_setup(p->get_model(), p->get_index(), tr)) {                               \
+      return Name();                                                                       \
+    }                                                                                      \
+    return Name(p);                                                                        \
+  }                                                                                        \
+  /** \deprecated_at{2.1} Use get_is_setup() instead. */                                   \
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1) static bool particle_is_instance(                  \
+      ::IMP::kernel::Particle *p, const TraitsType &tr = default_traits) {                 \
+    IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_is_setup instead.");                     \
+    return get_is_setup(p->get_model(), p->get_index(), tr);                               \
+  }                                                                                        \
+  /** \deprecated_at{2.1} Use get_is_setup() instead. */                                   \
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1) static bool particle_is_instance(                  \
+      IMP::kernel::Model *m, IMP::kernel::ParticleIndex pi,                                \
+      const TraitsType &tr = default_traits) {                                             \
+    IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_is_setup instead.");                     \
+    return get_is_setup(m, pi, tr);                                                        \
+  }                                                                                        \
+  static bool get_is_setup(const IMP::kernel::ParticleAdaptor &p,                          \
+                           const TraitsType &tr = default_traits) {                        \
+    return get_is_setup(p.get_model(), p.get_particle_index(), tr);                        \
+  }                                                                                        \
+  IMP_SHOWABLE(Name)
 
 /** Decorators need to be able to be set up from Particles, ParticleIndexes
     and other Decorators. To help keep things uniform, we provide macros
@@ -264,111 +255,108 @@ public:                                                                 \
     `do_setup_particle(kernel::Model *, ParticleIndex, args...)` function is
     defined. But any docs needed before the macro invocation.
 */
-#define IMP_DECORATOR_SETUP_0(Name)                                     \
-  /** Setup the particle so it can be used with this decorator. */      \
-  static Name setup_particle(kernel::Model *m, ParticleIndex pi) {              \
-    IMP_USAGE_CHECK(!get_is_setup(m, pi), "Particle "                   \
-                    << m->get_particle_name(pi)                         \
-                    << " already set up as " << #Name);                 \
-    do_setup_particle(m, pi);                                           \
-    return Name(m, pi);                                                 \
-  }                                                                     \
-  static Name setup_particle(IMP::kernel::ParticleAdaptor decorator) {  \
-    return setup_particle(decorator.get_model(),                        \
-                          decorator.get_particle_index());              \
+#define IMP_DECORATOR_SETUP_0(Name)                                    \
+  /** Setup the particle so it can be used with this decorator. */     \
+  static Name setup_particle(kernel::Model *m, ParticleIndex pi) {     \
+    IMP_USAGE_CHECK(!get_is_setup(m, pi),                              \
+                    "Particle " << m->get_particle_name(pi)            \
+                                << " already set up as " << #Name);    \
+    do_setup_particle(m, pi);                                          \
+    return Name(m, pi);                                                \
+  }                                                                    \
+  static Name setup_particle(IMP::kernel::ParticleAdaptor decorator) { \
+    return setup_particle(decorator.get_model(),                       \
+                          decorator.get_particle_index());             \
   }
 /** \see IMP_DECORATOR_SETUP_0() */
 #define IMP_DECORATOR_SETUP_1(Name, FirstArgumentType, first_argument_name) \
-  /** Setup the particle so it can be used with this decorator. */      \
-  static Name setup_particle(kernel::Model *m, ParticleIndex pi,                \
-                             FirstArgumentType first_argument_name) {   \
-    IMP_USAGE_CHECK(!get_is_setup(m, pi), "Particle "                   \
-                    << m->get_particle_name(pi)                         \
-                    << " already set up as " << #Name);                 \
-    do_setup_particle(m, pi, first_argument_name);                      \
-    return Name(m, pi);                                                 \
-  }                                                                     \
-  static Name setup_particle(IMP::kernel::ParticleAdaptor decorator,    \
-                             FirstArgumentType first_argument_name) {   \
-    return setup_particle(decorator.get_model(),                        \
-                          decorator.get_particle_index(),               \
-                          first_argument_name);                         \
+  /** Setup the particle so it can be used with this decorator. */          \
+  static Name setup_particle(kernel::Model *m, ParticleIndex pi,            \
+                             FirstArgumentType first_argument_name) {       \
+    IMP_USAGE_CHECK(!get_is_setup(m, pi),                                   \
+                    "Particle " << m->get_particle_name(pi)                 \
+                                << " already set up as " << #Name);         \
+    do_setup_particle(m, pi, first_argument_name);                          \
+    return Name(m, pi);                                                     \
+  }                                                                         \
+  static Name setup_particle(IMP::kernel::ParticleAdaptor decorator,        \
+                             FirstArgumentType first_argument_name) {       \
+    return setup_particle(decorator.get_model(),                            \
+                          decorator.get_particle_index(),                   \
+                          first_argument_name);                             \
   }
 /** \see IMP_DECORATOR_SETUP_0() */
-#define IMP_DECORATOR_SETUP_2(Name, FirstArgumentType, first_argument_name, \
-                              SecondArgumentType, second_argument_name) \
-  /** Setup the particle so it can be used with this decorator. */      \
-  static Name setup_particle(kernel::Model *m, ParticleIndex pi,                \
-                             FirstArgumentType first_argument_name,     \
-                             SecondArgumentType second_argument_name) { \
-    IMP_USAGE_CHECK(!get_is_setup(m, pi), "Particle "                   \
-                    << m->get_particle_name(pi)                         \
-                    << " already set up as " << #Name);                 \
-    do_setup_particle(m, pi, first_argument_name, second_argument_name); \
-    return Name(m, pi);                                                 \
-  }                                                                     \
-  static Name setup_particle(IMP::kernel::ParticleAdaptor decorator,    \
-                             FirstArgumentType first_argument_name,     \
-                             SecondArgumentType second_argument_name) { \
-    return setup_particle(decorator.get_model(),                        \
-                          decorator.get_particle_index(),               \
-                          first_argument_name, second_argument_name);   \
+#define IMP_DECORATOR_SETUP_2(Name, FirstArgumentType, first_argument_name,    \
+                              SecondArgumentType, second_argument_name)        \
+  /** Setup the particle so it can be used with this decorator. */             \
+  static Name setup_particle(kernel::Model *m, ParticleIndex pi,               \
+                             FirstArgumentType first_argument_name,            \
+                             SecondArgumentType second_argument_name) {        \
+    IMP_USAGE_CHECK(!get_is_setup(m, pi),                                      \
+                    "Particle " << m->get_particle_name(pi)                    \
+                                << " already set up as " << #Name);            \
+    do_setup_particle(m, pi, first_argument_name, second_argument_name);       \
+    return Name(m, pi);                                                        \
+  }                                                                            \
+  static Name setup_particle(IMP::kernel::ParticleAdaptor decorator,           \
+                             FirstArgumentType first_argument_name,            \
+                             SecondArgumentType second_argument_name) {        \
+    return setup_particle(decorator.get_model(),                               \
+                          decorator.get_particle_index(), first_argument_name, \
+                          second_argument_name);                               \
   }
 /** \see IMP_DECORATOR_SETUP_0() */
-#define IMP_DECORATOR_SETUP_3(Name, FirstArgumentType, first_argument_name, \
-                              SecondArgumentType, second_argument_name, \
-                              ThirdArgumentType, third_argument_name)   \
-  /** Setup the particle so it can be used with this decorator. */      \
-  static Name setup_particle(kernel::Model *m, ParticleIndex pi,        \
-                             FirstArgumentType first_argument_name,     \
-                             SecondArgumentType second_argument_name,   \
-                             ThirdArgumentType third_argument_name) {   \
-    IMP_USAGE_CHECK(!get_is_setup(m, pi), "Particle "                   \
-                    << m->get_particle_name(pi)                         \
-                    << " already set up as " << #Name);                 \
-    do_setup_particle(m, pi, first_argument_name, second_argument_name, \
-                      third_argument_name);                             \
-    return Name(m, pi);                                                 \
-  }                                                                     \
-  static Name setup_particle(IMP::kernel::ParticleAdaptor decorator,    \
-                             FirstArgumentType first_argument_name,     \
-                             SecondArgumentType second_argument_name,   \
-                             ThirdArgumentType third_argument_name) {   \
-    return setup_particle(decorator.get_model(),                        \
-                          decorator.get_particle_index(),               \
-                          first_argument_name, second_argument_name,    \
-                          third_argument_name);                         \
+#define IMP_DECORATOR_SETUP_3(Name, FirstArgumentType, first_argument_name,    \
+                              SecondArgumentType, second_argument_name,        \
+                              ThirdArgumentType, third_argument_name)          \
+  /** Setup the particle so it can be used with this decorator. */             \
+  static Name setup_particle(kernel::Model *m, ParticleIndex pi,               \
+                             FirstArgumentType first_argument_name,            \
+                             SecondArgumentType second_argument_name,          \
+                             ThirdArgumentType third_argument_name) {          \
+    IMP_USAGE_CHECK(!get_is_setup(m, pi),                                      \
+                    "Particle " << m->get_particle_name(pi)                    \
+                                << " already set up as " << #Name);            \
+    do_setup_particle(m, pi, first_argument_name, second_argument_name,        \
+                      third_argument_name);                                    \
+    return Name(m, pi);                                                        \
+  }                                                                            \
+  static Name setup_particle(IMP::kernel::ParticleAdaptor decorator,           \
+                             FirstArgumentType first_argument_name,            \
+                             SecondArgumentType second_argument_name,          \
+                             ThirdArgumentType third_argument_name) {          \
+    return setup_particle(decorator.get_model(),                               \
+                          decorator.get_particle_index(), first_argument_name, \
+                          second_argument_name, third_argument_name);          \
   }
 /** \see IMP_DECORATOR_SETUP_0() */
-#define IMP_DECORATOR_SETUP_4(Name, FirstArgumentType, first_argument_name, \
-                              SecondArgumentType, second_argument_name, \
-                              ThirdArgumentType, third_argument_name,   \
-                              FourthArgumentType, fourth_argument_name) \
-  /** Setup the particle so it can be used with this decorator. */      \
-  static Name setup_particle(kernel::Model *m, ParticleIndex pi,        \
-                             FirstArgumentType first_argument_name,     \
-                             SecondArgumentType second_argument_name,   \
-                             ThirdArgumentType third_argument_name,     \
-                             FourthArgumentType fourth_argument_name) { \
-    IMP_USAGE_CHECK(!get_is_setup(m, pi), "Particle "                   \
-                    << m->get_particle_name(pi)                         \
-                    << " already set up as " << #Name);                 \
-    do_setup_particle(m, pi, first_argument_name, second_argument_name, \
-                      third_argument_name, fourth_argument_name);       \
-    return Name(m, pi);                                                 \
-  }                                                                     \
-  static Name setup_particle(IMP::kernel::ParticleAdaptor decorator,    \
-                             FirstArgumentType first_argument_name,     \
-                             SecondArgumentType second_argument_name,   \
-                             ThirdArgumentType third_argument_name,     \
-                             FourthArgumentType fourth_argument_name) { \
-    return setup_particle(decorator.get_model(),                        \
-                          decorator.get_particle_index(),               \
-                          first_argument_name, second_argument_name,    \
-                          third_argument_name, fourth_argument_name);   \
+#define IMP_DECORATOR_SETUP_4(Name, FirstArgumentType, first_argument_name,    \
+                              SecondArgumentType, second_argument_name,        \
+                              ThirdArgumentType, third_argument_name,          \
+                              FourthArgumentType, fourth_argument_name)        \
+  /** Setup the particle so it can be used with this decorator. */             \
+  static Name setup_particle(kernel::Model *m, ParticleIndex pi,               \
+                             FirstArgumentType first_argument_name,            \
+                             SecondArgumentType second_argument_name,          \
+                             ThirdArgumentType third_argument_name,            \
+                             FourthArgumentType fourth_argument_name) {        \
+    IMP_USAGE_CHECK(!get_is_setup(m, pi),                                      \
+                    "Particle " << m->get_particle_name(pi)                    \
+                                << " already set up as " << #Name);            \
+    do_setup_particle(m, pi, first_argument_name, second_argument_name,        \
+                      third_argument_name, fourth_argument_name);              \
+    return Name(m, pi);                                                        \
+  }                                                                            \
+  static Name setup_particle(IMP::kernel::ParticleAdaptor decorator,           \
+                             FirstArgumentType first_argument_name,            \
+                             SecondArgumentType second_argument_name,          \
+                             ThirdArgumentType third_argument_name,            \
+                             FourthArgumentType fourth_argument_name) {        \
+    return setup_particle(decorator.get_model(),                               \
+                          decorator.get_particle_index(), first_argument_name, \
+                          second_argument_name, third_argument_name,           \
+                          fourth_argument_name);                               \
   }
-
-
 
 /** Decorators need to be able to be set up from Particles, ParticleIndexes
     and other Decorators. To help keep things uniform, we provide macros
@@ -376,58 +364,56 @@ public:                                                                 \
     `do_setup_particle(kernel::Model *, ParticleIndex, args...)` function is
     defined. But any docs needed before the macro invocation.
 */
-#define IMP_DECORATOR_TRAITS_SETUP_0(Name)                              \
-  /** Setup the particle so it can be used with this decorator. */      \
-  static Name setup_particle(kernel::Model *m, ParticleIndex pi,        \
-                             DecoratorTraits tr                         \
-                             = get_default_decorator_traits()) {        \
-    do_setup_particle(m, pi, tr);                                       \
-    return Name(m, pi, tr);                                             \
-  }                                                                     \
-  static Name setup_particle(IMP::kernel::ParticleAdaptor d,            \
-                             DecoratorTraits tr                         \
-                             = get_default_decorator_traits()) {        \
-    do_setup_particle(d.get_model(), d.get_particle_index(), tr);       \
-    return Name(d.get_model(), d.get_particle_index(), tr);             \
+#define IMP_DECORATOR_TRAITS_SETUP_0(Name)                         \
+  /** Setup the particle so it can be used with this decorator. */ \
+  static Name setup_particle(                                      \
+      kernel::Model *m, ParticleIndex pi,                          \
+      DecoratorTraits tr = get_default_decorator_traits()) {       \
+    do_setup_particle(m, pi, tr);                                  \
+    return Name(m, pi, tr);                                        \
+  }                                                                \
+  static Name setup_particle(                                      \
+      IMP::kernel::ParticleAdaptor d,                              \
+      DecoratorTraits tr = get_default_decorator_traits()) {       \
+    do_setup_particle(d.get_model(), d.get_particle_index(), tr);  \
+    return Name(d.get_model(), d.get_particle_index(), tr);        \
   }
 /** \see IMP_DECORATOR_TRAITS_SETUP_0() */
-#define IMP_DECORATOR_TRAITS_SETUP_1(Name, FirstArgumentType,           \
-                                     first_argument_name)               \
-  static Name setup_particle(kernel::Model *m, ParticleIndex pi,        \
-                             FirstArgumentType first_argument_name,     \
-                             DecoratorTraits tr                         \
-                             = get_default_decorator_traits()) {        \
-    do_setup_particle(m, pi, first_argument_name, tr);                  \
-    return Name(m, pi, tr);                                             \
-  }                                                                     \
-  static Name setup_particle(IMP::kernel::ParticleAdaptor d,            \
-                             FirstArgumentType first_argument_name,     \
-                             DecoratorTraits tr                         \
-                             = get_default_decorator_traits()) {        \
-    do_setup_particle(d.get_model(), d.get_particle_index(),            \
-                      first_argument_name, tr);                         \
-    return Name(d.get_model(), d.get_particle_index(), tr);             \
+#define IMP_DECORATOR_TRAITS_SETUP_1(Name, FirstArgumentType,                \
+                                     first_argument_name)                    \
+  static Name setup_particle(                                                \
+      kernel::Model *m, ParticleIndex pi,                                    \
+      FirstArgumentType first_argument_name,                                 \
+      DecoratorTraits tr = get_default_decorator_traits()) {                 \
+    do_setup_particle(m, pi, first_argument_name, tr);                       \
+    return Name(m, pi, tr);                                                  \
+  }                                                                          \
+  static Name setup_particle(                                                \
+      IMP::kernel::ParticleAdaptor d, FirstArgumentType first_argument_name, \
+      DecoratorTraits tr = get_default_decorator_traits()) {                 \
+    do_setup_particle(d.get_model(), d.get_particle_index(),                 \
+                      first_argument_name, tr);                              \
+    return Name(d.get_model(), d.get_particle_index(), tr);                  \
   }
 /** \see IMP_DECORATOR_TRAITS_SETUP_0() */
-#define IMP_DECORATOR_TRAITS_SETUP_2(Name,                              \
-                                     FirstArgumentType, first_argument_name, \
-                                     SecondArgumentType, second_argument_name) \
-  static Name setup_particle(kernel::Model *m, ParticleIndex pi,        \
-                             FirstArgumentType first_argument_name,     \
-                             SecondArgumentType second_argument_name,   \
-                             DecoratorTraits tr                         \
-                             = get_default_decorator_traits()) {        \
-    do_setup_particle(m, pi, first_argument_name, second_argument_name, tr); \
-    return Name(m, pi, tr);                                             \
-  }                                                                     \
-  static Name setup_particle(IMP::kernel::ParticleAdaptor d,            \
-                             FirstArgumentType first_argument_name,     \
-                             SecondArgumentType second_argument_name,   \
-                             DecoratorTraits tr                         \
-                             = get_default_decorator_traits()) {        \
-    do_setup_particle(d.get_model(), d.get_particle_index(),            \
-                      first_argument_name, second_argument_name, tr);   \
-    return Name(d.get_model(), d.get_particle_index(), tr);             \
+#define IMP_DECORATOR_TRAITS_SETUP_2(Name, FirstArgumentType,                 \
+                                     first_argument_name, SecondArgumentType, \
+                                     second_argument_name)                    \
+  static Name setup_particle(                                                 \
+      kernel::Model *m, ParticleIndex pi,                                     \
+      FirstArgumentType first_argument_name,                                  \
+      SecondArgumentType second_argument_name,                                \
+      DecoratorTraits tr = get_default_decorator_traits()) {                  \
+    do_setup_particle(m, pi, first_argument_name, second_argument_name, tr);  \
+    return Name(m, pi, tr);                                                   \
+  }                                                                           \
+  static Name setup_particle(                                                 \
+      IMP::kernel::ParticleAdaptor d, FirstArgumentType first_argument_name,  \
+      SecondArgumentType second_argument_name,                                \
+      DecoratorTraits tr = get_default_decorator_traits()) {                  \
+    do_setup_particle(d.get_model(), d.get_particle_index(),                  \
+                      first_argument_name, second_argument_name, tr);         \
+    return Name(d.get_model(), d.get_particle_index(), tr);                   \
   }
 
 //! Perform actions dependent on whether a particle has an attribute.
@@ -487,8 +473,7 @@ public:                                                                 \
 #define IMP_DECORATOR_GET_SET(name, AttributeKey, Type, ReturnType)      \
   ReturnType get_##name() const {                                        \
     return static_cast<ReturnType>(                                      \
-                                   get_model()->get_attribute(AttributeKey, \
-                                                     get_particle_index())); \
+        get_model()->get_attribute(AttributeKey, get_particle_index())); \
   }                                                                      \
   void set_##name(ReturnType t) {                                        \
     get_model()->set_attribute(AttributeKey, get_particle_index(), t);   \
@@ -548,7 +533,6 @@ public:                                                                 \
   }                                                            \
   typedef IMP::base::Vector<Name> PluralName
 
-
 //! Create a decorator that computes some sort of summary info on a set
 /** Examples include a centroid or a cover for a set of particles.
 
@@ -556,29 +540,30 @@ public:                                                                 \
     \param[in] Parent the parent decorator type
     \param[in] Members the way to pass a set of particles in
 */
-#define IMP_SUMMARY_DECORATOR_DECL(Name, Parent, Members)            \
-  class IMPCOREEXPORT Name : public Parent {                         \
-    IMP_CONSTRAINT_DECORATOR_DECL(Name);                             \
-    static void do_setup_particle(kernel::Model *m, ParticleIndex pi,   \
-                                  const ParticleIndexes &pis);          \
-    static void do_setup_particle(kernel::Model *m, ParticleIndex pi,   \
-                                  Refiner *ref);                        \
-  public:                                                               \
-    IMP_DECORATOR_METHODS(Name, Parent);                                \
-    IMP_DECORATOR_SETUP_1(Name, ParticleIndexesAdaptor, members);       \
-    IMP_DECORATOR_SETUP_1(Name, Refiner*, refiner);                     \
-    static bool get_is_setup(kernel::Model *m, ParticleIndex pi) {      \
-      return m->get_has_attribute(get_constraint_key(), pi);            \
-    }                                                                   \
-    IMP_NO_DOXYGEN(typedef boost::false_type DecoratorHasTraits);    \
-                                                                     \
-   private:                                                          \
-    /* hide set methods*/                                            \
-    void set_coordinates() {};                                       \
-    void set_coordinates_are_optimized() const {}                    \
-    void set_coordinate() const {}                                   \
-    void set_radius() const {}                                       \
-  };                                                                 \
+#define IMP_SUMMARY_DECORATOR_DECL(Name, Parent, Members)             \
+  class IMPCOREEXPORT Name : public Parent {                          \
+    IMP_CONSTRAINT_DECORATOR_DECL(Name);                              \
+    static void do_setup_particle(kernel::Model *m, ParticleIndex pi, \
+                                  const ParticleIndexes &pis);        \
+    static void do_setup_particle(kernel::Model *m, ParticleIndex pi, \
+                                  Refiner *ref);                      \
+                                                                      \
+   public:                                                            \
+    IMP_DECORATOR_METHODS(Name, Parent);                              \
+    IMP_DECORATOR_SETUP_1(Name, ParticleIndexesAdaptor, members);     \
+    IMP_DECORATOR_SETUP_1(Name, Refiner *, refiner);                  \
+    static bool get_is_setup(kernel::Model *m, ParticleIndex pi) {    \
+      return m->get_has_attribute(get_constraint_key(), pi);          \
+    }                                                                 \
+    IMP_NO_DOXYGEN(typedef boost::false_type DecoratorHasTraits);     \
+                                                                      \
+   private:                                                           \
+    /* hide set methods*/                                             \
+    void set_coordinates() {};                                        \
+    void set_coordinates_are_optimized() const {}                     \
+    void set_coordinate() const {}                                    \
+    void set_radius() const {}                                        \
+  };                                                                  \
   IMP_DECORATORS(Name, Name##s, Parent##s)
 
 /** See IMP_SUMMARY_DECORATOR_DECL()
@@ -589,22 +574,22 @@ public:                                                                 \
     which computes the summary info. It should be called mod.
 */
 #define IMP_SUMMARY_DECORATOR_DEF(Name, Parent, Members, create_modifier) \
-  void Name::do_setup_particle(kernel::Model *m, ParticleIndex pi,      \
-                               const ParticleIndexes &pis) {            \
-    Refiner *ref = new FixedRefiner(IMP::kernel::get_particles(m, pis)); \
-    create_modifier;                                                    \
-    if (!Parent::get_is_setup(m, pi)) Parent::setup_particle(m, pi);    \
-    set_constraint(mod, new DerivativesToRefined(ref), m, pi);          \
-  }                                                                     \
-  void Name::do_setup_particle(kernel::Model *m,                        \
-                               ParticleIndex pi, Refiner *ref) {        \
-    create_modifier;                                                    \
-    if (!Parent::get_is_setup(m, pi)) Parent::setup_particle(m, pi);    \
-    set_constraint(mod, new DerivativesToRefined(ref), m, pi);          \
-  }                                                                     \
-  void Name::show(std::ostream &out) const {                            \
-    out << #Name << " at " << static_cast<Parent>(*this);               \
-  }                                                                     \
+  void Name::do_setup_particle(kernel::Model *m, ParticleIndex pi,        \
+                               const ParticleIndexes &pis) {              \
+    Refiner *ref = new FixedRefiner(IMP::kernel::get_particles(m, pis));  \
+    create_modifier;                                                      \
+    if (!Parent::get_is_setup(m, pi)) Parent::setup_particle(m, pi);      \
+    set_constraint(mod, new DerivativesToRefined(ref), m, pi);            \
+  }                                                                       \
+  void Name::do_setup_particle(kernel::Model *m, ParticleIndex pi,        \
+                               Refiner *ref) {                            \
+    create_modifier;                                                      \
+    if (!Parent::get_is_setup(m, pi)) Parent::setup_particle(m, pi);      \
+    set_constraint(mod, new DerivativesToRefined(ref), m, pi);            \
+  }                                                                       \
+  void Name::show(std::ostream &out) const {                              \
+    out << #Name << " at " << static_cast<Parent>(*this);                 \
+  }                                                                       \
   IMP_CONSTRAINT_DECORATOR_DEF(Name)
 
 #endif /* IMPKERNEL_DECORATOR_MACROS_H */

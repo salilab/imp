@@ -16,8 +16,8 @@ namespace {
 // TODO: why not a static class variable?
 unsigned int key_count = 0;
 }
-ConsecutivePairContainer::ConsecutivePairContainer(const kernel::ParticlesTemp &ps,
-                                                   std::string name)
+ConsecutivePairContainer::ConsecutivePairContainer(
+    const kernel::ParticlesTemp &ps, std::string name)
     : PairContainer(ps[0]->get_model(), name),
       ps_(IMP::internal::get_index(ps)) {
   init();
@@ -33,8 +33,8 @@ void ConsecutivePairContainer::init() {
   for (unsigned int i = 0; i < ps_.size(); ++i) {
     IMP_USAGE_CHECK(!get_model()->get_has_attribute(key_, ps_[i]),
                     "You must create containers before reading in the "
-                        << "saved model: " << get_model()->get_particle(ps_[i])
-                                                  ->get_name());
+                        << "saved model: "
+                        << get_model()->get_particle(ps_[i])->get_name());
     get_model()->add_attribute(key_, ps_[i], i);
   }
 }
@@ -78,8 +78,8 @@ void ExclusiveConsecutivePairContainer::init() {
     IMP_USAGE_CHECK(
         !get_model()->get_has_attribute(get_exclusive_key(), ps_[i]),
         "You must create containers before reading in the "
-            << "saved model: " << get_model()->get_particle(ps_[i])
-                                      ->get_name());
+            << "saved model: "
+            << get_model()->get_particle(ps_[i])->get_name());
     get_model()->add_attribute(get_exclusive_key(), ps_[i], i);
     get_model()->add_attribute(get_exclusive_object_key(), ps_[i], this);
   }

@@ -29,13 +29,12 @@ class IMPCOREEXPORT Transform : public SingletonModifier {
   */
   Transform(const algebra::Transformation3D &t, bool ignore_non_xyz = false);
 
-  virtual void apply_index(kernel::Model *m, kernel::ParticleIndex p) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                         const kernel::ParticleIndexes &pis) const
+  virtual void apply_index(kernel::Model *m, kernel::ParticleIndex p) const
       IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_outputs(kernel::Model *m,
-                                          const kernel::ParticleIndexes &pis) const
-      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_outputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_SINGLETON_MODIFIER_METHODS(Transform);
   IMP_OBJECT_METHODS(Transform);
   ;

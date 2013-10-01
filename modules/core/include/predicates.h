@@ -23,12 +23,12 @@ class InBoundingBox3DSingletonPredicate : public SingletonPredicate {
                                     std::string name =
                                         "InBoundingBox3DSingletonPredicate%1%")
       : SingletonPredicate(name), bb_(bb) {}
-  virtual int get_value_index(kernel::Model *m, kernel::ParticleIndex pi) const IMP_OVERRIDE {
+  virtual int get_value_index(kernel::Model *m, kernel::ParticleIndex pi) const
+      IMP_OVERRIDE {
     return bb_.get_contains(XYZ(m, pi).get_coordinates()) ? 1 : 0;
   }
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                         const kernel::ParticleIndexes &pi) const
-      IMP_OVERRIDE {
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pi) const IMP_OVERRIDE {
     kernel::ModelObjectsTemp ret;
     ret += IMP::get_particles(m, pi);
     return ret;
@@ -44,12 +44,12 @@ class AttributeSingletonPredicate : public SingletonPredicate {
   AttributeSingletonPredicate(IntKey bb, std::string name =
                                              "AttributeSingletonPredicate%1%")
       : SingletonPredicate(name), bb_(bb) {}
-  virtual int get_value_index(kernel::Model *m, kernel::ParticleIndex pi) const IMP_OVERRIDE {
+  virtual int get_value_index(kernel::Model *m, kernel::ParticleIndex pi) const
+      IMP_OVERRIDE {
     return m->get_attribute(bb_, pi);
   }
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                         const kernel::ParticleIndexes &pi) const
-      IMP_OVERRIDE {
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pi) const IMP_OVERRIDE {
     kernel::ModelObjectsTemp ret;
     ret += IMP::get_particles(m, pi);
     return ret;
@@ -63,32 +63,32 @@ class IsCollisionPairPredicate : public PairPredicate {
  public:
   IsCollisionPairPredicate(std::string name = "CollisionPairPredicate%1%")
       : PairPredicate(name) {}
-  virtual int
-  get_value_index(kernel::Model *m, const kernel::ParticleIndexPair& pi) const IMP_OVERRIDE {
-    Float sr = m->get_sphere(pi[0]).get_radius()
-      + m->get_sphere(pi[1]).get_radius();
+  virtual int get_value_index(kernel::Model *m,
+                              const kernel::ParticleIndexPair &pi) const
+      IMP_OVERRIDE {
+    Float sr =
+        m->get_sphere(pi[0]).get_radius() + m->get_sphere(pi[1]).get_radius();
 #if IMP_HAS_CHECKS > 1
     bool check_collisions = (get_distance(XYZR(m, pi[0]), XYZR(m, pi[1])) <= 0);
 #endif
     for (unsigned int i = 0; i < 3; ++i) {
-      double delta = std::abs(m->get_sphere(pi[0]).get_center()[i]
-                              - m->get_sphere(pi[1]).get_center()[i]);
+      double delta = std::abs(m->get_sphere(pi[0]).get_center()[i] -
+                              m->get_sphere(pi[1]).get_center()[i]);
       if (delta >= sr) {
         IMP_INTERNAL_CHECK(!check_collisions, "Should be a collision");
         return 0;
       }
     }
-    bool col= algebra::get_squared_distance(m->get_sphere(pi[0]).get_center(),
-                                         m->get_sphere(pi[1]).get_center())
-      < algebra::get_squared(sr);
-    IMP_INTERNAL_CHECK(col == check_collisions,
-                    "Don't match");
+    bool col =
+        algebra::get_squared_distance(m->get_sphere(pi[0]).get_center(),
+                                      m->get_sphere(pi[1]).get_center()) <
+        algebra::get_squared(sr);
+    IMP_INTERNAL_CHECK(col == check_collisions, "Don't match");
     return col ? 1 : 0;
   }
 
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                         const kernel::ParticleIndexes &pi) const
-      IMP_OVERRIDE {
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pi) const IMP_OVERRIDE {
     kernel::ModelObjectsTemp ret;
     ret += IMP::get_particles(m, pi);
     return ret;
@@ -124,9 +124,8 @@ class PredicateSingletonScore : public SingletonScore {
   }
   virtual double evaluate_index(kernel::Model *m, kernel::ParticleIndex p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                         const kernel::ParticleIndexes &pis) const
-      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_SINGLETON_SCORE_METHODS(PredicateSingletonScore);
   IMP_OBJECT_METHODS(PredicateSingletonScore);
 };
@@ -134,7 +133,8 @@ class PredicateSingletonScore : public SingletonScore {
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 template <class Predicate, class Score>
 inline double PredicateSingletonScore<Predicate, Score>::evaluate_index(
-    kernel::Model *m, kernel::ParticleIndex p, DerivativeAccumulator *da) const {
+    kernel::Model *m, kernel::ParticleIndex p,
+    DerivativeAccumulator *da) const {
   int val = pred_->get_value(m, p);
   Score *s = get_score(val);
   if (s) {

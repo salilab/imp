@@ -208,7 +208,8 @@ inline ParticlesTemp get_particle(kernel::Model *m, const ParticleIndexes &ps) {
 
 template <unsigned int D>
 inline base::Vector<base::Array<D, base::WeakPointer<Particle>, Particle *> >
-get_particle(kernel::Model *m, const base::Vector<base::Array<D, ParticleIndex> > &ps) {
+get_particle(kernel::Model *m,
+             const base::Vector<base::Array<D, ParticleIndex> > &ps) {
   base::Vector<base::Array<D, base::WeakPointer<Particle>, Particle *> > ret(
       ps.size());
   for (unsigned int i = 0; i < ps.size(); ++i) {
@@ -252,7 +253,7 @@ base::Vector<base::Array<D, ParticleIndex> > get_index(const base::Vector<
   return ret;
 }
 
-inline Model *get_model(Particle *p) { return p->get_model(); }\
+inline Model *get_model(Particle *p) { return p->get_model(); }
 inline Model *get_model(kernel::ModelObject *p) { return p->get_model(); }
 inline Model *get_model(ScoreState *p) { return p->get_model(); }
 

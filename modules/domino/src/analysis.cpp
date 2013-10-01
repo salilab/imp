@@ -22,8 +22,8 @@ class ParticleStatesEmbedding : public statistics::Embedding {
   Ints allowed_;
 
  public:
-  ParticleStatesEmbedding(kernel::Particle *p, ParticleStates *ps, const Ints &allowed,
-                          std::string name)
+  ParticleStatesEmbedding(kernel::Particle *p, ParticleStates *ps,
+                          const Ints &allowed, std::string name)
       : Embedding(name), p_(p), ps_(ps), allowed_(allowed) {}
   algebra::VectorKD get_point(unsigned int i) const;
   algebra::VectorKDs get_points() const {
@@ -57,10 +57,10 @@ Ints get_state_clusters(kernel::Particle *p, ParticleStates *ps,
   IMP::base::PointerMember<statistics::PartitionalClusteringWithCenter> c =
       create_connectivity_clustering(pse, resolution);
   Ints ret(ps->get_number_of_particle_states(), -1);
-  IMP_LOG_TERSE("For particle "
-                << p->get_name() << " there are " << allowed_states.size()
-                << " states which clustered to " << c->get_number_of_clusters()
-                << std::endl);
+  IMP_LOG_TERSE("For particle " << p->get_name() << " there are "
+                                << allowed_states.size()
+                                << " states which clustered to "
+                                << c->get_number_of_clusters() << std::endl);
   for (unsigned int i = 0; i < c->get_number_of_clusters(); ++i) {
     Ints is = c->get_cluster(i);
     int rep = allowed_states[c->get_cluster_representative(i)];

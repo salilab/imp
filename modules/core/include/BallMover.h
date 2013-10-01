@@ -30,7 +30,8 @@ class IMPCOREEXPORT BallMover : public MonteCarloMover {
   void initialize(kernel::ParticleIndexes pis, FloatKeys keys, double radius);
 
  public:
-  BallMover(kernel::Model *m, kernel::ParticleIndex pi, const FloatKeys &vars, double radius);
+  BallMover(kernel::Model *m, kernel::ParticleIndex pi, const FloatKeys &vars,
+            double radius);
   //! Move the x,y,z coordinates
   BallMover(kernel::Model *m, kernel::ParticleIndex pi, double radius);
 
@@ -41,7 +42,8 @@ class IMPCOREEXPORT BallMover : public MonteCarloMover {
       \param[in] vars The variables to use (normally the keys for x,y,z)
       \param[in] radius The radius deviation to use.
    */
-  BallMover(const kernel::ParticlesTemp &sc, const FloatKeys &vars, Float radius);
+  BallMover(const kernel::ParticlesTemp &sc, const FloatKeys &vars,
+            Float radius);
 
   /** The x,y,z coordinates are perturbed within a ball.
       \param[in] sc The set of particles to perturb.

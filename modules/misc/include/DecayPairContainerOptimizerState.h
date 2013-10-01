@@ -27,16 +27,15 @@ IMPMISC_BEGIN_NAMESPACE
     it evaluates to 0 are removed.
  */
 class IMPMISCEXPORT DecayPairContainerOptimizerState
-  : public kernel::OptimizerState {
+    : public kernel::OptimizerState {
   base::PointerMember<PairPredicate> pred_;
   base::PointerMember<PairContainer> input_;
   base::Pointer<IMP::internal::InternalDynamicListPairContainer> output_;
 
  public:
-  DecayPairContainerOptimizerState(PairPredicate *pred,
-                                   const kernel::ParticlePairsTemp &initial_list,
-                                   std::string name =
-                                       "DecayPairContainerOptimizerState%1%");
+  DecayPairContainerOptimizerState(
+      PairPredicate *pred, const kernel::ParticlePairsTemp &initial_list,
+      std::string name = "DecayPairContainerOptimizerState%1%");
   PairContainer *get_output_container() const { return output_; }
   virtual void do_update(unsigned int call_num) IMP_OVERRIDE;
   IMP_OBJECT_METHODS(DecayPairContainerOptimizerState);

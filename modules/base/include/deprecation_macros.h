@@ -81,8 +81,8 @@
   IMP_DEPRECATED_MACRO(                                                       \
       2.1,                                                                    \
       "Use IMP@MODULE@_DEPRECATED_VALUE_DEF "                                 \
-      "instead") if (::IMP::base::internal::get_print_deprecation_message(    \
-                         #classname)) {                                       \
+      "instead") if (::IMP::base::internal::                                  \
+                         get_print_deprecation_message(#classname)) {         \
     IMP_WARN(#classname << " is deprecated "                                  \
                         << "and should not be used.\nUse "                    \
                         << #replacement_classname << " instead."              \

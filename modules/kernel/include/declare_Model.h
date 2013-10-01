@@ -85,20 +85,16 @@ class IMPKERNELEXPORT Model : public base::Object
                               public internal::ParticleAttributeTable,
                               public internal::ParticlesAttributeTable
 #endif
-{
-  typedef base::Vector<ModelObject*> Edges;
+                              {
+  typedef base::Vector<ModelObject *> Edges;
   // must be up top
   // we don't want any liveness checks
-  IMP_NAMED_TUPLE_5(NodeInfo, NodeInfos,
-                    Edges, inputs,
-                    Edges, input_outputs,
-                    Edges, outputs,
-                    Edges, readers,
-                    Edges, writers,);
-  typedef base::map<const ModelObject*, NodeInfo> DependencyGraph;
+  IMP_NAMED_TUPLE_5(NodeInfo, NodeInfos, Edges, inputs, Edges, input_outputs,
+                    Edges, outputs, Edges, readers, Edges, writers, );
+  typedef base::map<const ModelObject *, NodeInfo> DependencyGraph;
   DependencyGraph dependency_graph_;
-  base::set<const ModelObject*> no_dependencies_;
-  base::map<const ModelObject*, ScoreStatesTemp> required_score_states_;
+  base::set<const ModelObject *> no_dependencies_;
+  base::map<const ModelObject *, ScoreStatesTemp> required_score_states_;
 
   // basic representation
   base::map<FloatKey, FloatRange> ranges_;
@@ -106,7 +102,6 @@ class IMPKERNELEXPORT Model : public base::Object
   ParticleIndexes free_particles_;
   base::IndexVector<ParticleIndexTag, base::Pointer<Particle> > particle_index_;
   base::IndexVector<ParticleIndexTag, Undecorators> undecorators_index_;
-
 
   base::Vector<base::PointerMember<base::Object> > model_data_;
   ////////////// DEPRECATED
@@ -156,18 +151,18 @@ class IMPKERNELEXPORT Model : public base::Object
   void do_remove_particle(ParticleIndex pi);
   bool do_get_has_required_score_states(const ModelObject *mo) const;
   void do_set_has_required_score_states(kernel::ModelObject *mo, bool tf);
-  const ScoreStatesTemp& do_get_required_score_states(const ModelObject *mo)
-      const {
+  const ScoreStatesTemp &do_get_required_score_states(
+      const ModelObject *mo) const {
     IMP_USAGE_CHECK(do_get_has_required_score_states(mo),
                     "Doesn't have score states");
     return required_score_states_.find(mo)->second;
   }
   void do_add_model_object(kernel::ModelObject *mo);
   void do_remove_model_object(kernel::ModelObject *mo);
+
  public:
   /** Construct an empty model */
   Model(std::string name = "Model %1%");
-
 
  public:
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
@@ -195,19 +190,19 @@ class IMPKERNELEXPORT Model : public base::Object
   /** Add the passed Undecorator to the particle.*/
   void add_undecorator(ParticleIndex pi, Undecorator *d);
 
-    /** @name States
+  /** @name States
 
-        ScoreStates can be added to the Model in order to keep them
-        alive as long as the model is alive. Being added does affect
-        their ability to perform their required action. See ScoreState
-        for more information.
+      ScoreStates can be added to the Model in order to keep them
+      alive as long as the model is alive. Being added does affect
+      their ability to perform their required action. See ScoreState
+      for more information.
 
-        \advancedmethod
-    */
-    /**@{*/
+      \advancedmethod
+  */
+  /**@{*/
   IMP_LIST_ACTION(public, ScoreState, ScoreStates, score_state, score_states,
-                  ScoreState *, ScoreStates, do_add_score_state(obj),
-                  {}, do_remove_score_state(obj));
+                  ScoreState *, ScoreStates, do_add_score_state(obj), {},
+                  do_remove_score_state(obj));
   /**@}*/
 
  public:
@@ -325,8 +320,7 @@ class IMPKERNELEXPORT Model : public base::Object
 
   IMP_OBJECT_METHODS(Model);
 
-
-  // deprecated
+// deprecated
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   struct NotNull {
     bool operator()(const base::Pointer<Particle> &p) { return p; }
@@ -336,7 +330,7 @@ class IMPKERNELEXPORT Model : public base::Object
       ParticleIterator;
 #endif
 
-  // all deprecated but too used to add warnings about now
+// all deprecated but too used to add warnings about now
 #if !defined(IMP_DOXYGEN)
   ScoringFunction *create_model_scoring_function();
   void add_restraint(Restraint *r);
@@ -348,11 +342,11 @@ class IMPKERNELEXPORT Model : public base::Object
 
   /** \deprecated_at{2.1} Use a RestraintSet instead.*/
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-      unsigned int get_number_of_restraints() const;
+  unsigned int get_number_of_restraints() const;
   /** \deprecated_at{2.1} Use a RestraintSet instead.*/
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-      Restraint *get_restraint(unsigned int i) const;
-   /** \deprecated_at{2.1} Use a ScoringFunction instead.*/
+  Restraint *get_restraint(unsigned int i) const;
+  /** \deprecated_at{2.1} Use a ScoringFunction instead.*/
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   double evaluate(bool tf, bool warn = true);
   /** \deprecated_at{2.1} Use the ParticleIndex version.*/
@@ -369,7 +363,7 @@ class IMPKERNELEXPORT Model : public base::Object
   ModelObjectsTemp get_optimized_particles() const;
   /** \deprecated_at{2.1} Using a ScoringFunction instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-      RestraintSet *get_root_restraint_set();
+  RestraintSet *get_root_restraint_set();
   /** \deprecated_at{2.1} Get the maximum directly from the restraint.*/
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   double get_maximum_score(Restraint *r) const;
@@ -391,9 +385,8 @@ class IMPKERNELEXPORT Model : public base::Object
   ParticleIterator particles_end() const;
   /** \deprecated_at{2.1} Use a ScoringFunction instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-   operator Restraint *() const { return restraints_.get(); }
+  operator Restraint *() const { return restraints_.get(); }
 #endif
-
 };
 
 IMPKERNEL_END_NAMESPACE

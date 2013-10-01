@@ -32,17 +32,15 @@ class SetNumberOfThreads : public base::RAII {
   int num_;
 
  public:
-  IMP_RAII(SetNumberOfThreads, (unsigned int n), {
-    num_ = 0;
-  },
+  IMP_RAII(SetNumberOfThreads, (unsigned int n), { num_ = 0; },
            {
-    num_ = get_number_of_threads();
-    set_number_of_threads(n);
-  },
+             num_ = get_number_of_threads();
+             set_number_of_threads(n);
+           },
            {
-    set_number_of_threads(num_);
-    num_ = 0;
-  }, );
+             set_number_of_threads(num_);
+             num_ = 0;
+           }, );
 };
 
 IMPBASE_END_NAMESPACE

@@ -128,8 +128,8 @@ IMPALGEBRA_END_NAMESPACE
                     "Inverted range " << lower_corner << " " << upper_corner); \
     IMP_USAGE_CHECK(lower_corner <= center,                                    \
                     "Center not in range " << lower_corner << " " << center);  \
-    IMP_USAGE_CHECK(center <= upper_corner,                                    \
-                    "Center not in range " << center << upper_corner);         \
+    IMP_USAGE_CHECK(center <= upper_corner, "Center not in range "             \
+                                                << center << upper_corner);    \
     for (voxel_index[0] = lower_corner[0]; voxel_index[0] <= upper_corner[0];  \
          ++voxel_index[0]) {                                                   \
       if (voxel_index[0] > center[0]) break;                                   \

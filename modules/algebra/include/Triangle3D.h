@@ -30,8 +30,8 @@ class IMPALGEBRAEXPORT Triangle3D : public GeometricPrimitiveD<3> {
     IMP_USAGE_CHECK(i < 3, "invalid point index");
     return p_[i];
   }
-  IMP_SHOWABLE_INLINE(
-      Triangle3D, out << "(" << p_[0] << ", " << p_[1] << ", " << p_[2] << ")");
+  IMP_SHOWABLE_INLINE(Triangle3D, out << "(" << p_[0] << ", " << p_[1] << ", "
+                                      << p_[2] << ")");
   Floats get_edge_lengths() const;
 
  private:

@@ -24,7 +24,8 @@ class IMPCOREEXPORT RigidBodyHierarchyGeometry
                              unsigned int layer);
 
  public:
-  RigidBodyHierarchyGeometry(RigidBody rb, const kernel::ParticlesTemp &constituents);
+  RigidBodyHierarchyGeometry(RigidBody rb,
+                             const kernel::ParticlesTemp &constituents);
   display::Geometries get_components() const;
   IMP_OBJECT_METHODS(RigidBodyHierarchyGeometry);
 };

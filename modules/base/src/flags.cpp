@@ -82,10 +82,11 @@ size_t get_int_flag(std::string name) {
 }
 
 void add_bool_flag(std::string name, std::string description) {
-  internal::flags.add_options()(
-      name.c_str(), boost::program_options::value<bool>()->default_value(false)
-                        ->zero_tokens(),
-      description.c_str());
+  internal::flags.add_options()(name.c_str(),
+                                boost::program_options::value<bool>()
+                                    ->default_value(false)
+                                    ->zero_tokens(),
+                                description.c_str());
 }
 
 bool get_bool_flag(std::string name) {
@@ -191,8 +192,11 @@ Strings setup_from_argv_internal(int argc, char **argv, std::string description,
   m_positional.add("positional", -1);
   try {
     boost::program_options::parsed_options parsed =
-        boost::program_options::command_line_parser(argc, argv).options(all)
-            .positional(m_positional).allow_unregistered().run();
+        boost::program_options::command_line_parser(argc, argv)
+            .options(all)
+            .positional(m_positional)
+            .allow_unregistered()
+            .run();
     boost::program_options::store(parsed, internal::variables_map);
     boost::program_options::notify(internal::variables_map);
     if (internal::variables_map.count("positional") != 0) {
@@ -249,7 +253,7 @@ Strings setup_from_argv_internal(int argc, char **argv, std::string description,
       return Strings(positional.begin(), positional.end());
     }
   }
-  catch (const std::runtime_error & e) {
+  catch (const std::runtime_error &e) {
     std::cerr << "Error parsing arguments: " << e.what() << std::endl;
     write_help(std::cerr);
     throw IMP::base::UsageException(e.what());

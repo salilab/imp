@@ -47,7 +47,8 @@ Strings parse_psipred_file(base::TextInput inf) {
   return ss;
 }
 
-SecondaryStructureResidues create_sses_from_strings(Strings ss, kernel::Particles ps) {
+SecondaryStructureResidues create_sses_from_strings(Strings ss,
+                                                    kernel::Particles ps) {
   SecondaryStructureResidues ssrs;
   std::string conf = ss[0], pred = ss[1], aa = ss[2];
   for (int nres = 0; nres < (int)ss[0].length(); nres++) {
@@ -70,7 +71,8 @@ SecondaryStructureResidues create_sses_from_strings(Strings ss, kernel::Particle
 }
 }
 
-SecondaryStructureResidues read_psipred(base::TextInput inf, kernel::Model* mdl) {
+SecondaryStructureResidues read_psipred(base::TextInput inf,
+                                        kernel::Model* mdl) {
   Strings ss = parse_psipred_file(inf);
   int nres = ss[0].size();
   kernel::Particles ps;
@@ -81,7 +83,8 @@ SecondaryStructureResidues read_psipred(base::TextInput inf, kernel::Model* mdl)
   return create_sses_from_strings(ss, ps);
 }
 
-SecondaryStructureResidues read_psipred(base::TextInput inf, kernel::Particles ps) {
+SecondaryStructureResidues read_psipred(base::TextInput inf,
+                                        kernel::Particles ps) {
   Strings ss = parse_psipred_file(inf);
   return create_sses_from_strings(ss, ps);
 }

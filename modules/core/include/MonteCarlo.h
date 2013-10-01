@@ -98,8 +98,8 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
   }
   //! Get number of proposed moves
   unsigned int get_number_of_proposed_steps() const {
-    return stat_forward_steps_taken_ + stat_upward_steps_taken_
-      + stat_num_failures_;
+    return stat_forward_steps_taken_ + stat_upward_steps_taken_ +
+           stat_num_failures_;
   }
   //! Get number of accepted moves
   unsigned int get_number_of_accepted_steps() const {

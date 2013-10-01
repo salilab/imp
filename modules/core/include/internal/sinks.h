@@ -15,7 +15,8 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-inline bool get_filters_contains(kernel::Model *m, const PairPredicates &filters,
+inline bool get_filters_contains(kernel::Model *m,
+                                 const PairPredicates &filters,
                                  kernel::ParticleIndexPair pip) {
   for (unsigned int i = 0; i < filters.size(); ++i) {
     if (filters[i]->get_value_index(m, pip)) return true;
@@ -26,7 +27,8 @@ inline bool get_filters_contains(kernel::Model *m, const PairPredicates &filters
 struct ParticleSink {
   kernel::Model *m_;
   kernel::ParticlesTemp &out_;
-  ParticleSink(kernel::Model *m, kernel::ParticlesTemp &out) : m_(m), out_(out) {}
+  ParticleSink(kernel::Model *m, kernel::ParticlesTemp &out)
+      : m_(m), out_(out) {}
   typedef kernel::ParticleIndex argument_type;
   bool operator()(kernel::ParticleIndex c) {
     out_.push_back(m_->get_particle(c));
@@ -52,7 +54,8 @@ struct ParticlePairSink {
   bool add(kernel::ParticleIndex a, kernel::ParticleIndex b) {
     if (get_filters_contains(m_, filters_, kernel::ParticleIndexPair(a, b)))
       return false;
-    out_.push_back(kernel::ParticlePair(m_->get_particle(a), m_->get_particle(b)));
+    out_.push_back(
+        kernel::ParticlePair(m_->get_particle(a), m_->get_particle(b)));
     return true;
   }
   bool operator()(kernel::ParticleIndex a, kernel::ParticleIndex b) {
@@ -60,17 +63,19 @@ struct ParticlePairSink {
     return true;
   }
   void check_contains(kernel::ParticleIndex a, kernel::ParticleIndex b) const {
-    if (get_filters_contains(m_, filters_, kernel::ParticleIndexPair(a, b))) return;
+    if (get_filters_contains(m_, filters_, kernel::ParticleIndexPair(a, b)))
+      return;
     kernel::ParticlePair pp(m_->get_particle(a), m_->get_particle(b));
     kernel::ParticlePair opp(m_->get_particle(b), m_->get_particle(a));
     if (std::find(out_.begin(), out_.end(), pp) == out_.end() &&
         std::find(out_.begin(), out_.end(), opp) == out_.end()) {
-      IMP_INTERNAL_CHECK(
-          false, "Particle pair "
-                     << pp[0]->get_name() << ", " << pp[1]->get_name()
-                     << " not found in list. Coordinates are " << XYZR(pp[0])
-                     << " and " << XYZR(pp[1]) << " and distance is "
-                     << get_distance(XYZR(pp[0]), XYZR(pp[1])));
+      IMP_INTERNAL_CHECK(false, "Particle pair "
+                                    << pp[0]->get_name() << ", "
+                                    << pp[1]->get_name()
+                                    << " not found in list. Coordinates are "
+                                    << XYZR(pp[0]) << " and " << XYZR(pp[1])
+                                    << " and distance is "
+                                    << get_distance(XYZR(pp[0]), XYZR(pp[1])));
     }
   }
 };
@@ -93,13 +98,14 @@ struct ParticleIndexPairSink {
     return true;
   }
   void check_contains(kernel::ParticleIndex a, kernel::ParticleIndex b) const {
-    if (get_filters_contains(m_, filters_, kernel::ParticleIndexPair(a, b))) return;
+    if (get_filters_contains(m_, filters_, kernel::ParticleIndexPair(a, b)))
+      return;
     kernel::ParticleIndexPair pp(a, b);
     kernel::ParticleIndexPair opp(b, a);
     if (std::find(out_.begin(), out_.end(), pp) == out_.end() &&
         std::find(out_.begin(), out_.end(), opp) == out_.end()) {
-      IMP_INTERNAL_CHECK(false,
-                         "Particle pair " << pp << " not found in list.");
+      IMP_INTERNAL_CHECK(false, "Particle pair " << pp
+                                                 << " not found in list.");
     }
   }
 };
@@ -148,9 +154,8 @@ struct ParticleIndexPairSinkWithMax : public ParticleIndexPairSink {
         da_(da) {}
   bool operator()(kernel::ParticleIndex a, kernel::ParticleIndex b) {
     if (!ParticleIndexPairSink::add(a, b)) return true;
-    double cur = ssps_->PS::evaluate_index(ParticleIndexPairSink::m_,
-                                           kernel::ParticleIndexPair(a, b),
-                                           da_);
+    double cur = ssps_->PS::evaluate_index(
+        ParticleIndexPairSink::m_, kernel::ParticleIndexPair(a, b), da_);
     max_ -= cur;
     score_ += cur;
     if (max_ < 0) {
@@ -189,7 +194,8 @@ struct HalfParticleIndexPairSink : public ParticleIndexPairSink {
 
 struct SwappedHalfParticleIndexPairSink : public ParticleIndexPairSink {
   kernel::ParticleIndex p_;
-  SwappedHalfParticleIndexPairSink(kernel::Model *m, const PairPredicates &filters,
+  SwappedHalfParticleIndexPairSink(kernel::Model *m,
+                                   const PairPredicates &filters,
                                    kernel::ParticleIndexPairs &out,
                                    kernel::ParticleIndex p)
       : ParticleIndexPairSink(m, filters, out), p_(p) {}
@@ -208,8 +214,7 @@ struct HalfParticlePairSinkWithMax : public ParticlePairSinkWithMax<PS> {
                               kernel::ParticlePairsTemp &out, PS *ssps,
                               DerivativeAccumulator *da, double &score,
                               double max, kernel::ParticleIndex p)
-      : ParticlePairSinkWithMax<PS>(m, filters, out, ssps, da,
-                                    score, max),
+      : ParticlePairSinkWithMax<PS>(m, filters, out, ssps, da, score, max),
         p_(p) {}
   bool operator()(kernel::ParticleIndex c) {
     return ParticlePairSinkWithMax<PS>::operator()(p_, c);
@@ -223,7 +228,8 @@ template <class PS>
 struct HalfParticleIndexPairSinkWithMax
     : public ParticleIndexPairSinkWithMax<PS> {
   kernel::ParticleIndex p_;
-  HalfParticleIndexPairSinkWithMax(kernel::Model *m, const PairPredicates &filters,
+  HalfParticleIndexPairSinkWithMax(kernel::Model *m,
+                                   const PairPredicates &filters,
                                    kernel::ParticleIndexPairs &out, PS *ssps,
                                    DerivativeAccumulator *da, double &score,
                                    double max, kernel::ParticleIndex p)
@@ -242,8 +248,8 @@ struct RigidBodyRigidBodyParticleIndexPairSink : public ParticleIndexPairSink {
   double dist_;
   const IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &map_;
   RigidBodyRigidBodyParticleIndexPairSink(
-      kernel::Model *m, const PairPredicates &filters, kernel::ParticleIndexPairs &out,
-      ObjectKey key, double dist,
+      kernel::Model *m, const PairPredicates &filters,
+      kernel::ParticleIndexPairs &out, ObjectKey key, double dist,
       const IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &map)
       : ParticleIndexPairSink(m, filters, out),
         key_(key),
@@ -270,8 +276,8 @@ struct RigidBodyParticleParticleIndexPairSink : public ParticleIndexPairSink {
   double dist_;
   const IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &map_;
   RigidBodyParticleParticleIndexPairSink(
-      kernel::Model *m, const PairPredicates &filters, kernel::ParticleIndexPairs &out,
-      ObjectKey key, double dist,
+      kernel::Model *m, const PairPredicates &filters,
+      kernel::ParticleIndexPairs &out, ObjectKey key, double dist,
       const IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &map)
       : ParticleIndexPairSink(m, filters, out),
         key_(key),
@@ -298,8 +304,8 @@ struct ParticleRigidBodyParticleIndexPairSink : public ParticleIndexPairSink {
   double dist_;
   const IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &map_;
   ParticleRigidBodyParticleIndexPairSink(
-      kernel::Model *m, const PairPredicates &filters, kernel::ParticleIndexPairs &out,
-      ObjectKey key, double dist,
+      kernel::Model *m, const PairPredicates &filters,
+      kernel::ParticleIndexPairs &out, ObjectKey key, double dist,
       const IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &map)
       : ParticleIndexPairSink(m, filters, out),
         key_(key),
@@ -328,9 +334,9 @@ struct RigidBodyParticleIndexPairSinkWithMax
   double dist_;
   const IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &map_;
   RigidBodyParticleIndexPairSinkWithMax(
-      kernel::Model *m, const PairPredicates &filters, kernel::ParticleIndexPairs &out,
-      PS *ssps, DerivativeAccumulator *da, double &score, double max,
-      ObjectKey key, double dist,
+      kernel::Model *m, const PairPredicates &filters,
+      kernel::ParticleIndexPairs &out, PS *ssps, DerivativeAccumulator *da,
+      double &score, double max, ObjectKey key, double dist,
       const IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &map)
       : ParticleIndexPairSinkWithMax<PS>(m, filters, out, ssps, da, score, max),
         key_(key),
@@ -350,9 +356,9 @@ struct RigidBodyRigidBodyParticleIndexPairSinkWithMax
     : public RigidBodyParticleIndexPairSinkWithMax<PS> {
   typedef RigidBodyParticleIndexPairSinkWithMax<PS> P;
   RigidBodyRigidBodyParticleIndexPairSinkWithMax(
-      kernel::Model *m, const PairPredicates &filters, kernel::ParticleIndexPairs &out,
-      PS *ssps, DerivativeAccumulator *da, double &score, double max,
-      ObjectKey key, double dist,
+      kernel::Model *m, const PairPredicates &filters,
+      kernel::ParticleIndexPairs &out, PS *ssps, DerivativeAccumulator *da,
+      double &score, double max, ObjectKey key, double dist,
       const IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &map)
       : P(m, filters, out, ssps, da, score, max, key, dist, map) {}
   bool operator()(kernel::ParticleIndex a, kernel::ParticleIndex b) {
@@ -372,9 +378,9 @@ struct RigidBodyParticleParticleIndexPairSinkWithMax
     : public RigidBodyParticleIndexPairSinkWithMax<PS> {
   typedef RigidBodyParticleIndexPairSinkWithMax<PS> P;
   RigidBodyParticleParticleIndexPairSinkWithMax(
-      kernel::Model *m, const PairPredicates &filters, kernel::ParticleIndexPairs &out,
-      PS *ssps, DerivativeAccumulator *da, double &score, double max,
-      ObjectKey key, double dist,
+      kernel::Model *m, const PairPredicates &filters,
+      kernel::ParticleIndexPairs &out, PS *ssps, DerivativeAccumulator *da,
+      double &score, double max, ObjectKey key, double dist,
       const IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &map)
       : P(m, filters, out, ssps, da, score, max, key, dist, map) {}
   bool operator()(kernel::ParticleIndex a, kernel::ParticleIndex b) {

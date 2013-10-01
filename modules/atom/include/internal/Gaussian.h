@@ -14,23 +14,22 @@
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
 
 //! Gaussian function
-class Gaussian : public UnaryFunction
-{
-public:
+class Gaussian : public UnaryFunction {
+ public:
   /** Create with the given mean and the spring constant k */
-  Gaussian(Float Emin, Float Zmin, Float sigma) :
-   Emin_(Emin), Zmin_(Zmin), sigma_(sigma) {}
+  Gaussian(Float Emin, Float Zmin, Float sigma)
+      : Emin_(Emin), Zmin_(Zmin), sigma_(sigma) {}
 
   IMP_UNARY_FUNCTION_INLINE(Gaussian,
-                            Emin_ * exp( - (feature - Zmin_) * (feature - Zmin_)
-                            / sigma_ / sigma_ / 2.0 ),
-                            - Emin_ * exp( - (feature - Zmin_)*(feature - Zmin_)
-                            / sigma_ / sigma_ / 2.0 ) * (feature - Zmin_)
-                            / sigma_ / sigma_,
-                            "Gaussian: " << Emin_ << " and " << Zmin_
-                            << " and " << sigma_ << std::endl);
+                            Emin_* exp(-(feature - Zmin_) * (feature - Zmin_) /
+                                       sigma_ / sigma_ / 2.0),
+                            -Emin_* exp(-(feature - Zmin_) * (feature - Zmin_) /
+                                        sigma_ / sigma_ / 2.0) *
+                                (feature - Zmin_) / sigma_ / sigma_,
+                            "Gaussian: " << Emin_ << " and " << Zmin_ << " and "
+                                         << sigma_ << std::endl);
 
-private:
+ private:
   Float Emin_;
   Float Zmin_;
   Float sigma_;
@@ -38,4 +37,4 @@ private:
 
 IMPATOM_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPATOM_INTERNAL_GAUSSIAN_H */
+#endif /* IMPATOM_INTERNAL_GAUSSIAN_H */

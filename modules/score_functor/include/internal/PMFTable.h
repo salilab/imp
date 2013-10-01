@@ -35,7 +35,7 @@ struct StorageSelector<true> {
 };
 
 template <bool BIPARTITE, bool INTERPOLATE, bool SPARSE = false>
-struct PMFTable: public base::Object {
+struct PMFTable : public base::Object {
   unsigned int split_;
   double inverse_bin_width_;
   double bin_width_;
@@ -47,9 +47,9 @@ struct PMFTable: public base::Object {
     if (i > j) {
       std::swap(i, j);
     }
-    IMP_USAGE_CHECK(
-        !BIPARTITE || j >= split_,
-        "One of the particles should be of each type: " << i << " " << j);
+    IMP_USAGE_CHECK(!BIPARTITE || j >= split_,
+                    "One of the particles should be of each type: " << i << " "
+                                                                    << j);
     j -= split_;
   }
   const RawOpenCubicSpline &get(int i, int j) const {
@@ -176,10 +176,11 @@ struct PMFTable: public base::Object {
     IMP_LOG_TERSE("PMF table entries have " << bins_read << " bins with width "
                                             << bin_width_ << std::endl);
   }
+
  public:
   template <class Key>
-  PMFTable(base::TextInput name, unsigned int split, Key) :
-      Object("PMFTable-"+name.get_name()), split_(split) {
+  PMFTable(base::TextInput name, unsigned int split, Key)
+      : Object("PMFTable-" + name.get_name()), split_(split) {
     initialize<Key>(name);
   }
 

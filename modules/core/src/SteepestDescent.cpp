@@ -13,17 +13,16 @@
 IMPCORE_BEGIN_NAMESPACE
 
 SteepestDescent::SteepestDescent()
-    : AttributeOptimizer(), step_size_(0.01),
+    : AttributeOptimizer(),
+      step_size_(0.01),
       max_step_size_(std::numeric_limits<double>::max()),
-      threshold_(0.) {
-}
+      threshold_(0.) {}
 
 SteepestDescent::SteepestDescent(kernel::Model *m, std::string name)
     : AttributeOptimizer(m, name),
       step_size_(0.01),
       max_step_size_(std::numeric_limits<double>::max()),
-      threshold_(0.) {
-}
+      threshold_(0.) {}
 
 double SteepestDescent::do_optimize(unsigned int max_steps) {
   IMP_OBJECT_LOG;
@@ -36,10 +35,10 @@ double SteepestDescent::do_optimize(unsigned int max_steps) {
   Float current_step_size = step_size_;
 
   // ... and space for the old values
-  algebra::VectorKD temp_derivs
-      = algebra::get_zero_vector_kd(float_indexes.size());
-  algebra::VectorKD temp_values
-      = algebra::get_zero_vector_kd(float_indexes.size());
+  algebra::VectorKD temp_derivs =
+      algebra::get_zero_vector_kd(float_indexes.size());
+  algebra::VectorKD temp_values =
+      algebra::get_zero_vector_kd(float_indexes.size());
 
   for (unsigned int step = 0; step < max_steps; step++) {
     // model.show(std::cout);

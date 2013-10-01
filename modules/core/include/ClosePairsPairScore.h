@@ -34,30 +34,29 @@ class IMPCOREEXPORT KClosePairsPairScore : public PairScore {
   int k_;
   mutable double last_distance_;
   IMP::base::PointerMember<RigidClosePairsFinder> cpf_;
-  kernel::ParticleIndexPairs get_close_pairs(kernel::Model *m,
-                                     const kernel::ParticleIndexPair &pp) const;
+  kernel::ParticleIndexPairs get_close_pairs(
+      kernel::Model *m, const kernel::ParticleIndexPair &pp) const;
 
  public:
   /** only score the k closest pairs.
    */
   KClosePairsPairScore(PairScore *f, Refiner *r, int k = 1);
 
-  kernel::ParticlePairsTemp
-    get_close_pairs(const kernel::ParticlePair &pp) const {
+  kernel::ParticlePairsTemp get_close_pairs(
+      const kernel::ParticlePair &pp) const {
     return IMP::internal::get_particle(
         pp[0]->get_model(),
         get_close_pairs(pp[0]->get_model(), IMP::internal::get_index(pp)));
   }
 
-  kernel::Restraints create_current_decomposition(kernel::Model *m,
-                                     const kernel::ParticleIndexPair &vt) const;
+  kernel::Restraints create_current_decomposition(
+      kernel::Model *m, const kernel::ParticleIndexPair &vt) const;
 
   virtual double evaluate_index(kernel::Model *m,
                                 const kernel::ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                     const kernel::ParticleIndexes &pis) const
-      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
   virtual double evaluate_if_good_index(kernel::Model *m,
                                         const kernel::ParticleIndexPair &vt,
                                         DerivativeAccumulator *da,
@@ -78,8 +77,8 @@ class IMPCOREEXPORT ClosePairsPairScore : public PairScore {
   IMP::base::PointerMember<PairScore> f_;
   Float th_;
   IMP::base::PointerMember<RigidClosePairsFinder> cpf_;
-  kernel::ParticleIndexPairs get_close_pairs(kernel::Model *m,
-                                     const kernel::ParticleIndexPair &pp) const;
+  kernel::ParticleIndexPairs get_close_pairs(
+      kernel::Model *m, const kernel::ParticleIndexPair &pp) const;
 
  public:
   /** \param[in] r The Refiner to call on each particle
@@ -89,14 +88,14 @@ class IMPCOREEXPORT ClosePairsPairScore : public PairScore {
    */
   ClosePairsPairScore(PairScore *f, Refiner *r, Float max_distance);
 
-  kernel::ParticlePairsTemp
-    get_close_pairs(const kernel::ParticlePair &pp) const {
+  kernel::ParticlePairsTemp get_close_pairs(
+      const kernel::ParticlePair &pp) const {
     return IMP::internal::get_particle(
         pp[0]->get_model(),
         get_close_pairs(pp[0]->get_model(), IMP::internal::get_index(pp)));
   }
-  kernel::Restraints create_current_decomposition(kernel::Model *m,
-                                   const kernel::ParticleIndexPair &vt) const;
+  kernel::Restraints create_current_decomposition(
+      kernel::Model *m, const kernel::ParticleIndexPair &vt) const;
 
   virtual double evaluate_index(kernel::Model *m,
                                 const kernel::ParticleIndexPair &p,
@@ -105,9 +104,8 @@ class IMPCOREEXPORT ClosePairsPairScore : public PairScore {
                                         const kernel::ParticleIndexPair &vt,
                                         DerivativeAccumulator *da,
                                         double max) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                    const kernel::ParticleIndexes &pis) const
-      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_PAIR_SCORE_METHODS(KClosePairsPairScore);
   IMP_OBJECT_METHODS(ClosePairsPairScore);
 };

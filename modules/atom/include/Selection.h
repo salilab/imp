@@ -42,11 +42,11 @@ IMPATOM_BEGIN_NAMESPACE
 */
 class IMPATOMEXPORT Selection :
 #ifdef SWIG
-  public kernel::ParticleIndexesAdaptor
+    public kernel::ParticleIndexesAdaptor
 #else
-public base::InputAdaptor
+    public base::InputAdaptor
 #endif
-{
+    {
  public:
   enum Terminus {
     NONE,
@@ -60,13 +60,10 @@ public base::InputAdaptor
   double radius_;
 
   kernel::ParticleIndexes h_;
-  IMP_NAMED_TUPLE_3(SearchResult, SearchResults,
-                    bool, match,
-                    double, radius,
-                    kernel::ParticleIndexes, indexes,);
-  SearchResult search(
-      kernel::Model *m, kernel::ParticleIndex pi,
-      boost::dynamic_bitset<> parent) const;
+  IMP_NAMED_TUPLE_3(SearchResult, SearchResults, bool, match, double, radius,
+                    kernel::ParticleIndexes, indexes, );
+  SearchResult search(kernel::Model *m, kernel::ParticleIndex pi,
+                      boost::dynamic_bitset<> parent) const;
   void set_hierarchies(kernel::Model *m, const kernel::ParticleIndexes &pis);
 
  public:
@@ -151,8 +148,8 @@ public base::InputAdaptor
   kernel::ParticleIndexes get_selected_particle_indexes() const;
 
 #ifndef SWIG
-  operator ParticleIndexes () const { return get_selected_particle_indexes();}
-  operator ParticlesTemp () const {return get_selected_particles();}
+  operator ParticleIndexes() const { return get_selected_particle_indexes(); }
+  operator ParticlesTemp() const { return get_selected_particles(); }
 #endif
 
   IMP_SHOWABLE(Selection);
@@ -171,10 +168,10 @@ IMP_VALUES(Selection, Selections);
     See Selection
  */
 IMPATOMEXPORT kernel::Restraint *create_distance_restraint(const Selection &n0,
-                                                   const Selection &n1,
-                                                   double x0, double k,
-                                                   std::string name =
-                                                       "Distance%1%");
+                                                           const Selection &n1,
+                                                           double x0, double k,
+                                                           std::string name =
+                                                               "Distance%1%");
 
 /** Create a restraint connecting the selections.
 
@@ -182,10 +179,8 @@ IMPATOMEXPORT kernel::Restraint *create_distance_restraint(const Selection &n0,
     to accelerate the computation.
     See Selection
 */
-IMPATOMEXPORT kernel::Restraint *
-create_connectivity_restraint(const Selections &s,
-                              double k,
-                              std::string name = "Connectivity%1%");
+IMPATOMEXPORT kernel::Restraint *create_connectivity_restraint(
+    const Selections &s, double k, std::string name = "Connectivity%1%");
 
 /** Create a restraint connecting the selections. The particles are
  allowed to be appart by x0 and still count as connected.
@@ -194,10 +189,9 @@ create_connectivity_restraint(const Selections &s,
     to accelerate the computation.
      See Selection
 */
-IMPATOMEXPORT kernel::Restraint *
-create_connectivity_restraint(const Selections &s,
-                              double x0, double k,
-                              std::string name = "Connectivity%1%");
+IMPATOMEXPORT kernel::Restraint *create_connectivity_restraint(
+    const Selections &s, double x0, double k,
+    std::string name = "Connectivity%1%");
 
 /** Create a restraint connecting the selection.
 
@@ -261,8 +255,8 @@ IMPATOMEXPORT double get_surface_area(const Selection &s);
 IMPATOMEXPORT double get_radius_of_gyration(const Selection &s);
 
 /** Create an excluded volume restraint for a list of selections.*/
-IMPATOMEXPORT kernel::Restraint *
-create_excluded_volume_restraint(const Selections &s);
+IMPATOMEXPORT kernel::Restraint *create_excluded_volume_restraint(
+    const Selections &s);
 
 /** See Hierarchy */
 IMPATOMEXPORT Hierarchies get_leaves(const Selection &h);
@@ -272,8 +266,8 @@ IMPATOMEXPORT Hierarchies get_leaves(const Selection &h);
 */
 class IMPATOMEXPORT SelectionGeometry : public display::Geometry {
   atom::Selection res_;
-  mutable IMP::base::map<kernel::Particle *,
-                         base::Pointer<Geometry> > components_;
+  mutable IMP::base::map<kernel::Particle *, base::Pointer<Geometry> >
+      components_;
 
  public:
   SelectionGeometry(atom::Selection d, std::string name = "Selection")

@@ -181,9 +181,9 @@ void parse_angle_line(std::string line, CHARMMResidueTopologyBase *residue,
 
   for (unsigned int i = 1; i < split_results.size(); i += 3) {
     if (split_results[i][0] == '!') return;  // comments start
-    residue->add_angle(
-        get_atom_names(split_results.begin() + i, split_results.begin() + i + 3,
-                       residue, translate_names_to_pdb));
+    residue->add_angle(get_atom_names(split_results.begin() + i,
+                                      split_results.begin() + i + 3, residue,
+                                      translate_names_to_pdb));
   }
 }
 
@@ -195,9 +195,9 @@ void parse_dihedral_line(std::string line, CHARMMResidueTopologyBase *residue,
 
   for (unsigned int i = 1; i < split_results.size(); i += 4) {
     if (split_results[i][0] == '!') return;  // comments start
-    residue->add_dihedral(
-        get_atom_names(split_results.begin() + i, split_results.begin() + i + 4,
-                       residue, translate_names_to_pdb));
+    residue->add_dihedral(get_atom_names(split_results.begin() + i,
+                                         split_results.begin() + i + 4, residue,
+                                         translate_names_to_pdb));
   }
 }
 
@@ -209,9 +209,9 @@ void parse_improper_line(std::string line, CHARMMResidueTopologyBase *residue,
 
   for (unsigned int i = 1; i < split_results.size(); i += 4) {
     if (split_results[i][0] == '!') return;  // comments start
-    residue->add_improper(
-        get_atom_names(split_results.begin() + i, split_results.begin() + i + 4,
-                       residue, translate_names_to_pdb));
+    residue->add_improper(get_atom_names(split_results.begin() + i,
+                                         split_results.begin() + i + 4, residue,
+                                         translate_names_to_pdb));
   }
 }
 
@@ -291,11 +291,13 @@ void parse_patch_line(std::string line, std::string &first, std::string &last,
 
 typedef std::map<kernel::Particle *, base::Vector<IMP::atom::Bond> > BondMap;
 
-// Build a simple mapping from kernel::Particles to bonds that connect them. Note
+// Build a simple mapping from kernel::Particles to bonds that connect them.
+// Note
 // that we cannot use the existing such mapping (the bond graph) in the
 // Bonded particles, since bonds may be a subset of all bonds.
 void make_bond_map(const kernel::Particles &bonds, BondMap &particle_bonds) {
-  for (kernel::Particles::const_iterator it = bonds.begin(); it != bonds.end(); ++it) {
+  for (kernel::Particles::const_iterator it = bonds.begin(); it != bonds.end();
+       ++it) {
     IMP::atom::Bond bd = IMP::atom::Bond(*it);
     kernel::Particle *p1 = bd.get_bonded(0).get_particle();
     kernel::Particle *p2 = bd.get_bonded(1).get_particle();
@@ -570,8 +572,8 @@ void CHARMMParameters::parse_bonds_parameters_line(String line) {
   CHARMMBondParameters p;
   p.force_constant = atof(split_results[2].c_str());
   p.ideal = atof(split_results[3].c_str());
-  bond_parameters_[
-      internal::CHARMMBondNames(split_results[0], split_results[1])] = p;
+  bond_parameters_
+      [internal::CHARMMBondNames(split_results[0], split_results[1])] = p;
 }
 
 void CHARMMParameters::parse_angles_parameters_line(String line) {
@@ -768,8 +770,8 @@ Particles CHARMMParameters::create_angles(kernel::Particles bonds) const {
   make_bond_map(bonds, particle_bonds);
 
   // Iterate over all bonds
-  for (kernel::Particles::const_iterator bit1 = bonds.begin(); bit1 != bonds.end();
-       ++bit1) {
+  for (kernel::Particles::const_iterator bit1 = bonds.begin();
+       bit1 != bonds.end(); ++bit1) {
     IMP::atom::Bond bd = IMP::atom::Bond(*bit1);
     kernel::Particle *p2 = bd.get_bonded(0).get_particle();
     kernel::Particle *p3 = bd.get_bonded(1).get_particle();
@@ -797,11 +799,12 @@ Particles CHARMMParameters::create_angles(kernel::Particles bonds) const {
   return ps;
 }
 
-void CHARMMParameters::add_angle(kernel::Particle *p1, kernel::Particle *p2, kernel::Particle *p3,
+void CHARMMParameters::add_angle(kernel::Particle *p1, kernel::Particle *p2,
+                                 kernel::Particle *p3,
                                  kernel::Particles &ps) const {
   IMP_OBJECT_LOG;
-  Angle ad = Angle::setup_particle(new kernel::Particle(p1->get_model()), core::XYZ(p1),
-                                   core::XYZ(p2), core::XYZ(p3));
+  Angle ad = Angle::setup_particle(new kernel::Particle(p1->get_model()),
+                                   core::XYZ(p1), core::XYZ(p2), core::XYZ(p3));
   try {
     const CHARMMBondParameters &p = get_angle_parameters(
         CHARMMAtom(p1).get_charmm_type(), CHARMMAtom(p2).get_charmm_type(),
@@ -809,7 +812,7 @@ void CHARMMParameters::add_angle(kernel::Particle *p1, kernel::Particle *p2, ker
     ad.set_ideal(p.ideal / 180.0 * PI);
     ad.set_stiffness(std::sqrt(p.force_constant * 2.0));
   }
-  catch (const base::IndexException & e) {
+  catch (const base::IndexException &e) {
     // If no parameters, warn only
     IMP_WARN(e.what());
   }
@@ -823,8 +826,8 @@ Particles CHARMMParameters::create_dihedrals(kernel::Particles bonds) const {
   make_bond_map(bonds, particle_bonds);
 
   // Iterate over all bonds
-  for (kernel::Particles::const_iterator bit1 = bonds.begin(); bit1 != bonds.end();
-       ++bit1) {
+  for (kernel::Particles::const_iterator bit1 = bonds.begin();
+       bit1 != bonds.end(); ++bit1) {
     IMP::atom::Bond bd = IMP::atom::Bond(*bit1);
     kernel::Particle *p2 = bd.get_bonded(0).get_particle();
     kernel::Particle *p3 = bd.get_bonded(1).get_particle();

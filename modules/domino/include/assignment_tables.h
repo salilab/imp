@@ -122,7 +122,7 @@ class IMPDOMINOEXPORT BranchAndBoundAssignmentsTable : public AssignmentsTable {
 */
 class IMPDOMINOEXPORT ListAssignmentsTable : public AssignmentsTable {
   IMP::base::map<Subset, IMP::base::PointerMember<AssignmentContainer> >
-    states_;
+      states_;
 
  public:
   ListAssignmentsTable(std::string name = "ListSubsetStatesTable %1%");
@@ -140,7 +140,7 @@ class IMPDOMINOEXPORT ListAssignmentsTable : public AssignmentsTable {
     functionality for easier testing and should not be depended upon.
 */
 IMPDOMINOEXPORT kernel::ParticlesTemp get_order(const Subset &s,
-                                        const SubsetFilterTables &sft);
+                                                const SubsetFilterTables &sft);
 
 IMPDOMINO_END_NAMESPACE
 

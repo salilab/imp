@@ -56,7 +56,7 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
       @note An optimizer state may become periodic via its set_period()
             method.
   */
-  OptimizerState(kernel::Model *m, std::string name);
+  OptimizerState(kernel::Model* m, std::string name);
 
   /** \deprecated_at{2.1} Use the constructor that takes a Model. */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
@@ -98,7 +98,7 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
      @return the periodicity of the optimizer (how many calls to update()
              are required to invoke do_update()
   */
-  unsigned int get_period() const {return period_;}
+  unsigned int get_period() const { return period_; }
 
   /** Reset the phase to 0 and set the call number to 0 too.*/
   virtual void reset();
@@ -120,7 +120,7 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
   /** This method is called every get_period() update calls. The number of
       times this method has been called since the last reset or start of the
       optimization run is passed.*/
-  virtual void do_update(unsigned int ) {update();}
+  virtual void do_update(unsigned int) { update(); }
 
   virtual void do_set_is_optimizing(bool) {}
 
@@ -130,6 +130,7 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
   virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE IMP_FINAL {
     return ModelObjectsTemp();
   }
+
  private:
   base::UncheckedWeakPointer<Optimizer> optimizer_;
   bool is_optimizing_;

@@ -14,9 +14,9 @@ WriteOptimizerState::WriteOptimizerState(kernel::Model *m, WriterAdaptor w)
     : kernel::OptimizerState(m, "WriteOptimizerState%1%"), writer_(w) {}
 
 WriteOptimizerState::WriteOptimizerState(WriterAdaptor w)
-  : kernel::OptimizerState("WriteOptimizerState%1%"), writer_(w) {
-  IMPDISPLAY_DEPRECATED_FUNCTION_DEF(2.1,
-                                     "Use constructor that takes the kernel::Model.");
+    : kernel::OptimizerState("WriteOptimizerState%1%"), writer_(w) {
+  IMPDISPLAY_DEPRECATED_FUNCTION_DEF(
+      2.1, "Use constructor that takes the kernel::Model.");
 }
 
 void WriteOptimizerState::write(WriterAdaptor w) const {
@@ -33,6 +33,6 @@ void WriteOptimizerState::do_update(unsigned int frame) {
 }
 
 IMP_LIST_ACTION_IMPL(WriteOptimizerState, Geometry, Geometries, geometry,
-                     geometries, Geometry*, Geometries);
+                     geometries, Geometry *, Geometries);
 
 IMPDISPLAY_END_NAMESPACE

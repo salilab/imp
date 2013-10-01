@@ -46,7 +46,10 @@
 namespace IMP {
 namespace base {
 class Object;
-namespace internal { template <class R, class E> struct RefStuff; }
+namespace internal {
+template <class R, class E>
+struct RefStuff;
+}
 }
 }
 #endif

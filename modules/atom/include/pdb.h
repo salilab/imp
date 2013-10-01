@@ -70,8 +70,8 @@ class CAlphaPDBSelector : public NonAlternativePDBSelector {
  public:
   IMP_PDB_SELECTOR(CAlphaPDBSelector, NonAlternativePDBSelector,
                    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
-    return false;
-  } const std::string type = internal::atom_type(pdb_line);
+                         return false;
+                       } const std::string type = internal::atom_type(pdb_line);
                    return (type[1] == 'C' && type[2] == 'A' && type[3] == ' '),
                           out << "");
 };
@@ -81,8 +81,8 @@ class CBetaPDBSelector : public NonAlternativePDBSelector {
  public:
   IMP_PDB_SELECTOR(CBetaPDBSelector, NonAlternativePDBSelector,
                    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
-    return false;
-  } const std::string type = internal::atom_type(pdb_line);
+                         return false;
+                       } const std::string type = internal::atom_type(pdb_line);
                    return (type[1] == 'C' && type[2] == 'B' && type[3] == ' '),
                           out << "");
 };
@@ -92,8 +92,8 @@ class CPDBSelector : public NonAlternativePDBSelector {
  public:
   IMP_PDB_SELECTOR(CPDBSelector, NonAlternativePDBSelector,
                    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
-    return false;
-  } const std::string type = internal::atom_type(pdb_line);
+                         return false;
+                       } const std::string type = internal::atom_type(pdb_line);
                    return (type[1] == 'C' && type[2] == ' ' && type[3] == ' '),
                           out << "");
 };
@@ -103,8 +103,8 @@ class NPDBSelector : public NonAlternativePDBSelector {
  public:
   IMP_PDB_SELECTOR(NPDBSelector, NonAlternativePDBSelector,
                    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
-    return false;
-  } const std::string type = internal::atom_type(pdb_line);
+                         return false;
+                       } const std::string type = internal::atom_type(pdb_line);
                    return (type[1] == 'N' && type[2] == ' ' && type[3] == ' '),
                           out << "");
 };
@@ -141,15 +141,15 @@ class ChainPDBSelector : public NonAlternativePDBSelector {
 //! Select all non-water ATOM and HETATMrecords
 class WaterPDBSelector : public NonAlternativePDBSelector {
  public:
-  IMP_PDB_SELECTOR(WaterPDBSelector, NonAlternativePDBSelector,
-                   if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
-    return false;
-  } const std::string res_name = internal::atom_residue_name(pdb_line);
-                   return ((res_name[0] == 'H' && res_name[1] == 'O' &&
-                            res_name[2] == 'H') ||
-                           (res_name[0] == 'D' && res_name[1] == 'O' &&
-                            res_name[2] == 'D')),
-                          out << "");
+  IMP_PDB_SELECTOR(
+      WaterPDBSelector, NonAlternativePDBSelector,
+      if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
+            return false;
+          } const std::string res_name = internal::atom_residue_name(pdb_line);
+      return ((res_name[0] == 'H' && res_name[1] == 'O' &&
+               res_name[2] == 'H') ||
+              (res_name[0] == 'D' && res_name[1] == 'O' && res_name[2] == 'D')),
+             out << "");
 };
 
 //! Select all hydrogen ATOM and HETATM records
@@ -208,8 +208,8 @@ class PPDBSelector : public NonAlternativePDBSelector {
  public:
   IMP_PDB_SELECTOR(PPDBSelector, NonAlternativePDBSelector,
                    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
-    return false;
-  } const std::string type = internal::atom_type(pdb_line);
+                         return false;
+                       } const std::string type = internal::atom_type(pdb_line);
                    return (type[1] == 'P' && type[2] == ' '), out << "");
 };
 
@@ -334,8 +334,8 @@ IMPATOMEXPORT Hierarchies read_multimodel_pdb(base::TextInput input,
                                               );
 /** Read all models from the pdb file.
  */
-IMPATOMEXPORT Hierarchies read_multimodel_pdb(base::TextInput input,
-                                              kernel::Model *model);
+IMPATOMEXPORT Hierarchies
+    read_multimodel_pdb(base::TextInput input, kernel::Model *model);
 /** @} */
 
 /** @name PDB Writing
@@ -398,22 +398,23 @@ IMPATOMEXPORT std::string get_pdb_string(
 IMPATOMEXPORT std::string get_pdb_conect_record_string(int, int);
 #endif
 
-  /** \class WritePDBOptimizerState
-      This writes a PDB file at the specified interval during optimization.
-      If the file name contains %1% then a new file is written each time
-      with the %1% replaced by the index. Otherwise a new model is written
-      each time to the same file.
-  */
-class IMPATOMEXPORT WritePDBOptimizerState: public kernel::OptimizerState {
+/** \class WritePDBOptimizerState
+    This writes a PDB file at the specified interval during optimization.
+    If the file name contains %1% then a new file is written each time
+    with the %1% replaced by the index. Otherwise a new model is written
+    each time to the same file.
+*/
+class IMPATOMEXPORT WritePDBOptimizerState : public kernel::OptimizerState {
   std::string filename_;
   kernel::ParticleIndexes pis_;
-public:
+
+ public:
   WritePDBOptimizerState(kernel::Model *m,
                          const kernel::ParticleIndexesAdaptor &pis,
                          std::string filename);
-  WritePDBOptimizerState(const atom::Hierarchies mh,
-                         std::string filename);
-protected:
+  WritePDBOptimizerState(const atom::Hierarchies mh, std::string filename);
+
+ protected:
   virtual void do_update(unsigned int call) IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(WritePDBOptimizerState);

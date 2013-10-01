@@ -116,10 +116,10 @@ get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0& source,
       Sigma[i][i] = SV[i];
     }
 
-    IMP_LOG_VERBOSE("Reconstructed is "
-                    << internal::TNT::matmult(internal::TNT::matmult(U, Sigma),
-                                              internal::TNT::transpose(V))
-                    << std::endl);
+    IMP_LOG_VERBOSE("Reconstructed is " << internal::TNT::matmult(
+                                               internal::TNT::matmult(U, Sigma),
+                                               internal::TNT::transpose(V))
+                                        << std::endl);
   }
 
   // the rotation matrix is R = VU^T
@@ -157,8 +157,9 @@ get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0& source,
   \note The function assumes that the relative distances between points
   are conserved.
 **/
-IMPALGEBRAEXPORT Transformation2D get_transformation_aligning_pair(
-    const Vector2Ds& set_from, const Vector2Ds& set_to);
+IMPALGEBRAEXPORT Transformation2D
+    get_transformation_aligning_pair(const Vector2Ds& set_from,
+                                     const Vector2Ds& set_to);
 
 // implemented in Transformation2D
 

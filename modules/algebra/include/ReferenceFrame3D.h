@@ -74,9 +74,7 @@ class IMPALGEBRAEXPORT ReferenceFrame3D {
   ReferenceFrame3D get_local_reference_frame(const ReferenceFrame3D &v) const {
     return ReferenceFrame3D(get_inverse() * v.tr_);
   }
-  IMP_SHOWABLE_INLINE(ReferenceFrame3D, {
-    out << tr_;
-  });
+  IMP_SHOWABLE_INLINE(ReferenceFrame3D, { out << tr_; });
 };
 
 IMP_VALUES(ReferenceFrame3D, ReferenceFrame3Ds);

@@ -37,7 +37,9 @@ struct ParticleTraits {
   kernel::Model *m_;
   double d_;
   ParticleTraits(kernel::Model *m, double d) : m_(m), d_(d) {}
-  kernel::ParticleIndex get_id(kernel::Particle *p, int) const { return p->get_index(); }
+  kernel::ParticleIndex get_id(kernel::Particle *p, int) const {
+    return p->get_index();
+  }
   algebra::Vector3D get_center(kernel::ParticleIndex p, int) const {
     return m_->get_sphere(p).get_center();
   }
@@ -198,9 +200,9 @@ struct Helper {
         total += bin_contents[i].size();
       }
       IMP_CHECK_VARIABLE(total);
-      IMP_INTERNAL_CHECK(
-          total == std::distance(ps.b_, ps.e_),
-          "Lost points " << total << " " << std::distance(ps.b_, ps.e_));
+      IMP_INTERNAL_CHECK(total == std::distance(ps.b_, ps.e_),
+                         "Lost points " << total << " "
+                                        << std::distance(ps.b_, ps.e_));
     }
   }
 
@@ -399,9 +401,9 @@ struct Helper {
         if (bin_contents_g[j].empty()) continue;
         if (bin_contents_g[i].size() < 100 && bin_contents_g[j].size() < 100) {
           if (!do_fill_close_pairs_from_lists(
-                  bin_contents_g[i].begin(), bin_contents_g[i].end(),
-                  bin_contents_g[j].begin(), bin_contents_g[j].end(), tr,
-                  out)) {
+                   bin_contents_g[i].begin(), bin_contents_g[i].end(),
+                   bin_contents_g[j].begin(), bin_contents_g[j].end(), tr,
+                   out)) {
             return false;
           }
         } else {
@@ -493,9 +495,9 @@ struct Helper {
         algebra::BoundingBox3D bb = bbs_g[i] + bbs_q[j];
         if (bin_contents_g[i].size() < 10 && bin_contents_q[j].size() < 10) {
           if (!do_fill_close_pairs_from_lists(
-                  bin_contents_g[i].begin(), bin_contents_g[i].end(),
-                  bin_contents_q[j].begin(), bin_contents_q[j].end(), tr,
-                  out)) {
+                   bin_contents_g[i].begin(), bin_contents_g[i].end(),
+                   bin_contents_q[j].begin(), bin_contents_q[j].end(), tr,
+                   out)) {
             return false;
           }
         } else {

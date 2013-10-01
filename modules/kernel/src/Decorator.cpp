@@ -27,10 +27,9 @@ Decorator::Decorator(ParticleAdaptor p)
 
 void check_particle(Particle *p) {
   for (unsigned int i = 0; i < internal::particle_validators.size(); ++i) {
-    if (internal::particle_validators[i].first(p->get_model(),
-                                               p->get_index())) {
-      internal::particle_validators[i].second(p->get_model(),
-                                              p->get_index());
+    if (internal::particle_validators[i]
+            .first(p->get_model(), p->get_index())) {
+      internal::particle_validators[i].second(p->get_model(), p->get_index());
     }
   }
 }

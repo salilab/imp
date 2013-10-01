@@ -31,10 +31,8 @@ IMP_LIST_IMPL(CoreClosePairContainer, PairFilter, pair_filter, PairFilter *,
 CoreClosePairContainer::CoreClosePairContainer(SingletonContainer *c,
                                                double distance,
                                                ClosePairsFinder *cpf,
-                                               double slack,
-                                               std::string name)
-    : IMP::internal::ListLikePairContainer(c->get_model(),
-                                           name) {
+                                               double slack, std::string name)
+    : IMP::internal::ListLikePairContainer(c->get_model(), name) {
   initialize(c, distance, slack, cpf);
 }
 
@@ -95,14 +93,14 @@ void CoreClosePairContainer::check_list(bool check_slack) const {
             !get_pair_filter(i)->get_value_index(get_model(), cur[j]),
             "Pair " << cur[j] << " should have been filtered by filter "
                     << get_pair_filter(i)->get_name());
-        IMP_INTERNAL_CHECK(
-            !get_pair_filter(i)->get_value_index(
-                get_model(), kernel::ParticleIndexPair((cur[j])[0], (cur[j])[1])),
-            "Filter is not symmetric on pair "
-                << cur[j] << get_pair_filter(i)->get_name());
+        IMP_INTERNAL_CHECK(!get_pair_filter(i)->get_value_index(
+                                get_model(), kernel::ParticleIndexPair(
+                                                 (cur[j])[0], (cur[j])[1])),
+                           "Filter is not symmetric on pair "
+                               << cur[j] << get_pair_filter(i)->get_name());
       }
-      IMP_INTERNAL_CHECK(cur[j][0] < cur[j][1],
-                         "Pair " << cur[j] << " is not ordered");
+      IMP_INTERNAL_CHECK(cur[j][0] < cur[j][1], "Pair " << cur[j]
+                                                        << " is not ordered");
       // removal is lazy, so we can't guarantee this
       /*double d= core::get_distance(XYZR(get_model(), cur[j][0]),
                              XYZR(get_model(), cur[j][1]));
@@ -114,9 +112,10 @@ void CoreClosePairContainer::check_list(bool check_slack) const {
         existings.size() == num,
         "Not all particle pairs in list are unique: "
             << num << " vs " << existings.size() << " lists " << get_access()
-            << " vs " << kernel::ParticleIndexPairs(existings.begin(), existings.end())
-            << std::endl);
-    kernel::ParticlesTemp all(IMP::get_particles(get_model(), c_->get_indexes()));
+            << " vs " << kernel::ParticleIndexPairs(
+                             existings.begin(), existings.end()) << std::endl);
+    kernel::ParticlesTemp all(
+        IMP::get_particles(get_model(), c_->get_indexes()));
     double check_distance = distance_ * .9;
     if (check_slack) {
       check_distance += 1.8 * slack_;
@@ -126,8 +125,10 @@ void CoreClosePairContainer::check_list(bool check_slack) const {
     kernel::ParticlePairsTemp found = cpf_->get_close_pairs(all);
     IMP_LOG_TERSE("In check found " << found << std::endl);
     for (unsigned int i = 0; i < found.size(); ++i) {
-      kernel::ParticleIndexPair pi(found[i][0]->get_index(), found[i][1]->get_index());
-      kernel::ParticleIndexPair pii(found[i][1]->get_index(), found[i][0]->get_index());
+      kernel::ParticleIndexPair pi(found[i][0]->get_index(),
+                                   found[i][1]->get_index());
+      kernel::ParticleIndexPair pii(found[i][1]->get_index(),
+                                    found[i][0]->get_index());
       IMP_INTERNAL_CHECK(
           existings.find(pi) != existings.end() ||
               existings.find(pii) != existings.end(),
@@ -148,7 +149,7 @@ void CoreClosePairContainer::do_first_call() {
 void CoreClosePairContainer::do_incremental() {
   IMP_LOG_TERSE("Handling incremental update of ClosePairContainer"
                 << std::endl);
-  using IMP::operator<< ;
+  using IMP::operator<<;
   IMP_LOG_VERBOSE("Moved " << moved_->get_indexes() << std::endl);
   PairPredicatesTemp pf = access_pair_filters();
   pf.push_back(new AllSamePairPredicate());

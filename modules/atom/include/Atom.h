@@ -232,8 +232,11 @@ IMPATOMEXPORT extern const AtomType AT_HB1;
    \see Hierarchy
  */
 class IMPATOMEXPORT Atom : public Hierarchy {
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi, Atom o);
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi, AtomType t);
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                Atom o);
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                AtomType t);
+
  public:
   IMP_DECORATOR_METHODS(Atom, Hierarchy);
   IMP_DECORATOR_SETUP_1(Atom, Atom, other);
@@ -247,8 +250,8 @@ class IMPATOMEXPORT Atom : public Hierarchy {
   }
 
   AtomType get_atom_type() const {
-    return AtomType(get_model()->get_attribute(get_atom_type_key(),
-                                               get_particle_index()));
+    return AtomType(
+        get_model()->get_attribute(get_atom_type_key(), get_particle_index()));
   }
 
   //! Set the name and corresponding element and mass
@@ -256,8 +259,8 @@ class IMPATOMEXPORT Atom : public Hierarchy {
 
   //! get element
   Element get_element() const {
-    return Element(get_model()->get_attribute(get_element_key(),
-                                          get_particle_index()));
+    return Element(
+        get_model()->get_attribute(get_element_key(), get_particle_index()));
   }
 #ifndef IMP_DOXYGEN
   void set_element(Element e);
@@ -276,12 +279,11 @@ class IMPATOMEXPORT Atom : public Hierarchy {
   void set_occupancy(double occupancy) {
     if (!get_model()->get_has_attribute(get_occupancy_key(),
                                         get_particle_index())) {
-      get_model()->add_attribute(get_occupancy_key(),
-                                 get_particle_index(),
+      get_model()->add_attribute(get_occupancy_key(), get_particle_index(),
                                  occupancy);
     } else {
-      get_model()->set_attribute(get_occupancy_key(),
-                             get_particle_index(), occupancy);
+      get_model()->set_attribute(get_occupancy_key(), get_particle_index(),
+                                 occupancy);
     }
   }
 
@@ -299,12 +301,10 @@ class IMPATOMEXPORT Atom : public Hierarchy {
     if (!get_model()->get_has_attribute(get_temperature_factor_key(),
                                         get_particle_index())) {
       get_model()->add_attribute(get_temperature_factor_key(),
-                                 get_particle_index(),
-                                 tempFactor);
+                                 get_particle_index(), tempFactor);
     } else {
       get_model()->set_attribute(get_temperature_factor_key(),
-                                 get_particle_index(),
-                                 tempFactor);
+                                 get_particle_index(), tempFactor);
     }
   }
 

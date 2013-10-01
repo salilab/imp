@@ -17,7 +17,8 @@ IMPATOM_BEGIN_NAMESPACE
 DihedralSingletonScore::DihedralSingletonScore()
     : SingletonScore("DihedralSingletonScore%1%") {}
 
-double DihedralSingletonScore::evaluate_index(kernel::Model *mod, kernel::ParticleIndex pi,
+double DihedralSingletonScore::evaluate_index(kernel::Model *mod,
+                                              kernel::ParticleIndex pi,
                                               DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
   IMP_USAGE_CHECK(Dihedral::get_is_setup(mod, pi),

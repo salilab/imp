@@ -12,11 +12,11 @@
 IMPRMF_BEGIN_NAMESPACE
 
 SaveOptimizerState::SaveOptimizerState(kernel::Model *m, RMF::FileHandle fh)
-  : kernel::OptimizerState(m, std::string("Save to ") + fh.get_name()),
-    fh_(fh) {}
+    : kernel::OptimizerState(m, std::string("Save to ") + fh.get_name()),
+      fh_(fh) {}
 
 SaveOptimizerState::SaveOptimizerState(RMF::FileHandle fh)
-  : kernel::OptimizerState(std::string("Save to ") + fh.get_name()),
+    : kernel::OptimizerState(std::string("Save to ") + fh.get_name()),
       fh_(fh) {}
 
 void SaveOptimizerState::do_update(unsigned int k) {
@@ -34,10 +34,12 @@ void SaveOptimizerState::update_always(std::string name) {
   set_number_of_updates(get_number_of_updates() + 1);
 }
 
-IMP_LIST_IMPL(SaveOptimizerState, Hierarchy, hierarchy, kernel::Particle *, kernel::Particles);
+IMP_LIST_IMPL(SaveOptimizerState, Hierarchy, hierarchy, kernel::Particle *,
+              kernel::Particles);
 IMP_LIST_IMPL(SaveOptimizerState, Restraint, restraint, kernel::Restraint *,
               kernel::Restraints);
-IMP_LIST_IMPL(SaveOptimizerState, Particle, particle, kernel::Particle *, kernel::Particles);
+IMP_LIST_IMPL(SaveOptimizerState, Particle, particle, kernel::Particle *,
+              kernel::Particles);
 IMP_LIST_IMPL(SaveOptimizerState, Geometry, geometry, display::Geometry *,
               display::Geometries);
 

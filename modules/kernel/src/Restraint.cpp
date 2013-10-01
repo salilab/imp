@@ -81,10 +81,10 @@ void Restraint::set_maximum_score(double w) {
 
 namespace {
 void check_decomposition(Restraint *in, Restraint *out) {
-  IMP_INTERNAL_CHECK(
-      out->get_model(),
-      "Restraint " << out->get_name() << " produced from " << in->get_name()
-                   << " is not already part of model.");
+  IMP_INTERNAL_CHECK(out->get_model(),
+                     "Restraint " << out->get_name() << " produced from "
+                                  << in->get_name()
+                                  << " is not already part of model.");
   IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     // be lazy and hope that they behave the same on un updated states
     // otherwise it can be bery, bery slow
@@ -163,10 +163,10 @@ Restraint *Restraint::create_current_decomposition() const {
     IMP_INTERNAL_CHECK(old_score != 0,
                        "The score of the current decomposition term is 0."
                            << " This is unacceptable.");
-    IMP_INTERNAL_CHECK_FLOAT_EQUAL(old_score, new_score,
-                                   "Old and new scores don't match. This may "
-                                   << "just mean that the restraint didn't "
-                                   << "evaluate the restraints it returns.");
+    IMP_INTERNAL_CHECK_FLOAT_EQUAL(
+        old_score, new_score, "Old and new scores don't match. This may "
+                                  << "just mean that the restraint didn't "
+                                  << "evaluate the restraints it returns.");
   }
 #endif
   // need pointer to make sure destruction of rs doesn't free anything

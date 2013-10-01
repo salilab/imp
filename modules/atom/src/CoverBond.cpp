@@ -22,8 +22,8 @@ void CoverBond::apply_index(kernel::Model *m, kernel::ParticleIndex pi) const {
   r.set_radius((r.get_coordinates() - ea.get_coordinates()).get_magnitude());
 }
 
-ModelObjectsTemp CoverBond::do_get_inputs(kernel::Model *m,
-                                          const kernel::ParticleIndexes &pis) const {
+ModelObjectsTemp CoverBond::do_get_inputs(
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
   kernel::ModelObjectsTemp ret(3 * pis.size());
   for (unsigned int i = 0; i < pis.size(); ++i) {
     Bond bd(m, pis[i]);
@@ -34,8 +34,8 @@ ModelObjectsTemp CoverBond::do_get_inputs(kernel::Model *m,
   return ret;
 }
 
-ModelObjectsTemp CoverBond::do_get_outputs(kernel::Model *m,
-                                           const kernel::ParticleIndexes &pis) const {
+ModelObjectsTemp CoverBond::do_get_outputs(
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
   return IMP::kernel::get_particles(m, pis);
 }
 

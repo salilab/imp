@@ -114,8 +114,8 @@ inline base::Vector<VectorD<D> > get_uniform_surface_cover(const SphereD<D> &s,
 /** See VectorD
     See Cylinder3D
 */
-IMPALGEBRAEXPORT Vector3Ds get_uniform_surface_cover(const Cylinder3D &cyl,
-                                                     int number_of_points);
+IMPALGEBRAEXPORT Vector3Ds
+    get_uniform_surface_cover(const Cylinder3D &cyl, int number_of_points);
 
 //! Generate a set of 3D points that uniformly cover a hemisphere
 /** The points all lie on the upper hemisphere, eg, all their
@@ -132,8 +132,9 @@ inline base::Vector<VectorD<D> > get_uniform_upper_hemisphere_cover(
 /** See Vector3D
     See Cylinder3D
 */
-IMPALGEBRAEXPORT Vector3Ds get_grid_surface_cover(
-    const Cylinder3D &cyl, int number_of_cycles, int number_of_points_on_cycle);
+IMPALGEBRAEXPORT Vector3Ds
+    get_grid_surface_cover(const Cylinder3D &cyl, int number_of_cycles,
+                           int number_of_points_on_cycle);
 
 //! Generate a set of 3d points that uniformly cover a patch of a sphere
 /**
@@ -141,14 +142,16 @@ IMPALGEBRAEXPORT Vector3Ds get_grid_surface_cover(
    See SpherePatch3D
    See VectorD
  */
-IMPALGEBRAEXPORT Vector3Ds get_uniform_surface_cover(
-    const SpherePatch3D &sph, unsigned int number_of_points);
+IMPALGEBRAEXPORT Vector3Ds
+    get_uniform_surface_cover(const SpherePatch3D &sph,
+                              unsigned int number_of_points);
 
 /** See VectorD
     See Cone3D
 */
-IMPALGEBRAEXPORT Vector3Ds get_uniform_surface_cover(
-    const Cone3D &cone, unsigned int number_of_points);
+IMPALGEBRAEXPORT Vector3Ds
+    get_uniform_surface_cover(const Cone3D &cone,
+                              unsigned int number_of_points);
 
 /** Cover the interior of the bounding box by equal sized
     parallelograms of approximately full-width s, returning the
@@ -203,11 +206,10 @@ base::Vector<VectorD<D> > get_grid_interior_cover_by_spacing(
     \note The current implementation is not very clever and can be made
     more clever if needed.
  */
-IMPALGEBRAEXPORT Vector3Ds get_random_chain(unsigned int n, double r,
-                                            const Vector3D &start =
-                                                Vector3D(0, 0, 0),
-                                            const Sphere3Ds &obstacles =
-                                                Sphere3Ds());
+IMPALGEBRAEXPORT Vector3Ds
+    get_random_chain(unsigned int n, double r,
+                     const Vector3D &start = Vector3D(0, 0, 0),
+                     const Sphere3Ds &obstacles = Sphere3Ds());
 
 /** @} */
 

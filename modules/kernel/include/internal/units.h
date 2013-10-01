@@ -186,9 +186,7 @@ inline KilocaloriePerMol operator*(internal::AtomsPerMol,
 template <int EXP>
 inline KilocaloriePerAngstromPerMol operator*(
     internal::AtomsPerMol,
-    Unit<
-        internal::MKSTag, EXP,
-        HeatEnergyDerivative> /*typename
+    Unit<internal::MKSTag, EXP, HeatEnergyDerivative> /*typename
                     YoctoKilocaloriePerAngstrom::Units>*/ k) {
   return operator*(k, ATOMS_PER_MOL);
 }

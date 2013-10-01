@@ -36,7 +36,8 @@ class ParticleLoadLink : public SimpleLoadLink<kernel::Particle> {
     }
   }
   template <class IK, class RK>
-  void load_one(kernel::Particle *o, RMF::NodeConstHandle nh, RMF::Category cat) {
+  void load_one(kernel::Particle *o, RMF::NodeConstHandle nh,
+                RMF::Category cat) {
     base::map<RK, IK> map;
     load_keys(nh.get_file(), cat, map);
     /*RMF::show_hierarchy_with_values(nh,
@@ -72,7 +73,8 @@ class ParticleLoadLink : public SimpleLoadLink<kernel::Particle> {
   }
 
  public:
-  ParticleLoadLink(RMF::FileConstHandle, kernel::Model *m) : P("ParticleLoadLink%1%") {
+  ParticleLoadLink(RMF::FileConstHandle, kernel::Model *m)
+      : P("ParticleLoadLink%1%") {
 
     m_ = m;
   }
@@ -86,12 +88,12 @@ class ParticleSaveLink : public SimpleSaveLink<kernel::Particle> {
   base::map<IntKey, RMF::IntKey> int_;
   base::map<StringKey, RMF::StringKey> string_;
   template <class IK, class RK>
-  void save_one(kernel::Particle *o, const base::Vector<IK> &ks, RMF::NodeHandle nh,
-                base::map<IK, RK> &map) {
+  void save_one(kernel::Particle *o, const base::Vector<IK> &ks,
+                RMF::NodeHandle nh, base::map<IK, RK> &map) {
     for (unsigned int i = 0; i < ks.size(); ++i) {
       if (map.find(ks[i]) == map.end()) {
-        map[ks[i]] = nh.get_file()
-            .get_key<typename RK::TypeTraits>(cat_, ks[i].get_string());
+        map[ks[i]] = nh.get_file().get_key<typename RK::TypeTraits>(
+            cat_, ks[i].get_string());
       }
       nh.set_value(map.find(ks[i])->second, o->get_value(ks[i]));
     }
@@ -112,8 +114,9 @@ class ParticleSaveLink : public SimpleSaveLink<kernel::Particle> {
 };
 }
 
-IMP_DEFINE_LINKERS(Particle, particle, particles, kernel::Particle *, kernel::ParticlesTemp,
-                   kernel::Particle *, kernel::ParticlesTemp, (RMF::FileHandle fh),
+IMP_DEFINE_LINKERS(Particle, particle, particles, kernel::Particle *,
+                   kernel::ParticlesTemp, kernel::Particle *,
+                   kernel::ParticlesTemp, (RMF::FileHandle fh),
                    (RMF::FileConstHandle fh, kernel::Model *m), (fh), (fh, m),
                    (fh, IMP::internal::get_model(hs)));
 

@@ -33,29 +33,25 @@ ParticleIndexAdaptor::ParticleIndexAdaptor(base::Pointer<Particle> p)
 ParticleIndexAdaptor::ParticleIndexAdaptor(const Decorator &d)
     : ParticleIndex(d.get_particle_index()) {}
 
-ParticleIndexesAdaptor::ParticleIndexesAdaptor(const Particles &ps):
-  tmp_(new ParticleIndexes(ps.size())), val_(tmp_.get()) {
+ParticleIndexesAdaptor::ParticleIndexesAdaptor(const Particles &ps)
+    : tmp_(new ParticleIndexes(ps.size())), val_(tmp_.get()) {
   *tmp_ = get_indexes(ParticlesTemp(ps.begin(), ps.end()));
 }
 
-ParticleIndexesAdaptor:: ParticleIndexesAdaptor(const ParticlesTemp &ps):
-  tmp_(new ParticleIndexes(ps.size())), val_(tmp_.get()) {
+ParticleIndexesAdaptor::ParticleIndexesAdaptor(const ParticlesTemp &ps)
+    : tmp_(new ParticleIndexes(ps.size())), val_(tmp_.get()) {
   *tmp_ = get_indexes(ps);
 }
 
-
-ParticleIndexPairsAdaptor::
-ParticleIndexPairsAdaptor(const ParticlePairsTemp &ps):
-  ParticleIndexPairs(get_indexes(ps)) {}
-
+ParticleIndexPairsAdaptor::ParticleIndexPairsAdaptor(
+    const ParticlePairsTemp &ps)
+    : ParticleIndexPairs(get_indexes(ps)) {}
 
 namespace {
-  void foreach_test() {
-    ParticleIndexes pis;
-    ParticleIndexesAdaptor pia(pis);
-    BOOST_FOREACH(ParticleIndex pi, pia) {
-      IMP_UNUSED(pi);
-    }
-  }
+void foreach_test() {
+  ParticleIndexes pis;
+  ParticleIndexesAdaptor pia(pis);
+  BOOST_FOREACH(ParticleIndex pi, pia) { IMP_UNUSED(pi); }
+}
 }
 IMPKERNEL_END_NAMESPACE

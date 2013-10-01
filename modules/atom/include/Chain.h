@@ -20,13 +20,15 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class IMPATOMEXPORT Chain : public Hierarchy {
 
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi, char id) {
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                char id) {
     m->add_attribute(get_id_key(), pi, id);
     if (!Hierarchy::get_is_setup(m, pi)) {
       Hierarchy::setup_particle(m, pi);
     }
   }
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi, Chain o) {
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                Chain o) {
     do_setup_particle(m, pi, o.get_id());
   }
 
@@ -42,14 +44,14 @@ class IMPATOMEXPORT Chain : public Hierarchy {
 
   //! Return the chain id
   char get_id() const {
-    return static_cast<char>(get_model()->get_attribute(get_id_key(),
-                                                        get_particle_index()));
+    return static_cast<char>(
+        get_model()->get_attribute(get_id_key(), get_particle_index()));
   }
 
   //! Set the chain id
-  void set_id(char c) { get_model()->set_attribute(get_id_key(),
-                                                   get_particle_index(),
-                                                   c); }
+  void set_id(char c) {
+    get_model()->set_attribute(get_id_key(), get_particle_index(), c);
+  }
 
   //! The key used to store the chain
   static IntKey get_id_key();

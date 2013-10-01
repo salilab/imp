@@ -19,8 +19,8 @@
 #include <boost/mpl/not.hpp>
 #include <boost/utility/enable_if.hpp>
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
-template <class T, class Enabled = void> struct RefStuff {
-};
+template <class T, class Enabled = void>
+struct RefStuff {};
 
 template <class T>
 struct RefStuff<T, typename boost::enable_if<boost::mpl::not_<
@@ -87,11 +87,20 @@ struct RefStuff<T, typename boost::enable_if<
   }
 };
 
-template <class O> inline void unref(O* o) { RefStuff<O>::unref(o); }
+template <class O>
+inline void unref(O* o) {
+  RefStuff<O>::unref(o);
+}
 
-template <class O> inline void release(O* o) { RefStuff<O>::release(o); }
+template <class O>
+inline void release(O* o) {
+  RefStuff<O>::release(o);
+}
 
-template <class O> inline void ref(O* o) { RefStuff<O>::ref(o); }
+template <class O>
+inline void ref(O* o) {
+  RefStuff<O>::ref(o);
+}
 
 IMPBASE_END_INTERNAL_NAMESPACE
 

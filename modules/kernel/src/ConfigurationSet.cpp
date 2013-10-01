@@ -13,7 +13,7 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-ConfigurationSet::ConfigurationSet(kernel::Model *m, std::string nm)
+ConfigurationSet::ConfigurationSet(kernel::Model* m, std::string nm)
     : Object(nm), model_(m), base_(new Configuration(m)) {}
 
 void ConfigurationSet::save_configuration() {
@@ -47,13 +47,10 @@ void ConfigurationSet::load_configuration(int i) const {
   }
 }
 
-
-SaveToConfigurationSetOptimizerState::
-SaveToConfigurationSetOptimizerState(ConfigurationSet* cs):
-OptimizerState(cs->get_model(), cs->get_name() + "Saver%1%"),
-cs_(cs) {}
-void SaveToConfigurationSetOptimizerState
-::do_update(unsigned int ) {
+SaveToConfigurationSetOptimizerState::SaveToConfigurationSetOptimizerState(
+    ConfigurationSet* cs)
+    : OptimizerState(cs->get_model(), cs->get_name() + "Saver%1%"), cs_(cs) {}
+void SaveToConfigurationSetOptimizerState::do_update(unsigned int) {
   cs_->save_configuration();
 }
 

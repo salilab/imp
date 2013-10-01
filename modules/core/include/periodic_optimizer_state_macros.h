@@ -12,8 +12,8 @@
 
 #include "PeriodicOptimizerState.h"
 
-IMPCORE_DEPRECATED_HEADER(2.1,
-                  "Not needed any more, functionality is in OptimizerState")
+IMPCORE_DEPRECATED_HEADER(
+    2.1, "Not needed any more, functionality is in OptimizerState")
 
 /** Do not use, simply use IMP_OBJECT_METHODS() and declare
     - IMP::core::PeriodicOptimizerState::do_update()

@@ -36,13 +36,13 @@ class IMPCOREEXPORT TableRefiner : public Refiner {
   void set_particle(kernel::Particle *p, const kernel::ParticlesTemp &ps);
 
   virtual bool get_can_refine(kernel::Particle *) const IMP_OVERRIDE;
-  virtual const kernel::ParticlesTemp get_refined(kernel::Particle *) const IMP_OVERRIDE;
+  virtual const kernel::ParticlesTemp get_refined(kernel::Particle *) const
+      IMP_OVERRIDE;
 #ifndef SWIG
   using Refiner::get_refined;
 #endif
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                         const kernel::ParticleIndexes &pis) const
-      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(TableRefiner);
 };
 

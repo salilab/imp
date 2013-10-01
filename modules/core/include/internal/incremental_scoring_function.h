@@ -28,13 +28,15 @@ struct IMPCOREEXPORT NBGenerator {
   base::map<kernel::ParticleIndex, int> to_dnn_;
   base::PointerMember<algebra::DynamicNearestNeighbor3D> dnn_;
 
-  NBGenerator(kernel::Model *m, const kernel::ParticleIndexes &pis, PairScore *ps,
-              double distance, const PairPredicates &pfs);
+  NBGenerator(kernel::Model *m, const kernel::ParticleIndexes &pis,
+              PairScore *ps, double distance, const PairPredicates &pfs);
   struct single_result_type : public kernel::ParticleIndexPair {
     double score;
-    single_result_type(kernel::ParticleIndex a, kernel::ParticleIndex b, double s)
+    single_result_type(kernel::ParticleIndex a, kernel::ParticleIndex b,
+                       double s)
         : kernel::ParticleIndexPair(a, b), score(s) {}
-    IMP_SHOWABLE_INLINE(single_result_type, kernel::ParticleIndexPair::show(out);
+    IMP_SHOWABLE_INLINE(single_result_type,
+                        kernel::ParticleIndexPair::show(out);
                         out << " " << score;);
   };
   typedef base::Vector<single_result_type> result_type;
@@ -51,8 +53,8 @@ struct IMPCOREEXPORT NBChecker {
   base::Pointer<PairScore> score_;
   double distance_;
   PairPredicates filt_;
-  NBChecker(kernel::Model *m, const kernel::ParticleIndexes &pis, PairScore *score, double d,
-            const PairPredicates &filt);
+  NBChecker(kernel::Model *m, const kernel::ParticleIndexes &pis,
+            PairScore *score, double d, const PairPredicates &filt);
   bool operator()(const NBGenerator::result_type &vals) const;
 };
 
@@ -67,9 +69,10 @@ class IMPCOREEXPORT NBLScoring {
   base::map<kernel::ParticleIndex, kernel::ParticleIndexes> controlled_;
 
  public:
-  NBLScoring(PairScore *ps, double distance, const kernel::ParticleIndexes &to_move,
-             const kernel::ParticlesTemp &particles, const PairPredicates &filters,
-             double weight, double max);
+  NBLScoring(PairScore *ps, double distance,
+             const kernel::ParticleIndexes &to_move,
+             const kernel::ParticlesTemp &particles,
+             const PairPredicates &filters, double weight, double max);
   void set_moved(const kernel::ParticleIndexes &moved);
   double get_score();
   kernel::Restraint *create_restraint() const;

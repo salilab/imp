@@ -23,8 +23,8 @@ namespace {
 class NullScoringFunction : public ScoringFunction {
  public:
   NullScoringFunction(kernel::Model *m,
-                      std::string name = "NullScoringFunction%1%"):
-      ScoringFunction(m, name) {}
+                      std::string name = "NullScoringFunction%1%")
+      : ScoringFunction(m, name) {}
   void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator,
                                     const ScoreStatesTemp &) IMP_OVERRIDE {}
   Restraints create_restraints() const IMP_OVERRIDE { return Restraints(); }
@@ -36,8 +36,8 @@ class NullScoringFunction : public ScoringFunction {
 
 ScoringFunction *get_null_scoring_function() {
   static base::PointerMember<Model> m = new Model("NullModel");
-  static base::PointerMember<ScoringFunction> sf
-      = new NullScoringFunction(m, "The Null Scoring Function");
+  static base::PointerMember<ScoringFunction> sf =
+      new NullScoringFunction(m, "The Null Scoring Function");
   return sf;
 }
 }

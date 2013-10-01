@@ -61,9 +61,8 @@ void Model::before_evaluate(const ScoreStatesTemp &states) {
   unsigned int cur_begin = 0;
   while (cur_begin < states.size()) {
     unsigned int cur_end = cur_begin + 1;
-    while (cur_end < states.size() &&
-           states[cur_begin]->get_update_order()
-           == states[cur_end]->get_update_order()) {
+    while (cur_end < states.size() && states[cur_begin]->get_update_order() ==
+                                          states[cur_end]->get_update_order()) {
       ++cur_end;
     }
     for (unsigned int i = cur_begin; i < cur_end; ++i) {
@@ -89,7 +88,7 @@ void Model::before_evaluate(const ScoreStatesTemp &states) {
 #endif
           ss->before_evaluate();
         }
-        catch (const internal::InputOutputException & d) {
+        catch (const internal::InputOutputException &d) {
           IMP_FAILURE(d.get_message(ss));
         }
       } else {
@@ -116,9 +115,8 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
   std::reverse(states.begin(), states.end());
   while (cur_begin < states.size()) {
     unsigned int cur_end = cur_begin + 1;
-    while (cur_end < states.size() &&
-           states[cur_begin]->get_update_order()
-           == states[cur_end]->get_update_order()) {
+    while (cur_end < states.size() && states[cur_begin]->get_update_order() ==
+                                          states[cur_end]->get_update_order()) {
       ++cur_end;
     }
     for (unsigned int i = cur_begin; i < cur_end; ++i) {
@@ -142,7 +140,7 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
 #endif
           ss->after_evaluate(calc_derivs ? &accum : nullptr);
         }
-        catch (const internal::InputOutputException & d) {
+        catch (const internal::InputOutputException &d) {
           IMP_FAILURE(d.get_message(ss));
         }
       } else {
@@ -158,20 +156,22 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
 }
 
 double Model::evaluate(bool tf, bool warn) {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
-                      "Use a scoring function or Model::update() instead.");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(
+      2.1, "Use a scoring function or Model::update() instead.");
   // disable warning for now
   static bool warned = true;
   if (!warned && warn) {
-    IMP_WARN("Model::evaluate() is probably not really what you want. "
-             "Consider using IMP::Model::update() if you just want update"
-             " dependencies. "
-             "Or Model::create_model_scoring_function() and calling"
-             " evaluate on that if you are repeatedly evaluating"
-             " the score.");
-    IMP_WARN("Pass false as a second argument to IMP::Model::evaluate() "
-             "if you want to "
-             "disable this warning.");
+    IMP_WARN(
+        "Model::evaluate() is probably not really what you want. "
+        "Consider using IMP::Model::update() if you just want update"
+        " dependencies. "
+        "Or Model::create_model_scoring_function() and calling"
+        " evaluate on that if you are repeatedly evaluating"
+        " the score.");
+    IMP_WARN(
+        "Pass false as a second argument to IMP::Model::evaluate() "
+        "if you want to "
+        "disable this warning.");
     warned = true;
   }
   update();

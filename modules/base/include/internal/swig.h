@@ -31,7 +31,8 @@ class BoostDigraph : public IMP::base::Object {
   VertexMap vm_;
   // keep vertex indices stable under removals
   Ints index_map_;
-  template <class It> int distance(std::pair<It, It> r) const {
+  template <class It>
+  int distance(std::pair<It, It> r) const {
     return std::distance(r.first, r.second);
   }
   int get_vertex(int v) const {
@@ -87,16 +88,16 @@ class BoostDigraph : public IMP::base::Object {
 
   VertexName get_vertex_name(VertexDescriptor i) const {
     set_was_used(true);
-    IMP_USAGE_CHECK(
-        static_cast<unsigned int>(i) < boost::num_vertices(bg_),
-        "Out of range vertex " << i << " " << boost::num_vertices(bg_));
+    IMP_USAGE_CHECK(static_cast<unsigned int>(i) < boost::num_vertices(bg_),
+                    "Out of range vertex " << i << " "
+                                           << boost::num_vertices(bg_));
     return boost::get(vm_, get_vertex(i));
   }
   VertexDescriptors get_in_neighbors(VertexDescriptor v) const {
     set_was_used(true);
-    IMP_USAGE_CHECK(
-        static_cast<unsigned int>(v) < boost::num_vertices(bg_),
-        "Out of range vertex " << v << " " << boost::num_vertices(bg_));
+    IMP_USAGE_CHECK(static_cast<unsigned int>(v) < boost::num_vertices(bg_),
+                    "Out of range vertex " << v << " "
+                                           << boost::num_vertices(bg_));
     typedef typename Traits::in_edge_iterator IEIt;
     std::pair<IEIt, IEIt> be = boost::in_edges(get_vertex(v), bg_);
     Ints ret;
@@ -107,14 +108,14 @@ class BoostDigraph : public IMP::base::Object {
   }
   VertexDescriptors get_out_neighbors(VertexDescriptor v) const {
     set_was_used(true);
-    IMP_USAGE_CHECK(
-        static_cast<unsigned int>(v) < boost::num_vertices(bg_),
-        "Out of range vertex " << v << " " << boost::num_vertices(bg_));
+    IMP_USAGE_CHECK(static_cast<unsigned int>(v) < boost::num_vertices(bg_),
+                    "Out of range vertex " << v << " "
+                                           << boost::num_vertices(bg_));
     typedef typename Traits::out_edge_iterator IEIt;
     std::pair<IEIt, IEIt> be = boost::out_edges(get_vertex(v), bg_);
-    IMP_INTERNAL_CHECK(
-        std::distance(be.first, be.second) < 10000,
-        "Insane number of neighbors " << std::distance(be.first, be.second));
+    IMP_INTERNAL_CHECK(std::distance(be.first, be.second) < 10000,
+                       "Insane number of neighbors "
+                           << std::distance(be.first, be.second));
     Ints ret;
     for (; be.first != be.second; ++be.first) {
       ret.push_back(boost::target(*be.first, bg_));

@@ -16,20 +16,22 @@
 
 /** \deprecated_at{2.1} Declare the methods yourself.
  */
-#define IMP_CLOSE_PAIRS_FINDER(Name)                                         \
-  IMPCORE_DEPRECATED_MACRO(2.1, "Declare the methods directly.");            \
-  virtual kernel::ParticlePairsTemp get_close_pairs(const kernel::ParticlesTemp &pa) const   \
-      IMP_OVERRIDE;                                                          \
-  virtual kernel::ParticlePairsTemp get_close_pairs(                                 \
-      const kernel::ParticlesTemp &pa, const kernel::ParticlesTemp &pb) const IMP_OVERRIDE;  \
-  virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const \
-      IMP_OVERRIDE;                                                          \
-  virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas,       \
-                                   const algebra::BoundingBox3Ds &bbs) const \
-      IMP_OVERRIDE;                                                          \
-  using ClosePairsFinder::get_close_pairs;                                   \
-  virtual kernel::ModelObjectsTemp do_get_inputs(                                    \
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;              \
+#define IMP_CLOSE_PAIRS_FINDER(Name)                                          \
+  IMPCORE_DEPRECATED_MACRO(2.1, "Declare the methods directly.");             \
+  virtual kernel::ParticlePairsTemp get_close_pairs(                          \
+      const kernel::ParticlesTemp &pa) const IMP_OVERRIDE;                    \
+  virtual kernel::ParticlePairsTemp get_close_pairs(                          \
+      const kernel::ParticlesTemp &pa, const kernel::ParticlesTemp &pb) const \
+      IMP_OVERRIDE;                                                           \
+  virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const  \
+      IMP_OVERRIDE;                                                           \
+  virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas,        \
+                                   const algebra::BoundingBox3Ds &bbs) const  \
+      IMP_OVERRIDE;                                                           \
+  using ClosePairsFinder::get_close_pairs;                                    \
+  virtual kernel::ModelObjectsTemp do_get_inputs(                             \
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const             \
+      IMP_OVERRIDE;                                                           \
   IMP_OBJECT_METHODS(Name)
 
 #endif /* IMPCORE_CLOSE_PAIRS_FINDER_MACROS_H */

@@ -30,12 +30,11 @@ class IMPSTATISTICSEXPORT Metric : public IMP::base::Object {
     IMP_UNUSED(i);
     return 1.0;
   }
+
  public:
   virtual double get_distance(unsigned int i, unsigned int j) const = 0;
   /** Return a weight for the point. */
-  double get_weight(unsigned int i) const {
-    return do_get_weight(i);
-  }
+  double get_weight(unsigned int i) const { return do_get_weight(i); }
   virtual unsigned int get_number_of_items() const = 0;
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Metric);
 };

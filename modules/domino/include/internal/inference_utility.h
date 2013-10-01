@@ -139,11 +139,10 @@ inline bool get_are_equal(const Assignment &ss0, const Ints &i0,
   return true;
 }
 
-IMPDOMINOEXPORT Assignment get_merged_assignment(const Subset &s,
-                                                 const Assignment &ss0,
-                                                 const Ints &i0,
-                                                 const Assignment &ss1,
-                                                 const Ints &i1);
+IMPDOMINOEXPORT Assignment
+    get_merged_assignment(const Subset &s, const Assignment &ss0,
+                          const Ints &i0, const Assignment &ss1,
+                          const Ints &i1);
 
 IMPDOMINOEXPORT void load_union(const Subset &s0, const Subset &s1,
                                 AssignmentContainer *nd0,

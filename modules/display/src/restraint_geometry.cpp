@@ -22,7 +22,9 @@ RestraintGeometry::RestraintGeometry(kernel::Restraint *r, kernel::Model *m)
     : Geometry(r->get_name()), r_(r), m_(m) {}
 
 namespace {
-bool get_has_coordinates(kernel::Particle *p) { return p->has_attribute(FloatKey(0)); }
+bool get_has_coordinates(kernel::Particle *p) {
+  return p->has_attribute(FloatKey(0));
+}
 algebra::Vector3D get_coordinates(kernel::Particle *p) {
   return p->get_model()->get_sphere(p->get_index()).get_center();
 }

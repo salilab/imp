@@ -26,6 +26,7 @@
     }                                                         \
   }                                                           \
   IMP_OBJECT_METHODS(Name);                                   \
+                                                              \
  protected:                                                   \
   virtual void do_destroy() IMP_OVERRIDE { do_close(); }      \
   virtual void do_open();                                     \
@@ -33,6 +34,7 @@
 
 #define IMP_WRITER(Name)                                 \
   IMP_OBJECT_METHODS(Name);                              \
+                                                         \
  protected:                                              \
   virtual void do_destroy() IMP_OVERRIDE { do_close(); } \
   virtual void do_open();                                \

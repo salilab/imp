@@ -42,11 +42,12 @@ class IMPCOREEXPORT ClosePairsFinder : public kernel::ParticleInputs,
 
   /** \deprecated_at{2.1} use the index-based on instead. */
   IMPCORE_DEPRECATED_METHOD_DECL(2.1)
-  kernel::ParticlePairsTemp get_close_pairs(const kernel::ParticlesTemp &pc) const;
+  kernel::ParticlePairsTemp get_close_pairs(
+      const kernel::ParticlesTemp &pc) const;
   /** \deprecated_at{2.1} use the index-based on instead. */
   IMPCORE_DEPRECATED_METHOD_DECL(2.1)
-  kernel::ParticlePairsTemp get_close_pairs(const kernel::ParticlesTemp &pca,
-                                    const kernel::ParticlesTemp &pcb) const;
+  kernel::ParticlePairsTemp get_close_pairs(
+      const kernel::ParticlesTemp &pca, const kernel::ParticlesTemp &pcb) const;
   virtual kernel::ParticleIndexPairs get_close_pairs(
       kernel::Model *m, const kernel::ParticleIndexes &pc) const = 0;
   virtual kernel::ParticleIndexPairs get_close_pairs(

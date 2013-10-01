@@ -37,11 +37,11 @@ class DistancePairScore : public PairScore {
                     std::string name = "FunctorDistancePairScore %1%")
       : PairScore(name), ds_(t0) {}
 
-  virtual double evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &pip,
+  virtual double evaluate_index(kernel::Model *m,
+                                const kernel::ParticleIndexPair &pip,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                         const kernel::ParticleIndexes &pis) const
-      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_PAIR_SCORE_METHODS(DistancePairScore);
   IMP_OBJECT_METHODS(DistancePairScore);
 };
@@ -49,7 +49,8 @@ class DistancePairScore : public PairScore {
 #ifndef IMP_DOXYGEN
 template <class DistanceScore>
 inline double DistancePairScore<DistanceScore>::evaluate_index(
-    kernel::Model *m, const kernel::ParticleIndexPair &p, DerivativeAccumulator *da) const {
+    kernel::Model *m, const kernel::ParticleIndexPair &p,
+    DerivativeAccumulator *da) const {
   algebra::Vector3D delta =
       m->get_sphere(p[0]).get_center() - m->get_sphere(p[1]).get_center();
   double sq = delta.get_squared_magnitude();

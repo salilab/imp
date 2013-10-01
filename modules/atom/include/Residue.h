@@ -132,8 +132,7 @@ IMPATOMEXPORT extern const ResidueType HEME;
  */
 class IMPATOMEXPORT Residue : public Hierarchy {
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
-                                ResidueType t = UNK,
-                                int index = -1,
+                                ResidueType t = UNK, int index = -1,
                                 int insertion_code = 32) {
     m->add_attribute(get_residue_type_key(), pi, t.get_index());
     m->add_attribute(get_index_key(), pi, index);
@@ -147,17 +146,16 @@ class IMPATOMEXPORT Residue : public Hierarchy {
   }
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                                 const Residue &o) {
-    do_setup_particle(m, pi, o.get_residue_type(),
-                      o.get_index(),
+    do_setup_particle(m, pi, o.get_residue_type(), o.get_index(),
                       o.get_insertion_code());
   }
+
  public:
   IMP_DECORATOR_METHODS(Residue, Hierarchy);
-  IMP_DECORATOR_SETUP_3(Residue, ResidueType, t,
-                        int, index, int, insertion_code);
+  IMP_DECORATOR_SETUP_3(Residue, ResidueType, t, int, index, int,
+                        insertion_code);
   /** Setup the particle as a Residue with the passed type and index. */
-  IMP_DECORATOR_SETUP_2(Residue, ResidueType, t,
-                        int, index);
+  IMP_DECORATOR_SETUP_2(Residue, ResidueType, t, int, index);
   IMP_DECORATOR_SETUP_1(Residue, ResidueType, t);
   IMP_DECORATOR_SETUP_1(Residue, Residue, other);
 
@@ -200,8 +198,7 @@ class IMPATOMEXPORT Residue : public Hierarchy {
 
   void set_insertion_code(char insertion_code) {
     return get_model()->set_attribute(get_insertion_code_key(),
-                                      get_particle_index(),
-                                      insertion_code);
+                                      get_particle_index(), insertion_code);
   }
 
   static IntKey get_index_key();

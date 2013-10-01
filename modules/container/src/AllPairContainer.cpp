@@ -18,8 +18,9 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 AllPairContainer::AllPairContainer(SingletonContainerAdaptor c,
                                    std::string name)
-  : PairContainer(c->get_model(), name), c_(c),
-    c_version_(c->get_contents_version()) {}
+    : PairContainer(c->get_model(), name),
+      c_(c),
+      c_version_(c->get_contents_version()) {}
 
 ParticleIndexPairs AllPairContainer::get_indexes() const {
   kernel::ParticleIndexes ia = c_->get_indexes();

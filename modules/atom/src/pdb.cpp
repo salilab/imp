@@ -331,7 +331,8 @@ Hierarchies read_pdb(std::istream& in, std::string name, kernel::Model* model,
     }
 
     // check that line is an HETATM or ATOM rec and that selector accepts line.
-    // if this is the case construct a new kernel::Particle using line and add the
+    // if this is the case construct a new kernel::Particle using line and add
+    // the
     // kernel::Particle to the kernel::Model
     if (internal::is_ATOM_rec(line) || internal::is_HETATM_rec(line)) {
       if (!selector->get_is_selected(line)) {
@@ -387,8 +388,9 @@ Hierarchies read_pdb(std::istream& in, std::string name, kernel::Model* model,
     }
   }
   if (!has_atom) {
-    IMP_WARN("Sorry, unable to read atoms from PDB file."
-             " Thanks for the effort.\n");
+    IMP_WARN(
+        "Sorry, unable to read atoms from PDB file."
+        " Thanks for the effort.\n");
     return Hierarchies();
   }
   if (!noradii) {
@@ -471,8 +473,9 @@ void read_pdb(base::TextInput in, int model, Hierarchy h) {
   }
 }
 
-Hierarchy read_pdb(base::TextInput in, kernel::Model* model, PDBSelector* selector,
-                   bool select_first_model, bool no_radii) {
+Hierarchy read_pdb(base::TextInput in, kernel::Model* model,
+                   PDBSelector* selector, bool select_first_model,
+                   bool no_radii) {
   IMP::base::PointerMember<PDBSelector> sp(selector);
   Hierarchies ret = read_pdb(in, nicename(in.get_name()), model, selector,
                              select_first_model, false, no_radii);
@@ -538,14 +541,14 @@ void write_pdb(const kernel::ParticlesTemp& ps, base::TextOutput out) {
         pdb_file << std::setw(8) << std::setprecision(3) << xyz.get_z()
         << std::endl;*/
       }
-      out.get_stream()
-          << get_pdb_string(core::XYZ(ps[i]).get_coordinates(),
-                            use_input_index ? ad.get_input_index()
-                                            : static_cast<int>(i + 1),
-                            ad.get_atom_type(), rd.get_residue_type(), chain,
-                            rd.get_index(), rd.get_insertion_code(),
-                            ad.get_occupancy(), ad.get_temperature_factor(),
-                            ad.get_element());
+      out.get_stream() << get_pdb_string(
+                              core::XYZ(ps[i]).get_coordinates(),
+                              use_input_index ? ad.get_input_index()
+                                              : static_cast<int>(i + 1),
+                              ad.get_atom_type(), rd.get_residue_type(), chain,
+                              rd.get_index(), rd.get_insertion_code(),
+                              ad.get_occupancy(), ad.get_temperature_factor(),
+                              ad.get_element());
 
       if (!out) {
         IMP_THROW("Error writing to file in write_pdb", IOException);
@@ -593,9 +596,9 @@ void write_pdb_of_c_alphas(const Selection& mhd, base::TextOutput out,
     } else {
       chain = ' ';
     }
-    out.get_stream()
-        << get_pdb_string(core::XYZ(leaves[i]).get_coordinates(), i + 1, AT_CA,
-                          rt, chain, cur_residue, ' ', 0.0, 0.0, C);
+    out.get_stream() << get_pdb_string(core::XYZ(leaves[i]).get_coordinates(),
+                                       i + 1, AT_CA, rt, chain, cur_residue,
+                                       ' ', 0.0, 0.0, C);
 
     if (!out) {
       IMP_THROW("Error writing to file in write_pdb", IOException);
@@ -706,57 +709,56 @@ std::string get_pdb_conect_record_string(int a1_ind, int a2_ind) {
   out << a1_ind;  // a1.get_input_index();
   // 12 - 16 Serial number of bonded atom
   out << a2_ind;  // a2.get_input_index();
-  // 17 - 21 Serial number of bonded atom
-  // if(a3 != nullptr) {
-  //   out<<a3->get_input_index();
-  // }
-  // //22 - 26  Serial number of bonded atom
-  // if(a4 != nullptr) {
-  //   out<<a4->get_input_index();
-  // }
-  // //27 - 31 Serial number of bonded atom
-  // if(a5 != nullptr) {
-  //   out<<a5->get_input_index();
+                  // 17 - 21 Serial number of bonded atom
+                  // if(a3 != nullptr) {
+                  //   out<<a3->get_input_index();
+                  // }
+                  // //22 - 26  Serial number of bonded atom
+                  // if(a4 != nullptr) {
+                  //   out<<a4->get_input_index();
+                  // }
+                  // //27 - 31 Serial number of bonded atom
+                  // if(a5 != nullptr) {
+                  //   out<<a5->get_input_index();
   // }
   return out.str();
 }
 
-WritePDBOptimizerState::
-WritePDBOptimizerState(kernel::Model *m,
-                       const kernel::ParticleIndexesAdaptor &pis,
-                       std::string filename):
-  kernel::OptimizerState(m, filename + "Writer"),
-  filename_(filename), pis_(pis) {
-
-}
+WritePDBOptimizerState::WritePDBOptimizerState(
+    kernel::Model* m, const kernel::ParticleIndexesAdaptor& pis,
+    std::string filename)
+    : kernel::OptimizerState(m, filename + "Writer"),
+      filename_(filename),
+      pis_(pis) {}
 WritePDBOptimizerState::WritePDBOptimizerState(const atom::Hierarchies mh,
-                                               std::string filename):
-  kernel::OptimizerState(mh[0].get_model(), filename + "Writer"),
-  filename_(filename) {
+                                               std::string filename)
+    : kernel::OptimizerState(mh[0].get_model(), filename + "Writer"),
+      filename_(filename) {
   BOOST_FOREACH(atom::Hierarchy h, mh) {
     pis_.push_back(h.get_particle_index());
   }
 }
 
 void WritePDBOptimizerState::do_update(unsigned int call) {
-     std::ostringstream oss;
-     bool append = (call != 0);
-     std::string filename;
-     Hierarchies hs;
-     BOOST_FOREACH(kernel::ParticleIndex pi, pis_) {
-       hs.push_back(Hierarchy(get_model(), pi));
-     }
-     try {
-       oss << boost::format(filename_) % call;
-       append = false;
-       filename = oss.str();
-     } catch (...) {
-     }
-     if (append) {
-       write_pdb(hs, base::TextOutput(filename, true), call);
-     } else {
-       write_pdb(hs, base::TextOutput(filename, false), 0);
-     }
+  std::ostringstream oss;
+  bool append = (call != 0);
+  std::string filename;
+  Hierarchies hs;
+  BOOST_FOREACH(kernel::ParticleIndex pi, pis_) {
+    hs.push_back(Hierarchy(get_model(), pi));
+  }
+  try {
+    oss << boost::format(filename_) % call;
+    append = false;
+    filename = oss.str();
+  }
+  catch (...) {
+  }
+  if (append) {
+    write_pdb(hs, base::TextOutput(filename, true), call);
+  } else {
+    write_pdb(hs, base::TextOutput(filename, false), 0);
+  }
 }
 
 ModelObjectsTemp WritePDBOptimizerState::do_get_inputs() const {

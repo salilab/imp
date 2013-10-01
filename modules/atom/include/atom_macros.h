@@ -47,13 +47,14 @@
 
 /** Add the methods needed for a Simulator
  */
-#define IMP_SIMULATOR(Name)                                       \
-  IMPATOM_DEPRECATED_MACRO(2.1, "Expand the macro in place.");    \
- private:                                                         \
+#define IMP_SIMULATOR(Name)                                               \
+  IMPATOM_DEPRECATED_MACRO(2.1, "Expand the macro in place.");            \
+                                                                          \
+ private:                                                                 \
   virtual void setup(const kernel::ParticleIndexes& ps);                  \
   virtual double do_step(const kernel::ParticleIndexes& sc, double dt);   \
   virtual bool get_is_simulation_particle(kernel::ParticleIndex p) const; \
-                                                                  \
+                                                                          \
  public:
 
 #endif /* IMPATOM_MACROS_H */

@@ -17,7 +17,8 @@ IMPCORE_BEGIN_NAMESPACE
 CentroidOfRefined::CentroidOfRefined(Refiner *r, FloatKey weight, FloatKeys ks)
     : refiner_(r), ks_(ks), w_(weight) {}
 
-void CentroidOfRefined::apply_index(kernel::Model *m, kernel::ParticleIndex pi) const {
+void CentroidOfRefined::apply_index(kernel::Model *m,
+                                    kernel::ParticleIndex pi) const {
   kernel::Particle *p = m->get_particle(pi);
   kernel::ParticlesTemp ps = refiner_->get_refined(p);
   unsigned int n = ps.size();

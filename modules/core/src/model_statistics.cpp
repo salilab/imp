@@ -10,7 +10,7 @@
 IMPCORE_BEGIN_NAMESPACE
 WriteRestraintScoresOptimizerState::WriteRestraintScoresOptimizerState(
     const kernel::Restraints &rs, base::TextOutput out)
-  : kernel::OptimizerState(rs[0]->get_model(),
+    : kernel::OptimizerState(rs[0]->get_model(),
                              "WriteRestraintScoresOptimizerState%1%"),
       rs_(rs),
       out_(out) {

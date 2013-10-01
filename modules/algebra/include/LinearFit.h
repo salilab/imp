@@ -36,7 +36,7 @@ class IMPALGEBRAEXPORT LinearFit2D : public GeometricPrimitiveD<2> {
   //! get b value (constant)
   double get_b() const { return b_; }
 
-    //! show equation
+  //! show equation
   IMP_SHOWABLE_INLINE(LinearFit2D, {
     out << "y = " << a_ << "x + " << b_ << std::endl;
     out << "Error = " << error_ << std::endl;

@@ -32,9 +32,8 @@ class IMPATOMEXPORT DihedralSingletonScore : public SingletonScore {
   DihedralSingletonScore();
   virtual double evaluate_index(kernel::Model *m, kernel::ParticleIndex p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                         const kernel::ParticleIndexes &pis) const
-      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_SINGLETON_SCORE_METHODS(DihedralSingletonScore);
   IMP_OBJECT_METHODS(DihedralSingletonScore);
   ;

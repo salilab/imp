@@ -84,12 +84,8 @@ class SphereD : public GeometricPrimitiveD<D> {
 };
 
 IMP_VOLUME_GEOMETRY_METHODS_D(
-    Sphere, sphere, {
-  return PI * 4.0 * get_squared(g.get_radius());
-},
-    {
-  return PI * (4.0 / 3.0) * std::pow(g.get_radius(), 3.0);
-},
+    Sphere, sphere, { return PI * 4.0 * get_squared(g.get_radius()); },
+    { return PI * (4.0 / 3.0) * std::pow(g.get_radius(), 3.0); },
     return BoundingBoxD<D>(g.get_center()) + g.get_radius(););
 
 template <unsigned int D>

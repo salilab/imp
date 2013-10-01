@@ -19,7 +19,8 @@ QuadraticClosePairsFinder::QuadraticClosePairsFinder()
     : ClosePairsFinder("QuadraticCPF") {}
 
 ParticleIndexPairs QuadraticClosePairsFinder::get_close_pairs(
-    kernel::Model *m, const kernel::ParticleIndexes &pta, const kernel::ParticleIndexes &ptb) const {
+    kernel::Model *m, const kernel::ParticleIndexes &pta,
+    const kernel::ParticleIndexes &ptb) const {
   set_was_used(true);
   IMP_OBJECT_LOG;
   IMP_LOG_TERSE("Quadratic add_close_pairs called with "
@@ -95,7 +96,8 @@ IntPairs QuadraticClosePairsFinder::get_close_pairs(
   return ret;
 }
 
-bool QuadraticClosePairsFinder::get_are_close(kernel::Model *m, kernel::ParticleIndex a,
+bool QuadraticClosePairsFinder::get_are_close(kernel::Model *m,
+                                              kernel::ParticleIndex a,
                                               kernel::ParticleIndex b) const {
   return internal::get_are_close(m, access_pair_filters(), a, b,
                                  get_distance());

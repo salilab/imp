@@ -25,18 +25,21 @@ FloatKey SecondaryStructureResidue::get_prob_coil_key() {
 
 void SecondaryStructureResidue::show(std::ostream &out) const {
   out << "SecondaryStructureResidue with:\n"
-      << "prob helix: " << get_prob_helix() << " prob strand: "
-      << get_prob_strand() << " prob coil: " << get_prob_coil();
+      << "prob helix: " << get_prob_helix()
+      << " prob strand: " << get_prob_strand()
+      << " prob coil: " << get_prob_coil();
 }
 
 SecondaryStructureResidue setup_coarse_secondary_structure_residue(
-    const kernel::Particles &ssr_ps, kernel::Model *mdl, bool winner_takes_all_per_res) {
+    const kernel::Particles &ssr_ps, kernel::Model *mdl,
+    bool winner_takes_all_per_res) {
   Floats scores;
   scores.push_back(0.0);
   scores.push_back(0.0);
   scores.push_back(0.0);
   int count = 0;
-  for (kernel::Particles::const_iterator p = ssr_ps.begin(); p != ssr_ps.end(); ++p) {
+  for (kernel::Particles::const_iterator p = ssr_ps.begin(); p != ssr_ps.end();
+       ++p) {
     IMP_USAGE_CHECK(SecondaryStructureResidue::get_is_setup(*p),
                     "all particles must be SecondaryStructureResidues");
     SecondaryStructureResidue ssr(*p);
@@ -63,8 +66,8 @@ SecondaryStructureResidue setup_coarse_secondary_structure_residue(
 }
 
 SecondaryStructureResidues setup_coarse_secondary_structure_residues(
-    const kernel::Particles &ssr_ps, kernel::Model *mdl, int coarse_factor, int start_res_num,
-    bool winner_takes_all_per_res) {
+    const kernel::Particles &ssr_ps, kernel::Model *mdl, int coarse_factor,
+    int start_res_num, bool winner_takes_all_per_res) {
   /* We're presuming that the coarsening starts from 0.
       So if start_res_num%coarse_factor<coarse_factor/2, this
        set starts with the majority of a node.

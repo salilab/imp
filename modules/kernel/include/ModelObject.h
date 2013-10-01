@@ -21,9 +21,10 @@ class Model;
     in the model change. This allows them to update internal state
     when that occurs.
  */
-class IMPKERNELEXPORT ModelObject: public base::Object {
+class IMPKERNELEXPORT ModelObject : public base::Object {
   friend class Model;
   base::WeakPointer<Model> model_;
+
  public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   void validate_inputs() const;
@@ -59,8 +60,9 @@ class IMPKERNELEXPORT ModelObject: public base::Object {
   /** Get the score states that are ancestors of this in the dependency graph.
    */
   const ScoreStatesTemp &get_required_score_states() const;
+
  protected:
-  //virtual void do_destroy() IMP_OVERRIDE {set_has_dependencies(false);}
+  // virtual void do_destroy() IMP_OVERRIDE {set_has_dependencies(false);}
   /** Called when set_has_required_score_states() is called.*/
   virtual void handle_set_has_required_score_states(bool) {}
   /** Get any Particle, Container or other ModelObjects read by

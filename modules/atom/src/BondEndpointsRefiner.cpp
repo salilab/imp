@@ -16,7 +16,8 @@ bool BondEndpointsRefiner::get_can_refine(kernel::Particle *p) const {
   return atom::Bond::get_is_setup(p);
 }
 
-const kernel::ParticlesTemp BondEndpointsRefiner::get_refined(kernel::Particle *p) const {
+const kernel::ParticlesTemp BondEndpointsRefiner::get_refined(
+    kernel::Particle *p) const {
   IMP_INTERNAL_CHECK(get_can_refine(p), "Trying to refine the unrefinable");
   Bond d(p);
   kernel::ParticlesTemp ps(2);

@@ -70,12 +70,10 @@ void gather_residue_indices(Hierarchy h, Ints &inds) {
   if (Residue::get_is_setup(h)) {
     int i = Residue(h).get_index();
     inds.push_back(i);
-  } else if (Fragment::get_is_setup(h) &&
-             h.get_number_of_children() != 0) {
+  } else if (Fragment::get_is_setup(h) && h.get_number_of_children() != 0) {
     Ints v = Fragment(h).get_residue_indexes();
     inds.insert(inds.end(), v.begin(), v.end());
-  } else if (Domain::get_is_setup(h) &&
-             h.get_number_of_children() == 0) {
+  } else if (Domain::get_is_setup(h) && h.get_number_of_children() == 0) {
     Domain d(h);
     for (int i = d.get_begin_index(); i != d.get_end_index(); ++i) {
       inds.push_back(i);
@@ -204,8 +202,8 @@ Hierarchy create_protein(kernel::Model *m, std::string name, double resolution,
     pcd.set_residue_indexes(indexes);
     atom::Mass::setup_particle(pc, mass / nr.first);
   }
-  IMP_INTERNAL_CHECK(pd.get_is_valid(true),
-                     "Invalid hierarchy produced " << pd);
+  IMP_INTERNAL_CHECK(pd.get_is_valid(true), "Invalid hierarchy produced "
+                                                << pd);
   return pd;
 }
 
@@ -306,8 +304,8 @@ Hierarchy create_simplified_along_backbone(Hierarchy in, int num_res,
         new kernel::Particle(in->get_model(), in->get_name()));
     for (unsigned int i = 0; i < chains.size(); ++i) {
       Chain chain(chains[i].get_particle());
-      root.add_child(create_simplified_along_backbone(chain, num_res,
-                                                      keep_detailed));
+      root.add_child(
+          create_simplified_along_backbone(chain, num_res, keep_detailed));
     }
     return root;
   } else if (chains.size() == 1) {
@@ -399,8 +397,8 @@ Hierarchy create_simplified_along_backbone(Chain in,
   } while (true);
 #else
 #endif*/
-  IMP_INTERNAL_CHECK(root.get_is_valid(true),
-                     "Invalid hierarchy produced " << root);
+  IMP_INTERNAL_CHECK(root.get_is_valid(true), "Invalid hierarchy produced "
+                                                  << root);
   return root;
 }
 

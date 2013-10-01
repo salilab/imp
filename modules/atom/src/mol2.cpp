@@ -201,7 +201,7 @@ void bond_particle(kernel::Model*, const String& mol2_bondline,
   }
 
   // bond decorator
-  /*Bond ab_d =*/ create_bond(ad, bd, type);
+  /*Bond ab_d =*/create_bond(ad, bd, type);
 }
 
 Hierarchy molecule_particle(kernel::Model* m, const std::string& molecule_name,

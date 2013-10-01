@@ -14,7 +14,6 @@
 #include <iostream>
 #include <vector>
 
-
 IMPKERNEL_DEPRECATED_HEADER(2.1, "Use base/VersionInfo.h");
 
 IMPKERNEL_BEGIN_NAMESPACE

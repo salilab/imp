@@ -38,8 +38,9 @@ IMPATOMEXPORT String get_molecule_type(const String& mol2_line);
 IMPATOMEXPORT String pick_mol2atom_type(const String& atom_line);
 
 //! Return true if one atom in the bond pair is deleted
-IMPATOMEXPORT bool is_ATOM_del(const String& bond_line,
-                               const base::map<int, kernel::Particle*>& molecule_atoms);
+IMPATOMEXPORT bool is_ATOM_del(
+    const String& bond_line,
+    const base::map<int, kernel::Particle*>& molecule_atoms);
 
 //! in the mol2 file the atom type string starts at atom_type_field_
 static const unsigned mol2_type_field_ = 47;

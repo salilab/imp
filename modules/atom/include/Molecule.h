@@ -24,7 +24,7 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT Molecule : public Hierarchy {
   static IntKey key();
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
-                                 Molecule = Molecule()) {
+                                Molecule = Molecule()) {
     if (!Hierarchy::get_is_setup(m, pi)) {
       Hierarchy::setup_particle(m, pi);
     }

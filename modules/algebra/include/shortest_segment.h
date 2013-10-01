@@ -24,13 +24,13 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /** See Segment3D
     See Vector3D
 */
-IMPALGEBRAEXPORT Segment3D get_shortest_segment(const Segment3D &s,
-                                                const Vector3D &p);
+IMPALGEBRAEXPORT Segment3D
+    get_shortest_segment(const Segment3D &s, const Vector3D &p);
 
 /** See Segment3D
  */
-IMPALGEBRAEXPORT Segment3D get_shortest_segment(const Segment3D &sa,
-                                                const Segment3D &sb);
+IMPALGEBRAEXPORT Segment3D
+    get_shortest_segment(const Segment3D &sa, const Segment3D &sb);
 
 IMPALGEBRA_END_NAMESPACE
 

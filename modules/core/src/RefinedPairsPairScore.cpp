@@ -35,13 +35,15 @@ Float RefinedPairsPairScore::evaluate_index(kernel::Model *m,
                                             const kernel::ParticleIndexPair &p,
                                             DerivativeAccumulator *da) const {
   kernel::ParticlesTemp ps[2] = {get_set(m->get_particle(p[0]), r_),
-                         get_set(m->get_particle(p[1]), r_)};
+                                 get_set(m->get_particle(p[1]), r_)};
   double ret = 0;
   for (unsigned int i = 0; i < ps[0].size(); ++i) {
     for (unsigned int j = 0; j < ps[1].size(); ++j) {
-      ret += f_->evaluate_index(
-          ps[0][0]->get_model(),
-          kernel::ParticleIndexPair(ps[0][i]->get_index(), ps[1][j]->get_index()), da);
+      ret +=
+          f_->evaluate_index(ps[0][0]->get_model(),
+                             kernel::ParticleIndexPair(ps[0][i]->get_index(),
+                                                       ps[1][j]->get_index()),
+                             da);
     }
   }
   return ret;

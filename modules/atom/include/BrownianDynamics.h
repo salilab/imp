@@ -64,29 +64,26 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
                        its default, see also Simulator::simulate_wave()
   */
   BrownianDynamics(kernel::Model *m, std::string name = "BrownianDynamics%1%",
-                   double wave_factor=1.0);
+                   double wave_factor = 1.0);
   void set_maximum_move(double ms) { max_step_ = ms; }
   void set_use_stochastic_runge_kutta(bool tf) { srk_ = tf; }
 
   IMP_OBJECT_METHODS(BrownianDynamics);
 
-private:
-  virtual void
-      setup(const kernel::ParticleIndexes& ps) IMP_OVERRIDE;
-  virtual double
-      do_step(const kernel::ParticleIndexes& sc, double dt) IMP_OVERRIDE;
-  virtual bool
-      get_is_simulation_particle(kernel::ParticleIndex p) const IMP_OVERRIDE;
+ private:
+  virtual void setup(const kernel::ParticleIndexes &ps) IMP_OVERRIDE;
+  virtual double do_step(const kernel::ParticleIndexes &sc,
+                         double dt) IMP_OVERRIDE;
+  virtual bool get_is_simulation_particle(kernel::ParticleIndex p) const
+      IMP_OVERRIDE;
 
  private:
   void advance_chunk(double dtfs, double ikt, const kernel::ParticleIndexes &ps,
                      unsigned int begin, unsigned int end);
-  void advance_coordinates_1(kernel::ParticleIndex pi,
-                             unsigned int i, double dtfs,
-                             double ikT);
-  void advance_coordinates_0(kernel::ParticleIndex pi,
-                             unsigned int i, double dtfs,
-                             double ikT);
+  void advance_coordinates_1(kernel::ParticleIndex pi, unsigned int i,
+                             double dtfs, double ikT);
+  void advance_coordinates_0(kernel::ParticleIndex pi, unsigned int i,
+                             double dtfs, double ikT);
   void advance_orientation_0(kernel::ParticleIndex pi, double dtfs, double ikT);
 
   double max_step_;

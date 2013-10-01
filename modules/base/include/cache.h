@@ -85,7 +85,8 @@ class Memoizer {
 /** Implement a cache on sparse pairs of values. The cache
     is infinite (or at least n^2).
 */
-template <class Generator, class Checker> class SparseSymmetricPairMemoizer {
+template <class Generator, class Checker>
+class SparseSymmetricPairMemoizer {
  public:
   typedef typename Generator::argument_type::value_type Key;
   typedef typename Generator::result_type::value_type Entry;
@@ -115,7 +116,8 @@ template <class Generator, class Checker> class SparseSymmetricPairMemoizer {
   struct EntryEqual {
     Array<2, Key> v;
     EntryEqual(Key t0, Key t1) : v(t0, t1) {}
-    template <class O> bool operator()(const O &o) const {
+    template <class O>
+    bool operator()(const O &o) const {
       return v[0] == o[0] && v[1] == o[1];
     }
   };
@@ -136,10 +138,10 @@ template <class Generator, class Checker> class SparseSymmetricPairMemoizer {
   void check_it() const {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
     Vector<Entry> cur(cache_.begin(), cache_.end());
-    IMP_INTERNAL_CHECK(checker_(cur),
-                       "Cached and newly computed don't match: "
-                           << cur << " vs " << gen_(domain_, this)
-                           << " and cleared is " << cleared_);
+    IMP_INTERNAL_CHECK(checker_(cur), "Cached and newly computed don't match: "
+                                          << cur << " vs "
+                                          << gen_(domain_, this)
+                                          << " and cleared is " << cleared_);
     for (Hash0Iterator c = cache_.template get<0>().begin();
          c != cache_.template get<0>().end(); ++c) {
       IMP_INTERNAL_CHECK(
@@ -155,14 +157,14 @@ template <class Generator, class Checker> class SparseSymmetricPairMemoizer {
         {
           Hash0Iterator b, e;
           boost::tie(b, e) = cache_.template get<0>().equal_range(cleared_[i]);
-          IMP_INTERNAL_CHECK(
-              b == e, "Cleared entry " << cleared_[i] << " was not cleared.");
+          IMP_INTERNAL_CHECK(b == e, "Cleared entry " << cleared_[i]
+                                                      << " was not cleared.");
         }
         {
           Hash1Iterator b, e;
           boost::tie(b, e) = cache_.template get<1>().equal_range(cleared_[i]);
-          IMP_INTERNAL_CHECK(
-              b == e, "Cleared entry " << cleared_[i] << " was not cleared.");
+          IMP_INTERNAL_CHECK(b == e, "Cleared entry " << cleared_[i]
+                                                      << " was not cleared.");
         }
       }
     }
@@ -171,10 +173,10 @@ template <class Generator, class Checker> class SparseSymmetricPairMemoizer {
     IMP_LOG_VERBOSE("Inserting " << nv << " into pair memoizer" << std::endl);
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       for (unsigned int i = 0; i < nv.size(); ++i) {
-        IMP_INTERNAL_CHECK(std::find_if(nv.begin(), nv.end(),
-                                        EntryEqual(nv[i][1], nv[i][0])) ==
-                               nv.end(),
-                           "An entry and its flip are already in list: " << nv);
+        IMP_INTERNAL_CHECK(
+            std::find_if(nv.begin(), nv.end(),
+                         EntryEqual(nv[i][1], nv[i][0])) == nv.end(),
+            "An entry and its flip are already in list: " << nv);
       }
     }
     cache_.insert(nv.begin(), nv.end());
@@ -184,7 +186,8 @@ template <class Generator, class Checker> class SparseSymmetricPairMemoizer {
                               << std::endl);
     cleared_.clear();
   }
-  template <class F, class It> F do_apply(It b, It e, F f) const {
+  template <class F, class It>
+  F do_apply(It b, It e, F f) const {
     for (It c = b; c != e; ++c) {
       f(*c);
     }
@@ -198,14 +201,16 @@ template <class Generator, class Checker> class SparseSymmetricPairMemoizer {
       : gen_(gen), checker_(check), cleared_(domain), domain_(domain) {
     IMP_LOG_TERSE("Domain for memoizer is " << domain << std::endl);
   }
-  template <class F> F apply(F f) {
+  template <class F>
+  F apply(F f) {
     IMP_FUNCTION_LOG;
     if (!cleared_.empty()) fill_it();
     check_it();
     return do_apply(cache_.begin(), cache_.end(), f);
   }
   /** Apply a function to the current (unfilled) state of the memoizer.*/
-  template <class F> F apply_to_current_contents(F f) {
+  template <class F>
+  F apply_to_current_contents(F f) {
     IMP_FUNCTION_LOG;
     return do_apply(cache_.begin(), cache_.end(), f);
   }

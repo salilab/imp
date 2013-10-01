@@ -21,7 +21,8 @@ IMPDISPLAY_BEGIN_NAMESPACE
     if it is available.
  */
 class IMPDISPLAYEXPORT Colored : public Decorator {
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi, Color c) {
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                Color c) {
     m->add_attribute(get_color_keys()[0], pi, c.get_red(), false);
     m->add_attribute(get_color_keys()[1], pi, c.get_green(), false);
     m->add_attribute(get_color_keys()[2], pi, c.get_blue(), false);
@@ -30,20 +31,18 @@ class IMPDISPLAYEXPORT Colored : public Decorator {
  public:
   void set_color(const Color &c) {
     get_model()->set_attribute(get_color_keys()[0], get_particle_index(),
-                           c.get_red());
+                               c.get_red());
     get_model()->set_attribute(get_color_keys()[1], get_particle_index(),
-                           c.get_green());
+                               c.get_green());
     get_model()->set_attribute(get_color_keys()[2], get_particle_index(),
-                           c.get_blue());
+                               c.get_blue());
   }
 
   Color get_color() const {
-    return Color(get_model()->get_attribute(get_color_keys()[0],
-                                        get_particle_index()),
-                 get_model()->get_attribute(get_color_keys()[1],
-                                        get_particle_index()),
-                 get_model()->get_attribute(get_color_keys()[2],
-                                        get_particle_index()));
+    return Color(
+        get_model()->get_attribute(get_color_keys()[0], get_particle_index()),
+        get_model()->get_attribute(get_color_keys()[1], get_particle_index()),
+        get_model()->get_attribute(get_color_keys()[2], get_particle_index()));
   }
 
   static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {

@@ -16,7 +16,8 @@ IMPATOM_BEGIN_NAMESPACE
 
 ImproperSingletonScore::ImproperSingletonScore(UnaryFunction *f) : f_(f) {}
 
-double ImproperSingletonScore::evaluate_index(kernel::Model *m, kernel::ParticleIndex pi,
+double ImproperSingletonScore::evaluate_index(kernel::Model *m,
+                                              kernel::ParticleIndex pi,
                                               DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
   IMP_USAGE_CHECK(Dihedral::get_is_setup(m, pi),

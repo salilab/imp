@@ -91,8 +91,8 @@ template <class Score, class C>
 ModelObjectsTemp ContainerRestraint<Score, C>::do_get_inputs() const {
   IMP_OBJECT_LOG;
   ModelObjectsTemp ret;
-  ret += acc_->get_score_object()
-      ->get_inputs(get_model(), pc_->get_all_possible_indexes());
+  ret += acc_->get_score_object()->get_inputs(get_model(),
+                                              pc_->get_all_possible_indexes());
   ret.push_back(pc_);
   return ret;
 }

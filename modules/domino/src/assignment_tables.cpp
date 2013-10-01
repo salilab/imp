@@ -164,7 +164,7 @@ template <class It>
 ParticlesTemp get_sub_particles(const Subset &s, It b, It e) {
   if (b == e) return kernel::ParticlesTemp();
   return kernel::ParticlesTemp(boost::make_permutation_iterator(s.begin(), b),
-                       boost::make_permutation_iterator(s.end(), e));
+                               boost::make_permutation_iterator(s.end(), e));
 }
 
 template <class It>
@@ -172,10 +172,10 @@ Subset get_sub_subset(const Subset &s, It b, It e) {
   kernel::ParticlesTemp pt = get_sub_particles(s, b, e);
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     for (int i = 0; i < std::distance(b, e); ++i) {
-      IMP_INTERNAL_CHECK(
-          pt[i] == s[*(b + i)],
-          "Do not match at " << i << " got " << pt[i] << " expected "
-                             << s[*(b + i)] << " for " << s);
+      IMP_INTERNAL_CHECK(pt[i] == s[*(b + i)],
+                         "Do not match at " << i << " got " << pt[i]
+                                            << " expected " << s[*(b + i)]
+                                            << " for " << s);
     }
   }
   Subset rs(pt);
@@ -197,7 +197,8 @@ Assignment get_sub_assignment(const Subset &s, const Ints &ss,
 
 double evaluate_order(const Ints &order, const Subset &s,
                       const SubsetFilterTables &sft) {
-  kernel::ParticlesTemp sorted = get_sub_particles(s, order.begin(), order.end());
+  kernel::ParticlesTemp sorted =
+      get_sub_particles(s, order.begin(), order.end());
   Subset sc(sorted);
   sorted.pop_back();
   Subsets excluded;
@@ -274,7 +275,8 @@ Assignment get_next_assignment_base(
   }
 }
 
-Assignment get_next_assignment(const kernel::ParticlesTemp &s, const Subsets &subsets,
+Assignment get_next_assignment(const kernel::ParticlesTemp &s,
+                               const Subsets &subsets,
                                const base::Vector<Ints> &orders, Ints cur,
                                const Ints &maxs,
                                const base::Vector<SubsetFilters> &filters) {
@@ -348,12 +350,12 @@ Assignment get_next_assignment(const kernel::ParticlesTemp &s, const Subsets &su
         }
         IMP_INTERNAL_CHECK(cur.back() == cura[pos], "Assignments don't match");
         ok = false;
-        IMP_INTERNAL_CHECK(
-            increment > 0,
-            "Increment must be positive,"
-                << " it was not"
-                << " for \"" << filters.back()[i] << "\""
-                << " got " << increment << " from " << cur.back());
+        IMP_INTERNAL_CHECK(increment > 0, "Increment must be positive,"
+                                              << " it was not"
+                                              << " for \"" << filters.back()[i]
+                                              << "\""
+                                              << " got " << increment
+                                              << " from " << cur.back());
         break;
       }
     }
@@ -395,7 +397,8 @@ void BranchAndBoundAssignmentsTable::load_assignments(
   for (unsigned int i = 0; i < maxs.size(); ++i) {
     Subsets excluded;
     if (i > 0) {
-      excluded.push_back(Subset(kernel::ParticlesTemp(spt.begin(), spt.begin() + i)));
+      excluded.push_back(
+          Subset(kernel::ParticlesTemp(spt.begin(), spt.begin() + i)));
     }
     Subset cur(kernel::ParticlesTemp(spt.begin(), spt.begin() + i + 1));
     Ints order(cur.size());

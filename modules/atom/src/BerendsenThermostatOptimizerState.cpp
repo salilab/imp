@@ -29,8 +29,9 @@ void BerendsenThermostatOptimizerState::rescale_velocities() const {
   IMP_OBJECT_LOG;
   IMP_LOG_TERSE("Rescaling velocities" << std::endl);
   MolecularDynamics *md = dynamic_cast<MolecularDynamics *>(get_optimizer());
-  IMP_INTERNAL_CHECK(md, "Can only use velocity scaling with "
-                         "the molecular dynamics optimizer.");
+  IMP_INTERNAL_CHECK(md,
+                     "Can only use velocity scaling with "
+                     "the molecular dynamics optimizer.");
 
   double kinetic_temp = md->get_kinetic_temperature(md->get_kinetic_energy());
   double rescale = std::sqrt(1.0 + (md->get_last_time_step() / tau_) *

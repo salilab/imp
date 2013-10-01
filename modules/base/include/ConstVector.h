@@ -23,7 +23,8 @@ IMPBASE_BEGIN_NAMESPACE
 //! Store an array of values of the same type.
 /** Items must be comparable and hashable and the arrays
     cannote be changed after creation.*/
-template <class Data, class SwigData = Data> class ConstVector : public Value {
+template <class Data, class SwigData = Data>
+class ConstVector : public Value {
   boost::scoped_array<Data> v_;
   unsigned int sz_;
   int compare(const ConstVector &o) const {
@@ -47,7 +48,8 @@ template <class Data, class SwigData = Data> class ConstVector : public Value {
     }
     sz_ = sz;
   }
-  template <class It> void copy_from(It b, It e) {
+  template <class It>
+  void copy_from(It b, It e) {
     create(std::distance(b, e));
     std::copy(b, e, v_.get());
   }
@@ -59,8 +61,12 @@ template <class Data, class SwigData = Data> class ConstVector : public Value {
     std::fill(v_.get(), v_.get() + sz, fill);
   }
   ConstVector() : v_(0), sz_(0) {}
-  template <class It> ConstVector(It b, It e) { copy_from(b, e); }
-  template <class Vector> explicit ConstVector(const Vector &i) {
+  template <class It>
+  ConstVector(It b, It e) {
+    copy_from(b, e);
+  }
+  template <class Vector>
+  explicit ConstVector(const Vector &i) {
     copy_from(i.begin(), i.end());
   }
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
@@ -105,7 +111,8 @@ template <class Data, class SwigData = Data> class ConstVector : public Value {
     out << "(";
     for (unsigned int i = 0; i < size(); ++i) {
       out << Showable(v_[i]);
-      if (i != size() - 1) out << " ";
+      if (i != size() - 1)
+        out << " ";
     }
     out << ")";
   });
@@ -124,7 +131,8 @@ template <class Data, class SwigData = Data> class ConstVector : public Value {
 IMP_SWAP_1(ConstVector);
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-template <class D> inline std::size_t hash_value(const ConstVector<D> &t) {
+template <class D>
+inline std::size_t hash_value(const ConstVector<D> &t) {
   return t.__hash__();
 }
 #endif

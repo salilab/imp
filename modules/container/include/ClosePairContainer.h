@@ -128,12 +128,10 @@ IMP_OBJECTS(ClosePairContainer, ClosePairContainers);
     For best results, make the particles start in a
     that is "typical" for the optimization.
 */
-IMPCONTAINEREXPORT double 
-get_slack_estimate(const kernel::ParticlesTemp &ps,
-                   double upper_bound, double step,
-                   const kernel::RestraintsTemp &restraints,
-                   bool derivatives, Optimizer *opt,
-                   ClosePairContainer *cpc);
+IMPCONTAINEREXPORT double get_slack_estimate(
+    const kernel::ParticlesTemp &ps, double upper_bound, double step,
+    const kernel::RestraintsTemp &restraints, bool derivatives, Optimizer *opt,
+    ClosePairContainer *cpc);
 
 IMPCONTAINER_END_NAMESPACE
 

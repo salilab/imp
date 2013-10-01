@@ -116,13 +116,13 @@ void WriteHDF5AssignmentContainer::flush() {
       n[i] = Assignment(cache_.begin() + i * order_.size(),
                         cache_.begin() + (i + 1) * order_.size());
     }
-    IMP_INTERNAL_CHECK(
-        ds_.get_size()[0] >= num,
-        "Not enough on disk: " << ds_.get_size()[0] << " vs " << num);
+    IMP_INTERNAL_CHECK(ds_.get_size()[0] >= num,
+                       "Not enough on disk: " << ds_.get_size()[0] << " vs "
+                                              << num);
     for (unsigned int i = 0; i < num; ++i) {
       Assignment read = get_assignment(get_number_of_assignments() - num + i);
-      IMP_INTERNAL_CHECK(read == n[i],
-                         "Mismatch on read: " << read << " vs " << n[i]);
+      IMP_INTERNAL_CHECK(read == n[i], "Mismatch on read: " << read << " vs "
+                                                            << n[i]);
     }
   }
   ds_.get_file().flush();
@@ -170,8 +170,8 @@ void ReadHDF5AssignmentContainer::add_assignment(const Assignment &) {
 #endif
 
 WriteAssignmentContainer::WriteAssignmentContainer(
-    std::string dataset, const Subset &s, const kernel::ParticlesTemp &all_particles,
-    std::string name)
+    std::string dataset, const Subset &s,
+    const kernel::ParticlesTemp &all_particles, std::string name)
     : AssignmentContainer(name), order_(s, all_particles), max_cache_(10000) {
   cache_.reserve(max_cache_);
   f_ = open(dataset.c_str(), O_WRONLY | O_APPEND | O_CREAT | O_TRUNC
@@ -209,10 +209,10 @@ void WriteAssignmentContainer::flush() {
   cache_.reserve(max_cache_);
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   size_t size = lseek(f_, 0, SEEK_CUR);
-  IMP_INTERNAL_CHECK(
-      size == number_ * order_.size() * sizeof(int),
-      "Wrong number of bytes in file: got "
-          << size << " expected " << number_ * order_.size() * sizeof(int));
+  IMP_INTERNAL_CHECK(size == number_ * order_.size() * sizeof(int),
+                     "Wrong number of bytes in file: got "
+                         << size << " expected "
+                         << number_ * order_.size() * sizeof(int));
 #endif
 }
 
@@ -258,8 +258,8 @@ void CappedAssignmentContainer::add_assignment(const Assignment &a) {
 ///
 
 ReadAssignmentContainer::ReadAssignmentContainer(
-    std::string dataset, const Subset &s, const kernel::ParticlesTemp &all_particles,
-    std::string name)
+    std::string dataset, const Subset &s,
+    const kernel::ParticlesTemp &all_particles, std::string name)
     : AssignmentContainer(name), order_(s, all_particles) {
   // must be done first to initialize max_cache_
   set_cache_size(100000);
@@ -290,10 +290,10 @@ Assignment ReadAssignmentContainer::get_assignment(unsigned int i) const {
     int rd = read(f_, &cache_[0], max_cache_ * sizeof(int));
     cache_.resize(rd / sizeof(int));
     offset_ = i;
-    IMP_LOG_TERSE("Cache is of size "
-                  << cache_.size() << " at " << offset_ << " when reading " << i
-                  << " with assignments of size " << order_.size()
-                  << std::endl);
+    IMP_LOG_TERSE("Cache is of size " << cache_.size() << " at " << offset_
+                                      << " when reading " << i
+                                      << " with assignments of size "
+                                      << order_.size() << std::endl);
   }
   return order_.get_subset_ordered(
       cache_.begin() + (i - offset_) * order_.size(),
@@ -358,8 +358,8 @@ HeapAssignmentContainer::HeapAssignmentContainer(Subset subset, unsigned int k,
 void HeapAssignmentContainer::add_assignment(const Assignment &a) {
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     for (unsigned int i = 0; i < get_number_of_assignments(); ++i) {
-      IMP_INTERNAL_CHECK(get_assignment(i) != a,
-                         "Assignment " << a << " already here.");
+      IMP_INTERNAL_CHECK(get_assignment(i) != a, "Assignment "
+                                                     << a << " already here.");
     }
   }
   // rssf_ may be null if no restraints are assigned to the particles

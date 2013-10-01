@@ -60,8 +60,10 @@ Rotation3D get_rotation_from_matrix(double m11, double m12, double m13,
     double det = m11 * (m22 * m33 - m23 * m32) + m12 * (m23 * m31 - m21 * m33) +
                  m13 * (m21 * m32 - m22 * m31);
 #endif
-    IMP_USAGE_CHECK(std::abs(det - 1) < .1, "The determinant of the rotation "
-                                            "matrix is not 1. Got " << det);
+    IMP_USAGE_CHECK(std::abs(det - 1) < .1,
+                    "The determinant of the rotation "
+                    "matrix is not 1. Got "
+                        << det);
   }
   Rotation3D ret;
   {

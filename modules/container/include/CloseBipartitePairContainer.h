@@ -46,15 +46,15 @@ class IMPCONTAINEREXPORT CloseBipartitePairContainer :
   CloseBipartitePairContainer(SingletonContainerAdaptor a,
                               SingletonContainerAdaptor b, double distance,
                               double slack = 1,
-                              std::string name
-                              = "CloseBipartitePairContainer%1%");
+                              std::string name =
+                                  "CloseBipartitePairContainer%1%");
 #ifndef IMP_DOXYGEN
   //! Get the individual particles from the passed SingletonContainer
   CloseBipartitePairContainer(SingletonContainerAdaptor a,
                               SingletonContainerAdaptor b, double distance,
                               core::ClosePairsFinder *cpf, double slack = 1,
-                              std::string name
-                              = "CloseBipartitePairContainer%1%");
+                              std::string name =
+                                  "CloseBipartitePairContainer%1%");
 #endif
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)

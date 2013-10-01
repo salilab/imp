@@ -24,6 +24,7 @@ class IMPCOREEXPORT Reference : public Decorator {
                                 kernel::ParticleIndex refi) {
     m->add_attribute(get_reference_key(), pi, refi);
   }
+
  public:
 
   IMP_DECORATOR_METHODS(Reference, Decorator);
@@ -57,13 +58,12 @@ class IMPCOREEXPORT TransformationAndReflectionSymmetry
   TransformationAndReflectionSymmetry(const algebra::Transformation3D &t,
                                       const algebra::Reflection3D &r);
 
-  virtual void apply_index(kernel::Model *m, kernel::ParticleIndex p) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                         const kernel::ParticleIndexes &pis) const
+  virtual void apply_index(kernel::Model *m, kernel::ParticleIndex p) const
       IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_outputs(kernel::Model *m,
-                                          const kernel::ParticleIndexes &pis) const
-      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_outputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_SINGLETON_MODIFIER_METHODS(TransformationAndReflectionSymmetry);
   IMP_OBJECT_METHODS(TransformationAndReflectionSymmetry);
 };
@@ -80,13 +80,12 @@ class IMPCOREEXPORT TransformationSymmetry : public SingletonModifier {
   //! Create with both reflection and translation
   TransformationSymmetry(const algebra::Transformation3D &t);
 
-  virtual void apply_index(kernel::Model *m, kernel::ParticleIndex p) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                         const kernel::ParticleIndexes &pis) const
+  virtual void apply_index(kernel::Model *m, kernel::ParticleIndex p) const
       IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_outputs(kernel::Model *m,
-                                          const kernel::ParticleIndexes &pis) const
-      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_outputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_SINGLETON_MODIFIER_METHODS(TransformationSymmetry);
   IMP_OBJECT_METHODS(TransformationSymmetry);
 };

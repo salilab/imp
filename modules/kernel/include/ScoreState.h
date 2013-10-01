@@ -50,6 +50,7 @@ IMPKERNEL_BEGIN_NAMESPACE
  */
 class IMPKERNELEXPORT ScoreState : public ModelObject {
   int update_order_;
+
  public:
   ScoreState(kernel::Model *m, std::string name);
   //! Force update of the structure.
@@ -59,8 +60,8 @@ class IMPKERNELEXPORT ScoreState : public ModelObject {
   void after_evaluate(DerivativeAccumulator *accpt);
 
 #ifndef IMP_DOXYGEN
-  bool get_has_update_order() const {return update_order_ != -1;}
-  unsigned int get_update_order() const {return update_order_;}
+  bool get_has_update_order() const { return update_order_ != -1; }
+  unsigned int get_update_order() const { return update_order_; }
   virtual void handle_set_has_required_score_states(bool tf) IMP_OVERRIDE;
 
 #endif

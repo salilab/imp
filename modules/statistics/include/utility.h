@@ -23,8 +23,8 @@ IMPSTATISTICSEXPORT algebra::VectorKDs get_centroids(Embedding* d,
 /** Given a clustering and an embedding, compute a representatative
     element for each cluster.
  */
-IMPSTATISTICSEXPORT Ints get_representatives(Embedding* d,
-                                             PartitionalClustering* pc);
+IMPSTATISTICSEXPORT Ints
+    get_representatives(Embedding* d, PartitionalClustering* pc);
 
 IMPSTATISTICS_END_NAMESPACE
 

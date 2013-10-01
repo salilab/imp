@@ -88,17 +88,17 @@ typedef boost::graph_traits<Graph>::edge_descriptor Edge;
 typedef Graph::edge_property_type Weight;
 typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
 
-void compute_mst(kernel::Model *m, const kernel::ParticleIndexes &pis, PairScore *ps, Graph &g,
-                 base::Vector<Edge> &mst) {
+void compute_mst(kernel::Model *m, const kernel::ParticleIndexes &pis,
+                 PairScore *ps, Graph &g, base::Vector<Edge> &mst) {
   try {
     for (unsigned int i = 0; i < pis.size(); ++i) {
       for (unsigned int j = 0; j < i; ++j) {
-        double d =
-            ps->evaluate_index(m, kernel::ParticleIndexPair(pis[i], pis[j]), nullptr);
+        double d = ps->evaluate_index(
+            m, kernel::ParticleIndexPair(pis[i], pis[j]), nullptr);
         IMP_LOG_VERBOSE("ConnectivityRestraint edge between "
-                        << kernel::ParticleIndexPair(pis[i], pis[j]) << " with weight "
-                        << d << std::endl);
-        /*Edge e =*/ boost::add_edge(i, j, Weight(d), g);
+                        << kernel::ParticleIndexPair(pis[i], pis[j])
+                        << " with weight " << d << std::endl);
+        /*Edge e =*/boost::add_edge(i, j, Weight(d), g);
         // boost::put(boost::edge_weight_t(), g, e, d);
       }
     }
@@ -148,7 +148,8 @@ double ConnectivityRestraint::unprotected_evaluate(
   return ps_->evaluate_indexes(get_model(), edges, accum, 0, edges.size());
 }
 
-kernel::Restraints ConnectivityRestraint::do_create_current_decomposition() const {
+kernel::Restraints ConnectivityRestraint::do_create_current_decomposition()
+    const {
   kernel::ParticlePairsTemp pp = get_connected_pairs();
   kernel::Restraints ret;
   for (unsigned int i = 0; i < pp.size(); ++i) {

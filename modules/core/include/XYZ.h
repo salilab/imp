@@ -30,7 +30,7 @@ IMPCORE_BEGIN_NAMESPACE
     \see XYZR
  */
 class IMPCOREEXPORT XYZ : public Decorator {
-    static void do_setup_particle(
+  static void do_setup_particle(
       kernel::Model *m, kernel::ParticleIndex pi,
       // This method and the next one need to take a vector (not a ref)
       // as otherwise, you can pass the vector from one and use it to
@@ -41,6 +41,7 @@ class IMPCOREEXPORT XYZ : public Decorator {
     m->add_attribute(get_coordinate_key(1), pi, v[1]);
     m->add_attribute(get_coordinate_key(2), pi, v[2]);
   }
+
  public:
   static FloatKey get_coordinate_key(unsigned int i) {
     IMP_USAGE_CHECK(i < 3, "Out of range coordinate");
@@ -172,7 +173,8 @@ inline const algebra::Vector3D get_vector_d_geometry(kernel::Particle *p) {
   return core::XYZ(p).get_coordinates();
 }
 /** \genericgeometry */
-inline void set_vector_d_geometry(kernel::Particle *p, const algebra::Vector3D &v) {
+inline void set_vector_d_geometry(kernel::Particle *p,
+                                  const algebra::Vector3D &v) {
   core::XYZ(p).set_coordinates(v);
 }
 

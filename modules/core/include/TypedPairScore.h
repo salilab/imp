@@ -60,16 +60,16 @@ class IMPCOREEXPORT TypedPairScore : public PairScore {
       \param[in] btype Second particle type.
    */
   void set_pair_score(PairScore *ps, Int atype, Int btype) {
-    score_map_[
-        std::pair<Int, Int>(std::min(atype, btype), std::max(atype, btype))] =
-        IMP::base::PointerMember<PairScore>(ps);
+    score_map_
+        [std::pair<Int, Int>(std::min(atype, btype), std::max(atype, btype))] =
+            IMP::base::PointerMember<PairScore>(ps);
   }
 
-  virtual double evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &p,
+  virtual double evaluate_index(kernel::Model *m,
+                                const kernel::ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                         const kernel::ParticleIndexes &pis) const
-      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_PAIR_SCORE_METHODS(TypedPairScore);
   IMP_OBJECT_METHODS(TypedPairScore);
   ;

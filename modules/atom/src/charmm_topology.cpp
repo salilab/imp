@@ -64,8 +64,8 @@ void add_residue_bonds(
     const CHARMMParameters *ff, kernel::Particles &ps) {
   for (unsigned int nbond = 0; nbond < current_residue->get_number_of_bonds();
        ++nbond) {
-    Atoms as = current_residue->get_bond(nbond)
-        .get_atoms(current_residue, previous_residue, next_residue, resmap);
+    Atoms as = current_residue->get_bond(nbond).get_atoms(
+        current_residue, previous_residue, next_residue, resmap);
     if (as.size() > 0) {
       Bonded b[2];
       for (unsigned int i = 0; i < 2; ++i) {
@@ -87,7 +87,7 @@ void add_residue_bonds(
         // incorporated into x, so is the sqrt of the force constant
         bd.set_stiffness(std::sqrt(p.force_constant * 2.0));
       }
-      catch (const base::IndexException & e) {
+      catch (const base::IndexException &e) {
         // If no parameters, warn only
         IMP_WARN(e.what());
       }
@@ -104,8 +104,8 @@ void add_residue_dihedrals(
     const CHARMMParameters *ff, kernel::Particles &ps) {
   for (unsigned int ndih = 0; ndih < current_residue->get_number_of_dihedrals();
        ++ndih) {
-    Atoms as = current_residue->get_dihedral(ndih)
-        .get_atoms(current_residue, previous_residue, next_residue, resmap);
+    Atoms as = current_residue->get_dihedral(ndih).get_atoms(
+        current_residue, previous_residue, next_residue, resmap);
     if (as.size() > 0) {
       internal::add_dihedral_to_list(ff, as[0], as[1], as[2], as[3], ps);
     }
@@ -120,8 +120,8 @@ void add_residue_impropers(
     const CHARMMParameters *ff, kernel::Particles &ps) {
   for (unsigned int nimpr = 0;
        nimpr < current_residue->get_number_of_impropers(); ++nimpr) {
-    Atoms as = current_residue->get_improper(nimpr)
-        .get_atoms(current_residue, previous_residue, next_residue, resmap);
+    Atoms as = current_residue->get_improper(nimpr).get_atoms(
+        current_residue, previous_residue, next_residue, resmap);
     if (as.size() > 0) {
       try {
         const CHARMMDihedralParameters &p =
@@ -389,10 +389,11 @@ void CHARMMPatch::apply(CHARMMResidueTopology *res1,
   // Extra checks for the commonly-used CHARMM DISU patch
   if (get_type() == "DISU" &&
       (res1->get_type() != "CYS" || res2->get_type() != "CYS")) {
-    IMP_WARN("Applying a DISU patch to two residues that are not both 'CYS' "
-             "(they are " << *res1 << " and " << *res2
-                          << "). This is "
-                             "probably not what was intended.");
+    IMP_WARN(
+        "Applying a DISU patch to two residues that are not both 'CYS' "
+        "(they are "
+        << *res1 << " and " << *res2 << "). This is "
+                                        "probably not what was intended.");
   }
 
   // Copy or update atoms
@@ -652,9 +653,9 @@ void build_internal_coordinates(
   const CHARMMResidueTopology *prev = nullptr;
   for (unsigned int nres = 0; nres < seg->get_number_of_residues(); ++nres) {
     const CHARMMResidueTopology *cur = seg->get_residue(nres);
-    const CHARMMResidueTopology *next =
-        nres < seg->get_number_of_residues() - 1 ? seg->get_residue(nres + 1)
-                                                 : nullptr;
+    const CHARMMResidueTopology *next = nres < seg->get_number_of_residues() - 1
+                                            ? seg->get_residue(nres + 1)
+                                            : nullptr;
     for (unsigned int nic = 0; nic < cur->get_number_of_internal_coordinates();
          ++nic) {
       const CHARMMInternalCoordinate &ic = cur->get_internal_coordinate(nic);
@@ -668,8 +669,7 @@ void build_internal_coordinates(
 }
 
 float fill_distance(Atom i, Atom j, const CHARMMParameters *ff) {
-  if (CHARMMAtom::get_is_setup(i) &&
-      CHARMMAtom::get_is_setup(j)) {
+  if (CHARMMAtom::get_is_setup(i) && CHARMMAtom::get_is_setup(j)) {
     try {
       return ff->get_bond_parameters(CHARMMAtom(i).get_charmm_type(),
                                      CHARMMAtom(j).get_charmm_type()).ideal;
@@ -681,8 +681,7 @@ float fill_distance(Atom i, Atom j, const CHARMMParameters *ff) {
 }
 
 float fill_angle(Atom i, Atom j, Atom k, const CHARMMParameters *ff) {
-  if (CHARMMAtom::get_is_setup(i) &&
-      CHARMMAtom::get_is_setup(j) &&
+  if (CHARMMAtom::get_is_setup(i) && CHARMMAtom::get_is_setup(j) &&
       CHARMMAtom::get_is_setup(k)) {
     try {
       return ff->get_angle_parameters(CHARMMAtom(i).get_charmm_type(),
@@ -955,9 +954,9 @@ void CHARMMTopology::add_charges(Hierarchy hierarchy) const {
         Charged::setup_particle(*atit, it->first->get_atom(typ).get_charge());
       }
       catch (base::ValueException &) {
-        IMP_WARN_ONCE(typ.get_string(),
-                      "Could not determine charge for atom "
-                          << typ << " in residue " << Residue(it->second),
+        IMP_WARN_ONCE(typ.get_string(), "Could not determine charge for atom "
+                                            << typ << " in residue "
+                                            << Residue(it->second),
                       warn_context_);
       }
     }
@@ -1043,13 +1042,14 @@ Hierarchy CHARMMTopology::create_hierarchy(kernel::Model *model) const {
        segit != segments_end(); ++segit) {
     int residue_index = 1;
     const CHARMMSegmentTopology *seg = *segit;
-    Chain chain = Chain::setup_particle(new kernel::Particle(model), chain_id++);
+    Chain chain =
+        Chain::setup_particle(new kernel::Particle(model), chain_id++);
     root.add_child(chain);
     for (unsigned int nres = 0; nres < seg->get_number_of_residues(); ++nres) {
       const CHARMMResidueTopology *res = seg->get_residue(nres);
       ResidueType restyp = ResidueType(res->get_type());
-      Residue residue =
-          Residue::setup_particle(new kernel::Particle(model), restyp, residue_index++);
+      Residue residue = Residue::setup_particle(new kernel::Particle(model),
+                                                restyp, residue_index++);
       chain.add_child(residue);
       bool is_ligand = !(residue.get_is_protein() || residue.get_is_rna() ||
                          residue.get_is_dna());

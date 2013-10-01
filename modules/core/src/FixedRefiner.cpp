@@ -19,10 +19,13 @@ FixedRefiner::FixedRefiner(const kernel::ParticlesTemp &ps)
 
 bool FixedRefiner::get_can_refine(kernel::Particle *) const { return true; }
 
-const kernel::ParticlesTemp FixedRefiner::get_refined(kernel::Particle *) const { return ps_; }
+const kernel::ParticlesTemp FixedRefiner::get_refined(
+    kernel::Particle *) const {
+  return ps_;
+}
 
-ModelObjectsTemp FixedRefiner::do_get_inputs(kernel::Model *,
-                                             const kernel::ParticleIndexes &) const {
+ModelObjectsTemp FixedRefiner::do_get_inputs(
+    kernel::Model *, const kernel::ParticleIndexes &) const {
   return kernel::ModelObjectsTemp();
 }
 

@@ -13,9 +13,9 @@
 IMPATOM_BEGIN_NAMESPACE
 
 LangevinThermostatOptimizerState::LangevinThermostatOptimizerState(
-    Model*m,
-    ParticleIndexesAdaptor pis, Float temperature, double gamma)
-    : pis_(kernel::get_particles(m, pis)), temperature_(temperature),
+    Model *m, ParticleIndexesAdaptor pis, Float temperature, double gamma)
+    : pis_(kernel::get_particles(m, pis)),
+      temperature_(temperature),
       gamma_(gamma) {
   vs_[0] = FloatKey("vx");
   vs_[1] = FloatKey("vy");
@@ -43,12 +43,13 @@ void LangevinThermostatOptimizerState::rescale_velocities() const {
   MolecularDynamics *md = dynamic_cast<MolecularDynamics *>(get_optimizer());
   double c1 = exp(-gamma_ * md->get_last_time_step());
   double c2 = sqrt((1.0 - c1) * gas_constant * temperature_);
-  IMP_INTERNAL_CHECK(md, "Can only use velocity scaling with "
-                         "the molecular dynamics optimizer.");
+  IMP_INTERNAL_CHECK(md,
+                     "Can only use velocity scaling with "
+                     "the molecular dynamics optimizer.");
   boost::normal_distribution<Float> mrng(0., 1.);
   boost::variate_generator<base::RandomNumberGenerator &,
-                           boost::normal_distribution<Float> > sampler(
-      base::random_number_generator, mrng);
+                           boost::normal_distribution<Float> >
+      sampler(base::random_number_generator, mrng);
   for (unsigned int i = 0; i < pis_.size(); ++i) {
     kernel::Particle *p = pis_[i];
     double mass = Mass(p).get_mass();

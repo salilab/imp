@@ -40,16 +40,15 @@ IMPATOM_BEGIN_NAMESPACE
     \unstable{create_protein}
     See Hierarchy
  */
-IMPATOMEXPORT Hierarchy create_protein(kernel::Model *m, std::string name,
-                                       double resolution,
-                                       int number_of_residues,
-                                       int first_residue_index = 0,
-                                       double volume = -1
+IMPATOMEXPORT Hierarchy
+    create_protein(kernel::Model *m, std::string name, double resolution,
+                   int number_of_residues, int first_residue_index = 0,
+                   double volume = -1
 #ifndef IMP_DOXYGEN
-                                       ,
-                                       bool ismol = true
+                   ,
+                   bool ismol = true
 #endif
-                                       );
+                   );
 /** Like the former create_protein(), but it enforces domain splits
     at the provide domain boundairs. The domain boundaries should be
     the start of the first domain, any boundies, and then one past
@@ -77,13 +76,14 @@ IMPATOMEXPORT Hierarchy create_protein(kernel::Model *m, std::string name,
     @{
 */
 /** Simplify every num_res into one particle.*/
-IMPATOMEXPORT Hierarchy create_simplified_along_backbone(Hierarchy input,
-                                                         int num_res,
-                                                         bool keep_detailed =
-                                                             false);
+IMPATOMEXPORT Hierarchy
+    create_simplified_along_backbone(Hierarchy input, int num_res,
+                                     bool keep_detailed = false);
 /** Simplify by breaking at the boundaries provided.*/
-IMPATOMEXPORT Hierarchy create_simplified_along_backbone(
-    Chain input, const IntRanges &residue_segments, bool keep_detailed = false);
+IMPATOMEXPORT Hierarchy
+    create_simplified_along_backbone(Chain input,
+                                     const IntRanges &residue_segments,
+                                     bool keep_detailed = false);
 /** @} */
 
 /** \name Finding information
@@ -109,9 +109,8 @@ IMPATOMEXPORT int get_copy_index(Hierarchy h);
     to accelerate the computation.
     See Hierarchy
  */
-IMPATOMEXPORT kernel::Restraint *
-create_excluded_volume_restraint(const Hierarchies &hs,
-                                 double resolution = -1);
+IMPATOMEXPORT kernel::Restraint *create_excluded_volume_restraint(
+    const Hierarchies &hs, double resolution = -1);
 
 /** Set the mass, radius, residues, and coordinates to approximate the passed
     particles.
@@ -185,8 +184,7 @@ class HierarchyGeometry : public display::SingletonGeometry {
 class HierarchiesGeometry : public display::SingletonsGeometry {
   double res_;
   mutable IMP::base::map<kernel::ParticleIndex,
-                         base::Pointer<display::Geometry> >
-      components_;
+                         base::Pointer<display::Geometry> > components_;
 
  public:
   HierarchiesGeometry(SingletonContainer *sc, double resolution = -1)

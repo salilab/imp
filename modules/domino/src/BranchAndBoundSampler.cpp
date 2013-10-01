@@ -12,7 +12,8 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 
-BranchAndBoundSampler::BranchAndBoundSampler(kernel::Model *m, ParticleStatesTable *pst,
+BranchAndBoundSampler::BranchAndBoundSampler(kernel::Model *m,
+                                             ParticleStatesTable *pst,
                                              std::string name)
     : DiscreteSampler(m, pst, name) {}
 

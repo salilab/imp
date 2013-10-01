@@ -24,17 +24,20 @@ class IMPATOMEXPORT Domain : public Hierarchy {
     IntKey begin, end;
   };
   static const Data &get_data();
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi, IntRange r) {
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                IntRange r) {
     m->add_attribute(get_data().begin, pi, r.first);
     m->add_attribute(get_data().end, pi, r.second);
     if (!Hierarchy::get_is_setup(m, pi)) {
       Hierarchy::setup_particle(m, pi);
     }
   }
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi, Int b, Int e) {
-    do_setup_particle(m, pi, IntRange(b,e));
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                Int b, Int e) {
+    do_setup_particle(m, pi, IntRange(b, e));
   }
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi, Domain o) {
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                Domain o) {
     do_setup_particle(m, pi, o.get_index_range());
   }
 
@@ -54,10 +57,9 @@ class IMPATOMEXPORT Domain : public Hierarchy {
   }
   /** Get the range of indexes in the domain `[begin...end)` */
   IntRange get_index_range() const {
-    return IntRange(get_model()->get_attribute(get_data().begin,
-                                               get_particle_index()),
-                    get_model()->get_attribute(get_data().end,
-                                               get_particle_index()));
+    return IntRange(
+        get_model()->get_attribute(get_data().begin, get_particle_index()),
+        get_model()->get_attribute(get_data().end, get_particle_index()));
   }
 
   IMP_DECORATOR_METHODS(Domain, Hierarchy);
@@ -66,14 +68,14 @@ class IMPATOMEXPORT Domain : public Hierarchy {
 
   /** \deprecated_at{2.1} Use get_index_range() instead.*/
   IMPATOM_DEPRECATED_METHOD_DECL(2.1)
-    Int get_begin_index() const;
+  Int get_begin_index() const;
   /** \deprecated_at{2.1} Use get_index_range() instead.*/
   IMPATOM_DEPRECATED_METHOD_DECL(2.1)
-    Int get_end_index() const;
+  Int get_end_index() const;
   /** \deprecated_at{2.1} Use the IntRange setup_particle.*/
   IMPATOM_DEPRECATED_METHOD_DECL(2.1)
-        static Domain setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
-                                     Int residues_begin, Int residues_end);
+  static Domain setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                               Int residues_begin, Int residues_end);
   /** \deprecated_at{2.1} Use the IntRange setup_particle.*/
   IMPATOM_DEPRECATED_METHOD_DECL(2.1)
   static Domain setup_particle(IMP::kernel::ParticleAdaptor decorator,

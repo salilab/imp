@@ -30,9 +30,10 @@ IMPDOMINO_BEGIN_NAMESPACE
     less that of a constant vector in C++ or
     a constant list in python.
  */
-class IMPDOMINOEXPORT Subset
-    : public base::ConstVector<base::WeakPointer<kernel::Particle>, kernel::Particle *> {
-  typedef base::ConstVector<base::WeakPointer<kernel::Particle>, kernel::Particle *> P;
+class IMPDOMINOEXPORT Subset : public base::ConstVector<
+    base::WeakPointer<kernel::Particle>, kernel::Particle *> {
+  typedef base::ConstVector<base::WeakPointer<kernel::Particle>,
+                            kernel::Particle *> P;
   static const kernel::ParticlesTemp &get_sorted(kernel::ParticlesTemp &ps) {
     std::sort(ps.begin(), ps.end());
     return ps;

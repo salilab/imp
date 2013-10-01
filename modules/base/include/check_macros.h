@@ -31,7 +31,7 @@
   try {                                                            \
     expr;                                                          \
   }                                                                \
-  catch (const IMP::base::Exception & e) {                         \
+  catch (const IMP::base::Exception &e) {                          \
     std::cerr << "Application terminated with error :" << e.what() \
               << std::endl;                                        \
     exit(1);                                                       \

@@ -57,7 +57,8 @@ std::string InputOutputException::get_message(kernel::ModelObject *o) const {
   oss << " Violating object: \"" << o->get_name() << "\".";
   if (particle_index_ >= 0) {
     oss << " Attribute " << get_key_name() << " of particle \""
-        << o->get_model()->get_particle(ParticleIndex(get_particle_index()))
+        << o->get_model()
+               ->get_particle(ParticleIndex(get_particle_index()))
                ->get_name() << "\" with id " << get_particle_index();
   } else {
     oss << "Container \"" << container_name_ << "\".";

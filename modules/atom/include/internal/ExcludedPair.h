@@ -14,9 +14,11 @@
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
 
 //! An unordered pair of kernel::Particles, used for exclusions.
-/** Note that for performance the kernel::Particle* are not refcounted; the excluded
+/** Note that for performance the kernel::Particle* are not refcounted; the
+   excluded
     pair PairFilter must keep the refcounts itself.
-    Unlike a kernel::ParticlePair, the kernel::Particle* are stored sorted, so that
+    Unlike a kernel::ParticlePair, the kernel::Particle* are stored sorted, so
+   that
     ExcludedPair(a, b) == ExcludedPair(b, a).
  */
 class ExcludedPair {

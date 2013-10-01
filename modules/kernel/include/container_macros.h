@@ -241,10 +241,9 @@
   IMP_EXPOSE_ITERATORS(PluralData, lcname##_vector_, Ucname, Ucnames, lcname,  \
                        lcnames);                                               \
                                                                                \
- protected                                                                     \
-     : /** This method allows one to modify the contents of the container      \
-          without                                                              \
-           any callbacks being made.*/                                         \
+ protected: /** This method allows one to modify the contents of the container \
+               without                                                         \
+                any callbacks being made.*/                                    \
   PluralData& mutable_access_##lcnames() { return lcname##_vector_; }          \
   IMP_NO_DOXYGEN(const PluralData& access_##lcnames() const {                  \
     return lcname##_vector_;                                                   \

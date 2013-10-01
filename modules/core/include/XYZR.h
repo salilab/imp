@@ -43,7 +43,6 @@ class IMPCOREEXPORT XYZR : public XYZ {
     m->add_attribute(get_radius_key(), pi, 0, false);
   }
 
-
  public:
   IMP_DECORATOR_METHODS(XYZR, XYZ);
   IMP_DECORATOR_SETUP_0(XYZR);
@@ -148,13 +147,13 @@ inline void set_sphere_d_geometry(XYZR d, const algebra::Sphere3D &v) {
   d.set_sphere(v);
 }
 
-  /** \class XYZRGeometry
-      \brief Display an IMP::core::XYZR particle as a ball.
+/** \class XYZRGeometry
+    \brief Display an IMP::core::XYZR particle as a ball.
 
-      \class XYZRsGeometry
-      \brief Display an IMP::SingletonContainer of IMP::core::XYZR particles
-      as balls.
-  */
+    \class XYZRsGeometry
+    \brief Display an IMP::SingletonContainer of IMP::core::XYZR particles
+    as balls.
+*/
 IMP_PARTICLE_GEOMETRY(XYZR, core::XYZR, {
   display::SphereGeometry *g = new display::SphereGeometry(d.get_sphere());
   ret.push_back(g);
@@ -167,13 +166,13 @@ IMP_PARTICLE_GEOMETRY(XYZDerivative, core::XYZ, {
   ret.push_back(g);
 });
 
-  /** \class EdgePairGeometry
-      \brief Display a segment connecting a pair of particles.
+/** \class EdgePairGeometry
+    \brief Display a segment connecting a pair of particles.
 
-      \class EdgePairsGeometry
-      \brief Display a segment for each pair in a
-      IMP::kernel::PairContainer.
-  */
+    \class EdgePairsGeometry
+    \brief Display a segment for each pair in a
+    IMP::kernel::PairContainer.
+*/
 IMP_PARTICLE_PAIR_GEOMETRY(EdgePair, core::XYZ, {
   ret.push_back(new display::SegmentGeometry(
       algebra::Segment3D(d0.get_coordinates(), d1.get_coordinates())));
@@ -191,12 +190,14 @@ inline const algebra::Sphere3D get_sphere_d_geometry(kernel::Particle *p) {
 }
 
 /** \genericgeometry */
-inline void set_sphere_d_geometry(kernel::Particle *p, const algebra::Sphere3D &v) {
+inline void set_sphere_d_geometry(kernel::Particle *p,
+                                  const algebra::Sphere3D &v) {
   core::XYZR(p).set_sphere(v);
 }
 
 /** \genericgeometry */
-inline const algebra::BoundingBoxD<3> get_bounding_box_d_geometry(kernel::Particle *p) {
+inline const algebra::BoundingBoxD<3> get_bounding_box_d_geometry(
+    kernel::Particle *p) {
   return get_bounding_box(core::XYZR(p).get_sphere());
 }
 IMPKERNEL_END_NAMESPACE

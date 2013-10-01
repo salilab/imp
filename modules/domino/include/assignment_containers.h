@@ -97,8 +97,8 @@ inline void PackedAssignmentContainer::add_assignment(const Assignment &a) {
                   "Sizes don't match " << width_ << " vs " << a.size());
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     for (unsigned int i = 0; i < get_number_of_assignments(); ++i) {
-      IMP_INTERNAL_CHECK(get_assignment(i) != a,
-                         "Assignment " << a << " already here.");
+      IMP_INTERNAL_CHECK(get_assignment(i) != a, "Assignment "
+                                                     << a << " already here.");
     }
   }
   d_.insert(d_.end(), a.begin(), a.end());
@@ -286,7 +286,8 @@ class IMPDOMINOEXPORT ReadAssignmentContainer : public AssignmentContainer {
 
  public:
   ReadAssignmentContainer(std::string out_file, const Subset &s,
-                          const kernel::ParticlesTemp &all_particles, std::string name);
+                          const kernel::ParticlesTemp &all_particles,
+                          std::string name);
   void set_cache_size(unsigned int words);
   virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;
   virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE;
@@ -325,7 +326,7 @@ class IMPDOMINOEXPORT HeapAssignmentContainer : public AssignmentContainer {
   Subset subset_;
   Slices slices_;
   kernel::Restraints rs_;
-  unsigned int k_;  // max number of assignments (heap size)
+  unsigned int k_;                      // max number of assignments (heap size)
   base::Pointer<RestraintCache> rssf_;  // to score candidate assignments
  public:
   HeapAssignmentContainer(Subset subset, unsigned int k, RestraintCache *rssf,

@@ -69,8 +69,8 @@ class IMPALGEBRAEXPORT SphericalVector3D : public GeometricPrimitiveD<3> {
   //! Returns a vector with the Cartesian coordinates
   Vector3D get_cartesian_coordinates();
 
-  IMP_SHOWABLE_INLINE(SphericalVector3D,
-                      out << v_[0] << " , " << v_[1] << " , " << v_[2]);
+  IMP_SHOWABLE_INLINE(SphericalVector3D, out << v_[0] << " , " << v_[1] << " , "
+                                             << v_[2]);
 
  private:
   void set_cartesian_coordinates(const Vector3D& v);

@@ -23,7 +23,8 @@
 #endif
 
 IMPATOM_BEGIN_NAMESPACE
-BondGraph::BondGraph(Hierarchy bd) : sc_(get_as<kernel::Particles>(get_leaves(bd))) {
+BondGraph::BondGraph(Hierarchy bd)
+    : sc_(get_as<kernel::Particles>(get_leaves(bd))) {
   for (unsigned int i = 0; i < sc_.size(); ++i) {
     if (!Bonded::get_is_setup(sc_[i])) {
       Bonded::setup_particle(sc_[i]);
@@ -37,7 +38,8 @@ BondGraph::VertexIntPropertyMap BondGraph::get_vertex_index_map() const {
     oss << this << " bond graph index";
     index_key_ = IntKey(oss.str().c_str());
     int last = 0;
-    for (kernel::Particles::const_iterator it = sc_.begin(); it != sc_.end(); ++it) {
+    for (kernel::Particles::const_iterator it = sc_.begin(); it != sc_.end();
+         ++it) {
       (*it)->add_attribute(index_key_, last);
       ++last;
     }

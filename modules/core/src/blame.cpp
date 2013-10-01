@@ -44,8 +44,8 @@ void distribute_blame(kernel::Restraint *r, const ControlledBy &cb, FloatKey fk,
 }
 }
 
-void assign_blame(const kernel::RestraintsTemp &rs, const kernel::ParticlesTemp &ps,
-                  kernel::FloatKey attribute) {
+void assign_blame(const kernel::RestraintsTemp &rs,
+                  const kernel::ParticlesTemp &ps, kernel::FloatKey attribute) {
   IMP_FUNCTION_LOG;
   for (unsigned int i = 0; i < ps.size(); ++i) {
     if (ps[i]->has_attribute(attribute)) {
@@ -80,8 +80,8 @@ void assign_blame(const kernel::RestraintsTemp &rs, const kernel::ParticlesTemp 
 }
 
 display::Geometries create_blame_geometries(const kernel::RestraintsTemp &rs,
-                                            const kernel::ParticlesTemp &ps, double max,
-                                            std::string name) {
+                                            const kernel::ParticlesTemp &ps,
+                                            double max, std::string name) {
   IMP_FUNCTION_LOG;
   FloatKey key("blame temporary key");
   assign_blame(rs, ps, key);

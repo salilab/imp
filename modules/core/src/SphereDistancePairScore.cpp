@@ -31,7 +31,8 @@ NormalizedSphereDistancePairScore::NormalizedSphereDistancePairScore(
     : f_(f), radius_(radius) {}
 
 double NormalizedSphereDistancePairScore::evaluate_index(
-    kernel::Model *m, const kernel::ParticleIndexPair &pip, DerivativeAccumulator *da) const {
+    kernel::Model *m, const kernel::ParticleIndexPair &pip,
+    DerivativeAccumulator *da) const {
   Float ra = m->get_attribute(radius_, pip[0]);
   Float rb = m->get_attribute(radius_, pip[1]);
   Float mr = std::min(ra, rb);
@@ -51,7 +52,8 @@ WeightedSphereDistancePairScore::WeightedSphereDistancePairScore(
     : f_(f), radius_(radius), weight_(weight) {}
 
 double WeightedSphereDistancePairScore::evaluate_index(
-    kernel::Model *m, const kernel::ParticleIndexPair &p, DerivativeAccumulator *da) const {
+    kernel::Model *m, const kernel::ParticleIndexPair &p,
+    DerivativeAccumulator *da) const {
   Float ra = m->get_attribute(radius_, p[0]);
   Float rb = m->get_attribute(radius_, p[1]);
   Float wa = m->get_attribute(weight_, p[0]);

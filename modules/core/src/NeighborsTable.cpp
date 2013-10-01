@@ -16,16 +16,12 @@ void NeighborsTable::do_before_evaluate() {
   data_.clear();
 
   IMP_CONTAINER_FOREACH(PairContainer, input_, {
-      data_[_1[0]].push_back(_1[1]);
-      data_[_1[1]].push_back(_1[0]);
+    data_[_1[0]].push_back(_1[1]);
+    data_[_1[1]].push_back(_1[0]);
   });
 }
 
-NeighborsTable::NeighborsTable(kernel::PairContainer *input,
-                               std::string name):
-  ScoreState(input->get_model(), name),
-  input_(input), input_version_(-1) {
-
-}
+NeighborsTable::NeighborsTable(kernel::PairContainer *input, std::string name)
+    : ScoreState(input->get_model(), name), input_(input), input_version_(-1) {}
 
 IMPCORE_END_NAMESPACE

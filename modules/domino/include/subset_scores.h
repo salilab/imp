@@ -63,8 +63,8 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
         double e;
         {
           base::SetLogState sls(base::SILENT);
-          e = it->second.get_scoring_function()
-              ->evaluate_if_below(false, it->second.get_max());
+          e = it->second.get_scoring_function()->evaluate_if_below(
+              false, it->second.get_max());
         }
         IMP_LOG_TERSE("Restraint " << Showable(k.get_restraint())
                                    << " evaluated to " << e << " on "
@@ -75,13 +75,13 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
         return e;
       } else {
         SMap::const_iterator it = sets_.find(k.get_restraint());
-        IMP_USAGE_CHECK(
-            it != sets_.end(),
-            "Restraint set " << Showable(k.get_restraint()) << " not found.");
+        IMP_USAGE_CHECK(it != sets_.end(), "Restraint set "
+                                               << Showable(k.get_restraint())
+                                               << " not found.");
         double total = 0;
         for (unsigned int i = 0; i < it->second.get_members().size(); ++i) {
-          Assignment cur = it->second.get_members()[i].get_slice()
-              .get_sliced(k.get_assignment());
+          Assignment cur = it->second.get_members()[i].get_slice().get_sliced(
+              k.get_assignment());
           double score = cache.get(
               argument_type(it->second.get_members()[i].get_restraint(), cur));
           total += score * k.get_restraint()->get_weight();
@@ -100,8 +100,8 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
         }
       }
     }
-    void add_to_set(kernel::RestraintSet *rs, kernel::Restraint *r,
-                    Slice slice, double max) {
+    void add_to_set(kernel::RestraintSet *rs, kernel::Restraint *r, Slice slice,
+                    double max) {
       IMP_USAGE_CHECK(!dynamic_cast<kernel::RestraintSet *>(r),
                       "don't pass restraint sets here as second arg");
       sets_[rs].access_members().push_back(RestraintSetData(slice, r));
@@ -182,7 +182,7 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
   /** Return the restraints that should be evaluated for the subset,
       given the exclusions.*/
   kernel::RestraintsTemp get_restraints(const Subset &s,
-                                const Subsets &exclusions) const;
+                                        const Subsets &exclusions) const;
 
   kernel::RestraintsTemp get_restraints() const;
 
@@ -197,8 +197,7 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
   */
   void save_cache(const kernel::ParticlesTemp &particle_ordering,
                   const kernel::RestraintsTemp &restraints,
-                  RMF::HDF5::Group group,
-                  unsigned int max_entries);
+                  RMF::HDF5::Group group, unsigned int max_entries);
   void load_cache(const kernel::ParticlesTemp &ps, RMF::HDF5::ConstGroup group);
 #endif
 

@@ -107,7 +107,7 @@ class IMPCOREEXPORT RigidMovedSingletonContainer
       core::RigidBody rb(get_model(), bodies_[i]);
       double dr = std::abs(xyz.get_radius() - backup_[i].first.get_radius());
       double dx = (xyz.get_coordinates() - backup_[i].first.get_center())
-          .get_magnitude();
+                      .get_magnitude();
       algebra::Rotation3D nrot =
           rb.get_reference_frame().get_transformation_to().get_rotation();
       algebra::Rotation3D diffrot = backup_[i].second.get_inverse() * nrot;
@@ -128,10 +128,11 @@ class IMPCOREEXPORT RigidMovedSingletonContainer
       return std::make_pair(core::XYZR(get_model(), p).get_sphere(),
                             algebra::Rotation3D());
     } else {
-      return std::make_pair(
-          core::XYZR(get_model(), p).get_sphere(),
-          core::RigidBody(get_model(), p)
-              .get_reference_frame().get_transformation_to().get_rotation());
+      return std::make_pair(core::XYZR(get_model(), p).get_sphere(),
+                            core::RigidBody(get_model(), p)
+                                .get_reference_frame()
+                                .get_transformation_to()
+                                .get_rotation());
     }
   }
   kernel::ParticlesTemp get_input_particles() const;

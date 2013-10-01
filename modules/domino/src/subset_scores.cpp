@@ -40,16 +40,14 @@ void RestraintCache::add_restraint_set_internal(kernel::RestraintSet *rs,
   }
 }
 
-void RestraintCache::add_restraint_set_child_internal(kernel::Restraint *r,
-                                                      const Subset &cur_subset,
-                                                  kernel::RestraintSet *parent,
-                                                      double parent_max,
-                                                      Subset parent_subset) {
+void RestraintCache::add_restraint_set_child_internal(
+    kernel::Restraint *r, const Subset &cur_subset,
+    kernel::RestraintSet *parent, double parent_max, Subset parent_subset) {
   if (!parent) return;
   IMP_LOG_TERSE("Adding restraint " << Showable(r) << " to set "
                                     << Showable(parent) << std::endl);
-  cache_.access_generator()
-      .add_to_set(parent, r, Slice(parent_subset, cur_subset), parent_max);
+  cache_.access_generator().add_to_set(
+      parent, r, Slice(parent_subset, cur_subset), parent_max);
 }
 Subset RestraintCache::get_subset(kernel::Restraint *r,
                                   const DepMap &dependencies) const {
@@ -68,12 +66,9 @@ Subset RestraintCache::get_subset(kernel::Restraint *r,
   return Subset(outps);
 }
 
-void RestraintCache::add_restraint_internal(kernel::Restraint *r,
-                                            unsigned int index,
-                                            kernel::RestraintSet *parent,
-                                            double parent_max,
-                                            Subset parent_subset,
-                                            const DepMap &dependencies) {
+void RestraintCache::add_restraint_internal(
+    kernel::Restraint *r, unsigned int index, kernel::RestraintSet *parent,
+    double parent_max, Subset parent_subset, const DepMap &dependencies) {
   IMP_OBJECT_LOG;
   IMP_LOG_TERSE("Processing " << Showable(r) << " with " << parent_max
                               << std::endl);
@@ -114,7 +109,8 @@ void RestraintCache::add_restraints(const kernel::RestraintsAdaptor &rs) {
   kernel::ParticlesTemp allps = pst->get_particles();
   DependencyGraphVertexIndex index = IMP::get_vertex_index(dg);
   for (unsigned int i = 0; i < allps.size(); ++i) {
-    kernel::ParticlesTemp depp = get_dependent_particles(allps[i], allps, dg, index);
+    kernel::ParticlesTemp depp =
+        get_dependent_particles(allps[i], allps, dg, index);
     for (unsigned int j = 0; j < depp.size(); ++j) {
       dependencies[depp[j]].push_back(allps[i]);
     }
@@ -250,7 +246,8 @@ RestraintID get_restraint_id(const ParticleIndex &map, const Subset &s,
   ret.set_particle_indexes(base::ConstVector<unsigned int>(pis));
   return ret;
 }
-ParticleIndex get_particle_index(const kernel::ParticlesTemp &particle_ordering) {
+ParticleIndex get_particle_index(
+    const kernel::ParticlesTemp &particle_ordering) {
   ParticleIndex map;
   for (unsigned int i = 0; i < particle_ordering.size(); ++i) {
     map[particle_ordering[i]] = i;

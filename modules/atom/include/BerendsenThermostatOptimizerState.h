@@ -36,8 +36,8 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class IMPATOMEXPORT BerendsenThermostatOptimizerState : public OptimizerState {
  public:
-  BerendsenThermostatOptimizerState(const kernel::Particles &pis, double temperature,
-                                    double tau);
+  BerendsenThermostatOptimizerState(const kernel::Particles &pis,
+                                    double temperature, double tau);
 
   //! Set the particles to use.
   void set_particles(const kernel::Particles &pis) { pis_ = pis; }
@@ -56,7 +56,8 @@ class IMPATOMEXPORT BerendsenThermostatOptimizerState : public OptimizerState {
   IMP_OBJECT_METHODS(BerendsenThermostatOptimizerState);
 
  protected:
-    virtual void do_update(unsigned int) IMP_OVERRIDE;
+  virtual void do_update(unsigned int) IMP_OVERRIDE;
+
  private:
   kernel::Particles pis_;
   double temperature_;

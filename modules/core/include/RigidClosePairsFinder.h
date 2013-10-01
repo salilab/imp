@@ -66,9 +66,10 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder {
  public:
   RigidClosePairsFinder(ClosePairsFinder *cpf = nullptr);
 
-  kernel::ParticleIndexPairs get_close_pairs(kernel::Model *m, kernel::ParticleIndex a, kernel::ParticleIndex b,
-                                     const kernel::ParticleIndexes &pa,
-                                     const kernel::ParticleIndexes &pb) const;
+  kernel::ParticleIndexPairs get_close_pairs(
+      kernel::Model *m, kernel::ParticleIndex a, kernel::ParticleIndex b,
+      const kernel::ParticleIndexes &pa,
+      const kernel::ParticleIndexes &pb) const;
 
   void set_distance(double d) {
     cpf_->set_distance(d);
@@ -82,9 +83,10 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder {
 #ifndef SWIG
   using ClosePairsFinder::get_close_pairs;
 #else
-  kernel::ParticlePairsTemp get_close_pairs(const kernel::ParticlesTemp &pc) const;
-  kernel::ParticlePairsTemp get_close_pairs(const kernel::ParticlesTemp &pca,
-                                    const kernel::ParticlesTemp &pcb) const;
+  kernel::ParticlePairsTemp get_close_pairs(
+      const kernel::ParticlesTemp &pc) const;
+  kernel::ParticlePairsTemp get_close_pairs(
+      const kernel::ParticlesTemp &pca, const kernel::ParticlesTemp &pcb) const;
 #endif
 
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const
@@ -92,17 +94,14 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder {
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas,
                                    const algebra::BoundingBox3Ds &bbs) const
       IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                         const kernel::ParticleIndexes &pis) const
-      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
 
-  virtual kernel::ParticleIndexPairs get_close_pairs(kernel::Model *m,
-                                             const kernel::ParticleIndexes &pc) const
-      IMP_OVERRIDE;
-  virtual kernel::ParticleIndexPairs get_close_pairs(kernel::Model *m,
-                                             const kernel::ParticleIndexes &pca,
-                                             const kernel::ParticleIndexes &pcb) const
-      IMP_OVERRIDE;
+  virtual kernel::ParticleIndexPairs get_close_pairs(
+      kernel::Model *m, const kernel::ParticleIndexes &pc) const IMP_OVERRIDE;
+  virtual kernel::ParticleIndexPairs get_close_pairs(
+      kernel::Model *m, const kernel::ParticleIndexes &pca,
+      const kernel::ParticleIndexes &pcb) const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RigidClosePairsFinder);
 };
 

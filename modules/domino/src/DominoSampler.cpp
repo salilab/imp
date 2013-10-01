@@ -47,8 +47,8 @@ Assignments DominoSampler::do_get_sample_assignments(
   IMP_LOG_TERSE("Sampling with " << known_particles.size() << " particles as "
                                  << known_particles << std::endl);
   IMP_USAGE_CHECK(known_particles.size() > 0, "No particles to sample");
-  base::Pointer<kernel::RestraintSet> rs
-    = get_model()->get_root_restraint_set();
+  base::Pointer<kernel::RestraintSet> rs =
+      get_model()->get_root_restraint_set();
   kernel::ParticlesTemp pt(known_particles.begin(), known_particles.end());
 
   SubsetFilterTables sfts = get_subset_filter_tables_to_use(
@@ -100,8 +100,9 @@ Assignments DominoSampler::do_get_sample_assignments(
         as->get_assignments(IntRange(0, as->get_number_of_assignments()));
     IMP_LOG_TERSE("domino::DominoSampler end get_best_conformations\n");
     if (lsft) {
-      IMP_LOG_TERSE(lsft->get_ok_rate()
-                    << " were ok with the cross set filtering" << std::endl);
+      IMP_LOG_TERSE(
+          lsft->get_ok_rate() << " were ok with the cross set filtering"
+                              << std::endl);
     }
     IMP_LOG_TERSE("DOMINOO FINISH junction tree" << std::endl);
   }
@@ -163,8 +164,8 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
   typedef boost::graph_traits<MergeTree>::adjacency_iterator NeighborIterator;
   SubsetMap subset_map = boost::get(boost::vertex_name, mt_);
 
-  base::Pointer<kernel::RestraintSet> rs
-    = get_model()->get_root_restraint_set();
+  base::Pointer<kernel::RestraintSet> rs =
+      get_model()->get_root_restraint_set();
   // ParticlesTemp known_particles=
   // get_particle_states_table()->get_particles();
   SubsetFilterTables sfts = get_subset_filter_tables_to_use(
@@ -199,8 +200,8 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
   typedef boost::graph_traits<MergeTree>::adjacency_iterator NeighborIterator;
   SubsetMap subset_map = boost::get(boost::vertex_name, mt_);
 
-  base::Pointer<kernel::RestraintSet> rs
-    = get_model()->get_root_restraint_set();
+  base::Pointer<kernel::RestraintSet> rs =
+      get_model()->get_root_restraint_set();
   // ParticlesTemp known_particles=
   // get_particle_states_table()->get_particles();
   // kernel::ParticlesTemp pt(known_particles.begin(), known_particles.end())

@@ -69,10 +69,10 @@ ConfigurationSet *DiscreteSampler::do_sample() const {
     std::cout<<"Number of particles:"<<known_particles.size()<<std::endl;*/
   for (unsigned int i = 0; i < final_solutions.size(); ++i) {
     // if (i%10000==0) {std::cout<<i<<std::endl;}
-    IMP_INTERNAL_CHECK(
-        final_solutions[i].size() == known_particles.size(),
-        "Number of particles doesn't match:"
-            << final_solutions[i].size() << " != " << known_particles.size());
+    IMP_INTERNAL_CHECK(final_solutions[i].size() == known_particles.size(),
+                       "Number of particles doesn't match:"
+                           << final_solutions[i].size()
+                           << " != " << known_particles.size());
     ret->load_configuration(-1);
     for (unsigned int j = 0; j < known_particles.size(); ++j) {
       kernel::Particle *p = known_particles[j];

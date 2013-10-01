@@ -46,7 +46,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
      \see simulate()
    */
   Simulator(kernel::Model *m, std::string name = "Simulator %1%",
-            double wave_factor=1.0);
+            double wave_factor = 1.0);
 
   //! Simulate for a given time in fs
   /**
@@ -74,8 +74,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
      @note This function is experimental and liable to change at any
          time.
    */
-  double simulate_wave(double time_in_fs,
-                       double max_time_step_factor = 10.0,
+  double simulate_wave(double time_in_fs, double max_time_step_factor = 10.0,
                        double base = 1.5);
 
   double get_temperature() const { return temperature_; }
@@ -155,14 +154,13 @@ class IMPATOMEXPORT Simulator : public Optimizer {
   // see simulate() documentation
   double do_simulate(double time);
   // see simulate_wave() documentation
-  double do_simulate_wave(double time_in_fs,
-                       double max_time_step_factor = 10.0,
-                       double base = 1.5);
+  double do_simulate_wave(double time_in_fs, double max_time_step_factor = 10.0,
+                          double base = 1.5);
   double temperature_;
   double max_time_step_;
   double current_time_;
   double last_time_step_;
-  double wave_factor_; // if >1.0, use simulate_wave() from do_optimize()
+  double wave_factor_;  // if >1.0, use simulate_wave() from do_optimize()
 };
 
 IMP_OBJECTS(Simulator, Simulators);

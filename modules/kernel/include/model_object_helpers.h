@@ -19,7 +19,8 @@ class IMPKERNELEXPORT ParticleInputs {
  public:
   /** Get the list of ModelObjects read when passed the given list of particles
       is used.*/
-  ModelObjectsTemp get_inputs(kernel::Model *m, const ParticleIndexes &pis) const;
+  ModelObjectsTemp get_inputs(kernel::Model *m,
+                              const ParticleIndexes &pis) const;
 
   /** \deprecated_at{2.1} Use get_inputs instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
@@ -41,7 +42,8 @@ class IMPKERNELEXPORT ParticleOutputs {
  public:
   /** Get the list of ModelObjects changed when passed the given list of
       particles is used.*/
-  ModelObjectsTemp get_outputs(kernel::Model *m, const ParticleIndexes &pis) const;
+  ModelObjectsTemp get_outputs(kernel::Model *m,
+                               const ParticleIndexes &pis) const;
 
   /** \deprecated_at{2.1} Use get_inputs instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
@@ -59,8 +61,9 @@ class IMPKERNELEXPORT ParticleOutputs {
 
 /** Compute the set of score states required by the passed list of
     ModelObjects. This will compute dependencies if needed.*/
-IMPKERNELEXPORT ScoreStatesTemp get_required_score_states(
-    const ModelObjectsTemp &mos, ScoreStatesTemp exclude = ScoreStatesTemp());
+IMPKERNELEXPORT ScoreStatesTemp
+    get_required_score_states(const ModelObjectsTemp &mos,
+                              ScoreStatesTemp exclude = ScoreStatesTemp());
 
 IMPKERNEL_END_NAMESPACE
 

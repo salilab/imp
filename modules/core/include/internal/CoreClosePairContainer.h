@@ -57,8 +57,7 @@ class IMPCOREEXPORT CoreClosePairContainer
                     set_has_dependencies(false);
                     obj->set_was_used(true);
                   },
-                  { set_has_dependencies(false);}
-                  , );
+                  { set_has_dependencies(false); }, );
 
   void clear_caches() { first_call_ = true; }
   double get_slack() const { return slack_; }

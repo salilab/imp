@@ -107,7 +107,8 @@ class IMPCOREEXPORT MSConnectivityRestraint : public kernel::Restraint {
 
     class ParticleData {
      public:
-      ParticleData(kernel::Particle *p, unsigned int id) : particle_(p), id_(id) {}
+      ParticleData(kernel::Particle *p, unsigned int id)
+          : particle_(p), id_(id) {}
 
       kernel::Particle *get_particle() const { return particle_; }
 

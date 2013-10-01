@@ -23,23 +23,23 @@ IMPATOM_BEGIN_NAMESPACE
     Insertion of Amino Acid Side-chains into Membranes.
     Senes et al. J. Mol. Biol. (2007) 366, 436–448
  */
-class IMPATOMEXPORT EzRestraint : public kernel::Restraint
-{
+class IMPATOMEXPORT EzRestraint : public kernel::Restraint {
 
- kernel::Particles ps_;
- UnaryFunctions ufs_;
- Floats get_parameters(std::string restype);
-protected:
-  virtual double
-      unprotected_evaluate(DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual  kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-public:
+  kernel::Particles ps_;
+  UnaryFunctions ufs_;
+  Floats get_parameters(std::string restype);
+
+ protected:
+  virtual double unprotected_evaluate(DerivativeAccumulator *da) const
+      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+
+ public:
   EzRestraint(kernel::Particles ps);
 
   IMP_OBJECT_METHODS(EzRestraint);
 };
 
-
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_EZ_RESTRAINT_H */
+#endif /* IMPATOM_EZ_RESTRAINT_H */

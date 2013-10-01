@@ -25,15 +25,15 @@ IMPKERNEL_BEGIN_NAMESPACE
 IMPKERNELEXPORT ParticlesTemp get_input_particles(const ModelObjectsTemp &mos);
 
 /** Return all the input particles for a given ModelObject.*/
-IMPKERNELEXPORT ContainersTemp get_input_containers(
-    const ModelObjectsTemp &mos);
+IMPKERNELEXPORT ContainersTemp
+    get_input_containers(const ModelObjectsTemp &mos);
 
 /** Return all the output particles for a given ModelObject.*/
 IMPKERNELEXPORT ParticlesTemp get_output_particles(const ModelObjectsTemp &mos);
 
 /** Return all the output particles for a given ModelObject.*/
-IMPKERNELEXPORT ContainersTemp get_output_containers(
-    const ModelObjectsTemp &mos);
+IMPKERNELEXPORT ContainersTemp
+    get_output_containers(const ModelObjectsTemp &mos);
 /** @} */
 
 IMPKERNEL_END_NAMESPACE

@@ -36,10 +36,9 @@ namespace {
 typedef boost::variate_generator<base::RandomNumberGenerator &,
                                  boost::normal_distribution<double> > RNG;
 }
-BrownianDynamics::BrownianDynamics(kernel::Model *m,
-                                   std::string name,
+BrownianDynamics::BrownianDynamics(kernel::Model *m, std::string name,
                                    double wave_factor)
-  : Simulator(m, name, wave_factor),  // nd_(0,1),
+    : Simulator(m, name, wave_factor),  // nd_(0,1),
       // sampler_(base::random_number_generator, nd_),
       max_step_(std::numeric_limits<double>::max()),
       srk_(false) {}
@@ -52,14 +51,15 @@ BrownianDynamics::BrownianDynamics(kernel::Model *m,
   T* is
  */
 
-bool BrownianDynamics::get_is_simulation_particle(kernel::ParticleIndex pi) const {
+bool BrownianDynamics::get_is_simulation_particle(
+    kernel::ParticleIndex pi) const {
   return (Diffusion::get_is_setup(get_model(), pi) &&
           IMP::core::XYZ(get_model(), pi).get_coordinates_are_optimized());
 }
 
 namespace {
-inline double get_force(kernel::Model *m, kernel::ParticleIndex p, unsigned int i, double dt,
-                        double ikT) {
+inline double get_force(kernel::Model *m, kernel::ParticleIndex p,
+                        unsigned int i, double dt, double ikT) {
   Diffusion d(m, p);
   double nforce(-d.get_derivative(i));
   // unit::Angstrom R(sampler_());
@@ -77,8 +77,8 @@ inline double get_force(kernel::Model *m, kernel::ParticleIndex p, unsigned int 
   return force_term;
 }
 // radians
-inline double get_torque(kernel::Model *m, kernel::ParticleIndex p, unsigned int i, double dt,
-                         double ikT) {
+inline double get_torque(kernel::Model *m, kernel::ParticleIndex p,
+                         unsigned int i, double dt, double ikT) {
   RigidBodyDiffusion d(m, p);
   core::RigidBody rb(m, p);
 
@@ -95,12 +95,14 @@ inline double get_torque(kernel::Model *m, kernel::ParticleIndex p, unsigned int
   return -force_term;
 }
 
-inline double get_sigma(kernel::Model *m, kernel::ParticleIndex p, double dtfs) {
+inline double get_sigma(kernel::Model *m, kernel::ParticleIndex p,
+                        double dtfs) {
   // 6.0 since we are picking radius rather than the coordinates
   double dd = Diffusion(m, p).get_diffusion_coefficient();
   return sqrt(6.0 * dd * dtfs);
 }
-inline double get_rotational_sigma(kernel::Model *m, kernel::ParticleIndex p, double dtfs) {
+inline double get_rotational_sigma(kernel::Model *m, kernel::ParticleIndex p,
+                                   double dtfs) {
   double dr = RigidBodyDiffusion(m, p).get_rotational_diffusion_coefficient();
   return sqrt(6.0 * dr * dtfs);
 }
@@ -142,8 +144,9 @@ void check_delta(algebra::Vector3D &delta, double max_step) {
 }
 }
 
-void BrownianDynamics::advance_coordinates_1(kernel::ParticleIndex pi, unsigned int i,
-                                             double dt, double ikT) {
+void BrownianDynamics::advance_coordinates_1(kernel::ParticleIndex pi,
+                                             unsigned int i, double dt,
+                                             double ikT) {
   Diffusion d(get_model(), pi);
   core::XYZ xd(get_model(), pi);
   algebra::Vector3D force(get_force(get_model(), pi, 0, dt, ikT),
@@ -154,8 +157,9 @@ void BrownianDynamics::advance_coordinates_1(kernel::ParticleIndex pi, unsigned 
   xd.set_coordinates(xd.get_coordinates() + delta);
 }
 
-void BrownianDynamics::advance_coordinates_0(kernel::ParticleIndex pi, unsigned int i,
-                                             double dtfs, double ikT) {
+void BrownianDynamics::advance_coordinates_0(kernel::ParticleIndex pi,
+                                             unsigned int i, double dtfs,
+                                             double ikT) {
   core::XYZ xd(get_model(), pi);
   double sigma = get_sigma(get_model(), pi, dtfs);
   boost::normal_distribution<double> nd(0, sigma);
@@ -176,8 +180,8 @@ void BrownianDynamics::advance_coordinates_0(kernel::ParticleIndex pi, unsigned 
   xd.set_coordinates(xd.get_coordinates() + delta);
 }
 
-void BrownianDynamics::advance_orientation_0(kernel::ParticleIndex pi, double dtfs,
-                                             double ikT) {
+void BrownianDynamics::advance_orientation_0(kernel::ParticleIndex pi,
+                                             double dtfs, double ikT) {
   core::RigidBody rb(get_model(), pi);
   double sigma = get_rotational_sigma(get_model(), pi, dtfs);
   boost::normal_distribution<double> nd(0, sigma);

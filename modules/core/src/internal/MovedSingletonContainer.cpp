@@ -24,8 +24,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 MovedSingletonContainer::MovedSingletonContainer(SingletonContainer *pc,
                                                  double threshold,
                                                  std::string name)
-    : IMP::internal::ListLikeSingletonContainer(pc->get_model(),
-                                                name),
+    : IMP::internal::ListLikeSingletonContainer(pc->get_model(), name),
       threshold_(threshold),
       pc_(pc) {
   // make sure it doesn't match anything at the start
@@ -75,7 +74,8 @@ ParticleIndexes MovedSingletonContainer::get_range_indexes() const {
 }
 
 ModelObjectsTemp MovedSingletonContainer::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret = IMP::get_particles(get_model(), pc_->get_indexes());
+  kernel::ModelObjectsTemp ret =
+      IMP::get_particles(get_model(), pc_->get_indexes());
   ret.push_back(pc_);
   return ret;
 }
@@ -140,13 +140,14 @@ ParticleIndexes XYZRMovedSingletonContainer::do_get_moved() {
   kernel::ParticleIndexes ret;
   kernel::Model *m = get_model();
   IMP_CONTAINER_FOREACH(SingletonContainer, get_singleton_container(), {
-      if (moved_.find(_2) != moved_.end()) continue;
+    if (moved_.find(_2) != moved_.end())
+      continue;
     XYZR d(m, _1);
     double dr = std::abs(d.get_radius() - backup_[_2].get_radius());
     if (!algebra::get_interiors_intersect(
-            algebra::Sphere3D(d.get_coordinates(), 0),
-            algebra::Sphere3D(backup_[_2].get_center(),
-                              std::max<double>(0, get_threshold() - dr)))) {
+             algebra::Sphere3D(d.get_coordinates(), 0),
+             algebra::Sphere3D(backup_[_2].get_center(),
+                               std::max<double>(0, get_threshold() - dr)))) {
       ret.push_back(_1);
       moved_.insert(_2);
     }
@@ -156,8 +157,8 @@ ParticleIndexes XYZRMovedSingletonContainer::do_get_moved() {
 
 XYZRMovedSingletonContainer::XYZRMovedSingletonContainer(SingletonContainer *pc,
                                                          double threshold)
-    : MovedSingletonContainer(pc, threshold, "XYZRMovedSingletonContainer%1%")
-{}
+    : MovedSingletonContainer(pc, threshold, "XYZRMovedSingletonContainer%1%") {
+}
 
 void RigidMovedSingletonContainer::validate() const { IMP_OBJECT_LOG; }
 
@@ -187,7 +188,8 @@ void RigidMovedSingletonContainer::check_estimate(
 #endif
 }
 
-void RigidMovedSingletonContainer::do_initialize_particle(kernel::ParticleIndex pi) {
+void RigidMovedSingletonContainer::do_initialize_particle(
+    kernel::ParticleIndex pi) {
   if (core::RigidMember::get_is_setup(get_model(), pi)) {
     core::RigidBody rb = core::RigidMember(get_model(), pi).get_rigid_body();
     kernel::ParticleIndex rbpi = rb.get_particle_index();
@@ -223,9 +225,7 @@ void RigidMovedSingletonContainer::do_reset_all() {
 }
 void RigidMovedSingletonContainer::do_reset_moved() {
   IMP_OBJECT_LOG;
-  BOOST_FOREACH(int m, moved_) {
-    backup_[m] = get_data(bodies_[m]);
-  }
+  BOOST_FOREACH(int m, moved_) { backup_[m] = get_data(bodies_[m]); }
   moved_.clear();
 }
 
@@ -234,8 +234,8 @@ ParticleIndexes RigidMovedSingletonContainer::do_get_moved() {
   kernel::ParticleIndexes ret;
   IMP_LOG_TERSE("Getting moved with " << moved_.size() << std::endl);
   for (unsigned int i = 0; i < bodies_.size(); ++i) {
-    if (moved_.find(i) == moved_.end()
-        && get_distance_estimate(i) > get_threshold()) {
+    if (moved_.find(i) == moved_.end() &&
+        get_distance_estimate(i) > get_threshold()) {
       ret += rbs_members_[bodies_[i]];
       moved_.insert(i);
     }

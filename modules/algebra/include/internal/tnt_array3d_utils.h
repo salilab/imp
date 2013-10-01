@@ -34,7 +34,7 @@ std::ostream &operator<<(std::ostream &s, const Array3D<T> &A) {
 }
 
 template <class T>
-    std::istream &operator>>(std::istream &s, Array3D<T> &A) {
+std::istream &operator>>(std::istream &s, Array3D<T> &A) {
 
   int M, N, K;
 

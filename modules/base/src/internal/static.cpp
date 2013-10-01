@@ -162,7 +162,9 @@ std::string exe_name, exe_usage, exe_description;
 
 boost::program_options::options_description flags;
 boost::program_options::variables_map variables_map;
-namespace { int default_check_level = IMP_HAS_CHECKS; }
+namespace {
+int default_check_level = IMP_HAS_CHECKS;
+}
 
 boost::int64_t check_level = default_check_level;
 
@@ -261,7 +263,6 @@ AddBoolFlag printed_deprecation_messages_adder(
 AddBoolFlag exceptions_depre_adder(
     "deprecation_exceptions", "Throw an exception on runtime deprecation use",
     &exceptions_on_deprecation);
-
 
 base::map<std::string, Timing> timings;
 

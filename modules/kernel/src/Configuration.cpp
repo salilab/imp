@@ -75,7 +75,8 @@ bool are_not_equal(const base::Vector<T> &a, const base::Vector<T> &b) {
     }                                                                          \
   }
 
-Configuration::Configuration(kernel::Model *m, Configuration *base, std::string name)
+Configuration::Configuration(kernel::Model *m, Configuration *base,
+                             std::string name)
     : Object(name), model_(m), base_(base) {
   bool add_remove_found = false;
   IMP_CONFIG_FOREACH(IMP_CONFIG_CHECK_COPY);

@@ -22,8 +22,8 @@ class Decorator;
 IMPKERNELEXPORT ParticleIndexes get_indexes(const ParticlesTemp &ps);
 
 /** Get the particles from a list of indexes.*/
-IMPKERNELEXPORT ParticlesTemp get_particles(kernel::Model *m,
-                                            const ParticleIndexes &ps);
+IMPKERNELEXPORT ParticlesTemp
+    get_particles(kernel::Model *m, const ParticleIndexes &ps);
 
 /** Get the indexes from a list of particle pairs. */
 IMPKERNELEXPORT ParticleIndexPairs get_indexes(const ParticlePairsTemp &ps);
@@ -32,7 +32,8 @@ IMPKERNELEXPORT ParticleIndexPairs get_indexes(const ParticlePairsTemp &ps);
 class IMPKERNELEXPORT ParticleIndexAdaptor
 #ifndef SWIG
     // suppress swig warning that doesn't make sense and I can't make go away
-    : public ParticleIndex, base::InputAdaptor
+    : public ParticleIndex,
+      base::InputAdaptor
 #endif
       {
  public:
@@ -46,15 +47,15 @@ class IMPKERNELEXPORT ParticleIndexAdaptor
 };
 
 /** Take Decorator, Particle or ParticleIndex. */
-class IMPKERNELEXPORT ParticleIndexesAdaptor: public base::InputAdaptor
-      {
-        boost::shared_ptr<ParticleIndexes> tmp_;
-        const ParticleIndexes *val_;
+class IMPKERNELEXPORT ParticleIndexesAdaptor : public base::InputAdaptor {
+  boost::shared_ptr<ParticleIndexes> tmp_;
+  const ParticleIndexes *val_;
+
  public:
 #if !defined(SWIG)
   template <class PS>
-    ParticleIndexesAdaptor(const PS &ps): tmp_(new ParticleIndexes(ps.size())),
-    val_(tmp_.get()) {
+  ParticleIndexesAdaptor(const PS &ps)
+      : tmp_(new ParticleIndexes(ps.size())), val_(tmp_.get()) {
     for (unsigned int i = 0; i < ps.size(); ++i) {
       (*tmp_)[i] = ps[i].get_particle_index();
     }
@@ -62,10 +63,9 @@ class IMPKERNELEXPORT ParticleIndexesAdaptor: public base::InputAdaptor
   ParticleIndexesAdaptor(const Particles &ps);
 #endif
   ParticleIndexesAdaptor(const ParticlesTemp &ps);
-  ParticleIndexesAdaptor(const ParticleIndexes& pi) :
-    tmp_(new ParticleIndexes(pi)),
-    val_(tmp_.get()) {}
-  ParticleIndexesAdaptor(): tmp_(new ParticleIndexes()), val_(tmp_.get()) {}
+  ParticleIndexesAdaptor(const ParticleIndexes &pi)
+      : tmp_(new ParticleIndexes(pi)), val_(tmp_.get()) {}
+  ParticleIndexesAdaptor() : tmp_(new ParticleIndexes()), val_(tmp_.get()) {}
 #ifndef SWIG
   typedef ParticleIndexes::value_type value_type;
   typedef ParticleIndexes::const_reference reference;
@@ -73,28 +73,28 @@ class IMPKERNELEXPORT ParticleIndexesAdaptor: public base::InputAdaptor
   typedef ParticleIndexes::size_type size_type;
   typedef ParticleIndexes::const_reference const_reference;
   typedef ParticleIndexes::const_pointer const_pointer;
-  operator const ParticleIndexes &() const {return *val_;}
-  ParticleIndex operator[](unsigned int i) const {return (*val_)[i];}
-  unsigned int size() const {return val_->size();}
+  operator const ParticleIndexes &() const { return *val_; }
+  ParticleIndex operator[](unsigned int i) const { return (*val_)[i]; }
+  unsigned int size() const { return val_->size(); }
   typedef ParticleIndexes::const_iterator const_iterator;
   typedef ParticleIndexes::const_iterator iterator;
-  const_iterator begin() const {return val_->begin();}
-  const_iterator end() const {return val_->end();}
+  const_iterator begin() const { return val_->begin(); }
+  const_iterator end() const { return val_->end(); }
 #endif
 };
-
 
 /** Take ParticlePairs or ParticleIndexPairs. */
 class IMPKERNELEXPORT ParticleIndexPairsAdaptor
 #ifndef SWIG
     // suppress swig warning that doesn't make sense and I can't make go away
-  : public ParticleIndexPairs, base::InputAdaptor
+    : public ParticleIndexPairs,
+      base::InputAdaptor
 #endif
       {
  public:
 #if !defined(SWIG)
   template <class PS>
-    ParticleIndexPairsAdaptor(const PS &ps) {
+  ParticleIndexPairsAdaptor(const PS &ps) {
     resize(ps.size());
     for (unsigned int i = 0; i < ps.size(); ++i) {
       operator[](i) = ParticleIndexPair(ps[i][0].get_particle_index(),
@@ -103,8 +103,8 @@ class IMPKERNELEXPORT ParticleIndexPairsAdaptor
   }
 #endif
   ParticleIndexPairsAdaptor(const ParticlePairsTemp &ps);
-  ParticleIndexPairsAdaptor(const ParticleIndexPairs& pi)
-    : ParticleIndexPairs(pi) {}
+  ParticleIndexPairsAdaptor(const ParticleIndexPairs &pi)
+      : ParticleIndexPairs(pi) {}
   ParticleIndexPairsAdaptor() {}
 };
 

@@ -41,8 +41,8 @@ Transformation3Ds get_alignments_from_first_to_second(
           all_trans.push_back(pca12pca2);
         }
       }  // j1,j2
-    }  // i2
-  }  // i1
+    }    // i2
+  }      // i1
   return all_trans;
 }
 

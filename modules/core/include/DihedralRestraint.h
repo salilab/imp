@@ -28,8 +28,9 @@ class IMPCOREEXPORT DihedralRestraint : public kernel::Restraint {
       \param[in] p3 Pointer to third particle in dihedral restraint.
       \param[in] p4 Pointer to fourth particle in dihedral restraint.
    */
-  DihedralRestraint(UnaryFunction* score_func, kernel::Particle* p1, kernel::Particle* p2,
-                    kernel::Particle* p3, kernel::Particle* p4);
+  DihedralRestraint(UnaryFunction* score_func, kernel::Particle* p1,
+                    kernel::Particle* p2, kernel::Particle* p3,
+                    kernel::Particle* p4);
 
   virtual double unprotected_evaluate(
       IMP::kernel::DerivativeAccumulator* accum) const IMP_OVERRIDE;

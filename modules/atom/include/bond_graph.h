@@ -139,8 +139,8 @@ class IMPATOMEXPORT BondGraph {
                                     vertex_descriptor::BondIterator>
       out_edge_iterator;
   typedef vertex_descriptor::BondedIterator adjacency_iterator;
-  typedef boost::transform_iterator<internal::MakeBonded,
-                                    IMP::kernel::Particles::iterator> vertex_iterator;
+  typedef boost::transform_iterator<
+      internal::MakeBonded, IMP::kernel::Particles::iterator> vertex_iterator;
   typedef boost::disallow_parallel_edge_tag edge_parallel_category;
   typedef boost::undirected_tag directed_category;
 

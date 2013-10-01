@@ -39,8 +39,8 @@ class CollectVisitor : public boost::default_dfs_visitor {
     vals_.erase(std::unique(vals_.begin(), vals_.end()), vals_.end());
     return vals_;
   }
-  CollectVisitor(const DependencyGraph &g, const std::map<kernel::Particle *, int> &lu,
-                 Ints &vals)
+  CollectVisitor(const DependencyGraph &g,
+                 const std::map<kernel::Particle *, int> &lu, Ints &vals)
       : lu_(lu), vm_(boost::get(boost::vertex_name, g)), vals_(vals) {}
   template <class G>
   void discover_vertex(typename boost::graph_traits<G>::vertex_descriptor u,
@@ -49,7 +49,8 @@ class CollectVisitor : public boost::default_dfs_visitor {
     kernel::Particle *p = dynamic_cast<kernel::Particle *>(o);
     if (p) {
       // std::cout << "Checking particle " << p->get_name() << std::endl;
-      typename std::map<kernel::Particle *, int>::const_iterator it = lu_.find(p);
+      typename std::map<kernel::Particle *, int>::const_iterator it =
+          lu_.find(p);
       if (it != lu_.end()) {
         vals_.push_back(it->second);
       }
@@ -60,8 +61,8 @@ class CollectVisitor : public boost::default_dfs_visitor {
 namespace {
 class ScoreWeightedIncrementalBallMover : public MonteCarloMover {
  public:
-  ScoreWeightedIncrementalBallMover(const kernel::ParticlesTemp &ps, unsigned int n,
-                                    Float radius);
+  ScoreWeightedIncrementalBallMover(const kernel::ParticlesTemp &ps,
+                                    unsigned int n, Float radius);
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
@@ -256,8 +257,7 @@ IMP::internal::InternalListSingletonContainer *MCCGSampler::set_up_movers(
   kernel::ParticlesTemp ps;
   for (kernel::Model::ParticleIterator pit = mc->get_model()->particles_begin();
        pit != mc->get_model()->particles_end(); ++pit) {
-    if (XYZ::get_is_setup(*pit) &&
-        XYZ(*pit).get_coordinates_are_optimized()) {
+    if (XYZ::get_is_setup(*pit) && XYZ(*pit).get_coordinates_are_optimized()) {
       ps.push_back(*pit);
     }
   }
@@ -389,10 +389,10 @@ ConfigurationSet *MCCGSampler::do_sample() const {
         ret->load_configuration(ret->get_number_of_configurations() - 1);
         double ne = get_model()->evaluate(false);
         if (0) std::cout << oe << ne;
-        IMP_INTERNAL_CHECK(
-            std::abs(ne - oe) < (ne + oe) * .1 + .1,
-            "Energies to not match before and after save."
-                << "Expected " << oe << " got " << ne << std::endl);
+        IMP_INTERNAL_CHECK(std::abs(ne - oe) < (ne + oe) * .1 + .1,
+                           "Energies to not match before and after save."
+                               << "Expected " << oe << " got " << ne
+                               << std::endl);
       }
     } else {
       IMP_LOG_TERSE("Rejected configuration with score "
@@ -406,11 +406,11 @@ ConfigurationSet *MCCGSampler::do_sample() const {
     }
   }
   if (failures != 0) {
-    IMP_LOG(WARNING,
-            "The optimization failed "
-                << failures
-                << " times due to invalid attribute values or derivatives."
-                << std::endl);
+    IMP_LOG(
+        WARNING, "The optimization failed "
+                     << failures
+                     << " times due to invalid attribute values or derivatives."
+                     << std::endl);
   }
   IMP_CHECK_OBJECT(mc);
   IMP_CHECK_OBJECT(sc);

@@ -32,11 +32,9 @@ IMP::kernel::Model *extract_model(const kernel::ParticlesTemp &ps) {
 }
 }
 
-IncrementalScoringFunction::IncrementalScoringFunction(const kernel::ParticlesTemp &ps,
-                                                       const kernel::RestraintsTemp &rs,
-                                                       double weight,
-                                                       double max,
-                                                       std::string name)
+IncrementalScoringFunction::IncrementalScoringFunction(
+    const kernel::ParticlesTemp &ps, const kernel::RestraintsTemp &rs,
+    double weight, double max, std::string name)
     : ScoringFunction(extract_model(ps), name), weight_(weight), max_(max) {
   IMP_OBJECT_LOG;
   IMP_LOG_TERSE("Creating IncrementalScoringFunction with particles "
@@ -54,9 +52,9 @@ namespace {
 class IncrementalRestraintsScoringFunction
     : public IMP::internal::RestraintsScoringFunction {
  public:
-  IncrementalRestraintsScoringFunction(const kernel::RestraintsTemp &rs,
-                                       double weight = 1.0,
-                                       double max = NO_MAX,
+  IncrementalRestraintsScoringFunction(
+      const kernel::RestraintsTemp &rs, double weight = 1.0,
+      double max = NO_MAX,
       std::string name = "IncrementalRestraintsScoringFunction%1%")
       : IMP::internal::RestraintsScoringFunction(rs, weight, max, name) {}
   // don't depend on optimized particles
@@ -69,27 +67,24 @@ class IncrementalRestraintsScoringFunction
 IncrementalScoringFunction::Data IncrementalScoringFunction::create_data(
     kernel::ParticleIndex pi, const base::map<Restraint *, int> &all,
     const kernel::Restraints &dummies) const {
-  kernel::RestraintsTemp cr = get_dependent_restraints(get_model(),  pi);
+  kernel::RestraintsTemp cr = get_dependent_restraints(get_model(), pi);
   IMP_LOG_TERSE("Dependent restraints for particle "
-                << get_model()->get_particle_name(pi) << " are "
-                << cr << std::endl);
+                << get_model()->get_particle_name(pi) << " are " << cr
+                << std::endl);
   Data ret;
   for (unsigned int j = 0; j < cr.size(); ++j) {
     if (all.find(cr[j]) != all.end()) {
       int index = all.find(cr[j])->second;
       IMP_INTERNAL_CHECK(
-                         std::find(ret.indexes.begin(),
-                                   ret.indexes.end(), index) ==
-                         ret.indexes.end(),
-                         "Found duplicate restraint " << Showable(cr[j])
-                         << " in list " << cr);
+          std::find(ret.indexes.begin(), ret.indexes.end(), index) ==
+              ret.indexes.end(),
+          "Found duplicate restraint " << Showable(cr[j]) << " in list " << cr);
       ret.indexes.push_back(index);
     }
   }
   cr += kernel::RestraintsTemp(dummies.begin(), dummies.end());
   ret.sf = new IncrementalRestraintsScoringFunction(
-         cr, 1.0, NO_MAX,
-         get_model()->get_particle_name(pi) + " restraints");
+      cr, 1.0, NO_MAX, get_model()->get_particle_name(pi) + " restraints");
   return ret;
 }
 
@@ -98,7 +93,6 @@ void IncrementalScoringFunction::handle_set_has_required_score_states(bool tf) {
   if (tf) {
     create_scoring_functions();
   } else {
-
   }
 }
 
@@ -146,14 +140,15 @@ void IncrementalScoringFunction::reset_moved_particles() {
   set_moved_particles(last_move_);
   last_move_.clear();
 }
-void IncrementalScoringFunction::set_moved_particles(const kernel::ParticleIndexes &p) {
+void IncrementalScoringFunction::set_moved_particles(
+    const kernel::ParticleIndexes &p) {
   IMP_OBJECT_LOG;
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i = 0; i < p.size(); ++i) {
-      IMP_USAGE_CHECK(
-          std::find(all_.begin(), all_.end(), p[i]) != all_.end(),
-          "Particle " << Showable(p[i]) << " was not in the list of "
-                      << "particles passed to the constructor.");
+      IMP_USAGE_CHECK(std::find(all_.begin(), all_.end(), p[i]) != all_.end(),
+                      "Particle " << Showable(p[i])
+                                  << " was not in the list of "
+                                  << "particles passed to the constructor.");
     }
   }
   last_move_ = p;
@@ -241,24 +236,25 @@ void IncrementalScoringFunction::do_add_score_and_derivatives(
       if (std::abs(niscore - score) > .01 * (niscore + score)) {
         IMP_WARN("Scores: " << niscore << " vs " << score << std::endl);
         IMP_WARN("Dirty: " << dirty_ << " " << scoring_functions_.size()
-                 << std::endl);
+                           << std::endl);
         for (unsigned int i = 0; i < dirty_.size(); ++i) {
           ScoringFunctionsMap::const_iterator it =
               scoring_functions_.find(dirty_[i]);
           if (it != scoring_functions_.end()) {
             IMP_WARN("Scoring function for " << dirty_[i] << " is "
-                     << it->second.sf->get_name() << std::endl);
+                                             << it->second.sf->get_name()
+                                             << std::endl);
           }
         }
         Floats before = flattened_restraints_scores_;
         do_non_incremental_evaluate();
         for (unsigned int i = 0; i < before.size(); ++i) {
-          IMP_WARN(flattened_restraints_[i]->get_name() << ": "
-                   << before[i] << " vs " << flattened_restraints_scores_[i]
-                   << std::endl);
+          IMP_WARN(flattened_restraints_[i]->get_name()
+                   << ": " << before[i] << " vs "
+                   << flattened_restraints_scores_[i] << std::endl);
         }
-        IMP_INTERNAL_CHECK( false,
-                          "Incremental and non-incremental scores don't match");
+        IMP_INTERNAL_CHECK(
+            false, "Incremental and non-incremental scores don't match");
       }
     }
   }

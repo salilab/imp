@@ -72,8 +72,8 @@ RestraintsTemp get_restraints(const Subset &s, const ParticleStatesTable *pst,
   return rw;
 }
 
-Ints get_partial_index(const kernel::ParticlesTemp &particles, const Subset &subset,
-                       const Subsets &excluded) {
+Ints get_partial_index(const kernel::ParticlesTemp &particles,
+                       const Subset &subset, const Subsets &excluded) {
   for (unsigned int i = 0; i < excluded.size(); ++i) {
     bool all = true;
     for (unsigned int j = 0; j < particles.size(); ++j) {

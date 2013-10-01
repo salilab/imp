@@ -25,8 +25,8 @@ IMPCORE_BEGIN_NAMESPACE
     many or most move sets this is 1.0).
 */
 IMP_NAMED_TUPLE_2(MonteCarloMoverResult, MonteCarloMoverResults,
-                  kernel::ParticleIndexes, moved_particles,
-                  double, proposal_ratio, );
+                  kernel::ParticleIndexes, moved_particles, double,
+                  proposal_ratio, );
 
 //! A base class for classes which perturb particles.
 /** Mover objects propose a move, which can then be either accepted or rejected
