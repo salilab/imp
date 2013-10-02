@@ -27,8 +27,6 @@
       <tab type="user" visible="yes" title="Class Factories" url="md_doxygen_generated_factory_index.html"/>
       <tab type="user" visible="yes" title="Function Examples" url="md_doxygen_generated_function_example_index.html"/>
     </tab>
-   <tab type="user" visible="yes" title="Search" url="search.html">
-   </tab>
   </navindex>
 
   <!-- Layout definition for a class page -->
