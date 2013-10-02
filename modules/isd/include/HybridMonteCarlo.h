@@ -13,6 +13,7 @@
 #include <IMP/core/MonteCarlo.h>
 #include <IMP/isd/MolecularDynamics.h>
 #include <IMP/isd/MolecularDynamicsMover.h>
+#include <IMP/macros.h>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -49,18 +50,7 @@ public:
   MolecularDynamics* get_md() const;
 
   //evaluate should return the total energy
-  double do_evaluate(const kernel::ParticleIndexes &) const
-{
-    double ekin = md_->get_kinetic_energy();
-    double epot;
-    if (get_maximum_difference() < std::numeric_limits<double>::max()) {
-        epot = get_scoring_function()->evaluate_if_below(false,
-                get_last_accepted_energy()+get_maximum_difference());
-    } else {
-        epot = get_scoring_function()->evaluate(false);
-    }
-    return ekin + epot;
-}
+  double do_evaluate(const kernel::ParticleIndexes &) const;
 
   virtual void do_step();
   IMP_OBJECT_METHODS(HybridMonteCarlo);

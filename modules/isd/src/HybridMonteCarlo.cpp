@@ -25,6 +25,15 @@ HybridMonteCarlo::HybridMonteCarlo(kernel::Model *m, Float kT, unsigned steps,
     persistence_counter_=0;
 }
 
+double HybridMonteCarlo::do_evaluate(const kernel::ParticleIndexes &) const
+{
+    if (get_use_incremental_scoring_function())
+        IMP_THROW("Incremental scoring not supported", ModelException);
+    double ekin = md_->get_kinetic_energy();
+    double epot = get_scoring_function()->evaluate(false);
+    return ekin + epot;
+}
+
 void HybridMonteCarlo::do_step()
 {
     //gibbs sampler on x and v
@@ -43,18 +52,11 @@ void HybridMonteCarlo::do_step()
         static const double kB = 8.31441 / 4186.6;
         md_->assign_velocities(get_kt() / kB);
     }
-    kernel::ParticleIndexes all_optimized_particles;
-    {
-      kernel::ModelObjectsTemp op = get_model()->get_optimized_particles();
-      for (unsigned int i = 0; i< op.size(); ++i) {
-        all_optimized_particles.push_back(
-                dynamic_cast<kernel::Particle*>(op[i].get())->get_index());
-      }
-    }
-    double last = do_evaluate(all_optimized_particles);
+    kernel::ParticleIndexes unused;
+    double last = do_evaluate(unused);
     core::MonteCarloMoverResult moved = do_move();
 
-    double energy = do_evaluate(all_optimized_particles);
+    double energy = do_evaluate(unused);
     bool accepted = do_accept_or_reject_move(energy, last,
                                              moved.get_proposal_ratio());
     while ((!accepted) && (persistence_counter_ < persistence_-1))
