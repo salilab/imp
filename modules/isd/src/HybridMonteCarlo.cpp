@@ -10,8 +10,8 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-HybridMonteCarlo::HybridMonteCarlo(kernel::Model *m, Float kT, unsigned steps, Float
-        timestep, unsigned persistence) : MonteCarlo(m)
+HybridMonteCarlo::HybridMonteCarlo(kernel::Model *m, Float kT, unsigned steps,
+        Float timestep, unsigned persistence) : MonteCarlo(m)
 {
 
     mv_ = new MolecularDynamicsMover(m, steps, timestep);
@@ -28,7 +28,7 @@ HybridMonteCarlo::HybridMonteCarlo(kernel::Model *m, Float kT, unsigned steps, F
 void HybridMonteCarlo::do_step()
 {
     //gibbs sampler on x and v
-    //persistence=p samples p times x and once v
+    //persistence=p : sample p times x and once v
     //However because it's constant E, a rejected move
     //will result in recalculating the same move up to p times
     //until it is either accepted or the velocities are redrawn
@@ -47,8 +47,8 @@ void HybridMonteCarlo::do_step()
     {
       kernel::ModelObjectsTemp op = get_model()->get_optimized_particles();
       for (unsigned int i = 0; i< op.size(); ++i) {
-        all_optimized_particles.push_back(dynamic_cast<kernel::Particle*>(op[i].get())
-                                          ->get_index());
+        all_optimized_particles.push_back(
+                dynamic_cast<kernel::Particle*>(op[i].get())->get_index());
       }
     }
     double last = do_evaluate(all_optimized_particles);

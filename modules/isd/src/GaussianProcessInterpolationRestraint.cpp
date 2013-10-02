@@ -72,6 +72,18 @@ double GaussianProcessInterpolationRestraint::unprotected_evaluate(
     //the functions are all up-to-date since
     //the ScoreState has taken care of this
 
+    /*
+    std::cout << "===GPI ";
+    kernel::ParticlesTemp inppt(gpi_->get_input_particles());
+    for (unsigned i=0; i<inppt.size(); i++)
+        std::cout << Nuisance(inppt[i]).get_nuisance() << " " ;
+    if (accum) {
+        std::cout << "1 " << std::endl;
+    } else {
+        std::cout << "0 " << std::endl;
+    }
+    */
+
     if (accum) // O(M) if unchanged, O(M^2) if mean changed, else O(M^3)
     {
         //derivatives for mean particles
