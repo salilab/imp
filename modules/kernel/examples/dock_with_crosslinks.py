@@ -60,7 +60,8 @@ def read_pdbs(list_pdb_file):
 def setup_radii(chains):
     "setup the radii for each residue"
     for c in chains:
-        IMP.atom.create_rigid_body(c)
+        rb = IMP.atom.create_rigid_body(c)
+        rb.set_coordinates_are_optimized(True)
         for res in c.get_children():
             dres=IMP.core.XYZR(res)
             rt=IMP.atom.Residue(res).get_residue_type()

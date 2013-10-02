@@ -15,8 +15,9 @@ m=IMP.kernel.Model()
 ps=[]
 for i in range(2):
     p=IMP.kernel.Particle(m)
-    IMP.core.XYZR.setup_particle(p,
+    d = IMP.core.XYZR.setup_particle(p,
          IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0.,0.,0.), 1.0))
+    d.set_coordinates_are_optimized(True)
     ps.append(p)
 
 # add harmonic restraint to distance

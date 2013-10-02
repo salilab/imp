@@ -50,6 +50,7 @@ rigid_bodies= []
 for c in chains:
     atoms=IMP.core.get_leaves(c)
     rbd=IMP.core.RigidBody.setup_particle(c,atoms)
+    rbd.set_coordinates_are_optimized(True)
     rigid_bodies.append(rbd)
     print "chain has",rbd.get_number_of_members(), \
                           "atoms","coordinates: ",rbd.get_coordinates()

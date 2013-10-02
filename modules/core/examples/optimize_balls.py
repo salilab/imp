@@ -5,6 +5,10 @@ import IMP.core
 import IMP.display
 import IMP.container
 import IMP.rmf
+import IMP.base
+import sys
+
+IMP.base.setup_from_argv(sys.argv, "Optimize balls example")
 
 bb=IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                              IMP.algebra.Vector3D(10,10,10));
@@ -36,6 +40,7 @@ for i in range(0,ni):
             p.set_name("P"+str(i)+" "+str(j)+" "+str(k))
             s=IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb), radius)
             d= IMP.core.XYZR.setup_particle(p,s)
+            d.set_coordinates_are_optimized(True)
             movers.append(IMP.core.BallMover([p], radius*2))
             movers[-1].set_was_used(True)
             IMP.display.Colored.setup_particle(p, IMP.display.get_display_color(i*nj+j))
@@ -103,7 +108,6 @@ for i in range(1,11):
     print factor
     for j in range(0,5):
         print "stage", j
-        isf.set_log_level(IMP.base.TERSE)
         mc.set_kt(100.0/(3*j+1))
         print "mc", mc.optimize(ni*nj*np*(j+1)*100), m.evaluate(False), cg.optimize(10)
     del rs
