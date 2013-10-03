@@ -164,7 +164,7 @@ want to provide output that can be read back in.
 
 Classes and methods should use IMP exceptions to report errors. See
 IMP::base::Exception for a list of existing exceptions. See
-[checks](base/exception_8h.html) for more information.
+[checks](exception_8h.html) for more information.
 
 ### Namespaces ### {#devguide_namespace}
 
@@ -288,7 +288,7 @@ When writing examples, one should try (as appropriate) to do the following:
   `create_restraints` functions and performing samping and analysis and
   displaying the solutions.
 
-Obviously, not all examples need all of the above parts. See [Nup84 example](kernel/kernel_2nup84_8py-example.html) for a canonical example.
+Obviously, not all examples need all of the above parts. See [Nup84 example](kernel_2nup84_8py-example.html) for a canonical example.
 
 The example should have enough comments that the reasoning behind each line of code is clear to someone who roughly understands how IMP in general works.
 
