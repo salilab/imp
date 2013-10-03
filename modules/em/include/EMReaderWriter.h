@@ -16,7 +16,7 @@
 #include "def.h"
 
 IMPEM_BEGIN_NAMESPACE
-
+/** Reader/writer for EM. */
 class IMPEMEXPORT EMReaderWriter : public MapReaderWriter
 {
 public:

@@ -14,6 +14,7 @@
 #include "DensityHeader.h"
 #include "KernelParameters.h"
 IMPEM_BEGIN_NAMESPACE
+/** Mask based on the distance. */
 class IMPEMEXPORT RadiusDependentDistanceMask {
   //class  RadiusDependentDistanceMask {
 public:

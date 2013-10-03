@@ -40,6 +40,7 @@ class IMPATOMEXPORT ForceFieldParameters : public IMP::base::Object {
   IMP_REF_COUNTED_DESTRUCTOR(ForceFieldParameters);
 
  protected:
+  /** Store endpoints for a bond. */
   class Bond {
    public:
     Bond(AtomType type1, AtomType type2,
