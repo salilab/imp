@@ -10,7 +10,7 @@
 #define IMPISD_WEIGHT_MOVER_H
 
 #include "isd_config.h"
-#include <IMP/core/Mover.h>
+#include <IMP/core/MonteCarloMover.h>
 #include <IMP/algebra/VectorD.h>
 #include <IMP/isd/Weight.h>
 
