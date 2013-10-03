@@ -5,7 +5,7 @@ A protocol for generating atomic structures of complexes with cyclic symmetry
 a cryo-electron microscopy density map of the complex. This employs the
 IMP::cnmultifit module.
 
-See also [multifit](../multifit_tools/) for a similar protocol
+See also [multifit](@ref impmultifit_tools) for a similar protocol
 operating on non-symmetric complexes.
 
 A \salilab{/multifit/,webserver} is also available.

@@ -15,7 +15,7 @@ See the IMP::cnmultifit module for a similar protocol for handling symmetric
 complexes.
 
 Generally, this module is not used directly; instead, the
-[multifit.py application](../multifit_tools/index.html) is used.
+[multifit.py application](@ref impmultifit_tools) is used.
 
 # Info
 
