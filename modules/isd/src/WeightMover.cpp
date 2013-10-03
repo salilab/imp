@@ -42,7 +42,8 @@ core::MonteCarloMoverResult WeightMover::do_propose() {
   }
 
   // zero vector in D dimension
-  algebra::VectorKD zero=algebra::VectorKD(Floats(x.size()));
+  algebra::VectorKD zero = algebra::get_zero_vector_kd(x.size());
+
 
   // generate random perturbation of old components
   algebra::VectorKD dX
@@ -60,8 +61,7 @@ core::MonteCarloMoverResult WeightMover::do_propose() {
 
   // get the new weights
   algebra::VectorKD newweights =
-   algebra::VectorKD(Floats(oldweights_.get_dimension()));
-
+           algebra::get_zero_vector_kd(oldweights_.get_dimension());
 
   newweights[0]=x[0];
   for(unsigned i=1;i<newweights.get_dimension()-1;++i){
