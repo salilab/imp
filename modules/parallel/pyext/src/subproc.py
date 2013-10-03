@@ -1,3 +1,5 @@
+"""@namespace IMP.parallel.subproc Subprocess handling."""
+
 import sys
 try:
     import subprocess
