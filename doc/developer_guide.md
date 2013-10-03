@@ -164,7 +164,7 @@ want to provide output that can be read back in.
 
 Classes and methods should use IMP exceptions to report errors. See
 IMP::base::Exception for a list of existing exceptions. See
-[checks](exception_8h.html) for more information.
+[checks](base_2exception_8h.html) for more information.
 
 ### Namespaces ### {#devguide_namespace}
 
@@ -240,7 +240,7 @@ all return values should be checked by such code.
 The second is logging macros such as:
 
 - IMP_LOG() which allows controlled display of messages about what the
-  code is doing. See [logging](base/log_8h.html) for more information.
+  code is doing. See [logging](base_2log_8h.html) for more information.
 
 Finally, each module has a set of unit tests. The
 tests are located in the `modules/modulename/test` directory.
@@ -288,7 +288,7 @@ When writing examples, one should try (as appropriate) to do the following:
   `create_restraints` functions and performing samping and analysis and
   displaying the solutions.
 
-Obviously, not all examples need all of the above parts. See [Nup84 example](kernel_2nup84_8py-example.html) for a canonical example.
+Obviously, not all examples need all of the above parts.
 
 The example should have enough comments that the reasoning behind each line of code is clear to someone who roughly understands how IMP in general works.
 

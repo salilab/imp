@@ -219,7 +219,7 @@ benifit from better checking.
 - Logging has been improved to better report the name of methods producing the log messages
 - a macro IMP_FUNCTION_LOG has been added which should be added to the start of non-member functions which produce significant logging output.
 - IMP::algebra::get_distance(const Rotation3D&,const Rotation3D&) was changed to use the Euclidean distance in R4 as that seems better behaved than the prior metric.
-- IMP.domino2 was renamed to IMP.domino and the old IMP.domino was moved to https://svn.salilab.org/imp/branches/salilab/domino1
+- IMP.domino2 was renamed to IMP.domino and the old IMP.domino was moved
 - the documentation for classes and some methods now includes a list of all examples which use the class. Please report any incorrect links or phantom classes appearing in the docs. Unfortunately, functions have to be added individually. Please request any functions of particular interest.
 - applications and biological systems now have their own documentatin pages
 - IMP::atom::Hierarchy requires radii on its leaves
