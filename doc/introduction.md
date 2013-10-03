@@ -39,7 +39,7 @@ IMP provides tools to implement the computational parts of the integrative model
 
 In IMP, the model is represented as a collection of data, called particles, each of which has associated attributes (e.g. an atom with associated coordinates, mass, radius etc). In IMP, the attributes can be numbers, strings, or lists of other particles, among other things. Each particle is identified by an index (IMP::kernel::ParticleIndex) and has an associated name, in order to make it easier to understand. Finally, attributes are identified by keys (e.g. IMP::kernel::StringKey for string attributes). The key identifies one type of data that may be contained in many particles.
 
-At the most basic, to create a particles and manipulate attributes you can do
+At the most basic, to create particles and manipulate attributes you can do
 
     import IMP.kernel
     model= IMP.kernel.Model()
