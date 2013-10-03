@@ -27,8 +27,10 @@ IMPISD_BEGIN_NAMESPACE
 // and photobleaching survival rate
 FretRestraint::FretRestraint
   (kernel::Particles pd, kernel::Particles pa,
-   kernel::Particle *kda, kernel::Particle *Ida, kernel::Particle *R0, kernel::Particle *sigma0,
+   kernel::Particle *kda, kernel::Particle *Ida,
+   kernel::Particle *R0, kernel::Particle *sigma0,
    kernel::Particle *Pbl, double fexp, double m_d, double m_a):
+   Restraint(kda->get_model(),"FretRestraint%1%"),
    pd_(pd), pa_(pa), kda_(kda), Ida_(Ida),
    R0_(R0), sigma0_(sigma0), Pbl_(Pbl), fexp_(fexp),
    multi_d_(m_d), constr_type_(0) {
@@ -51,6 +53,7 @@ FretRestraint::FretRestraint
 FretRestraint::FretRestraint
   (kernel::Particle *kda, kernel::Particle *Ida, kernel::Particle *sumFi,
    kernel::Particle *sigma0, kernel::Particle *Pbl, double fexp):
+   Restraint(kda->get_model(),"FretRestraint%1%"),
    kda_(kda), Ida_(Ida), sumFi_(sumFi), sigma0_(sigma0),
    Pbl_(Pbl), fexp_(fexp), constr_type_(1) {};
 
@@ -64,6 +67,7 @@ FretRestraint::FretRestraint
    algebra::Vector3Ds GMMctra, Floats GMMwa, Floats GMMsiga,
    kernel::Particle *kda, kernel::Particle *Ida, kernel::Particle *sigma0,
    kernel::Particle *Pbl, FretData *data, double fexp):
+   Restraint(kda->get_model(),"FretRestraint%1%"),
    prd_(prd), GMMterd_(GMMterd), GMMctrd_(GMMctrd),
    pra_(pra), GMMtera_(GMMtera), GMMctra_(GMMctra),
    kda_(kda), Ida_(Ida), sigma0_(sigma0), Pbl_(Pbl),
@@ -214,7 +218,7 @@ double FretRestraint::get_model_fretr_type_0() const
 }
 
 algebra::Vector3Ds FretRestraint::get_current_centers
-                      (kernel::Particle *p, const algebra::Vector3Ds& ctrs) const {
+   (kernel::Particle *p, const algebra::Vector3Ds& ctrs) const {
 
  algebra::Vector3Ds new_ctrs;
  for(unsigned i=0; i<ctrs.size(); ++i){
@@ -224,7 +228,7 @@ algebra::Vector3Ds FretRestraint::get_current_centers
 }
 
 algebra::Vector3D FretRestraint::get_current_center
-                      (kernel::Particle *p, const algebra::Vector3D& ctr) const {
+   (kernel::Particle *p, const algebra::Vector3D& ctr) const {
 
  algebra::ReferenceFrame3D rf=core::RigidBody(p).get_reference_frame();
  return rf.get_global_coordinates(ctr);
