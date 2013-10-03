@@ -237,14 +237,21 @@ def main():
                ("Argument Index", "argument_index"),
                ("Class Examples", "class_example_index"),
                ("Function Examples", "function_example_index")]
-    create_index(indexes[0][0], indexes[0][1], indexes[1:], "Functions that create objects of a given type:",
+    create_index(indexes[0][0], indexes[0][1], indexes[1:],
+                 "Functions that create objects of a given type:",
                  creates, "doxygen/generated/factory_index.md", "Class", "Factories")
-    create_index(indexes[1][0], indexes[1][1], indexes, "Functions that take objects of a given type as arguments:",
+    create_index(indexes[1][0], indexes[1][1], indexes,
+                 "Functions that take objects of a given type as arguments:",
                  takes, "doxygen/generated/argument_index.md", "Class", "Users")
-    create_index(indexes[2][0], indexes[2][1], indexes, "Examples that use a given class:",
-                 examples_classes, "doxygen/generated/class_example_index.md", "Class", "Examples")
-    create_index(indexes[3][0], indexes[3][1], indexes[:-1], "Examples that use a given function:",
-                 examples_functions, "doxygen/generated/function_example_index.md", "Function", "Examples")
+    create_index(indexes[2][0], indexes[2][1], indexes,
+                 "Examples that use a given class:",
+                 examples_classes, "doxygen/generated/class_example_index.md",
+                 "Class", "Examples")
+    create_index(indexes[3][0], indexes[3][1], indexes[:-1],
+                 "Examples that use a given function:",
+                 examples_functions,
+                 "doxygen/generated/function_example_index.md",
+                 "Function", "Examples")
 
 if __name__ == '__main__':
     main()
