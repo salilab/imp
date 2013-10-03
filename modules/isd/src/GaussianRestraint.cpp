@@ -14,32 +14,46 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-  GaussianRestraint::GaussianRestraint(kernel::Particle *x, kernel::Particle *mu,
-          kernel::Particle *sigma) : px_(x), pmu_(mu), psigma_(sigma), isx_(true),
+  GaussianRestraint::GaussianRestraint(kernel::Particle *x,
+          kernel::Particle *mu, kernel::Particle *sigma) :
+          Restraint(sigma->get_model(),"GaussianRestraint%1%"),
+          px_(x), pmu_(mu), psigma_(sigma), isx_(true),
     ismu_(true), issigma_(true) {check_particles();}
 
   GaussianRestraint::GaussianRestraint(double x, kernel::Particle *mu,
-          kernel::Particle *sigma) : x_(x), pmu_(mu), psigma_(sigma), isx_(false),
+          kernel::Particle *sigma) :
+          Restraint(sigma->get_model(),"GaussianRestraint%1%"),
+          x_(x), pmu_(mu), psigma_(sigma), isx_(false),
     ismu_(true), issigma_(true) {check_particles();}
 
   GaussianRestraint::GaussianRestraint(kernel::Particle *x, double mu,
-          kernel::Particle *sigma) : px_(x), mu_(mu), psigma_(sigma), isx_(true),
+          kernel::Particle *sigma) :
+          Restraint(sigma->get_model(),"GaussianRestraint%1%"),
+          px_(x), mu_(mu), psigma_(sigma), isx_(true),
     ismu_(false), issigma_(true) {check_particles();}
 
-  GaussianRestraint::GaussianRestraint(kernel::Particle *x, kernel::Particle *mu,
-          double sigma) : px_(x), pmu_(mu), sigma_(sigma), isx_(true),
+  GaussianRestraint::GaussianRestraint(kernel::Particle *x,
+          kernel::Particle *mu, double sigma) :
+          Restraint(x->get_model(),"GaussianRestraint%1%"),
+          px_(x), pmu_(mu), sigma_(sigma), isx_(true),
     ismu_(true), issigma_(false) {check_particles();}
 
   GaussianRestraint::GaussianRestraint(kernel::Particle *x, double mu,
-          double sigma) : px_(x), mu_(mu), sigma_(sigma), isx_(true),
+          double sigma) :
+          Restraint(x->get_model(),"GaussianRestraint%1%"),
+          px_(x), mu_(mu), sigma_(sigma), isx_(true),
     ismu_(false), issigma_(false) {check_particles();}
 
   GaussianRestraint::GaussianRestraint(double x, double mu,
-          kernel::Particle *sigma) : x_(x), mu_(mu), psigma_(sigma), isx_(false),
+          kernel::Particle *sigma) :
+          Restraint(sigma->get_model(),"GaussianRestraint%1%"),
+          x_(x), mu_(mu), psigma_(sigma), isx_(false),
     ismu_(false), issigma_(true) {check_particles();}
 
   GaussianRestraint::GaussianRestraint(double x, kernel::Particle *mu,
-          double sigma) : x_(x), pmu_(mu), sigma_(sigma), isx_(false),
+          double sigma) :
+          Restraint(mu->get_model(),"GaussianRestraint%1%"),
+          x_(x), pmu_(mu), sigma_(sigma), isx_(false),
     ismu_(true), issigma_(false) {check_particles();}
 
 void GaussianRestraint::check_particles()
