@@ -180,6 +180,12 @@ def parse_file(fname):
 
     indent = 0
     printer = OutputPrinter()
+
+    if isinstance(a, ast.Module):
+        doc = get_dump_docstring(a)
+        if len(doc) > 0:
+            printer.output_lines(indent, doc, 1)
+
     for n in ast.iter_child_nodes(a):
         if isinstance(n, ast.ClassDef):
             handle_class(n, indent, printer)
