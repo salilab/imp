@@ -175,17 +175,17 @@ better functionality.
 
 - [Doxygen](http://www.doxygen.org/) and [Graphviz](http://www.graphviz.org/): Required for building documentation. They are available as
 part of most Unix tool sets (HomeBrew, all Linux distributions etc.).
-- [Modeller](modeller/index.html#modeller)
-- [CGAL](cgal/index.html#CGAL)
-- [Google perf tools](base/index.html#perf)
-- [ANN](algebra/index.html#ANN)
-- [GSL](gsl/index.html#GSL)
-- [OpenCV](em2d/index.html#OpenCV)
-- [MPI](mpi/index.html)
+- [Modeller](\ref modeller)
+- [CGAL](\ref CGAL)
+- [Google perf tools](\ref perf)
+- [ANN](\ref ANN)
+- [GSL](\ref GSL)
+- [OpenCV](\ref OpenCV)
+- [MPI](\ref impmpi)
 
 # Where to go next # {#installation_next}
 
 You are now ready to use IMP within Python and C++.
 
-Everyone should read the [Introduction](introduction.html) and developers should
-then move on to the [Developer Guide](devguide.html).
+Everyone should read the [introduction](\ref introduction) and developers should
+then move on to the [Developer Guide](\ref devguide).
