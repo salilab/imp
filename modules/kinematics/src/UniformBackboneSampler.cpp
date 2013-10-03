@@ -15,29 +15,26 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 UniformBackboneSampler::UniformBackboneSampler(
                                DihedralAngleRevoluteJoints joints,
                                DOFs dofs) :
-  joints_(joints), dofs_(dofs)
+  DOFsSampler( dofs ), joints_(joints)
 {
-  IMP_USAGE_CHECK(joints_.size() == dofs_.size(),
+  IMP_USAGE_CHECK(joints_.size() == get_number_of_dofs(),
                   "number of joints should be equal to the number "
                   << "of degrees of freedom for uniformbackbonesampler");
 
   // init random number generators
-  for(unsigned int i=0; i<dofs_.size(); i++) {
-    boost::uniform_real<> u_rand_i(dofs_[i]->get_range().first,
-                                   dofs_[i]->get_range().second);
+  for(unsigned int i=0; i< get_number_of_dofs(); i++) {
+    boost::uniform_real<> u_rand_i(get_dof(i)->get_range().first,
+                                   get_dof(i)->get_range().second);
     u_rand_.push_back(u_rand_i);
   }
-  // save last sample as current DOFs
-  last_sample_ = DOFValues(dofs_);
 }
 
-DOFValues UniformBackboneSampler::get_sample() const {
+DOFValues UniformBackboneSampler::do_get_sample() const {
   DOFValues v;
-  v.reserve(dofs_.size());
-  for(unsigned int i=0; i<dofs_.size(); i++) {
+  v.reserve(get_number_of_dofs());
+  for(unsigned int i=0; i<get_number_of_dofs(); i++) {
     v.push_back(u_rand_[i](IMP::base::random_number_generator));
   }
-  const_cast<UniformBackboneSampler*>(this)->last_sample_ = v;
   return v;
 }
 

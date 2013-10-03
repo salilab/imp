@@ -1,5 +1,5 @@
 /**
- *  \file revolute_joints.h
+ *  \file kinematics/revolute_joints.h
  *  \brief functionality for defining various revolute kinematic
  *         joints between rigid bodies as part of a kinematic tree,
  *         including RevoluteJoint, DihedralAngleRevoluteJoint, and
@@ -177,15 +177,16 @@ public Joint{
 
 
 /********************** DihedralAngleRevoluteJoint ***************/
+//     @TODO handle derivatives
 
-
+/** A revolute joint that is parametrized as a dihedral angle between
+    two planes */
 class  IMPKINEMATICSEXPORT
 DihedralAngleRevoluteJoint : public RevoluteJoint{
  public:
   /**
      constructs a dihedral angle that revolves around the axis b-c,
      using a,b,c,d as witnesses for the dihedral angle
-     // TODO: do we want to handle derivatives?
 
      @param parent,child kinematic nodes upstream and downstream (resp.) of
                     this joint
@@ -244,7 +245,11 @@ DihedralAngleRevoluteJoint : public RevoluteJoint{
 };
 
 /********************** BondAngleRevoluteJoint ***************/
+// TODO: do we want to handle derivatives?
 
+/** A revolute joint that is parametrized as a bond angle between three
+    particles
+ */
 class  IMPKINEMATICSEXPORT BondAngleRevoluteJoint : public RevoluteJoint{
  public:
   /**
@@ -252,7 +257,6 @@ class  IMPKINEMATICSEXPORT BondAngleRevoluteJoint : public RevoluteJoint{
      revolves around the axis that passes through b, normal to the
      plane containing a, b and c. a,b and c are the witnesses for the
      bond angle.
-     // TODO: do we want to handle derivatives?
 
      @param parent,child kinematic nodes upstream and downstream (resp.) of
                     this joint

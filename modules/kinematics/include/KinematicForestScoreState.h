@@ -1,10 +1,9 @@
 /**
- * \file KinematicForestScoreState.h
- * \brief
- *
- * \authors Dina Schneidman, Barak Raveh
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
- *
+ \file kinematics/KinematicForestScoreState.h
+ \brief
+
+ \authors Dina Schneidman, Barak Raveh
+ Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKINEMATICS_KINEMATIC_FOREST_SCORE_STATE_H
@@ -29,6 +28,14 @@ Model *extract_model(const IMP::core::RigidBodies& rbs,
 }
 }
 
+/**
+   A score state that uses a KinematicForest of the model to update
+   external coordinates before energy evaluation, if internal coordinates
+   in the forest where altered previously.
+
+   \see KinematicForest
+   \see Joint
+ */
 class IMPKINEMATICSEXPORT KinematicForestScoreState : public IMP::ScoreState {
  public:
 

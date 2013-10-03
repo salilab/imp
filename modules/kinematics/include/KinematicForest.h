@@ -30,7 +30,16 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
+/**
+   An unified interface for defining and manipulating a kinematic
+   structure over a model. The kinematic structure is defined as a
+   forest over model particles at a certain hierarchy, such that a
+   directed edge indicates the propagation of changes in internal
+   coordinates (joint values) to values of external (cartesian)
+   coordinates.
 
+   \see Joint
+ */
 class IMPKINEMATICSEXPORT KinematicForest
 : public base::Object // or kernel::ModelObject?
 {
@@ -39,12 +48,12 @@ IMP_OBJECT_METHODS(KinematicForest);
 
   KinematicForest(kernel::Model* m);
 
+  //     TODO: think about what foldtree scheme to use (star?),
   /**
-     Builds a kinematic tree automatically from a hierarchy that
+     Builds a kinematic forest automatically from a hierarchy that
      contains rigid bodies and adds a ScoreState to the model, to
      make sure the internal and external coordinates are synced
      before model updating
-     TODO: think about what foldtree scheme to use (star?),
   */
   KinematicForest(kernel::Model* m, IMP::atom::Hierarchy hierarchy);
 

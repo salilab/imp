@@ -21,6 +21,11 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
+// TODO: should move out of kinematics, or be in kinematic_algorithms
+
+/** A Simple implementation of the Rapidly-exploring Random Trees
+    algorithm
+*/
 class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
  public:
   IMP_OBJECT_METHODS(RRT);

@@ -1,5 +1,5 @@
 /**
- *  \file TransformationJoint.h
+ *  \file kinematics/TransformationJoint.h
  *  \brief a kinematic joints between rigid bodies that allows any
  *         transformation
  *  \authors Dina Schneidman, Barak Raveh
@@ -28,9 +28,9 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 /********************** TransformationJoint ***************/
 
 
-/* /\** A joint with a completely non-constrained transformation */
-/*     between parent and child nodes reference frames */
-/* *\/ */
+/** A joint with a completely non-constrained transformation
+    between parent and child nodes reference frames
+*/
 class  IMPKINEMATICSEXPORT
 TransformationJoint : public Joint{
  public:

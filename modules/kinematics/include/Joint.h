@@ -1,11 +1,12 @@
 /**
- *  \file Joint.h
- *  \brief functionality for defining a kinematic joint between rigid bodies
- *         as part of a kinematic tree
- *  \authors Dina Schneidman, Barak Raveh
- *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
- */
+ \file kinematics/Joint.h
+ \brief functionality for defining a kinematic joint between rigid bodies
+        as part of a kinematic tree
+
+ \authors Dina Schneidman, Barak Raveh
+
+ Copyright 2007-2013 IMP Inventors. All rights reserved.
+*/
 
 #ifndef IMPKINEMATICS_JOINT_H
 #define IMPKINEMATICS_JOINT_H
@@ -24,10 +25,10 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 
 class KinematicForest;
 
+// TODO: make abstract?
 /**
-    Abstract class for joints between rigid bodies in a kinematic
+    Base class for joints between rigid bodies in a kinematic
     tree.
-    // TODO: make abstract
 */
 class IMPKINEMATICSEXPORT Joint
 : public IMP::base::Object

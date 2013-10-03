@@ -22,6 +22,8 @@ function_name_exceptions=['DOFValues.append','DOFValues.assign', 'DOFValues.back
                      'VectorOfDoubles.rbegin',
                      'VectorOfDoubles.rend',
                      'VectorOfDoubles.resize',
-                     'VectorOfDoubles.size' ]
+                     'VectorOfDoubles.size',
+                     'DOFsSampler.get_dof',
+                     'UniformBackboneSampler.get_dof' ]
 show_exceptions=['VectorOfDoubles']
 value_object_exceptions=['VectorOfDoubles']

@@ -1,5 +1,5 @@
 /**
- * \file DOF.h
+ * \file kinematics/DOF.h
  * \brief single degree of freedom
  *
  * \authors Dina Schneidman, Barak Raveh
@@ -16,14 +16,16 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-/*
-  A general class for representing one degree of freedom (DOF) that is a double
-  Usually a joint represents one DOF, with the exception of transformation joint
-  that has 6 DOFs
+/**
+  A general class for representing one degree of freedom (DOF) that is
+  a double.  the class holds min/max range for the DOF, as well as the
+  step size for passing the DOFs values around. It relies on a
+  DOFValues class that only holds DOF value for each DOF
 
-  the class holds min/max range for the DOF, as well as the step size
-  for passing the DOFs values around we define DOFValues class that only holds
-  DOF value for each DOF
+  @note Typically, a DOF would correspond to one joint, with the exception
+  of transformation joint that has 6 DOFs (though collective joints
+  such as normal modes might be supported in principle)
+
  */
 class IMPKINEMATICSEXPORT DOF : public IMP::base::Object
 {
