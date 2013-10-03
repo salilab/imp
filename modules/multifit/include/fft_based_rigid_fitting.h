@@ -24,6 +24,7 @@
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
+//! Storage of the results from an FFT fit.
 class IMPMULTIFITEXPORT FFTFittingOutput : public base::Object {
 public:
   FFTFittingOutput() : base::Object("FFTFittingOutput%1%") {}
@@ -38,6 +39,7 @@ public:
   FittingSolutionRecords best_trans_per_rot_;
 };
 
+//! Fit a molecule inside its density by local or global FFT.
 class IMPMULTIFITEXPORT FFTFitting : public base::Object {
   IMP_OBJECT_METHODS(FFTFitting);
 

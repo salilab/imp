@@ -68,6 +68,7 @@ public:
 
 IMP_VALUES(ProteinRecordData, ProteinRecordDataList);
 
+//! Storage of proteomics data.
 class IMPMULTIFITEXPORT ProteomicsData : public base::Object {
  protected:
  public:

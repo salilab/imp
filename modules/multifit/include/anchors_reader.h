@@ -17,7 +17,7 @@
 #include "DataPointsAssignment.h"
 IMPMULTIFIT_BEGIN_NAMESPACE
 
-
+//! Storage of anchors (points and edges)
 class IMPMULTIFITEXPORT AnchorsData {
  public:
   AnchorsData(){}

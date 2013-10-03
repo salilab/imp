@@ -17,6 +17,8 @@
 #include <IMP/base/Object.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
+
+//! Probabilistic anchor graph.
 class IMPMULTIFITEXPORT ProbabilisticAnchorGraph : public IMP::base::Object {
 // Property types
 typedef boost::property<boost::edge_weight_t, float> EdgeWeightProperty;
@@ -49,7 +51,8 @@ public:
   unsigned int get_number_of_edges() const {return boost::num_edges(g_);}
   IntRanges get_edge_list() const;
   algebra::Vector3Ds get_anchors() const {return positions_;}
-  algebra::Vector3Ds get_particle_anchors(kernel::Particle *p,float min_prob=0) const;
+  algebra::Vector3Ds get_particle_anchors(kernel::Particle *p,
+                                          float min_prob=0) const;
   bool get_are_probabilities_for_particle_set(kernel::Particle *p) const {
     return particle_to_anchor_probabilities_.find(p) !=
       particle_to_anchor_probabilities_.end();

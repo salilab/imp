@@ -1,5 +1,5 @@
 /**
- *  \file proteomics_em_alignment_atomic.h
+ *  \file multifit/proteomics_em_alignment_atomic.h
  *  \brief align proteomics graph to em density map
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -25,9 +25,9 @@
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
-//the alignment is from the em anchors to the proteomics graph
-// Alignments get_alignments(const AnchorData &anchor_graph,
-//                           const ProteomicsData &prot_graph) {
+//! Align proteomics graph to EM density map
+/** The alignment is from the em anchors to the proteomics graph
+ */
 class IMPMULTIFITEXPORT ProteomicsEMAlignmentAtomic : public base::Object {
 public:
   ProteomicsEMAlignmentAtomic(

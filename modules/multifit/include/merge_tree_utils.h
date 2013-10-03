@@ -30,6 +30,7 @@ namespace MTU {
   typedef base::map<DGVertex,Particle *> VPMAP;
 };
 
+//! A simple Restraint that always returns a score of zero.
 class IMPMULTIFITEXPORT DummyRestraint : public kernel::Restraint {
 public:
   DummyRestraint(kernel::Particle *a, kernel::Particle *b) :
@@ -43,6 +44,7 @@ protected:
   kernel::Particle *p1_,*p2_;
 };
 
+//! Utility class for building merge trees.
 class IMPMULTIFITEXPORT MergeTreeBuilder {
 public:
   MergeTreeBuilder(const atom::Hierarchies &mhs) : g_(mhs.size()),

@@ -1,5 +1,5 @@
 /**
- *  \file ensemble_analysis.h
+ *  \file multifit/ensemble_analysis.h
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
@@ -18,6 +18,7 @@
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
+//! An ensemble of fitting solutions
 class IMPMULTIFITEXPORT Ensemble : public base::Object {
 public:
   void load_combination(Ints fit_comb);
