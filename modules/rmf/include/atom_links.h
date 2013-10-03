@@ -23,6 +23,10 @@
 #include <IMP/base/map.h>
 IMPRMF_BEGIN_NAMESPACE
 
+/** Manage the loading link between an RMF file and an atom::Hierarchy.
+
+    \unstable{HierarchyLoadLink}
+ */
 class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<kernel::Particle> {
   IMP_NAMED_TUPLE_2(ConstData, ConstDatas, RMF::NodeIDs, nodes,
                     kernel::ParticlesTemp, particles, );
@@ -80,6 +84,10 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<kernel::Particle> {
   IMP_OBJECT_METHODS(HierarchyLoadLink);
 };
 
+/** Manage the save link between an RMF file and an atom::Hierarchy.
+
+    \unstable{HierarchySaveLink}
+ */
 class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<kernel::Particle> {
   typedef SimpleSaveLink<kernel::Particle> P;
   IMP_NAMED_TUPLE_2(Data, Datas, RMF::NodeIDs, nodes, kernel::ParticlesTemp,

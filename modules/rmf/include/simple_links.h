@@ -22,6 +22,10 @@
 
 IMPRMF_BEGIN_NAMESPACE
 
+/** Manage a link between an IMP object and an RMF node.
+
+    \unstable{SimpleLoadLink}
+*/
 template <class O>
 class SimpleLoadLink : public LoadLink {
   base::Vector<base::Pointer<O> > os_;
@@ -93,6 +97,10 @@ class SimpleLoadLink : public LoadLink {
   }
 };
 
+/** Manage a link between an IMP object and an RMF node.
+
+    \unstable{SimpleSaveLink}
+*/
 template <class O>
 class SimpleSaveLink : public SaveLink {
   base::Vector<base::Pointer<O> > os_;

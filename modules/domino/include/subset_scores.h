@@ -43,6 +43,7 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
                     base::WeakPointer<kernel::Restraint>, restraint, );
   IMP_NAMED_TUPLE_2(SetData, SetDatas, RestraintSetDatas, members, double,
                     max, );
+
   class Generator {
     typedef base::map<kernel::Restraint *, RestraintData> RMap;
     RMap rmap_;
@@ -139,8 +140,11 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
                                   const Subset &cur_subset, double cur_max,
                                   const DepMap &dependencies);
   Subset get_subset(kernel::Restraint *r, const DepMap &dependencies) const;
+  // otherwise doxygen seems to index this for some reason
+#ifndef IMP_DOXYGEN
   typedef base::LRUCache<Generator, ApproximatelyEqual> Cache;
   Cache cache_;
+#endif
   typedef base::map<base::Pointer<kernel::Restraint>, Subset> KnownRestraints;
   KnownRestraints known_restraints_;
   // assign a unique index to each restraint for use with I/O

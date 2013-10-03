@@ -19,6 +19,7 @@
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
+/** Apply a Euclidean metric to an Embedding. */
 class IMPSTATISTICSEXPORT EuclideanMetric : public Metric {
   IMP::base::PointerMember<Embedding> em_;
 

@@ -35,6 +35,8 @@ IMP_OBJECTS(LoadLink, LoadLinks);
     loaded flexibly.
 
     LoadLinks must not save any handles to RMF objects.
+
+    \unstable{LoadLink}
 */
 class IMPRMFEXPORT LoadLink : public base::Object {
   bool frame_loaded_;
@@ -57,6 +59,8 @@ class IMPRMFEXPORT LoadLink : public base::Object {
     saved flexibly.
 
     SaveLinks must not save any handles to RMF objects.
+
+    \unstable{SaveLink}
 */
 class IMPRMFEXPORT SaveLink : public base::Object {
   bool frame_saved_;
