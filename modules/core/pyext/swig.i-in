@@ -124,6 +124,7 @@ IMP_SWIG_OBJECT( IMP::core, AllSameQuadPredicate, AllSameQuadPredicates);
 IMP_SWIG_DECORATOR( IMP::core, XYZ, XYZs);
 IMP_SWIG_DECORATOR( IMP::core, XYZR, XYZRs);
 IMP_SWIG_DECORATOR( IMP::core, RigidBody, RigidBodies);
+IMP_SWIG_DECORATOR( IMP::core, RigidBodyMember, RigidBodyMembers);
 IMP_SWIG_DECORATOR( IMP::core, RigidMember, RigidMembers);
 IMP_SWIG_DECORATOR( IMP::core, NonRigidMember, NonRigidMembers);
 IMP_SWIG_DECORATOR( IMP::core, Centroid, Centroids);

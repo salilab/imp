@@ -512,38 +512,37 @@ void RigidBody::teardown_particle(RigidBody rb) {
   rb.on_change();
   {
     const kernel::ParticleIndexes &members = rb.get_member_particle_indexes();
-    for (unsigned int i = 0; i < members.size(); ++i) {
-      RigidMember rm(rb.get_model(), members[i]);
-      internal::remove_required_attributes_for_member(rb.get_model(), rm);
+    BOOST_FOREACH(kernel::ParticleIndex pi, members) {
+      internal::remove_required_attributes_for_member(rb.get_model(),
+                                                      pi);
     }
   }
   {
     const kernel::ParticleIndexes &members =
         rb.get_body_member_particle_indexes();
-    for (unsigned int i = 0; i < members.size(); ++i) {
-      RigidMember rm(rb.get_model(), members[i]);
-      internal::remove_required_attributes_for_body_member(rb.get_model(), rm);
+    BOOST_FOREACH(kernel::ParticleIndex pi, members) {
+      internal::remove_required_attributes_for_body_member(rb.get_model(), pi);
     }
   }
   teardown_constraints(rb.get_particle());
   internal::remove_required_attributes_for_body(rb.get_model(), rb);
 }
+
 void RigidBody::set_reference_frame_from_members(
     const kernel::ParticleIndexes &rms) {
   base::Timer t("set_up_rigid_body_reference_frame");
-  algebra::Vector3Ds local(rms.size());
-  algebra::Vector3Ds global(rms.size());
+  algebra::Vector3Ds local;
+  algebra::Vector3Ds global;
   if (rms.size() < 3) {
     return;
   }
   kernel::Model *m = get_model();
   for (unsigned int i = 0; i < rms.size(); ++i) {
     if (RigidMember::get_is_setup(m, rms[i])) {
-      local[i] = RigidMember(m, rms[i]).get_internal_coordinates();
-      global[i] = RigidMember(m, rms[i]).get_coordinates();
+      local.push_back(RigidMember(m, rms[i]).get_internal_coordinates());
+      global.push_back(RigidMember(m, rms[i]).get_coordinates());
     } else if (NonRigidMember::get_is_setup(m, rms[i])) {
-      local[i] = NonRigidMember(m, rms[i]).get_internal_coordinates();
-      global[i] = NonRigidMember(m, rms[i]).get_coordinates();
+      // skip
     }
   }
   algebra::Transformation3D t3 =
@@ -620,15 +619,8 @@ RigidMembers RigidBody::get_members() const {
 }
 
 void RigidBody::set_is_rigid_member(kernel::ParticleIndex pi, bool tf) {
-  if (tf) {
-    get_model()->remove_attribute(internal::rigid_body_data().non_body_, pi);
-    get_model()->add_attribute(internal::rigid_body_data().body_, pi,
-                               get_particle_index());
-  } else {
-    get_model()->add_attribute(internal::rigid_body_data().non_body_, pi,
-                               get_particle_index());
-    get_model()->remove_attribute(internal::rigid_body_data().body_, pi);
-  }
+  get_model()->set_attribute(internal::rigid_body_data().is_rigid_key_, pi,
+                             tf ? 1 : 0);
   on_change();
 }
 
@@ -854,6 +846,7 @@ void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
 }
 
 RigidBody::~RigidBody() {}
+RigidBodyMember::~RigidBodyMember() {}
 RigidMember::~RigidMember() {}
 NonRigidMember::~NonRigidMember() {}
 
@@ -869,24 +862,24 @@ void RigidBody::show(std::ostream &out) const {
              internal::rigid_body_data().quaternion_[3]) << ")";
 }
 
-void RigidMember::show(std::ostream &out) const {
+void RigidBodyMember::show(std::ostream &out) const {
   out << "Member of " << get_rigid_body()->get_name() << " at "
       << get_internal_coordinates();
 }
 
-RigidBody RigidMember::get_rigid_body() const {
+void RigidMember::show(std::ostream &out) const {
+  RigidBodyMember::show(out);
+  out << " (rigid)";
+}
+
+RigidBody RigidBodyMember::get_rigid_body() const {
   return RigidBody(
       get_particle()->get_value(internal::rigid_body_data().body_));
 }
 
 void NonRigidMember::show(std::ostream &out) const {
-  out << "Member of " << get_rigid_body()->get_name() << " at "
-      << get_internal_coordinates();
-}
-
-RigidBody NonRigidMember::get_rigid_body() const {
-  return RigidBody(
-      get_particle()->get_value(internal::rigid_body_data().non_body_));
+  RigidBodyMember::show(out);
+  out << " (non-rigid)";
 }
 
 bool RigidMembersRefiner::get_can_refine(kernel::Particle *p) const {

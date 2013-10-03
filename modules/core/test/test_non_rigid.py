@@ -113,7 +113,7 @@ class Tests(IMP.test.TestCase):
         movers = [IMP.core.RigidBodyMover(m, r0.get_particle_index(), 1, 1),
                   IMP.core.RigidBodyMover(m, r1.get_particle_index(), 1, 1)]\
                   + [ICMover(m, x, 1) for x in nr0 + nr1]
-        for i in range(0, 100):
+        for i in range(0, 20):
             pis = []
             evr.evaluate(False)
             self._check_close_pairs(m, evr.get_indexes())

@@ -20,11 +20,10 @@ struct RigidBodyData {
   FloatKeys quaternion_;
   FloatKeys torque_;
   FloatKeys lquaternion_;
+  IntKey is_rigid_key_;
   kernel::ParticleIndexesKey members_;
   kernel::ParticleIndexesKey body_members_;
   kernel::ParticleIndexKey body_;
-  // for non-rigid bodies
-  kernel::ParticleIndexKey non_body_;
   ObjectKey refkey_;
   RigidBodyData() {
     child_keys_.resize(3);
@@ -38,6 +37,7 @@ struct RigidBodyData {
     quaternion_[1] = FloatKey((pre + "quaternion_1").c_str());
     quaternion_[2] = FloatKey((pre + "quaternion_2").c_str());
     quaternion_[3] = FloatKey((pre + "quaternion_3").c_str());
+    is_rigid_key_ = IntKey(pre + "_is_rigid");
     torque_.resize(3);
     torque_[0] = FloatKey((pre + "torque_0").c_str());
     torque_[1] = FloatKey((pre + "torque_1").c_str());
@@ -51,7 +51,6 @@ struct RigidBodyData {
     members_ = kernel::ParticleIndexesKey("rigid body members");
     body_members_ = kernel::ParticleIndexesKey("rigid body body members");
     body_ = kernel::ParticleIndexKey("rigid body");
-    non_body_ = kernel::ParticleIndexKey("(non) rigid body");
   }
 };
 
@@ -96,25 +95,25 @@ inline bool get_has_required_attributes_for_member(
   }
 }
 
+inline bool get_has_required_attributes_for_rigid_member(
+    kernel::Model *m, kernel::ParticleIndexAdaptor p) {
+  if (!get_has_required_attributes_for_member(m, p)) return false;
+  if (!m->get_has_attribute(rigid_body_data().is_rigid_key_, p)) return false;
+  if (m->get_attribute(rigid_body_data().is_rigid_key_, p) != 1) return false;
+  return true;
+}
+
 inline bool get_has_required_attributes_for_non_member(
     kernel::Model *m, kernel::ParticleIndexAdaptor p) {
-  if (!m->get_has_attribute(rigid_body_data().non_body_, p))
-    return false;
-  else {
-    for (unsigned int i = 0; i < 3; ++i) {
-      IMP_INTERNAL_CHECK(
-          m->get_has_attribute(rigid_body_data().child_keys_[i], p),
-          "Rigid member missing internal coords");
-    }
-    IMP_INTERNAL_CHECK(XYZ::get_is_setup(m, p),
-                       "Rigid member missing coordinates");
-    return true;
-  }
+  if (!get_has_required_attributes_for_member(m, p)) return false;
+  if (!m->get_has_attribute(rigid_body_data().is_rigid_key_, p)) return false;
+  if (m->get_attribute(rigid_body_data().is_rigid_key_, p) != 0) return false;
+  return true;
 }
 
 inline bool get_has_required_attributes_for_body_member(
     kernel::Model *m, kernel::ParticleIndexAdaptor p) {
-  if (!m->get_has_attribute(rigid_body_data().body_, p)) return false;
+  if (!get_has_required_attributes_for_member(m, p)) return false;
   for (unsigned int i = 0; i < 4; ++i) {
     if (!m->get_has_attribute(rigid_body_data().lquaternion_[i], p)) {
       return false;
@@ -161,6 +160,7 @@ inline void add_required_attributes_for_member(
   IMP_INTERNAL_CHECK(m->get_internal_coordinates(p).get_magnitude() < .01,
                      "Bad initialization");
   m->add_attribute(internal::rigid_body_data().body_, p, rb);
+  m->add_attribute(internal::rigid_body_data().is_rigid_key_, p, 1);
 }
 
 inline void add_required_attributes_for_non_member(
@@ -171,7 +171,8 @@ inline void add_required_attributes_for_non_member(
   }
   IMP_INTERNAL_CHECK(m->get_internal_coordinates(p).get_magnitude() < .01,
                      "Bad initialization");
-  m->add_attribute(internal::rigid_body_data().non_body_, p, rb);
+  m->add_attribute(internal::rigid_body_data().body_, p, rb);
+  m->add_attribute(internal::rigid_body_data().is_rigid_key_, p, 0);
 }
 
 inline void add_required_attributes_for_body_member(
@@ -181,6 +182,7 @@ inline void add_required_attributes_for_body_member(
   for (unsigned int i = 0; i < 4; ++i) {
     m->add_attribute(rigid_body_data().lquaternion_[i], p, 0);
   }
+  m->add_attribute(internal::rigid_body_data().is_rigid_key_, p, 1);
 }
 
 inline void remove_required_attributes_for_member(
@@ -189,6 +191,7 @@ inline void remove_required_attributes_for_member(
     m->remove_attribute(rigid_body_data().child_keys_[i], p);
   }
   m->remove_attribute(internal::rigid_body_data().body_, p);
+  m->remove_attribute(internal::rigid_body_data().is_rigid_key_, p);
 }
 
 inline void remove_required_attributes_for_body_member(
