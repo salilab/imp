@@ -16,6 +16,18 @@
 
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
+/**  Score pair of atoms based on SOAP.
+
+  Optimized atomic statistical potentials: Assessment of protein interfaces
+  and loops. Dong GQ, Fan H, Schneidman-Duhovny D, Webb B, Sali A.
+  Bioinformatics. 2013
+
+  soap_score.lib is the table that was developed for scoring docking models.
+  Should be applied on pairs of atoms from the two docked proteins.
+
+  You need to use IMP::atom::add_dope_score_data() to add the requisite
+  atom type data to the particles being scored.
+*/
 class Soap : public Statistical<DopeType, false, false> {
   typedef Statistical<DopeType, false, false> P;
 
