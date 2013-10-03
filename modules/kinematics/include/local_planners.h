@@ -19,7 +19,7 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-/* general interface for planning the motion between two
+/** general interface for planning the motion between two
    configuration nodes, each abstracted as a vector of DoFs
 */
 class IMPKINEMATICSEXPORT LocalPlanner
@@ -53,7 +53,7 @@ public:
 };
 
 
-/*
+/**
   Local planner implementation that samples conformations on a path
   between two nodes.
   @note the default path planning is over a linear interpolation between

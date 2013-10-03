@@ -35,6 +35,10 @@ typedef boost::adjacency_list <boost::vecS,
                                boost::no_property,
     boost::property<boost::edge_color_t, boost::default_color_type> > Graph;
 
+/**
+   Defines a kinematic structure over a protein, with backbone
+   and side chain dihedrals
+ */
 class IMPKINEMATICSEXPORT ProteinKinematics {
  public:
   /* Constructors */
@@ -131,7 +135,7 @@ private:
 
   //DihedralAngleRevoluteJoints get_joints(const IMP::atom::Residue r) const;
 
-  // map between residue phi/psi and joints
+  //! A map between residue phi/psi and joints
   class AngleToJointMap {
   public:
     // Joint access
