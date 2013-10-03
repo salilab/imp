@@ -62,9 +62,9 @@ void Weight::do_setup_particle(kernel::Model *m,
 
 //! Get all weights
  algebra::VectorKD Weight::get_weights() {
-   Floats ww;
-   for(int i=0;i<get_number_of_states();++i){ww.push_back(get_weight(i));}
-   return algebra::VectorKD(ww);
+   algebra::VectorKD  ww = algebra::get_zero_vector_kd(get_number_of_states());
+   for(int i=0;i<get_number_of_states();++i){ww[i]=get_weight(i);}
+   return ww;
  }
 
 //! Set weights are optimized
