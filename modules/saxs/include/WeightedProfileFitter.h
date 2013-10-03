@@ -20,6 +20,11 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
+/**
+   Fitting of multiple profiles to the experimental one.
+   The weights of the profiles are computed analytically using
+   non-negative least squares fitting (NNLS).
+*/
 class IMPSAXSEXPORT WeightedProfileFitter : public ProfileFitter<ChiScore> {
 
  public:

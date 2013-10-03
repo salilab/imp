@@ -12,7 +12,11 @@
 #include "Profile.h"
 
 IMPSAXS_BEGIN_NAMESPACE
-
+/**
+   Implementation of chi free score
+   Accurate assessment of mass, models and resolution by small-angle scattering.
+   Rambo RP, Tainer JA. Nature. 2013
+*/
 class IMPSAXSEXPORT ChiFreeScore {
  public:
   ChiFreeScore(unsigned int ns, unsigned int k): ns_(ns), K_(k) {

@@ -15,6 +15,9 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
+/**
+   chi scoring on log intensities
+*/
 class IMPSAXSEXPORT ChiScoreLog {
  public:
   Float compute_score(const Profile* exp_profile,

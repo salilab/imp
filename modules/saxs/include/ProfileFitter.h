@@ -17,14 +17,14 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-/** \name ProfileFitter
-
+/**
    ProfileFitter is a class for fitting the two profiles with user-defined
    scoring function that is a template parameter. By default chi score is used.
    The scoring function template parameter class has to implement three
    basic functions: compute_score, compute_scale_factor and compute_offset.
    see ChiScore for example.
-   Currently two scoring functions are implemented: ChiScore and LogChiScore.
+   Currently three scoring functions are implemented:
+   ChiScore, ChiScoreLog and ChiFreeScore.
  */
 template<class ScoringFunctionT = ChiScore>
 class ProfileFitter: public base::Object  {

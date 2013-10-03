@@ -13,6 +13,9 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
+/**
+   Basic implementation of Chi scoring
+*/
 class IMPSAXSEXPORT ChiScore {
  public:
   Float compute_score(const Profile* exp_profile,

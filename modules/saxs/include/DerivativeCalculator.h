@@ -16,6 +16,10 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
+/**
+   A class for computing derivatives with respect to SAXS
+   Note: the calculation is expensive, make sure it helps if you use it!
+*/
 class IMPSAXSEXPORT DerivativeCalculator : public base::Object {
 public:
   DerivativeCalculator(const Profile* exp_profile);
