@@ -27,16 +27,20 @@ IMPISD_BEGIN_NAMESPACE
 
 //first constructor, beta is unmarginalized and need to be sampled
 CysteineCrossLinkRestraint::CysteineCrossLinkRestraint
-  (kernel::Particle *beta, kernel::Particle *sigma, kernel::Particle *epsilon, kernel::Particle *weight,
+  (kernel::Particle *beta, kernel::Particle *sigma,
+   kernel::Particle *epsilon, kernel::Particle *weight,
    CrossLinkData *data, double fexp):
+   Restraint(beta->get_model(),"CysteineCrossLinkRestraint%1%"),
    beta_(beta), sigma_(sigma), epsilon_(epsilon), weight_(weight),
    data_(data), fexp_(fexp) {constr_type_=0;}
 
 //second constructor, marginalize the omega on the beat variable
 //using the support of the CysteineCrossLinkData
 CysteineCrossLinkRestraint::CysteineCrossLinkRestraint
-  (kernel::Particle *beta, kernel::Particle *sigma, kernel::Particle *epsilon, kernel::Particle *weight,
+  (kernel::Particle *beta, kernel::Particle *sigma,
+   kernel::Particle *epsilon, kernel::Particle *weight,
    CrossLinkData *data, CysteineCrossLinkData *ccldata):
+   Restraint(beta->get_model(),"CysteineCrossLinkRestraint%1%"),
    beta_(beta), sigma_(sigma), epsilon_(epsilon), weight_(weight),
    data_(data), ccldata_(ccldata) {constr_type_=1;}
 
@@ -92,7 +96,8 @@ double CysteineCrossLinkRestraint::get_standard_error() const
 }
 
 algebra::Vector3D
- CysteineCrossLinkRestraint::get_CB_coordinates(const kernel::Particles& ps) const
+ CysteineCrossLinkRestraint::get_CB_coordinates(const
+                                            kernel::Particles& ps) const
 {
 // get coordinates of central CA
   algebra::Vector3D x1 = core::XYZ(ps[1]).get_coordinates();
