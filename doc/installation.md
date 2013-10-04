@@ -6,7 +6,7 @@
 
 IMP is available in a variety of different ways. If you are just planning on using
 existing IMP code and run on a standard platform, you may be able to install
-a pre-built binary. See the [download](http://salilab.org/imp/download.html) page.
+a pre-built binary. See the [download](http://integrativemodeling.org/download.html) page.
 
 If you are planning on contributing to IMP, you should download and build the source.
 See the next section for more information.
@@ -145,7 +145,7 @@ that you're going to use to build IMP. The basic procedure is as follows:
   - (Optional) Get [numpy and scipy](http://www.scipy.org) to match your
     Python version.
   - (Optional) Get and install
-    [libTAU](http://salilab.org/imp/libTAU.html)
+    [libTAU](http://integrativemodeling.org/libTAU.html)
      - Copy `libTAU.lib` to `TAU.lib` to help cmake find it.
   - (Optional) Get the [OpenCV source code](http://opencv.willowgarage.com/wiki/InstallGuide)
     and build it by following the instructions at that website.

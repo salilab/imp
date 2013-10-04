@@ -11,7 +11,7 @@ In addition to the tabs above that take you to individual module, class and func
 - [Tutorial](../tutorial/index.html)
 - [Change history](@ref ChangeLog)
 - [Modules and Applications](@ref allmod)
-- [Biological systems modeled in IMP](http://salilab.org/imp/systems/)
+- [Biological systems modeled in IMP](http://integrativemodeling.org/systems/)
 - [Wiki](https://github.com/salilab/imp/wiki)
 - [Mailing lists](@ref maillists)
 
@@ -24,7 +24,7 @@ To help find things we provide the following indexes:
 Additional developer documentation:
 - [Developers' guide](@ref devguide)
 - [Bug Tracker](https://github.com/salilab/imp/issues)
-- [Nightly tests](http://salilab.org/imp/nightly/results/)
+- [Nightly tests](http://integrativemodeling.org/nightly/results/)
 
 An overview of some of the various modules currently available. Representative classes and functions are shown.
 | Module|Representation|Scoring|Sampling|Analysis|
