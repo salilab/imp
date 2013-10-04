@@ -258,4 +258,4 @@ in deprecated functionality are not fixed.
 
 # Where to go next # {#introduction_next}
 
-Probably the best thing to do next is to read the [kernel/nup84.py](kernel/kernel_2nup84_8py-example.html) example.
+Probably the best thing to do next is to read the [kernel/nup84.py](kernel_2nup84_8py-example.html) example.

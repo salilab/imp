@@ -233,7 +233,7 @@ The first set are assert-style macros:
 - IMP_INTERNAL_CHECK() which should be used to verify internal state
   and return values to make sure they satisfy pre and post-conditions.
 
-See [checks](base/exception_8h.html) page for more details. As a
+See [checks](base_2exception_8h.html) page for more details. As a
 general guideline, any improper usage to produce at least a warning
 all return values should be checked by such code.
 
