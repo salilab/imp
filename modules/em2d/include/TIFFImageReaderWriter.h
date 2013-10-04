@@ -1,5 +1,5 @@
 /**
- *  \file TIFFImageReaderWriter.h
+ *  \file em2d/TIFFImageReaderWriter.h
  *  \brief Management of reading/writing TIFF images
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -14,6 +14,7 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
+//! Management of reading/writing TIFF images
 class TIFFImageReaderWriter: public ImageReaderWriter {
 
 public:

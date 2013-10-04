@@ -15,6 +15,7 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
+//! Virtual class for reader/writers of images
 class ImageReaderWriter : public IMP::base::Object
 {
 public:

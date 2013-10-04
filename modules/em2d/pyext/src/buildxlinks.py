@@ -1,3 +1,6 @@
+"""@namespace IMP.em2d.buildxlinks
+   Utility functions to handle cross links.
+"""
 
 import IMP
 import IMP.atom as atom

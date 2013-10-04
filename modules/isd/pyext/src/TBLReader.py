@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+"""@namespace IMP.isd.TBLReader
+   Classes to handle TBL files.
+"""
 
 import sys, os
 import IMP.isd

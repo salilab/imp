@@ -1,5 +1,5 @@
 /**
- *  \file domino_filters.h
+ *  \file em2d/domino_filters.h
  *  \brief SubsetFilter for checking overlap between projections and images
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -21,6 +21,7 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
+//! SubsetFilter for checking overlap between projections and images
 class IMPEM2DEXPORT DistanceFilter: public domino::SubsetFilter {
 
 protected:

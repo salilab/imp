@@ -1,5 +1,5 @@
 /**
- *  \file CollisionCrossSection.h
+ *  \file em2d/CollisionCrossSection.h
  *  \brief
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -19,6 +19,7 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
+//! Determine the collision cross section for some projections of particles
 class IMPEM2DEXPORT CollisionCrossSection: public IMP::base::Object {
 public:
 

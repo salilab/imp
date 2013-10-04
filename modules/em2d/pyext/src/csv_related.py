@@ -1,3 +1,6 @@
+"""@namespace IMP.em2d.csv_related
+   Utility functions to handle CSV files.
+"""
 
 import csv
 

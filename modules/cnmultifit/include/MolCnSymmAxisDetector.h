@@ -1,5 +1,5 @@
 /**
- *  \file MolCnSymmAxisDetector.h
+ *  \file cnmultifit/MolCnSymmAxisDetector.h
  *  \brief molecule symmetry detector
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -20,6 +20,7 @@
 
 IMPCNMULTIFIT_BEGIN_NAMESPACE
 
+//! molecule symmetry detector
 class IMPCNMULTIFITEXPORT MolCnSymmAxisDetector {
 public:
   MolCnSymmAxisDetector(int symm_deg, const atom::Hierarchies &mhs);
