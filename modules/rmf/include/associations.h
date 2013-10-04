@@ -28,6 +28,7 @@ template <class T>
 inline T *get_association(RMF::NodeConstHandle nh) {
   AssociationType o = nh.get_association<AssociationType>();
   base::Object *op = o;
+  if (!op) return nullptr;
   return dynamic_cast<T *>(op);
 }
 

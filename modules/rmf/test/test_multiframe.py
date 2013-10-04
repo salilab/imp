@@ -22,8 +22,8 @@ class Tests(IMP.test.TestCase):
             d.set_y(0)
             d.set_z(0)
             nf=10
-            IMP.base.set_log_level(IMP.base.VERBOSE)
             path=self.get_tmp_file_name("test_mf."+suffix)
+            print path
             f=RMF.create_rmf_file(path)
             IMP.rmf.add_hierarchy(f, h)
             for i in range(0,nf):
@@ -31,6 +31,7 @@ class Tests(IMP.test.TestCase):
                 IMP.rmf.save_frame(f, i)
             del f
             f= RMF.open_rmf_file_read_only(path)
+            IMP.base.set_log_level(IMP.base.VERBOSE)
             [h]= IMP.rmf.create_hierarchies(f, m)
             for i in range(0,nf):
                 IMP.rmf.load_frame( f, i)

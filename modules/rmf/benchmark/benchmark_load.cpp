@@ -19,9 +19,9 @@ void test_it(std::string file_name, std::string test_name,
   double time;
   int nframes = 0;
   IMP_TIME({
-    IMP::rmf::load_frame(fh, nframes % 2);
-    ++nframes;
-  },
+             IMP::rmf::load_frame(fh, nframes % 2);
+             ++nframes;
+           },
            time);
   IMP::benchmark::report("rmf load", test_name, time, 1);
 }
@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
             "prmf", h);
 #endif
   }
-  catch (const IMP::base::Exception & e) {
+  catch (const IMP::base::Exception &e) {
     std::cerr << "ERROR: " << e.what() << std::endl;
   }
   return 0;

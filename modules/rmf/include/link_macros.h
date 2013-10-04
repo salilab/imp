@@ -18,7 +18,7 @@
 /**
    declares functions for adding, creating and linking
    RMF file objects with base calsses of type InType
- */
+*/
 #define IMP_DECLARE_LINKERS(Name, name, names, Type, Types, cargs,    \
                             link_custom_documentation)                \
   /** Add objects to the file.                                        \
@@ -58,23 +58,24 @@
    RMF file objects with base calsses of type InType
 
    \see IMP_DECLARE_LINKERS()
- */
-#define IMP_DEFINE_LINKERS(Name, name, names, Type, Types, create_args,     \
-                           create_args_pass)                                \
-  void add_##names(RMF::FileHandle fh, const Types& hs) {                   \
-    internal::add_helper<Name##SaveLink>(fh, hs);                           \
-  }                                                                         \
-  void add_##names(RMF::NodeHandle fh, const Types& hs) {                   \
-    internal::add_helper<Name##SaveLink>(fh.get_file(), hs);                \
-  }                                                                         \
-  void add_##name(RMF::FileHandle fh, Type hs) {                            \
-    add_##names(fh, Types(1, hs));                                          \
-  }                                                                         \
-  Types create_##names create_args {                                        \
-    return internal::create_helper<Name##LoadLink, Types> create_args_pass; \
-  }                                                                         \
-  void link_##names(RMF::FileConstHandle fh, const Types& hs) {             \
-    internal::link_helper<Name##LoadLink>(fh, hs);                      \
+*/
+#define IMP_DEFINE_LINKERS(Name, name, names, Type, Types, create_args, \
+                           create_args_pass)                            \
+  void add_##names(RMF::FileHandle fh, const Types& hs) {               \
+    IMP::rmf::internal::add_helper<Name##SaveLink>(fh, hs);             \
+  }                                                                     \
+  void add_##names(RMF::NodeHandle fh, const Types& hs) {               \
+    IMP::rmf::internal::add_helper<Name##SaveLink>(fh.get_file(), hs);  \
+  }                                                                     \
+  void add_##name(RMF::FileHandle fh, Type hs) {                        \
+    add_##names(fh, Types(1, hs));                                      \
+  }                                                                     \
+  Types create_##names create_args {                                    \
+    return IMP::rmf::internal::create_helper<Name##LoadLink, Types>     \
+        create_args_pass;                                               \
+  }                                                                     \
+  void link_##names(RMF::FileConstHandle fh, const Types& hs) {         \
+    IMP::rmf::internal::link_helper<Name##LoadLink>(fh, hs);            \
   }
 
 #endif /* IMPRMF_LINK_MACROS_H */

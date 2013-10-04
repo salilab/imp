@@ -13,7 +13,7 @@ int main(int, char * []) {
   try {
     RMF::test_throw_exception();
   }
-  catch (RMF::Exception & e) {
+  catch (RMF::Exception& e) {
     std::cout << RMF::get_message(e) << std::endl;
     return 0;
   }

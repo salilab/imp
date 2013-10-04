@@ -112,7 +112,7 @@ It create_particles() {
         ret.chains.back().add_child(cur);
         XYZR d = XYZR::setup_particle(p);
         d.set_radius(r);
-        /*Diffusion dd=*/ Diffusion::setup_particle(p);
+        /*Diffusion dd=*/Diffusion::setup_particle(p);
         d.set_coordinates_are_optimized(k != 0);
         d.set_coordinates(Vector3D(i * 30.0, j * 30.0, k * len + r) +
                           get_random_vector_in(perturb));
@@ -249,15 +249,13 @@ void do_benchmark(std::string name, PS0 *link, PS1 *lb, SS *bottom, bool rigid,
   It o = create_particles(in);
   if (rigid) {
     for (unsigned int i = 0; i < o.chains.size(); ++i) {
-      rigidify(get_as<kernel::ParticlesTemp>(get_leaves(o.chains[i])), no_members);
+      rigidify(get_as<kernel::ParticlesTemp>(get_leaves(o.chains[i])),
+               no_members);
     }
   }
   It it = create_restraints<PR>(link, lb, bottom, o);
   double total = 0, runtime = 0;
-  IMP_TIME({
-    total += simulate(it, number_of_steps);
-  },
-           runtime);
+  IMP_TIME({ total += simulate(it, number_of_steps); }, runtime);
   IMP::benchmark::report("bd", name, runtime, total);
 }
 }
@@ -345,11 +343,11 @@ int main(int argc, char **argv) {
       }
     }
   }
-  catch (IMP::base::Exception e) {
+  catch (const IMP::base::Exception& e) {
     std::cerr << "Error: " << e.what() << std::endl;
     return 1;
   }
-  catch (std::exception e) {
+  catch (const std::exception& e) {
     std::cerr << "Error: " << e.what() << std::endl;
     return 1;
   }

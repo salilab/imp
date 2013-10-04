@@ -30,7 +30,6 @@ class Tests(IMP.test.TestCase):
         #print RMF.get_open_hdf5_handle_names()
             f= RMF.open_rmf_file_read_only(name)
             print "reading"
-            print f, type(f)
             print "creating"
             h2=IMP.rmf.create_hierarchies(f, m)
             print "output"
