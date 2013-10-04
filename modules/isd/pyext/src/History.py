@@ -1,4 +1,4 @@
-#!/usr/bin/env ptyhon
+#!/usr/bin/env python
 from numpy import *
 import sys
 

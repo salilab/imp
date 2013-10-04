@@ -1,4 +1,4 @@
-#!/usr/bin/env ptyhon
+#!/usr/bin/env python
 
 import matplotlib.pyplot
 from numpy import *
