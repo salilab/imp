@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+
+"""@namespace IMP.isd.History
+   Classes to store output from replicas.
+"""
+
 from numpy import *
 import sys
 
