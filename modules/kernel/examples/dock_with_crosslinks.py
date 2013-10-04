@@ -97,6 +97,7 @@ def setup_move_them_all_MonteCarlo_internal(chains,scoring_function,
     for c in chains:
         p=IMP.atom.get_leaves(c)[0]
         rb=IMP.core.RigidMember(p).get_rigid_body()
+        rb.set_coordinates_are_optimized(True)
         mv= IMP.core.RigidBodyMover(rb, mc_dx, mc_dang)
         mc.add_mover(mv)
     return mc
@@ -132,6 +133,7 @@ def setup_move_them_all_MonteCarlo_external(connected_chain_list,scoring_functio
         p.set_name("root rigid body "+str(chain_id[s]))
         rb=IMP.core.RigidBody.setup_particle(p,rb_tmp_list)
         rb_ext_list.append(rb)
+        rb.set_coordinates_are_optimized(True)
         mv= IMP.core.RigidBodyMover(rb, mc_dx, mc_dang)
         mc.add_mover(mv)
     return mc,rb_ext_list
@@ -158,6 +160,7 @@ def setup_move_them_all_MonteCarlo_internal_2(chains,scoring_function,
         p=IMP.atom.get_leaves(c)[0]
         rb=IMP.core.RigidMember(p).get_rigid_body()
         rb_ext_list.append(rb)
+        rb.set_coordinates_are_optimized(True)
         mv= IMP.core.RigidBodyMover(rb, mc_dx, mc_dang)
         mc.add_mover(mv)
     return mc,rb_ext_list
