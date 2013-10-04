@@ -505,10 +505,14 @@ Hierarchies read_multimodel_pdb(base::TextInput in, kernel::Model* model) {
 bool check_arbond(kernel::Particle* atom_p);
 
 namespace {
-void write_pdb(const kernel::ParticlesTemp& ps, base::TextOutput out) {
+void write_pdb(const kernel::ParticlesTemp& inps, base::TextOutput out) {
   IMP_FUNCTION_LOG;
   int last_index = 0;
   bool use_input_index = true;
+  kernel::ParticlesTemp ps;
+  BOOST_FOREACH(kernel::Particle* p, inps) {
+    ps += get_by_type(atom::Hierarchy(p), ATOM_TYPE);
+  }
   for (unsigned int i = 0; i < ps.size(); ++i) {
     if (Atom(ps[i]).get_input_index() != last_index + 1) {
       use_input_index = false;
