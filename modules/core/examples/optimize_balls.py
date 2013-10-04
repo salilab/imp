@@ -30,7 +30,7 @@ IMP.base.set_log_level(IMP.base.SILENT)
 aps=[]
 filters=[]
 movers=[]
-rss= IMP.kernel.RestraintSet(m, 1.0, "bonds")
+restraints = []
 for i in range(0,ni):
     for j in range(0,nj):
         base=IMP.algebra.Vector3D(i,j,0)
@@ -53,13 +53,13 @@ for i in range(0,ni):
         # set up a chain of bonds
         cpc= IMP.container.ExclusiveConsecutivePairContainer(chain)
         r= IMP.container.PairsRestraint(lps, cpc)
-        rss.add_restraint(r)
+        restraints.append(r)
 
 # don't apply excluded volume to consecutive particles
 filters.append(IMP.container.ExclusiveConsecutivePairFilter())
 ibss= IMP.core.BoundingBox3DSingletonScore(IMP.core.HarmonicUpperBound(0,k), bb)
 bbr= IMP.container.SingletonsRestraint(ibss, aps)
-rss.add_restraint(bbr)
+restraints.append(bbr)
 
 cg= IMP.core.ConjugateGradients(m)
 mc=IMP.core.MonteCarlo(m)
@@ -67,7 +67,7 @@ mc.set_name("MC")
 sm= IMP.core.SerialMover(movers)
 mc.add_mover(sm)
 # we are special casing the nbl term
-isf= IMP.core.IncrementalScoringFunction(aps, [rss])
+isf= IMP.core.IncrementalScoringFunction(aps, restraints)
 isf.set_name("I")
 # use special incremental support for the non-bonded part
 # apply the pair score sps to all touching ball pairs from the list of particles
@@ -79,7 +79,7 @@ isf.add_close_pair_score(sps, 0, aps, filters)
 # ExcludedVolumeRestraint
 nbl= IMP.core.ExcludedVolumeRestraint(aps, k, 1)
 nbl.set_pair_filters(filters)
-sf= IMP.core.RestraintsScoringFunction([rss, nbl], "RSF")
+sf= IMP.core.RestraintsScoringFunction(restraints + [nbl], "RSF")
 
 if True:
     mc.set_incremental_scoring_function(isf)
@@ -94,8 +94,8 @@ for p in aps:
                                           0))
 cg.set_scoring_function(sf)
 cg.optimize(1000)
-print "collisions", nbl.evaluate(False), "bonds", rss.evaluate(False),
-print bbr.evaluate(False)
+for r in restraints:
+    print r.get_name(), r.evaluate(False)
 
 # shrink each of the particles, relax the configuration, repeat
 for i in range(1,11):
@@ -111,8 +111,8 @@ for i in range(1,11):
         mc.set_kt(100.0/(3*j+1))
         print "mc", mc.optimize(ni*nj*np*(j+1)*100), m.evaluate(False), cg.optimize(10)
     del rs
-    print "collisions", nbl.evaluate(False), "bonds", rss.evaluate(False),
-    print "bounding box", bbr.evaluate(False)
+    for r in restraints:
+        print r.get_name(), r.evaluate(False)
 
 w= IMP.display.PymolWriter("final.pym")
 for p in aps:
