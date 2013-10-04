@@ -30,6 +30,8 @@ def _cleanup_name(n):
         sp = n.split("::")
         if len(sp) == 2:
             sp = [sp[0], "kernel", sp[1]]
+        if len(sp) == 5:
+            return None
         return "::".join(sp)
     if n == 'IMP_NEW()':
         # Workaround for (unqualified) macro
@@ -56,8 +58,6 @@ def get_function_link(name, et, mname):
     return "<a href=\"" + fname+"#"+tag+"\">"+nicename+"()</a>"
 
 def _add_to_list(table, key, value):
-    _cleanup_name(key)
-    _cleanup_name(value)
     if table.has_key(key):
         if value not in table[key]:
             table[key].append(value)
@@ -98,7 +98,6 @@ def get_example_2_name(et):
     return nm
 
 def traverse_example(name, et):
-    if name: _cleanup_name(name)
     if et.tag=='ref':
         if et.attrib['kindref'] == "compound":
             _add_example_class_ref(name, get_class_name(et))
@@ -108,7 +107,6 @@ def traverse_example(name, et):
         traverse_example(name, child)
 
 def traverse_example_2(name, et):
-    if name: _cleanup_name(name)
     if et.tag=='ref':
         if et.attrib['kindref'] == "compound":
             _add_example_class_ref(name, get_class_name(et))
@@ -172,7 +170,10 @@ def create_index(title, ref, other_indexes, description, links, target, key_name
     keys.sort()
     keys_by_module = {}
     for k in keys:
-        m = _cleanup_name(k).split("::")[1]
+        kc = _cleanup_name(k)
+        if not kc:
+            continue
+        m = kc.split("::")[1]
         if m not in keys_by_module.keys():
             keys_by_module[m]=[]
         keys_by_module[m].append(k)
@@ -185,12 +186,14 @@ def create_index(title, ref, other_indexes, description, links, target, key_name
         for k in keys_by_module[m]:
 
             cn = _cleanup_name(k)
+            if not cn: continue
             out.write("<tr><td>@ref %s</td>"% cn)
         # suppress same names as they aren't very useful
             seen = []
             entry = []
             for l in links[k]:
                 cn = _cleanup_name(l)
+                if not cn: continue
                 if cn and cn not in seen:
                     entry.append(cn)
                 seen.append(cn)
