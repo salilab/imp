@@ -1,6 +1,6 @@
 /**
  *  \file isd/Weight.h
- *  \brief Add a name to a particle.
+ *  \brief Add weights for a set of states to a particle.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -20,6 +20,7 @@
 
 IMPISD_BEGIN_NAMESPACE
 
+//! Add weights for a set of states to a particle.
 class IMPISDEXPORT Weight: public Decorator
 {
 
