@@ -109,7 +109,7 @@ for i in range(1,11):
     for j in range(0,5):
         print "stage", j
         mc.set_kt(100.0/(3*j+1))
-        print "mc", mc.optimize(ni*nj*np*(j+1)*100), m.evaluate(False), cg.optimize(10)
+        print "mc", mc.optimize(ni*nj*np*(j+1)*100), cg.optimize(10)
     del rs
     for r in restraints:
         print r.get_name(), r.evaluate(False)
