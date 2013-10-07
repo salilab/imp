@@ -91,7 +91,9 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                                 const algebra::ReferenceFrame3D &rf);
-
+  void setup_score_states();
+  void add_point_member(kernel::ParticleIndex pi);
+  void add_rigid_body_member(kernel::ParticleIndex pi);
  public:
   RigidMembers get_members() const;
 

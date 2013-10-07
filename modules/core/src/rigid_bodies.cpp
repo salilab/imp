@@ -513,8 +513,7 @@ void RigidBody::teardown_particle(RigidBody rb) {
   {
     const kernel::ParticleIndexes &members = rb.get_member_particle_indexes();
     BOOST_FOREACH(kernel::ParticleIndex pi, members) {
-      internal::remove_required_attributes_for_member(rb.get_model(),
-                                                      pi);
+      internal::remove_required_attributes_for_member(rb.get_model(), pi);
     }
   }
   {
@@ -533,44 +532,27 @@ void RigidBody::set_reference_frame_from_members(
   base::Timer t("set_up_rigid_body_reference_frame");
   algebra::Vector3Ds local;
   algebra::Vector3Ds global;
-  if (rms.size() < 3) {
-    return;
-  }
+  IMP_USAGE_CHECK(rms.size() >= 3,
+                  "Can't initialize a rigid body reference frame "
+                      << "with < 3 particles.");
   kernel::Model *m = get_model();
-  for (unsigned int i = 0; i < rms.size(); ++i) {
-    if (RigidMember::get_is_setup(m, rms[i])) {
-      local.push_back(RigidMember(m, rms[i]).get_internal_coordinates());
-      global.push_back(RigidMember(m, rms[i]).get_coordinates());
-    } else if (NonRigidMember::get_is_setup(m, rms[i])) {
-      // skip
-    }
+  BOOST_FOREACH(kernel::ParticleIndex pi, rms) {
+    local.push_back(RigidMember(m, pi).get_internal_coordinates());
+    global.push_back(RigidMember(m, pi).get_coordinates());
   }
   algebra::Transformation3D t3 =
       algebra::get_transformation_aligning_first_to_second(local, global);
   set_reference_frame_lazy(algebra::ReferenceFrame3D(t3));
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    for (unsigned int i = 0; i < rms.size(); ++i) {
-      if (RigidMember::get_is_setup(m, rms[i])) {
-        algebra::Vector3D local =
-            RigidMember(m, rms[i]).get_internal_coordinates();
-        algebra::Vector3D back = t3.get_transformed(local);
-        algebra::Vector3D global = RigidMember(m, rms[i]).get_coordinates();
-        IMP_INTERNAL_CHECK(get_distance(back, global) < 1,
-                           "Coordinates don't match: read "
-                               << global << " had local " << local
-                               << " but got " << back << " with transform "
-                               << t3);
-      } else {
-        algebra::Vector3D local =
-            NonRigidMember(m, rms[i]).get_internal_coordinates();
-        algebra::Vector3D back = t3.get_transformed(local);
-        algebra::Vector3D global = NonRigidMember(m, rms[i]).get_coordinates();
-        IMP_INTERNAL_CHECK(get_distance(back, global) < 1,
-                           "Coordinates don't match: read "
-                               << global << " had local " << local
-                               << " but got " << back << " with transform "
-                               << t3);
-      }
+    BOOST_FOREACH(kernel::ParticleIndex pi, rms) {
+      algebra::Vector3D local =
+          RigidBodyMember(m, pi).get_internal_coordinates();
+      algebra::Vector3D back = t3.get_transformed(local);
+      algebra::Vector3D global = RigidMember(m, pi).get_coordinates();
+      IMP_INTERNAL_CHECK(get_distance(back, global) < 1,
+                         "Coordinates don't match: read "
+                             << global << " had local " << local << " but got "
+                             << back << " with transform " << t3);
     }
   }
   // later patch members to make coordinates exact.
@@ -624,73 +606,9 @@ void RigidBody::set_is_rigid_member(kernel::ParticleIndex pi, bool tf) {
   on_change();
 }
 
-void RigidBody::add_member(kernel::ParticleIndexAdaptor pi) {
-  IMP_FUNCTION_LOG;
-  algebra::ReferenceFrame3D r = get_reference_frame();
-  if (RigidBody::get_is_setup(get_model(), pi)) {
-    /*IMP_LOG_TERSE( "Adding rigid body " << p->get_name()
-      << " as member." << std::endl);*/
-    RigidBody d(get_model(), pi);
-    internal::add_required_attributes_for_body_member(get_model(), d,
-                                                      get_particle_index());
-    RigidMember cm(d);
-    if (get_model()->get_has_attribute(
-            internal::rigid_body_data().body_members_, get_particle_index())) {
-      kernel::ParticleIndexes members = get_model()->get_attribute(
-          internal::rigid_body_data().body_members_, get_particle_index());
-      members.push_back(pi);
-      get_model()->set_attribute(internal::rigid_body_data().body_members_,
-                                 get_particle_index(), members);
-    } else {
-      get_model()->add_attribute(internal::rigid_body_data().body_members_,
-                                 get_particle_index(),
-                                 kernel::ParticleIndexes(1, pi));
-    }
-    /*IMP_LOG_TERSE( "Body members are "
-            << get_model()->get_attribute(internal::rigid_body_data()
-                                          .body_members_,
-                                          get_particle_index()) << std::endl);*/
-    // want tr*ltr= btr, so ltr= tr-1*btr
-    algebra::ReferenceFrame3D pr = d.get_reference_frame();
-    algebra::Transformation3D tr =
-        r.get_transformation_from() * pr.get_transformation_to();
-    cm.set_internal_transformation(tr);
-    /*IMP_LOG_TERSE( "Transformations are " << r << " and " << pr
-            << " (" << r.get_transformation_from() << ")"
-            << " resulting in " << cm.get_internal_transformation()
-            << " from " << tr
-            << " with check of "
-            << r.get_transformation_to()*cm.get_internal_transformation()
-            << std::endl);*/
-  } else {
-    /*IMP_LOG_TERSE( "Adding XYZ " << p->get_name()
-      << " as member." << std::endl);*/
-    internal::add_required_attributes_for_member(get_model(), pi,
-                                                 get_particle_index());
-    RigidMember cm(get_model(), pi);
-    if (get_model()->get_has_attribute(internal::rigid_body_data().members_,
-                                       get_particle_index())) {
-      kernel::ParticleIndexes members = get_model()->get_attribute(
-          internal::rigid_body_data().members_, get_particle_index());
-      members.push_back(pi);
-      get_model()->set_attribute(internal::rigid_body_data().members_,
-                                 get_particle_index(), members);
-    } else {
-      get_model()->add_attribute(internal::rigid_body_data().members_,
-                                 get_particle_index(),
-                                 kernel::ParticleIndexes(1, pi));
-    }
-    algebra::Vector3D lc =
-        r.get_local_coordinates(XYZ(get_model(), pi).get_coordinates());
-    cm.set_internal_coordinates(lc);
-    IMP_USAGE_CHECK((cm.get_internal_coordinates() - lc).get_magnitude() < .1,
-                    "Bad setting of coordinates.");
-  }
-
+void RigidBody::setup_score_states() {
   if (!get_model()->get_has_attribute(get_rb_score_state_0_key(),
                                       get_particle_index())) {
-    /*IMP_LOG_TERSE( "Setting up constraint for rigid body "
-      << get_particle()->get_name() << std::endl);*/
     IMP_NEW(UpdateRigidBodyMembers, urbm, ());
     IMP_NEW(AccumulateRigidBodyDerivatives, arbd, ());
     base::Pointer<Constraint> c0 = IMP::internal::create_tuple_constraint(
@@ -700,49 +618,75 @@ void RigidBody::add_member(kernel::ParticleIndexAdaptor pi) {
     get_model()->add_attribute(get_rb_score_state_0_key(), get_particle_index(),
                                c0);
   }
-  on_change();
 }
 
-void RigidBody::add_non_rigid_member(kernel::ParticleIndex pi) {
+void RigidBody::add_rigid_body_member(kernel::ParticleIndex pi) {
   IMP_FUNCTION_LOG;
   algebra::ReferenceFrame3D r = get_reference_frame();
-  /*IMP_LOG_TERSE( "Adding XYZ " << p->get_name()
+  /*IMP_LOG_TERSE( "Adding rigid body " << p->get_name()
     << " as member." << std::endl);*/
-  kernel::Particle *p = get_model()->get_particle(pi);
-  internal::add_required_attributes_for_non_member(get_model(), pi,
-                                                   get_particle_index());
-  NonRigidMember cm(p);
+  RigidBody d(get_model(), pi);
+  internal::add_required_attributes_for_body_member(get_model(), d,
+                                                    get_particle_index());
+  RigidMember cm(d);
+  if (get_model()->get_has_attribute(internal::rigid_body_data().body_members_,
+                                     get_particle_index())) {
+    kernel::ParticleIndexes members = get_model()->get_attribute(
+        internal::rigid_body_data().body_members_, get_particle_index());
+    members.push_back(pi);
+    get_model()->set_attribute(internal::rigid_body_data().body_members_,
+                               get_particle_index(), members);
+  } else {
+    get_model()->add_attribute(internal::rigid_body_data().body_members_,
+                               get_particle_index(),
+                               kernel::ParticleIndexes(1, pi));
+  }
+  algebra::ReferenceFrame3D pr = d.get_reference_frame();
+  algebra::Transformation3D tr =
+      r.get_transformation_from() * pr.get_transformation_to();
+  cm.set_internal_transformation(tr);
+}
+
+void RigidBody::add_point_member(kernel::ParticleIndex pi) {
+  algebra::ReferenceFrame3D r = get_reference_frame();
+  internal::add_required_attributes_for_member(get_model(), pi,
+                                               get_particle_index());
+  RigidMember cm(get_model(), pi);
   if (get_model()->get_has_attribute(internal::rigid_body_data().members_,
                                      get_particle_index())) {
     kernel::ParticleIndexes members = get_model()->get_attribute(
         internal::rigid_body_data().members_, get_particle_index());
-    members.push_back(p->get_index());
+    members.push_back(pi);
     get_model()->set_attribute(internal::rigid_body_data().members_,
                                get_particle_index(), members);
   } else {
     get_model()->add_attribute(internal::rigid_body_data().members_,
                                get_particle_index(),
-                               kernel::ParticleIndexes(1, p->get_index()));
+                               kernel::ParticleIndexes(1, pi));
   }
-  // merge with add_member
-  algebra::Vector3D lc = r.get_local_coordinates(XYZ(p).get_coordinates());
+  algebra::Vector3D lc =
+      r.get_local_coordinates(XYZ(get_model(), pi).get_coordinates());
   cm.set_internal_coordinates(lc);
   IMP_USAGE_CHECK((cm.get_internal_coordinates() - lc).get_magnitude() < .1,
                   "Bad setting of coordinates.");
+}
 
-  if (!get_model()->get_has_attribute(get_rb_score_state_0_key(),
-                                      get_particle_index())) {
-    /*IMP_LOG_TERSE( "Setting up constraint for rigid body "
-      << get_particle()->get_name() << std::endl);*/
-    IMP_NEW(UpdateRigidBodyMembers, urbm, ());
-    IMP_NEW(AccumulateRigidBodyDerivatives, arbd, ());
-    base::Pointer<Constraint> c0 = IMP::internal::create_tuple_constraint(
-        urbm.get(), arbd.get(), get_particle(),
-        get_particle()->get_name() + " rigid body positions");
-    get_model()->add_score_state(c0);
-    get_model()->add_attribute(get_rb_score_state_0_key(), get_particle_index(),
-                               c0);
+void RigidBody::add_member(kernel::ParticleIndexAdaptor pi) {
+  IMP_FUNCTION_LOG;
+  algebra::ReferenceFrame3D r = get_reference_frame();
+  if (RigidBody::get_is_setup(get_model(), pi)) {
+    add_rigid_body_member(pi);
+  } else {
+    add_point_member(pi);
   }
+  setup_score_states();
+  on_change();
+}
+
+void RigidBody::add_non_rigid_member(kernel::ParticleIndex pi) {
+  IMP_FUNCTION_LOG;
+  add_member(pi);
+  set_is_rigid_member(pi, false);
 }
 
 algebra::VectorD<4> RigidBody::get_rotational_derivatives() const {
