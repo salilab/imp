@@ -179,19 +179,6 @@ def make_doxygen(options, modules):
         template = template.replace("@EXAMPLE_PATH@", "examples/"+options.name)
     tools.rewrite(file, template)
 
-def make_version_check(options):
-    dir= os.path.join("lib", "IMP", options.name)
-    tools.mkdir(dir, clean=False)
-    outf= os.path.join(dir, "_version_check.py")
-    template="""def check_version(myversion):
-  def _check_one(name, expected, found):
-    if expected != found:
-      message = "Expected version " + expected + " but got " + found + " when loading module " + name + ". Please make sure IMP is properly built and installed and that matching python and C++ libraries are used."
-      raise RuntimeError(message)
-  _check_one('%s', '%s', myversion)
-  """
-    tools.rewrite(outf, template%(options.name, get_version(options)))
-
 def write_no_ok(module):
     new_order= [x for x in tools.get_sorted_order() if x != module]
     tools.set_sorted_order(new_order)

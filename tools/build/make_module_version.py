@@ -57,9 +57,10 @@ def make_version_check(options):
     if expected != found:
       message = "Expected version " + expected + " but got " + found + " when loading module " + name + ". Please make sure IMP is properly built and installed and that matching python and C++ libraries are used."
       raise RuntimeError(message)
-  _check_one('%s', '%s', myversion)
+  version = '%s'
+  _check_one('%s', version, myversion)
   """
-    tools.rewrite(outf, template%(options.name, get_version(options)))
+    tools.rewrite(outf, template%(get_version(options), options.name))
 
 
 def main():
