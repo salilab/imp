@@ -1,5 +1,5 @@
 /**
- *  \file project.h
+ *  \file em2d/project.h
  *  \brief Generation of projections from models or density maps
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
 */
@@ -27,7 +27,7 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-// Parameters needed for the core projection routine
+//! Parameters needed for the core projection routine
 class IMPEM2DEXPORT ProjectingParameters {
 public:
   double pixel_size, resolution;
@@ -53,9 +53,10 @@ public:
 IMP_VALUES(ProjectingParameters,ProjectingParametersList);
 
 
-// Parameters given as options to the get_projections() functions.
-// This class augments ProjectingParameters adding values that are options
-// for the projecting functions, not core parameters.
+//! Parameters given as options to the get_projections() functions.
+/** This class augments ProjectingParameters adding values that are options
+    for the projecting functions, not core parameters.
+ */
 class IMPEM2DEXPORT ProjectingOptions: public ProjectingParameters {
 
   /**
@@ -106,8 +107,8 @@ public:
 IMP_VALUES(ProjectingOptions,ProjectingOptionsList);
 
 
-//! Generates projectios from particles
-/*!
+//! Generates projections from particles
+/**
   \param[in] ps particles to project
   \param[in] vs set of spherical vectors with the directions of projection
   \param[in] rows size of the images
@@ -121,8 +122,8 @@ IMPEM2DEXPORT em2d::Images get_projections(const kernel::ParticlesTemp &ps,
         Strings names=Strings());
 
 
-//! Generates projectios from particles
-/*!
+//! Generates projections from particles
+/**
   `registration_values` describes registration values with the parameters of
             the projections to generate.
 
@@ -135,7 +136,7 @@ IMPEM2DEXPORT em2d::Images get_projections(const kernel::ParticlesTemp &ps,
 
 
 //! Generates a projection from particles
-/*!
+/**
   \param[in] img
   \param[in] ps particles to project
   \param[in] reg Registration value with the parameters of the projection
@@ -147,13 +148,14 @@ IMPEM2DEXPORT em2d::Images get_projections(const kernel::ParticlesTemp &ps,
   \return img the projection will be stored here
   \note See the function get_projections() for the rest of the parameters
 */
-IMPEM2DEXPORT void get_projection(em2d::Image *img,const kernel::ParticlesTemp &ps,
+IMPEM2DEXPORT void get_projection(em2d::Image *img,
+        const kernel::ParticlesTemp &ps,
         const RegistrationResult &reg, const ProjectingOptions &options,
         MasksManagerPtr masks=MasksManagerPtr(), String name="");
 
 
 //! Projects a set of particles. This is the core function that others call
-/*!
+/**
   \param[in] ps particles to project
   \param[in] m2
   \param[in] R rotation to apply to the particles (respect to the centroid)
@@ -170,7 +172,7 @@ IMPEM2DEXPORT void do_project_particles(const kernel::ParticlesTemp &ps,
              MasksManagerPtr masks);
 
 
-/*! This function is slightly different than the other ones.
+/** This function is slightly different than the other ones.
     Only generates evenly distributed projections and determines the size of
     the images that encloses the particles. Should not be used unless this is
     exactly what you want.
@@ -184,7 +186,7 @@ IMPEM2DEXPORT Images create_evenly_distributed_projections(
 
 
 //! Project the points contained in Vector3Ds to gen vectors in 2D
-/*!
+/**
   \param[in] ps the points
   \param[in] R Rotation to apply to the points to project them in the Z axis
   \param[in] translation translation to apply to the points
@@ -199,7 +201,7 @@ IMPEM2DEXPORT algebra::Vector2Ds do_project_vectors(
 
 
 //! Project the points contained in Vector3Ds
-/*!
+/**
   \param[in] ps the points
   \param[in] R Rotation to apply to the points to project them in the Z axis
   \param[in] translation translation to apply to the points
@@ -213,13 +215,13 @@ IMPEM2DEXPORT algebra::Vector2Ds do_project_vectors(
               const algebra::Vector3D &center);
 
 
-/*! Get an automatic size for an image that contains the particles
-
+//! Get an automatic size for an image that contains the particles
+/**
   slack is the number of pixels left as border
 */
-IMPEM2DEXPORT unsigned int get_enclosing_image_size(const kernel::ParticlesTemp &ps,
-                                                    double pixel_size,
-                                                    unsigned int slack);
+IMPEM2DEXPORT unsigned int get_enclosing_image_size(
+                   const kernel::ParticlesTemp &ps, double pixel_size,
+                   unsigned int slack);
 
 
 
