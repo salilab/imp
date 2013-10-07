@@ -102,6 +102,7 @@ class IMPCOREEXPORT MSConnectivityRestraint : public kernel::Restraint {
  private:
 #endif
 
+#ifndef IMP_DOXYGEN
   class ParticleMatrix {
    public:
 
@@ -225,6 +226,7 @@ class IMPCOREEXPORT MSConnectivityRestraint : public kernel::Restraint {
     unsigned int root_;
     bool finalized_;
   };
+#endif // IMP_DOXYGEN
 
   ParticleMatrix particle_matrix_;
   mutable ExperimentalTree tree_;
