@@ -349,7 +349,6 @@ void Model::do_clear_required_score_states(kernel::ModelObject *mo) {
 void Model::do_clear_dependencies(const ModelObject *cmo) {
   IMP_CHECK_OBJECT(this);
   if (dependency_graph_.find(cmo) == dependency_graph_.end()) return;
-  IMP_LOG_VERBOSE("Clearing dependencies for " << cmo->get_name() << std::endl);
   ModelObject *mo = const_cast<ModelObject *>(cmo);
   {  // do first before edges go away
     do_clear_required_score_states(mo);
@@ -467,7 +466,6 @@ void Model::do_add_model_object(kernel::ModelObject *mo) {
 void Model::do_remove_model_object(kernel::ModelObject *mo) {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(this);
-  IMP_LOG_VERBOSE("Removing " << mo->get_name() << " from model." << std::endl);
   IMP_USAGE_CHECK(dependency_graph_.find(mo) != dependency_graph_.end(),
                   "Already removed from model.");
   if (no_dependencies_.find(mo) == no_dependencies_.end()) {
