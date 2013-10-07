@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""@namespace IMP.isd.Entry
+   Classes to handle ISD statistics files.
+"""
+
 class Entry:
     """The entry class represents a column in the statistics file.
     Its components are a title, a format and an additional object.

@@ -1,3 +1,7 @@
+"""@namespace IMP.isd.utils
+   Miscellaneous utilities.
+"""
+
 ##
 ## The Inferential Structure Determination (ISD) software library
 ##
