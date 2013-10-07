@@ -19,11 +19,6 @@
 
 IMPRMF_BEGIN_NAMESPACE
 
-#ifndef IMP_DOXYGEN
-IMPRMFEXPORT unsigned int get_load_linker_index(std::string st);
-IMPRMFEXPORT unsigned int get_save_linker_index(std::string st);
-#endif
-
 class SaveLink;
 class LoadLink;
 IMP_OBJECTS(SaveLink, SaveLinks);

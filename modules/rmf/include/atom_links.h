@@ -31,7 +31,6 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<kernel::Particle> {
   IMP_NAMED_TUPLE_2(ConstData, ConstDatas, RMF::NodeIDs, nodes,
                     kernel::ParticlesTemp, particles, );
   typedef SimpleLoadLink<kernel::Particle> P;
-  base::Pointer<Model> m_;
   RMF::ParticleConstFactory particle_factory_;
   RMF::IntermediateParticleConstFactory intermediate_particle_factory_;
   RMF::RigidParticleConstFactory rigid_factory_;
@@ -65,10 +64,10 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<kernel::Particle> {
       a member of the hierarchy.
       \unstable{do_create_recursive} */
   virtual kernel::Particle *do_create_recursive(
-      kernel::Particle *root, RMF::NodeConstHandle name,
+      kernel::Particle *root, kernel::Model *m, RMF::NodeConstHandle name,
       kernel::Particle *rbp = nullptr);
 
-  kernel::Particle *do_create(RMF::NodeConstHandle name);
+  kernel::Particle *do_create(RMF::NodeConstHandle name, kernel::Model *m);
   /** Overload this to take specific action on linking
       a member of the hierarchy.
       \unstable{do_add_link_recursive} */
@@ -79,7 +78,9 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<kernel::Particle> {
   void do_add_link(kernel::Particle *o, RMF::NodeConstHandle node);
 
  public:
-  HierarchyLoadLink(RMF::FileConstHandle fh, kernel::Model *m);
+  HierarchyLoadLink(RMF::FileConstHandle fh);
+
+  static const char *get_name() {return "atom load";}
 
   IMP_OBJECT_METHODS(HierarchyLoadLink);
 };
@@ -131,6 +132,8 @@ class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<kernel::Particle> {
  public:
   HierarchySaveLink(RMF::FileHandle fh);
   void set_save_forces(bool tf) { forces_ = tf; }
+
+  static const char *get_name() {return "atom save";}
   IMP_OBJECT_METHODS(HierarchySaveLink);
 };
 

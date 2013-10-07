@@ -87,6 +87,7 @@ class SphereLoadLink
 
  public:
   SphereLoadLink(RMF::FileConstHandle fh) : P(fh) {}
+  static const char *get_name() { return "sphere load"; }
 };
 
 void save_sphere(display::SphereGeometry *o, RMF::NodeHandle nh,
@@ -109,6 +110,7 @@ class SphereSaveLink
 
  public:
   SphereSaveLink(RMF::FileHandle fh) : P(fh) {}
+  static const char *get_name() { return "sphere save"; }
 };
 
 class CylinderLoadLink : public GeometryLoadLink<display::CylinderGeometry,
@@ -132,6 +134,7 @@ class CylinderLoadLink : public GeometryLoadLink<display::CylinderGeometry,
 
  public:
   CylinderLoadLink(RMF::FileConstHandle fh) : P(fh) {}
+  static const char *get_name() { return "cylinder load"; }
 };
 
 void save_cylinder(display::CylinderGeometry *o, RMF::NodeHandle nh,
@@ -161,6 +164,7 @@ class CylinderSaveLink
 
  public:
   CylinderSaveLink(RMF::FileHandle fh) : P(fh) {}
+  static const char *get_name() { return "cylinder save"; }
 };
 
 algebra::Segment3D get_segment(RMF::SegmentConst sc) {
@@ -198,6 +202,7 @@ class SegmentLoadLink : public GeometryLoadLink<display::SegmentGeometry,
 
  public:
   SegmentLoadLink(RMF::FileConstHandle fh) : P(fh) {}
+  static const char *get_name() { return "segment load"; }
 };
 
 void save_segment(display::SegmentGeometry *o, RMF::NodeHandle nh,
@@ -218,6 +223,7 @@ class SegmentSaveLink
 
  public:
   SegmentSaveLink(RMF::FileHandle fh) : P(fh) {}
+  static const char *get_name() { return "segment save"; }
 };
 
 class BoxLoadLink : public GeometryLoadLink<display::BoundingBoxGeometry,
@@ -245,6 +251,7 @@ class BoxLoadLink : public GeometryLoadLink<display::BoundingBoxGeometry,
 
  public:
   BoxLoadLink(RMF::FileConstHandle fh) : P(fh) {}
+  static const char *get_name() { return "box load"; }
 };
 
 void save_box(display::BoundingBoxGeometry *o, RMF::NodeHandle nh,
@@ -281,6 +288,7 @@ class BoxSaveLink : public GeometrySaveLink<display::BoundingBoxGeometry,
 
  public:
   BoxSaveLink(RMF::FileHandle fh) : P(fh) {}
+  static const char *get_name() { return "box save"; }
 };
 
 void divide(const display::GeometriesTemp &r, display::SphereGeometries &sgs,
@@ -302,14 +310,6 @@ void divide(const display::GeometriesTemp &r, display::SphereGeometries &sgs,
   }
 }
 }
-IMP_DEFINE_INTERNAL_LINKERS(Sphere, sphere, (RMF::FileHandle fh),
-                            (RMF::FileConstHandle fh), (fh), (fh));
-IMP_DEFINE_INTERNAL_LINKERS(Cylinder, cylinder, (RMF::FileHandle fh),
-                            (RMF::FileConstHandle fh), (fh), (fh));
-IMP_DEFINE_INTERNAL_LINKERS(Segment, segment, (RMF::FileHandle fh),
-                            (RMF::FileConstHandle fh), (fh), (fh));
-IMP_DEFINE_INTERNAL_LINKERS(Box, box, (RMF::FileHandle fh),
-                            (RMF::FileConstHandle fh), (fh), (fh));
 
 void add_geometries(RMF::NodeHandle rh, const display::GeometriesTemp &r) {
   RMF::FileHandle fh = rh.get_file();
@@ -318,10 +318,13 @@ void add_geometries(RMF::NodeHandle rh, const display::GeometriesTemp &r) {
   display::SegmentGeometries ssgs;
   display::BoundingBoxGeometries bgs;
   divide(r, sgs, cgs, ssgs, bgs);
-  base::Pointer<SphereSaveLink> sll = get_sphere_save_link(fh);
-  base::Pointer<CylinderSaveLink> cll = get_cylinder_save_link(fh);
-  base::Pointer<SegmentSaveLink> sgll = get_segment_save_link(fh);
-  base::Pointer<BoxSaveLink> bll = get_box_save_link(fh);
+  base::Pointer<SphereSaveLink> sll =
+      internal::get_save_link<SphereSaveLink>(fh);
+  base::Pointer<CylinderSaveLink> cll =
+      internal::get_save_link<CylinderSaveLink>(fh);
+  base::Pointer<SegmentSaveLink> sgll =
+      internal::get_save_link<SegmentSaveLink>(fh);
+  base::Pointer<BoxSaveLink> bll = internal::get_save_link<BoxSaveLink>(fh);
   {
     RMF::SetCurrentFrame sf(rh.get_file(), RMF::ALL_FRAMES);
     sll->add(rh, sgs);
@@ -394,10 +397,13 @@ void add_geometry(RMF::FileHandle parent, display::Geometry *r) {
 }
 
 display::Geometries create_geometries(RMF::FileConstHandle fh) {
-  base::Pointer<SphereLoadLink> sll = get_sphere_load_link(fh);
-  base::Pointer<CylinderLoadLink> cll = get_cylinder_load_link(fh);
-  base::Pointer<SegmentLoadLink> sgll = get_segment_load_link(fh);
-  base::Pointer<BoxLoadLink> bll = get_box_load_link(fh);
+  base::Pointer<SphereLoadLink> sll =
+      internal::get_load_link<SphereLoadLink>(fh);
+  base::Pointer<CylinderLoadLink> cll =
+      internal::get_load_link<CylinderLoadLink>(fh);
+  base::Pointer<SegmentLoadLink> sgll =
+      internal::get_load_link<SegmentLoadLink>(fh);
+  base::Pointer<BoxLoadLink> bll = internal::get_load_link<BoxLoadLink>(fh);
   display::GeometriesTemp ret;
   {
     RMF::SetCurrentFrame scf(fh, RMF::FrameID(0));
@@ -415,10 +421,13 @@ display::Geometries create_geometries(RMF::FileConstHandle fh) {
 
 void link_geometries(RMF::FileConstHandle fh,
                      const display::GeometriesTemp &gt) {
-  base::Pointer<SphereLoadLink> sll = get_sphere_load_link(fh);
-  base::Pointer<CylinderLoadLink> cll = get_cylinder_load_link(fh);
-  base::Pointer<SegmentLoadLink> sgll = get_segment_load_link(fh);
-  base::Pointer<BoxLoadLink> bll = get_box_load_link(fh);
+  base::Pointer<SphereLoadLink> sll =
+      internal::get_load_link<SphereLoadLink>(fh);
+  base::Pointer<CylinderLoadLink> cll =
+      internal::get_load_link<CylinderLoadLink>(fh);
+  base::Pointer<SegmentLoadLink> sgll =
+      internal::get_load_link<SegmentLoadLink>(fh);
+  base::Pointer<BoxLoadLink> bll = internal::get_load_link<BoxLoadLink>(fh);
   display::SphereGeometries sgs;
   display::CylinderGeometries cgs;
   display::SegmentGeometries ssgs;

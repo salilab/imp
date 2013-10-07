@@ -16,6 +16,7 @@
 #include <IMP/base/Pointer.h>
 #include <IMP/base/object_macros.h>
 #include <IMP/base/log_macros.h>
+#include <IMP/kernel/Model.h>
 #include <RMF/SetCurrentFrame.h>
 #include <RMF/names.h>
 #include <RMF/decorators.h>
@@ -34,7 +35,9 @@ class SimpleLoadLink : public LoadLink {
  protected:
   virtual void do_load_one(RMF::NodeConstHandle nh, O *o) = 0;
   void do_load(RMF::FileConstHandle fh) {
+    IMP_OBJECT_LOG;
     for (unsigned int i = 0; i < os_.size(); ++i) {
+      IMP_LOG_VERBOSE("Loading " << fh.get_node(nhs_[i]) << std::endl);
       do_load_one(fh.get_node(nhs_[i]), os_[i]);
     }
   }
@@ -45,14 +48,18 @@ class SimpleLoadLink : public LoadLink {
     set_association(nh, o, true);
   }
   virtual bool get_is(RMF::NodeConstHandle nh) const = 0;
-  virtual O *do_create(RMF::NodeConstHandle nh) = 0;
+  virtual O *do_create(RMF::NodeConstHandle nh) {IMP_FAILURE("Wrong create");}
+  virtual O *do_create(RMF::NodeConstHandle nh, kernel::Model *m) {
+    IMP_FAILURE("Wrong create");
+  }
   SimpleLoadLink(std::string name) : LoadLink(name) {}
 
  public:
   /** Create all the entities under the passed root.*/
   base::Vector<base::Pointer<O> > create(RMF::NodeConstHandle rt) {
     IMP_OBJECT_LOG;
-    RMF::SetCurrentFrame sf(rt.get_file(), RMF::FrameID(0));
+    IMP_LOG_TERSE("Creating IMP objects from " << rt << std::endl);
+    RMF::SetCurrentFrame sf(rt.get_file(), RMF::ALL_FRAMES);
     RMF::NodeConstHandles ch = rt.get_children();
     base::Vector<base::Pointer<O> > ret;
     for (unsigned int i = 0; i < ch.size(); ++i) {
@@ -67,10 +74,34 @@ class SimpleLoadLink : public LoadLink {
     }
     return ret;
   }
+
+  /** Create all the entities under the passed root.*/
+  base::Vector<base::Pointer<O> > create(RMF::NodeConstHandle rt,
+                                         kernel::Model *m) {
+    IMP_OBJECT_LOG;
+    IMP_LOG_TERSE("Creating Model objects from " << rt << std::endl);
+    RMF::SetCurrentFrame sf(rt.get_file(), RMF::ALL_FRAMES);
+    RMF::NodeConstHandles ch = rt.get_children();
+    base::Vector<base::Pointer<O> > ret;
+    for (unsigned int i = 0; i < ch.size(); ++i) {
+      IMP_LOG_VERBOSE("Checking " << ch[i] << std::endl);
+      if (get_is(ch[i])) {
+        IMP_LOG_VERBOSE("Adding " << ch[i] << std::endl);
+        base::Pointer<O> o = do_create(ch[i], m);
+        add_link(o, ch[i]);
+        ret.push_back(o);
+        o->set_was_used(true);
+      }
+    }
+    return ret;
+  }
+
   void link(RMF::NodeConstHandle rt,
             const base::Vector<base::Pointer<O> > &ps) {
     IMP_OBJECT_LOG;
-    RMF::SetCurrentFrame sf(rt.get_file(), RMF::FrameID(0));
+    IMP_LOG_TERSE("Linking " << rt << " to " << ps << std::endl);
+
+    RMF::SetCurrentFrame sf(rt.get_file(), RMF::ALL_FRAMES);
     set_was_used(true);
     RMF::NodeConstHandles ch = rt.get_children();
     int links = 0;
@@ -110,6 +141,8 @@ class SimpleSaveLink : public SaveLink {
   virtual void do_save_one(O *o, RMF::NodeHandle nh) = 0;
   void do_save(RMF::FileHandle fh) {
     for (unsigned int i = 0; i < os_.size(); ++i) {
+      IMP_LOG_VERBOSE("Saving to " << fh.get_node(nhs_[i]) << std::endl);
+
       os_[i]->set_was_used(true);
       IMP_LOG_VERBOSE("Saving " << Showable(os_[i]) << std::endl);
       do_save_one(os_[i], fh.get_node(nhs_[i]));
@@ -127,6 +160,7 @@ class SimpleSaveLink : public SaveLink {
  public:
   void add(RMF::NodeHandle parent, const base::Vector<base::Pointer<O> > &os) {
     IMP_OBJECT_LOG;
+    IMP_LOG_TERSE("Adding " << os << " to rmf" << std::endl);
     RMF::FileHandle file = parent.get_file();
     RMF::AliasFactory af(file);
     RMF::SetCurrentFrame sf(parent.get_file(), RMF::ALL_FRAMES);

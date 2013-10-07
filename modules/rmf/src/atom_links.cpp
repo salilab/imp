@@ -316,9 +316,10 @@ bool HierarchyLoadLink::setup_particle(kernel::Particle *root,
 }
 
 Particle *HierarchyLoadLink::do_create_recursive(kernel::Particle *root,
+                                                 kernel::Model *m,
                                                  RMF::NodeConstHandle name,
                                                  kernel::Particle *rb) {
-  IMP_NEW(kernel::Particle, p, (m_, name.get_name()));
+  IMP_NEW(kernel::Particle, p, (m, name.get_name()));
   if (!root) {
     root = p;
   } else {
@@ -331,15 +332,17 @@ Particle *HierarchyLoadLink::do_create_recursive(kernel::Particle *root,
   RMF::NodeConstHandles ch = name.get_children();
   for (unsigned int i = 0; i < ch.size(); ++i) {
     if (ch[i].get_type() == RMF::REPRESENTATION) {
-      kernel::Particle *c = do_create_recursive(root, ch[i], rb);
+      kernel::Particle *c = do_create_recursive(root, m, ch[i], rb);
       atom::Hierarchy(p).add_child(atom::Hierarchy(c));
     }
   }
   return p.release();
 }
 
-Particle *HierarchyLoadLink::do_create(RMF::NodeConstHandle name) {
-  kernel::Particle *ret = do_create_recursive(nullptr, name, nullptr);
+Particle *HierarchyLoadLink::do_create(RMF::NodeConstHandle name,
+                                       kernel::Model *m) {
+  RMF::SetCurrentFrame scf(name.get_file(), RMF::FrameID(0));
+  kernel::Particle *ret = do_create_recursive(nullptr, m, name, nullptr);
   create_bonds(name.get_file(), contents_[ret].get_nodes(),
                contents_[ret].get_particles());
   create_rigid_bodies(ret->get_model(), rigid_bodies_);
@@ -373,9 +376,8 @@ void HierarchyLoadLink::do_add_link(kernel::Particle *o,
                                     RMF::NodeConstHandle node) {
   do_add_link_recursive(o, o, node);
 }
-HierarchyLoadLink::HierarchyLoadLink(RMF::FileConstHandle fh, kernel::Model *m)
+HierarchyLoadLink::HierarchyLoadLink(RMF::FileConstHandle fh)
     : P("HierarchyLoadLink%1%"),
-      m_(m),
       particle_factory_(fh),
       intermediate_particle_factory_(fh),
       rigid_factory_(fh),

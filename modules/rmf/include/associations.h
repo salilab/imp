@@ -20,10 +20,6 @@
 IMPRMF_BEGIN_NAMESPACE
 
 typedef base::Object *AssociationType;
-class SaveLink;
-typedef base::Pointer<SaveLink> SaveLinkAssociationType;
-class LoadLink;
-typedef base::Pointer<LoadLink> LoadLinkAssociationType;
 
 IMPRMFEXPORT void set_association(RMF::NodeConstHandle nh, base::Object *o,
                                   bool overwrite = false);
@@ -50,22 +46,6 @@ IMPRMFEXPORT bool get_has_associated_node(RMF::FileConstHandle nh,
                                           base::Object *oi);
 
 /** @} */
-
-IMPRMFEXPORT bool get_has_linker(RMF::FileConstHandle nh, unsigned int id);
-
-#ifndef SWIG
-IMPRMFEXPORT void set_linker(RMF::FileConstHandle nh, unsigned int id,
-                             SaveLinkAssociationType l);
-
-IMPRMFEXPORT void set_linker(RMF::FileConstHandle nh, unsigned int id,
-                             LoadLinkAssociationType l);
-
-IMPRMFEXPORT SaveLinkAssociationType
-    get_save_linker(RMF::FileConstHandle nh, unsigned int id);
-
-IMPRMFEXPORT LoadLinkAssociationType
-    get_load_linker(RMF::FileConstHandle nh, unsigned int id);
-#endif
 
 IMPRMF_END_NAMESPACE
 

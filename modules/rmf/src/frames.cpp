@@ -8,40 +8,20 @@
 
 #include <IMP/rmf/frames.h>
 #include <IMP/rmf/links.h>
+#include <IMP/rmf/internal/link_helpers.h>
 #include <IMP/rmf/associations.h>
+#include <IMP/rmf/links.h>
 #include <IMP/base/set.h>
 #include <RMF/SetCurrentFrame.h>
 #include <boost/scoped_ptr.hpp>
+#include <boost/foreach.hpp>
 IMPRMF_BEGIN_NAMESPACE
-namespace {
-base::map<std::string, int> known_linkers;
-unsigned int get_linker_index(std::string st) {
-  if (known_linkers.find(st) == known_linkers.end()) {
-    int cur = known_linkers.size();
-    known_linkers[st] = cur;
-    return cur;
-  } else {
-    return known_linkers.find(st)->second;
-  }
-}
-}
-
-unsigned int get_load_linker_index(std::string st) {
-  return get_linker_index(st) * 2;
-}
-unsigned int get_save_linker_index(std::string st) {
-  return get_linker_index(st) * 2 + 1;
-}
-
-void load_frame(RMF::FileConstHandle file, int frame) {
+void load_frame(RMF::FileConstHandle fh, int frame) {
   try {
-    RMF::FrameConstHandle fr = file.get_frame(RMF::FrameID(frame));
+    RMF::FrameConstHandle fr = fh.get_frame(RMF::FrameID(frame));
     fr.set_as_current_frame();
-    for (unsigned int i = 0; i < known_linkers.size(); ++i) {
-      if (file.get_has_associated_data(2 * i)) {
-        base::Pointer<LoadLink> ll = get_load_linker(file, 2 * i);
-        ll->load(file);
-      }
+    BOOST_FOREACH(LoadLink *ll, internal::get_load_linkers(fh)) {
+      ll->load(fh);
     }
   }
   catch (const std::exception& e) {
@@ -74,11 +54,8 @@ void save_frame(RMF::FileHandle file, int frame, std::string name) {
     IMP_INTERNAL_CHECK(file.get_current_frame().get_id().get_index() ==
                            static_cast<int>(frame),
                        "Wrong current frame");
-    for (unsigned int i = 0; i < known_linkers.size(); ++i) {
-      if (file.get_has_associated_data(2 * i + 1)) {
-        base::Pointer<SaveLink> ll = get_save_linker(file, 2 * i + 1);
-        ll->save(file);
-      }
+    BOOST_FOREACH(SaveLink* ll, internal::get_save_linkers(file)) {
+      ll->save(file);
     }
     IMP_INTERNAL_CHECK(
         static_cast<int>(file.get_number_of_frames()) >= frame + 1,

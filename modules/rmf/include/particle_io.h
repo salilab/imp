@@ -26,7 +26,6 @@ IMPRMF_BEGIN_NAMESPACE
     @{
 */
 IMP_DECLARE_LINKERS(kernel::Particle, particle, particles, kernel::Particle *,
-                    kernel::ParticlesTemp, kernel::Particle *,
                     kernel::ParticlesTemp,
                     (RMF::FileConstHandle fh, kernel::Model *m), );
 

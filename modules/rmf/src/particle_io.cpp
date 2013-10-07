@@ -17,7 +17,6 @@ IMPRMF_BEGIN_NAMESPACE
 namespace {
 class ParticleLoadLink : public SimpleLoadLink<kernel::Particle> {
   typedef SimpleLoadLink<kernel::Particle> P;
-  base::Pointer<Model> m_;
 
   template <class IK, class RK>
   void load_keys(RMF::FileConstHandle fh, RMF::Category cat,
@@ -55,7 +54,6 @@ class ParticleLoadLink : public SimpleLoadLink<kernel::Particle> {
         if (o->has_attribute(it->second)) {
           o->remove_attribute(it->second);
         }
-        std::cout << "No value for " << it->first << std::endl;
       }
     }
   }
@@ -68,16 +66,15 @@ class ParticleLoadLink : public SimpleLoadLink<kernel::Particle> {
   bool get_is(RMF::NodeConstHandle nh) const {
     return nh.get_type() == RMF::CUSTOM;
   }
-  kernel::Particle *do_create(RMF::NodeConstHandle name) {
-    return new kernel::Particle(m_, name.get_name());
+  kernel::Particle *do_create(RMF::NodeConstHandle name, kernel::Model *m) {
+    return new kernel::Particle(m, name.get_name());
   }
 
  public:
-  ParticleLoadLink(RMF::FileConstHandle, kernel::Model *m)
+  ParticleLoadLink(RMF::FileConstHandle)
       : P("ParticleLoadLink%1%") {
-
-    m_ = m;
   }
+  static const char *get_name() {return "particle load";}
   IMP_OBJECT_METHODS(ParticleLoadLink);
 };
 
@@ -110,14 +107,13 @@ class ParticleSaveLink : public SimpleSaveLink<kernel::Particle> {
   ParticleSaveLink(RMF::FileHandle fh) : P("ParticleSaveLink%1%") {
     cat_ = fh.get_category("IMP");
   }
+  static const char *get_name() {return "particle save";}
   IMP_OBJECT_METHODS(ParticleSaveLink);
 };
 }
 
 IMP_DEFINE_LINKERS(Particle, particle, particles, kernel::Particle *,
-                   kernel::ParticlesTemp, kernel::Particle *,
-                   kernel::ParticlesTemp, (RMF::FileHandle fh),
-                   (RMF::FileConstHandle fh, kernel::Model *m), (fh), (fh, m),
-                   (fh, IMP::internal::get_model(hs)));
+                   kernel::ParticlesTemp,
+                   (RMF::FileConstHandle fh, kernel::Model *m), (fh, m));
 
 IMPRMF_END_NAMESPACE
