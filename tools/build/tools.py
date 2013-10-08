@@ -467,8 +467,8 @@ def run_subprocess(command, **kwargs):
     error = pro.stderr.read()
     if ret != 0:
         print >> sys.stderr, error
-        raise OSError("subprocess failed with return code %d: %s" \
-                      % (ret, " ".join(command)))
+        raise OSError("subprocess failed with return code %d: %s\n%s" \
+                      % (ret, " ".join(command), error))
     return output
 
 def _sigHandler( signum, frame ):
