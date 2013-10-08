@@ -21,8 +21,7 @@ if hasattr(Queue, 'task_done'):
         def run(self):
             while True:
                 func, args, kargs = self.tasks.get()
-                try: func(*args, **kargs)
-                except Exception, e: print e
+                func(*args, **kargs)
                 self.tasks.task_done()
 
     class ThreadPool:
@@ -32,7 +31,8 @@ if hasattr(Queue, 'task_done'):
                 num_threads=2*cpu_count()
             print "Creating thread pool with", num_threads
             self.tasks = Queue(-1)
-            for _ in range(num_threads): _Worker(self.tasks)
+            for _ in range(num_threads):
+                _Worker(self.tasks)
 
         def add_task(self, func, *args, **kargs):
             """Add a task to the queue"""

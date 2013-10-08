@@ -52,8 +52,7 @@ def setup_one(module, ordered, build_system, swig):
     + ["-I"+x for x in swigpath] + ["-I"+x for x in includepath]\
     + ["swig/IMP_%s.i"%module]
 
-    tools.run_subprocess(cmd, stdout=depf)
-    lines= open("src/%s_swig.deps.in"%module, "r").readlines()
+    lines = tools.run_subprocess(cmd).split("\n")
     names= [x[:-2].strip() for x in lines[1:]]
 
     final_names=[_fix(x, build_system) for x in names]

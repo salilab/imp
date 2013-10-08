@@ -457,14 +457,19 @@ def run_subprocess(command, **kwargs):
     #    kwargs["stdout"] = subprocess.PIPE
     #if not kwargs.has_key("stderr"):
     #    kwargs["stderr"] = subprocess.PIPE
-    pro = subprocess.Popen( command, preexec_fn = os.setsid, **kwargs )
+    pro = subprocess.Popen( command, preexec_fn = os.setsid, stderr = subprocess.PIPE,
+                            stdout = subprocess.PIPE, **kwargs )
     _subprocesses.append(pro)
     ##print pro.stdin.read()
     #print pro.stderr.read()
     ret = pro.wait()
+    output = pro.stdout.read()
+    error = pro.stderr.read()
     if ret != 0:
+        print >> sys.stderr, error
         raise OSError("subprocess failed with return code %d: %s" \
                       % (ret, " ".join(command)))
+    return output
 
 def _sigHandler( signum, frame ):
     print "starting handler"
