@@ -2,6 +2,7 @@ from Queue import Queue
 from threading import Thread
 
 if hasattr(Queue, 'task_done'):
+    error = None
     def cpu_count():
         """Return the number of processors this machine has"""
         try:
@@ -21,7 +22,11 @@ if hasattr(Queue, 'task_done'):
         def run(self):
             while True:
                 func, args, kargs = self.tasks.get()
-                func(*args, **kargs)
+                try:
+                    func(*args, **kargs)
+                except Exception, e:
+                    print e
+                    error = str(e)
                 self.tasks.task_done()
 
     class ThreadPool:
@@ -41,6 +46,7 @@ if hasattr(Queue, 'task_done'):
         def wait_completion(self):
             """Wait for completion of all the tasks in the queue"""
             self.tasks.join()
+            return error
 
 else:
     # If we don't have newer enough Queue (Python <2.5) then just run the

@@ -66,8 +66,11 @@ def main():
     for m in ordered:
         #setup_one(m, ordered, options.build_system, options.swig)
         pool.add_task(setup_one, m, ordered, options.build_system, options.swig)
-    pool.wait_completion()
-
+    err = pool.wait_completion()
+    if err:
+        print >> sys.stderr, err
+        return 1
+    return 0
 
 
 
