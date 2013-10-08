@@ -12,8 +12,6 @@ except ImportError:
     cpp_format = None
     print "Cannot conduct additional C++ format checks without the Python "
     print "Pygments (http://pygments.org/) library: please install."
-    print "Continuing anyway, but some checks will be postponed " + \
-          "to 'svn ci' time..."
     print
 
 def _check_do_not_commit(line, filename, num, errors):
