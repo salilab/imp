@@ -135,7 +135,8 @@ private:
 
   //DihedralAngleRevoluteJoints get_joints(const IMP::atom::Residue r) const;
 
-  //! A map between residue phi/psi and joints
+#ifndef IMP_DOXYGEN
+  // A map between residue phi/psi and joints
   class AngleToJointMap {
   public:
     // Joint access
@@ -155,6 +156,7 @@ private:
     IMP::base::map<IMP::kernel::ParticleIndex,
                             ResidueJoints> residue_to_joints_;
   };
+#endif // IMP_DOXYGEN
 
  private:
   // protein hierarchy

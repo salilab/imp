@@ -44,6 +44,7 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
   IMP_NAMED_TUPLE_2(SetData, SetDatas, RestraintSetDatas, members, double,
                     max, );
 
+#ifndef IMP_DOXYGEN
   class Generator {
     typedef base::map<kernel::Restraint *, RestraintData> RMap;
     RMap rmap_;
@@ -122,6 +123,8 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
     ParticleStatesTable *get_particle_states_table() const { return pst_; }
     void show_restraint_information(std::ostream &out) const;
   };
+#endif // IMP_DOXYGEN
+
   struct ApproximatelyEqual {
     bool operator()(double a, double b) const {
       return std::abs(a - b) < .1 * (a + b) + .1;
