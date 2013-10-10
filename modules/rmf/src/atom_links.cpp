@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <RMF/utility.h>
 #include <RMF/decorators.h>
+#include <boost/make_shared.hpp>
 
 IMPRMF_BEGIN_NAMESPACE
 
