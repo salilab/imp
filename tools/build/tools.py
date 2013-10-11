@@ -460,11 +460,8 @@ def run_subprocess(command, **kwargs):
     pro = subprocess.Popen( command, preexec_fn = os.setsid, stderr = subprocess.PIPE,
                             stdout = subprocess.PIPE, **kwargs )
     _subprocesses.append(pro)
-    ##print pro.stdin.read()
-    #print pro.stderr.read()
-    ret = pro.wait()
-    output = pro.stdout.read()
-    error = pro.stderr.read()
+    output, error = pro.communicate()
+    ret = pro.returncode
     if ret != 0:
         print >> sys.stderr, error
         raise OSError("subprocess failed with return code %d: %s\n%s" \
