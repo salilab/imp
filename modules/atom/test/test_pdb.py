@@ -49,9 +49,23 @@ class Tests(IMP.test.TestCase):
         mp= IMP.atom.read_pdb(self.open_input_file("input.pdb"),
                               m2, IMP.atom.CAlphaPDBSelector())
         self.assertEqual(m2.get_number_of_particles(), 260)
+        ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
+        self.assertEqual(len(ps), 129)
         IMP.atom.add_bonds(mp)
         bds = IMP.atom.get_internal_bonds(mp)
         self.assertEqual(len(bds), 0)
+
+        # more selector testing
+        mp = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
+                                m, IMP.atom.BackbonePDBSelector())
+        ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
+        self.assertEqual(len(ps), 516)
+
+        mp = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
+                                m, IMP.atom.NPDBSelector())
+        ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
+        self.assertEqual(len(ps), 129)
+
         # one more test for DNA
         mp = IMP.atom.read_pdb(self.open_input_file("single_dna.pdb"),
                                m, IMP.atom.NonWaterPDBSelector())

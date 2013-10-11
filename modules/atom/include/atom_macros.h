@@ -29,6 +29,7 @@
     a string called pdb_line.
  */
 #define IMP_PDB_SELECTOR(Name, parent, selected, show)                  \
+  IMPATOM_DEPRECATED_MACRO(2.1, "Expand the macro in place.");          \
   Name(std::string name) : parent(name) {}                              \
   Name() : parent(std::string(#Name) + "%1%") {}                        \
   bool get_is_selected(const std::string& pdb_line) const { selected; } \

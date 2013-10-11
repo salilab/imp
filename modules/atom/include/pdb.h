@@ -49,91 +49,95 @@ IMP_OBJECTS(PDBSelector, PDBSelectors);
 //! Select all ATOM and HETATM records which are not alternatives
 class NonAlternativePDBSelector : public PDBSelector {
  public:
-  IMP_PDB_SELECTOR(NonAlternativePDBSelector, PDBSelector,
-                   return (internal::atom_alt_loc_indicator(pdb_line) == ' ' ||
-                           internal::atom_alt_loc_indicator(pdb_line) == 'A'),
-                   out << "");
+  NonAlternativePDBSelector(std::string name = "NonAlternativePDBSelector%1%") :
+    PDBSelector(name) {}
+
+  bool get_is_selected(const std::string& pdb_line) const {
+    return (internal::atom_alt_loc_indicator(pdb_line) == ' ' ||
+            internal::atom_alt_loc_indicator(pdb_line) == 'A');
+  }
+  IMP_OBJECT_METHODS(NonAlternativePDBSelector);
 };
 
 //! Select all non-alternative ATOM records
 class ATOMPDBSelector : public NonAlternativePDBSelector {
  public:
-  IMP_PDB_SELECTOR(
-      ATOMPDBSelector, NonAlternativePDBSelector,
-      return NonAlternativePDBSelector::get_is_selected(pdb_line) &&
-             internal::is_ATOM_rec(pdb_line),
-      out << "");
+  ATOMPDBSelector(std::string name = "ATOMPDBSelector%1%") :
+     NonAlternativePDBSelector(name) {}
+
+  bool get_is_selected(const std::string& pdb_line) const {
+    return (NonAlternativePDBSelector::get_is_selected(pdb_line) &&
+            internal::is_ATOM_rec(pdb_line));
+  }
+  IMP_OBJECT_METHODS(ATOMPDBSelector)
 };
 
 //! Select all CA ATOM records
 class CAlphaPDBSelector : public NonAlternativePDBSelector {
  public:
-  IMP_PDB_SELECTOR(CAlphaPDBSelector, NonAlternativePDBSelector,
-                   if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
-                         return false;
-                       } const std::string type = internal::atom_type(pdb_line);
-                   return (type[1] == 'C' && type[2] == 'A' && type[3] == ' '),
-                          out << "");
-};
-
-//! Select all CB ATOM records
-class CBetaPDBSelector : public NonAlternativePDBSelector {
- public:
-  IMP_PDB_SELECTOR(CBetaPDBSelector, NonAlternativePDBSelector,
-                   if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
-                         return false;
-                       } const std::string type = internal::atom_type(pdb_line);
-                   return (type[1] == 'C' && type[2] == 'B' && type[3] == ' '),
-                          out << "");
-};
-
-//! Select all C (not CA or CB) ATOM records
-class CPDBSelector : public NonAlternativePDBSelector {
- public:
-  IMP_PDB_SELECTOR(CPDBSelector, NonAlternativePDBSelector,
-                   if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
-                         return false;
-                       } const std::string type = internal::atom_type(pdb_line);
-                   return (type[1] == 'C' && type[2] == ' ' && type[3] == ' '),
-                          out << "");
-};
-
-//! Select all N ATOM records
-class NPDBSelector : public NonAlternativePDBSelector {
- public:
-  IMP_PDB_SELECTOR(NPDBSelector, NonAlternativePDBSelector,
-                   if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
-                         return false;
-                       } const std::string type = internal::atom_type(pdb_line);
-                   return (type[1] == 'N' && type[2] == ' ' && type[3] == ' '),
-                          out << "");
-};
-
-//! Select all backbone (N,CA,C,O) ATOM records
-class BackbonePDBSelector : public NonAlternativePDBSelector {
- public:
-
-  BackbonePDBSelector(std::string name = "BackbonePDBSelector%1%") :
+  CAlphaPDBSelector(std::string name = "CAlphaPDBSelector%1%") :
     NonAlternativePDBSelector(name) {}
 
   bool get_is_selected(const std::string& pdb_line) const {
     if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
     const std::string type = internal::atom_type(pdb_line);
-    return ((type[1] == 'N' && type[2] == ' ' && type[3] == ' ') ||
-            (type[1] == 'C' && type[2] == 'A' && type[3] == ' ') ||
-            (type[1] == 'C' && type[2] == ' ' && type[3] == ' ') ||
-            (type[1] == 'O' && type[2] == ' ' && type[3] == ' '));
+    return (type[1] == 'C' && type[2] == 'A' && type[3] == ' ');
   }
-  IMP_OBJECT_METHODS(BackbonePDBSelector)
+  IMP_OBJECT_METHODS(CAlphaPDBSelector)
 };
 
+//! Select all CB ATOM records
+class CBetaPDBSelector : public NonAlternativePDBSelector {
+ public:
+  CBetaPDBSelector(std::string name = "CBetaPDBSelector%1%") :
+    NonAlternativePDBSelector(name) {}
+
+  bool get_is_selected(const std::string& pdb_line) const {
+    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
+    const std::string type = internal::atom_type(pdb_line);
+    return (type[1] == 'C' && type[2] == 'B' && type[3] == ' ');
+  }
+  IMP_OBJECT_METHODS(CBetaPDBSelector)
+};
+
+//! Select all C (not CA or CB) ATOM records
+class CPDBSelector : public NonAlternativePDBSelector {
+ public:
+  CPDBSelector(std::string name = "CPDBSelector%1%") :
+    NonAlternativePDBSelector(name) {}
+
+  bool get_is_selected(const std::string& pdb_line) const {
+    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
+    const std::string type = internal::atom_type(pdb_line);
+    return (type[1] == 'C' && type[2] == ' ' && type[3] == ' ');
+  }
+  IMP_OBJECT_METHODS(CPDBSelector)
+};
+
+//! Select all N ATOM records
+class NPDBSelector : public NonAlternativePDBSelector {
+ public:
+  NPDBSelector(std::string name = "NPDBSelector%1%") :
+    NonAlternativePDBSelector(name) {}
+
+  bool get_is_selected(const std::string& pdb_line) const {
+    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
+    const std::string type = internal::atom_type(pdb_line);
+    return (type[1] == 'N' && type[2] == ' ' && type[3] == ' ');
+  }
+  IMP_OBJECT_METHODS(NPDBSelector)
+};
 
 
 //! Defines a selector that will pick every ATOM and HETATM record
 class AllPDBSelector : public PDBSelector {
  public:
-  IMP_PDB_SELECTOR(AllPDBSelector, PDBSelector, return true || pdb_line.empty(),
-                   out << "");
+  AllPDBSelector(std::string name = "AllPDBSelector%1%") : PDBSelector(name) {}
+
+  bool get_is_selected(const std::string& pdb_line) const {
+    return (true || pdb_line.empty());
+  }
+  IMP_OBJECT_METHODS(AllPDBSelector);
 };
 
 //! Select all ATOM and HETATMrecords with the given chain ids
@@ -161,15 +165,18 @@ class ChainPDBSelector : public NonAlternativePDBSelector {
 //! Select all non-water ATOM and HETATMrecords
 class WaterPDBSelector : public NonAlternativePDBSelector {
  public:
-  IMP_PDB_SELECTOR(
-      WaterPDBSelector, NonAlternativePDBSelector,
-      if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
-            return false;
-          } const std::string res_name = internal::atom_residue_name(pdb_line);
-      return ((res_name[0] == 'H' && res_name[1] == 'O' &&
-               res_name[2] == 'H') ||
-              (res_name[0] == 'D' && res_name[1] == 'O' && res_name[2] == 'D')),
-             out << "");
+  WaterPDBSelector(std::string name = "WaterPDBSelector%1%") :
+    NonAlternativePDBSelector(name) {}
+
+  bool get_is_selected(const std::string& pdb_line) const {
+    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
+      return false;
+    }
+    const std::string res_name = internal::atom_residue_name(pdb_line);
+    return ((res_name[0] == 'H' && res_name[1] == 'O' && res_name[2] == 'H') ||
+            (res_name[0] == 'D' && res_name[1] == 'O' && res_name[2] == 'D'));
+  }
+  IMP_OBJECT_METHODS(WaterPDBSelector)
 };
 
 //! Select all hydrogen ATOM and HETATM records
@@ -177,9 +184,14 @@ class IMPATOMEXPORT HydrogenPDBSelector : public NonAlternativePDBSelector {
   bool is_hydrogen(std::string pdb_line) const;
 
  public:
-  IMP_PDB_SELECTOR(HydrogenPDBSelector, NonAlternativePDBSelector,
-                   return is_hydrogen(pdb_line);
-                   , out << "");
+  HydrogenPDBSelector(std::string name = "HydrogenPDBSelector%1%") :
+    NonAlternativePDBSelector(name) {}
+
+  bool get_is_selected(const std::string& pdb_line) const {
+    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
+    return is_hydrogen(pdb_line);
+  }
+  IMP_OBJECT_METHODS(HydrogenPDBSelector)
 };
 
 //! Select non water and non hydrogen atoms
@@ -223,14 +235,35 @@ class NonWaterPDBSelector : public NonAlternativePDBSelector {
         ws_(new WaterPDBSelector()) {}
 };
 
+//! Select all backbone (N,CA,C,O) ATOM records
+class BackbonePDBSelector : public NonWaterNonHydrogenPDBSelector {
+ public:
+  BackbonePDBSelector(std::string name = "BackbonePDBSelector%1%") :
+    NonWaterNonHydrogenPDBSelector(name) {}
+
+  bool get_is_selected(const std::string& pdb_line) const {
+    if(!NonWaterNonHydrogenPDBSelector::get_is_selected(pdb_line)) return false;
+    const std::string type = internal::atom_type(pdb_line);
+    return ((type[1] == 'N' && type[2] == ' ' && type[3] == ' ') ||
+            (type[1] == 'C' && type[2] == 'A' && type[3] == ' ') ||
+            (type[1] == 'C' && type[2] == ' ' && type[3] == ' ') ||
+            (type[1] == 'O' && type[2] == ' ' && type[3] == ' '));
+  }
+  IMP_OBJECT_METHODS(BackbonePDBSelector)
+};
+
 //! Select all P (= phosphate) ATOM records
 class PPDBSelector : public NonAlternativePDBSelector {
  public:
-  IMP_PDB_SELECTOR(PPDBSelector, NonAlternativePDBSelector,
-                   if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
-                         return false;
-                       } const std::string type = internal::atom_type(pdb_line);
-                   return (type[1] == 'P' && type[2] == ' '), out << "");
+  PPDBSelector(std::string name = "PPDBSelector%1%") :
+    NonAlternativePDBSelector(name) {}
+
+  bool get_is_selected(const std::string& pdb_line) const {
+    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
+    const std::string type = internal::atom_type(pdb_line);
+    return (type[1] == 'P' && type[2] == ' ' && type[3] == ' ');
+  }
+  IMP_OBJECT_METHODS(PPDBSelector)
 };
 
 // these do not work in python as the wrapped selectors get cleaned up
