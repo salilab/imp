@@ -297,6 +297,7 @@ if(IMP_DOXYGEN_FOUND)
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_cross_refs.py
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/Doxyfile.html
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/warnings.txt
+    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_fix_links.py ${CMAKE_BINARY_DIR}/doc/html
     COMMAND ${CMAKE_SOURCE_DIR}/doc/tutorial/setup.py
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/tutorial
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/tutorial-warnings.txt
