@@ -43,6 +43,7 @@ IMP_SWIG_OBJECT(IMP::atom, BondedPairFilter, BondedPairFilters);
 IMP_SWIG_OBJECT(IMP::atom, BrownianDynamics, BrownianDynamicsList);
 IMP_SWIG_OBJECT(IMP::atom, CAlphaPDBSelector, CAlphaPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, CBetaPDBSelector, CBetaPDBSelectors);
+IMP_SWIG_OBJECT(IMP::atom, BackbonePDBSelector, BackbonePDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, CHARMMParameters, CHARMMParametersList);
 IMP_SWIG_OBJECT(IMP::atom, CHARMMResidueTopology, CHARMMResidueTopologies);
 IMP_SWIG_OBJECT(IMP::atom, CHARMMSegmentTopology, CHARMMSegmentTopologies);

@@ -101,16 +101,6 @@ void sort_residues(Chain c) {
     c.add_child(Hierarchy(children[i]));
   }
 }
-/*
-void sort_atoms(Residue c) {
-  Hierarchies dchildren =c.get_children();
-  kernel::ParticlesTemp children(dchildren.begin(), dchildren.end());
-  std::sort(children.begin(), children.end(), TypeCompare());
-  c.clear_children();
-  for (unsigned int i=0; i< children.size(); ++i) {
-    c.add_child(Hierarchy(children[i]));
-  }
-  }*/
 
 void canonicalize(Hierarchy h) {
   for (unsigned int i = 0; i < h.get_number_of_children(); ++i) {
@@ -119,9 +109,6 @@ void canonicalize(Hierarchy h) {
   if (h.get_as_chain()) {
     sort_residues(h.get_as_chain());
   }
-  /*if (h.get_as_residue()) {
-    sort_atoms(h.get_as_residue());
-    }*/
 }
 
 Element get_element_from_pdb_line(const std::string& pdb_line) {
@@ -413,16 +400,6 @@ Hierarchies read_pdb(std::istream& in, std::string name, kernel::Model* model,
 }
 }
 
-Hierarchy read_pdb(base::TextInput in, kernel::Model* model) {
-  IMP_NEW(NonWaterPDBSelector, sel, ());
-  Hierarchies ret =
-      read_pdb(in, nicename(in.get_name()), model, sel, true, false, false);
-  if (ret.empty()) {
-    IMP_THROW("No molecule read from file " << in.get_name(), ValueException);
-  }
-  return ret[0];
-}
-
 void read_pdb(base::TextInput in, int model, Hierarchy h) {
   base::map<int, kernel::Particle*> atoms_map;
   atom::Hierarchies atoms = get_by_type(h, ATOM_TYPE);
@@ -496,86 +473,17 @@ Hierarchies read_multimodel_pdb(base::TextInput in, kernel::Model* model,
   return ret;
 }
 
-Hierarchies read_multimodel_pdb(base::TextInput in, kernel::Model* model) {
-  IMP_NEW(AllPDBSelector, s, ());
-  return read_multimodel_pdb(in, model, s);
-}
-
-// mol2.cpp
-bool check_arbond(kernel::Particle* atom_p);
-
-namespace {
-void write_pdb(const kernel::ParticlesTemp& inps, base::TextOutput out) {
-  IMP_FUNCTION_LOG;
-  int last_index = 0;
-  bool use_input_index = true;
-  kernel::ParticlesTemp ps;
-  BOOST_FOREACH(kernel::Particle* p, inps) {
-    ps += get_by_type(atom::Hierarchy(p), ATOM_TYPE);
-  }
-  for (unsigned int i = 0; i < ps.size(); ++i) {
-    if (Atom(ps[i]).get_input_index() != last_index + 1) {
-      use_input_index = false;
-      break;
-    } else {
-      ++last_index;
-    }
-  }
-  for (unsigned int i = 0; i < ps.size(); ++i) {
-    if (Atom::get_is_setup(ps[i])) {
-      Atom ad(ps[i]);
-      Residue rd = get_residue(ad);
-      // really dumb and slow, fix later
-      char chain;
-      Chain c = get_chain(rd);
-      if (c) {
-        chain = c.get_id();
-      } else {
-        chain = ' ';
-        /*
-        pdb_file << std::setw(7) << atomid << " ";
-        pdb_file.setf(std::ios::left,std::ios::adjustfield);
-        pdb_file << std::setw(4) << atom_type << " ";
-        pdb_file << "HET     1" << "    ";
-        pdb_file.setf(std::ios::right,std::ios::adjustfield);
-        pdb_file.setf(std::ios::fixed,std::ios::floatfield);
-        core::XYZ xyz= core::XYZ::cast(p);
-        pdb_file << std::setw(8) << std::setprecision(3) << xyz.get_x();
-        pdb_file << std::setw(8) << std::setprecision(3) << xyz.get_y();
-        pdb_file << std::setw(8) << std::setprecision(3) << xyz.get_z()
-        << std::endl;*/
-      }
-      out.get_stream() << get_pdb_string(
-                              core::XYZ(ps[i]).get_coordinates(),
-                              use_input_index ? ad.get_input_index()
-                                              : static_cast<int>(i + 1),
-                              ad.get_atom_type(), rd.get_residue_type(), chain,
-                              rd.get_index(), rd.get_insertion_code(),
-                              ad.get_occupancy(), ad.get_temperature_factor(),
-                              ad.get_element());
-
-      if (!out) {
-        IMP_THROW("Error writing to file in write_pdb", IOException);
-      }
-    }
-  }
-}
-
-void write_model(const kernel::ParticlesTemp& hs, base::TextOutput out,
-                 unsigned int model) {
+void write_pdb(const Selection& mhd, base::TextOutput out, unsigned int model) {
   out.get_stream() << boost::format("MODEL%1$9d") % model << std::endl;
-  write_pdb(hs, out);
+  internal::write_pdb(mhd.get_selected_particles(), out);
   out.get_stream() << "ENDMDL" << std::endl;
 }
-}
 
-void write_pdb(const Selection& mhd, base::TextOutput out, unsigned int model) {
-  write_model(mhd.get_selected_particles(), out, model);
-}
-
-void write_multimodel_pdb(const Hierarchies& mhd, base::TextOutput oout) {
+void write_multimodel_pdb(const Hierarchies& mhd, base::TextOutput out) {
   for (unsigned int i = 0; i < mhd.size(); ++i) {
-    write_model(get_leaves(mhd[i]), oout, i);
+    out.get_stream() << boost::format("MODEL%1$9d") % (i+1) << std::endl;
+    internal::write_pdb(get_leaves(mhd[i]), out);
+    out.get_stream() << "ENDMDL" << std::endl;
   }
 }
 

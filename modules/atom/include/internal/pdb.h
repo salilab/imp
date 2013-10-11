@@ -90,6 +90,10 @@ IMPATOMEXPORT String atom_element(const String& pdb_line);
 IMPATOMEXPORT base::Vector<unsigned short> connected_atoms(
     const String& pdb_line);
 
+//! write particles as ATOMs to PDB (assumes Particles are valid Atoms)
+IMPATOMEXPORT void write_pdb(const kernel::ParticlesTemp& ps,
+                             base::TextOutput out);
+
 /** ATOM Record Format (from PDB)
     COLUMNS        DATA TYPE       CONTENTS
     ------------------------------------------------------------------------

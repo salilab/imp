@@ -72,6 +72,7 @@ int do_benchmark() {
     return 0;
   } catch (IMP::base::Exception e) {
     std::cerr << "Caught exception " << e.what() << std::endl;
+    return 1;
   }
 }
 }

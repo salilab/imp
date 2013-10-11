@@ -109,6 +109,26 @@ class NPDBSelector : public NonAlternativePDBSelector {
                           out << "");
 };
 
+//! Select all backbone (N,CA,C,O) ATOM records
+class BackbonePDBSelector : public NonAlternativePDBSelector {
+ public:
+
+  BackbonePDBSelector(std::string name = "BackbonePDBSelector%1%") :
+    NonAlternativePDBSelector(name) {}
+
+  bool get_is_selected(const std::string& pdb_line) const {
+    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
+    const std::string type = internal::atom_type(pdb_line);
+    return ((type[1] == 'N' && type[2] == ' ' && type[3] == ' ') ||
+            (type[1] == 'C' && type[2] == 'A' && type[3] == ' ') ||
+            (type[1] == 'C' && type[2] == ' ' && type[3] == ' ') ||
+            (type[1] == 'O' && type[2] == ' ' && type[3] == ' '));
+  }
+  IMP_OBJECT_METHODS(BackbonePDBSelector)
+};
+
+
+
 //! Defines a selector that will pick every ATOM and HETATM record
 class AllPDBSelector : public PDBSelector {
  public:
@@ -289,10 +309,22 @@ class NotPDBSelector : public PDBSelector {
 */
 //!@{
 
+inline PDBSelector* get_default_pdb_selector() {
+  return new NonWaterPDBSelector();
+}
+
 /** Read a all the molecules in the first model of the
     pdb file.
  */
-IMPATOMEXPORT Hierarchy read_pdb(base::TextInput input, kernel::Model *model);
+IMPATOMEXPORT Hierarchy read_pdb(base::TextInput input, kernel::Model *model,
+                                 PDBSelector *selector =
+                                                  get_default_pdb_selector(),
+                                 bool select_first_model = true
+#ifndef IMP_DOXYGEN
+                                 ,
+                                 bool no_radii = false
+#endif
+                                 );
 
 /** Rewrite the coordinates of the passed hierarchy based
     on the contents of the first model in the pdb file.
@@ -311,32 +343,17 @@ IMPATOMEXPORT Hierarchy read_pdb(base::TextInput input, kernel::Model *model);
  */
 IMPATOMEXPORT void read_pdb(base::TextInput input, int model, Hierarchy h);
 
-/** See Hierarchy
- */
-IMPATOMEXPORT Hierarchy read_pdb(base::TextInput input, kernel::Model *model,
-                                 PDBSelector *selector,
-                                 bool select_first_model = true
-#ifndef IMP_DOXYGEN
-                                 ,
-                                 bool no_radii = false
-#endif
-                                 );
-
 /** Read all models from the pdb file.
  */
 IMPATOMEXPORT Hierarchies read_multimodel_pdb(base::TextInput input,
                                               kernel::Model *model,
-                                              PDBSelector *selector
+                                              PDBSelector *selector =
+                                                 get_default_pdb_selector()
 #ifndef IMP_DOXYGEN
                                               ,
                                               bool noradii = false
 #endif
                                               );
-/** Read all models from the pdb file.
- */
-IMPATOMEXPORT Hierarchies
-    read_multimodel_pdb(base::TextInput input, kernel::Model *model);
-/** @} */
 
 /** @name PDB Writing
     \anchor pdb_out
@@ -358,7 +375,7 @@ IMPATOMEXPORT Hierarchies
 /** Write some atoms to a PDB.
 */
 IMPATOMEXPORT void write_pdb(const Selection &mhd, base::TextOutput out,
-                             unsigned int model = 0);
+                             unsigned int model = 1);
 
 /** \brief Write a hierarchy to a pdb as C_alpha atoms.
 
@@ -369,7 +386,7 @@ IMPATOMEXPORT void write_pdb(const Selection &mhd, base::TextOutput out,
 */
 IMPATOMEXPORT void write_pdb_of_c_alphas(const Selection &mhd,
                                          base::TextOutput out,
-                                         unsigned int model = 0);
+                                         unsigned int model = 1);
 
 /** Write the hierarchies one per frame.
 */
