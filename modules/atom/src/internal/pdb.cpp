@@ -7,6 +7,9 @@
  */
 
 #include <IMP/atom/internal/pdb.h>
+#include <IMP/atom/Atom.h>
+#include <IMP/atom/Residue.h>
+#include <IMP/atom/Chain.h>
 
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
 
