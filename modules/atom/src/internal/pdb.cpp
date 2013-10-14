@@ -8,8 +8,9 @@
 
 #include <IMP/atom/internal/pdb.h>
 #include <IMP/atom/Atom.h>
-#include <IMP/atom/Residue.h>
 #include <IMP/atom/Chain.h>
+#include <IMP/atom/Residue.h>
+#include <IMP/atom/pdb.h>
 
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
 
@@ -146,18 +147,6 @@ void write_pdb(const kernel::ParticlesTemp& ps, base::TextOutput out) {
         chain = c.get_id();
       } else {
         chain = ' ';
-        /*
-        pdb_file << std::setw(7) << atomid << " ";
-        pdb_file.setf(std::ios::left,std::ios::adjustfield);
-        pdb_file << std::setw(4) << atom_type << " ";
-        pdb_file << "HET     1" << "    ";
-        pdb_file.setf(std::ios::right,std::ios::adjustfield);
-        pdb_file.setf(std::ios::fixed,std::ios::floatfield);
-        core::XYZ xyz= core::XYZ::cast(p);
-        pdb_file << std::setw(8) << std::setprecision(3) << xyz.get_x();
-        pdb_file << std::setw(8) << std::setprecision(3) << xyz.get_y();
-        pdb_file << std::setw(8) << std::setprecision(3) << xyz.get_z()
-        << std::endl;*/
       }
       out.get_stream() << get_pdb_string(
                               core::XYZ(ps[i]).get_coordinates(),
