@@ -220,6 +220,12 @@ file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.FileSystem" "ok=True")
 file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.ProgramOptions" "ok=True")
 file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.System" "ok=True")
 
+add_custom_target("IMP-version"
+                  COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_version.py --source=${CMAKE_SOURCE_DIR}
+                  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                  DEPENDS ${CMAKE_BINARY_DIR}/VERSION
+                  COMMENT "Computing version number")
+
 # configure modules
 file(STRINGS "${CMAKE_BINARY_DIR}/data/build_info/sorted_modules" modules)
 
@@ -302,7 +308,7 @@ if(IMP_DOXYGEN_FOUND)
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/tutorial
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/tutorial-warnings.txt
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    DEPENDS ${IMP_DOC_DEPENDS} ${docs} ${IMP_DOXYGEN_FETCH}
+    DEPENDS ${IMP_DOC_DEPENDS} ${docs} ${IMP_DOXYGEN_FETCH} IMP-version
     COMMENT "Building documentation")
 
   add_custom_target(IMP-doc-install

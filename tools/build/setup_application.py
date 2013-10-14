@@ -50,20 +50,13 @@ def link_py(path):
     tools.link_dir(path, "bin", clean=False, match=["*.py"],
                    exclude=['dependencies.py'])
 
-def get_version(application, source):
-    imp_version= os.path.join(source, "VERSION")
-    if os.path.exists(imp_version):
-        return open(imp_version, "r").read().split("\n")[0]
-    else:
-        return "develop"
-
 
 def make_doxygen(name, source, modules):
     file = os.path.join("doxygen", name, "Doxyfile")
     template_file = os.path.join(source, "tools", "build", "doxygen_templates", "Doxyfile.in")
     template = open(template_file, "r").read()
     template = template.replace("@IMP_SOURCE_PATH@", source)
-    template = template.replace("@VERSION@", get_version(name, source))
+    template = template.replace("@VERSION@", "0")
     template = template.replace("@NAME@", name)
     template = template.replace("@PROJECT_BRIEF@",
                                 '"The Integrative Modeling Platform"')

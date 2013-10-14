@@ -422,6 +422,29 @@ def get_dependent_dependencies(modules, dependencies, extra_data_path,
     ret= list(set(ret_names+dependencies))
     return ret
 
+def get_module_version(module, source_dir):
+    in_module = os.path.join(source_dir, "modules", module, "VERSION")
+    in_source = os.path.join(source_dir, "VERSION")
+    in_build = "VERSION"
+    if os.path.exists(in_module):
+        return open(in_module, "r").read().strip()
+    elif os.path.exists(in_source):
+        return open(in_source, "r").read().strip()
+    else:
+        return open(in_build, "r").read().strip()
+
+
+def get_application_version(module, source_dir):
+    in_module = os.path.join(source_dir, "applications", module, "VERSION")
+    in_source = os.path.join(source_dir, "VERSION")
+    in_build = "VERSION"
+    if os.path.exists(in_module):
+        return open(in_module, "r").read().strip()
+    elif os.path.exists(in_source):
+        return open(in_source, "r").read().strip()
+    else:
+        return open(in_build, "r").read().strip()
+
 def get_disabled_modules(extra_data_path, root="."):
     all= get_glob([os.path.join(root, "data", "build_info", "IMP.*")])
     modules=[os.path.splitext(a)[1][1:] for a in all]

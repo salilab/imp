@@ -19,9 +19,9 @@ from optparse import OptionParser
 def generate_doxyfile(source, target, is_xml = False, is_html = False, tutorial=False):
     doxyin=os.path.join(source, "tools", "build", "doxygen_templates", "Doxyfile.in")
     version="develop"
-    versionpath=os.path.join(source, "VERSION")
+    versionpath=os.path.join("VERSION")
     if os.path.exists(versionpath):
-        version= open(versionpath, "r").read().split('\n')[0].replace(" ", ":")
+        version= open(versionpath, "r").read().strip()
     if tutorial:
         version = '"for IMP version ' + version + '"'
     doxygen = open(doxyin, "r").read()

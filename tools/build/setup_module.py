@@ -25,17 +25,6 @@ parser.add_option("-s", "--source",
 parser.add_option("-d", "--datapath",
                   dest="datapath", default="", help="An extra IMP datapath.")
 
-def get_version(options):
-    module_version= os.path.join(options.source, "modules", options.name, "VERSION")
-    if os.path.exists(module_version):
-        return open(module_version, "r").read().split("\n")[0]
-    else:
-        imp_version= os.path.join(options.source, "VERSION")
-        if os.path.exists(imp_version):
-            return open(imp_version, "r").read().split("\n")[0]
-        else:
-            return "develop"
-
 def add_list_to_defines(cppdefines, data, sym, val, names):
     names.sort()
     for n in names:
@@ -109,29 +98,13 @@ using ::IMP::base::hash_value;
     data["cppdefines"]="\n".join(cppdefines)
     tools.rewrite(file, header_template%data)
 
-def make_cpp(options):
-    dir= os.path.join("src", options.name)
-    file=os.path.join(dir, "config.cpp")
-    cpp_template = open(os.path.join(options.source, "tools", "build", "config_templates", "src.cpp"), "r").read()
-    try:
-        os.makedirs(dir)
-    except:
-        # exists
-        pass
-    data={}
-    data["filename"]="IMP/%s/%s_config.h"%(options.name, options.name)
-    data["cppprefix"]="IMP%s"%options.name.upper().replace("_", "")
-    data["name"]= options.name
-    data["version"]= get_version(options)
-    tools.rewrite(file, cpp_template%data)
-
 def make_doxygen(options, modules):
     file = os.path.join("doxygen", options.name, "Doxyfile")
     name = options.name
     template_file = os.path.join(options.source, "tools", "build", "doxygen_templates", "Doxyfile.in")
     template = open(template_file, "r").read()
     template = template.replace("@IMP_SOURCE_PATH@", options.source)
-    template = template.replace("@VERSION@", get_version(options))
+    template = template.replace("@VERSION@", "NONE")
     template = template.replace("@NAME@", name)
     template = template.replace("@PROJECT_BRIEF@",
                                 '"The Integrative Modeling Platform"')
