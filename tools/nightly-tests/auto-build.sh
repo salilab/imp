@@ -73,6 +73,8 @@ tar -C ${GIT_TOP} --exclude .git -cf - imp | tar -xf -
 SORTDATE=`date -u "+%Y%m%d"`
 DATE=`date -u +'%Y/%m/%d'`
 IMPINSTALL=${IMPTOP}/${SORTDATE}-${shortrev}
+# Make sure VERSION file is reasonable
+(cd imp && rm -f VERSION && tools/build/make_version.py --source=.)
 if [ ${BRANCH} = "develop" ]; then
   # For nightly builds, prepend the date so the packages are upgradeable
   IMPVERSION="${SORTDATE}.develop.${shortrev}"
