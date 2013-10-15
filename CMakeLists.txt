@@ -223,7 +223,6 @@ file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.System" "ok=True")
 add_custom_target("IMP-version"
                   COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_version.py --source=${CMAKE_SOURCE_DIR}
                   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-                  DEPENDS ${CMAKE_BINARY_DIR}/VERSION
                   COMMENT "Computing version number")
 
 # configure modules
