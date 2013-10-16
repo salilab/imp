@@ -1,8 +1,8 @@
 ## \example restrainer/simple_connectivity_on_molecules.py
-## This example shows how to create simple IMP::core::ConnectivityRestraint on molecules.
-##
+# This example shows how to create simple IMP::core::ConnectivityRestraint on molecules.
+#
 
-#-- File: simple_connectivity_on_molecules.py --#
+# -- File: simple_connectivity_on_molecules.py --#
 
 import IMP
 import IMP.core

@@ -1,8 +1,8 @@
 ## \example restrainer/simple_em_fit.py
-## This example shows how to create simple IMP::em::FitRestraint.
-##
+# This example shows how to create simple IMP::em::FitRestraint.
+#
 
-#-- File: simple_em_fit.py --#
+# -- File: simple_em_fit.py --#
 
 import IMP
 import IMP.atom
@@ -52,8 +52,8 @@ particles.append(p3)
 mhs = IMP.atom.Hierarchies()
 mhs.append(mp)
 
-dmap = IMP.restrainer.load_em_density_map (
-           IMP.restrainer.get_example_path("in.mrc"), 1.0, 3.0)
+dmap = IMP.restrainer.load_em_density_map(
+    IMP.restrainer.get_example_path("in.mrc"), 1.0, 3.0)
 
 se = IMP.restrainer.create_simple_em_fit(mhs, dmap)
 

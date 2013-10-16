@@ -1,6 +1,6 @@
 ## \example core/simple.py
-## Illustration of simple usage of the IMP library from Python.
-##
+# Illustration of simple usage of the IMP library from Python.
+#
 
 import IMP
 import IMP.algebra

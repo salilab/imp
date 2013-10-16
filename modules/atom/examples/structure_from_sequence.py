@@ -1,6 +1,6 @@
 ## \example atom/structure_from_sequence.py
-## An atomic protein structure is created from primary (amino-acid) sequence.
-##
+# An atomic protein structure is created from primary (amino-acid) sequence.
+#
 
 import IMP.atom
 

@@ -1,8 +1,8 @@
 ## \example restrainer/simple_distance.py
-## This example shows how to create simple IMP::core::DistanceRestraint.
-##
+# This example shows how to create simple IMP::core::DistanceRestraint.
+#
 
-#-- File: simple_distance.py --#
+# -- File: simple_distance.py --#
 
 import IMP
 import IMP.core

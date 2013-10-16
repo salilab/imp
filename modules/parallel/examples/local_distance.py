@@ -1,8 +1,8 @@
 ## \example parallel/local_distance.py
-## This is a simple demonstration of the parallel functionality. It uses the
-## module to make a simple plot of score versus distance for a harmonic
-## distance restraint, dividing the work between several slaves.
-##
+# This is a simple demonstration of the parallel functionality. It uses the
+# module to make a simple plot of score versus distance for a harmonic
+# distance restraint, dividing the work between several slaves.
+#
 
 import IMP.parallel
 import tasks

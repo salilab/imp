@@ -1,8 +1,8 @@
 ## \example restrainer/simple_connectivity_on_rigid_bodies.py
-## This example shows how to create simple IMP::core::ConnectivityRestraint on rigid bodies.
-##
+# This example shows how to create simple IMP::core::ConnectivityRestraint on rigid bodies.
+#
 
-#-- File: simple_connectivity_on_rigid_bodies --#
+# -- File: simple_connectivity_on_rigid_bodies --#
 
 import IMP
 import IMP.atom

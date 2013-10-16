@@ -1,6 +1,6 @@
 ## \example atom/edit_molecular_hierarchy.py
-## In this example, we read a protein from a PDB file and then add a
-##layer of atom::Fragments below the chain.
+# In this example, we read a protein from a PDB file and then add a
+# layer of atom::Fragments below the chain.
 
 import IMP.kernel
 import IMP.core
@@ -9,7 +9,7 @@ import IMP.atom
 m = IMP.kernel.Model()
 ep = IMP.atom.read_pdb(IMP.atom.get_example_path('example_protein.pdb'), m)
 
-hchain= IMP.atom.get_by_type(ep, IMP.atom.CHAIN_TYPE)[0]
+hchain = IMP.atom.get_by_type(ep, IMP.atom.CHAIN_TYPE)[0]
 
 children = hchain.get_children()
 
@@ -39,6 +39,6 @@ hchain.add_child(f0)
 hchain.add_child(f1)
 
 # create a graph from the hierarchy
-ept= IMP.atom.get_hierarchy_tree(ep)
+ept = IMP.atom.get_hierarchy_tree(ep)
 
 IMP.base.show_graphviz(ept)

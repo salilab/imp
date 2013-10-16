@@ -1,11 +1,11 @@
 ## \example restrainer/saxs_restraint.py
-## This example shows how to use IMP::saxs::Restraint.
-##
-## \include saxs_representation.xml
-## \include saxs_restraint.xml
-##
+# This example shows how to use IMP::saxs::Restraint.
+#
+# \include saxs_representation.xml
+# \include saxs_restraint.xml
+#
 
-#-- File: saxs_restraint.py --#
+# -- File: saxs_restraint.py --#
 
 import IMP
 import IMP.restrainer
@@ -14,13 +14,15 @@ import IMP.restrainer
 restrainer = IMP.restrainer.Main()
 
 # Add representation and restraint to restrainer
-rep = restrainer.add_representation(IMP.restrainer.get_example_path('input/saxs_representation.xml'))
-rsr = restrainer.add_restraint(IMP.restrainer.get_example_path('input/saxs_restraint.xml'))
+rep = restrainer.add_representation(
+    IMP.restrainer.get_example_path('input/saxs_representation.xml'))
+rsr = restrainer.add_restraint(
+    IMP.restrainer.get_example_path('input/saxs_restraint.xml'))
 
-###=======================================================================###
+# =======================================================================###
 #  At this point all data from XML files have been placed into the model.
 #  Now it is possible to perform various operations on the IMP model.
-###=======================================================================###
+# =======================================================================###
 
 # Get the IMP model object used by restrainer
 model = restrainer.get_model()

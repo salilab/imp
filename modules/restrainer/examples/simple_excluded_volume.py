@@ -1,21 +1,21 @@
 ## \example restrainer/simple_excluded_volume.py
-## This example shows how to create simple IMP::core::ExcludedVolumeRestraint.
-##
+# This example shows how to create simple IMP::core::ExcludedVolumeRestraint.
+#
 
-#-- File: simple_excluded_volume.py --#
+# -- File: simple_excluded_volume.py --#
 
 import IMP
 import IMP.core
 import IMP.atom
 import IMP.restrainer
 
-m= IMP.kernel.Model()
+m = IMP.kernel.Model()
 
 sel = IMP.atom.CAlphaPDBSelector()
 p0 = IMP.atom.read_pdb(
-         IMP.restrainer.get_example_path("input.pdb"), m, sel)
+    IMP.restrainer.get_example_path("input.pdb"), m, sel)
 p1 = IMP.atom.read_pdb(
-         IMP.restrainer.get_example_path("input.pdb"), m, sel)
+    IMP.restrainer.get_example_path("input.pdb"), m, sel)
 
 mhs = IMP.atom.Hierarchies()
 mhs.append(p0)
