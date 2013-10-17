@@ -39,7 +39,7 @@ print IMP.em2d.get_example_path('3sfd')</tt>'.
 
 The input files are for modeling are the three simulated class averages of
 the complex located in the <tt>em_images</tt> directory, and the subunits to
-assemble: <tt>3sdfA.pdb</tt>, <tt>3sfdB.pdb</tt>, <tt>3sfdC.pdb</tt>, and
+assemble: <tt>3sfdA.pdb</tt>, <tt>3sfdB.pdb</tt>, <tt>3sfdC.pdb</tt>, and
 <tt>3sfdD.pdb</tt>. A number of Python files are also present. These control
 the modeling procedure and are described below. For an extensive description
 of all the parameters see <tt>config_example.py</tt>.
