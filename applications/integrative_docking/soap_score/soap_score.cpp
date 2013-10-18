@@ -20,6 +20,7 @@
 #include <IMP/saxs/SolventAccessibleSurface.h>
 #include <IMP/saxs/FormFactorTable.h>
 
+#include <IMP/algebra/standard_grids.h>
 #include <IMP/algebra/Transformation3D.h>
 
 #include <fstream>
@@ -73,7 +74,7 @@ int main(int argc, char **argv) {
   po::options_description
     desc("Usage: <pdb1> <pdb2> <trans_file>");
   desc.add_options()
-    ("help", "compute the SOAP score of the interface between pdb1 and pdb2\
+    ("help", "compute the SOAP score of the interface between pdb1 and pdb2 \
 for a set of transformations in the trans_file.")
     ("input-files", po::value< std::vector<std::string> >(), "input PDBs")
     ("output_file,o",
@@ -110,9 +111,9 @@ for a set of transformations in the trans_file.")
                         new IMP::atom::NonWaterNonHydrogenPDBSelector(),
                                                   true, true);
   IMP::kernel::Particles particles1 =
-    IMP::get_as<IMP::kernel::Particles>(get_by_type(mhd1, IMP::atom::ATOM_TYPE));
+    IMP::get_as<IMP::kernel::Particles>(get_by_type(mhd1,IMP::atom::ATOM_TYPE));
   IMP::kernel::Particles particles2 =
-    IMP::get_as<IMP::kernel::Particles>(get_by_type(mhd2, IMP::atom::ATOM_TYPE));
+    IMP::get_as<IMP::kernel::Particles>(get_by_type(mhd2,IMP::atom::ATOM_TYPE));
 
   IMP::kernel::ParticleIndexes pis1(particles1.size());
   for(unsigned int i=0; i<pis1.size(); ++i) {
@@ -129,9 +130,12 @@ for a set of transformations in the trans_file.")
   std::cerr << pis1.size() << " atoms read from " << pdb1 << std::endl;
   std::cerr << pis2.size() << " atoms read from " << pdb2 << std::endl;
 
-  // save particles2 coordinates (they are going to move)
-  std::vector<IMP::algebra::Vector3D> coordinates2;
-  for (unsigned int i = 0; i < particles2.size(); i++) {
+  // extract atom coordinates
+  IMP::algebra::Vector3Ds coordinates1, coordinates2;
+  for (unsigned int i=0; i<particles1.size(); i++) {
+    coordinates1.push_back(IMP::core::XYZ(particles1[i]).get_coordinates());
+  }
+  for (unsigned int i=0; i<particles2.size(); i++) {
     coordinates2.push_back(IMP::core::XYZ(particles2[i]).get_coordinates());
   }
 
@@ -148,6 +152,15 @@ for a set of transformations in the trans_file.")
   std::vector<IMP::algebra::Transformation3D> transforms;
   read_trans_file(trans_file, transforms);
 
+  // save receptor_pdb in grid for faster interface finding
+  typedef IMP::algebra::DenseGrid3D<IMP::Ints> Grid;
+  IMP::algebra::BoundingBox3D bb(coordinates1);
+  Grid grid(2.0, bb);
+  for(unsigned int i=0; i<coordinates1.size(); i++) {
+    Grid::Index grid_index = grid.get_nearest_index(coordinates1[i]);
+    grid[grid_index].push_back(i);
+  }
+
   // output file header
   std::ofstream out_file(out_file_name.c_str());
   out_file << "receptorPdb (str) " << pdb1 << std::endl;
@@ -159,6 +172,7 @@ for a set of transformations in the trans_file.")
 
   // distance based score score
   float distance_threshold = 15.0;
+  float distance_threshold2 = distance_threshold*distance_threshold;
   IMP::score_functor::Soap soap(distance_threshold);
 
   // iterate transformations
@@ -168,17 +182,27 @@ for a set of transformations in the trans_file.")
     transform(particles2, transforms[t]);
     // score
     double score = 0.0;
-    for(unsigned int i=0; i<pis1.size(); ++i) {
-      IMP::core::XYZ d1(model, pis1[i]);
-      IMP::algebra::Vector3D v1(d1.get_coordinates());
-      for(unsigned int j=0; j<pis2.size(); ++j) {
-        IMP::core::XYZ d2(model, pis2[j]);
-        IMP::algebra::Vector3D v2(d2.get_coordinates());
-        double dist = IMP::algebra::get_distance(v1, v2);
-        if(dist < distance_threshold) {
-          score += soap.get_score(model,
-                                  IMP::kernel::ParticleIndexPair(pis1[i], pis2[j]),
-                                  dist);
+    // iterate ligand atoms
+    for(unsigned int l_index=0; l_index<pis2.size(); l_index++) {
+      IMP::core::XYZ d(model, pis2[l_index]);
+      IMP::algebra::Vector3D v(d.get_coordinates());
+      // access grid to see if interface atom
+      IMP::algebra::BoundingBox3D bb(v);
+      bb+=distance_threshold;
+      Grid::ExtendedIndex lb = grid.get_extended_index(bb.get_corner(0)),
+        ub = grid.get_extended_index(bb.get_corner(1));
+      for(Grid::IndexIterator it= grid.indexes_begin(lb, ub);
+          it != grid.indexes_end(lb, ub); ++it) {
+        for(unsigned int vIndex=0; vIndex<grid[*it].size(); vIndex++) {
+          int r_index = grid[*it][vIndex];
+          float dist2 =
+            IMP::algebra::get_squared_distance(coordinates1[r_index], v);
+          if(dist2 < distance_threshold2) {
+            score+=soap.get_score(model,
+                                  IMP::kernel::ParticleIndexPair(pis1[r_index],
+                                                                 pis2[l_index]),
+                                  sqrt(dist2));
+          }
         }
       }
     }

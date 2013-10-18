@@ -5,6 +5,8 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
+#include "lib/SOAPResult.h"
+
 #include <IMP/kernel/Model.h>
 
 #include <IMP/atom/Atom.h>
@@ -16,6 +18,8 @@
 
 #include <IMP/saxs/SolventAccessibleSurface.h>
 #include <IMP/saxs/FormFactorTable.h>
+
+#include <IMP/algebra/standard_grids.h>
 
 #include <fstream>
 #include <vector>
@@ -34,6 +38,9 @@ int main(int argc, char **argv) {
   desc.add_options()
     ("help", "compute the SOAP score of the interface between pdb1 and pdb2.")
     ("input-files", po::value< std::vector<std::string> >(), "input PDBs")
+    ("output_file,o",
+     po::value<std::string>(&out_file_name)->default_value("soap_score.res"),
+     "output file name, default name soap_score.res");
     ;
 
   po::positional_options_description p;
@@ -65,9 +72,9 @@ int main(int argc, char **argv) {
                         new IMP::atom::NonWaterNonHydrogenPDBSelector(),
                                                   true, true);
   IMP::kernel::Particles particles1 =
-    IMP::get_as<IMP::kernel::Particles>(get_by_type(mhd1, IMP::atom::ATOM_TYPE));
+    IMP::get_as<IMP::kernel::Particles>(get_by_type(mhd1,IMP::atom::ATOM_TYPE));
   IMP::kernel::Particles particles2 =
-    IMP::get_as<IMP::kernel::Particles>(get_by_type(mhd2, IMP::atom::ATOM_TYPE));
+    IMP::get_as<IMP::kernel::Particles>(get_by_type(mhd2,IMP::atom::ATOM_TYPE));
 
   IMP::kernel::ParticleIndexes pis1(particles1.size());
   for(unsigned int i=0; i<pis1.size(); ++i) {
@@ -84,23 +91,53 @@ int main(int argc, char **argv) {
   std::cerr << pis1.size() << " atoms read from " << pdb1 << std::endl;
   std::cerr << pis2.size() << " atoms read from " << pdb2 << std::endl;
 
+
+  // extract atom coordinates
+  IMP::algebra::Vector3Ds coordinates1;
+  for(unsigned int i=0; i<particles1.size(); i++) {
+    coordinates1.push_back(IMP::core::XYZ(particles1[i]).get_coordinates());
+  }
+  // save receptor_pdb in grid for faster interface finding
+  typedef IMP::algebra::DenseGrid3D<IMP::Ints> Grid;
+  IMP::algebra::BoundingBox3D bb(coordinates1);
+  Grid grid(2.0, bb);
+  for(unsigned int i=0; i<coordinates1.size(); i++) {
+    Grid::Index grid_index = grid.get_nearest_index(coordinates1[i]);
+    grid[grid_index].push_back(i);
+  }
+
   // distance based score score
   float distance_threshold = 15.0;
+  float distance_threshold2 = distance_threshold*distance_threshold;
   IMP::score_functor::Soap soap(distance_threshold);
   double score = 0.0;
-  for(unsigned int i=0; i<pis1.size(); ++i) {
-    IMP::core::XYZ d1(model, pis1[i]);
-    IMP::algebra::Vector3D v1(d1.get_coordinates());
-    for(unsigned int j=0; j<pis2.size(); ++j) {
-      IMP::core::XYZ d2(model, pis2[j]);
-      IMP::algebra::Vector3D v2(d2.get_coordinates());
-      double dist = IMP::algebra::get_distance(v1, v2);
-      if(dist < distance_threshold) {
-        score += soap.get_score(model,
-                                IMP::kernel::ParticleIndexPair(pis1[i], pis2[j]), dist);
+
+  // iterate ligand atoms
+  for(unsigned int l_index=0; l_index<pis2.size(); l_index++) {
+    IMP::core::XYZ d(model, pis2[l_index]);
+    IMP::algebra::Vector3D v(d.get_coordinates());
+
+    // access grid to see if interface atom
+    IMP::algebra::BoundingBox3D bb(v);
+    bb+=distance_threshold;
+    Grid::ExtendedIndex lb = grid.get_extended_index(bb.get_corner(0)),
+      ub = grid.get_extended_index(bb.get_corner(1));
+    for(Grid::IndexIterator it= grid.indexes_begin(lb, ub);
+        it != grid.indexes_end(lb, ub); ++it) {
+      for(unsigned int vIndex=0; vIndex<grid[*it].size(); vIndex++) {
+        int r_index = grid[*it][vIndex];
+        float dist2 =
+          IMP::algebra::get_squared_distance(coordinates1[r_index], v);
+        if(dist2 < distance_threshold2) {
+          score += soap.get_score(model,
+                                  IMP::kernel::ParticleIndexPair(pis1[r_index],
+                                                                 pis2[l_index]),
+                                  sqrt(dist2));
+        }
       }
     }
   }
+
   std::cout << "Distance based score is " << score << std::endl;
 
   // SAS based score
@@ -128,5 +165,17 @@ int main(int argc, char **argv) {
   }
   std::cout << "SAS based score is " << sas_score << std::endl;
   std::cerr << "Score = " << sas_score + score << std::endl;
+
+  // output file header
+  std::ofstream out_file(out_file_name.c_str());
+  out_file << "receptorPdb (str) " << pdb1 << std::endl;
+  out_file << "ligandPdb (str) " << pdb2 << std::endl;
+  SOAPResult::print_header(out_file);
+  out_file.setf(std::ios::fixed, std::ios::floatfield);
+  out_file.precision(3);
+
+  SOAPResult r(1, sas_score+score, false, sas_score, score);
+  out_file << r << std::endl;
+
   return 0;
 }

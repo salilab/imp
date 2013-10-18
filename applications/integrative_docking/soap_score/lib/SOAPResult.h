@@ -18,7 +18,8 @@ class SOAPResult {
 public:
   SOAPResult(int number, float score, bool filtered, float sas_score,
              float atom_pairs_score,
-             IMP::algebra::Transformation3D transformation) :
+             IMP::algebra::Transformation3D transformation =
+                       IMP::algebra::get_identity_transformation_3d()) :
     number_(number), score_(score), filtered_(filtered), z_score_(0.0),
     sas_score_(sas_score), atom_pairs_score_(atom_pairs_score),
     transformation_(transformation) {}
