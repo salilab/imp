@@ -26,7 +26,13 @@ Additional developer documentation:
 - [Bug Tracker](https://github.com/salilab/imp/issues)
 - [Nightly tests](http://integrativemodeling.org/nightly/results/)
 
-An overview of some of the various modules currently available. Representative classes and functions are shown.
+An overview of some of the various modules currently
+available. Representative classes and functions are shown. Most
+modules are licensed under the
+[LGPL](http://www.gnu.org/licenses/lgpl.html), however some are
+licensed under the [GPL](http://www.gnu.org/copyleft/gpl.html) due to
+dependencies. See the doc page for each module for details.
+
 | Module|Representation|Scoring|Sampling|Analysis|
 |-------|--------------|-------|--------|--------|
 | IMP::kernel | IMP::kernel::Particle, IMP::kernel::Model | IMP::kernel::Restraint, IMP::kernel::ScoringFunction, IMP::kernel::create_restraint() | IMP::kernel::Optimizer, IMP::kernel::Sampler | IMP::kernel::ConfigurationSet |
