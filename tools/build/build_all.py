@@ -42,10 +42,7 @@ class TestXMLHandler(XMLGenerator):
                       '-' * 70 + '\n' \
                       + xml.sax.saxutils.escape(test['detail']) + '\n')
 
-    def _insert_details(self):
-        """Add Python unittest exception details to the XML file, as an
-           additional test measurement."""
-        # This assumes that the Results tag comes after the Name tag
+    def _get_pickle(self):
         name = self._test.get('name', '')
         splname = name.split('-', 1)[-1] # Also try without module- prefix
         for n in (name, splname):
@@ -56,14 +53,31 @@ class TestXMLHandler(XMLGenerator):
                 # Ignore incomplete pickles (e.g. if ctest killed Python when
                 # the timeout was reached while the pickle was being written)
                 testpickle = None
-            if testpickle is not None:
-                self.fh.write('\n\t\t\t<NamedMeasurement type="text/string" ' \
-                              'name="Python unittest detail"><Value>')
-                for test in testpickle:
-                    if test['detail'] is not None:
-                        self.write_test_detail(test)
-                self.fh.write('</Value>\n\t\t\t</NamedMeasurement>\n')
+            if testpickle:
+                self._test['pickle'] = testpickle
                 return
+
+    def _insert_test_list(self):
+        """Add a list of Python unittest test cases to the XML file"""
+        if self._test.get('pickle', None) is not None:
+            self.fh.write('\n\t\t<TestCaseList>\n')
+            for test in self._test['pickle']:
+                self.fh.write('\t\t\t<TestCase name="%s" state="%s">' \
+                              % (test['name'], test['state']))
+                self.fh.write('</TestCase>\n')
+            self.fh.write('\t\t</TestCaseList>\n')
+
+    def _insert_exception_details(self):
+        """Add Python unittest exception details to the XML file, as an
+           additional test measurement."""
+        # This assumes that the Results tag comes after the Name tag
+        if self._test.get('pickle', None) is not None:
+            self.fh.write('\n\t\t\t<NamedMeasurement type="text/string" ' \
+                          'name="Python unittest detail"><Value>')
+            for test in self._test['pickle']:
+                if test['detail'] is not None:
+                    self.write_test_detail(test)
+            self.fh.write('</Value>\n\t\t\t</NamedMeasurement>\n')
 
     def startElement(self, name, attrs):
         if name == 'Test' and attrs.has_key('Status'):
@@ -78,10 +92,14 @@ class TestXMLHandler(XMLGenerator):
             self._end_test()
         elif self._test is not None:
             if name == 'Name':
+                self._get_pickle()
                 self._in_name = False
             elif name == 'Results':
-                self._insert_details()
-        return XMLGenerator.endElement(self, name)
+                self._insert_exception_details()
+        ret = XMLGenerator.endElement(self, name)
+        if self._test is not None and name == 'Name':
+            self._insert_test_list()
+        return ret
 
     def characters(self, ch):
         if self._in_name:
