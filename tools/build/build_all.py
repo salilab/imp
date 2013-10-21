@@ -57,7 +57,7 @@ class TestXMLHandler(XMLGenerator):
                 # the timeout was reached while the pickle was being written)
                 testpickle = None
             if testpickle is not None:
-                self.fh.write('\t\t\t<NamedMeasurement type="text/string" ' \
+                self.fh.write('\n\t\t\t<NamedMeasurement type="text/string" ' \
                               'name="Python unittest detail"><Value>')
                 for test in testpickle:
                     if test['detail'] is not None:
