@@ -613,8 +613,12 @@ class _TestResult(unittest.TextTestResult):
             self.stream.write("in %.3fs ... " % pv)
         if detail is not None and not isinstance(detail, str):
             detail = self._exc_info_to_string(detail, test)
-        test_name = self.getDescription(test)
+        test_doc = self.getDescription(test)
+        test_name = test.id()
+        if test_name.startswith('__main__.'):
+            test_name = test_name[9:]
         self.all_tests.append({'name': test_name,
+                               'docstring': test_doc,
                                'time': pv, 'state': state, 'detail': detail})
 
     def addSuccess(self, test):
