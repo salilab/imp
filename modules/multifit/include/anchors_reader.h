@@ -11,14 +11,13 @@
 
 #include <IMP/atom/SecondaryStructureResidue.h>
 #include <IMP/algebra/Transformation3D.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/core/Hierarchy.h>
-#include <IMP/file.h>
 #include <IMP/multifit/multifit_config.h>
 #include "DataPointsAssignment.h"
 IMPMULTIFIT_BEGIN_NAMESPACE
 
-
+//! Storage of anchors (points and edges)
 class IMPMULTIFITEXPORT AnchorsData {
  public:
   AnchorsData(){}
@@ -65,7 +64,7 @@ class IMPMULTIFITEXPORT AnchorsData {
   }
 
   //!Sets up default secondary structure particles for every anchor (run first)
-  void setup_secondary_structure(Model *mdl);
+  void setup_secondary_structure(kernel::Model *mdl);
 
   //!Assign secondary structure particles. Provide indices if out of order.
   /**
@@ -73,17 +72,17 @@ class IMPMULTIFITEXPORT AnchorsData {
      \param[in] indices (Optional) List of which anchor point numbers the
                 provided ssres_ps belong to.
   */
-  void set_secondary_structure_probabilities(const Particles &ssres_ps,
+  void set_secondary_structure_probabilities(const kernel::Particles &ssres_ps,
                                              const Ints &indices=Ints());
 
-  inline Particles get_secondary_structure_particles() const {
+  inline kernel::Particles get_secondary_structure_particles() const {
     return secondary_structure_ps_;
   }
   algebra::Vector3Ds points_;
   std::vector<bool> consider_point_;
   IntPairs edges_;
  protected:
-  Particles secondary_structure_ps_;
+  kernel::Particles secondary_structure_ps_;
 };
 IMP_VALUES(AnchorsData, AnchorsDataList);
 

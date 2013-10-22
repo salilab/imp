@@ -14,31 +14,29 @@
 #include "DiscreteSampler.h"
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
-#include <IMP/internal/OwnerPointer.h>
+#include <IMP/base/Pointer.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
-
-
 
 //! Sample best solutions using BranchAndBound
 /** Find all good configurations of the model using branch and bound.
     Searches are truncated when the score is worse than the the thresholds
-    in the Sampler or when two particles with the same ParticlesState
+    in the Sampler or when two particles with the same kernel::ParticlesState
     are assigned the same state.
  */
-class IMPDOMINOEXPORT BranchAndBoundSampler : public DiscreteSampler
-{
-public:
-  BranchAndBoundSampler(Model *m, std::string name="BranchAndBoundSampler %1%");
-  BranchAndBoundSampler(Model*m, ParticleStatesTable *pst,
-                        std::string name="BranchAndBoundSampler %1%");
-  IMP_DISCRETE_SAMPLER(BranchAndBoundSampler);
+class IMPDOMINOEXPORT BranchAndBoundSampler : public DiscreteSampler {
+ public:
+  BranchAndBoundSampler(kernel::Model *m,
+                        std::string name = "BranchAndBoundSampler %1%");
+  BranchAndBoundSampler(kernel::Model *m, ParticleStatesTable *pst,
+                        std::string name = "BranchAndBoundSampler %1%");
+  Assignments do_get_sample_assignments(const IMP::domino::Subset &known) const
+      IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(BranchAndBoundSampler);
 };
-
 
 IMP_OBJECTS(BranchAndBoundSampler, BranchAndBoundSamplers);
 
-
 IMPDOMINO_END_NAMESPACE
 
-#endif  /* IMPDOMINO_BRANCH_AND_BOUND_SAMPLER_H */
+#endif /* IMPDOMINO_BRANCH_AND_BOUND_SAMPLER_H */

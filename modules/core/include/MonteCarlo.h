@@ -9,13 +9,13 @@
 #define IMPCORE_MONTE_CARLO_H
 
 #include <IMP/core/core_config.h>
-#include "Mover.h"
+#include "MonteCarloMover.h"
 #include "monte_carlo_macros.h"
 #include "IncrementalScoringFunction.h"
 #include <IMP/Optimizer.h>
 #include <IMP/optimizer_macros.h>
 #include <IMP/container_macros.h>
-#include <IMP/internal/container_helpers.h>
+#include <IMP/kernel/internal/container_helpers.h>
 #include <IMP/algebra/vector_search.h>
 #include <IMP/Configuration.h>
 
@@ -27,22 +27,30 @@ IMPCORE_BEGIN_NAMESPACE
 #define IMP_CORE_HAS_MONTE_CARLO_MOVER 1
 
 //! A Monte Carlo optimizer.
-/** The optimizer uses a set of Mover objects to propose steps. Currently
-    each Mover is called at each Monte Carlo iteration. If you only want to
-    use one mover at a time, use a SerialMover.
-    The movers propose some modification, which is then
-    accepted or rejected based on the Metropolis criterion. Optionally, a
-    number of local optimization steps are taken before the MonteCarlo step
+/** The optimizer uses a set of Mover objects to propose steps.  At
+    each sampling iteration, all Movers added to MonteCarlo are called to
+    generate a new proposed configuration.
+
+    The movers propose some modification, which is then accepted or
+    rejected based on the Metropolis criterion. Optionally, a number
+    of local optimization steps are taken before the MonteCarlo step
     is accepted or rejected.
+
+    If you want to sequentially call one mover at every iteration, wrap
+    all movers into a SerialMover first, and then add the SerialMover to
+    MonteCarlo.
 
     By default, the lowest score state encountered is returned.
 
     \see Mover
  */
-class IMPCOREEXPORT MonteCarlo: public Optimizer
-{
-public:
-  MonteCarlo(Model *m=nullptr);
+class IMPCOREEXPORT MonteCarlo : public Optimizer {
+ public:
+  MonteCarlo(kernel::Model *m);
+
+  /** \deprecated_at{2.1} Use the one that takes a model. */
+  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
+  MonteCarlo();
 
  protected:
   virtual Float do_optimize(unsigned int max_steps);
@@ -52,9 +60,7 @@ public:
       found so far. If, instead, you wish to return the last accepted
       state, set return best to false.
   */
-  void set_return_best(bool tf) {
-    return_best_=tf;
-  }
+  void set_return_best(bool tf) { return_best_ = tf; }
 
   /** \name kT
       The kT value has to be on the same scale as the differences
@@ -63,24 +69,20 @@ public:
       @{
   */
   void set_kt(Float t) {
-    IMP_INTERNAL_CHECK(t>0, "Temperature must be positive");
-    temp_=t;
+    IMP_INTERNAL_CHECK(t > 0, "Temperature must be positive");
+    temp_ = t;
   }
-  Float get_kt() const {
-    return temp_;
-  }
+  Float get_kt() const { return temp_; }
   /** @} */
   /** Return the energy of last accepted state.
    */
-  double get_last_accepted_energy() const {
-    return last_energy_;
-  }
+  double get_last_accepted_energy() const { return last_energy_; }
 
   /** If return best is on, you can get the best energy
       found so far.*/
   double get_best_accepted_energy() const {
     IMP_USAGE_CHECK(return_best_, "Getting the best energy"
-                    << " requires return best being on.");
+                                      << " requires return best being on.");
     return best_energy_;
   }
   /** \name Statistics
@@ -94,6 +96,21 @@ public:
   unsigned int get_number_of_upward_steps() const {
     return stat_upward_steps_taken_;
   }
+  //! Get number of proposed moves
+  unsigned int get_number_of_proposed_steps() const {
+    return stat_forward_steps_taken_ + stat_upward_steps_taken_ +
+           stat_num_failures_;
+  }
+  //! Get number of accepted moves
+  unsigned int get_number_of_accepted_steps() const {
+    return stat_forward_steps_taken_ + stat_upward_steps_taken_;
+  }
+  void reset_statistics() {
+    stat_forward_steps_taken_ = 0;
+    stat_upward_steps_taken_ = 0;
+    stat_num_failures_ = 0;
+  }
+
   /** @} */
 
   /** Computations can be acceletating by throwing out
@@ -101,13 +118,9 @@ public:
       do this, specific a maximum acceptable difference
       between the before and after scores.
   */
-  void set_maximum_difference(double d) {
-    max_difference_=d;
-  }
+  void set_maximum_difference(double d) { max_difference_ = d; }
 
-  double get_maximum_difference() const {
-    return max_difference_;
-  }
+  double get_maximum_difference() const { return max_difference_; }
   /** @name Movers
 
        The following methods are used to manipulate the list of Movers.
@@ -115,12 +128,9 @@ public:
        to change the current configuration.
        @{
   */
-  IMP_LIST_ACTION(public, Mover, Movers, mover, movers,
-                  MonteCarloMover*,
-                  MonteCarloMovers,
-                  {},{},{});
+  IMP_LIST_ACTION(public, Mover, Movers, mover, movers, MonteCarloMover *,
+                  MonteCarloMovers, {}, {}, {});
   /** @} */
-
 
   /** \name Incremental
       Efficient evaluation of non-bonded list based restraints is
@@ -131,25 +141,22 @@ public:
       each time. This cannot be changed during optimization.
   */
   void set_incremental_scoring_function(IncrementalScoringFunction *isf);
-  bool get_use_incremental_scoring_function() const {
-    return isf_;
-  }
-  IncrementalScoringFunction* get_incremental_scoring_function() const {
+  bool get_use_incremental_scoring_function() const { return isf_; }
+  IncrementalScoringFunction *get_incremental_scoring_function() const {
     return isf_;
   }
   /** @} */
  protected:
   /** Get all movable particles (those that can be moved by the current
       movers.*/
-  ParticleIndexes get_movable_particles() const;
+  kernel::ParticleIndexes get_movable_particles() const;
   /** Note that if return best is true, this will save the current
       state of the model. Also, if the move is accepted, the
       optimizer states will be updated.
   */
   bool do_accept_or_reject_move(double score, double last,
                                 double proposal_ratio);
-  bool do_accept_or_reject_move(double score, double proposal_ratio)
-  {
+  bool do_accept_or_reject_move(double score, double proposal_ratio) {
     return do_accept_or_reject_move(score, get_last_accepted_energy(),
                                     proposal_ratio);
   }
@@ -170,20 +177,20 @@ public:
 
       The list of moved particles is passed.
    */
-  virtual double do_evaluate(const ParticleIndexes &moved) const {
+  virtual double do_evaluate(const kernel::ParticleIndexes &moved) const {
     IMP_UNUSED(moved);
-    if (isf_ ) {
+    if (isf_) {
       isf_->set_moved_particles(moved);
     }
     if (get_maximum_difference() < NO_MAX) {
-      return get_scoring_function()
-        ->evaluate_if_below(false, last_energy_+max_difference_);
+      return get_scoring_function()->evaluate_if_below(
+          false, last_energy_ + max_difference_);
     } else {
-      return get_scoring_function()
-        ->evaluate(false);
+      return get_scoring_function()->evaluate(false);
     }
   }
-private:
+
+ private:
   double temp_;
   double last_energy_;
   double best_energy_;
@@ -192,30 +199,23 @@ private:
   unsigned int stat_upward_steps_taken_;
   unsigned int stat_num_failures_;
   bool return_best_;
-  IMP::OwnerPointer<Configuration> best_;
+  IMP::base::PointerMember<Configuration> best_;
   ::boost::uniform_real<> rand_;
 
-  Pointer<IncrementalScoringFunction> isf_;
+  base::Pointer<IncrementalScoringFunction> isf_;
 };
 
-
-
 //! This variant of Monte Carlo that relaxes after each move
-class IMPCOREEXPORT MonteCarloWithLocalOptimization: public MonteCarlo
-{
-  IMP::OwnerPointer<Optimizer> opt_;
+class IMPCOREEXPORT MonteCarloWithLocalOptimization : public MonteCarlo {
+  IMP::base::PointerMember<Optimizer> opt_;
   unsigned int num_local_;
-public:
-  MonteCarloWithLocalOptimization(Optimizer *opt,
-                               unsigned int steps);
 
-  unsigned int get_number_of_steps() const {
-    return num_local_;
-  }
+ public:
+  MonteCarloWithLocalOptimization(Optimizer *opt, unsigned int steps);
 
-  Optimizer* get_local_optimizer() const {
-    return opt_;
-  }
+  unsigned int get_number_of_steps() const { return num_local_; }
+
+  Optimizer *get_local_optimizer() const { return opt_; }
 
  protected:
   virtual void do_step() IMP_OVERRIDE;
@@ -230,10 +230,9 @@ public:
     local minima, but they can still climb the barriers in between as the model
     is not reset to the minima after each step.
  */
-class IMPCOREEXPORT MonteCarloWithBasinHopping:
-public MonteCarloWithLocalOptimization
-{
-public:
+class IMPCOREEXPORT MonteCarloWithBasinHopping
+    : public MonteCarloWithLocalOptimization {
+ public:
   MonteCarloWithBasinHopping(Optimizer *opt, unsigned int ns);
 
  protected:
@@ -241,7 +240,6 @@ public:
   IMP_OBJECT_METHODS(MonteCarloWithBasinHopping);
 };
 
-
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_MONTE_CARLO_H */
+#endif /* IMPCORE_MONTE_CARLO_H */

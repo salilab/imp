@@ -1,4 +1,4 @@
-"""Interface between XML Restraint and IMP Restraint."""
+"""Interface between XML Restraint and IMP.kernel.Restraint."""
 
 import IMP.core
 import IMP.em
@@ -22,7 +22,7 @@ class _RestraintSets(object):
         try:
             current_set = set_by_weight[restraint_type]
         except KeyError:
-            current_set = set_by_weight[restraint_type] = IMP.RestraintSet()
+            current_set = set_by_weight[restraint_type] = IMP.kernel.RestraintSet()
             if model:
                 model.add_restraint(current_set)
         current_set.add_restraint(restraint)
@@ -531,7 +531,7 @@ class _RestraintRestraint(_RestraintNode):
         for child in self.child_restraints:
             mhs.append(child)
         first_particle = self.child_restraints[0].get_particle()
-        if IMP.core.RigidBody.particle_is_instance(first_particle):
+        if IMP.core.RigidBody.get_is_setup(first_particle):
             rbs_tmp = []
             for mh in mhs:
                 rbs_tmp.append(mh.get_particle())
@@ -554,7 +554,7 @@ class _RestraintRestraint(_RestraintNode):
         for child in self.child_restraints:
             mhs.append(child)
         first_particle = self.child_restraints[0].get_particle()
-        if IMP.core.RigidBody.particle_is_instance(first_particle):
+        if IMP.core.RigidBody.get_is_setup(first_particle):
             rbs_tmp = []
             for mh in mhs:
                 rbs_tmp.append(mh.get_particle())

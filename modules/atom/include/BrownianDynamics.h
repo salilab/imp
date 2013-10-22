@@ -13,10 +13,9 @@
 #include "Diffusion.h"
 #include "Simulator.h"
 #include "atom_macros.h"
-#include <IMP/random.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/Optimizer.h>
-#include <IMP/internal/units.h>
+#include <IMP/kernel/internal/units.h>
 #include <IMP/algebra/Vector3D.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -30,7 +29,7 @@ class SimulationParameters;
     the score to be energy in kcal/mol, the xyz coordinates to be in
     angstroms and the diffusion coefficent be in cm^2/s
 
-    Particles without optimized x,y,z and nonoptimized D are skipped.
+    kernel::Particles without optimized x,y,z and nonoptimized D are skipped.
 
     Rigid bodies are supported.
 
@@ -49,38 +48,44 @@ class SimulationParameters;
 
     \see Diffusion
   */
-class IMPATOMEXPORT BrownianDynamics : public Simulator
-{
-public:
+class IMPATOMEXPORT BrownianDynamics : public Simulator {
+ public:
   //! Create the optimizer
   /** If sc is not null, that container will be used to find particles
-      to move, otherwise the model will be searched.*/
-  BrownianDynamics(Model *m, std::string name = "BrownianDynamics%1%");
-  void set_maximum_move(double ms) {
-    max_step_=ms;
-  }
-  void set_use_stochastic_runge_kutta(bool tf) {
-    srk_=tf;
-  }
-  IMP_SIMULATOR(BrownianDynamics);
- private:
-  void advance_chunk(double dtfs, double ikt,
-                     const ParticleIndexes &ps,
-                     unsigned int begin,
-                     unsigned int end);
-  void advance_coordinates_1(ParticleIndex pi,
-                             unsigned int i,
-                             double dtfs,
-                             double ikT);
-  void advance_coordinates_0(ParticleIndex pi, unsigned int i,
-                             double dtfs,
-                             double ikT);
-  void advance_orientation_0(ParticleIndex pi,
-                             double dtfs,
-                             double ikT);
+      to move, otherwise the model will be searched.
+      @param m model associated with bd
+      @param name name of bd object
+      @param wave_factor for wave step function, see Simulator object,
+                         if >1.001 or so, creates a wave of time steps
+                         that are larger by up to wave_factor from
+                         formal maximal time step
 
-  typedef boost::variate_generator<RandomNumberGenerator&,
-                                   boost::normal_distribution<double> > RNG;
+     @note wave_factor is an advanced feature - if you're not sure, just use
+                       its default, see also Simulator::simulate_wave()
+  */
+  BrownianDynamics(kernel::Model *m, std::string name = "BrownianDynamics%1%",
+                   double wave_factor = 1.0);
+  void set_maximum_move(double ms) { max_step_ = ms; }
+  void set_use_stochastic_runge_kutta(bool tf) { srk_ = tf; }
+
+  IMP_OBJECT_METHODS(BrownianDynamics);
+
+ private:
+  virtual void setup(const kernel::ParticleIndexes &ps) IMP_OVERRIDE;
+  virtual double do_step(const kernel::ParticleIndexes &sc,
+                         double dt) IMP_OVERRIDE;
+  virtual bool get_is_simulation_particle(kernel::ParticleIndex p) const
+      IMP_OVERRIDE;
+
+ private:
+  void advance_chunk(double dtfs, double ikt, const kernel::ParticleIndexes &ps,
+                     unsigned int begin, unsigned int end);
+  void advance_coordinates_1(kernel::ParticleIndex pi, unsigned int i,
+                             double dtfs, double ikT);
+  void advance_coordinates_0(kernel::ParticleIndex pi, unsigned int i,
+                             double dtfs, double ikT);
+  void advance_orientation_0(kernel::ParticleIndex pi, double dtfs, double ikT);
+
   double max_step_;
   bool srk_;
   base::Vector<algebra::Vector3D> forces_;
@@ -97,4 +102,4 @@ IMPATOMEXPORT double get_harmonic_sigma(double D, double f);
 #endif
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_BROWNIAN_DYNAMICS_H */
+#endif /* IMPATOM_BROWNIAN_DYNAMICS_H */

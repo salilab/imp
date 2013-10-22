@@ -1,5 +1,5 @@
 /*!
- *  \file scores2D.h
+ *  \file em2d/scores2D.h
  *  \brief Scoring functions for 2D
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
 */
@@ -11,7 +11,7 @@
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/RegistrationResult.h"
-#include "IMP/Object.h"
+#include "IMP/base/Object.h"
 #include "IMP/VersionInfo.h"
 #include <IMP/base/warning_macros.h>
 #include <functional>
@@ -89,7 +89,7 @@ public:
   ChiSquaredScore(): ScoreFunction() {}
 
 private:
-  mutable Pointer<Image> variance_;
+  mutable base::Pointer<Image> variance_;
   double get_private_score(Image *, Image *) const;
   void set_variance_imag_private(Image *var) {variance_ = var;}
 };
@@ -109,6 +109,7 @@ private:
 };
 IMP_OBJECTS(EM2DScore,EM2DScores);
 
+//! Score based on the mean of the absolute difference.
 class IMPEM2DEXPORT MeanAbsoluteDifference: public ScoreFunction {
 public:
   MeanAbsoluteDifference(): ScoreFunction() {}

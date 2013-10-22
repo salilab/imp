@@ -11,38 +11,33 @@
 #include <IMP/display/display_config.h>
 #include "declare_Geometry.h"
 #include "Writer.h"
-#include <IMP/OptimizerState.h>
-#include <IMP/SingletonContainer.h>
+#include <IMP/kernel/OptimizerState.h>
 #include <IMP/display/geometry.h>
-#include <IMP/Pointer.h>
-#include <IMP/internal/utility.h>
+#include <IMP/base/Pointer.h>
+#include <IMP/kernel/internal/utility.h>
 #include <vector>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
 /** Write to a Writer periodically.
  */
-class IMPDISPLAYEXPORT WriteOptimizerState: public OptimizerState {
-  ::IMP::kernel::internal::Counter skip_steps_, call_number_, update_number_;
-  IMP::OwnerPointer<Writer> writer_;
-  void update();
- public:
-  WriteOptimizerState(WriterAdaptor w) :
-    OptimizerState("WriteOptimizerState%1%"),
-    writer_(w) {}
-  void set_period(unsigned int p) {
-    skip_steps_=p-1;
-    call_number_=0;
-  }
-  IMP_LIST_ACTION(public, Geometry, Geometries, geometry, geometries,
-                  Geometry*, Geometries,,,);
-  void write(WriterAdaptor w) const;
-  IMP_OBJECT_INLINE(WriteOptimizerState,
-                    out << "  writer: " << writer_->get_name() << std::endl;,);
-};
-IMP_OBJECTS(WriteOptimizerState, WriteOptimizerStates);
+class IMPDISPLAYEXPORT WriteOptimizerState : public kernel::OptimizerState {
+  IMP::base::PointerMember<Writer> writer_;
 
+ public:
+  /** \deprecated_at{2.1} Use the method that takes a kernel::Model. */
+  IMPDISPLAY_DEPRECATED_FUNCTION_DECL(2.1)
+  WriteOptimizerState(WriterAdaptor w);
+  WriteOptimizerState(kernel::Model *m, WriterAdaptor w);
+  void write(WriterAdaptor w) const;
+  IMP_LIST_ACTION(public, Geometry, Geometries, geometry, geometries,
+                  Geometry *, Geometries, , , );
+
+ protected:
+  virtual void do_update(unsigned int) IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(WriteOptimizerState);
+};
 
 IMPDISPLAY_END_NAMESPACE
 
-#endif  /* IMPDISPLAY_LOG_OPTIMIZER_STATE_H */
+#endif /* IMPDISPLAY_LOG_OPTIMIZER_STATE_H */

@@ -15,50 +15,48 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 
-
-
 //! Add a dependency to the dependency graph
 /** This score state doesn't do anything other than add edges to the
     dependency graph. This can be useful when involved filters are used
     as they are not included in the dependency graph. This may go away
     and be replaced by adding dependencies to the SubsetFilterTable.
  */
-class IMPDOMINOEXPORT DependencyScoreState : public ScoreState
-{
-  ParticlesTemp inputp_, outputp_;
+class IMPDOMINOEXPORT DependencyScoreState : public ScoreState {
+  kernel::ParticlesTemp inputp_, outputp_;
   ContainersTemp inputc_, outputc_;
-public:
+
+ public:
   DependencyScoreState();
-  void set_input_particles(const ParticlesTemp &pt) {
-    IMP_USAGE_CHECK(!get_is_part_of_model(),
+  void set_input_particles(const kernel::ParticlesTemp &pt) {
+    IMP_USAGE_CHECK(!get_model(),
                     "Must set dependencies before adding to model.");
-    inputp_=pt;
+    inputp_ = pt;
   }
-  void set_output_particles(const ParticlesTemp &pt) {
-    IMP_USAGE_CHECK(!get_is_part_of_model(),
+  void set_output_particles(const kernel::ParticlesTemp &pt) {
+    IMP_USAGE_CHECK(!get_model(),
                     "Must set dependencies before adding to model.");
-    outputp_=pt;
+    outputp_ = pt;
   }
   void set_input_containers(const ContainersTemp &pt) {
-    IMP_USAGE_CHECK(!get_is_part_of_model(),
+    IMP_USAGE_CHECK(!get_model(),
                     "Must set dependencies before adding to model.");
-    inputc_=pt;
+    inputc_ = pt;
   }
   void set_output_containers(const ContainersTemp &pt) {
-    IMP_USAGE_CHECK(!get_is_part_of_model(),
+    IMP_USAGE_CHECK(!get_model(),
                     "Must set dependencies before adding to model.");
-    outputc_=pt;
+    outputc_ = pt;
   }
-  protected:
-  virtual void do_before_evaluate() IMP_OVERRIDE;
-  virtual void do_after_evaluate(DerivativeAccumulator *da)
-    IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
-  IMP_OBJECT_METHODS(DependencyScoreState);;
-};
 
+ protected:
+  virtual void do_before_evaluate() IMP_OVERRIDE;
+  virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(DependencyScoreState);
+  ;
+};
 
 IMPDOMINO_END_NAMESPACE
 
-#endif  /* IMPDOMINO_DEPENDENCY_SCORE_STATE_H */
+#endif /* IMPDOMINO_DEPENDENCY_SCORE_STATE_H */

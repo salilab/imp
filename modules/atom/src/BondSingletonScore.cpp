@@ -14,56 +14,46 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-BondSingletonScore::BondSingletonScore(UnaryFunction *f): f_(f){}
+BondSingletonScore::BondSingletonScore(UnaryFunction *f) : f_(f) {}
 
-double BondSingletonScore::evaluate(Particle *b,
-                                   DerivativeAccumulator *da) const
-{
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    Bond::decorate_particle(b);
-  }
-  Bond bd(b);
-  Float l= bd.get_length();
-  Float s= bd.get_stiffness();
+double BondSingletonScore::evaluate_index(kernel::Model *m,
+                                          kernel::ParticleIndex pi,
+                                          DerivativeAccumulator *da) const {
+  IMP_OBJECT_LOG;
+  IMP_USAGE_CHECK(Bond::get_is_setup(m, pi), "Particle is not a bond particle");
+  Bond bd(m, pi);
+  Float l = bd.get_length();
+  Float s = bd.get_stiffness();
   if (l < 0) {
     IMP_WARN("Bond does not have a length: " << bd << std::endl);
     return 0;
   }
-  if (s <0) s=1;
-  Particle *pa=nullptr, *pb=nullptr;
+  if (s < 0) s = 1;
+  kernel::Particle *pa = nullptr, *pb = nullptr;
   try {
     pa = bd.get_bonded(0).get_particle();
     pb = bd.get_bonded(1).get_particle();
-  } catch (const base::IndexException &e) {
+  }
+  catch (const base::IndexException &e) {
     IMP_WARN("Problem processing bond: " << bd << std::endl);
     IMP_WARN(e.what() << std::endl);
     return 0;
   }
-  return
-    IMP::core::internal::
-    evaluate_distance_pair_score(IMP::core::XYZ(pa),
-                                 IMP::core::XYZ(pb),
-                                 da,
-                                 f_.get(),
-                                 s*(boost::lambda::_1-l), s);
+  return IMP::core::internal::evaluate_distance_pair_score(
+      IMP::core::XYZ(pa), IMP::core::XYZ(pb), da, f_.get(),
+      s * (boost::lambda::_1 - l), s);
 }
 
-ContainersTemp BondSingletonScore::get_input_containers(Particle *) const {
-  return ContainersTemp();
-}
-
-ParticlesTemp BondSingletonScore::get_input_particles(Particle *p) const {
-  ParticlesTemp ret(3);
-  Bond bd(p);
-  ret[0]= bd.get_bonded(0);
-  ret[1]= bd.get_bonded(1);
-  ret[2]=p;
+ModelObjectsTemp BondSingletonScore::do_get_inputs(
+    kernel::Model *m, const kernel::ParticleIndexes &pi) const {
+  kernel::ModelObjectsTemp ret(3 * pi.size());
+  for (unsigned int i = 0; i < pi.size(); ++i) {
+    Bond ad(m, pi[i]);
+    ret[3 * i + 0] = ad.get_bonded(0);
+    ret[3 * i + 1] = ad.get_bonded(1);
+    ret[3 * i + 2] = m->get_particle(pi[i]);
+  }
   return ret;
-}
-
-void BondSingletonScore::do_show(std::ostream &out) const
-{
-  out << "function " << *f_ << std::endl;
 }
 
 IMPATOM_END_NAMESPACE

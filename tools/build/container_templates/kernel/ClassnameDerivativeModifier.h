@@ -18,10 +18,9 @@
 #include "input_output_macros.h"
 #include "ClassnameModifier.h"
 
-
 IMPKERNEL_BEGIN_NAMESPACE
 typedef ClassnameModifier ClassnameDerivativeModifier;
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_CLASSNAME_DERIVATIVE_MODIFIER_H */
+#endif /* IMPKERNEL_CLASSNAME_DERIVATIVE_MODIFIER_H */

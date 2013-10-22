@@ -1,5 +1,5 @@
 /**
- *  \file CollisionCrossSection.h
+ *  \file em2d/CollisionCrossSection.h
  *  \brief
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -19,6 +19,7 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
+//! Determine the collision cross section for some projections of particles
 class IMPEM2DEXPORT CollisionCrossSection: public IMP::base::Object {
 public:
 
@@ -26,8 +27,8 @@ public:
     \param[in] n_projections Number of projections to use for obtaining the CCS
     \param[in] resolution "Resolution" to use to generate the projections.
     \param[in] pixel_size size in A/pix to use when generating the projections
-    \param[in] projection_image_size. The size of the projections to generate
-               for this value you should request a size so that:
+    \param[in] projection_image_size The size of the projections to generate;
+               for this value you should request a size so that
                pixel_size * projection_image_size >= Max distance between two
                particles.
   */
@@ -39,10 +40,10 @@ public:
 
 
   /**
-   * Particles used to calculate their collision cross section
+   * kernel::Particles used to calculate their collision cross section
    * @param ps The particles
    */
-  void set_model_particles(const ParticlesTemp &ps);
+  void set_model_particles(const kernel::ParticlesTemp &ps);
 
   /**
    * Returns the collision cross section. Before using this function you need
@@ -64,7 +65,7 @@ protected:
 
   /*! Gets the sum of the values in the pixels with value > 0
     \param[in] m The projected area is computed for this matrix
-    \param[out] Values of the area
+    \return Values of the area
   */
   double get_projected_area(const cv::Mat &m) const;
 

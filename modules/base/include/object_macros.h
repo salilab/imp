@@ -16,80 +16,78 @@
 #include "WeakPointer.h"
 #include "SetLogState.h"
 
-
-//! Define the basic things needed by any Object
-/** This defines
-    - IMP::base::Object::get_version_info()
-    - a private destructor
-    and declares
-    - IMP::base::Object::do_show()
-*/
-#define IMP_OBJECT_INLINE(Name, show, destructor)                       \
-  public:                                                               \
-  IMP_IMPLEMENT_INLINE( virtual ::IMP::base::VersionInfo                \
-                        get_version_info() const,                       \
-  return ::IMP::base::VersionInfo(get_module_name(),                    \
-                                  get_module_version()));               \
-  IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                               \
-                                    try {                               \
-                                      IMP::base::Object::_on_destruction(); \
-                                      destructor;                       \
-                                    } catch (const std::exception &e) { \
-                                      IMP_LOG_VARIABLE(e);              \
-                                      IMP_WARN("Caught exception "      \
-                                               << e.what()              \
-                                               << " in destructor.");   \
-                                    })
-
-
-//! Use IMP_OBJECT_METHODS()
-#define IMP_OBJECT(Name)                                                \
-  public:                                                               \
-  IMP_IMPLEMENT_INLINE( virtual ::IMP::base::VersionInfo                \
-                        get_version_info() const,                       \
-  return ::IMP::base::VersionInfo(get_module_name(),                    \
-                                  get_module_version()));               \
-  virtual void do_show(std::ostream &out) const;                        \
-IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
-
 //! Define the basic things needed by any Object
 /** This defines
     - IMP::base::Object::get_version_info()
     - IMP::base::Object::get_type_name()
     - a private destructor
 */
-#define IMP_OBJECT_METHODS(Name)                                        \
-  public:                                                               \
-  IMP_IMPLEMENT_INLINE( virtual ::IMP::base::VersionInfo                \
-                        get_version_info() const,                       \
-  return ::IMP::base::VersionInfo(get_module_name(),                    \
-                                  get_module_version()));               \
-IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
+#define IMP_OBJECT_METHODS(Name)                                              \
+ public:                                                                      \
+  virtual std::string get_type_name() const IMP_OVERRIDE { return #Name; }    \
+  virtual ::IMP::base::VersionInfo get_version_info() const IMP_OVERRIDE {    \
+    return ::IMP::base::VersionInfo(get_module_name(), get_module_version()); \
+  }                                                                           \
+  IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
 
-#if IMP_HAS_DEPRECATED
-//! for backwards compat
-#define IMP_OBJECT_2(Name) IMP_OBJECT_METHODS(Name)
-#endif
+/** \deprecated_at{2.1} Use IMP_OBJECT_METHODS() */
+#define IMP_OBJECT_INLINE(Name, show, destructor)                             \
+ public:                                                                      \
+  IMPBASE_DEPRECATED_MACRO(2.1, "Use IMP_OBJECT_METHODS() instead.");         \
+  virtual std::string get_type_name() const IMP_OVERRIDE { return #Name; }    \
+  virtual ::IMP::base::VersionInfo get_version_info() const IMP_OVERRIDE {    \
+    return ::IMP::base::VersionInfo(get_module_name(), get_module_version()); \
+  }                                                                           \
+  IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                                     \
+                                    try {                                     \
+                                      IMP::base::Object::_on_destruction();   \
+                                      destructor;                             \
+                                    } catch (const std::exception &           \
+                                                 e) {                         \
+    IMP_LOG_VARIABLE(e);                                                      \
+    IMP_WARN("Caught exception " << e.what() << " in destructor.");           \
+  })
+
+//! Only to work aroung a gcc bug
+#define IMP_OBJECT_NO_WARNING(Name)                                           \
+ public:                                                                      \
+  virtual std::string get_type_name() const IMP_OVERRIDE { return #Name; }    \
+  virtual ::IMP::base::VersionInfo get_version_info() const IMP_OVERRIDE {    \
+    return ::IMP::base::VersionInfo(get_module_name(), get_module_version()); \
+  }                                                                           \
+  void do_show(std::ostream &out) const;                                      \
+  IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
+
+//! \deprecated_at{2.1} Use IMP_OBJECT_METHODS()
+#define IMP_OBJECT(Name)                                              \
+ public:                                                              \
+  IMPBASE_DEPRECATED_MACRO(2.1, "Use IMP_OBJECT_METHODS() instead."); \
+  IMP_OBJECT_NO_WARNING(Name)
+
+/** \deprecated_at{2.1} Use IMP_OBJECT_METHODS() */
+#define IMP_OBJECT_2(Name)                                    \
+  IMP_DEPRECATED_MACRO(2.0, "Use IMP_OBJECT_METHODS() macro") \
+      IMP_OBJECT_METHODS(Name)
 
 //! Define the types for storing sets of objects
 /** The macro defines the types PluralName and PluralNameTemp.
     PluralName should be Names unless the English spelling is
     different.
  */
-#define IMP_OBJECTS(Name, PluralName)           \
-  /** Store a set of objects.*/                                 \
-  typedef IMP::base::Vector<IMP::base::Pointer<Name> >          \
-  PluralName;                                                   \
-/** Pass a set of objects.
-    \relates Name */                                            \
-  typedef IMP::base::Vector<IMP::base::WeakPointer<Name> >      \
-  PluralName##Temp;
+#define IMP_OBJECTS(Name, PluralName)                                          \
+  /** Store a set of objects.*/                                                \
+  typedef IMP::base::Vector<IMP::base::Pointer<Name> > PluralName; /** Pass a  \
+                                                                      set of   \
+                                                                      objects. \
+                                                                       See     \
+                                                                      Name */  \
+  typedef IMP::base::Vector<IMP::base::WeakPointer<Name> > PluralName##Temp;
 
 #define IMP_GENERIC_OBJECT(Name, lcname, targument, carguments, cparguments) \
-  typedef Generic##Name<targument> Name;                                \
-  template <class targument>                                            \
-  Generic##Name<targument>* create_##lcname carguments {                \
-    return new Generic##Name<targument>cparguments;                     \
+  typedef Generic##Name<targument> Name;                                     \
+  template <class targument>                                                 \
+  Generic##Name<targument> *create_##lcname carguments {                     \
+    return new Generic##Name<targument> cparguments;                         \
   }
 
 //! Declare a ref counted pointer to a new object
@@ -99,7 +97,7 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
     if there are none.
     Please read the documentation for IMP::Pointer before using.
 */
-#define IMP_NEW(Typename, varname, args)        \
+#define IMP_NEW(Typename, varname, args) \
   IMP::base::Pointer<Typename> varname(new Typename args)
 
-#endif  /* IMPBASE_OBJECT_MACROS_H */
+#endif /* IMPBASE_OBJECT_MACROS_H */

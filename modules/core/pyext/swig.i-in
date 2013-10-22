@@ -7,10 +7,8 @@
 
 IMP_SWIG_BASE_OBJECT(IMP::core,  MonteCarloMover, MonteCarloMovers);
 IMP_SWIG_VALUE(IMP::core, MonteCarloMoverResult, MonteCarloMoverResults);
-#ifdef IMP_HAS_DEPRECATED
 IMP_SWIG_OBJECT(IMP::core,  Mover, Movers)
 IMP_SWIG_OBJECT(IMP::core,  MoverBase, MoverBases)
-#endif
 IMP_SWIG_CONTAINER(IMP::core, IMP::core, MonteCarlo, Mover, mover);
 IMP_SWIG_CONTAINER(IMP::core, IMP::core, SerialMover, Mover, mover);
 
@@ -60,12 +58,12 @@ IMP_SWIG_OBJECT( IMP::core, MonteCarlo, MonteCarlos);
 IMP_SWIG_OBJECT( IMP::core, MonteCarloWithLocalOptimization, MonteCarloWithLocalOptimizations);
 IMP_SWIG_OBJECT( IMP::core, MonteCarloWithBasinHopping, MonteCarloWithBasinHoppings);
 IMP_SWIG_OBJECT( IMP::core, MSConnectivityRestraint, MSConnectivityRestraints);
+IMP_SWIG_OBJECT( IMP::core, NeighborsTable, NeighborsTables);
 IMP_SWIG_OBJECT( IMP::core, NormalMover, NormalMovers);
 IMP_SWIG_OBJECT( IMP::core, NormalizedSphereDistancePairScore, NormalizedSphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, OpenCubicSpline, OpenCubicSplines);
 IMP_SWIG_OBJECT( IMP::core, PairConstraint, PairConstraints);
 IMP_SWIG_OBJECT( IMP::core, PairRestraint, PairRestraints);
-IMP_SWIG_BASE_OBJECT( IMP::core, PeriodicOptimizerState, PeriodicOptimizerStates);
 IMP_SWIG_OBJECT( IMP::core, QuadConstraint, QuadConstraints);
 IMP_SWIG_OBJECT( IMP::core, QuadRestraint, QuadRestraints);
 IMP_SWIG_OBJECT( IMP::core, QuadraticClosePairsFinder, QuadraticClosePairsFinders);
@@ -126,6 +124,7 @@ IMP_SWIG_OBJECT( IMP::core, AllSameQuadPredicate, AllSameQuadPredicates);
 IMP_SWIG_DECORATOR( IMP::core, XYZ, XYZs);
 IMP_SWIG_DECORATOR( IMP::core, XYZR, XYZRs);
 IMP_SWIG_DECORATOR( IMP::core, RigidBody, RigidBodies);
+IMP_SWIG_DECORATOR( IMP::core, RigidBodyMember, RigidBodyMembers);
 IMP_SWIG_DECORATOR( IMP::core, RigidMember, RigidMembers);
 IMP_SWIG_DECORATOR( IMP::core, NonRigidMember, NonRigidMembers);
 IMP_SWIG_DECORATOR( IMP::core, Centroid, Centroids);
@@ -159,6 +158,9 @@ IMP_SWIG_OBJECT(IMP::core, RigidBodyTorque, RigidBodyFramesTorques);
 IMP_SWIG_OBJECT(IMP::core, EdgePairGeometry, EdgePairGeometries);
 IMP_SWIG_OBJECT(IMP::core, EdgePairsGeometry, EdgePairsGeometries);
 
+IMP_SWIG_OBJECT(IMP::core, AttributeSingletonPredicate, AttributeSingletonPredicates);
+IMP_SWIG_OBJECT(IMP::core, InBoundingBox3DSingletonPredicate, InBoundingBox3DSingletonPredicates);
+IMP_SWIG_OBJECT(IMP::core, IsCollisionPairPredicate, IsCollisionPairPredicates);
 
 /* Don't wrap internal classes */
 %ignore IMP::core::internal::ChildArrayTraits;
@@ -166,10 +168,8 @@ IMP_SWIG_OBJECT(IMP::core, EdgePairsGeometry, EdgePairsGeometries);
 /* Wrap our own base classes */
 %include "IMP/core/ClosePairsFinder.h"
 %include "IMP/core/MonteCarloMover.h"
-#if IMP_HAS_DEPRECATED
 %include "IMP/core/Mover.h"
 %include "IMP/core/MoverBase.h"
-#endif
 
 %include "IMP/core/XYZ.h"
 
@@ -261,6 +261,7 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/Linear.h"
 %include "IMP/core/IncrementalScoringFunction.h"
 %include "IMP/core/MonteCarlo.h"
+%include "IMP/core/NeighborsTable.h"
 %include "IMP/core/NormalMover.h"
 %include "IMP/core/OpenCubicSpline.h"
 %include "IMP/core/QuadraticClosePairsFinder.h"
@@ -294,6 +295,7 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/pair_predicates.h"
 %include "IMP/core/triplet_predicates.h"
 %include "IMP/core/quad_predicates.h"
+%include "IMP/core/predicates.h"
 
 %include "IMP/core/AngleRestraint.h"
 %include "IMP/core/RigidBodyMover.h"

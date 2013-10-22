@@ -48,7 +48,7 @@ public:
       \param[in] norm_factors if set these precalcualted terms are used
                             for normalization
       \return the value of the cross correlation term: scalefac*(1-ccc)
-      \relatesalso cross_correlation_coefficient
+      See cross_correlation_coefficient
    */
   static float calc_score(
    DensityMap *data, SampledDensityMap *model_map,
@@ -71,7 +71,7 @@ public:
 */
   static algebra::Vector3Ds calc_derivatives(
      const DensityMap *em_map, const DensityMap *model_map,
-     const Particles &model_ps,const FloatKey &mass_key,
+     const kernel::Particles &model_ps,const FloatKey &mass_key,
      KernelParameters *kernel_params,
      const float &scalefac, const algebra::Vector3Ds &dv);
 #endif

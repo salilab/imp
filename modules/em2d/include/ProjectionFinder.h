@@ -21,7 +21,7 @@
 #include "IMP/algebra/Vector2D.h"
 #include "IMP/algebra/Rotation3D.h"
 #include "IMP/algebra/Rotation2D.h"
-#include "IMP/Pointer.h"
+#include "IMP/base/Pointer.h"
 #include "IMP/Particle.h"
 #include <string>
 
@@ -82,23 +82,6 @@ public:
     parameters_setup_(false),registration_done_(false) {};
 
   //! Initializes the parameters to generate and match projections
-  /*!
-    \param[in] resolution to employ to generate projections for matching with
-              the EM images. Default is the maximum possible, 1.
-    \param[in] coarse_registration_method Method for 1st step of projection
-              finding, the 2D alignment:
-                0 => FFT alignment no preprocessing.
-                1 => FFT alignment with preprocessing (Default and recommended).
-                2 => FFT alginment and centers of gravity
-                        (fast, but only works for low noise)
-                during testing.
-    \param[in] optimization steps to use by the simplex optimizer. The default
-              value is the one found during the benchmark to perform well
-    \param[in] simplex_initial_length Initial value to start the simplex search
-               The default value is based on the benchmark results
-    \param[in] Value of the simplex length stop the search. The smaller, the
-               more accurate the finder, but slower
-  */
   void setup(ScoreFunction *score_function,
              const Em2DRestraintParameters &params) {
 
@@ -126,7 +109,7 @@ public:
 
 
   //! Set the particles where the em2D restraint is applied
-  void set_model_particles(const ParticlesTemp &ps);
+  void set_model_particles(const kernel::ParticlesTemp &ps);
 
   //! The projections of the model that best match the subject EM images
   //! are saved.
@@ -213,9 +196,9 @@ protected:
   em2d::Images variances_;
   em2d::Images projections_;
   RegistrationResults registration_results_;
-  ParticlesTemp model_particles_;
+  kernel::ParticlesTemp model_particles_;
   Ints n_members_;
-  Pointer<ScoreFunction> score_function_;
+  base::Pointer<ScoreFunction> score_function_;
 
   bool particles_set_,
        parameters_setup_,

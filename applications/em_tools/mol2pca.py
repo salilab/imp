@@ -15,7 +15,7 @@ with density above the input threshold."""
         parser.error("incorrect number of arguments")
     in_prot_fn=args[0]
     out_pca_fn=args[1]
-    mdl=IMP.Model()
+    mdl=IMP.kernel.Model()
     mol=IMP.atom.read_pdb(in_prot_fn,mdl)
     vecs=[]
     for xyz in IMP.core.XYZs(IMP.core.get_leaves(mol)):

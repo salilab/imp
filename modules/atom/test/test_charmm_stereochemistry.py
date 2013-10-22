@@ -6,7 +6,7 @@ class Tests(IMP.test.TestCase):
     """Test CHARMM stereochemistry restraint"""
 
     def setup_restraint(self):
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         pdb = IMP.atom.read_pdb(
                         self.get_input_file_name('charmm_type_test.pdb'), m)
         ff = IMP.atom.get_heavy_atom_CHARMM_parameters()

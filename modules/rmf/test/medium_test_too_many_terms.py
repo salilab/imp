@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
     def test_round_trip(self):
         """Test that restraints with a zillion terms are squashed"""
         for suffix in RMF.suffixes:
-            m= IMP.Model()
+            m= IMP.kernel.Model()
             l0= IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m)
             l1= IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m)
             cpc= IMP.container.CloseBipartitePairContainer(IMP.atom.get_leaves(l0), IMP.atom.get_leaves(l1), 15, 1)

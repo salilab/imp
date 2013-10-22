@@ -3,7 +3,7 @@
 __doc__ = "Generate indexes of fitting solutions."
 
 import IMP.multifit
-from optparse import OptionParser
+from IMP import OptionParser
 
 def parse_args():
     usage = """%prog [options] <assembly name> <assembly input> <number of fits> <indexes filename>

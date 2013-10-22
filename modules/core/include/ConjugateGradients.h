@@ -11,8 +11,7 @@
 
 #include <IMP/core/core_config.h>
 
-#include <IMP/Optimizer.h>
-#include <IMP/optimizer_macros.h>
+#include <IMP/AttributeOptimizer.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -24,41 +23,47 @@ IMPCORE_BEGIN_NAMESPACE
     derivatives of the various attributes being optimized. By default,
     the scales are estimated from the range of values found for the attribute
     upon initialization. These estimates can be viewed either by calling
-    Model::get_range(my_float_key) or by turning on TERSE logging and looking
+    kernel::Model::get_range(my_float_key) or by turning on TERSE logging and
+   looking
     at logged messages. If this estimate does not accurately reflect the
-    scale, then you can use Model::set_range to set a more accurate range
+    scale, then you can use kernel::Model::set_range to set a more accurate
+   range
     for the parameters.
 */
-class IMPCOREEXPORT ConjugateGradients : public Optimizer
-{
-public:
-  ConjugateGradients(Model *m=nullptr);
+class IMPCOREEXPORT ConjugateGradients : public AttributeOptimizer {
+ public:
+  /** \deprecated_at{2.1} Use the constructor that takes a kernel::Model. */
+  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
+  ConjugateGradients();
+  ConjugateGradients(kernel::Model *m,
+                     std::string name = "ConjugateGradients%1%");
 
   //! Set the threshold for the minimum gradient
-  void set_gradient_threshold(Float t){ threshold_=t;}
+  void set_gradient_threshold(Float t) { threshold_ = t; }
 
 #ifndef IMP_DOXYGEN
-  void set_threshold(Float t) {set_gradient_threshold(t);}
+  void set_threshold(Float t) { set_gradient_threshold(t); }
 #endif
-
 
   //! Limit how far anything can change each time step
   void set_max_change(Float t) { max_change_ = t; }
 
-  IMP_OPTIMIZER(ConjugateGradients);
-private:
+  virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ConjugateGradients);
+
+ private:
 
   typedef double NT;
 
   // Handle optimization failing badly
   void failure();
 
-  NT get_score(base::Vector<FloatIndex> float_indices,
-               base::Vector<NT> &x, base::Vector<NT> &dscore);
-  bool line_search(base::Vector<NT> &x, base::Vector<NT> &dx,
-                   NT &alpha, const base::Vector<FloatIndex> &float_indices,
-                   int &ifun, NT &f, NT &dg, NT &dg1,
-                   int max_steps, const base::Vector<NT> &search,
+  NT get_score(base::Vector<FloatIndex> float_indices, base::Vector<NT> &x,
+               base::Vector<NT> &dscore);
+  bool line_search(base::Vector<NT> &x, base::Vector<NT> &dx, NT &alpha,
+                   const base::Vector<FloatIndex> &float_indices, int &ifun,
+                   NT &f, NT &dg, NT &dg1, int max_steps,
+                   const base::Vector<NT> &search,
                    const base::Vector<NT> &estimate);
   Float threshold_;
   Float max_change_;
@@ -66,4 +71,4 @@ private:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_CONJUGATE_GRADIENTS_H */
+#endif /* IMPCORE_CONJUGATE_GRADIENTS_H */

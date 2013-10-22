@@ -16,6 +16,8 @@ header_template ="""/** \\file IMP%(slashalias)s/%(file)s
 */
 #include <IMP/%(module)s/%(file)s>
 
+%(deprecate)s
+
 %(namespacebegin)s
 using namespace ::IMP::%(module)s;
 %(namespaceend)s
@@ -23,12 +25,16 @@ using namespace ::IMP::%(module)s;
 
 internal_header_template ="""#include <IMP/%(module)s/internal/%(file)s>
 
+%(deprecate)s
+
 %(namespacebegin)s
 using namespace ::IMP::%(module)s;
 %(namespaceend)s
 """
 
 allh_template = """#include <IMP/%(module)s.h>
+
+%(deprecate)s
 
 %(namespacebegin)s
 using namespace ::IMP::%(module)s;
@@ -42,6 +48,8 @@ parser.add_option("-a", "--alias",
                   dest="alias", help="The name of the module alias.")
 parser.add_option("-s", "--source",
                   dest="source", help="IMP source directory.")
+parser.add_option("-d", "--deprecate", dest="deprecate", default="",
+                  help="Deprecate the generated headers")
 
 
 def main():
@@ -53,6 +61,12 @@ def main():
     tools.mkdir("include/IMP/%s"%options.alias)
     tools.mkdir("include/IMP/%s/internal"%options.alias)
     var={"module": options.module}
+    if options.deprecate != "":
+        var["deprecate"] = "IMP%s_DEPRECATED_HEADER(%s, \"%s\")"%(options.module.upper(),
+                                                              options.deprecate,
+                                                              "Use the one in IMP/%s instead."%options.module)
+    else:
+        var["deprecate"] = ""
     if options.alias=="":
         var["namespacebegin"]="namespace IMP {"
         var["namespaceend"]="}"

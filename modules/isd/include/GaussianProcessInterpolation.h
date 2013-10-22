@@ -59,7 +59,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
                                unsigned n_obs,
                                UnivariateFunction *mean_function,
                                BivariateFunction *covariance_function,
-                               Particle *sigma,
+                               kernel::Particle *sigma,
                                double sparse_cutoff=1e-7);
 
   /** Get posterior mean and covariance functions, at the points requested
@@ -119,7 +119,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   FloatsList get_posterior_covariance_hessian(Floats x, bool) const;
 
   //needed for restraints using gpi
-  ParticlesTemp get_input_particles() const;
+  kernel::ParticlesTemp get_input_particles() const;
   ContainersTemp get_input_containers() const;
 
   // call these if you called update() on the mean or covariance function.
@@ -151,7 +151,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   friend class GaussianProcessInterpolationRestraint;
   friend class GaussianProcessInterpolationScoreState;
 
-  IMP_OBJECT(GaussianProcessInterpolation);
+  IMP_OBJECT_METHODS(GaussianProcessInterpolation);
 
  protected:
   //returns updated data vector
@@ -185,6 +185,8 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   // returns updated prior covariance vector
   void add_to_Omega_particle_derivative(unsigned particle, double value,
           DerivativeAccumulator &accum);
+  //returns LDLT decomp of omega
+  Eigen::LDLT<MatrixXd, Eigen::Upper> get_ldlt() const;
   //returns updated Omega^{-1}
   MatrixXd get_Omi() const;
   //returns updated Omega^{-1}(I-m)
@@ -202,6 +204,8 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   void compute_W();
   // compute \f$(\mathbf{W} + \frac{\sigma}{N}\mathbf{S})^{-1}\f$.
   void compute_Omega();
+  // compute LDLT decomposition of Omega
+  void compute_ldlt();
   // compute \f$(\mathbf{W} + \frac{\sigma}{N}\mathbf{S})^{-1}\f$.
   void compute_Omi();
   // compute (W+sigma*S/N)^{-1} (I-m)
@@ -237,18 +241,19 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
     FloatsList x_; // abscissa
     unsigned n_obs_; // number of observations
     // pointer to the prior mean function
-    IMP::internal::OwnerPointer<UnivariateFunction> mean_function_;
+    IMP::base::PointerMember<UnivariateFunction> mean_function_;
     // pointer to the prior covariance function
-    IMP::internal::OwnerPointer<BivariateFunction> covariance_function_;
+    IMP::base::PointerMember<BivariateFunction> covariance_function_;
     VectorXd I_,m_;
     MatrixXd W_,Omega_,Omi_; // Omi = Omega^{-1}
     Eigen::DiagonalMatrix<double, Eigen::Dynamic> S_;
     VectorXd OmiIm_; // Omi * (I - m)
     bool flag_m_, flag_m_gpir_, flag_Omi_, flag_OmiIm_, flag_W_,
-         flag_Omega_, flag_Omega_gpir_;
-    Pointer<Particle> sigma_;
+         flag_Omega_, flag_Omega_gpir_, flag_ldlt_;
+    IMP::base::Pointer<IMP::kernel::Particle> sigma_;
     double cutoff_;
     double sigma_val_; //to know if an update is needed
+    Eigen::LDLT<MatrixXd, Eigen::Upper> ldlt_;
 
 };
 

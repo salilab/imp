@@ -32,35 +32,35 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
     \note The output containers contents are not necessarily disjoint.
 */
-class IMPCONTAINEREXPORT DistributeClassnamesScoreState :
-public ScoreState
-{
-  base::OwnerPointer<ClassnameContainer> input_;
+class IMPCONTAINEREXPORT DistributeClassnamesScoreState : public ScoreState {
+  base::PointerMember<ClassnameContainer> input_;
   typedef boost::tuple<base::Pointer<DynamicListClassnameContainer>,
-                base::OwnerPointer<ClassnamePredicate>, int> Data;
+                       base::PointerMember<ClassnamePredicate>, int> Data;
   base::Vector<Data> data_;
-  mutable bool updated_;
+  mutable int input_version_;
   void update_lists_if_necessary() const;
-public:
+
+ public:
   DistributeClassnamesScoreState(ClassnameContainerAdaptor input,
-                      std::string name="DistributeClassnamesScoreState %1%");
+                                 std::string name =
+                                     "DistributeClassnamesScoreState %1%");
 
   /** A given tuple will go into the returned container if \c predicate
       returns \c value when applied to it.*/
   DynamicListClassnameContainer *add_predicate(ClassnamePredicate *predicate,
-                                        int value) {
-    IMP_NEW(DynamicListClassnameContainer, c, (input_,
-                                        predicate->get_name()+ " output"));
+                                               int value) {
+    IMP_NEW(DynamicListClassnameContainer, c,
+            (input_, predicate->get_name() + " output"));
     data_.push_back(Data(c, predicate, value));
     return c;
   }
   virtual void do_before_evaluate() IMP_OVERRIDE;
   virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
-  IMP_OBJECT(DistributeClassnamesScoreState);
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(DistributeClassnamesScoreState);
 };
 
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_DISTRIBUTE_CLASSNAMES_SCORE_STATE_H */
+#endif /* IMPCONTAINER_DISTRIBUTE_CLASSNAMES_SCORE_STATE_H */

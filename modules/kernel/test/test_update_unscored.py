@@ -28,7 +28,7 @@ class Tests(IMP.test.TestCase):
 
     def test_score_state_update(self):
         """Test that unscored particles are updated on evaluate"""
-        m=IMP.Model()
+        m=IMP.kernel.Model()
         pi= m.add_particle("my particle")
         k= IMP.FloatKey("hi")
         ss = TouchSS(m, pi, k)

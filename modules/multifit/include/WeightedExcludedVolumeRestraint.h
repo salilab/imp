@@ -16,9 +16,8 @@
 
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/core/XYZR.h>
-#include <IMP/Model.h>
-#include <IMP/Restraint.h>
-#include <IMP/VersionInfo.h>
+#include <IMP/kernel/Model.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/Refiner.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
@@ -27,7 +26,8 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 /** \ingroup exp_restraint
 
  */
-class IMPMULTIFITEXPORT WeightedExcludedVolumeRestraint : public Restraint
+class IMPMULTIFITEXPORT WeightedExcludedVolumeRestraint
+  : public kernel::Restraint
 {
 public:
   //! Constructor
@@ -35,8 +35,9 @@ public:
     \param[in] rbs Excluded volume will be calculated between these Rigid bodies
     \param[in] refiner rigid body refiner
     \param[in] weight_key the name of the weight attribute of the particles
-    \note Particles that are rigid-bodies are interpolated and not resampled.
-          This significantly reduces the running time but is less accurate.
+    \note kernel::Particles that are rigid-bodies are interpolated and
+    not resampled. This significantly reduces the running time but is less
+    accurate.
    */
   WeightedExcludedVolumeRestraint(
                core::RigidBodies rbs,
@@ -50,7 +51,7 @@ public:
   IMP_OBJECT_METHODS(WeightedExcludedVolumeRestraint);
 
 #ifndef SWIG
-  IMP_LIST(private, Particle, particle, Particle*, Particles);
+  IMP_LIST(private, Particle, particle, kernel::Particle*, kernel::Particles);
 #endif
 
 private:
@@ -70,7 +71,7 @@ private:
   //  bool special_treatment_of_particles_outside_of_density_;
   //rigid bodies handling
   std::vector<IMP::algebra::Transformation3D> rbs_orig_trans_;
-  IMP::OwnerPointer<Refiner> rb_refiner_;//refiner for rigid bodies
+  IMP::base::PointerMember<Refiner> rb_refiner_;//refiner for rigid bodies
 };
 
 IMPMULTIFIT_END_NAMESPACE

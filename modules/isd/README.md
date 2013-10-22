@@ -1,7 +1,7 @@
 This module implements inferential scoring in IMP, building on methods
 developed as part of the [Inferential Structure Determination](http://www.isd.bio.cam.ac.uk/) software (ISD).
 
-## Info
+# Info
 
 _Author(s)_: Yannick Spill, Riccardo Pellarin, Charles Greenberg, Ben Webb, Daniel Russel
 
@@ -15,3 +15,4 @@ version 2 of the License, or (at your option) any later version.
 
 _Publications_:
  - See main IMP papers list.
+ - Inferential structure determination. Rieping W, Habeck M, Nilges M. (2005) Science. 8;309(5732):303-6.

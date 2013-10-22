@@ -14,7 +14,7 @@
 #include <IMP/generic.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/SingletonScore.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/singleton_macros.h>
 #include <IMP/UnaryFunction.h>
 #include <boost/lambda/lambda.hpp>
@@ -28,52 +28,50 @@ IMPCORE_BEGIN_NAMESPACE
 
     To restrain a set of particles store in SingletonContainer pc in a sphere
     do the following:
-    \htmlinclude restrain_in_sphere.py
+    \include core/restrain_in_sphere.py
  */
 template <class UF>
-class GenericDistanceToSingletonScore : public SingletonScore
-{
-  IMP::OwnerPointer<UF> f_;
+class GenericDistanceToSingletonScore : public SingletonScore {
+  IMP::base::PointerMember<UF> f_;
   algebra::Vector3D pt_;
-  struct StaticD
-  {
+  struct StaticD {
     algebra::Vector3D v_;
-    StaticD(algebra::Vector3D v): v_(v){}
-    Float get_coordinate(unsigned int i) {return v_[i];}
-    void add_to_derivatives(algebra::Vector3D v, DerivativeAccumulator){
+    StaticD(algebra::Vector3D v) : v_(v) {}
+    Float get_coordinate(unsigned int i) { return v_[i]; }
+    void add_to_derivatives(algebra::Vector3D v, DerivativeAccumulator) {
       IMP_UNUSED(v);
-      IMP_WARN( "DistanceTo dropped deriv of " <<  v << std::endl);
+      IMP_WARN("DistanceTo dropped deriv of " << v << std::endl);
     }
   };
-public:
-  GenericDistanceToSingletonScore(UF *f,
-                                  const algebra::Vector3D& pt);
-  IMP_SIMPLE_SINGLETON_SCORE(GenericDistanceToSingletonScore);
+
+ public:
+  GenericDistanceToSingletonScore(UF *f, const algebra::Vector3D &pt);
+  virtual double evaluate_index(kernel::Model *m, kernel::ParticleIndex p,
+                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE {
+    return IMP::kernel::get_particles(m, pis);
+  }
+  IMP_SINGLETON_SCORE_METHODS(GenericDistanceToSingletonScore);
+  IMP_OBJECT_METHODS(GenericDistanceToSingletonScore);
+  ;
 };
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 
-
 template <class UF>
-GenericDistanceToSingletonScore<UF>
-::GenericDistanceToSingletonScore(UF *f,
-                                  const algebra::Vector3D &v)
-    : f_(f), pt_(v){}
+GenericDistanceToSingletonScore<UF>::GenericDistanceToSingletonScore(
+    UF *f, const algebra::Vector3D &v)
+    : f_(f), pt_(v) {}
 template <class UF>
-Float GenericDistanceToSingletonScore<UF>::evaluate(Particle *b,
-                                         DerivativeAccumulator *da) const
-{
-  Float v= internal::evaluate_distance_pair_score(XYZ(b),
-                                                  StaticD(pt_), da,
-                                                  f_.get(), boost::lambda::_1);
-  IMP_LOG_VERBOSE( "DistanceTo from " << XYZ(b) << " to "
-          << pt_ << " scored " << v << std::endl);
+double GenericDistanceToSingletonScore<UF>::evaluate_index(
+    kernel::Model *m, kernel::ParticleIndex pi,
+    DerivativeAccumulator *da) const {
+  double v = internal::evaluate_distance_pair_score(
+      XYZ(m, pi), StaticD(pt_), da, f_.get(), boost::lambda::_1);
+  IMP_LOG_VERBOSE("DistanceTo from " << XYZ(m, pi) << " to " << pt_
+                                     << " scored " << v << std::endl);
   return v;
-}
-template <class UF>
-void GenericDistanceToSingletonScore<UF>::do_show(std::ostream &out) const
-{
-  out << "function " << *f_;
 }
 
 #endif
@@ -81,10 +79,7 @@ void GenericDistanceToSingletonScore<UF>::do_show(std::ostream &out) const
 /** Use an IMP::UnaryFunction to score a distance to a point.*/
 IMP_GENERIC_OBJECT(DistanceToSingletonScore, distance_to_singleton_score,
                    UnaryFunction,
-                   (UnaryFunction *f, const algebra::Vector3D& pt),
-                   (f, pt));
-
-
+                   (UnaryFunction *f, const algebra::Vector3D &pt), (f, pt));
 
 //! Apply a function to the distance to a fixed point.
 /** A particle is scored based on the distance between it and a constant
@@ -93,28 +88,34 @@ IMP_GENERIC_OBJECT(DistanceToSingletonScore, distance_to_singleton_score,
 
     To restrain a set of particles store in SingletonContainer pc in a sphere
     do the following:
-    \htmlinclude restrain_in_sphere.py
+    \include core/restrain_in_sphere.py
  */
-class IMPCOREEXPORT SphereDistanceToSingletonScore : public SingletonScore
-{
-  IMP::OwnerPointer<UnaryFunction> f_;
+class IMPCOREEXPORT SphereDistanceToSingletonScore : public SingletonScore {
+  IMP::base::PointerMember<UnaryFunction> f_;
   algebra::Vector3D pt_;
-  struct StaticD
-  {
+  struct StaticD {
     algebra::Vector3D v_;
-    StaticD(algebra::Vector3D v): v_(v){}
-    Float get_coordinate(unsigned int i) {return v_[i];}
-    void add_to_derivatives(algebra::Vector3D v, DerivativeAccumulator){
+    StaticD(algebra::Vector3D v) : v_(v) {}
+    Float get_coordinate(unsigned int i) { return v_[i]; }
+    void add_to_derivatives(algebra::Vector3D v, DerivativeAccumulator) {
       IMP_UNUSED(v);
-      IMP_LOG_VERBOSE( "DistanceTo dropped deriv of " <<  v << std::endl);
+      IMP_LOG_VERBOSE("DistanceTo dropped deriv of " << v << std::endl);
     }
   };
-public:
-  SphereDistanceToSingletonScore(UnaryFunction *f,
-                                 const algebra::Vector3D& pt);
-  IMP_SIMPLE_SINGLETON_SCORE(SphereDistanceToSingletonScore);
+
+ public:
+  SphereDistanceToSingletonScore(UnaryFunction *f, const algebra::Vector3D &pt);
+  virtual double evaluate_index(kernel::Model *m, kernel::ParticleIndex p,
+                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE {
+    return IMP::kernel::get_particles(m, pis);
+  }
+  IMP_SINGLETON_SCORE_METHODS(SphereDistanceToSingletonScore);
+  IMP_OBJECT_METHODS(SphereDistanceToSingletonScore);
+  ;
 };
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_DISTANCE_TO_SINGLETON_SCORE_H */
+#endif /* IMPCORE_DISTANCE_TO_SINGLETON_SCORE_H */

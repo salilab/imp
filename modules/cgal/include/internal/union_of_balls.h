@@ -12,13 +12,11 @@
 #include <IMP/algebra/SphereD.h>
 #include <vector>
 
-
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
 
-IMPCGALEXPORT
-std::pair<double, double>
-get_surface_area_and_volume(const algebra::Sphere3Ds &ss);
+IMPCGALEXPORT std::pair<double, double> get_surface_area_and_volume(
+    const algebra::Sphere3Ds &ss);
 
 IMPCGAL_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPCGAL_INTERNAL_UNION_OF_BALLS_H */
+#endif /* IMPCGAL_INTERNAL_UNION_OF_BALLS_H */

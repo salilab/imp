@@ -25,9 +25,8 @@ IMPBASE_BEGIN_NAMESPACE
     version info allows one to determine the module and version of
     all restraints used to help creating reproducible results.
  */
-class IMPBASEEXPORT VersionInfo: public Value
-{
-public:
+class IMPBASEEXPORT VersionInfo : public Value {
+ public:
   //! Create a VersionInfo object with the given module and version.
   VersionInfo(std::string module, std::string version);
 
@@ -37,17 +36,17 @@ public:
 
   std::string get_version() const { return version_; }
   IMP_SHOWABLE_INLINE(VersionInfo, {
-      IMP_USAGE_CHECK(!module_.empty(),
-                      "Attempting to use uninitialized version info");
-      out << module_ << " " << version_;
-    }
-    );
+    IMP_USAGE_CHECK(!module_.empty(),
+                    "Attempting to use uninitialized version info");
+    out << module_ << " " << version_;
+  });
   IMP_COMPARISONS_2(VersionInfo, module_, version_);
-private:
+
+ private:
   std::string module_, version_;
 };
 IMP_VALUES(VersionInfo, VersionInfos);
 
 IMPBASE_END_NAMESPACE
 
-#endif  /* IMPBASE_VERSION_INFO_H */
+#endif /* IMPBASE_VERSION_INFO_H */

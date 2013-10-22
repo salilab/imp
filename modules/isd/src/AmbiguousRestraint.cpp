@@ -12,14 +12,17 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-AmbiguousRestraint::AmbiguousRestraint(int d, Restraint *r0, Restraint *r1)
-: d_(d)
+AmbiguousRestraint::AmbiguousRestraint(kernel::Model *m, int d,
+        kernel::Restraint *r0, kernel::Restraint *r1) :
+    Restraint(m, "AmbiguousRestraint%1%"), d_(d)
 {
     rs_.push_back(r0);
     rs_.push_back(r1);
 }
 
-AmbiguousRestraint::AmbiguousRestraint(int d, Restraints rs) : d_(d),rs_(rs) {}
+AmbiguousRestraint::AmbiguousRestraint(kernel::Model *m, int d,
+        kernel::Restraints rs) : Restraint(m, "AmbiguousRestraint%1%"), d_(d),
+    rs_(rs) {}
 
 /* Apply the restraint by computing the d-norm
  */
@@ -47,20 +50,11 @@ AmbiguousRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp AmbiguousRestraint::do_get_inputs() const
 {
-  ModelObjectsTemp ret;
+  kernel::ModelObjectsTemp ret;
   for (unsigned int i=0; i<rs_.size(); ++i){
     ret+=rs_[i]->get_inputs();
   }
   return ret;
-}
-
-void AmbiguousRestraint::do_show(std::ostream& out) const
-{
-  out << "restraints= ";
-  for (unsigned int i=0; i<rs_.size(); ++i) {
-      out <<  rs_[i]->get_name();
-  }
-  out << std::endl;
 }
 
 IMPISD_END_NAMESPACE

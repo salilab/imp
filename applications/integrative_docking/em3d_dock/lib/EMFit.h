@@ -15,7 +15,7 @@
 #include <IMP/em/MapDistanceTransform.h>
 #include <IMP/em/DensityMap.h>
 
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 
 class EMFit {
 public:
@@ -37,25 +37,24 @@ public:
   void output(std::string out_file_name, std::string out_pdb_file_name="");
 
 private:
-  float compute_volume(const IMP::Particles& particles);
+  float compute_volume(const IMP::kernel::Particles& particles);
   float estimate_density_threshold(float object_volume) const;
   void read_trans_file(const std::string file_name,
                        std::vector<IMP::algebra::Transformation3D>& transforms);
 
-  void read_pdb_atoms(IMP::Model *model, const std::string file_name,
-                      IMP::Particles& particles);
+  void read_pdb_atoms(IMP::kernel::Model *model, const std::string file_name,
+                      IMP::kernel::Particles& particles);
 
   void compute_zscores();
 
 private:
-  IMP::OwnerPointer<IMP::Model> model_;
-  IMP::Particles rec_particles_, lig_particles_;
+  IMP::base::PointerMember<IMP::kernel::Model> model_;
+  IMP::kernel::Particles rec_particles_, lig_particles_;
   std::string rec_file_name_, lig_file_name_;
-  IMP::em::DensityMap *map_;
-  IMP::em::MapDistanceTransform *distance_transform_;
-  IMP::em::EnvelopeScore *envelope_score_;
+  IMP::base::PointerMember<IMP::em::DensityMap> map_;
+  IMP::base::PointerMember<IMP::em::MapDistanceTransform> distance_transform_;
+  IMP::base::PointerMember<IMP::em::EnvelopeScore> envelope_score_;
   MapScorer *cc_score_;
-  float resolution_;
   float dist_thr_;
   float density_threshold_;
   std::vector<FitResult> fit_results_;

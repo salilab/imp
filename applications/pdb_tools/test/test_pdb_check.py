@@ -5,7 +5,7 @@ class PDBCheckApplicationTest(IMP.test.ApplicationTestCase):
     def test_simple(self):
         """Simple test of pdb_check application"""
         p = self.run_application('pdb_check',
-                                 ['-i', self.get_input_file_name('mini.pdb')])
+                                 [self.get_input_file_name('mini.pdb')])
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)

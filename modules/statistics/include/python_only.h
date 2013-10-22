@@ -10,7 +10,6 @@
 #include <IMP/statistics/statistics_config.h>
 IMPSTATISTICS_BEGIN_NAMESPACE
 
-
 #ifdef IMP_DOXYGEN
 /** \name Python only
     This functionality is only available in python.
@@ -26,12 +25,12 @@ IMPSTATISTICS_BEGIN_NAMESPACE
     \param[in] yscale Whether the yscale is "linear" or "log"
     \param[in] curves A list of python functions to plot on the histogram as
     curves. The functions should take one float and return a float.
-    \relatesalso HistogramD
+    See HistogramD
 */
-void show_histogram(HistogramD h, std::string xscale="linear",
-                     std::string yscale="linear",
-                     Functions curves=Functions());
+void show_histogram(HistogramD h, std::string xscale = "linear",
+                    std::string yscale = "linear",
+                    Functions curves = Functions());
 /** @} */
 #endif
 IMPSTATISTICS_END_NAMESPACE
-#endif  /* IMPSTATISTICS_PYTHON_ONLY_H */
+#endif /* IMPSTATISTICS_PYTHON_ONLY_H */

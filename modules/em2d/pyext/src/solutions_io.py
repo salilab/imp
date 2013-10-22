@@ -1,3 +1,7 @@
+"""@namespace IMP.em2d.solutions_io
+   Utility functions to store and retrieve solution information.
+"""
+
 import IMP.em2d.imp_general.io as io
 import IMP.em2d.Database as Database
 
@@ -318,6 +322,8 @@ class ResultsDB(Database.Database2):
             tables, a left join is done. Otherwise get_solutions_results_table()
             is called. See get_solutions_results_table() for the meaning
             of the parameters.
+            @param max_number
+            @param orderby
         """
         tables = self.get_tables_names()
         log.debug("tables %s", tables)

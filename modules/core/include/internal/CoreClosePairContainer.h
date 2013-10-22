@@ -18,75 +18,78 @@
 #include <IMP/PairContainer.h>
 #include <IMP/PairPredicate.h>
 #include <IMP/generic.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/SingletonContainer.h>
-#include <IMP/internal/ListLikePairContainer.h>
+#include <IMP/kernel/internal/ListLikePairContainer.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-
-class IMPCOREEXPORT CoreClosePairContainer :
-  public IMP::internal::ListLikePairContainer
-{
-  IMP::OwnerPointer<SingletonContainer> c_;
-  IMP::OwnerPointer<ClosePairsFinder> cpf_;
-  IMP::OwnerPointer<internal::MovedSingletonContainer> moved_;
+class IMPCOREEXPORT CoreClosePairContainer
+    : public IMP::internal::ListLikePairContainer {
+  IMP::base::PointerMember<SingletonContainer> c_;
+  IMP::base::PointerMember<ClosePairsFinder> cpf_;
+  IMP::base::PointerMember<internal::MovedSingletonContainer> moved_;
   unsigned int moved_count_;
   bool first_call_;
   double distance_, slack_;
-  IMP_LISTLIKE_PAIR_CONTAINER_2(CoreClosePairContainer);
-  void initialize(SingletonContainer *c, double distance,
-                  double slack, ClosePairsFinder *cpf);
+  void initialize(SingletonContainer *c, double distance, double slack,
+                  ClosePairsFinder *cpf);
 
   void check_duplicates_input() const;
   void check_list(bool include_slack) const;
   void do_first_call();
   void do_incremental();
   void do_rebuild();
-public:
+
+ public:
+  virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual void do_before_evaluate() IMP_OVERRIDE;
+
   CoreClosePairContainer(SingletonContainer *c, double distance,
-                         ClosePairsFinder *cpf,
-                         double slack=1);
+                         ClosePairsFinder *cpf, double slack = 1,
+                         std::string name = "CoreClosePairContainer%1%");
 
-  IMP_LIST_ACTION(public, PairFilter, PairFilters,
-                  pair_filter, pair_filters,
-                  PairPredicate*, PairPredicates,
-                  obj->set_was_used(true);,
-                  ,);
+  IMP_LIST_ACTION(public, PairFilter, PairFilters, pair_filter, pair_filters,
+                  PairPredicate *, PairPredicates,
+                  {
+                    set_has_dependencies(false);
+                    obj->set_was_used(true);
+                  },
+                  { set_has_dependencies(false); }, );
 
-  void clear_caches() {first_call_=true;}
-public:
-  double get_slack() const {return slack_;}
-  double get_distance() const {return distance_;}
-  void update() {
-    do_before_evaluate();
-  }
-  SingletonContainer*get_singleton_container() const {return c_;}
-  ClosePairsFinder *get_close_pairs_finder() const {return cpf_;}
+  void clear_caches() { first_call_ = true; }
+  double get_slack() const { return slack_; }
+  double get_distance() const { return distance_; }
+  void update() { do_before_evaluate(); }
+  SingletonContainer *get_singleton_container() const { return c_; }
+  ClosePairsFinder *get_close_pairs_finder() const { return cpf_; }
   void set_slack(double d);
-  Restraints create_decomposition(PairScore *ps) const {
-    ParticleIndexPairs all= get_range_indexes();
-    Restraints ret(all.size());
-    for (unsigned int i=0; i< all.size(); ++i) {
-      ret[i]= new PairRestraint(ps, IMP::internal::get_particle(get_model(),
-                                                                all[i]));
+  kernel::Restraints create_decomposition(kernel::PairScore *ps) const {
+    kernel::ParticleIndexPairs all = get_range_indexes();
+    kernel::Restraints ret(all.size());
+    for (unsigned int i = 0; i < all.size(); ++i) {
+      ret[i] = new PairRestraint(
+          ps, IMP::internal::get_particle(get_model(), all[i]));
     }
     return ret;
   }
   template <class PS>
-  Restraints create_decomposition_t(PS *ps) const {
-    ParticleIndexPairs all= get_range_indexes();
-    Restraints ret(all.size());
-    for (unsigned int i=0; i< all.size(); ++i) {
-      ret[i]= IMP::create_restraint(ps,
-                                     IMP::internal::get_particle(get_model(),
-                                                                 all[i]));
+  kernel::Restraints create_decomposition_t(PS *ps) const {
+    kernel::ParticleIndexPairs all = get_range_indexes();
+    kernel::Restraints ret(all.size());
+    for (unsigned int i = 0; i < all.size(); ++i) {
+      ret[i] = IMP::create_restraint(
+          ps, IMP::internal::get_particle(get_model(), all[i]));
     }
     return ret;
   }
+  IMP_OBJECT_METHODS(CoreClosePairContainer);
 };
 
 IMP_OBJECTS(CoreClosePairContainer, CoreClosePairContainers);
 
 IMPCORE_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPCORE_INTERNAL_CORE_CLOSE_PAIR_CONTAINER_H */
+#endif /* IMPCORE_INTERNAL_CORE_CLOSE_PAIR_CONTAINER_H */

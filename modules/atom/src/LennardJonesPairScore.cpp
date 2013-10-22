@@ -11,11 +11,11 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-Float LennardJonesPairScore::evaluate(const ParticlePair &p,
-                                      DerivativeAccumulator *da) const
-{
-  LennardJones lj0(p[0]);
-  LennardJones lj1(p[1]);
+Float LennardJonesPairScore::evaluate_index(kernel::Model *m,
+                                            const kernel::ParticleIndexPair &p,
+                                            DerivativeAccumulator *da) const {
+  LennardJones lj0(m, p[0]);
+  LennardJones lj1(m, p[1]);
 
   algebra::Vector3D delta = lj0.get_coordinates() - lj1.get_coordinates();
   double distsqr = delta.get_squared_magnitude();
@@ -30,10 +30,8 @@ Float LennardJonesPairScore::evaluate(const ParticlePair &p,
   double score = repulsive - attractive;
 
   if (da) {
-    DerivativePair d =
-            (*smoothing_function_)(score,
-                                   (6.0 * attractive - 12.0 * repulsive) / dist,
-                                   dist);
+    DerivativePair d = (*smoothing_function_)(
+        score, (6.0 * attractive - 12.0 * repulsive) / dist, dist);
     algebra::Vector3D deriv = d.second * delta / dist;
     lj0.add_to_derivatives(deriv, *da);
     lj1.add_to_derivatives(-deriv, *da);
@@ -43,11 +41,9 @@ Float LennardJonesPairScore::evaluate(const ParticlePair &p,
   }
 }
 
-void LennardJonesPairScore::do_show(std::ostream &out) const
-{
-  out << " attractive_weight "
-      << attractive_weight_ << ", repulsive weight " << repulsive_weight_
-      << " using " << *smoothing_function_ << std::endl;
+ModelObjectsTemp LennardJonesPairScore::do_get_inputs(
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
+  return IMP::kernel::get_particles(m, pis);
 }
 
 IMPATOM_END_NAMESPACE

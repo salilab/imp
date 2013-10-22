@@ -8,18 +8,14 @@
 
 #include "IMP/atom/Chain.h"
 
-
 IMPATOM_BEGIN_NAMESPACE
-
 
 IntKey Chain::get_id_key() {
   static IntKey k("chain");
   return k;
 }
 
-void Chain::show(std::ostream &out) const {
-  out << "Chain " << get_id();
-}
+void Chain::show(std::ostream &out) const { out << "Chain " << get_id(); }
 
 Chain get_chain(Hierarchy h) {
   do {
@@ -27,10 +23,10 @@ Chain get_chain(Hierarchy h) {
       return Chain();
     }
 
-    if (Chain::particle_is_instance(h)) {
+    if (Chain::get_is_setup(h)) {
       return Chain(h);
     }
-  } while ((h=h.get_parent()));
+  } while ((h = h.get_parent()));
   return Chain();
 }
 

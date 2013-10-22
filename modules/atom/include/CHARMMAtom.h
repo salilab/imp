@@ -21,27 +21,27 @@
 IMPATOM_BEGIN_NAMESPACE
 
 //! A decorator for an atom that has a defined CHARMM type.
-class IMPATOMEXPORT CHARMMAtom : public Atom
-{
-public:
-  IMP_DECORATOR(CHARMMAtom, Atom);
+class IMPATOMEXPORT CHARMMAtom : public Atom {
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                String charmm_type) {
+    IMP_USAGE_CHECK(Atom::get_is_setup(m, pi),
+                    "Particle must already be an Atom particle");
+    m->add_attribute(get_charmm_type_key(), pi, charmm_type);
+  }
 
+ public:
+  IMP_DECORATOR_METHODS(CHARMMAtom, Atom);
   /** Create a decorator with the passed CHARMM type.
       The particle is assumed to already have all atom attributes.
    */
-  static CHARMMAtom setup_particle(Particle *p, String charmm_type) {
-    IMP_USAGE_CHECK(Atom::particle_is_instance(p),
-                    "Particle must already be an Atom particle");
-    p->add_attribute(get_charmm_type_key(), charmm_type);
-    return CHARMMAtom(p);
-  }
+  IMP_DECORATOR_SETUP_1(CHARMMAtom, String, charmm_type);
 
   IMP_DECORATOR_GET_SET(charmm_type, get_charmm_type_key(), String, String);
 
   //! Return true if the particle is an instance of a CHARMMAtom
-  static bool particle_is_instance(Particle *p) {
-    return Atom::particle_is_instance(p)
-           && p->has_attribute(get_charmm_type_key());
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+    return Atom::get_is_setup(m, pi) &&
+           m->get_has_attribute(get_charmm_type_key(), pi);
   }
 
   static StringKey get_charmm_type_key();
@@ -61,4 +61,4 @@ IMPATOMEXPORT void remove_charmm_untyped_atoms(Hierarchy hierarchy);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_CHARMM_ATOM_H */
+#endif /* IMPATOM_CHARMM_ATOM_H */

@@ -15,7 +15,7 @@
 #include "DistanceRestraint.h"
 
 #include <IMP/SingletonContainer.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/PairScore.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -29,23 +29,25 @@ IMPCORE_BEGIN_NAMESPACE
     use an appropriate PairScore which calls a Refiner (such
     as ClosePairsPairScore).
 
-    \verbinclude connectivity_restraint.py
+    \include connectivity_restraint.py
 
     More precisely, the restraint scores by computing the MST on the complete
     graph connecting all the particles. The edge weights are given by
     the value of the PairScore for the two endpoints of the edge.
  */
-class IMPCOREEXPORT ConnectivityRestraint : public Restraint
-{
-  IMP::OwnerPointer<PairScore> ps_;
-  IMP::OwnerPointer<SingletonContainer> sc_;
-public:
+class IMPCOREEXPORT ConnectivityRestraint : public kernel::Restraint {
+  IMP::base::PointerMember<PairScore> ps_;
+  IMP::base::PointerMember<SingletonContainer> sc_;
+
+ public:
   //! Use the given PairScore
-  ConnectivityRestraint(PairScore* ps, SingletonContainer *sc);
+  ConnectivityRestraint(PairScore *ps, SingletonContainer *sc);
+  /** \deprecated_at{2.1} Use constructor that takes a container instead.
+   */
+  IMPCORE_DEPRECATED_METHOD_DECL(2.1)
+  ConnectivityRestraint(PairScore *ps);
 #ifndef IMP_DOXYGEN
-  //! create a list internally
-  ConnectivityRestraint(PairScore* ps);
-  /** @name Particles to be connected
+  /** @name kernel::Particles to be connected
 
        The following methods are used to manipulate the list of particles
        that are to be connected. Each particle should have all the
@@ -55,10 +57,10 @@ public:
        can only be used if none is passed.
   */
   /*@{*/
-  void add_particle(Particle *p);
-  void add_particles(const ParticlesTemp &ps);
-  void set_particles(const ParticlesTemp &ps);
-  /*@}*/
+  void add_particle(kernel::Particle *p);
+  void add_particles(const kernel::ParticlesTemp &ps);
+  void set_particles(const kernel::ParticlesTemp &ps);
+/*@}*/
 #endif
 
   //! Return the set of pairs which are connected by the restraint
@@ -66,20 +68,19 @@ public:
       the get_connected_pairs() call, not the set at the time of the last
       evaluate() call.
   */
-  ParticlePairsTemp get_connected_pairs() const;
+  kernel::ParticlePairsTemp get_connected_pairs() const;
 
   //! Return the pair score used for scoring
-  PairScore *get_pair_score() const {
-    return ps_;
-  }
+  PairScore *get_pair_score() const { return ps_; }
 
-  Restraints do_create_current_decomposition() const;
+  kernel::Restraints do_create_current_decomposition() const;
 
-  public:
-   double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
-                 const IMP_OVERRIDE;
-   IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-   IMP_OBJECT_METHODS(ConnectivityRestraint);;
+ public:
+  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
+      IMP_OVERRIDE;
+  IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ConnectivityRestraint);
+  ;
 };
 
 IMPCORE_END_NAMESPACE

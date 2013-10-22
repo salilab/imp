@@ -5,7 +5,7 @@ import IMP.atom
 def _make_hierarchy_decorators(m, *types):
     decorators = []
     for t in types:
-        p = IMP.Particle(m)
+        p = IMP.kernel.Particle(m)
         d = t[0].setup_particle(p, t[1])
         decorators.append(d)
     return decorators
@@ -29,7 +29,7 @@ class Tests(IMP.test.TestCase):
 
     def test_get_by_type(self):
         """Check hierarchy get_by_type"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         r1, r2, a1, a2 = _make_hierarchy_decorators(m, (IMP.atom.Residue, IMP.atom.VAL), (IMP.atom.Residue, IMP.atom.VAL),
                                                     (IMP.atom.Atom, IMP.atom.AT_C), (IMP.atom.Atom, IMP.atom.AT_C))
         r1.add_child(a1)
@@ -52,7 +52,7 @@ class Tests(IMP.test.TestCase):
 
     def test_get_internal_bonds(self):
         """Check hierarchy get_internal_bonds"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         # Bonds external to the hierarchy should not be counted
         r1, r2, bonded1, bonded2 = _make_bonded_atoms(m)
         IMP.atom.create_bond(bonded1[0], bonded2[0], IMP.atom.Bond.SINGLE)

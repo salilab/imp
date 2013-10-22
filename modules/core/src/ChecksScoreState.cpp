@@ -5,62 +5,47 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
-
 #include <IMP/core/ChecksScoreState.h>
-#include <IMP/Pointer.h>
-#include <IMP/exception.h>
-#include <IMP/random.h>
+#include <IMP/base/Pointer.h>
+#include <IMP/base/exception.h>
+#include <IMP/base/random.h>
 #include <boost/random/uniform_real.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
-
-
-ChecksScoreState::ChecksScoreState(double prob):
-  ScoreState("ChecksScoreState %1%"),
-  probability_(prob), num_checked_(0)
-{
-  IMP_USAGE_CHECK(prob >=0 && prob <=1,
+ChecksScoreState::ChecksScoreState(kernel::Model *m, double prob)
+    : ScoreState(m, "ChecksScoreState %1%"),
+      probability_(prob),
+      num_checked_(0) {
+  IMP_USAGE_CHECK(prob >= 0 && prob <= 1,
                   "Probability must be a number between 0 and 1.");
 }
 
+ChecksScoreState::ChecksScoreState(double prob)
+    : ScoreState("ChecksScoreState %1%"), probability_(prob), num_checked_(0) {
+  IMPCORE_DEPRECATED_METHOD_DEF(2.1,
+                                "Use constructor with kernel::Model argument.");
+  IMP_USAGE_CHECK(prob >= 0 && prob <= 1,
+                  "Probability must be a number between 0 and 1.");
+}
 
-void ChecksScoreState::do_before_evaluate()
-{
-  ::boost::uniform_real<> rand(0,1);
-  if (rand(random_number_generator) < probability_) {
-    set_check_level(USAGE_AND_INTERNAL);
-    ++ num_checked_;
+void ChecksScoreState::do_before_evaluate() {
+  ::boost::uniform_real<> rand(0, 1);
+  if (rand(base::random_number_generator) < probability_) {
+    set_check_level(base::USAGE_AND_INTERNAL);
+    ++num_checked_;
   } else {
-    set_check_level(NONE);
+    set_check_level(base::NONE);
   }
 }
-void ChecksScoreState::do_after_evaluate(DerivativeAccumulator*){
+void ChecksScoreState::do_after_evaluate(DerivativeAccumulator *) {}
+
+ModelObjectsTemp ChecksScoreState::do_get_inputs() const {
+  return kernel::ModelObjectsTemp();
 }
 
-
-ContainersTemp ChecksScoreState::get_input_containers() const {
-  return ContainersTemp();
+ModelObjectsTemp ChecksScoreState::do_get_outputs() const {
+  return kernel::ModelObjectsTemp();
 }
-
-ContainersTemp ChecksScoreState::get_output_containers() const {
-  return ContainersTemp();
-}
-
-ParticlesTemp ChecksScoreState::get_input_particles() const {
-  return ParticlesTemp();
-}
-
-ParticlesTemp ChecksScoreState::get_output_particles() const {
-  return ParticlesTemp();
-}
-
-
-void ChecksScoreState::do_show(std::ostream &out) const
-{
-  out << "probability " << probability_ << std::endl;
-}
-
-
 
 IMPCORE_END_NAMESPACE

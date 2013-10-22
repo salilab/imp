@@ -6,18 +6,14 @@
  */
 
 #include "IMP/kernel/Constraint.h"
+#include "IMP/kernel/Model.h"
 #include "IMP/kernel/internal/utility.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-Constraint::Constraint(std::string name) :
-  ScoreState(name)
-{
-}
+Constraint::Constraint(std::string name) : ScoreState(name) {}
 
-Constraint::Constraint(Model *m, std::string name) :
-  ScoreState(m, name)
-{
-}
+Constraint::Constraint(kernel::Model *m, std::string name)
+    : ScoreState(m, name) {}
 
 IMPKERNEL_END_NAMESPACE

@@ -23,7 +23,7 @@ class IMPMULTIFITEXPORT FittingStates: public domino::ParticleStates {
 public:
   FittingStates(const algebra::ReferenceFrame3Ds &states,
                 IntKey fit_state_key):
-    ParticleStates("RigidBodyStates %1%"), states_(states),
+    domino::ParticleStates("RigidBodyStates %1%"), states_(states),
     fit_state_key_(fit_state_key){}
   IMP_PARTICLE_STATES(FittingStates);
 };

@@ -27,20 +27,20 @@ IMPALGEBRA_BEGIN_NAMESPACE
 */
 template <int D>
 class GeometricPrimitiveD {
-protected:
-  GeometricPrimitiveD(){}
+ protected:
+  GeometricPrimitiveD() {}
 };
 
 #ifndef IMP_DOXYGEN
-  typedef GeometricPrimitiveD<1> GeometricPrimitive1D;
-  typedef GeometricPrimitiveD<2> GeometricPrimitive2D;
-  typedef GeometricPrimitiveD<3> GeometricPrimitive3D;
-  typedef GeometricPrimitiveD<4> GeometricPrimitive4D;
-  typedef GeometricPrimitiveD<5> GeometricPrimitive5D;
-  typedef GeometricPrimitiveD<6> GeometricPrimitive6D;
-  typedef GeometricPrimitiveD<-1> GeometricPrimitiveKD;
+typedef GeometricPrimitiveD<1> GeometricPrimitive1D;
+typedef GeometricPrimitiveD<2> GeometricPrimitive2D;
+typedef GeometricPrimitiveD<3> GeometricPrimitive3D;
+typedef GeometricPrimitiveD<4> GeometricPrimitive4D;
+typedef GeometricPrimitiveD<5> GeometricPrimitive5D;
+typedef GeometricPrimitiveD<6> GeometricPrimitive6D;
+typedef GeometricPrimitiveD<-1> GeometricPrimitiveKD;
 #endif
 
 IMPALGEBRA_END_NAMESPACE
 
-#endif  /* IMPALGEBRA_GEOMETRIC_PRIMITIVE_D_H */
+#endif /* IMPALGEBRA_GEOMETRIC_PRIMITIVE_D_H */

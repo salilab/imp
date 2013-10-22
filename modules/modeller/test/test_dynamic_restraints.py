@@ -16,7 +16,7 @@ class Tests(IMP.test.TestCase):
         modmodel = model(e)
         modmodel.build_sequence('GGCC')
 
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         protein = loader.load_atoms(m)
 
@@ -38,7 +38,7 @@ class Tests(IMP.test.TestCase):
         modmodel = model(e)
         modmodel.build_sequence('GGCC')
 
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         protein = loader.load_atoms(m)
 
@@ -60,7 +60,7 @@ class Tests(IMP.test.TestCase):
         modmodel = model(e)
         modmodel.build_sequence('GGC')
 
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         protein = loader.load_atoms(m)
 

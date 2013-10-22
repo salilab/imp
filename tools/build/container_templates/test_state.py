@@ -24,9 +24,9 @@ class SingletonTestModifier(IMP.SingletonModifier):
             a0.add_attribute(self.k, 1)
     def get_version_info(self):
         return 1
-    def _do_get_inputs(self, m, pis):
+    def do_get_inputs(self, m, pis):
         return [m.get_particle(i) for i in pis]
-    def _do_get_outputs(self, m, pis):
+    def do_get_outputs(self, m, pis):
         return [m.get_particle(i) for i in pis]
 
 class PairTestModifier(IMP.PairModifier):
@@ -41,9 +41,9 @@ class PairTestModifier(IMP.PairModifier):
         self.sm.apply(a0[1])
     def get_version_info(self):
         return 1
-    def _do_get_inputs(self, m, pis):
+    def do_get_inputs(self, m, pis):
         return [m.get_particle(i) for i in pis]
-    def _do_get_outputs(self, m, pis):
+    def do_get_outputs(self, m, pis):
         return [m.get_particle(i) for i in pis]
 
 def particle_has_attribute(p, k):
@@ -61,13 +61,13 @@ class Tests(IMP.test.TestCase):
     """Tests for ClassnameContainer related objects"""
 
     def create_particle(self,m):
-        p= IMP.Particle(m)
+        p= IMP.kernel.Particle(m)
         p.add_attribute(IMP.FloatKey("thekey"), float(1))
         return p
 
     def create_particle_pair(self,m):
-        p0= IMP.Particle(m)
-        p1= IMP.Particle(m)
+        p0= IMP.kernel.Particle(m)
+        p1= IMP.kernel.Particle(m)
         d0= IMP.core.XYZ.setup_particle(p0)
         d1= IMP.core.XYZ.setup_particle(p1)
         d0.set_coordinates(IMP.algebra.Vector3D(0,0,1))
@@ -97,7 +97,7 @@ class Tests(IMP.test.TestCase):
         # call evaluate and check that it is incremented
         IMP.base.set_log_level(IMP.base.VERBOSE)
         print "start"
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         print "hi"
         c= IMP.container.ListClassnameContainer(m)
         cs=[]
@@ -123,7 +123,7 @@ class Tests(IMP.test.TestCase):
         # call evaluate and check that it is incremented
         IMP.base.set_log_level(IMP.base.VERBOSE)
         print "start"
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         print "hi"
         t=self.create_FUNCTIONNAME(m)
         print "dl"

@@ -1,14 +1,14 @@
 ## \example restrainer/simple_diameter.py
-## This example shows how to create simple IMP::core::DiameterRestraint.
-##
+# This example shows how to create simple IMP::core::DiameterRestraint.
+#
 
-#-- File: simple_diameter.py --#
+# -- File: simple_diameter.py --#
 
 import IMP
 import IMP.core
 import IMP.restrainer
 
-imp_model = IMP.Model()
+imp_model = IMP.kernel.Model()
 ps = IMP.core.create_xyzr_particles(imp_model, 50, 1.0)
 diameter = 10
 

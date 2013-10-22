@@ -12,7 +12,7 @@ class Tests(IMP.test.TestCase):
     def test_registration(self):
         """Test the registration of 3 subjects from 1gyt.pdb at 0.5 SNR"""
         # Get model from PDB file
-        smodel = IMP.Model()
+        smodel = IMP.kernel.Model()
         ssel = IMP.atom.ATOMPDBSelector()
         fn_model = self.get_input_file_name("1gyt.pdb")
         prot =  IMP.atom.read_pdb(fn_model,smodel,ssel)
@@ -62,8 +62,7 @@ class Tests(IMP.test.TestCase):
         finder.get_complete_registration()
         # Recover the registration results:
         registration_parameters=finder.get_registration_results()
-        fn_registration_results=self.get_input_file_name(
-                                                "my_1gyt_registration.params")
+        fn_registration_results = "my_1gyt_registration.params"
         em2d.write_registration_results(fn_registration_results,
                                           registration_parameters)
         # Read the correct registration results:

@@ -44,31 +44,25 @@ IMPKERNEL_BEGIN_NAMESPACE
     particle's coordinates, a IMP::core::Centroid of a set
     containing the particle will not be correct until the
     Model is evaluated.
-
-    \implementationwithoutexample{Constraint, IMP_CONSTRAINT}
  */
-class IMPKERNELEXPORT Constraint : public ScoreState
-{
-public:
+class IMPKERNELEXPORT Constraint : public ScoreState {
+ public:
 #ifndef IMP_DOXYGEN
-  Constraint(std::string name="Constraint %1%");
+  Constraint(std::string name = "Constraint %1%");
 #endif
-  Constraint(Model *m, std::string name="Constraint %1%");
-  virtual void do_update_attributes()=0;
-  virtual void do_update_derivatives(DerivativeAccumulator *da)=0;
+  Constraint(kernel::Model *m, std::string name = "Constraint %1%");
+  virtual void do_update_attributes() = 0;
+  virtual void do_update_derivatives(DerivativeAccumulator *da) = 0;
 
-  virtual void do_before_evaluate() IMP_OVERRIDE {
-    do_update_attributes();
-  }
-  virtual void do_after_evaluate(DerivativeAccumulator*da) IMP_OVERRIDE {
+  virtual void do_before_evaluate() IMP_OVERRIDE { do_update_attributes(); }
+  virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE {
     if (da) do_update_derivatives(da);
   }
   IMP_REF_COUNTED_DESTRUCTOR(Constraint);
 };
 
-
-IMP_OBJECTS(Constraint,Constraints);
+IMP_OBJECTS(Constraint, Constraints);
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_CONSTRAINT_H */
+#endif /* IMPKERNEL_CONSTRAINT_H */

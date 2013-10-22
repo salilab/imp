@@ -8,7 +8,7 @@
 
 #include <IMP/isd/isd_config.h>
 #include <IMP/macros.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <Eigen/Dense>
 
 IMPISD_BEGIN_INTERNAL_NAMESPACE
@@ -167,8 +167,7 @@ private:
     }
 
 
-    IMP_OBJECT_INLINE(ConjugateGradientEigen, out << "cgEigen" << std::endl,
-            {});
+    IMP_OBJECT_METHODS(ConjugateGradientEigen);
 
 };
 

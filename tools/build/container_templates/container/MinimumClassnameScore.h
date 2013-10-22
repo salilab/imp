@@ -21,24 +21,26 @@ IMPCONTAINER_BEGIN_NAMESPACE
 /** Each of the set of ClassnameScores is evaluated and the sum of the
     minimum n is returned.
 */
-class IMPCONTAINEREXPORT MinimumClassnameScore : public ClassnameScore
-{
+class IMPCONTAINEREXPORT MinimumClassnameScore : public ClassnameScore {
   ClassnameScores scores_;
   unsigned int n_;
-public:
-  MinimumClassnameScore(const ClassnameScoresTemp &scores,
-                       unsigned int n=1,
-                       std::string name="ClassnameScore %1%");
-  IMP_INDEX_CLASSNAME_SCORE(MinimumClassnameScore);
 
-  IMP_IMPLEMENT(Restraints
-                do_create_current_decomposition(Model *m,
-                                                PASSINDEXTYPE vt)
-                const IMP_OVERRIDE);
+ public:
+  MinimumClassnameScore(const ClassnameScoresTemp &scores, unsigned int n = 1,
+                        std::string name = "ClassnameScore %1%");
+  virtual double evaluate_index(kernel::Model *m, PASSINDEXTYPE vt,
+                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m, const kernel::ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  IMP_CLASSNAME_SCORE_METHODS(MinimumClassnameScore);
+  IMP_OBJECT_METHODS(MinimumClassnameScore);
+
+  Restraints do_create_current_decomposition( kernel::Model *m, PASSINDEXTYPE vt)
+      const IMP_OVERRIDE;
 };
 
-IMP_OBJECTS(MinimumClassnameScore,MinimumClassnameScores);
+IMP_OBJECTS(MinimumClassnameScore, MinimumClassnameScores);
 
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_MINIMUM_CLASSNAME_SCORE_H */
+#endif /* IMPCONTAINER_MINIMUM_CLASSNAME_SCORE_H */

@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
 
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
 
         self.ds = IMP.core.create_xyzr_particles(self.m, 4, 1.0)
         self.ps = self.m.get_particles()

@@ -10,19 +10,18 @@ IMP_SWIG_BASE_OBJECT(IMP::statistics, Embedding, Embeddings);
 IMP_SWIG_OBJECT(IMP::statistics, ConfigurationSetXYZEmbedding, ConfigurationSetXYZEmbeddings);
 IMP_SWIG_OBJECT(IMP::statistics, VectorDEmbedding, VectorDEmbeddings);
 IMP_SWIG_OBJECT(IMP::statistics, ParticleEmbedding, ParticleEmbeddings);
-#if IMP_HAS_DEPRECATED
 IMP_SWIG_VALUE(IMP::statistics, Histogram, Histograms);
-#endif
 IMP_SWIG_BASE_OBJECT(IMP::statistics, Metric, Metrics);
 IMP_SWIG_OBJECT(IMP::statistics, EuclideanMetric, EuclideanMetrics);
 IMP_SWIG_OBJECT(IMP::statistics, ConfigurationSetRMSDMetric, ConfigurationSetRMSDMetrics);
 IMP_SWIG_OBJECT(IMP::statistics, RecursivePartitionalClusteringMetric, RecursivePartitionalClusteringMetrics);
 IMP_SWIG_OBJECT(IMP::statistics, RecursivePartitionalClusteringEmbedding, RecursivePartitionalClusteringEmbeddings);
-
+IMP_SWIG_OBJECT(IMP::statistics, ChiSquareMetric, ChiSquareMetrics);
 
 %include "IMP/statistics/PartitionalClustering.h"
 %include "IMP/statistics/Embedding.h"
 %include "IMP/statistics/Metric.h"
+%include "IMP/statistics/ChiSquareMetric.h"
 %include "IMP/statistics/PartitionalClusteringWithCenter.h"
 %include "IMP/statistics/embeddings.h"
 %include "IMP/statistics/metrics.h"

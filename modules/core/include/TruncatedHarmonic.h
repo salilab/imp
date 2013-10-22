@@ -15,7 +15,11 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-enum BoundDirection {LOWER, BOTH, UPPER};
+enum BoundDirection {
+  LOWER,
+  BOTH,
+  UPPER
+};
 
 //! A function that is harmonic over an interval.
 /** This function is harmonic between center and threshold and then
@@ -37,7 +41,7 @@ enum BoundDirection {LOWER, BOTH, UPPER};
  */
 template <int DIRECTION>
 class TruncatedHarmonic : public UnaryFunction {
-public:
+ public:
   /** \param[in] center The center point for the harmonic.
    \param[in] k The spring constant for the harmonic.
    \param[in] threshold How far the harmonic term extends from the center.
@@ -48,30 +52,28 @@ public:
    don't really see an alternative. There are a few sanity checks, so
    the order is a bit hard to get wrong.
    */
-  TruncatedHarmonic(Float center,
-                    Float k, Float threshold,
-                    Float limit):
-  d_(center, k, threshold, limit){
-  }
+  TruncatedHarmonic(Float center, Float k, Float threshold, Float limit)
+      : d_(center, k, threshold, limit) {}
   /** Set limit to a reasonable value. */
-  TruncatedHarmonic(Float center,
-                    Float k, Float threshold):
-    d_(center, k, threshold, k*square(threshold-center)){
-  }
-  virtual DerivativePair evaluate_with_derivative(double feature)
-  const IMP_OVERRIDE {
+  TruncatedHarmonic(Float center, Float k, Float threshold)
+      : d_(center, k, threshold, k * square(threshold - center)) {}
+  virtual DerivativePair evaluate_with_derivative(double feature) const
+      IMP_OVERRIDE {
     return DerivativePair(evaluate(feature),
-                          ((DIRECTION == LOWER && (feature > d_.c_))
-                           || (DIRECTION == UPPER && (feature < d_.c_)))?
-                          0: d_.evaluate_with_derivative(feature).second);
+                          ((DIRECTION == LOWER && (feature > d_.c_)) ||
+                           (DIRECTION == UPPER && (feature < d_.c_)))
+                              ? 0
+                              : d_.evaluate_with_derivative(feature).second);
   }
   virtual double evaluate(double feature) const IMP_OVERRIDE {
-    return ((DIRECTION == LOWER && (feature > d_.c_))
-            || (DIRECTION == UPPER && (feature < d_.c_)))?
-      0: d_.evaluate(feature);
+    return ((DIRECTION == LOWER && (feature > d_.c_)) ||
+            (DIRECTION == UPPER && (feature < d_.c_)))
+               ? 0
+               : d_.evaluate(feature);
   }
   IMP_OBJECT_METHODS(TruncatedHarmonic);
-private:
+
+ private:
   internal::TruncatedHarmonicData d_;
 };
 
@@ -84,4 +86,4 @@ typedef TruncatedHarmonic<BOTH> TruncatedHarmonicBound;
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_TRUNCATED_HARMONIC_H */
+#endif /* IMPCORE_TRUNCATED_HARMONIC_H */

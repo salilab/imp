@@ -14,8 +14,8 @@
 #include "Chain.h"
 
 #include <IMP/base_types.h>
-#include <IMP/Particle.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Particle.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/Decorator.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -23,8 +23,9 @@ IMPATOM_BEGIN_NAMESPACE
 /* each static must be on a separate line because of MSVC bug C2487:
    see http://support.microsoft.com/kb/127900/
 */
+typedef Key<IMP_RESIDUE_TYPE_INDEX, true> ResidueType;
+IMP_VALUES(ResidueType, ResidueTypes);
 
-IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
 /** \class IMP::atom::ResidueType
     \brief The type for a residue.
 
@@ -41,8 +42,8 @@ IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
 
 /** Unknown residue */
 IMPATOMEXPORT extern const ResidueType UNK;
-/** \relatesalso ResidueType
-    glycein G*/
+/** See ResidueType
+    glycine G*/
 IMPATOMEXPORT extern const ResidueType GLY;
 #ifndef IMP_DOXYGEN
 /* Code currently assumes that all indices between GLY.get_index()
@@ -121,7 +122,6 @@ IMPATOMEXPORT extern const ResidueType HEME;
 #endif
 /*@}*/
 
-
 //! A decorator for a residue.
 /**
    As with the Atom, the names of residues may be expanded
@@ -130,48 +130,45 @@ IMPATOMEXPORT extern const ResidueType HEME;
    \ingroup hierarchy
    \ingroup decorators
  */
-class IMPATOMEXPORT Residue: public Hierarchy
-{
-public:
-  IMP_DECORATOR(Residue, Hierarchy);
-  //! Add the required attributes to the particle and create a Residue
-  static Residue setup_particle(Model *m, ParticleIndex pi,
-                                ResidueType t= UNK,
-                                int index=-1, int insertion_code = 32) {
+class IMPATOMEXPORT Residue : public Hierarchy {
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                ResidueType t = UNK, int index = -1,
+                                int insertion_code = 32) {
     m->add_attribute(get_residue_type_key(), pi, t.get_index());
     m->add_attribute(get_index_key(), pi, index);
     m->add_attribute(get_insertion_code_key(), pi, insertion_code);
     // insertion code 32 is for space
-    if (!Hierarchy::particle_is_instance(m, pi)) {
+    if (!Hierarchy::get_is_setup(m, pi)) {
       Hierarchy::setup_particle(m, pi);
     }
     Residue ret(m, pi);
     ret.set_residue_type(t);
-    return ret;
+  }
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                const Residue &o) {
+    do_setup_particle(m, pi, o.get_residue_type(), o.get_index(),
+                      o.get_insertion_code());
   }
 
-  static Residue setup_particle(Particle *p, ResidueType t= UNK,
-                                 int index=-1, int insertion_code = 32) {
-    return setup_particle(p->get_model(),
-                          p->get_index(), t, index, insertion_code);
-  }
+ public:
+  IMP_DECORATOR_METHODS(Residue, Hierarchy);
+  IMP_DECORATOR_SETUP_3(Residue, ResidueType, t, int, index, int,
+                        insertion_code);
+  /** Setup the particle as a Residue with the passed type and index. */
+  IMP_DECORATOR_SETUP_2(Residue, ResidueType, t, int, index);
+  IMP_DECORATOR_SETUP_1(Residue, ResidueType, t);
+  IMP_DECORATOR_SETUP_1(Residue, Residue, other);
 
-  //! Copy data from the other Residue to the particle p
-  static Residue setup_particle(Particle *p, Residue o) {
-    return setup_particle(p, o.get_residue_type(),
-                          o.get_index(),
-                          o.get_insertion_code());
-  }
-
-  static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(get_residue_type_key())
-      && p->has_attribute(get_index_key())
-      && p->has_attribute(get_insertion_code_key())
-      && Hierarchy::particle_is_instance(p);
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+    return m->get_has_attribute(get_residue_type_key(), pi) &&
+           m->get_has_attribute(get_index_key(), pi) &&
+           m->get_has_attribute(get_insertion_code_key(), pi) &&
+           Hierarchy::get_is_setup(m, pi);
   }
 
   ResidueType get_residue_type() const {
-    return ResidueType(get_particle()->get_value(get_residue_type_key()));
+    return ResidueType(get_model()->get_attribute(get_residue_type_key(),
+                                                  get_particle_index()));
   }
 
   //! Update the stored ResidueType and the atom::Hierarchy::Name.
@@ -182,25 +179,26 @@ public:
   }
 
   bool get_is_dna() const {
-    return get_residue_type().get_index() >= DADE.get_index()
-      && get_residue_type().get_index() <= DTHY.get_index();
+    return get_residue_type().get_index() >= DADE.get_index() &&
+           get_residue_type().get_index() <= DTHY.get_index();
   }
 
   bool get_is_rna() const {
-    return get_residue_type().get_index() >= ADE.get_index()
-      && get_residue_type().get_index() < DADE.get_index();
+    return get_residue_type().get_index() >= ADE.get_index() &&
+           get_residue_type().get_index() < DADE.get_index();
   }
 
   //! The residues index in the chain
-  IMP_DECORATOR_GET_SET(index, get_index_key(),
-                        Int, Int);
+  IMP_DECORATOR_GET_SET(index, get_index_key(), Int, Int);
 
   char get_insertion_code() const {
-    return char(get_particle()->get_value(get_insertion_code_key()));
+    return char(get_model()->get_attribute(get_insertion_code_key(),
+                                           get_particle_index()));
   }
 
   void set_insertion_code(char insertion_code) {
-    return get_particle()->set_value(get_insertion_code_key(), insertion_code);
+    return get_model()->set_attribute(get_insertion_code_key(),
+                                      get_particle_index(), insertion_code);
   }
 
   static IntKey get_index_key();
@@ -210,9 +208,9 @@ public:
   static IntKey get_insertion_code_key();
 };
 
-IMP_DECORATORS(Residue,Residues, Hierarchies);
+IMP_DECORATORS(Residue, Residues, Hierarchies);
 
-/** \relatesalso Residue
+/** See Residue
 
     Return the residue from the same chain with one
     higher index, or Hierarchy().
@@ -227,7 +225,7 @@ IMP_DECORATORS(Residue,Residues, Hierarchies);
  */
 IMPATOMEXPORT Hierarchy get_next_residue(Residue rd);
 
-/** \relatesalso Residue
+/** See Residue
 
     Return the residue from the same chain with one
     lower index, or Hierarchy().
@@ -241,11 +239,10 @@ IMPATOMEXPORT Hierarchy get_previous_residue(Residue rd);
 */
 IMPATOMEXPORT ResidueType get_residue_type(char c);
 
-
 /** Get the 1-letter amino acid code from the residue type.
 */
 IMPATOMEXPORT char get_one_letter_code(ResidueType c);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_RESIDUE_H */
+#endif /* IMPATOM_RESIDUE_H */

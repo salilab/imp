@@ -14,9 +14,9 @@
 #include "IMP/em2d/image_processing.h"
 #include "IMP/em2d/FFToperations.h"
 #include "IMP/em/ImageHeader.h"
-#include <IMP/Pointer.h>
-#include <IMP/Object.h>
-#include "IMP/Object.h"
+#include <IMP/base/Pointer.h>
+#include <IMP/base/Object.h>
+#include "IMP/base/Object.h"
 #include "IMP/base_types.h"
 #include <limits>
 #include <typeinfo>
@@ -140,7 +140,7 @@ public:
    * @param reader The image reader to use
    */
   void read(String filename, const ImageReaderWriter *reader) {
-    Pointer<const ImageReaderWriter> ptr(reader);
+    base::Pointer<const ImageReaderWriter> ptr(reader);
     reader->read(filename,header_,data_);
   }
 

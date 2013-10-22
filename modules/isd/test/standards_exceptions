@@ -1,6 +1,6 @@
 spelling_exceptions=['guinier', 'jeffreys', 'gaussian',
-                                       'porod', 'logsquares', 'timestep',
-                                       'ndims', 'gammahat', 'chiexp', 'logdet']
+                     'porod', 'logsquares', 'timestep', 'pdf', 'nonmarginal',
+                     'ndims', 'gammahat', 'chiexp', 'logdet', 'fretr']
 function_name_exceptions=[
         'BivariateFunction.has_changed',
         'Covariance1DFunction.has_changed',
@@ -21,12 +21,12 @@ function_name_exceptions=[
         'MarginalNOERestraint.get_SS',
         'MolecularDynamics.assign_velocities',
         'MolecularDynamics.simulate',
-        'Nuisance.has_lower',
-        'Nuisance.has_upper',
-        'Scale.has_lower',
-        'Scale.has_upper',
-        'Switching.has_lower',
-        'Switching.has_upper',
+        'Nuisance.get_has_lower',
+        'Nuisance.get_has_upper',
+        'Scale.get_has_lower',
+        'Scale.get_has_upper',
+        'Switching.get_has_lower',
+        'Switching.get_has_upper',
         'TALOSRestraint.get_R0',
         'UnivariateFunction.has_changed',
         'vonMises.density',

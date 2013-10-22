@@ -1,12 +1,13 @@
 ## \example atom/charmm_forcefield.py
-## In this example, a PDB file is read in and scored using the CHARMM forcefield. For more control over the setup of the forcefield, see the 'charmm_forcefield_verbose.py' example.
-##
+# In this example, a PDB file is read in and scored using the CHARMM
+# forcefield. For more control over the setup of the forcefield, see
+# the 'charmm_forcefield_verbose.py' example.
 
 import IMP.atom
 import IMP.container
 
 # Create an IMP model and add a heavy atom-only protein from a PDB file
-m = IMP.Model()
+m = IMP.kernel.Model()
 prot = IMP.atom.read_pdb(IMP.atom.get_example_path("example_protein.pdb"), m,
                          IMP.atom.NonWaterNonHydrogenPDBSelector())
 

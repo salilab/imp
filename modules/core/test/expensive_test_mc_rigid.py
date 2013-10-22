@@ -6,16 +6,16 @@ class MCOptimizerTest(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
         #IMP.base.set_log_level(IMP.base.TERSE)
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         #read molecules
         self.m1 = IMP.kernel._create_particles_from_pdb(self.get_input_file_name("1z5s_A.pdb"),
                                                 self.m)
         self.m2 = IMP.kernel._create_particles_from_pdb(self.get_input_file_name("1z5s_C.pdb"),
                                                 self.m)
         #create rigid bodies
-        self.rb0=IMP.core.RigidBody.setup_particle(IMP.Particle(self.m), self.m1)
+        self.rb0=IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(self.m), self.m1)
         self.rb0.set_coordinates_are_optimized(True)
-        self.rb1=IMP.core.RigidBody.setup_particle(IMP.Particle(self.m), self.m2)
+        self.rb1=IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(self.m), self.m2)
         self.rb1.set_coordinates_are_optimized(True)
         #add restraints
         self.h = IMP.core.HarmonicUpperBound(0,3.)

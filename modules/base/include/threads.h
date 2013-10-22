@@ -12,11 +12,13 @@
 #include <IMP/base/base_config.h>
 
 IMPBASE_BEGIN_NAMESPACE
-
 /** \name Number of threads
-    Get and set the default number of threads to use in \imp.
+    Get and set the default number of threads to use in
+    \imp.
     @{ */
-/** Get the current number of threads requested. */
+/** Get the current number of threads requested. The default
+    is the number of cores/hardware threads in the machine if
+    there is OpenMP support, or 1 otherwise. */
 IMPBASEEXPORT unsigned int get_number_of_threads();
 /** Set the current number of threads to a number greater or
     equal to 1. Setting it to 1 disables multithreaded evaluation.
@@ -24,22 +26,20 @@ IMPBASEEXPORT unsigned int get_number_of_threads();
 IMPBASEEXPORT void set_number_of_threads(unsigned int n);
 /** @} */
 
-
 /** Temporarily set the number of threads
  */
-class SetNumberOfThreads: public base::RAII
-{
+class SetNumberOfThreads : public base::RAII {
   int num_;
-public:
-  IMP_RAII(SetNumberOfThreads, (unsigned int n),
-           {num_= 0;},
+
+ public:
+  IMP_RAII(SetNumberOfThreads, (unsigned int n), { num_ = 0; },
            {
-             num_=get_number_of_threads();
+             num_ = get_number_of_threads();
              set_number_of_threads(n);
            },
            {
              set_number_of_threads(num_);
-             num_=0;
+             num_ = 0;
            }, );
 };
 

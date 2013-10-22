@@ -91,13 +91,31 @@ namespace kernel {
 %warnfilter(473) Sampler;
 %warnfilter(473) Restraint;
 %warnfilter(403) Restraint;
+%warnfilter(403) SingletonPredicate;
+%warnfilter(403) PairPredicate;
+%warnfilter(403) TripletPredicate;
+%warnfilter(403) QuadPredicate;
+%warnfilter(403) SingletonModifier;
+%warnfilter(403) PairModifier;
+%warnfilter(403) TripletModifier;
+%warnfilter(403) QuadModifier;
+%warnfilter(403) SingletonScore;
+%warnfilter(403) PairScore;
+%warnfilter(403) TripletScore;
+%warnfilter(403) QuadScore;
+%warnfilter(403) AttributeOptimizer;
+%warnfilter(403) OptimizerState;
 }
 }
+%warnfilter(403) IMP::base::TrackedObject< IMP::kernel::ModelObject,IMP::kernel::Model >;
+
+
 // to avoid extend clash
 IMP_SWIG_BASE_OBJECT(IMP::kernel,Constraint, Constraints);
 IMP_SWIG_BASE_OBJECT(IMP::kernel,Undecorator, Undecorators);
 IMP_SWIG_BASE_OBJECT(IMP::kernel,Container, Containers);
 IMP_SWIG_BASE_OBJECT(IMP::kernel,Optimizer, Optimizers);
+IMP_SWIG_BASE_OBJECT(IMP::kernel,AttributeOptimizer, AttributeOptimizers);
 IMP_SWIG_BASE_OBJECT(IMP::kernel,OptimizerState, OptimizerStates);
 IMP_SWIG_BASE_OBJECT(IMP::kernel,PairContainer, PairContainers);
 IMP_SWIG_BASE_OBJECT(IMP::kernel,PairModifier, PairModifiers);
@@ -120,11 +138,6 @@ IMP_SWIG_OBJECT(IMP::kernel,ConfigurationSet, ConfigurationSets);
 IMP_SWIG_OBJECT(IMP::kernel,Configuration, Configurations);
 IMP_SWIG_OBJECT(IMP::kernel,Model, Models);
 IMP_SWIG_OBJECT(IMP::kernel,Particle, Particles);
-
-#if IMP_HAS_DEPRECATED
-IMP_SWIG_BASE_OBJECT(IMP::kernel::internal,PythonRestraint, PythonRestraints);
-IMP_SWIG_BASE_OBJECT(IMP::kernel::internal,PythonScoreState, PythonScoreStates);
-#endif
 
 IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::kernel::Particle, IMP::kernel::ParticlesTemp, IMP::kernel::ParticlesTemps, const&);
 IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::kernel::Particle, IMP::kernel::ParticlesTemp, IMP::kernel::ParticlesTemps,);
@@ -165,7 +178,6 @@ IMP_SWIG_RAII_TEMPLATE(IMP::kernel, GenericScopedScoreState);
 IMP_SWIG_RAII_TEMPLATE(IMP::kernel, ScopedSetAttribute);
 IMP_SWIG_RAII_INSTANCE(IMP::kernel, ScopedSetFloatAttribute, ScopedSetAttribute);
 
-IMP_SWIG_VALUE(IMP::kernel, RestraintStatistics, RestraintStatisticsList);
 IMP_SWIG_BASE_OBJECT(IMP::kernel, ScoringFunction, ScoringFunctions);
 IMP_SWIG_BASE_OBJECT(IMP::kernel, ModelObject, ModelObjects);
 
@@ -219,16 +231,23 @@ class Decorators;
 
 %rename(_ParticleIndexTag) ParticleIndexTag;
 %rename(_ScoringFunctionAdaptor) ScoringFunctionAdaptor;
+%rename(_RestraintsAdaptor) RestraintsAdaptor;
 %rename(_SingletonContainerAdaptor) SingletonContainerAdaptor;
 %rename(_PairContainerAdaptor) PairContainerAdaptor;
 %rename(_TripletContainerAdaptor) TripletContainerAdaptor;
 %rename(_QuadContainerAdaptor) QuadContainerAdaptor;
+%rename(_ParticleIndexAdaptor) ParticleIndexAdaptor;
+%rename(_ParticleIndexesAdaptor) ParticleIndexesAdaptor;
+%rename(_ParticleIndexPairsAdaptor) ParticleIndexPairsAdaptor;
+%rename(_ParticleAdaptor) ParticleAdaptor;
 
-%include "IMP/kernel/particle_index.h"
 %include "IMP/kernel/FloatIndex.h"
 %include "IMP/kernel/base_types.h"
 %include "IMP/kernel/constants.h"
 %include "IMP/kernel/ModelObject.h"
+%rename(_ParticleInputs) ParticleInputs;
+%rename(_ParticleOutputs) ParticleOutputs;
+%include "IMP/kernel/model_object_helpers.h"
 %include "IMP/kernel/input_output.h"
 %include "IMP/kernel/utility.h"
 %include "IMP/kernel/DerivativeAccumulator.h"
@@ -256,6 +275,7 @@ namespace kernel {
 %include "IMP/kernel/OptimizerState.h"
 %include "IMP/kernel/Refiner.h"
 %include "IMP/kernel/Optimizer.h"
+%include "IMP/kernel/AttributeOptimizer.h"
 %include "IMP/kernel/ConfigurationSet.h"
 %include "IMP/kernel/Configuration.h"
 %include "IMP/kernel/Sampler.h"
@@ -263,23 +283,24 @@ namespace kernel {
 %include "IMP/kernel/PairModifier.h"
 %include "IMP/kernel/PairScore.h"
 %include "IMP/kernel/PairPredicate.h"
-%include "IMP/kernel/declare_PairContainer.h"
+%include "IMP/kernel/PairContainer.h"
 %include "IMP/kernel/QuadDerivativeModifier.h"
 %include "IMP/kernel/QuadModifier.h"
 %include "IMP/kernel/QuadScore.h"
 %include "IMP/kernel/QuadPredicate.h"
-%include "IMP/kernel/declare_QuadContainer.h"
+%include "IMP/kernel/QuadContainer.h"
 %include "IMP/kernel/SingletonDerivativeModifier.h"
 %include "IMP/kernel/SingletonModifier.h"
 %include "IMP/kernel/SingletonScore.h"
 %include "IMP/kernel/SingletonPredicate.h"
-%include "IMP/kernel/declare_SingletonContainer.h"
+%include "IMP/kernel/SingletonContainer.h"
 %include "IMP/kernel/TripletDerivativeModifier.h"
 %include "IMP/kernel/TripletModifier.h"
 %include "IMP/kernel/TripletScore.h"
 %include "IMP/kernel/TripletPredicate.h"
-%include "IMP/kernel/declare_TripletContainer.h"
+%include "IMP/kernel/TripletContainer.h"
 %include "IMP/kernel/io.h"
+%include "IMP/kernel/particle_index.h"
 %include "IMP/kernel/internal/swig.h"
 %include "IMP/kernel/scoped.h"
 
@@ -338,19 +359,13 @@ if sys.platform == 'win32' and 'IMP_LD_PATH' in os.environ:
 %}
 
 
-#if IMP_HAS_DEPRECATED
 %pythoncode %{
-RestraintBase=Restraint
-ScoreStateBase=ScoreState
-Restraint=PythonRestraint
-ScoreState=PythonScoreState
 IOException=IMP.base.IOException
 ValueException=IMP.base.ValueException
 ModelException=IMP.base.ModelException
 IOException=IMP.base.IOException
 IOException=IMP.base.IOException
 %}
-#endif
 
 %include "IMP_kernel.dispatcher.i"
 %include "IMP_kernel.optparse.i"

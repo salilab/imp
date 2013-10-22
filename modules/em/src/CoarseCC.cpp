@@ -177,7 +177,7 @@ double CoarseCC::cross_correlation_coefficient(
                                  grid2_voxel_data_threshold,norm_factors);
   }
   else {
-    IMP_LOG_VERBOSE("calculated correlation bewteen padded maps\n");
+    IMP_LOG_VERBOSE("calculated correlation between padded maps\n");
     //create a padded version of the grids
     //copy maps to contain the same extent
     if (!get_interiors_intersect(
@@ -187,12 +187,12 @@ double CoarseCC::cross_correlation_coefficient(
     }
     algebra::BoundingBox3D merged_bb=
       get_bounding_box(grid1)+get_bounding_box(grid2);
-    OwnerPointer<DensityMap> padded_grid1=
+    base::PointerMember<DensityMap> padded_grid1=
       create_density_map(merged_bb,grid1_header->get_spacing());
     padded_grid1->add(grid1);
     padded_grid1->get_header_writable()->set_resolution(
                           grid1->get_header()->get_resolution());
-    OwnerPointer<DensityMap> padded_grid2=
+    base::PointerMember<DensityMap> padded_grid2=
       create_density_map(merged_bb,grid2_header->get_spacing());
     padded_grid2->add(grid2);
     padded_grid2->get_header_writable()->set_resolution(
@@ -316,7 +316,7 @@ float CoarseCC::local_cross_correlation_coefficient(const DensityMap *em_map,
 algebra::Vector3Ds CoarseCC::calc_derivatives(
              const DensityMap *em_map,
              const DensityMap *model_map,
-             const Particles &model_ps,const FloatKey &w_key,
+             const kernel::Particles &model_ps,const FloatKey &w_key,
              KernelParameters *kernel_params,
              const float &scalefac,
              const algebra::Vector3Ds &dv) {

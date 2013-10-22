@@ -28,7 +28,7 @@ class Tests(IMP.test.TestCase):
 
     def _perturb_all(self, all):
         for a in all:
-            if IMP.core.RigidBody.particle_is_instance(a):
+            if IMP.core.RigidBody.get_is_setup(a):
                 rb= IMP.core.RigidBody(a)
                 self._perturb_rb(rb)
             else:
@@ -37,17 +37,17 @@ class Tests(IMP.test.TestCase):
 
     def test_create_one_from_pdb(self):
         """Testing destroy rigid body"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps=[]
         ds=[]
         for i in range(0,4):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             ps.append(p)
             d= IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(i, 0, 0))
             ds.append(d)
-        p0= IMP.Particle(m)
-        p1= IMP.Particle(m)
-        p01= IMP.Particle(m)
+        p0= IMP.kernel.Particle(m)
+        p1= IMP.kernel.Particle(m)
+        p01= IMP.kernel.Particle(m)
         rb0= IMP.core.RigidBody.setup_particle(p0, [ps[0], ps[1]])
         rb1= IMP.core.RigidBody.setup_particle(p1, [ps[2], ps[3]])
         rb01= IMP.core.RigidBody.setup_particle(p01, [rb0, rb1])

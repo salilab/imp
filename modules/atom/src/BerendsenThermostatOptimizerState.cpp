@@ -14,43 +14,37 @@
 IMPATOM_BEGIN_NAMESPACE
 
 BerendsenThermostatOptimizerState::BerendsenThermostatOptimizerState(
-    const Particles &pis, double temperature, double tau) :
-    pis_(pis), temperature_(temperature), tau_(tau)
-{
+    const kernel::Particles &pis, double temperature, double tau)
+    : pis_(pis), temperature_(temperature), tau_(tau) {
   vs_[0] = FloatKey("vx");
   vs_[1] = FloatKey("vy");
   vs_[2] = FloatKey("vz");
 }
 
-void BerendsenThermostatOptimizerState::update()
-{
-    rescale_velocities();
+void BerendsenThermostatOptimizerState::do_update(unsigned int) {
+  rescale_velocities();
 }
 
-void BerendsenThermostatOptimizerState::rescale_velocities() const
-{
+void BerendsenThermostatOptimizerState::rescale_velocities() const {
+  IMP_OBJECT_LOG;
+  IMP_LOG_TERSE("Rescaling velocities" << std::endl);
   MolecularDynamics *md = dynamic_cast<MolecularDynamics *>(get_optimizer());
-  IMP_INTERNAL_CHECK(md, "Can only use velocity scaling with "
-             "the molecular dynamics optimizer.");
+  IMP_INTERNAL_CHECK(md,
+                     "Can only use velocity scaling with "
+                     "the molecular dynamics optimizer.");
 
   double kinetic_temp = md->get_kinetic_temperature(md->get_kinetic_energy());
-  double rescale = std::sqrt(1.0 + (md->get_last_time_step() / tau_)
-                             * (temperature_ / kinetic_temp - 1.0));
+  double rescale = std::sqrt(1.0 + (md->get_last_time_step() / tau_) *
+                                       (temperature_ / kinetic_temp - 1.0));
 
-  for (unsigned int i=0; i< pis_.size(); ++i) {
-    Particle *p = pis_[i];
+  for (unsigned int i = 0; i < pis_.size(); ++i) {
+    kernel::Particle *p = pis_[i];
     for (int i = 0; i < 3; ++i) {
       double velocity = p->get_value(vs_[i]);
       velocity *= rescale;
       p->set_value(vs_[i], velocity);
-   }
- }
-}
-
-void BerendsenThermostatOptimizerState::do_show(std::ostream &out) const
-{
-  out << "Berendsen thermostat with set temperature " << temperature_ <<
-      " and tau (coupling) " << tau_  << std::endl;
+    }
+  }
 }
 
 IMPATOM_END_NAMESPACE

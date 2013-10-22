@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/frames.h
- *  \brief Handle read/write of Model data from/to files.
+ *  \brief Handle read/write of kernel::Model data from/to files.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -19,18 +19,15 @@ IMPRMF_BEGIN_NAMESPACE
 
     The current frame is left as the passed frame number.
 */
-IMPRMFEXPORT
-void load_frame(RMF::FileConstHandle file,  int frame);
+IMPRMFEXPORT void load_frame(RMF::FileConstHandle file, int frame);
 
 /** Save the current state of the objects linked to the RMF
     file as the frameth frame.
 
     The current frame is left as the passed frame number.
 */
-IMPRMFEXPORT
-void save_frame(RMF::FileHandle file,  int frame,
-                std::string name="frame");
-
+IMPRMFEXPORT void save_frame(RMF::FileHandle file, int frame,
+                             std::string name = "frame");
 
 IMPRMF_END_NAMESPACE
 

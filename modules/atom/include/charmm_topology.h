@@ -9,7 +9,7 @@
 #ifndef IMPATOM_CHARMM_TOPOLOGY_H
 #define IMPATOM_CHARMM_TOPOLOGY_H
 
-#include "IMP/Object.h"
+#include "IMP/base/Object.h"
 #include "Hierarchy.h"
 #include "Atom.h"
 #include <IMP/atom/atom_config.h>
@@ -29,21 +29,22 @@ class CHARMMAtomTopology {
   std::string name_;
   std::string charmm_type_;
   double charge_;
-public:
-  CHARMMAtomTopology(std::string name) : name_(name) {};
+
+ public:
+  CHARMMAtomTopology(std::string name) : name_(name) {}
 
   CHARMMAtomTopology(std::string name, const CHARMMAtomTopology &other)
-                   : name_(name), charmm_type_(other.charmm_type_),
-                     charge_(other.charge_) {};
+      : name_(name), charmm_type_(other.charmm_type_), charge_(other.charge_) {}
 
   std::string get_name() const { return name_; }
   std::string get_charmm_type() const { return charmm_type_; }
   double get_charge() const { return charge_; }
   void set_charmm_type(std::string charmm_type) { charmm_type_ = charmm_type; }
   void set_charge(double charge) { charge_ = charge; }
-  IMP_SHOWABLE_INLINE(CHARMMAtomTopology, {out << "name: " << name_
-                                           << "; CHARMM type: " << charmm_type_
-                                           << "; charge: " << charge_;});
+  IMP_SHOWABLE_INLINE(CHARMMAtomTopology, {
+    out << "name: " << name_ << "; CHARMM type: " << charmm_type_
+        << "; charge: " << charge_;
+  });
 };
 
 IMP_VALUES(CHARMMAtomTopology, CHARMMAtomTopologies);
@@ -68,55 +69,56 @@ class CHARMMResidueTopology;
  */
 class IMPATOMEXPORT CHARMMBondEndpoint {
   std::string atom_name_;
-  Pointer<Object> residue_;
-public:
+  base::Pointer<base::Object> residue_;
+
+ public:
   CHARMMBondEndpoint(std::string atom_name,
-                     CHARMMResidueTopology *residue=nullptr);
+                     CHARMMResidueTopology *residue = nullptr);
 
   std::string get_atom_name() const { return atom_name_; }
 
   //! Map the endpoint to an Atom particle.
-  Atom get_atom(const CHARMMResidueTopology *current_residue,
-                const CHARMMResidueTopology *previous_residue,
-                const CHARMMResidueTopology *next_residue,
-                const std::map<const CHARMMResidueTopology *,
-                               Hierarchy> &resmap) const;
+  Atom get_atom(
+      const CHARMMResidueTopology *current_residue,
+      const CHARMMResidueTopology *previous_residue,
+      const CHARMMResidueTopology *next_residue,
+      const std::map<const CHARMMResidueTopology *, Hierarchy> &resmap) const;
 
-  IMP_SHOWABLE_INLINE(CHARMMBondEndpoint, {out << atom_name_;});
+  IMP_SHOWABLE_INLINE(CHARMMBondEndpoint, { out << atom_name_; });
 };
 
 IMP_VALUES(CHARMMBondEndpoint, CHARMMBondEndpoints);
 
 //! A connection (bond, angle, dihedral) between some number of endpoints.
 template <unsigned int D>
-class CHARMMConnection
-{
-protected:
+class CHARMMConnection {
+ protected:
   base::Vector<CHARMMBondEndpoint> endpoints_;
-public:
+
+ public:
   CHARMMConnection(const IMP::Strings &atoms) {
     IMP_INTERNAL_CHECK(atoms.size() == D, "wrong number of bond endpoints");
-    for (Strings::const_iterator it = atoms.begin();
-         it != atoms.end(); ++it) {
+    for (Strings::const_iterator it = atoms.begin(); it != atoms.end(); ++it) {
       endpoints_.push_back(CHARMMBondEndpoint(*it));
     }
   }
 
 #ifndef SWIG
   CHARMMConnection(base::Vector<CHARMMBondEndpoint> endpoints)
-     : endpoints_(endpoints) {
+      : endpoints_(endpoints) {
     IMP_INTERNAL_CHECK(endpoints.size() == D, "wrong number of bond endpoints");
   }
 #endif
 
-  const IMP::atom::CHARMMBondEndpoint & get_endpoint(unsigned int i) const {
+  const IMP::atom::CHARMMBondEndpoint &get_endpoint(unsigned int i) const {
     return endpoints_[i];
   }
 
   //! \return true if the bond contains the named atom.
   bool get_contains_atom(std::string name) const {
-    for (base::Vector<CHARMMBondEndpoint>::const_iterator
-         it = endpoints_.begin(); it != endpoints_.end(); ++it) {
+    for (base::Vector<CHARMMBondEndpoint>::const_iterator it =
+             endpoints_.begin();
+         it != endpoints_.end(); ++it) {
       if (it->get_atom_name() == name) {
         return true;
       }
@@ -126,16 +128,17 @@ public:
 
 #ifndef SWIG
   //! Map the bond to a list of Atom particles.
-  Atoms get_atoms(const CHARMMResidueTopology *current_residue,
-                  const CHARMMResidueTopology *previous_residue,
-                  const CHARMMResidueTopology *next_residue,
-                  const std::map<const CHARMMResidueTopology *,
-                                 Hierarchy> &resmap) const {
+  Atoms get_atoms(
+      const CHARMMResidueTopology *current_residue,
+      const CHARMMResidueTopology *previous_residue,
+      const CHARMMResidueTopology *next_residue,
+      const std::map<const CHARMMResidueTopology *, Hierarchy> &resmap) const {
     Atoms as;
-    for (base::Vector<CHARMMBondEndpoint>::const_iterator
-         it = endpoints_.begin(); it != endpoints_.end(); ++it) {
-      Atom a = it->get_atom(current_residue, previous_residue,
-                            next_residue, resmap);
+    for (base::Vector<CHARMMBondEndpoint>::const_iterator it =
+             endpoints_.begin();
+         it != endpoints_.end(); ++it) {
+      Atom a =
+          it->get_atom(current_residue, previous_residue, next_residue, resmap);
       if (a) {
         as.push_back(a);
       } else {
@@ -145,21 +148,21 @@ public:
     return as;
   }
 #endif
-  IMP_SHOWABLE_INLINE(CHARMMConnection,
-     { for (base::Vector<CHARMMBondEndpoint>::const_iterator
-            it = endpoints_.begin(); it != endpoints_.end(); ++it) {
-         if (it != endpoints_.begin()) {
-           out << "-";
-         }
-         out << it->get_atom_name();
-       }
-     });
+  IMP_SHOWABLE_INLINE(CHARMMConnection, {
+    for (base::Vector<CHARMMBondEndpoint>::const_iterator it =
+             endpoints_.begin();
+         it != endpoints_.end(); ++it) {
+      if (it != endpoints_.begin()) {
+        out << "-";
+      }
+      out << it->get_atom_name();
+    }
+  });
 };
 
 typedef CHARMMConnection<2> CHARMMBond;
 typedef CHARMMConnection<3> CHARMMAngle;
 typedef CHARMMConnection<4> CHARMMDihedral;
-
 
 IMP_VALUES(CHARMMBond, CHARMMBonds);
 
@@ -187,28 +190,34 @@ IMP_VALUES(CHARMMDihedral, CHARMMDihedrals);
     In both cases the dihedral is the angle between the two planes formed
     by ijk and jkl.
  */
-class CHARMMInternalCoordinate : public CHARMMConnection<4>
-{
+class CHARMMInternalCoordinate : public CHARMMConnection<4> {
   float first_distance_, second_distance_, first_angle_, second_angle_,
-        dihedral_;
+      dihedral_;
   bool improper_;
-public:
+
+ public:
   CHARMMInternalCoordinate(const IMP::Strings &atoms, float first_distance,
                            float first_angle, float dihedral,
                            float second_angle, float second_distance,
                            bool improper)
-             : CHARMMConnection<4>(atoms), first_distance_(first_distance),
-               second_distance_(second_distance), first_angle_(first_angle),
-               second_angle_(second_angle), dihedral_(dihedral),
-               improper_(improper) {}
+      : CHARMMConnection<4>(atoms),
+        first_distance_(first_distance),
+        second_distance_(second_distance),
+        first_angle_(first_angle),
+        second_angle_(second_angle),
+        dihedral_(dihedral),
+        improper_(improper) {}
   CHARMMInternalCoordinate(const base::Vector<CHARMMBondEndpoint> endpoints,
                            float first_distance, float first_angle,
                            float dihedral, float second_angle,
                            float second_distance, bool improper)
-             : CHARMMConnection<4>(endpoints), first_distance_(first_distance),
-               second_distance_(second_distance), first_angle_(first_angle),
-               second_angle_(second_angle), dihedral_(dihedral),
-               improper_(improper) {}
+      : CHARMMConnection<4>(endpoints),
+        first_distance_(first_distance),
+        second_distance_(second_distance),
+        first_angle_(first_angle),
+        second_angle_(second_angle),
+        dihedral_(dihedral),
+        improper_(improper) {}
 
   float get_first_distance() const { return first_distance_; }
   float get_second_distance() const { return second_distance_; }
@@ -217,24 +226,23 @@ public:
   float get_dihedral() const { return dihedral_; }
   bool get_improper() const { return improper_; }
 
-  IMP_SHOWABLE_INLINE(CHARMMInternalCoordinate,
-                      {CHARMMConnection<4>::show(out);
-                       out << "; distances: " << first_distance_ << ", "
-                           << second_distance_ << "; angles: " << first_angle_
-                           << ", " << second_angle_ << "; dihedral: "
-                           << dihedral_;
-                       if (improper_) {
-                         out << "; improper";
-                       }
-                      });
+  IMP_SHOWABLE_INLINE(CHARMMInternalCoordinate, {
+    CHARMMConnection<4>::show(out);
+    out << "; distances: " << first_distance_ << ", " << second_distance_
+        << "; angles: " << first_angle_ << ", " << second_angle_
+        << "; dihedral: " << dihedral_;
+    if (improper_) {
+      out << "; improper";
+    }
+  });
 };
 IMP_VALUES(CHARMMInternalCoordinate, CHARMMInternalCoordinates);
 
 //! Base class for all CHARMM residue-based topology
-class IMPATOMEXPORT CHARMMResidueTopologyBase : public IMP::base::Object
-{
+class IMPATOMEXPORT CHARMMResidueTopologyBase : public IMP::base::Object {
   std::string type_;
-protected:
+
+ protected:
   base::Vector<CHARMMAtomTopology> atoms_;
   CHARMMBonds bonds_;
   CHARMMAngles angles_;
@@ -242,12 +250,12 @@ protected:
   CHARMMDihedrals impropers_;
   CHARMMInternalCoordinates internal_coordinates_;
 
-  CHARMMResidueTopologyBase(std::string type) :
-    Object("CharmmResidueTopoBase%1%"),
-    type_(type) {
+  CHARMMResidueTopologyBase(std::string type)
+      : Object("CharmmResidueTopoBase%1%"), type_(type) {
     set_name(std::string("CHARMM residue ") + type);
   }
-public:
+
+ public:
   std::string get_type() const { return type_; }
 
   unsigned int get_number_of_atoms() const { return atoms_.size(); }
@@ -264,34 +272,26 @@ public:
   const CHARMMAtomTopology &get_atom(std::string name) const;
 
   unsigned int get_number_of_bonds() const { return bonds_.size(); }
-  void add_bond(const CHARMMBond &bond) {
-    bonds_.push_back(bond);
-  }
+  void add_bond(const CHARMMBond &bond) { bonds_.push_back(bond); }
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   // cannot return non const ref to swig
   CHARMMBond &get_bond(unsigned int index) { return bonds_[index]; }
 #endif
 
   unsigned int get_number_of_angles() const { return angles_.size(); }
-  void add_angle(const CHARMMAngle &bond) {
-    angles_.push_back(bond);
-  }
+  void add_angle(const CHARMMAngle &bond) { angles_.push_back(bond); }
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   // cannot return non const ref to swig
   CHARMMAngle &get_angle(unsigned int index) { return angles_[index]; }
 #endif
   unsigned int get_number_of_dihedrals() const { return dihedrals_.size(); }
-  void add_dihedral(const CHARMMDihedral &bond) {
-    dihedrals_.push_back(bond);
-  }
+  void add_dihedral(const CHARMMDihedral &bond) { dihedrals_.push_back(bond); }
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   // cannot return non const ref to swig
   CHARMMDihedral &get_dihedral(unsigned int index) { return dihedrals_[index]; }
 #endif
   unsigned int get_number_of_impropers() const { return impropers_.size(); }
-  void add_improper(const CHARMMDihedral &bond) {
-    impropers_.push_back(bond);
-  }
+  void add_improper(const CHARMMDihedral &bond) { impropers_.push_back(bond); }
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   CHARMMDihedral &get_improper(unsigned int index) { return impropers_[index]; }
 #endif
@@ -302,14 +302,12 @@ public:
   void add_internal_coordinate(const CHARMMInternalCoordinate &ic) {
     internal_coordinates_.push_back(ic);
   }
-  const CHARMMInternalCoordinate
-           &get_internal_coordinate(unsigned int index) const {
+  const CHARMMInternalCoordinate &get_internal_coordinate(
+      unsigned int index) const {
     return internal_coordinates_[index];
   }
 
-  const CHARMMBond &get_bond(unsigned int index) const {
-    return bonds_[index];
-  }
+  const CHARMMBond &get_bond(unsigned int index) const { return bonds_[index]; }
   const CHARMMAngle &get_angle(unsigned int index) const {
     return angles_[index];
   }
@@ -320,7 +318,7 @@ public:
     return impropers_[index];
   }
 
-  IMP_OBJECT(CHARMMResidueTopologyBase);
+  IMP_OBJECT_METHODS(CHARMMResidueTopologyBase);
 };
 
 IMP_OBJECTS(CHARMMResidueTopologyBase, CHARMMResidueTopologyBases);
@@ -334,7 +332,8 @@ IMP_OBJECTS(CHARMMResidueTopologyBase, CHARMMResidueTopologyBases);
 class IMPATOMEXPORT CHARMMIdealResidueTopology
     : public CHARMMResidueTopologyBase {
   std::string default_first_patch_, default_last_patch_;
-public:
+
+ public:
   CHARMMIdealResidueTopology(std::string type)
       : CHARMMResidueTopologyBase(type) {}
   CHARMMIdealResidueTopology(ResidueType type)
@@ -353,7 +352,7 @@ public:
   }
   std::string get_default_first_patch() const { return default_first_patch_; }
   std::string get_default_last_patch() const { return default_last_patch_; }
-  IMP_OBJECT(CHARMMIdealResidueTopology);
+  IMP_OBJECT_METHODS(CHARMMIdealResidueTopology);
 };
 
 IMP_OBJECTS(CHARMMIdealResidueTopology, CHARMMIdealResidueTopologies);
@@ -372,7 +371,8 @@ class CHARMMResidueTopology;
  */
 class IMPATOMEXPORT CHARMMPatch : public CHARMMResidueTopologyBase {
   base::Vector<std::string> deleted_atoms_;
-public:
+
+ public:
   //! Construct a new, empty patch residue.
   /** To get an existing patch, use CHARMMParameters::get_patch() instead.
    */
@@ -407,11 +407,10 @@ public:
       \throws ValueException if the patch is not a two-residue patch.
    */
   void apply(CHARMMResidueTopology *res1, CHARMMResidueTopology *res2) const;
-  IMP_OBJECT(CHARMMPatch);
+  IMP_OBJECT_METHODS(CHARMMPatch);
 };
 
 IMP_OBJECTS(CHARMMPatch, CHARMMPatches);
-
 
 //! The topology of a single residue in a model.
 /** Each CHARMMResidueTopology object can represent an 'unknown' residue
@@ -420,18 +419,18 @@ IMP_OBJECTS(CHARMMPatch, CHARMMPatches);
     residues (see CHARMMPatch::apply()) to add N- or C-termini, disulfide
     bridges, sidechain modifications, etc.
  */
-class IMPATOMEXPORT CHARMMResidueTopology : public CHARMMIdealResidueTopology
-{
+class IMPATOMEXPORT CHARMMResidueTopology : public CHARMMIdealResidueTopology {
   bool patched_;
-public:
+
+ public:
 
   //! Create an empty topology, containing no atoms or bonds.
   CHARMMResidueTopology(ResidueType type)
-    : CHARMMIdealResidueTopology(type), patched_(false) {}
+      : CHARMMIdealResidueTopology(type), patched_(false) {}
 
   //! Construct residue topology as a copy of an existing topology.
   CHARMMResidueTopology(CHARMMIdealResidueTopology *ideal)
-    : CHARMMIdealResidueTopology(ideal->get_type()), patched_(false) {
+      : CHARMMIdealResidueTopology(ideal->get_type()), patched_(false) {
     set_default_first_patch(ideal->get_default_first_patch());
     set_default_last_patch(ideal->get_default_last_patch());
 
@@ -461,11 +460,11 @@ public:
   bool get_patched() const { return patched_; }
   void set_patched(bool patched) { patched_ = patched; }
 
-  IMP_OBJECT(CHARMMResidueTopology);
+  IMP_OBJECT_METHODS(CHARMMResidueTopology);
 };
 
-IMP_OBJECTS(CHARMMResidueTopology,CHARMMResidueTopologies);
+IMP_OBJECTS(CHARMMResidueTopology, CHARMMResidueTopologies);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_CHARMM_TOPOLOGY_H */
+#endif /* IMPATOM_CHARMM_TOPOLOGY_H */

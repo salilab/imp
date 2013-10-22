@@ -14,8 +14,8 @@
 #include <IMP/base_types.h>
 #include <IMP/algebra/Segment3D.h>
 #include <IMP/algebra/Transformation3D.h>
-#include <IMP/Model.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Model.h>
+#include <IMP/kernel/Particle.h>
 
 IMPCORE_BEGIN_NAMESPACE
 //! Get the centroid
@@ -30,4 +30,4 @@ IMPCOREEXPORT algebra::BoundingBoxD<3> get_bounding_box(const XYZRs &ps);
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_UTILITY_H */
+#endif /* IMPCORE_UTILITY_H */

@@ -10,13 +10,11 @@
 #include <IMP/base/deprecation_macros.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
-#if IMP_HAS_DEPRECATED
 
 void BildWriter::do_open() {
-  IMP_DEPRECATED_OBJECT(IMP::rmf);
+  IMPDISPLAY_DEPRECATED_OBJECT_DEF(2.1, "Use IMP::rmf");
 }
 
-void BildWriter::do_close() {
-}
-#endif
+void BildWriter::do_close() {}
+
 IMPDISPLAY_END_NAMESPACE

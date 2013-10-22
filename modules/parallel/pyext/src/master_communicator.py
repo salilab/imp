@@ -1,7 +1,12 @@
+"""@namespace IMP.parallel.master_communicator
+   Classes for communicating from the master to slaves."""
+
 import socket
 from IMP.parallel import _Communicator
 
 class MasterCommunicator(_Communicator):
+    """For communicating from the master to slaves."""
+
     connect_timeout = 600
 
     def __init__(self, master_addr, lock):

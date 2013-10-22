@@ -23,32 +23,28 @@ IMPDISPLAY_BEGIN_NAMESPACE
 /** Any geometry which is not above the plane is not passed on to the writer
     or log or whatever this CompoundGoemetry is passed to.
  */
-class IMPDISPLAYEXPORT FilterGeometry: public GeometryProcessor,
-                                       public Geometry
-{
+class IMPDISPLAYEXPORT FilterGeometry : public GeometryProcessor,
+                                        public Geometry {
   const algebra::Plane3D &p_;
   Geometries gdata_;
   mutable Geometries filtered_;
-  bool handle_sphere(SphereGeometry *g,
-                         Color color, std::string name);
-  bool handle_cylinder(CylinderGeometry *g,
-                       Color color, std::string name);
-  bool handle_point(PointGeometry *g,
-                       Color color, std::string name);
-  bool handle_segment(SegmentGeometry *g,
-                       Color color, std::string name);
-public:
+  bool handle_sphere(SphereGeometry *g, Color color, std::string name);
+  bool handle_cylinder(CylinderGeometry *g, Color color, std::string name);
+  bool handle_point(PointGeometry *g, Color color, std::string name);
+  bool handle_segment(SegmentGeometry *g, Color color, std::string name);
+
+ public:
   //! Pay attention to the orientation of the plane.
   FilterGeometry(const algebra::Plane3D &p);
 
-  void add_geometry(Geometry* g);
+  void add_geometry(Geometry *g);
 
-  void add_geometry(const Geometries& g);
+  void add_geometry(const Geometries &g);
 
-  IMP_GEOMETRY(FilterGeometry);
+  virtual IMP::display::Geometries get_components() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(FilterGeometry);
 };
-
 
 IMPDISPLAY_END_NAMESPACE
 
-#endif  /* IMPDISPLAY_FILTER_GEOMETRY_H */
+#endif /* IMPDISPLAY_FILTER_GEOMETRY_H */

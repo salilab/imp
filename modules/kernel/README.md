@@ -1,8 +1,9 @@
 The IMP kernel provides the base functionality and abstract
-base classes for representation, scoring and sampling. See the IMP introduction for
-an overview.
+base classes for representation, scoring and sampling. The contents of the
+IMP::kernel namespace are hoisted into the IMP namespace for backwards
+compatibility.
 
-## Info
+# Info
 
 _Author(s)_: Daniel Russel
 

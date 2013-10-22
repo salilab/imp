@@ -12,8 +12,8 @@ class Tests(IMP.test.TestCase):
     def test_large(self):
         """Test multi frame files"""
         for suffix in RMF.suffixes:
-            m= IMP.Model()
-            p =IMP.Particle(m)
+            m= IMP.kernel.Model()
+            p =IMP.kernel.Particle(m)
             h= IMP.atom.Hierarchy.setup_particle(p)
             d= IMP.core.XYZR.setup_particle(p)
             md= IMP.atom.Mass.setup_particle(p, 1)
@@ -22,8 +22,8 @@ class Tests(IMP.test.TestCase):
             d.set_y(0)
             d.set_z(0)
             nf=10
-            IMP.base.set_log_level(IMP.base.VERBOSE)
             path=self.get_tmp_file_name("test_mf."+suffix)
+            print path
             f=RMF.create_rmf_file(path)
             IMP.rmf.add_hierarchy(f, h)
             for i in range(0,nf):
@@ -31,6 +31,7 @@ class Tests(IMP.test.TestCase):
                 IMP.rmf.save_frame(f, i)
             del f
             f= RMF.open_rmf_file_read_only(path)
+            IMP.base.set_log_level(IMP.base.VERBOSE)
             [h]= IMP.rmf.create_hierarchies(f, m)
             for i in range(0,nf):
                 IMP.rmf.load_frame( f, i)

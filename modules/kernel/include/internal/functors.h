@@ -17,23 +17,23 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 template <class Pred, bool Sense>
 class PredicateEquals {
-  base::OwnerPointer<const Pred> p_;
+  base::PointerMember<const Pred> p_;
   base::Pointer<Model> m_;
   int v_;
+
  public:
   typedef typename Pred::IndexArgument argument_type;
   typedef bool result_type;
-  PredicateEquals(const Pred *p,
-                  Model *m, int v): p_(p), m_(m), v_(v){}
+  PredicateEquals(const Pred *p, Model *m, int v) : p_(p), m_(m), v_(v) {}
   bool operator()(const argument_type &t) const {
     if (Sense) {
-      return p_->get_value_index(m_, t)==v_;
+      return p_->get_value_index(m_, t) == v_;
     } else {
-      return p_->get_value_index(m_, t)!=v_;
+      return p_->get_value_index(m_, t) != v_;
     }
   }
 };
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPKERNEL_INTERNAL_FUNCTORS_H */
+#endif /* IMPKERNEL_INTERNAL_FUNCTORS_H */

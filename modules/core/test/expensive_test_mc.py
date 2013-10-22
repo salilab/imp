@@ -3,10 +3,10 @@ import IMP.test
 import IMP.core
 import IMP.container
 
-class WoodsFunc(IMP.Restraint):
+class WoodsFunc(IMP.kernel.Restraint):
     """Woods function for four input values, defined as an IMP restraint"""
     def __init__(self, m):
-        IMP.Restraint.__init__(self, m)
+        IMP.kernel.Restraint.__init__(self, m, "WoodsFunc%1%")
         self.index= IMP.FloatKey("x")
     def unprotected_evaluate(self, accum):
         #print "Evaluating in python\n"
@@ -30,10 +30,8 @@ class WoodsFunc(IMP.Restraint):
         return IMP.VersionInfo("Daniel Russel", "0.5")
     def do_show(self, fh):
         fh.write("WoodsFunc")
-    def get_input_particles(self):
+    def do_get_inputs(self):
         return [x for x in self.get_model().get_particles()]
-    def get_input_containers(self):
-        return []
 
 class MCOptimizerTest(IMP.test.TestCase):
     def setUp(self):
@@ -56,13 +54,13 @@ class MCOptimizerTest(IMP.test.TestCase):
         self._test_starting_conditions(model, opt, (2.0, 3.0, 8.0, -5.0), 5)
 
     def _setup_opt(self):
-        model = IMP.Model()
+        model = IMP.kernel.Model()
         lopt= IMP.core.ConjugateGradients(model)
         opt = IMP.core.MonteCarloWithLocalOptimization(lopt, 1000)
         opt.set_score_threshold(.01)
         opt.set_model(model)
         for value in (-3.0, -1.0, -3.0, -1.0):
-            p = IMP.Particle(model)
+            p = IMP.kernel.Particle(model)
             p.add_attribute(self.xkey, value, True)
         fk=IMP.FloatKeys([self.xkey])
         mod= IMP.core.BallMover(model.get_particles(), fk, .25)

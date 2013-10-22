@@ -13,6 +13,7 @@
 #include <IMP/base/log_macros.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
+IMPKERNEL_DEPRECATED_HEADER(2.1, "Please use IMP/base/log.h instead.");
 #ifndef IMP_DOXYGEN
 using IMP::base::LogLevel;
 using IMP::base::DEFAULT;
@@ -28,4 +29,4 @@ using IMP::base::get_log_level;
 #endif
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_LOG_H */
+#endif /* IMPKERNEL_LOG_H */

@@ -1,8 +1,8 @@
 ## \example modeller/imp_restraints_in_modeller.py
-## This demonstrates using IMP Restraints as additional energy terms in the
-## Modeller scoring function, so that IMP scoring terms can be incorporated into
-## existing comparative modeling pipelines.
-##
+# This demonstrates using IMP.kernel.Restraints as additional energy terms in the
+# Modeller scoring function, so that IMP scoring terms can be incorporated into
+# existing comparative modeling pipelines.
+#
 
 import modeller
 import IMP
@@ -18,7 +18,7 @@ modmodel = modeller.model(e)
 modmodel.build_sequence('GGCC')
 
 # Set up IMP and load the Modeller model in as a new Hierarchy
-m = IMP.Model()
+m = IMP.kernel.Model()
 protein = IMP.modeller.ModelLoader(modmodel).load_atoms(m)
 
 # Create a simple IMP distance restraint between the first and last atoms

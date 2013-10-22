@@ -11,7 +11,7 @@
 #include <IMP/isd/isd_config.h>
 #include "internal/timer.h"
 #include <IMP/macros.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/constants.h>
 #include <IMP/base/Object.h>
 #include <math.h>
@@ -39,7 +39,7 @@ using Eigen::VectorXd;
  *  which is implemented as
  * \f[ p(x_1,\cdots,x_N|\mu,F,\Sigma) = ((2\pi\sigma^2)^M|\Sigma|)^{-N/2} J(F)
  *  \exp\left(-\frac{N}{2\sigma^2} {}^t\epsilon \Sigma^{-1} \epsilon\right)
- *  \exp\left(-\frac{1}{2\sigma^2} \operatorname{tr}(W\Sigma^{-1})\right)
+ *  \exp\left(-\frac{1}{2\sigma^2} \text{tr}(W\Sigma^{-1})\right)
  *  \f]
  *  where
  *  \f[\epsilon = (F(\mu)- \overline{F(x)}) \quad
@@ -49,7 +49,7 @@ using Eigen::VectorXd;
  *
  * \f$\sigma\f$ is a multiplicative scaling factor that factors out of the
  * \f$\Sigma\f$ covariance matrix. It is set to 1 by default and its intent is
- * to avoid inverting the $\Sigma$ matrix unless necessary.
+ * to avoid inverting the \f$\Sigma\f$ matrix unless necessary.
  *
  * Set J(F) to 1 if you want the multivariate normal distribution.
  * The distribution is normalized with respect to the matrix variable X.
@@ -107,7 +107,7 @@ private:
   bool use_cg_, first_PW_, first_PWP_;
   double cg_tol_;
   double factor_;
-  IMP::Pointer<internal::ConjugateGradientEigen> cg_;
+  base::Pointer<internal::ConjugateGradientEigen> cg_;
 
   internal::CallTimer<IMP_MVN_TIMER_NFUNCS> timer_;
 
@@ -222,11 +222,12 @@ private:
   double get_minus_log_normalization() const;
 
   /* remaining stuff */
-  IMP_OBJECT_INLINE(MultivariateFNormalSufficient,
+  IMP_OBJECT_METHODS(MultivariateFNormalSufficient);
+  /*IMP_OBJECT_INLINE(MultivariateFNormalSufficient,
           out << "MultivariateFNormalSufficient: "
           << N_ << " observations of "
           <<  M_ << " variables " <<std::endl,
-          {});
+          {});*/
 
  private:
 

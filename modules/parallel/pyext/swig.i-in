@@ -178,7 +178,9 @@ class SlaveArray(object):
     """Representation of an array of slaves.
        This is similar to Slave, except that it represents a collection of
        slaves that are controlled together, such as a batch submission system
-       array job on a compute cluster."""
+       array job on a compute cluster.
+       Slave is an abstract class; instead of using this class directly, use
+       a subclass such as SGEQsubSlaveArray."""
 
     def _get_slaves(self):
         """Return a list of Slave objects contained within this array"""
@@ -334,9 +336,9 @@ class Context(object):
     def add_task(self, task):
         """Add a task to this context.
            Tasks are any Python callable object that can be pickled (e.g. a
-           function or a class that implements the __call__ method). When the
-           task is run on the slave its arguments are the return value from this
-           context's startup function."""
+           function or a class that implements the \_\_call\_\_ method). When
+           the task is run on the slave its arguments are the return value
+           from this context's startup function."""
         self._tasks.append(task)
 
     def get_results_unordered(self):
@@ -376,7 +378,7 @@ class Manager(object):
                      connections across the network.
        @param output A format string used to name slave output files. It is
                      given the numeric slave id, so for example the default
-                     value 'slave%d.output' will yield output files called
+                     value 'slave\%d.output' will yield output files called
                      slave0.output, slave1.output, etc.
     """
   
@@ -412,11 +414,12 @@ class Manager(object):
     def get_context(self, startup=None):
         """Create and return a new Context in which tasks can be run.
            @param startup If not None, a callable (Python function or class
-                          that implements the __call__ method) that sets up
+                          that implements the \_\_call\_\_ method) that sets up
                           the slave to run tasks. This method is only called
                           once per slave. The return values from this method
                           are passed to the task object when it runs on
                           the slave.
+           @return A new Context object.
         """
         return Context(self, startup)
 

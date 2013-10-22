@@ -10,7 +10,7 @@
 #define IMPCORE_DATA_OBJECT_H
 
 #include <IMP/core/core_config.h>
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -20,24 +20,17 @@ IMPCORE_BEGIN_NAMESPACE
     This class is C++ only.
  */
 template <class Data>
-class DataObject: public IMP::base::Object
-{
+class DataObject : public IMP::base::Object {
   Data data_;
-public:
-  DataObject(const Data &d, std::string name="DataObject %1%"):Object(name),
-    data_(d){
-  }
-  const Data &get_data() const {return data_;}
-  Data &access_data() {return data_;}
-  IMP_OBJECT(DataObject);
+
+ public:
+  DataObject(const Data &d, std::string name = "DataObject %1%")
+      : Object(name), data_(d) {}
+  const Data &get_data() const { return data_; }
+  Data &access_data() { return data_; }
+  IMP_OBJECT_METHODS(DataObject);
 };
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-template <class Data>
-inline void DataObject<Data>::do_show(std::ostream &out) const {
-  IMP_UNUSED(out);
-}
-#endif
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_DATA_OBJECT_H */
+#endif /* IMPCORE_DATA_OBJECT_H */

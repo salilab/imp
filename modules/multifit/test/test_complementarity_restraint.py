@@ -8,16 +8,16 @@ class Tests(IMP.test.TestCase):
 
     def _setup(self):
         """Set up two simple rigid bodies (spheres) and a restraint"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         sph = IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0.,0.,0.), 10.0)
-        p0 = IMP.Particle(m)
+        p0 = IMP.kernel.Particle(m)
         IMP.core.XYZR.setup_particle(p0, sph)
         IMP.atom.Mass.setup_particle(p0, 1.0)
-        p1 = IMP.Particle(m)
+        p1 = IMP.kernel.Particle(m)
         IMP.core.XYZR.setup_particle(p1, sph)
         IMP.atom.Mass.setup_particle(p1, 1.0)
-        rb0 = IMP.core.RigidBody.setup_particle(IMP.Particle(m), [p0])
-        rb1 = IMP.core.RigidBody.setup_particle(IMP.Particle(m), [p1])
+        rb0 = IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m), [p0])
+        rb1 = IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m), [p1])
 
         r=IMP.multifit.ComplementarityRestraint([p0], [p1])
         r.set_maximum_separation(30)

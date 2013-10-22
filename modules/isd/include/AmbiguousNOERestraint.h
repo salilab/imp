@@ -14,28 +14,28 @@
 #include <IMP/SingletonScore.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/restraint_macros.h>
-#include <IMP/isd/ISDRestraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/PairContainer.h>
 #include <IMP/isd/Scale.h>
 
 IMPISD_BEGIN_NAMESPACE
 
 //! Ambiguous NOE distance restraint between a number of pairs of particles.
-class IMPISDEXPORT AmbiguousNOERestraint : public ISDRestraint
+class IMPISDEXPORT AmbiguousNOERestraint : public kernel::Restraint
 {
-  Pointer<PairContainer> pc_;
-  Pointer<Particle> sigma_;
-  Pointer<Particle> gamma_;
+  base::Pointer<PairContainer> pc_;
+  base::Pointer<kernel::Particle> sigma_;
+  base::Pointer<kernel::Particle> gamma_;
   double Vexp_;
   double chi_;
   void set_chi(double chi) { chi_ = chi; }
 public:
   //! Create the restraint.
-  /** Restraints should store the particles they are to act on,
+  /** kernel::Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
    */
-  AmbiguousNOERestraint(PairContainer *pc, Particle *sigma, Particle *gamma,
-                        double Iexp);
+  AmbiguousNOERestraint(kernel::Model *m, PairContainer *pc,
+          kernel::Particle *sigma, kernel::Particle *gamma, double Iexp);
 
   /* call for probability */
   double get_probability() const
@@ -49,7 +49,11 @@ public:
 
   /** This macro declares the basic needed methods: evaluate and show
    */
-  IMP_RESTRAINT_2(AmbiguousNOERestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(AmbiguousNOERestraint);
 
 };
 

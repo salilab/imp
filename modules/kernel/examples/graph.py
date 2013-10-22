@@ -1,20 +1,20 @@
 ## \example kernel/graph.py
-## A simple example showing how to use the graph interface for in python.
+# A simple example showing how to use the graph interface for in python.
 
 import IMP
 
-m= IMP.Model()
+m = IMP.kernel.Model()
 # An undirected graph with an IMP::Object for each node
-g= IMP.DependencyGraph()
-vs=[]
-ps=[]
-for i in range(0,10):
-    ps.append(IMP.Particle(m))
-    vs.append(g.add_vertex(ps[-1]));
+g = IMP.DependencyGraph()
+vs = []
+ps = []
+for i in range(0, 10):
+    ps.append(IMP.kernel.Particle(m))
+    vs.append(g.add_vertex(ps[-1]))
 g.add_edge(vs[0], vs[1])
 g.add_edge(vs[1], vs[2])
 
-#try to use the altgraph package to visualize
+# try to use the altgraph package to visualize
 IMP.show_graphviz(g)
 try:
     IMP.show_graphviz(g)
@@ -28,13 +28,13 @@ try:
     import matplotlib.pyplot as plt
 
     # the method below requires the altgraph python package
-    xg=IMP.get_networkx_graph(g)
+    xg = IMP.get_networkx_graph(g)
 
     # the networkx visualization tools suck, so skip them
     #import networkx
-    #networkx.draw(xg)
-    #networkx.draw_shell(xg)
-    #plt.show()
+    # networkx.draw(xg)
+    # networkx.draw_shell(xg)
+    # plt.show()
 except:
     print "networkx not fully installed"
 

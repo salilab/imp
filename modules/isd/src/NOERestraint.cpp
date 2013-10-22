@@ -16,9 +16,10 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-NOERestraint::NOERestraint(Particle *p0, Particle *p1, Particle *sigma,
-                           Particle *gamma, double Vexp)
-    : p0_(p0), p1_(p1), sigma_(sigma), gamma_(gamma), Vexp_(Vexp) {}
+NOERestraint::NOERestraint(Model *m, Particle *p0, Particle *p1,
+        Particle *sigma, Particle *gamma, double Vexp)
+    : Restraint(m,"NOERestraint%1%"), p0_(p0), p1_(p1), sigma_(sigma),
+    gamma_(gamma), Vexp_(Vexp) {}
 
 /* Apply the restraint to two atoms, two Scales, one experimental value.
  */
@@ -63,9 +64,7 @@ NOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   return score;
 }
 
-/* Return all particles whose attributes are read by the restraints. To
-   do this, ask the pair score what particles it uses.*/
-ParticlesTemp NOERestraint::get_input_particles() const
+ModelObjectsTemp NOERestraint::do_get_inputs() const
 {
   ParticlesTemp ret;
   ret.push_back(p0_);
@@ -73,21 +72,6 @@ ParticlesTemp NOERestraint::get_input_particles() const
   ret.push_back(sigma_);
   ret.push_back(gamma_);
   return ret;
-}
-
-/* The only container used is pc_. */
-ContainersTemp NOERestraint::get_input_containers() const
-{
-  return ContainersTemp();
-}
-
-void NOERestraint::do_show(std::ostream& out) const
-{
-  out << "particle0= " << p0_->get_name() << std::endl;
-  out << "particle1= " << p1_->get_name() << std::endl;
-  out << "sigma= " << sigma_->get_name() << std::endl;
-  out << "gamma= " << gamma_->get_name() << std::endl;
-  out << "Vexp= " << Vexp_ << std::endl;
 }
 
 IMPISD_END_NAMESPACE

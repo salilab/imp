@@ -41,7 +41,7 @@ def create_assembly(model, fn_pdbs, names=False):
     """ Read all the PDBs given in the list of names fn_pdbs and adds the
         hierarchies to the model
     """
-    assembly = IMP.atom.Molecule.setup_particle(IMP.Particle(model))
+    assembly = IMP.atom.Molecule.setup_particle(IMP.kernel.Particle(model))
     for i, fn_pdb in enumerate(fn_pdbs):
         if(names):
             prot = read_component(model, fn_pdb, names[i])
@@ -84,7 +84,7 @@ def create_rigid_bodies(assembly):
                         "hierarchy")
     rbs = []
     for c in molecule.get_children():
-        p = IMP.Particle(c.get_model())
+        p = IMP.kernel.Particle(c.get_model())
         core.RigidBody.setup_particle(p, atom.get_leaves(c))
         rb = core.RigidBody(p)
 #        rb = atom.create_rigid_body(c)
@@ -123,7 +123,7 @@ def create_simplified_dna(dna_hierarchy, n_res):
                         "chain.")
 
     model = dna_hierarchy.get_model()
-    ph = IMP.Particle(model)
+    ph = IMP.kernel.Particle(model)
     simplified_h = atom.Hierarchy.setup_particle(ph)
     atom.Chain.setup_particle(ph,"0")
 
@@ -144,7 +144,7 @@ def create_simplified_dna(dna_hierarchy, n_res):
             equivalent_mass += get_residue_mass(r)
 
         s = core.get_enclosing_sphere(xyzrs)
-        p = IMP.Particle(model)
+        p = IMP.kernel.Particle(model)
         xyzr = core.XYZR.setup_particle(p)
         xyzr.set_radius(s.get_radius() )
         xyzr.set_coordinates(s.get_center())
@@ -182,7 +182,7 @@ def create_simplified_assembly(assembly, components_rbs, n_res):
     model = assembly.get_model()
     n_children = molecule.get_number_of_children()
 
-    sh = IMP.Particle(model)
+    sh = IMP.kernel.Particle(model)
     simplified_hierarchy = atom.Molecule.setup_particle(sh)
 
     for i in range(n_children): # for all members of the assembly
@@ -193,7 +193,7 @@ def create_simplified_assembly(assembly, components_rbs, n_res):
             raise ValueError("Rigid body and component do not match")
 
         hchains = atom.get_by_type(component, atom.CHAIN_TYPE)
-        ch = IMP.Particle(model)
+        ch = IMP.kernel.Particle(model)
         coarse_component_h = atom.Molecule.setup_particle(ch)
         # simplify all the chains in the member
         for h in hchains:
@@ -244,12 +244,12 @@ def get_selection_rigid_body(model, S):
     """ Build the rigid body for all the particles in the selection S """
     ps = S.get_selected_particles()
     xyzrs = [core.XYZR(p) for p in ps]
-    p_rbS = IMP.Particle(model)
+    p_rbS = IMP.kernel.Particle(model)
     rbS = core.RigidBody.setup_particle(p_rbS,xyzrs)
     return rbS
 
 def get_selection_as_hierarchy(model,S):
-    ph = IMP.Particle(model)
+    ph = IMP.kernel.Particle(model)
     h = core.Hierarchy.setup_particle(ph)
     for p in S.get_selected_particles():
         x = core.Hierarchy.setup_particle(p)
@@ -261,7 +261,7 @@ def get_selection_as_atom_hierarchy(model,S):
         Then all of them are put into a big residue. I have this to use
         with the multifit.create_coarse_molecule_from_molecule() function
     """
-    ph = IMP.Particle(model)
+    ph = IMP.kernel.Particle(model)
     h = atom.Residue.setup_particle(ph)
     for p in S.get_selected_particles():
         h.add_child( atom.Atom(p) )
@@ -438,6 +438,6 @@ def get_all_members(rigid_bodies):
 def get_simple_members(rb):
     # Add members if they are not sub-rigid bodies
     members = filter(
-       lambda m: not core.RigidBody.particle_is_instance(m.get_particle()),
+       lambda m: not core.RigidBody.get_is_setup(m.get_particle()),
        rb.get_members() )
     return members

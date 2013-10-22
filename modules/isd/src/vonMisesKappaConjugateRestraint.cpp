@@ -6,7 +6,7 @@
  *
  */
 
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/isd/Scale.h>
 #include <IMP/isd/vonMisesKappaConjugateRestraint.h>
 #include <math.h>
@@ -14,9 +14,10 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-vonMisesKappaConjugateRestraint::vonMisesKappaConjugateRestraint(Particle *p,
-                                                      double c, double R0):
-    kappa_(p), bessel_init_(false), c_(c), R0_(R0) {
+vonMisesKappaConjugateRestraint::vonMisesKappaConjugateRestraint(
+        kernel::Model *m, kernel::Particle *p, double c, double R0):
+    Restraint(m, "vonMisesKappaConjugateRestraint%1%"), kappa_(p),
+    bessel_init_(false), c_(c), R0_(R0) {
     if (!(0<=R0 && 0<c && R0<=c)) {
         IMP_THROW("Must have 0 < R0 <= c", ModelException);
     }
@@ -79,22 +80,10 @@ double vonMisesKappaConjugateRestraint::unprotected_evaluate(
   return score;
 }
 
-/* Return all particles whose attributes are read by the restraints. To
-   do this, ask the pair score what particles it uses.*/
-ParticlesTemp vonMisesKappaConjugateRestraint::get_input_particles() const
+ModelObjectsTemp vonMisesKappaConjugateRestraint::do_get_inputs() const
 {
-  return ParticlesTemp(1,kappa_);
+  return kernel::ParticlesTemp(1,kappa_);
 }
 
-/* The only container used is pc_. */
-ContainersTemp vonMisesKappaConjugateRestraint::get_input_containers() const
-{
-  return ContainersTemp();
-}
-
-void vonMisesKappaConjugateRestraint::do_show(std::ostream& out) const
-{
-  out << "particle= " << kappa_->get_name() << std::endl;
-}
 
 IMPISD_END_NAMESPACE

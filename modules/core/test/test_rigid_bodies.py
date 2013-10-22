@@ -21,22 +21,44 @@ class Tests(IMP.test.TestCase):
             r= IMP.core.SingletonRestraint(dt, mb.get_particle())
             m.add_restraint(r)
     def _create_hierarchy(self, m, n=10):
-        rd= IMP.core.XYZ.setup_particle(IMP.Particle(m),
+        rd= IMP.core.XYZ.setup_particle(IMP.kernel.Particle(m),
                                          IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
+        rd.set_name("rigid body")
         hd= IMP.core.Hierarchy.setup_particle(rd.get_particle())
         for i in range(0,n):
-            crd= IMP.core.XYZ.setup_particle(IMP.Particle(m),
+            crd= IMP.core.XYZ.setup_particle(IMP.kernel.Particle(m),
                                               IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
             chd= IMP.core.Hierarchy.setup_particle(crd.get_particle())
             hd.add_child(chd)
+            chd.set_name("child%d"%i)
         return rd.get_particle()
+
+    def test_dependencies(self):
+        """Test dependencies"""
+        m = IMP.kernel.Model()
+        p= self._create_hierarchy(m)
+        h=IMP.core.Hierarchy(p)
+        children=h.get_children()
+        cs=IMP.core.XYZs(children)
+        rbd=IMP.core.RigidBody.setup_particle(p, cs)
+        p.set_has_required_score_states(True)
+        print m.get_score_states(), m.get_model_objects()
+        dg = IMP.kernel.get_dependency_graph(m)
+        #IMP.base.show_graphviz(dg)
+        ss = p.get_required_score_states()
+        self.assertEqual(len(ss), 2)
+        self. _add_rb_restraints(rbd)
+        rs = m.get_restraints()
+        rs[0].set_has_required_score_states(True)
+        ss = rs[0].get_required_score_states()
+        self.assertEqual(len(ss), 3)
 
     def test_create_one(self):
         """Testing create_rigid_body"""
         count=1
         success=0
         for i in range(0, count):
-            m= IMP.Model()
+            m= IMP.kernel.Model()
             IMP.base.set_log_level(IMP.base.SILENT)
             print "creating"
             p= self._create_hierarchy(m)
@@ -64,10 +86,10 @@ class Tests(IMP.test.TestCase):
 
     def test_create_one_from_pdb(self):
         """Testing create_rigid_bodies"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         hs= IMP.kernel._create_particles_from_pdb(self.get_input_file_name("input.pdb"), m)
         print "done reading"
-        rb= IMP.core.RigidBody.setup_particle(IMP.Particle(m), hs)
+        rb= IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m), hs)
         rb.set_coordinates_are_optimized(True)
         print "done setting up"
         ls= hs
@@ -90,14 +112,14 @@ class Tests(IMP.test.TestCase):
         self.assertLess((ntr.get_translation()- tr.get_translation()).get_magnitude(), 2.2)
     def test_teardown(self):
         """Testing tearing down rigid bodies"""
-        m= IMP.Model()
-        ps=[IMP.core.XYZ.setup_particle(IMP.Particle(m)) for i in range(3)]
-        rbp0= IMP.Particle(m)
+        m= IMP.kernel.Model()
+        ps=[IMP.core.XYZ.setup_particle(IMP.kernel.Particle(m)) for i in range(3)]
+        rbp0= IMP.kernel.Particle(m)
         rbp0.set_name("rb0")
-        rbp1= IMP.Particle(m)
+        rbp1= IMP.kernel.Particle(m)
         rbp1.set_name("rb1")
         try:
-            before= IMP.base.RefCounted.get_number_of_live_objects()
+            before= IMP.base.Object.get_number_of_live_objects()
             names_before= IMP.base.Object.get_live_object_names()
         except:
             pass
@@ -113,7 +135,7 @@ class Tests(IMP.test.TestCase):
         failure=False
         # check cleanup
         try:
-            after= IMP.base.RefCounted.get_number_of_live_objects()
+            after= IMP.base.Object.get_number_of_live_objects()
             names_after= IMP.base.Object.get_live_object_names()
             for n in names_after:
                 if n not in names_before:

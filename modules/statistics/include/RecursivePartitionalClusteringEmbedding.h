@@ -12,10 +12,8 @@
 #include <IMP/statistics/statistics_config.h>
 #include "PartitionalClustering.h"
 #include "Embedding.h"
-#include "embedding_macros.h"
 
 IMPSTATISTICS_BEGIN_NAMESPACE
-
 
 /** Represent an embedding for clustering data that has already been clustered
     once. To use it, cluster things once, create one of these with the embedding
@@ -23,18 +21,20 @@ IMPSTATISTICS_BEGIN_NAMESPACE
     the clustering algorithm, it will cluster the centers. You can extract the
     clustering of the original elements using create_full_clustering().
 */
-class IMPSTATISTICSEXPORT RecursivePartitionalClusteringEmbedding:
-  public Embedding {
-  IMP::OwnerPointer<Embedding> metric_;
-  IMP::OwnerPointer<PartitionalClustering> clustering_;
+class IMPSTATISTICSEXPORT RecursivePartitionalClusteringEmbedding
+    : public Embedding {
+  IMP::base::PointerMember<Embedding> metric_;
+  IMP::base::PointerMember<PartitionalClustering> clustering_;
+
  public:
   RecursivePartitionalClusteringEmbedding(Embedding *metric,
                                           PartitionalClustering *clustering);
-  PartitionalClustering*
-    create_full_clustering(PartitionalClustering *center_cluster);
-  IMP_EMBEDDING(RecursivePartitionalClusteringEmbedding);
+  PartitionalClustering *create_full_clustering(
+      PartitionalClustering *center_cluster);
+  algebra::VectorKD get_point(unsigned int i) const IMP_OVERRIDE;
+  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(RecursivePartitionalClusteringEmbedding);
 };
-
 
 IMPSTATISTICS_END_NAMESPACE
 

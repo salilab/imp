@@ -10,8 +10,8 @@
 #define IMPATOM_CHARMM_STEREOCHEMISTRY_RESTRAINT_H
 
 #include <IMP/atom/atom_config.h>
-#include <IMP/Pointer.h>
-#include <IMP/Restraint.h>
+#include <IMP/base/Pointer.h>
+#include <IMP/kernel/Restraint.h>
 #include "StereochemistryPairFilter.h"
 #include "Hierarchy.h"
 #include "charmm_segment_topology.h"
@@ -34,14 +34,14 @@ IMPATOM_BEGIN_NAMESPACE
           and then evaluated using an AngleSingletonScore in combination
           with a container::SingletonsRestraint.
  */
-class IMPATOMEXPORT CHARMMStereochemistryRestraint : public Restraint
-{
-  Particles bonds_, angles_, dihedrals_, impropers_;
-  IMP::OwnerPointer<BondSingletonScore> bond_score_;
-  IMP::OwnerPointer<AngleSingletonScore> angle_score_;
-  IMP::OwnerPointer<DihedralSingletonScore> dihedral_score_;
-  IMP::OwnerPointer<ImproperSingletonScore> improper_score_;
-public:
+class IMPATOMEXPORT CHARMMStereochemistryRestraint : public kernel::Restraint {
+  kernel::Particles bonds_, angles_, dihedrals_, impropers_;
+  IMP::base::PointerMember<BondSingletonScore> bond_score_;
+  IMP::base::PointerMember<AngleSingletonScore> angle_score_;
+  IMP::base::PointerMember<DihedralSingletonScore> dihedral_score_;
+  IMP::base::PointerMember<ImproperSingletonScore> improper_score_;
+
+ public:
   CHARMMStereochemistryRestraint(Hierarchy h, CHARMMTopology *topology);
 
   //! Get a PairFilter that excludes all stereochemical pairs.
@@ -50,9 +50,12 @@ public:
    */
   StereochemistryPairFilter *get_pair_filter();
 
-  IMP_RESTRAINT(CHARMMStereochemistryRestraint);
+  virtual double unprotected_evaluate(
+      IMP::kernel::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(CHARMMStereochemistryRestraint);
 };
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_CHARMM_STEREOCHEMISTRY_RESTRAINT_H */
+#endif /* IMPATOM_CHARMM_STEREOCHEMISTRY_RESTRAINT_H */

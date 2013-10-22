@@ -9,29 +9,28 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-Float TypedPairScore::evaluate(const ParticlePair &p,
-                               DerivativeAccumulator *da) const
-{
-  PairScore *ps= get_pair_score(p);
+Float TypedPairScore::evaluate_index(kernel::Model *m,
+                                     const kernel::ParticleIndexPair &pip,
+                                     DerivativeAccumulator *da) const {
+  kernel::ParticlePair p(m->get_particle(pip[0]), m->get_particle(pip[1]));
+  PairScore *ps = get_pair_score(p);
   if (!ps) {
     if (!allow_invalid_types_) {
-      IMP_THROW("Attempt to evaluate TypedPairScore on "
-                "particles with invalid types ("
-                << p[0]->get_value(typekey_) << ", "
-                << p[1]->get_value(typekey_) << ")",
-                ValueException);
+      IMP_THROW(
+          "Attempt to evaluate TypedPairScore on "
+          "particles with invalid types ("
+              << p[0]->get_value(typekey_) << ", " << p[1]->get_value(typekey_)
+              << ")",
+          ValueException);
     } else {
       return 0.0;
     }
   } else {
-    return ps->evaluate_index(p[0]->get_model(),
-                              ParticleIndexPair(p[0]->get_index(),
-                                                p[1]->get_index()),
-                              da);
+    return ps->evaluate_index(m, pip, da);
   }
 }
 
-PairScore *TypedPairScore::get_pair_score(const ParticlePair &p) const {
+PairScore *TypedPairScore::get_pair_score(const kernel::ParticlePair &p) const {
   if (!p[0]->has_attribute(typekey_)) {
     set_particle_type(p[0]);
   }
@@ -41,9 +40,8 @@ PairScore *TypedPairScore::get_pair_score(const ParticlePair &p) const {
   Int atype = p[0]->get_value(typekey_);
   Int btype = p[1]->get_value(typekey_);
 
-  ScoreMap::const_iterator psit =
-      score_map_.find(std::pair<Int,Int>(std::min(atype, btype),
-                                         std::max(atype, btype)));
+  ScoreMap::const_iterator psit = score_map_.find(
+      std::pair<Int, Int>(std::min(atype, btype), std::max(atype, btype)));
   if (psit == score_map_.end()) {
     return nullptr;
   } else {
@@ -53,24 +51,14 @@ PairScore *TypedPairScore::get_pair_score(const ParticlePair &p) const {
 }
 
 TypedPairScore::TypedPairScore(IntKey typekey, bool allow_invalid_types)
-      : typekey_(typekey), score_map_(),
-    allow_invalid_types_(allow_invalid_types) {}
-
+    : typekey_(typekey),
+      score_map_(),
+      allow_invalid_types_(allow_invalid_types) {}
 
 // should pass it off, fix later
-ParticlesTemp TypedPairScore::get_input_particles(Particle *p) const {
-  ParticlesTemp ret(1, p);
-  return ret;
-}
-
-ContainersTemp
-TypedPairScore::get_input_containers(Particle *) const {
-  return ContainersTemp();
-}
-
-void TypedPairScore::do_show(std::ostream &out) const
-{
-  out << "key " << typekey_ << std::endl;
+ModelObjectsTemp TypedPairScore::do_get_inputs(
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
+  return IMP::kernel::get_particles(m, pis);
 }
 
 IMPCORE_END_NAMESPACE

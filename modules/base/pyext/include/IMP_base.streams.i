@@ -28,6 +28,24 @@
   }
 }
 
+%typemap(in) IMP::base::TextProxy<std::ostream> (IMP::base::PointerMember<PyOutFileAdapter> tmp){
+  tmp=new PyOutFileAdapter();
+    try {
+      $1 = IMP::base::TextProxy<std::ostream>(tmp->set_python_file($input), tmp);
+    } catch (...) {
+      // If Python error indicator is set (e.g. from a failed director method),
+      // it will be reraised at the end of the method
+      if (!PyErr_Occurred()) {
+        handle_imp_exception();
+      }
+      SWIG_fail;
+    }
+  if (!$1.str_) {
+    SWIG_fail;
+  }
+}
+
+
 %typemap(in) std::ostream& (IMP::base::OwnerPointer<PyOutFileAdapter> tmp){
   tmp=new PyOutFileAdapter();
   try {
@@ -45,6 +63,25 @@
     SWIG_fail;
   }
 }
+
+%typemap(in) std::ostream& (IMP::base::PointerMember<PyOutFileAdapter> tmp){
+  tmp=new PyOutFileAdapter();
+  try {
+       $1 = tmp->set_python_file($input);
+    } catch (...) {
+      // If Python error indicator is set (e.g. from a failed director method),
+      // it will be reraised at the end of the method
+      if (!PyErr_Occurred()) {
+        handle_imp_exception();
+      }
+      SWIG_fail;
+    }
+
+  if (!$1) {
+    SWIG_fail;
+  }
+}
+
 
 // Something of an abuse of argout: force anything in our streambuf adapter to
 // be flushed out to the file, and catch any exceptions raised. (Ideally the
@@ -91,7 +128,23 @@
   }
 }
 
+%typemap(in) IMP::base::TextProxy<std::istream> (IMP::base::PointerMember<PyInFileAdapter> tmp) {
+    tmp=new PyInFileAdapter();
+    $1 = IMP::base::TextProxy<std::istream>(tmp->set_python_file($input), tmp);
+  if (!$1.str_) {
+    SWIG_fail;
+  }
+}
+
 %typemap(in) std::istream& (IMP::base::OwnerPointer<PyInFileAdapter> tmp){
+    tmp= new PyInFileAdapter();
+    $1 = tmp->set_python_file($input);
+  if (!$1) {
+    SWIG_fail;
+  }
+}
+
+%typemap(in) std::istream& (IMP::base::PointerMember<PyInFileAdapter> tmp){
     tmp= new PyInFileAdapter();
     $1 = tmp->set_python_file($input);
   if (!$1) {
@@ -189,8 +242,6 @@
   std::auto_ptr<StreamBuf> stream_buf_;
 public:
  PyOutFileAdapter():IMP::base::Object("PyOutFileAdapter") {
-  }
-  void do_show(std::ostream &out) const {
   }
   std::string get_type_name() const {return "Pyton output file";}
   IMP::base::VersionInfo get_version_info() const {
@@ -393,8 +444,6 @@ protected:
   std::auto_ptr<std::istream> istr_;
 public:
  PyInFileAdapter(): IMP::base::Object("PyInFileAdapter") {}
-  void do_show(std::ostream &out) const {
-  }
   std::string get_type_name() const {return "Pyton input file";}
   IMP::base::VersionInfo get_version_info() const {
     return IMP::base::VersionInfo("IMP.base", IMP::base::get_module_version());

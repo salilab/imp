@@ -13,7 +13,7 @@
 #include <IMP/SingletonScore.h>
 #include <IMP/singleton_macros.h>
 #include <IMP/UnaryFunction.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -27,17 +27,23 @@ IMPATOM_BEGIN_NAMESPACE
 
     \see CHARMMParameters::create_angles(), Angle.
  */
-class IMPATOMEXPORT AngleSingletonScore : public SingletonScore
-{
-  IMP::OwnerPointer<UnaryFunction> f_;
-public:
+class IMPATOMEXPORT AngleSingletonScore : public SingletonScore {
+  IMP::base::PointerMember<UnaryFunction> f_;
+
+ public:
   //! Use f to penalize deviations in angle
   AngleSingletonScore(UnaryFunction *f);
-  IMP_SINGLETON_SCORE(AngleSingletonScore);
+  virtual double evaluate_index(kernel::Model *m, kernel::ParticleIndex p,
+                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  IMP_SINGLETON_SCORE_METHODS(AngleSingletonScore);
+  IMP_OBJECT_METHODS(AngleSingletonScore);
+  ;
 };
 
-IMP_OBJECTS(AngleSingletonScore,AngleSingletonScores);
+IMP_OBJECTS(AngleSingletonScore, AngleSingletonScores);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_ANGLE_SINGLETON_SCORE_H */
+#endif /* IMPATOM_ANGLE_SINGLETON_SCORE_H */

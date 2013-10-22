@@ -30,7 +30,7 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         IMP.base.set_log_level(IMP.base.SILENT)
         IMP.base.set_check_level(IMP.base.NONE)
-        self.imp_model = IMP.Model()
+        self.imp_model = IMP.kernel.Model()
         self.load_density_map()
         self.load_protein("1z5s_A.pdb")
 
@@ -39,7 +39,7 @@ class Tests(IMP.test.TestCase):
         check = IMP.base.get_check_level()
         mrw=IMP.em.MRCReaderWriter()
         #create a rigid body
-        rb_p = IMP.Particle(self.imp_model)
+        rb_p = IMP.kernel.Particle(self.imp_model)
         #sample density map
         sampled_density_map = IMP.em.SampledDensityMap(self.scene.get_header())
         sampled_density_map.set_particles(self.particles)

@@ -11,18 +11,22 @@ namespace std {
 %ignore operator>>(std::istream& q, IntensityEntry& e);
 %template(_Vector3Ds) ::std::vector< ::IMP::algebra::Vector3D>;
 
+IMP_SWIG_OBJECT(IMP::saxs, Profile, Profiles);
+
 /* Wrap our own classes */
 %include "IMP/saxs/FormFactorTable.h"
 %include "IMP/saxs/Profile.h"
 %include "IMP/saxs/FitParameters.h"
+%include "IMP/saxs/WeightedFitParameters.h"
 %include "IMP/saxs/ChiScore.h"
 %include "IMP/saxs/ChiScoreLog.h"
 %include "IMP/saxs/ProfileFitter.h"
+%template(ProfileFitterChi) IMP::saxs::ProfileFitter<IMP::saxs::ChiScore>;
+%include "IMP/saxs/WeightedProfileFitter.h"
 %include "IMP/saxs/DerivativeCalculator.h"
 %include "IMP/saxs/Restraint.h"
 %include "IMP/saxs/RadiusOfGyrationRestraint.h"
 %include "IMP/saxs/Distribution.h"
 %include "IMP/saxs/SolventAccessibleSurface.h"
 
-%template(ProfileFitterChi) IMP::saxs::ProfileFitter<IMP::saxs::ChiScore>;
 %template(ProfileFitterChiLog) IMP::saxs::ProfileFitter<IMP::saxs::ChiScoreLog>;

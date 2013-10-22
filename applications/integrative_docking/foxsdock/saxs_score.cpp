@@ -111,7 +111,7 @@ recommended q value is 0.2")
   float delta_q = max_q / profile_size;
 
   // read pdb  files, prepare particles
-  IMP::Particles particles1, particles2;
+  IMP::kernel::Particles particles1, particles2;
   if(!residue_level) {
     read_pdb_atoms(static_pdb, particles1);
     read_pdb_atoms(transformed_pdb, particles2);
@@ -144,45 +144,45 @@ recommended q value is 0.2")
   read_trans_file(trans_file, transforms);
 
   // compute non-changing profile
-  IMP::saxs::Profile rigid_part1_profile(0.0, max_q, delta_q);
+  IMP_NEW(IMP::saxs::Profile, rigid_part1_profile, (0.0, max_q, delta_q));
   std::cerr << "Computing profile for " << static_pdb << " min = 0.0 max = "
             << max_q << " delta=" << delta_q << std::endl;
   if(fit) {
-    rigid_part1_profile.calculate_profile_partial(particles1, surface_area1,
+    rigid_part1_profile->calculate_profile_partial(particles1, surface_area1,
                                                   ff_type);
   } else {
-    rigid_part1_profile.calculate_profile(particles1, ff_type);
+    rigid_part1_profile->calculate_profile(particles1, ff_type);
   }
 
-  IMP::saxs::Profile rigid_part2_profile(0.0, max_q, delta_q);
+  IMP_NEW(IMP::saxs::Profile, rigid_part2_profile, (0.0, max_q, delta_q));
   std::cerr << "Computing profile for " << transformed_pdb
             << " min = 0.0 max = " << max_q << " delta=" << delta_q <<std::endl;
   if(fit) {
-    rigid_part2_profile.calculate_profile_partial(particles2, surface_area2,
+    rigid_part2_profile->calculate_profile_partial(particles2, surface_area2,
                                                   ff_type);
   } else {
-    rigid_part2_profile.calculate_profile(particles2, ff_type);
+    rigid_part2_profile->calculate_profile(particles2, ff_type);
   }
 
   // add the two profiles
   if(fit) {
-    rigid_part1_profile.add_partial_profiles(rigid_part2_profile);
+    rigid_part1_profile->add_partial_profiles(rigid_part2_profile);
   } else {
-    rigid_part1_profile.add(rigid_part2_profile);
+    rigid_part1_profile->add(rigid_part2_profile);
   }
 
   // read experimental profiles
-  IMP::saxs::Profile exp_saxs_profile(dat_file);
+  IMP_NEW(IMP::saxs::Profile, exp_saxs_profile, (dat_file));
   std::cerr << "Profile read from file " << dat_file
-            << " min = " << exp_saxs_profile.get_min_q()
-            << " max = " << exp_saxs_profile.get_max_q()
-            << " delta = " << exp_saxs_profile.get_delta_q()
-            << " size = " << exp_saxs_profile.size() << std::endl;
+            << " min = " << exp_saxs_profile->get_min_q()
+            << " max = " << exp_saxs_profile->get_max_q()
+            << " delta = " << exp_saxs_profile->get_delta_q()
+            << " size = " << exp_saxs_profile->size() << std::endl;
   if(background_adjustment_q > 0.0) { // adjust the background if requested
-    exp_saxs_profile.background_adjust(background_adjustment_q);
+    exp_saxs_profile->background_adjust(background_adjustment_q);
   }
   // compute rg and valid rg range for experimental profile
-  double rg = exp_saxs_profile.radius_of_gyration(end_q_rg);
+  double rg = exp_saxs_profile->radius_of_gyration(end_q_rg);
   double min_rg = (1.0 - min_rg_bound/100.0) * rg;
   double max_rg = (1.0 + max_rg_bound/100.0) * rg;
   std::cerr << dat_file << " Rg= " << rg << " range "
@@ -195,7 +195,7 @@ recommended q value is 0.2")
   }
 
   // prepare vec with all particles for d_max/rg computation
-  IMP::Particles particles(particles1);
+  IMP::kernel::Particles particles(particles1);
   particles.insert(particles.end(), particles2.begin(), particles2.end());
 
   // output file header
@@ -224,20 +224,20 @@ recommended q value is 0.2")
     float chi = 0; float c1 = 0; float c2 = 0;
     if(!rg_only && !filtered) {
       // compute contribution of inter-parts distances to profile
-      IMP::saxs::Profile rigid_part12_profile(0.0, max_q, delta_q);
+      IMP_NEW(IMP::saxs::Profile, rigid_part12_profile, (0.0, max_q, delta_q));
       // cerr << "Computing profile between parts " << transforms[i] << endl;
       if(fit) {
-        rigid_part12_profile.calculate_profile_partial(particles1, particles2,
+        rigid_part12_profile->calculate_profile_partial(particles1, particles2,
                                                        surface_area1,
                                                        surface_area2, ff_type);
-        rigid_part12_profile.add_partial_profiles(rigid_part1_profile);
+        rigid_part12_profile->add_partial_profiles(rigid_part1_profile);
       } else {
-        rigid_part12_profile.calculate_profile(particles1, particles2, ff_type);
-        rigid_part12_profile.add(rigid_part1_profile);
+        rigid_part12_profile->calculate_profile(particles1, particles2,ff_type);
+        rigid_part12_profile->add(rigid_part1_profile);
       }
 
       // fit to exp profile and compute chi
-      IMP::Pointer<IMP::saxs::ProfileFitter<> > saxs_score =
+      IMP::base::Pointer<IMP::saxs::ProfileFitter<> > saxs_score =
         new IMP::saxs::ProfileFitter<>(exp_saxs_profile);
 
       float min_c1=1.0; float max_c1=1.04;

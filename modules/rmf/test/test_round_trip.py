@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
     def test_rt(self):
         """Test round trip"""
         for suffix in RMF.suffixes:
-            m= IMP.Model()
+            m= IMP.kernel.Model()
             print "reading pdb"
             name=self.get_tmp_file_name("test_round_trip."+suffix)
             h= IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
@@ -30,7 +30,6 @@ class Tests(IMP.test.TestCase):
         #print RMF.get_open_hdf5_handle_names()
             f= RMF.open_rmf_file_read_only(name)
             print "reading"
-            print f, type(f)
             print "creating"
             h2=IMP.rmf.create_hierarchies(f, m)
             print "output"
@@ -55,7 +54,7 @@ class Tests(IMP.test.TestCase):
     def test_part1(self):
         """Test round trip 1"""
         for suffix in RMF.suffixes:
-            m= IMP.Model()
+            m= IMP.kernel.Model()
             print "reading pdb"
             h= IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
                                  IMP.atom.NonAlternativePDBSelector())
@@ -77,7 +76,7 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(len(h2), 1)
             del f
 
-            m= IMP.Model()
+            m= IMP.kernel.Model()
             print "reopening"
             f= RMF.open_rmf_file_read_only(name)
             print "reading"

@@ -13,7 +13,7 @@
 #include "XYZ.h"
 #include <IMP/Refiner.h>
 #include <IMP/singleton_macros.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/SingletonDerivativeModifier.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -24,22 +24,26 @@ IMPCORE_BEGIN_NAMESPACE
     \see CentroidOfRefinedSingletonModifer
  An example showing a how to use such a score state to maintain a cover
  of the atoms of a protein by a sphere per residue.
- \pythonexample{cover_particles}
+ \include cover_particles.py
  */
-class IMPCOREEXPORT DerivativesToRefined:
-public SingletonDerivativeModifier
-{
-  IMP::OwnerPointer<Refiner> refiner_;
+class IMPCOREEXPORT DerivativesToRefined : public SingletonDerivativeModifier {
+  IMP::base::PointerMember<Refiner> refiner_;
   FloatKeys ks_;
-public:
-  //! Copy ks to the particles returned by r.
-  DerivativesToRefined(Refiner *r,
-                       FloatKeys ks
-                       = XYZ::get_xyz_keys());
 
-  IMP_INDEX_SINGLETON_DERIVATIVE_MODIFIER(DerivativesToRefined);
+ public:
+  //! Copy ks to the particles returned by r.
+  DerivativesToRefined(Refiner *r, FloatKeys ks = XYZ::get_xyz_keys());
+
+  virtual void apply_index(kernel::Model *m, kernel::ParticleIndex a) const
+      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_outputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  IMP_SINGLETON_MODIFIER_METHODS(DerivativesToRefined);
+  IMP_OBJECT_METHODS(DerivativesToRefined);
 };
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_DERIVATIVES_TO_REFINED_H */
+#endif /* IMPCORE_DERIVATIVES_TO_REFINED_H */

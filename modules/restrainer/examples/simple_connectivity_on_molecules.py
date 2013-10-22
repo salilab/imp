@@ -1,14 +1,14 @@
 ## \example restrainer/simple_connectivity_on_molecules.py
-## This example shows how to create simple IMP::core::ConnectivityRestraint on molecules.
-##
+# This example shows how to create simple IMP::core::ConnectivityRestraint on molecules.
+#
 
-#-- File: simple_connectivity_on_molecules.py --#
+# -- File: simple_connectivity_on_molecules.py --#
 
 import IMP
 import IMP.core
 import IMP.restrainer
 
-m = IMP.Model()
+m = IMP.kernel.Model()
 
 IMP.core.create_xyzr_particles(m, 4, 1.0)
 ps = m.get_particles()

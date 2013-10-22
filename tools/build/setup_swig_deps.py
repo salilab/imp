@@ -7,7 +7,6 @@ import sys
 from optparse import OptionParser
 import os.path
 import tools
-import subprocess
 import thread_pool
 
 
@@ -53,13 +52,15 @@ def setup_one(module, ordered, build_system, swig):
     + ["-I"+x for x in swigpath] + ["-I"+x for x in includepath]\
     + ["swig/IMP_%s.i"%module]
 
-    ret = subprocess.call(cmd, stdout=depf)
-    del depf
-    if ret != 0:
-        raise OSError("subprocess failed with return code %d: %s" \
-                      % (ret, str(cmd)))
-    lines= open("src/%s_swig.deps.in"%module, "r").readlines()
-    names= [x[:-2].strip() for x in lines[1:]]
+    lines = tools.run_subprocess(cmd).split("\n")
+    names= []
+    for x in lines:
+        if x.endswith("\\"):
+            x = x[:-1]
+        x = x.strip()
+        if not x.endswith(".h") and not x.endswith(".i") and not x.endswith(".i-in"):
+            continue
+        names.append(x)
 
     final_names=[_fix(x, build_system) for x in names]
     final_list= "\n".join(final_names)
@@ -72,8 +73,11 @@ def main():
     for m in ordered:
         #setup_one(m, ordered, options.build_system, options.swig)
         pool.add_task(setup_one, m, ordered, options.build_system, options.swig)
-    pool.wait_completion()
-
+    err = pool.wait_completion()
+    if err:
+        print >> sys.stderr, err
+        return 1
+    return 0
 
 
 

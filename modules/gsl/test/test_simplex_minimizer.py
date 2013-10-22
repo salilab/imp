@@ -5,9 +5,9 @@ import IMP.gsl
 corners=[[0,0,0],[0,1,0], [0,0,1], [0,1,1],
          [1,0,0],[1,1,0], [1,0,1], [1,1,1]]
 
-class EasyCubeFunc(IMP.Restraint):
+class EasyCubeFunc(IMP.kernel.Restraint):
     def __init__(self, model, particles):
-        IMP.Restraint.__init__(self)
+        IMP.kernel.Restraint.__init__(self, "EasyCubeFunc %1%")
         self.particles= particles
         self.index= IMP.FloatKey("x")
     def do_show(self, junk):
@@ -24,20 +24,18 @@ class EasyCubeFunc(IMP.Restraint):
             dist2= (d.get_coordinates()-v).get_squared_magnitude()
             e =e+dist2
         return e
-    def get_input_particles(self):
-        return IMP.ParticlesTemp(self.particles)
-    def get_input_objects(self):
-        return IMP.ObjectsTemp()
+    def do_get_inputs(self):
+        return IMP.kernel.ParticlesTemp(self.particles)
 
 
 
 class Tests(IMP.test.TestCase):
     def _test_it(self):
-        model = IMP.Model()
+        model = IMP.kernel.Model()
         particles = []
 
         for i in range(0,2):
-            p = IMP.Particle(model)
+            p = IMP.kernel.Particle(model)
             particles.append(p)
             IMP.core.XYZ.setup_particle(p, IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())).set_coordinates_are_optimized(True)
         rsr = EasyCubeFunc(model, particles)

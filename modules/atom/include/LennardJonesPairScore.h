@@ -11,7 +11,7 @@
 #include <IMP/atom/atom_config.h>
 #include <IMP/generic.h>
 #include <IMP/PairScore.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/atom/LennardJones.h>
 #include <IMP/atom/smoothing_functions.h>
 
@@ -38,9 +38,8 @@ IMPATOM_BEGIN_NAMESPACE
     a single particle is modifed, that will affect its interaction with all
     particles.
  */
-class IMPATOMEXPORT LennardJonesPairScore : public PairScore
-{
-  IMP::OwnerPointer<SmoothingFunction> smoothing_function_;
+class IMPATOMEXPORT LennardJonesPairScore : public PairScore {
+  IMP::base::PointerMember<SmoothingFunction> smoothing_function_;
   double repulsive_weight_, attractive_weight_;
 
   // Calculate A, B factors from particle well depths and radii
@@ -59,9 +58,11 @@ class IMPATOMEXPORT LennardJonesPairScore : public PairScore
     B = 2.0 * well_depth * rmin6 * attractive_weight_;
   }
 
-public:
+ public:
   LennardJonesPairScore(SmoothingFunction *f)
-    : smoothing_function_(f), repulsive_weight_(1.0), attractive_weight_(1.0) {}
+      : smoothing_function_(f),
+        repulsive_weight_(1.0),
+        attractive_weight_(1.0) {}
 
   void set_repulsive_weight(double repulsive_weight) {
     repulsive_weight_ = repulsive_weight;
@@ -75,11 +76,18 @@ public:
 
   double get_attractive_weight() const { return attractive_weight_; }
 
-  IMP_SIMPLE_PAIR_SCORE(LennardJonesPairScore);
+  virtual double evaluate_index(kernel::Model *m,
+                                const kernel::ParticleIndexPair &p,
+                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  IMP_PAIR_SCORE_METHODS(LennardJonesPairScore);
+  IMP_OBJECT_METHODS(LennardJonesPairScore);
+  ;
 };
 
-IMP_OBJECTS(LennardJonesPairScore,LennardJonesPairScores);
+IMP_OBJECTS(LennardJonesPairScore, LennardJonesPairScores);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_LENNARD_JONES_PAIR_SCORE_H */
+#endif /* IMPATOM_LENNARD_JONES_PAIR_SCORE_H */

@@ -17,31 +17,34 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
     \note a positive k results in repulsion
 */
-class LinearLowerBound: public Score {
+class LinearLowerBound : public Score {
   const double k_;
-public:
-  LinearLowerBound(double k): k_(k){}
+
+ public:
+  LinearLowerBound(double k) : k_(k) {}
   // depend on get_is_trivially_zero
   template <unsigned int D>
-  double get_score(Model *, const base::Array<D, ParticleIndex>&,
+  double get_score(kernel::Model *,
+                   const base::Array<D, kernel::ParticleIndex> &,
                    double distance) const {
-    IMP_USAGE_CHECK(distance <= 0,
-                    "It is trivially 0.");
-    return -k_*distance;
+    if (distance >= 0) return 0;
+    return -k_ * distance;
   }
   template <unsigned int D>
-  DerivativePair get_score_and_derivative(Model *,
-                                          const base::Array<D, ParticleIndex>&,
-                                          double distance) const {
-    return DerivativePair(-k_*distance, -k_);
+  DerivativePair get_score_and_derivative(
+      kernel::Model *, const base::Array<D, kernel::ParticleIndex> &,
+      double distance) const {
+    if (distance >= 0) return DerivativePair(0, 0);
+    return DerivativePair(-k_ * distance, -k_);
   }
   template <unsigned int D>
-  double get_maximum_range(Model *,
-                           const base::Array<D, ParticleIndex>& ) const {
+  double get_maximum_range(
+      kernel::Model *, const base::Array<D, kernel::ParticleIndex> &) const {
     return 0;
   }
   template <unsigned int D>
-  bool get_is_trivially_zero(Model *, const base::Array<D, ParticleIndex>& ,
+  bool get_is_trivially_zero(kernel::Model *,
+                             const base::Array<D, kernel::ParticleIndex> &,
                              double squared_distance) const {
     return squared_distance > 0;
   }
@@ -49,4 +52,4 @@ public:
 
 IMPSCOREFUNCTOR_END_NAMESPACE
 
-#endif  /* IMPSCORE_FUNCTOR_LINEAR_LOWER_BOUND_H */
+#endif /* IMPSCORE_FUNCTOR_LINEAR_LOWER_BOUND_H */

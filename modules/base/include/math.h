@@ -43,4 +43,4 @@ inline bool isinf(const T& a) {
 
 IMPBASE_END_NAMESPACE
 
-#endif  /* IMPBASE_BASE_MATH_H */
+#endif /* IMPBASE_BASE_MATH_H */

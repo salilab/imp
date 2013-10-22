@@ -12,11 +12,11 @@ class Tests(IMP.test.TestCase):
     """Test molecular dynamics optimizer states"""
 
     def setup_particles(self, coords, copies=1):
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         ps = []
         for i in range(copies):
             for c in coords:
-                p = IMP.Particle(m)
+                p = IMP.kernel.Particle(m)
                 x = IMP.core.XYZ.setup_particle(p, c[0])
                 x.set_coordinates_are_optimized(True)
                 IMP.atom.Mass.setup_particle(p, 1.0)
@@ -64,7 +64,7 @@ class Tests(IMP.test.TestCase):
         m, ps = self.setup_particles([[IMP.algebra.Vector3D(0,0,0),
                                        IMP.algebra.Vector3D(10,0,0)]])
         s = IMP.atom.RemoveRigidMotionOptimizerState(ps, 1)
-        self.assertEqual(s.get_skip_steps(), 1)
+        self.assertEqual(s.get_period(), 2)
         s.remove_rigid_motion()
         self.assertEqual(ps[0].get_value(vxkey), 0.)
         self.assertEqual(ps[0].get_value(vykey), 0.)
@@ -81,13 +81,14 @@ class Tests(IMP.test.TestCase):
                                               ps, 298.0, coupling)
             md = IMP.atom.MolecularDynamics(m)
             md.set_maximum_time_step(4.0)
+            md.optimize(0) # ick
             md.add_optimizer_state(scaler)
-            md.optimize(0)
             ts = []
             for i in range(20):
                 ts.append(md.get_kinetic_temperature(md.get_kinetic_energy()))
                 scaler.rescale_velocities()
             # Temperature should decrease from start to set temp
+            print ts
             self.assertAlmostEqual(ts[0], 4009.0, delta=0.2)
             self.assertGreater(ts[steps-1], 298.1)
             # Make sure that once set temperature is reached, it is maintained

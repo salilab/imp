@@ -1,3 +1,6 @@
+"""@namespace IMP.em2d.Database
+   Utility functions to manage SQL databases with sqlite3.
+"""
 
 import sqlite3 as sqlite
 import os

@@ -18,9 +18,8 @@
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Mass.h>
 #include <IMP/core/XYZR.h>
-#include <IMP/Model.h>
-#include <IMP/Restraint.h>
-#include <IMP/VersionInfo.h>
+#include <IMP/kernel/Model.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/Refiner.h>
 
 IMPEM_BEGIN_NAMESPACE
@@ -29,7 +28,7 @@ IMPEM_BEGIN_NAMESPACE
 /** \ingroup exp_restraint
 
  */
-class IMPEMEXPORT FitRestraint : public Restraint
+class IMPEMEXPORT FitRestraint : public kernel::Restraint
 {
 public:
   //! Constructor
@@ -52,7 +51,7 @@ public:
           If the user prefers to get more accurate results, provide
           its members as input particles and not the rigid body.
    */
-  FitRestraint(ParticlesTemp ps,
+  FitRestraint(kernel::ParticlesTemp ps,
                DensityMap *em_map,
                FloatPair norm_factors=FloatPair(0.,0.),
                FloatKey weight_key= atom::Mass::get_mass_key(),
@@ -65,23 +64,27 @@ public:
   }
   void set_scale_factor(float scale) {scalefac_=scale;}
   float get_scale_factor() const {return scalefac_;}
-  IMP_RESTRAINT(FitRestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(FitRestraint);
 
 #ifndef SWIG
-  IMP_LIST(private, Particle, particle, Particle*, Particles);
+  IMP_LIST(private, Particle, particle, kernel::Particle*, kernel::Particles);
 #endif
 private:
   //! Store particles
-  void store_particles(ParticlesTemp ps);
+  void store_particles(kernel::ParticlesTemp ps);
   //! Resample the model density map
   void resample() const;
   //! Create density maps: one for each rigid body and one for the rest.
   void initialize_model_density_map(FloatKey weight_key);
 
-  IMP::OwnerPointer<DensityMap> target_dens_map_;
-  mutable IMP::OwnerPointer<SampledDensityMap> model_dens_map_;
+  IMP::base::PointerMember<DensityMap> target_dens_map_;
+  mutable IMP::base::PointerMember<SampledDensityMap> model_dens_map_;
   mutable SampledDensityMaps rb_model_dens_map_;
-  mutable IMP::OwnerPointer<SampledDensityMap>
+  mutable IMP::base::PointerMember<SampledDensityMap>
     none_rb_model_dens_map_;
   algebra::BoundingBoxD<3> target_bounding_box_;
   // reference to the IMP environment
@@ -96,10 +99,11 @@ private:
   bool use_rigid_bodies_;
   //particle handling
   //map particles to their rigid bodies
-  IMP::base::map<core::RigidBody, Particles> member_map_;
-  Particles all_ps_;
-  Particles not_part_of_rb_; //all particles that are not part of a rigid body
-  Particles part_of_rb_;
+  IMP::base::map<core::RigidBody, kernel::Particles> member_map_;
+  kernel::Particles all_ps_;
+  //all particles that are not part of a rigid body
+  kernel::Particles not_part_of_rb_;
+  kernel::Particles part_of_rb_;
   core::RigidBodies rbs_;
   KernelType kt_;
 };

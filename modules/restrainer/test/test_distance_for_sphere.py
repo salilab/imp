@@ -27,7 +27,7 @@ class Tests(IMP.test.TestCase):
         opt.set_model(self.Model)
         #opt.add_optimizer_state(self.log)
 
-        opt.optimize(10)
+        opt.optimize(30)
         #self.log.write('sphere_optimized.py')
 
         restraint_name = 'distance_restraint_1'

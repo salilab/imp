@@ -25,11 +25,10 @@ class ParticleStatesTable;
     to statistics::ParticleEmbedding which has a method
     which takes a particle.
  */
-IMPDOMINOEXPORT Assignments get_state_clusters(const Subset &subset,
-                                               const Assignments &states,
-                                               ParticleStatesTable *pst,
-                                               double resolution);
+IMPDOMINOEXPORT Assignments
+    get_state_clusters(const Subset &subset, const Assignments &states,
+                       ParticleStatesTable *pst, double resolution);
 
 IMPDOMINO_END_NAMESPACE
 
-#endif  /* IMPDOMINO_ANALYSIS_H */
+#endif /* IMPDOMINO_ANALYSIS_H */

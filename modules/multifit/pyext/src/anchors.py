@@ -4,7 +4,7 @@ __doc__ = "Generate anchors for a density map."
 
 import IMP.multifit
 import IMP.em
-from optparse import OptionParser
+from IMP import OptionParser
 
 def parse_args():
     usage = """%prog [options] <assembly input> <output anchors prefix>
@@ -33,7 +33,7 @@ def main():
         number_of_means = asmb.get_number_of_component_headers()
     else:
         total_num_residues=0
-        mdl=IMP.Model()
+        mdl=IMP.kernel.Model()
         for i in range(asmb.get_number_of_component_headers()):
             total_num_residues+=len(IMP.atom.get_by_type(IMP.atom.read_pdb(asmb.get_component_header(i).get_filename(),mdl),IMP.atom.RESIDUE_TYPE))
             number_of_means=total_num_residues/options.size

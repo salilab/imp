@@ -14,32 +14,33 @@
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
 /** A DistanceScore that scores with a harmonic on distances below 0.*/
-class HarmonicLowerBound: public Score {
+class HarmonicLowerBound : public Score {
   double k_;
-public:
-  HarmonicLowerBound(double k): k_(k){}
+
+ public:
+  HarmonicLowerBound(double k) : k_(k) {}
   template <unsigned int D>
-  double get_score(Model *, const base::Array<D, ParticleIndex>&,
+  double get_score(kernel::Model *,
+                   const base::Array<D, kernel::ParticleIndex> &,
                    double distance) const {
     if (distance > 0) return 0;
-    return .5*k_*algebra::get_squared(distance);
+    return .5 * k_ * algebra::get_squared(distance);
   }
   template <unsigned int D>
-  DerivativePair get_score_and_derivative(Model *m,
-                                          const base::Array<D, ParticleIndex>&p,
-                                          double distance) const {
-    if (distance > 0) return DerivativePair(0,0);
-    return DerivativePair(get_score(m,p,distance),
-                          k_*(distance));
+  DerivativePair get_score_and_derivative(
+      kernel::Model *m, const base::Array<D, kernel::ParticleIndex> &p,
+      double distance) const {
+    if (distance > 0) return DerivativePair(0, 0);
+    return DerivativePair(get_score(m, p, distance), k_ * (distance));
   }
   template <unsigned int D>
-  double get_maximum_range(Model *,
-                           const base::Array<D, ParticleIndex>& ) const {
+  double get_maximum_range(
+      kernel::Model *, const base::Array<D, kernel::ParticleIndex> &) const {
     return 0;
   }
   template <unsigned int D>
-  bool get_is_trivially_zero(Model *,
-                             const base::Array<D, ParticleIndex>& ,
+  bool get_is_trivially_zero(kernel::Model *,
+                             const base::Array<D, kernel::ParticleIndex> &,
                              double squared_distance) const {
     return squared_distance > 0;
   }
@@ -47,4 +48,4 @@ public:
 
 IMPSCOREFUNCTOR_END_NAMESPACE
 
-#endif  /* IMPSCORE_FUNCTOR_HARMONIC_LOWER_BOUND_H */
+#endif /* IMPSCORE_FUNCTOR_HARMONIC_LOWER_BOUND_H */

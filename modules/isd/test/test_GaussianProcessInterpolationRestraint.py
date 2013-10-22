@@ -13,6 +13,8 @@ from IMP.isd import *
 
 #unit testing framework
 import IMP.test
+IMP.set_log_level(0)
+#IMP.set_log_level(IMP.VERBOSE)
 
 class MockFunc:
     def __init__(self, setval, evaluate, evalargs=1, update=None):
@@ -37,28 +39,26 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        #IMP.base.set_log_level(IMP.base.TERSE)
-        IMP.base.set_log_level(0)
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         self.q=[[0],[1]]
         self.I=[1,1]
         self.err=array([sqrt(10),sqrt(20)])
         self.N=10
-        self.alpha = Nuisance.setup_particle(IMP.Particle(self.m,"alpha"), 0.0)
+        self.alpha = Nuisance.setup_particle(IMP.kernel.Particle(self.m,"alpha"), 0.0)
         self.alpha.set_nuisance_is_optimized(True)
-        self.beta = Nuisance.setup_particle(IMP.Particle(self.m,'beta'),  0.0)
+        self.beta = Nuisance.setup_particle(IMP.kernel.Particle(self.m,'beta'),  0.0)
         self.beta.set_nuisance_is_optimized(True)
         self.mean = Linear1DFunction(self.alpha,self.beta)
-        self.tau = Switching.setup_particle(IMP.Particle(self.m,'tau'), 1.0)
+        self.tau = Switching.setup_particle(IMP.kernel.Particle(self.m,'tau'), 1.0)
         self.tau.set_nuisance_is_optimized(True)
-        self.lam = Scale.setup_particle(IMP.Particle(self.m,'lambda'), 1.0)
+        self.lam = Scale.setup_particle(IMP.kernel.Particle(self.m,'lambda'), 1.0)
         self.lam.set_nuisance_is_optimized(True)
-        self.sig = Scale.setup_particle(IMP.Particle(self.m,'sigma'), 1.0)
+        self.sig = Scale.setup_particle(IMP.kernel.Particle(self.m,'sigma'), 1.0)
         self.sig.set_nuisance_is_optimized(True)
         self.cov = Covariance1DFunction(self.tau, self.lam, 2.0)
         self.gpi = IMP.isd.GaussianProcessInterpolation(self.q, self.I,
                 self.err, self.N, self.mean, self.cov, self.sig)
-        self.gpr = IMP.isd.GaussianProcessInterpolationRestraint(self.gpi)
+        self.gpr = IMP.isd.GaussianProcessInterpolationRestraint(self.m,self.gpi)
         self.m.add_restraint(self.gpr)
         self.particles=[self.alpha,self.beta,self.sig,self.tau,self.lam]
 
@@ -385,7 +385,6 @@ class Tests(IMP.test.TestCase):
         #dg.show_graphviz(open('graph.dot','w'))
         #print IMP.get_dependent_score_states(self.m,mi,dg,dgi)
         #return
-        #IMP.base.set_log_level(IMP.base.TERSE)
         for a in logspace(-1,2,num=100):
             self.sig.set_nuisance(a)
             observed = self.m.evaluate(False)
@@ -736,7 +735,6 @@ class Tests(IMP.test.TestCase):
 
     def testDerivNumericTau(self):
         "Test the derivatives of the GPI restraint numerically for tau"
-        #IMP.base.set_log_level(IMP.base.TERSE)
         pnum=3
         values=linspace(.1,.9)
         particle=self.particles[pnum]

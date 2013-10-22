@@ -14,15 +14,15 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-ImproperSingletonScore::ImproperSingletonScore(UnaryFunction *f): f_(f){}
+ImproperSingletonScore::ImproperSingletonScore(UnaryFunction *f) : f_(f) {}
 
-double ImproperSingletonScore::evaluate(Particle *b,
-                                        DerivativeAccumulator *da) const
-{
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    Dihedral::decorate_particle(b);
-  }
-  Dihedral id(b);
+double ImproperSingletonScore::evaluate_index(kernel::Model *m,
+                                              kernel::ParticleIndex pi,
+                                              DerivativeAccumulator *da) const {
+  IMP_OBJECT_LOG;
+  IMP_USAGE_CHECK(Dihedral::get_is_setup(m, pi),
+                  "Particle is not a dihedral particle");
+  Dihedral id(m, pi);
   Float ideal = id.get_ideal();
   Float s = id.get_stiffness();
   if (s == 0.) {
@@ -50,25 +50,18 @@ double ImproperSingletonScore::evaluate(Particle *b,
   }
 }
 
-
-ContainersTemp ImproperSingletonScore::get_input_containers(Particle *) const {
-  return ContainersTemp();
-}
-
-ParticlesTemp ImproperSingletonScore::get_input_particles(Particle *p) const {
-  ParticlesTemp ret(5);
-  Dihedral bd(p);
-  ret[0]= bd.get_particle(0);
-  ret[1]= bd.get_particle(1);
-  ret[2]= bd.get_particle(2);
-  ret[3]= bd.get_particle(3);
-  ret[4]= p;
+ModelObjectsTemp ImproperSingletonScore::do_get_inputs(
+    kernel::Model *m, const kernel::ParticleIndexes &pi) const {
+  kernel::ModelObjectsTemp ret(5 * pi.size());
+  for (unsigned int i = 0; i < pi.size(); ++i) {
+    Dihedral ad(m, pi[i]);
+    ret[5 * i + 0] = ad.get_particle(0);
+    ret[5 * i + 1] = ad.get_particle(1);
+    ret[5 * i + 2] = ad.get_particle(2);
+    ret[5 * i + 3] = ad.get_particle(3);
+    ret[5 * i + 4] = m->get_particle(pi[i]);
+  }
   return ret;
-}
-
-void ImproperSingletonScore::do_show(std::ostream &out) const
-{
-  out << "function " << *f_ << std::endl;
 }
 
 IMPATOM_END_NAMESPACE

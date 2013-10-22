@@ -10,10 +10,10 @@
 using namespace IMP;
 int main(){
   set_log_level(VERBOSE);
-  WeakPointer<Model> m(new Model());
-  Particle* p0= new Particle(m);
+  WeakPointer<Model> m(new kernel::Model());
+  kernel::Particle* p0= new kernel::Particle(m);
   core::XYZ d0= core::XYZ::setup_particle(p0);
-  Particle* p1= new Particle(m);
+  kernel::Particle* p1= new kernel::Particle(m);
   core::XYZ d1= core::XYZ::setup_particle(p1);
   example::ExampleRestraint *r0= new example::ExampleRestraint(p0, 1);
   example::ExampleRestraint *r1= new example::ExampleRestraint(p1, 1);

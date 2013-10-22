@@ -17,14 +17,13 @@
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
-
-class IMPKERNELEXPORT InternalDynamicListClassnameContainer:
-  public ListLikeClassnameContainer
-{
+class IMPKERNELEXPORT InternalDynamicListClassnameContainer
+    : public ListLikeClassnameContainer {
   typedef ListLikeClassnameContainer P;
   // use this to define the set of all possible particles when it is dynamic
   base::Pointer<Container> scope_;
-  bool check_list(const ParticleIndexes& cp) const;
+  bool check_list(const ParticleIndexes &cp) const;
+
  public:
   InternalDynamicListClassnameContainer(Container *m, std::string name);
   InternalDynamicListClassnameContainer(Container *m, const char *name);
@@ -32,9 +31,13 @@ class IMPKERNELEXPORT InternalDynamicListClassnameContainer:
   void add(const PLURALINDEXTYPE &c);
   void set(PLURALINDEXTYPE cp);
   void clear();
-  IMP_LISTLIKE_CLASSNAME_CONTAINER(InternalDynamicListClassnameContainer);
+  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual void do_before_evaluate() IMP_OVERRIDE;
+  virtual PLURALINDEXTYPE get_range_indexes() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(InternalDynamicListClassnameContainer);
 };
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPKERNEL_INTERNAL_INTERNAL_DYNAMIC_LIST_CLASSNAME_CONTAINER_H */
+#endif /* IMPKERNEL_INTERNAL_INTERNAL_DYNAMIC_LIST_CLASSNAME_CONTAINER_H */

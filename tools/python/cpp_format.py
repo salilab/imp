@@ -29,7 +29,9 @@ def tokenize_file(fh):
     return scan
 
 def check_tokens(scan, filename, header, errors):
-    check_comment_header(scan, filename, errors)
+    if filename.find("test_") == -1:
+        # we don't do it for python tests
+        check_comment_header(scan, filename, errors)
     check_eol(scan, filename, errors)
     if header:
         # Handle older versions of pygments which concatenate \n and # tokens

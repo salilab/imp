@@ -7,7 +7,7 @@ import IMP.display
 class Tests(IMP.test.TestCase):
     def test_bonded(self):
         """Test simplifying DNA"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         h= IMP.atom.read_pdb(self.get_input_file_name("dna.pdb"), m)
 
         hs= IMP.atom.create_simplified_along_backbone(IMP.atom.Chain(h.get_child(0)), 1)
@@ -21,7 +21,7 @@ class Tests(IMP.test.TestCase):
             self.assertTrue(r>3.5 and r < 5.5)
     def test_bonded2(self):
         """Test simplifying DNA 2"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         h= IMP.atom.read_pdb(self.get_input_file_name("dna.pdb"), m)
 
         hs= IMP.atom.create_simplified_along_backbone(IMP.atom.Chain(h.get_child(0)), 2)

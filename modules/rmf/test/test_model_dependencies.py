@@ -11,8 +11,8 @@ class Tests(IMP.test.TestCase):
         """Test that writing restraints doesn't reset model dependencies"""
         for suffix in RMF.suffixes:
             f= RMF.create_rmf_file(self.get_tmp_file_name("restrnp2."+suffix))
-            m= IMP.Model()
-            ps= [IMP.Particle(m) for i in range(0,3)]
+            m= IMP.kernel.Model()
+            ps= [IMP.kernel.Particle(m) for i in range(0,3)]
             ds= [IMP.core.XYZR.setup_particle(p) for p in ps]
             for d in ds:
                 d.set_radius(1)
@@ -26,7 +26,6 @@ class Tests(IMP.test.TestCase):
             sf= IMP.core.RestraintsScoringFunction([r])
             sf.evaluate(False)
             IMP.rmf.save_frame(f, 0)
-            self.assertTrue(m.get_has_dependencies())
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""@namespace IMP.isd.TALOSReader
+   Classes to handle TALOS files or folders.
+"""
+
 import sys,os
 from math import pi
 from IMP.isd.utils import check_residue, read_sequence_file

@@ -12,13 +12,13 @@
 #include <IMP/atom/atom_config.h>
 #include "Hierarchy.h"
 #include <IMP/core/StatisticalPairScore.h>
-#include <IMP/Model.h>
-#include <IMP/Particle.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Model.h>
+#include <IMP/kernel/Particle.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/PairScore.h>
 #include <IMP/container/PairsRestraint.h>
 #include <IMP/algebra/Vector3D.h>
-#include <IMP/file.h>
+#include <IMP/base/file.h>
 #include <limits>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -28,15 +28,16 @@ IMPATOM_BEGIN_NAMESPACE
 
     \imp provides a statistical scoring function for scoring
     protein-ligand complexes. See the
-    \ref application_ligand_score "ligand scoring"
-    application for more information.
+    [Ligand Score application](@ref impligand_score) for more information.
     @{
  */
 class ProteinLigandRestraint;
 
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-IMP_DECLARE_CONTROLLED_KEY_TYPE(ProteinLigandType, 783462);
-#elif defined(SWIG)
+#ifndef SWIG
+/** The marker to identify the atom types.*/
+typedef Key<783462, false> ProteinLigandType;
+IMP_VALUES(ProteinLigandType, ProteinLigandTypes);
+#else
 class ProteinLigandType;
 #endif
 
@@ -48,42 +49,40 @@ class ProteinLigandType;
     \imp also provides \c protein_ligand_pose_score.lib which can be
     found at IMP::atom::get_data_path("protein_ligand_pose_score.lib").
 */
-class IMPATOMEXPORT ProteinLigandAtomPairScore:
-  public core::StatisticalPairScore<ProteinLigandType, true, false> {
+class IMPATOMEXPORT ProteinLigandAtomPairScore
+    : public core::StatisticalPairScore<ProteinLigandType, true, false> {
   friend class ProteinLigandRestraint;
-  typedef core::StatisticalPairScore<ProteinLigandType, true, false>  P;
+  typedef core::StatisticalPairScore<ProteinLigandType, true, false> P;
   double threshold_;
+
  public:
-  ProteinLigandAtomPairScore(double threshold
-                             = std::numeric_limits<double>::max());
-  ProteinLigandAtomPairScore(double threshold,
-                             base::TextInput data_file);
-  double get_maximum_distance() const {
-    return threshold_;
-  }
+  ProteinLigandAtomPairScore(double threshold =
+                                 std::numeric_limits<double>::max());
+  ProteinLigandAtomPairScore(double threshold, base::TextInput data_file);
+  double get_maximum_distance() const { return threshold_; }
 };
 
-IMP_OBJECTS(ProteinLigandAtomPairScore,ProteinLigandAtomPairScores);
+IMP_OBJECTS(ProteinLigandAtomPairScore, ProteinLigandAtomPairScores);
 
 /** Score a pair of molecules. See ProteinLigandAtomPairScore for
     simply scoring the atom pairs.
 
     \see ProteinLigandAtomPairScore
 */
-class IMPATOMEXPORT ProteinLigandRestraint: public container::PairsRestraint {
-  void initialize(Hierarchy protein,
-                  Hierarchy ligand);
+class IMPATOMEXPORT ProteinLigandRestraint : public container::PairsRestraint {
+  void initialize(Hierarchy protein, Hierarchy ligand);
+
  public:
   ProteinLigandRestraint(Hierarchy protein, Hierarchy ligand,
-                         double threshold= std::numeric_limits<double>::max());
-  ProteinLigandRestraint(Hierarchy protein, Hierarchy ligand,
-                         double threshold,
+                         double threshold = std::numeric_limits<double>::max());
+  ProteinLigandRestraint(Hierarchy protein, Hierarchy ligand, double threshold,
                          base::TextInput data_file);
 };
 
-IMP_OBJECTS(ProteinLigandRestraint,ProteinLigandRestraints);
+IMP_OBJECTS(ProteinLigandRestraint, ProteinLigandRestraints);
 
-
+/** Add the data needed to use ProteinLigandAtomPairScore with the passed
+    Hierarchy.*/
 IMPATOMEXPORT void add_protein_ligand_score_data(Hierarchy h);
 
 /** @} */

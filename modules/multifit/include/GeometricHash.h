@@ -19,10 +19,10 @@
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 
-/* This is the definition of Geometric Hash table.
-    * GeometricHash<T, D> stores values of type T with D-dimensional
-    * points whose coordinates are of type double inside D-dimensional
-    * buckets (cubes) */
+//! Geometric Hash table.
+/** GeometricHash<T, D> stores values of type T with D-dimensional
+    points whose coordinates are of type double inside D-dimensional
+    buckets (cubes) */
 template < typename T, size_t D >
 class GeometricHash
 {

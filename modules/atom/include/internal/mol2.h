@@ -11,7 +11,7 @@
 #include <IMP/atom/atom_config.h>
 #include "../Atom.h"
 #include <IMP/base/map.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/base_types.h>
 
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
@@ -38,21 +38,25 @@ IMPATOMEXPORT String get_molecule_type(const String& mol2_line);
 IMPATOMEXPORT String pick_mol2atom_type(const String& atom_line);
 
 //! Return true if one atom in the bond pair is deleted
-IMPATOMEXPORT bool is_ATOM_del(const String& bond_line,
-                   const base::map<int, Particle*>& molecule_atoms);
+IMPATOMEXPORT bool is_ATOM_del(
+    const String& bond_line,
+    const base::map<int, kernel::Particle*>& molecule_atoms);
 
 //! in the mol2 file the atom type string starts at atom_type_field_
 static const unsigned mol2_type_field_ = 47;
 
-
-IMPATOMEXPORT bool check_arbond(Particle* atom_p);
+IMPATOMEXPORT bool check_arbond(kernel::Particle* atom_p);
 
 IMPATOMEXPORT std::string get_mol2_name(Atom at);
 
-enum Subtype {ST_NONE=0, ST_AR=1, ST_AM=2};
+enum Subtype {
+  ST_NONE = 0,
+  ST_AR = 1,
+  ST_AM = 2
+};
 
-IMPATOMEXPORT std::pair<AtomType, Subtype>
-get_atom_type_from_mol2(std::string name);
+IMPATOMEXPORT std::pair<AtomType, Subtype> get_atom_type_from_mol2(
+    std::string name);
 
 IMPATOMEXPORT IntKey get_subtype_key();
 

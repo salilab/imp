@@ -17,7 +17,7 @@ Samples a protein into a simulated 3D density map."""
     resolution=float(args[2])
     apix=float(args[3])
     #read the protein
-    mdl=IMP.Model()
+    mdl=IMP.kernel.Model()
     mh=IMP.atom.read_pdb(pdb_fn,mdl,IMP.atom.NonWaterNonHydrogenPDBSelector())
     IMP.atom.add_radii(mh)
     #sample the density

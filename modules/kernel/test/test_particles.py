@@ -15,7 +15,7 @@ class Tests(IMP.test.TestCase):
         """Build a set of test particles"""
         IMP.test.TestCase.setUp(self)
 
-        model = IMP.Model("particles model")
+        model = IMP.kernel.Model("particles model")
         particles = []
 
         # create particles 0 - 11
@@ -101,7 +101,7 @@ class Tests(IMP.test.TestCase):
         """Test particle get_ and set_ methods"""
         (model, particles)= self.setup()
         for (i, p) in enumerate(particles):
-            #self.assertEqual(p.get_index(), IMP.ParticleIndex(i))
+            #self.assertEqual(p.get_index(), IMP.kernel.ParticleIndex(i))
             model = p.get_model()
         p = particles[0]
         self.assertEqual(p.get_is_active(), True)
@@ -129,7 +129,7 @@ class Tests(IMP.test.TestCase):
         self._test_add_remove(p, IMP.FloatKey("something"), 1.0)
         self._test_add_remove(p, IMP.StringKey("something"), "Hello")
         self._test_add_remove(p, IMP.IntKey("something"), 1)
-        self._test_add_remove(p, IMP.ParticleIndexKey("something"), p)
+        self._test_add_remove(p, IMP.kernel.ParticleIndexKey("something"), p)
 
     def test_derivatives(self):
         """Test get/set of derivatives"""
@@ -195,10 +195,10 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(td0a, p0a)
     def test_many_particle(self):
         """Test that we can allocate many particles"""
-        m= IMP.Model("many particles")
+        m= IMP.kernel.Model("many particles")
         num=20000
         for i in range(0,num):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             if i%10000 == 0:
                 print i
         print "removing"

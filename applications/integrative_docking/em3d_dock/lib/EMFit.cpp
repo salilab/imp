@@ -8,18 +8,23 @@
 
 #include <IMP/em/PCAAligner.h>
 #include <IMP/em/MRCReaderWriter.h>
+#include <IMP/em/EnvelopeFitRestraint.h>
+
 #include <IMP/saxs/FormFactorTable.h>
 #include <IMP/saxs/utility.h>
+
 #include <IMP/atom/distance.h>
 #include <IMP/atom/pdb.h>
+
 #include <IMP/algebra/constants.h>
+#include <IMP/base/nullptr.h>
 
 EMFit::EMFit(std::string rec_file_name, std::string lig_file_name,
              std::string map_file_name, float resolution,
              float dist_thr, float volume_scale) :
-  resolution_(resolution), dist_thr_(dist_thr) {
+   dist_thr_(dist_thr) {
 
-  model_ = new IMP::Model();
+  model_ = new IMP::kernel::Model();
 
   rec_file_name_ = rec_file_name;
   lig_file_name_ = lig_file_name;
@@ -44,9 +49,9 @@ EMFit::EMFit(std::string rec_file_name, std::string lig_file_name,
 
 EMFit::EMFit(std::string pdb_file_name, std::string map_file_name,
              float resolution, float dist_thr, float volume_scale) :
-  resolution_(resolution), dist_thr_(dist_thr) {
+  dist_thr_(dist_thr) {
 
-  model_ = new IMP::Model();
+  model_ = new IMP::kernel::Model();
 
   // read pdb
   read_pdb_atoms(model_, pdb_file_name, rec_particles_);
@@ -74,7 +79,7 @@ EMFit::EMFit(std::string pdb_file_name, std::string map_file_name,
   cc_score_ = new MapScorer(rec_particles_, *map_);
 }
 
-float EMFit::compute_volume(const IMP::Particles& particles) {
+float EMFit::compute_volume(const IMP::kernel::Particles& particles) {
   IMP::saxs::FormFactorTable* ft = IMP::saxs::default_form_factor_table();
   float volume = 0.0;
   float c = (4.0/3.0)*IMP::algebra::PI;
@@ -145,17 +150,18 @@ void EMFit::output(std::string out_file_name, std::string out_pdb_file_name) {
   out_file.close();
   if(fit_results_.size() == 1) { // output PDB
     IMP::algebra::Transformation3D tr = fit_results_[0].get_map_trans();
-    IMP::Particles ps = rec_particles_;
+    IMP::kernel::Particles ps = rec_particles_;
     ps.insert(ps.end(), lig_particles_.begin(), lig_particles_.end());
     // transform
-    for(IMP::Particles::iterator it = ps.begin(); it != ps.end(); it++) {
+    for(IMP::kernel::Particles::iterator it = ps.begin(); it != ps.end(); it++) {
       IMP::core::XYZ d(*it);
       d.set_coordinates(tr * d.get_coordinates());
     }
     // output
-    std::ofstream out_file(out_pdb_file_name.c_str());
-    IMP::ParticlesTemp pst = ps;
-    IMP::atom::write_pdb(pst, out_file);
+    std::ofstream out_file2(out_pdb_file_name.c_str());
+    IMP::kernel::ParticlesTemp pst = ps;
+    IMP::atom::write_pdb(pst, out_file2);
+    out_file2.close();
   }
 }
 
@@ -251,34 +257,15 @@ void EMFit::runPCA(std::string trans_file, bool use_cc_score) {
 
 void EMFit::runPCA() {
 
-  // fit pdb into the map
-  IMP::algebra::Vector3Ds all_points;
-  IMP::saxs::get_coordinates(rec_particles_, all_points);
-  IMP::em::PCAAligner pca_aligner(map_, density_threshold_);
-
-  // align
-  IMP::algebra::Transformation3Ds map_transforms =
-    pca_aligner.align(all_points);
-  // filter and score, save best scoring only (or none if penetrating)
-  float penetration_thr = -2.0*dist_thr_;
-  bool best_found = false;
-  IMP::algebra::Transformation3D best_trans;
-  double best_score = -std::numeric_limits<double>::max();
-  for(unsigned int j=0; j<map_transforms.size(); j++) {
-    std::cerr << "Scoring " << map_transforms[j] << std::endl;
-    if(!envelope_score_->is_penetrating(all_points,
-                                        map_transforms[j], penetration_thr)) {
-      std::cerr << "  not penetrating " << map_transforms[j] << std::endl;
-    }
-      double score = envelope_score_->score(all_points, map_transforms[j]);
-      std::cerr << "  score = " << score << std::endl;
-      if(score > best_score) {
-        best_score = score;
-        best_trans = map_transforms[j];
-        best_found = true;
-      }
-
-  }
+  // using em::EnvelopeFitRestraint
+  IMP::em::EnvelopeFitRestraint *efr =
+    new IMP::em::EnvelopeFitRestraint(rec_particles_,
+                                      map_,
+                                      density_threshold_,
+                                      -2.0*dist_thr_);
+  IMP::algebra::Transformation3D best_trans = efr->get_transformation();
+  double best_score = efr->unprotected_evaluate(NULL);
+  bool best_found = true;
 
   std::cerr << "Best score = " << best_score  << " best_found "
             << best_found << " best_trans " << best_trans << std::endl;
@@ -315,9 +302,9 @@ void EMFit::read_trans_file(const std::string file_name,
             << file_name << std::endl;
 }
 
-void EMFit::read_pdb_atoms(IMP::Model *model,
+void EMFit::read_pdb_atoms(IMP::kernel::Model *model,
                            const std::string file_name,
-                           IMP::Particles& particles) {
+                           IMP::kernel::Particles& particles) {
   IMP::atom::Hierarchy mhd =
     IMP::atom::read_pdb(file_name, model,
                         new IMP::atom::NonWaterNonHydrogenPDBSelector(),

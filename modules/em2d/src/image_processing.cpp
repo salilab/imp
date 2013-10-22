@@ -11,7 +11,7 @@
 #include "IMP/em2d/SpiderImageReaderWriter.h"
 #include "IMP/algebra/eigen_analysis.h"
 #include "IMP/base/check_macros.h"
-#include "IMP/exception.h"
+#include "IMP/base/exception.h"
 #include "IMP/macros.h"
 #include "IMP/base_types.h"
 #include "boost/random.hpp"

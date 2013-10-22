@@ -14,27 +14,23 @@ IMPCORE_BEGIN_NAMESPACE
 
 #ifdef IMP_CORE_USE_IMP_CGAL
 
-VolumeRestraint::VolumeRestraint(UnaryFunction *f,
-                                 SingletonContainer *sc,
-                                 double volume):
-  Restraint(sc->get_model(), "VolumeRestraint%1%"),
-  sc_(sc), f_(f), volume_(volume)
-{
-}
+VolumeRestraint::VolumeRestraint(UnaryFunction *f, SingletonContainer *sc,
+                                 double volume)
+    : kernel::Restraint(sc->get_model(), "VolumeRestraint%1%"),
+      sc_(sc),
+      f_(f),
+      volume_(volume) {}
 
-
-
-double
-VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
+double VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
   IMP_CHECK_VARIABLE(da);
   IMP_USAGE_CHECK(!da, "VolumeRestraint does not support derivatives.");
   algebra::Sphere3Ds spheres;
-  IMP_FOREACH_SINGLETON(sc_, {
-      spheres.push_back(XYZR(_1).get_sphere());
-    });
-  double vol= algebra::get_surface_area_and_volume(spheres).second;
-  return f_->evaluate(vol-volume_);
+  kernel::Model *m = get_model();
+  IMP_CONTAINER_FOREACH(SingletonContainer, sc_,
+                        { spheres.push_back(XYZR(m, _1).get_sphere()); });
+  double vol = algebra::get_surface_area_and_volume(spheres).second;
+  return f_->evaluate(vol - volume_);
   /*IMP_LOG_VERBOSE( "Begin volume restraint." << std::endl);
   algebra::BoundingBox3D bb3;
   IMP_FOREACH_SINGLETON(sc_, {
@@ -186,18 +182,11 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
       return rv.first;*/
 }
 
-void VolumeRestraint::do_show(std::ostream &out) const {
-  out << "volume " << volume_ << std::endl;
-  out << "container " << sc_->get_name() << std::endl;
-}
-
-ParticlesTemp VolumeRestraint::get_input_particles() const {
-  return sc_->get_particles();
-}
-
-
-ContainersTemp VolumeRestraint::get_input_containers() const {
-  return ContainersTemp(1, sc_);
+ModelObjectsTemp VolumeRestraint::do_get_inputs() const {
+  kernel::ModelObjectsTemp ret =
+      IMP::kernel::get_particles(get_model(), sc_->get_all_possible_indexes());
+  ret.push_back(sc_);
+  return ret;
 }
 
 #endif

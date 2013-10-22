@@ -1,5 +1,5 @@
 /**
- *  \file ensemble_analysis.h
+ *  \file multifit/ensemble_analysis.h
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
@@ -18,6 +18,7 @@
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
+//! An ensemble of fitting solutions
 class IMPMULTIFITEXPORT Ensemble : public base::Object {
 public:
   void load_combination(Ints fit_comb);
@@ -31,10 +32,10 @@ public:
     return atom::get_rmsd(second_xyz,xyz_);}
   Ensemble(multifit::SettingsData *sd,
            const ProteinsAnchorsSamplingSpace &mapping_data);
-  std::vector<Floats> score_by_restraints(Restraints rs,
+  std::vector<Floats> score_by_restraints(kernel::Restraints rs,
                                           const IntsList &combinations);
 
-  IMP_OBJECT_INLINE(Ensemble, {IMP_UNUSED(out);}, {});
+  IMP_OBJECT_METHODS(Ensemble);
 
 private:
   atom::Hierarchies mhs_;

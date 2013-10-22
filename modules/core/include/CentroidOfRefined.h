@@ -13,11 +13,10 @@
 #include "XYZ.h"
 #include <IMP/Refiner.h>
 #include <IMP/macros.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/Decorator.h>
 #include <IMP/SingletonModifier.h>
 #include "DerivativesToRefined.h"
-
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -29,20 +28,23 @@ IMPCORE_BEGIN_NAMESPACE
     \see DerivativesToRefined
     \see DerivativesFromRefined
  */
-class IMPCOREEXPORT CentroidOfRefined:
-public SingletonModifier
-{
-  IMP::OwnerPointer<Refiner> refiner_;
+class IMPCOREEXPORT CentroidOfRefined : public SingletonModifier {
+  IMP::base::PointerMember<Refiner> refiner_;
   FloatKeys ks_;
   FloatKey w_;
-public:
-  //! Set the keys ks to be the average of the refined particles.
-  CentroidOfRefined(Refiner *r,
-                    FloatKey weight=FloatKey(),
-                    FloatKeys ks
-                    = XYZ::get_xyz_keys());
 
-  IMP_INDEX_SINGLETON_MODIFIER(CentroidOfRefined);
+ public:
+  //! Set the keys ks to be the average of the refined particles.
+  CentroidOfRefined(Refiner *r, FloatKey weight = FloatKey(),
+                    FloatKeys ks = XYZ::get_xyz_keys());
+  virtual void apply_index(kernel::Model *m, kernel::ParticleIndex a) const
+      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_outputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  IMP_SINGLETON_MODIFIER_METHODS(CentroidOfRefined);
+  IMP_OBJECT_METHODS(CentroidOfRefined);
 };
 
 //! A particle that is the centroid of other particles.
@@ -55,4 +57,4 @@ IMP_SUMMARY_DECORATOR_DECL(Centroid, XYZ, XYZs);
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_CENTROID_OF_REFINED_H */
+#endif /* IMPCORE_CENTROID_OF_REFINED_H */

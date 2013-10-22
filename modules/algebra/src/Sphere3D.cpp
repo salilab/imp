@@ -20,35 +20,34 @@ Sphere3D get_enclosing_sphere(const Sphere3Ds &ss) {
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
   return cgal::internal::get_enclosing_sphere(ss);
 #else
-   BoundingBox3D bb= get_bounding_box(ss[0]);
-   for (unsigned int i=1; i< ss.size(); ++i) {
-     bb+= get_bounding_box(ss[i]);
-   }
-   Vector3D c= .5*(bb.get_corner(0)+ bb.get_corner(1));
-   double r=0;
-   for (unsigned int i=0; i< ss.size(); ++i) {
-     double d= (c- ss[i].get_center()).get_magnitude();
-     d+= ss[i].get_radius();
-     r= std::max(r, d);
-   }
-   return Sphere3D(c, r);
+  BoundingBox3D bb = get_bounding_box(ss[0]);
+  for (unsigned int i = 1; i < ss.size(); ++i) {
+    bb += get_bounding_box(ss[i]);
+  }
+  Vector3D c = .5 * (bb.get_corner(0) + bb.get_corner(1));
+  double r = 0;
+  for (unsigned int i = 0; i < ss.size(); ++i) {
+    double d = (c - ss[i].get_center()).get_magnitude();
+    d += ss[i].get_radius();
+    r = std::max(r, d);
+  }
+  return Sphere3D(c, r);
 #endif
 }
 
 Sphere3D get_enclosing_sphere(const Vector3Ds &vs) {
   Sphere3Ds ss(vs.size());
-  for (unsigned int i=0; i< vs.size(); ++i) {
-    ss[i]= Sphere3D(vs[i], 0);
+  for (unsigned int i = 0; i < vs.size(); ++i) {
+    ss[i] = Sphere3D(vs[i], 0);
   }
   return get_enclosing_sphere(ss);
 }
 
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
-std::pair<double, double>
-get_surface_area_and_volume(const algebra::Sphere3Ds &ss) {
+std::pair<double, double> get_surface_area_and_volume(
+    const algebra::Sphere3Ds &ss) {
   return IMP::cgal::internal::get_surface_area_and_volume(ss);
 }
 #endif
-
 
 IMPALGEBRA_END_NAMESPACE

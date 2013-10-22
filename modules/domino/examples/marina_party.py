@@ -1,25 +1,25 @@
 ## \example domino/marina_party.py
-##
-## This is a not very serious example that shows how to use domino from scratch to
-## solve a problem. It is illustrative of creating your own type of particles,
-## a pair score, particle states for DOMINO, a decorator, and using subset filter
-## tables with DOMINO.
-##
-## Solution of the Marina Party Problem with DOMINO:
-##
-## - Girls attend to a party
-## - Each girl has dresses of different price
-## - There can not be repeated dresses in the party within a group of connected
-##   people
-## - Girls that are friends can call each other to agree
-## - The objective is to maximize the total price of all dresses in the party
-##
-##
+#
+# This is a not very serious example that shows how to use domino from scratch to
+# solve a problem. It is illustrative of creating your own type of particles,
+# a pair score, particle states for DOMINO, a decorator, and using subset filter
+# tables with DOMINO.
+#
+# Solution of the Marina Party Problem with DOMINO:
+#
+# - Girls attend to a party
+# - Each girl has dresses of different price
+# - There can not be repeated dresses in the party within a group of connected
+# people
+# - Girls that are friends can call each other to agree
+# - The objective is to maximize the total price of all dresses in the party
+#
+#
 
 
 import IMP
-import IMP.domino as domino
-import IMP.core as core
+import IMP.domino
+import IMP.core
 import random
 
 
@@ -28,16 +28,17 @@ class SumPricePairScore(IMP.PairScore):
     def evaluate(self, pair, accum):
         price0 = Price(pair[0]).get_price()
         price1 = Price(pair[1]).get_price()
-        return price0+price1
+        return price0 + price1
 
-    def _do_get_inputs(self, m, pis):
+    def do_get_inputs(self, m, pis):
         return [m.get_particle(i) for i in pis]
 
-class PriceStates(domino.ParticleStates):
+
+class PriceStates(IMP.domino.ParticleStates):
 
     def __init__(self, prices):
         self.prices = prices
-        domino.ParticleStates.__init__(self)
+        IMP.domino.ParticleStates.__init__(self)
 
     def load_particle_state(self, i, particle):
         pr = Price(particle)
@@ -51,7 +52,7 @@ class Price(IMP.Decorator):
     price_key = IMP.IntKey("price")
 
     def __init__(self, p):
-        if not self.particle_is_instance(p):
+        if not self.get_is_setup(p):
             self.setup_particle(p)
         self.particle = p
 
@@ -65,9 +66,8 @@ class Price(IMP.Decorator):
     def set_price(self, x):
         self.particle.set_value(self.price_key, int(x))
 
-    def particle_is_instance(self, p):
+    def get_is_setup(self, p):
         return p.has_attribute(self.price_key)
-
 
 
 def get_total_price(states_table, subset, assignment):
@@ -93,20 +93,20 @@ def print_assignment(states_table, subset, assignment):
 n_girls = 10
 n_edges = 20
 girls = []
-prices = [100, 200, 400, 600, 800 ]
+prices = [100, 200, 400, 600, 800]
 
 
-model = IMP.Model()
+model = IMP.kernel.Model()
 
 # prepare filter tables for DOMINO
-states_table = domino.ParticleStatesTable()
-sampler = domino.DominoSampler(model,states_table)
+states_table = IMP.domino.ParticleStatesTable()
+sampler = IMP.domino.DominoSampler(model, states_table)
 all_possible_states = PriceStates(prices)
 
 
 # set_states
 for i in range(n_girls):
-    p = IMP.Particle(model, "girl-%d" % i)
+    p = IMP.kernel.Particle(model, "girl-%d" % i)
     pr = Price(p)
     girls.append(p)
     # add possible dresses
@@ -116,28 +116,28 @@ for i in range(n_girls):
     if len(prices) == 1:
         n_dresses = 1
     else:
-        n_dresses = random.randrange(1,len(prices)+1)
+        n_dresses = random.randrange(1, len(prices) + 1)
 
     # Each girl has a selection of dresses
     selection = random.sample(prices, n_dresses)
     allowed_states_indices = [prices.index(price) for price in selection]
-    print p.get_name(), "prices selected",selection, "indices", allowed_states_indices
-    list_states_table = domino.ListSubsetFilterTable(states_table)
+    print p.get_name(), "prices selected", selection, "indices", allowed_states_indices
+    list_states_table = IMP.domino.ListSubsetFilterTable(states_table)
     list_states_table.set_allowed_states(p, allowed_states_indices)
     sampler.add_subset_filter_table(list_states_table)
 
 # create restraints
 for z in xrange(n_edges):
     # pair of friends
-    i = random.randrange(0,n_girls)
-    j = random.randrange(0,n_girls)
-    friends = IMP.ParticlePair(girls[i], girls[j])
+    i = random.randrange(0, n_girls)
+    j = random.randrange(0, n_girls)
+    friends = IMP.kernel.ParticlePair(girls[i], girls[j])
     # restraint
-    score =  SumPricePairScore()
-    r = core.PairRestraint(score, friends)
+    score = SumPricePairScore()
+    r = IMP.core.PairRestraint(score, friends)
     model.add_restraint(r)
     # Exclusion states. Two girls can't have same dress
-    ft = domino.ExclusionSubsetFilterTable()
+    ft = IMP.domino.ExclusionSubsetFilterTable()
     ft.add_pair(friends)
     sampler.add_subset_filter_table(ft)
 
@@ -148,7 +148,7 @@ if len(solutions) == 0:
     print "There are no solutions to the problem"
 else:
     most_expensive = 0
-    best_solution  = solutions[0]
+    best_solution = solutions[0]
     for assignment in solutions:
         total_price = get_total_price(states_table, subset, assignment)
         if(total_price > most_expensive):

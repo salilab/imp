@@ -12,7 +12,7 @@ from math import *
 class Tests(IMP.test.TestCase):
     def test_rigid_body_image_fit_restraint(self):
         """Test scoring with RigidBodiesImageFitRestraint"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
 
         # read full complex
         fn = self.get_input_file_name("1z5s.pdb")

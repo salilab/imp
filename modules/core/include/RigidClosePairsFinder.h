@@ -11,7 +11,7 @@
 #include "ClosePairsFinder.h"
 #include "rigid_bodies.h"
 #include "close_pairs_finder_macros.h"
-#include <IMP/internal/InternalListSingletonContainer.h>
+#include <IMP/kernel/internal/InternalListSingletonContainer.h>
 #include <IMP/Refiner.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -52,23 +52,24 @@ IMPCORE_BEGIN_NAMESPACE
     \note Do not reuse RigidClosePairsFinders for different sets of
     particles from the same rigid body.
 
-    \pythonexample{rigid_collisions}
+    \include rigid_collisions.py
 
     \uses{class RigidClosePairsFinder, CGAL}
     \see ClosePairsScoreState
     \see RigidBody
     \see cover_members()
  */
-class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
-{
-  mutable IMP::OwnerPointer<ClosePairsFinder> cpf_;
+class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder {
+  mutable IMP::base::PointerMember<ClosePairsFinder> cpf_;
   ObjectKey k_;
- public:
-  RigidClosePairsFinder(ClosePairsFinder *cpf=nullptr);
 
-  ParticlePairsTemp get_close_pairs(Particle *a, Particle *b,
-                                    const ParticleIndexes &pa,
-                                    const ParticleIndexes &pb) const;
+ public:
+  RigidClosePairsFinder(ClosePairsFinder *cpf = nullptr);
+
+  kernel::ParticleIndexPairs get_close_pairs(
+      kernel::Model *m, kernel::ParticleIndex a, kernel::ParticleIndex b,
+      const kernel::ParticleIndexes &pa,
+      const kernel::ParticleIndexes &pb) const;
 
   void set_distance(double d) {
     cpf_->set_distance(d);
@@ -76,14 +77,34 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
   }
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  internal::MovedSingletonContainer *
-    get_moved_singleton_container(SingletonContainer *c,
-                                  double thresold) const;
+  internal::MovedSingletonContainer *get_moved_singleton_container(
+      SingletonContainer *c, double thresold) const;
 #endif
-  IMP_CLOSE_PAIRS_FINDER(RigidClosePairsFinder);
+#ifndef SWIG
+  using ClosePairsFinder::get_close_pairs;
+#else
+  kernel::ParticlePairsTemp get_close_pairs(
+      const kernel::ParticlesTemp &pc) const;
+  kernel::ParticlePairsTemp get_close_pairs(
+      const kernel::ParticlesTemp &pca, const kernel::ParticlesTemp &pcb) const;
+#endif
 
+  virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const
+      IMP_OVERRIDE;
+  virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas,
+                                   const algebra::BoundingBox3Ds &bbs) const
+      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+
+  virtual kernel::ParticleIndexPairs get_close_pairs(
+      kernel::Model *m, const kernel::ParticleIndexes &pc) const IMP_OVERRIDE;
+  virtual kernel::ParticleIndexPairs get_close_pairs(
+      kernel::Model *m, const kernel::ParticleIndexes &pca,
+      const kernel::ParticleIndexes &pcb) const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(RigidClosePairsFinder);
 };
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_RIGID_CLOSE_PAIRS_FINDER_H */
+#endif /* IMPCORE_RIGID_CLOSE_PAIRS_FINDER_H */

@@ -6,56 +6,30 @@
  */
 
 #include "IMP/base/exception.h"
-#include "IMP/base/log.h"
-#include "IMP/base/internal/static.h"
-#include "IMP/base/check_macros.h"
-#include "IMP/base/log_macros.h"
-#include <cstring>
-#include <boost/lambda/lambda.hpp>
-
+#include "IMP/base/warning_macros.h"
 
 IMPBASE_BEGIN_NAMESPACE
-
-void handle_error(const char *)
-{
+void handle_error(const char *message) {
+  IMP_UNUSED(message);
   // this method is just here to provide a place to break in the debugger
 }
 
-Exception::~Exception() throw()
-{
-}
+Exception::~Exception() throw() {}
 
-Exception::Exception(const char *message):
-  std::runtime_error(message) {
-}
+Exception::Exception(const char *message) : std::runtime_error(message) {}
 
-InternalException::~InternalException() throw()
-{
-}
+InternalException::~InternalException() throw() {}
 
-UsageException::~UsageException() throw()
-{
-}
+UsageException::~UsageException() throw() {}
 
-IndexException::~IndexException() throw()
-{
-}
+IndexException::~IndexException() throw() {}
 
-ValueException::~ValueException() throw()
-{
-}
+ValueException::~ValueException() throw() {}
 
-ModelException::~ModelException() throw()
-{
-}
+ModelException::~ModelException() throw() {}
 
-EventException::~EventException() throw()
-{
-}
+EventException::~EventException() throw() {}
 
-IOException::~IOException() throw()
-{
-}
-
+IOException::~IOException() throw() {}
 
 IMPBASE_END_NAMESPACE

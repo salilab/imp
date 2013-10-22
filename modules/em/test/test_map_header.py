@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
         IMP.base.set_log_level(IMP.base.SILENT)
         IMP.test.TestCase.setUp(self)
         #Read PDB
-        self.mdl=IMP.Model()
+        self.mdl=IMP.kernel.Model()
         self.mh = IMP.atom.read_pdb(self.get_input_file_name("input1.pdb"),self.mdl,IMP.atom.CAlphaPDBSelector())
         self.ps = IMP.core.get_leaves(self.mh)
         IMP.atom.add_radii(self.mh)

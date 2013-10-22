@@ -5,7 +5,7 @@
 */
 
 #include "IMP/em2d/ProjectionMask.h"
-#include "IMP/exception.h"
+#include "IMP/base/exception.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -87,7 +87,7 @@ ProjectionMaskPtr MasksManager::find_mask(double radius) {
 }
 
 
-void MasksManager::create_masks(const ParticlesTemp &ps) {
+void MasksManager::create_masks(const kernel::ParticlesTemp &ps) {
   IMP_LOG_TERSE("Creating Projection Masks " << std::endl);
   ProjectionMaskPtr mask;
   unsigned long n_particles = ps.size();

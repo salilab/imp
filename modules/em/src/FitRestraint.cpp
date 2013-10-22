@@ -12,19 +12,19 @@
 #include <IMP/core/HarmonicUpperBound.h>
 #include <IMP/atom/pdb.h>
 #include "IMP/container_macros.h"
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 
 IMPEM_BEGIN_NAMESPACE
 
 FitRestraint::FitRestraint(
-   ParticlesTemp ps,
+   kernel::ParticlesTemp ps,
    DensityMap *em_map,
    FloatPair norm_factors,
    FloatKey weight_key,
    float scale,
    bool use_rigid_bodies,
    KernelType kt
-                           ): Restraint(IMP::internal::get_model(ps),
+                           ): kernel::Restraint(IMP::internal::get_model(ps),
                                         "Fit restraint %1%"),kt_(kt)
 {
   use_rigid_bodies_=use_rigid_bodies;
@@ -38,11 +38,12 @@ FitRestraint::FitRestraint(
   norm_factors_=norm_factors;
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< ps.size(); ++i) {
-      IMP_USAGE_CHECK(core::XYZR::particle_is_instance(ps[i]),
+      IMP_USAGE_CHECK(core::XYZR::get_is_setup(ps[i]),
                       "Particle " << ps[i]->get_name()
                       << " is not XYZR"
                       << std::endl);
-      IMP_USAGE_CHECK(ps[i]->has_attribute(weight_key),
+      IMP_USAGE_CHECK(get_model()->get_has_attribute(weight_key,
+                                                     ps[i]->get_index()),
                 "Particle " << ps[i]->get_name()
                 << " is missing the mass "<< weight_key
                 << std::endl);
@@ -52,7 +53,7 @@ FitRestraint::FitRestraint(
   store_particles(ps);
   IMP_LOG_TERSE("after adding "<< all_ps_.size()<<" particles"<<std::endl);
   model_dens_map_ = new SampledDensityMap(*em_map->get_header(),kt_);
-  model_dens_map_->set_particles(get_as<ParticlesTemp>(all_ps_),weight_key);
+  model_dens_map_->set_particles(get_as<kernel::ParticlesTemp>(all_ps_),weight_key);
   kernel_params_=model_dens_map_->get_kernel_params();
   IMP_LOG_TERSE("going to initialize_model_density_map"<<std::endl);
   initialize_model_density_map(weight_key);
@@ -78,7 +79,7 @@ void FitRestraint::initialize_model_density_map(
       core::RigidBody rb = *it;
       IMP_LOG_VERBOSE("working on rigid body:"<<
               (*it)->get_name()<<std::endl);
-      ParticlesTemp members=get_as<ParticlesTemp>(member_map_[*it]);
+      kernel::ParticlesTemp members=get_as<kernel::ParticlesTemp>(member_map_[*it]);
       //The rigid body may be outside of the density. This means
       //that the generated SampledDensityMap will be empty,
       //as it ignore particles outside of the boundaries.
@@ -104,7 +105,7 @@ void FitRestraint::initialize_model_density_map(
     }
   }
   //update the none rigid bodies map
-  none_rb_model_dens_map_->set_particles(get_as<ParticlesTemp>(not_part_of_rb_),
+  none_rb_model_dens_map_->set_particles(get_as<kernel::ParticlesTemp>(not_part_of_rb_),
                                          weight_key);
   if(not_part_of_rb_.size()>0){
     none_rb_model_dens_map_->resample();
@@ -123,7 +124,7 @@ void FitRestraint::initialize_model_density_map(
          algebra::get_transformation_from_first_to_second(
                                        rbs_orig_rf_[rb_i],
                                        rbs_[rb_i].get_reference_frame());
-    Pointer<DensityMap> transformed = get_transformed(
+    base::Pointer<DensityMap> transformed = get_transformed(
                                        rb_model_dens_map_[rb_i],rb_t);
       model_dens_map_->add(transformed);
       transformed->set_was_used(true);
@@ -150,7 +151,7 @@ void FitRestraint::resample() const {
          algebra::get_transformation_from_first_to_second(
                                              rbs_orig_rf_[rb_i],
                                              rbs_[rb_i].get_reference_frame());
-    Pointer<DensityMap> transformed = get_transformed(
+    base::Pointer<DensityMap> transformed = get_transformed(
                                                       rb_model_dens_map_[rb_i],
                                                       rb_t);
     IMP_LOG_VERBOSE("transformed map size:"<<
@@ -159,7 +160,7 @@ void FitRestraint::resample() const {
     transformed->set_was_used(true);
   }
 }
-IMP_LIST_IMPL(FitRestraint, Particle, particle,Particle*, Particles);
+IMP_LIST_IMPL(FitRestraint, Particle, particle,Particle*, kernel::Particles);
 
 double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
@@ -221,7 +222,7 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   FloatKeys xyz_keys=IMP::core::XYZR::get_xyz_keys();
   if (calc_deriv) {
     for(unsigned int i=0;i<all_ps_.size();i++) {
-      Particle *p=all_ps_[i];
+      kernel::Particle *p=all_ps_[i];
       p->add_to_derivative(xyz_keys[0], dv_[i][0],
                                           *accum);
       p->add_to_derivative(xyz_keys[1], dv_[i][1],
@@ -237,30 +238,22 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   return score;
 }
 
-ParticlesTemp FitRestraint::get_input_particles() const
+ModelObjectsTemp FitRestraint::do_get_inputs() const
 {
-  ParticlesTemp pt(all_ps_.begin(), all_ps_.end());
+  kernel::ModelObjectsTemp pt(all_ps_.begin(), all_ps_.end());
   for(int i=0;i<(int)rbs_.size();i++) {
     pt.push_back(rbs_[i]);
   }
   return pt;
 }
 
-ContainersTemp FitRestraint::get_input_containers() const {
-  return ContainersTemp();
-}
-
-void FitRestraint::do_show(std::ostream& out) const
-{
-  out<<"FitRestraint"<<std::endl;
-}
-void FitRestraint::store_particles(ParticlesTemp ps) {
-  all_ps_=get_as<Particles>(ps);
+void FitRestraint::store_particles(kernel::ParticlesTemp ps) {
+  all_ps_=get_as<kernel::Particles>(ps);
   add_particles(ps);
   //sort to rigid and not rigid members
   if (use_rigid_bodies_) {
-    for(Particles::iterator it = all_ps_.begin();it != all_ps_.end(); it++) {
-      if (core::RigidMember::particle_is_instance(*it)) {
+    for(kernel::Particles::iterator it = all_ps_.begin();it != all_ps_.end(); it++) {
+      if (core::RigidMember::get_is_setup(*it)) {
         core::RigidBody rb=core::RigidMember(*it).get_rigid_body();
         part_of_rb_.push_back(*it);
         if (member_map_.find(rb) == member_map_.end()) {

@@ -11,14 +11,23 @@
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/container_macros.h"
 #include "IMP/algebra/SphericalVector3D.h"
-#include "IMP/log.h"
+#include "IMP/base/log.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 
+Fine2DRegistrationRestraint::Fine2DRegistrationRestraint(): calls_(0) {
+    projection_ = new Image();
+    projection_->set_was_used(true);
+    projection_->set_name("projection-in-fine2d");
+    subject_ = new Image();
+    subject_->set_was_used(true);
+    subject_->set_name("subject-in-fine2d");
+  };
+
 void Fine2DRegistrationRestraint::setup(
-                       ParticlesTemp &ps,
+                       kernel::ParticlesTemp &ps,
                        const ProjectingParameters &params,
-                       Model *scoring_model,
+                       kernel::Model *scoring_model,
 //                       ScoreFunctionPtr score_function,
                        ScoreFunction *score_function,
                        MasksManagerPtr masks) {
@@ -42,7 +51,7 @@ void Fine2DRegistrationRestraint::setup(
   // Set the model
   this->set_model(scoring_model);
   // Create a particle for the projection parameters to be optimized
-  subj_params_particle_ = new Particle(scoring_model);
+  subj_params_particle_ = new kernel::Particle(scoring_model);
   PP_ = ProjectionParameters::setup_particle(subj_params_particle_);
   PP_.decorate_particle(subj_params_particle_);
   PP_.set_parameters_optimized(true);
@@ -119,21 +128,10 @@ double Fine2DRegistrationRestraint::unprotected_evaluate(
   return score;
 }
 
-ParticlesTemp Fine2DRegistrationRestraint::get_input_particles() const {
-  ParticlesTemp ps_subjects(1);
+ModelObjectsTemp Fine2DRegistrationRestraint::do_get_inputs() const {
+  kernel::ModelObjectsTemp ps_subjects(1);
   ps_subjects[0]=subj_params_particle_;
   return ps_subjects;
-}
-
-ObjectsTemp Fine2DRegistrationRestraint::get_input_objects() const {
-  ObjectsTemp ot;
-  return ot;
-}
-
-void Fine2DRegistrationRestraint::do_show(std::ostream& out) const {
-  RegistrationResult rr=get_final_registration();
-  rr.show(out);
-  out << " em2d: " << rr.get_score() << std::endl;
 }
 
 RegistrationResult
@@ -148,12 +146,5 @@ RegistrationResult
   rr.set_score(score);
   return rr;
 }
-
-
-ContainersTemp Fine2DRegistrationRestraint::get_input_containers() const {
-  ContainersTemp ot;
-  return ot;
-}
-
 
 IMPEM2D_END_NAMESPACE

@@ -10,27 +10,25 @@
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
-RecursivePartitionalClusteringEmbedding
-::RecursivePartitionalClusteringEmbedding(Embedding *metric,
-                                       PartitionalClustering *clustering):
-  Embedding("RecursivePartitionalClusteringEmbedding %1%"),
-  metric_(metric), clustering_(clustering){
+RecursivePartitionalClusteringEmbedding::
+    RecursivePartitionalClusteringEmbedding(Embedding *metric,
+                                            PartitionalClustering *clustering)
+    : Embedding("RecursivePartitionalClusteringEmbedding %1%"),
+      metric_(metric),
+      clustering_(clustering) {}
 
-}
-
-PartitionalClustering*
- RecursivePartitionalClusteringEmbedding
-::create_full_clustering(PartitionalClustering *center_cluster) {
-  IMP::base::Vector<Ints>
-    clusters(center_cluster->get_number_of_clusters());
+PartitionalClustering *
+RecursivePartitionalClusteringEmbedding::create_full_clustering(
+    PartitionalClustering *center_cluster) {
+  IMP::base::Vector<Ints> clusters(center_cluster->get_number_of_clusters());
   Ints reps(clusters.size());
-  for (unsigned int i=0; i< clusters.size(); ++i) {
-    Ints outer= center_cluster->get_cluster(i);
-    reps[i]=clustering_->get_cluster_representative(
-               center_cluster->get_cluster_representative(i));
-    for (unsigned int j=0; j< outer.size(); ++j) {
-      Ints inner= clustering_->get_cluster(outer[j]);
-      clusters[i].insert(clusters[i].end(),inner.begin(), inner.end());
+  for (unsigned int i = 0; i < clusters.size(); ++i) {
+    Ints outer = center_cluster->get_cluster(i);
+    reps[i] = clustering_->get_cluster_representative(
+        center_cluster->get_cluster_representative(i));
+    for (unsigned int j = 0; j < outer.size(); ++j) {
+      Ints inner = clustering_->get_cluster(outer[j]);
+      clusters[i].insert(clusters[i].end(), inner.begin(), inner.end());
     }
   }
   IMP_NEW(internal::TrivialPartitionalClustering, ret, (clusters, reps));
@@ -38,20 +36,13 @@ PartitionalClustering*
   return ret.release();
 }
 
-
-algebra::VectorKD
-RecursivePartitionalClusteringEmbedding::get_point(unsigned int i) const {
+algebra::VectorKD RecursivePartitionalClusteringEmbedding::get_point(
+    unsigned int i) const {
   return metric_->get_point(clustering_->get_cluster_representative(i));
 }
 
-unsigned int
-RecursivePartitionalClusteringEmbedding::get_number_of_items() const {
+unsigned int RecursivePartitionalClusteringEmbedding::get_number_of_items()
+    const {
   return clustering_->get_number_of_clusters();
 }
-
-void RecursivePartitionalClusteringEmbedding::do_show(std::ostream &) const {
-}
-
-
-
 IMPSTATISTICS_END_NAMESPACE

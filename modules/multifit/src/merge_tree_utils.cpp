@@ -11,22 +11,12 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 double DummyRestraint::unprotected_evaluate(DerivativeAccumulator *) const
 {return 0.;
 }
-ParticlesTemp DummyRestraint::get_input_particles() const
+ModelObjectsTemp DummyRestraint::do_get_inputs() const
 {
-  ParticlesTemp pt;
+  kernel::ParticlesTemp pt;
   pt.push_back(p1_);
   pt.push_back(p2_);
   return pt;
-}
-
-ContainersTemp DummyRestraint::get_input_containers() const {
-  return ContainersTemp();
-}
-
-void DummyRestraint::do_show(std::ostream& out) const
-{
-  out<<"Dummy restraint bewteen:"<<p1_->get_name()<<" and "
-     << p2_->get_name()<<std::endl;
 }
 
 IMPMULTIFIT_END_NAMESPACE

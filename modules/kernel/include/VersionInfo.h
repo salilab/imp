@@ -14,10 +14,12 @@
 #include <iostream>
 #include <vector>
 
+IMPKERNEL_DEPRECATED_HEADER(2.1, "Use base/VersionInfo.h");
+
 IMPKERNEL_BEGIN_NAMESPACE
 
 using IMP::base::VersionInfo;
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_VERSION_INFO_H */
+#endif /* IMPKERNEL_VERSION_INFO_H */

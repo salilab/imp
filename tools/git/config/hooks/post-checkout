@@ -1,17 +1,8 @@
 #!/bin/sh
 
-if test "$1" == "rebase" -o "$1" == "amend"; then
-read LINE
-hash=`echo $LINE | cut -f 1 -d\ `
-branch=`git branch --contains $hash | sed "s#*##" | sed "s# ##" | head -n 1`
-else
-branch=`git rev-parse --abbrev-ref HEAD`
-fi
+git submodule update
 
-if test "$branch" == "master"
-then
-echo `git describe` > `git rev-parse --show-toplevel`/VERSION
-else
-echo $branch-`git rev-parse --short HEAD` > `git rev-parse --show-toplevel`/VERSION
-fi
-echo "Version=\""`cat VERSION`"\""
+`git rev-parse --show-toplevel`/tools/git/support/cleanup_pyc.py
+`git rev-parse --show-toplevel`/tools/build/setup_cmake.py > /dev/null
+
+rm -f `git rev-parse --show-toplevel`/VERSION

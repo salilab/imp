@@ -27,6 +27,10 @@
 
 #include "IMP/kmeans/internal/KMfilterCenters.h"
 #include "IMP/kmeans/internal/KMrand.h"
+#include <iostream>
+#include <iomanip>
+#include <IMP/base/log.h>
+#include <IMP/base/log_macros.h>
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 
@@ -243,10 +247,28 @@ void KMfilterCenters::swapOneCenter(            // swap one center
 
 void KMfilterCenters::print(bool )      // print centers and distortion
 {
+  print_to_ostream(*kmOut);
+}
+
+//----------------------------------------------------------------------
+//  print centers and distortions to out
+//----------------------------------------------------------------------
+std::ostream& KMfilterCenters::print_to_ostream(std::ostream& out, bool pretty)
+{
   for(int j = 0; j < kCtrs; j++) {
-    *kmOut << "    " << std::setw(4) << j << "\t";
-    kmPrintPt(ctrs[j], getDim(), true);
-    *kmOut << " dist = " << std::setw(8) << dists[j] << std::endl;
+    out << "    " << std::setw(4) << j << "\t";
+    kmPrintPt(ctrs[j], getDim(), pretty);
+    out << " dist = " << std::setw(8) << dists[j] << std::endl;
+  }
+  return out;
+}
+
+void KMfilterCenters::log(base::LogLevel ll)
+{
+  for(int j = 0; j < kCtrs; j++) {
+    IMP_LOG(ll, "    " << std::setw(4) << j << "\t");
+    kmLogPt(ll, ctrs[j], getDim(), true);
+    IMP_LOG(ll, " dist = " << std::setw(8) << dists[j] << std::endl);
   }
 }
 

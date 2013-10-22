@@ -9,7 +9,7 @@
 
 #include <IMP/isd/isd_config.h>
 #include <IMP/macros.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/constants.h>
 #include <math.h>
 #include <boost/math/special_functions/bessel.hpp>
@@ -67,8 +67,9 @@ public:
     }
   }
 
-  IMP_OBJECT_INLINE(vonMises, out << "vonMises: " << x_ << ", " << mu_
-                            << ", " << kappa_  <<std::endl, {});
+  IMP_OBJECT_METHODS(vonMises);
+  /*IMP_OBJECT_INLINE(vonMises, out << "vonMises: " << x_ << ", " << mu_
+    << ", " << kappa_  <<std::endl, {});*/
 
  private:
   void force_set_kappa(double kappa) {

@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/Category.h
- *  \brief Handle read/write of Model data from/to files.
+ *  \brief Handle read/write of kernel::Model data from/to files.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -12,17 +12,8 @@
 IMPRMF_BEGIN_NAMESPACE
 
 IMP_DEFINE_LINKERS(Hierarchy, hierarchy, hierarchies,
-                   atom::Hierarchy,atom::Hierarchies,
-                   atom::Hierarchy,atom::Hierarchies,
-                   (RMF::FileHandle fh),
-                   (RMF::FileConstHandle fh,
-                    Model *m), (fh), (fh, m),
-                   (fh, IMP::internal::get_model(hs)));
-
-void set_save_forces(RMF::FileHandle fh, bool tf) {
-  HierarchySaveLink *link= get_hierarchy_save_link(fh);
-  link->set_save_forces(tf);
-}
-
+                   atom::Hierarchy,
+                   atom::Hierarchies,
+                   (RMF::FileConstHandle fh, kernel::Model *m), (fh, m));
 
 IMPRMF_END_NAMESPACE

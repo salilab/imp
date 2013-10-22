@@ -10,7 +10,7 @@
 
 #include <IMP/container/container_config.h>
 #include <IMP/core/internal/MovedSingletonContainer.h>
-#include <IMP/internal/ListLikePairContainer.h>
+#include <IMP/kernel/internal/ListLikePairContainer.h>
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/macros.h>
@@ -37,35 +37,46 @@ IMPCONTAINER_BEGIN_NAMESPACE
     but less flexible.
     \see {core::ConnectivityRestraint}
  */
-class IMPCONTAINEREXPORT ConnectingPairContainer:
+class IMPCONTAINEREXPORT ConnectingPairContainer :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-public PairContainer
+    public PairContainer
 #else
-public IMP::internal::ListLikePairContainer
+    public IMP::internal::ListLikePairContainer
 #endif
-{
-  IMP::OwnerPointer<SingletonContainer> sc_;
-  IMP::OwnerPointer<core::internal::MovedSingletonContainer> mv_;
-  ParticlePairsTemp data_;
+    {
+  IMP::base::PointerMember<SingletonContainer> sc_;
+  IMP::base::PointerMember<core::internal::MovedSingletonContainer> mv_;
+  kernel::ParticlePairsTemp data_;
   double error_bound_;
   bool mst_;
   void initialize(SingletonContainer *sc);
-public:
+
+ public:
   /** For efficiency, the set of edges is only updated occasionally. The
    error parameter determines how far particles need to move before
    the set of edges is updated.*/
   ConnectingPairContainer(SingletonContainer *sc, double error);
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-  IMP_PAIR_CONTAINER(ConnectingPairContainer);
+  kernel::ParticleIndexPairs get_indexes() const;
+  kernel::ParticleIndexPairs get_range_indexes() const;
+  void do_before_evaluate();
+  kernel::ModelObjectsTemp do_get_inputs() const;
+  void do_apply(const PairModifier *sm) const;
+  kernel::ParticleIndexes get_all_possible_indexes() const;
+  IMP_OBJECT_METHODS(ConnectingPairContainer);
 #else
-  IMP_LISTLIKE_PAIR_CONTAINER(ConnectingPairContainer);
-  bool get_is_decomposable() const {return false;}
+  virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual void do_before_evaluate() IMP_OVERRIDE;
+  virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ConnectingPairContainer);
+  bool get_is_decomposable() const { return false; }
 #endif
 };
 
-IMP_OBJECTS(ConnectingPairContainer,ConnectingPairContainers);
+IMP_OBJECTS(ConnectingPairContainer, ConnectingPairContainers);
 
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_CONNECTING_PAIR_CONTAINER_H */
+#endif /* IMPCONTAINER_CONNECTING_PAIR_CONTAINER_H */

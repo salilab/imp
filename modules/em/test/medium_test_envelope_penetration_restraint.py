@@ -21,7 +21,7 @@ class Tests(IMP.test.TestCase):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
         IMP.base.set_log_level(IMP.base.SILENT)
-        self.mdl = IMP.Model()
+        self.mdl = IMP.kernel.Model()
         self._load_particles()
         self._create_density_map(10,1.5)
         self.epr = IMP.em.EnvelopePenetrationRestraint(self.ps,self.dmap,self.thr)
@@ -29,7 +29,7 @@ class Tests(IMP.test.TestCase):
     def test_evaluate(self):
         """Check the restraint is being evaluated"""
         score = self.mdl.evaluate(False)
-        self.assertLess(score, 2, "the score "+str(score)+" should be lower")
+        self.assertAlmostEqual(score, 5.0, delta=0.1)
 
     def test_penetration(self):
         trans = IMP.algebra.Vector3D(5,5,5)
@@ -38,7 +38,7 @@ class Tests(IMP.test.TestCase):
         for x in xyz:
             x.set_coordinates(t.get_transformed(x.get_coordinates()))
         score = self.mdl.evaluate(False)
-        print score
-        self.assertGreater(score, 200, "the score "+str(score)+" should be higher")
+        self.assertAlmostEqual(score, 54.0, delta=0.1)
+
 if __name__ == '__main__':
     IMP.test.main()

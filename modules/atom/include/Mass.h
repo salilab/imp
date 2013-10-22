@@ -20,32 +20,34 @@ IMPATOM_BEGIN_NAMESPACE
 //! Add mass to a particle
 /** The mass of the particle is assumed to be in Daltons.
  */
-class IMPATOMEXPORT Mass: public Decorator
-{
-public:
-  static Mass setup_particle(Particle *p, double mass) {
-    p->add_attribute(get_mass_key(), mass);
-    return Mass(p);
+class IMPATOMEXPORT Mass : public Decorator {
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                double mass) {
+    m->add_attribute(get_mass_key(), pi, mass);
   }
 
-  static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(get_mass_key());
+ public:
+
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+    return m->get_has_attribute(get_mass_key(), pi);
   }
 
   Float get_mass() const {
-    return get_particle()->get_value(get_mass_key());
+    return get_model()->get_attribute(get_mass_key(), get_particle_index());
   }
 
   void set_mass(Float d) {
-    get_particle()->set_value(get_mass_key(), d);
+    get_model()->set_attribute(get_mass_key(), get_particle_index(), d);
   }
 
-  IMP_DECORATOR(Mass, Decorator);
+  IMP_DECORATOR_METHODS(Mass, Decorator);
+  /** Add the specified mass to the particle. */
+  IMP_DECORATOR_SETUP_1(Mass, Float, mass);
 
+  /** Get the key used to store the mass. */
   static FloatKey get_mass_key();
 };
 
-
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_MASS_H */
+#endif /* IMPATOM_MASS_H */

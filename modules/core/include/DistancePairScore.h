@@ -17,26 +17,21 @@ IMPCORE_BEGIN_NAMESPACE
 
 /** Score a pair of particles based on their distance using an
     arbitrary UnaryFunction.*/
-IMP_FUNCTOR_DISTANCE_PAIR_SCORE(DistancePairScore,
-                                score_functor::UnaryFunctionEvaluate,
-                                (UnaryFunction *uf,
-                                 std::string name="DistancePairScore%1%"),
-                                (uf));
+IMP_FUNCTOR_DISTANCE_PAIR_SCORE(
+    DistancePairScore, score_functor::UnaryFunctionEvaluate,
+    (UnaryFunction *uf, std::string name = "DistancePairScore%1%"), (uf));
 
 #ifndef IMP_DOXYGEN
-typedef score_functor::Shift <score_functor::Harmonic >
-HarmonicDistanceScore;
+typedef score_functor::Shift<score_functor::Harmonic> HarmonicDistanceScore;
 #endif
 
 /** Score a pair of particles based on their distance using a
     Harmonic. This is faster than DistancePairScore if you
     are using a Harmonic.*/
-IMP_FUNCTOR_DISTANCE_PAIR_SCORE(HarmonicDistancePairScore,
-                                HarmonicDistanceScore,
-                                (double x0, double k,
-                                 std::string name
-                                 ="HarmonicDistancePairScore%1%"),
-                                (x0, score_functor::Harmonic(k)));
+IMP_FUNCTOR_DISTANCE_PAIR_SCORE(
+    HarmonicDistancePairScore, HarmonicDistanceScore,
+    (double x0, double k, std::string name = "HarmonicDistancePairScore%1%"),
+    (x0, score_functor::Harmonic(k)));
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_DISTANCE_PAIR_SCORE_H */
+#endif /* IMPCORE_DISTANCE_PAIR_SCORE_H */

@@ -51,7 +51,7 @@ em::FittingSolutions fast_cc(em::DensityMap *dmap1,
   float score;
   for(algebra::Transformation3Ds::iterator it = trans_on_dmap2.begin();
       it != trans_on_dmap2.end();it++) {
-    Pointer<em::DensityMap> trans_map = em::get_transformed(dmap2,*it);
+    base::Pointer<em::DensityMap> trans_map = em::get_transformed(dmap2,*it);
     score= em::CoarseCC::cross_correlation_coefficient(
                    dmap1,dmap2,threshold);
     fits.add_solution(*it,score);
@@ -153,9 +153,9 @@ em::FittingSolutions symmetry_local_fitting(atom::Hierarchies mhs,
   em::FittingSolutions return_fit_sols;
   return_fit_sols.add_solution(algebra::get_identity_transformation_3d(),0.);
   return return_fit_sols;
-  Particles ps;
+  kernel::Particles ps;
   for(unsigned int i=0;i<mhs.size();i++) {
-    Particles temp_ps = core::get_leaves(mhs[i]);
+    kernel::Particles temp_ps = core::get_leaves(mhs[i]);
     ps.insert(ps.end(),temp_ps.begin(),temp_ps.end());
   }
   em::FittingSolutions fit_sols;
@@ -223,7 +223,7 @@ em::DensityMap* build_cn_dens_assembly(
                             const em::DensityHeader &asmb_dens_header,
                             algebra::Transformation3D monomer_t,
                             int symm_deg){
-  OwnerPointer<em::DensityMap> ret(em::create_density_map(
+  base::PointerMember<em::DensityMap> ret(em::create_density_map(
                      asmb_dens_header.get_nx(),
                      asmb_dens_header.get_ny(),
                      asmb_dens_header.get_nz(),
@@ -235,7 +235,7 @@ em::DensityMap* build_cn_dens_assembly(
   ret->reset_data(0);
   algebra::Transformation3D curr_t=algebra::get_identity_transformation_3d();
   for (int i=0;i<symm_deg;i++){
-    OwnerPointer<em::DensityMap> trans_subunit
+    base::PointerMember<em::DensityMap> trans_subunit
                    = get_transformed(subunit_dens, curr_t);
     ret->add(subunit_dens);
     curr_t=curr_t*monomer_t;
@@ -246,15 +246,15 @@ em::DensityMap* build_cn_dens_assembly(
 
 em::FittingSolutions fit_cn_assembly(
             atom::Hierarchies mhs,
-            int dn_symm_deg,
+            int /*dn_symm_deg*/,
             em::DensityMap *dmap,
             float threshold,
             const AlignSymmetric &aligner,
             bool sample_translation,bool fine_rotational_sampling) {
-  Particles ps;
+  kernel::Particles ps;
   //here change to CA !!
   for(unsigned int i=0;i<mhs.size();i++) {
-    //    Particles temp_ps;
+    //    kernel::Particles temp_ps;
     //TODO - is there a better way to do this?
     atom::Atoms atoms = atom::Atoms(atom::get_by_type(mhs[i],atom::ATOM_TYPE));
     for (atom::Atoms::iterator it = atoms.begin(); it != atoms.end(); it++) {
@@ -305,7 +305,7 @@ em::FittingSolutions fit_cn_assembly(
             const MolCnSymmAxisDetector &symm_mol,
             em::DensityMap *dmap,
             const CnSymmAxisDetector &symm_map,
-            int symm_deg, float threshold)
+            int symm_deg, float /*threshold*/)
 {
   //get all different ways of aligning the complex pca to the map pca
   algebra::Transformation3Ds all_trans =
@@ -314,7 +314,7 @@ em::FittingSolutions fit_cn_assembly(
   //get all of these options to the map
   em::FittingSolutions coarse_sols = fast_cc(dmap,asmb_map,all_trans);
   //  std::cout<<"best score is:"<<coarse_sols.get_score(0)<<std::endl;
-  Pointer<em::DensityMap> asmb_map_pca_aligned =
+  base::Pointer<em::DensityMap> asmb_map_pca_aligned =
     em::get_transformed(asmb_map,coarse_sols.get_transformation(0));
   //make translation only
   algebra::Transformation3Ds translations;
@@ -384,11 +384,11 @@ float cn_symm_score(atom::Hierarchies mhs,
 multifit::FittingSolutionRecords prune_by_pca(
                              const std::string &param_fn,
                              const multifit::FittingSolutionRecords &sols,
-                             int dn) {
+                             int /*dn*/) {
   multifit::FittingSolutionRecords pruned_sols;
   internal::Parameters par(param_fn.c_str());
   //load the protein
-  IMP_NEW(Model,mdl,());
+  IMP_NEW(kernel::Model,mdl,());
   atom::CAlphaPDBSelector *sel = new atom::CAlphaPDBSelector();
   atom::Hierarchies mhs;
   for(int i=0;i<par.get_cn_symm();i++) {
@@ -398,7 +398,7 @@ multifit::FittingSolutionRecords prune_by_pca(
     mhs.push_back(mh);
   }
   //load the density map
-  base::OwnerPointer<em::DensityMap> dmap =
+  base::PointerMember<em::DensityMap> dmap =
                em::read_map(par.get_density_map_filename(),
                             new em::MRCReaderWriter());
   AlignSymmetric aligner(dmap,par.get_density_map_threshold(),

@@ -23,47 +23,41 @@ IMPCORE_BEGIN_NAMESPACE
 // TODO: why this number? how can we tell it's unique
 #define IMP_PARTICLE_TYPE_INDEX 34897493
 
-/** A ParticleType is a Key object for identifying types of particles
-    by strings. The PartickeType key is use to type particles within
+/** A kernel::ParticleType is an IMP::kernel::Key object for identifying types
+   of
+    particles by strings. The kernel::ParticleType key is used to type particles
+   within
     the Typed decorator */
-IMP_DECLARE_KEY_TYPE(ParticleType, IMP_PARTICLE_TYPE_INDEX);
-
+typedef Key<IMP_PARTICLE_TYPE_INDEX, true> ParticleType;
+IMP_VALUES(ParticleType, ParticleTypes);
 
 //! A decorator for classifying particles in your system.
 /** This decorator
  */
-class IMPCOREEXPORT Typed: public Decorator
-{
- public:
+class IMPCOREEXPORT Typed : public Decorator {
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                ParticleType t) {
+    m->add_attribute(get_type_key(), pi, t.get_index());
+  }
 
+ public:
   static IntKey get_type_key();
 
-  IMP_DECORATOR(Typed, Decorator);
+  IMP_DECORATOR_METHODS(Typed, Decorator);
+  IMP_DECORATOR_SETUP_1(Typed, ParticleType, t);
 
-  /** Create a decorator with the passed coordinates. */
-  static Typed setup_particle(Particle *p, ParticleType t) {
-    p->add_attribute(get_type_key(),t.get_index());
-    return Typed(p);
-  }
-
-  static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(get_type_key());
-  }
-
-  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
     return m->get_has_attribute(get_type_key(), pi);
   }
 
   ParticleType get_type() const {
-    return ParticleType(get_particle()->get_value(get_type_key()));
+    return ParticleType(
+        get_model()->get_attribute(get_type_key(), get_particle_index()));
   }
 };
 
-IMP_DECORATORS(Typed,Typeds, ParticlesTemp);
-
+IMP_DECORATORS(Typed, Typeds, kernel::ParticlesTemp);
 
 IMPCORE_END_NAMESPACE
 
-
-
-#endif  /* IMPCORE_TYPED_H */
+#endif /* IMPCORE_TYPED_H */

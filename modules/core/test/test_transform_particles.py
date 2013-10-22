@@ -7,7 +7,7 @@ class Tests(IMP.test.TestCase):
     """Test particle transformations"""
     def test_transformation(self):
         """Test the TransformationFunction class"""
-        imp_model = IMP.Model()
+        imp_model = IMP.kernel.Model()
         particles = IMP.core.create_xyzr_particles(imp_model, 4, 1.0)
 
         coords= [x.get_coordinates() for x in particles]

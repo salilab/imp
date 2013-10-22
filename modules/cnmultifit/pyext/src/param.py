@@ -3,7 +3,7 @@
 __doc__ = "Generate a suitable parameter file for build_models."
 
 import IMP.multifit
-from optparse import OptionParser
+from IMP import OptionParser
 
 def usage():
     usage = """%prog [options] <cyclic symmetry degree>

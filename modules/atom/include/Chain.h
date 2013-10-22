@@ -18,56 +18,50 @@ IMPATOM_BEGIN_NAMESPACE
 //! Store info for a chain of a protein
 /** \see Hierarchy
  */
-class IMPATOMEXPORT Chain: public Hierarchy
-{
-  IMP_DECORATOR(Chain, Hierarchy);
-public:
-  static Chain setup_particle(Model *m, ParticleIndex pi, char id) {
+class IMPATOMEXPORT Chain : public Hierarchy {
+
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                char id) {
     m->add_attribute(get_id_key(), pi, id);
-    if (!Hierarchy::particle_is_instance(m, pi)) {
+    if (!Hierarchy::get_is_setup(m, pi)) {
       Hierarchy::setup_particle(m, pi);
     }
-    return Chain(m, pi);
   }
-  static Chain setup_particle(Particle *p, char id) {
-    return setup_particle(p->get_model(),
-                          p->get_index(), id);
-  }
-
-  static Chain setup_particle(Particle *p, Chain o) {
-    p->add_attribute(get_id_key(), o.get_id());
-    if (!Hierarchy::particle_is_instance(p)) {
-      Hierarchy::setup_particle(p);
-    }
-    return Chain(p);
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                Chain o) {
+    do_setup_particle(m, pi, o.get_id());
   }
 
+ public:
+  IMP_DECORATOR_METHODS(Chain, Hierarchy);
+  IMP_DECORATOR_SETUP_1(Chain, char, id);
+  IMP_DECORATOR_SETUP_1(Chain, Chain, other);
 
-  static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(get_id_key())
-      &&  Hierarchy::particle_is_instance(p);
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+    return m->get_has_attribute(get_id_key(), pi) &&
+           Hierarchy::get_is_setup(m, pi);
   }
 
   //! Return the chain id
   char get_id() const {
-    return static_cast<char>(get_particle()->get_value(get_id_key()));
+    return static_cast<char>(
+        get_model()->get_attribute(get_id_key(), get_particle_index()));
   }
 
   //! Set the chain id
   void set_id(char c) {
-    get_particle()->set_value(get_id_key(), c);
+    get_model()->set_attribute(get_id_key(), get_particle_index(), c);
   }
 
   //! The key used to store the chain
   static IntKey get_id_key();
 };
 
-IMP_DECORATORS(Chain,Chains, Hierarchies);
+IMP_DECORATORS(Chain, Chains, Hierarchies);
 
 /** Get the containing chain or Chain() if there is none*/
-IMPATOMEXPORT
-Chain get_chain(Hierarchy h);
+IMPATOMEXPORT Chain get_chain(Hierarchy h);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_CHAIN_H */
+#endif /* IMPATOM_CHAIN_H */

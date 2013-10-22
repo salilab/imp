@@ -3,7 +3,7 @@
 __doc__ = "Add RMSD to reference to each fitting file."
 
 import IMP.multifit
-from optparse import OptionParser
+from IMP import OptionParser
 
 def parse_args():
     usage =  """%prog [options] <asmb.input> <proteomics> <mapping> <align param>

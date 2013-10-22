@@ -60,12 +60,12 @@ class Representation(object):
         if model is None:
             model = self._model
             if model is None:
-                self._model = model = IMP.Model()
+                self._model = model = IMP.kernel.Model()
             else:
                 return model
         else:
             self._model = model
-        repr_particle = IMP.Particle(model)
+        repr_particle = IMP.kernel.Particle(model)
         decorator = IMP.atom.Hierarchy.setup_particle(repr_particle)
         self.model_decorator = decorator
         for child in self._children:
@@ -113,7 +113,7 @@ class _RepresentationNode(object):
             child.add_as_child(decorator, model)
 
     def to_particle(self, model):
-        self.this_particle = IMP.Particle(model)
+        self.this_particle = IMP.kernel.Particle(model)
         decorator = IMP.atom.Hierarchy.setup_particle(self.this_particle)
         return decorator
 
@@ -244,7 +244,7 @@ class _RepChain(_RepresentationNode):
             parent = self.fragment_decorator.get_parent()
             parent.remove_child(self.fragment_decorator)
         if self._children and not self.filename:
-            particle = IMP.Particle(model)
+            particle = IMP.kernel.Particle(model)
             decorator = IMP.atom.Chain.setup_particle(particle,
                 self.chain_label)
         else:
@@ -263,7 +263,7 @@ class _RepFragment(_RepresentationNode):
     def to_particle(self, model):
         if len(self._children) != 1:
             raise Exception, "Fragment %s must have exactly one child" % self.id
-        particle = IMP.Particle(model)
+        particle = IMP.kernel.Particle(model)
         child = self._children[0]
         child.add_attributes(particle)
         decorator = IMP.atom.Fragment.setup_particle(particle)

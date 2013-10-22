@@ -31,6 +31,7 @@ class IMPSAXSEXPORT FitParameters {
   std::string get_profile_file_name() const { return profile_file_name_; }
   int get_mol_index() const { return mol_index_; }
 
+  void set_chi(float chi) { chi_ = chi; }
   void set_default_chi(float chi) { default_chi_ = chi; }
   void set_profile_file_name(std::string file_name) {
     profile_file_name_ = file_name;
@@ -50,7 +51,7 @@ class IMPSAXSEXPORT FitParameters {
   };
 #endif
 
- private:
+ protected:
   float chi_; // fit score
   float c1_; // excluded volume fit
   float c2_; // water layer fit

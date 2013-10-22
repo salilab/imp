@@ -47,10 +47,10 @@ IMPATOMEXPORT char atom_alt_loc_indicator(const String& pdb_line);
 IMPATOMEXPORT String atom_residue_name(const String& pdb_line);
 
 //! Returns an ATOM record's chain id.
-IMPATOMEXPORT char  atom_chain_id(const String& pdb_line);
+IMPATOMEXPORT char atom_chain_id(const String& pdb_line);
 
 //! Returns an ATOM record's chain id.
-IMPATOMEXPORT int  atom_number(const String& pdb_line);
+IMPATOMEXPORT int atom_number(const String& pdb_line);
 
 //! Returns an ATOM record's residue index.
 IMPATOMEXPORT short atom_residue_number(const String& pdb_line);
@@ -87,8 +87,12 @@ IMPATOMEXPORT float atom_temp_factor(const String& pdb_line);
 IMPATOMEXPORT String atom_element(const String& pdb_line);
 
 //! Returns the connected atoms from the CONECT record
-IMPATOMEXPORT base::Vector<unsigned short>
-connected_atoms(const String& pdb_line);
+IMPATOMEXPORT base::Vector<unsigned short> connected_atoms(
+    const String& pdb_line);
+
+//! write particles as ATOMs to PDB (assumes Particles are valid Atoms)
+IMPATOMEXPORT void write_pdb(const kernel::ParticlesTemp& ps,
+                             base::TextOutput out);
 
 /** ATOM Record Format (from PDB)
     COLUMNS        DATA TYPE       CONTENTS
@@ -126,7 +130,7 @@ static const unsigned atom_zcoord_field_ = 46;
 static const unsigned atom_occupancy_field_ = 54;
 static const unsigned atom_temp_factor_field_ = 60;
 static const unsigned atom_element_field_ = 76;
-static const unsigned model_index_field_=6;
+static const unsigned model_index_field_ = 6;
 
 IMPATOM_END_INTERNAL_NAMESPACE
 

@@ -19,6 +19,7 @@
 
 IMPEM_BEGIN_NAMESPACE
 
+/** Reader/Writer for xplor files. */
 class IMPEMEXPORT XplorReaderWriter : public MapReaderWriter
 {
 #if !defined(DOXYGEN) && !defined(SWIG)

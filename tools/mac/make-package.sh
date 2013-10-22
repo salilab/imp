@@ -149,7 +149,7 @@ if [ "${TARGET_OSX_VER}" = "10.6" ]; then
                 /usr/local/lib/liblzma.5.dylib \
                 /usr/local/lib/libprotobuf.8.dylib \
                 /usr/local/lib/libTAU.1.dylib \
-                /usr/local/lib/libCGAL.9.0.0.dylib \
+                /usr/local/lib/libCGAL.10.0.1.dylib \
                 /usr/local/lib/libgmp.10.dylib \
                 /usr/local/lib/libgmpxx.4.dylib \
                 /usr/local/lib/libmpfr.4.dylib"

@@ -6,10 +6,31 @@
 */
 
 #include "IMP/kmeans/KMeans.h"
-#include <iostream>     // C++ I/O
+#include <IMP/base/log.h>
+#include <iostream>
+#include <iomanip>
 #include <string>
 
 IMPKMEANS_BEGIN_NAMESPACE
+
+
+namespace { // Anonymous
+  std::ostream &operator<<(std::ostream &out, const IMP::Floats& p){
+    const int dim = p.size();
+    if(dim == 0){
+      out << "()" << std::endl;
+    } else {
+      out << "(" << p[0];
+      for(int i = 1 ; i < dim; i++) {
+        out << ", " << p[i];
+      }
+      out << ")" << std::endl;
+    }
+    return out;
+
+  }
+}
+
 
 /***********************  Constructors  **************************/
 
@@ -30,9 +51,9 @@ KMeans::KMeans
  unsigned int max_nPts)
   : Object(CONST_kmeans_type),
     is_executed_(false),
-    pKMDataPts_(),
+    pKMDataPts_(nullptr),
     is_KM_data_synced_(false),
-    pCenters_(),
+    pCenters_(nullptr),
     terminationConditions_
     (100, 0, 0, 0,    // run for 100 stages
      0.10,     // min consec RDL
@@ -64,9 +85,9 @@ KMeans::KMeans
 KMeans::KMeans()
   : Object(CONST_kmeans_type),
     is_executed_(false),
-    pKMDataPts_(),
+    pKMDataPts_(nullptr),
     is_KM_data_synced_(false),
-    pCenters_(),
+    pCenters_(nullptr),
     terminationConditions_
     (100, 0, 0, 0,    // run for 100 stages
      0.10,     // min consec RDL
@@ -91,10 +112,9 @@ KMeans::execute(unsigned int k, KM_ALG_TYPE alg_type, int stages)
 
   assert(STLDataPts_.size() >= k ); // TODO: exception? warning?
 
-  // TODO: remove debug outputting
-  std::cout << "Data Points:\n";     // echo data points
+  IMP_LOG(PROGRESS, "Data Points:" << std::endl);     // echo data points
   for(unsigned int i = 0; i < STLDataPts_.size(); i++)
-    print_pt_to_stream(std::cout, STLDataPts_[i]);
+    IMP_LOG(PROGRESS, STLDataPts_[i]);
 
   // synchronize STL points to wrapped internal::KMdata points
   // allocate points array
@@ -111,45 +131,45 @@ KMeans::execute(unsigned int k, KM_ALG_TYPE alg_type, int stages)
     case KM_LLOYDS:
       {
         // repeated Lloyd's
-        std::cout << "\nExecuting Clustering Algorithm: Lloyd's\n";
+        IMP_LOG(base::PROGRESS, "\nExecuting Clustering Algorithm: Lloyd's\n");
         internal::KMlocalLloyds kmLloyds
           (*pCenters_, terminationConditions_);
         *pCenters_ = kmLloyds.execute();
         is_executed_ = true;
-        print_summary(kmLloyds);
+        print_summary(kmLloyds, base::PROGRESS);
         break;
       }
     case KM_LOCAL_SWAP:
       {
         // Swap heuristic
-        std::cout << "\nExecuting Clustering Algorithm: Swap\n";
+        IMP_LOG(base::PROGRESS, "\nExecuting Clustering Algorithm: Swap\n");
         internal::KMlocalSwap kmSwap
           (*pCenters_, terminationConditions_);
         *pCenters_ = kmSwap.execute();
         is_executed_ = true;
-        print_summary(kmSwap);
+        print_summary(kmSwap, base::PROGRESS);
         break;
       }
     case KM_LOCAL_EZ_HYBRID:
       {
         // EZ-Hybrid heuristic
-        std::cout << "\nExecuting Clustering Algorithm: EZ-Hybrid\n";
+        IMP_LOG(base::PROGRESS,"\nExecuting Clustering Algorithm: EZ-Hybrid\n");
         internal::KMlocalEZ_Hybrid kmEZ_Hybrid
           (*pCenters_, terminationConditions_);
         *pCenters_ = kmEZ_Hybrid.execute();
         is_executed_ = true;
-        print_summary(kmEZ_Hybrid);
+        print_summary(kmEZ_Hybrid, base::PROGRESS);
         break;
       }
     case KM_HYBRID:
       {
         // Hybrid heuristic
-        std::cout << "\nExecuting Clustering Algorithm: Hybrid\n";
+        IMP_LOG(base::PROGRESS,"\nExecuting Clustering Algorithm: Hybrid\n");
         internal::KMlocalHybrid kmHybrid
           (*pCenters_, terminationConditions_);
         *pCenters_ = kmHybrid.execute();
           is_executed_ = true;
-        print_summary(kmHybrid);
+          print_summary(kmHybrid, base::PROGRESS);
         break;
       }
     }
@@ -316,63 +336,58 @@ KMeans::read_data_pts_from_stream
 void
 KMeans::print_pt_to_stream(std::ostream& out, const IMP::Floats& p)
 {
-  const int dim = p.size();
-  if(dim == 0){
-    out << "()" << std::endl;
-    return;
-  }
-  out << "(" << p[0];
-  for(int i = 1 ; i < dim; i++) {
-
-    out << ", " << p[i];
-  }
-  out << ")" << std::endl;
+  out << p;
 }
+
+
 
 //------------------------------------------------------------------------
 //  Print summary of execution
 //------------------------------------------------------------------------
 void
 KMeans::print_summary
-(const internal::KMlocal&    theAlg)   // the algorithm
+(const internal::KMlocal&    theAlg,
+ base::LogLevel ll)   // the algorithm
 {
   using namespace std;
 
   assert(is_executed_);
-  cout << "Number of stages: " << theAlg.getTotalStages() << endl;
-  cout << "Average distortion: " <<
-    pCenters_->getDist(false) / double(pCenters_->getNPts()) << endl;
+  IMP_LOG(ll,  "Number of stages: " << theAlg.getTotalStages() << endl);
+  IMP_LOG(ll, "Average distortion: " <<
+          pCenters_->getDist(false) / double(pCenters_->getNPts()) << endl);
   // print final center points
-  cout << "(Final Center Points:\n";
-  pCenters_->print();
-  cout << ")\n";
+  IMP_LOG(ll, "(Final Center Points:" << endl);
+  pCenters_->log(ll);
+  IMP_LOG(ll, ")" << endl);
   // get/print final cluster assignments
   internal::KMctrIdxArray closeCtr =
     new internal::KMctrIdx[pKMDataPts_->getNPts()];
   double* sqDist = new double[pKMDataPts_->getNPts()];
   pCenters_->getAssignments(closeCtr, sqDist);
-  cout  << "(Cluster assignments:" << endl
-        << "    Point  Center  Squared Dist" << endl
-        << "    -----  ------  ------------" << endl;
+  IMP_LOG(ll,
+          "(Cluster assignments:" << endl
+          << "    Point  Center  Squared Dist" << endl
+          << "    -----  ------  ------------" << endl);
   for(int i = 0; i < pKMDataPts_->getNPts(); i++) {
-    cout  << "   " << setw(5) << i
-          << "   " << setw(5) << closeCtr[i]
-          << "   " << setw(10) << sqDist[i]
-          << endl;
+    IMP_LOG(ll,
+            "   " << setw(5) << i
+            << "   " << setw(5) << closeCtr[i]
+            << "   " << setw(10) << sqDist[i]
+            << endl);
   }
-  cout << ")" << endl;
+  IMP_LOG(ll, ")" << endl);
   delete [] closeCtr;
   delete [] sqDist;
 }
 
-// print the centers (assuming exectute() was applied)
+// print the centers (assuming execute() was applied)
 void
-KMeans::print_centers() const
+KMeans::print_centers(base::LogLevel ll) const
 {
   assert( is_executed_ ); // TODO: exception?
   if(pCenters_ && is_executed_)
     {
-      pCenters_->print();
+      pCenters_->log(ll);
     }
 }
 

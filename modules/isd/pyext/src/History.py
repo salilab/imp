@@ -1,5 +1,10 @@
-#!/usr/bin/env ptyhon
-from numpy import *
+#!/usr/bin/env python
+
+"""@namespace IMP.isd.History
+   Classes to store output from replicas.
+"""
+
+import numpy
 import sys
 
 class History:
@@ -83,12 +88,12 @@ class History:
                     tp='int'
                 if tp=='float':
                     try:
-                        ent=array(ent)
-                        avg=mean(ent)
-                        avg100=mean(ent[-100:])
-                        avg200=mean(ent[-200:-100])
-                        st=std(ent)
-                        st200=std(ent[-200])
+                        ent=numpy.array(ent)
+                        avg=numpy.mean(ent)
+                        avg100=numpy.mean(ent[-100:])
+                        avg200=numpy.mean(ent[-200:-100])
+                        st=numpy.std(ent)
+                        st200=numpy.std(ent[-200])
                         if st200 ==0 or abs(avg200 - avg100)/st200 > 3:
                             if avg200>avg100:
                                 tend='\\'

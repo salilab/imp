@@ -12,7 +12,7 @@ class Tests(IMP.test.TestCase):
     def test_hierarchy(self):
         """Test class hierarchy of IMP exceptions"""
         self.assertSubclass(IMP.base.Exception, Exception)
-        # Make sure that all exceptions derive from IMP.Exception
+        # Make sure that all exceptions derive from IMP.base.Exception
         for subclass in (IMP.base.InternalException, IMP.base.ModelException,
                          IMP.base.UsageException, IMP.base.IndexException,
                          IMP.base.IOException, IMP.base.ValueException,

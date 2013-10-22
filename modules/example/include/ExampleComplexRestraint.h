@@ -12,7 +12,7 @@
 
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/restraint_macros.h>
 #include <IMP/ScoreState.h>
 #include <IMP/UnaryFunction.h>
@@ -31,27 +31,29 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     \include ExampleComplexRestraint.cpp
 
 */
-class IMPEXAMPLEEXPORT ExampleComplexRestraint: public Restraint
-{
-  Pointer<ScoreState> ss_;
-  Pointer<Particle> p_;
+class IMPEXAMPLEEXPORT ExampleComplexRestraint : public kernel::Restraint {
+  base::Pointer<ScoreState> ss_;
+  kernel::ParticleIndex p_;
   Float diameter_;
-  Pointer<SingletonContainer> sc_;
-  Pointer<UnaryFunction> f_;
+  base::Pointer<SingletonContainer> sc_;
+  base::Pointer<UnaryFunction> f_;
   FloatKey dr_;
-public:
+
+ public:
   //! Use f to restrain particles in sc to be within diameter of one another
   /** f should have a minimum at 0 and be an upper bound-style function.
    */
-  ExampleComplexRestraint(UnaryFunction *f,
-                    SingletonContainer *sc, Float diameter);
+  ExampleComplexRestraint(UnaryFunction *f, SingletonContainer *sc,
+                          Float diameter,
+                          std::string name = "ExampleComplexRestraint%1%");
 
-  IMP_RESTRAINT(ExampleComplexRestraint);
-
-  void set_model(Model *m);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ExampleComplexRestraint);
 };
-
 
 IMPEXAMPLE_END_NAMESPACE
 
-#endif  /* IMPEXAMPLE_EXAMPLE_COMPLEX_RESTRAINT_H */
+#endif /* IMPEXAMPLE_EXAMPLE_COMPLEX_RESTRAINT_H */

@@ -14,7 +14,7 @@
 #include "XYZ.h"
 #include <IMP/generic.h>
 
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 
 #include <iostream>
 
@@ -31,28 +31,28 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT DistanceRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
-  public Restraint
+    public kernel::Restraint
 #else
-  public IMP::internal::TupleRestraint<DistancePairScore>
+    public IMP::internal::TupleRestraint<DistancePairScore>
 #endif
-{
-public:
+    {
+ public:
   //! Create the distance restraint.
   /** \param[in] score_func Scoring function for the restraint.
       \param[in] a Pointer to first particle in distance restraint.
       \param[in] b Pointer to second particle in distance restraint.
    */
-  DistanceRestraint(UnaryFunction* score_func,
-                    Particle *a, Particle *b);
+  DistanceRestraint(UnaryFunction *score_func, kernel::Particle *a,
+                    kernel::Particle *b);
 
 #ifdef SWIG
-protected:
- double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  IMP::ModelObjectsTemp do_get_inputs() const;
+ protected:
+  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
+  IMP::kernel::ModelObjectsTemp do_get_inputs() const;
   IMP_OBJECT_METHODS(DistanceRestraint);
 #endif
 };
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_DISTANCE_RESTRAINT_H */
+#endif /* IMPCORE_DISTANCE_RESTRAINT_H */

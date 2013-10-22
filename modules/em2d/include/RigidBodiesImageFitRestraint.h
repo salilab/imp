@@ -1,6 +1,6 @@
 /**
- *  \file RigidBodiesImageFitRestraint.h
- *  \brief Fit Restraint
+ *  \file em2d/RigidBodiesImageFitRestraint.h
+ *  \brief Fit kernel::Restraint
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -15,7 +15,7 @@
 #include "IMP/core/rigid_bodies.h"
 #include "IMP/algebra/Rotation3D.h"
 #include "IMP/Restraint.h"
-#include "IMP/Pointer.h"
+#include "IMP/base/Pointer.h"
 #include "IMP/macros.h"
 #include "IMP/base_types.h"
 
@@ -40,18 +40,22 @@ typedef std::map< Ints, unsigned int, IntsOrder> KeyIndexMap;
 typedef std::vector< KeyIndexMap > KeyIndexMaps;
 
 
-
-class IMPEM2DEXPORT RigidBodiesImageFitRestraint: public Restraint {
-  IMP_RESTRAINT(RigidBodiesImageFitRestraint);
+//! Fit rigid bodies to an image.
+class IMPEM2DEXPORT RigidBodiesImageFitRestraint: public kernel::Restraint {
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(RigidBodiesImageFitRestraint);
 
 protected:
   // Storage for all the masks of the rigid bodies
   std::vector<em2d::Images> rigid_bodies_masks_;
   KeyIndexMaps maps_;
-  Pointer<ScoreFunction> score_function_;
+  base::Pointer<ScoreFunction> score_function_;
   core::RigidBodies rigid_bodies_;
-  Pointer<Image> image_; // Image to used when scoring
-  Pointer<Image> projection_;
+  base::Pointer<Image> image_; // Image to used when scoring
+  base::Pointer<Image> projection_;
   ProjectingParameters params_;
   bool params_set_;
 
@@ -62,7 +66,7 @@ public:
 
   /*! Initialize the class
     \param[in] scf Score function used to compute the value of the restraint
-    \param[in] Rbs Rigid bodies that are restrained
+    \param[in] rbs Rigid bodies that are restrained
     \param[in] img Image used to compute the restraint
   */
   RigidBodiesImageFitRestraint(ScoreFunction *scf,
@@ -74,7 +78,6 @@ public:
 
   /*! Set the possible rotations that a rigid body can have. A projection of
       the rigid body in all posible orientations is stored
-    \param[in]
   */
   void set_orientations(const core::RigidBody &rb,
                      const algebra::Rotation3Ds &rots);

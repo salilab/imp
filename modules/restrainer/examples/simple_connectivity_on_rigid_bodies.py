@@ -1,14 +1,14 @@
 ## \example restrainer/simple_connectivity_on_rigid_bodies.py
-## This example shows how to create simple IMP::core::ConnectivityRestraint on rigid bodies.
-##
+# This example shows how to create simple IMP::core::ConnectivityRestraint on rigid bodies.
+#
 
-#-- File: simple_connectivity_on_rigid_bodies --#
+# -- File: simple_connectivity_on_rigid_bodies --#
 
 import IMP
 import IMP.atom
 import IMP.restrainer
 
-m = IMP.Model()
+m = IMP.kernel.Model()
 sel = IMP.atom.CAlphaPDBSelector()
 
 mh1 = IMP.atom.read_pdb(IMP.restrainer.get_example_path("input.pdb"), m, sel)

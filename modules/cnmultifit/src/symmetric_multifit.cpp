@@ -146,10 +146,10 @@ multifit::FittingSolutionRecords fit_models_to_density(
 
   int cn_symm_deg=params.get_cn_symm();
   int dn_symm_deg=params.get_dn_symm();
-  Particles mhs_particles;
+  kernel::Particles mhs_particles;
   for(atom::Hierarchies::const_iterator it = mhs.begin();
       it != mhs.end(); it++) {
-    Particles temp=core::get_leaves(*it);
+    kernel::Particles temp=core::get_leaves(*it);
     mhs_particles.insert(mhs_particles.end(),temp.begin(),temp.end());
   }
   //calculate the density map PCA
@@ -233,7 +233,7 @@ void do_all_fitting(const std::string param_filename,
 
 
   //load the density
-  base::OwnerPointer<em::DensityMap> dmap =
+  base::PointerMember<em::DensityMap> dmap =
                em::read_map(density_filename, new em::MRCReaderWriter());
   dmap->get_header_writable()->set_resolution(resolution);
   dmap->update_voxel_size(spacing);
@@ -259,7 +259,7 @@ void do_all_fitting(const std::string param_filename,
   //                                   pca_pruned_asmb_sols);
 
   //load the protein
-  IMP_NEW(Model, mdl, ());
+  IMP_NEW(kernel::Model, mdl, ());
   atom::Hierarchy asmb;
   atom::Hierarchies mhs;
   //atom::CAlphaPDBSelector sel;

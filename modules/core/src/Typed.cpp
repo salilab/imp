@@ -14,7 +14,5 @@ IntKey Typed::get_type_key() {
   return k;
 }
 
-void Typed::show(std::ostream &out) const {
-  out << get_type();
-}
+void Typed::show(std::ostream &out) const { out << get_type(); }
 IMPCORE_END_NAMESPACE

@@ -12,7 +12,7 @@
 #include <IMP/core/core_config.h>
 
 #include <IMP/ModelObject.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/particle_index.h>
 #include <IMP/base/tuple_macros.h>
 
@@ -25,22 +25,26 @@ IMPCORE_BEGIN_NAMESPACE
     many or most move sets this is 1.0).
 */
 IMP_NAMED_TUPLE_2(MonteCarloMoverResult, MonteCarloMoverResults,
-                  ParticleIndexes, moved_particles,
-                  double, proposal_ratio,);
+                  kernel::ParticleIndexes, moved_particles, double,
+                  proposal_ratio, );
 
 //! A base class for classes which perturb particles.
 /** Mover objects propose a move, which can then be either accepted or rejected
     based on some criteria. For example, in a Monte-Carlo evaluation scheme.
 
-    The output particles (ModelObject::do_get_outputs()) are assummed to be
-    equal to the inputs (ModelObject::do_get_inputs()).
+    All changed attributes should be optimizable, it is undefined behavior to
+    try to optimize an attribute which is not.
+
+    The output particles (kernel::ModelObject::do_get_outputs()) are assummed
+    to be equal to the inputs (kernel::ModelObject::do_get_inputs()).
  */
-class IMPCOREEXPORT MonteCarloMover: public ModelObject
-{
+class IMPCOREEXPORT MonteCarloMover : public kernel::ModelObject {
   unsigned int num_proposed_;
   unsigned int num_rejected_;
-public:
-  MonteCarloMover(Model *m, std::string name);
+  bool has_move_;
+
+ public:
+  MonteCarloMover(kernel::Model *m, std::string name);
 
   //! propose a modification
   /** The method should return the list of all particles that were
@@ -50,21 +54,28 @@ public:
    */
   MonteCarloMoverResult propose() {
     IMP_OBJECT_LOG;
+    IMP_USAGE_CHECK(
+        !has_move_,
+        "Mover already had proposed a move. "
+            << " This probably means you added it twice: " << get_name());
+    has_move_ = true;
     set_was_used(true);
     ++num_proposed_;
     return do_propose();
   }
 
-  //! Roll back any changes made to the Particles
+  //! Roll back any changes made to the kernel::Particles
   void reject() {
     IMP_OBJECT_LOG;
     ++num_rejected_;
+    has_move_ = false;
     do_reject();
   }
 
-  //! Roll back any changes made to the Particles
+  //! Roll back any changes made to the kernel::Particles
   void accept() {
     IMP_OBJECT_LOG;
+    has_move_ = false;
     do_accept();
   }
 
@@ -72,9 +83,7 @@ public:
       Movers keep track of some statistics as they are used.
       @{
   */
-  unsigned int get_number_of_proposed() const {
-    return num_proposed_;
-  }
+  unsigned int get_number_of_proposed() const { return num_proposed_; }
   unsigned int get_number_of_accepted() const {
     return num_proposed_ - num_rejected_;
   }
@@ -83,7 +92,7 @@ public:
     num_rejected_ = 0;
   }
   /** @} */
-protected:
+ protected:
   //! Implement propose_move()
   virtual MonteCarloMoverResult do_propose() = 0;
   //! Implement reset_proposed_move()
@@ -91,15 +100,13 @@ protected:
   //! Implement accept_proposed_move(), default impl is empty
   virtual void do_accept() {}
 
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+  virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
     return get_inputs();
   }
-
-  virtual void do_update_dependencies() IMP_OVERRIDE {}
 };
 
-IMP_OBJECTS(MonteCarloMover,MonteCarloMovers);
+IMP_OBJECTS(MonteCarloMover, MonteCarloMovers);
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_MONTE_CARLO_MOVER_H */
+#endif /* IMPCORE_MONTE_CARLO_MOVER_H */

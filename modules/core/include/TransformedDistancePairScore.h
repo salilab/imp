@@ -13,7 +13,7 @@
 #include <IMP/generic.h>
 #include <IMP/PairScore.h>
 #include <IMP/UnaryFunction.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/pair_macros.h>
 
 #include <IMP/algebra/Transformation3D.h>
@@ -27,20 +27,27 @@ IMPCORE_BEGIN_NAMESPACE
     function to the distance between the transformed particle and the
     second. This can be used to implement symmetry restraints.
  */
-class IMPCOREEXPORT TransformedDistancePairScore : public PairScore
-{
-  IMP::OwnerPointer<UnaryFunction> f_;
+class IMPCOREEXPORT TransformedDistancePairScore : public PairScore {
+  IMP::base::PointerMember<UnaryFunction> f_;
   algebra::Transformation3D t_;
   algebra::Rotation3D ri_;
+
  public:
   TransformedDistancePairScore(UnaryFunction *f,
                                const algebra::Transformation3D &transformation);
 
   /** Set the transformation object.*/
   void set_transformation(const algebra::Transformation3D &rot);
-  IMP_SIMPLE_PAIR_SCORE(TransformedDistancePairScore);
+  virtual double evaluate_index(kernel::Model *m,
+                                const kernel::ParticleIndexPair &p,
+                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  IMP_PAIR_SCORE_METHODS(TransformedDistancePairScore);
+  IMP_OBJECT_METHODS(TransformedDistancePairScore);
+  ;
 };
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_TRANSFORMED_DISTANCE_PAIR_SCORE_H */
+#endif /* IMPCORE_TRANSFORMED_DISTANCE_PAIR_SCORE_H */

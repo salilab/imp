@@ -6,8 +6,8 @@ class Tests(IMP.test.TestCase):
     """Tests for WLC unary function"""
     def test_wlc(self):
         """Test that decay has the right halflife"""
-        m= IMP.Model()
-        ps=[IMP.Particle(m) for i in range(0,100)]
+        m= IMP.kernel.Model()
+        ps=[IMP.kernel.Particle(m) for i in range(0,100)]
         ap= []
         for i in range(0, len(ps)):
             for j in range(0,i):

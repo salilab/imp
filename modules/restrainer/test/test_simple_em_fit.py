@@ -37,7 +37,7 @@ class Tests(IMP.test.TestCase):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
 
-        self.imp_model = IMP.Model()
+        self.imp_model = IMP.kernel.Model()
 
         origin =  3.0
         self.load_particles(self.imp_model,
@@ -77,14 +77,14 @@ class Tests(IMP.test.TestCase):
 
         self.assertIsInstance(IMP.em.FitRestraint.get_from(r1),
                               IMP.em.FitRestraint)
-        self.assertRaises(IMP.ValueException, IMP.em.FitRestraint.get_from, r2)
+        self.assertRaises(IMP.base.ValueException, IMP.em.FitRestraint.get_from, r2)
 
         r1 = self.imp_model.get_restraint(0)
         r2 = self.imp_model.get_restraint(1)
 
         self.assertIsInstance(IMP.em.FitRestraint.get_from(r1),
                               IMP.em.FitRestraint)
-        self.assertRaises(IMP.ValueException, IMP.em.FitRestraint.get_from, r2)
+        self.assertRaises(IMP.base.ValueException, IMP.em.FitRestraint.get_from, r2)
 
 
     def test_methods(self):

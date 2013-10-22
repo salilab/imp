@@ -12,7 +12,7 @@
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/base_types.h>
 #include <IMP/core/Hierarchy.h>
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/multifit/multifit_config.h>
 #include "FittingSolutionRecord.h"
@@ -31,7 +31,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 IMPMULTIFITEXPORT FittingSolutionRecords get_close_to_point(
   const FittingSolutionRecords &fit_sols,
   atom::Hierarchy mh,
-  IMP::Particle *ap,
+  IMP::kernel::Particle *ap,
   Float dist);
 
 IMPMULTIFIT_END_NAMESPACE

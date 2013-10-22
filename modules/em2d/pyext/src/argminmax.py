@@ -1,3 +1,6 @@
+"""@namespace IMP.em2d.argminmax
+   Utility functions to extract min/max from the inputs.
+"""
 
 def argmin(sequence):
     """ Argmin function: Returns the pair (min_value,min_index),

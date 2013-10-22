@@ -2,10 +2,10 @@ import IMP, IMP.test
 import IMP.core
 import IMP.gsl
 
-class WoodsFunc(IMP.Restraint):
+class WoodsFunc(IMP.kernel.Restraint):
     """Woods function for four input values, defined as an IMP restraint"""
     def __init__(self, model, particles):
-        IMP.Restraint.__init__(self, model)
+        IMP.kernel.Restraint.__init__(self, model, "WoodsFunc %1%")
         self.particles= particles
         self.index= IMP.FloatKey("x")
     def do_show(self, junk):
@@ -31,10 +31,8 @@ class WoodsFunc(IMP.Restraint):
             #for (i, d) in zip(self.indices, dx):
             #    accum.add_to_deriv(i, d)
         return e
-    def get_input_particles(self):
+    def do_get_inputs(self):
         return self.particles
-    def get_input_containers(self):
-        return []
 
 
 class Tests(IMP.test.TestCase):
@@ -45,17 +43,16 @@ class Tests(IMP.test.TestCase):
 
     def _test_starting_conditions(self, starting_values):
         """Test the optimizer with given starting conditions"""
-        model = IMP.Model()
+        model = IMP.kernel.Model()
         particles = []
 
         for value in starting_values:
-            p = IMP.Particle(model)
+            p = IMP.kernel.Particle(model)
             particles.append(p)
             p.add_attribute(IMP.FloatKey("x"), value, True)
         rsr = WoodsFunc(model, particles)
         model.add_restraint(rsr)
-        opt = IMP.gsl.QuasiNewton()
-        opt.set_model(model)
+        opt = IMP.gsl.QuasiNewton(model)
         #opt.set_threshold(1e-5)
         e = opt.optimize(1000)
         for p in particles:

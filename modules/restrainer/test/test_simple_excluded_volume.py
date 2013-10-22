@@ -9,7 +9,7 @@ class Tests(IMP.test.TestCase):
     """Tests for simple excluded volume"""
 
     def setup_system(self):
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         # Read in two chains
         sel = IMP.atom.CAlphaPDBSelector()
         p0= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"), m, sel)

@@ -8,8 +8,8 @@ from IMP.algebra import *
 class Tests(IMP.test.TestCase):
     def _write_restraint(self, name):
         f= RMF.create_rmf_file(name)
-        m= IMP.Model()
-        p= IMP.Particle(m)
+        m= IMP.kernel.Model()
+        p= IMP.kernel.Particle(m)
         IMP.rmf.add_particles(f, [p]);
         r= IMP.kernel._ConstRestraint(1, [p])
         r.set_model(m)
@@ -19,12 +19,12 @@ class Tests(IMP.test.TestCase):
     def _read_restraint(self, name):
         IMP.base.add_to_log(IMP.base.TERSE, "Starting reading back\n")
         f= RMF.open_rmf_file_read_only(name)
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps=IMP.rmf.create_particles(f, m);
-        rs=IMP.RestraintSet.get_from(IMP.rmf.create_restraints(f, m)[0])
+        rs=IMP.kernel.RestraintSet.get_from(IMP.rmf.create_restraints(f, m)[0])
         IMP.rmf.load_frame(f, 0)
         r= rs.get_restraints()[0]
-        print [IMP.Particle.get_from(x).get_index() for x in r.get_inputs()]
+        print [IMP.kernel.Particle.get_from(x).get_index() for x in r.get_inputs()]
         print [x.get_index() for x in ps]
         self.assertEqual(r.get_inputs(), ps)
     def test_0(self):
@@ -40,8 +40,8 @@ class Tests(IMP.test.TestCase):
             nm=self.get_tmp_file_name("restrnp."+suffix)
             print nm
             f= RMF.create_rmf_file(nm)
-            m= IMP.Model()
-            p= IMP.Particle(m)
+            m= IMP.kernel.Model()
+            p= IMP.kernel.Particle(m)
             r= IMP.kernel._ConstRestraint(1)
             r.set_name("R")
             r.set_model(m)
@@ -59,8 +59,8 @@ class Tests(IMP.test.TestCase):
             print path
             f= RMF.create_rmf_file(path)
             IMP.base.set_log_level(IMP.base.SILENT)
-            m= IMP.Model()
-            ps= [IMP.Particle(m) for i in range(0,10)]
+            m= IMP.kernel.Model()
+            ps= [IMP.kernel.Particle(m) for i in range(0,10)]
             ds= [IMP.core.XYZR.setup_particle(p) for p in ps]
             for d in ds:
                 d.set_radius(1)

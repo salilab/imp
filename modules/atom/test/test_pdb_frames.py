@@ -6,7 +6,7 @@ import IMP.atom
 class Tests(IMP.test.TestCase):
     def test_read_one_model(self):
         """Reading of successive models from a pdb"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         pdb=self.open_input_file("multimodel.pdb")
         h= IMP.atom.read_pdb(pdb, m)
         atom0= IMP.core.XYZ(IMP.atom.get_leaves(h)[0])

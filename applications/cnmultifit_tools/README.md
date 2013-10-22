@@ -1,17 +1,19 @@
+# CNMultifit Tools
+
 A protocol for generating atomic structures of complexes with cyclic symmetry
 (such as rings), using only the atomic structure of a single subunit and
 a cryo-electron microscopy density map of the complex. This employs the
 IMP::cnmultifit module.
 
-See also [multifit](@ref IMP_multifit_tools_overview) for a similar protocol
+See also [multifit](@ref impmultifit_tools) for a similar protocol
 operating on non-symmetric complexes.
 
 A \salilab{/multifit/,webserver} is also available.
 
 _Examples_:
- - [Modeling of GroEL](@ref cnmultifit_groel)
+ - [Modeling of GroEL](../tutorial/cnmultifit_groel.html)
 
-## Info
+# Info
 
 _Author(s)_: Keren Lasker
 

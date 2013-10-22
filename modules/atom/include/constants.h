@@ -12,12 +12,10 @@
 
 IMPATOM_BEGIN_NAMESPACE
 /** Return kT for a given temperature.
-    Value take from
-    \external{http://http://en.wikipedia.org/wiki/Boltzmann_constant, Wikipedia}.
+    Value taken from
+    \external{http://en.wikipedia.org/wiki/Boltzmann_constant,Wikipedia}.
 */
-inline double get_kt(double T) {
-  return 0.0019872041*T;
-}
+inline double get_kt(double T) { return 0.0019872041 * T; }
 
 IMPATOM_END_NAMESPACE
 

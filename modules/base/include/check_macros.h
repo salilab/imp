@@ -27,16 +27,15 @@
     error message. Use this for basic error handling in main functions
     in C++. Do not use within the \imp library.
 */
-#define IMP_CATCH_AND_TERMINATE(expr)                   \
-  try {                                                 \
-    expr;                                               \
-  } catch (const IMP::base::Exception &e) {             \
-    std::cerr << "Application terminated with error :"  \
-              << e.what() << std::endl;                 \
-    exit(1);                                            \
+#define IMP_CATCH_AND_TERMINATE(expr)                              \
+  try {                                                            \
+    expr;                                                          \
+  }                                                                \
+  catch (const IMP::base::Exception &e) {                          \
+    std::cerr << "Application terminated with error :" << e.what() \
+              << std::endl;                                        \
+    exit(1);                                                       \
   }
-
-
 
 //! Throw an exception with a message
 /** The exception thrown must inherit from Exception and not be
@@ -48,31 +47,29 @@
               IOException);
     \endcode
  */
-#define IMP_THROW(message, exception_name)do {                          \
-    /* to bring in exceptions for backward compat */                    \
-    using namespace IMP::base;                                          \
-    std::ostringstream imp_throw_oss;                                   \
-    imp_throw_oss << message << std::endl;                              \
-  BOOST_STATIC_ASSERT((!(boost::is_base_of<IMP::base::UsageException,   \
-                          exception_name>::value)                       \
-                       && !(boost::is_base_of<IMP::base::InternalException, \
-                             exception_name>::value)                    \
-                       && (boost::is_base_of<IMP::base::Exception,      \
-                            exception_name>::value)));                  \
-  throw exception_name(imp_throw_oss.str().c_str());                    \
+#define IMP_THROW(message, exception_name)                                   \
+  do {                                                                       \
+    /* to bring in exceptions for backward compat */                         \
+    using namespace IMP::base;                                               \
+    std::ostringstream imp_throw_oss;                                        \
+    imp_throw_oss << message << std::endl;                                   \
+    BOOST_STATIC_ASSERT(                                                     \
+        (!(boost::is_base_of<IMP::base::UsageException,                      \
+                             exception_name>::value) &&                      \
+         !(boost::is_base_of<IMP::base::InternalException,                   \
+                             exception_name>::value) &&                      \
+         (boost::is_base_of<IMP::base::Exception, exception_name>::value))); \
+    throw exception_name(imp_throw_oss.str().c_str());                       \
   } while (true)
-
 
 //! Throw an exception if a check fails
 /** Do IMP_THROW() if the check as the first argument fails. Unlike
     IMP_USAGE_CHECK() and IMP_INTERNAL_CHECK() these checks are
     always present.*/
-#define IMP_ALWAYS_CHECK(condition, message, exception_name)    \
-  if (!(condition)) {                                           \
-    IMP_THROW(message, exception_name);                         \
+#define IMP_ALWAYS_CHECK(condition, message, exception_name) \
+  if (!(condition)) {                                        \
+    IMP_THROW(message, exception_name);                      \
   }
-
-
 
 //! A runtime failure for IMP.
 /** \param[in] message Failure message to write.
@@ -80,21 +77,22 @@
     an internal error in \imp. It causes an IMP::InternalException to be
     thrown.
 */
-#define IMP_FAILURE(message) do {                                       \
-    std::ostringstream imp_failure_oss;                                 \
-    imp_failure_oss << message << std::endl;                            \
-    IMP::base::handle_error(imp_failure_oss.str().c_str());             \
-    throw IMP::base::InternalException(imp_failure_oss.str().c_str());  \
+#define IMP_FAILURE(message)                                           \
+  do {                                                                 \
+    std::ostringstream imp_failure_oss;                                \
+    imp_failure_oss << message << std::endl;                           \
+    IMP::base::handle_error(imp_failure_oss.str().c_str());            \
+    throw IMP::base::InternalException(imp_failure_oss.str().c_str()); \
   } while (true)
-
 
 //! Use this to make that the method is not implemented yet
 /**
  */
-#define IMP_NOT_IMPLEMENTED do {                                        \
-    IMP::base::handle_error("This method is not implemented.");         \
-    throw IMP::base::InternalException("Not implemented");              \
-  } while(true)
+#define IMP_NOT_IMPLEMENTED                                     \
+  do {                                                          \
+    IMP::base::handle_error("This method is not implemented."); \
+    throw IMP::base::InternalException("Not implemented");      \
+  } while (true)
 
 #ifdef IMP_DOXYGEN
 
@@ -106,7 +104,7 @@
    For example:
     \code
     IMP_IF_CHECK(USAGE) {
-        base::Vector<Particle*> testp(input.begin(), input.end());
+        base::Vector<kernel::Particle*> testp(input.begin(), input.end());
         std::sort(testp.begin(), testp.end());
         IMP_USAGE_CHECK(std::unique(testp.begin(), testp.end()) == testp.end(),
                         "Duplicate particles found in the input list.");
@@ -115,12 +113,11 @@
 */
 #define IMP_IF_CHECK(level)
 
-
 //! Only compile the code if checks are enabled
 /** For example
     \code
     IMP_CHECK_CODE({
-        base::Vector<Particle*> testp(input.begin(), input.end());
+        base::Vector<kernel::Particle*> testp(input.begin(), input.end());
         std::sort(testp.begin(), testp.end());
         IMP_USAGE_CHECK(std::unique(testp.begin(), testp.end()) == testp.end(),
                         "Duplicate particles found in the input list.");
@@ -128,7 +125,6 @@
     \endcode
 **/
 #define IMP_CHECK_CODE(expr)
-
 
 /** \brief An assertion to check for internal errors in \imp. An
     IMP::ErrorException will be thrown.
@@ -151,7 +147,6 @@
     \param[in] message Write this message if the assertion fails.
 */
 #define IMP_INTERNAL_CHECK(expr, message)
-
 
 /** This is like IMP_INTERNAL_CHECK, however designed to check if
     two floating point numbers are almost equal. The check looks something
@@ -209,9 +204,7 @@
 */
 #define IMP_INTERNAL_CHECK_VARIABLE(variable)
 
-
-#else // IMP_DOXYGEN
-
+#else  // IMP_DOXYGEN
 
 #if IMP_HAS_CHECKS == IMP_INTERNAL
 #define IMP_CHECK_VARIABLE(variable)
@@ -227,12 +220,11 @@
 #define IMP_INTERNAL_CHECK_VARIABLE(variable) IMP_UNUSED(variable)
 #endif
 
-
 #if IMP_HAS_CHECKS > IMP_NONE
-#define IMP_IF_CHECK(level)                      \
-  using IMP::base::NONE;                         \
-  using IMP::base::USAGE;                        \
-  using IMP::base::USAGE_AND_INTERNAL;           \
+#define IMP_IF_CHECK(level)            \
+  using IMP::base::NONE;               \
+  using IMP::base::USAGE;              \
+  using IMP::base::USAGE_AND_INTERNAL; \
   if (level <= ::IMP::base::get_check_level())
 
 #define IMP_CHECK_CODE(expr) expr
@@ -243,61 +235,55 @@
 #define IMP_BASE_CONTEXT << IMP::base::get_context_message()
 #endif
 
-
-
-#else // IMP_HAS_CHECKS == IMP_NONE
+#else  // IMP_HAS_CHECKS == IMP_NONE
 #define IMP_IF_CHECK(level) if (0)
 #define IMP_CHECK_CODE(expr)
-#endif // IMP_HAS_CHECKS
+#endif  // IMP_HAS_CHECKS
 
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-#define IMP_INTERNAL_CHECK(expr, message)                               \
-  do {                                                                  \
-    if (IMP::base::get_check_level()                                    \
-        >= IMP::base::USAGE_AND_INTERNAL && !(expr)) {                  \
-      std::ostringstream imp_check_oss;                                 \
+#define IMP_INTERNAL_CHECK(expr, message)                                 \
+  do {                                                                    \
+    if (IMP::base::get_check_level() >= IMP::base::USAGE_AND_INTERNAL &&  \
+        !(expr)) {                                                        \
+      std::ostringstream imp_check_oss;                                   \
       imp_check_oss << "Internal check failure: " << message << std::endl \
-                   << "  File \"" << __FILE__ << "\", line " << __LINE__ \
-        IMP_BASE_CONTEXT                                                \
-                   << std::endl;                                        \
-      IMP::base::handle_error(imp_check_oss.str().c_str());              \
-      throw IMP::base::InternalException(imp_check_oss.str().c_str());   \
-    }                                                                   \
-  } while(false)
+                    << "  File \"" << __FILE__ << "\", line "             \
+                    << __LINE__ IMP_BASE_CONTEXT << std::endl;            \
+      IMP::base::handle_error(imp_check_oss.str().c_str());               \
+      throw IMP::base::InternalException(imp_check_oss.str().c_str());    \
+    }                                                                     \
+  } while (false)
 
-#define IMP_INTERNAL_CHECK_FLOAT_EQUAL(expra, exprb, message)           \
-  IMP_INTERNAL_CHECK(std::abs((expra)-(exprb)) <                        \
-                     .1*std::abs((expra)+(exprb))+.1,                   \
-                     (expra) << " != " << (exprb)                       \
-                     << " - " << message)
+#define IMP_INTERNAL_CHECK_FLOAT_EQUAL(expra, exprb, message)              \
+  IMP_INTERNAL_CHECK(                                                      \
+      std::abs((expra) - (exprb)) < .1 * std::abs((expra) + (exprb)) + .1, \
+      (expra) << " != " << (exprb) << " - " << message)
 #else
 #define IMP_INTERNAL_CHECK(expr, message)
 #define IMP_INTERNAL_CHECK_FLOAT_EQUAL(expra, exprb, message)
 #endif
 
 #if IMP_HAS_CHECKS >= IMP_USAGE
-#define IMP_USAGE_CHECK(expr, message)                                  \
-  do {                                                                  \
-    if (IMP::base::get_check_level() >= IMP::base::USAGE && !(expr)) {  \
-      std::ostringstream imp_check_oss;                                 \
-      imp_check_oss << "Usage check failure: " << message               \
-        IMP_BASE_CONTEXT                                                \
-                    << std::endl;                                       \
-      IMP::base::handle_error(imp_check_oss.str().c_str());             \
-      throw IMP::base::UsageException(imp_check_oss.str().c_str());     \
-    }                                                                   \
+#define IMP_USAGE_CHECK(expr, message)                                     \
+  do {                                                                     \
+    if (IMP::base::get_check_level() >= IMP::base::USAGE && !(expr)) {     \
+      std::ostringstream imp_check_oss;                                    \
+      imp_check_oss << "Usage check failure: " << message IMP_BASE_CONTEXT \
+                    << std::endl;                                          \
+      IMP::base::handle_error(imp_check_oss.str().c_str());                \
+      throw IMP::base::UsageException(imp_check_oss.str().c_str());        \
+    }                                                                      \
   } while (false)
-#define IMP_USAGE_CHECK_FLOAT_EQUAL(expra, exprb, message)              \
-  IMP_USAGE_CHECK(std::abs((expra)-(exprb))                             \
-                  < .1*std::abs((expra)+(exprb))+.1,                    \
-                  expra << " != " << exprb                              \
-                  <<" - " <<  message)
+#define IMP_USAGE_CHECK_FLOAT_EQUAL(expra, exprb, message)                 \
+  IMP_USAGE_CHECK(                                                         \
+      std::abs((expra) - (exprb)) < .1 * std::abs((expra) + (exprb)) + .1, \
+      expra << " != " << exprb << " - " << message)
 #else
 #define IMP_USAGE_CHECK(expr, message)
 #define IMP_USAGE_CHECK_FLOAT_EQUAL(expra, exprb, message)
 #endif
 
-#endif // IMP_DOXYGEN
+#endif  // IMP_DOXYGEN
 
 #if defined(IMP_DOXYGEN) || IMP_HAS_CHECKS == IMP_NONE
 //! Perform some basic validity checks on the object for memory debugging
@@ -305,22 +291,23 @@
 #define IMP_CHECK_OBJECT_IF_NOT_nullptr(obj) IMP_UNUSED(obj)
 #else
 
-#define IMP_CHECK_OBJECT(obj) do {                                      \
-    IMP_UNUSED(obj);                                                    \
-    IMP_INTERNAL_CHECK((obj), "nullptr object");                           \
-    IMP_INTERNAL_CHECK((obj)->get_is_valid(), "Check object "           \
-                       << static_cast<const void*>(obj)                 \
-                       << " was previously freed");                     \
-} while (false)
+#define IMP_CHECK_OBJECT(obj)                                            \
+  do {                                                                   \
+    IMP_UNUSED(obj);                                                     \
+    IMP_INTERNAL_CHECK((obj), "nullptr object");                         \
+    IMP_INTERNAL_CHECK((obj)->get_is_valid(),                            \
+                       "Check object " << static_cast<const void *>(obj) \
+                                       << " was previously freed");      \
+  } while (false)
 
-#define IMP_CHECK_OBJECT_IF_NOT_nullptr(obj) do {                          \
-    if (obj) {                                                          \
-      IMP_INTERNAL_CHECK((obj)->get_is_valid(), "Check object "         \
-                         << static_cast<const void*>(obj)               \
-                         << " was previously freed");                   \
-    }                                                                   \
+#define IMP_CHECK_OBJECT_IF_NOT_nullptr(obj)                               \
+  do {                                                                     \
+    if (obj) {                                                             \
+      IMP_INTERNAL_CHECK((obj)->get_is_valid(),                            \
+                         "Check object " << static_cast<const void *>(obj) \
+                                         << " was previously freed");      \
+    }                                                                      \
   } while (false)
 #endif
 
-
-#endif  /* IMPBASE_CHECK_MACROS_H */
+#endif /* IMPBASE_CHECK_MACROS_H */

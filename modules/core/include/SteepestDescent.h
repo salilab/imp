@@ -10,31 +10,34 @@
 
 #include <IMP/core/core_config.h>
 
-#include <IMP/Optimizer.h>
-#include <IMP/optimizer_macros.h>
+#include <IMP/AttributeOptimizer.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
 //! A simple steepest descent optimizer
- /** Follow the gradient based on the partial derivatives. Multiply by the
-     current step size. If the score gets worse, reduce the step size.
-     If the score gets better, increase the step size if we are sufficiently
-     far from a score of zero. If the score reaches the threshold, quit.
- */
-class IMPCOREEXPORT SteepestDescent : public Optimizer
-{
+/** Follow the gradient based on the partial derivatives. Multiply by the
+    current step size. If the score gets worse, reduce the step size.
+    If the score gets better, increase the step size if we are sufficiently
+    far from a score of zero. If the score reaches the threshold, quit.
+*/
+class IMPCOREEXPORT SteepestDescent : public AttributeOptimizer {
  public:
-  SteepestDescent(Model *m= nullptr);
+  /** \deprecated_at{2.1} Use the constructor that takes a kernel::Model. */
+  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
+  SteepestDescent();
+  SteepestDescent(kernel::Model *m, std::string name = "SteepestDescent%1%");
 
-  IMP_OPTIMIZER(SteepestDescent);
+  virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(SteepestDescent);
 
   //! Set the minimum gradient threshold
-  void set_threshold(Float t) {threshold_=t;}
+  void set_threshold(Float t) { threshold_ = t; }
   //! The starting step size
-  void set_step_size(Float t) {step_size_=t;}
-//! The maximum step size
-  void set_maximum_step_size(Float t) {max_step_size_=t;}
-private:
+  void set_step_size(Float t) { step_size_ = t; }
+  //! The maximum step size
+  void set_maximum_step_size(Float t) { max_step_size_ = t; }
+
+ private:
   Float step_size_;
   Float max_step_size_;
   Float threshold_;
@@ -42,4 +45,4 @@ private:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_STEEPEST_DESCENT_H */
+#endif /* IMPCORE_STEEPEST_DESCENT_H */

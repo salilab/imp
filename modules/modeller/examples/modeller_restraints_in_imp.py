@@ -1,8 +1,8 @@
 ## \example modeller/modeller_restraints_in_imp.py
-## This demonstrates using Modeller restraints as additional terms in the IMP
-## scoring function, so that existing Modeller restraints can be used in
-## combination with new IMP restraints and optimization protocols.
-##
+# This demonstrates using Modeller restraints as additional terms in the IMP
+# scoring function, so that existing Modeller restraints can be used in
+# combination with new IMP restraints and optimization protocols.
+#
 
 import modeller
 import IMP
@@ -23,7 +23,7 @@ r = modeller.forms.gaussian(feature=feat, mean=10.0, stdev=1.0,
 modmodel.restraints.add(r)
 
 # Set up IMP and load the Modeller model in as a new Hierarchy
-m = IMP.Model()
+m = IMP.kernel.Model()
 protein = IMP.modeller.ModelLoader(modmodel).load_atoms(m)
 atoms = IMP.atom.get_by_type(protein, IMP.atom.ATOM_TYPE)
 

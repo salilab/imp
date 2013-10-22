@@ -11,3 +11,4 @@ def _check_particle(p, a):
 
 
 %include "IMP/kernel/declare_Particle.h"
+%include "IMP/kernel/Particle.h"

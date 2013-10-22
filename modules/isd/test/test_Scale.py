@@ -16,20 +16,20 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
-        self.m = IMP.Model()
-        self.sigma = Scale.setup_particle(IMP.Particle(self.m), 1.0)
+        self.m = IMP.kernel.Model()
+        self.sigma = Scale.setup_particle(IMP.kernel.Particle(self.m), 1.0)
 
     def test_Setup1(self):
         "Test scale setup without lower/upper"
-        si = Scale.setup_particle(IMP.Particle(self.m))
+        si = Scale.setup_particle(IMP.kernel.Particle(self.m))
         self.assertAlmostEqual(float(si.get_scale()),1.0, delta=1e-6)
         self.assertAlmostEqual(float(si.get_lower()),0.0, delta=1e-6)
-        self.assertFalse(si.has_upper())
+        self.assertFalse(si.get_has_upper())
         self.assertEqual(si.get_upper(), 1e3000) # 1e3000 ~= inf
 
     def test_Setup2(self):
         "Test scale setup with lower/upper"
-        si = Scale.setup_particle(IMP.Particle(self.m), 2.0)
+        si = Scale.setup_particle(IMP.kernel.Particle(self.m), 2.0)
         si.set_lower(0.1)
         si.set_upper(10)
         self.assertAlmostEqual(float(si.get_scale()),2.0, delta=1e-6)
@@ -38,9 +38,9 @@ class Tests(IMP.test.TestCase):
 
     def test_Nuisance(self):
         "Test that a Nuisance can be converted to a Scale"
-        n=Nuisance.setup_particle(IMP.Particle(self.m),3.0)
+        n=Nuisance.setup_particle(IMP.kernel.Particle(self.m),3.0)
         n.set_lower(0)
-        self.assertTrue(Scale.particle_is_instance(n.get_particle()))
+        self.assertTrue(Scale.get_is_setup(n.get_particle()))
 
     def test_Set(self):
         "Scale set returns nothing"
@@ -66,7 +66,7 @@ class Tests(IMP.test.TestCase):
 
     def test_GetSet2(self):
         "Test Scale get and set (border check)"
-        scale = Scale.setup_particle(IMP.Particle(self.m), 50.0)
+        scale = Scale.setup_particle(IMP.kernel.Particle(self.m), 50.0)
         scale.set_lower(10)
         scale.set_upper(80)
         for si in range(1,100):

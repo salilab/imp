@@ -7,7 +7,8 @@
 
 #include "ResidueContent.h"
 
-#include <IMP/exception.h>
+#include <IMP/base/exception.h>
+#include <IMP/base/check_macros.h>
 #include <IMP/utility.h>
 #include <fstream>
 
@@ -16,7 +17,7 @@
 void ResidueContent::read_content_file(const std::string& file_name) {
   std::ifstream in_file(file_name.c_str());
   if (!in_file) {
-    IMP_THROW("Can't open file " << file_name, IMP::IOException);
+    IMP_THROW("Can't open file " << file_name, IMP::base::IOException);
   }
 
   std::string line;

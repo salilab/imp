@@ -6,8 +6,7 @@
  *
  */
 
-int main()
-{
-  auto a=6;
+int main() {
+  auto a = 6;
   return 0;
 }

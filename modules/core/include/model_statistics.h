@@ -9,11 +9,8 @@
 #define IMPCORE_MODEL_STATISTICS_H
 
 #include <IMP/core/core_config.h>
-#include "PeriodicOptimizerState.h"
-#include "periodic_optimizer_state_macros.h"
-#include <IMP/Model.h>
-#include <IMP/OptimizerState.h>
-#include <IMP/optimizer_state_macros.h>
+#include <IMP/kernel/Model.h>
+#include <IMP/kernel/OptimizerState.h>
 #include <IMP/io.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -24,13 +21,15 @@ IMPCORE_BEGIN_NAMESPACE
     and then has one line per periodic update with comma
     separated scores for each restraint.
 */
-class IMPCOREEXPORT WriteRestraintScoresOptimizerState:
-  public PeriodicOptimizerState {
-  Restraints rs_;
+class IMPCOREEXPORT WriteRestraintScoresOptimizerState
+    : public kernel::OptimizerState {
+  kernel::Restraints rs_;
   base::TextOutput out_;
+
  public:
-  WriteRestraintScoresOptimizerState(const Restraints &rs,
+  WriteRestraintScoresOptimizerState(const kernel::Restraints &rs,
                                      base::TextOutput out);
+
  protected:
   virtual void do_update(unsigned int call_num) IMP_OVERRIDE;
   IMP_OBJECT_METHODS(WriteRestraintScoresOptimizerState);
@@ -38,4 +37,4 @@ class IMPCOREEXPORT WriteRestraintScoresOptimizerState:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_MODEL_STATISTICS_H */
+#endif /* IMPCORE_MODEL_STATISTICS_H */

@@ -7,30 +7,25 @@
  */
 
 #include <IMP/saxs/RadiusOfGyrationRestraint.h>
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 #include <IMP/saxs/utility.h>
 
 IMPSAXS_BEGIN_NAMESPACE
 
-RadiusOfGyrationRestraint::RadiusOfGyrationRestraint(const Particles& particles,
-                            const Profile& exp_profile, const double end_q_rg) :
+RadiusOfGyrationRestraint::RadiusOfGyrationRestraint(const kernel::Particles& particles,
+                            const Profile* exp_profile, const double end_q_rg) :
     IMP::Restraint(IMP::internal::get_model(particles),
                    "SAXS Radius of Gyration restraint"), particles_(particles) {
-  exp_rg_ = exp_profile.radius_of_gyration(end_q_rg);
+  exp_rg_ = exp_profile->radius_of_gyration(end_q_rg);
 }
 
 
-ParticlesTemp RadiusOfGyrationRestraint::get_input_particles() const
+ModelObjectsTemp RadiusOfGyrationRestraint::do_get_inputs() const
 {
-  ParticlesTemp pts(particles_.begin(), particles_.end());
+  kernel::ModelObjectsTemp pts(particles_.begin(), particles_.end());
   return pts;
 }
 
-
-ContainersTemp RadiusOfGyrationRestraint::get_input_containers() const
-{
-  return ContainersTemp();
-}
 
 //! Calculate the score and the derivatives for particles of the restraint.
 /** \param[in] acc If true (not nullptr), partial first derivatives should be
@@ -78,13 +73,6 @@ double RadiusOfGyrationRestraint::unprotected_evaluate(
   IMP_LOG_TERSE( "SAXS RadiusOfGyrationRestraint::done derivatives, score "
           << score << "\n");
   return score;
-}
-
-void RadiusOfGyrationRestraint::do_show(std::ostream& out) const
-{
-   out << "SAXSRadiusOfGyrationRestraint: for " << particles_.size()
-       << " particles, target radius of gyration: " << exp_rg_
-       << std::endl;
 }
 
 IMPSAXS_END_NAMESPACE

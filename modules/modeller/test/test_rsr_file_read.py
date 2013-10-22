@@ -32,6 +32,7 @@ def assertSimilarModellerIMPScores(tst, modeller_model, imp_atoms):
 
 
 class Tests(IMP.test.TestCase):
+    _environ = None
 
     def remove_atom_types(self, hierarchy):
         """Remove atom types as assigned by Modeller so we can set our own"""
@@ -40,16 +41,22 @@ class Tests(IMP.test.TestCase):
         for a in atoms:
             a.get_particle().remove_attribute(k)
 
+    def get_modeller_environ(self):
+        # Reading Modeller libraries is expensive, so cache the environ
+        if not self._environ:
+            e = Tests._environ = environ()
+            e.edat.dynamic_sphere = False
+            e.libs.topology.read('${LIB}/top_heav.lib')
+            e.libs.parameters.read('${LIB}/par.lib')
+        return self._environ
+
     def test_read_static_restraints(self):
         """Check loading of Modeller static restraints"""
-        e = environ()
-        e.edat.dynamic_sphere = False
-        e.libs.topology.read('${LIB}/top_heav.lib')
-        e.libs.parameters.read('${LIB}/par.lib')
+        e = self.get_modeller_environ()
         modmodel = model(e)
         modmodel.build_sequence('GGCC')
 
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         protein = loader.load_atoms(m)
 
@@ -119,7 +126,7 @@ class Tests(IMP.test.TestCase):
             modmodel.restraints.clear()
             modmodel.restraints.add(r)
 
-            rset = IMP.RestraintSet()
+            rset = IMP.kernel.RestraintSet()
             m.add_restraint(rset)
             for rsr in loader.load_static_restraints():
                 rset.add_restraint(rsr)
@@ -128,10 +135,7 @@ class Tests(IMP.test.TestCase):
 
     def test_rsr_file_read(self):
         """Check reading of arbitrary Modeller restraint files"""
-        e = environ()
-        e.edat.dynamic_sphere = False
-        e.libs.topology.read('${LIB}/top_heav.lib')
-        e.libs.parameters.read('${LIB}/par.lib')
+        e = self.get_modeller_environ()
         modmodel = model(e)
         modmodel.build_sequence('GGCC')
         open('test.rsr', 'w').write('MODELLER5 VERSION: MODELLER FORMAT\n'
@@ -139,7 +143,7 @@ class Tests(IMP.test.TestCase):
                                     '     2       1.5380    0.0364')
         modmodel.restraints.append('test.rsr')
         # Deprecated interface
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         protein = loader.load_atoms(m)
         r = IMP.modeller.load_restraints_file('test.rsr', protein)
@@ -149,7 +153,7 @@ class Tests(IMP.test.TestCase):
         assertSimilarModellerIMPScores(self, modmodel, protein)
 
         # Need atoms before loading restraints
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         self.assertRaises(ValueError, loader.load_static_restraints_file,
                           'test.rsr')
@@ -162,17 +166,14 @@ class Tests(IMP.test.TestCase):
 
     def test_bond_restraints(self):
         """Check bond restraints against Modeller"""
-        e = environ()
-        e.edat.dynamic_sphere = False
-        e.libs.topology.read('${LIB}/top_heav.lib')
-        e.libs.parameters.read('${LIB}/par.lib')
+        e = self.get_modeller_environ()
         modmodel = model(e)
         modmodel.build_sequence('G')
         modmodel.restraints.make(selection(modmodel), restraint_type='BOND',
                                  spline_on_site=False,
                                  residue_span_range=(0, 99999))
 
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         protein = loader.load_atoms(m)
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path('top.lib'),
@@ -190,17 +191,14 @@ class Tests(IMP.test.TestCase):
 
     def test_improper_restraints(self):
         """Check improper restraints against Modeller"""
-        e = environ()
-        e.edat.dynamic_sphere = False
-        e.libs.topology.read('${LIB}/top_heav.lib')
-        e.libs.parameters.read('${LIB}/par.lib')
+        e = self.get_modeller_environ()
         modmodel = model(e)
         modmodel.build_sequence('A')
         modmodel.restraints.make(selection(modmodel), restraint_type='IMPROPER',
                                  spline_on_site=False,
                                  residue_span_range=(0, 99999))
 
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         protein = loader.load_atoms(m)
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path('top.lib'),
@@ -218,17 +216,14 @@ class Tests(IMP.test.TestCase):
 
     def test_angle_restraints(self):
         """Check angle restraints against Modeller"""
-        e = environ()
-        e.edat.dynamic_sphere = False
-        e.libs.topology.read('${LIB}/top_heav.lib')
-        e.libs.parameters.read('${LIB}/par.lib')
+        e = self.get_modeller_environ()
         modmodel = model(e)
         modmodel.build_sequence('A')
         modmodel.restraints.make(selection(modmodel), restraint_type='ANGLE',
                                  spline_on_site=False,
                                  residue_span_range=(0, 99999))
 
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         protein = loader.load_atoms(m)
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path('top.lib'),
@@ -247,17 +242,14 @@ class Tests(IMP.test.TestCase):
 
     def test_dihedral_restraints(self):
         """Check dihedral restraints against Modeller"""
-        e = environ()
-        e.edat.dynamic_sphere = False
-        e.libs.topology.read('${LIB}/top_heav.lib')
-        e.libs.parameters.read('${LIB}/par.lib')
+        e = self.get_modeller_environ()
         modmodel = model(e)
         modmodel.build_sequence('A')
         modmodel.restraints.make(selection(modmodel), restraint_type='DIHEDRAL',
                                  spline_on_site=False,
                                  residue_span_range=(0, 99999))
 
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         protein = loader.load_atoms(m)
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path('top.lib'),

@@ -65,14 +65,20 @@ def show_graphviz(g):
         import sys
         print >> sys.stderr, "The dot command from the graphviz package was not found. Please make sure it is in the PATH passed to IMP."
         return
-    try:
-        import platform
-        if platform.system() =="Darwin":
-            cmd="open"
-        else:
-            cmd="acroread"
-        print "launching viewer", cmd
-        subprocess.Popen([cmd, tfon])
-    except:
+    import platform
+    if platform.system() =="Darwin":
+        cmd=["open"]
+    else:
+        cmd=["gv", "acroread", "xpdf"]
+    success = False
+    for c in cmd:
+        print "launching viewer", c
+        try:
+            subprocess.check_call([c, tfon])
+            success = True
+            break
+        except:
+            pass
+    if not success:
         print "Could not display file. It is saved at", tfon
     return tfon

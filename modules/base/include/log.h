@@ -33,7 +33,7 @@ IMPBASE_BEGIN_NAMESPACE
     IMP::Object::set_log_level()) which is used when executing code on
     that object.
 
-    Logging is provided by IMP/log.h.
+    Logging is provided by IMP/base/log.h.
 
     People implementing IMP::Object classes should also see IMP_OBJECT_LOG()
     and IMP::SetLogState.
@@ -57,13 +57,20 @@ IMPBASEEXPORT void add_to_log(std::string to_write);
 #endif
 #endif
 
-
 //! Write a string to the log, for python
 IMPBASEEXPORT void add_to_log(LogLevel level, std::string to_write);
 
 //! Set the current global log level
-/** Note that this should not, currently, be used directly
-    during Model::evaluate() calls. */
+/** Set the current global log level
+
+    @note may be overriden by set_log_level of specific objects that inherit
+          from IMP::base::Object
+    @note this global method should not, currently, be used directly during
+    kernel::Model::evaluate() calls.
+
+    \see get_log_level()
+    \see IMP::base::Object::set_log_level()
+*/
 IMPBASEEXPORT void set_log_level(LogLevel l);
 
 //! Set whether log messages are tagged with the current log time
@@ -72,17 +79,18 @@ IMPBASEEXPORT void set_log_timer(bool tb);
 //! Reset the log timer
 IMPBASEEXPORT void reset_log_timer();
 
+//! Get the currently active global log level
+/** Get the currently active global log level
 
-//! Get the currently active log level
-/** This may not always match the value passed to set_log_level()
-    as objects can temporarily override the global level
-    while they are evaluating.
+    @note This may not always match the value passed to set_log_level()
+          as objects can temporarily override the global level
+          while they are evaluating.
+
+    \see set_log_level()
+    \see IMP::base::Object::set_log_level()
+
  */
-inline LogLevel get_log_level()
-{
-  return LogLevel(internal::log_level);
-}
-
+inline LogLevel get_log_level() { return LogLevel(internal::log_level); }
 
 #if IMP_BASE_HAS_LOG4CXX
 inline log4cxx::LoggerPtr get_logger() {
@@ -91,15 +99,11 @@ inline log4cxx::LoggerPtr get_logger() {
 }
 #else
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-inline bool get_is_log_output(LogLevel l)
-{
-  return l <= get_log_level();
-}
+inline bool get_is_log_output(LogLevel l) { return l <= get_log_level(); }
 #endif
 #endif
 
 /** @} */
-
 
 /** \name Create a progress bar in the terminal
 
@@ -110,7 +114,7 @@ inline bool get_is_log_output(LogLevel l)
     See IMP_PROGRESS_DISPLAY().
 */
 IMPBASEEXPORT void set_progress_display(std::string description,
-                                    unsigned int steps);
+                                        unsigned int steps);
 /** Set the current progress. When it equals the number of steps,
     the bar is done.*/
 IMPBASEEXPORT void add_to_progress_display(unsigned int step = 1);
@@ -119,5 +123,4 @@ IMPBASEEXPORT void add_to_progress_display(unsigned int step = 1);
 
 IMPBASE_END_NAMESPACE
 
-
-#endif  /* IMPBASE_LOG_H */
+#endif /* IMPBASE_LOG_H */

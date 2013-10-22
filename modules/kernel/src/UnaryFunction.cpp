@@ -8,8 +8,7 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-UnaryFunction::UnaryFunction(std::string name): Object(name)
-{
+UnaryFunction::UnaryFunction(std::string name) : Object(name) {
   /* Implemented here rather than in the header so that UnaryFunction
      symbols are present in the kernel DSO */
 }

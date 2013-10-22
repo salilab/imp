@@ -37,15 +37,15 @@ void read_trans_file(const std::string file_name,
             << file_name << std::endl;
 }
 
-void transform(IMP::Particles& ps, IMP::algebra::Transformation3D& t) {
-  for(IMP::Particles::iterator it = ps.begin(); it != ps.end(); it++) {
+void transform(IMP::kernel::Particles& ps, IMP::algebra::Transformation3D& t) {
+  for(IMP::kernel::Particles::iterator it = ps.begin(); it != ps.end(); it++) {
     IMP::core::XYZ d(*it);
     d.set_coordinates(t * d.get_coordinates());
   }
 }
 
-void get_atom_2_residue_map(const IMP::Particles& atom_particles,
-                            const IMP::Particles& residue_particles,
+void get_atom_2_residue_map(const IMP::kernel::Particles& atom_particles,
+                            const IMP::kernel::Particles& residue_particles,
                             std::vector<int>& atom_2_residue_map) {
   atom_2_residue_map.resize(atom_particles.size());
   unsigned int residue_index=0;
@@ -60,7 +60,7 @@ void get_atom_2_residue_map(const IMP::Particles& atom_particles,
   }
 }
 
-IMP::algebra::Vector3D get_ca_coordinate(const IMP::Particles& ca_atoms,
+IMP::algebra::Vector3D get_ca_coordinate(const IMP::kernel::Particles& ca_atoms,
                                          int residue_index, char chain_id) {
   IMP::algebra::Vector3D v(0,0,0);
   for(unsigned int i=0; i<ca_atoms.size(); i++) {
@@ -79,7 +79,7 @@ IMP::algebra::Vector3D get_ca_coordinate(const IMP::Particles& ca_atoms,
   //  return v;
 }
 
-void get_residue_solvent_accessibility(const IMP::Particles& residue_particles,
+void get_residue_solvent_accessibility(const IMP::kernel::Particles& residue_particles,
                                   IMP::Floats& residue_solvent_accessibility) {
   IMP::saxs::FormFactorTable* ft = IMP::saxs::default_form_factor_table();
   IMP::saxs::FormFactorType ff_type = IMP::saxs::CA_ATOMS;

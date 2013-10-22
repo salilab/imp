@@ -11,7 +11,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 FittingSolutionRecords get_close_to_point(
   const FittingSolutionRecords &fit_sols,
   atom::Hierarchy mh,
-  IMP::Particle *ap,
+  IMP::kernel::Particle *ap,
   Float dist) {
   FittingSolutionRecords pruned_fit_sols;
   Float dist2 = dist*dist;

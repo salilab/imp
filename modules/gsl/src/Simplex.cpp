@@ -11,17 +11,20 @@
 
 IMPGSL_BEGIN_NAMESPACE
 
-Simplex::Simplex(Model *m): GSLOptimizer(m) {
-  min_length_=.1;
-  max_length_=1;
+Simplex::Simplex(kernel::Model *m) : GSLOptimizer(m) {
+  min_length_ = .1;
+  max_length_ = 1;
 }
 
-
-void Simplex::do_show(std::ostream &) const {}
+Simplex::Simplex() : GSLOptimizer() {
+  IMPGSL_DEPRECATED_FUNCTION_DEF(2.1, "Pass the model to the constructor.");
+  min_length_ = .1;
+  max_length_ = 1;
+}
 
 Float Simplex::do_optimize(unsigned int nsteps) {
   // we have an old version of GSL so can't use the 2 version
-  const gsl_multimin_fminimizer_type *t=gsl_multimin_fminimizer_nmsimplex;
+  const gsl_multimin_fminimizer_type *t = gsl_multimin_fminimizer_nmsimplex;
   return GSLOptimizer::optimize(nsteps, t, min_length_, max_length_);
 }
 

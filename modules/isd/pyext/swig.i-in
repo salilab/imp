@@ -6,9 +6,7 @@
    %include lines as well as any inline C++ code (or at least any such code which uses
    the types in question).
   */
-IMP_SWIG_OBJECT(IMP::isd, ISDRestraint, ISDRestraints);
 IMP_SWIG_OBJECT(IMP::isd, JeffreysRestraint, JeffreysRestraints);
-IMP_SWIG_OBJECT(IMP::isd, SlidingPriorRestraint, SlidingPriorRestraints);
 IMP_SWIG_OBJECT(IMP::isd, vonMisesKappaJeffreysRestraint, vonMisesKappaJeffreysRestraints);
 IMP_SWIG_OBJECT(IMP::isd, vonMisesKappaConjugateRestraint, vonMisesKappaConjugateRestraints);
 IMP_SWIG_OBJECT(IMP::isd, FNormal, FNormals);
@@ -18,15 +16,13 @@ IMP_SWIG_DECORATOR(IMP::isd, Nuisance, Nuisances);
 IMP_SWIG_DECORATOR(IMP::isd, Scale, Scales);
 IMP_SWIG_DECORATOR(IMP::isd, Switching, Switchings);
 IMP_SWIG_OBJECT(IMP::isd, NOERestraint, NOERestraints);
+IMP_SWIG_DECORATOR(IMP::isd, Weight, Weights);
 IMP_SWIG_OBJECT(IMP::isd, GaussianRestraint, GaussianRestraints);
 IMP_SWIG_OBJECT(IMP::isd, LognormalRestraint, LognormalRestraints);
 IMP_SWIG_OBJECT(IMP::isd, AmbiguousNOERestraint, AmbigousNOERestraints);
 IMP_SWIG_OBJECT(IMP::isd, MarginalNOERestraint, AmbigousNOERestraints);
 IMP_SWIG_OBJECT(IMP::isd, MarginalHBondRestraint, AmbigousHBondRestraints);
 IMP_SWIG_OBJECT(IMP::isd, TALOSRestraint, TALOSRestraints);
-IMP_SWIG_OBJECT(IMP::isd, LogicalORRestraint, LogicalORRestraints);
-IMP_SWIG_OBJECT(IMP::isd, NuisanceRangeModifier, NuisanceRangeModifiers);
-IMP_SWIG_OBJECT(IMP::isd, MaintainScaleOrderConstraint, MaintainScaleOrderConstraints);
 IMP_SWIG_OBJECT(IMP::isd, RepulsiveDistancePairScore, RepulsiveDistancePairScores);
 IMP_SWIG_OBJECT(IMP::isd, AmbiguousRestraint, AmbiguousRestraints);
 IMP_SWIG_OBJECT(IMP::isd, UnivariateFunction, UnivariateFunctions);
@@ -36,14 +32,16 @@ IMP_SWIG_OBJECT(IMP::isd, BivariateFunction,  BivariateFunctions);
 IMP_SWIG_OBJECT(IMP::isd, Covariance1DFunction, Covariance1DFunctions);
 IMP_SWIG_OBJECT(IMP::isd, GaussianProcessInterpolation, GaussianProcessInterpolations);
 IMP_SWIG_OBJECT(IMP::isd, GaussianProcessInterpolationRestraint, GaussianProcessInterpolationRestraints);
-#ifdef IMP_ISD_USE_CHOLMOD
-IMP_SWIG_OBJECT(IMP::isd, GaussianProcessInterpolationSparse, GaussianProcessInterpolationSparses);
-IMP_SWIG_OBJECT(IMP::isd, GaussianProcessInterpolationRestraintSparse, GaussianProcessInterpolationRestraintSparses);
-#endif
-%warnfilter(302);
 IMP_SWIG_OBJECT(IMP::isd, MolecularDynamics, MolecularDynamicss);
 IMP_SWIG_OBJECT(IMP::isd, MolecularDynamicsMover, MolecularDynamicsMovers);
 IMP_SWIG_OBJECT(IMP::isd, HybridMonteCarlo, HybridMonteCarlos);
+IMP_SWIG_OBJECT(IMP::isd, FretData, FretDatas);
+IMP_SWIG_OBJECT(IMP::isd, FretRestraint, FretRestraints);
+IMP_SWIG_OBJECT(IMP::isd, CrossLinkData, CrossLinkDatas);
+IMP_SWIG_OBJECT(IMP::isd, CysteineCrossLinkData, CysteineCrossLinkDatas);
+IMP_SWIG_OBJECT(IMP::isd, CysteineCrossLinkRestraint, CysteineCrossLinkRestraints);
+IMP_SWIG_OBJECT(IMP::isd, WeightMover, WeightMovers);
+IMP_SWIG_OBJECT(IMP::isd, WeightRestraint, WeightRestraints);
 
 /* One can add python methods to your module by putting code in %pythoncode blocks
    This function can be called as IMP.isds.say_hello(). */
@@ -63,14 +61,11 @@ def create_model_and_particles():
 
 /* Wrap our own classes. Each header in the module should be listed here with a
    %include line.*/
-%include "IMP/isd/ISDRestraint.h"
 %include "IMP/isd/Nuisance.h"
 %include "IMP/isd/Scale.h"
 %include "IMP/isd/Switching.h"
-%include "IMP/isd/NuisanceRangeModifier.h"
-%include "IMP/isd/MaintainScaleOrderConstraint.h"
+%include "IMP/isd/Weight.h"
 %include "IMP/isd/JeffreysRestraint.h"
-%include "IMP/isd/SlidingPriorRestraint.h"
 %include "IMP/isd/FNormal.h"
 %include "IMP/isd/vonMises.h"
 %include "IMP/isd/vonMisesSufficient.h"
@@ -83,20 +78,22 @@ def create_model_and_particles():
 %include "IMP/isd/MarginalNOERestraint.h"
 %include "IMP/isd/MarginalHBondRestraint.h"
 %include "IMP/isd/TALOSRestraint.h"
-%include "IMP/isd/LogicalORRestraint.h"
 %include "IMP/isd/RepulsiveDistancePairScore.h"
 %include "IMP/isd/AmbiguousRestraint.h"
 %include "IMP/isd/univariate_functions.h"
 %include "IMP/isd/bivariate_functions.h"
 %include "IMP/isd/GaussianProcessInterpolation.h"
 %include "IMP/isd/GaussianProcessInterpolationRestraint.h"
-#ifdef IMP_ISD_USE_CHOLMOD
-%include "IMP/isd/GaussianProcessInterpolationSparse.h"
-%include "IMP/isd/GaussianProcessInterpolationRestraintSparse.h"
-#endif
 %include "IMP/isd/MolecularDynamics.h"
 %include "IMP/isd/MolecularDynamicsMover.h"
 %include "IMP/isd/HybridMonteCarlo.h"
+%include "IMP/isd/FretData.h"
+%include "IMP/isd/FretRestraint.h"
+%include "IMP/isd/CysteineCrossLinkData.h"
+%include "IMP/isd/CrossLinkData.h"
+%include "IMP/isd/CysteineCrossLinkRestraint.h"
+%include "IMP/isd/WeightMover.h"
+%include "IMP/isd/WeightRestraint.h"
 
 namespace IMP {
   namespace atom {

@@ -1,6 +1,6 @@
 /**
  *  \file WeighedExcludedVolumeRestraint2.cpp
- *  \brief Calculate excluded volume bewteen rigid bodies.
+ *  \brief Calculate excluded volume between rigid bodies.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -9,11 +9,11 @@
 #include <IMP/multifit/ComplementarityRestraint.h>
 #include <IMP/multifit/internal/GeometricComplementarity.h>
 #include <IMP/core/DataObject.h>
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 IMP::algebra::DenseGrid3D<float>
-ComplementarityRestraint::get_grid(const ParticlesTemp &a,
+ComplementarityRestraint::get_grid(const kernel::ParticlesTemp &a,
                                            double thickness,
                                            double value,
                                            double interior_thickness,
@@ -31,7 +31,7 @@ ComplementarityRestraint::get_grid(const ParticlesTemp &a,
 
 ComplementarityRestraint::GridObject *
 ComplementarityRestraint::get_grid_object(core::RigidBody rb,
-                                                  const ParticlesTemp &a,
+                                                  const kernel::ParticlesTemp &a,
                                                   ObjectKey ok,
                                                   double thickness,
                                                   double value,
@@ -52,9 +52,10 @@ ComplementarityRestraint::get_grid_object(core::RigidBody rb,
               << ", " << grid.get_number_of_voxels(1)
               << ", " << grid.get_number_of_voxels(2)
               << std::endl);
-      Pointer<GridObject> n(new GridObject(GridPair(rb.get_reference_frame()
-                                                    .get_transformation_to(),
-                                                    grid)));
+      base::Pointer<GridObject>
+        n(new GridObject(GridPair(rb.get_reference_frame()
+                                  .get_transformation_to(),
+                                  grid)));
       rb->add_cache_attribute(ok, n);
     }
     IMP_CHECK_OBJECT(rb->get_value(ok));
@@ -64,11 +65,11 @@ ComplementarityRestraint::get_grid_object(core::RigidBody rb,
   }
 ComplementarityRestraint
 ::ComplementarityRestraint(
-                                   const ParticlesTemp &a,
-                                   const ParticlesTemp &b,
+                                   const kernel::ParticlesTemp &a,
+                                   const kernel::ParticlesTemp &b,
                                    std::string name)
  :
-    Restraint(IMP::internal::get_model(a), name), a_(a), b_(b),
+    kernel::Restraint(IMP::internal::get_model(a), name), a_(a), b_(b),
   rba_(core::RigidMember(a[0]).get_rigid_body()),
   rbb_(core::RigidMember(b[0]).get_rigid_body()),
   ok_("wev grid"),
@@ -119,11 +120,11 @@ double ComplementarityRestraint::unprotected_evaluate_if_good(
                                              max);
   //std::cout<<"max penet score:"<<params.maximum_penetration_score<<"(" <<
   //maximum_penetration_score_<<","<<vol<<","<<max<<")"<<std::endl;
-  Pointer<GridObject> ga=get_grid_object(rba_, a_, ok_,
+  base::Pointer<GridObject> ga=get_grid_object(rba_, a_, ok_,
                                          complementarity_thickness_,
                                          complementarity_value_,
                                          interior_thickness_, voxel_size_);
-  Pointer<GridObject> gb=get_grid_object(rbb_, b_, ok_,
+  base::Pointer<GridObject> gb=get_grid_object(rbb_, b_, ok_,
                                          complementarity_thickness_,
                                          complementarity_value_,
                                          interior_thickness_, voxel_size_);
@@ -175,31 +176,13 @@ void ComplementarityRestraint::update_voxel() {
   voxel_size_=val/2.0;
 }
 
-ParticlesTemp ComplementarityRestraint::get_input_particles() const
+ModelObjectsTemp ComplementarityRestraint::do_get_inputs() const
 {
-  ParticlesTemp ret= a_;
+  kernel::ParticlesTemp ret= a_;
   ret.insert(ret.end(), b_.begin(), b_.end());
   ret.push_back(rba_);
   ret.push_back(rbb_);
   return ret;
-}
-
-ContainersTemp ComplementarityRestraint::get_input_containers() const {
-  return ContainersTemp();
-}
-
-void ComplementarityRestraint::do_show(std::ostream& out) const
-{
-  out<<get_name()<<" with parameters:"<<
-    " maximum_separation_: "<<maximum_separation_<<
-    ", maximum_penetration_score: "<<maximum_penetration_score_<<
-    ", maximum_penetration: "<<maximum_penetration_<<
-    ", complementarity_thickness: "<<complementarity_thickness_<<
-    ", complementarity_value: "<<complementarity_value_<<
-    ", penetration_coef: "<<penetration_coef_<<
-    ", boundary_coef: "<<boundary_coef_<<
-    ", interior_thickness: "<<interior_thickness_<<
-    ", voxel_size: "<<voxel_size_<<std::endl;
 }
 
 IMPMULTIFIT_END_NAMESPACE

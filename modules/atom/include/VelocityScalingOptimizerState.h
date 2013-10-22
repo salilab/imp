@@ -10,7 +10,7 @@
 #define IMPATOM_VELOCITY_SCALING_OPTIMIZER_STATE_H
 
 #include <IMP/atom/atom_config.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/base_types.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/optimizer_state_macros.h>
@@ -23,34 +23,32 @@ IMPATOM_BEGIN_NAMESPACE
     (Note that this results in discontinuous dynamics.)
     \see MolecularDynamics
  */
-class IMPATOMEXPORT VelocityScalingOptimizerState : public OptimizerState
-{
+class IMPATOMEXPORT VelocityScalingOptimizerState : public OptimizerState {
  public:
-  VelocityScalingOptimizerState(const Particles &pis, Float temperature,
+  /** \deprecated_at{2.1} Use set_period() instead. */
+  IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
+  VelocityScalingOptimizerState(const kernel::Particles &pis, Float temperature,
                                 unsigned skip_steps);
-
-  //! Set the number of update calls to skip between rescaling.
-  void set_skip_steps(unsigned skip_steps) {
-    skip_steps_ = skip_steps;
-  }
+  VelocityScalingOptimizerState(kernel::Model *m,
+                                kernel::ParticleIndexesAdaptor pis,
+                                double temperature);
 
   //! Set the particles to use.
-  void set_particles(const Particles &pis) {
-    pis_=pis;
-  }
+  void set_particles(const kernel::Particles &pis) { pis_ = pis; }
 
   //! Set the temperature to use.
-  void set_temperature(Float temperature) {
-    temperature_ = temperature;
-  }
+  void set_temperature(Float temperature) { temperature_ = temperature; }
 
   //! Rescale the velocities now
   void rescale_velocities() const;
 
-  IMP_OPTIMIZER_STATE(VelocityScalingOptimizerState);
+  IMP_OBJECT_METHODS(VelocityScalingOptimizerState);
 
-private:
-  Particles pis_;
+ protected:
+  virtual void do_update(unsigned int call) IMP_OVERRIDE;
+
+ private:
+  kernel::Particles pis_;
   Float temperature_;
   unsigned skip_steps_;
   unsigned call_number_;
@@ -59,8 +57,8 @@ private:
   FloatKey vs_[3];
 };
 
-IMP_OBJECTS(VelocityScalingOptimizerState,VelocityScalingOptimizerStates);
+IMP_OBJECTS(VelocityScalingOptimizerState, VelocityScalingOptimizerStates);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_VELOCITY_SCALING_OPTIMIZER_STATE_H */
+#endif /* IMPATOM_VELOCITY_SCALING_OPTIMIZER_STATE_H */

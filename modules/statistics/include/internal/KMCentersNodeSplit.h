@@ -25,28 +25,27 @@ IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
     high dimensions]. We also store pointers to the 2 children.
     \unstable{KMCentersNodeSplit}
 */
-class IMPSTATISTICSEXPORT KMCentersNodeSplit : public KMCentersNode
-{
-public:
-  KMCentersNodeSplit(){}
+class IMPSTATISTICSEXPORT KMCentersNodeSplit : public KMCentersNode {
+ public:
+  KMCentersNodeSplit() {}
   //!Constractor
-    /**
+  /**
 \param[in] dim the dimension of the points
 \param[in] bb the bounding box
 \param[in] cd the cutting dimension
 \param[in] cv the cutting value
      */
-  KMCentersNodeSplit(
-   int level,KMRectangle &bb,KMCenters *centers,int cd,double cv, double lv,
-   double hv, KMCentersNode * lc=nullptr, KMCentersNode * hc=nullptr)
-    : KMCentersNode(bb, centers,level) {
-  cut_dim_ = cd;
-  cut_val_ = cv;
-  cd_bnds_[0] = lv; // lower bound for rectangle
-  cd_bnds_[1] = hv; // upper bound for rectangle
-  children_[0]= lc;  // left child
-  children_[1] = hc; // right child
- }
+  KMCentersNodeSplit(int level, KMRectangle &bb, KMCenters *centers, int cd,
+                     double cv, double lv, double hv,
+                     KMCentersNode *lc = nullptr, KMCentersNode *hc = nullptr)
+      : KMCentersNode(bb, centers, level) {
+    cut_dim_ = cd;
+    cut_val_ = cv;
+    cd_bnds_[0] = lv;   // lower bound for rectangle
+    cd_bnds_[1] = hv;   // upper bound for rectangle
+    children_[0] = lc;  // left child
+    children_[1] = hc;  // right child
+  }
   virtual ~KMCentersNodeSplit();
   //! Compute the sums of a split node.
   /** The sums of such a node derive from the children.
@@ -54,11 +53,10 @@ public:
       on that dimension.
    */
   void compute_sums();
- //! Compute neighbors for centers
- void get_neighbors(const Ints &cands,
-     KMPointArray *sums, KMPoint *sum_sqs,Ints *weights);
- void get_assignments(const Ints &cands,
-                      Ints &close_center);
+  //! Compute neighbors for centers
+  void get_neighbors(const Ints &cands, KMPointArray *sums, KMPoint *sum_sqs,
+                     Ints *weights);
+  void get_assignments(const Ints &cands, Ints &close_center);
   /** Let m denote the number of data points
       descended from this node.  Then with probability 1/(2m-1), this cell is
       chosen.  Otherwise, let mL and mR denote the number of points associated
@@ -73,19 +71,20 @@ public:
       sampled with probability 1/(2m-1), and the subtrees should be sampled
       with the given probabilities.
     */
-    KMPoint sample_center();
+  KMPoint sample_center();
 
-    //! Print node
-    void show(std::ostream &out = std::cout) const;
-protected:
-    int cut_dim_; // dim orthogonal to cutting plane
-    double cut_val_;  // location of cutting plane
-    double cd_bnds_[2]; // lower and upper bounds of
-                        // rectangle along cut_dim
-    KMCentersNode *children_[2];  // left and right children
+  //! Print node
+  void show(std::ostream &out = std::cout) const;
+
+ protected:
+  int cut_dim_;                 // dim orthogonal to cutting plane
+  double cut_val_;              // location of cutting plane
+  double cd_bnds_[2];           // lower and upper bounds of
+                                // rectangle along cut_dim
+  KMCentersNode *children_[2];  // left and right children
 };
 
 #endif
 
 IMPSTATISTICS_END_INTERNAL_NAMESPACE
-#endif  /* IMPSTATISTICS_INTERNAL_KM_CENTERS_NODE_SPLIT_H */
+#endif /* IMPSTATISTICS_INTERNAL_KM_CENTERS_NODE_SPLIT_H */

@@ -22,8 +22,8 @@
   }
 }
 
-%feature("ref")   IMP::base::RefCounted "IMP::base::internal::ref($this);"
-%feature("unref") IMP::base::RefCounted "IMP::base::internal::unref($this);"
+%feature("ref")   IMP::base::Object "IMP::base::internal::ref($this);"
+%feature("unref") IMP::base::Object "IMP::base::internal::unref($this);"
 
 %include "IMP/base/object_cast.h"
 
@@ -92,6 +92,7 @@ IMP_SWIG_VALUE(IMP::base::internal, _Protection, _Protections);
 %include "IMP/base/live_objects.h"
 %include "IMP/base/deprecation.h"
 %include "IMP/base/threads.h"
+%include "IMP/base/statistics.h"
 
 %pythoncode %{
 

@@ -15,8 +15,8 @@
 #include "IMP/em/DensityHeader.h"
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/endian.h>
-#include <IMP/exception.h>
-#include <IMP/log.h>
+#include <IMP/base/exception.h>
+#include <IMP/base/log.h>
 #include <typeinfo>
 #include <complex>
 #include <string>
@@ -83,8 +83,7 @@ public:
   void write(const char *filename,
              const float *data,const DensityHeader &header);
 #endif
-  IMP_OBJECT_INLINE(SpiderMapReaderWriter,
-                    {out << "SpiderMapReaderWriter";}, {});
+  IMP_OBJECT_METHODS(SpiderMapReaderWriter);
 };
 
 IMPEM_END_NAMESPACE

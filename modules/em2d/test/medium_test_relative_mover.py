@@ -85,7 +85,7 @@ class Tests(IMP.test.TestCase):
         self.get_input_file_name("transforms-1suvA-1suvE_reduced.txt")
         fn_tr2  = \
         self.get_input_file_name("transforms-1suvC-1suvE_filtered.txt")
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         sel = atom.ATOMPDBSelector()
         h_rec1 =  atom.read_pdb(fn_rec1, m, sel)
         rb_rec1 = atom.create_rigid_body(h_rec1)
@@ -129,11 +129,11 @@ class Tests(IMP.test.TestCase):
                 rb_lig.set_reference_frame(r)
                 docked_coords = [core.XYZ(l) for l in atom.get_leaves(h_ligand)]
                 rmsd = atom.get_rmsd(current_coords, docked_coords)
-                if(rmsd < 0.5):
+                if rmsd < 0.1:
                     found = True
             self.assertTrue(found, msg= "the proposed move is not " \
                     "in the relative solutions")
-
+            mv.accept()
 #            os.remove(fn_proposed)
 
 if __name__ == '__main__':

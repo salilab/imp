@@ -8,8 +8,8 @@
 #ifndef IMPMULTIFIT_FFT_FITTING_UTILS_H
 #define IMPMULTIFIT_FFT_FITTING_UTILS_H
 
-#include <IMP/log.h>
-#include <IMP/exception.h>
+#include <IMP/base/log.h>
+#include <IMP/base/exception.h>
 #include <IMP/multifit/multifit_config.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/atom/Hierarchy.h>

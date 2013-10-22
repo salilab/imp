@@ -8,26 +8,24 @@
 
 #include "IMP/display/Colored.h"
 
-
 IMPDISPLAY_BEGIN_NAMESPACE
 
-
-void Colored::show(std::ostream &out) const {
+void Colored::show(std::ostream& out) const {
   out << "Colored " << get_color() << std::endl;
 }
 
 namespace {
-  FloatKeys init_color_keys() {
-    FloatKeys ret;
-    ret.push_back(FloatKey("display red"));
-    ret.push_back(FloatKey("display green"));
-    ret.push_back(FloatKey("display blue"));
-    return ret;
-  }
+FloatKeys init_color_keys() {
+  FloatKeys ret;
+  ret.push_back(FloatKey("display red"));
+  ret.push_back(FloatKey("display green"));
+  ret.push_back(FloatKey("display blue"));
+  return ret;
+}
 }
 
 const FloatKeys& Colored::get_color_keys() {
-  static FloatKeys rks=init_color_keys();
+  static FloatKeys rks = init_color_keys();
   return rks;
 }
 

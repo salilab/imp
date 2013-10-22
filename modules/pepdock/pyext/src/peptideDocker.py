@@ -60,7 +60,7 @@ class PeptideDocker:
 
         pdbName = self.getParam("native_pdb_input_file")
 
-        self.model = IMP.Model()
+        self.model = IMP.kernel.Model()
 
         self.protein = IMP.atom.read_pdb(pdbName, self.model, IMP.atom.ATOMPDBSelector())
 
@@ -324,7 +324,7 @@ class PeptideDocker:
 
             initialPositionFile = self.getParam("saved_initial_atom_positions")
             print "reading initial positions from %s" % initialPositionFile
-            initialModel = IMP.Model()
+            initialModel = IMP.kernel.Model()
             initialProtein = IMP.atom.read_pdb(initialPositionFile, initialModel, IMP.atom.ATOMPDBSelector())
             initialLeaves = IMP.atom.get_leaves(initialProtein)
             for initialLeaf in initialLeaves:
@@ -438,7 +438,7 @@ class PeptideDocker:
 
         #Restraint decomposition has been a little touchy; a couple workarounds contained
         decomposedRestraintTemp = listBondRestraint.create_decomposition()
-        decomposedRestraints = IMP.RestraintSet.get_from(decomposedRestraintTemp)
+        decomposedRestraints = IMP.kernel.RestraintSet.get_from(decomposedRestraintTemp)
         rs_restraints= decomposedRestraints.get_restraints()
 
         #manually remove the full restraint after getting the decomposition
@@ -755,7 +755,7 @@ class PeptideDocker:
 
         if (self.wroteNativeProtein == 0):
             pdbName = self.getParam("native_pdb_input_file")
-            self.nativeModel = IMP.Model()
+            self.nativeModel = IMP.kernel.Model()
             self.nativeProtein = IMP.atom.read_pdb(pdbName, self.nativeModel, IMP.atom.ATOMPDBSelector())
             self.wroteNativeProtein = 1
 

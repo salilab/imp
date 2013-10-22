@@ -55,7 +55,7 @@ protected:
   void set_edges(double voxel_size=3.);
   /*  bool are_particles_close(core::RigidBody rb1,
       core::RigidBody rb2);*/
-  Pointer<const IMP::statistics::internal::XYZDataPoints> data_;
+  base::Pointer<const IMP::statistics::internal::XYZDataPoints> data_;
   std::vector<algebra::Vector3Ds> cluster_sets_;
   const IMP::statistics::internal::ClusteringEngine *cluster_engine_;
   IntPairs edges_;

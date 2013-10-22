@@ -9,24 +9,24 @@ class Tests(IMP.test.TestCase):
 
     def test_create(self):
         """Check creation of Charged decorators"""
-        m = IMP.Model()
-        p = IMP.Particle(m)
+        m = IMP.kernel.Model()
+        p = IMP.kernel.Particle(m)
         v = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
         # Can create decorators using a Vector3D and charge, or just charge
         # if the particle is already an XYZ
         IMP.atom.Charged.setup_particle(p, v, -0.5)
-        p = IMP.Particle(m)
+        p = IMP.kernel.Particle(m)
         IMP.core.XYZ.setup_particle(p, v)
         IMP.atom.Charged.setup_particle(p, -0.5)
-        p = IMP.Particle(m)
+        p = IMP.kernel.Particle(m)
         if IMP.base.get_check_level() != IMP.base.NONE:
             self.assertRaises(IMP.base.UsageException,
                               IMP.atom.Charged.setup_particle, p, -0.5)
 
     def test_get_set(self):
         """Check get/set methods of Charged decorators"""
-        m = IMP.Model()
-        p = IMP.Particle(m)
+        m = IMP.kernel.Model()
+        p = IMP.kernel.Particle(m)
         v = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
         c = IMP.atom.Charged.setup_particle(p, v, -0.5)
         self.assertAlmostEqual(c.get_charge(), -0.5, delta=1e-6)
@@ -35,8 +35,8 @@ class Tests(IMP.test.TestCase):
 
     def test_show(self):
         """Check show method of Charged decorators"""
-        m = IMP.Model()
-        p = IMP.Particle(m)
+        m = IMP.kernel.Model()
+        p = IMP.kernel.Particle(m)
         v = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
         c = IMP.atom.Charged.setup_particle(p, v, -0.5)
         self.assertIn(' charge= ', str(c))

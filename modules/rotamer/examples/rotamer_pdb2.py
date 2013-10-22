@@ -1,22 +1,24 @@
-## \example modules/rotamer/examples/rotamer_pdb.py
-## rotamer_pdb.py is a script demonstrating the usage of RotamerCalculator and RotamerLibrary.
-## It reads a PDB file and a rotamer library file, and tries to rotate the atoms based on the most
-## probable chi angles from the rotamer library. Then it saves the rotated atoms to a specified output
-## PDB file.
-##
-## Usage:
-##
-## `python rotamer_pdb.py -i <input>.pdb -l <rotamer_library>.lib -o <output>.pdb`
-##
-## Example (the result will be saved into transformed_1z5s_A.pdb):
-##
-## `../../../tools/imppy.sh python rotamer_pdb.py -i ../../atom/test/input/1z5s_A.pdb \
-##   -l /path/to/ALL.bbdep.rotamers.lib -o transformed_1z5s_A.pdb`
-##
+## \example rotamer/rotamer_pdb2.py
+# rotamer_pdb.py is a script demonstrating the usage of
+# RotamerCalculator and RotamerLibrary.  It reads a PDB file and a
+# rotamer library file, and tries to rotate the atoms based on the
+# most probable chi angles from the rotamer library. Then it saves
+# the rotated atoms to a specified output PDB file.
+#
+# Usage:
+#
+# `python rotamer_pdb.py -i <input>.pdb -l <rotamer_library>.lib -o <output>.pdb`
+#
+# Example (the result will be saved into transformed_1z5s_A.pdb):
+#
+# `../../../tools/imppy.sh python rotamer_pdb.py -i ../../atom/test/input/1z5s_A.pdb \
+# -l /path/to/ALL.bbdep.rotamers.lib -o transformed_1z5s_A.pdb`
+#
 
 #!/usr/bin/env python
 
 import IMP
+import IMP.base
 import IMP.core
 import IMP.atom
 import IMP.algebra
@@ -30,7 +32,7 @@ def transform(input_pdb, input_lib, output_pdb):
     rc = IMP.rotamer.RotamerCalculator(rl)
 
     # read the original PDB
-    m = IMP.Model()
+    m = IMP.kernel.Model()
     orig_h = IMP.atom.read_pdb(input_pdb, m)
     mh = IMP.atom.get_by_type(orig_h, IMP.atom.RESIDUE_TYPE)
 
@@ -51,21 +53,18 @@ def quick_test():
 if __name__ == '__main__':
 
     import sys
-    import optparse
 
-    P = optparse.OptionParser()
+    P = IMP.OptionParser()
     P.add_option('--input_pdb', '-i', action='store', type='string',
-        help='input PDB file (required)')
+                 help='input PDB file (required)')
     P.add_option('--input_lib', '-l', action='store', type='string',
-        help='input rotamer library file (required)')
+                 help='input rotamer library file (required)')
     P.add_option('--output_pdb', '-o', action='store', type='string',
-        help='output PDB file (required)')
+                 help='output PDB file (required)')
     P.add_option('--verbose', '-v', action='store_true',
-        help='show more messages')
-    P.add_option('--run_quick_test', action='store_true',
-        help='run quick test')
+                 help='show more messages')
     opts, args = P.parse_args()
-    if opts.run_quick_test or \
+    if IMP.base.get_bool_flag('run_quick_test') or \
        not (opts.input_pdb or opts.input_lib or opts.output_pdb):
         quick_test()
         sys.exit(0)

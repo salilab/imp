@@ -12,28 +12,38 @@
 IMPATOM_BEGIN_NAMESPACE
 
 VelocityScalingOptimizerState::VelocityScalingOptimizerState(
-    const Particles &pis, Float temperature, unsigned skip_steps) :
-    pis_(pis), temperature_(temperature), skip_steps_(skip_steps),
-    call_number_(0)
-{
+    const kernel::Particles &pis, Float temperature, unsigned skip_steps)
+    : kernel::OptimizerState(pis[0]->get_model(),
+                             "VelocityScalingOptimizerState%1%"),
+      pis_(pis),
+      temperature_(temperature) {
+  vs_[0] = FloatKey("vx");
+  vs_[1] = FloatKey("vy");
+  vs_[2] = FloatKey("vz");
+  set_period(skip_steps + 1);
+}
+
+VelocityScalingOptimizerState::VelocityScalingOptimizerState(
+    kernel::Model *m, kernel::ParticleIndexesAdaptor pis, double temp)
+    : kernel::OptimizerState(m, "VelocityScalingOptimizerState%1%"),
+      temperature_(temp) {
+  BOOST_FOREACH(kernel::ParticleIndex pi, pis) {
+    pis_.push_back(m->get_particle(pi));
+  }
   vs_[0] = FloatKey("vx");
   vs_[1] = FloatKey("vy");
   vs_[2] = FloatKey("vz");
 }
 
-void VelocityScalingOptimizerState::update()
-{
-  if (skip_steps_ == 0 || (call_number_ % skip_steps_) == 0) {
-    rescale_velocities();
-  }
-  ++call_number_;
+void VelocityScalingOptimizerState::do_update(unsigned int) {
+  rescale_velocities();
 }
 
-void VelocityScalingOptimizerState::rescale_velocities() const
-{
+void VelocityScalingOptimizerState::rescale_velocities() const {
   MolecularDynamics *md = dynamic_cast<MolecularDynamics *>(get_optimizer());
-  IMP_INTERNAL_CHECK(md, "Can only use velocity scaling with "
-             "the molecular dynamics optimizer.");
+  IMP_INTERNAL_CHECK(md,
+                     "Can only use velocity scaling with "
+                     "the molecular dynamics optimizer.");
 
   Float ekinetic = md->get_kinetic_energy();
   Float tkinetic = md->get_kinetic_temperature(ekinetic);
@@ -46,12 +56,6 @@ void VelocityScalingOptimizerState::rescale_velocities() const
       }
     }
   }
-}
-
-void VelocityScalingOptimizerState::do_show(std::ostream &out) const
-{
-  out << "Rescaling velocities to " << temperature_ << " every "
-      << skip_steps_ << " steps" << std::endl;
 }
 
 IMPATOM_END_NAMESPACE

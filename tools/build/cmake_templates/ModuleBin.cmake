@@ -2,23 +2,23 @@
 
 include_directories(%(includepath)s)
 link_directories(%(libpath)s)
+add_definitions("-DIMP_EXECUTABLE")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${%(NAME)s_CXX_FLAGS}")
-
 
 set(cppbins %(cppbins)s)
 
 foreach (bin ${cppbins})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
-   add_executable(%(name)s.${name} ${bin})
-   target_link_libraries(%(name)s.${name}     imp_%(name)s
+   add_executable(IMP.%(name)s-${name} ${bin})
+   target_link_libraries(IMP.%(name)s-${name}     IMP.%(name)s-lib
     %(modules)s
     %(dependencies)s)
-   set_target_properties(%(name)s.${name} PROPERTIES
-                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/module_bin/%(name)s"
+   set_target_properties(IMP.%(name)s-${name} PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/module_bin/%(name)s"
                          OUTPUT_NAME ${name})
-   set(executables ${executables} %(name)s.${name})
+  set_property(TARGET "IMP.%(name)s-${name}" PROPERTY FOLDER "IMP.%(name)s")
+   set(executables ${executables} IMP.%(name)s-${name})
 endforeach(bin)
 
-
-add_custom_target("imp_%(name)s_bins" ALL DEPENDS ${executables})
+set(IMP_%(name)s_BINS ${executables} CACHE INTERNAL "" FORCE)

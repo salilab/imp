@@ -14,7 +14,7 @@
 #include <IMP/ClassnameContainer.h>
 #include <IMP/ScoreState.h>
 #include <IMP/score_state_macros.h>
-#include <IMP/compatibility/set.h>
+#include <IMP/base/set.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -22,26 +22,29 @@ IMPCONTAINER_BEGIN_NAMESPACE
 /** The current statistics are average and min/max occupancy. Other
     statistics can be added on request, but we probably want to
     restrict it to ones that are cheap to gather. */
-class IMPCONTAINEREXPORT ClassnameContainerStatistics : public ScoreState
-{
+class IMPCONTAINEREXPORT ClassnameContainerStatistics : public ScoreState {
   base::Pointer<ClassnameContainer> container_;
   unsigned int total_;
   unsigned int checks_;
   unsigned int max_;
   unsigned int min_;
   bool track_unique_;
-  IMP::compatibility::set<VARIABLETYPE> unique_;
-public:
+  IMP::base::set<VARIABLETYPE> unique_;
+
+ public:
   ClassnameContainerStatistics(ClassnameContainerAdaptor c);
   void show_statistics(std::ostream &out) const;
   /** Keeping track of the number of unique entries seen is
       expensive, so it is not done by default.
   */
   void set_track_unique(bool tf);
-  IMP_SCORE_STATE(ClassnameContainerStatistics);
+  virtual void do_before_evaluate() IMP_OVERRIDE;
+  virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ClassnameContainerStatistics);
 };
-
 
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_CLASSNAME_CONTAINER_STATISTICS_H */
+#endif /* IMPCONTAINER_CLASSNAME_CONTAINER_STATISTICS_H */

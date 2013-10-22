@@ -5,24 +5,25 @@
 */
 
 #include "IMP/em2d/ProjectionParameters.h"
-#include "IMP/Model.h" // ParticleIterator
-#include "IMP/log.h"
+#include "IMP/kernel/Model.h" // kernel::ParticleIterator
+#include "IMP/base/log.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 
-bool ProjectionParameters::particle_is_instance(Particle *p) {
+bool ProjectionParameters::get_is_setup(kernel::Model *m,
+                                        kernel::ParticleIndex pi) {
   // Check with only the first key
-  return p->has_attribute(get_keys()[0]);
+  return m->get_has_attribute(get_keys()[0], pi);
 }
 
-ProjectionParameters ProjectionParameters::setup_particle(Particle *p) {
-  p->add_attribute(get_keys()[0],0.0);
-  p->add_attribute(get_keys()[1],0.0);
-  p->add_attribute(get_keys()[2],0.0);
-  p->add_attribute(get_keys()[3],0.0);
-  p->add_attribute(get_keys()[4],0.0);
-  p->add_attribute(get_keys()[5],0.0);
-  return ProjectionParameters(p);
+void ProjectionParameters::do_setup_particle(kernel::Model *m,
+                                             kernel::ParticleIndex pi) {
+  m->add_attribute(get_keys()[0],pi,0.0);
+  m->add_attribute(get_keys()[1],pi,0.0);
+  m->add_attribute(get_keys()[2],pi,0.0);
+  m->add_attribute(get_keys()[3],pi,0.0);
+  m->add_attribute(get_keys()[4],pi,0.0);
+  m->add_attribute(get_keys()[5],pi,0.0);
 }
 
 
@@ -43,7 +44,7 @@ const FloatKeys& ProjectionParameters::get_keys() {
 }
 
 
-void ProjectionParameters::set_proper_ranges_for_keys(Model *m,
+void ProjectionParameters::set_proper_ranges_for_keys(kernel::Model *m,
                            const algebra::Vector3D &min_translation_values,
                            const algebra::Vector3D &max_translation_values) {
   // Range for the quaternion of the rotation
@@ -70,35 +71,15 @@ void ProjectionParametersScoreState::do_after_evaluate(
   IMP_LOG_VERBOSE(ProjectionParameters(proj_params_));
 }
 
-void ProjectionParametersScoreState::do_show(std::ostream& out) const {
-  // Dummy line, nothing here
-  out << "ProjectionParametersScoreState" << std::endl;
-}
-
-ParticlesTemp ProjectionParametersScoreState::get_input_particles() const {
+ModelObjectsTemp ProjectionParametersScoreState::do_get_inputs() const {
   // simply return the particle with the projection parameters
-  ParticlesTemp used;
+  kernel::ModelObjectsTemp used;
   used.push_back(proj_params_);
   return used;
 }
 
-ParticlesTemp ProjectionParametersScoreState::get_output_particles() const {
-  // simply return the particle with the projection parameters
-  ParticlesTemp used;
-  used.push_back(proj_params_);
-  return used;
+ModelObjectsTemp ProjectionParametersScoreState::do_get_outputs() const {
+  return get_inputs();
 }
-
-ContainersTemp ProjectionParametersScoreState::get_input_containers() const {
-  ContainersTemp ot;
-  return ot;
-}
-
-ContainersTemp ProjectionParametersScoreState::get_output_containers() const {
-  // Nothing here in this case
-  ContainersTemp ot;
-  return ot;
-}
-
 
 IMPEM2D_END_NAMESPACE

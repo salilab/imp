@@ -8,6 +8,6 @@
 #include "IMP/kernel/internal/graph_utility.h"
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
-AncestorException::~AncestorException(){}
+AncestorException::~AncestorException() {}
 
 IMPKERNEL_END_INTERNAL_NAMESPACE

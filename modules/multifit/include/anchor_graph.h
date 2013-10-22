@@ -14,9 +14,11 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/multifit/multifit_config.h>
 #include "FittingSolutionRecord.h"
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
+
+//! Probabilistic anchor graph.
 class IMPMULTIFITEXPORT ProbabilisticAnchorGraph : public IMP::base::Object {
 // Property types
 typedef boost::property<boost::edge_weight_t, float> EdgeWeightProperty;
@@ -38,28 +40,28 @@ public:
   }
   //! Set the probability of a component to be located at each anchor position
   /**
-     \param[in] comp_ind the component index
-     \param[in] comp_cen the position of the component centroid
+     \param[in] p
      \param[in] sols the fitting solutions of the component
    */
   void set_particle_probabilities_on_anchors(
-             Particle *p,
+             kernel::Particle *p,
              multifit::FittingSolutionRecords sols);
   void show(std::ostream& out=std::cout) const;
   unsigned int get_number_of_anchors() const {return boost::num_vertices(g_);}
   unsigned int get_number_of_edges() const {return boost::num_edges(g_);}
   IntRanges get_edge_list() const;
   algebra::Vector3Ds get_anchors() const {return positions_;}
-  algebra::Vector3Ds get_particle_anchors(Particle *p,float min_prob=0) const;
-  bool get_are_probabilities_for_particle_set(Particle *p) const {
+  algebra::Vector3Ds get_particle_anchors(kernel::Particle *p,
+                                          float min_prob=0) const;
+  bool get_are_probabilities_for_particle_set(kernel::Particle *p) const {
     return particle_to_anchor_probabilities_.find(p) !=
       particle_to_anchor_probabilities_.end();
   }
-  Floats get_particle_probabilities(Particle *p) const;
-  IMP_OBJECT_INLINE(ProbabilisticAnchorGraph, show(out),{});
+  Floats get_particle_probabilities(kernel::Particle *p) const;
+  IMP_OBJECT_METHODS(ProbabilisticAnchorGraph);
 private:
   AnchorGraph g_;
-  std::map<Particle *,Floats> particle_to_anchor_probabilities_;
+  std::map<kernel::Particle *,Floats> particle_to_anchor_probabilities_;
   algebra::Vector3Ds positions_;
   std::vector<GVertex> id2node_;
 };

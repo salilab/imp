@@ -16,10 +16,9 @@
 #include <IMP/base/utility_macros.h>
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
-#include <IMP/internal/OwnerPointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/base_types.h>
 IMPDOMINO_BEGIN_NAMESPACE
-
 
 //! A base class for discrete samplers in Domino2
 /** All the samplers derived from it share some common properties:
@@ -33,7 +32,7 @@ IMPDOMINO_BEGIN_NAMESPACE
     Defaults are provided for all the parameters:
     - if no SubsetFilterTables are provided, then the
     ExclusionSubsetFilterTable and the
-    RestraintScoreSubsetFilterTable are used.
+    kernel::RestraintScoreSubsetFilterTable are used.
 
     \note the restraint scores must be non-negative in general.
     If you are using restraints which can produce negative values,
@@ -48,33 +47,31 @@ IMPDOMINO_BEGIN_NAMESPACE
     locking them to a single conformation or to a few
     degrees of freedom).
  */
-class IMPDOMINOEXPORT DiscreteSampler : public Sampler
-{
-  IMP::OwnerPointer<ParticleStatesTable> pst_;
-  IMP::OwnerPointer<AssignmentsTable> sst_;
+class IMPDOMINOEXPORT DiscreteSampler : public Sampler {
+  IMP::base::PointerMember<ParticleStatesTable> pst_;
+  IMP::base::PointerMember<AssignmentsTable> sst_;
   unsigned int max_;
-protected:
-  SubsetFilterTables get_subset_filter_tables_to_use
-                       (const RestraintsTemp &rs,
-                        ParticleStatesTable *pst) const;
-  AssignmentsTable* get_assignments_table_to_use
-      (const SubsetFilterTables &sfts,
-       unsigned int max=std::numeric_limits<int>::max())
-      const;
-  virtual ConfigurationSet* do_sample() const IMP_OVERRIDE;
-  virtual Assignments do_get_sample_assignments(const Subset& all)
-      const=0;
-public:
-  DiscreteSampler(Model*m, ParticleStatesTable *pst, std::string name);
+
+ protected:
+  SubsetFilterTables get_subset_filter_tables_to_use(
+      const kernel::RestraintsTemp &rs, ParticleStatesTable *pst) const;
+  AssignmentsTable *get_assignments_table_to_use(
+      const SubsetFilterTables &sfts,
+      unsigned int max = std::numeric_limits<int>::max()) const;
+  virtual ConfigurationSet *do_sample() const IMP_OVERRIDE;
+  virtual Assignments do_get_sample_assignments(const Subset &all) const = 0;
+
+ public:
+  DiscreteSampler(kernel::Model *m, ParticleStatesTable *pst, std::string name);
 
   ~DiscreteSampler();
 
-  /** Particle states can be set either using this method,
+  /** kernel::Particle states can be set either using this method,
       or equivalently, by accessing the table itself
       using get_particle_states_table(). This method
       is provided for users who want to use the default values
       and want a simple inferface.*/
-  void set_particle_states(Particle *p, ParticleStates *se) {
+  void set_particle_states(kernel::Particle *p, ParticleStates *se) {
     pst_->set_particle_states(p, se);
   }
 
@@ -92,19 +89,13 @@ public:
       the module for a general description.
       @{
    */
-  void set_particle_states_table(ParticleStatesTable *cse) {
-    pst_= cse;
-  }
-  void set_assignments_table(AssignmentsTable *sst) {
-    sst_=sst;
-  }
-  ParticleStatesTable* get_particle_states_table() const {
-    return pst_;
-  }
+  void set_particle_states_table(ParticleStatesTable *cse) { pst_ = cse; }
+  void set_assignments_table(AssignmentsTable *sst) { sst_ = sst; }
+  ParticleStatesTable *get_particle_states_table() const { return pst_; }
   IMP_LIST_ACTION(public, SubsetFilterTable, SubsetFilterTables,
                   subset_filter_table, subset_filter_tables,
-                  SubsetFilterTable*, SubsetFilterTables,
-                  obj->set_was_used(true),,);
+                  SubsetFilterTable *, SubsetFilterTables,
+                  obj->set_was_used(true), , );
   /** @} */
 
   /** Limit the number of states that is ever produced for any
@@ -114,18 +105,12 @@ public:
       many states would otherwise be produced. A warning
       will be emitted whenever the limit eliminates states.
   */
-  void set_maximum_number_of_assignments(unsigned int mx) {
-    max_=mx;
-  }
-  unsigned int get_maximum_number_of_assignments() const {
-    return max_;
-  }
+  void set_maximum_number_of_assignments(unsigned int mx) { max_ = mx; }
+  unsigned int get_maximum_number_of_assignments() const { return max_; }
 };
-
 
 IMP_OBJECTS(DiscreteSampler, DiscreteSamplers);
 
-
 IMPDOMINO_END_NAMESPACE
 
-#endif  /* IMPDOMINO_DISCRETE_SAMPLER_H */
+#endif /* IMPDOMINO_DISCRETE_SAMPLER_H */

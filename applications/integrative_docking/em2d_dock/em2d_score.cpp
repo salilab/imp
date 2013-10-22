@@ -10,7 +10,7 @@
 #include "FitResult.h"
 
 #include <IMP/algebra/Vector3D.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/utility.h>
@@ -34,12 +34,12 @@ std::vector<IMP::algebra::Vector3D> read_points_from_pdb(
     exit(1);
   }
   std::vector<IMP::algebra::Vector3D> points;
-  IMP::Model *model = new IMP::Model();
+  IMP::kernel::Model *model = new IMP::kernel::Model();
   IMP::atom::Hierarchy mhd =
     IMP::atom::read_pdb(pdb_file_name, model,
                         new IMP::atom::NonWaterNonHydrogenPDBSelector(),
                         true, true);
-  IMP::ParticlesTemp particles = get_by_type(mhd, IMP::atom::ATOM_TYPE);
+  IMP::kernel::ParticlesTemp particles = get_by_type(mhd, IMP::atom::ATOM_TYPE);
   for(unsigned int i=0; i<particles.size(); i++)
     points.push_back(IMP::core::XYZ(particles[i]).get_coordinates());
   std::cerr << points.size() << " atoms were read from file "

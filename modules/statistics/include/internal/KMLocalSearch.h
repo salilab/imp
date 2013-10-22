@@ -54,45 +54,42 @@ The generic algorithm:
 \unstable{KMLocalSearch}
 */
 class IMPSTATISTICSEXPORT KMLocalSearch {
-public:
+ public:
   KMLocalSearch(KMFilterCenters *sol, KMTerminationCondition *term);
 
-  virtual ~KMLocalSearch(){}
+  virtual ~KMLocalSearch() {}
   //! Execute the k-mean clustering
   virtual void execute();
   //!Return total number of stages
-  int get_total_number_of_stages() const {
-    return stage_num_;
-  }
-  const KMFilterCentersResults &get_best() const {return best_;}
-protected:
+  int get_total_number_of_stages() const { return stage_num_; }
+  const KMFilterCentersResults &get_best() const { return best_; }
+
+ protected:
   virtual void reset();
   virtual bool is_done() const;
   virtual void begin_run();
-  //apply stage
+  // apply stage
   virtual void preform_stage() {}
   virtual void begin_stage() {}
   //! End of stage processing
   virtual void end_stage();
-  virtual bool is_run_done() {
-    return is_done();
-  }
+  virtual bool is_run_done() { return is_done(); }
   virtual void end_run() {}
   //! Test acceptance
   virtual void try_acceptance();
-  virtual void log_stage(std::ostream &out=std::cout);
+  virtual void log_stage(std::ostream &out = std::cout);
 
   Int num_of_data_points_;
   Int num_of_centers_;
   Int dim_;
   Int stage_num_;
-  Int run_init_stage_; // the stage at which a new run started
-  KMFilterCenters *curr_; //current solution
-  KMFilterCentersResults best_; //best solution so far
+  Int run_init_stage_;           // the stage at which a new run started
+  KMFilterCenters *curr_;        // current solution
+  KMFilterCentersResults best_;  // best solution so far
   KMTerminationCondition *term_;
 };
 
 #endif
 
 IMPSTATISTICS_END_INTERNAL_NAMESPACE
-#endif  /* IMPSTATISTICS_INTERNAL_KM_LOCAL_SEARCH_H */
+#endif /* IMPSTATISTICS_INTERNAL_KM_LOCAL_SEARCH_H */

@@ -4,7 +4,7 @@ __doc__ = "Generate a Connolly surface for a PDB."
 
 import IMP.atom
 import IMP.multifit
-from optparse import OptionParser
+from IMP import OptionParser
 
 def parse_args():
     usage = """%prog [options] <pdb file name>
@@ -29,7 +29,7 @@ def main():
     infile, density, rp = parse_args()
     outfile = infile + '.ms'
 
-    m = IMP.Model()
+    m = IMP.kernel.Model()
     h = IMP.atom.read_pdb(infile, m,
                           IMP.atom.NonWaterNonHydrogenPDBSelector())
     IMP.multifit.write_connolly_surface(IMP.atom.get_leaves(h),

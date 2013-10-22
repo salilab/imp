@@ -12,8 +12,8 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-JeffreysRestraint::JeffreysRestraint(Particle *p):
-    ISDRestraint("JeffreysRestraint_"+p->get_name()), p_(p) {
+JeffreysRestraint::JeffreysRestraint(Model *m, Particle *p):
+    Restraint(m, "JeffreysRestraint_"+p->get_name()), p_(p) {
 }
 
 
@@ -43,20 +43,9 @@ JeffreysRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
-ParticlesTemp JeffreysRestraint::get_input_particles() const
+kernel::ModelObjectsTemp JeffreysRestraint::do_get_inputs() const
 {
   return ParticlesTemp(1,p_);
-}
-
-/* The only container used is pc_. */
-ContainersTemp JeffreysRestraint::get_input_containers() const
-{
-  return ContainersTemp();
-}
-
-void JeffreysRestraint::do_show(std::ostream& out) const
-{
-  out << "particle= " << p_->get_name() << std::endl;
 }
 
 IMPISD_END_NAMESPACE

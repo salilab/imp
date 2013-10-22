@@ -15,7 +15,7 @@
 #include "base_types.h"
 #include "ParticleTuple.h"
 #include "internal/container_helpers.h"
-#include "input_output_macros.h"
+#include "model_object_helpers.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -28,37 +28,33 @@ IMPKERNEL_BEGIN_NAMESPACE
     Implementors should see IMP_CLASSNAME_MODIFIER(). Also see
     ClassnameDerivativeModifier.
  */
-class IMPKERNELEXPORT ClassnameModifier : public base::Object
-{
-public:
+class IMPKERNELEXPORT ClassnameModifier : public ParticleInputs,
+                                          public ParticleOutputs,
+                                          public base::Object {
+ public:
   typedef VARIABLETYPE Argument;
   typedef INDEXTYPE IndexArgument;
-  ClassnameModifier(std::string name="ClassnameModifier %1%");
+  ClassnameModifier(std::string name = "ClassnameModifier %1%");
+
+  /** \deprecated_at{2.1} use the index version instead*/
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
+    virtual void apply(ARGUMENTTYPE vt) const;
 
   /** Apply the function to a single value*/
-  virtual void apply(ARGUMENTTYPE) const =0;
-
- /** Apply the function to a single value*/
-  virtual void apply_index(Model *m, PASSINDEXTYPE v) const {
-    apply(internal::get_particle(m, v));
-  }
+  virtual void apply_index(kernel::Model *m, PASSINDEXTYPE v) const;
 
   /** Apply the function to a collection of PLURALVARIABLETYPE */
   /** If bounds are passed, only apply to ones between the upper and
       lower bounds.*/
-  virtual void apply_indexes(Model *m, const PLURALINDEXTYPE &o,
+  virtual void apply_indexes(kernel::Model *m, const PLURALINDEXTYPE &o,
                              unsigned int lower_bound,
                              unsigned int upper_bound) const {
-    for (unsigned int i=lower_bound; i < upper_bound; ++i) {
+    for (unsigned int i = lower_bound; i < upper_bound; ++i) {
       apply_index(m, o[i]);
     }
   }
-  IMP_INPUTS_DECL(ClassnameModifier);
-  IMP_OUTPUTS_DECL(ClassnameModifier);
 };
-
-
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_CLASSNAME_MODIFIER_H */
+#endif /* IMPKERNEL_CLASSNAME_MODIFIER_H */

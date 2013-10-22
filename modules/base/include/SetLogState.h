@@ -28,31 +28,27 @@ class Object;
 
    \ingroup logging
  */
-class IMPBASEEXPORT SetLogState: public base::RAII
-{
+class IMPBASEEXPORT SetLogState : public base::RAII {
   LogLevel level_;
-  Object* obj_;
+  Object *obj_;
   void do_set(Object *o, LogLevel l);
   void do_reset();
   void do_show(std::ostream &out) const;
-public:
-  IMP_RAII(SetLogState, (Object *o, LogLevel l),
-           {level_= DEFAULT; obj_=nullptr;},
-           {
-             do_set(o, l);
-           },
-           {
-             do_reset();
-           }, do_show(out););
+
+ public:
+  IMP_RAII(SetLogState, (Object *o, LogLevel l), {
+                                                   level_ = DEFAULT;
+                                                   obj_ = nullptr;
+                                                 },
+           { do_set(o, l); }, { do_reset(); }, do_show(out););
 
   //! Construct it with the desired level and target
   SetLogState(LogLevel l);
   void set(LogLevel l);
 };
 
-
 IMP_VALUES(SetLogState, SetLogStates);
 
 IMPBASE_END_NAMESPACE
 
-#endif  /* IMPBASE_SET_LOG_STATE_H */
+#endif /* IMPBASE_SET_LOG_STATE_H */

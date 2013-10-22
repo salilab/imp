@@ -6,7 +6,7 @@ class Tests(IMP.test.TestCase):
     def setUp(self):
         # Initial values and names of files
         IMP.test.TestCase.setUp(self)
-        self.mdl=IMP.Model()
+        self.mdl=IMP.kernel.Model()
         sel=IMP.atom.NonAlternativePDBSelector()
         mh1 = IMP.atom.read_pdb(self.get_input_file_name('1z5s_A.pdb'),self.mdl,sel)
         IMP.atom.add_radii(mh1)

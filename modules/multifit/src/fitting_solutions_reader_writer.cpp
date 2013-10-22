@@ -17,7 +17,6 @@ namespace {
 FittingSolutionRecord parse_fitting_line(const std::string &line) {
   IMP_LOG_VERBOSE("line:"<<line<<std::endl);
   FittingSolutionRecord fit_sol;
-  typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
   IMP_LOG_VERBOSE("going to parse:"<<line);
   std::vector<std::string> line_split,fit_rotation_split,fit_translation_split,

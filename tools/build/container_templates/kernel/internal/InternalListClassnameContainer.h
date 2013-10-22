@@ -16,22 +16,25 @@
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
-
-class IMPKERNELEXPORT InternalListClassnameContainer:
-  public ListLikeClassnameContainer
-{
+class IMPKERNELEXPORT InternalListClassnameContainer
+    : public ListLikeClassnameContainer {
   typedef ListLikeClassnameContainer P;
+
  public:
-  InternalListClassnameContainer(Model *m, std::string name);
-  InternalListClassnameContainer(Model *m, const char *name);
+  InternalListClassnameContainer(kernel::Model *m, std::string name);
+  InternalListClassnameContainer(kernel::Model *m, const char *name);
   void add(PASSINDEXTYPE vt);
   void add(const PLURALINDEXTYPE &c);
   void set(PLURALINDEXTYPE cp);
   void remove(PASSINDEXTYPE vt);
   void clear();
-  IMP_LISTLIKE_CLASSNAME_CONTAINER(InternalListClassnameContainer);
+  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual void do_before_evaluate() IMP_OVERRIDE;
+  virtual PLURALINDEXTYPE get_range_indexes() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(InternalListClassnameContainer);
 };
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPKERNEL_INTERNAL_INTERNAL_LIST_CLASSNAME_CONTAINER_H */
+#endif /* IMPKERNEL_INTERNAL_INTERNAL_LIST_CLASSNAME_CONTAINER_H */

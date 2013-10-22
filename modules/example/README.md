@@ -1,6 +1,6 @@
 The overview section of the module page can contain any MarkDown markup as well as references to IMP classes such as IMP::Model.
 
-## Info
+# Info
 
 _Author(s)_: Daniel Russel
 

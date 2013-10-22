@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
     def test_docking_solutions(self):
         """Test nested rigid bodies"""
         #load components
-        mdl=IMP.Model()
+        mdl=IMP.kernel.Model()
         mhs=[]
         rbs=[]
         aps=[]
@@ -20,7 +20,7 @@ class Tests(IMP.test.TestCase):
             ps= IMP.kernel._create_particles_from_pdb(self.get_input_file_name(fn),
                                                mdl)
             aps.extend(ps)
-            p= IMP.Particle(mdl)
+            p= IMP.kernel.Particle(mdl)
             rb= IMP.core.RigidBody.setup_particle(p, ps)
             mhs.append(rb)
             mhs[-1].set_name("molecule"+str(i))

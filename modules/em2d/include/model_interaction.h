@@ -21,7 +21,7 @@
 #include "IMP/atom/Atom.h"
 #include "IMP/core/XYZ.h"
 #include "IMP/core.h"
-#include "IMP/Pointer.h"
+#include "IMP/base/Pointer.h"
 #include "IMP.h"
 #include <typeinfo>
 

@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/geometry_io.h
- *  \brief Handle read/write of Model data from/to files.
+ *  \brief Handle read/write of kernel::Model data from/to files.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -40,7 +40,7 @@ IMPRMFEXPORT void add_geometries(RMF::NodeHandle parent,
     between frames. This can be space saving compared to resaving
     the constant position each frame.*/
 IMPRMFEXPORT void add_static_geometries(RMF::FileHandle parent,
-                                 const display::GeometriesTemp &r);
+                                        const display::GeometriesTemp &r);
 
 #ifndef IMP_DOXYGEN
 IMPRMFEXPORT void add_geometry(RMF::FileHandle parent, display::Geometry *r);

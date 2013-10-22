@@ -102,9 +102,14 @@ class ModellerRestraints(IMP.Restraint):
              this attribute is changed by IMP.
     """
     def __init__(self, model, modeller_model, particles):
-        IMP.Restraint.__init__(self, model)
+        def get_particle(x):
+            if hasattr(x, 'get_particle'):
+                return x.get_particle()
+            else:
+                return x
+        IMP.Restraint.__init__(self, model, "ModellerRestraints %1%")
         self._modeller_model = modeller_model
-        self._particles = particles
+        self._particles = [get_particle(x) for x in particles]
 
     def unprotected_evaluate(self, accum):
         atoms = self._modeller_model.atoms
@@ -120,10 +125,8 @@ class ModellerRestraints(IMP.Restraint):
         return IMP.VersionInfo("IMP developers", "0.1")
     def do_show(self, fh):
         fh.write("ModellerRestraints")
-    def get_input_particles(self):
-        return [x for x in self._particles]
-    def get_input_containers(self):
-        return []
+    def do_get_inputs(self):
+        return self._particles
 
 
 def _copy_imp_coords_to_modeller(particles, atoms):
@@ -313,9 +316,10 @@ def _load_entire_restraints_file(filename, protein):
 
 
 def load_restraints_file(filename, protein):
-    """@deprecated Use ModelLoader instead.
+    """Convert a Modeller restraints file into IMP::Restraint objects.
 
-       Convert a Modeller restraints file into equivalent IMP::Restraints.
+       @deprecated Use ModelLoader instead.
+
        @param filename Name of the Modeller restraints file.
        @param protein An IMP::atom::Hierarchy containing the protein atoms
                       (e.g. as returned by read_pdb). The Modeller restraints
@@ -551,8 +555,11 @@ class ModelLoader(object):
         return wrap
 
     def load_dynamic_restraints(self, pair_filter=None):
-        """Convert the current set of Modeller dynamic restraints
-           (e.g. soft-sphere, electrostatics) into equivalent IMP::Restraints.
+        """Convert Modeller dynamic restraints into IMP::Restraint objects.
+
+           For each currently active Modeller dynamic restraint
+           (e.g. soft-sphere, electrostatics) an equivalent IMP::Restraint
+           is created.
            load_atoms() must have been called first to read
            in the atoms that the restraints will act upon.
 
@@ -612,10 +619,11 @@ class ModelLoader(object):
 
 
 def read_pdb(name, model, special_patches=None):
-    """@deprecated Use IMP::atom::read_pdb() instead to read a PDB file,
+    """Construct an IMP::atom::Hierarchy from a PDB file.
+
+       @deprecated Use IMP::atom::read_pdb() instead to read a PDB file,
                    or ModelLoader to read a Modeller model.
 
-       Construct an IMP::atom::Hierarchy from a PDB file.
        @param name The name of the PDB file to read.
        @param model The IMP::Model object in which the hierarchy will be
                     created. The highest level hierarchy node is a PROTEIN.

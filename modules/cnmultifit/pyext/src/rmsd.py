@@ -3,7 +3,7 @@
 __doc__ = "Calculate RMSD between a model and the reference."
 
 import IMP.cnmultifit
-from optparse import OptionParser
+from IMP import OptionParser
 
 def parse_args():
     usage = """%prog [options] <parameter file> <transformations file>

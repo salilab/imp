@@ -1,0 +1,7 @@
+[submodule "modules/rmf/dependency/RMF_source"]
+	path = modules/rmf/dependency/RMF_source
+	url = ../rmf.git
+
+[submodule "tools/git/gitflow"]
+	path = tools/git/gitflow
+	url = ../gitflow_imp.git

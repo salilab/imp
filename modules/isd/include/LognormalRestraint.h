@@ -12,20 +12,20 @@
 
 #include <IMP/restraint_macros.h>
 #include <IMP/isd/isd_config.h>
-#include <IMP/Particle.h>
-#include <IMP/isd/ISDRestraint.h>
+#include <IMP/kernel/Particle.h>
+#include <IMP/kernel/Restraint.h>
 
 IMPISD_BEGIN_NAMESPACE
 
 //! Normal probability distribution as a restraint
-class IMPISDEXPORT LognormalRestraint : public ISDRestraint
+class IMPISDEXPORT LognormalRestraint : public kernel::Restraint
 {
 private:
-  Pointer<Particle> px_;
+  base::Pointer<kernel::Particle> px_;
   double x_;
-  Pointer<Particle> pmu_;
+  base::Pointer<kernel::Particle> pmu_;
   double mu_;
-  Pointer<Particle> psigma_;
+  base::Pointer<kernel::Particle> psigma_;
   double sigma_;
   bool isx_, ismu_, issigma_; // true if it's a particle
   double chi_;
@@ -41,13 +41,14 @@ public:
    * If F is the identity function, this is a gaussian (e.g. harmonic)
    * restraint.
    */
-  LognormalRestraint(Particle *x, Particle *mu, Particle *sigma);
-  LognormalRestraint(double x, Particle *mu, Particle *sigma);
-  LognormalRestraint(Particle *x, double mu, Particle *sigma);
-  LognormalRestraint(Particle *x, Particle *mu, double sigma);
-  LognormalRestraint(double x, double mu, Particle *sigma);
-  LognormalRestraint(Particle *x, double mu, double sigma);
-  LognormalRestraint(double x, Particle *mu, double sigma);
+  LognormalRestraint(kernel::Particle *x, kernel::Particle *mu, kernel::Particle
+          *sigma);
+  LognormalRestraint(double x, kernel::Particle *mu, kernel::Particle *sigma);
+  LognormalRestraint(kernel::Particle *x, double mu, kernel::Particle *sigma);
+  LognormalRestraint(kernel::Particle *x, kernel::Particle *mu, double sigma);
+  LognormalRestraint(double x, double mu, kernel::Particle *sigma);
+  LognormalRestraint(kernel::Particle *x, double mu, double sigma);
+  LognormalRestraint(double x, kernel::Particle *mu, double sigma);
 
   /* call for probability */
   double get_probability() const
@@ -59,7 +60,11 @@ public:
   {return chi_; }
 
 
-  IMP_RESTRAINT(LognormalRestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(LognormalRestraint);
 
 };
 

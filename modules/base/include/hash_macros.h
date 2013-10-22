@@ -19,12 +19,9 @@
 
 #else
 
-#define IMP_HASHABLE_INLINE(name, hashret)\
-  std::size_t __hash__() const {          \
-    hashret;                              \
-  }
+#define IMP_HASHABLE_INLINE(name, hashret) \
+  std::size_t __hash__() const { hashret; }
 
 #endif
 
-
-#endif  /* IMPBASE_HASH_MACROS_H */
+#endif /* IMPBASE_HASH_MACROS_H */

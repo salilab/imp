@@ -18,9 +18,9 @@
 #include "IMP/em2d/internal/image_processing_helper.h"
 #include "IMP/atom/Mass.h"
 #include "IMP/gsl/Simplex.h"
-#include "IMP/log.h"
-#include "IMP/Pointer.h"
-#include "IMP/exception.h"
+#include "IMP/base/log.h"
+#include "IMP/base/Pointer.h"
+#include "IMP/base/exception.h"
 #include <boost/timer.hpp>
 #include <boost/progress.hpp>
 #include <algorithm>
@@ -114,7 +114,7 @@ void ProjectionFinder::set_projections(const em2d::Images &projections) {
 }
 
 
-void ProjectionFinder::set_model_particles(const ParticlesTemp &ps) {
+void ProjectionFinder::set_model_particles(const kernel::ParticlesTemp &ps) {
   IMP_LOG_TERSE( "ProjectionFinder: Setting model particles" << std::endl);
 
   if(parameters_setup_==false) {
@@ -123,14 +123,14 @@ void ProjectionFinder::set_model_particles(const ParticlesTemp &ps) {
   model_particles_= ps;
   // Check the particles for coordinates, radius and mass
   for (unsigned int i=0; i<model_particles_.size() ; ++i) {
-    IMP_USAGE_CHECK((core::XYZR::particle_is_instance(model_particles_[i]) &&
-              atom::Mass::particle_is_instance(model_particles_[i])),
+    IMP_USAGE_CHECK((core::XYZR::get_is_setup(model_particles_[i]) &&
+              atom::Mass::get_is_setup(model_particles_[i])),
        "Particle " << i
        << " does not have the required attributes" << std::endl);
   }
   masks_manager_->create_masks(model_particles_);
   particles_set_=true;
-  IMP_LOG_TERSE("ProjectionFinder: Model particles set" << std::endl);
+  IMP_LOG_TERSE("ProjectionFinder: kernel::Model particles set" << std::endl);
 }
 
 
@@ -348,9 +348,9 @@ void ProjectionFinder::get_complete_registration() {
   match->set_name("match image");
 
   // Set optimizer
-  IMP_NEW(Model,scoring_model,());
+  IMP_NEW(kernel::Model,scoring_model,());
   IMP_NEW(Fine2DRegistrationRestraint,fine2d,());
-  IMP_NEW(IMP::gsl::Simplex,simplex_optimizer,());
+  IMP_NEW(IMP::gsl::Simplex,simplex_optimizer,(scoring_model));
 
 
   IMP_LOG_TERSE("ProjectionFinder: Setting Fine2DRegistrationRestraint "
@@ -362,7 +362,6 @@ void ProjectionFinder::get_complete_registration() {
                 score_function_,
                 masks_manager_);
 
-  simplex_optimizer->set_model(scoring_model);
   simplex_optimizer->set_initial_length(params_.simplex_initial_length);
   simplex_optimizer->set_minimum_size(params_.simplex_minimum_size);
 

@@ -11,9 +11,9 @@
 #include <IMP/multifit/multifit_config.h>
 #include <IMP/base_types.h>
 #include <IMP/container_macros.h>
-#include <IMP/Pointer.h>
-#include <IMP/Model.h>
-#include <IMP/internal/OwnerPointer.h>
+#include <IMP/base/Pointer.h>
+#include <IMP/kernel/Model.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/algebra/Transformation3D.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
@@ -52,11 +52,12 @@ class IMPMULTIFITEXPORT ComponentHeader : public IMP::base::Object {
     std::string get_transformations_fn() const {return transformations_fn_;}
     void set_reference_fn(const std::string &ref_fn){reference_fn_=ref_fn;}
     std::string get_reference_fn() const {return reference_fn_;}
-    IMP_OBJECT_INLINE(ComponentHeader, {
+    IMP_OBJECT_METHODS(ComponentHeader);
+    /*IMP_OBJECT_INLINE(ComponentHeader, {
         out<<name_<<"|"<<filename_<<"|"<<surface_fn_<<"|";
         out<<pdb_ap_fn_<<"|"<<num_ap_<<"|";
         out<<pdb_fine_ap_fn_<<"|"<<num_fine_ap_<<"|";
-        out<<transformations_fn_<<"|"<<reference_fn_<<"|"<<std::endl; }, {});
+        out<<transformations_fn_<<"|"<<reference_fn_<<"|"<<std::endl; }, {});*/
   protected:
     std::string name_;
     std::string filename_;
@@ -107,13 +108,14 @@ class IMPMULTIFITEXPORT AssemblyHeader : public IMP::base::Object {
       return fine_over_sampled_ap_fn_;}
     void set_fine_over_sampled_ap_fn (const std::string &new_fn) {
       fine_over_sampled_ap_fn_=new_fn;}
-    IMP_OBJECT_INLINE(AssemblyHeader, {
+    IMP_OBJECT_METHODS(AssemblyHeader);
+    /*IMP_OBJECT_INLINE(AssemblyHeader, {
         out<<dens_fn_<<"|"<<resolution_<<"|"<<spacing_<<"|"<<threshold_
            <<"|"<<origin_[0]<<"|";
         out<<origin_[1]<<"|"<<origin_[2]<<"|"<<coarse_ap_fn_;
         out<<"|"<<coarse_over_sampled_ap_fn_<<"|";
         out<<fine_ap_fn_<<"|"<<fine_over_sampled_ap_fn_<<"|\n";
-      }, {});
+        }, {});*/
   protected:
     std::string dens_fn_;
     float resolution_;
@@ -168,7 +170,7 @@ public:
   }
   std::string get_data_path() const {return data_path_;}
 
-  IMP_OBJECT_INLINE(SettingsData, { out << "Settings data"; }, {});
+  IMP_OBJECT_METHODS(SettingsData);
 
   IMP_LIST_ACTION(public, ComponentHeader, ComponentHeaders,
                   component_header, component_headers,
@@ -176,7 +178,7 @@ public:
                   ComponentHeaders, obj->set_was_used(true);,,);
 
 protected:
-  IMP::OwnerPointer<AssemblyHeader> dens_data_;
+  IMP::base::PointerMember<AssemblyHeader> dens_data_;
   std::string asmb_fn_;
   std::string data_path_;
 };

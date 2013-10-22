@@ -19,26 +19,33 @@ IMPCORE_BEGIN_NAMESPACE
 /** Each particle is refined by returning the list
     of particles stored for it in a table.
  */
-class IMPCOREEXPORT TableRefiner: public Refiner
-{
-  IMP::base::map<Particle*, Particles> map_;
-public:
+class IMPCOREEXPORT TableRefiner : public Refiner {
+  IMP::base::map<kernel::Particle *, kernel::Particles> map_;
+
+ public:
   //! Initialize it with an empty table
   TableRefiner();
 
   //! Add a mapping to the table
-  void add_particle(Particle *p, const ParticlesTemp &ps);
+  void add_particle(kernel::Particle *p, const kernel::ParticlesTemp &ps);
 
   //! Remove a mapping from the table
-  void remove_particle(Particle *p);
+  void remove_particle(kernel::Particle *p);
 
   //! Set the mapping for a particular particle
-  void set_particle(Particle *p, const ParticlesTemp &ps);
+  void set_particle(kernel::Particle *p, const kernel::ParticlesTemp &ps);
 
-  IMP_REFINER(TableRefiner);
+  virtual bool get_can_refine(kernel::Particle *) const IMP_OVERRIDE;
+  virtual const kernel::ParticlesTemp get_refined(kernel::Particle *) const
+      IMP_OVERRIDE;
+#ifndef SWIG
+  using Refiner::get_refined;
+#endif
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(TableRefiner);
 };
-
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_TABLE_REFINER_H */
+#endif /* IMPCORE_TABLE_REFINER_H */

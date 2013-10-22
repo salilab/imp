@@ -24,21 +24,24 @@
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
+//! Storage of the results from an FFT fit.
 class IMPMULTIFITEXPORT FFTFittingOutput : public base::Object {
 public:
   FFTFittingOutput() : base::Object("FFTFittingOutput%1%") {}
 
-  IMP_OBJECT_INLINE(FFTFittingOutput,
+  IMP_OBJECT_METHODS(FFTFittingOutput);
+  /*IMP_OBJECT_INLINE(FFTFittingOutput,
                     { out << best_fits_.size() << " final fits; "
                           << best_trans_per_rot_.size()
-                          << " best translations per rotation"; }, {});
+                          << " best translations per rotation"; }, {});*/
 public:
   FittingSolutionRecords best_fits_;   //final fits
   FittingSolutionRecords best_trans_per_rot_;
 };
 
+//! Fit a molecule inside its density by local or global FFT.
 class IMPMULTIFITEXPORT FFTFitting : public base::Object {
-  IMP_OBJECT_INLINE(FFTFitting, {IMP_UNUSED(out);}, {});
+  IMP_OBJECT_METHODS(FFTFitting);
 
  protected:
   //logging
@@ -53,8 +56,8 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
   double spacing_;                      //map voxel size
   double origx_,origy_,origz_;// map origin
   internal::FFTWGrid<double> low_map_data_;   // low resolution map
-  Pointer<em::DensityMap> low_map_;
-  Pointer<em::SampledDensityMap> sampled_map_;//sampled from protein
+  base::Pointer<em::DensityMap> low_map_;
+  base::Pointer<em::SampledDensityMap> sampled_map_;//sampled from protein
   internal::FFTWGrid<double> sampled_map_data_,fftw_r_grid_mol_;
   // high resolution map
   internal::FFTWGrid<double> reversed_fftw_data_;
@@ -158,14 +161,16 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
      \param[in] mol2fit the molecule to fit. The molecule has to be a rigid body
      \param[in] angle_sampling_interval_rad sample the mol
                 within the range of  +- this angle
+     \param[in] max_angle_sampling_rad
      \param[in] max_translation sample the mol within +-
                                 this translation is all directions
+     \param[in] num_fits_to_report
      \param[in] cluster_fits if true the fits are clustered.
                 Not recommended for refinement mode
      \param[in] num_angle_per_voxel number of rotations to save per voxel
      \param[in] max_clustering_translation cluster transformations whose
                 translational distance is lower than the parameter
-     \param[in] max_clustering_angle cluster transformations whose
+     \param[in] max_clustering_rotation cluster transformations whose
                 rotational distance is lower than the parameter
      \param[in] angles_filename a file containing angles to sample.
                 if not specified, all angles are sampled
@@ -188,6 +193,7 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
 /**
 \param[in] mol2fit a rigid body molecule to fit
 \param[in] dmap the map to fit into
+\param[in] density_threshold ignore density below this value
 \param[in] angle_sampling_interval_rad sampling internal in radians
  */
 IMPMULTIFITEXPORT

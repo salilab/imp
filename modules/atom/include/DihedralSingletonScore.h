@@ -27,15 +27,20 @@ IMPATOM_BEGIN_NAMESPACE
 
     \see CHARMMParameters::create_dihedrals(), Dihedral.
  */
-class IMPATOMEXPORT DihedralSingletonScore : public SingletonScore
-{
-public:
+class IMPATOMEXPORT DihedralSingletonScore : public SingletonScore {
+ public:
   DihedralSingletonScore();
-  IMP_SINGLETON_SCORE(DihedralSingletonScore);
+  virtual double evaluate_index(kernel::Model *m, kernel::ParticleIndex p,
+                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  IMP_SINGLETON_SCORE_METHODS(DihedralSingletonScore);
+  IMP_OBJECT_METHODS(DihedralSingletonScore);
+  ;
 };
 
-IMP_OBJECTS(DihedralSingletonScore,DihedralSingletonScores);
+IMP_OBJECTS(DihedralSingletonScore, DihedralSingletonScores);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_DIHEDRAL_SINGLETON_SCORE_H */
+#endif /* IMPATOM_DIHEDRAL_SINGLETON_SCORE_H */

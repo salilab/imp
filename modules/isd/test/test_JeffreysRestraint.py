@@ -20,10 +20,11 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
-        self.m = IMP.Model()
-        self.sigma = Scale.setup_particle(IMP.Particle(self.m), 1.0)
+        self.m = IMP.kernel.Model()
+        self.sigma = Scale.setup_particle(IMP.kernel.Particle(self.m), 1.0)
         self.DA = IMP.DerivativeAccumulator()
-        self.J = IMP.isd.JeffreysRestraint(self.sigma)
+        self.J = IMP.isd.JeffreysRestraint(self.m, self.sigma)
+        self.J.set_model(self.m)
 
     def testValueP(self):
         "Test if JeffreysRestraint probability is 1/scale"

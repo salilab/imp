@@ -7,7 +7,7 @@ __doc__ = "Generate proteomics info from anchor graph and fits."
 #add EV accordinly
 
 import IMP.multifit
-from optparse import OptionParser
+from IMP import OptionParser
 
 def parse_args():
     usage = """%prog [options] <asmb.input> <anchors.txt>
@@ -29,7 +29,7 @@ def run(asmb_fn,anchors_fn,proteomics_fn):
     ad=IMP.multifit.read_anchors_data(anchors_fn)
 
     #read molecules
-    mdl=IMP.Model()
+    mdl=IMP.kernel.Model()
     mhs=[]
     centroids=[]
     for i in range(asmb.get_number_of_component_headers()):

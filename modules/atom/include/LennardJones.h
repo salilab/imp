@@ -23,20 +23,18 @@ IMPATOM_BEGIN_NAMESPACE
     \ingroup decorators
     \see LennardJonesPairScore
  */
-class IMPATOMEXPORT LennardJones: public IMP::core::XYZR
-{
-public:
-  IMP_DECORATOR(LennardJones, IMP::core::XYZR);
-
-  /** Create a decorator with the passed well depth.
-      The particle is assumed to already have x,y,z,r attributes.
-   */
-  static LennardJones setup_particle(Particle *p, Float well_depth=0) {
-    IMP_USAGE_CHECK(XYZR::particle_is_instance(p),
+class IMPATOMEXPORT LennardJones : public IMP::core::XYZR {
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                Float well_depth = 0) {
+    IMP_USAGE_CHECK(XYZR::get_is_setup(m, pi),
                     "Particle must already be an XYZR particle");
-    p->add_attribute(get_well_depth_key(), well_depth);
-    return LennardJones(p);
+    m->add_attribute(get_well_depth_key(), pi, well_depth);
   }
+
+ public:
+  IMP_DECORATOR_METHODS(LennardJones, IMP::core::XYZR);
+  IMP_DECORATOR_SETUP_0(LennardJones);
+  IMP_DECORATOR_SETUP_1(LennardJones, Float, well_depth);
 
   Float get_well_depth() const {
     return static_cast<Float>(get_particle()->get_value(get_well_depth_key()));
@@ -48,9 +46,9 @@ public:
   }
 
   //! Return true if the particle is an instance of a LennardJones
-  static bool particle_is_instance(Particle *p) {
-    return XYZR::particle_is_instance(p)
-           && p->has_attribute(get_well_depth_key());
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+    return XYZR::get_is_setup(m, pi) &&
+           m->get_has_attribute(get_well_depth_key(), pi);
   }
 
   static FloatKey get_well_depth_key();
@@ -60,4 +58,4 @@ IMP_DECORATORS(LennardJones, LennardJonesList, core::XYZRs);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_LENNARD_JONES_H */
+#endif /* IMPATOM_LENNARD_JONES_H */

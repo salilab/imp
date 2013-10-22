@@ -11,7 +11,7 @@
 #include <IMP/score_functor/HarmonicLowerBound.h>
 #include <IMP/base/object_macros.h>
 
-int main(int, char*[]) {
+int main(int, char * []) {
   using namespace IMP::score_functor;
   typedef DistancePairScore<Harmonic> PS;
   IMP_NEW(PS, ps, (Harmonic(1)));

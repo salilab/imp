@@ -1,10 +1,12 @@
+# Multifit Tools
+
 MultiFit is a protocol for simultaneously fitting atomic structures
 of components into the cryo-electron microscopy (cryo-EM) density map of
 their assembly. It can also incorporate connectivity information from
 proteomics experiments (such as cross links), and can work with density maps
 at resolutions as low as 25A.
 
-See also [cnmultifit](@ref IMP_cnmultifit_tools_overview) for a similar protocol
+See also [cnmultifit](@ref impcnmultifit_tools) for a similar protocol
 operating on symmetric complexes.
 
 The component positions and orientations are optimized with respect to a
@@ -18,9 +20,9 @@ The protocol employs the IMP::multifit module.
 A [webserver](http://www.salilab.org/multifit) is also available.
 
 _Examples_:
- - [Modeling of 3sfd](@ref multifit_3sfd)
+ - [Modeling of 3sfd](../tutorial/multifit_3sfd.html)
 
-## Info
+# Info
 
 _Author(s)_: Keren Lasker
 

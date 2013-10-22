@@ -12,16 +12,17 @@ int main(int argc, char** argv) {
   IMP::base::setup_from_argv(argc, argv, "show what benchmarks look like");
 
   {
-    double sum=0, time;
+    double sum = 0, time;
     IMP_TIME({
-        for (unsigned int i=0; i< 100; ++i) {
-          double *d= new double(i);
-          std::size_t iv= reinterpret_cast<std::size_t>(d);
-          sum+=iv;
-          delete d;
-        }
-      }, time);
-    IMP::benchmark::report("alloc and free", "current",time, sum);
+      for (unsigned int i = 0; i < 100; ++i) {
+        double* d = new double(i);
+        std::size_t iv = reinterpret_cast<std::size_t>(d);
+        sum += iv;
+        delete d;
+      }
+    },
+             time);
+    IMP::benchmark::report("alloc and free", "current", time, sum);
   }
   return IMP::benchmark::get_return_value();
 }

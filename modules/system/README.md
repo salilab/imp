@@ -1,6 +1,6 @@
 This module provides helper functions for biological systems. This module is in flux.
 
-## Info
+# Info
 
 _Author(s)_: Daniel Russel
 

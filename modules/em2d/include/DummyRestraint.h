@@ -10,14 +10,14 @@
 #define IMPEM2D_DUMMY_RESTRAINT_H
 
 #include "IMP/em2d/em2d_config.h"
-#include "IMP/log.h"
-#include <IMP/Restraint.h>
+#include "IMP/base/log.h"
+#include <IMP/kernel/Restraint.h>
 #include "IMP/restraint_macros.h"
-#include "IMP/Pointer.h"
+#include "IMP/base/Pointer.h"
 
 
-#include <IMP/Restraint.h>
-#include <IMP/log.h>
+#include <IMP/kernel/Restraint.h>
+#include <IMP/base/log.h>
 #include <IMP/SingletonContainer.h>
 
 
@@ -34,9 +34,9 @@ IMPEM2D_BEGIN_NAMESPACE
     NOTE: Using this restraint for DOMINO requires a fairly good knowledge of
         the works of merge trees.
 */
-class IMPEM2DEXPORT DummyRestraint: public Restraint {
-  Pointer<Particle> p0_;
-  Pointer<Particle> p1_;
+class IMPEM2DEXPORT DummyRestraint: public kernel::Restraint {
+  base::Pointer<kernel::Particle> p0_;
+  base::Pointer<kernel::Particle> p1_;
 
 public:
 
@@ -45,7 +45,8 @@ public:
    * @param p First particle
    * @param q Second particle
    */
-  DummyRestraint(IMP::Particle *p, IMP::Particle *q) {
+  DummyRestraint(IMP::kernel::Particle *p, IMP::kernel::Particle *q):
+      kernel::Restraint(p->get_model(), "DummyRestraint%1%") {
     p0_ = p;
     p1_ = q;
   }
@@ -55,10 +56,14 @@ public:
    * @param out Stream used to show the information
    */
   void show(std::ostream &out = std::cout) const {
-    out << "Dummy Restraint" << std::endl;
+    out << "Dummy kernel::Restraint" << std::endl;
   }
 
-  IMP_RESTRAINT(DummyRestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(DummyRestraint);
 
 };
 IMP_OBJECTS(DummyRestraint,DummyRestraints);
@@ -66,8 +71,8 @@ IMP_OBJECTS(DummyRestraint,DummyRestraints);
 
 
 //! Dummy restraint for a set of particles. Same use as DummyRestraint
-class IMPEM2DEXPORT ParticlesDummyRestraint: public Restraint {
-  Pointer<SingletonContainer> container_;
+class IMPEM2DEXPORT ParticlesDummyRestraint: public kernel::Restraint {
+  base::Pointer<SingletonContainer> container_;
 
 public:
 
@@ -75,7 +80,8 @@ public:
    * Sets a dummy restraint for a set of particles
    * @param sc Must contain all the particles that are going to be restrained
    */
-  ParticlesDummyRestraint(SingletonContainer *sc) {
+  ParticlesDummyRestraint(SingletonContainer *sc):
+      kernel::Restraint(sc->get_model(), "ParticlesDummyRestraint%1%") {
     container_ = sc;
   }
 
@@ -87,7 +93,11 @@ public:
     out << "ParticlesDummyRestraint" << std::endl;
   }
 
-  IMP_RESTRAINT(ParticlesDummyRestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ParticlesDummyRestraint);
 
 };
 IMP_OBJECTS(ParticlesDummyRestraint, ParticlesDummyRestraints);

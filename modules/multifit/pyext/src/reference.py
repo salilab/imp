@@ -4,7 +4,7 @@ __doc__ = "Compare output models to a reference structure."
 
 #analyse the ensemble, first we will do the rmsd stuff
 import IMP.multifit
-from optparse import OptionParser
+from IMP import OptionParser
 
 
 def get_placement_scores_from_coordinates(model_components_coords,
@@ -67,7 +67,7 @@ def get_components_placement_scores(assembly, native_assembly, align=False):
         @param native_assembly An atom.Molecule object with the native
                         conformation. Obviously the atoms in assembly and
                         native_assembly must be the same.
-        @param if True, the coordinates are aligned before the score is
+        @param align if True, the coordinates are aligned before the score is
                calculated.
         @return The function returns 2 lists. The first list contains the
                 placement distances of the children. The second list contains
@@ -111,7 +111,7 @@ of the asmb.input file.
 
 def run(asmb_fn,proteomics_fn,mapping_fn,combs_fn,max_comb):
     #get rmsd for subunits
-    mdl=IMP.Model()
+    mdl=IMP.kernel.Model()
     combs=IMP.multifit.read_paths(combs_fn)
     sd=IMP.multifit.read_settings(asmb_fn)
     sd.set_was_used(True)

@@ -8,22 +8,19 @@
 #ifndef IMPCORE_MOVER_MACROS_H
 #define IMPCORE_MOVER_MACROS_H
 
-#include <IMP/base/doxygen_macros.h>
+#include <IMP/base/deprecation_macros.h>
+#include <IMP/core/core_config.h>
 #include "Mover.h"
 
-#if defined(IMP_DOXYGEN) || IMP_HAS_DEPRECATED
-/** Helper macro for implementing IMP::core::Mover. In
-    addition to the IMP_OBJECT methods, it declares
-    - IMP::core::Mover::propose_move()
-    - IMP::core::Mover::reset_move()
+IMPCORE_DEPRECATED_HEADER(2.1, "Use MonteCarloMover")
+
+/** \deprecated_at{2.1} Use IMP::core::MonteCarloMover
  */
-#define IMP_MOVER(Name)                                                 \
-  IMP_PRAGMA(message("You should move to IMP::core::MonteCarloMover"))  \
-  IMP_IMPLEMENT(virtual ParticlesTemp propose_move(Float size));        \
-  IMP_IMPLEMENT(virtual void reset_move());                             \
-  IMP_IMPLEMENT(virtual ParticlesTemp get_output_particles() const);    \
-  IMP_OBJECT(Name)
-#endif
+#define IMP_MOVER(Name)                                                      \
+  IMP_DEPRECATED_MACRO(2.1, "You should move to IMP::core::MonteCarloMover") \
+      IMP_IMPLEMENT(virtual kernel::ParticlesTemp propose_move(Float size)); \
+  IMP_IMPLEMENT(virtual void reset_move());                                  \
+  IMP_IMPLEMENT(virtual kernel::ParticlesTemp get_output_particles() const); \
+  IMP_OBJECT_NO_WARNING(Name)
 
-
-#endif  /* IMPCORE_MOVER_MACROS_H */
+#endif /* IMPCORE_MOVER_MACROS_H */

@@ -12,9 +12,8 @@
 #include <IMP/core/ConjugateGradients.h>
 #include <IMP/RestraintSet.h>
 #include <IMP/algebra/Transformation3D.h>
-#include <IMP/VersionInfo.h>
-#include <IMP/Particle.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Particle.h>
+#include <IMP/kernel/Model.h>
 #include "DensityMap.h"
 #include "FitRestraint.h"
 #include <IMP/em/em_config.h>
@@ -127,7 +126,7 @@ IMP_VALUES(FittingSolutions, FittingSolutionsList);
 \return the refined fitting solutions
 */
 IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
- Particle *p, Refiner *refiner,
+ kernel::Particle *p, Refiner *refiner,
    const FloatKey &weight_key,
    DensityMap *dmap, const algebra::Vector3D &anchor_centroid,
    OptimizerStates display_log,
@@ -165,7 +164,7 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
 */
 
 inline FittingSolutions local_rigid_fitting(
-   Particle *p, Refiner *refiner,
+   kernel::Particle *p, Refiner *refiner,
    const FloatKey &weight_key,
    DensityMap *dmap,
    OptimizerStates display_log,
@@ -206,7 +205,7 @@ inline FittingSolutions local_rigid_fitting(
 \return the refined fitting solutions
 */
 IMPEMEXPORT FittingSolutions local_rigid_fitting_around_points(
-   Particle *p,Refiner *refiner,
+   kernel::Particle *p,Refiner *refiner,
    const FloatKey &wei_key,
    DensityMap *dmap, const algebra::Vector3Ds &anchor_centroids,
    OptimizerStates display_log,
@@ -236,7 +235,7 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_points(
 \return the refined fitting solutions
 */
 IMPEMEXPORT FittingSolutions local_rigid_fitting_grid_search(
-   const ParticlesTemp &ps,
+   const kernel::ParticlesTemp &ps,
    const FloatKey &wei_key,
    DensityMap *dmap,
    Int max_voxels_translation=2,
@@ -264,7 +263,8 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_grid_search(
 \return The scored fitting solutions
 \note the function assumes the density map holds its density
  */
-IMPEMEXPORT FittingSolutions compute_fitting_scores(const ParticlesTemp &ps,
+IMPEMEXPORT FittingSolutions
+compute_fitting_scores(const kernel::ParticlesTemp &ps,
    DensityMap *em_map,
    const algebra::Transformation3Ds &transformations,
    bool fast_version=false, bool local_score=false,
@@ -299,7 +299,7 @@ inline FittingSolutions compute_fitting_scores(
 \param[in] wei_key  The weight key of the particles in the rigid body
 \note the function assumes the density map holds its density
  */
-IMPEMEXPORT Float compute_fitting_score(const ParticlesTemp &ps,
+IMPEMEXPORT Float compute_fitting_score(const kernel::ParticlesTemp &ps,
    DensityMap *em_map,
    FloatKey wei_key=atom::Mass::get_mass_key());
 

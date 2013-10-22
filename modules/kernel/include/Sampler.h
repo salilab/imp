@@ -10,7 +10,8 @@
 
 #include <IMP/kernel/kernel_config.h>
 #include "Model.h"
-#include "Pointer.h"
+#include <IMP/base/Pointer.h>
+#include <IMP/base/Object.h>
 #include "ConfigurationSet.h"
 #include <IMP/base/deprecation_macros.h>
 #include <IMP/base/ref_counted_macros.h>
@@ -27,37 +28,33 @@ IMPKERNEL_BEGIN_NAMESPACE
     types to search for configurations which minimize the scoring
     function.
 */
-class IMPKERNELEXPORT Sampler: public IMP::base::Object
-{
-  OwnerPointer<Model> model_;
-  OwnerPointer<ScoringFunction> sf_;
+class IMPKERNELEXPORT Sampler : public IMP::base::Object {
+  base::PointerMember<Model> model_;
+  base::PointerMember<ScoringFunction> sf_;
+
  public:
-  Sampler(Model *m, std::string name="Sampler %1%");
-#ifndef IMP_DOXYGEN
-  ConfigurationSet *get_sample() const {
-    IMP_DEPRECATED_FUNCTION(create_sample);
-    return create_sample();
-  }
-#endif
+  Sampler(kernel::Model *m, std::string name = "Sampler %1%");
   ConfigurationSet *create_sample() const;
 
-  ScoringFunction *get_scoring_function() const {
-    return sf_;
-  }
+  ScoringFunction *get_scoring_function() const { return sf_; }
   void set_scoring_function(ScoringFunctionAdaptor sf);
 
-  Model *get_model() const {return model_;}
+  Model *get_model() const { return model_; }
 
-protected:
-  virtual ConfigurationSet* do_sample() const =0;
+  /** \deprecated_at{2.1} Use create_sample */
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
+  ConfigurationSet *get_sample() const;
+
+ protected:
+  virtual ConfigurationSet *do_sample() const = 0;
 
   // for the vtable
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Sampler);
   //! Subclasses should override this method
 };
 
-IMP_OBJECTS(Sampler,Samplers);
+IMP_OBJECTS(Sampler, Samplers);
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_SAMPLER_H */
+#endif /* IMPKERNEL_SAMPLER_H */

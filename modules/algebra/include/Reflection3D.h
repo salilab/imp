@@ -17,25 +17,22 @@ IMPALGEBRA_BEGIN_NAMESPACE
 //! Reflect about a plane in 3D
 /**
 */
-class Reflection3D: public GeometricPrimitiveD<3>
-{
+class Reflection3D : public GeometricPrimitiveD<3> {
   Plane3D pl_;
-public:
-  Reflection3D(){}
-  Reflection3D(Plane3D pl): pl_(pl){}
+
+ public:
+  Reflection3D() {}
+  Reflection3D(Plane3D pl) : pl_(pl) {}
 
   Vector3D get_reflected(const Vector3D &v) const {
-    Vector3D p= pl_.get_projection(v);
-    return v+2*(p-v);
+    Vector3D p = pl_.get_projection(v);
+    return v + 2 * (p - v);
   }
-  IMP_SHOWABLE_INLINE(Transformation3D, {
-      out << pl_;
-    }
-    );
+  IMP_SHOWABLE_INLINE(Transformation3D, { out << pl_; });
 };
 
 IMP_VALUES(Reflection3D, Reflection3Ds);
 
 IMPALGEBRA_END_NAMESPACE
 
-#endif  /* IMPALGEBRA_REFLECTION_3D_H */
+#endif /* IMPALGEBRA_REFLECTION_3D_H */

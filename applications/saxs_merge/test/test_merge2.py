@@ -7,6 +7,8 @@ import copy
 import IMP.test
 import IMP.isd
 
+IMP.set_log_level(0)
+
 class MockArgs:
     def __init__(self,**kwargs):
         for k,v in kwargs.iteritems():
@@ -56,8 +58,8 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         self.merge = merge
 
     def set_interpolant(self, profile, a, b, interpolant=MockGP):
-        m=IMP.Model()
-        s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
+        m=IMP.kernel.Model()
+        s=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(m),3.0)
         gp=interpolant(a,b)
         functions={}
         functions['mean']=MockFunction()
@@ -96,6 +98,7 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         self.assertAlmostEqual(p1.get_gamma(),30)
         self.assertAlmostEqual(p2.get_gamma(),3)
         self.assertAlmostEqual(p3.get_gamma(),1)
+    test_rescaling_normal=IMP.test.expectedFailure(test_rescaling_normal)
 
     def test_rescaling_lognormal(self):
         """Test rescaling of three perfectly agreeing lognormal functions"""
@@ -156,7 +159,8 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         gp3=self.set_interpolant(p3,2.5,10,MockGP2)
         self.merge.create_intervals_from_data(p3,'agood')
         #run classification
-        args=MockArgs(verbose=0, dalpha=0.05, baverage=False, eaverage=False)
+        args=MockArgs(verbose=0, dalpha=0.05, baverage=False, eaverage=False,
+                auto=False, remove_redundant=False)
         self.merge.classification([p1,p2,p3],args)
         #p1
         self.assertTrue(
@@ -218,15 +222,15 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
                 dalpha=0.05, eextrapolate=0, enoextrapolate=False,
                 baverage=False, enocomp=True, emean='Flat',
                 elimit_fitting=-1, elimit_hessian=-1, eaverage=False,
-                lambdamin=0.005)
+                lambdamin=0.005, auto=False, remove_redundant=False)
         self.merge.classification([p1,p2,p3],args)
-        def find_fit(a,b,c,model_comp=None, mean_function=None,
+        def find_fit(a,b,model_comp=None, mean_function=None,
                         model_comp_maxpoints=None, lambdamin=0.005):
-            return 'test',b,None
+            return 'test',{'sigma':b},None
         self.merge.find_fit = find_fit
-        def setup_process(b,c,e):
-            m=IMP.Model()
-            s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
+        def setup_process(b,c):
+            m=IMP.kernel.Model()
+            s=IMP.isd.Scale.setup_particle(IMP.kernel.Particle(m),3.0)
             gp=MockGP(1,10)
             functions={'mean':MockFunction(),'covariance':MockFunction()}
             return m,{'sigma':s},functions,gp

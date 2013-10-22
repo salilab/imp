@@ -12,8 +12,6 @@ except ImportError:
     cpp_format = None
     print "Cannot conduct additional C++ format checks without the Python "
     print "Pygments (http://pygments.org/) library: please install."
-    print "Continuing anyway, but some checks will be postponed " + \
-          "to 'svn ci' time..."
     print
 
 def _check_do_not_commit(line, filename, num, errors):
@@ -30,9 +28,17 @@ def check_c_file(filename, errors):
     url = re.compile('https?://')
     configh=False
     blank = False
+    file_line = False
     exported= filename.find("internal")==-1 and filename.endswith(".h")
+    name = os.path.split(filename)[1]
+    module = None
+    # modules/name/include/header.h
+    if os.path.split(os.path.split(os.path.split(os.path.split(filename)[0])[0])[0])[1] == "modules":
+        module = os.path.split(os.path.split(os.path.split(filename)[0])[0])[1]
     for (num, line) in enumerate(fh):
         line = line.rstrip('\r\n')
+        if line.find("\\file %s/%s"%(module, name)) != -1 or line.find("\\file IMP/%s/%s"%(module, name)) != -1:
+            file_line = True
         # No way to split URLs, so let them exceed 80 characters:
         if line.startswith(">>>>>>> "):
             errors.append("%s:%d: error: Incomplete merge found."% (filename, num+1))
@@ -62,14 +68,18 @@ def check_c_file(filename, errors):
             configh=True;
         if blank and num == 0:
             errors.append('%s:1: File has leading blank line(s)' % filename)
-    if len(fh)>0 and len(fh[-2])==0:
+    if len(fh)>0 and len(fh) > 2 and len(fh[-2])==0:
         errors.append('%s:%d: File has trailing blank line(s)' % (filename, len(fh)))
+    if exported and filename.endswith(".h") and not file_line and module:
+        errors.append('%s:2: Exported header must have a line \\file %s/%s'% (filename, module, name))
 
 def check_python_file(filename, errors):
     """Check each modified Python file to make sure it adheres to the
        standards"""
     temptest = re.compile('\s+def\s+temp_hide_test.*')
     test= re.compile('\s+def\s+(test_[abcdefghijklmnopqrstuvwxyz0123456789_]*)\(')
+    import_as= re.compile('[ ]*import [ ]*.* [ ]*as [ ]*.*')
+    import_from = re.compile('[ ]*from [ ]*.* [ ]*import [ ]*.*')
     tests=[]
     for (num, line) in enumerate(file(filename, "r")):
         _check_do_not_commit(line, filename, num, errors)
@@ -85,6 +95,11 @@ def check_python_file(filename, errors):
                 errors.append('%s:%d: Test case has multiple tests with the same name %s' \
                           % (filename, num+1, g))
             tests.append(m.group(1))
+        if filename.find("test") == -1 and filename.find("example") != -1:
+            if import_as.match(line):
+                errors.append('%s:%d: Examples should not rename types on import as that confuses doxygen: '%(filename, num+1) + line)
+            if import_from.match(line):
+                errors.append('%s:%d: Examples should not use import from as that confuses doxygen: '%(filename, num+1) + line)
     fh = file(filename, "r")
     r = Reindenter(fh)
     try:
@@ -103,10 +118,14 @@ def check_modified_file(filename, errors):
     # skip code that isn't ours
     if filename.find("dependency") != -1:
         return
+    # don't check header guard in template headers
+    if filename.find("templates") != -1:
+        return
     if filename.endswith('.h') or filename.endswith('.cpp') \
        or filename.endswith('.c'):
         check_c_file(filename, errors)
-        if cpp_format and filename.endswith('.h'):
+        # don't check header guard in template headers
+        if cpp_format and filename.endswith('.h') and filename.find("templates") == -1:
             cpp_format.check_header_file(get_file(filename), errors)
         elif cpp_format and filename.endswith('.cpp'):
             cpp_format.check_cpp_file(get_file(filename), errors)

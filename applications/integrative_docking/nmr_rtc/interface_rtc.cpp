@@ -8,7 +8,7 @@
 #include "nmr_helpers.h"
 #include "ResidueContent.h"
 
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/algebra/standard_grids.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/atom/Atom.h>
@@ -112,15 +112,15 @@ defined by two molecules.")
   ligand_pdb = files[1];
 
   // read pdb  files, prepare particles
-  IMP::Model *model = new IMP::Model();
+  IMP::kernel::Model *model = new IMP::kernel::Model();
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(receptor_pdb, model,
                    new IMP::atom::NonWaterNonHydrogenPDBSelector(), true, true);
-  IMP::Particles atom_particles1 = get_by_type(mhd, IMP::atom::ATOM_TYPE);
-  IMP::Particles residue_particles1 = get_by_type(mhd, IMP::atom::RESIDUE_TYPE);
+  IMP::kernel::Particles atom_particles1 = get_by_type(mhd, IMP::atom::ATOM_TYPE);
+  IMP::kernel::Particles residue_particles1 = get_by_type(mhd, IMP::atom::RESIDUE_TYPE);
   mhd = IMP::atom::read_pdb(ligand_pdb, model,
                    new IMP::atom::NonWaterNonHydrogenPDBSelector(), true, true);
-  IMP::Particles atom_particles2 = get_by_type(mhd, IMP::atom::ATOM_TYPE);
-  IMP::Particles residue_particles2 = get_by_type(mhd, IMP::atom::RESIDUE_TYPE);
+  IMP::kernel::Particles atom_particles2 = get_by_type(mhd, IMP::atom::ATOM_TYPE);
+  IMP::kernel::Particles residue_particles2 = get_by_type(mhd, IMP::atom::RESIDUE_TYPE);
   std::vector<int> atom_2_residue_map1,atom_2_residue_map2;
   get_atom_2_residue_map(atom_particles1,
                          residue_particles1,atom_2_residue_map1);
@@ -137,7 +137,7 @@ defined by two molecules.")
                         IMP::core::XYZ(atom_particles2[i]).get_coordinates());
 
   // get CA atoms for residues
-  IMP::Particles ca_atoms1, ca_atoms2;
+  IMP::kernel::Particles ca_atoms1, ca_atoms2;
   for(unsigned int i=0; i<residue_particles1.size(); i++) {
     IMP::atom::Atom at =
       IMP::atom::get_atom(IMP::atom::Residue(residue_particles1[i]),

@@ -23,11 +23,11 @@ class Tests(IMP.test.TestCase):
 
     def test_it(self):
         """Test cover bond"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps=[]
         ds=IMP.core.XYZRs()
         for i in range(0,2):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             d=IMP.core.XYZR.setup_particle(p)
             ps.append(p)
             ds.append(d)

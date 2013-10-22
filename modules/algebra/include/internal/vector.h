@@ -11,8 +11,6 @@
 #include <IMP/base/exception.h>
 #include <limits>
 
-
-
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
 template <class T>
@@ -33,42 +31,37 @@ inline int get_null_value() {
 template <class T, int D, bool KNOWN_DEFAULT>
 class VectorData {
   T storage_[D];
-public:
-  unsigned int get_dimension() const {
-    return D;
-  }
+
+ public:
+  unsigned int get_dimension() const { return D; }
+  VectorData(int) {}
   VectorData() {
 #if IMP_HAS_CHECKS >= IMP_USAGE
-    for (unsigned int i=0; i< D; ++i) {
-      storage_[i]= get_null_value<T>();
+    for (unsigned int i = 0; i < D; ++i) {
+      storage_[i] = get_null_value<T>();
     }
 #else
     if (KNOWN_DEFAULT) {
-      for (unsigned int i=0; i< D; ++i) {
-        storage_[i]= get_null_value<T>();
+      for (unsigned int i = 0; i < D; ++i) {
+        storage_[i] = get_null_value<T>();
       }
     }
 #endif
   }
   template <class It>
   void set_coordinates(It b, It e) {
-    IMP_USAGE_CHECK(std::distance(b,e)==D,
+    IMP_USAGE_CHECK(std::distance(b, e) == D,
                     "Wrong number of coordinates provided.");
-    std::copy(b,e, storage_);
+    std::copy(b, e, storage_);
   }
-  T *get_data() {
-    return storage_;
-  }
-  const T *get_data() const {
-    return storage_;
-  }
-  bool get_is_null() const {
-    return storage_[0]>= get_null_value<T>();
-  }
+  T *get_data() { return storage_; }
+  const T *get_data() const { return storage_; }
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(VectorData);
+  bool get_is_null() const { return storage_[0] >= get_null_value<T>(); }
   ~VectorData() {
 #if IMP_HAS_CHECKS >= IMP_USAGE
-    for (unsigned int i=0; i< D; ++i) {
-      storage_[i]= get_null_value<T>();
+    for (unsigned int i = 0; i < D; ++i) {
+      storage_[i] = get_null_value<T>();
     }
 #endif
   }
@@ -78,46 +71,36 @@ template <class T, bool KNOWN_DEFAULT>
 class VectorData<T, -1, KNOWN_DEFAULT> {
   boost::scoped_array<T> storage_;
   unsigned int d_;
-public:
+
+ public:
+  VectorData(int d) : storage_(new T[d]), d_(d) {}
   VectorData(const VectorData &o) {
-    set_coordinates(o.get_data(),
-                    o.get_data()+o.get_dimension());
+    set_coordinates(o.get_data(), o.get_data() + o.get_dimension());
   }
   VectorData &operator=(const VectorData &o) {
-    set_coordinates(o.get_data(),
-                    o.get_data()+o.get_dimension());
+    set_coordinates(o.get_data(), o.get_data() + o.get_dimension());
     return *this;
   }
-  VectorData(): d_(0){}
-  unsigned int get_dimension() const {
-    return d_;
-  }
+  VectorData() : d_(0) {}
+  unsigned int get_dimension() const { return d_; }
   template <class It>
   void set_coordinates(It b, It e) {
-    d_= std::distance(b,e);
+    d_ = std::distance(b, e);
     storage_.reset(new T[d_]);
-    std::copy(b,e, storage_.get());
+    std::copy(b, e, storage_.get());
   }
-  T *get_data() {
-    return storage_.get();
-  }
-  const T *get_data() const {
-    return storage_.get();
-  }
-  bool get_is_null() const {
-    return d_==0;
-  }
+  T *get_data() { return storage_.get(); }
+  const T *get_data() const { return storage_.get(); }
+  bool get_is_null() const { return d_ == 0; }
   ~VectorData() {
 #if IMP_HAS_CHECKS >= IMP_USAGE
-    for (unsigned int i=0; i< d_; ++i) {
-      storage_[i]= get_null_value<T>();
+    for (unsigned int i = 0; i < d_; ++i) {
+      storage_[i] = get_null_value<T>();
     }
 #endif
   }
 };
 
-
 IMPALGEBRA_END_INTERNAL_NAMESPACE
 
-
-#endif  /* IMPALGEBRA_INTERNAL_VECTOR_H */
+#endif /* IMPALGEBRA_INTERNAL_VECTOR_H */

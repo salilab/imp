@@ -2,7 +2,20 @@ This module supports integration of Modeller with IMP. See
 [the Modeller website](http://www.salilab.org/modeller/) for more
 information about Modeller.
 
-## Info
+Functionality includes:
+
+ - \link IMP::modeller::ModelLoader Loading a Modeller model into IMP\endlink
+ - \link IMP::modeller::ModellerRestraints Calling the Modeller scoring function from IMP\endlink
+ - \link IMP::modeller::IMPRestraints Calling the IMP scoring function from Modeller\endlink
+ - Converting a set of Modeller \link IMP::modeller::ModelLoader.load_static_restraints() static restraints\endlink or \link IMP::modeller::ModelLoader.load_dynamic_restraints() dynamic restraints\endlink into equivalent IMP restraints
+
+# Modeller # {#modeller}
+
+If you want to use IMP with MODELLER, you should use version 9v7 or
+later. If you installed the MODELLER Linux RPM or Mac package, it should be
+detected automatically. Make sure that MODELLER is found in your `PYTHONPATH`.
+
+# Info
 
 _Author(s)_: Ben Webb, Daniel Russel
 

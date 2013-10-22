@@ -19,11 +19,11 @@ IMPISD_BEGIN_NAMESPACE
 //MarginalNOERestraint::MarginalNOERestraint() {}
 
 // add a contribution: simple case
-void MarginalNOERestraint::add_contribution(Particle *p1, Particle *p2,
-                                            double Iexp)
+void MarginalNOERestraint::add_contribution(kernel::Particle *p1,
+        kernel::Particle *p2, double Iexp)
 {
-    ParticlePair pc(p1,p2);
-    ParticlePairsTemp pct(1,pc);
+    kernel::ParticlePair pc(p1,p2);
+    kernel::ParticlePairsTemp pct(1,pc);
     IMP_NEW(container::ListPairContainer, cont, (pct));
     //container::ListPairContainer cont(pct);
     add_contribution(cont,Iexp);
@@ -111,7 +111,7 @@ MarginalNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp MarginalNOERestraint::do_get_inputs() const
 {
-  ModelObjectsTemp ret;
+  kernel::ModelObjectsTemp ret;
   for (unsigned i=0; i<volumes_.size(); ++i)
   {
     ret+= IMP::get_particles(get_model(),
@@ -122,11 +122,6 @@ ModelObjectsTemp MarginalNOERestraint::do_get_inputs() const
       ret.push_back(contribs_[i]);
   }
   return ret;
-}
-void MarginalNOERestraint::do_show(std::ostream& out) const
-{
-  out << "Marginal NOE restraint with " << volumes_.size()
-      << " contributions " << std::endl;
 }
 
 IMPISD_END_NAMESPACE

@@ -27,63 +27,62 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
     is assumed to just be the input and the latter empty.
 */
 template <class DistanceScoreT>
-class DistancePairScore : public PairScore
-{
+class DistancePairScore : public PairScore {
   DistanceScoreT ds_;
-public:
+
+ public:
   typedef DistanceScoreT DistanceScore;
   // for backwards compat
   DistancePairScore(const DistanceScore &t0,
-                           std::string name="FunctorDistancePairScore %1%"):
-    PairScore(name),
-    ds_(t0) {}
+                    std::string name = "FunctorDistancePairScore %1%")
+      : PairScore(name), ds_(t0) {}
 
-  IMP_INDEX_PAIR_SCORE(DistancePairScore);
+  virtual double evaluate_index(kernel::Model *m,
+                                const kernel::ParticleIndexPair &pip,
+                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  IMP_PAIR_SCORE_METHODS(DistancePairScore);
+  IMP_OBJECT_METHODS(DistancePairScore);
 };
 
 #ifndef IMP_DOXYGEN
 template <class DistanceScore>
-inline double DistancePairScore<DistanceScore>::
-evaluate_index(Model *m, const ParticleIndexPair& p,
-               DerivativeAccumulator *da) const {
-  algebra::Vector3D delta=m->get_sphere(p[0]).get_center()-
-    m->get_sphere(p[1]).get_center();
-  double sq= delta.get_squared_magnitude();
-  if (ds_.get_is_trivially_zero(m, p, sq)) {return 0;}
-  double dist= std::sqrt(sq);
+inline double DistancePairScore<DistanceScore>::evaluate_index(
+    kernel::Model *m, const kernel::ParticleIndexPair &p,
+    DerivativeAccumulator *da) const {
+  algebra::Vector3D delta =
+      m->get_sphere(p[0]).get_center() - m->get_sphere(p[1]).get_center();
+  double sq = delta.get_squared_magnitude();
+  if (ds_.get_is_trivially_zero(m, p, sq)) {
+    return 0;
+  }
+  double dist = std::sqrt(sq);
   if (da) {
-    std::pair<double, double> sp=
-      ds_.get_score_and_derivative(m, p, dist);
+    std::pair<double, double> sp = ds_.get_score_and_derivative(m, p, dist);
     static const double MIN_DISTANCE = .00001;
     algebra::Vector3D uv;
     if (dist > MIN_DISTANCE) {
-      uv= delta/dist;
+      uv = delta / dist;
     } else {
-      uv= algebra::get_zero_vector_d<3>();
+      uv = algebra::get_zero_vector_d<3>();
     }
-    m->add_to_coordinate_derivatives(p[0], uv*sp.second, *da);
-    m->add_to_coordinate_derivatives(p[1], -uv*sp.second, *da);
+    m->add_to_coordinate_derivatives(p[0], uv * sp.second, *da);
+    m->add_to_coordinate_derivatives(p[1], -uv * sp.second, *da);
     return sp.first;
   } else {
     return ds_.get_score(m, p, dist);
   }
 }
 template <class DistanceScore>
-inline ModelObjectsTemp DistancePairScore<DistanceScore>::
-do_get_inputs(Model *m,
-           const ParticleIndexes &pis) const {
-  ModelObjectsTemp ret;
-  ret+= ds_.get_inputs(m, pis);
+inline kernel::ModelObjectsTemp DistancePairScore<DistanceScore>::do_get_inputs(
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
+  kernel::ModelObjectsTemp ret;
+  ret += ds_.get_inputs(m, pis);
   return ret;
-}
-template <class DistanceScore>
-inline void DistancePairScore<DistanceScore>::
-do_show(std::ostream &) const {
 }
 #endif
 
-
-
 IMPSCOREFUNCTOR_END_NAMESPACE
 
-#endif  /* IMPSCORE_FUNCTOR_DISTANCE_PAIR_SCORE_H */
+#endif /* IMPSCORE_FUNCTOR_DISTANCE_PAIR_SCORE_H */

@@ -63,7 +63,7 @@ IMP_DECORATORS_DECL(RigidMember, RigidMembers);
 
     It is often desirable to randomize the orientation of a rigid
     body:
-    \pythonexample{randomize_rigid_body}
+    \include randomize_rigid_body.py
 
     \usesconstraint
 
@@ -72,28 +72,35 @@ IMP_DECORATORS_DECL(RigidMember, RigidMembers);
     \see RigidClosePairsFinder
     \see RigidBodyDistancePairScore
  */
-class IMPCOREEXPORT RigidBody: public XYZ {
+class IMPCOREEXPORT RigidBody : public XYZ {
   //! Return the location of a member particle given the current position
   /** This method computes the coordinates of p given its internal coordinates
       and the current position and orientation of the rigid body.
    */
   algebra::Vector3D get_coordinates(RigidMember p) const;
 
-  void add_member_internal(Particle *p,
+  void add_member_internal(kernel::Particle *p,
                            const algebra::ReferenceFrame3D &rf);
   void on_change();
-  static void teardown_constraints(Particle *p);
+  static void teardown_constraints(kernel::Particle *p);
   static ObjectKey get_constraint_key_0();
   static ObjectKey get_constraint_key_1();
-public:
-#ifndef IMP_DOXYGEN
+
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                kernel::ParticleIndexesAdaptor ps);
+
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                const algebra::ReferenceFrame3D &rf);
+  void setup_score_states();
+  void add_point_member(kernel::ParticleIndex pi);
+  void add_rigid_body_member(kernel::ParticleIndex pi);
+ public:
   RigidMembers get_members() const;
-#endif
+
   //! Return the members as particle pointers
-  /** This member function is here
-      for efficiency.*/
-  const ParticleIndexes& get_member_particle_indexes() const {
-    static ParticleIndexes empty;
+  /** This member function is here for efficiency.*/
+  const kernel::ParticleIndexes &get_member_particle_indexes() const {
+    static kernel::ParticleIndexes empty;
     if (get_model()->get_has_attribute(internal::rigid_body_data().members_,
                                        get_particle_index())) {
       return get_model()->get_attribute(internal::rigid_body_data().members_,
@@ -103,67 +110,49 @@ public:
     }
   }
 
-  const ParticleIndexes& get_body_member_particle_indexes() const {
-    static ParticleIndexes empty;
-    if (get_model()
-        ->get_has_attribute(internal::rigid_body_data().body_members_,
-                                       get_particle_index())) {
-      return get_model()
-        ->get_attribute(internal::rigid_body_data().body_members_,
-                                        get_particle_index());
+  const kernel::ParticleIndexes &get_body_member_particle_indexes() const {
+    static kernel::ParticleIndexes empty;
+    if (get_model()->get_has_attribute(
+            internal::rigid_body_data().body_members_, get_particle_index())) {
+      return get_model()->get_attribute(
+          internal::rigid_body_data().body_members_, get_particle_index());
     } else {
       return empty;
     }
   }
 
-  IMP_DECORATOR(RigidBody, XYZ);
-
-  //! Create a new rigid body from a set of particles.
-  /** \param[in] p The particle to make into a rigid body
-      \param[in] ps The particles to use as members of the rigid body
-
-      The initial position and orientation of p is computed, as are the
-      relative positions of the member particles. The member particles
-      do not already need to be RigidMember particles, only
-      XYZ particles.
-   */
-  static RigidBody setup_particle(Particle *p,
-                                  const ParticlesTemp &ps);
-
-
-  /** Set it up with the provided initial reference frame.*/
-  static RigidBody setup_particle(Particle *p,
-                                  const algebra::ReferenceFrame3D &rf);
+  IMP_DECORATOR_METHODS(RigidBody, XYZ);
+  IMP_DECORATOR_SETUP_1(RigidBody, kernel::ParticleIndexesAdaptor, ps);
+  /** Create a rigid body with the passed reference frame as its initial
+      position. */
+  IMP_DECORATOR_SETUP_1(RigidBody, algebra::ReferenceFrame3D, rf);
 
   //! Make the rigid body no longer rigid.
   static void teardown_particle(RigidBody rb);
 
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(RigidBody);
   ~RigidBody();
 
-  //!Return true of the particle is a rigid body
-  static bool particle_is_instance(Particle *p) {
-    return internal::get_has_required_attributes_for_body(p->get_model(),
-                                                          p->get_index());
-  }
-
-  //!Return true of the particle is a rigid body
-  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+  /** Return true of the particle is a rigid body */
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
     return internal::get_has_required_attributes_for_body(m, pi);
   }
 
   // swig doesn't support using, so the method is wrapped
   //! Get the coordinates of the particle
-  algebra::Vector3D get_coordinates() const {
-    return XYZ::get_coordinates();
-  }
+  algebra::Vector3D get_coordinates() const { return XYZ::get_coordinates(); }
 
   //! Get the reference frame for the local coordinates
   IMP::algebra::ReferenceFrame3D get_reference_frame() const {
-    algebra::VectorD<4>
-      v(get_particle()->get_value(internal::rigid_body_data().quaternion_[0]),
-        get_particle()->get_value(internal::rigid_body_data().quaternion_[1]),
-        get_particle()->get_value(internal::rigid_body_data().quaternion_[2]),
-        get_particle()->get_value(internal::rigid_body_data().quaternion_[3]));
+    algebra::VectorD<4> v(
+        get_model()->get_attribute(internal::rigid_body_data().quaternion_[0],
+                                   get_particle_index()),
+        get_model()->get_attribute(internal::rigid_body_data().quaternion_[1],
+                                   get_particle_index()),
+        get_model()->get_attribute(internal::rigid_body_data().quaternion_[2],
+                                   get_particle_index()),
+        get_model()->get_attribute(internal::rigid_body_data().quaternion_[3],
+                                   get_particle_index()));
     IMP_USAGE_CHECK_FLOAT_EQUAL(v.get_squared_magnitude(), 1,
                                 "Rotation is not a unit vector: " << v);
     /*if (v.get_squared_magnitude() > 0){
@@ -172,8 +161,8 @@ public:
       v = algebra::VectorD<4>(1,0,0,0);
       }*/
     IMP::algebra::Rotation3D rot(v);
-    return algebra::ReferenceFrame3D(algebra::Transformation3D(rot,
-                                                           get_coordinates()));
+    return algebra::ReferenceFrame3D(
+        algebra::Transformation3D(rot, get_coordinates()));
   }
 
   //! Set the current reference frame
@@ -199,7 +188,7 @@ public:
       \note This requires at least three members that are not collinear
       to work.
   */
-  void set_reference_frame_from_members(const ParticleIndexes &members);
+  void set_reference_frame_from_members(const kernel::ParticleIndexes &members);
 
 #ifndef IMP_DOXYGEN
   /** This takes a cartesian derivative, and a location in internal coordinates.
@@ -220,10 +209,9 @@ public:
   /** The units are kCal/Mol/Radian */
   algebra::Vector3D get_torque() const {
     algebra::Vector3D ret;
-    for (unsigned int i=0; i< 3; ++i) {
-      ret[i]
-          =get_particle()
-          ->get_derivative(internal::rigid_body_data().torque_[i]);
+    for (unsigned int i = 0; i < 3; ++i) {
+      ret[i] = get_model()->get_derivative(
+          internal::rigid_body_data().torque_[i], get_particle_index());
     }
     return ret;
   }
@@ -244,30 +232,23 @@ public:
 
 #ifndef IMP_DOXYGEN
   unsigned int get_number_of_members() const {
-    return get_body_member_particle_indexes().size()
-      + get_member_particle_indexes().size();
+    return get_body_member_particle_indexes().size() +
+           get_member_particle_indexes().size();
   }
 
   RigidMember get_member(unsigned int i) const;
-
-  /** Add a member, properly handle rigid bodies and XYZ particles.
-   */
-  void add_member(Particle *p);
 #endif
   /** Add a member, properly handle rigid bodies and XYZ particles.
    */
-  void add_member(ParticleIndex p) {
-    add_member(get_model()->get_particle(p));
-  }
+  void add_member(kernel::ParticleIndexAdaptor p);
 
   /** Add a NonRigidMember. Currently RigidBody non-rigid members are
       not handler properly.*/
-  void add_non_rigid_member(ParticleIndex pi);
+  void add_non_rigid_member(kernel::ParticleIndex pi);
 
   /** Set whether a particular member is a rigid member or a non-rigid member.*/
-  void set_is_rigid_member(ParticleIndex pi, bool tf);
+  void set_is_rigid_member(kernel::ParticleIndex pi, bool tf);
 };
-
 
 /** It is often useful to store precalculated properties of the rigid body
     for later use. These need to be cleared out when the rigid body changes.
@@ -275,94 +256,109 @@ public:
 */
 void IMPCOREEXPORT add_rigid_body_cache_key(ObjectKey k);
 
-
-//! A decorator for a particle that is part of a rigid body
-/**
-   \see RigidBody
- */
-class IMPCOREEXPORT RigidMember: public XYZ {
- public:
-  IMP_DECORATOR(RigidMember, XYZ);
+//! A member of a rigid body, it has internal coordinates
+class IMPCOREEXPORT RigidBodyMember: public XYZ {
+  IMP_DECORATOR_METHODS(RigidBodyMember, XYZ);
 
   RigidBody get_rigid_body() const;
 
   //! Return the current orientation of the body
-  const algebra::Vector3D& get_internal_coordinates() const {
+  const algebra::Vector3D &get_internal_coordinates() const {
     return get_model()->get_internal_coordinates(get_particle_index());
   }
 
   //! set the internal coordinates for this member
   void set_internal_coordinates(const algebra::Vector3D &v) const {
-    get_model()->get_internal_coordinates(get_particle_index())=v;
-    get_rigid_body().get_particle()->clear_caches();
+    get_model()->get_internal_coordinates(get_particle_index()) = v;
+    get_rigid_body().get_model()->clear_particle_caches(get_particle_index());
   }
+
   //! Member must be a rigid body
-  void set_internal_transformation(const  algebra::Transformation3D& v) {
+  void set_internal_transformation(const algebra::Transformation3D &v) {
     IMP_USAGE_CHECK(
-   get_particle()->has_attribute(internal::rigid_body_data().lquaternion_[0]),
-         "Can only set the internal transformation if member is"
-         << " a rigid body itself.");
+        get_model()->get_has_attribute(
+            internal::rigid_body_data().lquaternion_[0], get_particle_index()),
+        "Can only set the internal transformation if member is"
+            << " a rigid body itself.");
     set_internal_coordinates(v.get_translation());
 
-    get_particle()->set_value(internal::rigid_body_data().lquaternion_[0],
-                              v.get_rotation().get_quaternion()[0]);
-    get_particle()->set_value(internal::rigid_body_data().lquaternion_[1],
-                              v.get_rotation().get_quaternion()[1]);
-    get_particle()->set_value(internal::rigid_body_data().lquaternion_[2],
-                              v.get_rotation().get_quaternion()[2]);
-    get_particle()->set_value(internal::rigid_body_data().lquaternion_[3],
-                              v.get_rotation().get_quaternion()[3]);
-    get_rigid_body().get_particle()->clear_caches();
+    get_model()->set_attribute(internal::rigid_body_data().lquaternion_[0],
+                               get_particle_index(),
+                               v.get_rotation().get_quaternion()[0]);
+    get_model()->set_attribute(internal::rigid_body_data().lquaternion_[1],
+                               get_particle_index(),
+                               v.get_rotation().get_quaternion()[1]);
+    get_model()->set_attribute(internal::rigid_body_data().lquaternion_[2],
+                               get_particle_index(),
+                               v.get_rotation().get_quaternion()[2]);
+    get_model()->set_attribute(internal::rigid_body_data().lquaternion_[3],
+                               get_particle_index(),
+                               v.get_rotation().get_quaternion()[3]);
+    get_rigid_body().get_model()->clear_particle_caches(get_particle_index());
   }
 
   algebra::Transformation3D get_internal_transformation() const {
     IMP_USAGE_CHECK(
-     get_particle()->has_attribute(internal::rigid_body_data().lquaternion_[0]),
-     "Can only set the internal transformation if member is a "
-     << "rigid body itself.");
-    algebra::Vector3D tr
-        =get_model()->get_internal_coordinates(get_particle_index());
-    algebra::Rotation3D
-      rot(get_particle()->get_value(internal::rigid_body_data()
-                                    .lquaternion_[0]),
-          get_particle()->get_value(internal::rigid_body_data()
-                                    .lquaternion_[1]),
-          get_particle()->get_value(internal::rigid_body_data()
-                                    .lquaternion_[2]),
-          get_particle()->get_value(internal::rigid_body_data()
-                                    .lquaternion_[3]));
+        get_model()->get_has_attribute(
+            internal::rigid_body_data().lquaternion_[0], get_particle_index()),
+        "Can only set the internal transformation if member is a "
+            << "rigid body itself.");
+    algebra::Vector3D tr =
+        get_model()->get_internal_coordinates(get_particle_index());
+    algebra::Rotation3D rot(
+        get_model()->get_attribute(internal::rigid_body_data().lquaternion_[0],
+                                   get_particle_index()),
+        get_model()->get_attribute(internal::rigid_body_data().lquaternion_[1],
+                                   get_particle_index()),
+        get_model()->get_attribute(internal::rigid_body_data().lquaternion_[2],
+                                   get_particle_index()),
+        get_model()->get_attribute(internal::rigid_body_data().lquaternion_[3],
+                                   get_particle_index()));
     return algebra::Transformation3D(rot, tr);
   }
-
+  ~RigidBodyMember();
   //! XYZ::set_coordiantes()
   // this is here since swig does like using statements
   void set_coordinates(const algebra::Vector3D &center) {
     XYZ::set_coordinates(center);
   }
+
 #ifndef IMP_DOXYGEN
   //! Set the coordinates from the internal coordinates
   void set_coordinates(const algebra::Transformation3D &tr) {
     set_coordinates(tr.get_transformed(get_internal_coordinates()));
   }
 #endif
-  ~RigidMember();
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(RigidBodyMember);
 
   //! return true if it is a rigid member
-  static bool particle_is_instance(Particle *p) {
-    return particle_is_instance(p->get_model(), p->get_index());
-  }
-    //! return true if it is a rigid member
-  static bool particle_is_instance(Model *m, ParticleIndex p) {
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndexAdaptor p) {
     return internal::get_has_required_attributes_for_member(m, p);
   }
 
   static FloatKeys get_internal_coordinate_keys() {
     return internal::rigid_body_data().child_keys_;
   }
+
 };
 
+//! A decorator for a particle that is part of a rigid body
+/**
+   \see RigidBody
+ */
+class IMPCOREEXPORT RigidMember : public RigidBodyMember {
+ public:
+  IMP_DECORATOR_METHODS(RigidMember, RigidBodyMember);
 
 
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(RigidMember);
+  ~RigidMember();
+
+  //! return true if it is a rigid member
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndexAdaptor p) {
+    return internal::get_has_required_attributes_for_rigid_member(m, p);
+  }
+};
 
 //! A decorator for a particle that is part of a rigid body but not rigid
 /** NonRigidMembers, like RigidMembers have internal coordinates and move
@@ -372,99 +368,37 @@ class IMPCOREEXPORT RigidMember: public XYZ {
 
    \see RigidBody
  */
-class IMPCOREEXPORT NonRigidMember: public XYZ {
+class IMPCOREEXPORT NonRigidMember : public RigidBodyMember {
  public:
-  IMP_DECORATOR(NonRigidMember, XYZ);
-
-  RigidBody get_rigid_body() const;
-
-  //! Return the current orientation of the body
-  const algebra::Vector3D& get_internal_coordinates() const {
-    return get_model()->get_internal_coordinates(get_particle_index());
-  }
-
-  //! set the internal coordinates for this member
-  void set_internal_coordinates(const algebra::Vector3D &v) const {
-    get_model()->get_internal_coordinates(get_particle_index())=v;
-    get_rigid_body().get_particle()->clear_caches();
-  }
-
-  //! Member must be a rigid body
-  void set_internal_transformation(const  algebra::Transformation3D& v) {
-    IMP_USAGE_CHECK(
-   get_particle()->has_attribute(internal::rigid_body_data().lquaternion_[0]),
-         "Can only set the internal transformation if member is"
-         << " a rigid body itself.");
-    set_internal_coordinates(v.get_translation());
-
-    get_particle()->set_value(internal::rigid_body_data().lquaternion_[0],
-                              v.get_rotation().get_quaternion()[0]);
-    get_particle()->set_value(internal::rigid_body_data().lquaternion_[1],
-                              v.get_rotation().get_quaternion()[1]);
-    get_particle()->set_value(internal::rigid_body_data().lquaternion_[2],
-                              v.get_rotation().get_quaternion()[2]);
-    get_particle()->set_value(internal::rigid_body_data().lquaternion_[3],
-                              v.get_rotation().get_quaternion()[3]);
-    get_rigid_body().get_particle()->clear_caches();
-  }
-
-  algebra::Transformation3D get_internal_transformation() const {
-    IMP_USAGE_CHECK(
-     get_particle()->has_attribute(internal::rigid_body_data().lquaternion_[0]),
-     "Can only set the internal transformation if member is a "
-     << "rigid body itself.");
-    algebra::Vector3D tr
-        =get_model()->get_internal_coordinates(get_particle_index());
-    algebra::Rotation3D
-      rot(get_particle()->get_value(internal::rigid_body_data()
-                                    .lquaternion_[0]),
-          get_particle()->get_value(internal::rigid_body_data()
-                                    .lquaternion_[1]),
-          get_particle()->get_value(internal::rigid_body_data()
-                                    .lquaternion_[2]),
-          get_particle()->get_value(internal::rigid_body_data()
-                                    .lquaternion_[3]));
-    return algebra::Transformation3D(rot, tr);
-  }
-
-  //! XYZ::set_coordiantes()
-  // this is here since swig does like using statements
-  void set_coordinates(const algebra::Vector3D &center) {
-    XYZ::set_coordinates(center);
-  }
-
-#ifndef IMP_DOXYGEN
-  //! Set the coordinates from the internal coordinates
-  void set_coordinates(const algebra::Transformation3D &tr) {
-    set_coordinates(tr.get_transformed(get_internal_coordinates()));
-  }
-#endif
+  IMP_DECORATOR_METHODS(NonRigidMember, RigidBodyMember);
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(NonRigidMember);
   ~NonRigidMember();
 
   //! return true if it is a rigid member
-  static bool particle_is_instance(Particle *p) {
-    return particle_is_instance(p->get_model(), p->get_index());
-  }
-    //! return true if it is a rigid member
-  static bool particle_is_instance(Model *m, ParticleIndex p) {
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex p) {
     return internal::get_has_required_attributes_for_non_member(m, p);
-  }
-
-  static FloatKeys get_internal_coordinate_keys() {
-    return internal::rigid_body_data().child_keys_;
   }
 };
 
 #ifndef IMP_DOXYGEN
 
-class IMPCOREEXPORT RigidMembersRefiner: public Refiner {
+class IMPCOREEXPORT RigidMembersRefiner : public Refiner {
  public:
-  RigidMembersRefiner(std::string name="RigidMembersRefiner%d"):Refiner(name){}
-  IMP_SIMPLE_REFINER(RigidMembersRefiner);
+  RigidMembersRefiner(std::string name = "RigidMembersRefiner%d")
+      : Refiner(name) {}
+  virtual bool get_can_refine(kernel::Particle *) const IMP_OVERRIDE;
+#ifndef SWIG
+  using Refiner::get_refined;
+#endif
+  virtual const kernel::ParticlesTemp get_refined(kernel::Particle *) const
+      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(RigidMembersRefiner);
 };
 
 namespace internal {
-  IMPCOREEXPORT RigidMembersRefiner* get_rigid_members_refiner();
+IMPCOREEXPORT RigidMembersRefiner *get_rigid_members_refiner();
 }
 #endif
 
@@ -473,17 +407,26 @@ namespace internal {
     body, as opposed to replacing the current conformation, as in
     RigidBody::set_reference_frame().
 
-    \relatesalso RigidBody
+    See RigidBody
      algebra::Transformation3D
 */
-inline void transform(RigidBody a, const algebra::Transformation3D&tr) {
+inline void transform(RigidBody a, const algebra::Transformation3D &tr) {
   a.set_reference_frame(get_transformed(a.get_reference_frame(), tr));
 }
 
 /** Compute the rigid body reference frame given a set of input particles.
  */
-IMPCOREEXPORT algebra::ReferenceFrame3D
-get_initial_reference_frame(const ParticlesTemp &ps);
+IMPCOREEXPORT algebra::ReferenceFrame3D get_initial_reference_frame(
+    kernel::Model *m, const kernel::ParticleIndexes &pis);
+
+inline algebra::ReferenceFrame3D get_initial_reference_frame(
+    const kernel::ParticlesTemp &ps) {
+  if (ps.empty()) {
+    return algebra::ReferenceFrame3D();
+  }
+  return get_initial_reference_frame(ps[0]->get_model(),
+                                     kernel::get_indexes(ps));
+}
 
 /** Create a set of rigid bodies that are bound together for efficiency.
     These rigid bodies cannot nest or have other dependencies amongst them.
@@ -493,14 +436,14 @@ get_initial_reference_frame(const ParticlesTemp &ps);
     \note Do not use this with DOMINO as all the rigid bodies use the same
     ScoreState and so will be considered inter-dependent.
 */
-IMPCOREEXPORT ParticlesTemp create_rigid_bodies(Model *m,
-                                               unsigned int n,
-                                               bool no_members=false);
+IMPCOREEXPORT kernel::ParticlesTemp create_rigid_bodies(kernel::Model *m,
+                                                        unsigned int n,
+                                                        bool no_members =
+                                                            false);
 
-
-IMP_DECORATORS_DEF(RigidMember,RigidMembers);
-IMP_DECORATORS(RigidBody,RigidBodies, XYZs);
+IMP_DECORATORS_DEF(RigidMember, RigidMembers);
+IMP_DECORATORS(RigidBody, RigidBodies, XYZs);
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_RIGID_BODIES_H */
+#endif /* IMPCORE_RIGID_BODIES_H */

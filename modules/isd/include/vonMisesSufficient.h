@@ -9,7 +9,7 @@
 
 #include <IMP/isd/isd_config.h>
 #include <IMP/macros.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/constants.h>
 #include <math.h>
 #include <boost/math/special_functions/bessel.hpp>
@@ -149,9 +149,10 @@ class vonMisesSufficient : public base::Object
         return retval;
     }
 
-  IMP_OBJECT_INLINE(vonMisesSufficient, out << "vonMisesSufficient: " << x_
+  IMP_OBJECT_METHODS(vonMisesSufficient);
+  /*IMP_OBJECT_INLINE(vonMisesSufficient, out << "vonMisesSufficient: " << x_
                     << ", " << N_ << ", " << R0_ << ", " << chiexp_
-                    << ", " << kappa_  <<std::endl, {});
+                    << ", " << kappa_  <<std::endl, {});*/
 
  private:
   double x_,R0_,chiexp_,kappa_,I0_,I1_,logterm_,I0N_;

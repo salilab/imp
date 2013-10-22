@@ -29,7 +29,7 @@ ATOM      2  CA  ALA A   2     -18.390   4.442 -18.049  1.00  0.00           C
               ['test.pdb', '7',
                self.get_input_file_name('multifit.chimera.output'), '2',
                'test.output'])
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         for expected in ['test.output.000.pdb', 'test.output.001.pdb']:
             h = IMP.atom.read_pdb(expected, m)
             atoms = IMP.atom.get_by_type(h, IMP.atom.ATOM_TYPE)

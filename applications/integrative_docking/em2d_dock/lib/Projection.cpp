@@ -196,8 +196,12 @@ void create_projections(const std::vector<IMP::algebra::Vector3D>& points,
   for(unsigned int i=0; i<spherical_coords.size(); i++) {
     // convert sphere coordinate to rotation
     IMP::algebra::SphericalVector3D v = spherical_coords[i];
-    IMP::algebra::Rotation3D r =
-      IMP::algebra::get_rotation_from_fixed_zyz(v[2], v[1], 0.0);
+    double cy = cos(v[1]/2.0); double cz = cos(v[2]/2.0);
+    double sy = sin(v[1]/2.0); double sz = sin(v[2]/2.0);
+    // this is a rotation about z axis by an angle v[2]
+    // followed by rotation about y axis by an angle v[1]
+    IMP::algebra::Rotation3D r(cy*cz, sy*sz, sy*cz, cy*sz);
+
     // rotate points
     for(unsigned int point_index=0; point_index<points.size(); point_index++) {
       rotated_points[point_index] = r*points[point_index];
@@ -254,8 +258,12 @@ void create_projections(const std::vector<IMP::algebra::Vector3D>& all_points,
   for(unsigned int i=0; i<spherical_coords.size(); i++) {
     // convert sphere coordinate to rotation
     IMP::algebra::SphericalVector3D v = spherical_coords[i];
-    IMP::algebra::Rotation3D r =
-      IMP::algebra::get_rotation_from_fixed_zyz(v[2], v[1], 0.0);
+    double cy = cos(v[1]/2.0); double cz = cos(v[2]/2.0);
+    double sy = sin(v[1]/2.0); double sz = sin(v[2]/2.0);
+    // this is a rotation about z axis by an angle v[2]
+    // followed by rotation about y axis by an angle v[1]
+    IMP::algebra::Rotation3D r(cy*cz, sy*sz, sy*cz, cy*sz);
+
     // rotate points
     for(unsigned int point_index=0; point_index<all_points.size();
         point_index++)

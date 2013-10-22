@@ -28,7 +28,7 @@
 #include "IMP/core/XYZR.h"
 #include "IMP/core.h"
 
-#include "IMP/Pointer.h"
+#include "IMP/base/Pointer.h"
 #include "IMP.h"
 
 #include <boost/program_options.hpp>
@@ -133,7 +133,7 @@ bool check_parameters(const po::variables_map &vm,const str required_params,
 
 int main(int argc, char **argv) {
 
-  IMP::set_log_level(IMP::VERBOSE);
+  IMP::set_log_level(IMP::base::VERBOSE);
 
   po::variables_map vm = get_parameters(argc,argv);
   IMP_NEW(em2d::SpiderImageReaderWriter, srw, ());
@@ -203,10 +203,10 @@ int main(int argc, char **argv) {
 
   // Read model file
   fn_model = vm["mod"].as<str>();
-  IMP_NEW(IMP::Model,model, ());
-  IMP::Pointer<atom::ATOMPDBSelector> sel=new atom::ATOMPDBSelector();
+  IMP_NEW(IMP::kernel::Model,model, ());
+  IMP::base::Pointer<atom::ATOMPDBSelector> sel=new atom::ATOMPDBSelector();
   atom::Hierarchy mh =atom::read_pdb(fn_model,model,sel);
-  IMP::ParticlesTemp ps = core::get_leaves(mh);
+  IMP::kernel::ParticlesTemp ps = core::get_leaves(mh);
 
   // Deal with the generation of projections
   digest_parameter("projs",vm,opt);
@@ -248,7 +248,7 @@ int main(int argc, char **argv) {
              << " Time: " << projection_time <<std::endl;
 
   // Prepare finder
-  IMP::set_log_level(IMP::VERBOSE);
+  IMP::set_log_level(IMP::base::VERBOSE);
 
 
   boost::timer registration_timer;

@@ -1,3 +1,6 @@
+"""@namespace IMP.em2d.restraints
+   Utility functions to handle restraints.
+"""
 
 import IMP
 import IMP.core as core

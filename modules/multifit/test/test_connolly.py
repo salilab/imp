@@ -14,10 +14,10 @@ def read_surface(fname):
 class Tests(IMP.test.TestCase):
     def test_single_atom(self):
         """Test generation of Connolly surface around a single atom"""
-        m = IMP.Model()
-        p = IMP.Particle(m)
+        m = IMP.kernel.Model()
+        p = IMP.kernel.Particle(m)
         res = IMP.atom.Residue.setup_particle(p, IMP.atom.ALA)
-        p = IMP.Particle(m)
+        p = IMP.kernel.Particle(m)
         center = IMP.algebra.Vector3D(10.,10.,10.)
         IMP.core.XYZ.setup_particle(p, center)
         a = IMP.atom.Atom.setup_particle(p, IMP.atom.AT_CA)

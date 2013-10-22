@@ -17,44 +17,38 @@ IMPCORE_BEGIN_NAMESPACE
 //! Modify a set of continuous variables using a normal distribution.
 /** \see MonteCarlo
  */
-class IMPCOREEXPORT NormalMover : public MonteCarloMover
-{
-  ParticleIndexes pis_;
+class IMPCOREEXPORT NormalMover : public MonteCarloMover {
+  kernel::ParticleIndexes pis_;
   FloatKeys keys_;
   Float stddev_;
   algebra::VectorKDs originals_;
 
-  void initialize(ParticleIndexes pis,
-                  FloatKeys keys,
-                  double radius);
-public:
-  NormalMover(Model *m, ParticleIndex pi,
-            const FloatKeys &vars, double stddev);
+  void initialize(kernel::ParticleIndexes pis, FloatKeys keys, double radius);
+
+ public:
+  NormalMover(kernel::Model *m, kernel::ParticleIndex pi, const FloatKeys &vars,
+              double stddev);
   //! Move the x,y,z coordinates
-  NormalMover(Model *m, ParticleIndex pi, double stddev);
+  NormalMover(kernel::Model *m, kernel::ParticleIndex pi, double stddev);
 #ifndef IMP_DOXYGEN
   /**  \param[in] sc The set of particles to perturb.
        \param[in] vars The variables to use (normally the keys for x,y,z)
        \param[in] sigma The standard deviation to use.
    */
-  NormalMover(const ParticlesTemp &sc,
-              const FloatKeys &vars,
+  NormalMover(const kernel::ParticlesTemp &sc, const FloatKeys &vars,
               Float sigma);
 
-  NormalMover(const ParticlesTemp &sc,
-              Float radius);
+  NormalMover(const kernel::ParticlesTemp &sc, Float radius);
 #endif
 
   void set_sigma(Float sigma) {
     IMP_USAGE_CHECK(sigma > 0, "Sigma must be positive");
-    stddev_=sigma;
+    stddev_ = sigma;
   }
 
-  Float get_sigma() const {
-    return stddev_;
-  }
+  Float get_sigma() const { return stddev_; }
 
-protected:
+ protected:
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
@@ -63,4 +57,4 @@ protected:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_NORMAL_MOVER_H */
+#endif /* IMPCORE_NORMAL_MOVER_H */

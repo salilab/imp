@@ -16,7 +16,7 @@
 #include "internal/inference_utility.h"
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
-#include <IMP/internal/OwnerPointer.h>
+#include <IMP/base/Pointer.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 #ifdef SWIG
@@ -29,20 +29,22 @@ class SubsetGraph;
     generate. The Assignments returned by get_sample_assignments() can be
     a lot smaller and faster.
  */
-class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler
-{
-  Pointer<AssignmentsTable> sst_;
+class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler {
+  base::Pointer<AssignmentsTable> sst_;
   SubsetGraph sg_;
   MergeTree mt_;
-  bool has_sg_, has_mt_;
+  bool has_mt_;
   bool csf_;
   mutable internal::InferenceStatistics stats_;
 
  public:
-  DominoSampler(Model *m, std::string name= "DominoSampler %1%");
-  DominoSampler(Model*m, ParticleStatesTable *pst,
-                std::string name= "DominoSampler %1%");
-  IMP_DISCRETE_SAMPLER(DominoSampler);
+  DominoSampler(kernel::Model *m, std::string name = "DominoSampler %1%");
+  DominoSampler(kernel::Model *m, ParticleStatesTable *pst,
+                std::string name = "DominoSampler %1%");
+  Assignments do_get_sample_assignments(const IMP::domino::Subset &known) const
+      IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(DominoSampler);
+
  public:
   /** \name Advanced
       Default values are provided, you only need to replace these
@@ -50,8 +52,6 @@ class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler
       the module for a general description.
       @{
   */
-  //! Use "loopy" inference on a subset graph
-  void set_subset_graph(const SubsetGraph &sg);
   //! Specify the merge tree directly
   void set_merge_tree(const MergeTree &mt);
   /** @} */
@@ -59,9 +59,7 @@ class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler
   /** perform filtering between subsets based by eliminating states
       that cannot be realized in a subset.
   */
-  void set_use_cross_subset_filtering(bool tf) {
-    csf_=tf;
-  }
+  void set_use_cross_subset_filtering(bool tf) { csf_ = tf; }
 
   /** \name Statistics
       If you specify the merge tree explicitly, you can query
@@ -69,11 +67,10 @@ class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler
       @{
   */
   //! Get the number of states found for the merge at that vertex of the tree
-  unsigned int
-    get_number_of_assignments_for_vertex(unsigned int tree_vertex) const;
+  unsigned int get_number_of_assignments_for_vertex(
+      unsigned int tree_vertex) const;
   //! Return a few subset states from that merge
-  Assignments
-    get_sample_assignments_for_vertex(unsigned int tree_vertex) const;
+  Assignments get_sample_assignments_for_vertex(unsigned int tree_vertex) const;
   /** @} */
 
   /** \name Interactive mode
@@ -92,24 +89,22 @@ class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler
   */
   //! Fill in assignments for a leaf
   Assignments get_vertex_assignments(unsigned int node_index,
-                                     unsigned int max_states
-                                     =std::numeric_limits<int>::max()) const;
+                                     unsigned int max_states =
+                                         std::numeric_limits<int>::max()) const;
   //! Fill in assignments for an internal node
   /** The passed assignments, the ordering for the children is
       the node index for the children.
   */
   Assignments get_vertex_assignments(unsigned int node_index,
-                                         const Assignments &first,
-                                         const Assignments &second,
-                                         unsigned int max_states
-                                       =std::numeric_limits<int>::max()) const;
-
+                                     const Assignments &first,
+                                     const Assignments &second,
+                                     unsigned int max_states =
+                                         std::numeric_limits<int>::max()) const;
 
   //! Fill in assignments for a leaf
-  void load_vertex_assignments(unsigned int node_index,
-                               AssignmentContainer *ac,
-                               unsigned int max_states
-                               =std::numeric_limits<int>::max()) const;
+  void load_vertex_assignments(unsigned int node_index, AssignmentContainer *ac,
+                               unsigned int max_states =
+                                   std::numeric_limits<int>::max()) const;
   //! Fill in assignments for an internal node
   /** The passed assignments, the ordering for the children is that of
       the node indexes for the children.
@@ -118,16 +113,14 @@ class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler
                                AssignmentContainer *first,
                                AssignmentContainer *second,
                                AssignmentContainer *ac,
-                               unsigned int max_states
-                               =std::numeric_limits<int>::max()) const;
+                               unsigned int max_states =
+                                   std::numeric_limits<int>::max()) const;
 
   /** @} */
 };
 
-
 IMP_OBJECTS(DominoSampler, DominoSamplers);
-
 
 IMPDOMINO_END_NAMESPACE
 
-#endif  /* IMPDOMINO_DOMINO_SAMPLER_H */
+#endif /* IMPDOMINO_DOMINO_SAMPLER_H */

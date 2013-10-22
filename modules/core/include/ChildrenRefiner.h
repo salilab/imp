@@ -21,21 +21,29 @@ class HierarchyTraits;
 //! Return the hierarchy children of a particle.
 /** \ingroup hierarchy
     A simple example using is
-    \pythonexample{cover_particles}
+    \include cover_particles.py
     \see Hierarchy
     \see Hierarchy
 */
-class IMPCOREEXPORT ChildrenRefiner : public Refiner
-{
+class IMPCOREEXPORT ChildrenRefiner : public Refiner {
 
   HierarchyTraits traits_;
-public:
+
+ public:
   //! Create a refiner for a particular type of hierarchy
   ChildrenRefiner(HierarchyTraits tr);
 
-  IMP_REFINER(ChildrenRefiner);
+  virtual bool get_can_refine(kernel::Particle *) const IMP_OVERRIDE;
+  virtual const kernel::ParticlesTemp get_refined(kernel::Particle *) const
+      IMP_OVERRIDE;
+#ifndef SWIG
+  using Refiner::get_refined;
+#endif
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ChildrenRefiner);
 };
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_CHILDREN_REFINER_H */
+#endif /* IMPCORE_CHILDREN_REFINER_H */

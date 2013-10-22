@@ -6,7 +6,7 @@
 
 #include <IMP/isd/GaussianProcessInterpolationRestraint.h>
 #include <IMP/macros.h>
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 #include <IMP/constants.h>
 #include <math.h>
 #include <IMP/algebra/internal/tnt_array2d.h>
@@ -16,8 +16,8 @@
 IMPISD_BEGIN_NAMESPACE
 
 GaussianProcessInterpolationRestraint::GaussianProcessInterpolationRestraint(
-        GaussianProcessInterpolation *gpi) :
-    ISDRestraint("GaussianProcessInterpolationRestraint %1%"), gpi_(gpi)
+        kernel::Model *m, GaussianProcessInterpolation *gpi) :
+    Restraint(m, "GaussianProcessInterpolationRestraint %1%"), gpi_(gpi)
 {
     //O(M^2)
     //number of observation points
@@ -35,35 +35,34 @@ GaussianProcessInterpolationRestraint::GaussianProcessInterpolationRestraint(
             1, Eigen::MatrixXd::Zero(M_,M_), gpi_->get_Omega());
     mvn_->set_use_cg(false,0.0);
     IMP_LOG_TERSE( "GPIR: done init" << std::endl);
+    create_score_state();
 }
 
-void GaussianProcessInterpolationRestraint::set_model(Model *m)
+void GaussianProcessInterpolationRestraint::create_score_state() {
+    IMP_LOG_TERSE( "GPIR: create scorestate" <<std::endl);
+    ss_ = new GaussianProcessInterpolationScoreState(this);
+}
+
+void GaussianProcessInterpolationRestraint::do_set_model(kernel::Model *m)
 {
-    if (m) {
-        IMP_LOG_TERSE( "GPIR: registering the model and scorestate"<<std::endl);
-        Model *m = gpi_->sigma_->get_model();
-        ss_ = new GaussianProcessInterpolationScoreState(this);
-        m->add_score_state(ss_);
-    } else {
-        if (ss_) {
-            if (ss_->get_is_part_of_model())
-            {
-                Model *m = ss_->get_model();
-                m->remove_score_state(ss_);
-                ss_=nullptr;
-            }
-        }
-    }
-    Restraint::set_model(m);
+  if (m) {
+    create_score_state();
+  } else {
+    IMP_LOG_TERSE( "GPIR: unregistering the scorestate"<<std::endl);
+    // it will get cleaned up
+    ss_ = nullptr;
+  }
 }
 
 ModelObjectsTemp GaussianProcessInterpolationRestraint::do_get_inputs() const {
   // call the existing implementation
-  ModelObjectsTemp ret;
+  kernel::ModelObjectsTemp ret;
   ret+=gpi_->get_input_particles();
   ret+=gpi_->get_input_containers();
   // add the score state
-  ret.push_back(ss_);
+  if (ss_) {
+    ret.push_back(ss_);
+  }
   return ret;
 }
 
@@ -72,6 +71,18 @@ double GaussianProcessInterpolationRestraint::unprotected_evaluate(
 {
     //the functions are all up-to-date since
     //the ScoreState has taken care of this
+
+    /*
+    std::cout << "===GPI ";
+    kernel::ParticlesTemp inppt(gpi_->get_input_particles());
+    for (unsigned i=0; i<inppt.size(); i++)
+        std::cout << Nuisance(inppt[i]).get_nuisance() << " " ;
+    if (accum) {
+        std::cout << "1 " << std::endl;
+    } else {
+        std::cout << "0 " << std::endl;
+    }
+    */
 
     if (accum) // O(M) if unchanged, O(M^2) if mean changed, else O(M^3)
     {
@@ -157,7 +168,7 @@ MatrixXd GaussianProcessInterpolationRestraint::get_hessian() const
         for (unsigned j=i; j<mnum_opt; ++j)
             Hessian(i,j) += tmp.transpose()*funcm[j];
     }
-    dmdm.resize(0,0); // free up some space
+    //dmdm.resize(0,0); // free up some space
 
     //d2E/(dOm_kl dOm_mn) * dOm_kl/dTheta_i * dOm_mn/dTheta_j
     std::vector<std::vector<MatrixXd> > dodo;
@@ -184,9 +195,8 @@ MatrixXd GaussianProcessInterpolationRestraint::get_hessian() const
             Hessian(i,j) +=
                 (tmp*funcO[j-mnum_opt]).trace();
     }
-    for (unsigned i=0; i < dodo.size(); ++i)
-        for (unsigned j=0; j < dodo[i].size(); ++j)
-            dodo[i][j].resize(0,0);
+    for (unsigned i=0; i < dodo.size(); ++i) dodo[i].clear();
+    dodo.clear();
 
     //d2E/(dm_k dOm_lm) * (  dm^k/dTheta_j dOm^lm/dTheta_i
     //                     + dm^k/dTheta_i dOm^lm/dTheta_j)
@@ -207,12 +217,9 @@ MatrixXd GaussianProcessInterpolationRestraint::get_hessian() const
             Hessian(i,j) += funcm[i].transpose()*tmp;
     }
     //deallocate both dmdo and all function derivatives
-    for (unsigned k=0; k<dmdo.size(); ++k)
-        dmdo[k].resize(0,0);
-    for (unsigned i=0; i<funcm.size(); ++i)
-        funcm[i].resize(0);
-    for (unsigned i=0; i<funcO.size(); ++i)
-            funcO[i].resize(0,0);
+    dmdo.clear();
+    funcm.clear();
+    funcO.clear();
 
     // dE/dm_k * d2m^k/(dTheta_i dTheta_j)
     VectorXd dem(mvn_->evaluate_derivative_FM());
@@ -227,7 +234,7 @@ MatrixXd GaussianProcessInterpolationRestraint::get_hessian() const
         iopt++;
     }
 
-    dem.resize(0);
+    //dem.resize(0);
 
     // dE/dOm_kl * d2Om^kl/(dTheta_i dTheta_j)
     MatrixXd dOm(mvn_->evaluate_derivative_Sigma());
@@ -241,7 +248,7 @@ MatrixXd GaussianProcessInterpolationRestraint::get_hessian() const
         }
         iopt++;
     }
-    dOm.resize(0,0);
+    //dOm.resize(0,0);
 
     //return hessian as full matrix
     for (unsigned i=0; i<num_opt; ++i)
@@ -309,28 +316,16 @@ void GaussianProcessInterpolationScoreState::do_after_evaluate(
         DerivativeAccumulator *) {
 }
 
-ContainersTemp
-GaussianProcessInterpolationScoreState::get_input_containers() const {
-  return gpir_->gpi_->get_input_containers();
-}
-ContainersTemp
-GaussianProcessInterpolationScoreState::get_output_containers() const {
-  return ContainersTemp();
-}
-ParticlesTemp
-GaussianProcessInterpolationScoreState::get_input_particles() const {
-  //gpir needs to update internal values computed from particles
-  return gpir_->gpi_->get_input_particles();
-}
-ParticlesTemp
-GaussianProcessInterpolationScoreState::get_output_particles() const {
-  //gpir does not change particles' attributes.
-  return ParticlesTemp();
+ModelObjectsTemp
+GaussianProcessInterpolationScoreState::do_get_inputs() const {
+  kernel::ModelObjectsTemp ret = gpir_->gpi_->get_input_particles();
+  ret += gpir_->gpi_->get_input_containers();
+  return ret;
 }
 
-void GaussianProcessInterpolationScoreState::do_show(std::ostream &out) const
-{
-    out << "GPI score state" << std::endl;
+ModelObjectsTemp
+GaussianProcessInterpolationScoreState::do_get_outputs() const {
+  return kernel::ModelObjectsTemp();
 }
 
 IMPISD_END_NAMESPACE

@@ -20,47 +20,42 @@ IMPATOM_BEGIN_NAMESPACE
 
     \see CHARMMParameters::create_angles(), AngleSingletonScore.
  */
-class IMPATOMEXPORT Angle : public Decorator
-{
-public:
-  IMP_DECORATOR(Angle, Decorator);
-
-  //! Create an angle with the given particles.
-  static Angle setup_particle(Particle *p, core::XYZ a, core::XYZ b,
-                              core::XYZ c) {
-    p->add_attribute(get_particle_key(0), a);
-    p->add_attribute(get_particle_key(1), b);
-    p->add_attribute(get_particle_key(2), c);
-    return Angle(p);
+class IMPATOMEXPORT Angle : public Decorator {
+  static void do_setup_particle(kernel::Model* m, kernel::ParticleIndex p,
+                                core::XYZ a, core::XYZ b, core::XYZ c) {
+    m->add_attribute(get_particle_key(0), p, a);
+    m->add_attribute(get_particle_key(1), p, b);
+    m->add_attribute(get_particle_key(2), p, c);
   }
 
+ public:
+  IMP_DECORATOR_METHODS(Angle, Decorator);
+  IMP_DECORATOR_SETUP_3(Angle, core::XYZ, a, core::XYZ, b, core::XYZ, c);
+
   //! Return true if the particle is an angle.
-  static bool particle_is_instance(Particle *p) {
+  static bool get_is_setup(kernel::Model* m, kernel::ParticleIndex pi) {
     for (unsigned int i = 0; i < 3; ++i) {
-      if (!p->has_attribute(get_particle_key(i))) return false;
+      if (!m->get_has_attribute(get_particle_key(i), pi)) return false;
     }
     return true;
   }
 
-  Particle* get_particle() const {
-    return Decorator::get_particle();
-  }
+  kernel::Particle* get_particle() const { return Decorator::get_particle(); }
 
   //! Get the ith particle in the angle.
-  Particle* get_particle(unsigned int i) const {
+  kernel::Particle* get_particle(unsigned int i) const {
     return get_particle()->get_value(get_particle_key(i));
   }
 
   IMP_DECORATOR_GET_SET_OPT(ideal, get_ideal_key(), Float, Float, -1);
   IMP_DECORATOR_GET_SET_OPT(stiffness, get_stiffness_key(), Float, Float, 0.);
 
-  static ParticleIndexKey get_particle_key(unsigned int i);
+  static kernel::ParticleIndexKey get_particle_key(unsigned int i);
   static FloatKey get_ideal_key();
   static FloatKey get_stiffness_key();
 };
 
-
-IMP_DECORATORS(Angle,Angles, ParticlesTemp);
+IMP_DECORATORS(Angle, Angles, kernel::ParticlesTemp);
 
 //! A particle that describes a dihedral angle between four particles.
 /** An Angle decorator is a simple container of four particles, together
@@ -75,51 +70,48 @@ IMP_DECORATORS(Angle,Angles, ParticlesTemp);
          CHARMMTopology::add_impropers(), DihedralSingletonScore,
          ImproperSingletonScore.
  */
-class IMPATOMEXPORT Dihedral : public Decorator
-{
-public:
-  IMP_DECORATOR(Dihedral, Decorator);
-
+class IMPATOMEXPORT Dihedral : public Decorator {
   //! Create a dihedral with the given particles.
-  static Dihedral setup_particle(Particle *p, core::XYZ a, core::XYZ b,
-                                 core::XYZ c, core::XYZ d) {
-    p->add_attribute(get_particle_key(0), a);
-    p->add_attribute(get_particle_key(1), b);
-    p->add_attribute(get_particle_key(2), c);
-    p->add_attribute(get_particle_key(3), d);
-    return Dihedral(p);
+  static void do_setup_particle(kernel::Model* m, kernel::ParticleIndex p,
+                                core::XYZ a, core::XYZ b, core::XYZ c,
+                                core::XYZ d) {
+    m->add_attribute(get_particle_key(0), p, a);
+    m->add_attribute(get_particle_key(1), p, b);
+    m->add_attribute(get_particle_key(2), p, c);
+    m->add_attribute(get_particle_key(3), p, d);
   }
 
-  //! Return true if the particle is a dihedral.
-  static bool particle_is_instance(Particle *p) {
+ public:
+  IMP_DECORATOR_METHODS(Dihedral, Decorator);
+  IMP_DECORATOR_SETUP_4(Dihedral, core::XYZ, a, core::XYZ, b, core::XYZ, c,
+                        core::XYZ, d);
+
+  static bool get_is_setup(kernel::Model* m, kernel::ParticleIndex pi) {
     for (unsigned int i = 0; i < 4; ++i) {
-      if (!p->has_attribute(get_particle_key(i))) return false;
+      if (!m->get_has_attribute(get_particle_key(i), pi)) return false;
     }
     return true;
   }
 
-  Particle* get_particle() const {
-    return Decorator::get_particle();
-  }
+  kernel::Particle* get_particle() const { return Decorator::get_particle(); }
 
   //! Get the ith particle in the dihedral.
-  Particle* get_particle(unsigned int i) const {
+  kernel::Particle* get_particle(unsigned int i) const {
     return get_particle()->get_value(get_particle_key(i));
   }
 
   IMP_DECORATOR_GET_SET_OPT(ideal, get_ideal_key(), Float, Float, -1);
-  IMP_DECORATOR_GET_SET_OPT(multiplicity, get_multiplicity_key(),
-                            Int, Int, 0);
+  IMP_DECORATOR_GET_SET_OPT(multiplicity, get_multiplicity_key(), Int, Int, 0);
   IMP_DECORATOR_GET_SET_OPT(stiffness, get_stiffness_key(), Float, Float, 0.);
 
-  static ParticleIndexKey get_particle_key(unsigned int i);
+  static kernel::ParticleIndexKey get_particle_key(unsigned int i);
   static FloatKey get_ideal_key();
   static IntKey get_multiplicity_key();
   static FloatKey get_stiffness_key();
 };
 
-IMP_DECORATORS(Dihedral,Dihedrals, ParticlesTemp);
+IMP_DECORATORS(Dihedral, Dihedrals, kernel::ParticlesTemp);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_ANGLE_DECORATORS_H */
+#endif /* IMPATOM_ANGLE_DECORATORS_H */

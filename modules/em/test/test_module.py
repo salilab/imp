@@ -7,7 +7,7 @@ class Tests(IMP.test.TestCase):
 
     def test_exceptions(self):
         """Make sure that exceptions work correctly"""
-        # Using SWIG-generated std::vector classes (such as IMP.Particles)
+        # Using SWIG-generated std::vector classes (such as IMP.kernel.Particles)
         # can cause a crash due to an unhandled exception. This code crashes
         # with swig 1.3.33 if more than one module defines vector wrappers.
         # See SWIG bug #1863647 at

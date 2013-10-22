@@ -17,7 +17,7 @@ class Tests(IMP.test.TestCase):
         modmodel = modeller.model(e)
         modmodel.build_sequence('GGCC')
 
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         protein = IMP.modeller.ModelLoader(modmodel).load_atoms(m)
         atoms = IMP.atom.get_by_type(protein, IMP.atom.ATOM_TYPE)
         r = IMP.core.DistanceRestraint(IMP.core.Harmonic(10.0, 1.0),

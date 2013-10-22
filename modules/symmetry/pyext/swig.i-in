@@ -1,0 +1,6 @@
+IMP_SWIG_OBJECT(IMP::symmetry, BallMover, BallMovers); 
+IMP_SWIG_OBJECT(IMP::symmetry, RigidBodyMover, RigidBodyMovers);
+
+
+%include "IMP/symmetry/BallMover.h"
+%include "IMP/symmetry/RigidBodyMover.h"

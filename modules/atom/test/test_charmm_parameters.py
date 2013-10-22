@@ -295,7 +295,7 @@ class Tests(IMP.test.TestCase):
     def test_charmm_elements(self):
         """Test that new atom types from CHARMM get elements assigned"""
         ff = IMP.atom.get_heavy_atom_CHARMM_parameters()
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         t = IMP.atom.get_element_table()
         # None of these atom names are used in standard PDB amino acids,
         # so should have been created when we read in the CHARMM topology
@@ -306,7 +306,7 @@ class Tests(IMP.test.TestCase):
                                      ('HET:CGD', 'C'),
                                      ('HET:CMB', 'C')):
             self.assertTrue(IMP.atom.AtomType.get_key_exists(charmm_name))
-            p = IMP.Particle(m)
+            p = IMP.kernel.Particle(m)
             a = IMP.atom.Atom.setup_particle(p, IMP.atom.AtomType(charmm_name))
             # Make sure each new atom type has the correct element
             self.assertEqual(a.get_element(), t.get_element(element))

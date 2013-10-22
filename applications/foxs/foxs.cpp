@@ -2,14 +2,17 @@
    This is the program for SAXS profile computation and fitting.
    see FOXS for webserver (salilab.org/foxs)
  */
-#include <IMP/Model.h>
-#include <IMP/atom/pdb.h>
-
 #include <IMP/saxs/Profile.h>
 #include <IMP/saxs/ProfileFitter.h>
 #include <IMP/saxs/ChiScoreLog.h>
+#include <IMP/saxs/ChiFreeScore.h>
 #include <IMP/saxs/SolventAccessibleSurface.h>
 #include <IMP/saxs/FormFactorTable.h>
+
+#include <IMP/atom/pdb.h>
+
+#include <IMP/constants.h>
+#include <IMP/kernel/Model.h>
 
 #include "Gnuplot.h"
 #include "JmolWriter.h"
@@ -21,6 +24,141 @@
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 
+using namespace IMP::saxs;
+
+namespace {
+
+void read_pdb(const std::string file,
+              std::vector<std::string>& pdb_file_names,
+              std::vector<IMP::kernel::Particles>& particles_vec,
+              bool residue_level, bool heavy_atoms_only, int multi_model_pdb) {
+
+  IMP::kernel::Model *model = new IMP::kernel::Model();
+
+  IMP::atom::Hierarchies mhds;
+  IMP::atom::PDBSelector* selector;
+  if(residue_level) // read CA only
+    selector = new IMP::atom::CAlphaPDBSelector();
+  else
+    if(heavy_atoms_only) // read without hydrogens
+      selector =  new IMP::atom::NonWaterNonHydrogenPDBSelector();
+    else // read with hydrogens
+      selector = new IMP::atom::NonWaterPDBSelector();
+
+  if(multi_model_pdb == 2) {
+    mhds = read_multimodel_pdb(file, model, selector, true);
+  } else {
+    if(multi_model_pdb == 3) {
+      IMP::atom::Hierarchy mhd =
+        IMP::atom::read_pdb(file, model, selector, false, true);
+      mhds.push_back(mhd);
+    } else {
+      IMP::atom::Hierarchy mhd =
+        IMP::atom::read_pdb(file, model, selector, true, true);
+      mhds.push_back(mhd);
+    }
+  }
+
+  for(unsigned int h_index=0; h_index<mhds.size(); h_index++) {
+    IMP::kernel::ParticlesTemp ps = get_by_type(mhds[h_index],
+                                                IMP::atom::ATOM_TYPE);
+    if(ps.size() > 0) { // pdb file
+      std::string pdb_id = file;
+      if(mhds.size() > 1) {
+        pdb_id = trim_extension(file) + "_m" +
+          std::string(boost::lexical_cast<std::string>(h_index+1)) + ".pdb";
+      }
+      pdb_file_names.push_back(pdb_id);
+      particles_vec.push_back(IMP::get_as<IMP::kernel::Particles>(ps));
+      std::cout << ps.size() << " atoms were read from PDB file " << file;
+      if(mhds.size() > 1) std::cout << " MODEL " << h_index+1;
+      std::cout << std::endl;
+    }
+  }
+}
+
+void read_files(const std::vector<std::string>& files,
+                std::vector<std::string>& pdb_file_names,
+                std::vector<std::string>& dat_files,
+                std::vector<IMP::kernel::Particles>& particles_vec,
+                Profiles& exp_profiles,
+                bool residue_level, bool heavy_atoms_only,
+                int multi_model_pdb) {
+
+  for(unsigned int i=0; i<files.size(); i++) {
+    // check if file exists
+    std::ifstream in_file(files[i].c_str());
+    if(!in_file) {
+      std::cerr << "Can't open file " << files[i] << std::endl; return;
+    }
+    // 1. try as pdb
+    try {
+      read_pdb(files[i], pdb_file_names, particles_vec,
+               residue_level, heavy_atoms_only, multi_model_pdb);
+    } catch(IMP::base::ValueException e) { // not a pdb file
+      // 2. try as a dat profile file
+      IMP_NEW(Profile, profile, (files[i]));
+      if(profile->size() == 0) {
+        std::cerr << "can't parse input file " << files[i] << std::endl;
+        return;
+      } else {
+        dat_files.push_back(files[i]);
+        exp_profiles.push_back(profile);
+        std::cout << "Profile read from file " << files[i] << " size = "
+                  << profile->size() << std::endl;
+      }
+    }
+  }
+}
+
+Profile* compute_profile(IMP::kernel::Particles particles,
+                         float min_q, float max_q, float delta_q,
+                         FormFactorTable* ft, FormFactorType ff_type,
+                         float water_layer_c2, bool fit,
+                         bool reciprocal, bool ab_initio,
+                         bool vacuum) {
+  IMP_NEW(Profile, profile, (min_q, max_q, delta_q));
+  if(reciprocal) profile->set_ff_table(ft);
+
+  // compute surface accessibility and average radius
+  IMP::Floats surface_area;
+  SolventAccessibleSurface s;
+  float average_radius = 0.0;
+  if(water_layer_c2 != 0.0) {
+    // add radius
+    for(unsigned int i=0; i<particles.size(); i++) {
+      float radius = ft->get_radius(particles[i], ff_type);
+      IMP::core::XYZR::setup_particle(particles[i], radius);
+      average_radius += radius;
+    }
+    surface_area = s.get_solvent_accessibility(IMP::core::XYZRs(particles));
+    average_radius /= particles.size();
+    profile->set_average_radius(average_radius);
+  }
+
+  // pick profile calculation based on input parameters
+  if(!fit) { // regular profile, no c1/c2 fitting
+    if(ab_initio) { // bead model, constant form factor
+      profile->calculate_profile_constant_form_factor(particles);
+    } else if(vacuum) {
+        profile->calculate_profile_partial(particles, surface_area, ff_type);
+        profile->sum_partial_profiles(0.0, 0.0); // c1 = 0;
+    } else {
+      profile->calculate_profile(particles, ff_type, reciprocal);
+    }
+  } else { // c1/c2 fitting
+    if(reciprocal)
+      profile->calculate_profile_reciprocal_partial(particles, surface_area,
+                                                    ff_type);
+    else
+      profile->calculate_profile_partial(particles, surface_area, ff_type);
+  }
+  return profile.release();
+}
+
+}
+
+
 int main(int argc, char **argv)
 {
   // output arguments
@@ -31,14 +169,16 @@ int main(int argc, char **argv)
   float max_q = 0.5;
   float background_adjustment_q = 0.0;
   float excluded_volume_c1 = 0.0;
+  float scale = 1.0;
+  bool set_scale = false;
   bool use_offset = false;
+  bool write_partial_profile = false;
   bool fit = true;
   float MAX_C2 = 4.0; float MIN_C2 = -MAX_C2/2.0;
   float water_layer_c2 = MAX_C2;
   bool heavy_atoms_only = true;
   bool residue_level = false;
   bool score_log = false;
-  bool interval_chi = false;
   int multi_model_pdb = 1;
   po::options_description desc("Options");
   desc.add_options()
@@ -69,6 +209,7 @@ Valid range: 0.95 < c1 < 1.05")
      "background adjustment, not used by default. if enabled, \
 recommended q value is 0.2")
     ("offset,o", "use offset in fitting (default = false)")
+    ("write-partial-profile,p", "write partial profile file (default = false)")
     ("multi-model-pdb,m", po::value<int>(&multi_model_pdb)->default_value(1),
      "1 - read the first MODEL only (default), \
 2 - read each MODEL into a separate structure, \
@@ -77,11 +218,12 @@ recommended q value is 0.2")
 (default = false)")
     ;
 
-
   std::string form_factor_table_file;
   bool ab_initio = false;
   bool vacuum = false;
   bool javascript = false;
+  bool interval_chi = false;
+  int chi_free = 0;
   po::options_description hidden("Hidden options");
   hidden.add_options()
     ("input-files", po::value< std::vector<std::string> >(),
@@ -94,6 +236,12 @@ constant form factor (default = false)")
     ("javascript,j",
      "output javascript for browser viewing of the results (default = false)")
     ("interval_chi,i", "compute chi for intervals (default = false)")
+    ("scale,c",
+     po::value<float>(&scale),
+     "set scaling constant instead of least square fitting to minimize chi. \
+(default = false)")
+    ("chi_free,x", po::value<int>(&chi_free)->default_value(0),
+     "compute chi-free instead of chi, specify iteration number (default = 0)")
     ;
 
   po::options_description cmdline_options;
@@ -121,6 +269,7 @@ constant form factor (default = false)")
   if(vm.count("hydrogens")) heavy_atoms_only=false;
   if(vm.count("residues")) residue_level=true;
   if(vm.count("offset")) use_offset=true;
+  if(vm.count("write-partial-profile")) write_partial_profile=true;
   if(vm.count("score_log")) score_log=true;
   // no water layer or fitting in ab initio mode for now
   if(vm.count("ab_initio")) { ab_initio=true; water_layer_c2 = 0.0;
@@ -128,6 +277,7 @@ constant form factor (default = false)")
   if(vm.count("vacuum")) { vacuum = true; }
   if(vm.count("javascript")) { javascript = true; }
   if(vm.count("interval_chi")) { interval_chi = true; }
+  if(vm.count("scale")) { set_scale = true; }
 
   if(multi_model_pdb != 1 && multi_model_pdb != 2 && multi_model_pdb != 3) {
     std::cerr << "Incorrect option for multi_model_pdb "
@@ -140,165 +290,64 @@ constant form factor (default = false)")
   }
   float delta_q = max_q / profile_size;
 
+  // read in or use default form factor table
   bool reciprocal = false;
-  IMP::saxs::FormFactorTable* ft = NULL;
+  FormFactorTable* ft = NULL;
   if(form_factor_table_file.length() > 0) {
     //reciprocal space calculation, requires form factor file
-    ft = new IMP::saxs::FormFactorTable(form_factor_table_file,
-                                        0.0, max_q, delta_q);
+    ft = new FormFactorTable(form_factor_table_file, 0.0, max_q, delta_q);
     reciprocal = true;
+  } else {
+    ft = default_form_factor_table();
   }
+
+  // determine form factor type
+  FormFactorType ff_type = HEAVY_ATOMS;
+  if(!heavy_atoms_only) ff_type = ALL_ATOMS;
+  if(residue_level) ff_type = CA_ATOMS;
+
+  if(excluded_volume_c1 == 1.0 && water_layer_c2 == 0.0) fit = false;
 
   // 1. read pdbs and profiles, prepare particles
-  IMP::Model *model = new IMP::Model();
-  std::vector<IMP::Particles> particles_vec;
-  std::vector<IMP::saxs::Profile *> exp_profiles;
-  for(unsigned int i=0; i<files.size(); i++) {
-    // check if file exists
-    std::ifstream in_file(files[i].c_str());
-    if(!in_file) {
-      std::cerr << "Can't open file " << files[i] << std::endl; return 1;
-    }
-    // A. try as pdb
-    try {
-      IMP::atom::Hierarchies mhds;
-      IMP::atom::PDBSelector* selector;
-      if(residue_level) // read CA only
-        selector = new IMP::atom::CAlphaPDBSelector();
-      else
-        if(heavy_atoms_only) // read without hydrogens
-            selector =  new IMP::atom::NonWaterNonHydrogenPDBSelector();
-        else // read with hydrogens
-          selector = new IMP::atom::NonWaterPDBSelector();
+  std::vector<IMP::kernel::Particles> particles_vec;
+  Profiles exp_profiles;
 
-      if(multi_model_pdb == 2) {
-        mhds = read_multimodel_pdb(files[i], model, selector, true);
-      } else {
-        if(multi_model_pdb == 3) {
-          IMP::atom::Hierarchy mhd =
-            IMP::atom::read_pdb(files[i], model, selector, false, true);
-          mhds.push_back(mhd);
-        } else {
-          IMP::atom::Hierarchy mhd =
-            IMP::atom::read_pdb(files[i], model, selector, true, true);
-          mhds.push_back(mhd);
-        }
-      }
+  read_files(files, pdb_files, dat_files,
+             particles_vec, exp_profiles,
+             residue_level, heavy_atoms_only, multi_model_pdb);
 
-
-      for(unsigned int h_index=0; h_index<mhds.size(); h_index++) {
-        IMP::ParticlesTemp particles =
-          get_by_type(mhds[h_index], IMP::atom::ATOM_TYPE);
-        if(particles.size() > 0) { // pdb file
-          std::string pdb_id = files[i];
-          if(mhds.size() > 1) {
-            pdb_id = trim_extension(files[i]) + "_m" +
-              std::string(boost::lexical_cast<std::string>(h_index+1)) + ".pdb";
-          }
-          pdb_files.push_back(pdb_id);
-          particles_vec.push_back(IMP::get_as<IMP::Particles>(particles));
-          std::cout << particles.size() << " atoms were read from PDB file "
-                    << files[i];
-          if(mhds.size() > 1) std::cout << " MODEL " << h_index+1;
-          std::cout << std::endl;
-
-          if(water_layer_c2 != 0.0) { // add radius
-            IMP::saxs::FormFactorTable* ft=IMP::saxs::default_form_factor_table();
-            IMP::saxs::FormFactorType ff_type = IMP::saxs::HEAVY_ATOMS;
-            if(residue_level) ff_type = IMP::saxs::CA_ATOMS;
-            if(!heavy_atoms_only) ff_type = IMP::saxs::ALL_ATOMS;
-            for(unsigned int p_index=0; p_index<particles.size(); p_index++) {
-              float radius = ft->get_radius(particles[p_index], ff_type);
-              IMP::core::XYZR::setup_particle(particles[p_index], radius);
-            }
-          }
-        }
-      }
-    } catch(IMP::ValueException e) { // not a pdb file
-      // B. try as dat file
-      IMP::saxs::Profile *profile = new IMP::saxs::Profile(files[i]);
-      if(profile->size() == 0) {
-        std::cerr << "can't parse input file " << files[i] << std::endl;
-        return 1;
-      } else {
-        dat_files.push_back(files[i]);
-        if(background_adjustment_q > 0.0) {
-          profile->background_adjust(background_adjustment_q);
-        }
-        exp_profiles.push_back(profile);
-        std::cout << "Profile read from file " << files[i] << " size = "
-                  << profile->size() << std::endl;
-      }
-    }
+  if(background_adjustment_q > 0.0) {
+    for(unsigned int i=0; i<exp_profiles.size(); i++)
+      exp_profiles[i]->background_adjust(background_adjustment_q);
   }
-
+  if(dat_files.size() == 0) fit = false;
+  if(write_partial_profile) fit = true;
 
   // 2. compute profiles for input pdbs
-  std::vector<IMP::saxs::Profile *> profiles;
-  std::vector<IMP::saxs::FitParameters> fps;
+  Profiles profiles;
+  std::vector<FitParameters> fps;
   for(unsigned int i=0; i<particles_vec.size(); i++) {
-    // compute surface accessibility
-    IMP::Floats surface_area;
-    IMP::saxs::SolventAccessibleSurface s;
-    if(water_layer_c2 != 0.0) {
-      surface_area =
-        s.get_solvent_accessibility(IMP::core::XYZRs(particles_vec[i]));
-    }
-
-    // compute profile
     std::cerr << "Computing profile for " << pdb_files[i]
               << " "  << particles_vec[i].size() << " atoms "<< std::endl;
-    IMP::saxs::Profile *partial_profile =
-      new IMP::saxs::Profile(0.0, max_q, delta_q);
-    if(reciprocal) partial_profile->set_ff_table(ft);
-    if(excluded_volume_c1 == 1.0 && water_layer_c2 == 0.0) fit = false;
-    IMP::saxs::FormFactorType ff_type = IMP::saxs::HEAVY_ATOMS;
-    if(!heavy_atoms_only) ff_type = IMP::saxs::ALL_ATOMS;
-    if(residue_level) ff_type = IMP::saxs::CA_ATOMS;
-    // calculate total volume and average radius
-    IMP::saxs::FormFactorTable* ft = IMP::saxs::default_form_factor_table();
-    float average_radius = 0.0;
-    float volume = 0;
-    for(unsigned int k=0; k<particles_vec[i].size(); k++) {
-      average_radius += ft->get_radius(particles_vec[i][k], ff_type);
-      volume += ft->get_volume(particles_vec[i][k], ff_type);
-    }
-    average_radius /= particles_vec[i].size();
-    partial_profile->set_average_radius(average_radius);
+    IMP::base::Pointer<Profile> profile =
+      compute_profile(particles_vec[i], 0.0, max_q, delta_q, ft, ff_type,
+                      water_layer_c2, fit, reciprocal, ab_initio, vacuum);
 
-    if(dat_files.size() == 0 || !fit) { // regular profile, no c1/c2 fitting
-      if(ab_initio) { // bead model, constant form factor
-        partial_profile->
-          calculate_profile_constant_form_factor(particles_vec[i]);
-      } else {
-        if(vacuum) {
-          partial_profile->calculate_profile_partial(particles_vec[i],
-                                                     surface_area, ff_type);
-          partial_profile->sum_partial_profiles(0.0, 0.0, *partial_profile);
-        } else {
-          partial_profile->calculate_profile(particles_vec[i],
-                                             ff_type, reciprocal);
-        }
-      }
-    } else { // c1/c2 fitting
-      if(reciprocal)
-         partial_profile->calculate_profile_reciprocal_partial(particles_vec[i],
-                                                         surface_area, ff_type);
-      else
-        partial_profile->calculate_profile_partial(particles_vec[i],
-                                                   surface_area, ff_type);
-    }
     // save the profile
-    profiles.push_back(partial_profile);
+    profiles.push_back(profile);
     // write profile file
     std::string profile_file_name = std::string(pdb_files[i]) + ".dat";
-    partial_profile->add_errors();
-    partial_profile->write_SAXS_file(profile_file_name);
-    Gnuplot::print_profile_script(pdb_files[i]);
+    if(write_partial_profile)
+      profile->write_partial_profiles(profile_file_name);
+    else { // write normal profile
+      profile->add_errors();
+      profile->write_SAXS_file(profile_file_name);
+      Gnuplot::print_profile_script(pdb_files[i]);
+    }
 
     // 3. fit experimental profiles
     for(unsigned int j=0; j<dat_files.size(); j++) {
-      IMP::saxs::Profile* exp_saxs_profile = exp_profiles[j];
+      Profile* exp_saxs_profile = exp_profiles[j];
 
       std::string fit_file_name2 = trim_extension(pdb_files[i]) + "_" +
         trim_extension(basename(const_cast<char *>(dat_files[j].c_str())))
@@ -309,26 +358,51 @@ constant form factor (default = false)")
       if(std::fabs(water_layer_c2 - MAX_C2) < 0.00000000001) { // enumerate
       } else { MIN_C2 = MAX_C2 = water_layer_c2; } // set specific value
 
-      IMP::saxs::FitParameters fp;
+      FitParameters fp;
       if(score_log) {
-        IMP::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiScoreLog> > pf =
-        new IMP::saxs::ProfileFitter<IMP::saxs::ChiScoreLog>(*exp_saxs_profile);
-        fp = pf->fit_profile(*partial_profile,
-                             min_c1, max_c1, MIN_C2, MAX_C2,
+        IMP_NEW(ProfileFitter<ChiScoreLog>, pf, (exp_saxs_profile));
+        fp = pf->fit_profile(profile, min_c1, max_c1, MIN_C2, MAX_C2,
                              use_offset, fit_file_name2);
       } else {
-        IMP::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiScore> > pf =
-          new IMP::saxs::ProfileFitter<IMP::saxs::ChiScore>(*exp_saxs_profile);
-        fp = pf->fit_profile(*partial_profile,
-                             min_c1, max_c1, MIN_C2, MAX_C2,
+        IMP_NEW(ProfileFitter<ChiScore>, pf, (exp_saxs_profile));
+        fp = pf->fit_profile(profile, min_c1, max_c1, MIN_C2, MAX_C2,
                              use_offset, fit_file_name2);
+        if(chi_free > 0) {
+          double dmax = compute_max_distance(particles_vec[i]);
+          unsigned int ns = IMP::algebra::get_rounded(
+                                 exp_saxs_profile->get_max_q()*dmax/IMP::PI);
+          int K = chi_free;
+          ChiFreeScore cfs(ns, K);
+          // resample the profile
+          IMP_NEW(Profile, resampled_profile,
+                  (exp_saxs_profile->get_min_q(),
+                   exp_saxs_profile->get_max_q(),
+                   exp_saxs_profile->get_delta_q()));
+          pf->resample(profile, resampled_profile);
+          double chi_free = cfs.compute_score(exp_saxs_profile,
+                                              resampled_profile);
+          fp.set_chi(chi_free);
+        }
+
         if(interval_chi) {
           std::cout << "interval_chi " <<pdb_files[i] << " "
-                    << pf->compute_score(*partial_profile, 0.0, 0.05) << " "
-                    << pf->compute_score(*partial_profile, 0.0, 0.1) << " "
-                    << pf->compute_score(*partial_profile, 0.0, 0.15) << " "
-                    << pf->compute_score(*partial_profile, 0.0, 0.2) << " "
-                    << pf->compute_score(*partial_profile) << std::endl;
+                    << pf->compute_score(profile, 0.0, 0.05) << " "
+                    << pf->compute_score(profile, 0.0, 0.1) << " "
+                    << pf->compute_score(profile, 0.0, 0.15) << " "
+                    << pf->compute_score(profile, 0.0, 0.2) << " "
+                    << pf->compute_score(profile) << std::endl;
+        }
+
+        if(set_scale) {
+          std::cerr << "scale given by user " << scale << std::endl;
+          // resample the profile
+          IMP_NEW(Profile, resampled_profile,
+                  (exp_saxs_profile->get_min_q(),
+                   exp_saxs_profile->get_max_q(),
+                   exp_saxs_profile->get_delta_q()));
+          pf->resample(profile, resampled_profile);
+          pf->write_SAXS_fit_file(fit_file_name2, resampled_profile,
+                                  fp.get_chi(), scale);
         }
       }
       std::cout << pdb_files[i] << " " << dat_files[j]
@@ -344,8 +418,7 @@ constant form factor (default = false)")
     }
   }
 
-  std::sort(fps.begin(), fps.end(),
-            IMP::saxs::FitParameters::compare_fit_parameters());
+  std::sort(fps.begin(), fps.end(), FitParameters::compare_fit_parameters());
 
   if(pdb_files.size() > 1) {
     Gnuplot::print_profile_script(pdb_files);

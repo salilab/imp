@@ -8,8 +8,8 @@
 
 #include <IMP/em/converters.h>
 
-MapScorer::MapScorer(IMP::Particles& rec_particles,
-                     IMP::Particles& lig_particles,
+MapScorer::MapScorer(IMP::kernel::Particles& rec_particles,
+                     IMP::kernel::Particles& lig_particles,
                      const IMP::em::DensityMap& map) :
   complex_map_(map) {
 
@@ -26,7 +26,7 @@ MapScorer::MapScorer(IMP::Particles& rec_particles,
   docked_complex_map_->copy_map(&complex_map_);
 }
 
-MapScorer::MapScorer(IMP::Particles& particles, const IMP::em::DensityMap& map):
+MapScorer::MapScorer(IMP::kernel::Particles& particles, const IMP::em::DensityMap& map):
   complex_map_(map) {
   float resolution = complex_map_.get_header()->get_resolution();
   float voxel_size = complex_map_.get_header()->get_spacing();

@@ -10,51 +10,36 @@
 #include "IMP/example/ExampleSingletonModifier.h"
 #include "IMP/core/XYZ.h"
 
-
 IMPEXAMPLE_BEGIN_NAMESPACE
-ExampleSingletonModifier
-::ExampleSingletonModifier(const algebra::BoundingBox3D &bb ): bb_(bb){
-}
+ExampleSingletonModifier::ExampleSingletonModifier(
+    const algebra::BoundingBox3D &bb)
+    : bb_(bb) {}
 
-void ExampleSingletonModifier::apply(Particle *p) const {
-  core::XYZ d(p);
-  for (unsigned int i=0; i< 3; ++i) {
+void ExampleSingletonModifier::apply_index(kernel::Model *m,
+                                           kernel::ParticleIndex pi) const {
+  core::XYZ d(m, pi);
+  for (unsigned int i = 0; i < 3; ++i) {
     // shift the coordinate until it is in the box
     while (d.get_coordinate(i) < bb_.get_corner(0)[i]) {
-      d.set_coordinate(i, d.get_coordinate(i)
-                       + (bb_.get_corner(1)[i]-bb_.get_corner(0)[i]));
+      d.set_coordinate(i, d.get_coordinate(i) +
+                              (bb_.get_corner(1)[i] - bb_.get_corner(0)[i]));
     }
     while (d.get_coordinate(i) > bb_.get_corner(1)[i]) {
-      d.set_coordinate(i, d.get_coordinate(i)
-                       - (bb_.get_corner(1)[i]-bb_.get_corner(0)[i]));
+      d.set_coordinate(i, d.get_coordinate(i) -
+                              (bb_.get_corner(1)[i] - bb_.get_corner(0)[i]));
     }
   }
 }
 
-
 /* Only the passed particle is used */
-ParticlesTemp
-ExampleSingletonModifier::get_input_particles(Particle *p) const {
-  return ParticlesTemp(1, p);
+ModelObjectsTemp ExampleSingletonModifier::do_get_inputs(kernel::Model *m,
+                                          const kernel::ParticleIndexes &pis) const {
+  return IMP::kernel::get_particles(m, pis);
 }
 
-ParticlesTemp
-ExampleSingletonModifier::get_output_particles(Particle *p) const {
-  return ParticlesTemp(1, p);
-}
-
-ContainersTemp
-ExampleSingletonModifier::get_input_containers(Particle *) const {
-  return ContainersTemp();
-}
-
-ContainersTemp
-ExampleSingletonModifier::get_output_containers(Particle *) const {
-  return ContainersTemp();
-}
-
-void ExampleSingletonModifier::do_show(std::ostream &out) const {
-  out << "bounding box " << bb_ << std::endl;
+ModelObjectsTemp ExampleSingletonModifier::do_get_outputs(kernel::Model *m,
+                                          const kernel::ParticleIndexes &pis) const {
+  return do_get_inputs(m, pis);
 }
 
 IMPEXAMPLE_END_NAMESPACE

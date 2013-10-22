@@ -16,38 +16,34 @@
 #include "input_output_macros.h"
 #include "constants.h"
 
-/** To implement a new restraint, just implement the two methods:
-- IMP::Restraint::do_add_score_and_derivatives()
-  (or IMP::Restraint::unprotected_evaluate())
-- IMP::ModelObjectsTemp::do_get_inputs();
-and use the macro to handle IMP::base::Object
-- IMP_OBJECT_METHODS()
+/** \deprecated_at{2.1} Declare the methods yourself instead.
 */
-#define IMP_RESTRAINT(Name)                                             \
-  public:                                                               \
-  IMP_IMPLEMENT( double                                                 \
-          unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum) \
-                 const);                                                \
-  IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS;                              \
-  IMP_OBJECT(Name)
+#define IMP_RESTRAINT(Name)                                                    \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the methods yourself");             \
+                                                                               \
+ public:                                                                       \
+  double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum) const \
+      IMP_OVERRIDE;                                                            \
+  IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS;                                     \
+  IMP_OBJECT_NO_WARNING(Name)
 
-#if IMP_HAS_DEPRECATED
-//! For backwards compatibility
-#define IMP_RESTRAINT_2(Name)                                           \
-  public:                                                               \
-  IMP_IMPLEMENT( double                                                 \
-         unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum) \
-                 const);                                                \
-  IMP_IMPLEMENT(IMP::kernel::ModelObjectsTemp do_get_inputs() const);   \
-  IMP_OBJECT(Name)
+/**  \deprecated_at{2.1} Declare the methods yourself instead.
+ */
+#define IMP_RESTRAINT_2(Name)                                               \
+ public:                                                                    \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the methods yourself");          \
+  virtual double unprotected_evaluate(                                      \
+      IMP::kernel::DerivativeAccumulator *accum) const IMP_OVERRIDE;        \
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE; \
+  IMP_OBJECT_NO_WARNING(Name)
 
-//! For backwards compatability
-#define IMP_RESTRAINT_ACCUMULATOR(Name)                                 \
-  public:                                                               \
-  void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator sa)   \
-  const;                                                                \
-  IMP::kernel::ModelObjectsTemp do_get_inputs() const;                  \
-  IMP_OBJECT(Name)
-#endif
+/**  \deprecated_at{2.1} Declare the methods yourself instead.
+ */
+#define IMP_RESTRAINT_ACCUMULATOR(Name)                                      \
+ public:                                                                     \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the methods yourself");           \
+  void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator sa) const; \
+  IMP::kernel::ModelObjectsTemp do_get_inputs() const;                       \
+  IMP_OBJECT_NO_WARNING(Name)
 
-#endif  /* IMPKERNEL_RESTRAINT_MACROS_H */
+#endif /* IMPKERNEL_RESTRAINT_MACROS_H */

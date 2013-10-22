@@ -46,15 +46,15 @@ class Tests(IMP.test.TestCase):
         """Test hierarchical clustering of models"""
         if sys.platform == 'win32':
             self.skipTest("clustering does not work on Windows")
-        input_dir=self.get_input_file_name("")
-        sub_dir = input_dir+"/clustering/"
-        os.chdir(sub_dir)
-        fn_selection = "all-models-1z5s.sel"
+        fn_selection = self.get_input_file_name(
+                                     "clustering/all-models-1z5s.sel")
         # Load models
-        model = IMP.Model()
+        model = IMP.kernel.Model()
         ssel = IMP.atom.ATOMPDBSelector()
         coords =[]
         fn_models = IMP.em2d.read_selection_file(fn_selection)
+        fn_models = [self.get_input_file_name('clustering/' + x) \
+                     for x in fn_models]
         n_models = len(fn_models)
         for fn in fn_models:
             h=IMP.atom.read_pdb(fn,model,ssel,True,True)
@@ -107,6 +107,8 @@ class Tests(IMP.test.TestCase):
         filenames = ["single_linkage_results.txt",
                      "complete_linkage_results.txt",
                      "average_distance_linkage_results.txt"]
+        filenames = [self.get_input_file_name("clustering/" + x) \
+                     for x in filenames]
 
         for i in range(0,len(linkage_mats)):
 #            print "checking linkage matrix"
@@ -128,8 +130,6 @@ class Tests(IMP.test.TestCase):
                     "Clusters below 1.4 rmsd are not equal")
         self.assertEqual(complete_cls_elems,[[2,3],[0,4,1]],
                     "Clusters below 1.4 rmsd are not equal")
-
-        os.chdir(input_dir)
 
 
 if __name__ == '__main__':

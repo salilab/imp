@@ -12,20 +12,23 @@
 #include "Profile.h"
 #include "ProfileFitter.h"
 #include "Distribution.h"
+#include <IMP/base/Object.h>
 
 IMPSAXS_BEGIN_NAMESPACE
 
-//class ProfileFitter<ChiScore>;
-
-class IMPSAXSEXPORT DerivativeCalculator : public base::RefCounted {
+/**
+   A class for computing derivatives with respect to SAXS
+   Note: the calculation is expensive, make sure it helps if you use it!
+*/
+class IMPSAXSEXPORT DerivativeCalculator : public base::Object {
 public:
-  DerivativeCalculator(const Profile& exp_profile);
+  DerivativeCalculator(const Profile* exp_profile);
 
   /* compute the model-specific part of the derivative of the chi square
   * e.g. -2 * c * w_tilda(q) * (Iexp(q)-c*Icalc(q) + o)
   * for each q
   */
-  std::vector<double> compute_gaussian_effect_size(const Profile& model_profile,
+  std::vector<double> compute_gaussian_effect_size(const Profile* model_profile,
                                               const ProfileFitter<ChiScore>* pf,
                                               bool use_offset = false) const;
 
@@ -33,19 +36,20 @@ public:
   * loop over all particles and rigid bodies, and call
   * compute_chisquare_derivative on them
   */
-  void compute_all_derivatives(const Particles& particles,
-       const std::vector<Particles>& rigid_bodies,
+  void compute_all_derivatives(const kernel::Particles& particles,
+       const std::vector<kernel::Particles>& rigid_bodies,
        const std::vector<core::RigidBody>& rigid_bodies_decorators,
-       const Profile& model_profile, const std::vector<double>& effect_size,
+       const Profile* model_profile, const std::vector<double>& effect_size,
        DerivativeAccumulator *acc) const;
 
 protected:
   /*
   * precompute sinc_cos function and derivative of distance distribution
   */
-  DeltaDistributionFunction precompute_derivative_helpers(const Profile&
-          resampled_model_profile, const Particles& particles1,
-          const Particles& particles2, std::vector<Floats>& sinc_cos_values)
+  DeltaDistributionFunction precompute_derivative_helpers(const Profile*
+          resampled_model_profile, const kernel::Particles& particles1,
+          const kernel::Particles& particles2,
+          std::vector<Floats>& sinc_cos_values)
       const ;
 
   /* compute dI(q)/dx_k for given q and k
@@ -65,15 +69,23 @@ protected:
      \param[in] particles1 Derivative will be computed for each particle
      \param[in] particles2 Derivative will be computed relative to this set
      \param[in] derivatives Output vector
-     \return chi square score for current particle setup
+     \param[in] effect_size Effect size
   */
-  void compute_chisquare_derivative(const Profile& model_profile,
-                              const Particles& particles1,
-                              const Particles& particles2,
+  void compute_chisquare_derivative(const Profile* model_profile,
+                              const kernel::Particles& particles1,
+                              const kernel::Particles& particles2,
                               std::vector<algebra::Vector3D >& derivatives,
                               const std::vector<double>& effect_size) const;
-  void compute_chisquare_derivative(const Profile& model_profile,
-                              const Particles& particles,
+
+  //! compute derivatives for particles
+  /**
+     \param[in] model_profile The current profile of particles
+     \param[in] particles Derivative will be computed for each particle
+     \param[in] derivatives Output vector
+     \param[in] effect_size Effect size
+  */
+  void compute_chisquare_derivative(const Profile* model_profile,
+                              const kernel::Particles& particles,
                               std::vector<algebra::Vector3D >& derivatives,
                               const std::vector<double>& effect_size) const
     {
@@ -82,14 +94,14 @@ protected:
     }
 
 protected:
-  const Profile exp_profile_;   //  experimental saxs profile
+  const Profile *exp_profile_;   //  experimental saxs profile
 
 private:
   void compute_sinc_cos(Float pr_resolution, Float max_distance,
-                        const Profile& model_profile,
+                        const Profile* model_profile,
                         std::vector<Floats>& output_values) const;
 
-  void compute_profile_difference(const Profile& model_profile,
+  void compute_profile_difference(const Profile* model_profile,
                                   const Float c, const Float offset,
                                   std::vector<double>& profile_diff) const;
 

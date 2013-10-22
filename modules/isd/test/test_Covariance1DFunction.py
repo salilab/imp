@@ -34,10 +34,10 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         IMP.base.set_log_level(0)
-        self.tau = Scale.setup_particle(IMP.Particle(self.m), 1.0)
-        self.lam = Scale.setup_particle(IMP.Particle(self.m),  1.0)
+        self.tau = Scale.setup_particle(IMP.kernel.Particle(self.m), 1.0)
+        self.lam = Scale.setup_particle(IMP.kernel.Particle(self.m),  1.0)
         self.particles=[self.tau,self.lam]
         self.cov = Covariance1DFunction(*self.particles)
         self.DA=IMP.DerivativeAccumulator()
@@ -61,7 +61,7 @@ class Tests(IMP.test.TestCase):
 
     def testFail(self):
         if IMP.base.get_check_level() >= IMP.base.USAGE_AND_INTERNAL:
-            q=IMP.Particle(self.m)
+            q=IMP.kernel.Particle(self.m)
             self.assertRaises(IMP.base.InternalException, Covariance1DFunction,
                               self.tau,q)
             self.assertRaises(IMP.base.InternalException, Covariance1DFunction,

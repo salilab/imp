@@ -24,12 +24,15 @@ IMPGSL_BEGIN_NAMESPACE
     The main advantage of Simplex is that it is a local optimizer that
     does not require derivatives.
  */
-class IMPGSLEXPORT Simplex: public GSLOptimizer
-{
+class IMPGSLEXPORT Simplex : public GSLOptimizer {
   double min_length_;
   double max_length_;
-public:
-  Simplex(Model *m= nullptr);
+
+ public:
+  Simplex(kernel::Model *m);
+  /** \deprecated_at{2.1} Pass a model to the constructor. */
+  IMPGSL_DEPRECATED_FUNCTION_DECL(2.1)
+  Simplex();
 
   /** \name Parameters
 
@@ -49,25 +52,24 @@ public:
   */
 
   void set_initial_length(double length) {
-    IMP_USAGE_CHECK(length >0 && length <= 4,
+    IMP_USAGE_CHECK(length > 0 && length <= 4,
                     "The initial length is relative to the rescaled attributes"
-                    << " and so should not be much larger than 1.");
-    max_length_=length;
+                        << " and so should not be much larger than 1.");
+    max_length_ = length;
   }
 
   void set_minimum_size(double d) {
-    IMP_USAGE_CHECK(d >0 && d <= 4,
+    IMP_USAGE_CHECK(d > 0 && d <= 4,
                     "The minimum size is relative to the rescaled attributes"
-                    << " and so should not be much larger than 1 "
-                    << "(and must be non-zero).");
-    min_length_=d;
+                        << " and so should not be much larger than 1 "
+                        << "(and must be non-zero).");
+    min_length_ = d;
   }
   /** @} */
-
-  IMP_OPTIMIZER(Simplex);
+  virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(Simplex);
 };
-
 
 IMPGSL_END_NAMESPACE
 
-#endif  /* IMPGSL_SIMPLEX_H */
+#endif /* IMPGSL_SIMPLEX_H */

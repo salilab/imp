@@ -19,17 +19,19 @@ IMPMISC_BEGIN_NAMESPACE
 //! Allow OptimizerStates to be used as ScoreStates
 /** You can have up to two, one for before, and one for after.
  */
-class IMPMISCEXPORT StateAdaptor: public ScoreState
-{
-  IMP::OwnerPointer<OptimizerState> before_, after_;
-public:
+class IMPMISCEXPORT StateAdaptor : public ScoreState {
+  IMP::base::PointerMember<OptimizerState> before_, after_;
+
+ public:
   //! set the before and after states
-  StateAdaptor(OptimizerState *before, OptimizerState *after);
-
-  IMP_SCORE_STATE(StateAdaptor);
+  StateAdaptor(kernel::Model *m, OptimizerState *before, OptimizerState *after);
+  virtual void do_before_evaluate() IMP_OVERRIDE;
+  virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(StateAdaptor);
 };
-
 
 IMPMISC_END_NAMESPACE
 
-#endif  /* IMPMISC_STATE_ADAPTOR_H */
+#endif /* IMPMISC_STATE_ADAPTOR_H */

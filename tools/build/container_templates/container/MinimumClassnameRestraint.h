@@ -24,29 +24,27 @@ IMPCONTAINER_BEGIN_NAMESPACE
     if n is 1, the value of the restraint is the value of the min or max
     score over the container.
  */
-class IMPCONTAINEREXPORT MinimumClassnameRestraint
-: public Restraint
-{
-  IMP::base::OwnerPointer<ClassnameScore> f_;
-  IMP::base::OwnerPointer<ClassnameContainer> c_;
+class IMPCONTAINEREXPORT MinimumClassnameRestraint : public Restraint {
+  IMP::base::PointerMember<ClassnameScore> f_;
+  IMP::base::PointerMember<ClassnameContainer> c_;
   unsigned int n_;
-public:
+
+ public:
   /** n is the number of LCMinimum scores to use.
    */
-  MinimumClassnameRestraint(ClassnameScore *f,
-                                 ClassnameContainerAdaptor c,
-                                 unsigned int n=1,
-                                 std::string name
-                                 ="MinimumClassnameRestraint %1%");
+  MinimumClassnameRestraint(ClassnameScore *f, ClassnameContainerAdaptor c,
+                            unsigned int n = 1,
+                            std::string name = "MinimumClassnameRestraint %1%");
 
-  public:
-   double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
-                 const IMP_OVERRIDE;
-   IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-   IMP_OBJECT_METHODS(MinimumClassnameRestraint);;
+ public:
+  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
+      IMP_OVERRIDE;
+  IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(MinimumClassnameRestraint);
+  ;
 
   //! Set the number of lowest scores to use.
-  void set_n(unsigned int n) { n_=n;}
+  void set_n(unsigned int n) { n_ = n; }
 #ifndef IMP_DOXYGEN
   Restraints do_create_current_decomposition() const IMP_OVERRIDE;
   double unprotected_evaluate_if_good(DerivativeAccumulator *da,
@@ -54,7 +52,6 @@ public:
 #endif
 };
 
-
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_MINIMUM_CLASSNAME_RESTRAINT_H */
+#endif /* IMPCONTAINER_MINIMUM_CLASSNAME_RESTRAINT_H */

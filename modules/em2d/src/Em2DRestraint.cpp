@@ -10,7 +10,7 @@
 #include "IMP/em2d/project.h"
 
 IMPEM2D_BEGIN_NAMESPACE
-
+ Em2DRestraint::Em2DRestraint() {};
 
  void Em2DRestraint::set_images(const em2d::Images em_images) {
    em_images_ = em_images;
@@ -46,7 +46,7 @@ Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   IMP_UNUSED(accum);
   IMP_USAGE_CHECK(!accum, "No derivatives provided");
-  IMP_NEW(Model,model,());
+  IMP_NEW(kernel::Model,model,());
   model = get_model();
   // Project the model
   RegistrationResults regs = get_evenly_distributed_registration_results(
@@ -79,22 +79,11 @@ Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 
 // We also need to know which particles are used (as some are
 //   used, but don't create interactions).
-ParticlesTemp Em2DRestraint::get_input_particles() const
+ModelObjectsTemp Em2DRestraint::do_get_inputs() const
 {
-  ParticlesTemp ret= particles_container_->get_particles();
+  kernel::ModelObjectsTemp ret= particles_container_->get_particles();
+  ret.push_back(particles_container_);
   return ret;
-}
-
-ContainersTemp Em2DRestraint::get_input_containers() const
-{
-  // Returns a vector of one container with the particles
-  return ContainersTemp(1, particles_container_);
-}
-
-
-void Em2DRestraint::do_show(std::ostream& out) const
-{
-  out << "container " << *particles_container_ << std::endl;
 }
 
 IMPEM2D_END_NAMESPACE

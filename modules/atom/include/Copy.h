@@ -24,23 +24,22 @@ IMPATOM_BEGIN_NAMESPACE
     molecule in the system. It should only be applied to
     Molecule particles.
  */
-class IMPATOMEXPORT Copy: public Molecule
-{
- public:
-
-  static IntKey get_copy_index_key();
-
-  IMP_DECORATOR(Copy, Molecule);
-
-  /** Create a decorator for the numberth copy. */
-  static Copy setup_particle(Particle *p, int number) {
-    p->add_attribute(get_copy_index_key(),number);
-    Molecule::setup_particle(p);
-    return Copy(p);
+class IMPATOMEXPORT Copy : public Molecule {
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                int number) {
+    m->add_attribute(get_copy_index_key(), pi, number);
+    Molecule::setup_particle(m, pi);
   }
 
-  static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(get_copy_index_key());
+ public:
+  static IntKey get_copy_index_key();
+
+  IMP_DECORATOR_METHODS(Copy, Molecule);
+  /** Create a decorator for the numberth copy. */
+  IMP_DECORATOR_SETUP_1(Copy, Int, number);
+
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+    return m->get_has_attribute(get_copy_index_key(), pi);
   }
 
   int get_copy_index() const {
@@ -48,11 +47,8 @@ class IMPATOMEXPORT Copy: public Molecule
   }
 };
 
-IMP_DECORATORS(Copy,Copies, ParticlesTemp);
-
+IMP_DECORATORS(Copy, Copies, kernel::ParticlesTemp);
 
 IMPATOM_END_NAMESPACE
 
-
-
-#endif  /* IMPATOM_COPY_H */
+#endif /* IMPATOM_COPY_H */

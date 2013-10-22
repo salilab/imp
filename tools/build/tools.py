@@ -5,6 +5,8 @@ import copy
 import shutil
 import sys
 import difflib
+import subprocess
+import signal
 
 # cmake paths are always /-separated; on platforms where the path is not /
 # (e.g. Windows) convert a path to or from a form cmake will like
@@ -163,11 +165,6 @@ def get_dependency_description(path):
     passlibs=split(libraries)
     passheaders=split(headers)
     extra_libs=split(extra_libraries)
-    build=os.path.splitext(path)[0]+".install"
-    if os.path.exists(build):
-        build_script=str(build)
-    else:
-        build_script=None
     cmakef=os.path.splitext(path)[0]+".cmake"
     if os.path.exists(cmakef):
         cmake="include(\"${PROJECT_SOURCE_DIR}/%s\")"%(to_cmake_path(os.path.splitext(path)[0]+".cmake"))
@@ -180,7 +177,6 @@ def get_dependency_description(path):
             "headers":passheaders,
             "libraries":passlibs,
             "extra_libraries":extra_libs,
-            "build_script": build_script,
             "body":body,
             "version_cpp":split(version_cpp),
             "version_headers":split(version_headers),
@@ -329,7 +325,7 @@ def get_applications(source):
 
 # a version of split that doesn't return empty strings when there are no items
 def split(string, sep=":"):
-    return [x for x in string.split(sep) if x != ""]
+    return [x.replace("@", ":") for x in string.replace("\:", "@").split(sep) if x != ""]
 
 
 def toposort2(data):
@@ -426,6 +422,29 @@ def get_dependent_dependencies(modules, dependencies, extra_data_path,
     ret= list(set(ret_names+dependencies))
     return ret
 
+def get_module_version(module, source_dir):
+    in_module = os.path.join(source_dir, "modules", module, "VERSION")
+    in_source = os.path.join(source_dir, "VERSION")
+    in_build = "VERSION"
+    if os.path.exists(in_module):
+        return open(in_module, "r").read().strip()
+    elif os.path.exists(in_source):
+        return open(in_source, "r").read().strip()
+    else:
+        return open(in_build, "r").read().strip()
+
+
+def get_application_version(module, source_dir):
+    in_module = os.path.join(source_dir, "applications", module, "VERSION")
+    in_source = os.path.join(source_dir, "VERSION")
+    in_build = "VERSION"
+    if os.path.exists(in_module):
+        return open(in_module, "r").read().strip()
+    elif os.path.exists(in_source):
+        return open(in_source, "r").read().strip()
+    else:
+        return open(in_build, "r").read().strip()
+
 def get_disabled_modules(extra_data_path, root="."):
     all= get_glob([os.path.join(root, "data", "build_info", "IMP.*")])
     modules=[os.path.splitext(a)[1][1:] for a in all]
@@ -452,3 +471,36 @@ def get_application_executables(path):
             continue
         ret+= _handle_cpp_dir(d)
     return ret
+
+_subprocesses = []
+
+def run_subprocess(command, **kwargs):
+    global _subprocesses
+    #if not kwargs.has_key("stdout"):
+    #    kwargs["stdout"] = subprocess.PIPE
+    #if not kwargs.has_key("stderr"):
+    #    kwargs["stderr"] = subprocess.PIPE
+    pro = subprocess.Popen( command, preexec_fn = os.setsid, stderr = subprocess.PIPE,
+                            stdout = subprocess.PIPE, **kwargs )
+    _subprocesses.append(pro)
+    output, error = pro.communicate()
+    ret = pro.returncode
+    if ret != 0:
+        print >> sys.stderr, error
+        raise OSError("subprocess failed with return code %d: %s\n%s" \
+                      % (ret, " ".join(command), error))
+    return output
+
+def _sigHandler( signum, frame ):
+    print "starting handler"
+    signal.signal( signal.SIGTERM, signal.SIG_DFL )
+    global _subprocesses
+    for p in _subprocesses:
+        print "killing", p
+        try:
+            os.kill( p.pid, signal.SIGTERM )
+        except:
+            pass
+    sys.exit(1)
+
+signal.signal( signal.SIGTERM, _sigHandler )

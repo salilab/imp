@@ -653,7 +653,7 @@ int Image2D<T>::get_segmentation_threshold() const
 
 #include <utility>
 
-namespace {
+
   typedef IMP::base::map<int, int> HashMap;
   typedef IMP::base::map<int, HashMap> DoubleHashMap;
   class EquivalenceTable : public DoubleHashMap {
@@ -721,7 +721,6 @@ namespace {
   private:
     int max_color_;
   };
-};
 
 template<class T>
 void Image2D<T>::get_connected_components(Image2D<int>& out_image) const {

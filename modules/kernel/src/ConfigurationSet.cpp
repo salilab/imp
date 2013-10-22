@@ -13,24 +13,20 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-ConfigurationSet::ConfigurationSet(Model *m,
-                                   std::string nm):
-  Object(nm),
-  model_(m), base_(new Configuration(m)){
-}
-
+ConfigurationSet::ConfigurationSet(kernel::Model* m, std::string nm)
+    : Object(nm), model_(m), base_(new Configuration(m)) {}
 
 void ConfigurationSet::save_configuration() {
   IMP_OBJECT_LOG;
   set_was_used(true);
-  IMP_LOG_TERSE( "Adding configuration to set " << get_name() << std::endl);
+  IMP_LOG_TERSE("Adding configuration to set " << get_name() << std::endl);
   configurations_.push_back(new Configuration(model_, base_));
 }
 
 void ConfigurationSet::remove_configuration(unsigned int i) {
   IMP_USAGE_CHECK(i < get_number_of_configurations(),
                   "Out of range configuration: " << i);
-  configurations_.erase(configurations_.begin()+i);
+  configurations_.erase(configurations_.begin() + i);
 }
 
 unsigned int ConfigurationSet::get_number_of_configurations() const {
@@ -41,14 +37,21 @@ void ConfigurationSet::load_configuration(int i) const {
   set_was_used(true);
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(this);
-  IMP_USAGE_CHECK(i < static_cast<int>(get_number_of_configurations())
-                  && i >= -1,
-                  "Invalid configuration requested.");
-  if (i==-1) {
+  IMP_USAGE_CHECK(
+      i < static_cast<int>(get_number_of_configurations()) && i >= -1,
+      "Invalid configuration requested.");
+  if (i == -1) {
     base_->load_configuration();
   } else {
     configurations_[i]->load_configuration();
   }
+}
+
+SaveToConfigurationSetOptimizerState::SaveToConfigurationSetOptimizerState(
+    ConfigurationSet* cs)
+    : OptimizerState(cs->get_model(), cs->get_name() + "Saver%1%"), cs_(cs) {}
+void SaveToConfigurationSetOptimizerState::do_update(unsigned int) {
+  cs_->save_configuration();
 }
 
 IMPKERNEL_END_NAMESPACE

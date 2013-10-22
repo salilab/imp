@@ -8,7 +8,7 @@ class Tests(IMP.test.TestCase):
 
     def test_read(self):
         """Check get_next_residue() method"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
 
         #! read PDB
         mp= IMP.atom.read_pdb(self.open_input_file("input.pdb"),

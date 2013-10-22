@@ -156,7 +156,7 @@ private:
     std::vector<char> rot_atoms;
   };
 
-  IMP::OwnerPointer<const RotamerLibrary> rl_;
+  IMP::base::PointerMember<const RotamerLibrary> rl_;
   std::vector<ResidueData> residues_;
 };
 

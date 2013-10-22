@@ -22,16 +22,16 @@ class Model;
     have such an invariant (eg an IMP::core::RigidBody) should register
     an Undecorator when setup_particle is called.
 */
-class IMPKERNELEXPORT Undecorator: public base::Object {
+class IMPKERNELEXPORT Undecorator : public base::Object {
   Model *m_;
+
  public:
-  Undecorator(Model *m, std::string name);
+  Undecorator(kernel::Model *m, std::string name);
   virtual void teardown(ParticleIndex pi) const = 0;
 };
 
 IMP_OBJECTS(Undecorator, Undecorators);
 
-
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_UNDECORATOR_H */
+#endif /* IMPKERNEL_UNDECORATOR_H */

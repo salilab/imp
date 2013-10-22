@@ -10,38 +10,21 @@
 #define IMPKERNEL_KEY_MACROS_H
 #include <IMP/kernel/kernel_config.h>
 #include <IMP/base/value_macros.h>
+#include <IMP/base/deprecation_macros.h>
 #include "Key.h"
 
-
-/** Define a new key type.
-
-    It defines two public types: Name, which is an instantiation of KeyBase, and
-    Names which is a vector of Name.
-
-    \param[in] Name The name for the new type.
-    \param[in] Tag A (hopefully) unique integer to define this key type.
-
-    \note We define a new class rather than use a typedef since SWIG has a
-    bug dealing with names that start with ::. A fix has been commited to SVN
-    for SWIG.
-
-    \note The name in the typedef would have to start with ::IMP so it
-    could be used out of the IMP namespace.
+/** \deprecated_at{2.1} Just declare the typedef directly.
 */
-#define IMP_DECLARE_KEY_TYPE(Name, Tag)         \
-  typedef Key<Tag, true> Name;                  \
+#define IMP_DECLARE_KEY_TYPE(Name, Tag)                                  \
+  IMPKERNEL_DEPRECATED_MACRO(                                            \
+      2.1, "Declare the typedef directly.") typedef Key<Tag, true> Name; \
   IMP_VALUES(Name, Name##s)
 
-
-/** Define a new key non lazy type where new types have to be created
-    explicitly.
-
-    \see IMP_DECLARE_KEY_TYPE
+/** \deprecated_at{2.1} Just declare the typedef directly.
 */
-#define IMP_DECLARE_CONTROLLED_KEY_TYPE(Name, Tag)      \
-  typedef Key<Tag, false> Name;                         \
+#define IMP_DECLARE_CONTROLLED_KEY_TYPE(Name, Tag)                        \
+  IMPKERNEL_DEPRECATED_MACRO(                                             \
+      2.1, "Declare the typedef directly.") typedef Key<Tag, false> Name; \
   IMP_VALUES(Name, Name##s)
 
-
-
-#endif  /* IMPKERNEL_KEY_MACROS_H */
+#endif /* IMPKERNEL_KEY_MACROS_H */

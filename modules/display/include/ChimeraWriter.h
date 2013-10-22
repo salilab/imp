@@ -12,8 +12,9 @@
 #include <IMP/display/Writer.h>
 #include <IMP/display/writer_macros.h>
 
+IMPDISPLAY_DEPRECATED_HEADER(2.1, "Use IMP.rmf")
+
 IMPDISPLAY_BEGIN_NAMESPACE
-#if IMP_HAS_DEPRECATED
 //! Write geometry to a python file for Chimera to read
 /** The writer writes a python file which can handle markers, edges
     and surfaces.  Since these are native chimera objects, they are
@@ -23,27 +24,20 @@ IMPDISPLAY_BEGIN_NAMESPACE
     and save them all, make sure there is a "%1%" in the file name string
     passed to the constructor.
 
-    \deprecated Use IMP::rmf instead when interfacing with Chimera.
+    \deprecated_at{2.1} Use IMP::rmf instead when interfacing with Chimera.
  */
-class IMPDISPLAYEXPORT ChimeraWriter: public TextWriter
-{
-  void cleanup(std::string name,
-               bool need_ms, bool need_surf=false);
-  bool handle_sphere(SphereGeometry *g,
-               Color color, std::string name);
-  bool handle_cylinder(CylinderGeometry *g,
-               Color color, std::string name);
-  bool handle_point(PointGeometry *g,
-               Color color, std::string name);
-  bool handle_segment(SegmentGeometry *g,
-               Color color, std::string name);
-  bool handle_polygon(PolygonGeometry *g,
-               Color color, std::string name);
-  bool handle_triangle(TriangleGeometry *g,
-               Color color, std::string name);
-  bool handle_ellipsoid(EllipsoidGeometry *g,
-               Color color, std::string name);
-public:
+class IMPDISPLAYEXPORT ChimeraWriter : public TextWriter {
+  void cleanup(std::string name, bool need_ms, bool need_surf = false);
+  bool handle_sphere(SphereGeometry *g, Color color, std::string name);
+  bool handle_cylinder(CylinderGeometry *g, Color color, std::string name);
+  bool handle_point(PointGeometry *g, Color color, std::string name);
+  bool handle_segment(SegmentGeometry *g, Color color, std::string name);
+  bool handle_polygon(PolygonGeometry *g, Color color, std::string name);
+  bool handle_triangle(TriangleGeometry *g, Color color, std::string name);
+  bool handle_ellipsoid(EllipsoidGeometry *g, Color color, std::string name);
+
+ public:
+  IMPDISPLAY_DEPRECATED_OBJECT_DECL(2.1)
   IMP_TEXT_WRITER(ChimeraWriter);
 
   //! Add some arbitrary python code to the chimera file
@@ -53,8 +47,7 @@ public:
    */
   void add_python_code(std::string code);
 };
-#endif
 
 IMPDISPLAY_END_NAMESPACE
 
-#endif  /* IMPDISPLAY_CHIMERA_WRITER_H */
+#endif /* IMPDISPLAY_CHIMERA_WRITER_H */

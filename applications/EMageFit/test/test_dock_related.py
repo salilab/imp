@@ -20,11 +20,11 @@ class TestDockRelated(IMP.test.ApplicationTestCase):
 
         dock = self.import_python_application('emagefit_dock.py')
         sel = atom.NonWaterNonHydrogenPDBSelector()
-        ligand = IMP.Model()
+        ligand = IMP.kernel.Model()
         fn_ligand = self.get_input_file_name("3sfdB-3sfdA_initial_docking.pdb")
         h_ligand = atom.read_pdb(fn_ligand, ligand, sel)
         rb_ligand = atom.create_rigid_body(h_ligand)
-        receptor = IMP.Model()
+        receptor = IMP.kernel.Model()
         fn_receptor = self.get_input_file_name("3sfdB.pdb")
         h_receptor = atom.read_pdb(fn_receptor, receptor, sel)
         # read_hex_transformations
@@ -36,7 +36,7 @@ class TestDockRelated(IMP.test.ApplicationTestCase):
                                     "3sfdA", "A", residue_ligand, distance)
 
         xlinks_list = [xl]
-        fn_filtered = self.get_input_file_name("filtered_transforms.txt")
+        fn_filtered = "filtered_transforms.txt"
         dock.filter_docking_results(h_receptor, h_ligand, xlinks_list,
                                             fn, fn_filtered)
         fn_stored = self.get_input_file_name(

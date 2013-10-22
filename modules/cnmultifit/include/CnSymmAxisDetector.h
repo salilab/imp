@@ -1,5 +1,5 @@
 /**
- *  \file CnSymmAxisDetector.h
+ *  \file cnmultifit/CnSymmAxisDetector.h
  *  \brief Detect cn symmetry in proteins and density maps.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -19,6 +19,7 @@
 
 IMPCNMULTIFIT_BEGIN_NAMESPACE
 
+//! Detect cn symmetry in proteins and density maps.
 class IMPCNMULTIFITEXPORT CnSymmAxisDetector {
 public:
   CnSymmAxisDetector(int symm_deg, em::DensityMap *dmap,
@@ -49,7 +50,7 @@ protected:
   Float symm_avg(const algebra::Vector3D &start_p,
                  const algebra::Vector3D &symm_vec) const;
   algebra::Vector3Ds vecs_;
-  OwnerPointer<em::DensityMap> dmap_;
+  base::PointerMember<em::DensityMap> dmap_;
   algebra::PrincipalComponentAnalysis pca_;
   int symm_deg_;
   algebra::Transformation3D to_native_,from_native_;

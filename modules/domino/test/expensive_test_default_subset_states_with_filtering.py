@@ -27,13 +27,13 @@ class Tests(IMP.test.TestCase):
         return vs
     def _get_stuff(self):
         IMP.base.set_log_level(IMP.base.SILENT)
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         m.set_log_level(IMP.base.SILENT)
         ps=[]
         ns=5
         np=4
         for i in range(0,np):
-            ps.append(IMP.Particle(m))
+            ps.append(IMP.kernel.Particle(m))
             IMP.core.XYZ.setup_particle(ps[-1])
         pst= IMP.domino.ParticleStatesTable()
         print "creating subset"

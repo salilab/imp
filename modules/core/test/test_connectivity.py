@@ -12,7 +12,7 @@ class Tests(IMP.test.TestCase):
            proteins should be connected, either directly or indirectly
            through other proteins."""
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        m = IMP.Model()
+        m = IMP.kernel.Model()
 
         ps= self.create_particles_in_box(m,4)
         ds= map(lambda p: IMP.core.XYZ.decorate_particle(p), ps)

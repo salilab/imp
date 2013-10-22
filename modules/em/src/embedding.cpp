@@ -31,12 +31,4 @@ unsigned int HighDensityEmbedding::get_number_of_items() const {
   return points_.size();
 }
 
-void HighDensityEmbedding::do_show(std::ostream &out) const {
-  out << points_.size()
-      << " points.";
-  out << std::endl;
-}
-
-
-
 IMPEM_END_NAMESPACE

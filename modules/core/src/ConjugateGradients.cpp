@@ -7,18 +7,19 @@
 
 #include <IMP/core/ConjugateGradients.h>
 #include <IMP/core/utility.h>
-#include <IMP/log.h>
-#include <IMP/Model.h>
+#include <IMP/base/log.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/io.h>
 
 #include <limits>
 #include <cmath>
 
-#define IMP_CHECK_VALUE(n) IMP_IF_CHECK(IMP::base::USAGE) {      \
-    if (!is_good_value(n)) {                                     \
-      IMP_LOG_TERSE( #n << " is " << n << std::endl);            \
-      failure();                                                 \
-    }                                                            \
+#define IMP_CHECK_VALUE(n)                           \
+  IMP_IF_CHECK(IMP::base::USAGE) {                   \
+    if (!is_good_value(n)) {                         \
+      IMP_LOG_TERSE(#n << " is " << n << std::endl); \
+      failure();                                     \
+    }                                                \
   }
 
 #define IMP_CG_SCALE
@@ -31,12 +32,12 @@ const double cg_eps = 1.2e-7;
 
 template <class NT>
 bool is_good_value(const NT &f) {
-  if (base::isnan(f)
-      || std::abs(f) > std::numeric_limits<NT>::max() /1024.0f) {
-    IMP_LOG_VERBOSE( "Bad value found in CG: " << f << std::endl);
+  if (base::isnan(f) ||
+      std::abs(f) > std::numeric_limits<NT>::max() / 1024.0f) {
+    IMP_LOG_VERBOSE("Bad value found in CG: " << f << std::endl);
     return false;
-  }
-  else return true;
+  } else
+    return true;
 }
 }
 
@@ -44,31 +45,25 @@ void ConjugateGradients::failure() {
   IMP_THROW("Failure in ConjugateGradients", base::ModelException);
 }
 
-
-void ConjugateGradients::do_show(std::ostream &) const {
-}
-
 //! Get the score for a given model state.
 /** \param[in] model The model to score.
-    \param[in] model_data The corresponding ModelData.
+    \param[in] model_data The corresponding kernel::ModelData.
     \param[in] float_indices Indices of optimizable variables.
     \param[in] x Current value of optimizable variables.
     \param[out] dscore First derivatives for current state.
     \return The model score.
  */
-ConjugateGradients::NT
-ConjugateGradients::get_score(base::Vector<FloatIndex> float_indices,
-                              base::Vector<NT> &x,
-                              base::Vector<NT> &dscore)
-{
+ConjugateGradients::NT ConjugateGradients::get_score(
+    base::Vector<FloatIndex> float_indices, base::Vector<NT> &x,
+    base::Vector<NT> &dscore) {
   int i, opt_var_cnt = float_indices.size();
   /* set model state */
   for (i = 0; i < opt_var_cnt; i++) {
     IMP_CHECK_VALUE(x[i]);
 #ifdef IMP_CG_SCALE
-    double v=get_scaled_value(float_indices[i]); // scaled
+    double v = get_scaled_value(float_indices[i]);  // scaled
 #else
-    double v=get_value(float_indices[i]); // scaled
+    double v = get_value(float_indices[i]);  // scaled
 #endif
     if (std::abs(x[i] - v) > max_change_) {
       if (x[i] < v) {
@@ -88,23 +83,22 @@ ConjugateGradients::get_score(base::Vector<FloatIndex> float_indices,
   /* get score */
   try {
     score = get_scoring_function()->evaluate(true);
-  } catch (base::ModelException) {
+  }
+  catch (base::ModelException) {
     // if we took a bad step, just return a bad score
     return std::numeric_limits<NT>::infinity();
   }
   /* get derivatives */
   for (i = 0; i < opt_var_cnt; i++) {
 #ifdef IMP_CG_SCALE
-    dscore[i] = get_scaled_derivative(float_indices[i]); //scaled
+    dscore[i] = get_scaled_derivative(float_indices[i]);  // scaled
 #else
-    dscore[i] = get_derivative(float_indices[i]); //scaled
+    dscore[i] = get_derivative(float_indices[i]);  // scaled
 #endif
-    IMP_USAGE_CHECK(is_good_value(dscore[i]),
-              "Bad input to CG");
+    IMP_USAGE_CHECK(is_good_value(dscore[i]), "Bad input to CG");
   }
   return score;
 }
-
 
 //! Try to find the minimum of the function in the given direction.
 /** \param[out]   x         Current state (updated on output)
@@ -120,17 +114,11 @@ ConjugateGradients::get_score(base::Vector<FloatIndex> float_indices,
     \return true if the line search succeeded, false if max_steps was exceeded
             or a minimum could not be found.
  */
-bool ConjugateGradients::line_search(base::Vector<NT> &x,
-                                     base::Vector<NT> &dx,
-                                     NT &alpha,
-                                     const base::Vector<FloatIndex>
-                                     &float_indices,
-                                     int &ifun, NT &f,
-                                     NT &dg, NT &dg1,
-                                     int max_steps,
-                                     const base::Vector<NT> &search,
-                                     const base::Vector<NT> &estimate)
-{
+bool ConjugateGradients::line_search(
+    base::Vector<NT> &x, base::Vector<NT> &dx, NT &alpha,
+    const base::Vector<FloatIndex> &float_indices, int &ifun, NT &f, NT &dg,
+    NT &dg1, int max_steps, const base::Vector<NT> &search,
+    const base::Vector<NT> &estimate) {
   NT ap, fp, dp, step, minf, u1, u2;
   int i, n, ncalls = ifun;
 
@@ -221,8 +209,8 @@ bool ConjugateGradients::line_search(base::Vector<NT> &x,
       /* THE MINIMUM HAS BEEN BRACKETED. TEST WHETHER THE TRIAL POINT LIES
          SUFFICIENTLY WITHIN THE BRACKETED INTERVAL.
          IF IT DOES NOT, CHOOSE AT AS THE MIDPOINT OF THE INTERVAL. */
-      if (at < (1.01 * std::min(alpha, ap))
-          || at > (0.99 * std::max(alpha, ap))) {
+      if (at < (1.01 * std::min(alpha, ap)) ||
+          at > (0.99 * std::max(alpha, ap))) {
         at = (alpha + ap) / 2.0;
       }
 
@@ -256,34 +244,32 @@ bool ConjugateGradients::line_search(base::Vector<NT> &x,
   return true;
 }
 
-
 //! Constructor
-ConjugateGradients::ConjugateGradients(Model *m):
-  Optimizer(m, "ConjugateGradients")
-{
-  threshold_=std::numeric_limits<Float>::epsilon();
+ConjugateGradients::ConjugateGradients(kernel::Model *m, std::string name)
+    : AttributeOptimizer(m, name) {
+  threshold_ = std::numeric_limits<Float>::epsilon();
   max_change_ = std::numeric_limits<Float>::max() / 100.0;
 }
 
+ConjugateGradients::ConjugateGradients() : AttributeOptimizer() {
+  threshold_ = std::numeric_limits<Float>::epsilon();
+  max_change_ = std::numeric_limits<Float>::max() / 100.0;
+}
 
-
-
-Float ConjugateGradients::do_optimize(unsigned int max_steps)
-{
+Float ConjugateGradients::do_optimize(unsigned int max_steps) {
   IMP_OBJECT_LOG;
   IMP_USAGE_CHECK(get_model(),
-            "Must set the model on the optimizer before optimizing");
+                  "Must set the model on the optimizer before optimizing");
   clear_range_cache();
   base::Vector<NT> x, dx;
   int i;
-  //ModelData* model_data = get_model()->get_model_data();
+  // kernel::ModelData* model_data = get_model()->get_model_data();
 
-  FloatIndexes float_indices=get_optimized_attributes();
+  FloatIndexes float_indices = get_optimized_attributes();
 
   int n = float_indices.size();
-  if (n==0) {
-    IMP_THROW("There are no optimizeable degrees of freedom.",
-              ModelException);
+  if (n == 0) {
+    IMP_THROW("There are no optimizeable degrees of freedom.", ModelException);
   }
 
   x.resize(n);
@@ -291,13 +277,13 @@ Float ConjugateGradients::do_optimize(unsigned int max_steps)
   // get initial state in x(n):
   for (i = 0; i < n; i++) {
 #ifdef IMP_CG_SCALE
-    x[i] = get_scaled_value(float_indices[i]); //scaled
+    x[i] = get_scaled_value(float_indices[i]);  // scaled
 #else
-    x[i] = get_value(float_indices[i]); //scaled
+    x[i] = get_value(float_indices[i]);  // scaled
 #endif
-    IMP_USAGE_CHECK(!base::isnan(x[i])
-                    && std::abs(x[i]) < std::numeric_limits<NT>::max(),
-              "Bad input to CG");
+    IMP_USAGE_CHECK(
+        !base::isnan(x[i]) && std::abs(x[i]) < std::numeric_limits<NT>::max(),
+        "Bad input to CG");
   }
 
   // Initialize optimization variables
@@ -320,15 +306,15 @@ Float ConjugateGradients::do_optimize(unsigned int max_steps)
   resy.resize(n);
   ressearch.resize(n);
 
-  /* Calculate the function and gradient at the initial
-     point and initialize nrst,which is used to determine
-     whether a Beale restart is being done. nrst=n means that this
-     iteration is a restart iteration. */
+/* Calculate the function and gradient at the initial
+   point and initialize nrst,which is used to determine
+   whether a Beale restart is being done. nrst=n means that this
+   iteration is a restart iteration. */
 g20:
   f = get_score(float_indices, x, dx);
-  if (get_stop_on_good_score()
-      && get_scoring_function()->get_had_good_score()) {
-    estimate=x;
+  if (get_stop_on_good_score() &&
+      get_scoring_function()->get_had_good_score()) {
+    estimate = x;
     goto end;
   }
   ifun++;
@@ -353,7 +339,7 @@ g20:
     goto end;
   }
 
-  /* Begin the major iteration loop. */
+/* Begin the major iteration loop. */
 g40:
   update_states();
   /* Begin linear search. alpha is the steplength. */
@@ -374,8 +360,8 @@ g40:
   destimate = dx;
 
   /* Try to find a better score by linear search */
-  if (!line_search(x, dx, alpha, float_indices,
-                   ifun, f, dg, dg1, max_steps, search, estimate)) {
+  if (!line_search(x, dx, alpha, float_indices, ifun, f, dg, dg1, max_steps,
+                   search, estimate)) {
     /* If the line search failed, it was either because the maximum number
        of iterations was exceeded, or the minimum could not be found */
     if (static_cast<unsigned int>(ifun) > max_steps) {
@@ -405,11 +391,11 @@ g40:
   /* COMPUTE THE NEW SEARCH VECTOR;
      TEST IF A POWELL RESTART IS INDICATED. */
   rtst = 0.;
-  for (i = 0; i<n; ++i) {
+  for (i = 0; i < n; ++i) {
     rtst += dx[i] * destimate[i];
   }
 
-  if (std::abs(rtst/dxsq) > .2) {
+  if (std::abs(rtst / dxsq) > .2) {
     nrst = n;
   }
 
@@ -445,14 +431,14 @@ g40:
     u1 = u2 = u3 = 0.0;
     for (i = 0; i < n; i++) {
       u1 -= (dx[i] - destimate[i]) * ressearch[i] / w1;
-      u2 = u2 - (dx[i] - destimate[i]) * resy[i] / w1
-           + 2.0 * ressearch[i] * (dx[i] - destimate[i]) / w2;
+      u2 = u2 - (dx[i] - destimate[i]) * resy[i] / w1 +
+           2.0 * ressearch[i] * (dx[i] - destimate[i]) / w2;
       u3 += search[i] * (dx[i] - destimate[i]);
     }
     step = u4 = 0.;
     for (i = 0; i < n; i++) {
-      step = (w2 / w1) * (dx[i] - destimate[i])
-             + u1 * resy[i] + u2 * ressearch[i];
+      step =
+          (w2 / w1) * (dx[i] - destimate[i]) + u1 * resy[i] + u2 * ressearch[i];
       u4 += step * (dx[i] - destimate[i]);
       destimate[i] = step;
     }
@@ -462,8 +448,8 @@ g40:
     u1 = u2 = 0.0;
     for (i = 0; i < n; i++) {
       u1 -= search[i] * dx[i] / u3;
-      u2 += (1.0 + u4 / u3) * search[i] * dx[i] / u3
-            - destimate[i] * dx[i] / u3;
+      u2 +=
+          (1.0 + u4 / u3) * search[i] * dx[i] / u3 - destimate[i] * dx[i] / u3;
     }
     for (i = 0; i < n; i++) {
       estimate[i] = estimate[i] - u1 * destimate[i] - u2 * search[i];
@@ -489,7 +475,7 @@ g40:
     goto g40;
   }
 
-  /* ROUNDOFF HAS PRODUCED A BAD DIRECTION. */
+/* ROUNDOFF HAS PRODUCED A BAD DIRECTION. */
 
 end:
   // If the 'best current estimate' is better than the current state, return

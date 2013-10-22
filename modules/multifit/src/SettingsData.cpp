@@ -23,7 +23,6 @@ namespace {
 ComponentHeader *parse_component_line(
    const std::string &config,const std::string &line) {
   try {
-  typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
   IMP_LOG_VERBOSE("going to parse:"<<line);
   std::vector<std::string> line_split;
@@ -66,7 +65,6 @@ ComponentHeader *parse_component_line(
 }
 AssemblyHeader *parse_assembly_line(
    const std::string & config,const std::string &line) {
-  typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
   IMP_LOG_VERBOSE("going to parse:"<<line);
   std::vector<std::string> line_split;

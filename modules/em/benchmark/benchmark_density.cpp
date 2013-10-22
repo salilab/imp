@@ -14,7 +14,7 @@ using namespace IMP::algebra;
 
 namespace {
 void do_benchmark() {
-  IMP::Pointer<DensityMap> m[3];
+  base::Pointer<DensityMap> m[3];
   for (unsigned int i=0; i< 3; ++i) {
     m[i]= new DensityMap();
     unsigned int n[3];

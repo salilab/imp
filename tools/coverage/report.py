@@ -39,7 +39,8 @@ def report_python_module(cov, modname, outdir):
 
 def report_python_application(cov, app, srcdir, outdir):
     mods = tools.get_glob([os.path.join(srcdir, 'applications', app, '*.py')])
-    mods = [os.path.join('bin', os.path.basename(x)) for x in mods]
+    mods = [os.path.basename(x) for x in mods]
+    mods = [os.path.join('bin', x) for x in mods if x != 'dependencies.py']
     report_python_component(cov, mods, app, 'application', '', outdir)
 
 def report_python_dependency(cov, dep, outdir):
@@ -124,7 +125,8 @@ def report_cpp_application(app, srcdir, outdir):
 
 def report_cpp_dependency(dep, srcdir, outdir):
     # Currently works only for RMF
-    report_cpp_component(dep, "dependency", ['/rmf/dependency/%s/' % dep], [],
+    report_cpp_component(dep, "dependency",
+                         ['/rmf/dependency/%s_source/' % dep], [],
                          os.path.join(srcdir, 'modules', 'rmf', 'dependency'),
                          outdir)
 

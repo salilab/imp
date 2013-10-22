@@ -9,19 +9,21 @@ class Tests(IMP.test.TestCase):
 
     def test_rigid(self):
         """Test ClosePairContainer with rigid finder"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         m.set_log_level(IMP.base.SILENT)
         bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                       IMP.algebra.Vector3D(10,10,10))
         slack = 1
         def create_rb():
-            rbp= IMP.Particle(m)
+            rbp= IMP.kernel.Particle(m)
             ps= []
             for i in range(0,10):
-                p = IMP.Particle(m)
+                p = IMP.kernel.Particle(m)
                 d= IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb), 3))
                 ps.append(p)
-            return (IMP.core.RigidBody.setup_particle(rbp, ps), ps)
+            rb = IMP.core.RigidBody.setup_particle(rbp, ps)
+            rb.set_coordinates_are_optimized(True)
+            return (rb, ps)
         (rb0, ps0)= create_rb()
         (rb1, ps1)= create_rb()
         lsc= IMP.container.ListSingletonContainer(ps0+ps1)

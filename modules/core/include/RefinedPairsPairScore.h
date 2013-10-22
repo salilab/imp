@@ -11,7 +11,7 @@
 #include <IMP/core/core_config.h>
 #include <IMP/PairScore.h>
 #include <IMP/UnaryFunction.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/Refiner.h>
 #include <IMP/pair_macros.h>
 
@@ -21,18 +21,24 @@ IMPCORE_BEGIN_NAMESPACE
 /** Each passed particle refined and then the PairScore applied
     to all resulting pairs.
  */
-class IMPCOREEXPORT RefinedPairsPairScore : public PairScore
-{
-  IMP::OwnerPointer<Refiner> r_;
-  IMP::OwnerPointer<PairScore> f_;
-public:
+class IMPCOREEXPORT RefinedPairsPairScore : public PairScore {
+  IMP::base::PointerMember<Refiner> r_;
+  IMP::base::PointerMember<PairScore> f_;
+
+ public:
   /** \param[in] r The Refiner to call on each particle
       \param[in] f The pair score to apply to the generated pairs
    */
   RefinedPairsPairScore(Refiner *r, PairScore *f);
-  IMP_INDEX_PAIR_SCORE(RefinedPairsPairScore);
+  double evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &p,
+                        DerivativeAccumulator *da) const IMP_OVERRIDE;
+  kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const;
+  IMP_PAIR_SCORE_METHODS(RefinedPairsPairScore);
+  IMP_OBJECT_METHODS(RefinedPairsPairScore);
+  ;
 };
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_REFINED_PAIRS_PAIR_SCORE_H */
+#endif /* IMPCORE_REFINED_PAIRS_PAIR_SCORE_H */

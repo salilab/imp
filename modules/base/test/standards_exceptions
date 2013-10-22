@@ -1,6 +1,5 @@
-show_exceptions=['RandomNumberGenerator',]
-function_name_exceptions=['Particle.has_attribute', 'Model.restore_particle',
-                                            'RandomNumberGenerator.seed']
+show_exceptions=['RandomNumberGenerator',"Timer"]
+function_name_exceptions=['RandomNumberGenerator.seed']
 value_object_exceptions=[ 'Exception',
                                             'IOException', 'IndexException',
                                            'InternalException',
@@ -10,5 +9,5 @@ value_object_exceptions=[ 'Exception',
                                             'RandomNumberGenerator',
                                            'ValueException',
                                            'FailureHandlerBase',
-                                            "TextInput", "TextOutput", "RefCounted"]
+                                            "TextInput", "TextOutput", "RefCounted", "Timer"]
 spelling_exceptions=['altgraph']

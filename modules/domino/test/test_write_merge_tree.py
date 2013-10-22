@@ -8,8 +8,8 @@ import StringIO
 class Tests(IMP.test.TestCase):
     def test_global_min0(self):
         """Testing writing and reading a merge tree"""
-        m= IMP.Model()
-        ps= [IMP.Particle(m) for p in range(10)]
+        m= IMP.kernel.Model()
+        ps= [IMP.kernel.Particle(m) for p in range(10)]
         jt= IMP.domino.SubsetGraph()
         for p in ps:
             jt.add_vertex(IMP.domino.Subset([p]))

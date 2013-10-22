@@ -10,7 +10,7 @@
 #define IMPISD_AMBIGUOUS_RESTRAINT_H
 
 #include <IMP/isd/isd_config.h>
-#include <IMP/isd/ISDRestraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/restraint_macros.h>
 
 IMPISD_BEGIN_NAMESPACE
@@ -25,18 +25,19 @@ IMPISD_BEGIN_NAMESPACE
     \include AmbiguousRestraint.h
     \include AmbiguousRestraint.cpp
 */
-class IMPISDEXPORT AmbiguousRestraint : public ISDRestraint
+class IMPISDEXPORT AmbiguousRestraint : public kernel::Restraint
 {
   int d_;
-  Restraints rs_;
+  kernel::Restraints rs_;
 public:
   //! Create the restraint.
-  /** Restraints should store the particles they are to act on,
+  /** kernel::Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
       Two ways to call it: pass it two restraints, or a list of restraints.
    */
-  AmbiguousRestraint(int d, Restraint *r0, Restraint *r1);
-  AmbiguousRestraint(int d, Restraints rs);
+  AmbiguousRestraint(kernel::Model *m, int d, kernel::Restraint *r0,
+          kernel::Restraint *r1);
+  AmbiguousRestraint(kernel::Model *m, int d, kernel::Restraints rs);
 
   double get_probability() const
   {
@@ -45,7 +46,11 @@ public:
 
   /** This macro declares the basic needed methods: evaluate and show
    */
-  IMP_RESTRAINT_2(AmbiguousRestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(AmbiguousRestraint);
 
 };
 

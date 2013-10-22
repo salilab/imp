@@ -22,12 +22,11 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 template <class SD, int D, class UF>
 inline double compute_distance_pair_score(const algebra::VectorD<D> &delta,
-                                   const UF *f,
-                                   algebra::VectorD<D> *d,
-                                   SD sd,
-                                   double deriv_multiplier = 1.0) {
+                                          const UF *f, algebra::VectorD<D> *d,
+                                          SD sd,
+                                          double deriv_multiplier = 1.0) {
   static const double MIN_DISTANCE = .00001;
-  double distance= delta.get_magnitude();
+  double distance = delta.get_magnitude();
   double shifted_distance = sd(distance);
 
   // if needed, calculate the partial derivatives of the scores with respect
@@ -36,26 +35,23 @@ inline double compute_distance_pair_score(const algebra::VectorD<D> &delta,
   DerivativePair dp;
   if (d && distance >= MIN_DISTANCE) {
     dp = f->evaluate_with_derivative(shifted_distance);
-    *d= (delta/distance) * deriv_multiplier * dp.second;
+    *d = (delta / distance) * deriv_multiplier * dp.second;
   } else {
     // calculate the score based on the distance feature
     dp.first = f->evaluate(shifted_distance);
     if (d) {
-      *d= dp.second
-       *IMP::algebra
-        ::get_random_vector_on(IMP::algebra::get_unit_sphere_d<3>());
+      *d = dp.second * IMP::algebra::get_random_vector_on(
+                           IMP::algebra::get_unit_sphere_d<3>());
     }
   }
   return dp.first;
 }
 
-
 template <class W0, class W1, class SD, class UF>
 inline double evaluate_distance_pair_score(W0 d0, W1 d1,
-                                    DerivativeAccumulator *da,
-                                    const UF *f, SD sd,
-                                    double deriv_multiplier = 1.0)
-{
+                                           DerivativeAccumulator *da,
+                                           const UF *f, SD sd,
+                                           double deriv_multiplier = 1.0) {
   algebra::Vector3D delta;
 
   for (int i = 0; i < 3; ++i) {
@@ -63,8 +59,8 @@ inline double evaluate_distance_pair_score(W0 d0, W1 d1,
   }
 
   algebra::Vector3D d;
-  double score= compute_distance_pair_score(delta, f, (da? &d : nullptr), sd,
-                                            deriv_multiplier);
+  double score = compute_distance_pair_score(delta, f, (da ? &d : nullptr), sd,
+                                             deriv_multiplier);
 
   if (da) {
     d0.add_to_derivatives(d, *da);
@@ -76,4 +72,4 @@ inline double evaluate_distance_pair_score(W0 d0, W1 d1,
 
 IMPCORE_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPCORE_EVALUATE_DISTANCE_PAIR_SCORE_H */
+#endif /* IMPCORE_EVALUATE_DISTANCE_PAIR_SCORE_H */

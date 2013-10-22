@@ -16,6 +16,7 @@
 #include <IMP/ClassnameModifier.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/optimizer_state_macros.h>
+#include <IMP/base/Pointer.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 // for swig
@@ -28,24 +29,24 @@ IMPCONTAINER_BEGIN_NAMESPACE
 /** \ingroup restraint
     \see ClassnameOptimizerState
  */
-class IMPCONTAINEREXPORT ClassnamesOptimizerState : public OptimizerState
-{
-  IMP::OwnerPointer<ClassnameModifier> f_;
-  IMP::OwnerPointer<ClassnameContainer> c_;
-public:
+class IMPCONTAINEREXPORT ClassnamesOptimizerState : public OptimizerState {
+  IMP::base::PointerMember<ClassnameModifier> f_;
+  IMP::base::PointerMember<ClassnameContainer> c_;
+
+ public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] gf The ClassnameModifier to apply to all elements.
       \param[in] name The name to use for this Object
    */
   ClassnamesOptimizerState(ClassnameContainerAdaptor c, ClassnameModifier *gf,
-                           std::string name="ClassnamesOptimizerState %1%");
+                           std::string name = "ClassnamesOptimizerState %1%");
 
-  IMP_OPTIMIZER_STATE(ClassnamesOptimizerState);
+  virtual void update() IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ClassnamesOptimizerState);
 };
 
-IMP_OBJECTS(ClassnamesOptimizerState,ClassnamesOptimizerStates);
-
+IMP_OBJECTS(ClassnamesOptimizerState, ClassnamesOptimizerStates);
 
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_CLASSNAMES_OPTIMIZER_STATE_H */
+#endif /* IMPCONTAINER_CLASSNAMES_OPTIMIZER_STATE_H */

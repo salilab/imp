@@ -20,17 +20,24 @@ IMPCORE_BEGIN_NAMESPACE
 //! The refiner can refine any particle by returning a fixed set
 /**
  */
-class IMPCOREEXPORT FixedRefiner: public Refiner
-{
-  ParticlesTemp ps_;
-public:
+class IMPCOREEXPORT FixedRefiner : public Refiner {
+  kernel::ParticlesTemp ps_;
+
+ public:
   //! Store the set of particles
-  FixedRefiner(const ParticlesTemp &ps);
+  FixedRefiner(const kernel::ParticlesTemp &ps);
 
-  IMP_REFINER(FixedRefiner);
+  virtual bool get_can_refine(kernel::Particle *) const IMP_OVERRIDE;
+  virtual const kernel::ParticlesTemp get_refined(kernel::Particle *) const
+      IMP_OVERRIDE;
+#ifndef SWIG
+  using Refiner::get_refined;
+#endif
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(FixedRefiner);
 };
-
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_FIXED_REFINER_H */
+#endif /* IMPCORE_FIXED_REFINER_H */

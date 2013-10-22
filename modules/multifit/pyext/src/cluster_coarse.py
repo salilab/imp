@@ -3,7 +3,7 @@
 #analyse the ensemble, first we will do the rmsd stuff
 import operator
 import IMP.multifit
-from optparse import OptionParser
+from IMP import OptionParser
 
 def parse_args():
     usage =  "usage %prog [options] <asmb.input> <proteomics.input> <mapping.input> <alignment params> <combinatins> <diameter> <output combinations>\n"

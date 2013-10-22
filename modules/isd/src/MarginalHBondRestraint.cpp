@@ -18,11 +18,12 @@ IMPISD_BEGIN_NAMESPACE
 //MarginalHBondRestraint::MarginalHBondRestraint() {}
 
 // add a contribution: simple case
-void MarginalHBondRestraint::add_contribution(Particle *p1, Particle *p2,
+void MarginalHBondRestraint::add_contribution(kernel::Particle *p1, kernel::Particle *p2,
                                               double Iexp)
 {
-    ParticlePair pc(p1,p2);
-    ParticlePairsTemp pct(1,pc);
+    set_has_dependencies(false);
+    kernel::ParticlePair pc(p1,p2);
+    kernel::ParticlePairsTemp pct(1,pc);
     IMP_NEW(container::ListPairContainer, cont, (pct));
     //container::ListPairContainer cont(pct);
     add_contribution(cont,Iexp);
@@ -31,6 +32,7 @@ void MarginalHBondRestraint::add_contribution(Particle *p1, Particle *p2,
 //add a contribution: general case
 void MarginalHBondRestraint::add_contribution(PairContainer *pc, double Iexp)
 {
+    set_has_dependencies(false);
     contribs_.push_back(pc);
     volumes_.push_back(Iexp);
 }
@@ -98,7 +100,7 @@ MarginalHBondRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp MarginalHBondRestraint::do_get_inputs() const
 {
-  ModelObjectsTemp ret;
+  kernel::ModelObjectsTemp ret;
   for (unsigned i=0; i<volumes_.size(); ++i)
   {
     ret+=IMP::get_particles(get_model(),
@@ -106,12 +108,6 @@ ModelObjectsTemp MarginalHBondRestraint::do_get_inputs() const
     ret.push_back(contribs_[i]);
   }
   return ret;
-}
-
-void MarginalHBondRestraint::do_show(std::ostream& out) const
-{
-  out << "Marginal HBond restraint with " << volumes_.size()
-      << " contributions " << std::endl;
 }
 
 IMPISD_END_NAMESPACE

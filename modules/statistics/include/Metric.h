@@ -22,13 +22,20 @@ IMPSTATISTICS_BEGIN_NAMESPACE
     implement this abstract base class provide a way of getting the
     distance between any two items.
  */
-class IMPSTATISTICSEXPORT Metric: public IMP::base::Object {
-protected:
+class IMPSTATISTICSEXPORT Metric : public IMP::base::Object {
+ protected:
   Metric(std::string name);
+  //! By default return 1.0
+  virtual double do_get_weight(unsigned int i) const {
+    IMP_UNUSED(i);
+    return 1.0;
+  }
+
  public:
-  virtual double get_distance(unsigned int i,
-                              unsigned int j) const =0;
-  virtual unsigned int get_number_of_items() const=0;
+  virtual double get_distance(unsigned int i, unsigned int j) const = 0;
+  /** Return a weight for the point. */
+  double get_weight(unsigned int i) const { return do_get_weight(i); }
+  virtual unsigned int get_number_of_items() const = 0;
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Metric);
 };
 

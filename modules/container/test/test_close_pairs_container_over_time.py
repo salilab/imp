@@ -9,7 +9,7 @@ class Tests(IMP.test.TestCase):
 
     def test_restraint_1(self):
         """Test ClosePairContainer complete list over time"""
-        m=IMP.Model()
+        m=IMP.kernel.Model()
         IMP.base.set_log_level(IMP.base.SILENT)
         ps= self.create_particles_in_box(m, 10)
         for p in ps:

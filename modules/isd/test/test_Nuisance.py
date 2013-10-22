@@ -16,19 +16,19 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         #IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
-        self.m = IMP.Model()
-        self.sigma = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
+        self.m = IMP.kernel.Model()
+        self.sigma = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 1.0)
 
     def test_Setup1(self):
         "Test nuisance parameter setup without lower/upper"
-        si = Nuisance.setup_particle(IMP.Particle(self.m))
+        si = Nuisance.setup_particle(IMP.kernel.Particle(self.m))
         self.assertAlmostEqual(float(si.get_nuisance()),1.0, delta=1e-6)
         self.assertEqual(si.get_lower(), -1e3000) # -1e3000 ~= -inf
         self.assertEqual(si.get_upper(), 1e3000) # 1e3000 ~= inf
 
     def test_Setup2(self):
         "Test nuisance parameter setup with lower/upper"
-        si = Nuisance.setup_particle(IMP.Particle(self.m), 2.0)
+        si = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 2.0)
         si.set_lower(0.1)
         si.set_upper(10)
         self.assertAlmostEqual(float(si.get_nuisance()),2.0, delta=1e-6)
@@ -59,7 +59,7 @@ class Tests(IMP.test.TestCase):
 
     def test_GetSet2(self):
         "Test nuisance get and set (border check)"
-        nuisance = Nuisance.setup_particle(IMP.Particle(self.m), 50.0)
+        nuisance = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 50.0)
         nuisance.set_lower(10)
         nuisance.set_upper(80)
         for si in range(1,100):
@@ -74,9 +74,9 @@ class Tests(IMP.test.TestCase):
 
     def test_GetSet_Particle(self):
         "Test nuisance get and set (border check) with particles"
-        nuisance = Nuisance.setup_particle(IMP.Particle(self.m), 50.0)
-        lower = Nuisance.setup_particle(IMP.Particle(self.m), 10.0)
-        upper = Nuisance.setup_particle(IMP.Particle(self.m), 80.0)
+        nuisance = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 50.0)
+        lower = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 10.0)
+        upper = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 80.0)
         nuisance.set_lower(lower)
         nuisance.set_upper(upper)
         for si in range(1,100):
@@ -91,9 +91,9 @@ class Tests(IMP.test.TestCase):
 
     def test_GetSet_Both(self):
         "Test nuisance get/set (border check) with both particles and floats"
-        nuisance = Nuisance.setup_particle(IMP.Particle(self.m), 50.0)
-        lower = Nuisance.setup_particle(IMP.Particle(self.m), 10.0)
-        upper = Nuisance.setup_particle(IMP.Particle(self.m), 90.0)
+        nuisance = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 50.0)
+        lower = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 10.0)
+        upper = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 90.0)
         nuisance.set_lower(1.0)
         nuisance.set_lower(lower)
         nuisance.set_upper(upper)

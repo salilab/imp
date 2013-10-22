@@ -10,23 +10,23 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
         ap=[]
         for i in range(0,n):
             cs= IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_on(ls), r)
-            d= IMP.core.XYZR.setup_particle(IMP.Particle(m), cs)
+            d= IMP.core.XYZR.setup_particle(IMP.kernel.Particle(m), cs)
             ap.append(d);
-        rbp= IMP.core.RigidBody.setup_particle(IMP.Particle(m), ap)
+        rbp= IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m), ap)
         #rbp.set_log_level(IMP.base.SILENT)
         rbp.set_coordinates_are_optimized(True)
         return rbp
     def _create_xyzrs(self, m, n, r):
         ap=[]
         for i in range(0,n):
-            d= IMP.core.XYZR.setup_particle(IMP.Particle(m),
+            d= IMP.core.XYZR.setup_particle(IMP.kernel.Particle(m),
                                            IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0), r))
             d.set_coordinates_are_optimized(True)
             ap.append(d);
         return ap
     def _setup_ev_restraint(self):
         #IMP.base.set_log_level(IMP.base.VERBOSE)
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         m.set_log_level(IMP.base.SILENT)
         all=[]
         rbs=[]
@@ -62,7 +62,7 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
         """Testing excluded volume restraint"""
         (m,r, xyzrs, rbs)= self._setup_ev_restraint()
         print "mc"
-        o= IMP.core.MonteCarlo()
+        o= IMP.core.MonteCarlo(m)
         mvs= self._setup_movers(xyzrs, rbs)
         o.set_movers(mvs)
         o.set_model(m)
@@ -74,7 +74,7 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
         """Testing excluded volume serial restraint"""
         (m,r, xyzrs, rbs)= self._setup_ev_restraint()
         print "mc"
-        o= IMP.core.MonteCarlo()
+        o= IMP.core.MonteCarlo(m)
         mvs= self._setup_movers(xyzrs, rbs)
         sm= IMP.core.SerialMover(mvs)
         o.set_movers([sm])

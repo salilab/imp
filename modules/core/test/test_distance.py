@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
         """Set up model and particles"""
         IMP.test.TestCase.setUp(self)
 
-        self.imp_model = IMP.Model()
+        self.imp_model = IMP.kernel.Model()
         self.particles = []
         self.rsrs = []
 

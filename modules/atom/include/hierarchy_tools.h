@@ -38,28 +38,25 @@ IMPATOM_BEGIN_NAMESPACE
     by default, and have garbage coordinate values.
     \untested{create_protein}
     \unstable{create_protein}
-    \relatesalso Hierarchy
+    See Hierarchy
  */
-IMPATOMEXPORT Hierarchy create_protein(Model *m,
-                                       std::string name,
-                                       double resolution,
-                                       int number_of_residues,
-                                       int first_residue_index=0,
-                                       double volume=-1
+IMPATOMEXPORT Hierarchy
+    create_protein(kernel::Model *m, std::string name, double resolution,
+                   int number_of_residues, int first_residue_index = 0,
+                   double volume = -1
 #ifndef IMP_DOXYGEN
-                                       , bool ismol=true
+                   ,
+                   bool ismol = true
 #endif
-);
+                   );
 /** Like the former create_protein(), but it enforces domain splits
     at the provide domain boundairs. The domain boundaries should be
     the start of the first domain, any boundies, and then one past
     the end of the last domain.
  */
-IMPATOMEXPORT Hierarchy create_protein(Model *m,
-                                       std::string name,
+IMPATOMEXPORT Hierarchy create_protein(kernel::Model *m, std::string name,
                                        double resolution,
                                        const Ints domain_boundaries);
-
 
 /** \name Simplification along backbone
 
@@ -79,15 +76,15 @@ IMPATOMEXPORT Hierarchy create_protein(Model *m,
     @{
 */
 /** Simplify every num_res into one particle.*/
-IMPATOMEXPORT Hierarchy create_simplified_along_backbone(Hierarchy input,
-                                                         int num_res,
-                                                     bool keep_detailed=false);
+IMPATOMEXPORT Hierarchy
+    create_simplified_along_backbone(Hierarchy input, int num_res,
+                                     bool keep_detailed = false);
 /** Simplify by breaking at the boundaries provided.*/
-IMPATOMEXPORT Hierarchy create_simplified_along_backbone(Chain input,
-                                              const IntRanges& residue_segments,
-                                                      bool keep_detailed=false);
+IMPATOMEXPORT Hierarchy
+    create_simplified_along_backbone(Chain input,
+                                     const IntRanges &residue_segments,
+                                     bool keep_detailed = false);
 /** @} */
-
 
 /** \name Finding information
     Get the attribute of the given particle or throw a ValueException
@@ -104,63 +101,53 @@ IMPATOMEXPORT std::string get_domain_name(Hierarchy h);
 IMPATOMEXPORT int get_copy_index(Hierarchy h);
 /** @} */
 
-
-
 /** Create an excluded volume restraint for the included molecules. If a
     value is provided for resolution, then something less than the full
     resolution representation will be used.
 
     If one or more of the selections is a rigid body, this will be used
     to accelerate the computation.
-    \relatesalso Hierarchy
+    See Hierarchy
  */
-IMPATOMEXPORT Restraint* create_excluded_volume_restraint(const Hierarchies &hs,
-                                                          double resolution=-1);
-
-
-
+IMPATOMEXPORT kernel::Restraint *create_excluded_volume_restraint(
+    const Hierarchies &hs, double resolution = -1);
 
 /** Set the mass, radius, residues, and coordinates to approximate the passed
     particles.
  */
-IMPATOMEXPORT void setup_as_approximation(Particle *h,
-                                          const ParticlesTemp &other
+IMPATOMEXPORT void setup_as_approximation(kernel::Particle *h,
+                                          const kernel::ParticlesTemp &other
 #ifndef IMP_DOXYGEN
                                           ,
-                                          double resolution=-1
+                                          double resolution = -1
 #endif
-);
+                                          );
 
 /** Set the mass, radius, residues, and coordinates to approximate the passed
     particle based on the leaves of h.
-    \relatesalso Hierarchy
+    See Hierarchy
  */
 IMPATOMEXPORT void setup_as_approximation(Hierarchy h
 #ifndef IMP_DOXYGEN
                                           ,
-                                          double resolution =-1
+                                          double resolution = -1
 #endif
-);
+                                          );
 
 /** Transform a hierarchy. This is aware of rigid bodies.
  */
 IMPATOMEXPORT void transform(Hierarchy h, const algebra::Transformation3D &tr);
 
-
-
 /** A graph for representing a Hierarchy so you can view it
     nicely.
 */
-IMP_GRAPH(HierarchyTree, bidirectional, Hierarchy, int);
+IMP_GRAPH(HierarchyTree, bidirectional, Hierarchy, int,
+          vertex.show(out, "\\n"));
 /** Get a graph for the passed Hierarchy. This can be used,
     for example, to graphically display the hierarchy in 2D.
-    \relatesalso Hierarchy
+    See Hierarchy
 */
 IMPATOMEXPORT HierarchyTree get_hierarchy_tree(Hierarchy h);
-
-
-
-
 
 /** \class HierarchyGeometry
     \brief Display an IMP::atom::Hierarchy particle as balls.
@@ -169,54 +156,54 @@ IMPATOMEXPORT HierarchyTree get_hierarchy_tree(Hierarchy h);
     \brief Display an IMP::SingletonContainer of IMP::atom::Hierarchy particles
     as balls.
 */
-class HierarchyGeometry: public display::SingletonGeometry {
+class HierarchyGeometry : public display::SingletonGeometry {
   double res_;
-  mutable IMP::base::map<Particle*, Pointer<display::Geometry> >
-  components_;
-public:
-  HierarchyGeometry(core::Hierarchy d, double resolution=-1):
-    SingletonGeometry(d), res_(resolution){}
+  mutable IMP::base::map<kernel::Particle *, base::Pointer<display::Geometry> >
+      components_;
+
+ public:
+  HierarchyGeometry(core::Hierarchy d, double resolution = -1)
+      : SingletonGeometry(d), res_(resolution) {}
   display::Geometries get_components() const {
     display::Geometries ret;
     atom::Hierarchy d(get_particle());
     atom::Selection sel(d);
     sel.set_target_radius(res_);
-    ParticlesTemp ps= sel.get_selected_particles();
-    for (unsigned int i=0; i< ps.size(); ++i) {
-      if (components_.find(ps[i])== components_.end()) {
+    kernel::ParticlesTemp ps = sel.get_selected_particles();
+    for (unsigned int i = 0; i < ps.size(); ++i) {
+      if (components_.find(ps[i]) == components_.end()) {
         IMP_NEW(core::XYZRGeometry, g, (core::XYZR(ps[i])));
-        components_[ps[i]]=g;
+        components_[ps[i]] = g;
       }
       ret.push_back(components_.find(ps[i])->second);
     }
     return ret;
   }
-  IMP_OBJECT_INLINE(HierarchyGeometry,
-                    out <<  atom::Hierarchy(get_particle())<< std::endl;,{});
+  IMP_OBJECT_METHODS(HierarchyGeometry);
 };
-class HierarchiesGeometry: public display::SingletonsGeometry {
+class HierarchiesGeometry : public display::SingletonsGeometry {
   double res_;
-  mutable IMP::base::map<Particle*, Pointer<display::Geometry> >
-  components_;
-  public:
-  HierarchiesGeometry(SingletonContainer* sc, double resolution=-1):
-    SingletonsGeometry(sc), res_(resolution){}
+  mutable IMP::base::map<kernel::ParticleIndex,
+                         base::Pointer<display::Geometry> > components_;
+
+ public:
+  HierarchiesGeometry(SingletonContainer *sc, double resolution = -1)
+      : SingletonsGeometry(sc), res_(resolution) {}
   display::Geometries get_components() const {
     display::Geometries ret;
-    IMP_FOREACH_SINGLETON(get_container(), {
-        if (components_.find(_1)
-            == components_.end()) {
-          IMP_NEW(HierarchyGeometry, g, (atom::Hierarchy(_1), res_));
-          components_[_1]= g;
-        }
-        ret.push_back(components_.find(_1)->second);
-      });
+    IMP_CONTAINER_FOREACH(SingletonContainer, get_container(), {
+      kernel::Model *m = get_container()->get_model();
+      if (components_.find(_1) == components_.end()) {
+        IMP_NEW(HierarchyGeometry, g, (atom::Hierarchy(m, _1), res_));
+        components_[_1] = g;
+      }
+      ret.push_back(components_.find(_1)->second);
+    });
     return ret;
   }
-  IMP_OBJECT_INLINE(HierarchiesGeometry,
-                    out <<  get_container() << std::endl;,{});
+  IMP_OBJECT_METHODS(HierarchiesGeometry);
 };
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_HIERARCHY_TOOLS_H */
+#endif /* IMPATOM_HIERARCHY_TOOLS_H */

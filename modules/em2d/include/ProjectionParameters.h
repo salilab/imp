@@ -24,10 +24,13 @@ IMPEM2D_BEGIN_NAMESPACE
 //! Rotation and tranlation. In this cases, the translation is the translation
 //! to apply to the model in 3D, in order to perform the registration
 class IMPEM2DEXPORT ProjectionParameters: public Decorator {
+  static void do_setup_particle(kernel::Model *m,
+                                kernel::ParticleIndex pi);
+
 public:
 
-  IMP_DECORATOR(ProjectionParameters,Decorator);
-
+  IMP_DECORATOR_METHODS(ProjectionParameters,Decorator);
+  IMP_DECORATOR_SETUP_0(ProjectionParameters);
 
   ~ProjectionParameters() {};
 
@@ -37,15 +40,12 @@ public:
 
   //! ranges for the keys. Only adjust the translations, the rotations are
   //! self adjusted
-  void set_proper_ranges_for_keys(Model *m,
+  void set_proper_ranges_for_keys(kernel::Model *m,
                   const algebra::Vector3D &min_translation_values,
                   const algebra::Vector3D &max_translation_values);
 
-  //! Create the proper attributes for a particle
-  static ProjectionParameters setup_particle(Particle *p);
-
   //!Return true of the particle is a set of projection parameters
-  static bool particle_is_instance(Particle *p);
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi);
 
 
   //! Get whether the parameters are optimized
@@ -116,7 +116,7 @@ private:
 
 };
 
-IMP_DECORATORS(ProjectionParameters, ProjectionParametersList, Particles);
+IMP_DECORATORS(ProjectionParameters, ProjectionParametersList, kernel::Particles);
 
 
 
@@ -125,14 +125,20 @@ IMP_DECORATORS(ProjectionParameters, ProjectionParametersList, Particles);
 //! Decorator
 class IMPEM2DEXPORT ProjectionParametersScoreState : public ScoreState {
 public:
-  ProjectionParametersScoreState(Particle *p) {
+  ProjectionParametersScoreState(kernel::Particle *p):
+      ScoreState(p->get_model(),
+                 "ProjectionParametersScoreState%1%") {
     proj_params_ = p;
   }
-  IMP_SCORE_STATE(ProjectionParametersScoreState);
+  virtual void do_before_evaluate() IMP_OVERRIDE;
+  virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ProjectionParametersScoreState);
 
 private:
-  // Particle to store the projection params
-  Pointer<Particle> proj_params_;
+  // kernel::Particle to store the projection params
+  base::Pointer<kernel::Particle> proj_params_;
 };
 
 

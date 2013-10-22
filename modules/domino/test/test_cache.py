@@ -5,20 +5,18 @@ import IMP.core
 import IMP.algebra
 import random
 
-class LogRestraint(IMP.Restraint):
+class LogRestraint(IMP.kernel.Restraint):
     def __init__(self, m, ps):
-        IMP.Restraint.__init__(self, m)
+        IMP.kernel.Restraint.__init__(self, m, "LogRestraint%1%")
         self.count=0
         self.ps=ps
     def unprotected_evaluate(self, da):
         self.count+=1
         return 1
-    def get_input_particles(self):
+    def do_get_inputs(self):
         return self.ps
     def reset(self):
         self.count=0
-    def get_input_containers(self):
-        return []
     def show(self, out):
         return
 
@@ -26,8 +24,8 @@ class LogRestraint(IMP.Restraint):
 class Tests(IMP.test.TestCase):
     def test_global_min1(self):
         """Test caching of restraint scores"""
-        m= IMP.Model()
-        p= IMP.Particle(m)
+        m= IMP.kernel.Model()
+        p= IMP.kernel.Particle(m)
         IMP.core.XYZ.setup_particle(p)
         lr= LogRestraint(m, [p])
         lr.set_maximum_score(0)
@@ -46,8 +44,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(lr.count, 1)
     def test_global_min2(self):
         """Test non-caching of restraint scores"""
-        m= IMP.Model()
-        p= IMP.Particle(m)
+        m= IMP.kernel.Model()
+        p= IMP.kernel.Particle(m)
         IMP.core.XYZ.setup_particle(p)
         lr= LogRestraint(m, [p])
         lr.set_maximum_score(0)
@@ -66,8 +64,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(lr.count, 2)
     def test_global_min3(self):
         """Test capped caching of restraint scores"""
-        m= IMP.Model()
-        p= IMP.Particle(m)
+        m= IMP.kernel.Model()
+        p= IMP.kernel.Particle(m)
         IMP.core.XYZ.setup_particle(p)
         lr= LogRestraint(m, [p])
         lr.set_maximum_score(0)

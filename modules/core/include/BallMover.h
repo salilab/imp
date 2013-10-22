@@ -11,6 +11,7 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/base_types.h>
+#include <IMP/base/exception.h>
 #include "MonteCarloMover.h"
 
 IMPCORE_BEGIN_NAMESPACE
@@ -20,21 +21,19 @@ IMPCORE_BEGIN_NAMESPACE
     given radius.
     \see MonteCarlo
  */
-class IMPCOREEXPORT BallMover: public MonteCarloMover
-{
-  ParticleIndexes pis_;
+class IMPCOREEXPORT BallMover : public MonteCarloMover {
+  kernel::ParticleIndexes pis_;
   FloatKeys keys_;
   double radius_;
   algebra::VectorKDs originals_;
 
-  void initialize(ParticleIndexes pis,
-                  FloatKeys keys,
-                  double radius);
-public:
-  BallMover(Model *m, ParticleIndex pi,
-            const FloatKeys &vars, double radius);
+  void initialize(kernel::ParticleIndexes pis, FloatKeys keys, double radius);
+
+ public:
+  BallMover(kernel::Model *m, kernel::ParticleIndex pi, const FloatKeys &vars,
+            double radius);
   //! Move the x,y,z coordinates
-  BallMover(Model *m, ParticleIndex pi, double radius);
+  BallMover(kernel::Model *m, kernel::ParticleIndex pi, double radius);
 
 #ifndef IMP_DOXYGEN
   /** The attributes are perturbed within a ball whose dimensionality is
@@ -43,25 +42,23 @@ public:
       \param[in] vars The variables to use (normally the keys for x,y,z)
       \param[in] radius The radius deviation to use.
    */
-  BallMover(const ParticlesTemp &sc, const FloatKeys &vars,
+  BallMover(const kernel::ParticlesTemp &sc, const FloatKeys &vars,
             Float radius);
 
   /** The x,y,z coordinates are perturbed within a ball.
       \param[in] sc The set of particles to perturb.
       \param[in] radius The radius deviation to use.
    */
-  BallMover(const ParticlesTemp &sc,
-            Float radius);
+  BallMover(const kernel::ParticlesTemp &sc, Float radius);
 #endif
 
   void set_radius(Float radius) {
-    IMP_USAGE_CHECK(radius > 0, "The radius must be positive");
-    radius_=radius;
+    IMP_ALWAYS_CHECK(radius > 0, "The radius must be positive",
+                     IMP::base::ValueException);
+    radius_ = radius;
   }
 
-  Float get_radius() const {
-    return radius_;
-  }
+  Float get_radius() const { return radius_; }
 
  protected:
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
@@ -72,4 +69,4 @@ public:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_BALL_MOVER_H */
+#endif /* IMPCORE_BALL_MOVER_H */

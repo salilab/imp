@@ -81,30 +81,6 @@ def link_python(source):
                 #print "linking", path
         tools.link_dir(os.path.join(g, "pyext", "src"), path, clean=False)
 
-def doxygenize_readme(readme, output_dir, name):
-    out = ["/**", "\\page IMP_%s_overview IMP.%s"%(name, name)]
-    out.extend(open(readme, "r").read().split("\n"))
-    out.append("*/")
-    tools.rewrite(os.path.join(output_dir, "IMP_"+name+"_overview.dox"), "\n".join(out))
-
-# link all the dox files and other documentation related files from the source tree
-# into the build tree
-def link_dox(source):
-    target=os.path.join("doxygen")
-    tools.mkdir(target)
-    for module, g in tools.get_modules(source):
-        tools.link_dir(os.path.join(g, "doc"), os.path.join(target, module))
-        tools.link_dir(os.path.join(g, "doc"), os.path.join("doc", "html"), match=["*.png", "*.pdf"],
-                 clean=False)
-        doxygenize_readme(os.path.join(g, "README.md"), "doxygen", module)
-    for app, g in tools.get_applications(source):
-        tools.link_dir(g, os.path.join(target, app))
-        tools.link_dir(g, os.path.join("doc", "html"), match=["*.png", "*.pdf"], clean=False)
-        doxygenize_readme(os.path.join(g, "README.md"), "doxygen", app)
-    tools.link_dir(os.path.join(source, "doc"), os.path.join(target, "IMP"))
-    tools.link_dir(os.path.join(source, "doc"), os.path.join("doc", "html"), match=["*.png", "*.pdf"],
-             clean=False)
-
 def _make_test_driver(outf, cpps):
     out= open(outf, "w")
     print >> out, \
@@ -211,34 +187,6 @@ if __name__ == '__main__':
         tools.mkdir(os.path.join(target, app))
 
 
-def generate_doxyfile(source):
-    doxyin=os.path.join(source, "doc", "doxygen", "Doxyfile.in")
-    version="develop"
-    versionpath=os.path.join(source, "VERSION")
-    if os.path.exists(versionpath):
-        version= open(versionpath, "r").read().split('\n')[0].replace(" ", ":")
-    # for building of modules without IMP
-    if os.path.exists(doxyin):
-        doxygen= open(doxyin, "r").read()
-        doxygenr= doxygen.replace( "@IMP_SOURCE_PATH@", source).replace("@VERSION@", version)
-        doxygenrhtml= doxygenr.replace( "@IS_HTML@", "YES").replace("@IS_XML@", "NO")
-        doxygenrxml= doxygenr.replace( "@IS_XML@", "YES").replace("@IS_HTML@", "NO")
-        open(os.path.join("doxygen", "Doxyfile.html"), "w").write(doxygenrhtml)
-        open(os.path.join("doxygen", "Doxyfile.xml"), "w").write(doxygenrxml)
-
-# generate the pages that list biological systems and applications
-def generate_overview_pages(source):
-    ai= open(os.path.join("doxygen", "applications.dox"), "w")
-    ai.write("/** \\page applications_index Application Index \n")
-    for bs, g in tools.get_applications(source):
-        ai.write("- \\subpage IMP_%s_overview \"%s\"\n"%(bs,bs))
-    ai.write("*/")
-    ai= open(os.path.join("doxygen", "modules.dox"), "w")
-    ai.write("/** \\page modules_index Module Index \n")
-    for bs, g in tools.get_modules(source):
-        ai.write("- \\subpage IMP_%s_overview \"%s\"\n"%(bs,bs))
-    ai.write("*/")
-
 def clean_pyc(dir):
     for root, dirnames, filenames in os.walk('.'):
         for d in dirnames:
@@ -283,12 +231,9 @@ def main():
                              options.datapath)
     link_headers(options.source)
     link_examples(options.source)
-    link_dox(options.source)
     link_swig(options.source)
     link_python(options.source)
     link_data(options.source)
-    generate_overview_pages(options.source)
-    generate_doxyfile(options.source)
     generate_tests(options.source, options.scons)
     generate_src_dirs(options.source)
     generate_applications_list(options.source)

@@ -1,5 +1,5 @@
 /**
- * \file EnvelopeFitRestraint.h
+ * \file em/EnvelopeFitRestraint.h
  * \brief score envelope fit based on map distance transform
  *
  * \authors Dina Schneidman
@@ -16,7 +16,7 @@
 #include <IMP/em/EnvelopeScore.h>
 #include <IMP/base/object_macros.h>
 
-#include <IMP/Restraint.h>
+#include <IMP/kernel/Restraint.h>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -40,7 +40,7 @@ public:
     of particles out of the map envelope (as defined by density_threshold)
     is allowed. Recommended value is approximately map resolution
   */
-  EnvelopeFitRestraint(Particles particles,
+  EnvelopeFitRestraint(kernel::Particles particles,
                        DensityMap *em_map,
                        double density_threshold,
                        double penetration_threshold);
@@ -56,15 +56,15 @@ public:
   // compute best scoring transformation and apply it on the particles
   void apply_transformation();
 
-  IMP::ModelObjectsTemp do_get_inputs() const { return ps_; }
+  IMP::kernel::ModelObjectsTemp do_get_inputs() const { return ps_; }
   IMP_OBJECT_METHODS(EnvelopeFitRestraint);
 
  private:
-  Particles ps_;
-  PCAAligner pca_aligner_;
+  kernel::Particles ps_;
+  IMP::base::PointerMember<PCAAligner> pca_aligner_;
   double penetration_threshold_;
-  MapDistanceTransform distance_transform_;
-  EnvelopeScore envelope_score_;
+  IMP::base::PointerMember<MapDistanceTransform> distance_transform_;
+  IMP::base::PointerMember<EnvelopeScore> envelope_score_;
 
   // best scoring trans from last evaluate
   IMP::algebra::Transformation3D transformation_;

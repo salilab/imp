@@ -9,7 +9,7 @@
 #define IMPKERNEL_SCORE_STATE_H
 
 #include <IMP/kernel/kernel_config.h>
-#include "WeakPointer.h"
+#include <IMP/base/WeakPointer.h>
 #include "DerivativeAccumulator.h"
 #include "utility.h"
 #include "ModelObject.h"
@@ -42,38 +42,34 @@ IMPKERNEL_BEGIN_NAMESPACE
     returned by the respective get_input_* and get_output_* calls.
     For ScoreState::after_evaluate() they are reversed (see note below).
 
-
-    \note If no acceptable order exists, an exception will be thrown
-    and the set of ScoreState objects creating the loop will be
-    reported.
-
     \note The input and output sets for the ScoreState::after_evaluate()
     functions are assumed to be the reverse of the ScoreState::before_evaluate()
     functions. As a result, the ScoreStates are applied in opposite order
     after evaluate. If you have a ScoreState for which this is not true,
     consider splitting it into two parts.
  */
-class IMPKERNELEXPORT ScoreState : public ModelObject
-{
-public:
-#ifndef IMP_DOXYGEN
-  ScoreState(std::string name="ScoreState %1%");
-#endif
-  ScoreState(Model *m, std::string name="ScoreState %1%");
+class IMPKERNELEXPORT ScoreState : public ModelObject {
+  int update_order_;
+
+ public:
+  ScoreState(kernel::Model *m, std::string name);
   //! Force update of the structure.
   void before_evaluate();
 
   //! Do post evaluation work if needed
   void after_evaluate(DerivativeAccumulator *accpt);
 
-protected:
+#ifndef IMP_DOXYGEN
+  bool get_has_update_order() const { return update_order_ != -1; }
+  unsigned int get_update_order() const { return update_order_; }
+  virtual void handle_set_has_required_score_states(bool tf) IMP_OVERRIDE;
+
+#endif
+
+ protected:
   // Update the state given the current state of the model.
   /* This is also called prior to every calculation of the model score.
       It should be implemented by ScoreStates in order to provide functionality.
-
-      \note This can't have the same name as the public function due to the
-      way C++ handles overloading and name lookups--if only one is implemented
-      in the child class it will only find that one.
    */
   virtual void do_before_evaluate() = 0;
 
@@ -82,36 +78,36 @@ protected:
                        calculation, or nullptr if derivatives were not
                        requested.
    */
-  virtual void do_after_evaluate(DerivativeAccumulator *accpt)=0;
+  virtual void do_after_evaluate(DerivativeAccumulator *accpt) = 0;
 
-  IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(ScoreState);
+  IMP_REF_COUNTED_DESTRUCTOR(ScoreState);
 
-public:
-#if IMP_HAS_DEPRECATED
-  /** \deprecated use get_inputs() instead.*/
-  IMP_DEPRECATED_WARN ParticlesTemp get_input_particles() const;
-  /** \deprecated use get_inputs() instead.*/
-  IMP_DEPRECATED_WARN ContainersTemp get_input_containers() const;
-  /** \deprecated use get_outputs() instead.*/
-  IMP_DEPRECATED_WARN ParticlesTemp get_output_particles() const;
-  /** \deprecated use get_outputs() instead.*/
-  IMP_DEPRECATED_WARN ContainersTemp get_output_containers() const;
-#endif
-protected:
-  virtual void do_update_dependencies() IMP_OVERRIDE;
- private:
-
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-public:
-#endif
-  int order_;
+ public:
+  /** \deprecated_at{2.1} Use version that takes a name too.
+   */
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
+  ScoreState(kernel::Model *m);
+  /** \deprecated_at{2.1} Use version that takes a Model instead.
+   */
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
+  ScoreState(std::string name = "ScoreState %1%");
+  /** \deprecated_at{2.1} use get_inputs() instead.*/
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
+  ParticlesTemp get_input_particles() const;
+  /** \deprecated_at{2.1} use get_inputs() instead.*/
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
+  ContainersTemp get_input_containers() const;
+  /** \deprecated_at{2.1} use get_outputs() instead.*/
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
+  ParticlesTemp get_output_particles() const;
+  /** \deprecated_at{2.1} use get_outputs() instead.*/
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
+  ContainersTemp get_output_containers() const;
 };
-
-/** Return the passed list of score states ordered based on how they need to
-    be ordered during update calls.*/
-IMPKERNELEXPORT ScoreStatesTemp get_update_order( ScoreStatesTemp input);
+/** Return an appropriate (topoligically sorted) order to update
+    the score states in. */
+IMPKERNELEXPORT ScoreStatesTemp get_update_order(ScoreStatesTemp input);
 
 IMPKERNEL_END_NAMESPACE
 
-
-#endif  /* IMPKERNEL_SCORE_STATE_H */
+#endif /* IMPKERNEL_SCORE_STATE_H */

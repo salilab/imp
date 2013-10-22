@@ -23,20 +23,22 @@ IMPCONTAINER_BEGIN_NAMESPACE
     container for which the predicate returns a certain value is in the
     range [min_count, max_count).
  */
-class IMPCONTAINEREXPORT EventClassnamesOptimizerState:
-    public OptimizerState {
-  IMP::OwnerPointer<ClassnamePredicate> pred_;
-  IMP::OwnerPointer<ClassnameContainer> container_;
+class IMPCONTAINEREXPORT EventClassnamesOptimizerState : public OptimizerState {
+  IMP::base::PointerMember<ClassnamePredicate> pred_;
+  IMP::base::PointerMember<ClassnameContainer> container_;
   int v_;
   int min_, max_;
-public:
+
+ public:
   EventClassnamesOptimizerState(ClassnamePredicate *pred,
-                                ClassnameContainerAdaptor container,
-                                int value, int min_count, int max_count,
-                                std::string name="ConstClassnamePredicate%1%");
-  IMP_OPTIMIZER_STATE(EventClassnamesOptimizerState);
+                                ClassnameContainerAdaptor container, int value,
+                                int min_count, int max_count,
+                                std::string name =
+                                    "ConstClassnamePredicate%1%");
+  virtual void update() IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(EventClassnamesOptimizerState);
 };
 
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_EVENT_CLASSNAMES_OPTIMIZER_STATE_H */
+#endif /* IMPCONTAINER_EVENT_CLASSNAMES_OPTIMIZER_STATE_H */

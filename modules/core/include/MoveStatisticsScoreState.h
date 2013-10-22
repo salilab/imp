@@ -10,7 +10,7 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/OptimizerState.h>
-#include <IMP/internal/utility.h>
+#include <IMP/kernel/internal/utility.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/score_state_macros.h>
 #include <IMP/io.h>
@@ -21,9 +21,8 @@ IMPCORE_BEGIN_NAMESPACE
 /** Keep track of average and maximum moves for a set
     of particles during optimization.
  */
-class IMPCOREEXPORT MoveStatisticsScoreState: public ScoreState
-{
-  Particles ps_;
+class IMPCOREEXPORT MoveStatisticsScoreState : public ScoreState {
+  kernel::Particles ps_;
   algebra::Vector3Ds last_;
   double max_move_;
   std::string max_mover_;
@@ -31,14 +30,18 @@ class IMPCOREEXPORT MoveStatisticsScoreState: public ScoreState
   double total_move_;
   double total_movers_;
   bool init_;
-public:
-  MoveStatisticsScoreState(const ParticlesTemp& ps);
-  void show_statistics(std::ostream &out=std::cout) const;
-  void reset();
-  IMP_SCORE_STATE(MoveStatisticsScoreState);
-};
 
+ public:
+  MoveStatisticsScoreState(const kernel::ParticlesTemp& ps);
+  void show_statistics(std::ostream& out = std::cout) const;
+  void reset();
+  virtual void do_before_evaluate() IMP_OVERRIDE;
+  virtual void do_after_evaluate(DerivativeAccumulator* da) IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const;
+  virtual kernel::ModelObjectsTemp do_get_outputs() const;
+  IMP_OBJECT_METHODS(MoveStatisticsScoreState);
+};
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_MOVE_STATISTICS_SCORE_STATE_H */
+#endif /* IMPCORE_MOVE_STATISTICS_SCORE_STATE_H */

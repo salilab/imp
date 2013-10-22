@@ -11,12 +11,13 @@
 #include <IMP/kernel/kernel_config.h>
 #include <IMP/base/WeakPointer.h>
 
-
 IMPKERNEL_BEGIN_NAMESPACE
+IMPKERNEL_DEPRECATED_HEADER(2.1, "Please use IMP/base/WeakPointer.h instead.");
+
 #ifndef IMP_DOXYGEN
 using IMP::base::UncheckedWeakPointer;
 using IMP::base::WeakPointer;
 #endif
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_WEAK_POINTER_H */
+#endif /* IMPKERNEL_WEAK_POINTER_H */

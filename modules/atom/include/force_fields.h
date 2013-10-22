@@ -23,24 +23,21 @@ IMPATOM_BEGIN_NAMESPACE
    that, at the moment, all added bonds are reported as
    IMP::Bond::SINGLE, whether or not they actually are.
 
-   \relatesalso Hierarchy
-   \relatesalso ForceFieldParameters
+   See Hierarchy
+   See ForceFieldParameters
 */
-IMPATOMEXPORT void add_bonds(Hierarchy d,
-                             const ForceFieldParameters* ffp
-                             =get_all_atom_CHARMM_parameters());
-
+IMPATOMEXPORT void add_bonds(Hierarchy d, const ForceFieldParameters* ffp =
+                                              get_all_atom_CHARMM_parameters());
 
 /**
    Add vdW radius from given force field.
 
-   \relatesalso Hierarchy
-   \relatesalso ForceFieldParameters
+   See Hierarchy
+   See ForceFieldParameters
 */
-IMPATOMEXPORT void add_radii(Hierarchy d,
-                             const ForceFieldParameters *ffp
-                             = get_all_atom_CHARMM_parameters(),
-                             FloatKey radius_key= FloatKey("radius"));
+IMPATOMEXPORT void add_radii(Hierarchy d, const ForceFieldParameters* ffp =
+                                              get_all_atom_CHARMM_parameters(),
+                             FloatKey radius_key = FloatKey("radius"));
 
 IMPATOM_END_NAMESPACE
 

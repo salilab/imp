@@ -37,7 +37,7 @@ class DominoModel:
         Management of a model using DOMINO
     """
     def __init__(self, name="my model"):
-        self.model = IMP.Model()
+        self.model = IMP.kernel.Model()
         self.model.set_name(name)
         self.configuration_sampling_done = False
         self.assignments_sampling_done = False
@@ -54,7 +54,7 @@ class DominoModel:
     def add_restraint(self, r, name, weight, max_score=False):
         """
             Adds a restraint to the model
-            @param r An IMP.Restraint object
+            @param r An IMP.kernel.Restraint object
             @param name Name for the restraint
             @param weight Weight for the restraint
             @param max_score Maximum score allowed for the restraint. If
@@ -133,10 +133,12 @@ class DominoModel:
         """
             Set a restraint on the maximum distance between 2 residues
             @param id1 Name of the first component
+            @param chain1
             @param residue1 Residue number for the aminoacid in the first
                 component.The number is the number in the PDB file, not the
                 number relative to the beginning of the chain
             @param id2 Name of the second component
+            @param chain2
             @param residue2 Residue number for the aminoacid in the second
               component.
             @param distance Maximum distance tolerated
@@ -163,7 +165,7 @@ class DominoModel:
         k = core.Harmonic.get_k_from_standard_deviation(stddev)
         score = core.HarmonicUpperBound(xlink.distance, k)
         pair_score = IMP.core.DistancePairScore(score)
-        r = IMP.core.PairRestraint(pair_score, IMP.ParticlePair(p1, p2))
+        r = IMP.core.PairRestraint(pair_score, IMP.kernel.ParticlePair(p1, p2))
         if not max_score:
             error_distance_allowed = 100
             max_score = weight * score.evaluate(distance + error_distance_allowed)
@@ -177,10 +179,12 @@ class DominoModel:
             Set a restraint for geometric complementarity between 2 components
             @param name1 name of
             @param name2 - The restraint is applied to this components
-            - rname - The name given to the restraint
-            - max_sep_distance - maximum distance between molecules
+            @param rname - The name given to the restraint
+            @param max_sep_distance - maximum distance between molecules
                                 tolerated by the restraint
-            - max_penetration - Maximum penetration allowd (angstrom)
+            @param max_penetration - Maximum penetration allowd (angstrom)
+            @param weight
+            @param max_score
         """
         log.info("Setting geometric complementarity restraint %s: %s - %s",
                             rname, name1, name2)
@@ -227,6 +231,7 @@ class DominoModel:
               The mode "assignments_heap_container" selects the best solutions
               after ecah merging in DOMINO, discarding the rest.
               In practice I used the mode "assignments_heap_container"
+            @param params
         """
         t0 = time.time()
         if mode == "configuration":
@@ -345,8 +350,9 @@ class DominoModel:
             Domino sampling that recovers the assignments for the root of the
             merge tree, but
             conserving only the best k scores for each vertex of the tree.
-            @param vertex Vertex with the root of the current merge tree. This
+            @param[in] vertex Vertex with the root of the current merge tree. This
             function is recursive.
+            @param[in] k
         """
         if(self.sampler.get_number_of_subset_filter_tables() == 0 ):
             raise ValueError("No subset filter tables")
@@ -402,14 +408,9 @@ class DominoModel:
         """
             Sets the native model for benchmark, by reading the native
             structure and set the rigid bodies.
-            @param fn_pdb_native PDB with the native structure
-            @param anchored List of True/False values indicating
-                if the components of the assembly are anchored. The function
-                sets the FIRST anchored component in the (0,0,0) coordinate
-                and moves the other components with the same translation
         """
         self.measure_models = True
-        self.native_model = IMP.Model()
+        self.native_model = IMP.kernel.Model()
         if hasattr(params.benchmark, "fn_pdb_native"):
             self.native_assembly = \
                 representation.create_assembly_from_pdb(self.native_model,
@@ -709,7 +710,7 @@ class DominoModel:
         """
             Set a part of the model as not optimized (it does not move during
             the model optimization)
-            @param Name of the component to optimized
+            @param name of the component to optimized
         """
         if name not in self.names:
             raise ValueError("DominoModel: There is not component " \
@@ -726,6 +727,7 @@ class DominoModel:
             of the coarse assembly.See help for
             @param distance Maximum distance tolerated between particles
             @param weight Weight for the restraint
+            @param stddev
             @param max_score Maximum value for the restraint. If the parameter
                 is None, an automatic value is computed (using the ratio).
             @param ratio Fraction of the number of possible pairs of
@@ -747,8 +749,8 @@ class DominoModel:
                     possible_pairs = len(ls1) * len(ls2)
                     n_pairs = possible_pairs * ratio
 
-                    marker1 = IMP.Particle(self.model, "marker1 " + name)
-                    marker2 = IMP.Particle(self.model, "marker2 " + name)
+                    marker1 = IMP.kernel.Particle(self.model, "marker1 " + name)
+                    marker2 = IMP.kernel.Particle(self.model, "marker2 " + name)
                     table_refiner = core.TableRefiner()
                     table_refiner.add_particle(marker1, ls1)
                     table_refiner.add_particle(marker2, ls2)
@@ -758,7 +760,7 @@ class DominoModel:
                                                                 table_refiner,
                                                                 distance)
                     r = core.PairRestraint(close_pair_score,
-                                           IMP.ParticlePair(marker1,marker2))
+                                           IMP.kernel.ParticlePair(marker1,marker2))
 
                     if not max_score:
                         minimum_distance_allowed = 0
@@ -778,7 +780,8 @@ class DominoModel:
             @param name2 Name of the second component
             @param restraint_name Name for the restraint
             @param distance Maximum distance tolerated between particles
-            @param weight. Weight of the restraint
+            @param weight Weight of the restraint
+            @param n_pairs
             @param max_score Maximum value tolerated for the restraint
             @param stddev Standard deviation used to approximate the
                 HarmonicUpperBound function to a Gaussian
@@ -789,11 +792,11 @@ class DominoModel:
         # When the refiner gets a request for marker1, it returns the attached
         # particles
         A = representation.get_component(self.coarse_assembly, name1)
-        marker1 = IMP.Particle(self.model, "marker1 "+restraint_name)
+        marker1 = IMP.kernel.Particle(self.model, "marker1 "+restraint_name)
         table_refiner.add_particle(marker1, atom.get_leaves(A))
         # same for B
         B = representation.get_component(self.coarse_assembly, name2)
-        marker2 = IMP.Particle(self.model, "marker2 "+restraint_name)
+        marker2 = IMP.kernel.Particle(self.model, "marker2 "+restraint_name)
         table_refiner.add_particle(marker2, atom.get_leaves(B))
 
         k = core.Harmonic.get_k_from_standard_deviation(stddev)
@@ -812,13 +815,14 @@ class DominoModel:
 
         log.info("Setting pair score restraint for %s %s. k = %s, max_score " \
             "= %s, stddev %s", name1, name2, k, max_score,stddev)
-        r = core.PairRestraint(pair_score, IMP.ParticlePair( marker1, marker2 ) )
+        r = core.PairRestraint(pair_score, IMP.kernel.ParticlePair( marker1, marker2 ) )
         self.add_restraint(r, restraint_name, weight, max_score)
 
 
     def write_solutions_database(self, fn_database, max_number=None):
         """
             Write the results of the DOMINO sampling to a SQLite database.
+            @param fn_database
             @param max_number Maximum number of results to write
         """
         log.info("Creating the database of solutions")
@@ -872,10 +876,10 @@ class DominoModel:
         for rb,rn  in zip(self.components_rbs, self.native_rbs):
             # remove sub-rigid bodies
             rb_members = filter(
-                           lambda m: not core.RigidBody.particle_is_instance(
+                           lambda m: not core.RigidBody.get_is_setup(
                                      m.get_particle()), rb.get_members())
             rn_members =  filter(
-                           lambda m: not core.RigidBody.particle_is_instance(
+                           lambda m: not core.RigidBody.get_is_setup(
                                      m.get_particle()), rn.get_members())
             rb_coords = [m.get_coordinates() for m in rb_members]
             rn_coords = [m.get_coordinates() for m in rn_members]
@@ -913,6 +917,7 @@ class DominoModel:
             Write a file with a configuration for the model (configuration
             here means a configuration in DOMINO)
             @param n Index of the configuration desired.
+            @param fn_pdb
         """
         if not self.configuration_sampling_done:
             raise ValueError("DominoModel: sampling not done")
@@ -1063,7 +1068,7 @@ def get_coordinates(rigid_bodies):
     for rb in rigid_bodies:
             # remove sub-rigid bodies
         rb_members = filter(
-                       lambda m: not core.RigidBody.particle_is_instance(
+                       lambda m: not core.RigidBody.get_is_setup(
                                  m.get_particle()), rb.get_members())
         coords.extend([m.get_coordinates() for m in rb_members])
     return coords

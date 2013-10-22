@@ -29,7 +29,7 @@ prot_lib = %s
         IMP.cnmultifit.do_all_fitting('trimer.param')
         self.assertEqual(len(open('multifit.output').readlines()), 4)
 
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         ref = IMP.atom.read_pdb(self.get_input_file_name('trimer-ref.pdb'), m)
         ref_atoms = IMP.core.XYZs(IMP.atom.get_by_type(ref, IMP.atom.ATOM_TYPE))
         rmsds = []

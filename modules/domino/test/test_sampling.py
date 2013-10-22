@@ -8,12 +8,12 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min2(self):
         """Test sampling"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         m.set_log_level(IMP.base.SILENT)
         ps=[]
         print 1
         for i in range(0,3):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             d= IMP.core.XYZ.setup_particle(p)
             ps.append(p)
             print 2
@@ -50,11 +50,11 @@ class Tests(IMP.test.TestCase):
             self.assertLess((IMP.core.get_distance(d1,d2)-1)**2, .1)
     def test_global_min3(self):
         """Test sampling with edge scores"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         m.set_log_level(IMP.base.SILENT)
         ps=[]
         for i in range(0,3):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             d= IMP.core.XYZ.setup_particle(p)
             ps.append(p)
         pts=[IMP.algebra.Vector3D(0,0,0),

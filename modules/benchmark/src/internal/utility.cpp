@@ -9,12 +9,12 @@ IMPBENCHMARK_BEGIN_INTERNAL_NAMESPACE
 
 std::string get_benchmarks_name(const char* name) {
   std::string sname(name);
-  std::size_t loc= sname.rfind("benchmark_");
+  std::size_t loc = sname.rfind("benchmark_");
   if (loc != std::string::npos) {
-    return std::string(name+loc+10);
+    return std::string(name + loc + 10);
   } else {
-    int sloc=sname.rfind("/");
-    return std::string(name+sloc);
+    int sloc = sname.rfind("/");
+    return std::string(name + sloc);
   }
 }
 

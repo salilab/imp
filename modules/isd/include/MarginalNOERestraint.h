@@ -12,7 +12,7 @@
 
 #include <IMP/restraint_macros.h>
 #include <IMP/isd/isd_config.h>
-#include <IMP/isd/ISDRestraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/PairContainer.h>
 
 IMPISD_BEGIN_NAMESPACE
@@ -28,7 +28,7 @@ IMPISD_BEGIN_NAMESPACE
     \hat{\gamma} = \left(\prod_{i=1}^N \frac{V_i^{exp}}{d_i^{-6}}\right)^{1/N}
     \f]
  */
-class IMPISDEXPORT MarginalNOERestraint : public ISDRestraint
+class IMPISDEXPORT MarginalNOERestraint : public kernel::Restraint
 {
   PairContainers contribs_;
   std::vector<double> volumes_;
@@ -39,14 +39,16 @@ class IMPISDEXPORT MarginalNOERestraint : public ISDRestraint
 
 public:
   //! Create the restraint.
-  /** Restraints should store the particles they are to act on,
+  /** kernel::Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
    */
-  MarginalNOERestraint(){};
+  MarginalNOERestraint(kernel::Model *m) :
+    Restraint(m, "MarginalNOERestraint%1%") {};
 
 
   // add a contribution: simple case
-  void add_contribution(Particle *p1, Particle *p2, double Iexp);
+  void add_contribution(kernel::Particle *p1, kernel::Particle *p2, double
+          Iexp);
 
   //add a contribution: general case
   void add_contribution(PairContainer *pc, double Iexp);
@@ -68,7 +70,11 @@ public:
 
   /** This macro declares the basic needed methods: evaluate and show
    */
-  IMP_RESTRAINT_2(MarginalNOERestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(MarginalNOERestraint);
 
 
 };

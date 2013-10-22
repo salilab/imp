@@ -20,17 +20,23 @@ IMPATOM_BEGIN_NAMESPACE
     \ingroup bond
     \see Bonded
  */
-class IMPATOMEXPORT BondedPairFilter : public PairPredicate
-{
-public:
+class IMPATOMEXPORT BondedPairFilter : public PairPredicate {
+ public:
   //! no arguments
   BondedPairFilter();
 
-  IMP_PAIR_PREDICATE(BondedPairFilter);
+  virtual int get_value_index(kernel::Model *m,
+                              const kernel::ParticleIndexPair &p) const
+      IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  IMP_PAIR_PREDICATE_METHODS(BondedPairFilter);
+  IMP_OBJECT_METHODS(BondedPairFilter);
+  ;
 };
 
-IMP_OBJECTS(BondedPairFilter,BondedPairFilters);
+IMP_OBJECTS(BondedPairFilter, BondedPairFilters);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_BONDED_PAIR_FILTER_H */
+#endif /* IMPATOM_BONDED_PAIR_FILTER_H */

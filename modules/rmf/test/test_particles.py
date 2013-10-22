@@ -8,9 +8,9 @@ class Tests(IMP.test.TestCase):
     def test_perturbed(self):
         """Test reading and writing particles"""
         for suffix in RMF.suffixes:
-            m= IMP.Model()
-            p0= IMP.Particle(m)
-            p1= IMP.Particle(m)
+            m= IMP.kernel.Model()
+            p0= IMP.kernel.Particle(m)
+            p1= IMP.kernel.Particle(m)
             ik= IMP.IntKey("hi int")
             fk= IMP.FloatKey("hi float")
             p0.add_attribute(ik, 1)
@@ -39,9 +39,9 @@ class Tests(IMP.test.TestCase):
     def test_perturbed_frames(self):
         """Test reading and writing particles with frames"""
         for suffix in RMF.suffixes:
-            m= IMP.Model()
-            p0= IMP.Particle(m)
-            p1= IMP.Particle(m)
+            m= IMP.kernel.Model()
+            p0= IMP.kernel.Particle(m)
+            p1= IMP.kernel.Particle(m)
             ik= IMP.IntKey("hi int")
             fk= IMP.FloatKey("hi float")
             p0.add_attribute(ik, 1)

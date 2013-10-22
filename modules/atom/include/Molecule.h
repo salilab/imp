@@ -13,41 +13,37 @@
 #include "Hierarchy.h"
 
 #include <IMP/base_types.h>
-#include <IMP/Particle.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Particle.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/Decorator.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
-
 //! A decorator for a molecule.
 /** */
-class IMPATOMEXPORT Molecule: public Hierarchy
-{
+class IMPATOMEXPORT Molecule : public Hierarchy {
   static IntKey key();
-public:
-  IMP_DECORATOR(Molecule, Hierarchy);
-  //! Add the required attributes to the particle and create a Molecule
-  static Molecule setup_particle(Particle *p) {
-    if (!Hierarchy::particle_is_instance(p)) {
-      Hierarchy::setup_particle(p);
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                Molecule = Molecule()) {
+    if (!Hierarchy::get_is_setup(m, pi)) {
+      Hierarchy::setup_particle(m, pi);
     }
-    p->add_attribute(key(),1);
-    return Molecule(p);
+    m->add_attribute(key(), pi, 1);
   }
 
-  //! Copy data from the other Molecule to the particle p
-  static Molecule setup_particle(Particle *p, Molecule) {
-    return setup_particle(p);
-  }
+ public:
+  IMP_DECORATOR_METHODS(Molecule, Hierarchy);
+  /** Mark the particle as denoting a molecule. */
+  IMP_DECORATOR_SETUP_0(Molecule);
+  IMP_DECORATOR_SETUP_1(Molecule, Molecule, other);
 
-  static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(key());
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+    return m->get_has_attribute(key(), pi);
   }
 };
 
-IMP_DECORATORS(Molecule,Molecules, Hierarchies);
+IMP_DECORATORS(Molecule, Molecules, Hierarchies);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_MOLECULE_H */
+#endif /* IMPATOM_MOLECULE_H */

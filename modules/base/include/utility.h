@@ -15,10 +15,7 @@
 #include <IMP/base/Vector.h>
 #include <IMP/base/math.h>
 
-
 IMPBASE_BEGIN_NAMESPACE
-
-
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 template <class T>
@@ -26,23 +23,20 @@ inline T square(T t) IMP_NO_SIDEEFFECTS;
 template <class T>
 inline T cube(T t) IMP_NO_SIDEEFFECTS;
 
-
 //! Compute the square of a number
 template <class T>
-inline T square(T t)
-{
-  return t*t;
+inline T square(T t) {
+  return t * t;
 }
 
 //! Compute the cube of a number
 template <class T>
-inline T cube(T t)
-{
-  return t*t*t;
+inline T cube(T t) {
+  return t * t * t;
 }
 
 template <class T>
-inline bool is_nan(const T& a) {
+inline bool is_nan(const T &a) {
   return isnan(a);
 }
 
@@ -70,9 +64,8 @@ inline Out get_as(const In &in) {
 
 /** Return a unique name produced from the string by replacing
     %1% with a sequential number.*/
-IMPBASEEXPORT
-std::string get_unique_name(std::string templ);
+IMPBASEEXPORT std::string get_unique_name(std::string templ);
 
 IMPBASE_END_NAMESPACE
 
-#endif  /* IMPBASE_UTILITY_H */
+#endif /* IMPBASE_UTILITY_H */

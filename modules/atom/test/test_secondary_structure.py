@@ -9,8 +9,8 @@ from math import sqrt
 class Tests(IMP.test.TestCase):
     """Test the SecondaryStructureResidue decorator and reader"""
     def test_get_set(self):
-        m = IMP.Model()
-        p = IMP.Particle(m)
+        m = IMP.kernel.Model()
+        p = IMP.kernel.Particle(m)
         ssr = IMP.atom.SecondaryStructureResidue.setup_particle(p,0.5,0.25,0.25)
         self.assertAlmostEqual(ssr.get_prob_helix(), 0.5, delta=1e-6)
         self.assertAlmostEqual(ssr.get_prob_strand(), 0.25, delta=1e-6)
@@ -18,7 +18,7 @@ class Tests(IMP.test.TestCase):
 
     def test_coarsen(self):
         """Test coarsening a set of SecondaryStructureResidues"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         avs=[0.0,0.0,0.0]
         helices=[0.6,0.4,0.05]
         coils=[0.25,0.35,0.15]
@@ -28,7 +28,7 @@ class Tests(IMP.test.TestCase):
         ps=[]
 
         for i in range(3):
-            p=IMP.Particle(m)
+            p=IMP.kernel.Particle(m)
             ssr=IMP.atom.SecondaryStructureResidue.setup_particle(p,
                                            helices[i],coils[i],strands[i])
             av[0]+=helices[i]/3
@@ -56,13 +56,13 @@ class Tests(IMP.test.TestCase):
 
     def test_match_score(self):
         """Test if SecondaryStructureResidue scores are compared correctly"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         ssr_vals=[[0.5,0.25,0.25],
                   [0.9,0.05,0.05]]
-        p1 = IMP.Particle(m)
+        p1 = IMP.kernel.Particle(m)
         ssr1 = IMP.atom.SecondaryStructureResidue.setup_particle(p1,
                                    ssr_vals[0][0],ssr_vals[0][1],ssr_vals[0][2])
-        p2 = IMP.Particle(m)
+        p2 = IMP.kernel.Particle(m)
         ssr2 = IMP.atom.SecondaryStructureResidue.setup_particle(p2,
                                    ssr_vals[1][0],ssr_vals[1][1],ssr_vals[1][2])
         rmsd=0.0
@@ -73,7 +73,7 @@ class Tests(IMP.test.TestCase):
                                rmsd,delta=1e-6)
     def test_psipred_reader(self):
         """Test if psipred file is read into SecondaryStructureResidues"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         ssres=IMP.atom.read_psipred(self.open_input_file("yGCP2.psipred"),m)
         self.assertEqual(len(ssres),769)
         self.assertAlmostEqual(ssres[0].get_prob_coil(),1.0,delta=1e-6)
@@ -86,10 +86,10 @@ class Tests(IMP.test.TestCase):
 
     def test_psipred_reader_provided_particles(self):
         """Test if psipred file (+particles) are read into SecondaryStructureResidues"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         ps=[]
         for i in range(769):
-            p=IMP.Particle(m)
+            p=IMP.kernel.Particle(m)
             ps.append(p)
 
         ssres=IMP.atom.read_psipred(self.open_input_file("yGCP2.psipred"),ps)

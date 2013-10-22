@@ -7,7 +7,7 @@
 
 #include "IMP/em/SpiderReaderWriter.h"
 #include "IMP/algebra/endian.h"
-#include "IMP/exception.h"
+#include "IMP/base/exception.h"
 
 IMPEM_BEGIN_NAMESPACE
 

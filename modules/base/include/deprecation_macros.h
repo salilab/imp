@@ -11,94 +11,113 @@
 
 #include <IMP/base/base_config.h>
 #include "deprecation.h"
-#include "log.h"
-#include "log_macros.h"
-#include "enums.h"
 
-/** \brief Mark the functionality as deprecated. It will print out a message.
+/** Used to implement deprecation support. See the
+    [IMP deprecation policy](https://github.com/salilab/imp/wiki/Deprecation).*/
+#define IMP_DEPRECATED_MACRO(version, help_message)                 \
+  IMP_PRAGMA(message("This macro is deprecated as of IMP " #version \
+                     ": " help_message))
 
-  From time to time, \imp is updated in ways that break backward
-  compatibility.  In certain cases we will leave the old functionality
-  in so as not to break existing code which uses \imp. Such code is
-  said to be "deprecated". See \salilab{imp/doc/doxygen/deprecated.html,
-  the deprecated class list} for a list of such classes.
+/** Used to implement deprecation support. See the
+    [IMP deprecation policy](https://github.com/salilab/imp/wiki/Deprecation).*/
+#define IMP_DEPRECATED_OBJECT_RUNTIME_WARNING(version, help_message) \
+  {                                                                  \
+    std::ostringstream oss;                                          \
+    oss << "Object " << get_module_name() << "::" << get_type_name() \
+        << " is deprecated. " << help_message << std::endl;          \
+    IMP::base::handle_use_deprecated(oss.str());                     \
+  }
 
-  Deprecated classes are marked in a variety of ways:
-  - They are listed in the "Deprecated List" in the "Related Pages" tab.
-  - They are noted as deprecated in their documentation.
-  - They print a warning when an instance is constructed or the function
-    is called.
+/** Used to implement deprecation support. See the
+    [IMP deprecation policy](https://github.com/salilab/imp/wiki/Deprecation).*/
+#define IMP_DEPRECATED_VALUE_RUNTIME_WARNING(version, help_message)      \
+  {                                                                      \
+    std::ostringstream oss;                                              \
+    oss << "Class " << get_module_name() << "::" << IMP_CURRENT_FUNCTION \
+        << " is deprecated. " << help_message << std::endl;              \
+    IMP::base::handle_use_deprecated(oss.str());                         \
+  }
 
-  The warnings can be turned off using the
-  IMP::base::set_print_deprecation_messages function.
-  \param[in] replacement_classname The class which replaces it.
+/** Used to implement deprecation support. See the
+    [IMP deprecation policy](https://github.com/salilab/imp/wiki/Deprecation).*/
+#define IMP_DEPRECATED_FUNCTION_RUNTIME_WARNING(version, help_message)      \
+  {                                                                         \
+    std::ostringstream oss;                                                 \
+    oss << "Function " << IMP_CURRENT_PRETTY_FUNCTION << " is deprecated. " \
+        << help_message << std::endl;                                       \
+    IMP::base::handle_use_deprecated(oss.str());                            \
+  }
 
-  Further, \imp can be built without deprecated code by defining
-  using the \c deprecated=False \c scons argument.
+/** Used to implement deprecation support. See the
+    [IMP deprecation policy](https://github.com/salilab/imp/wiki/Deprecation).*/
+#define IMP_DEPRECATED_METHOD_RUNTIME_WARNING(version, help_message)      \
+  {                                                                       \
+    std::ostringstream oss;                                               \
+    oss << "Method " << IMP_CURRENT_PRETTY_FUNCTION << " is deprecated. " \
+        << "WARNING: " << help_message << std::endl;                      \
+    IMP::base::handle_use_deprecated(oss.str());                          \
+  }
 
-  You should also use the \deprecated command in the doxygen documentation.
+/** \deprecated_at{2.1} Deprecated as of IMP 2.1. Use
+    IMPMODULE_DEPRECATED_CLASS_DEF().
  */
 #define IMP_DEPRECATED_OBJECT(replacement_classname)                    \
-  if (::IMP::base::internal::get_print_deprecation_message(get_name())) { \
-    IMP_WARN(get_name()                                                 \
-            << " is deprecated "                                        \
-            << "and should not be used.\nUse "                          \
-            << #replacement_classname << " instead." << std::endl);     \
-    ::IMP::base::internal::set_printed_deprecation_message(get_name(), \
-                                                     true);             \
+  IMP_DEPRECATED_MACRO(                                                 \
+                       2.1,                                             \
+                       "Use IMP@MODULE@_DEPRECATED_OBJECT_DECL()")      \
+  if (::IMP::base::internal::                                           \
+      get_print_deprecation_message(                                    \
+                                    get_name())) {                      \
+    IMP_WARN(get_name() << " is deprecated "                            \
+             << "and should not be used.\nUse "                         \
+             << #replacement_classname << " instead."                   \
+             << std::endl);                                             \
+    ::IMP::base::internal::set_printed_deprecation_message(get_name(), true); \
   }
-/** \see IMP_DEPRECATED_OBJECT()
+/** \deprecated_at{2.1} As of IMP 2.1. Use IMPMODULE_DEPRECATED_CLASS_DEF()
+    instead
  */
-#define IMP_DEPRECATED_CLASS(classname, replacement_classname)         \
-  if (::IMP::base::internal::get_print_deprecation_message(#classname)) { \
-    IMP_WARN(#classname                                                 \
-            << " is deprecated "                                        \
-            << "and should not be used.\nUse "                          \
-            << #replacement_classname << " instead." << std::endl);     \
-    ::IMP::base::internal::set_printed_deprecation_message(#classname, \
-                                                     true);             \
+#define IMP_DEPRECATED_CLASS(classname, replacement_classname)                \
+  IMP_DEPRECATED_MACRO(                                                       \
+      2.1,                                                                    \
+      "Use IMP@MODULE@_DEPRECATED_VALUE_DEF "                                 \
+      "instead") if (::IMP::base::internal::                                  \
+                         get_print_deprecation_message(#classname)) {         \
+    IMP_WARN(#classname << " is deprecated "                                  \
+                        << "and should not be used.\nUse "                    \
+                        << #replacement_classname << " instead."              \
+                        << std::endl);                                        \
+    ::IMP::base::internal::set_printed_deprecation_message(#classname, true); \
   }
-/** \see IMP_DEPRECATED_OBJECT()
+/** \deprecated_at{2.1} As of IMP 2.1. Use IMPMODULE_DEPRECATED_FUNCTION_DEF()
+    instead
  */
-#define IMP_DEPRECATED_FUNCTION(replacement)                            \
-  if (::IMP::base::internal::get_print_deprecation_message(__func__)) { \
-    IMP_WARN(__func__                                                   \
-            << " is deprecated "                                        \
-            << "and should not be used.\nUse "                          \
-            << #replacement << " instead." << std::endl);               \
-    ::IMP::base::internal::set_printed_deprecation_message(__func__,    \
-                                                           true);       \
+#define IMP_DEPRECATED_FUNCTION(replacement)                         \
+  IMP_DEPRECATED_MACRO(                                              \
+      2.1, "Use IMP@MODULE@_DEPRECATED_FUNCTION_DECL/DEF instead");  \
+  if (::IMP::base::internal::get_print_deprecation_message(          \
+          IMP_CURRENT_FUNCTION)) {                                   \
+    IMP_WARN(IMP_CURRENT_FUNCTION << " is deprecated "               \
+                                  << "and should not be used.\nUse " \
+                                  << #replacement << " instead."     \
+                                  << std::endl);                     \
+    ::IMP::base::internal::set_printed_deprecation_message(          \
+        IMP_CURRENT_FUNCTION, true);                                 \
   }
-
 
 #if !defined(IMP_SWIG_WRAPPER) && (defined(__GNUC__) || defined(__clang__))
-#define IMP_DEPRECATED_WARN __attribute__((deprecated))
+#define IMP_DEPRECATED_WARN                                          \
+  IMP_DEPRECATED_MACRO(2.1, "Use IMPMODULE_DEPRECATED_FUNCTION_DEF") \
+      __attribute__((deprecated))
 #else
-/** Produce compiler warnings when the function is called.*/
+/** Produce compiler warnings when the function is called.
+
+    \deprecated_at{2.1} As of IMP 2.1. Use IMPMODULE_DEPRECATED_FUNCTION_DEF()
+    instead.
+*/
 #define IMP_DEPRECATED_WARN
 #endif
 
-#if defined(IMP_DOXYGEN)
-/** Suppress compiler warnings about a call to a deprecated function.*/
-#define IMP_DEPRECATED_IGNORE(call) call
-
-#elif defined(__GNUC__)
-
-// This doesn't work except in 4.7 or so and higher due to a bug in gcc
-#define IMP_DEPRECATED_IGNORE(call)                                     \
-  IMP_GCC_PUSH_POP( diagnostic push)                                       \
-  IMP_GCC_PRAGMA( diagnostic ignored "-Wdeprecated-declarations")        \
-    call;                                                               \
-  IMP_GCC_PUSH_POP( diagnostic pop)
-
-#elif defined(__clang__)
-#define IMP_DEPRECATED_IGNORE(call)                                     \
-  IMP_CLANG_PRAGMA( diagnostic push)                                     \
-  IMP_CLANG_PRAGMA( diagnostic ignored "-Wdeprecated")                   \
-    call;                                                               \
-  IMP_CLANG_PRAGMA( diagnostic pop)
-#else
-#define IMP_DEPRECATED_IGNORE(call) call
-#endif
+#define IMP_DEPRECATED_FUNCTION_DEF(version, message)
 
 #endif /* IMPBASE_DEPRECATION_MACROS_H */

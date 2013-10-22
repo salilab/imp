@@ -1,5 +1,5 @@
 /**
- *  \file AlignSymmetric.h
+ *  \file cnmultifit/AlignSymmetric.h
  *  \brief Fast alignment of a cyclic model to its density.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.

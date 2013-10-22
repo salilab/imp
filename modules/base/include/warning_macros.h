@@ -15,11 +15,10 @@
 #define IMP_REQUIRE_SEMICOLON_CLASS(Name)
 #define IMP_REQUIRE_SEMICOLON_NAMESPACE
 /*
-#define IMP_REQUIRE_SEMICOLON_CLASS(Name)                       \
+#define IMP_REQUIRE_SEMICOLON_CLASS(Name)
   IMP_NO_DOXYGEN(IMP_NO_SWIG(struct semicolon_##Name##_helper_struct{}))
 #define IMP_REQUIRE_SEMICOLON_NAMESPACE void dummy_f()
 */
-
 
 /** Disable unused variable warning for a variable.
  */
@@ -27,11 +26,11 @@
 
 #ifndef IMP_DOXYGEN
 #ifdef __GNUC__
-#define IMP_WARN_PREPROCESS(msg) IMP_PRAGMA(message IMP_STRINGIFY(msg) )
+#define IMP_WARN_PREPROCESS(msg) IMP_PRAGMA(message IMP_STRINGIFY(msg))
 
 //#if __GNUC_PREREQ(4,2)
-#define IMP_GCC_DISABLE_WARNING(name)\
-  IMP_GCC_PRAGMA( diagnostic ignored IMP_STRINGIFY(name) )
+#define IMP_GCC_DISABLE_WARNING(name) \
+  IMP_GCC_PRAGMA(diagnostic ignored IMP_STRINGIFY(name))
 
 /*#else
 #define IMP_GCC_DISABLE_WARNING(name)
@@ -43,5 +42,4 @@
 
 #endif
 
-
-#endif  /* IMPBASE_WARNING_MACROS_H */
+#endif /* IMPBASE_WARNING_MACROS_H */

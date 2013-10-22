@@ -18,10 +18,10 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-AmbiguousNOERestraint::AmbiguousNOERestraint(PairContainer *pc,
-                           Particle *sigma, Particle *gamma,
-                           double Vexp) : pc_(pc), sigma_(sigma),
-                                          gamma_(gamma), Vexp_(Vexp) {}
+AmbiguousNOERestraint::AmbiguousNOERestraint(kernel::Model *m,
+        PairContainer *pc, kernel::Particle *sigma, kernel::Particle *gamma,
+        double Vexp) : Restraint(m, "AmbiguousNOERestraint%1%"), pc_(pc),
+    sigma_(sigma), gamma_(gamma), Vexp_(Vexp) {}
 
 /* Apply the restraint to two atoms, two Scales, one experimental value.
  */
@@ -90,7 +90,7 @@ AmbiguousNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp AmbiguousNOERestraint::do_get_inputs() const
 {
-  ModelObjectsTemp ret;
+  kernel::ModelObjectsTemp ret;
   ret+= IMP::get_particles(get_model(),
                            pc_->get_all_possible_indexes());
   ret.push_back(sigma_);
@@ -98,20 +98,6 @@ ModelObjectsTemp AmbiguousNOERestraint::do_get_inputs() const
 
   ret.push_back(pc_);
   return ret;
-}
-
-void AmbiguousNOERestraint::do_show(std::ostream& out) const
-{
-  IMP_CONTAINER_FOREACH(PairContainer,
-                       pc_,
-                       {
-    ParticlePair it(get_model()->get_particle(_1[0]),
-                    get_model()->get_particle(_1[1]));
-    out << "pair " << _2+1 << it << std::endl;
-                       });
-  out << "sigma= " << sigma_->get_name() << std::endl;
-  out << "gamma= " << gamma_->get_name() << std::endl;
-  out << "Vexp= " << Vexp_ << std::endl;
 }
 
 IMPISD_END_NAMESPACE

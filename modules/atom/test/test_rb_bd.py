@@ -7,15 +7,15 @@ import RMF
 
 class Tests(IMP.test.TestCase):
     def _create_rb(self, m):
-        prb= IMP.Particle(m, "body")
+        prb= IMP.kernel.Particle(m, "body")
         h0= IMP.atom.Hierarchy.setup_particle(prb)
-        core= IMP.Particle(m, "core")
+        core= IMP.kernel.Particle(m, "core")
         IMP.core.XYZR.setup_particle(core).set_radius(1)
         h0.add_child(IMP.atom.Hierarchy.setup_particle(core))
         ps=[core]
         IMP.atom.Mass.setup_particle(core, 1)
         for i in range(0,3):
-            ep= IMP.Particle(m, "ep"+str(i))
+            ep= IMP.kernel.Particle(m, "ep"+str(i))
             d=IMP.core.XYZR.setup_particle(ep)
             d.set_coordinate(i, 1)
             d.set_radius(.1)
@@ -28,7 +28,7 @@ class Tests(IMP.test.TestCase):
         return prb, ep, core
     def test_bonded(self):
         """Check brownian dynamics with rigid bodies"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         RMF.set_log_level("Off")
         m.set_log_level(IMP.base.SILENT)
         pa, ma, ca=self._create_rb(m)
@@ -61,9 +61,19 @@ class Tests(IMP.test.TestCase):
         bd.optimize(10)
         print "going silent"
         IMP.base.set_log_level(IMP.base.SILENT)
-        bd.optimize(1000)
-        e= sf.evaluate(False)
-        self.assertLess(e, 2)
+        max_cycles=5000
+        round_cycles=250
+        total_cycles=0
+        e_threshold = 2
+        for i in range(max_cycles / round_cycles):
+            bd.optimize(round_cycles)
+            energy = sf.evaluate(False)
+            total_cycles += round_cycles
+            print "energy after %d cycles = %.2f" \
+                % ( total_cycles, energy)
+            if(energy < e_threshold):
+                break
+        self.assertLess(energy, e_threshold)
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -18,14 +18,14 @@ class Tests(IMP.test.TestCase):
     def _convert_to_xyzs(self, m, vs):
         ret=[]
         for v in vs:
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             d= IMP.core.XYZ.setup_particle(p, v)
             ret.append(d)
         return ret
 
     def test_align(self):
         """Testing rigid alignment of xyz sets"""
-        m=IMP.Model()
+        m=IMP.kernel.Model()
         r= IMP.algebra.get_random_rotation_3d()
         t= IMP.algebra.Vector3D(0,0,0) #IMP.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())
         tr= IMP.algebra.Transformation3D(r, t)

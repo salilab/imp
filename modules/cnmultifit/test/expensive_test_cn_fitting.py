@@ -20,7 +20,7 @@ class CnFittingTests(IMP.test.TestCase):
         self.ref_prot_fn=self.get_input_file_name("1oel.pdb")
 
         #load the assembly
-        self.mdl = IMP.Model()
+        self.mdl = IMP.kernel.Model()
         self.ref = IMP.atom.read_pdb(self.ref_prot_fn,self.mdl)
         self.ref_chains = IMP.atom.get_by_type(self.ref,IMP.atom.CHAIN_TYPE)
         for mh in self.ref_chains:

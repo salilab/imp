@@ -21,16 +21,20 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 //! A trivial constraint that just increments a counter
 /**
 */
-class IMPEXAMPLEEXPORT ExampleConstraint : public Constraint
-{
-  base::Pointer<Particle> p_;
+class IMPEXAMPLEEXPORT ExampleConstraint : public Constraint {
+  base::Pointer<kernel::Particle> p_;
   IntKey k_;
-public:
-  ExampleConstraint(Particle *p);
 
-  IMP_CONSTRAINT(ExampleConstraint);
+ public:
+  ExampleConstraint(kernel::Particle *p);
+
+  virtual void do_update_attributes() IMP_OVERRIDE;
+  virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ExampleConstraint);
 };
 
 IMPEXAMPLE_END_NAMESPACE
 
-#endif  /* IMPEXAMPLE_EXAMPLE_CONSTRAINT_H */
+#endif /* IMPEXAMPLE_EXAMPLE_CONSTRAINT_H */

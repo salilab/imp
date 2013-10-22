@@ -11,50 +11,33 @@
 #include <IMP/isd/MolecularDynamics.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/isd/Nuisance.h>
-#include <IMP/random.h>
+#include <IMP/base/random.h>
 
 IMPISD_BEGIN_NAMESPACE
 
-MolecularDynamicsMover::MolecularDynamicsMover(Model *m,
+MolecularDynamicsMover::MolecularDynamicsMover(kernel::Model *m,
                                                unsigned nsteps,
                                                Float timestep) :
-  Mover(m, "MolecularDynamicsMover%1%"),
+  core::MonteCarloMover(m, "MolecularDynamicsMover%1%"),
   nsteps_(nsteps)
 {
     md_ = new MolecularDynamics(m);
     md_->set_maximum_time_step(timestep);
 }
 
-//IMP_GCC_DISABLE_WARNING("-Wuninitialized")
-void MolecularDynamicsMover::do_move(Float probability)
+core::MonteCarloMoverResult MolecularDynamicsMover::do_propose()
 {
-  if ( probability < 1 )
-  {
-      boost::uniform_real<> rand(0,1);
-      if (rand(random_number_generator) > probability) return;
-  }
-  md_->optimize(nsteps_);
-
+    IMP_OBJECT_LOG;
+    save_coordinates();
+    md_->optimize(nsteps_);
+    return core::MonteCarloMoverResult(md_->get_simulation_particle_indexes(),
+                                        1.0);
 }
-void MolecularDynamicsMover::do_show(std::ostream &) const { }
-
-  ParticlesTemp MolecularDynamicsMover::propose_move(Float prob)
-  {
-      IMP_OBJECT_LOG;
-      save_coordinates();
-      do_move(prob);
-      return md_->get_simulation_particles();
-  }
-
-  void MolecularDynamicsMover::reset_move()
-  {
-      reset_coordinates();
-  }
 
 void MolecularDynamicsMover::save_coordinates()
 {
-      IMP_OBJECT_LOG;
-    ParticlesTemp ps = md_->get_simulation_particles();
+    IMP_OBJECT_LOG;
+    kernel::ParticlesTemp ps = md_->get_simulation_particles();
     unsigned nparts = ps.size();
     coordinates_.clear();
     coordinates_.reserve(nparts);
@@ -62,8 +45,8 @@ void MolecularDynamicsMover::save_coordinates()
     velocities_.reserve(nparts);
     for (unsigned i=0; i<nparts; i++)
     {
-        bool isnuisance = Nuisance::particle_is_instance(ps[i]);
-        bool isxyz = core::XYZ::particle_is_instance(ps[i]);
+        bool isnuisance = Nuisance::get_is_setup(ps[i]);
+        bool isxyz = core::XYZ::get_is_setup(ps[i]);
         IMP_USAGE_CHECK(isnuisance||isxyz,
                 "Particle " << ps[i] << " is neither nuisance nor xyz!");
         if (isnuisance)
@@ -92,10 +75,10 @@ void MolecularDynamicsMover::save_coordinates()
     }
 }
 
-void MolecularDynamicsMover::reset_coordinates()
+void MolecularDynamicsMover::do_reject()
 {
-      IMP_OBJECT_LOG;
-    ParticlesTemp ps = md_->get_simulation_particles();
+    IMP_OBJECT_LOG;
+    kernel::ParticlesTemp ps = md_->get_simulation_particles();
     unsigned nparts = ps.size();
     IMP_USAGE_CHECK(coordinates_.size() == ps.size(),
             "The list of particles that move has been changed!");
@@ -103,8 +86,8 @@ void MolecularDynamicsMover::reset_coordinates()
             "The list of particles that move has been changed!");
     for (unsigned i=0; i<nparts; i++)
     {
-        bool isnuisance = Nuisance::particle_is_instance(ps[i]);
-        bool isxyz = core::XYZ::particle_is_instance(ps[i]);
+        bool isnuisance = Nuisance::get_is_setup(ps[i]);
+        bool isxyz = core::XYZ::get_is_setup(ps[i]);
         IMP_USAGE_CHECK(isnuisance||isxyz,
                 "Particle " << ps[i] << " is neither nuisance nor xyz!");
         if (isnuisance)
@@ -131,7 +114,14 @@ void MolecularDynamicsMover::reset_coordinates()
         }
     }
 }
-ParticlesTemp MolecularDynamicsMover::get_output_particles() const {
-  return md_->get_simulation_particles();
+
+kernel::ModelObjectsTemp MolecularDynamicsMover::do_get_inputs() const {
+    kernel::ParticleIndexes pis(md_->get_simulation_particle_indexes());
+    kernel::ModelObjectsTemp ret(pis.size());
+    for (unsigned int i=0; i< pis.size(); ++i) {
+        ret[i] = get_model()->get_particle(pis[i]);
+    }
+    return ret;
 }
+
 IMPISD_END_NAMESPACE

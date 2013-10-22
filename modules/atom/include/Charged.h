@@ -13,7 +13,7 @@
 
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra/Vector3D.h>
-#include <IMP/internal/constants.h>
+#include <IMP/kernel/internal/constants.h>
 
 #include <vector>
 #include <limits>
@@ -28,36 +28,30 @@ IMPATOM_BEGIN_NAMESPACE
     \ingroup decorators
     \see CoulombPairScore
  */
-class IMPATOMEXPORT Charged: public IMP::core::XYZ
-{
-public:
-  IMP_DECORATOR(Charged, IMP::core::XYZ);
-
-  /** Create a decorator with the passed coordinates and charge.
-   */
-  static Charged setup_particle(Particle *p, const algebra::Vector3D &v,
-                                Float charge) {
-    XYZ::setup_particle(p, v);
-    p->add_attribute(get_charge_key(), charge);
-    return Charged(p);
+class IMPATOMEXPORT Charged : public IMP::core::XYZ {
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                const algebra::Vector3D &v, Float charge) {
+    XYZ::setup_particle(m, pi, v);
+    do_setup_particle(m, pi, charge);
   }
-
-  /** Create a decorator with the passed charge.
-      The particle is assumed to already have x,y,z attributes.
-   */
-  static Charged setup_particle(Particle *p, Float charge=0) {
-    IMP_USAGE_CHECK(XYZ::particle_is_instance(p),
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                Float charge = 0) {
+    IMP_USAGE_CHECK(XYZ::get_is_setup(m, pi),
                     "Particle must already be an XYZ particle");
-    p->add_attribute(get_charge_key(), charge);
-    return Charged(p);
+    m->add_attribute(get_charge_key(), pi, charge);
   }
+
+ public:
+  IMP_DECORATOR_METHODS(Charged, IMP::core::XYZ);
+  IMP_DECORATOR_SETUP_1(Charged, Float, charge);
+  IMP_DECORATOR_SETUP_2(Charged, algebra::Vector3D, v, Float, charge);
 
   IMP_DECORATOR_GET_SET(charge, get_charge_key(), Float, Float);
 
   //! Return true if the particle is an instance of a Charged
-  static bool particle_is_instance(Particle *p) {
-    return XYZ::particle_is_instance(p)
-           && p->has_attribute(get_charge_key());
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+    return XYZ::get_is_setup(m, pi) &&
+           m->get_has_attribute(get_charge_key(), pi);
   }
 
   static FloatKey get_charge_key();
@@ -67,4 +61,4 @@ IMP_DECORATORS(Charged, Chargeds, core::XYZs);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_CHARGED_H */
+#endif /* IMPATOM_CHARGED_H */

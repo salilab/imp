@@ -23,36 +23,38 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 //! Return all bipartite pairs between two containers
-/** \see AllPairContainer
-
-    \usesconstraint
+/** See also AllPairContainer, ClosePairContainer,
+    CloseBipartitePairContainer for variants on the functionality provided.
  */
-class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer
-{
-  IMP::base::OwnerPointer<SingletonContainer> a_, b_;
-  friend class AllPairContainer;
-public:
+class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer {
+  IMP::base::PointerMember<SingletonContainer> a_, b_;
+  int a_version_, b_version_;
+
+ public:
   template <class F>
-    void apply_generic(F* f) const {
+  void apply_generic(F* f) const {
     validate_readable();
-    ParticleIndexes ib= b_->get_indexes();
-    IMP_FOREACH_SINGLETON_INDEX(a_, {
-        for (unsigned int j=0; j < ib.size(); ++j) {
-          f->apply_index(get_model(), ParticleIndexPair(_1, ib[j]));
-        }
+    kernel::ParticleIndexes ib = b_->get_indexes();
+    IMP_CONTAINER_FOREACH(SingletonContainer, a_, {
+      for (unsigned int j = 0; j < ib.size(); ++j) {
+        f->apply_index(get_model(), kernel::ParticleIndexPair(_1, ib[j]));
       }
-      );
+    });
   }
   AllBipartitePairContainer(SingletonContainerAdaptor a,
                             SingletonContainerAdaptor b,
-                            std::string name="AllBipartitePairContainer%1%");
-
-  IMP_PAIR_CONTAINER(AllBipartitePairContainer);
+                            std::string name = "AllBipartitePairContainer%1%");
+  virtual kernel::ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
+  virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual void do_before_evaluate() IMP_OVERRIDE;
+  IMP_PAIR_CONTAINER_METHODS(AllBipartitePairContainer);
+  IMP_OBJECT_METHODS(AllBipartitePairContainer);
 };
 
-IMP_OBJECTS(AllBipartitePairContainer,AllBipartitePairContainers);
-
+IMP_OBJECTS(AllBipartitePairContainer, AllBipartitePairContainers);
 
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_ALL_BIPARTITE_PAIR_CONTAINER_H */
+#endif /* IMPCONTAINER_ALL_BIPARTITE_PAIR_CONTAINER_H */

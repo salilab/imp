@@ -6,22 +6,27 @@ possibly using results returned from completed tasks. The system is fault
 tolerant; if a slave fails, any tasks running on that slave are automatically
 moved to another slave.
 
-To use the module, first create a Manager object. Add one or
-more slaves to the Manager using its
-\link Manager::add_slave() add_slave()\endlink method (example slaves are
-LocalSlave, which simply starts another IMP process on the
-same machine as the master, and SGEQsubSlaveArray, which starts
-an array of multiple slaves on a Sun GridEngine cluster). Next, call
-Manager::get_context() method, which creates and returns a new Context object.
-Add tasks to the Context with the Context::add_task() method (each task is
+To use the module, first create a \link IMP::parallel::Manager Manager\endlink
+object. Add one or more slaves to the Manager using its
+\link IMP::parallel::Manager.add_slave() add_slave()\endlink method (example slaves are
+\link IMP::parallel::LocalSlave LocalSlave\endlink, which simply starts another
+IMP process on the same machine as the master, and
+\link IMP::parallel::SGEQsubSlaveArray SGEQsubSlaveArray\endlink, which starts
+an array of multiple slaves on a Sun GridEngine cluster). Next, call the
+\link IMP::parallel::Manager.get_context() get_context()\endlink
+method, which creates and returns a new
+\link IMP::parallel::Context Context\endlink object.
+Add tasks to the Context with the
+\link IMP::parallel::Context.add_task() Context.add_task()\endlink method
+(each task is
 simply a Python function or other callable object). Finally, call
-Context::get_results_unordered() to
+\link IMP::parallel::Context.get_results_unordered() Context.get_results_unordered()\endlink to
 send the tasks out to the slaves (a slave only runs a single task at a time;
 if there are more tasks than slaves later tasks will be queued until a slave
 is done with an earlier task). This method returns the results from each task
 as it completes.
 
-Setup in IMP is often expensive, and thus the Manager::get_context() method
+Setup in IMP is often expensive, and thus the Manager.get_context() method
 allows you to specify a Python function or other callable object to do any
 setup for the tasks. This function will be run on the slave before any tasks
 from that context are started (the return values from this function are
@@ -42,7 +47,7 @@ solutions.
    containing <tt>qsub</tt> to the PATH, or remove the setting of PATH entirely.
 
  - <b>The master process 'hangs' and does not do anything when
-   Context::get_results_unordered() is called.</b>\n
+   Context.get_results_unordered() is called.</b>\n
    Usually this is because no slaves have successfully started up. Check the
    slave output files to determine what the problem is.
 
@@ -74,7 +79,7 @@ solutions.
    the slave started (either the master had little work to do, or the slave
    took a very long time to start up). This is normal.
 
-## Info
+# Info
 
 _Author(s)_: Ben Webb
 

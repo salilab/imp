@@ -19,7 +19,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(rows,128,"Error reading image")
         self.assertEqual(cols,128,"Error reading image")
 
-        temp=self.get_input_file_name("opencv_test_image.spi")
+        temp="opencv_test_image.spi"
         img.write(temp,srw)
 
         img2=em2d.Image()
@@ -121,7 +121,7 @@ class Tests(IMP.test.TestCase):
         jrw = em2d.JPGImageReaderWriter()
         fn_img1 = self.get_input_file_name("lena-256x256.jpg")
         img1=em2d.Image(fn_img1,jrw)
-        fn_img2 = self.get_input_file_name("temp.jpg")
+        fn_img2 = "temp.jpg"
         img1.write(fn_img2,jrw)
         img2 = em2d.Image(fn_img2,jrw)
         # Use the ccc for testing instead of the pixel values. The matrix
@@ -138,8 +138,7 @@ class Tests(IMP.test.TestCase):
         jrw = em2d.JPGImageReaderWriter()
         fn_img1 = self.get_input_file_name("lena-256x256.jpg")
         img1=em2d.Image(fn_img1,jrw)
-        fn_img2 = self.get_input_file_name("temp.xxx")
-        self.assertRaises(IOError, img1.write, fn_img2, jrw)
+        self.assertRaises(IOError, img1.write, "temp.xxx", jrw)
 
     def test_read_tiff(self):
         """Test of TIFFReaderWriter reading"""
@@ -164,7 +163,7 @@ class Tests(IMP.test.TestCase):
         srw = em2d.SpiderImageReaderWriter()
         fn_img1 = self.get_input_file_name("lena-256x256.tif")
         img1=em2d.Image(fn_img1,trw)
-        fn_img2 = self.get_input_file_name("temp.tif")
+        fn_img2 = "temp.tif"
         img1.write(fn_img2,trw)
         img2 = em2d.Image(fn_img2,trw)
         # Use the ccc for testing instead of the pixel values. The matrix
@@ -182,8 +181,7 @@ class Tests(IMP.test.TestCase):
         trw = em2d.TIFFImageReaderWriter()
         fn_img1 = self.get_input_file_name("lena-256x256.tif")
         img1=em2d.Image(fn_img1,trw)
-        fn_img2 = self.get_input_file_name("temp.xxx")
-        self.assertRaises(IOError, img1.write, fn_img2, trw)
+        self.assertRaises(IOError, img1.write, "temp.xxx", trw)
 
     def test_do_extend_borders(self):
         """Test that extending the borders of an image is done correctly"""
@@ -193,8 +191,6 @@ class Tests(IMP.test.TestCase):
         img2=em2d.Image()
         border = 10
         em2d.do_extend_borders(img1,img2,border)
-#        fn_img2 = self.get_input_file_name("lena-256x256-extended.spi")
-#        img2.write(fn_img2,srw)
         rows2=int(img2.get_header().get_number_of_rows())
         cols2=int(img2.get_header().get_number_of_columns())
         self.assertEqual(rows2,256+2*border,

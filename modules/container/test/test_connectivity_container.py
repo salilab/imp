@@ -15,8 +15,8 @@ class Tests(IMP.test.TestCase):
     """Tests for tunnel scores"""
     def test_connectivity_zero_set(self):
         """Test connectivity zero set"""
-        m= IMP.Model()
-        ps=[IMP.Particle(m) for i in range(0,15)]
+        m= IMP.kernel.Model()
+        ps=[IMP.kernel.Particle(m) for i in range(0,15)]
         ds=[IMP.core.XYZR.setup_particle(p) for p in ps]
         bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                       IMP.algebra.Vector3D(10,10,10))
@@ -28,6 +28,7 @@ class Tests(IMP.test.TestCase):
         hub= IMP.core.HarmonicUpperBound(0,1)
         sdps= IMP.core.SphereDistancePairScore(hub)
         r= IMP.container.PairsRestraint(sdps, cpc)
+        print "added"
         m.add_restraint(r)
         w= IMP.display.PymolWriter(self.get_tmp_file_name("connectivity.pym"))
         for d in ds:
@@ -36,15 +37,18 @@ class Tests(IMP.test.TestCase):
         g=IMP.display.RestraintGeometry(r)
         w.add_geometry(g)
         del w
+        print 'eval'
         m.evaluate(False)
+        print 'done eval'
         for pr in cpc.get_particle_pairs():
             dist= IMP.core.get_distance(IMP.core.XYZR(pr[0]),
                                         IMP.core.XYZR(pr[1]))
+        print 'eval2'
         self.assertEqual(m.evaluate(False), 0)
     def test_score(self):
         """Test connectivity"""
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps= IMP.core.create_xyzr_particles(m, 10, .1)
         for p in ps:
             p.set_coordinates_are_optimized(True)
@@ -67,20 +71,24 @@ class Tests(IMP.test.TestCase):
         ub= IMP.core.HarmonicUpperBound(0, 1)
         sd= IMP.core.DistancePairScore(ub)
         pr= IMP.container.PairsRestraint(sd, cpc)
+        print "adding"
         m.add_restraint(pr)
         print "added"
         print pr.evaluate(False)
+        print "eval"
         cg.set_threshold(.0001)
         for i in range(10):
             try:
+                print "opt"
                 cg.optimize(100)
-            except IMP.ValueException: # Catch CG failure
+            except IMP.base.ValueException: # Catch CG failure
                 pass
             if pr.evaluate(False) <= .0001:
                 break
             # Nudge the particles a little to escape a local minimum
             for p in ps:
                 nudge_particle(p, 1.0)
+        print "get"
         for pp in cpc.get_particle_pairs():
             print pp
             print

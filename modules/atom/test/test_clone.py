@@ -6,7 +6,7 @@ import IMP.atom
 class Tests(IMP.test.TestCase):
     def test_bonded(self):
         """Check close and destroy Hierarchy """
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         mh= IMP.atom.read_pdb(self.get_input_file_name("mini.pdb"), m)
         nump= len(m.get_particles())
         mhc= IMP.atom.create_clone(mh)
@@ -21,7 +21,7 @@ class Tests(IMP.test.TestCase):
 
     def test_destroy_child(self):
         """Destroy of a child should update the parent"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         mh = IMP.atom.read_pdb(self.get_input_file_name("mini.pdb"), m)
         atoms = IMP.atom.get_by_type(mh, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(atoms), 68)

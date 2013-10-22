@@ -11,13 +11,17 @@
 
 IMPGSL_BEGIN_NAMESPACE
 
-QuasiNewton::QuasiNewton(Model *m): GSLOptimizer(m) {
-  initial_step_=.01;
-  line_step_=.01;
-  min_gradient_=.001;
+QuasiNewton::QuasiNewton(kernel::Model *m) : GSLOptimizer(m) {
+  initial_step_ = .01;
+  line_step_ = .01;
+  min_gradient_ = .001;
 }
 
-void QuasiNewton::do_show(std::ostream &) const {
+QuasiNewton::QuasiNewton() : GSLOptimizer() {
+  IMPGSL_DEPRECATED_FUNCTION_DEF(2.1, "Pass the model to the constructor.");
+  initial_step_ = .01;
+  line_step_ = .01;
+  min_gradient_ = .001;
 }
 
 Float QuasiNewton::do_optimize(unsigned int nsteps) {
@@ -25,12 +29,12 @@ Float QuasiNewton::do_optimize(unsigned int nsteps) {
      use the older less efficient bfgs optimizer instead. */
   const gsl_multimin_fdfminimizer_type *t
 #if defined _MSC_VER
-    =gsl_multimin_fdfminimizer_vector_bfgs;
+      = gsl_multimin_fdfminimizer_vector_bfgs;
 #else
-    =gsl_multimin_fdfminimizer_vector_bfgs2;
+  = gsl_multimin_fdfminimizer_vector_bfgs2;
 #endif
-  return GSLOptimizer::optimize(nsteps, t, initial_step_,
-                                line_step_, min_gradient_);
+  return GSLOptimizer::optimize(nsteps, t, initial_step_, line_step_,
+                                min_gradient_);
 }
 
 IMPGSL_END_NAMESPACE

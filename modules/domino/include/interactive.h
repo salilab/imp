@@ -13,10 +13,10 @@
 #include "Subset.h"
 #include "subset_filters.h"
 #include "assignment_containers.h"
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/RestraintSet.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/core/internal/CoreClosePairContainer.h>
 #include <IMP/display/Writer.h>
 #include <IMP/dependency_graph.h>
@@ -26,49 +26,40 @@
 #include <RMF/HDF5/Group.h>
 #endif
 
-
 IMPDOMINO_BEGIN_NAMESPACE
 
-
-  //! Fill in assignments for a leaf
-IMPDOMINOEXPORT void load_leaf_assignments(const Subset& subset,
+//! Fill in assignments for a leaf
+IMPDOMINOEXPORT void load_leaf_assignments(const Subset &subset,
                                            AssignmentsTable *at,
                                            AssignmentContainer *ac);
 
-  //! Fill in assignments for an internal node
-  /** The passed assignments, the ordering for the children is that of
-      the node indexes for the children.
-  */
-IMPDOMINOEXPORT void load_merged_assignments(const Subset &first_subset,
-                                             AssignmentContainer* first,
-                                             const Subset &second_subset,
-                                             AssignmentContainer* second,
-                                             const SubsetFilterTablesTemp
-                                             &filters,
-                                             AssignmentContainer* ret);
+//! Fill in assignments for an internal node
+/** The passed assignments, the ordering for the children is that of
+    the node indexes for the children.
+*/
+IMPDOMINOEXPORT void load_merged_assignments(
+    const Subset &first_subset, AssignmentContainer *first,
+    const Subset &second_subset, AssignmentContainer *second,
+    const SubsetFilterTablesTemp &filters, AssignmentContainer *ret);
 
- //! Sample from the merged assignments.
-  /** The passed assignments, the ordering for the children is that of
+//! Sample from the merged assignments.
+/** The passed assignments, the ordering for the children is that of
       the node indexes for the children.
 
       It will try maximum_tries times to merge an assignment from the first
-      set with a randomly chosen assignment from the second. Note that duplicate
+      set with a randomly chosen assignment from the second. Note that
+    duplicate
       solutions may be present in the output and the output will never be
       guaranteed to be complete.
 
       \unstable{load_sampled_merged_assignments}
   */
-IMPDOMINOEXPORT void
-load_merged_assignments_random_order(const Subset &first_subset,
-                                     AssignmentContainer* first,
-                                     const Subset &second_subset,
-                                     AssignmentContainer* second,
-                                     const SubsetFilterTablesTemp
-                                     &filters,
-                                     unsigned int maximum_tries,
-                                     AssignmentContainer* ret);
-
+IMPDOMINOEXPORT void load_merged_assignments_random_order(
+    const Subset &first_subset, AssignmentContainer *first,
+    const Subset &second_subset, AssignmentContainer *second,
+    const SubsetFilterTablesTemp &filters, unsigned int maximum_tries,
+    AssignmentContainer *ret);
 
 IMPDOMINO_END_NAMESPACE
 
-#endif  /* IMPDOMINO_INTERACTIVE_H */
+#endif /* IMPDOMINO_INTERACTIVE_H */

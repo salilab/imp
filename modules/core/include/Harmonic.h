@@ -22,43 +22,33 @@ IMPCORE_BEGIN_NAMESPACE
     \see HarmonicUpperBound
     \see HarmonicLowerBound
  */
-class Harmonic : public UnaryFunction
-{
-public:
+class Harmonic : public UnaryFunction {
+ public:
   /** Create with the given mean and the spring constant k */
   Harmonic(Float mean, Float k) : mean_(mean), k_(k) {}
 
   virtual DerivativePair evaluate_with_derivative(double feature) const {
-    return DerivativePair(0.5 * k_ * square(feature-mean_),
-                          k_*(feature - mean_));
+    return DerivativePair(0.5 * k_ * square(feature - mean_),
+                          k_ * (feature - mean_));
   }
 
   virtual double evaluate(double feature) const {
-    return 0.5 * k_ * square(feature-mean_);
+    return 0.5 * k_ * square(feature - mean_);
   }
 
   IMP_OBJECT_METHODS(Harmonic);
 
   //! \return the mean of this function
-  Float get_mean() const {
-    return mean_;
-  }
+  Float get_mean() const { return mean_; }
 
   //! \return the spring constant
-  Float get_k() const {
-    return k_;
-  }
+  Float get_k() const { return k_; }
 
   //! Set the mean of this function
-  void set_mean(Float mean) {
-    mean_ = mean;
-  }
+  void set_mean(Float mean) { mean_ = mean; }
 
   //! Set the spring constant
-  void set_k(Float k) {
-    k_ = k;
-  }
-
+  void set_k(Float k) { k_ = k; }
 
   //! Return the k to use for a given Gaussian standard deviation.
   /** Given the standard deviation of a Gaussian distribution, get
@@ -70,17 +60,17 @@ public:
       \param[in] t   System temperature, in Kelvin
       \return        Force constant
    */
-  static Float get_k_from_standard_deviation(Float sd, Float t=297.15) {
+  static Float get_k_from_standard_deviation(Float sd, Float t = 297.15) {
     // Gas constant in kcal/mol K
     const static Float R = 8.31441 / 4186.8;
     return R * t / square(sd);
   }
 
-private:
+ private:
   Float mean_;
   Float k_;
 };
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_HARMONIC_H */
+#endif /* IMPCORE_HARMONIC_H */

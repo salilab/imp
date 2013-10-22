@@ -29,29 +29,32 @@ IMPCONTAINER_BEGIN_NAMESPACE
     container lists all close pairs of particles where one particle is
     taken from each of the input sets.
 
-    \usesconstraint
+    See also AllPairContainer, ClosePairContainer,
+    AllBipartitePairContainer for variants on the functionality provided.
  */
-class IMPCONTAINEREXPORT CloseBipartitePairContainer:
+class IMPCONTAINEREXPORT CloseBipartitePairContainer :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-public PairContainer
+    public PairContainer
 #else
-public IMP::core::internal::CoreCloseBipartitePairContainer
+    public IMP::core::internal::CoreCloseBipartitePairContainer
 #endif
-{
+    {
   typedef IMP::core::internal::CoreCloseBipartitePairContainer P;
-public:
+
+ public:
   //! Get the individual particles from the passed SingletonContainer
   CloseBipartitePairContainer(SingletonContainerAdaptor a,
-                              SingletonContainerAdaptor b,
-                              double distance,
-                              double slack=1);
+                              SingletonContainerAdaptor b, double distance,
+                              double slack = 1,
+                              std::string name =
+                                  "CloseBipartitePairContainer%1%");
 #ifndef IMP_DOXYGEN
   //! Get the individual particles from the passed SingletonContainer
   CloseBipartitePairContainer(SingletonContainerAdaptor a,
-                              SingletonContainerAdaptor b,
-                              double distance,
-                              core::ClosePairsFinder *cpf,
-                              double slack=1);
+                              SingletonContainerAdaptor b, double distance,
+                              core::ClosePairsFinder *cpf, double slack = 1,
+                              std::string name =
+                                  "CloseBipartitePairContainer%1%");
 #endif
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
@@ -65,13 +68,20 @@ public:
   */
   /**@{*/
   IMP_LIST_ACTION(public, PairPredicate, PairPredicates, pair_filter,
-                  pair_filters,
-                  PairPredicate*, PairPredicates, obj->set_was_used(true);,,);
-   /**@}*/
-  IMP_PAIR_CONTAINER(CloseBipartitePairContainer);
+                  pair_filters, PairPredicate *, PairPredicates,
+                  obj->set_was_used(true);
+                  , , );
+  /**@}*/
+  kernel::ParticleIndexPairs get_indexes() const;
+  kernel::ParticleIndexPairs get_range_indexes() const;
+  void do_before_evaluate();
+  kernel::ModelObjectsTemp do_get_inputs() const;
+  void do_apply(const PairModifier *sm) const;
+  kernel::ParticleIndexes get_all_possible_indexes() const;
 #endif
+  IMP_OBJECT_METHODS(CloseBipartitePairContainer);
 };
 
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H */
+#endif /* IMPCONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H */

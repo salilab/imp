@@ -5,7 +5,7 @@ __doc__ = "Generate complete models from Chimera transformations file."
 import sys
 import IMP
 import IMP.atom
-from optparse import OptionParser
+from IMP import OptionParser
 
 def parse_args():
     usage = """%prog [options] <subunit> <symmetry degree>
@@ -47,7 +47,7 @@ def get_transformations(sol):
     return dock_t,fit_t
 
 def run(subunit_fn,symm_deg,sol_fn,num,output_fn):
-    mdl=IMP.Model()
+    mdl=IMP.kernel.Model()
     mhs=[]
     for i in range(symm_deg):
         mh=IMP.atom.read_pdb(subunit_fn,mdl)

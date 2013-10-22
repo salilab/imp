@@ -7,14 +7,15 @@
  */
 #include <IMP/em/EnvelopePenetrationRestraint.h>
 #include <IMP/em/envelope_penetration.h>
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 
 IMPEM_BEGIN_NAMESPACE
 
 EnvelopePenetrationRestraint::EnvelopePenetrationRestraint(
-   Particles ps,
+   kernel::Particles ps,
    DensityMap *em_map,Float threshold
-   ): Restraint("Envelope penetration restraint")
+                                                           ):
+    kernel::Restraint(ps[0]->get_model(), "Envelope penetration restraint")
 {
   IMP_LOG_TERSE("Load envelope penetration with the following input:"<<
           "number of particles:"<<ps.size()<<
@@ -23,7 +24,7 @@ EnvelopePenetrationRestraint::EnvelopePenetrationRestraint(
   target_dens_map_ = em_map;
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< ps.size(); ++i) {
-      IMP_USAGE_CHECK(core::XYZR::particle_is_instance(ps[i]),
+      IMP_USAGE_CHECK(core::XYZR::get_is_setup(ps[i]),
                       "Particle " << ps[i]->get_name()
                       << " is not XYZR"
                       << std::endl);
@@ -51,9 +52,9 @@ double
   return ret_score;
 }
 
-ParticlesTemp EnvelopePenetrationRestraint::get_input_particles() const
+ModelObjectsTemp EnvelopePenetrationRestraint::do_get_inputs() const
 {
-  ParticlesTemp pt;
+  kernel::ModelObjectsTemp pt;
   for (ParticleConstIterator it= particles_begin();
        it != particles_end(); ++it) {
       pt.push_back(*it);
@@ -61,21 +62,8 @@ ParticlesTemp EnvelopePenetrationRestraint::get_input_particles() const
   return pt;
 }
 
-ContainersTemp EnvelopePenetrationRestraint::get_input_containers() const {
-  ContainersTemp pt;
-  for (ParticleConstIterator it= particles_begin();
-       it != particles_end(); ++it) {
-  }
-  return pt;
-}
-
-void EnvelopePenetrationRestraint::do_show(std::ostream& out) const
-{
-  out<<"EnvelopePenetrationRestraint"<<std::endl;
-}
-
 IMP_LIST_IMPL(
-  EnvelopePenetrationRestraint, Particle, particle,Particle*, Particles);
+  EnvelopePenetrationRestraint, Particle, particle,Particle*, kernel::Particles);
 
 
 

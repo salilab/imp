@@ -15,6 +15,7 @@
 #include <IMP/em/FitRestraint.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/core/rigid_bodies.h>
+#include <IMP/base/VersionInfo.h>
 
 IMPRESTRAINER_BEGIN_NAMESPACE
 
@@ -25,14 +26,14 @@ class SimpleExcludedVolume;
 class SimpleEMFit;
 
 
-/* Having the default be RigidMembersRefiner is most likely a bad
-   idea, but it is needed to make things work. The refiner should
-   probably be exposed, otherwise this method cannot be used with the
-   rigid bodies created from molecular hierarchies, which is kind of
-   an unintuitive result. A better solution may be to ensure that
-   everything is an atom.Hierarchy and use the LeavesRefiner
-   implicitly.
+/** Creates ConnectivityRestraint on rigid bodies.
 
+    \note Having the default be RigidMembersRefiner is most likely a bad
+          idea, but it is needed to make things work. The refiner should
+          probably be exposed, otherwise this method cannot be used with the
+          rigid bodies created from molecular hierarchies, which is kind of
+          an unintuitive result. A better solution may be to ensure that
+          everything is an atom.Hierarchy and use the LeavesRefiner implicitly.
  */
 IMPRESTRAINEREXPORT SimpleConnectivity
 create_simple_connectivity_on_rigid_bodies(const core::RigidBodies &rbs,
@@ -47,7 +48,7 @@ create_simple_connectivity_on_rigid_bodies(const core::RigidBodies &rbs,
     \see SphereDistancePairScore
     \see HarmonicUpperBound
     \see LeavesRefiner
-    \relates SimpleConnectivity
+    See SimpleConnectivity
   */
 IMPRESTRAINEREXPORT SimpleConnectivity create_simple_connectivity_on_molecules(
                 const atom::Hierarchies &mhs);
@@ -56,9 +57,10 @@ IMPRESTRAINEREXPORT SimpleConnectivity create_simple_connectivity_on_molecules(
 /** Creates DistanceRestraint using HarmonicUpperBound scoring function
     as default.
     \param[in] ps Pointer to two particles in distance restraint.
-    \relates SimpleDistance
+    See SimpleDistance
 */
-IMPRESTRAINEREXPORT SimpleDistance create_simple_distance(const Particles &ps);
+IMPRESTRAINEREXPORT SimpleDistance
+create_simple_distance(const kernel::Particles &ps);
 
 
 
@@ -67,10 +69,10 @@ IMPRESTRAINEREXPORT SimpleDistance create_simple_distance(const Particles &ps);
     \param[in] ps Pointer to particles in diameter restraint.
     \param[in] diameter Diameter.
     \see ListSingletonContainer
-    \relates SimpleDiameter
+    See SimpleDiameter
   */
 IMPRESTRAINEREXPORT SimpleDiameter create_simple_diameter(
-                const Particles &ps, Float diameter);
+                const kernel::Particles &ps, Float diameter);
 
 
 /* Having the default be RigidMembersRefiner is most likely a bad
@@ -84,7 +86,7 @@ IMPRESTRAINEREXPORT SimpleDiameter create_simple_diameter(
 
 /** Creates ExcludedVolumeRestraint using LeavesRefiner.
     \see ListSingletonContainer
-    \relates SimpleExcludedVolume
+    See SimpleExcludedVolume
 */
 IMPRESTRAINEREXPORT SimpleExcludedVolume
                 create_simple_excluded_volume_on_rigid_bodies(
@@ -95,7 +97,7 @@ IMPRESTRAINEREXPORT SimpleExcludedVolume
 
 /** Creates ExcludedVolumeRestraint using RigidMembersRefiner.
     \see RigidMembersRefiner
-    \relates SimpleExcludedVolume
+    See SimpleExcludedVolume
 */
 IMPRESTRAINEREXPORT SimpleExcludedVolume
                 create_simple_excluded_volume_on_molecules(
@@ -106,7 +108,7 @@ IMPRESTRAINEREXPORT SimpleExcludedVolume
 /** Creates EM FitRestraint.
     \see FitRestraint
     \see DensityMap
-    \relates SimpleEMFit
+    See SimpleEMFit
 */
 IMPRESTRAINEREXPORT SimpleEMFit create_simple_em_fit(
                 atom::Hierarchies const &mhs, em::DensityMap *dmap);
@@ -116,7 +118,7 @@ IMPRESTRAINEREXPORT SimpleEMFit create_simple_em_fit(
    \param[in] dmap the density map
     \see FitRestraint
     \see DensityMap
-    \relates SimpleEMFit
+    See SimpleEMFit
 */
 IMPRESTRAINEREXPORT SimpleEMFit create_simple_em_fit(
     atom::Hierarchy const &mh, em::DensityMap *dmap);
@@ -125,6 +127,9 @@ IMPRESTRAINEREXPORT SimpleEMFit create_simple_em_fit(
 IMPRESTRAINEREXPORT em::DensityMap *load_em_density_map(
                 char const *map_fn, float spacing, float resolution);
 
+/** Set each of the given hierachies to be a rigid body.
+    \deprecated_at{2.1} Use atom::create_rigid_body() instead. */
+IMPRESTRAINER_DEPRECATED_FUNCTION_DECL(2.1)
 IMPRESTRAINEREXPORT core::RigidBodies set_rigid_bodies(
                 atom::Hierarchies const &mhs);
 
@@ -185,9 +190,9 @@ class IMPRESTRAINEREXPORT SimpleConnectivity
      harmonic_upper_bound_->set_k(k);
   }
 
-  VersionInfo get_version_info() const
+  base::VersionInfo get_version_info() const
   {
-    return IMP::VersionInfo("restrainer",
+    return base::VersionInfo("restrainer",
                             get_module_version());
   }
 
@@ -210,9 +215,9 @@ private:
     , sphere_distance_pair_score_(sphere_distance_pair_score)
   {}
 
-  IMP::Pointer<core::ConnectivityRestraint> connectivity_restraint_;
-  IMP::Pointer<core::HarmonicUpperBound> harmonic_upper_bound_;
-  IMP::Pointer<core::SphereDistancePairScore> sphere_distance_pair_score_;
+  base::Pointer<core::ConnectivityRestraint> connectivity_restraint_;
+  base::Pointer<core::HarmonicUpperBound> harmonic_upper_bound_;
+  base::Pointer<core::SphereDistancePairScore> sphere_distance_pair_score_;
 };
 IMP_VALUES(SimpleConnectivity, SimpleConnectivities);
 
@@ -228,7 +233,7 @@ IMP_VALUES(SimpleConnectivity, SimpleConnectivities);
 class IMPRESTRAINEREXPORT SimpleDistance
 {
   IMP_NO_SWIG(friend IMPRESTRAINEREXPORT SimpleDistance
-  create_simple_distance(const Particles &ps));
+  create_simple_distance(const kernel::Particles &ps));
  public:
   core::DistanceRestraint *get_restraint()
   {
@@ -263,9 +268,9 @@ class IMPRESTRAINEREXPORT SimpleDistance
      harmonic_upper_bound_->set_k(k);
   }
 
-  VersionInfo get_version_info() const
+  base::VersionInfo get_version_info() const
   {
-    return VersionInfo("restrainer",
+    return base::VersionInfo("restrainer",
                        get_module_version());
   }
 
@@ -286,8 +291,8 @@ private:
     , harmonic_upper_bound_(harmonic_upper_bound)
   {}
 
-  IMP::Pointer<core::DistanceRestraint> distance_restraint_;
-  IMP::Pointer<core::HarmonicUpperBound> harmonic_upper_bound_;
+  base::Pointer<core::DistanceRestraint> distance_restraint_;
+  base::Pointer<core::HarmonicUpperBound> harmonic_upper_bound_;
 };
 IMP_VALUES(SimpleDistance, SimpleDistances);
 
@@ -302,7 +307,7 @@ IMP_VALUES(SimpleDistance, SimpleDistances);
 class IMPRESTRAINEREXPORT SimpleDiameter
 {
   IMP_NO_SWIG(friend IMPRESTRAINEREXPORT SimpleDiameter
-  create_simple_diameter(const Particles &ps,
+  create_simple_diameter(const kernel::Particles &ps,
                                                            Float diameter));
  public:
 
@@ -339,9 +344,9 @@ class IMPRESTRAINEREXPORT SimpleDiameter
      harmonic_upper_bound_->set_k(k);
   }
 
-  VersionInfo get_version_info() const
+  base::VersionInfo get_version_info() const
   {
-    return VersionInfo("restrainer",
+    return base::VersionInfo("restrainer",
                        get_module_version());
   }
 
@@ -362,8 +367,8 @@ private:
     , harmonic_upper_bound_(harmonic_upper_bound)
   {}
 
-  IMP::Pointer<core::DiameterRestraint> diameter_restraint_;
-  IMP::Pointer<core::HarmonicUpperBound> harmonic_upper_bound_;
+  base::Pointer<core::DiameterRestraint> diameter_restraint_;
+  base::Pointer<core::HarmonicUpperBound> harmonic_upper_bound_;
 };
 IMP_VALUES(SimpleDiameter, SimpleDiameters);
 
@@ -388,9 +393,9 @@ class IMPRESTRAINEREXPORT SimpleExcludedVolume
     return excluded_volume_restraint_;
   }
 
-  VersionInfo get_version_info() const
+  base::VersionInfo get_version_info() const
   {
-    return VersionInfo("restrainer",
+    return base::VersionInfo("restrainer",
                        get_module_version());
   }
 
@@ -409,7 +414,7 @@ private:
     : excluded_volume_restraint_(excluded_volume_restraint)
   {}
 
-  IMP::Pointer<core::ExcludedVolumeRestraint> excluded_volume_restraint_;
+  base::Pointer<core::ExcludedVolumeRestraint> excluded_volume_restraint_;
 };
 IMP_VALUES(SimpleExcludedVolume, SimpleExcludedVolumes);
 
@@ -428,9 +433,9 @@ public:
     return fit_restraint_;
   }
 
-  VersionInfo get_version_info() const
+  base::VersionInfo get_version_info() const
   {
-    return VersionInfo("restrainer",
+    return base::VersionInfo("restrainer",
                        get_module_version());
   }
 
@@ -449,7 +454,7 @@ private:
     : fit_restraint_(fit_restraint)
   {}
 
-  IMP::Pointer<em::FitRestraint> fit_restraint_;
+  base::Pointer<em::FitRestraint> fit_restraint_;
 };
 IMP_VALUES(SimpleEMFit, SimpleEMFits);
 

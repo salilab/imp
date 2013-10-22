@@ -10,47 +10,40 @@
 #define IMPCONTAINER_GENERIC_H
 
 #include <IMP/container/container_config.h>
-#include <IMP/internal/ContainerRestraint.h>
-#include <IMP/internal/ContainerConstraint.h>
+#include <IMP/kernel/internal/ContainerRestraint.h>
+#include <IMP/kernel/internal/ContainerConstraint.h>
 #include "InContainerPairFilter.h"
 
 IMPCONTAINER_BEGIN_NAMESPACE
-
 
 /** Create a restraint from a score and a container. The resulting restraint
     is, in general, more efficient than creating an, eg, PairsRestraint.
 */
 template <class Score, class Container>
-inline Restraint *create_restraint(Score *s, Container*c,
-                            std::string name=std::string()) {
+inline kernel::Restraint *create_restraint(Score *s, Container *c,
+                                           std::string name = std::string()) {
   return IMP::internal::create_container_restraint(s, c, name);
 }
-
-
 
 /** Helper to create a ContainerConstraint.
  */
 template <class Container, class Before, class After>
 inline Constraint *create_constraint(Before *b, After *a, Container *c,
-                              std::string name=std::string()) {
+                                     std::string name = std::string()) {
   return IMP::internal::create_container_constraint(c, b, a, name);
 }
-
 
 /** Create a filter that returns whether the pair, or its flip is
     contained in the passed container.
 
     \note This is different than the InContainerPairFilter.*/
 template <class Container>
-inline PairPredicate*
-create_in_container_filter(Container *c, std::string name=std::string()) {
+inline PairPredicate *create_in_container_filter(Container *c,
+                                                 std::string name =
+                                                     std::string()) {
   return new InContainerPairFilter(c, name);
 }
 
-
-
-
 IMPCONTAINER_END_NAMESPACE
 
-
-#endif  /* IMPCONTAINER_GENERIC_H */
+#endif /* IMPCONTAINER_GENERIC_H */

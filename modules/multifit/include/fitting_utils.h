@@ -10,9 +10,9 @@
 #define IMPMULTIFIT_FITTING_UTILS_H
 
 #include <IMP/algebra/Transformation3D.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/core/Hierarchy.h>
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 #include <IMP/file.h>
 #include <IMP/em/rigid_fitting.h>
 #include <IMP/multifit/multifit_config.h>

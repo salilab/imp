@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
     """Tests for sampled density maps"""
     def test_filters(self):
         """Test filters on excluded volume"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         m.set_log_level(IMP.base.SILENT)
         print "pdb"
         h0s=IMP.kernel._create_particles_from_pdb(self.get_input_file_name("1z5s_A.pdb"),
@@ -34,7 +34,8 @@ class Tests(IMP.test.TestCase):
         print "ss", ss
         self.assert_(len(ss) > 0)
         crsf= IMP.core.RestraintsScoringFunction([cr])
-        print crsf.get_score_states()
+        crsf.set_has_required_score_states(True)
+        print crsf.get_required_score_states()
         print r.evaluate(False)
         m.set_log_level(IMP.base.VERBOSE)
         print cr.evaluate(False)

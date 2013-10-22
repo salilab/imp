@@ -13,7 +13,7 @@
 #define IMPCORE_CLASSNAME_CONSTRAINT_H
 
 #include <IMP/core/core_config.h>
-#include <IMP/internal/TupleConstraint.h>
+#include <IMP/kernel/internal/TupleConstraint.h>
 #include <IMP/ClassnameModifier.h>
 #include <IMP/ClassnameDerivativeModifier.h>
 #include <IMP/score_state_macros.h>
@@ -30,37 +30,44 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class ClassnameConstraint :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-public Constraint
+    public Constraint
 #else
-public IMP::kernel::internal::TupleConstraint<ClassnameModifier,
-                                      ClassnameDerivativeModifier>
+    public IMP::kernel::internal::TupleConstraint<ClassnameModifier,
+                                                  ClassnameDerivativeModifier>
 #endif
-{
-public:
-  /** before and after are the modifiers to apply before and after
-      evaluate.
+    {
+ public:
+  /** \deprecated_at{2.1} Use the model/index constructor.
    */
+      IMPCORE_DEPRECATED_METHOD_DECL(2.1)
   ClassnameConstraint(ClassnameModifier *before,
-                      ClassnameDerivativeModifier *after,
-                      ARGUMENTTYPE vt,
-                      std::string name="ClassnameConstraint %1%"):
-      IMP::kernel::internal::TupleConstraint<ClassnameModifier,
-                                      ClassnameDerivativeModifier>
-      (before, after, vt, name)
-      {
-  }
+                      ClassnameDerivativeModifier *after, ARGUMENTTYPE vt,
+                      std::string name = "ClassnameConstraint %1%")
+      : IMP::kernel::internal::TupleConstraint<
+            ClassnameModifier, ClassnameDerivativeModifier>(before, after, vt,
+                                                            name) {
+        IMPCORE_DEPRECATED_METHOD_DEF(2.1, "Use the model/index constructor.");
+      }
+
+  ClassnameConstraint(ClassnameModifier *before,
+                      ClassnameDerivativeModifier *after, kernel::Model *m,
+                      PASSINDEXTYPE vt,
+                      std::string name = "ClassnameConstraint %1%")
+      : IMP::kernel::internal::TupleConstraint<
+    ClassnameModifier, ClassnameDerivativeModifier>(before, after, m,
+                                                    vt, name) {
+      }
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-  protected:
+ protected:
   void do_update_attributes();
   void do_update_derivatives(DerivativeAccumulator *da);
-  virtual ModelObjectsTemp do_get_inputs() const;
-  virtual ModelObjectsTemp do_get_outputs() const;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const;
+  virtual kernel::ModelObjectsTemp do_get_outputs() const;
   IMP_OBJECT_METHODS(ClassnameConstraint);
 #endif
 };
 
-
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_CLASSNAME_CONSTRAINT_H */
+#endif /* IMPCORE_CLASSNAME_CONSTRAINT_H */

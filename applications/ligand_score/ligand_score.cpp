@@ -10,10 +10,10 @@
 #include <IMP/atom/mol2.h>
 #include <IMP/core/GridClosePairsFinder.h>
 #include <IMP/particle_index.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 
 int main(int argc, char *argv[]) {
-  IMP::set_log_level(IMP::SILENT);
+  IMP::base::set_log_level(IMP::base::SILENT);
   std::string mol2name, pdbname;
   for (int i=1; i < argc; ++i) {
     std::string nm(argv[i]);
@@ -35,10 +35,10 @@ int main(int argc, char *argv[]) {
     lib= IMP::base::TextInput(argv[3]);
   }
 
-  IMP_NEW(IMP::Model, m, ());
+  IMP_NEW(IMP::kernel::Model, m, ());
   IMP::atom::Hierarchy p, l;
   {
-    IMP::SetLogState ss(IMP::SILENT);
+    IMP::base::SetLogState ss(IMP::base::SILENT);
     p= IMP::atom::read_pdb(pdbname, m, new IMP::atom::ATOMPDBSelector());
     IMP::atom::add_protein_ligand_score_data(p);
     l= IMP::atom::read_mol2(mol2name, m);
@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
   }
   IMP::atom::Hierarchies mols
     = IMP::atom::get_by_type(l, IMP::atom::RESIDUE_TYPE);
-  IMP::Pointer<IMP::atom::ProteinLigandAtomPairScore> ps;
+  IMP::base::Pointer<IMP::atom::ProteinLigandAtomPairScore> ps;
   if (lib) {
     ps = new IMP::atom::ProteinLigandAtomPairScore(100000, lib);
   } else {
@@ -56,13 +56,13 @@ int main(int argc, char *argv[]) {
   IMP_NEW(IMP::core::GridClosePairsFinder, gcpf, ());
   gcpf->set_distance(d);
 
-  IMP::ParticlesTemp patoms= IMP::atom::get_leaves(p);
-  IMP::ParticleIndexes ipatoms= IMP::get_indexes(patoms);
+  IMP::kernel::ParticlesTemp patoms= IMP::atom::get_leaves(p);
+  IMP::kernel::ParticleIndexes ipatoms= IMP::get_indexes(patoms);
   for (unsigned int i=0; i< mols.size(); ++i) {
     //IMP::SetLogState ss(i==0? TERSE: IMP::SILENT);
-    IMP::ParticlesTemp latoms= IMP::atom::get_leaves(mols[i]);
-    IMP::ParticleIndexes ilatoms= IMP::get_indexes(latoms);
-    IMP::ParticleIndexPairs ppt= gcpf->get_close_pairs(m, ipatoms, ilatoms);
+    IMP::kernel::ParticlesTemp latoms= IMP::atom::get_leaves(mols[i]);
+    IMP::kernel::ParticleIndexes ilatoms= IMP::get_indexes(latoms);
+    IMP::kernel::ParticleIndexPairs ppt= gcpf->get_close_pairs(m, ipatoms, ilatoms);
     double score=ps->evaluate_indexes(m, ppt, NULL, 0, ppt.size());
     std::cout << "Score for " << mols[i]->get_name() << " is "
               << score << std::endl;

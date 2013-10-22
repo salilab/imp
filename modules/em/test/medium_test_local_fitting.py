@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
                                               10.,2.)
 
     def load_protein(self,pdb_filename):
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         self.mh= IMP.atom.read_pdb(self.open_input_file(pdb_filename),
                               self.m, IMP.atom.CAlphaPDBSelector())
         self.weight_key = IMP.atom.Mass.get_mass_key()
@@ -25,9 +25,9 @@ class Tests(IMP.test.TestCase):
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.TERSE)
+        IMP.base.set_log_level(IMP.base.SILENT)
         #IMP.base.set_check_level(IMP.base.NONE)
-        self.imp_model = IMP.Model()
+        self.imp_model = IMP.kernel.Model()
         self.load_protein("1z5s_A.pdb")
         self.sample_density_map()
         mhs=IMP.atom.Hierarchies()

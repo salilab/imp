@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from optparse import OptionParser
+from IMP import OptionParser
 import IMP.em
 import IMP.multifit
 def main():
@@ -13,7 +13,7 @@ def main():
     pdb_fn=args[0]
     cmm_fn=args[1]
     #read the protein
-    mdl=IMP.Model()
+    mdl=IMP.kernel.Model()
     mh=IMP.atom.read_pdb(pdb_fn,mdl,IMP.atom.CAlphaPDBSelector())
     IMP.atom.add_radii(mh)
     #find the centers of the individual chains

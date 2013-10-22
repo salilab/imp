@@ -9,9 +9,8 @@
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
-Metric::Metric(std::string name): Object(name){}
+Metric::Metric(std::string name) : Object(name) {}
 
-Metric::~Metric(){}
-
+Metric::~Metric() {}
 
 IMPSTATISTICS_END_NAMESPACE

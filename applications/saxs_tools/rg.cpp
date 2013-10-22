@@ -1,7 +1,7 @@
 /**
    This is the program for computation of radius of gyration from SAXS profiles.
  */
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/atom/pdb.h>
 
 #include <IMP/saxs/Profile.h>
@@ -49,8 +49,8 @@ use 0.8 for elongated proteins")
   }
 
   // 1. read pdbs and profiles, prepare particles
-  IMP::Model *model = new IMP::Model();
-  std::vector<IMP::Particles> particles_vec;
+  IMP::kernel::Model *model = new IMP::kernel::Model();
+  std::vector<IMP::kernel::Particles> particles_vec;
   std::vector<IMP::saxs::Profile *> exp_profiles;
   for(unsigned int i=0; i<files.size(); i++) {
     // check if file exists
@@ -66,15 +66,15 @@ use 0.8 for elongated proteins")
                             new IMP::atom::NonWaterNonHydrogenPDBSelector(),
                             // don't add radii
                             true, true);
-      IMP::Particles particles
-        = IMP::get_as<IMP::Particles>(get_by_type(mhd, IMP::atom::ATOM_TYPE));
+      IMP::kernel::Particles particles
+        = IMP::get_as<IMP::kernel::Particles>(get_by_type(mhd, IMP::atom::ATOM_TYPE));
       if(particles.size() > 0) { // pdb file
         pdb_files.push_back(files[i]);
         particles_vec.push_back(particles);
         std::cout << particles.size() << " atoms were read from PDB file "
                   << files[i] << std::endl;
       }
-    } catch(IMP::ValueException e) { // not a pdb file
+    } catch(IMP::base::ValueException e) { // not a pdb file
       // B. try as dat file
       IMP::saxs::Profile *profile = new IMP::saxs::Profile(files[i]);
       if(profile->size() == 0) {

@@ -16,7 +16,7 @@
 #include <IMP/container_macros.h>
 #include <IMP/Optimizer.h>
 #include <IMP/algebra/BoundingBoxD.h>
-#include <IMP/internal/InternalListSingletonContainer.h>
+#include <IMP/kernel/internal/InternalListSingletonContainer.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -37,8 +37,7 @@ class MonteCarlo;
     variety of optimization protocols (eg only do conjugate gradient
     steps occasionally).
 */
-class IMPCOREEXPORT MCCGSampler : public Sampler
-{
+class IMPCOREEXPORT MCCGSampler : public Sampler {
   struct Parameters {
     unsigned int cg_steps_;
     int mc_steps_;
@@ -48,21 +47,21 @@ class IMPCOREEXPORT MCCGSampler : public Sampler
     Bounds bounds_;
     unsigned int attempts_;
     FloatKeys opt_keys_;
-    IMP::OwnerPointer<Optimizer> local_opt_;
+    IMP::base::PointerMember<Optimizer> local_opt_;
     Parameters();
   };
   Parameters default_parameters_;
   bool is_refining_;
-  Pointer<ConfigurationSet> rejected_;
+  base::Pointer<ConfigurationSet> rejected_;
 
   Parameters fill_in_parameters() const;
   void randomize(const Parameters &pms,
                  IMP::internal::InternalListSingletonContainer *sc) const;
-  IMP::internal::InternalListSingletonContainer*
-    set_up_movers(const Parameters &pms,
-                  MonteCarlo *mc) const;
-public:
-  MCCGSampler(Model *m, std::string name="MCCG Sampler %1%");
+  IMP::internal::InternalListSingletonContainer *set_up_movers(
+      const Parameters &pms, MonteCarlo *mc) const;
+
+ public:
+  MCCGSampler(kernel::Model *m, std::string name = "MCCG Sampler %1%");
 
   //! Set the bounding box for randomizing the Cartesian coordinates
   void set_bounding_box(const algebra::BoundingBoxD<3> &bb);
@@ -107,18 +106,19 @@ public:
    */
   void set_save_rejected_configurations(bool tf);
 
-  ConfigurationSet* get_rejected_configurations() const;
+  ConfigurationSet *get_rejected_configurations() const;
 
   /** \name Optimizer states
       The optimizer states will be added to the MonteCarlo optimizer
       used.
   */
-  IMP_LIST(public, OptimizerState, optimizer_state, OptimizerState*,
+  IMP_LIST(public, OptimizerState, optimizer_state, OptimizerState *,
            OptimizerStates);
 
-  IMP_SAMPLER(MCCGSampler);
+  virtual ConfigurationSet *do_sample() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(MCCGSampler);
 };
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_MCCG_SAMPLER_H */
+#endif /* IMPCORE_MCCG_SAMPLER_H */

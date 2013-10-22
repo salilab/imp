@@ -14,7 +14,7 @@
 
 #include <IMP/saxs/saxs_config.h>
 #include "Profile.h"
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 
 #include <iostream>
 #include <vector>
@@ -134,12 +134,12 @@ class IMPSAXSEXPORT
 DeltaDistributionFunction : public Distribution<algebra::Vector3D> {
 public:
   //! Constructor
-  DeltaDistributionFunction(const Particles& particles,
+  DeltaDistributionFunction(const kernel::Particles& particles,
                             Float max_distance = 0.0,
                             Float bin_size = pr_resolution);
 
   //! calculates distribution for an atom defined by particle
-  void calculate_derivative_distribution(Particle* particle);
+  void calculate_derivative_distribution(kernel::Particle* particle);
 
   //! print tables
   void show(std::ostream &out=std::cout, std::string prefix="") const;

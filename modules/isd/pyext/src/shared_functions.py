@@ -274,7 +274,7 @@ class sfo_common:
             # Set up and evaluate the stereochemical part (bonds, angles, dihedrals,
             # impropers) of the CHARMM forcefield
             r = IMP.atom.CHARMMStereochemistryRestraint(prot, topology)
-            rsb = IMP.RestraintSet("bonded")
+            rsb = IMP.RestraintSet(m,1.0,"bonded")
             rsb.add_restraint(r)
             m.add_restraint(rsb)
             #
@@ -299,23 +299,22 @@ class sfo_common:
         nbl.add_pair_filter(nonbonded_pair_filter)
         #should weight the ff restraint by a temperature, set to 300K.
         pr = IMP.container.PairsRestraint(pairscore, nbl)
-        rs = IMP.RestraintSet('phys')
+        rs = IMP.RestraintSet(m,1.0/(kB*ff_temp),'phys')
         rs.add_restraint(pr)
-        rs.set_weight(1.0/(kB*ff_temp))
         m.add_restraint(rs)
         return prot, ff, rsb, rs
 
-    def init_model_setup_scale(self, default, lower=-1, upper=-1):
+    def init_model_setup_scale(self, default, lower=None, upper=None):
         """sets up a Scale particle to the initial default value. It can
         optionnally be constrained between two positive bounds, or else its
         range  is 0 to infinity.
         """
         m=self._m
-        scale = IMP.isd.Scale.setup_particle(IMP.Particle(m),default,lower,upper)
-        #constrain it also for the optimizers
-        if lower != -1 or upper != -1:
-            m.add_score_state(IMP.core.SingletonConstraint(
-                            IMP.isd.ScaleRangeModifier(),None,scale))
+        scale = IMP.isd.Scale.setup_particle(IMP.Particle(m),default)
+        if lower:
+            scale.set_lower(lower)
+        if upper:
+            scale.set_upper(upper)
         return scale
 
     def init_model_jeffreys_kappa(self, scales, prior_rs=None):
@@ -337,11 +336,11 @@ class sfo_common:
         If argument prior_rs is used, add them to that RestraintSet instead.
         """
         if not prior_rs:
-            prior_rs = IMP.RestraintSet('prior')
+            prior_rs = IMP.RestraintSet(self._m,1.0,'prior')
             self._m.add_restraint(prior_rs)
-            prior_rs.set_weight(1.0)
         for i in scales:
-            prior_rs.add_restraint(IMP.isd.JeffreysRestraint(i))
+            jr=IMP.isd.JeffreysRestraint(self._m,i)
+            prior_rs.add_restraint(jr)
         return prior_rs
 
     def init_model_conjugate_kappa(self, scales, c, R, prior_rs=None):
@@ -353,9 +352,8 @@ class sfo_common:
         if not (0 <= R <= c):
             raise ValueError, "parameters R and c should satisfy 0 <= R <= c"
         if not prior_rs:
-            prior_rs = IMP.RestraintSet('prior')
+            prior_rs = IMP.RestraintSet(self._m,1.0,'prior')
             self._m.add_restraint(prior_rs)
-            prior_rs.set_weight(1.0)
         for i in scales:
             prior_rs.add_restraint(IMP.isd.vonMisesKappaConjugateRestraint(i, c, R))
         return prior_rs
@@ -414,7 +412,7 @@ class sfo_common:
         p0=self.find_atom(atoms[0], prot)
         p1=self.find_atom(atoms[1], prot)
         #create lognormal restraint using gamma_data = 1
-        ln = IMP.isd.NOERestraint(p0,p1,sigma,gamma,distance**(-6))
+        ln = IMP.isd.NOERestraint(self._m,p0,p1,sigma,gamma,distance**(-6))
         return ln
 
     def init_model_ambiguous_NOE_restraint(self, prot, contributions, distance,
@@ -457,7 +455,7 @@ class sfo_common:
         gamma=self.init_model_setup_scale(*bounds_gamma)
         prior_rs = self.init_model_jeffreys([sigma,gamma], prior_rs)
         #likelihood
-        rs = IMP.RestraintSet(name)
+        rs = IMP.RestraintSet(self._m,1.0,name)
         #use the TBLReader to parse the TBL file.
         sequence = IMP.isd.utils.read_sequence_file(seqfile,
                 first_residue_number=sequence_match[1])
@@ -482,7 +480,6 @@ class sfo_common:
             print "\r%d NOE restraints read" % i
         #set weight of rs and add to model.
         #Weight is 1.0 cause sigma particle already has this role.
-        rs.set_weight(1.0)
         self._m.add_restraint(rs)
         return rs, prior_rs, sigma, gamma
 
@@ -499,7 +496,7 @@ class sfo_common:
         Returns: data_rs
         """
         #likelihood
-        rs = IMP.RestraintSet(name)
+        rs = IMP.RestraintSet(self._m,1.0,name)
         #use the TBLReader to parse the TBL file.
         sequence = IMP.isd.utils.read_sequence_file(seqfile,
                 first_residue_number=sequence_match[1])
@@ -523,7 +520,6 @@ class sfo_common:
         rs.add_restraint(ln)
         if verbose:
             print "\r%d NOE contributions added" % (len(restraints))
-        rs.set_weight(1.0)
         self._m.add_restraint(rs)
         return rs
 
@@ -539,7 +535,7 @@ class sfo_common:
         Returns: data_rs
         """
         #likelihood
-        rs = IMP.RestraintSet(name)
+        rs = IMP.RestraintSet(self._m,1.0,name)
         #use the TBLReader to parse the TBL file.
         sequence = IMP.isd.utils.read_sequence_file(seqfile)
         tblr = IMP.isd.TBLReader.TBLReader(sequence)
@@ -561,7 +557,6 @@ class sfo_common:
         rs.add_restraint(ln)
         if verbose:
             print "\r%d Hbond contributions added" % (len(restraints))
-        rs.set_weight(1.0)
         self._m.add_restraint(rs)
         return rs
 
@@ -604,7 +599,7 @@ class sfo_common:
         #likelihood
         if verbose:
             print "reading data"
-        rs=IMP.RestraintSet(name)
+        rs = IMP.RestraintSet(self._m,1.0,name)
         sequence= IMP.isd.utils.read_sequence_file(seqfile,
                 first_residue_no=sequence_match[1])
         if fulldata:
@@ -659,7 +654,6 @@ class sfo_common:
         if verbose:
             print "%s Restraints created. Average R0: %f" % \
                 (len(avgR), sum(avgR)/float(len(avgR)))
-        rs.set_weight(1.0)
         self._m.add_restraint(rs)
         return rs, prior_rs, kappa
 
@@ -669,12 +663,11 @@ class sfo_common:
         way (like foxs)
         Returns: a restraintset and the experimental profile
         """
-        rs = IMP.RestraintSet(name)
+        rs = IMP.RestraintSet(self._m,1.0,name)
         saxs_profile = IMP.saxs.Profile(profilefile)
         particles = IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
         saxs_restraint = IMP.saxs.Restraint(particles, saxs_profile, ff_type)
         rs.add_restraint(saxs_restraint)
-        rs.set_weight(1.0)
         self._m.add_restraint(rs)
         return rs, saxs_profile
 
@@ -733,9 +726,7 @@ class sfo_common:
         by a gaussian with standard deviation 'stepsize'
         Returns: mover instance.
         """
-        cont=IMP.container.ListSingletonContainer(self._m)
-        cont.add_particle(particle)
-        nm=IMP.core.NormalMover(cont,
+        nm=IMP.core.NormalMover(self._m,particle.get_particle_index(),
                 IMP.FloatKeys([floatkey]),stepsize)
         return nm
 
@@ -766,8 +757,6 @@ class sfo_common:
         mc.set_kt(kB*temperature)
         #allow to go uphill
         mc.set_return_best(False)
-        #update all particles each time
-        mc.set_move_probability(1.0)
         if mc_restraints:
             #tell mc to only use restraints involving the particle
             mc.set_restraints(mc_restraints)
@@ -851,11 +840,11 @@ class sfo_common:
         mc.set_move_probability(1.0)
         return mc, mdmover, md
 
-    def init_simulation_setup_scale_mc(self, scale, temperature=300.0,
-            mc_restraints=None, floatkey=IMP.FloatKey("scale"), nm_stepsize=0.1):
-        """sets up monte carlo on scale, at a certain target temperature,
+    def init_simulation_setup_nuisance_mc(self, nuis, temperature=300.0,
+            mc_restraints=None, nm_stepsize=0.1):
+        """sets up monte carlo on nuisance, at a certain target temperature,
         optionnally using a certain set of restraints only.
-        - scale: scale particle
+        - nuis: nuisance particle
         - temperature: target temperature
         - mc_restraints: optional set of restraints from which the energy should
           be drawn instead of the energy of the complete system.
@@ -863,7 +852,8 @@ class sfo_common:
         - nm_stepsize: the stepsize of the normal mover
         Returns: mc instance, nm instance.
         """
-        nm = self._setup_normal_mover(scale, floatkey, nm_stepsize)
+        nm = self._setup_normal_mover(nuis, nuis.get_nuisance_key(),
+                nm_stepsize)
         mc = self._setup_mc(nm, temperature, mc_restraints)
         return mc, nm
 

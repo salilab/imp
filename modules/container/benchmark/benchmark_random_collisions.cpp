@@ -20,48 +20,48 @@ using namespace IMP::container;
 IMP_COMPILER_ENABLE_WARNINGS
 
 namespace {
-  std::string get_module_name() {
-    return std::string("benchmark");
-  }
-  std::string get_module_version() {
-    return IMP::benchmark::get_module_version();
-  }
+std::string get_module_name() { return std::string("benchmark"); }
+std::string get_module_version() {
+  return IMP::benchmark::get_module_version();
+}
 
-class ConstPairScore: public PairScore {
-public:
-  ConstPairScore(){}
-  IMP_INDEX_PAIR_SCORE(ConstPairScore);
+class ConstPairScore : public PairScore {
+ public:
+  ConstPairScore() {}
+  double evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &p,
+                        DerivativeAccumulator *da) const IMP_OVERRIDE;
+  kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m, const kernel::ParticleIndexes &pis) const;
+  IMP_PAIR_SCORE_METHODS(ConstPairScore);
+  IMP_OBJECT_METHODS(ConstPairScore);
+  ;
 };
 
-  double ConstPairScore::evaluate_index(Model *, const ParticleIndexPair &,
-                                DerivativeAccumulator *) const {
+double ConstPairScore::evaluate_index(kernel::Model *, const kernel::ParticleIndexPair &,
+                                      DerivativeAccumulator *) const {
   return 1;
 }
-void ConstPairScore::do_show(std::ostream &) const {
+
+ModelObjectsTemp ConstPairScore::do_get_inputs(
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
+  kernel::ModelObjectsTemp ret;
+  ret += IMP::get_particles(m, pis);
+  return ret;
 }
-}
-ModelObjectsTemp
-ConstPairScore::do_get_inputs(Model *m,
-                              const ParticleIndexes &pis) const {
-   ModelObjectsTemp ret;
-   ret+=IMP::get_particles(m, pis);
-   return ret;
 }
 
 namespace {
 
-void test_one(std::string name,
-              ClosePairsFinder *cpf, unsigned int n,
+void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
               float rmin, float rmax, double) {
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
-  Vector3D minc(0,0,0), maxc(10,10,10);
-  IMP_NEW(Model, m, ());
-  ParticlesTemp ps = create_xyzr_particles(m, n, rmin);
-  ParticleIndexes pis = IMP::internal::get_index(ps);
+  Vector3D minc(0, 0, 0), maxc(10, 10, 10);
+  IMP_NEW(kernel::Model, m, ());
+  kernel::ParticlesTemp ps = create_xyzr_particles(m, n, rmin);
+  kernel::ParticleIndexes pis = IMP::internal::get_index(ps);
   ::boost::uniform_real<> rand(rmin, rmax);
-  for (unsigned int i=0; i< ps.size(); ++i) {
-    XYZR(ps[i]).set_radius(rand(random_number_generator));
+  for (unsigned int i = 0; i < ps.size(); ++i) {
+    XYZR(ps[i]).set_radius(rand(base::random_number_generator));
   }
   IMP_NEW(ListSingletonContainer, lsc, (ps));
   IMP_NEW(ClosePairContainer, cpc, (lsc, 0.0, cpf, 1.0));
@@ -70,23 +70,26 @@ void test_one(std::string name,
   m->add_restraint(pr);
   double setuptime;
   IMP_TIME({
-      for (unsigned int i=0; i< pis.size(); ++i) {
-        XYZ(m, pis[i]).set_coordinates(get_random_vector_in(BoundingBox3D(minc,
-                                                                      maxc)));
-      }
-    }, setuptime);
+    for (unsigned int i = 0; i < pis.size(); ++i) {
+      XYZ(m, pis[i])
+          .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
+    }
+  },
+           setuptime);
   double runtime;
-  double result=0;
+  double result = 0;
   IMP_TIME({
-      for (unsigned int i=0; i< pis.size(); ++i) {
-        XYZ(m, pis[i]).set_coordinates(get_random_vector_in(BoundingBox3D(minc,
-                                                                      maxc)));
-      }
-      result+= m->evaluate(false);
-    }, runtime);
+    for (unsigned int i = 0; i < pis.size(); ++i) {
+      XYZ(m, pis[i])
+          .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
+    }
+    result += m->evaluate(false);
+  },
+           runtime);
   std::ostringstream oss;
-  oss << "col" << " " << n << " " << rmax;
-  report(oss.str(), name, runtime-setuptime, result);
+  oss << "col"
+      << " " << n << " " << rmax;
+  report(oss.str(), name, runtime - setuptime, result);
 }
 }
 
@@ -94,21 +97,21 @@ int main(int argc, char **argv) {
   IMP::base::setup_from_argv(argc, argv, "Benchmark collision detection");
   {
     IMP_NEW(QuadraticClosePairsFinder, cpf, ());
-    //std::cout << "Quadratic:" << std::endl;
+    // std::cout << "Quadratic:" << std::endl;
     test_one("quadratic", cpf, 10000, 0, .1, 87.210356);
     test_one("quadratic", cpf, 10000, 0, .5, 99.562332);
   }
 #ifdef IMP_BENCHMARK_USE_IMP_CGAL
   {
     IMP_NEW(BoxSweepClosePairsFinder, cpf, ());
-    //std::cout << "Box:" << std::endl;
+    // std::cout << "Box:" << std::endl;
     test_one("box", cpf, 10000, 0, .1, 23.306047);
     test_one("box", cpf, 10000, 0, .5, 1145.327934);
   }
 #endif
   {
     IMP_NEW(GridClosePairsFinder, cpf, ());
-    //std::cout << "Grid:" << std::endl;
+    // std::cout << "Grid:" << std::endl;
     test_one("grid", cpf, 10000, 0, .1, 23.649063);
     test_one("grid", cpf, 10000, 0, .5, 1145.327934);
   }

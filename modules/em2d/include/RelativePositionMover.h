@@ -1,5 +1,5 @@
 /**
- *  \file RelativePositionMover.h
+ *  \file em2d/RelativePositionMover.h
  *  \brief Mover for Rigid Bodies moving respect to each other
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -26,13 +26,10 @@ IMPEM2D_BEGIN_NAMESPACE
     Each reference rigid
     body needs to specify the set of the internal (relative) transformations
     that A can have respect to it.
-
-
-  \param[in]
 */
-
 typedef std::vector<algebra::Transformation3Ds > Transformation3DsList;
 
+/** Move a nested rigid body. */
 class IMPEM2DEXPORT RelativePositionMover : public core::RigidBodyMover {
 
 protected:

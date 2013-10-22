@@ -98,9 +98,7 @@ class XMLRestraint(_xml_parser.XMLRestraint):
         """ @param[in] filename the name of the file to read """
         _xml_parser.XMLRestraint.__init__(self, filename)
     def run(self):
-        """Return
-           <a href="classIMP_1_1restrainer_1_1restraint_1_1Restraint.html">
-           Restraint</a>
+        """Return Restraint
            object such that each node in the restraint
            corresponds to the node in the XML nodes"""
         return _xml_parser.XMLRestraint.run(self)
@@ -118,8 +116,7 @@ class Display(_display.Display):
 
     def create_log(self, repr, log_name):
        """Create Chimera log.
-           @param repr <a href="classIMP_1_1restrainer_1_1representation_1_1Representation.html">
-            Representation</a> object.
+           @param Representation object.
            @param log_name Log name
            @return IMP::dispay::WriteOptimizerState"""
        return _display.Display.create_log(self, repr, log_name)

@@ -22,7 +22,7 @@ SurfaceShellDensityMap::SurfaceShellDensityMap(const DensityHeader &header)
 }
 
 SurfaceShellDensityMap::SurfaceShellDensityMap(
-       const ParticlesTemp &ps,
+       const kernel::ParticlesTemp &ps,
        float voxel_size,
        IMP::FloatKey mass_key,int num_shells)
   :SampledDensityMap()

@@ -1,1 +1,1 @@
-post-checkout
+#!/bin/sh

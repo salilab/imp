@@ -3,7 +3,7 @@ The module provides composable functors to implement scores via compile-time com
 No functionality is exported to python. It can be done with some work, but it
 is not clear that it would be very useful.
 
-## Info
+# Info
 
 _Author(s)_: Daniel Russel
 

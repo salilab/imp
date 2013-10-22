@@ -11,8 +11,8 @@
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/algebra/constants.h"
-#include "IMP/exception.h"
-#include "IMP/log.h"
+#include "IMP/base/exception.h"
+#include "IMP/base/log.h"
 #include <IMP/constants.h>
 
 IMPEM2D_BEGIN_NAMESPACE
@@ -117,7 +117,7 @@ public:
   double get_radius_step() const {
     if(get_is_setup() == false) {
       IMP_THROW("trying to get radius_step before initializing",
-                                                    IMP::ValueException);
+                IMP::base::ValueException);
   }
     return radius_step_;
   }
@@ -127,7 +127,7 @@ public:
   void create_maps_for_resampling() {
     if(n_angles_==0) {
       IMP_THROW("Number of sampling points for the angle is zero",
-                                                          IMP::ValueException);
+                                                    IMP::base::ValueException);
     }
     // create the appropiate map
     polar_map_.create(n_rings_,n_angles_,CV_32FC2); // 2 channels, floats

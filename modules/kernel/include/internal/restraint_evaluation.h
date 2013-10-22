@@ -15,20 +15,19 @@
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 IMPKERNELEXPORT void protected_evaluate(IMP::kernel::ScoreAccumulator sa,
-                                  Restraint* restraint,
-                                  const ScoreStatesTemp &states,
-                                  Model *m);
-
+                                        Restraint *restraint,
+                                        const ScoreStatesTemp &states,
+                                        Model *m);
 
 IMPKERNELEXPORT void protected_evaluate(IMP::kernel::ScoreAccumulator sa,
-                         const RestraintsTemp &restraints,
-                                               const ScoreStatesTemp &states,
-                         Model *m);
+                                        const RestraintsTemp &restraints,
+                                        const ScoreStatesTemp &states,
+                                        Model *m);
 IMPKERNELEXPORT void protected_evaluate(IMP::kernel::ScoreAccumulator sa,
-                         const Restraints &restraints,
-                                              const ScoreStatesTemp &states,
-                         Model *m);
+                                        const Restraints &restraints,
+                                        const ScoreStatesTemp &states,
+                                        Model *m);
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPKERNEL_INTERNAL_RESTRAINT_EVALUATION_H */
+#endif /* IMPKERNEL_INTERNAL_RESTRAINT_EVALUATION_H */

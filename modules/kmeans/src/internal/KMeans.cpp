@@ -26,10 +26,12 @@
 //----------------------------------------------------------------------
 
 #include <iostream>                  // C++ I/O
+#include <iomanip>
 
 #include "IMP/kmeans/internal/KMeans.h"    // kmeans includes
 #include "IMP/kmeans/internal/KCtree.h"    // kc tree
 #include "IMP/kmeans/internal/KMrand.h"    // random number generators
+#include <IMP/base/log_macros.h>
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 
@@ -49,10 +51,11 @@ std::istream*      kmIn            = &std::cin;      // input stream
 //  Output utilities
 //----------------------------------------------------------------------
 
-void kmPrintPt(                        // print a point
-  KMpoint            p,                  // the point
-  int                  dim,                  // the dimension
-  bool            fancy)                  // print plain or fancy?
+void kmPrintPt
+(                        // print a point
+ KMpoint            p,                  // the point
+ int                  dim,                  // the dimension
+ bool            fancy)                  // print plain or fancy?
 {
   if(fancy) *kmOut << "[ ";
   for(int i = 0; i < dim; i++) {
@@ -60,6 +63,21 @@ void kmPrintPt(                        // print a point
     if(i < dim - 1) *kmOut << " ";
   }
   if(fancy) *kmOut << " ]";
+}
+
+void kmLogPt
+(                        // print a point
+ base::LogLevel ll,
+ KMpoint            p,                  // the point
+ int                  dim,                  // the dimension
+ bool            fancy)                  // print plain or fancy?
+{
+  if(fancy) IMP_LOG( ll,  "[ ");
+  for(int i = 0; i < dim; i++) {
+    IMP_LOG(ll, std::setw(8) << p[i]);
+    if(i < dim - 1) IMP_LOG(ll, " ");
+  }
+  if(fancy) IMP_LOG(ll, " ]");
 }
 
 void kmPrintPts(                  // print points
@@ -77,6 +95,25 @@ void kmPrintPts(                  // print points
   }
   *kmOut << "  )" << std::endl;
 }
+
+void kmLogPts
+(                  // print points
+ base::LogLevel ll,
+ std::string            title,                  // name of point set
+ KMpointArray      pa,                  // the point array
+ int                  n,                  // number of points
+ int                  dim,                  // the dimension
+  bool            fancy)                    // print plain or fancy?
+{
+  IMP_LOG( ll,  "  (" << title << ":" << std::endl);
+  for(int i = 0; i < n; i++) {
+    IMP_LOG(ll, "    " << i << "\t");
+    kmLogPt(ll, pa[i], dim, fancy);
+    IMP_LOG(ll, std::endl);
+  }
+  *kmOut << "  )" << std::endl;
+}
+
 
 //------------------------------------------------------------------------
 //  kmError - print error message

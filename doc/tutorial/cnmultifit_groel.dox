@@ -1,0 +1,127 @@
+/** \page cnmultifit_groel Modeling of GroEL with cnmultifit
+
+\tableofcontents
+
+\section cnmultifit_groel_intro Introduction
+
+In this example, [cnmultifit](@ref impcnmultifit_tools) is employed
+to generate a model of part of the
+bacterial molecular chaperone GroEL. GroEL is composed of two heptameric rings
+of identical 57 kDa subunits stacked back to back; here one of the rings is
+modeled. cnmultifit takes as input a structure of a single subunit of the
+ring, and a cryo-electron microscopy (cryo-EM) map of the entire assembly.
+
+(For the purposes of this example, it is assumed that the single subunit
+structure is already available. In the more general case, this can be generated
+using a tool such as [MODELLER](http://salilab.org/modeller/). See the
+[GroEL biological system](http://salilab.org/multifit_groel)
+for a fully worked example.)
+
+All steps in the procedure use a command line tool called
+<tt>cnmultifit.py</tt>. (There is also a \salilab{multifit/,web interface}
+available.) For full help on this tool, run from a command line:
+
+\code{.sh}
+cnmultifit.py help
+\endcode
+
+\section cnmultifit_groel_setup Setup
+
+First, obtain the input files used in this example and put them in the
+current directory, by typing:
+
+\code{.sh}
+cp <imp_example_path>/cnmultifit/groel/* .
+\endcode
+
+(On a Windows machine, use 'copy' rather than 'cp'.) Here, \<imp_example_path\> 
+is the directory containing the IMP example files. The full path to the files
+can be determined by running in a Python interpreter '<tt>import IMP.cnmultifit;
+print IMP.cnmultifit.get_example_path('groel')</tt>'.
+
+The first step is to generate a map of the surface of the subunit,
+<tt>1oel_A.pdb</tt>. This surface is used by later steps of the modeling
+to place copies of the subunit together without interpenetrating:
+
+\code{.sh}
+cnmultifit.py surface 1oel_A.pdb
+\endcode
+
+This generates a surface file, <tt>1oel_A.pdb.ms</tt>.
+
+Next, create a parameters file to control the operation of cnmultifit:
+
+\code{.sh}
+cnmultifit.py param -n 5 -- 7 1oel_A.pdb 1oel_10.mrc 10 1.5 20  -130.5  -84 -87
+\endcode
+
+This generates a parameter file <tt>multifit.param</tt> in .ini format. It
+contains the parameters given on the command line, and a number of other
+parameters that control the model generation procedure. These can be tweaked
+if necessary.
+
+The <tt>-n</tt> option controls the number of models that will be built (5 in
+this case); if it is not given, 10 models will be built by default. Next, the
+symmetry of the map is given; GroEL has C<sub>7</sub> symmetry so '7' is given
+here. This
+is followed by the name of the subunit PDB file and the cryo-EM map MRC file.
+Next, the resolution of the map in angstroms (10) is given, and its spacing
+in angstroms (1.5) and density threshold (20). Finally, the origin of the map
+in angstroms is given (-130.5, -84, -87).
+
+The spacing (or pixel size) and the origin of the map are often stored in the
+map header. This can be viewed by running:
+
+\code{.sh}
+view_density_header.py 1oel_10.mrc
+\endcode
+
+The resolution is typically not stored in the map header; it is usually
+provided in the corresponding publication and can also be found in the
+corresponding \external{http://www.ebi.ac.uk/pdbe/emdb/,EMDB} entry.
+A threshold is often provided by the author in the EMDB entry as
+"Recommended counter level" under the "Map Information" section.
+
+\section cnmultifit_groel_modgen Model generation
+
+Now that all input files are prepared, the modeling procedure itself can
+be run with:
+
+\code{.sh}
+cnmultifit.py build --chimera multifit.chimera.output multifit.param
+\endcode
+
+This generates models as PDB files named <tt>asmb.model.*.pdb</tt>, ranked
+by score (model 0 should be the best fit to the density).
+It also generates a file <tt>multifit.output</tt> that shows the
+transformation needed to place the subunit in the density.
+
+The optional <tt>--chimera</tt> parameter requests the same transformation
+output in a \external{http://www.cgl.ucsf.edu/chimera/,Chimera}-compatible
+format. To generate PDB files from the Chimera output file, use:
+
+\code{.sh}
+cnmultifit.py chimera_models 1oel_A.pdb 7 multifit.chimera.output 5 test
+\endcode
+
+This generates models named <tt>test.*.pdb</tt>.
+
+\section cnmultifit_groel_analysis Analysis
+
+If a single 'reference' PDB file is available of the entire complex,
+the cnmultifit output can be compared against this reference with:
+
+\code{.sh}
+cnmultifit.py rmsd multifit.param multifit.output ref.pdb
+\endcode
+
+This generates a file <tt>rmsd.output</tt> which shows, for each model, the
+root-mean-square deviation (RMSD) in angstroms between the model and the
+reference structure, and the cross-correlation between the model's
+theoretical density and the cryo-EM map. Model 0 has an RMSD of around 2.5
+angstroms, which is very close to the native structure. A Chimera view of the
+protein, fitted into the density map, is shown below:
+
+<img src="groel_fit.png" alt="GroEL model fit into the density">
+
+*/

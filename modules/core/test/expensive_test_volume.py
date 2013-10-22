@@ -13,11 +13,11 @@ class Volume(IMP.test.TestCase):
         """Testing that volume restraint can separate balls"""
         if not hasattr(IMP.core, 'VolumeRestraint'):
             self.skipTest('VolumeRestraint not built (no CGAL)')
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps= []
         IMP.base.set_log_level(IMP.base.VERBOSE)
         for i in range(0,3):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             v= IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                                   IMP.algebra.Vector3D(5,5,5)))
             d=IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(v, 4))
@@ -36,16 +36,16 @@ class Volume(IMP.test.TestCase):
                 mc.optimize(10)
                 if m.evaluate(False) < .2:
                     break
-            except IMP.ValueException:
+            except IMP.base.ValueException:
                 # Catch CG failure
                 pass
         self.assertLess(m.evaluate(False), .2)
     def _test_volume_2(self):
         """Testing that volume restraint can change radius"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         IMP.base.set_log_level(IMP.base.VERBOSE)
         ps= []
-        p= IMP.Particle(m)
+        p= IMP.kernel.Particle(m)
         inits=Sphere3D(get_random_vector_in(BoundingBox3D(Vector3D(0,0,0),
                                                           Vector3D(5,5,5))),
                        4)

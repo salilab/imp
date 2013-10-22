@@ -21,9 +21,8 @@ IMPBENCHMARK_BEGIN_NAMESPACE
     \param[in] time the time it took (perhaps normalized)
     \param[in] check a check value to print out to see if the calc was ok
 */
-IMPBENCHMARKEXPORT void report(std::string benchmark,
-                               std::string algorithm, double time,
-                               double check);
+IMPBENCHMARKEXPORT void report(std::string benchmark, std::string algorithm,
+                               double time, double check);
 
 #ifndef IMP_DOXYGEN
 IMPBENCHMARKEXPORT void report(std::string benchmark, double time,
@@ -34,4 +33,4 @@ IMPBENCHMARKEXPORT int get_return_value();
 
 IMPBENCHMARK_END_NAMESPACE
 
-#endif  /* IMPBENCHMARK_UTILITY_H */
+#endif /* IMPBENCHMARK_UTILITY_H */

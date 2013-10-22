@@ -25,7 +25,7 @@ class SurfaceDistanceMap
 {
 public:
 
-  SurfaceDistanceMap(const IMP::ParticlesTemp &ps, float voxel_size)
+  SurfaceDistanceMap(const IMP::kernel::ParticlesTemp &ps, float voxel_size)
     : SampledDensityMap(ps, 1.0, voxel_size, IMP::atom::Mass::get_mass_key(),
         3, IMP::em::SPHERE)
   {
@@ -181,7 +181,7 @@ void SurfaceDistanceMap::resample() {
 
 
 IMP::algebra::DenseGrid3D<float>
-get_complementarity_grid(const IMP::ParticlesTemp &ps,
+get_complementarity_grid(const IMP::kernel::ParticlesTemp &ps,
   const ComplementarityGridParameters &params)
 {
   IMP_NEW(SurfaceDistanceMap, sdm, (ps, params.voxel_size));

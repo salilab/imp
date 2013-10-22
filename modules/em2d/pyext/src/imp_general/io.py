@@ -28,7 +28,7 @@ def get_particles_from_points(points, model):
     """
     particles = []
     for x in points:
-        p=IMP.Particle(model)
+        p=IMP.kernel.Particle(model)
         d=IMP.core.XYZR.setup_particle(p)
         d.set_coordinates(alg.Vector3D(x[0], x[1], x[2]))
         d.set_radius(2)
@@ -41,7 +41,7 @@ def get_particles_from_points(points, model):
     """
     particles = []
     for x in points:
-        p=IMP.Particle(model)
+        p=IMP.kernel.Particle(model)
         d=IMP.core.XYZR.setup_particle(p)
         d.set_coordinates(alg.Vector3D(x[0], x[1], x[2]))
         d.set_radius(2)
@@ -52,7 +52,7 @@ def get_particles_from_points(points, model):
 def get_particles_from_vector3ds(vs, model):
     particles = []
     for v in vs:
-        p=IMP.Particle(model)
+        p=IMP.kernel.Particle(model)
         d=IMP.core.XYZR.setup_particle(p)
         d.set_coordinates(v)
         d.set_radius(2)
@@ -102,10 +102,10 @@ def write_points_to_chimera(points,radius, fn, name="points"):
     """ Writes a bunch o particles to the file fn
         It is assumed that the particles can be decorated with XYZR
     """
-    m = IMP.Model()
+    m = IMP.kernel.Model()
     ps = []
     for p in points:
-        pa = IMP.Particle(m)
+        pa = IMP.kernel.Particle(m)
         xyzr = core.XYZR.setup_particle(pa)
         xyzr.set_radius(radius)
         xyzr.set_coordinates( alg.Vector3D(p[0], p[1], p[2]) )
@@ -117,10 +117,10 @@ def write_vectors_to_chimera(vs, radius, fn, name="vectors"):
         Writes vectors as points in chimera
     """
 
-    m = IMP.Model()
+    m = IMP.kernel.Model()
     ps = []
     for v in vs:
-        pa = IMP.Particle(m)
+        pa = IMP.kernel.Particle(m)
         xyzr = core.XYZR.setup_particle(pa)
         xyzr.set_radius(radius)
         xyzr.set_coordinates(v)
@@ -236,7 +236,7 @@ def write_pdb_for_reference_frames(fn_pdbs, refs_texts, fn_output):
     """
         Read the PDB files, apply reference frames to them, and write a pdb
     """
-    model = IMP.Model()
+    model = IMP.kernel.Model()
     assembly = representation.create_assembly(model, fn_pdbs)
     rbs = representation.create_rigid_bodies(assembly)
     for t, rb in zip(refs_texts, rbs):

@@ -16,28 +16,21 @@
 #include "IMP/em2d/scores2D.h"
 #include "IMP/algebra/Vector2D.h"
 #include "IMP/atom/Atom.h"
-#include "IMP/Pointer.h"
+#include "IMP/base/Pointer.h"
 #include "IMP/macros.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 
 //! Performs the fine search for the registration values in order to register
 //! a model projection with an image
-class IMPEM2DEXPORT Fine2DRegistrationRestraint : public Restraint
+class IMPEM2DEXPORT Fine2DRegistrationRestraint : public kernel::Restraint
 {
 public:
 
   /**
    * Constructs the restraint. Use the setup() function after construction
    */
-  Fine2DRegistrationRestraint(): calls_(0) {
-    projection_ = new Image();
-    projection_->set_was_used(true);
-    projection_->set_name("projection-in-fine2d");
-    subject_ = new Image();
-    subject_->set_was_used(true);
-    subject_->set_name("subject-in-fine2d");
-  };
+  Fine2DRegistrationRestraint();
 
 
   /**
@@ -50,8 +43,8 @@ public:
    * between a projection of the model and the EM image
    * @param masks A manager containing the masks used for projecting.
    */
-  void setup(ParticlesTemp &ps, const ProjectingParameters &params,
-                 Model *scoring_model,
+  void setup(kernel::ParticlesTemp &ps, const ProjectingParameters &params,
+                 kernel::Model *scoring_model,
                  ScoreFunction *score_function,
                  MasksManagerPtr masks=MasksManagerPtr());
 
@@ -70,9 +63,11 @@ public:
    */
   RegistrationResult get_final_registration() const;
 
-  IMP_RESTRAINT(Fine2DRegistrationRestraint);
-
-  ObjectsTemp get_input_objects() const;
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(Fine2DRegistrationRestraint);
 
   /**
    * Get the number of times that the function was called
@@ -83,18 +78,18 @@ public:
 private:
 
 
-  Pointer<Image> subject_;
-  mutable Pointer<Image> projection_;
+  base::Pointer<Image> subject_;
+  mutable base::Pointer<Image> projection_;
   // Subject particle (it is going to be the parameters for the subject)
-  mutable Pointer<Particle> subj_params_particle_;
+  mutable base::Pointer<kernel::Particle> subj_params_particle_;
   // Decorator for the subject particle
   ProjectionParameters PP_;
   // Access point for the particles
-  ParticlesTemp ps_;
+  kernel::ParticlesTemp ps_;
   // Projection masks for the particles
   MasksManagerPtr  masks_;
   double resolution_,pixelsize_;
-  Pointer<ScoreFunction> score_function_;
+  base::Pointer<ScoreFunction> score_function_;
   ProjectingParameters params_;
 
   mutable unsigned int calls_;

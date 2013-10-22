@@ -17,10 +17,10 @@
 
 #include <IMP/core/rigid_bodies.h>
 
-#include <IMP/Model.h>
-#include <IMP/Restraint.h>
-#include <IMP/VersionInfo.h>
-#include <IMP/internal/OwnerPointer.h>
+#include <IMP/kernel/Model.h>
+#include <IMP/kernel/Restraint.h>
+#include <IMP/base/Object.h>
+#include <IMP/base/Pointer.h>
 
 IMPSAXS_BEGIN_NAMESPACE
 
@@ -39,7 +39,7 @@ IMPSAXS_BEGIN_NAMESPACE
     The distances between the atoms of rigid body do not change, therefore
     their contribution to the profile is pre-computed and stored.
  */
-class IMPSAXSEXPORT Restraint : public IMP::Restraint
+class IMPSAXSEXPORT Restraint : public kernel::Restraint
 {
  public:
   //! Constructor
@@ -51,22 +51,27 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint
                 HEAVY_ATOMS - no hydrogens, all other atoms included
                 CA_ATOMS - residue level, residue represented by CA
   */
-  Restraint(const Particles& particles, const Profile& exp_profile,
+  Restraint(const kernel::Particles& particles, const Profile* exp_profile,
             FormFactorType ff_type = HEAVY_ATOMS);
 
-  IMP_RESTRAINT(Restraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(Restraint);
 
  protected:
-  void compute_profile(Profile& model_profile);
+  void compute_profile(Profile* model_profile);
 
  protected:
-  Particles particles_; // non-rigid bodies particles
+  kernel::Particles particles_; // non-rigid bodies particles
   std::vector<core::RigidBody> rigid_bodies_decorators_; //rigid bodies
-  std::vector<Particles> rigid_bodies_; // rigid bodies particles
-  Profile rigid_bodies_profile_; // non-changing part of the profile
-  Profile exp_profile_; // experimental profile
-  Pointer<ProfileFitter<ChiScore> > profile_fitter_; // computes profiles
-  Pointer<DerivativeCalculator> derivative_calculator_; // computes derivatives
+  std::vector<kernel::Particles> rigid_bodies_; // rigid bodies particles
+  // non-changing part of the profile
+  base::PointerMember<Profile> rigid_bodies_profile_;
+  base::Pointer<ProfileFitter<ChiScore> > profile_fitter_; // computes profiles
+  // computes derivatives
+  base::Pointer<DerivativeCalculator> derivative_calculator_;
   FormFactorType ff_type_; // type of the form factors to use
 };
 

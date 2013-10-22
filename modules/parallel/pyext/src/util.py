@@ -1,3 +1,5 @@
+"""@namespace IMP.parallel.util Utilities for the IMP.parallel module."""
+
 import socket
 import select
 import sys

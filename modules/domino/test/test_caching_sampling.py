@@ -8,12 +8,12 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min3(self):
         """Test caching sampling with edge scores"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         m.set_log_level(IMP.base.SILENT)
         ps=[]
         ds=[]
         for i in range(0,3):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             d= IMP.core.XYZ.setup_particle(p)
             print d
             ds.append(d)

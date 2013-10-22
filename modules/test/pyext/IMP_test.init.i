@@ -18,6 +18,7 @@ import shutil
 import _compat_python
 import _compat_python.unittest2
 import datetime
+import pickle
 
 # Fall back to the sets.Set class on older Pythons that don't have
 # the 'set' builtin type.
@@ -150,24 +151,16 @@ class TestCase(unittest.TestCase):
     def get_input_file_name(self, filename):
         """Get the full name of an input file in the top-level
            test directory."""
-        # If we ran from run-all-tests.py, it set an env variable for us with
-        # the top-level test directory
-        if 'TEST_DIRECTORY' in os.environ:
-            top = os.environ['TEST_DIRECTORY']
-            return os.path.join(top, 'input', filename)
-        else:
-            # Otherwise, search up from the test's directory until we find
-            # the input directory
-            testdir = os.path.dirname(os.path.abspath(sys.argv[0]))
-            dirs = testdir.split(os.path.sep)
-            for i in range(len(dirs), 0, -1):
+        testdir = os.path.dirname(os.path.abspath(sys.argv[0]))
+        dirs = testdir.split(os.path.sep)
+        for i in range(len(dirs), 0, -1):
                 input = os.path.sep.join(dirs[:i] + ['input'])
                 if os.path.isdir(input):
-                    return os.path.join(input, filename)
-        # If not found, default to the current working directory:
-        ret= os.path.join('input', filename)
-        if not open(ret, "r"):
-            raise IOError("Test input file "+ret+" does not exist")
+                    ret = os.path.join(input, filename)
+                    if not open(ret, "r"):
+                         raise IOError("Test input file "+ret+" does not exist")
+                    return ret
+        raise IOError("No test input directory found")
 
     def open_input_file(self, filename, mode='rb'):
         """Open and return an input file in the top-level test directory."""
@@ -231,7 +224,7 @@ class TestCase(unittest.TestCase):
         raise AssertError("Too many failures")
 
     def failure_probability(self, testcall):
-        """Estimate how like a given block of code is to raise an
+        """Estimate how likely a given block of code is to raise an
         AssertionError."""
         failures=0
         tries=0.0
@@ -534,6 +527,7 @@ class TestCase(unittest.TestCase):
            a subprocess.Popen-like object containing the child stdin,
            stdout and stderr.
         """
+        import IMP.kernel
         if type(module) == type(os):
             mod = module
         else:
@@ -543,10 +537,13 @@ class TestCase(unittest.TestCase):
             modpath = modpath[:-1]
         if type(module) == type(os):
             old_sys_argv = sys.argv
+            # boost parser doesn't like being called multiple times per process
+            IMP.kernel.OptionParser._use_boost_parser = False
             try:
                 sys.argv = [modpath] + args
                 return module.main()
             finally:
+                IMP.kernel.OptionParser._use_boost_parser = True
                 sys.argv = old_sys_argv
         else:
             return _SubprocessWrapper(sys.executable, [modpath] + args)
@@ -558,8 +555,8 @@ class TestCase(unittest.TestCase):
         r = self.run_python_module(module, ['--help'])
         out, err = r.communicate()
         self.assertEqual(r.returncode, 0)
-        self.assertEqual(err, "")
-        self.assertNotEqual(out, "")
+        self.assertNotEqual(err, "")
+        self.assertEqual(out, "")
 
 
 class _ExecDictProxy(object):
@@ -593,26 +590,12 @@ class _TestResult(unittest.TextTestResult):
     def __init__(self, stream=None, descriptions=None, verbosity=None):
         super(_TestResult, self).__init__(stream, descriptions, verbosity)
         self.all_tests = []
-        self._test_names = {}
-        self._duplicated_tests = {}
 
     def stopTestRun(self):
-        # Check for multiple tests which have the same name. Since tests are
-        # tracked by name, duplicates will make it difficult for developers
-        # to figure out which tests are failing. Report duplicates as an
-        # extra test failure.
-        class _DuplicateTest(object):
-            def shortDescription(self):
-                return 'Duplicate test names found'
-
-        if len(self._duplicated_tests) > 0:
-            self.errors.append((_DuplicateTest(),
-                                'Test case names must be unique, so that '
-                                'failures can be easily tracked.\n'
-                                'Please rename test(s) so that they are. '
-                                'The following test case names\n'
-                                'are duplicated:\n' \
-                                + '\n'.join(self._duplicated_tests.keys())))
+        if 'IMP_TEST_DETAIL_DIR' in os.environ:
+            fname = os.path.join(os.environ['IMP_TEST_DETAIL_DIR'],
+                                 os.path.basename(sys.argv[0]))
+            pickle.dump(self.all_tests, open(fname, 'wb'), -1)
         super(_TestResult, self).stopTestRun()
 
     def startTest(self, test):
@@ -630,12 +613,12 @@ class _TestResult(unittest.TextTestResult):
             self.stream.write("in %.3fs ... " % pv)
         if detail is not None and not isinstance(detail, str):
             detail = self._exc_info_to_string(detail, test)
-        test_name = self.getDescription(test)
-        if test_name in self._test_names:
-            self._duplicated_tests[test_name] = None
-        else:
-            self._test_names[test_name] = None
+        test_doc = self.getDescription(test)
+        test_name = test.id()
+        if test_name.startswith('__main__.'):
+            test_name = test_name[9:]
         self.all_tests.append({'name': test_name,
+                               'docstring': test_doc,
                                'time': pv, 'state': state, 'detail': detail})
 
     def addSuccess(self, test):
@@ -789,8 +772,7 @@ class ApplicationTestCase(TestCase):
         return _SubprocessWrapper(sys.executable, [app]+args)
 
     def assertApplicationExitedCleanly(self, ret, error):
-        """Assert that the application exited cleanly, i.e. that the
-           return value is zero."""
+        """Assert that the application exited cleanly (return value = 0)."""
         if ret < 0:
             raise OSError("Application exited with signal %d\n" % -ret\
                           +error)
@@ -801,7 +783,7 @@ class ApplicationTestCase(TestCase):
 
     def read_shell_commands(self, doxfile):
         """Read and return a set of shell commands from a doxygen file.
-           Each command is assumed to be in a \code{.sh}...\endcode block.
+           Each command is assumed to be in a \\code{.sh}...\\endcode block.
            The doxygen file is specified relative to the test file itself.
            This is used to make sure the commands shown in an application
            example actually work (the testcase can also check the resulting
@@ -850,7 +832,7 @@ class RefCountChecker(object):
         IMP.base._director_objects.cleanup()
         self.__testcase = testcase
         if IMP.base.get_check_level() >= IMP.base.USAGE_AND_INTERNAL:
-            self.__basenum = IMP.base.RefCounted.get_number_of_live_objects()
+            self.__basenum = IMP.base.Object.get_number_of_live_objects()
             self.__names= IMP.base.get_live_object_names()
 
     def assert_number(self, expected):
@@ -859,7 +841,7 @@ class RefCountChecker(object):
         IMP.base._director_objects.cleanup()
         if IMP.base.get_check_level() >= IMP.base.USAGE_AND_INTERNAL:
             newnames=[x for x in IMP.base.get_live_object_names() if x not in self.__names]
-            newnum=IMP.base.RefCounted.get_number_of_live_objects()-self.__basenum
+            newnum=IMP.base.Object.get_number_of_live_objects()-self.__basenum
             t.assertEqual(newnum, expected,
                           "Number of objects don't match: "\
                            +str(newnum)\

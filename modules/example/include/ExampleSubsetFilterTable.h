@@ -21,20 +21,25 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     \include ExampleSubsetFilterTable.h
     \include ExampleSubsetFilterTable.cpp
 */
-class IMPEXAMPLEEXPORT ExampleSubsetFilterTable:
-  public domino::SubsetFilterTable
-{
+class IMPEXAMPLEEXPORT ExampleSubsetFilterTable
+    : public domino::SubsetFilterTable {
   int max_diff_;
-  const Particles ps_;
+  const kernel::Particles ps_;
   Ints get_indexes(const domino::Subset &s,
-                   const domino::Subsets& prior_subsets) const;
+                   const domino::Subsets &prior_subsets) const;
+
  public:
-  ExampleSubsetFilterTable(unsigned int max_diff, const ParticlesTemp &pt);
+  ExampleSubsetFilterTable(unsigned int max_diff, const kernel::ParticlesTemp &pt);
 
-  IMP_SUBSET_FILTER_TABLE(ExampleSubsetFilterTable);
+   virtual IMP::domino::SubsetFilter *get_subset_filter(
+      const IMP::domino::Subset &s,
+      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
+   virtual double get_strength(
+      const IMP::domino::Subset &s,
+      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
+   IMP_OBJECT_METHODS(ExampleSubsetFilterTable);
 };
-
 
 IMPEXAMPLE_END_NAMESPACE
 
-#endif  /* IMPEXAMPLE_EXAMPLE_SUBSET_FILTER_TABLE_H */
+#endif /* IMPEXAMPLE_EXAMPLE_SUBSET_FILTER_TABLE_H */

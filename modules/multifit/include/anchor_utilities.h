@@ -43,8 +43,8 @@ void get_anchors_for_density(em::DensityMap *dmap, int number_of_means,
 //! Get lists of anchors that match a sequence of secondary structures
 /**
    \param[in] ad The AnchorsData
-   \param[in] sse_ps The SecondaryStructureResidue particles to match
-   \param[in] min_correlation SecondaryStructureResidue match must be
+   \param[in] ssrs The SecondaryStructureResidue particles to match
+   \param[in] max_rmsd SecondaryStructureResidue match must be
               below this value (0.816 is rmsd of known SSE to random)
 */
 IMPMULTIFITEXPORT

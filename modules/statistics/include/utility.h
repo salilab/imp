@@ -17,16 +17,14 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 
 /** Given a clustering and an embedding, compute the centroid for each cluster
  */
-IMPSTATISTICSEXPORT
-algebra::VectorKDs get_centroids(Embedding* d, PartitionalClustering *pc);
+IMPSTATISTICSEXPORT algebra::VectorKDs get_centroids(Embedding* d,
+                                                     PartitionalClustering* pc);
 
 /** Given a clustering and an embedding, compute a representatative
     element for each cluster.
  */
-IMPSTATISTICSEXPORT
-Ints get_representatives(Embedding* d, PartitionalClustering *pc);
-
-
+IMPSTATISTICSEXPORT Ints
+    get_representatives(Embedding* d, PartitionalClustering* pc);
 
 IMPSTATISTICS_END_NAMESPACE
 

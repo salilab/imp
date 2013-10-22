@@ -1,6 +1,6 @@
 ## \example atom/structure_from_sequence.py
-## An atomic protein structure is created from primary (amino-acid) sequence.
-##
+# An atomic protein structure is created from primary (amino-acid) sequence.
+#
 
 import IMP.atom
 
@@ -14,7 +14,7 @@ topology.apply_default_patches()
 
 # Make an IMP Hierarchy (atoms, residues, chains) that corresponds to
 # this topology
-m = IMP.Model()
+m = IMP.kernel.Model()
 h = topology.create_hierarchy(m)
 
 # Generate coordinates for all atoms in the Hierarchy, using CHARMM internal

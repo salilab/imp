@@ -17,6 +17,7 @@ IMP_SWIG_OBJECT(IMP::example, ExampleSingletonModifier, ExampleSingletonModifier
 IMP_SWIG_OBJECT(IMP::example, ExamplePairScore, ExamplePairScores);
 IMP_SWIG_OBJECT(IMP::example, ExampleSubsetFilterTable, ExampleSubsetFilterTables);
 IMP_SWIG_OBJECT(IMP::example, ExampleConstraint, ExampleConstraints);
+IMP_SWIG_OBJECT(IMP::example, ExampleObject, ExampleObjects);
 IMP_SWIG_VALUE_INSTANCE(IMP::example, ExampleTemplateClass3D, ExampleTemplateClassD, ExampleTemplateClass3Ds);
 IMP_SWIG_VALUE_TEMPLATE(IMP::example, ExampleTemplateClassD);
 
@@ -42,7 +43,7 @@ def create_model_and_particles():
 %include "IMP/example/ExampleRestraint.h"
 %include "IMP/example/ExampleDecorator.h"
 %include "IMP/example/ExampleUnaryFunction.h"
-%include "IMP/example/ExampleRefCounted.h"
+%include "IMP/example/ExampleObject.h"
 %include "IMP/example/ExampleSingletonModifier.h"
 %include "IMP/example/ExampleTemplateClass.h"
 %include "IMP/example/ExamplePairScore.h"

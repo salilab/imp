@@ -13,8 +13,8 @@
 #include "Scale.h"
 #include "vonMisesSufficient.h"
 
-#include <IMP/Restraint.h>
-#include <IMP/Particle.h>
+#include <IMP/kernel/Restraint.h>
+#include <IMP/kernel/Particle.h>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -29,40 +29,46 @@ IMPISD_BEGIN_NAMESPACE
     \f$R\f$ and \f$\chi_{exp}\f$.
     \see vonMisesSufficient.h for further detail.
 */
-class IMPISDEXPORT TALOSRestraint : public Restraint
+class IMPISDEXPORT TALOSRestraint : public kernel::Restraint
 {
 public:
 
   //! Create restraint from a list of particles and the data.
-  /** \param[in] p list of 4 particles that make the dihedral angle.
+  /** \param[in] m the Model
+      \param[in] p list of 4 particles that make the dihedral angle.
       \param[in] data list of observations for that angle.
       \param[in] kappa Pointer to the \f$\kappa\f$ concentration particle.
    */
-  TALOSRestraint(Particles p, Floats data, Particle *kappa);
+  TALOSRestraint(kernel::Model *m, kernel::Particles p, Floats data,
+          kernel::Particle *kappa);
 
   //! Create restraint from 4 particles and the data.
-  /** \param[in] p1 Pointer to first particle in dihedral restraint.
+  /** \param[in] m the Model
+      \param[in] p1 Pointer to first particle in dihedral restraint.
       \param[in] p2 Pointer to second particle in dihedral restraint.
       \param[in] p3 Pointer to third particle in dihedral restraint.
       \param[in] p4 Pointer to fourth particle in dihedral restraint.
       \param[in] data list of observations for that angle.
       \param[in] kappa Pointer to the \f$\kappa\f$ concentration particle.
    */
-  TALOSRestraint(Particle* p1, Particle* p2, Particle* p3, Particle *p4,
-                 Floats data, Particle *kappa);
+  TALOSRestraint(kernel::Model *m, kernel::Particle* p1, kernel::Particle* p2,
+          kernel::Particle* p3, kernel::Particle *p4, Floats data,
+          kernel::Particle *kappa);
 
   //! Create restraint from a list of particles and the sufficient statistics.
-  /** \param[in] p list of 4 particles that make the dihedral angle.
+  /** \param[in] m the Model
+      \param[in] p list of 4 particles that make the dihedral angle.
       \param[in] N Number of observations
       \param[in] R0 component on the x axis
       \param[in] chiexp average observed angle.
       \param[in] kappa Pointer to the \f$\kappa\f$ concentration particle.
    */
-  TALOSRestraint(Particles p, unsigned N, double R0, double chiexp,
-                 Particle *kappa);
+  TALOSRestraint(kernel::Model *m, kernel::Particles p, unsigned N, double R0,
+          double chiexp, kernel::Particle *kappa);
 
   //! Create restraint from 4 particles and the sufficient statistics.
-  /** \param[in] p1 Pointer to first particle in dihedral restraint.
+  /** \param[in] m the Model
+      \param[in] p1 Pointer to first particle in dihedral restraint.
       \param[in] p2 Pointer to second particle in dihedral restraint.
       \param[in] p3 Pointer to third particle in dihedral restraint.
       \param[in] p4 Pointer to fourth particle in dihedral restraint.
@@ -71,8 +77,9 @@ public:
       \param[in] chiexp average observed angle.
       \param[in] kappa Pointer to the \f$\kappa\f$ concentration particle.
    */
-  TALOSRestraint(Particle* p1, Particle* p2, Particle* p3, Particle *p4,
-          unsigned N, double R0, double chiexp, Particle *kappa);
+  TALOSRestraint(kernel::Model *m, kernel::Particle* p1, kernel::Particle* p2,
+          kernel::Particle* p3, kernel::Particle *p4, unsigned N, double R0,
+          double chiexp, kernel::Particle *kappa);
 
 
   //! Call for probability
@@ -91,12 +98,16 @@ public:
       return mises_->get_chiexp();
   }
 
-  IMP_RESTRAINT(TALOSRestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(TALOSRestraint);
 
 private:
-  IMP::Pointer<Particle> p_[4];
-  IMP::Pointer<Particle> kappa_;
-  IMP::Pointer<vonMisesSufficient> mises_;
+  base::Pointer<kernel::Particle> p_[4];
+  base::Pointer<kernel::Particle> kappa_;
+  base::Pointer<vonMisesSufficient> mises_;
 };
 
 IMPISD_END_NAMESPACE

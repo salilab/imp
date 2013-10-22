@@ -1,16 +1,23 @@
-The [GSL](http://www.gnu.org/software/gsl/) provides various general purpose optimizers which this module exposes to \imp. The most useful is probably the IMP::gsl::Simplex optimizer. Not that GSL is licensed under the GPLv3, which requires that all other software linked with it also be licensed under a GPL-compatible license.
+The module exposes several general purpose optimizers from GSL to IMP. The most useful is probably the IMP::gsl::Simplex optimizer. Note that GSL is licensed under the GPLv3, which requires that all other software linked with it also be licensed under a GPL-compatible license.
 
-## Info
+# GSL # {#GSL}
+The IMP.gsl module requires [GSL](http://www.gnu.org/software/gsl/). It
+is available as a prebuilt package on all supported platforms. Note that
+GSL is distributed under the GPL and so cannot be used in C++ applications
+with certain other dependencies such as CGAL.
+
+
+# Info
 
 _Author(s)_: Daniel Russel
 
 _Maintainer_: `drussel`
 
-_License_: [GPL](http://www.gnu.org/licenses/old-licenses/gpl-2.1.html)
+_License_: [GPL](http://www.gnu.org/licenses/gpl.html)
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation; either
-version 2 of the License, or (at your option) any later version.
+version 3 of the License, or (at your option) any later version.
 
 _Publications_:
  - See main IMP papers list.

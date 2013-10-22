@@ -15,28 +15,28 @@
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
-struct IMPKERNELEXPORT AncestorException{
+struct IMPKERNELEXPORT AncestorException {
   base::Object *o;
-  AncestorException(base::Object *oi): o(oi){};
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(AncestorException);
+  AncestorException(base::Object *oi) : o(oi) {};
   virtual ~AncestorException();
 };
 
 // gcc 4.2 objects if this does not have external linkage
 template <class Graph>
-class AncestorVisitor: public boost::default_dfs_visitor {
-  std::set<Particle*> pst_;
-  typename boost::property_map<Graph,
-                               boost::vertex_name_t>::const_type vm_;
-public:
-  AncestorVisitor(){}
-  AncestorVisitor(const ParticlesTemp& pst,
-                  const Graph&g): pst_(pst.begin(), pst.end()),
-                                  vm_(boost::get(boost::vertex_name, g)){}
+class AncestorVisitor : public boost::default_dfs_visitor {
+  std::set<Particle *> pst_;
+  typename boost::property_map<Graph, boost::vertex_name_t>::const_type vm_;
+
+ public:
+  AncestorVisitor() {}
+  AncestorVisitor(const ParticlesTemp &pst, const Graph &g)
+      : pst_(pst.begin(), pst.end()), vm_(boost::get(boost::vertex_name, g)) {}
   void discover_vertex(typename boost::graph_traits<Graph>::vertex_descriptor u,
-                       const Graph& ) {
-    base::Object *o= vm_[u];
-    //std::cout << "Visiting " << o->get_name() << std::endl;
-    if (pst_.find(dynamic_cast<Particle*>(o)) != pst_.end()) {
+                       const Graph &) {
+    base::Object *o = vm_[u];
+    // std::cout << "Visiting " << o->get_name() << std::endl;
+    if (pst_.find(dynamic_cast<Particle *>(o)) != pst_.end()) {
       throw AncestorException(o);
     }
   }
@@ -52,18 +52,18 @@ public:
 };
 
 template <class G>
-inline bool get_has_ancestor(const G &g,
-                      unsigned int v,
-                      const ParticlesTemp &pst) {
-  typedef boost::reverse_graph<G>  RG;
+inline bool get_has_ancestor(const G &g, unsigned int v,
+                             const ParticlesTemp &pst) {
+  typedef boost::reverse_graph<G> RG;
   RG rg(g);
-  AncestorVisitor<RG> av(pst,g);
+  AncestorVisitor<RG> av(pst, g);
   boost::vector_property_map<int> color(boost::num_vertices(g));
   try {
-    //std::cout << "Searching for dependents of " << v << std::endl;
+    // std::cout << "Searching for dependents of " << v << std::endl;
     boost::depth_first_visit(rg, v, av, color);
     return false;
-  } catch (AncestorException e) {
+  }
+  catch (AncestorException e) {
     /*IMP_LOG_VERBOSE( "Vertex has ancestor \"" << e.o->get_name()
       << "\"" << std::endl);*/
     return true;
@@ -72,4 +72,4 @@ inline bool get_has_ancestor(const G &g,
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPKERNEL_INTERNAL_GRAPH_UTILITY_H */
+#endif /* IMPKERNEL_INTERNAL_GRAPH_UTILITY_H */

@@ -9,12 +9,12 @@ class Tests(IMP.test.TestCase):
 
     def test_it(self):
         """Test centroid of refined decorator"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         IMP.base.set_log_level(IMP.MEMORY)
         n= random.randrange(1,10)
         ps=IMP.core.create_xyzr_particles(m, 10, 1)
         fpr= IMP.core.FixedRefiner(ps)
-        p= IMP.core.Centroid.setup_particle(IMP.Particle(m), fpr)
+        p= IMP.core.Centroid.setup_particle(IMP.kernel.Particle(m), fpr)
         print "eval"
         m.evaluate(True)
 if __name__ == '__main__':

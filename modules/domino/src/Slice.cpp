@@ -8,7 +8,6 @@
 #include <IMP/domino/Slice.h>
 #include <IMP/domino/Subset.h>
 
-
 IMPDOMINO_BEGIN_NAMESPACE
 
 IMPDOMINO_END_NAMESPACE

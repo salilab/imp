@@ -16,7 +16,6 @@
 IMPMULTIFIT_BEGIN_NAMESPACE
 namespace {
 bool is_edges_line(const std::string &line) {
-  typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
   IMP_LOG_VERBOSE("going to parse:"<<line);
   std::vector<std::string> line_split;
@@ -32,7 +31,6 @@ bool is_edges_line(const std::string &line) {
 
 algebra::Vector3D parse_point_line(
                                    const std::string &line){
-  typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
   IMP_LOG_VERBOSE("going to parse:"<<line);
   std::vector<std::string> line_split;
@@ -50,7 +48,6 @@ algebra::Vector3D parse_point_line(
 }
 
 IntPair parse_edge_line(const std::string &line){
-  typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
   IMP_LOG_VERBOSE("going to parse:"<<line);
   std::vector<std::string> line_split;
@@ -152,9 +149,9 @@ void write_cmm(const std::string &cmm_filename,
   out.close();
 }
 
-void AnchorsData::setup_secondary_structure(Model *mdl){
+void AnchorsData::setup_secondary_structure(kernel::Model *mdl){
   for (int anum=0;anum<(int)points_.size();anum++){
-    IMP_NEW(Particle,ssr_p,(mdl));
+    IMP_NEW(kernel::Particle,ssr_p,(mdl));
     atom::SecondaryStructureResidue default_ssr=
       atom::SecondaryStructureResidue::setup_particle(ssr_p);
     secondary_structure_ps_.push_back(ssr_p);
@@ -162,8 +159,8 @@ void AnchorsData::setup_secondary_structure(Model *mdl){
 }
 
 void AnchorsData::set_secondary_structure_probabilities(
-                                                 const Particles &ssres_ps,
-                                                 const Ints &indices){
+                                            const kernel::Particles &ssres_ps,
+                                            const Ints &indices){
 
   IMP_USAGE_CHECK(secondary_structure_ps_.size()==points_.size(),
                   "Secondary structure has not been set up, "
@@ -171,8 +168,8 @@ void AnchorsData::set_secondary_structure_probabilities(
   int anum;
   for (int ssnum=0;ssnum<(int)ssres_ps.size();ssnum++){
     IMP_USAGE_CHECK(atom::SecondaryStructureResidue::
-                    particle_is_instance(ssres_ps[ssnum]),
-                    "SSE Particles must be decorated as"
+                    get_is_setup(ssres_ps[ssnum]),
+                    "SSE kernel::Particles must be decorated as"
                     "SecondaryStructureResidues");
     if (indices.size()==0) anum=ssnum;
     else anum=indices[ssnum];

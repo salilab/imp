@@ -8,7 +8,7 @@ class Tests(IMP.test.TestCase):
     """Tests for bond refiner"""
 
     def _random_hierarchy(self, m, depth=2, width=4):
-        p= IMP.Particle(m)
+        p= IMP.kernel.Particle(m)
         h = IMP.core.Hierarchy.setup_particle(p)
         if depth== 0:
             d = IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()),
@@ -28,7 +28,7 @@ class Tests(IMP.test.TestCase):
     def test_rops(self):
         """Checking close pairs pair score"""
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         threshold = 5.0
         r0= self._random_hierarchy(m)
         r1= self._random_hierarchy(m)
@@ -58,7 +58,7 @@ class Tests(IMP.test.TestCase):
     def test_rops2(self):
         """Checking k-close pairs pair score"""
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         threshold = 5.0
         r0= self._random_hierarchy(m)
         r1= self._random_hierarchy(m)

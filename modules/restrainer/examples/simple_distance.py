@@ -1,24 +1,24 @@
 ## \example restrainer/simple_distance.py
-## This example shows how to create simple IMP::core::DistanceRestraint.
-##
+# This example shows how to create simple IMP::core::DistanceRestraint.
+#
 
-#-- File: simple_distance.py --#
+# -- File: simple_distance.py --#
 
 import IMP
 import IMP.core
 import IMP.restrainer
 
-imp_model = IMP.Model()
+imp_model = IMP.kernel.Model()
 
 # Create particle point 1
-p1 = IMP.Particle(imp_model)
+p1 = IMP.kernel.Particle(imp_model)
 p1.add_attribute(IMP.FloatKey("x"), 0, True)
 p1.add_attribute(IMP.FloatKey("y"), 0, True)
 p1.add_attribute(IMP.FloatKey("z"), 0, True)
 p1.add_attribute(IMP.FloatKey("radius"), 1.0, False)
 
 # Create particle point 2
-p2 = IMP.Particle(imp_model)
+p2 = IMP.kernel.Particle(imp_model)
 p2.add_attribute(IMP.FloatKey("x"), 100, True)
 p2.add_attribute(IMP.FloatKey("y"), 100, True)
 p2.add_attribute(IMP.FloatKey("z"), 100, True)

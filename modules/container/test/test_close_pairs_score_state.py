@@ -33,7 +33,7 @@ class Tests(IMP.test.TestCase):
                     self.assertTrue((a,b) in all or (b,a) in all)
     def test_it(self):
         """Test ClosePairContainer"""
-        m=IMP.Model()
+        m=IMP.kernel.Model()
         IMP.base.set_log_level(IMP.base.SILENT)
         ps= self.create_particles_in_box(m, 20)
         # test rebuilding under move, set input and change radius
@@ -68,7 +68,7 @@ class Tests(IMP.test.TestCase):
             self._compare_lists(m, pc, threshold, cpss)
     def test_restraint_0(self):
         """Test ClosePairContainer over time"""
-        m=IMP.Model()
+        m=IMP.kernel.Model()
         IMP.base.set_log_level(IMP.base.SILENT)
         ps= self.create_particles_in_box(m, 10)
         for p in ps:
@@ -92,7 +92,7 @@ class Tests(IMP.test.TestCase):
             m.evaluate(False)
     def test_restraint(self):
         """Test ClosePairContainer with a restraint"""
-        m=IMP.Model()
+        m=IMP.kernel.Model()
         IMP.base.set_log_level(IMP.base.VERBOSE)
         ps= self.create_particles_in_box(m, 10)
         # test rebuilding under move, set input and change radius

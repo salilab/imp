@@ -560,7 +560,7 @@ class AtomicDomino:
 
         if (self.wroteNativeProtein == 0):
             pdbName = self.getParam("native_pdb_input_file")
-            self.nativeModel = IMP.Model()
+            self.nativeModel = IMP.kernel.Model()
             self.nativeProtein = IMP.atom.read_pdb(pdbName, self.nativeModel, IMP.atom.ATOMPDBSelector())
             self.wroteNativeProtein = 1
 
@@ -568,7 +568,7 @@ class AtomicDomino:
 
     def calculateTrajectoryRmsd(self, trajectoryFile, trajectoryFrame, flexibleAtoms):
         pdbName = self.getParam("native_pdb_input_file")
-        otherModel = IMP.Model()
+        otherModel = IMP.kernel.Model()
         otherProtein = IMP.atom.read_pdb(pdbName, self.nativeModel, IMP.atom.ATOMPDBSelector())
         outputDir = self.getParam("output_directory")
         fullFile = os.path.join(outputDir, trajectoryFile)

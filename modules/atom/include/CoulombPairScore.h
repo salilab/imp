@@ -11,7 +11,7 @@
 #include <IMP/atom/atom_config.h>
 #include <IMP/generic.h>
 #include <IMP/PairScore.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/atom/smoothing_functions.h>
 #include <IMP/pair_macros.h>
 
@@ -26,15 +26,14 @@ IMPATOM_BEGIN_NAMESPACE
     \f$q_i\f$ and \f$q_j\f$ the charges on the two particles,
     and \f$|r_{ij}|\f$ the distance between them.
  */
-class IMPATOMEXPORT CoulombPairScore : public PairScore
-{
-  IMP::OwnerPointer<SmoothingFunction> smoothing_function_;
+class IMPATOMEXPORT CoulombPairScore : public PairScore {
+  IMP::base::PointerMember<SmoothingFunction> smoothing_function_;
   double relative_dielectric_;
   double multiplication_factor_;
 
   void calculate_multiplication_factor();
 
-public:
+ public:
   CoulombPairScore(SmoothingFunction *f) : smoothing_function_(f) {
     set_relative_dielectric(1.0);
   }
@@ -46,11 +45,18 @@ public:
 
   double get_relative_dielectric() const { return relative_dielectric_; }
 
-  IMP_SIMPLE_PAIR_SCORE(CoulombPairScore);
+  virtual double evaluate_index(kernel::Model *m,
+                                const kernel::ParticleIndexPair &p,
+                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  IMP_PAIR_SCORE_METHODS(CoulombPairScore);
+  IMP_OBJECT_METHODS(CoulombPairScore);
+  ;
 };
 
-IMP_OBJECTS(CoulombPairScore,CoulombPairScores);
+IMP_OBJECTS(CoulombPairScore, CoulombPairScores);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_COULOMB_PAIR_SCORE_H */
+#endif /* IMPATOM_COULOMB_PAIR_SCORE_H */

@@ -7,12 +7,12 @@ ik= IMP.IntKey("hi")
 class Odd(IMP.SingletonPredicate):
     def get_value(self, p):
         return p.get_value(ik)%2
-    def _do_get_inputs(self, m, pis):
+    def do_get_inputs(self, m, pis):
         return [m.get_particle(i) for i in pis]
 class Mod5(IMP.SingletonPredicate):
     def get_value(self, p):
         return p.get_value(ik)%5
-    def _do_get_inputs(self, m, pis):
+    def do_get_inputs(self, m, pis):
         return [m.get_particle(i) for i in pis]
 
 class Tests(IMP.test.TestCase):
@@ -20,10 +20,10 @@ class Tests(IMP.test.TestCase):
 
     def test_allp(self):
         """Checking distribute particles"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         ps=[]
         for i in range(0,10):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             ps.append(p)
             p.add_attribute(ik, i)
         lp= IMP.container.ListSingletonContainer(ps)

@@ -13,7 +13,7 @@
 #include <IMP/PairScore.h>
 #include <IMP/pair_macros.h>
 #include <IMP/UnaryFunction.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
@@ -22,17 +22,22 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     \include ExamplePairScore.h
     \include ExamplePairScore.cpp
 */
-class IMPEXAMPLEEXPORT ExamplePairScore : public PairScore
-{
+class IMPEXAMPLEEXPORT ExamplePairScore : public PairScore {
   double x0_, k_;
-public:
+
+ public:
   ExamplePairScore(double x0, double k);
-  IMP_PAIR_SCORE(ExamplePairScore);
+  virtual double evaluate_index(kernel::Model *m,
+                                const kernel::ParticleIndexPair &p,
+                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m, const kernel::ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  IMP_PAIR_SCORE_METHODS(ExamplePairScore);
+  IMP_OBJECT_METHODS(ExamplePairScore);;
 };
 
 IMP_OBJECTS(ExamplePairScore, ExamplePairScores);
 
-
 IMPEXAMPLE_END_NAMESPACE
 
-#endif  /* IMPEXAMPLE_EXAMPLE_PAIR_SCORE_H */
+#endif /* IMPEXAMPLE_EXAMPLE_PAIR_SCORE_H */

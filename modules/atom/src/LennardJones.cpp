@@ -15,8 +15,7 @@ FloatKey LennardJones::get_well_depth_key() {
   return k;
 }
 
-void LennardJones::show(std::ostream &out) const
-{
+void LennardJones::show(std::ostream &out) const {
   XYZR::show(out);
   out << " Lennard-Jones well depth= " << get_well_depth();
 }

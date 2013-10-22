@@ -12,7 +12,7 @@
 #include <IMP/isd/isd_config.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/PairScore.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/generic.h>
 
 IMPISD_BEGIN_NAMESPACE
@@ -37,7 +37,15 @@ public:
     return k_;
   }
 
-  IMP_SIMPLE_PAIR_SCORE(RepulsiveDistancePairScore);
+  virtual double evaluate_index(kernel::Model *m,
+                                const kernel::ParticleIndexPair &p,
+                                DerivativeAccumulator *da)
+      const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
+                                         const kernel::ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  IMP_PAIR_SCORE_METHODS(RepulsiveDistancePairScore);
+  IMP_OBJECT_METHODS(RepulsiveDistancePairScore);;
 };
 
 

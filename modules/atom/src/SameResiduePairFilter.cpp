@@ -12,36 +12,25 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-SameResiduePairFilter
-::SameResiduePairFilter(){
+SameResiduePairFilter::SameResiduePairFilter() {}
+
+int SameResiduePairFilter::get_value_index(
+    kernel::Model *m, const kernel::ParticleIndexPair &p) const {
+  return Hierarchy(m, p[0]).get_parent() == Hierarchy(m, p[1]).get_parent();
 }
 
-int SameResiduePairFilter::get_value(const ParticlePair &pp)
- const {
-     return Hierarchy(pp[0]).get_parent() ==
-            Hierarchy(pp[1]).get_parent();
-}
-
-ParticlesTemp SameResiduePairFilter::get_input_particles( Particle* t) const {
-  IMP_OBJECT_LOG;
-  // Particles other than the actual input particles can be passed here
-  // so don't be very picky
-  if (!Atom::particle_is_instance(t)) return ParticlesTemp();
-  ParticlesTemp ret;
-  ret.push_back(t);
-  Particle *parent=Hierarchy(t).get_parent();
-  if (parent) {
-    ret.push_back(parent);
+ModelObjectsTemp SameResiduePairFilter::do_get_inputs(
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
+  kernel::ModelObjectsTemp ret = IMP::kernel::get_particles(m, pis);
+  for (unsigned int i = 0; i < pis.size(); ++i) {
+    if (Atom::get_is_setup(m, pis[i])) {
+      kernel::Particle *parent = Hierarchy(m, pis[i]).get_parent();
+      if (parent) {
+        ret.push_back(parent);
+      }
+    }
   }
   return ret;
-}
-
-
-ContainersTemp
-SameResiduePairFilter::get_input_containers(Particle*) const {
-  return ContainersTemp();
-}
-void SameResiduePairFilter::do_show(std::ostream &) const {
 }
 
 IMPATOM_END_NAMESPACE

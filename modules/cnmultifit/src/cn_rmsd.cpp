@@ -36,7 +36,7 @@ Floats get_rmsd_for_models(const std::string param_filename,
   protein_filename = params.get_unit_pdb_fn();
   cn_symm_deg = params.get_cn_symm();
 
-  IMP_NEW(Model, mdl, ());
+  IMP_NEW(kernel::Model, mdl, ());
   atom::Hierarchy asmb_ref;
   atom::Hierarchies mhs;
   //read the monomer
@@ -50,8 +50,8 @@ Floats get_rmsd_for_models(const std::string param_filename,
     atom::add_radii(h);
     atom::setup_as_rigid_body(h);
     mhs.push_back(h);
-    Particles leaves = core::get_leaves(h);
-    for(Particles::iterator it = leaves.begin(); it != leaves.end(); it++) {
+    kernel::Particles leaves = core::get_leaves(h);
+    for(kernel::Particles::iterator it = leaves.begin(); it != leaves.end(); it++) {
       model_xyzs.push_back(core::XYZ(*it));
     }
   }

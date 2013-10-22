@@ -10,11 +10,8 @@
 #include <IMP/algebra/algebra_config.h>
 #include <cmath>
 
-
-
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
-namespace TNT
-{
+namespace TNT {
 using namespace std;
 /**
   @returns hypotenuse of real (non-complex) scalars a and b by
@@ -23,15 +20,13 @@ using namespace std;
   sqrt(a*a + b*b).
 */
 template <class Real>
-inline Real hypot(const Real &a, const Real &b)
-{
+inline Real hypot(const Real &a, const Real &b) {
 
-  if (a== 0)
+  if (a == 0)
     return abs(b);
-  else
-  {
-    Real c = b/a;
-    return fabs(a) * sqrt(1 + c*c);
+  else {
+    Real c = b / a;
+    return fabs(a) * sqrt(1 + c * c);
   }
 }
 } /* TNT namespace */

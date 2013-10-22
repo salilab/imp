@@ -13,7 +13,7 @@
 #include <IMP/isd/isd_config.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/core/XYZ.h>
-#include <IMP/isd/ISDRestraint.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairScore.h>
 #include <IMP/restraint_macros.h>
@@ -21,22 +21,22 @@
 IMPISD_BEGIN_NAMESPACE
 
 //! Apply an NOE distance restraint between two particles.
-class IMPISDEXPORT NOERestraint : public ISDRestraint
+class IMPISDEXPORT NOERestraint : public kernel::Restraint
 {
-  Pointer<Particle> p0_;
-  Pointer<Particle> p1_;
-  Pointer<Particle> sigma_;
-  Pointer<Particle> gamma_;
+  base::Pointer<kernel::Particle> p0_;
+  base::Pointer<kernel::Particle> p1_;
+  base::Pointer<kernel::Particle> sigma_;
+  base::Pointer<kernel::Particle> gamma_;
   double Vexp_;
   double chi_;
   void set_chi(double chi) { chi_ = chi; }
 
 public:
   //! Create the restraint.
-  /** Restraints should store the particles they are to act on,
+  /** kernel::Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
    */
-  NOERestraint(Particle *p0, Particle *p1, Particle *sigma,
+  NOERestraint(kernel::Model *m, Particle *p0, Particle *p1, Particle *sigma,
                Particle *gamma,double Iexp);
 
   /* call for probability */
@@ -49,9 +49,11 @@ public:
   {return chi_; }
 
 
-  /** This macro declares the basic needed methods: evaluate and show
-   */
-  IMP_RESTRAINT(NOERestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(NOERestraint);
 
 };
 

@@ -17,7 +17,7 @@ em::DensityMap* create_hit_map(core::RigidBody rb, Refiner *rb_ref,
   algebra::Vector3D cen =
     core::get_centroid(core::XYZs(rb_ref->get_refined(rb)));
   //create a return map
-  Pointer<em::DensityMap> ret(new em::DensityMap(*(dmap->get_header())));
+  base::Pointer<em::DensityMap> ret(new em::DensityMap(*(dmap->get_header())));
   ret->reset_data(0.);
   algebra::Vector3D cen_t;
   //get all hits

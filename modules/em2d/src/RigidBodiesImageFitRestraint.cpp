@@ -16,8 +16,8 @@
 #include "IMP/algebra/Rotation3D.h"
 #include "IMP/algebra/Transformation3D.h"
 #include "IMP/atom/Mass.h"
-#include <IMP/log.h>
-#include "IMP/exception.h"
+#include <IMP/base/log.h>
+#include "IMP/base/exception.h"
 #include "IMP/Particle.h"
 #include <IMP/SingletonContainer.h>
 #include "IMP/container.h"
@@ -30,10 +30,12 @@ IMPEM2D_BEGIN_NAMESPACE
 RigidBodiesImageFitRestraint::RigidBodiesImageFitRestraint(
                           ScoreFunction *scf,
                           const core::RigidBodies &rbs,
-                          Image *img): score_function_(scf),
-                          rigid_bodies_(rbs),
-                          image_(img),
-                          params_set_(false) {
+                          Image *img):
+    kernel::Restraint(rbs[0]->get_model(), "RigidBodiesImageFitRestraint%1%"),
+    score_function_(scf),
+    rigid_bodies_(rbs),
+    image_(img),
+    params_set_(false) {
   maps_.resize(rbs.size());
   image_->set_was_used(true);
   rigid_bodies_masks_.resize(rbs.size());
@@ -94,11 +96,11 @@ void RigidBodiesImageFitRestraint::set_orientations(const core::RigidBody &rb,
 
   // Get the particles of the rigid body
   core::RigidMembers rbm = rb.get_members();
-  ParticlesTemp ps;
+  kernel::ParticlesTemp ps;
 
   for (unsigned int i=0; i < rbm.size(); ++i) {
     // Discard particles that do not have mass
-    if (atom::Mass::particle_is_instance(rbm[i].get_particle()) ) {
+    if (atom::Mass::get_is_setup(rbm[i].get_particle()) ) {
       ps.push_back(rbm[i].get_particle());
     }
   }
@@ -155,20 +157,15 @@ void RigidBodiesImageFitRestraint::set_projecting_parameters(
 }
 
 
-ParticlesTemp RigidBodiesImageFitRestraint::get_input_particles() const
+ModelObjectsTemp RigidBodiesImageFitRestraint::do_get_inputs() const
 {
-  ParticlesTemp ret;
+  kernel::ParticlesTemp ret;
   for (unsigned int i=0; i < rigid_bodies_.size(); ++i) {
     ret.push_back( rigid_bodies_[i].get_particle());
   }
   return ret;
 }
 
-ContainersTemp RigidBodiesImageFitRestraint::get_input_containers() const
-{
-  ContainersTemp ct;
-  return ct;
-}
 
 Ints get_unique_index(const algebra::Rotation3D &rot) {
   Ints unique(4);
@@ -183,17 +180,6 @@ Ints get_unique_index(const algebra::Rotation3D &rot) {
           << " " << unique[3] << std::endl);
   return unique;
 }
-
-  void RigidBodiesImageFitRestraint::do_show(
-                                  std::ostream &out = std::cout) const {
-    out << "RigidBodiesImageFitRestraint. Rigid_bodies: "
-       << rigid_bodies_.size() << " Masks: " << std::endl;
-    for (unsigned int i=0; i < rigid_bodies_.size(); ++i) {
-      out << "rigid body " << rigid_bodies_[i]->get_name() << " Masks "
-                                 << maps_[i].size() << std::endl;
-    }
-  }
-
 
 unsigned int RigidBodiesImageFitRestraint::get_rigid_body_index(
                                         const core::RigidBody &rb) const {

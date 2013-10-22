@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
 
-        self.m = IMP.Model()
+        self.m = IMP.kernel.Model()
         sel = IMP.atom.CAlphaPDBSelector()
 
         mhs = IMP.atom.Hierarchies()

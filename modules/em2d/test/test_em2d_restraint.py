@@ -34,7 +34,7 @@ class WriteStatisticsOptimizerScore(IMP.OptimizerState):
 class Tests(IMP.test.TestCase):
     def test_building_an_optimization_problem_with_em2d_restraint(self):
         """Test that an a optimization with em2d restraint is properly built"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         prot =  IMP.atom.read_pdb(self.get_input_file_name("1z5s.pdb"),
                             m,IMP.atom.ATOMPDBSelector())
         # get the chains
@@ -106,7 +106,7 @@ class Tests(IMP.test.TestCase):
         container = IMP.container.ListSingletonContainer(
                                               IMP.core.get_leaves(prot))
         em2d_restraint.set_particles(container)
-        em2d_restraints_set=IMP.RestraintSet()
+        em2d_restraints_set=IMP.kernel.RestraintSet()
         em2d_restraints_set.add_restraint(em2d_restraint)
         em2d_restraints_set.set_weight(1000) # weight for the em2D restraint
         m.add_restraint(em2d_restraints_set)
@@ -125,7 +125,7 @@ class Tests(IMP.test.TestCase):
         # Optimizer state to save intermediate configurations
         o_state=IMP.atom.WritePDBOptimizerState(chains,
                                                 "intermediate-step-%1%.pdb")
-        o_state.set_skip_steps(10)
+        o_state.set_period(11)
         s.add_optimizer_state(o_state)
 
         ostate2 = WriteStatisticsOptimizerScore()

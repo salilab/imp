@@ -77,8 +77,8 @@ IMPEM2DEXPORT em2d::ResultAlign2D get_complete_alignment_no_preprocessing(
 //! Computes the rotational alignment for two autocorrelation matrices
 //! It is assumed that the arguments are FFTs
 /*!
-  \param[in]  M1 fft of the first autocorrelation (in polars)
-  \param[in] M2 fft of the second autocorrelation (in polars)
+  \param[in]  POLAR1 fft of the first autocorrelation (in polars)
+  \param[in] POLAR2 fft of the second autocorrelation (in polars)
   \return The result. Check the definition of  ResultAlign2D
 */
 IMPEM2DEXPORT ResultAlign2D get_rotational_alignment_no_preprocessing(

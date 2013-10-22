@@ -12,24 +12,37 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-ClosePairsFinder::ClosePairsFinder(std::string name): Object(name),
-  distance_(std::numeric_limits<double>::quiet_NaN()){
+ClosePairsFinder::ClosePairsFinder(std::string name)
+    : Object(name), distance_(std::numeric_limits<double>::quiet_NaN()) {
   set_was_used(true);
 }
 
-ClosePairsFinder::~ClosePairsFinder(){}
+ClosePairsFinder::~ClosePairsFinder() {}
 
-internal::MovedSingletonContainer*
+internal::MovedSingletonContainer *
 ClosePairsFinder::get_moved_singleton_container(SingletonContainer *in,
-                                                 double threshold) const {
+                                                double threshold) const {
   return new internal::XYZRMovedSingletonContainer(in, threshold);
 }
 
-IMP_LIST_IMPL(ClosePairsFinder,
-              PairFilter,
-              pair_filter,
-              PairPredicate*,
+ParticlePairsTemp ClosePairsFinder::get_close_pairs(
+    const kernel::ParticlesTemp &pc) const {
+  return IMP::internal::get_particle(
+      IMP::internal::get_model(pc),
+      get_close_pairs(IMP::internal::get_model(pc),
+                      IMP::internal::get_index(pc)));
+}
+
+ParticlePairsTemp ClosePairsFinder::get_close_pairs(
+    const kernel::ParticlesTemp &pca, const kernel::ParticlesTemp &pcb) const {
+  return IMP::internal::get_particle(
+      IMP::internal::get_model(pca),
+      get_close_pairs(IMP::internal::get_model(pca),
+                      IMP::internal::get_index(pca),
+                      IMP::internal::get_index(pcb)));
+}
+
+IMP_LIST_IMPL(ClosePairsFinder, PairFilter, pair_filter, PairPredicate *,
               PairPredicates);
-IMP_INPUTS_DEF(ClosePairsFinder);
 
 IMPCORE_END_NAMESPACE

@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
 
     def _make_particles(self, m, types):
         """Make particles with the given types"""
-        ps = [IMP.Particle(m) for i in types]
+        ps = [IMP.kernel.Particle(m) for i in types]
         for p, typ in zip(ps, types):
             p.add_attribute(typekey, typ)
         return ps
@@ -22,7 +22,7 @@ class Tests(IMP.test.TestCase):
         ps.set_pair_score(cps, 0, 1)
         # Keep Python reference to the model so that the particles
         # aren't destroyed
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         pa, pb = self._make_particles(m, (0, 1))
         da = IMP.DerivativeAccumulator()
         # The ordering of the particles should not matter:
@@ -33,7 +33,7 @@ class Tests(IMP.test.TestCase):
 
     def test_invalid_type(self):
         """Check TypedPairScore behavior with invalid particle types"""
-        m = IMP.Model()
+        m = IMP.kernel.Model()
         pa, pb = self._make_particles(m, (0, 1))
         da = IMP.DerivativeAccumulator()
         ps1 = IMP.core.TypedPairScore(typekey, True)

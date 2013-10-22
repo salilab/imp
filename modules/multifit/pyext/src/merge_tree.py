@@ -3,7 +3,7 @@
 __doc__ = "Show the DOMINO merge tree to be used in alignment."
 
 import IMP.multifit
-from optparse import OptionParser
+from IMP import OptionParser
 
 def parse_args():
     usage =  """%prog [options] <asmb> <asmb.proteomics> <asmb.mapping>

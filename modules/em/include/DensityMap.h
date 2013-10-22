@@ -8,15 +8,15 @@
 
 #ifndef IMPEM_DENSITY_MAP_H
 #define IMPEM_DENSITY_MAP_H
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/em/em_config.h>
 #include "DensityHeader.h"
 #include "MapReaderWriter.h"
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/BoundingBoxD.h>
 #include <IMP/algebra/Transformation3D.h>
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 #include <boost/scoped_array.hpp>
 #include <iostream>
 #include <iomanip>
@@ -40,7 +40,7 @@ IMPEMEXPORT DensityMap *create_density_map(
                                            double spacing);
 
 /** Read a density map from a file and return it.
-    \relatesalso DensityMap
+    See DensityMap
 */
 IMPEMEXPORT DensityMap* read_map(std::string filename, MapReaderWriter *reader);
 
@@ -50,13 +50,13 @@ IMPEMEXPORT DensityMap* read_map(std::string filename, MapReaderWriter *reader);
     - .em
     - .vol
     - .xplor
-    \relatesalso DensityMap
+    See DensityMap
 */
 IMPEMEXPORT DensityMap* read_map(std::string filename);
 
 
 /** Write a density map to a file.
-    \relatesalso DensityMap
+    See DensityMap
 */
 IMPEMEXPORT void write_map(DensityMap* m, std::string filename,
                            MapReaderWriter *writer);
@@ -68,7 +68,7 @@ IMPEMEXPORT void write_map(DensityMap* m, std::string filename,
     - .em
     - .vol
     - .xplor
-    \relatesalso DensityMap
+    See DensityMap
 */
 IMPEMEXPORT void write_map(DensityMap* m, std::string filename);
 
@@ -450,7 +450,7 @@ public:
    */
   void convolute_kernel(
                         double *kernel, int dim_len) {
-    Pointer<DensityMap> cmap = em::create_density_map(this);
+    base::Pointer<DensityMap> cmap = em::create_density_map(this);
     cmap->set_was_used(true);
     convolute_kernel(cmap,kernel,dim_len);
     cmap=static_cast<DensityMap*>(nullptr);
@@ -538,7 +538,7 @@ IMP_OBJECTS(DensityMap,DensityMaps);
 
 /** Return the value for the density map, m, at point v, interpolating linearly
     from the sample values. The resulting function is C0 over R3.
-    \relatesalso DensityMap
+    See DensityMap
 */
 IMPEMEXPORT double get_density(const DensityMap *m,
                                const algebra::Vector3D &v);
@@ -546,7 +546,7 @@ IMPEMEXPORT double get_density(const DensityMap *m,
 /** Return a new density map containing a rotated version of the old
     one. Only voxels whose value is above threshold are considered when
     computing the bounding box of the new map (set IMP::em::get_bounding_box()).
-    \relatesalso DensityMap
+    See DensityMap
 */
 IMPEMEXPORT DensityMap* get_transformed(const DensityMap *input,
                                         const algebra::Transformation3D &tr,
@@ -554,7 +554,7 @@ IMPEMEXPORT DensityMap* get_transformed(const DensityMap *input,
 
 /** Return a new density map containing a rotated version of the old
     one. The dimension of the new map is the same as the old one.
-    \relatesalso DensityMap
+    See DensityMap
 */
 IMPEMEXPORT DensityMap* get_transformed(DensityMap *input,
                                         const algebra::Transformation3D &tr);
@@ -563,7 +563,7 @@ IMPEMEXPORT DensityMap* get_transformed(DensityMap *input,
 //! Get a resampled version of the map.
 /** The spacing is multiplied by scaling.
     That means, scaling values greater than 1 increase the voxel size.
-    \relatesalso DensityMap
+    See DensityMap
 */
 IMPEMEXPORT DensityMap* get_resampled(DensityMap *input, double scaling);
 
@@ -574,7 +574,7 @@ IMPEMEXPORT DensityMap* get_resampled(DensityMap *input, double scaling);
 \param[in] tr transform the from density map by this transformation
 \param[out] into the map to tranform into
 \param[in] calc_rms if true RMS is calculated on the transformed map
- \relatesalso DensityMap
+ See DensityMap
 */
 IMPEMEXPORT void get_transformed_into(const DensityMap *source,
                                       const algebra::Transformation3D &tr,
@@ -596,7 +596,7 @@ inline bool get_interiors_intersect(const DensityMap *d1,
 \param[in] threshold only add voxels with value above this threshold
                      to the histogram
 \param[in] num_bins the number of bins to have in the histogram
- \relatesalso DensityMap
+ See DensityMap
 */
 // IMPEMEXPORT statistics::Histogram
 // get_density_histogram(const DensityMap *dmap, float threshold,int num_bins);

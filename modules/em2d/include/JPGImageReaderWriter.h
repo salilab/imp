@@ -98,8 +98,7 @@ public:
     cv::imwrite(filename,jpg_data,flags);
   }
 
-  IMP_OBJECT_INLINE(JPGImageReaderWriter,
-                    { out << "JPGImageReaderWriter"; }, {});
+  IMP_OBJECT_METHODS(JPGImageReaderWriter);
 };
 
 IMPEM2D_END_NAMESPACE

@@ -26,7 +26,8 @@ class Tests(IMP.test.TestCase):
                     self.assertTrue((a,b) in out.get_particle_pairs())
 
     def _test_one(self, rb0, rb1):
-        m=IMP.Model()
+        m=IMP.kernel.Model()
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         ps0= self.create_particles_in_box(m, 10)
         ps1= self.create_particles_in_box(m, 10)
         print "adding a radius"
@@ -38,9 +39,9 @@ class Tests(IMP.test.TestCase):
             d.set_radius(random.uniform(0,2))
 
         if rb0:
-            IMP.core.RigidBody.setup_particle(IMP.Particle(m), ps0)
+            IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m), ps0)
         if rb1:
-            IMP.core.RigidBody.setup_particle(IMP.Particle(m), ps1)
+            IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m), ps1)
         # test rebuilding under move, set input and change radius
         pc0= IMP.container.ListSingletonContainer(ps0)
         pc1= IMP.container.ListSingletonContainer(ps1)
@@ -62,6 +63,9 @@ class Tests(IMP.test.TestCase):
             d= IMP.core.XYZR.decorate_particle(p)
             d.set_coordinates(IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
         self._compare_lists(m, ps0, ps1, cpss, threshold)
+        print "done"
+        del m
+        print "deleted model"
 
     def test_it_0(self):
         """Test CloseBipartitePairContainer"""
@@ -70,7 +74,6 @@ class Tests(IMP.test.TestCase):
         """Test CloseBipartitePairContainer with rigid body 0"""
         self._test_one(True, False)
     def test_it_2(self):
-        IMP.base.set_log_level(IMP.base.VERBOSE)
         """Test CloseBipartitePairContainer with rigid body 1"""
         self._test_one(False, True)
     def test_it_3(self):
@@ -78,7 +81,7 @@ class Tests(IMP.test.TestCase):
         self._test_one(True, True)
     def test_filtering(self):
         """Testing that CloseBipartitePairContainer responds to changes in filters"""
-        m=IMP.Model()
+        m=IMP.kernel.Model()
         ps0= self.create_particles_in_box(m, 30)
         ps1= self.create_particles_in_box(m, 30)
         for p in ps0+ps1:

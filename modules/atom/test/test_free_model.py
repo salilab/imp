@@ -14,7 +14,7 @@ class Tests(IMP.test.TestCase):
             topology.add_sequence('IACGACKPECPVNIIQGS')
             topology.apply_default_patches()
 
-            m = IMP.Model()
+            m = IMP.kernel.Model()
             h = topology.create_hierarchy(m)
 
             topology.add_atom_types(h)

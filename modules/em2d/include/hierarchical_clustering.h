@@ -12,7 +12,7 @@
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/em2d/scores2D.h"
 #include "IMP/base_types.h"
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 #include <vector>
 #include <list>
 #include <algorithm>
@@ -66,8 +66,8 @@ public:
   // Get the biggest clusters that have distances below a given cutoff
   /*!
     \param[in] cutoff distance
-    \param[out] A vector of Ints: Each Ints has the ids of all elements of the
-                cluster
+    \return A vector of Ints: Each Ints has the ids of all elements of the
+            cluster
   */
   Ints get_clusters_below_cutoff(double cutoff) const;
 
@@ -135,10 +135,11 @@ public:
   /*!
     \param[in] id1 identity of cluster 1 to merge
     \param[in] id2 identity of cluster 2 to merge
-    \param[in] linkage matrix describing the contents of clusters so far.
-    \param[in] distances. A NxN matrix of distances(i,j) between the individual
+    \param[in] cluster_set linkage matrix describing the contents of
+               clusters so far.
+    \param[in] distances A NxN matrix of distances(i,j) between the individual
               members to cluster
-    \param[out] Minimal distance between members of the clusters
+    \return Minimal distance between members of the clusters
     \note the id of an isolated member n<N is n. The id of the cluster formed
           at step i is i+N.
   */
@@ -162,7 +163,7 @@ public:
   // Distance between the clusters
   /*!
     \note See SingleLinkage class for the meaning of the arguments
-    \param[out] Maximal distance between 2 members in the merged cluster
+    \return Maximal distance between 2 members in the merged cluster
 
   */
   double operator()(unsigned int id1,
@@ -208,8 +209,7 @@ IMP_VALUES(AverageDistanceLinkage,AverageDistanceLinkages);
   \param[in] distances Vector of Floats containing all the
   possible distances(i,j) between elements to cluster. Given N elements to
   cluster, there are N vectors of size N
-  \param[in] Function to calculate distance between clusters.
-  \param[out] a ClusterSet class containing all the clustering steps.
+  \return a ClusterSet class containing all the clustering steps.
 */
 template<class LinkageFunction>
 ClusterSet

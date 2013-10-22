@@ -10,9 +10,6 @@
 #define IMPBASE_SWIG_MACROS_H
 #include <IMP/base/base_config.h>
 
-
-
-
 #if defined(SWIG)
 #define IMP_NO_SWIG(x)
 #else
@@ -21,4 +18,4 @@
 #define IMP_NO_SWIG(x) x
 #endif
 
-#endif  /* IMPBASE_SWIG_MACROS_H */
+#endif /* IMPBASE_SWIG_MACROS_H */

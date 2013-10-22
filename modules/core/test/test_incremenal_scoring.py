@@ -7,12 +7,12 @@ import random
 class Tests(IMP.test.TestCase):
     def test_incr(self):
         """Testing incremental scoring with non-bonded"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         m.set_log_level(IMP.base.SILENT)
         ps=[]
         bb= IMP.algebra.get_unit_bounding_box_3d()
         for i in range(0,10):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             d= IMP.core.XYZR.setup_particle(p)
             ps.append(d)
             d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
@@ -40,8 +40,8 @@ class Tests(IMP.test.TestCase):
         print "iscore"
         iscore=isf.evaluate(False)
         print "oscore"
-        sf.set_log_level(IMP.base.VERBOSE)
-        m.set_log_level(IMP.base.VERBOSE)
+        #sf.set_log_level(IMP.base.VERBOSE)
+        #m.set_log_level(IMP.base.VERBOSE)
         oscore=sf.evaluate(False)
         self.assertAlmostEqual(iscore,
                                oscore, delta=.1)
@@ -75,12 +75,12 @@ class Tests(IMP.test.TestCase):
                                        rscore, delta=.1)
     def test_incr_no_restraints(self):
         """Testing incremental scoring with no restraints"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         m.set_log_level(IMP.base.SILENT)
         ps=[]
         bb= IMP.algebra.get_unit_bounding_box_3d()
         for i in range(0,10):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             d= IMP.core.XYZR.setup_particle(p)
             ps.append(d)
             d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
@@ -99,8 +99,8 @@ class Tests(IMP.test.TestCase):
         print "iscore"
         iscore=isf.evaluate(False)
         print "oscore"
-        sf.set_log_level(IMP.base.VERBOSE)
-        m.set_log_level(IMP.base.VERBOSE)
+        #sf.set_log_level(IMP.base.VERBOSE)
+        #m.set_log_level(IMP.base.VERBOSE)
         oscore=sf.evaluate(False)
         self.assertAlmostEqual(iscore,
                                oscore, delta=.1)
@@ -134,12 +134,12 @@ class Tests(IMP.test.TestCase):
                                        rscore, delta=.1)
     def test_incrnonb(self):
         """Testing incremental scoring"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         #mc.set_log_level(IMP.base.TERSE)
         ps=[]
         bb= IMP.algebra.get_unit_bounding_box_3d()
         for i in range(0,10):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             d= IMP.core.XYZR.setup_particle(p)
             ps.append(d)
             d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
@@ -234,7 +234,7 @@ class Tests(IMP.test.TestCase):
 
     def test_incrigid(self):
         """Testing incremental scoring with rigid bodies"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         #m.set_log_level(IMP.base.SILENT)
         #mc.set_log_level(IMP.base.TERSE)
         ps=[]
@@ -243,14 +243,14 @@ class Tests(IMP.test.TestCase):
         for j in range(0,3):
             cps=[]
             for i in range(0,3):
-                p= IMP.Particle(m)
+                p= IMP.kernel.Particle(m)
                 d= IMP.core.XYZR.setup_particle(p)
                 ps.append(d)
                 d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
                 d.set_radius(1)
                 d.set_coordinates_are_optimized(True)
                 cps.append(p)
-            rb= IMP.core.RigidBody.setup_particle(IMP.Particle(m),
+            rb= IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m),
                                                   cps)
             rbs.append(rb)
         cpc= IMP.container.ConsecutivePairContainer(rbs)

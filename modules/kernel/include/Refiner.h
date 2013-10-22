@@ -11,11 +11,9 @@
 #include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
 #include "Particle.h"
-#include "VersionInfo.h"
-#include "RefCounted.h"
 #include "internal/IndexingIterator.h"
 #include <IMP/base/deprecation_macros.h>
-#include "input_output_macros.h"
+#include "model_object_helpers.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -28,31 +26,36 @@ class DerivativeAccumulator;
     reflect existing relationships, such as the
     IMP::core::LeavesRefiner or arbitrary relationships set up
     for a particular purpose, such as IMP::core::TableRefiner.
-
-    Implementors should see IMP_REFINER().
 */
-class IMPKERNELEXPORT Refiner : public IMP::base::Object
-{
+class IMPKERNELEXPORT Refiner : public ParticleInputs, public base::Object {
   struct Accessor;
-public:
-  Refiner(std::string name="Refiner %1%");
+
+ public:
+  Refiner(std::string name = "Refiner %1%");
   //! Return true if this refiner can refine that particle
   /** This should not throw, so be careful what fields are touched.
    */
-  virtual bool get_can_refine(Particle *) const {return false;}
+  virtual bool get_can_refine(Particle *) const { return false; }
 
   //! Refine the passed particle into a set of particles.
   /** As a precondition can_refine_particle(a) should be true.
    */
-  virtual const ParticlesTemp get_refined(Particle *a) const=0;
+  virtual const ParticlesTemp get_refined(Particle *a) const = 0;
+
+  virtual ParticleIndexes get_refined_indexes(Model *m, ParticleIndex pi) const;
+
   //! Get the ith refined particle.
   /** As a precondition can_refine_particle(a) should be true.
    */
-  virtual Particle* get_refined(Particle *a, unsigned int i) const =0;
+  virtual Particle *get_refined(Particle *a, unsigned int i) const {
+    return get_refined(a)[i];
+  }
 
   /** As a precondition can_refine_particle(a) should be true.
    */
-  virtual unsigned int get_number_of_refined(Particle *a) const =0;
+  virtual unsigned int get_number_of_refined(Particle *a) const {
+    return get_refined(a).size();
+  }
 
 #ifndef SWIG
   /** @name Iterating through the set of refined particles
@@ -64,10 +67,8 @@ public:
   typedef internal::IndexingIterator<Accessor> RefinedIterator;
   RefinedIterator refined_begin(Particle *a) const;
   RefinedIterator refined_end(Particle *a) const;
-  /** @} */
+/** @} */
 #endif
-
-  IMP_INPUTS_DECL(Refiner);
 };
 //! a collection of Refiner objects
 IMP_OBJECTS(Refiner, Refiners);
@@ -75,17 +76,13 @@ IMP_OBJECTS(Refiner, Refiners);
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 struct Refiner::Accessor {
   // can't reference count since swig memory management is broken
-  Particle* p_;
-  const Refiner* r_;
-  Accessor(Particle *p, const Refiner *r): p_(p), r_(r) {}
-  Accessor(){}
+  Particle *p_;
+  const Refiner *r_;
+  Accessor(Particle *p, const Refiner *r) : p_(p), r_(r) {}
+  Accessor() {}
   typedef Particle *result_type;
-  Particle *operator()(unsigned int i) const {
-    return r_->get_refined(p_, i);
-  }
-  bool operator==(const Accessor &o) const {
-    return p_==o.p_ && r_==o.r_;
-  }
+  Particle *operator()(unsigned int i) const { return r_->get_refined(p_, i); }
+  bool operator==(const Accessor &o) const { return p_ == o.p_ && r_ == o.r_; }
 };
 #endif
 
@@ -98,4 +95,4 @@ inline Refiner::RefinedIterator Refiner::refined_end(Particle *a) const {
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_REFINER_H */
+#endif /* IMPKERNEL_REFINER_H */

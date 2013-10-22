@@ -24,23 +24,30 @@ IMPEXAMPLE_BEGIN_NAMESPACE
      or IMP::core::SingletonsRestraint to keep a set of particles
      in a box.
 
-     \pythonexample{range_restriction}
+     \include range_restriction.py
 
      The source code is as follows:
      \include ExampleRestraint.h
      \include ExampleRestraint.cpp
  */
-class IMPEXAMPLEEXPORT ExampleSingletonModifier: public SingletonModifier
-{
+class IMPEXAMPLEEXPORT ExampleSingletonModifier : public SingletonModifier {
   algebra::BoundingBoxD<3> bb_;
-public:
+
+ public:
   ExampleSingletonModifier(const algebra::BoundingBoxD<3> &bb);
 
   // note, Doxygen wants a semicolon at the end of macro lines
-  IMP_SINGLETON_MODIFIER(ExampleSingletonModifier);
+  virtual void apply_index(kernel::Model *m, kernel::ParticleIndex p) const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
+                                         const kernel::ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_outputs(kernel::Model *m,
+                                          const kernel::ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  IMP_SINGLETON_MODIFIER_METHODS(ExampleSingletonModifier);
+  IMP_OBJECT_METHODS(ExampleSingletonModifier);
 };
-
 
 IMPEXAMPLE_END_NAMESPACE
 
-#endif  /* IMPEXAMPLE_EXAMPLE_SINGLETON_MODIFIER_H */
+#endif /* IMPEXAMPLE_EXAMPLE_SINGLETON_MODIFIER_H */

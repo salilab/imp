@@ -31,7 +31,8 @@
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 
 // standard constructor
-KMdata::KMdata(int d, int n) : dim(d), maxPts(n), nPts(n)
+KMdata::KMdata(int d, int n) : base::Object("KMdata%1%"),
+                               dim(d), maxPts(n), nPts(n)
 {
   pts = kmAllocPts(n, d);
   kcTree = NULL;
@@ -42,21 +43,6 @@ KMdata::~KMdata()                    // destructor
   kmDeallocPts(pts);                        // deallocate point array
   delete kcTree;                        // deallocate kc-tree
 }
-
-// copy-constructor (not implemented)
-KMdata::KMdata(const KMdata& )
-  : RefCounted()
-{
-  assert(false);
-}
-
-// assignment operator (not implemented)
-KMdata& KMdata::operator=(const KMdata& )
-{
-  assert(false);
-  return *this;
-}
-
 
 void KMdata::buildKcTree()              // build kc-tree for points
 {

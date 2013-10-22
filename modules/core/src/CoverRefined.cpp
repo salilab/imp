@@ -14,26 +14,34 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-CoverRefined
-::CoverRefined(Refiner *ref,
-               Float slack): slack_(slack)
-{
-  refiner_=ref;
+CoverRefined::CoverRefined(Refiner *ref, Float slack) : slack_(slack) {
+  refiner_ = ref;
 }
 
-IMP_SINGLETON_MODIFIER_FROM_REFINED(CoverRefined, refiner_);
+ModelObjectsTemp CoverRefined::do_get_inputs(
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
+  kernel::ModelObjectsTemp ret = refiner_->get_inputs(m, pis);
+  ret += IMP::kernel::get_particles(m, pis);
+  for (unsigned int i = 0; i < pis.size(); ++i) {
+    ret +=
+        IMP::kernel::get_particles(m, refiner_->get_refined_indexes(m, pis[i]));
+  }
+  return ret;
+}
 
+ModelObjectsTemp CoverRefined::do_get_outputs(
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
+  kernel::ModelObjectsTemp ret = IMP::kernel::get_particles(m, pis);
+  return ret;
+}
 
-void CoverRefined::apply_index(Model *m,
-                               ParticleIndex pi) const
-{
+void CoverRefined::apply_index(kernel::Model *m,
+                               kernel::ParticleIndex pi) const {
   XYZR dp(m, pi);
   XYZs ps(refiner_->get_refined(dp));
   set_enclosing_sphere(dp, ps, slack_);
 }
 
-
 IMP_SUMMARY_DECORATOR_DEF(Cover, XYZR, XYZs,
-                          SingletonModifier * mod
-                          = new CoverRefined(ref,0));
+                          SingletonModifier *mod = new CoverRefined(ref, 0));
 IMPCORE_END_NAMESPACE

@@ -18,9 +18,8 @@
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Mass.h>
 #include <IMP/core/XYZR.h>
-#include <IMP/Model.h>
-#include <IMP/Restraint.h>
-#include <IMP/VersionInfo.h>
+#include <IMP/kernel/Model.h>
+#include <IMP/kernel/Restraint.h>
 #include <IMP/Refiner.h>
 #include <IMP/algebra/eigen_analysis.h>
 
@@ -30,7 +29,7 @@ IMPEM_BEGIN_NAMESPACE
 /** \ingroup exp_restraint
 
  */
-class IMPEMEXPORT PCAFitRestraint : public Restraint
+class IMPEMEXPORT PCAFitRestraint : public kernel::Restraint
 {
 public:
   //! Constructor
@@ -40,28 +39,35 @@ public:
     \param[in] threahold consider all voxels above this value for
                PCA calculation
     \param[in] weight_key the name of the weight attribute of the particles
+    \param[in] max_pca_size_diff
+    \param[in] max_angle_diff
+    \param[in] max_centroid_diff
    */
-  PCAFitRestraint(ParticlesTemp ps,
+  PCAFitRestraint(kernel::ParticlesTemp ps,
        DensityMap *em_map, float threahold,
        float max_pca_size_diff,float max_angle_diff,float max_centroid_diff,
        FloatKey weight_key= atom::Mass::get_mass_key());
 
-  IMP_RESTRAINT(PCAFitRestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(PCAFitRestraint);
 
 #ifndef SWIG
-  IMP_LIST(private, Particle, particle, Particle*, Particles);
+  IMP_LIST(private, Particle, particle, kernel::Particle*, kernel::Particles);
 #endif
 private:
   //! Store particles
-  void store_particles(ParticlesTemp ps);
+  void store_particles(kernel::ParticlesTemp ps);
 
-  IMP::OwnerPointer<DensityMap> target_dens_map_;
+  IMP::base::PointerMember<DensityMap> target_dens_map_;
   float threshold_;
   algebra::BoundingBoxD<3> target_bounding_box_;
   // reference to the IMP environment
   core::XYZs xyz_;
   FloatKey weight_key_;
-  Particles all_ps_;
+  kernel::Particles all_ps_;
   KernelType kt_;
   algebra::PrincipalComponentAnalysis dens_pca_;
   float max_angle_diff_,max_pca_size_diff_;

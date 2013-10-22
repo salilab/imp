@@ -1,3 +1,16 @@
+# Version 1.0 (2013-04-12)
+# Public Domain, originally written by Lasse KÃ¤rkkÃ¤inen <tronic@zi.fi>
+# Published at http://www.cmake.org/Wiki/CMake:How_To_Find_Libraries
+
+# If you improve the script, please modify the forementioned wiki page because
+# I no longer maintain my scripts (hosted as static files at zi.fi). Feel free
+# to remove this entire header if you use real version control instead.
+
+# Changelog:
+# 2013-04-12  Added version number (1.0) and this header, no other changes
+# 2009-10-08  Originally published
+
+
 # Works the same as find_package, but forwards the "REQUIRED" and "QUIET" arguments
 # used for the current package. For this to work, the first parameter must be the
 # prefix of the current package, then the prefix of the new package etc, which are
@@ -22,9 +35,9 @@ macro (libfind_pkg_check_modules PREFIX PKGNAME)
     include(UsePkgConfig)
     pkgconfig(${PKGNAME} ${PREFIX}_INCLUDE_DIRS ${PREFIX}_LIBRARY_DIRS ${PREFIX}_LDFLAGS ${PREFIX}_CFLAGS)
   else (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
-    find_package(PkgConfig QUIET)
+    find_package(PkgConfig)
     if (PKG_CONFIG_FOUND)
-      pkg_check_modules(${PREFIX} ${PKGNAME} QUIET)
+      pkg_check_modules(${PREFIX} ${PKGNAME})
     endif (PKG_CONFIG_FOUND)
   endif (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
 endmacro (libfind_pkg_check_modules)

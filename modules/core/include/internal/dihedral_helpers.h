@@ -20,14 +20,12 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
     in on return with the derivatives with respect to the XYZ particles.
  */
 template <class P>
-inline double dihedral(const P &d0, const P &d1,
-                       const P &d2, const P &d3,
+inline double dihedral(const P &d0, const P &d1, const P &d2, const P &d3,
                        algebra::Vector3D *derv0, algebra::Vector3D *derv1,
-                       algebra::Vector3D *derv2, algebra::Vector3D *derv3)
-{
-  algebra::Vector3D rij = get_vector_d_geometry(d0)-get_vector_d_geometry(d1);
-  algebra::Vector3D rkj = get_vector_d_geometry(d2)-get_vector_d_geometry(d1);
-  algebra::Vector3D rkl = get_vector_d_geometry(d2)-get_vector_d_geometry(d3);
+                       algebra::Vector3D *derv2, algebra::Vector3D *derv3) {
+  algebra::Vector3D rij = get_vector_d_geometry(d0) - get_vector_d_geometry(d1);
+  algebra::Vector3D rkj = get_vector_d_geometry(d2) - get_vector_d_geometry(d1);
+  algebra::Vector3D rkl = get_vector_d_geometry(d2) - get_vector_d_geometry(d3);
 
   algebra::Vector3D v1 = get_vector_product(rij, rkj);
   algebra::Vector3D v2 = get_vector_product(rkj, rkl);
@@ -35,8 +33,8 @@ inline double dihedral(const P &d0, const P &d1,
   double mag_product = v1.get_magnitude() * v2.get_magnitude();
 
   // avoid division by zero
-  double cosangle = std::abs(mag_product) > 1e-12
-                    ? scalar_product / mag_product : 0.0;
+  double cosangle =
+      std::abs(mag_product) > 1e-12 ? scalar_product / mag_product : 0.0;
 
   // avoid range error for acos
   cosangle = std::max(std::min(cosangle, static_cast<Float>(1.0)),
@@ -45,7 +43,7 @@ inline double dihedral(const P &d0, const P &d1,
   double angle = std::acos(cosangle);
   // get sign
   algebra::Vector3D v0 = get_vector_product(v1, v2);
-  double sign = rkj*v0;
+  double sign = rkj * v0;
   if (sign < 0.0) {
     angle = -angle;
   }
@@ -58,8 +56,8 @@ inline double dihedral(const P &d0, const P &d1,
     double sijkj2 = vijkj.get_squared_magnitude();
     double skjkl2 = vkjkl.get_squared_magnitude();
     double skj = rkj.get_magnitude();
-    double rijkj = rij*rkj;
-    double rkjkl = rkj*rkl;
+    double rijkj = rij * rkj;
+    double rkjkl = rkj * rkl;
 
     double fact0 = sijkj2 > 1e-8 ? skj / sijkj2 : 0.0;
     double fact1 = skj > 1e-8 ? rijkj / (skj * skj) : 0.0;
@@ -76,4 +74,4 @@ inline double dihedral(const P &d0, const P &d1,
 
 IMPCORE_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPCORE_DIHEDRAL_HELPERS_H */
+#endif /* IMPCORE_DIHEDRAL_HELPERS_H */

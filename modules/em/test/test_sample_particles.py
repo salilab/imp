@@ -14,7 +14,7 @@ class Tests(IMP.test.TestCase):
         IMP.base.set_log_level(IMP.base.SILENT)
         IMP.base.set_check_level(IMP.base.NONE)
         #init IMP model ( the environment)
-        self.imp_model = IMP.Model()
+        self.imp_model = IMP.kernel.Model()
         self.particles = []
         ## -  create a set of three particles in imp
         npart = 3

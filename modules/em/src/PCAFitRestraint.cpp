@@ -6,7 +6,7 @@
  *
  */
 #include <IMP/em/PCAFitRestraint.h>
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 #include <IMP/em/converters.h>
 
 IMPEM_BEGIN_NAMESPACE
@@ -37,11 +37,11 @@ algebra::PrincipalComponentAnalysis get_pca_from_density(
 }
 
 PCAFitRestraint::PCAFitRestraint(
-   ParticlesTemp ps,
+   kernel::ParticlesTemp ps,
    DensityMap *em_map, float threshold,
    float max_pca_size_diff,float max_angle_diff,
    float max_centroid_diff,
-   FloatKey weight_key): Restraint(IMP::internal::get_model(ps),
+   FloatKey weight_key): kernel::Restraint(IMP::internal::get_model(ps),
       "Fit restraint%1%"),
       max_angle_diff_(algebra::PI*max_angle_diff/180.),
       max_pca_size_diff_(max_pca_size_diff*max_pca_size_diff),
@@ -51,7 +51,7 @@ PCAFitRestraint::PCAFitRestraint(
   weight_key_=weight_key;
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< ps.size(); ++i) {
-      IMP_USAGE_CHECK(core::XYZR::particle_is_instance(ps[i]),
+      IMP_USAGE_CHECK(core::XYZR::get_is_setup(ps[i]),
                       "Particle " << ps[i]->get_name()
                       << " is not XYZR"
                       << std::endl);
@@ -66,7 +66,7 @@ PCAFitRestraint::PCAFitRestraint(
   IMP_LOG_TERSE( "Finish initialization" << std::endl);
 }
 
-IMP_LIST_IMPL(PCAFitRestraint, Particle, particle,Particle*, Particles);
+IMP_LIST_IMPL(PCAFitRestraint, Particle, particle,Particle*, kernel::Particles);
 
 double PCAFitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
@@ -115,22 +115,14 @@ double PCAFitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   return escore;
 }
 
-ParticlesTemp PCAFitRestraint::get_input_particles() const
+ModelObjectsTemp PCAFitRestraint::do_get_inputs() const
 {
-  ParticlesTemp pt(all_ps_.begin(), all_ps_.end());
+  kernel::ModelObjectsTemp pt(all_ps_.begin(), all_ps_.end());
   return pt;
 }
 
-ContainersTemp PCAFitRestraint::get_input_containers() const {
-  return ContainersTemp();
-}
-
-void PCAFitRestraint::do_show(std::ostream& out) const
-{
-  out<<"FitRestraint"<<std::endl;
-}
-void PCAFitRestraint::store_particles(ParticlesTemp ps) {
-  all_ps_=get_as<Particles>(ps);
+void PCAFitRestraint::store_particles(kernel::ParticlesTemp ps) {
+  all_ps_=get_as<kernel::Particles>(ps);
   add_particles(ps);
 }
 IMPEM_END_NAMESPACE

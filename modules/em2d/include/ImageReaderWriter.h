@@ -8,13 +8,14 @@
 #define IMPEM2D_IMAGE_READER_WRITER_H
 
 #include "IMP/em2d/em2d_config.h"
-#include "IMP/Object.h"
+#include "IMP/base/Object.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em/ImageHeader.h"
 #include <iostream>
 
 IMPEM2D_BEGIN_NAMESPACE
 
+//! Virtual class for reader/writers of images
 class ImageReaderWriter : public IMP::base::Object
 {
 public:
@@ -39,8 +40,7 @@ public:
                              em::ImageHeader& header,
                              const cv::Mat &data) const = 0;
 
-  IMP_OBJECT_INLINE(ImageReaderWriter,
-                    { out << "I am an ImageReaderWriter"; }, {});
+  IMP_OBJECT_METHODS(ImageReaderWriter);
 };
 
 IMPEM2D_END_NAMESPACE

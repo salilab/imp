@@ -13,8 +13,7 @@
 #include <IMP/rmf/frames.h>
 #include <IMP/base/flags.h>
 
-int main(int argc, char **argv) {
-  try {
+namespace {
     bool recolor = false;
     double score = std::numeric_limits<double>::max();
     std::string file_type = "auto";
@@ -35,6 +34,10 @@ int main(int argc, char **argv) {
                               " f frames", &frame);
     IMP::base::AddIntFlag aiff("frame_step",
                               "If non-zero output every n frames", &frame_step);
+}
+
+int main(int argc, char **argv) {
+  try {
     IMP::Strings io
       = IMP::base::setup_from_argv(argc, argv,
                                    "Export an RMF file to a viewer",
@@ -56,9 +59,9 @@ int main(int argc, char **argv) {
         return 1;
       }
       if (file_type=="pymol") {
-        output= IMP::create_temporary_file_name("display", ".pym");
+        output= IMP::base::create_temporary_file_name("display", ".pym");
       } else if (file_type=="chimera") {
-        output= IMP::create_temporary_file_name("display", ".py");
+        output= IMP::base::create_temporary_file_name("display", ".py");
       } else {
         IMP::base::write_help();
         return 1;
@@ -66,13 +69,13 @@ int main(int argc, char **argv) {
     }
     std::cout<< "writing to file " << output << std::endl;
     RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(io[0]);
-    IMP_NEW(IMP::Model, m, ());
+    IMP_NEW(IMP::kernel::Model, m, ());
     IMP::atom::Hierarchies hs= IMP::rmf::create_hierarchies(rh, m);
-    IMP::ParticlesTemp ps= IMP::rmf::create_particles(rh, m);
+    IMP::kernel::ParticlesTemp ps= IMP::rmf::create_particles(rh, m);
     IMP::Restraints rs= IMP::rmf::create_restraints(rh, m);
     IMP::display::Geometries gs= IMP::rmf::create_geometries(rh);
 
-    IMP::Pointer<IMP::display::Writer> w
+    IMP::base::Pointer<IMP::display::Writer> w
       = IMP::display::create_writer(output);
     if (frame_step == 0) frame_step = std::numeric_limits<int>::max();
     int cur_frame=0;
@@ -92,7 +95,7 @@ int main(int argc, char **argv) {
         /*if (frame!= 0) {
           IMP::rmf::load_configuration(rh, hs[i], frame);
           }*/
-        if (IMP::core::XYZR::particle_is_instance(ps[i])) {
+        if (IMP::core::XYZR::get_is_setup(ps[i])) {
           IMP::core::XYZR d(ps[i]);
           IMP_NEW(IMP::core::XYZRGeometry, g, (ps[i]));
           if (recolor) {
@@ -118,7 +121,7 @@ int main(int argc, char **argv) {
     } else {
       return 0;
     }
-  } catch (const IMP::Exception &e) {
+  } catch (const IMP::base::Exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
     return 1;
   } catch (const std::exception &e) {

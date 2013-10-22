@@ -6,9 +6,9 @@
 
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/scores2D.h"
-#include "IMP/Pointer.h"
+#include "IMP/base/Pointer.h"
 #include "IMP/em2d/opencv_interface.h"
-#include "IMP/exception.h"
+#include "IMP/base/exception.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 

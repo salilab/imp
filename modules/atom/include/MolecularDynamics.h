@@ -12,7 +12,7 @@
 #include <IMP/atom/atom_config.h>
 #include "Simulator.h"
 #include "atom_macros.h"
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/Optimizer.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -25,17 +25,16 @@ IMPATOM_BEGIN_NAMESPACE
 
     \note RigidBody particles are not handled properly.
 
-    Particles without optimized x,y,z and nonoptimized mass are skipped.
+    kernel::Particles without optimized x,y,z and nonoptimized mass are skipped.
     \see VelocityScalingOptimizerState
     \see LangevinThermostatOptimizerState
     \see BerendsenThermostatOptimizerState
     \see RemoveRigidMotionOptimizerState
  */
-class IMPATOMEXPORT MolecularDynamics : public Simulator
-{
-public:
+class IMPATOMEXPORT MolecularDynamics : public Simulator {
+ public:
   /** Score based on the provided model */
-  MolecularDynamics(Model *m=nullptr);
+  MolecularDynamics(kernel::Model *m);
 
   //! \return the current kinetic energy of the system, in kcal/mol
   virtual Float get_kinetic_energy() const;
@@ -59,19 +58,26 @@ public:
 
   //! Assign velocities representative of the given temperature
   virtual void assign_velocities(Float temperature);
-  IMP_SIMULATOR(MolecularDynamics);
-protected:
+  virtual void setup(const kernel::ParticleIndexes &ps) IMP_OVERRIDE;
+  virtual double do_step(const kernel::ParticleIndexes &sc,
+                         double dt) IMP_OVERRIDE;
+  virtual bool get_is_simulation_particle(kernel::ParticleIndex p) const
+      IMP_OVERRIDE;
+
+  IMP_OBJECT_METHODS(MolecularDynamics);
+
+ protected:
   void initialize();
 
-  virtual void setup_degrees_of_freedom(const ParticleIndexes &ps);
+  virtual void setup_degrees_of_freedom(const kernel::ParticleIndexes &ps);
 
   //! First part of velocity Verlet (update coordinates and half-step velocity)
-  virtual void propagate_coordinates(const ParticleIndexes &ps, double
-          step_size);
+  virtual void propagate_coordinates(const kernel::ParticleIndexes &ps,
+                                     double step_size);
 
   //! Second part of velocity Verlet (update velocity)
-  virtual void propagate_velocities(const ParticleIndexes &ps, double
-          step_size);
+  virtual void propagate_velocities(const kernel::ParticleIndexes &ps,
+                                    double step_size);
 
   //! Cap a velocity component to the maximum value.
   inline void cap_velocity_component(Float &vel) {
@@ -94,4 +100,4 @@ protected:
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_MOLECULAR_DYNAMICS_H */
+#endif /* IMPATOM_MOLECULAR_DYNAMICS_H */

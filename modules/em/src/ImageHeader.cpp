@@ -6,7 +6,7 @@
 
 
 #include "IMP/em/ImageHeader.h"
-#include <IMP/exception.h>
+#include <IMP/base/exception.h>
 #include <ctime>
 #include <string.h>
 

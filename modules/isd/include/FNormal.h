@@ -9,7 +9,7 @@
 
 #include <IMP/isd/isd_config.h>
 #include <IMP/macros.h>
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/constants.h>
 #include <math.h>
 
@@ -81,8 +81,9 @@ class IMPISDEXPORT FNormal : public base::Object
     sigma_=f;
   }
 
-  IMP_OBJECT_INLINE(FNormal, out << "FNormal: " << FA_ << ", " << JA_
-                            << ", " << FM_ << ", " << sigma_ <<std::endl, {});
+  IMP_OBJECT_METHODS(FNormal);
+  /*IMP_OBJECT_INLINE(FNormal, out << "FNormal: " << FA_ << ", " << JA_
+    << ", " << FM_ << ", " << sigma_ <<std::endl, {});*/
 
  private:
   double FA_,JA_,FM_,sigma_;

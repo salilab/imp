@@ -14,38 +14,37 @@
 IMPATOM_BEGIN_NAMESPACE
 
 RemoveTranslationOptimizerState::RemoveTranslationOptimizerState(
-    const Particles &pis, unsigned skip_steps) :
-    pis_(pis), skip_steps_(skip_steps),
-    call_number_(0) {}
-
-void RemoveTranslationOptimizerState::update()
-{
-  if (skip_steps_ == 0 || (call_number_ % skip_steps_) == 0) {
-    remove_translation();
-  }
-  ++call_number_;
+    const kernel::Particles &pis, unsigned skip_steps)
+    : kernel::OptimizerState(pis[0]->get_model(),
+                             "RemoveTranslationOptimizerState%1%"),
+      pis_(pis) {
+  set_period(skip_steps + 1);
 }
 
-void RemoveTranslationOptimizerState::remove_translation() const
-{
-  Particle *p0 = *pis_.begin();
+RemoveTranslationOptimizerState::RemoveTranslationOptimizerState(
+    kernel::Model *m, kernel::ParticleIndexesAdaptor pis)
+    : kernel::OptimizerState(m, "RemoveTranslationOptimizerState%1%") {
+  BOOST_FOREACH(kernel::ParticleIndex pi, pis) {
+    pis_.push_back(m->get_particle(pi));
+  }
+}
+
+void RemoveTranslationOptimizerState::do_update(unsigned int) {
+  remove_translation();
+}
+
+void RemoveTranslationOptimizerState::remove_translation() const {
+  set_was_used(true);
+  kernel::Particle *p0 = *pis_.begin();
   core::XYZ d0(p0);
   algebra::Vector3D coords = d0.get_coordinates();
 
-  for (Particles::const_iterator pi = pis_.begin(); pi != pis_.end(); ++pi) {
-    Particle *p = *pi;
+  for (kernel::Particles::const_iterator pi = pis_.begin(); pi != pis_.end();
+       ++pi) {
+    kernel::Particle *p = *pi;
     core::XYZ d(p);
-    d.set_coordinates(d.get_coordinates()-coords);
+    d.set_coordinates(d.get_coordinates() - coords);
   }
-
-}
-
-
-
-void RemoveTranslationOptimizerState::do_show(std::ostream &out) const
-{
-  out << "Remove Translation every "
-      << skip_steps_ << " steps" << std::endl;
 }
 
 IMPATOM_END_NAMESPACE

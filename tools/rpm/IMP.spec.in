@@ -117,10 +117,11 @@ against IMP.
 %build
 # For now, bundle RMF with IMP (long term, may be better to put in a separate
 # RPM)
+mkdir imp && mv * imp || :
 mkdir build && cd build
-%{cmake} .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr \
-            -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/%{name}-%{version} \
-            -DIMP_DISABLED_MODULES=scratch %{cmake_opts}
+%{cmake} ../imp -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr \
+                -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/%{name}-%{version} \
+                -DIMP_DISABLED_MODULES=scratch %{cmake_opts}
 
 # Normally make will stop at the first error. Since an RPM cannot be built
 # if the build did not complete successfully, this is the default here too.
@@ -129,7 +130,7 @@ mkdir build && cd build
 # not just the first one.
 %if 0%{?keep_going}
 mkdir logs
-../tools/build/build_all.py --outdir=logs --summary=logs/summary.pck make
+../imp/tools/build/build_all.py --outdir=logs --summary=logs/summary.pck make
 %else
 make
 %endif

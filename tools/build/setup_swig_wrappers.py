@@ -14,7 +14,8 @@ from optparse import OptionParser
 imp_init="""try:
     from kernel import *
 except:
-    print "no kernel"
+    import sys
+    print "no kernel", sys.exc_info()
 """
 
 def write_module_cpp(m, contents, datapath):
@@ -47,8 +48,8 @@ def build_wrapper(module, module_path, source, sorted, info, target, datapath):
 
     contents.append("""%%module(directors="1", allprotected="1") "%s"
 %%feature("autodoc", 1);
-// turn off the warning as it mostly triggers on methods (and lots of them)
-%%warnfilter(321);
+// Warning 314: 'lambda' is a python keyword, renaming to '_lambda'
+%%warnfilter(321,302,314);
 
 %%inline %%{
 namespace IMP {
@@ -72,6 +73,18 @@ using namespace kernel;
 #include <boost/utility/enable_if.hpp>
 #include <exception>
 
+#ifdef __cplusplus
+extern "C"
+#endif
+
+// suppress warning
+SWIGEXPORT
+#if PY_VERSION_HEX >= 0x03000000
+PyObject*
+#else
+void
+#endif
+SWIG_init();
 %%}
 """%swig_module_name)
         # some of the typemap code ends up before this is swig sees the typemaps first

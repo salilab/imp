@@ -6,7 +6,7 @@ import math
 import IMP.multifit
 import IMP.atom
 import IMP.em
-from optparse import OptionParser
+from IMP import OptionParser
 import os
 import sys
 
@@ -46,7 +46,7 @@ class Fitter(object):
                                              self.originz))
         dmap.set_was_used(True)
         dmap.get_header().show()
-        mdl = IMP.Model()
+        mdl = IMP.kernel.Model()
         mol2fit = IMP.atom.read_pdb(self.pdb, mdl)
         mh_xyz=IMP.core.XYZs(IMP.core.get_leaves(mol2fit))
         rb = IMP.atom.create_rigid_body(mol2fit)

@@ -11,6 +11,7 @@
 
 #include <IMP/base/base_config.h>
 #include "random.h"
+#include "compiler_macros.h"
 #include "enums.h"
 #include <IMP/base/nullptr.h>
 #include "internal/static.h"
@@ -43,7 +44,7 @@ typedef std::runtime_error ExceptionBase;
     USAGE before running your final optimization to make sure that
     \imp is used correctly.
 
-    Error handling is provided by IMP/exception.h,
+    Error handling is provided by IMP/base/exception.h,
 
     Use the \c gdbinit file provided in \c tools to automatically have \c gdb
     break when \imp errors are detected.
@@ -55,15 +56,16 @@ typedef std::runtime_error ExceptionBase;
 */
 class IMPBASEEXPORT Exception
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  : public std::runtime_error
+    : public std::runtime_error
 #endif
-{
+      {
  public:
 #if defined(SWIG) || defined(IMP_DOXYGEN)
-  const char *what() const throw();
+  const char *what() const IMP_NOEXCEPT;
 #endif
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Exception);
   Exception(const char *message);
-  ~Exception() throw();
+  ~Exception() IMP_NOEXCEPT;
 };
 
 #endif
@@ -72,14 +74,13 @@ class IMPBASEEXPORT Exception
 IMPBASEEXPORT std::string get_context_message();
 #endif
 
-
 //! Control runtime checks in the code
 /** The default level of checks is USAGE for release builds and
     USAGE_AND_INTERNAL for debug builds.
 */
 inline void set_check_level(CheckLevel tf) {
   // cap it against the maximum supported level
-  internal::check_level= std::min<int>(tf, IMP_HAS_CHECKS);
+  internal::check_level = std::min<int>(tf, IMP_HAS_CHECKS);
 }
 
 //! Get the current audit mode
@@ -93,15 +94,10 @@ inline CheckLevel get_check_level() {
 #endif
 }
 
-
-
 /** This function is called whenever IMP detects an error. It can be
     useful to add a breakpoint in the function when using a debugger.
 */
 IMPBASEEXPORT void handle_error(const char *msg);
-
-
-
 
 /** @} */
 
@@ -113,11 +109,13 @@ IMPBASEEXPORT void handle_error(const char *msg);
  */
 struct IMPBASEEXPORT InternalException
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  : public std::runtime_error
+    : public std::runtime_error
 #endif
-{
-  InternalException(const char *msg="Fatal error"): std::runtime_error(msg){}
-  ~InternalException() throw();
+      {
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(InternalException);
+  InternalException(const char *msg = "Fatal error")
+      : std::runtime_error(msg) {}
+  ~InternalException() IMP_NOEXCEPT;
 };
 
 //! An exception for an invalid usage of \imp
@@ -132,34 +130,34 @@ struct IMPBASEEXPORT InternalException
  */
 class IMPBASEEXPORT UsageException
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  : public std::runtime_error
+    : public std::runtime_error
 #endif
-{
+      {
  public:
-  UsageException(const char *t): std::runtime_error(t){}
-  ~UsageException() throw();
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(UsageException);
+  UsageException(const char *t) : std::runtime_error(t) {}
+  ~UsageException() IMP_NOEXCEPT;
 };
 
 //! An exception for an invalid value being passed to \imp
 /** The equivalent Python type also derives from Python's ValueError.
  */
-class IMPBASEEXPORT ValueException : public Exception
-{
+class IMPBASEEXPORT ValueException : public Exception {
  public:
-  ValueException(const char *t): Exception(t){}
-  ~ValueException() throw();
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(ValueException);
+  ValueException(const char *t) : Exception(t) {}
+  ~ValueException() IMP_NOEXCEPT;
 };
-
 
 //! An exception for a request for an invalid member of a container
 /** The equivalent Python type also derives from Python's IndexError.
  */
-class IMPBASEEXPORT IndexException: public Exception
-{
+class IMPBASEEXPORT IndexException : public Exception {
  public:
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(IndexException);
   //! Create exception with an error message
-  IndexException(const char *t): Exception(t){}
-  ~IndexException() throw();
+  IndexException(const char *t) : Exception(t) {}
+  ~IndexException() IMP_NOEXCEPT;
 };
 
 //! An input/output exception
@@ -171,15 +169,14 @@ class IMPBASEEXPORT IndexException: public Exception
 
     The equivalent Python type also derives from Python's IOError.
  */
-class IMPBASEEXPORT IOException: public Exception
-{
+class IMPBASEEXPORT IOException : public Exception {
  public:
-  IOException(const char *t): Exception(t){}
-  ~IOException() throw();
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(IOException);
+  IOException(const char *t) : Exception(t) {}
+  ~IOException() IMP_NOEXCEPT;
 };
 
-
-/** \brief An exception which is thrown when the Model has
+/** \brief An exception which is thrown when the kernel::Model has
     attributes with invalid values.
 
     It may be OK to catch an \imp ModelException, when, for example,
@@ -187,12 +184,12 @@ class IMPBASEEXPORT IOException: public Exception
     restart the optimization. Sampling protocols, such as
     IMP::core::MCCGSampler, tend to do this.
  */
-class IMPBASEEXPORT ModelException: public Exception
-{
+class IMPBASEEXPORT ModelException : public Exception {
  public:
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(ModelException);
   //! Create exception with an error message
-  ModelException(const char *t): Exception(t){}
-  ~ModelException() throw();
+  ModelException(const char *t) : Exception(t) {}
+  ~ModelException() IMP_NOEXCEPT;
 };
 
 /** \brief An exception that signifies some event occurred.
@@ -203,15 +200,15 @@ class IMPBASEEXPORT ModelException: public Exception
 
     We can add event types later via a key.
  */
-class IMPBASEEXPORT EventException: public Exception
-{
+class IMPBASEEXPORT EventException : public Exception {
  public:
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(EventException);
   //! Create exception with an error message
-  EventException(const char *t=""): Exception(t){}
-  ~EventException() throw();
+  EventException(const char *t = "") : Exception(t) {}
+  ~EventException() IMP_NOEXCEPT;
 };
 #endif
 
 IMPBASE_END_NAMESPACE
 
-#endif  /* IMPBASE_EXCEPTION_H */
+#endif /* IMPBASE_EXCEPTION_H */

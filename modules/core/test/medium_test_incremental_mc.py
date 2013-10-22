@@ -7,14 +7,14 @@ import os
 class Tests(IMP.test.TestCase):
     def test_incr(self):
         """Testing incremental scoring with Monte Carlo"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         IMP.base.set_log_level(IMP.base.SILENT)
         mc= IMP.core.MonteCarlo(m)
-        mc.set_log_level(IMP.base.TERSE)
+        mc.set_log_level(IMP.base.SILENT)
         ps=[]
         bb= IMP.algebra.get_unit_bounding_box_3d()
         for i in range(0,10):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             d= IMP.core.XYZR.setup_particle(p)
             ps.append(d)
             d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
@@ -26,7 +26,7 @@ class Tests(IMP.test.TestCase):
         r= IMP.container.PairsRestraint(hps, cpc)
         r.set_model(m)
         isf= IMP.core.IncrementalScoringFunction(ps, [r])
-        isf.set_log_level(IMP.base.TERSE)
+        isf.set_log_level(IMP.base.SILENT)
         mc.set_incremental_scoring_function(isf)
         ms= [IMP.core.BallMover([x], .1) for x in ps]
         mv= IMP.core.SerialMover(ms)
@@ -47,14 +47,14 @@ class Tests(IMP.test.TestCase):
         self.assertLess(m.evaluate(False), 3)
     def test_incr_nbl(self):
         """Testing incremental scoring with Monte Carlo and a nbl"""
-        m= IMP.Model()
+        m= IMP.kernel.Model()
         IMP.base.set_log_level(IMP.base.SILENT)
         mc= IMP.core.MonteCarlo(m)
-        mc.set_log_level(IMP.base.TERSE)
+        mc.set_log_level(IMP.base.SILENT)
         ps=[]
         bb= IMP.algebra.get_unit_bounding_box_3d()
         for i in range(0,10):
-            p= IMP.Particle(m)
+            p= IMP.kernel.Particle(m)
             d= IMP.core.XYZR.setup_particle(p)
             ps.append(d)
             d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
@@ -73,7 +73,7 @@ class Tests(IMP.test.TestCase):
         mc.add_mover(mv)
         icpf= IMP.container.InContainerPairFilter(cpc, True)
         isf.add_close_pair_score(IMP.core.SoftSpherePairScore(100), .2, ps, [icpf])
-        isf.set_log_level(IMP.base.TERSE)
+        isf.set_log_level(IMP.base.SILENT)
         #w= IMP.display.PymolWriter(self.get_tmp_file_name("incr_nbl.pym"))
         #w.set_frame(0)
         #for p in ps:

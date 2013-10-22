@@ -14,32 +14,24 @@
 #include <IMP/base/doxygen_macros.h>
 #include <IMP/base/object_macros.h>
 
+/** \deprecated_at{2.1} Declare the methods yourself.
+ */
+#define IMP_CLOSE_PAIRS_FINDER(Name)                                          \
+  IMPCORE_DEPRECATED_MACRO(2.1, "Declare the methods directly.");             \
+  virtual kernel::ParticlePairsTemp get_close_pairs(                          \
+      const kernel::ParticlesTemp &pa) const IMP_OVERRIDE;                    \
+  virtual kernel::ParticlePairsTemp get_close_pairs(                          \
+      const kernel::ParticlesTemp &pa, const kernel::ParticlesTemp &pb) const \
+      IMP_OVERRIDE;                                                           \
+  virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const  \
+      IMP_OVERRIDE;                                                           \
+  virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas,        \
+                                   const algebra::BoundingBox3Ds &bbs) const  \
+      IMP_OVERRIDE;                                                           \
+  using ClosePairsFinder::get_close_pairs;                                    \
+  virtual kernel::ModelObjectsTemp do_get_inputs(                             \
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const             \
+      IMP_OVERRIDE;                                                           \
+  IMP_OBJECT_METHODS(Name)
 
-// various installs of doxygen get messed up with this macro, so hide it
-#ifdef IMP_DOXYGEN
-/** Helper macro for implementing
-    IMP::core::ClosePairsFinder objects. In addition to the
-    IMP_OBJECT methods it declares:
-    - IMP::core::get_close_pairs()
-*/
-#define IMP_CLOSE_PAIRS_FINDER(Name)
-#else
-#define IMP_CLOSE_PAIRS_FINDER(Name)                                    \
-  IMP_IMPLEMENT(ParticlePairsTemp get_close_pairs(const ParticlesTemp   \
-                                                  &pa) const);          \
-  IMP_IMPLEMENT(ParticlePairsTemp get_close_pairs(const ParticlesTemp &pa, \
-                                                  const ParticlesTemp &pb) \
-                const);                                                 \
-  IMP_IMPLEMENT(IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) \
-                const);                                                 \
-  IMP_IMPLEMENT(IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas, \
-                                         const algebra::BoundingBox3Ds &bbs)\
-                const);                                                 \
-  using ClosePairsFinder::get_close_pairs;                              \
-  IMP_IMPLEMENT(ModelObjectsTemp                                        \
-                do_get_inputs(Model *m,                                 \
-                              const ParticleIndexes &pis) const);       \
-  IMP_OBJECT(Name)
-#endif
-
-#endif  /* IMPCORE_CLOSE_PAIRS_FINDER_MACROS_H */
+#endif /* IMPCORE_CLOSE_PAIRS_FINDER_MACROS_H */

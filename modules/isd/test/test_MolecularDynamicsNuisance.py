@@ -18,22 +18,22 @@ kcal2mod = 4.1868e-4
 # Mass of Carbon-12 (g/mol)
 cmass = 12.011
 
-class XTransRestraint(IMP.Restraint):
+class XTransRestraint(IMP.kernel.Restraint):
     """Attempt to move the whole system along the x axis"""
     def __init__(self, strength):
-        IMP.Restraint.__init__(self)
+        IMP.kernel.Restraint.__init__(self, "XTransRestraint %1%")
         self.strength = strength
 
     def unprotected_evaluate(self, accum):
         e = 0.
         for p in self.get_model().get_particles():
-            if IMP.isd.Nuisance.particle_is_instance(p):
+            if IMP.isd.Nuisance.get_is_setup(p):
                 e += p.get_value(nkey) * self.strength
             else:
                 e += p.get_value(xkey) * self.strength
         if accum:
             for p in self.get_model().get_particles():
-                if IMP.isd.Nuisance.particle_is_instance(p):
+                if IMP.isd.Nuisance.get_is_setup(p):
                     p.add_to_derivative(nkey, self.strength, accum)
                 else:
                     p.add_to_derivative(xkey, self.strength, accum)
@@ -44,10 +44,8 @@ class XTransRestraint(IMP.Restraint):
         return IMP.VersionInfo("","")
     def do_show(self, fh):
         fh.write("Test restraint")
-    def get_input_particles(self):
+    def do_get_inputs(self):
         return [x for x in self.get_model().get_particles()]
-    def get_input_containers(self):
-        return []
 
 class WriteTrajState(IMP.OptimizerState):
     """Write system coordinates (trajectory) into a Python list"""
@@ -58,7 +56,7 @@ class WriteTrajState(IMP.OptimizerState):
         model = self.get_optimizer().get_model()
         step = []
         for p in model.get_particles():
-            if IMP.isd.Nuisance.particle_is_instance(p):
+            if IMP.isd.Nuisance.get_is_setup(p):
                 step.append((p.get_value(nkey),p.get_value(vnkey)))
             else:
                 step.append((p.get_value(xkey), p.get_value(ykey),
@@ -72,10 +70,10 @@ class Tests(IMP.test.TestCase):
         """Set up particles and optimizer"""
         IMP.test.TestCase.setUp(self)
         IMP.base.set_log_level(0)
-        self.model = IMP.Model()
+        self.model = IMP.kernel.Model()
         self.particles = []
         self.particles.append(IMP.isd.Nuisance.setup_particle(
-            IMP.Particle(self.model), -43.0))
+            IMP.kernel.Particle(self.model), -43.0))
         self.particles[-1].set_nuisance_is_optimized(True)
         self.particles[-1].add_attribute(masskey, cmass, False)
         self.md = IMP.isd.MolecularDynamics(self.model)
@@ -139,7 +137,7 @@ class Tests(IMP.test.TestCase):
 
     def test_non_xyz(self):
         """Should skip nuisance particles without xyz attributes"""
-        p = IMP.Particle(self.model)
+        p = IMP.kernel.Particle(self.model)
         p.add_attribute(IMP.FloatKey("attr"), 0.0, True)
         self.md.optimize(100)
 
@@ -164,7 +162,7 @@ class Tests(IMP.test.TestCase):
         # large number of particles:
         for i in range(500):
             self.particles.append(IMP.isd.Nuisance.setup_particle(
-                IMP.Particle(self.model), random.uniform(-100,100)))
+                IMP.kernel.Particle(self.model), random.uniform(-100,100)))
             self.particles[-1].set_nuisance_is_optimized(True)
             self.particles[-1].add_attribute(masskey, cmass, False)
         # Initial temperature should be zero:

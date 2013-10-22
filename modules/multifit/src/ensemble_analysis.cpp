@@ -25,7 +25,7 @@ atom::Hierarchy create_protein(
                 <<std::endl);
   std::cout<<"create protein "<<name<<" with "<<num_beads<<" beads"<<std::endl;
   atom::Hierarchy prot=
-    atom::Hierarchy::setup_particle(new Particle(mdl));
+    atom::Hierarchy::setup_particle(new kernel::Particle(mdl));
   prot->set_name(name);
   prot->add_attribute(order_key,prot_ind);
   prot->add_attribute(path_ind_key,-1);
@@ -34,7 +34,7 @@ atom::Hierarchy create_protein(
   std::cout<<"number of children "<<num_beads<<std::endl;
   for (int i=0;i<num_beads;i++){
     core::XYZR bead_child=core::XYZR::setup_particle(
-             new Particle(mdl),
+             new kernel::Particle(mdl),
              algebra::Sphere3D(algebra::Vector3D(0,0,0),
                                bead_radius));
     atom::Mass::setup_particle(bead_child,3);
@@ -51,7 +51,7 @@ atom::Hierarchy create_protein(
   // //TODO - do we need this restraint
    if (sel.size()>1){
 
-     Restraint *r = atom::create_connectivity_restraint(sel,k);
+     kernel::Restraint *r = atom::create_connectivity_restraint(sel,k);
      IMP_INTERNAL_CHECK(r!=NULL,
                         "Create connectivity failed for protein:"<<name
                         <<" failed \n");
@@ -155,7 +155,7 @@ Ensemble::Ensemble(multifit::SettingsData *sd,
 }
 
 std::vector<Floats> Ensemble::score_by_restraints(
-                        Restraints rs, const IntsList &combinations ) {
+                        kernel::Restraints rs, const IntsList &combinations ) {
   std::vector<Floats> scores(combinations.size());
   boost::progress_display show_progress(combinations.size());
   for(int i=0;i<(int)combinations.size();i++) {

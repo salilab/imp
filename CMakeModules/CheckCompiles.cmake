@@ -13,8 +13,10 @@ int main(int,char*[]) {
   if ("${${pkgname}${name}}" MATCHES "1")
     #message(STATUS "Compiled ok")
     set(${ucpkgname}_INCLUDE_PATH ${include_dir} CACHE INTERNAL "" FORCE)
-    set(${ucpkgname}_LIBRARIES ${link_libs} CACHE INTERNAL "" FORCE)
-    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/${pkgname}" "ok=True
+    foreach(l ${link_libs})
+      set(${ucpkgname}_LIBRARIES ${${ucpkgname}_LIBRARIES} ${l} CACHE INTERNAL "" FORCE)
+    endforeach()
+    file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/${pkgname}" "ok=True
 includepath=\"${${pkgname}_INCLUDE_PATH}\"
 swigpath=\"${${pkgname}_SWIG_PATH}\"
 libpath=\"${${pkgname}_LIB_PATH}\"

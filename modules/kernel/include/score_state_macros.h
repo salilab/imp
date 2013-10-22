@@ -14,46 +14,48 @@
 #include "container_base.h"
 #include "input_output_macros.h"
 
+//! \deprecated_at{2.1} Declare the needed functions directly
+#define IMP_SCORE_STATE(Name)                                                \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the needed functions directly."); \
+                                                                             \
+ protected:                                                                  \
+  virtual void do_before_evaluate() IMP_OVERRIDE;                            \
+  virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;    \
+  IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS;                                   \
+  IMP_MODEL_OBJECT_BACKWARDS_MACRO_OUTPUTS;                                  \
+  IMP_OBJECT_NO_WARNING(Name)
 
+//! \deprecated_at{2.1} Declare the needed functions directly
+#define IMP_CONSTRAINT(Name)                                                  \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the needed functions directly.");  \
+                                                                              \
+ protected:                                                                   \
+  virtual void do_update_attributes() IMP_OVERRIDE;                           \
+  virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE; \
+  IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS;                                    \
+  IMP_MODEL_OBJECT_BACKWARDS_MACRO_OUTPUTS;                                   \
+  IMP_OBJECT_NO_WARNING(Name)
 
-//! For backwards compatibility
-#define IMP_SCORE_STATE(Name)                                           \
-  protected:                                                            \
-  virtual void do_before_evaluate();                                    \
-  virtual void do_after_evaluate(DerivativeAccumulator *da);            \
-  IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS;                              \
-  IMP_MODEL_OBJECT_BACKWARDS_MACRO_OUTPUTS;                             \
-  IMP_OBJECT(Name)
+//! \deprecated_at{2.1} Declare the needed functions directly
+#define IMP_SCORE_STATE_2(Name)                                              \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the needed functions directly."); \
+                                                                             \
+ protected:                                                                  \
+  virtual void do_before_evaluate() IMP_OVERRIDE;                            \
+  virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;    \
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;               \
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;              \
+  IMP_OBJECT_NO_WARNING(Name)
 
+//! \deprecated_at{2.1} Declare the needed functions directly
+#define IMP_CONSTRAINT_2(Name)                                               \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the needed functions directly."); \
+                                                                             \
+ protected:                                                                  \
+  void do_update_attributes();                                               \
+  void do_update_derivatives(DerivativeAccumulator *da);                     \
+  virtual ModelObjectsTemp do_get_inputs() const;                            \
+  virtual ModelObjectsTemp do_get_outputs() const;                           \
+  IMP_OBJECT_NO_WARNING(Name)
 
-//! For backwards compatibility
-#define IMP_CONSTRAINT(Name)                                            \
-  protected:                                                            \
-  void do_update_attributes();                                          \
-  void do_update_derivatives(DerivativeAccumulator *da);                \
-  IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS;                              \
-  IMP_MODEL_OBJECT_BACKWARDS_MACRO_OUTPUTS;                             \
-  IMP_OBJECT(Name)
-
-#if IMP_HAS_DEPRECATED
-//! For backwards compatibility
-#define IMP_SCORE_STATE_2(Name)                                         \
-  protected:                                                            \
-  virtual void do_before_evaluate();                                    \
-  virtual void do_after_evaluate(DerivativeAccumulator *da);            \
-  virtual ModelObjectsTemp do_get_inputs() const;                       \
-  virtual ModelObjectsTemp do_get_outputs() const;                      \
-  IMP_OBJECT(Name)
-
-
-//! For backwards compatibility
-#define IMP_CONSTRAINT_2(Name)                                          \
-  protected:                                                            \
-  void do_update_attributes();                                          \
-  void do_update_derivatives(DerivativeAccumulator *da);                \
-  virtual ModelObjectsTemp do_get_inputs() const;                       \
-  virtual ModelObjectsTemp do_get_outputs() const;                      \
-  IMP_OBJECT(Name)
-#endif
-
-#endif  /* IMPKERNEL_SCORE_STATE_MACROS_H */
+#endif /* IMPKERNEL_SCORE_STATE_MACROS_H */

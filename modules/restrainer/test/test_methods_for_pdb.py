@@ -4,7 +4,7 @@ import IMP.restrainer
 
 class Tests(IMP.test.TestCase):
     def setUp(self):
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.base.set_log_level(IMP.base.NONE)
         IMP.test.TestCase.setUp(self)
 
         RepParser = IMP.restrainer.XMLRepresentation(self.get_input_file_name('pdb_representation.xml'))
@@ -20,7 +20,8 @@ class Tests(IMP.test.TestCase):
         """Check multiple input restraints for pdb"""
 
         self.Model.show()
-        self.Model.evaluate(False)
+        score = self.Model.evaluate(False)
+        self.assertAlmostEqual(score, 187500., delta=10.0)
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -9,8 +9,8 @@ class Tests(IMP.test.TestCase):
     def test_5(self):
         """Testing the CMM writer and frames"""
         name=self.get_tmp_file_name("cmm.%1%.py")
-        m= IMP.Model()
-        p=IMP.Particle(m)
+        m= IMP.kernel.Model()
+        p=IMP.kernel.Particle(m)
         d= IMP.core.XYZR.setup_particle(p)
         w=IMP.display.CMMWriter(name)
         names=[]
@@ -29,8 +29,8 @@ class Tests(IMP.test.TestCase):
     def test_0(self):
         """Testing the CMM writer without frames"""
         name=self.get_tmp_file_name("cmm.py")
-        m= IMP.Model()
-        p=IMP.Particle(m)
+        m= IMP.kernel.Model()
+        p=IMP.kernel.Particle(m)
         d= IMP.core.XYZR.setup_particle(p)
         w=IMP.display.CMMWriter(name)
         g= IMP.core.XYZRGeometry(p)
@@ -54,8 +54,8 @@ class Tests(IMP.test.TestCase):
     def test_1(self):
         """Testing the CMM writer with a singlet file but frames"""
         name=self.get_tmp_file_name("cmmframes.py")
-        m= IMP.Model()
-        p=IMP.Particle(m)
+        m= IMP.kernel.Model()
+        p=IMP.kernel.Particle(m)
         d= IMP.core.XYZR.setup_particle(p)
         w=IMP.display.CMMWriter(name)
         for i in range(0,10):
