@@ -135,6 +135,9 @@ public:
       The normalization flag is set to avoid repeated computation */
   void std_normalize();
 
+  //! Normalize the density voxles between 0 and 1
+  void normalize();
+
   inline bool is_normalized() const {return normalized_;}
 
   //! Calculate the location of a given voxel in a given dimension
