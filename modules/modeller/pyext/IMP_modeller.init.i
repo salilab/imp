@@ -482,11 +482,11 @@ class ModelLoader(object):
         for (maa, mab) in self._modeller_model.bonds:
             pa = self._atoms[maa.index]
             pb = self._atoms[mab.index]
-            if IMP.atom.Bonded.particle_is_instance(pa):
+            if IMP.atom.Bonded.get_is_setup(pa):
                 ba= IMP.atom.Bonded(pa)
             else:
                 ba= IMP.atom.Bonded.setup_particle(pa)
-            if IMP.atom.Bonded.particle_is_instance(pb):
+            if IMP.atom.Bonded.get_is_setup(pb):
                 bb= IMP.atom.Bonded(pb)
             else:
                 bb= IMP.atom.Bonded.setup_particle(pb)
