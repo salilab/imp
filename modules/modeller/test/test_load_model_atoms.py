@@ -17,6 +17,22 @@ class Tests(IMP.test.TestCase):
             Tests._modeller_environ = env
         return self._modeller_environ
 
+    def test_read_alnstructure(self):
+        """Check reading a Modeller alignment structure"""
+        env = self.get_environ()
+        m = modeller.model(env)
+        m.build_sequence('C')
+        a = modeller.alignment(env)
+        a.append_model(m, align_codes='test', atom_files='test')
+        m = IMP.kernel.Model()
+        loader = IMP.modeller.ModelLoader(a[0])
+        mp = loader.load_atoms(m)
+        all_atoms= IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
+        self.assertEqual(7, len(all_atoms))
+        # Alignment structures don't have charges or CHARMM types
+        self.assertEqual(IMP.atom.Charged.get_is_setup(all_atoms[0]), False)
+        self.assertEqual(IMP.atom.CHARMMAtom.get_is_setup(all_atoms[0]), False)
+
     def test_hierarchy(self):
         """Check reading a Modeller model with one protein"""
         i_num_res_type= IMP.atom.ResidueType.get_number_unique()
@@ -50,6 +66,10 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(IMP.atom.get_residue(at).get_index(),
                              rd.get_index())
             self.assertEqual(rd.get_index(), 29)
+            at= IMP.atom.get_atom(rd, IMP.atom.AtomType("CA"))
+            self.assertAlmostEqual(IMP.atom.Charged(at).get_charge(),
+                                   0.16, delta=1e-5)
+            self.assertEqual(IMP.atom.CHARMMAtom(at).get_charmm_type(), 'CT1')
 
     def test_bonds(self):
         """Check that Modeller bonds and angles are loaded"""
