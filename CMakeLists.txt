@@ -266,10 +266,6 @@ foreach(app ${applications})
   add_subdirectory("${CMAKE_SOURCE_DIR}/applications/${app}")
 endforeach(app)
 
-if(${IMP_DOXYGEN_FOUND})
-  imp_execute_process("setup_doxygen_config" ${CMAKE_BINARY_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_doxygen_config.py "--source=${CMAKE_SOURCE_DIR}")
-endif()
-
 list(INSERT IMP_PYTHONPATH 0 "${CMAKE_BINARY_DIR}/lib")
 list(INSERT IMP_LDPATH 0 "${CMAKE_BINARY_DIR}/lib")
 list(INSERT IMP_PATH 0 "${CMAKE_BINARY_DIR}/bin")
@@ -298,6 +294,7 @@ if(IMP_DOXYGEN_FOUND)
    ${CMAKE_SOURCE_DIR}/doc/*.md)
 
   add_custom_target(IMP-doc ALL
+    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_doxygen_config.py "--source=${CMAKE_SOURCE_DIR}"
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/Doxyfile.xml
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_cross_refs.py
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/Doxyfile.html
