@@ -13,7 +13,7 @@ In addition to the tabs above that take you to individual module, class and func
 - [Modules and Applications](@ref allmod)
 - [Biological systems modeled in IMP](http://integrativemodeling.org/systems/)
 - [Wiki](https://github.com/salilab/imp/wiki)
-- [Mailing lists](@ref maillists)
+- [Mailing lists](http://integrativemodeling.org/contact.html)
 
 To help find things we provide the following indexes:
 - [Methods that create classes](@ref factory_index)
