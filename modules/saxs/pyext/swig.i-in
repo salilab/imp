@@ -9,7 +9,7 @@ namespace std {
                    const AtomFactorCoefficients& atom_factor_coefficients);
 %ignore operator<<(std::ostream& q, const IntensityEntry& e);
 %ignore operator>>(std::istream& q, IntensityEntry& e);
-%template(_Vector3Ds) ::std::vector< ::IMP::algebra::Vector3D>;
+//%template(_Vector3Ds) ::std::vector< ::IMP::algebra::Vector3D>;
 
 IMP_SWIG_OBJECT(IMP::saxs, Profile, Profiles);
 
