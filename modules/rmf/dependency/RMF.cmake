@@ -1,4 +1,3 @@
-if(NOT DEFINED RMF_LIBRARIES)
 
   set(CHECK_COMPILES_BODY "")
 
@@ -46,11 +45,8 @@ if(NOT DEFINED RMF_LIBRARIES)
     endif("${RMF_LIBRARY}" MATCHES ".*NOTFOUND.*"
           OR "${RMF_INCLUDE_DIR}" MATCHES ".*NOTFOUND.*")
   endif("${RMF_ok}" MATCHES "1")
-else(NOT DEFINED RMF_LIBRARIES)
-  message(STATUS "RMF already setup")
-endif(NOT DEFINED RMF_LIBRARIES)
 
-if(DEFINED RMF_INTERNAL)
+if(DEFINED RMF_INTERNAL AND NOT DEFINED RMF_LIBRARIES)
   if(IMP_STATIC)
     message(STATUS "RMF does not currently support static builds - skipping")
     file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/RMF" "ok=False")
@@ -70,4 +66,4 @@ if(DEFINED RMF_INTERNAL)
 
     file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/RMF" "ok=True\nincludepath=\"${RMF_INCLUDE_PATH}\"\nswigpath=\"${RMF_SWIG_PATH}\"\n")
   endif(IMP_STATIC)
-endif(DEFINED RMF_INTERNAL)
+endif(DEFINED RMF_INTERNAL AND NOT DEFINED RMF_LIBRARIES)
