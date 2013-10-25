@@ -5,7 +5,7 @@ project(IMP)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 if(${CMAKE_BINARY_DIR} MATCHES "${CMAKE_SOURCE_DIR}/.*")
-   message(FATAL_ERROR "Building in the source directory not supported: " ${CMAKE_SOURCE_DIR} " includes "${CMAKE_BINARY_DIR} )
+   message(FATAL_ERROR "Building in the source directory not supported: ${CMAKE_SOURCE_DIR} includes ${CMAKE_BINARY_DIR}")
 endif()
 
 include(${CMAKE_SOURCE_DIR}/CMakeModules/ExecuteProcess.cmake)
