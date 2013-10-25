@@ -53,7 +53,6 @@ Color get_color_map_color(double f, Color *colors, unsigned int n) {
   double rem = (n - 1) * f - lb;
   if (rem < 0) rem = 0;
   if (rem > 1) rem = 1;
-  std::cout << "lb: " << lb << " n: " << n << std::endl;
   return get_interpolated_rgb(colors[lb], colors[lb + 1], rem);
 }
 }
