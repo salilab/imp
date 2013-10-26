@@ -252,17 +252,34 @@ inline double get_maximum_length(const BoundingBoxD<D> &a) {
 
 //! Return a list of the 8 bounding points for the bounding box
 /** See BoundingBoxD */
-inline Vector3Ds get_vertices(const BoundingBoxD<3> &bb) {
-  Vector3Ds ret;
-  ret.reserve(8);
-  for (unsigned int i = 0; i < 2; ++i) {
-    for (unsigned int j = 0; j < 2; ++j) {
-      for (unsigned int k = 0; k < 2; ++k) {
-        ret.push_back(Vector3D(bb.get_corner(i)[0], bb.get_corner(j)[1],
-                               bb.get_corner(k)[2]));
-      }
-    }
+template <int D>
+inline base::Vector<VectorD<D> > get_vertices(const BoundingBoxD<D> &bb) {
+  BOOST_STATIC_ASSERT(D > 0);
+  VectorD<D - 1> c0, c1;
+  for (unsigned int i = 0; i < D - 1; ++i) {
+    c0[i] = bb.get_corner(0)[i];
+    c1[i] = bb.get_corner(1)[i];
   }
+  BoundingBoxD<D - 1> bbm1(c0, c1);
+  base::Vector<VectorD<D - 1> > recurse = get_vertices(bbm1);
+  base::Vector<VectorD<D> > ret;
+  for (unsigned int i = 0; i < recurse.size(); ++i) {
+    VectorD<D> cur;
+    for (unsigned int j = 0; j < D - 1; ++j) {
+      cur[j] = recurse[i][j];
+    }
+    cur[D - 1] = bb.get_corner(0)[D - 1];
+    ret.push_back(cur);
+    cur[D - 1] = bb.get_corner(1)[D - 1];
+    ret.push_back(cur);
+  }
+  return ret;
+}
+
+inline base::Vector<VectorD<1> > get_vertices(const BoundingBoxD<1> &bb) {
+  base::Vector<VectorD<1> > ret(2);
+  ret[0] = bb.get_corner(0);
+  ret[1] = bb.get_corner(1);
   return ret;
 }
 
