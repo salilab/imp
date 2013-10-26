@@ -7,6 +7,8 @@ import os
 import sys
 import glob
 import pickle
+
+sys.path.append(os.path.join(os.path.dirname(sys.argv[0]), '..', 'build'))
 import tools
 
 def setup_excludes(cov):
