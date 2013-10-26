@@ -22,11 +22,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 template <int D, class Storage, class Value, class Embedding>
 inline Value get_linearly_interpolated(
     const GridD<D, Storage, Value, Embedding> &g, const VectorD<D> &pt) {
-  base::Vector<VectorD<D> > corners =
-      internal::get_interpolation_corners(g, pt);
-  Floats values = internal::get_interpolation_values(g, corners);
-  VectorD<D> fraction = internal::get_interpolation_fraction(g, pt);
-  return internal::get_interpolation_value(values, fraction);
+  return internal::get_interpolation_value(g, pt);
 }
 
 //! Use trilinear interpolation to compute a smoothed value at v
@@ -108,8 +104,9 @@ IMPALGEBRA_END_NAMESPACE
           unsigned int loop_voxel_index = next_loop_voxel_index;               \
           IMP_UNUSED(loop_voxel_index);                                        \
           ++next_loop_voxel_index;                                             \
-          { action }                                                           \
-          ;                                                                    \
+          {                                                                    \
+            action                                                             \
+          };                                                                   \
         }                                                                      \
       }                                                                        \
     }                                                                          \
