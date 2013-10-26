@@ -16,26 +16,29 @@ int main(int, char * []) {
                                  IMP::algebra::Vector3D(10, 10, 10));
   // declare a grid covering the space 0 to 100 with a cell size of 1 and
   // default value of 0
-  typedef IMP::algebra::DenseGrid3D<double> Grid;
+  // unfortunately, due to swig GridD takes lots of redundant template
+  // parameters
+  typedef IMP::algebra::GridD<3, IMP::algebra::DenseGridStorageD<3, double>,
+                              double> Grid;
   Grid grid(1, bb, 0);
   // fill it with a gradient
   BOOST_FOREACH(Grid::Index i, grid.get_all_indexes()) {
     IMP::algebra::Vector3D c = grid.get_center(i);
-    grid[i] = c[0];
+    grid[i] = IMP::algebra::get_distance(c, IMP::algebra::Vector3D(10, 10, 10));
   }
   // we can get smooth values at off-grid points
   // it is boring below .5
   std::cout << "Smooth" << std::endl;
   for (double x = .5; x < 4; x += .1) {
     double vo = IMP::algebra::get_linearly_interpolated(
-        grid, IMP::algebra::Vector3D(x, 1, 1));
+        grid, IMP::algebra::Vector3D(x, x, x));
     std::cout << vo << " ";
   }
   std::cout << std::endl;
   // we can get chunky values at off-grid points instead
   std::cout << "Chunky" << std::endl;
   for (double x = .5; x < 4; x += .1) {
-    double vo = grid[IMP::algebra::Vector3D(x, 1, 1)];
+    double vo = grid[IMP::algebra::Vector3D(x, x, x)];
     std::cout << vo << " ";
   }
   std::cout << std::endl;
