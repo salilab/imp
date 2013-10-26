@@ -19,6 +19,7 @@
 #include <boost/iterator/transform_iterator.hpp>
 #include <IMP/base/map.h>
 #include <IMP/base/Vector.h>
+#include <boost/range/iterator_range.hpp>
 
 #include <limits>
 
@@ -313,6 +314,13 @@ class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
     // ExtendedIndex ub= get_extended_index(bb.get_corner(1));
     return Storage::indexes_end(ExtendedGridIndexD<3>(),
                                 ExtendedGridIndexD<3>());
+  }
+  typedef boost::iterator_range<typename Storage::IndexIterator> Indexes;
+  Indexes get_indexes(const BoundingBoxD<D> &bb) const {
+    return Indexes(indexes_begin(bb), indexes_end(bb));
+  }
+  Indexes get_all_indexes() const {
+    return Indexes(Storage::all_indexes_begin(), Storage::all_indexes_end());
   }
 #endif
   /** @} */
