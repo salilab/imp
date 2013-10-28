@@ -187,7 +187,7 @@ void JmolWriter::prepare_PDB_file(
       IMP::atom::Atom ad(particles_vec[mol_index][j]);
       IMP::atom::Residue rd = get_residue(ad);
       IMP::atom::Chain c = get_chain(rd);
-      char chain = c.get_id();
+      char chain = c.get_id_char();
       out_file <<
        IMP::atom::get_pdb_string(v, ad.get_input_index(), ad.get_atom_type(),
                                  rd.get_residue_type(), chain, rd.get_index(),
@@ -223,7 +223,7 @@ void JmolWriter::prepare_PDB_file(
       IMP::atom::Atom ad(particles_vec[i][j]);
       IMP::atom::Residue rd = get_residue(ad);
       IMP::atom::Chain c = get_chain(rd);
-      char chain = c.get_id();
+      char chain = c.get_id_char();
       out_file <<
        IMP::atom::get_pdb_string(v, ad.get_input_index(), ad.get_atom_type(),
                                  rd.get_residue_type(), chain, rd.get_index(),

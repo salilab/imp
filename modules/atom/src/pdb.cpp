@@ -504,7 +504,7 @@ void write_pdb_of_c_alphas(const Selection& mhd, base::TextOutput out,
     char chain;
     Chain c = get_chain(leaves[i]);
     if (c) {
-      chain = c.get_id();
+      chain = c.get_id()[0];
     } else {
       chain = ' ';
     }

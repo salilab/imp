@@ -78,7 +78,7 @@ class IMPATOMEXPORT Selection :
             Strings chains = [], AtomTypes atom_types = [],
             ResidueTypes residue_types = [], Strings domains = [],
             double target_radius = 0, std::string molecule = None,
-            int residue_index = None, char chain = None,
+            int residue_index = None, std::string chain = None,
             AtomType atom_type = None, ResidueType residue_type = None,
             HierarchyType hierarchy_type = None, Terminus terminus = None,
             std::string domain = None, core::ParticleType particle_type = None,
@@ -108,7 +108,7 @@ class IMPATOMEXPORT Selection :
   void set_terminus(Terminus t);
   /** Select particles in chains whose id is
       in the passed string.*/
-  void set_chains(std::string chains);
+  void set_chains(Strings chains);
   /** Select residues whose indexes are in the passed list.*/
   void set_residue_indexes(Ints indexes);
   /** Select atoms whose types are in the list, eg AT_CA.*/
@@ -121,7 +121,12 @@ class IMPATOMEXPORT Selection :
   /** Select a molecule with the passed name. */
   void set_molecule(std::string mol);
   /** Select a chain with the passed id*/
-  void set_chain(char c);
+  void set_chain(std::string c);
+#ifndef SWIG
+  /** \deprecated_at{2.2} Pass a string */
+  IMPATOM_DEPRECATED_FUNCTION_DECL(2.2)
+  void set_chain(char c) { set_chain(std::string(1, c)); }
+#endif
   /** Select only residues with the passed index.*/
   void set_residue_index(int i);
   /** Select atoms with only the passed type. */

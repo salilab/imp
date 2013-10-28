@@ -10,8 +10,8 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-IntKey Chain::get_id_key() {
-  static IntKey k("chain");
+StringKey Chain::get_id_key() {
+  static StringKey k("chain");
   return k;
 }
 

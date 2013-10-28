@@ -239,7 +239,7 @@ void HierarchySaveStatic::setup_node(kernel::Model *m, kernel::ParticleIndex p,
   }
   if (atom::Chain::get_is_setup(m, p)) {
     atom::Chain d(m, p);
-    chain_factory_.get(n).set_chain_id(d.get_id() - 'A');
+    chain_factory_.get(n).set_chain_id(d.get_id()[0] - 'A');
   }
   if (atom::Diffusion::get_is_setup(m, p)) {
     atom::Diffusion d(m, p);

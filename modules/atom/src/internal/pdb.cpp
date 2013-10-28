@@ -144,7 +144,7 @@ void write_pdb(const kernel::ParticlesTemp& ps, base::TextOutput out) {
       char chain;
       Chain c = get_chain(rd);
       if (c) {
-        chain = c.get_id();
+        chain = c.get_id()[0];
       } else {
         chain = ' ';
       }

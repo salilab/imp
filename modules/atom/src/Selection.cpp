@@ -163,7 +163,7 @@ IMP_ATOM_SELECTION_PRED(ResidueType, ResidueTypes, {
   return 0;
 });
 
-IMP_ATOM_SELECTION_PRED(ChainID, std::string, {
+IMP_ATOM_SELECTION_PRED(ChainID, Strings, {
   if (Chain::get_is_setup(m, pi)) {
     return std::binary_search(data_.begin(), data_.end(),
                               Chain(m, pi).get_id());
@@ -338,7 +338,7 @@ void Selection::set_molecules(Strings mols) {
 void Selection::set_terminus(Terminus t) {
   predicates_.push_back(new TerminusSingletonPredicate(t));
 }
-void Selection::set_chains(std::string chains) {
+void Selection::set_chains(Strings chains) {
   std::sort(chains.begin(), chains.end());
   predicates_.push_back(new ChainIDSingletonPredicate(chains));
 }
@@ -361,7 +361,7 @@ void Selection::set_domains(Strings names) {
 void Selection::set_molecule(std::string mol) {
   set_molecules(Strings(1, mol));
 }
-void Selection::set_chain(char c) { set_chains(std::string(1, c)); }
+void Selection::set_chain(std::string c) { set_chains(Strings(1, c)); }
 void Selection::set_residue_index(int i) { set_residue_indexes(Ints(1, i)); }
 void Selection::set_atom_type(AtomType types) {
   set_atom_types(AtomTypes(1, types));
@@ -754,7 +754,7 @@ ResidueType get_residue_type(Hierarchy h) {
   } while ((h = h.get_parent()));
   IMP_THROW("Hierarchy " << h << " has no residue type.", ValueException);
 }
-int get_chain_id(Hierarchy h) {
+std::string get_chain_id(Hierarchy h) {
   Chain c = get_chain(h);
   if (!c) {
     IMP_THROW("Hierarchy " << h << " has no chain.", ValueException);
