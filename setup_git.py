@@ -9,10 +9,10 @@ from optparse import OptionParser
 opt = OptionParser()
 opt.add_option("-m", "--module",
                action="store_true", dest="module", default=False,
-                  help="Set things up for a module [default]")
+               help="Set things up for a module [default]")
 opt.add_option("-g", "--global",
                action="store_true", dest="glob", default=False,
-                  help="Set global git settings instead of repo settings [default]")
+               help="Set global git settings instead of repo settings [default]")
 
 (options, args) = opt.parse_args()
 
@@ -37,7 +37,7 @@ if options.module and not os.path.exists("include"):
     exit(1)
 
 cmd = subprocess.Popen(["git", "rev-parse", "--abbrev-ref", "HEAD"],
-                           stdout = subprocess.PIPE)
+                       stdout=subprocess.PIPE)
 branch = cmd.stdout.read()
 if branch[-1] == "\n":
     branch = branch[:-1]
@@ -46,18 +46,30 @@ if not options.module and branch != "develop":
     os.system("git checkout develop")
 
 imp_root = os.path.split(sys.argv[0])[0]
+sys.path.append(os.path.join(imp_root, "tools", "build"))
+import tools
+
 
 if options.module:
     print "imp root is", imp_root
 
 sys.path.append(os.path.join(imp_root, "tools"))
-import build.tools
 
 config = os.path.join(imp_root, "tools", "git")
 if options.module:
-    build.tools.link_dir(os.path.join(config, "module_config", "hooks"), os.path.join(".git", "hooks"))
+    tools.link_dir(
+        os.path.join(config,
+                     "module_config",
+                     "hooks"),
+        os.path.join(".git",
+                     "hooks"))
 else:
-    build.tools.link_dir(os.path.join(config, "config", "hooks"), os.path.join(".git", "hooks"))
+    tools.link_dir(
+        os.path.join(config,
+                     "config",
+                     "hooks"),
+        os.path.join(".git",
+                     "hooks"))
 
 if options.glob:
     config_contents = ""
@@ -65,7 +77,7 @@ else:
     config_contents = open(os.path.join(".git", "config"), "r").read()
 
 cmd = subprocess.Popen(["git", "branch", "-r"],
-                           stdout = subprocess.PIPE)
+                       stdout=subprocess.PIPE)
 branches = cmd.stdout.read()
 
 if config_contents.find("gitimp") != -1:
@@ -74,7 +86,14 @@ elif branches.find("develop") == -1 or branches.find("master") == -1:
     print "Git imp not set up as the repository does not have both a master and a develop branch."
 else:
     if options.module:
-        os.system(os.path.join(imp_root, "tools", "git", "gitflow", "git-imp") + " init")
+        os.system(
+            os.path.join(
+                imp_root,
+                "tools",
+                "git",
+                "gitflow",
+                "git-imp") +
+            " init")
     else:
         os.system(os.path.join("tools", "git", "gitflow", "git-imp") + " init")
 
@@ -100,7 +119,9 @@ if config_contents.find("color \"branch\"") == -1:
     os.system(git_config + " color.status.untracked cyan")
 if config_contents.find("whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol") == -1:
     print "Telling git to clean up whitespace"
-    os.system(git_config + " core.whitespace \"fix,-indent-with-non-tab,trailing-space,cr-at-eol\"")
+    os.system(
+        git_config +
+        " core.whitespace \"fix,-indent-with-non-tab,trailing-space,cr-at-eol\"")
 
 if config_contents.find("autosetuprebase = always") == -1:
     print "Telling git to rebase by default on pull"
@@ -114,9 +135,9 @@ os.system(git_config + " alias.imp !tools/git/gitflow/git-imp")
 
 os.system(git_config + " commit.template tools/git/commit_message.txt")
 
-if not options.module :
+if not options.module:
     if branch != "develop":
-        os.system("git checkout "+branch)
+        os.system("git checkout " + branch)
 else:
     # make sure VERSION is ignored
     path = os.path.join(".git", "info", "exclude")
@@ -125,5 +146,5 @@ else:
         ignored.append("VERSION")
         open(path, "w").writelines(ignored)
 
-#make sure version is updated
+# make sure version is updated
 os.system(os.path.join(".", ".git", "hooks", "post-commit"))
