@@ -5,6 +5,7 @@ import IMP.atom
 import IMP.restrainer
 import IMP.container
 import unittest
+import subprocess
 import os
 
 class IMPInstallTests(unittest.TestCase):
@@ -31,6 +32,23 @@ class IMPInstallTests(unittest.TestCase):
         """Check install of example files"""
         d = IMP.restrainer.get_example_path("em_restraint.py")
         self.assert_(os.path.exists(d))
+
+    def test_applications_installed(self):
+        """Check install of basic applications"""
+        apps = ['cnmultifit.py', 'foxs', 'idock.py', 'ligand_score',
+                'multifit.py', 'pdb_check', 'pdb_rmf', 'rmf_cat',
+                'saxs_merge.py']
+        for app in apps:
+            try:
+                p = subprocess.Popen([app, '--help'], stdout=subprocess.PIPE,
+                                     stderr=subprocess.STDOUT)
+            except OSError:
+                raise OSError("Could not run %s" % app)
+            out = p.stdout.read()
+            ret = p.wait()
+            self.assert_(ret == 1 or ret == 0,
+                         "Return code for %s app is %d, not 0 or 1; " \
+                         "output is %s" % (app, ret, out))
 
 if __name__ == '__main__':
     # Note we use unittest rather than IMP.test, since the latter requires
