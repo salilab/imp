@@ -2,7 +2,6 @@
 
 import sys,os
 import optparse
-import fractions
 from random import sample
 from numpy import *
 import copy
