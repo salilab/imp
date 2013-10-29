@@ -19,7 +19,15 @@ class OptionParser(optparse.OptionParser):
         # Handle old users of IMP.OptionParser that set imp_module
         if 'imp_module' in kwargs:
             del kwargs['imp_module']
-        optparse.OptionParser.__init__(self, *args, **kwargs)
+        try:
+            optparse.OptionParser.__init__(self, *args, **kwargs)
+        except TypeError:
+            if 'epilog' in kwargs:
+                # Older optparse doesn't support the epilog keyword
+                del kwargs['epilog']
+                optparse.OptionParser.__init__(self, *args, **kwargs)
+            else:
+                raise
 
     # Don't complain if invalid options are encountered; pass them through
     # unmodified
