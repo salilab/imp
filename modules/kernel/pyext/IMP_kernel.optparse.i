@@ -30,7 +30,7 @@ class OptionParser(optparse.OptionParser):
             except optparse.BadOptionError, err:
                 if not hasattr(err, 'opt_str') \
                    and err.msg.startswith('no such option:'):
-                    self.largs.append(err.msg[16:]
+                    self.largs.append(err.msg[16:])
                 else:
                     self.largs.append(err.opt_str)
         else:
