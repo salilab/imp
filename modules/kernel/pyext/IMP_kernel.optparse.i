@@ -28,7 +28,11 @@ class OptionParser(optparse.OptionParser):
             try:
                 optparse.OptionParser._process_long_opt(self, rargs, values)
             except optparse.BadOptionError, err:
-                self.largs.append(err.opt_str)
+                if not hasattr(err, 'opt_str') \
+                   and err.msg.startswith('no such option:'):
+                    self.largs.append(err.msg[16:]
+                else:
+                    self.largs.append(err.opt_str)
         else:
             optparse.OptionParser._process_long_opt(self, rargs, values)
     def _process_short_opts(self, rargs, values):
