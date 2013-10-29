@@ -1248,7 +1248,7 @@ def find_fit_all(data, initvals, verbose, mean_function):
                 args=(mean_function, particles, model, gpr, M, True),
                 gtol=1e-5, maxiter=100, disp=False, full_output=True)
         Af,cuf,cvf,clf = res[0]
-        success = True if res[-1]==0 else False
+        success = (res[-1]==0)
     else:
         mu0 = transform(particles['G'])
         mv0 = transform(particles['Rg'])
@@ -1259,7 +1259,7 @@ def find_fit_all(data, initvals, verbose, mean_function):
                 args=(mean_function, particles, model, gpr, M, True),
                 gtol=1e-5, maxiter=100, disp=False, full_output=True)
             Af,muf,mvf,cuf,cvf,clf = res[0]
-            success = True if res[-1]==0 else False
+            success = (res[-1]==0)
         else:
             mw0 = transform(particles['d'])
             if mean_function == 'Generalized':
@@ -1269,7 +1269,7 @@ def find_fit_all(data, initvals, verbose, mean_function):
                     args=(mean_function, particles, model, gpr, M, True),
                     gtol=1e-5, maxiter=100, disp=False, full_output=True)
                 Af,muf,mvf,mwf,cuf,cvf,clf = res[0]
-                success = True if res[-1]==0 else False
+                success = (res[-1]==0)
             else:
                 mx0 = transform(particles['s'])
                 res = optimize.fmin_bfgs(lambda *a: target_function(*a)[0],
@@ -1278,7 +1278,7 @@ def find_fit_all(data, initvals, verbose, mean_function):
                     args=(mean_function, particles, model, gpr, M, True),
                     gtol=1e-5, maxiter=100, disp=False, full_output=True)
                 Af,muf,mvf,mwf,mxf,cuf,cvf,clf = res[0]
-                success = True if res[-1]==0 else False
+                success = (res[-1]==0)
                 particles['s'].set_nuisance(untransform(mxf,particles['s']))
             particles['d'].set_nuisance(untransform(mwf,particles['d']))
         particles['Rg'].set_nuisance(untransform(mvf,particles['Rg']))
@@ -1646,7 +1646,10 @@ def write_summary_file(merge, profiles, args):
             fl.write("  Model Comparison : num_params -log10(Bayes Factor) "
                     "-log(Posterior) -log(Likelihood) BIC AIC\n")
             for i in merge.bayes:
-                name = '*'+i if i==merge.mean else i
+                if i==merge.mean:
+                    name = '*'+i
+                else:
+                    name = i
                 fl.write("   %s : %d\t%f\t%f\t%f\t%f\t%f\n" %
                         (name, merge.bayes[i][0], merge.bayes[i][8]/log(10),
                             merge.bayes[i][4], merge.bayes[i][5],
