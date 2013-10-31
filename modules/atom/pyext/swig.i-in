@@ -55,6 +55,7 @@ IMP_SWIG_OBJECT(IMP::atom, CoulombPairScore, CoulombPairScores);
 IMP_SWIG_OBJECT(IMP::atom, CoverBond, CoverBonds);
 IMP_SWIG_OBJECT(IMP::atom, DihedralSingletonScore, DihedralSingletonScores);
 IMP_SWIG_OBJECT(IMP::atom, DopePairScore, DopePairScores);
+IMP_SWIG_OBJECT(IMP::atom, SoapLoopPairScore, SoapLoopPairScores);
 IMP_SWIG_OBJECT(IMP::atom, EzRestraint, EzRestraints);
 IMP_SWIG_OBJECT(IMP::atom, ForceFieldParameters, ForceFieldParametersList);
 IMP_SWIG_OBJECT(IMP::atom, ForceSwitch, ForceSwitches);
@@ -175,6 +176,7 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
 
 %template(_ADopeBase) IMP::score_functor::DistancePairScore<IMP::score_functor::Dope>;
 %template(_BDopeBase) IMP::score_functor::DistancePairScore< IMP::score_functor::Statistical< IMP::atom::DopeType,false,true,false > >;
+%template(_SoapLoopBase) IMP::score_functor::DistancePairScore<IMP::score_functor::SoapLoop>;
 namespace IMP {
   namespace atom {
    %template(_SPSFTB) ::IMP::score_functor::DistancePairScore<score_functor::Statistical< IMP::atom::ProteinLigandType, true, false> >;
@@ -210,6 +212,7 @@ namespace IMP {
 %include "IMP/atom/EzRestraint.h"
 %include "IMP/atom/hierarchy_tools.h"
 %include "IMP/atom/DopePairScore.h"
+%include "IMP/atom/SoapLoopPairScore.h"
 %include "IMP/atom/SameResiduePairFilter.h"
 %include "IMP/atom/RemoveRigidMotionOptimizerState.h"
 %include "IMP/atom/BerendsenThermostatOptimizerState.h"
