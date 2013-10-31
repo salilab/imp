@@ -100,7 +100,8 @@ struct Pointer : internal::PointerBase<internal::RefCountedPointerTraits<O> > {
     P::operator=(o);
     return *this;
   }
-#if defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)
+#if (defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)) && \
+    !defined(nullptr)
   base::Pointer<O>& operator=(nullptr_t o) {
     P::operator=(o);
     return *this;
@@ -160,7 +161,8 @@ struct PointerMember
     P::operator=(o);
     return *this;
   }
-#if defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)
+#if (defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)) && \
+    !defined(nullptr)
   base::PointerMember<O>& operator=(nullptr_t o) {
     P::operator=(o);
     return *this;
@@ -218,7 +220,8 @@ struct OwnerPointer : internal::PointerBase<internal::PointerMemberTraits<O> > {
     P::operator=(o);
     return *this;
   }
-#if defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)
+#if (defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)) && \
+    !defined(nullptr)
   base::OwnerPointer<O>& operator=(nullptr_t o) {
     P::operator=(o);
     return *this;

@@ -46,7 +46,8 @@ struct UncheckedWeakPointer
     P::operator=(o);
     return *this;
   }
-#if defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)
+#if(defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)) && \
+    !defined(nullptr)
   UncheckedWeakPointer<O>& operator=(nullptr_t o) {
     P::operator=(o);
     return *this;
@@ -88,7 +89,8 @@ struct WeakPointer
     P::operator=(o);
     return *this;
   }
-#if defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)
+#if(defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)) && \
+    !defined(nullptr)
   WeakPointer<O>& operator=(nullptr_t o) {
     P::operator=(o);
     return *this;
