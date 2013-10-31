@@ -24,7 +24,7 @@ else:
         hsh, err = process.communicate()
         version = branch + "-" + hsh
     elif branch == "master" or branch.startswith("release"):
-        process = subprocess.Popen(['git', 'describe'], stdout=subprocess.PIPE)
+        process = subprocess.Popen(['git', 'describe'], cwd = options.source, stdout=subprocess.PIPE)
         version, err = process.communicate()
     else:
         process = subprocess.Popen(['git', 'rev-parse', '--short', 'HEAD'], cwd = options.source, stdout=subprocess.PIPE)
