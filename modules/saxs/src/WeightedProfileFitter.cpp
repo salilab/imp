@@ -9,79 +9,145 @@
 
 #include <IMP/saxs/WeightedProfileFitter.h>
 
-#include <IMP/saxs/internal/nnls.h>
+#include <Eigen/Dense>
+
+using namespace Eigen;
 
 IMPSAXS_BEGIN_NAMESPACE
 
-Floats WeightedProfileFitter::empty_weights_;
+namespace {
+
+Eigen::VectorXf NNLS(const Eigen::MatrixXf &A, const Eigen::VectorXf &b) {
+
+  // TODO: make JacobiSVD a class object to avoid memory re-allocations
+  Eigen::JacobiSVD<Eigen::MatrixXf> svd(A, ComputeThinU | ComputeThinV);
+  Eigen::VectorXf x = svd.solve(b);
+
+  //compute a small negative tolerance
+  float tol = 0;
+  int n = A.cols();
+  int m = A.rows();
+
+  //count initial negatives
+  int negs=0;
+  for(int i=0; i<n; i++) if (x[i]<0.0) negs++;
+  if (negs<=0) return x;
+
+  int sip = int(negs/100); if (sip<1) sip=1;
+
+  Eigen::VectorXf zeroed = Eigen::VectorXf::Zero(n);
+  Eigen::MatrixXf C = A;
+
+  //iteratively zero some x values
+  for(int count=0; count<n; count++)  { //loop till no negatives found
+    //count negatives and choose how many to treat
+    negs=0;
+    for (int i=0; i<n; i++) if (zeroed[i]<1.0 && x[i]<tol) negs++;
+    if (negs<=0) break;
+
+    int gulp = std::max(negs/20,sip);
+
+    //zero the most negative solution values
+    for (int k=1; k<=gulp; k++) {
+      int p = -1;
+      float worst=0.0;
+      for (int j=0; j<n; j++)
+        if (zeroed[j]<1.0 && x[j]<worst) {
+          p=j; worst=x[p];
+        }
+      if (p<0) break;
+      for (int i=0; i<m; i++) C(i, p) = 0.0;
+      zeroed[p]=9;
+    }
+
+    //re-solve
+    Eigen::JacobiSVD<Eigen::MatrixXf> svd(C, ComputeThinU | ComputeThinV);
+    x = svd.solve(b);
+  }
+
+  for (int j=0; j<n; j++)
+    if(x[j]<0.0 && std::abs(x[j])<=std::abs(tol)) x[j]=0.0;
+
+  return x;
+}
+
+}
 
 WeightedProfileFitter::WeightedProfileFitter(const Profile* exp_profile):
   ProfileFitter<ChiScore>(exp_profile),
-  W_(exp_profile->size()),
+  W_(exp_profile->size(), 1),
   Wb_(exp_profile->size()),
   A_(exp_profile->size(), 2) {
 
+  Eigen::VectorXf b(exp_profile->size());
+
   for(unsigned int i=0; i<exp_profile_->size(); i++) {
-    Wb_[i] = exp_profile_->get_intensity(i);
-    W_[i] = 1.0/(exp_profile_->get_error(i)*exp_profile_->get_error(i));
+    Wb_(i) = exp_profile_->get_intensity(i);
+    W_(i) = 1.0/(exp_profile_->get_error(i));
   }
-  Wb_ = W_ * Wb_;
+  Wb_ = W_.asDiagonal() * Wb_;
 }
 
 Float WeightedProfileFitter::compute_score(const ProfilesTemp& profiles,
-                                           std::vector<double>& weights) const {
+                                           std::vector<double>& weights,
+                                           bool nnls) const {
 
   // no need to compute weighted profile for ensemble of size 1
-  if(profiles.size() == 1)
+  if(profiles.size() == 1) {
+    weights.resize(1); weights[0] = 1.0;
     return scoring_function_->compute_score(exp_profile_, profiles[0]);
+  }
 
   //compute_weights(profiles, weights);
   int m = profiles.size();
   int n = exp_profile_->size();
 
+  // fill in A_
   WeightedProfileFitter* non_const_this =
     const_cast<WeightedProfileFitter*>(this);
-  if(A_.dim2() != m) non_const_this->A_.resize(n, m);
 
+  if(A_.cols() != m) non_const_this->A_.resize(n, m);
   for(int j=0; j<m; j++) {
     for(int i=0; i<n; i++) {
-      (non_const_this->A_)[i][j] = profiles[j]->get_intensity(i);
+      (non_const_this->A_)(i, j) = profiles[j]->get_intensity(i);
     }
   }
 
-  // compute weights
-  internal::Vector w = autoregn(W_*A_, Wb_);
-  // normalize weights so they sum up to 1.0
+  Eigen::VectorXf w;
+  if(!nnls) { // solve least squares
+    Eigen::JacobiSVD<Eigen::MatrixXf> svd(W_.asDiagonal()*A_,
+                                          ComputeThinU | ComputeThinV);
+    w = svd.solve(Wb_);
+    // zero the negatives
+    for(int i=0; i<w.size(); i++) if(w(i) < 0) w(i)=0;
+  } else {
+    w = NNLS(W_.asDiagonal()*A_, Wb_);
+  }
   w /= w.sum();
 
-  // computed weighted profile
+  // compute weighted profile
   IMP_NEW(Profile, weighted_profile, (exp_profile_->get_min_q(),
                                       exp_profile_->get_max_q(),
                                       exp_profile_->get_delta_q()));
-  internal::Vector wp = A_*w;
-
+  Eigen::VectorXf wp = A_*w;
   for(unsigned int k=0; k<profiles[0]->size(); k++)
     weighted_profile->add_entry(profiles[0]->get_q(k), wp[k]);
 
-  weights.resize(w.size()); for(int i=0; i<w.size(); i++) weights[i] = w[i];
+  weights.resize(w.size());
+  for(int i=0; i<w.size(); i++) weights[i] = w[i];
+
   return scoring_function_->compute_score(exp_profile_, weighted_profile);
 }
 
 WeightedFitParameters WeightedProfileFitter::fit_profile(
                             ProfilesTemp partial_profiles,
                             float min_c1, float max_c1,
-                            float min_c2, float max_c2,
-                            const std::string fit_file_name) const {
-
+                            float min_c2, float max_c2) const {
   std::vector<double> weights;
   WeightedFitParameters fp = search_fit_parameters(partial_profiles,
                                            min_c1, max_c1, min_c2, max_c2,
                                            std::numeric_limits<float>::max(),
                                            weights);
-
-  if(fit_file_name.size() > 0)
-    write_fit_file(partial_profiles, fp, fit_file_name);
-
   return fp;
 }
 

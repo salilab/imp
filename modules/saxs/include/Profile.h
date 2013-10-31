@@ -93,13 +93,15 @@ public:
                      FormFactorType ff_type = HEAVY_ATOMS);
 
   //! calculate profile for any type of kernel::Particles that have coordinates
-  void calculate_profile_constant_form_factor(const kernel::Particles& particles,
-                                              Float form_factor = 1.0);
+  void calculate_profile_constant_form_factor(
+                                           const kernel::Particles& particles,
+                                           Float form_factor = 1.0);
 
   // computes theoretical profile faster for cyclically symmetric particles
   // assumes that the units particles are ordered one after another in the
   // input particles vector (n - symmetry order)
-  void calculate_profile_symmetric(const kernel::Particles& particles, unsigned int n,
+  void calculate_profile_symmetric(const kernel::Particles& particles,
+                                   unsigned int n,
                                    FormFactorType ff_type = HEAVY_ATOMS);
 
   //! convert to real space P(r) function P(r) = 1/2PI^2 Sum(I(q)*qr*sin(qr))
@@ -284,6 +286,7 @@ public:
 
   // stores the intensity split into 6 for c1/c2 enumeration
   std::vector<std::vector<double> > partial_profiles_;
+  Float c1_, c2_;
 
   bool experimental_; // experimental profile read from file
   Float average_radius_; // average radius of the particles

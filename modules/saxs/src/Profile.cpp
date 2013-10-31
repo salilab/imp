@@ -34,8 +34,8 @@ const Float Profile::modulation_function_parameter_ = 0.23;
 
 Profile::Profile(Float qmin, Float qmax, Float delta):
   base::Object("profile%1%"),
-  min_q_(qmin), max_q_(qmax), delta_q_(delta), experimental_(false),
-  average_radius_(1.58), average_volume_(17.5), id_(0) {
+  min_q_(qmin), max_q_(qmax), delta_q_(delta), c1_(10), c2_(10),
+  experimental_(false), average_radius_(1.58), average_volume_(17.5), id_(0) {
   set_was_used(true);
   ff_table_ = default_form_factor_table();
 }
@@ -523,7 +523,8 @@ void Profile::sum_partial_profiles(Float c1, Float c2) {
   // precomputed exp function
   static internal::ExpFunction ef(square(get_max_q())*0.3, 0.00001);
 
-  if(partial_profiles_.size() > 0) {
+  if(partial_profiles_.size() > 0 &&
+     (fabs(c1_ -c1) > 0.000001 || fabs(c2_-c2) > 0.000001)) {
     // implements volume fitting function G(s) as described
     // in crysol paper eq. 13
     Float rm = average_radius_;
@@ -555,6 +556,8 @@ void Profile::sum_partial_profiles(Float c1, Float c2) {
       }
       set_intensity(k, intensity);
     }
+    // set new c1/c2 values
+    c1_ = c1; c2_ = c2;
   }
 }
 

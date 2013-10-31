@@ -21,6 +21,7 @@ class IMPSAXSEXPORT FitParameters {
   FitParameters(float chi, float c1, float c2):
     chi_(chi), c1_(c1), c2_(c2), c_(0.0), o_(0.0), default_chi_(0.0) {}
 
+  float get_score() const { return chi_; }
   float get_chi() const { return chi_; }
   float get_c1() const { return c1_; }
   float get_c2() const { return c2_; }
