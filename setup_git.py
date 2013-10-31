@@ -130,10 +130,10 @@ if config_contents.find("autosetuprebase = always") == -1:
 os.system(git_config + " branch.develop.rebase true")
 os.system(git_config + " branch.master.rebase true")
 
-print "Adding git-flow imp aliases"
-os.system(git_config + " alias.imp !tools/git/gitflow/git-imp")
-
-os.system(git_config + " commit.template tools/git/commit_message.txt")
+if not options.glob:
+    print "Adding git-flow imp aliases"
+    os.system(git_config + " alias.imp !tools/git/gitflow/git-imp")
+    os.system(git_config + " commit.template !tools/git/commit_message.txt")
 
 if not options.module:
     if branch != "develop":
