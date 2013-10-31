@@ -14,7 +14,7 @@
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
 //! Open cubic spline function.
-/** This function interpolates a set of eveny spaced values using a spline.
+/** This function interpolates a set of evenly spaced values using a spline.
     The the second derivative at the termini is set to zero. See
     core::ClosedCubicSpline for a periodic version.
 
