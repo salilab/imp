@@ -1,6 +1,8 @@
 # ChangeLog
+# For IMP 2.1.1 # {#ChangeLog}
+- Added support for Mac OS 10.9
 
-# For IMP 2.1 # {#ChangeLog}
+# For IMP 2.1
 - There is now some limited IMP-wide gathering of timing statistics. You can add `--statistics=filename` to the command line or use the IMP::base::show_timings() function to view of summary of where IMP has spent time.
 - Slack was being used inconsistently (and not always correctly) among the various containers and restraints. If you had heavily optimized the slack value for speed, you may want to revisit it.
 - class name OwnerPointer was switched to PointerMember, to denote more clearly a ref-counting pointer that is a class member
