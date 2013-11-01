@@ -39,7 +39,7 @@ rm -f /tmp/$$.out
 
 # Update any submodules, etc. if necessary
 git submodule update
-./setup_git.py >& /dev/null || exit 1
+./setup_git.py > /dev/null || exit 1
 
 # Get top-most revision
 rev=`git rev-parse HEAD`
