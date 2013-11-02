@@ -19,6 +19,10 @@
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
 //! SOAP-LOOP score.
+/** The library file itself, soap_loop.hdf5, is rather large (~500MB)
+    and so is not included here. It can be downloaded separately from
+    http://salilab.org/SOAP/.
+ */
 class SoapLoop : public Score {
   double maxrange_;
   internal::SoapLoopPotential potential_;

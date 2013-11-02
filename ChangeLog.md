@@ -1,6 +1,7 @@
 # ChangeLog
 # For IMP 2.2 # {#ChangeLog}
 - IMP::atom::Chain now uses strings for the chain ids, to be consistent with changes in the PDB. PDB files are written using the first character of the chain string.
+- Added SOAP-LOOP scoring (IMP::score_functor::SoapLoop and IMP::atom::SoapLoopPairScore). The potential file itself is rather large (~500MB) and so is not included with IMP. It can be downloaded separately from http://salilab.org/SOAP/.
 
 # For IMP 2.1 #
 - There is now some limited IMP-wide gathering of timing statistics. You can add `--statistics=filename` to the command line or use the IMP::base::show_timings() function to view a summary of where IMP has spent time.

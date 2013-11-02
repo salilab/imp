@@ -15,6 +15,10 @@
 IMPATOM_BEGIN_NAMESPACE
 
 //! Score a pair of atoms using the SOAP-LOOP potential.
+/** The library file itself, soap_loop.hdf5, is rather large (~500MB)
+    and so is not included here. It can be downloaded separately from
+    http://salilab.org/SOAP/.
+ */
 class SoapLoopPairScore
     : public score_functor::DistancePairScore<score_functor::SoapLoop> {
   typedef score_functor::DistancePairScore<score_functor::SoapLoop> P;
