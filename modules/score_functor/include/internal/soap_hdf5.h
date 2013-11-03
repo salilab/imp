@@ -10,6 +10,9 @@
 #define IMPSCORE_FUNCTOR_SOAP_HDF_5_H
 
 #include <IMP/score_functor/score_functor_config.h>
+
+#ifdef IMP_SCORE_FUNCTOR_USE_HDF5
+
 #include <boost/noncopyable.hpp>
 #include <hdf5.h>
 
@@ -222,5 +225,7 @@ Hdf5Dataspace::Hdf5Dataspace(Hdf5Attribute &attribute) : id_(-1) {
 }
 
 IMPSCOREFUNCTOR_END_INTERNAL_NAMESPACE
+
+#endif // IMP_SCORE_FUNCTOR_USE_HDF5
 
 #endif /* IMPSCORE_FUNCTOR_SOAP_HDF_5_H */

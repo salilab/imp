@@ -9,6 +9,8 @@
 #include <IMP/score_functor/internal/soap_hdf5.h>
 #include <IMP/base/check_macros.h>
 
+#ifdef IMP_SCORE_FUNCTOR_USE_HDF5
+
 IMPSCOREFUNCTOR_BEGIN_INTERNAL_NAMESPACE
 
 namespace {
@@ -33,3 +35,5 @@ void handle_hdf5_error()
 }
 
 IMPSCOREFUNCTOR_END_INTERNAL_NAMESPACE
+
+#endif // IMP_SCORE_FUNCTOR_USE_HDF5

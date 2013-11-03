@@ -10,6 +10,9 @@
 #define IMPSCORE_FUNCTOR_SOAP_LOOP_HELPERS_H
 
 #include <IMP/score_functor/score_functor_config.h>
+
+#ifdef IMP_SCORE_FUNCTOR_USE_HDF5
+
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Residue.h>
 #include "soap_hdf5.h"
@@ -214,5 +217,7 @@ void SoapLoopPotential::read_feature_info(Hdf5File &file_id)
 }
 
 IMPSCOREFUNCTOR_END_INTERNAL_NAMESPACE
+
+#endif // IMP_SCORE_FUNCTOR_USE_HDF5
 
 #endif /* IMPSCORE_FUNCTOR_SOAP_LOOP_HELPERS_H */

@@ -25,6 +25,7 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
  */
 class SoapLoop : public Score {
   double maxrange_;
+#ifdef IMP_SCORE_FUNCTOR_USE_HDF5
   internal::SoapLoopPotential potential_;
   internal::SoapLoopDoublets doublets_;
 
@@ -53,19 +54,27 @@ class SoapLoop : public Score {
     return potential_.get_value(distbin, ang1, ang2, dih, d1.doublet_class,
                                 d2.doublet_class);
   }
+#endif // IMP_SCORE_FUNCTOR_USE_HDF5
 
  public:
   //! Constructor.
   /** \param[in] library The HDF5 file containing the SOAP-LOOP library.
    */
   SoapLoop(std::string library) {
+#ifdef IMP_SCORE_FUNCTOR_USE_HDF5
     read_library(library);
+#else
+    maxrange_ = 0.;
+    IMP_UNUSED(library);
+    IMP_THROW("Must configure IMP with HDF5 to use this class", ValueException);
+#endif
   }
   template <unsigned int D>
   double get_score(kernel::Model *m,
                    const base::Array<D, kernel::ParticleIndex> &pis,
                    double distance) const {
     double score = 0;
+#ifdef IMP_SCORE_FUNCTOR_USE_HDF5
     int distbin = potential_.get_index(internal::SoapLoopPotential::DISTANCE,
                                        distance);
     if (distbin >= 0) {
@@ -85,6 +94,7 @@ class SoapLoop : public Score {
         }
       }
     }
+#endif // IMP_SCORE_FUNCTOR_USE_HDF5
     return score;
   }
   template <unsigned int D>
