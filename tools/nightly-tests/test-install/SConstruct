@@ -10,6 +10,9 @@ vars.Add('mock_config', 'Name of the mock config used to build IMP RPMs. '
 vars.Add(PathVariable('pypath',
                       'Directory/ies where IMP Python wrappers are installed',
                       None, PathVariable.PathAccept))
+vars.Add(PathVariable('path',
+                      'Directory/ies where IMP binaries are installed',
+                      None, PathVariable.PathAccept))
 vars.Add('python', 'The Python executable to use to execute IMP Python scripts',
          'python')
 
@@ -19,6 +22,7 @@ Help(vars.GenerateHelpText(env))
 libpath = env.get('libpath', None)
 cpppath = env.get('cpppath', None)
 pypath = env.get('pypath', None)
+path = env.get('path', None)
 mock = env.get('mock_config', None)
 cxxflags = env.get('cxxflags', '').split(' ')
 linkflags = env.get('linkflags', '').split(' ')
@@ -31,6 +35,10 @@ env['ENV']['LIBPATH'] = libpath             # AIX
 
 # Set Python search path
 env['ENV']['PYTHONPATH'] = '%s:%s' % (pypath, libpath)
+
+# Set path
+if path:
+    env['ENV']['PATH'] = path + ':' + env['ENV']['PATH']
 
 # Test compiling and running a C++ program that links against IMP
 testcpp = env.Program('test.cpp', CPPPATH=cpppath, LIBPATH=libpath,
