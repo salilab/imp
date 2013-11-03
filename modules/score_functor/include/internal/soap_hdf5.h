@@ -16,6 +16,7 @@
 IMPSCOREFUNCTOR_BEGIN_INTERNAL_NAMESPACE
 
 // Convert the HDF5 error into an IMP exception
+IMPSCOREFUNCTOREXPORT
 void handle_hdf5_error();
 
 #define IMP_HDF5_OBJECT(Name, Close) \
@@ -211,6 +212,14 @@ public:
 
   IMP_HDF5_OBJECT(Hdf5Group, H5Gclose)
 };
+
+Hdf5Dataspace::Hdf5Dataspace(Hdf5Dataset &dataset) : id_(-1) {
+  IMP_HDF5_ERRCHECK(id_ = H5Dget_space(dataset.get()));
+}
+
+Hdf5Dataspace::Hdf5Dataspace(Hdf5Attribute &attribute) : id_(-1) {
+  IMP_HDF5_ERRCHECK(id_ = H5Aget_space(attribute.get()));
+}
 
 IMPSCOREFUNCTOR_END_INTERNAL_NAMESPACE
 
