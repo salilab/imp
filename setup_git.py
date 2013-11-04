@@ -42,9 +42,6 @@ branch = cmd.stdout.read()
 if branch[-1] == "\n":
     branch = branch[:-1]
 
-if not options.module and branch != "develop":
-    os.system("git checkout develop")
-
 imp_root = os.path.split(sys.argv[0])[0]
 sys.path.append(os.path.join(imp_root, "tools", "build"))
 import tools
