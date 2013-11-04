@@ -1,5 +1,5 @@
 /**
- *  \file ProjectionFinder.h
+ *  \file em2d/ProjectionFinder.h
  *  \brief Coarse registration of 2D projections from a 3D volume
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -127,7 +127,7 @@ public:
   //! With this fast mode, only the first number n of best scoring
   //! projections during the coarse search are refined.
   //! Saves vast times of computation time with some loss of accuracy.
-  //! Try starting with 1 (risky) or 2, and increased it for get more chances
+  //! Try starting with 1 (risky) or 2, and increase it to get more chances
   //! of finding the best projection
   void set_fast_mode(unsigned int n);
 
@@ -144,7 +144,7 @@ public:
   void get_coarse_registration();
 
   //! Performs complete registration of projections against the images.
-  //! This meaning the coarse registration followed by simplex optimization
+  //! This means the coarse registration followed by simplex optimization
   void get_complete_registration();
 
   //! Get the em2d score for a model after the registration performed:
