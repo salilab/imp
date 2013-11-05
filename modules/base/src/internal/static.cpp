@@ -241,7 +241,7 @@ AddIntFlag sf("random_seed", "Random seed to use.", &random_seed);
 IMPBASE_END_INTERNAL_NAMESPACE
 
 IMPBASE_BEGIN_NAMESPACE
-::boost::rand48 random_number_generator(internal::random_seed);
+::boost::random::mt19937 random_number_generator(internal::random_seed);
 IMPBASE_END_NAMESPACE
 
 IMPBASE_BEGIN_NAMESPACE
