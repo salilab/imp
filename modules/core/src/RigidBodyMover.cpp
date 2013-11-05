@@ -35,15 +35,24 @@ MonteCarloMoverResult RigidBodyMover::do_propose() {
   IMP_OBJECT_LOG;
   RigidBody d(get_model(), pi_);
   last_transformation_ = d.get_reference_frame().get_transformation_to();
-  algebra::Vector3D translation = algebra::get_random_vector_in(
-      algebra::Sphere3D(d.get_coordinates(), max_translation_));
-  algebra::Vector3D axis =
-      algebra::get_random_vector_on(algebra::get_unit_sphere_d<3>());
-  ::boost::uniform_real<> rand(-max_angle_, max_angle_);
-  Float angle = rand(base::random_number_generator);
-  algebra::Rotation3D r = algebra::get_rotation_about_axis(axis, angle);
-  algebra::Rotation3D rc =
-      r * d.get_reference_frame().get_transformation_to().get_rotation();
+  algebra::Vector3D translation;
+  if (max_translation_ > 0) {
+    translation = algebra::get_random_vector_in(
+        algebra::Sphere3D(d.get_coordinates(), max_translation_));
+  } else {
+    translation = algebra::get_zero_vector_d<3>();
+  }
+  algebra::Rotation3D rc;
+  if (max_angle_ > 0) {
+    algebra::Vector3D axis =
+        algebra::get_random_vector_on(algebra::get_unit_sphere_d<3>());
+    ::boost::uniform_real<> rand(-max_angle_, max_angle_);
+    Float angle = rand(base::random_number_generator);
+    algebra::Rotation3D r = algebra::get_rotation_about_axis(axis, angle);
+    rc = r * d.get_reference_frame().get_transformation_to().get_rotation();
+  } else {
+    rc = algebra::get_identity_rotation_3d();
+  }
   algebra::Transformation3D t(rc, translation);
   IMP_LOG_VERBOSE("proposed move " << t << std::endl);
   IMP_USAGE_CHECK(
