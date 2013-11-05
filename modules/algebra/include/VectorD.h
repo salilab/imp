@@ -16,6 +16,8 @@
 #include <IMP/base/utility.h>
 #include <IMP/base/InputAdaptor.h>
 #include <IMP/base/random.h>
+#include <boost/random/variate_generator.hpp>
+#include <boost/random/normal_distribution.hpp>
 #include "internal/vector.h"
 
 #include <limits>
@@ -211,10 +213,10 @@ class VectorD : public GeometricPrimitiveD<D> {
       // NOTE: (1) avoids vector_generators / SphereD to prevent recursiveness
       //       (2) D might be -1, so use get_dimension()
       VectorD<D> ret(*this);
-      boost::variate_generator<base::RandomNumberGenerator,
+      boost::random::variate_generator<base::RandomNumberGenerator,
                                boost::normal_distribution<> >
           generator(IMP::base::random_number_generator,
-                    ::boost::normal_distribution<>(0, 1.0));
+                    ::boost::random::normal_distribution<>(0, 1.0));
       for (unsigned int i = 0; i < get_dimension(); ++i) {
         ret[i] = generator();
       }

@@ -11,6 +11,8 @@
 #include "../SphereD.h"
 #include "../SphericalVector3D.h"
 #include "../utility.h"
+#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_01.hpp>
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
 #include <IMP/cgal/internal/sphere_cover.h>
 #endif
