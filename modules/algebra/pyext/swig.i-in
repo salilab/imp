@@ -143,6 +143,7 @@ IMP_SWIG_ALGEBRA_TEMPLATE_OBJECT_D(IMP::algebra, NearestNeighbor);
 
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, PrincipalComponentAnalysis);
 IMP_SWIG_ALGEBRA_FUNCTION_D_DS(PrincipalComponentAnalysis, get_principal_components, Vector);
+IMP_SWIG_ALGEBRA_FUNCTION_DS_D(Vector, get_vertices, BoundingBox);
 
 IMP_SWIG_ALGEBRA_FUNCTION_N_DD(double, get_distance, Vector, Vector);
 IMP_SWIG_ALGEBRA_FUNCTION_N_DD(double, get_distance, Sphere, Sphere);
