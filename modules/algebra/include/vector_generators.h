@@ -55,6 +55,7 @@ inline VectorD<D> get_random_vector_on(const BoundingBoxD<D> &bb) {
  */
 template <int D>
 inline VectorD<D> get_random_vector_in(const SphereD<D> &s) {
+  IMP_USAGE_CHECK(s.get_radius() > 0, "The sphere must have positive radius");
   BoundingBoxD<D> bb = get_bounding_box(s);
   double norm;
   VectorD<D> ret;
