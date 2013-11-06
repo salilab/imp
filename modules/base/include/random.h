@@ -12,7 +12,7 @@
 #include <boost/random/mersenne_twister.hpp>
 
 IMPBASE_BEGIN_NAMESPACE
-typedef ::boost::random::mt19937 RandomNumberGenerator;
+typedef ::boost::mt19937 RandomNumberGenerator;
 //! A shared random number generator
 /** The random number generator is seeded based using the boost::random_device
 if it is available or `/dev/urandom` if it is not.
