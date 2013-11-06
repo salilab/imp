@@ -1,3 +1,8 @@
+if (APPLE)
+  execute_process(COMMAND uname -v OUTPUT_VARIABLE DARWIN_VERSION)
+  string(REGEX MATCH "[0-9]+" DARWIN_VERSION ${DARWIN_VERSION})
+endif()
+
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
 execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE
 		        GCC_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -10,6 +15,10 @@ message(STATUS "Enabling g++ C++0x support")
 add_definitions("--std=c++0x")
 endif()
 elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-message(STATUS "Enabling clang C++11 support")
-add_definitions("--std=c++11")
+  # c++11's std::move (which boost/CGAL use) doesn't work until
+  # OS X 10.9 (Darwin version 13)
+  if (NOT APPLE OR DARWIN_VERSION GREATER 12)
+    message(STATUS "Enabling clang C++11 support")
+    add_definitions("--std=c++11")
+  endif()
 endif()
