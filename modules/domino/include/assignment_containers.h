@@ -13,19 +13,21 @@
 #include "Assignment.h"
 #include "Order.h"
 #include "subset_scores.h"
+#include <IMP/base/Vector.h>
+#include <IMP/base/hash.h>
 #include <IMP/base/map.h>
 #include <IMP/statistics/metric_clustering.h>
+
+#include <algorithm>
+#include <boost/random/uniform_int.hpp>
+#include <boost/shared_array.hpp>
+#include <cstdio>
+#include <queue>
+
 #if IMP_DOMINO_HAS_RMF
 #include <RMF/HDF5/Group.h>
 #include <RMF/HDF5/File.h>
 #endif
-#include <boost/shared_array.hpp>
-#include <algorithm>
-#include <IMP/base/hash.h>
-#include <IMP/base/Vector.h>
-
-#include <queue>
-#include <cstdio>
 
 #ifdef _MSC_VER
 #include <io.h>
