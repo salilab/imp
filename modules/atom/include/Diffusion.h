@@ -20,13 +20,16 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-//! A decorator for a diffusing particle.
+//! A decorator for a diffusing particle with a diffusion coefficient.
 /** \ingroup helper
     \ingroup decorators
     \see BrownianDynamics
     \unstable{Diffusion} The name really should be fixed.
 
-    D is assumed to be in \f$A^2/fs\f$
+    Diffusion is used to decorate diffusing particle with a diffusion
+    coefficient D. D is assumed to be in units of \f$A^2/fs\f.
+
+    \see RigidBodyDiffusion
  */
 class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,

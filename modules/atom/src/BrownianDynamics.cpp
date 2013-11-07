@@ -58,9 +58,9 @@ bool BrownianDynamics::get_is_simulation_particle(
 }
 
 namespace {
-inline double get_force(kernel::Model *m, kernel::ParticleIndex p,
+inline double get_force(kernel::Model *m, kernel::ParticleIndex pi,
                         unsigned int i, double dt, double ikT) {
-  Diffusion d(m, p);
+  Diffusion d(m, pi);
   double nforce(-d.get_derivative(i));
   // unit::Angstrom R(sampler_());
   double dd = d.get_diffusion_coefficient();
