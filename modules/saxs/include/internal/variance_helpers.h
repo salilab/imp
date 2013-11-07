@@ -381,6 +381,19 @@ inline double A(double a, double b, double c){
  return 1./(8*a*b*c) * ( c1 - c2);
 }
 
+//univariate normal distribution PDF
+inline double uninorm(double delta, double var){
+    const double pi = 3.141592653589793;
+    return std::exp( - square(delta)/(2*var) )/ (std::sqrt(2*pi*var));
+}
+
+//bivariate normal distribution with same variance
+inline double binorm(double dx, double dy,
+        double var, double rho){
+    const double pi = 3.141592653589793;
+    double z = (square(dx) + square(dy) -2*rho*(dx)*(dy))/var;
+    return std::exp(-z/(2*(1-rho*rho)))/(2*pi*var*std::sqrt(1-rho*rho));
+}
 
 IMPSAXS_END_INTERNAL_NAMESPACE
 

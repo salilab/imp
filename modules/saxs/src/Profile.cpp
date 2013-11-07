@@ -18,10 +18,12 @@
 #include <IMP/algebra/ParabolicFit.h>
 #include <IMP/algebra/LinearFit.h>
 #include <IMP/constants.h>
+#include <IMP/random.h>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/random.hpp>
 #include <boost/math/special_functions/sinc.hpp>
+#include <boost/random/normal_distribution.hpp>
 
 #include <fstream>
 #include <string>
@@ -732,8 +734,8 @@ void Profile::distribution_2_profile(const RadialDistributionFunction& r_dist) {
   }
 }
 
-void Profile::
-squared_distribution_2_profile(const RadialDistributionFunction& r_dist) {
+void Profile::squared_distribution_2_profile(
+        const RadialDistributionFunction& r_dist) {
   init();
   // precomputed sin(x)/x function
   static internal::SincFunction sf(sqrt(r_dist.get_max_distance())*get_max_q(),
