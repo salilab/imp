@@ -36,7 +36,7 @@ for q in xrange(model_profile.size()):
     fl.write('%G ' % model_profile.get_q(q))
     if calc_variance:
         fl.write('%G ' % model_profile.get_intensity(q))
-        fl.write('%G\n' % numpy.sqrt(model_profile.get_variance(q,q)))
+        fl.write('%G\n' % sqrt(model_profile.get_variance(q,q)))
     else:
         fl.write('%G\n' % model_profile.get_intensity(q))
 
