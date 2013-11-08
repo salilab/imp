@@ -12,7 +12,7 @@ import IMP.core
 import IMP.saxs
 import os
 import sys
-import numpy
+from numpy import *
 
 m = IMP.Model()
 
