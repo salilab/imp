@@ -11,6 +11,7 @@
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/base/random.h>
 #include <algorithm>
+#include <boost/random/uniform_int.hpp>
 
 IMPDOMINO_BEGIN_NAMESPACE
 ParticleStates::~ParticleStates() {}
