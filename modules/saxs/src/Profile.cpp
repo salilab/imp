@@ -9,7 +9,6 @@
 #include <IMP/saxs/utility.h>
 #include <IMP/saxs/internal/sinc_function.h>
 #include <IMP/saxs/internal/exp_function.h>
-#include <IMP/saxs/internal/variance_helpers.h>
 
 #include <IMP/base/math.h>
 #include <IMP/core/XYZ.h>
@@ -50,19 +49,14 @@ Profile::Profile(const String& file_name, bool fit_file) :
   read_SAXS_file(file_name, fit_file);
 }
 
-void Profile::init(bool variance) {
+void Profile::init() {
   q_.clear(); intensity_.clear(); error_.clear();
   int number_of_q_entries = (int)std::ceil((max_q_ - min_q_) / delta_q_ )+1;
   q_.resize(number_of_q_entries);
   intensity_.resize(number_of_q_entries);
   error_.resize(number_of_q_entries);
 
-  for(int i=0; i<number_of_q_entries; i++) {
-    q_[i] = min_q_ + i * delta_q_;
-    if(variance) {
-      variances_.push_back(std::vector<double>((number_of_q_entries-i), 0.0));
-    }
-  }
+  for(int i=0; i<number_of_q_entries; i++) q_[i] = min_q_ + i * delta_q_;
 }
 
 void Profile::read_SAXS_file(const String& file_name, bool fit_file) {
@@ -325,12 +319,10 @@ void Profile::write_partial_profiles(const String& file_name) const {
 }
 
 void Profile::calculate_profile_real(const kernel::Particles& particles,
-                                     FormFactorType ff_type,
-                                     bool variance, double variance_tau) {
+                                     FormFactorType ff_type) {
   IMP_LOG_TERSE("start real profile calculation for "
                  << particles.size() << " particles" << std::endl);
   RadialDistributionFunction r_dist; //fi(0) fj(0)
-  RadialDistributionFunction r_dist2; //fi(0)^2 fj(0)^2
   // prepare coordinates and form factors in advance, for faster access
   std::vector<algebra::Vector3D> coordinates;
   get_coordinates(particles, coordinates);
@@ -343,17 +335,11 @@ void Profile::calculate_profile_real(const kernel::Particles& particles,
       Float dist = get_squared_distance(coordinates[i], coordinates[j]);
       double prod = form_factors[i] * form_factors[j];
       r_dist.add_to_distribution(dist, 2 * prod);
-      if (variance) r_dist2.add_to_distribution(dist, 2 * prod * prod);
     }
     // add autocorrelation part
     r_dist.add_to_distribution(0.0, square(form_factors[i]));
-    if (variance)
-      r_dist2.add_to_distribution(0.0, square(square(form_factors[i])));
   }
-  if(variance)
-    squared_distribution_2_profile(r_dist, r_dist2, variance_tau);
-  else
-    squared_distribution_2_profile(r_dist);
+  squared_distribution_2_profile(r_dist);
 }
 
 Float Profile::calculate_I0(const kernel::Particles& particles,
@@ -689,13 +675,11 @@ void Profile::calculate_profile_symmetric(const kernel::Particles& particles,
 
 void Profile::calculate_profile_real(const kernel::Particles& particles1,
                                      const kernel::Particles& particles2,
-                                     FormFactorType ff_type,
-                                     bool variance, double variance_tau) {
+                                     FormFactorType ff_type) {
   IMP_LOG_TERSE( "start real profile calculation for "
           << particles1.size() << " + " << particles2.size()
           << " particles" << std::endl);
   RadialDistributionFunction r_dist; //fi(0) fj(0)
-  RadialDistributionFunction r_dist2; //fi(0)^2 fj(0)^2
 
   // copy coordinates and form factors in advance, to avoid n^2 copy operations
   std::vector<algebra::Vector3D> coordinates1, coordinates2;
@@ -711,13 +695,9 @@ void Profile::calculate_profile_real(const kernel::Particles& particles1,
       Float dist = get_squared_distance(coordinates1[i], coordinates2[j]);
       double prod = form_factors1[i] * form_factors2[j];
       r_dist.add_to_distribution(dist, 2 * prod);
-      if (variance) r_dist2.add_to_distribution(dist, 2*prod*prod);
     }
   }
-  if(variance)
-    squared_distribution_2_profile(r_dist, r_dist2, variance_tau);
-  else
-    squared_distribution_2_profile(r_dist);
+  squared_distribution_2_profile(r_dist);
 }
 
 void Profile::distribution_2_profile(const RadialDistributionFunction& r_dist) {
@@ -762,50 +742,6 @@ void Profile::squared_distribution_2_profile(
     // this correction is required since we approximate the form factor
     // as f(q) = f(0) * exp(-b*q^2)
     intensity_[k] *= std::exp(-modulation_function_parameter_*square(q_[k]));
-  }
-}
-
-void Profile::
-squared_distribution_2_profile(const RadialDistributionFunction& r_dist,
-                               const RadialDistributionFunction& r_dist2,
-                               double variance_tau) {
-  squared_distribution_2_profile(r_dist);
-
-  // precompute square roots of distances
-  std::vector<float> distances(r_dist.size(), 0.0);
-  for (unsigned int r = 0; r < r_dist.size(); r++)
-    if(r_dist[r] != 0.0)  distances[r] = sqrt(r_dist.index2dist(r));
-
-  for (unsigned int k = 0; k < size(); k++) {
-    intensity_[k] *= std::exp(-0.5*square(variance_tau*q_[k]));
-  }
-
-  // iterate over rows
-  for (unsigned int i = 0; i < size(); i++) {
-   // iterate over columns
-   for (unsigned int j = i; j < size(); j++) {
-     double q1 = q_[i];
-     double q2 = q_[j];
-      // iterate over radial distribution
-     double contrib=0;
-     if (q1*q2 != 0){ //else contrib is zero
-      for (unsigned int r = 0; r < r_dist.size(); r++) {
-        if(r_dist[r] == 0.0) continue;
-        double dist = distances[r];
-        if(dist == 0.0) continue;
-        const double sqrt2 = 1.4142135623730950488;
-        double a = q1*variance_tau/sqrt2;
-        double b = q2*variance_tau/sqrt2;
-        double c = dist/(variance_tau*sqrt2);
-         //exponent beats erf at high distances, so assume infs and nans mean 0
-        double A(internal::A(a,b,c));
-        contrib += A*r_dist2[r];
-      }
-     }
-    double var = contrib
-                *std::exp(- modulation_function_parameter_*(q1*q1+q2*q2));
-    variances_[i][j-i] = var;
-   }
   }
 }
 

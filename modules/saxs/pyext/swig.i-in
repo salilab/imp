@@ -12,10 +12,12 @@ namespace std {
 //%template(_Vector3Ds) ::std::vector< ::IMP::algebra::Vector3D>;
 
 IMP_SWIG_OBJECT(IMP::saxs, Profile, Profiles);
+IMP_SWIG_OBJECT(IMP::saxs, VariancedProfile, VariancedProfiles);
 
 /* Wrap our own classes */
 %include "IMP/saxs/FormFactorTable.h"
 %include "IMP/saxs/Profile.h"
+%include "IMP/saxs/VariancedProfile.h"
 %include "IMP/saxs/FitParameters.h"
 %include "IMP/saxs/WeightedFitParameters.h"
 %include "IMP/saxs/ChiScore.h"
