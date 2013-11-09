@@ -711,6 +711,9 @@ float FormFactorTable::get_form_factor(atom::ResidueType rt) const {
   }
 }
 
+
+
+
 float FormFactorTable::get_vacuum_form_factor(atom::ResidueType rt) const {
   std::map<atom::ResidueType, FormFactor>::const_iterator i =
     residue_type_form_factor_map_.find(rt);
@@ -738,8 +741,12 @@ float FormFactorTable::get_dummy_form_factor(atom::ResidueType rt) const {
 Float FormFactorTable::get_form_factor(kernel::Particle *p,
                                        FormFactorType ff_type) const {
   if(ff_type == CA_ATOMS) { // residue level form factors
-    atom::ResidueType residue_type =
-      atom::get_residue(atom::Atom(p)).get_residue_type();
+    atom::ResidueType residue_type;
+    if(p->has_attribute(atom::Residue::get_residue_type_key()))
+      residue_type =
+        atom::ResidueType(p->get_value(atom::Residue::get_residue_type_key()));
+    else
+      residue_type = atom::get_residue(atom::Atom(p)).get_residue_type();
     return get_form_factor(residue_type);
   }
 
@@ -762,8 +769,12 @@ Float FormFactorTable::get_form_factor(kernel::Particle *p,
 Float FormFactorTable::get_vacuum_form_factor(kernel::Particle *p,
                                               FormFactorType ff_type) const {
   if(ff_type == CA_ATOMS) { // residue level form factors
-    atom::ResidueType residue_type =
-      atom::get_residue(atom::Atom(p)).get_residue_type();
+    atom::ResidueType residue_type;
+    if(p->has_attribute(atom::Residue::get_residue_type_key()))
+      residue_type =
+        atom::ResidueType(p->get_value(atom::Residue::get_residue_type_key()));
+    else
+      residue_type = atom::get_residue(atom::Atom(p)).get_residue_type();
     return get_vacuum_form_factor(residue_type);
   }
 
@@ -780,8 +791,12 @@ Float FormFactorTable::get_vacuum_form_factor(kernel::Particle *p,
 Float FormFactorTable::get_dummy_form_factor(kernel::Particle *p,
                                              FormFactorType ff_type) const {
   if(ff_type == CA_ATOMS) { // residue level form factors
-    atom::ResidueType residue_type =
-      atom::get_residue(atom::Atom(p)).get_residue_type();
+    atom::ResidueType residue_type;
+    if(p->has_attribute(atom::Residue::get_residue_type_key()))
+      residue_type =
+        atom::ResidueType(p->get_value(atom::Residue::get_residue_type_key()));
+    else
+      residue_type = atom::get_residue(atom::Atom(p)).get_residue_type();
     return get_dummy_form_factor(residue_type);
   }
 
