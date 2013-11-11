@@ -1,4 +1,4 @@
-## \example kernel/chain.py
+# \example kernel/chain.py
 # This example shows how to set up an optimization involving several
 # particles constrained to be connected in a loop. It uses non bonded
 # lists and a variety of restraints.
@@ -8,7 +8,10 @@ import IMP.core
 import random
 import IMP.display
 import IMP.container
+import IMP.base
+import sys
 
+IMP.base.setup_from_argv(sys.argv, "Chain example")
 
 # A trivial example that constructs a set of particles which are restrained
 # to form a chain via bonds between successive particles. In addition

@@ -121,6 +121,14 @@ ModelObjectsTemps ModelObject::get_interactions() const {
   return do_get_interactions();
 }
 
+void ModelObject::set_model(Model *m) {
+  IMP_USAGE_CHECK(!m, "Can only call set_model with null");
+  if (model_) {
+    model_->do_remove_model_object(this);
+  }
+  model_ = m;
+}
+
 ///////////////////////////////////////// DEPRECATED
 
 ParticlesTemp get_input_particles(const ModelObjectsTemp &mo) {
@@ -177,26 +185,6 @@ ContainersTemp get_output_containers(const ModelObjectsTemp &mo) {
     }
   }
   return ret;
-}
-
-bool ModelObject::get_is_part_of_model() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Should always be true.");
-  return get_model();
-}
-
-void ModelObject::set_model(kernel::Model *m) {
-  if (model_) {
-    model_->do_remove_model_object(this);
-  }
-  model_ = m;
-  if (model_) {
-    model_->do_add_model_object(this);
-  }
-  do_set_model(m);
-}
-
-ModelObject::ModelObject(std::string name) : base::Object(name) {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Pass the Model to the constructor.");
 }
 
 IMPKERNEL_END_NAMESPACE

@@ -25,9 +25,6 @@ class IMPDISPLAYEXPORT WriteOptimizerState : public kernel::OptimizerState {
   IMP::base::PointerMember<Writer> writer_;
 
  public:
-  /** \deprecated_at{2.1} Use the method that takes a kernel::Model. */
-  IMPDISPLAY_DEPRECATED_FUNCTION_DECL(2.1)
-  WriteOptimizerState(WriterAdaptor w);
   WriteOptimizerState(kernel::Model *m, WriterAdaptor w);
   void write(WriterAdaptor w) const;
   IMP_LIST_ACTION(public, Geometry, Geometries, geometry, geometries,

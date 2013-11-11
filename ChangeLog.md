@@ -1,5 +1,8 @@
 # ChangeLog
 # For IMP 2.2 # {#ChangeLog}
+- The deprecated function IMP::kernel::Optimizer::set_restraints() was removed. Use IMP::kernel::Optimizer::set_scoring_function() instead.
+- The deprecated constructor for IMP::kernel::ModelObject that does not take an IMP::kernel::Model was removed. This propagates to constructors IMP::kernel::Restraint, IMP::kernel::ScoreState and kin. Make sure you pass an IMP::kernel::Model as the first constructor argument. Related to this, deprecated functions like get_is_part_of_model(), set_model() were removed as they don't serve any purpose.
+- The deprecated methods in IMP::kernel::Optimizer that pertain to attribute optimization were removed. Inherit from IMP::kernel::AttributeOptimizer instead if you want to use them in your optimizer.
 - Some deprecated functionality was removed. If you encounter problems, replace IMP::base::OwnerPointer with IMP::base::PointerMember, find logging stuff in IMP/base/log.h, object in IMP/base/Object.h and random in IMP/base/random.h.
 - IMP::atom::Chain now uses strings for the chain ids, to be consistent with changes in the PDB. PDB files are written using the first character of the chain string.
 - Added SOAP-LOOP scoring (IMP::score_functor::SoapLoop and IMP::atom::SoapLoopPairScore). The potential file itself is rather large (~500MB) and so is not included with IMP. It can be downloaded separately from http://salilab.org/SOAP/.

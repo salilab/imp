@@ -15,10 +15,6 @@ SaveOptimizerState::SaveOptimizerState(kernel::Model *m, RMF::FileHandle fh)
     : kernel::OptimizerState(m, std::string("Save to ") + fh.get_name()),
       fh_(fh) {}
 
-SaveOptimizerState::SaveOptimizerState(RMF::FileHandle fh)
-    : kernel::OptimizerState(std::string("Save to ") + fh.get_name()),
-      fh_(fh) {}
-
 void SaveOptimizerState::do_update(unsigned int k) {
   std::string name;
   if (sim_) {

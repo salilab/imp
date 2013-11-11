@@ -17,13 +17,6 @@ QuasiNewton::QuasiNewton(kernel::Model *m) : GSLOptimizer(m) {
   min_gradient_ = .001;
 }
 
-QuasiNewton::QuasiNewton() : GSLOptimizer() {
-  IMPGSL_DEPRECATED_FUNCTION_DEF(2.1, "Pass the model to the constructor.");
-  initial_step_ = .01;
-  line_step_ = .01;
-  min_gradient_ = .001;
-}
-
 Float QuasiNewton::do_optimize(unsigned int nsteps) {
   /* The GnuWin32 Windows build of GSL is only 1.8, which doesn't have bfgs2;
      use the older less efficient bfgs optimizer instead. */

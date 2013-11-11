@@ -17,13 +17,6 @@ ConjugateGradients::ConjugateGradients(kernel::Model *m) : GSLOptimizer(m) {
   min_gradient_ = .001;
 }
 
-ConjugateGradients::ConjugateGradients() : GSLOptimizer() {
-  IMPGSL_DEPRECATED_FUNCTION_DEF(2.1, "Pass the model to the constructor.");
-  initial_step_ = .01;
-  line_step_ = .0001;
-  min_gradient_ = .001;
-}
-
 Float ConjugateGradients::do_optimize(unsigned int nsteps) {
   const gsl_multimin_fdfminimizer_type *t =
       gsl_multimin_fdfminimizer_conjugate_fr;

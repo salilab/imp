@@ -21,14 +21,6 @@ ChecksScoreState::ChecksScoreState(kernel::Model *m, double prob)
                   "Probability must be a number between 0 and 1.");
 }
 
-ChecksScoreState::ChecksScoreState(double prob)
-    : ScoreState("ChecksScoreState %1%"), probability_(prob), num_checked_(0) {
-  IMPCORE_DEPRECATED_METHOD_DEF(2.1,
-                                "Use constructor with kernel::Model argument.");
-  IMP_USAGE_CHECK(prob >= 0 && prob <= 1,
-                  "Probability must be a number between 0 and 1.");
-}
-
 void ChecksScoreState::do_before_evaluate() {
   ::boost::uniform_real<> rand(0, 1);
   if (rand(base::random_number_generator) < probability_) {

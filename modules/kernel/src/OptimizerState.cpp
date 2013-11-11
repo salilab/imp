@@ -11,12 +11,6 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-OptimizerState::OptimizerState(std::string name) : ModelObject(name) {
-  is_optimizing_ = false;
-  reset();
-  set_period(1);
-}
-
 OptimizerState::OptimizerState(kernel::Model* m, std::string name)
     : ModelObject(m, name) {
   is_optimizing_ = false;

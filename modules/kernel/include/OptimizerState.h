@@ -58,10 +58,6 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
   */
   OptimizerState(kernel::Model* m, std::string name);
 
-  /** \deprecated_at{2.1} Use the constructor that takes a Model. */
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-  OptimizerState(std::string name = "OptimizerState %1%");
-
   //! Called when the Optimizer accepts a new conformation
   /**
       This method is called by owning optimizers every time they commit.

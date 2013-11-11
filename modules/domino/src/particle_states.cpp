@@ -134,7 +134,7 @@ class DummyConstraint : public Constraint {
 
  public:
   DummyConstraint(kernel::Particle *in, const kernel::ParticlesTemp &out)
-      : in_(in), out_(out) {}
+      : Constraint(in->get_model(), "DummyConstraint%1%"), in_(in), out_(out) {}
   virtual void do_update_attributes() IMP_OVERRIDE;
   virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const;

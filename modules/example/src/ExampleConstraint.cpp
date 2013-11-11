@@ -12,7 +12,9 @@
 IMPEXAMPLE_BEGIN_NAMESPACE
 
 ExampleConstraint::ExampleConstraint(kernel::Particle *p)
-    : p_(p), k_("Constraint key") {
+    : Constraint(p->get_model(), "ExampleConstraint%1%"),
+      p_(p),
+      k_("Constraint key") {
   if (!p_->has_attribute(k_)) {
     p_->add_attribute(k_, 0);
   }

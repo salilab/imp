@@ -332,9 +332,6 @@ Restraints ExcludedVolumeRestraint::do_create_decomposition() const {
       ret.back()->set_name(oss.str());
     }
   }
-  for (unsigned int i = 0; i < ret.size(); ++i) {
-    ret[i]->set_model(get_model());
-  }
   return ret;
 }
 

@@ -41,11 +41,9 @@ class IMPCOREEXPORT ConnectivityRestraint : public kernel::Restraint {
 
  public:
   //! Use the given PairScore
-  ConnectivityRestraint(PairScore *ps, SingletonContainer *sc);
-  /** \deprecated_at{2.1} Use constructor that takes a container instead.
-   */
-  IMPCORE_DEPRECATED_METHOD_DECL(2.1)
-  ConnectivityRestraint(PairScore *ps);
+  ConnectivityRestraint(PairScore *ps, SingletonContainerAdaptor sc);
+
+  ConnectivityRestraint(Model *m, PairScore *ps);
 #ifndef IMP_DOXYGEN
   /** @name kernel::Particles to be connected
 

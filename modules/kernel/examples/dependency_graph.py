@@ -1,4 +1,4 @@
-## \example kernel/dependency_graph.py
+# \example kernel/dependency_graph.py
 # When trying to understand what is going on in \imp, it can often be useful to view the dependency graph, that is, the graph showing how various entities relate to one another. In it, an arrow leads from an IMP::Container or IMP::Particle to an IMP::Restraint if the IMP::Restraint reads from that container or particle. Similarly, an arrow leads from an IMP::Container or IMP::Particle to an IMP::ScoreState if the score state reads from it, and an arrow leads from an IMP::ScoreState to an IMP::Container or IMP::Particle if the score state updates the particle.
 #
 # The resulting pruned depenency graph is:
@@ -129,6 +129,10 @@
 import IMP
 import IMP.atom
 import IMP.container
+import IMP.base
+import sys
+
+IMP.base.setup_from_argv(sys.argv, "Example of dependency graphs")
 
 
 def create_representation():

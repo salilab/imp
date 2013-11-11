@@ -13,9 +13,7 @@
 IMPRESTRAINER_BEGIN_NAMESPACE
 
 SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
-                                       const core::RigidBodies &rbs,
-                                       Refiner *ref)
-{
+    const core::RigidBodies &rbs, Refiner *ref) {
   IMP_USAGE_CHECK(rbs.size() > 0, "At least one particle should be given");
 
   /****** Define PairScore ******/
@@ -29,15 +27,15 @@ SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
 
   /****** Set the restraint ******/
 
-  IMP_NEW(core::ConnectivityRestraint, cr, (rdps));
-  for ( size_t i=0; i<rbs.size(); ++i )
-    //cr->set_particles((*rbs)[i].get_particle());
+  IMP_NEW(core::ConnectivityRestraint, cr, (rbs[0]->get_model(), rdps));
+  for (size_t i = 0; i < rbs.size(); ++i)
+    // cr->set_particles((*rbs)[i].get_particle());
     cr->add_particle(rbs[i].get_particle());
 
   /****** Add restraint to the model ******/
 
-  //Model *mdl = rbs[0].get_model();
-  //mdl->add_restraint(cr);
+  // Model *mdl = rbs[0].get_model();
+  // mdl->add_restraint(cr);
 
   /****** Return a SimpleConnectivity object ******/
 
@@ -45,16 +43,14 @@ SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
 }
 
 SimpleConnectivity create_simple_connectivity_on_molecules(
-                   const atom::Hierarchies &mhs)
-{
+    const atom::Hierarchies &mhs) {
   size_t mhs_size = mhs.size();
 
   IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given");
 
   kernel::ParticlesTemp ps;
 
-  for ( size_t i=0; i<mhs_size; ++i )
-  {
+  for (size_t i = 0; i < mhs_size; ++i) {
     ps.push_back(mhs[i].get_particle());
   }
 
@@ -72,21 +68,20 @@ SimpleConnectivity create_simple_connectivity_on_molecules(
 
   /****** Set the restraint ******/
 
-  IMP_NEW(core::ConnectivityRestraint, cr, (lrps));
+  IMP_NEW(core::ConnectivityRestraint, cr, (mhs[0]->get_model(), lrps));
   cr->set_particles((ps));
 
   /****** Add restraint to the model ******/
 
-  //Model *mdl = mhs[0].get_particle()->get_model();
-  //mdl->add_restraint(cr);
+  // Model *mdl = mhs[0].get_particle()->get_model();
+  // mdl->add_restraint(cr);
 
   /****** Return a SimpleConnectivity object ******/
 
   return SimpleConnectivity(cr, h, sdps);
 }
 
-SimpleDistance create_simple_distance(const kernel::Particles &ps)
-{
+SimpleDistance create_simple_distance(const kernel::Particles &ps) {
   IMP_USAGE_CHECK(ps.size() == 2, "Two particles should be given");
 
   /****** Set the restraint ******/
@@ -96,28 +91,29 @@ SimpleDistance create_simple_distance(const kernel::Particles &ps)
 
   /****** Add restraint to the model ******/
 
-  //Model *mdl = (*ps)[0]->get_model();
-  //mdl->add_restraint(dr);
+  // Model *mdl = (*ps)[0]->get_model();
+  // mdl->add_restraint(dr);
 
   /****** Return a SimpleDistance object ******/
 
   return SimpleDistance(dr, h);
 }
 
-SimpleDiameter create_simple_diameter(const kernel::Particles &ps, Float diameter)
-{
+SimpleDiameter create_simple_diameter(const kernel::Particles &ps,
+                                      Float diameter) {
   IMP_USAGE_CHECK(ps.size() >= 2, "At least two particles should be given");
 
   /****** Set the restraint ******/
 
   IMP_NEW(core::HarmonicUpperBound, h, (0, 1));
-  IMP_NEW(container::ListSingletonContainer, lsc, (get_as<kernel::ParticlesTemp>(ps)));
+  IMP_NEW(container::ListSingletonContainer, lsc,
+          (get_as<kernel::ParticlesTemp>(ps)));
   IMP_NEW(core::DiameterRestraint, dr, (h, lsc, diameter));
 
   /****** Add restraint to the model ******/
 
-  //Model *mdl = (*ps)[0]->get_model();
-  //mdl->add_restraint(dr);
+  // Model *mdl = (*ps)[0]->get_model();
+  // mdl->add_restraint(dr);
 
   /****** Return a SimpleDiameter object ******/
 
@@ -125,16 +121,14 @@ SimpleDiameter create_simple_diameter(const kernel::Particles &ps, Float diamete
 }
 
 SimpleExcludedVolume create_simple_excluded_volume_on_rigid_bodies(
-                                         const core::RigidBodies &rbs,
-                                         Refiner *ref)
-{
+    const core::RigidBodies &rbs, Refiner *ref) {
   IMP_USAGE_CHECK(rbs.size() > 0, "At least one particle should be given");
 
   /****** Set the restraint ******/
 
   kernel::ParticlesTemp all;
-  for (unsigned int i=0; i< rbs.size(); ++i) {
-    kernel::ParticlesTemp cur= ref->get_refined(rbs[i]);
+  for (unsigned int i = 0; i < rbs.size(); ++i) {
+    kernel::ParticlesTemp cur = ref->get_refined(rbs[i]);
     all.insert(all.end(), cur.begin(), cur.end());
   }
 
@@ -144,8 +138,8 @@ SimpleExcludedVolume create_simple_excluded_volume_on_rigid_bodies(
 
   /****** Add restraint to the model ******/
 
-  //Model *mdl = rbs[0].get_model();
-  //mdl->add_restraint(evr);
+  // Model *mdl = rbs[0].get_model();
+  // mdl->add_restraint(evr);
 
   /****** Return a SimpleExcludedVolume object ******/
 
@@ -153,17 +147,15 @@ SimpleExcludedVolume create_simple_excluded_volume_on_rigid_bodies(
 }
 
 SimpleExcludedVolume create_simple_excluded_volume_on_molecules(
-                     atom::Hierarchies const &mhs)
-{
+    atom::Hierarchies const &mhs) {
   IMP_CHECK_CODE(size_t mhs_size = mhs.size());
 
   IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given");
 
   kernel::ParticlesTemp ps;
 
-  for ( size_t i=0; i<mhs.size(); ++i )
-  {
-    kernel::ParticlesTemp leaves= IMP::atom::get_leaves(mhs[i]);
+  for (size_t i = 0; i < mhs.size(); ++i) {
+    kernel::ParticlesTemp leaves = IMP::atom::get_leaves(mhs[i]);
     ps.insert(ps.end(), leaves.begin(), leaves.end());
   }
 
@@ -175,42 +167,39 @@ SimpleExcludedVolume create_simple_excluded_volume_on_molecules(
 
   /****** Add restraint to the model ******/
 
-  //Model *mdl = mhs[0].get_particle()->get_model();
-  //mdl->add_restraint(evr);
+  // Model *mdl = mhs[0].get_particle()->get_model();
+  // mdl->add_restraint(evr);
 
   /****** Return a SimpleExcludedVolume object ******/
 
   return SimpleExcludedVolume(evr);
 }
 
-core::RigidBodies set_rigid_bodies(atom::Hierarchies const &mhs)
-{
-  IMPRESTRAINER_DEPRECATED_FUNCTION_DEF(2.1,
-                                      "Use atom::create_rigid_body() instead.");
+core::RigidBodies set_rigid_bodies(atom::Hierarchies const &mhs) {
+  IMPRESTRAINER_DEPRECATED_FUNCTION_DEF(
+      2.1, "Use atom::create_rigid_body() instead.");
   size_t mhs_size = mhs.size();
 
   IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given");
 
   kernel::Particles rbps;
 
-  for ( size_t i=0; i<mhs_size; ++i )
-  {
+  for (size_t i = 0; i < mhs_size; ++i) {
     // The rigid body is set to be optimized
     IMP::atom::setup_as_rigid_body(mhs[i]);
     rbps.push_back(mhs[i].get_particle());
   }
   return (core::RigidBodies(rbps));
 }
-SimpleEMFit
-  create_simple_em_fit(atom::Hierarchy const &mh, em::DensityMap *dmap) {
+SimpleEMFit create_simple_em_fit(atom::Hierarchy const &mh,
+                                 em::DensityMap *dmap) {
   atom::Hierarchies mhs;
   mhs.push_back(mh);
-  return create_simple_em_fit(mhs,dmap);
+  return create_simple_em_fit(mhs, dmap);
 }
 
 em::DensityMap *load_em_density_map(char const *map_fn, float spacing,
-                                    float resolution)
-{
+                                    float resolution) {
   em::DensityMap *dmap = em::read_map(map_fn);
   em::DensityHeader *dmap_header = dmap->get_header_writable();
   dmap->update_voxel_size(spacing);
@@ -219,22 +208,18 @@ em::DensityMap *load_em_density_map(char const *map_fn, float spacing,
 }
 
 SimpleEMFit create_simple_em_fit(atom::Hierarchies const &mhs,
-                                   em::DensityMap *dmap)
-{
+                                 em::DensityMap *dmap) {
   size_t mhs_size = mhs.size();
 
   IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given");
   kernel::ParticlesTemp ps;
-  for ( size_t i=0; i<mhs_size; ++i )
-  {
+  for (size_t i = 0; i < mhs_size; ++i) {
     kernel::ParticlesTemp pss = core::get_leaves(mhs[i]);
-    ps.insert(ps.end(),pss.begin(),pss.end());
+    ps.insert(ps.end(), pss.begin(), pss.end());
   }
 
-  IMP_NEW(em::FitRestraint, fit_rs, (ps, dmap,
-        FloatPair(0.,0.),
-        atom::Mass::get_mass_key(),
-        1.0));
+  IMP_NEW(em::FitRestraint, fit_rs,
+          (ps, dmap, FloatPair(0., 0.), atom::Mass::get_mass_key(), 1.0));
   return SimpleEMFit(fit_rs);
 }
 

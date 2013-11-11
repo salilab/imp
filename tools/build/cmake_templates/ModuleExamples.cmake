@@ -8,7 +8,7 @@ set(pytests %(pyexamples)s)
 math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
 
 if (${IMP_MAX_CHECKS} MATCHES "INTERNAL")
-set(testarg "--run_quick_test" "--deprecation_exceptions")
+set(testarg "--run_quick_test" "--deprecation_exceptions" "--log_level=2")
 else()
 set(testarg "--deprecation_exceptions")
 endif()

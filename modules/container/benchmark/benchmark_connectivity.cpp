@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
     m->remove_restraint(r);
   }
   {
-    MSConnectivityRestraint *r = new MSConnectivityRestraint(ss);
+    MSConnectivityRestraint *r = new MSConnectivityRestraint(m, ss);
     Ints composite;
     for (unsigned int i = 0; i < ps.size(); ++i) {
       composite.push_back(r->add_type(kernel::ParticlesTemp(1, ps[i])));

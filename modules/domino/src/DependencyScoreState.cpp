@@ -8,7 +8,8 @@
 #include <IMP/domino/DependencyScoreState.h>
 #include <IMP/kernel/Particle.h>
 IMPDOMINO_BEGIN_NAMESPACE
-DependencyScoreState::DependencyScoreState() {}
+DependencyScoreState::DependencyScoreState(Model *m)
+    : ScoreState(m, "DependencyScoreState%1%") {}
 
 void DependencyScoreState::do_before_evaluate() {}
 void DependencyScoreState::do_after_evaluate(DerivativeAccumulator *) {}

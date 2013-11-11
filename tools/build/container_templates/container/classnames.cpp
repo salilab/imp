@@ -192,7 +192,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 ClassnamesOptimizerState::ClassnamesOptimizerState(ClassnameContainerAdaptor c,
                                                    ClassnameModifier *gm,
                                                    std::string name)
-    : OptimizerState(name), c_(c) {
+    : OptimizerState(c->get_model(), name), c_(c) {
   f_ = gm;
 }
 
@@ -283,7 +283,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 EventClassnamesOptimizerState::EventClassnamesOptimizerState(
     ClassnamePredicate *pred, ClassnameContainerAdaptor container, int value,
     int min_count, int max_count, std::string name)
-    : OptimizerState(name),
+    : OptimizerState(container->get_model(), name),
       pred_(pred),
       container_(container),
       v_(value),

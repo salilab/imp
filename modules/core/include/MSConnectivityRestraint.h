@@ -61,7 +61,7 @@ class IMPCOREEXPORT MSConnectivityRestraint : public kernel::Restraint {
   /** If sc is nullptr, a ListSingletonContainer is created internally.
     eps is set to 0.1 by default.
    */
-  MSConnectivityRestraint(PairScore *ps, double eps = 0.1);
+  MSConnectivityRestraint(Model *m, PairScore *ps, double eps = 0.1);
   /** @name kernel::Particles to be connected
 
     The following methods are used to manipulate the list of particles

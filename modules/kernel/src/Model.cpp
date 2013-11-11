@@ -208,6 +208,7 @@ void Model::do_destroy() {
   while (!dependency_graph_.empty()) {
     ModelObject *mo =
         const_cast<ModelObject *>(dependency_graph_.begin()->first);
+    IMP_CHECK_OBJECT(mo);
     mo->set_model(nullptr);
   }
 }

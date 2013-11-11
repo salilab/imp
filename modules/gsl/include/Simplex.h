@@ -30,9 +30,6 @@ class IMPGSLEXPORT Simplex : public GSLOptimizer {
 
  public:
   Simplex(kernel::Model *m);
-  /** \deprecated_at{2.1} Pass a model to the constructor. */
-  IMPGSL_DEPRECATED_FUNCTION_DECL(2.1)
-  Simplex();
 
   /** \name Parameters
 

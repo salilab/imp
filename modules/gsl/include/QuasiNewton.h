@@ -22,9 +22,6 @@ class IMPGSLEXPORT QuasiNewton : public GSLOptimizer {
 
  public:
   QuasiNewton(kernel::Model *m);
-  /** \deprecated_at{2.1} Pass a model to the constructor. */
-  IMPGSL_DEPRECATED_FUNCTION_DECL(2.1)
-  QuasiNewton();
 
   // default 0.01
   void set_initial_step(double length) {

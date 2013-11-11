@@ -23,7 +23,7 @@
 IMPATOM_BEGIN_NAMESPACE
 
 EzRestraint::EzRestraint(kernel::Particles ps)
-    : kernel::Restraint("Ez Potential") {
+    : kernel::Restraint(ps[0]->get_model(), "Ez Potential") {
   ps_ = ps;
   for (unsigned i = 0; i < ps_.size(); ++i) {
     // get residue type

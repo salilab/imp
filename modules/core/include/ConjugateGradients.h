@@ -32,9 +32,6 @@ IMPCORE_BEGIN_NAMESPACE
 */
 class IMPCOREEXPORT ConjugateGradients : public AttributeOptimizer {
  public:
-  /** \deprecated_at{2.1} Use the constructor that takes a kernel::Model. */
-  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
-  ConjugateGradients();
   ConjugateGradients(kernel::Model *m,
                      std::string name = "ConjugateGradients%1%");
 

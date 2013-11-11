@@ -12,12 +12,6 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-SteepestDescent::SteepestDescent()
-    : AttributeOptimizer(),
-      step_size_(0.01),
-      max_step_size_(std::numeric_limits<double>::max()),
-      threshold_(0.) {}
-
 SteepestDescent::SteepestDescent(kernel::Model *m, std::string name)
     : AttributeOptimizer(m, name),
       step_size_(0.01),

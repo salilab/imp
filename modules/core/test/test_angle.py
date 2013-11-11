@@ -4,7 +4,9 @@ import IMP.core
 import StringIO
 import math
 
+
 class Tests(IMP.test.TestCase):
+
     """Tests for angle restraints"""
 
     def _setup_particles(self, system_angle, scored_angle):
@@ -54,11 +56,10 @@ class Tests(IMP.test.TestCase):
             model, rsr, ps = self._setup_particles(angles[i], angles[i])
             self.assertLess(model.evaluate(False), 1e-6)
             # When the angle is different, score should be far from zero:
-            model, rsr, ps = self._setup_particles(angles[i], angles[-i-1])
+            model, rsr, ps = self._setup_particles(angles[i], angles[-i - 1])
             self.assertGreater(model.evaluate(False), 10.0)
             # Optimizing should reduce the score to zero:
-            opt = IMP.core.ConjugateGradients()
-            opt.set_model(model)
+            opt = IMP.core.ConjugateGradients(model)
             self.assertLess(opt.optimize(50), 1e-6)
             self.assertLess(model.evaluate(False), 1e-6)
 

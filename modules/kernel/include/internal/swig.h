@@ -36,7 +36,6 @@ class IMPKERNELEXPORT _ConstRestraint : public Restraint {
       : Restraint(internal::get_model(ps), "ConstRestraint%1%"),
         v_(v),
         ps_(ps) {}
-  _ConstRestraint(double v) : Restraint("ConstRestraint%1%"), v_(v) {}
   _ConstRestraint(Model *m, const ParticleIndexes &pis, double v)
       : Restraint(m, "ConstRestraint%1%"), v_(v), ps_(get_particles(m, pis)) {}
   double get_value() const { return v_; }

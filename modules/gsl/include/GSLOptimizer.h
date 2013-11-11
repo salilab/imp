@@ -26,7 +26,6 @@ class IMPGSLEXPORT GSLOptimizer : public AttributeOptimizer {
 
  public:
   GSLOptimizer(kernel::Model *m);
-  GSLOptimizer();
 
   virtual ~GSLOptimizer();
 

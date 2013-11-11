@@ -1,6 +1,10 @@
 import IMP
+import IMP.base
 import IMP.mpi
 import IMP.core
+import sys
+
+IMP.base.setup_from_argv(sys.argv, "Temperature MPI example")
 
 # min and max temperature
 TEMPMIN_ = 1.0
@@ -75,5 +79,5 @@ for istep in range(0, 100):
     # try exchange
     flag = rem.do_exchange(myscore, fscore, findex)
     # if accepted, change temperature
-    if (flag == True):
+    if (flag):
         mc.set_kt(ftemp)

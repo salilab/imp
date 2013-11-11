@@ -26,7 +26,7 @@ class IMPDOMINOEXPORT DependencyScoreState : public ScoreState {
   ContainersTemp inputc_, outputc_;
 
  public:
-  DependencyScoreState();
+  DependencyScoreState(Model *m);
   void set_input_particles(const kernel::ParticlesTemp &pt) {
     IMP_USAGE_CHECK(!get_model(),
                     "Must set dependencies before adding to model.");

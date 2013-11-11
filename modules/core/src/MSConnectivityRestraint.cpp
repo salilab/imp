@@ -154,8 +154,9 @@ void MSConnectivityRestraint::ExperimentalTree::desc_to_label(
   }
 }
 
-MSConnectivityRestraint::MSConnectivityRestraint(PairScore *ps, double eps)
-    : kernel::Restraint("MSConnectivityRestraint %1%"), ps_(ps), eps_(eps) {}
+MSConnectivityRestraint::MSConnectivityRestraint(Model *m, PairScore *ps,
+                                                 double eps)
+    : kernel::Restraint(m, "MSConnectivityRestraint %1%"), ps_(ps), eps_(eps) {}
 
 unsigned int MSConnectivityRestraint::ParticleMatrix::add_type(
     const kernel::ParticlesTemp &ps) {
@@ -710,7 +711,6 @@ Restraints MSConnectivityRestraint::do_create_current_decomposition() const {
     oss << get_name() << " " << i;
     pr->set_name(oss.str());
     ret[i] = pr;
-    ret[i]->set_model(get_model());
   }
   return ret;
 }

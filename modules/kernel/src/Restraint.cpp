@@ -30,13 +30,6 @@ const double BAD_SCORE = NO_MAX;
 Restraint::Restraint(kernel::Model *m, std::string name)
     : ModelObject(m, name), weight_(1), max_(NO_MAX), last_score_(BAD_SCORE) {}
 
-Restraint::Restraint(std::string name)
-    : ModelObject(name), weight_(1), max_(NO_MAX), last_score_(BAD_SCORE) {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(
-      2.1, "You should pass the model to the Restraint constructor. "
-               << "Constructing " << name);
-}
-
 double Restraint::evaluate(bool calc_derivs) const {
   IMP_OBJECT_LOG;
   base::Pointer<ScoringFunction> sf = create_internal_scoring_function();
@@ -114,7 +107,6 @@ Restraint *create_decomp_helper(const Restraint *me,
                             me->get_maximum_score() / created[0]->get_weight());
       created[0]->set_weight(weight);
       created[0]->set_maximum_score(max);
-      created[0]->set_model(me->get_model());
       created[0]->set_log_level(me->get_log_level());
       created[0]->set_check_level(me->get_check_level());
     }

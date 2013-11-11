@@ -49,12 +49,6 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
   //! Create a set that is registered with the model
   RestraintSet(const RestraintsTemp &rs, double weight,
                const std::string &name = "RestraintSet %1%");
-  /** \deprecated_at{2.1} Use the constructor that takes a Model. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  RestraintSet(double weight, const std::string &name = "RestraintSet %1%");
-  /** \deprecated_at{2.1} Use the constructor that takes a Model. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  RestraintSet(const std::string &name = "RestraintSet %1%");
 
   double unprotected_evaluate(DerivativeAccumulator *da) const;
   IMP_OBJECT_METHODS(RestraintSet);
@@ -81,10 +75,7 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
 #endif
   double get_last_score() const;
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-
  protected:
-  virtual void do_set_model(kernel::Model *m) IMP_OVERRIDE;
-
   Restraints do_create_decomposition() const;
   Restraints do_create_current_decomposition() const;
   void do_add_score_and_derivatives(ScoreAccumulator sa) const;

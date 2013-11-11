@@ -15,7 +15,11 @@ IMPATOM_BEGIN_NAMESPACE
 
 BerendsenThermostatOptimizerState::BerendsenThermostatOptimizerState(
     const kernel::Particles &pis, double temperature, double tau)
-    : pis_(pis), temperature_(temperature), tau_(tau) {
+    : OptimizerState(pis[0]->get_model(),
+                     "BerendsenThermostatOptimizerState%1%"),
+      pis_(pis),
+      temperature_(temperature),
+      tau_(tau) {
   vs_[0] = FloatKey("vx");
   vs_[1] = FloatKey("vy");
   vs_[2] = FloatKey("vz");

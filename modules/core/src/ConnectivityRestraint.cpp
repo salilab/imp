@@ -29,13 +29,13 @@
 IMPCORE_BEGIN_NAMESPACE
 
 ConnectivityRestraint::ConnectivityRestraint(PairScore *ps,
-                                             SingletonContainer *sc)
+                                             SingletonContainerAdaptor sc)
     : kernel::Restraint(sc->get_model(), "ConnectivityRestraint %1%"), ps_(ps) {
   sc_ = sc;
 }
 
-ConnectivityRestraint::ConnectivityRestraint(PairScore *ps)
-    : kernel::Restraint("ConnectivityRestraint %1%"), ps_(ps) {
+ConnectivityRestraint::ConnectivityRestraint(Model *m, PairScore *ps)
+  : kernel::Restraint(m, "ConnectivityRestraint %1%"), ps_(ps) {
   IMPCORE_DEPRECATED_METHOD_DEF(2.1, "Use constructor that takes container.");
 }
 

@@ -25,6 +25,8 @@ class IMPKERNELEXPORT ModelObject : public base::Object {
   friend class Model;
   base::WeakPointer<Model> model_;
 
+  // for cleanup
+  void set_model(Model *m);
  public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   void validate_inputs() const;
@@ -76,20 +78,6 @@ class IMPKERNELEXPORT ModelObject : public base::Object {
   /** Override if this if not all inputs interact with all outputs. This is
       rarely something you want to do.*/
   virtual ModelObjectsTemps do_get_interactions() const;
-
- public:
-  /** \deprecated_at{2.1} Use the constructor that takes a Model. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  ModelObject(std::string name);
-  /** \deprecated_at{2.1} Use the constructor that takes a Model. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  virtual void set_model(kernel::Model *m);
-  /** \deprecated_at{2.1} Should always be true. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  bool get_is_part_of_model() const;
-  /** \deprecated_at{2.1} As it should always be part of a model. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  virtual void do_set_model(kernel::Model *) {}
 };
 
 IMPKERNEL_END_NAMESPACE

@@ -191,7 +191,6 @@ Restraint *NBLScoring::create_restraint() const {
   base::Pointer<kernel::Restraint> ret =
       new IMP::internal::InternalPairsRestraint(
           cache_.get_generator().score_.get(), cpc.get());
-  ret->set_model(cache_.get_generator().m_);
   return ret.release();
 }
 

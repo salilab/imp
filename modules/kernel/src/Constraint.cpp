@@ -11,8 +11,6 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-Constraint::Constraint(std::string name) : ScoreState(name) {}
-
 Constraint::Constraint(kernel::Model *m, std::string name)
     : ScoreState(m, name) {}
 

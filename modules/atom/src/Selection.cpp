@@ -281,8 +281,9 @@ Selection::SearchResult Selection::search(
     }
   }
   if (matched) {
-    IMP_LOG_TERSE("Matched " << m->get_particle_name(pi) << " with " << children
-                             << " and " << children_covered << std::endl);
+    IMP_LOG_VERBOSE("Matched " << m->get_particle_name(pi) << " with "
+                               << children << " and " << children_covered
+                               << std::endl);
     double my_radius = -std::numeric_limits<double>::max();
     if (core::XYZR::get_is_setup(m, pi)) {
       my_radius = core::XYZR(m, pi).get_radius();

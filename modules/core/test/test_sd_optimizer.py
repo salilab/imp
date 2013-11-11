@@ -4,7 +4,9 @@ import IMP.core
 
 radkey = IMP.FloatKey("radius")
 
+
 class Tests(IMP.test.TestCase):
+
     """Test steepest descent optimizer"""
 
     def setUp(self):
@@ -31,7 +33,7 @@ class Tests(IMP.test.TestCase):
         p1.add_attribute(radkey, 3.0, False)
 
         # separate 3 particles by their radii
-        for pairs in ((0,1), (1,2), (0,2)):
+        for pairs in ((0, 1), (1, 2), (0, 2)):
             p1 = self.particles[pairs[0]]
             p2 = self.particles[pairs[1]]
             mean = p1.get_value(radkey) + p2.get_value(radkey)
@@ -40,7 +42,7 @@ class Tests(IMP.test.TestCase):
             self.rsrs.append(rsr)
 
         # add restraints
-        rs = IMP.kernel.RestraintSet("distance_rsrs")
+        rs = IMP.kernel.RestraintSet(self.imp_model, 1.0, "distance_rsrs")
         self.imp_model.add_restraint(rs)
         self.restraint_sets.append(rs)
         for i in range(len(self.rsrs)):
@@ -49,8 +51,6 @@ class Tests(IMP.test.TestCase):
         self.steepest_descent = IMP.core.SteepestDescent()
         self.steepest_descent.set_model(self.imp_model)
 
-
-
     def test_sd_optimizer1(self):
         """Test that steepest descent optimizer brings particles together"""
 
@@ -58,12 +58,11 @@ class Tests(IMP.test.TestCase):
 
         for i in range(0, 2):
             pi = self.particles[i]
-            for j in range(i+1, 3):
+            for j in range(i + 1, 3):
                 pj = self.particles[j]
                 dist = self.particle_distance(pi, pj) \
-                       - pi.get_value(radkey) - pj.get_value(radkey)
+                    - pi.get_value(radkey) - pj.get_value(radkey)
                 self.assertAlmostEqual(0.0, dist, places=2)
-
 
     def test_sd_optimizer2(self):
         """Test that steepest descent optimizer spreads particles apart"""
@@ -76,10 +75,10 @@ class Tests(IMP.test.TestCase):
 
         for i in range(0, 2):
             pi = self.particles[i]
-            for j in range(i+1, 3):
+            for j in range(i + 1, 3):
                 pj = self.particles[j]
                 dist = self.particle_distance(pi, pj) \
-                       - pi.get_value(radkey) - pj.get_value(radkey)
+                    - pi.get_value(radkey) - pj.get_value(radkey)
                 self.assertAlmostEqual(0.0, dist, places=2)
 
 

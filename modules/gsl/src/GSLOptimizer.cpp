@@ -21,11 +21,6 @@ GSLOptimizer::GSLOptimizer(kernel::Model *m)
       stop_score_(-std::numeric_limits<double>::max()),
       best_score_(std::numeric_limits<double>::max()) {}
 
-GSLOptimizer::GSLOptimizer()
-    : AttributeOptimizer(),
-      stop_score_(-std::numeric_limits<double>::max()),
-      best_score_(std::numeric_limits<double>::max()) {}
-
 GSLOptimizer::~GSLOptimizer() {}
 
 gsl_vector *GSLOptimizer::get_state() const {
