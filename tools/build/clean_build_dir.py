@@ -31,12 +31,19 @@ def build_info():
 
 
 def clean_headers():
-    for f in [x for l in [("include", "IMP", "refiner_macros.h"),
-                          ("include", "IMP", "log.h"),
-                          ("include", "IMP", "exception.h"),
-                          ("include", "IMP", "Object.h"),
-                          ("include", "IMP", "file.h")] for x in glob.glob(
-            os.path.join(*l))]:
+    for f in [x for l in ["refiner_macros.h",
+                          "log.h",
+                          "exception.h",
+                          "Object.h",
+                          "file.h",
+                          "sampler_macros.h",
+                          "Pointer.h",
+                          "WeakPointer.h",
+                          "RefCounted.h",
+                          "scoring_function_macros.h",
+                          "VersionInfo.h",
+                          "key_macros.h"] for x in glob.glob(
+            os.path.join("include", "IMP", l))]:
         os.unlink(f)
 
 

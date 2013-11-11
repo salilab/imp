@@ -10,7 +10,6 @@
 #include "IMP/kernel/Model.h"
 #include "IMP/kernel/internal/evaluate_utility.h"
 #include "IMP/kernel/internal/scoring_functions.h"
-#include "IMP/kernel/scoring_function_macros.h"
 #include "IMP/kernel/internal/utility.h"
 #include "IMP/kernel/generic.h"
 #include "IMP/kernel/utility.h"
