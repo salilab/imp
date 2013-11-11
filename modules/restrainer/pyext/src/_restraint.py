@@ -26,7 +26,7 @@ class _RestraintSets(object):
             current_set = set_by_weight[restraint_type]
         except KeyError:
             if not model:
-                assert(0, "Can't create restraints without a model.")
+                raise RuntimeError("Model must be passed to create restraints")
             current_set = set_by_weight[
                 restraint_type] = IMP.kernel.RestraintSet(model)
             if model:
