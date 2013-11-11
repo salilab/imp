@@ -642,7 +642,7 @@ class _TestResult(unittest.TextTestResult):
         super(_TestResult, self).addExpectedFailure(test, err)
 
     def addUnexpectedSuccess(self, test):
-        self._test_finished(test, 'UNEXPSUC', err)
+        self._test_finished(test, 'UNEXPSUC')
         super(_TestResult, self).addUnexpectedSuccess(test)
 
     def getDescription(self, test):
