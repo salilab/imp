@@ -133,7 +133,7 @@ bool check_parameters(const po::variables_map &vm,const str required_params,
 
 int main(int argc, char **argv) {
 
-  IMP::set_log_level(IMP::base::VERBOSE);
+  IMP::base::set_log_level(IMP::base::VERBOSE);
 
   po::variables_map vm = get_parameters(argc,argv);
   IMP_NEW(em2d::SpiderImageReaderWriter, srw, ());
