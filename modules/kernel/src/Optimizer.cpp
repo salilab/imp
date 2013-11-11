@@ -41,7 +41,7 @@ Optimizer::~Optimizer() {}
 
 void Optimizer::update_states() const {
   IMP_LOG_VERBOSE("Updating OptimizerStates " << std::flush);
-  BOOST_FOREACH(ScoreState * ss, get_required_score_states()) {
+  IMP_FOREACH(ScoreState * ss, get_required_score_states()) {
     ss->before_evaluate();
   }
   for (OptimizerStateConstIterator it = optimizer_states_begin();

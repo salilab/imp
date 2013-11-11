@@ -10,7 +10,7 @@
 #include <IMP/benchmark/benchmark_macros.h>
 #include <IMP/container.h>
 #include <IMP/test/test_macros.h>
-#include <boost/foreach.hpp>
+
 
 using namespace IMP;
 using namespace IMP::core;

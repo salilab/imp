@@ -52,12 +52,12 @@ HierarchyLoadLocalCoordinates::link_particle(
 
 void HierarchyLoadLocalCoordinates::load(RMF::FileConstHandle fh,
                                          kernel::Model *m) {
-  BOOST_FOREACH(Pair pp, xyzs_) {
+  IMP_FOREACH(Pair pp, xyzs_) {
     algebra::Vector3D v =
         get_coordinates(fh.get_node(pp.first), intermediate_particle_factory_);
     core::RigidBodyMember(m, pp.second).set_internal_coordinates(v);
   }
-  BOOST_FOREACH(Pair pp, rigid_bodies_) {
+  IMP_FOREACH(Pair pp, rigid_bodies_) {
     algebra::Transformation3D rf(
         get_transformation(fh.get_node(pp.first), reference_frame_factory_));
     core::RigidBodyMember(m, pp.second).set_internal_transformation(rf);
@@ -82,12 +82,12 @@ bool HierarchySaveLocalCoordinates::setup_node(
 }
 
 void HierarchySaveLocalCoordinates::save(Model *m, RMF::FileHandle fh) {
-  BOOST_FOREACH(Pair pp, xyzs_) {
+  IMP_FOREACH(Pair pp, xyzs_) {
     copy_to_particle(
         core::RigidBodyMember(m, pp.second).get_internal_coordinates(),
         fh.get_node(pp.first), intermediate_particle_factory_);
   }
-  BOOST_FOREACH(Pair pp, rigid_bodies_) {
+  IMP_FOREACH(Pair pp, rigid_bodies_) {
     copy_to_reference_frame(
         core::RigidBodyMember(m, pp.second).get_internal_transformation(),
         fh.get_node(pp.first), reference_frame_factory_);

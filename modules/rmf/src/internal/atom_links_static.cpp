@@ -297,7 +297,7 @@ void HierarchyLoadBonds::setup_bonds(RMF::NodeConstHandle n, kernel::Model *m,
       atom::create_bond(get_bonded(p0), get_bonded(p1), atom::Bond::SINGLE);
     }
   } else {
-    BOOST_FOREACH(RMF::NodeConstHandle c, children) { setup_bonds(c, m, p); }
+    IMP_FOREACH(RMF::NodeConstHandle c, children) { setup_bonds(c, m, p); }
   }
 }
 

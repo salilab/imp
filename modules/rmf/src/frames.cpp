@@ -14,13 +14,13 @@
 #include <IMP/base/set.h>
 #include <RMF/SetCurrentFrame.h>
 #include <boost/scoped_ptr.hpp>
-#include <boost/foreach.hpp>
+
 IMPRMF_BEGIN_NAMESPACE
 void load_frame(RMF::FileConstHandle fh, int frame) {
   try {
     RMF::FrameConstHandle fr = fh.get_frame(RMF::FrameID(frame));
     fr.set_as_current_frame();
-    BOOST_FOREACH(LoadLink *ll, internal::get_load_linkers(fh)) {
+    IMP_FOREACH(LoadLink *ll, internal::get_load_linkers(fh)) {
       ll->load(fh);
     }
   }
@@ -54,7 +54,7 @@ void save_frame(RMF::FileHandle file, int frame, std::string name) {
     IMP_INTERNAL_CHECK(file.get_current_frame().get_id().get_index() ==
                            static_cast<int>(frame),
                        "Wrong current frame");
-    BOOST_FOREACH(SaveLink* ll, internal::get_save_linkers(file)) {
+    IMP_FOREACH(SaveLink* ll, internal::get_save_linkers(file)) {
       ll->save(file);
     }
     IMP_INTERNAL_CHECK(

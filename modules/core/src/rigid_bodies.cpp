@@ -512,14 +512,14 @@ void RigidBody::teardown_particle(RigidBody rb) {
   rb.on_change();
   {
     const kernel::ParticleIndexes &members = rb.get_member_particle_indexes();
-    BOOST_FOREACH(kernel::ParticleIndex pi, members) {
+    IMP_FOREACH(kernel::ParticleIndex pi, members) {
       internal::remove_required_attributes_for_member(rb.get_model(), pi);
     }
   }
   {
     const kernel::ParticleIndexes &members =
         rb.get_body_member_particle_indexes();
-    BOOST_FOREACH(kernel::ParticleIndex pi, members) {
+    IMP_FOREACH(kernel::ParticleIndex pi, members) {
       internal::remove_required_attributes_for_body_member(rb.get_model(), pi);
     }
   }
@@ -536,7 +536,7 @@ void RigidBody::set_reference_frame_from_members(
                   "Can't initialize a rigid body reference frame "
                       << "with < 3 particles.");
   kernel::Model *m = get_model();
-  BOOST_FOREACH(kernel::ParticleIndex pi, rms) {
+  IMP_FOREACH(kernel::ParticleIndex pi, rms) {
     local.push_back(RigidMember(m, pi).get_internal_coordinates());
     global.push_back(RigidMember(m, pi).get_coordinates());
   }
@@ -544,7 +544,7 @@ void RigidBody::set_reference_frame_from_members(
       algebra::get_transformation_aligning_first_to_second(local, global);
   set_reference_frame_lazy(algebra::ReferenceFrame3D(t3));
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    BOOST_FOREACH(kernel::ParticleIndex pi, rms) {
+    IMP_FOREACH(kernel::ParticleIndex pi, rms) {
       algebra::Vector3D local =
           RigidBodyMember(m, pi).get_internal_coordinates();
       algebra::Vector3D back = t3.get_transformed(local);

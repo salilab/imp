@@ -24,7 +24,7 @@
 #include <IMP/core/internal/CoreCloseBipartitePairContainer.h>
 #include <IMP/core/internal/close_pairs_helpers.h>
 #include <IMP/algebra/eigen_analysis.h>
-#include <boost/foreach.hpp>
+
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -166,7 +166,7 @@ double ExcludedVolumeRestraint::unprotected_evaluate(
   }
   IMP_UNUSED(recomputed);
   double ret = 0;
-  BOOST_FOREACH(kernel::ParticleIndexPair pi, cur_list_) {
+  IMP_FOREACH(kernel::ParticleIndexPair pi, cur_list_) {
     ret += ssps_->evaluate_index(get_model(), pi, da);
   }
 #if IMP_HAS_CHECKS >= IMP_INTERNAL

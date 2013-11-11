@@ -10,7 +10,7 @@
 #include <IMP/atom/MolecularDynamics.h>
 #include <IMP/atom/Mass.h>
 #include <IMP/core/XYZ.h>
-#include <boost/foreach.hpp>
+
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -29,7 +29,7 @@ RemoveRigidMotionOptimizerState::RemoveRigidMotionOptimizerState(
 RemoveRigidMotionOptimizerState::RemoveRigidMotionOptimizerState(
     kernel::Model *m, kernel::ParticleIndexesAdaptor pis)
     : kernel::OptimizerState(m, "RemoveRigidMotionOptimizerState%1%") {
-  BOOST_FOREACH(kernel::ParticleIndex pi, pis) {
+  IMP_FOREACH(kernel::ParticleIndex pi, pis) {
     pis_.push_back(m->get_particle(pi));
   }
   vs_[0] = FloatKey("vx");

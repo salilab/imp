@@ -22,7 +22,7 @@
 #include <boost/format.hpp>
 #include <locale>
 #include <fstream>
-#include <boost/foreach.hpp>
+
 #include <iomanip>
 
 #include <boost/version.hpp>
@@ -646,7 +646,7 @@ WritePDBOptimizerState::WritePDBOptimizerState(const atom::Hierarchies mh,
                                                std::string filename)
     : kernel::OptimizerState(mh[0].get_model(), filename + "Writer"),
       filename_(filename) {
-  BOOST_FOREACH(atom::Hierarchy h, mh) {
+  IMP_FOREACH(atom::Hierarchy h, mh) {
     pis_.push_back(h.get_particle_index());
   }
 }
@@ -656,7 +656,7 @@ void WritePDBOptimizerState::do_update(unsigned int call) {
   bool append = (call != 0);
   std::string filename;
   Hierarchies hs;
-  BOOST_FOREACH(kernel::ParticleIndex pi, pis_) {
+  IMP_FOREACH(kernel::ParticleIndex pi, pis_) {
     hs.push_back(Hierarchy(get_model(), pi));
   }
   try {
@@ -675,7 +675,7 @@ void WritePDBOptimizerState::do_update(unsigned int call) {
 
 ModelObjectsTemp WritePDBOptimizerState::do_get_inputs() const {
   kernel::ModelObjectsTemp ret;
-  BOOST_FOREACH(kernel::ParticleIndex pi, pis_) {
+  IMP_FOREACH(kernel::ParticleIndex pi, pis_) {
     ret += get_leaves(Hierarchy(get_model(), pi));
   }
   return ret;

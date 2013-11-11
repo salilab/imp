@@ -8,6 +8,15 @@
 #ifndef IMPBASE_COMPILER_MACROS_H
 #define IMPBASE_COMPILER_MACROS_H
 
+#include <boost/config.hpp>
+#ifdef BOOST_NO_CXX11_RANGE_BASED_FOR
+#define IMP_FOREACH(v, r) BOOST_FOREACH(v, r)
+#else
+/** Use C++11 range-based for if available or BOOST_FOREACH if not. */
+#define IMP_FOREACH(v, r) for (v : r)
+#endif
+
+
 #include <boost/detail/endian.hpp>
 
 #define IMP_STRINGIFY(x) #x
@@ -210,4 +219,4 @@
 #define IMP_DEPRECATED_ATTRIBUTE
 #endif
 
-#endif /* IMPBASE_COMPILER_MACROS_H */
+#endif  /* IMPBASE_COMPILER_MACROS_H */

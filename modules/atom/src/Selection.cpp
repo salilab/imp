@@ -443,7 +443,7 @@ Restraint *create_connectivity_restraint(const Selections &s, double x0,
                                          double k, std::string name) {
   IMP_IF_CHECK(USAGE) {
     base::set<kernel::ParticleIndex> used;
-    BOOST_FOREACH(const Selection & sel, s) {
+    IMP_FOREACH(const Selection & sel, s) {
       kernel::ParticleIndexes cur = sel.get_selected_particle_indexes();
       int old = used.size();
       IMP_UNUSED(old);

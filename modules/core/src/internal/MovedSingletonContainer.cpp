@@ -14,7 +14,7 @@
 #include <IMP/SingletonScore.h>
 #include <IMP/PairScore.h>
 #include <IMP/base/utility.h>
-#include <boost/foreach.hpp>
+
 
 #include <algorithm>
 #include <sstream>
@@ -128,7 +128,7 @@ void XYZRMovedSingletonContainer::do_reset_moved() {
   IMP_OBJECT_LOG;
   IMP_LOG_TERSE("Resetting moved particles" << std::endl);
   IMP_CONTAINER_ACCESS(SingletonContainer, get_singleton_container(), {
-      BOOST_FOREACH(int m, moved_) {
+      IMP_FOREACH(int m, moved_) {
         backup_[m] =
             XYZR(get_model(), imp_indexes[m]).get_sphere();
       }
@@ -225,7 +225,7 @@ void RigidMovedSingletonContainer::do_reset_all() {
 }
 void RigidMovedSingletonContainer::do_reset_moved() {
   IMP_OBJECT_LOG;
-  BOOST_FOREACH(int m, moved_) { backup_[m] = get_data(bodies_[m]); }
+  IMP_FOREACH(int m, moved_) { backup_[m] = get_data(bodies_[m]); }
   moved_.clear();
 }
 

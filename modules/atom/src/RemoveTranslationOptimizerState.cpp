@@ -24,7 +24,7 @@ RemoveTranslationOptimizerState::RemoveTranslationOptimizerState(
 RemoveTranslationOptimizerState::RemoveTranslationOptimizerState(
     kernel::Model *m, kernel::ParticleIndexesAdaptor pis)
     : kernel::OptimizerState(m, "RemoveTranslationOptimizerState%1%") {
-  BOOST_FOREACH(kernel::ParticleIndex pi, pis) {
+  IMP_FOREACH(kernel::ParticleIndex pi, pis) {
     pis_.push_back(m->get_particle(pi));
   }
 }

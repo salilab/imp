@@ -51,7 +51,7 @@ namespace {
 void foreach_test() {
   ParticleIndexes pis;
   ParticleIndexesAdaptor pia(pis);
-  BOOST_FOREACH(ParticleIndex pi, pia) { IMP_UNUSED(pi); }
+  IMP_FOREACH(ParticleIndex pi, pia) { IMP_UNUSED(pi); }
 }
 }
 IMPKERNEL_END_NAMESPACE

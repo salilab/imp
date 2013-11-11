@@ -99,7 +99,7 @@ void HierarchyLoadGlobalCoordinates::fix_rigid_body(Model *m,
   // core::RigidMembers rms=in.second;
   core::RigidBody rb(m, in.rb);
   kernel::ParticleIndexes rigid_bits;
-  BOOST_FOREACH(kernel::ParticleIndex pi, in.members) {
+  IMP_FOREACH(kernel::ParticleIndex pi, in.members) {
     if (core::RigidMember::get_is_setup(rb.get_model(), pi)) {
       rigid_bits.push_back(pi);
     }
@@ -109,7 +109,7 @@ void HierarchyLoadGlobalCoordinates::fix_rigid_body(Model *m,
   rb.set_reference_frame_from_members(rigid_bits);
   algebra::ReferenceFrame3D rf = rb.get_reference_frame();
   // fix rigid bodies that aren't rigid
-  BOOST_FOREACH(kernel::ParticleIndex mb, in.members) {
+  IMP_FOREACH(kernel::ParticleIndex mb, in.members) {
     if (core::NonRigidMember::get_is_setup(rb.get_model(), mb)) {
       fix_internal_coordinates(rb, rf,
                                core::RigidBodyMember(rb.get_model(), mb));
@@ -128,7 +128,7 @@ void HierarchyLoadGlobalCoordinates::initialize_rigid_body(Model *m,
       core::get_initial_reference_frame(m, in.members);
   IMP_LOG_TERSE("Initial rf is " << rf << std::endl);
   rb.set_reference_frame_lazy(rf);
-  BOOST_FOREACH(kernel::ParticleIndex pi, in.members) {
+  IMP_FOREACH(kernel::ParticleIndex pi, in.members) {
     core::RigidBodyMember rbm(m, pi);
     if (core::RigidBody::get_is_setup(m, pi)) {
       algebra::Transformation3D lc =
@@ -150,20 +150,20 @@ void HierarchyLoadGlobalCoordinates::initialize_rigid_body(Model *m,
 }
 
 void HierarchyLoadGlobalCoordinates::load(RMF::FileConstHandle fh, Model *m) {
-  BOOST_FOREACH(Pair pp, xyzs_) {
+  IMP_FOREACH(Pair pp, xyzs_) {
     algebra::Vector3D v =
         get_coordinates(fh.get_node(pp.first), intermediate_particle_factory_);
     IMP_LOG_VERBOSE("Loading particle " << m->get_particle_name(pp.second)
                     << " to " << v << std::endl);
     core::XYZ(m, pp.second).set_coordinates(v);
   }
-  BOOST_FOREACH(Pair pp, rigid_bodies_) {
+  IMP_FOREACH(Pair pp, rigid_bodies_) {
     algebra::ReferenceFrame3D rf(
         get_transformation(fh.get_node(pp.first), reference_frame_factory_));
     core::RigidBody(m, pp.second).set_reference_frame(rf);
   }
   typedef std::pair<const int, RB> P;
-  BOOST_FOREACH(P & pp, rigid_body_compositions_) {
+  IMP_FOREACH(P & pp, rigid_body_compositions_) {
     if (!pp.second.initialized) {
       initialize_rigid_body(m, pp.second);
     } else {
@@ -206,11 +206,11 @@ bool HierarchySaveGlobalCoordinates::setup_node(
 
 void HierarchySaveGlobalCoordinates::save(kernel::Model *m,
                                           RMF::FileHandle fh) {
-  BOOST_FOREACH(Pair pp, xyzs_) {
+  IMP_FOREACH(Pair pp, xyzs_) {
     copy_to_particle(core::XYZ(m, pp.second).get_coordinates(),
                      fh.get_node(pp.first), intermediate_particle_factory_);
   }
-  BOOST_FOREACH(Pair pp, rigid_bodies_) {
+  IMP_FOREACH(Pair pp, rigid_bodies_) {
     copy_to_reference_frame(core::RigidBody(m, pp.second)
                                 .get_reference_frame()
                                 .get_transformation_to(),

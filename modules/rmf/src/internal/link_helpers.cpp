@@ -6,7 +6,7 @@
  */
 
 #include <IMP/rmf/internal/link_helpers.h>
-#include <boost/foreach.hpp>
+
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 namespace {
@@ -38,7 +38,7 @@ unsigned int get_save_linker_index(std::string st) {
 LoadLinks get_load_linkers(RMF::FileConstHandle fh) {
   LoadLinks ret;
   typedef std::pair<std::string, int> P;
-  BOOST_FOREACH(P kl, known_load_linkers) {
+  IMP_FOREACH(P kl, known_load_linkers) {
     if (fh.get_has_associated_data(kl.second)) {
       ret.push_back(fh.get_associated_data<LoadLinkAssociationType>(kl.second));
     }
@@ -50,7 +50,7 @@ LoadLinks get_load_linkers(RMF::FileConstHandle fh) {
 SaveLinks get_save_linkers(RMF::FileHandle fh) {
   SaveLinks ret;
   typedef std::pair<std::string, int> P;
-  BOOST_FOREACH(P kl, known_save_linkers) {
+  IMP_FOREACH(P kl, known_save_linkers) {
     if (fh.get_has_associated_data(kl.second)) {
       ret.push_back(fh.get_associated_data<SaveLinkAssociationType>(kl.second));
     }

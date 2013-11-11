@@ -11,7 +11,7 @@
 #include <IMP/kernel/container_base.h>
 // should move to own .cpp
 #include <IMP/kernel/input_output.h>
-#include <boost/foreach.hpp>
+
 #include <algorithm>
 
 IMPKERNEL_BEGIN_NAMESPACE

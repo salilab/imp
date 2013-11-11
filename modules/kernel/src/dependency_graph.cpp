@@ -19,7 +19,7 @@ IMP_GCC_PRAGMA(diagnostic ignored "-Wunused-parameter")
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/dynamic_bitset.hpp>
 #include <IMP/base/warning_macros.h>
-#include <boost/foreach.hpp>
+
 #include <IMP/base/file.h>
 //#include <boost/graph/lookup_edge.hpp>
 #include <IMP/base/vector_property_map.h>
@@ -364,7 +364,7 @@ RestraintsTemp do_get_dependent_restraints(kernel::ModelObject *mo) {
   if (r) {
     ret.push_back(r);
   }
-  BOOST_FOREACH(kernel::ModelObject * cur,
+  IMP_FOREACH(kernel::ModelObject * cur,
                 mo->get_model()->get_dependency_graph_outputs(mo)) {
     ret += do_get_dependent_restraints(cur);
   }

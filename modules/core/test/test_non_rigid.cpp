@@ -8,7 +8,7 @@
 #include <IMP/kernel/internal/InternalListSingletonContainer.h>
 #include <IMP/test/test_macros.h>
 #include <IMP/core/internal/CoreClosePairContainer.h>
-#include <boost/foreach.hpp>
+
 
 namespace {
   std::string get_module_name() {return "anon";}
@@ -49,7 +49,7 @@ namespace {
   IMP::core::MonteCarloMovers create_ic_movers(IMP::kernel::Model *m,
                                             IMP::kernel::ParticleIndexes pis) {
     IMP::core::MonteCarloMovers ret;
-    BOOST_FOREACH(IMP::kernel::ParticleIndex pi, pis) {
+    IMP_FOREACH(IMP::kernel::ParticleIndex pi, pis) {
       ret.push_back(new ICMover(m, pi, 1));
     }
     return ret;
@@ -99,7 +99,7 @@ namespace {
   }
 
   void move(IMP::core::MonteCarloMovers mvs) {
-    BOOST_FOREACH(IMP::core::MonteCarloMover *m, mvs) {
+    IMP_FOREACH(IMP::core::MonteCarloMover *m, mvs) {
       m->propose();
       m->accept();
     }
