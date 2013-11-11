@@ -9,7 +9,8 @@
 #define IMPBASE_COMPILER_MACROS_H
 
 #include <boost/config.hpp>
-#ifdef BOOST_NO_CXX11_RANGE_BASED_FOR
+#include <boost/version.hpp>
+#if defined(BOOST_NO_CXX11_RANGE_BASED_FOR) || BOOST_VERSION <= 104100
 #define IMP_FOREACH(v, r) BOOST_FOREACH(v, r)
 #else
 /** Use C++11 range-based for if available or BOOST_FOREACH if not. */
