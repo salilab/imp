@@ -236,7 +236,7 @@ class IMPDOMINOEXPORT RecursiveStates : public ParticleStates {
   Subset s_;
   Assignments ss_;
   IMP::base::PointerMember<ParticleStatesTable> pst_;
-  ScopedScoreState sss_;
+  IMP::base::PointerMember<ScoreState> sss_;
 
  public:
   RecursiveStates(kernel::Particle *p, Subset s, const Assignments &ss,

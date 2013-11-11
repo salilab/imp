@@ -158,8 +158,8 @@ RecursiveStates::RecursiveStates(kernel::Particle *p, Subset s,
       s_(s),
       ss_(ss),
       pst_(pst),
-      sss_(new DummyConstraint(p, kernel::ParticlesTemp(s.begin(), s.end())),
-           p->get_model()) {}
+      sss_(new DummyConstraint(p, kernel::ParticlesTemp(s.begin(), s.end()))) {}
+
 unsigned int RecursiveStates::get_number_of_particle_states() const {
   return ss_.size();
 }
