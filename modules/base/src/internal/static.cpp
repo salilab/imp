@@ -11,8 +11,6 @@
 #endif
 #include "IMP/base//Pointer.h"
 #include "IMP/base/Object.h"
-#include "IMP/base/RefCounted.h"
-#include "IMP/base/RefCounted.h"
 #include "IMP/base/Showable.h"
 #include "IMP/base/Vector.h"
 #include "IMP/base/base_macros.h"
@@ -97,7 +95,7 @@ boost::scoped_ptr<boost::progress_display> progress;
 
 IMPBASE_END_INTERNAL_NAMESPACE
 IMPBASE_BEGIN_NAMESPACE
-unsigned int RefCounted::live_objects_ = 0;
+unsigned int Object::live_objects_ = 0;
 base::set<Object*> live_;
 bool show_live = true;
 namespace {

@@ -12,7 +12,7 @@
 #include "Hierarchy.h"
 
 #include <IMP/Refiner.h>
-#include <IMP/refiner_macros.h>
+
 IMPCORE_BEGIN_NAMESPACE
 
 class HierarchyTraits;

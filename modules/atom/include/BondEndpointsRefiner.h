@@ -9,9 +9,8 @@
 #define IMPATOM_BOND_ENDPOINTS_REFINER_H
 
 #include <IMP/atom/atom_config.h>
-
 #include <IMP/Refiner.h>
-#include <IMP/refiner_macros.h>
+
 IMPATOM_BEGIN_NAMESPACE
 
 //! Return the endpoints of a bond.

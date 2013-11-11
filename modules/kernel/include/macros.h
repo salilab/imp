@@ -18,7 +18,6 @@
 #include "unary_function_macros.h"
 #include "sampler_macros.h"
 #include "score_state_macros.h"
-#include "refiner_macros.h"
 #include "singleton_macros.h"
 #include "pair_macros.h"
 #include "triplet_macros.h"

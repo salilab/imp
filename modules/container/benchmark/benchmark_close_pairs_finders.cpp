@@ -19,8 +19,6 @@ using namespace IMP::container;
 namespace {
 void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
               float rmin, float rmax, bool nobi = false) {
-  set_log_level(SILENT);
-  set_check_level(IMP::NONE);
   {
     Vector3D minc(0, 0, 0), maxc(10, 10, 10);
     IMP_NEW(kernel::Model, m, ());

@@ -30,13 +30,15 @@ class ConstPairScore : public PairScore {
   ConstPairScore() {}
   double evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &p,
                         DerivativeAccumulator *da) const IMP_OVERRIDE;
-  kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m, const kernel::ParticleIndexes &pis) const;
+  kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const;
   IMP_PAIR_SCORE_METHODS(ConstPairScore);
   IMP_OBJECT_METHODS(ConstPairScore);
   ;
 };
 
-double ConstPairScore::evaluate_index(kernel::Model *, const kernel::ParticleIndexPair &,
+double ConstPairScore::evaluate_index(kernel::Model *,
+                                      const kernel::ParticleIndexPair &,
                                       DerivativeAccumulator *) const {
   return 1;
 }
@@ -53,8 +55,6 @@ namespace {
 
 void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
               float rmin, float rmax, double) {
-  set_log_level(SILENT);
-  set_check_level(IMP::NONE);
   Vector3D minc(0, 0, 0), maxc(10, 10, 10);
   IMP_NEW(kernel::Model, m, ());
   kernel::ParticlesTemp ps = create_xyzr_particles(m, n, rmin);
@@ -70,21 +70,21 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
   m->add_restraint(pr);
   double setuptime;
   IMP_TIME({
-    for (unsigned int i = 0; i < pis.size(); ++i) {
-      XYZ(m, pis[i])
-          .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
-    }
-  },
+             for (unsigned int i = 0; i < pis.size(); ++i) {
+               XYZ(m, pis[i]).set_coordinates(
+                   get_random_vector_in(BoundingBox3D(minc, maxc)));
+             }
+           },
            setuptime);
   double runtime;
   double result = 0;
   IMP_TIME({
-    for (unsigned int i = 0; i < pis.size(); ++i) {
-      XYZ(m, pis[i])
-          .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
-    }
-    result += m->evaluate(false);
-  },
+             for (unsigned int i = 0; i < pis.size(); ++i) {
+               XYZ(m, pis[i]).set_coordinates(
+                   get_random_vector_in(BoundingBox3D(minc, maxc)));
+             }
+             result += m->evaluate(false);
+           },
            runtime);
   std::ostringstream oss;
   oss << "col"

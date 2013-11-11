@@ -9,7 +9,7 @@
 
 #include "IMP/kernel/Particle.h"
 #include "IMP/kernel/Model.h"
-#include "IMP/kernel/log.h"
+#include "IMP/base/log_macros.h"
 #include "IMP/kernel/Restraint.h"
 #include "IMP/kernel/container_base.h"
 #include "IMP/kernel/ScoringFunction.h"
@@ -89,7 +89,7 @@ void check_decomposition(Restraint *in, Restraint *out) {
     // be lazy and hope that they behave the same on un updated states
     // otherwise it can be bery, bery slow
     // in->get_model()->update();
-    base::SetLogState sls(WARNING);
+    base::SetLogState sls(base::WARNING);
     double tin = in->unprotected_evaluate(nullptr);
     double tout = out->unprotected_evaluate(nullptr);
     if (std::abs(tin - tout) > .01 * std::abs(tin + tout) + .1) {

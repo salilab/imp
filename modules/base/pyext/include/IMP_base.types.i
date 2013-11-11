@@ -506,7 +506,7 @@ IMP_SWIG_DECORATOR_ATTRIBUTE(Float, FloatKey);
 IMP_SWIG_DECORATOR_ATTRIBUTE(Int, IntKey);
 IMP_SWIG_DECORATOR_ATTRIBUTE(String, StringKey);
 IMP_SWIG_DECORATOR_ATTRIBUTE(Particle*, ParticleIndexKey);
-IMP_SWIG_DECORATOR_ATTRIBUTE(Object*, ObjectKey);
+IMP_SWIG_DECORATOR_ATTRIBUTE(base::Object*, ObjectKey);
 IMP_SWIG_FORWARD_1(get_derivative, double, IMP::kernel::FloatKey);
 IMP_SWIG_FORWARD_0(get_name, std::string);
 IMP_SWIG_FORWARD_0(clear_caches, void);

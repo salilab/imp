@@ -8,7 +8,7 @@
 #include <IMP/domino/BranchAndBoundSampler.h>
 #include <IMP/domino/assignment_tables.h>
 #include <IMP/domino/utility.h>
-#include <IMP/file.h>
+#include <IMP/base/file.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 

@@ -6,7 +6,7 @@
  */
 
 #include "IMP/kernel/Particle.h"
-#include "IMP/kernel/log.h"
+#include "IMP/base/log_macros.h"
 #include "IMP/kernel/Model.h"
 #include "IMP/kernel/internal/utility.h"
 #include "IMP/kernel/internal/PrefixStream.h"

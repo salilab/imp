@@ -10,7 +10,6 @@
 
 #include <IMP/core/core_config.h>
 #include "internal/rigid_bodies.h"
-#include <IMP/refiner_macros.h>
 
 #include "XYZ.h"
 #include "XYZR.h"

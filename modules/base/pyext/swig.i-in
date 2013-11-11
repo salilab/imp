@@ -75,7 +75,6 @@ IMP_SWIG_VALUE(IMP::base::internal, _Protection, _Protections);
 %include "IMP/base/flags.h"
 %include "IMP/base/enums.h"
 %include "IMP/base/VersionInfo.h"
-%include "IMP/base/RefCounted.h"
 %include "IMP/base/file.h"
 %include "IMP/base/log.h"
 %include "IMP/base/declare_Object.h"

@@ -16,7 +16,6 @@
 #include "../PairScore.h"
 #include "../macros.h"
 #include "../Decorator.h"
-#include "../file.h"
 #include "../Optimizer.h"
 #include "container_helpers.h"
 #include <IMP/base/map.h>

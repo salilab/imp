@@ -7,7 +7,7 @@
 
 #include <IMP/kernel/RestraintSet.h>
 #include <IMP/kernel/Model.h>
-#include <IMP/kernel/log.h>
+#include <IMP/base/log.h>
 #include <IMP/kernel/internal/utility.h>
 #include <IMP/kernel/generic.h>
 #include <IMP/kernel/ScoringFunction.h>

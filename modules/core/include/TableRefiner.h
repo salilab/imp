@@ -11,7 +11,6 @@
 #include <IMP/core/core_config.h>
 
 #include <IMP/Refiner.h>
-#include <IMP/refiner_macros.h>
 #include <IMP/base/map.h>
 IMPCORE_BEGIN_NAMESPACE
 

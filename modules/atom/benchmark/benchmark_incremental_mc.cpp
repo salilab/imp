@@ -61,7 +61,8 @@ PairScore *create_pair_score(atom::Hierarchy, RigidBodies rbs, double k) {
   return cpps.release();
 }
 
-Restraint *create_diameter_restraint(kernel::Model *, RigidBodies rbs, double d) {
+Restraint *create_diameter_restraint(kernel::Model *, RigidBodies rbs,
+                                     double d) {
   IMP_NEW(ListSingletonContainer, lsc, (rbs));
   IMP_NEW(HarmonicUpperBound, hub, (0, 1.0));
   IMP_NEW(DiameterRestraint, dr, (hub, lsc, d));
@@ -84,8 +85,6 @@ Restraint *add_DOPE(kernel::Model *, atom::Hierarchy h) {
 
 void benchmark_it(std::string name, bool incr, bool nbl, bool longr) {
   IMP_NEW(kernel::Model, m, ());
-  m->set_log_level(IMP::SILENT);
-  set_check_level(IMP::USAGE_AND_INTERNAL);
   atom::Hierarchy h = atom::Hierarchy::setup_particle(new kernel::Particle(m));
   h->set_name("root");
   RigidBodies rbs;

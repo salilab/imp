@@ -1,5 +1,6 @@
 # ChangeLog
 # For IMP 2.2 # {#ChangeLog}
+- Some deprecated functionality was removed. If you encounter problems, replace IMP::base::OwnerPointer with IMP::base::PointerMember, find logging stuff in IMP/base/log.h, object in IMP/base/Object.h and random in IMP/base/random.h.
 - IMP::atom::Chain now uses strings for the chain ids, to be consistent with changes in the PDB. PDB files are written using the first character of the chain string.
 - Added SOAP-LOOP scoring (IMP::score_functor::SoapLoop and IMP::atom::SoapLoopPairScore). The potential file itself is rather large (~500MB) and so is not included with IMP. It can be downloaded separately from http://salilab.org/SOAP/.
 

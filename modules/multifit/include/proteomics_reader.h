@@ -13,7 +13,7 @@
 #include <IMP/domino/DominoSampler.h>
 #include <IMP/kernel/Model.h>
 #include <IMP/core/Hierarchy.h>
-#include <IMP/file.h>
+#include <IMP/base/file.h>
 #include <IMP/multifit/multifit_config.h>
 IMPMULTIFIT_BEGIN_NAMESPACE
 class ProteinRecordData {

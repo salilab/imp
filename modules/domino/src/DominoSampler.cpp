@@ -11,7 +11,7 @@
 #include <IMP/domino/internal/tree_inference.h>
 #include <IMP/base/warning_macros.h>
 #include <IMP/kernel/internal/graph_utility.h>
-#include <IMP/file.h>
+#include <IMP/base/file.h>
 #include <boost/scoped_ptr.hpp>
 #include <boost/graph/connected_components.hpp>
 

@@ -15,7 +15,7 @@
 #include "IMP/kernel/ScoreState.h"
 #include "IMP/kernel/ScoringFunction.h"
 #include "IMP/kernel/dependency_graph.h"
-#include "IMP/kernel/file.h"
+#include "IMP/base/file.h"
 #include "IMP/kernel/internal/evaluate_utility.h"
 #include "IMP/kernel/internal/graph_utility.h"
 #include <IMP/kernel/utility.h>

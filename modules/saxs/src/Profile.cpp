@@ -18,7 +18,7 @@
 #include <IMP/algebra/ParabolicFit.h>
 #include <IMP/algebra/LinearFit.h>
 #include <IMP/constants.h>
-#include <IMP/random.h>
+#include <IMP/base/random.h>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/random.hpp>
