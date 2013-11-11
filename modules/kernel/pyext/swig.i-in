@@ -169,12 +169,6 @@ IMP_SWIG_VALUE_INSTANCE(IMP::kernel, ParticleIndexKey, Key, ParticleIndexKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP::kernel, ParticleIndexesKey, Key, ParticleIndexesKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP::kernel, ObjectKey, Key, ObjectKeys);
 IMP_SWIG_VALUE_TEMPLATE(IMP::kernel, Key);
-IMP_SWIG_RAII_INSTANCE(IMP::kernel, ScopedRestraint, GenericScopedRestraint);
-IMP_SWIG_RAII_INSTANCE(IMP::kernel, ScopedRemoveRestraint, GenericScopedRemoveRestraint);
-IMP_SWIG_RAII_INSTANCE(IMP::kernel, ScopedRemoveScoreState, GenericScopedRemoveScoreState);
-IMP_SWIG_RAII_INSTANCE(IMP::kernel, ScopedScoreState, GenericScopedScoreState);
-IMP_SWIG_RAII_TEMPLATE(IMP::kernel, GenericScopedRestraint);
-IMP_SWIG_RAII_TEMPLATE(IMP::kernel, GenericScopedScoreState);
 IMP_SWIG_RAII_TEMPLATE(IMP::kernel, ScopedSetAttribute);
 IMP_SWIG_RAII_INSTANCE(IMP::kernel, ScopedSetFloatAttribute, ScopedSetAttribute);
 
@@ -307,10 +301,6 @@ namespace kernel {
 
 namespace IMP {
 namespace kernel {
-  %template(ScopedScoreState) ::IMP::kernel::GenericScopedScoreState< IMP::kernel::ScoreState>;
-  %template(ScopedRestraint) ::IMP::kernel::GenericScopedRestraint< IMP::kernel::Restraint>;
-  %template(ScopedRemoveRestraint) ::IMP::kernel::GenericScopedRemoveRestraint< IMP::kernel::Restraint>;
-  %template(ScopedRemoveScoreState) ::IMP::kernel::GenericScopedRemoveScoreState< IMP::kernel::ScoreState>;
   %template(ScopedSetFloatAttribute) ::IMP::kernel::ScopedSetAttribute<FloatKey, Float>;
 }
 }

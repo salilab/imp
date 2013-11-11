@@ -64,23 +64,15 @@
   IMPBASE_DEPRECATED_MACRO(2.1, "Use IMP_OBJECT_METHODS() instead."); \
   IMP_OBJECT_NO_WARNING(Name)
 
-/** \deprecated_at{2.1} Use IMP_OBJECT_METHODS() */
-#define IMP_OBJECT_2(Name)                                    \
-  IMP_DEPRECATED_MACRO(2.0, "Use IMP_OBJECT_METHODS() macro") \
-      IMP_OBJECT_METHODS(Name)
-
 //! Define the types for storing sets of objects
 /** The macro defines the types PluralName and PluralNameTemp.
     PluralName should be Names unless the English spelling is
     different.
  */
-#define IMP_OBJECTS(Name, PluralName)                                          \
-  /** Store a set of objects.*/                                                \
-  typedef IMP::base::Vector<IMP::base::Pointer<Name> > PluralName; /** Pass a  \
-                                                                      set of   \
-                                                                      objects. \
-                                                                       See     \
-                                                                      Name */  \
+#define IMP_OBJECTS(Name, PluralName)                              \
+  /** Store a set of objects.*/                                    \
+  typedef IMP::base::Vector<IMP::base::Pointer<Name> > PluralName; \
+  /** Pass a set of objects. See Name */                           \
   typedef IMP::base::Vector<IMP::base::WeakPointer<Name> > PluralName##Temp;
 
 #define IMP_GENERIC_OBJECT(Name, lcname, targument, carguments, cparguments) \
