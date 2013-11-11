@@ -26,7 +26,7 @@ class SimulationParameters;
 //! Simple Brownian dynamics simulator.
 /** This is an implementation of a Brownian Dynamics simulator.
 
-    \subsection Input particles and score
+    _Input particles and score_
 
     Each optimized particle must have x,y,z attributes
     that are optimizable. In addition, each optimized particle must be
@@ -44,7 +44,7 @@ class SimulationParameters;
     particles. If such a container is passed, particles added to it
     during optimization state updates are handled properly.
 
-    \subsection Simulation:
+    _Simulation_
 
     At each simulation time step, each particle is translated in the
     direction of the sum of a random diffusion vector and the gradient
@@ -60,16 +60,6 @@ class SimulationParameters;
 
     If the skt (stochastic runge kutta) flag is true, the simulation is
     altered slightly to apply the SKT scheme.
-
-    \subsection Parameters
-
-    BrownianDynamics uses a SimulationParameters particle to store the
-    parameters of the simulation. Such a particle must be passed on
-    creation. The BrownianDynamics object will at least see updates
-    to the SimulationParamters particle that occur before the
-    call to BrownianDynamics::optimize() or BrownianDynamics::simulate(),
-    changing the parameters during optimization has undefined
-    results.
 
     \see Diffusion
     \see RigidBodyDiffusion
