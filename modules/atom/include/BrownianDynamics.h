@@ -35,7 +35,7 @@ class SimulationParameters;
     diffusion coefficient for core::RigidBody particles.  The
     optimizer assumes the scoring function to be energy in kcal/mol, and the xyz
     coordinates to be in angstroms and the diffusion coefficent of
-    each particle be in \f$A^2/fs\f (or \fRadian^2/fs\f for rotational
+    each particle be in \f$A^2/fs\f$ (or \f$Radian^2/fs\f$ for rotational
     diffusion coefficient).  kernel::Particles without optimized x,y,z
     and nonoptimized D are skipped.
 

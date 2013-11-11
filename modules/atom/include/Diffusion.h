@@ -27,7 +27,7 @@ IMPATOM_BEGIN_NAMESPACE
     \unstable{Diffusion} The name really should be fixed.
 
     Diffusion is used to decorate diffusing particle with a diffusion
-    coefficient D. D is assumed to be in units of \f$A^2/fs\f.
+    coefficient D. D is assumed to be in units of \f$A^2/fs\f$.
 
     \see RigidBodyDiffusion
  */
