@@ -56,11 +56,8 @@ log = open("log" + str(myindex), "w")
 # start sampling loop
 for istep in range(0, 100):
     # do optimization
-    mc.optimize(100)
+    score = mc.optimize(100)
 
-    # time to try an exchange
-    # get my score
-    score = m.evaluate(False)
     # get my replica index and temperature
     myindex = rem.get_my_index()
     mytemp = rem.get_my_parameter("temp")[0]

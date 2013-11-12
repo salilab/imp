@@ -1,4 +1,4 @@
-## \example core/ms_connectivity_restraint.py
+# \example core/ms_connectivity_restraint.py
 # This example shows how to use the MSConnectivityRestraint to ensure that all the particles that are part of complexes end up in a connected conformation following the optimization. It allows multiple copies of particles and takes an experimental tree as an input.
 #
 
@@ -30,7 +30,7 @@ ds.append(IMP.core.XYZ.setup_particle(
 
 ub = IMP.core.HarmonicUpperBound(1.0, 0.1)
 ss = IMP.core.DistancePairScore(ub)
-r = IMP.core.MSConnectivityRestraint(ss)
+r = IMP.core.MSConnectivityRestraint(m, ss)
 
 # Add particle types to the restraint
 # add_type() returns a unique type handle that can be used as an argument

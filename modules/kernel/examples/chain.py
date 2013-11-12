@@ -32,11 +32,6 @@ chainr = IMP.container.PairsRestraint(hdps, bonds)
 chainr.set_name("The chain restraint")
 m.add_restraint(chainr)
 
-# If you want to inspect the particles
-# Notice that each bond is a particle
-for p in m.get_particles():
-    p.show()
-
 # Prevent non-bonded particles from penetrating one another
 nbl = IMP.container.ClosePairContainer(chain, 0, 2)
 bpc = IMP.container.ConsecutivePairFilter(bonds)  # exclude existing bonds

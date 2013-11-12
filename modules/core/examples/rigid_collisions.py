@@ -1,4 +1,4 @@
-## \example core/rigid_collisions.py
+# \example core/rigid_collisions.py
 # Collision detection and building of a non-bonded list can be sped up when rigid bodies are used.
 # To do this, use a RigidClosePairsFinder.
 
@@ -36,8 +36,7 @@ evr = IMP.container.PairsRestraint(ps, nbl)
 evri = m.add_restraint(evr)
 
 # Set up optimizer
-o = IMP.core.ConjugateGradients()
-o.set_model(m)
+o = IMP.core.ConjugateGradients(m)
 
 done = False
 while not done:

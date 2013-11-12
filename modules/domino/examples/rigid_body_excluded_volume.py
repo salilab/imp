@@ -1,4 +1,4 @@
-## \example domino/rigid_body_excluded_volume.py
+# \example domino/rigid_body_excluded_volume.py
 # This example shows using two rigid bodies and doing excluded volume with
 # them.
 
@@ -32,7 +32,6 @@ def create_excluded_volume(m, helices):
         all.extend(IMP.atom.get_by_type(h, IMP.atom.ATOM_TYPE))
     lsc = IMP.container.ListSingletonContainer(all)
     evr = IMP.core.ExcludedVolumeRestraint(lsc, 1)
-    evr.set_model(m)
     evr.set_maximum_score(.01)
     return [evr]
 

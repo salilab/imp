@@ -59,7 +59,7 @@ class WriteTrajState(IMP.OptimizerState):
     """Write system coordinates (trajectory) into a Python list"""
 
     def __init__(self, m, traj):
-        IMP.OptimizerState.__init__(self, m)
+        IMP.OptimizerState.__init__(self, m, "WriteTraj")
         self.traj = traj
 
     def update(self):

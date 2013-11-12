@@ -1,4 +1,4 @@
-## \example core/restrain_diameter.py
+# \example core/restrain_diameter.py
 # An example restraining the diameter of a set of points. That is, the
 # restraint penalizes conformations where there are two point more than a
 # certain distance from one another.
@@ -19,8 +19,7 @@ r = IMP.core.DiameterRestraint(h, lc, diameter)
 m.add_restraint(r)
 
 # Set up optimizer
-o = IMP.core.ConjugateGradients()
-o.set_model(m)
+o = IMP.core.ConjugateGradients(m)
 
 max = 0
 for p0 in lc.get_particles():

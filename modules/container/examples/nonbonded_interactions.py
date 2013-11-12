@@ -1,4 +1,4 @@
-## \example container/nonbonded_interactions.py
+# \example container/nonbonded_interactions.py
 # This example shows how to set up an excluded volume restraint for a set
 # of XYZRDecorator-style particles.
 
@@ -31,7 +31,6 @@ evr = IMP.container.PairsRestraint(sdps, nbl)
 m.add_restraint(evr)
 
 # Set up optimizer
-o = IMP.core.ConjugateGradients()
-o.set_model(m)
+o = IMP.core.ConjugateGradients(m)
 
 o.optimize(1000)

@@ -517,7 +517,7 @@ void destroy(Hierarchy d) {
   }
 
   for (unsigned int i = 0; i < all.size(); ++i) {
-    all[i]->get_model()->remove_particle(all[i]);
+    all[i]->get_model()->remove_particle(all[i]->get_index());
   }
 }
 

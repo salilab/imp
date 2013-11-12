@@ -1,4 +1,4 @@
-## \example domino/multiscale.py
+# \example domino/multiscale.py
 # We are interested in applying domino to problems systematically in a
 # multiscale manner. This script experiments with those approaches.
 
@@ -28,20 +28,17 @@ h = IMP.core.Harmonic(0, k)
 r0 = IMP.core.SingletonRestraint(
     IMP.core.DistanceToSingletonScore(h, IMP.algebra.Vector3D(0, 0, 0)),
     ds[0], "0 at origin")
-r0.set_model(m)
 
 r1 = IMP.core.SingletonRestraint(IMP.core.AttributeSingletonScore(h,
                                                                   IMP.core.XYZ.get_xyz_keys(
                                                                   )[0]),
                                  ds[1], "1 on axis")
-r1.set_model(m)
 
 rs = [r0, r1]
 for pr in [(0, 1), (1, 2), (0, 2)]:
     r = IMP.core.PairRestraint(IMP.core.HarmonicSphereDistancePairScore(0, k),
                                (ds[pr[0]], ds[pr[1]]),
                                "R for " + str(pr))
-    r.set_model(m)
     rs.append(r)
 
 

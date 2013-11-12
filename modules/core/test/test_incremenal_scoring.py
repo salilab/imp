@@ -25,7 +25,6 @@ class Tests(IMP.test.TestCase):
         # hps.set_log_level(IMP.base.VERBOSE)
         r = IMP.container.PairsRestraint(hps, cpc)
         r.set_name("chain")
-        r.set_model(m)
         ls = IMP.container.ListSingletonContainer(ps)
         nbl = IMP.container.ClosePairContainer(ls, 0)
         f = IMP.container.InContainerPairFilter(cpc, True)
@@ -33,7 +32,6 @@ class Tests(IMP.test.TestCase):
         nbps = IMP.core.SoftSpherePairScore(1)
         rnb = IMP.container.PairsRestraint(nbps, nbl)
         rnb.set_name("NB")
-        rnb.set_model(m)
         sf = IMP.core.RestraintsScoringFunction([r, rnb])
         dsf = IMP.core.RestraintsScoringFunction([r.create_decomposition(),
                                                   rnb.create_decomposition()])
@@ -94,7 +92,6 @@ class Tests(IMP.test.TestCase):
         nbps = IMP.core.SoftSpherePairScore(1)
         rnb = IMP.container.PairsRestraint(nbps, nbl)
         rnb.set_name("NB")
-        rnb.set_model(m)
         sf = IMP.core.RestraintsScoringFunction([rnb])
         dsf = IMP.core.RestraintsScoringFunction([rnb.create_decomposition()])
         isf = IMP.core.IncrementalScoringFunction(ps, [])
@@ -268,7 +265,6 @@ class Tests(IMP.test.TestCase):
         nbl.add_pair_filter(f)
         nbps = IMP.core.SoftSpherePairScore(1)
         rnb = IMP.container.PairsRestraint(nbps, nbl)
-        rnb.set_model(m)
         rnb.set_name("NB")
         sf = IMP.core.RestraintsScoringFunction([r, rnb], 1.0, IMP.NO_MAX, "R")
         dsf = IMP.core.RestraintsScoringFunction([r.create_decomposition(),

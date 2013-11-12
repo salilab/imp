@@ -1,4 +1,4 @@
-## \example em/analyze_convergence.py
+# \example em/analyze_convergence.py
 # Analyze the convergence of the IMP.em.FitRestraint. The script build a
 # simple model and then displays the derivatives, em score and how well
 # conjugate gradients converges under various displacements of the model.
@@ -41,7 +41,7 @@ else:
 
 bb = IMP.algebra.BoundingBox3D(
     IMP.algebra.Vector3D(-bd - radius, -bd - radius, -bd - radius),
-    IMP.algebra.Vector3D(bd + radius,  bd + radius,  bd + radius))
+    IMP.algebra.Vector3D(bd + radius, bd + radius, bd + radius))
 
 dheader = IMP.em.create_density_header(bb, 1)
 dheader.set_resolution(1)
@@ -52,7 +52,7 @@ dmap.resample()
 # computes statistic stuff about the map and insert it in the header
 dmap.calcRMS()
 IMP.em.write_map(dmap, "map.mrc", IMP.em.MRCReaderWriter())
-rs = IMP.kernel.RestraintSet()
+rs = IMP.kernel.RestraintSet(m)
 m.add_restraint(rs)
 # rs.set_weight(.003)
 

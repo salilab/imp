@@ -1,4 +1,4 @@
-## \example domino/interactive_with_containers.py
+# \example domino/interactive_with_containers.py
 # Run domino storing the intermediate and final results in an hdf5
 # database. This has the advantage that if you interrupt the run at any
 # point, you have a list of everything computed so far and so can get some
@@ -20,7 +20,6 @@ lpc = IMP.container.ListPairContainer(
     [(ps[i[0]], ps[i[1]]) for i in [(0, 1), (1, 2)]])
 print [(p[0].get_name(), p[1].get_name()) for p in lpc.get_particle_pairs()]
 r = IMP.container.PairsRestraint(s, lpc)
-r.set_model(m)
 r.set_maximum_score(.1)
 
 space = IMP.domino.XYZStates(
@@ -71,7 +70,10 @@ def get_assignments(vertex):
     print ss, mine.get_number_of_assignments()
     # make sure that the cache is flushed
     del mine
-    return (ss, IMP.domino.ReadHDF5AssignmentContainer(dataset, ss, pst.get_particles(), ssn))
+    return (
+        (ss, IMP.domino.ReadHDF5AssignmentContainer(
+            dataset, ss, pst.get_particles(), ssn))
+    )
 
 # the root is the last vetex
 all = get_assignments(mt.get_vertices()[-1])
