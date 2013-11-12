@@ -20,8 +20,7 @@ class Tests(IMP.test.TestCase):
         self.display = DisplayParser.run()
 
         self.Model = self.representation.get_model()
-        self.restraint.add_to_representation(
-            self.representation, model=self.Model)
+        self.restraint.add_to_representation(self.representation)
         #self.log = self.display.create_log(self.representation, 'sphere_log_%03d.py')
         # self.log.write('sphere_initial.py')
 

@@ -18,8 +18,7 @@ class Tests(IMP.test.TestCase):
         self.restraint = RestraintParser.run()
 
         self.Model = self.representation.get_model()
-        self.restraint.add_to_representation(
-            self.representation, model=self.Model)
+        self.restraint.add_to_representation(self.representation)
 
     def test_show(self):
         """Check EM restraint"""

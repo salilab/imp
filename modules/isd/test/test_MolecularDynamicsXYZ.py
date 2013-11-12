@@ -115,7 +115,7 @@ class Tests(IMP.test.TestCase):
                  for p in self.model.get_particles()]
         # Add starting (step 0) position to the trajectory, with zero velocity
         traj = [[x + [0] for x in start]]
-        state = WriteTrajState(traj)
+        state = WriteTrajState(self.model, traj)
         self.md.add_optimizer_state(state)
         self.md.set_maximum_time_step(timestep)
         self.md.optimize(50)

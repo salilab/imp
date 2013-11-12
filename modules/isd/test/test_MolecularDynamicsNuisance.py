@@ -136,7 +136,7 @@ class Tests(IMP.test.TestCase):
         """Check that velocity capping works on nuisances"""
         timestep = 4.0
         strength = 5000.0
-        r = XTransRestraint(strength)
+        r = XTransRestraint(self.model, strength)
         self.model.add_restraint(r)
         self.md.set_velocity_cap(0.3)
         (start, traj) = self._optimize_model(timestep)
@@ -199,7 +199,7 @@ class Tests(IMP.test.TestCase):
 
     def test_get_optimizer_states(self):
         """Test get_optimizer_states() method on nuisances"""
-        wrtraj = WriteTrajState([])
+        wrtraj = WriteTrajState(self.model, [])
         scaler = IMP.atom.VelocityScalingOptimizerState(
             self.particles, 298.0, 10)
         self.md.add_optimizer_state(wrtraj)

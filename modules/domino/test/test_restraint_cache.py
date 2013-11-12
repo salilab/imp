@@ -75,8 +75,7 @@ class Tests(IMP.test.TestCase):
     def test_decomposition_4(self):
         """Test cache with decomposition with nested sets"""
         (m, ps, r, pst, ik, cache) = self._create_stuff()
-        rs = IMP.kernel.RestraintSet("outer")
-        rs.set_model(m)
+        rs = IMP.kernel.RestraintSet(m, 1.0, "outer")
         rs.set_maximum_score(2)
         rs.add_restraint(r)
         r.set_weight(3)
@@ -94,8 +93,7 @@ class Tests(IMP.test.TestCase):
     def test_decomposition_5(self):
         """Test cache with simple restraint"""
         (m, ps, r, pst, ik, cache) = self._create_stuff()
-        rs = IMP.kernel.RestraintSet("outer")
-        rs.set_model(m)
+        rs = IMP.kernel.RestraintSet(m, 1.0, "outer")
         r = IMP.kernel._ConstRestraint(1, [ps[0]])
         r.set_name("const 2")
         rs.add_restraint(r)

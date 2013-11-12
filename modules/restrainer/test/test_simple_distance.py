@@ -27,7 +27,6 @@ class Tests(IMP.test.TestCase):
 
         self.opt = IMP.core.ConjugateGradients(self.imp_model)
         self.opt.set_threshold(1e-4)
-        self.opt.set_model(self.imp_model)
 
     def test_simple_distance(self):
         """Test simple distance restraint"""

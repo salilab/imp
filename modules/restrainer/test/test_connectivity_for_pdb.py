@@ -17,8 +17,7 @@ class Tests(IMP.test.TestCase):
         self.restraint = RestraintParser.run()
 
         self.Model = self.representation.get_model()
-        self.restraint.add_to_representation(
-            self.representation, model=self.Model)
+        self.restraint.add_to_representation(self.representation)
 
     def test_show(self):
         """Check get_restraint_by_name, get_weight, and set_weight for connectivity restraint for pdb"""

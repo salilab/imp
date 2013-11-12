@@ -45,7 +45,7 @@ class Tests(IMP.test.TestCase):
         self.m2 = IMP.kernel.Model()
         self.ps2 = self.create_particles_in_box(self.m2, 8)
         self.ds2 = map(lambda p: IMP.core.XYZ.decorate_particle(p), self.ps2)
-        self.r2 = IMP.core.MSConnectivityRestraint(self.ss)
+        self.r2 = IMP.core.MSConnectivityRestraint(self.m2, self.ss)
         ppa = self.r2.add_type([self.ds2[0], self.ds2[1], self.ds2[2]])
         ppb = self.r2.add_type([self.ds2[3], self.ds2[4]])
         ppc = self.r2.add_type([self.ds2[5], self.ds2[6]])
@@ -136,9 +136,8 @@ class Tests(IMP.test.TestCase):
         score = self.m.evaluate(False)
 #        print 'Score = ', score
 
-        o = IMP.core.ConjugateGradients()
+        o = IMP.core.ConjugateGradients(self.m)
         o.set_threshold(1e-4)
-        o.set_model(self.m)
         o.optimize(100)
 
 #        print 'AFTER optimization'

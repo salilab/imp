@@ -26,7 +26,6 @@ def create_scoring(m, ps):
                                           IMP.algebra.Vector3D(2, 0, 0))
     # force ps[1] to be on the positive side to remove flip degree of freedom
     dr = IMP.core.SingletonRestraint(d, ps[1])
-    dr.set_model(m)
     # we are not interested in conformations which don't fit the distances
     # exactly, but using 0 is tricky
     dr.set_maximum_score(.01)
