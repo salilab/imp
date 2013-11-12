@@ -12,7 +12,6 @@
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/RegistrationResult.h"
 #include "IMP/base/Object.h"
-#include "IMP/VersionInfo.h"
 #include <IMP/base/warning_macros.h>
 #include <functional>
 
