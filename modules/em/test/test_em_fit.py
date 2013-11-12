@@ -4,15 +4,19 @@ import IMP.em
 import IMP.test
 import IMP.core
 
+
 class Tests(IMP.test.TestCase):
+
     """Class to test EM correlation restraint"""
 
     def load_density_map(self):
-        ### Note: This test used to work with in.em, we moved to mrc
-        ### as it was not clear how to save origin in em format.
-        ### Resolve with Frido.
+        # Note: This test used to work with in.em, we moved to mrc
+        # as it was not clear how to save origin in em format.
+        # Resolve with Frido.
         self.mrw = IMP.em.MRCReaderWriter()
-        self.scene = IMP.em.read_map(self.get_input_file_name("in.mrc"), self.mrw)
+        self.scene = IMP.em.read_map(
+            self.get_input_file_name("in.mrc"),
+            self.mrw)
         self.scene.get_header_writable().set_resolution(3.)
         header = self.scene.get_header()
         self.assertEqual(header.get_nx(), 33)
@@ -26,18 +30,20 @@ class Tests(IMP.test.TestCase):
         protein_key = IMP.FloatKey("protein")
         id_key = IMP.FloatKey("id")
 
-
         self.particles = []
-        origin =  3.0
+        origin = 3.0
         self.particles.append(self.create_point_particle(self.imp_model,
-                                                         9.+origin, 9.+origin,
-                                                         9.+origin))
+                                                         9. + origin, 9. +
+                                                         origin,
+                                                         9. + origin))
         self.particles.append(self.create_point_particle(self.imp_model,
-                                                         12.+origin, 3.+origin,
-                                                         3.+origin))
+                                                         12. +
+                                                         origin, 3. + origin,
+                                                         3. + origin))
         self.particles.append(self.create_point_particle(self.imp_model,
-                                                         3.+origin, 12.+origin,
-                                                         12.+origin))
+                                                         3. +
+                                                         origin, 12. + origin,
+                                                         12. + origin))
         p1 = self.particles[0]
         p1.add_attribute(self.radius_key, 1.0)
         p1.add_attribute(self.weight_key, 1.0)
@@ -68,7 +74,8 @@ class Tests(IMP.test.TestCase):
         self.load_density_map()
         self.load_particles()
 
-        self.opt = IMP.core.ConjugateGradients()
+        self.opt = IMP.core.ConjugateGradients(self.imp_model)
+
     def test_load_nonexistent_file(self):
         """Check that load of nonexistent file is handled cleanly"""
 #        scene = EM.DensityMap()
@@ -78,17 +85,17 @@ class Tests(IMP.test.TestCase):
     def test_em_fit(self):
         """Check that correlation of particles with their own density is 1"""
         for p in self.particles:
-            print "is rigid body?",IMP.core.RigidBody.get_is_setup(p)
-        r = IMP.em.FitRestraint(self.particles,self.scene)
+            print "is rigid body?", IMP.core.RigidBody.get_is_setup(p)
+        r = IMP.em.FitRestraint(self.particles, self.scene)
         self.imp_model.add_restraint(r)
         score = self.imp_model.evaluate(False)
-        print "EM score (1-CC) = "+str(score)
+        print "EM score (1-CC) = " + str(score)
         self.assertLess(score, 0.05, "the correlation score is not correct")
 
     def test_cast(self):
         """Make sure that we can cast Restraint* to FitRestraint*"""
         m = self.imp_model
-        r1 = IMP.em.FitRestraint(self.particles,self.scene)
+        r1 = IMP.em.FitRestraint(self.particles, self.scene)
         sf = IMP.core.Harmonic(10.0, 0.1)
         r2 = IMP.core.DistanceRestraint(sf, self.particles[0],
                                         self.particles[1])
@@ -99,9 +106,10 @@ class Tests(IMP.test.TestCase):
         self.assertIsInstance(IMP.em.FitRestraint.cast(r1),
                               IMP.em.FitRestraint)
         self.assertIsNone(IMP.em.FitRestraint.cast(r2))
+
     def test_get_methods(self):
         """Check FitRestraint's get methods"""
-        r1 = IMP.em.FitRestraint(self.particles,self.scene)
+        r1 = IMP.em.FitRestraint(self.particles, self.scene)
         self.assertIsInstance(r1.get_model_dens_map(),
                               IMP.em.SampledDensityMap)
 

@@ -1,4 +1,4 @@
-## \example domino/six_particles_optimization.py
+# \example domino/six_particles_optimization.py
 # Optimize six particles on a 2D unit grid. In order to remove translation degrees
 # of freedom, the 0th particle is pinned at the origin by allowing it only a
 # single conformation. To remove flips, the first particle is restrained to
@@ -22,7 +22,6 @@ def create_scoring(m, ps):
                                          "Restrained pairs")
     pr = IMP.container.PairsRestraint(score, pc)
     pr.set_maximum_score(.01)
-    pr.set_model(m)
     d = IMP.core.DistanceToSingletonScore(IMP.core.HarmonicUpperBound(2, 1),
                                           IMP.algebra.Vector3D(2, 0, 0))
     # force ps[1] to be on the positive side to remove flip degree of freedom

@@ -1,4 +1,4 @@
-## \example domino/custom_filter.py
+# \example domino/custom_filter.py
 # This example looks like the six particle optimization example except a
 # filter is used instead of a restraint to remove the flip degree of
 # freedom. The filter is written is python, which makes for quick
@@ -20,7 +20,6 @@ def create_scoring(m, ps):
                                          "Restrained pairs")
     pr = IMP.container.PairsRestraint(score, pc)
     pr.set_maximum_score(.01)
-    pr.set_model(m)
     d = IMP.core.DistanceToSingletonScore(IMP.core.HarmonicUpperBound(2, 1),
                                           IMP.algebra.Vector3D(2, 0, 0))
     return [pr]

@@ -4,7 +4,9 @@ import IMP.core
 import IMP.test
 import IMP.restrainer
 
+
 class Tests(IMP.test.TestCase):
+
     """Class to test simple distance restraint"""
 
     def load_particles(self, m, coordinates):
@@ -21,22 +23,21 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
 
         self.imp_model = IMP.kernel.Model()
-        self.load_particles(self.imp_model, [(0, 0, 0),(100, 100, 100)])
+        self.load_particles(self.imp_model, [(0, 0, 0), (100, 100, 100)])
 
-        self.opt = IMP.core.ConjugateGradients()
+        self.opt = IMP.core.ConjugateGradients(self.imp_model)
         self.opt.set_threshold(1e-4)
         self.opt.set_model(self.imp_model)
 
-
     def test_simple_distance(self):
         """Test simple distance restraint"""
-        r = IMP.restrainer.create_simple_distance(self.particles).get_restraint()
+        r = IMP.restrainer.create_simple_distance(
+            self.particles).get_restraint()
         # Make sure that refcounting is working
         self.assertEqual(r.get_ref_count(), 1)
         self.imp_model.add_restraint(r)
         self.opt.optimize(1000)
         self.assertLess(r.evaluate(False), 0.1)
-
 
     def test_methods(self):
         """Check SimpleDistance's methods"""

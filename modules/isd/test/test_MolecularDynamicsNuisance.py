@@ -18,10 +18,13 @@ kcal2mod = 4.1868e-4
 # Mass of Carbon-12 (g/mol)
 cmass = 12.011
 
+
 class XTransRestraint(IMP.kernel.Restraint):
+
     """Attempt to move the whole system along the x axis"""
-    def __init__(self, strength):
-        IMP.kernel.Restraint.__init__(self, "XTransRestraint %1%")
+
+    def __init__(self, m, strength):
+        IMP.kernel.Restraint.__init__(self, m, "XTransRestraint %1%")
         self.strength = strength
 
     def unprotected_evaluate(self, accum):
@@ -40,30 +43,39 @@ class XTransRestraint(IMP.kernel.Restraint):
                     p.add_to_derivative(ykey, 0.0, accum)
                     p.add_to_derivative(zkey, 0.0, accum)
         return e
+
     def get_version_info(self):
-        return IMP.VersionInfo("","")
+        return IMP.VersionInfo("", "")
+
     def do_show(self, fh):
         fh.write("Test restraint")
+
     def do_get_inputs(self):
         return [x for x in self.get_model().get_particles()]
 
+
 class WriteTrajState(IMP.OptimizerState):
+
     """Write system coordinates (trajectory) into a Python list"""
-    def __init__(self, traj):
-        IMP.OptimizerState.__init__(self)
+
+    def __init__(self, m, traj):
+        IMP.OptimizerState.__init__(self, m, "WriteTraj")
         self.traj = traj
+
     def update(self):
         model = self.get_optimizer().get_model()
         step = []
         for p in model.get_particles():
             if IMP.isd.Nuisance.get_is_setup(p):
-                step.append((p.get_value(nkey),p.get_value(vnkey)))
+                step.append((p.get_value(nkey), p.get_value(vnkey)))
             else:
                 step.append((p.get_value(xkey), p.get_value(ykey),
-                           p.get_value(zkey), p.get_value(vxkey)))
+                             p.get_value(zkey), p.get_value(vxkey)))
         self.traj.append(step)
 
+
 class Tests(IMP.test.TestCase):
+
     """Test molecular dynamics optimizer on nuisances"""
 
     def setUp(self):
@@ -95,15 +107,15 @@ class Tests(IMP.test.TestCase):
                     self.assertAlmostEqual(coor[n][d], step[n][d], delta=1e-3,
                                            msg=msg % (coor[n][d], step[n][d],
                                                       num, n, d))
-                coor[n][0] += (newvx+vx)/2.0 * timestep
+                coor[n][0] += (newvx + vx) / 2.0 * timestep
             vx = newvx
 
     def _optimize_model(self, timestep):
         """Run a short MD optimization on the model."""
         start = [[p.get_value(nkey)] for p in self.model.get_particles()]
         # Add starting (step 0) position to the trajectory, with zero velocity
-        traj = [[x+[0] for x in start]]
-        state = WriteTrajState(traj)
+        traj = [[x + [0] for x in start]]
+        state = WriteTrajState(self.model, traj)
         self.md.add_optimizer_state(state)
         self.md.set_maximum_time_step(timestep)
         self.md.optimize(50)
@@ -113,7 +125,7 @@ class Tests(IMP.test.TestCase):
         """Check that non-rigid MD translation on nuisances is Newtonian"""
         timestep = 4.0
         strength = 50.0
-        r = XTransRestraint(strength)
+        r = XTransRestraint(self.model, strength)
         self.model.add_restraint(r)
         (start, traj) = self._optimize_model(timestep)
         delttm = -timestep * kcal2mod / cmass
@@ -131,9 +143,9 @@ class Tests(IMP.test.TestCase):
         # Strength is so high that velocity should max out at the cap
         for i in range(len(traj) - 1):
             oldx = traj[i][0][0]
-            newx = traj[i+1][0][0]
+            newx = traj[i + 1][0][0]
             # Calculate velocity from change in position
-            self.assertAlmostEqual((oldx-newx) / timestep, 0.3, delta=1e-5)
+            self.assertAlmostEqual((oldx - newx) / timestep, 0.3, delta=1e-5)
 
     def test_non_xyz(self):
         """Should skip nuisance particles without xyz attributes"""
@@ -152,9 +164,9 @@ class Tests(IMP.test.TestCase):
         ekinetic = self.md.get_kinetic_energy()
         tkinetic = self.md.get_kinetic_temperature(ekinetic)
         self.assertAlmostEqual(tkinetic, desired,
-                     msg="Temperature %f does not match expected %f within %f" \
-                         % (tkinetic, desired, tolerance),
-                     delta=tolerance)
+                               msg="Temperature %f does not match expected %f within %f"
+                               % (tkinetic, desired, tolerance),
+                               delta=tolerance)
 
     def test_temperature(self):
         """Check temperature on nuisances"""
@@ -162,7 +174,7 @@ class Tests(IMP.test.TestCase):
         # large number of particles:
         for i in range(500):
             self.particles.append(IMP.isd.Nuisance.setup_particle(
-                IMP.kernel.Particle(self.model), random.uniform(-100,100)))
+                IMP.kernel.Particle(self.model), random.uniform(-100, 100)))
             self.particles[-1].set_nuisance_is_optimized(True)
             self.particles[-1].add_attribute(masskey, cmass, False)
         # Initial temperature should be zero:
@@ -189,7 +201,7 @@ class Tests(IMP.test.TestCase):
         """Test get_optimizer_states() method on nuisances"""
         wrtraj = WriteTrajState([])
         scaler = IMP.atom.VelocityScalingOptimizerState(
-                             self.particles, 298.0, 10)
+            self.particles, 298.0, 10)
         self.md.add_optimizer_state(wrtraj)
         self.md.add_optimizer_state(scaler)
         m = self.md.get_optimizer_states()

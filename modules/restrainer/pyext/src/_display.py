@@ -1,12 +1,15 @@
 import IMP
 import IMP.display
 
+
 class Display(object):
+
     """Store Display"""
+
     def __init__(self):
         self._children = list()
 
-    def create_log(self, repr, log_name):
+    def create_log(self, model, repr, log_name):
         """Create Chimera log.
            @param repr <a href="classIMP_1_1restrainer_1_1representation_1_1Representation.html">
             Representation</a> object.
@@ -14,7 +17,9 @@ class Display(object):
            @return IMP::display::WriteOptimizerState"""
 
         # Try to create Chimera log (like in display_log.py example)
-        log = IMP.display.WriteOptimizerState(IMP.display.ChimeraWriter(log_name))
+        log = IMP.display.WriteOptimizerState(
+            model,
+            IMP.display.ChimeraWriter(log_name))
         # Find IMP particle that corresponds to a representation id
         for child in self._children:
             child.find_model_decorator(repr)
@@ -34,8 +39,10 @@ class Display(object):
         return '<Display>\n%s\n</Display>' %\
             ('\n'.join([child._to_str(1) for child in self._children]))
 
+
 class _DisplayNode(object):
     counter = 0
+
     def __init__(self, attributes):
         id = attributes.get('id')
         if id:
@@ -82,11 +89,11 @@ class _DisplayNode(object):
         atom_list = list()
         if self.model_decorator:
             atoms = IMP.atom.get_by_type(self.model_decorator,
-                IMP.atom.XYZR_TYPE)
+                                         IMP.atom.XYZR_TYPE)
             for atomh in atoms:
                 for atom in IMP.atom.get_leaves(atomh):
                     atom_list.append(atom)
-        if len(atom_list) >0:
+        if len(atom_list) > 0:
             c = IMP.container.ListSingletonContainer(atom_list)
             geometry = IMP.core.XYZRsGeometry(c)
             geometry.set_name(self.id)
@@ -99,21 +106,22 @@ class _DisplayNode(object):
         return ('DisplayNode', 'id="%s"' % self.id)
 
     def _to_str(self, level):
-        indent = '  '*level
+        indent = '  ' * level
         name, strattr = self._attr_to_str()
         if not self._children:
             return '%s<%s %s/>' % (indent, name, strattr)
         else:
             return '%s<%s %s>\n%s\n%s</%s>' %\
                 (indent, name, strattr,
-                '\n'.join([child._to_str(level + 1)
-                  for child in self._children]), indent, name)
+                 '\n'.join([child._to_str(level + 1)
+                           for child in self._children]), indent, name)
 
     def __str__(self):
         return self._to_str(0)
 
 
 class _DisplayColor(_DisplayNode):
+
     def __init__(self, attributes):
         _DisplayNode.__init__(self, attributes)
         self.r = float(attributes.get('r', 0))
@@ -122,9 +130,11 @@ class _DisplayColor(_DisplayNode):
 
     def _attr_to_str(self):
         return ('Color', 'id="%s" r="%s" g="%s" b="%s"' %
-            (self.id, self.r, self.g, self.b))
+                (self.id, self.r, self.g, self.b))
+
 
 class _DisplayResidue(_DisplayNode):
+
     def __init__(self, attributes):
         _DisplayNode.__init__(self, attributes)
         self.start = int(attributes.get('start', -1))
@@ -132,65 +142,83 @@ class _DisplayResidue(_DisplayNode):
 
     def _attr_to_str(self):
         return ('Residue', 'id="%s" start="%s" end="%s"' %
-            (self.id, self.start, self.end))
+                (self.id, self.start, self.end))
+
 
 class _DisplayUniverse(_DisplayNode):
+
     def __init__(self, attributes):
         _DisplayNode.__init__(self, attributes)
 
     def _attr_to_str(self):
         return ('Universe', 'id="%s"' % self.id)
 
+
 class _DisplayCollection(_DisplayNode):
+
     def __init__(self, attributes):
         _DisplayNode.__init__(self, attributes)
 
     def _attr_to_str(self):
         return ('Collection', 'id="%s"' % self.id)
 
+
 class _DisplayAssembly(_DisplayNode):
+
     def __init__(self, attributes):
         _DisplayNode.__init__(self, attributes)
 
     def _attr_to_str(self):
         return ('Assembly', 'id="%s"' % self.id)
 
+
 class _DisplaySegment(_DisplayNode):
+
     def __init__(self, attributes):
         _DisplayNode.__init__(self, attributes)
 
     def _attr_to_str(self):
         return ('Segment', 'id="%s"' % self.id)
 
+
 class _DisplayMolecule(_DisplayNode):
+
     def __init__(self, attributes):
         _DisplayNode.__init__(self, attributes)
 
     def _attr_to_str(self):
         return ('Molecule', 'id="%s"' % self.id)
 
+
 class _DisplayProtein(_DisplayNode):
+
     def __init__(self, attributes):
         _DisplayNode.__init__(self, attributes)
 
     def _attr_to_str(self):
         return ('Protein', 'id="%s"' % self.id)
 
+
 class _DisplayNucleicAcid(_DisplayNode):
+
     def __init__(self, attributes):
         _DisplayNode.__init__(self, attributes)
 
     def _attr_to_str(self):
         return ('NucleicAcid', 'id="%s"' % self.id)
 
+
 class _DisplayChain(_DisplayNode):
+
     def __init__(self, attributes):
         _DisplayNode.__init__(self, attributes)
 
     def _attr_to_str(self):
         return ('Chain', 'id="%s"' % self.id)
 
+
 class _DisplayFragment(_DisplayNode):
+
     def __init__(self, attributes):
         _DisplayNode.__init__(self, attributes)
 

@@ -4,7 +4,9 @@ import IMP.core
 import IMP.test
 import IMP.restrainer
 
+
 class Tests(IMP.test.TestCase):
+
     """Class to test simple diameter restraint"""
 
     def setUp(self):
@@ -15,10 +17,9 @@ class Tests(IMP.test.TestCase):
         self.ps = IMP.core.create_xyzr_particles(self.imp_model, 50, 1.0)
         self.diameter = 10
 
-        self.opt = IMP.core.ConjugateGradients()
+        self.opt = IMP.core.ConjugateGradients(self.imp_model)
         self.opt.set_threshold(1e-4)
         self.opt.set_model(self.imp_model)
-
 
     def _test_simple_diameter(self):
         """Test simple diameter restraint"""
@@ -36,14 +37,13 @@ class Tests(IMP.test.TestCase):
 
         for p0 in self.ps:
             for p1 in self.ps:
-                d=IMP.core.get_distance(IMP.core.XYZ(p0.get_particle()),
-                                    IMP.core.XYZ(p1.get_particle()))
-                self.assertLess(d, 1.1*self.diameter)
+                d = IMP.core.get_distance(IMP.core.XYZ(p0.get_particle()),
+                                          IMP.core.XYZ(p1.get_particle()))
+                self.assertLess(d, 1.1 * self.diameter)
 
     def test_simple_diameter(self):
         """Test that simple diameter restraints are reasonable"""
         self.probabilistic_test("self._test_simple_diameter()", .002)
-
 
     def test_methods(self):
         """Check SimpleDiameter's methods"""
