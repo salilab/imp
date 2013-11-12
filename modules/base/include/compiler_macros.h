@@ -11,6 +11,7 @@
 #include <boost/config.hpp>
 #include <boost/version.hpp>
 #if defined(BOOST_NO_CXX11_RANGE_BASED_FOR) || BOOST_VERSION <= 104100
+#include <boost/foreach.hpp>
 #define IMP_FOREACH(v, r) BOOST_FOREACH(v, r)
 #else
 /** Use C++11 range-based for if available or BOOST_FOREACH if not. */
