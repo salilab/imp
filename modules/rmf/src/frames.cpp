@@ -20,9 +20,7 @@ void load_frame(RMF::FileConstHandle fh, int frame) {
   try {
     RMF::FrameConstHandle fr = fh.get_frame(RMF::FrameID(frame));
     fr.set_as_current_frame();
-    IMP_FOREACH(LoadLink *ll, internal::get_load_linkers(fh)) {
-      ll->load(fh);
-    }
+    IMP_FOREACH(LoadLink * ll, internal::get_load_linkers(fh)) { ll->load(fh); }
   }
   catch (const std::exception& e) {
     IMP_THROW(e.what(), IOException);
@@ -54,7 +52,7 @@ void save_frame(RMF::FileHandle file, int frame, std::string name) {
     IMP_INTERNAL_CHECK(file.get_current_frame().get_id().get_index() ==
                            static_cast<int>(frame),
                        "Wrong current frame");
-    IMP_FOREACH(SaveLink* ll, internal::get_save_linkers(file)) {
+    IMP_FOREACH(SaveLink * ll, internal::get_save_linkers(file)) {
       ll->save(file);
     }
     IMP_INTERNAL_CHECK(

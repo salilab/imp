@@ -72,10 +72,8 @@ class ParticleLoadLink : public SimpleLoadLink<kernel::Particle> {
   }
 
  public:
-  ParticleLoadLink(RMF::FileConstHandle)
-      : P("ParticleLoadLink%1%") {
-  }
-  static const char *get_name() {return "particle load";}
+  ParticleLoadLink(RMF::FileConstHandle) : P("ParticleLoadLink%1%") {}
+  static const char *get_name() { return "particle load"; }
   IMP_OBJECT_METHODS(ParticleLoadLink);
 };
 
@@ -108,7 +106,7 @@ class ParticleSaveLink : public SimpleSaveLink<kernel::Particle> {
   ParticleSaveLink(RMF::FileHandle fh) : P("ParticleSaveLink%1%") {
     cat_ = fh.get_category("IMP");
   }
-  static const char *get_name() {return "particle save";}
+  static const char *get_name() { return "particle save"; }
   IMP_OBJECT_METHODS(ParticleSaveLink);
 };
 }

@@ -198,7 +198,7 @@ class RestraintLoadLink : public SimpleLoadLink<kernel::Restraint> {
         af_(fh),
         imp_cat_(fh.get_category("IMP")),
         weight_key_(fh.get_key<RMF::FloatTraits>(imp_cat_, "weight")) {}
-  static const char *get_name() {return "restraint load";}
+  static const char *get_name() { return "restraint load"; }
 
   IMP_OBJECT_METHODS(RestraintLoadLink);
 };
@@ -318,7 +318,7 @@ class RestraintSaveLink : public SimpleSaveLink<kernel::Restraint> {
         weight_key_(fh.get_key<RMF::FloatTraits>(imp_cat_, "weight")),
         max_terms_(100) {}
   void set_maximum_number_of_terms(unsigned int n) { max_terms_ = n; }
-  static const char *get_name() {return "restraint save";}
+  static const char *get_name() { return "restraint save"; }
   IMP_OBJECT_METHODS(RestraintSaveLink);
 };
 }

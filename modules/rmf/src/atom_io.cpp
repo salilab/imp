@@ -11,8 +11,7 @@
 
 IMPRMF_BEGIN_NAMESPACE
 
-IMP_DEFINE_LINKERS(Hierarchy, hierarchy, hierarchies,
-                   atom::Hierarchy,
+IMP_DEFINE_LINKERS(Hierarchy, hierarchy, hierarchies, atom::Hierarchy,
                    atom::Hierarchies,
                    (RMF::FileConstHandle fh, kernel::Model *m), (fh, m));
 

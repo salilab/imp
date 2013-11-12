@@ -9,8 +9,6 @@
 #ifndef IMPEM2D_COLLISION_CROSS_SECTION_H
 #define IMPEM2D_COLLISION_CROSS_SECTION_H
 
-
-
 #include "IMP/em2d/ProjectionMask.h"
 #include "IMP/em2d/RegistrationResult.h"
 #include "IMP/em2d/project.h"
@@ -20,9 +18,8 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 //! Determine the collision cross section for some projections of particles
-class IMPEM2DEXPORT CollisionCrossSection: public IMP::base::Object {
-public:
-
+class IMPEM2DEXPORT CollisionCrossSection : public IMP::base::Object {
+ public:
   /*!
     \param[in] n_projections Number of projections to use for obtaining the CCS
     \param[in] resolution "Resolution" to use to generate the projections.
@@ -32,12 +29,8 @@ public:
                pixel_size * projection_image_size >= Max distance between two
                particles.
   */
-  CollisionCrossSection(unsigned int  n_projections,
-                        double resolution,
-                        double pixel_size,
-                        double projection_image_size
-                        );
-
+  CollisionCrossSection(unsigned int n_projections, double resolution,
+                        double pixel_size, double projection_image_size);
 
   /**
    * kernel::Particles used to calculate their collision cross section
@@ -59,10 +52,9 @@ public:
   void show(std::ostream &out) const {
     out << "Collision Cross section." << std::endl;
   }
-  IMP_OBJECT_METHODS( CollisionCrossSection);
+  IMP_OBJECT_METHODS(CollisionCrossSection);
 
-protected:
-
+ protected:
   /*! Gets the sum of the values in the pixels with value > 0
     \param[in] m The projected area is computed for this matrix
     \return Values of the area
@@ -83,4 +75,4 @@ IMP_OBJECTS(CollisionCrossSection, CollisionCrossSections);
 
 IMPEM2D_END_NAMESPACE
 
-#endif  /* IMPEM2D_COLLISION_CROSS_SECTION_H */
+#endif /* IMPEM2D_COLLISION_CROSS_SECTION_H */

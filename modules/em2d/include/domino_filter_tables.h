@@ -16,33 +16,31 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-
 /*! Table to create DistanceFilters on demand
 
  */
 class IMPEM2DEXPORT DistanceFilterTable : public domino::SubsetFilterTable {
-protected:
-    domino::Subset my_subset_;
-    base::Pointer<domino::ParticleStatesTable> ps_table_;
-    double max_distance_; // max distance tolerated between the particles
+ protected:
+  domino::Subset my_subset_;
+  base::Pointer<domino::ParticleStatesTable> ps_table_;
+  double max_distance_;  // max distance tolerated between the particles
 
-public:
+ public:
+  DistanceFilterTable(const domino::Subset &subset_to_act_on,
+                      domino::ParticleStatesTable *ps_table,
+                      double max_distance)
+      : my_subset_(subset_to_act_on),
+        ps_table_(ps_table),
+        max_distance_(max_distance) {};
 
-    DistanceFilterTable(const domino::Subset &subset_to_act_on,
-            domino::ParticleStatesTable *ps_table,
-            double max_distance) :
-    my_subset_(subset_to_act_on), ps_table_(ps_table),
-    max_distance_(max_distance) {
-    };
+  void show(std::ostream &out = std::cout) const {
+    out << "DistanceFilterTable" << std::endl;
+  };
 
-    void show(std::ostream &out = std::cout) const {
-        out << "DistanceFilterTable" << std::endl;
-    };
-
-    IMP_SUBSET_FILTER_TABLE(DistanceFilterTable);
+  IMP_SUBSET_FILTER_TABLE(DistanceFilterTable);
 };
 IMP_OBJECTS(DistanceFilterTable, DistanceFilterTables);
 
 IMPEM2D_END_NAMESPACE
 
-#endif  /* IMPEM2D_DOMINO_FILTER_TABLES_H */
+#endif /* IMPEM2D_DOMINO_FILTER_TABLES_H */

@@ -29,5 +29,4 @@ bool get_has_associated_node(RMF::FileConstHandle nh, base::Object *oi) {
   return nh.get_node_from_association(oi) != RMF::NodeConstHandle();
 }
 
-
 IMPRMF_END_NAMESPACE

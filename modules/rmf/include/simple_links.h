@@ -48,8 +48,8 @@ class SimpleLoadLink : public LoadLink {
     set_association(nh, o, true);
   }
   virtual bool get_is(RMF::NodeConstHandle nh) const = 0;
-  virtual O *do_create(RMF::NodeConstHandle ) {IMP_FAILURE("Wrong create");}
-  virtual O *do_create(RMF::NodeConstHandle , kernel::Model *) {
+  virtual O *do_create(RMF::NodeConstHandle) { IMP_FAILURE("Wrong create"); }
+  virtual O *do_create(RMF::NodeConstHandle, kernel::Model *) {
     IMP_FAILURE("Wrong create");
   }
   SimpleLoadLink(std::string name) : LoadLink(name) {}

@@ -15,10 +15,7 @@
 
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 
-
 const int NO_VALUE = std::numeric_limits<int>::max();
-
-
 
 //! Returns the neighbors for a givel pixel in a given mode
 /*!
@@ -36,15 +33,8 @@ const int NO_VALUE = std::numeric_limits<int>::max();
               initial column. If this parameter is false (default) the
               neighbors outside the matrix are removed.
 */
- cvPixels get_neighbors2d(const cvPixel &p,
-                                      const cv::Mat &m,
-                                      int mode=4,
-                                      int sign=0,
-                                      bool cycle=false);
-
-
-
-
+cvPixels get_neighbors2d(const cvPixel &p, const cv::Mat &m, int mode = 4,
+                         int sign = 0, bool cycle = false);
 
 /***************************
 
@@ -64,24 +54,16 @@ void set_final_labels(cvIntMat &mat_to_label, Ints &Labels);
 */
 int do_union(Ints &Labels, int i, int j);
 
-
 //! Sets a new label for a pixel
-int get_new_label(const cvPixel &p,
-                                cvIntMat &mat_to_label,
-                                Ints &Labels,
-                                int label);
+int get_new_label(const cvPixel &p, cvIntMat &mat_to_label, Ints &Labels,
+                  int label);
 
 //! Decission tree copy function
-void do_copy_tree(const cvPixel &p,
-                                const cvPixel &a,
-                                cvIntMat &mat_to_label);
+void do_copy_tree(const cvPixel &p, const cvPixel &a, cvIntMat &mat_to_label);
 
 //! Decission tree copy function
-void do_copy_tree(const cvPixel &p,
-                                const cvPixel &a,
-                                const cvPixel &c,
-                                cvIntMat &mat_to_label,
-                                Ints &Labels);
+void do_copy_tree(const cvPixel &p, const cvPixel &a, const cvPixel &c,
+                  cvIntMat &mat_to_label, Ints &Labels);
 
 //! find root operation
 /*!
@@ -91,42 +73,31 @@ void do_copy_tree(const cvPixel &p,
 */
 int find_root(const Ints &Labels, int i);
 
-
-
 //! Set root operation
 /*!
   \param[in] P vector of labels
   \param[in] i node of a tree
   \param[out] root root node of the tree of i
 */
-void set_root(Ints &Labels,int i, int root);
-
-
+void set_root(Ints &Labels, int i, int root);
 
 //! flattens the vector with the union-find tree of labels and
 //! relabels the components
 void do_flatten_labels(Ints &Labels);
 
 //! Decission tree for neighbor exploration
-int get_label_using_decission_tree(const cvPixel &p,
-                    cvPixels &neighbors,
-                    int background,
-                    const cvIntMat &m,
-                    cvIntMat &mat_to_label,
-                    Ints &Labels,
-                    int label);
-
+int get_label_using_decission_tree(const cvPixel &p, cvPixels &neighbors,
+                                   int background, const cvIntMat &m,
+                                   cvIntMat &mat_to_label, Ints &Labels,
+                                   int label);
 
 //! SCT1 Scanning function
 /*!
   \param[in] m binary matrix to scan
   \param[out] mat_to_label matrix with the labels
 */
-void do_binary_matrix_scan(const cvIntMat &m,
-                           cvIntMat &mat_to_label,
+void do_binary_matrix_scan(const cvIntMat &m, cvIntMat &mat_to_label,
                            Ints &Labels);
-
-
 
 //! Performs a peak search in a matrix
 /*!
@@ -134,12 +105,11 @@ void do_binary_matrix_scan(const cvIntMat &m,
   \param[out] value the value at the peak
   \return the position of the peak. Subpixel precision, using interpolation
 */
-algebra::Vector2D get_peak(cv::Mat &m,double *value);
+algebra::Vector2D get_peak(cv::Mat &m, double *value);
 
 //! computes the weighted centroid of a matrix, with the values of the matrix
 algebra::Vector2D get_weighted_centroid(const cv::Mat &m);
 
-
 IMPEM2D_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPEM2D_INTERNAL_IMAGE_PROCESSING_HELPER_H */
+#endif /* IMPEM2D_INTERNAL_IMAGE_PROCESSING_HELPER_H */
