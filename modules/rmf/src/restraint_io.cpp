@@ -146,6 +146,7 @@ class RestraintLoadLink : public SimpleLoadLink<kernel::Restraint> {
   bool get_is(RMF::NodeConstHandle nh) const {
     return nh.get_type() == RMF::FEATURE;
   }
+  using P::do_create;
   kernel::Restraint *do_create(RMF::NodeConstHandle name, kernel::Model *m) {
     RMF::NodeConstHandles chs = name.get_children();
     kernel::Restraints childr;

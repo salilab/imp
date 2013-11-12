@@ -54,6 +54,7 @@ bool HierarchyLoadGlobalCoordinates::setup_particle(
 
   }
   link_particle(n, cstate, m, p, rigid_bodies);
+  return true;
 }
 
 bool HierarchyLoadGlobalCoordinates::link_particle(
@@ -71,6 +72,7 @@ bool HierarchyLoadGlobalCoordinates::link_particle(
     rigid_body_compositions_[rb].rb =
         core::RigidBodyMember(m, p).get_rigid_body().get_particle_index();
   }
+  return true;
 }
 
 

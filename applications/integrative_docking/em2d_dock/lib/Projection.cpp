@@ -10,6 +10,7 @@
 #include <IMP/algebra/SphericalVector3D.h>
 #include <IMP/algebra/Rotation3D.h>
 #include <IMP/constants.h>
+#include <boost/scoped_ptr.hpp>
 
 Projection::Projection(const IMP::algebra::Vector3Ds& points,
                        double scale, double resolution, int axis_size) :

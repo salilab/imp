@@ -40,7 +40,6 @@ using Eigen::MatrixXd;
 using saxs::internal::SincFunction;
 using saxs::internal::SincCosFunction;
 typedef Eigen::Array<double,Eigen::Dynamic, 3> ArrayCoord;
-}
 
 Particles get_particles(Model *m) {
     IMP_NEW(atom::CAlphaPDBSelector, sel, () );
@@ -277,6 +276,7 @@ ArrayXXd make_relative(ArrayXXd mat, ArrayXd vec){
 bool compfunction (std::vector<double> i, std::vector<double> j){
         return i[3] > j[3];
     }
+}
 
 
 #endif  /* IMPISD_PROFILE_VARIANCE_H */

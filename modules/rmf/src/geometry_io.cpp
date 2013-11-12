@@ -31,6 +31,7 @@ class GeometryLoadLink : public SimpleLoadLink<G> {
   bool get_is(RMF::NodeConstHandle nh) const {
     return nh.get_type() == RMF::GEOMETRY && factory_.get_is(nh);
   }
+  using P::do_create;
   G *do_create(RMF::NodeConstHandle name) { return new G(name.get_name()); }
 
  public:

@@ -22,7 +22,6 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT MinimumRestraint : public kernel::Restraint {
   unsigned int k_;
-  void on_add(kernel::Restraint *r) const;
 
  public:
   /** Score based on the num minimum restraints from rs.
@@ -41,7 +40,7 @@ class IMPCOREEXPORT MinimumRestraint : public kernel::Restraint {
   ;
 
   IMP_LIST_ACTION(public, Restraint, Restraints, restraint, restraints,
-                  kernel::Restraint *, kernel::Restraints, on_add(obj);
+                  kernel::Restraint *, kernel::Restraints,
                   , {}, {});
 };
 

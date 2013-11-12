@@ -50,8 +50,6 @@ ModelObjectsTemp MinimumRestraint::do_get_inputs() const {
   return ret;
 }
 
-void MinimumRestraint::on_add(kernel::Restraint *r) const {}
-
 void MinimumRestraint::clear_caches() {
   if (get_model()) {
     get_model()->clear_caches();

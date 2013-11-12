@@ -38,7 +38,7 @@ FretRestraint::FretRestraint
 // number of acceptors
    Na_ = static_cast<unsigned>(floor(static_cast<double>(pa_.size())/m_a+0.5));
 // build list of state vectors (on-the-fly average over photobleached states)
-   for(unsigned i = 0; i < (1<<Na_); ++i){
+   for(int i = 0; i < (1<<Na_); ++i){
     // get state vector
     std::vector<unsigned> indices=get_indices(i, Na_);
     // and add to list
@@ -154,7 +154,7 @@ double FretRestraint::get_sumFi(double Pbleach) const
  // calculate ensemble average
  double sumFi = 0.;
  // enumerate all possible photobleached states
- for(unsigned i = 0; i < (1<<Na); ++i){
+ for(int i = 0; i < (1<<Na); ++i){
   double Fi = 0.;
   double weight = 1.;
   for(unsigned j = 0; j < Na; ++j){

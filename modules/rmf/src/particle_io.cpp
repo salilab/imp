@@ -66,6 +66,7 @@ class ParticleLoadLink : public SimpleLoadLink<kernel::Particle> {
   bool get_is(RMF::NodeConstHandle nh) const {
     return nh.get_type() == RMF::CUSTOM;
   }
+  using P::do_create;
   kernel::Particle *do_create(RMF::NodeConstHandle name, kernel::Model *m) {
     return new kernel::Particle(m, name.get_name());
   }

@@ -62,6 +62,7 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<kernel::Particle> {
   virtual void do_add_link(kernel::Particle *o,
                            RMF::NodeConstHandle node) IMP_FINAL
       IMP_OVERRIDE;
+  using P::do_create;
   virtual kernel::Particle *do_create(RMF::NodeConstHandle name,
                                       kernel::Model *m) IMP_FINAL
       IMP_OVERRIDE;
@@ -76,20 +77,21 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<kernel::Particle> {
   /** This method is called for the hierarchy.*/
   virtual void do_load_hierarchy(RMF::NodeConstHandle root_node,
                                  kernel::Model *m, kernel::ParticleIndex root) {
+    IMP_UNUSED(root_node); IMP_UNUSED(m); IMP_UNUSED(root);
   }
   /** Overload this to take specific action on creating
       a member of the hierarchy.
       \unstable{do_create_recursive} */
   virtual void do_setup_particle(kernel::Model *m, kernel::ParticleIndex root,
                                  kernel::ParticleIndex cur,
-                                 RMF::NodeConstHandle node) {}
+                                 RMF::NodeConstHandle node) {IMP_UNUSED(m); IMP_UNUSED(root); IMP_UNUSED(cur); IMP_UNUSED(node);}
 
   /** Overload this to take specific action on linking
      a member of the hierarchy.
      \unstable{do_add_link_recursive} */
   virtual void do_link_particle(kernel::Model *m, kernel::ParticleIndex root,
                                 kernel::ParticleIndex cur,
-                                RMF::NodeConstHandle node) {}
+                                RMF::NodeConstHandle node) {IMP_UNUSED(root); IMP_UNUSED(m); IMP_UNUSED(cur); IMP_UNUSED(node);}
 
  public:
   HierarchyLoadLink(RMF::FileConstHandle fh);
@@ -135,10 +137,14 @@ class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<kernel::Particle> {
  protected:
   /** Override to add extra data for nodes. */
   virtual void do_setup_node(Model *m, kernel::ParticleIndex root,
-                             kernel::ParticleIndex p, RMF::NodeHandle n) {}
+                             kernel::ParticleIndex p, RMF::NodeHandle n) {
+    IMP_UNUSED(m); IMP_UNUSED(root); IMP_UNUSED(p); IMP_UNUSED(n);
+}
   /** Override to add extra data for nodes. */
   virtual void do_save_hierarchy(Model *m, kernel::ParticleIndex root,
-                                 RMF::NodeHandle root_node) {}
+                                 RMF::NodeHandle root_node) {
+    IMP_UNUSED(m); IMP_UNUSED(root); IMP_UNUSED(root_node);
+}
 
  public:
   HierarchySaveLink(RMF::FileHandle fh);

@@ -33,6 +33,7 @@ bool HierarchyLoadLocalCoordinates::setup_particle(
     core::RigidBody::setup_particle(m, p, algebra::ReferenceFrame3D());
     core::RigidBody(m, rigid_bodies.back()).add_non_rigid_member(p);
   }
+  return true;
 }
 
 HierarchyLoadLocalCoordinates::Type
@@ -40,6 +41,7 @@ HierarchyLoadLocalCoordinates::link_particle(
     RMF::NodeConstHandle n, unsigned int cstate, kernel::Model *m,
     kernel::ParticleIndex p, const kernel::ParticleIndexes &rigid_bodies) {
   // check at frame 0
+  IMP_UNUSED(m);
   if (rigid_bodies.empty()) return NONE;
   if (cstate & FRAME_RB) {
     rigid_bodies_.push_back(std::make_pair(n.get_id(), p));
@@ -48,6 +50,7 @@ HierarchyLoadLocalCoordinates::link_particle(
     xyzs_.push_back(std::make_pair(n.get_id(), p));
     return PARTICLE;
   }
+  return NONE;
 }
 
 void HierarchyLoadLocalCoordinates::load(RMF::FileConstHandle fh,
