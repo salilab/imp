@@ -11,8 +11,8 @@ class WriteStatisticsOptimizerScore(IMP.OptimizerState):
     """ An Optimizer score to get the values of the statistics after a given set
     of evaluations """
     count =0
-    def __init__(self):
-        IMP.OptimizerState.__init__(self)
+    def __init__(self, m):
+        IMP.OptimizerState.__init__(self, m, "WriteStats")
         count = 0
     def update(self):
         if (self.count!=10):
@@ -99,14 +99,14 @@ class Tests(IMP.test.TestCase):
         params.coarse_registration_method = em2d.ALIGN2D_PREPROCESSING
         score_function=em2d.EM2DScore()
 
-        em2d_restraint = em2d.Em2DRestraint()
+        em2d_restraint = em2d.Em2DRestraint(m)
         em2d_restraint.setup(score_function, params)
         em2d_restraint.set_images(em_images)
         em2d_restraint.set_name("em2d restraint")
         container = IMP.container.ListSingletonContainer(
                                               IMP.core.get_leaves(prot))
         em2d_restraint.set_particles(container)
-        em2d_restraints_set=IMP.kernel.RestraintSet()
+        em2d_restraints_set=IMP.kernel.RestraintSet(m)
         em2d_restraints_set.add_restraint(em2d_restraint)
         em2d_restraints_set.set_weight(1000) # weight for the em2D restraint
         m.add_restraint(em2d_restraints_set)
@@ -128,7 +128,7 @@ class Tests(IMP.test.TestCase):
         o_state.set_period(11)
         s.add_optimizer_state(o_state)
 
-        ostate2 = WriteStatisticsOptimizerScore()
+        ostate2 = WriteStatisticsOptimizerScore(m)
         s.add_optimizer_state(ostate2)
 
         # Perform optimization

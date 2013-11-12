@@ -15,7 +15,7 @@ IMPEM2D_BEGIN_NAMESPACE
 bool DistanceFilter::get_is_ok(const domino::Assignment& assignment) const {
   core::XYZs coords;
   for (unsigned int i=0; i < assignment.size(); ++i) {
-    Pointer <kernel::Particle> p = subset_acting_on_[i];
+    base::Pointer <kernel::Particle> p = subset_acting_on_[i];
     if(p == subset_restrained_[0] || p == subset_restrained_[1] ) {
       base::Pointer<domino::ParticleStates> st =
                        ps_table_->get_particle_states(subset_acting_on_[i]);

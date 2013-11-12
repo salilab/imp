@@ -30,7 +30,7 @@ public:
   /**
    * Constructs the restraint. Use the setup() function after construction
    */
-  Fine2DRegistrationRestraint();
+  Fine2DRegistrationRestraint(kernel::Model*m);
 
 
   /**

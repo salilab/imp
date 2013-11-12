@@ -10,7 +10,7 @@
 #include "IMP/em2d/project.h"
 
 IMPEM2D_BEGIN_NAMESPACE
- Em2DRestraint::Em2DRestraint() {};
+Em2DRestraint::Em2DRestraint(kernel::Model *m): Restraint(m, "Em2DRestraint%1%") {}
 
  void Em2DRestraint::set_images(const em2d::Images em_images) {
    em_images_ = em_images;

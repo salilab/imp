@@ -50,7 +50,7 @@ public:
    * Creates the restraint. You are not done yet by creating the restraint.
    * After creating it, you need to call the setup() function
    */
-  Em2DRestraint();
+  Em2DRestraint(kernel::Model *m);
 
   /**
    * Initializes the restraint

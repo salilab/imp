@@ -73,7 +73,7 @@ public:
                                         const cv::Mat &data) const {
     IMP_UNUSED(header);
     // discard header
-    IMP_LOG(IMP::WARNING,"Writing with TIFFImageReaderWriter "
+    IMP_LOG(IMP::base::WARNING,"Writing with TIFFImageReaderWriter "
                   "discards image header " << std::endl);
     // check extension
     String ext=boost::filesystem::extension(filename);

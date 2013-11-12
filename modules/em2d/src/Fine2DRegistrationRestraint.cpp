@@ -15,7 +15,7 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-Fine2DRegistrationRestraint::Fine2DRegistrationRestraint(): calls_(0) {
+Fine2DRegistrationRestraint::Fine2DRegistrationRestraint(kernel::Model *m): Restraint(m, "File2DRegistrationRestraint%1%"), calls_(0) {
     projection_ = new Image();
     projection_->set_was_used(true);
     projection_->set_name("projection-in-fine2d");
@@ -48,8 +48,6 @@ void Fine2DRegistrationRestraint::setup(
     IMP_LOG_VERBOSE("masks given to Fine2DRegistrationRestraint "
              << std::endl);
   }
-  // Set the model
-  this->set_model(scoring_model);
   // Create a particle for the projection parameters to be optimized
   subj_params_particle_ = new kernel::Particle(scoring_model);
   PP_ = ProjectionParameters::setup_particle(subj_params_particle_);

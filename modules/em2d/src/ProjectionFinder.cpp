@@ -349,7 +349,7 @@ void ProjectionFinder::get_complete_registration() {
 
   // Set optimizer
   IMP_NEW(kernel::Model,scoring_model,());
-  IMP_NEW(Fine2DRegistrationRestraint,fine2d,());
+  IMP_NEW(Fine2DRegistrationRestraint,fine2d,(scoring_model));
   IMP_NEW(IMP::gsl::Simplex,simplex_optimizer,(scoring_model));
 
 

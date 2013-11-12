@@ -248,7 +248,7 @@ int main(int argc, char **argv) {
              << " Time: " << projection_time <<std::endl;
 
   // Prepare finder
-  IMP::set_log_level(IMP::base::VERBOSE);
+  IMP::base::set_log_level(IMP::base::VERBOSE);
 
 
   boost::timer registration_timer;
