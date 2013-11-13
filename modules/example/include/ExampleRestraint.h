@@ -32,9 +32,9 @@ class IMPEXAMPLEEXPORT ExampleRestraint : public kernel::Restraint {
       preferably in a Singleton or PairContainer as appropriate.
    */
   ExampleRestraint(kernel::Model *m, kernel::ParticleIndex p, double k);
-  void do_add_score_and_derivatives(IMP::ScoreAccumulator sa) const
+  void do_add_score_and_derivatives(kernel::ScoreAccumulator sa) const
       IMP_OVERRIDE;
-  IMP::kernel::ModelObjectsTemp do_get_inputs() const;
+  kernel::ModelObjectsTemp do_get_inputs() const;
   IMP_OBJECT_METHODS(ExampleRestraint);
 };
 
