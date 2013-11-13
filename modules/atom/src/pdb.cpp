@@ -313,6 +313,8 @@ Hierarchies read_pdb(std::istream& in, std::string name, kernel::Model* model,
         oss << internal::model_index(line);
         root_name = oss.str();
         root_p = nullptr;
+        cp = nullptr;
+        rp = nullptr;
       }
       first_model_read = true;
     }
