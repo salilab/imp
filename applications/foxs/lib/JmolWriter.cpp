@@ -38,7 +38,7 @@ void JmolWriter::prepare_jmol_script(
 
   std::ofstream outstream(html_filename.c_str());
   outstream << prepare_gnuplot_init_selection_string(model_num, true);
-  outstream << jmol_script("/foxs/jmol");
+  outstream << jsmol_script("/foxs/jsmol");
   std::string init = "select all;" + display_selection_;
   std::string selection_init = "define selection model =1";
 
@@ -111,7 +111,7 @@ void JmolWriter::prepare_jmol_script(const std::vector<std::string>& pdbs,
 
   std::ofstream outstream(html_filename.c_str());
   outstream << prepare_gnuplot_init_selection_string(model_num, false);
-  outstream << jmol_script("/foxs/jmol");
+  outstream << jsmol_script("/foxs/jsmol");
   std::string init = "select all;" + display_selection_;
   std::string selection_init = "define selection model =1";
 
@@ -267,6 +267,15 @@ std::string JmolWriter::jmol_script(std::string jmol_path) {
   js_string += "<script src=\"" + jmol_path + "/Jmol.js\"></script>\n";
   js_string += "<script> jmolInitialize(\"" + jmol_path
     + "\", \"JmolAppletSigned.jar\"); </script>\n";
+  return js_string;
+}
+
+std::string JmolWriter::jsmol_script(std::string jmol_path) {
+  std::string js_string = "";
+  js_string += "<script src=\"" + jmol_path + "/JSmol.min.js\"></script>\n";
+  js_string += "<script src=\"" + jmol_path + "/Jmol2.js\"></script>\n";
+  js_string += "<script type=\"text/javascript\">var Info = {}</script>\n";
+  js_string += "<script> jmolInitialize(\"" + jmol_path + "\"); </script>\n";
   return js_string;
 }
 
