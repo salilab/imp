@@ -1,33 +1,33 @@
 /**
- *  \file IMP/score_functor/SoapLoop.h
- *  \brief Score a particle pair using the SOAP-LOOP potential.
+ *  \file IMP/score_functor/OrientedSoap.h
+ *  \brief Score a particle pair using an orientation-dependent SOAP potential.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPSCORE_FUNCTOR_SOAP_LOOP_H
-#define IMPSCORE_FUNCTOR_SOAP_LOOP_H
+#ifndef IMPSCORE_FUNCTOR_ORIENTED_SOAP_H
+#define IMPSCORE_FUNCTOR_ORIENTED_SOAP_H
 
 #include <IMP/score_functor/score_functor_config.h>
 #include <IMP/algebra/constants.h>
 #include <IMP/core/internal/angle_helpers.h>
 #include <IMP/core/internal/dihedral_helpers.h>
 #include "internal/soap_hdf5.h"
-#include "internal/soap_loop_helpers.h"
+#include "internal/soap_helpers.h"
 #include "Score.h"
 
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
-//! SOAP-LOOP score.
-/** The library file itself, soap_loop.hdf5, is rather large (~500MB)
-    and so is not included here. It can be downloaded separately from
-    http://salilab.org/SOAP/.
+//! Orientation-dependent SOAP score.
+/** The library files themselves, such as soap_loop.hdf5 or
+    soap_protein_od.hdf5, are rather large (~1.5GB) and so are not included
+    here. They can be downloaded separately from http://salilab.org/SOAP/.
  */
-class SoapLoop : public Score {
+class OrientedSoap : public Score {
   double maxrange_;
 #ifdef IMP_SCORE_FUNCTOR_USE_HDF5
-  internal::SoapLoopPotential potential_;
-  internal::SoapLoopDoublets doublets_;
+  internal::SoapPotential potential_;
+  internal::SoapDoublets doublets_;
 
   typedef std::vector<internal::SoapModelDoublet> DList;
 
@@ -58,9 +58,9 @@ class SoapLoop : public Score {
 
  public:
   //! Constructor.
-  /** \param[in] library The HDF5 file containing the SOAP-LOOP library.
+  /** \param[in] library The HDF5 file containing the SOAP library.
    */
-  SoapLoop(std::string library) {
+  OrientedSoap(std::string library) {
 #ifdef IMP_SCORE_FUNCTOR_USE_HDF5
     read_library(library);
 #else
@@ -75,7 +75,7 @@ class SoapLoop : public Score {
                    double distance) const {
     double score = 0;
 #ifdef IMP_SCORE_FUNCTOR_USE_HDF5
-    int distbin = potential_.get_index(internal::SoapLoopPotential::DISTANCE,
+    int distbin = potential_.get_index(internal::SoapPotential::DISTANCE,
                                        distance);
     if (distbin >= 0) {
       atom::Atom a1(m, pis[0]);
@@ -119,4 +119,4 @@ class SoapLoop : public Score {
 
 IMPSCOREFUNCTOR_END_NAMESPACE
 
-#endif /* IMPSCORE_FUNCTOR_SOAP_LOOP_H */
+#endif /* IMPSCORE_FUNCTOR_ORIENTED_SOAP_H */

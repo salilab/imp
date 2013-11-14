@@ -1,13 +1,13 @@
 /**
- * \file soap_loop_helpers.h
- * \brief Helper functions for SOAP-LOOP.
+ * \file soap_helpers.h
+ * \brief Helper functions for SOAP.
  *
  * Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPSCORE_FUNCTOR_SOAP_LOOP_HELPERS_H
-#define IMPSCORE_FUNCTOR_SOAP_LOOP_HELPERS_H
+#ifndef IMPSCORE_FUNCTOR_SOAP_HELPERS_H
+#define IMPSCORE_FUNCTOR_SOAP_HELPERS_H
 
 #include <IMP/score_functor/score_functor_config.h>
 
@@ -22,7 +22,7 @@ IMPSCOREFUNCTOR_BEGIN_INTERNAL_NAMESPACE
 
 // A single doublet in the Model.
 // Only the 'other atom' in the doublet is stored here; the principal atom
-// is that passed to the SoapLoop score.
+// is that passed to the OrientedSoap score.
 struct SoapModelDoublet
 {
   atom::Atom atom;
@@ -33,9 +33,9 @@ struct SoapModelDoublet
 };
 
 // Storage of all doublet library information
-class SoapLoopDoublets
+class SoapDoublets
 {
-  // Mapping from atom type to SOAP-LOOP type, for each possible 'other atom'
+  // Mapping from atom type to SOAP type, for each possible 'other atom'
   // in an interaction
   typedef std::map<atom::AtomType, int> OtherAtoms;
   typedef std::pair<atom::ResidueType, atom::AtomType> Key;
@@ -46,7 +46,7 @@ class SoapLoopDoublets
   int n_classes_;
 
 public:
-  SoapLoopDoublets() : n_classes_(0) {}
+  SoapDoublets() : n_classes_(0) {}
 
   void read(Hdf5File &file_id);
 
@@ -76,8 +76,8 @@ public:
   }
 };
 
-// Storage of the SOAP-LOOP statistical potential
-class SoapLoopPotential {
+// Storage of the SOAP statistical potential
+class SoapPotential {
   std::vector<double> bin_min_, bin_width_, inv_bin_width_;
   boost::shared_array<float> data_;
   Ints dims_, stride_;
@@ -101,9 +101,9 @@ class SoapLoopPotential {
 public:
   static const int DISTANCE = 0, ANGLE1 = 1, ANGLE2 = 2, DIHEDRAL = 3,
                    CLASS1 = 4, CLASS2 = 5;
-  SoapLoopPotential() {}
+  SoapPotential() {}
 
-  void read(Hdf5File &file_id, const SoapLoopDoublets &doublets);
+  void read(Hdf5File &file_id, const SoapDoublets &doublets);
 
   // Get the maximum distance between any two principal atoms
   double get_max_range() const { return bin_min_[DISTANCE]
@@ -141,8 +141,8 @@ public:
   }
 };
 
-void SoapLoopPotential::read(Hdf5File &file_id,
-                             const SoapLoopDoublets &doublets)
+void SoapPotential::read(Hdf5File &file_id,
+                             const SoapDoublets &doublets)
 {
   read_feature_info(file_id);
 
@@ -150,13 +150,13 @@ void SoapLoopPotential::read(Hdf5File &file_id,
   Hdf5Dataspace space(dset);
   dims_ = space.get_simple_extent_dims();
   if (dims_.size() != 6) {
-    IMP_THROW("SOAP-LOOP potential should be 6-dimensional (it is "
+    IMP_THROW("SOAP potential should be 6-dimensional (it is "
               << dims_.size() << "-dimensional)", ValueException);
   }
 
   int n_classes = doublets.get_number_of_classes();
   if (dims_[CLASS1] != n_classes || dims_[CLASS2] != n_classes) {
-    IMP_THROW("SOAP-LOOP potential dimensions (" << dims_[CLASS1] << ", "
+    IMP_THROW("SOAP potential dimensions (" << dims_[CLASS1] << ", "
               << dims_[CLASS2] << ") do not match the number of tuple classes ("
               << n_classes << ")", ValueException);
   }
@@ -175,7 +175,7 @@ void SoapLoopPotential::read(Hdf5File &file_id,
   dset.read_float(data_.get());
 }
 
-void SoapLoopDoublets::read(Hdf5File &file_id)
+void SoapDoublets::read(Hdf5File &file_id)
 {
   Hdf5Group group(file_id.get(), "/library/tuples");
   Hdf5Dataset ntypes_ds(group.get(), "ntypes");
@@ -204,7 +204,7 @@ void SoapLoopDoublets::read(Hdf5File &file_id)
   n_classes_ = class_id;
 }
 
-void SoapLoopPotential::read_feature_info(Hdf5File &file_id)
+void SoapPotential::read_feature_info(Hdf5File &file_id)
 {
   bin_min_.resize(4);
   bin_width_.resize(4);
@@ -220,4 +220,4 @@ IMPSCOREFUNCTOR_END_INTERNAL_NAMESPACE
 
 #endif // IMP_SCORE_FUNCTOR_USE_HDF5
 
-#endif /* IMPSCORE_FUNCTOR_SOAP_LOOP_HELPERS_H */
+#endif /* IMPSCORE_FUNCTOR_SOAP_HELPERS_H */
