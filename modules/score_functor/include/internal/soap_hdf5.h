@@ -87,13 +87,20 @@ public:
 
 class Hdf5Attribute : public boost::noncopyable {
   hid_t id_;
+  void read(void *data, hid_t type_id) {
+    IMP_HDF5_ERRCHECK(H5Aread(id_, type_id, data));
+  }
 public:
   Hdf5Attribute(hid_t loc_id, std::string name) : id_(-1) {
     IMP_HDF5_ERRCHECK(id_ = H5Aopen(loc_id, name.c_str(), H5P_DEFAULT));
   }
 
   void read_float(float *data) {
-    IMP_HDF5_ERRCHECK(H5Aread(id_, H5T_NATIVE_FLOAT, data));
+    read(data, H5T_NATIVE_FLOAT);
+  }
+
+  void read_int(int *data) {
+    read(data, H5T_NATIVE_INT);
   }
 
   IMP_HDF5_OBJECT(Hdf5Attribute, H5Aclose)
@@ -194,6 +201,16 @@ public:
 
 class Hdf5Group : public boost::noncopyable {
   hid_t id_;
+
+  void check_attribute_size(Hdf5Attribute &attr, std::string name, int size) {
+    Hdf5Dataspace space(attr);
+    int npoints = space.get_simple_extent_npoints();
+    if (npoints != size) {
+      IMP_THROW("Attribute " << name << " should be of size " << size
+                << " (it is " << npoints << ")", ValueException);
+    }
+  }
+
 public:
   Hdf5Group(hid_t loc_id, std::string name) : id_(-1) {
     IMP_HDF5_ERRCHECK(id_ = H5Gopen(loc_id, name.c_str(), H5P_DEFAULT));
@@ -202,15 +219,28 @@ public:
   // Read and return a single float attribute attached to this group
   float read_float_attribute(std::string name) {
     Hdf5Attribute attr(id_, name);
-    Hdf5Dataspace space(attr);
-    int npoints = space.get_simple_extent_npoints();
-    if (npoints != 1) {
-      IMP_THROW("Attribute " << name << " should be of size 1 (it is "
-                << npoints << ")", ValueException);
-    }
+    check_attribute_size(attr, name, 1);
     float val;
     attr.read_float(&val);
     return val;
+  }
+
+  // Read and return a single int attribute attached to this group
+  int read_int_attribute(std::string name) {
+    Hdf5Attribute attr(id_, name);
+    check_attribute_size(attr, name, 1);
+    int val;
+    attr.read_int(&val);
+    return val;
+  }
+
+  // Read an int array attribute of the given size and return it as a vector.
+  std::vector<int> read_int_attribute_vector(std::string name, int size) {
+    Hdf5Attribute attr(id_, name);
+    check_attribute_size(attr, name, size);
+    std::vector<int> ret(size);
+    attr.read_int(&ret[0]);
+    return ret;
   }
 
   IMP_HDF5_OBJECT(Hdf5Group, H5Gclose)

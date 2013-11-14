@@ -141,8 +141,7 @@ public:
   }
 };
 
-void SoapPotential::read(Hdf5File &file_id,
-                             const SoapDoublets &doublets)
+void SoapPotential::read(Hdf5File &file_id, const SoapDoublets &doublets)
 {
   read_feature_info(file_id);
 

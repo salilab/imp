@@ -75,6 +75,7 @@ IMP_SWIG_OBJECT(IMP::atom, PPDBSelector, PPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, ProteinLigandAtomPairScore, ProteinLigandAtomPairScores);
 IMP_SWIG_OBJECT(IMP::atom, ProteinLigandRestraint, ProteinLigandRestraints);
 IMP_SWIG_OBJECT(IMP::atom, SameResiduePairFilter, SameResiduePairFilters);
+IMP_SWIG_OBJECT(IMP::atom, SoapPairFilter, SoapPairFilters);
 IMP_SWIG_OBJECT(IMP::atom, SmoothingFunction, SmoothingFunctions);
 IMP_SWIG_OBJECT(IMP::atom, StereochemistryPairFilter, StereochemistryPairFilters);
 IMP_SWIG_OBJECT(IMP::atom, VelocityScalingOptimizerState, VelocityScalingOptimizerStates);
@@ -168,6 +169,7 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
 %include "IMP/atom/VelocityScalingOptimizerState.h"
 %include "IMP/atom/Fragment.h"
 %include "IMP/atom/StereochemistryPairFilter.h"
+%include "IMP/atom/SoapPairFilter.h"
 %include "IMP/atom/Mass.h"
 %include "IMP/atom/BondedPairFilter.h"
 %include "IMP/atom/mol2.h"

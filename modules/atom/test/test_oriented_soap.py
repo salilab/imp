@@ -11,11 +11,10 @@ class Tests(IMP.test.TestCase):
                                m)
         ps = IMP.atom.get_by_type(mh, IMP.atom.ATOM_TYPE)
         c = IMP.container.ClosePairContainer(ps, 15.0, 0.0)
-        f = IMP.atom.SameResiduePairFilter()
-        c.add_pair_filter(f)
 
         sl = IMP.atom.OrientedSoapPairScore(
                          self.get_input_file_name('soap_loop_test.hdf5'))
+        c.add_pair_filter(sl.get_pair_filter())
 
         r = IMP.container.PairsRestraint(sl, c)
         m.add_restraint(r)

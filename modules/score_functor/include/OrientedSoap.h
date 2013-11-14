@@ -19,12 +19,15 @@
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
 //! Orientation-dependent SOAP score.
-/** The library files themselves, such as soap_loop.hdf5 or
+/** Orientation-dependent SOAP scores include those that score loops
+    (SOAP-Loop), protein-peptide interfaces (SOAP-Peptide) and proteins
+    (SOAP-Protein). The library files themselves, such as soap_loop.hdf5 or
     soap_protein_od.hdf5, are rather large (~1.5GB) and so are not included
     here. They can be downloaded separately from http://salilab.org/SOAP/.
  */
 class OrientedSoap : public Score {
   double maxrange_;
+  std::string library_;
 #ifdef IMP_SCORE_FUNCTOR_USE_HDF5
   internal::SoapPotential potential_;
   internal::SoapDoublets doublets_;
@@ -60,12 +63,11 @@ class OrientedSoap : public Score {
   //! Constructor.
   /** \param[in] library The HDF5 file containing the SOAP library.
    */
-  OrientedSoap(std::string library) {
+  OrientedSoap(std::string library) : library_(library) {
 #ifdef IMP_SCORE_FUNCTOR_USE_HDF5
     read_library(library);
 #else
     maxrange_ = 0.;
-    IMP_UNUSED(library);
     IMP_THROW("Must configure IMP with HDF5 to use this class", ValueException);
 #endif
   }
@@ -115,6 +117,25 @@ class OrientedSoap : public Score {
                              double squared_distance) const {
     return squared_distance > algebra::get_squared(maxrange_);
   }
+
+  kernel::ModelObjectsTemp get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const {
+    kernel::ModelObjectsTemp ret = IMP::kernel::get_particles(m, pis);
+#ifdef IMP_SCORE_FUNCTOR_USE_HDF5
+    // We touch the Residue for each Atom, so make sure that's in the list
+    // Note that we potentially touch other atoms in the Residue that aren't
+    // in the input list; we should really expand the list of Atoms to include
+    // *all* atoms in any Residue we touch.
+    for (unsigned int i = 0; i < pis.size(); ++i) {
+      if (atom::Atom::get_is_setup(m, pis[i])) {
+        atom::Residue r = atom::get_residue(atom::Atom(m, pis[i]));
+        ret.push_back(r);
+      }
+    }
+#endif
+    return ret;
+  }
+
 };
 
 IMPSCOREFUNCTOR_END_NAMESPACE
