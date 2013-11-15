@@ -35,24 +35,13 @@ GaussianProcessInterpolationRestraint::GaussianProcessInterpolationRestraint(
             1, Eigen::MatrixXd::Zero(M_,M_), gpi_->get_Omega());
     mvn_->set_use_cg(false,0.0);
     IMP_LOG_TERSE( "GPIR: done init" << std::endl);
-    create_score_state();
+    ss_ = new GaussianProcessInterpolationScoreState(this);
 }
 
 void GaussianProcessInterpolationRestraint::create_score_state() {
     IMP_LOG_TERSE( "GPIR: create scorestate" <<std::endl);
-    ss_ = new GaussianProcessInterpolationScoreState(this);
 }
 
-void GaussianProcessInterpolationRestraint::do_set_model(kernel::Model *m)
-{
-  if (m) {
-    create_score_state();
-  } else {
-    IMP_LOG_TERSE( "GPIR: unregistering the scorestate"<<std::endl);
-    // it will get cleaned up
-    ss_ = nullptr;
-  }
-}
 
 ModelObjectsTemp GaussianProcessInterpolationRestraint::do_get_inputs() const {
   // call the existing implementation
