@@ -171,6 +171,8 @@ private:
   void set_Fbar(const VectorXd& f);
   VectorXd get_Fbar() const;
 
+  VectorXd get_epsilon() const;
+
   void set_jacobian(double f);
   double get_jacobian() const;
   void set_minus_log_jacobian(double f); //-log(J)
@@ -249,7 +251,6 @@ private:
   void set_Peps(const VectorXd& Peps);
 
   // epsilon = Fbar - FM
-  VectorXd get_epsilon() const;
   void set_epsilon(const VectorXd& eps);
 
   // gets factorization object
