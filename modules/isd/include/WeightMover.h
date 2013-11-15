@@ -29,7 +29,8 @@ public:
       \param[in] radius maximum radius of displacement
    */
   WeightMover(kernel::Particle *w, Float radius);
-
+  void set_radius(Float radius){radius_=radius;}
+  Float get_radius(){return radius_;}
 protected:
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
