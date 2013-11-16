@@ -588,9 +588,9 @@ template<typename T> class aligned_stack_memory_handler
     IMP_Eigen::internal::check_size_for_overflow<TYPE>(SIZE); \
     TYPE* NAME = (BUFFER)!=0 ? (BUFFER) \
                : reinterpret_cast<TYPE*>( \
-                      (sizeof(TYPE)*SIZE<=EIGEN_STACK_ALLOCATION_LIMIT) ? IMP_EIGEN_ALIGNED_ALLOCA(sizeof(TYPE)*SIZE) \
+                      (sizeof(TYPE)*SIZE<=IMP_EIGEN_STACK_ALLOCATION_LIMIT) ? IMP_EIGEN_ALIGNED_ALLOCA(sizeof(TYPE)*SIZE) \
                     : IMP_Eigen::internal::aligned_malloc(sizeof(TYPE)*SIZE) );  \
-    IMP_Eigen::internal::aligned_stack_memory_handler<TYPE> IMP_EIGEN_CAT(NAME,_stack_memory_destructor)((BUFFER)==0 ? NAME : 0,SIZE,sizeof(TYPE)*SIZE>EIGEN_STACK_ALLOCATION_LIMIT)
+    IMP_Eigen::internal::aligned_stack_memory_handler<TYPE> IMP_EIGEN_CAT(NAME,_stack_memory_destructor)((BUFFER)==0 ? NAME : 0,SIZE,sizeof(TYPE)*SIZE>IMP_EIGEN_STACK_ALLOCATION_LIMIT)
 
 #else
 

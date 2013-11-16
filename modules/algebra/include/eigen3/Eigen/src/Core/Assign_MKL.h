@@ -61,7 +61,7 @@ class vml_assign_traits
                      && Src::InnerStrideAtCompileTime==1 && Dst::InnerStrideAtCompileTime==1,
       MightLinearize = MightEnableVml && (int(Dst::Flags) & int(Src::Flags) & LinearAccessBit),
       VmlSize = MightLinearize ? MaxSizeAtCompileTime : InnerMaxSize,
-      LargeEnough = VmlSize==Dynamic || VmlSize>=EIGEN_MKL_VML_THRESHOLD,
+      LargeEnough = VmlSize==Dynamic || VmlSize>=IMP_EIGEN_MKL_VML_THRESHOLD,
       MayEnableVml = MightEnableVml && LargeEnough,
       MayLinearize = MayEnableVml && MightLinearize
     };
