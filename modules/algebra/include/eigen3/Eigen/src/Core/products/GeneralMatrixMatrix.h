@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_GENERAL_MATRIX_MATRIX_H
-#define EIGEN_GENERAL_MATRIX_MATRIX_H
+#ifndef IMP_EIGEN_GENERAL_MATRIX_MATRIX_H
+#define IMP_EIGEN_GENERAL_MATRIX_MATRIX_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -24,7 +24,7 @@ template<
 struct general_matrix_matrix_product<Index,LhsScalar,LhsStorageOrder,ConjugateLhs,RhsScalar,RhsStorageOrder,ConjugateRhs,RowMajor>
 {
   typedef typename scalar_product_traits<LhsScalar, RhsScalar>::ReturnType ResScalar;
-  static EIGEN_STRONG_INLINE void run(
+  static IMP_EIGEN_STRONG_INLINE void run(
     Index rows, Index cols, Index depth,
     const LhsScalar* lhs, Index lhsStride,
     const RhsScalar* rhs, Index rhsStride,
@@ -73,7 +73,7 @@ static void run(Index rows, Index cols, Index depth,
   gemm_pack_rhs<RhsScalar, Index, Traits::nr, RhsStorageOrder> pack_rhs;
   gebp_kernel<LhsScalar, RhsScalar, Index, Traits::mr, Traits::nr, ConjugateLhs, ConjugateRhs> gebp;
 
-#ifdef EIGEN_HAS_OPENMP
+#ifdef IMP_EIGEN_HAS_OPENMP
   if(info)
   {
     // this is the parallel version!
@@ -145,9 +145,9 @@ static void run(Index rows, Index cols, Index depth,
     }
   }
   else
-#endif // EIGEN_HAS_OPENMP
+#endif // IMP_EIGEN_HAS_OPENMP
   {
-    EIGEN_UNUSED_VARIABLE(info);
+    IMP_EIGEN_UNUSED_VARIABLE(info);
 
     // this is the sequential version!
     std::size_t sizeA = kc*mc;
@@ -286,9 +286,9 @@ class gemm_blocking_space<StorageOrder,_LhsScalar,_RhsScalar,MaxRows, MaxCols, M
       SizeW = MaxDepth * Traits::WorkSpaceFactor
     };
 
-    EIGEN_ALIGN16 LhsScalar m_staticA[SizeA];
-    EIGEN_ALIGN16 RhsScalar m_staticB[SizeB];
-    EIGEN_ALIGN16 RhsScalar m_staticW[SizeW];
+    IMP_EIGEN_ALIGN16 LhsScalar m_staticA[SizeA];
+    IMP_EIGEN_ALIGN16 RhsScalar m_staticB[SizeB];
+    IMP_EIGEN_ALIGN16 RhsScalar m_staticW[SizeW];
 
   public:
 
@@ -379,10 +379,10 @@ class GeneralProduct<Lhs, Rhs, GemmProduct>
   : public ProductBase<GeneralProduct<Lhs,Rhs,GemmProduct>, Lhs, Rhs>
 {
     enum {
-      MaxDepthAtCompileTime = EIGEN_SIZE_MIN_PREFER_FIXED(Lhs::MaxColsAtCompileTime,Rhs::MaxRowsAtCompileTime)
+      MaxDepthAtCompileTime = IMP_EIGEN_SIZE_MIN_PREFER_FIXED(Lhs::MaxColsAtCompileTime,Rhs::MaxRowsAtCompileTime)
     };
   public:
-    EIGEN_PRODUCT_PUBLIC_INTERFACE(GeneralProduct)
+    IMP_EIGEN_PRODUCT_PUBLIC_INTERFACE(GeneralProduct)
     
     typedef typename  Lhs::Scalar LhsScalar;
     typedef typename  Rhs::Scalar RhsScalar;
@@ -391,7 +391,7 @@ class GeneralProduct<Lhs, Rhs, GemmProduct>
     GeneralProduct(const Lhs& lhs, const Rhs& rhs) : Base(lhs,rhs)
     {
       typedef internal::scalar_product_op<LhsScalar,RhsScalar> BinOp;
-      EIGEN_CHECK_BINARY_COMPATIBILIY(BinOp,LhsScalar,RhsScalar);
+      IMP_EIGEN_CHECK_BINARY_COMPATIBILIY(BinOp,LhsScalar,RhsScalar);
     }
 
     template<typename Dest> void scaleAndAddTo(Dest& dst, const Scalar& alpha) const
@@ -422,6 +422,6 @@ class GeneralProduct<Lhs, Rhs, GemmProduct>
     }
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_GENERAL_MATRIX_MATRIX_H
+#endif // IMP_EIGEN_GENERAL_MATRIX_MATRIX_H

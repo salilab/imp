@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_JACOBI_H
-#define EIGEN_JACOBI_H
+#ifndef IMP_EIGEN_JACOBI_H
+#define IMP_EIGEN_JACOBI_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \ingroup Jacobi_Module
   * \jacobi_module
@@ -309,8 +309,8 @@ void /*EIGEN_DONT_INLINE*/ apply_rotation_in_the_plane(VectorX& _x, VectorY& _y,
   Index incrx = _x.innerStride();
   Index incry = _y.innerStride();
 
-  Scalar* EIGEN_RESTRICT x = &_x.coeffRef(0);
-  Scalar* EIGEN_RESTRICT y = &_y.coeffRef(0);
+  Scalar* IMP_EIGEN_RESTRICT x = &_x.coeffRef(0);
+  Scalar* IMP_EIGEN_RESTRICT y = &_y.coeffRef(0);
   
   OtherScalar c = j.c();
   OtherScalar s = j.s();
@@ -341,8 +341,8 @@ void /*EIGEN_DONT_INLINE*/ apply_rotation_in_the_plane(VectorX& _x, VectorY& _y,
       y[i] = -s * xi + numext::conj(c) * yi;
     }
 
-    Scalar* EIGEN_RESTRICT px = x + alignedStart;
-    Scalar* EIGEN_RESTRICT py = y + alignedStart;
+    Scalar* IMP_EIGEN_RESTRICT px = x + alignedStart;
+    Scalar* IMP_EIGEN_RESTRICT py = y + alignedStart;
 
     if(internal::first_aligned(x, size)==alignedStart)
     {
@@ -398,8 +398,8 @@ void /*EIGEN_DONT_INLINE*/ apply_rotation_in_the_plane(VectorX& _x, VectorY& _y,
     const Packet pc = pset1<Packet>(c);
     const Packet ps = pset1<Packet>(s);
     conj_helper<Packet,Packet,NumTraits<Scalar>::IsComplex,false> pcj;
-    Scalar* EIGEN_RESTRICT px = x;
-    Scalar* EIGEN_RESTRICT py = y;
+    Scalar* IMP_EIGEN_RESTRICT px = x;
+    Scalar* IMP_EIGEN_RESTRICT py = y;
     for(Index i=0; i<size; i+=PacketSize)
     {
       Packet xi = pload<Packet>(px);
@@ -428,6 +428,6 @@ void /*EIGEN_DONT_INLINE*/ apply_rotation_in_the_plane(VectorX& _x, VectorY& _y,
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_JACOBI_H
+#endif // IMP_EIGEN_JACOBI_H

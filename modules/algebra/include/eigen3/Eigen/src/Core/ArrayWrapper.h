@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_ARRAYWRAPPER_H
-#define EIGEN_ARRAYWRAPPER_H
+#ifndef IMP_EIGEN_ARRAYWRAPPER_H
+#define IMP_EIGEN_ARRAYWRAPPER_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \class ArrayWrapper
   * \ingroup Core_Module
@@ -37,8 +37,8 @@ class ArrayWrapper : public ArrayBase<ArrayWrapper<ExpressionType> >
 {
   public:
     typedef ArrayBase<ArrayWrapper> Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(ArrayWrapper)
-    EIGEN_INHERIT_ASSIGNMENT_OPERATORS(ArrayWrapper)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(ArrayWrapper)
+    IMP_EIGEN_INHERIT_ASSIGNMENT_OPERATORS(ArrayWrapper)
 
     typedef typename internal::conditional<
                        internal::is_lvalue<ExpressionType>::value,
@@ -157,8 +157,8 @@ class MatrixWrapper : public MatrixBase<MatrixWrapper<ExpressionType> >
 {
   public:
     typedef MatrixBase<MatrixWrapper<ExpressionType> > Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(MatrixWrapper)
-    EIGEN_INHERIT_ASSIGNMENT_OPERATORS(MatrixWrapper)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(MatrixWrapper)
+    IMP_EIGEN_INHERIT_ASSIGNMENT_OPERATORS(MatrixWrapper)
 
     typedef typename internal::conditional<
                        internal::is_lvalue<ExpressionType>::value,
@@ -249,6 +249,6 @@ class MatrixWrapper : public MatrixBase<MatrixWrapper<ExpressionType> >
     NestedExpressionType m_expression;
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_ARRAYWRAPPER_H
+#endif // IMP_EIGEN_ARRAYWRAPPER_H

@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPARSEMATRIXBASE_H
-#define EIGEN_SPARSEMATRIXBASE_H
+#ifndef IMP_EIGEN_SPARSEMATRIXBASE_H
+#define IMP_EIGEN_SPARSEMATRIXBASE_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \ingroup SparseCore_Module
   *
@@ -21,7 +21,7 @@ namespace Eigen {
   * \tparam Derived
   *
   * This class can be extended with the help of the plugin mechanism described on the page
-  * \ref TopicCustomizingEigen by defining the preprocessor symbol \c EIGEN_SPARSEMATRIXBASE_PLUGIN.
+  * \ref TopicCustomizingEigen by defining the preprocessor symbol \c IMP_EIGEN_SPARSEMATRIXBASE_PLUGIN.
   */
 template<typename Derived> class SparseMatrixBase : public EigenBase<Derived>
 {
@@ -93,14 +93,14 @@ template<typename Derived> class SparseMatrixBase : public EigenBase<Derived>
       InnerSizeAtCompileTime = int(IsVectorAtCompileTime) ? int(SizeAtCompileTime)
                              : int(IsRowMajor) ? int(ColsAtCompileTime) : int(RowsAtCompileTime),
 
-      #ifndef EIGEN_PARSED_BY_DOXYGEN
+      #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
       _HasDirectAccess = (int(Flags)&DirectAccessBit) ? 1 : 0 // workaround sunCC
       #endif
     };
 
     /** \internal the return type of MatrixBase::adjoint() */
     typedef typename internal::conditional<NumTraits<Scalar>::IsComplex,
-                        CwiseUnaryOp<internal::scalar_conjugate_op<Scalar>, Eigen::Transpose<const Derived> >,
+                        CwiseUnaryOp<internal::scalar_conjugate_op<Scalar>, IMP_Eigen::Transpose<const Derived> >,
                         Transpose<const Derived>
                      >::type AdjointReturnType;
 
@@ -108,7 +108,7 @@ template<typename Derived> class SparseMatrixBase : public EigenBase<Derived>
     typedef SparseMatrix<Scalar, Flags&RowMajorBit ? RowMajor : ColMajor, Index> PlainObject;
 
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** This is the "real scalar" type; if the \a Scalar type is already real numbers
       * (e.g. int, float or double) then \a RealScalar is just the same as \a Scalar. If
       * \a Scalar is \a std::complex<T> then RealScalar is \a T.
@@ -125,26 +125,26 @@ template<typename Derived> class SparseMatrixBase : public EigenBase<Derived>
     typedef CwiseNullaryOp<internal::scalar_constant_op<Scalar>,Matrix<Scalar,Dynamic,Dynamic> > ConstantReturnType;
 
     /** type of the equivalent square matrix */
-    typedef Matrix<Scalar,EIGEN_SIZE_MAX(RowsAtCompileTime,ColsAtCompileTime),
-                          EIGEN_SIZE_MAX(RowsAtCompileTime,ColsAtCompileTime)> SquareMatrixType;
+    typedef Matrix<Scalar,IMP_EIGEN_SIZE_MAX(RowsAtCompileTime,ColsAtCompileTime),
+                          IMP_EIGEN_SIZE_MAX(RowsAtCompileTime,ColsAtCompileTime)> SquareMatrixType;
 
     inline const Derived& derived() const { return *static_cast<const Derived*>(this); }
     inline Derived& derived() { return *static_cast<Derived*>(this); }
     inline Derived& const_cast_derived() const
     { return *static_cast<Derived*>(const_cast<SparseMatrixBase*>(this)); }
-#endif // not EIGEN_PARSED_BY_DOXYGEN
+#endif // not IMP_EIGEN_PARSED_BY_DOXYGEN
 
-#define EIGEN_CURRENT_STORAGE_BASE_CLASS Eigen::SparseMatrixBase
+#define IMP_EIGEN_CURRENT_STORAGE_BASE_CLASS IMP_Eigen::SparseMatrixBase
 #   include "../plugins/CommonCwiseUnaryOps.h"
 #   include "../plugins/CommonCwiseBinaryOps.h"
 #   include "../plugins/MatrixCwiseUnaryOps.h"
 #   include "../plugins/MatrixCwiseBinaryOps.h"
 #   include "../plugins/BlockMethods.h"
-#   ifdef EIGEN_SPARSEMATRIXBASE_PLUGIN
-#     include EIGEN_SPARSEMATRIXBASE_PLUGIN
+#   ifdef IMP_EIGEN_SPARSEMATRIXBASE_PLUGIN
+#     include IMP_EIGEN_SPARSEMATRIXBASE_PLUGIN
 #   endif
-#   undef EIGEN_CURRENT_STORAGE_BASE_CLASS
-#undef EIGEN_CURRENT_STORAGE_BASE_CLASS
+#   undef IMP_EIGEN_CURRENT_STORAGE_BASE_CLASS
+#undef IMP_EIGEN_CURRENT_STORAGE_BASE_CLASS
 
     /** \returns the number of rows. \sa cols() */
     inline Index rows() const { return derived().rows(); }
@@ -317,7 +317,7 @@ template<typename Derived> class SparseMatrixBase : public EigenBase<Derived>
     Derived& operator*=(const Scalar& other);
     Derived& operator/=(const Scalar& other);
 
-    #define EIGEN_SPARSE_CWISE_PRODUCT_RETURN_TYPE \
+    #define IMP_EIGEN_SPARSE_CWISE_PRODUCT_RETURN_TYPE \
       CwiseBinaryOp< \
         internal::scalar_product_op< \
           typename internal::scalar_product_traits< \
@@ -330,7 +330,7 @@ template<typename Derived> class SparseMatrixBase : public EigenBase<Derived>
       >
 
     template<typename OtherDerived>
-    EIGEN_STRONG_INLINE const EIGEN_SPARSE_CWISE_PRODUCT_RETURN_TYPE
+    IMP_EIGEN_STRONG_INLINE const IMP_EIGEN_SPARSE_CWISE_PRODUCT_RETURN_TYPE
     cwiseProduct(const MatrixBase<OtherDerived> &other) const;
 
     // sparse * sparse
@@ -369,7 +369,7 @@ template<typename Derived> class SparseMatrixBase : public EigenBase<Derived>
     template<typename OtherDerived>
     Derived& operator*=(const SparseMatrixBase<OtherDerived>& other);
 
-    #ifdef EIGEN2_SUPPORT
+    #ifdef IMP_EIGEN2_SUPPORT
     // deprecated
     template<typename OtherDerived>
     typename internal::plain_matrix_type_column_major<OtherDerived>::type
@@ -378,7 +378,7 @@ template<typename Derived> class SparseMatrixBase : public EigenBase<Derived>
     // deprecated
     template<typename OtherDerived>
     void solveTriangularInPlace(MatrixBase<OtherDerived>& other) const;
-    #endif // EIGEN2_SUPPORT
+    #endif // IMP_EIGEN2_SUPPORT
 
     template<int Mode>
     inline const SparseTriangularView<Derived, Mode> triangularView() const;
@@ -446,6 +446,6 @@ template<typename Derived> class SparseMatrixBase : public EigenBase<Derived>
     bool m_isRValue;
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SPARSEMATRIXBASE_H
+#endif // IMP_EIGEN_SPARSEMATRIXBASE_H

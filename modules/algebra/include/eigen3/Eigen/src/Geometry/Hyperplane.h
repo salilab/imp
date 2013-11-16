@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_HYPERPLANE_H
-#define EIGEN_HYPERPLANE_H
+#ifndef IMP_EIGEN_HYPERPLANE_H
+#define IMP_EIGEN_HYPERPLANE_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \geometry_module \ingroup Geometry_Module
   *
@@ -34,7 +34,7 @@ template <typename _Scalar, int _AmbientDim, int _Options>
 class Hyperplane
 {
 public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_AmbientDim==Dynamic ? Dynamic : _AmbientDim+1)
+  IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_AmbientDim==Dynamic ? Dynamic : _AmbientDim+1)
   enum {
     AmbientDimAtCompileTime = _AmbientDim,
     Options = _Options
@@ -98,7 +98,7 @@ public:
     */
   static inline Hyperplane Through(const VectorType& p0, const VectorType& p1, const VectorType& p2)
   {
-    EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(VectorType, 3)
+    IMP_EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(VectorType, 3)
     Hyperplane result(p0.size());
     result.normal() = (p2 - p0).cross(p1 - p0).normalized();
     result.offset() = -p0.dot(result.normal());
@@ -179,7 +179,7 @@ public:
   VectorType intersection(const Hyperplane& other) const
   {
     using std::abs;
-    EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(VectorType, 2)
+    IMP_EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(VectorType, 2)
     Scalar det = coeffs().coeff(0) * other.coeffs().coeff(1) - coeffs().coeff(1) * other.coeffs().coeff(0);
     // since the line equations ax+by=c are normalized with a^2+b^2=1, the following tests
     // whether the two lines are approximately parallel.
@@ -265,6 +265,6 @@ protected:
   Coefficients m_coeffs;
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_HYPERPLANE_H
+#endif // IMP_EIGEN_HYPERPLANE_H

@@ -55,10 +55,10 @@
 
 #include "../../../../Eigen/src/Core/util/NonMPL2.h"
 
-#ifndef EIGEN_ITERATION_CONTROLLER_H
-#define EIGEN_ITERATION_CONTROLLER_H
+#ifndef IMP_EIGEN_ITERATION_CONTROLLER_H
+#define IMP_EIGEN_ITERATION_CONTROLLER_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \ingroup IterativeSolvers_Module
   * \class IterationController
@@ -149,6 +149,6 @@ class IterationController
 
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_ITERATION_CONTROLLER_H
+#endif // IMP_EIGEN_ITERATION_CONTROLLER_H

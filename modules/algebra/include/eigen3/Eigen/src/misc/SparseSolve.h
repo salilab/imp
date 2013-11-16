@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPARSE_SOLVE_H
-#define EIGEN_SPARSE_SOLVE_H
+#ifndef IMP_EIGEN_SPARSE_SOLVE_H
+#define IMP_EIGEN_SPARSE_SOLVE_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -54,8 +54,8 @@ template<typename _DecompositionType, typename Rhs> struct sparse_solve_retval_b
       static const int NbColsAtOnce = 4;
       int rhsCols = m_rhs.cols();
       int size = m_rhs.rows();
-      Eigen::Matrix<DestScalar,Dynamic,Dynamic> tmp(size,rhsCols);
-      Eigen::Matrix<DestScalar,Dynamic,Dynamic> tmpX(size,rhsCols);
+      IMP_Eigen::Matrix<DestScalar,Dynamic,Dynamic> tmp(size,rhsCols);
+      IMP_Eigen::Matrix<DestScalar,Dynamic,Dynamic> tmpX(size,rhsCols);
       for(int k=0; k<rhsCols; k+=NbColsAtOnce)
       {
         int actualCols = std::min<int>(rhsCols-k, NbColsAtOnce);
@@ -68,12 +68,12 @@ template<typename _DecompositionType, typename Rhs> struct sparse_solve_retval_b
     typename Rhs::Nested m_rhs;
 };
 
-#define EIGEN_MAKE_SPARSE_SOLVE_HELPERS(DecompositionType,Rhs) \
+#define IMP_EIGEN_MAKE_SPARSE_SOLVE_HELPERS(DecompositionType,Rhs) \
   typedef typename DecompositionType::MatrixType MatrixType; \
   typedef typename MatrixType::Scalar Scalar; \
   typedef typename MatrixType::RealScalar RealScalar; \
   typedef typename MatrixType::Index Index; \
-  typedef Eigen::internal::sparse_solve_retval_base<DecompositionType,Rhs> Base; \
+  typedef IMP_Eigen::internal::sparse_solve_retval_base<DecompositionType,Rhs> Base; \
   using Base::dec; \
   using Base::rhs; \
   using Base::rows; \
@@ -123,6 +123,6 @@ template<typename DecompositionType, typename Rhs, typename Guess> struct solve_
 
 } // namepsace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SPARSE_SOLVE_H
+#endif // IMP_EIGEN_SPARSE_SOLVE_H

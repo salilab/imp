@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_REF_H
-#define EIGEN_REF_H
+#ifndef IMP_EIGEN_REF_H
+#define IMP_EIGEN_REF_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 template<typename Derived> class RefBase;
 template<typename PlainObjectType, int Options = 0,
@@ -128,7 +128,7 @@ template<typename Derived> class RefBase
 public:
 
   typedef MapBase<Derived> Base;
-  EIGEN_DENSE_PUBLIC_INTERFACE(RefBase)
+  IMP_EIGEN_DENSE_PUBLIC_INTERFACE(RefBase)
 
   inline Index innerStride() const
   {
@@ -150,7 +150,7 @@ public:
                StrideType::InnerStrideAtCompileTime==Dynamic?0:StrideType::InnerStrideAtCompileTime)
   {}
   
-  EIGEN_INHERIT_ASSIGNMENT_OPERATORS(RefBase)
+  IMP_EIGEN_INHERIT_ASSIGNMENT_OPERATORS(RefBase)
 
 protected:
 
@@ -186,10 +186,10 @@ template<typename PlainObjectType, int Options, typename StrideType> class Ref
   public:
 
     typedef RefBase<Ref> Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(Ref)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(Ref)
 
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     template<typename Derived>
     inline Ref(PlainObjectBase<Derived>& expr,
                typename internal::enable_if<bool(Traits::template match<Derived>::MatchAtCompileTime),Derived>::type* = 0)
@@ -208,7 +208,7 @@ template<typename PlainObjectType, int Options, typename StrideType> class Ref
       Base::construct(expr.const_cast_derived());
     }
 
-    EIGEN_INHERIT_ASSIGNMENT_OPERATORS(Ref)
+    IMP_EIGEN_INHERIT_ASSIGNMENT_OPERATORS(Ref)
 
 };
 
@@ -220,7 +220,7 @@ template<typename TPlainObjectType, int Options, typename StrideType> class Ref<
   public:
 
     typedef RefBase<Ref> Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(Ref)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(Ref)
 
     template<typename Derived>
     inline Ref(const DenseBase<Derived>& expr)
@@ -250,6 +250,6 @@ template<typename TPlainObjectType, int Options, typename StrideType> class Ref<
     TPlainObjectType m_object;
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_REF_H
+#endif // IMP_EIGEN_REF_H

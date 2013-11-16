@@ -30,7 +30,7 @@
 #ifndef SPARSELU_PRUNEL_H
 #define SPARSELU_PRUNEL_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 namespace internal {
 
 /**
@@ -130,6 +130,6 @@ void SparseLUImpl<Scalar,Index>::pruneL(const Index jcol, const IndexVector& per
 }
 
 } // end namespace internal
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
 #endif // SPARSELU_PRUNEL_H

@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_MAP_H
-#define EIGEN_MAP_H
+#ifndef IMP_EIGEN_MAP_H
+#define IMP_EIGEN_MAP_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \class Map
   * \ingroup Core_Module
@@ -82,7 +82,7 @@ struct traits<Map<PlainObjectType, MapOptions, StrideType> >
     HasNoInnerStride = InnerStrideAtCompileTime == 1,
     HasNoOuterStride = StrideType::OuterStrideAtCompileTime == 0,
     HasNoStride = HasNoInnerStride && HasNoOuterStride,
-    IsAligned = bool(EIGEN_ALIGN) && ((int(MapOptions)&Aligned)==Aligned),
+    IsAligned = bool(IMP_EIGEN_ALIGN) && ((int(MapOptions)&Aligned)==Aligned),
     IsDynamicSize = PlainObjectType::SizeAtCompileTime==Dynamic,
     KeepsPacketAccess = bool(HasNoInnerStride)
                         && ( bool(IsDynamicSize)
@@ -107,10 +107,10 @@ template<typename PlainObjectType, int MapOptions, typename StrideType> class Ma
   public:
 
     typedef MapBase<Map> Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(Map)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(Map)
 
     typedef typename Base::PointerType PointerType;
-#if EIGEN2_SUPPORT_STAGE <= STAGE30_FULL_EIGEN3_API
+#if IMP_EIGEN2_SUPPORT_STAGE <= STAGE30_FULL_EIGEN3_API
     typedef const Scalar* PointerArgType;
     inline PointerType cast_to_pointer_type(PointerArgType ptr) { return const_cast<PointerType>(ptr); }
 #else
@@ -167,7 +167,7 @@ template<typename PlainObjectType, int MapOptions, typename StrideType> class Ma
       PlainObjectType::Base::_check_template_params();
     }
 
-    EIGEN_INHERIT_ASSIGNMENT_OPERATORS(Map)
+    IMP_EIGEN_INHERIT_ASSIGNMENT_OPERATORS(Map)
 
   protected:
     StrideType m_stride;
@@ -177,16 +177,16 @@ template<typename _Scalar, int _Rows, int _Cols, int _Options, int _MaxRows, int
 inline Array<_Scalar, _Rows, _Cols, _Options, _MaxRows, _MaxCols>
   ::Array(const Scalar *data)
 {
-  this->_set_noalias(Eigen::Map<const Array>(data));
+  this->_set_noalias(IMP_Eigen::Map<const Array>(data));
 }
 
 template<typename _Scalar, int _Rows, int _Cols, int _Options, int _MaxRows, int _MaxCols>
 inline Matrix<_Scalar, _Rows, _Cols, _Options, _MaxRows, _MaxCols>
   ::Matrix(const Scalar *data)
 {
-  this->_set_noalias(Eigen::Map<const Matrix>(data));
+  this->_set_noalias(IMP_Eigen::Map<const Matrix>(data));
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_MAP_H
+#endif // IMP_EIGEN_MAP_H

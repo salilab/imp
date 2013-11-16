@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_DENSECOEFFSBASE_H
-#define EIGEN_DENSECOEFFSBASE_H
+#ifndef IMP_EIGEN_DENSECOEFFSBASE_H
+#define IMP_EIGEN_DENSECOEFFSBASE_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 namespace internal {
 template<typename T> struct add_const_on_value_type_if_arithmetic
@@ -61,7 +61,7 @@ class DenseCoeffsBase<Derived,ReadOnlyAccessors> : public EigenBase<Derived>
     using Base::size;
     using Base::derived;
 
-    EIGEN_STRONG_INLINE Index rowIndexByOuterInner(Index outer, Index inner) const
+    IMP_EIGEN_STRONG_INLINE Index rowIndexByOuterInner(Index outer, Index inner) const
     {
       return int(Derived::RowsAtCompileTime) == 1 ? 0
           : int(Derived::ColsAtCompileTime) == 1 ? inner
@@ -69,7 +69,7 @@ class DenseCoeffsBase<Derived,ReadOnlyAccessors> : public EigenBase<Derived>
           : inner;
     }
 
-    EIGEN_STRONG_INLINE Index colIndexByOuterInner(Index outer, Index inner) const
+    IMP_EIGEN_STRONG_INLINE Index colIndexByOuterInner(Index outer, Index inner) const
     {
       return int(Derived::ColsAtCompileTime) == 1 ? 0
           : int(Derived::RowsAtCompileTime) == 1 ? inner
@@ -86,19 +86,19 @@ class DenseCoeffsBase<Derived,ReadOnlyAccessors> : public EigenBase<Derived>
       * repeated coefficient access. Only use this when it is guaranteed that the
       * parameters \a row and \a col are in range.
       *
-      * If EIGEN_INTERNAL_DEBUGGING is defined, an assertion will be made, making this
+      * If IMP_EIGEN_INTERNAL_DEBUGGING is defined, an assertion will be made, making this
       * function equivalent to \link operator()(Index,Index) const \endlink.
       *
       * \sa operator()(Index,Index) const, coeffRef(Index,Index), coeff(Index) const
       */
-    EIGEN_STRONG_INLINE CoeffReturnType coeff(Index row, Index col) const
+    IMP_EIGEN_STRONG_INLINE CoeffReturnType coeff(Index row, Index col) const
     {
       eigen_internal_assert(row >= 0 && row < rows()
                         && col >= 0 && col < cols());
       return derived().coeff(row, col);
     }
 
-    EIGEN_STRONG_INLINE CoeffReturnType coeffByOuterInner(Index outer, Index inner) const
+    IMP_EIGEN_STRONG_INLINE CoeffReturnType coeffByOuterInner(Index outer, Index inner) const
     {
       return coeff(rowIndexByOuterInner(outer, inner),
                    colIndexByOuterInner(outer, inner));
@@ -108,7 +108,7 @@ class DenseCoeffsBase<Derived,ReadOnlyAccessors> : public EigenBase<Derived>
       *
       * \sa operator()(Index,Index), operator[](Index)
       */
-    EIGEN_STRONG_INLINE CoeffReturnType operator()(Index row, Index col) const
+    IMP_EIGEN_STRONG_INLINE CoeffReturnType operator()(Index row, Index col) const
     {
       eigen_assert(row >= 0 && row < rows()
           && col >= 0 && col < cols());
@@ -124,13 +124,13 @@ class DenseCoeffsBase<Derived,ReadOnlyAccessors> : public EigenBase<Derived>
       * repeated coefficient access. Only use this when it is guaranteed that the
       * parameter \a index is in range.
       *
-      * If EIGEN_INTERNAL_DEBUGGING is defined, an assertion will be made, making this
+      * If IMP_EIGEN_INTERNAL_DEBUGGING is defined, an assertion will be made, making this
       * function equivalent to \link operator[](Index) const \endlink.
       *
       * \sa operator[](Index) const, coeffRef(Index), coeff(Index,Index) const
       */
 
-    EIGEN_STRONG_INLINE CoeffReturnType
+    IMP_EIGEN_STRONG_INLINE CoeffReturnType
     coeff(Index index) const
     {
       eigen_internal_assert(index >= 0 && index < size());
@@ -146,11 +146,11 @@ class DenseCoeffsBase<Derived,ReadOnlyAccessors> : public EigenBase<Derived>
       * z() const, w() const
       */
 
-    EIGEN_STRONG_INLINE CoeffReturnType
+    IMP_EIGEN_STRONG_INLINE CoeffReturnType
     operator[](Index index) const
     {
-      #ifndef EIGEN2_SUPPORT
-      EIGEN_STATIC_ASSERT(Derived::IsVectorAtCompileTime,
+      #ifndef IMP_EIGEN2_SUPPORT
+      IMP_EIGEN_STATIC_ASSERT(Derived::IsVectorAtCompileTime,
                           THE_BRACKET_OPERATOR_IS_ONLY_FOR_VECTORS__USE_THE_PARENTHESIS_OPERATOR_INSTEAD)
       #endif
       eigen_assert(index >= 0 && index < size());
@@ -167,7 +167,7 @@ class DenseCoeffsBase<Derived,ReadOnlyAccessors> : public EigenBase<Derived>
       * z() const, w() const
       */
 
-    EIGEN_STRONG_INLINE CoeffReturnType
+    IMP_EIGEN_STRONG_INLINE CoeffReturnType
     operator()(Index index) const
     {
       eigen_assert(index >= 0 && index < size());
@@ -176,22 +176,22 @@ class DenseCoeffsBase<Derived,ReadOnlyAccessors> : public EigenBase<Derived>
 
     /** equivalent to operator[](0).  */
 
-    EIGEN_STRONG_INLINE CoeffReturnType
+    IMP_EIGEN_STRONG_INLINE CoeffReturnType
     x() const { return (*this)[0]; }
 
     /** equivalent to operator[](1).  */
 
-    EIGEN_STRONG_INLINE CoeffReturnType
+    IMP_EIGEN_STRONG_INLINE CoeffReturnType
     y() const { return (*this)[1]; }
 
     /** equivalent to operator[](2).  */
 
-    EIGEN_STRONG_INLINE CoeffReturnType
+    IMP_EIGEN_STRONG_INLINE CoeffReturnType
     z() const { return (*this)[2]; }
 
     /** equivalent to operator[](3).  */
 
-    EIGEN_STRONG_INLINE CoeffReturnType
+    IMP_EIGEN_STRONG_INLINE CoeffReturnType
     w() const { return (*this)[3]; }
 
     /** \internal
@@ -205,7 +205,7 @@ class DenseCoeffsBase<Derived,ReadOnlyAccessors> : public EigenBase<Derived>
       */
 
     template<int LoadMode>
-    EIGEN_STRONG_INLINE PacketReturnType packet(Index row, Index col) const
+    IMP_EIGEN_STRONG_INLINE PacketReturnType packet(Index row, Index col) const
     {
       eigen_internal_assert(row >= 0 && row < rows()
                       && col >= 0 && col < cols());
@@ -215,7 +215,7 @@ class DenseCoeffsBase<Derived,ReadOnlyAccessors> : public EigenBase<Derived>
 
     /** \internal */
     template<int LoadMode>
-    EIGEN_STRONG_INLINE PacketReturnType packetByOuterInner(Index outer, Index inner) const
+    IMP_EIGEN_STRONG_INLINE PacketReturnType packetByOuterInner(Index outer, Index inner) const
     {
       return packet<LoadMode>(rowIndexByOuterInner(outer, inner),
                               colIndexByOuterInner(outer, inner));
@@ -232,7 +232,7 @@ class DenseCoeffsBase<Derived,ReadOnlyAccessors> : public EigenBase<Derived>
       */
 
     template<int LoadMode>
-    EIGEN_STRONG_INLINE PacketReturnType packet(Index index) const
+    IMP_EIGEN_STRONG_INLINE PacketReturnType packet(Index index) const
     {
       eigen_internal_assert(index >= 0 && index < size());
       return derived().template packet<LoadMode>(index);
@@ -306,19 +306,19 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
       * repeated coefficient access. Only use this when it is guaranteed that the
       * parameters \a row and \a col are in range.
       *
-      * If EIGEN_INTERNAL_DEBUGGING is defined, an assertion will be made, making this
+      * If IMP_EIGEN_INTERNAL_DEBUGGING is defined, an assertion will be made, making this
       * function equivalent to \link operator()(Index,Index) \endlink.
       *
       * \sa operator()(Index,Index), coeff(Index, Index) const, coeffRef(Index)
       */
-    EIGEN_STRONG_INLINE Scalar& coeffRef(Index row, Index col)
+    IMP_EIGEN_STRONG_INLINE Scalar& coeffRef(Index row, Index col)
     {
       eigen_internal_assert(row >= 0 && row < rows()
                         && col >= 0 && col < cols());
       return derived().coeffRef(row, col);
     }
 
-    EIGEN_STRONG_INLINE Scalar&
+    IMP_EIGEN_STRONG_INLINE Scalar&
     coeffRefByOuterInner(Index outer, Index inner)
     {
       return coeffRef(rowIndexByOuterInner(outer, inner),
@@ -330,7 +330,7 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
       * \sa operator[](Index)
       */
 
-    EIGEN_STRONG_INLINE Scalar&
+    IMP_EIGEN_STRONG_INLINE Scalar&
     operator()(Index row, Index col)
     {
       eigen_assert(row >= 0 && row < rows()
@@ -348,13 +348,13 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
       * repeated coefficient access. Only use this when it is guaranteed that the
       * parameters \a row and \a col are in range.
       *
-      * If EIGEN_INTERNAL_DEBUGGING is defined, an assertion will be made, making this
+      * If IMP_EIGEN_INTERNAL_DEBUGGING is defined, an assertion will be made, making this
       * function equivalent to \link operator[](Index) \endlink.
       *
       * \sa operator[](Index), coeff(Index) const, coeffRef(Index,Index)
       */
 
-    EIGEN_STRONG_INLINE Scalar&
+    IMP_EIGEN_STRONG_INLINE Scalar&
     coeffRef(Index index)
     {
       eigen_internal_assert(index >= 0 && index < size());
@@ -368,11 +368,11 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
       * \sa operator[](Index) const, operator()(Index,Index), x(), y(), z(), w()
       */
 
-    EIGEN_STRONG_INLINE Scalar&
+    IMP_EIGEN_STRONG_INLINE Scalar&
     operator[](Index index)
     {
-      #ifndef EIGEN2_SUPPORT
-      EIGEN_STATIC_ASSERT(Derived::IsVectorAtCompileTime,
+      #ifndef IMP_EIGEN2_SUPPORT
+      IMP_EIGEN_STATIC_ASSERT(Derived::IsVectorAtCompileTime,
                           THE_BRACKET_OPERATOR_IS_ONLY_FOR_VECTORS__USE_THE_PARENTHESIS_OPERATOR_INSTEAD)
       #endif
       eigen_assert(index >= 0 && index < size());
@@ -388,7 +388,7 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
       * \sa operator[](Index) const, operator()(Index,Index), x(), y(), z(), w()
       */
 
-    EIGEN_STRONG_INLINE Scalar&
+    IMP_EIGEN_STRONG_INLINE Scalar&
     operator()(Index index)
     {
       eigen_assert(index >= 0 && index < size());
@@ -397,22 +397,22 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
 
     /** equivalent to operator[](0).  */
 
-    EIGEN_STRONG_INLINE Scalar&
+    IMP_EIGEN_STRONG_INLINE Scalar&
     x() { return (*this)[0]; }
 
     /** equivalent to operator[](1).  */
 
-    EIGEN_STRONG_INLINE Scalar&
+    IMP_EIGEN_STRONG_INLINE Scalar&
     y() { return (*this)[1]; }
 
     /** equivalent to operator[](2).  */
 
-    EIGEN_STRONG_INLINE Scalar&
+    IMP_EIGEN_STRONG_INLINE Scalar&
     z() { return (*this)[2]; }
 
     /** equivalent to operator[](3).  */
 
-    EIGEN_STRONG_INLINE Scalar&
+    IMP_EIGEN_STRONG_INLINE Scalar&
     w() { return (*this)[3]; }
 
     /** \internal
@@ -426,7 +426,7 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
       */
 
     template<int StoreMode>
-    EIGEN_STRONG_INLINE void writePacket
+    IMP_EIGEN_STRONG_INLINE void writePacket
     (Index row, Index col, const typename internal::packet_traits<Scalar>::type& val)
     {
       eigen_internal_assert(row >= 0 && row < rows()
@@ -437,7 +437,7 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
 
     /** \internal */
     template<int StoreMode>
-    EIGEN_STRONG_INLINE void writePacketByOuterInner
+    IMP_EIGEN_STRONG_INLINE void writePacketByOuterInner
     (Index outer, Index inner, const typename internal::packet_traits<Scalar>::type& val)
     {
       writePacket<StoreMode>(rowIndexByOuterInner(outer, inner),
@@ -455,14 +455,14 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
       * starting at an address which is a multiple of the packet size.
       */
     template<int StoreMode>
-    EIGEN_STRONG_INLINE void writePacket
+    IMP_EIGEN_STRONG_INLINE void writePacket
     (Index index, const typename internal::packet_traits<Scalar>::type& val)
     {
       eigen_internal_assert(index >= 0 && index < size());
       derived().template writePacket<StoreMode>(index,val);
     }
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
 
     /** \internal Copies the coefficient at position (row,col) of other into *this.
       *
@@ -473,7 +473,7 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
       */
 
     template<typename OtherDerived>
-    EIGEN_STRONG_INLINE void copyCoeff(Index row, Index col, const DenseBase<OtherDerived>& other)
+    IMP_EIGEN_STRONG_INLINE void copyCoeff(Index row, Index col, const DenseBase<OtherDerived>& other)
     {
       eigen_internal_assert(row >= 0 && row < rows()
                         && col >= 0 && col < cols());
@@ -489,7 +489,7 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
       */
 
     template<typename OtherDerived>
-    EIGEN_STRONG_INLINE void copyCoeff(Index index, const DenseBase<OtherDerived>& other)
+    IMP_EIGEN_STRONG_INLINE void copyCoeff(Index index, const DenseBase<OtherDerived>& other)
     {
       eigen_internal_assert(index >= 0 && index < size());
       derived().coeffRef(index) = other.derived().coeff(index);
@@ -497,7 +497,7 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
 
 
     template<typename OtherDerived>
-    EIGEN_STRONG_INLINE void copyCoeffByOuterInner(Index outer, Index inner, const DenseBase<OtherDerived>& other)
+    IMP_EIGEN_STRONG_INLINE void copyCoeffByOuterInner(Index outer, Index inner, const DenseBase<OtherDerived>& other)
     {
       const Index row = rowIndexByOuterInner(outer,inner);
       const Index col = colIndexByOuterInner(outer,inner);
@@ -514,7 +514,7 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
       */
 
     template<typename OtherDerived, int StoreMode, int LoadMode>
-    EIGEN_STRONG_INLINE void copyPacket(Index row, Index col, const DenseBase<OtherDerived>& other)
+    IMP_EIGEN_STRONG_INLINE void copyPacket(Index row, Index col, const DenseBase<OtherDerived>& other)
     {
       eigen_internal_assert(row >= 0 && row < rows()
                         && col >= 0 && col < cols());
@@ -531,7 +531,7 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
       */
 
     template<typename OtherDerived, int StoreMode, int LoadMode>
-    EIGEN_STRONG_INLINE void copyPacket(Index index, const DenseBase<OtherDerived>& other)
+    IMP_EIGEN_STRONG_INLINE void copyPacket(Index index, const DenseBase<OtherDerived>& other)
     {
       eigen_internal_assert(index >= 0 && index < size());
       derived().template writePacket<StoreMode>(index,
@@ -540,7 +540,7 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
 
     /** \internal */
     template<typename OtherDerived, int StoreMode, int LoadMode>
-    EIGEN_STRONG_INLINE void copyPacketByOuterInner(Index outer, Index inner, const DenseBase<OtherDerived>& other)
+    IMP_EIGEN_STRONG_INLINE void copyPacketByOuterInner(Index outer, Index inner, const DenseBase<OtherDerived>& other)
     {
       const Index row = rowIndexByOuterInner(outer,inner);
       const Index col = colIndexByOuterInner(outer,inner);
@@ -749,6 +749,6 @@ struct outer_stride_at_compile_time<Derived, false>
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_DENSECOEFFSBASE_H
+#endif // IMP_EIGEN_DENSECOEFFSBASE_H

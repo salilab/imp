@@ -31,7 +31,7 @@
 #ifndef SPARSELU_PANEL_BMOD_H
 #define SPARSELU_PANEL_BMOD_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 namespace internal {
 
 /**
@@ -218,6 +218,6 @@ void SparseLUImpl<Scalar,Index>::panel_bmod(const Index m, const Index w, const 
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
 #endif // SPARSELU_PANEL_BMOD_H

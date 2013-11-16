@@ -28,12 +28,12 @@
 
 #include "../../../../Eigen/src/Core/util/NonMPL2.h"
 
-#ifndef EIGEN_CONSTRAINEDCG_H
-#define EIGEN_CONSTRAINEDCG_H
+#ifndef IMP_EIGEN_CONSTRAINEDCG_H
+#define IMP_EIGEN_CONSTRAINEDCG_H
 
 #include <Eigen/Core>
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -180,6 +180,6 @@ void constrained_cg(const TMatrix& A, const CMatrix& C, VectorX& x,
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_CONSTRAINEDCG_H
+#endif // IMP_EIGEN_CONSTRAINEDCG_H

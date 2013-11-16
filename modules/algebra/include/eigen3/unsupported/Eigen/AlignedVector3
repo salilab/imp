@@ -7,12 +7,12 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_ALIGNED_VECTOR3
-#define EIGEN_ALIGNED_VECTOR3
+#ifndef IMP_EIGEN_ALIGNED_VECTOR3
+#define IMP_EIGEN_ALIGNED_VECTOR3
 
 #include <Eigen/Geometry>
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 /**
   * \defgroup AlignedVector3_Module Aligned vector3 module
@@ -52,7 +52,7 @@ template<typename _Scalar> class AlignedVector3
   public:
 
     typedef MatrixBase<AlignedVector3<_Scalar> > Base;	
-    EIGEN_DENSE_PUBLIC_INTERFACE(AlignedVector3)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(AlignedVector3)
     using Base::operator*;
 
     inline Index rows() const { return 3; }
@@ -187,4 +187,4 @@ template<typename _Scalar> class AlignedVector3
 
 }
 
-#endif // EIGEN_ALIGNED_VECTOR3
+#endif // IMP_EIGEN_ALIGNED_VECTOR3

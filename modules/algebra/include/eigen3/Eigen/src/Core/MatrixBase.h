@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_MATRIXBASE_H
-#define EIGEN_MATRIXBASE_H
+#ifndef IMP_EIGEN_MATRIXBASE_H
+#define IMP_EIGEN_MATRIXBASE_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 /** \class MatrixBase
   * \ingroup Core_Module
@@ -34,14 +34,14 @@ namespace Eigen {
   *
   * \code
     template<typename Derived>
-    void printFirstRow(const Eigen::MatrixBase<Derived>& x)
+    void printFirstRow(const IMP_Eigen::MatrixBase<Derived>& x)
     {
       cout << x.row(0) << endl;
     }
   * \endcode
   *
   * This class can be extended with the help of the plugin mechanism described on the page
-  * \ref TopicCustomizingEigen by defining the preprocessor symbol \c EIGEN_MATRIXBASE_PLUGIN.
+  * \ref TopicCustomizingEigen by defining the preprocessor symbol \c IMP_EIGEN_MATRIXBASE_PLUGIN.
   *
   * \sa \ref TopicClassHierarchy
   */
@@ -49,7 +49,7 @@ template<typename Derived> class MatrixBase
   : public DenseBase<Derived>
 {
   public:
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     typedef MatrixBase StorageBaseType;
     typedef typename internal::traits<Derived>::StorageKind StorageKind;
     typedef typename internal::traits<Derived>::Index Index;
@@ -86,15 +86,15 @@ template<typename Derived> class MatrixBase
     typedef typename Base::ConstTransposeReturnType ConstTransposeReturnType;
     typedef typename Base::RowXpr RowXpr;
     typedef typename Base::ColXpr ColXpr;
-#endif // not EIGEN_PARSED_BY_DOXYGEN
+#endif // not IMP_EIGEN_PARSED_BY_DOXYGEN
 
 
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** type of the equivalent square matrix */
-    typedef Matrix<Scalar,EIGEN_SIZE_MAX(RowsAtCompileTime,ColsAtCompileTime),
-                          EIGEN_SIZE_MAX(RowsAtCompileTime,ColsAtCompileTime)> SquareMatrixType;
-#endif // not EIGEN_PARSED_BY_DOXYGEN
+    typedef Matrix<Scalar,IMP_EIGEN_SIZE_MAX(RowsAtCompileTime,ColsAtCompileTime),
+                          IMP_EIGEN_SIZE_MAX(RowsAtCompileTime,ColsAtCompileTime)> SquareMatrixType;
+#endif // not IMP_EIGEN_PARSED_BY_DOXYGEN
 
     /** \returns the size of the main diagonal, which is min(rows(),cols()).
       * \sa rows(), cols(), SizeAtCompileTime. */
@@ -114,7 +114,7 @@ template<typename Derived> class MatrixBase
                 internal::traits<Derived>::MaxColsAtCompileTime
           > PlainObject;
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** \internal Represents a matrix with all coefficients equal to one another*/
     typedef CwiseNullaryOp<internal::scalar_constant_op<Scalar>,Derived> ConstantReturnType;
     /** \internal the return type of MatrixBase::adjoint() */
@@ -130,17 +130,17 @@ template<typename Derived> class MatrixBase
     typedef Block<const CwiseNullaryOp<internal::scalar_identity_op<Scalar>, SquareMatrixType>,
                   internal::traits<Derived>::RowsAtCompileTime,
                   internal::traits<Derived>::ColsAtCompileTime> BasisReturnType;
-#endif // not EIGEN_PARSED_BY_DOXYGEN
+#endif // not IMP_EIGEN_PARSED_BY_DOXYGEN
 
-#define EIGEN_CURRENT_STORAGE_BASE_CLASS Eigen::MatrixBase
+#define IMP_EIGEN_CURRENT_STORAGE_BASE_CLASS IMP_Eigen::MatrixBase
 #   include "../plugins/CommonCwiseUnaryOps.h"
 #   include "../plugins/CommonCwiseBinaryOps.h"
 #   include "../plugins/MatrixCwiseUnaryOps.h"
 #   include "../plugins/MatrixCwiseBinaryOps.h"
-#   ifdef EIGEN_MATRIXBASE_PLUGIN
-#     include EIGEN_MATRIXBASE_PLUGIN
+#   ifdef IMP_EIGEN_MATRIXBASE_PLUGIN
+#     include IMP_EIGEN_MATRIXBASE_PLUGIN
 #   endif
-#undef EIGEN_CURRENT_STORAGE_BASE_CLASS
+#undef IMP_EIGEN_CURRENT_STORAGE_BASE_CLASS
 
     /** Special case of the template operator=, in order to prevent the compiler
       * from generating a default operator= (issue hit with g++ 4.1)
@@ -159,13 +159,13 @@ template<typename Derived> class MatrixBase
     template<typename OtherDerived>
     Derived& operator=(const ReturnByValue<OtherDerived>& other);
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     template<typename ProductDerived, typename Lhs, typename Rhs>
     Derived& lazyAssign(const ProductBase<ProductDerived, Lhs,Rhs>& other);
 
     template<typename MatrixPower, typename Lhs, typename Rhs>
     Derived& lazyAssign(const MatrixPowerProduct<MatrixPower, Lhs,Rhs>& other);
-#endif // not EIGEN_PARSED_BY_DOXYGEN
+#endif // not IMP_EIGEN_PARSED_BY_DOXYGEN
 
     template<typename OtherDerived>
     Derived& operator+=(const MatrixBase<OtherDerived>& other);
@@ -197,7 +197,7 @@ template<typename Derived> class MatrixBase
     typename internal::scalar_product_traits<typename internal::traits<Derived>::Scalar,typename internal::traits<OtherDerived>::Scalar>::ReturnType
     dot(const MatrixBase<OtherDerived>& other) const;
 
-    #ifdef EIGEN2_SUPPORT
+    #ifdef IMP_EIGEN2_SUPPORT
       template<typename OtherDerived>
       Scalar eigen2_dot(const MatrixBase<OtherDerived>& other) const;
     #endif
@@ -234,7 +234,7 @@ template<typename Derived> class MatrixBase
     typename ConstDiagonalIndexReturnType<DynamicIndex>::Type diagonal(Index index) const;
     #endif
 
-    #ifdef EIGEN2_SUPPORT
+    #ifdef IMP_EIGEN2_SUPPORT
     template<unsigned int Mode> typename internal::eigen2_part_return_type<Derived, Mode>::type part();
     template<unsigned int Mode> const typename internal::eigen2_part_return_type<Derived, Mode>::type part() const;
     
@@ -243,7 +243,7 @@ template<typename Derived> class MatrixBase
     template<template<typename T, int N> class U>
     const DiagonalWrapper<ConstDiagonalReturnType> part() const
     { return diagonal().asDiagonal(); }
-    #endif // EIGEN2_SUPPORT
+    #endif // IMP_EIGEN2_SUPPORT
 
     template<unsigned int Mode> struct TriangularViewReturnType { typedef TriangularView<Derived, Mode> Type; };
     template<unsigned int Mode> struct ConstTriangularViewReturnType { typedef const TriangularView<const Derived, Mode> Type; };
@@ -301,7 +301,7 @@ template<typename Derived> class MatrixBase
     inline bool operator!=(const MatrixBase<OtherDerived>& other) const
     { return cwiseNotEqual(other).any(); }
 
-    NoAlias<Derived,Eigen::MatrixBase > noalias();
+    NoAlias<Derived,IMP_Eigen::MatrixBase > noalias();
 
     inline const ForceAlignedAccess<Derived> forceAlignedAccess() const;
     inline ForceAlignedAccess<Derived> forceAlignedAccess();
@@ -317,7 +317,7 @@ template<typename Derived> class MatrixBase
     MatrixBase<Derived>& matrix() { return *this; }
     const MatrixBase<Derived>& matrix() const { return *this; }
 
-    /** \returns an \link Eigen::ArrayBase Array \endlink expression of this matrix
+    /** \returns an \link IMP_Eigen::ArrayBase Array \endlink expression of this matrix
       * \sa ArrayBase::matrix() */
     ArrayWrapper<Derived> array() { return derived(); }
     const ArrayWrapper<const Derived> array() const { return derived(); }
@@ -327,19 +327,19 @@ template<typename Derived> class MatrixBase
     const FullPivLU<PlainObject> fullPivLu() const;
     const PartialPivLU<PlainObject> partialPivLu() const;
 
-    #if EIGEN2_SUPPORT_STAGE < STAGE20_RESOLVE_API_CONFLICTS
+    #if IMP_EIGEN2_SUPPORT_STAGE < STAGE20_RESOLVE_API_CONFLICTS
     const LU<PlainObject> lu() const;
     #endif
 
-    #ifdef EIGEN2_SUPPORT
+    #ifdef IMP_EIGEN2_SUPPORT
     const LU<PlainObject> eigen2_lu() const;
     #endif
 
-    #if EIGEN2_SUPPORT_STAGE > STAGE20_RESOLVE_API_CONFLICTS
+    #if IMP_EIGEN2_SUPPORT_STAGE > STAGE20_RESOLVE_API_CONFLICTS
     const PartialPivLU<PlainObject> lu() const;
     #endif
     
-    #ifdef EIGEN2_SUPPORT
+    #ifdef IMP_EIGEN2_SUPPORT
     template<typename ResultType>
     void computeInverse(MatrixBase<ResultType> *result) const {
       *result = this->inverse();
@@ -373,7 +373,7 @@ template<typename Derived> class MatrixBase
     const ColPivHouseholderQR<PlainObject> colPivHouseholderQr() const;
     const FullPivHouseholderQR<PlainObject> fullPivHouseholderQr() const;
     
-    #ifdef EIGEN2_SUPPORT
+    #ifdef IMP_EIGEN2_SUPPORT
     const QR<PlainObject> qr() const;
     #endif
 
@@ -384,19 +384,19 @@ template<typename Derived> class MatrixBase
 
     JacobiSVD<PlainObject> jacobiSvd(unsigned int computationOptions = 0) const;
 
-    #ifdef EIGEN2_SUPPORT
+    #ifdef IMP_EIGEN2_SUPPORT
     SVD<PlainObject> svd() const;
     #endif
 
 /////////// Geometry module ///////////
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /// \internal helper struct to form the return type of the cross product
     template<typename OtherDerived> struct cross_product_return_type {
       typedef typename internal::scalar_product_traits<typename internal::traits<Derived>::Scalar,typename internal::traits<OtherDerived>::Scalar>::ReturnType Scalar;
       typedef Matrix<Scalar,MatrixBase::RowsAtCompileTime,MatrixBase::ColsAtCompileTime> type;
     };
-    #endif // EIGEN_PARSED_BY_DOXYGEN
+    #endif // IMP_EIGEN_PARSED_BY_DOXYGEN
     template<typename OtherDerived>
     typename cross_product_return_type<OtherDerived>::type
     cross(const MatrixBase<OtherDerived>& other) const;
@@ -405,7 +405,7 @@ template<typename Derived> class MatrixBase
     PlainObject unitOrthogonal(void) const;
     Matrix<Scalar,3,1> eulerAngles(Index a0, Index a1, Index a2) const;
     
-    #if EIGEN2_SUPPORT_STAGE > STAGE20_RESOLVE_API_CONFLICTS
+    #if IMP_EIGEN2_SUPPORT_STAGE > STAGE20_RESOLVE_API_CONFLICTS
     ScalarMultipleReturnType operator*(const UniformScaling<Scalar>& s) const;
     // put this as separate enum value to work around possible GCC 4.3 bug (?)
     enum { HomogeneousReturnTypeDirection = ColsAtCompileTime==1?Vertical:Horizontal };
@@ -459,7 +459,7 @@ template<typename Derived> class MatrixBase
     const MatrixLogarithmReturnValue<Derived> log() const;
     const MatrixPowerReturnValue<Derived> pow(const RealScalar& p) const;
 
-#ifdef EIGEN2_SUPPORT
+#ifdef IMP_EIGEN2_SUPPORT
     template<typename ProductDerived, typename Lhs, typename Rhs>
     Derived& operator+=(const Flagged<ProductBase<ProductDerived, Lhs,Rhs>, 0,
                                       EvalBeforeAssigningBit>& other);
@@ -504,12 +504,12 @@ template<typename Derived> class MatrixBase
   protected:
     // mixing arrays and matrices is not legal
     template<typename OtherDerived> Derived& operator+=(const ArrayBase<OtherDerived>& )
-    {EIGEN_STATIC_ASSERT(std::ptrdiff_t(sizeof(typename OtherDerived::Scalar))==-1,YOU_CANNOT_MIX_ARRAYS_AND_MATRICES); return *this;}
+    {IMP_EIGEN_STATIC_ASSERT(std::ptrdiff_t(sizeof(typename OtherDerived::Scalar))==-1,YOU_CANNOT_MIX_ARRAYS_AND_MATRICES); return *this;}
     // mixing arrays and matrices is not legal
     template<typename OtherDerived> Derived& operator-=(const ArrayBase<OtherDerived>& )
-    {EIGEN_STATIC_ASSERT(std::ptrdiff_t(sizeof(typename OtherDerived::Scalar))==-1,YOU_CANNOT_MIX_ARRAYS_AND_MATRICES); return *this;}
+    {IMP_EIGEN_STATIC_ASSERT(std::ptrdiff_t(sizeof(typename OtherDerived::Scalar))==-1,YOU_CANNOT_MIX_ARRAYS_AND_MATRICES); return *this;}
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_MATRIXBASE_H
+#endif // IMP_EIGEN_MATRIXBASE_H

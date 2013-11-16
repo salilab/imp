@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_COLPIVOTINGHOUSEHOLDERQR_H
-#define EIGEN_COLPIVOTINGHOUSEHOLDERQR_H
+#ifndef IMP_EIGEN_COLPIVOTINGHOUSEHOLDERQR_H
+#define IMP_EIGEN_COLPIVOTINGHOUSEHOLDERQR_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \ingroup QR_Module
   *
@@ -328,8 +328,8 @@ template<typename _MatrixType> class ColPivHouseholderQR
     /** Allows to come back to the default behavior, letting Eigen use its default formula for
       * determining the threshold.
       *
-      * You should pass the special object Eigen::Default as parameter here.
-      * \code qr.setThreshold(Eigen::Default); \endcode
+      * You should pass the special object IMP_Eigen::Default as parameter here.
+      * \code qr.setThreshold(IMP_Eigen::Default); \endcode
       *
       * See the documentation of setThreshold(const RealScalar&).
       */
@@ -519,7 +519,7 @@ template<typename _MatrixType, typename Rhs>
 struct solve_retval<ColPivHouseholderQR<_MatrixType>, Rhs>
   : solve_retval_base<ColPivHouseholderQR<_MatrixType>, Rhs>
 {
-  EIGEN_MAKE_SOLVE_HELPERS(ColPivHouseholderQR<_MatrixType>,Rhs)
+  IMP_EIGEN_MAKE_SOLVE_HELPERS(ColPivHouseholderQR<_MatrixType>,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -574,6 +574,6 @@ MatrixBase<Derived>::colPivHouseholderQr() const
   return ColPivHouseholderQR<PlainObject>(eval());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_COLPIVOTINGHOUSEHOLDERQR_H
+#endif // IMP_EIGEN_COLPIVOTINGHOUSEHOLDERQR_H

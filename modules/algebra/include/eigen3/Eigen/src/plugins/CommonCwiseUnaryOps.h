@@ -10,7 +10,7 @@
 
 // This file is a base class plugin containing common coefficient wise functions.
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
 
 /** \internal Represents a scalar multiple of an expression */
 typedef CwiseUnaryOp<internal::scalar_multiple_op<Scalar>, const Derived> ScalarMultipleReturnType;
@@ -36,7 +36,7 @@ typedef CwiseUnaryOp<internal::scalar_imag_op<Scalar>, const Derived> ImagReturn
 /** \internal the return type of imag() */
 typedef CwiseUnaryView<internal::scalar_imag_ref_op<Scalar>, Derived> NonConstImagReturnType;
 
-#endif // not EIGEN_PARSED_BY_DOXYGEN
+#endif // not IMP_EIGEN_PARSED_BY_DOXYGEN
 
 /** \returns an expression of the opposite of \c *this
   */
@@ -52,7 +52,7 @@ operator*(const Scalar& scalar) const
     (derived(), internal::scalar_multiple_op<Scalar>(scalar));
 }
 
-#ifdef EIGEN_PARSED_BY_DOXYGEN
+#ifdef IMP_EIGEN_PARSED_BY_DOXYGEN
 const ScalarMultipleReturnType operator*(const RealScalar& scalar) const;
 #endif
 

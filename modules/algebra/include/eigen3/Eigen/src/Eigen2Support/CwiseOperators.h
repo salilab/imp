@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_ARRAY_CWISE_OPERATORS_H
-#define EIGEN_ARRAY_CWISE_OPERATORS_H
+#ifndef IMP_EIGEN_ARRAY_CWISE_OPERATORS_H
+#define IMP_EIGEN_ARRAY_CWISE_OPERATORS_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /***************************************************************************
 * The following functions were defined in Core
@@ -19,7 +19,7 @@ namespace Eigen {
 
 /** \deprecated ArrayBase::abs() */
 template<typename ExpressionType>
-EIGEN_STRONG_INLINE const EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_abs_op)
+IMP_EIGEN_STRONG_INLINE const IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_abs_op)
 Cwise<ExpressionType>::abs() const
 {
   return _expression();
@@ -27,7 +27,7 @@ Cwise<ExpressionType>::abs() const
 
 /** \deprecated ArrayBase::abs2() */
 template<typename ExpressionType>
-EIGEN_STRONG_INLINE const EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_abs2_op)
+IMP_EIGEN_STRONG_INLINE const IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_abs2_op)
 Cwise<ExpressionType>::abs2() const
 {
   return _expression();
@@ -35,7 +35,7 @@ Cwise<ExpressionType>::abs2() const
 
 /** \deprecated ArrayBase::exp() */
 template<typename ExpressionType>
-inline const EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_exp_op)
+inline const IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_exp_op)
 Cwise<ExpressionType>::exp() const
 {
   return _expression();
@@ -43,7 +43,7 @@ Cwise<ExpressionType>::exp() const
 
 /** \deprecated ArrayBase::log() */
 template<typename ExpressionType>
-inline const EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_log_op)
+inline const IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_log_op)
 Cwise<ExpressionType>::log() const
 {
   return _expression();
@@ -52,19 +52,19 @@ Cwise<ExpressionType>::log() const
 /** \deprecated ArrayBase::operator*() */
 template<typename ExpressionType>
 template<typename OtherDerived>
-EIGEN_STRONG_INLINE const EIGEN_CWISE_PRODUCT_RETURN_TYPE(ExpressionType,OtherDerived)
+IMP_EIGEN_STRONG_INLINE const IMP_EIGEN_CWISE_PRODUCT_RETURN_TYPE(ExpressionType,OtherDerived)
 Cwise<ExpressionType>::operator*(const MatrixBase<OtherDerived> &other) const
 {
-  return EIGEN_CWISE_PRODUCT_RETURN_TYPE(ExpressionType,OtherDerived)(_expression(), other.derived());
+  return IMP_EIGEN_CWISE_PRODUCT_RETURN_TYPE(ExpressionType,OtherDerived)(_expression(), other.derived());
 }
 
 /** \deprecated ArrayBase::operator/() */
 template<typename ExpressionType>
 template<typename OtherDerived>
-EIGEN_STRONG_INLINE const EIGEN_CWISE_BINOP_RETURN_TYPE(internal::scalar_quotient_op)
+IMP_EIGEN_STRONG_INLINE const IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(internal::scalar_quotient_op)
 Cwise<ExpressionType>::operator/(const MatrixBase<OtherDerived> &other) const
 {
-  return EIGEN_CWISE_BINOP_RETURN_TYPE(internal::scalar_quotient_op)(_expression(), other.derived());
+  return IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(internal::scalar_quotient_op)(_expression(), other.derived());
 }
 
 /** \deprecated ArrayBase::operator*=() */
@@ -91,7 +91,7 @@ inline ExpressionType& Cwise<ExpressionType>::operator/=(const MatrixBase<OtherD
 
 /** \deprecated ArrayBase::sqrt() */
 template<typename ExpressionType>
-inline const EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_sqrt_op)
+inline const IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_sqrt_op)
 Cwise<ExpressionType>::sqrt() const
 {
   return _expression();
@@ -99,7 +99,7 @@ Cwise<ExpressionType>::sqrt() const
 
 /** \deprecated ArrayBase::cos() */
 template<typename ExpressionType>
-inline const EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_cos_op)
+inline const IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_cos_op)
 Cwise<ExpressionType>::cos() const
 {
   return _expression();
@@ -108,7 +108,7 @@ Cwise<ExpressionType>::cos() const
 
 /** \deprecated ArrayBase::sin() */
 template<typename ExpressionType>
-inline const EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_sin_op)
+inline const IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_sin_op)
 Cwise<ExpressionType>::sin() const
 {
   return _expression();
@@ -117,16 +117,16 @@ Cwise<ExpressionType>::sin() const
 
 /** \deprecated ArrayBase::log() */
 template<typename ExpressionType>
-inline const EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_pow_op)
+inline const IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_pow_op)
 Cwise<ExpressionType>::pow(const Scalar& exponent) const
 {
-  return EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_pow_op)(_expression(), internal::scalar_pow_op<Scalar>(exponent));
+  return IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_pow_op)(_expression(), internal::scalar_pow_op<Scalar>(exponent));
 }
 
 
 /** \deprecated ArrayBase::inverse() */
 template<typename ExpressionType>
-inline const EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_inverse_op)
+inline const IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_inverse_op)
 Cwise<ExpressionType>::inverse() const
 {
   return _expression();
@@ -134,7 +134,7 @@ Cwise<ExpressionType>::inverse() const
 
 /** \deprecated ArrayBase::square() */
 template<typename ExpressionType>
-inline const EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_square_op)
+inline const IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_square_op)
 Cwise<ExpressionType>::square() const
 {
   return _expression();
@@ -142,7 +142,7 @@ Cwise<ExpressionType>::square() const
 
 /** \deprecated ArrayBase::cube() */
 template<typename ExpressionType>
-inline const EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_cube_op)
+inline const IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_cube_op)
 Cwise<ExpressionType>::cube() const
 {
   return _expression();
@@ -154,110 +154,110 @@ Cwise<ExpressionType>::cube() const
 /** \deprecated ArrayBase::operator<() */
 template<typename ExpressionType>
 template<typename OtherDerived>
-inline const EIGEN_CWISE_BINOP_RETURN_TYPE(std::less)
+inline const IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(std::less)
 Cwise<ExpressionType>::operator<(const MatrixBase<OtherDerived> &other) const
 {
-  return EIGEN_CWISE_BINOP_RETURN_TYPE(std::less)(_expression(), other.derived());
+  return IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(std::less)(_expression(), other.derived());
 }
 
 /** \deprecated ArrayBase::<=() */
 template<typename ExpressionType>
 template<typename OtherDerived>
-inline const EIGEN_CWISE_BINOP_RETURN_TYPE(std::less_equal)
+inline const IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(std::less_equal)
 Cwise<ExpressionType>::operator<=(const MatrixBase<OtherDerived> &other) const
 {
-  return EIGEN_CWISE_BINOP_RETURN_TYPE(std::less_equal)(_expression(), other.derived());
+  return IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(std::less_equal)(_expression(), other.derived());
 }
 
 /** \deprecated ArrayBase::operator>() */
 template<typename ExpressionType>
 template<typename OtherDerived>
-inline const EIGEN_CWISE_BINOP_RETURN_TYPE(std::greater)
+inline const IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(std::greater)
 Cwise<ExpressionType>::operator>(const MatrixBase<OtherDerived> &other) const
 {
-  return EIGEN_CWISE_BINOP_RETURN_TYPE(std::greater)(_expression(), other.derived());
+  return IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(std::greater)(_expression(), other.derived());
 }
 
 /** \deprecated ArrayBase::operator>=() */
 template<typename ExpressionType>
 template<typename OtherDerived>
-inline const EIGEN_CWISE_BINOP_RETURN_TYPE(std::greater_equal)
+inline const IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(std::greater_equal)
 Cwise<ExpressionType>::operator>=(const MatrixBase<OtherDerived> &other) const
 {
-  return EIGEN_CWISE_BINOP_RETURN_TYPE(std::greater_equal)(_expression(), other.derived());
+  return IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(std::greater_equal)(_expression(), other.derived());
 }
 
 /** \deprecated ArrayBase::operator==() */
 template<typename ExpressionType>
 template<typename OtherDerived>
-inline const EIGEN_CWISE_BINOP_RETURN_TYPE(std::equal_to)
+inline const IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(std::equal_to)
 Cwise<ExpressionType>::operator==(const MatrixBase<OtherDerived> &other) const
 {
-  return EIGEN_CWISE_BINOP_RETURN_TYPE(std::equal_to)(_expression(), other.derived());
+  return IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(std::equal_to)(_expression(), other.derived());
 }
 
 /** \deprecated ArrayBase::operator!=() */
 template<typename ExpressionType>
 template<typename OtherDerived>
-inline const EIGEN_CWISE_BINOP_RETURN_TYPE(std::not_equal_to)
+inline const IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(std::not_equal_to)
 Cwise<ExpressionType>::operator!=(const MatrixBase<OtherDerived> &other) const
 {
-  return EIGEN_CWISE_BINOP_RETURN_TYPE(std::not_equal_to)(_expression(), other.derived());
+  return IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(std::not_equal_to)(_expression(), other.derived());
 }
 
 // comparisons to scalar value
 
 /** \deprecated ArrayBase::operator<(Scalar) */
 template<typename ExpressionType>
-inline const EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::less)
+inline const IMP_EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::less)
 Cwise<ExpressionType>::operator<(Scalar s) const
 {
-  return EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::less)(_expression(),
+  return IMP_EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::less)(_expression(),
             typename ExpressionType::ConstantReturnType(_expression().rows(), _expression().cols(), s));
 }
 
 /** \deprecated ArrayBase::operator<=(Scalar) */
 template<typename ExpressionType>
-inline const EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::less_equal)
+inline const IMP_EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::less_equal)
 Cwise<ExpressionType>::operator<=(Scalar s) const
 {
-  return EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::less_equal)(_expression(),
+  return IMP_EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::less_equal)(_expression(),
             typename ExpressionType::ConstantReturnType(_expression().rows(), _expression().cols(), s));
 }
 
 /** \deprecated ArrayBase::operator>(Scalar) */
 template<typename ExpressionType>
-inline const EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::greater)
+inline const IMP_EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::greater)
 Cwise<ExpressionType>::operator>(Scalar s) const
 {
-  return EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::greater)(_expression(),
+  return IMP_EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::greater)(_expression(),
             typename ExpressionType::ConstantReturnType(_expression().rows(), _expression().cols(), s));
 }
 
 /** \deprecated ArrayBase::operator>=(Scalar) */
 template<typename ExpressionType>
-inline const EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::greater_equal)
+inline const IMP_EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::greater_equal)
 Cwise<ExpressionType>::operator>=(Scalar s) const
 {
-  return EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::greater_equal)(_expression(),
+  return IMP_EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::greater_equal)(_expression(),
             typename ExpressionType::ConstantReturnType(_expression().rows(), _expression().cols(), s));
 }
 
 /** \deprecated ArrayBase::operator==(Scalar) */
 template<typename ExpressionType>
-inline const EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::equal_to)
+inline const IMP_EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::equal_to)
 Cwise<ExpressionType>::operator==(Scalar s) const
 {
-  return EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::equal_to)(_expression(),
+  return IMP_EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::equal_to)(_expression(),
             typename ExpressionType::ConstantReturnType(_expression().rows(), _expression().cols(), s));
 }
 
 /** \deprecated ArrayBase::operator!=(Scalar) */
 template<typename ExpressionType>
-inline const EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::not_equal_to)
+inline const IMP_EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::not_equal_to)
 Cwise<ExpressionType>::operator!=(Scalar s) const
 {
-  return EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::not_equal_to)(_expression(),
+  return IMP_EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::not_equal_to)(_expression(),
             typename ExpressionType::ConstantReturnType(_expression().rows(), _expression().cols(), s));
 }
 
@@ -293,6 +293,6 @@ inline ExpressionType& Cwise<ExpressionType>::operator-=(const Scalar& scalar)
   return m_matrix.const_cast_derived() = *this - scalar;
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_ARRAY_CWISE_OPERATORS_H
+#endif // IMP_EIGEN_ARRAY_CWISE_OPERATORS_H

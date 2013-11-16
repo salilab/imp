@@ -7,8 +7,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_UMEYAMA_H
-#define EIGEN_UMEYAMA_H
+#ifndef IMP_EIGEN_UMEYAMA_H
+#define IMP_EIGEN_UMEYAMA_H
 
 // This file requires the user to include 
 // * Eigen/Core
@@ -16,9 +16,9 @@
 // * Eigen/SVD
 // * Eigen/Array
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
 
 // These helpers are required since it allows to use mixed types as parameters
 // for the Umeyama. The problem with mixed parameters is that the return type
@@ -32,10 +32,10 @@ template<typename MatrixType, typename OtherMatrixType>
 struct umeyama_transform_matrix_type
 {
   enum {
-    MinRowsAtCompileTime = EIGEN_SIZE_MIN_PREFER_DYNAMIC(MatrixType::RowsAtCompileTime, OtherMatrixType::RowsAtCompileTime),
+    MinRowsAtCompileTime = IMP_EIGEN_SIZE_MIN_PREFER_DYNAMIC(MatrixType::RowsAtCompileTime, OtherMatrixType::RowsAtCompileTime),
 
     // When possible we want to choose some small fixed size value since the result
-    // is likely to fit on the stack. So here, EIGEN_SIZE_MIN_PREFER_DYNAMIC is not what we want.
+    // is likely to fit on the stack. So here, IMP_EIGEN_SIZE_MIN_PREFER_DYNAMIC is not what we want.
     HomogeneousDimension = int(MinRowsAtCompileTime) == Dynamic ? Dynamic : int(MinRowsAtCompileTime)+1
   };
 
@@ -88,7 +88,7 @@ struct umeyama_transform_matrix_type
 *   T = \begin{bmatrix} c\mathbf{R} & \mathbf{t} \\ \mathbf{0} & 1 \end{bmatrix}
 * \f}
 * minimizing the resudiual above. This transformation is always returned as an 
-* Eigen::Matrix.
+* IMP_Eigen::Matrix.
 */
 template <typename Derived, typename OtherDerived>
 typename internal::umeyama_transform_matrix_type<Derived, OtherDerived>::type
@@ -99,11 +99,11 @@ umeyama(const MatrixBase<Derived>& src, const MatrixBase<OtherDerived>& dst, boo
   typedef typename NumTraits<Scalar>::Real RealScalar;
   typedef typename Derived::Index Index;
 
-  EIGEN_STATIC_ASSERT(!NumTraits<Scalar>::IsComplex, NUMERIC_TYPE_MUST_BE_REAL)
-  EIGEN_STATIC_ASSERT((internal::is_same<Scalar, typename internal::traits<OtherDerived>::Scalar>::value),
+  IMP_EIGEN_STATIC_ASSERT(!NumTraits<Scalar>::IsComplex, NUMERIC_TYPE_MUST_BE_REAL)
+  IMP_EIGEN_STATIC_ASSERT((internal::is_same<Scalar, typename internal::traits<OtherDerived>::Scalar>::value),
     YOU_MIXED_DIFFERENT_NUMERIC_TYPES__YOU_NEED_TO_USE_THE_CAST_METHOD_OF_MATRIXBASE_TO_CAST_NUMERIC_TYPES_EXPLICITLY)
 
-  enum { Dimension = EIGEN_SIZE_MIN_PREFER_DYNAMIC(Derived::RowsAtCompileTime, OtherDerived::RowsAtCompileTime) };
+  enum { Dimension = IMP_EIGEN_SIZE_MIN_PREFER_DYNAMIC(Derived::RowsAtCompileTime, OtherDerived::RowsAtCompileTime) };
 
   typedef Matrix<Scalar, Dimension, 1> VectorType;
   typedef Matrix<Scalar, Dimension, Dimension> MatrixType;
@@ -172,6 +172,6 @@ umeyama(const MatrixBase<Derived>& src, const MatrixBase<OtherDerived>& dst, boo
   return Rt;
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_UMEYAMA_H
+#endif // IMP_EIGEN_UMEYAMA_H

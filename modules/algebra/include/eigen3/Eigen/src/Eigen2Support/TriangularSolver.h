@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_TRIANGULAR_SOLVER2_H
-#define EIGEN_TRIANGULAR_SOLVER2_H
+#ifndef IMP_EIGEN_TRIANGULAR_SOLVER2_H
+#define IMP_EIGEN_TRIANGULAR_SOLVER2_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 const unsigned int UnitDiagBit = UnitDiag;
 const unsigned int SelfAdjointBit = SelfAdjoint;
@@ -37,6 +37,6 @@ void Flagged<ExpressionType,Added,Removed>::solveTriangularInPlace(const MatrixB
   m_matrix.template triangularView<Added>().solveInPlace(other.derived());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
     
-#endif // EIGEN_TRIANGULAR_SOLVER2_H
+#endif // IMP_EIGEN_TRIANGULAR_SOLVER2_H

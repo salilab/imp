@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_NOALIAS_H
-#define EIGEN_NOALIAS_H
+#ifndef IMP_EIGEN_NOALIAS_H
+#define IMP_EIGEN_NOALIAS_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 /** \class NoAlias
   * \ingroup Core_Module
@@ -37,12 +37,12 @@ class NoAlias
     /** Behaves like MatrixBase::lazyAssign(other)
       * \sa MatrixBase::lazyAssign() */
     template<typename OtherDerived>
-    EIGEN_STRONG_INLINE ExpressionType& operator=(const StorageBase<OtherDerived>& other)
+    IMP_EIGEN_STRONG_INLINE ExpressionType& operator=(const StorageBase<OtherDerived>& other)
     { return internal::assign_selector<ExpressionType,OtherDerived,false>::run(m_expression,other.derived()); }
 
     /** \sa MatrixBase::operator+= */
     template<typename OtherDerived>
-    EIGEN_STRONG_INLINE ExpressionType& operator+=(const StorageBase<OtherDerived>& other)
+    IMP_EIGEN_STRONG_INLINE ExpressionType& operator+=(const StorageBase<OtherDerived>& other)
     {
       typedef SelfCwiseBinaryOp<internal::scalar_sum_op<Scalar>, ExpressionType, OtherDerived> SelfAdder;
       SelfAdder tmp(m_expression);
@@ -54,7 +54,7 @@ class NoAlias
 
     /** \sa MatrixBase::operator-= */
     template<typename OtherDerived>
-    EIGEN_STRONG_INLINE ExpressionType& operator-=(const StorageBase<OtherDerived>& other)
+    IMP_EIGEN_STRONG_INLINE ExpressionType& operator-=(const StorageBase<OtherDerived>& other)
     {
       typedef SelfCwiseBinaryOp<internal::scalar_difference_op<Scalar>, ExpressionType, OtherDerived> SelfAdder;
       SelfAdder tmp(m_expression);
@@ -64,21 +64,21 @@ class NoAlias
       return m_expression;
     }
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     template<typename ProductDerived, typename Lhs, typename Rhs>
-    EIGEN_STRONG_INLINE ExpressionType& operator+=(const ProductBase<ProductDerived, Lhs,Rhs>& other)
+    IMP_EIGEN_STRONG_INLINE ExpressionType& operator+=(const ProductBase<ProductDerived, Lhs,Rhs>& other)
     { other.derived().addTo(m_expression); return m_expression; }
 
     template<typename ProductDerived, typename Lhs, typename Rhs>
-    EIGEN_STRONG_INLINE ExpressionType& operator-=(const ProductBase<ProductDerived, Lhs,Rhs>& other)
+    IMP_EIGEN_STRONG_INLINE ExpressionType& operator-=(const ProductBase<ProductDerived, Lhs,Rhs>& other)
     { other.derived().subTo(m_expression); return m_expression; }
 
     template<typename Lhs, typename Rhs, int NestingFlags>
-    EIGEN_STRONG_INLINE ExpressionType& operator+=(const CoeffBasedProduct<Lhs,Rhs,NestingFlags>& other)
+    IMP_EIGEN_STRONG_INLINE ExpressionType& operator+=(const CoeffBasedProduct<Lhs,Rhs,NestingFlags>& other)
     { return m_expression.derived() += CoeffBasedProduct<Lhs,Rhs,NestByRefBit>(other.lhs(), other.rhs()); }
 
     template<typename Lhs, typename Rhs, int NestingFlags>
-    EIGEN_STRONG_INLINE ExpressionType& operator-=(const CoeffBasedProduct<Lhs,Rhs,NestingFlags>& other)
+    IMP_EIGEN_STRONG_INLINE ExpressionType& operator-=(const CoeffBasedProduct<Lhs,Rhs,NestingFlags>& other)
     { return m_expression.derived() -= CoeffBasedProduct<Lhs,Rhs,NestByRefBit>(other.lhs(), other.rhs()); }
     
     template<typename OtherDerived>
@@ -129,6 +129,6 @@ NoAlias<Derived,MatrixBase> MatrixBase<Derived>::noalias()
   return derived();
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_NOALIAS_H
+#endif // IMP_EIGEN_NOALIAS_H

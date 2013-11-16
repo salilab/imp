@@ -8,8 +8,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPARSELU_MODULE_H
-#define EIGEN_SPARSELU_MODULE_H
+#ifndef IMP_EIGEN_SPARSELU_MODULE_H
+#define IMP_EIGEN_SPARSELU_MODULE_H
 
 #include "SparseCore"
 
@@ -46,4 +46,4 @@
 #include "src/SparseLU/SparseLU_Utils.h"
 #include "src/SparseLU/SparseLU.h"
 
-#endif // EIGEN_SPARSELU_MODULE_H
+#endif // IMP_EIGEN_SPARSELU_MODULE_H

@@ -8,12 +8,12 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPARSE_MARKET_IO_H
-#define EIGEN_SPARSE_MARKET_IO_H
+#ifndef IMP_EIGEN_SPARSE_MARKET_IO_H
+#define IMP_EIGEN_SPARSE_MARKET_IO_H
 
 #include <iostream>
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal 
 {
@@ -268,6 +268,6 @@ bool saveMarketVector (const VectorType& vec, const std::string& filename)
   return true; 
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SPARSE_MARKET_IO_H
+#endif // IMP_EIGEN_SPARSE_MARKET_IO_H

@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPARSETRIANGULARSOLVER_H
-#define EIGEN_SPARSETRIANGULARSOLVER_H
+#ifndef IMP_EIGEN_SPARSETRIANGULARSOLVER_H
+#define IMP_EIGEN_SPARSETRIANGULARSOLVER_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -305,7 +305,7 @@ void SparseTriangularView<ExpressionType,Mode>::solveInPlace(SparseMatrixBase<Ot
 //     other = otherCopy;
 }
 
-#ifdef EIGEN2_SUPPORT
+#ifdef IMP_EIGEN2_SUPPORT
 
 // deprecated stuff:
 
@@ -327,8 +327,8 @@ SparseMatrixBase<Derived>::solveTriangular(const MatrixBase<OtherDerived>& other
   derived().solveTriangularInPlace(res);
   return res;
 }
-#endif // EIGEN2_SUPPORT
+#endif // IMP_EIGEN2_SUPPORT
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SPARSETRIANGULARSOLVER_H
+#endif // IMP_EIGEN_SPARSETRIANGULARSOLVER_H

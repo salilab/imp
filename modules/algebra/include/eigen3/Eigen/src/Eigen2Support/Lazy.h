@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_LAZY_H
-#define EIGEN_LAZY_H
+#ifndef IMP_EIGEN_LAZY_H
+#define IMP_EIGEN_LAZY_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \deprecated it is only used by lazy() which is deprecated
   *
@@ -66,6 +66,6 @@ Derived& MatrixBase<Derived>::operator-=(const Flagged<ProductBase<ProductDerive
   other._expression().derived().subTo(derived()); return derived();
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_LAZY_H
+#endif // IMP_EIGEN_LAZY_H

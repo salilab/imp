@@ -1,4 +1,4 @@
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -76,4 +76,4 @@ DenseIndex fdjac1(
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen

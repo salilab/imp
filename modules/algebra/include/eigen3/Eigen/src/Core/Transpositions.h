@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_TRANSPOSITIONS_H
-#define EIGEN_TRANSPOSITIONS_H
+#ifndef IMP_EIGEN_TRANSPOSITIONS_H
+#define IMP_EIGEN_TRANSPOSITIONS_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \class Transpositions
   * \ingroup Core_Module
@@ -66,7 +66,7 @@ class TranspositionsBase
       return derived();
     }
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** This is a special case of the templated operator=. Its purpose is to
       * prevent a default operator= from hiding the templated operator=.
       */
@@ -169,7 +169,7 @@ class Transpositions : public TranspositionsBase<Transpositions<SizeAtCompileTim
     inline Transpositions(const TranspositionsBase<OtherDerived>& other)
       : m_indices(other.indices()) {}
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** Standard copy constructor. Defined only to prevent a default copy constructor
       * from hiding the other templated constructor */
     inline Transpositions(const Transpositions& other) : m_indices(other.indices()) {}
@@ -187,7 +187,7 @@ class Transpositions : public TranspositionsBase<Transpositions<SizeAtCompileTim
       return Base::operator=(other);
     }
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** This is a special case of the templated operator=. Its purpose is to
       * prevent a default operator= from hiding the templated operator=.
       */
@@ -249,7 +249,7 @@ class Map<Transpositions<SizeAtCompileTime,MaxSizeAtCompileTime,IndexType>,Packe
       return Base::operator=(other);
     }
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** This is a special case of the templated operator=. Its purpose is to
       * prevent a default operator= from hiding the templated operator=.
       */
@@ -302,7 +302,7 @@ class TranspositionsWrapper
       return Base::operator=(other);
     }
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** This is a special case of the templated operator=. Its purpose is to
       * prevent a default operator= from hiding the templated operator=.
       */
@@ -431,6 +431,6 @@ class Transpose<TranspositionsBase<TranspositionsDerived> >
     const TranspositionType& m_transpositions;
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_TRANSPOSITIONS_H
+#endif // IMP_EIGEN_TRANSPOSITIONS_H

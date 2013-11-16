@@ -1,5 +1,6 @@
 # ChangeLog
 # For IMP 2.2 # {#ChangeLog}
+- [Eigen](#Eigen) is now included with IMP.
 - The deprecated function IMP::kernel::Optimizer::set_restraints() was removed. Use IMP::kernel::Optimizer::set_scoring_function() instead.
 - The deprecated constructor for IMP::kernel::ModelObject that does not take an IMP::kernel::Model was removed. This propagates to constructors IMP::kernel::Restraint, IMP::kernel::ScoreState and kin. Make sure you pass an IMP::kernel::Model as the first constructor argument. Related to this, deprecated functions like get_is_part_of_model(), set_model() were removed as they don't serve any purpose.
 - The deprecated methods in IMP::kernel::Optimizer that pertain to attribute optimization were removed. Inherit from IMP::kernel::AttributeOptimizer instead if you want to use them in your optimizer.

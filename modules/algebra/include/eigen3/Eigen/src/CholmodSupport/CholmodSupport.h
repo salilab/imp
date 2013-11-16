@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_CHOLMODSUPPORT_H
-#define EIGEN_CHOLMODSUPPORT_H
+#ifndef IMP_EIGEN_CHOLMODSUPPORT_H
+#define IMP_EIGEN_CHOLMODSUPPORT_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -118,7 +118,7 @@ cholmod_sparse viewAsCholmod(const SparseSelfAdjointView<SparseMatrix<_Scalar,_O
 template<typename Derived>
 cholmod_dense viewAsCholmod(MatrixBase<Derived>& mat)
 {
-  EIGEN_STATIC_ASSERT((internal::traits<Derived>::Flags&RowMajorBit)==0,THIS_METHOD_IS_ONLY_FOR_COLUMN_MAJOR_MATRICES);
+  IMP_EIGEN_STATIC_ASSERT((internal::traits<Derived>::Flags&RowMajorBit)==0,THIS_METHOD_IS_ONLY_FOR_COLUMN_MAJOR_MATRICES);
   typedef typename Derived::Scalar Scalar;
 
   cholmod_dense res;
@@ -284,14 +284,14 @@ class CholmodBase : internal::noncopyable
      *  See the Cholmod user guide for details. */
     cholmod_common& cholmod() { return m_cholmod; }
     
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** \internal */
     template<typename Rhs,typename Dest>
     void _solve(const MatrixBase<Rhs> &b, MatrixBase<Dest> &dest) const
     {
       eigen_assert(m_factorizationIsOk && "The decomposition is not in a valid state for solving, you must first call either compute() or symbolic()/numeric()");
       const Index size = m_cholmodFactor->n;
-      EIGEN_UNUSED_VARIABLE(size);
+      IMP_EIGEN_UNUSED_VARIABLE(size);
       eigen_assert(size==b.rows());
 
       // note: cd stands for Cholmod Dense
@@ -313,7 +313,7 @@ class CholmodBase : internal::noncopyable
     {
       eigen_assert(m_factorizationIsOk && "The decomposition is not in a valid state for solving, you must first call either compute() or symbolic()/numeric()");
       const Index size = m_cholmodFactor->n;
-      EIGEN_UNUSED_VARIABLE(size);
+      IMP_EIGEN_UNUSED_VARIABLE(size);
       eigen_assert(size==b.rows());
 
       // note: cs stands for Cholmod Sparse
@@ -327,7 +327,7 @@ class CholmodBase : internal::noncopyable
       dest = viewAsEigen<DestScalar,DestOptions,DestIndex>(*x_cs);
       cholmod_free_sparse(&x_cs, &m_cholmod);
     }
-    #endif // EIGEN_PARSED_BY_DOXYGEN
+    #endif // IMP_EIGEN_PARSED_BY_DOXYGEN
     
     
     /** Sets the shift parameter that will be used to adjust the diagonal coefficients during the numerical factorization.
@@ -576,7 +576,7 @@ struct solve_retval<CholmodBase<_MatrixType,_UpLo,Derived>, Rhs>
   : solve_retval_base<CholmodBase<_MatrixType,_UpLo,Derived>, Rhs>
 {
   typedef CholmodBase<_MatrixType,_UpLo,Derived> Dec;
-  EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
+  IMP_EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -589,7 +589,7 @@ struct sparse_solve_retval<CholmodBase<_MatrixType,_UpLo,Derived>, Rhs>
   : sparse_solve_retval_base<CholmodBase<_MatrixType,_UpLo,Derived>, Rhs>
 {
   typedef CholmodBase<_MatrixType,_UpLo,Derived> Dec;
-  EIGEN_MAKE_SPARSE_SOLVE_HELPERS(Dec,Rhs)
+  IMP_EIGEN_MAKE_SPARSE_SOLVE_HELPERS(Dec,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -599,6 +599,6 @@ struct sparse_solve_retval<CholmodBase<_MatrixType,_UpLo,Derived>, Rhs>
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_CHOLMODSUPPORT_H
+#endif // IMP_EIGEN_CHOLMODSUPPORT_H

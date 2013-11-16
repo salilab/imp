@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPARSEREDUX_H
-#define EIGEN_SPARSEREDUX_H
+#ifndef IMP_EIGEN_SPARSEREDUX_H
+#define IMP_EIGEN_SPARSEREDUX_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 template<typename Derived>
 typename internal::traits<Derived>::Scalar
@@ -40,6 +40,6 @@ SparseVector<_Scalar,_Options,_Index>::sum() const
   return Matrix<Scalar,1,Dynamic>::Map(&m_data.value(0), m_data.size()).sum();
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SPARSEREDUX_H
+#endif // IMP_EIGEN_SPARSEREDUX_H

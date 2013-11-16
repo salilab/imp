@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_GENERAL_PRODUCT_H
-#define EIGEN_GENERAL_PRODUCT_H
+#ifndef IMP_EIGEN_GENERAL_PRODUCT_H
+#define IMP_EIGEN_GENERAL_PRODUCT_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \class GeneralProduct
   * \ingroup Core_Module
@@ -47,7 +47,7 @@ template<int Rows, int Cols, int Depth> struct product_type_selector;
 template<int Size, int MaxSize> struct product_size_category
 {
   enum { is_large = MaxSize == Dynamic ||
-                    Size >= EIGEN_CACHEFRIENDLY_PRODUCT_THRESHOLD,
+                    Size >= IMP_EIGEN_CACHEFRIENDLY_PRODUCT_THRESHOLD,
          value = is_large  ? Large
                : Size == 1 ? 1
                            : Small
@@ -63,11 +63,11 @@ template<typename Lhs, typename Rhs> struct product_type
     Rows  = _Lhs::RowsAtCompileTime,
     MaxCols  = _Rhs::MaxColsAtCompileTime,
     Cols  = _Rhs::ColsAtCompileTime,
-    MaxDepth = EIGEN_SIZE_MIN_PREFER_FIXED(_Lhs::MaxColsAtCompileTime,
+    MaxDepth = IMP_EIGEN_SIZE_MIN_PREFER_FIXED(_Lhs::MaxColsAtCompileTime,
                                            _Rhs::MaxRowsAtCompileTime),
-    Depth = EIGEN_SIZE_MIN_PREFER_FIXED(_Lhs::ColsAtCompileTime,
+    Depth = IMP_EIGEN_SIZE_MIN_PREFER_FIXED(_Lhs::ColsAtCompileTime,
                                         _Rhs::RowsAtCompileTime),
-    LargeThreshold = EIGEN_CACHEFRIENDLY_PRODUCT_THRESHOLD
+    LargeThreshold = IMP_EIGEN_CACHEFRIENDLY_PRODUCT_THRESHOLD
   };
 
   // the splitting into different lines of code here, introducing the _select enums and the typedef below,
@@ -84,16 +84,16 @@ public:
   enum {
     value = selector::ret
   };
-#ifdef EIGEN_DEBUG_PRODUCT
+#ifdef IMP_EIGEN_DEBUG_PRODUCT
   static void debug()
   {
-      EIGEN_DEBUG_VAR(Rows);
-      EIGEN_DEBUG_VAR(Cols);
-      EIGEN_DEBUG_VAR(Depth);
-      EIGEN_DEBUG_VAR(rows_select);
-      EIGEN_DEBUG_VAR(cols_select);
-      EIGEN_DEBUG_VAR(depth_select);
-      EIGEN_DEBUG_VAR(value);
+      IMP_EIGEN_DEBUG_VAR(Rows);
+      IMP_EIGEN_DEBUG_VAR(Cols);
+      IMP_EIGEN_DEBUG_VAR(Depth);
+      IMP_EIGEN_DEBUG_VAR(rows_select);
+      IMP_EIGEN_DEBUG_VAR(cols_select);
+      IMP_EIGEN_DEBUG_VAR(depth_select);
+      IMP_EIGEN_DEBUG_VAR(value);
   }
 #endif
 };
@@ -205,7 +205,7 @@ class GeneralProduct<Lhs, Rhs, InnerProduct>
   public:
     GeneralProduct(const Lhs& lhs, const Rhs& rhs)
     {
-      EIGEN_STATIC_ASSERT((internal::is_same<typename Lhs::RealScalar, typename Rhs::RealScalar>::value),
+      IMP_EIGEN_STATIC_ASSERT((internal::is_same<typename Lhs::RealScalar, typename Rhs::RealScalar>::value),
         YOU_MIXED_DIFFERENT_NUMERIC_TYPES__YOU_NEED_TO_USE_THE_CAST_METHOD_OF_MATRIXBASE_TO_CAST_NUMERIC_TYPES_EXPLICITLY)
 
       Base::coeffRef(0,0) = (lhs.transpose().cwiseProduct(rhs)).sum();
@@ -225,7 +225,7 @@ namespace internal {
 
 // Column major
 template<typename ProductType, typename Dest, typename Func>
-EIGEN_DONT_INLINE void outer_product_selector_run(const ProductType& prod, Dest& dest, const Func& func, const false_type&)
+IMP_EIGEN_DONT_INLINE void outer_product_selector_run(const ProductType& prod, Dest& dest, const Func& func, const false_type&)
 {
   typedef typename Dest::Index Index;
   // FIXME make sure lhs is sequentially stored
@@ -237,7 +237,7 @@ EIGEN_DONT_INLINE void outer_product_selector_run(const ProductType& prod, Dest&
 
 // Row major
 template<typename ProductType, typename Dest, typename Func>
-EIGEN_DONT_INLINE void outer_product_selector_run(const ProductType& prod, Dest& dest, const Func& func, const true_type&) {
+IMP_EIGEN_DONT_INLINE void outer_product_selector_run(const ProductType& prod, Dest& dest, const Func& func, const true_type&) {
   typedef typename Dest::Index Index;
   // FIXME make sure rhs is sequentially stored
   // FIXME not very good if lhs is real and rhs complex while alpha is real too
@@ -260,11 +260,11 @@ class GeneralProduct<Lhs, Rhs, OuterProduct>
     template<typename T> struct IsRowMajor : internal::conditional<(int(T::Flags)&RowMajorBit), internal::true_type, internal::false_type>::type {};
     
   public:
-    EIGEN_PRODUCT_PUBLIC_INTERFACE(GeneralProduct)
+    IMP_EIGEN_PRODUCT_PUBLIC_INTERFACE(GeneralProduct)
 
     GeneralProduct(const Lhs& lhs, const Rhs& rhs) : Base(lhs,rhs)
     {
-      EIGEN_STATIC_ASSERT((internal::is_same<typename Lhs::RealScalar, typename Rhs::RealScalar>::value),
+      IMP_EIGEN_STATIC_ASSERT((internal::is_same<typename Lhs::RealScalar, typename Rhs::RealScalar>::value),
         YOU_MIXED_DIFFERENT_NUMERIC_TYPES__YOU_NEED_TO_USE_THE_CAST_METHOD_OF_MATRIXBASE_TO_CAST_NUMERIC_TYPES_EXPLICITLY)
     }
     
@@ -328,14 +328,14 @@ class GeneralProduct<Lhs, Rhs, GemvProduct>
   : public ProductBase<GeneralProduct<Lhs,Rhs,GemvProduct>, Lhs, Rhs>
 {
   public:
-    EIGEN_PRODUCT_PUBLIC_INTERFACE(GeneralProduct)
+    IMP_EIGEN_PRODUCT_PUBLIC_INTERFACE(GeneralProduct)
 
     typedef typename Lhs::Scalar LhsScalar;
     typedef typename Rhs::Scalar RhsScalar;
 
     GeneralProduct(const Lhs& a_lhs, const Rhs& a_rhs) : Base(a_lhs,a_rhs)
     {
-//       EIGEN_STATIC_ASSERT((internal::is_same<typename Lhs::Scalar, typename Rhs::Scalar>::value),
+//       IMP_EIGEN_STATIC_ASSERT((internal::is_same<typename Lhs::Scalar, typename Rhs::Scalar>::value),
 //         YOU_MIXED_DIFFERENT_NUMERIC_TYPES__YOU_NEED_TO_USE_THE_CAST_METHOD_OF_MATRIXBASE_TO_CAST_NUMERIC_TYPES_EXPLICITLY)
     }
 
@@ -372,21 +372,21 @@ template<typename Scalar,int Size,int MaxSize,bool Cond> struct gemv_static_vect
 template<typename Scalar,int Size,int MaxSize>
 struct gemv_static_vector_if<Scalar,Size,MaxSize,false>
 {
-  EIGEN_STRONG_INLINE  Scalar* data() { eigen_internal_assert(false && "should never be called"); return 0; }
+  IMP_EIGEN_STRONG_INLINE  Scalar* data() { eigen_internal_assert(false && "should never be called"); return 0; }
 };
 
 template<typename Scalar,int Size>
 struct gemv_static_vector_if<Scalar,Size,Dynamic,true>
 {
-  EIGEN_STRONG_INLINE Scalar* data() { return 0; }
+  IMP_EIGEN_STRONG_INLINE Scalar* data() { return 0; }
 };
 
 template<typename Scalar,int Size,int MaxSize>
 struct gemv_static_vector_if<Scalar,Size,MaxSize,true>
 {
-  #if EIGEN_ALIGN_STATICALLY
-  internal::plain_array<Scalar,EIGEN_SIZE_MIN_PREFER_FIXED(Size,MaxSize),0> m_data;
-  EIGEN_STRONG_INLINE Scalar* data() { return m_data.array; }
+  #if IMP_EIGEN_ALIGN_STATICALLY
+  internal::plain_array<Scalar,IMP_EIGEN_SIZE_MIN_PREFER_FIXED(Size,MaxSize),0> m_data;
+  IMP_EIGEN_STRONG_INLINE Scalar* data() { return m_data.array; }
   #else
   // Some architectures cannot align on the stack,
   // => let's manually enforce alignment by allocating more data and return the address of the first aligned element.
@@ -394,8 +394,8 @@ struct gemv_static_vector_if<Scalar,Size,MaxSize,true>
     ForceAlignment  = internal::packet_traits<Scalar>::Vectorizable,
     PacketSize      = internal::packet_traits<Scalar>::size
   };
-  internal::plain_array<Scalar,EIGEN_SIZE_MIN_PREFER_FIXED(Size,MaxSize)+(ForceAlignment?PacketSize:0),0> m_data;
-  EIGEN_STRONG_INLINE Scalar* data() {
+  internal::plain_array<Scalar,IMP_EIGEN_SIZE_MIN_PREFER_FIXED(Size,MaxSize)+(ForceAlignment?PacketSize:0),0> m_data;
+  IMP_EIGEN_STRONG_INLINE Scalar* data() {
     return ForceAlignment
             ? reinterpret_cast<Scalar*>((reinterpret_cast<size_t>(m_data.array) & ~(size_t(15))) + 16)
             : m_data.array;
@@ -445,9 +445,9 @@ template<> struct gemv_selector<OnTheRight,ColMajor,true>
     
     if(!evalToDest)
     {
-      #ifdef EIGEN_DENSE_STORAGE_CTOR_PLUGIN
+      #ifdef IMP_EIGEN_DENSE_STORAGE_CTOR_PLUGIN
       int size = dest.size();
-      EIGEN_DENSE_STORAGE_CTOR_PLUGIN
+      IMP_EIGEN_DENSE_STORAGE_CTOR_PLUGIN
       #endif
       if(!alphaIsCompatible)
       {
@@ -510,9 +510,9 @@ template<> struct gemv_selector<OnTheRight,RowMajor,true>
 
     if(!DirectlyUseRhs)
     {
-      #ifdef EIGEN_DENSE_STORAGE_CTOR_PLUGIN
+      #ifdef IMP_EIGEN_DENSE_STORAGE_CTOR_PLUGIN
       int size = actualRhs.size();
-      EIGEN_DENSE_STORAGE_CTOR_PLUGIN
+      IMP_EIGEN_DENSE_STORAGE_CTOR_PLUGIN
       #endif
       Map<typename _ActualRhsType::PlainObject>(actualRhsPtr, actualRhs.size()) = actualRhs;
     }
@@ -573,23 +573,23 @@ MatrixBase<Derived>::operator*(const MatrixBase<OtherDerived> &other) const
   // A note regarding the function declaration: In MSVC, this function will sometimes
   // not be inlined since DenseStorage is an unwindable object for dynamic
   // matrices and product types are holding a member to store the result.
-  // Thus it does not help tagging this function with EIGEN_STRONG_INLINE.
+  // Thus it does not help tagging this function with IMP_EIGEN_STRONG_INLINE.
   enum {
     ProductIsValid =  Derived::ColsAtCompileTime==Dynamic
                    || OtherDerived::RowsAtCompileTime==Dynamic
                    || int(Derived::ColsAtCompileTime)==int(OtherDerived::RowsAtCompileTime),
     AreVectors = Derived::IsVectorAtCompileTime && OtherDerived::IsVectorAtCompileTime,
-    SameSizes = EIGEN_PREDICATE_SAME_MATRIX_SIZE(Derived,OtherDerived)
+    SameSizes = IMP_EIGEN_PREDICATE_SAME_MATRIX_SIZE(Derived,OtherDerived)
   };
   // note to the lost user:
   //    * for a dot product use: v1.dot(v2)
   //    * for a coeff-wise product use: v1.cwiseProduct(v2)
-  EIGEN_STATIC_ASSERT(ProductIsValid || !(AreVectors && SameSizes),
+  IMP_EIGEN_STATIC_ASSERT(ProductIsValid || !(AreVectors && SameSizes),
     INVALID_VECTOR_VECTOR_PRODUCT__IF_YOU_WANTED_A_DOT_OR_COEFF_WISE_PRODUCT_YOU_MUST_USE_THE_EXPLICIT_FUNCTIONS)
-  EIGEN_STATIC_ASSERT(ProductIsValid || !(SameSizes && !AreVectors),
+  IMP_EIGEN_STATIC_ASSERT(ProductIsValid || !(SameSizes && !AreVectors),
     INVALID_MATRIX_PRODUCT__IF_YOU_WANTED_A_COEFF_WISE_PRODUCT_YOU_MUST_USE_THE_EXPLICIT_FUNCTION)
-  EIGEN_STATIC_ASSERT(ProductIsValid || SameSizes, INVALID_MATRIX_PRODUCT)
-#ifdef EIGEN_DEBUG_PRODUCT
+  IMP_EIGEN_STATIC_ASSERT(ProductIsValid || SameSizes, INVALID_MATRIX_PRODUCT)
+#ifdef IMP_EIGEN_DEBUG_PRODUCT
   internal::product_type<Derived,OtherDerived>::debug();
 #endif
   return typename ProductReturnType<Derived,OtherDerived>::Type(derived(), other.derived());
@@ -616,20 +616,20 @@ MatrixBase<Derived>::lazyProduct(const MatrixBase<OtherDerived> &other) const
                    || OtherDerived::RowsAtCompileTime==Dynamic
                    || int(Derived::ColsAtCompileTime)==int(OtherDerived::RowsAtCompileTime),
     AreVectors = Derived::IsVectorAtCompileTime && OtherDerived::IsVectorAtCompileTime,
-    SameSizes = EIGEN_PREDICATE_SAME_MATRIX_SIZE(Derived,OtherDerived)
+    SameSizes = IMP_EIGEN_PREDICATE_SAME_MATRIX_SIZE(Derived,OtherDerived)
   };
   // note to the lost user:
   //    * for a dot product use: v1.dot(v2)
   //    * for a coeff-wise product use: v1.cwiseProduct(v2)
-  EIGEN_STATIC_ASSERT(ProductIsValid || !(AreVectors && SameSizes),
+  IMP_EIGEN_STATIC_ASSERT(ProductIsValid || !(AreVectors && SameSizes),
     INVALID_VECTOR_VECTOR_PRODUCT__IF_YOU_WANTED_A_DOT_OR_COEFF_WISE_PRODUCT_YOU_MUST_USE_THE_EXPLICIT_FUNCTIONS)
-  EIGEN_STATIC_ASSERT(ProductIsValid || !(SameSizes && !AreVectors),
+  IMP_EIGEN_STATIC_ASSERT(ProductIsValid || !(SameSizes && !AreVectors),
     INVALID_MATRIX_PRODUCT__IF_YOU_WANTED_A_COEFF_WISE_PRODUCT_YOU_MUST_USE_THE_EXPLICIT_FUNCTION)
-  EIGEN_STATIC_ASSERT(ProductIsValid || SameSizes, INVALID_MATRIX_PRODUCT)
+  IMP_EIGEN_STATIC_ASSERT(ProductIsValid || SameSizes, INVALID_MATRIX_PRODUCT)
 
   return typename LazyProductReturnType<Derived,OtherDerived>::Type(derived(), other.derived());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_PRODUCT_H
+#endif // IMP_EIGEN_PRODUCT_H

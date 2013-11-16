@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_LLT_H
-#define EIGEN_LLT_H
+#ifndef IMP_EIGEN_LLT_H
+#define IMP_EIGEN_LLT_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal{
 template<typename MatrixType, int UpLo> struct LLT_Traits;
@@ -127,7 +127,7 @@ template<typename _MatrixType, int _UpLo> class LLT
       return internal::solve_retval<LLT, Rhs>(*this, b.derived());
     }
 
-    #ifdef EIGEN2_SUPPORT
+    #ifdef IMP_EIGEN2_SUPPORT
     template<typename OtherDerived, typename ResultType>
     bool solve(const MatrixBase<OtherDerived>& b, ResultType *result) const
     {
@@ -324,7 +324,7 @@ template<typename Scalar> struct llt_inplace<Scalar, Lower>
   template<typename MatrixType, typename VectorType>
   static typename MatrixType::Index rankUpdate(MatrixType& mat, const VectorType& vec, const RealScalar& sigma)
   {
-    return Eigen::internal::llt_rank_update_lower(mat, vec, sigma);
+    return IMP_Eigen::internal::llt_rank_update_lower(mat, vec, sigma);
   }
 };
   
@@ -333,13 +333,13 @@ template<typename Scalar> struct llt_inplace<Scalar, Upper>
   typedef typename NumTraits<Scalar>::Real RealScalar;
 
   template<typename MatrixType>
-  static EIGEN_STRONG_INLINE typename MatrixType::Index unblocked(MatrixType& mat)
+  static IMP_EIGEN_STRONG_INLINE typename MatrixType::Index unblocked(MatrixType& mat)
   {
     Transpose<MatrixType> matt(mat);
     return llt_inplace<Scalar, Lower>::unblocked(matt);
   }
   template<typename MatrixType>
-  static EIGEN_STRONG_INLINE typename MatrixType::Index blocked(MatrixType& mat)
+  static IMP_EIGEN_STRONG_INLINE typename MatrixType::Index blocked(MatrixType& mat)
   {
     Transpose<MatrixType> matt(mat);
     return llt_inplace<Scalar, Lower>::blocked(matt);
@@ -405,7 +405,7 @@ template<typename _MatrixType, int _UpLo>
 template<typename VectorType>
 LLT<_MatrixType,_UpLo> LLT<_MatrixType,_UpLo>::rankUpdate(const VectorType& v, const RealScalar& sigma)
 {
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(VectorType);
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(VectorType);
   eigen_assert(v.size()==m_matrix.cols());
   eigen_assert(m_isInitialized);
   if(internal::llt_inplace<typename MatrixType::Scalar, UpLo>::rankUpdate(m_matrix,v,sigma)>=0)
@@ -422,7 +422,7 @@ struct solve_retval<LLT<_MatrixType, UpLo>, Rhs>
   : solve_retval_base<LLT<_MatrixType, UpLo>, Rhs>
 {
   typedef LLT<_MatrixType,UpLo> LLTType;
-  EIGEN_MAKE_SOLVE_HELPERS(LLTType,Rhs)
+  IMP_EIGEN_MAKE_SOLVE_HELPERS(LLTType,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -485,6 +485,6 @@ SelfAdjointView<MatrixType, UpLo>::llt() const
   return LLT<PlainObject,UpLo>(m_matrix);
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_LLT_H
+#endif // IMP_EIGEN_LLT_H

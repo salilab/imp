@@ -6,14 +6,14 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_KRONECKER_PRODUCT_MODULE_H
-#define EIGEN_KRONECKER_PRODUCT_MODULE_H
+#ifndef IMP_EIGEN_KRONECKER_PRODUCT_MODULE_H
+#define IMP_EIGEN_KRONECKER_PRODUCT_MODULE_H
 
 #include "../../Eigen/Core"
 
 #include "../../Eigen/src/Core/util/DisableStupidWarnings.h"
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 /**
   * \defgroup KroneckerProduct_Module KroneckerProduct module
@@ -25,10 +25,10 @@ namespace Eigen {
   * \endcode
   */
 
-} // namespace Eigen
+} // namespace IMP_Eigen
 
 #include "src/KroneckerProduct/KroneckerTensorProduct.h"
 
 #include "../../Eigen/src/Core/util/ReenableStupidWarnings.h"
 
-#endif // EIGEN_KRONECKER_PRODUCT_MODULE_H
+#endif // IMP_EIGEN_KRONECKER_PRODUCT_MODULE_H

@@ -7,12 +7,12 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SKYLINEMATRIXBASE_H
-#define EIGEN_SKYLINEMATRIXBASE_H
+#ifndef IMP_EIGEN_SKYLINEMATRIXBASE_H
+#define IMP_EIGEN_SKYLINEMATRIXBASE_H
 
 #include "SkylineUtil.h"
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \ingroup Skyline_Module
  *
@@ -75,7 +75,7 @@ public:
         IsRowMajor = Flags & RowMajorBit ? 1 : 0
     };
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** This is the "real scalar" type; if the \a Scalar type is already real numbers
      * (e.g. int, float or double) then \a RealScalar is just the same as \a Scalar. If
      * \a Scalar is \a std::complex<T> then RealScalar is \a T.
@@ -85,8 +85,8 @@ public:
     typedef typename NumTraits<Scalar>::Real RealScalar;
 
     /** type of the equivalent square matrix */
-    typedef Matrix<Scalar, EIGEN_SIZE_MAX(RowsAtCompileTime, ColsAtCompileTime),
-                           EIGEN_SIZE_MAX(RowsAtCompileTime, ColsAtCompileTime) > SquareMatrixType;
+    typedef Matrix<Scalar, IMP_EIGEN_SIZE_MAX(RowsAtCompileTime, ColsAtCompileTime),
+                           IMP_EIGEN_SIZE_MAX(RowsAtCompileTime, ColsAtCompileTime) > SquareMatrixType;
 
     inline const Derived& derived() const {
         return *static_cast<const Derived*> (this);
@@ -99,7 +99,7 @@ public:
     inline Derived& const_cast_derived() const {
         return *static_cast<Derived*> (const_cast<SkylineMatrixBase*> (this));
     }
-#endif // not EIGEN_PARSED_BY_DOXYGEN
+#endif // not IMP_EIGEN_PARSED_BY_DOXYGEN
 
     /** \returns the number of rows. \sa cols(), RowsAtCompileTime */
     inline Index rows() const {
@@ -199,7 +199,7 @@ public:
      * Notice that in the case of a plain matrix or vector (not an expression) this function just returns
      * a const reference, in order to avoid a useless copy.
      */
-    EIGEN_STRONG_INLINE const typename internal::eval<Derived, IsSkyline>::type eval() const {
+    IMP_EIGEN_STRONG_INLINE const typename internal::eval<Derived, IsSkyline>::type eval() const {
         return typename internal::eval<Derived>::type(derived());
     }
 
@@ -207,6 +207,6 @@ protected:
     bool m_isRValue;
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SkylineMatrixBase_H
+#endif // IMP_EIGEN_SkylineMatrixBase_H

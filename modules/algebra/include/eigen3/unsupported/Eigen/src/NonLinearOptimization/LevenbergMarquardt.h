@@ -10,10 +10,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_LEVENBERGMARQUARDT__H
-#define EIGEN_LEVENBERGMARQUARDT__H
+#ifndef IMP_EIGEN_LEVENBERGMARQUARDT__H
+#define IMP_EIGEN_LEVENBERGMARQUARDT__H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace LevenbergMarquardtSpace {
     enum Status {
@@ -643,8 +643,8 @@ LevenbergMarquardt<FunctorType,Scalar>::lmdif1(
     return info;
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_LEVENBERGMARQUARDT__H
+#endif // IMP_EIGEN_LEVENBERGMARQUARDT__H
 
 //vim: ai ts=4 sts=4 et sw=4

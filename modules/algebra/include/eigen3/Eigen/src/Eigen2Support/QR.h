@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN2_QR_H
-#define EIGEN2_QR_H
+#ifndef IMP_EIGEN2_QR_H
+#define IMP_EIGEN2_QR_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 template<typename MatrixType>
 class QR : public HouseholderQR<MatrixType>
@@ -62,6 +62,6 @@ MatrixBase<Derived>::qr() const
   return QR<PlainObject>(eval());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN2_QR_H
+#endif // IMP_EIGEN2_QR_H

@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_REDUX_H
-#define EIGEN_REDUX_H
+#ifndef IMP_EIGEN_REDUX_H
+#define IMP_EIGEN_REDUX_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -56,7 +56,7 @@ public:
            ) ? Dynamic
            : Derived::SizeAtCompileTime * Derived::CoeffReadCost
                + (Derived::SizeAtCompileTime-1) * functor_traits<Func>::Cost,
-    UnrollingLimit = EIGEN_UNROLLING_LIMIT * (int(Traversal) == int(DefaultTraversal) ? 1 : int(PacketSize))
+    UnrollingLimit = IMP_EIGEN_UNROLLING_LIMIT * (int(Traversal) == int(DefaultTraversal) ? 1 : int(PacketSize))
   };
 
 public:
@@ -82,7 +82,7 @@ struct redux_novec_unroller
 
   typedef typename Derived::Scalar Scalar;
 
-  static EIGEN_STRONG_INLINE Scalar run(const Derived &mat, const Func& func)
+  static IMP_EIGEN_STRONG_INLINE Scalar run(const Derived &mat, const Func& func)
   {
     return func(redux_novec_unroller<Func, Derived, Start, HalfLength>::run(mat,func),
                 redux_novec_unroller<Func, Derived, Start+HalfLength, Length-HalfLength>::run(mat,func));
@@ -99,7 +99,7 @@ struct redux_novec_unroller<Func, Derived, Start, 1>
 
   typedef typename Derived::Scalar Scalar;
 
-  static EIGEN_STRONG_INLINE Scalar run(const Derived &mat, const Func&)
+  static IMP_EIGEN_STRONG_INLINE Scalar run(const Derived &mat, const Func&)
   {
     return mat.coeffByOuterInner(outer, inner);
   }
@@ -112,7 +112,7 @@ template<typename Func, typename Derived, int Start>
 struct redux_novec_unroller<Func, Derived, Start, 0>
 {
   typedef typename Derived::Scalar Scalar;
-  static EIGEN_STRONG_INLINE Scalar run(const Derived&, const Func&) { return Scalar(); }
+  static IMP_EIGEN_STRONG_INLINE Scalar run(const Derived&, const Func&) { return Scalar(); }
 };
 
 /*** vectorization ***/
@@ -128,7 +128,7 @@ struct redux_vec_unroller
   typedef typename Derived::Scalar Scalar;
   typedef typename packet_traits<Scalar>::type PacketScalar;
 
-  static EIGEN_STRONG_INLINE PacketScalar run(const Derived &mat, const Func& func)
+  static IMP_EIGEN_STRONG_INLINE PacketScalar run(const Derived &mat, const Func& func)
   {
     return func.packetOp(
             redux_vec_unroller<Func, Derived, Start, HalfLength>::run(mat,func),
@@ -149,7 +149,7 @@ struct redux_vec_unroller<Func, Derived, Start, 1>
   typedef typename Derived::Scalar Scalar;
   typedef typename packet_traits<Scalar>::type PacketScalar;
 
-  static EIGEN_STRONG_INLINE PacketScalar run(const Derived &mat, const Func&)
+  static IMP_EIGEN_STRONG_INLINE PacketScalar run(const Derived &mat, const Func&)
   {
     return mat.template packetByOuterInner<alignment>(outer, inner);
   }
@@ -170,7 +170,7 @@ struct redux_impl<Func, Derived, DefaultTraversal, NoUnrolling>
 {
   typedef typename Derived::Scalar Scalar;
   typedef typename Derived::Index Index;
-  static EIGEN_STRONG_INLINE Scalar run(const Derived& mat, const Func& func)
+  static IMP_EIGEN_STRONG_INLINE Scalar run(const Derived& mat, const Func& func)
   {
     eigen_assert(mat.rows()>0 && mat.cols()>0 && "you are using an empty matrix");
     Scalar res;
@@ -296,7 +296,7 @@ struct redux_impl<Func, Derived, LinearVectorizedTraversal, CompleteUnrolling>
     Size = Derived::SizeAtCompileTime,
     VectorizedSize = (Size / PacketSize) * PacketSize
   };
-  static EIGEN_STRONG_INLINE Scalar run(const Derived& mat, const Func& func)
+  static IMP_EIGEN_STRONG_INLINE Scalar run(const Derived& mat, const Func& func)
   {
     eigen_assert(mat.rows()>0 && mat.cols()>0 && "you are using an empty matrix");
     Scalar res = func.predux(redux_vec_unroller<Func, Derived, 0, Size / PacketSize>::run(mat,func));
@@ -322,7 +322,7 @@ struct redux_impl<Func, Derived, LinearVectorizedTraversal, CompleteUnrolling>
   */
 template<typename Derived>
 template<typename Func>
-EIGEN_STRONG_INLINE typename internal::result_of<Func(typename internal::traits<Derived>::Scalar)>::type
+IMP_EIGEN_STRONG_INLINE typename internal::result_of<Func(typename internal::traits<Derived>::Scalar)>::type
 DenseBase<Derived>::redux(const Func& func) const
 {
   typedef typename internal::remove_all<typename Derived::Nested>::type ThisNested;
@@ -334,20 +334,20 @@ DenseBase<Derived>::redux(const Func& func) const
   * \warning the result is undefined if \c *this contains NaN.
   */
 template<typename Derived>
-EIGEN_STRONG_INLINE typename internal::traits<Derived>::Scalar
+IMP_EIGEN_STRONG_INLINE typename internal::traits<Derived>::Scalar
 DenseBase<Derived>::minCoeff() const
 {
-  return this->redux(Eigen::internal::scalar_min_op<Scalar>());
+  return this->redux(IMP_Eigen::internal::scalar_min_op<Scalar>());
 }
 
 /** \returns the maximum of all coefficients of \c *this.
   * \warning the result is undefined if \c *this contains NaN.
   */
 template<typename Derived>
-EIGEN_STRONG_INLINE typename internal::traits<Derived>::Scalar
+IMP_EIGEN_STRONG_INLINE typename internal::traits<Derived>::Scalar
 DenseBase<Derived>::maxCoeff() const
 {
-  return this->redux(Eigen::internal::scalar_max_op<Scalar>());
+  return this->redux(IMP_Eigen::internal::scalar_max_op<Scalar>());
 }
 
 /** \returns the sum of all coefficients of *this
@@ -355,12 +355,12 @@ DenseBase<Derived>::maxCoeff() const
   * \sa trace(), prod(), mean()
   */
 template<typename Derived>
-EIGEN_STRONG_INLINE typename internal::traits<Derived>::Scalar
+IMP_EIGEN_STRONG_INLINE typename internal::traits<Derived>::Scalar
 DenseBase<Derived>::sum() const
 {
   if(SizeAtCompileTime==0 || (SizeAtCompileTime==Dynamic && size()==0))
     return Scalar(0);
-  return this->redux(Eigen::internal::scalar_sum_op<Scalar>());
+  return this->redux(IMP_Eigen::internal::scalar_sum_op<Scalar>());
 }
 
 /** \returns the mean of all coefficients of *this
@@ -368,10 +368,10 @@ DenseBase<Derived>::sum() const
 * \sa trace(), prod(), sum()
 */
 template<typename Derived>
-EIGEN_STRONG_INLINE typename internal::traits<Derived>::Scalar
+IMP_EIGEN_STRONG_INLINE typename internal::traits<Derived>::Scalar
 DenseBase<Derived>::mean() const
 {
-  return Scalar(this->redux(Eigen::internal::scalar_sum_op<Scalar>())) / Scalar(this->size());
+  return Scalar(this->redux(IMP_Eigen::internal::scalar_sum_op<Scalar>())) / Scalar(this->size());
 }
 
 /** \returns the product of all coefficients of *this
@@ -382,12 +382,12 @@ DenseBase<Derived>::mean() const
   * \sa sum(), mean(), trace()
   */
 template<typename Derived>
-EIGEN_STRONG_INLINE typename internal::traits<Derived>::Scalar
+IMP_EIGEN_STRONG_INLINE typename internal::traits<Derived>::Scalar
 DenseBase<Derived>::prod() const
 {
   if(SizeAtCompileTime==0 || (SizeAtCompileTime==Dynamic && size()==0))
     return Scalar(1);
-  return this->redux(Eigen::internal::scalar_product_op<Scalar>());
+  return this->redux(IMP_Eigen::internal::scalar_product_op<Scalar>());
 }
 
 /** \returns the trace of \c *this, i.e. the sum of the coefficients on the main diagonal.
@@ -397,12 +397,12 @@ DenseBase<Derived>::prod() const
   * \sa diagonal(), sum()
   */
 template<typename Derived>
-EIGEN_STRONG_INLINE typename internal::traits<Derived>::Scalar
+IMP_EIGEN_STRONG_INLINE typename internal::traits<Derived>::Scalar
 MatrixBase<Derived>::trace() const
 {
   return derived().diagonal().sum();
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_REDUX_H
+#endif // IMP_EIGEN_REDUX_H

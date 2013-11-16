@@ -7,15 +7,15 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SKYLINEUTIL_H
-#define EIGEN_SKYLINEUTIL_H
+#ifndef IMP_EIGEN_SKYLINEUTIL_H
+#define IMP_EIGEN_SKYLINEUTIL_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 #ifdef NDEBUG
-#define EIGEN_DBG_SKYLINE(X)
+#define IMP_EIGEN_DBG_SKYLINE(X)
 #else
-#define EIGEN_DBG_SKYLINE(X) X
+#define IMP_EIGEN_DBG_SKYLINE(X) X
 #endif
 
 const unsigned int SkylineBit = 0x1200;
@@ -24,41 +24,41 @@ enum AdditionalProductEvaluationMode {SkylineTimeDenseProduct, SkylineTimeSkylin
 enum {IsSkyline = SkylineBit};
 
 
-#define EIGEN_SKYLINE_INHERIT_ASSIGNMENT_OPERATOR(Derived, Op) \
+#define IMP_EIGEN_SKYLINE_INHERIT_ASSIGNMENT_OPERATOR(Derived, Op) \
 template<typename OtherDerived> \
-EIGEN_STRONG_INLINE Derived& operator Op(const Eigen::SkylineMatrixBase<OtherDerived>& other) \
+IMP_EIGEN_STRONG_INLINE Derived& operator Op(const IMP_Eigen::SkylineMatrixBase<OtherDerived>& other) \
 { \
   return Base::operator Op(other.derived()); \
 } \
-EIGEN_STRONG_INLINE Derived& operator Op(const Derived& other) \
+IMP_EIGEN_STRONG_INLINE Derived& operator Op(const Derived& other) \
 { \
   return Base::operator Op(other); \
 }
 
-#define EIGEN_SKYLINE_INHERIT_SCALAR_ASSIGNMENT_OPERATOR(Derived, Op) \
+#define IMP_EIGEN_SKYLINE_INHERIT_SCALAR_ASSIGNMENT_OPERATOR(Derived, Op) \
 template<typename Other> \
-EIGEN_STRONG_INLINE Derived& operator Op(const Other& scalar) \
+IMP_EIGEN_STRONG_INLINE Derived& operator Op(const Other& scalar) \
 { \
   return Base::operator Op(scalar); \
 }
 
-#define EIGEN_SKYLINE_INHERIT_ASSIGNMENT_OPERATORS(Derived) \
-  EIGEN_SKYLINE_INHERIT_ASSIGNMENT_OPERATOR(Derived, =) \
-  EIGEN_SKYLINE_INHERIT_ASSIGNMENT_OPERATOR(Derived, +=) \
-  EIGEN_SKYLINE_INHERIT_ASSIGNMENT_OPERATOR(Derived, -=) \
-  EIGEN_SKYLINE_INHERIT_SCALAR_ASSIGNMENT_OPERATOR(Derived, *=) \
-  EIGEN_SKYLINE_INHERIT_SCALAR_ASSIGNMENT_OPERATOR(Derived, /=)
+#define IMP_EIGEN_SKYLINE_INHERIT_ASSIGNMENT_OPERATORS(Derived) \
+  IMP_EIGEN_SKYLINE_INHERIT_ASSIGNMENT_OPERATOR(Derived, =) \
+  IMP_EIGEN_SKYLINE_INHERIT_ASSIGNMENT_OPERATOR(Derived, +=) \
+  IMP_EIGEN_SKYLINE_INHERIT_ASSIGNMENT_OPERATOR(Derived, -=) \
+  IMP_EIGEN_SKYLINE_INHERIT_SCALAR_ASSIGNMENT_OPERATOR(Derived, *=) \
+  IMP_EIGEN_SKYLINE_INHERIT_SCALAR_ASSIGNMENT_OPERATOR(Derived, /=)
 
 #define _EIGEN_SKYLINE_GENERIC_PUBLIC_INTERFACE(Derived, BaseClass) \
   typedef BaseClass Base; \
-  typedef typename Eigen::internal::traits<Derived>::Scalar Scalar; \
-  typedef typename Eigen::NumTraits<Scalar>::Real RealScalar; \
-  typedef typename Eigen::internal::traits<Derived>::StorageKind StorageKind; \
-  typedef typename Eigen::internal::index<StorageKind>::type Index; \
-  enum {  Flags = Eigen::internal::traits<Derived>::Flags, };
+  typedef typename IMP_Eigen::internal::traits<Derived>::Scalar Scalar; \
+  typedef typename IMP_Eigen::NumTraits<Scalar>::Real RealScalar; \
+  typedef typename IMP_Eigen::internal::traits<Derived>::StorageKind StorageKind; \
+  typedef typename IMP_Eigen::internal::index<StorageKind>::type Index; \
+  enum {  Flags = IMP_Eigen::internal::traits<Derived>::Flags, };
 
-#define EIGEN_SKYLINE_GENERIC_PUBLIC_INTERFACE(Derived) \
-  _EIGEN_SKYLINE_GENERIC_PUBLIC_INTERFACE(Derived, Eigen::SkylineMatrixBase<Derived>)
+#define IMP_EIGEN_SKYLINE_GENERIC_PUBLIC_INTERFACE(Derived) \
+  _EIGEN_SKYLINE_GENERIC_PUBLIC_INTERFACE(Derived, IMP_Eigen::SkylineMatrixBase<Derived>)
 
 template<typename Derived> class SkylineMatrixBase;
 template<typename _Scalar, int _Flags = 0> class SkylineMatrix;
@@ -84,6 +84,6 @@ template<typename T> class eval<T,IsSkyline>
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SKYLINEUTIL_H
+#endif // IMP_EIGEN_SKYLINEUTIL_H

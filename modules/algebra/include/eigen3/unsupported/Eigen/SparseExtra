@@ -7,8 +7,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPARSE_EXTRA_MODULE_H
-#define EIGEN_SPARSE_EXTRA_MODULE_H
+#ifndef IMP_EIGEN_SPARSE_EXTRA_MODULE_H
+#define IMP_EIGEN_SPARSE_EXTRA_MODULE_H
 
 #include "../../Eigen/Sparse"
 
@@ -22,7 +22,7 @@
 #include <fstream>
 #include <sstream>
 
-#ifdef EIGEN_GOOGLEHASH_SUPPORT
+#ifdef IMP_EIGEN_GOOGLEHASH_SUPPORT
   #include <google/dense_hash_map>
 #endif
 
@@ -53,4 +53,4 @@
 
 #include "../../Eigen/src/Core/util/ReenableStupidWarnings.h"
 
-#endif // EIGEN_SPARSE_EXTRA_MODULE_H
+#endif // IMP_EIGEN_SPARSE_EXTRA_MODULE_H

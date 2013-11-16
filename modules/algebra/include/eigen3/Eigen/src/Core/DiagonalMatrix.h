@@ -8,12 +8,12 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_DIAGONALMATRIX_H
-#define EIGEN_DIAGONALMATRIX_H
+#ifndef IMP_EIGEN_DIAGONALMATRIX_H
+#define IMP_EIGEN_DIAGONALMATRIX_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
 template<typename Derived>
 class DiagonalBase : public EigenBase<Derived>
 {
@@ -82,7 +82,7 @@ class DiagonalBase : public EigenBase<Derived>
       return other.diagonal() * scalar;
     }
     
-    #ifdef EIGEN2_SUPPORT
+    #ifdef IMP_EIGEN2_SUPPORT
     template<typename OtherDerived>
     bool isApprox(const DiagonalBase<OtherDerived>& other, typename NumTraits<Scalar>::Real precision = NumTraits<Scalar>::dummy_precision()) const
     {
@@ -136,7 +136,7 @@ class DiagonalMatrix
   : public DiagonalBase<DiagonalMatrix<_Scalar,SizeAtCompileTime,MaxSizeAtCompileTime> >
 {
   public:
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     typedef typename internal::traits<DiagonalMatrix>::DiagonalVectorType DiagonalVectorType;
     typedef const DiagonalMatrix& Nested;
     typedef _Scalar Scalar;
@@ -171,7 +171,7 @@ class DiagonalMatrix
     template<typename OtherDerived>
     inline DiagonalMatrix(const DiagonalBase<OtherDerived>& other) : m_diagonal(other.diagonal()) {}
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** copy constructor. prevent a default copy constructor from hiding the other templated constructor */
     inline DiagonalMatrix(const DiagonalMatrix& other) : m_diagonal(other.diagonal()) {}
     #endif
@@ -189,7 +189,7 @@ class DiagonalMatrix
       return *this;
     }
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** This is a special case of the templated operator=. Its purpose is to
       * prevent a default operator= from hiding the templated operator=.
       */
@@ -249,7 +249,7 @@ class DiagonalWrapper
   : public DiagonalBase<DiagonalWrapper<_DiagonalVectorType> >, internal::no_assignment_operator
 {
   public:
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     typedef _DiagonalVectorType DiagonalVectorType;
     typedef DiagonalWrapper Nested;
     #endif
@@ -308,6 +308,6 @@ bool MatrixBase<Derived>::isDiagonal(const RealScalar& prec) const
   return true;
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_DIAGONALMATRIX_H
+#endif // IMP_EIGEN_DIAGONALMATRIX_H

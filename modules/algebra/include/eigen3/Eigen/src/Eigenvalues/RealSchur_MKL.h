@@ -30,16 +30,16 @@
  ********************************************************************************
 */
 
-#ifndef EIGEN_REAL_SCHUR_MKL_H
-#define EIGEN_REAL_SCHUR_MKL_H
+#ifndef IMP_EIGEN_REAL_SCHUR_MKL_H
+#define IMP_EIGEN_REAL_SCHUR_MKL_H
 
 #include "Eigen/src/Core/util/MKL_support.h"
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \internal Specialization for the data types supported by MKL */
 
-#define EIGEN_MKL_SCHUR_REAL(EIGTYPE, MKLTYPE, MKLPREFIX, MKLPREFIX_U, EIGCOLROW, MKLCOLROW) \
+#define IMP_EIGEN_MKL_SCHUR_REAL(EIGTYPE, MKLTYPE, MKLPREFIX, MKLPREFIX_U, EIGCOLROW, MKLCOLROW) \
 template<> inline \
 RealSchur<Matrix<EIGTYPE, Dynamic, Dynamic, EIGCOLROW> >& \
 RealSchur<Matrix<EIGTYPE, Dynamic, Dynamic, EIGCOLROW> >::compute(const Matrix<EIGTYPE, Dynamic, Dynamic, EIGCOLROW>& matrix, bool computeU) \
@@ -73,11 +73,11 @@ RealSchur<Matrix<EIGTYPE, Dynamic, Dynamic, EIGCOLROW> >::compute(const Matrix<E
 \
 }
 
-EIGEN_MKL_SCHUR_REAL(double,   double, d, D, ColMajor, LAPACK_COL_MAJOR)
-EIGEN_MKL_SCHUR_REAL(float,    float,  s, S, ColMajor, LAPACK_COL_MAJOR)
-EIGEN_MKL_SCHUR_REAL(double,   double, d, D, RowMajor, LAPACK_ROW_MAJOR)
-EIGEN_MKL_SCHUR_REAL(float,    float,  s, S, RowMajor, LAPACK_ROW_MAJOR)
+IMP_EIGEN_MKL_SCHUR_REAL(double,   double, d, D, ColMajor, LAPACK_COL_MAJOR)
+IMP_EIGEN_MKL_SCHUR_REAL(float,    float,  s, S, ColMajor, LAPACK_COL_MAJOR)
+IMP_EIGEN_MKL_SCHUR_REAL(double,   double, d, D, RowMajor, LAPACK_ROW_MAJOR)
+IMP_EIGEN_MKL_SCHUR_REAL(float,    float,  s, S, RowMajor, LAPACK_ROW_MAJOR)
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_REAL_SCHUR_MKL_H
+#endif // IMP_EIGEN_REAL_SCHUR_MKL_H

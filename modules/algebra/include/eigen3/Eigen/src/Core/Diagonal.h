@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_DIAGONAL_H
-#define EIGEN_DIAGONAL_H
+#ifndef IMP_EIGEN_DIAGONAL_H
+#define IMP_EIGEN_DIAGONAL_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \class Diagonal
   * \ingroup Core_Module
@@ -42,14 +42,14 @@ struct traits<Diagonal<MatrixType,DiagIndex> >
   typedef typename MatrixType::StorageKind StorageKind;
   enum {
     RowsAtCompileTime = (int(DiagIndex) == DynamicIndex || int(MatrixType::SizeAtCompileTime) == Dynamic) ? Dynamic
-                      : (EIGEN_PLAIN_ENUM_MIN(MatrixType::RowsAtCompileTime - EIGEN_PLAIN_ENUM_MAX(-DiagIndex, 0),
-                                              MatrixType::ColsAtCompileTime - EIGEN_PLAIN_ENUM_MAX( DiagIndex, 0))),
+                      : (IMP_EIGEN_PLAIN_ENUM_MIN(MatrixType::RowsAtCompileTime - IMP_EIGEN_PLAIN_ENUM_MAX(-DiagIndex, 0),
+                                              MatrixType::ColsAtCompileTime - IMP_EIGEN_PLAIN_ENUM_MAX( DiagIndex, 0))),
     ColsAtCompileTime = 1,
     MaxRowsAtCompileTime = int(MatrixType::MaxSizeAtCompileTime) == Dynamic ? Dynamic
-                         : DiagIndex == DynamicIndex ? EIGEN_SIZE_MIN_PREFER_FIXED(MatrixType::MaxRowsAtCompileTime,
+                         : DiagIndex == DynamicIndex ? IMP_EIGEN_SIZE_MIN_PREFER_FIXED(MatrixType::MaxRowsAtCompileTime,
                                                                               MatrixType::MaxColsAtCompileTime)
-                         : (EIGEN_PLAIN_ENUM_MIN(MatrixType::MaxRowsAtCompileTime - EIGEN_PLAIN_ENUM_MAX(-DiagIndex, 0),
-                                                 MatrixType::MaxColsAtCompileTime - EIGEN_PLAIN_ENUM_MAX( DiagIndex, 0))),
+                         : (IMP_EIGEN_PLAIN_ENUM_MIN(MatrixType::MaxRowsAtCompileTime - IMP_EIGEN_PLAIN_ENUM_MAX(-DiagIndex, 0),
+                                                 MatrixType::MaxColsAtCompileTime - IMP_EIGEN_PLAIN_ENUM_MAX( DiagIndex, 0))),
     MaxColsAtCompileTime = 1,
     MaskLvalueBit = is_lvalue<MatrixType>::value ? LvalueBit : 0,
     Flags = (unsigned int)_MatrixTypeNested::Flags & (HereditaryBits | LinearAccessBit | MaskLvalueBit | DirectAccessBit) & ~RowMajorBit,
@@ -68,11 +68,11 @@ template<typename MatrixType, int _DiagIndex> class Diagonal
 
     enum { DiagIndex = _DiagIndex };
     typedef typename internal::dense_xpr_base<Diagonal>::type Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(Diagonal)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(Diagonal)
 
     inline Diagonal(MatrixType& matrix, Index a_index = DiagIndex) : m_matrix(matrix), m_index(a_index) {}
 
-    EIGEN_INHERIT_ASSIGNMENT_OPERATORS(Diagonal)
+    IMP_EIGEN_INHERIT_ASSIGNMENT_OPERATORS(Diagonal)
 
     inline Index rows() const
     { return m_index.value()<0 ? (std::min<Index>)(m_matrix.cols(),m_matrix.rows()+m_index.value()) : (std::min<Index>)(m_matrix.rows(),m_matrix.cols()-m_index.value()); }
@@ -100,7 +100,7 @@ template<typename MatrixType, int _DiagIndex> class Diagonal
 
     inline Scalar& coeffRef(Index row, Index)
     {
-      EIGEN_STATIC_ASSERT_LVALUE(MatrixType)
+      IMP_EIGEN_STATIC_ASSERT_LVALUE(MatrixType)
       return m_matrix.const_cast_derived().coeffRef(row+rowOffset(), row+colOffset());
     }
 
@@ -116,7 +116,7 @@ template<typename MatrixType, int _DiagIndex> class Diagonal
 
     inline Scalar& coeffRef(Index idx)
     {
-      EIGEN_STATIC_ASSERT_LVALUE(MatrixType)
+      IMP_EIGEN_STATIC_ASSERT_LVALUE(MatrixType)
       return m_matrix.const_cast_derived().coeffRef(idx+rowOffset(), idx+colOffset());
     }
 
@@ -147,9 +147,9 @@ template<typename MatrixType, int _DiagIndex> class Diagonal
 
   private:
     // some compilers may fail to optimize std::max etc in case of compile-time constants...
-    EIGEN_STRONG_INLINE Index absDiagIndex() const { return m_index.value()>0 ? m_index.value() : -m_index.value(); }
-    EIGEN_STRONG_INLINE Index rowOffset() const { return m_index.value()>0 ? 0 : -m_index.value(); }
-    EIGEN_STRONG_INLINE Index colOffset() const { return m_index.value()>0 ? m_index.value() : 0; }
+    IMP_EIGEN_STRONG_INLINE Index absDiagIndex() const { return m_index.value()>0 ? m_index.value() : -m_index.value(); }
+    IMP_EIGEN_STRONG_INLINE Index rowOffset() const { return m_index.value()>0 ? 0 : -m_index.value(); }
+    IMP_EIGEN_STRONG_INLINE Index colOffset() const { return m_index.value()>0 ? m_index.value() : 0; }
     // triger a compile time error is someone try to call packet
     template<int LoadMode> typename MatrixType::PacketReturnType packet(Index) const;
     template<int LoadMode> typename MatrixType::PacketReturnType packet(Index,Index) const;
@@ -232,6 +232,6 @@ MatrixBase<Derived>::diagonal() const
   return derived();
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_DIAGONAL_H
+#endif // IMP_EIGEN_DIAGONAL_H

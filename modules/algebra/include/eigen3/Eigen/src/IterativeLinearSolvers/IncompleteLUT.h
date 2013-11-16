@@ -7,11 +7,11 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_INCOMPLETE_LUT_H
-#define EIGEN_INCOMPLETE_LUT_H
+#ifndef IMP_EIGEN_INCOMPLETE_LUT_H
+#define IMP_EIGEN_INCOMPLETE_LUT_H
 
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
     
@@ -452,7 +452,7 @@ struct solve_retval<IncompleteLUT<_MatrixType>, Rhs>
   : solve_retval_base<IncompleteLUT<_MatrixType>, Rhs>
 {
   typedef IncompleteLUT<_MatrixType> Dec;
-  EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
+  IMP_EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -462,6 +462,6 @@ struct solve_retval<IncompleteLUT<_MatrixType>, Rhs>
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_INCOMPLETE_LUT_H
+#endif // IMP_EIGEN_INCOMPLETE_LUT_H

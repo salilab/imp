@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_MATRIX_H
-#define EIGEN_MATRIX_H
+#ifndef IMP_EIGEN_MATRIX_H
+#define IMP_EIGEN_MATRIX_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 /** \class Matrix
   * \ingroup Core_Module
@@ -54,20 +54,20 @@ namespace Eigen {
   * You can access elements of vectors and matrices using normal subscripting:
   *
   * \code
-  * Eigen::VectorXd v(10);
+  * IMP_Eigen::VectorXd v(10);
   * v[0] = 0.1;
   * v[1] = 0.2;
   * v(0) = 0.3;
   * v(1) = 0.4;
   *
-  * Eigen::MatrixXi m(10, 10);
+  * IMP_Eigen::MatrixXi m(10, 10);
   * m(0, 1) = 1;
   * m(0, 2) = 2;
   * m(0, 3) = 3;
   * \endcode
   *
   * This class can be extended with the help of the plugin mechanism described on the page
-  * \ref TopicCustomizingEigen by defining the preprocessor symbol \c EIGEN_MATRIX_PLUGIN.
+  * \ref TopicCustomizingEigen by defining the preprocessor symbol \c IMP_EIGEN_MATRIX_PLUGIN.
   *
   * <i><b>Some notes:</b></i>
   *
@@ -136,7 +136,7 @@ class Matrix
 
     enum { Options = _Options };
 
-    EIGEN_DENSE_PUBLIC_INTERFACE(Matrix)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(Matrix)
 
     typedef typename Base::PlainObject PlainObject;
 
@@ -151,7 +151,7 @@ class Matrix
       *
       * \callgraph
       */
-    EIGEN_STRONG_INLINE Matrix& operator=(const Matrix& other)
+    IMP_EIGEN_STRONG_INLINE Matrix& operator=(const Matrix& other)
     {
       return Base::_set(other);
     }
@@ -167,7 +167,7 @@ class Matrix
       * remain row-vectors and vectors remain vectors.
       */
     template<typename OtherDerived>
-    EIGEN_STRONG_INLINE Matrix& operator=(const MatrixBase<OtherDerived>& other)
+    IMP_EIGEN_STRONG_INLINE Matrix& operator=(const MatrixBase<OtherDerived>& other)
     {
       return Base::_set(other);
     }
@@ -179,13 +179,13 @@ class Matrix
       * \copydetails DenseBase::operator=(const EigenBase<OtherDerived> &other)
       */
     template<typename OtherDerived>
-    EIGEN_STRONG_INLINE Matrix& operator=(const EigenBase<OtherDerived> &other)
+    IMP_EIGEN_STRONG_INLINE Matrix& operator=(const EigenBase<OtherDerived> &other)
     {
       return Base::operator=(other);
     }
 
     template<typename OtherDerived>
-    EIGEN_STRONG_INLINE Matrix& operator=(const ReturnByValue<OtherDerived>& func)
+    IMP_EIGEN_STRONG_INLINE Matrix& operator=(const ReturnByValue<OtherDerived>& func)
     {
       return Base::operator=(func);
     }
@@ -200,16 +200,16 @@ class Matrix
       *
       * \sa resize(Index,Index)
       */
-    EIGEN_STRONG_INLINE Matrix() : Base()
+    IMP_EIGEN_STRONG_INLINE Matrix() : Base()
     {
       Base::_check_template_params();
-      EIGEN_INITIALIZE_COEFFS_IF_THAT_OPTION_IS_ENABLED
+      IMP_EIGEN_INITIALIZE_COEFFS_IF_THAT_OPTION_IS_ENABLED
     }
 
     // FIXME is it still needed
     Matrix(internal::constructor_without_unaligned_array_assert)
       : Base(internal::constructor_without_unaligned_array_assert())
-    { Base::_check_template_params(); EIGEN_INITIALIZE_COEFFS_IF_THAT_OPTION_IS_ENABLED }
+    { Base::_check_template_params(); IMP_EIGEN_INITIALIZE_COEFFS_IF_THAT_OPTION_IS_ENABLED }
 
     /** \brief Constructs a vector or row-vector with given dimension. \only_for_vectors
       *
@@ -217,19 +217,19 @@ class Matrix
       * it is redundant to pass the dimension here, so it makes more sense to use the default
       * constructor Matrix() instead.
       */
-    EIGEN_STRONG_INLINE explicit Matrix(Index dim)
+    IMP_EIGEN_STRONG_INLINE explicit Matrix(Index dim)
       : Base(dim, RowsAtCompileTime == 1 ? 1 : dim, ColsAtCompileTime == 1 ? 1 : dim)
     {
       Base::_check_template_params();
-      EIGEN_STATIC_ASSERT_VECTOR_ONLY(Matrix)
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(Matrix)
       eigen_assert(dim >= 0);
       eigen_assert(SizeAtCompileTime == Dynamic || SizeAtCompileTime == dim);
-      EIGEN_INITIALIZE_COEFFS_IF_THAT_OPTION_IS_ENABLED
+      IMP_EIGEN_INITIALIZE_COEFFS_IF_THAT_OPTION_IS_ENABLED
     }
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     template<typename T0, typename T1>
-    EIGEN_STRONG_INLINE Matrix(const T0& x, const T1& y)
+    IMP_EIGEN_STRONG_INLINE Matrix(const T0& x, const T1& y)
     {
       Base::_check_template_params();
       Base::template _init2<T0,T1>(x, y);
@@ -246,19 +246,19 @@ class Matrix
     #endif
 
     /** \brief Constructs an initialized 3D vector with given coefficients */
-    EIGEN_STRONG_INLINE Matrix(const Scalar& x, const Scalar& y, const Scalar& z)
+    IMP_EIGEN_STRONG_INLINE Matrix(const Scalar& x, const Scalar& y, const Scalar& z)
     {
       Base::_check_template_params();
-      EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Matrix, 3)
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Matrix, 3)
       m_storage.data()[0] = x;
       m_storage.data()[1] = y;
       m_storage.data()[2] = z;
     }
     /** \brief Constructs an initialized 4D vector with given coefficients */
-    EIGEN_STRONG_INLINE Matrix(const Scalar& x, const Scalar& y, const Scalar& z, const Scalar& w)
+    IMP_EIGEN_STRONG_INLINE Matrix(const Scalar& x, const Scalar& y, const Scalar& z, const Scalar& w)
     {
       Base::_check_template_params();
-      EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Matrix, 4)
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Matrix, 4)
       m_storage.data()[0] = x;
       m_storage.data()[1] = y;
       m_storage.data()[2] = z;
@@ -269,19 +269,19 @@ class Matrix
 
     /** \brief Constructor copying the value of the expression \a other */
     template<typename OtherDerived>
-    EIGEN_STRONG_INLINE Matrix(const MatrixBase<OtherDerived>& other)
+    IMP_EIGEN_STRONG_INLINE Matrix(const MatrixBase<OtherDerived>& other)
              : Base(other.rows() * other.cols(), other.rows(), other.cols())
     {
       // This test resides here, to bring the error messages closer to the user. Normally, these checks
       // are performed deeply within the library, thus causing long and scary error traces.
-      EIGEN_STATIC_ASSERT((internal::is_same<Scalar, typename OtherDerived::Scalar>::value),
+      IMP_EIGEN_STATIC_ASSERT((internal::is_same<Scalar, typename OtherDerived::Scalar>::value),
         YOU_MIXED_DIFFERENT_NUMERIC_TYPES__YOU_NEED_TO_USE_THE_CAST_METHOD_OF_MATRIXBASE_TO_CAST_NUMERIC_TYPES_EXPLICITLY)
 
       Base::_check_template_params();
       Base::_set_noalias(other);
     }
     /** \brief Copy constructor */
-    EIGEN_STRONG_INLINE Matrix(const Matrix& other)
+    IMP_EIGEN_STRONG_INLINE Matrix(const Matrix& other)
             : Base(other.rows() * other.cols(), other.rows(), other.cols())
     {
       Base::_check_template_params();
@@ -289,7 +289,7 @@ class Matrix
     }
     /** \brief Copy constructor with in-place evaluation */
     template<typename OtherDerived>
-    EIGEN_STRONG_INLINE Matrix(const ReturnByValue<OtherDerived>& other)
+    IMP_EIGEN_STRONG_INLINE Matrix(const ReturnByValue<OtherDerived>& other)
     {
       Base::_check_template_params();
       Base::resize(other.rows(), other.cols());
@@ -300,7 +300,7 @@ class Matrix
       * \sa MatrixBase::operator=(const EigenBase<OtherDerived>&)
       */
     template<typename OtherDerived>
-    EIGEN_STRONG_INLINE Matrix(const EigenBase<OtherDerived> &other)
+    IMP_EIGEN_STRONG_INLINE Matrix(const EigenBase<OtherDerived> &other)
       : Base(other.derived().rows() * other.derived().cols(), other.derived().rows(), other.derived().cols())
     {
       Base::_check_template_params();
@@ -328,7 +328,7 @@ class Matrix
     template<typename OtherDerived>
     Matrix& operator=(const RotationBase<OtherDerived,ColsAtCompileTime>& r);
 
-    #ifdef EIGEN2_SUPPORT
+    #ifdef IMP_EIGEN2_SUPPORT
     template<typename OtherDerived>
     explicit Matrix(const eigen2_RotationBase<OtherDerived,ColsAtCompileTime>& r);
     template<typename OtherDerived>
@@ -336,8 +336,8 @@ class Matrix
     #endif
 
     // allow to extend Matrix outside Eigen
-    #ifdef EIGEN_MATRIX_PLUGIN
-    #include EIGEN_MATRIX_PLUGIN
+    #ifdef IMP_EIGEN_MATRIX_PLUGIN
+    #include IMP_EIGEN_MATRIX_PLUGIN
     #endif
 
   protected:
@@ -367,7 +367,7 @@ class Matrix
   * \sa class Matrix
   */
 
-#define EIGEN_MAKE_TYPEDEFS(Type, TypeSuffix, Size, SizeSuffix)   \
+#define IMP_EIGEN_MAKE_TYPEDEFS(Type, TypeSuffix, Size, SizeSuffix)   \
 /** \ingroup matrixtypedefs */                                    \
 typedef Matrix<Type, Size, Size> Matrix##SizeSuffix##TypeSuffix;  \
 /** \ingroup matrixtypedefs */                                    \
@@ -375,31 +375,31 @@ typedef Matrix<Type, Size, 1>    Vector##SizeSuffix##TypeSuffix;  \
 /** \ingroup matrixtypedefs */                                    \
 typedef Matrix<Type, 1, Size>    RowVector##SizeSuffix##TypeSuffix;
 
-#define EIGEN_MAKE_FIXED_TYPEDEFS(Type, TypeSuffix, Size)         \
+#define IMP_EIGEN_MAKE_FIXED_TYPEDEFS(Type, TypeSuffix, Size)         \
 /** \ingroup matrixtypedefs */                                    \
 typedef Matrix<Type, Size, Dynamic> Matrix##Size##X##TypeSuffix;  \
 /** \ingroup matrixtypedefs */                                    \
 typedef Matrix<Type, Dynamic, Size> Matrix##X##Size##TypeSuffix;
 
-#define EIGEN_MAKE_TYPEDEFS_ALL_SIZES(Type, TypeSuffix) \
-EIGEN_MAKE_TYPEDEFS(Type, TypeSuffix, 2, 2) \
-EIGEN_MAKE_TYPEDEFS(Type, TypeSuffix, 3, 3) \
-EIGEN_MAKE_TYPEDEFS(Type, TypeSuffix, 4, 4) \
-EIGEN_MAKE_TYPEDEFS(Type, TypeSuffix, Dynamic, X) \
-EIGEN_MAKE_FIXED_TYPEDEFS(Type, TypeSuffix, 2) \
-EIGEN_MAKE_FIXED_TYPEDEFS(Type, TypeSuffix, 3) \
-EIGEN_MAKE_FIXED_TYPEDEFS(Type, TypeSuffix, 4)
+#define IMP_EIGEN_MAKE_TYPEDEFS_ALL_SIZES(Type, TypeSuffix) \
+IMP_EIGEN_MAKE_TYPEDEFS(Type, TypeSuffix, 2, 2) \
+IMP_EIGEN_MAKE_TYPEDEFS(Type, TypeSuffix, 3, 3) \
+IMP_EIGEN_MAKE_TYPEDEFS(Type, TypeSuffix, 4, 4) \
+IMP_EIGEN_MAKE_TYPEDEFS(Type, TypeSuffix, Dynamic, X) \
+IMP_EIGEN_MAKE_FIXED_TYPEDEFS(Type, TypeSuffix, 2) \
+IMP_EIGEN_MAKE_FIXED_TYPEDEFS(Type, TypeSuffix, 3) \
+IMP_EIGEN_MAKE_FIXED_TYPEDEFS(Type, TypeSuffix, 4)
 
-EIGEN_MAKE_TYPEDEFS_ALL_SIZES(int,                  i)
-EIGEN_MAKE_TYPEDEFS_ALL_SIZES(float,                f)
-EIGEN_MAKE_TYPEDEFS_ALL_SIZES(double,               d)
-EIGEN_MAKE_TYPEDEFS_ALL_SIZES(std::complex<float>,  cf)
-EIGEN_MAKE_TYPEDEFS_ALL_SIZES(std::complex<double>, cd)
+IMP_EIGEN_MAKE_TYPEDEFS_ALL_SIZES(int,                  i)
+IMP_EIGEN_MAKE_TYPEDEFS_ALL_SIZES(float,                f)
+IMP_EIGEN_MAKE_TYPEDEFS_ALL_SIZES(double,               d)
+IMP_EIGEN_MAKE_TYPEDEFS_ALL_SIZES(std::complex<float>,  cf)
+IMP_EIGEN_MAKE_TYPEDEFS_ALL_SIZES(std::complex<double>, cd)
 
-#undef EIGEN_MAKE_TYPEDEFS_ALL_SIZES
-#undef EIGEN_MAKE_TYPEDEFS
-#undef EIGEN_MAKE_FIXED_TYPEDEFS
+#undef IMP_EIGEN_MAKE_TYPEDEFS_ALL_SIZES
+#undef IMP_EIGEN_MAKE_TYPEDEFS
+#undef IMP_EIGEN_MAKE_FIXED_TYPEDEFS
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_MATRIX_H
+#endif // IMP_EIGEN_MATRIX_H

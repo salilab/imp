@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_TRIANGULAR_MATRIX_MATRIX_H
-#define EIGEN_TRIANGULAR_MATRIX_MATRIX_H
+#ifndef IMP_EIGEN_TRIANGULAR_MATRIX_MATRIX_H
+#define IMP_EIGEN_TRIANGULAR_MATRIX_MATRIX_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -18,7 +18,7 @@ namespace internal {
 // struct gemm_pack_lhs_triangular
 // {
 //   Matrix<Scalar,mr,mr,
-//   void operator()(Scalar* blockA, const EIGEN_RESTRICT Scalar* _lhs, int lhsStride, int depth, int rows)
+//   void operator()(Scalar* blockA, const IMP_EIGEN_RESTRICT Scalar* _lhs, int lhsStride, int depth, int rows)
 //   {
 //     conj_if<NumTraits<Scalar>::IsComplex && Conjugate> cj;
 //     const_blas_data_mapper<Scalar, StorageOrder> lhs(_lhs,lhsStride);
@@ -56,7 +56,7 @@ struct product_triangular_matrix_matrix<Scalar,Index,Mode,LhsIsTriangular,
                                            LhsStorageOrder,ConjugateLhs,
                                            RhsStorageOrder,ConjugateRhs,RowMajor,Version>
 {
-  static EIGEN_STRONG_INLINE void run(
+  static IMP_EIGEN_STRONG_INLINE void run(
     Index rows, Index cols, Index depth,
     const Scalar* lhs, Index lhsStride,
     const Scalar* rhs, Index rhsStride,
@@ -86,12 +86,12 @@ struct product_triangular_matrix_matrix<Scalar,Index,Mode,true,
   
   typedef gebp_traits<Scalar,Scalar> Traits;
   enum {
-    SmallPanelWidth   = 2 * EIGEN_PLAIN_ENUM_MAX(Traits::mr,Traits::nr),
+    SmallPanelWidth   = 2 * IMP_EIGEN_PLAIN_ENUM_MAX(Traits::mr,Traits::nr),
     IsLower = (Mode&Lower) == Lower,
     SetDiag = (Mode&(ZeroDiag|UnitDiag)) ? 0 : 1
   };
 
-  static EIGEN_DONT_INLINE void run(
+  static IMP_EIGEN_DONT_INLINE void run(
     Index _rows, Index _cols, Index _depth,
     const Scalar* _lhs, Index lhsStride,
     const Scalar* _rhs, Index rhsStride,
@@ -102,7 +102,7 @@ struct product_triangular_matrix_matrix<Scalar,Index,Mode,true,
 template <typename Scalar, typename Index, int Mode,
           int LhsStorageOrder, bool ConjugateLhs,
           int RhsStorageOrder, bool ConjugateRhs, int Version>
-EIGEN_DONT_INLINE void product_triangular_matrix_matrix<Scalar,Index,Mode,true,
+IMP_EIGEN_DONT_INLINE void product_triangular_matrix_matrix<Scalar,Index,Mode,true,
                                                         LhsStorageOrder,ConjugateLhs,
                                                         RhsStorageOrder,ConjugateRhs,ColMajor,Version>::run(
     Index _rows, Index _cols, Index _depth,
@@ -227,12 +227,12 @@ struct product_triangular_matrix_matrix<Scalar,Index,Mode,false,
 {
   typedef gebp_traits<Scalar,Scalar> Traits;
   enum {
-    SmallPanelWidth   = EIGEN_PLAIN_ENUM_MAX(Traits::mr,Traits::nr),
+    SmallPanelWidth   = IMP_EIGEN_PLAIN_ENUM_MAX(Traits::mr,Traits::nr),
     IsLower = (Mode&Lower) == Lower,
     SetDiag = (Mode&(ZeroDiag|UnitDiag)) ? 0 : 1
   };
 
-  static EIGEN_DONT_INLINE void run(
+  static IMP_EIGEN_DONT_INLINE void run(
     Index _rows, Index _cols, Index _depth,
     const Scalar* _lhs, Index lhsStride,
     const Scalar* _rhs, Index rhsStride,
@@ -243,7 +243,7 @@ struct product_triangular_matrix_matrix<Scalar,Index,Mode,false,
 template <typename Scalar, typename Index, int Mode,
           int LhsStorageOrder, bool ConjugateLhs,
           int RhsStorageOrder, bool ConjugateRhs, int Version>
-EIGEN_DONT_INLINE void product_triangular_matrix_matrix<Scalar,Index,Mode,false,
+IMP_EIGEN_DONT_INLINE void product_triangular_matrix_matrix<Scalar,Index,Mode,false,
                                                         LhsStorageOrder,ConjugateLhs,
                                                         RhsStorageOrder,ConjugateRhs,ColMajor,Version>::run(
     Index _rows, Index _cols, Index _depth,
@@ -384,7 +384,7 @@ template<int Mode, bool LhsIsTriangular, typename Lhs, typename Rhs>
 struct TriangularProduct<Mode,LhsIsTriangular,Lhs,false,Rhs,false>
   : public ProductBase<TriangularProduct<Mode,LhsIsTriangular,Lhs,false,Rhs,false>, Lhs, Rhs >
 {
-  EIGEN_PRODUCT_PUBLIC_INTERFACE(TriangularProduct)
+  IMP_EIGEN_PRODUCT_PUBLIC_INTERFACE(TriangularProduct)
 
   TriangularProduct(const Lhs& lhs, const Rhs& rhs) : Base(lhs,rhs) {}
 
@@ -422,6 +422,6 @@ struct TriangularProduct<Mode,LhsIsTriangular,Lhs,false,Rhs,false>
   }
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_TRIANGULAR_MATRIX_MATRIX_H
+#endif // IMP_EIGEN_TRIANGULAR_MATRIX_MATRIX_H

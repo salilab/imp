@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPARSE_SELFADJOINTVIEW_H
-#define EIGEN_SPARSE_SELFADJOINTVIEW_H
+#ifndef IMP_EIGEN_SPARSE_SELFADJOINTVIEW_H
+#define IMP_EIGEN_SPARSE_SELFADJOINTVIEW_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \ingroup SparseCore_Module
   * \class SparseSelfAdjointView
@@ -226,14 +226,14 @@ class SparseSelfAdjointTimeDenseProduct
   : public ProductBase<SparseSelfAdjointTimeDenseProduct<Lhs,Rhs,UpLo>, Lhs, Rhs>
 {
   public:
-    EIGEN_PRODUCT_PUBLIC_INTERFACE(SparseSelfAdjointTimeDenseProduct)
+    IMP_EIGEN_PRODUCT_PUBLIC_INTERFACE(SparseSelfAdjointTimeDenseProduct)
 
     SparseSelfAdjointTimeDenseProduct(const Lhs& lhs, const Rhs& rhs) : Base(lhs,rhs)
     {}
 
     template<typename Dest> void scaleAndAddTo(Dest& dest, const Scalar& alpha) const
     {
-      EIGEN_ONLY_USED_FOR_DEBUG(alpha);
+      IMP_EIGEN_ONLY_USED_FOR_DEBUG(alpha);
       // TODO use alpha
       eigen_assert(alpha==Scalar(1) && "alpha != 1 is not implemented yet, sorry");
       typedef typename internal::remove_all<Lhs>::type _Lhs;
@@ -287,7 +287,7 @@ class DenseTimeSparseSelfAdjointProduct
   : public ProductBase<DenseTimeSparseSelfAdjointProduct<Lhs,Rhs,UpLo>, Lhs, Rhs>
 {
   public:
-    EIGEN_PRODUCT_PUBLIC_INTERFACE(DenseTimeSparseSelfAdjointProduct)
+    IMP_EIGEN_PRODUCT_PUBLIC_INTERFACE(DenseTimeSparseSelfAdjointProduct)
 
     DenseTimeSparseSelfAdjointProduct(const Lhs& lhs, const Rhs& rhs) : Base(lhs,rhs)
     {}
@@ -502,6 +502,6 @@ class SparseSymmetricPermutationProduct
 
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SPARSE_SELFADJOINTVIEW_H
+#endif // IMP_EIGEN_SPARSE_SELFADJOINTVIEW_H

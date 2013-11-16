@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_TRANSLATION_H
-#define EIGEN_TRANSLATION_H
+#ifndef IMP_EIGEN_TRANSLATION_H
+#define IMP_EIGEN_TRANSLATION_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \geometry_module \ingroup Geometry_Module
   *
@@ -30,7 +30,7 @@ template<typename _Scalar, int _Dim>
 class Translation
 {
 public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_Dim)
+  IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_Dim)
   /** dimension of the space */
   enum { Dim = _Dim };
   /** the scalar type of the coefficients */
@@ -201,6 +201,6 @@ Translation<Scalar,Dim>::operator* (const EigenBase<OtherDerived>& linear) const
   return res;
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_TRANSLATION_H
+#endif // IMP_EIGEN_TRANSLATION_H

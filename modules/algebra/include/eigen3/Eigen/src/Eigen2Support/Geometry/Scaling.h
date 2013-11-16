@@ -9,7 +9,7 @@
 
 // no include guard, we'll include this twice from All.h from Eigen2Support, and it's internal anyway
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \geometry_module \ingroup Geometry_Module
   *
@@ -29,7 +29,7 @@ template<typename _Scalar, int _Dim>
 class Scaling
 {
 public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_Dim)
+  IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_Dim)
   /** dimension of the space */
   enum { Dim = _Dim };
   /** the scalar type of the coefficients */
@@ -164,4 +164,4 @@ Scaling<Scalar,Dim>::operator* (const TransformType& t) const
   return res;
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen

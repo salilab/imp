@@ -7,8 +7,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_LEVENBERGMARQUARDT_MODULE
-#define EIGEN_LEVENBERGMARQUARDT_MODULE
+#ifndef IMP_EIGEN_LEVENBERGMARQUARDT_MODULE
+#define IMP_EIGEN_LEVENBERGMARQUARDT_MODULE
 
 // #include <vector>
 
@@ -30,7 +30,7 @@
   */
 
 #include "Eigen/SparseCore"
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
 
 #include "src/LevenbergMarquardt/LMqrsolv.h"
 #include "src/LevenbergMarquardt/LMcovar.h"
@@ -42,4 +42,4 @@
 #include "src/LevenbergMarquardt/LMonestep.h"
 
 
-#endif // EIGEN_LEVENBERGMARQUARDT_MODULE
+#endif // IMP_EIGEN_LEVENBERGMARQUARDT_MODULE

@@ -8,12 +8,12 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SELFADJOINTEIGENSOLVER_H
-#define EIGEN_SELFADJOINTEIGENSOLVER_H
+#ifndef IMP_EIGEN_SELFADJOINTEIGENSOLVER_H
+#define IMP_EIGEN_SELFADJOINTEIGENSOLVER_H
 
 #include "./Tridiagonalization.h"
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 template<typename _MatrixType>
 class GeneralizedSelfAdjointEigenSolver;
@@ -320,7 +320,7 @@ template<typename _MatrixType> class SelfAdjointEigenSolver
       */
     static const int m_maxIterations = 30;
 
-    #ifdef EIGEN2_SUPPORT
+    #ifdef IMP_EIGEN2_SUPPORT
     SelfAdjointEigenSolver(const MatrixType& matrix, bool computeEigenvectors)
       : m_eivec(matrix.rows(), matrix.cols()),
         m_eivalues(matrix.cols()),
@@ -348,7 +348,7 @@ template<typename _MatrixType> class SelfAdjointEigenSolver
     {
       compute(matA, matB, computeEigenvectors ? ComputeEigenvectors : EigenvaluesOnly);
     }
-    #endif // EIGEN2_SUPPORT
+    #endif // IMP_EIGEN2_SUPPORT
 
   protected:
     MatrixType m_eivec;
@@ -562,9 +562,9 @@ template<typename SolverType> struct direct_selfadjoint_eigenvalues<SolverType,3
     // compute the eigen vectors
     if(computeEigenvectors)
     {
-      Scalar safeNorm2 = Eigen::NumTraits<Scalar>::epsilon();
+      Scalar safeNorm2 = IMP_Eigen::NumTraits<Scalar>::epsilon();
       safeNorm2 *= safeNorm2;
-      if((eivals(2)-eivals(0))<=Eigen::NumTraits<Scalar>::epsilon())
+      if((eivals(2)-eivals(0))<=IMP_Eigen::NumTraits<Scalar>::epsilon())
       {
         eivecs.setIdentity();
       }
@@ -616,7 +616,7 @@ template<typename SolverType> struct direct_selfadjoint_eigenvalues<SolverType,3
         tmp = scaledMat;
         tmp.diagonal().array() -= eivals(1);
 
-        if(d0<=Eigen::NumTraits<Scalar>::epsilon())
+        if(d0<=IMP_Eigen::NumTraits<Scalar>::epsilon())
           eivecs.col(1) = eivecs.col(k).unitOrthogonal();
         else
         {
@@ -797,6 +797,6 @@ static void tridiagonal_qr_step(RealScalar* diag, RealScalar* subdiag, Index sta
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SELFADJOINTEIGENSOLVER_H
+#endif // IMP_EIGEN_SELFADJOINTEIGENSOLVER_H

@@ -9,7 +9,7 @@
 
 // no include guard, we'll include this twice from All.h from Eigen2Support, and it's internal anyway
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 template<typename Other,
          int OtherRows=Other::RowsAtCompileTime,
@@ -49,7 +49,7 @@ class Quaternion : public RotationBase<Quaternion<_Scalar>,3>
   typedef RotationBase<Quaternion<_Scalar>,3> Base;
 
 public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,4)
+  IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,4)
 
   using Base::operator*;
 
@@ -492,4 +492,4 @@ struct ei_quaternion_assign_impl<Other,4,1>
   }
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen

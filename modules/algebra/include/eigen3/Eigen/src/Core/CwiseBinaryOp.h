@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_CWISE_BINARY_OP_H
-#define EIGEN_CWISE_BINARY_OP_H
+#ifndef IMP_EIGEN_CWISE_BINARY_OP_H
+#define IMP_EIGEN_CWISE_BINARY_OP_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 /** \class CwiseBinaryOp
   * \ingroup Core_Module
@@ -93,8 +93,8 @@ struct traits<CwiseBinaryOp<BinaryOp, Lhs, Rhs> >
 // It is tempting to always allow mixing different types but remember that this is often impossible in the vectorized paths.
 // So allowing mixing different types gives very unexpected errors when enabling vectorization, when the user tries to
 // add together a float matrix and a double matrix.
-#define EIGEN_CHECK_BINARY_COMPATIBILIY(BINOP,LHS,RHS) \
-  EIGEN_STATIC_ASSERT((internal::functor_is_product_like<BINOP>::ret \
+#define IMP_EIGEN_CHECK_BINARY_COMPATIBILIY(BINOP,LHS,RHS) \
+  IMP_EIGEN_STATIC_ASSERT((internal::functor_is_product_like<BINOP>::ret \
                         ? int(internal::scalar_product_traits<LHS, RHS>::Defined) \
                         : int(internal::is_same<LHS, RHS>::value)), \
     YOU_MIXED_DIFFERENT_NUMERIC_TYPES__YOU_NEED_TO_USE_THE_CAST_METHOD_OF_MATRIXBASE_TO_CAST_NUMERIC_TYPES_EXPLICITLY)
@@ -115,30 +115,30 @@ class CwiseBinaryOp : internal::no_assignment_operator,
         BinaryOp, Lhs, Rhs,
         typename internal::promote_storage_type<typename internal::traits<Lhs>::StorageKind,
                                          typename internal::traits<Rhs>::StorageKind>::ret>::Base Base;
-    EIGEN_GENERIC_PUBLIC_INTERFACE(CwiseBinaryOp)
+    IMP_EIGEN_GENERIC_PUBLIC_INTERFACE(CwiseBinaryOp)
 
     typedef typename internal::nested<Lhs>::type LhsNested;
     typedef typename internal::nested<Rhs>::type RhsNested;
     typedef typename internal::remove_reference<LhsNested>::type _LhsNested;
     typedef typename internal::remove_reference<RhsNested>::type _RhsNested;
 
-    EIGEN_STRONG_INLINE CwiseBinaryOp(const Lhs& aLhs, const Rhs& aRhs, const BinaryOp& func = BinaryOp())
+    IMP_EIGEN_STRONG_INLINE CwiseBinaryOp(const Lhs& aLhs, const Rhs& aRhs, const BinaryOp& func = BinaryOp())
       : m_lhs(aLhs), m_rhs(aRhs), m_functor(func)
     {
-      EIGEN_CHECK_BINARY_COMPATIBILIY(BinaryOp,typename Lhs::Scalar,typename Rhs::Scalar);
+      IMP_EIGEN_CHECK_BINARY_COMPATIBILIY(BinaryOp,typename Lhs::Scalar,typename Rhs::Scalar);
       // require the sizes to match
-      EIGEN_STATIC_ASSERT_SAME_MATRIX_SIZE(Lhs, Rhs)
+      IMP_EIGEN_STATIC_ASSERT_SAME_MATRIX_SIZE(Lhs, Rhs)
       eigen_assert(aLhs.rows() == aRhs.rows() && aLhs.cols() == aRhs.cols());
     }
 
-    EIGEN_STRONG_INLINE Index rows() const {
+    IMP_EIGEN_STRONG_INLINE Index rows() const {
       // return the fixed size type if available to enable compile time optimizations
       if (internal::traits<typename internal::remove_all<LhsNested>::type>::RowsAtCompileTime==Dynamic)
         return m_rhs.rows();
       else
         return m_lhs.rows();
     }
-    EIGEN_STRONG_INLINE Index cols() const {
+    IMP_EIGEN_STRONG_INLINE Index cols() const {
       // return the fixed size type if available to enable compile time optimizations
       if (internal::traits<typename internal::remove_all<LhsNested>::type>::ColsAtCompileTime==Dynamic)
         return m_rhs.cols();
@@ -167,29 +167,29 @@ class CwiseBinaryOpImpl<BinaryOp, Lhs, Rhs, Dense>
   public:
 
     typedef typename internal::dense_xpr_base<CwiseBinaryOp<BinaryOp, Lhs, Rhs> >::type Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE( Derived )
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE( Derived )
 
-    EIGEN_STRONG_INLINE const Scalar coeff(Index rowId, Index colId) const
+    IMP_EIGEN_STRONG_INLINE const Scalar coeff(Index rowId, Index colId) const
     {
       return derived().functor()(derived().lhs().coeff(rowId, colId),
                                  derived().rhs().coeff(rowId, colId));
     }
 
     template<int LoadMode>
-    EIGEN_STRONG_INLINE PacketScalar packet(Index rowId, Index colId) const
+    IMP_EIGEN_STRONG_INLINE PacketScalar packet(Index rowId, Index colId) const
     {
       return derived().functor().packetOp(derived().lhs().template packet<LoadMode>(rowId, colId),
                                           derived().rhs().template packet<LoadMode>(rowId, colId));
     }
 
-    EIGEN_STRONG_INLINE const Scalar coeff(Index index) const
+    IMP_EIGEN_STRONG_INLINE const Scalar coeff(Index index) const
     {
       return derived().functor()(derived().lhs().coeff(index),
                                  derived().rhs().coeff(index));
     }
 
     template<int LoadMode>
-    EIGEN_STRONG_INLINE PacketScalar packet(Index index) const
+    IMP_EIGEN_STRONG_INLINE PacketScalar packet(Index index) const
     {
       return derived().functor().packetOp(derived().lhs().template packet<LoadMode>(index),
                                           derived().rhs().template packet<LoadMode>(index));
@@ -202,7 +202,7 @@ class CwiseBinaryOpImpl<BinaryOp, Lhs, Rhs, Dense>
   */
 template<typename Derived>
 template<typename OtherDerived>
-EIGEN_STRONG_INLINE Derived &
+IMP_EIGEN_STRONG_INLINE Derived &
 MatrixBase<Derived>::operator-=(const MatrixBase<OtherDerived> &other)
 {
   SelfCwiseBinaryOp<internal::scalar_difference_op<Scalar>, Derived, OtherDerived> tmp(derived());
@@ -216,7 +216,7 @@ MatrixBase<Derived>::operator-=(const MatrixBase<OtherDerived> &other)
   */
 template<typename Derived>
 template<typename OtherDerived>
-EIGEN_STRONG_INLINE Derived &
+IMP_EIGEN_STRONG_INLINE Derived &
 MatrixBase<Derived>::operator+=(const MatrixBase<OtherDerived>& other)
 {
   SelfCwiseBinaryOp<internal::scalar_sum_op<Scalar>, Derived, OtherDerived> tmp(derived());
@@ -224,6 +224,6 @@ MatrixBase<Derived>::operator+=(const MatrixBase<OtherDerived>& other)
   return derived();
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_CWISE_BINARY_OP_H
+#endif // IMP_EIGEN_CWISE_BINARY_OP_H

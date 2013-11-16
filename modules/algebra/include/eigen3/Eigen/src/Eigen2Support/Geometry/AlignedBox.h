@@ -9,7 +9,7 @@
 
 // no include guard, we'll include this twice from All.h from Eigen2Support, and it's internal anyway
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \geometry_module \ingroup Geometry_Module
   * \nonstableyet
@@ -27,7 +27,7 @@ template <typename _Scalar, int _AmbientDim>
 class AlignedBox
 {
 public:
-EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_AmbientDim==Dynamic ? Dynamic : _AmbientDim+1)
+IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_AmbientDim==Dynamic ? Dynamic : _AmbientDim+1)
   enum { AmbientDimAtCompileTime = _AmbientDim };
   typedef _Scalar Scalar;
   typedef typename NumTraits<Scalar>::Real RealScalar;
@@ -156,4 +156,4 @@ inline Scalar AlignedBox<Scalar,AmbiantDim>::squaredExteriorDistance(const Vecto
   return dist2;
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen

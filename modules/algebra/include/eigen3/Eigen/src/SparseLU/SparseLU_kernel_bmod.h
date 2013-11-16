@@ -11,7 +11,7 @@
 #ifndef SPARSELU_KERNEL_BMOD_H
 #define SPARSELU_KERNEL_BMOD_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 namespace internal {
   
 /**
@@ -31,13 +31,13 @@ namespace internal {
 template <int SegSizeAtCompileTime> struct LU_kernel_bmod
 {
   template <typename BlockScalarVector, typename ScalarVector, typename IndexVector, typename Index>
-  static EIGEN_DONT_INLINE void run(const int segsize, BlockScalarVector& dense, ScalarVector& tempv, ScalarVector& lusup, Index& luptr, const Index lda,
+  static IMP_EIGEN_DONT_INLINE void run(const int segsize, BlockScalarVector& dense, ScalarVector& tempv, ScalarVector& lusup, Index& luptr, const Index lda,
                                     const Index nrow, IndexVector& lsub, const Index lptr, const Index no_zeros);
 };
 
 template <int SegSizeAtCompileTime>
 template <typename BlockScalarVector, typename ScalarVector, typename IndexVector, typename Index>
-EIGEN_DONT_INLINE void LU_kernel_bmod<SegSizeAtCompileTime>::run(const int segsize, BlockScalarVector& dense, ScalarVector& tempv, ScalarVector& lusup, Index& luptr, const Index lda,
+IMP_EIGEN_DONT_INLINE void LU_kernel_bmod<SegSizeAtCompileTime>::run(const int segsize, BlockScalarVector& dense, ScalarVector& tempv, ScalarVector& lusup, Index& luptr, const Index lda,
                                                                   const Index nrow, IndexVector& lsub, const Index lptr, const Index no_zeros)
 {
   typedef typename ScalarVector::Scalar Scalar;
@@ -92,13 +92,13 @@ EIGEN_DONT_INLINE void LU_kernel_bmod<SegSizeAtCompileTime>::run(const int segsi
 template <> struct LU_kernel_bmod<1>
 {
   template <typename BlockScalarVector, typename ScalarVector, typename IndexVector, typename Index>
-  static EIGEN_DONT_INLINE void run(const int /*segsize*/, BlockScalarVector& dense, ScalarVector& /*tempv*/, ScalarVector& lusup, Index& luptr,
+  static IMP_EIGEN_DONT_INLINE void run(const int /*segsize*/, BlockScalarVector& dense, ScalarVector& /*tempv*/, ScalarVector& lusup, Index& luptr,
                                     const Index lda, const Index nrow, IndexVector& lsub, const Index lptr, const Index no_zeros);
 };
 
 
 template <typename BlockScalarVector, typename ScalarVector, typename IndexVector, typename Index>
-EIGEN_DONT_INLINE void LU_kernel_bmod<1>::run(const int /*segsize*/, BlockScalarVector& dense, ScalarVector& /*tempv*/, ScalarVector& lusup, Index& luptr,
+IMP_EIGEN_DONT_INLINE void LU_kernel_bmod<1>::run(const int /*segsize*/, BlockScalarVector& dense, ScalarVector& /*tempv*/, ScalarVector& lusup, Index& luptr,
                                               const Index lda, const Index nrow, IndexVector& lsub, const Index lptr, const Index no_zeros)
 {
   typedef typename ScalarVector::Scalar Scalar;
@@ -126,5 +126,5 @@ EIGEN_DONT_INLINE void LU_kernel_bmod<1>::run(const int /*segsize*/, BlockScalar
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 #endif // SPARSELU_KERNEL_BMOD_H

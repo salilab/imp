@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_ROTATION2D_H
-#define EIGEN_ROTATION2D_H
+#ifndef IMP_EIGEN_ROTATION2D_H
+#define IMP_EIGEN_ROTATION2D_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \geometry_module \ingroup Geometry_Module
   *
@@ -134,7 +134,7 @@ template<typename Derived>
 Rotation2D<Scalar>& Rotation2D<Scalar>::fromRotationMatrix(const MatrixBase<Derived>& mat)
 {
   using std::atan2;
-  EIGEN_STATIC_ASSERT(Derived::RowsAtCompileTime==2 && Derived::ColsAtCompileTime==2,YOU_MADE_A_PROGRAMMING_MISTAKE)
+  IMP_EIGEN_STATIC_ASSERT(Derived::RowsAtCompileTime==2 && Derived::ColsAtCompileTime==2,YOU_MADE_A_PROGRAMMING_MISTAKE)
   m_angle = atan2(mat.coeff(1,0), mat.coeff(0,0));
   return *this;
 }
@@ -152,6 +152,6 @@ Rotation2D<Scalar>::toRotationMatrix(void) const
   return (Matrix2() << cosA, -sinA, sinA, cosA).finished();
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_ROTATION2D_H
+#endif // IMP_EIGEN_ROTATION2D_H

@@ -30,25 +30,25 @@
  ********************************************************************************
 */
 
-#ifndef EIGEN_PARTIALLU_LAPACK_H
-#define EIGEN_PARTIALLU_LAPACK_H
+#ifndef IMP_EIGEN_PARTIALLU_LAPACK_H
+#define IMP_EIGEN_PARTIALLU_LAPACK_H
 
 #include "Eigen/src/Core/util/MKL_support.h"
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
 /** \internal Specialization for the data types supported by MKL */
 
-#define EIGEN_MKL_LU_PARTPIV(EIGTYPE, MKLTYPE, MKLPREFIX) \
+#define IMP_EIGEN_MKL_LU_PARTPIV(EIGTYPE, MKLTYPE, MKLPREFIX) \
 template<int StorageOrder> \
 struct partial_lu_impl<EIGTYPE, StorageOrder, lapack_int> \
 { \
   /* \internal performs the LU decomposition in-place of the matrix represented */ \
   static lapack_int blocked_lu(lapack_int rows, lapack_int cols, EIGTYPE* lu_data, lapack_int luStride, lapack_int* row_transpositions, lapack_int& nb_transpositions, lapack_int maxBlockSize=256) \
   { \
-    EIGEN_UNUSED_VARIABLE(maxBlockSize);\
+    IMP_EIGEN_UNUSED_VARIABLE(maxBlockSize);\
     lapack_int matrix_order, first_zero_pivot; \
     lapack_int m, n, lda, *ipiv, info; \
     EIGTYPE* a; \
@@ -73,13 +73,13 @@ struct partial_lu_impl<EIGTYPE, StorageOrder, lapack_int> \
   } \
 };
 
-EIGEN_MKL_LU_PARTPIV(double, double, d)
-EIGEN_MKL_LU_PARTPIV(float, float, s)
-EIGEN_MKL_LU_PARTPIV(dcomplex, MKL_Complex16, z)
-EIGEN_MKL_LU_PARTPIV(scomplex, MKL_Complex8, c)
+IMP_EIGEN_MKL_LU_PARTPIV(double, double, d)
+IMP_EIGEN_MKL_LU_PARTPIV(float, float, s)
+IMP_EIGEN_MKL_LU_PARTPIV(dcomplex, MKL_Complex16, z)
+IMP_EIGEN_MKL_LU_PARTPIV(scomplex, MKL_Complex8, c)
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_PARTIALLU_LAPACK_H
+#endif // IMP_EIGEN_PARTIALLU_LAPACK_H

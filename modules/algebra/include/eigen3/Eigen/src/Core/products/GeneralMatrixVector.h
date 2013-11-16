@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_GENERAL_MATRIX_VECTOR_H
-#define EIGEN_GENERAL_MATRIX_VECTOR_H
+#ifndef IMP_EIGEN_GENERAL_MATRIX_VECTOR_H
+#define IMP_EIGEN_GENERAL_MATRIX_VECTOR_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -48,24 +48,24 @@ typedef typename conditional<Vectorizable,_LhsPacket,LhsScalar>::type LhsPacket;
 typedef typename conditional<Vectorizable,_RhsPacket,RhsScalar>::type RhsPacket;
 typedef typename conditional<Vectorizable,_ResPacket,ResScalar>::type ResPacket;
 
-EIGEN_DONT_INLINE static void run(
+IMP_EIGEN_DONT_INLINE static void run(
   Index rows, Index cols,
   const LhsScalar* lhs, Index lhsStride,
   const RhsScalar* rhs, Index rhsIncr,
   ResScalar* res, Index
-  #ifdef EIGEN_INTERNAL_DEBUGGING
+  #ifdef IMP_EIGEN_INTERNAL_DEBUGGING
     resIncr
   #endif
   , RhsScalar alpha);
 };
 
 template<typename Index, typename LhsScalar, bool ConjugateLhs, typename RhsScalar, bool ConjugateRhs, int Version>
-EIGEN_DONT_INLINE void general_matrix_vector_product<Index,LhsScalar,ColMajor,ConjugateLhs,RhsScalar,ConjugateRhs,Version>::run(
+IMP_EIGEN_DONT_INLINE void general_matrix_vector_product<Index,LhsScalar,ColMajor,ConjugateLhs,RhsScalar,ConjugateRhs,Version>::run(
   Index rows, Index cols,
   const LhsScalar* lhs, Index lhsStride,
   const RhsScalar* rhs, Index rhsIncr,
   ResScalar* res, Index
-  #ifdef EIGEN_INTERNAL_DEBUGGING
+  #ifdef IMP_EIGEN_INTERNAL_DEBUGGING
     resIncr
   #endif
   , RhsScalar alpha)
@@ -78,10 +78,10 @@ EIGEN_DONT_INLINE void general_matrix_vector_product<Index,LhsScalar,ColMajor,Co
     pstore(&res[j], \
       padd(pload<ResPacket>(&res[j]), \
         padd( \
-          padd(pcj.pmul(EIGEN_CAT(ploa , A0)<LhsPacket>(&lhs0[j]),    ptmp0), \
-                  pcj.pmul(EIGEN_CAT(ploa , A13)<LhsPacket>(&lhs1[j]),   ptmp1)), \
-          padd(pcj.pmul(EIGEN_CAT(ploa , A2)<LhsPacket>(&lhs2[j]),    ptmp2), \
-                  pcj.pmul(EIGEN_CAT(ploa , A13)<LhsPacket>(&lhs3[j]),   ptmp3)) )))
+          padd(pcj.pmul(IMP_EIGEN_CAT(ploa , A0)<LhsPacket>(&lhs0[j]),    ptmp0), \
+                  pcj.pmul(IMP_EIGEN_CAT(ploa , A13)<LhsPacket>(&lhs1[j]),   ptmp1)), \
+          padd(pcj.pmul(IMP_EIGEN_CAT(ploa , A2)<LhsPacket>(&lhs2[j]),    ptmp2), \
+                  pcj.pmul(IMP_EIGEN_CAT(ploa , A13)<LhsPacket>(&lhs3[j]),   ptmp3)) )))
 
   conj_helper<LhsScalar,RhsScalar,ConjugateLhs,ConjugateRhs> cj;
   conj_helper<LhsPacket,RhsPacket,ConjugateLhs,ConjugateRhs> pcj;
@@ -318,7 +318,7 @@ typedef typename conditional<Vectorizable,_LhsPacket,LhsScalar>::type LhsPacket;
 typedef typename conditional<Vectorizable,_RhsPacket,RhsScalar>::type RhsPacket;
 typedef typename conditional<Vectorizable,_ResPacket,ResScalar>::type ResPacket;
   
-EIGEN_DONT_INLINE static void run(
+IMP_EIGEN_DONT_INLINE static void run(
   Index rows, Index cols,
   const LhsScalar* lhs, Index lhsStride,
   const RhsScalar* rhs, Index rhsIncr,
@@ -327,14 +327,14 @@ EIGEN_DONT_INLINE static void run(
 };
 
 template<typename Index, typename LhsScalar, bool ConjugateLhs, typename RhsScalar, bool ConjugateRhs, int Version>
-EIGEN_DONT_INLINE void general_matrix_vector_product<Index,LhsScalar,RowMajor,ConjugateLhs,RhsScalar,ConjugateRhs,Version>::run(
+IMP_EIGEN_DONT_INLINE void general_matrix_vector_product<Index,LhsScalar,RowMajor,ConjugateLhs,RhsScalar,ConjugateRhs,Version>::run(
   Index rows, Index cols,
   const LhsScalar* lhs, Index lhsStride,
   const RhsScalar* rhs, Index rhsIncr,
   ResScalar* res, Index resIncr,
   ResScalar alpha)
 {
-  EIGEN_UNUSED_VARIABLE(rhsIncr);
+  IMP_EIGEN_UNUSED_VARIABLE(rhsIncr);
   eigen_internal_assert(rhsIncr==1);
   #ifdef _EIGEN_ACCUMULATE_PACKETS
   #error _EIGEN_ACCUMULATE_PACKETS has already been defined
@@ -342,10 +342,10 @@ EIGEN_DONT_INLINE void general_matrix_vector_product<Index,LhsScalar,RowMajor,Co
 
   #define _EIGEN_ACCUMULATE_PACKETS(A0,A13,A2) {\
     RhsPacket b = pload<RhsPacket>(&rhs[j]); \
-    ptmp0 = pcj.pmadd(EIGEN_CAT(ploa,A0) <LhsPacket>(&lhs0[j]), b, ptmp0); \
-    ptmp1 = pcj.pmadd(EIGEN_CAT(ploa,A13)<LhsPacket>(&lhs1[j]), b, ptmp1); \
-    ptmp2 = pcj.pmadd(EIGEN_CAT(ploa,A2) <LhsPacket>(&lhs2[j]), b, ptmp2); \
-    ptmp3 = pcj.pmadd(EIGEN_CAT(ploa,A13)<LhsPacket>(&lhs3[j]), b, ptmp3); }
+    ptmp0 = pcj.pmadd(IMP_EIGEN_CAT(ploa,A0) <LhsPacket>(&lhs0[j]), b, ptmp0); \
+    ptmp1 = pcj.pmadd(IMP_EIGEN_CAT(ploa,A13)<LhsPacket>(&lhs1[j]), b, ptmp1); \
+    ptmp2 = pcj.pmadd(IMP_EIGEN_CAT(ploa,A2) <LhsPacket>(&lhs2[j]), b, ptmp2); \
+    ptmp3 = pcj.pmadd(IMP_EIGEN_CAT(ploa,A13)<LhsPacket>(&lhs3[j]), b, ptmp3); }
 
   conj_helper<LhsScalar,RhsScalar,ConjugateLhs,ConjugateRhs> cj;
   conj_helper<LhsPacket,RhsPacket,ConjugateLhs,ConjugateRhs> pcj;
@@ -418,7 +418,7 @@ EIGEN_DONT_INLINE void general_matrix_vector_product<Index,LhsScalar,RowMajor,Co
   Index rowBound = ((rows-skipRows)/rowsAtOnce)*rowsAtOnce + skipRows;
   for (Index i=skipRows; i<rowBound; i+=rowsAtOnce)
   {
-    EIGEN_ALIGN16 ResScalar tmp0 = ResScalar(0);
+    IMP_EIGEN_ALIGN16 ResScalar tmp0 = ResScalar(0);
     ResScalar tmp1 = ResScalar(0), tmp2 = ResScalar(0), tmp3 = ResScalar(0);
 
     // this helps the compiler generating good binary code
@@ -527,7 +527,7 @@ EIGEN_DONT_INLINE void general_matrix_vector_product<Index,LhsScalar,RowMajor,Co
   {
     for (Index i=start; i<end; ++i)
     {
-      EIGEN_ALIGN16 ResScalar tmp0 = ResScalar(0);
+      IMP_EIGEN_ALIGN16 ResScalar tmp0 = ResScalar(0);
       ResPacket ptmp0 = pset1<ResPacket>(tmp0);
       const LhsScalar* lhs0 = lhs + i*lhsStride;
       // process first unaligned result's coeffs
@@ -568,6 +568,6 @@ EIGEN_DONT_INLINE void general_matrix_vector_product<Index,LhsScalar,RowMajor,Co
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_GENERAL_MATRIX_VECTOR_H
+#endif // IMP_EIGEN_GENERAL_MATRIX_VECTOR_H

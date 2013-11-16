@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_PARTIALLU_H
-#define EIGEN_PARTIALLU_H
+#ifndef IMP_EIGEN_PARTIALLU_H
+#define IMP_EIGEN_PARTIALLU_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \ingroup LU_Module
   *
@@ -438,7 +438,7 @@ template<typename _MatrixType, typename Rhs>
 struct solve_retval<PartialPivLU<_MatrixType>, Rhs>
   : solve_retval_base<PartialPivLU<_MatrixType>, Rhs>
 {
-  EIGEN_MAKE_SOLVE_HELPERS(PartialPivLU<_MatrixType>,Rhs)
+  IMP_EIGEN_MAKE_SOLVE_HELPERS(PartialPivLU<_MatrixType>,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -479,7 +479,7 @@ MatrixBase<Derived>::partialPivLu() const
   return PartialPivLU<PlainObject>(eval());
 }
 
-#if EIGEN2_SUPPORT_STAGE > STAGE20_RESOLVE_API_CONFLICTS
+#if IMP_EIGEN2_SUPPORT_STAGE > STAGE20_RESOLVE_API_CONFLICTS
 /** \lu_module
   *
   * Synonym of partialPivLu().
@@ -496,6 +496,6 @@ MatrixBase<Derived>::lu() const
 }
 #endif
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_PARTIALLU_H
+#endif // IMP_EIGEN_PARTIALLU_H

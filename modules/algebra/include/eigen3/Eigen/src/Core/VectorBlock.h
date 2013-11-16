@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_VECTORBLOCK_H
-#define EIGEN_VECTORBLOCK_H
+#ifndef IMP_EIGEN_VECTORBLOCK_H
+#define IMP_EIGEN_VECTORBLOCK_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \class VectorBlock
   * \ingroup Core_Module
@@ -66,7 +66,7 @@ template<typename VectorType, int Size> class VectorBlock
       IsColVector = !(internal::traits<VectorType>::Flags & RowMajorBit)
     };
   public:
-    EIGEN_DENSE_PUBLIC_INTERFACE(VectorBlock)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(VectorBlock)
 
     using Base::operator=;
 
@@ -77,7 +77,7 @@ template<typename VectorType, int Size> class VectorBlock
              IsColVector ? start : 0, IsColVector ? 0 : start,
              IsColVector ? size  : 1, IsColVector ? 1 : size)
     {
-      EIGEN_STATIC_ASSERT_VECTOR_ONLY(VectorBlock);
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(VectorBlock);
     }
 
     /** Fixed-size constructor
@@ -85,11 +85,11 @@ template<typename VectorType, int Size> class VectorBlock
     inline VectorBlock(VectorType& vector, Index start)
       : Base(vector, IsColVector ? start : 0, IsColVector ? 0 : start)
     {
-      EIGEN_STATIC_ASSERT_VECTOR_ONLY(VectorBlock);
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(VectorBlock);
     }
 };
 
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_VECTORBLOCK_H
+#endif // IMP_EIGEN_VECTORBLOCK_H

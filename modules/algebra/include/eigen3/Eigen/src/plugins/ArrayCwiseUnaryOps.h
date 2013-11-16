@@ -7,7 +7,7 @@
   *
   * \sa abs2()
   */
-EIGEN_STRONG_INLINE const CwiseUnaryOp<internal::scalar_abs_op<Scalar>, const Derived>
+IMP_EIGEN_STRONG_INLINE const CwiseUnaryOp<internal::scalar_abs_op<Scalar>, const Derived>
 abs() const
 {
   return derived();
@@ -20,7 +20,7 @@ abs() const
   *
   * \sa abs(), square()
   */
-EIGEN_STRONG_INLINE const CwiseUnaryOp<internal::scalar_abs2_op<Scalar>, const Derived>
+IMP_EIGEN_STRONG_INLINE const CwiseUnaryOp<internal::scalar_abs2_op<Scalar>, const Derived>
 abs2() const
 {
   return derived();
@@ -186,18 +186,18 @@ cube() const
   return derived();
 }
 
-#define EIGEN_MAKE_SCALAR_CWISE_UNARY_OP(METHOD_NAME,FUNCTOR) \
+#define IMP_EIGEN_MAKE_SCALAR_CWISE_UNARY_OP(METHOD_NAME,FUNCTOR) \
   inline const CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
   METHOD_NAME(const Scalar& s) const { \
     return CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
             (derived(), std::bind2nd(FUNCTOR<Scalar>(), s)); \
   }
 
-EIGEN_MAKE_SCALAR_CWISE_UNARY_OP(operator==,  std::equal_to)
-EIGEN_MAKE_SCALAR_CWISE_UNARY_OP(operator!=,  std::not_equal_to)
-EIGEN_MAKE_SCALAR_CWISE_UNARY_OP(operator<,   std::less)
-EIGEN_MAKE_SCALAR_CWISE_UNARY_OP(operator<=,  std::less_equal)
-EIGEN_MAKE_SCALAR_CWISE_UNARY_OP(operator>,   std::greater)
-EIGEN_MAKE_SCALAR_CWISE_UNARY_OP(operator>=,  std::greater_equal)
+IMP_EIGEN_MAKE_SCALAR_CWISE_UNARY_OP(operator==,  std::equal_to)
+IMP_EIGEN_MAKE_SCALAR_CWISE_UNARY_OP(operator!=,  std::not_equal_to)
+IMP_EIGEN_MAKE_SCALAR_CWISE_UNARY_OP(operator<,   std::less)
+IMP_EIGEN_MAKE_SCALAR_CWISE_UNARY_OP(operator<=,  std::less_equal)
+IMP_EIGEN_MAKE_SCALAR_CWISE_UNARY_OP(operator>,   std::greater)
+IMP_EIGEN_MAKE_SCALAR_CWISE_UNARY_OP(operator>=,  std::greater_equal)
 
 

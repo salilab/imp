@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_COMMAINITIALIZER_H
-#define EIGEN_COMMAINITIALIZER_H
+#ifndef IMP_EIGEN_COMMAINITIALIZER_H
+#define IMP_EIGEN_COMMAINITIALIZER_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \class CommaInitializer
   * \ingroup Core_Module
@@ -138,6 +138,6 @@ DenseBase<Derived>::operator<<(const DenseBase<OtherDerived>& other)
   return CommaInitializer<Derived>(*static_cast<Derived *>(this), other);
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_COMMAINITIALIZER_H
+#endif // IMP_EIGEN_COMMAINITIALIZER_H

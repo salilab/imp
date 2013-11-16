@@ -7,8 +7,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_FFT_H
-#define EIGEN_FFT_H
+#ifndef IMP_EIGEN_FFT_H
+#define IMP_EIGEN_FFT_H
 
 #include <complex>
 #include <vector>
@@ -68,32 +68,32 @@
   */
  
 
-#ifdef EIGEN_FFTW_DEFAULT
+#ifdef IMP_EIGEN_FFTW_DEFAULT
 // FFTW: faster, GPL -- incompatible with Eigen in LGPL form, bigger code size
 #  include <fftw3.h>
 #  include "src/FFT/ei_fftw_impl.h"
-   namespace Eigen {
+   namespace IMP_Eigen {
      //template <typename T> typedef struct internal::fftw_impl  default_fft_impl; this does not work
      template <typename T> struct default_fft_impl : public internal::fftw_impl<T> {};
    }
-#elif defined EIGEN_MKL_DEFAULT
+#elif defined IMP_EIGEN_MKL_DEFAULT
 // TODO 
 // intel Math Kernel Library: fastest, commercial -- may be incompatible with Eigen in GPL form
 #  include "src/FFT/ei_imklfft_impl.h"
-   namespace Eigen {
+   namespace IMP_Eigen {
      template <typename T> struct default_fft_impl : public internal::imklfft_impl {};
    }
 #else
 // internal::kissfft_impl:  small, free, reasonably efficient default, derived from kissfft
 //
 # include "src/FFT/ei_kissfft_impl.h"
-  namespace Eigen {
+  namespace IMP_Eigen {
      template <typename T> 
        struct default_fft_impl : public internal::kissfft_impl<T> {};
   }
 #endif
 
-namespace Eigen {
+namespace IMP_Eigen {
 
  
 // 
@@ -222,12 +222,12 @@ class FFT
     {
       typedef typename ComplexDerived::Scalar dst_type;
       typedef typename InputDerived::Scalar src_type;
-      EIGEN_STATIC_ASSERT_VECTOR_ONLY(InputDerived)
-      EIGEN_STATIC_ASSERT_VECTOR_ONLY(ComplexDerived)
-      EIGEN_STATIC_ASSERT_SAME_VECTOR_SIZE(ComplexDerived,InputDerived) // size at compile-time
-      EIGEN_STATIC_ASSERT((internal::is_same<dst_type, Complex>::value),
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(InputDerived)
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(ComplexDerived)
+      IMP_EIGEN_STATIC_ASSERT_SAME_VECTOR_SIZE(ComplexDerived,InputDerived) // size at compile-time
+      IMP_EIGEN_STATIC_ASSERT((internal::is_same<dst_type, Complex>::value),
             YOU_MIXED_DIFFERENT_NUMERIC_TYPES__YOU_NEED_TO_USE_THE_CAST_METHOD_OF_MATRIXBASE_TO_CAST_NUMERIC_TYPES_EXPLICITLY)
-      EIGEN_STATIC_ASSERT(int(InputDerived::Flags)&int(ComplexDerived::Flags)&DirectAccessBit,
+      IMP_EIGEN_STATIC_ASSERT(int(InputDerived::Flags)&int(ComplexDerived::Flags)&DirectAccessBit,
             THIS_METHOD_IS_ONLY_FOR_EXPRESSIONS_WITH_DIRECT_MEMORY_ACCESS_SUCH_AS_MAP_OR_PLAIN_MATRICES)
 
       if (nfft<1)
@@ -291,12 +291,12 @@ class FFT
       typedef typename ComplexDerived::Scalar src_type;
       typedef typename OutputDerived::Scalar dst_type;
       const bool realfft= (NumTraits<dst_type>::IsComplex == 0);
-      EIGEN_STATIC_ASSERT_VECTOR_ONLY(OutputDerived)
-      EIGEN_STATIC_ASSERT_VECTOR_ONLY(ComplexDerived)
-      EIGEN_STATIC_ASSERT_SAME_VECTOR_SIZE(ComplexDerived,OutputDerived) // size at compile-time
-      EIGEN_STATIC_ASSERT((internal::is_same<src_type, Complex>::value),
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(OutputDerived)
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(ComplexDerived)
+      IMP_EIGEN_STATIC_ASSERT_SAME_VECTOR_SIZE(ComplexDerived,OutputDerived) // size at compile-time
+      IMP_EIGEN_STATIC_ASSERT((internal::is_same<src_type, Complex>::value),
             YOU_MIXED_DIFFERENT_NUMERIC_TYPES__YOU_NEED_TO_USE_THE_CAST_METHOD_OF_MATRIXBASE_TO_CAST_NUMERIC_TYPES_EXPLICITLY)
-      EIGEN_STATIC_ASSERT(int(OutputDerived::Flags)&int(ComplexDerived::Flags)&DirectAccessBit,
+      IMP_EIGEN_STATIC_ASSERT(int(OutputDerived::Flags)&int(ComplexDerived::Flags)&DirectAccessBit,
             THIS_METHOD_IS_ONLY_FOR_EXPRESSIONS_WITH_DIRECT_MEMORY_ACCESS_SUCH_AS_MAP_OR_PLAIN_MATRICES)
 
       if (nfft<1) { //automatic FFT size determination

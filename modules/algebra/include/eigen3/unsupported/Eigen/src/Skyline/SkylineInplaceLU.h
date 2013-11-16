@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SKYLINEINPLACELU_H
-#define EIGEN_SKYLINEINPLACELU_H
+#ifndef IMP_EIGEN_SKYLINEINPLACELU_H
+#define IMP_EIGEN_SKYLINEINPLACELU_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \ingroup Skyline_Module
  *
@@ -35,7 +35,7 @@ public:
      * flags \a flags. */
     SkylineInplaceLU(MatrixType& matrix, int flags = 0)
     : /*m_matrix(matrix.rows(), matrix.cols()),*/ m_flags(flags), m_status(0), m_lu(matrix) {
-        m_precision = RealScalar(0.1) * Eigen::dummy_precision<RealScalar > ();
+        m_precision = RealScalar(0.1) * IMP_Eigen::dummy_precision<RealScalar > ();
         m_lu.IsRowMajor ? computeRowMajor() : compute();
     }
 
@@ -347,6 +347,6 @@ bool SkylineInplaceLU<MatrixType>::solve(const MatrixBase<BDerived> &b, MatrixBa
     return true;
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SKYLINELU_H
+#endif // IMP_EIGEN_SKYLINELU_H

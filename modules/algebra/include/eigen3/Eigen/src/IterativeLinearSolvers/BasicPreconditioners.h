@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_BASIC_PRECONDITIONERS_H
-#define EIGEN_BASIC_PRECONDITIONERS_H
+#ifndef IMP_EIGEN_BASIC_PRECONDITIONERS_H
+#define IMP_EIGEN_BASIC_PRECONDITIONERS_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \ingroup IterativeLinearSolvers_Module
   * \brief A preconditioner based on the digonal entries
@@ -107,7 +107,7 @@ struct solve_retval<DiagonalPreconditioner<_MatrixType>, Rhs>
   : solve_retval_base<DiagonalPreconditioner<_MatrixType>, Rhs>
 {
   typedef DiagonalPreconditioner<_MatrixType> Dec;
-  EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
+  IMP_EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -144,6 +144,6 @@ class IdentityPreconditioner
     inline const Rhs& solve(const Rhs& b) const { return b; }
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_BASIC_PRECONDITIONERS_H
+#endif // IMP_EIGEN_BASIC_PRECONDITIONERS_H

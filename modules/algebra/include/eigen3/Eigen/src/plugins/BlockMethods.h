@@ -9,7 +9,7 @@
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
 
 /** \internal expression type of a column */
 typedef Block<Derived, internal::traits<Derived>::RowsAtCompileTime, 1, !IsRowMajor> ColXpr;
@@ -35,7 +35,7 @@ typedef const VectorBlock<const Derived> ConstSegmentReturnType;
 template<int Size> struct FixedSegmentReturnType { typedef VectorBlock<Derived, Size> Type; };
 template<int Size> struct ConstFixedSegmentReturnType { typedef const VectorBlock<const Derived, Size> Type; };
 
-#endif // not EIGEN_PARSED_BY_DOXYGEN
+#endif // not IMP_EIGEN_PARSED_BY_DOXYGEN
 
 /** \returns a dynamic-size expression of a block in *this.
   *
@@ -751,7 +751,7 @@ inline ConstRowXpr row(Index i) const
   */
 inline SegmentReturnType segment(Index start, Index vecSize)
 {
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
   return SegmentReturnType(derived(), start, vecSize);
 }
 
@@ -759,7 +759,7 @@ inline SegmentReturnType segment(Index start, Index vecSize)
 /** This is the const version of segment(Index,Index).*/
 inline ConstSegmentReturnType segment(Index start, Index vecSize) const
 {
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
   return ConstSegmentReturnType(derived(), start, vecSize);
 }
 
@@ -780,7 +780,7 @@ inline ConstSegmentReturnType segment(Index start, Index vecSize) const
   */
 inline SegmentReturnType head(Index vecSize)
 {
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
   return SegmentReturnType(derived(), 0, vecSize);
 }
 
@@ -788,7 +788,7 @@ inline SegmentReturnType head(Index vecSize)
 inline ConstSegmentReturnType
   head(Index vecSize) const
 {
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
   return ConstSegmentReturnType(derived(), 0, vecSize);
 }
 
@@ -809,14 +809,14 @@ inline ConstSegmentReturnType
   */
 inline SegmentReturnType tail(Index vecSize)
 {
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
   return SegmentReturnType(derived(), this->size() - vecSize, vecSize);
 }
 
 /** This is the const version of tail(Index).*/
 inline ConstSegmentReturnType tail(Index vecSize) const
 {
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
   return ConstSegmentReturnType(derived(), this->size() - vecSize, vecSize);
 }
 
@@ -836,7 +836,7 @@ inline ConstSegmentReturnType tail(Index vecSize) const
 template<int Size>
 inline typename FixedSegmentReturnType<Size>::Type segment(Index start)
 {
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
   return typename FixedSegmentReturnType<Size>::Type(derived(), start);
 }
 
@@ -844,7 +844,7 @@ inline typename FixedSegmentReturnType<Size>::Type segment(Index start)
 template<int Size>
 inline typename ConstFixedSegmentReturnType<Size>::Type segment(Index start) const
 {
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
   return typename ConstFixedSegmentReturnType<Size>::Type(derived(), start);
 }
 
@@ -862,7 +862,7 @@ inline typename ConstFixedSegmentReturnType<Size>::Type segment(Index start) con
 template<int Size>
 inline typename FixedSegmentReturnType<Size>::Type head()
 {
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
   return typename FixedSegmentReturnType<Size>::Type(derived(), 0);
 }
 
@@ -870,7 +870,7 @@ inline typename FixedSegmentReturnType<Size>::Type head()
 template<int Size>
 inline typename ConstFixedSegmentReturnType<Size>::Type head() const
 {
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
   return typename ConstFixedSegmentReturnType<Size>::Type(derived(), 0);
 }
 
@@ -888,7 +888,7 @@ inline typename ConstFixedSegmentReturnType<Size>::Type head() const
 template<int Size>
 inline typename FixedSegmentReturnType<Size>::Type tail()
 {
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
   return typename FixedSegmentReturnType<Size>::Type(derived(), size() - Size);
 }
 
@@ -896,6 +896,6 @@ inline typename FixedSegmentReturnType<Size>::Type tail()
 template<int Size>
 inline typename ConstFixedSegmentReturnType<Size>::Type tail() const
 {
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
   return typename ConstFixedSegmentReturnType<Size>::Type(derived(), size() - Size);
 }

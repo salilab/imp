@@ -7,13 +7,13 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_INCOMPLETE_CHOlESKY_H
-#define EIGEN_INCOMPLETE_CHOlESKY_H
+#ifndef IMP_EIGEN_INCOMPLETE_CHOlESKY_H
+#define IMP_EIGEN_INCOMPLETE_CHOlESKY_H
 #include "Eigen/src/IterativeLinearSolvers/IncompleteLUT.h" 
 #include <Eigen/OrderingMethods>
 #include <list>
 
-namespace Eigen {  
+namespace IMP_Eigen {  
 /** 
  * \brief Modified Incomplete Cholesky with dual threshold
  * 
@@ -263,7 +263,7 @@ struct solve_retval<IncompleteCholesky<_Scalar,  _UpLo, OrderingType>, Rhs>
   : solve_retval_base<IncompleteCholesky<_Scalar, _UpLo, OrderingType>, Rhs>
 {
   typedef IncompleteCholesky<_Scalar, _UpLo, OrderingType> Dec;
-  EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
+  IMP_EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -273,6 +273,6 @@ struct solve_retval<IncompleteCholesky<_Scalar,  _UpLo, OrderingType>, Rhs>
 
 } // end namespace internal
 
-} // end namespace Eigen 
+} // end namespace IMP_Eigen 
 
 #endif

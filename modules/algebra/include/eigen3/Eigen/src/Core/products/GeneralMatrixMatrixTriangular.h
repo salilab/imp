@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_GENERAL_MATRIX_MATRIX_TRIANGULAR_H
-#define EIGEN_GENERAL_MATRIX_MATRIX_TRIANGULAR_H
+#ifndef IMP_EIGEN_GENERAL_MATRIX_MATRIX_TRIANGULAR_H
+#define IMP_EIGEN_GENERAL_MATRIX_MATRIX_TRIANGULAR_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 template<typename Scalar, typename Index, int StorageOrder, int UpLo, bool ConjLhs, bool ConjRhs>
 struct selfadjoint_rank1_update;
@@ -41,7 +41,7 @@ template <typename Index, typename LhsScalar, int LhsStorageOrder, bool Conjugat
 struct general_matrix_matrix_triangular_product<Index,LhsScalar,LhsStorageOrder,ConjugateLhs,RhsScalar,RhsStorageOrder,ConjugateRhs,RowMajor,UpLo,Version>
 {
   typedef typename scalar_product_traits<LhsScalar, RhsScalar>::ReturnType ResScalar;
-  static EIGEN_STRONG_INLINE void run(Index size, Index depth,const LhsScalar* lhs, Index lhsStride,
+  static IMP_EIGEN_STRONG_INLINE void run(Index size, Index depth,const LhsScalar* lhs, Index lhsStride,
                                       const RhsScalar* rhs, Index rhsStride, ResScalar* res, Index resStride, const ResScalar& alpha)
   {
     general_matrix_matrix_triangular_product<Index,
@@ -57,7 +57,7 @@ template <typename Index, typename LhsScalar, int LhsStorageOrder, bool Conjugat
 struct general_matrix_matrix_triangular_product<Index,LhsScalar,LhsStorageOrder,ConjugateLhs,RhsScalar,RhsStorageOrder,ConjugateRhs,ColMajor,UpLo,Version>
 {
   typedef typename scalar_product_traits<LhsScalar, RhsScalar>::ReturnType ResScalar;
-  static EIGEN_STRONG_INLINE void run(Index size, Index depth,const LhsScalar* _lhs, Index lhsStride,
+  static IMP_EIGEN_STRONG_INLINE void run(Index size, Index depth,const LhsScalar* _lhs, Index lhsStride,
                                       const RhsScalar* _rhs, Index rhsStride, ResScalar* res, Index resStride, const ResScalar& alpha)
   {
     const_blas_data_mapper<LhsScalar, Index, LhsStorageOrder> lhs(_lhs,lhsStride);
@@ -134,7 +134,7 @@ struct tribb_kernel
   typedef typename Traits::ResScalar ResScalar;
   
   enum {
-    BlockSize  = EIGEN_PLAIN_ENUM_MAX(mr,nr)
+    BlockSize  = IMP_EIGEN_PLAIN_ENUM_MAX(mr,nr)
   };
   void operator()(ResScalar* res, Index resStride, const LhsScalar* blockA, const RhsScalar* blockB, Index size, Index depth, const ResScalar& alpha, RhsScalar* workspace)
   {
@@ -273,6 +273,6 @@ TriangularView<MatrixType,UpLo>& TriangularView<MatrixType,UpLo>::assignProduct(
   return *this;
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_GENERAL_MATRIX_MATRIX_TRIANGULAR_H
+#endif // IMP_EIGEN_GENERAL_MATRIX_MATRIX_TRIANGULAR_H

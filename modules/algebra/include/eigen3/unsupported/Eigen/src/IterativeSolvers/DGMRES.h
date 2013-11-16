@@ -7,12 +7,12 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_DGMRES_H
-#define EIGEN_DGMRES_H
+#ifndef IMP_EIGEN_DGMRES_H
+#define IMP_EIGEN_DGMRES_H
 
 #include <Eigen/Eigenvalues>
 
-namespace Eigen { 
+namespace IMP_Eigen { 
   
 template< typename _MatrixType,
           typename _Preconditioner = DiagonalPreconditioner<typename _MatrixType::Scalar> >
@@ -529,7 +529,7 @@ struct solve_retval<DGMRES<_MatrixType, _Preconditioner>, Rhs>
   : solve_retval_base<DGMRES<_MatrixType, _Preconditioner>, Rhs>
 {
   typedef DGMRES<_MatrixType, _Preconditioner> Dec;
-  EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
+  IMP_EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -538,5 +538,5 @@ struct solve_retval<DGMRES<_MatrixType, _Preconditioner>, Rhs>
 };
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 #endif 

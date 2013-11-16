@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPARSE_TRIANGULARVIEW_H
-#define EIGEN_SPARSE_TRIANGULARVIEW_H
+#ifndef IMP_EIGEN_SPARSE_TRIANGULARVIEW_H
+#define IMP_EIGEN_SPARSE_TRIANGULARVIEW_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
   
@@ -34,7 +34,7 @@ template<typename MatrixType, int Mode> class SparseTriangularView
 
   public:
     
-    EIGEN_SPARSE_PUBLIC_INTERFACE(SparseTriangularView)
+    IMP_EIGEN_SPARSE_PUBLIC_INTERFACE(SparseTriangularView)
 
     class InnerIterator;
     class ReverseInnerIterator;
@@ -69,7 +69,7 @@ class SparseTriangularView<MatrixType,Mode>::InnerIterator : public MatrixTypeNe
     typedef typename SparseTriangularView::Index Index;
   public:
 
-    EIGEN_STRONG_INLINE InnerIterator(const SparseTriangularView& view, Index outer)
+    IMP_EIGEN_STRONG_INLINE InnerIterator(const SparseTriangularView& view, Index outer)
       : Base(view.nestedExpression(), outer), m_returnOne(false)
     {
       if(SkipFirst)
@@ -87,7 +87,7 @@ class SparseTriangularView<MatrixType,Mode>::InnerIterator : public MatrixTypeNe
       }
     }
 
-    EIGEN_STRONG_INLINE InnerIterator& operator++()
+    IMP_EIGEN_STRONG_INLINE InnerIterator& operator++()
     {
       if(HasUnitDiag && m_returnOne)
         m_returnOne = false;
@@ -117,7 +117,7 @@ class SparseTriangularView<MatrixType,Mode>::InnerIterator : public MatrixTypeNe
       else                            return Base::value();
     }
 
-    EIGEN_STRONG_INLINE operator bool() const
+    IMP_EIGEN_STRONG_INLINE operator bool() const
     {
       if(HasUnitDiag && m_returnOne)
         return true;
@@ -139,7 +139,7 @@ class SparseTriangularView<MatrixType,Mode>::ReverseInnerIterator : public Matri
     typedef typename SparseTriangularView::Index Index;
   public:
 
-    EIGEN_STRONG_INLINE ReverseInnerIterator(const SparseTriangularView& view, Index outer)
+    IMP_EIGEN_STRONG_INLINE ReverseInnerIterator(const SparseTriangularView& view, Index outer)
       : Base(view.nestedExpression(), outer)
     {
       eigen_assert((!HasUnitDiag) && "ReverseInnerIterator does not support yet triangular views with a unit diagonal");
@@ -149,13 +149,13 @@ class SparseTriangularView<MatrixType,Mode>::ReverseInnerIterator : public Matri
       }
     }
 
-    EIGEN_STRONG_INLINE ReverseInnerIterator& operator--()
+    IMP_EIGEN_STRONG_INLINE ReverseInnerIterator& operator--()
     { Base::operator--(); return *this; }
 
     inline Index row() const { return Base::row(); }
     inline Index col() const { return Base::col(); }
 
-    EIGEN_STRONG_INLINE operator bool() const
+    IMP_EIGEN_STRONG_INLINE operator bool() const
     {
       if (SkipLast) return Base::operator bool() ;
       else
@@ -174,6 +174,6 @@ SparseMatrixBase<Derived>::triangularView() const
   return derived();
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SPARSE_TRIANGULARVIEW_H
+#endif // IMP_EIGEN_SPARSE_TRIANGULARVIEW_H

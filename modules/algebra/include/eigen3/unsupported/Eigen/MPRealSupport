@@ -9,13 +9,13 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_MPREALSUPPORT_MODULE_H
-#define EIGEN_MPREALSUPPORT_MODULE_H
+#ifndef IMP_EIGEN_MPREALSUPPORT_MODULE_H
+#define IMP_EIGEN_MPREALSUPPORT_MODULE_H
 
 #include <Eigen/Core>
 #include <mpreal.h>
 
-namespace Eigen {
+namespace IMP_Eigen {
   
 /**
   * \defgroup MPRealSupport_Module MPFRC++ Support module
@@ -36,7 +36,7 @@ namespace Eigen {
 #include <Eigen/MPRealSupport>
 #include <Eigen/LU>
 using namespace mpfr;
-using namespace Eigen;
+using namespace IMP_Eigen;
 int main()
 {
   // set precision to 256 bits (double has only 53 bits)
@@ -152,7 +152,7 @@ int main()
     {
       typedef mpfr::mpreal mpreal;
 
-      EIGEN_DONT_INLINE
+      IMP_EIGEN_DONT_INLINE
       void operator()(mpreal* res, Index resStride, const mpreal* blockA, const mpreal* blockB, Index rows, Index depth, Index cols, mpreal alpha,
                       Index strideA=-1, Index strideB=-1, Index offsetA=0, Index offsetB=0, mpreal* /*unpackedB*/ = 0)
       {
@@ -200,4 +200,4 @@ int main()
   } // end namespace internal
 }
 
-#endif // EIGEN_MPREALSUPPORT_MODULE_H
+#endif // IMP_EIGEN_MPREALSUPPORT_MODULE_H

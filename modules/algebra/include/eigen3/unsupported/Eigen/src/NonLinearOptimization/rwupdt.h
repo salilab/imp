@@ -1,4 +1,4 @@
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -46,4 +46,4 @@ void rwupdt(
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen

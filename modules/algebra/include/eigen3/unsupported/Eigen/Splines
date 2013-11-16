@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPLINES_MODULE_H
-#define EIGEN_SPLINES_MODULE_H
+#ifndef IMP_EIGEN_SPLINES_MODULE_H
+#define IMP_EIGEN_SPLINES_MODULE_H
 
-namespace Eigen 
+namespace IMP_Eigen 
 {
 /**
   * \defgroup Splines_Module Spline and spline fitting module
@@ -28,4 +28,4 @@ namespace Eigen
 #include "src/Splines/Spline.h"
 #include "src/Splines/SplineFitting.h"
 
-#endif // EIGEN_SPLINES_MODULE_H
+#endif // IMP_EIGEN_SPLINES_MODULE_H

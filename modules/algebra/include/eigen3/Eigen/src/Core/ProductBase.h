@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_PRODUCTBASE_H
-#define EIGEN_PRODUCTBASE_H
+#ifndef IMP_EIGEN_PRODUCTBASE_H
+#define IMP_EIGEN_PRODUCTBASE_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \class ProductBase
   * \ingroup Core_Module
@@ -43,9 +43,9 @@ struct traits<ProductBase<Derived,_Lhs,_Rhs> >
 };
 }
 
-#define EIGEN_PRODUCT_PUBLIC_INTERFACE(Derived) \
+#define IMP_EIGEN_PRODUCT_PUBLIC_INTERFACE(Derived) \
   typedef ProductBase<Derived, Lhs, Rhs > Base; \
-  EIGEN_DENSE_PUBLIC_INTERFACE(Derived) \
+  IMP_EIGEN_DENSE_PUBLIC_INTERFACE(Derived) \
   typedef typename Base::LhsNested LhsNested; \
   typedef typename Base::_LhsNested _LhsNested; \
   typedef typename Base::LhsBlasTraits LhsBlasTraits; \
@@ -64,7 +64,7 @@ class ProductBase : public MatrixBase<Derived>
 {
   public:
     typedef MatrixBase<Derived> Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(ProductBase)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(ProductBase)
     
     typedef typename Lhs::Nested LhsNested;
     typedef typename internal::remove_all<LhsNested>::type _LhsNested;
@@ -134,10 +134,10 @@ class ProductBase : public MatrixBase<Derived>
     // restrict coeff accessors to 1x1 expressions. No need to care about mutators here since this isnt a Lvalue expression
     typename Base::CoeffReturnType coeff(Index row, Index col) const
     {
-#ifdef EIGEN2_SUPPORT
+#ifdef IMP_EIGEN2_SUPPORT
       return lhs().row(row).cwiseProduct(rhs().col(col).transpose()).sum();
 #else
-      EIGEN_STATIC_ASSERT_SIZE_1x1(Derived)
+      IMP_EIGEN_STATIC_ASSERT_SIZE_1x1(Derived)
       eigen_assert(this->rows() == 1 && this->cols() == 1);
       Matrix<Scalar,1,1> result = *this;
       return result.coeff(row,col);
@@ -146,7 +146,7 @@ class ProductBase : public MatrixBase<Derived>
 
     typename Base::CoeffReturnType coeff(Index i) const
     {
-      EIGEN_STATIC_ASSERT_SIZE_1x1(Derived)
+      IMP_EIGEN_STATIC_ASSERT_SIZE_1x1(Derived)
       eigen_assert(this->rows() == 1 && this->cols() == 1);
       Matrix<Scalar,1,1> result = *this;
       return result.coeff(i);
@@ -154,14 +154,14 @@ class ProductBase : public MatrixBase<Derived>
 
     const Scalar& coeffRef(Index row, Index col) const
     {
-      EIGEN_STATIC_ASSERT_SIZE_1x1(Derived)
+      IMP_EIGEN_STATIC_ASSERT_SIZE_1x1(Derived)
       eigen_assert(this->rows() == 1 && this->cols() == 1);
       return derived().coeffRef(row,col);
     }
 
     const Scalar& coeffRef(Index i) const
     {
-      EIGEN_STATIC_ASSERT_SIZE_1x1(Derived)
+      IMP_EIGEN_STATIC_ASSERT_SIZE_1x1(Derived)
       eigen_assert(this->rows() == 1 && this->cols() == 1);
       return derived().coeffRef(i);
     }
@@ -239,7 +239,7 @@ class ScaledProduct
                        typename NestedProduct::_RhsNested> Base;
     typedef typename Base::Scalar Scalar;
     typedef typename Base::PlainObject PlainObject;
-//     EIGEN_PRODUCT_PUBLIC_INTERFACE(ScaledProduct)
+//     IMP_EIGEN_PRODUCT_PUBLIC_INTERFACE(ScaledProduct)
 
     ScaledProduct(const NestedProduct& prod, const Scalar& x)
     : Base(prod.lhs(),prod.rhs()), m_prod(prod), m_alpha(x) {}
@@ -273,6 +273,6 @@ Derived& MatrixBase<Derived>::lazyAssign(const ProductBase<ProductDerived, Lhs,R
   return derived();
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_PRODUCTBASE_H
+#endif // IMP_EIGEN_PRODUCTBASE_H

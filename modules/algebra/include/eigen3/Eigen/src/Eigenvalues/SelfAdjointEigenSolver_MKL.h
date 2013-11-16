@@ -30,16 +30,16 @@
  ********************************************************************************
 */
 
-#ifndef EIGEN_SAEIGENSOLVER_MKL_H
-#define EIGEN_SAEIGENSOLVER_MKL_H
+#ifndef IMP_EIGEN_SAEIGENSOLVER_MKL_H
+#define IMP_EIGEN_SAEIGENSOLVER_MKL_H
 
 #include "Eigen/src/Core/util/MKL_support.h"
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \internal Specialization for the data types supported by MKL */
 
-#define EIGEN_MKL_EIG_SELFADJ(EIGTYPE, MKLTYPE, MKLRTYPE, MKLNAME, EIGCOLROW, MKLCOLROW ) \
+#define IMP_EIGEN_MKL_EIG_SELFADJ(EIGTYPE, MKLTYPE, MKLRTYPE, MKLNAME, EIGCOLROW, MKLCOLROW ) \
 template<> inline \
 SelfAdjointEigenSolver<Matrix<EIGTYPE, Dynamic, Dynamic, EIGCOLROW> >& \
 SelfAdjointEigenSolver<Matrix<EIGTYPE, Dynamic, Dynamic, EIGCOLROW> >::compute(const Matrix<EIGTYPE, Dynamic, Dynamic, EIGCOLROW>& matrix, int options) \
@@ -77,16 +77,16 @@ SelfAdjointEigenSolver<Matrix<EIGTYPE, Dynamic, Dynamic, EIGCOLROW> >::compute(c
 }
 
 
-EIGEN_MKL_EIG_SELFADJ(double,   double,        double, dsyev, ColMajor, LAPACK_COL_MAJOR)
-EIGEN_MKL_EIG_SELFADJ(float,    float,         float,  ssyev, ColMajor, LAPACK_COL_MAJOR)
-EIGEN_MKL_EIG_SELFADJ(dcomplex, MKL_Complex16, double, zheev, ColMajor, LAPACK_COL_MAJOR)
-EIGEN_MKL_EIG_SELFADJ(scomplex, MKL_Complex8,  float,  cheev, ColMajor, LAPACK_COL_MAJOR)
+IMP_EIGEN_MKL_EIG_SELFADJ(double,   double,        double, dsyev, ColMajor, LAPACK_COL_MAJOR)
+IMP_EIGEN_MKL_EIG_SELFADJ(float,    float,         float,  ssyev, ColMajor, LAPACK_COL_MAJOR)
+IMP_EIGEN_MKL_EIG_SELFADJ(dcomplex, MKL_Complex16, double, zheev, ColMajor, LAPACK_COL_MAJOR)
+IMP_EIGEN_MKL_EIG_SELFADJ(scomplex, MKL_Complex8,  float,  cheev, ColMajor, LAPACK_COL_MAJOR)
 
-EIGEN_MKL_EIG_SELFADJ(double,   double,        double, dsyev, RowMajor, LAPACK_ROW_MAJOR)
-EIGEN_MKL_EIG_SELFADJ(float,    float,         float,  ssyev, RowMajor, LAPACK_ROW_MAJOR)
-EIGEN_MKL_EIG_SELFADJ(dcomplex, MKL_Complex16, double, zheev, RowMajor, LAPACK_ROW_MAJOR)
-EIGEN_MKL_EIG_SELFADJ(scomplex, MKL_Complex8,  float,  cheev, RowMajor, LAPACK_ROW_MAJOR)
+IMP_EIGEN_MKL_EIG_SELFADJ(double,   double,        double, dsyev, RowMajor, LAPACK_ROW_MAJOR)
+IMP_EIGEN_MKL_EIG_SELFADJ(float,    float,         float,  ssyev, RowMajor, LAPACK_ROW_MAJOR)
+IMP_EIGEN_MKL_EIG_SELFADJ(dcomplex, MKL_Complex16, double, zheev, RowMajor, LAPACK_ROW_MAJOR)
+IMP_EIGEN_MKL_EIG_SELFADJ(scomplex, MKL_Complex8,  float,  cheev, RowMajor, LAPACK_ROW_MAJOR)
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SAEIGENSOLVER_H
+#endif // IMP_EIGEN_SAEIGENSOLVER_H

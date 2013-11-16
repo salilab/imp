@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_LU_H
-#define EIGEN_LU_H
+#ifndef IMP_EIGEN_LU_H
+#define IMP_EIGEN_LU_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \ingroup LU_Module
   *
@@ -261,8 +261,8 @@ template<typename _MatrixType> class FullPivLU
     /** Allows to come back to the default behavior, letting Eigen use its default formula for
       * determining the threshold.
       *
-      * You should pass the special object Eigen::Default as parameter here.
-      * \code lu.setThreshold(Eigen::Default); \endcode
+      * You should pass the special object IMP_Eigen::Default as parameter here.
+      * \code lu.setThreshold(IMP_Eigen::Default); \endcode
       *
       * See the documentation of setThreshold(const RealScalar&).
       */
@@ -542,9 +542,9 @@ template<typename _MatrixType>
 struct kernel_retval<FullPivLU<_MatrixType> >
   : kernel_retval_base<FullPivLU<_MatrixType> >
 {
-  EIGEN_MAKE_KERNEL_HELPERS(FullPivLU<_MatrixType>)
+  IMP_EIGEN_MAKE_KERNEL_HELPERS(FullPivLU<_MatrixType>)
 
-  enum { MaxSmallDimAtCompileTime = EIGEN_SIZE_MIN_PREFER_FIXED(
+  enum { MaxSmallDimAtCompileTime = IMP_EIGEN_SIZE_MIN_PREFER_FIXED(
             MatrixType::MaxColsAtCompileTime,
             MatrixType::MaxRowsAtCompileTime)
   };
@@ -628,9 +628,9 @@ template<typename _MatrixType>
 struct image_retval<FullPivLU<_MatrixType> >
   : image_retval_base<FullPivLU<_MatrixType> >
 {
-  EIGEN_MAKE_IMAGE_HELPERS(FullPivLU<_MatrixType>)
+  IMP_EIGEN_MAKE_IMAGE_HELPERS(FullPivLU<_MatrixType>)
 
-  enum { MaxSmallDimAtCompileTime = EIGEN_SIZE_MIN_PREFER_FIXED(
+  enum { MaxSmallDimAtCompileTime = IMP_EIGEN_SIZE_MIN_PREFER_FIXED(
             MatrixType::MaxColsAtCompileTime,
             MatrixType::MaxRowsAtCompileTime)
   };
@@ -666,7 +666,7 @@ template<typename _MatrixType, typename Rhs>
 struct solve_retval<FullPivLU<_MatrixType>, Rhs>
   : solve_retval_base<FullPivLU<_MatrixType>, Rhs>
 {
-  EIGEN_MAKE_SOLVE_HELPERS(FullPivLU<_MatrixType>,Rhs)
+  IMP_EIGEN_MAKE_SOLVE_HELPERS(FullPivLU<_MatrixType>,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -737,6 +737,6 @@ MatrixBase<Derived>::fullPivLu() const
   return FullPivLU<PlainObject>(eval());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_LU_H
+#endif // IMP_EIGEN_LU_H

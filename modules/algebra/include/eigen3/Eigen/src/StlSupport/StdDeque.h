@@ -8,16 +8,16 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_STDDEQUE_H
-#define EIGEN_STDDEQUE_H
+#ifndef IMP_EIGEN_STDDEQUE_H
+#define IMP_EIGEN_STDDEQUE_H
 
 #include "Eigen/src/StlSupport/details.h"
 
 // Define the explicit instantiation (e.g. necessary for the Intel compiler)
 #if defined(__INTEL_COMPILER) || defined(__GNUC__)
-  #define EIGEN_EXPLICIT_STL_DEQUE_INSTANTIATION(...) template class std::deque<__VA_ARGS__, EIGEN_ALIGNED_ALLOCATOR<__VA_ARGS__> >;
+  #define IMP_EIGEN_EXPLICIT_STL_DEQUE_INSTANTIATION(...) template class std::deque<__VA_ARGS__, IMP_EIGEN_ALIGNED_ALLOCATOR<__VA_ARGS__> >;
 #else
-  #define EIGEN_EXPLICIT_STL_DEQUE_INSTANTIATION(...)
+  #define IMP_EIGEN_EXPLICIT_STL_DEQUE_INSTANTIATION(...)
 #endif
 
 /**
@@ -25,15 +25,15 @@
  * std::deque such that for data types with alignment issues the correct allocator
  * is used automatically.
  */
-#define EIGEN_DEFINE_STL_DEQUE_SPECIALIZATION(...) \
-EIGEN_EXPLICIT_STL_DEQUE_INSTANTIATION(__VA_ARGS__) \
+#define IMP_EIGEN_DEFINE_STL_DEQUE_SPECIALIZATION(...) \
+IMP_EIGEN_EXPLICIT_STL_DEQUE_INSTANTIATION(__VA_ARGS__) \
 namespace std \
 { \
   template<typename _Ay> \
   class deque<__VA_ARGS__, _Ay>  \
-    : public deque<__VA_ARGS__, EIGEN_ALIGNED_ALLOCATOR<__VA_ARGS__> > \
+    : public deque<__VA_ARGS__, IMP_EIGEN_ALIGNED_ALLOCATOR<__VA_ARGS__> > \
   { \
-    typedef deque<__VA_ARGS__, EIGEN_ALIGNED_ALLOCATOR<__VA_ARGS__> > deque_base; \
+    typedef deque<__VA_ARGS__, IMP_EIGEN_ALIGNED_ALLOCATOR<__VA_ARGS__> > deque_base; \
   public: \
     typedef __VA_ARGS__ value_type; \
     typedef typename deque_base::allocator_type allocator_type; \
@@ -53,11 +53,11 @@ namespace std \
 }
 
 // check whether we really need the std::deque specialization
-#if !(defined(_GLIBCXX_DEQUE) && (!EIGEN_GNUC_AT_LEAST(4,1))) /* Note that before gcc-4.1 we already have: std::deque::resize(size_type,const T&). */
+#if !(defined(_GLIBCXX_DEQUE) && (!IMP_EIGEN_GNUC_AT_LEAST(4,1))) /* Note that before gcc-4.1 we already have: std::deque::resize(size_type,const T&). */
 
 namespace std {
 
-#define EIGEN_STD_DEQUE_SPECIALIZATION_BODY \
+#define IMP_EIGEN_STD_DEQUE_SPECIALIZATION_BODY \
   public:  \
     typedef T value_type; \
     typedef typename deque_base::allocator_type allocator_type; \
@@ -77,13 +77,13 @@ namespace std {
     }
 
   template<typename T>
-  class deque<T,EIGEN_ALIGNED_ALLOCATOR<T> >
+  class deque<T,IMP_EIGEN_ALIGNED_ALLOCATOR<T> >
     : public deque<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T),
-                   Eigen::aligned_allocator_indirection<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> >
+                   IMP_Eigen::aligned_allocator_indirection<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> >
 {
   typedef deque<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T),
-                Eigen::aligned_allocator_indirection<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> > deque_base;
-  EIGEN_STD_DEQUE_SPECIALIZATION_BODY
+                IMP_Eigen::aligned_allocator_indirection<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> > deque_base;
+  IMP_EIGEN_STD_DEQUE_SPECIALIZATION_BODY
 
   void resize(size_type new_size)
   { resize(new_size, T()); }
@@ -106,7 +106,7 @@ namespace std {
   { return deque_base::insert(position,x); }
   void insert(const_iterator position, size_type new_size, const value_type& x)
   { deque_base::insert(position, new_size, x); }
-#elif defined(_GLIBCXX_DEQUE) && EIGEN_GNUC_AT_LEAST(4,2)
+#elif defined(_GLIBCXX_DEQUE) && IMP_EIGEN_GNUC_AT_LEAST(4,2)
   // workaround GCC std::deque implementation
   void resize(size_type new_size, const value_type& x)
   {
@@ -131,4 +131,4 @@ namespace std {
 
 #endif // check whether specialization is actually required
 
-#endif // EIGEN_STDDEQUE_H
+#endif // IMP_EIGEN_STDDEQUE_H

@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_NESTBYVALUE_H
-#define EIGEN_NESTBYVALUE_H
+#ifndef IMP_EIGEN_NESTBYVALUE_H
+#define IMP_EIGEN_NESTBYVALUE_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 /** \class NestByValue
   * \ingroup Core_Module
@@ -38,7 +38,7 @@ template<typename ExpressionType> class NestByValue
   public:
 
     typedef typename internal::dense_xpr_base<NestByValue>::type Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(NestByValue)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(NestByValue)
 
     inline NestByValue(const ExpressionType& matrix) : m_expression(matrix) {}
 
@@ -106,6 +106,6 @@ DenseBase<Derived>::nestByValue() const
   return NestByValue<Derived>(derived());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_NESTBYVALUE_H
+#endif // IMP_EIGEN_NESTBYVALUE_H

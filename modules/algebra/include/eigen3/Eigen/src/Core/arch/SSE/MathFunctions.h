@@ -12,14 +12,14 @@
  * Julien Pommier's sse math library: http://gruntthepeon.free.fr/ssemath/
  */
 
-#ifndef EIGEN_MATH_FUNCTIONS_SSE_H
-#define EIGEN_MATH_FUNCTIONS_SSE_H
+#ifndef IMP_EIGEN_MATH_FUNCTIONS_SSE_H
+#define IMP_EIGEN_MATH_FUNCTIONS_SSE_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 namespace internal {
 
-template<> EIGEN_DEFINE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS EIGEN_UNUSED
+template<> IMP_EIGEN_DEFINE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS IMP_EIGEN_UNUSED
 Packet4f plog<Packet4f>(const Packet4f& _x)
 {
   Packet4f x = _x;
@@ -103,7 +103,7 @@ Packet4f plog<Packet4f>(const Packet4f& _x)
                    _mm_and_ps(iszero_mask, p4f_minus_inf));
 }
 
-template<> EIGEN_DEFINE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS EIGEN_UNUSED
+template<> IMP_EIGEN_DEFINE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS IMP_EIGEN_UNUSED
 Packet4f pexp<Packet4f>(const Packet4f& _x)
 {
   Packet4f x = _x;
@@ -135,7 +135,7 @@ Packet4f pexp<Packet4f>(const Packet4f& _x)
   /* express exp(x) as exp(g + n*log(2)) */
   fx = pmadd(x, p4f_cephes_LOG2EF, p4f_half);
 
-#ifdef EIGEN_VECTORIZE_SSE4_1
+#ifdef IMP_EIGEN_VECTORIZE_SSE4_1
   fx = _mm_floor_ps(fx);
 #else
   emm0 = _mm_cvttps_epi32(fx);
@@ -168,7 +168,7 @@ Packet4f pexp<Packet4f>(const Packet4f& _x)
   emm0 = _mm_slli_epi32(emm0, 23);
   return pmul(y, _mm_castsi128_ps(emm0));
 }
-template<> EIGEN_DEFINE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS EIGEN_UNUSED
+template<> IMP_EIGEN_DEFINE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS IMP_EIGEN_UNUSED
 Packet2d pexp<Packet2d>(const Packet2d& _x)
 {
   Packet2d x = _x;
@@ -203,7 +203,7 @@ Packet2d pexp<Packet2d>(const Packet2d& _x)
   /* express exp(x) as exp(g + n*log(2)) */
   fx = pmadd(p2d_cephes_LOG2EF, x, p2d_half);
 
-#ifdef EIGEN_VECTORIZE_SSE4_1
+#ifdef IMP_EIGEN_VECTORIZE_SSE4_1
   fx = _mm_floor_pd(fx);
 #else
   emm0 = _mm_cvttpd_epi32(fx);
@@ -254,7 +254,7 @@ Packet2d pexp<Packet2d>(const Packet2d& _x)
    surprising but correct result.
 */
 
-template<> EIGEN_DEFINE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS EIGEN_UNUSED
+template<> IMP_EIGEN_DEFINE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS IMP_EIGEN_UNUSED
 Packet4f psin<Packet4f>(const Packet4f& _x)
 {
   Packet4f x = _x;
@@ -355,7 +355,7 @@ Packet4f psin<Packet4f>(const Packet4f& _x)
 }
 
 /* almost the same as psin */
-template<> EIGEN_DEFINE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS EIGEN_UNUSED
+template<> IMP_EIGEN_DEFINE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS IMP_EIGEN_UNUSED
 Packet4f pcos<Packet4f>(const Packet4f& _x)
 {
   Packet4f x = _x;
@@ -444,7 +444,7 @@ Packet4f pcos<Packet4f>(const Packet4f& _x)
 
 // This is based on Quake3's fast inverse square root.
 // For detail see here: http://www.beyond3d.com/content/articles/8/
-template<> EIGEN_DEFINE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS EIGEN_UNUSED
+template<> IMP_EIGEN_DEFINE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS IMP_EIGEN_UNUSED
 Packet4f psqrt<Packet4f>(const Packet4f& _x)
 {
   Packet4f half = pmul(_x, pset1<Packet4f>(.5f));
@@ -459,6 +459,6 @@ Packet4f psqrt<Packet4f>(const Packet4f& _x)
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_MATH_FUNCTIONS_SSE_H
+#endif // IMP_EIGEN_MATH_FUNCTIONS_SSE_H

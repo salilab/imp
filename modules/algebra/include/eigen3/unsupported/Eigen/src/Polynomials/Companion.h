@@ -7,18 +7,18 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_COMPANION_H
-#define EIGEN_COMPANION_H
+#ifndef IMP_EIGEN_COMPANION_H
+#define IMP_EIGEN_COMPANION_H
 
 // This file requires the user to include
 // * Eigen/Core
 // * Eigen/src/PolynomialSolver.h
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
 
 template <typename T>
 T radix(){ return 2; }
@@ -39,7 +39,7 @@ template< typename _Scalar, int _Deg >
 class companion
 {
   public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_Deg==Dynamic ? Dynamic : _Deg)
+    IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_Deg==Dynamic ? Dynamic : _Deg)
 
     enum {
       Deg = _Deg,
@@ -60,7 +60,7 @@ class companion
     typedef DenseIndex Index;
 
   public:
-    EIGEN_STRONG_INLINE const _Scalar operator()(Index row, Index col ) const
+    IMP_EIGEN_STRONG_INLINE const _Scalar operator()(Index row, Index col ) const
     {
       if( m_bl_diag.rows() > col )
       {
@@ -211,7 +211,7 @@ template< typename _Scalar, int _Deg >
 void companion<_Scalar,_Deg>::balance()
 {
   using std::abs;
-  EIGEN_STATIC_ASSERT( Deg == Dynamic || 1 < Deg, YOU_MADE_A_PROGRAMMING_MISTAKE );
+  IMP_EIGEN_STATIC_ASSERT( Deg == Dynamic || 1 < Deg, YOU_MADE_A_PROGRAMMING_MISTAKE );
   const Index deg   = m_monic.size();
   const Index deg_1 = deg-1;
 
@@ -271,6 +271,6 @@ void companion<_Scalar,_Deg>::balance()
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_COMPANION_H
+#endif // IMP_EIGEN_COMPANION_H

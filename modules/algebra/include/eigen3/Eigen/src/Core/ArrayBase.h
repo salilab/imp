@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_ARRAYBASE_H
-#define EIGEN_ARRAYBASE_H
+#ifndef IMP_EIGEN_ARRAYBASE_H
+#define IMP_EIGEN_ARRAYBASE_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 template<typename ExpressionType> class MatrixWrapper;
 
@@ -32,7 +32,7 @@ template<typename ExpressionType> class MatrixWrapper;
   * \tparam Derived is the derived type, e.g., an array or an expression type.
   *
   * This class can be extended with the help of the plugin mechanism described on the page
-  * \ref TopicCustomizingEigen by defining the preprocessor symbol \c EIGEN_ARRAYBASE_PLUGIN.
+  * \ref TopicCustomizingEigen by defining the preprocessor symbol \c IMP_EIGEN_ARRAYBASE_PLUGIN.
   *
   * \sa class MatrixBase, \ref TopicClassHierarchy
   */
@@ -40,7 +40,7 @@ template<typename Derived> class ArrayBase
   : public DenseBase<Derived>
 {
   public:
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** The base class for a given storage type. */
     typedef ArrayBase StorageBaseType;
 
@@ -82,9 +82,9 @@ template<typename Derived> class ArrayBase
 
     typedef typename Base::CoeffReturnType CoeffReturnType;
 
-#endif // not EIGEN_PARSED_BY_DOXYGEN
+#endif // not IMP_EIGEN_PARSED_BY_DOXYGEN
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** \internal the plain matrix type corresponding to this expression. Note that is not necessarily
       * exactly the return type of eval(): in the case of plain matrices, the return type of eval() is a const
       * reference to a matrix, not a matrix! It is however guaranteed that the return type of eval() is either
@@ -101,19 +101,19 @@ template<typename Derived> class ArrayBase
 
     /** \internal Represents a matrix with all coefficients equal to one another*/
     typedef CwiseNullaryOp<internal::scalar_constant_op<Scalar>,Derived> ConstantReturnType;
-#endif // not EIGEN_PARSED_BY_DOXYGEN
+#endif // not IMP_EIGEN_PARSED_BY_DOXYGEN
 
-#define EIGEN_CURRENT_STORAGE_BASE_CLASS Eigen::ArrayBase
+#define IMP_EIGEN_CURRENT_STORAGE_BASE_CLASS IMP_Eigen::ArrayBase
 #   include "../plugins/CommonCwiseUnaryOps.h"
 #   include "../plugins/MatrixCwiseUnaryOps.h"
 #   include "../plugins/ArrayCwiseUnaryOps.h"
 #   include "../plugins/CommonCwiseBinaryOps.h"
 #   include "../plugins/MatrixCwiseBinaryOps.h"
 #   include "../plugins/ArrayCwiseBinaryOps.h"
-#   ifdef EIGEN_ARRAYBASE_PLUGIN
-#     include EIGEN_ARRAYBASE_PLUGIN
+#   ifdef IMP_EIGEN_ARRAYBASE_PLUGIN
+#     include IMP_EIGEN_ARRAYBASE_PLUGIN
 #   endif
-#undef EIGEN_CURRENT_STORAGE_BASE_CLASS
+#undef IMP_EIGEN_CURRENT_STORAGE_BASE_CLASS
 
     /** Special case of the template operator=, in order to prevent the compiler
       * from generating a default operator= (issue hit with g++ 4.1)
@@ -143,7 +143,7 @@ template<typename Derived> class ArrayBase
     ArrayBase<Derived>& array() { return *this; }
     const ArrayBase<Derived>& array() const { return *this; }
 
-    /** \returns an \link Eigen::MatrixBase Matrix \endlink expression of this array
+    /** \returns an \link IMP_Eigen::MatrixBase Matrix \endlink expression of this array
       * \sa MatrixBase::array() */
     MatrixWrapper<Derived> matrix() { return derived(); }
     const MatrixWrapper<const Derived> matrix() const { return derived(); }
@@ -161,10 +161,10 @@ template<typename Derived> class ArrayBase
   protected:
     // mixing arrays and matrices is not legal
     template<typename OtherDerived> Derived& operator+=(const MatrixBase<OtherDerived>& )
-    {EIGEN_STATIC_ASSERT(std::ptrdiff_t(sizeof(typename OtherDerived::Scalar))==-1,YOU_CANNOT_MIX_ARRAYS_AND_MATRICES); return *this;}
+    {IMP_EIGEN_STATIC_ASSERT(std::ptrdiff_t(sizeof(typename OtherDerived::Scalar))==-1,YOU_CANNOT_MIX_ARRAYS_AND_MATRICES); return *this;}
     // mixing arrays and matrices is not legal
     template<typename OtherDerived> Derived& operator-=(const MatrixBase<OtherDerived>& )
-    {EIGEN_STATIC_ASSERT(std::ptrdiff_t(sizeof(typename OtherDerived::Scalar))==-1,YOU_CANNOT_MIX_ARRAYS_AND_MATRICES); return *this;}
+    {IMP_EIGEN_STATIC_ASSERT(std::ptrdiff_t(sizeof(typename OtherDerived::Scalar))==-1,YOU_CANNOT_MIX_ARRAYS_AND_MATRICES); return *this;}
 };
 
 /** replaces \c *this by \c *this - \a other.
@@ -173,7 +173,7 @@ template<typename Derived> class ArrayBase
   */
 template<typename Derived>
 template<typename OtherDerived>
-EIGEN_STRONG_INLINE Derived &
+IMP_EIGEN_STRONG_INLINE Derived &
 ArrayBase<Derived>::operator-=(const ArrayBase<OtherDerived> &other)
 {
   SelfCwiseBinaryOp<internal::scalar_difference_op<Scalar>, Derived, OtherDerived> tmp(derived());
@@ -187,7 +187,7 @@ ArrayBase<Derived>::operator-=(const ArrayBase<OtherDerived> &other)
   */
 template<typename Derived>
 template<typename OtherDerived>
-EIGEN_STRONG_INLINE Derived &
+IMP_EIGEN_STRONG_INLINE Derived &
 ArrayBase<Derived>::operator+=(const ArrayBase<OtherDerived>& other)
 {
   SelfCwiseBinaryOp<internal::scalar_sum_op<Scalar>, Derived, OtherDerived> tmp(derived());
@@ -201,7 +201,7 @@ ArrayBase<Derived>::operator+=(const ArrayBase<OtherDerived>& other)
   */
 template<typename Derived>
 template<typename OtherDerived>
-EIGEN_STRONG_INLINE Derived &
+IMP_EIGEN_STRONG_INLINE Derived &
 ArrayBase<Derived>::operator*=(const ArrayBase<OtherDerived>& other)
 {
   SelfCwiseBinaryOp<internal::scalar_product_op<Scalar>, Derived, OtherDerived> tmp(derived());
@@ -215,7 +215,7 @@ ArrayBase<Derived>::operator*=(const ArrayBase<OtherDerived>& other)
   */
 template<typename Derived>
 template<typename OtherDerived>
-EIGEN_STRONG_INLINE Derived &
+IMP_EIGEN_STRONG_INLINE Derived &
 ArrayBase<Derived>::operator/=(const ArrayBase<OtherDerived>& other)
 {
   SelfCwiseBinaryOp<internal::scalar_quotient_op<Scalar>, Derived, OtherDerived> tmp(derived());
@@ -223,6 +223,6 @@ ArrayBase<Derived>::operator/=(const ArrayBase<OtherDerived>& other)
   return derived();
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_ARRAYBASE_H
+#endif // IMP_EIGEN_ARRAYBASE_H

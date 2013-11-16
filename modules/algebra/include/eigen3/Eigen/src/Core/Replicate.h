@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_REPLICATE_H
-#define EIGEN_REPLICATE_H
+#ifndef IMP_EIGEN_REPLICATE_H
+#define IMP_EIGEN_REPLICATE_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /**
   * \class Replicate
@@ -67,13 +67,13 @@ template<typename MatrixType,int RowFactor,int ColFactor> class Replicate
   public:
 
     typedef typename internal::dense_xpr_base<Replicate>::type Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(Replicate)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(Replicate)
 
     template<typename OriginalMatrixType>
     inline explicit Replicate(const OriginalMatrixType& a_matrix)
       : m_matrix(a_matrix), m_rowFactor(RowFactor), m_colFactor(ColFactor)
     {
-      EIGEN_STATIC_ASSERT((internal::is_same<typename internal::remove_const<MatrixType>::type,OriginalMatrixType>::value),
+      IMP_EIGEN_STATIC_ASSERT((internal::is_same<typename internal::remove_const<MatrixType>::type,OriginalMatrixType>::value),
                           THE_MATRIX_OR_EXPRESSION_THAT_YOU_PASSED_DOES_NOT_HAVE_THE_EXPECTED_TYPE)
       eigen_assert(RowFactor!=Dynamic && ColFactor!=Dynamic);
     }
@@ -82,7 +82,7 @@ template<typename MatrixType,int RowFactor,int ColFactor> class Replicate
     inline Replicate(const OriginalMatrixType& a_matrix, Index rowFactor, Index colFactor)
       : m_matrix(a_matrix), m_rowFactor(rowFactor), m_colFactor(colFactor)
     {
-      EIGEN_STATIC_ASSERT((internal::is_same<typename internal::remove_const<MatrixType>::type,OriginalMatrixType>::value),
+      IMP_EIGEN_STATIC_ASSERT((internal::is_same<typename internal::remove_const<MatrixType>::type,OriginalMatrixType>::value),
                           THE_MATRIX_OR_EXPRESSION_THAT_YOU_PASSED_DOES_NOT_HAVE_THE_EXPECTED_TYPE)
     }
 
@@ -172,6 +172,6 @@ VectorwiseOp<ExpressionType,Direction>::replicate(Index factor) const
           (_expression(),Direction==Vertical?factor:1,Direction==Horizontal?factor:1);
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_REPLICATE_H
+#endif // IMP_EIGEN_REPLICATE_H

@@ -1,5 +1,5 @@
-#ifndef EIGEN_CHOLMODSUPPORT_MODULE_H
-#define EIGEN_CHOLMODSUPPORT_MODULE_H
+#ifndef IMP_EIGEN_CHOLMODSUPPORT_MODULE_H
+#define IMP_EIGEN_CHOLMODSUPPORT_MODULE_H
 
 #include "SparseCore"
 
@@ -41,5 +41,5 @@ extern "C" {
 
 #include "src/Core/util/ReenableStupidWarnings.h"
 
-#endif // EIGEN_CHOLMODSUPPORT_MODULE_H
+#endif // IMP_EIGEN_CHOLMODSUPPORT_MODULE_H
 

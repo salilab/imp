@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SELFADJOINT_MATRIX_VECTOR_H
-#define EIGEN_SELFADJOINT_MATRIX_VECTOR_H
+#ifndef IMP_EIGEN_SELFADJOINT_MATRIX_VECTOR_H
+#define IMP_EIGEN_SELFADJOINT_MATRIX_VECTOR_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -27,7 +27,7 @@ template<typename Scalar, typename Index, int StorageOrder, int UpLo, bool Conju
 struct selfadjoint_matrix_vector_product
 
 {
-static EIGEN_DONT_INLINE void run(
+static IMP_EIGEN_DONT_INLINE void run(
   Index size,
   const Scalar*  lhs, Index lhsStride,
   const Scalar* _rhs, Index rhsIncr,
@@ -36,7 +36,7 @@ static EIGEN_DONT_INLINE void run(
 };
 
 template<typename Scalar, typename Index, int StorageOrder, int UpLo, bool ConjugateLhs, bool ConjugateRhs, int Version>
-EIGEN_DONT_INLINE void selfadjoint_matrix_vector_product<Scalar,Index,StorageOrder,UpLo,ConjugateLhs,ConjugateRhs,Version>::run(
+IMP_EIGEN_DONT_INLINE void selfadjoint_matrix_vector_product<Scalar,Index,StorageOrder,UpLo,ConjugateLhs,ConjugateRhs,Version>::run(
   Index size,
   const Scalar*  lhs, Index lhsStride,
   const Scalar* _rhs, Index rhsIncr,
@@ -52,12 +52,12 @@ EIGEN_DONT_INLINE void selfadjoint_matrix_vector_product<Scalar,Index,StorageOrd
     FirstTriangular = IsRowMajor == IsLower
   };
 
-  conj_helper<Scalar,Scalar,NumTraits<Scalar>::IsComplex && EIGEN_LOGICAL_XOR(ConjugateLhs,  IsRowMajor), ConjugateRhs> cj0;
-  conj_helper<Scalar,Scalar,NumTraits<Scalar>::IsComplex && EIGEN_LOGICAL_XOR(ConjugateLhs, !IsRowMajor), ConjugateRhs> cj1;
+  conj_helper<Scalar,Scalar,NumTraits<Scalar>::IsComplex && IMP_EIGEN_LOGICAL_XOR(ConjugateLhs,  IsRowMajor), ConjugateRhs> cj0;
+  conj_helper<Scalar,Scalar,NumTraits<Scalar>::IsComplex && IMP_EIGEN_LOGICAL_XOR(ConjugateLhs, !IsRowMajor), ConjugateRhs> cj1;
   conj_helper<Scalar,Scalar,NumTraits<Scalar>::IsComplex, ConjugateRhs> cjd;
 
-  conj_helper<Packet,Packet,NumTraits<Scalar>::IsComplex && EIGEN_LOGICAL_XOR(ConjugateLhs,  IsRowMajor), ConjugateRhs> pcj0;
-  conj_helper<Packet,Packet,NumTraits<Scalar>::IsComplex && EIGEN_LOGICAL_XOR(ConjugateLhs, !IsRowMajor), ConjugateRhs> pcj1;
+  conj_helper<Packet,Packet,NumTraits<Scalar>::IsComplex && IMP_EIGEN_LOGICAL_XOR(ConjugateLhs,  IsRowMajor), ConjugateRhs> pcj0;
+  conj_helper<Packet,Packet,NumTraits<Scalar>::IsComplex && IMP_EIGEN_LOGICAL_XOR(ConjugateLhs, !IsRowMajor), ConjugateRhs> pcj1;
 
   Scalar cjAlpha = ConjugateRhs ? numext::conj(alpha) : alpha;
 
@@ -79,8 +79,8 @@ EIGEN_DONT_INLINE void selfadjoint_matrix_vector_product<Scalar,Index,StorageOrd
   for (Index j=FirstTriangular ? bound : 0;
        j<(FirstTriangular ? size : bound);j+=2)
   {
-    register const Scalar* EIGEN_RESTRICT A0 = lhs + j*lhsStride;
-    register const Scalar* EIGEN_RESTRICT A1 = lhs + (j+1)*lhsStride;
+    register const Scalar* IMP_EIGEN_RESTRICT A0 = lhs + j*lhsStride;
+    register const Scalar* IMP_EIGEN_RESTRICT A1 = lhs + (j+1)*lhsStride;
 
     Scalar t0 = cjAlpha * rhs[j];
     Packet ptmp0 = pset1<Packet>(t0);
@@ -119,10 +119,10 @@ EIGEN_DONT_INLINE void selfadjoint_matrix_vector_product<Scalar,Index,StorageOrd
     }
     // Yes this an optimization for gcc 4.3 and 4.4 (=> huge speed up)
     // gcc 4.2 does this optimization automatically.
-    const Scalar* EIGEN_RESTRICT a0It  = A0  + alignedStart;
-    const Scalar* EIGEN_RESTRICT a1It  = A1  + alignedStart;
-    const Scalar* EIGEN_RESTRICT rhsIt = rhs + alignedStart;
-          Scalar* EIGEN_RESTRICT resIt = res + alignedStart;
+    const Scalar* IMP_EIGEN_RESTRICT a0It  = A0  + alignedStart;
+    const Scalar* IMP_EIGEN_RESTRICT a1It  = A1  + alignedStart;
+    const Scalar* IMP_EIGEN_RESTRICT rhsIt = rhs + alignedStart;
+          Scalar* IMP_EIGEN_RESTRICT resIt = res + alignedStart;
     for (size_t i=alignedStart; i<alignedEnd; i+=PacketSize)
     {
       Packet A0i = ploadu<Packet>(a0It);  a0It  += PacketSize;
@@ -147,7 +147,7 @@ EIGEN_DONT_INLINE void selfadjoint_matrix_vector_product<Scalar,Index,StorageOrd
   }
   for (Index j=FirstTriangular ? 0 : bound;j<(FirstTriangular ? bound : size);j++)
   {
-    register const Scalar* EIGEN_RESTRICT A0 = lhs + j*lhsStride;
+    register const Scalar* IMP_EIGEN_RESTRICT A0 = lhs + j*lhsStride;
 
     Scalar t1 = cjAlpha * rhs[j];
     Scalar t2(0);
@@ -179,7 +179,7 @@ template<typename Lhs, int LhsMode, typename Rhs>
 struct SelfadjointProductMatrix<Lhs,LhsMode,false,Rhs,0,true>
   : public ProductBase<SelfadjointProductMatrix<Lhs,LhsMode,false,Rhs,0,true>, Lhs, Rhs >
 {
-  EIGEN_PRODUCT_PUBLIC_INTERFACE(SelfadjointProductMatrix)
+  IMP_EIGEN_PRODUCT_PUBLIC_INTERFACE(SelfadjointProductMatrix)
 
   enum {
     LhsUpLo = LhsMode&(Upper|Lower)
@@ -217,18 +217,18 @@ struct SelfadjointProductMatrix<Lhs,LhsMode,false,Rhs,0,true>
     
     if(!EvalToDest)
     {
-      #ifdef EIGEN_DENSE_STORAGE_CTOR_PLUGIN
+      #ifdef IMP_EIGEN_DENSE_STORAGE_CTOR_PLUGIN
       int size = dest.size();
-      EIGEN_DENSE_STORAGE_CTOR_PLUGIN
+      IMP_EIGEN_DENSE_STORAGE_CTOR_PLUGIN
       #endif
       MappedDest(actualDestPtr, dest.size()) = dest;
     }
       
     if(!UseRhs)
     {
-      #ifdef EIGEN_DENSE_STORAGE_CTOR_PLUGIN
+      #ifdef IMP_EIGEN_DENSE_STORAGE_CTOR_PLUGIN
       int size = rhs.size();
-      EIGEN_DENSE_STORAGE_CTOR_PLUGIN
+      IMP_EIGEN_DENSE_STORAGE_CTOR_PLUGIN
       #endif
       Map<typename _ActualRhsType::PlainObject>(actualRhsPtr, rhs.size()) = rhs;
     }
@@ -259,7 +259,7 @@ template<typename Lhs, typename Rhs, int RhsMode>
 struct SelfadjointProductMatrix<Lhs,0,true,Rhs,RhsMode,false>
   : public ProductBase<SelfadjointProductMatrix<Lhs,0,true,Rhs,RhsMode,false>, Lhs, Rhs >
 {
-  EIGEN_PRODUCT_PUBLIC_INTERFACE(SelfadjointProductMatrix)
+  IMP_EIGEN_PRODUCT_PUBLIC_INTERFACE(SelfadjointProductMatrix)
 
   enum {
     RhsUpLo = RhsMode&(Upper|Lower)
@@ -276,6 +276,6 @@ struct SelfadjointProductMatrix<Lhs,0,true,Rhs,RhsMode,false>
   }
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SELFADJOINT_MATRIX_VECTOR_H
+#endif // IMP_EIGEN_SELFADJOINT_MATRIX_VECTOR_H

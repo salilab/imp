@@ -1,12 +1,12 @@
-#ifndef EIGEN_REGRESSION_MODULE_H
-#define EIGEN_REGRESSION_MODULE_H
+#ifndef IMP_EIGEN_REGRESSION_MODULE_H
+#define IMP_EIGEN_REGRESSION_MODULE_H
 
-#ifndef EIGEN2_SUPPORT
-#error LeastSquares is only available in Eigen2 support mode (define EIGEN2_SUPPORT)
+#ifndef IMP_EIGEN2_SUPPORT
+#error LeastSquares is only available in Eigen2 support mode (define IMP_EIGEN2_SUPPORT)
 #endif
 
 // exclude from normal eigen3-only documentation
-#ifdef EIGEN2_SUPPORT
+#ifdef IMP_EIGEN2_SUPPORT
 
 #include "Core"
 
@@ -27,6 +27,6 @@
 
 #include "src/Core/util/ReenableStupidWarnings.h"
 
-#endif // EIGEN2_SUPPORT
+#endif // IMP_EIGEN2_SUPPORT
 
-#endif // EIGEN_REGRESSION_MODULE_H
+#endif // IMP_EIGEN_REGRESSION_MODULE_H

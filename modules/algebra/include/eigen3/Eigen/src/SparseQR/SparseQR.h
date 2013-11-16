@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPARSE_QR_H
-#define EIGEN_SPARSE_QR_H
+#ifndef IMP_EIGEN_SPARSE_QR_H
+#define IMP_EIGEN_SPARSE_QR_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 template<typename MatrixType, typename OrderingType> class SparseQR;
 template<typename SparseQRType> struct SparseQRMatrixQReturnType;
@@ -523,7 +523,7 @@ struct solve_retval<SparseQR<_MatrixType,OrderingType>, Rhs>
   : solve_retval_base<SparseQR<_MatrixType,OrderingType>, Rhs>
 {
   typedef SparseQR<_MatrixType,OrderingType> Dec;
-  EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
+  IMP_EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -535,7 +535,7 @@ struct sparse_solve_retval<SparseQR<_MatrixType, OrderingType>, Rhs>
  : sparse_solve_retval_base<SparseQR<_MatrixType, OrderingType>, Rhs>
 {
   typedef SparseQR<_MatrixType, OrderingType> Dec;
-  EIGEN_MAKE_SPARSE_SOLVE_HELPERS(Dec, Rhs)
+  IMP_EIGEN_MAKE_SPARSE_SOLVE_HELPERS(Dec, Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -649,6 +649,6 @@ struct SparseQRMatrixQTransposeReturnType
   const SparseQRType& m_qr;
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
 #endif

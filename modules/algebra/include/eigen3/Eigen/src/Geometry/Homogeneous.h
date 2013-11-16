@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_HOMOGENEOUS_H
-#define EIGEN_HOMOGENEOUS_H
+#ifndef IMP_EIGEN_HOMOGENEOUS_H
+#define IMP_EIGEN_HOMOGENEOUS_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \geometry_module \ingroup Geometry_Module
   *
@@ -66,7 +66,7 @@ template<typename MatrixType,int _Direction> class Homogeneous
     enum { Direction = _Direction };
 
     typedef MatrixBase<Homogeneous> Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(Homogeneous)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(Homogeneous)
 
     inline Homogeneous(const MatrixType& matrix)
       : m_matrix(matrix)
@@ -126,7 +126,7 @@ template<typename Derived>
 inline typename MatrixBase<Derived>::HomogeneousReturnType
 MatrixBase<Derived>::homogeneous() const
 {
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived);
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived);
   return derived();
 }
 
@@ -157,7 +157,7 @@ template<typename Derived>
 inline const typename MatrixBase<Derived>::HNormalizedReturnType
 MatrixBase<Derived>::hnormalized() const
 {
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived);
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived);
   return ConstStartMinusOne(derived(),0,0,
     ColsAtCompileTime==1?size()-1:1,
     ColsAtCompileTime==1?1:size()-1) / coeff(size()-1);
@@ -302,6 +302,6 @@ struct homogeneous_right_product_impl<Homogeneous<MatrixType,Horizontal>,Rhs>
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_HOMOGENEOUS_H
+#endif // IMP_EIGEN_HOMOGENEOUS_H

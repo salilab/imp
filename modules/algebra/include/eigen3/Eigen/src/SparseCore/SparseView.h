@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPARSEVIEW_H
-#define EIGEN_SPARSEVIEW_H
+#ifndef IMP_EIGEN_SPARSEVIEW_H
+#define IMP_EIGEN_SPARSEVIEW_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -33,7 +33,7 @@ class SparseView : public SparseMatrixBase<SparseView<MatrixType> >
   typedef typename MatrixType::Nested MatrixTypeNested;
   typedef typename internal::remove_all<MatrixTypeNested>::type _MatrixTypeNested;
 public:
-  EIGEN_SPARSE_PUBLIC_INTERFACE(SparseView)
+  IMP_EIGEN_SPARSE_PUBLIC_INTERFACE(SparseView)
 
   SparseView(const MatrixType& mat, const Scalar& m_reference = Scalar(0),
              typename NumTraits<Scalar>::Real m_epsilon = NumTraits<Scalar>::dummy_precision()) : 
@@ -65,7 +65,7 @@ public:
     incrementToNonZero();
   }
 
-  EIGEN_STRONG_INLINE InnerIterator& operator++()
+  IMP_EIGEN_STRONG_INLINE InnerIterator& operator++()
   {
     IterBase::operator++();
     incrementToNonZero();
@@ -94,6 +94,6 @@ const SparseView<Derived> MatrixBase<Derived>::sparseView(const Scalar& m_refere
   return SparseView<Derived>(derived(), m_reference, m_epsilon);
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
 #endif

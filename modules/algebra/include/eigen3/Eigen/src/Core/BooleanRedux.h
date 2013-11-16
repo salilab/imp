@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_ALLANDANY_H
-#define EIGEN_ALLANDANY_H
+#ifndef IMP_EIGEN_ALLANDANY_H
+#define IMP_EIGEN_ALLANDANY_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -82,7 +82,7 @@ inline bool DenseBase<Derived>::all() const
     unroll = SizeAtCompileTime != Dynamic
           && CoeffReadCost != Dynamic
           && NumTraits<Scalar>::AddCost != Dynamic
-          && SizeAtCompileTime * (CoeffReadCost + NumTraits<Scalar>::AddCost) <= EIGEN_UNROLLING_LIMIT
+          && SizeAtCompileTime * (CoeffReadCost + NumTraits<Scalar>::AddCost) <= IMP_EIGEN_UNROLLING_LIMIT
   };
   if(unroll)
     return internal::all_unroller<Derived, unroll ? int(SizeAtCompileTime) : Dynamic>::run(derived());
@@ -106,7 +106,7 @@ inline bool DenseBase<Derived>::any() const
     unroll = SizeAtCompileTime != Dynamic
           && CoeffReadCost != Dynamic
           && NumTraits<Scalar>::AddCost != Dynamic
-          && SizeAtCompileTime * (CoeffReadCost + NumTraits<Scalar>::AddCost) <= EIGEN_UNROLLING_LIMIT
+          && SizeAtCompileTime * (CoeffReadCost + NumTraits<Scalar>::AddCost) <= IMP_EIGEN_UNROLLING_LIMIT
   };
   if(unroll)
     return internal::any_unroller<Derived, unroll ? int(SizeAtCompileTime) : Dynamic>::run(derived());
@@ -149,6 +149,6 @@ inline bool DenseBase<Derived>::allFinite() const
   return !((derived()-derived()).hasNaN());
 }
     
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_ALLANDANY_H
+#endif // IMP_EIGEN_ALLANDANY_H

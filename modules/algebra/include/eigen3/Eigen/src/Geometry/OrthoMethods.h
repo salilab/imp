@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_ORTHOMETHODS_H
-#define EIGEN_ORTHOMETHODS_H
+#ifndef IMP_EIGEN_ORTHOMETHODS_H
+#define IMP_EIGEN_ORTHOMETHODS_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \geometry_module
   *
@@ -25,8 +25,8 @@ template<typename OtherDerived>
 inline typename MatrixBase<Derived>::template cross_product_return_type<OtherDerived>::type
 MatrixBase<Derived>::cross(const MatrixBase<OtherDerived>& other) const
 {
-  EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived,3)
-  EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(OtherDerived,3)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived,3)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(OtherDerived,3)
 
   // Note that there is no need for an expression here since the compiler
   // optimize such a small temporary very well (even within a complex expression)
@@ -73,8 +73,8 @@ template<typename OtherDerived>
 inline typename MatrixBase<Derived>::PlainObject
 MatrixBase<Derived>::cross3(const MatrixBase<OtherDerived>& other) const
 {
-  EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived,4)
-  EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(OtherDerived,4)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived,4)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(OtherDerived,4)
 
   typedef typename internal::nested<Derived,2>::type DerivedNested;
   typedef typename internal::nested<OtherDerived,2>::type OtherDerivedNested;
@@ -100,8 +100,8 @@ template<typename OtherDerived>
 const typename VectorwiseOp<ExpressionType,Direction>::CrossReturnType
 VectorwiseOp<ExpressionType,Direction>::cross(const MatrixBase<OtherDerived>& other) const
 {
-  EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(OtherDerived,3)
-  EIGEN_STATIC_ASSERT((internal::is_same<Scalar, typename OtherDerived::Scalar>::value),
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(OtherDerived,3)
+  IMP_EIGEN_STATIC_ASSERT((internal::is_same<Scalar, typename OtherDerived::Scalar>::value),
     YOU_MIXED_DIFFERENT_NUMERIC_TYPES__YOU_NEED_TO_USE_THE_CAST_METHOD_OF_MATRIXBASE_TO_CAST_NUMERIC_TYPES_EXPLICITLY)
 
   CrossReturnType res(_expression().rows(),_expression().cols());
@@ -209,10 +209,10 @@ template<typename Derived>
 typename MatrixBase<Derived>::PlainObject
 MatrixBase<Derived>::unitOrthogonal() const
 {
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
   return internal::unitOrthogonal_selector<Derived>::run(derived());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_ORTHOMETHODS_H
+#endif // IMP_EIGEN_ORTHOMETHODS_H

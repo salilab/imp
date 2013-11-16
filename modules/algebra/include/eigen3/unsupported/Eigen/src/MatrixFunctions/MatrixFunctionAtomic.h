@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_MATRIX_FUNCTION_ATOMIC
-#define EIGEN_MATRIX_FUNCTION_ATOMIC
+#ifndef IMP_EIGEN_MATRIX_FUNCTION_ATOMIC
+#define IMP_EIGEN_MATRIX_FUNCTION_ATOMIC
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \ingroup MatrixFunctions_Module
   * \class MatrixFunctionAtomic
@@ -126,6 +126,6 @@ bool MatrixFunctionAtomic<MatrixType>::taylorConverged(Index s, const MatrixType
   return false;
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_MATRIX_FUNCTION_ATOMIC
+#endif // IMP_EIGEN_MATRIX_FUNCTION_ATOMIC

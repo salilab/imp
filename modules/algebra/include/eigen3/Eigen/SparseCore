@@ -1,5 +1,5 @@
-#ifndef EIGEN_SPARSECORE_MODULE_H
-#define EIGEN_SPARSECORE_MODULE_H
+#ifndef IMP_EIGEN_SPARSECORE_MODULE_H
+#define IMP_EIGEN_SPARSECORE_MODULE_H
 
 #include "Core"
 
@@ -26,7 +26,7 @@
   * This module depends on: Core.
   */
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 /** The type used to identify a general sparse storage. */
 struct Sparse {};
@@ -60,5 +60,5 @@ struct Sparse {};
 
 #include "src/Core/util/ReenableStupidWarnings.h"
 
-#endif // EIGEN_SPARSECORE_MODULE_H
+#endif // IMP_EIGEN_SPARSECORE_MODULE_H
 

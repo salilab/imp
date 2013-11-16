@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_PERMUTATIONMATRIX_H
-#define EIGEN_PERMUTATIONMATRIX_H
+#ifndef IMP_EIGEN_PERMUTATIONMATRIX_H
+#define IMP_EIGEN_PERMUTATIONMATRIX_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 template<int RowCol,typename IndicesType,typename MatrixType, typename StorageKind> class PermutedImpl;
 
@@ -56,7 +56,7 @@ class PermutationBase : public EigenBase<Derived>
     typedef EigenBase<Derived> Base;
   public:
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     typedef typename Traits::IndicesType IndicesType;
     enum {
       Flags = Traits::Flags,
@@ -93,7 +93,7 @@ class PermutationBase : public EigenBase<Derived>
       return derived();
     }
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** This is a special case of the templated operator=. Its purpose is to
       * prevent a default operator= from hiding the templated operator=.
       */
@@ -113,7 +113,7 @@ class PermutationBase : public EigenBase<Derived>
     /** \returns the size of a side of the respective square matrix, i.e., the number of indices */
     inline Index size() const { return Index(indices().size()); }
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     template<typename DenseDerived>
     void evalTo(MatrixBase<DenseDerived>& other) const
     {
@@ -210,7 +210,7 @@ class PermutationBase : public EigenBase<Derived>
     /**** multiplication helpers to hopefully get RVO ****/
 
   
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
   protected:
     template<typename OtherDerived>
     void assignTranspose(const PermutationBase<OtherDerived>& other)
@@ -286,7 +286,7 @@ class PermutationMatrix : public PermutationBase<PermutationMatrix<SizeAtCompile
     typedef internal::traits<PermutationMatrix> Traits;
   public:
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     typedef typename Traits::IndicesType IndicesType;
     #endif
 
@@ -303,7 +303,7 @@ class PermutationMatrix : public PermutationBase<PermutationMatrix<SizeAtCompile
     inline PermutationMatrix(const PermutationBase<OtherDerived>& other)
       : m_indices(other.indices()) {}
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** Standard copy constructor. Defined only to prevent a default copy constructor
       * from hiding the other templated constructor */
     inline PermutationMatrix(const PermutationMatrix& other) : m_indices(other.indices()) {}
@@ -343,7 +343,7 @@ class PermutationMatrix : public PermutationBase<PermutationMatrix<SizeAtCompile
       return Base::operator=(tr.derived());
     }
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** This is a special case of the templated operator=. Its purpose is to
       * prevent a default operator= from hiding the templated operator=.
       */
@@ -362,7 +362,7 @@ class PermutationMatrix : public PermutationBase<PermutationMatrix<SizeAtCompile
 
     /**** multiplication helpers to hopefully get RVO ****/
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     template<typename Other>
     PermutationMatrix(const Transpose<PermutationBase<Other> >& other)
       : m_indices(other.nestedPermutation().size())
@@ -401,7 +401,7 @@ class Map<PermutationMatrix<SizeAtCompileTime, MaxSizeAtCompileTime, IndexType>,
     typedef internal::traits<Map> Traits;
   public:
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     typedef typename Traits::IndicesType IndicesType;
     typedef typename IndicesType::Scalar Index;
     #endif
@@ -424,7 +424,7 @@ class Map<PermutationMatrix<SizeAtCompileTime, MaxSizeAtCompileTime, IndexType>,
     Map& operator=(const TranspositionsBase<Other>& tr)
     { return Base::operator=(tr.derived()); }
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** This is a special case of the templated operator=. Its purpose is to
       * prevent a default operator= from hiding the templated operator=.
       */
@@ -486,7 +486,7 @@ class PermutationWrapper : public PermutationBase<PermutationWrapper<_IndicesTyp
     typedef internal::traits<PermutationWrapper> Traits;
   public:
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     typedef typename Traits::IndicesType IndicesType;
     #endif
 
@@ -619,7 +619,7 @@ class Transpose<PermutationBase<Derived> >
     typedef typename PermutationType::PlainPermutationType PlainPermutationType;
   public:
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     typedef internal::traits<PermutationType> Traits;
     typedef typename Derived::DenseMatrixType DenseMatrixType;
     enum {
@@ -638,7 +638,7 @@ class Transpose<PermutationBase<Derived> >
     inline int rows() const { return m_permutation.rows(); }
     inline int cols() const { return m_permutation.cols(); }
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     template<typename DenseDerived>
     void evalTo(MatrixBase<DenseDerived>& other) const
     {
@@ -683,6 +683,6 @@ const PermutationWrapper<const Derived> MatrixBase<Derived>::asPermutation() con
   return derived();
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_PERMUTATIONMATRIX_H
+#endif // IMP_EIGEN_PERMUTATIONMATRIX_H

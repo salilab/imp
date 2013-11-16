@@ -31,7 +31,7 @@
 #ifndef SPARSELU_COLUMN_BMOD_H
 #define SPARSELU_COLUMN_BMOD_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 namespace internal {
 /**
@@ -175,6 +175,6 @@ Index SparseLUImpl<Scalar,Index>::column_bmod(const Index jcol, const Index nseg
 }
 
 } // end namespace internal
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
 #endif // SPARSELU_COLUMN_BMOD_H

@@ -12,7 +12,7 @@
 #ifndef KRONECKER_TENSOR_PRODUCT_H
 #define KRONECKER_TENSOR_PRODUCT_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 template<typename Scalar, int Options, typename Index> class SparseMatrix;
 
@@ -54,7 +54,7 @@ class KroneckerProduct : public ReturnByValue<KroneckerProduct<Lhs,Rhs> >
 
     Scalar coeff(Index i) const
     {
-      EIGEN_STATIC_ASSERT_VECTOR_ONLY(KroneckerProduct);
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(KroneckerProduct);
       return m_A.coeff(i / m_A.size()) * m_B.coeff(i % m_A.size());
     }
 
@@ -239,6 +239,6 @@ KroneckerProductSparse<A,B> kroneckerProduct(const EigenBase<A>& a, const EigenB
   return KroneckerProductSparse<A,B>(a.derived(), b.derived());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
 #endif // KRONECKER_TENSOR_PRODUCT_H

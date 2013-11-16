@@ -8,24 +8,24 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_CWISE_H
-#define EIGEN_CWISE_H
+#ifndef IMP_EIGEN_CWISE_H
+#define IMP_EIGEN_CWISE_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \internal
   * convenient macro to defined the return type of a cwise binary operation */
-#define EIGEN_CWISE_BINOP_RETURN_TYPE(OP) \
+#define IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(OP) \
     CwiseBinaryOp<OP<typename internal::traits<ExpressionType>::Scalar>, ExpressionType, OtherDerived>
 
 /** \internal
   * convenient macro to defined the return type of a cwise unary operation */
-#define EIGEN_CWISE_UNOP_RETURN_TYPE(OP) \
+#define IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(OP) \
     CwiseUnaryOp<OP<typename internal::traits<ExpressionType>::Scalar>, ExpressionType>
 
 /** \internal
   * convenient macro to defined the return type of a cwise comparison to a scalar */
-#define EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(OP) \
+#define IMP_EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(OP) \
     CwiseBinaryOp<OP<typename internal::traits<ExpressionType>::Scalar>, ExpressionType, \
         typename ExpressionType::ConstantReturnType >
 
@@ -43,7 +43,7 @@ namespace Eigen {
   * Output: \verbinclude MatrixBase_cwise_const.out
   *
   * This class can be extended with the help of the plugin mechanism described on the page
-  * \ref TopicCustomizingEigen by defining the preprocessor symbol \c EIGEN_CWISE_PLUGIN.
+  * \ref TopicCustomizingEigen by defining the preprocessor symbol \c IMP_EIGEN_CWISE_PLUGIN.
   *
   * \sa MatrixBase::cwise() const, MatrixBase::cwise()
   */
@@ -62,36 +62,36 @@ template<typename ExpressionType> class Cwise
     inline const ExpressionType& _expression() const { return m_matrix; }
 
     template<typename OtherDerived>
-    const EIGEN_CWISE_PRODUCT_RETURN_TYPE(ExpressionType,OtherDerived)
+    const IMP_EIGEN_CWISE_PRODUCT_RETURN_TYPE(ExpressionType,OtherDerived)
     operator*(const MatrixBase<OtherDerived> &other) const;
 
     template<typename OtherDerived>
-    const EIGEN_CWISE_BINOP_RETURN_TYPE(internal::scalar_quotient_op)
+    const IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(internal::scalar_quotient_op)
     operator/(const MatrixBase<OtherDerived> &other) const;
 
     /** \deprecated ArrayBase::min() */
     template<typename OtherDerived>
-    const EIGEN_CWISE_BINOP_RETURN_TYPE(internal::scalar_min_op)
+    const IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(internal::scalar_min_op)
     (min)(const MatrixBase<OtherDerived> &other) const
-    { return EIGEN_CWISE_BINOP_RETURN_TYPE(internal::scalar_min_op)(_expression(), other.derived()); }
+    { return IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(internal::scalar_min_op)(_expression(), other.derived()); }
 
     /** \deprecated ArrayBase::max() */
     template<typename OtherDerived>
-    const EIGEN_CWISE_BINOP_RETURN_TYPE(internal::scalar_max_op)
+    const IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(internal::scalar_max_op)
     (max)(const MatrixBase<OtherDerived> &other) const
-    { return EIGEN_CWISE_BINOP_RETURN_TYPE(internal::scalar_max_op)(_expression(), other.derived()); }
+    { return IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(internal::scalar_max_op)(_expression(), other.derived()); }
 
-    const EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_abs_op)      abs() const;
-    const EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_abs2_op)     abs2() const;
-    const EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_square_op)   square() const;
-    const EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_cube_op)     cube() const;
-    const EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_inverse_op)  inverse() const;
-    const EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_sqrt_op)     sqrt() const;
-    const EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_exp_op)      exp() const;
-    const EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_log_op)      log() const;
-    const EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_cos_op)      cos() const;
-    const EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_sin_op)      sin() const;
-    const EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_pow_op)      pow(const Scalar& exponent) const;
+    const IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_abs_op)      abs() const;
+    const IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_abs2_op)     abs2() const;
+    const IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_square_op)   square() const;
+    const IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_cube_op)     cube() const;
+    const IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_inverse_op)  inverse() const;
+    const IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_sqrt_op)     sqrt() const;
+    const IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_exp_op)      exp() const;
+    const IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_log_op)      log() const;
+    const IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_cos_op)      cos() const;
+    const IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_sin_op)      sin() const;
+    const IMP_EIGEN_CWISE_UNOP_RETURN_TYPE(internal::scalar_pow_op)      pow(const Scalar& exponent) const;
 
     const ScalarAddReturnType
     operator+(const Scalar& scalar) const;
@@ -114,46 +114,46 @@ template<typename ExpressionType> class Cwise
     template<typename OtherDerived>
     inline ExpressionType& operator/=(const MatrixBase<OtherDerived> &other);
 
-    template<typename OtherDerived> const EIGEN_CWISE_BINOP_RETURN_TYPE(std::less)
+    template<typename OtherDerived> const IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(std::less)
     operator<(const MatrixBase<OtherDerived>& other) const;
 
-    template<typename OtherDerived> const EIGEN_CWISE_BINOP_RETURN_TYPE(std::less_equal)
+    template<typename OtherDerived> const IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(std::less_equal)
     operator<=(const MatrixBase<OtherDerived>& other) const;
 
-    template<typename OtherDerived> const EIGEN_CWISE_BINOP_RETURN_TYPE(std::greater)
+    template<typename OtherDerived> const IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(std::greater)
     operator>(const MatrixBase<OtherDerived>& other) const;
 
-    template<typename OtherDerived> const EIGEN_CWISE_BINOP_RETURN_TYPE(std::greater_equal)
+    template<typename OtherDerived> const IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(std::greater_equal)
     operator>=(const MatrixBase<OtherDerived>& other) const;
 
-    template<typename OtherDerived> const EIGEN_CWISE_BINOP_RETURN_TYPE(std::equal_to)
+    template<typename OtherDerived> const IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(std::equal_to)
     operator==(const MatrixBase<OtherDerived>& other) const;
 
-    template<typename OtherDerived> const EIGEN_CWISE_BINOP_RETURN_TYPE(std::not_equal_to)
+    template<typename OtherDerived> const IMP_EIGEN_CWISE_BINOP_RETURN_TYPE(std::not_equal_to)
     operator!=(const MatrixBase<OtherDerived>& other) const;
 
     // comparisons to a scalar value
-    const EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::less)
+    const IMP_EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::less)
     operator<(Scalar s) const;
 
-    const EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::less_equal)
+    const IMP_EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::less_equal)
     operator<=(Scalar s) const;
 
-    const EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::greater)
+    const IMP_EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::greater)
     operator>(Scalar s) const;
 
-    const EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::greater_equal)
+    const IMP_EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::greater_equal)
     operator>=(Scalar s) const;
 
-    const EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::equal_to)
+    const IMP_EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::equal_to)
     operator==(Scalar s) const;
 
-    const EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::not_equal_to)
+    const IMP_EIGEN_CWISE_COMP_TO_SCALAR_RETURN_TYPE(std::not_equal_to)
     operator!=(Scalar s) const;
 
     // allow to extend Cwise outside Eigen
-    #ifdef EIGEN_CWISE_PLUGIN
-    #include EIGEN_CWISE_PLUGIN
+    #ifdef IMP_EIGEN_CWISE_PLUGIN
+    #include IMP_EIGEN_CWISE_PLUGIN
     #endif
 
   protected:
@@ -187,6 +187,6 @@ inline Cwise<Derived> MatrixBase<Derived>::cwise()
   return derived();
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_CWISE_H
+#endif // IMP_EIGEN_CWISE_H

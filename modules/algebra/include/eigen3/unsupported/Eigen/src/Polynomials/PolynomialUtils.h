@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_POLYNOMIAL_UTILS_H
-#define EIGEN_POLYNOMIAL_UTILS_H
+#ifndef IMP_EIGEN_POLYNOMIAL_UTILS_H
+#define IMP_EIGEN_POLYNOMIAL_UTILS_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \ingroup Polynomials_Module
  * \returns the evaluation of the polynomial at x using Horner algorithm.
@@ -138,6 +138,6 @@ void roots_to_monicPolynomial( const RootVector& rv, Polynomial& poly )
   }
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_POLYNOMIAL_UTILS_H
+#endif // IMP_EIGEN_POLYNOMIAL_UTILS_H

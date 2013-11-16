@@ -29,10 +29,10 @@
  ********************************************************************************
 */
 
-#ifndef EIGEN_PARDISOSUPPORT_H
-#define EIGEN_PARDISOSUPPORT_H
+#ifndef IMP_EIGEN_PARDISOSUPPORT_H
+#define IMP_EIGEN_PARDISOSUPPORT_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 template<typename _MatrixType> class PardisoLU;
 template<typename _MatrixType, int Options=Upper> class PardisoLLT;
@@ -564,7 +564,7 @@ struct solve_retval<PardisoImpl<_Derived>, Rhs>
   : solve_retval_base<PardisoImpl<_Derived>, Rhs>
 {
   typedef PardisoImpl<_Derived> Dec;
-  EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
+  IMP_EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -577,7 +577,7 @@ struct sparse_solve_retval<PardisoImpl<Derived>, Rhs>
   : sparse_solve_retval_base<PardisoImpl<Derived>, Rhs>
 {
   typedef PardisoImpl<Derived> Dec;
-  EIGEN_MAKE_SPARSE_SOLVE_HELPERS(Dec,Rhs)
+  IMP_EIGEN_MAKE_SPARSE_SOLVE_HELPERS(Dec,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -587,6 +587,6 @@ struct sparse_solve_retval<PardisoImpl<Derived>, Rhs>
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_PARDISOSUPPORT_H
+#endif // IMP_EIGEN_PARDISOSUPPORT_H

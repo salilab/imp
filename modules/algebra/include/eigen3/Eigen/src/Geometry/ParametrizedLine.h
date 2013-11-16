@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_PARAMETRIZEDLINE_H
-#define EIGEN_PARAMETRIZEDLINE_H
+#ifndef IMP_EIGEN_PARAMETRIZEDLINE_H
+#define IMP_EIGEN_PARAMETRIZEDLINE_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \geometry_module \ingroup Geometry_Module
   *
@@ -30,7 +30,7 @@ template <typename _Scalar, int _AmbientDim, int _Options>
 class ParametrizedLine
 {
 public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_AmbientDim)
+  IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_AmbientDim)
   enum {
     AmbientDimAtCompileTime = _AmbientDim,
     Options = _Options
@@ -145,7 +145,7 @@ template <typename _Scalar, int _AmbientDim, int _Options>
 template <int OtherOptions>
 inline ParametrizedLine<_Scalar, _AmbientDim,_Options>::ParametrizedLine(const Hyperplane<_Scalar, _AmbientDim,OtherOptions>& hyperplane)
 {
-  EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(VectorType, 2)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(VectorType, 2)
   direction() = hyperplane.normal().unitOrthogonal();
   origin() = -hyperplane.normal()*hyperplane.offset();
 }
@@ -190,6 +190,6 @@ ParametrizedLine<_Scalar, _AmbientDim,_Options>::intersectionPoint(const Hyperpl
   return pointAt(intersectionParameter(hyperplane));
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_PARAMETRIZEDLINE_H
+#endif // IMP_EIGEN_PARAMETRIZEDLINE_H

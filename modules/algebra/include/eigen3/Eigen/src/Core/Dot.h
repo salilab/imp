@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_DOT_H
-#define EIGEN_DOT_H
+#ifndef IMP_EIGEN_DOT_H
+#define IMP_EIGEN_DOT_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -62,22 +62,22 @@ template<typename OtherDerived>
 typename internal::scalar_product_traits<typename internal::traits<Derived>::Scalar,typename internal::traits<OtherDerived>::Scalar>::ReturnType
 MatrixBase<Derived>::dot(const MatrixBase<OtherDerived>& other) const
 {
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(OtherDerived)
-  EIGEN_STATIC_ASSERT_SAME_VECTOR_SIZE(Derived,OtherDerived)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(OtherDerived)
+  IMP_EIGEN_STATIC_ASSERT_SAME_VECTOR_SIZE(Derived,OtherDerived)
   typedef internal::scalar_conj_product_op<Scalar,typename OtherDerived::Scalar> func;
-  EIGEN_CHECK_BINARY_COMPATIBILIY(func,Scalar,typename OtherDerived::Scalar);
+  IMP_EIGEN_CHECK_BINARY_COMPATIBILIY(func,Scalar,typename OtherDerived::Scalar);
 
   eigen_assert(size() == other.size());
 
   return internal::dot_nocheck<Derived,OtherDerived>::run(*this, other);
 }
 
-#ifdef EIGEN2_SUPPORT
+#ifdef IMP_EIGEN2_SUPPORT
 /** \returns the dot product of *this with other, with the Eigen2 convention that the dot product is linear in the first variable
   * (conjugating the second variable). Of course this only makes a difference in the complex case.
   *
-  * This method is only available in EIGEN2_SUPPORT mode.
+  * This method is only available in IMP_EIGEN2_SUPPORT mode.
   *
   * \only_for_vectors
   *
@@ -88,10 +88,10 @@ template<typename OtherDerived>
 typename internal::traits<Derived>::Scalar
 MatrixBase<Derived>::eigen2_dot(const MatrixBase<OtherDerived>& other) const
 {
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(OtherDerived)
-  EIGEN_STATIC_ASSERT_SAME_VECTOR_SIZE(Derived,OtherDerived)
-  EIGEN_STATIC_ASSERT((internal::is_same<Scalar, typename OtherDerived::Scalar>::value),
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(OtherDerived)
+  IMP_EIGEN_STATIC_ASSERT_SAME_VECTOR_SIZE(Derived,OtherDerived)
+  IMP_EIGEN_STATIC_ASSERT((internal::is_same<Scalar, typename OtherDerived::Scalar>::value),
     YOU_MIXED_DIFFERENT_NUMERIC_TYPES__YOU_NEED_TO_USE_THE_CAST_METHOD_OF_MATRIXBASE_TO_CAST_NUMERIC_TYPES_EXPLICITLY)
 
   eigen_assert(size() == other.size());
@@ -110,7 +110,7 @@ MatrixBase<Derived>::eigen2_dot(const MatrixBase<OtherDerived>& other) const
   * \sa dot(), norm()
   */
 template<typename Derived>
-EIGEN_STRONG_INLINE typename NumTraits<typename internal::traits<Derived>::Scalar>::Real MatrixBase<Derived>::squaredNorm() const
+IMP_EIGEN_STRONG_INLINE typename NumTraits<typename internal::traits<Derived>::Scalar>::Real MatrixBase<Derived>::squaredNorm() const
 {
   return numext::real((*this).cwiseAbs2().sum());
 }
@@ -201,7 +201,7 @@ struct lpNorm_selector<Derived, Infinity>
 } // end namespace internal
 
 /** \returns the \f$ \ell^p \f$ norm of *this, that is, returns the p-th root of the sum of the p-th powers of the absolute values
-  *          of the coefficients of *this. If \a p is the special value \a Eigen::Infinity, this function returns the \f$ \ell^\infty \f$
+  *          of the coefficients of *this. If \a p is the special value \a IMP_Eigen::Infinity, this function returns the \f$ \ell^\infty \f$
   *          norm, that is the maximum of the absolute values of the coefficients of *this.
   *
   * \sa norm()
@@ -258,6 +258,6 @@ bool MatrixBase<Derived>::isUnitary(const RealScalar& prec) const
   return true;
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_DOT_H
+#endif // IMP_EIGEN_DOT_H

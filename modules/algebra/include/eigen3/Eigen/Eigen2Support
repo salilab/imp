@@ -7,11 +7,11 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN2SUPPORT_H
-#define EIGEN2SUPPORT_H
+#ifndef IMP_EIGEN2SUPPORT_H
+#define IMP_EIGEN2SUPPORT_H
 
-#if (!defined(EIGEN2_SUPPORT)) || (!defined(EIGEN_CORE_H))
-#error Eigen2 support must be enabled by defining EIGEN2_SUPPORT before including any Eigen header
+#if (!defined(IMP_EIGEN2_SUPPORT)) || (!defined(IMP_EIGEN_CORE_H))
+#error Eigen2 support must be enabled by defining IMP_EIGEN2_SUPPORT before including any Eigen header
 #endif
 
 #include "src/Core/util/DisableStupidWarnings.h"
@@ -20,9 +20,9 @@
   * \defgroup Eigen2Support_Module Eigen2 support module
   * This module provides a couple of deprecated functions improving the compatibility with Eigen2.
   *
-  * To use it, define EIGEN2_SUPPORT before including any Eigen header
+  * To use it, define IMP_EIGEN2_SUPPORT before including any Eigen header
   * \code
-  * #define EIGEN2_SUPPORT
+  * #define IMP_EIGEN2_SUPPORT
   * \endcode
   *
   */
@@ -45,38 +45,38 @@
 // Eigen2 used to include iostream
 #include<iostream>
 
-#define EIGEN_USING_MATRIX_TYPEDEFS_FOR_TYPE_AND_SIZE(TypeSuffix, SizeSuffix) \
-using Eigen::Matrix##SizeSuffix##TypeSuffix; \
-using Eigen::Vector##SizeSuffix##TypeSuffix; \
-using Eigen::RowVector##SizeSuffix##TypeSuffix;
+#define IMP_EIGEN_USING_MATRIX_TYPEDEFS_FOR_TYPE_AND_SIZE(TypeSuffix, SizeSuffix) \
+using IMP_Eigen::Matrix##SizeSuffix##TypeSuffix; \
+using IMP_Eigen::Vector##SizeSuffix##TypeSuffix; \
+using IMP_Eigen::RowVector##SizeSuffix##TypeSuffix;
 
-#define EIGEN_USING_MATRIX_TYPEDEFS_FOR_TYPE(TypeSuffix) \
-EIGEN_USING_MATRIX_TYPEDEFS_FOR_TYPE_AND_SIZE(TypeSuffix, 2) \
-EIGEN_USING_MATRIX_TYPEDEFS_FOR_TYPE_AND_SIZE(TypeSuffix, 3) \
-EIGEN_USING_MATRIX_TYPEDEFS_FOR_TYPE_AND_SIZE(TypeSuffix, 4) \
-EIGEN_USING_MATRIX_TYPEDEFS_FOR_TYPE_AND_SIZE(TypeSuffix, X) \
+#define IMP_EIGEN_USING_MATRIX_TYPEDEFS_FOR_TYPE(TypeSuffix) \
+IMP_EIGEN_USING_MATRIX_TYPEDEFS_FOR_TYPE_AND_SIZE(TypeSuffix, 2) \
+IMP_EIGEN_USING_MATRIX_TYPEDEFS_FOR_TYPE_AND_SIZE(TypeSuffix, 3) \
+IMP_EIGEN_USING_MATRIX_TYPEDEFS_FOR_TYPE_AND_SIZE(TypeSuffix, 4) \
+IMP_EIGEN_USING_MATRIX_TYPEDEFS_FOR_TYPE_AND_SIZE(TypeSuffix, X) \
 
-#define EIGEN_USING_MATRIX_TYPEDEFS \
-EIGEN_USING_MATRIX_TYPEDEFS_FOR_TYPE(i) \
-EIGEN_USING_MATRIX_TYPEDEFS_FOR_TYPE(f) \
-EIGEN_USING_MATRIX_TYPEDEFS_FOR_TYPE(d) \
-EIGEN_USING_MATRIX_TYPEDEFS_FOR_TYPE(cf) \
-EIGEN_USING_MATRIX_TYPEDEFS_FOR_TYPE(cd)
+#define IMP_EIGEN_USING_MATRIX_TYPEDEFS \
+IMP_EIGEN_USING_MATRIX_TYPEDEFS_FOR_TYPE(i) \
+IMP_EIGEN_USING_MATRIX_TYPEDEFS_FOR_TYPE(f) \
+IMP_EIGEN_USING_MATRIX_TYPEDEFS_FOR_TYPE(d) \
+IMP_EIGEN_USING_MATRIX_TYPEDEFS_FOR_TYPE(cf) \
+IMP_EIGEN_USING_MATRIX_TYPEDEFS_FOR_TYPE(cd)
 
 #define USING_PART_OF_NAMESPACE_EIGEN \
-EIGEN_USING_MATRIX_TYPEDEFS \
-using Eigen::Matrix; \
-using Eigen::MatrixBase; \
-using Eigen::ei_random; \
-using Eigen::ei_real; \
-using Eigen::ei_imag; \
-using Eigen::ei_conj; \
-using Eigen::ei_abs; \
-using Eigen::ei_abs2; \
-using Eigen::ei_sqrt; \
-using Eigen::ei_exp; \
-using Eigen::ei_log; \
-using Eigen::ei_sin; \
-using Eigen::ei_cos;
+IMP_EIGEN_USING_MATRIX_TYPEDEFS \
+using IMP_Eigen::Matrix; \
+using IMP_Eigen::MatrixBase; \
+using IMP_Eigen::ei_random; \
+using IMP_Eigen::ei_real; \
+using IMP_Eigen::ei_imag; \
+using IMP_Eigen::ei_conj; \
+using IMP_Eigen::ei_abs; \
+using IMP_Eigen::ei_abs2; \
+using IMP_Eigen::ei_sqrt; \
+using IMP_Eigen::ei_exp; \
+using IMP_Eigen::ei_log; \
+using IMP_Eigen::ei_sin; \
+using IMP_Eigen::ei_cos;
 
-#endif // EIGEN2SUPPORT_H
+#endif // IMP_EIGEN2SUPPORT_H

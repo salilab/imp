@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_GENERAL_BLOCK_PANEL_H
-#define EIGEN_GENERAL_BLOCK_PANEL_H
+#ifndef IMP_EIGEN_GENERAL_BLOCK_PANEL_H
+#define IMP_EIGEN_GENERAL_BLOCK_PANEL_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
   
 namespace internal {
 
@@ -72,7 +72,7 @@ inline void manage_caching_sizes(Action action, std::ptrdiff_t* l1=0, std::ptrdi
 template<typename LhsScalar, typename RhsScalar, int KcFactor, typename SizeType>
 void computeProductBlockingSizes(SizeType& k, SizeType& m, SizeType& n)
 {
-  EIGEN_UNUSED_VARIABLE(n);
+  IMP_EIGEN_UNUSED_VARIABLE(n);
   // Explanations:
   // Let's recall the product algorithms form kc x nc horizontal panels B' on the rhs and
   // mc x kc blocks A' on the lhs. A' has to fit into L2 cache. Moreover, B' is processed
@@ -102,28 +102,28 @@ inline void computeProductBlockingSizes(SizeType& k, SizeType& m, SizeType& n)
   computeProductBlockingSizes<LhsScalar,RhsScalar,1>(k, m, n);
 }
 
-#ifdef EIGEN_HAS_FUSE_CJMADD
+#ifdef IMP_EIGEN_HAS_FUSE_CJMADD
   #define MADD(CJ,A,B,C,T)  C = CJ.pmadd(A,B,C);
 #else
 
   // FIXME (a bit overkill maybe ?)
 
   template<typename CJ, typename A, typename B, typename C, typename T> struct gebp_madd_selector {
-    EIGEN_ALWAYS_INLINE static void run(const CJ& cj, A& a, B& b, C& c, T& /*t*/)
+    IMP_EIGEN_ALWAYS_INLINE static void run(const CJ& cj, A& a, B& b, C& c, T& /*t*/)
     {
       c = cj.pmadd(a,b,c);
     }
   };
 
   template<typename CJ, typename T> struct gebp_madd_selector<CJ,T,T,T,T> {
-    EIGEN_ALWAYS_INLINE static void run(const CJ& cj, T& a, T& b, T& c, T& t)
+    IMP_EIGEN_ALWAYS_INLINE static void run(const CJ& cj, T& a, T& b, T& c, T& t)
     {
       t = b; t = cj.pmul(a,t); c = padd(c,t);
     }
   };
 
   template<typename CJ, typename A, typename B, typename C, typename T>
-  EIGEN_STRONG_INLINE void gebp_madd(const CJ& cj, A& a, B& b, C& c, T& t)
+  IMP_EIGEN_STRONG_INLINE void gebp_madd(const CJ& cj, A& a, B& b, C& c, T& t)
   {
     gebp_madd_selector<CJ,A,B,C,T>::run(cj,a,b,c,t);
   }
@@ -158,7 +158,7 @@ public:
     RhsPacketSize = Vectorizable ? packet_traits<RhsScalar>::size : 1,
     ResPacketSize = Vectorizable ? packet_traits<ResScalar>::size : 1,
     
-    NumberOfRegisters = EIGEN_ARCH_DEFAULT_NUMBER_OF_REGISTERS,
+    NumberOfRegisters = IMP_EIGEN_ARCH_DEFAULT_NUMBER_OF_REGISTERS,
 
     // register block size along the N direction (must be either 2 or 4)
     nr = NumberOfRegisters/4,
@@ -182,33 +182,33 @@ public:
 
   typedef ResPacket AccPacket;
   
-  EIGEN_STRONG_INLINE void initAcc(AccPacket& p)
+  IMP_EIGEN_STRONG_INLINE void initAcc(AccPacket& p)
   {
     p = pset1<ResPacket>(ResScalar(0));
   }
 
-  EIGEN_STRONG_INLINE void unpackRhs(DenseIndex n, const RhsScalar* rhs, RhsScalar* b)
+  IMP_EIGEN_STRONG_INLINE void unpackRhs(DenseIndex n, const RhsScalar* rhs, RhsScalar* b)
   {
     for(DenseIndex k=0; k<n; k++)
       pstore1<RhsPacket>(&b[k*RhsPacketSize], rhs[k]);
   }
 
-  EIGEN_STRONG_INLINE void loadRhs(const RhsScalar* b, RhsPacket& dest) const
+  IMP_EIGEN_STRONG_INLINE void loadRhs(const RhsScalar* b, RhsPacket& dest) const
   {
     dest = pload<RhsPacket>(b);
   }
 
-  EIGEN_STRONG_INLINE void loadLhs(const LhsScalar* a, LhsPacket& dest) const
+  IMP_EIGEN_STRONG_INLINE void loadLhs(const LhsScalar* a, LhsPacket& dest) const
   {
     dest = pload<LhsPacket>(a);
   }
 
-  EIGEN_STRONG_INLINE void madd(const LhsPacket& a, const RhsPacket& b, AccPacket& c, AccPacket& tmp) const
+  IMP_EIGEN_STRONG_INLINE void madd(const LhsPacket& a, const RhsPacket& b, AccPacket& c, AccPacket& tmp) const
   {
     tmp = b; tmp = pmul(a,tmp); c = padd(c,tmp);
   }
 
-  EIGEN_STRONG_INLINE void acc(const AccPacket& c, const ResPacket& alpha, ResPacket& r) const
+  IMP_EIGEN_STRONG_INLINE void acc(const AccPacket& c, const ResPacket& alpha, ResPacket& r) const
   {
     r = pmadd(c,alpha,r);
   }
@@ -234,7 +234,7 @@ public:
     RhsPacketSize = Vectorizable ? packet_traits<RhsScalar>::size : 1,
     ResPacketSize = Vectorizable ? packet_traits<ResScalar>::size : 1,
     
-    NumberOfRegisters = EIGEN_ARCH_DEFAULT_NUMBER_OF_REGISTERS,
+    NumberOfRegisters = IMP_EIGEN_ARCH_DEFAULT_NUMBER_OF_REGISTERS,
     nr = NumberOfRegisters/4,
     mr = 2 * LhsPacketSize,
     WorkSpaceFactor = nr*RhsPacketSize,
@@ -253,43 +253,43 @@ public:
 
   typedef ResPacket AccPacket;
 
-  EIGEN_STRONG_INLINE void initAcc(AccPacket& p)
+  IMP_EIGEN_STRONG_INLINE void initAcc(AccPacket& p)
   {
     p = pset1<ResPacket>(ResScalar(0));
   }
 
-  EIGEN_STRONG_INLINE void unpackRhs(DenseIndex n, const RhsScalar* rhs, RhsScalar* b)
+  IMP_EIGEN_STRONG_INLINE void unpackRhs(DenseIndex n, const RhsScalar* rhs, RhsScalar* b)
   {
     for(DenseIndex k=0; k<n; k++)
       pstore1<RhsPacket>(&b[k*RhsPacketSize], rhs[k]);
   }
 
-  EIGEN_STRONG_INLINE void loadRhs(const RhsScalar* b, RhsPacket& dest) const
+  IMP_EIGEN_STRONG_INLINE void loadRhs(const RhsScalar* b, RhsPacket& dest) const
   {
     dest = pload<RhsPacket>(b);
   }
 
-  EIGEN_STRONG_INLINE void loadLhs(const LhsScalar* a, LhsPacket& dest) const
+  IMP_EIGEN_STRONG_INLINE void loadLhs(const LhsScalar* a, LhsPacket& dest) const
   {
     dest = pload<LhsPacket>(a);
   }
 
-  EIGEN_STRONG_INLINE void madd(const LhsPacket& a, const RhsPacket& b, AccPacket& c, RhsPacket& tmp) const
+  IMP_EIGEN_STRONG_INLINE void madd(const LhsPacket& a, const RhsPacket& b, AccPacket& c, RhsPacket& tmp) const
   {
     madd_impl(a, b, c, tmp, typename conditional<Vectorizable,true_type,false_type>::type());
   }
 
-  EIGEN_STRONG_INLINE void madd_impl(const LhsPacket& a, const RhsPacket& b, AccPacket& c, RhsPacket& tmp, const true_type&) const
+  IMP_EIGEN_STRONG_INLINE void madd_impl(const LhsPacket& a, const RhsPacket& b, AccPacket& c, RhsPacket& tmp, const true_type&) const
   {
     tmp = b; tmp = pmul(a.v,tmp); c.v = padd(c.v,tmp);
   }
 
-  EIGEN_STRONG_INLINE void madd_impl(const LhsScalar& a, const RhsScalar& b, ResScalar& c, RhsScalar& /*tmp*/, const false_type&) const
+  IMP_EIGEN_STRONG_INLINE void madd_impl(const LhsScalar& a, const RhsScalar& b, ResScalar& c, RhsScalar& /*tmp*/, const false_type&) const
   {
     c += a * b;
   }
 
-  EIGEN_STRONG_INLINE void acc(const AccPacket& c, const ResPacket& alpha, ResPacket& r) const
+  IMP_EIGEN_STRONG_INLINE void acc(const AccPacket& c, const ResPacket& alpha, ResPacket& r) const
   {
     r = cj.pmadd(c,alpha,r);
   }
@@ -336,9 +336,9 @@ public:
   typedef typename conditional<Vectorizable,ScalarPacket,Scalar>::type ResPacket;
   typedef typename conditional<Vectorizable,DoublePacket,Scalar>::type AccPacket;
   
-  EIGEN_STRONG_INLINE void initAcc(Scalar& p) { p = Scalar(0); }
+  IMP_EIGEN_STRONG_INLINE void initAcc(Scalar& p) { p = Scalar(0); }
 
-  EIGEN_STRONG_INLINE void initAcc(DoublePacket& p)
+  IMP_EIGEN_STRONG_INLINE void initAcc(DoublePacket& p)
   {
     p.first   = pset1<RealPacket>(RealScalar(0));
     p.second  = pset1<RealPacket>(RealScalar(0));
@@ -348,7 +348,7 @@ public:
    * two packects containing respectively the real and imaginary coefficient
    * duplicated as many time as needed: (x+iy) => [x, ..., x] [y, ..., y]
    */
-  EIGEN_STRONG_INLINE void unpackRhs(DenseIndex n, const Scalar* rhs, Scalar* b)
+  IMP_EIGEN_STRONG_INLINE void unpackRhs(DenseIndex n, const Scalar* rhs, Scalar* b)
   {
     for(DenseIndex k=0; k<n; k++)
     {
@@ -362,34 +362,34 @@ public:
     }
   }
 
-  EIGEN_STRONG_INLINE void loadRhs(const RhsScalar* b, ResPacket& dest) const { dest = *b; }
+  IMP_EIGEN_STRONG_INLINE void loadRhs(const RhsScalar* b, ResPacket& dest) const { dest = *b; }
 
-  EIGEN_STRONG_INLINE void loadRhs(const RhsScalar* b, DoublePacket& dest) const
+  IMP_EIGEN_STRONG_INLINE void loadRhs(const RhsScalar* b, DoublePacket& dest) const
   {
     dest.first  = pload<RealPacket>((const RealScalar*)b);
     dest.second = pload<RealPacket>((const RealScalar*)(b+ResPacketSize));
   }
 
   // nothing special here
-  EIGEN_STRONG_INLINE void loadLhs(const LhsScalar* a, LhsPacket& dest) const
+  IMP_EIGEN_STRONG_INLINE void loadLhs(const LhsScalar* a, LhsPacket& dest) const
   {
     dest = pload<LhsPacket>((const typename unpacket_traits<LhsPacket>::type*)(a));
   }
 
-  EIGEN_STRONG_INLINE void madd(const LhsPacket& a, const RhsPacket& b, DoublePacket& c, RhsPacket& /*tmp*/) const
+  IMP_EIGEN_STRONG_INLINE void madd(const LhsPacket& a, const RhsPacket& b, DoublePacket& c, RhsPacket& /*tmp*/) const
   {
     c.first   = padd(pmul(a,b.first), c.first);
     c.second  = padd(pmul(a,b.second),c.second);
   }
 
-  EIGEN_STRONG_INLINE void madd(const LhsPacket& a, const RhsPacket& b, ResPacket& c, RhsPacket& /*tmp*/) const
+  IMP_EIGEN_STRONG_INLINE void madd(const LhsPacket& a, const RhsPacket& b, ResPacket& c, RhsPacket& /*tmp*/) const
   {
     c = cj.pmadd(a,b,c);
   }
   
-  EIGEN_STRONG_INLINE void acc(const Scalar& c, const Scalar& alpha, Scalar& r) const { r += alpha * c; }
+  IMP_EIGEN_STRONG_INLINE void acc(const Scalar& c, const Scalar& alpha, Scalar& r) const { r += alpha * c; }
   
-  EIGEN_STRONG_INLINE void acc(const DoublePacket& c, const ResPacket& alpha, ResPacket& r) const
+  IMP_EIGEN_STRONG_INLINE void acc(const DoublePacket& c, const ResPacket& alpha, ResPacket& r) const
   {
     // assemble c
     ResPacket tmp;
@@ -439,7 +439,7 @@ public:
     RhsPacketSize = Vectorizable ? packet_traits<RhsScalar>::size : 1,
     ResPacketSize = Vectorizable ? packet_traits<ResScalar>::size : 1,
     
-    NumberOfRegisters = EIGEN_ARCH_DEFAULT_NUMBER_OF_REGISTERS,
+    NumberOfRegisters = IMP_EIGEN_ARCH_DEFAULT_NUMBER_OF_REGISTERS,
     nr = 4,
     mr = 2*ResPacketSize,
     WorkSpaceFactor = nr*RhsPacketSize,
@@ -458,43 +458,43 @@ public:
 
   typedef ResPacket AccPacket;
 
-  EIGEN_STRONG_INLINE void initAcc(AccPacket& p)
+  IMP_EIGEN_STRONG_INLINE void initAcc(AccPacket& p)
   {
     p = pset1<ResPacket>(ResScalar(0));
   }
 
-  EIGEN_STRONG_INLINE void unpackRhs(DenseIndex n, const RhsScalar* rhs, RhsScalar* b)
+  IMP_EIGEN_STRONG_INLINE void unpackRhs(DenseIndex n, const RhsScalar* rhs, RhsScalar* b)
   {
     for(DenseIndex k=0; k<n; k++)
       pstore1<RhsPacket>(&b[k*RhsPacketSize], rhs[k]);
   }
 
-  EIGEN_STRONG_INLINE void loadRhs(const RhsScalar* b, RhsPacket& dest) const
+  IMP_EIGEN_STRONG_INLINE void loadRhs(const RhsScalar* b, RhsPacket& dest) const
   {
     dest = pload<RhsPacket>(b);
   }
 
-  EIGEN_STRONG_INLINE void loadLhs(const LhsScalar* a, LhsPacket& dest) const
+  IMP_EIGEN_STRONG_INLINE void loadLhs(const LhsScalar* a, LhsPacket& dest) const
   {
     dest = ploaddup<LhsPacket>(a);
   }
 
-  EIGEN_STRONG_INLINE void madd(const LhsPacket& a, const RhsPacket& b, AccPacket& c, RhsPacket& tmp) const
+  IMP_EIGEN_STRONG_INLINE void madd(const LhsPacket& a, const RhsPacket& b, AccPacket& c, RhsPacket& tmp) const
   {
     madd_impl(a, b, c, tmp, typename conditional<Vectorizable,true_type,false_type>::type());
   }
 
-  EIGEN_STRONG_INLINE void madd_impl(const LhsPacket& a, const RhsPacket& b, AccPacket& c, RhsPacket& tmp, const true_type&) const
+  IMP_EIGEN_STRONG_INLINE void madd_impl(const LhsPacket& a, const RhsPacket& b, AccPacket& c, RhsPacket& tmp, const true_type&) const
   {
     tmp = b; tmp.v = pmul(a,tmp.v); c = padd(c,tmp);
   }
 
-  EIGEN_STRONG_INLINE void madd_impl(const LhsScalar& a, const RhsScalar& b, ResScalar& c, RhsScalar& /*tmp*/, const false_type&) const
+  IMP_EIGEN_STRONG_INLINE void madd_impl(const LhsScalar& a, const RhsScalar& b, ResScalar& c, RhsScalar& /*tmp*/, const false_type&) const
   {
     c += a * b;
   }
 
-  EIGEN_STRONG_INLINE void acc(const AccPacket& c, const ResPacket& alpha, ResPacket& r) const
+  IMP_EIGEN_STRONG_INLINE void acc(const AccPacket& c, const ResPacket& alpha, ResPacket& r) const
   {
     r = cj.pmadd(alpha,c,r);
   }
@@ -527,13 +527,13 @@ struct gebp_kernel
     ResPacketSize = Traits::ResPacketSize
   };
 
-  EIGEN_DONT_INLINE
+  IMP_EIGEN_DONT_INLINE
   void operator()(ResScalar* res, Index resStride, const LhsScalar* blockA, const RhsScalar* blockB, Index rows, Index depth, Index cols, ResScalar alpha,
                   Index strideA=-1, Index strideB=-1, Index offsetA=0, Index offsetB=0, RhsScalar* unpackedB=0);
 };
 
 template<typename LhsScalar, typename RhsScalar, typename Index, int mr, int nr, bool ConjugateLhs, bool ConjugateRhs>
-EIGEN_DONT_INLINE
+IMP_EIGEN_DONT_INLINE
 void gebp_kernel<LhsScalar,RhsScalar,Index,mr,nr,ConjugateLhs,ConjugateRhs>
   ::operator()(ResScalar* res, Index resStride, const LhsScalar* blockA, const RhsScalar* blockB, Index rows, Index depth, Index cols, ResScalar alpha,
                Index strideA, Index strideB, Index offsetA, Index offsetB, RhsScalar* unpackedB)
@@ -599,7 +599,7 @@ void gebp_kernel<LhsScalar,RhsScalar,Index,mr,nr,ConjugateLhs,ConjugateRhs>
             RhsPacket B_0;
             RhsPacket T0;
             
-EIGEN_ASM_COMMENT("mybegin2");
+IMP_EIGEN_ASM_COMMENT("mybegin2");
             traits.loadLhs(&blA[0*LhsProgress], A0);
             traits.loadLhs(&blA[1*LhsProgress], A1);
             traits.loadRhs(&blB[0*RhsProgress], B_0);
@@ -635,11 +635,11 @@ EIGEN_ASM_COMMENT("mybegin2");
             traits.loadRhs(&blB[7*RhsProgress], B_0);
             traits.madd(A0,B_0,C1,T0);
             traits.madd(A1,B_0,C5,B_0);
-EIGEN_ASM_COMMENT("myend");
+IMP_EIGEN_ASM_COMMENT("myend");
           }
           else
           {
-EIGEN_ASM_COMMENT("mybegin4");
+IMP_EIGEN_ASM_COMMENT("mybegin4");
             LhsPacket A0, A1;
             RhsPacket B_0, B1, B2, B3;
             RhsPacket T0;
@@ -1117,17 +1117,17 @@ EIGEN_ASM_COMMENT("mybegin4");
 template<typename Scalar, typename Index, int Pack1, int Pack2, int StorageOrder, bool Conjugate, bool PanelMode>
 struct gemm_pack_lhs
 {
-  EIGEN_DONT_INLINE void operator()(Scalar* blockA, const Scalar* EIGEN_RESTRICT _lhs, Index lhsStride, Index depth, Index rows, Index stride=0, Index offset=0);
+  IMP_EIGEN_DONT_INLINE void operator()(Scalar* blockA, const Scalar* IMP_EIGEN_RESTRICT _lhs, Index lhsStride, Index depth, Index rows, Index stride=0, Index offset=0);
 };
 
 template<typename Scalar, typename Index, int Pack1, int Pack2, int StorageOrder, bool Conjugate, bool PanelMode>
-EIGEN_DONT_INLINE void gemm_pack_lhs<Scalar, Index, Pack1, Pack2, StorageOrder, Conjugate, PanelMode>
-  ::operator()(Scalar* blockA, const Scalar* EIGEN_RESTRICT _lhs, Index lhsStride, Index depth, Index rows, Index stride, Index offset)
+IMP_EIGEN_DONT_INLINE void gemm_pack_lhs<Scalar, Index, Pack1, Pack2, StorageOrder, Conjugate, PanelMode>
+  ::operator()(Scalar* blockA, const Scalar* IMP_EIGEN_RESTRICT _lhs, Index lhsStride, Index depth, Index rows, Index stride, Index offset)
 {
   typedef typename packet_traits<Scalar>::type Packet;
   enum { PacketSize = packet_traits<Scalar>::size };
 
-  EIGEN_ASM_COMMENT("EIGEN PRODUCT PACK LHS");
+  IMP_EIGEN_ASM_COMMENT("EIGEN PRODUCT PACK LHS");
   eigen_assert(((!PanelMode) && stride==0 && offset==0) || (PanelMode && stride>=depth && offset<=stride));
   eigen_assert( (StorageOrder==RowMajor) || ((Pack1%PacketSize)==0 && Pack1<=4*PacketSize) );
   conj_if<NumTraits<Scalar>::IsComplex && Conjugate> cj;
@@ -1207,14 +1207,14 @@ struct gemm_pack_rhs<Scalar, Index, nr, ColMajor, Conjugate, PanelMode>
 {
   typedef typename packet_traits<Scalar>::type Packet;
   enum { PacketSize = packet_traits<Scalar>::size };
-  EIGEN_DONT_INLINE void operator()(Scalar* blockB, const Scalar* rhs, Index rhsStride, Index depth, Index cols, Index stride=0, Index offset=0);
+  IMP_EIGEN_DONT_INLINE void operator()(Scalar* blockB, const Scalar* rhs, Index rhsStride, Index depth, Index cols, Index stride=0, Index offset=0);
 };
 
 template<typename Scalar, typename Index, int nr, bool Conjugate, bool PanelMode>
-EIGEN_DONT_INLINE void gemm_pack_rhs<Scalar, Index, nr, ColMajor, Conjugate, PanelMode>
+IMP_EIGEN_DONT_INLINE void gemm_pack_rhs<Scalar, Index, nr, ColMajor, Conjugate, PanelMode>
   ::operator()(Scalar* blockB, const Scalar* rhs, Index rhsStride, Index depth, Index cols, Index stride, Index offset)
 {
-  EIGEN_ASM_COMMENT("EIGEN PRODUCT PACK RHS COLMAJOR");
+  IMP_EIGEN_ASM_COMMENT("EIGEN PRODUCT PACK RHS COLMAJOR");
   eigen_assert(((!PanelMode) && stride==0 && offset==0) || (PanelMode && stride>=depth && offset<=stride));
   conj_if<NumTraits<Scalar>::IsComplex && Conjugate> cj;
   Index packet_cols = (cols/nr) * nr;
@@ -1258,14 +1258,14 @@ template<typename Scalar, typename Index, int nr, bool Conjugate, bool PanelMode
 struct gemm_pack_rhs<Scalar, Index, nr, RowMajor, Conjugate, PanelMode>
 {
   enum { PacketSize = packet_traits<Scalar>::size };
-  EIGEN_DONT_INLINE void operator()(Scalar* blockB, const Scalar* rhs, Index rhsStride, Index depth, Index cols, Index stride=0, Index offset=0);
+  IMP_EIGEN_DONT_INLINE void operator()(Scalar* blockB, const Scalar* rhs, Index rhsStride, Index depth, Index cols, Index stride=0, Index offset=0);
 };
 
 template<typename Scalar, typename Index, int nr, bool Conjugate, bool PanelMode>
-EIGEN_DONT_INLINE void gemm_pack_rhs<Scalar, Index, nr, RowMajor, Conjugate, PanelMode>
+IMP_EIGEN_DONT_INLINE void gemm_pack_rhs<Scalar, Index, nr, RowMajor, Conjugate, PanelMode>
   ::operator()(Scalar* blockB, const Scalar* rhs, Index rhsStride, Index depth, Index cols, Index stride, Index offset)
 {
-  EIGEN_ASM_COMMENT("EIGEN PRODUCT PACK RHS ROWMAJOR");
+  IMP_EIGEN_ASM_COMMENT("EIGEN PRODUCT PACK RHS ROWMAJOR");
   eigen_assert(((!PanelMode) && stride==0 && offset==0) || (PanelMode && stride>=depth && offset<=stride));
   conj_if<NumTraits<Scalar>::IsComplex && Conjugate> cj;
   Index packet_cols = (cols/nr) * nr;
@@ -1330,6 +1330,6 @@ inline void setCpuCacheSizes(std::ptrdiff_t l1, std::ptrdiff_t l2)
   internal::manage_caching_sizes(SetAction, &l1, &l2);
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_GENERAL_BLOCK_PANEL_H
+#endif // IMP_EIGEN_GENERAL_BLOCK_PANEL_H

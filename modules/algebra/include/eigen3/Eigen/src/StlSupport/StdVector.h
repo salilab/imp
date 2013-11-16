@@ -8,8 +8,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_STDVECTOR_H
-#define EIGEN_STDVECTOR_H
+#ifndef IMP_EIGEN_STDVECTOR_H
+#define IMP_EIGEN_STDVECTOR_H
 
 #include "Eigen/src/StlSupport/details.h"
 
@@ -18,14 +18,14 @@
  * std::vector such that for data types with alignment issues the correct allocator
  * is used automatically.
  */
-#define EIGEN_DEFINE_STL_VECTOR_SPECIALIZATION(...) \
+#define IMP_EIGEN_DEFINE_STL_VECTOR_SPECIALIZATION(...) \
 namespace std \
 { \
   template<> \
   class vector<__VA_ARGS__, std::allocator<__VA_ARGS__> >  \
-    : public vector<__VA_ARGS__, EIGEN_ALIGNED_ALLOCATOR<__VA_ARGS__> > \
+    : public vector<__VA_ARGS__, IMP_EIGEN_ALIGNED_ALLOCATOR<__VA_ARGS__> > \
   { \
-    typedef vector<__VA_ARGS__, EIGEN_ALIGNED_ALLOCATOR<__VA_ARGS__> > vector_base; \
+    typedef vector<__VA_ARGS__, IMP_EIGEN_ALIGNED_ALLOCATOR<__VA_ARGS__> > vector_base; \
   public: \
     typedef __VA_ARGS__ value_type; \
     typedef vector_base::allocator_type allocator_type; \
@@ -46,7 +46,7 @@ namespace std \
 
 namespace std {
 
-#define EIGEN_STD_VECTOR_SPECIALIZATION_BODY \
+#define IMP_EIGEN_STD_VECTOR_SPECIALIZATION_BODY \
   public:  \
     typedef T value_type; \
     typedef typename vector_base::allocator_type allocator_type; \
@@ -66,13 +66,13 @@ namespace std {
     }
 
   template<typename T>
-  class vector<T,EIGEN_ALIGNED_ALLOCATOR<T> >
+  class vector<T,IMP_EIGEN_ALIGNED_ALLOCATOR<T> >
     : public vector<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T),
-                    Eigen::aligned_allocator_indirection<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> >
+                    IMP_Eigen::aligned_allocator_indirection<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> >
 {
   typedef vector<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T),
-                 Eigen::aligned_allocator_indirection<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> > vector_base;
-  EIGEN_STD_VECTOR_SPECIALIZATION_BODY
+                 IMP_Eigen::aligned_allocator_indirection<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> > vector_base;
+  IMP_EIGEN_STD_VECTOR_SPECIALIZATION_BODY
 
   void resize(size_type new_size)
   { resize(new_size, T()); }
@@ -93,14 +93,14 @@ namespace std {
   { return vector_base::insert(position,x); }
   void insert(const_iterator position, size_type new_size, const value_type& x)
   { vector_base::insert(position, new_size, x); }
-#elif defined(_GLIBCXX_VECTOR) && (!(EIGEN_GNUC_AT_LEAST(4,1)))
+#elif defined(_GLIBCXX_VECTOR) && (!(IMP_EIGEN_GNUC_AT_LEAST(4,1)))
   /* Note that before gcc-4.1 we already have: std::vector::resize(size_type,const T&).
-   * However, this specialization is still needed to make the above EIGEN_DEFINE_STL_VECTOR_SPECIALIZATION trick to work. */
+   * However, this specialization is still needed to make the above IMP_EIGEN_DEFINE_STL_VECTOR_SPECIALIZATION trick to work. */
   void resize(size_type new_size, const value_type& x)
   {
     vector_base::resize(new_size,x);
   }
-#elif defined(_GLIBCXX_VECTOR) && EIGEN_GNUC_AT_LEAST(4,2)
+#elif defined(_GLIBCXX_VECTOR) && IMP_EIGEN_GNUC_AT_LEAST(4,2)
   // workaround GCC std::vector implementation
   void resize(size_type new_size, const value_type& x)
   {
@@ -123,4 +123,4 @@ namespace std {
   };
 }
 
-#endif // EIGEN_STDVECTOR_H
+#endif // IMP_EIGEN_STDVECTOR_H

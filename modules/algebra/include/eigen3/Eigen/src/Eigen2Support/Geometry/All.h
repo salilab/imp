@@ -1,5 +1,5 @@
-#ifndef EIGEN2_GEOMETRY_MODULE_H
-#define EIGEN2_GEOMETRY_MODULE_H
+#ifndef IMP_EIGEN2_GEOMETRY_MODULE_H
+#define IMP_EIGEN2_GEOMETRY_MODULE_H
 
 #include <limits>
 
@@ -7,7 +7,7 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#if EIGEN2_SUPPORT_STAGE < STAGE20_RESOLVE_API_CONFLICTS
+#if IMP_EIGEN2_SUPPORT_STAGE < STAGE20_RESOLVE_API_CONFLICTS
 #include "RotationBase.h"
 #include "Rotation2D.h"
 #include "Quaternion.h"
@@ -112,4 +112,4 @@
 #undef Hyperplane
 #undef ParametrizedLine
 
-#endif // EIGEN2_GEOMETRY_MODULE_H
+#endif // IMP_EIGEN2_GEOMETRY_MODULE_H

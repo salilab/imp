@@ -8,9 +8,9 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_QUATERNION_H
-#define EIGEN_QUATERNION_H
-namespace Eigen { 
+#ifndef IMP_EIGEN_QUATERNION_H
+#define IMP_EIGEN_QUATERNION_H
+namespace IMP_Eigen { 
 
 
 /***************************************************************************
@@ -43,7 +43,7 @@ public:
   typedef typename NumTraits<Scalar>::Real RealScalar;
   typedef typename internal::traits<Derived>::Coefficients Coefficients;
   enum {
-    Flags = Eigen::internal::traits<Derived>::Flags
+    Flags = IMP_Eigen::internal::traits<Derived>::Flags
   };
 
  // typedef typename Matrix<Scalar,4,1> Coefficients;
@@ -86,8 +86,8 @@ public:
   /** \returns a vector expression of the coefficients (x,y,z,w) */
   inline typename internal::traits<Derived>::Coefficients& coeffs() { return derived().coeffs(); }
 
-  EIGEN_STRONG_INLINE QuaternionBase<Derived>& operator=(const QuaternionBase<Derived>& other);
-  template<class OtherDerived> EIGEN_STRONG_INLINE Derived& operator=(const QuaternionBase<OtherDerived>& other);
+  IMP_EIGEN_STRONG_INLINE QuaternionBase<Derived>& operator=(const QuaternionBase<Derived>& other);
+  template<class OtherDerived> IMP_EIGEN_STRONG_INLINE Derived& operator=(const QuaternionBase<OtherDerived>& other);
 
 // disabled this copy operator as it is giving very strange compilation errors when compiling
 // test_stdvector with GCC 4.4.2. This looks like a GCC bug though, so feel free to re-enable it if it's
@@ -141,8 +141,8 @@ public:
   template<typename Derived1, typename Derived2>
   Derived& setFromTwoVectors(const MatrixBase<Derived1>& a, const MatrixBase<Derived2>& b);
 
-  template<class OtherDerived> EIGEN_STRONG_INLINE Quaternion<Scalar> operator* (const QuaternionBase<OtherDerived>& q) const;
-  template<class OtherDerived> EIGEN_STRONG_INLINE Derived& operator*= (const QuaternionBase<OtherDerived>& q);
+  template<class OtherDerived> IMP_EIGEN_STRONG_INLINE Quaternion<Scalar> operator* (const QuaternionBase<OtherDerived>& q) const;
+  template<class OtherDerived> IMP_EIGEN_STRONG_INLINE Derived& operator*= (const QuaternionBase<OtherDerived>& q);
 
   /** \returns the quaternion describing the inverse rotation */
   Quaternion<Scalar> inverse() const;
@@ -165,7 +165,7 @@ public:
   { return coeffs().isApprox(other.coeffs(), prec); }
 
 	/** return the result vector of \a v through the rotation*/
-  EIGEN_STRONG_INLINE Vector3 _transformVector(Vector3 v) const;
+  IMP_EIGEN_STRONG_INLINE Vector3 _transformVector(Vector3 v) const;
 
   /** \returns \c *this with scalar type casted to \a NewScalarType
     *
@@ -178,8 +178,8 @@ public:
     return typename internal::cast_return_type<Derived,Quaternion<NewScalarType> >::type(derived());
   }
 
-#ifdef EIGEN_QUATERNIONBASE_PLUGIN
-# include EIGEN_QUATERNIONBASE_PLUGIN
+#ifdef IMP_EIGEN_QUATERNIONBASE_PLUGIN
+# include IMP_EIGEN_QUATERNIONBASE_PLUGIN
 #endif
 };
 
@@ -233,7 +233,7 @@ class Quaternion : public QuaternionBase<Quaternion<_Scalar,_Options> >
 public:
   typedef _Scalar Scalar;
 
-  EIGEN_INHERIT_ASSIGNMENT_EQUAL_OPERATOR(Quaternion)
+  IMP_EIGEN_INHERIT_ASSIGNMENT_EQUAL_OPERATOR(Quaternion)
   using Base::operator*=;
 
   typedef typename internal::traits<Quaternion>::Coefficients Coefficients;
@@ -255,7 +255,7 @@ public:
   inline Quaternion(const Scalar* data) : m_coeffs(data) {}
 
   /** Copy constructor */
-  template<class Derived> EIGEN_STRONG_INLINE Quaternion(const QuaternionBase<Derived>& other) { this->Base::operator=(other); }
+  template<class Derived> IMP_EIGEN_STRONG_INLINE Quaternion(const QuaternionBase<Derived>& other) { this->Base::operator=(other); }
 
   /** Constructs and initializes a quaternion from the angle-axis \a aa */
   explicit inline Quaternion(const AngleAxisType& aa) { *this = aa; }
@@ -278,15 +278,15 @@ public:
   inline Coefficients& coeffs() { return m_coeffs;}
   inline const Coefficients& coeffs() const { return m_coeffs;}
 
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF(IsAligned)
+  IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF(IsAligned)
 
 protected:
   Coefficients m_coeffs;
   
-#ifndef EIGEN_PARSED_BY_DOXYGEN
-    static EIGEN_STRONG_INLINE void _check_template_params()
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
+    static IMP_EIGEN_STRONG_INLINE void _check_template_params()
     {
-      EIGEN_STATIC_ASSERT( (_Options & DontAlign) == _Options,
+      IMP_EIGEN_STATIC_ASSERT( (_Options & DontAlign) == _Options,
         INVALID_MATRIX_TEMPLATE_PARAMETERS)
     }
 #endif
@@ -343,7 +343,7 @@ class Map<const Quaternion<_Scalar>, _Options >
   public:
     typedef _Scalar Scalar;
     typedef typename internal::traits<Map>::Coefficients Coefficients;
-    EIGEN_INHERIT_ASSIGNMENT_EQUAL_OPERATOR(Map)
+    IMP_EIGEN_INHERIT_ASSIGNMENT_EQUAL_OPERATOR(Map)
     using Base::operator*=;
 
     /** Constructs a Mapped Quaternion object from the pointer \a coeffs
@@ -352,7 +352,7 @@ class Map<const Quaternion<_Scalar>, _Options >
       * \code *coeffs == {x, y, z, w} \endcode
       *
       * If the template parameter _Options is set to #Aligned, then the pointer coeffs must be aligned. */
-    EIGEN_STRONG_INLINE Map(const Scalar* coeffs) : m_coeffs(coeffs) {}
+    IMP_EIGEN_STRONG_INLINE Map(const Scalar* coeffs) : m_coeffs(coeffs) {}
 
     inline const Coefficients& coeffs() const { return m_coeffs;}
 
@@ -380,7 +380,7 @@ class Map<Quaternion<_Scalar>, _Options >
   public:
     typedef _Scalar Scalar;
     typedef typename internal::traits<Map>::Coefficients Coefficients;
-    EIGEN_INHERIT_ASSIGNMENT_EQUAL_OPERATOR(Map)
+    IMP_EIGEN_INHERIT_ASSIGNMENT_EQUAL_OPERATOR(Map)
     using Base::operator*=;
 
     /** Constructs a Mapped Quaternion object from the pointer \a coeffs
@@ -389,7 +389,7 @@ class Map<Quaternion<_Scalar>, _Options >
       * \code *coeffs == {x, y, z, w} \endcode
       *
       * If the template parameter _Options is set to #Aligned, then the pointer coeffs must be aligned. */
-    EIGEN_STRONG_INLINE Map(Scalar* coeffs) : m_coeffs(coeffs) {}
+    IMP_EIGEN_STRONG_INLINE Map(Scalar* coeffs) : m_coeffs(coeffs) {}
 
     inline Coefficients& coeffs() { return m_coeffs; }
     inline const Coefficients& coeffs() const { return m_coeffs; }
@@ -420,7 +420,7 @@ typedef Map<Quaternion<double>, Aligned>  QuaternionMapAlignedd;
 namespace internal {
 template<int Arch, class Derived1, class Derived2, typename Scalar, int _Options> struct quat_product
 {
-  static EIGEN_STRONG_INLINE Quaternion<Scalar> run(const QuaternionBase<Derived1>& a, const QuaternionBase<Derived2>& b){
+  static IMP_EIGEN_STRONG_INLINE Quaternion<Scalar> run(const QuaternionBase<Derived1>& a, const QuaternionBase<Derived2>& b){
     return Quaternion<Scalar>
     (
       a.w() * b.w() - a.x() * b.x() - a.y() * b.y() - a.z() * b.z(),
@@ -435,10 +435,10 @@ template<int Arch, class Derived1, class Derived2, typename Scalar, int _Options
 /** \returns the concatenation of two rotations as a quaternion-quaternion product */
 template <class Derived>
 template <class OtherDerived>
-EIGEN_STRONG_INLINE Quaternion<typename internal::traits<Derived>::Scalar>
+IMP_EIGEN_STRONG_INLINE Quaternion<typename internal::traits<Derived>::Scalar>
 QuaternionBase<Derived>::operator* (const QuaternionBase<OtherDerived>& other) const
 {
-  EIGEN_STATIC_ASSERT((internal::is_same<typename Derived::Scalar, typename OtherDerived::Scalar>::value),
+  IMP_EIGEN_STATIC_ASSERT((internal::is_same<typename Derived::Scalar, typename OtherDerived::Scalar>::value),
    YOU_MIXED_DIFFERENT_NUMERIC_TYPES__YOU_NEED_TO_USE_THE_CAST_METHOD_OF_MATRIXBASE_TO_CAST_NUMERIC_TYPES_EXPLICITLY)
   return internal::quat_product<Architecture::Target, Derived, OtherDerived,
                          typename internal::traits<Derived>::Scalar,
@@ -448,7 +448,7 @@ QuaternionBase<Derived>::operator* (const QuaternionBase<OtherDerived>& other) c
 /** \sa operator*(Quaternion) */
 template <class Derived>
 template <class OtherDerived>
-EIGEN_STRONG_INLINE Derived& QuaternionBase<Derived>::operator*= (const QuaternionBase<OtherDerived>& other)
+IMP_EIGEN_STRONG_INLINE Derived& QuaternionBase<Derived>::operator*= (const QuaternionBase<OtherDerived>& other)
 {
   derived() = derived() * other.derived();
   return derived();
@@ -462,7 +462,7 @@ EIGEN_STRONG_INLINE Derived& QuaternionBase<Derived>::operator*= (const Quaterni
   *   - Via a Matrix3: 24 + 15n
   */
 template <class Derived>
-EIGEN_STRONG_INLINE typename QuaternionBase<Derived>::Vector3
+IMP_EIGEN_STRONG_INLINE typename QuaternionBase<Derived>::Vector3
 QuaternionBase<Derived>::_transformVector(Vector3 v) const
 {
     // Note that this algorithm comes from the optimization by hand
@@ -476,7 +476,7 @@ QuaternionBase<Derived>::_transformVector(Vector3 v) const
 }
 
 template<class Derived>
-EIGEN_STRONG_INLINE QuaternionBase<Derived>& QuaternionBase<Derived>::operator=(const QuaternionBase<Derived>& other)
+IMP_EIGEN_STRONG_INLINE QuaternionBase<Derived>& QuaternionBase<Derived>::operator=(const QuaternionBase<Derived>& other)
 {
   coeffs() = other.coeffs();
   return derived();
@@ -484,7 +484,7 @@ EIGEN_STRONG_INLINE QuaternionBase<Derived>& QuaternionBase<Derived>::operator=(
 
 template<class Derived>
 template<class OtherDerived>
-EIGEN_STRONG_INLINE Derived& QuaternionBase<Derived>::operator=(const QuaternionBase<OtherDerived>& other)
+IMP_EIGEN_STRONG_INLINE Derived& QuaternionBase<Derived>::operator=(const QuaternionBase<OtherDerived>& other)
 {
   coeffs() = other.coeffs();
   return derived();
@@ -493,7 +493,7 @@ EIGEN_STRONG_INLINE Derived& QuaternionBase<Derived>::operator=(const Quaternion
 /** Set \c *this from an angle-axis \a aa and returns a reference to \c *this
   */
 template<class Derived>
-EIGEN_STRONG_INLINE Derived& QuaternionBase<Derived>::operator=(const AngleAxisType& aa)
+IMP_EIGEN_STRONG_INLINE Derived& QuaternionBase<Derived>::operator=(const AngleAxisType& aa)
 {
   using std::cos;
   using std::sin;
@@ -513,7 +513,7 @@ template<class Derived>
 template<class MatrixDerived>
 inline Derived& QuaternionBase<Derived>::operator=(const MatrixBase<MatrixDerived>& xpr)
 {
-  EIGEN_STATIC_ASSERT((internal::is_same<typename Derived::Scalar, typename MatrixDerived::Scalar>::value),
+  IMP_EIGEN_STATIC_ASSERT((internal::is_same<typename Derived::Scalar, typename MatrixDerived::Scalar>::value),
    YOU_MIXED_DIFFERENT_NUMERIC_TYPES__YOU_NEED_TO_USE_THE_CAST_METHOD_OF_MATRIXBASE_TO_CAST_NUMERIC_TYPES_EXPLICITLY)
   internal::quaternionbase_assign_impl<MatrixDerived>::run(*this, xpr.derived());
   return derived();
@@ -770,6 +770,6 @@ struct quaternionbase_assign_impl<Other,4,1>
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_QUATERNION_H
+#endif // IMP_EIGEN_QUATERNION_H

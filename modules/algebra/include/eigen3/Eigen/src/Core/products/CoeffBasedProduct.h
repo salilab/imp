@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_COEFFBASED_PRODUCT_H
-#define EIGEN_COEFFBASED_PRODUCT_H
+#ifndef IMP_EIGEN_COEFFBASED_PRODUCT_H
+#define IMP_EIGEN_COEFFBASED_PRODUCT_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -54,7 +54,7 @@ struct traits<CoeffBasedProduct<LhsNested,RhsNested,NestingFlags> >
 
       RowsAtCompileTime = _LhsNested::RowsAtCompileTime,
       ColsAtCompileTime = _RhsNested::ColsAtCompileTime,
-      InnerSize = EIGEN_SIZE_MIN_PREFER_FIXED(_LhsNested::ColsAtCompileTime, _RhsNested::RowsAtCompileTime),
+      InnerSize = IMP_EIGEN_SIZE_MIN_PREFER_FIXED(_LhsNested::ColsAtCompileTime, _RhsNested::RowsAtCompileTime),
 
       MaxRowsAtCompileTime = _LhsNested::MaxRowsAtCompileTime,
       MaxColsAtCompileTime = _RhsNested::MaxColsAtCompileTime,
@@ -117,7 +117,7 @@ class CoeffBasedProduct
   public:
 
     typedef MatrixBase<CoeffBasedProduct> Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(CoeffBasedProduct)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(CoeffBasedProduct)
     typedef typename Base::PlainObject PlainObject;
 
   private:
@@ -128,7 +128,7 @@ class CoeffBasedProduct
     enum {
       PacketSize = internal::packet_traits<Scalar>::size,
       InnerSize  = internal::traits<CoeffBasedProduct>::InnerSize,
-      Unroll = CoeffReadCost != Dynamic && CoeffReadCost <= EIGEN_UNROLLING_LIMIT,
+      Unroll = CoeffReadCost != Dynamic && CoeffReadCost <= IMP_EIGEN_UNROLLING_LIMIT,
       CanVectorizeInner = internal::traits<CoeffBasedProduct>::CanVectorizeInner
     };
 
@@ -150,17 +150,17 @@ class CoeffBasedProduct
     {
       // we don't allow taking products of matrices of different real types, as that wouldn't be vectorizable.
       // We still allow to mix T and complex<T>.
-      EIGEN_STATIC_ASSERT((internal::scalar_product_traits<typename Lhs::RealScalar, typename Rhs::RealScalar>::Defined),
+      IMP_EIGEN_STATIC_ASSERT((internal::scalar_product_traits<typename Lhs::RealScalar, typename Rhs::RealScalar>::Defined),
         YOU_MIXED_DIFFERENT_NUMERIC_TYPES__YOU_NEED_TO_USE_THE_CAST_METHOD_OF_MATRIXBASE_TO_CAST_NUMERIC_TYPES_EXPLICITLY)
       eigen_assert(lhs.cols() == rhs.rows()
         && "invalid matrix product"
         && "if you wanted a coeff-wise or a dot product use the respective explicit functions");
     }
 
-    EIGEN_STRONG_INLINE Index rows() const { return m_lhs.rows(); }
-    EIGEN_STRONG_INLINE Index cols() const { return m_rhs.cols(); }
+    IMP_EIGEN_STRONG_INLINE Index rows() const { return m_lhs.rows(); }
+    IMP_EIGEN_STRONG_INLINE Index cols() const { return m_rhs.cols(); }
 
-    EIGEN_STRONG_INLINE const Scalar coeff(Index row, Index col) const
+    IMP_EIGEN_STRONG_INLINE const Scalar coeff(Index row, Index col) const
     {
       Scalar res;
       ScalarCoeffImpl::run(row, col, m_lhs, m_rhs, res);
@@ -170,7 +170,7 @@ class CoeffBasedProduct
     /* Allow index-based non-packet access. It is impossible though to allow index-based packed access,
      * which is why we don't set the LinearAccessBit.
      */
-    EIGEN_STRONG_INLINE const Scalar coeff(Index index) const
+    IMP_EIGEN_STRONG_INLINE const Scalar coeff(Index index) const
     {
       Scalar res;
       const Index row = RowsAtCompileTime == 1 ? 0 : index;
@@ -180,7 +180,7 @@ class CoeffBasedProduct
     }
 
     template<int LoadMode>
-    EIGEN_STRONG_INLINE const PacketScalar packet(Index row, Index col) const
+    IMP_EIGEN_STRONG_INLINE const PacketScalar packet(Index row, Index col) const
     {
       PacketScalar res;
       internal::product_packet_impl<Flags&RowMajorBit ? RowMajor : ColMajor,
@@ -191,7 +191,7 @@ class CoeffBasedProduct
     }
 
     // Implicit conversion to the nested type (trigger the evaluation of the product)
-    EIGEN_STRONG_INLINE operator const PlainObject& () const
+    IMP_EIGEN_STRONG_INLINE operator const PlainObject& () const
     {
       m_result.lazyAssign(*this);
       return m_result;
@@ -239,7 +239,7 @@ template<int UnrollingIndex, typename Lhs, typename Rhs, typename RetScalar>
 struct product_coeff_impl<DefaultTraversal, UnrollingIndex, Lhs, Rhs, RetScalar>
 {
   typedef typename Lhs::Index Index;
-  static EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, RetScalar &res)
+  static IMP_EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, RetScalar &res)
   {
     product_coeff_impl<DefaultTraversal, UnrollingIndex-1, Lhs, Rhs, RetScalar>::run(row, col, lhs, rhs, res);
     res += lhs.coeff(row, UnrollingIndex) * rhs.coeff(UnrollingIndex, col);
@@ -250,7 +250,7 @@ template<typename Lhs, typename Rhs, typename RetScalar>
 struct product_coeff_impl<DefaultTraversal, 0, Lhs, Rhs, RetScalar>
 {
   typedef typename Lhs::Index Index;
-  static EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, RetScalar &res)
+  static IMP_EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, RetScalar &res)
   {
     res = lhs.coeff(row, 0) * rhs.coeff(0, col);
   }
@@ -260,7 +260,7 @@ template<typename Lhs, typename Rhs, typename RetScalar>
 struct product_coeff_impl<DefaultTraversal, Dynamic, Lhs, Rhs, RetScalar>
 {
   typedef typename Lhs::Index Index;
-  static EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, RetScalar& res)
+  static IMP_EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, RetScalar& res)
   {
     eigen_assert(lhs.cols()>0 && "you are using a non initialized matrix");
     res = lhs.coeff(row, 0) * rhs.coeff(0, col);
@@ -278,7 +278,7 @@ struct product_coeff_vectorized_unroller
 {
   typedef typename Lhs::Index Index;
   enum { PacketSize = packet_traits<typename Lhs::Scalar>::size };
-  static EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, typename Lhs::PacketScalar &pres)
+  static IMP_EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, typename Lhs::PacketScalar &pres)
   {
     product_coeff_vectorized_unroller<UnrollingIndex-PacketSize, Lhs, Rhs, Packet>::run(row, col, lhs, rhs, pres);
     pres = padd(pres, pmul( lhs.template packet<Aligned>(row, UnrollingIndex) , rhs.template packet<Aligned>(UnrollingIndex, col) ));
@@ -289,7 +289,7 @@ template<typename Lhs, typename Rhs, typename Packet>
 struct product_coeff_vectorized_unroller<0, Lhs, Rhs, Packet>
 {
   typedef typename Lhs::Index Index;
-  static EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, typename Lhs::PacketScalar &pres)
+  static IMP_EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, typename Lhs::PacketScalar &pres)
   {
     pres = pmul(lhs.template packet<Aligned>(row, 0) , rhs.template packet<Aligned>(0, col));
   }
@@ -301,7 +301,7 @@ struct product_coeff_impl<InnerVectorizedTraversal, UnrollingIndex, Lhs, Rhs, Re
   typedef typename Lhs::PacketScalar Packet;
   typedef typename Lhs::Index Index;
   enum { PacketSize = packet_traits<typename Lhs::Scalar>::size };
-  static EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, RetScalar &res)
+  static IMP_EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, RetScalar &res)
   {
     Packet pres;
     product_coeff_vectorized_unroller<UnrollingIndex+1-PacketSize, Lhs, Rhs, Packet>::run(row, col, lhs, rhs, pres);
@@ -314,7 +314,7 @@ template<typename Lhs, typename Rhs, int LhsRows = Lhs::RowsAtCompileTime, int R
 struct product_coeff_vectorized_dyn_selector
 {
   typedef typename Lhs::Index Index;
-  static EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, typename Lhs::Scalar &res)
+  static IMP_EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, typename Lhs::Scalar &res)
   {
     res = lhs.row(row).transpose().cwiseProduct(rhs.col(col)).sum();
   }
@@ -326,7 +326,7 @@ template<typename Lhs, typename Rhs, int RhsCols>
 struct product_coeff_vectorized_dyn_selector<Lhs,Rhs,1,RhsCols>
 {
   typedef typename Lhs::Index Index;
-  static EIGEN_STRONG_INLINE void run(Index /*row*/, Index col, const Lhs& lhs, const Rhs& rhs, typename Lhs::Scalar &res)
+  static IMP_EIGEN_STRONG_INLINE void run(Index /*row*/, Index col, const Lhs& lhs, const Rhs& rhs, typename Lhs::Scalar &res)
   {
     res = lhs.transpose().cwiseProduct(rhs.col(col)).sum();
   }
@@ -336,7 +336,7 @@ template<typename Lhs, typename Rhs, int LhsRows>
 struct product_coeff_vectorized_dyn_selector<Lhs,Rhs,LhsRows,1>
 {
   typedef typename Lhs::Index Index;
-  static EIGEN_STRONG_INLINE void run(Index row, Index /*col*/, const Lhs& lhs, const Rhs& rhs, typename Lhs::Scalar &res)
+  static IMP_EIGEN_STRONG_INLINE void run(Index row, Index /*col*/, const Lhs& lhs, const Rhs& rhs, typename Lhs::Scalar &res)
   {
     res = lhs.row(row).transpose().cwiseProduct(rhs).sum();
   }
@@ -346,7 +346,7 @@ template<typename Lhs, typename Rhs>
 struct product_coeff_vectorized_dyn_selector<Lhs,Rhs,1,1>
 {
   typedef typename Lhs::Index Index;
-  static EIGEN_STRONG_INLINE void run(Index /*row*/, Index /*col*/, const Lhs& lhs, const Rhs& rhs, typename Lhs::Scalar &res)
+  static IMP_EIGEN_STRONG_INLINE void run(Index /*row*/, Index /*col*/, const Lhs& lhs, const Rhs& rhs, typename Lhs::Scalar &res)
   {
     res = lhs.transpose().cwiseProduct(rhs).sum();
   }
@@ -356,7 +356,7 @@ template<typename Lhs, typename Rhs, typename RetScalar>
 struct product_coeff_impl<InnerVectorizedTraversal, Dynamic, Lhs, Rhs, RetScalar>
 {
   typedef typename Lhs::Index Index;
-  static EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, typename Lhs::Scalar &res)
+  static IMP_EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, typename Lhs::Scalar &res)
   {
     product_coeff_vectorized_dyn_selector<Lhs,Rhs>::run(row, col, lhs, rhs, res);
   }
@@ -370,7 +370,7 @@ template<int UnrollingIndex, typename Lhs, typename Rhs, typename Packet, int Lo
 struct product_packet_impl<RowMajor, UnrollingIndex, Lhs, Rhs, Packet, LoadMode>
 {
   typedef typename Lhs::Index Index;
-  static EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, Packet &res)
+  static IMP_EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, Packet &res)
   {
     product_packet_impl<RowMajor, UnrollingIndex-1, Lhs, Rhs, Packet, LoadMode>::run(row, col, lhs, rhs, res);
     res =  pmadd(pset1<Packet>(lhs.coeff(row, UnrollingIndex)), rhs.template packet<LoadMode>(UnrollingIndex, col), res);
@@ -381,7 +381,7 @@ template<int UnrollingIndex, typename Lhs, typename Rhs, typename Packet, int Lo
 struct product_packet_impl<ColMajor, UnrollingIndex, Lhs, Rhs, Packet, LoadMode>
 {
   typedef typename Lhs::Index Index;
-  static EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, Packet &res)
+  static IMP_EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, Packet &res)
   {
     product_packet_impl<ColMajor, UnrollingIndex-1, Lhs, Rhs, Packet, LoadMode>::run(row, col, lhs, rhs, res);
     res =  pmadd(lhs.template packet<LoadMode>(row, UnrollingIndex), pset1<Packet>(rhs.coeff(UnrollingIndex, col)), res);
@@ -392,7 +392,7 @@ template<typename Lhs, typename Rhs, typename Packet, int LoadMode>
 struct product_packet_impl<RowMajor, 0, Lhs, Rhs, Packet, LoadMode>
 {
   typedef typename Lhs::Index Index;
-  static EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, Packet &res)
+  static IMP_EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, Packet &res)
   {
     res = pmul(pset1<Packet>(lhs.coeff(row, 0)),rhs.template packet<LoadMode>(0, col));
   }
@@ -402,7 +402,7 @@ template<typename Lhs, typename Rhs, typename Packet, int LoadMode>
 struct product_packet_impl<ColMajor, 0, Lhs, Rhs, Packet, LoadMode>
 {
   typedef typename Lhs::Index Index;
-  static EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, Packet &res)
+  static IMP_EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, Packet &res)
   {
     res = pmul(lhs.template packet<LoadMode>(row, 0), pset1<Packet>(rhs.coeff(0, col)));
   }
@@ -412,7 +412,7 @@ template<typename Lhs, typename Rhs, typename Packet, int LoadMode>
 struct product_packet_impl<RowMajor, Dynamic, Lhs, Rhs, Packet, LoadMode>
 {
   typedef typename Lhs::Index Index;
-  static EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, Packet& res)
+  static IMP_EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, Packet& res)
   {
     eigen_assert(lhs.cols()>0 && "you are using a non initialized matrix");
     res = pmul(pset1<Packet>(lhs.coeff(row, 0)),rhs.template packet<LoadMode>(0, col));
@@ -425,7 +425,7 @@ template<typename Lhs, typename Rhs, typename Packet, int LoadMode>
 struct product_packet_impl<ColMajor, Dynamic, Lhs, Rhs, Packet, LoadMode>
 {
   typedef typename Lhs::Index Index;
-  static EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, Packet& res)
+  static IMP_EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, Packet& res)
   {
     eigen_assert(lhs.cols()>0 && "you are using a non initialized matrix");
     res = pmul(lhs.template packet<LoadMode>(row, 0), pset1<Packet>(rhs.coeff(0, col)));
@@ -436,6 +436,6 @@ struct product_packet_impl<ColMajor, Dynamic, Lhs, Rhs, Packet, LoadMode>
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_COEFFBASED_PRODUCT_H
+#endif // IMP_EIGEN_COEFFBASED_PRODUCT_H

@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SKYLINEPRODUCT_H
-#define EIGEN_SKYLINEPRODUCT_H
+#ifndef IMP_EIGEN_SKYLINEPRODUCT_H
+#define IMP_EIGEN_SKYLINEPRODUCT_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 template<typename Lhs, typename Rhs, int ProductMode>
 struct SkylineProductReturnType {
@@ -35,7 +35,7 @@ struct internal::traits<SkylineProduct<LhsNested, RhsNested, ProductMode> > {
 
         RowsAtCompileTime = _LhsNested::RowsAtCompileTime,
         ColsAtCompileTime = _RhsNested::ColsAtCompileTime,
-        InnerSize = EIGEN_SIZE_MIN_PREFER_FIXED(_LhsNested::ColsAtCompileTime, _RhsNested::RowsAtCompileTime),
+        InnerSize = IMP_EIGEN_SIZE_MIN_PREFER_FIXED(_LhsNested::ColsAtCompileTime, _RhsNested::RowsAtCompileTime),
 
         MaxRowsAtCompileTime = _LhsNested::MaxRowsAtCompileTime,
         MaxColsAtCompileTime = _RhsNested::MaxColsAtCompileTime,
@@ -63,7 +63,7 @@ class SkylineProduct : no_assignment_operator,
 public traits<SkylineProduct<LhsNested, RhsNested, ProductMode> >::Base {
 public:
 
-    EIGEN_GENERIC_PUBLIC_INTERFACE(SkylineProduct)
+    IMP_EIGEN_GENERIC_PUBLIC_INTERFACE(SkylineProduct)
 
 private:
 
@@ -73,7 +73,7 @@ private:
 public:
 
     template<typename Lhs, typename Rhs>
-    EIGEN_STRONG_INLINE SkylineProduct(const Lhs& lhs, const Rhs& rhs)
+    IMP_EIGEN_STRONG_INLINE SkylineProduct(const Lhs& lhs, const Rhs& rhs)
     : m_lhs(lhs), m_rhs(rhs) {
         eigen_assert(lhs.cols() == rhs.rows());
 
@@ -82,31 +82,31 @@ public:
             || _RhsNested::RowsAtCompileTime == Dynamic
             || int(_LhsNested::ColsAtCompileTime) == int(_RhsNested::RowsAtCompileTime),
             AreVectors = _LhsNested::IsVectorAtCompileTime && _RhsNested::IsVectorAtCompileTime,
-            SameSizes = EIGEN_PREDICATE_SAME_MATRIX_SIZE(_LhsNested, _RhsNested)
+            SameSizes = IMP_EIGEN_PREDICATE_SAME_MATRIX_SIZE(_LhsNested, _RhsNested)
         };
         // note to the lost user:
         //    * for a dot product use: v1.dot(v2)
         //    * for a coeff-wise product use: v1.cwise()*v2
-        EIGEN_STATIC_ASSERT(ProductIsValid || !(AreVectors && SameSizes),
+        IMP_EIGEN_STATIC_ASSERT(ProductIsValid || !(AreVectors && SameSizes),
                 INVALID_VECTOR_VECTOR_PRODUCT__IF_YOU_WANTED_A_DOT_OR_COEFF_WISE_PRODUCT_YOU_MUST_USE_THE_EXPLICIT_FUNCTIONS)
-                EIGEN_STATIC_ASSERT(ProductIsValid || !(SameSizes && !AreVectors),
+                IMP_EIGEN_STATIC_ASSERT(ProductIsValid || !(SameSizes && !AreVectors),
                 INVALID_MATRIX_PRODUCT__IF_YOU_WANTED_A_COEFF_WISE_PRODUCT_YOU_MUST_USE_THE_EXPLICIT_FUNCTION)
-                EIGEN_STATIC_ASSERT(ProductIsValid || SameSizes, INVALID_MATRIX_PRODUCT)
+                IMP_EIGEN_STATIC_ASSERT(ProductIsValid || SameSizes, INVALID_MATRIX_PRODUCT)
     }
 
-    EIGEN_STRONG_INLINE Index rows() const {
+    IMP_EIGEN_STRONG_INLINE Index rows() const {
         return m_lhs.rows();
     }
 
-    EIGEN_STRONG_INLINE Index cols() const {
+    IMP_EIGEN_STRONG_INLINE Index cols() const {
         return m_rhs.cols();
     }
 
-    EIGEN_STRONG_INLINE const _LhsNested& lhs() const {
+    IMP_EIGEN_STRONG_INLINE const _LhsNested& lhs() const {
         return m_lhs;
     }
 
-    EIGEN_STRONG_INLINE const _RhsNested& rhs() const {
+    IMP_EIGEN_STRONG_INLINE const _RhsNested& rhs() const {
         return m_rhs;
     }
 
@@ -119,7 +119,7 @@ protected:
 // Note that here we force no inlining and separate the setZero() because GCC messes up otherwise
 
 template<typename Lhs, typename Rhs, typename Dest>
-EIGEN_DONT_INLINE void skyline_row_major_time_dense_product(const Lhs& lhs, const Rhs& rhs, Dest& dst) {
+IMP_EIGEN_DONT_INLINE void skyline_row_major_time_dense_product(const Lhs& lhs, const Rhs& rhs, Dest& dst) {
     typedef typename remove_all<Lhs>::type _Lhs;
     typedef typename remove_all<Rhs>::type _Rhs;
     typedef typename traits<Lhs>::Scalar Scalar;
@@ -182,7 +182,7 @@ EIGEN_DONT_INLINE void skyline_row_major_time_dense_product(const Lhs& lhs, cons
 }
 
 template<typename Lhs, typename Rhs, typename Dest>
-EIGEN_DONT_INLINE void skyline_col_major_time_dense_product(const Lhs& lhs, const Rhs& rhs, Dest& dst) {
+IMP_EIGEN_DONT_INLINE void skyline_col_major_time_dense_product(const Lhs& lhs, const Rhs& rhs, Dest& dst) {
     typedef typename remove_all<Lhs>::type _Lhs;
     typedef typename remove_all<Rhs>::type _Rhs;
     typedef typename traits<Lhs>::Scalar Scalar;
@@ -284,12 +284,12 @@ struct skyline_product_selector<Lhs, Rhs, ResultType, ColMajor> {
 
 template<typename Derived>
 template<typename OtherDerived >
-EIGEN_STRONG_INLINE const typename SkylineProductReturnType<Derived, OtherDerived>::Type
+IMP_EIGEN_STRONG_INLINE const typename SkylineProductReturnType<Derived, OtherDerived>::Type
 SkylineMatrixBase<Derived>::operator*(const MatrixBase<OtherDerived> &other) const {
 
     return typename SkylineProductReturnType<Derived, OtherDerived>::Type(derived(), other.derived());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SKYLINEPRODUCT_H
+#endif // IMP_EIGEN_SKYLINEPRODUCT_H

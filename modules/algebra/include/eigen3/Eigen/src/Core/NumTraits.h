@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_NUMTRAITS_H
-#define EIGEN_NUMTRAITS_H
+#ifndef IMP_EIGEN_NUMTRAITS_H
+#define IMP_EIGEN_NUMTRAITS_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 /** \class NumTraits
   * \ingroup Core_Module
@@ -77,7 +77,7 @@ template<typename T> struct GenericNumTraits
   static inline T highest() { return (std::numeric_limits<T>::max)(); }
   static inline T lowest()  { return IsInteger ? (std::numeric_limits<T>::min)() : (-(std::numeric_limits<T>::max)()); }
   
-#ifdef EIGEN2_SUPPORT
+#ifdef IMP_EIGEN2_SUPPORT
   enum {
     HasFloatingPoint = !IsInteger
   };
@@ -145,6 +145,6 @@ struct NumTraits<Array<Scalar, Rows, Cols, Options, MaxRows, MaxCols> >
   static inline RealScalar dummy_precision() { return NumTraits<RealScalar>::dummy_precision(); }
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_NUMTRAITS_H
+#endif // IMP_EIGEN_NUMTRAITS_H

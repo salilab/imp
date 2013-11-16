@@ -42,10 +42,10 @@ LDL License:
 
 #include "../Core/util/NonMPL2.h"
 
-#ifndef EIGEN_SIMPLICIAL_CHOLESKY_IMPL_H
-#define EIGEN_SIMPLICIAL_CHOLESKY_IMPL_H
+#ifndef IMP_EIGEN_SIMPLICIAL_CHOLESKY_IMPL_H
+#define IMP_EIGEN_SIMPLICIAL_CHOLESKY_IMPL_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 template<typename Derived>
 void SimplicialCholeskyBase<Derived>::analyzePattern_preordered(const CholMatrixType& ap, bool doLDLT)
@@ -194,6 +194,6 @@ void SimplicialCholeskyBase<Derived>::factorize_preordered(const CholMatrixType&
   m_factorizationIsOk = true;
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SIMPLICIAL_CHOLESKY_IMPL_H
+#endif // IMP_EIGEN_SIMPLICIAL_CHOLESKY_IMPL_H

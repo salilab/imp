@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_MAPPED_SPARSEMATRIX_H
-#define EIGEN_MAPPED_SPARSEMATRIX_H
+#ifndef IMP_EIGEN_MAPPED_SPARSEMATRIX_H
+#define IMP_EIGEN_MAPPED_SPARSEMATRIX_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \class MappedSparseMatrix
   *
@@ -32,7 +32,7 @@ class MappedSparseMatrix
   : public SparseMatrixBase<MappedSparseMatrix<_Scalar, _Flags, _Index> >
 {
   public:
-    EIGEN_SPARSE_PUBLIC_INTERFACE(MappedSparseMatrix)
+    IMP_EIGEN_SPARSE_PUBLIC_INTERFACE(MappedSparseMatrix)
     enum { IsRowMajor = Base::IsRowMajor };
 
   protected:
@@ -174,6 +174,6 @@ class MappedSparseMatrix<Scalar,_Flags,_Index>::ReverseInnerIterator
     const Index m_end;
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_MAPPED_SPARSEMATRIX_H
+#endif // IMP_EIGEN_MAPPED_SPARSEMATRIX_H

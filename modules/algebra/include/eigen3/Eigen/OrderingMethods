@@ -1,5 +1,5 @@
-#ifndef EIGEN_ORDERINGMETHODS_MODULE_H
-#define EIGEN_ORDERINGMETHODS_MODULE_H
+#ifndef IMP_EIGEN_ORDERINGMETHODS_MODULE_H
+#define IMP_EIGEN_ORDERINGMETHODS_MODULE_H
 
 #include "SparseCore"
 
@@ -56,11 +56,11 @@
   * \endcode
   */
 
-#ifndef EIGEN_MPL2_ONLY
+#ifndef IMP_EIGEN_MPL2_ONLY
 #include "src/OrderingMethods/Amd.h"
 #endif
 
 #include "src/OrderingMethods/Ordering.h"
 #include "src/Core/util/ReenableStupidWarnings.h"
 
-#endif // EIGEN_ORDERINGMETHODS_MODULE_H
+#endif // IMP_EIGEN_ORDERINGMETHODS_MODULE_H

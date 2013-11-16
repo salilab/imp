@@ -30,19 +30,19 @@
  ********************************************************************************
 */
 
-#ifndef EIGEN_LLT_MKL_H
-#define EIGEN_LLT_MKL_H
+#ifndef IMP_EIGEN_LLT_MKL_H
+#define IMP_EIGEN_LLT_MKL_H
 
 #include "Eigen/src/Core/util/MKL_support.h"
 #include <iostream>
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
 template<typename Scalar> struct mkl_llt;
 
-#define EIGEN_MKL_LLT(EIGTYPE, MKLTYPE, MKLPREFIX) \
+#define IMP_EIGEN_MKL_LLT(EIGTYPE, MKLTYPE, MKLPREFIX) \
 template<> struct mkl_llt<EIGTYPE> \
 { \
   template<typename MatrixType> \
@@ -73,7 +73,7 @@ template<> struct llt_inplace<EIGTYPE, Lower> \
   } \
   template<typename MatrixType, typename VectorType> \
   static typename MatrixType::Index rankUpdate(MatrixType& mat, const VectorType& vec, const typename MatrixType::RealScalar& sigma) \
-  { return Eigen::internal::llt_rank_update_lower(mat, vec, sigma); } \
+  { return IMP_Eigen::internal::llt_rank_update_lower(mat, vec, sigma); } \
 }; \
 template<> struct llt_inplace<EIGTYPE, Upper> \
 { \
@@ -90,13 +90,13 @@ template<> struct llt_inplace<EIGTYPE, Upper> \
   } \
 };
 
-EIGEN_MKL_LLT(double, double, d)
-EIGEN_MKL_LLT(float, float, s)
-EIGEN_MKL_LLT(dcomplex, MKL_Complex16, z)
-EIGEN_MKL_LLT(scomplex, MKL_Complex8, c)
+IMP_EIGEN_MKL_LLT(double, double, d)
+IMP_EIGEN_MKL_LLT(float, float, s)
+IMP_EIGEN_MKL_LLT(dcomplex, MKL_Complex16, z)
+IMP_EIGEN_MKL_LLT(scomplex, MKL_Complex8, c)
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_LLT_MKL_H
+#endif // IMP_EIGEN_LLT_MKL_H

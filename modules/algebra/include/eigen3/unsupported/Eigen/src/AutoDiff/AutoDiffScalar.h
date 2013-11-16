@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_AUTODIFF_SCALAR_H
-#define EIGEN_AUTODIFF_SCALAR_H
+#ifndef IMP_EIGEN_AUTODIFF_SCALAR_H
+#define IMP_EIGEN_AUTODIFF_SCALAR_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 namespace internal {
 
@@ -50,7 +50,7 @@ template<typename _DerType, bool Enable> struct auto_diff_special_op;
   *  - internal::abs, internal::sqrt, numext::pow, internal::exp, internal::log, internal::sin, internal::cos,
   *  - internal::conj, internal::real, internal::imag, numext::abs2.
   *
-  * AutoDiffScalar can be used as the scalar type of an Eigen::Matrix object. However,
+  * AutoDiffScalar can be used as the scalar type of an IMP_Eigen::Matrix object. However,
   * in that case, the expression template mechanism only occurs at the top Matrix level,
   * while derivatives are computed right away.
   *
@@ -519,13 +519,13 @@ struct scalar_product_traits<typename DerType::Scalar,AutoDiffScalar<DerType> >
 
 } // end namespace internal
 
-#define EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY(FUNC,CODE) \
+#define IMP_EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY(FUNC,CODE) \
   template<typename DerType> \
-  inline const Eigen::AutoDiffScalar<Eigen::CwiseUnaryOp<Eigen::internal::scalar_multiple_op<typename Eigen::internal::traits<typename Eigen::internal::remove_all<DerType>::type>::Scalar>, const typename Eigen::internal::remove_all<DerType>::type> > \
-  FUNC(const Eigen::AutoDiffScalar<DerType>& x) { \
-    using namespace Eigen; \
-    typedef typename Eigen::internal::traits<typename Eigen::internal::remove_all<DerType>::type>::Scalar Scalar; \
-    typedef AutoDiffScalar<CwiseUnaryOp<Eigen::internal::scalar_multiple_op<Scalar>, const typename Eigen::internal::remove_all<DerType>::type> > ReturnType; \
+  inline const IMP_Eigen::AutoDiffScalar<IMP_Eigen::CwiseUnaryOp<IMP_Eigen::internal::scalar_multiple_op<typename IMP_Eigen::internal::traits<typename IMP_Eigen::internal::remove_all<DerType>::type>::Scalar>, const typename IMP_Eigen::internal::remove_all<DerType>::type> > \
+  FUNC(const IMP_Eigen::AutoDiffScalar<DerType>& x) { \
+    using namespace IMP_Eigen; \
+    typedef typename IMP_Eigen::internal::traits<typename IMP_Eigen::internal::remove_all<DerType>::type>::Scalar Scalar; \
+    typedef AutoDiffScalar<CwiseUnaryOp<IMP_Eigen::internal::scalar_multiple_op<Scalar>, const typename IMP_Eigen::internal::remove_all<DerType>::type> > ReturnType; \
     CODE; \
   }
 
@@ -544,45 +544,45 @@ inline AutoDiffScalar<DerType> (min)(const T& x, const AutoDiffScalar<DerType>& 
 template<typename DerType, typename T>
 inline AutoDiffScalar<DerType> (max)(const T& x, const AutoDiffScalar<DerType>& y)    { return (x > y ? x : y); }
 
-EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY(abs,
+IMP_EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY(abs,
   using std::abs;
   return ReturnType(abs(x.value()), x.derivatives() * (x.value()<0 ? -1 : 1) );)
 
-EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY(abs2,
+IMP_EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY(abs2,
   using numext::abs2;
   return ReturnType(abs2(x.value()), x.derivatives() * (Scalar(2)*x.value()));)
 
-EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY(sqrt,
+IMP_EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY(sqrt,
   using std::sqrt;
   Scalar sqrtx = sqrt(x.value());
   return ReturnType(sqrtx,x.derivatives() * (Scalar(0.5) / sqrtx));)
 
-EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY(cos,
+IMP_EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY(cos,
   using std::cos;
   using std::sin;
   return ReturnType(cos(x.value()), x.derivatives() * (-sin(x.value())));)
 
-EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY(sin,
+IMP_EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY(sin,
   using std::sin;
   using std::cos;
   return ReturnType(sin(x.value()),x.derivatives() * cos(x.value()));)
 
-EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY(exp,
+IMP_EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY(exp,
   using std::exp;
   Scalar expx = exp(x.value());
   return ReturnType(expx,x.derivatives() * expx);)
 
-EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY(log,
+IMP_EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY(log,
   using std::log;
   return ReturnType(log(x.value()),x.derivatives() * (Scalar(1)/x.value()));)
 
 template<typename DerType>
-inline const Eigen::AutoDiffScalar<Eigen::CwiseUnaryOp<Eigen::internal::scalar_multiple_op<typename Eigen::internal::traits<DerType>::Scalar>, const DerType> >
-pow(const Eigen::AutoDiffScalar<DerType>& x, typename Eigen::internal::traits<DerType>::Scalar y)
+inline const IMP_Eigen::AutoDiffScalar<IMP_Eigen::CwiseUnaryOp<IMP_Eigen::internal::scalar_multiple_op<typename IMP_Eigen::internal::traits<DerType>::Scalar>, const DerType> >
+pow(const IMP_Eigen::AutoDiffScalar<DerType>& x, typename IMP_Eigen::internal::traits<DerType>::Scalar y)
 {
-  using namespace Eigen;
-  typedef typename Eigen::internal::traits<DerType>::Scalar Scalar;
-  return AutoDiffScalar<CwiseUnaryOp<Eigen::internal::scalar_multiple_op<Scalar>, const DerType> >(
+  using namespace IMP_Eigen;
+  typedef typename IMP_Eigen::internal::traits<DerType>::Scalar Scalar;
+  return AutoDiffScalar<CwiseUnaryOp<IMP_Eigen::internal::scalar_multiple_op<Scalar>, const DerType> >(
     std::pow(x.value(),y),
     x.derivatives() * (y * std::pow(x.value(),y-1)));
 }
@@ -609,22 +609,22 @@ atan2(const AutoDiffScalar<DerTypeA>& a, const AutoDiffScalar<DerTypeB>& b)
   return ret;
 }
 
-EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY(tan,
+IMP_EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY(tan,
   using std::tan;
   using std::cos;
   return ReturnType(tan(x.value()),x.derivatives() * (Scalar(1)/numext::abs2(cos(x.value()))));)
 
-EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY(asin,
+IMP_EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY(asin,
   using std::sqrt;
   using std::asin;
   return ReturnType(asin(x.value()),x.derivatives() * (Scalar(1)/sqrt(1-numext::abs2(x.value()))));)
   
-EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY(acos,
+IMP_EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY(acos,
   using std::sqrt;
   using std::acos;
   return ReturnType(acos(x.value()),x.derivatives() * (Scalar(-1)/sqrt(1-numext::abs2(x.value()))));)
 
-#undef EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY
+#undef IMP_EIGEN_AUTODIFF_DECLARE_GLOBAL_UNARY
 
 template<typename DerType> struct NumTraits<AutoDiffScalar<DerType> >
   : NumTraits< typename NumTraits<typename DerType::Scalar>::Real >
@@ -639,4 +639,4 @@ template<typename DerType> struct NumTraits<AutoDiffScalar<DerType> >
 
 }
 
-#endif // EIGEN_AUTODIFF_SCALAR_H
+#endif // IMP_EIGEN_AUTODIFF_SCALAR_H

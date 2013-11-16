@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPARSE_BLOCK_H
-#define EIGEN_SPARSE_BLOCK_H
+#ifndef IMP_EIGEN_SPARSE_BLOCK_H
+#define IMP_EIGEN_SPARSE_BLOCK_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 template<typename XprType, int BlockRows, int BlockCols>
 class BlockImpl<XprType,BlockRows,BlockCols,true,Sparse>
@@ -23,7 +23,7 @@ public:
 protected:
     enum { OuterSize = IsRowMajor ? BlockRows : BlockCols };
 public:
-    EIGEN_SPARSE_PUBLIC_INTERFACE(BlockType)
+    IMP_EIGEN_SPARSE_PUBLIC_INTERFACE(BlockType)
     
     class InnerIterator: public XprType::InnerIterator
     {
@@ -58,8 +58,8 @@ public:
       : m_matrix(xpr), m_outerStart(IsRowMajor ? startRow : startCol), m_outerSize(IsRowMajor ? blockRows : blockCols)
     {}
 
-    EIGEN_STRONG_INLINE Index rows() const { return IsRowMajor ? m_outerSize.value() : m_matrix.rows(); }
-    EIGEN_STRONG_INLINE Index cols() const { return IsRowMajor ? m_matrix.cols() : m_outerSize.value(); }
+    IMP_EIGEN_STRONG_INLINE Index rows() const { return IsRowMajor ? m_outerSize.value() : m_matrix.rows(); }
+    IMP_EIGEN_STRONG_INLINE Index cols() const { return IsRowMajor ? m_matrix.cols() : m_outerSize.value(); }
 
   protected:
 
@@ -82,7 +82,7 @@ class BlockImpl<SparseMatrix<_Scalar, _Options, _Index>,BlockRows,BlockCols,true
     typedef Block<SparseMatrixType, BlockRows, BlockCols, true> BlockType;
 public:
     enum { IsRowMajor = internal::traits<BlockType>::IsRowMajor };
-    EIGEN_SPARSE_PUBLIC_INTERFACE(BlockType)
+    IMP_EIGEN_SPARSE_PUBLIC_INTERFACE(BlockType)
 protected:
     enum { OuterSize = IsRowMajor ? BlockRows : BlockCols };
 public:
@@ -224,7 +224,7 @@ public:
 
     const Scalar& lastCoeff() const
     {
-      EIGEN_STATIC_ASSERT_VECTOR_ONLY(BlockImpl);
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(BlockImpl);
       eigen_assert(nonZeros()>0);
       if(m_matrix.isCompressed())
         return m_matrix.valuePtr()[m_matrix.outerIndexPtr()[m_outerStart+1]-1];
@@ -232,8 +232,8 @@ public:
         return m_matrix.valuePtr()[m_matrix.outerIndexPtr()[m_outerStart]+m_matrix.innerNonZeroPtr()[m_outerStart]-1];
     }
 
-    EIGEN_STRONG_INLINE Index rows() const { return IsRowMajor ? m_outerSize.value() : m_matrix.rows(); }
-    EIGEN_STRONG_INLINE Index cols() const { return IsRowMajor ? m_matrix.cols() : m_outerSize.value(); }
+    IMP_EIGEN_STRONG_INLINE Index rows() const { return IsRowMajor ? m_outerSize.value() : m_matrix.rows(); }
+    IMP_EIGEN_STRONG_INLINE Index cols() const { return IsRowMajor ? m_matrix.cols() : m_outerSize.value(); }
 
   protected:
 
@@ -294,7 +294,7 @@ class BlockImpl<XprType,BlockRows,BlockCols,InnerPanel,Sparse>
   typedef Block<XprType, BlockRows, BlockCols, InnerPanel> BlockType;
 public:
     enum { IsRowMajor = internal::traits<BlockType>::IsRowMajor };
-    EIGEN_SPARSE_PUBLIC_INTERFACE(BlockType)
+    IMP_EIGEN_SPARSE_PUBLIC_INTERFACE(BlockType)
 
     /** Column or Row constructor
       */
@@ -349,7 +349,7 @@ public:
       Index m_end;
     public:
 
-      EIGEN_STRONG_INLINE InnerIterator(const BlockType& block, Index outer)
+      IMP_EIGEN_STRONG_INLINE InnerIterator(const BlockType& block, Index outer)
         : Base(block.derived().nestedExpression(), outer + (IsRowMajor ? block.m_startRow.value() : block.m_startCol.value())),
           m_block(block),
           m_end(IsRowMajor ? block.m_startCol.value()+block.m_blockCols.value() : block.m_startRow.value()+block.m_blockRows.value())
@@ -372,7 +372,7 @@ public:
       Index m_begin;
     public:
 
-      EIGEN_STRONG_INLINE ReverseInnerIterator(const BlockType& block, Index outer)
+      IMP_EIGEN_STRONG_INLINE ReverseInnerIterator(const BlockType& block, Index outer)
         : Base(block.derived().nestedExpression(), outer + (IsRowMajor ? block.m_startRow.value() : block.m_startCol.value())),
           m_block(block),
           m_begin(IsRowMajor ? block.m_startCol.value() : block.m_startRow.value())
@@ -400,6 +400,6 @@ public:
 
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SPARSE_BLOCK_H
+#endif // IMP_EIGEN_SPARSE_BLOCK_H

@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPARSETRANSPOSE_H
-#define EIGEN_SPARSETRANSPOSE_H
+#ifndef IMP_EIGEN_SPARSETRANSPOSE_H
+#define IMP_EIGEN_SPARSETRANSPOSE_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 template<typename MatrixType> class TransposeImpl<MatrixType,Sparse>
   : public SparseMatrixBase<Transpose<MatrixType> >
@@ -18,7 +18,7 @@ template<typename MatrixType> class TransposeImpl<MatrixType,Sparse>
     typedef typename internal::remove_all<typename MatrixType::Nested>::type _MatrixTypeNested;
   public:
 
-    EIGEN_SPARSE_PUBLIC_INTERFACE(Transpose<MatrixType> )
+    IMP_EIGEN_SPARSE_PUBLIC_INTERFACE(Transpose<MatrixType> )
 
     class InnerIterator;
     class ReverseInnerIterator;
@@ -37,7 +37,7 @@ template<typename MatrixType> class TransposeImpl<MatrixType,Sparse>::InnerItera
     typedef typename TransposeImpl::Index Index;
   public:
 
-    EIGEN_STRONG_INLINE InnerIterator(const TransposeImpl& trans, typename TransposeImpl<MatrixType,Sparse>::Index outer)
+    IMP_EIGEN_STRONG_INLINE InnerIterator(const TransposeImpl& trans, typename TransposeImpl<MatrixType,Sparse>::Index outer)
       : Base(trans.derived().nestedExpression(), outer)
     {}
     Index row() const { return Base::col(); }
@@ -51,13 +51,13 @@ template<typename MatrixType> class TransposeImpl<MatrixType,Sparse>::ReverseInn
     typedef typename TransposeImpl::Index Index;
   public:
 
-    EIGEN_STRONG_INLINE ReverseInnerIterator(const TransposeImpl& xpr, typename TransposeImpl<MatrixType,Sparse>::Index outer)
+    IMP_EIGEN_STRONG_INLINE ReverseInnerIterator(const TransposeImpl& xpr, typename TransposeImpl<MatrixType,Sparse>::Index outer)
       : Base(xpr.derived().nestedExpression(), outer)
     {}
     Index row() const { return Base::col(); }
     Index col() const { return Base::row(); }
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SPARSETRANSPOSE_H
+#endif // IMP_EIGEN_SPARSETRANSPOSE_H

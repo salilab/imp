@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_HOUSEHOLDER_H
-#define EIGEN_HOUSEHOLDER_H
+#ifndef IMP_EIGEN_HOUSEHOLDER_H
+#define IMP_EIGEN_HOUSEHOLDER_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 template<int n> struct decrement_size
@@ -70,7 +70,7 @@ void MatrixBase<Derived>::makeHouseholder(
   using std::sqrt;
   using numext::conj;
   
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(EssentialPart)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(EssentialPart)
   VectorBlock<const Derived, EssentialPart::SizeAtCompileTime> tail(derived(), 1, size()-1);
   
   RealScalar tailSqNorm = size()==1 ? RealScalar(0) : tail.squaredNorm();
@@ -166,6 +166,6 @@ void MatrixBase<Derived>::applyHouseholderOnTheRight(
   }
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_HOUSEHOLDER_H
+#endif // IMP_EIGEN_HOUSEHOLDER_H

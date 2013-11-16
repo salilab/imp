@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_MATRIX_SQUARE_ROOT
-#define EIGEN_MATRIX_SQUARE_ROOT
+#ifndef IMP_EIGEN_MATRIX_SQUARE_ROOT
+#define IMP_EIGEN_MATRIX_SQUARE_ROOT
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \ingroup MatrixFunctions_Module
   * \brief Class for computing matrix square roots of upper quasi-triangular matrices.
@@ -208,8 +208,8 @@ void MatrixSquareRootQuasiTriangular<MatrixType>
      ::solveAuxiliaryEquation(SmallMatrixType& X, const SmallMatrixType& A,
 			      const SmallMatrixType& B, const SmallMatrixType& C)
 {
-  EIGEN_STATIC_ASSERT((internal::is_same<SmallMatrixType, Matrix<Scalar,2,2> >::value),
-		      EIGEN_INTERNAL_ERROR_PLEASE_FILE_A_BUG_REPORT);
+  IMP_EIGEN_STATIC_ASSERT((internal::is_same<SmallMatrixType, Matrix<Scalar,2,2> >::value),
+		      IMP_EIGEN_INTERNAL_ERROR_PLEASE_FILE_A_BUG_REPORT);
 
   Matrix<Scalar,4,4> coeffMatrix = Matrix<Scalar,4,4>::Zero();
   coeffMatrix.coeffRef(0,0) = A.coeff(0,0) + B.coeff(0,0);
@@ -461,6 +461,6 @@ const MatrixSquareRootReturnValue<Derived> MatrixBase<Derived>::sqrt() const
   return MatrixSquareRootReturnValue<Derived>(derived());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_MATRIX_FUNCTION
+#endif // IMP_EIGEN_MATRIX_FUNCTION

@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_META_H
-#define EIGEN_META_H
+#ifndef IMP_EIGEN_META_H
+#define IMP_EIGEN_META_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 namespace internal {
 
@@ -238,6 +238,6 @@ template<typename T, int S> struct is_diagonal<DiagonalMatrix<T,S> >
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_META_H
+#endif // IMP_EIGEN_META_H

@@ -10,7 +10,7 @@
 
 // no include guard, we'll include this twice from All.h from Eigen2Support, and it's internal anyway
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \geometry_module \ingroup Geometry_Module
   *
@@ -29,7 +29,7 @@ template <typename _Scalar, int _AmbientDim>
 class ParametrizedLine
 {
 public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_AmbientDim)
+  IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_AmbientDim)
   enum { AmbientDimAtCompileTime = _AmbientDim };
   typedef _Scalar Scalar;
   typedef typename NumTraits<Scalar>::Real RealScalar;
@@ -124,7 +124,7 @@ protected:
 template <typename _Scalar, int _AmbientDim>
 inline ParametrizedLine<_Scalar, _AmbientDim>::ParametrizedLine(const Hyperplane<_Scalar, _AmbientDim>& hyperplane)
 {
-  EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(VectorType, 2)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(VectorType, 2)
   direction() = hyperplane.normal().unitOrthogonal();
   origin() = -hyperplane.normal()*hyperplane.offset();
 }
@@ -138,4 +138,4 @@ inline _Scalar ParametrizedLine<_Scalar, _AmbientDim>::intersection(const Hyperp
           /(direction().eigen2_dot(hyperplane.normal()));
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen

@@ -30,10 +30,10 @@
  ********************************************************************************
 */
 
-#ifndef EIGEN_GENERAL_MATRIX_VECTOR_MKL_H
-#define EIGEN_GENERAL_MATRIX_VECTOR_MKL_H
+#ifndef IMP_EIGEN_GENERAL_MATRIX_VECTOR_MKL_H
+#define IMP_EIGEN_GENERAL_MATRIX_VECTOR_MKL_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -50,7 +50,7 @@ template<typename Index, typename LhsScalar, int LhsStorageOrder, bool Conjugate
 struct general_matrix_vector_product_gemv :
   general_matrix_vector_product<Index,LhsScalar,LhsStorageOrder,ConjugateLhs,RhsScalar,ConjugateRhs,BuiltIn> {};
 
-#define EIGEN_MKL_GEMV_SPECIALIZE(Scalar) \
+#define IMP_EIGEN_MKL_GEMV_SPECIALIZE(Scalar) \
 template<typename Index, bool ConjugateLhs, bool ConjugateRhs> \
 struct general_matrix_vector_product<Index,Scalar,ColMajor,ConjugateLhs,Scalar,ConjugateRhs,Specialized> { \
 static void run( \
@@ -81,12 +81,12 @@ static void run( \
 } \
 }; \
 
-EIGEN_MKL_GEMV_SPECIALIZE(double)
-EIGEN_MKL_GEMV_SPECIALIZE(float)
-EIGEN_MKL_GEMV_SPECIALIZE(dcomplex)
-EIGEN_MKL_GEMV_SPECIALIZE(scomplex)
+IMP_EIGEN_MKL_GEMV_SPECIALIZE(double)
+IMP_EIGEN_MKL_GEMV_SPECIALIZE(float)
+IMP_EIGEN_MKL_GEMV_SPECIALIZE(dcomplex)
+IMP_EIGEN_MKL_GEMV_SPECIALIZE(scomplex)
 
-#define EIGEN_MKL_GEMV_SPECIALIZATION(EIGTYPE,MKLTYPE,MKLPREFIX) \
+#define IMP_EIGEN_MKL_GEMV_SPECIALIZATION(EIGTYPE,MKLTYPE,MKLPREFIX) \
 template<typename Index, int LhsStorageOrder, bool ConjugateLhs, bool ConjugateRhs> \
 struct general_matrix_vector_product_gemv<Index,EIGTYPE,LhsStorageOrder,ConjugateLhs,EIGTYPE,ConjugateRhs> \
 { \
@@ -119,13 +119,13 @@ static void run( \
 }\
 };
 
-EIGEN_MKL_GEMV_SPECIALIZATION(double,   double,        d)
-EIGEN_MKL_GEMV_SPECIALIZATION(float,    float,         s)
-EIGEN_MKL_GEMV_SPECIALIZATION(dcomplex, MKL_Complex16, z)
-EIGEN_MKL_GEMV_SPECIALIZATION(scomplex, MKL_Complex8,  c)
+IMP_EIGEN_MKL_GEMV_SPECIALIZATION(double,   double,        d)
+IMP_EIGEN_MKL_GEMV_SPECIALIZATION(float,    float,         s)
+IMP_EIGEN_MKL_GEMV_SPECIALIZATION(dcomplex, MKL_Complex16, z)
+IMP_EIGEN_MKL_GEMV_SPECIALIZATION(scomplex, MKL_Complex8,  c)
 
 } // end namespase internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_GENERAL_MATRIX_VECTOR_MKL_H
+#endif // IMP_EIGEN_GENERAL_MATRIX_VECTOR_MKL_H

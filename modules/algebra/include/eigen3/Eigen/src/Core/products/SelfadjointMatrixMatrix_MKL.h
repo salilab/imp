@@ -30,17 +30,17 @@
  ********************************************************************************
 */
 
-#ifndef EIGEN_SELFADJOINT_MATRIX_MATRIX_MKL_H
-#define EIGEN_SELFADJOINT_MATRIX_MATRIX_MKL_H
+#ifndef IMP_EIGEN_SELFADJOINT_MATRIX_MATRIX_MKL_H
+#define IMP_EIGEN_SELFADJOINT_MATRIX_MATRIX_MKL_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
 
 /* Optimized selfadjoint matrix * matrix (?SYMM/?HEMM) product */
 
-#define EIGEN_MKL_SYMM_L(EIGTYPE, MKLTYPE, EIGPREFIX, MKLPREFIX) \
+#define IMP_EIGEN_MKL_SYMM_L(EIGTYPE, MKLTYPE, EIGPREFIX, MKLPREFIX) \
 template <typename Index, \
           int LhsStorageOrder, bool ConjugateLhs, \
           int RhsStorageOrder, bool ConjugateRhs> \
@@ -92,7 +92,7 @@ struct product_selfadjoint_matrix<EIGTYPE,Index,LhsStorageOrder,true,ConjugateLh
 };
 
 
-#define EIGEN_MKL_HEMM_L(EIGTYPE, MKLTYPE, EIGPREFIX, MKLPREFIX) \
+#define IMP_EIGEN_MKL_HEMM_L(EIGTYPE, MKLTYPE, EIGPREFIX, MKLPREFIX) \
 template <typename Index, \
           int LhsStorageOrder, bool ConjugateLhs, \
           int RhsStorageOrder, bool ConjugateRhs> \
@@ -159,15 +159,15 @@ struct product_selfadjoint_matrix<EIGTYPE,Index,LhsStorageOrder,true,ConjugateLh
   } \
 };
 
-EIGEN_MKL_SYMM_L(double, double, d, d)
-EIGEN_MKL_SYMM_L(float, float, f, s)
-EIGEN_MKL_HEMM_L(dcomplex, MKL_Complex16, cd, z)
-EIGEN_MKL_HEMM_L(scomplex, MKL_Complex8, cf, c)
+IMP_EIGEN_MKL_SYMM_L(double, double, d, d)
+IMP_EIGEN_MKL_SYMM_L(float, float, f, s)
+IMP_EIGEN_MKL_HEMM_L(dcomplex, MKL_Complex16, cd, z)
+IMP_EIGEN_MKL_HEMM_L(scomplex, MKL_Complex8, cf, c)
 
 
 /* Optimized matrix * selfadjoint matrix (?SYMM/?HEMM) product */
 
-#define EIGEN_MKL_SYMM_R(EIGTYPE, MKLTYPE, EIGPREFIX, MKLPREFIX) \
+#define IMP_EIGEN_MKL_SYMM_R(EIGTYPE, MKLTYPE, EIGPREFIX, MKLPREFIX) \
 template <typename Index, \
           int LhsStorageOrder, bool ConjugateLhs, \
           int RhsStorageOrder, bool ConjugateRhs> \
@@ -218,7 +218,7 @@ struct product_selfadjoint_matrix<EIGTYPE,Index,LhsStorageOrder,false,ConjugateL
 };
 
 
-#define EIGEN_MKL_HEMM_R(EIGTYPE, MKLTYPE, EIGPREFIX, MKLPREFIX) \
+#define IMP_EIGEN_MKL_HEMM_R(EIGTYPE, MKLTYPE, EIGPREFIX, MKLPREFIX) \
 template <typename Index, \
           int LhsStorageOrder, bool ConjugateLhs, \
           int RhsStorageOrder, bool ConjugateRhs> \
@@ -283,13 +283,13 @@ struct product_selfadjoint_matrix<EIGTYPE,Index,LhsStorageOrder,false,ConjugateL
   } \
 };
 
-EIGEN_MKL_SYMM_R(double, double, d, d)
-EIGEN_MKL_SYMM_R(float, float, f, s)
-EIGEN_MKL_HEMM_R(dcomplex, MKL_Complex16, cd, z)
-EIGEN_MKL_HEMM_R(scomplex, MKL_Complex8, cf, c)
+IMP_EIGEN_MKL_SYMM_R(double, double, d, d)
+IMP_EIGEN_MKL_SYMM_R(float, float, f, s)
+IMP_EIGEN_MKL_HEMM_R(dcomplex, MKL_Complex16, cd, z)
+IMP_EIGEN_MKL_HEMM_R(scomplex, MKL_Complex8, cf, c)
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SELFADJOINT_MATRIX_MATRIX_MKL_H
+#endif // IMP_EIGEN_SELFADJOINT_MATRIX_MATRIX_MKL_H

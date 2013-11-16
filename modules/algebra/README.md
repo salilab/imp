@@ -58,6 +58,9 @@ straight forward, it is not avaible as a package for common platforms.
 In addition, ANN must be built as a shared library rather than a static
 library.
 
+# Eigen # {#Eigen}
+We ship a copy of Eigen as part of IMP as Eigen support varies quite considerably across platforms and it is header-only  and so easy to ship. Our version of Eigen has been patched to move everything to the `IMP_Eigen` namespace and preprocessor symbols to start with `IMP_EIGEN_` so that things do not conflict with system installs of eigen.
+
 # Info
 
 _Author(s)_: Daniel Russel, Keren Lasker, Ben Webb, Javier Angel Velazquez-Muriel

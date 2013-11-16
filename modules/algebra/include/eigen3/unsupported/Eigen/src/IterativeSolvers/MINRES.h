@@ -9,11 +9,11 @@
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 
-#ifndef EIGEN_MINRES_H_
-#define EIGEN_MINRES_H_
+#ifndef IMP_EIGEN_MINRES_H_
+#define IMP_EIGEN_MINRES_H_
 
 
-namespace Eigen {
+namespace IMP_Eigen {
     
     namespace internal {
         
@@ -27,7 +27,7 @@ namespace Eigen {
          * \param tol_error On input the tolerance error, on output an estimation of the relative error.
          */
         template<typename MatrixType, typename Rhs, typename Dest, typename Preconditioner>
-        EIGEN_DONT_INLINE
+        IMP_EIGEN_DONT_INLINE
         void minres(const MatrixType& mat, const Rhs& rhs, Dest& x,
                     const Preconditioner& precond, int& iters,
                     typename Dest::RealScalar& tol_error)
@@ -286,7 +286,7 @@ namespace Eigen {
         : solve_retval_base<MINRES<_MatrixType,_UpLo,_Preconditioner>, Rhs>
         {
             typedef MINRES<_MatrixType,_UpLo,_Preconditioner> Dec;
-            EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
+            IMP_EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
             
             template<typename Dest> void evalTo(Dest& dst) const
             {
@@ -296,7 +296,7 @@ namespace Eigen {
         
     } // end namespace internal
     
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_MINRES_H
+#endif // IMP_EIGEN_MINRES_H
 

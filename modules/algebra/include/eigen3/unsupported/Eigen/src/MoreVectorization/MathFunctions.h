@@ -8,19 +8,19 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_MOREVECTORIZATION_MATHFUNCTIONS_H
-#define EIGEN_MOREVECTORIZATION_MATHFUNCTIONS_H
+#ifndef IMP_EIGEN_MOREVECTORIZATION_MATHFUNCTIONS_H
+#define IMP_EIGEN_MOREVECTORIZATION_MATHFUNCTIONS_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
 /** \internal \returns the arcsin of \a a (coeff-wise) */
 template<typename Packet> inline static Packet pasin(Packet a) { return std::asin(a); }
 
-#ifdef EIGEN_VECTORIZE_SSE
+#ifdef IMP_EIGEN_VECTORIZE_SSE
 
-template<> EIGEN_DONT_INLINE Packet4f pasin(Packet4f x)
+template<> IMP_EIGEN_DONT_INLINE Packet4f pasin(Packet4f x)
 {
   _EIGEN_DECLARE_CONST_Packet4f(half, 0.5);
   _EIGEN_DECLARE_CONST_Packet4f(minus_half, -0.5);
@@ -86,10 +86,10 @@ template<> EIGEN_DONT_INLINE Packet4f pasin(Packet4f x)
   return _mm_xor_ps(z, sign_bit);
 }
 
-#endif // EIGEN_VECTORIZE_SSE
+#endif // IMP_EIGEN_VECTORIZE_SSE
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_MOREVECTORIZATION_MATHFUNCTIONS_H
+#endif // IMP_EIGEN_MOREVECTORIZATION_MATHFUNCTIONS_H

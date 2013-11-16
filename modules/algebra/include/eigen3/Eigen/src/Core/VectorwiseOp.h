@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_PARTIAL_REDUX_H
-#define EIGEN_PARTIAL_REDUX_H
+#ifndef IMP_EIGEN_PARTIAL_REDUX_H
+#define IMP_EIGEN_PARTIAL_REDUX_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \class PartialReduxExpr
   * \ingroup Core_Module
@@ -52,7 +52,7 @@ struct traits<PartialReduxExpr<MatrixType, MemberOp, Direction> >
     Flags = (Flags0 & ~RowMajorBit) | (RowsAtCompileTime == 1 ? RowMajorBit : 0),
     TraversalSize = Direction==Vertical ? RowsAtCompileTime : ColsAtCompileTime
   };
-  #if EIGEN_GNUC_AT_LEAST(3,4)
+  #if IMP_EIGEN_GNUC_AT_LEAST(3,4)
   typedef typename MemberOp::template Cost<InputScalar,int(TraversalSize)> CostOpType;
   #else
   typedef typename MemberOp::template Cost<InputScalar,TraversalSize> CostOpType;
@@ -70,7 +70,7 @@ class PartialReduxExpr : internal::no_assignment_operator,
   public:
 
     typedef typename internal::dense_xpr_base<PartialReduxExpr>::type Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(PartialReduxExpr)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(PartialReduxExpr)
     typedef typename internal::traits<PartialReduxExpr>::MatrixTypeNested MatrixTypeNested;
     typedef typename internal::traits<PartialReduxExpr>::_MatrixTypeNested _MatrixTypeNested;
 
@@ -80,7 +80,7 @@ class PartialReduxExpr : internal::no_assignment_operator,
     Index rows() const { return (Direction==Vertical   ? 1 : m_matrix.rows()); }
     Index cols() const { return (Direction==Horizontal ? 1 : m_matrix.cols()); }
 
-    EIGEN_STRONG_INLINE const Scalar coeff(Index i, Index j) const
+    IMP_EIGEN_STRONG_INLINE const Scalar coeff(Index i, Index j) const
     {
       if (Direction==Vertical)
         return m_functor(m_matrix.col(j));
@@ -101,33 +101,33 @@ class PartialReduxExpr : internal::no_assignment_operator,
     const MemberOp m_functor;
 };
 
-#define EIGEN_MEMBER_FUNCTOR(MEMBER,COST)                               \
+#define IMP_EIGEN_MEMBER_FUNCTOR(MEMBER,COST)                               \
   template <typename ResultType>                                        \
   struct member_##MEMBER {                                              \
-    EIGEN_EMPTY_STRUCT_CTOR(member_##MEMBER)                            \
+    IMP_EIGEN_EMPTY_STRUCT_CTOR(member_##MEMBER)                            \
     typedef ResultType result_type;                                     \
     template<typename Scalar, int Size> struct Cost                     \
     { enum { value = COST }; };                                         \
     template<typename XprType>                                          \
-    EIGEN_STRONG_INLINE ResultType operator()(const XprType& mat) const \
+    IMP_EIGEN_STRONG_INLINE ResultType operator()(const XprType& mat) const \
     { return mat.MEMBER(); } \
   }
 
 namespace internal {
 
-EIGEN_MEMBER_FUNCTOR(squaredNorm, Size * NumTraits<Scalar>::MulCost + (Size-1)*NumTraits<Scalar>::AddCost);
-EIGEN_MEMBER_FUNCTOR(norm, (Size+5) * NumTraits<Scalar>::MulCost + (Size-1)*NumTraits<Scalar>::AddCost);
-EIGEN_MEMBER_FUNCTOR(stableNorm, (Size+5) * NumTraits<Scalar>::MulCost + (Size-1)*NumTraits<Scalar>::AddCost);
-EIGEN_MEMBER_FUNCTOR(blueNorm, (Size+5) * NumTraits<Scalar>::MulCost + (Size-1)*NumTraits<Scalar>::AddCost);
-EIGEN_MEMBER_FUNCTOR(hypotNorm, (Size-1) * functor_traits<scalar_hypot_op<Scalar> >::Cost );
-EIGEN_MEMBER_FUNCTOR(sum, (Size-1)*NumTraits<Scalar>::AddCost);
-EIGEN_MEMBER_FUNCTOR(mean, (Size-1)*NumTraits<Scalar>::AddCost + NumTraits<Scalar>::MulCost);
-EIGEN_MEMBER_FUNCTOR(minCoeff, (Size-1)*NumTraits<Scalar>::AddCost);
-EIGEN_MEMBER_FUNCTOR(maxCoeff, (Size-1)*NumTraits<Scalar>::AddCost);
-EIGEN_MEMBER_FUNCTOR(all, (Size-1)*NumTraits<Scalar>::AddCost);
-EIGEN_MEMBER_FUNCTOR(any, (Size-1)*NumTraits<Scalar>::AddCost);
-EIGEN_MEMBER_FUNCTOR(count, (Size-1)*NumTraits<Scalar>::AddCost);
-EIGEN_MEMBER_FUNCTOR(prod, (Size-1)*NumTraits<Scalar>::MulCost);
+IMP_EIGEN_MEMBER_FUNCTOR(squaredNorm, Size * NumTraits<Scalar>::MulCost + (Size-1)*NumTraits<Scalar>::AddCost);
+IMP_EIGEN_MEMBER_FUNCTOR(norm, (Size+5) * NumTraits<Scalar>::MulCost + (Size-1)*NumTraits<Scalar>::AddCost);
+IMP_EIGEN_MEMBER_FUNCTOR(stableNorm, (Size+5) * NumTraits<Scalar>::MulCost + (Size-1)*NumTraits<Scalar>::AddCost);
+IMP_EIGEN_MEMBER_FUNCTOR(blueNorm, (Size+5) * NumTraits<Scalar>::MulCost + (Size-1)*NumTraits<Scalar>::AddCost);
+IMP_EIGEN_MEMBER_FUNCTOR(hypotNorm, (Size-1) * functor_traits<scalar_hypot_op<Scalar> >::Cost );
+IMP_EIGEN_MEMBER_FUNCTOR(sum, (Size-1)*NumTraits<Scalar>::AddCost);
+IMP_EIGEN_MEMBER_FUNCTOR(mean, (Size-1)*NumTraits<Scalar>::AddCost + NumTraits<Scalar>::MulCost);
+IMP_EIGEN_MEMBER_FUNCTOR(minCoeff, (Size-1)*NumTraits<Scalar>::AddCost);
+IMP_EIGEN_MEMBER_FUNCTOR(maxCoeff, (Size-1)*NumTraits<Scalar>::AddCost);
+IMP_EIGEN_MEMBER_FUNCTOR(all, (Size-1)*NumTraits<Scalar>::AddCost);
+IMP_EIGEN_MEMBER_FUNCTOR(any, (Size-1)*NumTraits<Scalar>::AddCost);
+IMP_EIGEN_MEMBER_FUNCTOR(count, (Size-1)*NumTraits<Scalar>::AddCost);
+IMP_EIGEN_MEMBER_FUNCTOR(prod, (Size-1)*NumTraits<Scalar>::MulCost);
 
 
 template <typename BinaryOp, typename Scalar>
@@ -224,9 +224,9 @@ template<typename ExpressionType, int Direction> class VectorwiseOp
     typename ExtendedType<OtherDerived>::Type
     extendedTo(const DenseBase<OtherDerived>& other) const
     {
-      EIGEN_STATIC_ASSERT(EIGEN_IMPLIES(Direction==Vertical, OtherDerived::MaxColsAtCompileTime==1),
+      IMP_EIGEN_STATIC_ASSERT(IMP_EIGEN_IMPLIES(Direction==Vertical, OtherDerived::MaxColsAtCompileTime==1),
                           YOU_PASSED_A_ROW_VECTOR_BUT_A_COLUMN_VECTOR_WAS_EXPECTED)
-      EIGEN_STATIC_ASSERT(EIGEN_IMPLIES(Direction==Horizontal, OtherDerived::MaxRowsAtCompileTime==1),
+      IMP_EIGEN_STATIC_ASSERT(IMP_EIGEN_IMPLIES(Direction==Horizontal, OtherDerived::MaxRowsAtCompileTime==1),
                           YOU_PASSED_A_COLUMN_VECTOR_BUT_A_ROW_VECTOR_WAS_EXPECTED)
       return typename ExtendedType<OtherDerived>::Type
                       (other.derived(),
@@ -246,9 +246,9 @@ template<typename ExpressionType, int Direction> class VectorwiseOp
     typename OppositeExtendedType<OtherDerived>::Type
     extendedToOpposite(const DenseBase<OtherDerived>& other) const
     {
-      EIGEN_STATIC_ASSERT(EIGEN_IMPLIES(Direction==Horizontal, OtherDerived::MaxColsAtCompileTime==1),
+      IMP_EIGEN_STATIC_ASSERT(IMP_EIGEN_IMPLIES(Direction==Horizontal, OtherDerived::MaxColsAtCompileTime==1),
                           YOU_PASSED_A_ROW_VECTOR_BUT_A_COLUMN_VECTOR_WAS_EXPECTED)
-      EIGEN_STATIC_ASSERT(EIGEN_IMPLIES(Direction==Vertical, OtherDerived::MaxRowsAtCompileTime==1),
+      IMP_EIGEN_STATIC_ASSERT(IMP_EIGEN_IMPLIES(Direction==Vertical, OtherDerived::MaxRowsAtCompileTime==1),
                           YOU_PASSED_A_COLUMN_VECTOR_BUT_A_ROW_VECTOR_WAS_EXPECTED)
       return typename OppositeExtendedType<OtherDerived>::Type
                       (other.derived(),
@@ -433,8 +433,8 @@ template<typename ExpressionType, int Direction> class VectorwiseOp
     template<typename OtherDerived>
     ExpressionType& operator=(const DenseBase<OtherDerived>& other)
     {
-      EIGEN_STATIC_ASSERT_VECTOR_ONLY(OtherDerived)
-      EIGEN_STATIC_ASSERT_SAME_XPR_KIND(ExpressionType, OtherDerived)
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(OtherDerived)
+      IMP_EIGEN_STATIC_ASSERT_SAME_XPR_KIND(ExpressionType, OtherDerived)
       //eigen_assert((m_matrix.isNull()) == (other.isNull())); FIXME
       return const_cast<ExpressionType&>(m_matrix = extendedTo(other.derived()));
     }
@@ -443,8 +443,8 @@ template<typename ExpressionType, int Direction> class VectorwiseOp
     template<typename OtherDerived>
     ExpressionType& operator+=(const DenseBase<OtherDerived>& other)
     {
-      EIGEN_STATIC_ASSERT_VECTOR_ONLY(OtherDerived)
-      EIGEN_STATIC_ASSERT_SAME_XPR_KIND(ExpressionType, OtherDerived)
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(OtherDerived)
+      IMP_EIGEN_STATIC_ASSERT_SAME_XPR_KIND(ExpressionType, OtherDerived)
       return const_cast<ExpressionType&>(m_matrix += extendedTo(other.derived()));
     }
 
@@ -452,8 +452,8 @@ template<typename ExpressionType, int Direction> class VectorwiseOp
     template<typename OtherDerived>
     ExpressionType& operator-=(const DenseBase<OtherDerived>& other)
     {
-      EIGEN_STATIC_ASSERT_VECTOR_ONLY(OtherDerived)
-      EIGEN_STATIC_ASSERT_SAME_XPR_KIND(ExpressionType, OtherDerived)
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(OtherDerived)
+      IMP_EIGEN_STATIC_ASSERT_SAME_XPR_KIND(ExpressionType, OtherDerived)
       return const_cast<ExpressionType&>(m_matrix -= extendedTo(other.derived()));
     }
 
@@ -461,9 +461,9 @@ template<typename ExpressionType, int Direction> class VectorwiseOp
     template<typename OtherDerived>
     ExpressionType& operator*=(const DenseBase<OtherDerived>& other)
     {
-      EIGEN_STATIC_ASSERT_VECTOR_ONLY(OtherDerived)
-      EIGEN_STATIC_ASSERT_ARRAYXPR(ExpressionType)
-      EIGEN_STATIC_ASSERT_SAME_XPR_KIND(ExpressionType, OtherDerived)
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(OtherDerived)
+      IMP_EIGEN_STATIC_ASSERT_ARRAYXPR(ExpressionType)
+      IMP_EIGEN_STATIC_ASSERT_SAME_XPR_KIND(ExpressionType, OtherDerived)
       m_matrix *= extendedTo(other.derived());
       return const_cast<ExpressionType&>(m_matrix);
     }
@@ -472,22 +472,22 @@ template<typename ExpressionType, int Direction> class VectorwiseOp
     template<typename OtherDerived>
     ExpressionType& operator/=(const DenseBase<OtherDerived>& other)
     {
-      EIGEN_STATIC_ASSERT_VECTOR_ONLY(OtherDerived)
-      EIGEN_STATIC_ASSERT_ARRAYXPR(ExpressionType)
-      EIGEN_STATIC_ASSERT_SAME_XPR_KIND(ExpressionType, OtherDerived)
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(OtherDerived)
+      IMP_EIGEN_STATIC_ASSERT_ARRAYXPR(ExpressionType)
+      IMP_EIGEN_STATIC_ASSERT_SAME_XPR_KIND(ExpressionType, OtherDerived)
       m_matrix /= extendedTo(other.derived());
       return const_cast<ExpressionType&>(m_matrix);
     }
 
     /** Returns the expression of the sum of the vector \a other to each subvector of \c *this */
-    template<typename OtherDerived> EIGEN_STRONG_INLINE
+    template<typename OtherDerived> IMP_EIGEN_STRONG_INLINE
     CwiseBinaryOp<internal::scalar_sum_op<Scalar>,
                   const ExpressionTypeNestedCleaned,
                   const typename ExtendedType<OtherDerived>::Type>
     operator+(const DenseBase<OtherDerived>& other) const
     {
-      EIGEN_STATIC_ASSERT_VECTOR_ONLY(OtherDerived)
-      EIGEN_STATIC_ASSERT_SAME_XPR_KIND(ExpressionType, OtherDerived)
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(OtherDerived)
+      IMP_EIGEN_STATIC_ASSERT_SAME_XPR_KIND(ExpressionType, OtherDerived)
       return m_matrix + extendedTo(other.derived());
     }
 
@@ -498,22 +498,22 @@ template<typename ExpressionType, int Direction> class VectorwiseOp
                   const typename ExtendedType<OtherDerived>::Type>
     operator-(const DenseBase<OtherDerived>& other) const
     {
-      EIGEN_STATIC_ASSERT_VECTOR_ONLY(OtherDerived)
-      EIGEN_STATIC_ASSERT_SAME_XPR_KIND(ExpressionType, OtherDerived)
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(OtherDerived)
+      IMP_EIGEN_STATIC_ASSERT_SAME_XPR_KIND(ExpressionType, OtherDerived)
       return m_matrix - extendedTo(other.derived());
     }
 
     /** Returns the expression where each subvector is the product of the vector \a other
       * by the corresponding subvector of \c *this */
-    template<typename OtherDerived> EIGEN_STRONG_INLINE
+    template<typename OtherDerived> IMP_EIGEN_STRONG_INLINE
     CwiseBinaryOp<internal::scalar_product_op<Scalar>,
                   const ExpressionTypeNestedCleaned,
                   const typename ExtendedType<OtherDerived>::Type>
     operator*(const DenseBase<OtherDerived>& other) const
     {
-      EIGEN_STATIC_ASSERT_VECTOR_ONLY(OtherDerived)
-      EIGEN_STATIC_ASSERT_ARRAYXPR(ExpressionType)
-      EIGEN_STATIC_ASSERT_SAME_XPR_KIND(ExpressionType, OtherDerived)
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(OtherDerived)
+      IMP_EIGEN_STATIC_ASSERT_ARRAYXPR(ExpressionType)
+      IMP_EIGEN_STATIC_ASSERT_SAME_XPR_KIND(ExpressionType, OtherDerived)
       return m_matrix * extendedTo(other.derived());
     }
 
@@ -525,9 +525,9 @@ template<typename ExpressionType, int Direction> class VectorwiseOp
                   const typename ExtendedType<OtherDerived>::Type>
     operator/(const DenseBase<OtherDerived>& other) const
     {
-      EIGEN_STATIC_ASSERT_VECTOR_ONLY(OtherDerived)
-      EIGEN_STATIC_ASSERT_ARRAYXPR(ExpressionType)
-      EIGEN_STATIC_ASSERT_SAME_XPR_KIND(ExpressionType, OtherDerived)
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(OtherDerived)
+      IMP_EIGEN_STATIC_ASSERT_ARRAYXPR(ExpressionType)
+      IMP_EIGEN_STATIC_ASSERT_SAME_XPR_KIND(ExpressionType, OtherDerived)
       return m_matrix / extendedTo(other.derived());
     }
     
@@ -550,7 +550,7 @@ template<typename ExpressionType, int Direction> class VectorwiseOp
 
 /////////// Geometry module ///////////
 
-    #if EIGEN2_SUPPORT_STAGE > STAGE20_RESOLVE_API_CONFLICTS
+    #if IMP_EIGEN2_SUPPORT_STAGE > STAGE20_RESOLVE_API_CONFLICTS
     Homogeneous<ExpressionType,Direction> homogeneous() const;
     #endif
 
@@ -636,6 +636,6 @@ DenseBase<Derived>::rowwise()
   return derived();
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_PARTIAL_REDUX_H
+#endif // IMP_EIGEN_PARTIAL_REDUX_H

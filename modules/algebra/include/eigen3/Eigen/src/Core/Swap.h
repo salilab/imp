@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SWAP_H
-#define EIGEN_SWAP_H
+#ifndef IMP_EIGEN_SWAP_H
+#define IMP_EIGEN_SWAP_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \class SwapWrapper
   * \ingroup Core_Module
@@ -30,7 +30,7 @@ template<typename ExpressionType> class SwapWrapper
   public:
 
     typedef typename internal::dense_xpr_base<SwapWrapper>::type Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(SwapWrapper)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(SwapWrapper)
     typedef typename internal::packet_traits<Scalar>::type Packet;
 
     inline SwapWrapper(ExpressionType& xpr) : m_expression(xpr) {}
@@ -121,6 +121,6 @@ template<typename ExpressionType> class SwapWrapper
     ExpressionType& m_expression;
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SWAP_H
+#endif // IMP_EIGEN_SWAP_H

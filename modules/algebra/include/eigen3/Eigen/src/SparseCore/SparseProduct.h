@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPARSEPRODUCT_H
-#define EIGEN_SPARSEPRODUCT_H
+#ifndef IMP_EIGEN_SPARSEPRODUCT_H
+#define IMP_EIGEN_SPARSEPRODUCT_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 template<typename Lhs, typename Rhs>
 struct SparseSparseProductReturnType
@@ -57,7 +57,7 @@ struct traits<SparseSparseProduct<LhsNested, RhsNested> >
     MaxRowsAtCompileTime = _LhsNested::MaxRowsAtCompileTime,
     MaxColsAtCompileTime = _RhsNested::MaxColsAtCompileTime,
 
-    InnerSize = EIGEN_SIZE_MIN_PREFER_FIXED(_LhsNested::ColsAtCompileTime, _RhsNested::RowsAtCompileTime),
+    InnerSize = IMP_EIGEN_SIZE_MIN_PREFER_FIXED(_LhsNested::ColsAtCompileTime, _RhsNested::RowsAtCompileTime),
 
     EvalToRowMajor = (RhsFlags & LhsFlags & RowMajorBit),
 
@@ -82,7 +82,7 @@ class SparseSparseProduct : internal::no_assignment_operator,
   public:
 
     typedef SparseMatrixBase<SparseSparseProduct> Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(SparseSparseProduct)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(SparseSparseProduct)
 
   private:
 
@@ -92,14 +92,14 @@ class SparseSparseProduct : internal::no_assignment_operator,
   public:
 
     template<typename Lhs, typename Rhs>
-    EIGEN_STRONG_INLINE SparseSparseProduct(const Lhs& lhs, const Rhs& rhs)
+    IMP_EIGEN_STRONG_INLINE SparseSparseProduct(const Lhs& lhs, const Rhs& rhs)
       : m_lhs(lhs), m_rhs(rhs), m_tolerance(0), m_conservative(true)
     {
       init();
     }
 
     template<typename Lhs, typename Rhs>
-    EIGEN_STRONG_INLINE SparseSparseProduct(const Lhs& lhs, const Rhs& rhs, const RealScalar& tolerance)
+    IMP_EIGEN_STRONG_INLINE SparseSparseProduct(const Lhs& lhs, const Rhs& rhs, const RealScalar& tolerance)
       : m_lhs(lhs), m_rhs(rhs), m_tolerance(tolerance), m_conservative(false)
     {
       init();
@@ -120,11 +120,11 @@ class SparseSparseProduct : internal::no_assignment_operator,
         internal::sparse_sparse_product_with_pruning_selector<_LhsNested, _RhsNested, Dest>::run(lhs(),rhs(),result,m_tolerance);
     }
 
-    EIGEN_STRONG_INLINE Index rows() const { return m_lhs.rows(); }
-    EIGEN_STRONG_INLINE Index cols() const { return m_rhs.cols(); }
+    IMP_EIGEN_STRONG_INLINE Index rows() const { return m_lhs.rows(); }
+    IMP_EIGEN_STRONG_INLINE Index cols() const { return m_rhs.cols(); }
 
-    EIGEN_STRONG_INLINE const _LhsNested& lhs() const { return m_lhs; }
-    EIGEN_STRONG_INLINE const _RhsNested& rhs() const { return m_rhs; }
+    IMP_EIGEN_STRONG_INLINE const _LhsNested& lhs() const { return m_lhs; }
+    IMP_EIGEN_STRONG_INLINE const _RhsNested& rhs() const { return m_rhs; }
 
   protected:
     void init()
@@ -136,16 +136,16 @@ class SparseSparseProduct : internal::no_assignment_operator,
                       || _RhsNested::RowsAtCompileTime==Dynamic
                       || int(_LhsNested::ColsAtCompileTime)==int(_RhsNested::RowsAtCompileTime),
         AreVectors = _LhsNested::IsVectorAtCompileTime && _RhsNested::IsVectorAtCompileTime,
-        SameSizes = EIGEN_PREDICATE_SAME_MATRIX_SIZE(_LhsNested,_RhsNested)
+        SameSizes = IMP_EIGEN_PREDICATE_SAME_MATRIX_SIZE(_LhsNested,_RhsNested)
       };
       // note to the lost user:
       //    * for a dot product use: v1.dot(v2)
       //    * for a coeff-wise product use: v1.cwise()*v2
-      EIGEN_STATIC_ASSERT(ProductIsValid || !(AreVectors && SameSizes),
+      IMP_EIGEN_STATIC_ASSERT(ProductIsValid || !(AreVectors && SameSizes),
         INVALID_VECTOR_VECTOR_PRODUCT__IF_YOU_WANTED_A_DOT_OR_COEFF_WISE_PRODUCT_YOU_MUST_USE_THE_EXPLICIT_FUNCTIONS)
-      EIGEN_STATIC_ASSERT(ProductIsValid || !(SameSizes && !AreVectors),
+      IMP_EIGEN_STATIC_ASSERT(ProductIsValid || !(SameSizes && !AreVectors),
         INVALID_MATRIX_PRODUCT__IF_YOU_WANTED_A_COEFF_WISE_PRODUCT_YOU_MUST_USE_THE_EXPLICIT_FUNCTION)
-      EIGEN_STATIC_ASSERT(ProductIsValid || SameSizes, INVALID_MATRIX_PRODUCT)
+      IMP_EIGEN_STATIC_ASSERT(ProductIsValid || SameSizes, INVALID_MATRIX_PRODUCT)
     }
 
     LhsNested m_lhs;
@@ -182,6 +182,6 @@ SparseMatrixBase<Derived>::operator*(const SparseMatrixBase<OtherDerived> &other
   return typename SparseSparseProductReturnType<Derived,OtherDerived>::Type(derived(), other.derived());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SPARSEPRODUCT_H
+#endif // IMP_EIGEN_SPARSEPRODUCT_H

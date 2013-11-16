@@ -1,5 +1,5 @@
-#ifndef EIGEN_PARDISOSUPPORT_MODULE_H
-#define EIGEN_PARDISOSUPPORT_MODULE_H
+#ifndef IMP_EIGEN_PARDISOSUPPORT_MODULE_H
+#define IMP_EIGEN_PARDISOSUPPORT_MODULE_H
 
 #include "SparseCore"
 
@@ -27,4 +27,4 @@
 
 #include "src/Core/util/ReenableStupidWarnings.h"
 
-#endif // EIGEN_PARDISOSUPPORT_MODULE_H
+#endif // IMP_EIGEN_PARDISOSUPPORT_MODULE_H

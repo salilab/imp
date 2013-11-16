@@ -8,12 +8,12 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_BLOCK_HOUSEHOLDER_H
-#define EIGEN_BLOCK_HOUSEHOLDER_H
+#ifndef IMP_EIGEN_BLOCK_HOUSEHOLDER_H
+#define IMP_EIGEN_BLOCK_HOUSEHOLDER_H
 
 // This file contains some helper function to deal with block householder reflectors
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -63,6 +63,6 @@ void apply_block_householder_on_the_left(MatrixType& mat, const VectorsType& vec
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_BLOCK_HOUSEHOLDER_H
+#endif // IMP_EIGEN_BLOCK_HOUSEHOLDER_H

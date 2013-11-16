@@ -31,16 +31,16 @@
  ********************************************************************************
 */
 
-#ifndef EIGEN_COLPIVOTINGHOUSEHOLDERQR_MKL_H
-#define EIGEN_COLPIVOTINGHOUSEHOLDERQR_MKL_H
+#ifndef IMP_EIGEN_COLPIVOTINGHOUSEHOLDERQR_MKL_H
+#define IMP_EIGEN_COLPIVOTINGHOUSEHOLDERQR_MKL_H
 
 #include "Eigen/src/Core/util/MKL_support.h"
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \internal Specialization for the data types supported by MKL */
 
-#define EIGEN_MKL_QR_COLPIV(EIGTYPE, MKLTYPE, MKLPREFIX, EIGCOLROW, MKLCOLROW) \
+#define IMP_EIGEN_MKL_QR_COLPIV(EIGTYPE, MKLTYPE, MKLPREFIX, EIGCOLROW, MKLCOLROW) \
 template<> inline \
 ColPivHouseholderQR<Matrix<EIGTYPE, Dynamic, Dynamic, EIGCOLROW, Dynamic, Dynamic> >& \
 ColPivHouseholderQR<Matrix<EIGTYPE, Dynamic, Dynamic, EIGCOLROW, Dynamic, Dynamic> >::compute( \
@@ -84,16 +84,16 @@ ColPivHouseholderQR<Matrix<EIGTYPE, Dynamic, Dynamic, EIGCOLROW, Dynamic, Dynami
   return *this; \
 }
 
-EIGEN_MKL_QR_COLPIV(double,   double,        d, ColMajor, LAPACK_COL_MAJOR)
-EIGEN_MKL_QR_COLPIV(float,    float,         s, ColMajor, LAPACK_COL_MAJOR)
-EIGEN_MKL_QR_COLPIV(dcomplex, MKL_Complex16, z, ColMajor, LAPACK_COL_MAJOR)
-EIGEN_MKL_QR_COLPIV(scomplex, MKL_Complex8,  c, ColMajor, LAPACK_COL_MAJOR)
+IMP_EIGEN_MKL_QR_COLPIV(double,   double,        d, ColMajor, LAPACK_COL_MAJOR)
+IMP_EIGEN_MKL_QR_COLPIV(float,    float,         s, ColMajor, LAPACK_COL_MAJOR)
+IMP_EIGEN_MKL_QR_COLPIV(dcomplex, MKL_Complex16, z, ColMajor, LAPACK_COL_MAJOR)
+IMP_EIGEN_MKL_QR_COLPIV(scomplex, MKL_Complex8,  c, ColMajor, LAPACK_COL_MAJOR)
 
-EIGEN_MKL_QR_COLPIV(double,   double,        d, RowMajor, LAPACK_ROW_MAJOR)
-EIGEN_MKL_QR_COLPIV(float,    float,         s, RowMajor, LAPACK_ROW_MAJOR)
-EIGEN_MKL_QR_COLPIV(dcomplex, MKL_Complex16, z, RowMajor, LAPACK_ROW_MAJOR)
-EIGEN_MKL_QR_COLPIV(scomplex, MKL_Complex8,  c, RowMajor, LAPACK_ROW_MAJOR)
+IMP_EIGEN_MKL_QR_COLPIV(double,   double,        d, RowMajor, LAPACK_ROW_MAJOR)
+IMP_EIGEN_MKL_QR_COLPIV(float,    float,         s, RowMajor, LAPACK_ROW_MAJOR)
+IMP_EIGEN_MKL_QR_COLPIV(dcomplex, MKL_Complex16, z, RowMajor, LAPACK_ROW_MAJOR)
+IMP_EIGEN_MKL_QR_COLPIV(scomplex, MKL_Complex8,  c, RowMajor, LAPACK_ROW_MAJOR)
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_COLPIVOTINGHOUSEHOLDERQR_MKL_H
+#endif // IMP_EIGEN_COLPIVOTINGHOUSEHOLDERQR_MKL_H

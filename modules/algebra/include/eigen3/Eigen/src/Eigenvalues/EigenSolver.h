@@ -8,12 +8,12 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_EIGENSOLVER_H
-#define EIGEN_EIGENSOLVER_H
+#ifndef IMP_EIGEN_EIGENSOLVER_H
+#define IMP_EIGEN_EIGENSOLVER_H
 
 #include "./RealSchur.h"
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \eigenvalues_module \ingroup Eigenvalues_Module
   *
@@ -593,6 +593,6 @@ void EigenSolver<MatrixType>::doComputeEigenvectors()
   }
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_EIGENSOLVER_H
+#endif // IMP_EIGEN_EIGENSOLVER_H

@@ -31,18 +31,18 @@
  ********************************************************************************
 */
 
-#ifndef EIGEN_QR_MKL_H
-#define EIGEN_QR_MKL_H
+#ifndef IMP_EIGEN_QR_MKL_H
+#define IMP_EIGEN_QR_MKL_H
 
 #include "Eigen/src/Core/util/MKL_support.h"
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
 /** \internal Specialization for the data types supported by MKL */
 
-#define EIGEN_MKL_QR_NOPIV(EIGTYPE, MKLTYPE, MKLPREFIX) \
+#define IMP_EIGEN_MKL_QR_NOPIV(EIGTYPE, MKLTYPE, MKLPREFIX) \
 template<typename MatrixQR, typename HCoeffs> \
 void householder_qr_inplace_blocked(MatrixQR& mat, HCoeffs& hCoeffs, \
                                        typename MatrixQR::Index maxBlockSize=32, \
@@ -57,13 +57,13 @@ void householder_qr_inplace_blocked(MatrixQR& mat, HCoeffs& hCoeffs, \
 \
 }
 
-EIGEN_MKL_QR_NOPIV(double, double, d)
-EIGEN_MKL_QR_NOPIV(float, float, s)
-EIGEN_MKL_QR_NOPIV(dcomplex, MKL_Complex16, z)
-EIGEN_MKL_QR_NOPIV(scomplex, MKL_Complex8, c)
+IMP_EIGEN_MKL_QR_NOPIV(double, double, d)
+IMP_EIGEN_MKL_QR_NOPIV(float, float, s)
+IMP_EIGEN_MKL_QR_NOPIV(dcomplex, MKL_Complex16, z)
+IMP_EIGEN_MKL_QR_NOPIV(scomplex, MKL_Complex8, c)
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_QR_MKL_H
+#endif // IMP_EIGEN_QR_MKL_H

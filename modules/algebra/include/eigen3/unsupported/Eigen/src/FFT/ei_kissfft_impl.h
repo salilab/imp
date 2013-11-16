@@ -7,7 +7,7 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -282,19 +282,19 @@ struct kissfft_impl
   inline
     void fwd2( Complex * dst,const Complex *src,int n0,int n1)
     {
-        EIGEN_UNUSED_VARIABLE(dst);
-        EIGEN_UNUSED_VARIABLE(src);
-        EIGEN_UNUSED_VARIABLE(n0);
-        EIGEN_UNUSED_VARIABLE(n1);
+        IMP_EIGEN_UNUSED_VARIABLE(dst);
+        IMP_EIGEN_UNUSED_VARIABLE(src);
+        IMP_EIGEN_UNUSED_VARIABLE(n0);
+        IMP_EIGEN_UNUSED_VARIABLE(n1);
     }
 
   inline
     void inv2( Complex * dst,const Complex *src,int n0,int n1)
     {
-        EIGEN_UNUSED_VARIABLE(dst);
-        EIGEN_UNUSED_VARIABLE(src);
-        EIGEN_UNUSED_VARIABLE(n0);
-        EIGEN_UNUSED_VARIABLE(n1);
+        IMP_EIGEN_UNUSED_VARIABLE(dst);
+        IMP_EIGEN_UNUSED_VARIABLE(src);
+        IMP_EIGEN_UNUSED_VARIABLE(n0);
+        IMP_EIGEN_UNUSED_VARIABLE(n1);
     }
 
   // real-to-complex forward FFT
@@ -415,6 +415,6 @@ struct kissfft_impl
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
 /* vim: set filetype=cpp et sw=2 ts=2 ai: */

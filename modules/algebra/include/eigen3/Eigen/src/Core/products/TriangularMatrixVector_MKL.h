@@ -30,10 +30,10 @@
  ********************************************************************************
 */
 
-#ifndef EIGEN_TRIANGULAR_MATRIX_VECTOR_MKL_H
-#define EIGEN_TRIANGULAR_MATRIX_VECTOR_MKL_H
+#ifndef IMP_EIGEN_TRIANGULAR_MATRIX_VECTOR_MKL_H
+#define IMP_EIGEN_TRIANGULAR_MATRIX_VECTOR_MKL_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -47,7 +47,7 @@ template<typename Index, int Mode, typename LhsScalar, bool ConjLhs, typename Rh
 struct triangular_matrix_vector_product_trmv :
   triangular_matrix_vector_product<Index,Mode,LhsScalar,ConjLhs,RhsScalar,ConjRhs,StorageOrder,BuiltIn> {};
 
-#define EIGEN_MKL_TRMV_SPECIALIZE(Scalar) \
+#define IMP_EIGEN_MKL_TRMV_SPECIALIZE(Scalar) \
 template<typename Index, int Mode, bool ConjLhs, bool ConjRhs> \
 struct triangular_matrix_vector_product<Index,Mode,Scalar,ConjLhs,Scalar,ConjRhs,ColMajor,Specialized> { \
  static void run(Index _rows, Index _cols, const Scalar* _lhs, Index lhsStride, \
@@ -65,13 +65,13 @@ struct triangular_matrix_vector_product<Index,Mode,Scalar,ConjLhs,Scalar,ConjRhs
   } \
 };
 
-EIGEN_MKL_TRMV_SPECIALIZE(double)
-EIGEN_MKL_TRMV_SPECIALIZE(float)
-EIGEN_MKL_TRMV_SPECIALIZE(dcomplex)
-EIGEN_MKL_TRMV_SPECIALIZE(scomplex)
+IMP_EIGEN_MKL_TRMV_SPECIALIZE(double)
+IMP_EIGEN_MKL_TRMV_SPECIALIZE(float)
+IMP_EIGEN_MKL_TRMV_SPECIALIZE(dcomplex)
+IMP_EIGEN_MKL_TRMV_SPECIALIZE(scomplex)
 
 // implements col-major: res += alpha * op(triangular) * vector
-#define EIGEN_MKL_TRMV_CM(EIGTYPE, MKLTYPE, EIGPREFIX, MKLPREFIX) \
+#define IMP_EIGEN_MKL_TRMV_CM(EIGTYPE, MKLTYPE, EIGPREFIX, MKLPREFIX) \
 template<typename Index, int Mode, bool ConjLhs, bool ConjRhs> \
 struct triangular_matrix_vector_product_trmv<Index,Mode,EIGTYPE,ConjLhs,EIGTYPE,ConjRhs,ColMajor> { \
   enum { \
@@ -150,13 +150,13 @@ struct triangular_matrix_vector_product_trmv<Index,Mode,EIGTYPE,ConjLhs,EIGTYPE,
   } \
 };
 
-EIGEN_MKL_TRMV_CM(double, double, d, d)
-EIGEN_MKL_TRMV_CM(dcomplex, MKL_Complex16, cd, z)
-EIGEN_MKL_TRMV_CM(float, float, f, s)
-EIGEN_MKL_TRMV_CM(scomplex, MKL_Complex8, cf, c)
+IMP_EIGEN_MKL_TRMV_CM(double, double, d, d)
+IMP_EIGEN_MKL_TRMV_CM(dcomplex, MKL_Complex16, cd, z)
+IMP_EIGEN_MKL_TRMV_CM(float, float, f, s)
+IMP_EIGEN_MKL_TRMV_CM(scomplex, MKL_Complex8, cf, c)
 
 // implements row-major: res += alpha * op(triangular) * vector
-#define EIGEN_MKL_TRMV_RM(EIGTYPE, MKLTYPE, EIGPREFIX, MKLPREFIX) \
+#define IMP_EIGEN_MKL_TRMV_RM(EIGTYPE, MKLTYPE, EIGPREFIX, MKLPREFIX) \
 template<typename Index, int Mode, bool ConjLhs, bool ConjRhs> \
 struct triangular_matrix_vector_product_trmv<Index,Mode,EIGTYPE,ConjLhs,EIGTYPE,ConjRhs,RowMajor> { \
   enum { \
@@ -235,13 +235,13 @@ struct triangular_matrix_vector_product_trmv<Index,Mode,EIGTYPE,ConjLhs,EIGTYPE,
   } \
 };
 
-EIGEN_MKL_TRMV_RM(double, double, d, d)
-EIGEN_MKL_TRMV_RM(dcomplex, MKL_Complex16, cd, z)
-EIGEN_MKL_TRMV_RM(float, float, f, s)
-EIGEN_MKL_TRMV_RM(scomplex, MKL_Complex8, cf, c)
+IMP_EIGEN_MKL_TRMV_RM(double, double, d, d)
+IMP_EIGEN_MKL_TRMV_RM(dcomplex, MKL_Complex16, cd, z)
+IMP_EIGEN_MKL_TRMV_RM(float, float, f, s)
+IMP_EIGEN_MKL_TRMV_RM(scomplex, MKL_Complex8, cf, c)
 
 } // end namespase internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_TRIANGULAR_MATRIX_VECTOR_MKL_H
+#endif // IMP_EIGEN_TRIANGULAR_MATRIX_VECTOR_MKL_H

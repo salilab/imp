@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_DIAGONALPRODUCT_H
-#define EIGEN_DIAGONALPRODUCT_H
+#ifndef IMP_EIGEN_DIAGONALPRODUCT_H
+#define IMP_EIGEN_DIAGONALPRODUCT_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 template<typename MatrixType, typename DiagonalType, int ProductOrder>
@@ -47,7 +47,7 @@ class DiagonalProduct : internal::no_assignment_operator,
   public:
 
     typedef MatrixBase<DiagonalProduct> Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(DiagonalProduct)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(DiagonalProduct)
 
     inline DiagonalProduct(const MatrixType& matrix, const DiagonalType& diagonal)
       : m_matrix(matrix), m_diagonal(diagonal)
@@ -55,15 +55,15 @@ class DiagonalProduct : internal::no_assignment_operator,
       eigen_assert(diagonal.diagonal().size() == (ProductOrder == OnTheLeft ? matrix.rows() : matrix.cols()));
     }
 
-    EIGEN_STRONG_INLINE Index rows() const { return m_matrix.rows(); }
-    EIGEN_STRONG_INLINE Index cols() const { return m_matrix.cols(); }
+    IMP_EIGEN_STRONG_INLINE Index rows() const { return m_matrix.rows(); }
+    IMP_EIGEN_STRONG_INLINE Index cols() const { return m_matrix.cols(); }
 
-    EIGEN_STRONG_INLINE const Scalar coeff(Index row, Index col) const
+    IMP_EIGEN_STRONG_INLINE const Scalar coeff(Index row, Index col) const
     {
       return m_diagonal.diagonal().coeff(ProductOrder == OnTheLeft ? row : col) * m_matrix.coeff(row, col);
     }
     
-    EIGEN_STRONG_INLINE const Scalar coeff(Index idx) const
+    IMP_EIGEN_STRONG_INLINE const Scalar coeff(Index idx) const
     {
       enum {
         StorageOrder = int(MatrixType::Flags) & RowMajorBit ? RowMajor : ColMajor
@@ -72,7 +72,7 @@ class DiagonalProduct : internal::no_assignment_operator,
     }
 
     template<int LoadMode>
-    EIGEN_STRONG_INLINE PacketScalar packet(Index row, Index col) const
+    IMP_EIGEN_STRONG_INLINE PacketScalar packet(Index row, Index col) const
     {
       enum {
         StorageOrder = Flags & RowMajorBit ? RowMajor : ColMajor
@@ -84,7 +84,7 @@ class DiagonalProduct : internal::no_assignment_operator,
     }
     
     template<int LoadMode>
-    EIGEN_STRONG_INLINE PacketScalar packet(Index idx) const
+    IMP_EIGEN_STRONG_INLINE PacketScalar packet(Index idx) const
     {
       enum {
         StorageOrder = int(MatrixType::Flags) & RowMajorBit ? RowMajor : ColMajor
@@ -94,14 +94,14 @@ class DiagonalProduct : internal::no_assignment_operator,
 
   protected:
     template<int LoadMode>
-    EIGEN_STRONG_INLINE PacketScalar packet_impl(Index row, Index col, Index id, internal::true_type) const
+    IMP_EIGEN_STRONG_INLINE PacketScalar packet_impl(Index row, Index col, Index id, internal::true_type) const
     {
       return internal::pmul(m_matrix.template packet<LoadMode>(row, col),
                      internal::pset1<PacketScalar>(m_diagonal.diagonal().coeff(id)));
     }
 
     template<int LoadMode>
-    EIGEN_STRONG_INLINE PacketScalar packet_impl(Index row, Index col, Index id, internal::false_type) const
+    IMP_EIGEN_STRONG_INLINE PacketScalar packet_impl(Index row, Index col, Index id, internal::false_type) const
     {
       enum {
         InnerSize = (MatrixType::Flags & RowMajorBit) ? MatrixType::ColsAtCompileTime : MatrixType::RowsAtCompileTime,
@@ -125,6 +125,6 @@ MatrixBase<Derived>::operator*(const DiagonalBase<DiagonalDerived> &a_diagonal) 
   return DiagonalProduct<Derived, DiagonalDerived, OnTheRight>(derived(), a_diagonal.derived());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_DIAGONALPRODUCT_H
+#endif // IMP_EIGEN_DIAGONALPRODUCT_H

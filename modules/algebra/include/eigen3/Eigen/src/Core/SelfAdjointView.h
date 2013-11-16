@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SELFADJOINTMATRIX_H
-#define EIGEN_SELFADJOINTMATRIX_H
+#ifndef IMP_EIGEN_SELFADJOINTMATRIX_H
+#define IMP_EIGEN_SELFADJOINTMATRIX_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \class SelfAdjointView
   * \ingroup Core_Module
@@ -162,7 +162,7 @@ template<typename MatrixType, unsigned int UpLo> class SelfAdjointView
     EigenvaluesReturnType eigenvalues() const;
     RealScalar operatorNorm() const;
     
-    #ifdef EIGEN2_SUPPORT
+    #ifdef IMP_EIGEN2_SUPPORT
     template<typename OtherDerived>
     SelfAdjointView& operator=(const MatrixBase<OtherDerived>& other)
     {
@@ -309,6 +309,6 @@ MatrixBase<Derived>::selfadjointView()
   return derived();
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SELFADJOINTMATRIX_H
+#endif // IMP_EIGEN_SELFADJOINTMATRIX_H

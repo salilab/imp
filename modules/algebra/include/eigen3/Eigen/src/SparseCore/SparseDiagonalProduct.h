@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPARSE_DIAGONAL_PRODUCT_H
-#define EIGEN_SPARSE_DIAGONAL_PRODUCT_H
+#ifndef IMP_EIGEN_SPARSE_DIAGONAL_PRODUCT_H
+#define IMP_EIGEN_SPARSE_DIAGONAL_PRODUCT_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 // The product of a diagonal matrix with a sparse matrix can be easily
 // implemented using expression template.
@@ -75,7 +75,7 @@ class SparseDiagonalProduct
 
   public:
 
-    EIGEN_SPARSE_PUBLIC_INTERFACE(SparseDiagonalProduct)
+    IMP_EIGEN_SPARSE_PUBLIC_INTERFACE(SparseDiagonalProduct)
 
     typedef internal::sparse_diagonal_product_inner_iterator_selector
                       <_LhsNested,_RhsNested,SparseDiagonalProduct,LhsMode,RhsMode> InnerIterator;
@@ -84,17 +84,17 @@ class SparseDiagonalProduct
     // but this dummy declaration is needed to make diag * sparse * diag compile.
     class ReverseInnerIterator;
 
-    EIGEN_STRONG_INLINE SparseDiagonalProduct(const Lhs& lhs, const Rhs& rhs)
+    IMP_EIGEN_STRONG_INLINE SparseDiagonalProduct(const Lhs& lhs, const Rhs& rhs)
       : m_lhs(lhs), m_rhs(rhs)
     {
       eigen_assert(lhs.cols() == rhs.rows() && "invalid sparse matrix * diagonal matrix product");
     }
 
-    EIGEN_STRONG_INLINE Index rows() const { return m_lhs.rows(); }
-    EIGEN_STRONG_INLINE Index cols() const { return m_rhs.cols(); }
+    IMP_EIGEN_STRONG_INLINE Index rows() const { return m_lhs.rows(); }
+    IMP_EIGEN_STRONG_INLINE Index cols() const { return m_rhs.cols(); }
 
-    EIGEN_STRONG_INLINE const _LhsNested& lhs() const { return m_lhs; }
-    EIGEN_STRONG_INLINE const _RhsNested& rhs() const { return m_rhs; }
+    IMP_EIGEN_STRONG_INLINE const _LhsNested& lhs() const { return m_lhs; }
+    IMP_EIGEN_STRONG_INLINE const _RhsNested& rhs() const { return m_rhs; }
 
   protected:
     LhsNested m_lhs;
@@ -191,6 +191,6 @@ SparseMatrixBase<Derived>::operator*(const DiagonalBase<OtherDerived> &other) co
   return SparseDiagonalProduct<Derived,OtherDerived>(this->derived(), other.derived());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SPARSE_DIAGONAL_PRODUCT_H
+#endif // IMP_EIGEN_SPARSE_DIAGONAL_PRODUCT_H

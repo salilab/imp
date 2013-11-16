@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_INVERSE_H
-#define EIGEN_INVERSE_H
+#ifndef IMP_EIGEN_INVERSE_H
+#define IMP_EIGEN_INVERSE_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -288,8 +288,8 @@ struct inverse_impl : public ReturnByValue<inverse_impl<MatrixType> >
 
   template<typename Dest> inline void evalTo(Dest& dst) const
   {
-    const int Size = EIGEN_PLAIN_ENUM_MIN(MatrixType::ColsAtCompileTime,Dest::ColsAtCompileTime);
-    EIGEN_ONLY_USED_FOR_DEBUG(Size);
+    const int Size = IMP_EIGEN_PLAIN_ENUM_MIN(MatrixType::ColsAtCompileTime,Dest::ColsAtCompileTime);
+    IMP_EIGEN_ONLY_USED_FOR_DEBUG(Size);
     eigen_assert(( (Size<=1) || (Size>4) || (extract_data(m_matrix)!=extract_data(dst)))
               && "Aliasing problem detected in inverse(), you need to do inverse().eval() here.");
 
@@ -319,7 +319,7 @@ struct inverse_impl : public ReturnByValue<inverse_impl<MatrixType> >
 template<typename Derived>
 inline const internal::inverse_impl<Derived> MatrixBase<Derived>::inverse() const
 {
-  EIGEN_STATIC_ASSERT(!NumTraits<Scalar>::IsInteger,THIS_FUNCTION_IS_NOT_FOR_INTEGER_NUMERIC_TYPES)
+  IMP_EIGEN_STATIC_ASSERT(!NumTraits<Scalar>::IsInteger,THIS_FUNCTION_IS_NOT_FOR_INTEGER_NUMERIC_TYPES)
   eigen_assert(rows() == cols());
   return internal::inverse_impl<Derived>(derived());
 }
@@ -395,6 +395,6 @@ inline void MatrixBase<Derived>::computeInverseWithCheck(
   computeInverseAndDetWithCheck(inverse,determinant,invertible,absDeterminantThreshold);
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_INVERSE_H
+#endif // IMP_EIGEN_INVERSE_H

@@ -9,16 +9,16 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_MATRIXSTORAGE_H
-#define EIGEN_MATRIXSTORAGE_H
+#ifndef IMP_EIGEN_MATRIXSTORAGE_H
+#define IMP_EIGEN_MATRIXSTORAGE_H
 
-#ifdef EIGEN_DENSE_STORAGE_CTOR_PLUGIN
-  #define EIGEN_INTERNAL_DENSE_STORAGE_CTOR_PLUGIN EIGEN_DENSE_STORAGE_CTOR_PLUGIN;
+#ifdef IMP_EIGEN_DENSE_STORAGE_CTOR_PLUGIN
+  #define IMP_EIGEN_INTERNAL_DENSE_STORAGE_CTOR_PLUGIN IMP_EIGEN_DENSE_STORAGE_CTOR_PLUGIN;
 #else
-  #define EIGEN_INTERNAL_DENSE_STORAGE_CTOR_PLUGIN
+  #define IMP_EIGEN_INTERNAL_DENSE_STORAGE_CTOR_PLUGIN
 #endif
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 namespace internal {
 
@@ -38,30 +38,30 @@ struct plain_array
 
   plain_array() 
   { 
-    EIGEN_STATIC_ASSERT(Size * sizeof(T) <= 128 * 128 * 8, OBJECT_ALLOCATED_ON_STACK_IS_TOO_BIG);
+    IMP_EIGEN_STATIC_ASSERT(Size * sizeof(T) <= 128 * 128 * 8, OBJECT_ALLOCATED_ON_STACK_IS_TOO_BIG);
   }
 
   plain_array(constructor_without_unaligned_array_assert) 
   { 
-    EIGEN_STATIC_ASSERT(Size * sizeof(T) <= 128 * 128 * 8, OBJECT_ALLOCATED_ON_STACK_IS_TOO_BIG);
+    IMP_EIGEN_STATIC_ASSERT(Size * sizeof(T) <= 128 * 128 * 8, OBJECT_ALLOCATED_ON_STACK_IS_TOO_BIG);
   }
 };
 
-#if defined(EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT)
-  #define EIGEN_MAKE_UNALIGNED_ARRAY_ASSERT(sizemask)
-#elif EIGEN_GNUC_AT_LEAST(4,7) 
+#if defined(IMP_EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT)
+  #define IMP_EIGEN_MAKE_UNALIGNED_ARRAY_ASSERT(sizemask)
+#elif IMP_EIGEN_GNUC_AT_LEAST(4,7) 
   // GCC 4.7 is too aggressive in its optimizations and remove the alignement test based on the fact the array is declared to be aligned.
   // See this bug report: http://gcc.gnu.org/bugzilla/show_bug.cgi?id=53900
   // Hiding the origin of the array pointer behind a function argument seems to do the trick even if the function is inlined:
   template<typename PtrType>
-  EIGEN_ALWAYS_INLINE PtrType eigen_unaligned_array_assert_workaround_gcc47(PtrType array) { return array; }
-  #define EIGEN_MAKE_UNALIGNED_ARRAY_ASSERT(sizemask) \
+  IMP_EIGEN_ALWAYS_INLINE PtrType eigen_unaligned_array_assert_workaround_gcc47(PtrType array) { return array; }
+  #define IMP_EIGEN_MAKE_UNALIGNED_ARRAY_ASSERT(sizemask) \
     eigen_assert((reinterpret_cast<size_t>(eigen_unaligned_array_assert_workaround_gcc47(array)) & sizemask) == 0 \
               && "this assertion is explained here: " \
               "http://eigen.tuxfamily.org/dox-devel/group__TopicUnalignedArrayAssert.html" \
               " **** READ THIS WEB PAGE !!! ****");
 #else
-  #define EIGEN_MAKE_UNALIGNED_ARRAY_ASSERT(sizemask) \
+  #define IMP_EIGEN_MAKE_UNALIGNED_ARRAY_ASSERT(sizemask) \
     eigen_assert((reinterpret_cast<size_t>(array) & sizemask) == 0 \
               && "this assertion is explained here: " \
               "http://eigen.tuxfamily.org/dox-devel/group__TopicUnalignedArrayAssert.html" \
@@ -71,24 +71,24 @@ struct plain_array
 template <typename T, int Size, int MatrixOrArrayOptions>
 struct plain_array<T, Size, MatrixOrArrayOptions, 16>
 {
-  EIGEN_USER_ALIGN16 T array[Size];
+  IMP_EIGEN_USER_ALIGN16 T array[Size];
 
   plain_array() 
   { 
-    EIGEN_MAKE_UNALIGNED_ARRAY_ASSERT(0xf);
-    EIGEN_STATIC_ASSERT(Size * sizeof(T) <= 128 * 128 * 8, OBJECT_ALLOCATED_ON_STACK_IS_TOO_BIG);
+    IMP_EIGEN_MAKE_UNALIGNED_ARRAY_ASSERT(0xf);
+    IMP_EIGEN_STATIC_ASSERT(Size * sizeof(T) <= 128 * 128 * 8, OBJECT_ALLOCATED_ON_STACK_IS_TOO_BIG);
   }
 
   plain_array(constructor_without_unaligned_array_assert) 
   { 
-    EIGEN_STATIC_ASSERT(Size * sizeof(T) <= 128 * 128 * 8, OBJECT_ALLOCATED_ON_STACK_IS_TOO_BIG);
+    IMP_EIGEN_STATIC_ASSERT(Size * sizeof(T) <= 128 * 128 * 8, OBJECT_ALLOCATED_ON_STACK_IS_TOO_BIG);
   }
 };
 
 template <typename T, int MatrixOrArrayOptions, int Alignment>
 struct plain_array<T, 0, MatrixOrArrayOptions, Alignment>
 {
-  EIGEN_USER_ALIGN16 T array[1];
+  IMP_EIGEN_USER_ALIGN16 T array[1];
   plain_array() {}
   plain_array(constructor_without_unaligned_array_assert) {}
 };
@@ -224,7 +224,7 @@ template<typename T, int _Options> class DenseStorage<T, Dynamic, Dynamic, Dynam
        : m_data(0), m_rows(0), m_cols(0) {}
     inline DenseStorage(DenseIndex size, DenseIndex nbRows, DenseIndex nbCols)
       : m_data(internal::conditional_aligned_new_auto<T,(_Options&DontAlign)==0>(size)), m_rows(nbRows), m_cols(nbCols)
-    { EIGEN_INTERNAL_DENSE_STORAGE_CTOR_PLUGIN }
+    { IMP_EIGEN_INTERNAL_DENSE_STORAGE_CTOR_PLUGIN }
     inline ~DenseStorage() { internal::conditional_aligned_delete_auto<T,(_Options&DontAlign)==0>(m_data, m_rows*m_cols); }
     inline void swap(DenseStorage& other)
     { std::swap(m_data,other.m_data); std::swap(m_rows,other.m_rows); std::swap(m_cols,other.m_cols); }
@@ -245,7 +245,7 @@ template<typename T, int _Options> class DenseStorage<T, Dynamic, Dynamic, Dynam
           m_data = internal::conditional_aligned_new_auto<T,(_Options&DontAlign)==0>(size);
         else
           m_data = 0;
-        EIGEN_INTERNAL_DENSE_STORAGE_CTOR_PLUGIN
+        IMP_EIGEN_INTERNAL_DENSE_STORAGE_CTOR_PLUGIN
       }
       m_rows = nbRows;
       m_cols = nbCols;
@@ -263,7 +263,7 @@ template<typename T, int _Rows, int _Options> class DenseStorage<T, Dynamic, _Ro
     inline DenseStorage() : m_data(0), m_cols(0) {}
     inline DenseStorage(internal::constructor_without_unaligned_array_assert) : m_data(0), m_cols(0) {}
     inline DenseStorage(DenseIndex size, DenseIndex, DenseIndex nbCols) : m_data(internal::conditional_aligned_new_auto<T,(_Options&DontAlign)==0>(size)), m_cols(nbCols)
-    { EIGEN_INTERNAL_DENSE_STORAGE_CTOR_PLUGIN }
+    { IMP_EIGEN_INTERNAL_DENSE_STORAGE_CTOR_PLUGIN }
     inline ~DenseStorage() { internal::conditional_aligned_delete_auto<T,(_Options&DontAlign)==0>(m_data, _Rows*m_cols); }
     inline void swap(DenseStorage& other) { std::swap(m_data,other.m_data); std::swap(m_cols,other.m_cols); }
     static inline DenseIndex rows(void) {return _Rows;}
@@ -273,7 +273,7 @@ template<typename T, int _Rows, int _Options> class DenseStorage<T, Dynamic, _Ro
       m_data = internal::conditional_aligned_realloc_new_auto<T,(_Options&DontAlign)==0>(m_data, size, _Rows*m_cols);
       m_cols = nbCols;
     }
-    EIGEN_STRONG_INLINE void resize(DenseIndex size, DenseIndex, DenseIndex nbCols)
+    IMP_EIGEN_STRONG_INLINE void resize(DenseIndex size, DenseIndex, DenseIndex nbCols)
     {
       if(size != _Rows*m_cols)
       {
@@ -282,7 +282,7 @@ template<typename T, int _Rows, int _Options> class DenseStorage<T, Dynamic, _Ro
           m_data = internal::conditional_aligned_new_auto<T,(_Options&DontAlign)==0>(size);
         else
           m_data = 0;
-        EIGEN_INTERNAL_DENSE_STORAGE_CTOR_PLUGIN
+        IMP_EIGEN_INTERNAL_DENSE_STORAGE_CTOR_PLUGIN
       }
       m_cols = nbCols;
     }
@@ -299,7 +299,7 @@ template<typename T, int _Cols, int _Options> class DenseStorage<T, Dynamic, Dyn
     inline DenseStorage() : m_data(0), m_rows(0) {}
     inline DenseStorage(internal::constructor_without_unaligned_array_assert) : m_data(0), m_rows(0) {}
     inline DenseStorage(DenseIndex size, DenseIndex nbRows, DenseIndex) : m_data(internal::conditional_aligned_new_auto<T,(_Options&DontAlign)==0>(size)), m_rows(nbRows)
-    { EIGEN_INTERNAL_DENSE_STORAGE_CTOR_PLUGIN }
+    { IMP_EIGEN_INTERNAL_DENSE_STORAGE_CTOR_PLUGIN }
     inline ~DenseStorage() { internal::conditional_aligned_delete_auto<T,(_Options&DontAlign)==0>(m_data, _Cols*m_rows); }
     inline void swap(DenseStorage& other) { std::swap(m_data,other.m_data); std::swap(m_rows,other.m_rows); }
     inline DenseIndex rows(void) const {return m_rows;}
@@ -309,7 +309,7 @@ template<typename T, int _Cols, int _Options> class DenseStorage<T, Dynamic, Dyn
       m_data = internal::conditional_aligned_realloc_new_auto<T,(_Options&DontAlign)==0>(m_data, size, m_rows*_Cols);
       m_rows = nbRows;
     }
-    EIGEN_STRONG_INLINE void resize(DenseIndex size, DenseIndex nbRows, DenseIndex)
+    IMP_EIGEN_STRONG_INLINE void resize(DenseIndex size, DenseIndex nbRows, DenseIndex)
     {
       if(size != m_rows*_Cols)
       {
@@ -318,7 +318,7 @@ template<typename T, int _Cols, int _Options> class DenseStorage<T, Dynamic, Dyn
           m_data = internal::conditional_aligned_new_auto<T,(_Options&DontAlign)==0>(size);
         else
           m_data = 0;
-        EIGEN_INTERNAL_DENSE_STORAGE_CTOR_PLUGIN
+        IMP_EIGEN_INTERNAL_DENSE_STORAGE_CTOR_PLUGIN
       }
       m_rows = nbRows;
     }
@@ -326,6 +326,6 @@ template<typename T, int _Cols, int _Options> class DenseStorage<T, Dynamic, Dyn
     inline T *data() { return m_data; }
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_MATRIX_H
+#endif // IMP_EIGEN_MATRIX_H

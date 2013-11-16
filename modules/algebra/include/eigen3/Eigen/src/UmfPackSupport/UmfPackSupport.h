@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_UMFPACKSUPPORT_H
-#define EIGEN_UMFPACKSUPPORT_H
+#ifndef IMP_EIGEN_UMFPACKSUPPORT_H
+#define IMP_EIGEN_UMFPACKSUPPORT_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /* TODO extract L, extract U, compute det, etc... */
 
@@ -271,7 +271,7 @@ class UmfPackLU : internal::noncopyable
       m_factorizationIsOk = true;
     }
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** \internal */
     template<typename BDerived,typename XDerived>
     bool _solve(const MatrixBase<BDerived> &b, MatrixBase<XDerived> &x) const;
@@ -404,7 +404,7 @@ struct solve_retval<UmfPackLU<_MatrixType>, Rhs>
   : solve_retval_base<UmfPackLU<_MatrixType>, Rhs>
 {
   typedef UmfPackLU<_MatrixType> Dec;
-  EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
+  IMP_EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -417,7 +417,7 @@ struct sparse_solve_retval<UmfPackLU<_MatrixType>, Rhs>
   : sparse_solve_retval_base<UmfPackLU<_MatrixType>, Rhs>
 {
   typedef UmfPackLU<_MatrixType> Dec;
-  EIGEN_MAKE_SPARSE_SOLVE_HELPERS(Dec,Rhs)
+  IMP_EIGEN_MAKE_SPARSE_SOLVE_HELPERS(Dec,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -427,6 +427,6 @@ struct sparse_solve_retval<UmfPackLU<_MatrixType>, Rhs>
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_UMFPACKSUPPORT_H
+#endif // IMP_EIGEN_UMFPACKSUPPORT_H

@@ -7,13 +7,13 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_BLASUTIL_H
-#define EIGEN_BLASUTIL_H
+#ifndef IMP_EIGEN_BLASUTIL_H
+#define IMP_EIGEN_BLASUTIL_H
 
 // This file contains many lightweight helper classes used to
 // implement and control fast level 2 and level 3 BLAS-like routines.
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 namespace internal {
 
@@ -56,64 +56,64 @@ template<> struct conj_if<false> {
 
 template<typename Scalar> struct conj_helper<Scalar,Scalar,false,false>
 {
-  EIGEN_STRONG_INLINE Scalar pmadd(const Scalar& x, const Scalar& y, const Scalar& c) const { return internal::pmadd(x,y,c); }
-  EIGEN_STRONG_INLINE Scalar pmul(const Scalar& x, const Scalar& y) const { return internal::pmul(x,y); }
+  IMP_EIGEN_STRONG_INLINE Scalar pmadd(const Scalar& x, const Scalar& y, const Scalar& c) const { return internal::pmadd(x,y,c); }
+  IMP_EIGEN_STRONG_INLINE Scalar pmul(const Scalar& x, const Scalar& y) const { return internal::pmul(x,y); }
 };
 
 template<typename RealScalar> struct conj_helper<std::complex<RealScalar>, std::complex<RealScalar>, false,true>
 {
   typedef std::complex<RealScalar> Scalar;
-  EIGEN_STRONG_INLINE Scalar pmadd(const Scalar& x, const Scalar& y, const Scalar& c) const
+  IMP_EIGEN_STRONG_INLINE Scalar pmadd(const Scalar& x, const Scalar& y, const Scalar& c) const
   { return c + pmul(x,y); }
 
-  EIGEN_STRONG_INLINE Scalar pmul(const Scalar& x, const Scalar& y) const
+  IMP_EIGEN_STRONG_INLINE Scalar pmul(const Scalar& x, const Scalar& y) const
   { return Scalar(numext::real(x)*numext::real(y) + numext::imag(x)*numext::imag(y), numext::imag(x)*numext::real(y) - numext::real(x)*numext::imag(y)); }
 };
 
 template<typename RealScalar> struct conj_helper<std::complex<RealScalar>, std::complex<RealScalar>, true,false>
 {
   typedef std::complex<RealScalar> Scalar;
-  EIGEN_STRONG_INLINE Scalar pmadd(const Scalar& x, const Scalar& y, const Scalar& c) const
+  IMP_EIGEN_STRONG_INLINE Scalar pmadd(const Scalar& x, const Scalar& y, const Scalar& c) const
   { return c + pmul(x,y); }
 
-  EIGEN_STRONG_INLINE Scalar pmul(const Scalar& x, const Scalar& y) const
+  IMP_EIGEN_STRONG_INLINE Scalar pmul(const Scalar& x, const Scalar& y) const
   { return Scalar(numext::real(x)*numext::real(y) + numext::imag(x)*numext::imag(y), numext::real(x)*numext::imag(y) - numext::imag(x)*numext::real(y)); }
 };
 
 template<typename RealScalar> struct conj_helper<std::complex<RealScalar>, std::complex<RealScalar>, true,true>
 {
   typedef std::complex<RealScalar> Scalar;
-  EIGEN_STRONG_INLINE Scalar pmadd(const Scalar& x, const Scalar& y, const Scalar& c) const
+  IMP_EIGEN_STRONG_INLINE Scalar pmadd(const Scalar& x, const Scalar& y, const Scalar& c) const
   { return c + pmul(x,y); }
 
-  EIGEN_STRONG_INLINE Scalar pmul(const Scalar& x, const Scalar& y) const
+  IMP_EIGEN_STRONG_INLINE Scalar pmul(const Scalar& x, const Scalar& y) const
   { return Scalar(numext::real(x)*numext::real(y) - numext::imag(x)*numext::imag(y), - numext::real(x)*numext::imag(y) - numext::imag(x)*numext::real(y)); }
 };
 
 template<typename RealScalar,bool Conj> struct conj_helper<std::complex<RealScalar>, RealScalar, Conj,false>
 {
   typedef std::complex<RealScalar> Scalar;
-  EIGEN_STRONG_INLINE Scalar pmadd(const Scalar& x, const RealScalar& y, const Scalar& c) const
+  IMP_EIGEN_STRONG_INLINE Scalar pmadd(const Scalar& x, const RealScalar& y, const Scalar& c) const
   { return padd(c, pmul(x,y)); }
-  EIGEN_STRONG_INLINE Scalar pmul(const Scalar& x, const RealScalar& y) const
+  IMP_EIGEN_STRONG_INLINE Scalar pmul(const Scalar& x, const RealScalar& y) const
   { return conj_if<Conj>()(x)*y; }
 };
 
 template<typename RealScalar,bool Conj> struct conj_helper<RealScalar, std::complex<RealScalar>, false,Conj>
 {
   typedef std::complex<RealScalar> Scalar;
-  EIGEN_STRONG_INLINE Scalar pmadd(const RealScalar& x, const Scalar& y, const Scalar& c) const
+  IMP_EIGEN_STRONG_INLINE Scalar pmadd(const RealScalar& x, const Scalar& y, const Scalar& c) const
   { return padd(c, pmul(x,y)); }
-  EIGEN_STRONG_INLINE Scalar pmul(const RealScalar& x, const Scalar& y) const
+  IMP_EIGEN_STRONG_INLINE Scalar pmul(const RealScalar& x, const Scalar& y) const
   { return x*conj_if<Conj>()(y); }
 };
 
 template<typename From,typename To> struct get_factor {
-  static EIGEN_STRONG_INLINE To run(const From& x) { return x; }
+  static IMP_EIGEN_STRONG_INLINE To run(const From& x) { return x; }
 };
 
 template<typename Scalar> struct get_factor<Scalar,typename NumTraits<Scalar>::Real> {
-  static EIGEN_STRONG_INLINE typename NumTraits<Scalar>::Real run(const Scalar& x) { return numext::real(x); }
+  static IMP_EIGEN_STRONG_INLINE typename NumTraits<Scalar>::Real run(const Scalar& x) { return numext::real(x); }
 };
 
 // Lightweight helper class to access matrix coefficients.
@@ -124,10 +124,10 @@ class blas_data_mapper
 {
   public:
     blas_data_mapper(Scalar* data, Index stride) : m_data(data), m_stride(stride) {}
-    EIGEN_STRONG_INLINE Scalar& operator()(Index i, Index j)
+    IMP_EIGEN_STRONG_INLINE Scalar& operator()(Index i, Index j)
     { return m_data[StorageOrder==RowMajor ? j + i*m_stride : i + j*m_stride]; }
   protected:
-    Scalar* EIGEN_RESTRICT m_data;
+    Scalar* IMP_EIGEN_RESTRICT m_data;
     Index m_stride;
 };
 
@@ -137,10 +137,10 @@ class const_blas_data_mapper
 {
   public:
     const_blas_data_mapper(const Scalar* data, Index stride) : m_data(data), m_stride(stride) {}
-    EIGEN_STRONG_INLINE const Scalar& operator()(Index i, Index j) const
+    IMP_EIGEN_STRONG_INLINE const Scalar& operator()(Index i, Index j) const
     { return m_data[StorageOrder==RowMajor ? j + i*m_stride : i + j*m_stride]; }
   protected:
-    const Scalar* EIGEN_RESTRICT m_data;
+    const Scalar* IMP_EIGEN_RESTRICT m_data;
     Index m_stride;
 };
 
@@ -259,6 +259,6 @@ template<typename T> const typename T::Scalar* extract_data(const T& m)
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_BLASUTIL_H
+#endif // IMP_EIGEN_BLASUTIL_H

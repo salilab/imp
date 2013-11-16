@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_GENERIC_PACKET_MATH_H
-#define EIGEN_GENERIC_PACKET_MATH_H
+#ifndef IMP_EIGEN_GENERIC_PACKET_MATH_H
+#define IMP_EIGEN_GENERIC_PACKET_MATH_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 namespace internal {
 
@@ -23,20 +23,20 @@ namespace internal {
   * of generic vectorized code.
   */
 
-#ifndef EIGEN_DEBUG_ALIGNED_LOAD
-#define EIGEN_DEBUG_ALIGNED_LOAD
+#ifndef IMP_EIGEN_DEBUG_ALIGNED_LOAD
+#define IMP_EIGEN_DEBUG_ALIGNED_LOAD
 #endif
 
-#ifndef EIGEN_DEBUG_UNALIGNED_LOAD
-#define EIGEN_DEBUG_UNALIGNED_LOAD
+#ifndef IMP_EIGEN_DEBUG_UNALIGNED_LOAD
+#define IMP_EIGEN_DEBUG_UNALIGNED_LOAD
 #endif
 
-#ifndef EIGEN_DEBUG_ALIGNED_STORE
-#define EIGEN_DEBUG_ALIGNED_STORE
+#ifndef IMP_EIGEN_DEBUG_ALIGNED_STORE
+#define IMP_EIGEN_DEBUG_ALIGNED_STORE
 #endif
 
-#ifndef EIGEN_DEBUG_UNALIGNED_STORE
-#define EIGEN_DEBUG_UNALIGNED_STORE
+#ifndef IMP_EIGEN_DEBUG_UNALIGNED_STORE
+#define IMP_EIGEN_DEBUG_UNALIGNED_STORE
 #endif
 
 struct default_packet_traits
@@ -231,35 +231,35 @@ template<typename Packet> inline Packet pcplxflip(const Packet& a)
 ***************************/
 
 /** \internal \returns the sine of \a a (coeff-wise) */
-template<typename Packet> EIGEN_DECLARE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS
+template<typename Packet> IMP_EIGEN_DECLARE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS
 Packet psin(const Packet& a) { using std::sin; return sin(a); }
 
 /** \internal \returns the cosine of \a a (coeff-wise) */
-template<typename Packet> EIGEN_DECLARE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS
+template<typename Packet> IMP_EIGEN_DECLARE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS
 Packet pcos(const Packet& a) { using std::cos; return cos(a); }
 
 /** \internal \returns the tan of \a a (coeff-wise) */
-template<typename Packet> EIGEN_DECLARE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS
+template<typename Packet> IMP_EIGEN_DECLARE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS
 Packet ptan(const Packet& a) { using std::tan; return tan(a); }
 
 /** \internal \returns the arc sine of \a a (coeff-wise) */
-template<typename Packet> EIGEN_DECLARE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS
+template<typename Packet> IMP_EIGEN_DECLARE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS
 Packet pasin(const Packet& a) { using std::asin; return asin(a); }
 
 /** \internal \returns the arc cosine of \a a (coeff-wise) */
-template<typename Packet> EIGEN_DECLARE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS
+template<typename Packet> IMP_EIGEN_DECLARE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS
 Packet pacos(const Packet& a) { using std::acos; return acos(a); }
 
 /** \internal \returns the exp of \a a (coeff-wise) */
-template<typename Packet> EIGEN_DECLARE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS
+template<typename Packet> IMP_EIGEN_DECLARE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS
 Packet pexp(const Packet& a) { using std::exp; return exp(a); }
 
 /** \internal \returns the log of \a a (coeff-wise) */
-template<typename Packet> EIGEN_DECLARE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS
+template<typename Packet> IMP_EIGEN_DECLARE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS
 Packet plog(const Packet& a) { using std::log; return log(a); }
 
 /** \internal \returns the square-root of \a a (coeff-wise) */
-template<typename Packet> EIGEN_DECLARE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS
+template<typename Packet> IMP_EIGEN_DECLARE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS
 Packet psqrt(const Packet& a) { using std::sqrt; return sqrt(a); }
 
 /***************************************************************************
@@ -344,7 +344,7 @@ template<> inline std::complex<double> pmul(const std::complex<double>& a, const
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_GENERIC_PACKET_MATH_H
+#endif // IMP_EIGEN_GENERIC_PACKET_MATH_H
 

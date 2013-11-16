@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_POLYNOMIAL_SOLVER_H
-#define EIGEN_POLYNOMIAL_SOLVER_H
+#ifndef IMP_EIGEN_POLYNOMIAL_SOLVER_H
+#define IMP_EIGEN_POLYNOMIAL_SOLVER_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \ingroup Polynomials_Module
  *  \class PolynomialSolverBase.
@@ -29,7 +29,7 @@ template< typename _Scalar, int _Deg >
 class PolynomialSolverBase
 {
   public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_Deg==Dynamic ? Dynamic : _Deg)
+    IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_Deg==Dynamic ? Dynamic : _Deg)
 
     typedef _Scalar                             Scalar;
     typedef typename NumTraits<Scalar>::Real    RealScalar;
@@ -290,7 +290,7 @@ class PolynomialSolverBase
     RootsType               m_roots;
 };
 
-#define EIGEN_POLYNOMIAL_SOLVER_BASE_INHERITED_TYPES( BASE )  \
+#define IMP_EIGEN_POLYNOMIAL_SOLVER_BASE_INHERITED_TYPES( BASE )  \
   typedef typename BASE::Scalar                 Scalar;       \
   typedef typename BASE::RealScalar             RealScalar;   \
   typedef typename BASE::RootType               RootType;     \
@@ -331,10 +331,10 @@ template< typename _Scalar, int _Deg >
 class PolynomialSolver : public PolynomialSolverBase<_Scalar,_Deg>
 {
   public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_Deg==Dynamic ? Dynamic : _Deg)
+    IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_Deg==Dynamic ? Dynamic : _Deg)
 
     typedef PolynomialSolverBase<_Scalar,_Deg>    PS_Base;
-    EIGEN_POLYNOMIAL_SOLVER_BASE_INHERITED_TYPES( PS_Base )
+    IMP_EIGEN_POLYNOMIAL_SOLVER_BASE_INHERITED_TYPES( PS_Base )
 
     typedef Matrix<Scalar,_Deg,_Deg>                 CompanionMatrixType;
     typedef EigenSolver<CompanionMatrixType>         EigenSolverType;
@@ -369,7 +369,7 @@ class PolynomialSolver<_Scalar,1> : public PolynomialSolverBase<_Scalar,1>
 {
   public:
     typedef PolynomialSolverBase<_Scalar,1>    PS_Base;
-    EIGEN_POLYNOMIAL_SOLVER_BASE_INHERITED_TYPES( PS_Base )
+    IMP_EIGEN_POLYNOMIAL_SOLVER_BASE_INHERITED_TYPES( PS_Base )
 
   public:
     /** Computes the complex roots of a new polynomial. */
@@ -384,6 +384,6 @@ class PolynomialSolver<_Scalar,1> : public PolynomialSolverBase<_Scalar,1>
     using                   PS_Base::m_roots;
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_POLYNOMIAL_SOLVER_H
+#endif // IMP_EIGEN_POLYNOMIAL_SOLVER_H

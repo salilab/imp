@@ -7,16 +7,16 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_STDLIST_H
-#define EIGEN_STDLIST_H
+#ifndef IMP_EIGEN_STDLIST_H
+#define IMP_EIGEN_STDLIST_H
 
 #include "Eigen/src/StlSupport/details.h"
 
 // Define the explicit instantiation (e.g. necessary for the Intel compiler)
 #if defined(__INTEL_COMPILER) || defined(__GNUC__)
-  #define EIGEN_EXPLICIT_STL_LIST_INSTANTIATION(...) template class std::list<__VA_ARGS__, EIGEN_ALIGNED_ALLOCATOR<__VA_ARGS__> >;
+  #define IMP_EIGEN_EXPLICIT_STL_LIST_INSTANTIATION(...) template class std::list<__VA_ARGS__, IMP_EIGEN_ALIGNED_ALLOCATOR<__VA_ARGS__> >;
 #else
-  #define EIGEN_EXPLICIT_STL_LIST_INSTANTIATION(...)
+  #define IMP_EIGEN_EXPLICIT_STL_LIST_INSTANTIATION(...)
 #endif
 
 /**
@@ -24,15 +24,15 @@
  * std::list such that for data types with alignment issues the correct allocator
  * is used automatically.
  */
-#define EIGEN_DEFINE_STL_LIST_SPECIALIZATION(...) \
-EIGEN_EXPLICIT_STL_LIST_INSTANTIATION(__VA_ARGS__) \
+#define IMP_EIGEN_DEFINE_STL_LIST_SPECIALIZATION(...) \
+IMP_EIGEN_EXPLICIT_STL_LIST_INSTANTIATION(__VA_ARGS__) \
 namespace std \
 { \
   template<typename _Ay> \
   class list<__VA_ARGS__, _Ay>  \
-    : public list<__VA_ARGS__, EIGEN_ALIGNED_ALLOCATOR<__VA_ARGS__> > \
+    : public list<__VA_ARGS__, IMP_EIGEN_ALIGNED_ALLOCATOR<__VA_ARGS__> > \
   { \
-    typedef list<__VA_ARGS__, EIGEN_ALIGNED_ALLOCATOR<__VA_ARGS__> > list_base; \
+    typedef list<__VA_ARGS__, IMP_EIGEN_ALIGNED_ALLOCATOR<__VA_ARGS__> > list_base; \
   public: \
     typedef __VA_ARGS__ value_type; \
     typedef typename list_base::allocator_type allocator_type; \
@@ -52,12 +52,12 @@ namespace std \
 }
 
 // check whether we really need the std::vector specialization
-#if !(defined(_GLIBCXX_VECTOR) && (!EIGEN_GNUC_AT_LEAST(4,1))) /* Note that before gcc-4.1 we already have: std::list::resize(size_type,const T&). */
+#if !(defined(_GLIBCXX_VECTOR) && (!IMP_EIGEN_GNUC_AT_LEAST(4,1))) /* Note that before gcc-4.1 we already have: std::list::resize(size_type,const T&). */
 
 namespace std
 {
 
-#define EIGEN_STD_LIST_SPECIALIZATION_BODY \
+#define IMP_EIGEN_STD_LIST_SPECIALIZATION_BODY \
   public:  \
     typedef T value_type; \
     typedef typename list_base::allocator_type allocator_type; \
@@ -77,13 +77,13 @@ namespace std
   }
 
   template<typename T>
-  class list<T,EIGEN_ALIGNED_ALLOCATOR<T> >
+  class list<T,IMP_EIGEN_ALIGNED_ALLOCATOR<T> >
     : public list<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T),
-                  Eigen::aligned_allocator_indirection<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> >
+                  IMP_Eigen::aligned_allocator_indirection<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> >
   {
     typedef list<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T),
-                 Eigen::aligned_allocator_indirection<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> > list_base;
-    EIGEN_STD_LIST_SPECIALIZATION_BODY
+                 IMP_Eigen::aligned_allocator_indirection<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> > list_base;
+    IMP_EIGEN_STD_LIST_SPECIALIZATION_BODY
 
     void resize(size_type new_size)
     { resize(new_size, T()); }
@@ -111,4 +111,4 @@ namespace std
 
 #endif // check whether specialization is actually required
 
-#endif // EIGEN_STDLIST_H
+#endif // IMP_EIGEN_STDLIST_H

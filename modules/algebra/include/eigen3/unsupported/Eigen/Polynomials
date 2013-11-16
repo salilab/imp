@@ -6,8 +6,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_POLYNOMIALS_MODULE_H
-#define EIGEN_POLYNOMIALS_MODULE_H
+#ifndef IMP_EIGEN_POLYNOMIALS_MODULE_H
+#define IMP_EIGEN_POLYNOMIALS_MODULE_H
 
 #include <Eigen/Core>
 
@@ -15,13 +15,13 @@
 
 #include <Eigen/Eigenvalues>
 
-// Note that EIGEN_HIDE_HEAVY_CODE has to be defined per module
-#if (defined EIGEN_EXTERN_INSTANTIATIONS) && (EIGEN_EXTERN_INSTANTIATIONS>=2)
-  #ifndef EIGEN_HIDE_HEAVY_CODE
-  #define EIGEN_HIDE_HEAVY_CODE
+// Note that IMP_EIGEN_HIDE_HEAVY_CODE has to be defined per module
+#if (defined IMP_EIGEN_EXTERN_INSTANTIATIONS) && (IMP_EIGEN_EXTERN_INSTANTIATIONS>=2)
+  #ifndef IMP_EIGEN_HIDE_HEAVY_CODE
+  #define IMP_EIGEN_HIDE_HEAVY_CODE
   #endif
-#elif defined EIGEN_HIDE_HEAVY_CODE
-  #undef EIGEN_HIDE_HEAVY_CODE
+#elif defined IMP_EIGEN_HIDE_HEAVY_CODE
+  #undef IMP_EIGEN_HIDE_HEAVY_CODE
 #endif
 
 /**
@@ -134,5 +134,5 @@
 
 #include <Eigen/src/Core/util/ReenableStupidWarnings.h>
 
-#endif // EIGEN_POLYNOMIALS_MODULE_H
+#endif // IMP_EIGEN_POLYNOMIALS_MODULE_H
 /* vim: set filetype=cpp et sw=2 ts=2 ai: */

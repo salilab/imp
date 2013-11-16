@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN2_META_H
-#define EIGEN2_META_H
+#ifndef IMP_EIGEN2_META_H
+#define IMP_EIGEN2_META_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 template<typename T>
 struct ei_traits : internal::traits<T>
@@ -70,6 +70,6 @@ class ei_meta_sqrt
 template<int Y, int InfX, int SupX>
 class ei_meta_sqrt<Y, InfX, SupX, true> { public:  enum { ret = (SupX*SupX <= Y) ? SupX : InfX }; };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN2_META_H
+#endif // IMP_EIGEN2_META_H

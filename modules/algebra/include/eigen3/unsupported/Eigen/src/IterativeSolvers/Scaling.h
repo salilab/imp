@@ -7,8 +7,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_ITERSCALING_H
-#define EIGEN_ITERSCALING_H
+#ifndef IMP_EIGEN_ITERSCALING_H
+#define IMP_EIGEN_ITERSCALING_H
 /**
   * \ingroup IterativeSolvers_Module
   * \brief iterative scaling algorithm to equilibrate rows and column norms in matrices
@@ -41,7 +41,7 @@
   * 
   * \sa \ref IncompleteLUT 
   */
-namespace Eigen {
+namespace IMP_Eigen {
 using std::abs; 
 template<typename _MatrixType>
 class IterScaling

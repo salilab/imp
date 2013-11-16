@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPARSESPARSEPRODUCTWITHPRUNING_H
-#define EIGEN_SPARSESPARSEPRODUCTWITHPRUNING_H
+#ifndef IMP_EIGEN_SPARSESPARSEPRODUCTWITHPRUNING_H
+#define IMP_EIGEN_SPARSESPARSEPRODUCTWITHPRUNING_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -144,6 +144,6 @@ struct sparse_sparse_product_with_pruning_selector<Lhs,Rhs,ResultType,RowMajor,R
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SPARSESPARSEPRODUCTWITHPRUNING_H
+#endif // IMP_EIGEN_SPARSESPARSEPRODUCTWITHPRUNING_H

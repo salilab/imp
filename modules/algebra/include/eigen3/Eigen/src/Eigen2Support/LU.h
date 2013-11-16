@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN2_LU_H
-#define EIGEN2_LU_H
+#ifndef IMP_EIGEN2_LU_H
+#define IMP_EIGEN2_LU_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 template<typename MatrixType>
 class LU : public FullPivLU<MatrixType>
@@ -81,7 +81,7 @@ class LU : public FullPivLU<MatrixType>
     const MatrixType& m_originalMatrix;
 };
 
-#if EIGEN2_SUPPORT_STAGE < STAGE20_RESOLVE_API_CONFLICTS
+#if IMP_EIGEN2_SUPPORT_STAGE < STAGE20_RESOLVE_API_CONFLICTS
 /** \lu_module
   *
   * Synonym of partialPivLu().
@@ -98,7 +98,7 @@ MatrixBase<Derived>::lu() const
 }
 #endif
 
-#ifdef EIGEN2_SUPPORT
+#ifdef IMP_EIGEN2_SUPPORT
 /** \lu_module
   *
   * Synonym of partialPivLu().
@@ -115,6 +115,6 @@ MatrixBase<Derived>::eigen2_lu() const
 }
 #endif
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN2_LU_H
+#endif // IMP_EIGEN2_LU_H

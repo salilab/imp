@@ -1,5 +1,5 @@
-#ifndef EIGEN_SPARSEQR_MODULE_H
-#define EIGEN_SPARSEQR_MODULE_H
+#ifndef IMP_EIGEN_SPARSEQR_MODULE_H
+#define IMP_EIGEN_SPARSEQR_MODULE_H
 
 #include "SparseCore"
 #include "OrderingMethods"

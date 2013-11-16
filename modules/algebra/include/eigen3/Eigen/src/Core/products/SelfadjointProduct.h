@@ -7,8 +7,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SELFADJOINT_PRODUCT_H
-#define EIGEN_SELFADJOINT_PRODUCT_H
+#ifndef IMP_EIGEN_SELFADJOINT_PRODUCT_H
+#define IMP_EIGEN_SELFADJOINT_PRODUCT_H
 
 /**********************************************************************
 * This file implements a self adjoint product: C += A A^T updating only
@@ -16,7 +16,7 @@
 * It corresponds to the level 3 SYRK and level 2 SYR Blas routines.
 **********************************************************************/
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 
 template<typename Scalar, typename Index, int UpLo, bool ConjLhs, bool ConjRhs>
@@ -118,6 +118,6 @@ SelfAdjointView<MatrixType,UpLo>& SelfAdjointView<MatrixType,UpLo>
   return *this;
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SELFADJOINT_PRODUCT_H
+#endif // IMP_EIGEN_SELFADJOINT_PRODUCT_H

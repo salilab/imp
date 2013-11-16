@@ -30,16 +30,16 @@
  ********************************************************************************
 */
 
-#ifndef EIGEN_JACOBISVD_MKL_H
-#define EIGEN_JACOBISVD_MKL_H
+#ifndef IMP_EIGEN_JACOBISVD_MKL_H
+#define IMP_EIGEN_JACOBISVD_MKL_H
 
 #include "Eigen/src/Core/util/MKL_support.h"
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \internal Specialization for the data types supported by MKL */
 
-#define EIGEN_MKL_SVD(EIGTYPE, MKLTYPE, MKLRTYPE, MKLPREFIX, EIGCOLROW, MKLCOLROW) \
+#define IMP_EIGEN_MKL_SVD(EIGTYPE, MKLTYPE, MKLRTYPE, MKLPREFIX, EIGCOLROW, MKLCOLROW) \
 template<> inline \
 JacobiSVD<Matrix<EIGTYPE, Dynamic, Dynamic, EIGCOLROW, Dynamic, Dynamic>, ColPivHouseholderQRPreconditioner>& \
 JacobiSVD<Matrix<EIGTYPE, Dynamic, Dynamic, EIGCOLROW, Dynamic, Dynamic>, ColPivHouseholderQRPreconditioner>::compute(const Matrix<EIGTYPE, Dynamic, Dynamic, EIGCOLROW, Dynamic, Dynamic>& matrix, unsigned int computationOptions) \
@@ -77,16 +77,16 @@ JacobiSVD<Matrix<EIGTYPE, Dynamic, Dynamic, EIGCOLROW, Dynamic, Dynamic>, ColPiv
   return *this; \
 }
 
-EIGEN_MKL_SVD(double,   double,        double, d, ColMajor, LAPACK_COL_MAJOR)
-EIGEN_MKL_SVD(float,    float,         float , s, ColMajor, LAPACK_COL_MAJOR)
-EIGEN_MKL_SVD(dcomplex, MKL_Complex16, double, z, ColMajor, LAPACK_COL_MAJOR)
-EIGEN_MKL_SVD(scomplex, MKL_Complex8,  float , c, ColMajor, LAPACK_COL_MAJOR)
+IMP_EIGEN_MKL_SVD(double,   double,        double, d, ColMajor, LAPACK_COL_MAJOR)
+IMP_EIGEN_MKL_SVD(float,    float,         float , s, ColMajor, LAPACK_COL_MAJOR)
+IMP_EIGEN_MKL_SVD(dcomplex, MKL_Complex16, double, z, ColMajor, LAPACK_COL_MAJOR)
+IMP_EIGEN_MKL_SVD(scomplex, MKL_Complex8,  float , c, ColMajor, LAPACK_COL_MAJOR)
 
-EIGEN_MKL_SVD(double,   double,        double, d, RowMajor, LAPACK_ROW_MAJOR)
-EIGEN_MKL_SVD(float,    float,         float , s, RowMajor, LAPACK_ROW_MAJOR)
-EIGEN_MKL_SVD(dcomplex, MKL_Complex16, double, z, RowMajor, LAPACK_ROW_MAJOR)
-EIGEN_MKL_SVD(scomplex, MKL_Complex8,  float , c, RowMajor, LAPACK_ROW_MAJOR)
+IMP_EIGEN_MKL_SVD(double,   double,        double, d, RowMajor, LAPACK_ROW_MAJOR)
+IMP_EIGEN_MKL_SVD(float,    float,         float , s, RowMajor, LAPACK_ROW_MAJOR)
+IMP_EIGEN_MKL_SVD(dcomplex, MKL_Complex16, double, z, RowMajor, LAPACK_ROW_MAJOR)
+IMP_EIGEN_MKL_SVD(scomplex, MKL_Complex8,  float , c, RowMajor, LAPACK_ROW_MAJOR)
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_JACOBISVD_MKL_H
+#endif // IMP_EIGEN_JACOBISVD_MKL_H

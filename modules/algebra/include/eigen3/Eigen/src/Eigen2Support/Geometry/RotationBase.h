@@ -9,7 +9,7 @@
 
 // no include guard, we'll include this twice from All.h from Eigen2Support, and it's internal anyway
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 // this file aims to contains the various representations of rotation/orientation
 // in 2D and 3D space excepted Matrix and Quaternion.
@@ -63,7 +63,7 @@ template<typename OtherDerived>
 Matrix<_Scalar, _Rows, _Cols, _Storage, _MaxRows, _MaxCols>
 ::Matrix(const RotationBase<OtherDerived,ColsAtCompileTime>& r)
 {
-  EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Matrix,int(OtherDerived::Dim),int(OtherDerived::Dim))
+  IMP_EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Matrix,int(OtherDerived::Dim),int(OtherDerived::Dim))
   *this = r.toRotationMatrix();
 }
 
@@ -77,7 +77,7 @@ Matrix<_Scalar, _Rows, _Cols, _Storage, _MaxRows, _MaxCols>&
 Matrix<_Scalar, _Rows, _Cols, _Storage, _MaxRows, _MaxCols>
 ::operator=(const RotationBase<OtherDerived,ColsAtCompileTime>& r)
 {
-  EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Matrix,int(OtherDerived::Dim),int(OtherDerived::Dim))
+  IMP_EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Matrix,int(OtherDerived::Dim),int(OtherDerived::Dim))
   return *this = r.toRotationMatrix();
 }
 
@@ -102,7 +102,7 @@ Matrix<_Scalar, _Rows, _Cols, _Storage, _MaxRows, _MaxCols>
 template<typename Scalar, int Dim>
 static inline Matrix<Scalar,2,2> ei_toRotationMatrix(const Scalar& s)
 {
-  EIGEN_STATIC_ASSERT(Dim==2,YOU_MADE_A_PROGRAMMING_MISTAKE)
+  IMP_EIGEN_STATIC_ASSERT(Dim==2,YOU_MADE_A_PROGRAMMING_MISTAKE)
   return Rotation2D<Scalar>(s).toRotationMatrix();
 }
 
@@ -115,9 +115,9 @@ static inline Matrix<Scalar,Dim,Dim> ei_toRotationMatrix(const RotationBase<Othe
 template<typename Scalar, int Dim, typename OtherDerived>
 static inline const MatrixBase<OtherDerived>& ei_toRotationMatrix(const MatrixBase<OtherDerived>& mat)
 {
-  EIGEN_STATIC_ASSERT(OtherDerived::RowsAtCompileTime==Dim && OtherDerived::ColsAtCompileTime==Dim,
+  IMP_EIGEN_STATIC_ASSERT(OtherDerived::RowsAtCompileTime==Dim && OtherDerived::ColsAtCompileTime==Dim,
     YOU_MADE_A_PROGRAMMING_MISTAKE)
   return mat;
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen

@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPARSEMATRIX_H
-#define EIGEN_SPARSEMATRIX_H
+#ifndef IMP_EIGEN_SPARSEMATRIX_H
+#define IMP_EIGEN_SPARSEMATRIX_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \ingroup SparseCore_Module
   *
@@ -35,7 +35,7 @@ namespace Eigen {
   * \tparam _Index the type of the indices. It has to be a \b signed type (e.g., short, int, std::ptrdiff_t). Default is \c int.
   *
   * This class can be extended with the help of the plugin mechanism described on the page
-  * \ref TopicCustomizingEigen by defining the preprocessor symbol \c EIGEN_SPARSEMATRIX_PLUGIN.
+  * \ref TopicCustomizingEigen by defining the preprocessor symbol \c IMP_EIGEN_SPARSEMATRIX_PLUGIN.
   */
 
 namespace internal {
@@ -86,9 +86,9 @@ class SparseMatrix
   : public SparseMatrixBase<SparseMatrix<_Scalar, _Options, _Index> >
 {
   public:
-    EIGEN_SPARSE_PUBLIC_INTERFACE(SparseMatrix)
-    EIGEN_SPARSE_INHERIT_ASSIGNMENT_OPERATOR(SparseMatrix, +=)
-    EIGEN_SPARSE_INHERIT_ASSIGNMENT_OPERATOR(SparseMatrix, -=)
+    IMP_EIGEN_SPARSE_PUBLIC_INTERFACE(SparseMatrix)
+    IMP_EIGEN_SPARSE_INHERIT_ASSIGNMENT_OPERATOR(SparseMatrix, +=)
+    IMP_EIGEN_SPARSE_INHERIT_ASSIGNMENT_OPERATOR(SparseMatrix, -=)
 
     typedef MappedSparseMatrix<Scalar,Flags> Map;
     using Base::IsRowMajor;
@@ -107,8 +107,8 @@ class SparseMatrix
     Index* m_innerNonZeros;     // optional, if null then the data is compressed
     Storage m_data;
     
-    Eigen::Map<Matrix<Index,Dynamic,1> > innerNonZeros() { return Eigen::Map<Matrix<Index,Dynamic,1> >(m_innerNonZeros, m_innerNonZeros?m_outerSize:0); }
-    const  Eigen::Map<const Matrix<Index,Dynamic,1> > innerNonZeros() const { return Eigen::Map<const Matrix<Index,Dynamic,1> >(m_innerNonZeros, m_innerNonZeros?m_outerSize:0); }
+    IMP_Eigen::Map<Matrix<Index,Dynamic,1> > innerNonZeros() { return IMP_Eigen::Map<Matrix<Index,Dynamic,1> >(m_innerNonZeros, m_innerNonZeros?m_outerSize:0); }
+    const  IMP_Eigen::Map<const Matrix<Index,Dynamic,1> > innerNonZeros() const { return IMP_Eigen::Map<const Matrix<Index,Dynamic,1> >(m_innerNonZeros, m_innerNonZeros?m_outerSize:0); }
 
   public:
     
@@ -259,7 +259,7 @@ class SparseMatrix
       m_data.reserve(reserveSize);
     }
     
-    #ifdef EIGEN_PARSED_BY_DOXYGEN
+    #ifdef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** Preallocates \a reserveSize[\c j] non zeros for each column (resp. row) \c j.
       *
       * This function turns the matrix in non-compressed mode */
@@ -269,7 +269,7 @@ class SparseMatrix
     template<class SizesType>
     inline void reserve(const SizesType& reserveSizes, const typename SizesType::value_type& enableif = typename SizesType::value_type())
     {
-      EIGEN_UNUSED_VARIABLE(enableif);
+      IMP_EIGEN_UNUSED_VARIABLE(enableif);
       reserveInnerVectors(reserveSizes);
     }
     template<class SizesType>
@@ -279,10 +279,10 @@ class SparseMatrix
     #endif
         SizesType::Scalar())
     {
-      EIGEN_UNUSED_VARIABLE(enableif);
+      IMP_EIGEN_UNUSED_VARIABLE(enableif);
       reserveInnerVectors(reserveSizes);
     }
-    #endif // EIGEN_PARSED_BY_DOXYGEN
+    #endif // IMP_EIGEN_PARSED_BY_DOXYGEN
   protected:
     template<class SizesType>
     inline void reserveInnerVectors(const SizesType& reserveSizes)
@@ -646,7 +646,7 @@ class SparseMatrix
     inline SparseMatrix(const SparseMatrixBase<OtherDerived>& other)
       : m_outerSize(0), m_innerSize(0), m_outerIndex(0), m_innerNonZeros(0)
     {
-      EIGEN_STATIC_ASSERT((internal::is_same<Scalar, typename OtherDerived::Scalar>::value),
+      IMP_EIGEN_STATIC_ASSERT((internal::is_same<Scalar, typename OtherDerived::Scalar>::value),
         YOU_MIXED_DIFFERENT_NUMERIC_TYPES__YOU_NEED_TO_USE_THE_CAST_METHOD_OF_MATRIXBASE_TO_CAST_NUMERIC_TYPES_EXPLICITLY)
       check_template_parameters();
       *this = other.derived();
@@ -696,9 +696,9 @@ class SparseMatrix
     {
       eigen_assert(rows() == cols() && "ONLY FOR SQUARED MATRICES");
       this->m_data.resize(rows());
-      Eigen::Map<Matrix<Index, Dynamic, 1> >(&this->m_data.index(0), rows()).setLinSpaced(0, rows()-1);
-      Eigen::Map<Matrix<Scalar, Dynamic, 1> >(&this->m_data.value(0), rows()).setOnes();
-      Eigen::Map<Matrix<Index, Dynamic, 1> >(this->m_outerIndex, rows()+1).setLinSpaced(0, rows());
+      IMP_Eigen::Map<Matrix<Index, Dynamic, 1> >(&this->m_data.index(0), rows()).setLinSpaced(0, rows()-1);
+      IMP_Eigen::Map<Matrix<Scalar, Dynamic, 1> >(&this->m_data.value(0), rows()).setOnes();
+      IMP_Eigen::Map<Matrix<Index, Dynamic, 1> >(this->m_outerIndex, rows()+1).setLinSpaced(0, rows());
     }
     inline SparseMatrix& operator=(const SparseMatrix& other)
     {
@@ -722,7 +722,7 @@ class SparseMatrix
       return *this;
     }
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     template<typename Lhs, typename Rhs>
     inline SparseMatrix& operator=(const SparseSparseProduct<Lhs,Rhs>& product)
     { return Base::operator=(product); }
@@ -740,11 +740,11 @@ class SparseMatrix
     #endif
 
     template<typename OtherDerived>
-    EIGEN_DONT_INLINE SparseMatrix& operator=(const SparseMatrixBase<OtherDerived>& other);
+    IMP_EIGEN_DONT_INLINE SparseMatrix& operator=(const SparseMatrixBase<OtherDerived>& other);
 
     friend std::ostream & operator << (std::ostream & s, const SparseMatrix& m)
     {
-      EIGEN_DBG_SPARSE(
+      IMP_EIGEN_DBG_SPARSE(
         s << "Nonzero entries:\n";
         if(m.isCompressed())
           for (Index i=0; i<m.nonZeros(); ++i)
@@ -786,13 +786,13 @@ class SparseMatrix
       std::free(m_innerNonZeros);
     }
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** Overloaded for performance */
     Scalar sum() const;
 #endif
     
-#   ifdef EIGEN_SPARSEMATRIX_PLUGIN
-#     include EIGEN_SPARSEMATRIX_PLUGIN
+#   ifdef IMP_EIGEN_SPARSEMATRIX_PLUGIN
+#     include IMP_EIGEN_SPARSEMATRIX_PLUGIN
 #   endif
 
 protected:
@@ -810,7 +810,7 @@ protected:
 
     /** \internal
       * \sa insert(Index,Index) */
-    EIGEN_DONT_INLINE Scalar& insertCompressed(Index row, Index col);
+    IMP_EIGEN_DONT_INLINE Scalar& insertCompressed(Index row, Index col);
 
     /** \internal
       * A vector object that is equal to 0 everywhere but v at the position i */
@@ -829,12 +829,12 @@ protected:
 
     /** \internal
       * \sa insert(Index,Index) */
-    EIGEN_DONT_INLINE Scalar& insertUncompressed(Index row, Index col);
+    IMP_EIGEN_DONT_INLINE Scalar& insertUncompressed(Index row, Index col);
 
 public:
     /** \internal
       * \sa insert(Index,Index) */
-    EIGEN_STRONG_INLINE Scalar& insertBackUncompressed(Index row, Index col)
+    IMP_EIGEN_STRONG_INLINE Scalar& insertBackUncompressed(Index row, Index col)
     {
       const Index outer = IsRowMajor ? row : col;
       const Index inner = IsRowMajor ? col : row;
@@ -850,8 +850,8 @@ public:
 private:
   static void check_template_parameters()
   {
-    EIGEN_STATIC_ASSERT(NumTraits<Index>::IsSigned,THE_INDEX_TYPE_MUST_BE_A_SIGNED_TYPE);
-    EIGEN_STATIC_ASSERT((Options&(ColMajor|RowMajor))==Options,INVALID_MATRIX_TEMPLATE_PARAMETERS);
+    IMP_EIGEN_STATIC_ASSERT(NumTraits<Index>::IsSigned,THE_INDEX_TYPE_MUST_BE_A_SIGNED_TYPE);
+    IMP_EIGEN_STATIC_ASSERT((Options&(ColMajor|RowMajor))==Options,INVALID_MATRIX_TEMPLATE_PARAMETERS);
   }
 
   struct default_prunning_func {
@@ -936,7 +936,7 @@ namespace internal {
 template<typename InputIterator, typename SparseMatrixType>
 void set_from_triplets(const InputIterator& begin, const InputIterator& end, SparseMatrixType& mat, int Options = 0)
 {
-  EIGEN_UNUSED_VARIABLE(Options);
+  IMP_EIGEN_UNUSED_VARIABLE(Options);
   enum { IsRowMajor = SparseMatrixType::IsRowMajor };
   typedef typename SparseMatrixType::Scalar Scalar;
   SparseMatrix<Scalar,IsRowMajor?ColMajor:RowMajor> trMat(mat.rows(),mat.cols());
@@ -984,7 +984,7 @@ void set_from_triplets(const InputIterator& begin, const InputIterator& end, Spa
   * Scalar row() const;   // the row index i
   * Scalar col() const;   // the column index j
   * \endcode
-  * See for instance the Eigen::Triplet template class.
+  * See for instance the IMP_Eigen::Triplet template class.
   *
   * Here is a typical usage example:
   * \code
@@ -1054,9 +1054,9 @@ void SparseMatrix<Scalar,_Options,_Index>::sumupDuplicates()
 
 template<typename Scalar, int _Options, typename _Index>
 template<typename OtherDerived>
-EIGEN_DONT_INLINE SparseMatrix<Scalar,_Options,_Index>& SparseMatrix<Scalar,_Options,_Index>::operator=(const SparseMatrixBase<OtherDerived>& other)
+IMP_EIGEN_DONT_INLINE SparseMatrix<Scalar,_Options,_Index>& SparseMatrix<Scalar,_Options,_Index>::operator=(const SparseMatrixBase<OtherDerived>& other)
 {
-  EIGEN_STATIC_ASSERT((internal::is_same<Scalar, typename OtherDerived::Scalar>::value),
+  IMP_EIGEN_STATIC_ASSERT((internal::is_same<Scalar, typename OtherDerived::Scalar>::value),
         YOU_MIXED_DIFFERENT_NUMERIC_TYPES__YOU_NEED_TO_USE_THE_CAST_METHOD_OF_MATRIXBASE_TO_CAST_NUMERIC_TYPES_EXPLICITLY)
   
   const bool needToTranspose = (Flags & RowMajorBit) != (OtherDerived::Flags & RowMajorBit);
@@ -1071,7 +1071,7 @@ EIGEN_DONT_INLINE SparseMatrix<Scalar,_Options,_Index>& SparseMatrix<Scalar,_Opt
     OtherCopy otherCopy(other.derived());
 
     SparseMatrix dest(other.rows(),other.cols());
-    Eigen::Map<Matrix<Index, Dynamic, 1> > (dest.m_outerIndex,dest.outerSize()).setZero();
+    IMP_Eigen::Map<Matrix<Index, Dynamic, 1> > (dest.m_outerIndex,dest.outerSize()).setZero();
 
     // pass 1
     // FIXME the above copy could be merged with that pass
@@ -1115,7 +1115,7 @@ EIGEN_DONT_INLINE SparseMatrix<Scalar,_Options,_Index>& SparseMatrix<Scalar,_Opt
 }
 
 template<typename _Scalar, int _Options, typename _Index>
-EIGEN_DONT_INLINE typename SparseMatrix<_Scalar,_Options,_Index>::Scalar& SparseMatrix<_Scalar,_Options,_Index>::insertUncompressed(Index row, Index col)
+IMP_EIGEN_DONT_INLINE typename SparseMatrix<_Scalar,_Options,_Index>::Scalar& SparseMatrix<_Scalar,_Options,_Index>::insertUncompressed(Index row, Index col)
 {
   eigen_assert(!isCompressed());
 
@@ -1147,7 +1147,7 @@ EIGEN_DONT_INLINE typename SparseMatrix<_Scalar,_Options,_Index>::Scalar& Sparse
 }
 
 template<typename _Scalar, int _Options, typename _Index>
-EIGEN_DONT_INLINE typename SparseMatrix<_Scalar,_Options,_Index>::Scalar& SparseMatrix<_Scalar,_Options,_Index>::insertCompressed(Index row, Index col)
+IMP_EIGEN_DONT_INLINE typename SparseMatrix<_Scalar,_Options,_Index>::Scalar& SparseMatrix<_Scalar,_Options,_Index>::insertCompressed(Index row, Index col)
 {
   eigen_assert(isCompressed());
 
@@ -1253,6 +1253,6 @@ EIGEN_DONT_INLINE typename SparseMatrix<_Scalar,_Options,_Index>::Scalar& Sparse
   return (m_data.value(p) = 0);
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SPARSEMATRIX_H
+#endif // IMP_EIGEN_SPARSEMATRIX_H

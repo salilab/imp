@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SUITESPARSEQRSUPPORT_H
-#define EIGEN_SUITESPARSEQRSUPPORT_H
+#ifndef IMP_EIGEN_SUITESPARSEQRSUPPORT_H
+#define IMP_EIGEN_SUITESPARSEQRSUPPORT_H
 
-namespace Eigen {
+namespace IMP_Eigen {
   
   template<typename MatrixType> class SPQR; 
   template<typename SPQRType> struct SPQRMatrixQReturnType; 
@@ -292,7 +292,7 @@ struct solve_retval<SPQR<_MatrixType>, Rhs>
   : solve_retval_base<SPQR<_MatrixType>, Rhs>
 {
   typedef SPQR<_MatrixType> Dec;
-  EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
+  IMP_EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -302,5 +302,5 @@ struct solve_retval<SPQR<_MatrixType>, Rhs>
 
 } // end namespace internal
 
-}// End namespace Eigen
+}// End namespace IMP_Eigen
 #endif

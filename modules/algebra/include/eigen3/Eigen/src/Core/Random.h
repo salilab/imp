@@ -7,15 +7,15 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_RANDOM_H
-#define EIGEN_RANDOM_H
+#ifndef IMP_EIGEN_RANDOM_H
+#define IMP_EIGEN_RANDOM_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
 template<typename Scalar> struct scalar_random_op {
-  EIGEN_EMPTY_STRUCT_CTOR(scalar_random_op)
+  IMP_EIGEN_EMPTY_STRUCT_CTOR(scalar_random_op)
   template<typename Index>
   inline const Scalar operator() (Index, Index = 0) const { return random<Scalar>(); }
 };
@@ -122,7 +122,7 @@ inline Derived& DenseBase<Derived>::setRandom()
   * \sa MatrixBase::setRandom(), setRandom(Index,Index), class CwiseNullaryOp, MatrixBase::Random()
   */
 template<typename Derived>
-EIGEN_STRONG_INLINE Derived&
+IMP_EIGEN_STRONG_INLINE Derived&
 PlainObjectBase<Derived>::setRandom(Index newSize)
 {
   resize(newSize);
@@ -140,13 +140,13 @@ PlainObjectBase<Derived>::setRandom(Index newSize)
   * \sa MatrixBase::setRandom(), setRandom(Index), class CwiseNullaryOp, MatrixBase::Random()
   */
 template<typename Derived>
-EIGEN_STRONG_INLINE Derived&
+IMP_EIGEN_STRONG_INLINE Derived&
 PlainObjectBase<Derived>::setRandom(Index nbRows, Index nbCols)
 {
   resize(nbRows, nbCols);
   return setRandom();
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_RANDOM_H
+#endif // IMP_EIGEN_RANDOM_H

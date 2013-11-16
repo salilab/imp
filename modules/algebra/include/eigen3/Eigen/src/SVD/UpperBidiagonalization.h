@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_BIDIAGONALIZATION_H
-#define EIGEN_BIDIAGONALIZATION_H
+#ifndef IMP_EIGEN_BIDIAGONALIZATION_H
+#define IMP_EIGEN_BIDIAGONALIZATION_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 // UpperBidiagonalization will probably be replaced by a Bidiagonalization class, don't want to make it stable API.
@@ -143,6 +143,6 @@ MatrixBase<Derived>::bidiagonalization() const
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_BIDIAGONALIZATION_H
+#endif // IMP_EIGEN_BIDIAGONALIZATION_H

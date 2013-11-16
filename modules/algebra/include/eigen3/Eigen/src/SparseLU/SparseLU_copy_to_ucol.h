@@ -29,7 +29,7 @@
 #ifndef SPARSELU_COPY_TO_UCOL_H
 #define SPARSELU_COPY_TO_UCOL_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 namespace internal {
 
 /**
@@ -101,6 +101,6 @@ Index SparseLUImpl<Scalar,Index>::copy_to_ucol(const Index jcol, const Index nse
 }
 
 } // namespace internal
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
 #endif // SPARSELU_COPY_TO_UCOL_H

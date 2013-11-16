@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_ITERATIVE_SOLVER_BASE_H
-#define EIGEN_ITERATIVE_SOLVER_BASE_H
+#ifndef IMP_EIGEN_ITERATIVE_SOLVER_BASE_H
+#define IMP_EIGEN_ITERATIVE_SOLVER_BASE_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \ingroup IterativeLinearSolvers_Module
   * \brief Base class for linear iterative solvers
@@ -201,8 +201,8 @@ public:
     
     int rhsCols = b.cols();
     int size = b.rows();
-    Eigen::Matrix<DestScalar,Dynamic,1> tb(size);
-    Eigen::Matrix<DestScalar,Dynamic,1> tx(size);
+    IMP_Eigen::Matrix<DestScalar,Dynamic,1> tb(size);
+    IMP_Eigen::Matrix<DestScalar,Dynamic,1> tx(size);
     for(int k=0; k<rhsCols; ++k)
     {
       tb = b.col(k);
@@ -239,7 +239,7 @@ struct sparse_solve_retval<IterativeSolverBase<Derived>, Rhs>
   : sparse_solve_retval_base<IterativeSolverBase<Derived>, Rhs>
 {
   typedef IterativeSolverBase<Derived> Dec;
-  EIGEN_MAKE_SPARSE_SOLVE_HELPERS(Dec,Rhs)
+  IMP_EIGEN_MAKE_SPARSE_SOLVE_HELPERS(Dec,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -249,6 +249,6 @@ struct sparse_solve_retval<IterativeSolverBase<Derived>, Rhs>
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_ITERATIVE_SOLVER_BASE_H
+#endif // IMP_EIGEN_ITERATIVE_SOLVER_BASE_H

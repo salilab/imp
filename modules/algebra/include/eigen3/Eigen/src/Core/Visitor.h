@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_VISITOR_H
-#define EIGEN_VISITOR_H
+#ifndef IMP_EIGEN_VISITOR_H
+#define IMP_EIGEN_VISITOR_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -80,7 +80,7 @@ void DenseBase<Derived>::visit(Visitor& visitor) const
                    && CoeffReadCost != Dynamic
                    && (SizeAtCompileTime == 1 || internal::functor_traits<Visitor>::Cost != Dynamic)
                    && SizeAtCompileTime * CoeffReadCost + (SizeAtCompileTime-1) * internal::functor_traits<Visitor>::Cost
-                      <= EIGEN_UNROLLING_LIMIT };
+                      <= IMP_EIGEN_UNROLLING_LIMIT };
   return internal::visitor_impl<Visitor, Derived,
       unroll ? int(SizeAtCompileTime) : Dynamic
     >::run(derived(), visitor);
@@ -191,7 +191,7 @@ template<typename IndexType>
 typename internal::traits<Derived>::Scalar
 DenseBase<Derived>::minCoeff(IndexType* index) const
 {
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
   internal::min_coeff_visitor<Derived> minVisitor;
   this->visit(minVisitor);
   *index = (RowsAtCompileTime==1) ? minVisitor.col : minVisitor.row;
@@ -225,13 +225,13 @@ template<typename IndexType>
 typename internal::traits<Derived>::Scalar
 DenseBase<Derived>::maxCoeff(IndexType* index) const
 {
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
   internal::max_coeff_visitor<Derived> maxVisitor;
   this->visit(maxVisitor);
   *index = (RowsAtCompileTime==1) ? maxVisitor.col : maxVisitor.row;
   return maxVisitor.res;
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_VISITOR_H
+#endif // IMP_EIGEN_VISITOR_H

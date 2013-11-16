@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_MATRIX_POWER
-#define EIGEN_MATRIX_POWER
+#ifndef IMP_EIGEN_MATRIX_POWER
+#define IMP_EIGEN_MATRIX_POWER
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 template<typename MatrixType> class MatrixPower;
 
@@ -504,6 +504,6 @@ template<typename Derived>
 const MatrixPowerReturnValue<Derived> MatrixBase<Derived>::pow(const RealScalar& p) const
 { return MatrixPowerReturnValue<Derived>(derived(), p); }
 
-} // namespace Eigen
+} // namespace IMP_Eigen
 
-#endif // EIGEN_MATRIX_POWER
+#endif // IMP_EIGEN_MATRIX_POWER

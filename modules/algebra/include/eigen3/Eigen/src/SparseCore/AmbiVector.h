@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_AMBIVECTOR_H
-#define EIGEN_AMBIVECTOR_H
+#ifndef IMP_EIGEN_AMBIVECTOR_H
+#define IMP_EIGEN_AMBIVECTOR_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -185,7 +185,7 @@ _Scalar& AmbiVector<_Scalar,_Index>::coeffRef(_Index i)
     return m_buffer[i];
   else
   {
-    ListEl* EIGEN_RESTRICT llElements = reinterpret_cast<ListEl*>(m_buffer);
+    ListEl* IMP_EIGEN_RESTRICT llElements = reinterpret_cast<ListEl*>(m_buffer);
     // TODO factorize the following code to reduce code generation
     eigen_assert(m_mode==IsSparse);
     if (m_llSize==0)
@@ -254,7 +254,7 @@ _Scalar& AmbiVector<_Scalar,_Index>::coeff(_Index i)
     return m_buffer[i];
   else
   {
-    ListEl* EIGEN_RESTRICT llElements = reinterpret_cast<ListEl*>(m_buffer);
+    ListEl* IMP_EIGEN_RESTRICT llElements = reinterpret_cast<ListEl*>(m_buffer);
     eigen_assert(m_mode==IsSparse);
     if ((m_llSize==0) || (i<llElements[m_llStart].index))
     {
@@ -303,7 +303,7 @@ class AmbiVector<_Scalar,_Index>::Iterator
       }
       else
       {
-        ListEl* EIGEN_RESTRICT llElements = reinterpret_cast<ListEl*>(m_vector.m_buffer);
+        ListEl* IMP_EIGEN_RESTRICT llElements = reinterpret_cast<ListEl*>(m_vector.m_buffer);
         m_currentEl = m_vector.m_llStart;
         while (m_currentEl>=0 && abs(llElements[m_currentEl].value)<=m_epsilon)
           m_currentEl = llElements[m_currentEl].next;
@@ -340,7 +340,7 @@ class AmbiVector<_Scalar,_Index>::Iterator
       }
       else
       {
-        ListEl* EIGEN_RESTRICT llElements = reinterpret_cast<ListEl*>(m_vector.m_buffer);
+        ListEl* IMP_EIGEN_RESTRICT llElements = reinterpret_cast<ListEl*>(m_vector.m_buffer);
         do {
           m_currentEl = llElements[m_currentEl].next;
         } while (m_currentEl>=0 && abs(llElements[m_currentEl].value)<m_epsilon);
@@ -368,6 +368,6 @@ class AmbiVector<_Scalar,_Index>::Iterator
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_AMBIVECTOR_H
+#endif // IMP_EIGEN_AMBIVECTOR_H

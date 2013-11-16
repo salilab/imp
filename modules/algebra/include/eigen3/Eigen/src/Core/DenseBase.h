@@ -8,17 +8,17 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_DENSEBASE_H
-#define EIGEN_DENSEBASE_H
+#ifndef IMP_EIGEN_DENSEBASE_H
+#define IMP_EIGEN_DENSEBASE_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 namespace internal {
   
-// The index type defined by EIGEN_DEFAULT_DENSE_INDEX_TYPE must be a signed type.
+// The index type defined by IMP_EIGEN_DEFAULT_DENSE_INDEX_TYPE must be a signed type.
 // This dummy function simply aims at checking that at compile time.
 static inline void check_DenseIndex_is_signed() {
-  EIGEN_STATIC_ASSERT(NumTraits<DenseIndex>::IsSigned,THE_INDEX_TYPE_MUST_BE_A_SIGNED_TYPE); 
+  IMP_EIGEN_STATIC_ASSERT(NumTraits<DenseIndex>::IsSigned,THE_INDEX_TYPE_MUST_BE_A_SIGNED_TYPE); 
 }
 
 } // end namespace internal
@@ -34,17 +34,17 @@ static inline void check_DenseIndex_is_signed() {
   * \tparam Derived is the derived type, e.g., a matrix type or an expression.
   *
   * This class can be extended with the help of the plugin mechanism described on the page
-  * \ref TopicCustomizingEigen by defining the preprocessor symbol \c EIGEN_DENSEBASE_PLUGIN.
+  * \ref TopicCustomizingEigen by defining the preprocessor symbol \c IMP_EIGEN_DENSEBASE_PLUGIN.
   *
   * \sa \ref TopicClassHierarchy
   */
 template<typename Derived> class DenseBase
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
   : public internal::special_scalar_op_base<Derived,typename internal::traits<Derived>::Scalar,
                                      typename NumTraits<typename internal::traits<Derived>::Scalar>::Real>
 #else
   : public DenseCoeffsBase<Derived>
-#endif // not EIGEN_PARSED_BY_DOXYGEN
+#endif // not IMP_EIGEN_PARSED_BY_DOXYGEN
 {
   public:
     using internal::special_scalar_op_base<Derived,typename internal::traits<Derived>::Scalar,
@@ -55,7 +55,7 @@ template<typename Derived> class DenseBase
     typedef typename internal::traits<Derived>::StorageKind StorageKind;
 
     /** \brief The type of indices 
-      * \details To change this, \c \#define the preprocessor symbol \c EIGEN_DEFAULT_DENSE_INDEX_TYPE.
+      * \details To change this, \c \#define the preprocessor symbol \c IMP_EIGEN_DEFAULT_DENSE_INDEX_TYPE.
       * \sa \ref TopicPreprocessorDirectives.
       */
     typedef typename internal::traits<Derived>::Index Index; 
@@ -216,7 +216,7 @@ template<typename Derived> class DenseBase
       */
     void resize(Index newSize)
     {
-      EIGEN_ONLY_USED_FOR_DEBUG(newSize);
+      IMP_EIGEN_ONLY_USED_FOR_DEBUG(newSize);
       eigen_assert(newSize == this->size()
                 && "DenseBase::resize() does not actually allow to resize.");
     }
@@ -226,13 +226,13 @@ template<typename Derived> class DenseBase
       */
     void resize(Index nbRows, Index nbCols)
     {
-      EIGEN_ONLY_USED_FOR_DEBUG(nbRows);
-      EIGEN_ONLY_USED_FOR_DEBUG(nbCols);
+      IMP_EIGEN_ONLY_USED_FOR_DEBUG(nbRows);
+      IMP_EIGEN_ONLY_USED_FOR_DEBUG(nbCols);
       eigen_assert(nbRows == this->rows() && nbCols == this->cols()
                 && "DenseBase::resize() does not actually allow to resize.");
     }
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
 
     /** \internal Represents a matrix with all coefficients equal to one another*/
     typedef CwiseNullaryOp<internal::scalar_constant_op<Scalar>,Derived> ConstantReturnType;
@@ -243,7 +243,7 @@ template<typename Derived> class DenseBase
     /** \internal the return type of MatrixBase::eigenvalues() */
     typedef Matrix<typename NumTraits<typename internal::traits<Derived>::Scalar>::Real, internal::traits<Derived>::ColsAtCompileTime, 1> EigenvaluesReturnType;
 
-#endif // not EIGEN_PARSED_BY_DOXYGEN
+#endif // not IMP_EIGEN_PARSED_BY_DOXYGEN
 
     /** Copies \a other into *this. \returns a reference to *this. */
     template<typename OtherDerived>
@@ -266,11 +266,11 @@ template<typename Derived> class DenseBase
     template<typename OtherDerived>
     Derived& operator=(const ReturnByValue<OtherDerived>& func);
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** Copies \a other into *this without evaluating other. \returns a reference to *this. */
     template<typename OtherDerived>
     Derived& lazyAssign(const DenseBase<OtherDerived>& other);
-#endif // not EIGEN_PARSED_BY_DOXYGEN
+#endif // not IMP_EIGEN_PARSED_BY_DOXYGEN
 
     CommaInitializer<Derived> operator<< (const Scalar& s);
 
@@ -280,11 +280,11 @@ template<typename Derived> class DenseBase
     template<typename OtherDerived>
     CommaInitializer<Derived> operator<< (const DenseBase<OtherDerived>& other);
 
-    Eigen::Transpose<Derived> transpose();
+    IMP_Eigen::Transpose<Derived> transpose();
 	typedef typename internal::add_const<Transpose<const Derived> >::type ConstTransposeReturnType;
     ConstTransposeReturnType transpose() const;
     void transposeInPlace();
-#ifndef EIGEN_NO_DEBUG
+#ifndef IMP_EIGEN_NO_DEBUG
   protected:
     template<typename OtherDerived>
     void checkTransposeAliasing(const OtherDerived& other) const;
@@ -359,7 +359,7 @@ template<typename Derived> class DenseBase
       * Notice that in the case of a plain matrix or vector (not an expression) this function just returns
       * a const reference, in order to avoid a useless copy.
       */
-    EIGEN_STRONG_INLINE EvalReturnType eval() const
+    IMP_EIGEN_STRONG_INLINE EvalReturnType eval() const
     {
       // Even though MSVC does not honor strong inlining when the return type
       // is a dynamic matrix, we desperately need strong inlining for fixed
@@ -423,7 +423,7 @@ template<typename Derived> class DenseBase
     /** \returns the unique coefficient of a 1x1 expression */
     CoeffReturnType value() const
     {
-      EIGEN_STATIC_ASSERT_SIZE_1x1(Derived)
+      IMP_EIGEN_STATIC_ASSERT_SIZE_1x1(Derived)
       eigen_assert(this->rows() == 1 && this->cols() == 1);
       return derived().coeff(0,0);
     }
@@ -471,14 +471,14 @@ template<typename Derived> class DenseBase
     ConstReverseReturnType reverse() const;
     void reverseInPlace();
 
-#define EIGEN_CURRENT_STORAGE_BASE_CLASS Eigen::DenseBase
+#define IMP_EIGEN_CURRENT_STORAGE_BASE_CLASS IMP_Eigen::DenseBase
 #   include "../plugins/BlockMethods.h"
-#   ifdef EIGEN_DENSEBASE_PLUGIN
-#     include EIGEN_DENSEBASE_PLUGIN
+#   ifdef IMP_EIGEN_DENSEBASE_PLUGIN
+#     include IMP_EIGEN_DENSEBASE_PLUGIN
 #   endif
-#undef EIGEN_CURRENT_STORAGE_BASE_CLASS
+#undef IMP_EIGEN_CURRENT_STORAGE_BASE_CLASS
 
-#ifdef EIGEN2_SUPPORT
+#ifdef IMP_EIGEN2_SUPPORT
 
     Block<Derived> corner(CornerType type, Index cRows, Index cCols);
     const Block<Derived> corner(CornerType type, Index cRows, Index cCols) const;
@@ -487,13 +487,13 @@ template<typename Derived> class DenseBase
     template<int CRows, int CCols>
     const Block<Derived, CRows, CCols> corner(CornerType type) const;
 
-#endif // EIGEN2_SUPPORT
+#endif // IMP_EIGEN2_SUPPORT
 
 
     // disable the use of evalTo for dense objects with a nice compilation error
     template<typename Dest> inline void evalTo(Dest& ) const
     {
-      EIGEN_STATIC_ASSERT((internal::is_same<Dest,void>::value),THE_EVAL_EVALTO_FUNCTION_SHOULD_NEVER_BE_CALLED_FOR_DENSE_OBJECTS);
+      IMP_EIGEN_STATIC_ASSERT((internal::is_same<Dest,void>::value),THE_EVAL_EVALTO_FUNCTION_SHOULD_NEVER_BE_CALLED_FOR_DENSE_OBJECTS);
     }
 
   protected:
@@ -503,9 +503,9 @@ template<typename Derived> class DenseBase
       /* Just checks for self-consistency of the flags.
        * Only do it when debugging Eigen, as this borders on paranoiac and could slow compilation down
        */
-#ifdef EIGEN_INTERNAL_DEBUGGING
-      EIGEN_STATIC_ASSERT((EIGEN_IMPLIES(MaxRowsAtCompileTime==1 && MaxColsAtCompileTime!=1, int(IsRowMajor))
-                        && EIGEN_IMPLIES(MaxColsAtCompileTime==1 && MaxRowsAtCompileTime!=1, int(!IsRowMajor))),
+#ifdef IMP_EIGEN_INTERNAL_DEBUGGING
+      IMP_EIGEN_STATIC_ASSERT((IMP_EIGEN_IMPLIES(MaxRowsAtCompileTime==1 && MaxColsAtCompileTime!=1, int(IsRowMajor))
+                        && IMP_EIGEN_IMPLIES(MaxColsAtCompileTime==1 && MaxRowsAtCompileTime!=1, int(!IsRowMajor))),
                           INVALID_STORAGE_ORDER_FOR_THIS_VECTOR_EXPRESSION)
 #endif
     }
@@ -516,6 +516,6 @@ template<typename Derived> class DenseBase
     template<typename OtherDerived> explicit DenseBase(const DenseBase<OtherDerived>&);
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_DENSEBASE_H
+#endif // IMP_EIGEN_DENSEBASE_H

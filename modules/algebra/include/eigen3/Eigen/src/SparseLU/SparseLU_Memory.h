@@ -28,10 +28,10 @@
  * the code was modified is included with the above copyright notice.
  */
 
-#ifndef EIGEN_SPARSELU_MEMORY
-#define EIGEN_SPARSELU_MEMORY
+#ifndef IMP_EIGEN_SPARSELU_MEMORY
+#define IMP_EIGEN_SPARSELU_MEMORY
 
-namespace Eigen {
+namespace IMP_Eigen {
 namespace internal {
   
 enum { LUNoMarker = 3 };
@@ -218,5 +218,5 @@ Index SparseLUImpl<Scalar,Index>::memXpand(VectorType& vec, Index& maxlen, Index
 
 } // end namespace internal
 
-} // end namespace Eigen
-#endif // EIGEN_SPARSELU_MEMORY
+} // end namespace IMP_Eigen
+#endif // IMP_EIGEN_SPARSELU_MEMORY

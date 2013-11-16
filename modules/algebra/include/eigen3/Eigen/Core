@@ -8,20 +8,20 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_CORE_H
-#define EIGEN_CORE_H
+#ifndef IMP_EIGEN_CORE_H
+#define IMP_EIGEN_CORE_H
 
 // first thing Eigen does: stop the compiler from committing suicide
 #include "src/Core/util/DisableStupidWarnings.h"
 
 // then include this file where all our macros are defined. It's really important to do it first because
 // it's where we do all the alignment settings (platform detection and honoring the user's will if he
-// defined e.g. EIGEN_DONT_ALIGN) so it needs to be done before we do anything with vectorization.
+// defined e.g. IMP_EIGEN_DONT_ALIGN) so it needs to be done before we do anything with vectorization.
 #include "src/Core/util/Macros.h"
 
 // Disable the ipa-cp-clone optimization flag with MinGW 6.x or newer (enabled by default with -O3)
 // See http://eigen.tuxfamily.org/bz/show_bug.cgi?id=556 for details.
-#if defined(__MINGW32__) && EIGEN_GNUC_AT_LEAST(4,6)
+#if defined(__MINGW32__) && IMP_EIGEN_GNUC_AT_LEAST(4,6)
   #pragma GCC optimize ("-fno-ipa-cp-clone")
 #endif
 
@@ -31,11 +31,11 @@
 // and inclusion of their respective header files
 #include "src/Core/util/MKL_support.h"
 
-// if alignment is disabled, then disable vectorization. Note: EIGEN_ALIGN is the proper check, it takes into
-// account both the user's will (EIGEN_DONT_ALIGN) and our own platform checks
-#if !EIGEN_ALIGN
-  #ifndef EIGEN_DONT_VECTORIZE
-    #define EIGEN_DONT_VECTORIZE
+// if alignment is disabled, then disable vectorization. Note: IMP_EIGEN_ALIGN is the proper check, it takes into
+// account both the user's will (IMP_EIGEN_DONT_ALIGN) and our own platform checks
+#if !IMP_EIGEN_ALIGN
+  #ifndef IMP_EIGEN_DONT_VECTORIZE
+    #define IMP_EIGEN_DONT_VECTORIZE
   #endif
 #endif
 
@@ -45,42 +45,42 @@
     // Remember that usage of defined() in a #define is undefined by the standard.
     // a user reported that in 64-bit mode, MSVC doesn't care to define _M_IX86_FP.
     #if (defined(_M_IX86_FP) && (_M_IX86_FP >= 2)) || defined(_M_X64)
-      #define EIGEN_SSE2_ON_MSVC_2008_OR_LATER
+      #define IMP_EIGEN_SSE2_ON_MSVC_2008_OR_LATER
     #endif
   #endif
 #else
   // Remember that usage of defined() in a #define is undefined by the standard
-  #if (defined __SSE2__) && ( (!defined __GNUC__) || (defined __INTEL_COMPILER) || EIGEN_GNUC_AT_LEAST(4,2) )
-    #define EIGEN_SSE2_ON_NON_MSVC_BUT_NOT_OLD_GCC
+  #if (defined __SSE2__) && ( (!defined __GNUC__) || (defined __INTEL_COMPILER) || IMP_EIGEN_GNUC_AT_LEAST(4,2) )
+    #define IMP_EIGEN_SSE2_ON_NON_MSVC_BUT_NOT_OLD_GCC
   #endif
 #endif
 
-#ifndef EIGEN_DONT_VECTORIZE
+#ifndef IMP_EIGEN_DONT_VECTORIZE
 
-  #if defined (EIGEN_SSE2_ON_NON_MSVC_BUT_NOT_OLD_GCC) || defined(EIGEN_SSE2_ON_MSVC_2008_OR_LATER)
+  #if defined (IMP_EIGEN_SSE2_ON_NON_MSVC_BUT_NOT_OLD_GCC) || defined(IMP_EIGEN_SSE2_ON_MSVC_2008_OR_LATER)
 
     // Defines symbols for compile-time detection of which instructions are
     // used.
-    // EIGEN_VECTORIZE_YY is defined if and only if the instruction set YY is used
-    #define EIGEN_VECTORIZE
-    #define EIGEN_VECTORIZE_SSE
-    #define EIGEN_VECTORIZE_SSE2
+    // IMP_EIGEN_VECTORIZE_YY is defined if and only if the instruction set YY is used
+    #define IMP_EIGEN_VECTORIZE
+    #define IMP_EIGEN_VECTORIZE_SSE
+    #define IMP_EIGEN_VECTORIZE_SSE2
 
     // Detect sse3/ssse3/sse4:
     // gcc and icc defines __SSE3__, ...
-    // there is no way to know about this on msvc. You can define EIGEN_VECTORIZE_SSE* if you
+    // there is no way to know about this on msvc. You can define IMP_EIGEN_VECTORIZE_SSE* if you
     // want to force the use of those instructions with msvc.
     #ifdef __SSE3__
-      #define EIGEN_VECTORIZE_SSE3
+      #define IMP_EIGEN_VECTORIZE_SSE3
     #endif
     #ifdef __SSSE3__
-      #define EIGEN_VECTORIZE_SSSE3
+      #define IMP_EIGEN_VECTORIZE_SSSE3
     #endif
     #ifdef __SSE4_1__
-      #define EIGEN_VECTORIZE_SSE4_1
+      #define IMP_EIGEN_VECTORIZE_SSE4_1
     #endif
     #ifdef __SSE4_2__
-      #define EIGEN_VECTORIZE_SSE4_2
+      #define IMP_EIGEN_VECTORIZE_SSE4_2
     #endif
 
     // include files
@@ -100,23 +100,23 @@
       #else
         #include <emmintrin.h>
         #include <xmmintrin.h>
-        #ifdef  EIGEN_VECTORIZE_SSE3
+        #ifdef  IMP_EIGEN_VECTORIZE_SSE3
         #include <pmmintrin.h>
         #endif
-        #ifdef EIGEN_VECTORIZE_SSSE3
+        #ifdef IMP_EIGEN_VECTORIZE_SSSE3
         #include <tmmintrin.h>
         #endif
-        #ifdef EIGEN_VECTORIZE_SSE4_1
+        #ifdef IMP_EIGEN_VECTORIZE_SSE4_1
         #include <smmintrin.h>
         #endif
-        #ifdef EIGEN_VECTORIZE_SSE4_2
+        #ifdef IMP_EIGEN_VECTORIZE_SSE4_2
         #include <nmmintrin.h>
         #endif
       #endif
     } // end extern "C"
   #elif defined __ALTIVEC__
-    #define EIGEN_VECTORIZE
-    #define EIGEN_VECTORIZE_ALTIVEC
+    #define IMP_EIGEN_VECTORIZE
+    #define IMP_EIGEN_VECTORIZE_ALTIVEC
     #include <altivec.h>
     // We need to #undef all these ugly tokens defined in <altivec.h>
     // => use __vector instead of vector
@@ -124,26 +124,26 @@
     #undef vector
     #undef pixel
   #elif defined  __ARM_NEON__
-    #define EIGEN_VECTORIZE
-    #define EIGEN_VECTORIZE_NEON
+    #define IMP_EIGEN_VECTORIZE
+    #define IMP_EIGEN_VECTORIZE_NEON
     #include <arm_neon.h>
   #endif
 #endif
 
-#if (defined _OPENMP) && (!defined EIGEN_DONT_PARALLELIZE)
-  #define EIGEN_HAS_OPENMP
+#if (defined _OPENMP) && (!defined IMP_EIGEN_DONT_PARALLELIZE)
+  #define IMP_EIGEN_HAS_OPENMP
 #endif
 
-#ifdef EIGEN_HAS_OPENMP
+#ifdef IMP_EIGEN_HAS_OPENMP
 #include <omp.h>
 #endif
 
 // MSVC for windows mobile does not have the errno.h file
 #if !(defined(_MSC_VER) && defined(_WIN32_WCE)) && !defined(__ARMCC_VERSION)
-#define EIGEN_HAS_ERRNO
+#define IMP_EIGEN_HAS_ERRNO
 #endif
 
-#ifdef EIGEN_HAS_ERRNO
+#ifdef IMP_EIGEN_HAS_ERRNO
 #include <cerrno>
 #endif
 #include <cstddef>
@@ -160,7 +160,7 @@
 #include <algorithm>
 
 // for outputting debug info
-#ifdef EIGEN_DEBUG_ASSIGN
+#ifdef IMP_EIGEN_DEBUG_ASSIGN
 #include <iostream>
 #endif
 
@@ -170,37 +170,37 @@
 #endif
 
 #if defined(_CPPUNWIND) || defined(__EXCEPTIONS)
-  #define EIGEN_EXCEPTIONS
+  #define IMP_EIGEN_EXCEPTIONS
 #endif
 
-#ifdef EIGEN_EXCEPTIONS
+#ifdef IMP_EIGEN_EXCEPTIONS
   #include <new>
 #endif
 
 /** \brief Namespace containing all symbols from the %Eigen library. */
-namespace Eigen {
+namespace IMP_Eigen {
 
 inline static const char *SimdInstructionSetsInUse(void) {
-#if defined(EIGEN_VECTORIZE_SSE4_2)
+#if defined(IMP_EIGEN_VECTORIZE_SSE4_2)
   return "SSE, SSE2, SSE3, SSSE3, SSE4.1, SSE4.2";
-#elif defined(EIGEN_VECTORIZE_SSE4_1)
+#elif defined(IMP_EIGEN_VECTORIZE_SSE4_1)
   return "SSE, SSE2, SSE3, SSSE3, SSE4.1";
-#elif defined(EIGEN_VECTORIZE_SSSE3)
+#elif defined(IMP_EIGEN_VECTORIZE_SSSE3)
   return "SSE, SSE2, SSE3, SSSE3";
-#elif defined(EIGEN_VECTORIZE_SSE3)
+#elif defined(IMP_EIGEN_VECTORIZE_SSE3)
   return "SSE, SSE2, SSE3";
-#elif defined(EIGEN_VECTORIZE_SSE2)
+#elif defined(IMP_EIGEN_VECTORIZE_SSE2)
   return "SSE, SSE2";
-#elif defined(EIGEN_VECTORIZE_ALTIVEC)
+#elif defined(IMP_EIGEN_VECTORIZE_ALTIVEC)
   return "AltiVec";
-#elif defined(EIGEN_VECTORIZE_NEON)
+#elif defined(IMP_EIGEN_VECTORIZE_NEON)
   return "ARM NEON";
 #else
   return "None";
 #endif
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
 #define STAGE10_FULL_EIGEN2_API             10
 #define STAGE20_RESOLVE_API_CONFLICTS       20
@@ -208,27 +208,27 @@ inline static const char *SimdInstructionSetsInUse(void) {
 #define STAGE40_FULL_EIGEN3_STRICTNESS      40
 #define STAGE99_NO_EIGEN2_SUPPORT           99
 
-#if   defined EIGEN2_SUPPORT_STAGE40_FULL_EIGEN3_STRICTNESS
-  #define EIGEN2_SUPPORT
-  #define EIGEN2_SUPPORT_STAGE STAGE40_FULL_EIGEN3_STRICTNESS
-#elif defined EIGEN2_SUPPORT_STAGE30_FULL_EIGEN3_API
-  #define EIGEN2_SUPPORT
-  #define EIGEN2_SUPPORT_STAGE STAGE30_FULL_EIGEN3_API
-#elif defined EIGEN2_SUPPORT_STAGE20_RESOLVE_API_CONFLICTS
-  #define EIGEN2_SUPPORT
-  #define EIGEN2_SUPPORT_STAGE STAGE20_RESOLVE_API_CONFLICTS
-#elif defined EIGEN2_SUPPORT_STAGE10_FULL_EIGEN2_API
-  #define EIGEN2_SUPPORT
-  #define EIGEN2_SUPPORT_STAGE STAGE10_FULL_EIGEN2_API
-#elif defined EIGEN2_SUPPORT
+#if   defined IMP_EIGEN2_SUPPORT_STAGE40_FULL_EIGEN3_STRICTNESS
+  #define IMP_EIGEN2_SUPPORT
+  #define IMP_EIGEN2_SUPPORT_STAGE STAGE40_FULL_EIGEN3_STRICTNESS
+#elif defined IMP_EIGEN2_SUPPORT_STAGE30_FULL_EIGEN3_API
+  #define IMP_EIGEN2_SUPPORT
+  #define IMP_EIGEN2_SUPPORT_STAGE STAGE30_FULL_EIGEN3_API
+#elif defined IMP_EIGEN2_SUPPORT_STAGE20_RESOLVE_API_CONFLICTS
+  #define IMP_EIGEN2_SUPPORT
+  #define IMP_EIGEN2_SUPPORT_STAGE STAGE20_RESOLVE_API_CONFLICTS
+#elif defined IMP_EIGEN2_SUPPORT_STAGE10_FULL_EIGEN2_API
+  #define IMP_EIGEN2_SUPPORT
+  #define IMP_EIGEN2_SUPPORT_STAGE STAGE10_FULL_EIGEN2_API
+#elif defined IMP_EIGEN2_SUPPORT
   // default to stage 3, that's what it's always meant
-  #define EIGEN2_SUPPORT_STAGE30_FULL_EIGEN3_API
-  #define EIGEN2_SUPPORT_STAGE STAGE30_FULL_EIGEN3_API
+  #define IMP_EIGEN2_SUPPORT_STAGE30_FULL_EIGEN3_API
+  #define IMP_EIGEN2_SUPPORT_STAGE STAGE30_FULL_EIGEN3_API
 #else
-  #define EIGEN2_SUPPORT_STAGE STAGE99_NO_EIGEN2_SUPPORT
+  #define IMP_EIGEN2_SUPPORT_STAGE STAGE99_NO_EIGEN2_SUPPORT
 #endif
 
-#ifdef EIGEN2_SUPPORT
+#ifdef IMP_EIGEN2_SUPPORT
 #undef minor
 #endif
 
@@ -259,14 +259,14 @@ using std::ptrdiff_t;
 #include "src/Core/MathFunctions.h"
 #include "src/Core/GenericPacketMath.h"
 
-#if defined EIGEN_VECTORIZE_SSE
+#if defined IMP_EIGEN_VECTORIZE_SSE
   #include "src/Core/arch/SSE/PacketMath.h"
   #include "src/Core/arch/SSE/MathFunctions.h"
   #include "src/Core/arch/SSE/Complex.h"
-#elif defined EIGEN_VECTORIZE_ALTIVEC
+#elif defined IMP_EIGEN_VECTORIZE_ALTIVEC
   #include "src/Core/arch/AltiVec/PacketMath.h"
   #include "src/Core/arch/AltiVec/Complex.h"
-#elif defined EIGEN_VECTORIZE_NEON
+#elif defined IMP_EIGEN_VECTORIZE_NEON
   #include "src/Core/arch/NEON/PacketMath.h"
   #include "src/Core/arch/NEON/Complex.h"
 #endif
@@ -279,7 +279,7 @@ using std::ptrdiff_t;
 #include "src/Core/MatrixBase.h"
 #include "src/Core/EigenBase.h"
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN // work around Doxygen bug triggered by Assign.h r814874
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN // work around Doxygen bug triggered by Assign.h r814874
                                 // at least confirmed with Doxygen 1.5.5 and 1.5.6
   #include "src/Core/Assign.h"
 #endif
@@ -350,7 +350,7 @@ using std::ptrdiff_t;
 #include "src/Core/ArrayBase.h"
 #include "src/Core/ArrayWrapper.h"
 
-#ifdef EIGEN_USE_BLAS
+#ifdef IMP_EIGEN_USE_BLAS
 #include "src/Core/products/GeneralMatrixMatrix_MKL.h"
 #include "src/Core/products/GeneralMatrixVector_MKL.h"
 #include "src/Core/products/GeneralMatrixMatrixTriangular_MKL.h"
@@ -359,9 +359,9 @@ using std::ptrdiff_t;
 #include "src/Core/products/TriangularMatrixMatrix_MKL.h"
 #include "src/Core/products/TriangularMatrixVector_MKL.h"
 #include "src/Core/products/TriangularSolverMatrix_MKL.h"
-#endif // EIGEN_USE_BLAS
+#endif // IMP_EIGEN_USE_BLAS
 
-#ifdef EIGEN_USE_MKL_VML
+#ifdef IMP_EIGEN_USE_MKL_VML
 #include "src/Core/Assign_MKL.h"
 #endif
 
@@ -369,8 +369,8 @@ using std::ptrdiff_t;
 
 #include "src/Core/util/ReenableStupidWarnings.h"
 
-#ifdef EIGEN2_SUPPORT
+#ifdef IMP_EIGEN2_SUPPORT
 #include "Eigen2Support"
 #endif
 
-#endif // EIGEN_CORE_H
+#endif // IMP_EIGEN_CORE_H

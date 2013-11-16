@@ -7,12 +7,12 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPLINES_FWD_H
-#define EIGEN_SPLINES_FWD_H
+#ifndef IMP_EIGEN_SPLINES_FWD_H
+#define IMP_EIGEN_SPLINES_FWD_H
 
 #include <Eigen/Core>
 
-namespace Eigen
+namespace IMP_Eigen
 {
     template <typename Scalar, int Dim, int Degree = Dynamic> class Spline;
 
@@ -83,4 +83,4 @@ namespace Eigen
     typedef Spline<double,3> Spline3d;
 }
 
-#endif // EIGEN_SPLINES_FWD_H
+#endif // IMP_EIGEN_SPLINES_FWD_H

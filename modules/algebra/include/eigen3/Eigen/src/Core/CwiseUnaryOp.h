@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_CWISE_UNARY_OP_H
-#define EIGEN_CWISE_UNARY_OP_H
+#ifndef IMP_EIGEN_CWISE_UNARY_OP_H
+#define IMP_EIGEN_CWISE_UNARY_OP_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \class CwiseUnaryOp
   * \ingroup Core_Module
@@ -62,13 +62,13 @@ class CwiseUnaryOp : internal::no_assignment_operator,
   public:
 
     typedef typename CwiseUnaryOpImpl<UnaryOp, XprType,typename internal::traits<XprType>::StorageKind>::Base Base;
-    EIGEN_GENERIC_PUBLIC_INTERFACE(CwiseUnaryOp)
+    IMP_EIGEN_GENERIC_PUBLIC_INTERFACE(CwiseUnaryOp)
 
     inline CwiseUnaryOp(const XprType& xpr, const UnaryOp& func = UnaryOp())
       : m_xpr(xpr), m_functor(func) {}
 
-    EIGEN_STRONG_INLINE Index rows() const { return m_xpr.rows(); }
-    EIGEN_STRONG_INLINE Index cols() const { return m_xpr.cols(); }
+    IMP_EIGEN_STRONG_INLINE Index rows() const { return m_xpr.rows(); }
+    IMP_EIGEN_STRONG_INLINE Index cols() const { return m_xpr.cols(); }
 
     /** \returns the functor representing the unary operation */
     const UnaryOp& functor() const { return m_functor; }
@@ -96,31 +96,31 @@ class CwiseUnaryOpImpl<UnaryOp,XprType,Dense>
 
     typedef CwiseUnaryOp<UnaryOp, XprType> Derived;
     typedef typename internal::dense_xpr_base<CwiseUnaryOp<UnaryOp, XprType> >::type Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(Derived)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(Derived)
 
-    EIGEN_STRONG_INLINE const Scalar coeff(Index rowId, Index colId) const
+    IMP_EIGEN_STRONG_INLINE const Scalar coeff(Index rowId, Index colId) const
     {
       return derived().functor()(derived().nestedExpression().coeff(rowId, colId));
     }
 
     template<int LoadMode>
-    EIGEN_STRONG_INLINE PacketScalar packet(Index rowId, Index colId) const
+    IMP_EIGEN_STRONG_INLINE PacketScalar packet(Index rowId, Index colId) const
     {
       return derived().functor().packetOp(derived().nestedExpression().template packet<LoadMode>(rowId, colId));
     }
 
-    EIGEN_STRONG_INLINE const Scalar coeff(Index index) const
+    IMP_EIGEN_STRONG_INLINE const Scalar coeff(Index index) const
     {
       return derived().functor()(derived().nestedExpression().coeff(index));
     }
 
     template<int LoadMode>
-    EIGEN_STRONG_INLINE PacketScalar packet(Index index) const
+    IMP_EIGEN_STRONG_INLINE PacketScalar packet(Index index) const
     {
       return derived().functor().packetOp(derived().nestedExpression().template packet<LoadMode>(index));
     }
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_CWISE_UNARY_OP_H
+#endif // IMP_EIGEN_CWISE_UNARY_OP_H

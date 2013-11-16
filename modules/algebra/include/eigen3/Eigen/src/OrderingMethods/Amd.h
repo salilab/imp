@@ -28,10 +28,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "../Core/util/NonMPL2.h"
 
-#ifndef EIGEN_SPARSE_AMD_H
-#define EIGEN_SPARSE_AMD_H
+#ifndef IMP_EIGEN_SPARSE_AMD_H
+#define IMP_EIGEN_SPARSE_AMD_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
   
@@ -430,6 +430,6 @@ void minimum_degree_ordering(SparseMatrix<Scalar,ColMajor,Index>& C, Permutation
 
 } // namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SPARSE_AMD_H
+#endif // IMP_EIGEN_SPARSE_AMD_H

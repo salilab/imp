@@ -7,24 +7,24 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_PACKET_MATH_ALTIVEC_H
-#define EIGEN_PACKET_MATH_ALTIVEC_H
+#ifndef IMP_EIGEN_PACKET_MATH_ALTIVEC_H
+#define IMP_EIGEN_PACKET_MATH_ALTIVEC_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 namespace internal {
 
-#ifndef EIGEN_CACHEFRIENDLY_PRODUCT_THRESHOLD
-#define EIGEN_CACHEFRIENDLY_PRODUCT_THRESHOLD 4
+#ifndef IMP_EIGEN_CACHEFRIENDLY_PRODUCT_THRESHOLD
+#define IMP_EIGEN_CACHEFRIENDLY_PRODUCT_THRESHOLD 4
 #endif
 
-#ifndef EIGEN_HAS_FUSE_CJMADD
-#define EIGEN_HAS_FUSE_CJMADD 1
+#ifndef IMP_EIGEN_HAS_FUSE_CJMADD
+#define IMP_EIGEN_HAS_FUSE_CJMADD 1
 #endif
 
 // NOTE Altivec has 32 registers, but Eigen only accepts a value of 8 or 16
-#ifndef EIGEN_ARCH_DEFAULT_NUMBER_OF_REGISTERS
-#define EIGEN_ARCH_DEFAULT_NUMBER_OF_REGISTERS 16
+#ifndef IMP_EIGEN_ARCH_DEFAULT_NUMBER_OF_REGISTERS
+#define IMP_EIGEN_ARCH_DEFAULT_NUMBER_OF_REGISTERS 16
 #endif
 
 typedef __vector float          Packet4f;
@@ -144,42 +144,42 @@ inline std::ostream & operator <<(std::ostream & s, const Packetbi & v)
   return s;
 }
 */
-template<> EIGEN_STRONG_INLINE Packet4f pset1<Packet4f>(const float&  from) {
+template<> IMP_EIGEN_STRONG_INLINE Packet4f pset1<Packet4f>(const float&  from) {
   // Taken from http://developer.apple.com/hardwaredrivers/ve/alignment.html
-  float EIGEN_ALIGN16 af[4];
+  float IMP_EIGEN_ALIGN16 af[4];
   af[0] = from;
   Packet4f vc = vec_ld(0, af);
   vc = vec_splat(vc, 0);
   return vc;
 }
 
-template<> EIGEN_STRONG_INLINE Packet4i pset1<Packet4i>(const int&    from)   {
-  int EIGEN_ALIGN16 ai[4];
+template<> IMP_EIGEN_STRONG_INLINE Packet4i pset1<Packet4i>(const int&    from)   {
+  int IMP_EIGEN_ALIGN16 ai[4];
   ai[0] = from;
   Packet4i vc = vec_ld(0, ai);
   vc = vec_splat(vc, 0);
   return vc;
 }
 
-template<> EIGEN_STRONG_INLINE Packet4f plset<float>(const float& a) { return vec_add(pset1<Packet4f>(a), p4f_COUNTDOWN); }
-template<> EIGEN_STRONG_INLINE Packet4i plset<int>(const int& a)     { return vec_add(pset1<Packet4i>(a), p4i_COUNTDOWN); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4f plset<float>(const float& a) { return vec_add(pset1<Packet4f>(a), p4f_COUNTDOWN); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4i plset<int>(const int& a)     { return vec_add(pset1<Packet4i>(a), p4i_COUNTDOWN); }
 
-template<> EIGEN_STRONG_INLINE Packet4f padd<Packet4f>(const Packet4f& a, const Packet4f& b) { return vec_add(a,b); }
-template<> EIGEN_STRONG_INLINE Packet4i padd<Packet4i>(const Packet4i& a, const Packet4i& b) { return vec_add(a,b); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4f padd<Packet4f>(const Packet4f& a, const Packet4f& b) { return vec_add(a,b); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4i padd<Packet4i>(const Packet4i& a, const Packet4i& b) { return vec_add(a,b); }
 
-template<> EIGEN_STRONG_INLINE Packet4f psub<Packet4f>(const Packet4f& a, const Packet4f& b) { return vec_sub(a,b); }
-template<> EIGEN_STRONG_INLINE Packet4i psub<Packet4i>(const Packet4i& a, const Packet4i& b) { return vec_sub(a,b); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4f psub<Packet4f>(const Packet4f& a, const Packet4f& b) { return vec_sub(a,b); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4i psub<Packet4i>(const Packet4i& a, const Packet4i& b) { return vec_sub(a,b); }
 
-template<> EIGEN_STRONG_INLINE Packet4f pnegate(const Packet4f& a) { return psub<Packet4f>(p4f_ZERO, a); }
-template<> EIGEN_STRONG_INLINE Packet4i pnegate(const Packet4i& a) { return psub<Packet4i>(p4i_ZERO, a); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4f pnegate(const Packet4f& a) { return psub<Packet4f>(p4f_ZERO, a); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4i pnegate(const Packet4i& a) { return psub<Packet4i>(p4i_ZERO, a); }
 
-template<> EIGEN_STRONG_INLINE Packet4f pconj(const Packet4f& a) { return a; }
-template<> EIGEN_STRONG_INLINE Packet4i pconj(const Packet4i& a) { return a; }
+template<> IMP_EIGEN_STRONG_INLINE Packet4f pconj(const Packet4f& a) { return a; }
+template<> IMP_EIGEN_STRONG_INLINE Packet4i pconj(const Packet4i& a) { return a; }
 
-template<> EIGEN_STRONG_INLINE Packet4f pmul<Packet4f>(const Packet4f& a, const Packet4f& b) { return vec_madd(a,b,p4f_ZERO); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4f pmul<Packet4f>(const Packet4f& a, const Packet4f& b) { return vec_madd(a,b,p4f_ZERO); }
 /* Commented out: it's actually slower than processing it scalar
  *
-template<> EIGEN_STRONG_INLINE Packet4i pmul<Packet4i>(const Packet4i& a, const Packet4i& b)
+template<> IMP_EIGEN_STRONG_INLINE Packet4i pmul<Packet4i>(const Packet4i& a, const Packet4i& b)
 {
   // Detailed in: http://freevec.org/content/32bit_signed_integer_multiplication_altivec
   //Set up constants, variables
@@ -213,7 +213,7 @@ template<> EIGEN_STRONG_INLINE Packet4i pmul<Packet4i>(const Packet4i& a, const 
   return prod;
 }
 */
-template<> EIGEN_STRONG_INLINE Packet4f pdiv<Packet4f>(const Packet4f& a, const Packet4f& b)
+template<> IMP_EIGEN_STRONG_INLINE Packet4f pdiv<Packet4f>(const Packet4f& a, const Packet4f& b)
 {
   Packet4f t, y_0, y_1, res;
 
@@ -228,40 +228,40 @@ template<> EIGEN_STRONG_INLINE Packet4f pdiv<Packet4f>(const Packet4f& a, const 
   return res;
 }
 
-template<> EIGEN_STRONG_INLINE Packet4i pdiv<Packet4i>(const Packet4i& /*a*/, const Packet4i& /*b*/)
+template<> IMP_EIGEN_STRONG_INLINE Packet4i pdiv<Packet4i>(const Packet4i& /*a*/, const Packet4i& /*b*/)
 { eigen_assert(false && "packet integer division are not supported by AltiVec");
   return pset1<Packet4i>(0);
 }
 
 // for some weird raisons, it has to be overloaded for packet of integers
-template<> EIGEN_STRONG_INLINE Packet4f pmadd(const Packet4f& a, const Packet4f& b, const Packet4f& c) { return vec_madd(a, b, c); }
-template<> EIGEN_STRONG_INLINE Packet4i pmadd(const Packet4i& a, const Packet4i& b, const Packet4i& c) { return padd(pmul(a,b), c); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4f pmadd(const Packet4f& a, const Packet4f& b, const Packet4f& c) { return vec_madd(a, b, c); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4i pmadd(const Packet4i& a, const Packet4i& b, const Packet4i& c) { return padd(pmul(a,b), c); }
 
-template<> EIGEN_STRONG_INLINE Packet4f pmin<Packet4f>(const Packet4f& a, const Packet4f& b) { return vec_min(a, b); }
-template<> EIGEN_STRONG_INLINE Packet4i pmin<Packet4i>(const Packet4i& a, const Packet4i& b) { return vec_min(a, b); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4f pmin<Packet4f>(const Packet4f& a, const Packet4f& b) { return vec_min(a, b); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4i pmin<Packet4i>(const Packet4i& a, const Packet4i& b) { return vec_min(a, b); }
 
-template<> EIGEN_STRONG_INLINE Packet4f pmax<Packet4f>(const Packet4f& a, const Packet4f& b) { return vec_max(a, b); }
-template<> EIGEN_STRONG_INLINE Packet4i pmax<Packet4i>(const Packet4i& a, const Packet4i& b) { return vec_max(a, b); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4f pmax<Packet4f>(const Packet4f& a, const Packet4f& b) { return vec_max(a, b); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4i pmax<Packet4i>(const Packet4i& a, const Packet4i& b) { return vec_max(a, b); }
 
 // Logical Operations are not supported for float, so we have to reinterpret casts using NEON intrinsics
-template<> EIGEN_STRONG_INLINE Packet4f pand<Packet4f>(const Packet4f& a, const Packet4f& b) { return vec_and(a, b); }
-template<> EIGEN_STRONG_INLINE Packet4i pand<Packet4i>(const Packet4i& a, const Packet4i& b) { return vec_and(a, b); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4f pand<Packet4f>(const Packet4f& a, const Packet4f& b) { return vec_and(a, b); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4i pand<Packet4i>(const Packet4i& a, const Packet4i& b) { return vec_and(a, b); }
 
-template<> EIGEN_STRONG_INLINE Packet4f por<Packet4f>(const Packet4f& a, const Packet4f& b) { return vec_or(a, b); }
-template<> EIGEN_STRONG_INLINE Packet4i por<Packet4i>(const Packet4i& a, const Packet4i& b) { return vec_or(a, b); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4f por<Packet4f>(const Packet4f& a, const Packet4f& b) { return vec_or(a, b); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4i por<Packet4i>(const Packet4i& a, const Packet4i& b) { return vec_or(a, b); }
 
-template<> EIGEN_STRONG_INLINE Packet4f pxor<Packet4f>(const Packet4f& a, const Packet4f& b) { return vec_xor(a, b); }
-template<> EIGEN_STRONG_INLINE Packet4i pxor<Packet4i>(const Packet4i& a, const Packet4i& b) { return vec_xor(a, b); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4f pxor<Packet4f>(const Packet4f& a, const Packet4f& b) { return vec_xor(a, b); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4i pxor<Packet4i>(const Packet4i& a, const Packet4i& b) { return vec_xor(a, b); }
 
-template<> EIGEN_STRONG_INLINE Packet4f pandnot<Packet4f>(const Packet4f& a, const Packet4f& b) { return vec_and(a, vec_nor(b, b)); }
-template<> EIGEN_STRONG_INLINE Packet4i pandnot<Packet4i>(const Packet4i& a, const Packet4i& b) { return vec_and(a, vec_nor(b, b)); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4f pandnot<Packet4f>(const Packet4f& a, const Packet4f& b) { return vec_and(a, vec_nor(b, b)); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4i pandnot<Packet4i>(const Packet4i& a, const Packet4i& b) { return vec_and(a, vec_nor(b, b)); }
 
-template<> EIGEN_STRONG_INLINE Packet4f pload<Packet4f>(const float* from) { EIGEN_DEBUG_ALIGNED_LOAD return vec_ld(0, from); }
-template<> EIGEN_STRONG_INLINE Packet4i pload<Packet4i>(const int*     from) { EIGEN_DEBUG_ALIGNED_LOAD return vec_ld(0, from); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4f pload<Packet4f>(const float* from) { IMP_EIGEN_DEBUG_ALIGNED_LOAD return vec_ld(0, from); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4i pload<Packet4i>(const int*     from) { IMP_EIGEN_DEBUG_ALIGNED_LOAD return vec_ld(0, from); }
 
-template<> EIGEN_STRONG_INLINE Packet4f ploadu<Packet4f>(const float* from)
+template<> IMP_EIGEN_STRONG_INLINE Packet4f ploadu<Packet4f>(const float* from)
 {
-  EIGEN_DEBUG_ALIGNED_LOAD
+  IMP_EIGEN_DEBUG_ALIGNED_LOAD
   // Taken from http://developer.apple.com/hardwaredrivers/ve/alignment.html
   Packet16uc MSQ, LSQ;
   Packet16uc mask;
@@ -271,9 +271,9 @@ template<> EIGEN_STRONG_INLINE Packet4f ploadu<Packet4f>(const float* from)
   return (Packet4f) vec_perm(MSQ, LSQ, mask);           // align the data
 
 }
-template<> EIGEN_STRONG_INLINE Packet4i ploadu<Packet4i>(const int* from)
+template<> IMP_EIGEN_STRONG_INLINE Packet4i ploadu<Packet4i>(const int* from)
 {
-  EIGEN_DEBUG_ALIGNED_LOAD
+  IMP_EIGEN_DEBUG_ALIGNED_LOAD
   // Taken from http://developer.apple.com/hardwaredrivers/ve/alignment.html
   Packet16uc MSQ, LSQ;
   Packet16uc mask;
@@ -283,14 +283,14 @@ template<> EIGEN_STRONG_INLINE Packet4i ploadu<Packet4i>(const int* from)
   return (Packet4i) vec_perm(MSQ, LSQ, mask);    // align the data
 }
 
-template<> EIGEN_STRONG_INLINE Packet4f ploaddup<Packet4f>(const float*   from)
+template<> IMP_EIGEN_STRONG_INLINE Packet4f ploaddup<Packet4f>(const float*   from)
 {
   Packet4f p;
   if((ptrdiff_t(&from) % 16) == 0)  p = pload<Packet4f>(from);
   else                              p = ploadu<Packet4f>(from);
   return vec_perm(p, p, p16uc_DUPLICATE);
 }
-template<> EIGEN_STRONG_INLINE Packet4i ploaddup<Packet4i>(const int*     from)
+template<> IMP_EIGEN_STRONG_INLINE Packet4i ploaddup<Packet4i>(const int*     from)
 {
   Packet4i p;
   if((ptrdiff_t(&from) % 16) == 0)  p = pload<Packet4i>(from);
@@ -298,12 +298,12 @@ template<> EIGEN_STRONG_INLINE Packet4i ploaddup<Packet4i>(const int*     from)
   return vec_perm(p, p, p16uc_DUPLICATE);
 }
 
-template<> EIGEN_STRONG_INLINE void pstore<float>(float*   to, const Packet4f& from) { EIGEN_DEBUG_ALIGNED_STORE vec_st(from, 0, to); }
-template<> EIGEN_STRONG_INLINE void pstore<int>(int*       to, const Packet4i& from) { EIGEN_DEBUG_ALIGNED_STORE vec_st(from, 0, to); }
+template<> IMP_EIGEN_STRONG_INLINE void pstore<float>(float*   to, const Packet4f& from) { IMP_EIGEN_DEBUG_ALIGNED_STORE vec_st(from, 0, to); }
+template<> IMP_EIGEN_STRONG_INLINE void pstore<int>(int*       to, const Packet4i& from) { IMP_EIGEN_DEBUG_ALIGNED_STORE vec_st(from, 0, to); }
 
-template<> EIGEN_STRONG_INLINE void pstoreu<float>(float*  to, const Packet4f& from)
+template<> IMP_EIGEN_STRONG_INLINE void pstoreu<float>(float*  to, const Packet4f& from)
 {
-  EIGEN_DEBUG_UNALIGNED_STORE
+  IMP_EIGEN_DEBUG_UNALIGNED_STORE
   // Taken from http://developer.apple.com/hardwaredrivers/ve/alignment.html
   // Warning: not thread safe!
   Packet16uc MSQ, LSQ, edges;
@@ -319,9 +319,9 @@ template<> EIGEN_STRONG_INLINE void pstoreu<float>(float*  to, const Packet4f& f
   vec_st( LSQ, 15, (unsigned char *)to );                   // Store the LSQ part first
   vec_st( MSQ, 0, (unsigned char *)to );                    // Store the MSQ part
 }
-template<> EIGEN_STRONG_INLINE void pstoreu<int>(int*      to, const Packet4i& from)
+template<> IMP_EIGEN_STRONG_INLINE void pstoreu<int>(int*      to, const Packet4i& from)
 {
-  EIGEN_DEBUG_UNALIGNED_STORE
+  IMP_EIGEN_DEBUG_UNALIGNED_STORE
   // Taken from http://developer.apple.com/hardwaredrivers/ve/alignment.html
   // Warning: not thread safe!
   Packet16uc MSQ, LSQ, edges;
@@ -338,19 +338,19 @@ template<> EIGEN_STRONG_INLINE void pstoreu<int>(int*      to, const Packet4i& f
   vec_st( MSQ, 0, (unsigned char *)to );                    // Store the MSQ part
 }
 
-template<> EIGEN_STRONG_INLINE void prefetch<float>(const float* addr) { vec_dstt(addr, DST_CTRL(2,2,32), DST_CHAN); }
-template<> EIGEN_STRONG_INLINE void prefetch<int>(const int*     addr) { vec_dstt(addr, DST_CTRL(2,2,32), DST_CHAN); }
+template<> IMP_EIGEN_STRONG_INLINE void prefetch<float>(const float* addr) { vec_dstt(addr, DST_CTRL(2,2,32), DST_CHAN); }
+template<> IMP_EIGEN_STRONG_INLINE void prefetch<int>(const int*     addr) { vec_dstt(addr, DST_CTRL(2,2,32), DST_CHAN); }
 
-template<> EIGEN_STRONG_INLINE float  pfirst<Packet4f>(const Packet4f& a) { float EIGEN_ALIGN16 x[4]; vec_st(a, 0, x); return x[0]; }
-template<> EIGEN_STRONG_INLINE int    pfirst<Packet4i>(const Packet4i& a) { int   EIGEN_ALIGN16 x[4]; vec_st(a, 0, x); return x[0]; }
+template<> IMP_EIGEN_STRONG_INLINE float  pfirst<Packet4f>(const Packet4f& a) { float IMP_EIGEN_ALIGN16 x[4]; vec_st(a, 0, x); return x[0]; }
+template<> IMP_EIGEN_STRONG_INLINE int    pfirst<Packet4i>(const Packet4i& a) { int   IMP_EIGEN_ALIGN16 x[4]; vec_st(a, 0, x); return x[0]; }
 
-template<> EIGEN_STRONG_INLINE Packet4f preverse(const Packet4f& a) { return (Packet4f)vec_perm((Packet16uc)a,(Packet16uc)a, p16uc_REVERSE); }
-template<> EIGEN_STRONG_INLINE Packet4i preverse(const Packet4i& a) { return (Packet4i)vec_perm((Packet16uc)a,(Packet16uc)a, p16uc_REVERSE); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4f preverse(const Packet4f& a) { return (Packet4f)vec_perm((Packet16uc)a,(Packet16uc)a, p16uc_REVERSE); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4i preverse(const Packet4i& a) { return (Packet4i)vec_perm((Packet16uc)a,(Packet16uc)a, p16uc_REVERSE); }
 
-template<> EIGEN_STRONG_INLINE Packet4f pabs(const Packet4f& a) { return vec_abs(a); }
-template<> EIGEN_STRONG_INLINE Packet4i pabs(const Packet4i& a) { return vec_abs(a); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4f pabs(const Packet4f& a) { return vec_abs(a); }
+template<> IMP_EIGEN_STRONG_INLINE Packet4i pabs(const Packet4i& a) { return vec_abs(a); }
 
-template<> EIGEN_STRONG_INLINE float predux<Packet4f>(const Packet4f& a)
+template<> IMP_EIGEN_STRONG_INLINE float predux<Packet4f>(const Packet4f& a)
 {
   Packet4f b, sum;
   b   = (Packet4f) vec_sld(a, a, 8);
@@ -360,7 +360,7 @@ template<> EIGEN_STRONG_INLINE float predux<Packet4f>(const Packet4f& a)
   return pfirst(sum);
 }
 
-template<> EIGEN_STRONG_INLINE Packet4f preduxp<Packet4f>(const Packet4f* vecs)
+template<> IMP_EIGEN_STRONG_INLINE Packet4f preduxp<Packet4f>(const Packet4f* vecs)
 {
   Packet4f v[4], sum[4];
 
@@ -388,7 +388,7 @@ template<> EIGEN_STRONG_INLINE Packet4f preduxp<Packet4f>(const Packet4f* vecs)
   return sum[0];
 }
 
-template<> EIGEN_STRONG_INLINE int predux<Packet4i>(const Packet4i& a)
+template<> IMP_EIGEN_STRONG_INLINE int predux<Packet4i>(const Packet4i& a)
 {
   Packet4i sum;
   sum = vec_sums(a, p4i_ZERO);
@@ -396,7 +396,7 @@ template<> EIGEN_STRONG_INLINE int predux<Packet4i>(const Packet4i& a)
   return pfirst(sum);
 }
 
-template<> EIGEN_STRONG_INLINE Packet4i preduxp<Packet4i>(const Packet4i* vecs)
+template<> IMP_EIGEN_STRONG_INLINE Packet4i preduxp<Packet4i>(const Packet4i* vecs)
 {
   Packet4i v[4], sum[4];
 
@@ -426,22 +426,22 @@ template<> EIGEN_STRONG_INLINE Packet4i preduxp<Packet4i>(const Packet4i* vecs)
 
 // Other reduction functions:
 // mul
-template<> EIGEN_STRONG_INLINE float predux_mul<Packet4f>(const Packet4f& a)
+template<> IMP_EIGEN_STRONG_INLINE float predux_mul<Packet4f>(const Packet4f& a)
 {
   Packet4f prod;
   prod = pmul(a, (Packet4f)vec_sld(a, a, 8));
   return pfirst(pmul(prod, (Packet4f)vec_sld(prod, prod, 4)));
 }
 
-template<> EIGEN_STRONG_INLINE int predux_mul<Packet4i>(const Packet4i& a)
+template<> IMP_EIGEN_STRONG_INLINE int predux_mul<Packet4i>(const Packet4i& a)
 {
-  EIGEN_ALIGN16 int aux[4];
+  IMP_EIGEN_ALIGN16 int aux[4];
   pstore(aux, a);
   return aux[0] * aux[1] * aux[2] * aux[3];
 }
 
 // min
-template<> EIGEN_STRONG_INLINE float predux_min<Packet4f>(const Packet4f& a)
+template<> IMP_EIGEN_STRONG_INLINE float predux_min<Packet4f>(const Packet4f& a)
 {
   Packet4f b, res;
   b = vec_min(a, vec_sld(a, a, 8));
@@ -449,7 +449,7 @@ template<> EIGEN_STRONG_INLINE float predux_min<Packet4f>(const Packet4f& a)
   return pfirst(res);
 }
 
-template<> EIGEN_STRONG_INLINE int predux_min<Packet4i>(const Packet4i& a)
+template<> IMP_EIGEN_STRONG_INLINE int predux_min<Packet4i>(const Packet4i& a)
 {
   Packet4i b, res;
   b = vec_min(a, vec_sld(a, a, 8));
@@ -458,7 +458,7 @@ template<> EIGEN_STRONG_INLINE int predux_min<Packet4i>(const Packet4i& a)
 }
 
 // max
-template<> EIGEN_STRONG_INLINE float predux_max<Packet4f>(const Packet4f& a)
+template<> IMP_EIGEN_STRONG_INLINE float predux_max<Packet4f>(const Packet4f& a)
 {
   Packet4f b, res;
   b = vec_max(a, vec_sld(a, a, 8));
@@ -466,7 +466,7 @@ template<> EIGEN_STRONG_INLINE float predux_max<Packet4f>(const Packet4f& a)
   return pfirst(res);
 }
 
-template<> EIGEN_STRONG_INLINE int predux_max<Packet4i>(const Packet4i& a)
+template<> IMP_EIGEN_STRONG_INLINE int predux_max<Packet4i>(const Packet4i& a)
 {
   Packet4i b, res;
   b = vec_max(a, vec_sld(a, a, 8));
@@ -477,7 +477,7 @@ template<> EIGEN_STRONG_INLINE int predux_max<Packet4i>(const Packet4i& a)
 template<int Offset>
 struct palign_impl<Offset,Packet4f>
 {
-  static EIGEN_STRONG_INLINE void run(Packet4f& first, const Packet4f& second)
+  static IMP_EIGEN_STRONG_INLINE void run(Packet4f& first, const Packet4f& second)
   {
     if (Offset!=0)
       first = vec_sld(first, second, Offset*4);
@@ -487,7 +487,7 @@ struct palign_impl<Offset,Packet4f>
 template<int Offset>
 struct palign_impl<Offset,Packet4i>
 {
-  static EIGEN_STRONG_INLINE void run(Packet4i& first, const Packet4i& second)
+  static IMP_EIGEN_STRONG_INLINE void run(Packet4i& first, const Packet4i& second)
   {
     if (Offset!=0)
       first = vec_sld(first, second, Offset*4);
@@ -496,6 +496,6 @@ struct palign_impl<Offset,Packet4i>
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_PACKET_MATH_ALTIVEC_H
+#endif // IMP_EIGEN_PACKET_MATH_ALTIVEC_H

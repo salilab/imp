@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPARSE_BLOCKFORDYNAMICMATRIX_H
-#define EIGEN_SPARSE_BLOCKFORDYNAMICMATRIX_H
+#ifndef IMP_EIGEN_SPARSE_BLOCKFORDYNAMICMATRIX_H
+#define IMP_EIGEN_SPARSE_BLOCKFORDYNAMICMATRIX_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 #if 0
 
@@ -31,7 +31,7 @@ class SparseInnerVectorSet<DynamicSparseMatrix<_Scalar, _Options, _Index>, Size>
 
     enum { IsRowMajor = internal::traits<SparseInnerVectorSet>::IsRowMajor };
 
-    EIGEN_SPARSE_PUBLIC_INTERFACE(SparseInnerVectorSet)
+    IMP_EIGEN_SPARSE_PUBLIC_INTERFACE(SparseInnerVectorSet)
     class InnerIterator: public MatrixType::InnerIterator
     {
       public:
@@ -93,7 +93,7 @@ class SparseInnerVectorSet<DynamicSparseMatrix<_Scalar, _Options, _Index>, Size>
 
     const Scalar& lastCoeff() const
     {
-      EIGEN_STATIC_ASSERT_VECTOR_ONLY(SparseInnerVectorSet);
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(SparseInnerVectorSet);
       eigen_assert(m_matrix.data()[m_outerStart].size()>0);
       return m_matrix.data()[m_outerStart].vale(m_matrix.data()[m_outerStart].size()-1);
     }
@@ -104,8 +104,8 @@ class SparseInnerVectorSet<DynamicSparseMatrix<_Scalar, _Options, _Index>, Size>
 //       return *this;
 //     }
 
-    EIGEN_STRONG_INLINE Index rows() const { return IsRowMajor ? m_outerSize.value() : m_matrix.rows(); }
-    EIGEN_STRONG_INLINE Index cols() const { return IsRowMajor ? m_matrix.cols() : m_outerSize.value(); }
+    IMP_EIGEN_STRONG_INLINE Index rows() const { return IsRowMajor ? m_outerSize.value() : m_matrix.rows(); }
+    IMP_EIGEN_STRONG_INLINE Index cols() const { return IsRowMajor ? m_matrix.cols() : m_outerSize.value(); }
 
   protected:
 
@@ -117,6 +117,6 @@ class SparseInnerVectorSet<DynamicSparseMatrix<_Scalar, _Options, _Index>, Size>
 
 #endif
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SPARSE_BLOCKFORDYNAMICMATRIX_H
+#endif // IMP_EIGEN_SPARSE_BLOCKFORDYNAMICMATRIX_H

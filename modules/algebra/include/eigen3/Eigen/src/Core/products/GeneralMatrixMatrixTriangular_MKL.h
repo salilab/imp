@@ -30,10 +30,10 @@
  ********************************************************************************
 */
 
-#ifndef EIGEN_GENERAL_MATRIX_MATRIX_TRIANGULAR_MKL_H
-#define EIGEN_GENERAL_MATRIX_MATRIX_TRIANGULAR_MKL_H
+#ifndef IMP_EIGEN_GENERAL_MATRIX_MATRIX_TRIANGULAR_MKL_H
+#define IMP_EIGEN_GENERAL_MATRIX_MATRIX_TRIANGULAR_MKL_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -44,12 +44,12 @@ struct general_matrix_matrix_rankupdate :
 
 
 // try to go to BLAS specialization
-#define EIGEN_MKL_RANKUPDATE_SPECIALIZE(Scalar) \
+#define IMP_EIGEN_MKL_RANKUPDATE_SPECIALIZE(Scalar) \
 template <typename Index, int LhsStorageOrder, bool ConjugateLhs, \
                           int RhsStorageOrder, bool ConjugateRhs, int  UpLo> \
 struct general_matrix_matrix_triangular_product<Index,Scalar,LhsStorageOrder,ConjugateLhs, \
                Scalar,RhsStorageOrder,ConjugateRhs,ColMajor,UpLo,Specialized> { \
-  static EIGEN_STRONG_INLINE void run(Index size, Index depth,const Scalar* lhs, Index lhsStride, \
+  static IMP_EIGEN_STRONG_INLINE void run(Index size, Index depth,const Scalar* lhs, Index lhsStride, \
                           const Scalar* rhs, Index rhsStride, Scalar* res, Index resStride, Scalar alpha) \
   { \
     if (lhs==rhs) { \
@@ -65,13 +65,13 @@ struct general_matrix_matrix_triangular_product<Index,Scalar,LhsStorageOrder,Con
   } \
 };
 
-EIGEN_MKL_RANKUPDATE_SPECIALIZE(double)
+IMP_EIGEN_MKL_RANKUPDATE_SPECIALIZE(double)
 //EIGEN_MKL_RANKUPDATE_SPECIALIZE(dcomplex)
-EIGEN_MKL_RANKUPDATE_SPECIALIZE(float)
+IMP_EIGEN_MKL_RANKUPDATE_SPECIALIZE(float)
 //EIGEN_MKL_RANKUPDATE_SPECIALIZE(scomplex)
 
 // SYRK for float/double
-#define EIGEN_MKL_RANKUPDATE_R(EIGTYPE, MKLTYPE, MKLFUNC) \
+#define IMP_EIGEN_MKL_RANKUPDATE_R(EIGTYPE, MKLTYPE, MKLFUNC) \
 template <typename Index, int AStorageOrder, bool ConjugateA, int  UpLo> \
 struct general_matrix_matrix_rankupdate<Index,EIGTYPE,AStorageOrder,ConjugateA,ColMajor,UpLo> { \
   enum { \
@@ -79,7 +79,7 @@ struct general_matrix_matrix_rankupdate<Index,EIGTYPE,AStorageOrder,ConjugateA,C
     LowUp = IsLower ? Lower : Upper, \
     conjA = ((AStorageOrder==ColMajor) && ConjugateA) ? 1 : 0 \
   }; \
-  static EIGEN_STRONG_INLINE void run(Index size, Index depth,const EIGTYPE* lhs, Index lhsStride, \
+  static IMP_EIGEN_STRONG_INLINE void run(Index size, Index depth,const EIGTYPE* lhs, Index lhsStride, \
                           const EIGTYPE* rhs, Index rhsStride, EIGTYPE* res, Index resStride, EIGTYPE alpha) \
   { \
   /* typedef Matrix<EIGTYPE, Dynamic, Dynamic, RhsStorageOrder> MatrixRhs;*/ \
@@ -96,7 +96,7 @@ struct general_matrix_matrix_rankupdate<Index,EIGTYPE,AStorageOrder,ConjugateA,C
 };
 
 // HERK for complex data
-#define EIGEN_MKL_RANKUPDATE_C(EIGTYPE, MKLTYPE, RTYPE, MKLFUNC) \
+#define IMP_EIGEN_MKL_RANKUPDATE_C(EIGTYPE, MKLTYPE, RTYPE, MKLFUNC) \
 template <typename Index, int AStorageOrder, bool ConjugateA, int  UpLo> \
 struct general_matrix_matrix_rankupdate<Index,EIGTYPE,AStorageOrder,ConjugateA,ColMajor,UpLo> { \
   enum { \
@@ -104,7 +104,7 @@ struct general_matrix_matrix_rankupdate<Index,EIGTYPE,AStorageOrder,ConjugateA,C
     LowUp = IsLower ? Lower : Upper, \
     conjA = (((AStorageOrder==ColMajor) && ConjugateA) || ((AStorageOrder==RowMajor) && !ConjugateA)) ? 1 : 0 \
   }; \
-  static EIGEN_STRONG_INLINE void run(Index size, Index depth,const EIGTYPE* lhs, Index lhsStride, \
+  static IMP_EIGEN_STRONG_INLINE void run(Index size, Index depth,const EIGTYPE* lhs, Index lhsStride, \
                           const EIGTYPE* rhs, Index rhsStride, EIGTYPE* res, Index resStride, EIGTYPE alpha) \
   { \
    typedef Matrix<EIGTYPE, Dynamic, Dynamic, AStorageOrder> MatrixType; \
@@ -132,8 +132,8 @@ struct general_matrix_matrix_rankupdate<Index,EIGTYPE,AStorageOrder,ConjugateA,C
 };
 
 
-EIGEN_MKL_RANKUPDATE_R(double, double, dsyrk)
-EIGEN_MKL_RANKUPDATE_R(float,  float,  ssyrk)
+IMP_EIGEN_MKL_RANKUPDATE_R(double, double, dsyrk)
+IMP_EIGEN_MKL_RANKUPDATE_R(float,  float,  ssyrk)
 
 //EIGEN_MKL_RANKUPDATE_C(dcomplex, MKL_Complex16, double, zherk)
 //EIGEN_MKL_RANKUPDATE_C(scomplex, MKL_Complex8,  double, cherk)
@@ -141,6 +141,6 @@ EIGEN_MKL_RANKUPDATE_R(float,  float,  ssyrk)
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_GENERAL_MATRIX_MATRIX_TRIANGULAR_MKL_H
+#endif // IMP_EIGEN_GENERAL_MATRIX_MATRIX_TRIANGULAR_MKL_H

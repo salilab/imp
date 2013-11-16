@@ -31,7 +31,7 @@
 #define SPARSELU_COLUMN_DFS_H
 
 template <typename Scalar, typename Index> class SparseLUImpl;
-namespace Eigen {
+namespace IMP_Eigen {
 
 namespace internal {
 
@@ -172,6 +172,6 @@ Index SparseLUImpl<Scalar,Index>::column_dfs(const Index m, const Index jcol, In
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
 #endif

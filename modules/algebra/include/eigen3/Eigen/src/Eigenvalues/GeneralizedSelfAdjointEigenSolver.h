@@ -8,12 +8,12 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_GENERALIZEDSELFADJOINTEIGENSOLVER_H
-#define EIGEN_GENERALIZEDSELFADJOINTEIGENSOLVER_H
+#ifndef IMP_EIGEN_GENERALIZEDSELFADJOINTEIGENSOLVER_H
+#define IMP_EIGEN_GENERALIZEDSELFADJOINTEIGENSOLVER_H
 
 #include "./Tridiagonalization.h"
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \eigenvalues_module \ingroup Eigenvalues_Module
   *
@@ -222,6 +222,6 @@ compute(const MatrixType& matA, const MatrixType& matB, int options)
   return *this;
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_GENERALIZEDSELFADJOINTEIGENSOLVER_H
+#endif // IMP_EIGEN_GENERALIZEDSELFADJOINTEIGENSOLVER_H

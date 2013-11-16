@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_CONSTANTS_H
-#define EIGEN_CONSTANTS_H
+#ifndef IMP_EIGEN_CONSTANTS_H
+#define IMP_EIGEN_CONSTANTS_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 /** This value means that a positive quantity (e.g., a size) is not known at compile-time, and that instead the value is
   * stored in some runtime variable.
@@ -80,13 +80,13 @@ const unsigned int EvalBeforeAssigningBit = 0x4;
   */
 const unsigned int PacketAccessBit = 0x8;
 
-#ifdef EIGEN_VECTORIZE
+#ifdef IMP_EIGEN_VECTORIZE
 /** \ingroup flags
   *
-  * If vectorization is enabled (EIGEN_VECTORIZE is defined) this constant
+  * If vectorization is enabled (IMP_EIGEN_VECTORIZE is defined) this constant
   * is set to the value \a PacketAccessBit.
   *
-  * If vectorization is not enabled (EIGEN_VECTORIZE is not defined) this constant
+  * If vectorization is not enabled (IMP_EIGEN_VECTORIZE is not defined) this constant
   * is set to the value 0.
   */
 const unsigned int ActualPacketAccessBit = PacketAccessBit;
@@ -283,7 +283,7 @@ enum {
  *
  *   struct NoChange_t {};
  *   namespace {
- *     EIGEN_UNUSED NoChange_t NoChange;
+ *     IMP_EIGEN_UNUSED NoChange_t NoChange;
  *   }
  *
  * on the ground that it feels dangerous to disambiguate overloaded functions on enum/integer types.  
@@ -406,9 +406,9 @@ namespace Architecture
     Generic = 0x0,
     SSE = 0x1,
     AltiVec = 0x2,
-#if defined EIGEN_VECTORIZE_SSE
+#if defined IMP_EIGEN_VECTORIZE_SSE
     Target = SSE
-#elif defined EIGEN_VECTORIZE_ALTIVEC
+#elif defined IMP_EIGEN_VECTORIZE_ALTIVEC
     Target = AltiVec
 #else
     Target = Generic
@@ -433,6 +433,6 @@ struct MatrixXpr {};
 /** The type used to identify an array expression */
 struct ArrayXpr {};
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_CONSTANTS_H
+#endif // IMP_EIGEN_CONSTANTS_H

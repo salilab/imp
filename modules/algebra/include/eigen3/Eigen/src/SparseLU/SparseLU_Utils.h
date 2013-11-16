@@ -8,10 +8,10 @@
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 
-#ifndef EIGEN_SPARSELU_UTILS_H
-#define EIGEN_SPARSELU_UTILS_H
+#ifndef IMP_EIGEN_SPARSELU_UTILS_H
+#define IMP_EIGEN_SPARSELU_UTILS_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 namespace internal {
 
 /**
@@ -76,5 +76,5 @@ void SparseLUImpl<Scalar,Index>::fixupL(const Index n, const IndexVector& perm_r
 
 } // end namespace internal
 
-} // end namespace Eigen
-#endif // EIGEN_SPARSELU_UTILS_H
+} // end namespace IMP_Eigen
+#endif // IMP_EIGEN_SPARSELU_UTILS_H

@@ -7,12 +7,12 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPARSE_PERMUTATION_H
-#define EIGEN_SPARSE_PERMUTATION_H
+#ifndef IMP_EIGEN_SPARSE_PERMUTATION_H
+#define IMP_EIGEN_SPARSE_PERMUTATION_H
 
 // This file implements sparse * permutation products
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -143,6 +143,6 @@ operator*(const Transpose<PermutationBase<PermDerived> >& tperm, const SparseMat
   return internal::permut_sparsematrix_product_retval<PermutationBase<PermDerived>, SparseDerived, OnTheLeft, true>(tperm.nestedPermutation(), matrix.derived());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SPARSE_SELFADJOINTVIEW_H
+#endif // IMP_EIGEN_SPARSE_SELFADJOINTVIEW_H

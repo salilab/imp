@@ -16,10 +16,10 @@
 *** Platform checks for aligned malloc functions                           ***
 *****************************************************************************/
 
-#ifndef EIGEN_MEMORY_H
-#define EIGEN_MEMORY_H
+#ifndef IMP_EIGEN_MEMORY_H
+#define IMP_EIGEN_MEMORY_H
 
-#ifndef EIGEN_MALLOC_ALREADY_ALIGNED
+#ifndef IMP_EIGEN_MALLOC_ALREADY_ALIGNED
 
 // Try to determine automatically if malloc is already aligned.
 
@@ -32,9 +32,9 @@
 // quite safe, at least within the context of glibc, to equate 64-bit with LP64.
 #if defined(__GLIBC__) && ((__GLIBC__>=2 && __GLIBC_MINOR__ >= 8) || __GLIBC__>2) \
  && defined(__LP64__) && ! defined( __SANITIZE_ADDRESS__ )
-  #define EIGEN_GLIBC_MALLOC_ALREADY_ALIGNED 1
+  #define IMP_EIGEN_GLIBC_MALLOC_ALREADY_ALIGNED 1
 #else
-  #define EIGEN_GLIBC_MALLOC_ALREADY_ALIGNED 0
+  #define IMP_EIGEN_GLIBC_MALLOC_ALREADY_ALIGNED 0
 #endif
 
 // FreeBSD 6 seems to have 16-byte aligned malloc
@@ -42,18 +42,18 @@
 // FreeBSD 7 seems to have 16-byte aligned malloc except on ARM and MIPS architectures
 //   See http://svn.freebsd.org/viewvc/base/stable/7/lib/libc/stdlib/malloc.c?view=markup
 #if defined(__FreeBSD__) && !defined(__arm__) && !defined(__mips__)
-  #define EIGEN_FREEBSD_MALLOC_ALREADY_ALIGNED 1
+  #define IMP_EIGEN_FREEBSD_MALLOC_ALREADY_ALIGNED 1
 #else
-  #define EIGEN_FREEBSD_MALLOC_ALREADY_ALIGNED 0
+  #define IMP_EIGEN_FREEBSD_MALLOC_ALREADY_ALIGNED 0
 #endif
 
 #if defined(__APPLE__) \
  || defined(_WIN64) \
- || EIGEN_GLIBC_MALLOC_ALREADY_ALIGNED \
- || EIGEN_FREEBSD_MALLOC_ALREADY_ALIGNED
-  #define EIGEN_MALLOC_ALREADY_ALIGNED 1
+ || IMP_EIGEN_GLIBC_MALLOC_ALREADY_ALIGNED \
+ || IMP_EIGEN_FREEBSD_MALLOC_ALREADY_ALIGNED
+  #define IMP_EIGEN_MALLOC_ALREADY_ALIGNED 1
 #else
-  #define EIGEN_MALLOC_ALREADY_ALIGNED 0
+  #define IMP_EIGEN_MALLOC_ALREADY_ALIGNED 0
 #endif
 
 #endif
@@ -64,27 +64,27 @@
 #if defined(__unix__) || defined(__unix)
   #include <unistd.h>
   #if ((defined __QNXNTO__) || (defined _GNU_SOURCE) || ((defined _XOPEN_SOURCE) && (_XOPEN_SOURCE >= 600))) && (defined _POSIX_ADVISORY_INFO) && (_POSIX_ADVISORY_INFO > 0)
-    #define EIGEN_HAS_POSIX_MEMALIGN 1
+    #define IMP_EIGEN_HAS_POSIX_MEMALIGN 1
   #endif
 #endif
 
-#ifndef EIGEN_HAS_POSIX_MEMALIGN
-  #define EIGEN_HAS_POSIX_MEMALIGN 0
+#ifndef IMP_EIGEN_HAS_POSIX_MEMALIGN
+  #define IMP_EIGEN_HAS_POSIX_MEMALIGN 0
 #endif
 
-#ifdef EIGEN_VECTORIZE_SSE
-  #define EIGEN_HAS_MM_MALLOC 1
+#ifdef IMP_EIGEN_VECTORIZE_SSE
+  #define IMP_EIGEN_HAS_MM_MALLOC 1
 #else
-  #define EIGEN_HAS_MM_MALLOC 0
+  #define IMP_EIGEN_HAS_MM_MALLOC 0
 #endif
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 namespace internal {
 
 inline void throw_std_bad_alloc()
 {
-  #ifdef EIGEN_EXCEPTIONS
+  #ifdef IMP_EIGEN_EXCEPTIONS
     throw std::bad_alloc();
   #else
     std::size_t huge = -1;
@@ -163,7 +163,7 @@ inline void* generic_aligned_realloc(void* ptr, size_t size, size_t old_size)
   void* newptr = aligned_malloc(size);
   if (newptr == 0)
   {
-    #ifdef EIGEN_HAS_ERRNO
+    #ifdef IMP_EIGEN_HAS_ERRNO
     errno = ENOMEM; // according to the standard
     #endif
     return 0;
@@ -182,12 +182,12 @@ inline void* generic_aligned_realloc(void* ptr, size_t size, size_t old_size)
 *** Implementation of portable aligned versions of malloc/free/realloc     ***
 *****************************************************************************/
 
-#ifdef EIGEN_NO_MALLOC
+#ifdef IMP_EIGEN_NO_MALLOC
 inline void check_that_malloc_is_allowed()
 {
-  eigen_assert(false && "heap allocation is forbidden (EIGEN_NO_MALLOC is defined)");
+  eigen_assert(false && "heap allocation is forbidden (IMP_EIGEN_NO_MALLOC is defined)");
 }
-#elif defined EIGEN_RUNTIME_NO_MALLOC
+#elif defined IMP_EIGEN_RUNTIME_NO_MALLOC
 inline bool is_malloc_allowed_impl(bool update, bool new_value = false)
 {
   static bool value = true;
@@ -199,7 +199,7 @@ inline bool is_malloc_allowed() { return is_malloc_allowed_impl(false); }
 inline bool set_is_malloc_allowed(bool new_value) { return is_malloc_allowed_impl(true, new_value); }
 inline void check_that_malloc_is_allowed()
 {
-  eigen_assert(is_malloc_allowed() && "heap allocation is forbidden (EIGEN_RUNTIME_NO_MALLOC is defined and g_is_malloc_allowed is false)");
+  eigen_assert(is_malloc_allowed() && "heap allocation is forbidden (IMP_EIGEN_RUNTIME_NO_MALLOC is defined and g_is_malloc_allowed is false)");
 }
 #else 
 inline void check_that_malloc_is_allowed()
@@ -214,13 +214,13 @@ inline void* aligned_malloc(size_t size)
   check_that_malloc_is_allowed();
 
   void *result;
-  #if !EIGEN_ALIGN
+  #if !IMP_EIGEN_ALIGN
     result = std::malloc(size);
-  #elif EIGEN_MALLOC_ALREADY_ALIGNED
+  #elif IMP_EIGEN_MALLOC_ALREADY_ALIGNED
     result = std::malloc(size);
-  #elif EIGEN_HAS_POSIX_MEMALIGN
+  #elif IMP_EIGEN_HAS_POSIX_MEMALIGN
     if(posix_memalign(&result, 16, size)) result = 0;
-  #elif EIGEN_HAS_MM_MALLOC
+  #elif IMP_EIGEN_HAS_MM_MALLOC
     result = _mm_malloc(size, 16);
   #elif defined(_MSC_VER) && (!defined(_WIN32_WCE))
     result = _aligned_malloc(size, 16);
@@ -237,13 +237,13 @@ inline void* aligned_malloc(size_t size)
 /** \internal Frees memory allocated with aligned_malloc. */
 inline void aligned_free(void *ptr)
 {
-  #if !EIGEN_ALIGN
+  #if !IMP_EIGEN_ALIGN
     std::free(ptr);
-  #elif EIGEN_MALLOC_ALREADY_ALIGNED
+  #elif IMP_EIGEN_MALLOC_ALREADY_ALIGNED
     std::free(ptr);
-  #elif EIGEN_HAS_POSIX_MEMALIGN
+  #elif IMP_EIGEN_HAS_POSIX_MEMALIGN
     std::free(ptr);
-  #elif EIGEN_HAS_MM_MALLOC
+  #elif IMP_EIGEN_HAS_MM_MALLOC
     _mm_free(ptr);
   #elif defined(_MSC_VER) && (!defined(_WIN32_WCE))
     _aligned_free(ptr);
@@ -259,16 +259,16 @@ inline void aligned_free(void *ptr)
 **/
 inline void* aligned_realloc(void *ptr, size_t new_size, size_t old_size)
 {
-  EIGEN_UNUSED_VARIABLE(old_size);
+  IMP_EIGEN_UNUSED_VARIABLE(old_size);
 
   void *result;
-#if !EIGEN_ALIGN
+#if !IMP_EIGEN_ALIGN
   result = std::realloc(ptr,new_size);
-#elif EIGEN_MALLOC_ALREADY_ALIGNED
+#elif IMP_EIGEN_MALLOC_ALREADY_ALIGNED
   result = std::realloc(ptr,new_size);
-#elif EIGEN_HAS_POSIX_MEMALIGN
+#elif IMP_EIGEN_HAS_POSIX_MEMALIGN
   result = generic_aligned_realloc(ptr,new_size,old_size);
-#elif EIGEN_HAS_MM_MALLOC
+#elif IMP_EIGEN_HAS_MM_MALLOC
   // The defined(_mm_free) is just here to verify that this MSVC version
   // implements _mm_malloc/_mm_free based on the corresponding _aligned_
   // functions. This may not always be the case and we just try to be safe.
@@ -360,7 +360,7 @@ template<typename T> inline void destruct_elements_of_array(T *ptr, size_t size)
 *****************************************************************************/
 
 template<typename T>
-EIGEN_ALWAYS_INLINE void check_size_for_overflow(size_t size)
+IMP_EIGEN_ALWAYS_INLINE void check_size_for_overflow(size_t size)
 {
   if(size > size_t(-1) / sizeof(T))
     throw_std_bad_alloc();
@@ -519,13 +519,13 @@ template<typename T> struct smart_copy_helper<T,false> {
 *** Implementation of runtime stack allocation (falling back to malloc)    ***
 *****************************************************************************/
 
-// you can overwrite Eigen's default behavior regarding alloca by defining EIGEN_ALLOCA
+// you can overwrite Eigen's default behavior regarding alloca by defining IMP_EIGEN_ALLOCA
 // to the appropriate stack allocation function
-#ifndef EIGEN_ALLOCA
+#ifndef IMP_EIGEN_ALLOCA
   #if (defined __linux__)
-    #define EIGEN_ALLOCA alloca
+    #define IMP_EIGEN_ALLOCA alloca
   #elif defined(_MSC_VER)
-    #define EIGEN_ALLOCA _alloca
+    #define IMP_EIGEN_ALLOCA _alloca
   #endif
 #endif
 
@@ -544,14 +544,14 @@ template<typename T> class aligned_stack_memory_handler
       : m_ptr(ptr), m_size(size), m_deallocate(dealloc)
     {
       if(NumTraits<T>::RequireInitialization && m_ptr)
-        Eigen::internal::construct_elements_of_array(m_ptr, size);
+        IMP_Eigen::internal::construct_elements_of_array(m_ptr, size);
     }
     ~aligned_stack_memory_handler()
     {
       if(NumTraits<T>::RequireInitialization && m_ptr)
-        Eigen::internal::destruct_elements_of_array<T>(m_ptr, m_size);
+        IMP_Eigen::internal::destruct_elements_of_array<T>(m_ptr, m_size);
       if(m_deallocate)
-        Eigen::internal::aligned_free(m_ptr);
+        IMP_Eigen::internal::aligned_free(m_ptr);
     }
   protected:
     T* m_ptr;
@@ -563,7 +563,7 @@ template<typename T> class aligned_stack_memory_handler
 
 /** \internal
   * Declares, allocates and construct an aligned buffer named NAME of SIZE elements of type TYPE on the stack
-  * if SIZE is smaller than EIGEN_STACK_ALLOCATION_LIMIT, and if stack allocation is supported by the platform
+  * if SIZE is smaller than IMP_EIGEN_STACK_ALLOCATION_LIMIT, and if stack allocation is supported by the platform
   * (currently, this is Linux and Visual Studio only). Otherwise the memory is allocated on the heap.
   * The allocated buffer is automatically deleted when exiting the scope of this declaration.
   * If BUFFER is non null, then the declared variable is simply an alias for BUFFER, and no allocation/deletion occurs.
@@ -574,80 +574,80 @@ template<typename T> class aligned_stack_memory_handler
   *   // use data[0] to data[size-1]
   * }
   * \endcode
-  * The underlying stack allocation function can controlled with the EIGEN_ALLOCA preprocessor token.
+  * The underlying stack allocation function can controlled with the IMP_EIGEN_ALLOCA preprocessor token.
   */
-#ifdef EIGEN_ALLOCA
+#ifdef IMP_EIGEN_ALLOCA
 
   #ifdef __arm__
-    #define EIGEN_ALIGNED_ALLOCA(SIZE) reinterpret_cast<void*>((reinterpret_cast<size_t>(EIGEN_ALLOCA(SIZE+16)) & ~(size_t(15))) + 16)
+    #define IMP_EIGEN_ALIGNED_ALLOCA(SIZE) reinterpret_cast<void*>((reinterpret_cast<size_t>(IMP_EIGEN_ALLOCA(SIZE+16)) & ~(size_t(15))) + 16)
   #else
-    #define EIGEN_ALIGNED_ALLOCA EIGEN_ALLOCA
+    #define IMP_EIGEN_ALIGNED_ALLOCA IMP_EIGEN_ALLOCA
   #endif
 
   #define ei_declare_aligned_stack_constructed_variable(TYPE,NAME,SIZE,BUFFER) \
-    Eigen::internal::check_size_for_overflow<TYPE>(SIZE); \
+    IMP_Eigen::internal::check_size_for_overflow<TYPE>(SIZE); \
     TYPE* NAME = (BUFFER)!=0 ? (BUFFER) \
                : reinterpret_cast<TYPE*>( \
-                      (sizeof(TYPE)*SIZE<=EIGEN_STACK_ALLOCATION_LIMIT) ? EIGEN_ALIGNED_ALLOCA(sizeof(TYPE)*SIZE) \
-                    : Eigen::internal::aligned_malloc(sizeof(TYPE)*SIZE) );  \
-    Eigen::internal::aligned_stack_memory_handler<TYPE> EIGEN_CAT(NAME,_stack_memory_destructor)((BUFFER)==0 ? NAME : 0,SIZE,sizeof(TYPE)*SIZE>EIGEN_STACK_ALLOCATION_LIMIT)
+                      (sizeof(TYPE)*SIZE<=EIGEN_STACK_ALLOCATION_LIMIT) ? IMP_EIGEN_ALIGNED_ALLOCA(sizeof(TYPE)*SIZE) \
+                    : IMP_Eigen::internal::aligned_malloc(sizeof(TYPE)*SIZE) );  \
+    IMP_Eigen::internal::aligned_stack_memory_handler<TYPE> IMP_EIGEN_CAT(NAME,_stack_memory_destructor)((BUFFER)==0 ? NAME : 0,SIZE,sizeof(TYPE)*SIZE>EIGEN_STACK_ALLOCATION_LIMIT)
 
 #else
 
   #define ei_declare_aligned_stack_constructed_variable(TYPE,NAME,SIZE,BUFFER) \
-    Eigen::internal::check_size_for_overflow<TYPE>(SIZE); \
-    TYPE* NAME = (BUFFER)!=0 ? BUFFER : reinterpret_cast<TYPE*>(Eigen::internal::aligned_malloc(sizeof(TYPE)*SIZE));    \
-    Eigen::internal::aligned_stack_memory_handler<TYPE> EIGEN_CAT(NAME,_stack_memory_destructor)((BUFFER)==0 ? NAME : 0,SIZE,true)
+    IMP_Eigen::internal::check_size_for_overflow<TYPE>(SIZE); \
+    TYPE* NAME = (BUFFER)!=0 ? BUFFER : reinterpret_cast<TYPE*>(IMP_Eigen::internal::aligned_malloc(sizeof(TYPE)*SIZE));    \
+    IMP_Eigen::internal::aligned_stack_memory_handler<TYPE> IMP_EIGEN_CAT(NAME,_stack_memory_destructor)((BUFFER)==0 ? NAME : 0,SIZE,true)
     
 #endif
 
 
 /*****************************************************************************
-*** Implementation of EIGEN_MAKE_ALIGNED_OPERATOR_NEW [_IF]                ***
+*** Implementation of IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW [_IF]                ***
 *****************************************************************************/
 
-#if EIGEN_ALIGN
-  #ifdef EIGEN_EXCEPTIONS
-    #define EIGEN_MAKE_ALIGNED_OPERATOR_NEW_NOTHROW(NeedsToAlign) \
+#if IMP_EIGEN_ALIGN
+  #ifdef IMP_EIGEN_EXCEPTIONS
+    #define IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_NOTHROW(NeedsToAlign) \
       void* operator new(size_t size, const std::nothrow_t&) throw() { \
-        try { return Eigen::internal::conditional_aligned_malloc<NeedsToAlign>(size); } \
+        try { return IMP_Eigen::internal::conditional_aligned_malloc<NeedsToAlign>(size); } \
         catch (...) { return 0; } \
         return 0; \
       }
   #else
-    #define EIGEN_MAKE_ALIGNED_OPERATOR_NEW_NOTHROW(NeedsToAlign) \
+    #define IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_NOTHROW(NeedsToAlign) \
       void* operator new(size_t size, const std::nothrow_t&) throw() { \
-        return Eigen::internal::conditional_aligned_malloc<NeedsToAlign>(size); \
+        return IMP_Eigen::internal::conditional_aligned_malloc<NeedsToAlign>(size); \
       }
   #endif
 
-  #define EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF(NeedsToAlign) \
+  #define IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF(NeedsToAlign) \
       void *operator new(size_t size) { \
-        return Eigen::internal::conditional_aligned_malloc<NeedsToAlign>(size); \
+        return IMP_Eigen::internal::conditional_aligned_malloc<NeedsToAlign>(size); \
       } \
       void *operator new[](size_t size) { \
-        return Eigen::internal::conditional_aligned_malloc<NeedsToAlign>(size); \
+        return IMP_Eigen::internal::conditional_aligned_malloc<NeedsToAlign>(size); \
       } \
-      void operator delete(void * ptr) throw() { Eigen::internal::conditional_aligned_free<NeedsToAlign>(ptr); } \
-      void operator delete[](void * ptr) throw() { Eigen::internal::conditional_aligned_free<NeedsToAlign>(ptr); } \
+      void operator delete(void * ptr) throw() { IMP_Eigen::internal::conditional_aligned_free<NeedsToAlign>(ptr); } \
+      void operator delete[](void * ptr) throw() { IMP_Eigen::internal::conditional_aligned_free<NeedsToAlign>(ptr); } \
       /* in-place new and delete. since (at least afaik) there is no actual   */ \
       /* memory allocated we can safely let the default implementation handle */ \
       /* this particular case. */ \
       static void *operator new(size_t size, void *ptr) { return ::operator new(size,ptr); } \
       void operator delete(void * memory, void *ptr) throw() { return ::operator delete(memory,ptr); } \
       /* nothrow-new (returns zero instead of std::bad_alloc) */ \
-      EIGEN_MAKE_ALIGNED_OPERATOR_NEW_NOTHROW(NeedsToAlign) \
+      IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_NOTHROW(NeedsToAlign) \
       void operator delete(void *ptr, const std::nothrow_t&) throw() { \
-        Eigen::internal::conditional_aligned_free<NeedsToAlign>(ptr); \
+        IMP_Eigen::internal::conditional_aligned_free<NeedsToAlign>(ptr); \
       } \
       typedef void eigen_aligned_operator_new_marker_type;
 #else
-  #define EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF(NeedsToAlign)
+  #define IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF(NeedsToAlign)
 #endif
 
-#define EIGEN_MAKE_ALIGNED_OPERATOR_NEW EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF(true)
-#define EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(Scalar,Size) \
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF(bool(((Size)!=Eigen::Dynamic) && ((sizeof(Scalar)*(Size))%16==0)))
+#define IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF(true)
+#define IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(Scalar,Size) \
+  IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF(bool(((Size)!=IMP_Eigen::Dynamic) && ((sizeof(Scalar)*(Size))%16==0)))
 
 /****************************************************************************/
 
@@ -719,7 +719,7 @@ public:
 
     pointer allocate( size_type num, const void* hint = 0 )
     {
-        EIGEN_UNUSED_VARIABLE(hint);
+        IMP_EIGEN_UNUSED_VARIABLE(hint);
         internal::check_size_for_overflow<T>(num);
         return static_cast<pointer>( internal::aligned_malloc( num * sizeof(T) ) );
     }
@@ -757,32 +757,32 @@ public:
 
 //---------- Cache sizes ----------
 
-#if !defined(EIGEN_NO_CPUID)
+#if !defined(IMP_EIGEN_NO_CPUID)
 #  if defined(__GNUC__) && ( defined(__i386__) || defined(__x86_64__) )
 #    if defined(__PIC__) && defined(__i386__)
        // Case for x86 with PIC
-#      define EIGEN_CPUID(abcd,func,id) \
+#      define IMP_EIGEN_CPUID(abcd,func,id) \
          __asm__ __volatile__ ("xchgl %%ebx, %k1;cpuid; xchgl %%ebx,%k1": "=a" (abcd[0]), "=&r" (abcd[1]), "=c" (abcd[2]), "=d" (abcd[3]) : "a" (func), "c" (id));
 #    elif defined(__PIC__) && defined(__x86_64__)
        // Case for x64 with PIC. In theory this is only a problem with recent gcc and with medium or large code model, not with the default small code model.
        // However, we cannot detect which code model is used, and the xchg overhead is negligible anyway.
-#      define EIGEN_CPUID(abcd,func,id) \
+#      define IMP_EIGEN_CPUID(abcd,func,id) \
         __asm__ __volatile__ ("xchg{q}\t{%%}rbx, %q1; cpuid; xchg{q}\t{%%}rbx, %q1": "=a" (abcd[0]), "=&r" (abcd[1]), "=c" (abcd[2]), "=d" (abcd[3]) : "0" (func), "2" (id));
 #    else
        // Case for x86_64 or x86 w/o PIC
-#      define EIGEN_CPUID(abcd,func,id) \
+#      define IMP_EIGEN_CPUID(abcd,func,id) \
          __asm__ __volatile__ ("cpuid": "=a" (abcd[0]), "=b" (abcd[1]), "=c" (abcd[2]), "=d" (abcd[3]) : "0" (func), "2" (id) );
 #    endif
 #  elif defined(_MSC_VER)
 #    if (_MSC_VER > 1500) && ( defined(_M_IX86) || defined(_M_X64) )
-#      define EIGEN_CPUID(abcd,func,id) __cpuidex((int*)abcd,func,id)
+#      define IMP_EIGEN_CPUID(abcd,func,id) __cpuidex((int*)abcd,func,id)
 #    endif
 #  endif
 #endif
 
 namespace internal {
 
-#ifdef EIGEN_CPUID
+#ifdef IMP_EIGEN_CPUID
 
 inline bool cpuid_is_vendor(int abcd[4], const char* vendor)
 {
@@ -797,7 +797,7 @@ inline void queryCacheSizes_intel_direct(int& l1, int& l2, int& l3)
   int cache_type = 0;
   do {
     abcd[0] = abcd[1] = abcd[2] = abcd[3] = 0;
-    EIGEN_CPUID(abcd,0x4,cache_id);
+    IMP_EIGEN_CPUID(abcd,0x4,cache_id);
     cache_type  = (abcd[0] & 0x0F) >> 0;
     if(cache_type==1||cache_type==3) // data or unified cache
     {
@@ -826,7 +826,7 @@ inline void queryCacheSizes_intel_codes(int& l1, int& l2, int& l3)
   int abcd[4];
   abcd[0] = abcd[1] = abcd[2] = abcd[3] = 0;
   l1 = l2 = l3 = 0;
-  EIGEN_CPUID(abcd,0x00000002,0);
+  IMP_EIGEN_CPUID(abcd,0x00000002,0);
   unsigned char * bytes = reinterpret_cast<unsigned char *>(abcd)+2;
   bool check_for_p2_core2 = false;
   for(int i=0; i<14; ++i)
@@ -913,10 +913,10 @@ inline void queryCacheSizes_amd(int& l1, int& l2, int& l3)
 {
   int abcd[4];
   abcd[0] = abcd[1] = abcd[2] = abcd[3] = 0;
-  EIGEN_CPUID(abcd,0x80000005,0);
+  IMP_EIGEN_CPUID(abcd,0x80000005,0);
   l1 = (abcd[2] >> 24) * 1024; // C[31:24] = L1 size in KB
   abcd[0] = abcd[1] = abcd[2] = abcd[3] = 0;
-  EIGEN_CPUID(abcd,0x80000006,0);
+  IMP_EIGEN_CPUID(abcd,0x80000006,0);
   l2 = (abcd[2] >> 16) * 1024; // C[31;16] = l2 cache size in KB
   l3 = ((abcd[3] & 0xFFFC000) >> 18) * 512 * 1024; // D[31;18] = l3 cache size in 512KB
 }
@@ -926,11 +926,11 @@ inline void queryCacheSizes_amd(int& l1, int& l2, int& l3)
  * Queries and returns the cache sizes in Bytes of the L1, L2, and L3 data caches respectively */
 inline void queryCacheSizes(int& l1, int& l2, int& l3)
 {
-  #ifdef EIGEN_CPUID
+  #ifdef IMP_EIGEN_CPUID
   int abcd[4];
 
   // identify the CPU vendor
-  EIGEN_CPUID(abcd,0x0,0);
+  IMP_EIGEN_CPUID(abcd,0x0,0);
   int max_std_funcs = abcd[1];
   if(cpuid_is_vendor(abcd,"GenuineIntel"))
     queryCacheSizes_intel(l1,l2,l3,max_std_funcs);
@@ -976,6 +976,6 @@ inline int queryTopLevelCacheSize()
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_MEMORY_H
+#endif // IMP_EIGEN_MEMORY_H

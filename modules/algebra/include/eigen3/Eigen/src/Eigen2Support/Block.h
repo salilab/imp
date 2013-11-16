@@ -8,15 +8,15 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_BLOCK2_H
-#define EIGEN_BLOCK2_H
+#ifndef IMP_EIGEN_BLOCK2_H
+#define IMP_EIGEN_BLOCK2_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \returns a dynamic-size expression of a corner of *this.
   *
-  * \param type the type of corner. Can be \a Eigen::TopLeft, \a Eigen::TopRight,
-  * \a Eigen::BottomLeft, \a Eigen::BottomRight.
+  * \param type the type of corner. Can be \a IMP_Eigen::TopLeft, \a IMP_Eigen::TopRight,
+  * \a IMP_Eigen::BottomLeft, \a IMP_Eigen::BottomRight.
   * \param cRows the number of rows in the corner
   * \param cCols the number of columns in the corner
   *
@@ -70,8 +70,8 @@ DenseBase<Derived>::corner(CornerType type, Index cRows, Index cCols) const
 
 /** \returns a fixed-size expression of a corner of *this.
   *
-  * \param type the type of corner. Can be \a Eigen::TopLeft, \a Eigen::TopRight,
-  * \a Eigen::BottomLeft, \a Eigen::BottomRight.
+  * \param type the type of corner. Can be \a IMP_Eigen::TopLeft, \a IMP_Eigen::TopRight,
+  * \a IMP_Eigen::BottomLeft, \a IMP_Eigen::BottomRight.
   *
   * The template parameters CRows and CCols arethe number of rows and columns in the corner.
   *
@@ -121,6 +121,6 @@ DenseBase<Derived>::corner(CornerType type) const
   }
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_BLOCK2_H
+#endif // IMP_EIGEN_BLOCK2_H

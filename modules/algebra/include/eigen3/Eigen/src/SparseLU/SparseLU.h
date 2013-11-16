@@ -9,10 +9,10 @@
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 
-#ifndef EIGEN_SPARSE_LU_H
-#define EIGEN_SPARSE_LU_H
+#ifndef IMP_EIGEN_SPARSE_LU_H
+#define IMP_EIGEN_SPARSE_LU_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 template <typename _MatrixType, typename _OrderingType = COLAMDOrdering<typename _MatrixType::Index> > class SparseLU;
 template <typename MappedSparseMatrixType> struct SparseLUMatrixLReturnType;
@@ -223,7 +223,7 @@ class SparseLU : public internal::SparseLUImpl<typename _MatrixType::Scalar, typ
     {
       Dest& X(_X.derived());
       eigen_assert(m_factorizationIsOk && "The matrix should be factorized first");
-      EIGEN_STATIC_ASSERT((Dest::Flags&RowMajorBit)==0,
+      IMP_EIGEN_STATIC_ASSERT((Dest::Flags&RowMajorBit)==0,
                         THIS_METHOD_IS_ONLY_FOR_COLUMN_MAJOR_MATRICES);
       
       // Permute the right hand side to form X = Pr*B
@@ -729,7 +729,7 @@ struct solve_retval<SparseLU<_MatrixType,Derived>, Rhs>
   : solve_retval_base<SparseLU<_MatrixType,Derived>, Rhs>
 {
   typedef SparseLU<_MatrixType,Derived> Dec;
-  EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
+  IMP_EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -742,7 +742,7 @@ struct sparse_solve_retval<SparseLU<_MatrixType,Derived>, Rhs>
   : sparse_solve_retval_base<SparseLU<_MatrixType,Derived>, Rhs>
 {
   typedef SparseLU<_MatrixType,Derived> Dec;
-  EIGEN_MAKE_SPARSE_SOLVE_HELPERS(Dec,Rhs)
+  IMP_EIGEN_MAKE_SPARSE_SOLVE_HELPERS(Dec,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -751,6 +751,6 @@ struct sparse_solve_retval<SparseLU<_MatrixType,Derived>, Rhs>
 };
 } // end namespace internal
 
-} // End namespace Eigen 
+} // End namespace IMP_Eigen 
 
 #endif

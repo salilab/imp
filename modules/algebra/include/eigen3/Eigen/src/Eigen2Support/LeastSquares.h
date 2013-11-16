@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN2_LEASTSQUARES_H
-#define EIGEN2_LEASTSQUARES_H
+#ifndef IMP_EIGEN2_LEASTSQUARES_H
+#define IMP_EIGEN2_LEASTSQUARES_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \ingroup LeastSquares_Module
   *
@@ -134,7 +134,7 @@ void fitHyperplane(int numPoints,
 {
   typedef typename VectorType::Scalar Scalar;
   typedef Matrix<Scalar,VectorType::SizeAtCompileTime,VectorType::SizeAtCompileTime> CovMatrixType;
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(VectorType)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(VectorType)
   ei_assert(numPoints >= 1);
   int size = points[0]->size();
   ei_assert(size+1 == result->coeffs().size());
@@ -165,6 +165,6 @@ void fitHyperplane(int numPoints,
   result->offset() = - (result->normal().cwise()* mean).sum();
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN2_LEASTSQUARES_H
+#endif // IMP_EIGEN2_LEASTSQUARES_H

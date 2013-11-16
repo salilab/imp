@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_MISC_IMAGE_H
-#define EIGEN_MISC_IMAGE_H
+#ifndef IMP_EIGEN_MISC_IMAGE_H
+#define IMP_EIGEN_MISC_IMAGE_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -65,12 +65,12 @@ template<typename _DecompositionType> struct image_retval_base
 
 } // end namespace internal
 
-#define EIGEN_MAKE_IMAGE_HELPERS(DecompositionType) \
+#define IMP_EIGEN_MAKE_IMAGE_HELPERS(DecompositionType) \
   typedef typename DecompositionType::MatrixType MatrixType; \
   typedef typename MatrixType::Scalar Scalar; \
   typedef typename MatrixType::RealScalar RealScalar; \
   typedef typename MatrixType::Index Index; \
-  typedef Eigen::internal::image_retval_base<DecompositionType> Base; \
+  typedef IMP_Eigen::internal::image_retval_base<DecompositionType> Base; \
   using Base::dec; \
   using Base::originalMatrix; \
   using Base::rank; \
@@ -79,6 +79,6 @@ template<typename _DecompositionType> struct image_retval_base
   image_retval(const DecompositionType& dec, const MatrixType& originalMatrix) \
     : Base(dec, originalMatrix) {}
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_MISC_IMAGE_H
+#endif // IMP_EIGEN_MISC_IMAGE_H

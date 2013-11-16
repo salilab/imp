@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SIMPLICIAL_CHOLESKY_H
-#define EIGEN_SIMPLICIAL_CHOLESKY_H
+#ifndef IMP_EIGEN_SIMPLICIAL_CHOLESKY_H
+#define IMP_EIGEN_SIMPLICIAL_CHOLESKY_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 enum SimplicialCholeskyMode {
   SimplicialCholeskyLLT,
@@ -132,7 +132,7 @@ class SimplicialCholeskyBase : internal::noncopyable
       return derived();
     }
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** \internal */
     template<typename Stream>
     void dumpMemory(Stream& s)
@@ -175,7 +175,7 @@ class SimplicialCholeskyBase : internal::noncopyable
         dest = m_Pinv * dest;
     }
 
-#endif // EIGEN_PARSED_BY_DOXYGEN
+#endif // IMP_EIGEN_PARSED_BY_DOXYGEN
 
   protected:
     
@@ -253,8 +253,8 @@ template<typename _MatrixType, int _UpLo> struct traits<SimplicialLLT<_MatrixTyp
   typedef typename MatrixType::Scalar                         Scalar;
   typedef typename MatrixType::Index                          Index;
   typedef SparseMatrix<Scalar, ColMajor, Index>               CholMatrixType;
-  typedef SparseTriangularView<CholMatrixType, Eigen::Lower>  MatrixL;
-  typedef SparseTriangularView<typename CholMatrixType::AdjointReturnType, Eigen::Upper>   MatrixU;
+  typedef SparseTriangularView<CholMatrixType, IMP_Eigen::Lower>  MatrixL;
+  typedef SparseTriangularView<typename CholMatrixType::AdjointReturnType, IMP_Eigen::Upper>   MatrixU;
   static inline MatrixL getL(const MatrixType& m) { return m; }
   static inline MatrixU getU(const MatrixType& m) { return m.adjoint(); }
 };
@@ -266,8 +266,8 @@ template<typename _MatrixType,int _UpLo> struct traits<SimplicialLDLT<_MatrixTyp
   typedef typename MatrixType::Scalar                             Scalar;
   typedef typename MatrixType::Index                              Index;
   typedef SparseMatrix<Scalar, ColMajor, Index>                   CholMatrixType;
-  typedef SparseTriangularView<CholMatrixType, Eigen::UnitLower>  MatrixL;
-  typedef SparseTriangularView<typename CholMatrixType::AdjointReturnType, Eigen::UnitUpper> MatrixU;
+  typedef SparseTriangularView<CholMatrixType, IMP_Eigen::UnitLower>  MatrixL;
+  typedef SparseTriangularView<typename CholMatrixType::AdjointReturnType, IMP_Eigen::UnitUpper> MatrixU;
   static inline MatrixL getL(const MatrixType& m) { return m; }
   static inline MatrixU getU(const MatrixType& m) { return m.adjoint(); }
 };
@@ -639,7 +639,7 @@ struct solve_retval<SimplicialCholeskyBase<Derived>, Rhs>
   : solve_retval_base<SimplicialCholeskyBase<Derived>, Rhs>
 {
   typedef SimplicialCholeskyBase<Derived> Dec;
-  EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
+  IMP_EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -652,7 +652,7 @@ struct sparse_solve_retval<SimplicialCholeskyBase<Derived>, Rhs>
   : sparse_solve_retval_base<SimplicialCholeskyBase<Derived>, Rhs>
 {
   typedef SimplicialCholeskyBase<Derived> Dec;
-  EIGEN_MAKE_SPARSE_SOLVE_HELPERS(Dec,Rhs)
+  IMP_EIGEN_MAKE_SPARSE_SOLVE_HELPERS(Dec,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -662,6 +662,6 @@ struct sparse_solve_retval<SimplicialCholeskyBase<Derived>, Rhs>
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SIMPLICIAL_CHOLESKY_H
+#endif // IMP_EIGEN_SIMPLICIAL_CHOLESKY_H

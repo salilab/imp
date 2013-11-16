@@ -10,10 +10,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_LDLT_H
-#define EIGEN_LDLT_H
+#ifndef IMP_EIGEN_LDLT_H
+#define IMP_EIGEN_LDLT_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 template<typename MatrixType, int UpLo> struct LDLT_Traits;
@@ -142,7 +142,7 @@ template<typename _MatrixType, int _UpLo> class LDLT
       return m_sign == 1;
     }
     
-    #ifdef EIGEN2_SUPPORT
+    #ifdef IMP_EIGEN2_SUPPORT
     inline bool isPositiveDefinite() const
     {
       return isPositive();
@@ -181,7 +181,7 @@ template<typename _MatrixType, int _UpLo> class LDLT
       return internal::solve_retval<LDLT, Rhs>(*this, b.derived());
     }
 
-    #ifdef EIGEN2_SUPPORT
+    #ifdef IMP_EIGEN2_SUPPORT
     template<typename OtherDerived, typename ResultType>
     bool solve(const MatrixBase<OtherDerived>& b, ResultType *result) const
     {
@@ -399,14 +399,14 @@ template<> struct ldlt_inplace<Lower>
 template<> struct ldlt_inplace<Upper>
 {
   template<typename MatrixType, typename TranspositionType, typename Workspace>
-  static EIGEN_STRONG_INLINE bool unblocked(MatrixType& mat, TranspositionType& transpositions, Workspace& temp, int* sign=0)
+  static IMP_EIGEN_STRONG_INLINE bool unblocked(MatrixType& mat, TranspositionType& transpositions, Workspace& temp, int* sign=0)
   {
     Transpose<MatrixType> matt(mat);
     return ldlt_inplace<Lower>::unblocked(matt, transpositions, temp, sign);
   }
 
   template<typename MatrixType, typename TranspositionType, typename Workspace, typename WType>
-  static EIGEN_STRONG_INLINE bool update(MatrixType& mat, TranspositionType& transpositions, Workspace& tmp, WType& w, const typename MatrixType::RealScalar& sigma=1)
+  static IMP_EIGEN_STRONG_INLINE bool update(MatrixType& mat, TranspositionType& transpositions, Workspace& tmp, WType& w, const typename MatrixType::RealScalar& sigma=1)
   {
     Transpose<MatrixType> matt(mat);
     return ldlt_inplace<Lower>::update(matt, transpositions, tmp, w.conjugate(), sigma);
@@ -488,7 +488,7 @@ struct solve_retval<LDLT<_MatrixType,_UpLo>, Rhs>
   : solve_retval_base<LDLT<_MatrixType,_UpLo>, Rhs>
 {
   typedef LDLT<_MatrixType,_UpLo> LDLTType;
-  EIGEN_MAKE_SOLVE_HELPERS(LDLTType,Rhs)
+  IMP_EIGEN_MAKE_SOLVE_HELPERS(LDLTType,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -595,6 +595,6 @@ MatrixBase<Derived>::ldlt() const
   return LDLT<PlainObject>(derived());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_LDLT_H
+#endif // IMP_EIGEN_LDLT_H

@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_DETERMINANT_H
-#define EIGEN_DETERMINANT_H
+#ifndef IMP_EIGEN_DETERMINANT_H
+#define IMP_EIGEN_DETERMINANT_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -96,6 +96,6 @@ inline typename internal::traits<Derived>::Scalar MatrixBase<Derived>::determina
   return internal::determinant_impl<typename internal::remove_all<Nested>::type>::run(derived());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_DETERMINANT_H
+#endif // IMP_EIGEN_DETERMINANT_H

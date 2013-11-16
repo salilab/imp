@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SELECT_H
-#define EIGEN_SELECT_H
+#ifndef IMP_EIGEN_SELECT_H
+#define IMP_EIGEN_SELECT_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \class Select
   * \ingroup Core_Module
@@ -45,7 +45,7 @@ struct traits<Select<ConditionMatrixType, ThenMatrixType, ElseMatrixType> >
     MaxColsAtCompileTime = ConditionMatrixType::MaxColsAtCompileTime,
     Flags = (unsigned int)ThenMatrixType::Flags & ElseMatrixType::Flags & HereditaryBits,
     CoeffReadCost = traits<typename remove_all<ConditionMatrixNested>::type>::CoeffReadCost
-                  + EIGEN_SIZE_MAX(traits<typename remove_all<ThenMatrixNested>::type>::CoeffReadCost,
+                  + IMP_EIGEN_SIZE_MAX(traits<typename remove_all<ThenMatrixNested>::type>::CoeffReadCost,
                                    traits<typename remove_all<ElseMatrixNested>::type>::CoeffReadCost)
   };
 };
@@ -58,7 +58,7 @@ class Select : internal::no_assignment_operator,
   public:
 
     typedef typename internal::dense_xpr_base<Select>::type Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(Select)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(Select)
 
     Select(const ConditionMatrixType& a_conditionMatrix,
            const ThenMatrixType& a_thenMatrix,
@@ -157,6 +157,6 @@ DenseBase<Derived>::select(const typename ElseDerived::Scalar& thenScalar,
     derived(), ElseDerived::Constant(rows(),cols(),thenScalar), elseMatrix.derived());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SELECT_H
+#endif // IMP_EIGEN_SELECT_H

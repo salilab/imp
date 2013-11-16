@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_AUTODIFF_VECTOR_H
-#define EIGEN_AUTODIFF_VECTOR_H
+#ifndef IMP_EIGEN_AUTODIFF_VECTOR_H
+#define IMP_EIGEN_AUTODIFF_VECTOR_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 /* \class AutoDiffScalar
   * \brief A scalar type replacement with automatic differentation capability
@@ -24,7 +24,7 @@ namespace Eigen {
   *  - internal::abs, internal::sqrt, numext::pow, internal::exp, internal::log, internal::sin, internal::cos,
   *  - internal::conj, internal::real, internal::imag, numext::abs2.
   *
-  * AutoDiffScalar can be used as the scalar type of an Eigen::Matrix object. However,
+  * AutoDiffScalar can be used as the scalar type of an IMP_Eigen::Matrix object. However,
   * in that case, the expression template mechanism only occurs at the top Matrix level,
   * while derivatives are computed right away.
   *
@@ -217,4 +217,4 @@ class AutoDiffVector
 
 }
 
-#endif // EIGEN_AUTODIFF_VECTOR_H
+#endif // IMP_EIGEN_AUTODIFF_VECTOR_H

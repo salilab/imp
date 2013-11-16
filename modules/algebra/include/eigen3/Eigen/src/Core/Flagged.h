@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_FLAGGED_H
-#define EIGEN_FLAGGED_H
+#ifndef IMP_EIGEN_FLAGGED_H
+#define IMP_EIGEN_FLAGGED_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \class Flagged
   * \ingroup Core_Module
@@ -43,7 +43,7 @@ template<typename ExpressionType, unsigned int Added, unsigned int Removed> clas
 
     typedef MatrixBase<Flagged> Base;
     
-    EIGEN_DENSE_PUBLIC_INTERFACE(Flagged)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(Flagged)
     typedef typename internal::conditional<internal::must_nest_by_value<ExpressionType>::ret,
         ExpressionType, const ExpressionType&>::type ExpressionTypeNested;
     typedef typename ExpressionType::InnerIterator InnerIterator;
@@ -135,6 +135,6 @@ DenseBase<Derived>::flagged() const
   return derived();
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_FLAGGED_H
+#endif // IMP_EIGEN_FLAGGED_H

@@ -8,14 +8,14 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_MAPBASE_H
-#define EIGEN_MAPBASE_H
+#ifndef IMP_EIGEN_MAPBASE_H
+#define IMP_EIGEN_MAPBASE_H
 
-#define EIGEN_STATIC_ASSERT_INDEX_BASED_ACCESS(Derived) \
-      EIGEN_STATIC_ASSERT((int(internal::traits<Derived>::Flags) & LinearAccessBit) || Derived::IsVectorAtCompileTime, \
+#define IMP_EIGEN_STATIC_ASSERT_INDEX_BASED_ACCESS(Derived) \
+      IMP_EIGEN_STATIC_ASSERT((int(internal::traits<Derived>::Flags) & LinearAccessBit) || Derived::IsVectorAtCompileTime, \
                           YOU_ARE_TRYING_TO_USE_AN_INDEX_BASED_ACCESSOR_ON_AN_EXPRESSION_THAT_DOES_NOT_SUPPORT_THAT)
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \class MapBase
   * \ingroup Core_Module
@@ -94,7 +94,7 @@ template<typename Derived> class MapBase<Derived, ReadOnlyAccessors>
 
     inline const Scalar& coeff(Index index) const
     {
-      EIGEN_STATIC_ASSERT_INDEX_BASED_ACCESS(Derived)
+      IMP_EIGEN_STATIC_ASSERT_INDEX_BASED_ACCESS(Derived)
       return m_data[index * innerStride()];
     }
 
@@ -105,7 +105,7 @@ template<typename Derived> class MapBase<Derived, ReadOnlyAccessors>
 
     inline const Scalar& coeffRef(Index index) const
     {
-      EIGEN_STATIC_ASSERT_INDEX_BASED_ACCESS(Derived)
+      IMP_EIGEN_STATIC_ASSERT_INDEX_BASED_ACCESS(Derived)
       return this->m_data[index * innerStride()];
     }
 
@@ -119,13 +119,13 @@ template<typename Derived> class MapBase<Derived, ReadOnlyAccessors>
     template<int LoadMode>
     inline PacketScalar packet(Index index) const
     {
-      EIGEN_STATIC_ASSERT_INDEX_BASED_ACCESS(Derived)
+      IMP_EIGEN_STATIC_ASSERT_INDEX_BASED_ACCESS(Derived)
       return internal::ploadt<PacketScalar, LoadMode>(m_data + index * innerStride());
     }
 
     inline MapBase(PointerType dataPtr) : m_data(dataPtr), m_rows(RowsAtCompileTime), m_cols(ColsAtCompileTime)
     {
-      EIGEN_STATIC_ASSERT_FIXED_SIZE(Derived)
+      IMP_EIGEN_STATIC_ASSERT_FIXED_SIZE(Derived)
       checkSanity();
     }
 
@@ -134,7 +134,7 @@ template<typename Derived> class MapBase<Derived, ReadOnlyAccessors>
               m_rows(RowsAtCompileTime == Dynamic ? vecSize : Index(RowsAtCompileTime)),
               m_cols(ColsAtCompileTime == Dynamic ? vecSize : Index(ColsAtCompileTime))
     {
-      EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
       eigen_assert(vecSize >= 0);
       eigen_assert(dataPtr == 0 || SizeAtCompileTime == Dynamic || SizeAtCompileTime == vecSize);
       checkSanity();
@@ -153,10 +153,10 @@ template<typename Derived> class MapBase<Derived, ReadOnlyAccessors>
 
     void checkSanity() const
     {
-      EIGEN_STATIC_ASSERT(EIGEN_IMPLIES(internal::traits<Derived>::Flags&PacketAccessBit,
+      IMP_EIGEN_STATIC_ASSERT(IMP_EIGEN_IMPLIES(internal::traits<Derived>::Flags&PacketAccessBit,
                                         internal::inner_stride_at_compile_time<Derived>::ret==1),
                           PACKET_ACCESS_REQUIRES_TO_HAVE_INNER_STRIDE_FIXED_TO_1);
-      eigen_assert(EIGEN_IMPLIES(internal::traits<Derived>::Flags&AlignedBit, (size_t(m_data) % 16) == 0)
+      eigen_assert(IMP_EIGEN_IMPLIES(internal::traits<Derived>::Flags&AlignedBit, (size_t(m_data) % 16) == 0)
                    && "data is not aligned");
     }
 
@@ -205,7 +205,7 @@ template<typename Derived> class MapBase<Derived, WriteAccessors>
 
     inline ScalarWithConstIfNotLvalue& coeffRef(Index index)
     {
-      EIGEN_STATIC_ASSERT_INDEX_BASED_ACCESS(Derived)
+      IMP_EIGEN_STATIC_ASSERT_INDEX_BASED_ACCESS(Derived)
       return this->m_data[index * innerStride()];
     }
 
@@ -219,7 +219,7 @@ template<typename Derived> class MapBase<Derived, WriteAccessors>
     template<int StoreMode>
     inline void writePacket(Index index, const PacketScalar& val)
     {
-      EIGEN_STATIC_ASSERT_INDEX_BASED_ACCESS(Derived)
+      IMP_EIGEN_STATIC_ASSERT_INDEX_BASED_ACCESS(Derived)
       internal::pstoret<Scalar, PacketScalar, StoreMode>
                 (this->m_data + index * innerStride(), val);
     }
@@ -237,6 +237,6 @@ template<typename Derived> class MapBase<Derived, WriteAccessors>
     using Base::Base::operator=;
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_MAPBASE_H
+#endif // IMP_EIGEN_MAPBASE_H

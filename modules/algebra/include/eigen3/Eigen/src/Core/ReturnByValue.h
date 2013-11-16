@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_RETURNBYVALUE_H
-#define EIGEN_RETURNBYVALUE_H
+#ifndef IMP_EIGEN_RETURNBYVALUE_H
+#define IMP_EIGEN_RETURNBYVALUE_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 /** \class ReturnByValue
   * \ingroup Core_Module
@@ -54,7 +54,7 @@ template<typename Derived> class ReturnByValue
     typedef typename internal::traits<Derived>::ReturnType ReturnType;
 
     typedef typename internal::dense_xpr_base<ReturnByValue>::type Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(ReturnByValue)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(ReturnByValue)
 
     template<typename Dest>
     inline void evalTo(Dest& dst) const
@@ -62,7 +62,7 @@ template<typename Derived> class ReturnByValue
     inline Index rows() const { return static_cast<const Derived*>(this)->rows(); }
     inline Index cols() const { return static_cast<const Derived*>(this)->cols(); }
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
 #define Unusable YOU_ARE_TRYING_TO_ACCESS_A_SINGLE_COEFFICIENT_IN_A_SPECIAL_EXPRESSION_WHERE_THAT_IS_NOT_ALLOWED_BECAUSE_THAT_WOULD_BE_INEFFICIENT
     class Unusable{
       Unusable(const Unusable&) {}
@@ -83,6 +83,6 @@ Derived& DenseBase<Derived>::operator=(const ReturnByValue<OtherDerived>& other)
   return derived();
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_RETURNBYVALUE_H
+#endif // IMP_EIGEN_RETURNBYVALUE_H

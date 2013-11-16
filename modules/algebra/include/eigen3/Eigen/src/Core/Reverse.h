@@ -9,10 +9,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_REVERSE_H
-#define EIGEN_REVERSE_H
+#ifndef IMP_EIGEN_REVERSE_H
+#define IMP_EIGEN_REVERSE_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \class Reverse
   * \ingroup Core_Module
@@ -73,7 +73,7 @@ template<typename MatrixType, int Direction> class Reverse
   public:
 
     typedef typename internal::dense_xpr_base<Reverse>::type Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(Reverse)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(Reverse)
     using Base::IsRowMajor;
 
     // next line is necessary because otherwise const version of operator()
@@ -97,7 +97,7 @@ template<typename MatrixType, int Direction> class Reverse
 
     inline Reverse(const MatrixType& matrix) : m_matrix(matrix) { }
 
-    EIGEN_INHERIT_ASSIGNMENT_OPERATORS(Reverse)
+    IMP_EIGEN_INHERIT_ASSIGNMENT_OPERATORS(Reverse)
 
     inline Index rows() const { return m_matrix.rows(); }
     inline Index cols() const { return m_matrix.cols(); }
@@ -219,6 +219,6 @@ inline void DenseBase<Derived>::reverseInPlace()
   derived() = derived().reverse().eval();
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_REVERSE_H
+#endif // IMP_EIGEN_REVERSE_H

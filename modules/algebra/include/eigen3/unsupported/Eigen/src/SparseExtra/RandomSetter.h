@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_RANDOMSETTER_H
-#define EIGEN_RANDOMSETTER_H
+#ifndef IMP_EIGEN_RANDOMSETTER_H
+#define IMP_EIGEN_RANDOMSETTER_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** Represents a std::map
   *
@@ -27,16 +27,16 @@ template<typename Scalar> struct StdMapTraits
   static void setInvalidKey(Type&, const KeyType&) {}
 };
 
-#ifdef EIGEN_UNORDERED_MAP_SUPPORT
+#ifdef IMP_EIGEN_UNORDERED_MAP_SUPPORT
 /** Represents a std::unordered_map
   *
-  * To use it you need to both define EIGEN_UNORDERED_MAP_SUPPORT and include the unordered_map header file
+  * To use it you need to both define IMP_EIGEN_UNORDERED_MAP_SUPPORT and include the unordered_map header file
   * yourself making sure that unordered_map is defined in the std namespace.
   *
   * For instance, with current version of gcc you can either enable C++0x standard (-std=c++0x) or do:
   * \code
   * #include <tr1/unordered_map>
-  * #define EIGEN_UNORDERED_MAP_SUPPORT
+  * #define IMP_EIGEN_UNORDERED_MAP_SUPPORT
   * namespace std {
   *   using std::tr1::unordered_map;
   * }
@@ -54,7 +54,7 @@ template<typename Scalar> struct StdUnorderedMapTraits
 
   static void setInvalidKey(Type&, const KeyType&) {}
 };
-#endif // EIGEN_UNORDERED_MAP_SUPPORT
+#endif // IMP_EIGEN_UNORDERED_MAP_SUPPORT
 
 #ifdef _DENSE_HASH_MAP_H_
 /** Represents a google::dense_hash_map
@@ -136,7 +136,7 @@ template<typename Scalar> struct GoogleSparseHashMapTraits
   * For performance and memory consumption reasons it is highly recommended to use one of
   * the Google's hash_map implementation. To enable the support for them, you have two options:
   *  - \#include <google/dense_hash_map> yourself \b before Eigen/Sparse header
-  *  - define EIGEN_GOOGLEHASH_SUPPORT
+  *  - define IMP_EIGEN_GOOGLEHASH_SUPPORT
   * In the later case the inclusion of <google/dense_hash_map> is made for you.
   *
   * \see http://code.google.com/p/google-sparsehash/
@@ -322,6 +322,6 @@ class RandomSetter
     unsigned char m_keyBitsOffset;
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_RANDOMSETTER_H
+#endif // IMP_EIGEN_RANDOMSETTER_H

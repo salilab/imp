@@ -10,7 +10,7 @@
 #ifndef KDBVH_H_INCLUDED
 #define KDBVH_H_INCLUDED
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -18,7 +18,7 @@ namespace internal {
 template<typename Scalar, int Dim>
 struct vector_int_pair
 {
-EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(Scalar, Dim)
+IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(Scalar, Dim)
   typedef Matrix<Scalar, Dim, 1> VectorType;
 
   vector_int_pair(const VectorType &v, int i) : first(v), second(i) {}
@@ -129,7 +129,7 @@ public:
 
   /** Given an \a index of a node, on exit, \a outVBegin and \a outVEnd range over the indices of the volume children of the node
     * and \a outOBegin and \a outOEnd range over the object children of the node */
-  EIGEN_STRONG_INLINE void getChildren(Index index, VolumeIterator &outVBegin, VolumeIterator &outVEnd,
+  IMP_EIGEN_STRONG_INLINE void getChildren(Index index, VolumeIterator &outVBegin, VolumeIterator &outVEnd,
                                        ObjectIterator &outOBegin, ObjectIterator &outOEnd) const
   { //inlining this function should open lots of optimization opportunities to the compiler
     if(index < 0) {
@@ -217,6 +217,6 @@ private:
   ObjectList objects;
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
 #endif //KDBVH_H_INCLUDED

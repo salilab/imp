@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_TRIANGULARMATRIX_H
-#define EIGEN_TRIANGULARMATRIX_H
+#ifndef IMP_EIGEN_TRIANGULARMATRIX_H
+#define IMP_EIGEN_TRIANGULARMATRIX_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
   
@@ -57,7 +57,7 @@ template<typename Derived> class TriangularBase : public EigenBase<Derived>
     /** \see MatrixBase::copyCoeff(row,col)
       */
     template<typename Other>
-    EIGEN_STRONG_INLINE void copyCoeff(Index row, Index col, Other& other)
+    IMP_EIGEN_STRONG_INLINE void copyCoeff(Index row, Index col, Other& other)
     {
       derived().coeffRef(row, col) = other.coeff(row, col);
     }
@@ -73,10 +73,10 @@ template<typename Derived> class TriangularBase : public EigenBase<Derived>
       return coeffRef(row,col);
     }
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     inline const Derived& derived() const { return *static_cast<const Derived*>(this); }
     inline Derived& derived() { return *static_cast<Derived*>(this); }
-    #endif // not EIGEN_PARSED_BY_DOXYGEN
+    #endif // not IMP_EIGEN_PARSED_BY_DOXYGEN
 
     template<typename DenseDerived>
     void evalTo(MatrixBase<DenseDerived> &other) const;
@@ -94,18 +94,18 @@ template<typename Derived> class TriangularBase : public EigenBase<Derived>
 
     void check_coordinates(Index row, Index col) const
     {
-      EIGEN_ONLY_USED_FOR_DEBUG(row);
-      EIGEN_ONLY_USED_FOR_DEBUG(col);
+      IMP_EIGEN_ONLY_USED_FOR_DEBUG(row);
+      IMP_EIGEN_ONLY_USED_FOR_DEBUG(col);
       eigen_assert(col>=0 && col<cols() && row>=0 && row<rows());
       const int mode = int(Mode) & ~SelfAdjoint;
-      EIGEN_ONLY_USED_FOR_DEBUG(mode);
+      IMP_EIGEN_ONLY_USED_FOR_DEBUG(mode);
       eigen_assert((mode==Upper && col>=row)
                 || (mode==Lower && col<=row)
                 || ((mode==StrictlyUpper || mode==UnitUpper) && col>row)
                 || ((mode==StrictlyLower || mode==UnitLower) && col<row));
     }
 
-    #ifdef EIGEN_INTERNAL_DEBUGGING
+    #ifdef IMP_EIGEN_INTERNAL_DEBUGGING
     void check_coordinates_internal(Index row, Index col) const
     {
       check_coordinates(row, col);
@@ -267,7 +267,7 @@ template<typename _MatrixType, unsigned int _Mode> class TriangularView
     /** \sa MatrixBase::transpose() */
     inline TriangularView<Transpose<MatrixType>,TransposeMode> transpose()
     {
-      EIGEN_STATIC_ASSERT_LVALUE(MatrixType)
+      IMP_EIGEN_STATIC_ASSERT_LVALUE(MatrixType)
       return m_matrix.const_cast_derived().transpose();
     }
     /** \sa MatrixBase::transpose() const */
@@ -296,7 +296,7 @@ template<typename _MatrixType, unsigned int _Mode> class TriangularView
               (lhs.derived(),rhs.m_matrix);
     }
 
-    #ifdef EIGEN2_SUPPORT
+    #ifdef IMP_EIGEN2_SUPPORT
     template<typename OtherDerived>
     struct eigen2_product_return_type
     {
@@ -323,7 +323,7 @@ template<typename _MatrixType, unsigned int _Mode> class TriangularView
     {
       return this->toDenseMatrix().isApprox(other, precision);
     }
-    #endif // EIGEN2_SUPPORT
+    #endif // IMP_EIGEN2_SUPPORT
 
     template<int Side, typename Other>
     inline const internal::triangular_solve_retval<Side,TriangularView, Other>
@@ -343,12 +343,12 @@ template<typename _MatrixType, unsigned int _Mode> class TriangularView
 
     const SelfAdjointView<MatrixTypeNestedNonRef,Mode> selfadjointView() const
     {
-      EIGEN_STATIC_ASSERT((Mode&UnitDiag)==0,PROGRAMMING_ERROR);
+      IMP_EIGEN_STATIC_ASSERT((Mode&UnitDiag)==0,PROGRAMMING_ERROR);
       return SelfAdjointView<MatrixTypeNestedNonRef,Mode>(m_matrix);
     }
     SelfAdjointView<MatrixTypeNestedNonRef,Mode> selfadjointView()
     {
-      EIGEN_STATIC_ASSERT((Mode&UnitDiag)==0,PROGRAMMING_ERROR);
+      IMP_EIGEN_STATIC_ASSERT((Mode&UnitDiag)==0,PROGRAMMING_ERROR);
       return SelfAdjointView<MatrixTypeNestedNonRef,Mode>(m_matrix);
     }
 
@@ -377,40 +377,40 @@ template<typename _MatrixType, unsigned int _Mode> class TriangularView
     
     // TODO simplify the following:
     template<typename ProductDerived, typename Lhs, typename Rhs>
-    EIGEN_STRONG_INLINE TriangularView& operator=(const ProductBase<ProductDerived, Lhs,Rhs>& other)
+    IMP_EIGEN_STRONG_INLINE TriangularView& operator=(const ProductBase<ProductDerived, Lhs,Rhs>& other)
     {
       setZero();
       return assignProduct(other,1);
     }
     
     template<typename ProductDerived, typename Lhs, typename Rhs>
-    EIGEN_STRONG_INLINE TriangularView& operator+=(const ProductBase<ProductDerived, Lhs,Rhs>& other)
+    IMP_EIGEN_STRONG_INLINE TriangularView& operator+=(const ProductBase<ProductDerived, Lhs,Rhs>& other)
     {
       return assignProduct(other,1);
     }
     
     template<typename ProductDerived, typename Lhs, typename Rhs>
-    EIGEN_STRONG_INLINE TriangularView& operator-=(const ProductBase<ProductDerived, Lhs,Rhs>& other)
+    IMP_EIGEN_STRONG_INLINE TriangularView& operator-=(const ProductBase<ProductDerived, Lhs,Rhs>& other)
     {
       return assignProduct(other,-1);
     }
     
     
     template<typename ProductDerived>
-    EIGEN_STRONG_INLINE TriangularView& operator=(const ScaledProduct<ProductDerived>& other)
+    IMP_EIGEN_STRONG_INLINE TriangularView& operator=(const ScaledProduct<ProductDerived>& other)
     {
       setZero();
       return assignProduct(other,other.alpha());
     }
     
     template<typename ProductDerived>
-    EIGEN_STRONG_INLINE TriangularView& operator+=(const ScaledProduct<ProductDerived>& other)
+    IMP_EIGEN_STRONG_INLINE TriangularView& operator+=(const ScaledProduct<ProductDerived>& other)
     {
       return assignProduct(other,other.alpha());
     }
     
     template<typename ProductDerived>
-    EIGEN_STRONG_INLINE TriangularView& operator-=(const ScaledProduct<ProductDerived>& other)
+    IMP_EIGEN_STRONG_INLINE TriangularView& operator-=(const ScaledProduct<ProductDerived>& other)
     {
       return assignProduct(other,-other.alpha());
     }
@@ -418,7 +418,7 @@ template<typename _MatrixType, unsigned int _Mode> class TriangularView
   protected:
     
     template<typename ProductDerived, typename Lhs, typename Rhs>
-    EIGEN_STRONG_INLINE TriangularView& assignProduct(const ProductBase<ProductDerived, Lhs,Rhs>& prod, const Scalar& alpha);
+    IMP_EIGEN_STRONG_INLINE TriangularView& assignProduct(const ProductBase<ProductDerived, Lhs,Rhs>& prod, const Scalar& alpha);
 
     MatrixTypeNested m_matrix;
 };
@@ -612,7 +612,7 @@ void TriangularView<MatrixType, Mode>::lazyAssign(const MatrixBase<OtherDerived>
   enum {
     unroll = MatrixType::SizeAtCompileTime != Dynamic
           && internal::traits<OtherDerived>::CoeffReadCost != Dynamic
-          && MatrixType::SizeAtCompileTime*internal::traits<OtherDerived>::CoeffReadCost/2 <= EIGEN_UNROLLING_LIMIT
+          && MatrixType::SizeAtCompileTime*internal::traits<OtherDerived>::CoeffReadCost/2 <= IMP_EIGEN_UNROLLING_LIMIT
   };
   eigen_assert(m_matrix.rows() == other.rows() && m_matrix.cols() == other.cols());
 
@@ -650,7 +650,7 @@ void TriangularView<MatrixType, Mode>::lazyAssign(const TriangularBase<OtherDeri
     unroll = MatrixType::SizeAtCompileTime != Dynamic
                    && internal::traits<OtherDerived>::CoeffReadCost != Dynamic
                    && MatrixType::SizeAtCompileTime * internal::traits<OtherDerived>::CoeffReadCost / 2
-                        <= EIGEN_UNROLLING_LIMIT
+                        <= IMP_EIGEN_UNROLLING_LIMIT
   };
   eigen_assert(m_matrix.rows() == other.rows() && m_matrix.cols() == other.cols());
 
@@ -691,7 +691,7 @@ void TriangularBase<Derived>::evalToLazy(MatrixBase<DenseDerived> &other) const
     unroll = DenseDerived::SizeAtCompileTime != Dynamic
                    && internal::traits<Derived>::CoeffReadCost != Dynamic
                    && DenseDerived::SizeAtCompileTime * internal::traits<Derived>::CoeffReadCost / 2
-                        <= EIGEN_UNROLLING_LIMIT
+                        <= IMP_EIGEN_UNROLLING_LIMIT
   };
   other.derived().resize(this->rows(), this->cols());
 
@@ -710,7 +710,7 @@ void TriangularBase<Derived>::evalToLazy(MatrixBase<DenseDerived> &other) const
 * Implementation of MatrixBase methods
 ***************************************************************************/
 
-#ifdef EIGEN2_SUPPORT
+#ifdef IMP_EIGEN2_SUPPORT
 
 // implementation of part<>(), including the SelfAdjoint case.
 
@@ -825,6 +825,6 @@ bool MatrixBase<Derived>::isLowerTriangular(const RealScalar& prec) const
   return true;
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_TRIANGULARMATRIX_H
+#endif // IMP_EIGEN_TRIANGULARMATRIX_H

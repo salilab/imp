@@ -10,7 +10,7 @@
 
 // no include guard, we'll include this twice from All.h from Eigen2Support, and it's internal anyway
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \geometry_module \ingroup Geometry_Module
   *
@@ -33,7 +33,7 @@ template <typename _Scalar, int _AmbientDim>
 class Hyperplane
 {
 public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_AmbientDim==Dynamic ? Dynamic : _AmbientDim+1)
+  IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_AmbientDim==Dynamic ? Dynamic : _AmbientDim+1)
   enum { AmbientDimAtCompileTime = _AmbientDim };
   typedef _Scalar Scalar;
   typedef typename NumTraits<Scalar>::Real RealScalar;
@@ -87,7 +87,7 @@ public:
     */
   static inline Hyperplane Through(const VectorType& p0, const VectorType& p1, const VectorType& p2)
   {
-    EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(VectorType, 3)
+    IMP_EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(VectorType, 3)
     Hyperplane result(p0.size());
     result.normal() = (p2 - p0).cross(p1 - p0).normalized();
     result.offset() = -result.normal().eigen2_dot(p0);
@@ -167,7 +167,7 @@ public:
     */
   VectorType intersection(const Hyperplane& other)
   {
-    EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(VectorType, 2)
+    IMP_EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(VectorType, 2)
     Scalar det = coeffs().coeff(0) * other.coeffs().coeff(1) - coeffs().coeff(1) * other.coeffs().coeff(0);
     // since the line equations ax+by=c are normalized with a^2+b^2=1, the following tests
     // whether the two lines are approximately parallel.
@@ -251,4 +251,4 @@ protected:
   Coefficients m_coeffs;
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen

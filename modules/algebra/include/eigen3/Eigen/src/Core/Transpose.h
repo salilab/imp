@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_TRANSPOSE_H
-#define EIGEN_TRANSPOSE_H
+#ifndef IMP_EIGEN_TRANSPOSE_H
+#define IMP_EIGEN_TRANSPOSE_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \class Transpose
   * \ingroup Core_Module
@@ -60,11 +60,11 @@ template<typename MatrixType> class Transpose
   public:
 
     typedef typename TransposeImpl<MatrixType,typename internal::traits<MatrixType>::StorageKind>::Base Base;
-    EIGEN_GENERIC_PUBLIC_INTERFACE(Transpose)
+    IMP_EIGEN_GENERIC_PUBLIC_INTERFACE(Transpose)
 
     inline Transpose(MatrixType& a_matrix) : m_matrix(a_matrix) {}
 
-    EIGEN_INHERIT_ASSIGNMENT_OPERATORS(Transpose)
+    IMP_EIGEN_INHERIT_ASSIGNMENT_OPERATORS(Transpose)
 
     inline Index rows() const { return m_matrix.cols(); }
     inline Index cols() const { return m_matrix.rows(); }
@@ -103,8 +103,8 @@ template<typename MatrixType> class TransposeImpl<MatrixType,Dense>
   public:
 
     typedef typename internal::TransposeImpl_base<MatrixType>::type Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(Transpose<MatrixType>)
-    EIGEN_INHERIT_ASSIGNMENT_OPERATORS(TransposeImpl)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(Transpose<MatrixType>)
+    IMP_EIGEN_INHERIT_ASSIGNMENT_OPERATORS(TransposeImpl)
 
     inline Index innerStride() const { return derived().nestedExpression().innerStride(); }
     inline Index outerStride() const { return derived().nestedExpression().outerStride(); }
@@ -120,13 +120,13 @@ template<typename MatrixType> class TransposeImpl<MatrixType,Dense>
 
     inline ScalarWithConstIfNotLvalue& coeffRef(Index rowId, Index colId)
     {
-      EIGEN_STATIC_ASSERT_LVALUE(MatrixType)
+      IMP_EIGEN_STATIC_ASSERT_LVALUE(MatrixType)
       return derived().nestedExpression().const_cast_derived().coeffRef(colId, rowId);
     }
 
     inline ScalarWithConstIfNotLvalue& coeffRef(Index index)
     {
-      EIGEN_STATIC_ASSERT_LVALUE(MatrixType)
+      IMP_EIGEN_STATIC_ASSERT_LVALUE(MatrixType)
       return derived().nestedExpression().const_cast_derived().coeffRef(index);
     }
 
@@ -323,7 +323,7 @@ inline void MatrixBase<Derived>::adjointInPlace()
   derived() = adjoint().eval();
 }
 
-#ifndef EIGEN_NO_DEBUG
+#ifndef IMP_EIGEN_NO_DEBUG
 
 // The following is to detect aliasing problems in most common cases.
 
@@ -412,6 +412,6 @@ void DenseBase<Derived>::checkTransposeAliasing(const OtherDerived& other) const
 }
 #endif
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_TRANSPOSE_H
+#endif // IMP_EIGEN_TRANSPOSE_H

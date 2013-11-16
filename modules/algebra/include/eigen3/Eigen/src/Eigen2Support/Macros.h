@@ -7,14 +7,14 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN2_MACROS_H
-#define EIGEN2_MACROS_H
+#ifndef IMP_EIGEN2_MACROS_H
+#define IMP_EIGEN2_MACROS_H
 
 #define ei_assert eigen_assert
 #define ei_internal_assert eigen_internal_assert
 
-#define EIGEN_ALIGN_128 EIGEN_ALIGN16
+#define IMP_EIGEN_ALIGN_128 IMP_EIGEN_ALIGN16
 
-#define EIGEN_ARCH_WANTS_ALIGNMENT EIGEN_ALIGN_STATICALLY
+#define IMP_EIGEN_ARCH_WANTS_ALIGNMENT IMP_EIGEN_ALIGN_STATICALLY
 
-#endif // EIGEN2_MACROS_H
+#endif // IMP_EIGEN2_MACROS_H

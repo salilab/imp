@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN2_SVD_H
-#define EIGEN2_SVD_H
+#ifndef IMP_EIGEN2_SVD_H
+#define IMP_EIGEN2_SVD_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 /** \ingroup SVD_Module
   * \nonstableyet
@@ -36,7 +36,7 @@ template<typename MatrixType> class SVD
     enum {
       PacketSize = internal::packet_traits<Scalar>::size,
       AlignmentMask = int(PacketSize)-1,
-      MinSize = EIGEN_SIZE_MIN_PREFER_DYNAMIC(MatrixType::RowsAtCompileTime, MatrixType::ColsAtCompileTime)
+      MinSize = IMP_EIGEN_SIZE_MIN_PREFER_DYNAMIC(MatrixType::RowsAtCompileTime, MatrixType::ColsAtCompileTime)
     };
 
     typedef Matrix<Scalar, MatrixType::RowsAtCompileTime, 1> ColVector;
@@ -633,6 +633,6 @@ MatrixBase<Derived>::svd() const
   return SVD<PlainObject>(derived());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN2_SVD_H
+#endif // IMP_EIGEN2_SVD_H

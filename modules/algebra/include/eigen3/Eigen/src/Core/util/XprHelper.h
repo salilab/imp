@@ -8,23 +8,23 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_XPRHELPER_H
-#define EIGEN_XPRHELPER_H
+#ifndef IMP_EIGEN_XPRHELPER_H
+#define IMP_EIGEN_XPRHELPER_H
 
 // just a workaround because GCC seems to not really like empty structs
 // FIXME: gcc 4.3 generates bad code when strict-aliasing is enabled
 // so currently we simply disable this optimization for gcc 4.3
 #if (defined __GNUG__) && !((__GNUC__==4) && (__GNUC_MINOR__==3))
-  #define EIGEN_EMPTY_STRUCT_CTOR(X) \
-    EIGEN_STRONG_INLINE X() {} \
-    EIGEN_STRONG_INLINE X(const X& ) {}
+  #define IMP_EIGEN_EMPTY_STRUCT_CTOR(X) \
+    IMP_EIGEN_STRONG_INLINE X() {} \
+    IMP_EIGEN_STRONG_INLINE X(const X& ) {}
 #else
-  #define EIGEN_EMPTY_STRUCT_CTOR(X)
+  #define IMP_EIGEN_EMPTY_STRUCT_CTOR(X)
 #endif
 
-namespace Eigen {
+namespace IMP_Eigen {
 
-typedef EIGEN_DEFAULT_DENSE_INDEX_TYPE DenseIndex;
+typedef IMP_EIGEN_DEFAULT_DENSE_INDEX_TYPE DenseIndex;
 
 namespace internal {
 
@@ -49,8 +49,8 @@ struct promote_index_type
 template<typename T, int Value> class variable_if_dynamic
 {
   public:
-    EIGEN_EMPTY_STRUCT_CTOR(variable_if_dynamic)
-    explicit variable_if_dynamic(T v) { EIGEN_ONLY_USED_FOR_DEBUG(v); assert(v == T(Value)); }
+    IMP_EIGEN_EMPTY_STRUCT_CTOR(variable_if_dynamic)
+    explicit variable_if_dynamic(T v) { IMP_EIGEN_ONLY_USED_FOR_DEBUG(v); assert(v == T(Value)); }
     static T value() { return T(Value); }
     void setValue(T) {}
 };
@@ -70,8 +70,8 @@ template<typename T> class variable_if_dynamic<T, Dynamic>
 template<typename T, int Value> class variable_if_dynamicindex
 {
   public:
-    EIGEN_EMPTY_STRUCT_CTOR(variable_if_dynamicindex)
-    explicit variable_if_dynamicindex(T v) { EIGEN_ONLY_USED_FOR_DEBUG(v); assert(v == T(Value)); }
+    IMP_EIGEN_EMPTY_STRUCT_CTOR(variable_if_dynamicindex)
+    explicit variable_if_dynamicindex(T v) { IMP_EIGEN_ONLY_USED_FOR_DEBUG(v); assert(v == T(Value)); }
     static T value() { return T(Value); }
     void setValue(T) {}
 };
@@ -108,7 +108,7 @@ template<typename _Scalar, int _Rows, int _Cols,
          int _Options = AutoAlign |
                           ( (_Rows==1 && _Cols!=1) ? RowMajor
                           : (_Cols==1 && _Rows!=1) ? ColMajor
-                          : EIGEN_DEFAULT_MATRIX_STORAGE_ORDER_OPTION ),
+                          : IMP_EIGEN_DEFAULT_MATRIX_STORAGE_ORDER_OPTION ),
          int _MaxRows = _Rows,
          int _MaxCols = _Cols
 > class make_proper_matrix_type
@@ -135,7 +135,7 @@ class compute_matrix_flags
       (
             ((Options&DontAlign)==0)
         && (
-#if EIGEN_ALIGN_STATICALLY
+#if IMP_EIGEN_ALIGN_STATICALLY
              ((!is_dynamic_size_storage) && (((MaxCols*MaxRows*int(sizeof(Scalar))) % 16) == 0))
 #else
              0
@@ -143,7 +143,7 @@ class compute_matrix_flags
 
           ||
 
-#if EIGEN_ALIGN
+#if IMP_EIGEN_ALIGN
              is_dynamic_size_storage
 #else
              0
@@ -442,8 +442,8 @@ struct plain_col_type
 template<typename ExpressionType, typename Scalar = typename ExpressionType::Scalar>
 struct plain_diag_type
 {
-  enum { diag_size = EIGEN_SIZE_MIN_PREFER_DYNAMIC(ExpressionType::RowsAtCompileTime, ExpressionType::ColsAtCompileTime),
-         max_diag_size = EIGEN_SIZE_MIN_PREFER_FIXED(ExpressionType::MaxRowsAtCompileTime, ExpressionType::MaxColsAtCompileTime)
+  enum { diag_size = IMP_EIGEN_SIZE_MIN_PREFER_DYNAMIC(ExpressionType::RowsAtCompileTime, ExpressionType::ColsAtCompileTime),
+         max_diag_size = IMP_EIGEN_SIZE_MIN_PREFER_FIXED(ExpressionType::MaxRowsAtCompileTime, ExpressionType::MaxColsAtCompileTime)
   };
   typedef Matrix<Scalar, diag_size, 1, ExpressionType::PlainObject::Options & ~RowMajor, max_diag_size, 1> MatrixDiagType;
   typedef Array<Scalar, diag_size, 1, ExpressionType::PlainObject::Options & ~RowMajor, max_diag_size, 1> ArrayDiagType;
@@ -464,6 +464,6 @@ struct is_lvalue
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_XPRHELPER_H
+#endif // IMP_EIGEN_XPRHELPER_H

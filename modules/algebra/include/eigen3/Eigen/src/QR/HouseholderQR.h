@@ -9,10 +9,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_QR_H
-#define EIGEN_QR_H
+#ifndef IMP_EIGEN_QR_H
+#define IMP_EIGEN_QR_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \ingroup QR_Module
   *
@@ -306,7 +306,7 @@ template<typename _MatrixType, typename Rhs>
 struct solve_retval<HouseholderQR<_MatrixType>, Rhs>
   : solve_retval_base<HouseholderQR<_MatrixType>, Rhs>
 {
-  EIGEN_MAKE_SOLVE_HELPERS(HouseholderQR<_MatrixType>,Rhs)
+  IMP_EIGEN_MAKE_SOLVE_HELPERS(HouseholderQR<_MatrixType>,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -369,6 +369,6 @@ MatrixBase<Derived>::householderQr() const
   return HouseholderQR<PlainObject>(eval());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_QR_H
+#endif // IMP_EIGEN_QR_H

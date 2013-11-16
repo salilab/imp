@@ -30,16 +30,16 @@
  ********************************************************************************
 */
 
-#ifndef EIGEN_COMPLEX_SCHUR_MKL_H
-#define EIGEN_COMPLEX_SCHUR_MKL_H
+#ifndef IMP_EIGEN_COMPLEX_SCHUR_MKL_H
+#define IMP_EIGEN_COMPLEX_SCHUR_MKL_H
 
 #include "Eigen/src/Core/util/MKL_support.h"
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \internal Specialization for the data types supported by MKL */
 
-#define EIGEN_MKL_SCHUR_COMPLEX(EIGTYPE, MKLTYPE, MKLPREFIX, MKLPREFIX_U, EIGCOLROW, MKLCOLROW) \
+#define IMP_EIGEN_MKL_SCHUR_COMPLEX(EIGTYPE, MKLTYPE, MKLPREFIX, MKLPREFIX_U, EIGCOLROW, MKLCOLROW) \
 template<> inline \
 ComplexSchur<Matrix<EIGTYPE, Dynamic, Dynamic, EIGCOLROW> >& \
 ComplexSchur<Matrix<EIGTYPE, Dynamic, Dynamic, EIGCOLROW> >::compute(const Matrix<EIGTYPE, Dynamic, Dynamic, EIGCOLROW>& matrix, bool computeU) \
@@ -84,11 +84,11 @@ ComplexSchur<Matrix<EIGTYPE, Dynamic, Dynamic, EIGCOLROW> >::compute(const Matri
 \
 }
 
-EIGEN_MKL_SCHUR_COMPLEX(dcomplex, MKL_Complex16, z, Z, ColMajor, LAPACK_COL_MAJOR)
-EIGEN_MKL_SCHUR_COMPLEX(scomplex, MKL_Complex8,  c, C, ColMajor, LAPACK_COL_MAJOR)
-EIGEN_MKL_SCHUR_COMPLEX(dcomplex, MKL_Complex16, z, Z, RowMajor, LAPACK_ROW_MAJOR)
-EIGEN_MKL_SCHUR_COMPLEX(scomplex, MKL_Complex8,  c, C, RowMajor, LAPACK_ROW_MAJOR)
+IMP_EIGEN_MKL_SCHUR_COMPLEX(dcomplex, MKL_Complex16, z, Z, ColMajor, LAPACK_COL_MAJOR)
+IMP_EIGEN_MKL_SCHUR_COMPLEX(scomplex, MKL_Complex8,  c, C, ColMajor, LAPACK_COL_MAJOR)
+IMP_EIGEN_MKL_SCHUR_COMPLEX(dcomplex, MKL_Complex16, z, Z, RowMajor, LAPACK_ROW_MAJOR)
+IMP_EIGEN_MKL_SCHUR_COMPLEX(scomplex, MKL_Complex8,  c, C, RowMajor, LAPACK_ROW_MAJOR)
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_COMPLEX_SCHUR_MKL_H
+#endif // IMP_EIGEN_COMPLEX_SCHUR_MKL_H

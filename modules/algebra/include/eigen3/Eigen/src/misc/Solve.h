@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_MISC_SOLVE_H
-#define EIGEN_MISC_SOLVE_H
+#ifndef IMP_EIGEN_MISC_SOLVE_H
+#define IMP_EIGEN_MISC_SOLVE_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -58,12 +58,12 @@ template<typename _DecompositionType, typename Rhs> struct solve_retval_base
 
 } // end namespace internal
 
-#define EIGEN_MAKE_SOLVE_HELPERS(DecompositionType,Rhs) \
+#define IMP_EIGEN_MAKE_SOLVE_HELPERS(DecompositionType,Rhs) \
   typedef typename DecompositionType::MatrixType MatrixType; \
   typedef typename MatrixType::Scalar Scalar; \
   typedef typename MatrixType::RealScalar RealScalar; \
   typedef typename MatrixType::Index Index; \
-  typedef Eigen::internal::solve_retval_base<DecompositionType,Rhs> Base; \
+  typedef IMP_Eigen::internal::solve_retval_base<DecompositionType,Rhs> Base; \
   using Base::dec; \
   using Base::rhs; \
   using Base::rows; \
@@ -71,6 +71,6 @@ template<typename _DecompositionType, typename Rhs> struct solve_retval_base
   solve_retval(const DecompositionType& dec, const Rhs& rhs) \
     : Base(dec, rhs) {}
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_MISC_SOLVE_H
+#endif // IMP_EIGEN_MISC_SOLVE_H

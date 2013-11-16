@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPARSE_CWISE_BINARY_OP_H
-#define EIGEN_SPARSE_CWISE_BINARY_OP_H
+#ifndef IMP_EIGEN_SPARSE_CWISE_BINARY_OP_H
+#define IMP_EIGEN_SPARSE_CWISE_BINARY_OP_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 // Here we have to handle 3 cases:
 //  1 - sparse op dense
@@ -52,12 +52,12 @@ class CwiseBinaryOpImpl<BinaryOp, Lhs, Rhs, Sparse>
     class InnerIterator;
     class ReverseInnerIterator;
     typedef CwiseBinaryOp<BinaryOp, Lhs, Rhs> Derived;
-    EIGEN_SPARSE_PUBLIC_INTERFACE(Derived)
+    IMP_EIGEN_SPARSE_PUBLIC_INTERFACE(Derived)
     CwiseBinaryOpImpl()
     {
       typedef typename internal::traits<Lhs>::StorageKind LhsStorageKind;
       typedef typename internal::traits<Rhs>::StorageKind RhsStorageKind;
-      EIGEN_STATIC_ASSERT((
+      IMP_EIGEN_STATIC_ASSERT((
                 (!internal::is_same<LhsStorageKind,RhsStorageKind>::value)
             ||  ((Lhs::Flags&RowMajorBit) == (Rhs::Flags&RowMajorBit))),
             THE_STORAGE_ORDER_OF_BOTH_SIDES_MUST_MATCH);
@@ -73,7 +73,7 @@ class CwiseBinaryOpImpl<BinaryOp,Lhs,Rhs,Sparse>::InnerIterator
     typedef internal::sparse_cwise_binary_op_inner_iterator_selector<
       BinaryOp,Lhs,Rhs, InnerIterator> Base;
 
-    EIGEN_STRONG_INLINE InnerIterator(const CwiseBinaryOpImpl& binOp, Index outer)
+    IMP_EIGEN_STRONG_INLINE InnerIterator(const CwiseBinaryOpImpl& binOp, Index outer)
       : Base(binOp.derived(),outer)
     {}
 };
@@ -103,13 +103,13 @@ class sparse_cwise_binary_op_inner_iterator_selector<BinaryOp, Lhs, Rhs, Derived
 
   public:
 
-    EIGEN_STRONG_INLINE sparse_cwise_binary_op_inner_iterator_selector(const CwiseBinaryXpr& xpr, Index outer)
+    IMP_EIGEN_STRONG_INLINE sparse_cwise_binary_op_inner_iterator_selector(const CwiseBinaryXpr& xpr, Index outer)
       : m_lhsIter(xpr.lhs(),outer), m_rhsIter(xpr.rhs(),outer), m_functor(xpr.functor())
     {
       this->operator++();
     }
 
-    EIGEN_STRONG_INLINE Derived& operator++()
+    IMP_EIGEN_STRONG_INLINE Derived& operator++()
     {
       if (m_lhsIter && m_rhsIter && (m_lhsIter.index() == m_rhsIter.index()))
       {
@@ -138,13 +138,13 @@ class sparse_cwise_binary_op_inner_iterator_selector<BinaryOp, Lhs, Rhs, Derived
       return *static_cast<Derived*>(this);
     }
 
-    EIGEN_STRONG_INLINE Scalar value() const { return m_value; }
+    IMP_EIGEN_STRONG_INLINE Scalar value() const { return m_value; }
 
-    EIGEN_STRONG_INLINE Index index() const { return m_id; }
-    EIGEN_STRONG_INLINE Index row() const { return Lhs::IsRowMajor ? m_lhsIter.row() : index(); }
-    EIGEN_STRONG_INLINE Index col() const { return Lhs::IsRowMajor ? index() : m_lhsIter.col(); }
+    IMP_EIGEN_STRONG_INLINE Index index() const { return m_id; }
+    IMP_EIGEN_STRONG_INLINE Index row() const { return Lhs::IsRowMajor ? m_lhsIter.row() : index(); }
+    IMP_EIGEN_STRONG_INLINE Index col() const { return Lhs::IsRowMajor ? index() : m_lhsIter.col(); }
 
-    EIGEN_STRONG_INLINE operator bool() const { return m_id>=0; }
+    IMP_EIGEN_STRONG_INLINE operator bool() const { return m_id>=0; }
 
   protected:
     LhsIterator m_lhsIter;
@@ -168,7 +168,7 @@ class sparse_cwise_binary_op_inner_iterator_selector<scalar_product_op<T>, Lhs, 
     typedef typename Lhs::Index Index;
   public:
 
-    EIGEN_STRONG_INLINE sparse_cwise_binary_op_inner_iterator_selector(const CwiseBinaryXpr& xpr, Index outer)
+    IMP_EIGEN_STRONG_INLINE sparse_cwise_binary_op_inner_iterator_selector(const CwiseBinaryXpr& xpr, Index outer)
       : m_lhsIter(xpr.lhs(),outer), m_rhsIter(xpr.rhs(),outer), m_functor(xpr.functor())
     {
       while (m_lhsIter && m_rhsIter && (m_lhsIter.index() != m_rhsIter.index()))
@@ -180,7 +180,7 @@ class sparse_cwise_binary_op_inner_iterator_selector<scalar_product_op<T>, Lhs, 
       }
     }
 
-    EIGEN_STRONG_INLINE Derived& operator++()
+    IMP_EIGEN_STRONG_INLINE Derived& operator++()
     {
       ++m_lhsIter;
       ++m_rhsIter;
@@ -194,13 +194,13 @@ class sparse_cwise_binary_op_inner_iterator_selector<scalar_product_op<T>, Lhs, 
       return *static_cast<Derived*>(this);
     }
 
-    EIGEN_STRONG_INLINE Scalar value() const { return m_functor(m_lhsIter.value(), m_rhsIter.value()); }
+    IMP_EIGEN_STRONG_INLINE Scalar value() const { return m_functor(m_lhsIter.value(), m_rhsIter.value()); }
 
-    EIGEN_STRONG_INLINE Index index() const { return m_lhsIter.index(); }
-    EIGEN_STRONG_INLINE Index row() const { return m_lhsIter.row(); }
-    EIGEN_STRONG_INLINE Index col() const { return m_lhsIter.col(); }
+    IMP_EIGEN_STRONG_INLINE Index index() const { return m_lhsIter.index(); }
+    IMP_EIGEN_STRONG_INLINE Index row() const { return m_lhsIter.row(); }
+    IMP_EIGEN_STRONG_INLINE Index col() const { return m_lhsIter.col(); }
 
-    EIGEN_STRONG_INLINE operator bool() const { return (m_lhsIter && m_rhsIter); }
+    IMP_EIGEN_STRONG_INLINE operator bool() const { return (m_lhsIter && m_rhsIter); }
 
   protected:
     LhsIterator m_lhsIter;
@@ -222,25 +222,25 @@ class sparse_cwise_binary_op_inner_iterator_selector<scalar_product_op<T>, Lhs, 
     enum { IsRowMajor = (int(Lhs::Flags)&RowMajorBit)==RowMajorBit };
   public:
 
-    EIGEN_STRONG_INLINE sparse_cwise_binary_op_inner_iterator_selector(const CwiseBinaryXpr& xpr, Index outer)
+    IMP_EIGEN_STRONG_INLINE sparse_cwise_binary_op_inner_iterator_selector(const CwiseBinaryXpr& xpr, Index outer)
       : m_rhs(xpr.rhs()), m_lhsIter(xpr.lhs(),outer), m_functor(xpr.functor()), m_outer(outer)
     {}
 
-    EIGEN_STRONG_INLINE Derived& operator++()
+    IMP_EIGEN_STRONG_INLINE Derived& operator++()
     {
       ++m_lhsIter;
       return *static_cast<Derived*>(this);
     }
 
-    EIGEN_STRONG_INLINE Scalar value() const
+    IMP_EIGEN_STRONG_INLINE Scalar value() const
     { return m_functor(m_lhsIter.value(),
                        m_rhs.coeff(IsRowMajor?m_outer:m_lhsIter.index(),IsRowMajor?m_lhsIter.index():m_outer)); }
 
-    EIGEN_STRONG_INLINE Index index() const { return m_lhsIter.index(); }
-    EIGEN_STRONG_INLINE Index row() const { return m_lhsIter.row(); }
-    EIGEN_STRONG_INLINE Index col() const { return m_lhsIter.col(); }
+    IMP_EIGEN_STRONG_INLINE Index index() const { return m_lhsIter.index(); }
+    IMP_EIGEN_STRONG_INLINE Index row() const { return m_lhsIter.row(); }
+    IMP_EIGEN_STRONG_INLINE Index col() const { return m_lhsIter.col(); }
 
-    EIGEN_STRONG_INLINE operator bool() const { return m_lhsIter; }
+    IMP_EIGEN_STRONG_INLINE operator bool() const { return m_lhsIter; }
 
   protected:
     RhsNested m_rhs;
@@ -263,24 +263,24 @@ class sparse_cwise_binary_op_inner_iterator_selector<scalar_product_op<T>, Lhs, 
     enum { IsRowMajor = (int(Rhs::Flags)&RowMajorBit)==RowMajorBit };
   public:
 
-    EIGEN_STRONG_INLINE sparse_cwise_binary_op_inner_iterator_selector(const CwiseBinaryXpr& xpr, Index outer)
+    IMP_EIGEN_STRONG_INLINE sparse_cwise_binary_op_inner_iterator_selector(const CwiseBinaryXpr& xpr, Index outer)
       : m_xpr(xpr), m_rhsIter(xpr.rhs(),outer), m_functor(xpr.functor()), m_outer(outer)
     {}
 
-    EIGEN_STRONG_INLINE Derived& operator++()
+    IMP_EIGEN_STRONG_INLINE Derived& operator++()
     {
       ++m_rhsIter;
       return *static_cast<Derived*>(this);
     }
 
-    EIGEN_STRONG_INLINE Scalar value() const
+    IMP_EIGEN_STRONG_INLINE Scalar value() const
     { return m_functor(m_xpr.lhs().coeff(IsRowMajor?m_outer:m_rhsIter.index(),IsRowMajor?m_rhsIter.index():m_outer), m_rhsIter.value()); }
 
-    EIGEN_STRONG_INLINE Index index() const { return m_rhsIter.index(); }
-    EIGEN_STRONG_INLINE Index row() const { return m_rhsIter.row(); }
-    EIGEN_STRONG_INLINE Index col() const { return m_rhsIter.col(); }
+    IMP_EIGEN_STRONG_INLINE Index index() const { return m_rhsIter.index(); }
+    IMP_EIGEN_STRONG_INLINE Index row() const { return m_rhsIter.row(); }
+    IMP_EIGEN_STRONG_INLINE Index col() const { return m_rhsIter.col(); }
 
-    EIGEN_STRONG_INLINE operator bool() const { return m_rhsIter; }
+    IMP_EIGEN_STRONG_INLINE operator bool() const { return m_rhsIter; }
 
   protected:
     const CwiseBinaryXpr& m_xpr;
@@ -297,7 +297,7 @@ class sparse_cwise_binary_op_inner_iterator_selector<scalar_product_op<T>, Lhs, 
 
 template<typename Derived>
 template<typename OtherDerived>
-EIGEN_STRONG_INLINE Derived &
+IMP_EIGEN_STRONG_INLINE Derived &
 SparseMatrixBase<Derived>::operator-=(const SparseMatrixBase<OtherDerived> &other)
 {
   return derived() = derived() - other.derived();
@@ -305,7 +305,7 @@ SparseMatrixBase<Derived>::operator-=(const SparseMatrixBase<OtherDerived> &othe
 
 template<typename Derived>
 template<typename OtherDerived>
-EIGEN_STRONG_INLINE Derived &
+IMP_EIGEN_STRONG_INLINE Derived &
 SparseMatrixBase<Derived>::operator+=(const SparseMatrixBase<OtherDerived>& other)
 {
   return derived() = derived() + other.derived();
@@ -313,12 +313,12 @@ SparseMatrixBase<Derived>::operator+=(const SparseMatrixBase<OtherDerived>& othe
 
 template<typename Derived>
 template<typename OtherDerived>
-EIGEN_STRONG_INLINE const EIGEN_SPARSE_CWISE_PRODUCT_RETURN_TYPE
+IMP_EIGEN_STRONG_INLINE const IMP_EIGEN_SPARSE_CWISE_PRODUCT_RETURN_TYPE
 SparseMatrixBase<Derived>::cwiseProduct(const MatrixBase<OtherDerived> &other) const
 {
-  return EIGEN_SPARSE_CWISE_PRODUCT_RETURN_TYPE(derived(), other.derived());
+  return IMP_EIGEN_SPARSE_CWISE_PRODUCT_RETURN_TYPE(derived(), other.derived());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SPARSE_CWISE_BINARY_OP_H
+#endif // IMP_EIGEN_SPARSE_CWISE_BINARY_OP_H

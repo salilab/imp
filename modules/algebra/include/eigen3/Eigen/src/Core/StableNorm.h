@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_STABLENORM_H
-#define EIGEN_STABLENORM_H
+#ifndef IMP_EIGEN_STABLENORM_H
+#define IMP_EIGEN_STABLENORM_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -185,6 +185,6 @@ MatrixBase<Derived>::hypotNorm() const
   return this->cwiseAbs().redux(internal::scalar_hypot_op<RealScalar>());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_STABLENORM_H
+#endif // IMP_EIGEN_STABLENORM_H

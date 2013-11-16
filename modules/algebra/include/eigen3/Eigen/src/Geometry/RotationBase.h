@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_ROTATIONBASE_H
-#define EIGEN_ROTATIONBASE_H
+#ifndef IMP_EIGEN_ROTATIONBASE_H
+#define IMP_EIGEN_ROTATIONBASE_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 // forward declaration
 namespace internal {
@@ -67,7 +67,7 @@ class RotationBase
       *  - a vector of size Dim
       */
     template<typename OtherDerived>
-    EIGEN_STRONG_INLINE typename internal::rotation_base_generic_product_selector<Derived,OtherDerived,OtherDerived::IsVectorAtCompileTime>::ReturnType
+    IMP_EIGEN_STRONG_INLINE typename internal::rotation_base_generic_product_selector<Derived,OtherDerived,OtherDerived::IsVectorAtCompileTime>::ReturnType
     operator*(const EigenBase<OtherDerived>& e) const
     { return internal::rotation_base_generic_product_selector<Derived,OtherDerived>::run(derived(), e.derived()); }
 
@@ -123,7 +123,7 @@ struct rotation_base_generic_product_selector<RotationDerived,OtherVectorType,tr
 {
   enum { Dim = RotationDerived::Dim };
   typedef Matrix<typename RotationDerived::Scalar,Dim,1> ReturnType;
-  static EIGEN_STRONG_INLINE ReturnType run(const RotationDerived& r, const OtherVectorType& v)
+  static IMP_EIGEN_STRONG_INLINE ReturnType run(const RotationDerived& r, const OtherVectorType& v)
   {
     return r._transformVector(v);
   }
@@ -140,7 +140,7 @@ template<typename OtherDerived>
 Matrix<_Scalar, _Rows, _Cols, _Storage, _MaxRows, _MaxCols>
 ::Matrix(const RotationBase<OtherDerived,ColsAtCompileTime>& r)
 {
-  EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Matrix,int(OtherDerived::Dim),int(OtherDerived::Dim))
+  IMP_EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Matrix,int(OtherDerived::Dim),int(OtherDerived::Dim))
   *this = r.toRotationMatrix();
 }
 
@@ -154,7 +154,7 @@ Matrix<_Scalar, _Rows, _Cols, _Storage, _MaxRows, _MaxCols>&
 Matrix<_Scalar, _Rows, _Cols, _Storage, _MaxRows, _MaxCols>
 ::operator=(const RotationBase<OtherDerived,ColsAtCompileTime>& r)
 {
-  EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Matrix,int(OtherDerived::Dim),int(OtherDerived::Dim))
+  IMP_EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Matrix,int(OtherDerived::Dim),int(OtherDerived::Dim))
   return *this = r.toRotationMatrix();
 }
 
@@ -181,7 +181,7 @@ namespace internal {
 template<typename Scalar, int Dim>
 static inline Matrix<Scalar,2,2> toRotationMatrix(const Scalar& s)
 {
-  EIGEN_STATIC_ASSERT(Dim==2,YOU_MADE_A_PROGRAMMING_MISTAKE)
+  IMP_EIGEN_STATIC_ASSERT(Dim==2,YOU_MADE_A_PROGRAMMING_MISTAKE)
   return Rotation2D<Scalar>(s).toRotationMatrix();
 }
 
@@ -194,13 +194,13 @@ static inline Matrix<Scalar,Dim,Dim> toRotationMatrix(const RotationBase<OtherDe
 template<typename Scalar, int Dim, typename OtherDerived>
 static inline const MatrixBase<OtherDerived>& toRotationMatrix(const MatrixBase<OtherDerived>& mat)
 {
-  EIGEN_STATIC_ASSERT(OtherDerived::RowsAtCompileTime==Dim && OtherDerived::ColsAtCompileTime==Dim,
+  IMP_EIGEN_STATIC_ASSERT(OtherDerived::RowsAtCompileTime==Dim && OtherDerived::ColsAtCompileTime==Dim,
     YOU_MADE_A_PROGRAMMING_MISTAKE)
   return mat;
 }
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_ROTATIONBASE_H
+#endif // IMP_EIGEN_ROTATIONBASE_H

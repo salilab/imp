@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_BLOCK_H
-#define EIGEN_BLOCK_H
+#ifndef IMP_EIGEN_BLOCK_H
+#define IMP_EIGEN_BLOCK_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \class Block
   * \ingroup Core_Module
@@ -106,8 +106,8 @@ template<typename XprType, int BlockRows, int BlockCols, bool InnerPanel> class 
   public:
     //typedef typename Impl::Base Base;
     typedef Impl Base;
-    EIGEN_GENERIC_PUBLIC_INTERFACE(Block)
-    EIGEN_INHERIT_ASSIGNMENT_OPERATORS(Block)
+    IMP_EIGEN_GENERIC_PUBLIC_INTERFACE(Block)
+    IMP_EIGEN_INHERIT_ASSIGNMENT_OPERATORS(Block)
   
     /** Column or Row constructor
       */
@@ -123,7 +123,7 @@ template<typename XprType, int BlockRows, int BlockCols, bool InnerPanel> class 
     inline Block(XprType& xpr, Index a_startRow, Index a_startCol)
       : Impl(xpr, a_startRow, a_startCol)
     {
-      EIGEN_STATIC_ASSERT(RowsAtCompileTime!=Dynamic && ColsAtCompileTime!=Dynamic,THIS_METHOD_IS_ONLY_FOR_FIXED_SIZE)
+      IMP_EIGEN_STATIC_ASSERT(RowsAtCompileTime!=Dynamic && ColsAtCompileTime!=Dynamic,THIS_METHOD_IS_ONLY_FOR_FIXED_SIZE)
       eigen_assert(a_startRow >= 0 && BlockRows >= 1 && a_startRow + BlockRows <= xpr.rows()
              && a_startCol >= 0 && BlockCols >= 1 && a_startCol + BlockCols <= xpr.cols());
     }
@@ -152,7 +152,7 @@ class BlockImpl<XprType, BlockRows, BlockCols, InnerPanel, Dense>
     typedef typename XprType::Index Index;
   public:
     typedef Impl Base;
-    EIGEN_INHERIT_ASSIGNMENT_OPERATORS(BlockImpl)
+    IMP_EIGEN_INHERIT_ASSIGNMENT_OPERATORS(BlockImpl)
     inline BlockImpl(XprType& xpr, Index i) : Impl(xpr,i) {}
     inline BlockImpl(XprType& xpr, Index a_startRow, Index a_startCol) : Impl(xpr, a_startRow, a_startCol) {}
     inline BlockImpl(XprType& xpr, Index a_startRow, Index a_startCol, Index blockRows, Index blockCols)
@@ -169,8 +169,8 @@ template<typename XprType, int BlockRows, int BlockCols, bool InnerPanel, bool H
   public:
 
     typedef typename internal::dense_xpr_base<BlockType>::type Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(BlockType)
-    EIGEN_INHERIT_ASSIGNMENT_OPERATORS(BlockImpl_dense)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(BlockType)
+    IMP_EIGEN_INHERIT_ASSIGNMENT_OPERATORS(BlockImpl_dense)
 
     class InnerIterator;
 
@@ -209,7 +209,7 @@ template<typename XprType, int BlockRows, int BlockCols, bool InnerPanel, bool H
 
     inline Scalar& coeffRef(Index rowId, Index colId)
     {
-      EIGEN_STATIC_ASSERT_LVALUE(XprType)
+      IMP_EIGEN_STATIC_ASSERT_LVALUE(XprType)
       return m_xpr.const_cast_derived()
                .coeffRef(rowId + m_startRow.value(), colId + m_startCol.value());
     }
@@ -220,14 +220,14 @@ template<typename XprType, int BlockRows, int BlockCols, bool InnerPanel, bool H
                .coeffRef(rowId + m_startRow.value(), colId + m_startCol.value());
     }
 
-    EIGEN_STRONG_INLINE const CoeffReturnType coeff(Index rowId, Index colId) const
+    IMP_EIGEN_STRONG_INLINE const CoeffReturnType coeff(Index rowId, Index colId) const
     {
       return m_xpr.coeff(rowId + m_startRow.value(), colId + m_startCol.value());
     }
 
     inline Scalar& coeffRef(Index index)
     {
-      EIGEN_STATIC_ASSERT_LVALUE(XprType)
+      IMP_EIGEN_STATIC_ASSERT_LVALUE(XprType)
       return m_xpr.const_cast_derived()
              .coeffRef(m_startRow.value() + (RowsAtCompileTime == 1 ? 0 : index),
                        m_startCol.value() + (RowsAtCompileTime == 1 ? index : 0));
@@ -277,7 +277,7 @@ template<typename XprType, int BlockRows, int BlockCols, bool InnerPanel, bool H
           m_startCol.value() + (RowsAtCompileTime == 1 ? index : 0), val);
     }
 
-    #ifdef EIGEN_PARSED_BY_DOXYGEN
+    #ifdef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** \sa MapBase::data() */
     inline const Scalar* data() const;
     inline Index innerStride() const;
@@ -317,8 +317,8 @@ class BlockImpl_dense<XprType,BlockRows,BlockCols, InnerPanel,true>
   public:
 
     typedef MapBase<BlockType> Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(BlockType)
-    EIGEN_INHERIT_ASSIGNMENT_OPERATORS(BlockImpl_dense)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(BlockType)
+    IMP_EIGEN_INHERIT_ASSIGNMENT_OPERATORS(BlockImpl_dense)
 
     /** Column or Row constructor
       */
@@ -377,7 +377,7 @@ class BlockImpl_dense<XprType,BlockRows,BlockCols, InnerPanel,true>
   protected:
   #endif
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** \internal used by allowAligned() */
     inline BlockImpl_dense(XprType& xpr, const Scalar* data, Index blockRows, Index blockCols)
       : Base(data, blockRows, blockCols), m_xpr(xpr)
@@ -400,6 +400,6 @@ class BlockImpl_dense<XprType,BlockRows,BlockCols, InnerPanel,true>
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_BLOCK_H
+#endif // IMP_EIGEN_BLOCK_H

@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SOLVETRIANGULAR_H
-#define EIGEN_SOLVETRIANGULAR_H
+#ifndef IMP_EIGEN_SOLVETRIANGULAR_H
+#define IMP_EIGEN_SOLVETRIANGULAR_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -255,6 +255,6 @@ template<int Side, typename TriangularType, typename Rhs> struct triangular_solv
 
 } // namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SOLVETRIANGULAR_H
+#endif // IMP_EIGEN_SOLVETRIANGULAR_H

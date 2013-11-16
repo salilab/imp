@@ -7,13 +7,13 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SKYLINEMATRIX_H
-#define EIGEN_SKYLINEMATRIX_H
+#ifndef IMP_EIGEN_SKYLINEMATRIX_H
+#define IMP_EIGEN_SKYLINEMATRIX_H
 
 #include "SkylineStorage.h"
 #include "SkylineMatrixBase.h"
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \ingroup Skyline_Module
  *
@@ -51,9 +51,9 @@ template<typename _Scalar, int _Options>
 class SkylineMatrix
 : public SkylineMatrixBase<SkylineMatrix<_Scalar, _Options> > {
 public:
-    EIGEN_SKYLINE_GENERIC_PUBLIC_INTERFACE(SkylineMatrix)
-    EIGEN_SKYLINE_INHERIT_ASSIGNMENT_OPERATOR(SkylineMatrix, +=)
-    EIGEN_SKYLINE_INHERIT_ASSIGNMENT_OPERATOR(SkylineMatrix, -=)
+    IMP_EIGEN_SKYLINE_GENERIC_PUBLIC_INTERFACE(SkylineMatrix)
+    IMP_EIGEN_SKYLINE_INHERIT_ASSIGNMENT_OPERATOR(SkylineMatrix, +=)
+    IMP_EIGEN_SKYLINE_INHERIT_ASSIGNMENT_OPERATOR(SkylineMatrix, -=)
 
     using Base::IsRowMajor;
 
@@ -397,7 +397,7 @@ public:
      *
      * After an insertion session, you should call the finalize() function.
      */
-    EIGEN_DONT_INLINE Scalar & insert(Index row, Index col) {
+    IMP_EIGEN_DONT_INLINE Scalar & insert(Index row, Index col) {
         const Index outer = IsRowMajor ? row : col;
         const Index inner = IsRowMajor ? col : row;
 
@@ -684,7 +684,7 @@ public:
 
     friend std::ostream & operator <<(std::ostream & s, const SkylineMatrix & m) {
 
-        EIGEN_DBG_SKYLINE(
+        IMP_EIGEN_DBG_SKYLINE(
         std::cout << "upper elements : " << std::endl;
         for (Index i = 0; i < m.m_data.upperSize(); i++)
             std::cout << m.m_data.upper(i) << "\t";
@@ -857,6 +857,6 @@ protected:
     const Index m_end;
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SkylineMatrix_H
+#endif // IMP_EIGEN_SkylineMatrix_H

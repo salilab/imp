@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_MATHFUNCTIONS_H
-#define EIGEN_MATHFUNCTIONS_H
+#ifndef IMP_EIGEN_MATHFUNCTIONS_H
+#define IMP_EIGEN_MATHFUNCTIONS_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 namespace internal {
 
@@ -51,8 +51,8 @@ struct global_math_functions_filtering_base
   typedef typename T::Eigen_BaseClassForSpecializationOfGlobalMathFuncImpl type;
 };
 
-#define EIGEN_MATHFUNC_IMPL(func, scalar) Eigen::internal::func##_impl<typename Eigen::internal::global_math_functions_filtering_base<scalar>::type>
-#define EIGEN_MATHFUNC_RETVAL(func, scalar) typename Eigen::internal::func##_retval<typename Eigen::internal::global_math_functions_filtering_base<scalar>::type>::type
+#define IMP_EIGEN_MATHFUNC_IMPL(func, scalar) IMP_Eigen::internal::func##_impl<typename IMP_Eigen::internal::global_math_functions_filtering_base<scalar>::type>
+#define IMP_EIGEN_MATHFUNC_RETVAL(func, scalar) typename IMP_Eigen::internal::func##_retval<typename IMP_Eigen::internal::global_math_functions_filtering_base<scalar>::type>::type
 
 /****************************************************************************
 * Implementation of real                                                 *
@@ -355,7 +355,7 @@ struct atanh2_default_impl<Scalar, true>
 {
   static inline Scalar run(const Scalar&, const Scalar&)
   {
-    EIGEN_STATIC_ASSERT_NON_INTEGER(Scalar)
+    IMP_EIGEN_STATIC_ASSERT_NON_INTEGER(Scalar)
     return Scalar(0);
   }
 };
@@ -430,8 +430,8 @@ struct random_retval
   typedef Scalar type;
 };
 
-template<typename Scalar> inline EIGEN_MATHFUNC_RETVAL(random, Scalar) random(const Scalar& x, const Scalar& y);
-template<typename Scalar> inline EIGEN_MATHFUNC_RETVAL(random, Scalar) random();
+template<typename Scalar> inline IMP_EIGEN_MATHFUNC_RETVAL(random, Scalar) random(const Scalar& x, const Scalar& y);
+template<typename Scalar> inline IMP_EIGEN_MATHFUNC_RETVAL(random, Scalar) random();
 
 template<typename Scalar>
 struct random_default_impl<Scalar, false, false>
@@ -505,13 +505,13 @@ struct random_default_impl<Scalar, false, true>
 
   static inline Scalar run()
   {
-#ifdef EIGEN_MAKING_DOCS
+#ifdef IMP_EIGEN_MAKING_DOCS
     return run(Scalar(NumTraits<Scalar>::IsSigned ? -10 : 0), Scalar(10));
 #else
     enum { rand_bits = floor_log2<(unsigned int)(RAND_MAX)+1>::value,
            scalar_bits = sizeof(Scalar) * CHAR_BIT,
-           shift = EIGEN_PLAIN_ENUM_MAX(0, int(rand_bits) - int(scalar_bits)),
-           offset = NumTraits<Scalar>::IsSigned ? (1 << (EIGEN_PLAIN_ENUM_MIN(rand_bits,scalar_bits)-1)) : 0
+           shift = IMP_EIGEN_PLAIN_ENUM_MAX(0, int(rand_bits) - int(scalar_bits)),
+           offset = NumTraits<Scalar>::IsSigned ? (1 << (IMP_EIGEN_PLAIN_ENUM_MIN(rand_bits,scalar_bits)-1)) : 0
     };
     return Scalar((std::rand() >> shift) - offset);
 #endif
@@ -534,15 +534,15 @@ struct random_default_impl<Scalar, true, false>
 };
 
 template<typename Scalar>
-inline EIGEN_MATHFUNC_RETVAL(random, Scalar) random(const Scalar& x, const Scalar& y)
+inline IMP_EIGEN_MATHFUNC_RETVAL(random, Scalar) random(const Scalar& x, const Scalar& y)
 {
-  return EIGEN_MATHFUNC_IMPL(random, Scalar)::run(x, y);
+  return IMP_EIGEN_MATHFUNC_IMPL(random, Scalar)::run(x, y);
 }
 
 template<typename Scalar>
-inline EIGEN_MATHFUNC_RETVAL(random, Scalar) random()
+inline IMP_EIGEN_MATHFUNC_RETVAL(random, Scalar) random()
 {
-  return EIGEN_MATHFUNC_IMPL(random, Scalar)::run();
+  return IMP_EIGEN_MATHFUNC_IMPL(random, Scalar)::run();
 }
 
 } // end namespace internal
@@ -554,75 +554,75 @@ inline EIGEN_MATHFUNC_RETVAL(random, Scalar) random()
 namespace numext {
 
 template<typename Scalar>
-inline EIGEN_MATHFUNC_RETVAL(real, Scalar) real(const Scalar& x)
+inline IMP_EIGEN_MATHFUNC_RETVAL(real, Scalar) real(const Scalar& x)
 {
-  return EIGEN_MATHFUNC_IMPL(real, Scalar)::run(x);
+  return IMP_EIGEN_MATHFUNC_IMPL(real, Scalar)::run(x);
 }  
 
 template<typename Scalar>
-inline typename internal::add_const_on_value_type< EIGEN_MATHFUNC_RETVAL(real_ref, Scalar) >::type real_ref(const Scalar& x)
+inline typename internal::add_const_on_value_type< IMP_EIGEN_MATHFUNC_RETVAL(real_ref, Scalar) >::type real_ref(const Scalar& x)
 {
   return internal::real_ref_impl<Scalar>::run(x);
 }
 
 template<typename Scalar>
-inline EIGEN_MATHFUNC_RETVAL(real_ref, Scalar) real_ref(Scalar& x)
+inline IMP_EIGEN_MATHFUNC_RETVAL(real_ref, Scalar) real_ref(Scalar& x)
 {
-  return EIGEN_MATHFUNC_IMPL(real_ref, Scalar)::run(x);
+  return IMP_EIGEN_MATHFUNC_IMPL(real_ref, Scalar)::run(x);
 }
 
 template<typename Scalar>
-inline EIGEN_MATHFUNC_RETVAL(imag, Scalar) imag(const Scalar& x)
+inline IMP_EIGEN_MATHFUNC_RETVAL(imag, Scalar) imag(const Scalar& x)
 {
-  return EIGEN_MATHFUNC_IMPL(imag, Scalar)::run(x);
+  return IMP_EIGEN_MATHFUNC_IMPL(imag, Scalar)::run(x);
 }
 
 template<typename Scalar>
-inline typename internal::add_const_on_value_type< EIGEN_MATHFUNC_RETVAL(imag_ref, Scalar) >::type imag_ref(const Scalar& x)
+inline typename internal::add_const_on_value_type< IMP_EIGEN_MATHFUNC_RETVAL(imag_ref, Scalar) >::type imag_ref(const Scalar& x)
 {
   return internal::imag_ref_impl<Scalar>::run(x);
 }
 
 template<typename Scalar>
-inline EIGEN_MATHFUNC_RETVAL(imag_ref, Scalar) imag_ref(Scalar& x)
+inline IMP_EIGEN_MATHFUNC_RETVAL(imag_ref, Scalar) imag_ref(Scalar& x)
 {
-  return EIGEN_MATHFUNC_IMPL(imag_ref, Scalar)::run(x);
+  return IMP_EIGEN_MATHFUNC_IMPL(imag_ref, Scalar)::run(x);
 }
 
 template<typename Scalar>
-inline EIGEN_MATHFUNC_RETVAL(conj, Scalar) conj(const Scalar& x)
+inline IMP_EIGEN_MATHFUNC_RETVAL(conj, Scalar) conj(const Scalar& x)
 {
-  return EIGEN_MATHFUNC_IMPL(conj, Scalar)::run(x);
+  return IMP_EIGEN_MATHFUNC_IMPL(conj, Scalar)::run(x);
 }
 
 template<typename Scalar>
-inline EIGEN_MATHFUNC_RETVAL(abs2, Scalar) abs2(const Scalar& x)
+inline IMP_EIGEN_MATHFUNC_RETVAL(abs2, Scalar) abs2(const Scalar& x)
 {
-  return EIGEN_MATHFUNC_IMPL(abs2, Scalar)::run(x);
+  return IMP_EIGEN_MATHFUNC_IMPL(abs2, Scalar)::run(x);
 }
 
 template<typename Scalar>
-inline EIGEN_MATHFUNC_RETVAL(norm1, Scalar) norm1(const Scalar& x)
+inline IMP_EIGEN_MATHFUNC_RETVAL(norm1, Scalar) norm1(const Scalar& x)
 {
-  return EIGEN_MATHFUNC_IMPL(norm1, Scalar)::run(x);
+  return IMP_EIGEN_MATHFUNC_IMPL(norm1, Scalar)::run(x);
 }
 
 template<typename Scalar>
-inline EIGEN_MATHFUNC_RETVAL(hypot, Scalar) hypot(const Scalar& x, const Scalar& y)
+inline IMP_EIGEN_MATHFUNC_RETVAL(hypot, Scalar) hypot(const Scalar& x, const Scalar& y)
 {
-  return EIGEN_MATHFUNC_IMPL(hypot, Scalar)::run(x, y);
+  return IMP_EIGEN_MATHFUNC_IMPL(hypot, Scalar)::run(x, y);
 }
 
 template<typename Scalar>
-inline EIGEN_MATHFUNC_RETVAL(atanh2, Scalar) atanh2(const Scalar& x, const Scalar& y)
+inline IMP_EIGEN_MATHFUNC_RETVAL(atanh2, Scalar) atanh2(const Scalar& x, const Scalar& y)
 {
-  return EIGEN_MATHFUNC_IMPL(atanh2, Scalar)::run(x, y);
+  return IMP_EIGEN_MATHFUNC_IMPL(atanh2, Scalar)::run(x, y);
 }
 
 template<typename Scalar>
-inline EIGEN_MATHFUNC_RETVAL(pow, Scalar) pow(const Scalar& x, const Scalar& y)
+inline IMP_EIGEN_MATHFUNC_RETVAL(pow, Scalar) pow(const Scalar& x, const Scalar& y)
 {
-  return EIGEN_MATHFUNC_IMPL(pow, Scalar)::run(x, y);
+  return IMP_EIGEN_MATHFUNC_IMPL(pow, Scalar)::run(x, y);
 }
 
 // std::isfinite is non standard, so let's define our own version,
@@ -763,6 +763,6 @@ template<> struct scalar_fuzzy_impl<bool>
   
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_MATHFUNCTIONS_H
+#endif // IMP_EIGEN_MATHFUNCTIONS_H

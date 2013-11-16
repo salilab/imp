@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_EULERANGLES_H
-#define EIGEN_EULERANGLES_H
+#ifndef IMP_EIGEN_EULERANGLES_H
+#define IMP_EIGEN_EULERANGLES_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \geometry_module \ingroup Geometry_Module
   *
@@ -40,7 +40,7 @@ MatrixBase<Derived>::eulerAngles(Index a0, Index a1, Index a2) const
   using std::sin;
   using std::cos;
   /* Implemented from Graphics Gems IV */
-  EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived,3,3)
+  IMP_EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived,3,3)
 
   Matrix<Scalar,3,1> res;
   typedef Matrix<typename Derived::Scalar,2,1> Vector2;
@@ -99,6 +99,6 @@ MatrixBase<Derived>::eulerAngles(Index a0, Index a1, Index a2) const
   return res;
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_EULERANGLES_H
+#endif // IMP_EIGEN_EULERANGLES_H

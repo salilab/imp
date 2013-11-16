@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_CWISE_UNARY_VIEW_H
-#define EIGEN_CWISE_UNARY_VIEW_H
+#ifndef IMP_EIGEN_CWISE_UNARY_VIEW_H
+#define IMP_EIGEN_CWISE_UNARY_VIEW_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 /** \class CwiseUnaryView
   * \ingroup Core_Module
@@ -61,15 +61,15 @@ class CwiseUnaryView : public CwiseUnaryViewImpl<ViewOp, MatrixType, typename in
   public:
 
     typedef typename CwiseUnaryViewImpl<ViewOp, MatrixType,typename internal::traits<MatrixType>::StorageKind>::Base Base;
-    EIGEN_GENERIC_PUBLIC_INTERFACE(CwiseUnaryView)
+    IMP_EIGEN_GENERIC_PUBLIC_INTERFACE(CwiseUnaryView)
 
     inline CwiseUnaryView(const MatrixType& mat, const ViewOp& func = ViewOp())
       : m_matrix(mat), m_functor(func) {}
 
-    EIGEN_INHERIT_ASSIGNMENT_OPERATORS(CwiseUnaryView)
+    IMP_EIGEN_INHERIT_ASSIGNMENT_OPERATORS(CwiseUnaryView)
 
-    EIGEN_STRONG_INLINE Index rows() const { return m_matrix.rows(); }
-    EIGEN_STRONG_INLINE Index cols() const { return m_matrix.cols(); }
+    IMP_EIGEN_STRONG_INLINE Index rows() const { return m_matrix.rows(); }
+    IMP_EIGEN_STRONG_INLINE Index cols() const { return m_matrix.cols(); }
 
     /** \returns the functor representing unary operation */
     const ViewOp& functor() const { return m_functor; }
@@ -97,8 +97,8 @@ class CwiseUnaryViewImpl<ViewOp,MatrixType,Dense>
     typedef CwiseUnaryView<ViewOp, MatrixType> Derived;
     typedef typename internal::dense_xpr_base< CwiseUnaryView<ViewOp, MatrixType> >::type Base;
 
-    EIGEN_DENSE_PUBLIC_INTERFACE(Derived)
-    EIGEN_INHERIT_ASSIGNMENT_OPERATORS(CwiseUnaryViewImpl)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(Derived)
+    IMP_EIGEN_INHERIT_ASSIGNMENT_OPERATORS(CwiseUnaryViewImpl)
     
     inline Scalar* data() { return &coeffRef(0); }
     inline const Scalar* data() const { return &coeff(0); }
@@ -113,27 +113,27 @@ class CwiseUnaryViewImpl<ViewOp,MatrixType,Dense>
       return derived().nestedExpression().outerStride() * sizeof(typename internal::traits<MatrixType>::Scalar) / sizeof(Scalar);
     }
 
-    EIGEN_STRONG_INLINE CoeffReturnType coeff(Index row, Index col) const
+    IMP_EIGEN_STRONG_INLINE CoeffReturnType coeff(Index row, Index col) const
     {
       return derived().functor()(derived().nestedExpression().coeff(row, col));
     }
 
-    EIGEN_STRONG_INLINE CoeffReturnType coeff(Index index) const
+    IMP_EIGEN_STRONG_INLINE CoeffReturnType coeff(Index index) const
     {
       return derived().functor()(derived().nestedExpression().coeff(index));
     }
 
-    EIGEN_STRONG_INLINE Scalar& coeffRef(Index row, Index col)
+    IMP_EIGEN_STRONG_INLINE Scalar& coeffRef(Index row, Index col)
     {
       return derived().functor()(const_cast_derived().nestedExpression().coeffRef(row, col));
     }
 
-    EIGEN_STRONG_INLINE Scalar& coeffRef(Index index)
+    IMP_EIGEN_STRONG_INLINE Scalar& coeffRef(Index index)
     {
       return derived().functor()(const_cast_derived().nestedExpression().coeffRef(index));
     }
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_CWISE_UNARY_VIEW_H
+#endif // IMP_EIGEN_CWISE_UNARY_VIEW_H

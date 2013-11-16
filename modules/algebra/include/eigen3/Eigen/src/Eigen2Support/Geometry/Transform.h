@@ -10,7 +10,7 @@
 
 // no include guard, we'll include this twice from All.h from Eigen2Support, and it's internal anyway
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 // Note that we have to pass Dim and HDim because it is not allowed to use a template
 // parameter to define a template specialization. To be more precise, in the following
@@ -35,7 +35,7 @@ struct ei_transform_product_impl;
   * is available through the matrix() method.
   *
   * Conversion methods from/to Qt's QMatrix and QTransform are available if the
-  * preprocessor token EIGEN_QT_SUPPORT is defined.
+  * preprocessor token IMP_EIGEN_QT_SUPPORT is defined.
   *
   * \sa class Matrix, class Quaternion
   */
@@ -43,7 +43,7 @@ template<typename _Scalar, int _Dim>
 class Transform
 {
 public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_Dim==Dynamic ? Dynamic : (_Dim+1)*(_Dim+1))
+  IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_Dim==Dynamic ? Dynamic : (_Dim+1)*(_Dim+1))
   enum {
     Dim = _Dim,     ///< space dimension in which the transformation holds
     HDim = _Dim+1   ///< size of a respective homogeneous vector
@@ -123,7 +123,7 @@ public:
   inline Transform& operator=(const MatrixBase<OtherDerived>& other)
   { m_matrix = other; return *this; }
 
-  #ifdef EIGEN_QT_SUPPORT
+  #ifdef IMP_EIGEN_QT_SUPPORT
   inline Transform(const QMatrix& other);
   inline Transform& operator=(const QMatrix& other);
   inline QMatrix toQMatrix(void) const;
@@ -270,8 +270,8 @@ public:
   bool isApprox(const Transform& other, typename NumTraits<Scalar>::Real prec = precision<Scalar>()) const
   { return m_matrix.isApprox(other.m_matrix, prec); }
 
-  #ifdef EIGEN_TRANSFORM_PLUGIN
-  #include EIGEN_TRANSFORM_PLUGIN
+  #ifdef IMP_EIGEN_TRANSFORM_PLUGIN
+  #include IMP_EIGEN_TRANSFORM_PLUGIN
   #endif
 
 protected:
@@ -291,10 +291,10 @@ typedef Transform<double,3> Transform3d;
 *** Optional QT support ***
 **************************/
 
-#ifdef EIGEN_QT_SUPPORT
+#ifdef IMP_EIGEN_QT_SUPPORT
 /** Initialises \c *this from a QMatrix assuming the dimension is 2.
   *
-  * This function is available only if the token EIGEN_QT_SUPPORT is defined.
+  * This function is available only if the token IMP_EIGEN_QT_SUPPORT is defined.
   */
 template<typename Scalar, int Dim>
 Transform<Scalar,Dim>::Transform(const QMatrix& other)
@@ -304,12 +304,12 @@ Transform<Scalar,Dim>::Transform(const QMatrix& other)
 
 /** Set \c *this from a QMatrix assuming the dimension is 2.
   *
-  * This function is available only if the token EIGEN_QT_SUPPORT is defined.
+  * This function is available only if the token IMP_EIGEN_QT_SUPPORT is defined.
   */
 template<typename Scalar, int Dim>
 Transform<Scalar,Dim>& Transform<Scalar,Dim>::operator=(const QMatrix& other)
 {
-  EIGEN_STATIC_ASSERT(Dim==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
+  IMP_EIGEN_STATIC_ASSERT(Dim==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
   m_matrix << other.m11(), other.m21(), other.dx(),
               other.m12(), other.m22(), other.dy(),
               0, 0, 1;
@@ -320,12 +320,12 @@ Transform<Scalar,Dim>& Transform<Scalar,Dim>::operator=(const QMatrix& other)
   *
   * \warning this convertion might loss data if \c *this is not affine
   *
-  * This function is available only if the token EIGEN_QT_SUPPORT is defined.
+  * This function is available only if the token IMP_EIGEN_QT_SUPPORT is defined.
   */
 template<typename Scalar, int Dim>
 QMatrix Transform<Scalar,Dim>::toQMatrix(void) const
 {
-  EIGEN_STATIC_ASSERT(Dim==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
+  IMP_EIGEN_STATIC_ASSERT(Dim==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
   return QMatrix(m_matrix.coeff(0,0), m_matrix.coeff(1,0),
                  m_matrix.coeff(0,1), m_matrix.coeff(1,1),
                  m_matrix.coeff(0,2), m_matrix.coeff(1,2));
@@ -333,7 +333,7 @@ QMatrix Transform<Scalar,Dim>::toQMatrix(void) const
 
 /** Initialises \c *this from a QTransform assuming the dimension is 2.
   *
-  * This function is available only if the token EIGEN_QT_SUPPORT is defined.
+  * This function is available only if the token IMP_EIGEN_QT_SUPPORT is defined.
   */
 template<typename Scalar, int Dim>
 Transform<Scalar,Dim>::Transform(const QTransform& other)
@@ -343,12 +343,12 @@ Transform<Scalar,Dim>::Transform(const QTransform& other)
 
 /** Set \c *this from a QTransform assuming the dimension is 2.
   *
-  * This function is available only if the token EIGEN_QT_SUPPORT is defined.
+  * This function is available only if the token IMP_EIGEN_QT_SUPPORT is defined.
   */
 template<typename Scalar, int Dim>
 Transform<Scalar,Dim>& Transform<Scalar,Dim>::operator=(const QTransform& other)
 {
-  EIGEN_STATIC_ASSERT(Dim==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
+  IMP_EIGEN_STATIC_ASSERT(Dim==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
   m_matrix << other.m11(), other.m21(), other.dx(),
               other.m12(), other.m22(), other.dy(),
               other.m13(), other.m23(), other.m33();
@@ -357,12 +357,12 @@ Transform<Scalar,Dim>& Transform<Scalar,Dim>::operator=(const QTransform& other)
 
 /** \returns a QTransform from \c *this assuming the dimension is 2.
   *
-  * This function is available only if the token EIGEN_QT_SUPPORT is defined.
+  * This function is available only if the token IMP_EIGEN_QT_SUPPORT is defined.
   */
 template<typename Scalar, int Dim>
 QTransform Transform<Scalar,Dim>::toQTransform(void) const
 {
-  EIGEN_STATIC_ASSERT(Dim==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
+  IMP_EIGEN_STATIC_ASSERT(Dim==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
   return QTransform(m_matrix.coeff(0,0), m_matrix.coeff(1,0), m_matrix.coeff(2,0),
                     m_matrix.coeff(0,1), m_matrix.coeff(1,1), m_matrix.coeff(2,1),
                     m_matrix.coeff(0,2), m_matrix.coeff(1,2), m_matrix.coeff(2,2));
@@ -382,7 +382,7 @@ template<typename OtherDerived>
 Transform<Scalar,Dim>&
 Transform<Scalar,Dim>::scale(const MatrixBase<OtherDerived> &other)
 {
-  EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(OtherDerived,int(Dim))
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(OtherDerived,int(Dim))
   linear() = (linear() * other.asDiagonal()).lazy();
   return *this;
 }
@@ -407,7 +407,7 @@ template<typename OtherDerived>
 Transform<Scalar,Dim>&
 Transform<Scalar,Dim>::prescale(const MatrixBase<OtherDerived> &other)
 {
-  EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(OtherDerived,int(Dim))
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(OtherDerived,int(Dim))
   m_matrix.template block<Dim,HDim>(0,0) = (other.asDiagonal() * m_matrix.template block<Dim,HDim>(0,0)).lazy();
   return *this;
 }
@@ -432,7 +432,7 @@ template<typename OtherDerived>
 Transform<Scalar,Dim>&
 Transform<Scalar,Dim>::translate(const MatrixBase<OtherDerived> &other)
 {
-  EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(OtherDerived,int(Dim))
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(OtherDerived,int(Dim))
   translation() += linear() * other;
   return *this;
 }
@@ -446,7 +446,7 @@ template<typename OtherDerived>
 Transform<Scalar,Dim>&
 Transform<Scalar,Dim>::pretranslate(const MatrixBase<OtherDerived> &other)
 {
-  EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(OtherDerived,int(Dim))
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(OtherDerived,int(Dim))
   translation() += other;
   return *this;
 }
@@ -503,7 +503,7 @@ template<typename Scalar, int Dim>
 Transform<Scalar,Dim>&
 Transform<Scalar,Dim>::shear(Scalar sx, Scalar sy)
 {
-  EIGEN_STATIC_ASSERT(int(Dim)==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
+  IMP_EIGEN_STATIC_ASSERT(int(Dim)==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
   VectorType tmp = linear().col(0)*sy + linear().col(1);
   linear() << linear().col(0) + linear().col(1)*sx, tmp;
   return *this;
@@ -518,7 +518,7 @@ template<typename Scalar, int Dim>
 Transform<Scalar,Dim>&
 Transform<Scalar,Dim>::preshear(Scalar sx, Scalar sy)
 {
-  EIGEN_STATIC_ASSERT(int(Dim)==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
+  IMP_EIGEN_STATIC_ASSERT(int(Dim)==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
   m_matrix.template block<Dim,HDim>(0,0) = LinearMatrixType(1, sx, sy, 1) * m_matrix.template block<Dim,HDim>(0,0);
   return *this;
 }
@@ -783,4 +783,4 @@ struct ei_transform_product_impl<Other,Dim,HDim, Dim,1>
           * (Scalar(1) / ( (tr.matrix().template block<1,Dim>(Dim,0) * other).coeff(0) + tr.matrix().coeff(Dim,Dim))); }
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen

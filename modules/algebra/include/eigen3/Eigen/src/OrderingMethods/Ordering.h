@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_ORDERING_H
-#define EIGEN_ORDERING_H
+#ifndef IMP_EIGEN_ORDERING_H
+#define IMP_EIGEN_ORDERING_H
 
-namespace Eigen {
+namespace IMP_Eigen {
   
 #include "Eigen_Colamd.h"
 
@@ -37,7 +37,7 @@ void ordering_helper_at_plus_a(const MatrixType& mat, MatrixType& symmat)
     
 }
 
-#ifndef EIGEN_MPL2_ONLY
+#ifndef IMP_EIGEN_MPL2_ONLY
 
 /** \ingroup OrderingMethods_Module
   * \class AMDOrdering
@@ -80,7 +80,7 @@ class AMDOrdering
     }
 };
 
-#endif // EIGEN_MPL2_ONLY
+#endif // IMP_EIGEN_MPL2_ONLY
 
 /** \ingroup OrderingMethods_Module
   * \class NaturalOrdering
@@ -145,6 +145,6 @@ class COLAMDOrdering
     }
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
 #endif

@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPARSEDENSEPRODUCT_H
-#define EIGEN_SPARSEDENSEPRODUCT_H
+#ifndef IMP_EIGEN_SPARSEDENSEPRODUCT_H
+#define IMP_EIGEN_SPARSEDENSEPRODUCT_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 template<typename Lhs, typename Rhs, int InnerSize> struct SparseDenseProductReturnType
 {
@@ -70,7 +70,7 @@ class SparseDenseOuterProduct
   public:
 
     typedef SparseMatrixBase<SparseDenseOuterProduct> Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(SparseDenseOuterProduct)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(SparseDenseOuterProduct)
     typedef internal::traits<SparseDenseOuterProduct> Traits;
 
   private:
@@ -84,23 +84,23 @@ class SparseDenseOuterProduct
 
     class InnerIterator;
 
-    EIGEN_STRONG_INLINE SparseDenseOuterProduct(const Lhs& lhs, const Rhs& rhs)
+    IMP_EIGEN_STRONG_INLINE SparseDenseOuterProduct(const Lhs& lhs, const Rhs& rhs)
       : m_lhs(lhs), m_rhs(rhs)
     {
-      EIGEN_STATIC_ASSERT(!Tr,YOU_MADE_A_PROGRAMMING_MISTAKE);
+      IMP_EIGEN_STATIC_ASSERT(!Tr,YOU_MADE_A_PROGRAMMING_MISTAKE);
     }
 
-    EIGEN_STRONG_INLINE SparseDenseOuterProduct(const Rhs& rhs, const Lhs& lhs)
+    IMP_EIGEN_STRONG_INLINE SparseDenseOuterProduct(const Rhs& rhs, const Lhs& lhs)
       : m_lhs(lhs), m_rhs(rhs)
     {
-      EIGEN_STATIC_ASSERT(Tr,YOU_MADE_A_PROGRAMMING_MISTAKE);
+      IMP_EIGEN_STATIC_ASSERT(Tr,YOU_MADE_A_PROGRAMMING_MISTAKE);
     }
 
-    EIGEN_STRONG_INLINE Index rows() const { return Tr ? m_rhs.rows() : m_lhs.rows(); }
-    EIGEN_STRONG_INLINE Index cols() const { return Tr ? m_lhs.cols() : m_rhs.cols(); }
+    IMP_EIGEN_STRONG_INLINE Index rows() const { return Tr ? m_rhs.rows() : m_lhs.rows(); }
+    IMP_EIGEN_STRONG_INLINE Index cols() const { return Tr ? m_lhs.cols() : m_rhs.cols(); }
 
-    EIGEN_STRONG_INLINE const _LhsNested& lhs() const { return m_lhs; }
-    EIGEN_STRONG_INLINE const _RhsNested& rhs() const { return m_rhs; }
+    IMP_EIGEN_STRONG_INLINE const _LhsNested& lhs() const { return m_lhs; }
+    IMP_EIGEN_STRONG_INLINE const _RhsNested& rhs() const { return m_rhs; }
 
   protected:
     LhsNested m_lhs;
@@ -113,7 +113,7 @@ class SparseDenseOuterProduct<Lhs,Rhs,Transpose>::InnerIterator : public _LhsNes
     typedef typename _LhsNested::InnerIterator Base;
     typedef typename SparseDenseOuterProduct::Index Index;
   public:
-    EIGEN_STRONG_INLINE InnerIterator(const SparseDenseOuterProduct& prod, Index outer)
+    IMP_EIGEN_STRONG_INLINE InnerIterator(const SparseDenseOuterProduct& prod, Index outer)
       : Base(prod.lhs(), 0), m_outer(outer), m_factor(prod.rhs().coeff(outer))
     {
     }
@@ -240,7 +240,7 @@ class SparseTimeDenseProduct
   : public ProductBase<SparseTimeDenseProduct<Lhs,Rhs>, Lhs, Rhs>
 {
   public:
-    EIGEN_PRODUCT_PUBLIC_INTERFACE(SparseTimeDenseProduct)
+    IMP_EIGEN_PRODUCT_PUBLIC_INTERFACE(SparseTimeDenseProduct)
 
     SparseTimeDenseProduct(const Lhs& lhs, const Rhs& rhs) : Base(lhs,rhs)
     {}
@@ -270,7 +270,7 @@ class DenseTimeSparseProduct
   : public ProductBase<DenseTimeSparseProduct<Lhs,Rhs>, Lhs, Rhs>
 {
   public:
-    EIGEN_PRODUCT_PUBLIC_INTERFACE(DenseTimeSparseProduct)
+    IMP_EIGEN_PRODUCT_PUBLIC_INTERFACE(DenseTimeSparseProduct)
 
     DenseTimeSparseProduct(const Lhs& lhs, const Rhs& rhs) : Base(lhs,rhs)
     {}
@@ -296,6 +296,6 @@ SparseMatrixBase<Derived>::operator*(const MatrixBase<OtherDerived> &other) cons
   return typename SparseDenseProductReturnType<Derived,OtherDerived>::Type(derived(), other.derived());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SPARSEDENSEPRODUCT_H
+#endif // IMP_EIGEN_SPARSEDENSEPRODUCT_H

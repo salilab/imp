@@ -66,9 +66,9 @@
  *  Storage: new row subscripts; that is subscripts of PA.
  */
 
-#ifndef EIGEN_LU_STRUCTS
-#define EIGEN_LU_STRUCTS
-namespace Eigen {
+#ifndef IMP_EIGEN_LU_STRUCTS
+#define IMP_EIGEN_LU_STRUCTS
+namespace IMP_Eigen {
 namespace internal {
   
 typedef enum {LUSUP, UCOL, LSUB, USUB, LLVL, ULVL} MemType; 
@@ -107,5 +107,5 @@ struct perfvalues {
 
 } // end namespace internal
 
-} // end namespace Eigen
-#endif // EIGEN_LU_STRUCTS
+} // end namespace IMP_Eigen
+#endif // IMP_EIGEN_LU_STRUCTS

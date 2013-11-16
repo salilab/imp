@@ -7,14 +7,14 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_MATRIX_FUNCTION
-#define EIGEN_MATRIX_FUNCTION
+#ifndef IMP_EIGEN_MATRIX_FUNCTION
+#define IMP_EIGEN_MATRIX_FUNCTION
 
 #include "StemFunction.h"
 #include "MatrixFunctionAtomic.h"
 
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \ingroup MatrixFunctions_Module
   * \brief Class for computing matrix functions.
@@ -586,6 +586,6 @@ const MatrixFunctionReturnValue<Derived> MatrixBase<Derived>::cosh() const
   return MatrixFunctionReturnValue<Derived>(derived(), StdStemFunctions<ComplexScalar>::cosh);
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_MATRIX_FUNCTION
+#endif // IMP_EIGEN_MATRIX_FUNCTION

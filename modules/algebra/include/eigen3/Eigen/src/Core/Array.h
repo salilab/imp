@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_ARRAY_H
-#define EIGEN_ARRAY_H
+#ifndef IMP_EIGEN_ARRAY_H
+#define IMP_EIGEN_ARRAY_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 /** \class Array 
   * \ingroup Core_Module
@@ -25,7 +25,7 @@ namespace Eigen {
   * operations.
   *
   * This class can be extended with the help of the plugin mechanism described on the page
-  * \ref TopicCustomizingEigen by defining the preprocessor symbol \c EIGEN_ARRAY_PLUGIN.
+  * \ref TopicCustomizingEigen by defining the preprocessor symbol \c IMP_EIGEN_ARRAY_PLUGIN.
   *
   * \sa \ref TutorialArrayClass, \ref TopicClassHierarchy
   */
@@ -45,7 +45,7 @@ class Array
   public:
 
     typedef PlainObjectBase<Array> Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(Array)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(Array)
 
     enum { Options = _Options };
     typedef typename Base::PlainObject PlainObject;
@@ -69,7 +69,7 @@ class Array
       * the usage of 'using'. This should be done only for operator=.
       */
     template<typename OtherDerived>
-    EIGEN_STRONG_INLINE Array& operator=(const EigenBase<OtherDerived> &other)
+    IMP_EIGEN_STRONG_INLINE Array& operator=(const EigenBase<OtherDerived> &other)
     {
       return Base::operator=(other);
     }
@@ -84,7 +84,7 @@ class Array
       * remain row-vectors and vectors remain vectors.
       */
     template<typename OtherDerived>
-    EIGEN_STRONG_INLINE Array& operator=(const ArrayBase<OtherDerived>& other)
+    IMP_EIGEN_STRONG_INLINE Array& operator=(const ArrayBase<OtherDerived>& other)
     {
       return Base::_set(other);
     }
@@ -92,7 +92,7 @@ class Array
     /** This is a special case of the templated operator=. Its purpose is to
       * prevent a default operator= from hiding the templated operator=.
       */
-    EIGEN_STRONG_INLINE Array& operator=(const Array& other)
+    IMP_EIGEN_STRONG_INLINE Array& operator=(const Array& other)
     {
       return Base::_set(other);
     }
@@ -107,20 +107,20 @@ class Array
       *
       * \sa resize(Index,Index)
       */
-    EIGEN_STRONG_INLINE Array() : Base()
+    IMP_EIGEN_STRONG_INLINE Array() : Base()
     {
       Base::_check_template_params();
-      EIGEN_INITIALIZE_COEFFS_IF_THAT_OPTION_IS_ENABLED
+      IMP_EIGEN_INITIALIZE_COEFFS_IF_THAT_OPTION_IS_ENABLED
     }
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     // FIXME is it still needed ??
     /** \internal */
     Array(internal::constructor_without_unaligned_array_assert)
       : Base(internal::constructor_without_unaligned_array_assert())
     {
       Base::_check_template_params();
-      EIGEN_INITIALIZE_COEFFS_IF_THAT_OPTION_IS_ENABLED
+      IMP_EIGEN_INITIALIZE_COEFFS_IF_THAT_OPTION_IS_ENABLED
     }
 #endif
 
@@ -130,19 +130,19 @@ class Array
       * it is redundant to pass the dimension here, so it makes more sense to use the default
       * constructor Matrix() instead.
       */
-    EIGEN_STRONG_INLINE explicit Array(Index dim)
+    IMP_EIGEN_STRONG_INLINE explicit Array(Index dim)
       : Base(dim, RowsAtCompileTime == 1 ? 1 : dim, ColsAtCompileTime == 1 ? 1 : dim)
     {
       Base::_check_template_params();
-      EIGEN_STATIC_ASSERT_VECTOR_ONLY(Array)
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(Array)
       eigen_assert(dim >= 0);
       eigen_assert(SizeAtCompileTime == Dynamic || SizeAtCompileTime == dim);
-      EIGEN_INITIALIZE_COEFFS_IF_THAT_OPTION_IS_ENABLED
+      IMP_EIGEN_INITIALIZE_COEFFS_IF_THAT_OPTION_IS_ENABLED
     }
 
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     template<typename T0, typename T1>
-    EIGEN_STRONG_INLINE Array(const T0& val0, const T1& val1)
+    IMP_EIGEN_STRONG_INLINE Array(const T0& val0, const T1& val1)
     {
       Base::_check_template_params();
       this->template _init2<T0,T1>(val0, val1);
@@ -159,19 +159,19 @@ class Array
     #endif
 
     /** constructs an initialized 3D vector with given coefficients */
-    EIGEN_STRONG_INLINE Array(const Scalar& val0, const Scalar& val1, const Scalar& val2)
+    IMP_EIGEN_STRONG_INLINE Array(const Scalar& val0, const Scalar& val1, const Scalar& val2)
     {
       Base::_check_template_params();
-      EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Array, 3)
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Array, 3)
       m_storage.data()[0] = val0;
       m_storage.data()[1] = val1;
       m_storage.data()[2] = val2;
     }
     /** constructs an initialized 4D vector with given coefficients */
-    EIGEN_STRONG_INLINE Array(const Scalar& val0, const Scalar& val1, const Scalar& val2, const Scalar& val3)
+    IMP_EIGEN_STRONG_INLINE Array(const Scalar& val0, const Scalar& val1, const Scalar& val2, const Scalar& val3)
     {
       Base::_check_template_params();
-      EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Array, 4)
+      IMP_EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Array, 4)
       m_storage.data()[0] = val0;
       m_storage.data()[1] = val1;
       m_storage.data()[2] = val2;
@@ -182,14 +182,14 @@ class Array
 
     /** Constructor copying the value of the expression \a other */
     template<typename OtherDerived>
-    EIGEN_STRONG_INLINE Array(const ArrayBase<OtherDerived>& other)
+    IMP_EIGEN_STRONG_INLINE Array(const ArrayBase<OtherDerived>& other)
              : Base(other.rows() * other.cols(), other.rows(), other.cols())
     {
       Base::_check_template_params();
       Base::_set_noalias(other);
     }
     /** Copy constructor */
-    EIGEN_STRONG_INLINE Array(const Array& other)
+    IMP_EIGEN_STRONG_INLINE Array(const Array& other)
             : Base(other.rows() * other.cols(), other.rows(), other.cols())
     {
       Base::_check_template_params();
@@ -197,7 +197,7 @@ class Array
     }
     /** Copy constructor with in-place evaluation */
     template<typename OtherDerived>
-    EIGEN_STRONG_INLINE Array(const ReturnByValue<OtherDerived>& other)
+    IMP_EIGEN_STRONG_INLINE Array(const ReturnByValue<OtherDerived>& other)
     {
       Base::_check_template_params();
       Base::resize(other.rows(), other.cols());
@@ -206,7 +206,7 @@ class Array
 
     /** \sa MatrixBase::operator=(const EigenBase<OtherDerived>&) */
     template<typename OtherDerived>
-    EIGEN_STRONG_INLINE Array(const EigenBase<OtherDerived> &other)
+    IMP_EIGEN_STRONG_INLINE Array(const EigenBase<OtherDerived> &other)
       : Base(other.derived().rows() * other.derived().cols(), other.derived().rows(), other.derived().cols())
     {
       Base::_check_template_params();
@@ -224,8 +224,8 @@ class Array
     inline Index innerStride() const { return 1; }
     inline Index outerStride() const { return this->innerSize(); }
 
-    #ifdef EIGEN_ARRAY_PLUGIN
-    #include EIGEN_ARRAY_PLUGIN
+    #ifdef IMP_EIGEN_ARRAY_PLUGIN
+    #include IMP_EIGEN_ARRAY_PLUGIN
     #endif
 
   private:
@@ -253,56 +253,56 @@ class Array
   * \sa class Array
   */
 
-#define EIGEN_MAKE_ARRAY_TYPEDEFS(Type, TypeSuffix, Size, SizeSuffix)   \
+#define IMP_EIGEN_MAKE_ARRAY_TYPEDEFS(Type, TypeSuffix, Size, SizeSuffix)   \
 /** \ingroup arraytypedefs */                                    \
 typedef Array<Type, Size, Size> Array##SizeSuffix##SizeSuffix##TypeSuffix;  \
 /** \ingroup arraytypedefs */                                    \
 typedef Array<Type, Size, 1>    Array##SizeSuffix##TypeSuffix;
 
-#define EIGEN_MAKE_ARRAY_FIXED_TYPEDEFS(Type, TypeSuffix, Size)         \
+#define IMP_EIGEN_MAKE_ARRAY_FIXED_TYPEDEFS(Type, TypeSuffix, Size)         \
 /** \ingroup arraytypedefs */                                    \
 typedef Array<Type, Size, Dynamic> Array##Size##X##TypeSuffix;  \
 /** \ingroup arraytypedefs */                                    \
 typedef Array<Type, Dynamic, Size> Array##X##Size##TypeSuffix;
 
-#define EIGEN_MAKE_ARRAY_TYPEDEFS_ALL_SIZES(Type, TypeSuffix) \
-EIGEN_MAKE_ARRAY_TYPEDEFS(Type, TypeSuffix, 2, 2) \
-EIGEN_MAKE_ARRAY_TYPEDEFS(Type, TypeSuffix, 3, 3) \
-EIGEN_MAKE_ARRAY_TYPEDEFS(Type, TypeSuffix, 4, 4) \
-EIGEN_MAKE_ARRAY_TYPEDEFS(Type, TypeSuffix, Dynamic, X) \
-EIGEN_MAKE_ARRAY_FIXED_TYPEDEFS(Type, TypeSuffix, 2) \
-EIGEN_MAKE_ARRAY_FIXED_TYPEDEFS(Type, TypeSuffix, 3) \
-EIGEN_MAKE_ARRAY_FIXED_TYPEDEFS(Type, TypeSuffix, 4)
+#define IMP_EIGEN_MAKE_ARRAY_TYPEDEFS_ALL_SIZES(Type, TypeSuffix) \
+IMP_EIGEN_MAKE_ARRAY_TYPEDEFS(Type, TypeSuffix, 2, 2) \
+IMP_EIGEN_MAKE_ARRAY_TYPEDEFS(Type, TypeSuffix, 3, 3) \
+IMP_EIGEN_MAKE_ARRAY_TYPEDEFS(Type, TypeSuffix, 4, 4) \
+IMP_EIGEN_MAKE_ARRAY_TYPEDEFS(Type, TypeSuffix, Dynamic, X) \
+IMP_EIGEN_MAKE_ARRAY_FIXED_TYPEDEFS(Type, TypeSuffix, 2) \
+IMP_EIGEN_MAKE_ARRAY_FIXED_TYPEDEFS(Type, TypeSuffix, 3) \
+IMP_EIGEN_MAKE_ARRAY_FIXED_TYPEDEFS(Type, TypeSuffix, 4)
 
-EIGEN_MAKE_ARRAY_TYPEDEFS_ALL_SIZES(int,                  i)
-EIGEN_MAKE_ARRAY_TYPEDEFS_ALL_SIZES(float,                f)
-EIGEN_MAKE_ARRAY_TYPEDEFS_ALL_SIZES(double,               d)
-EIGEN_MAKE_ARRAY_TYPEDEFS_ALL_SIZES(std::complex<float>,  cf)
-EIGEN_MAKE_ARRAY_TYPEDEFS_ALL_SIZES(std::complex<double>, cd)
+IMP_EIGEN_MAKE_ARRAY_TYPEDEFS_ALL_SIZES(int,                  i)
+IMP_EIGEN_MAKE_ARRAY_TYPEDEFS_ALL_SIZES(float,                f)
+IMP_EIGEN_MAKE_ARRAY_TYPEDEFS_ALL_SIZES(double,               d)
+IMP_EIGEN_MAKE_ARRAY_TYPEDEFS_ALL_SIZES(std::complex<float>,  cf)
+IMP_EIGEN_MAKE_ARRAY_TYPEDEFS_ALL_SIZES(std::complex<double>, cd)
 
-#undef EIGEN_MAKE_ARRAY_TYPEDEFS_ALL_SIZES
-#undef EIGEN_MAKE_ARRAY_TYPEDEFS
+#undef IMP_EIGEN_MAKE_ARRAY_TYPEDEFS_ALL_SIZES
+#undef IMP_EIGEN_MAKE_ARRAY_TYPEDEFS
 
-#undef EIGEN_MAKE_ARRAY_TYPEDEFS_LARGE
+#undef IMP_EIGEN_MAKE_ARRAY_TYPEDEFS_LARGE
 
-#define EIGEN_USING_ARRAY_TYPEDEFS_FOR_TYPE_AND_SIZE(TypeSuffix, SizeSuffix) \
-using Eigen::Matrix##SizeSuffix##TypeSuffix; \
-using Eigen::Vector##SizeSuffix##TypeSuffix; \
-using Eigen::RowVector##SizeSuffix##TypeSuffix;
+#define IMP_EIGEN_USING_ARRAY_TYPEDEFS_FOR_TYPE_AND_SIZE(TypeSuffix, SizeSuffix) \
+using IMP_Eigen::Matrix##SizeSuffix##TypeSuffix; \
+using IMP_Eigen::Vector##SizeSuffix##TypeSuffix; \
+using IMP_Eigen::RowVector##SizeSuffix##TypeSuffix;
 
-#define EIGEN_USING_ARRAY_TYPEDEFS_FOR_TYPE(TypeSuffix) \
-EIGEN_USING_ARRAY_TYPEDEFS_FOR_TYPE_AND_SIZE(TypeSuffix, 2) \
-EIGEN_USING_ARRAY_TYPEDEFS_FOR_TYPE_AND_SIZE(TypeSuffix, 3) \
-EIGEN_USING_ARRAY_TYPEDEFS_FOR_TYPE_AND_SIZE(TypeSuffix, 4) \
-EIGEN_USING_ARRAY_TYPEDEFS_FOR_TYPE_AND_SIZE(TypeSuffix, X) \
+#define IMP_EIGEN_USING_ARRAY_TYPEDEFS_FOR_TYPE(TypeSuffix) \
+IMP_EIGEN_USING_ARRAY_TYPEDEFS_FOR_TYPE_AND_SIZE(TypeSuffix, 2) \
+IMP_EIGEN_USING_ARRAY_TYPEDEFS_FOR_TYPE_AND_SIZE(TypeSuffix, 3) \
+IMP_EIGEN_USING_ARRAY_TYPEDEFS_FOR_TYPE_AND_SIZE(TypeSuffix, 4) \
+IMP_EIGEN_USING_ARRAY_TYPEDEFS_FOR_TYPE_AND_SIZE(TypeSuffix, X) \
 
-#define EIGEN_USING_ARRAY_TYPEDEFS \
-EIGEN_USING_ARRAY_TYPEDEFS_FOR_TYPE(i) \
-EIGEN_USING_ARRAY_TYPEDEFS_FOR_TYPE(f) \
-EIGEN_USING_ARRAY_TYPEDEFS_FOR_TYPE(d) \
-EIGEN_USING_ARRAY_TYPEDEFS_FOR_TYPE(cf) \
-EIGEN_USING_ARRAY_TYPEDEFS_FOR_TYPE(cd)
+#define IMP_EIGEN_USING_ARRAY_TYPEDEFS \
+IMP_EIGEN_USING_ARRAY_TYPEDEFS_FOR_TYPE(i) \
+IMP_EIGEN_USING_ARRAY_TYPEDEFS_FOR_TYPE(f) \
+IMP_EIGEN_USING_ARRAY_TYPEDEFS_FOR_TYPE(d) \
+IMP_EIGEN_USING_ARRAY_TYPEDEFS_FOR_TYPE(cf) \
+IMP_EIGEN_USING_ARRAY_TYPEDEFS_FOR_TYPE(cd)
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_ARRAY_H
+#endif // IMP_EIGEN_ARRAY_H

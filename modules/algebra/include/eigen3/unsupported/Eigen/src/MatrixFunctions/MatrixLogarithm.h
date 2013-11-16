@@ -8,14 +8,14 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_MATRIX_LOGARITHM
-#define EIGEN_MATRIX_LOGARITHM
+#ifndef IMP_EIGEN_MATRIX_LOGARITHM
+#define IMP_EIGEN_MATRIX_LOGARITHM
 
 #ifndef M_PI
 #define M_PI 3.141592653589793238462643383279503L
 #endif
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \ingroup MatrixFunctions_Module
   * \class MatrixLogarithmAtomic
@@ -481,6 +481,6 @@ const MatrixLogarithmReturnValue<Derived> MatrixBase<Derived>::log() const
   return MatrixLogarithmReturnValue<Derived>(derived());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_MATRIX_LOGARITHM
+#endif // IMP_EIGEN_MATRIX_LOGARITHM

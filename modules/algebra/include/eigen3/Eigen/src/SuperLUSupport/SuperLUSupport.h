@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SUPERLUSUPPORT_H
-#define EIGEN_SUPERLUSUPPORT_H
+#ifndef IMP_EIGEN_SUPERLUSUPPORT_H
+#define IMP_EIGEN_SUPERLUSUPPORT_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 #define DECL_GSSVX(PREFIX,FLOATTYPE,KEYTYPE)		\
     extern "C" {                                                                                          \
@@ -42,10 +42,10 @@ DECL_GSSVX(d,double,double)
 DECL_GSSVX(z,double,std::complex<double>)
 
 #ifdef MILU_ALPHA
-#define EIGEN_SUPERLU_HAS_ILU
+#define IMP_EIGEN_SUPERLU_HAS_ILU
 #endif
 
-#ifdef EIGEN_SUPERLU_HAS_ILU
+#ifdef IMP_EIGEN_SUPERLU_HAS_ILU
 
 // similarly for the incomplete factorization using gsisx
 #define DECL_GSISX(PREFIX,FLOATTYPE,KEYTYPE)                                                    \
@@ -525,11 +525,11 @@ class SuperLU : public SuperLUBase<_MatrixType,SuperLU<_MatrixType> >
       */
     void factorize(const MatrixType& matrix);
     
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** \internal */
     template<typename Rhs,typename Dest>
     void _solve(const MatrixBase<Rhs> &b, MatrixBase<Dest> &dest) const;
-    #endif // EIGEN_PARSED_BY_DOXYGEN
+    #endif // IMP_EIGEN_PARSED_BY_DOXYGEN
     
     inline const LMatrixType& matrixL() const
     {
@@ -797,11 +797,11 @@ typename SuperLU<MatrixType>::Scalar SuperLU<MatrixType>::determinant() const
     return det;
 }
 
-#ifdef EIGEN_PARSED_BY_DOXYGEN
-#define EIGEN_SUPERLU_HAS_ILU
+#ifdef IMP_EIGEN_PARSED_BY_DOXYGEN
+#define IMP_EIGEN_SUPERLU_HAS_ILU
 #endif
 
-#ifdef EIGEN_SUPERLU_HAS_ILU
+#ifdef IMP_EIGEN_SUPERLU_HAS_ILU
 
 /** \ingroup SuperLUSupport_Module
   * \class SuperILU
@@ -860,11 +860,11 @@ class SuperILU : public SuperLUBase<_MatrixType,SuperILU<_MatrixType> >
       */
     void factorize(const MatrixType& matrix);
     
-    #ifndef EIGEN_PARSED_BY_DOXYGEN
+    #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
     /** \internal */
     template<typename Rhs,typename Dest>
     void _solve(const MatrixBase<Rhs> &b, MatrixBase<Dest> &dest) const;
-    #endif // EIGEN_PARSED_BY_DOXYGEN
+    #endif // IMP_EIGEN_PARSED_BY_DOXYGEN
     
   protected:
     
@@ -998,7 +998,7 @@ struct solve_retval<SuperLUBase<_MatrixType,Derived>, Rhs>
   : solve_retval_base<SuperLUBase<_MatrixType,Derived>, Rhs>
 {
   typedef SuperLUBase<_MatrixType,Derived> Dec;
-  EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
+  IMP_EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -1011,7 +1011,7 @@ struct sparse_solve_retval<SuperLUBase<_MatrixType,Derived>, Rhs>
   : sparse_solve_retval_base<SuperLUBase<_MatrixType,Derived>, Rhs>
 {
   typedef SuperLUBase<_MatrixType,Derived> Dec;
-  EIGEN_MAKE_SPARSE_SOLVE_HELPERS(Dec,Rhs)
+  IMP_EIGEN_MAKE_SPARSE_SOLVE_HELPERS(Dec,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -1021,6 +1021,6 @@ struct sparse_solve_retval<SuperLUBase<_MatrixType,Derived>, Rhs>
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SUPERLUSUPPORT_H
+#endif // IMP_EIGEN_SUPERLUSUPPORT_H

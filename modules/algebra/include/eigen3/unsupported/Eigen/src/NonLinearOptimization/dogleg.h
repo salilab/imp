@@ -1,4 +1,4 @@
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -104,4 +104,4 @@ algo_end:
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen

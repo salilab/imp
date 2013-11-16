@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_DYNAMIC_SPARSEMATRIX_H
-#define EIGEN_DYNAMIC_SPARSEMATRIX_H
+#ifndef IMP_EIGEN_DYNAMIC_SPARSEMATRIX_H
+#define IMP_EIGEN_DYNAMIC_SPARSEMATRIX_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \deprecated use a SparseMatrix in an uncompressed mode
   *
@@ -57,10 +57,10 @@ template<typename _Scalar, int _Options, typename _Index>
   : public SparseMatrixBase<DynamicSparseMatrix<_Scalar, _Options, _Index> >
 {
   public:
-    EIGEN_SPARSE_PUBLIC_INTERFACE(DynamicSparseMatrix)
+    IMP_EIGEN_SPARSE_PUBLIC_INTERFACE(DynamicSparseMatrix)
     // FIXME: why are these operator already alvailable ???
-    // EIGEN_SPARSE_INHERIT_ASSIGNMENT_OPERATOR(DynamicSparseMatrix, +=)
-    // EIGEN_SPARSE_INHERIT_ASSIGNMENT_OPERATOR(DynamicSparseMatrix, -=)
+    // IMP_EIGEN_SPARSE_INHERIT_ASSIGNMENT_OPERATOR(DynamicSparseMatrix, +=)
+    // IMP_EIGEN_SPARSE_INHERIT_ASSIGNMENT_OPERATOR(DynamicSparseMatrix, -=)
     typedef MappedSparseMatrix<Scalar,Flags> Map;
     using Base::IsRowMajor;
     using Base::operator=;
@@ -223,14 +223,14 @@ template<typename _Scalar, int _Options, typename _Index>
     }
 
     /** The class DynamicSparseMatrix is deprectaed */
-    EIGEN_DEPRECATED inline DynamicSparseMatrix()
+    IMP_EIGEN_DEPRECATED inline DynamicSparseMatrix()
       : m_innerSize(0), m_data(0)
     {
       eigen_assert(innerSize()==0 && outerSize()==0);
     }
 
     /** The class DynamicSparseMatrix is deprectaed */
-    EIGEN_DEPRECATED inline DynamicSparseMatrix(Index rows, Index cols)
+    IMP_EIGEN_DEPRECATED inline DynamicSparseMatrix(Index rows, Index cols)
       : m_innerSize(0)
     {
       resize(rows, cols);
@@ -238,7 +238,7 @@ template<typename _Scalar, int _Options, typename _Index>
 
     /** The class DynamicSparseMatrix is deprectaed */
     template<typename OtherDerived>
-    EIGEN_DEPRECATED explicit inline DynamicSparseMatrix(const SparseMatrixBase<OtherDerived>& other)
+    IMP_EIGEN_DEPRECATED explicit inline DynamicSparseMatrix(const SparseMatrixBase<OtherDerived>& other)
       : m_innerSize(0)
     {
     Base::operator=(other.derived());
@@ -279,7 +279,7 @@ template<typename _Scalar, int _Options, typename _Index>
 
     /** \deprecated
       * Set the matrix to zero and reserve the memory for \a reserveSize nonzero coefficients. */
-    EIGEN_DEPRECATED void startFill(Index reserveSize = 1000)
+    IMP_EIGEN_DEPRECATED void startFill(Index reserveSize = 1000)
     {
       setZero();
       reserve(reserveSize);
@@ -294,7 +294,7 @@ template<typename _Scalar, int _Options, typename _Index>
       *
       * \see fillrand(), coeffRef()
       */
-    EIGEN_DEPRECATED Scalar& fill(Index row, Index col)
+    IMP_EIGEN_DEPRECATED Scalar& fill(Index row, Index col)
     {
       const Index outer = IsRowMajor ? row : col;
       const Index inner = IsRowMajor ? col : row;
@@ -306,17 +306,17 @@ template<typename _Scalar, int _Options, typename _Index>
       * Compared to the generic coeffRef(), the unique limitation is that we assume
       * the coefficient does not exist yet.
       */
-    EIGEN_DEPRECATED Scalar& fillrand(Index row, Index col)
+    IMP_EIGEN_DEPRECATED Scalar& fillrand(Index row, Index col)
     {
       return insert(row,col);
     }
 
     /** \deprecated use finalize()
       * Does nothing. Provided for compatibility with SparseMatrix. */
-    EIGEN_DEPRECATED void endFill() {}
+    IMP_EIGEN_DEPRECATED void endFill() {}
     
-#   ifdef EIGEN_DYNAMICSPARSEMATRIX_PLUGIN
-#     include EIGEN_DYNAMICSPARSEMATRIX_PLUGIN
+#   ifdef IMP_EIGEN_DYNAMICSPARSEMATRIX_PLUGIN
+#     include IMP_EIGEN_DYNAMICSPARSEMATRIX_PLUGIN
 #   endif
  };
 
@@ -352,6 +352,6 @@ class DynamicSparseMatrix<Scalar,_Options,_Index>::ReverseInnerIterator : public
     const Index m_outer;
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_DYNAMIC_SPARSEMATRIX_H
+#endif // IMP_EIGEN_DYNAMIC_SPARSEMATRIX_H

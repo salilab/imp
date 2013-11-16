@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_FORCEALIGNEDACCESS_H
-#define EIGEN_FORCEALIGNEDACCESS_H
+#ifndef IMP_EIGEN_FORCEALIGNEDACCESS_H
+#define IMP_EIGEN_FORCEALIGNEDACCESS_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 /** \class ForceAlignedAccess
   * \ingroup Core_Module
@@ -37,7 +37,7 @@ template<typename ExpressionType> class ForceAlignedAccess
   public:
 
     typedef typename internal::dense_xpr_base<ForceAlignedAccess>::type Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(ForceAlignedAccess)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(ForceAlignedAccess)
 
     inline ForceAlignedAccess(const ExpressionType& matrix) : m_expression(matrix) {}
 
@@ -141,6 +141,6 @@ MatrixBase<Derived>::forceAlignedAccessIf()
   return derived();
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_FORCEALIGNEDACCESS_H
+#endif // IMP_EIGEN_FORCEALIGNEDACCESS_H

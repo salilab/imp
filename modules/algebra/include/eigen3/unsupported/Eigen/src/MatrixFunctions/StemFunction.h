@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_STEM_FUNCTION
-#define EIGEN_STEM_FUNCTION
+#ifndef IMP_EIGEN_STEM_FUNCTION
+#define IMP_EIGEN_STEM_FUNCTION
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \ingroup MatrixFunctions_Module 
   * \brief Stem functions corresponding to standard mathematical functions.
@@ -100,6 +100,6 @@ class StdStemFunctions
 
 }; // end of class StdStemFunctions
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_STEM_FUNCTION
+#endif // IMP_EIGEN_STEM_FUNCTION

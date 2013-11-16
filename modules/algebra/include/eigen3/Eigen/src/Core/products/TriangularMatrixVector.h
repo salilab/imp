@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_TRIANGULARMATRIXVECTOR_H
-#define EIGEN_TRIANGULARMATRIXVECTOR_H
+#ifndef IMP_EIGEN_TRIANGULARMATRIXVECTOR_H
+#define IMP_EIGEN_TRIANGULARMATRIXVECTOR_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -26,16 +26,16 @@ struct triangular_matrix_vector_product<Index,Mode,LhsScalar,ConjLhs,RhsScalar,C
     HasUnitDiag = (Mode & UnitDiag)==UnitDiag,
     HasZeroDiag = (Mode & ZeroDiag)==ZeroDiag
   };
-  static EIGEN_DONT_INLINE  void run(Index _rows, Index _cols, const LhsScalar* _lhs, Index lhsStride,
+  static IMP_EIGEN_DONT_INLINE  void run(Index _rows, Index _cols, const LhsScalar* _lhs, Index lhsStride,
                                      const RhsScalar* _rhs, Index rhsIncr, ResScalar* _res, Index resIncr, const ResScalar& alpha);
 };
 
 template<typename Index, int Mode, typename LhsScalar, bool ConjLhs, typename RhsScalar, bool ConjRhs, int Version>
-EIGEN_DONT_INLINE void triangular_matrix_vector_product<Index,Mode,LhsScalar,ConjLhs,RhsScalar,ConjRhs,ColMajor,Version>
+IMP_EIGEN_DONT_INLINE void triangular_matrix_vector_product<Index,Mode,LhsScalar,ConjLhs,RhsScalar,ConjRhs,ColMajor,Version>
   ::run(Index _rows, Index _cols, const LhsScalar* _lhs, Index lhsStride,
         const RhsScalar* _rhs, Index rhsIncr, ResScalar* _res, Index resIncr, const ResScalar& alpha)
   {
-    static const Index PanelWidth = EIGEN_TUNE_TRIANGULAR_PANEL_WIDTH;
+    static const Index PanelWidth = IMP_EIGEN_TUNE_TRIANGULAR_PANEL_WIDTH;
     Index size = (std::min)(_rows,_cols);
     Index rows = IsLower ? _rows : (std::min)(_rows,_cols);
     Index cols = IsLower ? (std::min)(_rows,_cols) : _cols;
@@ -94,16 +94,16 @@ struct triangular_matrix_vector_product<Index,Mode,LhsScalar,ConjLhs,RhsScalar,C
     HasUnitDiag = (Mode & UnitDiag)==UnitDiag,
     HasZeroDiag = (Mode & ZeroDiag)==ZeroDiag
   };
-  static EIGEN_DONT_INLINE void run(Index _rows, Index _cols, const LhsScalar* _lhs, Index lhsStride,
+  static IMP_EIGEN_DONT_INLINE void run(Index _rows, Index _cols, const LhsScalar* _lhs, Index lhsStride,
                                     const RhsScalar* _rhs, Index rhsIncr, ResScalar* _res, Index resIncr, const ResScalar& alpha);
 };
 
 template<typename Index, int Mode, typename LhsScalar, bool ConjLhs, typename RhsScalar, bool ConjRhs,int Version>
-EIGEN_DONT_INLINE void triangular_matrix_vector_product<Index,Mode,LhsScalar,ConjLhs,RhsScalar,ConjRhs,RowMajor,Version>
+IMP_EIGEN_DONT_INLINE void triangular_matrix_vector_product<Index,Mode,LhsScalar,ConjLhs,RhsScalar,ConjRhs,RowMajor,Version>
   ::run(Index _rows, Index _cols, const LhsScalar* _lhs, Index lhsStride,
         const RhsScalar* _rhs, Index rhsIncr, ResScalar* _res, Index resIncr, const ResScalar& alpha)
   {
-    static const Index PanelWidth = EIGEN_TUNE_TRIANGULAR_PANEL_WIDTH;
+    static const Index PanelWidth = IMP_EIGEN_TUNE_TRIANGULAR_PANEL_WIDTH;
     Index diagSize = (std::min)(_rows,_cols);
     Index rows = IsLower ? _rows : diagSize;
     Index cols = IsLower ? diagSize : _cols;
@@ -177,7 +177,7 @@ template<int Mode, typename Lhs, typename Rhs>
 struct TriangularProduct<Mode,true,Lhs,false,Rhs,true>
   : public ProductBase<TriangularProduct<Mode,true,Lhs,false,Rhs,true>, Lhs, Rhs >
 {
-  EIGEN_PRODUCT_PUBLIC_INTERFACE(TriangularProduct)
+  IMP_EIGEN_PRODUCT_PUBLIC_INTERFACE(TriangularProduct)
 
   TriangularProduct(const Lhs& lhs, const Rhs& rhs) : Base(lhs,rhs) {}
 
@@ -193,7 +193,7 @@ template<int Mode, typename Lhs, typename Rhs>
 struct TriangularProduct<Mode,false,Lhs,true,Rhs,false>
   : public ProductBase<TriangularProduct<Mode,false,Lhs,true,Rhs,false>, Lhs, Rhs >
 {
-  EIGEN_PRODUCT_PUBLIC_INTERFACE(TriangularProduct)
+  IMP_EIGEN_PRODUCT_PUBLIC_INTERFACE(TriangularProduct)
 
   TriangularProduct(const Lhs& lhs, const Rhs& rhs) : Base(lhs,rhs) {}
 
@@ -255,9 +255,9 @@ template<> struct trmv_selector<ColMajor>
 
     if(!evalToDest)
     {
-      #ifdef EIGEN_DENSE_STORAGE_CTOR_PLUGIN
+      #ifdef IMP_EIGEN_DENSE_STORAGE_CTOR_PLUGIN
       Index size = dest.size();
-      EIGEN_DENSE_STORAGE_CTOR_PLUGIN
+      IMP_EIGEN_DENSE_STORAGE_CTOR_PLUGIN
       #endif
       if(!alphaIsCompatible)
       {
@@ -321,9 +321,9 @@ template<> struct trmv_selector<RowMajor>
 
     if(!DirectlyUseRhs)
     {
-      #ifdef EIGEN_DENSE_STORAGE_CTOR_PLUGIN
+      #ifdef IMP_EIGEN_DENSE_STORAGE_CTOR_PLUGIN
       int size = actualRhs.size();
-      EIGEN_DENSE_STORAGE_CTOR_PLUGIN
+      IMP_EIGEN_DENSE_STORAGE_CTOR_PLUGIN
       #endif
       Map<typename _ActualRhsType::PlainObject>(actualRhsPtr, actualRhs.size()) = actualRhs;
     }
@@ -343,6 +343,6 @@ template<> struct trmv_selector<RowMajor>
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_TRIANGULARMATRIXVECTOR_H
+#endif // IMP_EIGEN_TRIANGULARMATRIXVECTOR_H

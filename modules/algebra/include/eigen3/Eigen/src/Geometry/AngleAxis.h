@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_ANGLEAXIS_H
-#define EIGEN_ANGLEAXIS_H
+#ifndef IMP_EIGEN_ANGLEAXIS_H
+#define IMP_EIGEN_ANGLEAXIS_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \geometry_module \ingroup Geometry_Module
   *
@@ -228,6 +228,6 @@ AngleAxis<Scalar>::toRotationMatrix(void) const
   return res;
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_ANGLEAXIS_H
+#endif // IMP_EIGEN_ANGLEAXIS_H

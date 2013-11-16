@@ -30,15 +30,15 @@
  ********************************************************************************
 */
 
-#ifndef EIGEN_TRIANGULAR_SOLVER_MATRIX_MKL_H
-#define EIGEN_TRIANGULAR_SOLVER_MATRIX_MKL_H
+#ifndef IMP_EIGEN_TRIANGULAR_SOLVER_MATRIX_MKL_H
+#define IMP_EIGEN_TRIANGULAR_SOLVER_MATRIX_MKL_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 namespace internal {
 
 // implements LeftSide op(triangular)^-1 * general
-#define EIGEN_MKL_TRSM_L(EIGTYPE, MKLTYPE, MKLPREFIX) \
+#define IMP_EIGEN_MKL_TRSM_L(EIGTYPE, MKLTYPE, MKLPREFIX) \
 template <typename Index, int Mode, bool Conjugate, int TriStorageOrder> \
 struct triangular_solve_matrix<EIGTYPE,Index,OnTheLeft,Mode,Conjugate,TriStorageOrder,ColMajor> \
 { \
@@ -86,14 +86,14 @@ struct triangular_solve_matrix<EIGTYPE,Index,OnTheLeft,Mode,Conjugate,TriStorage
  } \
 };
 
-EIGEN_MKL_TRSM_L(double, double, d)
-EIGEN_MKL_TRSM_L(dcomplex, MKL_Complex16, z)
-EIGEN_MKL_TRSM_L(float, float, s)
-EIGEN_MKL_TRSM_L(scomplex, MKL_Complex8, c)
+IMP_EIGEN_MKL_TRSM_L(double, double, d)
+IMP_EIGEN_MKL_TRSM_L(dcomplex, MKL_Complex16, z)
+IMP_EIGEN_MKL_TRSM_L(float, float, s)
+IMP_EIGEN_MKL_TRSM_L(scomplex, MKL_Complex8, c)
 
 
 // implements RightSide general * op(triangular)^-1
-#define EIGEN_MKL_TRSM_R(EIGTYPE, MKLTYPE, MKLPREFIX) \
+#define IMP_EIGEN_MKL_TRSM_R(EIGTYPE, MKLTYPE, MKLPREFIX) \
 template <typename Index, int Mode, bool Conjugate, int TriStorageOrder> \
 struct triangular_solve_matrix<EIGTYPE,Index,OnTheRight,Mode,Conjugate,TriStorageOrder,ColMajor> \
 { \
@@ -142,14 +142,14 @@ struct triangular_solve_matrix<EIGTYPE,Index,OnTheRight,Mode,Conjugate,TriStorag
  } \
 };
 
-EIGEN_MKL_TRSM_R(double, double, d)
-EIGEN_MKL_TRSM_R(dcomplex, MKL_Complex16, z)
-EIGEN_MKL_TRSM_R(float, float, s)
-EIGEN_MKL_TRSM_R(scomplex, MKL_Complex8, c)
+IMP_EIGEN_MKL_TRSM_R(double, double, d)
+IMP_EIGEN_MKL_TRSM_R(dcomplex, MKL_Complex16, z)
+IMP_EIGEN_MKL_TRSM_R(float, float, s)
+IMP_EIGEN_MKL_TRSM_R(scomplex, MKL_Complex8, c)
 
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_TRIANGULAR_SOLVER_MATRIX_MKL_H
+#endif // IMP_EIGEN_TRIANGULAR_SOLVER_MATRIX_MKL_H

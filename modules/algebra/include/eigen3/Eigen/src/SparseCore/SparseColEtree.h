@@ -31,7 +31,7 @@
 #ifndef SPARSE_COLETREE_H
 #define SPARSE_COLETREE_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 namespace internal {
 
@@ -199,6 +199,6 @@ void treePostorder(Index n, IndexVector& parent, IndexVector& post)
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
 #endif // SPARSE_COLETREE_H

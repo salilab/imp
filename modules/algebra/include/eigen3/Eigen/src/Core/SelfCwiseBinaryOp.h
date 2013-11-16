@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SELFCWISEBINARYOP_H
-#define EIGEN_SELFCWISEBINARYOP_H
+#ifndef IMP_EIGEN_SELFCWISEBINARYOP_H
+#define IMP_EIGEN_SELFCWISEBINARYOP_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \class SelfCwiseBinaryOp
   * \ingroup Core_Module
@@ -48,7 +48,7 @@ template<typename BinaryOp, typename Lhs, typename Rhs> class SelfCwiseBinaryOp
   public:
 
     typedef typename internal::dense_xpr_base<SelfCwiseBinaryOp>::type Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(SelfCwiseBinaryOp)
+    IMP_EIGEN_DENSE_PUBLIC_INTERFACE(SelfCwiseBinaryOp)
 
     typedef typename internal::packet_traits<Scalar>::type Packet;
 
@@ -64,7 +64,7 @@ template<typename BinaryOp, typename Lhs, typename Rhs> class SelfCwiseBinaryOp
     // TODO make Assign use .data()
     inline Scalar& coeffRef(Index row, Index col)
     {
-      EIGEN_STATIC_ASSERT_LVALUE(Lhs)
+      IMP_EIGEN_STATIC_ASSERT_LVALUE(Lhs)
       return m_matrix.const_cast_derived().coeffRef(row, col);
     }
     inline const Scalar& coeffRef(Index row, Index col) const
@@ -76,7 +76,7 @@ template<typename BinaryOp, typename Lhs, typename Rhs> class SelfCwiseBinaryOp
     // TODO make Assign use .data()
     inline Scalar& coeffRef(Index index)
     {
-      EIGEN_STATIC_ASSERT_LVALUE(Lhs)
+      IMP_EIGEN_STATIC_ASSERT_LVALUE(Lhs)
       return m_matrix.const_cast_derived().coeffRef(index);
     }
     inline const Scalar& coeffRef(Index index) const
@@ -125,17 +125,17 @@ template<typename BinaryOp, typename Lhs, typename Rhs> class SelfCwiseBinaryOp
     // reimplement lazyAssign to handle complex *= real
     // see CwiseBinaryOp ctor for details
     template<typename RhsDerived>
-    EIGEN_STRONG_INLINE SelfCwiseBinaryOp& lazyAssign(const DenseBase<RhsDerived>& rhs)
+    IMP_EIGEN_STRONG_INLINE SelfCwiseBinaryOp& lazyAssign(const DenseBase<RhsDerived>& rhs)
     {
-      EIGEN_STATIC_ASSERT_SAME_MATRIX_SIZE(Lhs,RhsDerived)
-      EIGEN_CHECK_BINARY_COMPATIBILIY(BinaryOp,typename Lhs::Scalar,typename RhsDerived::Scalar);
+      IMP_EIGEN_STATIC_ASSERT_SAME_MATRIX_SIZE(Lhs,RhsDerived)
+      IMP_EIGEN_CHECK_BINARY_COMPATIBILIY(BinaryOp,typename Lhs::Scalar,typename RhsDerived::Scalar);
       
-    #ifdef EIGEN_DEBUG_ASSIGN
+    #ifdef IMP_EIGEN_DEBUG_ASSIGN
       internal::assign_traits<SelfCwiseBinaryOp, RhsDerived>::debug();
     #endif
       eigen_assert(rows() == rhs.rows() && cols() == rhs.cols());
       internal::assign_impl<SelfCwiseBinaryOp, RhsDerived>::run(*this,rhs.derived());
-    #ifndef EIGEN_NO_DEBUG
+    #ifndef IMP_EIGEN_NO_DEBUG
       this->checkTransposeAliasing(rhs.derived());
     #endif
       return *this;
@@ -192,6 +192,6 @@ inline Derived& DenseBase<Derived>::operator/=(const Scalar& other)
   return derived();
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SELFCWISEBINARYOP_H
+#endif // IMP_EIGEN_SELFCWISEBINARYOP_H

@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SKYLINE_STORAGE_H
-#define EIGEN_SKYLINE_STORAGE_H
+#ifndef IMP_EIGEN_SKYLINE_STORAGE_H
+#define IMP_EIGEN_SKYLINE_STORAGE_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** Stores a skyline set of values in three structures :
  * The diagonal elements
@@ -254,6 +254,6 @@ public:
 
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_COMPRESSED_STORAGE_H
+#endif // IMP_EIGEN_COMPRESSED_STORAGE_H

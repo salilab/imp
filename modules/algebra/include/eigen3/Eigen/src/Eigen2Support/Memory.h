@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN2_MEMORY_H
-#define EIGEN2_MEMORY_H
+#ifndef IMP_EIGEN2_MEMORY_H
+#define IMP_EIGEN2_MEMORY_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 inline void* ei_aligned_malloc(size_t size) { return internal::aligned_malloc(size); }
 inline void  ei_aligned_free(void *ptr) { internal::aligned_free(ptr); }
@@ -40,6 +40,6 @@ template<typename T> inline void ei_aligned_delete(T *ptr, size_t size)
   return internal::aligned_delete(ptr, size);
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN2_MACROS_H
+#endif // IMP_EIGEN2_MACROS_H

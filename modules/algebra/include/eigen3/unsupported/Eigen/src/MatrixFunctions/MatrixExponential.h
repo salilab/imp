@@ -8,12 +8,12 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_MATRIX_EXPONENTIAL
-#define EIGEN_MATRIX_EXPONENTIAL
+#ifndef IMP_EIGEN_MATRIX_EXPONENTIAL
+#define IMP_EIGEN_MATRIX_EXPONENTIAL
 
 #include "StemFunction.h"
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 /** \ingroup MatrixFunctions_Module
   * \brief Class for computing the matrix exponential.
@@ -192,7 +192,7 @@ void MatrixExponential<MatrixType>::compute(ResultType &result)
 }
 
 template <typename MatrixType>
-EIGEN_STRONG_INLINE void MatrixExponential<MatrixType>::pade3(const MatrixType &A)
+IMP_EIGEN_STRONG_INLINE void MatrixExponential<MatrixType>::pade3(const MatrixType &A)
 {
   const RealScalar b[] = {120., 60., 12., 1.};
   m_tmp1.noalias() = A * A;
@@ -202,7 +202,7 @@ EIGEN_STRONG_INLINE void MatrixExponential<MatrixType>::pade3(const MatrixType &
 }
 
 template <typename MatrixType>
-EIGEN_STRONG_INLINE void MatrixExponential<MatrixType>::pade5(const MatrixType &A)
+IMP_EIGEN_STRONG_INLINE void MatrixExponential<MatrixType>::pade5(const MatrixType &A)
 {
   const RealScalar b[] = {30240., 15120., 3360., 420., 30., 1.};
   MatrixType A2 = A * A;
@@ -213,7 +213,7 @@ EIGEN_STRONG_INLINE void MatrixExponential<MatrixType>::pade5(const MatrixType &
 }
 
 template <typename MatrixType>
-EIGEN_STRONG_INLINE void MatrixExponential<MatrixType>::pade7(const MatrixType &A)
+IMP_EIGEN_STRONG_INLINE void MatrixExponential<MatrixType>::pade7(const MatrixType &A)
 {
   const RealScalar b[] = {17297280., 8648640., 1995840., 277200., 25200., 1512., 56., 1.};
   MatrixType A2 = A * A;
@@ -225,7 +225,7 @@ EIGEN_STRONG_INLINE void MatrixExponential<MatrixType>::pade7(const MatrixType &
 }
 
 template <typename MatrixType>
-EIGEN_STRONG_INLINE void MatrixExponential<MatrixType>::pade9(const MatrixType &A)
+IMP_EIGEN_STRONG_INLINE void MatrixExponential<MatrixType>::pade9(const MatrixType &A)
 {
   const RealScalar b[] = {17643225600., 8821612800., 2075673600., 302702400., 30270240.,
 		      2162160., 110880., 3960., 90., 1.};
@@ -239,7 +239,7 @@ EIGEN_STRONG_INLINE void MatrixExponential<MatrixType>::pade9(const MatrixType &
 }
 
 template <typename MatrixType>
-EIGEN_STRONG_INLINE void MatrixExponential<MatrixType>::pade13(const MatrixType &A)
+IMP_EIGEN_STRONG_INLINE void MatrixExponential<MatrixType>::pade13(const MatrixType &A)
 {
   const RealScalar b[] = {64764752532480000., 32382376266240000., 7771770303897600.,
 		      1187353796428800., 129060195264000., 10559470521600., 670442572800.,
@@ -258,7 +258,7 @@ EIGEN_STRONG_INLINE void MatrixExponential<MatrixType>::pade13(const MatrixType 
 
 #if LDBL_MANT_DIG > 64
 template <typename MatrixType>
-EIGEN_STRONG_INLINE void MatrixExponential<MatrixType>::pade17(const MatrixType &A)
+IMP_EIGEN_STRONG_INLINE void MatrixExponential<MatrixType>::pade17(const MatrixType &A)
 {
   const RealScalar b[] = {830034394580628357120000.L, 415017197290314178560000.L,
 		      100610229646136770560000.L, 15720348382208870400000.L,
@@ -446,6 +446,6 @@ const MatrixExponentialReturnValue<Derived> MatrixBase<Derived>::exp() const
   return MatrixExponentialReturnValue<Derived>(derived());
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_MATRIX_EXPONENTIAL
+#endif // IMP_EIGEN_MATRIX_EXPONENTIAL

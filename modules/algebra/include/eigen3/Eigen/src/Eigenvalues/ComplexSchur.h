@@ -9,12 +9,12 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_COMPLEX_SCHUR_H
-#define EIGEN_COMPLEX_SCHUR_H
+#ifndef IMP_EIGEN_COMPLEX_SCHUR_H
+#define IMP_EIGEN_COMPLEX_SCHUR_H
 
 #include "./HessenbergDecomposition.h"
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 template<typename MatrixType, bool IsComplex> struct complex_schur_reduce_to_hessenberg;
@@ -451,6 +451,6 @@ void ComplexSchur<MatrixType>::reduceToTriangularForm(bool computeU)
   m_matUisUptodate = computeU;
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_COMPLEX_SCHUR_H
+#endif // IMP_EIGEN_COMPLEX_SCHUR_H

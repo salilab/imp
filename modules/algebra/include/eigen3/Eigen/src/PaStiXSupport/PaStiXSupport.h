@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_PASTIXSUPPORT_H
-#define EIGEN_PASTIXSUPPORT_H
+#ifndef IMP_EIGEN_PASTIXSUPPORT_H
+#define IMP_EIGEN_PASTIXSUPPORT_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \ingroup PaStiXSupport_Module
   * \brief Interface to the PaStix solver
@@ -388,7 +388,7 @@ template<typename Rhs,typename Dest>
 bool PastixBase<Base>::_solve (const MatrixBase<Rhs> &b, MatrixBase<Dest> &x) const
 {
   eigen_assert(m_isInitialized && "The matrix should be factorized first");
-  EIGEN_STATIC_ASSERT((Dest::Flags&RowMajorBit)==0,
+  IMP_EIGEN_STATIC_ASSERT((Dest::Flags&RowMajorBit)==0,
                      THIS_METHOD_IS_ONLY_FOR_COLUMN_MAJOR_MATRICES);
   int rhs = 1;
   
@@ -693,7 +693,7 @@ struct solve_retval<PastixBase<_MatrixType>, Rhs>
   : solve_retval_base<PastixBase<_MatrixType>, Rhs>
 {
   typedef PastixBase<_MatrixType> Dec;
-  EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
+  IMP_EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -706,7 +706,7 @@ struct sparse_solve_retval<PastixBase<_MatrixType>, Rhs>
   : sparse_solve_retval_base<PastixBase<_MatrixType>, Rhs>
 {
   typedef PastixBase<_MatrixType> Dec;
-  EIGEN_MAKE_SPARSE_SOLVE_HELPERS(Dec,Rhs)
+  IMP_EIGEN_MAKE_SPARSE_SOLVE_HELPERS(Dec,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -716,6 +716,6 @@ struct sparse_solve_retval<PastixBase<_MatrixType>, Rhs>
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
 #endif

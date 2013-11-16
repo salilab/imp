@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_CONJUGATE_GRADIENT_H
-#define EIGEN_CONJUGATE_GRADIENT_H
+#ifndef IMP_EIGEN_CONJUGATE_GRADIENT_H
+#define IMP_EIGEN_CONJUGATE_GRADIENT_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -24,7 +24,7 @@ namespace internal {
   * \param tol_error On input the tolerance error, on output an estimation of the relative error.
   */
 template<typename MatrixType, typename Rhs, typename Dest, typename Preconditioner>
-EIGEN_DONT_INLINE
+IMP_EIGEN_DONT_INLINE
 void conjugate_gradient(const MatrixType& mat, const Rhs& rhs, Dest& x,
                         const Preconditioner& precond, int& iters,
                         typename Dest::RealScalar& tol_error)
@@ -250,7 +250,7 @@ struct solve_retval<ConjugateGradient<_MatrixType,_UpLo,_Preconditioner>, Rhs>
   : solve_retval_base<ConjugateGradient<_MatrixType,_UpLo,_Preconditioner>, Rhs>
 {
   typedef ConjugateGradient<_MatrixType,_UpLo,_Preconditioner> Dec;
-  EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
+  IMP_EIGEN_MAKE_SOLVE_HELPERS(Dec,Rhs)
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
@@ -260,6 +260,6 @@ struct solve_retval<ConjugateGradient<_MatrixType,_UpLo,_Preconditioner>, Rhs>
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_CONJUGATE_GRADIENT_H
+#endif // IMP_EIGEN_CONJUGATE_GRADIENT_H

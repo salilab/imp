@@ -30,10 +30,10 @@
  ********************************************************************************
 */
 
-#ifndef EIGEN_GENERAL_MATRIX_MATRIX_MKL_H
-#define EIGEN_GENERAL_MATRIX_MATRIX_MKL_H
+#ifndef IMP_EIGEN_GENERAL_MATRIX_MATRIX_MKL_H
+#define IMP_EIGEN_GENERAL_MATRIX_MATRIX_MKL_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -113,6 +113,6 @@ GEMM_SPECIALIZATION(scomplex, cf, MKL_Complex8,  c)
 
 } // end namespase internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_GENERAL_MATRIX_MATRIX_MKL_H
+#endif // IMP_EIGEN_GENERAL_MATRIX_MATRIX_MKL_H

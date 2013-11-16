@@ -9,10 +9,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_TRANSFORM_H
-#define EIGEN_TRANSFORM_H
+#ifndef IMP_EIGEN_TRANSFORM_H
+#define IMP_EIGEN_TRANSFORM_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
@@ -165,10 +165,10 @@ template<typename TransformType> struct transform_take_affine_part;
   * Note that there is zero overhead.
   *
   * Conversion methods from/to Qt's QMatrix and QTransform are available if the
-  * preprocessor token EIGEN_QT_SUPPORT is defined.
+  * preprocessor token IMP_EIGEN_QT_SUPPORT is defined.
   *
   * This class can be extended with the help of the plugin mechanism described on the page
-  * \ref TopicCustomizingEigen by defining the preprocessor symbol \c EIGEN_TRANSFORM_PLUGIN.
+  * \ref TopicCustomizingEigen by defining the preprocessor symbol \c IMP_EIGEN_TRANSFORM_PLUGIN.
   *
   * \sa class Matrix, class Quaternion
   */
@@ -176,7 +176,7 @@ template<typename _Scalar, int _Dim, int _Mode, int _Options>
 class Transform
 {
 public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_Dim==Dynamic ? Dynamic : (_Dim+1)*(_Dim+1))
+  IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_Dim==Dynamic ? Dynamic : (_Dim+1)*(_Dim+1))
   enum {
     Mode = _Mode,
     Options = _Options,
@@ -266,7 +266,7 @@ public:
   template<typename OtherDerived>
   inline explicit Transform(const EigenBase<OtherDerived>& other)
   {
-    EIGEN_STATIC_ASSERT((internal::is_same<Scalar,typename OtherDerived::Scalar>::value),
+    IMP_EIGEN_STATIC_ASSERT((internal::is_same<Scalar,typename OtherDerived::Scalar>::value),
       YOU_MIXED_DIFFERENT_NUMERIC_TYPES__YOU_NEED_TO_USE_THE_CAST_METHOD_OF_MATRIXBASE_TO_CAST_NUMERIC_TYPES_EXPLICITLY);
 
     check_template_params();
@@ -277,7 +277,7 @@ public:
   template<typename OtherDerived>
   inline Transform& operator=(const EigenBase<OtherDerived>& other)
   {
-    EIGEN_STATIC_ASSERT((internal::is_same<Scalar,typename OtherDerived::Scalar>::value),
+    IMP_EIGEN_STATIC_ASSERT((internal::is_same<Scalar,typename OtherDerived::Scalar>::value),
       YOU_MIXED_DIFFERENT_NUMERIC_TYPES__YOU_NEED_TO_USE_THE_CAST_METHOD_OF_MATRIXBASE_TO_CAST_NUMERIC_TYPES_EXPLICITLY);
 
     internal::transform_construct_from_matrix<OtherDerived,Mode,Options,Dim,HDim>::run(this, other.derived());
@@ -298,12 +298,12 @@ public:
     check_template_params();
     // prevent conversions as:
     // Affine | AffineCompact | Isometry = Projective
-    EIGEN_STATIC_ASSERT(EIGEN_IMPLIES(OtherMode==int(Projective), Mode==int(Projective)),
+    IMP_EIGEN_STATIC_ASSERT(IMP_EIGEN_IMPLIES(OtherMode==int(Projective), Mode==int(Projective)),
                         YOU_PERFORMED_AN_INVALID_TRANSFORMATION_CONVERSION)
 
     // prevent conversions as:
     // Isometry = Affine | AffineCompact
-    EIGEN_STATIC_ASSERT(EIGEN_IMPLIES(OtherMode==int(Affine)||OtherMode==int(AffineCompact), Mode!=int(Isometry)),
+    IMP_EIGEN_STATIC_ASSERT(IMP_EIGEN_IMPLIES(OtherMode==int(Affine)||OtherMode==int(AffineCompact), Mode!=int(Isometry)),
                         YOU_PERFORMED_AN_INVALID_TRANSFORMATION_CONVERSION)
 
     enum { ModeIsAffineCompact = Mode == int(AffineCompact),
@@ -347,7 +347,7 @@ public:
     return *this;
   }
 
-  #ifdef EIGEN_QT_SUPPORT
+  #ifdef IMP_EIGEN_QT_SUPPORT
   inline Transform(const QMatrix& other);
   inline Transform& operator=(const QMatrix& other);
   inline QMatrix toQMatrix(void) const;
@@ -396,7 +396,7 @@ public:
     */
   // note: this function is defined here because some compilers cannot find the respective declaration
   template<typename OtherDerived>
-  EIGEN_STRONG_INLINE const typename internal::transform_right_product_impl<Transform, OtherDerived>::ResultType
+  IMP_EIGEN_STRONG_INLINE const typename internal::transform_right_product_impl<Transform, OtherDerived>::ResultType
   operator * (const EigenBase<OtherDerived> &other) const
   { return internal::transform_right_product_impl<Transform, OtherDerived>::run(*this,other.derived()); }
 
@@ -458,10 +458,10 @@ public:
 private:
   // this intermediate structure permits to workaround a bug in ICC 11:
   //   error: template instantiation resulted in unexpected function type of "Eigen::Transform<double, 3, 32, 0>
-  //             (const Eigen::Transform<double, 3, 2, 0> &) const"
+  //             (const IMP_Eigen::Transform<double, 3, 2, 0> &) const"
   //  (the meaning of a name may have changed since the template declaration -- the type of the template is:
-  // "Eigen::internal::transform_transform_product_impl<Eigen::Transform<double, 3, 32, 0>,
-  //     Eigen::Transform<double, 3, Mode, Options>, <expression>>::ResultType (const Eigen::Transform<double, 3, Mode, Options> &) const")
+  // "Eigen::internal::transform_transform_product_impl<IMP_Eigen::Transform<double, 3, 32, 0>,
+  //     IMP_Eigen::Transform<double, 3, Mode, Options>, <expression>>::ResultType (const IMP_Eigen::Transform<double, 3, Mode, Options> &) const")
   // 
   template<int OtherMode,int OtherOptions> struct icc_11_workaround
   {
@@ -625,15 +625,15 @@ public:
   { return m_matrix.template block<int(Mode)==int(Projective)?HDim:Dim,1>(0,Dim); }
 
 
-  #ifdef EIGEN_TRANSFORM_PLUGIN
-  #include EIGEN_TRANSFORM_PLUGIN
+  #ifdef IMP_EIGEN_TRANSFORM_PLUGIN
+  #include IMP_EIGEN_TRANSFORM_PLUGIN
   #endif
   
 protected:
-  #ifndef EIGEN_PARSED_BY_DOXYGEN
-    static EIGEN_STRONG_INLINE void check_template_params()
+  #ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
+    static IMP_EIGEN_STRONG_INLINE void check_template_params()
     {
-      EIGEN_STATIC_ASSERT((Options & (DontAlign|RowMajor)) == Options, INVALID_MATRIX_TEMPLATE_PARAMETERS)
+      IMP_EIGEN_STATIC_ASSERT((Options & (DontAlign|RowMajor)) == Options, INVALID_MATRIX_TEMPLATE_PARAMETERS)
     }
   #endif
 
@@ -679,10 +679,10 @@ typedef Transform<double,3,Projective> Projective3d;
 *** Optional QT support ***
 **************************/
 
-#ifdef EIGEN_QT_SUPPORT
+#ifdef IMP_EIGEN_QT_SUPPORT
 /** Initializes \c *this from a QMatrix assuming the dimension is 2.
   *
-  * This function is available only if the token EIGEN_QT_SUPPORT is defined.
+  * This function is available only if the token IMP_EIGEN_QT_SUPPORT is defined.
   */
 template<typename Scalar, int Dim, int Mode,int Options>
 Transform<Scalar,Dim,Mode,Options>::Transform(const QMatrix& other)
@@ -693,12 +693,12 @@ Transform<Scalar,Dim,Mode,Options>::Transform(const QMatrix& other)
 
 /** Set \c *this from a QMatrix assuming the dimension is 2.
   *
-  * This function is available only if the token EIGEN_QT_SUPPORT is defined.
+  * This function is available only if the token IMP_EIGEN_QT_SUPPORT is defined.
   */
 template<typename Scalar, int Dim, int Mode,int Options>
 Transform<Scalar,Dim,Mode,Options>& Transform<Scalar,Dim,Mode,Options>::operator=(const QMatrix& other)
 {
-  EIGEN_STATIC_ASSERT(Dim==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
+  IMP_EIGEN_STATIC_ASSERT(Dim==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
   m_matrix << other.m11(), other.m21(), other.dx(),
               other.m12(), other.m22(), other.dy(),
               0, 0, 1;
@@ -709,13 +709,13 @@ Transform<Scalar,Dim,Mode,Options>& Transform<Scalar,Dim,Mode,Options>::operator
   *
   * \warning this conversion might loss data if \c *this is not affine
   *
-  * This function is available only if the token EIGEN_QT_SUPPORT is defined.
+  * This function is available only if the token IMP_EIGEN_QT_SUPPORT is defined.
   */
 template<typename Scalar, int Dim, int Mode, int Options>
 QMatrix Transform<Scalar,Dim,Mode,Options>::toQMatrix(void) const
 {
   check_template_params();
-  EIGEN_STATIC_ASSERT(Dim==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
+  IMP_EIGEN_STATIC_ASSERT(Dim==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
   return QMatrix(m_matrix.coeff(0,0), m_matrix.coeff(1,0),
                  m_matrix.coeff(0,1), m_matrix.coeff(1,1),
                  m_matrix.coeff(0,2), m_matrix.coeff(1,2));
@@ -723,7 +723,7 @@ QMatrix Transform<Scalar,Dim,Mode,Options>::toQMatrix(void) const
 
 /** Initializes \c *this from a QTransform assuming the dimension is 2.
   *
-  * This function is available only if the token EIGEN_QT_SUPPORT is defined.
+  * This function is available only if the token IMP_EIGEN_QT_SUPPORT is defined.
   */
 template<typename Scalar, int Dim, int Mode,int Options>
 Transform<Scalar,Dim,Mode,Options>::Transform(const QTransform& other)
@@ -734,13 +734,13 @@ Transform<Scalar,Dim,Mode,Options>::Transform(const QTransform& other)
 
 /** Set \c *this from a QTransform assuming the dimension is 2.
   *
-  * This function is available only if the token EIGEN_QT_SUPPORT is defined.
+  * This function is available only if the token IMP_EIGEN_QT_SUPPORT is defined.
   */
 template<typename Scalar, int Dim, int Mode, int Options>
 Transform<Scalar,Dim,Mode,Options>& Transform<Scalar,Dim,Mode,Options>::operator=(const QTransform& other)
 {
   check_template_params();
-  EIGEN_STATIC_ASSERT(Dim==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
+  IMP_EIGEN_STATIC_ASSERT(Dim==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
   if (Mode == int(AffineCompact))
     m_matrix << other.m11(), other.m21(), other.dx(),
                 other.m12(), other.m22(), other.dy();
@@ -753,12 +753,12 @@ Transform<Scalar,Dim,Mode,Options>& Transform<Scalar,Dim,Mode,Options>::operator
 
 /** \returns a QTransform from \c *this assuming the dimension is 2.
   *
-  * This function is available only if the token EIGEN_QT_SUPPORT is defined.
+  * This function is available only if the token IMP_EIGEN_QT_SUPPORT is defined.
   */
 template<typename Scalar, int Dim, int Mode, int Options>
 QTransform Transform<Scalar,Dim,Mode,Options>::toQTransform(void) const
 {
-  EIGEN_STATIC_ASSERT(Dim==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
+  IMP_EIGEN_STATIC_ASSERT(Dim==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
   if (Mode == int(AffineCompact))
     return QTransform(m_matrix.coeff(0,0), m_matrix.coeff(1,0),
                       m_matrix.coeff(0,1), m_matrix.coeff(1,1),
@@ -783,8 +783,8 @@ template<typename OtherDerived>
 Transform<Scalar,Dim,Mode,Options>&
 Transform<Scalar,Dim,Mode,Options>::scale(const MatrixBase<OtherDerived> &other)
 {
-  EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(OtherDerived,int(Dim))
-  EIGEN_STATIC_ASSERT(Mode!=int(Isometry), THIS_METHOD_IS_ONLY_FOR_SPECIFIC_TRANSFORMATIONS)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(OtherDerived,int(Dim))
+  IMP_EIGEN_STATIC_ASSERT(Mode!=int(Isometry), THIS_METHOD_IS_ONLY_FOR_SPECIFIC_TRANSFORMATIONS)
   linearExt().noalias() = (linearExt() * other.asDiagonal());
   return *this;
 }
@@ -796,7 +796,7 @@ Transform<Scalar,Dim,Mode,Options>::scale(const MatrixBase<OtherDerived> &other)
 template<typename Scalar, int Dim, int Mode, int Options>
 inline Transform<Scalar,Dim,Mode,Options>& Transform<Scalar,Dim,Mode,Options>::scale(const Scalar& s)
 {
-  EIGEN_STATIC_ASSERT(Mode!=int(Isometry), THIS_METHOD_IS_ONLY_FOR_SPECIFIC_TRANSFORMATIONS)
+  IMP_EIGEN_STATIC_ASSERT(Mode!=int(Isometry), THIS_METHOD_IS_ONLY_FOR_SPECIFIC_TRANSFORMATIONS)
   linearExt() *= s;
   return *this;
 }
@@ -810,8 +810,8 @@ template<typename OtherDerived>
 Transform<Scalar,Dim,Mode,Options>&
 Transform<Scalar,Dim,Mode,Options>::prescale(const MatrixBase<OtherDerived> &other)
 {
-  EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(OtherDerived,int(Dim))
-  EIGEN_STATIC_ASSERT(Mode!=int(Isometry), THIS_METHOD_IS_ONLY_FOR_SPECIFIC_TRANSFORMATIONS)
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(OtherDerived,int(Dim))
+  IMP_EIGEN_STATIC_ASSERT(Mode!=int(Isometry), THIS_METHOD_IS_ONLY_FOR_SPECIFIC_TRANSFORMATIONS)
   m_matrix.template block<Dim,HDim>(0,0).noalias() = (other.asDiagonal() * m_matrix.template block<Dim,HDim>(0,0));
   return *this;
 }
@@ -823,7 +823,7 @@ Transform<Scalar,Dim,Mode,Options>::prescale(const MatrixBase<OtherDerived> &oth
 template<typename Scalar, int Dim, int Mode, int Options>
 inline Transform<Scalar,Dim,Mode,Options>& Transform<Scalar,Dim,Mode,Options>::prescale(const Scalar& s)
 {
-  EIGEN_STATIC_ASSERT(Mode!=int(Isometry), THIS_METHOD_IS_ONLY_FOR_SPECIFIC_TRANSFORMATIONS)
+  IMP_EIGEN_STATIC_ASSERT(Mode!=int(Isometry), THIS_METHOD_IS_ONLY_FOR_SPECIFIC_TRANSFORMATIONS)
   m_matrix.template topRows<Dim>() *= s;
   return *this;
 }
@@ -837,7 +837,7 @@ template<typename OtherDerived>
 Transform<Scalar,Dim,Mode,Options>&
 Transform<Scalar,Dim,Mode,Options>::translate(const MatrixBase<OtherDerived> &other)
 {
-  EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(OtherDerived,int(Dim))
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(OtherDerived,int(Dim))
   translationExt() += linearExt() * other;
   return *this;
 }
@@ -851,7 +851,7 @@ template<typename OtherDerived>
 Transform<Scalar,Dim,Mode,Options>&
 Transform<Scalar,Dim,Mode,Options>::pretranslate(const MatrixBase<OtherDerived> &other)
 {
-  EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(OtherDerived,int(Dim))
+  IMP_EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(OtherDerived,int(Dim))
   if(int(Mode)==int(Projective))
     affine() += other * m_matrix.row(Dim);
   else
@@ -911,8 +911,8 @@ template<typename Scalar, int Dim, int Mode, int Options>
 Transform<Scalar,Dim,Mode,Options>&
 Transform<Scalar,Dim,Mode,Options>::shear(const Scalar& sx, const Scalar& sy)
 {
-  EIGEN_STATIC_ASSERT(int(Dim)==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
-  EIGEN_STATIC_ASSERT(Mode!=int(Isometry), THIS_METHOD_IS_ONLY_FOR_SPECIFIC_TRANSFORMATIONS)
+  IMP_EIGEN_STATIC_ASSERT(int(Dim)==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
+  IMP_EIGEN_STATIC_ASSERT(Mode!=int(Isometry), THIS_METHOD_IS_ONLY_FOR_SPECIFIC_TRANSFORMATIONS)
   VectorType tmp = linear().col(0)*sy + linear().col(1);
   linear() << linear().col(0) + linear().col(1)*sx, tmp;
   return *this;
@@ -927,8 +927,8 @@ template<typename Scalar, int Dim, int Mode, int Options>
 Transform<Scalar,Dim,Mode,Options>&
 Transform<Scalar,Dim,Mode,Options>::preshear(const Scalar& sx, const Scalar& sy)
 {
-  EIGEN_STATIC_ASSERT(int(Dim)==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
-  EIGEN_STATIC_ASSERT(Mode!=int(Isometry), THIS_METHOD_IS_ONLY_FOR_SPECIFIC_TRANSFORMATIONS)
+  IMP_EIGEN_STATIC_ASSERT(int(Dim)==2, YOU_MADE_A_PROGRAMMING_MISTAKE)
+  IMP_EIGEN_STATIC_ASSERT(Mode!=int(Isometry), THIS_METHOD_IS_ONLY_FOR_SPECIFIC_TRANSFORMATIONS)
   m_matrix.template block<Dim,HDim>(0,0) = LinearMatrixType(1, sx, sy, 1) * m_matrix.template block<Dim,HDim>(0,0);
   return *this;
 }
@@ -1234,7 +1234,7 @@ struct transform_right_product_impl< TransformType, MatrixType, 0 >
 {
   typedef typename MatrixType::PlainObject ResultType;
 
-  static EIGEN_STRONG_INLINE ResultType run(const TransformType& T, const MatrixType& other)
+  static IMP_EIGEN_STRONG_INLINE ResultType run(const TransformType& T, const MatrixType& other)
   {
     return T.matrix() * other;
   }
@@ -1252,9 +1252,9 @@ struct transform_right_product_impl< TransformType, MatrixType, 1 >
 
   typedef typename MatrixType::PlainObject ResultType;
 
-  static EIGEN_STRONG_INLINE ResultType run(const TransformType& T, const MatrixType& other)
+  static IMP_EIGEN_STRONG_INLINE ResultType run(const TransformType& T, const MatrixType& other)
   {
-    EIGEN_STATIC_ASSERT(OtherRows==HDim, YOU_MIXED_MATRICES_OF_DIFFERENT_SIZES);
+    IMP_EIGEN_STATIC_ASSERT(OtherRows==HDim, YOU_MIXED_MATRICES_OF_DIFFERENT_SIZES);
 
     typedef Block<ResultType, Dim, OtherCols, int(MatrixType::RowsAtCompileTime)==Dim> TopLeftLhs;
 
@@ -1278,9 +1278,9 @@ struct transform_right_product_impl< TransformType, MatrixType, 2 >
 
   typedef typename MatrixType::PlainObject ResultType;
 
-  static EIGEN_STRONG_INLINE ResultType run(const TransformType& T, const MatrixType& other)
+  static IMP_EIGEN_STRONG_INLINE ResultType run(const TransformType& T, const MatrixType& other)
   {
-    EIGEN_STATIC_ASSERT(OtherRows==Dim, YOU_MIXED_MATRICES_OF_DIFFERENT_SIZES);
+    IMP_EIGEN_STATIC_ASSERT(OtherRows==Dim, YOU_MIXED_MATRICES_OF_DIFFERENT_SIZES);
 
     typedef Block<ResultType, Dim, OtherCols, true> TopLeftLhs;
     ResultType res(Replicate<typename TransformType::ConstTranslationPart, 1, OtherCols>(T.translation(),1,other.cols()));
@@ -1435,6 +1435,6 @@ struct transform_transform_product_impl<Transform<Scalar,Dim,Projective,LhsOptio
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_TRANSFORM_H
+#endif // IMP_EIGEN_TRANSFORM_H

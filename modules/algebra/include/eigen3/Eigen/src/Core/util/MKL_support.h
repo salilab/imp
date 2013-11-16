@@ -30,36 +30,36 @@
  ********************************************************************************
 */
 
-#ifndef EIGEN_MKL_SUPPORT_H
-#define EIGEN_MKL_SUPPORT_H
+#ifndef IMP_EIGEN_MKL_SUPPORT_H
+#define IMP_EIGEN_MKL_SUPPORT_H
 
-#ifdef EIGEN_USE_MKL_ALL
-  #ifndef EIGEN_USE_BLAS
-    #define EIGEN_USE_BLAS
+#ifdef IMP_EIGEN_USE_MKL_ALL
+  #ifndef IMP_EIGEN_USE_BLAS
+    #define IMP_EIGEN_USE_BLAS
   #endif
-  #ifndef EIGEN_USE_LAPACKE
-    #define EIGEN_USE_LAPACKE
+  #ifndef IMP_EIGEN_USE_LAPACKE
+    #define IMP_EIGEN_USE_LAPACKE
   #endif
-  #ifndef EIGEN_USE_MKL_VML
-    #define EIGEN_USE_MKL_VML
+  #ifndef IMP_EIGEN_USE_MKL_VML
+    #define IMP_EIGEN_USE_MKL_VML
   #endif
 #endif
 
-#ifdef EIGEN_USE_LAPACKE_STRICT
-  #define EIGEN_USE_LAPACKE
+#ifdef IMP_EIGEN_USE_LAPACKE_STRICT
+  #define IMP_EIGEN_USE_LAPACKE
 #endif
 
-#if defined(EIGEN_USE_BLAS) || defined(EIGEN_USE_LAPACKE) || defined(EIGEN_USE_MKL_VML)
-  #define EIGEN_USE_MKL
+#if defined(IMP_EIGEN_USE_BLAS) || defined(IMP_EIGEN_USE_LAPACKE) || defined(IMP_EIGEN_USE_MKL_VML)
+  #define IMP_EIGEN_USE_MKL
 #endif
 
-#if defined EIGEN_USE_MKL
+#if defined IMP_EIGEN_USE_MKL
 
 #include <mkl.h>
 #include <mkl_lapacke.h>
-#define EIGEN_MKL_VML_THRESHOLD 128
+#define IMP_EIGEN_MKL_VML_THRESHOLD 128
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 typedef std::complex<double> dcomplex;
 typedef std::complex<float>  scomplex;
@@ -102,8 +102,8 @@ inline void assign_conj_scalar_eig2mkl<MKL_Complex8,scomplex>(MKL_Complex8& mklS
 
 } // end namespace internal
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
 #endif
 
-#endif // EIGEN_MKL_SUPPORT_H
+#endif // IMP_EIGEN_MKL_SUPPORT_H

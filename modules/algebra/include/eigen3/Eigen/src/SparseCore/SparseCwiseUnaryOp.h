@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPARSE_CWISE_UNARY_OP_H
-#define EIGEN_SPARSE_CWISE_UNARY_OP_H
+#ifndef IMP_EIGEN_SPARSE_CWISE_UNARY_OP_H
+#define IMP_EIGEN_SPARSE_CWISE_UNARY_OP_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 template<typename UnaryOp, typename MatrixType>
 class CwiseUnaryOpImpl<UnaryOp,MatrixType,Sparse>
@@ -22,7 +22,7 @@ class CwiseUnaryOpImpl<UnaryOp,MatrixType,Sparse>
     class ReverseInnerIterator;
 
     typedef CwiseUnaryOp<UnaryOp, MatrixType> Derived;
-    EIGEN_SPARSE_PUBLIC_INTERFACE(Derived)
+    IMP_EIGEN_SPARSE_PUBLIC_INTERFACE(Derived)
 
   protected:
     typedef typename internal::traits<Derived>::_XprTypeNested _MatrixTypeNested;
@@ -38,14 +38,14 @@ class CwiseUnaryOpImpl<UnaryOp,MatrixType,Sparse>::InnerIterator
     typedef typename CwiseUnaryOpImpl<UnaryOp,MatrixType,Sparse>::MatrixTypeIterator Base;
   public:
 
-    EIGEN_STRONG_INLINE InnerIterator(const CwiseUnaryOpImpl& unaryOp, typename CwiseUnaryOpImpl::Index outer)
+    IMP_EIGEN_STRONG_INLINE InnerIterator(const CwiseUnaryOpImpl& unaryOp, typename CwiseUnaryOpImpl::Index outer)
       : Base(unaryOp.derived().nestedExpression(),outer), m_functor(unaryOp.derived().functor())
     {}
 
-    EIGEN_STRONG_INLINE InnerIterator& operator++()
+    IMP_EIGEN_STRONG_INLINE InnerIterator& operator++()
     { Base::operator++(); return *this; }
 
-    EIGEN_STRONG_INLINE typename CwiseUnaryOpImpl::Scalar value() const { return m_functor(Base::value()); }
+    IMP_EIGEN_STRONG_INLINE typename CwiseUnaryOpImpl::Scalar value() const { return m_functor(Base::value()); }
 
   protected:
     const UnaryOp m_functor;
@@ -61,14 +61,14 @@ class CwiseUnaryOpImpl<UnaryOp,MatrixType,Sparse>::ReverseInnerIterator
     typedef typename CwiseUnaryOpImpl<UnaryOp,MatrixType,Sparse>::MatrixTypeReverseIterator Base;
   public:
 
-    EIGEN_STRONG_INLINE ReverseInnerIterator(const CwiseUnaryOpImpl& unaryOp, typename CwiseUnaryOpImpl::Index outer)
+    IMP_EIGEN_STRONG_INLINE ReverseInnerIterator(const CwiseUnaryOpImpl& unaryOp, typename CwiseUnaryOpImpl::Index outer)
       : Base(unaryOp.derived().nestedExpression(),outer), m_functor(unaryOp.derived().functor())
     {}
 
-    EIGEN_STRONG_INLINE ReverseInnerIterator& operator--()
+    IMP_EIGEN_STRONG_INLINE ReverseInnerIterator& operator--()
     { Base::operator--(); return *this; }
 
-    EIGEN_STRONG_INLINE typename CwiseUnaryOpImpl::Scalar value() const { return m_functor(Base::value()); }
+    IMP_EIGEN_STRONG_INLINE typename CwiseUnaryOpImpl::Scalar value() const { return m_functor(Base::value()); }
 
   protected:
     const UnaryOp m_functor;
@@ -86,7 +86,7 @@ class CwiseUnaryViewImpl<ViewOp,MatrixType,Sparse>
     class ReverseInnerIterator;
 
     typedef CwiseUnaryView<ViewOp, MatrixType> Derived;
-    EIGEN_SPARSE_PUBLIC_INTERFACE(Derived)
+    IMP_EIGEN_SPARSE_PUBLIC_INTERFACE(Derived)
 
   protected:
     typedef typename internal::traits<Derived>::_MatrixTypeNested _MatrixTypeNested;
@@ -102,15 +102,15 @@ class CwiseUnaryViewImpl<ViewOp,MatrixType,Sparse>::InnerIterator
     typedef typename CwiseUnaryViewImpl<ViewOp,MatrixType,Sparse>::MatrixTypeIterator Base;
   public:
 
-    EIGEN_STRONG_INLINE InnerIterator(const CwiseUnaryViewImpl& unaryOp, typename CwiseUnaryViewImpl::Index outer)
+    IMP_EIGEN_STRONG_INLINE InnerIterator(const CwiseUnaryViewImpl& unaryOp, typename CwiseUnaryViewImpl::Index outer)
       : Base(unaryOp.derived().nestedExpression(),outer), m_functor(unaryOp.derived().functor())
     {}
 
-    EIGEN_STRONG_INLINE InnerIterator& operator++()
+    IMP_EIGEN_STRONG_INLINE InnerIterator& operator++()
     { Base::operator++(); return *this; }
 
-    EIGEN_STRONG_INLINE typename CwiseUnaryViewImpl::Scalar value() const { return m_functor(Base::value()); }
-    EIGEN_STRONG_INLINE typename CwiseUnaryViewImpl::Scalar& valueRef() { return m_functor(Base::valueRef()); }
+    IMP_EIGEN_STRONG_INLINE typename CwiseUnaryViewImpl::Scalar value() const { return m_functor(Base::value()); }
+    IMP_EIGEN_STRONG_INLINE typename CwiseUnaryViewImpl::Scalar& valueRef() { return m_functor(Base::valueRef()); }
 
   protected:
     const ViewOp m_functor;
@@ -124,22 +124,22 @@ class CwiseUnaryViewImpl<ViewOp,MatrixType,Sparse>::ReverseInnerIterator
     typedef typename CwiseUnaryViewImpl<ViewOp,MatrixType,Sparse>::MatrixTypeReverseIterator Base;
   public:
 
-    EIGEN_STRONG_INLINE ReverseInnerIterator(const CwiseUnaryViewImpl& unaryOp, typename CwiseUnaryViewImpl::Index outer)
+    IMP_EIGEN_STRONG_INLINE ReverseInnerIterator(const CwiseUnaryViewImpl& unaryOp, typename CwiseUnaryViewImpl::Index outer)
       : Base(unaryOp.derived().nestedExpression(),outer), m_functor(unaryOp.derived().functor())
     {}
 
-    EIGEN_STRONG_INLINE ReverseInnerIterator& operator--()
+    IMP_EIGEN_STRONG_INLINE ReverseInnerIterator& operator--()
     { Base::operator--(); return *this; }
 
-    EIGEN_STRONG_INLINE typename CwiseUnaryViewImpl::Scalar value() const { return m_functor(Base::value()); }
-    EIGEN_STRONG_INLINE typename CwiseUnaryViewImpl::Scalar& valueRef() { return m_functor(Base::valueRef()); }
+    IMP_EIGEN_STRONG_INLINE typename CwiseUnaryViewImpl::Scalar value() const { return m_functor(Base::value()); }
+    IMP_EIGEN_STRONG_INLINE typename CwiseUnaryViewImpl::Scalar& valueRef() { return m_functor(Base::valueRef()); }
 
   protected:
     const ViewOp m_functor;
 };
 
 template<typename Derived>
-EIGEN_STRONG_INLINE Derived&
+IMP_EIGEN_STRONG_INLINE Derived&
 SparseMatrixBase<Derived>::operator*=(const Scalar& other)
 {
   for (Index j=0; j<outerSize(); ++j)
@@ -149,7 +149,7 @@ SparseMatrixBase<Derived>::operator*=(const Scalar& other)
 }
 
 template<typename Derived>
-EIGEN_STRONG_INLINE Derived&
+IMP_EIGEN_STRONG_INLINE Derived&
 SparseMatrixBase<Derived>::operator/=(const Scalar& other)
 {
   for (Index j=0; j<outerSize(); ++j)
@@ -158,6 +158,6 @@ SparseMatrixBase<Derived>::operator/=(const Scalar& other)
   return derived();
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_SPARSE_CWISE_UNARY_OP_H
+#endif // IMP_EIGEN_SPARSE_CWISE_UNARY_OP_H

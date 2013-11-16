@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_STRIDE_H
-#define EIGEN_STRIDE_H
+#ifndef IMP_EIGEN_STRIDE_H
+#define IMP_EIGEN_STRIDE_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \class Stride
   * \ingroup Core_Module
@@ -103,6 +103,6 @@ class OuterStride : public Stride<Value, 0>
     OuterStride(Index v) : Base(v,0) {}
 };
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_STRIDE_H
+#endif // IMP_EIGEN_STRIDE_H

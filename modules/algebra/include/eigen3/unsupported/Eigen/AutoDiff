@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_AUTODIFF_MODULE
-#define EIGEN_AUTODIFF_MODULE
+#ifndef IMP_EIGEN_AUTODIFF_MODULE
+#define IMP_EIGEN_AUTODIFF_MODULE
 
-namespace Eigen {
+namespace IMP_Eigen {
 
 /**
   * \defgroup AutoDiff_Module Auto Diff module
@@ -33,8 +33,8 @@ namespace Eigen {
 // #include "src/AutoDiff/AutoDiffVector.h"
 #include "src/AutoDiff/AutoDiffJacobian.h"
 
-namespace Eigen {
+namespace IMP_Eigen {
 //@}
 }
 
-#endif // EIGEN_AUTODIFF_MODULE
+#endif // IMP_EIGEN_AUTODIFF_MODULE

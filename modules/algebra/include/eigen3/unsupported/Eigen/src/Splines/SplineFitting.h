@@ -7,8 +7,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_SPLINE_FITTING_H
-#define EIGEN_SPLINE_FITTING_H
+#ifndef IMP_EIGEN_SPLINE_FITTING_H
+#define IMP_EIGEN_SPLINE_FITTING_H
 
 #include <numeric>
 
@@ -16,7 +16,7 @@
 
 #include <Eigen/QR>
 
-namespace Eigen
+namespace IMP_Eigen
 {
   /**
    * \brief Computes knot averages.
@@ -153,4 +153,4 @@ namespace Eigen
   }
 }
 
-#endif // EIGEN_SPLINE_FITTING_H
+#endif // IMP_EIGEN_SPLINE_FITTING_H

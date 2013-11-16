@@ -7,14 +7,14 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_BVALGORITHMS_H
-#define EIGEN_BVALGORITHMS_H
+#ifndef IMP_EIGEN_BVALGORITHMS_H
+#define IMP_EIGEN_BVALGORITHMS_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 namespace internal {
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
 template<typename BVH, typename Intersector>
 bool intersect_helper(const BVH &tree, Intersector &intersector, typename BVH::Index root)
 {
@@ -41,7 +41,7 @@ bool intersect_helper(const BVH &tree, Intersector &intersector, typename BVH::I
   }
   return false;
 }
-#endif //not EIGEN_PARSED_BY_DOXYGEN
+#endif //not IMP_EIGEN_PARSED_BY_DOXYGEN
 
 template<typename Volume1, typename Object1, typename Object2, typename Intersector>
 struct intersector_helper1
@@ -144,7 +144,7 @@ void BVIntersect(const BVH1 &tree1, const BVH2 &tree2, Intersector &intersector)
 
 namespace internal {
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN
+#ifndef IMP_EIGEN_PARSED_BY_DOXYGEN
 template<typename BVH, typename Minimizer>
 typename Minimizer::Scalar minimize_helper(const BVH &tree, Minimizer &minimizer, typename BVH::Index root, typename Minimizer::Scalar minimum)
 {
@@ -176,7 +176,7 @@ typename Minimizer::Scalar minimize_helper(const BVH &tree, Minimizer &minimizer
 
   return minimum;
 }
-#endif //not EIGEN_PARSED_BY_DOXYGEN
+#endif //not IMP_EIGEN_PARSED_BY_DOXYGEN
 
 
 template<typename Volume1, typename Object1, typename Object2, typename Minimizer>
@@ -288,6 +288,6 @@ typename Minimizer::Scalar BVMinimize(const BVH1 &tree1, const BVH2 &tree2, Mini
   return minimum;
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_BVALGORITHMS_H
+#endif // IMP_EIGEN_BVALGORITHMS_H

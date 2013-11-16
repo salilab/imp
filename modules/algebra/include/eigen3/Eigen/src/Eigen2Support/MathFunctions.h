@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN2_MATH_FUNCTIONS_H
-#define EIGEN2_MATH_FUNCTIONS_H
+#ifndef IMP_EIGEN2_MATH_FUNCTIONS_H
+#define IMP_EIGEN2_MATH_FUNCTIONS_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 template<typename T> inline typename NumTraits<T>::Real ei_real(const T& x) { return numext::real(x); }
 template<typename T> inline typename NumTraits<T>::Real ei_imag(const T& x) { return numext::imag(x); }
@@ -52,6 +52,6 @@ inline bool ei_isApproxOrLessThan(const Scalar& x, const Scalar& y,
   return internal::isApproxOrLessThan(x, y, precision);
 }
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN2_MATH_FUNCTIONS_H
+#endif // IMP_EIGEN2_MATH_FUNCTIONS_H

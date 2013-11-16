@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_ALIGNEDBOX_H
-#define EIGEN_ALIGNEDBOX_H
+#ifndef IMP_EIGEN_ALIGNEDBOX_H
+#define IMP_EIGEN_ALIGNEDBOX_H
 
-namespace Eigen { 
+namespace IMP_Eigen { 
 
 /** \geometry_module \ingroup Geometry_Module
   *
@@ -28,7 +28,7 @@ template <typename _Scalar, int _AmbientDim>
 class AlignedBox
 {
 public:
-EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_AmbientDim)
+IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_AmbientDim)
   enum { AmbientDimAtCompileTime = _AmbientDim };
   typedef _Scalar                                   Scalar;
   typedef NumTraits<Scalar>                         ScalarTraits;
@@ -141,7 +141,7 @@ EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_AmbientDim)
     */
   inline VectorType corner(CornerType corner) const
   {
-    EIGEN_STATIC_ASSERT(_AmbientDim <= 3, THIS_METHOD_IS_ONLY_FOR_VECTORS_OF_A_SPECIFIC_SIZE);
+    IMP_EIGEN_STATIC_ASSERT(_AmbientDim <= 3, THIS_METHOD_IS_ONLY_FOR_VECTORS_OF_A_SPECIFIC_SIZE);
 
     VectorType res;
 
@@ -352,24 +352,24 @@ inline Scalar AlignedBox<Scalar,AmbientDim>::squaredExteriorDistance(const Align
   * \sa class AlignedBox
   */
 
-#define EIGEN_MAKE_TYPEDEFS(Type, TypeSuffix, Size, SizeSuffix)    \
+#define IMP_EIGEN_MAKE_TYPEDEFS(Type, TypeSuffix, Size, SizeSuffix)    \
 /** \ingroup alignedboxtypedefs */                                 \
 typedef AlignedBox<Type, Size>   AlignedBox##SizeSuffix##TypeSuffix;
 
-#define EIGEN_MAKE_TYPEDEFS_ALL_SIZES(Type, TypeSuffix) \
-EIGEN_MAKE_TYPEDEFS(Type, TypeSuffix, 1, 1) \
-EIGEN_MAKE_TYPEDEFS(Type, TypeSuffix, 2, 2) \
-EIGEN_MAKE_TYPEDEFS(Type, TypeSuffix, 3, 3) \
-EIGEN_MAKE_TYPEDEFS(Type, TypeSuffix, 4, 4) \
-EIGEN_MAKE_TYPEDEFS(Type, TypeSuffix, Dynamic, X)
+#define IMP_EIGEN_MAKE_TYPEDEFS_ALL_SIZES(Type, TypeSuffix) \
+IMP_EIGEN_MAKE_TYPEDEFS(Type, TypeSuffix, 1, 1) \
+IMP_EIGEN_MAKE_TYPEDEFS(Type, TypeSuffix, 2, 2) \
+IMP_EIGEN_MAKE_TYPEDEFS(Type, TypeSuffix, 3, 3) \
+IMP_EIGEN_MAKE_TYPEDEFS(Type, TypeSuffix, 4, 4) \
+IMP_EIGEN_MAKE_TYPEDEFS(Type, TypeSuffix, Dynamic, X)
 
-EIGEN_MAKE_TYPEDEFS_ALL_SIZES(int,                  i)
-EIGEN_MAKE_TYPEDEFS_ALL_SIZES(float,                f)
-EIGEN_MAKE_TYPEDEFS_ALL_SIZES(double,               d)
+IMP_EIGEN_MAKE_TYPEDEFS_ALL_SIZES(int,                  i)
+IMP_EIGEN_MAKE_TYPEDEFS_ALL_SIZES(float,                f)
+IMP_EIGEN_MAKE_TYPEDEFS_ALL_SIZES(double,               d)
 
-#undef EIGEN_MAKE_TYPEDEFS_ALL_SIZES
-#undef EIGEN_MAKE_TYPEDEFS
+#undef IMP_EIGEN_MAKE_TYPEDEFS_ALL_SIZES
+#undef IMP_EIGEN_MAKE_TYPEDEFS
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_ALIGNEDBOX_H
+#endif // IMP_EIGEN_ALIGNEDBOX_H

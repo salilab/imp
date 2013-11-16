@@ -8,10 +8,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef EIGEN_FORWARDDECLARATIONS_H
-#define EIGEN_FORWARDDECLARATIONS_H
+#ifndef IMP_EIGEN_FORWARDDECLARATIONS_H
+#define IMP_EIGEN_FORWARDDECLARATIONS_H
 
-namespace Eigen {
+namespace IMP_Eigen {
 namespace internal {
 
 template<typename T> struct traits;
@@ -55,15 +55,15 @@ template<typename _Scalar, int _Rows, int _Cols,
     // workaround a bug in at least gcc 3.4.6
     // the innermost ?: ternary operator is misparsed. We write it slightly
     // differently and this makes gcc 3.4.6 happy, but it's ugly.
-    // The error would only show up with EIGEN_DEFAULT_TO_ROW_MAJOR is defined
-    // (when EIGEN_DEFAULT_MATRIX_STORAGE_ORDER_OPTION is RowMajor)
+    // The error would only show up with IMP_EIGEN_DEFAULT_TO_ROW_MAJOR is defined
+    // (when IMP_EIGEN_DEFAULT_MATRIX_STORAGE_ORDER_OPTION is RowMajor)
                           ( (_Rows==1 && _Cols!=1) ? RowMajor
-                          : !(_Cols==1 && _Rows!=1) ?  EIGEN_DEFAULT_MATRIX_STORAGE_ORDER_OPTION
+                          : !(_Cols==1 && _Rows!=1) ?  IMP_EIGEN_DEFAULT_MATRIX_STORAGE_ORDER_OPTION
                           : ColMajor ),
 #else
                           ( (_Rows==1 && _Cols!=1) ? RowMajor
                           : (_Cols==1 && _Rows!=1) ? ColMajor
-                          : EIGEN_DEFAULT_MATRIX_STORAGE_ORDER_OPTION ),
+                          : IMP_EIGEN_DEFAULT_MATRIX_STORAGE_ORDER_OPTION ),
 #endif
          int _MaxRows = _Rows,
          int _MaxCols = _Cols
@@ -196,15 +196,15 @@ template<typename _Scalar, int _Rows, int _Cols,
     // workaround a bug in at least gcc 3.4.6
     // the innermost ?: ternary operator is misparsed. We write it slightly
     // differently and this makes gcc 3.4.6 happy, but it's ugly.
-    // The error would only show up with EIGEN_DEFAULT_TO_ROW_MAJOR is defined
-    // (when EIGEN_DEFAULT_MATRIX_STORAGE_ORDER_OPTION is RowMajor)
+    // The error would only show up with IMP_EIGEN_DEFAULT_TO_ROW_MAJOR is defined
+    // (when IMP_EIGEN_DEFAULT_MATRIX_STORAGE_ORDER_OPTION is RowMajor)
                           ( (_Rows==1 && _Cols!=1) ? RowMajor
-                          : !(_Cols==1 && _Rows!=1) ?  EIGEN_DEFAULT_MATRIX_STORAGE_ORDER_OPTION
+                          : !(_Cols==1 && _Rows!=1) ?  IMP_EIGEN_DEFAULT_MATRIX_STORAGE_ORDER_OPTION
                           : ColMajor ),
 #else
                           ( (_Rows==1 && _Cols!=1) ? RowMajor
                           : (_Cols==1 && _Rows!=1) ? ColMajor
-                          : EIGEN_DEFAULT_MATRIX_STORAGE_ORDER_OPTION ),
+                          : IMP_EIGEN_DEFAULT_MATRIX_STORAGE_ORDER_OPTION ),
 #endif
          int _MaxRows = _Rows, int _MaxCols = _Cols> class Array;
 template<typename ConditionMatrixType, typename ThenMatrixType, typename ElseMatrixType> class Select;
@@ -235,7 +235,7 @@ template<typename Scalar> class Rotation2D;
 template<typename Scalar> class AngleAxis;
 template<typename Scalar,int Dim> class Translation;
 
-#ifdef EIGEN2_SUPPORT
+#ifdef IMP_EIGEN2_SUPPORT
 template<typename Derived, int _Dim> class eigen2_RotationBase;
 template<typename Lhs, typename Rhs> class eigen2_Cross;
 template<typename Scalar> class eigen2_Quaternion;
@@ -248,7 +248,7 @@ template<typename Scalar,int Dim> class eigen2_Translation;
 template<typename Scalar,int Dim> class eigen2_Scaling;
 #endif
 
-#if EIGEN2_SUPPORT_STAGE < STAGE20_RESOLVE_API_CONFLICTS
+#if IMP_EIGEN2_SUPPORT_STAGE < STAGE20_RESOLVE_API_CONFLICTS
 template<typename Scalar> class Quaternion;
 template<typename Scalar,int Dim> class Transform;
 template <typename _Scalar, int _AmbientDim> class ParametrizedLine;
@@ -256,7 +256,7 @@ template <typename _Scalar, int _AmbientDim> class Hyperplane;
 template<typename Scalar,int Dim> class Scaling;
 #endif
 
-#if EIGEN2_SUPPORT_STAGE > STAGE20_RESOLVE_API_CONFLICTS
+#if IMP_EIGEN2_SUPPORT_STAGE > STAGE20_RESOLVE_API_CONFLICTS
 template<typename Scalar, int Options = AutoAlign> class Quaternion;
 template<typename Scalar,int Dim,int Mode,int _Options=AutoAlign> class Transform;
 template <typename _Scalar, int _AmbientDim, int Options=AutoAlign> class ParametrizedLine;
@@ -283,7 +283,7 @@ struct stem_function
 }
 
 
-#ifdef EIGEN2_SUPPORT
+#ifdef IMP_EIGEN2_SUPPORT
 template<typename ExpressionType> class Cwise;
 template<typename MatrixType> class Minor;
 template<typename MatrixType> class LU;
@@ -294,6 +294,6 @@ template<typename MatrixType, unsigned int Mode> struct eigen2_part_return_type;
 }
 #endif
 
-} // end namespace Eigen
+} // end namespace IMP_Eigen
 
-#endif // EIGEN_FORWARDDECLARATIONS_H
+#endif // IMP_EIGEN_FORWARDDECLARATIONS_H
