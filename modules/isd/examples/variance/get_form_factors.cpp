@@ -9,19 +9,15 @@
 
 #include <iostream>
 #include <fstream>
-#include <Eigen/Dense>
+#include <IMP/algebra/eigen3/Eigen/Dense>
 
 namespace {
 using namespace IMP;
 using namespace IMP::base;
 using namespace IMP::isd;
-using Eigen::Array3d;
-using Eigen::ArrayXd;
-using Eigen::ArrayXXd;
-using Eigen::MatrixXd;
 using saxs::internal::SincFunction;
 using saxs::internal::SincCosFunction;
-typedef Eigen::Array<double,Eigen::Dynamic, 3> ArrayCoord;
+typedef IMP_Eigen::Array<double,IMP_Eigen::Dynamic, 3> ArrayCoord;
 }
 
 int main(int argc, char **argv) {
@@ -44,9 +40,9 @@ int main(int argc, char **argv) {
     ArrayCoord coords = get_coords(m,particles);
 
     //get form factors for them
-    ArrayXd ffs = get_form_factors(particles);
+    IMP_Eigen::ArrayXd ffs = get_form_factors(particles);
 
-    ArrayXXd tmp(coords.rows(),4);
+    IMP_Eigen::ArrayXXd tmp(coords.rows(),4);
     tmp.leftCols<3>() = coords;
     tmp.rightCols<1>() = ffs;
     myfile.open("formfactors.dat");

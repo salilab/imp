@@ -9,20 +9,16 @@
 
 #include <iostream>
 #include <fstream>
-#include <Eigen/Dense>
+#include <IMP/algebra/eigen3/Eigen/Dense>
 #include <algorithm>
 
 namespace {
 using namespace IMP;
 using namespace IMP::base;
 using namespace IMP::isd;
-using Eigen::Array3d;
-using Eigen::ArrayXd;
-using Eigen::ArrayXXd;
-using Eigen::MatrixXd;
 using saxs::internal::SincFunction;
 using saxs::internal::SincCosFunction;
-typedef Eigen::Array<double,Eigen::Dynamic, 3> ArrayCoord;
+typedef IMP_Eigen::Array<double, IMP_Eigen::Dynamic, 3> ArrayCoord;
 }
 
 int main(int argc, char **argv) {
@@ -43,7 +39,7 @@ int main(int argc, char **argv) {
     ArrayCoord coords = get_coords(m,particles);
 
     //get form factors for them
-    ArrayXd ffs = get_form_factors(particles);
+    IMP_Eigen::ArrayXd ffs = get_form_factors(particles);
 
     //initialize memoized functions with an estimate of dmax
     double dmax = 2*get_distances(coords.row(0), coords).maxCoeff();
@@ -66,7 +62,7 @@ int main(int argc, char **argv) {
 
     //other terms
     for (unsigned i=0; i<ffs.rows()-1; ++i){
-        ArrayXd dists = get_distances(coords.row(i),
+        IMP_Eigen::ArrayXd dists = get_distances(coords.row(i),
                 coords.bottomRows(ffs.rows()-i-1));
         for (unsigned j=0; j<dists.rows(); ++j){
             double dij = dists(j);
