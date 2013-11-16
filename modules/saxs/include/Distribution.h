@@ -40,6 +40,11 @@ public:
   //! returns bin size
   Float get_bin_size() const { return bin_size_; }
 
+  unsigned int dist2index(Float dist) const {
+    return algebra::get_rounded( dist * one_over_bin_size_ );
+  }
+  Float index2dist(unsigned int index) const { return index * bin_size_; }
+
 protected:
   void init(Float bin_size) {
     //  clear();
@@ -48,10 +53,7 @@ protected:
     max_distance_ = 50.0;      // start with ~50A (by default)
     std::vector< ValueT >::reserve(dist2index(max_distance_) + 1);
   }
-  unsigned int dist2index(Float dist) const {
-    return algebra::get_rounded( dist * one_over_bin_size_ );
-  }
-  Float index2dist(unsigned int index) const { return index * bin_size_; }
+
 protected:
   Float bin_size_, one_over_bin_size_; // resolution of discretization
   Float max_distance_;  // parameter for maximum r value for p(r) function
@@ -74,8 +76,6 @@ public:
 
   //! Constructor from gnom file
   RadialDistributionFunction(const std::string& file_name);
-
-  friend class Profile;
 
   //! scale distribution by a constant
   void scale(Float c);
@@ -100,8 +100,6 @@ public:
   //! normalize to area = 1.0
   void normalize();
 
- private:
-
   void add_to_distribution(Float dist, Float value) {
     unsigned int index = dist2index(dist);
     if(index >= size()) {
@@ -112,6 +110,8 @@ public:
     }
     (*this)[index] += value;
   }
+
+ private:
 
   //! read gnom file
   void read_pr_file(const std::string& file_name);
