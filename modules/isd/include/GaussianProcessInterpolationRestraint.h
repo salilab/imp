@@ -79,9 +79,6 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint
     IMP_OBJECT_METHODS(GaussianProcessInterpolationRestraint);
     ;
 
-    // needed to register the score state
-    void do_set_model(kernel::Model *m);
-
     // to allow the scorestate to get the restraint's objects
     friend class GaussianProcessInterpolationScoreState;
 };
