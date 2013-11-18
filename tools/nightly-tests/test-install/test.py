@@ -20,8 +20,7 @@ class IMPInstallTests(unittest.TestCase):
         d0 = IMP.core.XYZ.setup_particle(p0)
         d0.set_coordinates(IMP.algebra.Vector3D(0,0,2))
 
-        r0 = IMP.example.ExampleRestraint(p0, 1)
-        m.add_restraint(r0)
+        r0 = IMP.example.ExampleRestraint(m, p0.get_index(), 1)
 
     def test_data_installed(self):
         """Check install of data files"""
