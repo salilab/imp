@@ -7,6 +7,7 @@
  */
 
 #include <IMP/multifit/path_reader_writer.h>
+#include <IMP/multifit/internal/reader_writer_utility.h>
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
@@ -16,6 +17,7 @@
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 namespace {
+
 Ints parse_path_line(
                      const std::string &line){
   Ints ret;
@@ -23,8 +25,9 @@ Ints parse_path_line(
   IMP_LOG_VERBOSE("going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of(" "));
-  line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
-    boost::bind( &std::string::empty, _1 ) ),line_split.end() );
+  line_split.erase(std::remove_if(line_split.begin(), line_split.end(),
+                                  internal::EmptyString()),
+                   line_split.end());
   //split returns zero length entires as well
   for(int i=0;i<(int)line_split.size();i++){
     ret.push_back(boost::lexical_cast<int>(line_split[i]));

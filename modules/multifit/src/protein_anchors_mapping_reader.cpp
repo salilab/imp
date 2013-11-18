@@ -7,6 +7,7 @@
  */
 
 #include <IMP/multifit/protein_anchors_mapping_reader.h>
+#include <IMP/multifit/internal/reader_writer_utility.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
@@ -20,6 +21,7 @@
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 namespace {
+
 #if 0
 bool is_anchors_line(const std::string &line) {
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
@@ -30,7 +32,7 @@ bool is_anchors_line(const std::string &line) {
   boost::split(line_split, line, boost::is_any_of("|"));
   //split returns zero length entires as well
   line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
-    boost::bind( &std::string::empty, _1 ) ),line_split.end() );
+                                   internal::EmptyString() ),line_split.end() );
   if (boost::lexical_cast<std::string>(line_split[0]) != "anchors") {
     return false;
   }
@@ -43,8 +45,9 @@ bool is_protein_line(const std::string &line) {
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
   //split returns zero length entires as well
-  line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
-    boost::bind( &std::string::empty, _1 ) ),line_split.end() );
+  line_split.erase(std::remove_if(line_split.begin(), line_split.end(),
+                                  internal::EmptyString()),
+                   line_split.end());
   if (boost::lexical_cast<std::string>(line_split[0]) != "protein") {
     return false;
   }
@@ -57,8 +60,9 @@ std::string parse_anchors_line(const std::string &line) {
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
   //split returns zero length entires as well
-  line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
-    boost::bind( &std::string::empty, _1 ) ),line_split.end() );
+  line_split.erase(std::remove_if(line_split.begin(), line_split.end(),
+                                  internal::EmptyString()),
+                   line_split.end());
   return boost::lexical_cast<std::string>(line_split[1]);
 }
 
@@ -72,8 +76,9 @@ parse_protein_line(const std::string &config, const std::string &line,
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
   //split returns zero length entires as well
-  line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
-    boost::bind( &std::string::empty, _1 ) ),line_split.end() );
+  line_split.erase(std::remove_if(line_split.begin(), line_split.end(),
+                                  internal::EmptyString()),
+                   line_split.end());
   //allow no precalculated paths
   IMP_USAGE_CHECK(line_split.size() > 1,
                   "wrong format, should look like |protein|| or "
