@@ -282,9 +282,9 @@ class SoapBondSeparation {
     SoapLibraryBonds bonds;
     for (unsigned i = 0; i < type_names.size(); i += 3) {
       if (internal_bond(type_names[i+1], type_names[i+2])) {
-        SoapLibraryBond b(ResidueType(type_names[i]),
-                          AtomType(type_names[i+1]),
-                          AtomType(type_names[i+2]));
+        SoapLibraryBond b = SoapLibraryBond(ResidueType(type_names[i]),
+                                            AtomType(type_names[i + 1]),
+                                            AtomType(type_names[i + 2]));
         bonds.push_back(b);
       }
     }
