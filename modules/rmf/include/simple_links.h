@@ -17,7 +17,7 @@
 #include <IMP/base/object_macros.h>
 #include <IMP/base/log_macros.h>
 #include <IMP/kernel/Model.h>
-#include <RMF/SetCurrentFrame.h>
+#include <RMF/RestoreCurrentFrame.h>
 #include <RMF/names.h>
 #include <RMF/decorators.h>
 
@@ -59,7 +59,7 @@ class SimpleLoadLink : public LoadLink {
   base::Vector<base::Pointer<O> > create(RMF::NodeConstHandle rt) {
     IMP_OBJECT_LOG;
     IMP_LOG_TERSE("Creating IMP objects from " << rt << std::endl);
-    RMF::SetCurrentFrame sf(rt.get_file(), RMF::ALL_FRAMES);
+    RMF::SetCurrentFrame sf(rt.get_file(), RMF::FrameID(0));
     RMF::NodeConstHandles ch = rt.get_children();
     base::Vector<base::Pointer<O> > ret;
     for (unsigned int i = 0; i < ch.size(); ++i) {
@@ -80,7 +80,7 @@ class SimpleLoadLink : public LoadLink {
                                          kernel::Model *m) {
     IMP_OBJECT_LOG;
     IMP_LOG_TERSE("Creating Model objects from " << rt << std::endl);
-    RMF::SetCurrentFrame sf(rt.get_file(), RMF::ALL_FRAMES);
+    RMF::SetCurrentFrame sf(rt.get_file(), RMF::FrameID(0));
     RMF::NodeConstHandles ch = rt.get_children();
     base::Vector<base::Pointer<O> > ret;
     for (unsigned int i = 0; i < ch.size(); ++i) {
@@ -101,7 +101,7 @@ class SimpleLoadLink : public LoadLink {
     IMP_OBJECT_LOG;
     IMP_LOG_TERSE("Linking " << rt << " to " << ps << std::endl);
 
-    RMF::SetCurrentFrame sf(rt.get_file(), RMF::ALL_FRAMES);
+    RMF::RestoreCurrentFrame sf(rt.get_file());
     set_was_used(true);
     RMF::NodeConstHandles ch = rt.get_children();
     int links = 0;
@@ -163,7 +163,7 @@ class SimpleSaveLink : public SaveLink {
     IMP_LOG_TERSE("Adding " << os << " to rmf" << std::endl);
     RMF::FileHandle file = parent.get_file();
     RMF::AliasFactory af(file);
-    RMF::SetCurrentFrame sf(parent.get_file(), RMF::ALL_FRAMES);
+    RMF::RestoreCurrentFrame sf(parent.get_file());
     for (unsigned int i = 0; i < os.size(); ++i) {
       std::string nicename = RMF::get_as_node_name(os[i]->get_name());
       if (get_has_associated_node(file, os[i])) {

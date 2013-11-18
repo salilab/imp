@@ -21,7 +21,7 @@ class ParticleLoadLink : public SimpleLoadLink<kernel::Particle> {
   template <class IK, class RK>
   void load_keys(RMF::FileConstHandle fh, RMF::Category cat,
                  base::map<RK, IK> &map) {
-    typedef typename RK::TypeTraits Traits;
+    typedef typename RK::Tag Traits;
     std::vector<RK> ks = fh.get_keys<Traits>(cat);
     for (unsigned int i = 0; i < ks.size(); ++i) {
       IK ik(fh.get_name(ks[i]));
@@ -88,7 +88,7 @@ class ParticleSaveLink : public SimpleSaveLink<kernel::Particle> {
                 RMF::NodeHandle nh, base::map<IK, RK> &map) {
     for (unsigned int i = 0; i < ks.size(); ++i) {
       if (map.find(ks[i]) == map.end()) {
-        map[ks[i]] = nh.get_file().get_key<typename RK::TypeTraits>(
+        map[ks[i]] = nh.get_file().get_key<typename RK::Tag>(
             cat_, ks[i].get_string());
       }
       nh.set_value(map.find(ks[i])->second, o->get_value(ks[i]));

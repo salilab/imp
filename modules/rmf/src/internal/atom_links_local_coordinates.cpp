@@ -86,12 +86,12 @@ bool HierarchySaveLocalCoordinates::setup_node(
 
 void HierarchySaveLocalCoordinates::save(Model *m, RMF::FileHandle fh) {
   IMP_FOREACH(Pair pp, xyzs_) {
-    copy_to_particle(
+    copy_to_frame_particle(
         core::RigidBodyMember(m, pp.second).get_internal_coordinates(),
         fh.get_node(pp.first), intermediate_particle_factory_);
   }
   IMP_FOREACH(Pair pp, rigid_bodies_) {
-    copy_to_reference_frame(
+    copy_to_frame_reference_frame(
         core::RigidBodyMember(m, pp.second).get_internal_transformation(),
         fh.get_node(pp.first), reference_frame_factory_);
   }

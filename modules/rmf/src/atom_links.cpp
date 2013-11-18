@@ -21,6 +21,8 @@
 #include <RMF/utility.h>
 #include <RMF/decorators.h>
 #include <boost/make_shared.hpp>
+#include <RMF/RestoreCurrentFrame.h>
+#include <RMF/SetCurrentFrame.h>
 
 IMPRMF_BEGIN_NAMESPACE
 
@@ -45,9 +47,8 @@ unsigned int get_coords_state(RMF::NodeConstHandle nh,
                               RMF::ReferenceFrameConstFactory rfcf) {
   unsigned int ret = 0;
   {
-    RMF::SetCurrentFrame fa(nh.get_file(), RMF::ALL_FRAMES);
-    if (ipcf.get_is(nh)) ret |= internal::STATIC_XYZ;
-    if (rfcf.get_is(nh)) ret |= internal::STATIC_RB;
+    if (ipcf.get_is_static(nh)) ret |= internal::STATIC_XYZ;
+    if (rfcf.get_is_static(nh)) ret |= internal::STATIC_RB;
   }
   {
     RMF::SetCurrentFrame fa(nh.get_file(), RMF::FrameID(0));
@@ -164,7 +165,7 @@ void HierarchySaveLink::do_add(kernel::Particle *p, RMF::NodeHandle cur) {
   IMP_USAGE_CHECK(atom::Hierarchy(p).get_is_valid(true),
                   "Invalid hierarchy passed.");
 
-  RMF::SetCurrentFrame scf(cur.get_file(), RMF::ALL_FRAMES);
+  RMF::RestoreCurrentFrame scf(cur.get_file());
   data_.insert(
       std::make_pair(p->get_index(), boost::make_shared<Data>(cur.get_file())));
   add_recursive(p->get_model(), p->get_index(), p->get_index(),

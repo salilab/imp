@@ -17,7 +17,7 @@ void test_it(std::string file_name, std::string test_name,
   double time;
   int nframes = 0;
   IMP_TIME({
-             IMP::rmf::save_frame(fh, nframes);
+             IMP::rmf::save_frame(fh, "frame");
              ++nframes;
            },
            time);

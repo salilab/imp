@@ -134,7 +134,7 @@ It create_particles(std::string name) {
   ret.chains = IMP::rmf::create_hierarchies(r, ret.m);
   kernel::ParticlesTemp ps = IMP::rmf::create_particles(r, ret.m);
   IMP_USAGE_CHECK(ps.size() == 1, "Wrong number: " << ps);
-  IMP::rmf::load_frame(r, r.get_number_of_frames() - 1);
+  IMP::rmf::load_frame(r, RMF::FrameID(r.get_number_of_frames() - 1));
   if (ps.empty()) {
     IMP_THROW("No particles read", IOException);
   }
@@ -202,15 +202,15 @@ void create(It it, RMF::FileHandle fh) {
     for (unsigned int i = 0; i < 10; ++i) {
       SetLogState sll(VERBOSE);
       double ts = get_maximum_time_step_estimate(it.bd);
-      IMP::rmf::save_frame(fh, 1);
+      IMP::rmf::save_frame(fh, "one");
       std::cout << "Maximum time step is " << ts << std::endl;
       it.sp->set_value(tsk, ts);
-      IMP::rmf::save_frame(fh, 2);
+      IMP::rmf::save_frame(fh, "two");
       it.bd->set_maximum_time_step(ts);
     }
   }
   update_slack_estimate(it);
-  IMP::rmf::save_frame(fh, 3);
+  IMP::rmf::save_frame(fh, "three");
 }
 
 void initialize(It it) {

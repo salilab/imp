@@ -16,8 +16,8 @@ HierarchyLoadGlobalCoordinates::HierarchyLoadGlobalCoordinates(
     RMF::FileConstHandle f)
     : intermediate_particle_factory_(f), reference_frame_factory_(f) {
   RMF::Category cat = f.get_category("IMP");
-  key_ = f.get_index_key(cat, "rigid body");
-  non_rigid_key_ = f.get_index_key(cat, "non rigid");
+  key_ = f.get_key(cat, "rigid body", RMF::IntTraits());
+  non_rigid_key_ = f.get_key(cat, "non rigid", RMF::IntTraits());
 }
 
 bool HierarchyLoadGlobalCoordinates::setup_particle(
@@ -178,8 +178,8 @@ HierarchySaveGlobalCoordinates::HierarchySaveGlobalCoordinates(
     RMF::FileHandle f)
     : intermediate_particle_factory_(f), reference_frame_factory_(f) {
   RMF::Category cat = f.get_category("IMP");
-  key_ = f.get_index_key(cat, "rigid body");
-  non_rigid_key_ = f.get_index_key(cat, "non rigid");
+  key_ = f.get_key<RMF::IntTraits>(cat, "rigid body");
+  non_rigid_key_ = f.get_key<RMF::IntTraits>(cat, "non rigid");
 }
 
 bool HierarchySaveGlobalCoordinates::setup_node(
@@ -209,14 +209,16 @@ bool HierarchySaveGlobalCoordinates::setup_node(
 void HierarchySaveGlobalCoordinates::save(kernel::Model *m,
                                           RMF::FileHandle fh) {
   IMP_FOREACH(Pair pp, xyzs_) {
-    copy_to_particle(core::XYZ(m, pp.second).get_coordinates(),
-                     fh.get_node(pp.first), intermediate_particle_factory_);
+    copy_to_frame_particle(core::XYZ(m, pp.second).get_coordinates(),
+                             fh.get_node(pp.first),
+                             intermediate_particle_factory_);
   }
   IMP_FOREACH(Pair pp, rigid_bodies_) {
-    copy_to_reference_frame(core::RigidBody(m, pp.second)
-                                .get_reference_frame()
-                                .get_transformation_to(),
-                            fh.get_node(pp.first), reference_frame_factory_);
+    copy_to_frame_reference_frame(core::RigidBody(m, pp.second)
+                                        .get_reference_frame()
+                                        .get_transformation_to(),
+                                    fh.get_node(pp.first),
+                                    reference_frame_factory_);
   }
 }
 

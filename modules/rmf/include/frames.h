@@ -19,15 +19,31 @@ IMPRMF_BEGIN_NAMESPACE
 
     The current frame is left as the passed frame number.
 */
-IMPRMFEXPORT void load_frame(RMF::FileConstHandle file, int frame);
+IMPRMFEXPORT void load_frame(RMF::FileConstHandle file, RMF::FrameID frame);
+
+/** \deprecated_at{2.2} Pass the frame as an RMF::FrameID. */
+IMPRMF_DEPRECATED_FUNCTION_DECL(2.2)
+inline void load_frame(RMF::FileConstHandle file, unsigned int frame) {
+  IMPRMF_DEPRECATED_FUNCTION_DEF(2.2, "Pass the frame as an RMF::FrameID");
+  load_frame(file, RMF::FrameID(frame));
+}
 
 /** Save the current state of the objects linked to the RMF
     file as the frameth frame.
 
     The current frame is left as the passed frame number.
 */
-IMPRMFEXPORT void save_frame(RMF::FileHandle file, int frame,
-                             std::string name = "frame");
+IMPRMFEXPORT RMF::FrameID save_frame(RMF::FileHandle file,
+                                     std::string name = "");
+
+/** \deprecated_at{2.2} You cannot specify the frame. Drop it. */
+IMPRMF_DEPRECATED_FUNCTION_DECL(2.2)
+inline void save_frame(RMF::FileHandle file, unsigned int,
+                       std::string name = "") {
+  IMPRMF_DEPRECATED_FUNCTION_DEF(
+      2.2, "Don't try to specify the frame index, it is ignored");
+  save_frame(file, name);
+}
 
 IMPRMF_END_NAMESPACE
 

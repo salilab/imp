@@ -28,7 +28,7 @@ class Tests(IMP.test.TestCase):
             IMP.base.set_log_level(IMP.base.MEMORY)
             sf = IMP.core.RestraintsScoringFunction([r])
             sf.evaluate(False)
-            IMP.rmf.save_frame(f, 0)
+            IMP.rmf.save_frame(f, str(0))
 
 if __name__ == '__main__':
     unittest.main()

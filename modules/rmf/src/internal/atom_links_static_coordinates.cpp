@@ -69,11 +69,11 @@ bool HierarchySaveStaticCoordinates::setup_node(
           << " body in the hierarchy must be members of it.");
   if (core::RigidMember::get_is_setup(m, p)) {
     if (core::RigidBody::get_is_setup(m, p)) {
-      copy_to_reference_frame(rbm.get_internal_transformation(), n,
-                              reference_frame_factory_);
+      copy_to_static_reference_frame(rbm.get_internal_transformation(), n,
+                                     reference_frame_factory_);
     } else {
-      copy_to_particle(rbm.get_internal_coordinates(), n,
-                       intermediate_particle_factory_);
+      copy_to_static_particle(rbm.get_internal_coordinates(), n,
+                              intermediate_particle_factory_);
     }
   }
   return true;

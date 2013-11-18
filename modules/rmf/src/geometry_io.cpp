@@ -13,7 +13,7 @@
 #include <IMP/display/primitive_geometries.h>
 #include <IMP/base/check_macros.h>
 #include <IMP/base/Pointer.h>
-#include <RMF/Key.h>
+#include <RMF/types.h>
 #include <RMF/NodeHandle.h>
 #include <RMF/FileHandle.h>
 #include <RMF/decorators.h>
@@ -39,7 +39,7 @@ class GeometryLoadLink : public SimpleLoadLink<G> {
       : P("SphereLoadLink%1%"), factory_(fh), colored_factory_(fh) {}
   void load_color(RMF::NodeConstHandle nh, display::Geometry *g) {
     if (colored_factory_.get_is(nh)) {
-      RMF::Floats color = colored_factory_.get(nh).get_rgb_color();
+      RMF::Vector3 color = colored_factory_.get(nh).get_rgb_color();
       display::Color c(color.begin(), color.end());
       g->set_color(c);
     }
@@ -79,7 +79,7 @@ class SphereLoadLink
   typedef GeometryLoadLink<display::SphereGeometry, RMF::BallConstFactory> P;
   void do_load_one(RMF::NodeConstHandle nh, display::SphereGeometry *o) {
     RMF::BallConst b = get_factory().get(nh);
-    RMF::Floats cs = b.get_coordinates();
+    RMF::Vector3 cs = b.get_coordinates();
     algebra::Sphere3D s(algebra::Vector3D(cs.begin(), cs.end()),
                         b.get_radius());
     o->set_geometry(s);
@@ -120,13 +120,9 @@ class CylinderLoadLink : public GeometryLoadLink<display::CylinderGeometry,
       P;
   void do_load_one(RMF::NodeConstHandle nh, display::CylinderGeometry *o) {
     RMF::CylinderConst b = get_factory().get(nh);
-    RMF::FloatsList cs = b.get_coordinates();
-    algebra::Vector3D vs[2];
-    for (unsigned int i = 0; i < 2; ++i) {
-      for (unsigned int j = 0; j < 3; ++j) {
-        vs[i][j] = cs[j][i];
-      }
-    }
+    RMF::Vector3s cs = b.get_coordinates_list();
+    algebra::Vector3D vs[2] = {algebra::Vector3D(cs[0]),
+                               algebra::Vector3D(cs[1])};
     algebra::Segment3D s(vs[0], vs[1]);
     algebra::Cylinder3D c(s, b.get_radius());
     o->set_geometry(c);
@@ -143,15 +139,13 @@ void save_cylinder(display::CylinderGeometry *o, RMF::NodeHandle nh,
   algebra::Cylinder3D s = o->get_geometry();
   RMF::Cylinder c = f.get(nh);
   c.set_radius(s.get_radius());
-  RMF::FloatsList coords(3, RMF::Floats(2));
+  RMF::Vector3s coords(2);
   for (unsigned int i = 0; i < 2; ++i) {
-    algebra::Vector3D c = s.get_segment().get_point(i);
-    for (unsigned int j = 0; j < 3; ++j) {
-      coords[j][i] = c[j];
-    }
+    algebra::Vector3D cd = s.get_segment().get_point(i);
+    coords[i] = RMF::Vector3(cd);
   }
   o->set_was_used(true);
-  c.set_coordinates(coords);
+  c.set_coordinates_list(coords);
 }
 
 class CylinderSaveLink
@@ -169,26 +163,17 @@ class CylinderSaveLink
 };
 
 algebra::Segment3D get_segment(RMF::SegmentConst sc) {
-  RMF::FloatsList cs = sc.get_coordinates();
-  algebra::Vector3D vs[2];
-  for (unsigned int i = 0; i < 2; ++i) {
-    for (unsigned int j = 0; j < 3; ++j) {
-      vs[i][j] = cs[j][i];
-    }
-  }
-  algebra::Segment3D s(vs[0], vs[1]);
+  RMF::Vector3s cs = sc.get_coordinates_list();
+  algebra::Segment3D s =
+      algebra::Segment3D(algebra::Vector3D(cs[0]), algebra::Vector3D(cs[1]));
   return s;
 }
 
 void set_segment(algebra::Segment3D s, RMF::Segment c) {
-  RMF::FloatsList coords(3, RMF::Floats(2));
-  for (unsigned int i = 0; i < 2; ++i) {
-    algebra::Vector3D c = s.get_point(i);
-    for (unsigned int j = 0; j < 3; ++j) {
-      coords[j][i] = c[j];
-    }
-  }
-  c.set_coordinates(coords);
+  RMF::Vector3s coords(2);
+  coords[0] = RMF::Vector3(s.get_point(0));
+  coords[1] = RMF::Vector3(s.get_point(1));
+  c.set_coordinates_list(coords);
 }
 
 class SegmentLoadLink : public GeometryLoadLink<display::SegmentGeometry,
@@ -327,7 +312,7 @@ void add_geometries(RMF::NodeHandle rh, const display::GeometriesTemp &r) {
       internal::get_save_link<SegmentSaveLink>(fh);
   base::Pointer<BoxSaveLink> bll = internal::get_save_link<BoxSaveLink>(fh);
   {
-    RMF::SetCurrentFrame sf(rh.get_file(), RMF::ALL_FRAMES);
+    RMF::RestoreCurrentFrame sf(rh.get_file());
     sll->add(rh, sgs);
     cll->add(rh, cgs);
     sgll->add(rh, ssgs);
@@ -356,7 +341,7 @@ void add_static_geometries(RMF::FileHandle fh,
   display::BoundingBoxGeometries bgs;
   divide(r, sgs, cgs, ssgs, bgs);
   RMF::ColoredFactory cf(fh);
-  RMF::SetCurrentFrame sf(fh, RMF::ALL_FRAMES);
+  RMF::RestoreCurrentFrame sf(fh);
 
   {
     RMF::BallFactory bf(fh);

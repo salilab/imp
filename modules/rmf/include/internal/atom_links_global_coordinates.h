@@ -32,7 +32,7 @@ class IMPRMFEXPORT HierarchyLoadGlobalCoordinates {
   NodeParticlePairs rigid_bodies_;
   base::map<int, RB> rigid_body_compositions_;
 
-  RMF::IndexKey key_, non_rigid_key_;
+  RMF::IntKey key_, non_rigid_key_;
 
   void fix_internal_coordinates(core::RigidBody rb,
                                 algebra::ReferenceFrame3D rf,
@@ -59,7 +59,7 @@ class IMPRMFEXPORT HierarchySaveGlobalCoordinates {
   NodeParticlePairs xyzs_;
   NodeParticlePairs rigid_bodies_;
   base::map<kernel::ParticleIndex, int> bodies_;
-  RMF::IndexKey key_, non_rigid_key_;
+  RMF::IntKey key_, non_rigid_key_;
 
  public:
   HierarchySaveGlobalCoordinates(RMF::FileHandle f);

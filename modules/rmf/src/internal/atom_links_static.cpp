@@ -19,6 +19,7 @@
 #include <IMP/display/Colored.h>
 #include <RMF/SetCurrentFrame.h>
 #include <RMF/NodeHandle.h>
+#include <RMF/RestoreCurrentFrame.h>
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 
@@ -35,8 +36,8 @@ HierarchyLoadStatic::HierarchyLoadStatic(RMF::FileConstHandle fh)
       domain_factory_(fh),
       fragment_factory_(fh) {
   RMF::Category phy = fh.get_category("physics");
-  radius_key_ = fh.get_float_key(phy, "radius");
-  mass_key_ = fh.get_float_key(phy, "mass");
+  radius_key_ = fh.get_key(phy, "radius", RMF::FloatTraits());
+  mass_key_ = fh.get_key(phy, "mass", RMF::FloatTraits());
 }
 void HierarchyLoadStatic::setup_particle(RMF::NodeConstHandle nh,
                                          kernel::Model *m,
@@ -54,7 +55,7 @@ void HierarchyLoadStatic::setup_particle(RMF::NodeConstHandle nh,
     atom::Mass::setup_particle(m, p, nh.get_value(mass_key_));
   }
 
-  if (atom_factory_.get_is(nh)) {
+  if (atom_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("atomic " << std::endl);
     if (!atom::get_atom_type_exists(nh.get_name())) {
       atom::add_atom_type(nh.get_name(),
@@ -62,7 +63,7 @@ void HierarchyLoadStatic::setup_particle(RMF::NodeConstHandle nh,
     }
     atom::Atom::setup_particle(m, p, atom::AtomType(nh.get_name()));
   }
-  if (residue_factory_.get_is(nh)) {
+  if (residue_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("residue " << std::endl);
     RMF::ResidueConst residue = residue_factory_.get(nh);
     int b = residue.get_index();
@@ -71,7 +72,7 @@ void HierarchyLoadStatic::setup_particle(RMF::NodeConstHandle nh,
     IMP_INTERNAL_CHECK(atom::Residue::get_is_setup(m, p),
                        "Setup failed for residue");
   }
-  if (domain_factory_.get_is(nh)) {
+  if (domain_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("domain " << std::endl);
     int b, e;
     boost::tie(b, e) = domain_factory_.get(nh).get_indexes();
@@ -80,33 +81,33 @@ void HierarchyLoadStatic::setup_particle(RMF::NodeConstHandle nh,
       atom::Domain::setup_particle(m, p, IntRange(b, e));
     }
   }
-  if (fragment_factory_.get_is(nh)) {
+  if (fragment_factory_.get_is_static(nh)) {
     RMF::Indexes idx = fragment_factory_.get(nh).get_indexes();
     atom::Fragment::setup_particle(m, p, Ints(idx.begin(), idx.end()));
   }
-  if (colored_factory_.get_is(nh)) {
+  if (colored_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("colored " << std::endl);
-    RMF::Floats c = colored_factory_.get(nh).get_rgb_color();
+    RMF::Vector3 c = colored_factory_.get(nh).get_rgb_color();
     display::Colored::setup_particle(m, p, display::Color(c[0], c[1], c[2]));
   }
-  if (chain_factory_.get_is(nh)) {
+  if (chain_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("chain " << std::endl);
-    int cci = chain_factory_.get(nh).get_chain_id();
-    atom::Chain::setup_particle(m, p, cci + 'A');
+    std::string cci = chain_factory_.get(nh).get_chain_id();
+    atom::Chain::setup_particle(m, p, cci);
   }
-  if (typed_factory_.get_is(nh)) {
+  if (typed_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("typed " << std::endl);
     std::string t = typed_factory_.get(nh).get_type_name();
     core::ParticleType pt(t);
     core::Typed::setup_particle(m, p, pt);
   }
-  if (diffuser_factory_.get_is(nh)) {
+  if (diffuser_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("diffuser " << std::endl);
     double dv = diffuser_factory_.get(nh).get_diffusion_coefficient();
     core::XYZ::setup_particle(m, p);
     atom::Diffusion::setup_particle(m, p, dv);
   }
-  if (copy_factory_.get_is(nh)) {
+  if (copy_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("copy " << std::endl);
     int dv = copy_factory_.get(nh).get_copy_index();
     atom::Copy::setup_particle(m, p, dv);
@@ -130,7 +131,7 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
     atom::Mass(m, p).set_mass(mn.get_mass());
   }
 
-  if (atom_factory_.get_is(nh)) {
+  if (atom_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("atomic " << std::endl);
     if (!atom::get_atom_type_exists(nh.get_name())) {
       atom::add_atom_type(nh.get_name(),
@@ -138,7 +139,7 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
     }
     atom::Atom(m, p).set_atom_type(atom::AtomType(nh.get_name()));
   }
-  if (residue_factory_.get_is(nh)) {
+  if (residue_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("residue " << std::endl);
     RMF::ResidueConst residue = residue_factory_.get(nh);
     int b = residue.get_index();
@@ -147,7 +148,7 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
     IMP_INTERNAL_CHECK(atom::Residue::get_is_setup(m, p),
                        "Setup failed for residue");
   }
-  if (domain_factory_.get_is(nh)) {
+  if (domain_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("domain " << std::endl);
     int b, e;
     boost::tie(b, e) = domain_factory_.get(nh).get_indexes();
@@ -156,21 +157,21 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
       atom::Domain(m, p).set_index_range(IntRange(b, e));
     }
   }
-  if (fragment_factory_.get_is(nh)) {
+  if (fragment_factory_.get_is_static(nh)) {
     RMF::Indexes idx = fragment_factory_.get(nh).get_indexes();
     atom::Fragment(m, p).set_residue_indexes(Ints(idx.begin(), idx.end()));
   }
-  if (colored_factory_.get_is(nh)) {
+  if (colored_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("colored " << std::endl);
-    RMF::Floats c = colored_factory_.get(nh).get_rgb_color();
+    RMF::Vector3 c = colored_factory_.get(nh).get_rgb_color();
     display::Colored(m, p).set_color(display::Color(c[0], c[1], c[2]));
   }
-  if (chain_factory_.get_is(nh)) {
+  if (chain_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("chain " << std::endl);
-    int cci = chain_factory_.get(nh).get_chain_id();
-    atom::Chain(m, p).set_id(cci + 'A');
+    std::string cci = chain_factory_.get(nh).get_chain_id();
+    atom::Chain(m, p).set_id(cci);
   }
-  if (typed_factory_.get_is(nh)) {
+  if (typed_factory_.get_is_static(nh)) {
     // can't set
     IMP_LOG_VERBOSE("typed " << std::endl);
     std::string t = typed_factory_.get(nh).get_type_name();
@@ -179,12 +180,12 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
                     "Particle types don't match");
     // core::Typed(m, p).set_particle_type(pt);
   }
-  if (diffuser_factory_.get_is(nh)) {
+  if (diffuser_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("diffuser " << std::endl);
     double dv = diffuser_factory_.get(nh).get_diffusion_coefficient();
     atom::Diffusion(m, p).set_diffusion_coefficient(dv);
   }
-  if (copy_factory_.get_is(nh)) {
+  if (copy_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("copy " << std::endl);
     int dv = copy_factory_.get(nh).get_copy_index();
     IMP_USAGE_CHECK(atom::Copy(m, p).get_copy_index() == dv,
@@ -239,7 +240,7 @@ void HierarchySaveStatic::setup_node(kernel::Model *m, kernel::ParticleIndex p,
   }
   if (atom::Chain::get_is_setup(m, p)) {
     atom::Chain d(m, p);
-    chain_factory_.get(n).set_chain_id(d.get_id()[0] - 'A');
+    chain_factory_.get(n).set_chain_id(d.get_id());
   }
   if (atom::Diffusion::get_is_setup(m, p)) {
     atom::Diffusion d(m, p);
@@ -303,7 +304,7 @@ void HierarchyLoadBonds::setup_bonds(RMF::NodeConstHandle n, kernel::Model *m,
 
 void HierarchySaveBonds::setup_bonds(kernel::Model *m, kernel::ParticleIndex p,
                                      RMF::NodeHandle n) {
-  RMF::SetCurrentFrame scf(n.get_file(), RMF::ALL_FRAMES);
+  RMF::RestoreCurrentFrame scf(n.get_file());
   IMP_FUNCTION_LOG;
   atom::Bonds bds = atom::get_internal_bonds(atom::Hierarchy(m, p));
   if (bds.empty()) return;

@@ -16,7 +16,7 @@ class Tests(IMP.test.TestCase):
         r = IMP.kernel._ConstRestraint(1, [p])
         r.evaluate(False)
         IMP.rmf.add_restraint(f, r)
-        IMP.rmf.save_frame(f, 0)
+        IMP.rmf.save_frame(f, str(0))
 
     def _read_restraint(self, name):
         IMP.base.add_to_log(IMP.base.TERSE, "Starting reading back\n")
@@ -25,7 +25,7 @@ class Tests(IMP.test.TestCase):
         ps = IMP.rmf.create_particles(f, m)
         rs = IMP.kernel.RestraintSet.get_from(
             IMP.rmf.create_restraints(f, m)[0])
-        IMP.rmf.load_frame(f, 0)
+        IMP.rmf.load_frame(f, RMF.FrameID(0))
         r = rs.get_restraints()[0]
         print [IMP.kernel.Particle.get_from(x).get_index() for x in r.get_inputs()]
         print [x.get_index() for x in ps]
@@ -49,12 +49,11 @@ class Tests(IMP.test.TestCase):
             p = IMP.kernel.Particle(m)
             r = IMP.kernel._ConstRestraint(m, [], 1)
             r.set_name("R")
-            r.set_model(m)
             r.evaluate(False)
             IMP.rmf.add_restraint(f, r)
-            IMP.rmf.save_frame(f, 0)
+            IMP.rmf.save_frame(f, str(0))
             rr = IMP.rmf.create_restraints(f, m)
-            IMP.rmf.load_frame(f, 0)
+            IMP.rmf.load_frame(f, RMF.FrameID(0))
             self.assertEqual(rr[0].evaluate(False), r.evaluate(False))
 
     def test_2(self):
@@ -64,7 +63,7 @@ class Tests(IMP.test.TestCase):
             path = self.get_tmp_file_name("dynamic_restraints." + suffix)
             print path
             f = RMF.create_rmf_file(path)
-            IMP.base.set_log_level(IMP.base.SILENT)
+            IMP.base.set_log_level(IMP.base.VERBOSE)
             m = IMP.kernel.Model()
             ps = [IMP.kernel.Particle(m) for i in range(0, 10)]
             ds = [IMP.core.XYZR.setup_particle(p) for p in ps]
@@ -84,21 +83,22 @@ class Tests(IMP.test.TestCase):
                 for d in ds:
                     d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
                 scores.append(r.evaluate(False))
-                IMP.rmf.save_frame(f, i)
+                IMP.rmf.save_frame(f, str(i))
             for i, d in enumerate(ds):
                 d.set_x(i * 10)
             scores.append(r.evaluate(False))
-            IMP.rmf.save_frame(f, 10)
+            IMP.rmf.save_frame(f, str(10))
 
             del f
             del r
             f = RMF.open_rmf_file_read_only(path)
             bps = IMP.rmf.create_particles(f, m)
             rr = IMP.rmf.create_restraints(f, m)
-            # print scores
+            print rr[0].get_name()
+            print scores
             for i in range(0, 11):
-                IMP.rmf.load_frame(f, i)
-                # print i
+                IMP.rmf.load_frame(f, RMF.FrameID(i))
+                print i, scores[i], rr[0].evaluate(False)
                 self.assertAlmostEqual(
                     scores[i],
                     rr[0].evaluate(False),

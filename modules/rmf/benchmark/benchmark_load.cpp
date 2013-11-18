@@ -14,12 +14,12 @@ void test_it(std::string file_name, std::string test_name,
              IMP::atom::Hierarchy h) {
   RMF::FileHandle fh = RMF::create_rmf_file(file_name);
   IMP::rmf::add_hierarchies(fh, IMP::atom::Hierarchies(1, h));
-  IMP::rmf::save_frame(fh, 0);
-  IMP::rmf::save_frame(fh, 1);
+  IMP::rmf::save_frame(fh, "zero");
+  IMP::rmf::save_frame(fh, "one");
   double time;
   int nframes = 0;
   IMP_TIME({
-             IMP::rmf::load_frame(fh, nframes % 2);
+             IMP::rmf::load_frame(fh, RMF::FrameID(nframes % 2));
              ++nframes;
            },
            time);
