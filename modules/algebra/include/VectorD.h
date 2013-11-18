@@ -18,6 +18,7 @@
 #include <IMP/base/random.h>
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/normal_distribution.hpp>
+#include <boost/range.hpp>
 #include "internal/vector.h"
 
 #include <limits>
@@ -114,7 +115,10 @@ class VectorD : public GeometricPrimitiveD<D> {
   VectorD(It b, It e) {
     data_.set_coordinates(b, e);
   }
-
+  template <class Range>
+  explicit VectorD(Range r) {
+    data_.set_coordinates(boost::begin(r), boost::end(r));
+  }
   //! Initialize the 1-vector from its value.
   explicit VectorD(double x) {
 /* Note that MSVC gets confused with static asserts if we try to subclass
@@ -328,6 +332,20 @@ class VectorD : public GeometricPrimitiveD<D> {
   CoordinateConstIterator coordinates_end() const {
     return data_.get_data() + get_dimension();
   }
+  CoordinateIterator begin() { return data_.get_data(); }
+  CoordinateIterator end() { return data_.get_data() + get_dimension(); }
+
+  typedef double value_type;
+  typedef std::random_access_iterator_tag iterator_category;
+  typedef std::ptrdiff_t difference_type;
+  typedef double* pointer;
+  typedef double& reference;
+  typedef const double &const_reference;
+  CoordinateConstIterator begin() const { return data_.get_data(); }
+  CoordinateConstIterator end() const {
+    return data_.get_data() + get_dimension();
+  }
+
 #endif
 
 #ifndef SWIG
