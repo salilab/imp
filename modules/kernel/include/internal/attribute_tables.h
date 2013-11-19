@@ -24,6 +24,7 @@
   IMP_USAGE_CHECK(!mask || mask->size() > get_as_unsigned_int(particle_index), \
                   "For some reason the mask is too small.");                   \
   if (mask && !(*mask)[get_as_unsigned_int(particle_index)]) {                 \
+    base::handle_error("bad particle read or written");                        \
     throw InputOutputException(                                                \
         particle_index.get_index(), InputOutputException::operation,           \
         InputOutputException::entity, key.get_string());                       \

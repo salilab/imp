@@ -42,6 +42,7 @@ void Container::do_after_evaluate(DerivativeAccumulator *) {}
 void Container::validate_readable() const {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   if (!readable_) {
+    base::handle_error("bad container read");
     throw internal::InputOutputException(get_name(),
                                          internal::InputOutputException::GET);
   }
@@ -50,6 +51,7 @@ void Container::validate_readable() const {
 void Container::validate_writable() const {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   if (!writeable_) {
+    base::handle_error("bad container written");
     throw internal::InputOutputException(get_name(),
                                          internal::InputOutputException::GET);
   }
