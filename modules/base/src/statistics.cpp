@@ -9,8 +9,17 @@
 #include "IMP/base/internal/static.h"
 #include <boost/format.hpp>
 
-
 IMPBASE_BEGIN_NAMESPACE
+
+Timer::Timer(const Object *object, std::string operation) {
+  key_ = object->get_name() + "::" + operation;
+}
+Timer::Timer(std::string operation) { key_ = operation; }
+Timer::~Timer() {
+  internal::timings[key_].total_time += timer_.elapsed();
+  ++internal::timings[key_].calls;
+}
+
 void clear_statistics() { internal::timings.clear(); }
 
 void show_timings(TextOutput out) {

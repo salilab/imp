@@ -24,19 +24,14 @@ IMPBASEEXPORT void clear_statistics();
 IMPBASEEXPORT void show_timings(TextOutput out);
 
 /** Time an operation and save the timings.*/
-class Timer : public RAII {
+class IMPBASEEXPORT Timer : public RAII {
   boost::timer timer_;
   std::string key_;
 
  public:
-  Timer(const Object *object, std::string operation) {
-    key_ = object->get_name() + "::" + operation;
-  }
-  Timer(std::string operation) { key_ = operation; }
-  ~Timer() {
-    internal::timings[key_].total_time += timer_.elapsed();
-    ++internal::timings[key_].calls;
-  }
+  Timer(const Object *object, std::string operation);
+  Timer(std::string operation);
+  ~Timer();
 };
 
 IMPBASE_END_NAMESPACE
