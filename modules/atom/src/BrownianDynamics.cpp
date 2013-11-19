@@ -9,6 +9,7 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/utility.h>
+#include <IMP/algebra/vector_generators.h>
 #include <IMP/base/log.h>
 #include <IMP/base/random.h>
 #include <IMP/constants.h>
@@ -166,7 +167,7 @@ void BrownianDynamics::advance_coordinates_0(kernel::ParticleIndex pi,
   RNG sampler(base::random_number_generator, nd);
   double r = sampler();
   algebra::Vector3D random =
-      r * get_random_vector_on(algebra::get_unit_sphere_d<3>());
+    r * algebra::get_random_vector_on_unit_sphere();
   algebra::Vector3D force(get_force(get_model(), pi, 0, dtfs, ikT),
                           get_force(get_model(), pi, 1, dtfs, ikT),
                           get_force(get_model(), pi, 2, dtfs, ikT));
@@ -190,7 +191,7 @@ void BrownianDynamics::advance_orientation_0(kernel::ParticleIndex pi,
   algebra::Transformation3D nt =
       rb.get_reference_frame().get_transformation_to();
   algebra::Vector3D axis =
-      algebra::get_random_vector_on(algebra::get_unit_sphere_d<3>());
+    algebra::get_random_vector_on_unit_sphere();
   algebra::Rotation3D rrot = algebra::get_rotation_about_axis(axis, angle);
   nt = nt * rrot;
   algebra::Vector3D torque(get_torque(get_model(), pi, 0, dtfs, ikT),

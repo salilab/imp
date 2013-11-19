@@ -61,7 +61,9 @@ inline VectorD<2> get_random_vector_on(const SphereD<2> &s) {
   return ret + s.get_center();
 }
 
-inline VectorD<3> get_random_vector_on(const SphereD<3> &s) {
+//! returns a random vector on a sphere of radius 1
+//! with implementation optimized for the 3D + unit vector case
+inline VectorD<3> get_random_vector_on_unit_sphere() {
   ::boost::uniform_real<> rand(-1, 1);
   do {
     double x1 = rand(base::random_number_generator);
@@ -73,9 +75,16 @@ inline VectorD<3> get_random_vector_on(const SphereD<3> &s) {
       ret[0] = 2 * x1 * sq;
       ret[1] = 2 * x2 * sq;
       ret[2] = 1 - 2 * ssq;
-      return s.get_center() + ret * s.get_radius();
+      return ret;
     }
   } while (true);
+}
+
+//! returns a random vector on the surface of the sphere s in 3D
+//! with implementation optimized for the 3D case
+inline VectorD<3> get_random_vector_on(const SphereD<3> &s) {
+    return s.get_center() +
+      s.get_radius() * get_random_vector_on_unit_sphere();
 }
 
 /*inline VectorD<3> get_random_vector_on(const SphereD<3> &s) {
