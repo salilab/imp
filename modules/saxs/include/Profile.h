@@ -38,8 +38,6 @@ public:
   //! init for theoretical profile
   Profile(Float qmin = 0.0, Float qmax = 0.5, Float delta = 0.005);
 
-  IMP_OBJECT_METHODS(Profile);
-
   // Various ways to compute a profile
 
   //! computes theoretical profile
@@ -229,6 +227,8 @@ public:
 
   // parameter for E^2(q), used in faster calculation
   static const Float modulation_function_parameter_;
+
+  IMP_OBJECT_METHODS(Profile);
 
  protected:
   void init();
