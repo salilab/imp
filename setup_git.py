@@ -16,8 +16,8 @@ opt.add_option("-g", "--global",
 
 (options, args) = opt.parse_args()
 
-os.system("git submodule init")
-os.system("git submodule update")
+os.system("git submodule update --init --recursive")
+os.system("git submodule update --recursive")
 
 if options.glob:
     git_config = "git config --global --replace-all"
