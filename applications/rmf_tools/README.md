@@ -11,8 +11,6 @@ Several helper programs are provided.
 - `pdb_rmf` converts an rmf file to or from a PDB file, assuming all hierarchies
    in the rmf file are atomic resolution.
 
-- `rmf_color` adds color information to an RMF
-
 # Info
 
 _Author(s)_: Daniel Russel
