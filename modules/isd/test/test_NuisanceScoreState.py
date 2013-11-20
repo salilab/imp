@@ -37,7 +37,7 @@ class XTransRestraint(IMP.kernel.Restraint):
         return [x for x in self.get_model().get_particles()]
 
 
-class Tests(IMP.test.TestCase):
+class TestNuisanceScoreState(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
@@ -122,6 +122,48 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(n.get_value(Switching.get_switching_key()),
                                0.0, delta=1e-7)
         self.assertAlmostEqual(self.rs.values[0], 0.0)
+
+    def test_NormalMover_MC_ok(self):
+        "Test nuisance scorestate with MonteCarlo mover"
+        nuis= Nuisance.setup_particle(IMP.kernel.Particle(self.m), 50.0)
+        lower = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 10.0)
+        upper = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 90.0)
+        nuis.set_lower(1.0)
+        nuis.set_lower(lower)
+        nuis.set_upper(upper)
+        nuis.set_upper(80.0)
+        nmv = IMP.core.NormalMover([nuis],
+                       IMP.FloatKeys([IMP.FloatKey("nuisance")]), 10.0)
+        mc = IMP.core.MonteCarlo(self.m)
+        mc.set_return_best(False)
+        mc.set_kt(1.0)
+        mc.add_mover(nmv)
+        for i in range(100):
+            mc.optimize(10)
+            self.assertTrue(nuis.get_nuisance() >= nuis.get_lower()
+                        and nuis.get_nuisance() <= nuis.get_upper())
+
+
+    def test_NormalMover_MC_fails(self):
+        "Test nuisance scorestate with MonteCarlo mover"
+        self.m.remove_restraint(self.rs)
+        nuis= Nuisance.setup_particle(IMP.kernel.Particle(self.m), 50.0)
+        lower = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 10.0)
+        upper = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 90.0)
+        nuis.set_lower(1.0)
+        nuis.set_lower(lower)
+        nuis.set_upper(upper)
+        nuis.set_upper(80.0)
+        nmv = IMP.core.NormalMover([nuis],
+                       IMP.FloatKeys([IMP.FloatKey("nuisance")]), 10.0)
+        mc = IMP.core.MonteCarlo(self.m)
+        mc.set_return_best(False)
+        mc.set_kt(1.0)
+        mc.add_mover(nmv)
+        for i in range(100):
+            mc.optimize(10)
+            self.assertTrue(nuis.get_nuisance() >= nuis.get_lower()
+                        and nuis.get_nuisance() <= nuis.get_upper())
 
 if __name__ == '__main__':
     IMP.test.main()
