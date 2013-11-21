@@ -18,6 +18,7 @@
 #include <IMP/base/log_macros.h>
 #include <IMP/kernel/Model.h>
 #include <RMF/RestoreCurrentFrame.h>
+#include <RMF/SetCurrentFrame.h>
 #include <RMF/names.h>
 #include <RMF/decorators.h>
 
