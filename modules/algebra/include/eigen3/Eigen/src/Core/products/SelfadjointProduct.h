@@ -67,7 +67,7 @@ struct selfadjoint_product_selector<MatrixType,OtherType,UpLo,true>
     };
     internal::gemv_static_vector_if<Scalar,OtherType::SizeAtCompileTime,OtherType::MaxSizeAtCompileTime,!UseOtherDirectly> static_other;
 
-    ei_declare_aligned_stack_constructed_variable(Scalar, actualOtherPtr, other.size(),
+    imp_ei_declare_aligned_stack_constructed_variable(Scalar, actualOtherPtr, other.size(),
       (UseOtherDirectly ? const_cast<Scalar*>(actualOther.data()) : static_other.data()));
       
     if(!UseOtherDirectly)

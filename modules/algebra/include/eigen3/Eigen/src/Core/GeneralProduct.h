@@ -440,7 +440,7 @@ template<> struct gemv_selector<OnTheRight,ColMajor,true>
     
     RhsScalar compatibleAlpha = get_factor<ResScalar,RhsScalar>::run(actualAlpha);
 
-    ei_declare_aligned_stack_constructed_variable(ResScalar,actualDestPtr,dest.size(),
+    imp_ei_declare_aligned_stack_constructed_variable(ResScalar,actualDestPtr,dest.size(),
                                                   evalToDest ? dest.data() : static_dest.data());
     
     if(!evalToDest)
@@ -505,7 +505,7 @@ template<> struct gemv_selector<OnTheRight,RowMajor,true>
 
     gemv_static_vector_if<RhsScalar,_ActualRhsType::SizeAtCompileTime,_ActualRhsType::MaxSizeAtCompileTime,!DirectlyUseRhs> static_rhs;
 
-    ei_declare_aligned_stack_constructed_variable(RhsScalar,actualRhsPtr,actualRhs.size(),
+    imp_ei_declare_aligned_stack_constructed_variable(RhsScalar,actualRhsPtr,actualRhs.size(),
         DirectlyUseRhs ? const_cast<RhsScalar*>(actualRhs.data()) : static_rhs.data());
 
     if(!DirectlyUseRhs)

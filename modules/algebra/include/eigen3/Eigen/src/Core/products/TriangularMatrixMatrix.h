@@ -127,9 +127,9 @@ IMP_EIGEN_DONT_INLINE void product_triangular_matrix_matrix<Scalar,Index,Mode,tr
     std::size_t sizeB = kc*cols;
     std::size_t sizeW = kc*Traits::WorkSpaceFactor;
 
-    ei_declare_aligned_stack_constructed_variable(Scalar, blockA, sizeA, blocking.blockA());
-    ei_declare_aligned_stack_constructed_variable(Scalar, blockB, sizeB, blocking.blockB());
-    ei_declare_aligned_stack_constructed_variable(Scalar, blockW, sizeW, blocking.blockW());
+    imp_ei_declare_aligned_stack_constructed_variable(Scalar, blockA, sizeA, blocking.blockA());
+    imp_ei_declare_aligned_stack_constructed_variable(Scalar, blockB, sizeB, blocking.blockB());
+    imp_ei_declare_aligned_stack_constructed_variable(Scalar, blockW, sizeW, blocking.blockW());
 
     Matrix<Scalar,SmallPanelWidth,SmallPanelWidth,LhsStorageOrder> triangularBuffer;
     triangularBuffer.setZero();
@@ -268,9 +268,9 @@ IMP_EIGEN_DONT_INLINE void product_triangular_matrix_matrix<Scalar,Index,Mode,fa
     std::size_t sizeB = kc*cols;
     std::size_t sizeW = kc*Traits::WorkSpaceFactor;
 
-    ei_declare_aligned_stack_constructed_variable(Scalar, blockA, sizeA, blocking.blockA());
-    ei_declare_aligned_stack_constructed_variable(Scalar, blockB, sizeB, blocking.blockB());
-    ei_declare_aligned_stack_constructed_variable(Scalar, blockW, sizeW, blocking.blockW());
+    imp_ei_declare_aligned_stack_constructed_variable(Scalar, blockA, sizeA, blocking.blockA());
+    imp_ei_declare_aligned_stack_constructed_variable(Scalar, blockB, sizeB, blocking.blockB());
+    imp_ei_declare_aligned_stack_constructed_variable(Scalar, blockW, sizeW, blocking.blockW());
 
     Matrix<Scalar,SmallPanelWidth,SmallPanelWidth,RhsStorageOrder> triangularBuffer;
     triangularBuffer.setZero();

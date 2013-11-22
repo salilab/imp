@@ -570,7 +570,7 @@ template<typename T> class aligned_stack_memory_handler
   * Here is an example:
   * \code
   * {
-  *   ei_declare_aligned_stack_constructed_variable(float,data,size,0);
+  *   imp_ei_declare_aligned_stack_constructed_variable(float,data,size,0);
   *   // use data[0] to data[size-1]
   * }
   * \endcode
@@ -584,7 +584,7 @@ template<typename T> class aligned_stack_memory_handler
     #define IMP_EIGEN_ALIGNED_ALLOCA IMP_EIGEN_ALLOCA
   #endif
 
-  #define ei_declare_aligned_stack_constructed_variable(TYPE,NAME,SIZE,BUFFER) \
+  #define imp_ei_declare_aligned_stack_constructed_variable(TYPE,NAME,SIZE,BUFFER) \
     IMP_Eigen::internal::check_size_for_overflow<TYPE>(SIZE); \
     TYPE* NAME = (BUFFER)!=0 ? (BUFFER) \
                : reinterpret_cast<TYPE*>( \
@@ -594,7 +594,7 @@ template<typename T> class aligned_stack_memory_handler
 
 #else
 
-  #define ei_declare_aligned_stack_constructed_variable(TYPE,NAME,SIZE,BUFFER) \
+  #define imp_ei_declare_aligned_stack_constructed_variable(TYPE,NAME,SIZE,BUFFER) \
     IMP_Eigen::internal::check_size_for_overflow<TYPE>(SIZE); \
     TYPE* NAME = (BUFFER)!=0 ? BUFFER : reinterpret_cast<TYPE*>(IMP_Eigen::internal::aligned_malloc(sizeof(TYPE)*SIZE));    \
     IMP_Eigen::internal::aligned_stack_memory_handler<TYPE> IMP_EIGEN_CAT(NAME,_stack_memory_destructor)((BUFFER)==0 ? NAME : 0,SIZE,true)

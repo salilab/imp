@@ -64,7 +64,7 @@ IMP_EIGEN_DONT_INLINE void selfadjoint_matrix_vector_product<Scalar,Index,Storag
   // FIXME this copy is now handled outside product_selfadjoint_vector, so it could probably be removed.
   // if the rhs is not sequentially stored in memory we copy it to a temporary buffer,
   // this is because we need to extract packets
-  ei_declare_aligned_stack_constructed_variable(Scalar,rhs,size,rhsIncr==1 ? const_cast<Scalar*>(_rhs) : 0);  
+  imp_ei_declare_aligned_stack_constructed_variable(Scalar,rhs,size,rhsIncr==1 ? const_cast<Scalar*>(_rhs) : 0);  
   if (rhsIncr!=1)
   {
     const Scalar* it = _rhs;
@@ -209,10 +209,10 @@ struct SelfadjointProductMatrix<Lhs,LhsMode,false,Rhs,0,true>
     internal::gemv_static_vector_if<ResScalar,Dest::SizeAtCompileTime,Dest::MaxSizeAtCompileTime,!EvalToDest> static_dest;
     internal::gemv_static_vector_if<RhsScalar,_ActualRhsType::SizeAtCompileTime,_ActualRhsType::MaxSizeAtCompileTime,!UseRhs> static_rhs;
 
-    ei_declare_aligned_stack_constructed_variable(ResScalar,actualDestPtr,dest.size(),
+    imp_ei_declare_aligned_stack_constructed_variable(ResScalar,actualDestPtr,dest.size(),
                                                   EvalToDest ? dest.data() : static_dest.data());
                                                   
-    ei_declare_aligned_stack_constructed_variable(RhsScalar,actualRhsPtr,rhs.size(),
+    imp_ei_declare_aligned_stack_constructed_variable(RhsScalar,actualRhsPtr,rhs.size(),
         UseRhs ? const_cast<RhsScalar*>(rhs.data()) : static_rhs.data());
     
     if(!EvalToDest)

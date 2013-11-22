@@ -68,9 +68,9 @@ IMP_EIGEN_DONT_INLINE void triangular_solve_matrix<Scalar,Index,OnTheLeft,Mode,C
     std::size_t sizeB = kc*cols;
     std::size_t sizeW = kc*Traits::WorkSpaceFactor;
 
-    ei_declare_aligned_stack_constructed_variable(Scalar, blockA, sizeA, blocking.blockA());
-    ei_declare_aligned_stack_constructed_variable(Scalar, blockB, sizeB, blocking.blockB());
-    ei_declare_aligned_stack_constructed_variable(Scalar, blockW, sizeW, blocking.blockW());
+    imp_ei_declare_aligned_stack_constructed_variable(Scalar, blockA, sizeA, blocking.blockA());
+    imp_ei_declare_aligned_stack_constructed_variable(Scalar, blockB, sizeB, blocking.blockB());
+    imp_ei_declare_aligned_stack_constructed_variable(Scalar, blockW, sizeW, blocking.blockW());
 
     conj_if<Conjugate> conj;
     gebp_kernel<Scalar, Scalar, Index, Traits::mr, Traits::nr, Conjugate, false> gebp_kernel;
@@ -217,9 +217,9 @@ IMP_EIGEN_DONT_INLINE void triangular_solve_matrix<Scalar,Index,OnTheRight,Mode,
     std::size_t sizeB = kc*size;
     std::size_t sizeW = kc*Traits::WorkSpaceFactor;
 
-    ei_declare_aligned_stack_constructed_variable(Scalar, blockA, sizeA, blocking.blockA());
-    ei_declare_aligned_stack_constructed_variable(Scalar, blockB, sizeB, blocking.blockB());
-    ei_declare_aligned_stack_constructed_variable(Scalar, blockW, sizeW, blocking.blockW());
+    imp_ei_declare_aligned_stack_constructed_variable(Scalar, blockA, sizeA, blocking.blockA());
+    imp_ei_declare_aligned_stack_constructed_variable(Scalar, blockB, sizeB, blocking.blockB());
+    imp_ei_declare_aligned_stack_constructed_variable(Scalar, blockW, sizeW, blocking.blockW());
 
     conj_if<Conjugate> conj;
     gebp_kernel<Scalar,Scalar, Index, Traits::mr, Traits::nr, false, Conjugate> gebp_kernel;

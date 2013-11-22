@@ -75,8 +75,8 @@ struct general_matrix_matrix_triangular_product<Index,LhsScalar,LhsStorageOrder,
 
     std::size_t sizeW = kc*Traits::WorkSpaceFactor;
     std::size_t sizeB = sizeW + kc*size;
-    ei_declare_aligned_stack_constructed_variable(LhsScalar, blockA, kc*mc, 0);
-    ei_declare_aligned_stack_constructed_variable(RhsScalar, allocatedBlockB, sizeB, 0);
+    imp_ei_declare_aligned_stack_constructed_variable(LhsScalar, blockA, kc*mc, 0);
+    imp_ei_declare_aligned_stack_constructed_variable(RhsScalar, allocatedBlockB, sizeB, 0);
     RhsScalar* blockB = allocatedBlockB + sizeW;
     
     gemm_pack_lhs<LhsScalar, Index, Traits::mr, Traits::LhsProgress, LhsStorageOrder> pack_lhs;
@@ -216,12 +216,12 @@ struct general_product_to_triangular_selector<MatrixType,ProductType,UpLo,true>
     };
     
     internal::gemv_static_vector_if<Scalar,Lhs::SizeAtCompileTime,Lhs::MaxSizeAtCompileTime,!UseLhsDirectly> static_lhs;
-    ei_declare_aligned_stack_constructed_variable(Scalar, actualLhsPtr, actualLhs.size(),
+    imp_ei_declare_aligned_stack_constructed_variable(Scalar, actualLhsPtr, actualLhs.size(),
       (UseLhsDirectly ? const_cast<Scalar*>(actualLhs.data()) : static_lhs.data()));
     if(!UseLhsDirectly) Map<typename _ActualLhs::PlainObject>(actualLhsPtr, actualLhs.size()) = actualLhs;
     
     internal::gemv_static_vector_if<Scalar,Rhs::SizeAtCompileTime,Rhs::MaxSizeAtCompileTime,!UseRhsDirectly> static_rhs;
-    ei_declare_aligned_stack_constructed_variable(Scalar, actualRhsPtr, actualRhs.size(),
+    imp_ei_declare_aligned_stack_constructed_variable(Scalar, actualRhsPtr, actualRhs.size(),
       (UseRhsDirectly ? const_cast<Scalar*>(actualRhs.data()) : static_rhs.data()));
     if(!UseRhsDirectly) Map<typename _ActualRhs::PlainObject>(actualRhsPtr, actualRhs.size()) = actualRhs;
     

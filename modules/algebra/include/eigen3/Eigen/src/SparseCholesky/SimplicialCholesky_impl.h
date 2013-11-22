@@ -55,7 +55,7 @@ void SimplicialCholeskyBase<Derived>::analyzePattern_preordered(const CholMatrix
   m_parent.resize(size);
   m_nonZerosPerCol.resize(size);
 
-  ei_declare_aligned_stack_constructed_variable(Index, tags, size, 0);
+  imp_ei_declare_aligned_stack_constructed_variable(Index, tags, size, 0);
 
   for(Index k = 0; k < size; ++k)
   {
@@ -112,9 +112,9 @@ void SimplicialCholeskyBase<Derived>::factorize_preordered(const CholMatrixType&
   Index* Li = m_matrix.innerIndexPtr();
   Scalar* Lx = m_matrix.valuePtr();
 
-  ei_declare_aligned_stack_constructed_variable(Scalar, y, size, 0);
-  ei_declare_aligned_stack_constructed_variable(Index,  pattern, size, 0);
-  ei_declare_aligned_stack_constructed_variable(Index,  tags, size, 0);
+  imp_ei_declare_aligned_stack_constructed_variable(Scalar, y, size, 0);
+  imp_ei_declare_aligned_stack_constructed_variable(Index,  pattern, size, 0);
+  imp_ei_declare_aligned_stack_constructed_variable(Index,  tags, size, 0);
 
   bool ok = true;
   m_diag.resize(DoLDLT ? size : 0);

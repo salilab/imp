@@ -263,8 +263,8 @@ IMP_EIGEN_DONT_INLINE void product_selfadjoint_matrix<Scalar,Index,LhsStorageOrd
 
     std::size_t sizeW = kc*Traits::WorkSpaceFactor;
     std::size_t sizeB = sizeW + kc*cols;
-    ei_declare_aligned_stack_constructed_variable(Scalar, blockA, kc*mc, 0);
-    ei_declare_aligned_stack_constructed_variable(Scalar, allocatedBlockB, sizeB, 0);
+    imp_ei_declare_aligned_stack_constructed_variable(Scalar, blockA, kc*mc, 0);
+    imp_ei_declare_aligned_stack_constructed_variable(Scalar, allocatedBlockB, sizeB, 0);
     Scalar* blockB = allocatedBlockB + sizeW;
 
     gebp_kernel<Scalar, Scalar, Index, Traits::mr, Traits::nr, ConjugateLhs, ConjugateRhs> gebp_kernel;
@@ -350,8 +350,8 @@ IMP_EIGEN_DONT_INLINE void product_selfadjoint_matrix<Scalar,Index,LhsStorageOrd
     computeProductBlockingSizes<Scalar,Scalar>(kc, mc, nc);
     std::size_t sizeW = kc*Traits::WorkSpaceFactor;
     std::size_t sizeB = sizeW + kc*cols;
-    ei_declare_aligned_stack_constructed_variable(Scalar, blockA, kc*mc, 0);
-    ei_declare_aligned_stack_constructed_variable(Scalar, allocatedBlockB, sizeB, 0);
+    imp_ei_declare_aligned_stack_constructed_variable(Scalar, blockA, kc*mc, 0);
+    imp_ei_declare_aligned_stack_constructed_variable(Scalar, allocatedBlockB, sizeB, 0);
     Scalar* blockB = allocatedBlockB + sizeW;
 
     gebp_kernel<Scalar, Scalar, Index, Traits::mr, Traits::nr, ConjugateLhs, ConjugateRhs> gebp_kernel;
