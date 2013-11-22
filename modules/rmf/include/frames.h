@@ -11,6 +11,7 @@
 
 #include <IMP/rmf/rmf_config.h>
 #include <RMF/FileHandle.h>
+#include <IMP/base/deprecation_macros.h>
 
 IMPRMF_BEGIN_NAMESPACE
 
