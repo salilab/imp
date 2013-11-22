@@ -16,7 +16,7 @@ IMPSCOREFUNCTOR_BEGIN_INTERNAL_NAMESPACE
 namespace {
 
 /* Convert the topmost HDF5 error into an IMP exception */
-herr_t errwalkfunc(unsigned n, const H5E_error_t *err_desc, void *)
+herr_t errwalkfunc(unsigned n, const H5E_error2_t *err_desc, void *)
 {
   if (n == 0) {
     std::string errmsg = (err_desc->desc && strlen(err_desc->desc) > 0) ?
@@ -30,7 +30,7 @@ herr_t errwalkfunc(unsigned n, const H5E_error_t *err_desc, void *)
 
 void handle_hdf5_error()
 {
-  H5Ewalk(H5E_DEFAULT, H5E_WALK_DOWNWARD, errwalkfunc, NULL);
+  H5Ewalk2(H5E_DEFAULT, H5E_WALK_DOWNWARD, errwalkfunc, NULL);
   IMP_THROW("Generic HDF5 error", IOException);
 }
 

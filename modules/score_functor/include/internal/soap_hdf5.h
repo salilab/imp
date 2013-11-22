@@ -146,7 +146,7 @@ class Hdf5Dataset : public boost::noncopyable {
   }
 public:
   Hdf5Dataset(hid_t loc_id, std::string name) : id_(-1) {
-    IMP_HDF5_ERRCHECK(id_ = H5Dopen(loc_id, name.c_str(), H5P_DEFAULT));
+    IMP_HDF5_ERRCHECK(id_ = H5Dopen2(loc_id, name.c_str(), H5P_DEFAULT));
   }
 
   void read_float(float *data) {
@@ -213,7 +213,7 @@ class Hdf5Group : public boost::noncopyable {
 
 public:
   Hdf5Group(hid_t loc_id, std::string name) : id_(-1) {
-    IMP_HDF5_ERRCHECK(id_ = H5Gopen(loc_id, name.c_str(), H5P_DEFAULT));
+    IMP_HDF5_ERRCHECK(id_ = H5Gopen2(loc_id, name.c_str(), H5P_DEFAULT));
   }
 
   // Read and return a single float attribute attached to this group
