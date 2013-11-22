@@ -14,7 +14,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
 #ifdef IMP_DOXYGEN
 /** This writer displays things to a
-    \external{http://pivy.coin3d.org/,Pivy} window.
+    [Pivy](https://pypi.python.org/pypi/Pivy) window.
 
     At the moment it support SphereGeometry and CylinderGeometry.
 
