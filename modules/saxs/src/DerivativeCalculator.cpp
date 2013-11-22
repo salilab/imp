@@ -47,7 +47,7 @@ void DerivativeCalculator::compute_sinc_cos(Float pr_resolution,
   }
 }
 
-void DerivativeCalculator::compute_profile_difference(
+void DerivativeCalculator::compute_gaussian_effect_size(
                                        const Profile* model_profile,
                                        const Float c, const Float offset,
                                        std::vector<double>& profile_diff) const
@@ -72,20 +72,6 @@ void DerivativeCalculator::compute_profile_difference(
   }
 }
 
-/* compute the model-specific part of the derivative of the chi square e.g.
- * -2 * c * w_tilda(q) * (Iexp(q)-c*Icalc(q) + o) for each q
- */
-std::vector<double> DerivativeCalculator::compute_gaussian_effect_size(
-        const Profile* model_profile,
-        const ProfileFitter<ChiScore>* pf, bool use_offset) const
-{
-  Float offset = 0.0;
-  if(use_offset) offset = pf->compute_offset(model_profile);
-  Float c = pf->compute_scale_factor(model_profile);
-  std::vector<double> effect_size;
-  compute_profile_difference(model_profile, c, offset, effect_size);
-  return effect_size;
-}
 
 /*
  * precompute sinc_cos function and derivative of distance distribution
@@ -168,70 +154,5 @@ void DerivativeCalculator::compute_chisquare_derivative(
     derivatives[iatom] = chisquare_derivative;
   }
 }
-
-/*
- * loop over all particles and rigid bodies, and call compute_chi_derivative on
- * them
- */
-void DerivativeCalculator::compute_all_derivatives(
-               const kernel::Particles& particles,
-               const std::vector<kernel::Particles>& rigid_bodies,
-               const std::vector<core::RigidBody>& rigid_bodies_decorators,
-               const Profile* model_profile,
-               const std::vector<double>& effect_size,
-               DerivativeAccumulator *acc) const
-{
-  std::vector<IMP::algebra::VectorD<3> > derivatives;
-  const FloatKeys keys = IMP::core::XYZ::get_xyz_keys();
-
-  // 1. compute derivatives for each rigid body
-  for(unsigned int i=0; i<rigid_bodies.size(); i++) {
-    if(!rigid_bodies_decorators[i].get_coordinates_are_optimized()) continue;
-    // contribution from other rigid bodies
-    for(unsigned int j=0; j<rigid_bodies.size(); j++) {
-      if(i == j) continue;
-      compute_chisquare_derivative(model_profile, rigid_bodies[i],
-              rigid_bodies[j], derivatives, effect_size);
-      for (unsigned int k = 0; k < rigid_bodies[i].size(); k++) {
-        rigid_bodies[i][k]->add_to_derivative(keys[0],derivatives[k][0], *acc);
-        rigid_bodies[i][k]->add_to_derivative(keys[1],derivatives[k][1], *acc);
-        rigid_bodies[i][k]->add_to_derivative(keys[2],derivatives[k][2], *acc);
-      }
-    }
-    if(particles.size() > 0) {
-      // contribution from other particles
-      compute_chisquare_derivative(model_profile, rigid_bodies[i],
-                                          particles, derivatives, effect_size);
-      for (unsigned int k = 0; k < rigid_bodies[i].size(); k++) {
-        rigid_bodies[i][k]->add_to_derivative(keys[0],derivatives[k][0], *acc);
-        rigid_bodies[i][k]->add_to_derivative(keys[1],derivatives[k][1], *acc);
-        rigid_bodies[i][k]->add_to_derivative(keys[2],derivatives[k][2], *acc);
-      }
-    }
-  }
-
-  // 2. compute derivatives for other particles
-  if(particles.size() > 0) {
-    // particles own contribution
-    compute_chisquare_derivative(model_profile, particles, derivatives,
-            effect_size);
-    for (unsigned int i = 0; i < particles.size(); i++) {
-      particles[i]->add_to_derivative(keys[0], derivatives[i][0], *acc);
-      particles[i]->add_to_derivative(keys[1], derivatives[i][1], *acc);
-      particles[i]->add_to_derivative(keys[2], derivatives[i][2], *acc);
-    }
-    // rigid bodies contribution
-    for(unsigned int i=0; i<rigid_bodies.size(); i++) {
-      compute_chisquare_derivative(model_profile, particles, rigid_bodies[i],
-              derivatives, effect_size);
-      for (unsigned int i = 0; i < particles.size(); i++) {
-        particles[i]->add_to_derivative(keys[0], derivatives[i][0], *acc);
-        particles[i]->add_to_derivative(keys[1], derivatives[i][1], *acc);
-        particles[i]->add_to_derivative(keys[2], derivatives[i][2], *acc);
-      }
-    }
-  }
-}
-
 
 IMPSAXS_END_NAMESPACE
