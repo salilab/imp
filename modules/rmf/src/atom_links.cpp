@@ -21,7 +21,6 @@
 #include <RMF/utility.h>
 #include <RMF/decorators.h>
 #include <boost/make_shared.hpp>
-#include <RMF/RestoreCurrentFrame.h>
 #include <RMF/SetCurrentFrame.h>
 
 IMPRMF_BEGIN_NAMESPACE
@@ -164,8 +163,6 @@ HierarchyLoadLink::HierarchyLoadLink(RMF::FileConstHandle fh)
 void HierarchySaveLink::do_add(kernel::Particle *p, RMF::NodeHandle cur) {
   IMP_USAGE_CHECK(atom::Hierarchy(p).get_is_valid(true),
                   "Invalid hierarchy passed.");
-
-  RMF::RestoreCurrentFrame scf(cur.get_file());
   data_.insert(
       std::make_pair(p->get_index(), boost::make_shared<Data>(cur.get_file())));
   add_recursive(p->get_model(), p->get_index(), p->get_index(),

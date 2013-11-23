@@ -19,7 +19,6 @@
 #include <IMP/display/Colored.h>
 #include <RMF/SetCurrentFrame.h>
 #include <RMF/NodeHandle.h>
-#include <RMF/RestoreCurrentFrame.h>
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 
@@ -304,7 +303,6 @@ void HierarchyLoadBonds::setup_bonds(RMF::NodeConstHandle n, kernel::Model *m,
 
 void HierarchySaveBonds::setup_bonds(kernel::Model *m, kernel::ParticleIndex p,
                                      RMF::NodeHandle n) {
-  RMF::RestoreCurrentFrame scf(n.get_file());
   IMP_FUNCTION_LOG;
   atom::Bonds bds = atom::get_internal_bonds(atom::Hierarchy(m, p));
   if (bds.empty()) return;

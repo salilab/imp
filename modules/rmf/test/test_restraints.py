@@ -52,18 +52,21 @@ class Tests(IMP.test.TestCase):
             r.evaluate(False)
             IMP.rmf.add_restraint(f, r)
             IMP.rmf.save_frame(f, str(0))
+            del f
+            f = RMF.open_rmf_file_read_only(nm)
             rr = IMP.rmf.create_restraints(f, m)
             IMP.rmf.load_frame(f, RMF.FrameID(0))
             self.assertEqual(rr[0].evaluate(False), r.evaluate(False))
 
     def test_2(self):
         """Test writing dynamic restraints"""
+        RMF.set_log_level("Off")
         for suffix in RMF.suffixes:
             RMF.HDF5.set_show_errors(True)
             path = self.get_tmp_file_name("dynamic_restraints." + suffix)
             print path
             f = RMF.create_rmf_file(path)
-            IMP.base.set_log_level(IMP.base.VERBOSE)
+            IMP.base.set_log_level(IMP.base.SILENT)
             m = IMP.kernel.Model()
             ps = [IMP.kernel.Particle(m) for i in range(0, 10)]
             ds = [IMP.core.XYZR.setup_particle(p) for p in ps]
@@ -73,7 +76,7 @@ class Tests(IMP.test.TestCase):
             cpc = IMP.container.ClosePairContainer(ps, 0)
             r = IMP.container.PairsRestraint(
                 IMP.core.SoftSpherePairScore(1),
-                cpc)
+                cpc, "PR")
             bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                            IMP.algebra.Vector3D(10, 10, 10))
             r.evaluate(False)
@@ -84,6 +87,7 @@ class Tests(IMP.test.TestCase):
                     d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
                 scores.append(r.evaluate(False))
                 IMP.rmf.save_frame(f, str(i))
+                RMF.show_hierarchy_with_values(f.get_root_node())
             for i, d in enumerate(ds):
                 d.set_x(i * 10)
             scores.append(r.evaluate(False))
@@ -94,8 +98,9 @@ class Tests(IMP.test.TestCase):
             f = RMF.open_rmf_file_read_only(path)
             bps = IMP.rmf.create_particles(f, m)
             rr = IMP.rmf.create_restraints(f, m)
-            print rr[0].get_name()
             print scores
+            print rr[0].get_name(), rr[0].get_type_name()
+            print path
             for i in range(0, 11):
                 IMP.rmf.load_frame(f, RMF.FrameID(i))
                 print i, scores[i], rr[0].evaluate(False)

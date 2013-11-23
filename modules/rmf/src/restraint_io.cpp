@@ -15,7 +15,6 @@
 #include <IMP/base/ConstVector.h>
 #include <IMP/base/WeakPointer.h>
 #include <boost/shared_array.hpp>
-#include <RMF/RestoreCurrentFrame.h>
 
 IMPRMF_BEGIN_NAMESPACE
 namespace {
@@ -107,7 +106,6 @@ RMF::NodeHandle get_node(Subset s, RestraintSaveData &d,
                          RMF::RepresentationFactory sf,
                          RMF::NodeHandle parent) {
   if (d.map_.find(s) == d.map_.end()) {
-    RMF::RestoreCurrentFrame scf(parent.get_file());
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       for (base::map<Subset, RMF::NodeID>::const_iterator it = d.map_.begin();
            it != d.map_.end(); ++it) {
@@ -220,7 +218,7 @@ class RestraintSaveLink : public SimpleSaveLink<kernel::Restraint> {
     all_.push_back(r);
     rsf_ = new core::RestraintsScoringFunction(all_);
     nh.set_static_value(weight_key_, r->get_weight());
-    sf_.get(nh).set_static_score(0.0);
+    //sf_.get(nh).set_static_score(0.0);
     add_link(r, nh);
     kernel::RestraintSet *rs = dynamic_cast<kernel::RestraintSet *>(r);
     if (rs) {
@@ -241,22 +239,20 @@ class RestraintSaveLink : public SimpleSaveLink<kernel::Restraint> {
     IMP_OBJECT_LOG;
     IMP_LOG_TERSE("Saving restraint info for " << o->get_name() << std::endl);
     RestraintSaveData &d = data_[o];
-    {
-
-      if (!sf_.get_is(nh)) {
-        RMF::Representation sdnf = rf_.get(nh);
-        // be lazy about it
-        kernel::ParticlesTemp inputs = get_input_particles(o->get_inputs());
-        std::sort(inputs.begin(), inputs.end());
-        inputs.erase(std::unique(inputs.begin(), inputs.end()), inputs.end());
-        RMF::Ints nhs = get_node_ids(nh.get_file(), inputs);
-        sdnf.set_static_representation(nhs);
-      }
+    if (!sf_.get_is(nh)) {
+      RMF::Representation sdnf = rf_.get(nh);
+      // be lazy about it
+      kernel::ParticlesTemp inputs = get_input_particles(o->get_inputs());
+      std::sort(inputs.begin(), inputs.end());
+      inputs.erase(std::unique(inputs.begin(), inputs.end()), inputs.end());
+      RMF::Ints nhs = get_node_ids(nh.get_file(), inputs);
+      sdnf.set_static_representation(nhs);
     }
+
     RMF::Score sd = sf_.get(nh);
     double score = o->get_last_score();
     // only set score if it is valid
-    if (score < std::numeric_limits<double>::max()) {
+    if (score != 0) {
       IMP_LOG_TERSE("Saving score" << std::endl);
       sd.set_frame_score(score);
       if (no_terms_.find(o) != no_terms_.end()) {
@@ -281,11 +277,14 @@ class RestraintSaveLink : public SimpleSaveLink<kernel::Restraint> {
             no_terms_.insert(o);
             // delete old children
           } else {
-            for (unsigned int i = 0; i < rs.size(); ++i) {
-              Subset s(get_input_particles(rs[i]->get_inputs()));
-              double score = rs[i]->get_last_score();
-              rs[i]->set_was_used(true);
+            IMP_FOREACH(Restraint *r, rs) {
+              Subset s(get_input_particles(r->get_inputs()));
+              double score = r->get_last_score();
+              r->set_was_used(true);
               if (score != 0) {
+                IMP_LOG_VERBOSE("Saving subscore for for " << r->get_name()
+                                                           << " of " << score
+                                                           << std::endl);
                 RMF::NodeHandle nnh = get_node(s, d, rf_, nh);
                 RMF::Score csd = sf_.get(nnh);
                 csd.set_frame_score(score);
