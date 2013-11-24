@@ -12,6 +12,7 @@
 
 #include <IMP/saxs/saxs_config.h>
 #include <IMP/saxs/Profile.h>
+#include <IMP/saxs/DerivativeCalculator.h>
 
 #include <IMP/core/rigid_bodies.h>
 
@@ -22,7 +23,7 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-class IMPSAXSEXPORT RigidBodiesProfileHandler {
+class IMPSAXSEXPORT RigidBodiesProfileHandler: public base::Object {
 public:
   RigidBodiesProfileHandler(const kernel::Particles& particles,
                             FormFactorType ff_type = HEAVY_ATOMS);
@@ -39,6 +40,8 @@ public:
                            DerivativeAccumulator *acc) const;
 
   ModelObjectsTemp do_get_inputs() const;
+
+  IMP_OBJECT_METHODS(RigidBodiesProfileHandler);
 
 protected:
   kernel::Particles particles_; // non-rigid bodies particles

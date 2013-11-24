@@ -62,7 +62,7 @@ class IMPSAXSEXPORT Restraint : public kernel::Restraint
   IMP_OBJECT_METHODS(Restraint);
 
  protected:
-  RigidBodiesProfileHandler handler_;
+  base::Pointer<RigidBodiesProfileHandler> handler_;
   base::Pointer<ProfileFitter<ChiScore> > profile_fitter_; // computes profiles
   // computes derivatives
   base::Pointer<DerivativeCalculator> derivative_calculator_;
