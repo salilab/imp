@@ -18,8 +18,9 @@ IMPRMF_BEGIN_INTERNAL_NAMESPACE
 
 /** Load coordinates that don't change between frames. */
 class IMPRMFEXPORT HierarchyLoadStaticCoordinates {
-  RMF::IntermediateParticleConstFactory intermediate_particle_factory_;
-  RMF::ReferenceFrameConstFactory reference_frame_factory_;
+  RMF::decorator::IntermediateParticleConstFactory
+      intermediate_particle_factory_;
+  RMF::decorator::ReferenceFrameConstFactory reference_frame_factory_;
 
  public:
   HierarchyLoadStaticCoordinates(RMF::FileConstHandle f);
@@ -32,8 +33,8 @@ class IMPRMFEXPORT HierarchyLoadStaticCoordinates {
 
 /** Save coordinates that don't change between frames. */
 class IMPRMFEXPORT HierarchySaveStaticCoordinates {
-  RMF::IntermediateParticleFactory intermediate_particle_factory_;
-  RMF::ReferenceFrameFactory reference_frame_factory_;
+  RMF::decorator::IntermediateParticleFactory intermediate_particle_factory_;
+  RMF::decorator::ReferenceFrameFactory reference_frame_factory_;
 
  public:
   HierarchySaveStaticCoordinates(RMF::FileHandle f);

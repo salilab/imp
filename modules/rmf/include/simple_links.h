@@ -163,7 +163,7 @@ class SimpleSaveLink : public SaveLink {
     IMP_OBJECT_LOG;
     IMP_LOG_TERSE("Adding " << os << " to rmf" << std::endl);
     RMF::FileHandle file = parent.get_file();
-    RMF::AliasFactory af(file);
+    RMF::decorator::AliasFactory af(file);
     for (unsigned int i = 0; i < os.size(); ++i) {
       std::string nicename = RMF::get_as_node_name(os[i]->get_name());
       if (get_has_associated_node(file, os[i])) {

@@ -103,7 +103,7 @@ struct RestraintSaveData {
 };
 
 RMF::NodeHandle get_node(Subset s, RestraintSaveData &d,
-                         RMF::RepresentationFactory sf,
+                         RMF::decorator::RepresentationFactory sf,
                          RMF::NodeHandle parent) {
   if (d.map_.find(s) == d.map_.end()) {
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
@@ -115,7 +115,7 @@ RMF::NodeHandle get_node(Subset s, RestraintSaveData &d,
     RMF::NodeHandle n = parent.add_child(s.get_name(), RMF::FEATURE);
     d.map_[s] = n.get_id();
     IMP_INTERNAL_CHECK(d.map_.find(s) != d.map_.end(), "Not found");
-    RMF::Representation csd = sf.get(n);
+    RMF::decorator::Representation csd = sf.get(n);
     RMF::Ints nodes = get_node_ids(parent.get_file(), s);
     csd.set_static_representation(nodes);
   }
@@ -126,14 +126,14 @@ RMF::NodeHandle get_node(Subset s, RestraintSaveData &d,
 //
 class RestraintLoadLink : public SimpleLoadLink<kernel::Restraint> {
   typedef SimpleLoadLink<kernel::Restraint> P;
-  RMF::ScoreConstFactory sf_;
-  RMF::RepresentationConstFactory rf_;
+  RMF::decorator::ScoreConstFactory sf_;
+  RMF::decorator::RepresentationConstFactory rf_;
   RMF::Category imp_cat_;
   RMF::FloatKey weight_key_;
 
   void do_load_one(RMF::NodeConstHandle nh, kernel::Restraint *oi) {
     if (sf_.get_is(nh)) {
-      RMF::ScoreConst d = sf_.get(nh);
+      RMF::decorator::ScoreConst d = sf_.get(nh);
       IMP_LOG_TERSE("Loading score " << d.get_score() << " into restraint"
                     << oi->get_name() << std::endl);
       oi->set_last_score(d.get_score());
@@ -203,8 +203,8 @@ class RestraintLoadLink : public SimpleLoadLink<kernel::Restraint> {
 
 class RestraintSaveLink : public SimpleSaveLink<kernel::Restraint> {
   typedef SimpleSaveLink<kernel::Restraint> P;
-  RMF::ScoreFactory sf_;
-  RMF::RepresentationFactory rf_;
+  RMF::decorator::ScoreFactory sf_;
+  RMF::decorator::RepresentationFactory rf_;
   RMF::Category imp_cat_;
   RMF::FloatKey weight_key_;
   base::map<kernel::Restraint *, RestraintSaveData> data_;
@@ -240,7 +240,7 @@ class RestraintSaveLink : public SimpleSaveLink<kernel::Restraint> {
     IMP_LOG_TERSE("Saving restraint info for " << o->get_name() << std::endl);
     RestraintSaveData &d = data_[o];
     if (!sf_.get_is(nh)) {
-      RMF::Representation sdnf = rf_.get(nh);
+      RMF::decorator::Representation sdnf = rf_.get(nh);
       // be lazy about it
       kernel::ParticlesTemp inputs = get_input_particles(o->get_inputs());
       std::sort(inputs.begin(), inputs.end());
@@ -249,7 +249,7 @@ class RestraintSaveLink : public SimpleSaveLink<kernel::Restraint> {
       sdnf.set_static_representation(nhs);
     }
 
-    RMF::Score sd = sf_.get(nh);
+    RMF::decorator::Score sd = sf_.get(nh);
     double score = o->get_last_score();
     // only set score if it is valid
     if (score != 0) {
@@ -286,7 +286,7 @@ class RestraintSaveLink : public SimpleSaveLink<kernel::Restraint> {
                                                            << " of " << score
                                                            << std::endl);
                 RMF::NodeHandle nnh = get_node(s, d, rf_, nh);
-                RMF::Score csd = sf_.get(nnh);
+                RMF::decorator::Score csd = sf_.get(nnh);
                 csd.set_frame_score(score);
                 // csd.set_representation(get_node_ids(nh.get_file(), s));
               }

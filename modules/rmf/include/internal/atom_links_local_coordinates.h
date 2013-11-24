@@ -18,8 +18,9 @@
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 
 class IMPRMFEXPORT HierarchyLoadLocalCoordinates {
-  RMF::IntermediateParticleConstFactory intermediate_particle_factory_;
-  RMF::ReferenceFrameConstFactory reference_frame_factory_;
+  RMF::decorator::IntermediateParticleConstFactory
+      intermediate_particle_factory_;
+  RMF::decorator::ReferenceFrameConstFactory reference_frame_factory_;
   typedef std::pair<RMF::NodeID, kernel::ParticleIndex> Pair;
   typedef base::Vector<Pair> NodeParticlePairs;
   NodeParticlePairs xyzs_;
@@ -44,8 +45,8 @@ class IMPRMFEXPORT HierarchyLoadLocalCoordinates {
 };
 
 class IMPRMFEXPORT HierarchySaveLocalCoordinates {
-  RMF::IntermediateParticleFactory intermediate_particle_factory_;
-  RMF::ReferenceFrameFactory reference_frame_factory_;
+  RMF::decorator::IntermediateParticleFactory intermediate_particle_factory_;
+  RMF::decorator::ReferenceFrameFactory reference_frame_factory_;
   typedef std::pair<RMF::NodeID, kernel::ParticleIndex> Pair;
   typedef base::Vector<Pair> NodeParticlePairs;
   NodeParticlePairs xyzs_;

@@ -64,7 +64,7 @@ void HierarchyLoadStatic::setup_particle(RMF::NodeConstHandle nh,
   }
   if (residue_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("residue " << std::endl);
-    RMF::ResidueConst residue = residue_factory_.get(nh);
+    RMF::decorator::ResidueConst residue = residue_factory_.get(nh);
     int b = residue.get_index();
     atom::Residue::setup_particle(m, p, atom::ResidueType(residue.get_type()))
         .set_index(b);
@@ -125,7 +125,7 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
     core::XYZR(m, p).set_radius(r);
   }
   if (particle_factory_.get_is(nh)) {
-    RMF::ParticleConst mn = particle_factory_.get(nh);
+    RMF::decorator::ParticleConst mn = particle_factory_.get(nh);
     IMP_LOG_VERBOSE("massive " << std::endl);
     atom::Mass(m, p).set_mass(mn.get_mass());
   }
@@ -140,7 +140,7 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
   }
   if (residue_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("residue " << std::endl);
-    RMF::ResidueConst residue = residue_factory_.get(nh);
+    RMF::decorator::ResidueConst residue = residue_factory_.get(nh);
     int b = residue.get_index();
     atom::Residue(m, p).set_residue_type(atom::ResidueType(residue.get_type()));
     atom::Residue(m, p).set_index(b);
@@ -208,7 +208,7 @@ void HierarchySaveStatic::setup_node(kernel::Model *m, kernel::ParticleIndex p,
   }
   if (atom::Residue::get_is_setup(m, p)) {
     atom::Residue d(m, p);
-    RMF::Residue r = residue_factory_.get(n);
+    RMF::decorator::Residue r = residue_factory_.get(n);
     r.set_index(d.get_index());
     r.set_type(d.get_residue_type().get_string());
   }
@@ -227,7 +227,7 @@ void HierarchySaveStatic::setup_node(kernel::Model *m, kernel::ParticleIndex p,
   }
   if (display::Colored::get_is_setup(m, p)) {
     display::Colored d(m, p);
-    RMF::Floats color(3);
+    RMF::Vector3 color;
     color[0] = d.get_color().get_red();
     color[1] = d.get_color().get_green();
     color[2] = d.get_color().get_blue();

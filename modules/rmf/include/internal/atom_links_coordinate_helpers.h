@@ -23,10 +23,10 @@ enum {
   FRAME_XYZ = 8
 } NodeCoords;
 
-inline void copy_to_frame_reference_frame(const algebra::Transformation3D &tr,
-                                          RMF::NodeHandle n,
-                                          RMF::ReferenceFrameFactory rff) {
-  RMF::ReferenceFrame rf = rff.get(n);
+inline void copy_to_frame_reference_frame(
+    const algebra::Transformation3D &tr, RMF::NodeHandle n,
+    RMF::decorator::ReferenceFrameFactory rff) {
+  RMF::decorator::ReferenceFrame rf = rff.get(n);
   algebra::Vector3D translation = tr.get_translation();
   algebra::Vector4D quaternion = tr.get_rotation().get_quaternion();
   rf.set_frame_translation(RMF::Vector3(translation.coordinates_begin(),
@@ -34,17 +34,17 @@ inline void copy_to_frame_reference_frame(const algebra::Transformation3D &tr,
   rf.set_frame_rotation(RMF::Vector4(quaternion.coordinates_begin(),
                                        quaternion.coordinates_end()));
 }
-inline void copy_to_frame_particle(const algebra::Vector3D &v,
-                                     RMF::NodeHandle n,
-                                     RMF::IntermediateParticleFactory ipf) {
-  RMF::IntermediateParticle ip = ipf.get(n);
+inline void copy_to_frame_particle(
+    const algebra::Vector3D &v, RMF::NodeHandle n,
+    RMF::decorator::IntermediateParticleFactory ipf) {
+  RMF::decorator::IntermediateParticle ip = ipf.get(n);
   ip.set_frame_coordinates(
       RMF::Floats(v.coordinates_begin(), v.coordinates_end()));
 }
-inline void copy_to_static_reference_frame(const algebra::Transformation3D &tr,
-                                           RMF::NodeHandle n,
-                                           RMF::ReferenceFrameFactory rff) {
-  RMF::ReferenceFrame rf = rff.get(n);
+inline void copy_to_static_reference_frame(
+    const algebra::Transformation3D &tr, RMF::NodeHandle n,
+    RMF::decorator::ReferenceFrameFactory rff) {
+  RMF::decorator::ReferenceFrame rf = rff.get(n);
   algebra::Vector3D translation = tr.get_translation();
   algebra::Vector4D quaternion = tr.get_rotation().get_quaternion();
   rf.set_static_translation(RMF::Vector3(translation.coordinates_begin(),
@@ -52,20 +52,21 @@ inline void copy_to_static_reference_frame(const algebra::Transformation3D &tr,
   rf.set_static_rotation(RMF::Vector4(quaternion.coordinates_begin(),
                                       quaternion.coordinates_end()));
 }
-inline void copy_to_static_particle(const algebra::Vector3D &v,
-                                    RMF::NodeHandle n,
-                                    RMF::IntermediateParticleFactory ipf) {
-  RMF::IntermediateParticle ip = ipf.get(n);
+inline void copy_to_static_particle(
+    const algebra::Vector3D &v, RMF::NodeHandle n,
+    RMF::decorator::IntermediateParticleFactory ipf) {
+  RMF::decorator::IntermediateParticle ip = ipf.get(n);
   ip.set_static_coordinates(
       RMF::Floats(v.coordinates_begin(), v.coordinates_end()));
 }
 inline algebra::Vector3D get_coordinates(
-    RMF::NodeConstHandle n, RMF::IntermediateParticleConstFactory ipf) {
+    RMF::NodeConstHandle n,
+    RMF::decorator::IntermediateParticleConstFactory ipf) {
   RMF::Vector3 coords = ipf.get(n).get_coordinates();
   return algebra::Vector3D(coords.begin(), coords.end());
 }
 inline algebra::Transformation3D get_transformation(
-    RMF::NodeConstHandle n, RMF::ReferenceFrameConstFactory rfcf) {
+    RMF::NodeConstHandle n, RMF::decorator::ReferenceFrameConstFactory rfcf) {
   RMF::Vector3 coords = rfcf.get(n).get_translation();
   RMF::Vector4 quat = rfcf.get(n).get_rotation();
   return algebra::Transformation3D(

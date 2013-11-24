@@ -27,7 +27,7 @@ template <class G, class F>
 class GeometryLoadLink : public SimpleLoadLink<G> {
   typedef SimpleLoadLink<G> P;
   F factory_;
-  RMF::ColoredConstFactory colored_factory_;
+  RMF::decorator::ColoredConstFactory colored_factory_;
   bool get_is(RMF::NodeConstHandle nh) const {
     return nh.get_type() == RMF::GEOMETRY && factory_.get_is(nh);
   }
@@ -49,9 +49,9 @@ class GeometryLoadLink : public SimpleLoadLink<G> {
 };
 
 void save_colored(display::Geometry *g, RMF::NodeHandle nh,
-                  RMF::ColoredFactory f) {
+                  RMF::decorator::ColoredFactory f) {
   if (g->get_has_color()) {
-    RMF::Colored cd = f.get(nh);
+    RMF::decorator::Colored cd = f.get(nh);
     display::Color c = g->get_color();
     cd.set_rgb_color(RMF::Floats(c.components_begin(), c.components_end()));
   }
@@ -61,7 +61,7 @@ template <class G, class F>
 class GeometrySaveLink : public SimpleSaveLink<G> {
   typedef SimpleSaveLink<G> P;
   F factory_;
-  RMF::ColoredFactory colored_factory_;
+  RMF::decorator::ColoredFactory colored_factory_;
   RMF::NodeType get_type(G *) const { return RMF::GEOMETRY; }
 
  public:
@@ -75,10 +75,12 @@ class GeometrySaveLink : public SimpleSaveLink<G> {
 };
 
 class SphereLoadLink
-    : public GeometryLoadLink<display::SphereGeometry, RMF::BallConstFactory> {
-  typedef GeometryLoadLink<display::SphereGeometry, RMF::BallConstFactory> P;
+    : public GeometryLoadLink<display::SphereGeometry,
+                              RMF::decorator::BallConstFactory> {
+  typedef GeometryLoadLink<display::SphereGeometry,
+                           RMF::decorator::BallConstFactory> P;
   void do_load_one(RMF::NodeConstHandle nh, display::SphereGeometry *o) {
-    RMF::BallConst b = get_factory().get(nh);
+    RMF::decorator::BallConst b = get_factory().get(nh);
     RMF::Vector3 cs = b.get_coordinates();
     algebra::Sphere3D s(algebra::Vector3D(cs.begin(), cs.end()),
                         b.get_radius());
@@ -92,17 +94,18 @@ class SphereLoadLink
 };
 
 void save_sphere(display::SphereGeometry *o, RMF::NodeHandle nh,
-                 RMF::BallFactory f) {
+                 RMF::decorator::BallFactory f) {
   algebra::Sphere3D s = o->get_geometry();
-  RMF::Ball b = f.get(nh);
+  RMF::decorator::Ball b = f.get(nh);
   b.set_coordinates(RMF::Floats(s.get_center().coordinates_begin(),
                                 s.get_center().coordinates_end()));
   b.set_radius(s.get_radius());
 }
 
-class SphereSaveLink
-    : public GeometrySaveLink<display::SphereGeometry, RMF::BallFactory> {
-  typedef GeometrySaveLink<display::SphereGeometry, RMF::BallFactory> P;
+class SphereSaveLink : public GeometrySaveLink<display::SphereGeometry,
+                                               RMF::decorator::BallFactory> {
+  typedef GeometrySaveLink<display::SphereGeometry, RMF::decorator::BallFactory>
+      P;
   void do_save_one(display::SphereGeometry *o, RMF::NodeHandle nh) {
     save_sphere(o, nh, P::get_factory());
     P::save_color(o, nh);
@@ -114,12 +117,13 @@ class SphereSaveLink
   static const char *get_name() { return "sphere save"; }
 };
 
-class CylinderLoadLink : public GeometryLoadLink<display::CylinderGeometry,
-                                                 RMF::CylinderConstFactory> {
-  typedef GeometryLoadLink<display::CylinderGeometry, RMF::CylinderConstFactory>
-      P;
+class CylinderLoadLink
+    : public GeometryLoadLink<display::CylinderGeometry,
+                              RMF::decorator::CylinderConstFactory> {
+  typedef GeometryLoadLink<display::CylinderGeometry,
+                           RMF::decorator::CylinderConstFactory> P;
   void do_load_one(RMF::NodeConstHandle nh, display::CylinderGeometry *o) {
-    RMF::CylinderConst b = get_factory().get(nh);
+    RMF::decorator::CylinderConst b = get_factory().get(nh);
     RMF::Vector3s cs = b.get_coordinates_list();
     algebra::Vector3D vs[2] = {algebra::Vector3D(cs[0]),
                                algebra::Vector3D(cs[1])};
@@ -135,9 +139,9 @@ class CylinderLoadLink : public GeometryLoadLink<display::CylinderGeometry,
 };
 
 void save_cylinder(display::CylinderGeometry *o, RMF::NodeHandle nh,
-                   RMF::CylinderFactory f) {
+                   RMF::decorator::CylinderFactory f) {
   algebra::Cylinder3D s = o->get_geometry();
-  RMF::Cylinder c = f.get(nh);
+  RMF::decorator::Cylinder c = f.get(nh);
   c.set_radius(s.get_radius());
   RMF::Vector3s coords(2);
   for (unsigned int i = 0; i < 2; ++i) {
@@ -149,8 +153,10 @@ void save_cylinder(display::CylinderGeometry *o, RMF::NodeHandle nh,
 }
 
 class CylinderSaveLink
-    : public GeometrySaveLink<display::CylinderGeometry, RMF::CylinderFactory> {
-  typedef GeometrySaveLink<display::CylinderGeometry, RMF::CylinderFactory> P;
+    : public GeometrySaveLink<display::CylinderGeometry,
+                              RMF::decorator::CylinderFactory> {
+  typedef GeometrySaveLink<display::CylinderGeometry,
+                           RMF::decorator::CylinderFactory> P;
   void do_save_one(display::CylinderGeometry *o, RMF::NodeHandle nh) {
     save_cylinder(o, nh, P::get_factory());
     P::save_color(o, nh);
@@ -162,26 +168,28 @@ class CylinderSaveLink
   static const char *get_name() { return "cylinder save"; }
 };
 
-algebra::Segment3D get_segment(RMF::SegmentConst sc) {
+algebra::Segment3D get_segment(RMF::decorator::SegmentConst sc) {
   RMF::Vector3s cs = sc.get_coordinates_list();
   algebra::Segment3D s =
       algebra::Segment3D(algebra::Vector3D(cs[0]), algebra::Vector3D(cs[1]));
   return s;
 }
 
-void set_segment(algebra::Segment3D s, RMF::Segment c) {
+void set_segment(algebra::Segment3D s, RMF::decorator::Segment c) {
   RMF::Vector3s coords(2);
   coords[0] = RMF::Vector3(s.get_point(0));
   coords[1] = RMF::Vector3(s.get_point(1));
   c.set_coordinates_list(coords);
 }
 
-class SegmentLoadLink : public GeometryLoadLink<display::SegmentGeometry,
-                                                RMF::SegmentConstFactory> {
-  typedef GeometryLoadLink<display::SegmentGeometry, RMF::SegmentConstFactory>
-      P;
-  void do_load_one(RMF::NodeConstHandle nh, display::SegmentGeometry *o) {
-    RMF::SegmentConst b = get_factory().get(nh);
+class SegmentLoadLink
+    : public GeometryLoadLink<display::SegmentGeometry,
+                              RMF::decorator::SegmentConstFactory> {
+  typedef GeometryLoadLink<display::SegmentGeometry,
+                           RMF::decorator::SegmentConstFactory> P;
+  void do_load_one(RMF::NodeConstHandle nh,
+                   display::SegmentGeometry *o) {
+    RMF::decorator::SegmentConst b = get_factory().get(nh);
     o->set_geometry(get_segment(b));
     P::load_color(nh, o);
   }
@@ -192,15 +200,17 @@ class SegmentLoadLink : public GeometryLoadLink<display::SegmentGeometry,
 };
 
 void save_segment(display::SegmentGeometry *o, RMF::NodeHandle nh,
-                  RMF::SegmentFactory f) {
+                  RMF::decorator::SegmentFactory f) {
   algebra::Segment3D s = o->get_geometry();
-  RMF::Segment c = f.get(nh);
+  RMF::decorator::Segment c = f.get(nh);
   set_segment(s, c);
 }
 
 class SegmentSaveLink
-    : public GeometrySaveLink<display::SegmentGeometry, RMF::SegmentFactory> {
-  typedef GeometrySaveLink<display::SegmentGeometry, RMF::SegmentFactory> P;
+    : public GeometrySaveLink<display::SegmentGeometry,
+                              RMF::decorator::SegmentFactory> {
+  typedef GeometrySaveLink<display::SegmentGeometry,
+                           RMF::decorator::SegmentFactory> P;
   void do_save_one(display::SegmentGeometry *o, RMF::NodeHandle nh) {
     save_segment(o, nh, P::get_factory());
     P::save_color(o, nh);
@@ -212,10 +222,11 @@ class SegmentSaveLink
   static const char *get_name() { return "segment save"; }
 };
 
-class BoxLoadLink : public GeometryLoadLink<display::BoundingBoxGeometry,
-                                            RMF::SegmentConstFactory> {
+class BoxLoadLink
+    : public GeometryLoadLink<display::BoundingBoxGeometry,
+                              RMF::decorator::SegmentConstFactory> {
   typedef GeometryLoadLink<display::BoundingBoxGeometry,
-                           RMF::SegmentConstFactory> P;
+                           RMF::decorator::SegmentConstFactory> P;
   void do_load_one(RMF::NodeConstHandle nh, display::BoundingBoxGeometry *o) {
     algebra::BoundingBox3D b;
     RMF::NodeConstHandles nhs = nh.get_children();
@@ -241,7 +252,7 @@ class BoxLoadLink : public GeometryLoadLink<display::BoundingBoxGeometry,
 };
 
 void save_box(display::BoundingBoxGeometry *o, RMF::NodeHandle nh,
-              RMF::SegmentFactory f) {
+              RMF::decorator::SegmentFactory f) {
   algebra::BoundingBox3D bb = o->get_geometry();
   IntPairs edges = algebra::get_edges(bb);
   algebra::Vector3Ds vs = algebra::get_vertices(bb);
@@ -260,8 +271,9 @@ void add_box(display::BoundingBoxGeometry *o, RMF::NodeHandle nh) {
 }
 
 class BoxSaveLink : public GeometrySaveLink<display::BoundingBoxGeometry,
-                                            RMF::SegmentFactory> {
-  typedef GeometrySaveLink<display::BoundingBoxGeometry, RMF::SegmentFactory> P;
+                                            RMF::decorator::SegmentFactory> {
+  typedef GeometrySaveLink<display::BoundingBoxGeometry,
+                           RMF::decorator::SegmentFactory> P;
   void do_save_one(display::BoundingBoxGeometry *o, RMF::NodeHandle nh) {
     save_box(o, nh, P::get_factory());
     P::save_color(o, nh);
@@ -340,11 +352,11 @@ void add_static_geometries(RMF::FileHandle fh,
   display::SegmentGeometries ssgs;
   display::BoundingBoxGeometries bgs;
   divide(r, sgs, cgs, ssgs, bgs);
-  RMF::ColoredFactory cf(fh);
+  RMF::decorator::ColoredFactory cf(fh);
   RMF::RestoreCurrentFrame sf(fh);
 
   {
-    RMF::BallFactory bf(fh);
+    RMF::decorator::BallFactory bf(fh);
     for (unsigned int i = 0; i < sgs.size(); ++i) {
       RMF::NodeHandle h = add_static(fh, sgs[i]);
       save_sphere(sgs[i], h, bf);
@@ -352,7 +364,7 @@ void add_static_geometries(RMF::FileHandle fh,
     }
   }
   {
-    RMF::CylinderFactory bf(fh);
+    RMF::decorator::CylinderFactory bf(fh);
     for (unsigned int i = 0; i < cgs.size(); ++i) {
       RMF::NodeHandle h = add_static(fh, cgs[i]);
       save_cylinder(cgs[i], h, bf);
@@ -360,7 +372,7 @@ void add_static_geometries(RMF::FileHandle fh,
     }
   }
   {
-    RMF::SegmentFactory bf(fh);
+    RMF::decorator::SegmentFactory bf(fh);
     for (unsigned int i = 0; i < ssgs.size(); ++i) {
       RMF::NodeHandle h = add_static(fh, ssgs[i]);
       save_segment(ssgs[i], h, bf);
@@ -368,7 +380,7 @@ void add_static_geometries(RMF::FileHandle fh,
     }
   }
   {
-    RMF::SegmentFactory bf(fh);
+    RMF::decorator::SegmentFactory bf(fh);
     for (unsigned int i = 0; i < bgs.size(); ++i) {
       RMF::NodeHandle h = add_static(fh, bgs[i]);
       add_box(bgs[i], h);

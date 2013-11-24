@@ -41,9 +41,10 @@ std::string get_good_name(kernel::Model *m, kernel::ParticleIndex h) {
   }
 }
 
-unsigned int get_coords_state(RMF::NodeConstHandle nh,
-                              RMF::IntermediateParticleConstFactory ipcf,
-                              RMF::ReferenceFrameConstFactory rfcf) {
+unsigned int get_coords_state(
+    RMF::NodeConstHandle nh,
+    RMF::decorator::IntermediateParticleConstFactory ipcf,
+    RMF::decorator::ReferenceFrameConstFactory rfcf) {
   unsigned int ret = 0;
   {
     if (ipcf.get_is_static(nh)) ret |= internal::STATIC_XYZ;
