@@ -1,3 +1,6 @@
+## \example temperature_rem.py
+## Temperature replica exchange
+
 import IMP
 import IMP.base
 import IMP.mpi

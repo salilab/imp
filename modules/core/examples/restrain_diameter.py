@@ -1,7 +1,7 @@
-# \example core/restrain_diameter.py
-# An example restraining the diameter of a set of points. That is, the
-# restraint penalizes conformations where there are two point more than a
-# certain distance from one another.
+## \example core/restrain_diameter.py
+## An example restraining the diameter of a set of points. That is, the
+## restraint penalizes conformations where there are two point more than a
+## certain distance from one another.
 
 import IMP
 import IMP.core

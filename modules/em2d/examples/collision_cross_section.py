@@ -1,5 +1,5 @@
 ## \example em2d/collision_cross_section.py
-# Example of how to compute the collision cross section of a molecule.
+## Example of how to compute the collision cross section of a molecule.
 #
 
 

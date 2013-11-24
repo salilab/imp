@@ -1,3 +1,6 @@
+## \example BallMover.py
+## Symmetry ball mover
+
 import IMP
 import IMP.symmetry
 import IMP.core
