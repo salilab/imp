@@ -64,7 +64,7 @@ class IMPRMFEXPORT HierarchySaveStatic {
 };
 
 class IMPRMFEXPORT HierarchyLoadBonds {
-  RMF::decorator::AliasConstFactory af_;
+  RMF::decorator::BondConstFactory af_;
 
  public:
   HierarchyLoadBonds(RMF::FileConstHandle f) : af_(f) {}
@@ -73,7 +73,7 @@ class IMPRMFEXPORT HierarchyLoadBonds {
 };
 
 class IMPRMFEXPORT HierarchySaveBonds {
-  RMF::decorator::AliasFactory af_;
+  RMF::decorator::BondFactory af_;
 
  public:
   HierarchySaveBonds(RMF::FileHandle f) : af_(f) {}

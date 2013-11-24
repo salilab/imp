@@ -280,16 +280,12 @@ atom::Bonded get_bonded(kernel::Particle *p) {
 
 void HierarchyLoadBonds::setup_bonds(RMF::NodeConstHandle n, kernel::Model *m,
                                      kernel::ParticleIndex p) {
-  RMF::NodeConstHandles children = n.get_children();
-  if (n.get_type() == RMF::BOND && children.size() == 2) {
-    RMF::NodeConstHandle bd0, bd1;
-    if (af_.get_is(children[0])) {
-      bd0 = af_.get(children[0]).get_aliased();
-      bd1 = af_.get(children[1]).get_aliased();
-    } else {
-      bd0 = children[0];
-      bd1 = children[1];
-    }
+  if (af_.get_is(n)) {
+    RMF::decorator::BondConst bd = af_.get(n);
+    RMF::NodeID ep0(bd.get_bonded_0());
+    RMF::NodeID ep1(bd.get_bonded_1());
+    RMF::NodeConstHandle bd0 = n.get_file().get_node(ep0);
+    RMF::NodeConstHandle bd1 = n.get_file().get_node(ep1);
     Particle *p0 = get_association<kernel::Particle>(bd0);
     Particle *p1 = get_association<kernel::Particle>(bd1);
     if (p0 && p1) {
@@ -297,7 +293,9 @@ void HierarchyLoadBonds::setup_bonds(RMF::NodeConstHandle n, kernel::Model *m,
       atom::create_bond(get_bonded(p0), get_bonded(p1), atom::Bond::SINGLE);
     }
   } else {
-    IMP_FOREACH(RMF::NodeConstHandle c, children) { setup_bonds(c, m, p); }
+    IMP_FOREACH(RMF::NodeConstHandle c, n.get_children()) {
+      setup_bonds(c, m, p);
+    }
   }
 }
 
@@ -308,16 +306,17 @@ void HierarchySaveBonds::setup_bonds(kernel::Model *m, kernel::ParticleIndex p,
   if (bds.empty()) return;
   // could do this better, but...
   RMF::NodeHandle bonds = n.add_child("bonds", RMF::ORGANIZATIONAL);
-  for (unsigned int i = 0; i < bds.size(); ++i) {
-    kernel::Particle *p0 = bds[i].get_bonded(0);
-    kernel::Particle *p1 = bds[i].get_bonded(1);
+  RMF_FOREACH(atom::Bond bd, bds) {
+    kernel::Particle *p0 = bd.get_bonded(0);
+    kernel::Particle *p1 = bd.get_bonded(1);
     IMP_LOG_VERBOSE("Adding bond for pair " << Showable(p0) << " and "
                                             << Showable(p1) << std::endl);
     RMF::NodeHandle n0 = get_node_from_association(n.get_file(), p0);
     RMF::NodeHandle n1 = get_node_from_association(n.get_file(), p1);
-    RMF::NodeHandle bd = bonds.add_child("bond", RMF::BOND);
-    RMF::internal::add_child_alias(af_, bd, n0);
-    RMF::internal::add_child_alias(af_, bd, n1);
+    RMF::NodeHandle cbd = bonds.add_child("bond", RMF::BOND);
+    RMF::decorator::Bond b = af_.get(cbd);
+    b.set_bonded_0(n0.get_id().get_index());
+    b.set_bonded_1(n1.get_id().get_index());
   }
 }
 
