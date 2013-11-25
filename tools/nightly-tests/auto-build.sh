@@ -37,9 +37,9 @@ git checkout ${BRANCH} -f -q >& /tmp/$$.out
 grep -v "Version=" /tmp/$$.out
 rm -f /tmp/$$.out
 
-# Update any submodules, etc. if necessary
-git submodule update
 ./setup_git.py > /dev/null || exit 1
+# Update any submodules, etc. if necessary
+git imp update
 
 # Get top-most revision
 rev=`git rev-parse HEAD`
