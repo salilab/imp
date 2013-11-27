@@ -36,6 +36,7 @@ RigidBodiesProfileHandler::RigidBodiesProfileHandler(
     rigid_part_profile->calculate_profile(rigid_bodies_.back(), ff_type);
     rigid_bodies_profile_->add(rigid_part_profile);
   }
+  ff_type_ = ff_type;
   //  rigid_bodies_profile_->sum_partial_profiles(1.0, 0.0);
   IMP_LOG_TERSE("SAXS::RigidBodiesProfileHandler: " << particles_.size()
            << " atom particles " << rigid_bodies_.size() << " rigid bodies\n");
