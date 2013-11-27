@@ -16,12 +16,12 @@
 #include <IMP/algebra/Transformation3D.h>
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 
-enum {
+enum NodeCoords {
   STATIC_RB = 1,
   FRAME_RB = 2,
   STATIC_XYZ = 4,
   FRAME_XYZ = 8
-} NodeCoords;
+};
 
 inline void copy_to_frame_reference_frame(
     const algebra::Transformation3D &tr, RMF::NodeHandle n,
