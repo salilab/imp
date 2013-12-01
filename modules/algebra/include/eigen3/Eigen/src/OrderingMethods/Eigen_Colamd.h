@@ -436,7 +436,7 @@ static bool colamd(Index n_row, Index n_col, Index Alen, Index *A, Index *p, dou
 
   /* === Construct the row and column data structures ===================== */
   
-  if (!Eigen::internal::init_rows_cols (n_row, n_col, Row, Col, A, p, stats))
+  if (!IMP_Eigen::internal::init_rows_cols (n_row, n_col, Row, Col, A, p, stats))
   {
     /* input matrix is invalid */
     COLAMD_DEBUG0 (("colamd: Matrix invalid\n")) ;
