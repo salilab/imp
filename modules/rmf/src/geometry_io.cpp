@@ -230,8 +230,12 @@ class BoxLoadLink
   void do_load_one(RMF::NodeConstHandle nh, display::BoundingBoxGeometry *o) {
     algebra::BoundingBox3D b;
     RMF::NodeConstHandles nhs = nh.get_children();
-    for (unsigned int i = 0; i < 12; ++i) {
-      algebra::Segment3D s = get_segment(get_factory().get(nhs[i]));
+    IMP_USAGE_CHECK(nhs.size() == 12,
+                    "Wrong number of child segments for box: " << nhs.size());
+    IMP_FOREACH(RMF::NodeConstHandle n, nhs) {
+      IMP_USAGE_CHECK(get_factory().get_is(n),
+                      "It is not a segment: " << n.get_name());
+      algebra::Segment3D s = get_segment(get_factory().get(n));
       b += s.get_point(0);
       b += s.get_point(1);
     }
