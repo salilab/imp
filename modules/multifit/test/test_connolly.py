@@ -1,4 +1,4 @@
-import IMP
+import IMP.kernel
 import IMP.test
 import IMP.atom
 import IMP.core
@@ -20,12 +20,14 @@ class Tests(IMP.test.TestCase):
         p = IMP.kernel.Particle(m)
         center = IMP.algebra.Vector3D(10.,10.,10.)
         IMP.core.XYZ.setup_particle(p, center)
+        IMP.core.XYZR(p).set_radius(2.265)
         a = IMP.atom.Atom.setup_particle(p, IMP.atom.AT_CA)
         # Connolly radius of ALA:CA = 2.265A
         res.add_child(a)
-        IMP.multifit.write_connolly_surface([a], 'test.ms', 5.0, 1.8)
+        name = self.get_tmp_file_name("test.ms")
+        IMP.multifit.write_connolly_surface([a], name, 5.0, 1.8)
         total_area = 0.
-        for line in read_surface('test.ms'):
+        for line in read_surface(name):
             at1,at2,at3,x,y,z,area,normx,normy,normz,half = line
             # Only one atom, so only convex surface
             self.assertEqual(at1, 1)
@@ -45,7 +47,7 @@ class Tests(IMP.test.TestCase):
         # Total area should be roughly 4 * pi * r * r (r=2.265), but a little
         # less due to the probe not being pointlike
         self.assertAlmostEqual(total_area, 64.4, delta=0.1)
-        os.unlink('test.ms')
+
 
 if __name__ == '__main__':
     IMP.test.main()

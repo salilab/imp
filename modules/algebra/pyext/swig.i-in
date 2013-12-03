@@ -32,6 +32,7 @@ IMP_SWIG_VALUE(IMP::algebra,  Ellipsoid3D, Ellipsoid3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  Plane3D, Plane3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  Segment3D, Segment3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  SpherePatch3D, SpherePatch3Ds);
+IMP_SWIG_VALUE(IMP::algebra,  ConnollySurfacePoint, ConnollySurfacePoints);
 
 // we seem to need the non-typedefed name, at least for the first argument
 IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  Vector);
@@ -109,6 +110,7 @@ IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, Sphere);
 %include "IMP/algebra/Reflection3D.h"
 %include "IMP/algebra/Cylinder3D.h"
 %include "IMP/algebra/Ellipsoid3D.h"
+%include "IMP/algebra/connolly_surface.h"
 
 %include "IMP/algebra/grid_indexes.h"
 %include "IMP/algebra/grid_ranges.h"
