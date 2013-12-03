@@ -29,7 +29,10 @@ endif(POLICY CMP0017)
 
 if(APPLE)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
+# to support profiling on mac os
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework CoreFoundation")
 list(REMOVE_DUPLICATES CMAKE_CXX_FLAGS)
+list(REMOVE_DUPLICATES CMAKE_EXE_LINKER_FLAGS)
 endif(APPLE)
 
 set(timeout_factor 1)
