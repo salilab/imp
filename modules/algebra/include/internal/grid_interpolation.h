@@ -21,7 +21,8 @@ double get_interpolation_value(const GridD<D, Storage, Value, Embedding> &g,
   BoundingBoxD<D> bb(bblb, bbub);
   base::Vector<VectorD<D> > vertices = get_vertices(bb);
   Floats values(vertices.size());
-  VectorD<D> lb;
+  // suppress incorrect warning
+  VectorD<D> lb = get_zero_vector_d<D>();
   for (unsigned int i = 0; i < vertices.size(); ++i) {
     GridIndexD<D> index = g.get_nearest_index(vertices[i]);
     values[i] = g[index];
