@@ -1,5 +1,6 @@
 /**
- *  \file algebra/connolly_surface.h     \brief Generate surface for a set of atoms
+ *  \file algebra/connolly_surface.h     \brief Generate surface for a set of
+ *atoms
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -18,9 +19,14 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 /** Represent a point on the connoly surface. */
 struct ConnollySurfacePoint {
-  ConnollySurfacePoint(int a0, int a1, int a2, algebra::Vector3D sp,
-               float a, algebra::Vector3D n): atom_0(a0), atom_1(a1), atom_2(a2),
-                                              surface_point(sp), area(a), normal(n) {}
+  ConnollySurfacePoint(int a0, int a1, int a2, algebra::Vector3D sp, float a,
+                       algebra::Vector3D n)
+      : atom_0(a0),
+        atom_1(a1),
+        atom_2(a2),
+        surface_point(sp),
+        area(a),
+        normal(n) {}
   int atom_0;
   int atom_1;
   int atom_2;
@@ -41,9 +47,10 @@ IMP_VALUES(ConnollySurfacePoint, ConnollySurfacePoints);
     M.L. Connolly, "Analytical molecular surface calculation",
     J. Appl. Cryst. 16, p548-558 (1983).
  */
-ConnollySurfacePoints IMPALGEBRAEXPORT get_connolly_surface(const algebra::Sphere3Ds& spheres,
-                                                                 float density, float probe_radius);
+ConnollySurfacePoints IMPALGEBRAEXPORT
+    get_connolly_surface(const algebra::Sphere3Ds& spheres, float density,
+                         float probe_radius);
 
 IMPALGEBRA_END_NAMESPACE
 
-#endif  /* IMPALGEBRA_CONNOLLY_SURFACE_H */
+#endif /* IMPALGEBRA_CONNOLLY_SURFACE_H */
