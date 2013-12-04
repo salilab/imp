@@ -65,9 +65,9 @@ void HierarchyLoadStatic::setup_particle(RMF::NodeConstHandle nh,
   if (residue_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("residue " << std::endl);
     RMF::decorator::ResidueConst residue = residue_factory_.get(nh);
-    int b = residue.get_index();
-    atom::Residue::setup_particle(m, p, atom::ResidueType(residue.get_type()))
-        .set_index(b);
+    int b = residue.get_residue_index();
+    atom::Residue::setup_particle(
+        m, p, atom::ResidueType(residue.get_residue_type())).set_index(b);
     IMP_INTERNAL_CHECK(atom::Residue::get_is_setup(m, p),
                        "Setup failed for residue");
   }
@@ -141,8 +141,9 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
   if (residue_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("residue " << std::endl);
     RMF::decorator::ResidueConst residue = residue_factory_.get(nh);
-    int b = residue.get_index();
-    atom::Residue(m, p).set_residue_type(atom::ResidueType(residue.get_type()));
+    int b = residue.get_residue_index();
+    atom::Residue(m, p)
+        .set_residue_type(atom::ResidueType(residue.get_residue_type()));
     atom::Residue(m, p).set_index(b);
     IMP_INTERNAL_CHECK(atom::Residue::get_is_setup(m, p),
                        "Setup failed for residue");
@@ -209,8 +210,8 @@ void HierarchySaveStatic::setup_node(kernel::Model *m, kernel::ParticleIndex p,
   if (atom::Residue::get_is_setup(m, p)) {
     atom::Residue d(m, p);
     RMF::decorator::Residue r = residue_factory_.get(n);
-    r.set_index(d.get_index());
-    r.set_type(d.get_residue_type().get_string());
+    r.set_residue_index(d.get_index());
+    r.set_residue_type(d.get_residue_type().get_string());
   }
   if (atom::Domain::get_is_setup(m, p)) {
     atom::Domain d(m, p);
