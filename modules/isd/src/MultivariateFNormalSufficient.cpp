@@ -434,7 +434,8 @@ MultivariateFNormalSufficient::get_ldlt() const {
         // if (ldlt.info() != IMP_Eigen::Success)
         if (!ldlt.isPositive()) {
             std::cout << "Sigma" << std::endl;
-            std::cout << get_Sigma() << std::endl;
+            //std::cout << get_Sigma() << std::endl;
+            std::cout << get_Sigma_eigenvalues().transpose() << std::endl;
             IMP_THROW("Sigma matrix is not positive semidefinite!",
                       ModelException);
         }
