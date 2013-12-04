@@ -27,17 +27,20 @@ RigidBodiesProfileHandler::RigidBodiesProfileHandler(
     }
   }
 
-  rigid_bodies_profile_ = new Profile();
-  for(IMP::base::map<kernel::ParticleIndex, kernel::Particles>::iterator it =
-        rigid_bodies.begin(); it!= rigid_bodies.end(); it++) {
-    rigid_bodies_.push_back(it->second);
-    // compute non-changing profile
-    IMP_NEW(Profile, rigid_part_profile, ());
-    rigid_part_profile->calculate_profile(rigid_bodies_.back(), ff_type);
-    rigid_bodies_profile_->add(rigid_part_profile);
+  if (rigid_bodies_.size() > 0) {
+      rigid_bodies_profile_ = new Profile();
+      for (IMP::base::map<kernel::ParticleIndex, kernel::Particles>::iterator
+               it = rigid_bodies.begin();
+           it != rigid_bodies.end(); it++) {
+          rigid_bodies_.push_back(it->second);
+          // compute non-changing profile
+          IMP_NEW(Profile, rigid_part_profile, ());
+          rigid_part_profile->calculate_profile(rigid_bodies_.back(), ff_type);
+          rigid_bodies_profile_->add(rigid_part_profile);
+      }
+      //  rigid_bodies_profile_->sum_partial_profiles(1.0, 0.0);
   }
   ff_type_ = ff_type;
-  //  rigid_bodies_profile_->sum_partial_profiles(1.0, 0.0);
   IMP_LOG_TERSE("SAXS::RigidBodiesProfileHandler: " << particles_.size()
            << " atom particles " << rigid_bodies_.size() << " rigid bodies\n");
 
@@ -45,7 +48,8 @@ RigidBodiesProfileHandler::RigidBodiesProfileHandler(
 
 void RigidBodiesProfileHandler::compute_profile(Profile* model_profile) const {
   // add non-changing profile
-  model_profile->add(rigid_bodies_profile_);
+  if (rigid_bodies_.size() >0)
+      model_profile->add(rigid_bodies_profile_);
   IMP_NEW(Profile, profile, (model_profile->get_min_q(),
                              model_profile->get_max_q(),
                              model_profile->get_delta_q()));
