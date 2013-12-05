@@ -52,7 +52,7 @@ class IMPMockTests(unittest.TestCase):
                 'interface_rtc', 'ligand_score', 'map2pca.py', 'mol2pca.py',
                 'multifit.py', 'nmr_rtc_score', 'pdb_check', 'pdb_rmf',
                 'recompute_zscore', 'resample_density.py', 'rg',
-                'rmf_avro_dump', 'rmf_cat', 'rmf_color', 'rmf_display',
+                'rmf_avro_dump', 'rmf_cat', 'rmf_display',
                 'rmf_frames', 'rmf_info', 'rmf_interpolate', 'rmf_pdb',
                 'rmf_show', 'rmf_slice', 'rmf_transform', 'rmf_update',
                 'rmf_validate', 'rmf_xml', 'saxs_merge.py', 'saxs_score',
