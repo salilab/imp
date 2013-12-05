@@ -22,18 +22,12 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/CMakeModules)
 enable_testing()
 
 include(FindC++11)
+include(FindCompilerFlags)
 
 if(POLICY CMP0017)
 cmake_policy(SET CMP0017 NEW)
 endif(POLICY CMP0017)
 
-if(APPLE)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
-# to support profiling on mac os
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework CoreFoundation")
-list(REMOVE_DUPLICATES CMAKE_CXX_FLAGS)
-list(REMOVE_DUPLICATES CMAKE_EXE_LINKER_FLAGS)
-endif(APPLE)
 
 set(timeout_factor 1)
 set(IMP_SWIG_PATH CACHE STRING "List of places for swig to search")
