@@ -132,6 +132,7 @@ if [ "${TARGET_OSX_VER}" = "10.6" ]; then
                 /usr/local/lib/libboost_program_options-mt.dylib \
                 /usr/local/lib/libboost_thread-mt.dylib \
                 /usr/local/lib/libboost_chrono-mt.dylib \
+                /usr/local/lib/libboost_iostreams-mt.dylib \
                 /usr/local/lib/libboost_regex-mt.dylib \
                 /usr/local/lib/libboost_random-mt.dylib \
                 /usr/local/lib/libboost_graph-mt.dylib \
