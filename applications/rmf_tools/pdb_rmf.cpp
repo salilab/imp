@@ -1,6 +1,7 @@
 /**
  * Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
+
 #include <IMP/rmf/atom_io.h>
 #include <RMF/FileHandle.h>
 #include <IMP/base/flags.h>
@@ -19,7 +20,7 @@ int main(int argc, char **argv) {
       RMF::FileHandle out = RMF::create_rmf_file(files[1]);
 
       IMP::rmf::add_hierarchy(out, h);
-      IMP::rmf::save_frame(out, 0);
+      IMP::rmf::save_frame(out, "frame");
   } catch (const IMP::base::Exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
     return 1;
