@@ -11,9 +11,8 @@
 IMPSAXS_BEGIN_NAMESPACE
 
 RigidBodiesProfileHandler::RigidBodiesProfileHandler(
-                            const kernel::Particles& particles,
-                            FormFactorType ff_type) {
-
+    const kernel::Particles& particles, FormFactorType ff_type)
+    : base::Object("RigidBodiesProfileHandler%1%") {
   IMP::base::map<kernel::ParticleIndex, kernel::Particles> rigid_bodies;
   for(unsigned int i=0; i< particles.size(); ++i) {
     if(core::RigidMember::get_is_setup(particles[i])) {

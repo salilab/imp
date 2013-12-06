@@ -167,10 +167,6 @@ class IMPBASEEXPORT Object : public NonCopyable {
    */
   Object(std::string name);
 
-  /** \deprecated_at{2.1} Provide a name. */
-  IMPBASE_DEPRECATED_FUNCTION_DECL(2.1)
-  Object();
-
  public:
   // needed for python to make sure all wrapper objects are equivalent
   IMP_HASHABLE_INLINE(Object, return boost::hash_value(this););

@@ -16,11 +16,6 @@ IMPBASE_BEGIN_NAMESPACE
 
 Object::Object(std::string name) { initialize(name); }
 
-Object::Object() {
-  IMPBASE_DEPRECATED_FUNCTION_DEF(2.1, "provide a name");
-  initialize("NoName%1%");
-}
-
 void Object::initialize(std::string name) {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   ++live_objects_;
