@@ -118,7 +118,8 @@ def clean_cpp(path):
 
 
 def clean_py(path):
-    contents = _run([options.autopep8, "--aggressive", "--aggressive", path])
+    contents = _run([options.autopep8, "--aggressive", "--aggressive",
+                     "--ignore=E24,W602", path])
     if contents.find("# \\example") != -1:
         contents = "#" + contents
     _rewrite(path, contents)
