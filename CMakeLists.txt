@@ -292,7 +292,7 @@ if(IMP_DOXYGEN_FOUND)
  file(GLOB docs ${CMAKE_SOURCE_DIR}/doc/*.dox
    ${CMAKE_SOURCE_DIR}/doc/*.md)
 
-  add_custom_target(IMP-doc ALL
+  add_custom_target(IMP-doc
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_doxygen_config.py "--source=${CMAKE_SOURCE_DIR}"
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/Doxyfile.xml
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_cross_refs.py
