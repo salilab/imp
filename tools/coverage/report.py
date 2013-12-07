@@ -11,12 +11,13 @@ import pickle
 sys.path.append(os.path.join(os.path.dirname(sys.argv[0]), '..', 'build'))
 import tools
 
+
 def setup_excludes(cov):
     # Try to exclude SWIG and IMP boilerplate from coverage checks
     cov.exclude("def swig_import_helper\(")
     cov.exclude("def _swig_")
     cov.exclude("class (_ostream|_DirectorObjects|"
-           "IMP_\w+_SwigPyIterator)\(")
+                "IMP_\w+_SwigPyIterator)\(")
     cov.exclude("^\s+import _IMP_")
     cov.exclude("^except (Name|Attribute)Error:")
     cov.exclude("^\s+weakref_proxy =")
@@ -26,6 +27,7 @@ def setup_excludes(cov):
     cov.exclude("^\s+__getattr__ = lambda self, name: _swig_getattr")
     cov.exclude("^\s+__swig_[sg]etmethods__\[\".*\"\] = lambda ")
 
+
 def report_python_component(cov, morfs, name, typ, reldir, outdir):
     if len(morfs) > 0:
         print "Generating HTML report for %s %s Python coverage" % (name, typ)
@@ -34,10 +36,12 @@ def report_python_component(cov, morfs, name, typ, reldir, outdir):
         cov.html_report(morfs=morfs, directory=os.path.join(outdir, 'python',
                                                             name))
 
+
 def report_python_module(cov, modname, outdir):
     mods = glob.glob('lib/IMP/%s/*.py' % modname)
     mods = [x for x in mods if not x.endswith('_version_check.py')]
     report_python_component(cov, mods, modname, 'module', '', outdir)
+
 
 def report_python_application(cov, app, srcdir, outdir):
     mods = tools.get_glob([os.path.join(srcdir, 'applications', app, '*.py')])
@@ -45,15 +49,18 @@ def report_python_application(cov, app, srcdir, outdir):
     mods = [os.path.join('bin', x) for x in mods if x != 'dependencies.py']
     report_python_component(cov, mods, app, 'application', '', outdir)
 
+
 def report_python_dependency(cov, dep, outdir):
     mods = glob.glob('src/dependency/%s/*.py' % dep)
     mods = [x for x in mods if not x.endswith('sitecustomize.py')]
     report_python_component(cov, mods, dep, 'dependency', 'src/dependency/',
                             outdir)
 
+
 def report_python(opts, outdir):
     srcdir = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]),
                                           '..', '..'))
+
     def _our_abs_file(self, filename):
         return os.path.normcase(os.path.abspath(filename))
     coverage.files.FileLocator.abs_file = _our_abs_file
@@ -66,6 +73,7 @@ def report_python(opts, outdir):
         report_python_application(cov, app, srcdir, outdir)
     for dep in opts.dependencies:
         report_python_dependency(cov, dep, outdir)
+
 
 def extract_lcov(infile, outfile, matches, excludes):
     """Extract a subset from an lcov .info file.
@@ -106,6 +114,7 @@ def extract_lcov(infile, outfile, matches, excludes):
         os.unlink(outfile)
     return lines_written
 
+
 def report_cpp_component(name, typ, matches, excludes, prefix, outdir):
     info_file = 'coverage/%s.%s.info' % (typ, name)
     if extract_lcov('coverage/all.info', info_file, matches, excludes):
@@ -117,13 +126,16 @@ def report_cpp_component(name, typ, matches, excludes, prefix, outdir):
         sys.stdout.flush()
         subprocess.check_call(cmd)
 
+
 def report_cpp_module(module, srcdir, outdir):
     report_cpp_component(module, "module", ['/modules/%s/' % module],
                          ['/dependency/'], srcdir, outdir)
 
+
 def report_cpp_application(app, srcdir, outdir):
     report_cpp_component(app, "application", ['/applications/%s/' % app], [],
                          srcdir, outdir)
+
 
 def report_cpp_dependency(dep, srcdir, outdir):
     # Currently works only for RMF
@@ -131,6 +143,7 @@ def report_cpp_dependency(dep, srcdir, outdir):
                          ['/rmf/dependency/%s_source/' % dep], [],
                          os.path.join(srcdir, 'modules', 'rmf', 'dependency'),
                          outdir)
+
 
 def report_cpp(opts, outdir):
     srcdir = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]),
@@ -142,6 +155,7 @@ def report_cpp(opts, outdir):
     for dep in opts.dependencies:
         report_cpp_dependency(dep, srcdir, outdir)
 
+
 def _get_components(opt, all_comps, exclude):
     if opt is None:
         cs = all_comps
@@ -150,6 +164,7 @@ def _get_components(opt, all_comps, exclude):
     else:
         cs = opt.split(":")
     return [x for x in cs if x not in exclude]
+
 
 def parse_args():
     parser = OptionParser(usage="""%prog [options] outdir
@@ -189,10 +204,12 @@ Generate HTML coverage reports for IMP C++/Python code in the given directory.
     opts.modules = _get_components(opts.modules, tools.get_sorted_order(),
                                    exclude)
     opts.applications = _get_components(opts.applications,
-                                        tools.get_all_configured_applications(),
+                                        tools.get_all_configured_applications(
+                                        ),
                                         exclude)
     opts.dependencies = _get_components(opts.dependencies, ['RMF'], exclude)
     return opts, args[0]
+
 
 def main():
     opts, outdir = parse_args()

@@ -18,6 +18,7 @@ class Optimization(object):
 
 class _OptimizationNode(object):
     counter = 0
+
     def __init__(self, attributes, text):
         id = attributes.get('id')
         if id:
@@ -29,6 +30,7 @@ class _OptimizationNode(object):
 
 
 class _OptimizationConjugateGradients(_OptimizationNode):
+
     def __init__(self, attributes, text):
         _OptimizationNode.__init__(self, attributes, text)
         self.threshold = float(attributes.get('threshold', 0))
@@ -47,8 +49,8 @@ class _OptimizationConjugateGradients(_OptimizationNode):
         o.optimize(self.steps)
 
 
-
 class _OptimizationRestraint(_OptimizationNode):
+
     def __init__(self, attributes, text):
         _OptimizationNode.__init__(self, attributes, text)
         self.name = attributes['name']
@@ -56,4 +58,4 @@ class _OptimizationRestraint(_OptimizationNode):
 
     def run(self, restraint, log):
         restraint.set_include(name=self.name, include=True,
-            weight=self.weight)
+                              weight=self.weight)

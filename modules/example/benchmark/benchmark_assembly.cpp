@@ -27,7 +27,8 @@ Sphere3Ds get_residues(std::string fname) {
   atom::Hierarchy h = read_pdb(fname, m);
   atom::Hierarchy hs =
       create_simplified_along_backbone(Chain(get_by_type(h, CHAIN_TYPE)[0]), 1);
-  kernel::ParticlesTemp ps = get_as<kernel::ParticlesTemp>(atom::get_leaves(hs));
+  kernel::ParticlesTemp ps =
+get_as<kernel::ParticlesTemp>(atom::get_leaves(hs));
   Sphere3Ds ret;
   for (unsigned int i = 0; i < ps.size(); ++i) {
     ret.push_back(XYZR(ps[i]).get_sphere());
@@ -36,7 +37,8 @@ Sphere3Ds get_residues(std::string fname) {
 }
 
 std::pair<Restraints, PairPredicates> create_restraints(kernel::Model *m,
-                                                        const kernel::ParticlesTemp &ps,
+                                                        const
+kernel::ParticlesTemp &ps,
                                                         double threshold) {
   IMP_NEW(GridClosePairsFinder, cpf, ());
   cpf->set_distance(threshold);

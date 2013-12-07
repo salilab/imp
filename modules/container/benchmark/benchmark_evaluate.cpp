@@ -18,10 +18,10 @@ using namespace IMP::container;
 
 namespace {
 
-#define IMP_GET_EVALUATE(Class)                                    \
-  static_cast<double(Class::*)(kernel::Model *, const kernel::ParticleIndexPair &, \
-                               DerivativeAccumulator *) const>(    \
-      &Class::evaluate_index)
+#define IMP_GET_EVALUATE(Class)                           \
+  static_cast<double (Class::*)(                          \
+      kernel::Model *, const kernel::ParticleIndexPair &, \
+      DerivativeAccumulator *) const>(&Class::evaluate_index)
 
 template <class It, class F>
 inline double apply_and_accumulate(It b, It e, F f) {
@@ -39,10 +39,10 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
     const kernel::ParticleIndexPairs pps = pc->get_indexes();
     double runtime = 0, total = 0;
     IMP_TIME({
-      for (unsigned int i = 0; i < pps.size(); ++i) {
-        total += ps->evaluate_index(pc->get_model(), pps[i], nullptr);
-      }
-    },
+               for (unsigned int i = 0; i < pps.size(); ++i) {
+                 total += ps->evaluate_index(pc->get_model(), pps[i], nullptr);
+               }
+             },
              runtime);
     std::ostringstream oss;
     oss << "direct " << name;
@@ -53,10 +53,11 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
     const kernel::ParticleIndexPairs pps = pc->get_indexes();
     double runtime = 0, total = 0;
     IMP_TIME({
-      for (unsigned int i = 0; i < pps.size(); ++i) {
-        total += ssps->evaluate_index(pc->get_model(), pps[i], nullptr);
-      }
-    },
+               for (unsigned int i = 0; i < pps.size(); ++i) {
+                 total +=
+                     ssps->evaluate_index(pc->get_model(), pps[i], nullptr);
+               }
+             },
              runtime);
     std::ostringstream oss;
     oss << "ssps direct " << name;
@@ -67,11 +68,11 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
     const kernel::ParticleIndexPairs pps = pc->get_indexes();
     double runtime = 0, total = 0;
     IMP_TIME({
-      for (unsigned int i = 0; i < pps.size(); ++i) {
-        total += ssps->SoftSpherePairScore::evaluate_index(pc->get_model(),
-                                                           pps[i], nullptr);
-      }
-    },
+               for (unsigned int i = 0; i < pps.size(); ++i) {
+                 total += ssps->SoftSpherePairScore::evaluate_index(
+                     pc->get_model(), pps[i], nullptr);
+               }
+             },
              runtime);
     std::ostringstream oss;
     oss << "ssps direct call " << name;
@@ -82,11 +83,11 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
     const kernel::ParticleIndexPairs pps = pc->get_indexes();
     double runtime = 0, total = 0;
     IMP_TIME({
-      total += apply_and_accumulate(
-          pps.begin(), pps.end(),
-          boost::bind(IMP_GET_EVALUATE(SoftSpherePairScore), ssps,
-                      pc->get_model(), _1, nullptr));
-    },
+               total += apply_and_accumulate(
+                   pps.begin(), pps.end(),
+                   boost::bind(IMP_GET_EVALUATE(SoftSpherePairScore), ssps,
+                               pc->get_model(), _1, nullptr));
+             },
              runtime);
     std::ostringstream oss;
     oss << "ssps direct bind " << name;
@@ -96,13 +97,14 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
     SoftSpherePairScore *ssps = dynamic_cast<SoftSpherePairScore *>(ps);
     const kernel::ParticleIndexPairs pps = pc->get_indexes();
     double runtime = 0, total = 0;
-    IMP_TIME({
+    IMP_TIME(
+    {
       total += apply_and_accumulate(
           pps.begin(), pps.end(),
           boost::bind(IMP_GET_EVALUATE(PairScore), ssps, pc->get_model(), _1,
                       static_cast<DerivativeAccumulator *>(nullptr)));
     },
-             runtime);
+        runtime);
     std::ostringstream oss;
     oss << "direct bind " << name;
     IMP::benchmark::report(ossc.str(), oss.str(), runtime, total);
@@ -124,10 +126,9 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
   {
     double runtime = 0, total = 0;
     IMP_TIME({
-      IMP_CONTAINER_FOREACH(PairContainer, pc, {
-        total += ps->evaluate_index(pc->get_model(), _1, nullptr);
-      });
-    },
+               IMP_CONTAINER_FOREACH(PairContainer, pc,
+               { total += ps->evaluate_index(pc->get_model(), _1, nullptr); });
+             },
              runtime);
     std::ostringstream oss;
     oss << name << " out";

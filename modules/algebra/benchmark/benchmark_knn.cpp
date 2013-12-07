@@ -18,12 +18,12 @@ void test(std::string name, const Vector3Ds &pts, const KNN &knn, double eps) {
   double result = 0;
   double runtime;
   IMP_TIME({
-    for (unsigned int i = 0; i < pts.size(); ++i) {
-      Ints ret(2);
-      knn.fill_nearest_neighbors(pts[i], 2U, eps, ret);
-      result += ret[1];
-    }
-  },
+             for (unsigned int i = 0; i < pts.size(); ++i) {
+               Ints ret(2);
+               knn.fill_nearest_neighbors(pts[i], 2U, eps, ret);
+               result += ret[1];
+             }
+           },
            runtime);
   std::ostringstream oss;
   oss << "knn " << name << " " << knn.get_number_of_points() << " " << eps;

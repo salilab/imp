@@ -5,7 +5,9 @@ import IMP.core
 import IMP.modeller
 from test_rsr_file_read import assertSimilarModellerIMPScores
 
+
 class Tests(IMP.test.TestCase):
+
     """Check using Modeller restraints in IMP"""
 
     def test_modeller_restraints(self):
@@ -16,7 +18,9 @@ class Tests(IMP.test.TestCase):
         e.libs.parameters.read('${LIB}/par.lib')
         modmodel = modeller.model(e)
         modmodel.build_sequence('GGCC')
-        feat = modeller.features.distance(modmodel.atoms[0], modmodel.atoms[-1])
+        feat = modeller.features.distance(
+            modmodel.atoms[0],
+            modmodel.atoms[-1])
         r = modeller.forms.gaussian(feature=feat, mean=10.0, stdev=1.0,
                                     group=modeller.physical.xy_distance)
         modmodel.restraints.add(r)

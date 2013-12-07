@@ -61,7 +61,6 @@ class LU {
   }
 
  public:
-
   /** LU Decomposition
   @param  A   Rectangular matrix
   @return     LU Decomposition object to access L, U and piv.

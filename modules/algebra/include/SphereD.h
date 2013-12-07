@@ -51,9 +51,8 @@ class SphereD : public GeometricPrimitiveD<D> {
   bool get_contains(const VectorD<D> &p) const {
     return ((p - center_).get_squared_magnitude() <= get_squared(radius_));
   }
-  IMP_SHOWABLE_INLINE(SphereD, {
-    out << "(" << spaces_io(center_) << ": " << get_radius() << ")";
-  });
+  IMP_SHOWABLE_INLINE(SphereD,
+  { out << "(" << spaces_io(center_) << ": " << get_radius() << ")"; });
 #ifndef IMP_DOXYGEN
 #ifndef SWIG
   VectorD<D> &_access_center() { return center_; }
@@ -85,7 +84,7 @@ class SphereD : public GeometricPrimitiveD<D> {
 
 IMP_VOLUME_GEOMETRY_METHODS_D(
     Sphere, sphere, { return PI * 4.0 * get_squared(g.get_radius()); },
-    { return PI * (4.0 / 3.0) * std::pow(g.get_radius(), 3.0); },
+{ return PI * (4.0 / 3.0) * std::pow(g.get_radius(), 3.0); },
     return BoundingBoxD<D>(g.get_center()) + g.get_radius(););
 
 template <unsigned int D>

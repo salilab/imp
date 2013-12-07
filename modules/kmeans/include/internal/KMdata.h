@@ -28,8 +28,8 @@
 #define IMPKMEANS_INTERNAL_KMDATA_H
 
 #include <IMP/kmeans/kmeans_config.h>
-#include "KMeans.h"                  // kmeans includes
-#include "KCtree.h"                  // kc-tree includes
+#include "KMeans.h"  // kmeans includes
+#include "KCtree.h"  // kc-tree includes
 #include "IMP/base/Object.h"
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
@@ -57,61 +57,59 @@ IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 //----------------------------------------------------------------------
 
 class IMPKMEANSEXPORT KMdata : public base::Object
-// RefCounted for smart pointers
-{
-private:
-  int                  dim;            // dimension
-  int                  maxPts;            // max number of points
-  int                  nPts;            // number of data points
-  KMdataArray            pts;            // the data points
-  KCtree*            kcTree;            // kc-tree for the points
+                               // RefCounted for smart pointers
+                               {
+ private:
+  int dim;          // dimension
+  int maxPts;       // max number of points
+  int nPts;         // number of data points
+  KMdataArray pts;  // the data points
+  KCtree* kcTree;   // kc-tree for the points
 
-public:
-  KMdata(int d, int n);            // standard constructor
+ public:
+  KMdata(int d, int n);  // standard constructor
 
-  int getDim() const {            // get dimension
+  int getDim() const {  // get dimension
     return dim;
   }
-  int getNPts() const {            // get number of points
+  int getNPts() const {  // get number of points
     return nPts;
   }
-  KMdataArray getPts() const {      // get the points
+  KMdataArray getPts() const {  // get the points
     return pts;
   }
-  KCtree* getKcTree() const {            // get kc-tree
+  KCtree* getKcTree() const {  // get kc-tree
     return kcTree;
   }
-  KMdataPoint& operator[](int i) {      // index
+  KMdataPoint& operator[](int i) {  // index
     return pts[i];
   }
-  const KMdataPoint& operator[](int i) const {
-    return pts[i];
-  }
-  void setNPts(int n) {            // set number of points
-    assert(n <= maxPts);            // can't be more than array size
+  const KMdataPoint& operator[](int i) const { return pts[i]; }
+  void setNPts(int n) {   // set number of points
+    assert(n <= maxPts);  // can't be more than array size
     nPts = n;
   }
-  void buildKcTree();                  // build the kc-tree for points
+  void buildKcTree();  // build the kc-tree for points
 
-  virtual void sampleCtr(            // sample a center point
-    KMpoint            sample);            // where to store sample
+  virtual void sampleCtr(  // sample a center point
+      KMpoint sample);     // where to store sample
 
-  virtual void sampleCtrs(            // sample center points
-    KMpointArray      sample,                  // where to store sample
-    int            k,                  // number of points to sample
-    bool            allowDuplicate);      // allowing duplicates?
+  virtual void sampleCtrs(   // sample center points
+      KMpointArray sample,   // where to store sample
+      int k,                 // number of points to sample
+      bool allowDuplicate);  // allowing duplicates?
 
-  void resize(int d, int n);            // resize array
+  void resize(int d, int n);  // resize array
 
-  void print(                        // print data points
-    bool            fancy = true) {            // nicely formatted?
+  void print(               // print data points
+      bool fancy = true) {  // nicely formatted?
     kmPrintPts("Data_Points", pts, nPts, dim, fancy);
   }
 
-  virtual ~KMdata();                  // destructor
+  virtual ~KMdata();  // destructor
 };
 
-typedef KMdata* KMdataPtr;            // pointer to KMdata
+typedef KMdata* KMdataPtr;  // pointer to KMdata
 
 IMPKMEANS_END_INTERNAL_NAMESPACE
 

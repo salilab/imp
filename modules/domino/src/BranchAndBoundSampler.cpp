@@ -20,8 +20,8 @@ BranchAndBoundSampler::BranchAndBoundSampler(kernel::Model *m,
 BranchAndBoundSampler::BranchAndBoundSampler(kernel::Model *m, std::string name)
     : DiscreteSampler(m, new ParticleStatesTable(), name) {}
 
-Assignments BranchAndBoundSampler::do_get_sample_assignments(
-    const Subset &s) const {
+Assignments BranchAndBoundSampler::do_get_sample_assignments(const Subset &s)
+    const {
   SubsetFilterTables sfts = DiscreteSampler::get_subset_filter_tables_to_use(
       kernel::RestraintsTemp(1, get_model()->get_root_restraint_set()),
       get_particle_states_table());

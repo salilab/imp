@@ -20,9 +20,8 @@
 IMPSYMMETRY_BEGIN_NAMESPACE
 
 //! Move a rigid body and keep it in the primitive cell of a periodic lattice
-class IMPSYMMETRYEXPORT RigidBodyMover : public core::MonteCarloMover
-{
-public:
+class IMPSYMMETRYEXPORT RigidBodyMover : public core::MonteCarloMover {
+ public:
   /** The rigid body is rotated and translated to move
       \param[in] d is the master rigid body decorator
       \param[in] ps are the slave particles
@@ -31,15 +30,17 @@ public:
       \param[in] ctrs is a list of all cell centers
       \param[in] trs is the list of transformations from primitive to all cells
    */
-  RigidBodyMover(core::RigidBody d, kernel::Particles ps, Float max_tr, Float max_ang,
-                 algebra::Vector3Ds ctrs, algebra::Transformation3Ds trs);
+  RigidBodyMover(core::RigidBody d, kernel::Particles ps, Float max_tr,
+                 Float max_ang, algebra::Vector3Ds ctrs,
+                 algebra::Transformation3Ds trs);
 
  protected:
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RigidBodyMover);
-private:
+
+ private:
   core::RigidBody d_;
   kernel::Particles ps_;
   Float max_tr_;
@@ -52,10 +53,10 @@ private:
   algebra::Vector3Ds oldcoords_;
   algebra::Transformation3Ds oldtrs_;
 
-  kernel::Particles         get_particles(kernel::Particles ps);
+  kernel::Particles get_particles(kernel::Particles ps);
   std::vector<core::RigidBody> get_rigid_bodies(kernel::Particles ps);
 };
 
 IMPSYMMETRY_END_NAMESPACE
 
-#endif  /* IMPSYMMETRY_RIGID_BODY_MOVER_H */
+#endif /* IMPSYMMETRY_RIGID_BODY_MOVER_H */

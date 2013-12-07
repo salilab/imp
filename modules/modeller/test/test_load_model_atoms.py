@@ -5,6 +5,7 @@ import IMP.test
 import IMP.modeller
 import IMP.core
 
+
 class Tests(IMP.test.TestCase):
 
     def get_environ(self):
@@ -27,7 +28,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.kernel.Model()
         loader = IMP.modeller.ModelLoader(a[0])
         mp = loader.load_atoms(m)
-        all_atoms= IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
+        all_atoms = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         self.assertEqual(7, len(all_atoms))
         # Alignment structures don't have charges or CHARMM types
         self.assertEqual(IMP.atom.Charged.get_is_setup(all_atoms[0]), False)
@@ -35,24 +36,24 @@ class Tests(IMP.test.TestCase):
 
     def test_hierarchy(self):
         """Check reading a Modeller model with one protein"""
-        i_num_res_type= IMP.atom.ResidueType.get_number_unique()
-        i_num_atom_type= IMP.atom.AtomType.get_number_unique()
+        i_num_res_type = IMP.atom.ResidueType.get_number_unique()
+        i_num_atom_type = IMP.atom.AtomType.get_number_unique()
         m = IMP.kernel.Model()
         # Test both ModelLoader class and deprecated read_pdb function
         modmodel = modeller.scripts.complete_pdb(self.get_environ(),
-                             self.get_input_file_name('single_protein.pdb'))
+                                                 self.get_input_file_name('single_protein.pdb'))
         loader = IMP.modeller.ModelLoader(modmodel)
 
         for mp in (loader.load_atoms(m),
                    IMP.modeller.read_pdb(
                        self.get_input_file_name('single_protein.pdb'), m)):
             desc = IMP.core.get_all_descendants(mp)
-            f_num_res_type= IMP.atom.ResidueType.get_number_unique()
-            f_num_atom_type= IMP.atom.AtomType.get_number_unique()
-            mpp= mp.get_parent()
+            f_num_res_type = IMP.atom.ResidueType.get_number_unique()
+            f_num_atom_type = IMP.atom.AtomType.get_number_unique()
+            mpp = mp.get_parent()
             self.assertEqual(mpp, IMP.atom.Hierarchy(),
                              "Should not have a parent")
-            mpc= mp.get_child(0)
+            mpc = mp.get_child(0)
             self.assertEqual(mpc.get_parent(), mp,
                              "Should not have a parent")
             self.assertEqual(i_num_res_type, f_num_res_type,
@@ -61,12 +62,12 @@ class Tests(IMP.test.TestCase):
                              "too many atom types")
             self.assertEqual(1377, len(desc),
                              "Wrong number of particles created")
-            rd= IMP.atom.Residue(IMP.atom.get_residue(mp, 29).get_particle())
-            at= IMP.atom.get_atom(rd, IMP.atom.AtomType("C"))
+            rd = IMP.atom.Residue(IMP.atom.get_residue(mp, 29).get_particle())
+            at = IMP.atom.get_atom(rd, IMP.atom.AtomType("C"))
             self.assertEqual(IMP.atom.get_residue(at).get_index(),
                              rd.get_index())
             self.assertEqual(rd.get_index(), 29)
-            at= IMP.atom.get_atom(rd, IMP.atom.AtomType("CA"))
+            at = IMP.atom.get_atom(rd, IMP.atom.AtomType("CA"))
             self.assertAlmostEqual(IMP.atom.Charged(at).get_charge(),
                                    0.16, delta=1e-5)
             self.assertEqual(IMP.atom.CHARMMAtom(at).get_charmm_type(), 'CT1')
@@ -74,11 +75,11 @@ class Tests(IMP.test.TestCase):
     def test_bonds(self):
         """Check that Modeller bonds and angles are loaded"""
         modmodel = modeller.scripts.complete_pdb(self.get_environ(),
-                             self.get_input_file_name('single_protein.pdb'))
+                                                 self.get_input_file_name('single_protein.pdb'))
         m = IMP.kernel.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         mp = loader.load_atoms(m)
-        all_atoms= IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
+        all_atoms = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         self.assertEqual(1221, len(all_atoms),
                          "Wrong number of atoms found in protein")
         bonds = list(loader.load_bonds())
@@ -98,14 +99,15 @@ class Tests(IMP.test.TestCase):
             mdl.patch('3TER', mdl.residues[-1])
         m = IMP.kernel.Model()
         modmodel = modeller.scripts.complete_pdb(self.get_environ(),
-                             self.get_input_file_name('single_dna.pdb'),
-                             special_patches=na_patches)
+                                                 self.get_input_file_name(
+                                                     'single_dna.pdb'),
+                                                 special_patches=na_patches)
         mp = IMP.modeller.ModelLoader(modmodel).load_atoms(m)
         desc = IMP.core.get_all_descendants(mp)
-        mpp= mp.get_parent()
+        mpp = mp.get_parent()
         self.assertEqual(mpp, IMP.atom.Hierarchy(),
                          "Should not have a parent")
-        mpc= mp.get_child(0)
+        mpc = mp.get_child(0)
         self.assertEqual(mpc.get_parent(), mp,
                          "Should not have a parent")
         self.assertEqual(3160, len(desc),

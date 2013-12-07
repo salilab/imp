@@ -23,12 +23,11 @@ IMPISD_BEGIN_NAMESPACE
     unbounded. It can be bounded with set_upper and set_lower. Setting it
     to values outside of bounds results in setting it to the bound value.
  */
-class IMPISDEXPORT Nuisance: public Decorator
-{
+class IMPISDEXPORT Nuisance : public Decorator {
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
-                                double nuisance=1.0);
+                                double nuisance = 1.0);
 
-public:
+ public:
   IMP_DECORATOR_METHODS(Nuisance, Decorator);
   IMP_DECORATOR_SETUP_0(Nuisance);
   IMP_DECORATOR_SETUP_1(Nuisance, double, nuisance);
@@ -54,7 +53,7 @@ public:
   static FloatKey get_lower_key();
   static kernel::ParticleIndexKey get_lower_particle_key();
   void set_lower(Float d);
-  void set_lower(kernel::Particle * d);
+  void set_lower(kernel::Particle *d);
   void remove_lower();
 
   bool get_has_upper() const;
@@ -62,7 +61,7 @@ public:
   static FloatKey get_upper_key();
   static kernel::ParticleIndexKey get_upper_particle_key();
   void set_upper(Float d);
-  void set_upper(kernel::Particle * d);
+  void set_upper(kernel::Particle *d);
   void remove_upper();
 
   Float get_nuisance_derivative() const {
@@ -74,38 +73,36 @@ public:
   }
 
   bool get_nuisance_is_optimized() const {
-      return get_particle()->get_is_optimized(get_nuisance_key());
+    return get_particle()->get_is_optimized(get_nuisance_key());
   }
 
   void set_nuisance_is_optimized(bool val) {
-      get_particle()->set_is_optimized(get_nuisance_key(), val);
+    get_particle()->set_is_optimized(get_nuisance_key(), val);
   }
 
   friend class NuisanceScoreState;
 
-private:
-  //scorestate-related bookkeeping
+ private:
+  // scorestate-related bookkeeping
   static ObjectKey get_ss_key();
   void enforce_bounds();
   void remove_bounds();
-
 };
 
 IMP_DECORATORS(Nuisance, Nuisances, kernel::ParticlesTemp);
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-class IMPISDEXPORT NuisanceScoreState : public ScoreState
-{
-    private:
-        IMP::base::WeakPointer<kernel::Particle> p_;
+class IMPISDEXPORT NuisanceScoreState : public ScoreState {
+ private:
+  IMP::base::WeakPointer<kernel::Particle> p_;
 
-    private:
-        NuisanceScoreState(kernel::Particle *p) :
-            ScoreState(p->get_model(), "NuisanceScoreState%1%"), p_(p) {}
+ private:
+  NuisanceScoreState(kernel::Particle *p)
+      : ScoreState(p->get_model(), "NuisanceScoreState%1%"), p_(p) {}
 
-    public:
-        friend class Nuisance;
-        virtual void do_before_evaluate() IMP_OVERRIDE;
+ public:
+  friend class Nuisance;
+  virtual void do_before_evaluate() IMP_OVERRIDE;
   virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
@@ -113,7 +110,6 @@ class IMPISDEXPORT NuisanceScoreState : public ScoreState
 };
 #endif
 
-
 IMPISD_END_NAMESPACE
 
-#endif  /* IMPISD_NUISANCE_H */
+#endif /* IMPISD_NUISANCE_H */

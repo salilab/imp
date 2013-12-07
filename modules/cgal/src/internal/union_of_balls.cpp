@@ -1570,24 +1570,21 @@ inline double SpacefillingVolumetric<Gt>::halfDiskInter2_A(Wpoint const &i,
       I = 0;
     } else {
       I = acos(I);
-    }
-    ;
+    };
     if (J < -1) {
       J = PI;
     } else if (J > 1) {
       J = 0;
     } else {
       J = acos(J);
-    }
-    ;
+    };
     // remember that the angles I and J are between 0 and Pi, so, the
     // respective normalized angles will be between 0 and 1/2 hence, when
     // computing the sector area as I*ball_R2(i) we have a factor 2 : in
     // fact we compute the double of the area
     A = 0.5 * (I * ball_R2(i) + J * ball_R2(j)) -
         triangle_A(ball_R(i), ball_R(j), d);
-  }
-  ;
+  };
   return A;
 }
 
@@ -1630,16 +1627,14 @@ inline void SpacefillingVolumetric<Gt>::halfDiskInter2_A(Wpoint const &i,
       I = 0;
     } else {
       I = acos(I);
-    }
-    ;
+    };
     if (J < -1) {
       J = PI;
     } else if (J > 1) {
       J = 0;
     } else {
       J = acos(J);
-    }
-    ;
+    };
     // remember that the angles I and J are between 0 and Pi, so, the
     // respective normalized angles will be between 0 and 1/2 hence, when
     // computing the sector area as I*ball_R2(i) we have a factor 2 : in
@@ -1647,8 +1642,7 @@ inline void SpacefillingVolumetric<Gt>::halfDiskInter2_A(Wpoint const &i,
     A = 0.5 * (I * ball_R2(i) + J * ball_R2(j)) -
         triangle_A(ball_R(i), ball_R(j), d);
     L = I * ball_R(i) + J * ball_R(j);
-  }
-  ;
+  };
 }
 
 /*! Computes the area of the part of a triangle that is not in the spheres that

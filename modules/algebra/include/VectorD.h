@@ -338,8 +338,8 @@ class VectorD : public GeometricPrimitiveD<D> {
   typedef double value_type;
   typedef std::random_access_iterator_tag iterator_category;
   typedef std::ptrdiff_t difference_type;
-  typedef double* pointer;
-  typedef double& reference;
+  typedef double *pointer;
+  typedef double &reference;
   typedef const double &const_reference;
   CoordinateConstIterator begin() const { return data_.get_data(); }
   CoordinateConstIterator end() const {
@@ -362,7 +362,6 @@ class VectorD : public GeometricPrimitiveD<D> {
   unsigned int get_dimension() const { return data_.get_dimension(); }
 
  private:
-
   internal::VectorData<double, D, false> data_;
 };
 

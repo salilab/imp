@@ -19,7 +19,8 @@ class ExpensiveRestraint : public IMP::kernel::Restraint {
   IMP::kernel::ParticleIndexes pis_;
 
  public:
-  ExpensiveRestraint(IMP::kernel::Model *m, const IMP::kernel::ParticleIndexes &pis)
+  ExpensiveRestraint(IMP::kernel::Model *m,
+                     const IMP::kernel::ParticleIndexes &pis)
       : Restraint(m, "ExpensiveRestraint%1%"), pis_(pis) {}
   void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator sa) const
       IMP_OVERRIDE;
@@ -27,8 +28,8 @@ class ExpensiveRestraint : public IMP::kernel::Restraint {
   IMP_OBJECT_METHODS(ExpensiveRestraint);
 };
 
-void ExpensiveRestraint::do_add_score_and_derivatives(
-    IMP::ScoreAccumulator sa) const {
+void ExpensiveRestraint::do_add_score_and_derivatives(IMP::ScoreAccumulator sa)
+    const {
   double score = 0;
   IMP::kernel::Model *m = get_model();
   for (unsigned int i = 0; i < pis_.size(); ++i) {
@@ -60,20 +61,14 @@ void benchmark_omp(IMP::core::RestraintsScoringFunction *sf) {
   IMP_THREADS((oss), {
     double timet;
     double score = 0.0;
-    IMP_WALLTIME({
-      score = sf->evaluate(false);
-    },
-                 timet);
+    IMP_WALLTIME({ score = sf->evaluate(false); }, timet);
     IMP::benchmark::report(std::string("omp evaluate no deriv ") + oss.str(),
                            timet, score);
   });
   IMP_THREADS((oss), {
     double time;
     double score = 0.0;
-    IMP_WALLTIME({
-      score = sf->evaluate(true);
-    },
-                 time);
+    IMP_WALLTIME({ score = sf->evaluate(true); }, time);
     IMP::benchmark::report(std::string("omp evaluate deriv ") + oss.str(), time,
                            score);
   });
@@ -82,18 +77,12 @@ void benchmark_omp(IMP::core::RestraintsScoringFunction *sf) {
 void benchmark_serial(IMP::core::RestraintsScoringFunction *sf) {
   {
     double time, score = 0.0;
-    IMP_WALLTIME({
-      score = sf->evaluate(false);
-    },
-                 time);
+    IMP_WALLTIME({ score = sf->evaluate(false); }, time);
     IMP::benchmark::report("serial evaluate no deriv", time, score);
   }
   {
     double time, score = 0.0;
-    IMP_WALLTIME({
-      score = sf->evaluate(true);
-    },
-                 time);
+    IMP_WALLTIME({ score = sf->evaluate(true); }, time);
     IMP::benchmark::report("serial evaluate deriv", time, score);
   }
 }

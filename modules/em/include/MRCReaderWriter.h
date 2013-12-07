@@ -17,18 +17,15 @@
 IMPEM_BEGIN_NAMESPACE
 
 /** A class to read and write MRC files. */
-class IMPEMEXPORT MRCReaderWriter : public MapReaderWriter
-{
-public:
+class IMPEMEXPORT MRCReaderWriter : public MapReaderWriter {
+ public:
   //! Empty constructor
   MRCReaderWriter() {}
   //! Constructor
   /**
    * param[in] fn name of the file to open or write
    */
-  MRCReaderWriter(std::string fn) {
-    filename=fn;
-  }
+  MRCReaderWriter(std::string fn) { filename = fn; }
 #if !defined(DOXYGEN) && !defined(SWIG)
   //! Reads an MRC file and translates the header to the general DensityHeader
   void read(const char *fn_in, float **data, DensityHeader &head);
@@ -36,14 +33,10 @@ public:
   void write(const char *fn_out, const float *data, const DensityHeader &head);
 #endif
 
-private:
-
-
+ private:
   //! By default the data are read into the grid of the class, but an external
   //! pointer to another grid can be specified
-  void read() {
-    read(&grid);
-  }
+  void read() { read(&grid); }
 
   void read(float **pt);
   //! reads the header
@@ -54,22 +47,20 @@ private:
   void read_8_data(float *pt);
   //! reads data of size 32-bit
   void read_32_data(float *pt);
-  void read_grid(void *pt,size_t size,size_t n);
+  void read_grid(void *pt, size_t size, size_t n);
   void seek_to_data();
   //! Write function
   /**
    * param[in] fn name of the file to write
    */
-  void write(const char *fn) {
-    return write(fn,grid);
-  }
+  void write(const char *fn) { return write(fn, grid); }
 
   //! Write function
   /**
    * param[in] fn name of the file to write
    * param[in] pt pointer to the data to write
    */
-  void write(const char *fn,const float *pt);
+  void write(const char *fn, const float *pt);
   //! Writes the header
   /**
    * param[in] s stream to write the header
@@ -97,4 +88,4 @@ private:
 
 IMPEM_END_NAMESPACE
 
-#endif  /* IMPEM_MRC_READER_WRITER_H */
+#endif /* IMPEM_MRC_READER_WRITER_H */

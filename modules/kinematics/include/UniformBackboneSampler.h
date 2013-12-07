@@ -15,7 +15,7 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-//TODO: is it necessarily backbone? could be any dihedrals too?
+// TODO: is it necessarily backbone? could be any dihedrals too?
 
 /**
    A DOFs sampler that acts on a set of backbone dihedral joints

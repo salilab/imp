@@ -33,20 +33,18 @@ ConfigurationSetXYZEmbedding::ConfigurationSetXYZEmbedding(
     ConfigurationSet *cs, SingletonContainerAdaptor sc, bool align)
     : Embedding("ConfiguringEmbedding"), cs_(cs), sc_(sc), align_(align) {}
 
-algebra::VectorKD ConfigurationSetXYZEmbedding::get_point(
-    unsigned int a) const {
+algebra::VectorKD ConfigurationSetXYZEmbedding::get_point(unsigned int a)
+    const {
   algebra::Transformation3D tr = algebra::get_identity_transformation_3d();
   if (align_) {
     cs_->load_configuration(0);
     algebra::Vector3Ds vs0;
-    IMP_CONTAINER_FOREACH(SingletonContainer, sc_, {
-      vs0.push_back(get_coordinates(sc_->get_model(), _1));
-    });
+    IMP_CONTAINER_FOREACH(SingletonContainer, sc_,
+    { vs0.push_back(get_coordinates(sc_->get_model(), _1)); });
     cs_->load_configuration(a);
     algebra::Vector3Ds vsc;
-    IMP_CONTAINER_FOREACH(SingletonContainer, sc_, {
-      vsc.push_back(get_coordinates(sc_->get_model(), _1));
-    });
+    IMP_CONTAINER_FOREACH(SingletonContainer, sc_,
+    { vsc.push_back(get_coordinates(sc_->get_model(), _1)); });
     tr = get_transformation_aligning_first_to_second(vsc, vs0);
   } else {
     cs_->load_configuration(a);

@@ -18,7 +18,6 @@ IMPALGEBRA_BEGIN_NAMESPACE
 //! Calculate parabola that fits best the input data points
 class IMPALGEBRAEXPORT ParabolicFit2D : public GeometricPrimitiveD<2> {
  public:
-
   //! Constructor
   /**
      \param[in] data vector of pairs (VectorD<2>) with x and their

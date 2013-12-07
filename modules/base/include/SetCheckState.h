@@ -40,7 +40,7 @@ class IMPBASEEXPORT SetCheckState : public base::RAII {
                                                        level_ = DEFAULT_CHECK;
                                                        obj_ = nullptr;
                                                      },
-           { do_set(o, l); }, { do_reset(); }, do_show(out););
+  { do_set(o, l); }, { do_reset(); }, do_show(out););
 
   //! Construct it with the desired level and target
   SetCheckState(CheckLevel l) {

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-import sys,os
+import sys
+import os
 from glob import glob
 
 import IMP
@@ -13,28 +14,30 @@ import IMP.isd.TALOSReader
 import IMP.isd.utils
 from IMP.isd.Entry import Entry
 
-from math import sqrt,exp
+from math import sqrt, exp
 from StringIO import StringIO
 
 from random import random
 
-kB= (1.381 * 6.02214) / 4184.0
+kB = (1.381 * 6.02214) / 4184.0
+
 
 class PyMDMover:
+
     def __init__(self, cont, md, n_md_steps):
         self.cont = cont
         self.md = md
         self.n_md_steps = n_md_steps
-        self.velkeys=[IMP.FloatKey("vx"),
-                    IMP.FloatKey("vy"), IMP.FloatKey("vz")]
+        self.velkeys = [IMP.FloatKey("vx"),
+                        IMP.FloatKey("vy"), IMP.FloatKey("vz")]
 
     def store_move(self):
-        self.oldcoords=[]
-        #self.oldvel=[]
+        self.oldcoords = []
+        # self.oldvel=[]
         for i in xrange(self.cont.get_number_of_particles()):
-            p=self.cont.get_particle(i)
+            p = self.cont.get_particle(i)
             #self.oldvel.append([p.get_value(k) for k in self.velkeys])
-            d=IMP.core.XYZ(p)
+            d = IMP.core.XYZ(p)
             self.oldcoords.append(d.get_coordinates())
 
     def propose_move(self, prob):
@@ -42,10 +45,10 @@ class PyMDMover:
 
     def reset_move(self):
         for i in xrange(self.cont.get_number_of_particles()):
-            p=self.cont.get_particle(i)
-            #for j,k in enumerate(self.velkeys):
+            p = self.cont.get_particle(i)
+            # for j,k in enumerate(self.velkeys):
             #    p.set_value(k, self.oldvel[i][j])
-            d=IMP.core.XYZ(p)
+            d = IMP.core.XYZ(p)
             d.set_coordinates(self.oldcoords[i])
 
     def get_number_of_steps(self):
@@ -54,69 +57,74 @@ class PyMDMover:
     def set_number_of_steps(self, nsteps):
         self.n_md_steps = nsteps
 
+
 class PyMC(IMP.Optimizer):
-    debug =True
+    debug = True
 
-    def __init__(self,model):
-        self.m=model
+    def __init__(self, model):
+        self.m = model
 
-    def add_mover(self,mv):
+    def add_mover(self, mv):
         self.mv = mv
 
-    def set_kt(self,kT):
-        self.kT=kT
+    def set_kt(self, kT):
+        self.kT = kT
 
-    def set_return_best(self,thing):
+    def set_return_best(self, thing):
         pass
-    def set_move_probability(self,thing):
+
+    def set_move_probability(self, thing):
         pass
 
     def get_energy(self):
-        pot=self.m.evaluate(False)
-        #pot=self.get_restraints().evaluate(False)
-        kin=self.mv.md.get_kinetic_energy()
-        return pot+kin
+        pot = self.m.evaluate(False)
+        # pot=self.get_restraints().evaluate(False)
+        kin = self.mv.md.get_kinetic_energy()
+        return pot + kin
 
     def metropolis(self, old, new):
-        deltaE=new-old
+        deltaE = new - old
         if self.debug:
-            print ": old %f new %f deltaE %f new_epot: %f" % (old,new,deltaE,
-                self.m.evaluate(False)),
-        kT=self.kT
+            print ": old %f new %f deltaE %f new_epot: %f" % (old, new, deltaE,
+                                                              self.m.evaluate(
+                                                                  False)),
+        kT = self.kT
         if deltaE < 0:
             return True
         else:
-            return exp(-deltaE/kT) > random()
+            return exp(-deltaE / kT) > random()
 
-    def optimize(self,nsteps):
+    def optimize(self, nsteps):
         self.naccept = 0
         print "=== new MC call"
-        #store initial coordinates
+        # store initial coordinates
         self.mv.store_move()
         for i in xrange(nsteps):
             print "MC step %d " % i,
-            #draw new velocities
+            # draw new velocities
             self.mv.md.assign_velocities(self.kT / kB)
-            #get total energy
-            old=self.get_energy()
-            #make a MD move
+            # get total energy
+            old = self.get_energy()
+            # make a MD move
             self.mv.propose_move(1)
-            #get new total energy
-            new=self.get_energy()
-            if self.metropolis(old,new):
-                #move was accepted: store new conformation
+            # get new total energy
+            new = self.get_energy()
+            if self.metropolis(old, new):
+                # move was accepted: store new conformation
                 self.mv.store_move()
                 self.naccept += 1
                 print "accepted "
             else:
-                #move rejected: restore old conformation
+                # move rejected: restore old conformation
                 self.mv.reset_move()
                 print " "
 
     def get_number_of_forward_steps(self):
         return self.naccept
 
+
 class sfo_common:
+
     """nonspecific methods used across all shared function objects.
     Rules:
         - Their name starts with the name of the parent function (e.g.
@@ -135,15 +143,15 @@ class sfo_common:
     def hello(self):
         return "hello world"
 
-    def set_checklevel(self,value):
+    def set_checklevel(self, value):
         IMP.base.set_check_level(value)
 
-    def set_loglevel(self,value):
+    def set_loglevel(self, value):
         IMP.base.set_log_level(value)
 
-    def m(self,name,*args,**kw):
+    def m(self, name, *args, **kw):
         "wrapper to call methods of m"
-        func=getattr(self._m,name)
+        func = getattr(self._m, name)
         return func(*args, **kw)
 
     def init_model_base(self, wd):
@@ -152,7 +160,8 @@ class sfo_common:
         # Create an IMP model
         self._m = IMP.Model()
 
-    def init_model_charmm_protein_and_ff(self, initpdb, top, par, selector, pairscore,
+    def init_model_charmm_protein_and_ff(
+        self, initpdb, top, par, selector, pairscore,
             ff_temp=300.0, disulfides=None, representation='custom'):
         """creates a CHARMM protein representation.
         creates the charmm force field, bonded and nonbonded.
@@ -186,39 +195,39 @@ class sfo_common:
             - rs: the RestraintSet on nonbonded interactions. Both are weighted
               using ff_temp.
         """
-        m=self._m
+        m = self._m
         prot = IMP.atom.read_pdb(initpdb, m, selector)
         if not prot.get_is_valid(True):
-            raise ValueError, "invalid hierarchy!"
+            raise ValueError("invalid hierarchy!")
         if representation == 'custom':
             # Read in the CHARMM heavy atom topology and parameter files
-            ff = IMP.atom.CHARMMParameters(top,par)
+            ff = IMP.atom.CHARMMParameters(top, par)
         elif representation == 'heavy':
-            ff= IMP.atom.get_heavy_atom_CHARMM_parameters()
+            ff = IMP.atom.get_heavy_atom_CHARMM_parameters()
         elif representation == 'full':
-            ff= IMP.atom.get_all_atom_CHARMM_parameters()
+            ff = IMP.atom.get_all_atom_CHARMM_parameters()
         elif representation == 'calpha':
             pass
         else:
-            raise NotImplementedError, representation
+            raise NotImplementedError(representation)
         if representation == 'calpha':
             print "setting up simplified C alpha force field"
             # set radii
             for ca in IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE):
                 IMP.core.XYZR(ca.get_particle()).set_radius(1.89)
-                #IMP.atom.Mass(ca.get_particle()).set_mass(1.)
-            #create bonds by getting pairs and applying a pairscore
-            pairs=[]
+                # IMP.atom.Mass(ca.get_particle()).set_mass(1.)
+            # create bonds by getting pairs and applying a pairscore
+            pairs = []
             for chain in prot.get_children():
-                residues=[(chain.get_child(i),chain.get_child(i+1))
-                            for i in xrange(chain.get_number_of_children()-1)]
-                residues=[(i.get_child(0).get_particle(),
-                           j.get_child(0).get_particle())
-                            for (i,j) in residues]
+                residues = [(chain.get_child(i), chain.get_child(i + 1))
+                            for i in xrange(chain.get_number_of_children() - 1)]
+                residues = [(i.get_child(0).get_particle(),
+                             j.get_child(0).get_particle())
+                            for (i, j) in residues]
                 pairs.extend(residues)
-            bonds=[]
-            for (i,j) in pairs:
-                #check, because it fails if you try twice
+            bonds = []
+            for (i, j) in pairs:
+                # check, because it fails if you try twice
                 if IMP.atom.Bonded.particle_is_instance(i):
                     bi = IMP.atom.Bonded(i)
                 else:
@@ -227,19 +236,19 @@ class sfo_common:
                     bi = IMP.atom.Bonded(i)
                 else:
                     bj = IMP.atom.Bonded.setup_particle(j)
-                bond=IMP.atom.create_custom_bond(bi,bj,3.78,10) #stiff
+                bond = IMP.atom.create_custom_bond(bi, bj, 3.78, 10)  # stiff
                 bonds.append(bond)
             bonds_container = IMP.container.ListSingletonContainer(bonds)
-            hdps = IMP.core.Harmonic(0,1)
+            hdps = IMP.core.Harmonic(0, 1)
             bs = IMP.atom.BondSingletonScore(hdps)
             br = IMP.container.SingletonsRestraint(bs, bonds_container)
             rsb = IMP.RestraintSet("bonded")
             rsb.add_restraint(br)
-            rsb.set_weight(1.0/(kB*ff_temp))
+            rsb.set_weight(1.0 / (kB * ff_temp))
             m.add_restraint(rsb)
             nonbonded_pair_filter = IMP.atom.StereochemistryPairFilter()
             nonbonded_pair_filter.set_bonds(bonds)
-            ff=None
+            ff = None
         else:
             print "setting up CHARMM forcefield"
             #
@@ -250,21 +259,21 @@ class sfo_common:
             # applying the CHARMM CTER and NTER patches. Patches can also be manually
             # applied at this point, e.g. to add disulfide bridges.
             topology.apply_default_patches()
-            #disulfides
+            # disulfides
             if disulfides:
-                s=topology.get_segment(0)
-                dis=ff.get_patch('DISU')
-                for (i,j) in disulfides:
+                s = topology.get_segment(0)
+                dis = ff.get_patch('DISU')
+                for (i, j) in disulfides:
                     self.find_atom((i, 'SG'), prot)
                     self.find_atom((j, 'SG'), prot)
-                    r0=s.get_residue(i)
-                    r1=s.get_residue(j)
-                    if i==0:
+                    r0 = s.get_residue(i)
+                    r1 = s.get_residue(j)
+                    if i == 0:
                         r0.set_patched(False)
-                    if j==0:
+                    if j == 0:
                         r1.set_patched(False)
-                    dis.apply(r0,r1)
-                    print "added disulfide bridge between cysteines %d and %d" % (i,j)
+                    dis.apply(r0, r1)
+                    print "added disulfide bridge between cysteines %d and %d" % (i, j)
             # Make the PDB file conform with the topology; i.e. if it contains extra
             # atoms that are not in the CHARMM topology file, remove them; if it is
             # missing atoms (e.g. sidechains, hydrogens) that are in the CHARMM topology,
@@ -274,7 +283,7 @@ class sfo_common:
             # Set up and evaluate the stereochemical part (bonds, angles, dihedrals,
             # impropers) of the CHARMM forcefield
             r = IMP.atom.CHARMMStereochemistryRestraint(prot, topology)
-            rsb = IMP.RestraintSet(m,1.0,"bonded")
+            rsb = IMP.RestraintSet(m, 1.0, "bonded")
             rsb.add_restraint(r)
             m.add_restraint(rsb)
             #
@@ -297,9 +306,9 @@ class sfo_common:
         # LennardJonesPairScore to each pair in the ClosePairContainer.
         nbl = IMP.container.ClosePairContainer(cont, 4.0)
         nbl.add_pair_filter(nonbonded_pair_filter)
-        #should weight the ff restraint by a temperature, set to 300K.
+        # should weight the ff restraint by a temperature, set to 300K.
         pr = IMP.container.PairsRestraint(pairscore, nbl)
-        rs = IMP.RestraintSet(m,1.0/(kB*ff_temp),'phys')
+        rs = IMP.RestraintSet(m, 1.0 / (kB * ff_temp), 'phys')
         rs.add_restraint(pr)
         m.add_restraint(rs)
         return prot, ff, rsb, rs
@@ -309,8 +318,8 @@ class sfo_common:
         optionnally be constrained between two positive bounds, or else its
         range  is 0 to infinity.
         """
-        m=self._m
-        scale = IMP.isd.Scale.setup_particle(IMP.Particle(m),default)
+        m = self._m
+        scale = IMP.isd.Scale.setup_particle(IMP.Particle(m), default)
         if lower:
             scale.set_lower(lower)
         if upper:
@@ -336,10 +345,10 @@ class sfo_common:
         If argument prior_rs is used, add them to that RestraintSet instead.
         """
         if not prior_rs:
-            prior_rs = IMP.RestraintSet(self._m,1.0,'prior')
+            prior_rs = IMP.RestraintSet(self._m, 1.0, 'prior')
             self._m.add_restraint(prior_rs)
         for i in scales:
-            jr=IMP.isd.JeffreysRestraint(self._m,i)
+            jr = IMP.isd.JeffreysRestraint(self._m, i)
             prior_rs.add_restraint(jr)
         return prior_rs
 
@@ -350,12 +359,13 @@ class sfo_common:
         instead.
         """
         if not (0 <= R <= c):
-            raise ValueError, "parameters R and c should satisfy 0 <= R <= c"
+            raise ValueError("parameters R and c should satisfy 0 <= R <= c")
         if not prior_rs:
-            prior_rs = IMP.RestraintSet(self._m,1.0,'prior')
+            prior_rs = IMP.RestraintSet(self._m, 1.0, 'prior')
             self._m.add_restraint(prior_rs)
         for i in scales:
-            prior_rs.add_restraint(IMP.isd.vonMisesKappaConjugateRestraint(i, c, R))
+            prior_rs.add_restraint(
+                IMP.isd.vonMisesKappaConjugateRestraint(i, c, R))
         return prior_rs
 
     def find_atom(self, atom, prot):
@@ -363,21 +373,21 @@ class sfo_common:
         assumes that resno follows the same numbering as the sequence.
         Stores already found atoms for increased speed.
         """
-        if not hasattr(self,'__memoized'):
-            self.__memoized={prot:{}}
+        if not hasattr(self, '__memoized'):
+            self.__memoized = {prot: {}}
         try:
             return self.__memoized[prot][atom]
         except:
             pass
         try:
-            sel=IMP.atom.Selection(hierarchy=prot,
-                residue_index=atom[0],
-                atom_type=IMP.atom.AtomType(atom[1])
-                ).get_selected_particles()
+            sel = IMP.atom.Selection(hierarchy=prot,
+                                     residue_index=atom[0],
+                                     atom_type=IMP.atom.AtomType(atom[1])
+                                     ).get_selected_particles()
             if len(sel) > 1:
                 print "found multiple atoms for atom %d %s!" % atom
                 return
-            p0=IMP.core.XYZ(sel[0])
+            p0 = IMP.core.XYZ(sel[0])
         except:
             print "atom %d %s not found" % atom
             return
@@ -390,7 +400,7 @@ class sfo_common:
         particle as concentration parameter. Returns the restraint.
         data is a list of observations.
         """
-        return IMP.isd.TALOSRestraint(atoms,data,kappa)
+        return IMP.isd.TALOSRestraint(atoms, data, kappa)
 
     def init_model_vonMises_restraint_mean(self, prot, atoms, data, kappa):
         """
@@ -408,32 +418,40 @@ class sfo_common:
         where atom1 is (resno, atomname) and resno is the residue sequence
         number.
         """
-        #find corresponding atoms
-        p0=self.find_atom(atoms[0], prot)
-        p1=self.find_atom(atoms[1], prot)
-        #create lognormal restraint using gamma_data = 1
-        ln = IMP.isd.NOERestraint(self._m,p0,p1,sigma,gamma,distance**(-6))
+        # find corresponding atoms
+        p0 = self.find_atom(atoms[0], prot)
+        p1 = self.find_atom(atoms[1], prot)
+        # create lognormal restraint using gamma_data = 1
+        ln = IMP.isd.NOERestraint(
+            self._m,
+            p0,
+            p1,
+            sigma,
+            gamma,
+            distance ** (-6))
         return ln
 
     def init_model_ambiguous_NOE_restraint(self, prot, contributions, distance,
-            sigma, gamma):
+                                           sigma, gamma):
         """Reads an ambiguous NOE restraint. contributions is a list of
         (atom1, atom2) pairs, where atom1 is (resno, atomname).  Sets up a
         lognormal distance restraint using the given sigma and gamma.
         Returns the restraint.
         """
-        #create pairs list
-        pairs=[(self.find_atom(i, prot).get_particle(),
-                self.find_atom(j, prot).get_particle()) for (i,j) in
-                contributions]
+        # create pairs list
+        pairs = [(self.find_atom(i, prot).get_particle(),
+                  self.find_atom(j, prot).get_particle()) for (i, j) in
+                 contributions]
         pairs = IMP.container.ListPairContainer(pairs)
-        #create restraint
-        ln = IMP.isd.AmbiguousNOERestraint(pairs, sigma, gamma, distance**(-6))
+        # create restraint
+        ln = IMP.isd.AmbiguousNOERestraint(
+            pairs, sigma, gamma, distance ** (-6))
         return ln
 
-    def init_model_NOEs(self, prot, seqfile, tblfile, name='NOE', prior_rs=None,
-            bounds_sigma=(1.0,0.1,100), bounds_gamma=(1.0,0.1,100),
-            verbose=True, sequence_match=(1,1)):
+    def init_model_NOEs(
+        self, prot, seqfile, tblfile, name='NOE', prior_rs=None,
+        bounds_sigma=(1.0, 0.1, 100), bounds_gamma=(1.0, 0.1, 100),
+            verbose=True, sequence_match=(1, 1)):
         """read TBL file and store NOE restraints, using one sigma and one gamma
         for the whole dataset. Creates the necessary uninformative priors.
         - prot: protein hierarchy
@@ -448,43 +466,44 @@ class sfo_common:
         - sequence_match : (noe_start, sequence_start)
         Returns: data_rs, prior_rs, sigma, gamma
         """
-        #prior
+        # prior
         if verbose:
             print "Prior for the NOE Scales"
-        sigma=self.init_model_setup_scale(*bounds_sigma)
-        gamma=self.init_model_setup_scale(*bounds_gamma)
-        prior_rs = self.init_model_jeffreys([sigma,gamma], prior_rs)
-        #likelihood
-        rs = IMP.RestraintSet(self._m,1.0,name)
-        #use the TBLReader to parse the TBL file.
+        sigma = self.init_model_setup_scale(*bounds_sigma)
+        gamma = self.init_model_setup_scale(*bounds_gamma)
+        prior_rs = self.init_model_jeffreys([sigma, gamma], prior_rs)
+        # likelihood
+        rs = IMP.RestraintSet(self._m, 1.0, name)
+        # use the TBLReader to parse the TBL file.
         sequence = IMP.isd.utils.read_sequence_file(seqfile,
-                first_residue_number=sequence_match[1])
+                                                    first_residue_number=sequence_match[1])
         tblr = IMP.isd.TBLReader.TBLReader(sequence,
-                sequence_match=sequence_match)
+                                           sequence_match=sequence_match)
         restraints = tblr.read_distances(tblfile, 'NOE')['NOE']
-        for i,restraint in enumerate(restraints):
+        for i, restraint in enumerate(restraints):
             if verbose and i % 100 == 0:
                 print "\r%d" % i,
                 sys.stdout.flush()
-            #a restraint is (contributions, dist, upper, lower, volume)
-            #where contributions is a tuple of contributing pairs
-            #and a pair is (c1, c2), where c1 is of the form (resno, atname)
+            # a restraint is (contributions, dist, upper, lower, volume)
+            # where contributions is a tuple of contributing pairs
+            # and a pair is (c1, c2), where c1 is of the form (resno, atname)
             if len(restraint[0]) > 1:
-                ln = self.init_model_ambiguous_NOE_restraint(prot, restraint[0],
-                        restraint[1], sigma, gamma)
+                ln = self.init_model_ambiguous_NOE_restraint(
+                    prot, restraint[0],
+                    restraint[1], sigma, gamma)
             else:
                 ln = self.init_model_NOE_restraint(prot, restraint[0][0],
-                        restraint[1], sigma, gamma)
+                                                   restraint[1], sigma, gamma)
             rs.add_restraint(ln)
         if verbose:
             print "\r%d NOE restraints read" % i
-        #set weight of rs and add to model.
-        #Weight is 1.0 cause sigma particle already has this role.
+        # set weight of rs and add to model.
+        # Weight is 1.0 cause sigma particle already has this role.
         self._m.add_restraint(rs)
         return rs, prior_rs, sigma, gamma
 
     def init_model_NOEs_marginal(self, prot, seqfile, tblfile, name='NOE',
-            verbose=True, sequence_match=(1,1)):
+                                 verbose=True, sequence_match=(1, 1)):
         """read TBL file and store NOE restraints, using the marginal of the
         lognormal with one sigma and one gamma, for the whole dataset.
         - prot: protein hierarchy
@@ -495,26 +514,26 @@ class sfo_common:
         - sequence_match : (noe_start, sequence_start)
         Returns: data_rs
         """
-        #likelihood
-        rs = IMP.RestraintSet(self._m,1.0,name)
-        #use the TBLReader to parse the TBL file.
+        # likelihood
+        rs = IMP.RestraintSet(self._m, 1.0, name)
+        # use the TBLReader to parse the TBL file.
         sequence = IMP.isd.utils.read_sequence_file(seqfile,
-                first_residue_number=sequence_match[1])
+                                                    first_residue_number=sequence_match[1])
         tblr = IMP.isd.TBLReader.TBLReader(sequence,
-                sequence_match=sequence_match)
+                                           sequence_match=sequence_match)
         restraints = tblr.read_distances(tblfile, 'NOE')['NOE']
         ln = IMP.isd.MarginalNOERestraint()
-        for i,restraint in enumerate(restraints):
+        for i, restraint in enumerate(restraints):
             if verbose and i % 100 == 0:
                 print "\r%d" % i,
                 sys.stdout.flush()
-            #a restraint is (contributions, dist, upper, lower, volume)
-            #where contributions is a tuple of contributing pairs
-            #and a pair is (c1, c2), where c1 is of the form (resno, atname)
-            #residue numbers start at 0
-            pairs=[(self.find_atom(i, prot).get_particle(),
-                    self.find_atom(j, prot).get_particle()) for (i,j) in
-                    restraint[0]]
+            # a restraint is (contributions, dist, upper, lower, volume)
+            # where contributions is a tuple of contributing pairs
+            # and a pair is (c1, c2), where c1 is of the form (resno, atname)
+            # residue numbers start at 0
+            pairs = [(self.find_atom(i, prot).get_particle(),
+                      self.find_atom(j, prot).get_particle()) for (i, j) in
+                     restraint[0]]
             pairs = IMP.container.ListPairContainer(pairs)
             ln.add_contribution(pairs, restraint[4])
         rs.add_restraint(ln)
@@ -524,7 +543,7 @@ class sfo_common:
         return rs
 
     def init_model_HBonds_marginal(self, prot, seqfile, tblfile, name='NOE',
-            verbose=True):
+                                   verbose=True):
         """read TBL file and store lognormal restraints, using the marginal of the
         lognormal with one sigma and gamma=1, for the whole dataset.
         - prot: protein hierarchy
@@ -534,24 +553,24 @@ class sfo_common:
         - verbose: be verbose (default True)
         Returns: data_rs
         """
-        #likelihood
-        rs = IMP.RestraintSet(self._m,1.0,name)
-        #use the TBLReader to parse the TBL file.
+        # likelihood
+        rs = IMP.RestraintSet(self._m, 1.0, name)
+        # use the TBLReader to parse the TBL file.
         sequence = IMP.isd.utils.read_sequence_file(seqfile)
         tblr = IMP.isd.TBLReader.TBLReader(sequence)
         restraints = tblr.read_distances(tblfile, 'HBond')['HBond']
         ln = IMP.isd.MarginalHBondRestraint()
-        for i,restraint in enumerate(restraints):
+        for i, restraint in enumerate(restraints):
             if verbose and i % 100 == 0:
                 print "\r%d" % i,
                 sys.stdout.flush()
-            #a restraint is (contributions, dist, upper, lower, volume)
-            #where contributions is a tuple of contributing pairs
-            #and a pair is (c1, c2), where c1 is of the form (resno, atname)
-            #residue numbers start at 0
-            pairs=[(self.find_atom(i, prot).get_particle(),
-                    self.find_atom(j, prot).get_particle()) for (i,j) in
-                    restraint[0]]
+            # a restraint is (contributions, dist, upper, lower, volume)
+            # where contributions is a tuple of contributing pairs
+            # and a pair is (c1, c2), where c1 is of the form (resno, atname)
+            # residue numbers start at 0
+            pairs = [(self.find_atom(i, prot).get_particle(),
+                      self.find_atom(j, prot).get_particle()) for (i, j) in
+                     restraint[0]]
             pairs = IMP.container.ListPairContainer(pairs)
             ln.add_contribution(pairs, restraint[4])
         rs.add_restraint(ln)
@@ -561,9 +580,9 @@ class sfo_common:
         return rs
 
     def init_model_TALOS(self, prot, seqfile, talos_data, fulldata=True,
-            sequence_match=(1,1),name='TALOS', prior_rs=None,
-            bounds_kappa=(1.0, 0.1,10), verbose=True, prior='jeffreys',
-            keep_all=False):
+                         sequence_match=(1, 1), name='TALOS', prior_rs=None,
+                         bounds_kappa=(1.0, 0.1, 10), verbose=True, prior='jeffreys',
+                         keep_all=False):
         """read TALOS dihedral angle data, and create restraints for phi/psi
         torsion angles, along with the prior for kappa, which is a scale for the
         whole dataset, compare to 1/sigma**2 in the NOE case.
@@ -591,79 +610,84 @@ class sfo_common:
         Returns: data_rs, prior_rs, kappa
 
         """
-        #prior
+        # prior
         if verbose:
             print "Prior for von Mises Kappa"
-        kappa=self.init_model_setup_scale(*bounds_kappa)
+        kappa = self.init_model_setup_scale(*bounds_kappa)
         prior_rs = self.init_model_jeffreys_kappa([kappa], prior_rs)
-        #likelihood
+        # likelihood
         if verbose:
             print "reading data"
-        rs = IMP.RestraintSet(self._m,1.0,name)
-        sequence= IMP.isd.utils.read_sequence_file(seqfile,
-                first_residue_no=sequence_match[1])
+        rs = IMP.RestraintSet(self._m, 1.0, name)
+        sequence = IMP.isd.utils.read_sequence_file(seqfile,
+                                                    first_residue_no=sequence_match[1])
         if fulldata:
-            talosr=IMP.isd.TALOSReader.TALOSReader(sequence, True, keep_all,
-                    sequence_match=sequence_match)
+            talosr = IMP.isd.TALOSReader.TALOSReader(sequence, True, keep_all,
+                                                     sequence_match=sequence_match)
             if os.path.isdir(talos_data):
-                #using pred/res???.tab files
-                for i,res in enumerate(glob(os.path.join(talos_data,'res???.tab'))):
+                # using pred/res???.tab files
+                for i, res in enumerate(glob(os.path.join(talos_data, 'res???.tab'))):
                     if verbose and i % 100:
                         print "\r%d" % i,
                         sys.stdout.flush()
                     talosr.read(res)
             else:
-                #using predAll.tab file
+                # using predAll.tab file
                 talosr.read(talos_data)
         else:
-            #using pred.tab file and correcting for estimates
-            talosr=IMP.isd.TALOSReader.TALOSReader(sequence, False, keep_all,
-                    sequence_match=sequence_match)
+            # using pred.tab file and correcting for estimates
+            talosr = IMP.isd.TALOSReader.TALOSReader(sequence, False, keep_all,
+                                                     sequence_match=sequence_match)
             talosr.read(talos_data)
-        #get harvested data and create restraints
+        # get harvested data and create restraints
         data = talosr.get_data()
         if verbose:
             print "\rread dihedral data for %d residues" % len(data)
             print "creating restraints"
-        avgR=[]
-        for resno,datum in data.iteritems():
-            phidata=datum['phi']
-            psidata=datum['psi']
-            num=datum['num']
-            res=IMP.atom.Residue(IMP.atom.get_residue(prot, resno))
-            phi=IMP.atom.get_phi_dihedral_atoms(res)
-            psi=IMP.atom.get_psi_dihedral_atoms(res)
+        avgR = []
+        for resno, datum in data.iteritems():
+            phidata = datum['phi']
+            psidata = datum['psi']
+            num = datum['num']
+            res = IMP.atom.Residue(IMP.atom.get_residue(prot, resno))
+            phi = IMP.atom.get_phi_dihedral_atoms(res)
+            psi = IMP.atom.get_psi_dihedral_atoms(res)
             if fulldata:
-                r=self.init_model_vonMises_restraint_full(phi, phidata, kappa)
+                r = self.init_model_vonMises_restraint_full(
+                    phi, phidata, kappa)
                 rs.add_restraint(r)
                 if verbose:
                     avgR.append(r.get_R0())
-                r=self.init_model_vonMises_restraint_full(psi, psidata, kappa)
+                r = self.init_model_vonMises_restraint_full(
+                    psi, psidata, kappa)
                 rs.add_restraint(r)
                 if verbose:
                     avgR.append(r.get_R0())
             else:
-                r=self.init_model_vonMises_restraint_mean(phi, phidata, kappa)
+                r = self.init_model_vonMises_restraint_mean(
+                    phi, phidata, kappa)
                 rs.add_restraint(r)
                 if verbose:
                     avgR.append(r.get_R0())
-                r=self.init_model_vonMises_restraint_mean(psi, psidata, kappa)
+                r = self.init_model_vonMises_restraint_mean(
+                    psi, psidata, kappa)
                 rs.add_restraint(r)
                 if verbose:
                     avgR.append(r.get_R0())
         if verbose:
             print "%s Restraints created. Average R0: %f" % \
-                (len(avgR), sum(avgR)/float(len(avgR)))
+                (len(avgR), sum(avgR) / float(len(avgR)))
         self._m.add_restraint(rs)
         return rs, prior_rs, kappa
 
-    def init_model_standard_SAXS_restraint(self, prot, profilefile, name='SAXS',
+    def init_model_standard_SAXS_restraint(
+        self, prot, profilefile, name='SAXS',
             ff_type=IMP.saxs.HEAVY_ATOMS):
         """read experimental SAXS profile and apply restraint the standard
         way (like foxs)
         Returns: a restraintset and the experimental profile
         """
-        rs = IMP.RestraintSet(self._m,1.0,name)
+        rs = IMP.RestraintSet(self._m, 1.0, name)
         saxs_profile = IMP.saxs.Profile(profilefile)
         particles = IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
         saxs_restraint = IMP.saxs.Restraint(particles, saxs_profile, ff_type)
@@ -671,9 +695,9 @@ class sfo_common:
         self._m.add_restraint(rs)
         return rs, saxs_profile
 
-    def _setup_md(self,prot, temperature=300.0, thermostat='berendsen',
-            coupling=500, md_restraints=None, timestep=1.0, recenter=1000,
-            momentum=1000):
+    def _setup_md(self, prot, temperature=300.0, thermostat='berendsen',
+                  coupling=500, md_restraints=None, timestep=1.0, recenter=1000,
+                  momentum=1000):
         """setup molecular dynamics
         - temperature: target temperature
         - thermostat: one of 'NVE', rescale_velocities',
@@ -688,33 +712,33 @@ class sfo_common:
         Returns: an instance of md and an instance of an OptimizerState (the
         thermostat), or None if NVE.
         """
-        ## Molecular Dynamics (from MAX BONOMI)
-        md=IMP.atom.MolecularDynamics()
+        # Molecular Dynamics (from MAX BONOMI)
+        md = IMP.atom.MolecularDynamics()
         md.set_model(self._m)
         md.assign_velocities(temperature)
         md.set_time_step(timestep)
         if thermostat == 'NVE':
             os = None
         elif thermostat == 'rescale_velocities':
-            os=IMP.atom.VelocityScalingOptimizerState(
-                    IMP.atom.get_leaves(prot), temperature, 0)
+            os = IMP.atom.VelocityScalingOptimizerState(
+                IMP.atom.get_leaves(prot), temperature, 0)
             md.add_optimizer_state(os)
         elif thermostat == 'berendsen':
-            os=IMP.atom.BerendsenThermostatOptimizerState(
-                    IMP.atom.get_leaves(prot), temperature, coupling)
+            os = IMP.atom.BerendsenThermostatOptimizerState(
+                IMP.atom.get_leaves(prot), temperature, coupling)
             md.add_optimizer_state(os)
             mom = IMP.atom.RemoveRigidMotionOptimizerState(
-                    IMP.atom.get_leaves(prot), momentum)
+                IMP.atom.get_leaves(prot), momentum)
             md.add_optimizer_state(mom)
         elif thermostat == 'langevin':
-            os=IMP.atom.LangevinThermostatOptimizerState(
-                    IMP.atom.get_leaves(prot), temperature, coupling)
+            os = IMP.atom.LangevinThermostatOptimizerState(
+                IMP.atom.get_leaves(prot), temperature, coupling)
             md.add_optimizer_state(os)
-            #cen = IMP.atom.RemoveTranslationOptimizerState(
+            # cen = IMP.atom.RemoveTranslationOptimizerState(
             #        IMP.atom.get_leaves(prot), recenter)
-            #md.add_optimizer_state(cen)
+            # md.add_optimizer_state(cen)
         else:
-            raise NotImplementedError, thermostat
+            raise NotImplementedError(thermostat)
 
         if md_restraints:
             md.set_restraints(md_restraints)
@@ -726,8 +750,8 @@ class sfo_common:
         by a gaussian with standard deviation 'stepsize'
         Returns: mover instance.
         """
-        nm=IMP.core.NormalMover(self._m,particle.get_particle_index(),
-                IMP.FloatKeys([floatkey]),stepsize)
+        nm = IMP.core.NormalMover(self._m, particle.get_particle_index(),
+                                  IMP.FloatKeys([floatkey]), stepsize)
         return nm
 
     def _setup_md_mover(self, md, particles, temperature, n_md_steps=10):
@@ -738,7 +762,7 @@ class sfo_common:
         - n_md_steps: number of md steps to perform on each move
         Returns: mover instance.
         """
-        cont=IMP.container.ListSingletonContainer(self._m)
+        cont = IMP.container.ListSingletonContainer(self._m)
         cont.add_particles(particles)
         return IMP.atom.MDMover(cont, md, temperature, n_md_steps)
 
@@ -751,21 +775,21 @@ class sfo_common:
         Returns: mc instance.
         """
         mc = IMP.core.MonteCarlo(self._m)
-        #why is this returning an int?
+        # why is this returning an int?
         mc.add_mover(mover)
-        #set same temp as MD, careful with units
-        mc.set_kt(kB*temperature)
-        #allow to go uphill
+        # set same temp as MD, careful with units
+        mc.set_kt(kB * temperature)
+        # allow to go uphill
         mc.set_return_best(False)
         if mc_restraints:
-            #tell mc to only use restraints involving the particle
+            # tell mc to only use restraints involving the particle
             mc.set_restraints(mc_restraints)
         return mc
 
     def init_simulation_setup_protein_hmc_hopper(self, prot, temperature=300.0,
-            gamma=0.01, n_md_steps=10,
-            md_restraints=None, mc_restraints=None, timestep=1.0,
-            sd_threshold=0.0, sd_stepsize=0.01, sd_maxsteps=100):
+                                                 gamma=0.01, n_md_steps=10,
+                                                 md_restraints=None, mc_restraints=None, timestep=1.0,
+                                                 sd_threshold=0.0, sd_stepsize=0.01, sd_maxsteps=100):
         """setup hybrid monte-carlo on protein. Uses basin hopping with steepest
         descent minimization.
         - prot: protein hierarchy.
@@ -785,12 +809,12 @@ class sfo_common:
         """
         raise NotImplementedError
         md, os = self._setup_md(prot, temperature=temperature,
-                thermostat='langevin', coupling=gamma,
-                md_restraints=md_restraints, timestep=timestep)
-        particles=IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
+                                thermostat='langevin', coupling=gamma,
+                                md_restraints=md_restraints, timestep=timestep)
+        particles = IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
         mdmover = self._setup_md_mover(md, particles, temperature, n_md_steps)
         hmc = self._setup_mc(mdmover, temperature, mc_restraints)
-        sd=IMP.core.SteepestDescent(self._m)
+        sd = IMP.core.SteepestDescent(self._m)
         sd.set_threshold(sd_threshold)
         sd.set_step_size(sd_stepsize)
         hmc.set_local_optimizer(sd)
@@ -799,8 +823,8 @@ class sfo_common:
         return hmc, mdmover, md, os
 
     def init_simulation_setup_protein_hmc_nve(self, prot, temperature=300.0,
-            n_md_steps=100, md_restraints=None, mc_restraints=None,
-            timestep=1.0):
+                                              n_md_steps=100, md_restraints=None, mc_restraints=None,
+                                              timestep=1.0):
         """setup hybrid monte-carlo on protein. Uses NVE MD and tries the full
         - prot: protein hierarchy.
         - temperature: target temperature.
@@ -820,28 +844,28 @@ class sfo_common:
         """
         prot = self._p['prot']
         md, os = self._setup_md(prot, temperature=temperature,
-                thermostat='NVE', coupling=None, timestep=1.0,
-                md_restraints=md_restraints)
-        particles=IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
-        cont=IMP.container.ListSingletonContainer(self._m)
+                                thermostat='NVE', coupling=None, timestep=1.0,
+                                md_restraints=md_restraints)
+        particles = IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
+        cont = IMP.container.ListSingletonContainer(self._m)
         cont.add_particles(particles)
         mdmover = PyMDMover(cont, md, n_md_steps)
-        mdmover.m=self._m
+        mdmover.m = self._m
         #mdmover = IMP.atom.MDMover(cont, md, temperature, n_md_steps)
         mc = PyMC(self._m)
         #mc = IMP.core.MonteCarlo(self._m)
-        #why is this returning an int?
+        # why is this returning an int?
         mc.add_mover(mdmover)
-        #set same temp as MD, careful with units
-        mc.set_kt(kB*temperature)
-        #allow to go uphill
+        # set same temp as MD, careful with units
+        mc.set_kt(kB * temperature)
+        # allow to go uphill
         mc.set_return_best(False)
-        #update all particles each time
+        # update all particles each time
         mc.set_move_probability(1.0)
         return mc, mdmover, md
 
     def init_simulation_setup_nuisance_mc(self, nuis, temperature=300.0,
-            mc_restraints=None, nm_stepsize=0.1):
+                                          mc_restraints=None, nm_stepsize=0.1):
         """sets up monte carlo on nuisance, at a certain target temperature,
         optionnally using a certain set of restraints only.
         - nuis: nuisance particle
@@ -853,27 +877,27 @@ class sfo_common:
         Returns: mc instance, nm instance.
         """
         nm = self._setup_normal_mover(nuis, nuis.get_nuisance_key(),
-                nm_stepsize)
+                                      nm_stepsize)
         mc = self._setup_mc(nm, temperature, mc_restraints)
         return mc, nm
 
     def _mc_and_update_nm(self, nsteps, mc, nm, stats_key,
-            adjust_stepsize=True):
+                          adjust_stepsize=True):
         """run mc using a normal mover on a single particle,
         update stepsize and store nsteps, acceptance and stepsize in the
         statistics instance self.stat by using the key stats_key.
         """
-        #do the monte carlo
+        # do the monte carlo
         mc.optimize(nsteps)
         naccept = mc.get_number_of_forward_steps()
-        #increment the counter for this simulation
+        # increment the counter for this simulation
         self.stat.increment_counter(stats_key, nsteps)
-        #get the acceptance rate, stepsize
-        accept = float(naccept)/nsteps
+        # get the acceptance rate, stepsize
+        accept = float(naccept) / nsteps
         self.stat.update(stats_key, 'acceptance', accept)
         stepsize = nm.get_sigma()
         self.stat.update(stats_key, 'stepsize', stepsize)
-        #update stepsize if needed and requested
+        # update stepsize if needed and requested
         if adjust_stepsize:
             if 0.4 < accept < 0.6:
                 return
@@ -881,10 +905,10 @@ class sfo_common:
                 accept = 0.05
             if accept > 1.0:
                 accept = 1.0
-            nm.set_sigma(stepsize*2*accept)
+            nm.set_sigma(stepsize * 2 * accept)
 
     def _hmc_and_update_md(self, nsteps, hmc, mv, stats_key,
-            adjust_stepsize=True):
+                           adjust_stepsize=True):
         """run hmc, update stepsize and print statistics. Updates number of MD
         steps to reach a target acceptance between 0.4 and 0.6, sends
         statistics to self.stat. MD steps are always at least 10 and at most 500.
@@ -892,14 +916,14 @@ class sfo_common:
         hmc.optimize(nsteps)
         naccept = hmc.get_number_of_forward_steps()
         self.stat.increment_counter(stats_key, nsteps)
-        accept = float(naccept)/nsteps
+        accept = float(naccept) / nsteps
         self.stat.update(stats_key, 'acceptance', accept)
         mdsteps = mv.get_number_of_steps()
         self.stat.update(stats_key, 'n_md_steps', mdsteps)
         if adjust_stepsize:
             if 0.4 < accept < 0.6:
                 return
-            mdsteps = int(mdsteps *2**(accept-0.5))
+            mdsteps = int(mdsteps * 2 ** (accept - 0.5))
             if mdsteps > 500:
                 mdsteps = 500
             if mdsteps < 10:
@@ -918,7 +942,7 @@ class sfo_common:
         raise NotImplementedError
 
     def do_md_protein_statistics(self, md_key, nsteps, md_instance,
-            temperature=300.0, prot_coordinates=None):
+                                 temperature=300.0, prot_coordinates=None):
         """updates statistics for md simulation: target temp, kinetic energy,
         kinetic temperature, writes coordinates and increments counter.
         - md_key: stats md key
@@ -941,15 +965,15 @@ class sfo_common:
         statistics. Creates an entry for acceptance, stepsize and one
         coordinate set printed in the statistics file.
         """
-        #create category
+        # create category
         mc_key = stat.add_category(name=name)
-        #giving None as argument is a way to create a static entry.
+        # giving None as argument is a way to create a static entry.
         stat.add_entry(mc_key, entry=Entry('temperature', '%10G', None))
         stat.add_entry(mc_key, entry=Entry('acceptance', '%10G', None))
         stat.add_entry(mc_key, entry=Entry('stepsize', '%10G', None))
-        #special call to add coordinates to be dumped
+        # special call to add coordinates to be dumped
         stat.add_entry(mc_key, entry=Entry(coord, '%10G', None))
-        #add the counter to the output
+        # add the counter to the output
         stat.add_entry(mc_key, name='counter')
         return mc_key
 
@@ -959,15 +983,15 @@ class sfo_common:
         kinetic energy, and one set of coordinates called 'protein' by
         default.
         """
-        #create category
+        # create category
         md_key = stat.add_category(name=name)
-        #giving None as argument is a way to create a static entry.
+        # giving None as argument is a way to create a static entry.
         stat.add_entry(md_key, entry=Entry('target_temp', '%10G', None))
         stat.add_entry(md_key, entry=Entry('instant_temp', '%10G', None))
         stat.add_entry(md_key, entry=Entry('E_kinetic', '%10G', None))
-        #special call to add coordinates to be dumped
+        # special call to add coordinates to be dumped
         stat.add_coordinates(md_key, coord)
-        #add the counter to the output
+        # add the counter to the output
         stat.add_entry(md_key, name='counter')
         return md_key
 
@@ -976,16 +1000,16 @@ class sfo_common:
         statistics. Adds acceptance, number of MD steps and a trajectory for
         a protein.
         """
-        #create category
+        # create category
         hmc_key = stat.add_category(name=name)
-        #giving None as argument is a way to create a static entry.
+        # giving None as argument is a way to create a static entry.
         stat.add_entry(hmc_key, entry=Entry('temperature', '%10G', None))
         stat.add_entry(hmc_key, entry=Entry('acceptance', '%10G', None))
         stat.add_entry(hmc_key, entry=Entry('n_md_steps', '%10G', None))
         stat.add_entry(hmc_key, entry=Entry('E_kinetic', '%10G', None))
-        #special call to add coordinates to be dumped
+        # special call to add coordinates to be dumped
         stat.add_coordinates(hmc_key, coord)
-        #add the counter to the output
+        # add the counter to the output
         stat.add_entry(hmc_key, name='counter')
         return hmc_key
 
@@ -993,7 +1017,7 @@ class sfo_common:
         """rescale the velocities of a bunch of particles having vx vy and vz
         floatkeys
         """
-        keys=[IMP.FloatKey("vx"), IMP.FloatKey("vy"), IMP.FloatKey("vz")]
+        keys = [IMP.FloatKey("vx"), IMP.FloatKey("vy"), IMP.FloatKey("vz")]
         for p in particles:
             for k in keys:
-                p.set_value(k, p.get_value(k)*factor)
+                p.set_value(k, p.get_value(k) * factor)

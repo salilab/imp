@@ -40,7 +40,7 @@ class IMPBASEEXPORT SetLogState : public base::RAII {
                                                    level_ = DEFAULT;
                                                    obj_ = nullptr;
                                                  },
-           { do_set(o, l); }, { do_reset(); }, do_show(out););
+  { do_set(o, l); }, { do_reset(); }, do_show(out););
 
   //! Construct it with the desired level and target
   SetLogState(LogLevel l);

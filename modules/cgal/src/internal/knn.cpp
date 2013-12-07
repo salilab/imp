@@ -35,9 +35,9 @@ struct Distance {
   }
 
   template <class TreeTraits>
-  double min_distance_to_rectangle(
-      const algebra::VectorKD& p,
-      const CGAL::Kd_tree_rectangle<TreeTraits>& b) const {
+  double min_distance_to_rectangle(const algebra::VectorKD& p,
+                                   const CGAL::Kd_tree_rectangle<TreeTraits>& b)
+      const {
     double distance(0.0);
     for (unsigned int i = 0; i < p.get_dimension(); ++i) {
       double h = p[i];
@@ -48,9 +48,9 @@ struct Distance {
   }
 
   template <class TreeTraits>
-  double max_distance_to_rectangle(
-      const algebra::VectorKD& p,
-      const CGAL::Kd_tree_rectangle<TreeTraits>& b) const {
+  double max_distance_to_rectangle(const algebra::VectorKD& p,
+                                   const CGAL::Kd_tree_rectangle<TreeTraits>& b)
+      const {
     double d = 0.0;
     for (unsigned int i = 0; i < p.get_dimension(); ++i) {
       double h = p[i];
@@ -113,8 +113,8 @@ void KNNData::fill_nearest_neighbors_v(const algebra::VectorKD& g,
 void KNNData::fill_nearest_neighbors_v(const algebra::VectorKD& g, double dist,
                                        double eps, Ints& ret) const {
   VectorWithIndex d(std::numeric_limits<int>::max(), g);
-  dynamic_cast<RealRCTree*>(tree_.get())->tree
-      .search(std::back_inserter(ret), RealRCTree::Sphere(d, dist, eps));
+  dynamic_cast<RealRCTree*>(tree_.get())
+      ->tree.search(std::back_inserter(ret), RealRCTree::Sphere(d, dist, eps));
 }
 
 IMPCGAL_END_INTERNAL_NAMESPACE

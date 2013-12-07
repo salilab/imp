@@ -25,9 +25,8 @@ IMPEM_BEGIN_NAMESPACE
 /** \ingroup exp_restraint
 
  */
-class IMPEMEXPORT EnvelopePenetrationRestraint : public kernel::Restraint
-{
-public:
+class IMPEMEXPORT EnvelopePenetrationRestraint : public kernel::Restraint {
+ public:
   //! Constructor
   /**
     \param[in] ps The particles participating in the fitting score
@@ -41,19 +40,18 @@ public:
           its members as input particles and not the rigid body.
     \todo we currently assume rigid bodies are also molecular hierarchies.
    */
-  EnvelopePenetrationRestraint(kernel::Particles ps,
-                               DensityMap *em_map,Float threshold);
+  EnvelopePenetrationRestraint(kernel::Particles ps, DensityMap *em_map,
+                               Float threshold);
 
-  virtual double
-  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
-     const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(EnvelopePenetrationRestraint);
 
 #ifndef SWIG
-  IMP_LIST(private, Particle, particle, kernel::Particle*, kernel::Particles);
+  IMP_LIST(private, Particle, particle, kernel::Particle *, kernel::Particles);
 #endif
-private:
+ private:
   IMP::base::PointerMember<DensityMap> target_dens_map_;
   algebra::BoundingBoxD<3> target_bounding_box_;
   // reference to the IMP environment

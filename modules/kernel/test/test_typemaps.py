@@ -171,7 +171,8 @@ class Tests(IMP.test.TestCase):
     def test_overload_dec(self):
         """Check overloaded functions with decorators"""
         m = IMP.kernel.Model("overloaded decorators")
-        d0 = IMP.kernel._TrivialDecorator.setup_particle(IMP.kernel.Particle(m))
+        d0 = IMP.kernel._TrivialDecorator.setup_particle(
+            IMP.kernel.Particle(m))
         d1 = IMP.kernel._TrivialDerivedDecorator.setup_particle(
             IMP.kernel.Particle(m))
         self.assertEqual(IMP.kernel._overloaded_decorator(d1), 1)

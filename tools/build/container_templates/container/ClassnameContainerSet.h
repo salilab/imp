@@ -42,24 +42,28 @@ class IMPCONTAINEREXPORT ClassnameContainerSet : public ClassnameContainer {
   /** \brief apply modifer sm to all classname containers */
   IMP_IMPLEMENT(void do_apply(const ClassnameModifier *sm) const);
 
-  template <class M> void apply_generic(const M *m) const { apply(m); }
+  template <class M>
+  void apply_generic(const M *m) const {
+    apply(m);
+  }
 
   kernel::ParticleIndexes get_all_possible_indexes() const;
   IMP_OBJECT_METHODS(ClassnameContainerSet);
 
-    /** @name Methods to control the nested container
+  /** @name Methods to control the nested container
 
-        This container merges a set of nested containers. To add
-        or remove nested containers, use the methods below.
-    */
-    /**@{*/
+      This container merges a set of nested containers. To add
+      or remove nested containers, use the methods below.
+  */
+  /**@{*/
   IMP_LIST_ACTION(public, ClassnameContainer, ClassnameContainers,
                   CLASSFUNCTIONNAME_container, CLASSFUNCTIONNAME_containers,
-                  ClassnameContainer *, ClassnameContainers, {
-                    obj->set_was_used(true); versions_.clear();
+                  ClassnameContainer *, ClassnameContainers,
+  {
+    obj->set_was_used(true);
+    versions_.clear();
   },
-                  {
-  }, );
+                  {}, );
 /**@}*/
 
 #ifndef IMP_DOXYGEN

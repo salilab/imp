@@ -276,8 +276,8 @@ CHARMMAtomTopology &CHARMMResidueTopologyBase::get_atom(std::string name) {
   }
 }
 
-const CHARMMAtomTopology &CHARMMResidueTopologyBase::get_atom(
-    std::string name) const {
+const CHARMMAtomTopology &CHARMMResidueTopologyBase::get_atom(std::string name)
+    const {
   base::Vector<CHARMMAtomTopology>::const_iterator it =
       std::find_if(atoms_.begin(), atoms_.end(), atom_has_name(name));
   if (it != atoms_.end()) {

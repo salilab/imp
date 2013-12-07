@@ -2,7 +2,9 @@ import IMP
 import IMP.test
 import IMP.atom
 
+
 class Tests(IMP.test.TestCase):
+
     """Test the Residue class and related functions"""
 
     def test_rna_dna_protein(self):

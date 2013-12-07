@@ -168,9 +168,8 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
     if (!has_cache_) fill_cache();
     return matrix_[i];
   }
-  IMP_SHOWABLE_INLINE(Rotation3D, {
-    out << v_[0] << " " << v_[1] << " " << v_[2] << " " << v_[3];
-  });
+  IMP_SHOWABLE_INLINE(Rotation3D,
+  { out << v_[0] << " " << v_[1] << " " << v_[2] << " " << v_[3]; });
 
   //! Return the rotation which undoes this rotation.
   inline Rotation3D get_inverse() const {
@@ -409,7 +408,7 @@ class FixedXYZ : public GeometricPrimitiveD<3> {
   double get_y() const { return v_[1]; }
   double get_z() const { return v_[2]; }
   IMP_SHOWABLE_INLINE(FixedXYZ,
-                      { out << v_[0] << " " << v_[1] << " " << v_[2]; });
+  { out << v_[0] << " " << v_[1] << " " << v_[2]; });
 };
 
 IMP_VALUES(FixedXYZ, FixedXYZs);

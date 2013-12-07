@@ -24,10 +24,8 @@ class IMPRMFEXPORT HierarchyLoadStaticCoordinates {
 
  public:
   HierarchyLoadStaticCoordinates(RMF::FileConstHandle f);
-  bool setup_particle(RMF::NodeConstHandle n,
-                      unsigned int node_state,
-                      kernel::Model *m,
-                      kernel::ParticleIndex p,
+  bool setup_particle(RMF::NodeConstHandle n, unsigned int node_state,
+                      kernel::Model *m, kernel::ParticleIndex p,
                       const kernel::ParticleIndexes &rigid_bodies);
 };
 

@@ -28,16 +28,16 @@ void benchmark_table(AssignmentContainer *ac, std::string name) {
   double runtime, num = 0;
   ac->set_was_used(true);
   IMP_TIME({
-    int vals[10];
-    for (int i = 0; i < number_of_values; ++i) {
-      for (unsigned int j = 0; j < 10; ++j) {
-        vals[j] = i + j;
-      }
-      Assignment cur(vals, vals + 10);
-      ac->add_assignment(cur);
-    }
-    num += ac->get_number_of_assignments();
-  },
+             int vals[10];
+             for (int i = 0; i < number_of_values; ++i) {
+               for (unsigned int j = 0; j < 10; ++j) {
+                 vals[j] = i + j;
+               }
+               Assignment cur(vals, vals + 10);
+               ac->add_assignment(cur);
+             }
+             num += ac->get_number_of_assignments();
+           },
            runtime);
   IMP::benchmark::report("save assignments", name, runtime, num);
 }
@@ -68,8 +68,8 @@ int main(int, char * []) {
   }
 #endif
   {
-    std::string name = base::create_temporary_file_name("benchmark",
-                                                        ".assignments");
+    std::string name =
+        base::create_temporary_file_name("benchmark", ".assignments");
     IMP_NEW(WriteAssignmentContainer, ac, (name, s, m->get_particles(), "c"));
     ac->set_cache_size(1000000);
     benchmark_table<WriteAssignmentContainer>(ac, "direct");

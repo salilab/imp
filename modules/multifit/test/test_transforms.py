@@ -5,6 +5,7 @@ import IMP.multifit
 import IMP.algebra
 from IMP.multifit import transforms
 
+
 class Tests(IMP.test.TestCase):
 
     def test_transforms_help(self):
@@ -14,7 +15,7 @@ class Tests(IMP.test.TestCase):
     def test_transforms_usage(self):
         """Test transforms module incorrect usage"""
         r = self.run_python_module("IMP.multifit.transforms", [])
-        out,err = r.communicate()
+        out, err = r.communicate()
         self.assertEqual(out, "")
         self.assertIn("incorrect number of arguments", err)
         self.assertNotEqual(r.returncode, 0)
@@ -22,10 +23,11 @@ class Tests(IMP.test.TestCase):
     def test_transforms_run_chimera(self):
         """Test transforms module run with Chimera output"""
         self.run_python_module(transforms,
-                    ['-f', 'chimera',
-                     self.get_input_file_name('transforms.asmb.input'),
-                     self.get_input_file_name('transforms.scores'),
-                     'transforms.out.chimera'])
+                               ['-f', 'chimera',
+                                self.get_input_file_name(
+                                    'transforms.asmb.input'),
+                                self.get_input_file_name('transforms.scores'),
+                                'transforms.out.chimera'])
         lines = open('transforms.out.chimera').readlines()
         lines = lines[3]
         spl = lines.split('\t')
@@ -42,15 +44,16 @@ class Tests(IMP.test.TestCase):
     def test_transforms_run_dockref(self):
         """Test transforms module run with dockref output"""
         self.run_python_module(transforms,
-                    ['--format', 'dockref',
-                     self.get_input_file_name('transforms.asmb.input'),
-                     self.get_input_file_name('transforms.scores'),
-                     'transforms.out.dockref'])
+                               ['--format', 'dockref',
+                                self.get_input_file_name(
+                                    'transforms.asmb.input'),
+                                self.get_input_file_name('transforms.scores'),
+                                'transforms.out.dockref'])
         lines = open('transforms.out.dockref').readlines()
         self.assertEqual(lines[0].rstrip('\r\n'), 'A|B|')
         spl = lines[3].split('|')
         spl = spl[0].split(' ')
-        r = IMP.algebra.get_rotation_from_fixed_xyz(*[float(x) \
+        r = IMP.algebra.get_rotation_from_fixed_xyz(*[float(x)
                                                       for x in spl[:3]])
         t = IMP.algebra.Vector3D(*[float(x) for x in spl[3:6]])
         self.assert_transformation(r, t)

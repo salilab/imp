@@ -26,7 +26,6 @@ class IMPCOREEXPORT Reference : public Decorator {
   }
 
  public:
-
   IMP_DECORATOR_METHODS(Reference, Decorator);
   /** Make the first particle reference the passed particle. */
   IMP_DECORATOR_SETUP_1(Reference, kernel::ParticleIndexAdaptor, reference);

@@ -151,8 +151,8 @@ class IMPKERNELEXPORT Model : public base::Object
   void do_remove_particle(ParticleIndex pi);
   bool do_get_has_required_score_states(const ModelObject *mo) const;
   void do_set_has_required_score_states(kernel::ModelObject *mo, bool tf);
-  const ScoreStatesTemp &do_get_required_score_states(
-      const ModelObject *mo) const {
+  const ScoreStatesTemp &do_get_required_score_states(const ModelObject *mo)
+      const {
     IMP_USAGE_CHECK(do_get_has_required_score_states(mo),
                     "Doesn't have score states");
     return required_score_states_.find(mo)->second;

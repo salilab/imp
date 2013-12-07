@@ -13,14 +13,15 @@ import IMP.em2d.utility as utility
 
 import IMP.em2d.solutions_io as solutions_io
 
-class TestDominoModeling(IMP.test.ApplicationTestCase):
 
+class TestDominoModeling(IMP.test.ApplicationTestCase):
 
     def test_generate_model(self):
         """ Test that the DOMINO modeling runs """
         try:
-            import networkx, subprocess
-        except ImportError, detail:
+            import networkx
+            import subprocess
+        except ImportError as detail:
             self.skipTest(str(detail))
         domino_model = self.import_python_application('emagefit.py')
         IMP.base.set_log_level(IMP.base.SILENT)
@@ -30,7 +31,7 @@ class TestDominoModeling(IMP.test.ApplicationTestCase):
         domino_model.generate_domino_model(exp, fn_output_db)
         # assert that a database of results is created
         self.assertTrue(os.path.exists(fn_output_db))
-        self.assertGreater(os.path.getsize(fn_output_db),0)
+        self.assertGreater(os.path.getsize(fn_output_db), 0)
         # check that there are solutions in the database
         db = solutions_io.ResultsDB()
         db.connect(fn_output_db)

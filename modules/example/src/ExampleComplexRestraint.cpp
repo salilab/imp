@@ -38,27 +38,27 @@ ExampleComplexRestraint::ExampleComplexRestraint(UnaryFunction *f,
   d.set_coordinates_are_optimized(false);
   base::Pointer<core::CoverRefined> cr =
       new core::CoverRefined(new core::FixedRefiner(IMP::get_particles(
-          get_model(), sc_->get_indexes())),
+                                 get_model(), sc_->get_indexes())),
                              0);
   ss_ = new core::SingletonConstraint(cr, nullptr, get_model(), p_);
 }
 
-double ExampleComplexRestraint::unprotected_evaluate(
-    DerivativeAccumulator *da) const {
+double ExampleComplexRestraint::unprotected_evaluate(DerivativeAccumulator *da)
+    const {
   IMP_CHECK_OBJECT(sc_.get());
   double v = 0;
   core::XYZ dp(get_model(), p_);
   double radius = diameter_ / 2.0;
   IMP_CONTAINER_FOREACH(SingletonContainer, sc_,
-      v += core::internal::evaluate_distance_pair_score(
-          dp, core::XYZ(get_model(), _1),
-          da, f_.get(), boost::lambda::_1 - radius););
+                        v += core::internal::evaluate_distance_pair_score(
+                            dp, core::XYZ(get_model(), _1), da, f_.get(),
+                            boost::lambda::_1 - radius););
   return v;
 }
 
 ModelObjectsTemp ExampleComplexRestraint::do_get_inputs() const {
-  kernel::ModelObjectsTemp
-      ret(IMP::get_particles(get_model(), sc_->get_all_possible_indexes()));
+  kernel::ModelObjectsTemp ret(
+      IMP::get_particles(get_model(), sc_->get_all_possible_indexes()));
   ret.push_back(get_model()->get_particle(p_));
   ret.push_back(sc_);
   return ret;

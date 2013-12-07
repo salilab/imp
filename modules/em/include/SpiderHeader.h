@@ -15,7 +15,7 @@ IMPEM_BEGIN_NAMESPACE
 
 //! Header for Spider images. IMP-EM is designed to be compatible with it
 struct SpiderHeader {
-//! Number of slices (=1 for images)
+  //! Number of slices (=1 for images)
   float fNslice;
   //! Number of rows
   float fNrow;
@@ -52,7 +52,7 @@ struct SpiderHeader {
   //! Standard deviation. If -1 it means that it has no been computed
   float fSig;
   //! FLAG INDICATING IF THE HISTOGRAM HAS BE COMPUTED. NOT USED IN 3D FILES!
-  float fIhist; // It is obsolete in Spider
+  float fIhist;  // It is obsolete in Spider
   //! Number of columns
   float fNcol;
   //! number of records in file header (label)
@@ -78,7 +78,7 @@ struct SpiderHeader {
   //! RECORD LENGTH IN BYTES
   float fLenbyt;
   //! this is a Spider incongruence. 24 bytes without meaning
-  char  fNothing[24];
+  char fNothing[24];
   //! THAT ANGLES ARE SET.
   /**
    * 1 = ONE ADDITIONAL
@@ -93,19 +93,19 @@ struct SpiderHeader {
   float fPhi2;
   float fTheta2;
   float fPsi2;
-  double fGeo_matrix[3][3]; //! x9 = 72 bytes: Geometric info
-  float fAngle1; //! angle info
+  double fGeo_matrix[3][3];  //! x9 = 72 bytes: Geometric info
+  float fAngle1;             //! angle info
   float fr1;
-  float fr2; //! lift up cosine mask parameters
+  float fr2;  //! lift up cosine mask parameters
   //! For Radon transforms
-  float RTflag; //! 1=RT, 2=FFT(RT)
+  float RTflag;  //! 1=RT, 2=FFT(RT)
   float Astart;
   float Aend;
   float Ainc;
-  float Rsigma; //! 4*7 = 28 bytes
+  float Rsigma;  //! 4*7 = 28 bytes
   float Tstart;
   float Tend;
-  float Tinc; //! 4*3 = 12, 12+28 = 40B
+  float Tinc;  //! 4*3 = 12, 12+28 = 40B
   //! For Max-Likelihood refinement (Xmipp compatibility)
   float Weight;
   //! 0= no flipping , 1= flipping  (Xmipp compatibility)
@@ -125,7 +125,6 @@ struct SpiderHeader {
 
   void show(std::ostream& out) const { out << "SpiderHeader"; }
 };
-
 
 IMPEM_END_NAMESPACE
 

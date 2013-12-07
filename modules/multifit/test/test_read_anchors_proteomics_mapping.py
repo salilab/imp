@@ -3,6 +3,7 @@ import os.path
 import IMP.test
 import IMP.multifit
 
+
 class Tests(IMP.test.TestCase):
 
     def test_run(self):
@@ -10,17 +11,17 @@ class Tests(IMP.test.TestCase):
         data_file = self.get_input_file_name("anchors.proteomics.input")
         input_dir = os.path.dirname(data_file)
         mapping_file = self.get_input_file_name(
-                                        "proteomics.anchors.mapping.txt")
+            "proteomics.anchors.mapping.txt")
         prot_data = IMP.multifit.read_proteomics_data(data_file)
         mapping = IMP.multifit.read_protein_anchors_mapping(prot_data,
-                                                             mapping_file)
+                                                            mapping_file)
         self.assertEqual(os.path.realpath(
-                               mapping.get_paths_filename_for_protein("A")),
-                         os.path.realpath(
-                               os.path.join(input_dir, '1z5s.A.paths.txt')))
+            mapping.get_paths_filename_for_protein("A")),
+            os.path.realpath(
+                os.path.join(input_dir, '1z5s.A.paths.txt')))
         self.assertEqual(os.path.realpath(mapping.get_anchors_filename()),
                          os.path.realpath(
-                            os.path.join(input_dir, '1z5s_15_14_anchors.txt')))
+                             os.path.join(input_dir, '1z5s_15_14_anchors.txt')))
         self.assertEqual(mapping.get_paths_for_protein("A"), [])
 
 if __name__ == '__main__':

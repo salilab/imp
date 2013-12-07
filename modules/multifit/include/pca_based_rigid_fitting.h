@@ -22,7 +22,6 @@
 #include <algorithm>
 IMPMULTIFIT_BEGIN_NAMESPACE
 
-
 //! Compute fitting scores for a given set of rigid transformations
 /**
 \brief Fit a protein to its density by principal component matching
@@ -36,13 +35,10 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 \note the function assumes the density map holds its density
 */
 IMPMULTIFITEXPORT em::FittingSolutions pca_based_rigid_fitting(
-  core::RigidBody rb, Refiner *rb_refiner,
-  em::DensityMap *em_map,Float threshold,
-  FloatKey wei_key=atom::Mass::get_mass_key(),
-  algebra::PrincipalComponentAnalysis dens_pca_input=
-   algebra::PrincipalComponentAnalysis());
-
-
+    core::RigidBody rb, Refiner *rb_refiner, em::DensityMap *em_map,
+    Float threshold, FloatKey wei_key = atom::Mass::get_mass_key(),
+    algebra::PrincipalComponentAnalysis dens_pca_input =
+        algebra::PrincipalComponentAnalysis());
 
 //! Compute fitting scores for a given set of rigid transformations
 /**
@@ -56,15 +52,14 @@ IMPMULTIFITEXPORT em::FittingSolutions pca_based_rigid_fitting(
 \note the function assumes the density map holds its density
 */
 IMPMULTIFITEXPORT em::FittingSolutions pca_based_rigid_fitting(
-  kernel::ParticlesTemp ps,
-  em::DensityMap *em_map,Float threshold,
-  FloatKey wei_key=atom::Mass::get_mass_key(),
-  algebra::PrincipalComponentAnalysis dens_pca_input=
-   algebra::PrincipalComponentAnalysis());
+    kernel::ParticlesTemp ps, em::DensityMap *em_map, Float threshold,
+    FloatKey wei_key = atom::Mass::get_mass_key(),
+    algebra::PrincipalComponentAnalysis dens_pca_input =
+        algebra::PrincipalComponentAnalysis());
 
 IMPMULTIFITEXPORT
 void write_markers(const algebra::PrincipalComponentAnalysisD<3> &pca,
                    std::ostream &out);
 
 IMPMULTIFIT_END_NAMESPACE
-#endif  /* IMPMULTIFIT_PCA_BASED_RIGID_FITTING_H */
+#endif /* IMPMULTIFIT_PCA_BASED_RIGID_FITTING_H */

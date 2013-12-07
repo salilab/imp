@@ -33,7 +33,7 @@ IMPEM_BEGIN_NAMESPACE
  * \note: A DensityHeader class must be provided
  */
 class IMPEMEXPORT SpiderMapReaderWriter : public MapReaderWriter {
-public:
+ public:
   String filename_;
   bool skip_type_check_;
   bool force_reversed_;
@@ -42,9 +42,9 @@ public:
   //! Empty constructor. It does not force reversed header and does not
   //! skip any of the tests
   SpiderMapReaderWriter() {
-    skip_type_check_=false;
-    force_reversed_=false;
-    skip_extra_checkings_=false;
+    skip_type_check_ = false;
+    force_reversed_ = false;
+    skip_extra_checkings_ = false;
   }
 
   //! Full constructor.
@@ -56,12 +56,12 @@ public:
    *  \param[in] skip_extra_checkings if true, the most stringent
    * tests for consistency of images are skipped when reading
    */
-  SpiderMapReaderWriter(String filename,bool skip_type_check,
-                        bool force_reversed,bool skip_extra_checkings) {
-    filename_=filename;
-    skip_type_check_=skip_type_check;
-    force_reversed_=force_reversed;
-    skip_extra_checkings_=skip_extra_checkings;
+  SpiderMapReaderWriter(String filename, bool skip_type_check,
+                        bool force_reversed, bool skip_extra_checkings) {
+    filename_ = filename;
+    skip_type_check_ = skip_type_check;
+    force_reversed_ = force_reversed;
+    skip_extra_checkings_ = skip_extra_checkings;
   }
 #if !defined(DOXYGEN) && !defined(SWIG)
   //! Reads a map in Spider format and transfers the data and header.
@@ -80,8 +80,8 @@ public:
    *  \param[in] header DensityHeader class where the header info is stored
    *  data from the header.
    */
-  void write(const char *filename,
-             const float *data,const DensityHeader &header);
+  void write(const char *filename, const float *data,
+             const DensityHeader &header);
 #endif
   IMP_OBJECT_METHODS(SpiderMapReaderWriter);
 };

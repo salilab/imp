@@ -1,20 +1,22 @@
 #!/usr/bin/env python
 
-#general imports
+# general imports
 from numpy import *
 from random import *
 
 
-#imp general
+# imp general
 import IMP
 
-#our project
+# our project
 from IMP.isd import *
 
-#unit testing framework
+# unit testing framework
 import IMP.test
 
+
 class MockFunc:
+
     def __init__(self, setval, evaluate, evalargs=1, update=None):
         self.__set = setval
         self.__eval = evaluate
@@ -30,35 +32,37 @@ class MockFunc:
             self.__update()
         return self.__eval(self.__evalargs)
 
+
 class Tests(IMP.test.TestCase):
+
     """test of the GPI restraint with two data points, linear prior mean and
     gaussian prior covariances. Sigma is not optimzed.
     """
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        #IMP.base.set_log_level(IMP.base.TERSE)
+        # IMP.base.set_log_level(IMP.base.TERSE)
         IMP.base.set_log_level(0)
         self.m = IMP.kernel.Model()
-        data=open(self.get_input_file_name('lyzexp_gpir.dat')).readlines()
-        data=[map(float,d.split()) for d in data]
-        self.q=[[i[0]] for i in data]
-        self.I=[i[1] for i in data]
-        self.err=[i[2] for i in data]
-        self.N=10
+        data = open(self.get_input_file_name('lyzexp_gpir.dat')).readlines()
+        data = [map(float, d.split()) for d in data]
+        self.q = [[i[0]] for i in data]
+        self.I = [i[1] for i in data]
+        self.err = [i[2] for i in data]
+        self.N = 10
         self.G = Scale.setup_particle(IMP.kernel.Particle(self.m), 3.0)
         self.G.set_nuisance_is_optimized(True)
-        self.Rg = Scale.setup_particle(IMP.kernel.Particle(self.m),  10.0)
+        self.Rg = Scale.setup_particle(IMP.kernel.Particle(self.m), 10.0)
         self.Rg.set_nuisance_is_optimized(True)
-        #put d=15 so we don't use the porod region
-        self.d = Scale.setup_particle(IMP.kernel.Particle(self.m),  15.0)
+        # put d=15 so we don't use the porod region
+        self.d = Scale.setup_particle(IMP.kernel.Particle(self.m), 15.0)
         self.d.set_nuisance_is_optimized(False)
-        self.s = Scale.setup_particle(IMP.kernel.Particle(self.m),  0.0)
+        self.s = Scale.setup_particle(IMP.kernel.Particle(self.m), 0.0)
         self.s.set_nuisance_is_optimized(False)
-        self.A = Scale.setup_particle(IMP.kernel.Particle(self.m),  0.0)
+        self.A = Scale.setup_particle(IMP.kernel.Particle(self.m), 0.0)
         self.A.set_nuisance_is_optimized(False)
         self.mean = GeneralizedGuinierPorodFunction(
-                self.G,self.Rg,self.d,self.s, self.A)
+            self.G, self.Rg, self.d, self.s, self.A)
         self.tau = Switching.setup_particle(IMP.kernel.Particle(self.m), 1.0)
         self.tau.set_nuisance_is_optimized(True)
         self.lam = Scale.setup_particle(IMP.kernel.Particle(self.m), 1.0)
@@ -67,10 +71,18 @@ class Tests(IMP.test.TestCase):
         self.sig.set_nuisance_is_optimized(False)
         self.cov = Covariance1DFunction(self.tau, self.lam, 2.0)
         self.gpi = IMP.isd.GaussianProcessInterpolation(self.q, self.I,
-                self.err, self.N, self.mean, self.cov, self.sig)
-        self.gpr = IMP.isd.GaussianProcessInterpolationRestraint(self.m,self.gpi)
+                                                        self.err, self.N, self.mean, self.cov, self.sig)
+        self.gpr = IMP.isd.GaussianProcessInterpolationRestraint(
+            self.m, self.gpi)
         self.m.add_restraint(self.gpr)
-        self.particles=[self.G,self.Rg,self.d,self.s,self.sig,self.tau,self.lam]
+        self.particles = [
+            self.G,
+            self.Rg,
+            self.d,
+            self.s,
+            self.sig,
+            self.tau,
+            self.lam]
 
     def shuffle_particle_values(self):
         particles = [(self.alpha, -10, 10),
@@ -78,315 +90,319 @@ class Tests(IMP.test.TestCase):
                      (self.tau, 0.001, 10),
                      (self.lam, 0.1, 10),
                      (self.sig, 0.1, 10)]
-        #number of shuffled values
-        for i in xrange(randint(0,5)):
-            #which particle
-            p,imin,imax = particles.pop(randint(0,len(particles)-1))
+        # number of shuffled values
+        for i in xrange(randint(0, 5)):
+            # which particle
+            p, imin, imax = particles.pop(randint(0, len(particles) - 1))
             p.set_nuisance(uniform(imin, imax))
-
 
     def testDerivNumericG(self):
         """
         test the derivatives of the gpi numerically for G
         """
-        pnum=0
-        values=linspace(1,10)
-        particle=self.particles[pnum]
+        pnum = 0
+        values = linspace(1, 10)
+        particle = self.particles[pnum]
         PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
         for val in values:
             particle.set_nuisance(val)
-            ene=self.m.evaluate(True)
+            ene = self.m.evaluate(True)
             observed = particle.get_nuisance_derivative()
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(expected,observed,delta=1e-3)
+            self.assertAlmostEqual(expected, observed, delta=1e-3)
 
     def testDerivNumericRg(self):
         """
         test the derivatives of the gpi numerically for Rg
         """
-        pnum=1
-        values=linspace(1,10)
-        particle=self.particles[pnum]
+        pnum = 1
+        values = linspace(1, 10)
+        particle = self.particles[pnum]
         PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
         for val in values:
             particle.set_nuisance(val)
-            ene=self.m.evaluate(True)
+            ene = self.m.evaluate(True)
             observed = particle.get_nuisance_derivative()
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(expected,observed,delta=1e-1)
+            self.assertAlmostEqual(expected, observed, delta=1e-1)
 
     def testDerivNumericTau(self):
         """
         test the derivatives of the gpi numerically for Tau
         """
-        pnum=5
-        values=linspace(.1,.9)
-        particle=self.particles[pnum]
+        pnum = 5
+        values = linspace(.1, .9)
+        particle = self.particles[pnum]
         PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
         for val in values:
             particle.set_nuisance(val)
-            ene=self.m.evaluate(True)
+            ene = self.m.evaluate(True)
             observed = particle.get_nuisance_derivative()
             expected = IMP.test.numerical_derivative(PFunc, val, .01)
-            self.assertAlmostEqual(expected,observed,delta=5e-2)
+            self.assertAlmostEqual(expected, observed, delta=5e-2)
 
     def testDerivNumericLambda(self):
         """
         test the derivatives of the gpi numerically for Lambda
         """
-        pnum=6
-        values=linspace(.3,2)
-        particle=self.particles[pnum]
+        pnum = 6
+        values = linspace(.3, 2)
+        particle = self.particles[pnum]
         PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
         for val in values:
             particle.set_nuisance(val)
-            ene=self.m.evaluate(True)
+            ene = self.m.evaluate(True)
             observed = particle.get_nuisance_derivative()
             expected = IMP.test.numerical_derivative(PFunc, val, .02)
-            self.assertAlmostEqual(expected,observed,delta=1e-2)
-
+            self.assertAlmostEqual(expected, observed, delta=1e-2)
 
     def testHessianNumericGG(self):
         """
         test the Hessian of the function numerically wrt G and G
         """
-        pa=0
-        pb=0
-        values=range(1,5)
-        ppa=self.particles[pa]
-        ppb=self.particles[pb]
+        pa = 0
+        pb = 0
+        values = range(1, 5)
+        ppa = self.particles[pa]
+        ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
-                lambda a:ppa.get_nuisance_derivative(), None,
-                update=lambda: self.m.evaluate(True))
+                         lambda a: ppa.get_nuisance_derivative(), None,
+                         update=lambda: self.m.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            #IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.base.set_log_level(IMP.base.TERSE)
             observed = self.gpr.get_hessian(False)[pa][pb]
-            #IMP.base.set_log_level(0)
+            # IMP.base.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(expected,observed,delta=1e-3)
+            self.assertAlmostEqual(expected, observed, delta=1e-3)
 
     def testHessianNumericGRg(self):
         """
         test the Hessian of the function numerically wrt G and Rg
         """
-        pa=1
-        pb=0
-        values=linspace(1,10)
-        ppa=self.particles[pa]
-        ppb=self.particles[pb]
+        pa = 1
+        pb = 0
+        values = linspace(1, 10)
+        ppa = self.particles[pa]
+        ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
-                lambda a:ppa.get_nuisance_derivative(), None,
-                update=lambda: self.m.evaluate(True))
+                         lambda a: ppa.get_nuisance_derivative(), None,
+                         update=lambda: self.m.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            #IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.base.set_log_level(IMP.base.TERSE)
             observed = self.gpr.get_hessian(False)[pa][pb]
-            #IMP.base.set_log_level(0)
+            # IMP.base.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(expected,observed,delta=1e-3)
+            self.assertAlmostEqual(expected, observed, delta=1e-3)
 
     def testHessianNumericRgRg(self):
         """
         test the Hessian of the function numerically wrt Rg and Rg
         """
-        pa=1
-        pb=1
-        values=linspace(1,10)
-        ppa=self.particles[pa]
-        ppb=self.particles[pb]
+        pa = 1
+        pb = 1
+        values = linspace(1, 10)
+        ppa = self.particles[pa]
+        ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
-                lambda a:ppa.get_nuisance_derivative(), None,
-                update=lambda: self.m.evaluate(True))
+                         lambda a: ppa.get_nuisance_derivative(), None,
+                         update=lambda: self.m.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            #IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.base.set_log_level(IMP.base.TERSE)
             observed = self.gpr.get_hessian(False)[pa][pb]
-            #IMP.base.set_log_level(0)
+            # IMP.base.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(expected,observed,delta=1e-3)
+            self.assertAlmostEqual(expected, observed, delta=1e-3)
 
     def testHessianNumericRgG(self):
         """
         test the Hessian of the function numerically wrt Rg and G
         """
-        pa=1
-        pb=0
-        values=linspace(1,10)
-        ppa=self.particles[pa]
-        ppb=self.particles[pb]
+        pa = 1
+        pb = 0
+        values = linspace(1, 10)
+        ppa = self.particles[pa]
+        ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
-                lambda a:ppa.get_nuisance_derivative(), None,
-                update=lambda: self.m.evaluate(True))
+                         lambda a: ppa.get_nuisance_derivative(), None,
+                         update=lambda: self.m.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            #IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.base.set_log_level(IMP.base.TERSE)
             observed = self.gpr.get_hessian(False)[pa][pb]
-            #IMP.base.set_log_level(0)
+            # IMP.base.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(expected,observed,delta=1e-3)
-
+            self.assertAlmostEqual(expected, observed, delta=1e-3)
 
     def testHessianNumericTauTau(self):
         """
         test the Hessian of the function numerically wrt Tau and Tau
         """
-        pa=5
-        pb=5
-        values=linspace(.1,.9)
-        ppa=self.particles[pa]
-        ppb=self.particles[pb]
+        pa = 5
+        pb = 5
+        values = linspace(.1, .9)
+        ppa = self.particles[pa]
+        ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
-                lambda a:ppa.get_nuisance_derivative(), None,
-                update=lambda: self.m.evaluate(True))
+                         lambda a: ppa.get_nuisance_derivative(), None,
+                         update=lambda: self.m.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            #IMP.base.set_log_level(IMP.base.TERSE)
-            observed = self.gpr.get_hessian(False)[pa-3][pb-3] #s and d not opt
-            #IMP.base.set_log_level(0)
+            # IMP.base.set_log_level(IMP.base.TERSE)
+            # s and d not opt
+            observed = self.gpr.get_hessian(False)[pa - 3][pb - 3]
+            # IMP.base.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(expected,observed,delta=1e-2)
+            self.assertAlmostEqual(expected, observed, delta=1e-2)
 
     def testHessianNumericTauLambda(self):
         """
         test the Hessian of the function numerically wrt Tau and Lambda
         """
-        pa=5
-        pb=6
-        values=linspace(.1,.9)
-        ppa=self.particles[pa]
-        ppb=self.particles[pb]
+        pa = 5
+        pb = 6
+        values = linspace(.1, .9)
+        ppa = self.particles[pa]
+        ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
-                lambda a:ppa.get_nuisance_derivative(), None,
-                update=lambda: self.m.evaluate(True))
+                         lambda a: ppa.get_nuisance_derivative(), None,
+                         update=lambda: self.m.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            #IMP.base.set_log_level(IMP.base.TERSE)
-            observed = self.gpr.get_hessian(False)[pa-3][pb-3] #s and d not opt
-            #IMP.base.set_log_level(0)
+            # IMP.base.set_log_level(IMP.base.TERSE)
+            # s and d not opt
+            observed = self.gpr.get_hessian(False)[pa - 3][pb - 3]
+            # IMP.base.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(expected,observed,delta=1e-2)
+            self.assertAlmostEqual(expected, observed, delta=1e-2)
 
     def testHessianNumericLambdaLambda(self):
         """
         test the Hessian of the function numerically wrt Lambda and Lambda
         """
-        pa=6
-        pb=6
-        values=linspace(1,10)
-        ppa=self.particles[pa]
-        ppb=self.particles[pb]
+        pa = 6
+        pb = 6
+        values = linspace(1, 10)
+        ppa = self.particles[pa]
+        ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
-                lambda a:ppa.get_nuisance_derivative(), None,
-                update=lambda: self.m.evaluate(True))
+                         lambda a: ppa.get_nuisance_derivative(), None,
+                         update=lambda: self.m.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            #IMP.base.set_log_level(IMP.base.TERSE)
-            observed = self.gpr.get_hessian(False)[pa-3][pb-3] #s and d not opt
-            #IMP.base.set_log_level(0)
+            # IMP.base.set_log_level(IMP.base.TERSE)
+            # s and d not opt
+            observed = self.gpr.get_hessian(False)[pa - 3][pb - 3]
+            # IMP.base.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(expected,observed,delta=1e-3)
-
+            self.assertAlmostEqual(expected, observed, delta=1e-3)
 
     def testHessianNumericGTau(self):
         """
         test the Hessian of the function numerically wrt G and Tau
         """
-        pa=0
-        pb=5
-        values=linspace(.1,.9)
-        ppa=self.particles[pa]
-        ppb=self.particles[pb]
+        pa = 0
+        pb = 5
+        values = linspace(.1, .9)
+        ppa = self.particles[pa]
+        ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
-                lambda a:ppa.get_nuisance_derivative(), None,
-                update=lambda: self.m.evaluate(True))
+                         lambda a: ppa.get_nuisance_derivative(), None,
+                         update=lambda: self.m.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            #IMP.base.set_log_level(IMP.base.TERSE)
-            observed = self.gpr.get_hessian(False)[pa][pb-3] #s and d not opt
-            #IMP.base.set_log_level(0)
+            # IMP.base.set_log_level(IMP.base.TERSE)
+            # s and d not opt
+            observed = self.gpr.get_hessian(False)[pa][pb - 3]
+            # IMP.base.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(expected,observed,delta=1e-2)
+            self.assertAlmostEqual(expected, observed, delta=1e-2)
 
     def testHessianNumericRgTau(self):
         """
         test the Hessian of the function numerically wrt Rg and Tau
         """
-        pa=1
-        pb=5
-        values=linspace(.1,.9)
-        ppa=self.particles[pa]
-        ppb=self.particles[pb]
+        pa = 1
+        pb = 5
+        values = linspace(.1, .9)
+        ppa = self.particles[pa]
+        ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
-                lambda a:ppa.get_nuisance_derivative(), None,
-                update=lambda: self.m.evaluate(True))
+                         lambda a: ppa.get_nuisance_derivative(), None,
+                         update=lambda: self.m.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            #IMP.base.set_log_level(IMP.base.TERSE)
-            observed = self.gpr.get_hessian(False)[pa][pb-3] #s and d not opt
-            #IMP.base.set_log_level(0)
+            # IMP.base.set_log_level(IMP.base.TERSE)
+            # s and d not opt
+            observed = self.gpr.get_hessian(False)[pa][pb - 3]
+            # IMP.base.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(expected,observed,delta=1e-2)
+            self.assertAlmostEqual(expected, observed, delta=1e-2)
 
     def testHessianNumericGLambda(self):
         """
         test the Hessian of the function numerically wrt G and Lambda
         """
-        pa=0
-        pb=6
-        values=linspace(.1,.9)
-        ppa=self.particles[pa]
-        ppb=self.particles[pb]
+        pa = 0
+        pb = 6
+        values = linspace(.1, .9)
+        ppa = self.particles[pa]
+        ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
-                lambda a:ppa.get_nuisance_derivative(), None,
-                update=lambda: self.m.evaluate(True))
+                         lambda a: ppa.get_nuisance_derivative(), None,
+                         update=lambda: self.m.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            #IMP.base.set_log_level(IMP.base.TERSE)
-            observed = self.gpr.get_hessian(False)[pa][pb-3] #s and d not opt
-            #IMP.base.set_log_level(0)
+            # IMP.base.set_log_level(IMP.base.TERSE)
+            # s and d not opt
+            observed = self.gpr.get_hessian(False)[pa][pb - 3]
+            # IMP.base.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(expected,observed,delta=1e-2)
+            self.assertAlmostEqual(expected, observed, delta=1e-2)
 
     def testHessianNumericRgLambda(self):
         """
         test the Hessian of the function numerically wrt Rg and Lambda
         """
-        pa=1
-        pb=6
-        values=linspace(.1,.9)
-        ppa=self.particles[pa]
-        ppb=self.particles[pb]
+        pa = 1
+        pb = 6
+        values = linspace(.1, .9)
+        ppa = self.particles[pa]
+        ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
-                lambda a:ppa.get_nuisance_derivative(), None,
-                update=lambda: self.m.evaluate(True))
+                         lambda a: ppa.get_nuisance_derivative(), None,
+                         update=lambda: self.m.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            #IMP.base.set_log_level(IMP.base.TERSE)
-            observed = self.gpr.get_hessian(False)[pa][pb-3] #s and d not opt
-            #IMP.base.set_log_level(0)
+            # IMP.base.set_log_level(IMP.base.TERSE)
+            # s and d not opt
+            observed = self.gpr.get_hessian(False)[pa][pb - 3]
+            # IMP.base.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(expected,observed,delta=1e-2)
+            self.assertAlmostEqual(expected, observed, delta=1e-2)
 
     def testHessianNumericLambdaRg(self):
         """
         test the Hessian of the function numerically wrt Rg and Lambda
         """
-        pa=6
-        pb=1
-        values=linspace(.1,.9)
-        ppa=self.particles[pa]
-        ppb=self.particles[pb]
+        pa = 6
+        pb = 1
+        values = linspace(.1, .9)
+        ppa = self.particles[pa]
+        ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
-                lambda a:ppa.get_nuisance_derivative(), None,
-                update=lambda: self.m.evaluate(True))
+                         lambda a: ppa.get_nuisance_derivative(), None,
+                         update=lambda: self.m.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            #IMP.base.set_log_level(IMP.base.TERSE)
-            observed = self.gpr.get_hessian(False)[pa-3][pb] #s and d not opt
-            #IMP.base.set_log_level(0)
+            # IMP.base.set_log_level(IMP.base.TERSE)
+            # s and d not opt
+            observed = self.gpr.get_hessian(False)[pa - 3][pb]
+            # IMP.base.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(expected,observed,delta=1e-2)
+            self.assertAlmostEqual(expected, observed, delta=1e-2)
 
 
 if __name__ == '__main__':

@@ -59,7 +59,9 @@ class Tests(IMP.test.TestCase):
         cache.add_restraints([r])
         subset = IMP.domino.Subset(ps)
         print subset
-        rsb = cache.get_restraints(subset, [IMP.domino.Subset([p]) for p in ps])
+        rsb = cache.get_restraints(
+            subset,
+            [IMP.domino.Subset([p]) for p in ps])
         print rsb
         self.assertEqual(len(rsb), 1)
         slc = cache.get_slice(rsb[0], subset)
@@ -81,7 +83,9 @@ class Tests(IMP.test.TestCase):
         r.set_weight(3)
         cache.add_restraints([rs])
         subset = IMP.domino.Subset(ps)
-        rsb = cache.get_restraints(subset, [IMP.domino.Subset([p]) for p in ps])
+        rsb = cache.get_restraints(
+            subset,
+            [IMP.domino.Subset([p]) for p in ps])
         self.assertEqual(len(rsb), 1)
         slc = cache.get_slice(rsb[0], subset)
         self.assertEqual(len(slc), len(ps))

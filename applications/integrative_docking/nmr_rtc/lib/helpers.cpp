@@ -16,7 +16,7 @@
 void read_trans_file(const std::string file_name,
                      std::vector<IMP::algebra::Transformation3D>& transforms) {
   std::ifstream trans_file(file_name.c_str());
-  if(!trans_file) {
+  if (!trans_file) {
     std::cerr << "Can't find Transformation file " << file_name << std::endl;
     exit(1);
   }
@@ -24,21 +24,20 @@ void read_trans_file(const std::string file_name,
   IMP::algebra::Vector3D rotation_vec, translation;
   int trans_number;
 
-  while(trans_file >> trans_number >> rotation_vec >> translation) {
+  while (trans_file >> trans_number >> rotation_vec >> translation) {
     IMP::algebra::Rotation3D rotation =
-      IMP::algebra::get_rotation_from_fixed_xyz(rotation_vec[0],
-                                                rotation_vec[1],
-                                                rotation_vec[2]);
+        IMP::algebra::get_rotation_from_fixed_xyz(
+            rotation_vec[0], rotation_vec[1], rotation_vec[2]);
     IMP::algebra::Transformation3D trans(rotation, translation);
     transforms.push_back(trans);
   }
   trans_file.close();
-  std::cout << transforms.size() << " transforms were read from "
-            << file_name << std::endl;
+  std::cout << transforms.size() << " transforms were read from " << file_name
+            << std::endl;
 }
 
 void transform(IMP::kernel::Particles& ps, IMP::algebra::Transformation3D& t) {
-  for(IMP::kernel::Particles::iterator it = ps.begin(); it != ps.end(); it++) {
+  for (IMP::kernel::Particles::iterator it = ps.begin(); it != ps.end(); it++) {
     IMP::core::XYZ d(*it);
     d.set_coordinates(t * d.get_coordinates());
   }
@@ -48,10 +47,10 @@ void get_atom_2_residue_map(const IMP::kernel::Particles& atom_particles,
                             const IMP::kernel::Particles& residue_particles,
                             std::vector<int>& atom_2_residue_map) {
   atom_2_residue_map.resize(atom_particles.size());
-  unsigned int residue_index=0;
-  for(unsigned int atom_index=0; atom_index<atom_particles.size(); ) {
-    if(get_residue(IMP::atom::Atom(atom_particles[atom_index])).get_particle()
-       == residue_particles[residue_index]) {
+  unsigned int residue_index = 0;
+  for (unsigned int atom_index = 0; atom_index < atom_particles.size();) {
+    if (get_residue(IMP::atom::Atom(atom_particles[atom_index]))
+            .get_particle() == residue_particles[residue_index]) {
       atom_2_residue_map[atom_index] = residue_index;
       atom_index++;
     } else {
@@ -60,29 +59,32 @@ void get_atom_2_residue_map(const IMP::kernel::Particles& atom_particles,
   }
 }
 
-void get_residue_solvent_accessibility(const IMP::kernel::Particles& residue_particles,
-                                  IMP::Floats& residue_solvent_accessibility) {
+void get_residue_solvent_accessibility(
+    const IMP::kernel::Particles& residue_particles,
+    IMP::Floats& residue_solvent_accessibility) {
   IMP::saxs::FormFactorTable* ft = IMP::saxs::default_form_factor_table();
   IMP::saxs::FormFactorType ff_type = IMP::saxs::CA_ATOMS;
-  for(unsigned int p_index=0; p_index<residue_particles.size(); p_index++) {
+  for (unsigned int p_index = 0; p_index < residue_particles.size();
+       p_index++) {
     float radius = ft->get_radius(residue_particles[p_index], ff_type);
     IMP::core::XYZR::setup_particle(residue_particles[p_index], radius);
   }
   IMP::saxs::SolventAccessibleSurface s;
   residue_solvent_accessibility =
-    s.get_solvent_accessibility(IMP::core::XYZRs(residue_particles));
+      s.get_solvent_accessibility(IMP::core::XYZRs(residue_particles));
 }
 
-void get_residue_solvent_accessibility(const IMP::kernel::Particles& atom_particles,
-                                       const IMP::kernel::Particles& residue_particles,
-                                     const std::vector<int>& atom_2_residue_map,
-                            std::vector<float>& residue_solvent_accessibility) {
+void get_residue_solvent_accessibility(
+    const IMP::kernel::Particles& atom_particles,
+    const IMP::kernel::Particles& residue_particles,
+    const std::vector<int>& atom_2_residue_map,
+    std::vector<float>& residue_solvent_accessibility) {
 
   IMP::saxs::FormFactorTable* ft = IMP::saxs::default_form_factor_table();
   IMP::saxs::FormFactorType ff_type = IMP::saxs::HEAVY_ATOMS;
-  for(unsigned int i=0; i<atom_particles.size(); i++) {
+  for (unsigned int i = 0; i < atom_particles.size(); i++) {
     float radius = ft->get_radius(atom_particles[i], ff_type);
-    IMP::core::XYZR::setup_particle(atom_particles[i], 2.0*radius);
+    IMP::core::XYZR::setup_particle(atom_particles[i], 2.0 * radius);
   }
   IMP::Floats surface_area;
   IMP::saxs::SolventAccessibleSurface s;
@@ -92,10 +94,10 @@ void get_residue_solvent_accessibility(const IMP::kernel::Particles& atom_partic
   residue_solvent_accessibility.clear();
   residue_solvent_accessibility.insert(residue_solvent_accessibility.begin(),
                                        residue_particles.size(), 0.0);
-  for(unsigned int i=0; i<atom_particles.size(); i++) {
+  for (unsigned int i = 0; i < atom_particles.size(); i++) {
     // convert from 0-1 range to actual area in A^2
     float radius = IMP::core::XYZR(atom_particles[i]).get_radius();
-    float area = surface_area[i] * 4*IMP::algebra::PI*radius*radius;
+    float area = surface_area[i] * 4 * IMP::algebra::PI * radius * radius;
     residue_solvent_accessibility[atom_2_residue_map[i]] += area;
   }
 
@@ -123,13 +125,13 @@ void get_residue_solvent_accessibility(const IMP::kernel::Particles& atom_partic
   residue_type_area_map_[IMP::atom::VAL] = 160.0;
   residue_type_area_map_[IMP::atom::UNK] = 113.0;
 
-  for(unsigned int i=0; i<residue_particles.size(); i++) {
+  for (unsigned int i = 0; i < residue_particles.size(); i++) {
     IMP::atom::ResidueType residue_type =
-      IMP::atom::Residue(residue_particles[i]).get_residue_type();
+        IMP::atom::Residue(residue_particles[i]).get_residue_type();
     float residue_area = residue_type_area_map_.find(residue_type)->second;
     std::cerr << residue_type.get_string() << " "
-              << residue_solvent_accessibility[i]
-              << " " << residue_area << std::endl;
+              << residue_solvent_accessibility[i] << " " << residue_area
+              << std::endl;
     residue_solvent_accessibility[i] /= residue_area;
   }
 }

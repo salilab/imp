@@ -36,8 +36,8 @@ bool TableRefiner::get_can_refine(kernel::Particle *p) const {
   return map_.find(p) != map_.end();
 }
 
-const kernel::ParticlesTemp TableRefiner::get_refined(
-    kernel::Particle *p) const {
+const kernel::ParticlesTemp TableRefiner::get_refined(kernel::Particle *p)
+    const {
   IMP_INTERNAL_CHECK(map_.find(p) != map_.end(),
                      "Particle is not found in table to refine");
   return kernel::ParticlesTemp(map_.find(p)->second.begin(),

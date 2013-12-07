@@ -40,8 +40,7 @@ class IMPCOREEXPORT MinimumRestraint : public kernel::Restraint {
   ;
 
   IMP_LIST_ACTION(public, Restraint, Restraints, restraint, restraints,
-                  kernel::Restraint *, kernel::Restraints,
-                  , {}, {});
+                  kernel::Restraint *, kernel::Restraints, , {}, {});
 };
 
 IMPCORE_END_NAMESPACE

@@ -23,7 +23,8 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 */
 IMPEXAMPLEEXPORT void optimize_assembly(
     kernel::Model *m, const kernel::ParticlesTemp &components,
-    const kernel::RestraintsTemp &interactions, const kernel::RestraintsTemp &other_restraints,
+    const kernel::RestraintsTemp &interactions,
+    const kernel::RestraintsTemp &other_restraints,
     const algebra::BoundingBox3D &bb, PairScore *ev, double cutoff,
     const PairPredicates &excluded = PairPredicates());
 

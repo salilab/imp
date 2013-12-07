@@ -214,7 +214,11 @@ def encode_data_as_restraints(universe, restraints):
 
 
 # find acceptable conformations of the model
-def get_configurations(model, restraints, excluded_volume_particles, optimized_particles):
+def get_configurations(
+    model,
+    restraints,
+    excluded_volume_particles,
+        optimized_particles):
     #cpc= IMP.container.ClosePairContainer(representation.get_particles(), 0, 10)
     # evr= IMP.container.PairRestraint(IMP.core.SoftSpherePairScore(k), cpc,
     #                                 "Excluded Volume")

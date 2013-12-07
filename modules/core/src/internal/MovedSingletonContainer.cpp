@@ -15,7 +15,6 @@
 #include <IMP/PairScore.h>
 #include <IMP/base/utility.h>
 
-
 #include <algorithm>
 #include <sstream>
 
@@ -105,17 +104,16 @@ void XYZRMovedSingletonContainer::do_reset_all() {
   IMP_OBJECT_LOG;
   backup_.clear();
   moved_.clear();
-    // backup_.resize(get_singleton_container()->get_number_of_particles());
-  IMP_CONTAINER_FOREACH(SingletonContainer, get_singleton_container(), {
-    backup_.push_back(XYZR(get_model(), _1).get_sphere());
-  });
+  // backup_.resize(get_singleton_container()->get_number_of_particles());
+  IMP_CONTAINER_FOREACH(SingletonContainer, get_singleton_container(),
+  { backup_.push_back(XYZR(get_model(), _1).get_sphere()); });
 }
 ParticleIndexes XYZRMovedSingletonContainer::do_initialize() {
   IMP_OBJECT_LOG;
   backup_.clear();
   moved_.clear();
   kernel::ParticleIndexes ret;
-    // backup_.resize(get_singleton_container()->get_number_of_particles());
+  // backup_.resize(get_singleton_container()->get_number_of_particles());
   IMP_CONTAINER_FOREACH(SingletonContainer, get_singleton_container(), {
     backup_.push_back(XYZR(get_model(), _1).get_sphere());
     moved_.insert(_2);
@@ -131,9 +129,9 @@ void XYZRMovedSingletonContainer::do_reset_moved() {
       IMP_FOREACH(int m, moved_) {
         backup_[m] =
             XYZR(get_model(), imp_indexes[m]).get_sphere();
-      }
-  });
-  moved_.clear();
+}
+});
+moved_.clear();
 }
 ParticleIndexes XYZRMovedSingletonContainer::do_get_moved() {
   IMP_OBJECT_LOG;

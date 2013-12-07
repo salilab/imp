@@ -143,7 +143,7 @@ ResultAlign2D get_complete_alignment_no_preprocessing(
                 << std::endl);
 
   cv::Mat aux1, aux2, aux3, aux4;  // auxiliary matrices
-  cv::Mat AUX1, AUX2, AUX3;  // ffts
+  cv::Mat AUX1, AUX2, AUX3;        // ffts
   algebra::Transformation2D transformation1, transformation2;
   double angle1 = 0, angle2 = 0;
   ResultAlign2D RA = get_rotational_alignment_no_preprocessing(POLAR1, POLAR2);

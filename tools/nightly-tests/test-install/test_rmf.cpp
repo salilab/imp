@@ -4,7 +4,7 @@
 
 #include <RMF/FileHandle.h>
 
-int main(){
+int main() {
   RMF::create_rmf_file("test.rmf");
   return 0;
 }

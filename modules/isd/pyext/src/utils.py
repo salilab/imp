@@ -2,23 +2,23 @@
    Miscellaneous utilities.
 """
 
-##
-## The Inferential Structure Determination (ISD) software library
-##
-## Authors: Michael Habeck and Wolfgang Rieping
-##
-##          Copyright (C) Michael Habeck and Wolfgang Rieping
-##
-##          All rights reserved.
-##
-## NO WARRANTY. This library is provided 'as is' without warranty of any
-## kind, expressed or implied, including, but not limited to the implied
-## warranties of merchantability and fitness for a particular purpose or
-## a warranty of non-infringement.
-##
-## Distribution of substantively modified versions of this module is
-## prohibited without the explicit permission of the copyright holders.
-##
+#
+# The Inferential Structure Determination (ISD) software library
+#
+# Authors: Michael Habeck and Wolfgang Rieping
+#
+# Copyright (C) Michael Habeck and Wolfgang Rieping
+#
+# All rights reserved.
+#
+# NO WARRANTY. This library is provided 'as is' without warranty of any
+# kind, expressed or implied, including, but not limited to the implied
+# warranties of merchantability and fitness for a particular purpose or
+# a warranty of non-infringement.
+#
+# Distribution of substantively modified versions of this module is
+# prohibited without the explicit permission of the copyright holders.
+#
 
 import atexit
 import sys
@@ -33,59 +33,61 @@ from threading import Thread
 
 debug = False
 
-code={
-        'A':'ALA',
-        'R':'ARG',
-        'N':'ASN',
-        'D':'ASP',
-        'C':'CYS',
-        'E':'GLU',
-        'Q':'GLN',
-        'G':'GLY',
-        'H':'HIS',
-        'I':'ILE',
-        'L':'LEU',
-        'K':'LYS',
-        'M':'MET',
-        'F':'PHE',
-        'P':'PRO',
-        'S':'SER',
-        'T':'THR',
-        'W':'TRP',
-        'Y':'TYR',
-        'V':'VAL'
-        }
+code = {
+    'A': 'ALA',
+    'R': 'ARG',
+    'N': 'ASN',
+    'D': 'ASP',
+    'C': 'CYS',
+    'E': 'GLU',
+    'Q': 'GLN',
+    'G': 'GLY',
+    'H': 'HIS',
+    'I': 'ILE',
+    'L': 'LEU',
+    'K': 'LYS',
+    'M': 'MET',
+    'F': 'PHE',
+    'P': 'PRO',
+    'S': 'SER',
+    'T': 'THR',
+    'W': 'TRP',
+    'Y': 'TYR',
+    'V': 'VAL'
+}
 
 
 def average(x):
-    return sum(x)/float(len(x))
+    return sum(x) / float(len(x))
+
 
 def atexit_register(*args):
 
     atexit.register(*args)
 
+
 def atexit_unregister(func):
 
-    exit_funcs= [x[0]  for x in atexit._exithandlers]
+    exit_funcs = [x[0] for x in atexit._exithandlers]
 
     try:
         i = exit_funcs.index(func)
     except:
         return
 
-    atexit._exithandlers.pop( i )
+    atexit._exithandlers.pop(i)
+
 
 class WatchDog(Thread):
 
     def __init__(self, timeout, debug=False, logfile=None):
-
         """
         timeout: in minutes.
         """
 
         Thread.__init__(self)
 
-        self.timeout = timeout*60.
+        self.timeout = timeout * 60.
         self.debug = debug
         self._last_ping = None
         self._stop = False
@@ -128,11 +130,11 @@ class WatchDog(Thread):
                     val = '%.0f s' % delta
 
                 print 'Watchdog: last life sign %s ago; timeout is %d min(s).' % \
-                      (val, self.timeout/60.)
+                      (val, self.timeout / 60.)
 
             if self._last_ping is not None and delta > self.timeout:
 
-                s = 'No life sign for > %d minute(s)' % (self.timeout/60.)
+                s = 'No life sign for > %d minute(s)' % (self.timeout / 60.)
 
                 print s + ', exiting...'
 
@@ -145,7 +147,9 @@ class WatchDog(Thread):
 
                     try:
                         f = open(self.logfile, mode)
-                        f.write(s+'; host %s, %s\n' % (socket.gethostname(), time.ctime()))
+                        f.write(
+                            s + '; host %s, %s\n' %
+                            (socket.gethostname(), time.ctime()))
                         f.close()
 
                     except IOError:
@@ -157,7 +161,8 @@ class WatchDog(Thread):
                     print 'Watchdog: keeping Python interpreter alive.'
                     self.stop()
 
-            time.sleep(self.timeout/4.)
+            time.sleep(self.timeout / 4.)
+
 
 class SpinWheel:
 
@@ -175,10 +180,12 @@ class SpinWheel:
 
         self.state = (self.state + 1) % len(self.symbols)
 
+
 class Pipe(object):
+
     """implements a FIFO pipe that merges lists (see self.put)"""
 
-    def __init__(self, length = -1):
+    def __init__(self, length=-1):
 
         self.length = length
         self.pipe = []
@@ -226,6 +233,7 @@ class Pipe(object):
 
     __repr__ = __str__
 
+
 class SortedQueue(Queue):
 
     def sort(self):
@@ -247,7 +255,7 @@ class SortedQueue(Queue):
         from numpy.oldnumeric import power
         from Isd.misc.mathutils import draw_dirichlet, rescale_uniform
 
-        ## compute "probabilities"
+        # compute "probabilities"
 
         p = 1. - rescale_uniform(self.times)
         p = power(p, 2.)
@@ -263,6 +271,7 @@ class SortedQueue(Queue):
 
         return val
 
+
 def load_pdb(filename):
 
     import os
@@ -270,6 +279,7 @@ def load_pdb(filename):
     from Scientific.IO.PDB import Structure
 
     return Structure(os.path.expanduser(filename))
+
 
 def copyfiles(src_path, dest_path, pattern=None, verbose=False):
 
@@ -280,7 +290,7 @@ def copyfiles(src_path, dest_path, pattern=None, verbose=False):
     if pattern is None:
         pattern = '*'
 
-    file_list = glob(os.path.join(src_path,pattern))
+    file_list = glob(os.path.join(src_path, pattern))
 
     for f in file_list:
         copyfile(f, os.path.join(dest_path, os.path.basename(f)))
@@ -288,20 +298,23 @@ def copyfiles(src_path, dest_path, pattern=None, verbose=False):
         if verbose:
             print f
 
+
 def touch(filename):
 
     try:
         f = open(filename, 'w')
         f.close()
 
-    except IOError, error:
+    except IOError as error:
         import os
         if os.path.isdir(filename):
             pass
         else:
-            raise IOError, error
+            raise IOError(error)
 
-#Yannick
+# Yannick
+
+
 def read_sequence_file(filename, first_residue_number=1):
     """read sequence of ONE chain, 1-letter or 3-letter, returns dict of
     no:3-letter code. Fails on unknown amino acids.
@@ -310,41 +323,43 @@ def read_sequence_file(filename, first_residue_number=1):
     filename = os.path.abspath(filename)
     try:
         f = open(filename)
-    except IOError, msg:
-        raise IOError, 'Could not open sequence file "%s".' % filename
+    except IOError as msg:
+        raise IOError('Could not open sequence file "%s".' % filename)
     seq = f.read().upper()
 
     if seq.startswith('>'):
         print "Detected FASTA 1-letter sequence"
-        pos=seq.find('\n')
-        #get rid of first line and get sequence in one line
-        seq=''.join(seq[pos+1:].split())
+        pos = seq.find('\n')
+        # get rid of first line and get sequence in one line
+        seq = ''.join(seq[pos + 1:].split())
         names = [code[i] for i in seq]
-        numbers = range(first_residue_number, first_residue_number+len(seq))
-        return dict(zip(numbers,names))
+        numbers = range(first_residue_number, first_residue_number + len(seq))
+        return dict(zip(numbers, names))
     else:
-        l=seq.split()
+        l = seq.split()
         for x in l:
             if not x in code.values():
                 print 'Warning: unknown 3-letter code: %s' % x
-        numbers = range(first_residue_number, first_residue_number+len(l))
-        return dict(zip(numbers,l))
+        numbers = range(first_residue_number, first_residue_number + len(l))
+        return dict(zip(numbers, l))
 
-#Yannick
-def check_residue(a,b):
+# Yannick
+
+
+def check_residue(a, b):
     "checks whether residue codes a and b are the same, doing necessary conversions"
-    a=a.upper()
-    b=b.upper()
+    a = a.upper()
+    b = b.upper()
     if len(a) == 1:
         if a not in code:
             print 'Warning: unknown 1-letter code: %s' % a
             return False
-        a=code[a]
+        a = code[a]
     if len(b) == 1:
         if b not in code:
             print 'Warning: unknown 1-letter code: %s' % b
             return False
-        b=code[b]
+        b = code[b]
     if len(a) != 3:
         print 'Unknown residue code %s' % a
         return False
@@ -352,11 +367,10 @@ def check_residue(a,b):
         print 'Unknown residue code %s' % b
         return False
     if a != b:
-        print 'Residues %s and %s are not the same' % (a,b)
+        print 'Residues %s and %s are not the same' % (a, b)
         return False
     else:
         return True
-
 
 
 def my_glob(x, do_touch=False):
@@ -369,18 +383,20 @@ def my_glob(x, do_touch=False):
 
         path, name = os.path.split(x)
 
-        #os.system('touch %s' % path) #this is very inefficient
-        touch(path)         #this is better (4x to 6x faster)
+        # os.system('touch %s' % path) #this is very inefficient
+        touch(path)  # this is better (4x to 6x faster)
 
     return glob(x)
 
-def Dump(this, filename, gzip = 0, mode = 'w', bin=1):
+
+def Dump(this, filename, gzip=0, mode='w', bin=1):
     """
     Dump(this, filename, gzip = 0)
     Supports also '~' or '~user'.
     """
 
-    import os, cPickle
+    import os
+    import cPickle
 
     filename = os.path.expanduser(filename)
 
@@ -397,14 +413,16 @@ def Dump(this, filename, gzip = 0, mode = 'w', bin=1):
 
     f.close()
 
-def Load(filename, gzip = 0, force=0):
+
+def Load(filename, gzip=0, force=0):
     """
     Load(filename, gzip=0, force=0)
 
     force: returns all objects that could be unpickled. Useful
            when unpickling of sequential objects fails at some point.
     """
-    import cPickle, os
+    import cPickle
+    import os
 
     filename = os.path.expanduser(filename)
 
@@ -450,6 +468,7 @@ def Load(filename, gzip = 0, force=0):
 
     return objects
 
+
 def get_pdb(pdb_entry, dest='.', verbose_level=0):
 
     import ftplib
@@ -481,9 +500,10 @@ def get_pdb(pdb_entry, dest='.', verbose_level=0):
         ftp.quit()
 
     except ftplib.error_perm:
-        raise IOError, 'File %s not found on server' % filename
+        raise IOError('File %s not found on server' % filename)
 
     os.system('gunzip -f %s' % filename)
+
 
 def compile_index_list(chain, atom_names, residue_index_list=None):
 
@@ -501,8 +521,7 @@ def compile_index_list(chain, atom_names, residue_index_list=None):
     for res_index in residue_index_list:
 
         if atom_names is None:
-            names = chain[res_index].keys()
-            names.sort()
+            names = sorted(chain[res_index].keys())
 
         for n in names:
 
@@ -513,6 +532,7 @@ def compile_index_list(chain, atom_names, residue_index_list=None):
                 i += 1
 
     return index_list, index_map
+
 
 def get_coordinates(universe, E, indices=None, atom_names=('CA',),
                     residue_index_list=None, atom_index_list=None):
@@ -540,6 +560,7 @@ def get_coordinates(universe, E, indices=None, atom_names=('CA',),
 
     return array(l)
 
+
 def map_angles(angles, period=None):
     """
     maps angles into interval [-pi,pi]
@@ -552,14 +573,16 @@ def map_angles(angles, period=None):
 
     mask = greater(angles, 0.)
 
-    return mask * (fmod(angles+period, 2*period)-period) + \
-           logical_not(mask) * (fmod(angles-period, 2*period)+period)
+    return mask * (fmod(angles + period, 2 * period) - period) + \
+        logical_not(mask) * (fmod(angles - period, 2 * period) + period)
+
 
 def remove_from_dict(d, items):
 
     for item in items:
         if item in d:
             del d[item]
+
 
 def myrange(a, b, n):
 
@@ -571,16 +594,18 @@ def myrange(a, b, n):
 
     return x[:n]
 
+
 def indent(lines, prefix):
 
     tag = ' ' * len(str(prefix))
 
     lines[0] = prefix + lines[0]
-    lines = [lines[0]] + map(lambda s, t = tag: t + s, lines[1:])
+    lines = [lines[0]] + map(lambda s, t=tag: t + s, lines[1:])
 
     return '\n'.join(lines)
 
-def make_block(s, length = 80, tol = 10):
+
+def make_block(s, length=80, tol=10):
     blocks = s.split('\n')
     l = []
     for block in blocks:
@@ -588,15 +613,16 @@ def make_block(s, length = 80, tol = 10):
 
     return l
 
+
 def _make_block(s, length, tol):
 
     l = s.split(' ')
-    l = [(w,' ') for w in l]
+    l = [(w, ' ') for w in l]
 
     words = []
     for ll in l:
         g = ll[0].split('/')
-        g = [w+'/' for w in g]
+        g = [w + '/' for w in g]
         g[-1] = g[-1][:-1] + ' '
 
         words += g
@@ -617,7 +643,7 @@ def _make_block(s, length, tol):
                 word = word[m:]
 
             if len(line) > 1 and line[0] == ' ' and \
-                   line[1] <> ' ':
+                    line[1] != ' ':
                 line = line[1:]
 
             l.append(line)
@@ -625,20 +651,21 @@ def _make_block(s, length, tol):
 
     line = line[:-1]
     if len(line) > 1 and line[0] == ' ' and \
-       line[1] <> ' ':
+       line[1] != ' ':
         line = line[1:]
 
     l.append(line)
 
     return l
 
+
 def _save_dump(x, filename, err_msg=None, delay=10, show_io_err=True,
-              gzip=False, bin=True):
+               gzip=False, bin=True):
 
     try:
         Dump(x, filename, gzip=gzip, bin=bin)
 
-    except IOError, msg:
+    except IOError as msg:
 
         import time
 
@@ -651,9 +678,9 @@ def _save_dump(x, filename, err_msg=None, delay=10, show_io_err=True,
             else:
                 print err_msg
 
-        while 1:
+        while True:
 
-            ## wait for 10 minutes
+            # wait for 10 minutes
 
             time.sleep(60. * delay)
 
@@ -664,10 +691,12 @@ def _save_dump(x, filename, err_msg=None, delay=10, show_io_err=True,
             except IOError:
                 continue
 
+
 def save_dump(x, filename, err_msg=None, delay=10, show_io_err=True,
               gzip=False, mode='w', bin=True):
 
-    import os, tempfile
+    import os
+    import tempfile
 
     path, _filename = os.path.split(filename)
 
@@ -677,7 +706,7 @@ def save_dump(x, filename, err_msg=None, delay=10, show_io_err=True,
     _save_dump(x, temp_filename, err_msg, delay, show_io_err,
                gzip, bin)
 
-    ## if that worked, dump properly
+    # if that worked, dump properly
 
     if mode == 'w':
         os.rename(temp_filename, filename)
@@ -687,4 +716,4 @@ def save_dump(x, filename, err_msg=None, delay=10, show_io_err=True,
         Dump(x, filename, mode='a', gzip=gzip, bin=bin)
 
     else:
-        raise StandardError, 'Mode "%s" invalid.' % mode
+        raise Exception('Mode "%s" invalid.' % mode)

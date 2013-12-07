@@ -7,7 +7,9 @@ import os
 import tempfile
 import shutil
 
+
 class FakeSGEEnvironment(object):
+
     def __init__(self, jobid=None):
         self.tmpdir = tempfile.mkdtemp()
         self._oldpath = os.environ['PATH']
@@ -18,10 +20,10 @@ class FakeSGEEnvironment(object):
             fh.write("#!/bin/sh\necho $@ >> %s-commands\n" % fname)
             fh.write("cat >> %s-input\n" % fname)
             if jobid is not None and cmd == 'qsub':
-                fh.write('echo "Your job has been submitted: %s"\n' \
+                fh.write('echo "Your job has been submitted: %s"\n'
                          % str(jobid))
             fh.close()
-            os.chmod(fname, 493) # 493 = 0755 (but works in Python 2 & 3)
+            os.chmod(fname, 493)  # 493 = 0755 (but works in Python 2 & 3)
 
     def get_commands(self, cmd):
         fname = os.path.join(self.tmpdir, cmd)
@@ -37,6 +39,7 @@ class FakeSGEEnvironment(object):
 
 
 class Tests(IMP.test.TestCase):
+
     """Test SGE slaves"""
 
     def assertSGEOutputEqual(self, sge, command, expected):
@@ -47,7 +50,7 @@ class Tests(IMP.test.TestCase):
                 c = None
             if c == expected:
                 break
-            time.sleep(0.05) # Wait for output files to be created
+            time.sleep(0.05)  # Wait for output files to be created
         self.assertEqual(c, expected)
 
     def test_pe_slave(self):

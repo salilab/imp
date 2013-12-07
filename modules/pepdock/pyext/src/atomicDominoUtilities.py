@@ -3,6 +3,7 @@ import re
 import sys
 import os
 
+
 def readParameters(parameterFileName):
 
     parameters = {}
@@ -26,9 +27,11 @@ def readParameters(parameterFileName):
     parameterFh.close()
     return parameters
 
-#Represents an atom particle as a string (contains its chain ID, residue ID, and atom name)
-#Other methods parse the name so if the name format changes they need to be updated
+# Represents an atom particle as a string (contains its chain ID, residue ID, and atom name)
+# Other methods parse the name so if the name format changes they need to be updated
 #getPeptideCa(); writeCytoscapeIgInput(); getAtomTypeCounts()
+
+
 def quickParticleName(particle):
     atomDecorator = IMP.atom.Atom.decorate_particle(particle)
     atomName = atomDecorator.get_atom_type()
@@ -45,7 +48,9 @@ def quickParticleName(particle):
 
     return nameFinal
 
-#make dictionary mapping particle name to the object it represents
+# make dictionary mapping particle name to the object it represents
+
+
 def makeNamesToParticles(protein):
 
     leaves = IMP.atom.get_leaves(protein)
@@ -57,26 +62,29 @@ def makeNamesToParticles(protein):
     return namesToParticles
 
 
-#get the chain id, residue id, and atom name from the particle name -- slightly cleaner in that if we change the name
-#format, we don't have to change all the methods that rely on that format
+# get the chain id, residue id, and atom name from the particle name -- slightly cleaner in that if we change the name
+# format, we don't have to change all the methods that rely on that format
 def getAtomInfoFromName(particleName):
     [chain, residue, atom] = particleName.split("_")
     return [chain, residue, atom]
 
-#quick way to get formatted name
+# quick way to get formatted name
+
+
 def makeParticleName(chain, residueNumber, atomName):
     return "%s_%s_%s" % (chain, residueNumber, atomName)
 
 
-#Check if this particle is an atom particle or a restraint
+# Check if this particle is an atom particle or a restraint
 def isAtomParticle(p):
-    if (p.get_name().find('_') == -1):    #hack; need to distinguish from non-atom particle
+    # hack; need to distinguish from non-atom particle
+    if (p.get_name().find('_') == -1):
         return 0
     else:
         return 1
 
 
-#Get particles in model that are contained in model's restraints
+# Get particles in model that are contained in model's restraints
 def getRestrainedParticles(protein, model, namesToParticles):
     leaves = IMP.atom.get_leaves(protein)
 
@@ -90,7 +98,8 @@ def getRestrainedParticles(protein, model, namesToParticles):
             if (isAtomParticle(p) == 0):
                 continue
             name = quickParticleName(p)
-            particleDict[name] = 1 #use dictionary keyed on names to avoid duplication
+            # use dictionary keyed on names to avoid duplication
+            particleDict[name] = 1
         score = r.evaluate(0)
 
     restrainedParticles = []
@@ -99,6 +108,7 @@ def getRestrainedParticles(protein, model, namesToParticles):
         restrainedParticles.append(p)
 
     return restrainedParticles
+
 
 def getMdIntervalFrames(rh, interval, protein):
     frames = []

@@ -27,11 +27,10 @@ IMPKINEMATICS_BEGIN_NAMESPACE
   such as normal modes might be supported in principle)
 
  */
-class IMPKINEMATICSEXPORT DOF : public IMP::base::Object
-{
+class IMPKINEMATICSEXPORT DOF : public IMP::base::Object {
   IMP_OBJECT_METHODS(DOF);
-public:
 
+ public:
   // maybe delete this one, only leave the next constructor?
   DOF(double v);
 
@@ -46,11 +45,9 @@ public:
   void set_range(std::pair<double, double> range) { range_ = range; }
 
   // step size for going in the direction of the sampled value
-  double get_step_size() const
-  { return step_size_; }
+  double get_step_size() const { return step_size_; }
 
-  void set_step_size(double step_size)
-  { step_size_ = step_size; }
+  void set_step_size(double step_size) { step_size_ = step_size; }
 
   // return the number of steps between the input value and current DOF value
   int get_number_of_steps(double value) const;
@@ -58,7 +55,7 @@ public:
   // return the number of steps between between the two values
   int get_number_of_steps(double value1, double value2) const;
 
-private:
+ private:
   // initial value of DOF, the sampling samples around it
   double value_;
 

@@ -2,6 +2,7 @@
 
 import IMP
 
+
 def main():
     c = IMP.CommandDispatcher(short_help='Symmetric MultiFit.',
                               long_help='Fit symmetric complexes '

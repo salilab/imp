@@ -149,7 +149,7 @@ void push_log_context(const char *functionname, const void *classname) {
 #ifdef _OPENMP
   if (!omp_in_parallel())
 #endif
-      {
+  {
     internal::log_contexts.push_back(std::make_pair(functionname, classname));
   }
 }
@@ -158,7 +158,7 @@ void pop_log_context() {
 #ifdef _OPENMP
   if (!omp_in_parallel())
 #endif
-      {
+  {
     if (internal::log_context_initializeds >=
         static_cast<int>(internal::log_contexts.size() - 1)) {
       internal::log_indent -= 2;

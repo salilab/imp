@@ -28,7 +28,7 @@ double VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   algebra::Sphere3Ds spheres;
   kernel::Model *m = get_model();
   IMP_CONTAINER_FOREACH(SingletonContainer, sc_,
-                        { spheres.push_back(XYZR(m, _1).get_sphere()); });
+  { spheres.push_back(XYZR(m, _1).get_sphere()); });
   double vol = algebra::get_surface_area_and_volume(spheres).second;
   return f_->evaluate(vol - volume_);
   /*IMP_LOG_VERBOSE( "Begin volume restraint." << std::endl);

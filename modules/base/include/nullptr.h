@@ -60,7 +60,7 @@ extern IMPBASEEXPORT const nullptr_t nullptr;
 IMP_GCC_PRAGMA(diagnostic pop)
 #endif
 
-#else  // SWIG
+#else   // SWIG
 extern const void *const nullptr;
 #endif  // SWIG
 #endif  // IMP_DOXYGEN

@@ -25,7 +25,7 @@
 // It is provided "as is" without express or implied warranty.
 //----------------------------------------------------------------------
 
-#include "IMP/kmeans/internal/KCutil.h"     // kc-utility declarations
+#include "IMP/kmeans/internal/KCutil.h"  // kc-utility declarations
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 
@@ -37,19 +37,22 @@ IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 //      for this.
 //----------------------------------------------------------------------
 // standard 2-d indirect indexing
-#define KMEANS_PA(i,d)       (pa[pidx[(i)]][(d)])
+#define KMEANS_PA(i, d) (pa[pidx[(i)]][(d)])
 // accessing a single point
-#define KMEANS_PP(i)             (pa[pidx[(i)]])
+#define KMEANS_PP(i) (pa[pidx[(i)]])
 // swap two points
-#define KMEANS_PASWAP(a,b) { int tmp = pidx[a];\
-                    pidx[a] = pidx[b];\
-                    pidx[b] = tmp; }
+#define KMEANS_PASWAP(a, b) \
+  {                         \
+    int tmp = pidx[a];      \
+    pidx[a] = pidx[b];      \
+    pidx[b] = tmp;          \
+  }
 
 //----------------------------------------------------------------------
 //  Constants
 //----------------------------------------------------------------------
 
-const double ERR = 0.001;            // a small value
+const double ERR = 0.001;  // a small value
 
 //----------------------------------------------------------------------
 //  kmEnclRect, kmEnclCube
@@ -57,19 +60,20 @@ const double ERR = 0.001;            // a small value
 //      a set of points, respectively.
 //----------------------------------------------------------------------
 
-void kmEnclRect(
-  KMpointArray      pa,            // point array
-  KMidxArray            pidx,            // point indices
-  int                  n,            // number of points
-  int                  dim,            // dimension
-  KMorthRect            &bnds)            // bounding cube (returned)
+void kmEnclRect(KMpointArray pa,   // point array
+                KMidxArray pidx,   // point indices
+                int n,             // number of points
+                int dim,           // dimension
+                KMorthRect &bnds)  // bounding cube (returned)
 {
-  for(int d = 0; d < dim; d++) {       // find smallest enclosing rectangle
-    KMcoord lo_bnd = KMEANS_PA(0, d);     // lower bound on dimension d
-    KMcoord hi_bnd = KMEANS_PA(0, d);     // upper bound on dimension d
-    for(int i = 0; i < n; i++) {
-      if(KMEANS_PA(i, d) < lo_bnd) lo_bnd = KMEANS_PA(i, d);
-      else if(KMEANS_PA(i, d) > hi_bnd) hi_bnd = KMEANS_PA(i, d);
+  for (int d = 0; d < dim; d++) {      // find smallest enclosing rectangle
+    KMcoord lo_bnd = KMEANS_PA(0, d);  // lower bound on dimension d
+    KMcoord hi_bnd = KMEANS_PA(0, d);  // upper bound on dimension d
+    for (int i = 0; i < n; i++) {
+      if (KMEANS_PA(i, d) < lo_bnd)
+        lo_bnd = KMEANS_PA(i, d);
+      else if (KMEANS_PA(i, d) > hi_bnd)
+        hi_bnd = KMEANS_PA(i, d);
     }
     bnds.lo[d] = lo_bnd;
     bnds.hi[d] = hi_bnd;
@@ -82,36 +86,40 @@ void kmEnclRect(
 //  kmMaxSpread - find dimension of max spread
 //----------------------------------------------------------------------
 
-KMcoord kmSpread(            // compute point spread along dimension
-  KMpointArray      pa,            // point array
-  KMidxArray            pidx,            // point indices
-  int                  n,            // number of points
-  int                  d)            // dimension to check
+KMcoord kmSpread(     // compute point spread along dimension
+    KMpointArray pa,  // point array
+    KMidxArray pidx,  // point indices
+    int n,            // number of points
+    int d)            // dimension to check
 {
-  KMcoord min = KMEANS_PA(0, d);           // compute max and min coords
+  KMcoord min = KMEANS_PA(0, d);  // compute max and min coords
   KMcoord max = KMEANS_PA(0, d);
-  for(int i = 1; i < n; i++) {
+  for (int i = 1; i < n; i++) {
     KMcoord c = KMEANS_PA(i, d);
-    if(c < min) min = c;
-    else if(c > max) max = c;
+    if (c < min)
+      min = c;
+    else if (c > max)
+      max = c;
   }
-  return (max - min);                  // total spread is difference
+  return (max - min);  // total spread is difference
 }
 
-void kmMinMax(                  // compute min and max coordinates along dim
-  KMpointArray      pa,            // point array
-  KMidxArray            pidx,            // point indices
-  int                  n,            // number of points
-  int                  d,            // dimension to check
-  KMcoord            &min,            // minimum value (returned)
-  KMcoord            &max)            // maximum value (returned)
+void kmMinMax(        // compute min and max coordinates along dim
+    KMpointArray pa,  // point array
+    KMidxArray pidx,  // point indices
+    int n,            // number of points
+    int d,            // dimension to check
+    KMcoord &min,     // minimum value (returned)
+    KMcoord &max)     // maximum value (returned)
 {
-  min = KMEANS_PA(0, d);                 // compute max and min coords
+  min = KMEANS_PA(0, d);  // compute max and min coords
   max = KMEANS_PA(0, d);
-  for(int i = 1; i < n; i++) {
+  for (int i = 1; i < n; i++) {
     KMcoord c = KMEANS_PA(i, d);
-    if(c < min) min = c;
-    else if(c > max) max = c;
+    if (c < min)
+      min = c;
+    else if (c > max)
+      max = c;
   }
 }
 
@@ -128,36 +136,36 @@ void kmMinMax(                  // compute min and max coordinates along dim
 //      All indexing is done indirectly through the index array pidx.
 //----------------------------------------------------------------------
 
-void kmPlaneSplit(            // split points by a plane
-  KMpointArray      pa,            // points to split
-  KMidxArray            pidx,            // point indices
-  int                  n,            // number of points
-  int                  d,            // dimension along which to split
-  KMcoord            cv,            // cutting value
-  int                  &br1,            // first break (values < cv)
-  int                  &br2)            // second break (values == cv)
+void kmPlaneSplit(    // split points by a plane
+    KMpointArray pa,  // points to split
+    KMidxArray pidx,  // point indices
+    int n,            // number of points
+    int d,            // dimension along which to split
+    KMcoord cv,       // cutting value
+    int &br1,         // first break (values < cv)
+    int &br2)         // second break (values == cv)
 {
   int l = 0;
   int r = n - 1;
-  for(;;) {                        // partition pa[0..n-1] about cv
-    while(l < n && KMEANS_PA(l, d) < cv) l++;
-    while(r >= 0 && KMEANS_PA(r, d) >= cv) r--;
-    if(l > r) break;
+  for (;;) {  // partition pa[0..n-1] about cv
+    while (l < n && KMEANS_PA(l, d) < cv) l++;
+    while (r >= 0 && KMEANS_PA(r, d) >= cv) r--;
+    if (l > r) break;
     KMEANS_PASWAP(l, r);
     l++;
     r--;
   }
-  br1 = l;                  // now: pa[0..br1-1] < cv <= pa[br1..n-1]
+  br1 = l;  // now: pa[0..br1-1] < cv <= pa[br1..n-1]
   r = n - 1;
-  for(;;) {                        // partition pa[br1..n-1] about cv
-    while(l < n && KMEANS_PA(l, d) <= cv) l++;
-    while(r >= br1 && KMEANS_PA(r, d) > cv) r--;
-    if(l > r) break;
+  for (;;) {  // partition pa[br1..n-1] about cv
+    while (l < n && KMEANS_PA(l, d) <= cv) l++;
+    while (r >= br1 && KMEANS_PA(r, d) > cv) r--;
+    if (l > r) break;
     KMEANS_PASWAP(l, r);
     l++;
     r--;
   }
-  br2 = l;                  // now: pa[br1..br2-1] == cv < pa[br2..n-1]
+  br2 = l;  // now: pa[br1..br2-1] == cv < pa[br2..n-1]
 }
 
 //----------------------------------------------------------------------
@@ -181,32 +189,31 @@ void kmPlaneSplit(            // split points by a plane
 //
 //----------------------------------------------------------------------
 
-void sl_midpt_split(
-  KMpointArray      pa,            // point array
-  KMidxArray            pidx,            // point indices (permuted on return)
-  const KMorthRect      &bnds,            // bounding rectangle for cell
-  int                  n,            // number of points
-  int                  dim,            // dimension of space
-  int                  &cut_dim,      // cutting dimension (returned)
-  KMcoord            &cut_val,      // cutting value (returned)
-  int                  &n_lo)            // num of points on low side (returned)
+void sl_midpt_split(KMpointArray pa,  // point array
+                    KMidxArray pidx,  // point indices (permuted on return)
+                    const KMorthRect &bnds,  // bounding rectangle for cell
+                    int n,                   // number of points
+                    int dim,                 // dimension of space
+                    int &cut_dim,            // cutting dimension (returned)
+                    KMcoord &cut_val,        // cutting value (returned)
+                    int &n_lo)  // num of points on low side (returned)
 {
   int d;
 
   KMcoord max_length = bnds.hi[0] - bnds.lo[0];
-  for(d = 1; d < dim; d++) {             // find length of longest box side
+  for (d = 1; d < dim; d++) {  // find length of longest box side
     KMcoord length = bnds.hi[d] - bnds.lo[d];
-    if(length  > max_length) {
+    if (length > max_length) {
       max_length = length;
     }
   }
-  KMcoord max_spread = -1;            // find long side with most spread
-  for(d = 0; d < dim; d++) {
+  KMcoord max_spread = -1;  // find long side with most spread
+  for (d = 0; d < dim; d++) {
     // is it among longest?
-    if((bnds.hi[d] - bnds.lo[d]) >= (1 - ERR)*max_length) {
+    if ((bnds.hi[d] - bnds.lo[d]) >= (1 - ERR) * max_length) {
       // compute its spread
       KMcoord spr = kmSpread(pa, pidx, n, d);
-      if(spr > max_spread) {       // is it max so far?
+      if (spr > max_spread) {  // is it max so far?
         max_spread = spr;
         cut_dim = d;
       }
@@ -216,11 +223,11 @@ void sl_midpt_split(
   KMcoord ideal_cut_val = (bnds.lo[cut_dim] + bnds.hi[cut_dim]) / 2;
 
   KMcoord min, max;
-  kmMinMax(pa, pidx, n, cut_dim, min, max);      // find min/max coordinates
+  kmMinMax(pa, pidx, n, cut_dim, min, max);  // find min/max coordinates
 
-  if(ideal_cut_val < min)             // slide to min or max as needed
+  if (ideal_cut_val < min)  // slide to min or max as needed
     cut_val = min;
-  else if(ideal_cut_val > max)
+  else if (ideal_cut_val > max)
     cut_val = max;
   else
     cut_val = ideal_cut_val;
@@ -243,11 +250,16 @@ void sl_midpt_split(
   //      Otherwise, we select n_lo as close to n/2 as possible within
   //            [br1..br2].
   //------------------------------------------------------------------
-  if(ideal_cut_val < min) n_lo = 1;
-  else if(ideal_cut_val > max) n_lo = n - 1;
-  else if(br1 > n / 2) n_lo = br1;
-  else if(br2 < n / 2) n_lo = br2;
-  else n_lo = n / 2;
+  if (ideal_cut_val < min)
+    n_lo = 1;
+  else if (ideal_cut_val > max)
+    n_lo = n - 1;
+  else if (br1 > n / 2)
+    n_lo = br1;
+  else if (br2 < n / 2)
+    n_lo = br2;
+  else
+    n_lo = n / 2;
 }
 
 IMPKMEANS_END_INTERNAL_NAMESPACE

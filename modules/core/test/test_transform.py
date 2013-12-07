@@ -21,7 +21,8 @@ class Tests(IMP.test.TestCase):
         tr = IMP.algebra.Transformation3D(
             IMP.algebra.get_identity_rotation_3d(),
             t)
-        tps = IMP.core.TransformedDistancePairScore(IMP.core.Harmonic(0, 1), tr)
+        tps = IMP.core.TransformedDistancePairScore(
+            IMP.core.Harmonic(0, 1), tr)
         tps.set_was_used(True)
         d0.set_coordinates(IMP.algebra.Vector3D(2, 3, 4))
         d1.set_coordinates(IMP.algebra.Vector3D(2, 2, 4))

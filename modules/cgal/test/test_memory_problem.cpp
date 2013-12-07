@@ -14,7 +14,6 @@
 
 #include <CGAL/Alpha_shape_3.h>
 
-
 typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
 
 typedef K::Point_3 Point;
@@ -30,13 +29,11 @@ typedef CGAL::Triangulation_data_structure_3<Vb, Fb> TDS;
 typedef CGAL::Regular_triangulation_3<Gt, TDS> Triangulation;
 typedef Gt::Point Wpoint;
 
-
 int main(int, char * []) {
   std::cout << CGAL_VERSION_NR << std::endl;
   std::vector<Wpoint> pts;
   for (unsigned int i = 0; i < 1200; ++i) {
-    pts.push_back(Wpoint(Point(i,i,i),
-                         1));
+    pts.push_back(Wpoint(Point(i, i, i), 1));
   }
 
   Triangulation T(pts.begin(), pts.end());

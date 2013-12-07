@@ -19,7 +19,8 @@ class Tests(IMP.test.TestCase):
             mb = IMP.core.RigidMember(b.get_particle())
             lc = mb.get_internal_coordinates()
             lct = tr.get_transformed(lc)
-            dt = IMP.core.DistanceToSingletonScore(IMP.core.Harmonic(0, 1), lct)
+            dt = IMP.core.DistanceToSingletonScore(
+                IMP.core.Harmonic(0, 1), lct)
             r = IMP.core.SingletonRestraint(dt, mb.get_particle())
             m.add_restraint(r)
 
@@ -102,7 +103,8 @@ class Tests(IMP.test.TestCase):
             mp = IMP.core.RigidMember(p)
             ic = mp.get_internal_coordinates()
             nic = tr.get_transformed(ic)
-            dt = IMP.core.DistanceToSingletonScore(IMP.core.Harmonic(0, 1), nic)
+            dt = IMP.core.DistanceToSingletonScore(
+                IMP.core.Harmonic(0, 1), nic)
             r = IMP.core.SingletonRestraint(dt, rb)
             m.add_restraint(r)
         cg = IMP.core.ConjugateGradients(m)

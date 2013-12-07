@@ -20,63 +20,60 @@
 #ifdef IMP_DOXYGEN
 /** \deprecated_at{2.1} Use IMP_DECORATOR_METHODS() instead.
 */
-#define IMP_DECORATOR(Name, Parent)                                     \
- public:                                                                \
+#define IMP_DECORATOR(Name, Parent)                                                       \
+ public:                                                                                  \
   /* Should be private but SWIG accesses it through the                 \
      comparison                                                         \
-     macros*/ IMP_NO_DOXYGEN(                                           \
-      typedef Parent ParentDecorator);                                  \
-  Name() : Parent() {}                                                  \
-  Name(kernel::Model *m, ParticleIndex id) : Parent(m, id) {            \
-    IMP_INTERNAL_CHECK(                                                 \
-        get_is_setup(m->get_particle(id)),                              \
-        "Particle " << m->get_particle(id)->get_name()                  \
-                    << " missing required attributes for decorator "    \
-                    << #Name                                            \
-                    << "\n" << base::ShowFull(m->get_particle(id)));    \
-  }                                                                     \
+     macros*/ IMP_NO_DOXYGEN( \
+      typedef Parent ParentDecorator);                                                    \
+  Name() : Parent() {}                                                                    \
+  Name(kernel::Model *m, ParticleIndex id) : Parent(m, id) {                              \
+    IMP_INTERNAL_CHECK(                                                                   \
+        get_is_setup(m->get_particle(id)),                                                \
+        "Particle " << m->get_particle(id)->get_name()                                    \
+                    << " missing required attributes for decorator " << #Name             \
+                    << "\n" << base::ShowFull(m->get_particle(id)));                      \
+  }                                                                                       \
   IMP_SHOWABLE(Name)
 
 #else
-#define IMP_DECORATOR(Name, Parent)                                     \
-  IMPKERNEL_DEPRECATED_MACRO(2.1, "Use IMP_DECORATOR_METHODS()");       \
-                                                                        \
- public:                                                                \
+#define IMP_DECORATOR(Name, Parent)                                                       \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Use IMP_DECORATOR_METHODS()");                         \
+                                                                                          \
+ public:                                                                                  \
   /* Should be private but SWIG accesses it through the                 \
      comparison                                                         \
-     macros*/ IMP_NO_DOXYGEN(                                           \
-      typedef Parent ParentDecorator);                                  \
-  Name() : Parent() {}                                                  \
-  Name(kernel::Model *m, ParticleIndex id) : Parent(m, id) {            \
-    IMP_INTERNAL_CHECK(                                                 \
-        get_is_setup(m->get_particle(id)),                              \
-        "Particle " << m->get_particle(id)->get_name()                  \
-                    << " missing required attributes for decorator "    \
-                    << #Name                                            \
-                    << "\n" << base::ShowFull(m->get_particle(id)));    \
-  }                                                                     \
-  explicit Name(::IMP::kernel::Particle *p) : Parent(p) {               \
-    IMP_INTERNAL_CHECK(                                                 \
-        get_is_setup(p),                                                \
-        "Particle " << p->get_name()                                    \
-                    << " missing required attributes for decorator "    \
-                    << #Name                                            \
-                    << "\n" << base::ShowFull(p));                      \
-  }                                                                     \
-  static bool get_is_setup(Particle *p) { return particle_is_instance(p); } \
-  static bool get_is_setup(kernel::Model *m, ParticleIndex pi) {        \
-    return particle_is_instance(m->get_particle(pi));                   \
-  }                                                                     \
-  static bool particle_is_instance(kernel::Model *m, ParticleIndex pi) { \
-    return particle_is_instance(m->get_particle(pi));                   \
-  }                                                                     \
-  static Name decorate_particle(::IMP::kernel::Particle *p) {           \
-    IMP_CHECK_OBJECT(p);                                                \
-    if (!get_is_setup(p)) {                                             \
-      return Name();                                                    \
-    }                                                                   \
-    return Name(p);                                                     \
-  }                                                                     \
+     macros*/ IMP_NO_DOXYGEN( \
+      typedef Parent ParentDecorator);                                                    \
+  Name() : Parent() {}                                                                    \
+  Name(kernel::Model *m, ParticleIndex id) : Parent(m, id) {                              \
+    IMP_INTERNAL_CHECK(                                                                   \
+        get_is_setup(m->get_particle(id)),                                                \
+        "Particle " << m->get_particle(id)->get_name()                                    \
+                    << " missing required attributes for decorator " << #Name             \
+                    << "\n" << base::ShowFull(m->get_particle(id)));                      \
+  }                                                                                       \
+  explicit Name(::IMP::kernel::Particle *p) : Parent(p) {                                 \
+    IMP_INTERNAL_CHECK(                                                                   \
+        get_is_setup(p),                                                                  \
+        "Particle " << p->get_name()                                                      \
+                    << " missing required attributes for decorator " << #Name             \
+                    << "\n" << base::ShowFull(p));                                        \
+  }                                                                                       \
+  static bool get_is_setup(Particle *p) { return particle_is_instance(p); }               \
+  static bool get_is_setup(kernel::Model *m, ParticleIndex pi) {                          \
+    return particle_is_instance(m->get_particle(pi));                                     \
+  }                                                                                       \
+  static bool particle_is_instance(kernel::Model *m, ParticleIndex pi) {                  \
+    return particle_is_instance(m->get_particle(pi));                                     \
+  }                                                                                       \
+  static Name decorate_particle(::IMP::kernel::Particle *p) {                             \
+    IMP_CHECK_OBJECT(p);                                                                  \
+    if (!get_is_setup(p)) {                                                               \
+      return Name();                                                                      \
+    }                                                                                     \
+    return Name(p);                                                                       \
+  }                                                                                       \
   IMP_SHOWABLE(Name)
 #endif
 
@@ -85,52 +82,52 @@
     - get_is_setup()
     methods that you provide.
 */
-#define IMP_DECORATOR_METHODS(Name, Parent)                             \
-  public:                                                               \
+#define IMP_DECORATOR_METHODS(Name, Parent)                                               \
+ public:                                                                                  \
   /* Should be private but SWIG accesses it through the                 \
      comparison                                                         \
-     macros*/ IMP_NO_DOXYGEN(                                           \
-      typedef Parent ParentDecorator);                                  \
-  Name() : Parent() {}                                                  \
-  Name(::IMP::kernel::Model *m, ::IMP::kernel::ParticleIndex id)        \
-    : Parent(m, id) {                                                   \
-    IMP_INTERNAL_CHECK(                                                 \
-                       get_is_setup(m, id),                             \
-                       "Particle " << m->get_particle_name(id)          \
-                       << " missing required attributes for decorator " \
-                       << #Name);                                       \
-  }                                                                     \
-  explicit Name(const IMP::kernel::ParticleAdaptor &d) : Parent(d) {    \
-    IMP_INTERNAL_CHECK(                                                 \
-                       get_is_setup(d.get_model(), d.get_particle_index()), \
-                       "Particle " << d.get_model()->get_particle_name( \
-                               d.get_particle_index()) \
-                       << " missing required attributes for decorator " \
-                       << #Name);                                       \
-  }                                                                     \
-  /** \deprecated_at{2.1} Check explicitly instead. */                  \
-  static Name decorate_particle(::IMP::kernel::Particle *p) {           \
-    IMP_CHECK_OBJECT(p);                                                \
-    if (!get_is_setup(p->get_model(), p->get_index())) {                \
-      return Name();                                                    \
-    }                                                                   \
-    return Name(p);                                                     \
-  }                                                                     \
-  /** \deprecated_at{2.1} Use get_is_setup() instead. */                \
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1) static bool particle_is_instance( \
-                                          ::IMP::kernel::Particle *p) { \
-    IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_is_setup instead.");  \
-    return get_is_setup(p->get_model(), p->get_index());                \
-  }                                                                     \
-  /** \deprecated_at{2.1} Use get_is_setup() instead. */                \
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1) static bool particle_is_instance( \
-                IMP::kernel::Model *m, IMP::kernel::ParticleIndex pi) { \
-    IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_is_setup instead.");  \
-    return get_is_setup(m, pi);                                         \
-  }                                                                     \
-  static bool get_is_setup(const IMP::kernel::ParticleAdaptor &p) {     \
-    return get_is_setup(p.get_model(), p.get_particle_index());         \
-  }                                                                     \
+     macros*/ IMP_NO_DOXYGEN( \
+      typedef Parent ParentDecorator);                                                    \
+  Name() : Parent() {}                                                                    \
+  Name(::IMP::kernel::Model *m, ::IMP::kernel::ParticleIndex id)                          \
+      : Parent(m, id) {                                                                   \
+    IMP_INTERNAL_CHECK(                                                                   \
+        get_is_setup(m, id),                                                              \
+        "Particle " << m->get_particle_name(id)                                           \
+                    << " missing required attributes for decorator "                      \
+                    << #Name);                                                            \
+  }                                                                                       \
+  explicit Name(const IMP::kernel::ParticleAdaptor &d) : Parent(d) {                      \
+    IMP_INTERNAL_CHECK(                                                                   \
+        get_is_setup(d.get_model(), d.get_particle_index()),                              \
+        "Particle " << d.get_model()->get_particle_name(                                  \
+                           d.get_particle_index())                                        \
+                    << " missing required attributes for decorator "                      \
+                    << #Name);                                                            \
+  }                                                                                       \
+  /** \deprecated_at{2.1} Check explicitly instead. */                                    \
+  static Name decorate_particle(::IMP::kernel::Particle *p) {                             \
+    IMP_CHECK_OBJECT(p);                                                                  \
+    if (!get_is_setup(p->get_model(), p->get_index())) {                                  \
+      return Name();                                                                      \
+    }                                                                                     \
+    return Name(p);                                                                       \
+  }                                                                                       \
+  /** \deprecated_at{2.1} Use get_is_setup() instead. */                                  \
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1) static bool particle_is_instance(                 \
+      ::IMP::kernel::Particle *p) {                                                       \
+    IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_is_setup instead.");                    \
+    return get_is_setup(p->get_model(), p->get_index());                                  \
+  }                                                                                       \
+  /** \deprecated_at{2.1} Use get_is_setup() instead. */                                  \
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1) static bool particle_is_instance(                 \
+      IMP::kernel::Model *m, IMP::kernel::ParticleIndex pi) {                             \
+    IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_is_setup instead.");                    \
+    return get_is_setup(m, pi);                                                           \
+  }                                                                                       \
+  static bool get_is_setup(const IMP::kernel::ParticleAdaptor &p) {                       \
+    return get_is_setup(p.get_model(), p.get_particle_index());                           \
+  }                                                                                       \
   IMP_SHOWABLE(Name)
 
 /** \deprecated_at{2.1} Use IMP_DECORATOR_WITH_TRAITS_METHODS()
@@ -189,6 +186,7 @@
                                           traits_name, default_traits)                     \
  private:                                                                                  \
   TraitsType traits_;                                                                      \
+                                                                                           \
  public:                                                                                   \
   typedef TraitsType DecoratorTraits;                                                      \
   const DecoratorTraits &get_decorator_traits() const { return traits_; }                  \

@@ -41,7 +41,8 @@ class Tests(IMP.test.TestCase):
 
             translation = IMP.algebra.get_random_vector_in(bb)
             rotation = IMP.algebra.get_random_rotation_3d()
-            transformation = IMP.algebra.Transformation3D(rotation, translation)
+            transformation = IMP.algebra.Transformation3D(
+                rotation, translation)
 
             for rbd in rbs.rigid_bodies:
                 rbd.set_reference_frame(

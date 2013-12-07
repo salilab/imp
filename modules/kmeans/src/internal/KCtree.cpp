@@ -25,9 +25,9 @@
 // It is provided "as is" without express or implied warranty.
 //----------------------------------------------------------------------
 
-#include "IMP/kmeans/internal/KCtree.h"          // kc-tree declarations
-#include "IMP/kmeans/internal/KMfilterCenters.h" // center set structure
-#include "IMP/kmeans/internal/KMrand.h"          // random number includes
+#include "IMP/kmeans/internal/KCtree.h"           // kc-tree declarations
+#include "IMP/kmeans/internal/KMfilterCenters.h"  // center set structure
+#include "IMP/kmeans/internal/KMrand.h"           // random number includes
 #include <iostream>
 #include <iomanip>
 
@@ -36,22 +36,22 @@ IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 //----------------------------------------------------------------------
 //  Declaration of local utilities.  These are used in getNeighbors().
 //----------------------------------------------------------------------
-static int closestToBox(            // get closest point to box center
-  KMctrIdxArray      cands,                  // candidates for closest
-  int                  kCands,                  // number of candidates
-  KMorthRect            &bnd_box);            // bounding box of cell
+static int closestToBox(   // get closest point to box center
+    KMctrIdxArray cands,   // candidates for closest
+    int kCands,            // number of candidates
+    KMorthRect &bnd_box);  // bounding box of cell
 
-static bool pruneTest(                  // test whether to prune candidate
-  KMcenter            cand,                  // candidate to test
-  KMcenter            closeCand,            // closest candidate
-  KMorthRect            &bnd_box);            // bounding box
+static bool pruneTest(     // test whether to prune candidate
+    KMcenter cand,         // candidate to test
+    KMcenter closeCand,    // closest candidate
+    KMorthRect &bnd_box);  // bounding box
 
-static void postNeigh(                  // assign neighbors to center
-  KCptr            p,                  // the node posting
-  KMpoint            sum,                  // the sum of coordinates
-  double            sumSq,                  // the sum of squares
-  int                  n_data,                  // number of points
-  KMctrIdx            ctrIdx);            // center index
+static void postNeigh(  // assign neighbors to center
+    KCptr p,            // the node posting
+    KMpoint sum,        // the sum of coordinates
+    double sumSq,       // the sum of squares
+    int n_data,         // number of points
+    KMctrIdx ctrIdx);   // center index
 
 //----------------------------------------------------------------------
 //  KCtree constructors
@@ -65,43 +65,43 @@ static void postNeigh(                  // assign neighbors to center
 //      created and passesd through this argument.
 //----------------------------------------------------------------------
 
-void KCtree::skeletonTree(            // construct skeleton tree
-  KMdataArray            pa,            // point array (with at least n pts)
-  int                  n,            // number of points
-  int                  dd,            // dimension
-  int                  n_max,            // maximum number of points (optional)
-  KMpoint            bb_lo,            // bounding box low point (optional)
-  KMpoint            bb_hi,            // bounding box high point (optional)
-  KMdatIdxArray      pi)            // point indices (optional)
+void KCtree::skeletonTree(  // construct skeleton tree
+    KMdataArray pa,         // point array (with at least n pts)
+    int n,                  // number of points
+    int dd,                 // dimension
+    int n_max,              // maximum number of points (optional)
+    KMpoint bb_lo,          // bounding box low point (optional)
+    KMpoint bb_hi,          // bounding box high point (optional)
+    KMdatIdxArray pi)       // point indices (optional)
 {
   // initialize basic elements
-  dim = dd;                        // dimension
-  n_pts = n;                        // number of points
-  if(n_max < n) n_max = n;             // max_pts must be >= n
-  max_pts = n_max;                  // set max_pts
+  dim = dd;                  // dimension
+  n_pts = n;                 // number of points
+  if (n_max < n) n_max = n;  // max_pts must be >= n
+  max_pts = n_max;           // set max_pts
 
-  if(pa == NULL) {                   // no points supplied?
+  if (pa == NULL) {  // no points supplied?
     kmError("Points must be supplied to construct tree.", KMabort);
   }
-  pts = pa;                        // initialize point array
+  pts = pa;  // initialize point array
 
-  if(pi == NULL) {                   // point indices provided?
-    pidx = new KMdataIdx[max_pts];      // no, allocate them
-    for(int i = 0; i < n; i++)       // initialize to identity
+  if (pi == NULL) {                 // point indices provided?
+    pidx = new KMdataIdx[max_pts];  // no, allocate them
+    for (int i = 0; i < n; i++)     // initialize to identity
       pidx[i] = i;
-  } else pidx = pi;                // yes, just use them
+  } else
+    pidx = pi;  // yes, just use them
 
-
-  if(bb_lo == NULL || bb_hi == NULL)  // boundng box fully specified?
-    kmEnclRect(pa, pidx, n, dd, bnd_box);      // no, construct from points
+  if (bb_lo == NULL || bb_hi == NULL)      // boundng box fully specified?
+    kmEnclRect(pa, pidx, n, dd, bnd_box);  // no, construct from points
   // save bounding box
-  if(bb_lo != NULL)                   // if lower point given, then use it
+  if (bb_lo != NULL)  // if lower point given, then use it
     bnd_box.lo = kmAllocCopyPt(dd, bb_lo);
 
-  if(bb_hi != NULL)                   // same for upper point
+  if (bb_hi != NULL)  // same for upper point
     bnd_box.hi = kmAllocCopyPt(dd, bb_hi);
 
-  root = NULL;                  // no associated tree yet
+  root = NULL;  // no associated tree yet
 }
 
 //----------------------------------------------------------------------
@@ -113,18 +113,18 @@ void KCtree::skeletonTree(            // construct skeleton tree
 //       sampleCtr().
 //----------------------------------------------------------------------
 
-int            kcDim;                  // dimension of space
-int            kcDataSize;            // number of data points
-KMdataArray      kcPoints;            // data points
+int kcDim;             // dimension of space
+int kcDataSize;        // number of data points
+KMdataArray kcPoints;  // data points
 
 //----------------------------------------------------------------------
 //  initBasicGlobals - initialize basic globals
 //----------------------------------------------------------------------
 
-static void initBasicGlobals(            // initialize basic globals
-  int                  dim,                  // dimension
-  int                  data_size,            // number of data points
-  KMdataArray            data_pts)            // data points
+static void initBasicGlobals(  // initialize basic globals
+    int dim,                   // dimension
+    int data_size,             // number of data points
+    KMdataArray data_pts)      // data points
 {
   kcDim = dim;
   kcDataSize = data_size;
@@ -156,27 +156,28 @@ static void initBasicGlobals(            // initialize basic globals
 //      we generate a warning message.
 //----------------------------------------------------------------------
 
-KCtree::KCtree(                  // construct from point array
-  KMdataArray            pa,            // point array (with at least n pts)
-  int                  n,            // number of points
-  int                  dd,            // dimension
-  int                  n_max,            // maximum number of points (optional)
-  KMpoint            bb_lo,            // bounding box low point (optional)
-  KMpoint            bb_hi) :      // bounding box high point (optional)
-  bnd_box(dd)                        // create initial bounding box
+KCtree::KCtree(      // construct from point array
+    KMdataArray pa,  // point array (with at least n pts)
+    int n,           // number of points
+    int dd,          // dimension
+    int n_max,       // maximum number of points (optional)
+    KMpoint bb_lo,   // bounding box low point (optional)
+    KMpoint bb_hi)
+    :              // bounding box high point (optional)
+      bnd_box(dd)  // create initial bounding box
 {
   // set up the basic stuff
   skeletonTree(pa, n, dd, n_max, bb_lo, bb_hi, NULL);
-  initBasicGlobals(dd, n, pa);      // initialize globals
+  initBasicGlobals(dd, n, pa);  // initialize globals
 
   root = buildKcTree(pa, pidx, n, dd, bnd_box);
 
-  int ignoreMe1;                  // ignore results of call
+  int ignoreMe1;  // ignore results of call
   KMpoint ignoreMe2;
   double ignoreMe3;
   // compute sums
   root->makeSums(ignoreMe1, ignoreMe2, ignoreMe3);
-  assert(ignoreMe1 == n);            // should be all the points
+  assert(ignoreMe1 == n);  // should be all the points
 }
 
 //----------------------------------------------------------------------
@@ -209,43 +210,42 @@ KCtree::KCtree(                  // construct from point array
 // too many warnings
 IMP_CLANG_PRAGMA(diagnostic ignored "-Wshadow")
 
-KCptr KCtree::buildKcTree(      // recursive construction of kc-tree
-  KMdataArray            pa,            // point array
-  KMdatIdxArray      pidx,            // point indices to store in subtree
-  int                  n,            // number of points
-  int                  dim,            // dimension of space
-  KMorthRect            &bnd_box)      // bounding box for current node
+KCptr KCtree::buildKcTree(  // recursive construction of kc-tree
+    KMdataArray pa,         // point array
+    KMdatIdxArray pidx,     // point indices to store in subtree
+    int n,                  // number of points
+    int dim,                // dimension of space
+    KMorthRect &bnd_box)    // bounding box for current node
 {
-  if(n <= 1) {                   // n small, make a leaf node
+  if (n <= 1) {  // n small, make a leaf node
     return new KCleaf(dim, bnd_box, n, pidx);
-  } else {                      // n large, make a splitting node
-    int cd;                        // cutting dimension
-    KMcoord cv;                  // cutting value
-    int n_lo;                  // number on low side of cut
-    KCptr lo, hi;                  // low and high children
+  } else {         // n large, make a splitting node
+    int cd;        // cutting dimension
+    KMcoord cv;    // cutting value
+    int n_lo;      // number on low side of cut
+    KCptr lo, hi;  // low and high children
 
     // invoke splitting procedure
     sl_midpt_split(pa, pidx, bnd_box, n, dim, cd, cv, n_lo);
 
-    KMcoord lv = bnd_box.lo[cd];      // save bounds for cutting dimension
+    KMcoord lv = bnd_box.lo[cd];  // save bounds for cutting dimension
     KMcoord hv = bnd_box.hi[cd];
 
-    bnd_box.hi[cd] = cv;            // modify bounds for left subtree
-    lo = buildKcTree(            // build left subtree
-           pa, pidx, n_lo,            // ...from pidx[0..n_lo-1]
-           dim, bnd_box);
-    bnd_box.hi[cd] = hv;            // restore bounds
+    bnd_box.hi[cd] = cv;  // modify bounds for left subtree
+    lo = buildKcTree(     // build left subtree
+        pa, pidx, n_lo,   // ...from pidx[0..n_lo-1]
+        dim, bnd_box);
+    bnd_box.hi[cd] = hv;  // restore bounds
 
     bnd_box.lo[cd] = cv;            // modify bounds for right subtree
-    hi = buildKcTree(            // build right subtree
-           pa, pidx + n_lo, n - n_lo, // ...from pidx[n_lo..n-1]
-           dim, bnd_box);
-    bnd_box.lo[cd] = lv;            // restore bounds
+    hi = buildKcTree(               // build right subtree
+        pa, pidx + n_lo, n - n_lo,  // ...from pidx[n_lo..n-1]
+        dim, bnd_box);
+    bnd_box.lo[cd] = lv;  // restore bounds
 
     // create the splitting node
-    KCsplit *ptr = new KCsplit(dim, bnd_box, cd, cv,
-                               lv, hv, lo, hi);
-    return ptr;                  // return pointer to this node
+    KCsplit *ptr = new KCsplit(dim, bnd_box, cd, cv, lv, hv, lo, hi);
+    return ptr;  // return pointer to this node
   }
 }
 
@@ -258,19 +258,18 @@ KCptr KCtree::buildKcTree(      // recursive construction of kc-tree
 //      to thePoints.)
 //----------------------------------------------------------------------
 
-void KCnode::cellMidpt(      // compute cell midpoint
-  KMpoint      pt)                  // the midpoint (returned)
+void KCnode::cellMidpt(  // compute cell midpoint
+    KMpoint pt)          // the midpoint (returned)
 {
-  for(int d = 0; d < kcDim; d++) {             // compute box midpoint
+  for (int d = 0; d < kcDim; d++) {  // compute box midpoint
     pt[d] = (bnd_box.lo[d] + bnd_box.hi[d]) / 2;
   }
 }
 
-KMpoint KCleaf::getPoint()            // get data point
+KMpoint KCleaf::getPoint()  // get data point
 {
   return (n_data == 1 ? kcPoints[bkt[0]] : NULL);
 }
-
 
 //----------------------------------------------------------------------
 //  kc-tree make sums (part of constructor)
@@ -283,50 +282,48 @@ KMpoint KCleaf::getPoint()            // get data point
 //      of the constructor, and hence already exists.
 //----------------------------------------------------------------------
 
-void KCsplit::makeSums(
-  int                  &n,                  // number of points (returned)
-  KMpoint            &theSum,            // sum (returned)
-  double            &theSumSq)            // sum of squares (returned)
+void KCsplit::makeSums(int &n,            // number of points (returned)
+                       KMpoint &theSum,   // sum (returned)
+                       double &theSumSq)  // sum of squares (returned)
 {
-  assert(sum != NULL);                  // should already be allocated
-  int n_child = 0;                        // n_data of child
-  KMpoint s_child = NULL;                  // sum of child
-  double ssq_child = 0;                  // sum of squares for child
+  assert(sum != NULL);     // should already be allocated
+  int n_child = 0;         // n_data of child
+  KMpoint s_child = NULL;  // sum of child
+  double ssq_child = 0;    // sum of squares for child
 
-  n_data = 0;                              // initialize no. points
+  n_data = 0;  // initialize no. points
   // process each child
-  for(int i = KM_LO; i <= KM_HI; i++) {
+  for (int i = KM_LO; i <= KM_HI; i++) {
     // visit low child
     child[i]->makeSums(n_child, s_child, ssq_child);
-    n_data += n_child;                  // increment no. points
-    for(int d = 0; d < kcDim; d++) {       // update sum and sumSq
+    n_data += n_child;                 // increment no. points
+    for (int d = 0; d < kcDim; d++) {  // update sum and sumSq
       sum[d] += s_child[d];
     }
     sumSq += ssq_child;
   }
-  n = n_data;                              // return results
+  n = n_data;  // return results
   theSum = sum;
   theSumSq = sumSq;
 }
 
 //----------------------------------------------------------------------
-void KCleaf::makeSums(
-  int                  &n,                  // number of points (returned)
-  KMpoint            &theSum,            // sum (returned)
-  double            &theSumSq)            // sum of squares (returned)
+void KCleaf::makeSums(int &n,            // number of points (returned)
+                      KMpoint &theSum,   // sum (returned)
+                      double &theSumSq)  // sum of squares (returned)
 {
-  assert(sum != NULL);                  // should already be allocated
+  assert(sum != NULL);  // should already be allocated
 
   sumSq = 0;
-  for(int i = 0; i < n_data; i++) {             // compute sum
-    for(int d = 0; d < kcDim; d++) {
+  for (int i = 0; i < n_data; i++) {  // compute sum
+    for (int d = 0; d < kcDim; d++) {
       KMcoord theCoord = kcPoints[bkt[i]][d];
       sum[d] += theCoord;
       sumSq += theCoord * theCoord;
     }
   }
 
-  n = n_data;                              // return results
+  n = n_data;  // return results
   theSum = sum;
   theSumSq = sumSq;
 }
@@ -344,15 +341,15 @@ void KCleaf::makeSums(
 //      destructor from activating itself.
 //----------------------------------------------------------------------
 
-KCtree::~KCtree()            // tree destructor
+KCtree::~KCtree()  // tree destructor
 {
-  if(root != NULL) delete root;
-  if(pidx != NULL) delete [] pidx;
+  if (root != NULL) delete root;
+  if (pidx != NULL) delete[] pidx;
 }
 
-KCnode::~KCnode()            // node destructor
+KCnode::~KCnode()  // node destructor
 {
-  if(sum != NULL) kmDeallocPt(sum);       // deallocate sum
+  if (sum != NULL) kmDeallocPt(sum);  // deallocate sum
 }
 
 //----------------------------------------------------------------------
@@ -381,48 +378,47 @@ KCnode::~KCnode()            // node destructor
 //      probabilities.
 //----------------------------------------------------------------------
 
-void KCtree::sampleCtr(KMpoint c)            // sample a point
+void KCtree::sampleCtr(KMpoint c)  // sample a point
 {
-  initBasicGlobals(dim, n_pts, pts);            // initialize globals
+  initBasicGlobals(dim, n_pts, pts);  // initialize globals
   // TODO: bb_save check is just for debugging.
-  KMorthRect bb_save(dim, bnd_box);            // save bounding box
-  root->sampleCtr(c, bnd_box);            // start at root
-  for(int i = 0; i < dim; i++) {             // check that bnd_box unchanged
-    assert(bb_save.lo[i] == bnd_box.lo[i] &&
-           bb_save.hi[i] == bnd_box.hi[i]);
+  KMorthRect bb_save(dim, bnd_box);  // save bounding box
+  root->sampleCtr(c, bnd_box);       // start at root
+  for (int i = 0; i < dim; i++) {    // check that bnd_box unchanged
+    assert(bb_save.lo[i] == bnd_box.lo[i] && bb_save.hi[i] == bnd_box.hi[i]);
   }
 }
 
-void KCsplit::sampleCtr(                  // sample from splitting node
-  KMpoint            c,                  // the sampled point (returned)
-  KMorthRect            &bnd_box)            // bounding box for current node
+void KCsplit::sampleCtr(  // sample from splitting node
+    KMpoint c,            // the sampled point (returned)
+    KMorthRect &bnd_box)  // bounding box for current node
 {
-  int r = kmRanInt(n_nodes());            // random integer [0..n_nodes-1]
-  if(r == 0) {                         // sample from this node
+  int r = kmRanInt(n_nodes());  // random integer [0..n_nodes-1]
+  if (r == 0) {                 // sample from this node
     KMorthRect expBox(kcDim);
-    bnd_box.expand(kcDim, 3, expBox);      // compute 3x expanded box
-    expBox.sample(kcDim, c);            // sample c from box
-  } else if(r <= child[KM_LO]->n_nodes()) {     // sample from left
-    KMcoord save = bnd_box.hi[cut_dim];      // save old upper bound
+    bnd_box.expand(kcDim, 3, expBox);         // compute 3x expanded box
+    expBox.sample(kcDim, c);                  // sample c from box
+  } else if (r <= child[KM_LO]->n_nodes()) {  // sample from left
+    KMcoord save = bnd_box.hi[cut_dim];       // save old upper bound
     bnd_box.hi[cut_dim] = cut_val;            // modify for left subtree
     child[KM_LO]->sampleCtr(c, bnd_box);
-    bnd_box.hi[cut_dim] = save;            // restore upper bound
-  } else {                            // sample from right subtree
-    KMcoord save = bnd_box.lo[cut_dim];      // save old lower bound
-    bnd_box.lo[cut_dim] = cut_val;            // modify for right subtree
-    child[KM_HI]->sampleCtr(c,  bnd_box);
-    bnd_box.lo[cut_dim] = save;            // restore lower bound
+    bnd_box.hi[cut_dim] = save;          // restore upper bound
+  } else {                               // sample from right subtree
+    KMcoord save = bnd_box.lo[cut_dim];  // save old lower bound
+    bnd_box.lo[cut_dim] = cut_val;       // modify for right subtree
+    child[KM_HI]->sampleCtr(c, bnd_box);
+    bnd_box.lo[cut_dim] = save;  // restore lower bound
   }
 }
 
-void KCleaf::sampleCtr(                        // sample from leaf node
-  KMpoint            c,                  // the sampled point (returned)
-  KMorthRect            &)            // bounding box for current node
+void KCleaf::sampleCtr(  // sample from leaf node
+    KMpoint c,           // the sampled point (returned)
+    KMorthRect &)        // bounding box for current node
 {
   // TODO: make sure it really samples - why is bnd_box not used
   // (Barak, 5/7/12)
-  int ri = kmRanInt(n_data);                  // generate random index
-  kmCopyPt(kcDim, kcPoints[bkt[ri]], c);      // copy to destination
+  int ri = kmRanInt(n_data);              // generate random index
+  kmCopyPt(kcDim, kcPoints[bkt[ri]], c);  // copy to destination
 }
 
 //----------------------------------------------------------------------
@@ -440,21 +436,19 @@ void KCleaf::sampleCtr(                        // sample from leaf node
 //      for readability.
 //----------------------------------------------------------------------
 
-void KCsplit::print(            // print splitting node
-  int            level)                  // depth of node in tree
+void KCsplit::print(  // print splitting node
+    int level)        // depth of node in tree
 {
   // print high child
   child[KM_HI]->print(level + 1);
 
-  *kmOut << "    ";                  // print indentation
-  for(int i = 0; i < level; i++)
-    *kmOut << ".";
+  *kmOut << "    ";  // print indentation
+  for (int i = 0; i < level; i++) *kmOut << ".";
 
   kmOut->precision(4);
-  *kmOut << "Split"                  // print without address
+  *kmOut << "Split"  // print without address
          << " cd=" << cut_dim << " cv=" << std::setw(6) << cut_val
-         << " nd=" << n_data
-         << " sm=";
+         << " nd=" << n_data << " sm=";
   kmPrintPt(sum, kcDim, true);
   *kmOut << " ss=" << sumSq << "\n";
   // print low child
@@ -462,19 +456,19 @@ void KCsplit::print(            // print splitting node
 }
 
 //----------------------------------------------------------------------
-void KCleaf::print(                  // print leaf node
-  int            level)                  // depth of node in tree
+void KCleaf::print(  // print leaf node
+    int level)       // depth of node in tree
 {
   *kmOut << "    ";
-  for(int i = 0; i < level; i++)       // print indentation
+  for (int i = 0; i < level; i++)  // print indentation
     *kmOut << ".";
 
   // *kmOut << "Leaf <" << (void*) this << ">";
-  *kmOut << "Leaf";                  // print without address
+  *kmOut << "Leaf";  // print without address
   *kmOut << " n=" << n_data << " <";
-  for(int j = 0; j < n_data; j++) {
+  for (int j = 0; j < n_data; j++) {
     *kmOut << bkt[j];
-    if(j < n_data - 1) *kmOut << ",";
+    if (j < n_data - 1) *kmOut << ",";
   }
   *kmOut << ">"
          << " sm=";
@@ -483,21 +477,21 @@ void KCleaf::print(                  // print leaf node
 }
 
 //----------------------------------------------------------------------
-void KCtree::print(                  // print entire tree
-  bool      with_pts)                  // print points as well?
+void KCtree::print(  // print entire tree
+    bool with_pts)   // print points as well?
 {
-  if(with_pts) {                   // print point coordinates
+  if (with_pts) {  // print point coordinates
     *kmOut << "    Points:\n";
-    for(int i = 0; i < n_pts; i++) {
+    for (int i = 0; i < n_pts; i++) {
       *kmOut << "\t" << i << ": ";
       kmPrintPt(pts[i], kcDim, true);
       *kmOut << "\n";
     }
   }
-  if(root == NULL)                   // empty tree?
+  if (root == NULL)  // empty tree?
     *kmOut << "    Null tree.\n";
   else {
-    root->print(0);                  // invoke printing at root
+    root->print(0);  // invoke printing at root
   }
 }
 
@@ -510,40 +504,40 @@ void KCtree::print(                  // print entire tree
 //       Note: kcDim and kcPoints (from Basic Globals) are used as well.
 //----------------------------------------------------------------------
 
-int            kcKCtrs;            // number of centers
-int*            kcWeights;            // weights of each point
-KMpointArray      kcCenters;            // the center points
-KMpointArray      kcSums;                  // sums
-double*            kcSumSqs;            // sum of squares
-double*            kcDists;            // distortions
-KMpoint            kcBoxMidpt;            // bounding-box midpoint
+int kcKCtrs;             // number of centers
+int *kcWeights;          // weights of each point
+KMpointArray kcCenters;  // the center points
+KMpointArray kcSums;     // sums
+double *kcSumSqs;        // sum of squares
+double *kcDists;         // distortions
+KMpoint kcBoxMidpt;      // bounding-box midpoint
 
 //----------------------------------------------------------------------
 //  initDistGlobals - initialize distortion globals
 //----------------------------------------------------------------------
 
-static void initDistGlobals(            // initialize distortion globals
-  KMfilterCenters& ctrs)                  // the centers
+static void initDistGlobals(  // initialize distortion globals
+    KMfilterCenters &ctrs)    // the centers
 {
   initBasicGlobals(ctrs.getDim(), ctrs.getNPts(), ctrs.getDataPts());
-  kcKCtrs      = ctrs.getK();
-  kcCenters      = ctrs.getCtrPts();            // get ptrs to KMcenter arrays
-  kcWeights      = ctrs.getWeights(false);
-  kcSums      = ctrs.getSums(false);
-  kcSumSqs      = ctrs.getSumSqs(false);
-  kcDists      = ctrs.getDists(false);
-  kcBoxMidpt  = kmAllocPt(kcDim);
+  kcKCtrs = ctrs.getK();
+  kcCenters = ctrs.getCtrPts();  // get ptrs to KMcenter arrays
+  kcWeights = ctrs.getWeights(false);
+  kcSums = ctrs.getSums(false);
+  kcSumSqs = ctrs.getSumSqs(false);
+  kcDists = ctrs.getDists(false);
+  kcBoxMidpt = kmAllocPt(kcDim);
 
-  for(int j = 0; j < kcKCtrs; j++) {             // initialize sums
+  for (int j = 0; j < kcKCtrs; j++) {  // initialize sums
     kcWeights[j] = 0;
     kcSumSqs[j] = 0;
-    for(int d = 0; d < kcDim; d++) {
+    for (int d = 0; d < kcDim; d++) {
       kcSums[j][d] = 0;
     }
   }
 }
 
-static void deleteDistGlobals()            // delete distortion globals
+static void deleteDistGlobals()  // delete distortion globals
 {
   kmDeallocPt(kcBoxMidpt);
 }
@@ -577,68 +571,66 @@ static void deleteDistGlobals()            // delete distortion globals
 //      than the nearest candidate.
 //----------------------------------------------------------------------
 
-void KCtree::getNeighbors(            // compute neighbors for centers
-  KMfilterCenters& ctrs)                  // the centers
+void KCtree::getNeighbors(  // compute neighbors for centers
+    KMfilterCenters &ctrs)  // the centers
 {
-  initDistGlobals(ctrs);                  // initialize globals
-  int *candIdx = new int[kcKCtrs];            // allocate center indices
-  for(int j = 0; j < kcKCtrs; j++) {             // initialize everything
-    candIdx[j] = j;                        // initialize indices
+  initDistGlobals(ctrs);               // initialize globals
+  int *candIdx = new int[kcKCtrs];     // allocate center indices
+  for (int j = 0; j < kcKCtrs; j++) {  // initialize everything
+    candIdx[j] = j;                    // initialize indices
   }
-  root->getNeighbors(candIdx, kcKCtrs);      // get neighbors for tree
-  delete [] candIdx;                        // delete center indices
-  deleteDistGlobals();                  // delete globals
+  root->getNeighbors(candIdx, kcKCtrs);  // get neighbors for tree
+  delete[] candIdx;                      // delete center indices
+  deleteDistGlobals();                   // delete globals
 }
 
 //----------------------------------------------------------------------
-void KCsplit::getNeighbors(            // get neighbors for internal node
-  KMctrIdxArray      cands,                  // candidate centers
-  int                  kCands)                  // number of centers
+void KCsplit::getNeighbors(  // get neighbors for internal node
+    KMctrIdxArray cands,     // candidate centers
+    int kCands)              // number of centers
 {
-  if(kCands == 1) {                         // only one cand left?
+  if (kCands == 1) {  // only one cand left?
     // post points as neighbors
     postNeigh(this, sum, sumSq, n_data, cands[0]);
   } else {
     // get closest cand to box
     int cc = closestToBox(cands, kCands, bnd_box);
-    KMctrIdx closeCand = cands[cc];            // closest candidate index
+    KMctrIdx closeCand = cands[cc];  // closest candidate index
     // space for new candidates
     KMctrIdxArray newCands = new KMctrIdx[kCands];
-    int newK = 0;                        // number of new candidates
-    for(int j = 0; j < kCands; j++) {
-      if(j == cc || !pruneTest(             // is candidate close enough?
-           kcCenters[cands[j]],
-           kcCenters[closeCand],
-           bnd_box)) {
-        newCands[newK++] = cands[j];      // yes, keep it
+    int newK = 0;  // number of new candidates
+    for (int j = 0; j < kCands; j++) {
+      if (j == cc || !pruneTest(  // is candidate close enough?
+                          kcCenters[cands[j]], kcCenters[closeCand], bnd_box)) {
+        newCands[newK++] = cands[j];  // yes, keep it
       }
     }
     // apply to children
     child[KM_LO]->getNeighbors(newCands, newK);
     child[KM_HI]->getNeighbors(newCands, newK);
-    delete [] newCands;                  // delete new candidates
+    delete[] newCands;  // delete new candidates
   }
 }
 
 //----------------------------------------------------------------------
-void KCleaf::getNeighbors(            // get neighbors for leaf node
-  KMctrIdxArray      cands,                  // candidate centers
-  int                  kCands)                  // number of centers
+void KCleaf::getNeighbors(  // get neighbors for leaf node
+    KMctrIdxArray cands,    // candidate centers
+    int kCands)             // number of centers
 {
-  if(kCands == 1) {                         // only one cand left?
+  if (kCands == 1) {  // only one cand left?
     // post points as neighbors
     postNeigh(this, sum, sumSq, n_data, cands[0]);
-  } else {                            // find closest centers
-    for(int i = 0; i < n_data; i++) {       // for each point in bucket
-      KMdist minDist = KM_DIST_INF;      // distance to nearest point
-      int minK = 0;                  // index of this point
-      KMpoint thisPt = kcPoints[bkt[i]];      // this data point
+  } else {                                // find closest centers
+    for (int i = 0; i < n_data; i++) {    // for each point in bucket
+      KMdist minDist = KM_DIST_INF;       // distance to nearest point
+      int minK = 0;                       // index of this point
+      KMpoint thisPt = kcPoints[bkt[i]];  // this data point
 
-      for(int j = 0; j < kCands; j++) {       // compute closest candidate
+      for (int j = 0; j < kCands; j++) {  // compute closest candidate
         KMdist dist = kmDist(kcDim, kcCenters[cands[j]], thisPt);
-        if(dist < minDist) {             // best so far?
-          minDist = dist;            // yes, save it
-          minK = j;                  // ...and its index
+        if (dist < minDist) {  // best so far?
+          minDist = dist;      // yes, save it
+          minK = j;            // ...and its index
         }
       }
       postNeigh(this, kcPoints[bkt[i]], sumSq, 1, cands[minK]);
@@ -658,77 +650,75 @@ void KCleaf::getNeighbors(            // get neighbors for leaf node
 //      this node in order to perform the assignments.
 //----------------------------------------------------------------------
 
-void KCtree::getAssignments(            // compute assignments for points
-  KMfilterCenters&    ctrs,                  // the current centers
-  KMctrIdxArray       closeCtr,            // closest center per point
-  double*             sqDist)                  // sq'd distance to center
+void KCtree::getAssignments(  // compute assignments for points
+    KMfilterCenters &ctrs,    // the current centers
+    KMctrIdxArray closeCtr,   // closest center per point
+    double *sqDist)           // sq'd distance to center
 {
-  initDistGlobals(ctrs);                  // initialize globals
+  initDistGlobals(ctrs);  // initialize globals
 
-  int *candIdx = new int[kcKCtrs];            // allocate center indices
-  for(int j = 0; j < kcKCtrs; j++) {             // initialize everything
-    candIdx[j] = j;                        // initialize indices
+  int *candIdx = new int[kcKCtrs];     // allocate center indices
+  for (int j = 0; j < kcKCtrs; j++) {  // initialize everything
+    candIdx[j] = j;                    // initialize indices
   }
   // search the tree
   root->getAssignments(candIdx, kcKCtrs, closeCtr, sqDist);
-  delete [] candIdx;                        // delete center indices
-  deleteDistGlobals();                  // delete globals
+  delete[] candIdx;     // delete center indices
+  deleteDistGlobals();  // delete globals
 }
 
 //----------------------------------------------------------------------
-void KCsplit::getAssignments(            // get assignments for internal node
-  KMctrIdxArray      cands,                  // candidate centers
-  int                  kCands,                  // number of centers
-  KMctrIdxArray       closeCtr,            // closest center per point
-  double*             sqDist)                  // sq'd distance to center
+void KCsplit::getAssignments(  // get assignments for internal node
+    KMctrIdxArray cands,       // candidate centers
+    int kCands,                // number of centers
+    KMctrIdxArray closeCtr,    // closest center per point
+    double *sqDist)            // sq'd distance to center
 {
-  if(kCands == 1) {                         // only one cand left?
+  if (kCands == 1) {  // only one cand left?
     // no more pruning needed
     child[KM_LO]->getAssignments(cands, kCands, closeCtr, sqDist);
     child[KM_HI]->getAssignments(cands, kCands, closeCtr, sqDist);
   } else {
     // get closest cand to box
     int cc = closestToBox(cands, kCands, bnd_box);
-    KMctrIdx closeCand = cands[cc];            // closest candidate index
+    KMctrIdx closeCand = cands[cc];  // closest candidate index
     // space for new candidates
     KMctrIdxArray newCands = new KMctrIdx[kCands];
-    int newK = 0;                        // number of new candidates
-    for(int j = 0; j < kCands; j++) {
-      if(j == cc || !pruneTest(             // is candidate close enough?
-           kcCenters[cands[j]],
-           kcCenters[closeCand],
-           bnd_box)) {
-        newCands[newK++] = cands[j];      // yes, keep it
+    int newK = 0;  // number of new candidates
+    for (int j = 0; j < kCands; j++) {
+      if (j == cc || !pruneTest(  // is candidate close enough?
+                          kcCenters[cands[j]], kcCenters[closeCand], bnd_box)) {
+        newCands[newK++] = cands[j];  // yes, keep it
       }
     }
     // apply to children
     child[KM_LO]->getAssignments(newCands, newK, closeCtr, sqDist);
     child[KM_HI]->getAssignments(newCands, newK, closeCtr, sqDist);
-    delete [] newCands;                  // delete new candidates
+    delete[] newCands;  // delete new candidates
   }
 }
 
 //----------------------------------------------------------------------
-void KCleaf::getAssignments(            // get assignments for leaf node
-  KMctrIdxArray      cands,                  // candidate centers
-  int                  kCands,                  // number of centers
-  KMctrIdxArray       closeCtr,            // closest center per point
-  double*             sqDist)                  // sq'd distance to center
+void KCleaf::getAssignments(  // get assignments for leaf node
+    KMctrIdxArray cands,      // candidate centers
+    int kCands,               // number of centers
+    KMctrIdxArray closeCtr,   // closest center per point
+    double *sqDist)           // sq'd distance to center
 {
-  for(int i = 0; i < n_data; i++) {             // for each point in bucket
-    KMdist minDist = KM_DIST_INF;            // distance to nearest point
-    int minK = 0;                        // index of this point
-    KMpoint thisPt = kcPoints[bkt[i]];      // this data point
+  for (int i = 0; i < n_data; i++) {    // for each point in bucket
+    KMdist minDist = KM_DIST_INF;       // distance to nearest point
+    int minK = 0;                       // index of this point
+    KMpoint thisPt = kcPoints[bkt[i]];  // this data point
 
-    for(int j = 0; j < kCands; j++) {       // compute closest candidate
+    for (int j = 0; j < kCands; j++) {  // compute closest candidate
       KMdist dist = kmDist(kcDim, kcCenters[cands[j]], thisPt);
-      if(dist < minDist) {             // best so far?
-        minDist = dist;                  // yes, save it
-        minK = j;                  // ...and its index
+      if (dist < minDist) {  // best so far?
+        minDist = dist;      // yes, save it
+        minK = j;            // ...and its index
       }
     }
-    if(closeCtr != NULL) closeCtr[bkt[i]] = cands[minK];
-    if(sqDist != NULL) sqDist[bkt[i]] = minDist;
+    if (closeCtr != NULL) closeCtr[bkt[i]] = cands[minK];
+    if (sqDist != NULL) sqDist[bkt[i]] = minDist;
   }
 }
 
@@ -745,26 +735,26 @@ void KCleaf::getAssignments(            // get assignments for leaf node
 //      store the cell midpoint.
 //----------------------------------------------------------------------
 
-static int closestToBox(            // get closest point to box center
-  KMctrIdxArray      cands,                  // candidates for closest
-  int                  kCands,                  // number of candidates
-  KMorthRect            &bnd_box)            // bounding box of cell
+static int closestToBox(  // get closest point to box center
+    KMctrIdxArray cands,  // candidates for closest
+    int kCands,           // number of candidates
+    KMorthRect &bnd_box)  // bounding box of cell
 {
-  for(int d = 0; d < kcDim; d++) {             // compute midpoint
+  for (int d = 0; d < kcDim; d++) {  // compute midpoint
     kcBoxMidpt[d] = (bnd_box.lo[d] + bnd_box.hi[d]) / 2;
   }
 
-  KMdist minDist = KM_DIST_INF;            // distance to nearest point
-  int minK = 0;                        // index of this point
+  KMdist minDist = KM_DIST_INF;  // distance to nearest point
+  int minK = 0;                  // index of this point
 
-  for(int j = 0; j < kCands; j++) {             // compute dist to each point
+  for (int j = 0; j < kCands; j++) {  // compute dist to each point
     KMdist dist = kmDist(kcDim, kcCenters[cands[j]], kcBoxMidpt);
-    if(dist < minDist) {                   // best so far?
-      minDist = dist;                  // yes, save it
-      minK = j;                        // ...and its index
+    if (dist < minDist) {  // best so far?
+      minDist = dist;      // yes, save it
+      minK = j;            // ...and its index
     }
   }
-  return minK;                        // return closest index
+  return minK;  // return closest index
 }
 
 //----------------------------------------------------------------------
@@ -796,25 +786,24 @@ static int closestToBox(            // get closest point to box center
 //      used.
 //----------------------------------------------------------------------
 
-static bool pruneTest(
-  KMcenter            cand,                  // candidate to test
-  KMcenter            closeCand,            // closest candidate
-  KMorthRect            &bnd_box)            // bounding box
+static bool pruneTest(KMcenter cand,        // candidate to test
+                      KMcenter closeCand,   // closest candidate
+                      KMorthRect &bnd_box)  // bounding box
 {
-  double boxDot = 0;                        // holds (p-c').(c-c')
-  double ccDot = 0;                        // holds (c-c').(c-c')
-  for(int d = 0; d < kcDim; d++) {
-    double ccComp = cand[d] - closeCand[d];      // one component c-c'
-    ccDot += ccComp * ccComp;            // increment dot product
-    if(ccComp > 0) {                   // candidate on high side
+  double boxDot = 0;  // holds (p-c').(c-c')
+  double ccDot = 0;   // holds (c-c').(c-c')
+  for (int d = 0; d < kcDim; d++) {
+    double ccComp = cand[d] - closeCand[d];  // one component c-c'
+    ccDot += ccComp * ccComp;                // increment dot product
+    if (ccComp > 0) {                        // candidate on high side
       // use high side of box
       boxDot += (bnd_box.hi[d] - closeCand[d]) * ccComp;
-    } else {                            // candidate on low side
+    } else {  // candidate on low side
       // use low side of box
       boxDot += (bnd_box.lo[d] - closeCand[d]) * ccComp;
     }
   }
-  return (ccDot >= 2 * boxDot);                // return final result
+  return (ccDot >= 2 * boxDot);  // return final result
 }
 
 //----------------------------------------------------------------------
@@ -826,19 +815,19 @@ static bool pruneTest(
 //      only if tracing.
 //----------------------------------------------------------------------
 
-static void postNeigh(
-  KCptr            ,                  // the node posting
-  // TODO: p used only for tracing - remove it? (Barak 5/7/12)
-  KMpoint            sum,                  // the sum of coordinates
-  double            sumSq,                  // the sum of squares
-  int                  n_data,                  // number of points
-  KMctrIdx            ctrIdx)                  // center index
+static void postNeigh(KCptr,  // the node posting
+                      // TODO: p used only for tracing - remove it? (Barak
+                      // 5/7/12)
+                      KMpoint sum,      // the sum of coordinates
+                      double sumSq,     // the sum of squares
+                      int n_data,       // number of points
+                      KMctrIdx ctrIdx)  // center index
 {
-  for(int d = 0; d < kcDim; d++) {                   // increment sum
+  for (int d = 0; d < kcDim; d++) {  // increment sum
     kcSums[ctrIdx][d] += sum[d];
   }
-  kcWeights[ctrIdx] += n_data;                  // increment weight
-  kcSumSqs[ctrIdx] += sumSq;                        // incr sum of squares
+  kcWeights[ctrIdx] += n_data;  // increment weight
+  kcSumSqs[ctrIdx] += sumSq;    // incr sum of squares
 }
 
 IMPKMEANS_END_INTERNAL_NAMESPACE

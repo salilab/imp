@@ -3,6 +3,7 @@ from threading import Thread
 
 if hasattr(Queue, 'task_done'):
     error = None
+
     def cpu_count():
         """Return the number of processors this machine has"""
         try:
@@ -12,7 +13,9 @@ if hasattr(Queue, 'task_done'):
             return 1
 
     class _Worker(Thread):
+
         """Thread executing tasks from a given tasks queue"""
+
         def __init__(self, tasks):
             Thread.__init__(self)
             self.tasks = tasks
@@ -24,16 +27,18 @@ if hasattr(Queue, 'task_done'):
                 func, args, kargs = self.tasks.get()
                 try:
                     func(*args, **kargs)
-                except Exception, e:
+                except Exception as e:
                     print e
                     error = str(e)
                 self.tasks.task_done()
 
     class ThreadPool:
+
         """Pool of threads consuming tasks from a queue"""
+
         def __init__(self, num_threads=-1):
             if num_threads == -1:
-                num_threads=2*cpu_count()
+                num_threads = 2 * cpu_count()
             print "Creating thread pool with", num_threads
             self.tasks = Queue(-1)
             for _ in range(num_threads):
@@ -52,6 +57,7 @@ else:
     # If we don't have newer enough Queue (Python <2.5) then just run the
     # tasks on a single core
     class ThreadPool:
+
         def __init__(self, num_threads=-1):
             pass
 

@@ -7,7 +7,6 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
-
 #include <IMP/kinematics/KinematicForest.h>
 #include <IMP/kinematics/KinematicNode.h>
 #include <IMP/kinematics/TransformationJoint.h>
@@ -20,26 +19,20 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 
 /********************** Transformation Joint ***************/
 
-TransformationJoint::TransformationJoint
-(IMP::core::RigidBody parent, IMP::core::RigidBody child)
-  :  Joint(parent, child)
-{
-}
-
+TransformationJoint::TransformationJoint(IMP::core::RigidBody parent,
+                                         IMP::core::RigidBody child)
+    : Joint(parent, child) {}
 
 // Sets the transfromation from parent to child
-void
-TransformationJoint::set_transformation_child_to_parent
-(IMP::algebra::Transformation3D transformation)
-{
-  if(get_owner_kf()){
-    get_owner_kf()->update_all_internal_coordinates( );
+void TransformationJoint::set_transformation_child_to_parent(
+    IMP::algebra::Transformation3D transformation) {
+  if (get_owner_kf()) {
+    get_owner_kf()->update_all_internal_coordinates();
   }
-  Joint::set_transformation_child_to_parent_no_checks( transformation );
-  if(get_owner_kf()){
+  Joint::set_transformation_child_to_parent_no_checks(transformation);
+  if (get_owner_kf()) {
     get_owner_kf()->mark_internal_coordinates_changed();
   }
 }
-
 
 IMPKINEMATICS_END_NAMESPACE

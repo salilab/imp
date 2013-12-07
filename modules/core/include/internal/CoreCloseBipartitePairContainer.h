@@ -76,11 +76,11 @@ class IMPCOREEXPORT CoreCloseBipartitePairContainer
   /**@{*/
   IMP_LIST_ACTION(public, PairFilter, PairFilters, pair_filter, pair_filters,
                   PairPredicate *, PairPredicates,
-                  {
-                    set_has_dependencies(false);
-                    obj->set_was_used(true);
-                  },
-                  { set_has_dependencies(false); }, );
+  {
+    set_has_dependencies(false);
+    obj->set_was_used(true);
+  },
+  { set_has_dependencies(false); }, );
   /**@}*/
   void clear_caches() { reset_ = true; }
   virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;

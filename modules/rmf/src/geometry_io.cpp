@@ -187,8 +187,7 @@ class SegmentLoadLink
                               RMF::decorator::SegmentConstFactory> {
   typedef GeometryLoadLink<display::SegmentGeometry,
                            RMF::decorator::SegmentConstFactory> P;
-  void do_load_one(RMF::NodeConstHandle nh,
-                   display::SegmentGeometry *o) {
+  void do_load_one(RMF::NodeConstHandle nh, display::SegmentGeometry *o) {
     RMF::decorator::SegmentConst b = get_factory().get(nh);
     o->set_geometry(get_segment(b));
     P::load_color(nh, o);

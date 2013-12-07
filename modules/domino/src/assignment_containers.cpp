@@ -180,7 +180,8 @@ WriteAssignmentContainer::WriteAssignmentContainer(
                                  O_BINARY,
             _S_IREAD | _S_IWRITE);
 #else
-          , S_IRUSR|S_IWUSR);
+            ,
+            S_IRUSR | S_IWUSR);
 #endif
   number_ = 0;
 }
@@ -316,8 +317,8 @@ inline unsigned int RangeViewAssignmentContainer::get_number_of_assignments()
   return end_ - begin_;
 }
 
-inline Assignment RangeViewAssignmentContainer::get_assignment(
-    unsigned int i) const {
+inline Assignment RangeViewAssignmentContainer::get_assignment(unsigned int i)
+    const {
   IMP_USAGE_CHECK(i < get_number_of_assignments(),
                   "Invalid assignment requested: " << i);
   return inner_->get_assignment(i + begin_);
@@ -339,8 +340,8 @@ inline unsigned int HeapAssignmentContainer::get_number_of_assignments() const {
   return d_.size();
 }
 
-inline Assignment HeapAssignmentContainer::get_assignment(
-    unsigned int i) const {
+inline Assignment HeapAssignmentContainer::get_assignment(unsigned int i)
+    const {
   IMP_USAGE_CHECK(i < get_number_of_assignments(),
                   "Invalid assignment requested: " << i);
   return d_[i].first;

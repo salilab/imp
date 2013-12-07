@@ -16,79 +16,72 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-
-KinematicForest::KinematicForest(kernel::Model* m) :
-  Object("IMP_KINEMATICS_KINEMATIC_FOREST"),
-  m_(m),
-  is_internal_coords_updated_(true),
-  is_external_coords_updated_(true)
-{
-}
+KinematicForest::KinematicForest(kernel::Model* m)
+    : Object("IMP_KINEMATICS_KINEMATIC_FOREST"),
+      m_(m),
+      is_internal_coords_updated_(true),
+      is_external_coords_updated_(true) {}
 
 // build an entire tree from an existing hierarchy
-KinematicForest::KinematicForest(kernel::Model* m, IMP::atom::Hierarchy hierarchy) :
-  Object("IMP_KINEMATICS_KINEMATIC_FOREST"),
-  m_(m){
+KinematicForest::KinematicForest(kernel::Model* m,
+                                 IMP::atom::Hierarchy hierarchy)
+    : Object("IMP_KINEMATICS_KINEMATIC_FOREST"), m_(m) {
   // TODO: implement
   IMP_NOT_IMPLEMENTED;
   IMP_UNUSED(hierarchy);
 }
 
-
-
-void
-KinematicForest::add_edge(Joint* joint)
-{
-  joint->set_owner_kf( this );
+void KinematicForest::add_edge(Joint* joint) {
+  joint->set_owner_kf(this);
   IMP::core::RigidBody parent_rb = joint->get_parent_node();
   IMP::core::RigidBody child_rb = joint->get_child_node();
   KinematicNode parent_kn, child_kn;
 
   // decorate parent and store here
   kernel::Particle* parent_p = parent_rb.get_particle();
-  if(!KinematicNode::get_is_setup( parent_p ) ) {
-    parent_kn = KinematicNode::setup_particle( parent_p, this );
-    nodes_.insert( parent_kn );
-    roots_.insert( parent_kn );
+  if (!KinematicNode::get_is_setup(parent_p)) {
+    parent_kn = KinematicNode::setup_particle(parent_p, this);
+    nodes_.insert(parent_kn);
+    roots_.insert(parent_kn);
   } else {
-    parent_kn = KinematicNode( parent_p );
-    if( parent_kn.get_owner() != this ) {
-      IMP_THROW( "the parent rigid body " << parent_rb
-                 << " in the joint " << joint
-                 << " was already stored in a different kinematic forest -"
-                 << " this IMP version does not support such switching",
-                 IMP::base::ValueException );
+    parent_kn = KinematicNode(parent_p);
+    if (parent_kn.get_owner() != this) {
+      IMP_THROW("the parent rigid body "
+                    << parent_rb << " in the joint " << joint
+                    << " was already stored in a different kinematic forest -"
+                    << " this IMP version does not support such switching",
+                IMP::base::ValueException);
     }
   }
 
   // decorate child and store here
   kernel::Particle* child_p = child_rb.get_particle();
-  if(!KinematicNode::get_is_setup( child_p ) ) {
-    child_kn = KinematicNode::setup_particle( child_p, this, joint );
-    nodes_.insert( child_kn );
+  if (!KinematicNode::get_is_setup(child_p)) {
+    child_kn = KinematicNode::setup_particle(child_p, this, joint);
+    nodes_.insert(child_kn);
   } else {
-    child_kn = KinematicNode( child_p );
-    if( child_kn.get_owner() != this ){
-      IMP_THROW( "the child rigid body " << child_rb
-                 << " in the joint " << joint
-                 << " was already stored in a different kinematic forest -"
-                 << " this IMP version does not support such switching",
-                 IMP::base::ValueException );
+    child_kn = KinematicNode(child_p);
+    if (child_kn.get_owner() != this) {
+      IMP_THROW("the child rigid body "
+                    << child_rb << " in the joint " << joint
+                    << " was already stored in a different kinematic forest -"
+                    << " this IMP version does not support such switching",
+                IMP::base::ValueException);
     }
 
-    if( roots_.find( child_kn) != roots_.end() ) {
-      roots_.erase( child_kn ); // will no longer be a root
+    if (roots_.find(child_kn) != roots_.end()) {
+      roots_.erase(child_kn);  // will no longer be a root
     } else {
-      IMP_THROW( "IMP currently does not support switching of "
-                 << " parents in a kinematic tree",
-                 IMP::base::ValueException );
+      IMP_THROW("IMP currently does not support switching of "
+                    << " parents in a kinematic tree",
+                IMP::base::ValueException);
     }
   }
 
   // store joint
-  parent_kn.add_out_joint( joint );
-  child_kn.set_in_joint( joint );
-  joints_.push_back( joint);
+  parent_kn.add_out_joint(joint);
+  child_kn.set_in_joint(joint);
+  joints_.push_back(joint);
 }
 
 IMPKINEMATICS_END_NAMESPACE

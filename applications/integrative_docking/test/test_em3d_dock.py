@@ -3,7 +3,9 @@ import sys
 import os
 import re
 
+
 class EM3DDockApplicationTest(IMP.test.ApplicationTestCase):
+
     def test_simple(self):
         """Simple test of EM3D single PDB score application"""
         p = self.run_application('em3d_single_score',
@@ -20,7 +22,6 @@ class EM3DDockApplicationTest(IMP.test.ApplicationTestCase):
 
         os.unlink('em_fit_mini.res')
         os.unlink('em_fit_mini.pdb')
-
 
     def test_simple_score(self):
         """Simple test of EM3D score application"""

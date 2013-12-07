@@ -24,8 +24,8 @@
 #include <IMP/base/check_macros.h>
 
 // TODO: for debug only = remove later
-#define IMP_RAD_2_DEG(a) 180*a/IMP::algebra::PI
-#define IMP_DEG_2_RAD(a) a*IMP::algebra::PI/180
+#define IMP_RAD_2_DEG(a) 180 * a / IMP::algebra::PI
+#define IMP_DEG_2_RAD(a) a* IMP::algebra::PI / 180
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
@@ -42,13 +42,10 @@ class KinematicForest;
 //            << std::endl );
 // }
 
-
 /********************** RevoluteJoint ***************/
 
-
 /** Abstract class for all revolute joints **/
-class IMPKINEMATICSEXPORT RevoluteJoint :
-public Joint{
+class IMPKINEMATICSEXPORT RevoluteJoint : public Joint {
  public:
   /**
      constructs a revolute joint on the line connecting a and b,
@@ -57,17 +54,13 @@ public Joint{
      @param parent,child kinematic nodes upstream and downstream (resp.) of this
                     joint
   **/
- RevoluteJoint(IMP::core::RigidBody parent,
-               IMP::core::RigidBody child);
-
+  RevoluteJoint(IMP::core::RigidBody parent, IMP::core::RigidBody child);
 
   // pure virtual dtr to declare as abstrat class for SWIG
- virtual ~RevoluteJoint() = 0;
+  virtual ~RevoluteJoint() = 0;
 
-
- /******* getter / setter methods *********/
+  /******* getter / setter methods *********/
  public:
-
   /**
      sets the angle of the revolute joint and marks the internal
      coordinates as changed in the kinematic forest object
@@ -83,12 +76,14 @@ public Joint{
  protected:
   //#ifndef SWIG
   // in global coordinates
-  const IMP::algebra::Vector3D& get_rot_axis_origin() const
-    { return rot_axis_origin_; }
+  const IMP::algebra::Vector3D& get_rot_axis_origin() const {
+    return rot_axis_origin_;
+  }
 
   // in global coordinates
-  const IMP::algebra::Vector3D& get_rot_axis_unit_vector() const
-    { return rot_axis_unit_vector_; }
+  const IMP::algebra::Vector3D& get_rot_axis_unit_vector() const {
+    return rot_axis_unit_vector_;
+  }
   //#endif
 
   /****************** general protected methods ***************/
@@ -120,12 +115,11 @@ public Joint{
   */
   virtual double get_current_angle_from_cartesian_witnesses() const = 0;
 
-
   /**
      Update the joint internal parameters based on external reference frames
      of witnesses and rigid bodies, assuming external parameters are updated
    */
-  virtual void update_joint_from_cartesian_witnesses(){
+  virtual void update_joint_from_cartesian_witnesses() {
     update_axis_of_rotation_from_cartesian_witnesses();
     angle_ = get_current_angle_from_cartesian_witnesses();
     last_updated_angle_ = angle_;
@@ -139,24 +133,23 @@ public Joint{
      (as measured by get_angle_from_cartesian_witnesses() ).
    */
   IMP::algebra::Transformation3D
-    get_rotation_about_joint_in_parent_coordinates() const
-    {
-      IMP_LOG( VERBOSE, "get_rotation " << IMP_RAD_2_DEG(angle_)
-               << ", last_updated_angle = "
-               << IMP_RAD_2_DEG(last_updated_angle_) << std::endl );
-      // rotate by the difference from last_updated_angle_
-      IMP::algebra::Rotation3D R =
-        IMP::algebra::get_rotation_about_normalized_axis
-        ( rot_axis_unit_vector_, angle_ - last_updated_angle_ );
-      IMP::algebra::Transformation3D R_origin =
+  get_rotation_about_joint_in_parent_coordinates() const {
+    IMP_LOG(VERBOSE, "get_rotation " << IMP_RAD_2_DEG(angle_)
+                                     << ", last_updated_angle = "
+                                     << IMP_RAD_2_DEG(last_updated_angle_)
+                                     << std::endl);
+    // rotate by the difference from last_updated_angle_
+    IMP::algebra::Rotation3D R =
+        IMP::algebra::get_rotation_about_normalized_axis(
+            rot_axis_unit_vector_, angle_ - last_updated_angle_);
+    IMP::algebra::Transformation3D R_origin =
         IMP::algebra::get_rotation_about_point(rot_axis_origin_, R);
 
-      // debug prints
-      //nice_print_trans(R_origin, "R_origin: ");
+    // debug prints
+    // nice_print_trans(R_origin, "R_origin: ");
 
-      return R_origin;
-    }
-
+    return R_origin;
+  }
 
  protected:
   // the angle in Radians about the joint axis ("unit vector")
@@ -174,15 +167,12 @@ public Joint{
   IMP::algebra::Vector3D rot_axis_origin_;
 };
 
-
-
 /********************** DihedralAngleRevoluteJoint ***************/
 //     @TODO handle derivatives
 
 /** A revolute joint that is parametrized as a dihedral angle between
     two planes */
-class  IMPKINEMATICSEXPORT
-DihedralAngleRevoluteJoint : public RevoluteJoint{
+class IMPKINEMATICSEXPORT DihedralAngleRevoluteJoint : public RevoluteJoint {
  public:
   /**
      constructs a dihedral angle that revolves around the axis b-c,
@@ -197,9 +187,10 @@ DihedralAngleRevoluteJoint : public RevoluteJoint{
      @note It is assumed that neither a, b and c are downstream of child,
            and also that d is not upstream of it
      */
-  DihedralAngleRevoluteJoint
-    (IMP::core::RigidBody parent, IMP::core::RigidBody child,
-     IMP::core::XYZ a, IMP::core::XYZ b, IMP::core::XYZ c, IMP::core::XYZ d);
+  DihedralAngleRevoluteJoint(IMP::core::RigidBody parent,
+                             IMP::core::RigidBody child, IMP::core::XYZ a,
+                             IMP::core::XYZ b, IMP::core::XYZ c,
+                             IMP::core::XYZ d);
 
  protected:
   /**
@@ -208,24 +199,24 @@ DihedralAngleRevoluteJoint : public RevoluteJoint{
       using b_-c_ as the axis of rotation
       @note it is assumed b_ and c_ have update cartesian coordinates
   */
-  virtual void update_axis_of_rotation_from_cartesian_witnesses(){
+  virtual void update_axis_of_rotation_from_cartesian_witnesses() {
     using namespace IMP::algebra;
-    IMP_USAGE_CHECK
-      ( get_distance( b_.get_coordinates(), c_.get_coordinates() )
-        > 1e-12 ,
-        "witnesses b and c must be non identical beyone numerical error" );
+    IMP_USAGE_CHECK(
+        get_distance(b_.get_coordinates(), c_.get_coordinates()) > 1e-12,
+        "witnesses b and c must be non identical beyone numerical error");
     ReferenceFrame3D rf_parent = get_parent_node().get_reference_frame();
-    //nice_print_trans(rf_parent.get_transformation_to(), "Parent trans: ");
-    rot_axis_origin_ = rf_parent.get_local_coordinates( b_.get_coordinates() );
-    IMP_LOG( VERBOSE, "global b_ " << b_.get_coordinates()
-             <<  " and local parent b_ " << rot_axis_origin_ << std::endl);
-    Vector3D v =
-      rf_parent.get_local_coordinates( c_.get_coordinates() )
-      - rf_parent.get_local_coordinates( b_.get_coordinates() );
+    // nice_print_trans(rf_parent.get_transformation_to(), "Parent trans: ");
+    rot_axis_origin_ = rf_parent.get_local_coordinates(b_.get_coordinates());
+    IMP_LOG(VERBOSE, "global b_ " << b_.get_coordinates()
+                                  << " and local parent b_ " << rot_axis_origin_
+                                  << std::endl);
+    Vector3D v = rf_parent.get_local_coordinates(c_.get_coordinates()) -
+                 rf_parent.get_local_coordinates(b_.get_coordinates());
     rot_axis_unit_vector_ = v.get_unit_vector();
-    IMP_LOG( VERBOSE, "local axis of rot unnorm " << v
-             <<  " global axis " << c_.get_coordinates() - b_.get_coordinates()
-             << std::endl );
+    IMP_LOG(VERBOSE, "local axis of rot unnorm "
+                         << v << " global axis "
+                         << c_.get_coordinates() - b_.get_coordinates()
+                         << std::endl);
   };
 
   /**
@@ -236,12 +227,11 @@ DihedralAngleRevoluteJoint : public RevoluteJoint{
   */
   virtual double get_current_angle_from_cartesian_witnesses() const;
 
-
  private:
-    IMP::core::XYZ a_;
-    IMP::core::XYZ b_;
-    IMP::core::XYZ c_;
-    IMP::core::XYZ d_;
+  IMP::core::XYZ a_;
+  IMP::core::XYZ b_;
+  IMP::core::XYZ c_;
+  IMP::core::XYZ d_;
 };
 
 /********************** BondAngleRevoluteJoint ***************/
@@ -250,7 +240,7 @@ DihedralAngleRevoluteJoint : public RevoluteJoint{
 /** A revolute joint that is parametrized as a bond angle between three
     particles
  */
-class  IMPKINEMATICSEXPORT BondAngleRevoluteJoint : public RevoluteJoint{
+class IMPKINEMATICSEXPORT BondAngleRevoluteJoint : public RevoluteJoint {
  public:
   /**
      constructs a joint that controls the angle a-b-c. The joint
@@ -266,12 +256,11 @@ class  IMPKINEMATICSEXPORT BondAngleRevoluteJoint : public RevoluteJoint{
            this joint's child rigid body, and that c is downstream of
            it or inside it.
   */
-  BondAngleRevoluteJoint
-    (IMP::core::RigidBody parent, IMP::core::RigidBody child,
-     IMP::core::XYZ a, IMP::core::XYZ b, IMP::core::XYZ c);
+  BondAngleRevoluteJoint(IMP::core::RigidBody parent,
+                         IMP::core::RigidBody child, IMP::core::XYZ a,
+                         IMP::core::XYZ b, IMP::core::XYZ c);
 
  protected:
-
   /**
      this protected method uses the cartesian witnesses to compute the
      actual current bond angle of this joint (assuming external
@@ -285,34 +274,28 @@ class  IMPKINEMATICSEXPORT BondAngleRevoluteJoint : public RevoluteJoint{
      plane containing a_,b_,c_ as axis of rotation, in global
      coordinates
   */
-  virtual void update_axis_of_rotation_from_cartesian_witnesses(){
+  virtual void update_axis_of_rotation_from_cartesian_witnesses() {
     using namespace IMP::algebra;
 
-    IMP_USAGE_CHECK
-      ( get_distance( b_.get_coordinates(), c_.get_coordinates() )
-        > 1e-12 ,
-        "witnesses b and c must be non identical beyond numerical error" );
-    IMP_USAGE_CHECK
-      ( get_distance( b_.get_coordinates(), a_.get_coordinates() )
-        > 1e-12 ,
-        "witnesses b and a must be non identical beyond numerical error" );
-  ReferenceFrame3D rf_parent = get_parent_node().get_reference_frame();
-  Vector3D v = rf_parent.get_local_coordinates
-    ( get_perpendicular_vector(a_, b_, c_) );
-  rot_axis_unit_vector_ = v.get_unit_vector();
-  rot_axis_origin_ = rf_parent.get_local_coordinates
-    ( b_.get_coordinates() );
+    IMP_USAGE_CHECK(
+        get_distance(b_.get_coordinates(), c_.get_coordinates()) > 1e-12,
+        "witnesses b and c must be non identical beyond numerical error");
+    IMP_USAGE_CHECK(
+        get_distance(b_.get_coordinates(), a_.get_coordinates()) > 1e-12,
+        "witnesses b and a must be non identical beyond numerical error");
+    ReferenceFrame3D rf_parent = get_parent_node().get_reference_frame();
+    Vector3D v =
+        rf_parent.get_local_coordinates(get_perpendicular_vector(a_, b_, c_));
+    rot_axis_unit_vector_ = v.get_unit_vector();
+    rot_axis_origin_ = rf_parent.get_local_coordinates(b_.get_coordinates());
   };
 
  private:
-
-  static IMP::algebra::Vector3D
-    get_perpendicular_vector(core::XYZ a, core::XYZ b, core::XYZ c)
-  {
-    IMP::algebra::Vector3D
-      v1 = a.get_coordinates() - b.get_coordinates();
-    IMP::algebra::Vector3D
-      v2 = c.get_coordinates() - b.get_coordinates();
+  static IMP::algebra::Vector3D get_perpendicular_vector(core::XYZ a,
+                                                         core::XYZ b,
+                                                         core::XYZ c) {
+    IMP::algebra::Vector3D v1 = a.get_coordinates() - b.get_coordinates();
+    IMP::algebra::Vector3D v2 = c.get_coordinates() - b.get_coordinates();
     return IMP::algebra::get_vector_product(v1, v2);
   }
   IMP::core::XYZ a_;
@@ -320,12 +303,10 @@ class  IMPKINEMATICSEXPORT BondAngleRevoluteJoint : public RevoluteJoint{
   IMP::core::XYZ c_;
 };
 
-
-
 IMP_OBJECTS(RevoluteJoint, RevoluteJoints);
 IMP_OBJECTS(DihedralAngleRevoluteJoint, DihedralAngleRevoluteJoints);
 IMP_OBJECTS(BondAngleRevoluteJoint, BondAngleRevolteJoints);
 
 IMPKINEMATICS_END_NAMESPACE
 
-#endif  /* IMPKINEMATICS_REVOLUTE_JOINTS_H */
+#endif /* IMPKINEMATICS_REVOLUTE_JOINTS_H */

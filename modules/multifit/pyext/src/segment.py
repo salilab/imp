@@ -6,6 +6,7 @@ import IMP.multifit
 import IMP.em
 from IMP import OptionParser
 
+
 def parse_args():
     usage = """%prog [options] <density.mrc> <number of clusters>
               <density threshold> <output.pdb>
@@ -63,5 +64,5 @@ def main():
     IMP.multifit.get_segmentation(dmap, opts.apix, threshold, num_cluster,
                                   output, opts.cmm, opts.seg, opts.txt)
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()

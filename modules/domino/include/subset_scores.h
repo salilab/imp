@@ -123,7 +123,7 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
     ParticleStatesTable *get_particle_states_table() const { return pst_; }
     void show_restraint_information(std::ostream &out) const;
   };
-#endif // IMP_DOXYGEN
+#endif  // IMP_DOXYGEN
 
   struct ApproximatelyEqual {
     bool operator()(double a, double b) const {
@@ -143,7 +143,7 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
                                   const Subset &cur_subset, double cur_max,
                                   const DepMap &dependencies);
   Subset get_subset(kernel::Restraint *r, const DepMap &dependencies) const;
-  // otherwise doxygen seems to index this for some reason
+// otherwise doxygen seems to index this for some reason
 #ifndef IMP_DOXYGEN
   typedef base::LRUCache<Generator, ApproximatelyEqual> Cache;
   Cache cache_;

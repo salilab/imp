@@ -14,13 +14,13 @@ int main(int argc, char** argv) {
   {
     double sum = 0, time;
     IMP_TIME({
-      for (unsigned int i = 0; i < 100; ++i) {
-        double* d = new double(i);
-        std::size_t iv = reinterpret_cast<std::size_t>(d);
-        sum += iv;
-        delete d;
-      }
-    },
+               for (unsigned int i = 0; i < 100; ++i) {
+                 double* d = new double(i);
+                 std::size_t iv = reinterpret_cast<std::size_t>(d);
+                 sum += iv;
+                 delete d;
+               }
+             },
              time);
     IMP::benchmark::report("alloc and free", "current", time, sum);
   }

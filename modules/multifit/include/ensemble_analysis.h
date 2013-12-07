@@ -20,16 +20,16 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 
 //! An ensemble of fitting solutions
 class IMPMULTIFITEXPORT Ensemble : public base::Object {
-public:
+ public:
   void load_combination(Ints fit_comb);
   void unload_combination(Ints fit_comb);
-  void add_component_and_fits(
-                              atom::Hierarchy mh,
+  void add_component_and_fits(atom::Hierarchy mh,
                               const multifit::FittingSolutionRecords &fits);
-  atom::Hierarchies get_molecules() const {return mhs_;}
-  core::RigidBodies get_rigid_bodies() const {return rbs_;}
+  atom::Hierarchies get_molecules() const { return mhs_; }
+  core::RigidBodies get_rigid_bodies() const { return rbs_; }
   float get_rmsd(const core::XYZs &second_xyz) const {
-    return atom::get_rmsd(second_xyz,xyz_);}
+    return atom::get_rmsd(second_xyz, xyz_);
+  }
   Ensemble(multifit::SettingsData *sd,
            const ProteinsAnchorsSamplingSpace &mapping_data);
   std::vector<Floats> score_by_restraints(kernel::Restraints rs,
@@ -37,7 +37,7 @@ public:
 
   IMP_OBJECT_METHODS(Ensemble);
 
-private:
+ private:
   atom::Hierarchies mhs_;
   core::RigidBodies rbs_;
   core::XYZs xyz_;
@@ -49,9 +49,9 @@ private:
 IMP_OBJECTS(Ensemble, Ensembles);
 
 IMPMULTIFITEXPORT
-Ensemble* load_ensemble(multifit::SettingsData *sd,Model *mdl,
-              const ProteinsAnchorsSamplingSpace &mapping_data);
+Ensemble *load_ensemble(multifit::SettingsData *sd, Model *mdl,
+                        const ProteinsAnchorsSamplingSpace &mapping_data);
 
 IMPMULTIFIT_END_NAMESPACE
 
-#endif  /* IMPMULTIFIT_ENSEMBLE_ANALYSIS_H */
+#endif /* IMPMULTIFIT_ENSEMBLE_ANALYSIS_H */

@@ -41,7 +41,6 @@ class IMPATOMEXPORT Fragment : public Hierarchy {
   }
 
  public:
-
   static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
     return Hierarchy::get_is_setup(m, pi) &&
            m->get_has_attribute(get_marker_key(), pi);

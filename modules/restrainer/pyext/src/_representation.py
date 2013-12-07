@@ -5,7 +5,9 @@ import IMP.atom
 import random
 import math
 
+
 class Representation(object):
+
     """Store Representation."""
 
     def __init__(self):
@@ -23,7 +25,8 @@ class Representation(object):
         """Return the root of the IMP::atom::Hierarchy"""
         return self.model_decorator
 
-    def find_all_by_id(self, id): # assuming there are many obj with the same id
+    # assuming there are many obj with the same id
+    def find_all_by_id(self, id):
         """Return a list of all nodes that have the id given by the parameter"""
 
         def _find_rec(node):
@@ -37,7 +40,8 @@ class Representation(object):
             _find_rec(child)
         return found
 
-    def find_by_id(self, id): # assuming there is just one obj with the same id
+    # assuming there is just one obj with the same id
+    def find_by_id(self, id):
         """Return a node that have the id given by the parameter"""
 
         def _find_rec(node):
@@ -81,6 +85,7 @@ class Representation(object):
 
 class _RepresentationNode(object):
     counter = 0
+
     def __init__(self, attributes):
         id = attributes.get('id')
         if id:
@@ -100,11 +105,11 @@ class _RepresentationNode(object):
 
     def add_as_child(self, particle, model):
         """Add this node as a child of particle."""
-        #print 'add_as_child', self
+        # print 'add_as_child', self
         if not self.model_decorator:
             decorator = self.to_particle(model)
             self.model_decorator = decorator
-        #print 'model_decorator:',[self.model_decorator]
+        # print 'model_decorator:',[self.model_decorator]
         if decorator:
             particle.add_child(decorator)
         else:
@@ -121,21 +126,22 @@ class _RepresentationNode(object):
         return ('RepresentationNode', 'id="%s"' % self.id)
 
     def _to_str(self, level):
-        indent = '  '*level
+        indent = '  ' * level
         name, strattr = self._attr_to_str()
         if not self._children:
             return '%s<%s %s/>' % (indent, name, strattr)
         else:
             return '%s<%s %s>\n%s\n%s</%s>' %\
                 (indent, name, strattr,
-                '\n'.join([child._to_str(level + 1)
-                  for child in self._children]), indent, name)
+                 '\n'.join([child._to_str(level + 1)
+                           for child in self._children]), indent, name)
 
     def __str__(self):
         return self._to_str(0)
 
 
 class _RepUniverse(_RepresentationNode):
+
     def __init__(self, attributes):
         _RepresentationNode.__init__(self, attributes)
 
@@ -144,6 +150,7 @@ class _RepUniverse(_RepresentationNode):
 
 
 class _RepCollection(_RepresentationNode):
+
     def __init__(self, attributes):
         _RepresentationNode.__init__(self, attributes)
 
@@ -152,6 +159,7 @@ class _RepCollection(_RepresentationNode):
 
 
 class _RepAssembly(_RepresentationNode):
+
     def __init__(self, attributes):
         _RepresentationNode.__init__(self, attributes)
 
@@ -160,6 +168,7 @@ class _RepAssembly(_RepresentationNode):
 
 
 class _RepSegment(_RepresentationNode):
+
     def __init__(self, attributes):
         _RepresentationNode.__init__(self, attributes)
 
@@ -168,6 +177,7 @@ class _RepSegment(_RepresentationNode):
 
 
 class _RepMolecule(_RepresentationNode):
+
     def __init__(self, attributes):
         _RepresentationNode.__init__(self, attributes)
 
@@ -176,6 +186,7 @@ class _RepMolecule(_RepresentationNode):
 
 
 class _RepProtein(_RepresentationNode):
+
     def __init__(self, attributes):
         _RepresentationNode.__init__(self, attributes)
 
@@ -184,6 +195,7 @@ class _RepProtein(_RepresentationNode):
 
 
 class _RepNucleicAcid(_RepresentationNode):
+
     def __init__(self, attributes):
         _RepresentationNode.__init__(self, attributes)
 
@@ -192,22 +204,27 @@ class _RepNucleicAcid(_RepresentationNode):
 
 
 class _RepChain(_RepresentationNode):
+
     def __init__(self, attributes):
         _RepresentationNode.__init__(self, attributes)
         self.filename = attributes.get('filename', '')
         self.chain_label = attributes.get('chain_label', '')
-        self.selector =  attributes.get('selector', '')
+        self.selector = attributes.get('selector', '')
         if self.filename:
             self.force_field = int(attributes.get('force_field', '1'))
         else:
             self.force_field = 0
-        self.topology_file = attributes.get('topology_filename', IMP.atom.get_data_path('top_heav.lib'))
-        self.param_file = attributes.get('param_filename', IMP.atom.get_data_path('par.lib'))
+        self.topology_file = attributes.get(
+            'topology_filename',
+            IMP.atom.get_data_path('top_heav.lib'))
+        self.param_file = attributes.get(
+            'param_filename',
+            IMP.atom.get_data_path('par.lib'))
 
     def _attr_to_str(self):
         return ('Chain',
-            'id="%s" filename="%s" chain_label="%s" selector="%s"' %
-            (self.id, self.filename, self.chain_label, self.selector))
+                'id="%s" filename="%s" chain_label="%s" selector="%s"' %
+                (self.id, self.filename, self.chain_label, self.selector))
 
     def to_particle(self, model):
         if self.filename:
@@ -246,14 +263,18 @@ class _RepChain(_RepresentationNode):
         if self._children and not self.filename:
             particle = IMP.kernel.Particle(model)
             decorator = IMP.atom.Chain.setup_particle(particle,
-                self.chain_label)
+                                                      self.chain_label)
         else:
             if not self.filename and not self._children:
-                raise Exception, "Filename must be present for childless Chain %s" % self.id
+                raise Exception(
+                    "Filename must be present for childless Chain %s" %
+                    self.id)
             decorator = self.fragment_decorator
         return decorator
 
+
 class _RepFragment(_RepresentationNode):
+
     def __init__(self, attributes):
         _RepresentationNode.__init__(self, attributes)
 
@@ -262,46 +283,62 @@ class _RepFragment(_RepresentationNode):
 
     def to_particle(self, model):
         if len(self._children) != 1:
-            raise Exception, "Fragment %s must have exactly one child" % self.id
+            raise Exception(
+                "Fragment %s must have exactly one child" %
+                self.id)
         particle = IMP.kernel.Particle(model)
         child = self._children[0]
         child.add_attributes(particle)
         decorator = IMP.atom.Fragment.setup_particle(particle)
         if isinstance(child, _RepAtomicRep):
             if not isinstance(self.parent, _RepChain):
-                raise Exception, "Parent of Fragment %s must be a chain" % self.id
+                raise Exception(
+                    "Parent of Fragment %s must be a chain" %
+                    self.id)
             if particle.has_attribute(IMP.IntKey('start_residue')):
                 start_residue = particle.get_value(IMP.IntKey('start_residue'))
             else:
-                raise Exception, "Start residue is required for atomic rep of Fragment %s" % self.id
+                raise Exception(
+                    "Start residue is required for atomic rep of Fragment %s" %
+                    self.id)
             if particle.has_attribute(IMP.IntKey('end_residue')):
                 end_residue = particle.get_value(IMP.IntKey('end_residue'))
             else:
-                raise Exception, "End residue is required for atomic rep of Fragment %s" % self.id
+                raise Exception(
+                    "End residue is required for atomic rep of Fragment %s" %
+                    self.id)
             for x in xrange(int(start_residue), int(end_residue) + 1):
-                res_part = IMP.atom.get_residue(self.parent.fragment_decorator, x)
+                res_part = IMP.atom.get_residue(
+                    self.parent.fragment_decorator,
+                    x)
                 if res_part != IMP.atom.Hierarchy():
                     res_parent = res_part.get_parent()
                     res_parent.remove_child(res_part)
                     decorator.add_child(res_part)
         else:
             if not particle.has_attribute(IMP.FloatKey('x')):
-                particle.add_attribute(IMP.FloatKey('x'), random.uniform(-300, 300))
+                particle.add_attribute(
+                    IMP.FloatKey('x'),
+                    random.uniform(-300,
+                                   300))
                 particle.set_is_optimized(IMP.FloatKey('x'), True)
             if not particle.has_attribute(IMP.FloatKey('y')):
-                particle.add_attribute(IMP.FloatKey('y'), random.uniform(-300, 300))
+                particle.add_attribute(
+                    IMP.FloatKey('y'), random.uniform(-300, 300))
                 particle.set_is_optimized(IMP.FloatKey('y'), True)
             if not particle.has_attribute(IMP.FloatKey('z')):
-                particle.add_attribute(IMP.FloatKey('z'), random.uniform(-300, 300))
+                particle.add_attribute(
+                    IMP.FloatKey('z'), random.uniform(-300, 300))
                 particle.set_is_optimized(IMP.FloatKey('z'), True)
 
             if particle.get_value(IMP.FloatKey('radius')) < 0:
                 particle.set_value(IMP.FloatKey('radius'),
-                particle.get_value(IMP.FloatKey('calc_radius')))
+                                   particle.get_value(IMP.FloatKey('calc_radius')))
         return decorator
 
 
 class _RepAtomicRep(_RepresentationNode):
+
     def __init__(self, attributes):
         _RepresentationNode.__init__(self, attributes)
         self.start_residue = int(attributes.get('start_residue', -1))
@@ -311,12 +348,14 @@ class _RepAtomicRep(_RepresentationNode):
         if not self.end_residue:
             self.end_residue = int(attributes.get('end_nucleotide', -1))
         if self.start_residue < 0 or self.end_residue < 0:
-            raise Exception, "AtomicRep %s must have both start_(residue|nucleotide) and end_(residue|nucleotide)" % self.id
+            raise Exception(
+                "AtomicRep %s must have both start_(residue|nucleotide) and end_(residue|nucleotide)" %
+                self.id)
 
     def _attr_to_str(self):
         return ('AtomicRep',
-          'id="%s" start_residue="%s" end_residue="%s"' %
-          (self.id, self.start_residue, self.end_residue))
+                'id="%s" start_residue="%s" end_residue="%s"' %
+                (self.id, self.start_residue, self.end_residue))
 
     def to_particle(self, model):
         return None
@@ -327,7 +366,9 @@ class _RepAtomicRep(_RepresentationNode):
         for child in self._children:
             child.add_attributes(parent)
 
+
 class _RepGeometricShapeRep(_RepresentationNode):
+
     def __init__(self, attributes):
         _RepresentationNode.__init__(self, attributes)
         self.start_residue = int(attributes.get('start_residue', -1))
@@ -338,14 +379,16 @@ class _RepGeometricShapeRep(_RepresentationNode):
             self.end_residue = int(attributes.get('end_nucleotide', -1))
         self.total_residue = int(attributes.get('total_residue', -1))
         if self.total_residue >= 0 and self.end_residue >= 0 and \
-            self.start_residue >= 0:
+                self.start_residue >= 0:
             if self.total_residue != self.end_residue + 1 - self.start_residue:
-                raise Exception, "Total residues dubious consistency in Geometric Shape _Rep %s" % self.id
+                raise Exception(
+                    "Total residues dubious consistency in Geometric Shape _Rep %s" %
+                    self.id)
 
     def _attr_to_str(self):
         return ('GeometricShapeRep',
-          'id="%s" start_residue="%s" end_residue="%s" total_residue="%s"' %
-          (self.id, self.start_residue, self.end_residue, self.total_residue))
+                'id="%s" start_residue="%s" end_residue="%s" total_residue="%s"' %
+                (self.id, self.start_residue, self.end_residue, self.total_residue))
 
     def to_particle(self, model):
         return None
@@ -357,17 +400,18 @@ class _RepGeometricShapeRep(_RepresentationNode):
         if self.start_residue < 0 and self.end_residue < 0:
             total_residue = self.total_residue
         else:
-            total_residue = self.end_residue-self.start_residue+1
+            total_residue = self.end_residue - self.start_residue + 1
         if total_residue >= 0:
             m = IMP.atom.get_mass_from_number_of_residues(total_residue)
             v = IMP.atom.get_volume_from_mass(m)
-            r = (v/(4.0*math.pi)*3.0)**(1.0/3)
+            r = (v / (4.0 * math.pi) * 3.0) ** (1.0 / 3)
             parent.add_attribute(IMP.FloatKey('calc_radius'), r)
         for child in self._children:
             child.add_attributes(parent)
 
 
 class _RepSphere(_RepresentationNode):
+
     def __init__(self, attributes):
         _RepresentationNode.__init__(self, attributes)
         self.radius = float(attributes.get('radius', -1))
@@ -376,8 +420,8 @@ class _RepSphere(_RepresentationNode):
 
     def _attr_to_str(self):
         return ('Sphere',
-          'id="%s" radius="%s" weight="%s"' %
-          (self.id, self.radius, self.weight))
+                'id="%s" radius="%s" weight="%s"' %
+                (self.id, self.radius, self.weight))
 
     def initial_position(self):
         if self.__initial_position is None:
@@ -397,7 +441,9 @@ class _RepSphere(_RepresentationNode):
         for child in self._children:
             child.add_attributes(parent)
 
+
 class _RepInitialPosition(_RepresentationNode):
+
     def __init__(self, attributes):
         _RepresentationNode.__init__(self, attributes)
         self.optimize = int(attributes.get('optimize', -1))
@@ -407,8 +453,8 @@ class _RepInitialPosition(_RepresentationNode):
 
     def _attr_to_str(self):
         return ('InitialPosition',
-          'id="%s" x="%s" y="%s" z="%s" optimize="%s"' %
-          (self.id, self.x, self.y, self.z, self.optimize))
+                'id="%s" x="%s" y="%s" z="%s" optimize="%s"' %
+                (self.id, self.x, self.y, self.z, self.optimize))
 
     def to_particle(self, model):
         return None

@@ -33,10 +33,7 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
     cpf->set_distance(0);
     double result = 0;
     double runtime;
-    IMP_TIME({
-      result += cpf->get_close_pairs(m, psi).size();
-    },
-             runtime);
+    IMP_TIME({ result += cpf->get_close_pairs(m, psi).size(); }, runtime);
     std::ostringstream oss;
     oss << "cpf index " << name << " " << n << " " << rmax;
     report(oss.str(), runtime, result);
@@ -54,10 +51,7 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
     cpf->set_distance(0);
     double result = 0;
     double runtime;
-    IMP_TIME({
-      result += cpf->get_close_pairs(ps).size();
-    },
-             runtime);
+    IMP_TIME({ result += cpf->get_close_pairs(ps).size(); }, runtime);
     std::ostringstream oss;
     oss << "cpf " << name << " " << n << " " << rmax;
     report(oss.str(), runtime, result);
@@ -83,9 +77,7 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
     cpf->set_distance(0);
     double result = 0;
     double runtime;
-    IMP_TIME({
-      result += cpf->get_close_pairs(m, ps0i, ps1i).size();
-    },
+    IMP_TIME({ result += cpf->get_close_pairs(m, ps0i, ps1i).size(); },
              runtime);
     std::ostringstream oss;
     oss << "bcpf " << name << " " << n << " " << rmax;

@@ -16,22 +16,20 @@ using namespace IMP::multifit;
 namespace {
 
 void do_it() {
- IMP_EV_BENCHMARK_SETUP
+  IMP_EV_BENCHMARK_SETUP
 
   {
-    IMP_NEW(ComplementarityRestraint, r, (atom::get_leaves(h0),
-                                                  atom::get_leaves(h1)));
+    IMP_NEW(ComplementarityRestraint, r,
+            (atom::get_leaves(h0), atom::get_leaves(h1)));
     r->set_maximum_penetration_score(10);
     r->set_maximum_separation(10);
     r->set_complementarity_value(0);
     r->set_complementarity_thickness(0);
     r->set_interior_layer_thickness(4);
+    test_one<ComplementarityRestraint>(
+        "wev3", seed, m, r->create_scoring_function(), rb0, false);
     test_one<ComplementarityRestraint>("wev3", seed, m,
-                                       r->create_scoring_function(), rb0,
-                                       false);
-    test_one<ComplementarityRestraint>("wev3", seed, m,
-                                       r->create_scoring_function(), rb0,
-                                       true);
+                                       r->create_scoring_function(), rb0, true);
   }
 }
 }

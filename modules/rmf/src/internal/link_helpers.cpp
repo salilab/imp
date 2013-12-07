@@ -7,10 +7,9 @@
 
 #include <IMP/rmf/internal/link_helpers.h>
 
-
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 namespace {
-  base::map<std::string, int> known_load_linkers, known_save_linkers;
+base::map<std::string, int> known_load_linkers, known_save_linkers;
 }
 
 unsigned int get_load_linker_index(std::string st) {
@@ -32,8 +31,6 @@ unsigned int get_save_linker_index(std::string st) {
     return known_save_linkers.find(st)->second;
   }
 }
-
-
 
 LoadLinks get_load_linkers(RMF::FileConstHandle fh) {
   LoadLinks ret;
@@ -58,7 +55,6 @@ SaveLinks get_save_linkers(RMF::FileHandle fh) {
   IMP_LOG_VERBOSE("Found " << ret.size() << " save linkers" << std::endl);
   return ret;
 }
-
 
 bool get_has_linker(RMF::FileConstHandle fh, unsigned int id) {
   return fh.get_has_associated_data(id);

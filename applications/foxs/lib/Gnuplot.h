@@ -17,24 +17,22 @@
 #if defined(_WIN32) || defined(_WIN64)
 // Simple basename implementation on platforms that don't have libgen.h
 namespace {
-  const char *basename(const char *path)
-  {
-    int i;
-    for (i = path ? strlen(path) : 0; i > 0; --i) {
-      if (path[i] == '/' || path[i] == '\\') {
-        return &path[i + 1];
-      }
+const char* basename(const char* path) {
+  int i;
+  for (i = path ? strlen(path) : 0; i > 0; --i) {
+    if (path[i] == '/' || path[i] == '\\') {
+      return &path[i + 1];
     }
-    return path;
   }
+  return path;
+}
 }
 #else
 #include <libgen.h>
 #endif
 
 class Gnuplot {
-public:
-
+ public:
   // output profile
   static void print_profile_script(const std::string pdb);
 
@@ -50,11 +48,11 @@ public:
 
   // output multiple fits - png gnuplot terminal
   static void print_fit_script(
-                             const std::vector<IMP::saxs::FitParameters>& fps);
+      const std::vector<IMP::saxs::FitParameters>& fps);
 
   // output multiple fits - canvas gnuplot terminal
   static void print_canvas_script(
-                const std::vector<IMP::saxs::FitParameters>& fps, int max_num);
+      const std::vector<IMP::saxs::FitParameters>& fps, int max_num);
 };
 
 std::string trim_extension(const std::string file_name);

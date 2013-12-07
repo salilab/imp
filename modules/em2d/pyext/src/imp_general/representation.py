@@ -11,14 +11,15 @@ import logging
 
 log = logging.getLogger("representation")
 
-#########################################
+#
 """
 
     Functions to deal with the representation of assemblies and managing
     rigid bodies.
 
 """
-#########################################
+#
+
 
 def create_assembly_from_pdb(model, fn_pdb, names=False):
     """
@@ -28,7 +29,7 @@ def create_assembly_from_pdb(model, fn_pdb, names=False):
     hchains = atom.get_by_type(temp, atom.CHAIN_TYPE)
     ids = [atom.Chain(h).get_id() for h in hchains]
     log.debug("Creating assembly from pdb %s,names: %s. Chains %s",
-                                                        fn_pdb, names, ids)
+              fn_pdb, names, ids)
     atom.add_radii(temp)
     if(names):
         for i, h in enumerate(hchains):
@@ -51,7 +52,7 @@ def create_assembly(model, fn_pdbs, names=False):
     return assembly
 
 
-def read_component(model,fn_pdb, name=False):
+def read_component(model, fn_pdb, name=False):
     """ Read a PDB molecule, add atoms, and set a name
     """
     if name:
@@ -59,8 +60,8 @@ def read_component(model,fn_pdb, name=False):
     else:
         log.debug("reading component from %s", fn_pdb)
 
-    hierarchy =  atom.read_pdb(fn_pdb, model,
-                                  atom.NonWaterNonHydrogenPDBSelector())
+    hierarchy = atom.read_pdb(fn_pdb, model,
+                              atom.NonWaterNonHydrogenPDBSelector())
     if name:
         hierarchy.set_name(name)
     atom.add_radii(hierarchy)
@@ -80,7 +81,7 @@ def create_rigid_bodies(assembly):
     """
     molecule = assembly.get_as_molecule()
     if(not molecule.get_is_valid(True)):
-        raise TypeError("create_rigid_bodies(): The argument is not a valid "\
+        raise TypeError("create_rigid_bodies(): The argument is not a valid "
                         "hierarchy")
     rbs = []
     for c in molecule.get_children():
@@ -88,9 +89,10 @@ def create_rigid_bodies(assembly):
         core.RigidBody.setup_particle(p, atom.get_leaves(c))
         rb = core.RigidBody(p)
 #        rb = atom.create_rigid_body(c)
-        rb.set_name( get_rb_name( c.get_name() ) )
+        rb.set_name(get_rb_name(c.get_name()))
         rbs.append(rb)
     return rbs
+
 
 def rename_chains(assembly):
     """ Rename all the chains of an assembly so there are no conflicts with
@@ -99,14 +101,14 @@ def rename_chains(assembly):
     m = assembly.get_as_molecule()
     if(not m.get_is_valid(True)):
         raise TypeError("The argument is not a valid  hierarchy")
-    all_chains_as_hierarchies= get_all_chains(m.get_children())
+    all_chains_as_hierarchies = get_all_chains(m.get_children())
     letters = string.ascii_uppercase
     n_chains = len(all_chains_as_hierarchies)
     if(len(letters) < n_chains):
         raise ValueError("There are more chains than letter ids")
     ids = letters[0:n_chains]
     for h, c_id in zip(all_chains_as_hierarchies, ids):
-        chain = atom.Chain( h.get_particle() )
+        chain = atom.Chain(h.get_particle())
         chain.set_id(c_id)
         chain.set_name("chain %s" % c_id)
 
@@ -119,26 +121,27 @@ def create_simplified_dna(dna_hierarchy, n_res):
     """
     chain = dna_hierarchy.get_as_chain()
     if(not chain.get_is_valid(True)):
-        raise TypeError("create_simplified_dna: the hierarchy provided is not a "\
+        raise TypeError("create_simplified_dna: the hierarchy provided is not a "
                         "chain.")
 
     model = dna_hierarchy.get_model()
     ph = IMP.kernel.Particle(model)
     simplified_h = atom.Hierarchy.setup_particle(ph)
-    atom.Chain.setup_particle(ph,"0")
+    atom.Chain.setup_particle(ph, "0")
 
-    residues = atom.get_by_type(dna_hierarchy , atom.RESIDUE_TYPE)
-    l =len(residues)
+    residues = atom.get_by_type(dna_hierarchy, atom.RESIDUE_TYPE)
+    l = len(residues)
     # print "the DNA has ",l,"residues"
     for i in range(0, l, n_res):
         xyzrs = []
         equivalent_mass = 0.0
         residues_numbers = []
-        for r in residues[i : i+n_res]:
+        for r in residues[i: i + n_res]:
             rr = atom.Residue(r)
-            residues_numbers.append( rr.get_index())
-            #print "residue",rr.get_name(),rr.get_index()
-            residue_xyzrs = [ core.XYZ(a.get_particle()) for a in rr.get_children()]
+            residues_numbers.append(rr.get_index())
+            # print "residue",rr.get_name(),rr.get_index()
+            residue_xyzrs = [core.XYZ(a.get_particle())
+                             for a in rr.get_children()]
             xyzrs += residue_xyzrs
 #            print "residue",r,"mass",get_residue_mass(r)
             equivalent_mass += get_residue_mass(r)
@@ -146,7 +149,7 @@ def create_simplified_dna(dna_hierarchy, n_res):
         s = core.get_enclosing_sphere(xyzrs)
         p = IMP.kernel.Particle(model)
         xyzr = core.XYZR.setup_particle(p)
-        xyzr.set_radius(s.get_radius() )
+        xyzr.set_radius(s.get_radius())
         xyzr.set_coordinates(s.get_center())
         fragment = atom.Fragment.setup_particle(p)
         fragment.set_residue_indexes(residues_numbers)
@@ -177,7 +180,7 @@ def create_simplified_assembly(assembly, components_rbs, n_res):
     """
     molecule = assembly.get_as_molecule()
     if(not molecule.get_is_valid(True)):
-        raise TypeError( "The argument is not a valid  hierarchy")
+        raise TypeError("The argument is not a valid  hierarchy")
 
     model = assembly.get_model()
     n_children = molecule.get_number_of_children()
@@ -185,11 +188,11 @@ def create_simplified_assembly(assembly, components_rbs, n_res):
     sh = IMP.kernel.Particle(model)
     simplified_hierarchy = atom.Molecule.setup_particle(sh)
 
-    for i in range(n_children): # for all members of the assembly
+    for i in range(n_children):  # for all members of the assembly
         component = molecule.get_child(i)
         name = component.get_name()
         rb = components_rbs[i]
-        if( rb.get_name() !=  get_rb_name(name)):
+        if(rb.get_name() != get_rb_name(name)):
             raise ValueError("Rigid body and component do not match")
 
         hchains = atom.get_by_type(component, atom.CHAIN_TYPE)
@@ -206,17 +209,17 @@ def create_simplified_assembly(assembly, components_rbs, n_res):
             else:
                 coarse_h = atom.create_simplified_along_backbone(chain, n_res)
 
-            chain_rb = atom.create_rigid_body(coarse_h) # does not work for DNA
+            # does not work for DNA
+            chain_rb = atom.create_rigid_body(coarse_h)
             # chain_rb = atom.setup_as_rigid_body(coarse_h) # works with DNA
-            chain_rb.set_name("sub_rb"+name)
+            chain_rb.set_name("sub_rb" + name)
             rb.add_member(chain_rb)
 
             # are required to have excluded volume
-            coarse_component_h.add_child( atom.Chain(coarse_h) )
+            coarse_component_h.add_child(atom.Chain(coarse_h))
         coarse_component_h.set_name(name)
         simplified_hierarchy.add_child(coarse_component_h)
-    return  simplified_hierarchy
-
+    return simplified_hierarchy
 
 
 def get_component(assembly, name):
@@ -224,7 +227,9 @@ def get_component(assembly, name):
     for c in assembly.get_children():
         if (c.get_name() == name):
             return c
-    raise ValueError("The requested component %s is not in the assembly" % name)
+    raise ValueError(
+        "The requested component %s is not in the assembly" %
+        name)
 
 
 def get_rigid_body(rigid_bodies, name):
@@ -237,7 +242,7 @@ def get_rigid_body(rigid_bodies, name):
 
 def get_rb_name(name):
     """ Name to use for the rigid body of a hierarch"""
-    return "rb_"+name
+    return "rb_" + name
 
 
 def get_selection_rigid_body(model, S):
@@ -245,10 +250,11 @@ def get_selection_rigid_body(model, S):
     ps = S.get_selected_particles()
     xyzrs = [core.XYZR(p) for p in ps]
     p_rbS = IMP.kernel.Particle(model)
-    rbS = core.RigidBody.setup_particle(p_rbS,xyzrs)
+    rbS = core.RigidBody.setup_particle(p_rbS, xyzrs)
     return rbS
 
-def get_selection_as_hierarchy(model,S):
+
+def get_selection_as_hierarchy(model, S):
     ph = IMP.kernel.Particle(model)
     h = core.Hierarchy.setup_particle(ph)
     for p in S.get_selected_particles():
@@ -256,7 +262,8 @@ def get_selection_as_hierarchy(model,S):
         h.add_child(x)
     return h
 
-def get_selection_as_atom_hierarchy(model,S):
+
+def get_selection_as_atom_hierarchy(model, S):
     """ Gets a selection of particles and decorates them as Atoms.
         Then all of them are put into a big residue. I have this to use
         with the multifit.create_coarse_molecule_from_molecule() function
@@ -264,8 +271,9 @@ def get_selection_as_atom_hierarchy(model,S):
     ph = IMP.kernel.Particle(model)
     h = atom.Residue.setup_particle(ph)
     for p in S.get_selected_particles():
-        h.add_child( atom.Atom(p) )
+        h.add_child(atom.Atom(p))
     return h
+
 
 def get_coarse_selection(coarse_h, residues_numbers):
     """ The function returns the particles (fragments) in the coarse hierarchy
@@ -278,17 +286,18 @@ def get_coarse_selection(coarse_h, residues_numbers):
         The function returns the set of particles that are atom.Fragments
     """
     particles = []
-    fragments =  atom.get_by_type(coarse_h, atom.FRAGMENT_TYPE)
+    fragments = atom.get_by_type(coarse_h, atom.FRAGMENT_TYPE)
     for f in fragments:
         ff = atom.Fragment(f)
         residues_in_f = ff.get_residue_indexes()
         for number in residues_in_f:
             if number in residues_numbers:
-                particles.append( ff.get_particle() )
+                particles.append(ff.get_particle())
                 break
     return particles
 
-def apply_rotation_around_centroid(rb,rot):
+
+def apply_rotation_around_centroid(rb, rot):
     """
         Rotates the reference frame of a rigid body around the centroid
     """
@@ -300,6 +309,7 @@ def apply_rotation_around_centroid(rb,rot):
     ref = alg.ReferenceFrame3D(T)
     rb.set_reference_frame(ref)
 
+
 def apply_transformation_around_centroid(rb, T):
     """
         Aplies a transformation around the centroid of a rigid body.
@@ -309,7 +319,7 @@ def apply_transformation_around_centroid(rb, T):
         @param T a IMP.algebra.Transformation3D object
     """
     apply_rotation_around_centroid(rb, T.get_rotation())
-    rb.set_coordinates( rb.get_coordinates() + T.get_translation())
+    rb.set_coordinates(rb.get_coordinates() + T.get_translation())
 
 
 def get_residue_particle(h, chain_id=False, res=1):
@@ -321,10 +331,11 @@ def get_residue_particle(h, chain_id=False, res=1):
     """
 #    log.debug("get_residue_particle: chain_id %s, res %s",chain_id, res)
     if(chain_id):
-        s=IMP.atom.Selection(h, chain=chain_id, residue_index=res)
+        s = IMP.atom.Selection(h, chain=chain_id, residue_index=res)
     else:
-        s=IMP.atom.Selection(h, residue_index=res)
+        s = IMP.atom.Selection(h, residue_index=res)
     return s.get_selected_particles()[0]
+
 
 def get_residue_coordinates(h, chain_id=False, res=1):
     """
@@ -358,16 +369,18 @@ def get_all_chains(hierarchies):
     """ Gets all the chains in a set of hierarchies
         @param hierarchies A set of IMP.atom.Hierarchy objects
     """
-    chains=[]
+    chains = []
     for h in hierarchies:
         chains_in_h = atom.get_by_type(h, atom.CHAIN_TYPE)
         for ch in chains_in_h:
             chains.append(ch.get_as_chain())
     return chains
 
+
 def set_reference_frames(rigid_bodies, reference_frames):
-    for ref, rb  in zip(reference_frames,rigid_bodies):
+    for ref, rb in zip(reference_frames, rigid_bodies):
         rb.set_reference_frame(ref)
+
 
 def get_nucleic_acid_backbone(hierarchy, backbone='minimal'):
     """
@@ -404,8 +417,9 @@ def get_nucleic_acid_backbone(hierarchy, backbone='minimal'):
 def get_calphas(chain_hierarchy):
     h_residues = atom.get_by_type(chain_hierarchy, atom.RESIDUE_TYPE)
     cas = [atom.get_atom(atom.Residue(r), atom.AtomType("CA"))
-                                                        for r in h_residues]
+           for r in h_residues]
     return cas
+
 
 def get_backbone(hierarchy):
     """
@@ -423,6 +437,7 @@ def get_backbone(hierarchy):
         atoms = get_calphas(hierarchy)
     return atoms
 
+
 def get_all_members(rigid_bodies):
     """
         Gets all the members of a set of rigid bodies, removing the subrigid
@@ -430,7 +445,7 @@ def get_all_members(rigid_bodies):
     """
 
     members = []
-    for rb  in rigid_bodies:
+    for rb in rigid_bodies:
         members += get_simple_members(rb)
     return members
 
@@ -438,6 +453,6 @@ def get_all_members(rigid_bodies):
 def get_simple_members(rb):
     # Add members if they are not sub-rigid bodies
     members = filter(
-       lambda m: not core.RigidBody.get_is_setup(m.get_particle()),
-       rb.get_members() )
+        lambda m: not core.RigidBody.get_is_setup(m.get_particle()),
+        rb.get_members())
     return members

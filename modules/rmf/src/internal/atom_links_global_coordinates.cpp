@@ -51,7 +51,6 @@ bool HierarchyLoadGlobalCoordinates::setup_particle(
     }
     IMP_LOG_TERSE("Particle " << m->get_particle_name(p) << " is in rigid body "
                               << std::endl);
-
   }
   link_particle(n, cstate, m, p, rigid_bodies);
   return true;
@@ -75,7 +74,6 @@ bool HierarchyLoadGlobalCoordinates::link_particle(
   return true;
 }
 
-
 void HierarchyLoadGlobalCoordinates::fix_internal_coordinates(
     core::RigidBody rb, algebra::ReferenceFrame3D rf,
     core::RigidBodyMember rm) const {
@@ -97,7 +95,7 @@ void HierarchyLoadGlobalCoordinates::fix_internal_coordinates(
 void HierarchyLoadGlobalCoordinates::fix_rigid_body(Model *m,
                                                     const RB &in) const {
   IMP_LOG_TERSE("Fixing rigid body " << m->get_particle_name(in.rb)
-                << std::endl);
+                                     << std::endl);
   // core::RigidMembers rms=in.second;
   core::RigidBody rb(m, in.rb);
   kernel::ParticleIndexes rigid_bits;
@@ -119,11 +117,10 @@ void HierarchyLoadGlobalCoordinates::fix_rigid_body(Model *m,
   }
 }
 
-
 void HierarchyLoadGlobalCoordinates::initialize_rigid_body(Model *m,
                                                            RB &in) const {
   IMP_LOG_TERSE("Initializing rigid body " << m->get_particle_name(in.rb)
-                << std::endl);
+                                           << std::endl);
   // core::RigidMembers rms=in.second;
   core::RigidBody rb(m, in.rb);
   algebra::ReferenceFrame3D rf =
@@ -139,12 +136,12 @@ void HierarchyLoadGlobalCoordinates::initialize_rigid_body(Model *m,
               .get_transformation_to();
       rbm.set_internal_transformation(lc);
       IMP_LOG_VERBOSE("Internal transform for " << m->get_particle_name(pi)
-                      << " are " << lc << std::endl);
+                                                << " are " << lc << std::endl);
     } else {
       algebra::Vector3D coords = rbm.get_coordinates();
       algebra::Vector3D lc = rf.get_local_coordinates(coords);
       IMP_LOG_VERBOSE("Internal coords for " << m->get_particle_name(pi)
-                      << " are " << lc << std::endl);
+                                             << " are " << lc << std::endl);
       rbm.set_internal_coordinates(lc);
     }
   }
@@ -156,7 +153,7 @@ void HierarchyLoadGlobalCoordinates::load(RMF::FileConstHandle fh, Model *m) {
     algebra::Vector3D v =
         get_coordinates(fh.get_node(pp.first), intermediate_particle_factory_);
     IMP_LOG_VERBOSE("Loading particle " << m->get_particle_name(pp.second)
-                    << " to " << v << std::endl);
+                                        << " to " << v << std::endl);
     core::XYZ(m, pp.second).set_coordinates(v);
   }
   IMP_FOREACH(Pair pp, rigid_bodies_) {
@@ -210,15 +207,15 @@ void HierarchySaveGlobalCoordinates::save(kernel::Model *m,
                                           RMF::FileHandle fh) {
   IMP_FOREACH(Pair pp, xyzs_) {
     copy_to_frame_particle(core::XYZ(m, pp.second).get_coordinates(),
-                             fh.get_node(pp.first),
-                             intermediate_particle_factory_);
+                           fh.get_node(pp.first),
+                           intermediate_particle_factory_);
   }
   IMP_FOREACH(Pair pp, rigid_bodies_) {
     copy_to_frame_reference_frame(core::RigidBody(m, pp.second)
-                                        .get_reference_frame()
-                                        .get_transformation_to(),
-                                    fh.get_node(pp.first),
-                                    reference_frame_factory_);
+                                      .get_reference_frame()
+                                      .get_transformation_to(),
+                                  fh.get_node(pp.first),
+                                  reference_frame_factory_);
   }
 }
 

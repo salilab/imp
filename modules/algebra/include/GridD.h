@@ -303,8 +303,8 @@ class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
   }
   using Storage::indexes_begin;
   using Storage::indexes_end;
-  typename Storage::IndexIterator indexes_begin(
-      const BoundingBoxD<D> &bb) const {
+  typename Storage::IndexIterator indexes_begin(const BoundingBoxD<D> &bb)
+      const {
     ExtendedGridIndexD<3> lb = get_extended_index(bb.get_corner(0));
     ExtendedGridIndexD<3> ub = get_extended_index(bb.get_corner(1));
     return Storage::indexes_begin(lb, ub);

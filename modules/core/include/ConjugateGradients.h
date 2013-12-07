@@ -49,7 +49,6 @@ class IMPCOREEXPORT ConjugateGradients : public AttributeOptimizer {
   IMP_OBJECT_METHODS(ConjugateGradients);
 
  private:
-
   typedef double NT;
 
   // Handle optimization failing badly

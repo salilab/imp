@@ -20,13 +20,10 @@
 IMPROTAMER_BEGIN_NAMESPACE
 
 //! A class storing the rotated coordinates of the atoms in the residue
-class IMPROTAMEREXPORT ResidueRotamer
-{
-public:
+class IMPROTAMEREXPORT ResidueRotamer {
+ public:
   ResidueRotamer(const IMP::atom::ResidueType &rt = IMP::atom::UNK)
-    : size_(0)
-    , residue_type_(rt)
-  {}
+      : size_(0), residue_type_(rt) {}
 
   //! get coordinates of the specified atom
   /** \param[in] index the version of the coordinates (index 0 gives the
@@ -34,8 +31,8 @@ public:
        the second most probable coordinates, etc)
       \param[in] at the requested atom
   */
-  const IMP::algebra::Vector3D &get_coordinates(unsigned index,
-      const IMP::atom::AtomType &at) const;
+  const IMP::algebra::Vector3D &get_coordinates(
+      unsigned index, const IMP::atom::AtomType &at) const;
 
   //! get number of coordinate sets for a given atom
   /** \param[in] at the requested atom
@@ -48,11 +45,7 @@ public:
   bool get_atom_exists(const IMP::atom::AtomType &at) const;
 
   //! get number of rotamers
-  unsigned get_size() const
-  {
-    return size_;
-  }
-
+  unsigned get_size() const { return size_; }
 
   //! get probability associated with the given rotamer
   /** \param[in] index the version of the coordinates (index 1 gives
@@ -60,18 +53,12 @@ public:
   */
   double get_probability(unsigned index) const;
 
-  IMP_SHOWABLE_INLINE(ResidueRotamer, {
-      out << "ResidueRotamer"; });
+  IMP_SHOWABLE_INLINE(ResidueRotamer, { out << "ResidueRotamer"; });
 
-private:
-  struct Box3D
-  {
-    Box3D()
-    {
-      clear();
-    }
-    void clear()
-    {
+ private:
+  struct Box3D {
+    Box3D() { clear(); }
+    void clear() {
       xmin = ymin = zmin = std::numeric_limits<double>::max();
       xmax = ymax = zmax = -std::numeric_limits<double>::max();
     }
@@ -87,11 +74,10 @@ private:
   void create_bounding_boxes(Box3D &bb_box, Box3D &sc_box, Boxes3D &rot_boxes);
 
   void add_coordinates(const IMP::atom::AtomType &at,
-      const IMP::algebra::Vector3D &coords);
+                       const IMP::algebra::Vector3D &coords);
   void push_coordinates();
   IMP::algebra::Vector3D &get_coordinates(const IMP::atom::AtomType &at);
-  void set_coordinates(unsigned index,
-      IMP::atom::Residue &rd) const;
+  void set_coordinates(unsigned index, IMP::atom::Residue &rd) const;
 
   friend class RotamerCalculator;
 
@@ -103,15 +89,11 @@ private:
   IMP::atom::ResidueType residue_type_;
 };
 
-
 IMP_VALUES(ResidueRotamer, ResidueRotamers);
 
-
 //! A class performing the rotations of atoms in the residues
-class IMPROTAMEREXPORT RotamerCalculator
-  : public IMP::base::Object
-{
-public:
+class IMPROTAMEREXPORT RotamerCalculator : public IMP::base::Object {
+ public:
   //! constructor
   /** \param[in] rl an instance of RotamerLibrary
   */
@@ -136,20 +118,14 @@ public:
       \param[in] num_iter maximum number of iterations (suggested: 6)
   */
   void transform(const IMP::atom::Hierarchy &protein,
-      const IMP::PairScore *score, double thr,
-      double K, int num_iter) const;
+                 const IMP::PairScore *score, double thr, double K,
+                 int num_iter) const;
 
-private:
-  struct ResidueData
-  {
-    ResidueData()
-      : n_angles(0)
-    {}
+ private:
+  struct ResidueData {
+    ResidueData() : n_angles(0) {}
 
-    bool empty() const
-    {
-      return n_angles == 0;
-    }
+    bool empty() const { return n_angles == 0; }
 
     int n_angles;
     std::vector<IMP::atom::AtomType> at_axes;

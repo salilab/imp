@@ -25,7 +25,7 @@
 // It is provided "as is" without express or implied warranty.
 //----------------------------------------------------------------------
 
-#include "IMP/kmeans/internal/KMlocal.h"             // KMlocal includes
+#include "IMP/kmeans/internal/KMlocal.h"  // KMlocal includes
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 
@@ -36,34 +36,34 @@ IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 //----------------------------------------------------------------------
 
 IMP_CLANG_PRAGMA(diagnostic ignored "-Wswitch-enum")
-KMfilterCenters KMlocal::execute()            // execute the algorithm
+KMfilterCenters KMlocal::execute()  // execute the algorithm
 {
-  reset();                              // resets everything
-  while(!isDone()) {                         // while not done
-    beginRun();                        // start a new run
+  reset();                            // resets everything
+  while (!isDone()) {                 // while not done
+    beginRun();                       // start a new run
     do {                              // do while run is not done
-      beginStage();                  // start of stage processing
-      KMalg method = selectMethod();      // select a method
-      switch(method) {                  // apply one stage
-      case LLOYD:                        // Lloyd's algorithm
-        curr.lloyd1Stage();
-        break;
-      case SWAP:                        // swap heuristic
-        curr.swap1Stage();
-        break;
-      case RANDOM:                  // get random centers
-        curr.genRandom();
-        break;
-      default:                        // shouldn't come here
-        assert(false);
-        break;
+      beginStage();                   // start of stage processing
+      KMalg method = selectMethod();  // select a method
+      switch (method) {               // apply one stage
+        case LLOYD:                   // Lloyd's algorithm
+          curr.lloyd1Stage();
+          break;
+        case SWAP:  // swap heuristic
+          curr.swap1Stage();
+          break;
+        case RANDOM:  // get random centers
+          curr.genRandom();
+          break;
+        default:  // shouldn't come here
+          assert(false);
+          break;
       }
-      endStage();                        // end of stage processing
-    } while(!isRunDone());                   // while run is not done
-    endRun();                        // end of run processing
-    tryAcceptance();                  // accept if appropriate
+      endStage();            // end of stage processing
+    } while (!isRunDone());  // while run is not done
+    endRun();                // end of run processing
+    tryAcceptance();         // accept if appropriate
   }
-  return best;                        // return best solution
+  return best;  // return best solution
 }
 
 IMPKMEANS_END_INTERNAL_NAMESPACE

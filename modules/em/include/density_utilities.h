@@ -9,7 +9,6 @@
 #ifndef IMPEM_DENSITY_UTILITIES_H
 #define IMPEM_DENSITY_UTILITIES_H
 
-
 #include <IMP/em/em_config.h>
 #include <IMP/base_types.h>
 #include "DensityMap.h"
@@ -23,8 +22,8 @@ IMPEM_BEGIN_NAMESPACE
 \param[in] mask the mask
 \return the masked and normalized map
  */
-IMPEMEXPORT DensityMap* mask_and_norm(em::DensityMap *dmap,
-                                         em::DensityMap *mask);
+IMPEMEXPORT DensityMap *mask_and_norm(em::DensityMap *dmap,
+                                      em::DensityMap *mask);
 
 IMPEM_END_NAMESPACE
-#endif  /* IMPEM_DENSITY_UTILITIES_H */
+#endif /* IMPEM_DENSITY_UTILITIES_H */

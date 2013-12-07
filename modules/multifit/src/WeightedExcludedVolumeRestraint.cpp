@@ -12,36 +12,31 @@
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 WeightedExcludedVolumeRestraint::WeightedExcludedVolumeRestraint(
-  core::RigidBodies rbs,
-  Refiner *refiner,
-  FloatKey weight_key):
-    kernel::Restraint(IMP::internal::get_model(rbs),
-              "Weighted Excluded Volume kernel::Restraint") {
+    core::RigidBodies rbs, Refiner *refiner, FloatKey weight_key)
+    : kernel::Restraint(IMP::internal::get_model(rbs),
+                        "Weighted Excluded Volume kernel::Restraint") {
   IMP_LOG_TERSE("Load WeightedExcludedVolumeRestraint \n");
-  rb_refiner_=refiner;
+  rb_refiner_ = refiner;
   add_particles(rbs);
-  rbs_=rbs;
+  rbs_ = rbs;
   initialize_model_density_map(weight_key);
 }
-void WeightedExcludedVolumeRestraint::initialize_model_density_map(
-  FloatKey ) {
-  for (core::RigidBodies::const_iterator it = rbs_.begin();
-       it != rbs_.end();it++){
-    core::RigidBody rb=*it;
-    kernel::ParticlesTemp rb_ps=rb_refiner_->get_refined(rb);
-    std::cout<<"Creating a density map for:"
-             <<rb_ps.size()<<" particles"<<std::endl;
-    rbs_surface_maps_.push_back(
-                                new em::SurfaceShellDensityMap(rb_ps,1));
-    rbs_orig_trans_.push_back(rb.get_reference_frame().get_transformation_to()
-                              .get_inverse());
+void WeightedExcludedVolumeRestraint::initialize_model_density_map(FloatKey) {
+  for (core::RigidBodies::const_iterator it = rbs_.begin(); it != rbs_.end();
+       it++) {
+    core::RigidBody rb = *it;
+    kernel::ParticlesTemp rb_ps = rb_refiner_->get_refined(rb);
+    std::cout << "Creating a density map for:" << rb_ps.size() << " particles"
+              << std::endl;
+    rbs_surface_maps_.push_back(new em::SurfaceShellDensityMap(rb_ps, 1));
+    rbs_orig_trans_.push_back(
+        rb.get_reference_frame().get_transformation_to().get_inverse());
   }
 }
 
 double WeightedExcludedVolumeRestraint::unprotected_evaluate(
-                         DerivativeAccumulator *accum) const
-{
-  bool calc_deriv = accum? true: false;
+    DerivativeAccumulator *accum) const {
+  bool calc_deriv = accum ? true : false;
   IMP_LOG_VERBOSE("before resample\n");
   // //generate the transformed maps
   // std::vector<DensityMap*> transformed_maps;
@@ -55,7 +50,7 @@ double WeightedExcludedVolumeRestraint::unprotected_evaluate(
   //       false);
   //   transformed_maps.push_back(dm);
   // }
-  double score=0.;
+  double score = 0.;
   // MRCReaderWriter mrw;
   // for(int i=0;i<transformed_maps.size();i++){
   //   std::stringstream ss;
@@ -74,24 +69,24 @@ double WeightedExcludedVolumeRestraint::unprotected_evaluate(
   //   }
   // }
   em::SurfaceShellDensityMaps resampled_surfaces;
-  for(unsigned int i=0;i<rbs_.size();i++){
-    kernel::ParticlesTemp rb_ps=rb_refiner_->get_refined(rbs_[i]);
-    resampled_surfaces.push_back(new em::SurfaceShellDensityMap(rb_ps,1.));
+  for (unsigned int i = 0; i < rbs_.size(); i++) {
+    kernel::ParticlesTemp rb_ps = rb_refiner_->get_refined(rbs_[i]);
+    resampled_surfaces.push_back(new em::SurfaceShellDensityMap(rb_ps, 1.));
   }
-  for(unsigned int i=0;i<rbs_.size();i++){
-    for(unsigned int j=i+1;j<rbs_.size();j++){
+  for (unsigned int i = 0; i < rbs_.size(); i++) {
+    for (unsigned int j = i + 1; j < rbs_.size(); j++) {
       if (get_interiors_intersect(resampled_surfaces[i],
-                                  resampled_surfaces[j])){
-      score += em::CoarseCC::cross_correlation_coefficient(
-                               resampled_surfaces[i],
-                               resampled_surfaces[j],1.,true,FloatPair(0.,0.));
+                                  resampled_surfaces[j])) {
+        score += em::CoarseCC::cross_correlation_coefficient(
+            resampled_surfaces[i], resampled_surfaces[j], 1., true,
+            FloatPair(0., 0.));
       }
     }
   }
 
   if (calc_deriv) {
     IMP_WARN("WeightedExcludedVolumeRestraint currently"
-             <<" does not support derivatives\n");
+             << " does not support derivatives\n");
   }
   /*for(int i=resampled_surfaces.size()-1;i<0;i--){
     delete(resampled_surfaces[i]);
@@ -99,22 +94,19 @@ double WeightedExcludedVolumeRestraint::unprotected_evaluate(
   return score;
 }
 
-ModelObjectsTemp WeightedExcludedVolumeRestraint::do_get_inputs() const
-{
-  kernel::ModelObjectsTemp ret
-    = rb_refiner_->get_inputs(get_model(),
-                              IMP::get_indexes(kernel::ParticlesTemp(particles_begin(),
-                                                             particles_end())));
-  for (ParticleConstIterator it= particles_begin();
-       it != particles_end(); ++it) {
-      kernel::ParticlesTemp curr= rb_refiner_->get_refined(*it);
-      ret += curr;
+ModelObjectsTemp WeightedExcludedVolumeRestraint::do_get_inputs() const {
+  kernel::ModelObjectsTemp ret = rb_refiner_->get_inputs(
+      get_model(), IMP::get_indexes(kernel::ParticlesTemp(particles_begin(),
+                                                          particles_end())));
+  for (ParticleConstIterator it = particles_begin(); it != particles_end();
+       ++it) {
+    kernel::ParticlesTemp curr = rb_refiner_->get_refined(*it);
+    ret += curr;
   }
   return ret;
 }
 
-IMP_LIST_IMPL(WeightedExcludedVolumeRestraint,
-              Particle, particle,Particle*, kernel::Particles);
-
+IMP_LIST_IMPL(WeightedExcludedVolumeRestraint, Particle, particle, Particle *,
+              kernel::Particles);
 
 IMPMULTIFIT_END_NAMESPACE

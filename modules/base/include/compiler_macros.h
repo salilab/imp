@@ -18,7 +18,6 @@
 #define IMP_FOREACH(v, r) for (v : r)
 #endif
 
-
 #include <boost/detail/endian.hpp>
 
 #define IMP_STRINGIFY(x) #x
@@ -221,4 +220,4 @@
 #define IMP_DEPRECATED_ATTRIBUTE
 #endif
 
-#endif  /* IMPBASE_COMPILER_MACROS_H */
+#endif /* IMPBASE_COMPILER_MACROS_H */

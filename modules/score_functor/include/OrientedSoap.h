@@ -42,22 +42,22 @@ class OrientedSoap : public Score {
   }
 
   // Return the score for the interaction between a pair of doublets
-  double score_doublets(atom::Atom a1, atom::Atom a2,
-                        int distbin, const internal::SoapModelDoublet &d1,
+  double score_doublets(atom::Atom a1, atom::Atom a2, int distbin,
+                        const internal::SoapModelDoublet &d1,
                         const internal::SoapModelDoublet &d2) const {
-    double ang1 = core::internal::angle(a1, a2, d2.atom,
-                                        nullptr, nullptr,
-                                        nullptr) * 180.0 / PI;
-    double ang2 = core::internal::angle(d1.atom, a1, a2,
-                                        nullptr, nullptr,
-                                        nullptr) * 180.0 / PI;
-    double dih = core::internal::dihedral(d1.atom, a1, a2, d2.atom,
-                                          nullptr, nullptr, nullptr,
-                                          nullptr) * 180.0 / PI;
+    double ang1 =
+        core::internal::angle(a1, a2, d2.atom, nullptr, nullptr, nullptr) *
+        180.0 / PI;
+    double ang2 =
+        core::internal::angle(d1.atom, a1, a2, nullptr, nullptr, nullptr) *
+        180.0 / PI;
+    double dih = core::internal::dihedral(d1.atom, a1, a2, d2.atom, nullptr,
+                                          nullptr, nullptr, nullptr) *
+                 180.0 / PI;
     return potential_.get_value(distbin, ang1, ang2, dih, d1.doublet_class,
                                 d2.doublet_class);
   }
-#endif // IMP_SCORE_FUNCTOR_USE_HDF5
+#endif  // IMP_SCORE_FUNCTOR_USE_HDF5
 
  public:
   //! Constructor.
@@ -77,8 +77,8 @@ class OrientedSoap : public Score {
                    double distance) const {
     double score = 0;
 #ifdef IMP_SCORE_FUNCTOR_USE_HDF5
-    int distbin = potential_.get_index(internal::SoapPotential::DISTANCE,
-                                       distance);
+    int distbin =
+        potential_.get_index(internal::SoapPotential::DISTANCE, distance);
     if (distbin >= 0) {
       atom::Atom a1(m, pis[0]);
       atom::Atom a2(m, pis[1]);
@@ -96,7 +96,7 @@ class OrientedSoap : public Score {
         }
       }
     }
-#endif // IMP_SCORE_FUNCTOR_USE_HDF5
+#endif  // IMP_SCORE_FUNCTOR_USE_HDF5
     return score;
   }
   template <unsigned int D>
@@ -135,7 +135,6 @@ class OrientedSoap : public Score {
 #endif
     return ret;
   }
-
 };
 
 IMPSCOREFUNCTOR_END_NAMESPACE

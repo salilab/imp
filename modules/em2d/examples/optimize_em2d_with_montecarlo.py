@@ -60,7 +60,7 @@ for c in chains:
     native_chain_centers.append(rbd.get_coordinates())
 
 bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-25, -40, -60),
-                               IMP.algebra.Vector3D(25,  40, 60))
+                               IMP.algebra.Vector3D(25, 40, 60))
 # rotate and translate the chains
 for rbd in rigid_bodies:
     # rotation

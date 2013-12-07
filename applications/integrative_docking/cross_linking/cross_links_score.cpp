@@ -26,38 +26,42 @@ namespace po = boost::program_options;
 
 int main(int argc, char **argv) {
   // print command
-  for(int i=0; i<argc; i++) std::cerr << argv[i] << " "; std::cerr << std::endl;
+  for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";
+  std::cerr << std::endl;
 
   // input parsing
   std::string out_file_name;
-  po::options_description desc("Usage: <pdb1> <pdb2> \
+  po::options_description desc(
+      "Usage: <pdb1> <pdb2> \
 <trans_file> <cross_links_file>");
-  desc.add_options()
-    ("help", "static and transformed molecules from docking with \
+  desc.add_options()("help",
+                     "static and transformed molecules from docking with \
 transformation file. \
-Each docked complex will be compared against cross links in cross_links_file.")
-    ("input-files", po::value< std::vector<std::string> >(),
-     "input PDB, transformation and profile files")
-    ("output_file,o",
-     po::value<std::string>(&out_file_name)->default_value("cxms_score.res"),
-     "output file name, default name cxms_score.res");
+Each docked complex will be compared against cross links in cross_links_file.")(
+      "input-files", po::value<std::vector<std::string> >(),
+      "input PDB, transformation and profile files")(
+      "output_file,o",
+      po::value<std::string>(&out_file_name)->default_value("cxms_score.res"),
+      "output file name, default name cxms_score.res");
 
   po::positional_options_description p;
   p.add("input-files", -1);
   po::variables_map vm;
   po::store(
-      po::command_line_parser(argc,argv).options(desc).positional(p).run(), vm);
+      po::command_line_parser(argc, argv).options(desc).positional(p).run(),
+      vm);
   po::notify(vm);
 
   // parse filenames
   std::string receptor_pdb, ligand_pdb, trans_file;
   std::string cross_links_file;
   std::vector<std::string> files;
-  if(vm.count("input-files")) {
-    files = vm["input-files"].as< std::vector<std::string> >();
+  if (vm.count("input-files")) {
+    files = vm["input-files"].as<std::vector<std::string> >();
   }
-  if(vm.count("help") || files.size() != 4) {
-    std::cout << desc << "\n"; return 0;
+  if (vm.count("help") || files.size() != 4) {
+    std::cout << desc << "\n";
+    return 0;
   }
   receptor_pdb = files[0];
   ligand_pdb = files[1];
@@ -66,29 +70,28 @@ Each docked complex will be compared against cross links in cross_links_file.")
 
   // read pdb  files, prepare particles
   IMP::kernel::Model *model = new IMP::kernel::Model();
-  IMP::atom::Hierarchy mhd =
-    IMP::atom::read_pdb(receptor_pdb, model,
-                        new IMP::atom::NonWaterNonHydrogenPDBSelector(),
-                        true, true);
-  IMP::kernel::Particles residue_particles1 = get_by_type(mhd, IMP::atom::RESIDUE_TYPE);
+  IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(
+      receptor_pdb, model, new IMP::atom::NonWaterNonHydrogenPDBSelector(),
+      true, true);
+  IMP::kernel::Particles residue_particles1 =
+      get_by_type(mhd, IMP::atom::RESIDUE_TYPE);
   mhd = IMP::atom::read_pdb(ligand_pdb, model,
                             new IMP::atom::NonWaterNonHydrogenPDBSelector(),
                             true, true);
-  IMP::kernel::Particles residue_particles2 = get_by_type(mhd, IMP::atom::RESIDUE_TYPE);
+  IMP::kernel::Particles residue_particles2 =
+      get_by_type(mhd, IMP::atom::RESIDUE_TYPE);
 
   // get CA atoms for residues
   IMP::kernel::Particles ca_atoms1, ca_atoms2;
-  for(unsigned int i=0; i<residue_particles1.size(); i++) {
-    IMP::atom::Atom at =
-      IMP::atom::get_atom(IMP::atom::Residue(residue_particles1[i]),
-                          IMP::atom::AT_CA);
-    if(at.get_particle() != NULL) ca_atoms1.push_back(at.get_particle());
+  for (unsigned int i = 0; i < residue_particles1.size(); i++) {
+    IMP::atom::Atom at = IMP::atom::get_atom(
+        IMP::atom::Residue(residue_particles1[i]), IMP::atom::AT_CA);
+    if (at.get_particle() != NULL) ca_atoms1.push_back(at.get_particle());
   }
-  for(unsigned int i=0; i<residue_particles2.size(); i++) {
-    IMP::atom::Atom at =
-      IMP::atom::get_atom(IMP::atom::Residue(residue_particles2[i]),
-                          IMP::atom::AT_CA);
-    if(at.get_particle() != NULL) ca_atoms2.push_back(at.get_particle());
+  for (unsigned int i = 0; i < residue_particles2.size(); i++) {
+    IMP::atom::Atom at = IMP::atom::get_atom(
+        IMP::atom::Residue(residue_particles2[i]), IMP::atom::AT_CA);
+    if (at.get_particle() != NULL) ca_atoms2.push_back(at.get_particle());
   }
 
   // read tranformations
@@ -101,13 +104,11 @@ Each docked complex will be compared against cross links in cross_links_file.")
   std::vector<DockingDistanceRestraint> distance_restraints_;
 
   // find CA atoms from cross linked residues
-  for(unsigned int i=0; i<cross_links.size(); i++) {
-    IMP::algebra::Vector3D v1 =
-      get_ca_coordinate(ca_atoms1, cross_links[i].get_residue1(),
-                        cross_links[i].get_chain1());
-    IMP::algebra::Vector3D v2 =
-      get_ca_coordinate(ca_atoms2, cross_links[i].get_residue2(),
-                        cross_links[i].get_chain2());
+  for (unsigned int i = 0; i < cross_links.size(); i++) {
+    IMP::algebra::Vector3D v1 = get_ca_coordinate(
+        ca_atoms1, cross_links[i].get_residue1(), cross_links[i].get_chain1());
+    IMP::algebra::Vector3D v2 = get_ca_coordinate(
+        ca_atoms2, cross_links[i].get_residue2(), cross_links[i].get_chain2());
     DockingDistanceRestraint ddr(v1, v2, cross_links[i].get_max_distance(),
                                  cross_links[i].get_min_distance());
     distance_restraints_.push_back(ddr);
@@ -126,37 +127,37 @@ Each docked complex will be compared against cross links in cross_links_file.")
 
   // iterate transformations
   std::vector<CrossLinkingResult> results;
-  for(unsigned int i=0; i<transforms.size(); i++) {
+  for (unsigned int i = 0; i < transforms.size(); i++) {
     float score = 0.0;
     int unsatisfied_num = 0;
-    for(unsigned int j=0; j<distance_restraints_.size(); j++) {
+    for (unsigned int j = 0; j < distance_restraints_.size(); j++) {
       float curr_score = distance_restraints_[j].get_score(transforms[i]);
-      if(curr_score <= 0.0) {
+      if (curr_score <= 0.0) {
         unsatisfied_num++;
       } else {
-        score+= curr_score;
+        score += curr_score;
         // std::cerr << i << " " << score << std::endl;
       }
     }
 
     float final_score = score;
     bool filtered = false;
-    if(final_score <= 0.0) filtered = true;
+    if (final_score <= 0.0) filtered = true;
 
     // save
-    CrossLinkingResult r(i+1, final_score, filtered, unsatisfied_num,
+    CrossLinkingResult r(i + 1, final_score, filtered, unsatisfied_num,
                          transforms[i]);
     results.push_back(r);
-    if((i+1) % 10000 == 0) std::cerr << i+1 << " transforms processed "
-                                    << std::endl;
+    if ((i + 1) % 10000 == 0)
+      std::cerr << i + 1 << " transforms processed " << std::endl;
   }
 
   // compute z_scores
   float average = 0.0;
   float std = 0.0;
   int counter = 0;
-  for(unsigned int i=0; i<results.size(); i++) {
-    if(!results[i].is_filtered()) {
+  for (unsigned int i = 0; i < results.size(); i++) {
+    if (!results[i].is_filtered()) {
       counter++;
       average += results[i].get_score();
       std += IMP::square(results[i].get_score());
@@ -168,17 +169,17 @@ Each docked complex will be compared against cross links in cross_links_file.")
   std = sqrt(std);
 
   // update z_scores
-  for(unsigned int i=0; i<results.size(); i++) {
-    if(!results[i].is_filtered()) {
-      if(std > 0.0) {
-        float z_score = -(results[i].get_score() - average)/std;
+  for (unsigned int i = 0; i < results.size(); i++) {
+    if (!results[i].is_filtered()) {
+      if (std > 0.0) {
+        float z_score = -(results[i].get_score() - average) / std;
         results[i].set_z_score(z_score);
       }
     }
   }
 
   // output
-  for(unsigned int i=0; i<results.size(); i++) {
+  for (unsigned int i = 0; i < results.size(); i++) {
     out_file << results[i] << std::endl;
   }
   out_file.close();

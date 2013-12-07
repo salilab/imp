@@ -16,8 +16,8 @@ import os
 m = IMP.kernel.Model()
 
 #! read PDB
-mp= IMP.atom.read_pdb(IMP.saxs.get_example_path('6lyz.pdb'), m,
-                      IMP.atom.NonWaterNonHydrogenPDBSelector())
+mp = IMP.atom.read_pdb(IMP.saxs.get_example_path('6lyz.pdb'), m,
+                       IMP.atom.NonWaterNonHydrogenPDBSelector())
 
 #! read experimental profile
 exp_profile = IMP.saxs.Profile(IMP.saxs.get_example_path('lyzexp.dat'))

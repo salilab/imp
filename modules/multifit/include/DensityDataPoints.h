@@ -28,36 +28,33 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 typedef IMP::algebra::DenseGrid3D<double> DensGrid;
 
 IMPMULTIFITEXPORT
-em::DensityMap *grid2map(const DensGrid &dg,float spacing);
-
+em::DensityMap *grid2map(const DensGrid &dg, float spacing);
 
 //! Stores density voxels as a vector of Array1D.
 /**
 \note This manipulation is needed for matrix operations.
  */
 class IMPMULTIFITEXPORT DensityDataPoints
-  : public IMP::statistics::internal::XYZDataPoints
-{
+    : public IMP::statistics::internal::XYZDataPoints {
  public:
-  DensityDataPoints(em::DensityMap *dens,
-                    float density_threshold);
-  DensityDataPoints(const DensGrid &dens,
-                    float density_threshold);
+  DensityDataPoints(em::DensityMap *dens, float density_threshold);
+  DensityDataPoints(const DensGrid &dens, float density_threshold);
   IMP::statistics::internal::Array1DD sample() const;
 
   //  em::DensityMap* get_density_map() const {return dens_;}
 
   IMP_OBJECT_METHODS(DensityDataPoints);
+
  protected:
   void populate_data();
   void set_max_min_density_values();
   void set_density(em::DensityMap *d);
   void set_density(const DensGrid &dens);
-  //TODO - change back once DensityMap will be Grid3D
-  //Pointer<DensGrid> dens_; /// TODO - make the class an object
+  // TODO - change back once DensityMap will be Grid3D
+  // Pointer<DensGrid> dens_; /// TODO - make the class an object
   boost::scoped_ptr<DensGrid> dens_;
   //  em::DensityMap *dens_;
-  double max_value_,min_value_;
+  double max_value_, min_value_;
   double threshold_;
 };
 IMP_OBJECTS(DensityDataPoints, DensityDataPointsList);

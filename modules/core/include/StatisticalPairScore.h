@@ -56,8 +56,9 @@ IMPCORE_BEGIN_NAMESPACE
     interpolated with a spline.
 */
 template <class Key, bool BIPARTITE, bool INTERPOLATE, bool SPARSE = false>
-class StatisticalPairScore : public score_functor::DistancePairScore<
-    score_functor::Statistical<Key, BIPARTITE, INTERPOLATE, SPARSE> > {
+class StatisticalPairScore
+    : public score_functor::DistancePairScore<
+          score_functor::Statistical<Key, BIPARTITE, INTERPOLATE, SPARSE> > {
   typedef score_functor::Statistical<Key, BIPARTITE, INTERPOLATE, SPARSE> S;
   typedef score_functor::DistancePairScore<S> P;
 

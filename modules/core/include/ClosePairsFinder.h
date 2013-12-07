@@ -42,8 +42,8 @@ class IMPCOREEXPORT ClosePairsFinder : public kernel::ParticleInputs,
 
   /** \deprecated_at{2.1} use the index-based on instead. */
   IMPCORE_DEPRECATED_METHOD_DECL(2.1)
-  kernel::ParticlePairsTemp get_close_pairs(
-      const kernel::ParticlesTemp &pc) const;
+  kernel::ParticlePairsTemp get_close_pairs(const kernel::ParticlesTemp &pc)
+      const;
   /** \deprecated_at{2.1} use the index-based on instead. */
   IMPCORE_DEPRECATED_METHOD_DECL(2.1)
   kernel::ParticlePairsTemp get_close_pairs(
@@ -53,11 +53,11 @@ class IMPCOREEXPORT ClosePairsFinder : public kernel::ParticleInputs,
   virtual kernel::ParticleIndexPairs get_close_pairs(
       kernel::Model *m, const kernel::ParticleIndexes &pca,
       const kernel::ParticleIndexes &pcb) const = 0;
-  virtual IntPairs get_close_pairs(
-      const algebra::BoundingBox3Ds &bbs) const = 0;
-  virtual IntPairs get_close_pairs(
-      const algebra::BoundingBox3Ds &bas,
-      const algebra::BoundingBox3Ds &bbs) const = 0;
+  virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs)
+      const = 0;
+  virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas,
+                                   const algebra::BoundingBox3Ds &bbs)
+      const = 0;
   /** @} */
 
   /** \name The distance threshold

@@ -56,7 +56,6 @@ class IMPKERNELEXPORT Container : public ScoreState {
   Container(kernel::Model *m, std::string name = "Container %1%");
 
  public:
-
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   // lazy, should go in an internal header
   static bool update_version(Container *c, int &version) {

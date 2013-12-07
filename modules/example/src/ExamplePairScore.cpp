@@ -40,9 +40,8 @@ Float ExamplePairScore::evaluate_index(kernel::Model *m,
   return score;
 }
 
-ModelObjectsTemp ExamplePairScore::do_get_inputs(kernel::Model *m,
-                                               const kernel::ParticleIndexes &pis)
-    const {
+ModelObjectsTemp ExamplePairScore::do_get_inputs(
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
   return IMP::kernel::get_particles(m, pis);
 }
 

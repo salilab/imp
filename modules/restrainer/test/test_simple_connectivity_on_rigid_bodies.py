@@ -4,7 +4,9 @@ import IMP.test
 import IMP.atom
 import IMP.restrainer
 
+
 class Tests(IMP.test.TestCase):
+
     """Class to test simple connectivity restraint on rigid bodies"""
 
     def setUp(self):
@@ -16,10 +18,10 @@ class Tests(IMP.test.TestCase):
 
         mhs = IMP.atom.Hierarchies()
         mh1 = IMP.atom.read_pdb(self.get_input_file_name("input.pdb"),
-                              self.m, sel)
+                                self.m, sel)
         IMP.atom.add_radii(mh1)
         mh2 = IMP.atom.read_pdb(self.get_input_file_name("input.pdb"),
-                              self.m, sel)
+                                self.m, sel)
         IMP.atom.add_radii(mh2)
 
         mhs.append(mh1)
@@ -30,7 +32,8 @@ class Tests(IMP.test.TestCase):
     def test_methods(self):
         """Check SimpleConnectivity's methods for rigid bodies"""
 
-        sc = IMP.restrainer.create_simple_connectivity_on_rigid_bodies(self.rbs)
+        sc = IMP.restrainer.create_simple_connectivity_on_rigid_bodies(
+            self.rbs)
         r = sc.get_restraint()
         self.m.add_restraint(r)
 

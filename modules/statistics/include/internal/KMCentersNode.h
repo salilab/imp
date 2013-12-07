@@ -40,7 +40,7 @@ class IMPSTATISTICSEXPORT KMCentersNode {
 
   KMPoint get_mid_point() const;
   KMRectangle &get_bounding_box()  // TODO - should be const ?
-      {
+  {
     return bnd_box_;
   }
   //! Compute sums of points

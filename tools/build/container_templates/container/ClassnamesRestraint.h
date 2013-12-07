@@ -40,7 +40,6 @@ class ClassnamesRestraint :
   typedef IMP::kernel::internal::InternalClassnamesRestraint P;
 
  public:
-
   //! Create the restraint with a shared container
   /** \param[in] ss The function to apply to each particle.
       \param[in] pc The container containing the stored particles. This

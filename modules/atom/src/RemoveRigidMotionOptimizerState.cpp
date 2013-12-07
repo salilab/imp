@@ -11,7 +11,6 @@
 #include <IMP/atom/Mass.h>
 #include <IMP/core/XYZ.h>
 
-
 IMPATOM_BEGIN_NAMESPACE
 
 RemoveRigidMotionOptimizerState::RemoveRigidMotionOptimizerState(

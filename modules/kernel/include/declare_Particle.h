@@ -41,7 +41,6 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   IMP_OBJECT_METHODS(Particle);
 
  public:
-
   //! Construct a particle and add it to the Model
   Particle(kernel::Model *m, std::string name);
 

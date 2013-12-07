@@ -4,6 +4,7 @@ import IMP.cnmultifit
 import os
 from IMP.cnmultifit import param
 
+
 class Tests(IMP.test.TestCase):
 
     def test_param_help(self):
@@ -13,7 +14,7 @@ class Tests(IMP.test.TestCase):
     def test_param_usage(self):
         """Test param module incorrect usage"""
         r = self.run_python_module("IMP.cnmultifit.param", [])
-        out,err = r.communicate()
+        out, err = r.communicate()
         self.assertEqual(out, "")
         self.assertIn("incorrect number of arguments", err)
         self.assertNotEqual(r.returncode, 0)

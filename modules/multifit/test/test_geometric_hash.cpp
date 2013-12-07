@@ -13,18 +13,16 @@ typedef std::vector<int> Indices;
 
 namespace {
 // square Euclidean distance
-double sq_dist(const Hash2::Point &p1, const Hash2::Point &p2)
-{
+double sq_dist(const Hash2::Point &p1, const Hash2::Point &p2) {
   double d0 = p1[0] - p2[0];
   double d1 = p1[1] - p2[1];
-  return d0*d0 + d1*d1;
+  return d0 * d0 + d1 * d1;
 }
 
 // find the indices of points within the distance of radius from the
 // center by simple distance calculation
 Indices dist_nearest(const Points &points, const Hash2::Point &center,
-                     double radius)
-{
+                     double radius) {
   radius *= radius;
   Indices inds;
   for (unsigned i = 0; i < points.size(); ++i) {
@@ -35,12 +33,10 @@ Indices dist_nearest(const Points &points, const Hash2::Point &center,
   return inds;
 }
 
-
 // find the indices of points within the distance of radius from the
 // center using the hash
 Indices hash_nearest(const Points &points, const Hash2::Point &center,
-                     double radius)
-{
+                     double radius) {
   Hash2 H;
   for (unsigned i = 0; i < points.size(); ++i) {
     H.add(points[i], i);
@@ -54,23 +50,21 @@ Indices hash_nearest(const Points &points, const Hash2::Point &center,
 }
 
 // generate some points
-Points gen_points(int N)
-{
+Points gen_points(int N) {
   Points points;
   for (int r = 0; r < N; ++r) {
     for (int i = 0; i < N; ++i) {
-      double angle = 2.0*i*IMP::algebra::PI/static_cast<float>(N);
-      points.push_back(Hash2::Point(0.1*r*std::cos(angle),
-                                    0.1*r*std::sin(angle)));
+      double angle = 2.0 * i * IMP::algebra::PI / static_cast<float>(N);
+      points.push_back(
+          Hash2::Point(0.1 * r * std::cos(angle), 0.1 * r * std::sin(angle)));
     }
   }
   return points;
 }
 }
-int main()
-{
+int main() {
   Points points = gen_points(200);
-  Hash2::Point cnt(1.,1.);
+  Hash2::Point cnt(1., 1.);
   double rd = 0.45;
   Indices dist = dist_nearest(points, cnt, rd);
   Indices hash = hash_nearest(points, cnt, rd);

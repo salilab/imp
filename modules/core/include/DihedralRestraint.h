@@ -32,8 +32,8 @@ class IMPCOREEXPORT DihedralRestraint : public kernel::Restraint {
                     kernel::Particle* p2, kernel::Particle* p3,
                     kernel::Particle* p4);
 
-  virtual double unprotected_evaluate(
-      IMP::kernel::DerivativeAccumulator* accum) const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator* accum)
+      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(DihedralRestraint);
 

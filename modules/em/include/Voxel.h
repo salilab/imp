@@ -22,23 +22,20 @@ IMPEM_BEGIN_NAMESPACE
 /**
     \ingroup decorators
  */
-class IMPEMEXPORT Voxel: public Decorator
-{
+class IMPEMEXPORT Voxel : public Decorator {
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
-                  const algebra::Vector3D &position,
-                  Float radius,
-                  Float density) {
-    core::XYZR::setup_particle(m, pi, algebra::Sphere3D(position,radius));
-    m->add_attribute(get_density_key(),pi, density,false);
+                                const algebra::Vector3D &position, Float radius,
+                                Float density) {
+    core::XYZR::setup_particle(m, pi, algebra::Sphere3D(position, radius));
+    m->add_attribute(get_density_key(), pi, density, false);
   }
- public:
 
+ public:
   static const FloatKey get_density_key();
   static const FloatKeys get_keys();
 
   IMP_DECORATOR_METHODS(Voxel, Decorator);
-  IMP_DECORATOR_SETUP_3(Voxel, algebra::Vector3D, position,
-                        Float, radius,
+  IMP_DECORATOR_SETUP_3(Voxel, algebra::Vector3D, position, Float, radius,
                         Float, density);
 
   IMP_DECORATOR_GET_SET(density, get_density_key(), Float, Float);
@@ -53,4 +50,4 @@ IMP_DECORATORS(Voxel, Voxels, kernel::Particles);
 
 IMPEM_END_NAMESPACE
 
-#endif  /* IMPEM_VOXEL_H */
+#endif /* IMPEM_VOXEL_H */

@@ -7,7 +7,6 @@ import os
 import random
 
 
-
 class Tests(IMP.test.TestCase):
 
     def test_functions(self):

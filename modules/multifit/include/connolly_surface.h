@@ -1,5 +1,6 @@
 /**
- *  \file multifit/connolly_surface.h     \brief Generate surface for a set of atoms
+ *  \file multifit/connolly_surface.h     \brief Generate surface for a set of
+ *atoms
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -14,12 +15,11 @@
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
-
 //! Write the Connolly surface for a set of atoms to a file.
-void IMPMULTIFITEXPORT write_connolly_surface(
-           atom::Atoms as, base::TextOutput fn,
-           float density, float probe_radius);
+void IMPMULTIFITEXPORT
+    write_connolly_surface(atom::Atoms as, base::TextOutput fn, float density,
+                           float probe_radius);
 
 IMPMULTIFIT_END_NAMESPACE
 
-#endif  /* IMPMULTIFIT_CONNOLLY_SURFACE_H */
+#endif /* IMPMULTIFIT_CONNOLLY_SURFACE_H */

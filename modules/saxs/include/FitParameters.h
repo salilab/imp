@@ -14,12 +14,12 @@ IMPSAXS_BEGIN_NAMESPACE
 
 class IMPSAXSEXPORT FitParameters {
  public:
-  FitParameters():
-    chi_(0.0), c1_(0.0), c2_(0.0), c_(0.0), o_(0.0), default_chi_(0.0) {}
-  FitParameters(float chi, float c1, float c2, float c, float o):
-    chi_(chi), c1_(c1), c2_(c2), c_(c), o_(o), default_chi_(0.0) {}
-  FitParameters(float chi, float c1, float c2):
-    chi_(chi), c1_(c1), c2_(c2), c_(0.0), o_(0.0), default_chi_(0.0) {}
+  FitParameters()
+      : chi_(0.0), c1_(0.0), c2_(0.0), c_(0.0), o_(0.0), default_chi_(0.0) {}
+  FitParameters(float chi, float c1, float c2, float c, float o)
+      : chi_(chi), c1_(c1), c2_(c2), c_(c), o_(o), default_chi_(0.0) {}
+  FitParameters(float chi, float c1, float c2)
+      : chi_(chi), c1_(c1), c2_(c2), c_(0.0), o_(0.0), default_chi_(0.0) {}
 
   float get_score() const { return chi_; }
   float get_chi() const { return chi_; }
@@ -53,15 +53,15 @@ class IMPSAXSEXPORT FitParameters {
 #endif
 
  protected:
-  float chi_; // fit score
-  float c1_; // excluded volume fit
-  float c2_; // water layer fit
-  float c_; // scaling
-  float o_; // offset
-  float default_chi_; // default chi value without fitting c1/c2
+  float chi_;          // fit score
+  float c1_;           // excluded volume fit
+  float c2_;           // water layer fit
+  float c_;            // scaling
+  float o_;            // offset
+  float default_chi_;  // default chi value without fitting c1/c2
   std::string profile_file_name_;
   std::string pdb_file_name_;
-  int mol_index_; // unique mol index
+  int mol_index_;  // unique mol index
 };
 
 IMPSAXS_END_NAMESPACE

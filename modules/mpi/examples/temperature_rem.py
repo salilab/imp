@@ -1,5 +1,5 @@
 ## \example temperature_rem.py
-## Temperature replica exchange
+# Temperature replica exchange
 
 import IMP
 import IMP.base

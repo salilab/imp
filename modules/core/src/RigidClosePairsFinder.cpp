@@ -40,8 +40,7 @@ ParticlesTemp get_rigid_bodies(kernel::Model *m,
     if (RigidMember::get_is_setup(m, pis[i])) {
       rets.insert(RigidMember(m, pis[i]).get_rigid_body());
     }
-  }
-  ;
+  };
   return kernel::ParticlesTemp(rets.begin(), rets.end());
 }
 

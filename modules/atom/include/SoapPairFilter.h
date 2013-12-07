@@ -28,7 +28,7 @@ class SoapPairFilter : public PairPredicate {
   internal::SoapBondSeparation bondsep_;
   internal::SoapChainSeparation chainsep_;
 #endif
-public:
+ public:
   SoapPairFilter(std::string library) {
 #ifdef IMP_SCORE_FUNCTOR_USE_HDF5
     score_functor::internal::Hdf5File file_id(library);
@@ -44,8 +44,8 @@ public:
                               const kernel::ParticleIndexPair &p) const
       IMP_OVERRIDE {
 #ifdef IMP_SCORE_FUNCTOR_USE_HDF5
-    return !chainsep_.get_separation_ok(m, p)
-           || !bondsep_.get_separation_ok(m, p);
+    return !chainsep_.get_separation_ok(m, p) ||
+           !bondsep_.get_separation_ok(m, p);
 #else
     return true;
 #endif

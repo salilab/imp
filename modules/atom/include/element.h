@@ -133,7 +133,7 @@ enum Element {
   Jl = 105,
   Rf = 106
 #ifndef IMP_DOXYGEN
-      ,
+  ,
   NUMBER_OF_ELEMENTS = 107
 #endif
 };

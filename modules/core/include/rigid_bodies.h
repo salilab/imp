@@ -93,6 +93,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   void setup_score_states();
   void add_point_member(kernel::ParticleIndex pi);
   void add_rigid_body_member(kernel::ParticleIndex pi);
+
  public:
   RigidMembers get_members() const;
 
@@ -256,7 +257,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 void IMPCOREEXPORT add_rigid_body_cache_key(ObjectKey k);
 
 //! A member of a rigid body, it has internal coordinates
-class IMPCOREEXPORT RigidBodyMember: public XYZ {
+class IMPCOREEXPORT RigidBodyMember : public XYZ {
   IMP_DECORATOR_METHODS(RigidBodyMember, XYZ);
 
   RigidBody get_rigid_body() const;
@@ -338,7 +339,6 @@ class IMPCOREEXPORT RigidBodyMember: public XYZ {
   static FloatKeys get_internal_coordinate_keys() {
     return internal::rigid_body_data().child_keys_;
   }
-
 };
 
 //! A decorator for a particle that is part of a rigid body
@@ -348,7 +348,6 @@ class IMPCOREEXPORT RigidBodyMember: public XYZ {
 class IMPCOREEXPORT RigidMember : public RigidBodyMember {
  public:
   IMP_DECORATOR_METHODS(RigidMember, RigidBodyMember);
-
 
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(RigidMember);
   ~RigidMember();

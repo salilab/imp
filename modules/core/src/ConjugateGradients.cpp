@@ -274,7 +274,7 @@ Float ConjugateGradients::do_optimize(unsigned int max_steps) {
 #ifdef IMP_CG_SCALE
     x[i] = get_scaled_value(float_indices[i]);  // scaled
 #else
-    x[i] = get_value(float_indices[i]);  // scaled
+    x[i] = get_value(float_indices[i]);            // scaled
 #endif
     IMP_USAGE_CHECK(
         !base::isnan(x[i]) && std::abs(x[i]) < std::numeric_limits<NT>::max(),

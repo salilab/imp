@@ -30,15 +30,13 @@ class KinematicForest;
     Base class for joints between rigid bodies in a kinematic
     tree.
 */
-class IMPKINEMATICSEXPORT Joint
-: public IMP::base::Object
-{
+class IMPKINEMATICSEXPORT Joint : public IMP::base::Object {
   friend class KinematicForest;
   friend class CompositeJoint;
 
   IMP_OBJECT_METHODS(Joint);
 
-public:
+ public:
   /**
      An abstract class for a joint between a parent and a child
 
@@ -51,10 +49,7 @@ public:
   /***************** getter methods: ***************/
 
  public:
-
-  KinematicForest* get_owner_kf() const{
-    return owner_kf_;
-  }
+  KinematicForest* get_owner_kf() const { return owner_kf_; }
 
   /**
      returns the transformation of a vector from the child
@@ -63,37 +58,31 @@ public:
   */
   // hack to make it compile on swig - this should be fixed as it might
   // cause some pathologies
-IMP_NO_SWIG(virtual)
-  const IMP::algebra::Transformation3D&
-    get_transformation_child_to_parent() const;
+  IMP_NO_SWIG(virtual)
+  const IMP::algebra::Transformation3D& get_transformation_child_to_parent()
+      const;
 
-  IMP::core::RigidBody  get_parent_node() const
-    { return parent_; }
+  IMP::core::RigidBody get_parent_node() const { return parent_; }
 
-  IMP::core::RigidBody get_child_node() const
-    { return child_; }
-
+  IMP::core::RigidBody get_child_node() const { return child_; }
 
  protected:
-
-    /**
-       returns the transformation of a vector from the child
-       reference frame to the parent reference frame, without any checks
-       (= without updating internal coordinates even if needed)
-    */
+  /**
+     returns the transformation of a vector from the child
+     reference frame to the parent reference frame, without any checks
+     (= without updating internal coordinates even if needed)
+  */
   // hack to make it compile on swig - this should be fixed as it might
   // cause some pathologies
   IMP_NO_SWIG(virtual)
- const IMP::algebra::Transformation3D&
-    get_transformation_child_to_parent_no_checks() const {
+  const IMP::algebra::Transformation3D&
+  get_transformation_child_to_parent_no_checks() const {
     return tr_child_to_parent_;
   }
-
 
   /***************** setter methods: ***************/
 
  protected:
-
   /** this sets the kinematic forest that manages this joint,
       and also declares it as used (\see Object::set_was_used()
   */
@@ -107,11 +96,10 @@ IMP_NO_SWIG(virtual)
      (without any checks that internal coords are updated, and without
       marking the owner internal coords as changed)
   */
-  void set_transformation_child_to_parent_no_checks
-    (IMP::algebra::Transformation3D transformation) {
+  void set_transformation_child_to_parent_no_checks(
+      IMP::algebra::Transformation3D transformation) {
     tr_child_to_parent_ = transformation;
   }
-
 
   /**************** general methods: **************/
 
@@ -119,10 +107,7 @@ IMP_NO_SWIG(virtual)
      Updates the reference frame of the rigid body directly downstream
      of this joint
   */
-  virtual void
-    update_child_node_reference_frame() const;
-
-
+  virtual void update_child_node_reference_frame() const;
 
   /**
      Updates the joint transformation based on external coordinates
@@ -135,15 +120,15 @@ IMP_NO_SWIG(virtual)
   */
   virtual void update_joint_from_cartesian_witnesses();
 
-private:
+ private:
   IMP::core::RigidBody parent_;
   IMP::core::RigidBody child_;
   IMP::algebra::Transformation3D tr_child_to_parent_;
-  KinematicForest* owner_kf_; // the tree that manages updates to this joint
+  KinematicForest* owner_kf_;  // the tree that manages updates to this joint
 };
 
 IMP_OBJECTS(Joint, Joints);
 
 IMPKINEMATICS_END_NAMESPACE
 
-#endif  /* IMPKINEMATICS_JOINT_H */
+#endif /* IMPKINEMATICS_JOINT_H */

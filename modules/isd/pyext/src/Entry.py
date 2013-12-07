@@ -4,7 +4,9 @@
    Classes to handle ISD statistics files.
 """
 
+
 class Entry:
+
     """The entry class represents a column in the statistics file.
     Its components are a title, a format and an additional object.
     It's what gets written to the statistics file in a column.
@@ -17,6 +19,7 @@ class Entry:
       string is used on the result of the function call
       something(*args,**kwargs).
     """
+
     def __init__(self, title, fmt, something, *args, **kwargs):
         self.title = title
         self.format = fmt
@@ -34,8 +37,7 @@ class Entry:
             return "Entry('%s', '%s', f(...))" % (self.title, self.format)
         else:
             return "Entry('%s', '%s', %s)" % (self.title, self.format,
-                    self.value)
-
+                                              self.value)
 
     def get_title(self):
         return self.title
@@ -55,8 +57,7 @@ class Entry:
 
     def set_value(self, val):
         if self.is_function:
-            raise RuntimeError, \
-                    "Can only set_value on static entries."
+            raise RuntimeError("Can only set_value on static entries.")
         self.value = val
         self.was_updated_since_last_get = True
 

@@ -49,7 +49,6 @@ class SVD {
   int m, n;
 
  public:
-
   SVD(const Array2D<Real> &Arg) {
 
     m = Arg.dim1();

@@ -23,33 +23,32 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-class IMPSAXSEXPORT RigidBodiesProfileHandler: public base::Object {
-public:
+class IMPSAXSEXPORT RigidBodiesProfileHandler : public base::Object {
+ public:
   RigidBodiesProfileHandler(const kernel::Particles& particles,
                             FormFactorType ff_type = HEAVY_ATOMS);
-
 
   void compute_profile(Profile* model_profile) const;
 
   // TODO: implement
-  //void compute_profile_partial(Profile* model_profile) const;
+  // void compute_profile_partial(Profile* model_profile) const;
 
-  void compute_derivatives(const DerivativeCalculator *dc,
+  void compute_derivatives(const DerivativeCalculator* dc,
                            const Profile* model_profile,
                            const std::vector<double>& effect_size,
-                           DerivativeAccumulator *acc) const;
+                           DerivativeAccumulator* acc) const;
 
   ModelObjectsTemp do_get_inputs() const;
 
   IMP_OBJECT_METHODS(RigidBodiesProfileHandler);
 
-protected:
-  kernel::Particles particles_; // non-rigid bodies particles
-  std::vector<core::RigidBody> rigid_bodies_decorators_; //rigid bodies
-  std::vector<kernel::Particles> rigid_bodies_; // rigid bodies particles
+ protected:
+  kernel::Particles particles_;  // non-rigid bodies particles
+  std::vector<core::RigidBody> rigid_bodies_decorators_;  // rigid bodies
+  std::vector<kernel::Particles> rigid_bodies_;  // rigid bodies particles
   // non-changing part of the profile
   base::PointerMember<Profile> rigid_bodies_profile_;
-  FormFactorType ff_type_; // type of the form factors to use
+  FormFactorType ff_type_;  // type of the form factors to use
 };
 
 IMPSAXS_END_NAMESPACE

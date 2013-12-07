@@ -29,7 +29,11 @@ IMPSAXS_BEGIN_NAMESPACE
  HEAVY_ATOMS - no hydrogens, all other atoms included
  CA_ATOMS - residue level, residue represented by CA
 */
-enum FormFactorType { ALL_ATOMS, HEAVY_ATOMS, CA_ATOMS };
+enum FormFactorType {
+  ALL_ATOMS,
+  HEAVY_ATOMS,
+  CA_ATOMS
+};
 
 /**
    class that deals with form factor computation
@@ -42,7 +46,7 @@ enum FormFactorType { ALL_ATOMS, HEAVY_ATOMS, CA_ATOMS };
    The approximation is done using Fraser, MacRae and Suzuki (1978) model.
 */
 class IMPSAXSEXPORT FormFactorTable {
-public:
+ public:
   //! default constructor
   FormFactorTable();
 
@@ -53,15 +57,16 @@ public:
   // 1. Zero form factors
 
   //! get f(0), ie q=0 for real space profile calculation
-  Float get_form_factor(kernel::Particle* p, FormFactorType ff_type=HEAVY_ATOMS) const;
+  Float get_form_factor(kernel::Particle* p,
+                        FormFactorType ff_type = HEAVY_ATOMS) const;
 
   //! f(0) in vacuum
   Float get_vacuum_form_factor(kernel::Particle* p,
-                               FormFactorType ff_type=HEAVY_ATOMS) const;
+                               FormFactorType ff_type = HEAVY_ATOMS) const;
 
   //! f(0) for solvent
   Float get_dummy_form_factor(kernel::Particle* p,
-                              FormFactorType ff_type=HEAVY_ATOMS) const;
+                              FormFactorType ff_type = HEAVY_ATOMS) const;
 
   //! f(0) for water
   Float get_water_form_factor() const { return zero_form_factors_[OH2]; }
@@ -84,11 +89,13 @@ public:
 
   //! for reciprocal space profile calculation
   const Floats& get_vacuum_form_factors(kernel::Particle* p,
-                                 FormFactorType ff_type = HEAVY_ATOMS) const;
+                                        FormFactorType ff_type =
+                                            HEAVY_ATOMS) const;
 
   //! for reciprocal space profile calculation
   const Floats& get_dummy_form_factors(kernel::Particle* p,
-                                 FormFactorType ff_type = HEAVY_ATOMS) const;
+                                       FormFactorType ff_type =
+                                           HEAVY_ATOMS) const;
 
   //! full water form factor
   const Floats& get_water_form_factors() const { return form_factors_[OH2]; }
@@ -104,37 +111,80 @@ public:
   }
 
   //! radius
-  Float get_radius(kernel::Particle* p, FormFactorType ff_type=HEAVY_ATOMS) const;
+  Float get_radius(kernel::Particle* p,
+                   FormFactorType ff_type = HEAVY_ATOMS) const;
 
   //! volume
-  Float get_volume(kernel::Particle* p, FormFactorType ff_type=HEAVY_ATOMS) const;
+  Float get_volume(kernel::Particle* p,
+                   FormFactorType ff_type = HEAVY_ATOMS) const;
 
   //! print tables
-  void show(std::ostream &out=std::cout, std::string prefix="") const;
+  void show(std::ostream& out = std::cout, std::string prefix = "") const;
 
   // electron density of solvent - default=0.334 e/A^3 (H2O)
   static Float rho_;
 
-private:
+ private:
   // atom types for heavy atoms according to the number of hydrogens
   // connected to them
   // ALL_ATOM_SIZE is number of types needed for all atom representation
   // this indexing is used in form_factors arrays
   enum FormFactorAtomType {
-    H, He, Li, Be, B, C, N, O, F, Ne, // periodic table, lines 1-2 (10)
-    Na, Mg, Al, Si, P, S, Cl, Ar, // line 3 (8)
-    K, Ca, Cr, Mn, Fe, Co, Ni, Cu, Zn, Se, Br, // line 4 (11)
-    I, Ir, Pt, Au, Hg, ALL_ATOM_SIZE = 34,
-    CH=34, CH2=35, CH3=36, NH=37, NH2=38, NH3=39, OH=40, OH2=41, SH=42,
-    HEAVY_ATOM_SIZE=43, UNK=44};
+    H,
+    He,
+    Li,
+    Be,
+    B,
+    C,
+    N,
+    O,
+    F,
+    Ne,  // periodic table, lines 1-2 (10)
+    Na,
+    Mg,
+    Al,
+    Si,
+    P,
+    S,
+    Cl,
+    Ar,  // line 3 (8)
+    K,
+    Ca,
+    Cr,
+    Mn,
+    Fe,
+    Co,
+    Ni,
+    Cu,
+    Zn,
+    Se,
+    Br,  // line 4 (11)
+    I,
+    Ir,
+    Pt,
+    Au,
+    Hg,
+    ALL_ATOM_SIZE = 34,
+    CH = 34,
+    CH2 = 35,
+    CH3 = 36,
+    NH = 37,
+    NH2 = 38,
+    NH3 = 39,
+    OH = 40,
+    OH2 = 41,
+    SH = 42,
+    HEAVY_ATOM_SIZE = 43,
+    UNK = 44
+  };
 
   // map between atom element and FormFactorAtomType
   static std::map<atom::Element, FormFactorAtomType> element_ff_type_map_;
 
   struct FormFactor {
     FormFactor() {}
-    FormFactor(double ff, double vacuum_ff, double dummy_ff) :
-      ff_(ff), vacuum_ff_(vacuum_ff), dummy_ff_(dummy_ff) {}
+    FormFactor(double ff, double vacuum_ff, double dummy_ff)
+        : ff_(ff), vacuum_ff_(vacuum_ff), dummy_ff_(dummy_ff) {}
     double ff_, vacuum_ff_, dummy_ff_;
   };
 
@@ -153,7 +203,7 @@ private:
 
   // class for storing form factors solvation table
   class AtomFactorCoefficients {
-  public:
+   public:
     String atom_type_;
     Float a_[5];
     Float b_[5];
@@ -162,14 +212,14 @@ private:
   };
 
   // read entry
-  friend std::istream& operator>>(std::istream& s,
-                             AtomFactorCoefficients& atom_factor_coefficients);
+  friend std::istream& operator>>(
+      std::istream& s, AtomFactorCoefficients& atom_factor_coefficients);
 
   // write entry
-  friend std::ostream& operator<<(std::ostream& s,
-                       const AtomFactorCoefficients& atom_factor_coefficients);
+  friend std::ostream& operator<<(
+      std::ostream& s, const AtomFactorCoefficients& atom_factor_coefficients);
 
-private:
+ private:
   int read_form_factor_table(const String& table_name);
 
   void init_element_form_factor_map();
@@ -192,18 +242,22 @@ private:
                                                FormFactorType ff_type) const;
 
   FormFactorAtomType get_carbon_atom_type(const atom::AtomType& atom_type,
-                                const atom::ResidueType& residue_type) const;
+                                          const atom::ResidueType& residue_type)
+      const;
 
-  FormFactorAtomType get_nitrogen_atom_type(const atom::AtomType& atom_type,
-                                const atom::ResidueType& residue_type) const;
+  FormFactorAtomType get_nitrogen_atom_type(
+      const atom::AtomType& atom_type,
+      const atom::ResidueType& residue_type) const;
 
   FormFactorAtomType get_oxygen_atom_type(const atom::AtomType& atom_type,
-                                const atom::ResidueType& residue_type) const;
+                                          const atom::ResidueType& residue_type)
+      const;
 
   FormFactorAtomType get_sulfur_atom_type(const atom::AtomType& atom_type,
-                                const atom::ResidueType& residue_type) const;
+                                          const atom::ResidueType& residue_type)
+      const;
 
-private:
+ private:
   // read from lib file
   std::vector<AtomFactorCoefficients> form_factors_coefficients_;
 

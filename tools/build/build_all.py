@@ -19,8 +19,11 @@ try:
 except ImportError:
     import pickle
 
+
 class TestXMLHandler(XMLGenerator):
+
     """Copy an XML file and insert additional measurements"""
+
     def __init__(self, dest, detail_dir):
         self.fh = open(dest, 'wb')
         XMLGenerator.__init__(self, self.fh, "UTF-8")
@@ -36,15 +39,15 @@ class TestXMLHandler(XMLGenerator):
 
     def write_test_detail(self, test):
         """Write unittest detail as XML"""
-        self.fh.write('=' * 70 + '\n' + \
-                      test['state'] + ': ' \
-                      + xml.sax.saxutils.escape(test['name']) + '\n' + \
-                      '-' * 70 + '\n' \
+        self.fh.write('=' * 70 + '\n' +
+                      test['state'] + ': '
+                      + xml.sax.saxutils.escape(test['name']) + '\n' +
+                      '-' * 70 + '\n'
                       + xml.sax.saxutils.escape(test['detail']) + '\n')
 
     def _get_pickle(self):
         name = self._test.get('name', '')
-        splname = name.split('-', 1)[-1] # Also try without module- prefix
+        splname = name.split('-', 1)[-1]  # Also try without module- prefix
         for n in (name, splname):
             fulln = os.path.join(self.detail_dir, n)
             try:
@@ -62,7 +65,7 @@ class TestXMLHandler(XMLGenerator):
         if self._test.get('pickle', None) is not None:
             self.fh.write('\n\t\t<TestCaseList>\n')
             for test in self._test['pickle']:
-                self.fh.write('\t\t\t<TestCase name="%s" state="%s">' \
+                self.fh.write('\t\t\t<TestCase name="%s" state="%s">'
                               % (test['name'], test['state']))
                 self.fh.write('</TestCase>\n')
             self.fh.write('\t\t</TestCaseList>\n')
@@ -72,7 +75,7 @@ class TestXMLHandler(XMLGenerator):
            additional test measurement."""
         # This assumes that the Results tag comes after the Name tag
         if self._test.get('pickle', None) is not None:
-            self.fh.write('\n\t\t\t<NamedMeasurement type="text/string" ' \
+            self.fh.write('\n\t\t\t<NamedMeasurement type="text/string" '
                           'name="Python unittest detail"><Value>')
             for test in self._test['pickle']:
                 if test['detail'] is not None:
@@ -80,7 +83,7 @@ class TestXMLHandler(XMLGenerator):
             self.fh.write('</Value>\n\t\t\t</NamedMeasurement>\n')
 
     def startElement(self, name, attrs):
-        if name == 'Test' and attrs.has_key('Status'):
+        if name == 'Test' and 'Status' in attrs:
             self._start_test()
         elif self._test is not None:
             if name == 'Name':
@@ -113,23 +116,29 @@ def copy_xml(src, dest, detail_dir):
     parser.setContentHandler(handler)
     parser.parse(open(src))
 
+
 class Component(object):
+
     """Represent an IMP application or module"""
+
     def __init__(self, name):
         self.name = name
         self.target = {'build': '', 'test': '', 'benchmark': '', 'example': ''}
         self.done = False
         self.dep_failure = None
+
     def set_dep_modules(self, comps, modules, dependencies,
                         special_dep_targets):
         self.modules = [comps[m] for m in modules]
         for d in dependencies:
             if d in special_dep_targets and d in comps:
                 self.modules.append(comps[d])
+
     def disable(self):
         """Mark this component as disabled"""
         self.build_result = 'disabled'
         self.done = True
+
     def try_build(self, builder, summary):
         if self.done:
             return False
@@ -152,6 +161,7 @@ class Component(object):
         self.done = True
         summary.write()
         return True
+
     def test(self, builder, test_type, summary, expensive):
         if self.build_result == 'disabled':
             # We can't test components that were disabled
@@ -159,24 +169,27 @@ class Component(object):
         elif self.build_result != 0:
             print "%s: %s skipped due to build failure" % (self.name, test_type)
         else:
-            setattr(self, test_type+'_result', 'running')
+            setattr(self, test_type + '_result', 'running')
             summary.write()
             result, time = builder.test(self, test_type, expensive)
-            setattr(self, test_type+'_result', result)
-            setattr(self, test_type+'_time', time)
+            setattr(self, test_type + '_result', result)
+            setattr(self, test_type + '_time', time)
             summary.write()
+
     def get_build_summary(self):
         ret = {}
         for typ in ('build', 'test', 'benchmark', 'example'):
-            if hasattr(self, typ+'_result'):
-                ret[typ+'_result'] = getattr(self, typ+'_result')
-            if hasattr(self, typ+'_time'):
-                ret[typ+'_time'] = getattr(self, typ+'_time')
+            if hasattr(self, typ + '_result'):
+                ret[typ + '_result'] = getattr(self, typ + '_result')
+            if hasattr(self, typ + '_time'):
+                ret[typ + '_time'] = getattr(self, typ + '_time')
         return ret
 
 
 class Application(Component):
+
     """Represent an IMP application"""
+
     def __init__(self, name):
         Component.__init__(self, name)
         # No special targets to build tests
@@ -185,7 +198,9 @@ class Application(Component):
 
 
 class Module(Component):
+
     """Represent an IMP module"""
+
     def __init__(self, name):
         Component.__init__(self, name)
         self.target['build'] = 'IMP.' + name
@@ -193,6 +208,7 @@ class Module(Component):
 
 
 class RMFDependency(Component):
+
     def __init__(self, name):
         Component.__init__(self, name)
         self.target['build'] = 'RMF'
@@ -200,6 +216,7 @@ class RMFDependency(Component):
 
 
 class Builder(object):
+
     def __init__(self, makecmd, testcmd, outdir, coverage):
         self.makecmd = makecmd
         self.testcmd = testcmd
@@ -228,8 +245,11 @@ class Builder(object):
         commands = []
         if component.target[typ]:
             commands.append("%s %s" % (self.makecmd, component.target[typ]))
-        cmd = "%s -R '%s' -L '^%s$'" % (self.testcmd, component.test_regex, typ)
-        if expensive == False:
+        cmd = "%s -R '%s' -L '^%s$'" % (
+            self.testcmd,
+            component.test_regex,
+            typ)
+        if not expensive:
             cmd += " -E expensive"
         if self.outdir:
             cmd += " -T Test"
@@ -287,12 +307,13 @@ def internal_dep(dep):
             return line.rstrip('\r\n').endswith('NOTFOUND')
     return False
 
+
 def add_disabled_components(conf_comps, all_comps, comps, comp_type):
     """Mark components that are in all_comps but not conf_comps as disabled"""
     # Sanity check: everything in conf_comps should be in all_comps
     for comp in conf_comps:
         if comp not in all_comps:
-            raise ValueError("%s %s configured but not in 'all' list" \
+            raise ValueError("%s %s configured but not in 'all' list"
                              % (comp_type, comp))
 
     for comp in all_comps:
@@ -300,6 +321,7 @@ def add_disabled_components(conf_comps, all_comps, comps, comp_type):
             c = Component(comp)
             c.disable()
             comps[comp] = c
+
 
 def get_all_components():
 
@@ -330,13 +352,15 @@ def get_all_components():
         comps[a].set_dep_modules(comps, i['modules'], i['dependencies'],
                                  special_dep_targets)
     source_dir = os.path.join(os.path.dirname(sys.argv[0]), '..', '..')
-    all_modules= [x[0] for x in tools.get_modules(source_dir)]
-    all_apps= [x[0] for x in tools.get_applications(source_dir)]
+    all_modules = [x[0] for x in tools.get_modules(source_dir)]
+    all_apps = [x[0] for x in tools.get_applications(source_dir)]
     add_disabled_components(modules, all_modules, comps, "module")
     add_disabled_components(apps, all_apps, comps, "application")
     return comps
 
+
 class SummaryWriter(object):
+
     def __init__(self, summary, all_key, comps):
         self.summary = summary
         self.all_key = all_key
@@ -344,10 +368,12 @@ class SummaryWriter(object):
         self._start_time = time.time()
         self.all_time = 0.
         self.comps = comps
+
     def complete(self, result):
         self.all_state = result
         self.all_time = time.time() - self._start_time
         self.write()
+
     def write(self):
         if self.summary:
             fh = open(self.summary, 'wb')
@@ -364,6 +390,7 @@ def test_all(comps, builder, test_type, summary_writer, expensive=None):
     for m in comps.values():
         m.test(builder, test_type, summary_writer, expensive)
 
+
 def get_comps_to_build(all_comps, exclude):
     if not exclude:
         return all_comps
@@ -379,6 +406,7 @@ def get_comps_to_build(all_comps, exclude):
             if key not in p:
                 comps[key] = val
         return comps
+
 
 def build_all(builder, opts):
     all_comps = get_all_components()
@@ -416,10 +444,11 @@ def build_all(builder, opts):
         raise
     for m in comps.values():
         for typ in ('build', 'benchmark'):
-            if getattr(m, typ+'_result', 0) not in (0, 'disabled'):
+            if getattr(m, typ + '_result', 0) not in (0, 'disabled'):
                 summary_writer.complete(1)
                 sys.exit(1)
     summary_writer.complete(0)
+
 
 def parse_args():
     from optparse import OptionParser
@@ -490,6 +519,7 @@ failures are considered to be non-fatal).
     if len(args) != 1:
         parser.error("incorrect number of arguments")
     return opts, args
+
 
 def main():
     opts, args = parse_args()

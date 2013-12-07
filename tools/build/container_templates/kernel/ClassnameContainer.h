@@ -74,7 +74,8 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
     IMP_THROW("Object not implemented properly.", base::IndexException);
   }
 
-  template <class Functor> Functor for_each(Functor f) {
+  template <class Functor>
+  Functor for_each(Functor f) {
     PLURALINDEXTYPE vs = get_indexes();
     // use boost range instead
     return std::for_each(vs.begin(), vs.end(), f);
@@ -95,17 +96,17 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
 
       Return whether the container has the given element.*/
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-    bool get_contains_FUNCTIONNAME(VARIABLETYPE v) const;
+  bool get_contains_FUNCTIONNAME(VARIABLETYPE v) const;
 
   /** \deprecated_at{2.1} This can be very slow and is probably not useful
    */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-    unsigned int get_number_of_FUNCTIONNAMEs() const;
+  unsigned int get_number_of_FUNCTIONNAMEs() const;
 
   /** \deprecated_at{2.1}Use get_indexes() instead and thing about using the
       IMP_CONTAINER_FOREACH() macro.*/
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-    VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const;
+  VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const;
 
  protected:
   virtual void do_apply(const ClassnameModifier *sm) const = 0;

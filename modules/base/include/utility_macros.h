@@ -29,7 +29,6 @@
     return *this;                                \
   }) IMP_REQUIRE_SEMICOLON_CLASS(copy)
 
-
 #define IMP_EXPAND_AND_STRINGIFY(x) IMP_STRINGIFY(x)
 
 #endif /* IMPBASE_UTILITY_MACROS_H */

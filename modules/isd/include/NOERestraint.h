@@ -21,8 +21,7 @@
 IMPISD_BEGIN_NAMESPACE
 
 //! Apply an NOE distance restraint between two particles.
-class IMPISDEXPORT NOERestraint : public kernel::Restraint
-{
+class IMPISDEXPORT NOERestraint : public kernel::Restraint {
   base::Pointer<kernel::Particle> p0_;
   base::Pointer<kernel::Particle> p1_;
   base::Pointer<kernel::Particle> sigma_;
@@ -31,32 +30,25 @@ class IMPISDEXPORT NOERestraint : public kernel::Restraint
   double chi_;
   void set_chi(double chi) { chi_ = chi; }
 
-public:
+ public:
   //! Create the restraint.
   /** kernel::Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
    */
   NOERestraint(kernel::Model *m, Particle *p0, Particle *p1, Particle *sigma,
-               Particle *gamma,double Iexp);
+               Particle *gamma, double Iexp);
 
   /* call for probability */
-  double get_probability() const
-  {
-    return exp(-unprotected_evaluate(nullptr));
-  }
+  double get_probability() const { return exp(-unprotected_evaluate(nullptr)); }
 
-  double get_chi() const
-  {return chi_; }
+  double get_chi() const { return chi_; }
 
-
-  virtual double
-  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
-     const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(NOERestraint);
-
 };
 
 IMPISD_END_NAMESPACE
 
-#endif  /* IMPISD_NOE_RESTRAINT_H */
+#endif /* IMPISD_NOE_RESTRAINT_H */

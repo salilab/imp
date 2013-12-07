@@ -308,8 +308,7 @@ class Tests(IMP.test.TestCase):
         required = sorted(set(required))
         print required
         sf.set_has_required_score_states(True)
-        found = sf.get_required_score_states()
-        found.sort()
+        found = sorted(sf.get_required_score_states())
         self.assertEqual(required, found)
         sf.evaluate(False)
         for s in cs:

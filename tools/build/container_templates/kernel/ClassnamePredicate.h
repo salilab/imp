@@ -35,15 +35,17 @@ class IMPKERNELEXPORT ClassnamePredicate : public ParticleInputs,
   ClassnamePredicate(std::string name = "ClassnamePredicate %1%");
   /** \deprecated_at{2.1} Use the index based version.*/
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-    virtual int get_value(ARGUMENTTYPE vt) const;
+  virtual int get_value(ARGUMENTTYPE vt) const;
 
   /** \deprecated_at{2.1} Use the index based version.*/
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-      virtual Ints get_value(const PLURALVARIABLETYPE &o) const;
+  virtual Ints get_value(const PLURALVARIABLETYPE &o) const;
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  virtual void remove_if_equal(kernel::Model *m, PLURALINDEXTYPE &ps, int v) const;
-  virtual void remove_if_not_equal(kernel::Model *m, PLURALINDEXTYPE &ps, int v) const;
+  virtual void remove_if_equal(kernel::Model *m, PLURALINDEXTYPE &ps,
+                               int v) const;
+  virtual void remove_if_not_equal(kernel::Model *m, PLURALINDEXTYPE &ps,
+                                   int v) const;
 #endif
 
   //! Compute the predicate and the derivative if needed.
@@ -56,7 +58,8 @@ class IMPKERNELEXPORT ClassnamePredicate : public ParticleInputs,
     return get_value_index(m, vt);
   }
 
-  virtual Ints get_value_index(kernel::Model *m, const PLURALINDEXTYPE &o) const {
+  virtual Ints get_value_index(kernel::Model *m,
+                               const PLURALINDEXTYPE &o) const {
     Ints ret(o.size());
     for (unsigned int i = 0; i < o.size(); ++i) {
       ret[i] += get_value_index(m, o[i]);

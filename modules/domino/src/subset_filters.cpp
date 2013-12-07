@@ -48,8 +48,8 @@ class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilter : public SubsetFilter {
   IMP_OBJECT_METHODS(MinimumRestraintScoreSubsetFilter);
 };
 
-bool MinimumRestraintScoreSubsetFilter::get_is_ok(
-    const Assignment &state) const {
+bool MinimumRestraintScoreSubsetFilter::get_is_ok(const Assignment &state)
+    const {
   IMP_OBJECT_LOG;
   set_was_used(true);
   unsigned int bad_count = 0;
@@ -448,18 +448,18 @@ int get_next_equivalence_exclusion(int pos, const Assignment &state,
 
 IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(
     EquivalenceAndExclusion,
-    {
-      int last = -1;
-      for (unsigned int i = 0; i < members.size(); ++i) {
-        if (members[i] != -1) {
-          unsigned int si = state[members[i]];
-          if (si < i || static_cast<int>(si) <= last)
-            return false;
-          last = state[members[i]];
-        }
-      }
-      return true;
-    },
+{
+  int last = -1;
+  for (unsigned int i = 0; i < members.size(); ++i) {
+    if (members[i] != -1) {
+      unsigned int si = state[members[i]];
+      if (si < i || static_cast<int>(si) <= last)
+        return false;
+      last = state[members[i]];
+    }
+  }
+  return true;
+},
     return get_sorted_strength(s, excluded, members),
     return get_next_equivalence_exclusion(pos, state, set));
 

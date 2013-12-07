@@ -3,6 +3,7 @@ import IMP.test
 import IMP.cnmultifit
 from IMP.cnmultifit import build
 
+
 class Tests(IMP.test.TestCase):
 
     def test_build_help(self):
@@ -12,7 +13,7 @@ class Tests(IMP.test.TestCase):
     def test_build_usage(self):
         """Test build module incorrect usage"""
         r = self.run_python_module("IMP.cnmultifit.build", [])
-        out,err = r.communicate()
+        out, err = r.communicate()
         self.assertEqual(out, "")
         self.assertIn("incorrect number of arguments", err)
         self.assertNotEqual(r.returncode, 0)

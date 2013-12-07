@@ -32,7 +32,8 @@ int main(int argc, char * []) {
   kernel::ParticlesTemp rs;
   for (unsigned int i = 0; i < num_rb; ++i) {
     IMP_NEW(kernel::Particle, p, (m));
-    kernel::ParticlesTemp leaves(ps.begin() + i * 10, ps.begin() + (i + 1) * 10);
+    kernel::ParticlesTemp leaves(ps.begin() + i * 10,
+                                 ps.begin() + (i + 1) * 10);
     RigidBody r = RigidBody::setup_particle(p, leaves);
     vs.push_back(ReferenceFrame3D(r.get_reference_frame()));
     rs.push_back(r);
@@ -71,11 +72,11 @@ int main(int argc, char * []) {
     n = 10;
   }
   IMP_TIME({
-    for (int i = 0; i < n; ++i) {
-      base::Pointer<ConfigurationSet> cs = ds->create_sample();
-      num += cs->get_number_of_configurations();
-    }
-  },
+             for (int i = 0; i < n; ++i) {
+               base::Pointer<ConfigurationSet> cs = ds->create_sample();
+               num += cs->get_number_of_configurations();
+             }
+           },
            runtime);
   IMP::benchmark::report("domino small", runtime, num);
   return IMP::benchmark::get_return_value();

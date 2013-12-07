@@ -36,8 +36,8 @@ DihedralRestraint::DihedralRestraint(kernel::UnaryFunction* score_func,
                      derivatives.
     \return Current score.
  */
-double DihedralRestraint::unprotected_evaluate(
-    DerivativeAccumulator* accum) const {
+double DihedralRestraint::unprotected_evaluate(DerivativeAccumulator* accum)
+    const {
   IMP_CHECK_OBJECT(score_func_);
   XYZ d0 = XYZ::decorate_particle(p_[0]);
   XYZ d1 = XYZ::decorate_particle(p_[1]);

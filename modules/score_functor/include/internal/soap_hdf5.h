@@ -22,23 +22,26 @@ IMPSCOREFUNCTOR_BEGIN_INTERNAL_NAMESPACE
 IMPSCOREFUNCTOREXPORT
 void handle_hdf5_error();
 
-#define IMP_HDF5_OBJECT(Name, Close) \
-    ~Name() { \
-      if (id_ >= 0 && Close(id_) < 0) { \
-        handle_hdf5_error(); \
-      } \
-    } \
-    hid_t get() { return id_; }
+#define IMP_HDF5_OBJECT(Name, Close)  \
+  ~Name() {                           \
+    if (id_ >= 0 && Close(id_) < 0) { \
+      handle_hdf5_error();            \
+    }                                 \
+  }                                   \
+  hid_t get() { return id_; }
 
 #define IMP_HDF5_ERRCHECK(block) \
-    if ((block) < 0) { handle_hdf5_error(); }
+  if ((block) < 0) {             \
+    handle_hdf5_error();         \
+  }
 
 class Hdf5File : public boost::noncopyable {
   hid_t id_;
-public:
+
+ public:
   Hdf5File(std::string filename) : id_(-1) {
-    IMP_HDF5_ERRCHECK(id_ = H5Fopen(filename.c_str(), H5F_ACC_RDONLY,
-                                    H5P_DEFAULT));
+    IMP_HDF5_ERRCHECK(
+        id_ = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT));
   }
   IMP_HDF5_OBJECT(Hdf5File, H5Fclose)
 };
@@ -48,7 +51,8 @@ class Hdf5Attribute;
 
 class Hdf5Dataspace : public boost::noncopyable {
   hid_t id_;
-public:
+
+ public:
   // Get the dataspace for a given dataset
   Hdf5Dataspace(Hdf5Dataset &dataset);
 
@@ -76,7 +80,8 @@ public:
 // Variable-length (NULL-terminated, C-style) string datatype
 class Hdf5StringDatatype : public boost::noncopyable {
   hid_t id_;
-public:
+
+ public:
   Hdf5StringDatatype() : id_(-1) {
     IMP_HDF5_ERRCHECK(id_ = H5Tcopy(H5T_C_S1));
     IMP_HDF5_ERRCHECK(H5Tset_size(id_, H5T_VARIABLE));
@@ -90,18 +95,15 @@ class Hdf5Attribute : public boost::noncopyable {
   void read(void *data, hid_t type_id) {
     IMP_HDF5_ERRCHECK(H5Aread(id_, type_id, data));
   }
-public:
+
+ public:
   Hdf5Attribute(hid_t loc_id, std::string name) : id_(-1) {
     IMP_HDF5_ERRCHECK(id_ = H5Aopen(loc_id, name.c_str(), H5P_DEFAULT));
   }
 
-  void read_float(float *data) {
-    read(data, H5T_NATIVE_FLOAT);
-  }
+  void read_float(float *data) { read(data, H5T_NATIVE_FLOAT); }
 
-  void read_int(int *data) {
-    read(data, H5T_NATIVE_INT);
-  }
+  void read_int(int *data) { read(data, H5T_NATIVE_INT); }
 
   IMP_HDF5_OBJECT(Hdf5Attribute, H5Aclose)
 };
@@ -117,8 +119,8 @@ class Hdf5Dataset : public boost::noncopyable {
   }
   void check_rank(unsigned rank, unsigned actual_rank) {
     if (actual_rank != rank) {
-      IMP_THROW("Dataset should be " << rank
-                << "-dimensional, but is " << actual_rank,
+      IMP_THROW("Dataset should be " << rank << "-dimensional, but is "
+                                     << actual_rank,
                 ValueException);
     }
   }
@@ -126,8 +128,8 @@ class Hdf5Dataset : public boost::noncopyable {
     for (unsigned i = 0; i < dims.size(); ++i) {
       if (dims[i] != actual_dims[i]) {
         IMP_THROW("Dataset dimension " << i << " is incorrect; "
-                  << "it should be " << dims[i]
-                  << ", but is " << actual_dims[i],
+                                       << "it should be " << dims[i]
+                                       << ", but is " << actual_dims[i],
                   ValueException);
       }
     }
@@ -136,26 +138,23 @@ class Hdf5Dataset : public boost::noncopyable {
   // is as expected
   void read_dims(void *data, hid_t type_id, Ints dims) {
     check_dims(dims);
-    IMP_HDF5_ERRCHECK(H5Dread(id_, type_id, H5S_ALL, H5S_ALL,
-                              H5P_DEFAULT, data));
+    IMP_HDF5_ERRCHECK(
+        H5Dread(id_, type_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, data));
   }
   // Read into a buffer (size is not checked)
   void read(void *data, hid_t type_id) {
-    IMP_HDF5_ERRCHECK(H5Dread(id_, type_id, H5S_ALL, H5S_ALL,
-                              H5P_DEFAULT, data));
+    IMP_HDF5_ERRCHECK(
+        H5Dread(id_, type_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, data));
   }
-public:
+
+ public:
   Hdf5Dataset(hid_t loc_id, std::string name) : id_(-1) {
     IMP_HDF5_ERRCHECK(id_ = H5Dopen2(loc_id, name.c_str(), H5P_DEFAULT));
   }
 
-  void read_float(float *data) {
-    read(data, H5T_NATIVE_FLOAT);
-  }
+  void read_float(float *data) { read(data, H5T_NATIVE_FLOAT); }
 
-  void read_int(int *data) {
-    read(data, H5T_NATIVE_INT);
-  }
+  void read_int(int *data) { read(data, H5T_NATIVE_INT); }
 
   // Read into an int buffer, after ensuring the size is as expected
   void read_int_dims(int *data, Ints dims) {
@@ -164,7 +163,7 @@ public:
 
   // Read a 1-dimensional dataset into a std::vector<int> and return it.
   // If size is specified, the dataset must contain that many elements.
-  std::vector<int> read_int_vector(int size=0) {
+  std::vector<int> read_int_vector(int size = 0) {
     Hdf5Dataspace space(*this);
     Ints actual_dims = space.get_simple_extent_dims();
     check_rank(1, actual_dims.size());
@@ -191,8 +190,8 @@ public:
     for (int i = 0; i < nstr; ++i) {
       ret.push_back(strpointers[i]);
     }
-    IMP_HDF5_ERRCHECK(H5Dvlen_reclaim(str_type.get(), space.get(),
-                                      H5P_DEFAULT, &strpointers[0]));
+    IMP_HDF5_ERRCHECK(H5Dvlen_reclaim(str_type.get(), space.get(), H5P_DEFAULT,
+                                      &strpointers[0]));
     return ret;
   }
 
@@ -207,11 +206,12 @@ class Hdf5Group : public boost::noncopyable {
     int npoints = space.get_simple_extent_npoints();
     if (npoints != size) {
       IMP_THROW("Attribute " << name << " should be of size " << size
-                << " (it is " << npoints << ")", ValueException);
+                             << " (it is " << npoints << ")",
+                ValueException);
     }
   }
 
-public:
+ public:
   Hdf5Group(hid_t loc_id, std::string name) : id_(-1) {
     IMP_HDF5_ERRCHECK(id_ = H5Gopen2(loc_id, name.c_str(), H5P_DEFAULT));
   }
@@ -256,6 +256,6 @@ Hdf5Dataspace::Hdf5Dataspace(Hdf5Attribute &attribute) : id_(-1) {
 
 IMPSCOREFUNCTOR_END_INTERNAL_NAMESPACE
 
-#endif // IMP_SCORE_FUNCTOR_USE_HDF5
+#endif  // IMP_SCORE_FUNCTOR_USE_HDF5
 
 #endif /* IMPSCORE_FUNCTOR_SOAP_HDF_5_H */

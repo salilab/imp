@@ -407,7 +407,8 @@ struct ConvertVectorBase {
 
 template <class T, class ConvertT>
 struct ConvertSequence<base::Vector<T>, ConvertT> : public ConvertVectorBase<
-    base::Vector<T>, ConvertT> {
+                                                        base::Vector<T>,
+                                                        ConvertT> {
   static const int converter = 7;
 };
 

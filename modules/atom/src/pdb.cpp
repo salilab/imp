@@ -483,7 +483,7 @@ void write_pdb(const Selection& mhd, base::TextOutput out, unsigned int model) {
 
 void write_multimodel_pdb(const Hierarchies& mhd, base::TextOutput out) {
   for (unsigned int i = 0; i < mhd.size(); ++i) {
-    out.get_stream() << boost::format("MODEL%1$9d") % (i+1) << std::endl;
+    out.get_stream() << boost::format("MODEL%1$9d") % (i + 1) << std::endl;
     internal::write_pdb(get_leaves(mhd[i]), out);
     out.get_stream() << "ENDMDL" << std::endl;
   }
@@ -636,9 +636,7 @@ WritePDBOptimizerState::WritePDBOptimizerState(const atom::Hierarchies mh,
                                                std::string filename)
     : kernel::OptimizerState(mh[0].get_model(), filename + "Writer"),
       filename_(filename) {
-  IMP_FOREACH(atom::Hierarchy h, mh) {
-    pis_.push_back(h.get_particle_index());
-  }
+  IMP_FOREACH(atom::Hierarchy h, mh) { pis_.push_back(h.get_particle_index()); }
 }
 
 void WritePDBOptimizerState::do_update(unsigned int call) {

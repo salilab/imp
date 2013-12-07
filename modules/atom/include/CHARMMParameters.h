@@ -88,7 +88,6 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
       bool allow_wildcards) const;
 
  public:
-
   //! Construction with CHARMM topology (and optionally parameters) file.
   /** For addition of atom types, the topology file alone is enough;
       for adding bonds and radii, both files are needed.
@@ -307,7 +306,6 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
   IMP_FORCE_FIELD_PARAMETERS(CHARMMParameters);
 
  private:
-
   virtual String get_force_field_atom_type(Atom atom) const;
 
   void read_parameter_file(base::TextInput input_file);

@@ -56,10 +56,10 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
 
       This version uses the container::create_restraint() function and so
       is more efficient than the non-template version.*/
-  template <class Score> void set_score(int predicate_value, Score *score) {
-    IMP_USAGE_CHECK(get_model(),
-                    "You must add this restraint to the model"
-                        << " first, sorry, this can be fixed.");
+  template <class Score>
+  void set_score(int predicate_value, Score *score) {
+    IMP_USAGE_CHECK(get_model(), "You must add this restraint to the model"
+                                     << " first, sorry, this can be fixed.");
     IMP_NEW(List, c, (input_, score->get_name() + " input"));
     restraints_.push_back(container::create_restraint(score, c.get()));
     restraints_.back()->set_was_used(true);
@@ -68,12 +68,12 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
 
   /** Apply this score to any pair whose predicate value does not match
       one passed to set_score().*/
-  template <class Score> void set_unknown_score(Score *score) {
+  template <class Score>
+  void set_unknown_score(Score *score) {
     // make sure it gets cleaned up if it is a temporary
     base::Pointer<Score> pscore(score);
-    IMP_USAGE_CHECK(get_model(),
-                    "You must add this restraint to the model"
-                        << " first, sorry, this can be fixed.");
+    IMP_USAGE_CHECK(get_model(), "You must add this restraint to the model"
+                                     << " first, sorry, this can be fixed.");
     IMP_NEW(List, c, (input_, score->get_name() + " input"));
     restraints_.push_back(container::create_restraint(score, c.get()));
     unknown_container_ = c;

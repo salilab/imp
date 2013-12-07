@@ -4,6 +4,7 @@ import IMP.test
 import IMP.multifit
 from IMP.cnmultifit import surface
 
+
 class Tests(IMP.test.TestCase):
 
     def test_surface_help(self):
@@ -13,7 +14,7 @@ class Tests(IMP.test.TestCase):
     def test_surface_usage(self):
         """Test surface module incorrect usage"""
         r = self.run_python_module("IMP.cnmultifit.surface", [])
-        out,err = r.communicate()
+        out, err = r.communicate()
         self.assertEqual(out, "")
         self.assertIn("incorrect number of arguments", err)
         self.assertNotEqual(r.returncode, 0)

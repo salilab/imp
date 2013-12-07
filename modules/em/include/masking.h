@@ -16,19 +16,23 @@
 IMPEM_BEGIN_NAMESPACE
 /** Mask based on the distance. */
 class IMPEMEXPORT RadiusDependentDistanceMask {
-  //class  RadiusDependentDistanceMask {
-public:
-  RadiusDependentDistanceMask(
-        float sampling_radius, const DensityHeader &header);
+  // class  RadiusDependentDistanceMask {
+ public:
+  RadiusDependentDistanceMask(float sampling_radius,
+                              const DensityHeader &header);
   inline const std::vector<double> *get_neighbor_shift() const {
-    return &neighbor_shift_;}
+    return &neighbor_shift_;
+  }
   inline const std::vector<double> *get_neighbor_dist() const {
-    return &neighbor_dist_;}
+    return &neighbor_dist_;
+  }
   inline const std::vector<double> *get_neighbor_dist_exp() const {
-    return &neighbor_dist_exp_;}
+    return &neighbor_dist_exp_;
+  }
 
-  void show(std::ostream& out) const { out << "RadiusDependentDistanceMask"; }
-protected:
+  void show(std::ostream &out) const { out << "RadiusDependentDistanceMask"; }
+
+ protected:
   std::vector<double> neighbor_shift_;
   std::vector<double> neighbor_dist_;
   std::vector<double> neighbor_dist_exp_;
@@ -36,22 +40,20 @@ protected:
 
 //! Calculates and stores a distance mask
 class IMPEMEXPORT DistanceMask
-//class  DistanceMask
-{
-public:
-  DistanceMask() {
-    initialized_ = false;
-  }
+    // class  DistanceMask
+    {
+ public:
+  DistanceMask() { initialized_ = false; }
 
   DistanceMask(const DensityHeader *header) {
-    header_=header;
+    header_ = header;
     initialized_ = true;
   }
 
-  void show(std::ostream& out) const { out << "DistanceMask"; }
+  void show(std::ostream &out) const { out << "DistanceMask"; }
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   //! Sets the parameters that depend on the radius of a given particle.
-  const RadiusDependentDistanceMask* set_mask(float radius);
+  const RadiusDependentDistanceMask *set_mask(float radius);
 
   //! Finds the precomputed mask given a particle radius.
   /**
@@ -63,15 +65,15 @@ public:
    \note the function return nullptr and writes a warning if parameters
    for this radius were not found.
   */
-  const RadiusDependentDistanceMask* get_mask(
-        float radius,float eps=0.001) const;
+  const RadiusDependentDistanceMask *get_mask(float radius,
+                                              float eps = 0.001) const;
 #endif
-  bool is_mask_set(float radius,float eps=0.001) {
+  bool is_mask_set(float radius, float eps = 0.001) {
     return get_mask(radius, eps) != nullptr;
   }
-protected:
-  typedef
-    std::map<float, const RadiusDependentDistanceMask*> MASK_MAP;
+
+ protected:
+  typedef std::map<float, const RadiusDependentDistanceMask *> MASK_MAP;
   bool initialized_;
   MASK_MAP masks_;
   const DensityHeader *header_;
@@ -79,4 +81,4 @@ protected:
 };
 
 IMPEM_END_NAMESPACE
-#endif  /* IMPEM_MASKING_H */
+#endif /* IMPEM_MASKING_H */

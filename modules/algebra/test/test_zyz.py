@@ -4,7 +4,9 @@ import IMP.algebra
 import math
 import random
 
+
 class Tests(IMP.test.TestCase):
+
     def test_conversion_from_ZYZ_to_quaternion(self):
         """Check Euler ZYZ conversions"""
         rot1 = 0.777

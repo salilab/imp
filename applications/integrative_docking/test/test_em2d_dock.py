@@ -3,7 +3,9 @@ import sys
 import os
 import re
 
+
 class EM2DDockApplicationTest(IMP.test.ApplicationTestCase):
+
     def test_simple(self):
         """Simple test of EM2D single PDB score application"""
         p = self.run_application('em2d_single_score',
@@ -11,7 +13,7 @@ class EM2DDockApplicationTest(IMP.test.ApplicationTestCase):
                                   self.get_input_file_name('image_1.pgm'),
                                   self.get_input_file_name('image_2.pgm'),
                                   self.get_input_file_name('image_3.pgm'),
-                                  '-s', '2.2', '-n', '200']) # pixel size, projections number
+                                  '-s', '2.2', '-n', '200'])  # pixel size, projections number
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
@@ -23,7 +25,6 @@ class EM2DDockApplicationTest(IMP.test.ApplicationTestCase):
         os.unlink('images.pgm')
         os.unlink('best_projections.pgm')
 
-
     def test_simple_score(self):
         """Simple test of EM2D score application"""
         p = self.run_application('em2d_score',
@@ -33,7 +34,7 @@ class EM2DDockApplicationTest(IMP.test.ApplicationTestCase):
                                   self.get_input_file_name('image_1.pgm'),
                                   self.get_input_file_name('image_2.pgm'),
                                   self.get_input_file_name('image_3.pgm'),
-                                  '-s', '2.2', '-n', '200']) # pixel size, projections number
+                                  '-s', '2.2', '-n', '200'])  # pixel size, projections number
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)

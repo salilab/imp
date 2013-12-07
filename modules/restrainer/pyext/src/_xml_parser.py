@@ -52,24 +52,27 @@ from _optimization import Optimization
 from _optimization import _OptimizationConjugateGradients
 from _optimization import _OptimizationRestraint
 
+
 class XMLRepresentation(object):
+
     """Construct Representation from XML file"""
+
     def __init__(self, filename):
-        #Define a dictionary with tags as keys and functions as values
+        # Define a dictionary with tags as keys and functions as values
         self.handlers = {
-            'Universe':self._handle_universe,
-            'Collection':self._handle_collection,
-            'Assembly':self._handle_assembly,
-            'Segment':self._handle_segment,
-            'Molecule':self._handle_molecule,
-            'Protein':self._handle_protein,
-            'NucleicAcid':self._handle_nucleic_acid,
-            'Chain':self._handle_chain,
-            'Fragment':self._handle_fragment,
-            'AtomicRep':self._handle_atomic_rep,
-            'GeometricShapeRep':self._handle_geometric_shape_rep,
-            'Sphere':self._handle_sphere,
-            'InitialPosition':self._handle_initial_position}
+            'Universe': self._handle_universe,
+            'Collection': self._handle_collection,
+            'Assembly': self._handle_assembly,
+            'Segment': self._handle_segment,
+            'Molecule': self._handle_molecule,
+            'Protein': self._handle_protein,
+            'NucleicAcid': self._handle_nucleic_acid,
+            'Chain': self._handle_chain,
+            'Fragment': self._handle_fragment,
+            'AtomicRep': self._handle_atomic_rep,
+            'GeometricShapeRep': self._handle_geometric_shape_rep,
+            'Sphere': self._handle_sphere,
+            'InitialPosition': self._handle_initial_position}
         self.filename = filename
         self.base_dir = os.path.dirname(filename)
         _document = open(filename).read()
@@ -83,9 +86,10 @@ class XMLRepresentation(object):
            object such that each node in the representation
            corresponds to the node in the XML nodes"""
         try:
-            representation_dom = self.dom.getElementsByTagName('Representation')[0]
+            representation_dom = self.dom.getElementsByTagName(
+                'Representation')[0]
         except:
-            print "\"%s\" does not contain <Representation> tag." %(
+            print "\"%s\" does not contain <Representation> tag." % (
                 self.filename)
             print "Please check the input file.\nExit..."
             raise
@@ -97,12 +101,12 @@ class XMLRepresentation(object):
         return result
 
     def _handle_node(self, node):
-        #Return a proper function for the node
+        # Return a proper function for the node
         handler = self.handlers.get(node.nodeName, self._handle_nothing)
         return handler(node)
 
     def _get_attributes(self, node):
-        #To store node attributes in python dictionary
+        # To store node attributes in python dictionary
         attr_dict = dict()
         attr_map = node.attributes
         if attr_map:
@@ -112,25 +116,25 @@ class XMLRepresentation(object):
                 # make sure filenames are relative to XML directory
                 if attr_name.endswith('filename'):
                     attr_value = os.path.abspath(os.path.join(self.base_dir,
-                      str(attr.value)))
+                                                              str(attr.value)))
                 else:
                     attr_value = str(attr.value)
                 attr_dict[attr_name] = attr_value
         return attr_dict
 
     def _print_node_info(self, node):
-        #Printing node info for debugging purposes
+        # Printing node info for debugging purposes
         attrs = self._get_attributes(node)
         attr_list = ['%s=%s' %
-             (at_name, at_val) for (at_name, at_val) in attrs.iteritems()]
-        print '%s%s' % ('  '*(self.depth + 1), ','.join(attr_list))
+                     (at_name, at_val) for (at_name, at_val) in attrs.iteritems()]
+        print '%s%s' % ('  ' * (self.depth + 1), ','.join(attr_list))
 
     def _handle_nothing(self, node):
-        #To ignore unwanted nodes
+        # To ignore unwanted nodes
         pass
 
     def _handle_universe(self, node):
-        #To create object for universe and all of its descendents
+        # To create object for universe and all of its descendents
         self.depth += 1
         attrs = self._get_attributes(node)
         result = _RepUniverse(attrs)
@@ -142,7 +146,7 @@ class XMLRepresentation(object):
         return result
 
     def _handle_collection(self, node):
-        #To create object for collection and all of its descendents
+        # To create object for collection and all of its descendents
         self.depth += 1
         attrs = self._get_attributes(node)
         result = _RepCollection(attrs)
@@ -154,7 +158,7 @@ class XMLRepresentation(object):
         return result
 
     def _handle_assembly(self, node):
-        #To create object for assembly and all of its descendents
+        # To create object for assembly and all of its descendents
         self.depth += 1
         attrs = self._get_attributes(node)
         result = _RepAssembly(attrs)
@@ -166,7 +170,7 @@ class XMLRepresentation(object):
         return result
 
     def _handle_segment(self, node):
-        #To create object for segment and all of its descendents
+        # To create object for segment and all of its descendents
         self.depth += 1
         attrs = self._get_attributes(node)
         result = _RepSegment(attrs)
@@ -178,7 +182,7 @@ class XMLRepresentation(object):
         return result
 
     def _handle_molecule(self, node):
-        #To create object for molecule and all of its descendents
+        # To create object for molecule and all of its descendents
         self.depth += 1
         attrs = self._get_attributes(node)
         result = _RepMolecule(attrs)
@@ -190,7 +194,7 @@ class XMLRepresentation(object):
         return result
 
     def _handle_protein(self, node):
-        #To create object for protein and all of its descendents
+        # To create object for protein and all of its descendents
         self.depth += 1
         attrs = self._get_attributes(node)
         result = _RepProtein(attrs)
@@ -202,7 +206,7 @@ class XMLRepresentation(object):
         return result
 
     def _handle_nucleic_acid(self, node):
-        #To create object for nucleic acid and all of its descendents
+        # To create object for nucleic acid and all of its descendents
         self.depth += 1
         attrs = self._get_attributes(node)
         result = _RepNucleicAcid(attrs)
@@ -214,7 +218,7 @@ class XMLRepresentation(object):
         return result
 
     def _handle_chain(self, node):
-        #To create object for chain and all of its descendents
+        # To create object for chain and all of its descendents
         self.depth += 1
         attrs = self._get_attributes(node)
         result = _RepChain(attrs)
@@ -226,7 +230,7 @@ class XMLRepresentation(object):
         return result
 
     def _handle_fragment(self, node):
-        #To create object for fragment and all of its descendents
+        # To create object for fragment and all of its descendents
         self.depth += 1
         attrs = self._get_attributes(node)
         result = _RepFragment(attrs)
@@ -238,7 +242,7 @@ class XMLRepresentation(object):
         return result
 
     def _handle_atomic_rep(self, node):
-        #To create object for atomic rep and all of its descendents
+        # To create object for atomic rep and all of its descendents
         self.depth += 1
         attrs = self._get_attributes(node)
         result = _RepAtomicRep(attrs)
@@ -250,7 +254,7 @@ class XMLRepresentation(object):
         return result
 
     def _handle_geometric_shape_rep(self, node):
-        #To create object for geometric shape rep and all of its descendents
+        # To create object for geometric shape rep and all of its descendents
         self.depth += 1
         attrs = self._get_attributes(node)
         result = _RepGeometricShapeRep(attrs)
@@ -261,9 +265,8 @@ class XMLRepresentation(object):
         self.depth -= 1
         return result
 
-
     def _handle_sphere(self, node):
-        #To create object for sphere and all of its descendents
+        # To create object for sphere and all of its descendents
         self.depth += 1
         attrs = self._get_attributes(node)
         result = _RepSphere(attrs)
@@ -274,9 +277,8 @@ class XMLRepresentation(object):
         self.depth -= 1
         return result
 
-
     def _handle_initial_position(self, node):
-        #To create object for initial position and all of its descendents
+        # To create object for initial position and all of its descendents
         self.depth += 1
         attrs = self._get_attributes(node)
         result = _RepInitialPosition(attrs)
@@ -287,21 +289,24 @@ class XMLRepresentation(object):
         self.depth -= 1
         return result
 
+
 class XMLDisplay(object):
+
     """Construct Display from XML file"""
+
     def __init__(self, filename):
         self.handlers = {
-            'Universe':self._handle_universe,
-            'Collection':self._handle_collection,
-            'Assembly':self._handle_assembly,
-            'Segment':self._handle_segment,
-            'Molecule':self._handle_molecule,
-            'Protein':self._handle_protein,
-            'NucleicAcid':self._handle_nucleic_acid,
-            'Chain':self._handle_chain,
-            'Fragment':self._handle_fragment,
-            'Color':self._handle_color,
-            'Residue':self._handle_residue}
+            'Universe': self._handle_universe,
+            'Collection': self._handle_collection,
+            'Assembly': self._handle_assembly,
+            'Segment': self._handle_segment,
+            'Molecule': self._handle_molecule,
+            'Protein': self._handle_protein,
+            'NucleicAcid': self._handle_nucleic_acid,
+            'Chain': self._handle_chain,
+            'Fragment': self._handle_fragment,
+            'Color': self._handle_color,
+            'Residue': self._handle_residue}
         _document = open(filename).read()
         self.dom = xml.dom.minidom.parseString(_document)
         self.depth = 0
@@ -335,8 +340,8 @@ class XMLDisplay(object):
     def _print_node_info(self, node):
         attrs = self._get_attributes(node)
         attr_list = ['%s=%s' %
-            (at_name, at_val) for (at_name, at_val) in attrs.iteritems()]
-        print '%s%s' % ('  '*(self.depth + 1), ','.join(attr_list))
+                     (at_name, at_val) for (at_name, at_val) in attrs.iteritems()]
+        print '%s%s' % ('  ' * (self.depth + 1), ','.join(attr_list))
 
     def _handle_nothing(self, node):
         pass
@@ -462,32 +467,35 @@ class XMLDisplay(object):
         self.depth -= 1
         return result
 
+
 class XMLRestraint(object):
+
     """Construct Restraint from XML file"""
+
     def __init__(self, filename):
         self.handlers = {
-            'Y2H':self._handle_y2h,
-            'Pulldown':self._handle_pulldown,
-            'RigidBody':self._handle_rigidbody,
-            'XrayStruc':self._handle_xray_struc,
-            'MSMS':self._handle_msms,
-            'Array':self._handle_array,
-            'Copurification':self._handle_copurification,
-            'CrossLink':self._handle_crosslink,
-            'Distance':self._handle_distance,
-            'Diameter':self._handle_diameter,
-            'ExcludedVolume':self._handle_excluded_volume,
-            'SAS':self._handle_sas,
-            'SAXS':self._handle_saxs,
-            'SANS':self._handle_sans,
-            'EM':self._handle_em,
-            'Restraint':self._handle_restraint,
-            'Particle':self._handle_particle,
-            'Source':self._handle_source,
-            'Author':self._handle_author,
-            'Journal':self._handle_journal,
-            'Title':self._handle_title,
-            'Year':self._handle_year}
+            'Y2H': self._handle_y2h,
+            'Pulldown': self._handle_pulldown,
+            'RigidBody': self._handle_rigidbody,
+            'XrayStruc': self._handle_xray_struc,
+            'MSMS': self._handle_msms,
+            'Array': self._handle_array,
+            'Copurification': self._handle_copurification,
+            'CrossLink': self._handle_crosslink,
+            'Distance': self._handle_distance,
+            'Diameter': self._handle_diameter,
+            'ExcludedVolume': self._handle_excluded_volume,
+            'SAS': self._handle_sas,
+            'SAXS': self._handle_saxs,
+            'SANS': self._handle_sans,
+            'EM': self._handle_em,
+            'Restraint': self._handle_restraint,
+            'Particle': self._handle_particle,
+            'Source': self._handle_source,
+            'Author': self._handle_author,
+            'Journal': self._handle_journal,
+            'Title': self._handle_title,
+            'Year': self._handle_year}
         self.base_dir = os.path.dirname(filename)
         _document = open(filename).read()
         self.dom = xml.dom.minidom.parseString(_document)
@@ -524,7 +532,7 @@ class XMLRestraint(object):
                 # make sure filenames are relative to XML directory
                 if attr_name.endswith('filename'):
                     attr_value = os.path.abspath(os.path.join(self.base_dir,
-                      str(attr.value)))
+                                                              str(attr.value)))
                 else:
                     attr_value = str(attr.value)
                 attr_dict[attr_name] = attr_value
@@ -533,8 +541,8 @@ class XMLRestraint(object):
     def _print_node_info(self, node):
         attrs = self._get_attributes(node)
         attr_list = ['%s=%s' %
-            (at_name, at_val) for (at_name, at_val) in attrs.iteritems()]
-        print '%s%s' % ('  '*(self.depth + 1), ','.join(attr_list))
+                     (at_name, at_val) for (at_name, at_val) in attrs.iteritems()]
+        print '%s%s' % ('  ' * (self.depth + 1), ','.join(attr_list))
 
     def _handle_nothing(self, node):
         pass
@@ -751,7 +759,7 @@ class XMLRestraint(object):
     def _handle_journal(self, node):
         self.depth += 1
         attrs = self._get_attributes(node)
-        text  = self._get_text(node)
+        text = self._get_text(node)
         result = _RestraintJournal(attrs, text)
         for child in node.childNodes:
             r = self._handle_node(child)
@@ -763,7 +771,7 @@ class XMLRestraint(object):
     def _handle_title(self, node):
         self.depth += 1
         attrs = self._get_attributes(node)
-        text  = self._get_text(node)
+        text = self._get_text(node)
         result = _RestraintTitle(attrs, text)
         for child in node.childNodes:
             r = self._handle_node(child)
@@ -775,7 +783,7 @@ class XMLRestraint(object):
     def _handle_year(self, node):
         self.depth += 1
         attrs = self._get_attributes(node)
-        text  = self._get_text(node)
+        text = self._get_text(node)
         result = _RestraintYear(attrs, text)
         for child in node.childNodes:
             r = self._handle_node(child)
@@ -786,11 +794,13 @@ class XMLRestraint(object):
 
 
 class XMLOptimization(object):
+
     """Construct Optimization from XML file"""
+
     def __init__(self, filename):
         self.handlers = {
-            'ConjugateGradients':self._handle_conjugate_gradients,
-            'Restraint':self._handle_restraint}
+            'ConjugateGradients': self._handle_conjugate_gradients,
+            'Restraint': self._handle_restraint}
         _document = open(filename).read()
         self.dom = xml.dom.minidom.parseString(_document)
         self.depth = 0
@@ -823,8 +833,8 @@ class XMLOptimization(object):
     def _print_node_info(self, node):
         attrs = self._get_attributes(node)
         attr_list = ['%s=%s' %
-            (at_name, at_val) for (at_name, at_val) in attrs.iteritems()]
-        print '%s%s' % ('  '*(self.depth + 1), ','.join(attr_list))
+                     (at_name, at_val) for (at_name, at_val) in attrs.iteritems()]
+        print '%s%s' % ('  ' * (self.depth + 1), ','.join(attr_list))
 
     def _handle_nothing(self, node):
         pass
@@ -832,7 +842,7 @@ class XMLOptimization(object):
     def _handle_conjugate_gradients(self, node):
         self.depth += 1
         attrs = self._get_attributes(node)
-        text  = self._get_text(node)
+        text = self._get_text(node)
         result = _OptimizationConjugateGradients(attrs, text)
         for child in node.childNodes:
             r = self._handle_node(child)
@@ -844,7 +854,7 @@ class XMLOptimization(object):
     def _handle_restraint(self, node):
         self.depth += 1
         attrs = self._get_attributes(node)
-        text  = self._get_text(node)
+        text = self._get_text(node)
         result = _OptimizationRestraint(attrs, text)
         for child in node.childNodes:
             r = self._handle_node(child)

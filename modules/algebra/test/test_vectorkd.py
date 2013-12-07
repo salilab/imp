@@ -2,7 +2,9 @@ import IMP.algebra
 import IMP.test
 import math
 
+
 class Tests(IMP.test.TestCase):
+
     def test_magnitude(self):
         """Check VectorKD magnitude"""
         v = IMP.algebra.VectorKD([1.0, 2.0, 3.0, 4.0])
@@ -16,12 +18,11 @@ class Tests(IMP.test.TestCase):
         v_unit = v.get_unit_vector()
         self.assertAlmostEqual(v_unit.get_magnitude(), 1.0, places=6)
         # tests that a tiny vector is converted to a random unit vector
-        for i in range(1,5):
+        for i in range(1, 5):
             tiny_v = IMP.algebra.VectorKD \
-                ([1.0e-16, 2.0e-16, 3.0e-16, 4.0e-16,5.0e-16,6.0e-16])
+                ([1.0e-16, 2.0e-16, 3.0e-16, 4.0e-16, 5.0e-16, 6.0e-16])
             tiny_v_unit = tiny_v.get_unit_vector()
             self.assertAlmostEqual(tiny_v_unit.get_magnitude(), 1.0, places=6)
-
 
     def test_component(self):
         """Check VectorKD components"""
@@ -43,8 +44,8 @@ class Tests(IMP.test.TestCase):
         """Check VectorKD scalar product"""
         v1 = IMP.algebra.VectorKD([1.0, 2.0, 3.0, 4.0])
         v2 = IMP.algebra.VectorKD([10.0, 1.0, 2.0, 3.0])
-        self.assertAlmostEqual(v1*v2, v2.get_scalar_product(v1), delta=.1)
-        self.assertAlmostEqual(v1*v2, v1 * v2, delta=.1)
+        self.assertAlmostEqual(v1 * v2, v2.get_scalar_product(v1), delta=.1)
+        self.assertAlmostEqual(v1 * v2, v1 * v2, delta=.1)
         self.assertAlmostEqual(v1.get_scalar_product(v2), v2 * v1, delta=.1)
         self.assertAlmostEqual(v1.get_scalar_product(v2), 30.0, delta=.1)
 
@@ -55,9 +56,9 @@ class Tests(IMP.test.TestCase):
         diff = v1 - v2
         v1 -= v2
         expected_diff = IMP.algebra.VectorKD([-9.0, 1.0, 1.0, 1.0])
-        self.assertAlmostEqual((diff-expected_diff).get_magnitude(),
+        self.assertAlmostEqual((diff - expected_diff).get_magnitude(),
                                0, delta=.1)
-        self.assertAlmostEqual((v1-expected_diff).get_magnitude(),
+        self.assertAlmostEqual((v1 - expected_diff).get_magnitude(),
                                0, delta=.1)
 
     def test_addition(self):
@@ -73,9 +74,9 @@ class Tests(IMP.test.TestCase):
         # The underlying C++ object pointer should be unchanged too:
         self.assertEqual(str(v1.this), cppobj)
         expected_sum = IMP.algebra.VectorKD([11.0, 3.0, 5.0, 7.0])
-        self.assertAlmostEqual((sum-expected_sum).get_magnitude(),
+        self.assertAlmostEqual((sum - expected_sum).get_magnitude(),
                                0, delta=.1)
-        self.assertAlmostEqual((v1-expected_sum).get_magnitude(),
+        self.assertAlmostEqual((v1 - expected_sum).get_magnitude(),
                                0, delta=.1)
 
     def test_scalar_multiplication(self):

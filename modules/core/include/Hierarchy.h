@@ -140,9 +140,8 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
                      get_decorator_traits());
   }
   kernel::ParticleIndex get_child_index(unsigned int i) const {
-     IMP_USAGE_CHECK(i < get_number_of_children(), "Invalid child requested");
-     return  get_model()->get_attribute(
-                                      get_decorator_traits().get_children_key(),
+    IMP_USAGE_CHECK(i < get_number_of_children(), "Invalid child requested");
+    return get_model()->get_attribute(get_decorator_traits().get_children_key(),
                                       get_particle_index())[i];
   }
   GenericHierarchies get_children() const {
@@ -411,7 +410,6 @@ struct HierarchyCounter : public HierarchyVisitor {
   IMP_SHOWABLE_INLINE(HierarchyCounter, out << get_count());
 
  private:
-
   unsigned int ct_;
 };
 

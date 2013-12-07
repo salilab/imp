@@ -11,7 +11,6 @@
 #include "IMP/kernel/internal/scoring_functions.h"
 #include "IMP/base//set.h"
 
-
 IMPKERNEL_BEGIN_NAMESPACE
 
 //! Constructor

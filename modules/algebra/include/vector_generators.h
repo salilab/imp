@@ -90,7 +90,6 @@ inline VectorD<3> get_random_vector_on_unit_sphere() {
   return internal::get_random_vector_on_unit_sphere();
 }
 
-
 //! Generate a random vector on a sphere with uniform density
 /** See VectorD
     See SphereD
@@ -99,8 +98,6 @@ template <int D>
 inline VectorD<D> get_random_vector_on(const SphereD<D> &s) {
   return internal::get_random_vector_on(s);
 }
-
-
 
 //! Generate a set of vectors which covers a sphere uniformly
 /** The function is currently pretty slow, especially in non-optimized

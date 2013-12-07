@@ -16,18 +16,16 @@ using namespace IMP::multifit;
 namespace {
 
 void do_it() {
- IMP_EV_BENCHMARK_SETUP
+  IMP_EV_BENCHMARK_SETUP
 
   {
 
-    IMP_NEW(ExcludedVolumeRestraint, evr, (lsc,1, 5));
+    IMP_NEW(ExcludedVolumeRestraint, evr, (lsc, 1, 5));
     evr->set_maximum_score(.1);
-    test_one<ExcludedVolumeRestraint>("excluded volume", seed, m,
-                                      evr->create_scoring_function(), rb0,
-                                      false);
-    test_one<ExcludedVolumeRestraint>("excluded volume", seed, m,
-                                      evr->create_scoring_function(), rb0,
-                                      true);
+    test_one<ExcludedVolumeRestraint>(
+        "excluded volume", seed, m, evr->create_scoring_function(), rb0, false);
+    test_one<ExcludedVolumeRestraint>(
+        "excluded volume", seed, m, evr->create_scoring_function(), rb0, true);
   }
 }
 }

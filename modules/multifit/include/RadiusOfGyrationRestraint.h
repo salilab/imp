@@ -23,9 +23,8 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 /note a harmonic upper bound is applied between
       the predicted radius and the actual radius
  */
-class IMPMULTIFITEXPORT RadiusOfGyrationRestraint : public kernel::Restraint
-{
-public:
+class IMPMULTIFITEXPORT RadiusOfGyrationRestraint : public kernel::Restraint {
+ public:
   //! Constructor
   /**
     \param[in] ps the particles to work on
@@ -33,21 +32,22 @@ public:
     \param[in] scale allow the radius of gyration of the particles
                       to be at most scale times the predicted one
    */
-  RadiusOfGyrationRestraint(kernel::Particles ps,int num_residues,Float scale=1.);
-  virtual double
-  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
-     const IMP_OVERRIDE;
+  RadiusOfGyrationRestraint(kernel::Particles ps, int num_residues,
+                            Float scale = 1.);
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RadiusOfGyrationRestraint);
   //! Set the predicted radius of gyration used in the restraint
   void set_radius_of_gyration(Float r) {
-    predicted_rog_=r;
-    hub_=new core::HarmonicUpperBound(predicted_rog_*scale_,1);}
+    predicted_rog_ = r;
+    hub_ = new core::HarmonicUpperBound(predicted_rog_ * scale_, 1);
+  }
   //! Get the predicted radius of gyration used in the restraint
-  inline Float get_radius_of_gyration() {return predicted_rog_;}
+  inline Float get_radius_of_gyration() { return predicted_rog_; }
 
 #ifndef SWIG
-  IMP_LIST(private, Particle, particle, kernel::Particle*, kernel::Particles);
+  IMP_LIST(private, Particle, particle, kernel::Particle *, kernel::Particles);
 #endif
  protected:
   kernel::Model *mdl_;

@@ -135,7 +135,7 @@ class RestraintLoadLink : public SimpleLoadLink<kernel::Restraint> {
     if (sf_.get_is(nh)) {
       RMF::decorator::ScoreConst d = sf_.get(nh);
       IMP_LOG_TERSE("Loading score " << d.get_score() << " into restraint"
-                    << oi->get_name() << std::endl);
+                                     << oi->get_name() << std::endl);
       oi->set_last_score(d.get_score());
     } else {
       oi->set_last_score(0);
@@ -218,7 +218,7 @@ class RestraintSaveLink : public SimpleSaveLink<kernel::Restraint> {
     all_.push_back(r);
     rsf_ = new core::RestraintsScoringFunction(all_);
     nh.set_static_value(weight_key_, r->get_weight());
-    //sf_.get(nh).set_static_score(0.0);
+    // sf_.get(nh).set_static_score(0.0);
     add_link(r, nh);
     kernel::RestraintSet *rs = dynamic_cast<kernel::RestraintSet *>(r);
     if (rs) {
@@ -277,7 +277,7 @@ class RestraintSaveLink : public SimpleSaveLink<kernel::Restraint> {
             no_terms_.insert(o);
             // delete old children
           } else {
-            IMP_FOREACH(Restraint *r, rs) {
+            IMP_FOREACH(Restraint * r, rs) {
               Subset s(get_input_particles(r->get_inputs()));
               double score = r->get_last_score();
               r->set_was_used(true);

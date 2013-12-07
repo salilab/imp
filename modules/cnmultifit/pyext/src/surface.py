@@ -6,6 +6,7 @@ import IMP.atom
 import IMP.multifit
 from IMP import OptionParser
 
+
 def parse_args():
     usage = """%prog [options] <pdb file name>
 
@@ -24,6 +25,7 @@ This program generates the Connolly surface for a given PDB file."""
     if len(args) != 1:
         parser.error("incorrect number of arguments")
     return args[0], opts.density, opts.rp
+
 
 def main():
     infile, density, rp = parse_args()

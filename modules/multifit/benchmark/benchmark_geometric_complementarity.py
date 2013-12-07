@@ -21,15 +21,15 @@ import time
 def read_transformations():
     res = list()
     inf = open(IMP.benchmark.get_data_path("1j1A_docking.imp.txt"), "r")
-    inf.readline() # header
+    inf.readline()  # header
     for line in inf:
         fields = line.strip().split('|')
         rots = [float(x) for x in fields[2].split()]
         trans = [float(x) for x in fields[3].split()]
         score = float(fields[7].strip())
         res.append((IMP.algebra.Transformation3D(
-          IMP.algebra.Rotation3D(rots[0], rots[1], rots[2], rots[3]),
-          IMP.algebra.Vector3D(trans[0], trans[1], trans[2])), score))
+            IMP.algebra.Rotation3D(rots[0], rots[1], rots[2], rots[3]),
+            IMP.algebra.Vector3D(trans[0], trans[1], trans[2])), score))
     inf.close()
     return res
 
@@ -57,9 +57,9 @@ def perform_benchmark(model, tr_list, r1, r2, rb1, rb2, maxiter):
     for i in xrange(maxiter):
         start = time.time()
         IMP.core.transform(rb2, tr_list[i][0])
-        score = 8*rest.evaluate(False)
+        score = 8 * rest.evaluate(False)
         orig_score = tr_list[i][1]
-        pct_error = 100*abs((score - orig_score)/orig_score)
+        pct_error = 100 * abs((score - orig_score) / orig_score)
         IMP.core.transform(rb2, tr_list[i][0].get_inverse())
         elapsed = time.time() - start
         IMP.benchmark.report("ComplementarityRestraint %d" % i, "",

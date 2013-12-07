@@ -14,12 +14,12 @@
 
 IMPCNMULTIFIT_BEGIN_NAMESPACE
 
-Floats IMPCNMULTIFITEXPORT
-get_rmsd_for_models(const std::string param_filename,
-                    const std::string trans_filename,
-                    const std::string ref_filename,
-                    int start_model=0, int end_model=-1);
+Floats IMPCNMULTIFITEXPORT get_rmsd_for_models(const std::string param_filename,
+                                               const std::string trans_filename,
+                                               const std::string ref_filename,
+                                               int start_model = 0,
+                                               int end_model = -1);
 
 IMPCNMULTIFIT_END_NAMESPACE
 
-#endif  /* IMPCNMULTIFIT_CN_RMSD_H */
+#endif /* IMPCNMULTIFIT_CN_RMSD_H */

@@ -1,3 +1,3 @@
-required_modules='multifit'
-required_dependencies=''
-optional_dependencies=''
+required_modules = 'multifit'
+required_dependencies = ''
+optional_dependencies = ''

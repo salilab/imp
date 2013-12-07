@@ -12,10 +12,14 @@ import subprocess
 import optparse
 import inspect
 
+
 class TempDir(object):
+
     """Make a temporary directory, and delete it when the object is destroyed"""
+
     def __init__(self):
         self.tmpdir = tempfile.mkdtemp()
+
     def __del__(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
@@ -26,6 +30,7 @@ def _count_lines(filename):
     for line in open(filename):
         wc += 1
     return wc
+
 
 def _count_fiber_dock_out(filename):
     """Count the number of transformations in a FiberDock output file"""
@@ -38,6 +43,7 @@ def _count_fiber_dock_out(filename):
             elif 'glob' in line:
                 header_found = True
     return wc
+
 
 def _run_binary(path, binary, args, out_file=None):
     if path:
@@ -56,6 +62,7 @@ def _run_binary(path, binary, args, out_file=None):
 
 
 class Scorer(object):
+
     """Score transformations using a type of experimental data.
        To add support for a new type of data, simply create a new Scorer
        subclass and override its methods and variables."""
@@ -110,7 +117,7 @@ class Scorer(object):
         for line in open(transforms_file):
             spl = line.split()
             if len(spl) > 1:
-                fh.write(solutions[int(spl[0])-1])
+                fh.write(solutions[int(spl[0]) - 1])
         fh.close()
         # Recompute z-scores for the new set
         args = [tmp_tf]
@@ -121,6 +128,7 @@ class Scorer(object):
 
 
 class NMRScorer(Scorer):
+
     """Score transformations using NMR residue type content"""
     short_name = 'nmr_rtc'
 
@@ -156,6 +164,7 @@ class NMRScorer(Scorer):
 
 
 class SAXSScorer(Scorer):
+
     """Score transformations using SAXS (rg + chi)"""
     short_name = 'saxs'
 
@@ -166,14 +175,14 @@ class SAXSScorer(Scorer):
                      help="File name of the complex SAXS profile")
         g.add_option('--saxs_receptor_pdb', metavar='FILE',
                      help='Additional receptor structure for SAXS scoring '
-                           'with modeled missing atoms/residues. '
-                           'This structure should be aligned to the '
-                           'input receptor!')
+                     'with modeled missing atoms/residues. '
+                     'This structure should be aligned to the '
+                     'input receptor!')
         g.add_option('--saxs_ligand_pdb', metavar='FILE',
-                      help='Additional ligand structure for SAXS scoring '
-                           'with modeled missing atoms/residues. '
-                           'This structure should be aligned to the '
-                           'input ligand!')
+                     help='Additional ligand structure for SAXS scoring '
+                     'with modeled missing atoms/residues. '
+                     'This structure should be aligned to the '
+                     'input ligand!')
         parser.add_option_group(g)
 
     @classmethod
@@ -198,6 +207,7 @@ class SAXSScorer(Scorer):
 
 
 class EM2DScorer(Scorer):
+
     """Score transformations using EM2D"""
     short_name = 'em2d'
 
@@ -232,13 +242,14 @@ class EM2DScorer(Scorer):
 
     def _run_score_binary(self):
         _run_binary(None, "em2d_score",
-                    [self.receptor, self.ligand, self.transformations_file] \
-                    + self.class_averages \
+                    [self.receptor, self.ligand, self.transformations_file]
+                    + self.class_averages
                     + ['-o', self.output_file, '-n', '200', '-s',
                        str(self.pixel_size)])
 
 
 class EM3DScorer(Scorer):
+
     """Score transformations using EM3D"""
     short_name = 'em3d'
     transforms_needed = 1000
@@ -270,6 +281,7 @@ class EM3DScorer(Scorer):
 
 
 class CXMSScorer(Scorer):
+
     """Score transformations using CXMS"""
     short_name = 'cxms'
     transforms_needed = 2000
@@ -301,12 +313,14 @@ class CXMSScorer(Scorer):
 
 
 class IDock(object):
+
     """Handle all stages of the integrative docking protocol"""
 
     # Get list of all Scorer subclasses
     _all_scorers = [x[1] for x in inspect.getmembers(sys.modules[__name__],
-                            lambda x: inspect.isclass(x) \
-                                and issubclass(x, Scorer) and x is not Scorer)]
+                                                     lambda x: inspect.isclass(
+                                                         x)
+                                                     and issubclass(x, Scorer) and x is not Scorer)]
 
     def parse_args(self):
         """Parse command line options, and return all applicable Scorers"""
@@ -325,7 +339,7 @@ find 'reduce' in the system path."""
                                               "using %s data" % data_types,
                                   epilog=epilog,
                                   imp_module=IMP.saxs)
-        choices=['EI', 'AA', 'other']
+        choices = ['EI', 'AA', 'other']
         parser.add_option('--complex_type', metavar='TYPE', type='choice',
                           dest="type", choices=choices, default='other',
                           help='/'.join(choices) + '; use this order for '
@@ -348,11 +362,12 @@ find 'reduce' in the system path."""
         parser.add_option('--prefix', default='',
                           help='Add prefix string (separated by an underscore) '
                                'to filenames generated by the current run')
-        parser.add_option('--precision', type='choice', choices=['1', '2', '3'],
-                          default='1',
-                          help='Sampling precision for rigid docking: '
-                               '1-normal, 2-medium, 3-high. The higher the '
-                               'precision, the higher are the run times')
+        parser.add_option(
+            '--precision', type='choice', choices=['1', '2', '3'],
+            default='1',
+            help='Sampling precision for rigid docking: '
+            '1-normal, 2-medium, 3-high. The higher the '
+            'precision, the higher are the run times')
         for s in self._all_scorers:
             s.add_parser_options(parser)
 
@@ -411,8 +426,8 @@ find 'reduce' in the system path."""
 
     def get_all_scores_filename(self, scorers, prefix, suffix):
         """Get a filename containing the names of all scores used"""
-        return self.get_filename(prefix \
-                          + '_'.join([x.short_name for x in scorers]) + suffix)
+        return self.get_filename(prefix
+                                 + '_'.join([x.short_name for x in scorers]) + suffix)
 
     def do_patch_dock_docking(self):
         """Do PatchDock docking, using previously generated surfaces
@@ -451,7 +466,7 @@ find 'reduce' in the system path."""
         if self.opts.type == 'AA':
             self.ligand, self.receptor = self.receptor, self.ligand
             self.opts.saxs_receptor_pdb, self.opts.saxs_ligand_pdb = \
-                    self.opts.saxs_ligand_pdb, self.opts.saxs_receptor_pdb
+                self.opts.saxs_ligand_pdb, self.opts.saxs_receptor_pdb
         return num_transforms
 
     def get_filtered_scores(self, scorers):
@@ -518,8 +533,8 @@ find 'reduce' in the system path."""
         params = self.get_all_scores_filename(scorers, 'params_fd_', '.txt')
         fd_out = self.get_all_scores_filename(scorers, 'fd_res_', '')
         self.run_fiber_dock_binary('buildFiberDockParams.pl',
-                 [receptorH, ligandH, 'U', 'U', self.opts.type, trans_for_fd,
-                  fd_out, '0', '50', '0.8', '0', 'glpk', params])
+                                   [receptorH, ligandH, 'U', 'U', self.opts.type, trans_for_fd,
+                                    fd_out, '0', '50', '0.8', '0', 'glpk', params])
         return params, fd_out + '.ref'
 
     def do_fiber_dock_docking(self, trans_for_fd, params, fd_out):
@@ -605,10 +620,10 @@ find 'reduce' in the system path."""
         print >> fh, "receptorPdb Str " + self.receptor
         print >> fh, "ligandPdb Str " + self.ligand
         print >> fh, "     # |  Score  | filt| ZScore |" \
-                 + "|".join(["%-8s| Zscore " % s.short_name for s in scorers]) \
-                 + "| Energy | Zscore | Transformation"
+            + "|".join(["%-8s| Zscore " % s.short_name for s in scorers]) \
+            + "| Energy | Zscore | Transformation"
         for i, solution in enumerate(solutions):
-            fh.write("%6d | " % (i+1) + "|".join(solution[1:]))
+            fh.write("%6d | " % (i + 1) + "|".join(solution[1:]))
         return out_fname
 
     def main(self):

@@ -22,21 +22,25 @@ except NameError:
 
 log = logging.getLogger("solutions_io")
 
-unit_delim = "/" # separate units within a field (eg, reference frames).
+unit_delim = "/"  # separate units within a field (eg, reference frames).
 field_delim = ","
 
+
 class ClusterRecord(tuple):
+
     """Simple named tuple class"""
 
     class _itemgetter(object):
+
         def __init__(self, ind):
             self.__ind = ind
+
         def __call__(self, obj):
             return obj[self.__ind]
 
     def __init__(self, iterable):
         if len(iterable) != self.__n_fields:
-            raise TypeError("Expected %d arguments, got %d" \
+            raise TypeError("Expected %d arguments, got %d"
                             % (self.__n_fields, len(iterable)))
         tuple.__init__(self, iterable)
 
@@ -48,13 +52,14 @@ class ClusterRecord(tuple):
     solutions_ids = property(_itemgetter(4))
 
 
-#################################
+#
 
 # INPUT/OUTPUT OF SOLUTIONS OBTAINED WITH DominoModel
 
-#################################
+#
 
 class HeapRecord(tuple):
+
     """
         The heapq algorithm is a min-heap. I want a max-heap, that pops the
         larger values out of the heap.
@@ -62,7 +67,8 @@ class HeapRecord(tuple):
         index that is used for the comparison. The index corresponds to
         the restraint that we desired to order by
     """
-    def __new__(self,x,i):
+
+    def __new__(self, x, i):
         """
             Build from a tuple and the index used to compare
         """
@@ -86,7 +92,7 @@ class HeapRecord(tuple):
 
 
 def gather_best_solution_results(fns, fn_output, max_number=50000,
-                                    raisef=0.1, orderby="em2d"):
+                                 raisef=0.1, orderby="em2d"):
     """
        Reads a set of database files and merge them into a single file.
 
@@ -110,8 +116,8 @@ def gather_best_solution_results(fns, fn_output, max_number=50000,
     names = db.get_table_column_names(tbl)
     types = db.get_table_types(tbl)
     indices = get_sorting_indices(names)
-    sorted_names = [ names[i] for i in indices]
-    sorted_types = [ types[i] for i in indices]
+    sorted_names = [names[i] for i in indices]
+    sorted_types = [types[i] for i in indices]
 
     names.sort()
     ind = names.index(orderby)
@@ -131,15 +137,15 @@ def gather_best_solution_results(fns, fn_output, max_number=50000,
     n_problems = 0
     for fn in fns:
         try:
-            log.info("Reading %s",fn)
+            log.info("Reading %s", fn)
             db.connect(fn)
 #            log.debug("Retrieving %s", they_are_sorted)
             sql_command = """SELECT %s FROM %s
                              WHERE assignment<>"native"
                              ORDER BY %s ASC LIMIT %s """ % (
-                                    they_are_sorted, tbl,orderby, max_number)
+                they_are_sorted, tbl, orderby, max_number)
             data = db.retrieve_data(sql_command)
-            log.info("%s records read from %s",len(data), fn)
+            log.info("%s records read from %s", len(data), fn)
             db.close()
             # Fill heap
             for d in data:
@@ -151,21 +157,22 @@ def gather_best_solution_results(fns, fn_output, max_number=50000,
                     # as a HeapRecord is used
                     if(best_records[0] < a):
                         heapq.heapreplace(best_records, a)
-        except Exception, e:
-            log.error("Error for %s: %s",fn, e)
+        except Exception as e:
+            log.error("Error for %s: %s", fn, e)
             n_problems += 1
 
     # If the number of problematic files is too high, report that something
     # big is going on. Otherwise tolerate some errors from some tasks that
     # failed (memory errors, locks, writing errors ...)
-    ratio = float(n_problems)/float(len(fns))
+    ratio = float(n_problems) / float(len(fns))
     if ratio > raisef:
-        raise IOError("There are %8.1f %s of the database "\
-                    "files to merge with problems! " % (ratio*100,"%"))
+        raise IOError("There are %8.1f %s of the database "
+                      "files to merge with problems! " % (ratio * 100, "%"))
     # append the native data to the best_records
     heapq.heappush(best_records, native_data[0])
     out_db.store_data(tbl, best_records)
     out_db.close()
+
 
 def gather_solution_results(fns, fn_output, raisef=0.1):
     """
@@ -182,8 +189,8 @@ def gather_solution_results(fns, fn_output, raisef=0.1):
     names = db.get_table_column_names(tbl)
     types = db.get_table_types(tbl)
     indices = get_sorting_indices(names)
-    sorted_names = [ names[i] for i in indices]
-    sorted_types = [ types[i] for i in indices]
+    sorted_names = [names[i] for i in indices]
+    sorted_types = [types[i] for i in indices]
     log.info("Gathering results. Saving to %s", fn_output)
     out_db = Database.Database2()
     out_db.create(fn_output, overwrite=True)
@@ -193,34 +200,34 @@ def gather_solution_results(fns, fn_output, raisef=0.1):
     n_problems = 0
     for fn in fns:
         try:
-            log.info("Reading %s",fn)
+            log.info("Reading %s", fn)
             db.connect(fn)
-            names = db.get_table_column_names(tbl)
-            names.sort()
+            names = sorted(db.get_table_column_names(tbl))
             they_are_sorted = field_delim.join(names)
             log.debug("Retrieving %s", they_are_sorted)
             sql_command = "SELECT %s FROM %s" % (they_are_sorted, tbl)
             data = db.retrieve_data(sql_command)
             out_db.store_data(tbl, data)
             db.close()
-        except Exception, e:
-            log.error("Error for file %s: %s",fn, e)
+        except Exception as e:
+            log.error("Error for file %s: %s", fn, e)
             n_problems += 1
-    ratio = float(n_problems)/float(len(fns))
+    ratio = float(n_problems) / float(len(fns))
     if ratio > raisef:
-        raise IOError("There are %8.1f %s of the database "\
-                    "files to merge with problems! " % (ratio*100,"%"))
+        raise IOError("There are %8.1f %s of the database "
+                      "files to merge with problems! " % (ratio * 100, "%"))
     out_db.close()
+
 
 def get_sorting_indices(l):
     """ Return indices that sort the list l """
-    pairs = [(element, i) for i,element in enumerate(l)]
-    pairs.sort()
+    pairs = sorted([(element, i) for i, element in enumerate(l)])
     indices = [p[1] for p in pairs]
     return indices
 
+
 def get_best_solution(fn_database, Nth, fields=False, orderby=False,
-                                                                 tbl="results"):
+                      tbl="results"):
     """
         Recover the reference frame of the n-th best solution from a database.
         The index Nth stars at 0
@@ -231,15 +238,17 @@ def get_best_solution(fn_database, Nth, fields=False, orderby=False,
                       ASC LIMIT 1 OFFSET %d """ % (f, tbl, orderby, Nth)
     data = Database.read_data(fn_database, sql_command)
     if len(data) == 0:
-        raise ValueError("The requested %s-th best solution does not exist. "\
-                                "Only %s solutions found" % (Nth, len(data) ))
+        raise ValueError("The requested %s-th best solution does not exist. "
+                         "Only %s solutions found" % (Nth, len(data)))
     # the only field  last record is the solution requested
     return data[0][0]
+
 
 def get_pca(string, delimiter="/"):
     pca = string.split(delimiter)
     pca = [float(p) for p in pca]
     return pca
+
 
 def get_fields_string(fields):
     """
@@ -255,9 +264,11 @@ def get_fields_string(fields):
 
 
 class ResultsDB(Database.Database2):
+
     """
         Class for managing the results of the experiments
     """
+
     def __init__(self, ):
         self.records = []
         self.native_table_name = "native"
@@ -268,13 +279,13 @@ class ResultsDB(Database.Database2):
 
         # columns describing a solution in the results
         self.results_description_columns = ["solution_id", "assignment",
-                                                        "reference_frames"]
+                                            "reference_frames"]
         self.results_description_types = [int, str, str]
         # columns describing measures for a result
         self.results_measures_columns = ["drms", "cdrms", "crmsd"]
         self.results_measures_types = [float, float, float]
 
-    def add_results_table(self,restraints_names, add_measures=False):
+    def add_results_table(self, restraints_names, add_measures=False):
         """
             Build the table of results
             @param restraints_names The names given to the columns of the table
@@ -282,18 +293,21 @@ class ResultsDB(Database.Database2):
             and native conformation
         """
         table_fields = self.results_description_columns + \
-                                        ["total_score"] + restraints_names
+            ["total_score"] + restraints_names
         table_types = self.results_description_types + \
-                                [float] + [float for r in restraints_names]
+            [float] + [float for r in restraints_names]
         if add_measures:
             # Add columns for measures
             table_fields += self.results_measures_columns
             table_types += self.results_measures_types
-        log.debug("Creating table %s\n%s",table_fields,table_types)
+        log.debug("Creating table %s\n%s", table_fields, table_types)
         self.create_table(self.results_table, table_fields, table_types)
         # create a table for the native assembly if we are benchmarking
-        if add_measures :
-            self.create_table(self.native_table_name, table_fields, table_types)
+        if add_measures:
+            self.create_table(
+                self.native_table_name,
+                table_fields,
+                table_types)
 
     def get_solutions_results_table(self, fields=False,
                                     max_number=None, orderby=False):
@@ -309,13 +323,13 @@ class ResultsDB(Database.Database2):
         sql_command = "SELECT %s FROM %s " % (f, self.results_table)
         if orderby:
             sql_command += " ORDER BY %s ASC" % orderby
-        if max_number not in (None,False):
+        if max_number not in (None, False):
             sql_command += " LIMIT %d" % (max_number)
-        log.debug("Using %s", sql_command )
+        log.debug("Using %s", sql_command)
         data = self.retrieve_data(sql_command)
         return data
 
-    def get_solutions(self, fields=False,  max_number=None, orderby=False):
+    def get_solutions(self, fields=False, max_number=None, orderby=False):
         """
             Get solutions from the database.
             @param fields Fields requested. If the fields are in different
@@ -331,31 +345,31 @@ class ResultsDB(Database.Database2):
         pairs_table_field = []
 #        fields_string = self.get_fields_string(fields)
         if not fields:
-            fields = ["*",]
-        for f,t in [(f,t) for f in fields for t in tables]:
+            fields = ["*", ]
+        for f, t in [(f, t) for f in fields for t in tables]:
             if t == "native" or f == "solution_id":
                 continue
             columns = self.get_table_column_names(t)
             if f in columns:
                 required_tables.add(t)
-                pairs_table_field.append((t,f))
+                pairs_table_field.append((t, f))
         required_tables = list(required_tables)
         log.debug("required_tables %s", required_tables)
         log.debug("pairs_table_field %s", pairs_table_field)
         if len(required_tables) == 0:
             data = self.get_solutions_results_table(fields,
-                                                max_number, orderby)
+                                                    max_number, orderby)
             return data
         elif len(required_tables) == 1 and required_tables[0] == "results":
             data = self.get_solutions_results_table(fields,
-                                                max_number, orderby)
+                                                    max_number, orderby)
             return data
         elif len(required_tables) > 1:
-            sql_command = self.get_left_join_command( pairs_table_field,
-                                                      required_tables)
+            sql_command = self.get_left_join_command(pairs_table_field,
+                                                     required_tables)
             if orderby:
                 sql_command += " ORDER BY %s ASC" % orderby
-            log.debug("Using %s", sql_command )
+            log.debug("Using %s", sql_command)
             data = self.retrieve_data(sql_command)
             return data
         else:
@@ -373,7 +387,7 @@ class ResultsDB(Database.Database2):
         return data
 
     def add_record(self, solution_id, assignment, RFs, total_score,
-                                            restraints_scores, measures):
+                   restraints_scores, measures):
         """
             Add a recorde to the database
             @param solution_id The key for the solution
@@ -390,13 +404,13 @@ class ResultsDB(Database.Database2):
         words = [io.ReferenceFrameToText(ref).get_text() for ref in RFs]
         RFs_txt = unit_delim.join(words)
         record = [solution_id, assignment, RFs_txt, total_score] + \
-                                                        restraints_scores
-        if measures != None:
+            restraints_scores
+        if measures is not None:
             record = record + measures
         self.records.append(record)
 
     def add_native_record(self, assignment, RFs, total_score,
-                                                        restraints_scores):
+                          restraints_scores):
         """
             Add a record for the native structure to the database
             see add_record() for the meaning of the parameters
@@ -405,18 +419,17 @@ class ResultsDB(Database.Database2):
         RFs_txt = unit_delim.join(words)
         solution_id = 0
         record = [solution_id, assignment, RFs_txt, total_score] + \
-                                                            restraints_scores
-        measures = [0,0,0] # ["drms", "cdrms", "crmsd"]
+            restraints_scores
+        measures = [0, 0, 0]  # ["drms", "cdrms", "crmsd"]
         record = record + measures
         self.store_data(self.native_table_name, [record])
 
-    def save_records(self,table="results"):
+    def save_records(self, table="results"):
         self.store_data(table, self.records)
 
     def format_placement_record(self, solution_id, distances, angles):
         """ both distances and angles are expected to be a list of floats """
         return [solution_id] + distances + angles
-
 
     def add_placement_scores_table(self, names):
         """
@@ -433,7 +446,7 @@ class ResultsDB(Database.Database2):
         self.drop_table(self.placement_table_name)
         self.create_table(self.placement_table_name, table_fields, table_types)
         self.add_columns(self.native_table_name,
-                                table_fields, table_types,check=True)
+                         table_fields, table_types, check=True)
         # update all placements scores to 0 for the native assembly
         native_values = [0 for t in table_fields]
         log.debug("%s", self.native_table_name)
@@ -447,7 +460,8 @@ class ResultsDB(Database.Database2):
             Return the names of the placement score fields in the database
         """
         columns = self.get_table_column_names(self.placements_table)
-        fields = [col for col in columns if "distance" in col or "angle" in col]
+        fields = [
+            col for col in columns if "distance" in col or "angle" in col]
         return fields
 
     def add_ccc_table(self):
@@ -463,9 +477,9 @@ class ResultsDB(Database.Database2):
         self.create_table(self.ccc_table_name, table_fields, table_types)
         # update values for the native assembly
         self.add_columns(self.native_table_name,
-                         table_fields, table_types,check=True)
+                         table_fields, table_types, check=True)
         self.update_data(self.native_table_name,
-                    table_fields, [0,1.00], ["assignment"], ["\"native\""])
+                         table_fields, [0, 1.00], ["assignment"], ["\"native\""])
 
     def format_ccc_record(self, solution_id, ccc):
         """ Format for the record to store in the ccc table """
@@ -486,8 +500,8 @@ class ResultsDB(Database.Database2):
         self.store_data(self.ccc_table_name, ccc_data)
 
     def store_placement_data(self, data):
-        log.debug("store placement table %s",data)
-        self.store_data(self.placement_table_name,data)
+        log.debug("store placement table %s", data)
+        self.store_data(self.placement_table_name, data)
 
     def get_left_join_command(self, pairs_table_field, tables_names):
         """
@@ -508,22 +522,25 @@ class ResultsDB(Database.Database2):
                     table3.solution_id IS NOT NULL
         """
 
-        txt = [ "%s.%s" % (p[0],p[1]) for p in pairs_table_field]
+        txt = ["%s.%s" % (p[0], p[1]) for p in pairs_table_field]
         fields_requested = field_delim.join(txt)
-        sql_command = " SELECT %s FROM %s " % (fields_requested,tables_names[0])
+        sql_command = " SELECT %s FROM %s " % (
+            fields_requested, tables_names[0])
         n_tables = len(tables_names)
         for i in range(1, n_tables):
-            a = tables_names[i-1]
+            a = tables_names[i - 1]
             b = tables_names[i]
             sql_command += " LEFT JOIN %s " \
-                            "ON %s.solution_id = %s.solution_id " % (b,a,b)
+                "ON %s.solution_id = %s.solution_id " % (b, a, b)
         # add the condition of solution_id being not null, so there are not
         # problems if some solutions are missing in one table
-        for i in range(n_tables-1):
+        for i in range(n_tables - 1):
             sql_command += "WHERE %s.solution_id " \
-                                            "IS NOT NULL AND " % tables_names[i]
-        sql_command += " %s.solution_id IS NOT NULL " % tables_names[n_tables-1]
-        log.debug("%s" %sql_command)
+                "IS NOT NULL AND " % tables_names[
+                    i]
+        sql_command += " %s.solution_id IS NOT NULL " % tables_names[
+            n_tables - 1]
+        log.debug("%s" % sql_command)
         return sql_command
 
     def add_clusters_table(self, name):
@@ -533,14 +550,14 @@ class ResultsDB(Database.Database2):
         """
         self.cluster_table_name = name
         self.check_if_is_connected()
-        table_fields = ("cluster_id","n_elements",
-                            "representative","elements", "solutions_ids")
+        table_fields = ("cluster_id", "n_elements",
+                        "representative", "elements", "solutions_ids")
         table_types = (int, int, int, str, str)
         self.drop_table(name)
         self.create_table(name, table_fields, table_types)
 
     def add_cluster_record(self, cluster_id, n_elements, representative,
-                            elements, solutions_ids):
+                           elements, solutions_ids):
         """
             Add a record to the cluster database. Actually, only stores it
             in a list (that will be added later)
@@ -555,7 +572,7 @@ class ResultsDB(Database.Database2):
         """
 
         record = (cluster_id, n_elements, representative, elements,
-                                                            solutions_ids)
+                  solutions_ids)
         log.debug("Adding cluster record: %s", record)
         self.cluster_records.append(record)
 
@@ -564,10 +581,10 @@ class ResultsDB(Database.Database2):
             Store the data for the clusters
         """
         log.info("Storing data of clusters. Number of records %s",
-                                                    len(self.cluster_records) )
+                 len(self.cluster_records))
         self.store_data(self.cluster_table_name, self.cluster_records)
 
-    def get_solutions_from_list(self, fields=False,  solutions_ids=[]):
+    def get_solutions_from_list(self, fields=False, solutions_ids=[]):
         """
             Recover solutions for a specific list of results
             @param fields Fields to recover fro the database
@@ -575,8 +592,10 @@ class ResultsDB(Database.Database2):
         """
         sql_command = """ SELECT %s FROM %s WHERE solution_id IN (%s) """
         f = self.get_fields_string(fields)
-        str_ids = ",".join(map(str,solutions_ids))
-        data = self.retrieve_data( sql_command % (f, self.results_table, str_ids ) )
+        str_ids = ",".join(map(str, solutions_ids))
+        data = self.retrieve_data(
+            sql_command %
+            (f, self.results_table, str_ids))
         return data
 
     def get_native_rank(self, orderby):
@@ -586,12 +605,12 @@ class ResultsDB(Database.Database2):
         """
         import numpy as np
 
-        data = self.get_native_solution([orderby,])
+        data = self.get_native_solution([orderby, ])
         native_value = data[0][0]
-        data = self.get_solutions_results_table(fields=[orderby,],
+        data = self.get_solutions_results_table(fields=[orderby, ],
                                                 orderby=orderby)
         values = [row[0] for row in data]
-        rank = np.searchsorted(values,native_value)
+        rank = np.searchsorted(values, native_value)
         return rank
 
     def get_nth_largest_cluster(self, position, table_name="clusters"):
@@ -604,9 +623,8 @@ class ResultsDB(Database.Database2):
         """
         s = """ SELECT * FROM %s ORDER BY n_elements DESC """ % table_name
         data = self.retrieve_data(s)
-        record = ClusterRecord(data[position-1])
+        record = ClusterRecord(data[position - 1])
         return record
-
 
     def get_individual_placement_statistics(self, solutions_ids):
         """
@@ -635,11 +653,11 @@ class ResultsDB(Database.Database2):
         angle_fields = filter(lambda x: 'angle' in x, fields)
         sql_command = """ SELECT %s FROM %s WHERE solution_id IN (%s) """
         # string with the solution ids to pass to the sql_command
-        str_ids = ",".join(map(str,solutions_ids))
+        str_ids = ",".join(map(str, solutions_ids))
         log.debug("Solutions considered %s", solutions_ids)
-        s = sql_command % (",".join(distance_fields), table, str_ids )
+        s = sql_command % (",".join(distance_fields), table, str_ids)
         data_distances = self.retrieve_data(s)
-        s = sql_command % (",".join(angle_fields), table, str_ids )
+        s = sql_command % (",".join(angle_fields), table, str_ids)
         data_angles = self.retrieve_data(s)
         D = np.array(data_distances)
         placement_distances_mean = D.mean(axis=0)
@@ -647,9 +665,8 @@ class ResultsDB(Database.Database2):
         A = np.array(data_angles)
         placement_angles_mean = A.mean(axis=0)
         placement_angles_stddev = A.std(axis=0)
-        return [placement_distances_mean,placement_distances_stddev,
-                    placement_angles_mean, placement_angles_stddev]
-
+        return [placement_distances_mean, placement_distances_stddev,
+                placement_angles_mean, placement_angles_stddev]
 
     def get_placement_statistics(self, solutions_ids):
         """
@@ -670,11 +687,11 @@ class ResultsDB(Database.Database2):
                 plca_std - Standard deviation of the placement angle for
                             the entire complex over all the solutions.
         """
-        [placement_distances_mean,placement_distances_stddev,
+        [placement_distances_mean, placement_distances_stddev,
             placement_angles_mean, placement_angles_stddev] = \
             self.get_individual_placement_statistics(solutions_ids)
         plcd_mean = placement_distances_mean.mean(axis=0)
-        plcd_std  = placement_distances_stddev.mean(axis=0)
+        plcd_std = placement_distances_stddev.mean(axis=0)
         plca_mean = placement_angles_mean.mean(axis=0)
-        plca_std  = placement_angles_stddev.mean(axis=0)
+        plca_std = placement_angles_stddev.mean(axis=0)
         return [plcd_mean, plcd_std, plca_mean, plca_std]

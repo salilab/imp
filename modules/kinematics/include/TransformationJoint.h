@@ -23,19 +23,14 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-
-
 /********************** TransformationJoint ***************/
-
 
 /** A joint with a completely non-constrained transformation
     between parent and child nodes reference frames
 */
-class  IMPKINEMATICSEXPORT
-TransformationJoint : public Joint{
+class IMPKINEMATICSEXPORT TransformationJoint : public Joint {
  public:
-  TransformationJoint(IMP::core::RigidBody parent,
-                      IMP::core::RigidBody child);
+  TransformationJoint(IMP::core::RigidBody parent, IMP::core::RigidBody child);
 
   /**
      Sets the transfromation from parent to child reference frame,
@@ -43,14 +38,12 @@ TransformationJoint : public Joint{
      from external if needed, and marking the owner internal coordinates
      as changed.
   */
-  void set_transformation_child_to_parent
-    (IMP::algebra::Transformation3D transformation);
-
-
+  void set_transformation_child_to_parent(
+      IMP::algebra::Transformation3D transformation);
 };
 
 IMP_OBJECTS(TransformationJoint, TransformationJoints);
 
 IMPKINEMATICS_END_NAMESPACE
 
-#endif  /* IMPKINEMATICS_TRANSFORMATION_JOINT_H */
+#endif /* IMPKINEMATICS_TRANSFORMATION_JOINT_H */

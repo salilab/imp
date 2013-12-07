@@ -4,6 +4,7 @@ import IMP.multifit
 import os
 import sys
 
+
 class Tests(IMP.test.TestCase):
 
     def test_no_file(self):
@@ -47,7 +48,7 @@ class Tests(IMP.test.TestCase):
     def test_read(self):
         """Check AlignmentParams()"""
         p = IMP.multifit.AlignmentParams(
-                               self.get_input_file_name("test.align.param"))
+            self.get_input_file_name("test.align.param"))
         d = p.get_domino_params()
         self.assertAlmostEqual(d.max_value_threshold_, 10000., delta=1e-6)
         self.assertEqual(d.max_num_states_for_subset_, 1000)

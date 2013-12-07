@@ -110,10 +110,10 @@
 
 /** \deprecated_at{2.1} Expand the macro inline
 */
-#define IMP_SUBSET_FILTER(Name)                                          \
-  IMPDOMINO_DEPRECATED_MACRO(2.1, "Expand the macro inline.") public     \
-      : virtual bool get_is_ok(                                          \
-          const IMP::domino::Assignment &assignment) const IMP_OVERRIDE; \
+#define IMP_SUBSET_FILTER(Name)                                            \
+  IMPDOMINO_DEPRECATED_MACRO(2.1, "Expand the macro inline.") public       \
+      : virtual bool get_is_ok(                                            \
+            const IMP::domino::Assignment &assignment) const IMP_OVERRIDE; \
   IMP_OBJECT_NO_WARNING(Name)
 
 /** \deprecated_at{2.1} Expand the macro inline
@@ -121,7 +121,7 @@
 #define IMP_DISCRETE_SAMPLER(Name)                                   \
   IMPDOMINO_DEPRECATED_MACRO(2.1, "Expand the macro inline.") public \
       : Assignments do_get_sample_assignments(                       \
-          const IMP::domino::Subset &known) const IMP_OVERRIDE;      \
+            const IMP::domino::Subset &known) const IMP_OVERRIDE;    \
   IMP_OBJECT_NO_WARNING(Name)
 
 /**  \deprecated_at{2.1} Expand the macro inline
@@ -129,7 +129,7 @@
 #define IMP_SUBSET_GRAPH_TABLE(Name)                                 \
   IMPDOMINO_DEPRECATED_MACRO(2.1, "Expand the macro inline.") public \
       : IMP_IMPLEMENT(SubsetGraph get_subset_graph(                  \
-          IMP::domino::ParticleStatesTable *pst) const);             \
+            IMP::domino::ParticleStatesTable *pst) const);           \
   IMP_OBJECT_NO_WARNING(Name)
 
 /** This macro defines:
@@ -148,8 +148,7 @@
   }                                                                        \
   virtual Assignments get_assignments() const IMP_OVERRIDE {               \
     return get_assignments(IntRange(0, get_number_of_assignments()));      \
-  }                                                                        \
-  ;                                                                        \
+  };                                                                       \
   virtual void add_assignments(const Assignments &as) IMP_OVERRIDE {       \
     for (unsigned int i = 0; i < as.size(); ++i) {                         \
       Name::add_assignment(as[i]);                                         \

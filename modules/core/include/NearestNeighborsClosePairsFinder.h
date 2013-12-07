@@ -25,8 +25,8 @@ class IMPCOREEXPORT NearestNeighborsClosePairsFinder : public ClosePairsFinder {
 #ifndef SWIG
   using ClosePairsFinder::get_close_pairs;
 #else
-  kernel::ParticlePairsTemp get_close_pairs(
-      const kernel::ParticlesTemp &pc) const;
+  kernel::ParticlePairsTemp get_close_pairs(const kernel::ParticlesTemp &pc)
+      const;
   kernel::ParticlePairsTemp get_close_pairs(
       const kernel::ParticlesTemp &pca, const kernel::ParticlesTemp &pcb) const;
 #endif

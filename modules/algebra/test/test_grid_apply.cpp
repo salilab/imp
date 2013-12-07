@@ -42,9 +42,9 @@ int main(int, char * []) {
     gbb += get_random_vector_in(bb);
     Grid g(1, gbb, 0);
     unsigned int count = g.apply(Count()).get_count();
-    IMP_TEST_EQUAL(count,
-                   g.get_number_of_voxels(0) * g.get_number_of_voxels(1) *
-                       g.get_number_of_voxels(2));
+    IMP_TEST_EQUAL(count, g.get_number_of_voxels(0) *
+                              g.get_number_of_voxels(1) *
+                              g.get_number_of_voxels(2));
   }
   {
     BoundingBox3D bb(Vector3D(0, 0, 0), Vector3D(100, 100, 100));

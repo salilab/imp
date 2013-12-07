@@ -26,32 +26,28 @@ IMPISD_BEGIN_NAMESPACE
 //  \right]}\f]
 //!
 
-class IMPISDEXPORT vonMisesKappaJeffreysRestraint : public kernel::Restraint
-{
+class IMPISDEXPORT vonMisesKappaJeffreysRestraint : public kernel::Restraint {
   base::Pointer<kernel::Particle> kappa_;
   double old_kappaval;
-  double I0_,I1_;
+  double I0_, I1_;
 
-public:
+ public:
   //! Create the restraint.
   vonMisesKappaJeffreysRestraint(kernel::Model *m, kernel::Particle *kappa);
 
   /** This macro declares the basic needed methods: evaluate and show
    */
-  virtual double
-  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
-     const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(vonMisesKappaJeffreysRestraint);
 
-virtual double get_probability() const;
+  virtual double get_probability() const;
 
-private:
-
-void update_bessel(double kappaval); // update memoized bessel values
-
+ private:
+  void update_bessel(double kappaval);  // update memoized bessel values
 };
 
 IMPISD_END_NAMESPACE
 
-#endif  /* IMPISD_VON_MISES_KAPPA_JEFFREYS_RESTRAINT_H */
+#endif /* IMPISD_VON_MISES_KAPPA_JEFFREYS_RESTRAINT_H */

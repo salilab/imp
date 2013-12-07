@@ -271,9 +271,9 @@ IMP::internal::InternalListSingletonContainer *MCCGSampler::set_up_movers(
   return sc.release();
 }
 
-void MCCGSampler::randomize(
-    const Parameters &pms,
-    IMP::internal::InternalListSingletonContainer *sc) const {
+void MCCGSampler::randomize(const Parameters &pms,
+                            IMP::internal::InternalListSingletonContainer *sc)
+    const {
   algebra::BoundingBox3D bb(
       algebra::Vector3D(pms.bounds_.find(XK)->second.first,
                         pms.bounds_.find(YK)->second.first,

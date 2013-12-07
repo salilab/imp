@@ -28,7 +28,8 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     The source code is as follows:
     \include ExampleTemplateClass.h
 */
-template <unsigned int D> class ExampleTemplateClassD {
+template <unsigned int D>
+class ExampleTemplateClassD {
   IMP::algebra::VectorD<D> eps_[2];
 
  public:

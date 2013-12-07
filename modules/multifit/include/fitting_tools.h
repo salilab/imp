@@ -28,11 +28,10 @@ IMPMULTIFIT_BEGIN_NAMESPACE
                 is smaller than dist will be included
 \return the pruned fitting solutions
  */
-IMPMULTIFITEXPORT FittingSolutionRecords get_close_to_point(
-  const FittingSolutionRecords &fit_sols,
-  atom::Hierarchy mh,
-  IMP::kernel::Particle *ap,
-  Float dist);
+IMPMULTIFITEXPORT FittingSolutionRecords
+    get_close_to_point(const FittingSolutionRecords &fit_sols,
+                       atom::Hierarchy mh, IMP::kernel::Particle *ap,
+                       Float dist);
 
 IMPMULTIFIT_END_NAMESPACE
 #endif /* IMPMULTIFIT_FITTING_TOOLS_H */

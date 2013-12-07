@@ -40,8 +40,7 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
   //! Compute the score and the derivative if needed.
   /** \deprecated_at{2.1} Use the index-based evaluate instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-     virtual double evaluate(ARGUMENTTYPE vt,
-                             DerivativeAccumulator *da) const;
+  virtual double evaluate(ARGUMENTTYPE vt, DerivativeAccumulator *da) const;
 
   //! Compute the score and the derivative if needed.
   virtual double evaluate_index(kernel::Model *m, PASSINDEXTYPE vt,
@@ -65,7 +64,8 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
       for these are provided by the IMP_CLASSNAME_SCORE()
       macro.
   */
-  virtual double evaluate_if_good_indexes(kernel::Model *m, const PLURALINDEXTYPE &o,
+  virtual double evaluate_if_good_indexes(kernel::Model *m,
+                                          const PLURALINDEXTYPE &o,
                                           DerivativeAccumulator *da, double max,
                                           unsigned int lower_bound,
                                           unsigned int upper_bound) const;
@@ -73,7 +73,8 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
       restraints. The scoring function and derivatives should
       be equal to the current score. The defualt implementation
       just returns this object bound to the pair.*/
-  Restraints create_current_decomposition(kernel::Model *m, PASSINDEXTYPE vt) const;
+  Restraints create_current_decomposition(kernel::Model *m,
+                                          PASSINDEXTYPE vt) const;
 
  protected:
   /** Overide this to return your own decomposition.*/

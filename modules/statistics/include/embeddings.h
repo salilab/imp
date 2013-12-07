@@ -57,13 +57,16 @@ class IMPSTATISTICSEXPORT ParticleEmbedding : public Embedding {
   base::Vector<FloatRange> ranges_;
 
  public:
-  ParticleEmbedding(const kernel::ParticlesTemp &ps,
-                    const FloatKeys &ks
+  ParticleEmbedding(const kernel::ParticlesTemp &ps, const FloatKeys &ks
 #if defined(IMP_DOXYGEN)
-                    = core::XYZ::get_xyz_keys()
+                                                     = core::XYZ::get_xyz_keys()
 #else
-                    = FloatKeys(IMP::kernel::internal::xyzr_keys,
-                                IMP::kernel::internal::xyzr_keys + 3)
+                                                     = FloatKeys(
+                                                         IMP::kernel::internal::
+                                                             xyzr_keys,
+                                                         IMP::kernel::internal::
+                                                                 xyzr_keys +
+                                                             3)
 #endif
                     ,
                     bool rescale = false);

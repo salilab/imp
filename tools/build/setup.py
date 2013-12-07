@@ -66,7 +66,8 @@ def link_examples(source):
         tools.link_dir(
             os.path.join(g, "examples"), os.path.join(target, module))
 
-# link files from the module/data directries from the source into the build tree
+# link files from the module/data directries from the source into the
+# build tree
 
 
 def link_data(source):
@@ -215,9 +216,14 @@ if __name__ == '__main__':
                             str(function_name_exceptions),
                             'value_object_exceptions':
                             str(value_object_exceptions),
-                            'class_name_exceptions': str(class_name_exceptions),
+                            'class_name_exceptions':
+                            str(class_name_exceptions),
                             'spelling_exceptions': str(spelling_exceptions)})
-        open(os.path.join("test", module, "test_standards.py"), "w").write(test)
+        open(
+            os.path.join("test",
+                         module,
+                         "test_standards.py"),
+            "w").write(test)
 
         cpptests = tools.get_glob([os.path.join(g, "test", "test_*.cpp")])
         ecpptests = tools.get_glob(

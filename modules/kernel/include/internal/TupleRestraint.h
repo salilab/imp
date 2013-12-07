@@ -51,8 +51,8 @@ TupleRestraint<Score>::TupleRestraint(Score *ss, Model *m,
     : Restraint(m, name), ss_(ss), v_(vt) {}
 
 template <class Score>
-double TupleRestraint<Score>::unprotected_evaluate(
-    DerivativeAccumulator *accum) const {
+double TupleRestraint<Score>::unprotected_evaluate(DerivativeAccumulator *accum)
+    const {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
   return ss_->evaluate_index(Restraint::get_model(), v_, accum);

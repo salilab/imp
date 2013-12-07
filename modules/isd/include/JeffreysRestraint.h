@@ -19,30 +19,25 @@ IMPISD_BEGIN_NAMESPACE
 //! Score a Scale particle with log(scale)
 //! the probability is 1/scale
 
-class IMPISDEXPORT JeffreysRestraint : public kernel::Restraint
-{
-    base::Pointer<Particle> p_;
+class IMPISDEXPORT JeffreysRestraint : public kernel::Restraint {
+  base::Pointer<Particle> p_;
 
-public:
+ public:
   //! Create the restraint.
   JeffreysRestraint(Model *m, Particle *p);
 
-  virtual double unprotected_evaluate(
-          IMP::kernel::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(JeffreysRestraint);
 
-
-
-   /* call for probability */
-  virtual double get_probability() const
-  {
+  /* call for probability */
+  virtual double get_probability() const {
     return exp(-unprotected_evaluate(nullptr));
   }
-
 };
 
 IMPISD_END_NAMESPACE
 
-#endif  /* IMPISD_JEFFREYS_RESTRAINT_H */
+#endif /* IMPISD_JEFFREYS_RESTRAINT_H */

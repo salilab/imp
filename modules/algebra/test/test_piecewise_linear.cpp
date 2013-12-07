@@ -45,7 +45,7 @@ void check_gaussian() {
   for (unsigned int i = 0; i < steps.size(); ++i) {
     locs0.push_back(locs0.back() + steps[i]);
   }
-  using IMP::base::operator<< ;
+  using IMP::base::operator<<;
   // std::cout << locs0 << std::endl;
   IMP::Floats locs(locs0.rbegin(), locs0.rend());
   for (unsigned int i = 0; i < locs.size(); ++i) {

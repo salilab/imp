@@ -80,8 +80,8 @@ double ClosedCubicSpline::evaluate(double feature) const {
              (spacing_ * spacing_) / 6.;
 }
 
-DerivativePair ClosedCubicSpline::evaluate_with_derivative(
-    double feature) const {
+DerivativePair ClosedCubicSpline::evaluate_with_derivative(double feature)
+    const {
   size_t lowbin = static_cast<size_t>((feature - minrange_) / spacing_);
   size_t highbin = lowbin + 1;
   size_t npoints = values_.size();

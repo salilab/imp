@@ -23,14 +23,14 @@ class TouchyRestraint : public IMP::Restraint {
  public:
   TouchyRestraint(IMP::kernel::Particle *p, IMP::FloatKey fk)
       : IMP::Restraint(p->get_model(), "Touchy"), p_(p), fk_(fk) {}
-  virtual double unprotected_evaluate(
-      IMP::kernel::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(TouchyRestraint);
 };
 
-double TouchyRestraint::unprotected_evaluate(
-    IMP::DerivativeAccumulator *) const {
+double TouchyRestraint::unprotected_evaluate(IMP::DerivativeAccumulator *)
+    const {
   return p_->get_value(fk_);
 }
 
@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
     return 1;
     // the exception gets translated into a normal IMP exception
   }
-  catch (const std::runtime_error & e) {
+  catch (const std::runtime_error &e) {
     std::cerr << e.what() << std::endl;
   }
 #endif

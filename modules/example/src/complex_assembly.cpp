@@ -88,7 +88,8 @@ class AssemblyData {
     }
     return ret;
   }
-  kernel::Particle *get_highest_degree_unused_particle(kernel::ParticlesTemp ps) const {
+  kernel::Particle *get_highest_degree_unused_particle(kernel::ParticlesTemp ps)
+      const {
     std::sort(ps.begin(), ps.end());
     int md = 0;
     int mi = -1;
@@ -112,7 +113,8 @@ class AssemblyData {
     addition, the assembly is optimized. The protocol seems to work at
     assembling the residues of a protein from a truncated distance matrix.
 */
-void optimize_assembly(kernel::Model *m, const kernel::ParticlesTemp &components,
+void optimize_assembly(kernel::Model *m,
+                       const kernel::ParticlesTemp &components,
                        const kernel::RestraintsTemp &interactions,
                        const kernel::RestraintsTemp &other_restraints,
                        const algebra::BoundingBox3D &bb, PairScore *ev,
@@ -131,8 +133,8 @@ void optimize_assembly(kernel::Model *m, const kernel::ParticlesTemp &components
   IMP_NEW(container::ClosePairContainer, cpc, (active, 0, 4));
   cpc->set_pair_filters(excluded);
   IMP_NEW(core::SoftSpherePairScore, ssps, (10));
-  base::Pointer<kernel::Restraint> evr
-    = container::create_restraint(ssps.get(), cpc.get());
+  base::Pointer<kernel::Restraint> evr =
+      container::create_restraint(ssps.get(), cpc.get());
   IMP_NEW(core::HarmonicUpperBound, hub, (0, 10));
   IMP_NEW(core::BoundingBox3DSingletonScore, bbss, (hub, bb));
   base::Pointer<kernel::Restraint> bbr =
@@ -150,7 +152,7 @@ void optimize_assembly(kernel::Model *m, const kernel::ParticlesTemp &components
                                             << std::endl);
     mc->set_scoring_function(rs);
     cg->set_scoring_function(rs + kernel::RestraintsTemp(1, evr.get()) +
-                       kernel::RestraintsTemp(1, bbr.get()));
+                             kernel::RestraintsTemp(1, bbr.get()));
     active->set_particles(cur);
     double e;
     for (int j = 0; j < 5; ++j) {
@@ -163,7 +165,6 @@ void optimize_assembly(kernel::Model *m, const kernel::ParticlesTemp &components
       IMP_THROW("Failure to converge", ModelException);
     }
   } while (cur.size() != components.size());
-
 }
 
 IMPEXAMPLE_END_NAMESPACE

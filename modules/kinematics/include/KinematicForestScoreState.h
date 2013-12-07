@@ -18,10 +18,12 @@
 IMPKINEMATICS_BEGIN_NAMESPACE
 
 namespace {
-Model *extract_model(const IMP::core::RigidBodies& rbs,
-                     const IMP::kernel::ParticlesTemp& atoms) {
-  if (!rbs.empty()) return rbs[0].get_model();
-  else if (!atoms.empty()) return atoms[0]->get_model();
+Model *extract_model(const IMP::core::RigidBodies &rbs,
+                     const IMP::kernel::ParticlesTemp &atoms) {
+  if (!rbs.empty())
+    return rbs[0].get_model();
+  else if (!atoms.empty())
+    return atoms[0]->get_model();
   else {
     IMP_FAILURE("No particles passed to KinematicForestScoreState");
   }
@@ -38,20 +40,17 @@ Model *extract_model(const IMP::core::RigidBodies& rbs,
  */
 class IMPKINEMATICSEXPORT KinematicForestScoreState : public IMP::ScoreState {
  public:
-
   IMP_OBJECT_METHODS(KinematicForestScoreState);
 
-  KinematicForestScoreState(KinematicForest *kf,
-                            IMP::core::RigidBodies rbs,
-                            IMP::kernel::ParticlesTemp atoms) :
-      ScoreState(extract_model(rbs, atoms),
-                 "KinematicForestScoreState%1%"),
-    kf_(kf), rbs_(rbs), atoms_(atoms) {}
+  KinematicForestScoreState(KinematicForest *kf, IMP::core::RigidBodies rbs,
+                            IMP::kernel::ParticlesTemp atoms)
+      : ScoreState(extract_model(rbs, atoms), "KinematicForestScoreState%1%"),
+        kf_(kf),
+        rbs_(rbs),
+        atoms_(atoms) {}
 
   // functions that ScoreState requires
-  void do_before_evaluate() {
-    kf_->update_all_external_coordinates();
-  }
+  void do_before_evaluate() { kf_->update_all_external_coordinates(); }
 
   void do_after_evaluate(DerivativeAccumulator *da) { IMP_UNUSED(da); }
 

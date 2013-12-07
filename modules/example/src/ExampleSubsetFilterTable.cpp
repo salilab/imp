@@ -20,8 +20,8 @@ class ExampleSubsetFilter : public domino::SubsetFilter {
       : domino::SubsetFilter("ExampleSubsetFilter%1%"),
         indices_(indices),
         max_(max) {}
-  virtual bool get_is_ok(const IMP::domino::Assignment&
-                         assignment) const IMP_OVERRIDE;
+  virtual bool get_is_ok(const IMP::domino::Assignment& assignment) const
+      IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ExampleSubsetFilter);
 };
 
@@ -37,8 +37,8 @@ bool ExampleSubsetFilter::get_is_ok(const domino::Assignment& a) const {
 }
 }
 
-ExampleSubsetFilterTable::ExampleSubsetFilterTable(unsigned int max_diff,
-                                                   const kernel::ParticlesTemp& ps)
+ExampleSubsetFilterTable::ExampleSubsetFilterTable(
+    unsigned int max_diff, const kernel::ParticlesTemp& ps)
     : domino::SubsetFilterTable("ExampleSubsetFilterTable%1%"),
       max_diff_(max_diff),
       ps_(ps.begin(), ps.end()) {}

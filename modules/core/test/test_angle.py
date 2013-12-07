@@ -40,12 +40,15 @@ class Tests(IMP.test.TestCase):
             for score_angle in angles:
                 model, rsr, ps = self._setup_particles(system_angle,
                                                        score_angle)
-                self.assertXYZDerivativesInTolerance(model, IMP.core.XYZ(ps[0]),
-                                                     0.3, 5.0)
-                self.assertXYZDerivativesInTolerance(model, IMP.core.XYZ(ps[1]),
-                                                     0.3, 5.0)
-                self.assertXYZDerivativesInTolerance(model, IMP.core.XYZ(ps[2]),
-                                                     0.3, 5.0)
+                self.assertXYZDerivativesInTolerance(
+                    model, IMP.core.XYZ(ps[0]),
+                    0.3, 5.0)
+                self.assertXYZDerivativesInTolerance(
+                    model, IMP.core.XYZ(ps[1]),
+                    0.3, 5.0)
+                self.assertXYZDerivativesInTolerance(
+                    model, IMP.core.XYZ(ps[2]),
+                    0.3, 5.0)
 
     def test_score(self):
         """Check score of angle restraints"""

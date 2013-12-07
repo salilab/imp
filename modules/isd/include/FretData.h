@@ -19,24 +19,22 @@ IMPISD_BEGIN_NAMESPACE
 /**
  */
 
-class IMPISDEXPORT FretData : public base::Object
-{
-    Floats d_term_;
-    Floats d_center_;
-    Floats s_grid_;
-    std::vector<unsigned> nbin_;
-    unsigned dimension_;
-    Floats grid_;
-    Floats norm_;
+class IMPISDEXPORT FretData : public base::Object {
+  Floats d_term_;
+  Floats d_center_;
+  Floats s_grid_;
+  std::vector<unsigned> nbin_;
+  unsigned dimension_;
+  Floats grid_;
+  Floats norm_;
 
-    unsigned get_index(unsigned indices[3]) const;
-    void init_grids
-    (const Floats& d_grid_int, Float R0, Float Rmin, Float Rmax, bool do_limit);
+  unsigned get_index(unsigned indices[3]) const;
+  void init_grids(const Floats& d_grid_int, Float R0, Float Rmin, Float Rmax,
+                  bool do_limit);
 
  public:
-
-  FretData(Floats d_term, Floats d_center, Floats d_int,
-           Floats s_grid, Float R0, Float Rmin, Float Rmax, bool do_limit=true);
+  FretData(Floats d_term, Floats d_center, Floats d_int, Floats s_grid,
+           Float R0, Float Rmin, Float Rmax, bool do_limit = true);
 
   int get_closest(std::vector<double> const& vec, double value) const;
 
@@ -44,13 +42,12 @@ class IMPISDEXPORT FretData : public base::Object
 
   Float get_kernel(Float dist, Float R0) const;
 
-  FloatPair get_marginal_element
-                              (Float d_term, Float d_center, Float sigma) const;
+  FloatPair get_marginal_element(Float d_term, Float d_center,
+                                 Float sigma) const;
 
   IMP_OBJECT_METHODS(FretData);
-
 };
 
 IMPISD_END_NAMESPACE
 
-#endif  /* IMPISD_FRET_DATA_H */
+#endif /* IMPISD_FRET_DATA_H */

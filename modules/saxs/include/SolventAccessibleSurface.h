@@ -20,7 +20,7 @@ IMPSAXS_BEGIN_NAMESPACE
    estimate of the area (enough for SAXS).
 */
 class IMPSAXSEXPORT SolventAccessibleSurface {
-public:
+ public:
   //! estimate surface accessability of each atom.
   /**
      \param[in] points A set of points for which surface accessibility is
@@ -33,22 +33,20 @@ public:
   IMP::Floats get_solvent_accessibility(const core::XYZRs& points,
                                         float probe_radius = 1.8,
                                         float density = 5.0);
+
  private:
   bool is_intersecting(const algebra::Vector3D& sphere_center1,
                        const algebra::Vector3D& sphere_center2,
                        const float radius1, const float radius2) {
-    float squared_radius_sum = (radius1+radius2)*(radius1+radius2);
+    float squared_radius_sum = (radius1 + radius2) * (radius1 + radius2);
     float squared_dist =
-      algebra::get_squared_distance(sphere_center1, sphere_center2);
-    if(fabs(squared_radius_sum - squared_dist) < 0.0001)
-      return false;
-    if(squared_radius_sum > squared_dist)
-      return true;
+        algebra::get_squared_distance(sphere_center1, sphere_center2);
+    if (fabs(squared_radius_sum - squared_dist) < 0.0001) return false;
+    if (squared_radius_sum > squared_dist) return true;
     return false;
   }
 
   algebra::Vector3Ds create_sphere_dots(float radius, float density);
-
 };
 
 IMPSAXS_END_NAMESPACE

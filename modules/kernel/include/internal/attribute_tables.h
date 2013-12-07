@@ -93,7 +93,7 @@ class BasicAttributeTable {
         write_mask_(nullptr),
         add_remove_mask_(nullptr)
 #endif
-        {
+  {
   }
 
   void add_attribute(Key k, ParticleIndex particle,
@@ -260,7 +260,7 @@ class FloatAttributeTable {
         read_derivatives_mask_(nullptr),
         write_derivatives_mask_(nullptr)
 #endif
-        {
+  {
   }
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   void set_masks(Mask *read_mask, Mask *write_mask, Mask *add_remove_mask,
@@ -321,8 +321,8 @@ class FloatAttributeTable {
     IMP_ACCUMULATE(internal_coordinate_derivatives_[particle][2], da(v[2]));
   }
 
-  const algebra::Vector3D &get_coordinate_derivatives(
-      ParticleIndex particle) const {
+  const algebra::Vector3D &get_coordinate_derivatives(ParticleIndex particle)
+      const {
     IMP_CHECK_MASK(read_derivatives_mask_, particle, FloatKey(0), GET,
                    DERIVATIVE);
     IMP_USAGE_CHECK(get_has_attribute(FloatKey(0), particle),

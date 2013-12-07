@@ -3,7 +3,9 @@ import IMP.core
 import IMP.test
 import StringIO
 
+
 class Tests(IMP.test.TestCase):
+
     """Test distance restraint and three harmonic score functions"""
 
     def setUp(self):
@@ -23,7 +25,7 @@ class Tests(IMP.test.TestCase):
                                                          4.0, 0.0, 0.0))
 
         p1 = self.particles[0]
-        self.radkey= IMP.FloatKey("radius")
+        self.radkey = IMP.FloatKey("radius")
         p1.add_attribute(self.radkey, 1.0, False)
         p1 = self.particles[1]
         p1.add_attribute(self.radkey, 2.0, False)
@@ -87,25 +89,47 @@ class Tests(IMP.test.TestCase):
         # score should not change with deriv calcs
         accum = IMP.DerivativeAccumulator()
 
-        # score should be equivalent if attribute is used or equivalent hard-coded distance is used
+        # score should be equivalent if attribute is used or equivalent
+        # hard-coded distance is used
         for i in range(9):
             self.assertEqual(self.rsrs[i].evaluate(False),
-                             self.rsrs[i+9].evaluate(False),
+                             self.rsrs[i + 9].evaluate(False),
                              "should get same distance whether explicit "
                              "or through radii")
 
         # exact match
-        self.assertEqual(self.rsrs[0].evaluate(False), 0.0, "unexpected distance score")
-        self.assertEqual(self.rsrs[1].evaluate(False), 0.0, "unexpected distance score")
-        self.assertEqual(self.rsrs[2].evaluate(False), 0.0, "unexpected distance score")
+        self.assertEqual(
+            self.rsrs[0].evaluate(False),
+            0.0,
+            "unexpected distance score")
+        self.assertEqual(
+            self.rsrs[1].evaluate(False),
+            0.0,
+            "unexpected distance score")
+        self.assertEqual(
+            self.rsrs[2].evaluate(False),
+            0.0,
+            "unexpected distance score")
 
         # too close
-        self.assertEqual(self.rsrs[0].evaluate(False), 0.0, "unexpected distance score")
-        self.assertTrue(self.rsrs[1].evaluate(False) == self.rsrs[2].evaluate(False) == 0.0, "unexpected distance score")
+        self.assertEqual(
+            self.rsrs[0].evaluate(False),
+            0.0,
+            "unexpected distance score")
+        self.assertTrue(
+            self.rsrs[1].evaluate(False) == self.rsrs[
+                2].evaluate(False) == 0.0,
+            "unexpected distance score")
 
         # too far
-        self.assertEqual(self.rsrs[1].evaluate(False), 0.0, "unexpected distance score")
-        self.assertTrue(self.rsrs[0].evaluate(False) == self.rsrs[2].evaluate(False) == 0.0, "unexpected distance score")
+        self.assertEqual(
+            self.rsrs[1].evaluate(False),
+            0.0,
+            "unexpected distance score")
+        self.assertTrue(
+            self.rsrs[0].evaluate(False) == self.rsrs[
+                2].evaluate(False) == 0.0,
+            "unexpected distance score")
 
 if __name__ == '__main__':
     IMP.test.main()

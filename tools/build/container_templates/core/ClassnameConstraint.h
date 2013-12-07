@@ -39,24 +39,23 @@ class ClassnameConstraint :
  public:
   /** \deprecated_at{2.1} Use the model/index constructor.
    */
-      IMPCORE_DEPRECATED_METHOD_DECL(2.1)
+  IMPCORE_DEPRECATED_METHOD_DECL(2.1)
   ClassnameConstraint(ClassnameModifier *before,
                       ClassnameDerivativeModifier *after, ARGUMENTTYPE vt,
                       std::string name = "ClassnameConstraint %1%")
       : IMP::kernel::internal::TupleConstraint<
             ClassnameModifier, ClassnameDerivativeModifier>(before, after, vt,
                                                             name) {
-        IMPCORE_DEPRECATED_METHOD_DEF(2.1, "Use the model/index constructor.");
-      }
+    IMPCORE_DEPRECATED_METHOD_DEF(2.1, "Use the model/index constructor.");
+  }
 
   ClassnameConstraint(ClassnameModifier *before,
                       ClassnameDerivativeModifier *after, kernel::Model *m,
                       PASSINDEXTYPE vt,
                       std::string name = "ClassnameConstraint %1%")
       : IMP::kernel::internal::TupleConstraint<
-    ClassnameModifier, ClassnameDerivativeModifier>(before, after, m,
-                                                    vt, name) {
-      }
+            ClassnameModifier, ClassnameDerivativeModifier>(before, after, m,
+                                                            vt, name) {}
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
  protected:

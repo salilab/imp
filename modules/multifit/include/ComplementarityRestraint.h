@@ -37,63 +37,49 @@ IMPMULTIFIT_BEGIN_NAMESPACE
     returns infinity for many cases. Monte Carlo might make sense with certain
     parameters.
 */
-class IMPMULTIFITEXPORT ComplementarityRestraint : public kernel::Restraint
-{
-public:
-  ComplementarityRestraint(const kernel::ParticlesTemp &a, const kernel::ParticlesTemp &b,
-                           std::string name="ComplementarityRestraint %1%");
+class IMPMULTIFITEXPORT ComplementarityRestraint : public kernel::Restraint {
+ public:
+  ComplementarityRestraint(const kernel::ParticlesTemp &a,
+                           const kernel::ParticlesTemp &b,
+                           std::string name = "ComplementarityRestraint %1%");
   /** If the two molecules have a penetration score of more than this,
       infinity is returned as the score. This score is roughly the number of
       cubic angstroms that the two molecules overlap (assuming only one
       internal layer). */
   void set_maximum_penetration_score(double s) {
-    maximum_penetration_score_=s;
+    maximum_penetration_score_ = s;
   }
   /** Alternatively, you can bound the maximum allowed penetration.
    */
-  void set_maximum_penetration(double d) {
-    maximum_penetration_=d;
-  }
+  void set_maximum_penetration(double d) { maximum_penetration_ = d; }
   /** If the two molecules' bounding sphere surfaces are separated by more
       than this distance, infinity is returned.
    */
-  void set_maximum_separation(double s) {
-    maximum_separation_=s;
-  }
+  void set_maximum_separation(double s) { maximum_separation_ = s; }
   /** Set the thickness to use for the external complementarity layer.*/
   void set_complementarity_thickness(double th) {
-    complementarity_thickness_=th;
+    complementarity_thickness_ = th;
     update_voxel();
   }
   /** Set the value to use for external complementarity voxels.
    */
-  void set_complementarity_value(double th) {
-    complementarity_value_=th;
-  }
+  void set_complementarity_value(double th) { complementarity_value_ = th; }
   /** Set the thickness of the interior layers. */
   void set_interior_layer_thickness(double th) {
-    interior_thickness_=th;
+    interior_thickness_ = th;
     update_voxel();
   }
 
-  void set_penetration_coefficient(double pc)
-  {
-    penetration_coef_ = pc;
-  }
+  void set_penetration_coefficient(double pc) { penetration_coef_ = pc; }
 
-  void set_complementarity_coefficient(double cc)
-  {
+  void set_complementarity_coefficient(double cc) {
     complementarity_coef_ = cc;
   }
 
-  void set_boundary_coefficient(double bc)
-  {
-    boundary_coef_ = bc;
-  }
-  float get_voxel_size() const {return voxel_size_;}
-  virtual double
-  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
-     const IMP_OVERRIDE;
+  void set_boundary_coefficient(double bc) { boundary_coef_ = bc; }
+  float get_voxel_size() const { return voxel_size_; }
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ComplementarityRestraint);
 #ifndef IMP_DOXYGEN
@@ -101,22 +87,17 @@ public:
                                       double max) const;
 #endif
  private:
-  typedef std::pair<algebra::Transformation3D,
-                    algebra::DenseGrid3D<float> > GridPair;
+  typedef std::pair<algebra::Transformation3D, algebra::DenseGrid3D<float> >
+      GridPair;
   typedef core::DataObject<GridPair> GridObject;
   GridObject *get_grid_object(core::RigidBody rb,
-                              const kernel::ParticlesTemp &a,
-                              ObjectKey ok,
-                              double thickness,
-                              double value,
-                              double interior_thickness,
-                              double voxel) const;
-  IMP::algebra::DenseGrid3D<float>
-    get_grid(const kernel::ParticlesTemp &a,
-             double thickness,
-             double value,
-             double interior_thickness,
-             double voxel) const;
+                              const kernel::ParticlesTemp &a, ObjectKey ok,
+                              double thickness, double value,
+                              double interior_thickness, double voxel) const;
+  IMP::algebra::DenseGrid3D<float> get_grid(const kernel::ParticlesTemp &a,
+                                            double thickness, double value,
+                                            double interior_thickness,
+                                            double voxel) const;
   void update_voxel();
   kernel::ParticlesTemp a_, b_;
   core::RigidBody rba_, rbb_;
@@ -131,4 +112,4 @@ public:
 
 IMPMULTIFIT_END_NAMESPACE
 
-#endif  /* IMPMULTIFIT_COMPLEMENTARITY_RESTRAINT_H */
+#endif /* IMPMULTIFIT_COMPLEMENTARITY_RESTRAINT_H */

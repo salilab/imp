@@ -24,16 +24,16 @@ IMPEM_BEGIN_NAMESPACE
     objects, so the method may fail in case of symmetric structures
  */
 class IMPEMEXPORT PCAAligner : public IMP::base::Object {
-public:
+ public:
   /** init the distance transform
       \param map input density map
       \param density_threshold a threshold that detemines
                               which voxels belong to the object
   */
-  PCAAligner(IMP::em::DensityMap* map, float density_threshold) :
-    base::Object("EM_PCA_Aligner") {
+  PCAAligner(IMP::em::DensityMap* map, float density_threshold)
+      : base::Object("EM_PCA_Aligner") {
     IMP::algebra::Vector3Ds density_points =
-      IMP::em::density2vectors(map, density_threshold);
+        IMP::em::density2vectors(map, density_threshold);
     map_pc_ = IMP::algebra::get_principal_components(density_points);
   }
 
@@ -56,12 +56,11 @@ public:
   algebra::Rotation3D get_rotation_matrix(const algebra::Vector3D& x,
                                           const algebra::Vector3D& y) const {
     algebra::Vector3D z = get_vector_product(x, y);
-    return algebra::get_rotation_from_matrix(x[0], x[1], x[2],
-                                             y[0], y[1], y[2],
+    return algebra::get_rotation_from_matrix(x[0], x[1], x[2], y[0], y[1], y[2],
                                              z[0], z[1], z[2]);
   }
 
-private:
+ private:
   IMP::algebra::PrincipalComponentAnalysis map_pc_;
 };
 

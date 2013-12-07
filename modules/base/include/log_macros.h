@@ -223,8 +223,7 @@
     std::ostringstream oss;                               \
     oss << "WARNING  " << expr << std::flush;             \
     IMP::base::add_to_log(oss.str());                     \
-  }                                                       \
-  ;
+  };
 #endif
 
 #if IMP_HAS_LOG >= IMP_TERSE

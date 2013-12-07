@@ -5,7 +5,9 @@ import StringIO
 
 typekey = IMP.IntKey('mytype')
 
+
 class Tests(IMP.test.TestCase):
+
     """Class to test TypedPairScore"""
 
     def _make_particles(self, m, types):
@@ -26,8 +28,8 @@ class Tests(IMP.test.TestCase):
         pa, pb = self._make_particles(m, (0, 1))
         da = IMP.DerivativeAccumulator()
         # The ordering of the particles should not matter:
-        pab=(pa, pb)
-        pba=(pb, pa)
+        pab = (pa, pb)
+        pba = (pb, pa)
         self.assertEqual(ps.evaluate(pab, da), 5.0)
         self.assertEqual(ps.evaluate(pba, da), 5.0)
 

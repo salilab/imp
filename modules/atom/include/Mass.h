@@ -27,7 +27,6 @@ class IMPATOMEXPORT Mass : public Decorator {
   }
 
  public:
-
   static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
     return m->get_has_attribute(get_mass_key(), pi);
   }

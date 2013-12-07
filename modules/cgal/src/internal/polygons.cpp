@@ -127,8 +127,8 @@ Ints get_convex_polygons(const Ints &indexes,
   for (unsigned int i = 0; i < polys2.size(); ++i) {
     for (Polygon_2::Vertex_iterator it = polys2[i].vertices_begin();
          it != polys2[i].vertices_end(); ++it) {
-      IMP_INTERNAL_CHECK(index.find(*it) != index.end(),
-                         "Can't find point " << *it);
+      IMP_INTERNAL_CHECK(index.find(*it) != index.end(), "Can't find point "
+                                                             << *it);
       ret.push_back(index.find(*it)->second);
     }
     ret.push_back(-1);

@@ -19,8 +19,8 @@ FixedRefiner::FixedRefiner(const kernel::ParticlesTemp &ps)
 
 bool FixedRefiner::get_can_refine(kernel::Particle *) const { return true; }
 
-const kernel::ParticlesTemp FixedRefiner::get_refined(
-    kernel::Particle *) const {
+const kernel::ParticlesTemp FixedRefiner::get_refined(kernel::Particle *)
+    const {
   return ps_;
 }
 

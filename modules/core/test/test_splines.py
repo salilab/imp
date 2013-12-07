@@ -3,15 +3,19 @@ import IMP.test
 import IMP.core
 import math
 
+
 def _testfunc(val):
     """Simple function and its first derivative"""
     return val * val + 3.0 * val + 1.0, 2.0 * val + 3.0
+
 
 def _periodic_testfunc(val):
     """Simple periodic function and its first derivative"""
     return math.cos(val), -math.sin(val)
 
+
 class Tests(IMP.test.TestCase):
+
     """Tests for cubic spline unary functions"""
 
     def test_range(self):

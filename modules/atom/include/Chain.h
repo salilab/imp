@@ -27,9 +27,9 @@ class IMPATOMEXPORT Chain : public Hierarchy {
       Hierarchy::setup_particle(m, pi);
     }
   }
- static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                                 char c) {
-   do_setup_particle(m, pi, std::string(1, c));
+    do_setup_particle(m, pi, std::string(1, c));
   }
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                                 Chain o) {

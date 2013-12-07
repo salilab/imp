@@ -40,15 +40,17 @@ IMPCONTAINER_BEGIN_INTERNAL_NAMESPACE
 ClassnameContainerIndex::ClassnameContainerIndex(ClassnameContainerAdaptor c,
                                                  bool handle_permutations)
     : ScoreState(c->get_model(), c->get_name() + " index"),
-      container_(c), container_version_(c->get_contents_version()),
+      container_(c),
+      container_version_(c->get_contents_version()),
       handle_permutations_(handle_permutations) {
   build();
 }
 
 void ClassnameContainerIndex::build() {
   contents_.clear();
-  IMP_CONTAINER_FOREACH(ClassnameContainer,
-      container_, contents_.insert(IMP::kernel::internal::get_canonical(_1)));
+  IMP_CONTAINER_FOREACH(
+      ClassnameContainer, container_,
+      contents_.insert(IMP::kernel::internal::get_canonical(_1)));
 }
 
 void ClassnameContainerIndex::do_before_evaluate() {
@@ -125,15 +127,14 @@ void ClassnameContainerSet::do_before_evaluate() {
   versions_.resize(get_number_of_CLASSFUNCTIONNAME_containers(), -1);
   for (unsigned int i = 0; i < get_number_of_CLASSFUNCTIONNAME_containers();
        ++i) {
-    changed |= update_version(get_CLASSFUNCTIONNAME_container(i),
-                              versions_[i]);
+    changed |= update_version(get_CLASSFUNCTIONNAME_container(i), versions_[i]);
   }
   set_is_changed(changed);
 }
 
 ModelObjectsTemp ClassnameContainerSet::do_get_inputs() const {
   return kernel::ModelObjectsTemp(CLASSFUNCTIONNAME_containers_begin(),
-                          CLASSFUNCTIONNAME_containers_end());
+                                  CLASSFUNCTIONNAME_containers_end());
 }
 
 IMPCONTAINER_END_NAMESPACE
@@ -294,9 +295,7 @@ void EventClassnamesOptimizerState::update() {
   int met = 0;
   kernel::Model *m = get_optimizer()->get_model();
   IMP_CONTAINER_FOREACH(ClassnameContainer, container_,
-                              if (pred_->get_value_index(m, _1) == v_) {
-    ++met;
-  });
+                        if (pred_->get_value_index(m, _1) == v_) { ++met; });
   if (met >= min_ && met < max_) {
     throw IMP::base::EventException("an event occurred");
   }
@@ -335,10 +334,12 @@ ListClassnameContainer::ListClassnameContainer(kernel::Model *m,
   set(ps);
 }
 
-ListClassnameContainer::ListClassnameContainer(kernel::Model *m, std::string name)
+ListClassnameContainer::ListClassnameContainer(kernel::Model *m,
+                                               std::string name)
     : P(m, name) {}
 
-ListClassnameContainer::ListClassnameContainer(kernel::Model *m, const char *name)
+ListClassnameContainer::ListClassnameContainer(kernel::Model *m,
+                                               const char *name)
     : P(m, name) {}
 
 void ListClassnameContainer::add_FUNCTIONNAME(ARGUMENTTYPE vt) {
@@ -541,8 +542,8 @@ ModelObjectsTemp PredicateClassnamesRestraint::do_get_inputs() const {
   return ret;
 }
 
-Restraints
-PredicateClassnamesRestraint::do_create_current_decomposition() const {
+Restraints PredicateClassnamesRestraint::do_create_current_decomposition()
+    const {
   Restraints ret;
   for (unsigned int i = 0; i < restraints_.size(); ++i) {
     base::Pointer<Restraint> r = restraints_[i]->create_current_decomposition();
@@ -568,9 +569,9 @@ bool PredicateClassnamesRestraint::assign_pair(PASSINDEXTYPE index) const {
       unknown_container_->add(index);
       return true;
     } else if (error_on_unknown_) {
-      IMP_THROW(
-          "Invalid predicate value of " << bin << " encounted for " << index,
-          ValueException);
+      IMP_THROW("Invalid predicate value of " << bin << " encounted for "
+                                              << index,
+                ValueException);
       return true;
     } else {
       return false;
@@ -592,7 +593,8 @@ void PredicateClassnamesRestraint::update_lists_if_necessary() const {
   int dropped = 0;
   IMP_CONTAINER_FOREACH(ClassnameContainer, input_, {
     bool added = assign_pair(_1);
-    if (!added) ++dropped;
+    if (!added)
+      ++dropped;
   });
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     unsigned int total = dropped;
@@ -605,9 +607,9 @@ void PredicateClassnamesRestraint::update_lists_if_necessary() const {
     } else {
       total += dropped;
     }
-    IMP_INTERNAL_CHECK(
-        input_->get_number() == total,
-        "Wrong number of particles " << total << "!=" << input_->get_number());
+    IMP_INTERNAL_CHECK(input_->get_number() == total,
+                       "Wrong number of particles "
+                           << total << "!=" << input_->get_number());
   }
 }
 

@@ -40,8 +40,8 @@ inline unsigned int TrivialPartitionalClustering::get_number_of_clusters()
   IMP_CHECK_OBJECT(this);
   return clusters_.size();
 }
-inline const Ints &TrivialPartitionalClustering::get_cluster(
-    unsigned int i) const {
+inline const Ints &TrivialPartitionalClustering::get_cluster(unsigned int i)
+    const {
   IMP_CHECK_OBJECT(this);
   IMP_USAGE_CHECK(i < get_number_of_clusters(), "There are only "
                                                     << get_number_of_clusters()

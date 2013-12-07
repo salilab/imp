@@ -41,10 +41,12 @@ PLURALVARIABLETYPE ClassnameContainer::get_FUNCTIONNAMEs() const {
 }
 
 bool ClassnameContainer::get_contains_FUNCTIONNAME(VARIABLETYPE v) const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "You should build your own index instead");
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
+                                  "You should build your own index instead");
   INDEXTYPE iv = IMP::kernel::internal::get_index(v);
   IMP_CONTAINER_FOREACH(ClassnameContainer, this, {
-    if (_1 == iv) return true;
+    if (_1 == iv)
+      return true;
   });
   return false;
 }
@@ -79,7 +81,8 @@ ClassnameContainerAdaptor::ClassnameContainerAdaptor(ClassnameContainer *c)
 ClassnameContainerAdaptor::ClassnameContainerAdaptor(
     const PLURALVARIABLETYPE &t, std::string name) {
   IMP_USAGE_CHECK(t.size() > 0,
-                  "An Empty PLURALVARIABLETYPE list cannot be adapted to container since it lacks model info");
+                  "An Empty PLURALVARIABLETYPE list cannot be adapted to "
+                  "container since it lacks model info");
   kernel::Model *m = internal::get_model(t);
   IMP_NEW(internal::InternalListClassnameContainer, c, (m, name));
   c->set(IMP::kernel::internal::get_index(t));
@@ -94,8 +97,7 @@ void ClassnameModifier::apply_index(kernel::Model *m, PASSINDEXTYPE v) const {
 
 void ClassnameModifier::apply(ARGUMENTTYPE vt) const {
   IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use index version");
-  return apply_index(internal::get_model(vt),
-                     internal::get_index(vt));
+  return apply_index(internal::get_model(vt), internal::get_index(vt));
 }
 
 ClassnamePredicate::ClassnamePredicate(std::string name) : Object(name) {
@@ -108,7 +110,6 @@ void ClassnamePredicate::remove_if_equal(kernel::Model *m, PLURALINDEXTYPE &ps,
   ps.erase(std::remove_if(ps.begin(), ps.end(),
                           make_predicate_equal(this, m, value)),
            ps.end());
-
 }
 Ints ClassnamePredicate::get_value(const PLURALVARIABLETYPE &o) const {
   IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use index version");
@@ -121,11 +122,13 @@ Ints ClassnamePredicate::get_value(const PLURALVARIABLETYPE &o) const {
   return ret;
 }
 
-int ClassnamePredicate::get_value_index(kernel::Model *m, PASSINDEXTYPE vt) const {
+int ClassnamePredicate::get_value_index(kernel::Model *m,
+                                        PASSINDEXTYPE vt) const {
   return get_value(internal::get_particle(m, vt));
 }
 
-void ClassnamePredicate::remove_if_not_equal(kernel::Model *m, PLURALINDEXTYPE &ps,
+void ClassnamePredicate::remove_if_not_equal(kernel::Model *m,
+                                             PLURALINDEXTYPE &ps,
                                              int value) const {
   ps.erase(std::remove_if(ps.begin(), ps.end(),
                           make_predicate_not_equal(this, m, value)),
@@ -134,8 +137,7 @@ void ClassnamePredicate::remove_if_not_equal(kernel::Model *m, PLURALINDEXTYPE &
 
 int ClassnamePredicate::get_value(ARGUMENTTYPE vt) const {
   IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use index version");
-  return get_value_index(internal::get_model(vt),
-                         internal::get_index(vt));
+  return get_value_index(internal::get_model(vt), internal::get_index(vt));
 }
 
 ClassnameScore::ClassnameScore(std::string name) : Object(name) {
@@ -149,15 +151,15 @@ double ClassnameScore::evaluate(ARGUMENTTYPE vt,
   return evaluate_index(internal::get_model(vt), internal::get_index(vt), da);
 }
 
-  // old versions of gcc don't like having the pragma inside the function
-double ClassnameScore::evaluate_index(
-    kernel::Model *m, PASSINDEXTYPE vt, DerivativeAccumulator *da)
-                      const {
+// old versions of gcc don't like having the pragma inside the function
+double ClassnameScore::evaluate_index(kernel::Model *m, PASSINDEXTYPE vt,
+                                      DerivativeAccumulator *da) const {
   // see http://gcc.gnu.org/bugzilla/show_bug.cgi?id=53469
   return evaluate(internal::get_particle(m, vt), da);
 }
 
-double ClassnameScore::evaluate_indexes(kernel::Model *m, const PLURALINDEXTYPE &o,
+double ClassnameScore::evaluate_indexes(kernel::Model *m,
+                                        const PLURALINDEXTYPE &o,
                                         DerivativeAccumulator *da,
                                         unsigned int lower_bound,
                                         unsigned int upper_bound) const {
@@ -168,7 +170,8 @@ double ClassnameScore::evaluate_indexes(kernel::Model *m, const PLURALINDEXTYPE 
   return ret;
 }
 
-double ClassnameScore::evaluate_if_good_index(kernel::Model *m, PASSINDEXTYPE vt,
+double ClassnameScore::evaluate_if_good_index(kernel::Model *m,
+                                              PASSINDEXTYPE vt,
                                               DerivativeAccumulator *da,
                                               double max) const {
   IMP_UNUSED(max);
@@ -176,8 +179,8 @@ double ClassnameScore::evaluate_if_good_index(kernel::Model *m, PASSINDEXTYPE vt
 }
 
 double ClassnameScore::evaluate_if_good_indexes(
-    kernel::Model *m, const PLURALINDEXTYPE &o, DerivativeAccumulator *da, double max,
-    unsigned int lower_bound, unsigned int upper_bound) const {
+    kernel::Model *m, const PLURALINDEXTYPE &o, DerivativeAccumulator *da,
+    double max, unsigned int lower_bound, unsigned int upper_bound) const {
   double ret = 0;
   for (unsigned int i = lower_bound; i < upper_bound; ++i) {
     double cur = evaluate_if_good_index(m, o[i], da, max - ret);
@@ -257,8 +260,7 @@ InternalDynamicListClassnameContainer::get_all_possible_indexes() const {
 
 void InternalDynamicListClassnameContainer::do_before_evaluate() {}
 
-ModelObjectsTemp InternalDynamicListClassnameContainer::do_get_inputs()
-    const {
+ModelObjectsTemp InternalDynamicListClassnameContainer::do_get_inputs() const {
   return kernel::ModelObjectsTemp();
 }
 

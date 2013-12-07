@@ -88,8 +88,8 @@ class ParticleSaveLink : public SimpleSaveLink<kernel::Particle> {
                 RMF::NodeHandle nh, base::map<IK, RK> &map) {
     for (unsigned int i = 0; i < ks.size(); ++i) {
       if (map.find(ks[i]) == map.end()) {
-        map[ks[i]] = nh.get_file().get_key<typename RK::Tag>(
-            cat_, ks[i].get_string());
+        map[ks[i]] =
+            nh.get_file().get_key<typename RK::Tag>(cat_, ks[i].get_string());
       }
       nh.set_value(map.find(ks[i])->second, o->get_value(ks[i]));
     }

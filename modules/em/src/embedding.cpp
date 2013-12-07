@@ -9,10 +9,9 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-HighDensityEmbedding::HighDensityEmbedding(em::DensityMap *dm,
-                                           double threshold):
-  statistics::Embedding("HighDensityEmbedding of "+dm->get_name()) {
-  for (int i=0; i< dm->get_number_of_voxels(); ++i) {
+HighDensityEmbedding::HighDensityEmbedding(em::DensityMap *dm, double threshold)
+    : statistics::Embedding("HighDensityEmbedding of " + dm->get_name()) {
+  for (int i = 0; i < dm->get_number_of_voxels(); ++i) {
     if (dm->get_value(i) > threshold) {
       algebra::Vector3D v(dm->get_location_in_dim_by_voxel(i, 0),
                           dm->get_location_in_dim_by_voxel(i, 1),

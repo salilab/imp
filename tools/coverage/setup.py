@@ -3,11 +3,13 @@
 import os
 import shutil
 
+
 def clean_gcdas():
     for dirpath, dirnames, filenames in os.walk('.'):
         for f in filenames:
             if f.endswith('.gcda'):
                 os.unlink(os.path.join(dirpath, f))
+
 
 def setup_python_coverage():
     if os.path.exists('coverage'):
@@ -35,6 +37,7 @@ atexit.register(_coverage_cleanup, _cov)
         if os.path.exists(dst):
             os.unlink(dst)
         os.symlink(os.path.abspath('coverage/sitecustomize.py'), dst)
+
 
 def main():
     clean_gcdas()

@@ -29,8 +29,8 @@ class IMPCOREEXPORT ConstantRestraint : public kernel::Restraint {
   //! Add v to the total score.
   ConstantRestraint(Model *m, Float v);
 
-  virtual double unprotected_evaluate(
-      IMP::kernel::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ConstantRestraint);
 };

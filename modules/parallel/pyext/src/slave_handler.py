@@ -7,7 +7,9 @@ from IMP.parallel.master_communicator import MasterCommunicator
 from IMP.parallel.util import _TaskWrapper, _ContextWrapper
 from IMP.parallel.util import _ErrorWrapper, _HeartBeat, _SlaveAction
 
+
 class _HeartBeatThread(threading.Thread):
+
     """Periodically send a 'heartbeat' back to the master, so that it can
        distinguish between failed nodes and long calculations"""
     timeout = 300
@@ -31,6 +33,7 @@ class _HeartBeatThread(threading.Thread):
 
 
 class SlaveHandler(object):
+
     def __init__(self, master_addr):
         self._master_addr = master_addr
 
@@ -50,7 +53,7 @@ class SlaveHandler(object):
         try:
             exc_type, exc_value, tb = sys.exc_info()
             master._send(_ErrorWrapper(exc,
-                          traceback.format_exception(exc_type, exc_value, tb)))
+                                       traceback.format_exception(exc_type, exc_value, tb)))
         except socket.error:
             # ignore errors encountered while trying to send error to master
             pass
@@ -74,7 +77,7 @@ class SlaveHandler(object):
                     obj.execute()
             except NetworkError:
                 raise
-            except Exception, detail:
+            except Exception as detail:
                 # Send all other exceptions back to the master and reraise
                 self._send_exception_to_master(master, detail)
                 raise

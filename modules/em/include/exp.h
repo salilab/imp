@@ -38,14 +38,13 @@ IMPEM_BEGIN_NAMESPACE
   important or when one knows that the item in question will not be extended.
   http://en.wikibooks.org/wiki/C++_Programming/Union
 */
-typedef union
-{
- double d;
- struct{
+typedef union {
+  double d;
+  struct {
 #ifdef BOOST_LITTLE_ENDIAN
-    int j,i;
+    int j, i;
 #else
-    int i,j;
+    int i, j;
 #endif
   } n;
 } _eco;
@@ -53,18 +52,15 @@ typedef union
 /* Originally was (1048576/M_LN2); M_LN2 expanded out so that this header
    can be correctly #include'd in other code on Windows machines without having
    to #define the non-standard _USE_MATH_DEFINES macro */
-#define IMP_EXP_A (1048576/0.693147180559945309417232121458176568)
+#define IMP_EXP_A (1048576 / 0.693147180559945309417232121458176568)
 #define IMP_EXP_C 60801
-
-
-
 
 inline double EXP(float y) {
   static _eco eco;
-  eco.n.i = (int) (IMP_EXP_A*(y) + (1072693248-IMP_EXP_C));
+  eco.n.i = (int)(IMP_EXP_A * (y) + (1072693248 - IMP_EXP_C));
   return eco.d;
 }
 
 IMPEM_END_NAMESPACE
 
-#endif  /* IMPEM_EXP_H */
+#endif /* IMPEM_EXP_H */

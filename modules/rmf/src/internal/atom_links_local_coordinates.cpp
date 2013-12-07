@@ -23,13 +23,13 @@ bool HierarchyLoadLocalCoordinates::setup_particle(
   link_particle(n, cstate, m, p, rigid_bodies);
   if (cstate & FRAME_XYZ) {
     IMP_LOG_TERSE("Particle " << m->get_particle_name(p)
-                  << " is a local rigid member." << std::endl);
+                              << " is a local rigid member." << std::endl);
     core::XYZ::setup_particle(m, p);
     core::RigidBody(m, rigid_bodies.back()).add_non_rigid_member(p);
   }
   if (cstate & FRAME_RB) {
     IMP_LOG_TERSE("Particle " << m->get_particle_name(p)
-                  << " is a local non-rigid member." << std::endl);
+                              << " is a local non-rigid member." << std::endl);
     core::RigidBody::setup_particle(m, p, algebra::ReferenceFrame3D());
     core::RigidBody(m, rigid_bodies.back()).add_non_rigid_member(p);
   }

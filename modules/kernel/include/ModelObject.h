@@ -27,6 +27,7 @@ class IMPKERNELEXPORT ModelObject : public base::Object {
 
   // for cleanup
   void set_model(Model *m);
+
  public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   void validate_inputs() const;

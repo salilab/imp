@@ -36,7 +36,7 @@ base::Vector<VectorWithIndex> create_vectors_with_index(It b, It e) {
 }
 
 struct IMPCGALEXPORT RCTree : public base::Object {
-  RCTree(): Object("RCTree%1%") {}
+  RCTree() : Object("RCTree%1%") {}
   virtual ~RCTree();
 };
 

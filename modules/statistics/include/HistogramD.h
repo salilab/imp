@@ -24,7 +24,6 @@ template <int D, class Grid = algebra::GridD<
                      typename algebra::DefaultEmbeddingD<D> > >
 class HistogramD : public algebra::GeometricPrimitiveD<D> {
  public:
-
   typedef Grid CountGrid;
   HistogramD() : count_(std::numeric_limits<double>::max()) {}
   HistogramD(double voxel_size, const algebra::BoundingBoxD<D> &bb)

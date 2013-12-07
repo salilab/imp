@@ -47,8 +47,9 @@ class Array : public Value {
 #ifndef IMP_DOXYGEN
   typedef SwigData value_type;
 #endif
-  unsigned int get_dimension() { return D; }
-  ;
+  unsigned int get_dimension() {
+    return D;
+  };
   Array() {}
   Array(SwigData x, SwigData y) {
     IMP_USAGE_CHECK(D == 2, "Need " << D << " to construct a " << D

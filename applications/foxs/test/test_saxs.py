@@ -3,7 +3,9 @@ import sys
 import os
 import re
 
+
 class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
+
     def test_simple(self):
         """Simple test of SAXS profile application"""
         print self.get_input_file_name('6lyz.pdb')
@@ -53,7 +55,6 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         self.assertAlmostEqual(float(m.group(1)), 0.82, delta=0.01)
         for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat', '6lyz_lyzexp.plt', '6lyz.plt'):
             os.unlink(self.get_input_file_name(out))
-
 
     def test_simple_js(self):
         """Simple test of SAXS profile application js output"""

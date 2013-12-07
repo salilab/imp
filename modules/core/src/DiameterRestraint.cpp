@@ -49,8 +49,8 @@ void DiameterRestraint::init() {
   m->add_score_state(ss_);
 }
 
-double DiameterRestraint::unprotected_evaluate(
-    DerivativeAccumulator *da) const {
+double DiameterRestraint::unprotected_evaluate(DerivativeAccumulator *da)
+    const {
   IMP_CHECK_OBJECT(sc_.get());
   double v = 0;
   XYZ dp(p_);

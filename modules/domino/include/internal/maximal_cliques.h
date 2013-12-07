@@ -50,9 +50,10 @@ void GX(const Graph& graph, Vector& P, Vector& X,
 // Binary Predicate:  Degree_less
 // For std::max_element in GX
 template <class Graph>
-class Degree_less : public std::binary_function<
-    typename boost::graph_traits<Graph>::vertex_descriptor,
-    typename boost::graph_traits<Graph>::vertex_descriptor, bool> {
+class Degree_less
+    : public std::binary_function<
+          typename boost::graph_traits<Graph>::vertex_descriptor,
+          typename boost::graph_traits<Graph>::vertex_descriptor, bool> {
  private:
   typedef typename boost::graph_traits<Graph>::vertex_descriptor
       vertex_descriptor;

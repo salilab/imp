@@ -3,13 +3,16 @@ import sys
 import os
 import re
 
+
 class FoXSDockApplicationTest(IMP.test.ApplicationTestCase):
+
     def test_simple(self):
         """Simple test of SAXS profile application"""
         p = self.run_application('saxs_score',
                                  [self.get_input_file_name('static.pdb'),
                                   self.get_input_file_name('transformed.pdb'),
-                                  self.get_input_file_name('transforms-foxs10'),
+                                  self.get_input_file_name(
+                                      'transforms-foxs10'),
                                   self.get_input_file_name('iq.dat')])
         out, err = p.communicate()
         sys.stderr.write(err)

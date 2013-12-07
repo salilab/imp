@@ -23,8 +23,7 @@ IMPSAXS_BEGIN_NAMESPACE
 /** \ingroup exp_restraint
 
  */
-class IMPSAXSEXPORT RadiusOfGyrationRestraint : public kernel::Restraint
-{
+class IMPSAXSEXPORT RadiusOfGyrationRestraint : public kernel::Restraint {
  public:
   //! Constructor
   /**
@@ -34,19 +33,19 @@ class IMPSAXSEXPORT RadiusOfGyrationRestraint : public kernel::Restraint
       i.e. q*rg < end_q_rg. Use 1.3 for globular proteins, 0.8 for elongated
   */
   RadiusOfGyrationRestraint(const kernel::Particles& particles,
-          const Profile* exp_profile, const double end_q_rg=1.3);
+                            const Profile* exp_profile,
+                            const double end_q_rg = 1.3);
 
-  virtual double
-  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
-     const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator* accum)
+      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RadiusOfGyrationRestraint);
 
  private:
-  kernel::Particles particles_; // non-rigid bodies particles
-  double exp_rg_; //radius of gyration from experimental profile
+  kernel::Particles particles_;  // non-rigid bodies particles
+  double exp_rg_;                // radius of gyration from experimental profile
 };
 
 IMPSAXS_END_NAMESPACE
 
-#endif  /* IMPSAXS_RADIUS_OF_GYRATION_RESTRAINT_H */
+#endif /* IMPSAXS_RADIUS_OF_GYRATION_RESTRAINT_H */

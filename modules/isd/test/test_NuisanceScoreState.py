@@ -125,7 +125,7 @@ class TestNuisanceScoreState(IMP.test.TestCase):
 
     def test_NormalMover_MC_ok(self):
         "Test nuisance scorestate with MonteCarlo mover"
-        nuis= Nuisance.setup_particle(IMP.kernel.Particle(self.m), 50.0)
+        nuis = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 50.0)
         lower = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 10.0)
         upper = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 90.0)
         nuis.set_lower(1.0)
@@ -133,7 +133,7 @@ class TestNuisanceScoreState(IMP.test.TestCase):
         nuis.set_upper(upper)
         nuis.set_upper(80.0)
         nmv = IMP.core.NormalMover([nuis],
-                       IMP.FloatKeys([IMP.FloatKey("nuisance")]), 10.0)
+                                   IMP.FloatKeys([IMP.FloatKey("nuisance")]), 10.0)
         mc = IMP.core.MonteCarlo(self.m)
         mc.set_return_best(False)
         mc.set_kt(1.0)
@@ -141,13 +141,12 @@ class TestNuisanceScoreState(IMP.test.TestCase):
         for i in range(100):
             mc.optimize(10)
             self.assertTrue(nuis.get_nuisance() >= nuis.get_lower()
-                        and nuis.get_nuisance() <= nuis.get_upper())
-
+                            and nuis.get_nuisance() <= nuis.get_upper())
 
     def test_NormalMover_MC_fails(self):
         "Test nuisance scorestate with MonteCarlo mover"
         self.m.remove_restraint(self.rs)
-        nuis= Nuisance.setup_particle(IMP.kernel.Particle(self.m), 50.0)
+        nuis = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 50.0)
         lower = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 10.0)
         upper = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 90.0)
         nuis.set_lower(1.0)
@@ -155,7 +154,7 @@ class TestNuisanceScoreState(IMP.test.TestCase):
         nuis.set_upper(upper)
         nuis.set_upper(80.0)
         nmv = IMP.core.NormalMover([nuis],
-                       IMP.FloatKeys([IMP.FloatKey("nuisance")]), 10.0)
+                                   IMP.FloatKeys([IMP.FloatKey("nuisance")]), 10.0)
         mc = IMP.core.MonteCarlo(self.m)
         mc.set_return_best(False)
         mc.set_kt(1.0)
@@ -163,7 +162,7 @@ class TestNuisanceScoreState(IMP.test.TestCase):
         for i in range(100):
             mc.optimize(10)
             self.assertTrue(nuis.get_nuisance() >= nuis.get_lower()
-                        and nuis.get_nuisance() <= nuis.get_upper())
+                            and nuis.get_nuisance() <= nuis.get_upper())
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -2,6 +2,7 @@ import RMF
 import unittest
 import os
 
+
 class RMFInstallTests(unittest.TestCase):
 
     def test_create(self):

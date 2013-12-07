@@ -14,22 +14,17 @@
 
 IMPMULTIFIT_BEGIN_INTERNAL_NAMESPACE
 
-template < typename T >
-class FFTWGrid : public boost::noncopyable
-{
-private:
+template <typename T>
+class FFTWGrid : public boost::noncopyable {
+ private:
   T *data_;
 
-public:
+ public:
   FFTWGrid() : data_(nullptr) {}
 
-  explicit FFTWGrid(size_t n) : data_(nullptr) {
-    resize(n);
-  }
+  explicit FFTWGrid(size_t n) : data_(nullptr) { resize(n); }
 
-  ~FFTWGrid() {
-    release();
-  }
+  ~FFTWGrid() { release(); }
 
   void release() {
     if (data_) fftw_free(data_);
@@ -43,11 +38,9 @@ public:
   }
 
   // Get the raw pointer
-  operator T*() const {
-    return data_;
-  }
+  operator T *() const { return data_; }
 };
 
 IMPMULTIFIT_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPMULTIFIT_FFTW_GRID_H */
+#endif /* IMPMULTIFIT_FFTW_GRID_H */

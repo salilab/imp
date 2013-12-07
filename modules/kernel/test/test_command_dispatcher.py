@@ -3,21 +3,29 @@ import sys
 import IMP.test
 from StringIO import StringIO
 
+
 class TestModule:
     _all_commands = ['foo', 'bar']
+
     def get_module_version():
         return 'testver'
     get_module_version = staticmethod(get_module_version)
+
     class submodule:
         pass
+
     class foo:
         __doc__ = 'doc for foo'
+
     class bar:
+
         def main():
             TestModule.bar_main_called = True
         main = staticmethod(main)
 
+
 class Tests(IMP.test.TestCase):
+
     def setUp(self):
         IMP.test.TestCase.setUp(self)
         self.old_argv = sys.argv

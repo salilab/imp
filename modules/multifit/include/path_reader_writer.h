@@ -19,11 +19,11 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 \note Notice that for the function to read the last line it should end with \n
  */
 IMPMULTIFITEXPORT
-IntsList read_paths(const char*txt_filename,int max_paths=INT_MAX);
+IntsList read_paths(const char *txt_filename, int max_paths = INT_MAX);
 
 IMPMULTIFITEXPORT
-void write_paths(const IntsList &paths,const std::string &txt_filename);
+void write_paths(const IntsList &paths, const std::string &txt_filename);
 
 IMPMULTIFIT_END_NAMESPACE
 
-#endif  /* IMPMULTIFIT_PATH_READER_WRITER_H */
+#endif /* IMPMULTIFIT_PATH_READER_WRITER_H */

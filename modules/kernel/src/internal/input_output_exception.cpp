@@ -52,8 +52,7 @@ std::string InputOutputException::get_message(kernel::ModelObject *o) const {
           oss << "Unknown read/write error";
       }
       break;
-  }
-  ;
+  };
   oss << " Violating object: \"" << o->get_name() << "\".";
   if (particle_index_ >= 0) {
     oss << " Attribute " << get_key_name() << " of particle \""

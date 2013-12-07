@@ -8,6 +8,7 @@ import unittest
 import subprocess
 import os
 
+
 class IMPInstallTests(unittest.TestCase):
 
     def test_modules_installed(self):
@@ -18,7 +19,7 @@ class IMPInstallTests(unittest.TestCase):
 
         p0 = IMP.kernel.Particle(m)
         d0 = IMP.core.XYZ.setup_particle(p0)
-        d0.set_coordinates(IMP.algebra.Vector3D(0,0,2))
+        d0.set_coordinates(IMP.algebra.Vector3D(0, 0, 2))
 
         r0 = IMP.example.ExampleRestraint(m, p0.get_index(), 1)
 
@@ -46,7 +47,7 @@ class IMPInstallTests(unittest.TestCase):
             out = p.stdout.read()
             ret = p.wait()
             self.assert_(ret == 1 or ret == 0,
-                         "Return code for %s app is %d, not 0 or 1; " \
+                         "Return code for %s app is %d, not 0 or 1; "
                          "output is %s" % (app, ret, out))
 
 if __name__ == '__main__':

@@ -25,7 +25,7 @@ void handle_use_deprecated(std::string message) {
         internal::printed_deprecation_messages.insert(message);
       }
     }
-    // we only have a stacktrace if logging is on
+// we only have a stacktrace if logging is on
 #if IMP_HAS_LOG > IMP_SILENT
     if (internal::exceptions_on_deprecation) {
       throw UsageException(message.c_str());

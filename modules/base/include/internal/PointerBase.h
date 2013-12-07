@@ -34,7 +34,7 @@ struct RefCountedPointerTraits {
 };
 template <class TT>
 // note: PointerMember replaces the old OwnerPointer
-    struct PointerMemberTraits : public RefCountedPointerTraits<TT> {
+struct PointerMemberTraits : public RefCountedPointerTraits<TT> {
   typedef TT Type;
   static void handle_set(TT* t) {
     t->set_was_used(true);

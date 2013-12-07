@@ -1,6 +1,7 @@
 import os
 import IMP.base as base
 
+
 def vararg_callback(option, opt_str, value, parser):
     """
         Snippet from Python website to process multiple values for
@@ -46,21 +47,24 @@ def get_experiment_params(fn_params):
     # convert to absolute paths
     exp.fn_pdbs = [base.get_relative_path(fn_params, fn) for fn in exp.fn_pdbs]
     if hasattr(exp, "sampling_positions"):
-        exp.sampling_positions.read = base.get_relative_path(fn_params, exp.sampling_positions.read)
+        exp.sampling_positions.read = base.get_relative_path(
+            fn_params, exp.sampling_positions.read)
     if hasattr(exp, "benchmark"):
         if hasattr(exp.benchmark, "fn_pdb_native"):
             exp.benchmark.fn_pdb_native = base.get_relative_path(
-                                    fn_params, exp.benchmark.fn_pdb_native)
+                fn_params, exp.benchmark.fn_pdb_native)
         if hasattr(exp.benchmark, "fn_pdbs_native"):
             fns = []
             for fn in exp.benchmark.fn_pdbs_native:
-                fns.append( base.get_relative_path(fn_params, fn) )
+                fns.append(base.get_relative_path(fn_params, fn))
             exp.benchmark.fn_pdbs_native = fns
 
     if hasattr(exp, "dock_transforms"):
         for i in range(len(exp.dock_transforms)):
-            exp.dock_transforms[i][2] = base.get_relative_path(fn_params, exp.dock_transforms[i][2])
+            exp.dock_transforms[i][2] = base.get_relative_path(
+                fn_params, exp.dock_transforms[i][2])
     if hasattr(exp, "em2d_restraints"):
         for i in range(len(exp.em2d_restraints)):
-            exp.em2d_restraints[i][1] = base.get_relative_path(fn_params, exp.em2d_restraints[i][1])
+            exp.em2d_restraints[i][1] = base.get_relative_path(
+                fn_params, exp.em2d_restraints[i][1])
     return exp

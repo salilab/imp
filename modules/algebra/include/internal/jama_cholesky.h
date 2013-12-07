@@ -54,7 +54,6 @@ class Cholesky {
   int isspd;  // 1 if matrix to be factored was SPD
 
  public:
-
   Cholesky();
   Cholesky(const IMP::algebra::internal::TNT::Array2D<Real> &A);
   IMP::algebra::internal::TNT::Array2D<Real> getL() const;

@@ -24,16 +24,17 @@ using namespace IMP::atom;
 
 namespace {
 template <class PT>
-void do_benchmark(std::string name, kernel::Model *, const PT &ps, Refiner *r, double) {
+void do_benchmark(std::string name, kernel::Model *, const PT &ps, Refiner *r,
+                  double) {
   // measure time
   double runtime;
   double total = 0;
   IMP_TIME({
-    for (unsigned int i = 0; i < ps.size(); ++i) {
-      kernel::ParticlesTemp nps = r->get_refined(ps[i]);
-      total += nps.size();
-    }
-  },
+             for (unsigned int i = 0; i < ps.size(); ++i) {
+               kernel::ParticlesTemp nps = r->get_refined(ps[i]);
+               total += nps.size();
+             }
+           },
            runtime);
   IMP::benchmark::report(std::string("refiner ") + name, runtime, total);
 }

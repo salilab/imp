@@ -175,8 +175,8 @@ Slice RestraintCache::get_slice(kernel::Restraint *r, const Subset &s) const {
   return Slice(s, rs);
 }
 
-void RestraintCache::Generator::show_restraint_information(
-    std::ostream &out) const {
+void RestraintCache::Generator::show_restraint_information(std::ostream &out)
+    const {
   for (RMap::const_iterator it = rmap_.begin(); it != rmap_.end(); ++it) {
     out << it->first->get_name() << ": " << it->second << std::endl;
   }

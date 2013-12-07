@@ -21,7 +21,6 @@ class IMPCOREEXPORT ChecksScoreState : public ScoreState {
   unsigned int num_checked_;
 
  public:
-
   ChecksScoreState(kernel::Model *m, double probability);
 
   unsigned int get_number_of_checked() const { return num_checked_; }

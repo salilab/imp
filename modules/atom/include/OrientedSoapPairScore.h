@@ -27,14 +27,12 @@ class OrientedSoapPairScore
   typedef score_functor::DistancePairScore<score_functor::OrientedSoap> P;
   std::string library_;
 
-public:
+ public:
   OrientedSoapPairScore(std::string library)
       : P(score_functor::OrientedSoap(library)), library_(library) {}
 
   //! Get a filter that returns pairs that this score should use
-  SoapPairFilter *get_pair_filter() {
-    return new SoapPairFilter(library_);
-  }
+  SoapPairFilter *get_pair_filter() { return new SoapPairFilter(library_); }
 };
 
 IMPATOM_END_NAMESPACE

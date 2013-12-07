@@ -16,8 +16,9 @@ import logging
 
 log = logging.getLogger("restraints")
 
+
 def get_connectivity_restraint(particles, distance=10.,
-                                    n_pairs=1, spring_constant=1):
+                               n_pairs=1, spring_constant=1):
     """
         Set a connectivity restraint for the leaves of a set of particles
 
@@ -35,11 +36,11 @@ def get_connectivity_restraint(particles, distance=10.,
     return cr
 
 
-def get_em2d_restraint( assembly,
-                        images_selection_file,
-                        restraint_params,
-                        mode="fast",
-                        n_optimized=1):
+def get_em2d_restraint(assembly,
+                       images_selection_file,
+                       restraint_params,
+                       mode="fast",
+                       n_optimized=1):
     """ Sets a restraint for comparing the model to a set of EM images
     """
     model = assembly.get_model()

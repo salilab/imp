@@ -55,9 +55,8 @@
     bounding_box;                                                             \
   }                                                                           \
   /** See Name */                                                             \
-  IMP_NO_SWIG(template <int D>                                                \
-              inline void set_##name##_d_geometry(                            \
-                  Name##D<D> &g, const Name##D<D> &v) { g = v; }              \
+  IMP_NO_SWIG(template <int D> inline void set_##name##_d_geometry(           \
+      Name##D<D> &g, const Name##D<D> &v) { g = v; }                          \
               /** See Name */                                                 \
               template <int D>                                                \
               inline const Name##D<D> &get_##name##_d_geometry(               \
@@ -150,9 +149,8 @@
     return g;                                                       \
   }                                                                 \
   /** See Name */                                                   \
-  IMP_NO_SWIG(template <int D>                                      \
-              inline void set_##name##_d_geometry(                  \
-                  Name &g, const Name##D<D> &v) { g = v; })         \
+  IMP_NO_SWIG(template <int D> inline void set_##name##_d_geometry( \
+      Name &g, const Name##D<D> &v) { g = v; })                     \
       /** Typedef for python. */                                    \
       typedef Name##D<1> Name##1D;                                  \
   IMP_VALUES(Name##1D, Name##1Ds);                                  \

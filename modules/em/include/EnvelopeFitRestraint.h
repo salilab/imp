@@ -30,7 +30,7 @@ IMPEM_BEGIN_NAMESPACE
    for low resolution density maps.
  */
 class IMPEMEXPORT EnvelopeFitRestraint : public IMP::Restraint {
-public:
+ public:
   //! Constructor
   /**
     \param[in] particles The particles participating in the score
@@ -40,10 +40,8 @@ public:
     of particles out of the map envelope (as defined by density_threshold)
     is allowed. Recommended value is approximately map resolution
   */
-  EnvelopeFitRestraint(kernel::Particles particles,
-                       DensityMap *em_map,
-                       double density_threshold,
-                       double penetration_threshold);
+  EnvelopeFitRestraint(kernel::Particles particles, DensityMap *em_map,
+                       double density_threshold, double penetration_threshold);
 
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
 

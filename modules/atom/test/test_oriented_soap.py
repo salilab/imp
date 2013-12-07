@@ -3,7 +3,9 @@ import IMP.test
 import IMP.atom
 import IMP.container
 
+
 class Tests(IMP.test.TestCase):
+
     def test_oriented_soap_score(self):
         """Check that orientation-dependent SOAP score is as expected"""
         m = IMP.kernel.Model()
@@ -13,7 +15,7 @@ class Tests(IMP.test.TestCase):
         c = IMP.container.ClosePairContainer(ps, 15.0, 0.0)
 
         sl = IMP.atom.OrientedSoapPairScore(
-                         self.get_input_file_name('soap_loop_test.hdf5'))
+            self.get_input_file_name('soap_loop_test.hdf5'))
         c.add_pair_filter(sl.get_pair_filter())
 
         r = IMP.container.PairsRestraint(sl, c)

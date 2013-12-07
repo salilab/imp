@@ -1,6 +1,6 @@
 ## \example core/randomize_rigid_body.py
-## This fragments shows how to either perturb or set the orientation of a rigid
-## body randomly.
+# This fragments shows how to either perturb or set the orientation of a rigid
+# body randomly.
 
 import IMP.core
 import IMP.algebra

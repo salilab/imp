@@ -10,27 +10,43 @@ from IMP import OptionParser
 import os
 import sys
 
+
 class Fitter(object):
-    def __init__(self, em_map, spacing, resolution, origin, density_threshold,pdb, fits_fn, angle,num_fits,angles_per_voxel,max_trans,max_angle,ref_pdb=''):
+
+    def __init__(
+        self,
+        em_map,
+        spacing,
+        resolution,
+        origin,
+        density_threshold,
+        pdb,
+        fits_fn,
+        angle,
+        num_fits,
+        angles_per_voxel,
+        max_trans,
+        max_angle,
+            ref_pdb=''):
         self.em_map = em_map
         self.spacing = spacing
         self.resolution = resolution
-        self.threshold=density_threshold
+        self.threshold = density_threshold
         self.originx = origin[0]
         self.originy = origin[1]
         self.originz = origin[2]
         self.pdb = pdb
         self.fits_fn = fits_fn
         self.angle = angle
-        self.num_fits=num_fits
-        self.angles_per_voxel=angles_per_voxel
-        self.max_trans=max_trans
-        self.max_angle=max_angle
-        self.ref_pdb=ref_pdb
+        self.num_fits = num_fits
+        self.angles_per_voxel = angles_per_voxel
+        self.max_trans = max_trans
+        self.max_angle = max_angle
+        self.ref_pdb = ref_pdb
 
-    #TODO - update function
-    def run_local_fitting(self,mol2fit,rb,initial_transformation):
-        print "resolution is:",self.resolution
+    # TODO - update function
+    def run_local_fitting(self, mol2fit, rb, initial_transformation):
+        print "resolution is:", self.resolution
         dmap = IMP.em.read_map(self.em_map)
         dmap.get_header().set_resolution(self.resolution)
         dmap.update_voxel_size(self.spacing)
@@ -39,46 +55,47 @@ class Fitter(object):
                                              self.originz))
         dmap.set_was_used(True)
         dmap.get_header().show()
-        mh_xyz=IMP.core.XYZs(IMP.core.get_leaves(mol2fit))
+        mh_xyz = IMP.core.XYZs(IMP.core.get_leaves(mol2fit))
         ff = IMP.multifit.FFTFitting()
         ff.set_was_used(True)
-        #####
-        do_cluster_fits=True
-        max_clustering_translation=3
-        max_clustering_rotation=5
-        num_fits_to_report=100
-        #####
-        fits = ff.do_local_fitting(dmap, self.threshold,mol2fit,
+        #
+        do_cluster_fits = True
+        max_clustering_translation = 3
+        max_clustering_rotation = 5
+        num_fits_to_report = 100
+        #
+        fits = ff.do_local_fitting(dmap, self.threshold, mol2fit,
                                    self.angle / 180.0 * math.pi,
-                                   self.max_angle / 180.0 * math.pi, self.max_trans, num_fits_to_report,
+                                   self.max_angle / 180.0 *
+                                   math.pi, self.max_trans, num_fits_to_report,
                                    do_cluster_fits, self.angles_per_voxel,
-                                   max_clustering_translation,max_clustering_rotation)
+                                   max_clustering_translation, max_clustering_rotation)
         fits.set_was_used(True)
         final_fits = fits.best_fits_
-        if self.ref_pdb!='':
-            ref_mh=IMP.atom.read_pdb(self.ref_pdb,mdl)
-            ref_mh_xyz=IMP.core.XYZs(IMP.core.get_leaves(ref_mh))
-            cur_low=[1e4,0]
+        if self.ref_pdb != '':
+            ref_mh = IMP.atom.read_pdb(self.ref_pdb, mdl)
+            ref_mh_xyz = IMP.core.XYZs(IMP.core.get_leaves(ref_mh))
+            cur_low = [1e4, 0]
         for i, fit in enumerate(final_fits):
             fit.set_index(i)
-            if self.ref_pdb!='':
-                trans=fit.get_fit_transformation()
-                IMP.atom.transform(mol2fit,trans)
-                rmsd=IMP.atom.get_rmsd(mh_xyz,ref_mh_xyz)
-                if rmsd<cur_low[0]:
-                    cur_low[0]=rmsd
-                    cur_low[1]=i
+            if self.ref_pdb != '':
+                trans = fit.get_fit_transformation()
+                IMP.atom.transform(mol2fit, trans)
+                rmsd = IMP.atom.get_rmsd(mh_xyz, ref_mh_xyz)
+                if rmsd < cur_low[0]:
+                    cur_low[0] = rmsd
+                    cur_low[1] = i
                 fit.set_rmsd_to_reference(rmsd)
-                IMP.atom.transform(mol2fit,trans.get_inverse())
-                fit.set_fit_transformation(trans*initial_transformation)
-        if self.ref_pdb!='':
-            print 'from all fits, lowest rmsd to ref:',cur_low
+                IMP.atom.transform(mol2fit, trans.get_inverse())
+                fit.set_fit_transformation(trans * initial_transformation)
+        if self.ref_pdb != '':
+            print 'from all fits, lowest rmsd to ref:', cur_low
         IMP.multifit.write_fitting_solutions(self.fits_fn, final_fits)
-
 
 
 def do_work(f):
     f.run()
+
 
 def parse_args():
     usage = """%prog [options] <assembly input> <refined assembly input> <proteomics.input> <mapping.input> <combinations file> <combination index>
@@ -103,74 +120,88 @@ Fit subunits locally around a combination solution with FFT."""
     parser.add_option("-t", "--max_trans", dest="max_trans", type="float",
                       default=10.,
                       help="maximum translational search in A"
-                          "(default 10)")
+                      "(default 10)")
 
     parser.add_option("-m", "--max_angle", dest="max_angle", type="float",
                       default=30.,
                       help="maximum angular search in degrees"
-                          "(default 50)")
+                      "(default 50)")
 
     options, args = parser.parse_args()
     if len(args) != 6:
         parser.error("incorrect number of arguments")
-    return options,args
+    return options, args
 
-def run(asmb_fn, asmb_refined_fn, proteomics_fn,mapping_fn,combs_fn,comb_ind,options):
-    #get rmsd for subunits
-    mdl1=IMP.kernel.Model()
-    mdl2=IMP.kernel.Model()
-    combs=IMP.multifit.read_paths(combs_fn)
-    asmb_input=IMP.multifit.read_settings(asmb_fn)
+
+def run(
+    asmb_fn,
+    asmb_refined_fn,
+    proteomics_fn,
+    mapping_fn,
+    combs_fn,
+    comb_ind,
+        options):
+    # get rmsd for subunits
+    mdl1 = IMP.kernel.Model()
+    mdl2 = IMP.kernel.Model()
+    combs = IMP.multifit.read_paths(combs_fn)
+    asmb_input = IMP.multifit.read_settings(asmb_fn)
     asmb_input.set_was_used(True)
-    asmb_refined_input=IMP.multifit.read_settings(asmb_refined_fn)
+    asmb_refined_input = IMP.multifit.read_settings(asmb_refined_fn)
     asmb_refined_input.set_was_used(True)
-    prot_data=IMP.multifit.read_proteomics_data(proteomics_fn)
-    mapping_data=IMP.multifit.read_protein_anchors_mapping(prot_data,
-                                                           mapping_fn)
-    ensmb=IMP.multifit.load_ensemble(asmb_input,mdl1,mapping_data)
+    prot_data = IMP.multifit.read_proteomics_data(proteomics_fn)
+    mapping_data = IMP.multifit.read_protein_anchors_mapping(prot_data,
+                                                             mapping_fn)
+    ensmb = IMP.multifit.load_ensemble(asmb_input, mdl1, mapping_data)
     ensmb.set_was_used(True)
-    mhs=ensmb.get_molecules()
+    mhs = ensmb.get_molecules()
 
-    ensmb_ref=IMP.multifit.load_ensemble(asmb_input,mdl2,mapping_data)
+    ensmb_ref = IMP.multifit.load_ensemble(asmb_input, mdl2, mapping_data)
     ensmb_ref.set_was_used(True)
-    mhs_ref=ensmb_ref.get_molecules()
+    mhs_ref = ensmb_ref.get_molecules()
 
     ensmb.load_combination(combs[comb_ind])
 
-    em_map=asmb_input.get_assembly_header().get_dens_fn()
-    resolution=asmb_input.get_assembly_header().get_resolution()
-    spacing=asmb_input.get_assembly_header().get_spacing()
-    origin=asmb_input.get_assembly_header().get_origin()
+    em_map = asmb_input.get_assembly_header().get_dens_fn()
+    resolution = asmb_input.get_assembly_header().get_resolution()
+    spacing = asmb_input.get_assembly_header().get_spacing()
+    origin = asmb_input.get_assembly_header().get_origin()
 
-    rbs_ref=ensmb_ref.get_rigid_bodies()
-    rbs=ensmb.get_rigid_bodies()
+    rbs_ref = ensmb_ref.get_rigid_bodies()
+    rbs = ensmb.get_rigid_bodies()
 
-    for i,mh in enumerate(mhs):
-        fits_fn=asmb_refined_input.get_component_header(i).get_transformations_fn()
+    for i, mh in enumerate(mhs):
+        fits_fn = asmb_refined_input.get_component_header(
+            i).get_transformations_fn()
 
-        #todo - get the initial transformation
-        rb_ref=rbs_ref[i]
-        rb=rbs[i]
+        # todo - get the initial transformation
+        rb_ref = rbs_ref[i]
+        rb = rbs[i]
 
-        initial_transformation=IMP.algebra.get_transformation_from_first_to_second(
-                rb_ref.get_reference_frame(),
-                rb.get_reference_frame())
+        initial_transformation = IMP.algebra.get_transformation_from_first_to_second(
+            rb_ref.get_reference_frame(),
+            rb.get_reference_frame())
 
-        pdb_fn=asmb_input.get_component_header(i).get_filename()
+        pdb_fn = asmb_input.get_component_header(i).get_filename()
 
-        f = Fitter(em_map, spacing, resolution, origin, asmb_input.get_assembly_header().get_threshold(),pdb_fn, fits_fn, options.angle,options.num,options.angle_voxel,
-                   options.max_trans,options.max_angle)
-        f.run_local_fitting(mh,rb,initial_transformation)
+        f = Fitter(
+            em_map, spacing, resolution, origin, asmb_input.get_assembly_header(
+            ).get_threshold(
+            ), pdb_fn, fits_fn, options.angle, options.num, options.angle_voxel,
+            options.max_trans, options.max_angle)
+        f.run_local_fitting(mh, rb, initial_transformation)
+
 
 def main():
-    options,args = parse_args()
+    options, args = parse_args()
     asmb_input = args[0]
     asmb_refined_input = args[1]
-    proteomics_fn=args[2]
-    mapping_fn=args[3]
+    proteomics_fn = args[2]
+    mapping_fn = args[3]
     combinations_fn = args[4]
     combination_ind = int(args[5])
-    run(asmb_input, asmb_refined_input, proteomics_fn,mapping_fn,combinations_fn, combination_ind, options)
+    run(asmb_input, asmb_refined_input, proteomics_fn,
+        mapping_fn, combinations_fn, combination_ind, options)
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()

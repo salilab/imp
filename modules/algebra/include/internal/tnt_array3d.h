@@ -45,7 +45,6 @@ class Array3D {
   int g_;
 
  public:
-
   typedef T value_type;
 
   Array3D();

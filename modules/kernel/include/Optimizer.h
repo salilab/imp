@@ -105,7 +105,7 @@ class IMPKERNELEXPORT Optimizer : public ModelObject {
                   optimizer_states, OptimizerState *, OptimizerStates,
                   set_optimizer_state_optimizer(obj, this);
                   , {},
-                  { Optimizer::set_optimizer_state_optimizer(obj, nullptr); });
+  { Optimizer::set_optimizer_state_optimizer(obj, nullptr); });
   /**@}*/
 
   /** By default, the Optimizer uses the scoring function provided by

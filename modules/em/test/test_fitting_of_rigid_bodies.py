@@ -14,7 +14,9 @@ class Tests(IMP.test.TestCase):
 
     def load_density_map(self, em_filename):
         mrw = IMP.em.MRCReaderWriter()
-        self.scene = IMP.em.read_map(self.get_input_file_name(em_filename), mrw)
+        self.scene = IMP.em.read_map(
+            self.get_input_file_name(em_filename),
+            mrw)
         self.scene.get_header_writable().set_resolution(10.)
         self.scene.update_voxel_size(2.0)
 

@@ -19,7 +19,7 @@ IMPEM_BEGIN_NAMESPACE
 
 //! class for envelope based scoring using MapDistanceTransform
 class IMPEMEXPORT EnvelopeScore : public IMP::base::Object {
-public:
+ public:
   // init with MapDistanceTransform
   EnvelopeScore(const MapDistanceTransform* mdt);
 
@@ -57,7 +57,7 @@ public:
       \param [in] trans - apply this transformation on points before scoring
   */
   double score(const std::vector<IMP::algebra::Vector3D>& points,
-            const IMP::algebra::Transformation3D& trans) const;
+               const IMP::algebra::Transformation3D& trans) const;
 
   // methods required by Object
   IMP::base::VersionInfo get_version_info() const {
@@ -68,9 +68,9 @@ public:
 
  private:
   unsigned int find_range(float distance) const {
-    for(unsigned int i=0; i< ranges_.size(); i++)
+    for (unsigned int i = 0; i < ranges_.size(); i++)
       // Add a small delta to handle floating point 'equals'
-      if(distance <= ranges_[i] + 1e-5) return i;
+      if (distance <= ranges_[i] + 1e-5) return i;
     return ranges_.size();
   }
 

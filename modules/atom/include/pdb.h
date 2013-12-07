@@ -49,10 +49,10 @@ IMP_OBJECTS(PDBSelector, PDBSelectors);
 //! Select all ATOM and HETATM records which are not alternatives
 class NonAlternativePDBSelector : public PDBSelector {
  public:
-  NonAlternativePDBSelector(std::string name = "NonAlternativePDBSelector%1%") :
-    PDBSelector(name) {}
+  NonAlternativePDBSelector(std::string name = "NonAlternativePDBSelector%1%")
+      : PDBSelector(name) {}
 
-  bool get_is_selected(const std::string& pdb_line) const {
+  bool get_is_selected(const std::string &pdb_line) const {
     return (internal::atom_alt_loc_indicator(pdb_line) == ' ' ||
             internal::atom_alt_loc_indicator(pdb_line) == 'A');
   }
@@ -62,10 +62,10 @@ class NonAlternativePDBSelector : public PDBSelector {
 //! Select all non-alternative ATOM records
 class ATOMPDBSelector : public NonAlternativePDBSelector {
  public:
-  ATOMPDBSelector(std::string name = "ATOMPDBSelector%1%") :
-     NonAlternativePDBSelector(name) {}
+  ATOMPDBSelector(std::string name = "ATOMPDBSelector%1%")
+      : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string& pdb_line) const {
+  bool get_is_selected(const std::string &pdb_line) const {
     return (NonAlternativePDBSelector::get_is_selected(pdb_line) &&
             internal::is_ATOM_rec(pdb_line));
   }
@@ -75,10 +75,10 @@ class ATOMPDBSelector : public NonAlternativePDBSelector {
 //! Select all CA ATOM records
 class CAlphaPDBSelector : public NonAlternativePDBSelector {
  public:
-  CAlphaPDBSelector(std::string name = "CAlphaPDBSelector%1%") :
-    NonAlternativePDBSelector(name) {}
+  CAlphaPDBSelector(std::string name = "CAlphaPDBSelector%1%")
+      : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string& pdb_line) const {
+  bool get_is_selected(const std::string &pdb_line) const {
     if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
     const std::string type = internal::atom_type(pdb_line);
     return (type[1] == 'C' && type[2] == 'A' && type[3] == ' ');
@@ -89,10 +89,10 @@ class CAlphaPDBSelector : public NonAlternativePDBSelector {
 //! Select all CB ATOM records
 class CBetaPDBSelector : public NonAlternativePDBSelector {
  public:
-  CBetaPDBSelector(std::string name = "CBetaPDBSelector%1%") :
-    NonAlternativePDBSelector(name) {}
+  CBetaPDBSelector(std::string name = "CBetaPDBSelector%1%")
+      : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string& pdb_line) const {
+  bool get_is_selected(const std::string &pdb_line) const {
     if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
     const std::string type = internal::atom_type(pdb_line);
     return (type[1] == 'C' && type[2] == 'B' && type[3] == ' ');
@@ -103,10 +103,10 @@ class CBetaPDBSelector : public NonAlternativePDBSelector {
 //! Select all C (not CA or CB) ATOM records
 class CPDBSelector : public NonAlternativePDBSelector {
  public:
-  CPDBSelector(std::string name = "CPDBSelector%1%") :
-    NonAlternativePDBSelector(name) {}
+  CPDBSelector(std::string name = "CPDBSelector%1%")
+      : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string& pdb_line) const {
+  bool get_is_selected(const std::string &pdb_line) const {
     if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
     const std::string type = internal::atom_type(pdb_line);
     return (type[1] == 'C' && type[2] == ' ' && type[3] == ' ');
@@ -117,10 +117,10 @@ class CPDBSelector : public NonAlternativePDBSelector {
 //! Select all N ATOM records
 class NPDBSelector : public NonAlternativePDBSelector {
  public:
-  NPDBSelector(std::string name = "NPDBSelector%1%") :
-    NonAlternativePDBSelector(name) {}
+  NPDBSelector(std::string name = "NPDBSelector%1%")
+      : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string& pdb_line) const {
+  bool get_is_selected(const std::string &pdb_line) const {
     if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
     const std::string type = internal::atom_type(pdb_line);
     return (type[1] == 'N' && type[2] == ' ' && type[3] == ' ');
@@ -128,13 +128,12 @@ class NPDBSelector : public NonAlternativePDBSelector {
   IMP_OBJECT_METHODS(NPDBSelector)
 };
 
-
 //! Defines a selector that will pick every ATOM and HETATM record
 class AllPDBSelector : public PDBSelector {
  public:
   AllPDBSelector(std::string name = "AllPDBSelector%1%") : PDBSelector(name) {}
 
-  bool get_is_selected(const std::string& pdb_line) const {
+  bool get_is_selected(const std::string &pdb_line) const {
     return (true || pdb_line.empty());
   }
   IMP_OBJECT_METHODS(AllPDBSelector);
@@ -165,10 +164,10 @@ class ChainPDBSelector : public NonAlternativePDBSelector {
 //! Select all non-water ATOM and HETATMrecords
 class WaterPDBSelector : public NonAlternativePDBSelector {
  public:
-  WaterPDBSelector(std::string name = "WaterPDBSelector%1%") :
-    NonAlternativePDBSelector(name) {}
+  WaterPDBSelector(std::string name = "WaterPDBSelector%1%")
+      : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string& pdb_line) const {
+  bool get_is_selected(const std::string &pdb_line) const {
     if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
       return false;
     }
@@ -184,10 +183,10 @@ class IMPATOMEXPORT HydrogenPDBSelector : public NonAlternativePDBSelector {
   bool is_hydrogen(std::string pdb_line) const;
 
  public:
-  HydrogenPDBSelector(std::string name = "HydrogenPDBSelector%1%") :
-    NonAlternativePDBSelector(name) {}
+  HydrogenPDBSelector(std::string name = "HydrogenPDBSelector%1%")
+      : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string& pdb_line) const {
+  bool get_is_selected(const std::string &pdb_line) const {
     if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
     return is_hydrogen(pdb_line);
   }
@@ -238,11 +237,12 @@ class NonWaterPDBSelector : public NonAlternativePDBSelector {
 //! Select all backbone (N,CA,C,O) ATOM records
 class BackbonePDBSelector : public NonWaterNonHydrogenPDBSelector {
  public:
-  BackbonePDBSelector(std::string name = "BackbonePDBSelector%1%") :
-    NonWaterNonHydrogenPDBSelector(name) {}
+  BackbonePDBSelector(std::string name = "BackbonePDBSelector%1%")
+      : NonWaterNonHydrogenPDBSelector(name) {}
 
-  bool get_is_selected(const std::string& pdb_line) const {
-    if(!NonWaterNonHydrogenPDBSelector::get_is_selected(pdb_line)) return false;
+  bool get_is_selected(const std::string &pdb_line) const {
+    if (!NonWaterNonHydrogenPDBSelector::get_is_selected(pdb_line))
+      return false;
     const std::string type = internal::atom_type(pdb_line);
     return ((type[1] == 'N' && type[2] == ' ' && type[3] == ' ') ||
             (type[1] == 'C' && type[2] == 'A' && type[3] == ' ') ||
@@ -255,10 +255,10 @@ class BackbonePDBSelector : public NonWaterNonHydrogenPDBSelector {
 //! Select all P (= phosphate) ATOM records
 class PPDBSelector : public NonAlternativePDBSelector {
  public:
-  PPDBSelector(std::string name = "PPDBSelector%1%") :
-    NonAlternativePDBSelector(name) {}
+  PPDBSelector(std::string name = "PPDBSelector%1%")
+      : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string& pdb_line) const {
+  bool get_is_selected(const std::string &pdb_line) const {
     if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
     const std::string type = internal::atom_type(pdb_line);
     return (type[1] == 'P' && type[2] == ' ' && type[3] == ' ');
@@ -342,22 +342,22 @@ class NotPDBSelector : public PDBSelector {
 */
 //!@{
 
-inline PDBSelector* get_default_pdb_selector() {
+inline PDBSelector *get_default_pdb_selector() {
   return new NonWaterPDBSelector();
 }
 
 /** Read a all the molecules in the first model of the
     pdb file.
  */
-IMPATOMEXPORT Hierarchy read_pdb(base::TextInput input, kernel::Model *model,
-                                 PDBSelector *selector =
-                                                  get_default_pdb_selector(),
-                                 bool select_first_model = true
+IMPATOMEXPORT Hierarchy
+    read_pdb(base::TextInput input, kernel::Model *model,
+             PDBSelector *selector = get_default_pdb_selector(),
+             bool select_first_model = true
 #ifndef IMP_DOXYGEN
-                                 ,
-                                 bool no_radii = false
+             ,
+             bool no_radii = false
 #endif
-                                 );
+             );
 
 /** Rewrite the coordinates of the passed hierarchy based
     on the contents of the first model in the pdb file.
@@ -378,15 +378,14 @@ IMPATOMEXPORT void read_pdb(base::TextInput input, int model, Hierarchy h);
 
 /** Read all models from the pdb file.
  */
-IMPATOMEXPORT Hierarchies read_multimodel_pdb(base::TextInput input,
-                                              kernel::Model *model,
-                                              PDBSelector *selector =
-                                                 get_default_pdb_selector()
+IMPATOMEXPORT Hierarchies
+    read_multimodel_pdb(base::TextInput input, kernel::Model *model,
+                        PDBSelector *selector = get_default_pdb_selector()
 #ifndef IMP_DOXYGEN
-                                              ,
-                                              bool noradii = false
+                        ,
+                        bool noradii = false
 #endif
-                                              );
+                        );
 
 /** @name PDB Writing
     \anchor pdb_out

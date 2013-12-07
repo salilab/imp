@@ -8,21 +8,21 @@ import os
 from math import *
 
 
-
 class Tests(IMP.test.TestCase):
+
     def test_rigid_body_image_fit_restraint(self):
         """Test scoring with RigidBodiesImageFitRestraint"""
         m = IMP.kernel.Model()
 
         # read full complex
         fn = self.get_input_file_name("1z5s.pdb")
-        prot = atom.read_pdb(fn, m,IMP.atom.ATOMPDBSelector())
+        prot = atom.read_pdb(fn, m, IMP.atom.ATOMPDBSelector())
         # read components
         names = ["1z5sA", "1z5sB", "1z5sC", "1z5sD"]
-        fn_pdbs = [self.get_input_file_name(name+".pdb") for name in names]
-        components = [atom.read_pdb(fn, m,IMP.atom.ATOMPDBSelector())
-                                                          for fn in fn_pdbs]
-        components_rbs = [ atom.create_rigid_body(c) for c in components ]
+        fn_pdbs = [self.get_input_file_name(name + ".pdb") for name in names]
+        components = [atom.read_pdb(fn, m, IMP.atom.ATOMPDBSelector())
+                      for fn in fn_pdbs]
+        components_rbs = [atom.create_rigid_body(c) for c in components]
 
         # img
         R = alg.get_identity_rotation_3d()
@@ -39,7 +39,7 @@ class Tests(IMP.test.TestCase):
         # set restraint
         score_function = em2d.EM2DScore()
         rb_fit = em2d.RigidBodiesImageFitRestraint(score_function,
-                                                    components_rbs, img)
+                                                   components_rbs, img)
         pp = em2d.ProjectingParameters(pixel_size, resolution)
         rb_fit.set_projecting_parameters(pp)
         # set the trivial case:
@@ -49,9 +49,9 @@ class Tests(IMP.test.TestCase):
             # set as the only possible orientation the one that the rigid
             # body already has
             rb_fit.set_orientations(rb,
-            [rb.get_reference_frame().get_transformation_to().get_rotation()])
-            self.assertEqual(rb_fit.get_number_of_masks(rb),n_masks,
-                        "Incorrect number rigid body masks")
+                                    [rb.get_reference_frame().get_transformation_to().get_rotation()])
+            self.assertEqual(rb_fit.get_number_of_masks(rb), n_masks,
+                             "Incorrect number rigid body masks")
 
         # Calculate the positions of the rigid bodies respect to the centroid
         # of the entire molecule
@@ -71,7 +71,7 @@ class Tests(IMP.test.TestCase):
         # It seems that projecting with the masks is slightly less accurate
         # I have to establish a tolerance of 0.03
         self.assertAlmostEqual(score, 0, delta=0.03,
-                              msg = "Wrong value for the score %f " % (score))
+                               msg="Wrong value for the score %f " % (score))
 
 
 if __name__ == '__main__':

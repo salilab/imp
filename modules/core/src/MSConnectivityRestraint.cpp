@@ -320,7 +320,6 @@ class MSConnectivityScore {
   EdgeSet get_all_edges(NNGraph &G) const;
 
  private:
-
   struct EdgeScoreComparator {
     EdgeScoreComparator(const MSConnectivityRestraint &restraint)
         : restraint_(restraint) {}
@@ -734,7 +733,7 @@ ModelObjectsTemp MSConnectivityRestraint::do_get_inputs() const {
   if (!sc_) return kernel::ModelObjectsTemp();
   kernel::ModelObjectsTemp ret;
   IMP_CONTAINER_ACCESS(SingletonContainer, sc_,
-                       { ret += ps_->get_inputs(get_model(), imp_indexes); });
+  { ret += ps_->get_inputs(get_model(), imp_indexes); });
   return ret;
 }
 

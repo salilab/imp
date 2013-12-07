@@ -25,11 +25,10 @@ IMPEM_BEGIN_NAMESPACE
 //! Responsible for performing coarse fitting between two density objects.
 /** The pixels involved are derived from the positions of N particles.
  */
-class IMPEMEXPORT CoarseCC : public IMP::base::Object
-{
+class IMPEMEXPORT CoarseCC : public IMP::base::Object {
 
-public:
-  CoarseCC():Object("CoarseCC%1%"){}
+ public:
+  CoarseCC() : Object("CoarseCC%1%") {}
   //! Calculates the value of the EM fitting term.
   /** \note The function returns scalefac*(1-ccc)
             to support minimization optimization. The ccc value (cross
@@ -50,30 +49,32 @@ public:
       \return the value of the cross correlation term: scalefac*(1-ccc)
       See cross_correlation_coefficient
    */
-  static float calc_score(
-   DensityMap *data, SampledDensityMap *model_map,
-   float scalefactor,
-   bool recalc_rms=true,bool resample=true,
-   FloatPair norm_factors=FloatPair(0.,0.));
+  static float calc_score(DensityMap *data, SampledDensityMap *model_map,
+                          float scalefactor, bool recalc_rms = true,
+                          bool resample = true,
+                          FloatPair norm_factors = FloatPair(0., 0.));
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-/**
- Computes the derivatives of the cross correlation term scalefac*(1-ccc) at each
- voxel of the map.
- \param[in] em_map the target density map.
- \param[in] model_map the density map of the model
- \param[in] model_ps the particles sampled in model_map
- \param[in] mass_key the key of the mass attribute of the particles
- \param[in] scalefac scale factor to apply to the value of the cross
-                        correlation term
- \return a vector of derivatives
- \note: The function assumes that correct RMS are calculated for the densities
-*/
-  static algebra::Vector3Ds calc_derivatives(
-     const DensityMap *em_map, const DensityMap *model_map,
-     const kernel::Particles &model_ps,const FloatKey &mass_key,
-     KernelParameters *kernel_params,
-     const float &scalefac, const algebra::Vector3Ds &dv);
+  /**
+   Computes the derivatives of the cross correlation term scalefac*(1-ccc) at
+   each
+   voxel of the map.
+   \param[in] em_map the target density map.
+   \param[in] model_map the density map of the model
+   \param[in] model_ps the particles sampled in model_map
+   \param[in] mass_key the key of the mass attribute of the particles
+   \param[in] scalefac scale factor to apply to the value of the cross
+                          correlation term
+   \return a vector of derivatives
+   \note: The function assumes that correct RMS are calculated for the densities
+  */
+  static algebra::Vector3Ds calc_derivatives(const DensityMap *em_map,
+                                             const DensityMap *model_map,
+                                             const kernel::Particles &model_ps,
+                                             const FloatKey &mass_key,
+                                             KernelParameters *kernel_params,
+                                             const float &scalefac,
+                                             const algebra::Vector3Ds &dv);
 #endif
 
   //!Calculates the cross correlation coefficient between two maps
@@ -104,23 +105,21 @@ public:
          use voxel_data_threshold that does not consist of the entire map
          this would be wrong. Fix it.
    */
-  static double cross_correlation_coefficient(
-     const DensityMap *grid1,
-     const DensityMap *grid2,
-     float grid2_voxel_data_threshold,
-     bool allow_padding=false,
-     FloatPair norm_factors=FloatPair(0.,0.));
+  static double cross_correlation_coefficient(const DensityMap *grid1,
+                                              const DensityMap *grid2,
+                                              float grid2_voxel_data_threshold,
+                                              bool allow_padding = false,
+                                              FloatPair norm_factors =
+                                                  FloatPair(0., 0.));
 
   //! Local cross correlation function
-static float local_cross_correlation_coefficient(const DensityMap *em_map,
-                                              DensityMap *model_map,
-                                                 float voxel_data_threshold);
+  static float local_cross_correlation_coefficient(const DensityMap *em_map,
+                                                   DensityMap *model_map,
+                                                   float voxel_data_threshold);
 
- IMP_OBJECT_METHODS(CoarseCC);
+  IMP_OBJECT_METHODS(CoarseCC);
 };
-
-
 
 IMPEM_END_NAMESPACE
 
-#endif  /* IMPEM_COARSE_CC_H */
+#endif /* IMPEM_COARSE_CC_H */

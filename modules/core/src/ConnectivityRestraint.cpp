@@ -35,7 +35,7 @@ ConnectivityRestraint::ConnectivityRestraint(PairScore *ps,
 }
 
 ConnectivityRestraint::ConnectivityRestraint(Model *m, PairScore *ps)
-  : kernel::Restraint(m, "ConnectivityRestraint %1%"), ps_(ps) {
+    : kernel::Restraint(m, "ConnectivityRestraint %1%"), ps_(ps) {
   IMPCORE_DEPRECATED_METHOD_DEF(2.1, "Use constructor that takes container.");
 }
 
@@ -138,8 +138,8 @@ ParticleIndexPairs get_edges(const SingletonContainer *a, PairScore *ps) {
 }
 }
 
-double ConnectivityRestraint::unprotected_evaluate(
-    DerivativeAccumulator *accum) const {
+double ConnectivityRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
+    const {
   IMP_CHECK_OBJECT(ps_.get());
   IMP_OBJECT_LOG;
   base::Vector<Edge> mst;

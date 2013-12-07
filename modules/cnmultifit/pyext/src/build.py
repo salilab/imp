@@ -5,6 +5,7 @@ __doc__ = "Build cyclic symmetric complexes in their density map."
 import IMP.cnmultifit
 from IMP import OptionParser
 
+
 def parse_args():
     usage = """%prog [options] <parameter file>
 
@@ -17,6 +18,7 @@ This program builds cyclic symmetric complexes in their density maps."""
     if len(args) != 1:
         parser.error("incorrect number of arguments")
     return args[0], options.chimera
+
 
 def main():
     param_file, chimera_file = parse_args()

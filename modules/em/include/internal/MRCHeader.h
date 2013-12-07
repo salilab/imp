@@ -14,16 +14,13 @@
 
 IMPEM_BEGIN_INTERNAL_NAMESPACE
 
-#define IMP_MRC_LABEL_SIZE      80
-#define IMP_MRC_USER            25
-#define IMP_MRC_NUM_LABELS      10
-
-
+#define IMP_MRC_LABEL_SIZE 80
+#define IMP_MRC_USER 25
+#define IMP_MRC_NUM_LABELS 10
 
 //! Class to deal with the header of MRC files
-class IMPEMEXPORT MRCHeader
-{
-public:
+class IMPEMEXPORT MRCHeader {
+ public:
   //! map size (x dimension)
   int nx;
   //! map size (y dimension)
@@ -40,7 +37,7 @@ public:
   **/
   int mode;
   //! number of first columns in map (default = 0)
-  int nxstart,nystart,nzstart;
+  int nxstart, nystart, nzstart;
   //! Intervals along dimension x
   int mx;
   //! Intervals along dimension y
@@ -90,42 +87,43 @@ public:
   int nlabl;
   //! text labels
   char labels[IMP_MRC_NUM_LABELS][IMP_MRC_LABEL_SIZE];
-public:
+
+ public:
   //! Converter from MRCHeader to DensityHeader
   void FromDensityHeader(const DensityHeader &h);
   //! Converter from DensityHeader to MRCHeader
   void ToDensityHeader(DensityHeader &h);
   //! Outputs coordinates delimited by single space.
-  friend std::ostream& operator<<(std::ostream& s, const MRCHeader &v) {
-    s<< "nx: " << v.nx << " ny: " << v.ny << " nz: " << v.nz << std::endl;
-    s<<"mode: " << v.mode << std::endl;
-    s <<"nxstart: " << v.nxstart << " nystart: " << v.nystart <<" nzstart: "
-      << v.nzstart << std::endl;
-    s<<"mx: "<< v.mx <<" my:" << v.my << " mz: " << v.mz << std::endl;
-    s << "xlen: " << v.xlen <<" ylen: " << v.ylen <<" zlen: " << v.zlen
+  friend std::ostream &operator<<(std::ostream &s, const MRCHeader &v) {
+    s << "nx: " << v.nx << " ny: " << v.ny << " nz: " << v.nz << std::endl;
+    s << "mode: " << v.mode << std::endl;
+    s << "nxstart: " << v.nxstart << " nystart: " << v.nystart
+      << " nzstart: " << v.nzstart << std::endl;
+    s << "mx: " << v.mx << " my:" << v.my << " mz: " << v.mz << std::endl;
+    s << "xlen: " << v.xlen << " ylen: " << v.ylen << " zlen: " << v.zlen
       << std::endl;
-    s <<"alpha : " << v.alpha << " beta: " << v.beta <<" gamma: "<< v.gamma
+    s << "alpha : " << v.alpha << " beta: " << v.beta << " gamma: " << v.gamma
       << std::endl;
-    s << "mapc : " << v.mapc << " mapr: " << v.mapr <<" maps: " << v.maps
+    s << "mapc : " << v.mapc << " mapr: " << v.mapr << " maps: " << v.maps
       << std::endl;
     s << "dmin: " << v.dmin << " dmax: " << v.dmax << " dmean: " << v.dmean
       << std::endl;
-    s <<"ispg: " << v.ispg << std::endl;
-    s <<"nsymbt: " << v.nsymbt << std::endl;
+    s << "ispg: " << v.ispg << std::endl;
+    s << "nsymbt: " << v.nsymbt << std::endl;
     s << "user: " << v.user << std::endl;
-    s << "xorigin: " << v.xorigin << " yorigin: "<< v.yorigin
-      << " zorigin: "<< v.zorigin << std::endl;
-    s <<"map: " << v.map << std::endl;
-    s<< "machinestamp: " << v.machinestamp << std::endl;
-    s <<"rms: " << v.rms << std::endl;
-    s<<"nlabl: " << v.nlabl << std::endl;
-    s <<"labels : " << v.labels << std::endl;
-    for(int i=0;i<v.nlabl;i++)
-      s <<"labels[" << i << "] = ->" <<  v.labels[i] << "<-" << std::endl;
+    s << "xorigin: " << v.xorigin << " yorigin: " << v.yorigin
+      << " zorigin: " << v.zorigin << std::endl;
+    s << "map: " << v.map << std::endl;
+    s << "machinestamp: " << v.machinestamp << std::endl;
+    s << "rms: " << v.rms << std::endl;
+    s << "nlabl: " << v.nlabl << std::endl;
+    s << "labels : " << v.labels << std::endl;
+    for (int i = 0; i < v.nlabl; i++)
+      s << "labels[" << i << "] = ->" << v.labels[i] << "<-" << std::endl;
     return s;
   }
 };
 
 IMPEM_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPEM_INTERNAL_MRC_HEADER_H */
+#endif /* IMPEM_INTERNAL_MRC_HEADER_H */

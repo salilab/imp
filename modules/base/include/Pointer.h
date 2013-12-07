@@ -187,7 +187,6 @@ struct PointerMember
 #endif
 };
 
-
 /******* streaming ********/
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 template <class T>

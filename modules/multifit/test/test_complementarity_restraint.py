@@ -4,12 +4,13 @@ import IMP.core
 import IMP.atom
 import IMP.multifit
 
+
 class Tests(IMP.test.TestCase):
 
     def _setup(self):
         """Set up two simple rigid bodies (spheres) and a restraint"""
         m = IMP.kernel.Model()
-        sph = IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0.,0.,0.), 10.0)
+        sph = IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0., 0., 0.), 10.0)
         p0 = IMP.kernel.Particle(m)
         IMP.core.XYZR.setup_particle(p0, sph)
         IMP.atom.Mass.setup_particle(p0, 1.0)
@@ -19,7 +20,7 @@ class Tests(IMP.test.TestCase):
         rb0 = IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m), [p0])
         rb1 = IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m), [p1])
 
-        r=IMP.multifit.ComplementarityRestraint([p0], [p1])
+        r = IMP.multifit.ComplementarityRestraint([p0], [p1])
         r.set_maximum_separation(30)
         r.set_complementarity_value(-10)
         r.set_maximum_penetration_score(30)
@@ -30,8 +31,9 @@ class Tests(IMP.test.TestCase):
         return (m, r, rb0, rb1)
 
     def _set_separation(self, rb, separation):
-        tr= IMP.algebra.Transformation3D(IMP.algebra.Vector3D(separation,0,0))
-        nrf=IMP.algebra.ReferenceFrame3D(tr)
+        tr = IMP.algebra.Transformation3D(
+            IMP.algebra.Vector3D(separation, 0, 0))
+        nrf = IMP.algebra.ReferenceFrame3D(tr)
         rb.set_reference_frame(nrf)
 
     def test_complementarity_restraint(self):

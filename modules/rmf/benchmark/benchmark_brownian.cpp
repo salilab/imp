@@ -343,11 +343,11 @@ int main(int argc, char **argv) {
       }
     }
   }
-  catch (const IMP::base::Exception& e) {
+  catch (const IMP::base::Exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
     return 1;
   }
-  catch (const std::exception& e) {
+  catch (const std::exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
     return 1;
   }

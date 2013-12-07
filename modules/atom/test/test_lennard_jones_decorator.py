@@ -4,6 +4,7 @@ import IMP.core
 import IMP.atom
 import IMP.algebra
 
+
 def _make_test_decorator(m):
     p = IMP.kernel.Particle(m)
     v = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
@@ -13,6 +14,7 @@ def _make_test_decorator(m):
 
 
 class Tests(IMP.test.TestCase):
+
     """Test the LennardJones decorator"""
 
     def test_create(self):

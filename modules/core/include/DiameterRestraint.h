@@ -45,8 +45,8 @@ class IMPCOREEXPORT DiameterRestraint : public kernel::Restraint {
    */
   DiameterRestraint(UnaryFunction *f, SingletonContainer *sc, Float diameter);
 
-  virtual double unprotected_evaluate(
-      IMP::kernel::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(DiameterRestraint);
 #ifndef IMP_DOXYGEN

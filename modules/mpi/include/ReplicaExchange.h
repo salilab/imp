@@ -20,8 +20,7 @@ IMPMPI_BEGIN_NAMESPACE
 /** Any model parameter can be used as exchange parameter:
     temperature, restraint intensity, ...
 */
-class IMPMPIEXPORT ReplicaExchange: public base::Object
-{
+class IMPMPIEXPORT ReplicaExchange : public base::Object {
   //! MPI rank
   int myrank_;
   //! Number of replicas
@@ -33,47 +32,46 @@ class IMPMPIEXPORT ReplicaExchange: public base::Object
   //! MPI status
   MPI_Status status_;
   //! Exchange parameters
-  std::map<std::string,Floats> parameters_;
+  std::map<std::string, Floats> parameters_;
 
-private:
+ private:
   //! Create list of replica indices
-  Ints   create_indexes();
+  Ints create_indexes();
   //! Create list of number of exchange accepted
   /** This is useful to track exchange acceptance across replicas */
-  Ints   create_exarray();
+  Ints create_exarray();
   //! Calculate acceptance probability
-  bool   get_acceptance(double myscore,double fscore);
+  bool get_acceptance(double myscore, double fscore);
   //! Get the rank for a given replica index
-  int    get_rank(int index);
+  int get_rank(int index);
 
-  virtual void do_destroy() IMP_OVERRIDE {
-    MPI_Finalize();
-  }
-public:
+  virtual void do_destroy() IMP_OVERRIDE { MPI_Finalize(); }
+
+ public:
   ReplicaExchange();
   //! Set exchange parameter
-  void   set_my_parameter(std::string key,Floats values);
+  void set_my_parameter(std::string key, Floats values);
   //! Get the value of my exchange parameter
   Floats get_my_parameter(std::string key);
   //! Get the index of friend with which trying an exchange
-  int    get_friend_index(int istep);
+  int get_friend_index(int istep);
   //! Get the array with exchange acceptance
-  Ints   get_exchange_array();
+  Ints get_exchange_array();
   //! Get the value of my friend's parameter
-  Floats get_friend_parameter(std::string key,int findex);
+  Floats get_friend_parameter(std::string key, int findex);
   //! Try an exchange
-  bool   do_exchange(double myscore0,double myscore1,int findex);
+  bool do_exchange(double myscore0, double myscore1, int findex);
   //! Initialize array of temperatures
   /** Temperatures are distributed according to a geometric progression */
-  Floats create_temperatures(double tmin,double tmax,int nrep);
+  Floats create_temperatures(double tmin, double tmax, int nrep);
   //! Get replica index
-  int get_my_index() const {return index_[myrank_];}
+  int get_my_index() const { return index_[myrank_]; }
   //! Get number of replicas
-  int get_number_of_replicas() const {return nproc_;}
+  int get_number_of_replicas() const { return nproc_; }
 
   IMP_OBJECT_METHODS(ReplicaExchange);
 };
 
 IMPMPI_END_NAMESPACE
 
-#endif  /* IMPMPI_REPLICA_EXCHANGE_H */
+#endif /* IMPMPI_REPLICA_EXCHANGE_H */

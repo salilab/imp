@@ -4,7 +4,9 @@ import IMP.parallel
 import util
 import tasks
 
+
 class Tests(IMP.test.TestCase):
+
     """Test startup of parallel jobs"""
 
     def test_simple(self):
@@ -14,8 +16,7 @@ class Tests(IMP.test.TestCase):
         c = m.get_context()
         for i in range(10):
             c.add_task(tasks.SimpleTask(i))
-        results = list(c.get_results_unordered())
-        results.sort()
+        results = sorted(c.get_results_unordered())
         self.assertEqual(results, list(range(10)))
         util.unlink("simple0.out")
 

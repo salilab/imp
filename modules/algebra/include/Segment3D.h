@@ -40,7 +40,7 @@ class IMPALGEBRAEXPORT Segment3D : public GeometricPrimitiveD<3> {
   Vector3D get_direction() const { return (p_[1] - p_[0]).get_unit_vector(); }
   double get_length() const;
   IMP_SHOWABLE_INLINE(Segment3D,
-                      { out << spaces_io(p_[0]) << ": " << spaces_io(p_[1]); });
+  { out << spaces_io(p_[0]) << ": " << spaces_io(p_[1]); });
 
  private:
   Vector3D p_[2];

@@ -17,9 +17,8 @@
 
 IMPMULTIFIT_BEGIN_INTERNAL_NAMESPACE
 
-class IMPMULTIFITEXPORT FFTWPlan : public boost::noncopyable
-{
-private:
+class IMPMULTIFITEXPORT FFTWPlan : public boost::noncopyable {
+ private:
   fftw_plan data_;
   static unsigned int number_of_plans_;
   static bool cleanup_requested_;
@@ -30,7 +29,7 @@ private:
       // existing plans to become undefined. Also, fftw_cleanup() throws away
       // accumulated FFTW wisdom, so keep it around until a cleanup has been
       // specificially requested (i.e. we're done with FFTW)
-      IMP_LOG_VERBOSE( "Doing FFTW cleanup");
+      IMP_LOG_VERBOSE("Doing FFTW cleanup");
       fftw_cleanup();
     }
   }
@@ -43,7 +42,7 @@ private:
     }
   }
 
-public:
+ public:
   FFTWPlan() : data_(nullptr) {}
 
   FFTWPlan(fftw_plan plan) : data_(nullptr) { set_pointer(plan); }
@@ -53,9 +52,7 @@ public:
     return *this;
   }
 
-  ~FFTWPlan() {
-    release();
-  }
+  ~FFTWPlan() { release(); }
 
   void release() {
     if (data_) {
@@ -77,4 +74,4 @@ public:
 
 IMPMULTIFIT_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPMULTIFIT_FFTW_PLAN_H */
+#endif /* IMPMULTIFIT_FFTW_PLAN_H */

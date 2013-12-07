@@ -17,10 +17,13 @@
 void read_trans_file(const std::string file_name,
                      std::vector<IMP::algebra::Transformation3D>& transforms);
 
-void read_pdb_atoms(const std::string file_name, IMP::kernel::Particles& particles);
+void read_pdb_atoms(const std::string file_name,
+                    IMP::kernel::Particles& particles);
 
-void read_pdb_ca_atoms(const std::string file_name, IMP::kernel::Particles& particles);
+void read_pdb_ca_atoms(const std::string file_name,
+                       IMP::kernel::Particles& particles);
 
-void transform(IMP::kernel::Particles& particles, IMP::algebra::Transformation3D& t);
+void transform(IMP::kernel::Particles& particles,
+               IMP::algebra::Transformation3D& t);
 
 #endif /* IMP_HELPERS_H */

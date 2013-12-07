@@ -12,7 +12,7 @@
 
 IMPCNMULTIFIT_BEGIN_INTERNAL_NAMESPACE
 
-Parameters::Parameters(const char* param_filename) {
+Parameters::Parameters(const char *param_filename) {
   boost::property_tree::ptree pt;
   boost::property_tree::read_ini(param_filename, pt);
 
@@ -35,8 +35,8 @@ void Parameters::parse_files_section(const boost::property_tree::ptree &pt) {
   params_.protLib = pt.get<std::string>("files.prot_lib");
   params_.refPdb = pt.get<std::string>("files.reference", "");
   params_.logParams.output_fn_ = pt.get<std::string>("files.output");
-  params_.logParams.intermediate_fn_
-                         = pt.get<std::string>("files.intermediate", "");
+  params_.logParams.intermediate_fn_ =
+      pt.get<std::string>("files.intermediate", "");
   params_.logParams.model_fn_ = pt.get<std::string>("files.model");
 }
 
@@ -46,21 +46,21 @@ void Parameters::parse_symmetry_section(const boost::property_tree::ptree &pt) {
 }
 
 void Parameters::parse_scoring_section(const boost::property_tree::ptree &pt) {
-  params_.dockingParams.scoreParams.small_interface_ratio
-                  = pt.get<float>("scoring.small_interface_ratio");
-  params_.dockingParams.scoreParams.max_penetration
-                  = pt.get<float>("scoring.max_penetration");
+  params_.dockingParams.scoreParams.small_interface_ratio =
+      pt.get<float>("scoring.small_interface_ratio");
+  params_.dockingParams.scoreParams.max_penetration =
+      pt.get<float>("scoring.max_penetration");
   params_.dockingParams.scoreParams.ns_thr = pt.get<float>("scoring.threshold");
-  params_.dockingParams.scoreParams.weights[0]
-                                 = pt.get<float>("scoring.weight1");
-  params_.dockingParams.scoreParams.weights[1]
-                                 = pt.get<float>("scoring.weight2");
-  params_.dockingParams.scoreParams.weights[2]
-                                 = pt.get<float>("scoring.weight3");
-  params_.dockingParams.scoreParams.weights[3]
-                                 = pt.get<float>("scoring.weight4");
-  params_.dockingParams.scoreParams.weights[4]
-                                 = pt.get<float>("scoring.weight5");
+  params_.dockingParams.scoreParams.weights[0] =
+      pt.get<float>("scoring.weight1");
+  params_.dockingParams.scoreParams.weights[1] =
+      pt.get<float>("scoring.weight2");
+  params_.dockingParams.scoreParams.weights[2] =
+      pt.get<float>("scoring.weight3");
+  params_.dockingParams.scoreParams.weights[3] =
+      pt.get<float>("scoring.weight4");
+  params_.dockingParams.scoreParams.weights[4] =
+      pt.get<float>("scoring.weight5");
 }
 
 void Parameters::parse_density_section(const boost::property_tree::ptree &pt) {
@@ -72,18 +72,18 @@ void Parameters::parse_density_section(const boost::property_tree::ptree &pt) {
   float origin_z = pt.get<float>("density.origin_z");
   params_.densityParams.origin_ = TAU::Vector3(origin_x, origin_y, origin_z);
   params_.densityParams.thr_ = pt.get<float>("density.threshold");
-  params_.densityParams.pca_matching_thr_
-                        = pt.get<float>("density.pca_matching_threshold");
+  params_.densityParams.pca_matching_thr_ =
+      pt.get<float>("density.pca_matching_threshold");
 }
 
 void Parameters::parse_clustering_section(
-                              const boost::property_tree::ptree &pt) {
-  params_.dockingParams.clusterParams.maxAngleDiff
-                  = pt.get<float>("clustering.axis_angle_threshold");
-  params_.dockingParams.clusterParams.ignoreClustersSmaller
-                  = pt.get<int>("clustering.min_size");
-  params_.dockingParams.clusterParams.rmsd
-                  =  pt.get<float>("clustering.distance");
+    const boost::property_tree::ptree &pt) {
+  params_.dockingParams.clusterParams.maxAngleDiff =
+      pt.get<float>("clustering.axis_angle_threshold");
+  params_.dockingParams.clusterParams.ignoreClustersSmaller =
+      pt.get<int>("clustering.min_size");
+  params_.dockingParams.clusterParams.rmsd =
+      pt.get<float>("clustering.distance");
 }
 
 void Parameters::parse_base_section(const boost::property_tree::ptree &pt) {

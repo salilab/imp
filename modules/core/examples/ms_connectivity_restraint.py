@@ -1,5 +1,5 @@
 ## \example core/ms_connectivity_restraint.py
-## This example shows how to use the MSConnectivityRestraint to ensure that all the particles that are part of complexes end up in a connected conformation following the optimization. It allows multiple copies of particles and takes an experimental tree as an input.
+# This example shows how to use the MSConnectivityRestraint to ensure that all the particles that are part of complexes end up in a connected conformation following the optimization. It allows multiple copies of particles and takes an experimental tree as an input.
 #
 
 # -- File: ms_connectivity_restraint.py --#

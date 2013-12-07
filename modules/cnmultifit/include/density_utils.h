@@ -15,11 +15,11 @@
 
 IMPCNMULTIFIT_BEGIN_NAMESPACE
 
-//TODO - this function should be removed at one point, because it should
-//be in IMP::em
+// TODO - this function should be removed at one point, because it should
+// be in IMP::em
 statistics::Histogram my_get_density_histogram(const em::DensityMap *dmap,
-                                               float threshold,int num_bins);
+                                               float threshold, int num_bins);
 
 IMPCNMULTIFIT_END_NAMESPACE
 
-#endif  /* IMPCNMULTIFIT_DENSITY_UTILS_H */
+#endif /* IMPCNMULTIFIT_DENSITY_UTILS_H */

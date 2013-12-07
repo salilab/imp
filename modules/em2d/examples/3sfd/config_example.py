@@ -2,19 +2,20 @@
 
 # This class specifies the parameters used during the Monte Carlo optimization
 class MonteCarloParams:
+
     def __init__(self):
 
         # Profile of the set of temperatures used. You can add as many as you
         # want. You can see that here the profile is a tempering
-        self.temperatures = [30000,15000,10000,5000,1000]
+        self.temperatures = [30000, 15000, 10000, 5000, 1000]
         # Monte Carlo iterations to use for each value of the temperature.
         # The number of values must be the same as the number of temperatures.
-        self.iterations = [200,200,200,200]
+        self.iterations = [200, 200, 200, 200]
         # Maximum translation allowed for the components for each value of
         # the temperature
-        self.max_translations = [20,15,10,5]
+        self.max_translations = [20, 15, 10, 5]
         # Same as above but with the rotations (in radians)
-        self.max_rotations = [1,0.5,0.25,0.1]
+        self.max_rotations = [1, 0.5, 0.25, 0.1]
         # The number of cycles. Is the number of times that the profile
         # of temperatures, iterations, translations and rotations is repeated
         # Yo can put as many as you want
@@ -31,6 +32,7 @@ class MonteCarloParams:
 
 # This class specifies the parameters used for the DOMINO sampling
 class DominoSamplingPositions:
+
     def __init__(self):
         # This parameter is the file where the results of many different
         # Monte Carlo runs are. The starting solutions for DOMINO are read from
@@ -45,7 +47,10 @@ class DominoSamplingPositions:
         # DOMINO.
 
 # This class is for technical parameters for DOMINO.
+
+
 class DominoParams:
+
     def __init__(self, ):
         # Exploring all possible combinations of sampling positions
         # is memory intensive. self.heap_solutions is the number of
@@ -56,7 +61,10 @@ class DominoParams:
 
 # This class is here to inject testing code in the modeling. Don't bother with
 # it unless you know the code for the application well.
+
+
 class TestParameters(object):
+
     def __init__(self, ):
         self.do_test = False
         self.test_fn_assembly = ""
@@ -65,6 +73,7 @@ class TestParameters(object):
 # This class is used to measure the performance of the method with benchmark
 # structures. Same as above, ignore or delete it if you are modeling.
 class Benchmark:
+
     def __init__(self, ):
         self.fn_pdb_native = "3sfd.pdb"
         # parameters for measuring the ccc with the 3D map
@@ -88,10 +97,10 @@ class Experiment (object):
         # The name of each of the components (subunits) of the assembly. The
         # names of the subunits are heavily used by the code. Make sure that all
         # the names are different.
-        self.names = ["3sfdA","3sfdB","3sfdC","3sfdD"]
+        self.names = ["3sfdA", "3sfdB", "3sfdC", "3sfdD"]
         # The number of the pdbs containing the subunits. The name of the
         # files does not need to match the names of the subunits in self.names
-        self.fn_pdbs = ["3sfdA.pdb","3sfdB.pdb","3sfdC.pdb","3sfdD.pdb"]
+        self.fn_pdbs = ["3sfdA.pdb", "3sfdB.pdb", "3sfdC.pdb", "3sfdD.pdb"]
         # Some of the restraints (e.g., excluded volume), use a coarse
         # representation of the components of the assembly. This value is
         # the number of residues included in a bead of the coarse
@@ -104,12 +113,12 @@ class Experiment (object):
         # selection of the anchored component if you want. The only condition
         # is that the anchor can not move relative to other components.
         # The program will crash otherwise.
-        self.anchor = [False,False,False,False]
+        self.anchor = [False, False, False, False]
         # This option means that the coordinates of a component are fixed.
         # It makes sense when using DOMINO. It keeps a component in its
         # actual position, ignoring all the possible positions obtained using
         # the Monte Carlo modelings.
-        self.fixed =[ False,False,False,False]
+        self.fixed = [False, False, False, False]
 
         # Pair score restraint. This restraint indicates that 2 components of
         # the complex should be together. The order of the parameters for each
@@ -131,18 +140,18 @@ class Experiment (object):
         # Gaussian function of standard deviation stddev.
 
         # component1,component2,name,distance,weight,pairs,stddev
-        self.pair_score_restraints =[ ["3sfdB","3sfdA","B_A",0,1,1,3.],
-                                      ["3sfdB","3sfdC","B_C",0,1,1,3.],
-                                      ["3sfdB","3sfdD","B_D",0,1,1,3.],
-                                      ["3sfdD","3sfdC","D_C",0,1,1,3.]
+        self.pair_score_restraints = [["3sfdB", "3sfdA", "B_A", 0, 1, 1, 3.],
+                                      ["3sfdB", "3sfdC", "B_C", 0, 1, 1, 3.],
+                                      ["3sfdB", "3sfdD", "B_D", 0, 1, 1, 3.],
+                                      ["3sfdD", "3sfdC", "D_C", 0, 1, 1, 3.]
 
-                                    ]
+                                      ]
 
         # Excluded volume restraint. Restraint preventing the components from
         # interpenetrating. This restraints sets an all agains all excluded
         # volument restraint. The meaning of the parameters is the same as above
         #distance, weight,pairs,stddev
-        self.pairs_excluded_restraint = [0,1,0.1,2]
+        self.pairs_excluded_restraint = [0, 1, 0.1, 2]
 
         # Geometric complementarity restraint:
         # the parameters are the ids of the 2 components, the name of the restraint
@@ -158,11 +167,22 @@ class Experiment (object):
         # for no apparent reason, and seems to be structure specific. One of the first
         # to do in this case is to remove this restraints.
         # the weight parameter is the weight for the restraint.
-        #component1, component2, max distance,max penetration,weight.
-        self.complementarity_restraints = [ [ "3sfdB","3sfdA","cB_A",30,15,0.0001],
-                                            [ "3sfdB","3sfdC","cB_C",30,15,0.0001],
-                                            [ "3sfdB","3sfdD","cB_D",30,15,0.0001],
-                                          ]
+        # component1, component2, max distance,max penetration,weight.
+        self.complementarity_restraints = [
+            ["3sfdB", "3sfdA", "cB_A", 30, 15, 0.0001],
+            ["3sfdB",
+             "3sfdC",
+             "cB_C",
+             30,
+             15,
+             0.0001],
+            ["3sfdB",
+             "3sfdD",
+             "cB_D",
+             30,
+             15,
+             0.0001],
+        ]
 
         # Em2DRestraint. Restraint measuring the similarity between a model and the
         # EM class averages. The parameters are:
@@ -176,8 +196,8 @@ class Experiment (object):
         # and the maximum score tolerated for the restraint. If the value for the
         # maximum score. 1000 is used here because the maximum value for the em2d score
         # is 1 and the weight of the restraint is 1000.
-        self.em2d_restraints = [ ["em2d",  "em_images/images.sel", 1.5,5,20,1000,1000 ]
-                                 ]
+        self.em2d_restraints = [["em2d", "em_images/images.sel", 1.5, 5, 20, 1000, 1000]
+                                ]
 
         # Cross-linking restraints. The parameters
         # the ids, chains and residue number of the subunits implied in the restraint
@@ -188,24 +208,73 @@ class Experiment (object):
         # You can add a last parameter to the list, the maximum value of the scoring function
         # that you want to accept. It is only used during the DOMINO optimization
         # component1,chain1,residue1, component2, chain2, residue2, distance,weight, stddev, max_score
-        self.xlink_restraints =  [ ["3sfdB","B",23,"3sfdA","A",456,30,100,2],
-                                   ["3sfdB","B",241,"3sfdC","C",112,30,100,2],
-                                   ["3sfdB","B",205,"3sfdD","D",37,30,100,2],
-                                   ["3sfdB","B",177,"3sfdD","D",99,30,100,2],
-                                   ["3sfdC","C",95,"3sfdD","D",132,30,100,2],
-                                   ["3sfdC","C",9,"3sfdD","D",37,30,100,2],
-                                   ["3sfdC","C",78,"3sfdD","D",128,30,100,2],
-                                    ]
+        self.xlink_restraints = [
+            ["3sfdB", "B", 23, "3sfdA", "A", 456, 30, 100, 2],
+            ["3sfdB",
+             "B",
+             241,
+             "3sfdC",
+             "C",
+             112,
+             30,
+             100,
+             2],
+            ["3sfdB",
+             "B",
+             205,
+             "3sfdD",
+             "D",
+             37,
+             30,
+             100,
+             2],
+            ["3sfdB",
+             "B",
+             177,
+             "3sfdD",
+             "D",
+             99,
+             30,
+             100,
+             2],
+            ["3sfdC",
+             "C",
+             95,
+             "3sfdD",
+             "D",
+             132,
+             30,
+             100,
+             2],
+            ["3sfdC",
+             "C",
+             9,
+             "3sfdD",
+             "D",
+             37,
+             30,
+             100,
+             2],
+            ["3sfdC",
+             "C",
+             78,
+             "3sfdD",
+             "D",
+             128,
+             30,
+             100,
+             2],
+        ]
         # set the value to False of this parameter if you don't have the HEXDOCK docking program.
         # self.have_hexdock = False
 
         #
-        self.dock_transforms =  [
-                ["3sfdB","3sfdA","relative_positions_3sfdB-3sfdA.txt"],
-                ["3sfdB","3sfdC","relative_positions_3sfdB-3sfdC.txt"],
-                ["3sfdB","3sfdD","relative_positions_3sfdB-3sfdD.txt"],
-                ["3sfdD","3sfdC","relative_positions_3sfdD-3sfdC.txt"],
-                                 ]
+        self.dock_transforms = [
+            ["3sfdB", "3sfdA", "relative_positions_3sfdB-3sfdA.txt"],
+            ["3sfdB", "3sfdC", "relative_positions_3sfdB-3sfdC.txt"],
+            ["3sfdB", "3sfdD", "relative_positions_3sfdB-3sfdD.txt"],
+            ["3sfdD", "3sfdC", "relative_positions_3sfdD-3sfdC.txt"],
+        ]
 
         self.sampling_positions = DominoSamplingPositions()
 

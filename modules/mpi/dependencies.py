@@ -1,3 +1,3 @@
-required_modules='base'
-required_dependencies='MPI'
-optional_dependencies=''
+required_modules = 'base'
+required_dependencies = 'MPI'
+optional_dependencies = ''

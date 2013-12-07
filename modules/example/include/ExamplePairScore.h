@@ -30,10 +30,11 @@ class IMPEXAMPLEEXPORT ExamplePairScore : public PairScore {
   virtual double evaluate_index(kernel::Model *m,
                                 const kernel::ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m, const kernel::ParticleIndexes &pis)
-      const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_PAIR_SCORE_METHODS(ExamplePairScore);
-  IMP_OBJECT_METHODS(ExamplePairScore);;
+  IMP_OBJECT_METHODS(ExamplePairScore);
+  ;
 };
 
 IMP_OBJECTS(ExamplePairScore, ExamplePairScores);

@@ -21,20 +21,21 @@ IMPEM_BEGIN_NAMESPACE
     They should never be stored, only created immediately and passed to
     the read or write function.
  */
-class IMPEMEXPORT MapReaderWriter : public IMP::base::Object
-{
-public:
-  MapReaderWriter(): base::Object("MapReaderWriter%1%"){}
+class IMPEMEXPORT MapReaderWriter : public IMP::base::Object {
+ public:
+  MapReaderWriter() : base::Object("MapReaderWriter%1%") {}
 #if !defined(DOXYGEN) && !defined(SWIG)
   // since swig can't see these methods, it wants to create a wrapper
   // for the class
   virtual void read(const char *filename, float **data, DensityHeader &) {
-    IMP_UNUSED(filename); IMP_UNUSED(data);
+    IMP_UNUSED(filename);
+    IMP_UNUSED(data);
     IMP_FAILURE("Don't use the base class");
-};
+  };
   virtual void write(const char *filename, const float *data,
                      const DensityHeader &) {
-    IMP_UNUSED(filename); IMP_UNUSED(data);
+    IMP_UNUSED(filename);
+    IMP_UNUSED(data);
     IMP_FAILURE("Don't use the base class");
   };
 #endif
@@ -44,4 +45,4 @@ public:
 
 IMPEM_END_NAMESPACE
 
-#endif  /* IMPEM_MAP_READER_WRITER_H */
+#endif /* IMPEM_MAP_READER_WRITER_H */

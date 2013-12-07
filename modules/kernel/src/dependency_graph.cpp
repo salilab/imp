@@ -365,7 +365,7 @@ RestraintsTemp do_get_dependent_restraints(kernel::ModelObject *mo) {
     ret.push_back(r);
   }
   IMP_FOREACH(kernel::ModelObject * cur,
-                mo->get_model()->get_dependency_graph_outputs(mo)) {
+              mo->get_model()->get_dependency_graph_outputs(mo)) {
     ret += do_get_dependent_restraints(cur);
   }
   return ret;

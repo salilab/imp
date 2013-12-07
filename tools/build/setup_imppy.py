@@ -13,6 +13,7 @@ import stat
 import glob
 import subprocess
 
+
 def get_python_pathsep(python):
     """Get the separator used for PYTHONPATH"""
     if python == "python":
@@ -25,9 +26,10 @@ def get_python_pathsep(python):
         pathsep = p.stdout.read().rstrip('\r\n')
         ret = p.wait()
         if ret != 0:
-            raise OSError("subprocess failed with code %d: %s" \
+            raise OSError("subprocess failed with code %d: %s"
                           % (ret, str(args)))
         return pathsep
+
 
 class FileGenerator(object):
     body = ["@LDPATH@", "", "@PYTHONPATH@", "",
@@ -61,55 +63,57 @@ class FileGenerator(object):
         if self.options.suffix:
             modbin += [os.path.join(x, self.options.suffix) for x in modbin]
         return modbin + [self.get_abs_binary_path("bin")] \
-               + self.native_paths(self.options.path, True)
+            + self.native_paths(self.options.path, True)
 
     def write_file(self):
         pypathsep = get_python_pathsep(self.options.python)
-        outfile= self.options.output
-        pythonpath=self.native_paths(self.options.python_path, True)
-        ldpath=self.native_paths(self.options.ld_path)
-        precommand=self.options.precommand
+        outfile = self.options.output
+        pythonpath = self.native_paths(self.options.python_path, True)
+        ldpath = self.native_paths(self.options.ld_path)
+        precommand = self.options.precommand
         path = self.get_path()
-        externdata=self.native_paths(self.options.external_data)
+        externdata = self.native_paths(self.options.external_data)
 
-        libdir= self.get_abs_binary_path("lib")
-        impdir= os.path.join(libdir, "IMP")
-        bindir= self.get_abs_binary_path("bin")
-        datadir= os.path.abspath("data")
-        exampledir=  os.path.abspath(os.path.join("doc", "examples"))
-        tmpdir= os.path.abspath("tmp")
+        libdir = self.get_abs_binary_path("lib")
+        impdir = os.path.join(libdir, "IMP")
+        bindir = self.get_abs_binary_path("bin")
+        datadir = os.path.abspath("data")
+        exampledir = os.path.abspath(os.path.join("doc", "examples"))
+        tmpdir = os.path.abspath("tmp")
 
         if platform.system() == 'Linux':
-            varname= "LD_LIBRARY_PATH"
+            varname = "LD_LIBRARY_PATH"
         elif platform.system() == 'Darwin':
-            varname= "DYLD_LIBRARY_PATH"
+            varname = "DYLD_LIBRARY_PATH"
         else:
-            varname=None
+            varname = None
 
-        lines={"@LDPATH@":(varname, os.pathsep.join([libdir]+ldpath),
-                           True, True),
-               "@PYTHONPATH@":("PYTHONPATH",
-                               pypathsep.join([libdir]+pythonpath), True, True),
-               "@IMP_BIN_DIR@":("IMP_BIN_DIR", bindir, True, False),
-               "@PATH@":("PATH", os.pathsep.join([bindir]+path), True, True),
-               "@PRECOMMAND@":("precommand", precommand, False, False),
-               "@IMP_DATA@":("IMP_DATA", ":".join([datadir] + externdata),
-                             True, False),
-               "@IMP_EXAMPLE_DATA@":("IMP_EXAMPLE_DATA",
-                                     os.pathsep.join([exampledir]),
-                                     True, False),
-               "@TMPDIR@":("IMP_TMP_DIR", tmpdir, True, False)}
-        if self.options.wine_hack=="yes":
+        lines = {"@LDPATH@": (varname, os.pathsep.join([libdir] + ldpath),
+                              True, True),
+                 "@PYTHONPATH@": ("PYTHONPATH",
+                                  pypathsep.join(
+                                      [libdir] + pythonpath), True, True),
+                 "@IMP_BIN_DIR@": ("IMP_BIN_DIR", bindir, True, False),
+                 "@PATH@":
+                 ("PATH", os.pathsep.join([bindir] + path), True, True),
+                 "@PRECOMMAND@": ("precommand", precommand, False, False),
+                 "@IMP_DATA@": ("IMP_DATA", ":".join([datadir] + externdata),
+                                True, False),
+                 "@IMP_EXAMPLE_DATA@": ("IMP_EXAMPLE_DATA",
+                                        os.pathsep.join([exampledir]),
+                                        True, False),
+                 "@TMPDIR@": ("IMP_TMP_DIR", tmpdir, True, False)}
+        if self.options.wine_hack == "yes":
             lines['@LDPATH@'] = ('IMP_LD_PATH', os.pathsep.join(ldpath),
                                  True, False)
 
-        contents=[]
+        contents = []
 
         for line in self.template:
 
-            if lines.has_key(line):
-                val= lines[line]
-                if val[0] and len(val[1])>0:
+            if line in lines:
+                val = lines[line]
+                if val[0] and len(val[1]) > 0:
                     # ick
                     if self.options.propagate == "no" or not val[3]:
                         contents.extend(self.set_variable(val[0], val[1],
@@ -120,7 +124,7 @@ class FileGenerator(object):
                         else:
                             sep = os.pathsep
                         contents.extend(self.set_variable_propagate(
-                                             val[0], val[1], val[2], sep))
+                            val[0], val[1], val[2], sep))
             else:
                 contents.append(line)
         tools.rewrite(outfile, "\n".join(contents))
@@ -129,8 +133,8 @@ class FileGenerator(object):
 
 class ShellScriptFileGenerator(FileGenerator):
     template = ["#!/usr/bin/env sh", "", ""] + FileGenerator.body \
-               + ["", "", "mkdir -p ${IMP_TMP_DIR}", "",
-                  "exec ${precommand} \"$@\""]
+        + ["", "", "mkdir -p ${IMP_TMP_DIR}", "",
+           "exec ${precommand} \"$@\""]
 
     def _internal_set(self, setstr, varname, export):
         if export:
@@ -139,16 +143,19 @@ class ShellScriptFileGenerator(FileGenerator):
             return [setstr]
 
     def set_variable(self, varname, value, export):
-        return self._internal_set(varname+'="'+value+'"', varname, export)
+        return (
+            self._internal_set(varname + '="' + value + '"', varname, export)
+        )
 
     def set_variable_propagate(self, varname, value, export, sep):
-        return self._internal_set(varname+'="'+value+'%s$%s"' % (sep, varname),
-                                  varname, export)
+        return self._internal_set(
+            varname + '="' + value + '%s$%s"' % (sep, varname),
+            varname, export)
 
 
 class BatchFileGenerator(FileGenerator):
     template = [x for x in FileGenerator.body if not x.startswith('#')] \
-               + ["", 'mkdir "%IMP_TMP_DIR%"']
+        + ["", 'mkdir "%IMP_TMP_DIR%"']
 
     def set_variable(self, varname, value, export):
         return ['set %s=%s' % (varname, value)]
@@ -159,7 +166,7 @@ class BatchFileGenerator(FileGenerator):
     def get_path(self):
         # Windows looks for libraries in PATH, not LD_LIBRARY_PATH
         return FileGenerator.get_path(self) \
-               + self.native_paths(self.options.ld_path, True)
+            + self.native_paths(self.options.ld_path, True)
 
 
 parser = OptionParser()
@@ -183,6 +190,7 @@ parser.add_option("-o", "--output", dest="output", default="imppy.sh",
                   help="Name of the file to produce.")
 parser.add_option("--suffix", default="",
                   help="Subdirectory to suffix to binary directories")
+
 
 def main():
     (options, args) = parser.parse_args()

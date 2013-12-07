@@ -14,7 +14,7 @@
 #include <map>
 
 class ResidueContent {
-public:
+ public:
   /* read residue content file in the following format:
   ALA 3
   TRP 5
@@ -46,7 +46,8 @@ public:
   int get_total_counter2() const;
 
   friend std::ostream& operator<<(std::ostream& q, const ResidueContent& rc);
-private:
+
+ private:
   std::map<IMP::atom::ResidueType, int> residue_content_;
 };
 

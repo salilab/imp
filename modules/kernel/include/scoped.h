@@ -34,18 +34,18 @@ class ScopedAddCacheAttribute : public base::RAII {
 
  public:
   IMP_RAII(ScopedAddCacheAttribute, (Particle* p, Key key, const Value& value),
-           { pi_ = base::get_invalid_index<ParticleIndexTag>(); },
-           {
-             m_ = p->get_model();
-             pi_ = p->get_index();
-             key_ = key;
-             m_->add_cache_attribute(key_, pi_, value);
-           },
-           {
-             if (pi_ != base::get_invalid_index<ParticleIndexTag>()) {
-               m_->remove_attribute(key_, pi_);
-             }
-           }, );
+  { pi_ = base::get_invalid_index<ParticleIndexTag>(); },
+  {
+    m_ = p->get_model();
+    pi_ = p->get_index();
+    key_ = key;
+    m_->add_cache_attribute(key_, pi_, value);
+  },
+  {
+    if (pi_ != base::get_invalid_index<ParticleIndexTag>()) {
+      m_->remove_attribute(key_, pi_);
+    }
+  }, );
 };
 
 /** Set an attribute to a given value and restore the old
@@ -60,19 +60,19 @@ class ScopedSetAttribute : public base::RAII {
 
  public:
   IMP_RAII(ScopedSetAttribute, (Particle* p, Key key, const Value& value),
-           { pi_ = base::get_invalid_index<ParticleIndexTag>(); },
-           {
-             m_ = p->get_model();
-             pi_ = p->get_index();
-             key_ = key;
-             old_ = m_->get_attribute(key_, pi_);
-             m_->set_attribute(key_, pi_, value);
-           },
-           {
-             if (pi_ != base::get_invalid_index<ParticleIndexTag>()) {
-               m_->set_attribute(key_, pi_, old_);
-             }
-           }, );
+  { pi_ = base::get_invalid_index<ParticleIndexTag>(); },
+  {
+    m_ = p->get_model();
+    pi_ = p->get_index();
+    key_ = key;
+    old_ = m_->get_attribute(key_, pi_);
+    m_->set_attribute(key_, pi_, value);
+  },
+  {
+    if (pi_ != base::get_invalid_index<ParticleIndexTag>()) {
+      m_->set_attribute(key_, pi_, old_);
+    }
+  }, );
 };
 
 typedef ScopedSetAttribute<FloatKey, Float> ScopedSetFloatAttribute;

@@ -302,8 +302,8 @@ class IMPATOMEXPORT CHARMMResidueTopologyBase : public IMP::base::Object {
   void add_internal_coordinate(const CHARMMInternalCoordinate &ic) {
     internal_coordinates_.push_back(ic);
   }
-  const CHARMMInternalCoordinate &get_internal_coordinate(
-      unsigned int index) const {
+  const CHARMMInternalCoordinate &get_internal_coordinate(unsigned int index)
+      const {
     return internal_coordinates_[index];
   }
 
@@ -423,7 +423,6 @@ class IMPATOMEXPORT CHARMMResidueTopology : public CHARMMIdealResidueTopology {
   bool patched_;
 
  public:
-
   //! Create an empty topology, containing no atoms or bonds.
   CHARMMResidueTopology(ResidueType type)
       : CHARMMIdealResidueTopology(type), patched_(false) {}

@@ -30,14 +30,12 @@ void get_atom_2_residue_map(const IMP::kernel::Particles& atom_particles,
                             const IMP::kernel::Particles& residue_particles,
                             std::vector<int>& atom_2_residue_map);
 
-IMP::algebra::Vector3D get_ca_coordinate
-(const IMP::kernel::Particles& atom_particles,
- int residue_index, char chain_id);
+IMP::algebra::Vector3D get_ca_coordinate(
+    const IMP::kernel::Particles& atom_particles, int residue_index,
+    char chain_id);
 
-void
-get_residue_solvent_accessibility
-(const IMP::kernel::Particles& residue_particles,
- IMP::Floats& residue_solvent_accessibility);
-
+void get_residue_solvent_accessibility(
+    const IMP::kernel::Particles& residue_particles,
+    IMP::Floats& residue_solvent_accessibility);
 
 #endif /* IMP_HELPERS_H */

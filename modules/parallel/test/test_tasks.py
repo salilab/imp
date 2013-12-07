@@ -5,7 +5,9 @@ import util
 import sys
 import tasks
 
+
 class Tests(IMP.test.TestCase):
+
     """Test tasks in parallel jobs"""
 
     def test_pass_exceptions(self):
@@ -31,7 +33,8 @@ class Tests(IMP.test.TestCase):
     def test_floats(self):
         """Check that NaN and Inf floats are pickled correctly"""
         if sys.platform in ('irix6', 'osf1V5'):
-            self.skipTest("Cannot reliably handle NaN and Inf on Irix or Alpha")
+            self.skipTest(
+                "Cannot reliably handle NaN and Inf on Irix or Alpha")
 
         m = util.Manager(output='floats%d.out')
         m.add_slave(IMP.parallel.LocalSlave())

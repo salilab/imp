@@ -174,8 +174,7 @@ const Vector3D Rotation3D::get_derivative(const Vector3D &o,
                       t73 - 2 * t65 * v_[3]);
     default:
       IMP_THROW("Invalid derivative component", base::IndexException);
-  }
-  ;
+  };
   return Vector3D(0, 0, 0);
 }
 

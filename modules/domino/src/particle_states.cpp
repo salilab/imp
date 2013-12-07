@@ -86,8 +86,8 @@ algebra::VectorKD RigidBodyStates::get_embedding(unsigned int i) const {
   algebra::Vector6D v = get_as_vector(states_[i], scale_);
   return algebra::VectorKD(v.coordinates_begin(), v.coordinates_end());
 }
-unsigned int RigidBodyStates::get_nearest_state(
-    const algebra::VectorKD &v) const {
+unsigned int RigidBodyStates::get_nearest_state(const algebra::VectorKD &v)
+    const {
   return nn_->get_nearest_neighbors(v, 1)[0];
 }
 

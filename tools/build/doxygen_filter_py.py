@@ -21,6 +21,7 @@ except ImportError:
     # Fail gracefully on older Pythons (ast needs Python 2.6)
     sys.exit(0)
 
+
 def format_value(val):
     """Get a string representation of an ast node."""
     if isinstance(val, ast.Num):
@@ -45,6 +46,7 @@ def format_value(val):
         return format_value(val.func) + '(' + ", ".join(args) + ')'
     raise ValueError("Do not know how to format %s" % str(val))
 
+
 def get_class_signature(c):
     """Get a class signature, as a string"""
     bases = [format_value(b) for b in c.bases]
@@ -53,6 +55,7 @@ def get_class_signature(c):
     else:
         return "class " + c.name + '(' + ", ".join(bases) + "):"
 
+
 def get_function_signature(m):
     """Get a function signature, as a string"""
     sig = "def " + m.name + '('
@@ -60,6 +63,7 @@ def get_function_signature(m):
     off = len(args) - len(m.args.defaults)
     for i, default in enumerate(m.args.defaults):
         args[off + i][1] = default
+
     def format_arg(arg):
         sig = arg[0].id
         if arg[1]:
@@ -72,6 +76,7 @@ def get_function_signature(m):
     if m.args.kwarg:
         sig += ", **" + m.args.kwarg
     return sig + '):'
+
 
 def handle_func(f):
     # Exclude internal functions
@@ -89,6 +94,7 @@ def handle_func(f):
                 return
     return f
 
+
 def get_dump_docstring(node, add_lines=[]):
     lines = []
     doc = ast.get_docstring(node)
@@ -99,11 +105,13 @@ def get_dump_docstring(node, add_lines=[]):
             prefix = "#  "
     return lines
 
+
 def dump_function(func, indent, printer):
     d = get_dump_docstring(func)
     printer.output_lines(indent, d + [get_function_signature(func)],
                          func.lineno)
     printer.output_line(indent + 4, "pass")
+
 
 def dump_class(cls, meths, indent, printer):
     if cls.swig:
@@ -116,6 +124,7 @@ def dump_class(cls, meths, indent, printer):
         printer.output_line(indent + 4, "pass")
     for m in meths:
         dump_function(m, indent + 4, printer)
+
 
 def handle_class(c, indent, printer):
     if c.name.startswith('_'):
@@ -135,7 +144,9 @@ def handle_class(c, indent, printer):
         return
     dump_class(c, meths, indent, printer)
 
+
 class OutputPrinter(object):
+
     def __init__(self):
         # The number of the next line to be written (1-based)
         self.lineno = 1

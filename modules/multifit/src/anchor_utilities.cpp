@@ -18,22 +18,18 @@
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 void get_anchors_for_density(em::DensityMap *dmap, int number_of_means,
-                             float density_threshold,
-                             std::string pdb_filename,
-                             std::string cmm_filename,
-                             std::string seg_filename,
-                             std::string txt_filename)
-{
+                             float density_threshold, std::string pdb_filename,
+                             std::string cmm_filename, std::string seg_filename,
+                             std::string txt_filename) {
   dmap->set_was_used(true);
-  IMP_NEW(multifit::DensityDataPoints, ddp, (dmap,density_threshold));
+  IMP_NEW(multifit::DensityDataPoints, ddp, (dmap, density_threshold));
   IMP::statistics::internal::VQClustering vq(ddp, number_of_means);
   ddp->set_was_used(true);
   vq.run();
   multifit::DataPointsAssignment assignment(ddp, &vq);
-  multifit::AnchorsData ad(assignment.get_centers(),
-                           *(assignment.get_edges()));
+  multifit::AnchorsData ad(assignment.get_centers(), *(assignment.get_edges()));
   multifit::write_pdb(pdb_filename, assignment);
-  //also write cmm string into a file:
+  // also write cmm string into a file:
   if (cmm_filename != "") {
     multifit::write_cmm(cmm_filename, "anchor_graph", ad);
   }
@@ -49,28 +45,27 @@ void get_anchors_for_density(em::DensityMap *dmap, int number_of_means,
 
 IMPMULTIFITEXPORT
 IntsList get_anchor_indices_matching_secondary_structure(
-                            const AnchorsData &ad,
-                            const atom::SecondaryStructureResidues &match_ssrs,
-                            Float max_rmsd){
+    const AnchorsData &ad, const atom::SecondaryStructureResidues &match_ssrs,
+    Float max_rmsd) {
 
-  atom::SecondaryStructureResidues anchor_ssrs=
-    ad.get_secondary_structure_particles();
-  IMP_USAGE_CHECK(anchor_ssrs.size()==ad.points_.size(),
+  atom::SecondaryStructureResidues anchor_ssrs =
+      ad.get_secondary_structure_particles();
+  IMP_USAGE_CHECK(anchor_ssrs.size() == ad.points_.size(),
                   "Anchors do not have enough SSEs set");
 
-  //double loop unfortunately: for each match_ps check all anchors
+  // double loop unfortunately: for each match_ps check all anchors
   IntsList all_matches;
-  for (atom::SecondaryStructureResidues::const_iterator it_match=
-         match_ssrs.begin();it_match!=match_ssrs.end();++it_match){
+  for (atom::SecondaryStructureResidues::const_iterator it_match =
+           match_ssrs.begin();
+       it_match != match_ssrs.end(); ++it_match) {
     Ints matches;
-    int count=0;
-    for(atom::SecondaryStructureResidues::const_iterator
-          it_anchor=anchor_ssrs.begin();
-        it_anchor!=anchor_ssrs.end();++it_anchor){
-      float match_score=
-        atom::get_secondary_structure_match_score(
-                    *it_anchor,*it_match);
-      if (match_score<max_rmsd) matches.push_back(count);
+    int count = 0;
+    for (atom::SecondaryStructureResidues::const_iterator it_anchor =
+             anchor_ssrs.begin();
+         it_anchor != anchor_ssrs.end(); ++it_anchor) {
+      float match_score =
+          atom::get_secondary_structure_match_score(*it_anchor, *it_match);
+      if (match_score < max_rmsd) matches.push_back(count);
       count++;
     }
     all_matches.push_back(matches);

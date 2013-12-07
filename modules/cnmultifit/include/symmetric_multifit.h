@@ -23,9 +23,9 @@ IMPCNMULTIFIT_BEGIN_NAMESPACE
                             information.
  */
 void IMPCNMULTIFITEXPORT
-do_all_fitting(const std::string param_filename,
-               const std::string chimera_filename = "");
+    do_all_fitting(const std::string param_filename,
+                   const std::string chimera_filename = "");
 
 IMPCNMULTIFIT_END_NAMESPACE
 
-#endif  /* IMPCNMULTIFIT_SYMMETRIC_MULTIFIT_H */
+#endif /* IMPCNMULTIFIT_SYMMETRIC_MULTIFIT_H */

@@ -18,4 +18,4 @@ const double EPS = 1e-16;
 
 IMPEM_END_NAMESPACE
 
-#endif  /* IMPEM_DEF_H */
+#endif /* IMPEM_DEF_H */

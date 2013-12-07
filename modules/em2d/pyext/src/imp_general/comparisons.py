@@ -16,10 +16,12 @@ import itertools
 import logging
 log = logging.getLogger("comparisons")
 
+
 def get_coordinates(hierarchy):
     xyz = [core.XYZ(l) for l in atom.get_leaves(hierarchy)]
     coords = [x.get_coordinates() for x in xyz]
     return coords
+
 
 def get_assembly_placement_score(assembly, native_assembly, align=False):
     """
@@ -31,9 +33,10 @@ def get_assembly_placement_score(assembly, native_assembly, align=False):
     """
 
     distances, angles = get_components_placement_scores(assembly,
-                                                    native_assembly, align)
+                                                        native_assembly, align)
     n = 1. * len(distances)
-    return sum(distances)/n, sum(angles)/n
+    return sum(distances) / n, sum(angles) / n
+
 
 def get_components_placement_scores(assembly, native_assembly, align=False):
     """
@@ -47,8 +50,10 @@ def get_components_placement_scores(assembly, native_assembly, align=False):
                 placement distances of the children. The second list contains the
                 placnement angles
     """
-    model_coords_per_child = [get_coordinates(c) for c in assembly.get_children()]
-    native_coords_per_child = [get_coordinates(c) for c in native_assembly.get_children()]
+    model_coords_per_child = [get_coordinates(c)
+                              for c in assembly.get_children()]
+    native_coords_per_child = [get_coordinates(c)
+                               for c in native_assembly.get_children()]
     if align:
         model_coords = []
         nil = [model_coords.extend(x) for x in model_coords_per_child]
@@ -63,12 +68,12 @@ def get_components_placement_scores(assembly, native_assembly, align=False):
             new_model_coords_per_child.append(coords)
         model_coords_per_child = new_model_coords_per_child
     distances, angles = get_placement_scores_from_coordinates(
-                            native_coords_per_child, model_coords_per_child)
+        native_coords_per_child, model_coords_per_child)
     return distances, angles
 
 
 def get_placement_scores_from_coordinates(model_components_coords,
-                                         native_components_coords):
+                                          native_components_coords):
     """
         Computes the placement score for each of the components
         @param model_components_coords A list with the coordinates for each
@@ -78,10 +83,10 @@ def get_placement_scores_from_coordinates(model_components_coords,
     """
     distances = []
     angles = []
-    for model_coords, native_coords  in zip(
-                        model_components_coords,native_components_coords):
+    for model_coords, native_coords in zip(
+            model_components_coords, native_components_coords):
         distance, angle = get_placement_score_from_coordinates(model_coords,
-                                                                native_coords)
+                                                               native_coords)
         distances.append(distance)
         angles.append(angle)
     return distances, angles
@@ -101,14 +106,14 @@ def get_placement_score_from_coordinates(model_coords, native_coords):
     model_centroid = alg.get_centroid(model_coords)
     translation_vector = native_centroid - model_centroid
     distance = translation_vector.get_magnitude()
-    if(len(model_coords) != len(native_coords) ):
+    if(len(model_coords) != len(native_coords)):
         raise ValueError(
-          "Mismatch in the number of members %d %d " % (
-                                                len(model_coords),
-                                                len(native_coords)) )
+            "Mismatch in the number of members %d %d " % (
+                len(model_coords),
+                len(native_coords)))
     TT = alg.get_transformation_aligning_first_to_second(model_coords,
-                                                            native_coords)
-    P = alg.get_axis_and_angle( TT.get_rotation() )
+                                                         native_coords)
+    P = alg.get_axis_and_angle(TT.get_rotation())
     angle = P.second
     return distance, angle
 
@@ -120,7 +125,7 @@ def get_rmsd(hierarchy1, hierarchy2):
 
 
 def get_ccc(native_assembly, assembly, resolution, voxel_size,
-                            threshold, write_maps=False):
+            threshold, write_maps=False):
     """
         Threshold - threshold used for the map of the native assembly. Pixels
         with values above this threshold in the native map are used for the
@@ -135,13 +140,12 @@ def get_ccc(native_assembly, assembly, resolution, voxel_size,
     #  and the particles of the model
     bb_union = alg.get_union(bb_native, bb_solution)
     # add border of 4 voxels
-    border = 4*voxel_size
+    border = 4 * voxel_size
     bottom = bb_union.get_corner(0)
     bottom += alg.Vector3D(-border, -border, -border)
     top = bb_union.get_corner(1)
     top += alg.Vector3D(border, border, border)
     bb_union = alg.BoundingBox3D(bottom, top)
-
 
     mrw = em.MRCReaderWriter()
     header = em.create_density_header(bb_union, voxel_size)
@@ -164,11 +168,11 @@ def get_ccc(native_assembly, assembly, resolution, voxel_size,
     # base the calculation of the cross_correlation coefficient on the threshold]
     # for the native map, because the threshold for the map of the model changes
     # with each model
-    threshold = 0.25 # threshold AFTER normalization using calcRMS()
+    threshold = 0.25  # threshold AFTER normalization using calcRMS()
     ccc = coarse_cc.cross_correlation_coefficient(map_solution,
-                                                        map_native, threshold)
-    log.debug("cross_correlation_coefficient (based on native_map " \
-                                            "treshold %s) %s", threshold, ccc)
+                                                  map_native, threshold)
+    log.debug("cross_correlation_coefficient (based on native_map "
+              "treshold %s) %s", threshold, ccc)
     return ccc
 
 
@@ -211,7 +215,7 @@ def get_drms_for_backbone(assembly, native_assembly):
         """
         backbone.extend(atoms)
         end_range = begin_range + len(atoms)
-        ranges.append((begin_range, end_range ))
+        ranges.append((begin_range, end_range))
         begin_range = end_range
     log.debug("Ranges %s number of atoms %s", ranges, len(backbone))
     xyzs = [core.XYZ(l) for l in backbone]
@@ -219,18 +223,21 @@ def get_drms_for_backbone(assembly, native_assembly):
     names = [atom.Chain(ch).get_id() for ch in native_chains]
     native_backbone = []
     for h in native_chains:
-        native_backbone.extend( representation.get_backbone(h))
+        native_backbone.extend(representation.get_backbone(h))
     native_xyzs = [core.XYZ(l) for l in native_backbone]
     if len(xyzs) != len(native_xyzs):
         raise ValueError(
             "Cannot compute DRMS for sets of atoms of different size")
     log.debug("Getting rigid bodies rmsd")
     drms = atom.get_rigid_bodies_drms(xyzs, native_xyzs, ranges)
-    if drms < 0 or math.isnan(drms): # or drms > 100:
-        log.debug("len(xyzs) = %s. len(native_xyzs) = %s",len(xyzs), len(native_xyzs))
-        log.debug("drms = %s",drms)
+    if drms < 0 or math.isnan(drms):  # or drms > 100:
+        log.debug(
+            "len(xyzs) = %s. len(native_xyzs) = %s",
+            len(xyzs),
+            len(native_xyzs))
+        log.debug("drms = %s", drms)
         atom.write_pdb(assembly, "drms_model_calphas.pdb")
         atom.write_pdb(native_assembly, "drms_native_calphas.pdb")
-        raise ValueError("There is a problem with the drms. I wrote the pdbs " \
-                "for you: drms_model_calphas.pdb drms_native_calphas.pdb" )
+        raise ValueError("There is a problem with the drms. I wrote the pdbs "
+                         "for you: drms_model_calphas.pdb drms_native_calphas.pdb")
     return drms

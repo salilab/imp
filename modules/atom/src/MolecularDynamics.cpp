@@ -39,8 +39,8 @@ void MolecularDynamics::initialize() {
   vs_[2] = FloatKey("vz");
 }
 
-bool MolecularDynamics::get_is_simulation_particle(
-    kernel::ParticleIndex pi) const {
+bool MolecularDynamics::get_is_simulation_particle(kernel::ParticleIndex pi)
+    const {
   kernel::Particle *p = get_model()->get_particle(pi);
   bool ret = IMP::core::XYZ::get_is_setup(p) &&
              IMP::core::XYZ(p).get_coordinates_are_optimized() &&

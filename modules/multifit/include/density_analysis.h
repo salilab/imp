@@ -21,7 +21,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 
 //! Get a histogram of density values
 IMPMULTIFITEXPORT statistics::Histogram get_density_histogram(
-                   const em::DensityMap *dmap, float threshold,int num_bins);
+    const em::DensityMap *dmap, float threshold, int num_bins);
 
 //! Returns a map containing all density without the background
 /**
@@ -30,9 +30,9 @@ IMPMULTIFITEXPORT statistics::Histogram get_density_histogram(
 \param[in] edge_threshold consider only voxels above this threshold
 \return the segmented map
  */
-IMPMULTIFITEXPORT em::DensityMap* remove_background(em::DensityMap *dmap,
-                                      float threshold,float edge_threshold);
-
+IMPMULTIFITEXPORT em::DensityMap *remove_background(em::DensityMap *dmap,
+                                                    float threshold,
+                                                    float edge_threshold);
 
 //! Return connected components based on density values
 /**
@@ -43,9 +43,8 @@ IMPMULTIFITEXPORT em::DensityMap* remove_background(em::DensityMap *dmap,
    \return List of indexes for each connected component
 */
 IMPMULTIFITEXPORT
-IntsList get_connected_components(
-                                          em::DensityMap *dmap,
-                                          float threshold,float edge_threshold);
+IntsList get_connected_components(em::DensityMap *dmap, float threshold,
+                                  float edge_threshold);
 
 //! Segment a density map using the anchor graph.
 /** All voxels above the threshold are segmented into the given number

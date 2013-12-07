@@ -57,5 +57,4 @@
   virtual bool get_is_simulation_particle(kernel::ParticleIndex p) const; \
                                                                           \
  public:
-
 #endif /* IMPATOM_MACROS_H */

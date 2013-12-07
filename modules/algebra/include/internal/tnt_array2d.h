@@ -38,14 +38,12 @@ template <class T>
 class Array2D {
 
  private:
-
   Array1D<T> data_;
   Array1D<T *> v_;
   int m_;
   int n_;
 
  public:
-
   typedef T value_type;
   Array2D();
   Array2D(int m, int n);

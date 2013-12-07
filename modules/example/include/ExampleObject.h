@@ -46,8 +46,7 @@ class IMPEXAMPLEEXPORT ExampleObject : public base::Object {
 };
 
 typedef base::Vector<base::Pointer<ExampleObject> > ExampleObjects;
-typedef base::Vector<base::WeakPointer<ExampleObject> >
-          ExampleObjectsTemp;
+typedef base::Vector<base::WeakPointer<ExampleObject> > ExampleObjectsTemp;
 
 IMPEXAMPLE_END_NAMESPACE
 

@@ -60,7 +60,6 @@ class ExponentialNumber {
   }
 
  public:
-
   ExponentialNumber() : v_(std::numeric_limits<double>::infinity()) {}
   template <int OEXP>
   ExponentialNumber(ExponentialNumber<OEXP> o) {

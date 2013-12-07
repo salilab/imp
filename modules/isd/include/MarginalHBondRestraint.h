@@ -28,52 +28,43 @@ IMPISD_BEGIN_NAMESPACE
                      {d_i^{-6}(X)}\right)\right)^{-\frac{N}{2}}
     \f]
  */
-class IMPISDEXPORT MarginalHBondRestraint : public kernel::Restraint
-{
+class IMPISDEXPORT MarginalHBondRestraint : public kernel::Restraint {
   PairContainers contribs_;
   std::vector<double> volumes_;
   double logsquares_;
-  void set_logsquares(double logsquares) {logsquares_=logsquares;}
+  void set_logsquares(double logsquares) { logsquares_ = logsquares; }
 
-public:
+ public:
   //! Create the restraint.
   /** kernel::Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
    */
-  MarginalHBondRestraint(kernel::Model *m) :
-      Restraint(m, "MarginalHBondRestraint%1%") {};
-
+  MarginalHBondRestraint(kernel::Model *m)
+      : Restraint(m, "MarginalHBondRestraint%1%") {};
 
   // add a contribution: simple case
-  void add_contribution(kernel::Particle *p1, kernel::Particle *p2, double
-          Iexp);
+  void add_contribution(kernel::Particle *p1, kernel::Particle *p2,
+                        double Iexp);
 
-  //add a contribution: general case
+  // add a contribution: general case
   void add_contribution(PairContainer *pc, double Iexp);
 
-  //return the sum inside the parentheses
-  double get_logsquares() const {return logsquares_;}
+  // return the sum inside the parentheses
+  double get_logsquares() const { return logsquares_; }
 
-  unsigned get_number_of_contributions() const {return volumes_.size();}
+  unsigned get_number_of_contributions() const { return volumes_.size(); }
 
   /* call for probability */
-  double get_probability() const
-  {
-    return exp(-unprotected_evaluate(nullptr));
-  }
-
+  double get_probability() const { return exp(-unprotected_evaluate(nullptr)); }
 
   /** This macro declares the basic needed methods: evaluate and show
    */
-  virtual double
-  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
-     const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(MarginalHBondRestraint);
-
-
 };
 
 IMPISD_END_NAMESPACE
 
-#endif  /* IMPISD_MARGINAL_HBOND_RESTRAINT_H */
+#endif /* IMPISD_MARGINAL_HBOND_RESTRAINT_H */

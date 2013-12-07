@@ -3,7 +3,9 @@ import sys
 import os
 import re
 
+
 class SOAPDockingApplicationTest(IMP.test.ApplicationTestCase):
+
     def test_simple_single_structure_score(self):
         """Simple test of single complex SOAP score application"""
 

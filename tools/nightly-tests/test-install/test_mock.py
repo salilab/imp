@@ -4,6 +4,7 @@ import subprocess
 
 mock_config = os.environ['MOCK_CONFIG']
 
+
 class IMPMockTests(unittest.TestCase):
 
     def test_modules_installed(self):
@@ -58,7 +59,7 @@ class IMPMockTests(unittest.TestCase):
                 'rmf_validate', 'rmf_xml', 'saxs_merge.py', 'saxs_score',
                 'simulate_density_from_pdb.py', 'soap_score',
                 'soap_single_score', 'validate_profile',
-                'view_density_header.py' ]
+                'view_density_header.py']
         # RHEL systems don't include EMageFit; Fedora does
         if mock_config.startswith('fedora'):
             apps.extend(emagefit_apps)
@@ -74,7 +75,7 @@ class IMPMockTests(unittest.TestCase):
             out = p.stdout.read()
             ret = p.wait()
             self.assert_(ret == 1 or ret == 0,
-                         "Return code for %s app is %d, not 0 or 1; " \
+                         "Return code for %s app is %d, not 0 or 1; "
                          "output is %s" % (app, ret, out))
 
 if __name__ == '__main__':

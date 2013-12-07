@@ -83,8 +83,7 @@ inline VectorD<3> get_random_vector_on_unit_sphere() {
 //! returns a random vector on the surface of the sphere s in 3D
 //! with implementation optimized for the 3D case
 inline VectorD<3> get_random_vector_on(const SphereD<3> &s) {
-    return s.get_center() +
-      s.get_radius() * get_random_vector_on_unit_sphere();
+  return s.get_center() + s.get_radius() * get_random_vector_on_unit_sphere();
 }
 
 /*inline VectorD<3> get_random_vector_on(const SphereD<3> &s) {

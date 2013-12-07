@@ -54,8 +54,7 @@ class ClassnamesConstraint :
       after evaluate.
       \param[in] name The object name
    */
-  ClassnamesConstraint(ClassnameModifier *before,
-                       ClassnameModifier *after,
+  ClassnamesConstraint(ClassnameModifier *before, ClassnameModifier *after,
                        ClassnameContainerAdaptor c,
                        std::string name = "ClassnameConstraint %1%")
       : P(before, after, c, name) {}

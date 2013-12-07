@@ -32,7 +32,6 @@ class BoundingBoxD {
   }
 
  public:
-
   //! Create an empty bounding box
   BoundingBoxD() {
     IMP_USAGE_CHECK(D > 0, "The constructor can not be used "

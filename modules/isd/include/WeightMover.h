@@ -21,22 +21,23 @@ IMPISD_BEGIN_NAMESPACE
     size. The probability distribution is uniform over the ball.
     \see MonteCarlo
  */
-class IMPISDEXPORT WeightMover : public core::MonteCarloMover
-{
-public:
+class IMPISDEXPORT WeightMover : public core::MonteCarloMover {
+ public:
   /** Mover for weight decorator
       \param[in] w particle
       \param[in] radius maximum radius of displacement
    */
   WeightMover(kernel::Particle *w, Float radius);
-  void set_radius(Float radius){radius_=radius;}
-  Float get_radius(){return radius_;}
-protected:
+  void set_radius(Float radius) { radius_ = radius; }
+  Float get_radius() { return radius_; }
+
+ protected:
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(WeightMover);
-private:
+
+ private:
   Weight w_;
   algebra::VectorKD oldweights_;
   Float radius_;
@@ -44,4 +45,4 @@ private:
 
 IMPISD_END_NAMESPACE
 
-#endif  /* IMPISD_WEIGHT_MOVER_H */
+#endif /* IMPISD_WEIGHT_MOVER_H */

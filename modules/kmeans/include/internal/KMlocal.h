@@ -31,17 +31,17 @@
 //  basic includes
 //----------------------------------------------------------------------
 #include <IMP/kmeans/kmeans_config.h>
-#include <cmath>                        // math includes (exp, log)
-#include "KMeans.h"                        // kmeans includes
-#include "KMdata.h"                        // data points
-#include "KMfilterCenters.h"                  // centers
-#include "KMterm.h"                        // termination conditions
-#include "KMrand.h"                        // random number generation
+#include <cmath>              // math includes (exp, log)
+#include "KMeans.h"           // kmeans includes
+#include "KMdata.h"           // data points
+#include "KMfilterCenters.h"  // centers
+#include "KMterm.h"           // termination conditions
+#include "KMrand.h"           // random number generation
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 
 class KMlocal;
-typedef KMlocal* KMlocalPtr;                  // generic algorithm pointer
+typedef KMlocal *KMlocalPtr;  // generic algorithm pointer
 
 //------------------------------------------------------------------------
 //  Generic Local Search Overview
@@ -110,73 +110,72 @@ typedef KMlocal* KMlocalPtr;                  // generic algorithm pointer
 //            Maximum number of stages total.
 //------------------------------------------------------------------------
 
-class IMPKMEANSEXPORT KMlocal                          // generic local search
-{
-protected:
+class IMPKMEANSEXPORT KMlocal  // generic local search
+    {
+ protected:
   // fixed quantities
-  int                  nPts;                  // number of points
-  int                  kCtrs;                  // number of centers
-  int                  dim;                  // dimension
-  KMterm            term;                  // termination conditions
-  int                  maxTotStage;            // max total stages (from term)
+  int nPts;         // number of points
+  int kCtrs;        // number of centers
+  int dim;          // dimension
+  KMterm term;      // termination conditions
+  int maxTotStage;  // max total stages (from term)
   // varying quantities
-  int                  stageNo;            // current stage number
-  int                  runInitStage;            // stage at which run started
-  KMfilterCenters      curr;                  // current solution
-  KMfilterCenters      best;                  // saved solution
-protected:                              // utility functions
-  virtual void printStageStats() {            // print stage information
-    if(kmStatLev >= STAGE) {
-      *kmOut << "\t<stage: "      << stageNo
-             << " curr: "            << curr.getAvgDist()
-             << " best: "            << best.getAvgDist()
-             << " >" << std::endl;
+  int stageNo;                      // current stage number
+  int runInitStage;                 // stage at which run started
+  KMfilterCenters curr;             // current solution
+  KMfilterCenters best;             // saved solution
+ protected:                         // utility functions
+  virtual void printStageStats() {  // print stage information
+    if (kmStatLev >= STAGE) {
+      *kmOut << "\t<stage: " << stageNo << " curr: " << curr.getAvgDist()
+             << " best: " << best.getAvgDist() << " >" << std::endl;
     }
   }
-public:
+
+ public:
   // constructor
   KMlocal(const KMfilterCenters &sol, const KMterm &t)
-    : term(t), curr(sol), best(sol) {
-    nPts    = sol.getNPts();
-    kCtrs   = sol.getK();
-    dim     = sol.getDim();
+      : term(t), curr(sol), best(sol) {
+    nPts = sol.getNPts();
+    kCtrs = sol.getK();
+    dim = sol.getDim();
     stageNo = 0;
     maxTotStage = term.getMaxTotStage(kCtrs, nPts);
   }
 
-  virtual ~KMlocal() { }                  // virtual destructor
-  virtual KMfilterCenters execute();            // execute the algorithm
+  virtual ~KMlocal() {}               // virtual destructor
+  virtual KMfilterCenters execute();  // execute the algorithm
 
-  int getTotalStages() const {            // return total no. of stages
+  int getTotalStages() const {  // return total no. of stages
     return stageNo;
   }
 
-protected:                              // overridden by subclasses
-  virtual void reset() {                  // reset everything
+ protected:               // overridden by subclasses
+  virtual void reset() {  // reset everything
     stageNo = 0;
     runInitStage = 0;
-    curr.genRandom();                  // generate random centers
-    curr.getDist();                        // compute initial distortion
+    curr.genRandom();  // generate random centers
+    curr.getDist();    // compute initial distortion
     best = curr;
   }
-  virtual bool isDone() const {            // are we done?
+  virtual bool isDone() const {  // are we done?
     return stageNo >= maxTotStage;
   }
-  virtual void beginRun() {                  // begin of run processing
+  virtual void beginRun() {  // begin of run processing
     runInitStage = stageNo;
   }
-  virtual void beginStage() { }            // start of stage processing
-  virtual KMalg selectMethod() = 0;            // method: LLOYD or SWAP
-  virtual void endStage() {                  // end of stage processing
+  virtual void beginStage() {}       // start of stage processing
+  virtual KMalg selectMethod() = 0;  // method: LLOYD or SWAP
+  virtual void endStage() {          // end of stage processing
     stageNo++;
   }
-  virtual bool isRunDone() {                  // is run done?
+  virtual bool isRunDone() {  // is run done?
     return isDone();
   }
-  virtual void endRun() { }                   // end of run processing
-  virtual void tryAcceptance() {             // test acceptance
-    if(curr.getDist() < best.getDist()) {       // is current distortion lower?
-      best = curr;                  // then best the current
+  virtual void endRun() {}                  // end of run processing
+  virtual void tryAcceptance() {            // test acceptance
+    if (curr.getDist() < best.getDist()) {  // is current distortion lower?
+      best = curr;                          // then best the current
     }
   }
 };
@@ -270,67 +269,66 @@ protected:                              // overridden by subclasses
 //            current run distortion.
 //------------------------------------------------------------------------
 
-class IMPKMEANSEXPORT KMlocalLloyds : public KMlocal
-{
-private:
-  double      initRunDist;                  // initial run distortion
-  bool      isNewPhase;                  // starting new phase
-protected:
-  double accumRDL() {                      // relative RDL for run
+class IMPKMEANSEXPORT KMlocalLloyds : public KMlocal {
+ private:
+  double initRunDist;  // initial run distortion
+  bool isNewPhase;     // starting new phase
+ protected:
+  double accumRDL() {  // relative RDL for run
     return (initRunDist - curr.getDist()) / initRunDist;
   }
-  virtual void printStageStats() {            // print end of stage info
-    if(kmStatLev >= STAGE) {
-      *kmOut << "\t<stage: "      << stageNo
-             << " curr: "            << curr.getAvgDist()
-             << " best: "            << best.getAvgDist()
-             << " accumRDL: "      << accumRDL() * 100 << "%"
+  virtual void printStageStats() {  // print end of stage info
+    if (kmStatLev >= STAGE) {
+      *kmOut << "\t<stage: " << stageNo << " curr: " << curr.getAvgDist()
+             << " best: " << best.getAvgDist()
+             << " accumRDL: " << accumRDL() * 100 << "%"
              << " >" << std::endl;
     }
   }
-  virtual void printRunStats() {            // print end of run info
-    if(kmStatLev >= STAGE) {
+  virtual void printRunStats() {  // print end of run info
+    if (kmStatLev >= STAGE) {
       *kmOut << "    <Generating new random centers>" << std::endl;
     }
   }
-public:
+
+ public:
   // constructor
   KMlocalLloyds(const KMfilterCenters &sol, const KMterm &t)
-    : KMlocal(sol, t) { }
-protected:                              // overridden methods
+      : KMlocal(sol, t) {}
+
+ protected:  // overridden methods
   virtual void reset() {
-    KMlocal::reset();                  // reset base class
-    isNewPhase = false;                  // first phase was started
-    initRunDist = curr.getDist();            // initialize run dist
+    KMlocal::reset();              // reset base class
+    isNewPhase = false;            // first phase was started
+    initRunDist = curr.getDist();  // initialize run dist
     printStageStats();
   }
-  virtual KMalg selectMethod() {            // method = Lloyd's
-    return (isNewPhase ? RANDOM : LLOYD);      // ...unless start of phase
+  virtual KMalg selectMethod() {           // method = Lloyd's
+    return (isNewPhase ? RANDOM : LLOYD);  // ...unless start of phase
   }
-  virtual void endStage() {                  // end of stage processing
-    KMlocal::endStage();                  // base class processing
+  virtual void endStage() {  // end of stage processing
+    KMlocal::endStage();     // base class processing
     // get distortions
-    if(curr.getAvgDist() < best.getAvgDist())
-      best = curr;                  // update if better
+    if (curr.getAvgDist() < best.getAvgDist()) best = curr;  // update if better
     printStageStats();
   }
-  virtual bool isRunDone() {                  // is run done
-    if(KMlocal::isRunDone() ||             // check base conditions
-       stageNo - runInitStage >= term.getMaxRunStage()) {
-      return true;                  // too many stages
-    } else if(isNewPhase) {                 // start of new phase?
-      isNewPhase = false;                  // remove flag
-      initRunDist = curr.getDist();      // initialize run distortion
+  virtual bool isRunDone() {     // is run done
+    if (KMlocal::isRunDone() ||  // check base conditions
+        stageNo - runInitStage >= term.getMaxRunStage()) {
+      return true;                   // too many stages
+    } else if (isNewPhase) {         // start of new phase?
+      isNewPhase = false;            // remove flag
+      initRunDist = curr.getDist();  // initialize run distortion
       return false;                  // run is just starting
-    } else {                            // continue if improvement
+    } else {                         // continue if improvement
       return accumRDL() >= term.getMinAccumRDL();
     }
   }
-  virtual void endRun() {                   // end of run processing
-    if(accumRDL() < term.getMinAccumRDL()) {// unsuccessful run?
-      isNewPhase = true;                  // start a new phase
+  virtual void endRun() {                      // end of run processing
+    if (accumRDL() < term.getMinAccumRDL()) {  // unsuccessful run?
+      isNewPhase = true;                       // start a new phase
     } else {
-      initRunDist = curr.getDist();      // next run distortion
+      initRunDist = curr.getDist();  // next run distortion
     }
     printRunStats();
   }
@@ -369,44 +367,43 @@ protected:                              // overridden methods
 //            restore best centers.
 //------------------------------------------------------------------------
 
-class IMPKMEANSEXPORT KMlocalSwap : public KMlocal
-{
-private:
-  const int      maxSwaps;                  // maximum swaps per run
-  int            swapNo;                        // no. of swaps this run
-public:
+class IMPKMEANSEXPORT KMlocalSwap : public KMlocal {
+ private:
+  const int maxSwaps;  // maximum swaps per run
+  int swapNo;          // no. of swaps this run
+ public:
   // constructor
   KMlocalSwap(const KMfilterCenters &sol, const KMterm &t, int p = 1)
-    : KMlocal(sol, t), maxSwaps(p) {
-  }
-protected:                              // overridden methods
+      : KMlocal(sol, t), maxSwaps(p) {}
+
+ protected:  // overridden methods
   virtual void reset() {
-    KMlocal::reset();                  // reset base class
+    KMlocal::reset();  // reset base class
     printStageStats();
   }
-  virtual void beginRun() {                  // start of run processing
-    KMlocal::beginRun();                  // base class processing
-    swapNo = 0;                        // init number of swaps
+  virtual void beginRun() {  // start of run processing
+    KMlocal::beginRun();     // base class processing
+    swapNo = 0;              // init number of swaps
   }
-  virtual KMalg selectMethod() {            // method = Swap
+  virtual KMalg selectMethod() {  // method = Swap
     return SWAP;
   }
-  virtual void endStage() { }                  // do nothing
-  virtual bool isRunDone() {                   // run is done
-    return  KMlocal::isRunDone() ||            // base class say's done
-            ++swapNo >= maxSwaps;            // or enough swaps done
+  virtual void endStage() {}        // do nothing
+  virtual bool isRunDone() {        // run is done
+    return KMlocal::isRunDone() ||  // base class say's done
+           ++swapNo >= maxSwaps;    // or enough swaps done
   }
 
-  virtual void endRun() {                   // end of run processing
+  virtual void endRun() {  // end of run processing
     curr.getDist();
     stageNo++;
-    printStageStats();                  // print stage info
+    printStageStats();  // print stage info
   }
-  virtual void tryAcceptance() {             // test acceptance
-    if(curr.getDist() < best.getDist()) {       // current distortion lower?
-      best = curr;                        // then save the current
-    } else {                            // current distortion worse
-      curr = best;                        // restore old centers
+  virtual void tryAcceptance() {            // test acceptance
+    if (curr.getDist() < best.getDist()) {  // current distortion lower?
+      best = curr;                          // then save the current
+    } else {                                // current distortion worse
+      curr = best;                          // restore old centers
     }
   }
 };
@@ -592,134 +589,130 @@ protected:                              // overridden methods
 //            solution.
 //------------------------------------------------------------------------
 
-template <typename T>                        // min function
-T kmMin(const T& x, const T& y)
-{
+template <typename T>  // min function
+T kmMin(const T &x, const T &y) {
   return (x < y ? x : y);
 }
 
-template <typename T>                        // max function
-T kmMax(const T& x, const T& y)
-{
+template <typename T>  // max function
+T kmMax(const T &x, const T &y) {
   return (x > y ? x : y);
 }
 
-class IMPKMEANSEXPORT KMlocalHybrid : public KMlocal
-{
-private:
-  double      temperature;                  // temperature used in SA
-  int            initTempRunStage;            // stage when temp run started
-  bool      areSwapping;                  // are we swapping? (or Lloyd's)
-  double      prevDist;                  // distortion from prev stage
-  double      sumTrials;                  // sum of RDL's over trials
-  int            trialCt;                  // trial count
-  KMfilterCenters save;                  // saved solution
-protected:                              // local utilities
-  double accumRDL() {                      // accumulated RDL
-    return (save.getDist() - curr.getDist()) /  save.getDist();
+class IMPKMEANSEXPORT KMlocalHybrid : public KMlocal {
+ private:
+  double temperature;    // temperature used in SA
+  int initTempRunStage;  // stage when temp run started
+  bool areSwapping;      // are we swapping? (or Lloyd's)
+  double prevDist;       // distortion from prev stage
+  double sumTrials;      // sum of RDL's over trials
+  int trialCt;           // trial count
+  KMfilterCenters save;  // saved solution
+ protected:              // local utilities
+  double accumRDL() {    // accumulated RDL
+    return (save.getDist() - curr.getDist()) / save.getDist();
   }
 
-  double consecRDL() {                      // consecutive RDL
+  double consecRDL() {  // consecutive RDL
     return (prevDist - curr.getDist()) / prevDist;
   }
 
-  virtual void printStageStats() {            // print end of stage info
-    if(kmStatLev >= STAGE) {
-      *kmOut << "    <stage: "      << stageNo
-             << " curr: "            << curr.getAvgDist()
-             << " best: "            << best.getAvgDist()
-             << " save: "            << save.getAvgDist()
-             << " consecRDL: "      << consecRDL()
-             << " >" << std::endl;
+  virtual void printStageStats() {  // print end of stage info
+    if (kmStatLev >= STAGE) {
+      *kmOut << "    <stage: " << stageNo << " curr: " << curr.getAvgDist()
+             << " best: " << best.getAvgDist() << " save: " << save.getAvgDist()
+             << " consecRDL: " << consecRDL() << " >" << std::endl;
     }
   }
-  virtual void printRunStats() {            // print end of run info
-    if(kmStatLev >= STAGE) {
+  virtual void printRunStats() {  // print end of run info
+    if (kmStatLev >= STAGE) {
       *kmOut << "    <End of Run>" << std::endl;
     }
   }
-protected:                              // SA utilities
-  int nTrials() {                      // number of trials
+
+ protected:        // SA utilities
+  int nTrials() {  // number of trials
     return kmMax(20, term.getTempRunLength());
   }
 
-  bool simAnnealAccept(double rdl) {            // random accept choice
+  bool simAnnealAccept(double rdl) {  // random accept choice
     double prob;
-    if(--trialCt >= 0) {                   // still in trial phase?
-      sumTrials += fabs(rdl);                  // increment sum of RDLs
-      if(trialCt == 0) {                   // last trial?  get temp
+    if (--trialCt >= 0) {      // still in trial phase?
+      sumTrials += fabs(rdl);  // increment sum of RDLs
+      if (trialCt == 0) {      // last trial?  get temp
         temperature = -sumTrials / (nTrials() * log(term.getInitProbAccept()));
-        initTempRunStage = stageNo;            // start counting stages
+        initTempRunStage = stageNo;  // start counting stages
       }
-      prob = term.getInitProbAccept();      // use initial probability
+      prob = term.getInitProbAccept();  // use initial probability
     } else {                            // use SA probability
       prob = kmMin(term.getInitProbAccept(), exp(rdl / temperature));
     }
     return prob > kmRanUnif();
   }
 
-  void initTempRuns() {                  // initialize for temp runs
+  void initTempRuns() {  // initialize for temp runs
     sumTrials = 0;
     trialCt = nTrials();
-    initTempRunStage = KM_HUGE_INT;            // not counting stages
+    initTempRunStage = KM_HUGE_INT;  // not counting stages
   }
 
-  bool isTempRunDone() {                // end of temperature run?
+  bool isTempRunDone() {  // end of temperature run?
     return stageNo - initTempRunStage >= term.getTempRunLength();
   }
 
   void endTempRun() {                        // process end of temp run
-    temperature *= term.getTempReducFact();      // reduce temperature
+    temperature *= term.getTempReducFact();  // reduce temperature
     initTempRunStage = stageNo;
   }
 
-public:
+ public:
   // constructor
   KMlocalHybrid(const KMfilterCenters &sol, const KMterm &t)
-    : KMlocal(sol, t), save(sol) { }
-protected:                              // overridden methods
+      : KMlocal(sol, t), save(sol) {}
+
+ protected:  // overridden methods
   virtual void reset() {
-    KMlocal::reset();                        // reset base class
-    save = curr;                        // save initial centers
-    areSwapping = true;                  // start with swapping
-    initTempRuns();                        // initialize sim. annealing
+    KMlocal::reset();    // reset base class
+    save = curr;         // save initial centers
+    areSwapping = true;  // start with swapping
+    initTempRuns();      // initialize sim. annealing
     printStageStats();
   }
-  virtual void beginStage() {                  // start of stage processing
-    prevDist = curr.getDist();            // save previous distortion
+  virtual void beginStage() {   // start of stage processing
+    prevDist = curr.getDist();  // save previous distortion
   }
-  virtual KMalg selectMethod() {            // select method
+  virtual KMalg selectMethod() {  // select method
     return (areSwapping ? SWAP : LLOYD);
   }
-  virtual void endStage() {                  // end of stage processing
-    stageNo++;                        // increment stage number
-    curr.getDist();                        // get distortion
+  virtual void endStage() {  // end of stage processing
+    stageNo++;               // increment stage number
+    curr.getDist();          // get distortion
     printStageStats();
   }
-  virtual bool isRunDone() {                   // run is done
-    if(areSwapping) {                   // swapping?
-      if(!simAnnealAccept(consecRDL())) {       // check SA acceptance
-        areSwapping = false;                  // transition to Lloyd's
+  virtual bool isRunDone() {                // run is done
+    if (areSwapping) {                      // swapping?
+      if (!simAnnealAccept(consecRDL())) {  // check SA acceptance
+        areSwapping = false;                // transition to Lloyd's
       }
       return false;
-    } else {                            // doing Lloyd's algorithm
+    } else {                                         // doing Lloyd's algorithm
       return consecRDL() <= term.getMinConsecRDL();  // test for convergence
     }
   }
-  virtual void endRun() {                   // end of run processing
-    if(isTempRunDone()) endTempRun();       // check/process end of temp run
-    areSwapping = true;                  // return to swapping
+  virtual void endRun() {               // end of run processing
+    if (isTempRunDone()) endTempRun();  // check/process end of temp run
+    areSwapping = true;                 // return to swapping
     printRunStats();
   }
-  virtual void tryAcceptance() {             // test acceptance
-    if(accumRDL() > 0) {                   // improvement over saved?
-      save = curr;                        // save this one
-      if(save.getDist() < best.getDist()) {       // new best?
+  virtual void tryAcceptance() {              // test acceptance
+    if (accumRDL() > 0) {                     // improvement over saved?
+      save = curr;                            // save this one
+      if (save.getDist() < best.getDist()) {  // new best?
         best = save;
       }
-    } else if(simAnnealAccept(accumRDL())) {     // SA says save anyway
+    } else if (simAnnealAccept(accumRDL())) {  // SA says save anyway
       save = best;
-    } else {                            // reject, restore old solution
+    } else {  // reject, restore old solution
       curr = save;
     }
   }
@@ -794,65 +787,64 @@ protected:                              // overridden methods
 //            iterations.  Update the overall best if appropriate.
 //------------------------------------------------------------------------
 
-class IMPKMEANSEXPORT KMlocalEZ_Hybrid : public KMlocal
-{
-private:
-  bool      areSwapping;                  // are we swapping? (or Lloyd's)
-  double      prevDist;                  // distortion from prev stage
-protected:                              // local utilities
-  double consecRDL() {                      // consecutive RDL
+class IMPKMEANSEXPORT KMlocalEZ_Hybrid : public KMlocal {
+ private:
+  bool areSwapping;     // are we swapping? (or Lloyd's)
+  double prevDist;      // distortion from prev stage
+ protected:             // local utilities
+  double consecRDL() {  // consecutive RDL
     return (prevDist - curr.getDist()) / prevDist;
   }
 
-  virtual void printStageStats() {            // print end of stage info
-    if(kmStatLev >= STAGE) {
-      *kmOut << "    <stage: "      << stageNo
-             << " curr: "            << curr.getAvgDist()
-             << " best: "            << best.getAvgDist()
-             << " consecRDL: "      << consecRDL()
+  virtual void printStageStats() {  // print end of stage info
+    if (kmStatLev >= STAGE) {
+      *kmOut << "    <stage: " << stageNo << " curr: " << curr.getAvgDist()
+             << " best: " << best.getAvgDist() << " consecRDL: " << consecRDL()
              << " >" << std::endl;
     }
   }
-  virtual void printRunStats() {            // print end of run info
-    if(kmStatLev >= STAGE) {
+  virtual void printRunStats() {  // print end of run info
+    if (kmStatLev >= STAGE) {
       *kmOut << "    <Swapping Centers>" << std::endl;
     }
   }
-public:
+
+ public:
   // constructor
   KMlocalEZ_Hybrid(const KMfilterCenters &sol, const KMterm &t)
-    : KMlocal(sol, t) { }
-protected:                              // overridden methods
+      : KMlocal(sol, t) {}
+
+ protected:  // overridden methods
   virtual void reset() {
-    KMlocal::reset();                        // reset base class
-    areSwapping = true;                  // start with swapping
+    KMlocal::reset();    // reset base class
+    areSwapping = true;  // start with swapping
     printStageStats();
   }
-  virtual void beginStage() {                  // start of stage processing
-    prevDist = curr.getDist();            // save previous distortion
+  virtual void beginStage() {   // start of stage processing
+    prevDist = curr.getDist();  // save previous distortion
   }
-  virtual KMalg selectMethod() {            // select method
+  virtual KMalg selectMethod() {  // select method
     return (areSwapping ? SWAP : LLOYD);
   }
-  virtual void endStage() {                  // end of stage processing
-    stageNo++;                        // increment stage number
-    curr.getDist();                        // get distortion
+  virtual void endStage() {  // end of stage processing
+    stageNo++;               // increment stage number
+    curr.getDist();          // get distortion
     printStageStats();
   }
-  virtual bool isRunDone() {                   // run is done
-    if(areSwapping) {                   // swapping?
-      areSwapping = false;                  // transition to Lloyd's
+  virtual bool isRunDone() {  // run is done
+    if (areSwapping) {        // swapping?
+      areSwapping = false;    // transition to Lloyd's
       return false;
-    } else {                            // doing Lloyd's algorithm
+    } else {                                         // doing Lloyd's algorithm
       return consecRDL() <= term.getMinConsecRDL();  // test for convergence
     }
   }
-  virtual void endRun() {                   // end of run processing
-    areSwapping = true;                  // return to swapping
+  virtual void endRun() {  // end of run processing
+    areSwapping = true;    // return to swapping
     printRunStats();
   }
-  virtual void tryAcceptance() {             // test acceptance
-    if(curr.getDist() < best.getDist()) {       // new best?
+  virtual void tryAcceptance() {            // test acceptance
+    if (curr.getDist() < best.getDist()) {  // new best?
       best = curr;
     }
   }

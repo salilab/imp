@@ -73,7 +73,7 @@ void compute_mst(kernel::Model *m, const kernel::ParticleIndexes &imp_indexes,
 void compute_mst(const SingletonContainer *sc,
                  kernel::ParticleIndexPairs &out) {
   IMP_CONTAINER_ACCESS(SingletonContainer, sc,
-                       { compute_mst(sc->get_model(), imp_indexes, out); });
+  { compute_mst(sc->get_model(), imp_indexes, out); });
 }
 }
 

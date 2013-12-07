@@ -24,7 +24,6 @@ class IMPKERNELEXPORT AttributeOptimizer : public Optimizer {
   AttributeOptimizer(kernel::Model *m, std::string name = "Optimizer %1%");
 
  protected:
-
   /** @name Methods for getting and setting optimized attributes
       Optimizers don't have to go through the particles themselves
       looking for values to optimize unless they care about special

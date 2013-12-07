@@ -4,7 +4,9 @@ import IMP.core
 import IMP.atom
 import IMP.algebra
 
+
 class Tests(IMP.test.TestCase):
+
     """Test the Charged decorator"""
 
     def test_create(self):

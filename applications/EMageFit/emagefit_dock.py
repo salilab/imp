@@ -28,13 +28,12 @@ log = logging.getLogger("emagefit_dock")
 """
 
 
-
 def check_for_hexdock():
     log.debug("Checking for HEXDOCK")
     try:
-        subprocess.Popen(["hex"],stdin=subprocess.PIPE ,
-                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    except OSError, e:
+        subprocess.Popen(["hex"], stdin=subprocess.PIPE,
+                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    except OSError as e:
         if e.errno == errno.ENOENT:
             print "Docking requires the program HEXDOCK."
             print "Make sure that the command hex is available in your path."
@@ -46,7 +45,7 @@ def check_for_hexdock():
 class HexDocking(object):
 
     def __init__(self, ):
-        ##### commands for HEX (the %s are filled when calling self.dock)
+        # commands for HEX (the %s are filled when calling self.dock)
         self.text_base = \
         """
         open_receptor %s
@@ -69,8 +68,8 @@ class HexDocking(object):
         """
 
     def dock(self, fn_receptor, fn_ligand, fn_transforms,
-                                                fn_docked="docked.pdb",
-                                                write_hex_dump=False ):
+             fn_docked="docked.pdb",
+             write_hex_dump=False):
         """
             Docks the ligand into the receptor using HEX.
             @param fn_receptor PDB of the receptor
@@ -82,15 +81,15 @@ class HexDocking(object):
             @param write_hex_dump For debugging. If True, the output of HEX
                         is written to a file with .dump extension
         """
-        log.info("===> Docking %s into %s with HEX",fn_ligand, fn_receptor)
+        log.info("===> Docking %s into %s with HEX", fn_ligand, fn_receptor)
         hex_commands = self.text_base % (fn_receptor, fn_ligand,
-                                        fn_transforms, fn_docked)
-        pid = subprocess.Popen(["hex"],stdin=subprocess.PIPE ,
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                         fn_transforms, fn_docked)
+        pid = subprocess.Popen(["hex"], stdin=subprocess.PIPE,
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         # send the commands to hex with the PIPE file object for stdin
         pid.stdin.write(hex_commands)
         out, err = pid.communicate()
-        if err != "": # there is some error output
+        if err != "":  # there is some error output
             fn = "hexdock_errors.txt"
             f = open(fn, "w")
             f.write(err)
@@ -110,13 +109,14 @@ def parse_hex_transform(row):
         @param row A list containing a splitted line from the HEX output file
         NOTE: An HEX rotation is the inverse of the IMP convention
     """
-    euler = map(float,row[8:11])
+    euler = map(float, row[8:11])
     xyz = map(float, row[5:8])
     euler = [-euler[0], -euler[1], -euler[2]]
     R = alg.get_rotation_from_fixed_zyz(*euler)
     R = R.get_inverse()
     t = alg.Vector3D(*xyz)
     return alg.Transformation3D(R, t)
+
 
 def read_hex_transforms(fn_transforms):
     """
@@ -126,6 +126,7 @@ def read_hex_transforms(fn_transforms):
     """
     rows = csv_related.read_csv(fn_transforms, delimiter=" ")
     return [parse_hex_transform(row) for row in rows]
+
 
 def get_xlinks_are_good(coords_rec, coords_lig, distances):
     """
@@ -139,14 +140,15 @@ def get_xlinks_are_good(coords_rec, coords_lig, distances):
         @return True if all the distances between the pairs of coordinates are
                 below the thresholds contained in the argument "distances""
     """
-    for vi,vj,d in zip(coords_rec, coords_lig, distances):
+    for vi, vj, d in zip(coords_rec, coords_lig, distances):
         if alg.get_distance(vi, vj) > d:
             return False
     return True
 
+
 def filter_docking_results(h_receptor, h_ligand,
-                        list_xlinks, fn_transforms,
-                        fn_filtered, max_number=False):
+                           list_xlinks, fn_transforms,
+                           fn_filtered, max_number=False):
     """
         Check if the set of transforms proposed by docking with HEX is
         compatible with the distances between aminoacids from crosslinking
@@ -168,16 +170,16 @@ def filter_docking_results(h_receptor, h_ligand,
     for xl in list_xlinks:
         log.info("%s", xl.show())
         coords_rec.append(representation.get_residue_coordinates(
-                    h_receptor, xl.first_chain, xl.first_residue))
+            h_receptor, xl.first_chain, xl.first_residue))
         coords_lig.append(representation.get_residue_coordinates(
-                    h_ligand, xl.second_chain, xl.second_residue))
-        threshold_distances.append(xl.distance);
+            h_ligand, xl.second_chain, xl.second_residue))
+        threshold_distances.append(xl.distance)
     rows = csv_related.read_csv(fn_transforms, delimiter=" ",
-                                                        max_number=max_number)
+                                max_number=max_number)
     good = []
     for r in rows:
         T = parse_hex_transform(r)
-        transformed = [T.get_transformed(c) for c in coords_lig ]
+        transformed = [T.get_transformed(c) for c in coords_lig]
         if get_xlinks_are_good(coords_rec, transformed, threshold_distances):
             good.append(r)
 
@@ -185,9 +187,9 @@ def filter_docking_results(h_receptor, h_ligand,
     # bet is to keep all of them and trust the randomization procedure.
     f_output = open(fn_filtered, "w")
     w = csv.writer(f_output, delimiter=" ")
-    if len(good) ==0:
-        log.warning("No docking solution satisfies all the x-linking " \
-                                            "restraints. Keeping all of them")
+    if len(good) == 0:
+        log.warning("No docking solution satisfies all the x-linking "
+                    "restraints. Keeping all of them")
         w.writerows(rows)
     else:
         w.writerows(good)
@@ -213,6 +215,7 @@ def get_internal_transform(Thex, rb_receptor, rb_ligand):
     Ti = alg.compose(Trec.get_inverse(), Tdock)
     return Ti
 
+
 def get_docked_reference_frames(hex_transforms, rb_ligand):
     """
         @param hex_transforms A list of HEX transformations
@@ -236,15 +239,15 @@ if __name__ == "__main__":
 
 fn_receptor and fn_ligand are the filenames of the PDB files for the
 receptor and ligand, respectively.""",
-                      description="Functions related to docking with HEX",
-                      imp_module=IMP.em2d)
+        description="Functions related to docking with HEX",
+        imp_module=IMP.em2d)
     parser.add_option("--dock",
                       action="store_true", dest="dock", default=False,
                       help="Dock the ligand into the receptor")
     parser.add_option("--hex", dest="fn_transforms", default=False,
                       help="File where to write the hex transforms.")
     parser.add_option("--w", type=int, dest="write", default=False,
-                      help="Write a number of docking transformations" )
+                      help="Write a number of docking transformations")
     parser.add_option("--int", dest="fn_internal_transforms", default=False,
                       help="Input/Output file of internal transformations")
     parser.add_option("--log", dest="log", default=None,
@@ -263,9 +266,9 @@ receptor and ligand, respectively.""",
 
     sel = atom.ATOMPDBSelector()
     m = IMP.kernel.Model()
-    h_receptor =  atom.read_pdb(fn_receptor, m, sel)
+    h_receptor = atom.read_pdb(fn_receptor, m, sel)
     rb_receptor = atom.create_rigid_body(h_receptor)
-    h_ligand =  atom.read_pdb(fn_ligand, m, sel)
+    h_ligand = atom.read_pdb(fn_ligand, m, sel)
     rb_ligand = atom.create_rigid_body(h_ligand)
     if opts.dock:
         check_for_hexdock()
@@ -288,4 +291,4 @@ receptor and ligand, respectively.""",
             Tdock = alg.compose(Trec, Tinternal[i])
             ref = alg.ReferenceFrame3D(Tdock)
             rb_ligand.set_reference_frame(ref)
-            atom.write_pdb(h_ligand,"docked-%03d.pdb" % i)
+            atom.write_pdb(h_ligand, "docked-%03d.pdb" % i)

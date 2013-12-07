@@ -1,3 +1,3 @@
-required_modules='rmf:benchmark'
-required_dependencies='Boost.ProgramOptions:RMF'
-optional_dependencies=''
+required_modules = 'rmf:benchmark'
+required_dependencies = 'Boost.ProgramOptions:RMF'
+optional_dependencies = ''

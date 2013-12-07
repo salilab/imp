@@ -18,7 +18,6 @@
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/atom/Atom.h>
 
-
 #include <IMP/base/map.h>
 #include <IMP/base/Vector.h>
 #include <vector>
@@ -29,10 +28,8 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-typedef boost::adjacency_list <boost::vecS,
-                               boost::vecS,
-                               boost::undirectedS,
-                               boost::no_property,
+typedef boost::adjacency_list<
+    boost::vecS, boost::vecS, boost::undirectedS, boost::no_property,
     boost::property<boost::edge_color_t, boost::default_color_type> > Graph;
 
 /**
@@ -44,8 +41,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics {
   /* Constructors */
 
   // all phi/psi rotatable
-  ProteinKinematics(IMP::atom::Hierarchy mhd,
-                    bool flexible_backbone = true,
+  ProteinKinematics(IMP::atom::Hierarchy mhd, bool flexible_backbone = true,
                     bool flexible_side_chains = false);
 
   // only torsions from dihedral_angles list are rotatable
@@ -56,17 +52,13 @@ class IMPKINEMATICSEXPORT ProteinKinematics {
                     bool flexible_side_chains = false);
 
  private:
-
   //! the actual construction is done here,
   //! see constructors for documentation
-  void init( const IMP::atom::Residues& flexible_residues,
-             const std::vector<IMP::atom::Atoms>& dihedral_angles,
-             bool flexible_backbone,
-             bool flexible_side_chains) ;
+  void init(const IMP::atom::Residues& flexible_residues,
+            const std::vector<IMP::atom::Atoms>& dihedral_angles,
+            bool flexible_backbone, bool flexible_side_chains);
 
  public:
-
-
   /* Access methods */
 
   double get_phi(const IMP::atom::Residue r) const {
@@ -84,7 +76,6 @@ class IMPKINEMATICSEXPORT ProteinKinematics {
 
   IMP::core::RigidBodies get_rigid_bodies() { return rbs_; }
 
-
   // TODO: add chi
 
   /* Modifier methods */
@@ -101,24 +92,32 @@ class IMPKINEMATICSEXPORT ProteinKinematics {
 
   // TODO: add chi
 
-
-private:
-
-  enum ProteinAngleType { PHI, PSI, CHI1, CHI2, CHI3, CHI4, OTHER, TOTAL };
+ private:
+  enum ProteinAngleType {
+    PHI,
+    PSI,
+    CHI1,
+    CHI2,
+    CHI3,
+    CHI4,
+    OTHER,
+    TOTAL
+  };
 
   void build_topology_graph();
 
   void mark_rotatable_angles(
-                        const std::vector<IMP::atom::Atoms>& dihedral_angles);
+      const std::vector<IMP::atom::Atoms>& dihedral_angles);
 
   void build_rigid_bodies();
 
   void add_dihedral_joints(
-                          const std::vector<IMP::atom::Atoms>& dihedral_angles);
+      const std::vector<IMP::atom::Atoms>& dihedral_angles);
 
-  void add_dihedral_joints(const std::vector<IMP::atom::Residue>& residues,
-                           ProteinAngleType angle_type,
-                          const std::vector<IMP::atom::Atoms>& dihedral_angles);
+  void add_dihedral_joints(
+      const std::vector<IMP::atom::Residue>& residues,
+      ProteinAngleType angle_type,
+      const std::vector<IMP::atom::Atoms>& dihedral_angles);
 
   void add_dihedral_joint(const IMP::atom::Residue r,
                           ProteinAngleType angle_type,
@@ -133,30 +132,29 @@ private:
     return (DihedralAngleRevoluteJoint*)joint_map_.get_joint(r, PSI);
   }
 
-  //DihedralAngleRevoluteJoints get_joints(const IMP::atom::Residue r) const;
+// DihedralAngleRevoluteJoints get_joints(const IMP::atom::Residue r) const;
 
 #ifndef IMP_DOXYGEN
   // A map between residue phi/psi and joints
   class AngleToJointMap {
-  public:
+   public:
     // Joint access
     Joint* get_joint(const IMP::atom::Residue r,
                      ProteinAngleType angle_type) const;
 
     // store Joint
-    void add_joint(const IMP::atom::Residue r,
-                   ProteinAngleType angle_type,
+    void add_joint(const IMP::atom::Residue r, ProteinAngleType angle_type,
                    Joint* joint);
 
-  private:
+   private:
     /* mapping to phi/psi/chi for a specific residue.
        the joints are stored using ProteinAngleType as an index */
     typedef std::vector<Joint*> ResidueJoints;
     /* mapping between residue and its joints */
-    IMP::base::map<IMP::kernel::ParticleIndex,
-                            ResidueJoints> residue_to_joints_;
+    IMP::base::map<IMP::kernel::ParticleIndex, ResidueJoints>
+        residue_to_joints_;
   };
-#endif // IMP_DOXYGEN
+#endif  // IMP_DOXYGEN
 
  private:
   // protein hierarchy

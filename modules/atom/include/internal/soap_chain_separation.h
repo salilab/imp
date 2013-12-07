@@ -25,7 +25,7 @@ IMPATOM_BEGIN_INTERNAL_NAMESPACE
 class SoapChainSeparation {
   bool require_same_chain_, require_different_chains_;
 
-public:
+ public:
   SoapChainSeparation() {}
 
   bool enabled() const {
@@ -44,8 +44,8 @@ public:
     Hierarchy p1 = r1.get_parent();
     Hierarchy p2 = r2.get_parent();
     bool same_chain = (p1 == p2);
-    return (require_same_chain_ && same_chain)
-           || (require_different_chains_ && !same_chain);
+    return (require_same_chain_ && same_chain) ||
+           (require_different_chains_ && !same_chain);
   }
 
   void read(score_functor::internal::Hdf5File &file_id) {
@@ -58,6 +58,6 @@ public:
 
 IMPATOM_END_INTERNAL_NAMESPACE
 
-#endif // IMP_SCORE_FUNCTOR_USE_HDF5
+#endif  // IMP_SCORE_FUNCTOR_USE_HDF5
 
 #endif /* IMPATOM_SOAP_CHAIN_SEPARATION_H */

@@ -26,30 +26,29 @@ class KinematicForest;
    A KinematicNode is a rigid body that is connected by a joint to other
    rigid bodies
 */
-class IMPKINEMATICSEXPORT KinematicNode : public IMP::core::RigidBody{
+class IMPKINEMATICSEXPORT KinematicNode : public IMP::core::RigidBody {
   friend class KinematicForest;
 
-  static void do_setup_particle( kernel::Model *m,
-                                 kernel::ParticleIndex p,
-                                 KinematicForest* owner,
-                                 Joint* in_joint = nullptr,
-                                 Joints out_joints = Joints() );
+  static void do_setup_particle(kernel::Model* m, kernel::ParticleIndex p,
+                                KinematicForest* owner,
+                                Joint* in_joint = nullptr,
+                                Joints out_joints = Joints());
+
  public:
   IMP_DECORATOR_METHODS(KinematicNode, IMP::core::RigidBody);
   IMP_DECORATOR_SETUP_1(KinematicNode, KinematicForest*, owner);
-  IMP_DECORATOR_SETUP_2(KinematicNode, KinematicForest*, owner,
-                        Joint*, in_joint);
-  IMP_DECORATOR_SETUP_3(KinematicNode, KinematicForest*, owner,
-                        Joint*, in_joint, Joints, out_joints);
+  IMP_DECORATOR_SETUP_2(KinematicNode, KinematicForest*, owner, Joint*,
+                        in_joint);
+  IMP_DECORATOR_SETUP_3(KinematicNode, KinematicForest*, owner, Joint*,
+                        in_joint, Joints, out_joints);
 
   /**
      @brief Return true if the particle is a kinematic nodea (has the
      appropriate properties).
   */
-  inline static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi);
+  inline static bool get_is_setup(kernel::Model* m, kernel::ParticleIndex pi);
 
  private:
-
   //! returns the kinematic forest associated with this node
   KinematicForest* get_owner();
 
@@ -65,73 +64,60 @@ class IMPKINEMATICSEXPORT KinematicNode : public IMP::core::RigidBody{
 
   void set_in_joint(Joint* j);
 
-  static ObjectKey get_owner_key()
-  {
+  static ObjectKey get_owner_key() {
     static ObjectKey k("kinematics__kinematic_node_owner");
     return k;
   }
 
-  static ObjectKey get_in_joint_key()
-  {
+  static ObjectKey get_in_joint_key() {
     static ObjectKey k("kinematics__kinematic_node_in_joint");
     return k;
   }
 
-  static ObjectsKey get_out_joints_key()
-  {
+  static ObjectsKey get_out_joints_key() {
     static ObjectsKey k("kinematics__kinematic_node_out_joint");
     return k;
   }
-
 };
 
 /************** inlines ***********/
 
-bool
-KinematicNode::get_is_setup(kernel::Model *m,
-                            kernel::ParticleIndex pi)
-{
-  return
-    m->get_has_attribute( get_owner_key(), pi);
+bool KinematicNode::get_is_setup(kernel::Model* m, kernel::ParticleIndex pi) {
+  return m->get_has_attribute(get_owner_key(), pi);
 }
 
-
 //! return nullptr if does not have incoming joint
-Joint*
-KinematicNode::get_in_joint() {
-  if( !get_model()->get_has_attribute
-      ( get_in_joint_key(), get_particle_index() ) )
-    {
-      return nullptr;
-    }
-  base::Object* obj = get_model()->get_attribute
-    ( get_in_joint_key(), get_particle_index() );
+Joint* KinematicNode::get_in_joint() {
+  if (!get_model()->get_has_attribute(get_in_joint_key(),
+                                      get_particle_index())) {
+    return nullptr;
+  }
+  base::Object* obj =
+      get_model()->get_attribute(get_in_joint_key(), get_particle_index());
   return static_cast<Joint*>(obj);
 }
 
 //! returns list of outcoming joints, or empty list if attribute
 //! does not exist
-JointsTemp
-KinematicNode::get_out_joints() {
+JointsTemp KinematicNode::get_out_joints() {
   JointsTemp joints;
-  if(! get_model()->get_has_attribute
-     ( get_out_joints_key(), get_particle_index() ) ) {
+  if (!get_model()->get_has_attribute(get_out_joints_key(),
+                                      get_particle_index())) {
     return joints;
   }
-  base::Objects objs = get_model()->get_attribute
-    ( get_out_joints_key(), get_particle_index() );
-  for(unsigned int i = 0; i < objs.size(); i++){
-    base::Object * o = objs[i];
+  base::Objects objs =
+      get_model()->get_attribute(get_out_joints_key(), get_particle_index());
+  for (unsigned int i = 0; i < objs.size(); i++) {
+    base::Object* o = objs[i];
     Joint* j = static_cast<Joint*>(o);
     joints.push_back(j);
   }
   return joints;
 }
 
-
-//IMP_DECORATORS_DEF(KinematicNode, KinematicNodes);
+// IMP_DECORATORS_DEF(KinematicNode, KinematicNodes);
 IMP_DECORATORS(KinematicNode, KinematicNodes, IMP::core::RigidBody);
 
 IMPKINEMATICS_END_NAMESPACE
 
-#endif  /* IMPKINEMATICS_KINEMATIC_NODE_H */
+#endif /* IMPKINEMATICS_KINEMATIC_NODE_H */

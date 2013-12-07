@@ -5,6 +5,7 @@ import IMP.atom
 import IMP.multifit
 from IMP.multifit import anchors
 
+
 class Tests(IMP.test.TestCase):
 
     def test_anchors_help(self):
@@ -14,7 +15,7 @@ class Tests(IMP.test.TestCase):
     def test_anchors_usage(self):
         """Test anchors module incorrect usage"""
         r = self.run_python_module("IMP.multifit.anchors", [])
-        out,err = r.communicate()
+        out, err = r.communicate()
         self.assertEqual(out, "")
         self.assertIn("incorrect number of arguments", err)
         self.assertNotEqual(r.returncode, 0)
@@ -27,8 +28,8 @@ B|%s|||1||1|||
 density header
 %s|4.0|1.33|0.02|1.1|11.8|-6.9|||||
 """ % (self.get_input_file_name("twoblobsA.pdb"),
-       self.get_input_file_name("twoblobsB.pdb"),
-       self.get_input_file_name("twoblobs-4.0.mrc")))
+            self.get_input_file_name("twoblobsB.pdb"),
+            self.get_input_file_name("twoblobs-4.0.mrc")))
         self.run_python_module(anchors, ['test.asmb', 'test.out'])
 
         # Check PDB and cmm output
@@ -47,10 +48,10 @@ density header
         pts.sort()
         self.assertAlmostEqual(pts[0][0], 24.0, delta=1.0)
         self.assertAlmostEqual(pts[0][1], 11.6, delta=1.0)
-        self.assertAlmostEqual(pts[0][2],  8.2, delta=1.0)
+        self.assertAlmostEqual(pts[0][2], 8.2, delta=1.0)
         self.assertAlmostEqual(pts[1][0], 26.7, delta=1.0)
         self.assertAlmostEqual(pts[1][1], 14.6, delta=1.0)
-        self.assertAlmostEqual(pts[1][2],  5.1, delta=1.0)
+        self.assertAlmostEqual(pts[1][2], 5.1, delta=1.0)
 
         os.unlink('test.asmb')
         os.unlink('test.out.pdb')

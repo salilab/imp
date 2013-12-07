@@ -24,7 +24,7 @@ Float QuasiNewton::do_optimize(unsigned int nsteps) {
 #if defined _MSC_VER
       = gsl_multimin_fdfminimizer_vector_bfgs;
 #else
-  = gsl_multimin_fdfminimizer_vector_bfgs2;
+      = gsl_multimin_fdfminimizer_vector_bfgs2;
 #endif
   return GSLOptimizer::optimize(nsteps, t, initial_step_, line_step_,
                                 min_gradient_);

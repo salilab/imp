@@ -82,8 +82,8 @@ inline unsigned int PackedAssignmentContainer::get_number_of_assignments()
   return d_.size() / width_;
 }
 
-inline Assignment PackedAssignmentContainer::get_assignment(
-    unsigned int i) const {
+inline Assignment PackedAssignmentContainer::get_assignment(unsigned int i)
+    const {
   IMP_USAGE_CHECK(i < get_number_of_assignments(),
                   "Invalid assignment requested: " << i);
   IMP_USAGE_CHECK(width_ > 0, "Uninitualized PackedAssignmentContainer.");
@@ -128,8 +128,8 @@ inline unsigned int ListAssignmentContainer::get_number_of_assignments() const {
   return d_.size();
 }
 
-inline Assignment ListAssignmentContainer::get_assignment(
-    unsigned int i) const {
+inline Assignment ListAssignmentContainer::get_assignment(unsigned int i)
+    const {
   return d_[i];
 }
 
@@ -169,8 +169,8 @@ inline unsigned int SampleAssignmentContainer::get_number_of_assignments()
   return d_.size() / width_;
 }
 
-inline Assignment SampleAssignmentContainer::get_assignment(
-    unsigned int i) const {
+inline Assignment SampleAssignmentContainer::get_assignment(unsigned int i)
+    const {
   return Assignment(d_.begin() + i * width_, d_.begin() + (i + 1) * width_);
 }
 #endif
@@ -220,7 +220,6 @@ class IMPDOMINOEXPORT ReadHDF5AssignmentContainer : public AssignmentContainer {
   void flush();
 
  public:
-
   ReadHDF5AssignmentContainer(RMF::HDF5::IndexConstDataSet2D dataset,
                               const Subset &s,
                               const kernel::ParticlesTemp &all_particles,

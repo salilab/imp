@@ -195,9 +195,10 @@ class Tests(IMP.test.TestCase):
         e = self.get_modeller_environ()
         modmodel = model(e)
         modmodel.build_sequence('A')
-        modmodel.restraints.make(selection(modmodel), restraint_type='IMPROPER',
-                                 spline_on_site=False,
-                                 residue_span_range=(0, 99999))
+        modmodel.restraints.make(
+            selection(modmodel), restraint_type='IMPROPER',
+            spline_on_site=False,
+            residue_span_range=(0, 99999))
 
         m = IMP.kernel.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
@@ -246,9 +247,10 @@ class Tests(IMP.test.TestCase):
         e = self.get_modeller_environ()
         modmodel = model(e)
         modmodel.build_sequence('A')
-        modmodel.restraints.make(selection(modmodel), restraint_type='DIHEDRAL',
-                                 spline_on_site=False,
-                                 residue_span_range=(0, 99999))
+        modmodel.restraints.make(
+            selection(modmodel), restraint_type='DIHEDRAL',
+            spline_on_site=False,
+            residue_span_range=(0, 99999))
 
         m = IMP.kernel.Model()
         loader = IMP.modeller.ModelLoader(modmodel)

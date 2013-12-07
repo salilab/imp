@@ -25,7 +25,6 @@
 #include <IMP/core/internal/close_pairs_helpers.h>
 #include <IMP/algebra/eigen_analysis.h>
 
-
 IMPCORE_BEGIN_NAMESPACE
 
 ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainerAdaptor sc,
@@ -128,8 +127,8 @@ bool ExcludedVolumeRestraint::get_if_moved() const {
                                 rbs_backup_rot_, xyzrs_backup_);
 }
 
-double ExcludedVolumeRestraint::unprotected_evaluate(
-    DerivativeAccumulator *da) const {
+double ExcludedVolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da)
+    const {
   IMP_OBJECT_LOG;
   if (!initialized_) {
     initialize();
@@ -254,8 +253,7 @@ double ExcludedVolumeRestraint::unprotected_evaluate_if_good(
                          "I think it is bad, but it isn't: " << cur << " vs "
                                                              << check);
       return cur;
-    }
-    ;
+    };
   }
   if (was_bad_ || get_if_moved() > 0) {
     double ret = fill_list_if_good(max);

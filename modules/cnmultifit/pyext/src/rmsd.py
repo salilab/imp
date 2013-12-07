@@ -5,6 +5,7 @@ __doc__ = "Calculate RMSD between a model and the reference."
 import IMP.cnmultifit
 from IMP import OptionParser
 
+
 def parse_args():
     usage = """%prog [options] <parameter file> <transformations file>
         <reference PDB>
@@ -29,6 +30,7 @@ Notice: no structural alignment is performed!"""
     if len(args) != 3:
         parser.error("incorrect number of arguments")
     return options, args
+
 
 def main():
     opts, args = parse_args()

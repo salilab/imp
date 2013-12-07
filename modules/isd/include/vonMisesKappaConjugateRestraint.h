@@ -22,36 +22,32 @@ IMPISD_BEGIN_NAMESPACE
     where \f$kappa\f$ is the concentration parameter.
     Default values: \f$R_0=1\f$ and \f$c=10\f$
  */
-class IMPISDEXPORT vonMisesKappaConjugateRestraint : public kernel::Restraint
-{
+class IMPISDEXPORT vonMisesKappaConjugateRestraint : public kernel::Restraint {
   base::Pointer<kernel::Particle> kappa_;
   double old_kappaval;
   bool bessel_init_;
-  double I0_,I1_;
-  double c_,R0_;
+  double I0_, I1_;
+  double c_, R0_;
 
-public:
+ public:
   //! Create the restraint.
   vonMisesKappaConjugateRestraint(kernel::Model *m, kernel::Particle *kappa,
-          double c=10.0, double R0=0.0);
+                                  double c = 10.0, double R0 = 0.0);
 
   /** This macro declares the basic needed methods: evaluate and show
    */
-  virtual double
-  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
-     const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(vonMisesKappaConjugateRestraint);
 
   virtual double get_probability() const;
 
-private:
-
-  void update_bessel(double kappaval); // update memoized bessel value
+ private:
+  void update_bessel(double kappaval);  // update memoized bessel value
   double get_kappa() const;
-
 };
 
 IMPISD_END_NAMESPACE
 
-#endif  /* IMPISD_VON_MISES_KAPPA_CONJUGATE_RESTRAINT_H */
+#endif /* IMPISD_VON_MISES_KAPPA_CONJUGATE_RESTRAINT_H */

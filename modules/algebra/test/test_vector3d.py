@@ -4,35 +4,47 @@ import StringIO
 import os
 import math
 
+
 class Tests(IMP.test.TestCase):
+
     def test_magnitude(self):
         """Check Vector3D magnitude"""
         v = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
         self.assertEqual(v.get_squared_magnitude(), 14.0)
         self.assertAlmostEqual(v.get_magnitude(), math.sqrt(14.0), places=1)
+
     def test_from_floats(self):
         """Check Vector3D from floats"""
         v = IMP.algebra.Vector3D([1.0, 2.0, 3.0])
+
     def test_compare(self):
         """Test that vectors can't be compared"""
-        v= IMP.algebra.Vector3D(0,0,0)
-        self.assertRaises(ValueError, lambda a,b: a==b, v, v)
+        v = IMP.algebra.Vector3D(0, 0, 0)
+        self.assertRaises(ValueError, lambda a, b: a == b, v, v)
 
     def test_io(self):
         """Check I/O of Vector3Ds"""
         class NotAFile(object):
             pass
-        vs1 = [IMP.algebra.Vector3D(1.0, 2.0, 3.0), IMP.algebra.Vector3D(4.0, 5.0, 6.0)]
+        vs1 = [
+            IMP.algebra.Vector3D(
+                1.0,
+                2.0,
+                3.0),
+            IMP.algebra.Vector3D(
+                4.0,
+                5.0,
+                6.0)]
 
         # Test read/write for regular files and file-like objects
         sio = StringIO.StringIO()
         IMP.algebra.write_pts(vs1, sio)
         sio.seek(0)
-        rpts= IMP.algebra.read_pts(sio)
+        rpts = IMP.algebra.read_pts(sio)
         print sio.getvalue()
         self.assertEqual(len(rpts), len(vs1))
         for i in range(0, len(rpts)):
-            for j in range(0,3):
+            for j in range(0, 3):
                 self.assertAlmostEqual(rpts[i][j], vs1[i][j], delta=.01)
 
     def test_component(self):
@@ -62,10 +74,10 @@ class Tests(IMP.test.TestCase):
 
     def test_product_scalar(self):
         """Check that multiplying vectors by scalars works"""
-        v= IMP.algebra.Vector3D(1.0,2.0, 3.0)
-        av= 3.0*v
-        va= 3.0*v
-        for i in range(0,3):
+        v = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
+        av = 3.0 * v
+        va = 3.0 * v
+        for i in range(0, 3):
             self.assertEqual(av[0], 3.0)
             self.assertEqual(va[0], 3.0)
             self.assertEqual(av[1], 6.0)
@@ -91,14 +103,15 @@ class Tests(IMP.test.TestCase):
         diff = v1 - v2
         v1 -= v2
         expected_diff = IMP.algebra.Vector3D(-9.0, 1.0, 1.0)
-        self.assertAlmostEqual((diff-expected_diff).get_magnitude(),
+        self.assertAlmostEqual((diff - expected_diff).get_magnitude(),
                                0, delta=.1)
-        self.assertAlmostEqual((v1-expected_diff).get_magnitude(),
+        self.assertAlmostEqual((v1 - expected_diff).get_magnitude(),
                                0, delta=.1)
+
     def test_show(self):
         """Check vector 3D show"""
-        v= IMP.algebra.Vector3D(1,2,3)
-        out= StringIO.StringIO()
+        v = IMP.algebra.Vector3D(1, 2, 3)
+        out = StringIO.StringIO()
         print >> out, v
         self.assertEqual(out.getvalue().find("Swig"), -1)
 
@@ -115,9 +128,9 @@ class Tests(IMP.test.TestCase):
         # The underlying C++ object pointer should be unchanged too:
         self.assertEqual(str(v1.this), cppobj)
         expected_sum = IMP.algebra.Vector3D(11.0, 3.0, 5.0)
-        self.assertAlmostEqual((sum-expected_sum).get_magnitude(),
+        self.assertAlmostEqual((sum - expected_sum).get_magnitude(),
                                0, delta=.1)
-        self.assertAlmostEqual((v1-expected_sum).get_magnitude(),
+        self.assertAlmostEqual((v1 - expected_sum).get_magnitude(),
                                0, delta=.1)
 
     def test_scalar_multiplication(self):
@@ -161,8 +174,9 @@ class Tests(IMP.test.TestCase):
     def test_generators(self):
         """Check the Vector3D generators"""
         # test calling since it is a bit non-trivial in SWIG
-        v= IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_sphere_3d())
-        v= IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0), 1))
+        v = IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_sphere_3d())
+        v = IMP.algebra.get_random_vector_in(
+            IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), 1))
 
 if __name__ == '__main__':
     IMP.test.main()

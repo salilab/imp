@@ -2,13 +2,15 @@ import IMP
 import IMP.test
 import IMP.atom
 
+
 class Tests(IMP.test.TestCase):
+
     """Test CHARMM stereochemistry restraint"""
 
     def setup_restraint(self):
         m = IMP.kernel.Model()
         pdb = IMP.atom.read_pdb(
-                        self.get_input_file_name('charmm_type_test.pdb'), m)
+            self.get_input_file_name('charmm_type_test.pdb'), m)
         ff = IMP.atom.get_heavy_atom_CHARMM_parameters()
         topology = ff.create_topology(pdb)
         topology.apply_default_patches()
@@ -23,13 +25,13 @@ class Tests(IMP.test.TestCase):
         for ni, res in enumerate(residues):
             resatoms = IMP.atom.get_by_type(res, IMP.atom.ATOM_TYPE)
             for a in resatoms:
-                aid = '%d:' % (ni+1) \
+                aid = '%d:' % (ni + 1) \
                       + IMP.atom.Atom(a).get_atom_type().get_string()
                 atoms[aid] = a.get_particle()
         return atoms
 
     def assertContainsPair(self, pf, atoms, a1, a2):
-        self.assertEquals(pf.get_value([atoms[a1],atoms[a2]]),
+        self.assertEquals(pf.get_value([atoms[a1], atoms[a2]]),
                           True)
 
     def test_score(self):

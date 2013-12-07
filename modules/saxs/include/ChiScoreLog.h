@@ -20,12 +20,10 @@ IMPSAXS_BEGIN_NAMESPACE
 */
 class IMPSAXSEXPORT ChiScoreLog {
  public:
-  Float compute_score(const Profile* exp_profile,
-                      const Profile* model_profile,
+  Float compute_score(const Profile* exp_profile, const Profile* model_profile,
                       bool use_offset = false) const;
 
-  Float compute_score(const Profile* exp_profile,
-                      const Profile* model_profile,
+  Float compute_score(const Profile* exp_profile, const Profile* model_profile,
                       Float min_q, Float max_q) const;
 
   Float compute_scale_factor(const Profile* exp_profile,
@@ -39,7 +37,6 @@ class IMPSAXSEXPORT ChiScoreLog {
     IMP_UNUSED(model_profile);
     return 0.0;
   }
-
 };
 
 IMPSAXS_END_NAMESPACE

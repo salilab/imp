@@ -27,8 +27,8 @@ class IMPCOREEXPORT VolumeRestraint : public kernel::Restraint {
  public:
   VolumeRestraint(UnaryFunction *f, SingletonContainer *sc, double volume);
 
-  virtual double unprotected_evaluate(
-      IMP::kernel::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(VolumeRestraint);
 };

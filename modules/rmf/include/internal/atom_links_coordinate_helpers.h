@@ -30,9 +30,9 @@ inline void copy_to_frame_reference_frame(
   algebra::Vector3D translation = tr.get_translation();
   algebra::Vector4D quaternion = tr.get_rotation().get_quaternion();
   rf.set_frame_translation(RMF::Vector3(translation.coordinates_begin(),
-                                          translation.coordinates_end()));
+                                        translation.coordinates_end()));
   rf.set_frame_rotation(RMF::Vector4(quaternion.coordinates_begin(),
-                                       quaternion.coordinates_end()));
+                                     quaternion.coordinates_end()));
 }
 inline void copy_to_frame_particle(
     const algebra::Vector3D &v, RMF::NodeHandle n,
