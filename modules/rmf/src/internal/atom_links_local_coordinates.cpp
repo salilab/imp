@@ -16,10 +16,11 @@ HierarchyLoadLocalCoordinates::HierarchyLoadLocalCoordinates(
     RMF::FileConstHandle f)
     : intermediate_particle_factory_(f), reference_frame_factory_(f) {}
 
-bool HierarchyLoadLocalCoordinates::setup_particle(
+kernel::ParticleIndex HierarchyLoadLocalCoordinates::setup_particle(
     RMF::NodeConstHandle n, unsigned int cstate, kernel::Model *m,
     kernel::ParticleIndex p, const kernel::ParticleIndexes &rigid_bodies) {
-  if (rigid_bodies.empty()) return false;
+  kernel::ParticleIndex ret;
+  if (rigid_bodies.empty()) return ret;
   link_particle(n, cstate, m, p, rigid_bodies);
   if (cstate & FRAME_XYZ) {
     IMP_LOG_TERSE("Particle " << m->get_particle_name(p)
@@ -32,25 +33,25 @@ bool HierarchyLoadLocalCoordinates::setup_particle(
                               << " is a local non-rigid member." << std::endl);
     core::RigidBody::setup_particle(m, p, algebra::ReferenceFrame3D());
     core::RigidBody(m, rigid_bodies.back()).add_non_rigid_member(p);
+    ret = p;
   }
-  return true;
+  return ret;
 }
 
-HierarchyLoadLocalCoordinates::Type
-HierarchyLoadLocalCoordinates::link_particle(
+kernel::ParticleIndex HierarchyLoadLocalCoordinates::link_particle(
     RMF::NodeConstHandle n, unsigned int cstate, kernel::Model *m,
     kernel::ParticleIndex p, const kernel::ParticleIndexes &rigid_bodies) {
   // check at frame 0
+  kernel::ParticleIndex ret;
   IMP_UNUSED(m);
-  if (rigid_bodies.empty()) return NONE;
-  if (cstate & FRAME_RB) {
+  if (rigid_bodies.empty()) return ret;
+  if (cstate & FRAME_RB && !(cstate & EXTERNAL_RB)) {
     rigid_bodies_.push_back(std::make_pair(n.get_id(), p));
-    return RIGID_BODY;
+    ret = p;
   } else if (cstate & FRAME_XYZ) {
     xyzs_.push_back(std::make_pair(n.get_id(), p));
-    return PARTICLE;
   }
-  return NONE;
+  return ret;
 }
 
 void HierarchyLoadLocalCoordinates::load(RMF::FileConstHandle fh,

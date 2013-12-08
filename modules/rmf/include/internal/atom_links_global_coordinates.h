@@ -32,6 +32,7 @@ class IMPRMFEXPORT HierarchyLoadGlobalCoordinates {
   NodeParticlePairs xyzs_;
   NodeParticlePairs rigid_bodies_;
   base::map<int, RB> rigid_body_compositions_;
+  boost::unordered_map<RMF::NodeID, kernel::ParticleIndex> external_rbs_;
 
   RMF::IntKey key_, non_rigid_key_;
 
@@ -43,12 +44,12 @@ class IMPRMFEXPORT HierarchyLoadGlobalCoordinates {
 
  public:
   HierarchyLoadGlobalCoordinates(RMF::FileConstHandle f);
-  bool setup_particle(RMF::NodeConstHandle n, unsigned int node_state,
-                      kernel::Model *m, kernel::ParticleIndex p,
-                      const kernel::ParticleIndexes &rigid_bodies);
-  bool link_particle(RMF::NodeConstHandle n, unsigned int node_state,
-                     kernel::Model *m, kernel::ParticleIndex p,
-                     const kernel::ParticleIndexes &rigid_bodies);
+  kernel::ParticleIndex setup_particle(
+      RMF::NodeConstHandle n, unsigned int node_state, kernel::Model *m,
+      kernel::ParticleIndex p, const kernel::ParticleIndexes &rigid_bodies);
+  kernel::ParticleIndex link_particle(
+      RMF::NodeConstHandle n, unsigned int node_state, kernel::Model *m,
+      kernel::ParticleIndex p, const kernel::ParticleIndexes &rigid_bodies);
   void load(RMF::FileConstHandle fh, Model *m);
 };
 

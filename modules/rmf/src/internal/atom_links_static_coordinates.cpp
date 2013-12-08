@@ -16,11 +16,11 @@ HierarchyLoadStaticCoordinates::HierarchyLoadStaticCoordinates(
     RMF::FileConstHandle f)
     : intermediate_particle_factory_(f), reference_frame_factory_(f) {}
 
-bool HierarchyLoadStaticCoordinates::setup_particle(
+void HierarchyLoadStaticCoordinates::setup_particle(
     RMF::NodeConstHandle n, unsigned int cstate, kernel::Model *m,
     kernel::ParticleIndex p, const kernel::ParticleIndexes &rigid_bodies) {
   if (rigid_bodies.empty()) {
-    return false;
+    return;
   }
   kernel::ParticleIndex rbp = rigid_bodies.back();
   core::RigidBody rb(m, rbp);
@@ -40,7 +40,6 @@ bool HierarchyLoadStaticCoordinates::setup_particle(
     rbm.set_internal_coordinates(
         get_coordinates(n, intermediate_particle_factory_));
   }
-  return true;
 }
 
 HierarchySaveStaticCoordinates::HierarchySaveStaticCoordinates(

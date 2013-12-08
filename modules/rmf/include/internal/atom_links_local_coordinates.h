@@ -28,17 +28,12 @@ class IMPRMFEXPORT HierarchyLoadLocalCoordinates {
 
  public:
   HierarchyLoadLocalCoordinates(RMF::FileConstHandle f);
-  bool setup_particle(RMF::NodeConstHandle n, unsigned int node_state,
-                      kernel::Model *m, kernel::ParticleIndex p,
-                      const kernel::ParticleIndexes &rigid_bodies);
-  enum Type {
-    NONE = 0,
-    PARTICLE,
-    RIGID_BODY
-  };
-  Type link_particle(RMF::NodeConstHandle n, unsigned int node_state,
-                     kernel::Model *m, kernel::ParticleIndex p,
-                     const kernel::ParticleIndexes &rigid_bodies);
+  kernel::ParticleIndex setup_particle(
+      RMF::NodeConstHandle n, unsigned int node_state, kernel::Model *m,
+      kernel::ParticleIndex p, const kernel::ParticleIndexes &rigid_bodies);
+  kernel::ParticleIndex link_particle(
+      RMF::NodeConstHandle n, unsigned int node_state, kernel::Model *m,
+      kernel::ParticleIndex p, const kernel::ParticleIndexes &rigid_bodies);
   void load(RMF::FileConstHandle fh, kernel::Model *m);
 };
 

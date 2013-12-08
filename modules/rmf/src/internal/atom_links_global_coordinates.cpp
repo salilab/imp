@@ -20,14 +20,22 @@ HierarchyLoadGlobalCoordinates::HierarchyLoadGlobalCoordinates(
   non_rigid_key_ = f.get_key(cat, "non rigid", RMF::IntTraits());
 }
 
-bool HierarchyLoadGlobalCoordinates::setup_particle(
+kernel::ParticleIndex HierarchyLoadGlobalCoordinates::setup_particle(
     RMF::NodeConstHandle n, unsigned int cstate, kernel::Model *m,
     kernel::ParticleIndex p, const kernel::ParticleIndexes &rigid_bodies) {
-  if (!rigid_bodies.empty()) return false;
+  kernel::ParticleIndex ret;
+  if (!rigid_bodies.empty()) return ret;
   if (cstate & FRAME_RB) {
-    IMP_LOG_TERSE("Particle " << m->get_particle_name(p)
-                              << " is a global rigid body." << std::endl);
-    core::RigidBody::setup_particle(m, p, algebra::ReferenceFrame3D());
+    if (cstate & EXTERNAL_RB) {
+      ret = m->add_particle(m->get_particle_name(p) + " rigid body");
+      core::RigidBody::setup_particle(m, ret, algebra::ReferenceFrame3D());
+      external_rbs_[n.get_index()] = ret;
+    } else {
+      IMP_LOG_TERSE("Particle " << m->get_particle_name(p)
+                                << " is a global rigid body." << std::endl);
+      core::RigidBody::setup_particle(m, p, algebra::ReferenceFrame3D());
+      ret = p;
+    }
   } else if (cstate & FRAME_XYZ) {
     IMP_LOG_TERSE("Particle " << m->get_particle_name(p)
                               << " is a global XYZ particle." << std::endl);
@@ -53,15 +61,26 @@ bool HierarchyLoadGlobalCoordinates::setup_particle(
                               << std::endl);
   }
   link_particle(n, cstate, m, p, rigid_bodies);
-  return true;
+  return ret;
 }
 
-bool HierarchyLoadGlobalCoordinates::link_particle(
+kernel::ParticleIndex HierarchyLoadGlobalCoordinates::link_particle(
     RMF::NodeConstHandle n, unsigned int cstate, kernel::Model *m,
     kernel::ParticleIndex p, const kernel::ParticleIndexes &rigid_bodies) {
-  if (!rigid_bodies.empty()) return false;
+  kernel::ParticleIndex ret;
+  if (!rigid_bodies.empty()) return ret;
   if (cstate & FRAME_RB) {
-    rigid_bodies_.push_back(std::make_pair(n.get_id(), p));
+    if (cstate & EXTERNAL_RB) {
+      kernel::ParticleIndex cur = p;
+      do {
+        cur = atom::Hierarchy(m, cur).get_child(0);
+      } while (!core::RigidBodyMember::get_is_setup(m, cur));
+      ret = core::RigidBodyMember(m, cur).get_rigid_body().get_particle_index();
+      external_rbs_[n.get_index()] = ret;
+    } else {
+      rigid_bodies_.push_back(std::make_pair(n.get_id(), p));
+      ret = p;
+    }
   } else if (cstate & FRAME_XYZ) {
     xyzs_.push_back(std::make_pair(n.get_id(), p));
   }
@@ -71,7 +90,7 @@ bool HierarchyLoadGlobalCoordinates::link_particle(
     rigid_body_compositions_[rb].rb =
         core::RigidBodyMember(m, p).get_rigid_body().get_particle_index();
   }
-  return true;
+  return ret;
 }
 
 void HierarchyLoadGlobalCoordinates::fix_internal_coordinates(
@@ -157,6 +176,12 @@ void HierarchyLoadGlobalCoordinates::load(RMF::FileConstHandle fh, Model *m) {
     core::XYZ(m, pp.second).set_coordinates(v);
   }
   IMP_FOREACH(Pair pp, rigid_bodies_) {
+    algebra::ReferenceFrame3D rf(
+        get_transformation(fh.get_node(pp.first), reference_frame_factory_));
+    core::RigidBody(m, pp.second).set_reference_frame(rf);
+  }
+  typedef std::pair<RMF::NodeID, kernel::ParticleIndex> EP;
+  IMP_FOREACH(EP pp, external_rbs_) {
     algebra::ReferenceFrame3D rf(
         get_transformation(fh.get_node(pp.first), reference_frame_factory_));
     core::RigidBody(m, pp.second).set_reference_frame(rf);

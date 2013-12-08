@@ -20,7 +20,8 @@ enum NodeCoords {
   STATIC_RB = 1,
   FRAME_RB = 2,
   STATIC_XYZ = 4,
-  FRAME_XYZ = 8
+  FRAME_XYZ = 8,
+  EXTERNAL_RB = 16
 };
 
 inline void copy_to_frame_reference_frame(

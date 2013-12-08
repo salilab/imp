@@ -36,6 +36,7 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<kernel::Particle> {
   RMF::decorator::IntermediateParticleConstFactory
       intermediate_particle_factory_;
   RMF::decorator::ReferenceFrameConstFactory reference_frame_factory_;
+  RMF::IntKey external_rigid_body_key_;
   struct Data {
     internal::HierarchyLoadStatic load_static;
     internal::HierarchyLoadBonds load_bonds;
@@ -132,6 +133,7 @@ class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<kernel::Particle> {
   };
   typedef base::map<kernel::ParticleIndex, boost::shared_ptr<Data> > DM;
   DM data_;
+  RMF::IntKey external_rigid_body_key_;
 
   void add_recursive(Model *m, kernel::ParticleIndex root,
                      kernel::ParticleIndex p,

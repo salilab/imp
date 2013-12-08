@@ -44,8 +44,11 @@ std::string get_good_name(kernel::Model *m, kernel::ParticleIndex h) {
 unsigned int get_coords_state(
     RMF::NodeConstHandle nh,
     RMF::decorator::IntermediateParticleConstFactory ipcf,
-    RMF::decorator::ReferenceFrameConstFactory rfcf) {
+    RMF::decorator::ReferenceFrameConstFactory rfcf, RMF::IntKey external_key) {
   unsigned int ret = 0;
+  if (nh.get_has_value(external_key)) {
+    ret |= internal::EXTERNAL_RB;
+  }
   {
     if (ipcf.get_is_static(nh)) ret |= internal::STATIC_XYZ;
     if (rfcf.get_is_static(nh)) ret |= internal::STATIC_RB;
@@ -54,7 +57,8 @@ unsigned int get_coords_state(
     RMF::SetCurrentFrame fa(nh.get_file(), RMF::FrameID(0));
     if (!(ret & internal::STATIC_XYZ) && ipcf.get_is(nh))
       ret |= internal::FRAME_XYZ;
-    if (!(ret & internal::STATIC_RB) && rfcf.get_is(nh))
+    if (!(ret & internal::STATIC_RB) &&
+        rfcf.get_is(nh) & !(ret & internal::EXTERNAL_RB))
       ret |= internal::FRAME_RB;
   }
   return ret;
@@ -77,17 +81,20 @@ void HierarchyLoadLink::create_recursive(kernel::Model *m,
                                          kernel::ParticleIndexes rigid_bodies,
                                          Data &data) {
   set_association(name, m->get_particle(cur));
-  unsigned int state = get_coords_state(name, intermediate_particle_factory_,
-                                        reference_frame_factory_);
+  unsigned int state =
+      get_coords_state(name, intermediate_particle_factory_,
+                       reference_frame_factory_, external_rigid_body_key_);
   data.load_static.setup_particle(name, m, cur, rigid_bodies);
-  data.load_local_coordinates.setup_particle(name, state, m, cur, rigid_bodies);
+  IMP::kernel::ParticleIndex rb = data.load_global_coordinates.setup_particle(
+      name, state, m, cur, rigid_bodies);
+  IMP::kernel::ParticleIndex lrb = data.load_local_coordinates.setup_particle(
+      name, state, m, cur, rigid_bodies);
   data.load_static_coordinates.setup_particle(name, state, m, cur,
                                               rigid_bodies);
-  data.load_global_coordinates.setup_particle(name, state, m, cur,
-                                              rigid_bodies);
-
-  if (core::RigidBody::get_is_setup(m, cur)) {
-    rigid_bodies.push_back(cur);
+  if (rb != IMP::kernel::ParticleIndex()) {
+    rigid_bodies.push_back(rb);
+  } else if (lrb != IMP::kernel::ParticleIndex()) {
+    rigid_bodies.push_back(lrb);
   }
 
   IMP_FOREACH(RMF::NodeConstHandle ch, name.get_children()) {
@@ -123,18 +130,24 @@ void HierarchyLoadLink::add_link_recursive(kernel::Model *m,
                   "Names don't match");
   set_association(node, m->get_particle(cur), true);
   RMF::NodeConstHandles ch = node.get_children();
-  unsigned int state = get_coords_state(node, intermediate_particle_factory_,
-                                        reference_frame_factory_);
+  unsigned int state =
+      get_coords_state(node, intermediate_particle_factory_,
+                       reference_frame_factory_, external_rigid_body_key_);
   data.load_static.link_particle(node, m, cur, rigid_bodies);
-  data.load_global_coordinates.link_particle(node, state, m, cur, rigid_bodies);
+  kernel::ParticleIndex rb = data.load_global_coordinates.link_particle(
+      node, state, m, cur, rigid_bodies);
   // data.load_static_coordinates.link_particle(node, m, cur, rigid_bodies);
-  data.load_local_coordinates.link_particle(node, state, m, cur, rigid_bodies);
+  IMP::kernel::ParticleIndex lrb = data.load_local_coordinates.link_particle(
+      node, state, m, cur, rigid_bodies);
 
   do_link_particle(m, root, cur, node);
 
-  if (core::RigidBody::get_is_setup(m, cur)) {
-    rigid_bodies.push_back(cur);
+  if (rb != kernel::ParticleIndex()) {
+    rigid_bodies.push_back(rb);
+  } else if (lrb != kernel::ParticleIndex()) {
+    rigid_bodies.push_back(lrb);
   }
+
   int child = 0;
   for (unsigned int i = 0; i < ch.size(); ++i) {
     if (ch[i].get_type() == RMF::REPRESENTATION) {
@@ -159,7 +172,11 @@ void HierarchyLoadLink::do_add_link(kernel::Particle *o,
 HierarchyLoadLink::HierarchyLoadLink(RMF::FileConstHandle fh)
     : P("HierarchyLoadLink%1%"),
       intermediate_particle_factory_(fh),
-      reference_frame_factory_(fh) {}
+      reference_frame_factory_(fh) {
+  RMF::Category imp_cat = fh.get_category("IMP");
+  external_rigid_body_key_ =
+      fh.get_key(imp_cat, "external frame", RMF::IntTraits());
+}
 
 void HierarchySaveLink::do_add(kernel::Particle *p, RMF::NodeHandle cur) {
   IMP_USAGE_CHECK(atom::Hierarchy(p).get_is_valid(true),
@@ -213,7 +230,11 @@ void HierarchySaveLink::add_recursive(Model *m, kernel::ParticleIndex root,
   }
 }
 
-HierarchySaveLink::HierarchySaveLink(RMF::FileHandle)
-    : P("HierarchySaveLink%1%") {}
+HierarchySaveLink::HierarchySaveLink(RMF::FileHandle f)
+    : P("HierarchySaveLink%1%") {
+  RMF::Category imp_cat = f.get_category("IMP");
+  external_rigid_body_key_ =
+      f.get_key(imp_cat, "external frame", RMF::IntTraits());
+}
 
 IMPRMF_END_NAMESPACE

@@ -222,8 +222,7 @@ void HierarchySaveStatic::setup_node(kernel::Model *m, kernel::ParticleIndex p,
     atom::Fragment d(m, p);
     Ints idx = d.get_residue_indexes();
     if (!idx.empty()) {
-      fragment_factory_.get(n)
-          .set_indexes(RMF::Ints(idx.begin(), idx.end()));
+      fragment_factory_.get(n).set_indexes(RMF::Ints(idx.begin(), idx.end()));
     }
   }
   if (display::Colored::get_is_setup(m, p)) {
