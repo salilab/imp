@@ -89,13 +89,13 @@ void HierarchyLoadLink::create_recursive(kernel::Model *m,
   if (core::RigidBody::get_is_setup(m, cur)) {
     rigid_bodies.push_back(cur);
   }
-  RMF::NodeConstHandles ch = name.get_children();
-  for (unsigned int i = 0; i < ch.size(); ++i) {
-    if (ch[i].get_type() == RMF::REPRESENTATION) {
-      kernel::ParticleIndex child = m->add_particle(ch[i].get_name());
+
+  IMP_FOREACH(RMF::NodeConstHandle ch, name.get_children()) {
+    if (ch.get_type() == RMF::REPRESENTATION) {
+      kernel::ParticleIndex child = m->add_particle(ch.get_name());
       atom::Hierarchy(m, cur)
           .add_child(atom::Hierarchy::setup_particle(m, child));
-      create_recursive(m, root, child, ch[i], rigid_bodies, data);
+      create_recursive(m, root, child, ch, rigid_bodies, data);
     }
   }
   do_setup_particle(m, root, cur, name);
