@@ -1,9 +1,8 @@
-## !/usr/bin/env python
+# !/usr/bin/env python
 
 import sys
 import os.path
 import glob
-from reindent import Reindenter
 import re
 import traceback
 try:
@@ -45,17 +44,7 @@ def check_c_file(filename, errors):
             errors.append(
                 "%s:%d: error: Incomplete merge found." %
                 (filename, num + 1))
-        if len(line) > 80 and not url.search(line):
-            errors.append('%s:%d: error: Line is longer than 80 characters.'
-                          % (filename, num + 1))
-        if line.find('\t') >= 0:
-            errors.append(
-                '%s:%d: error: Line contains tabs.' %
-                (filename, num + 1))
         _check_do_not_commit(line, filename, num, errors)
-        if srch.search(line):
-            errors.append('%s:%d: error: Line has trailing whitespace'
-                          % (filename, num + 1))
         if not filename.endswith(".cpp") and line.startswith("#define ") \
            and not line.startswith("#define IMP") \
            and not line.startswith("#define EIGEN_YES_I_KNOW_SPARSE_"
@@ -73,10 +62,6 @@ def check_c_file(filename, errors):
             configh = True
         if blank and num == 0:
             errors.append('%s:1: File has leading blank line(s)' % filename)
-    if len(fh) > 0 and len(fh) > 2 and len(fh[-2]) == 0:
-        errors.append(
-            '%s:%d: File has trailing blank line(s)' %
-            (filename, len(fh)))
     if exported and filename.endswith(".h") and not file_line and module:
         errors.append(
             '%s:2: Exported header must have a line \\file %s/%s' %
@@ -129,15 +114,6 @@ def check_python_file(filename, errors):
                 errors.append(
                     '%s:%d: Examples should not use import from as that confuses doxygen: ' %
                     (filename, num + 1) + line)
-    fh = file(filename, "r")
-    r = Reindenter(fh)
-    try:
-        if 'compat_python' not in filename and r.run():
-            errors.append('Python file ' + filename + ' has odd indentation; '
-                          + 'please run through tools/reindent.py first.')
-    except Exception:
-        print >> sys.stderr, "reindent.py FAILED on %s:" % filename
-        raise
 
 
 def get_file(filename):
@@ -160,8 +136,7 @@ def check_modified_file(filename, errors):
             cpp_format.check_header_file(get_file(filename), errors)
         elif cpp_format and filename.endswith('.cpp'):
             cpp_format.check_cpp_file(get_file(filename), errors)
-    elif filename.endswith('.py') or filename.endswith('SConscript') \
-            or filename.endswith('SConstruct'):
+    elif filename.endswith('.py'):
         check_python_file(filename, errors)
 
 
