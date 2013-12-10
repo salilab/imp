@@ -46,7 +46,6 @@ class IMPCOREEXPORT MovedSingletonContainer
   void do_after_evaluate(DerivativeAccumulator *);
   void initialize();
   virtual void validate() const = 0;
-  //! Track the changes with the specified keys.
   MovedSingletonContainer(SingletonContainer *pc, double threshold,
                           std::string name);
 
