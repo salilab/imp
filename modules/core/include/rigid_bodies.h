@@ -95,10 +95,12 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   void add_rigid_body_member(kernel::ParticleIndex pi);
 
  public:
+  /** This method does not return non-rigid members. */
   RigidMembers get_members() const;
 
   //! Return the members as particle pointers
-  /** This member function is here for efficiency.*/
+  /** This member function is here for efficiency. This includes rigid and
+      non-rigid members, but not rigid body members. */
   const kernel::ParticleIndexes &get_member_particle_indexes() const {
     static kernel::ParticleIndexes empty;
     if (get_model()->get_has_attribute(internal::rigid_body_data().members_,
@@ -110,6 +112,9 @@ class IMPCOREEXPORT RigidBody : public XYZ {
     }
   }
 
+  //! Return the members as particle pointers
+  /** This member function is here for efficiency. This includes rigid and
+      non-rigid members, but not rigid body members. */
   const kernel::ParticleIndexes &get_body_member_particle_indexes() const {
     static kernel::ParticleIndexes empty;
     if (get_model()->get_has_attribute(
