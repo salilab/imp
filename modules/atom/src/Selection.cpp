@@ -18,7 +18,7 @@
 #include <IMP/atom/Mass.h>
 #include <IMP/atom/Molecule.h>
 #include <IMP/atom/Residue.h>
-#include <IMP/atom/Resolution.h>
+#include <IMP/atom/Representation.h>
 #include <IMP/atom/bond_decorators.h>
 #include <IMP/atom/distance.h>
 #include <IMP/atom/estimates.h>
@@ -250,6 +250,18 @@ Selection::SearchResult Selection::search(
     kernel::Model *m, kernel::ParticleIndex pi,
     boost::dynamic_bitset<> parent) const {
   IMP_FUNCTION_LOG;
+  // to handle representations
+  Hierarchies chs;
+  if (Representation::get_is_setup(m, pi)) {
+    if (resolution_ == ALL_RESOLUTIONS) {
+      chs = Representation(m, pi).get_representations(BALLS);
+      IMP_INTERNAL_CHECK(chs.back().get_particle_index() == pi,
+                         "Current is not on the back");
+      chs.pop_back();
+    } else {
+      pi = Representation(m, pi).get_representation(resolution_, BALLS);
+    }
+  }
   IMP_LOG_VERBOSE("Searching " << m->get_particle_name(pi) << " missing "
                                << parent.count() << std::endl);
   for (unsigned int i = 0; i < predicates_.size(); ++i) {
@@ -263,12 +275,7 @@ Selection::SearchResult Selection::search(
   kernel::ParticleIndexes children;
   bool children_covered = true;
   bool matched = parent.none();
-  Hierarchies chs;
-  if (Resolution::get_is_setup(m, pi)) {
-    chs = Resolution(cur).get_children(resolution_, BALLS);
-  } else {
-    chs = cur.get_children();
-  }
+  chs += cur.get_children();
   IMP_FOREACH(Hierarchy ch, chs) {
     SearchResult curr = search(m, ch, parent);
     matched |= curr.get_match();
