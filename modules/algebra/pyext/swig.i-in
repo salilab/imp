@@ -64,7 +64,7 @@ namespace multi_array_types {
 
 %extend IMP::algebra::GridD {
   IMP::base::Vector<IMP::algebra::GridIndexD<D> > get_indexes(IMP::algebra::BoundingBoxD<D> bb) {
-     boost::iterator_range<typename Storage::IndexIterator> is = self->get_indexes(bb);
+     boost::iterator_range<Storage::IndexIterator> is = self->get_indexes(bb);
      return IMP::base::Vector<IMP::algebra::GridIndexD<D> >(is.begin(), is.end());
   }
   IMP::base::Vector<IMP::algebra::ExtendedGridIndexD<D> > get_extended_indexes(IMP::algebra::BoundingBoxD<D> bb) {
