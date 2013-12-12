@@ -39,6 +39,11 @@ def mkdir(path, clean=True):
             # Remove old lists of Python tests
             for f in glob.glob(os.path.join(path, "*.pytests")):
                 os.unlink(f)
+        else:
+            # clean broken links
+            for f in glob.glob(os.path.join(path, "*")):
+                if os.path.islink(f) and not os.path.exists(os.readlink(f)):
+                    os.unlink(f)
         return
     if os.path.isfile(path):
         os.unlink(path)
@@ -132,12 +137,12 @@ def link_dir(source_dir, target_dir, match=["*"], exclude=[],
         k
     exclude = exclude + ["SConscript", "CMakeLists.txt", ".svn"]
     # print "linking", source_dir, target_dir
+    mkdir(target_dir, clean=False)
     if clean:
         existing_links = get_existing_links(target_dir)
     # Don't clean links here, as that forces any valid symlinks to be
     # recreated (potentially forcing a useless rebuild). We'll handle them
     # at the end of this function.
-    mkdir(target_dir, clean=False)
     files = []
     targets = {}
     for m in match:
