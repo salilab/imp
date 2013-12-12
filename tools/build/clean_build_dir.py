@@ -47,11 +47,19 @@ def clean_headers():
         os.unlink(f)
 
 
+def clean_pyc(dir):
+    for root, dirnames, filenames in os.walk('.'):
+        for d in dirnames:
+            for f in tools.get_glob([os.path.join(d, "*.pyc")]):
+                os.unlink(f)
+
+
 def main():
     check_config()
     declare_container()
     build_info()
     clean_headers()
+    clean_pyc("lib")
 
 if __name__ == '__main__':
     main()
