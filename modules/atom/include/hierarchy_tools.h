@@ -168,13 +168,13 @@ class HierarchyGeometry : public display::SingletonGeometry {
       components_;
 
  public:
-  HierarchyGeometry(core::Hierarchy d, double resolution = -1)
+  HierarchyGeometry(core::Hierarchy d, double resolution = 0)
       : SingletonGeometry(d), res_(resolution) {}
   display::Geometries get_components() const {
     display::Geometries ret;
     atom::Hierarchy d(get_particle());
     atom::Selection sel(d);
-    sel.set_target_radius(res_);
+    sel.set_resolution(res_);
     kernel::ParticlesTemp ps = sel.get_selected_particles();
     for (unsigned int i = 0; i < ps.size(); ++i) {
       if (components_.find(ps[i]) == components_.end()) {

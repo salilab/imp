@@ -39,19 +39,19 @@
 #include <algorithm>
 IMPATOM_BEGIN_NAMESPACE
 
-Selection::Selection() : radius_(-1) { m_ = nullptr; }
-Selection::Selection(kernel::Particle *h) : radius_(-1) {
+Selection::Selection() : resolution_(0) { m_ = nullptr; }
+Selection::Selection(kernel::Particle *h) : resolution_(0) {
   set_hierarchies(h->get_model(), kernel::ParticleIndexes(1, h->get_index()));
 }
-Selection::Selection(Hierarchy h) : radius_(-1) {
+Selection::Selection(Hierarchy h) : resolution_(0) {
   set_hierarchies(h.get_model(),
                   kernel::ParticleIndexes(1, h.get_particle_index()));
 }
 Selection::Selection(kernel::Model *m, const kernel::ParticleIndexes &pis)
-    : radius_(-1) {
+    : resolution_(0) {
   set_hierarchies(m, pis);
 }
-Selection::Selection(const Hierarchies &h) : radius_(-1) {
+Selection::Selection(const Hierarchies &h) : resolution_(0) {
   if (h.empty()) {
     m_ = nullptr;
     return;
@@ -59,7 +59,7 @@ Selection::Selection(const Hierarchies &h) : radius_(-1) {
     set_hierarchies(h[0].get_model(), IMP::internal::get_index(h));
   }
 }
-Selection::Selection(const kernel::ParticlesTemp &h) : radius_(-1) {
+Selection::Selection(const kernel::ParticlesTemp &h) : resolution_(0) {
   if (h.empty()) {
     m_ = nullptr;
     return;
@@ -69,7 +69,7 @@ Selection::Selection(const kernel::ParticlesTemp &h) : radius_(-1) {
 }
 // for C++
 Selection::Selection(Hierarchy h, std::string molname, int residue_index)
-    : radius_(-1) {
+    : resolution_(0) {
   set_hierarchies(h.get_model(),
                   kernel::ParticleIndexes(1, h.get_particle_index()));
   set_molecules(Strings(1, molname));
@@ -262,16 +262,9 @@ Selection::SearchResult Selection::search(
   kernel::ParticleIndexes children;
   bool children_covered = true;
   bool matched = parent.none();
-  double sum_radii = 0;
-  int num_radii = 0;
-  for (unsigned int i = 0; i < cur.get_number_of_children(); ++i) {
-    SearchResult curr =
-        search(m, cur.get_child(i).get_particle_index(), parent);
+  IMP_FOREACH(Hierarchy ch, cur.get_children(resolution_, BALLS)) {
+    SearchResult curr = search(m, ch, parent);
     matched |= curr.get_match();
-    if (curr.get_radius() >= 0) {
-      sum_radii += curr.get_radius();
-      ++num_radii;
-    }
     if (curr.get_match()) {
       if (curr.get_indexes().empty()) {
         children_covered = false;
@@ -284,19 +277,13 @@ Selection::SearchResult Selection::search(
     IMP_LOG_VERBOSE("Matched " << m->get_particle_name(pi) << " with "
                                << children << " and " << children_covered
                                << std::endl);
-    double my_radius = -std::numeric_limits<double>::max();
-    if (core::XYZR::get_is_setup(m, pi)) {
-      my_radius = core::XYZR(m, pi).get_radius();
-    }
-    double their_radius = sum_radii / num_radii;
-    if (children_covered && !children.empty() &&
-        std::abs(my_radius - radius_) > std::abs(their_radius - radius_)) {
-      return SearchResult(true, their_radius, children);
+    if (children_covered && !children.empty()) {
+      return SearchResult(true, children);
     } else {
-      return SearchResult(true, my_radius, kernel::ParticleIndexes(1, pi));
+      return SearchResult(true, kernel::ParticleIndexes(1, pi));
     }
   }
-  return SearchResult(false, -1, kernel::ParticleIndexes());
+  return SearchResult(false, kernel::ParticleIndexes());
 }
 
 ParticlesTemp Selection::get_selected_particles() const {
@@ -561,7 +548,7 @@ Restraint *create_excluded_volume_restraint(const Hierarchies &hs,
   Selections ss;
   for (unsigned int i = 0; i < hs.size(); ++i) {
     Selection s(hs[i]);
-    s.set_target_radius(resolution);
+    s.set_resolution(resolution);
     ss.push_back(s);
   }
   return create_excluded_volume_restraint(ss);
