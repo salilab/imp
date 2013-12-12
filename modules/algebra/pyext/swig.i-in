@@ -62,6 +62,19 @@ namespace multi_array_types {
 }
 }
 
+%extend IMP::algebra::GridD {
+  IMP::base::Vector<IMP::algebra::GridIndexD<D> > get_indexes(IMP::algebra::BoundingBoxD<D> bb) {
+     boost::iterator_range<typename Storage::IndexIterator> is = self->get_indexes(bb);
+     return IMP::base::Vector<IMP::algebra::GridIndexD<D> >(is.begin(), is.end());
+  }
+  IMP::base::Vector<IMP::algebra::ExtendedGridIndexD<D> > get_extended_indexes(IMP::algebra::BoundingBoxD<D> bb) {
+     typedef IMP::algebra::ExtendedGridIndexD<D> EI;
+     typedef IMP::algebra::internal::GridIndexIterator<EI, IMP::algebra::internal::AllItHelp<EI, EI> > It;
+     boost::iterator_range<It> is = self->get_extended_indexes(bb);
+     return IMP::base::Vector<IMP::algebra::ExtendedGridIndexD<D> >(is.begin(), is.end());
+  }
+}
+
 
 /* to extend */
 %include "IMP/algebra/GeometricPrimitiveD.h"

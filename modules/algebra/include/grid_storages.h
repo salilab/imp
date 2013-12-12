@@ -345,7 +345,7 @@ class SparseGridStorageD : public Base {
     }
     return f;
   }
-
+#ifndef IMP_DOXYGEN
   //! Return the index which has no lower index in each coordinate
   ExtendedGridIndexD<D> get_minimum_extended_index() const {
     IMP_USAGE_CHECK(!data_.empty(), "No voxels in grid.");
@@ -372,6 +372,7 @@ class SparseGridStorageD : public Base {
     }
     return ret;
   }
+#endif
 };
 IMPALGEBRA_END_NAMESPACE
 

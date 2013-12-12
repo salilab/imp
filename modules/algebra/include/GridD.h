@@ -305,22 +305,45 @@ class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
   using Storage::indexes_end;
   typename Storage::IndexIterator indexes_begin(const BoundingBoxD<D> &bb)
       const {
-    ExtendedGridIndexD<3> lb = get_extended_index(bb.get_corner(0));
-    ExtendedGridIndexD<3> ub = get_extended_index(bb.get_corner(1));
+    ExtendedGridIndexD<D> lb = get_extended_index(bb.get_corner(0));
+    ExtendedGridIndexD<D> ub = get_extended_index(bb.get_corner(1));
     return Storage::indexes_begin(lb, ub);
   }
   typename Storage::IndexIterator indexes_end(const BoundingBoxD<D> &) const {
     // ExtendedIndex lb= get_extended_index(bb.get_corner(0));
     // ExtendedIndex ub= get_extended_index(bb.get_corner(1));
-    return Storage::indexes_end(ExtendedGridIndexD<3>(),
-                                ExtendedGridIndexD<3>());
+    return Storage::indexes_end(ExtendedGridIndexD<D>(),
+                                ExtendedGridIndexD<D>());
   }
+
+  typedef internal::GridIndexIterator<
+      ExtendedGridIndexD<D>,
+      internal::AllItHelp<ExtendedGridIndexD<D>, ExtendedGridIndexD<D> > >
+      ExtendedIndexIterator;
+  ExtendedIndexIterator extended_indexes_begin(const BoundingBoxD<D> &bb)
+      const {
+    ExtendedGridIndexD<D> lb = get_extended_index(bb.get_corner(0));
+    ExtendedGridIndexD<D> ub = get_extended_index(bb.get_corner(1));
+    ExtendedGridIndexD<D> eub = ub.get_offset(1, 1, 1);
+    return ExtendedIndexIterator(lb, eub);
+  }
+  ExtendedIndexIterator extended_indexes_end(const BoundingBoxD<D> &) const {
+    // ExtendedIndex lb= get_extended_index(bb.get_corner(0));
+    // ExtendedIndex ub= get_extended_index(bb.get_corner(1));
+    return ExtendedIndexIterator();
+  }
+
   typedef boost::iterator_range<typename Storage::IndexIterator> Indexes;
   Indexes get_indexes(const BoundingBoxD<D> &bb) const {
     return Indexes(indexes_begin(bb), indexes_end(bb));
   }
   Indexes get_all_indexes() const {
     return Indexes(Storage::all_indexes_begin(), Storage::all_indexes_end());
+  }
+  typedef boost::iterator_range<ExtendedIndexIterator> ExtendedIndexes;
+  ExtendedIndexes get_extended_indexes(const BoundingBoxD<D> &bb) const {
+    return ExtendedIndexes(extended_indexes_begin(bb),
+                           extended_indexes_end(bb));
   }
 #endif
   /** @} */
