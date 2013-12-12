@@ -18,6 +18,7 @@
 #include <IMP/atom/Mass.h>
 #include <IMP/atom/Molecule.h>
 #include <IMP/atom/Residue.h>
+#include <IMP/atom/Resolution.h>
 #include <IMP/atom/bond_decorators.h>
 #include <IMP/atom/distance.h>
 #include <IMP/atom/estimates.h>
