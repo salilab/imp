@@ -6,6 +6,8 @@
  */
 
 #include <IMP/atom/Resolution.h>
+#include <IMP/atom/Atom.h>
+#include <IMP/atom/Mass.h>
 #include <IMP/base/log.h>
 
 #include <boost/unordered_map.hpp>
@@ -19,7 +21,7 @@ double get_resolution(const Hierarchies& hs) {
   double count = 0;
   IMP_FOREACH(Hierarchy h, hs) {
     IMP_FOREACH(Hierarchy l, get_leaves(h)) {
-      sum += core::XYZR(l).get_radius();
+      sum += Mass(l).get_mass();
       ++count;
     }
   }
@@ -53,11 +55,14 @@ ParticleIndexesKey Resolution::get_children_key(unsigned int index) {
 }
 
 void Resolution::do_setup_particle(kernel::Model* m, kernel::ParticleIndex pi,
-                                   const Hierarchies& children) {
+                                   const Hierarchies& children,
+                                   double resolution) {
   if (!Hierarchy::get_is_setup(m, pi)) {
     Hierarchy::setup_particle(m, pi);
   }
-  double resolution = get_resolution(children);
+  if (resolution < 0) {
+    resolution = get_resolution(children);
+  }
   ParticleIndexes pis;
   IMP_FOREACH(Hierarchy h, children) { pis.push_back(h.get_particle_index()); }
   m->add_attribute(get_types_key(), pi, Ints(1, BALLS));
@@ -118,10 +123,17 @@ Hierarchies Resolution::get_all_children(RepresentationType type) {
 }
 
 void Resolution::add_resolution(const Hierarchies& children,
-                                RepresentationType type) {
-  double resolution = get_resolution(children);
+                                RepresentationType type, double resolution) {
+  if (resolution < 0) {
+    resolution = get_resolution(children);
+  }
   ParticleIndexes pis;
-  IMP_FOREACH(Hierarchy h, children) { pis.push_back(h.get_particle_index()); }
+  IMP_FOREACH(Hierarchy h, children) {
+    pis.push_back(h.get_particle_index());
+    // fake the parent
+    get_model()->add_attribute(Hierarchy::get_traits().get_parent_key(),
+                               h.get_particle_index(), get_particle_index());
+  }
   int index =
       get_model()->get_attribute(get_types_key(), get_particle_index()).size();
   get_model()

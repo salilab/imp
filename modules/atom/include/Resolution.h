@@ -30,6 +30,9 @@ enum RepresentationType {
 //! A decorator for a resolution.
 /** It stores a number of copies of its sub hierarchy each with an associated
  * resolution. You can used it to get the representation at a given resolution.
+ *
+ * \note Only one Resolution node is allowed in any path up the tree as nesting
+ * them does not have a clear meaning.
  */
 class IMPATOMEXPORT Resolution : public Hierarchy {
   static IntsKey get_types_key();
@@ -37,12 +40,16 @@ class IMPATOMEXPORT Resolution : public Hierarchy {
   static FloatKey get_resolution_key(unsigned int index);
 
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
-                                const Hierarchies &ch);
+                                const Hierarchies &ch, double resolution = -1);
 
  public:
   /** The children are added at a resolution computed using the get_resolution()
    * function */
   IMP_DECORATOR_SETUP_1(Resolution, const Hierarchies &, children);
+  /** For testing only. Will go away. */
+  IMP_DECORATOR_SETUP_2(Resolution, const Hierarchies &, children, double,
+                        resolution);
+
   IMP_DECORATOR_METHODS(Resolution, Hierarchy);
 
   static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
@@ -62,16 +69,18 @@ class IMPATOMEXPORT Resolution : public Hierarchy {
   Hierarchies get_all_children(RepresentationType type = BALLS);
 
   /** Set the children for a given resolution. The resolution is computed using
-   * get_resolution(). /*/
+   * get_resolution().
+   * \note The resolution parameter will go away.
+   */
   void add_resolution(const Hierarchies &children,
-                      RepresentationType type = BALLS);
+                      RepresentationType type = BALLS, double resolution = -1);
 };
 
 IMP_DECORATORS(Resolution, Resolutions, Hierarchies);
 
 /** Return an estimate of the resolution of the hierarchy as used by Resolution.
 
-    It is currently the average radii of the leaves. */
+    It is currently the averages mass of the leaves. */
 IMPATOMEXPORT double get_resolution(const Hierarchies &ch);
 
 IMPATOM_END_NAMESPACE
