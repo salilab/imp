@@ -1459,33 +1459,8 @@ algebra::GridD<3, algebra::DenseGridStorageD<3, float>, float> get_grid(
 
 DensityMap *create_density_map(
     const algebra::GridD<3, algebra::DenseGridStorageD<3, float>, float> &arg) {
-  IMP_FUNCTION_LOG;
-  typedef algebra::GridD<3, algebra::DenseGridStorageD<3, float>, float> G;
-  IMP_USAGE_CHECK(
-      std::abs(arg.get_unit_cell()[0] - arg.get_unit_cell()[1]) < .01,
-      "The passed grid does not seem to have cubic voxels");
-  base::Pointer<DensityMap> ret = create_density_map(
-      algebra::get_bounding_box(arg), arg.get_unit_cell()[0]);
-  IMP_USAGE_CHECK(arg.get_number_of_voxels(0) ==
-                      static_cast<unsigned int>(ret->get_header()->get_nx()),
-                  "X voxels don't match");
-  IMP_USAGE_CHECK(arg.get_number_of_voxels(1) ==
-                      static_cast<unsigned int>(ret->get_header()->get_ny()),
-                  "Y voxels don't match");
-  IMP_USAGE_CHECK(arg.get_number_of_voxels(2) ==
-                      static_cast<unsigned int>(ret->get_header()->get_nz()),
-                  "Z voxels don't match");
-  for (unsigned int i = 0; i < arg.get_number_of_voxels(0); ++i) {
-    for (unsigned int j = 0; j < arg.get_number_of_voxels(1); ++j) {
-      for (unsigned int k = 0; k < arg.get_number_of_voxels(2); ++k) {
-        G::ExtendedIndex ei(i, j, k);
-        G::Index gi = arg.get_index(ei);
-        long vi = ret->xyz_ind2voxel(i, j, k);
-        ret->set_value(vi, arg[gi]);
-      }
-    }
-  }
-  return ret.release();
+  return create_density_map<algebra::DenseGridStorageD<3, float>, float,
+                            algebra::DefaultEmbeddingD<3> >(arg);
 }
 
 DensityMap *get_binarized_interior(DensityMap *dmap) {

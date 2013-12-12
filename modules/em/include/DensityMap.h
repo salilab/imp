@@ -640,11 +640,39 @@ IMPEMEXPORT
 algebra::GridD<3, algebra::DenseGridStorageD<3, float>, float> get_grid(
     DensityMap *in_map);
 
+/** Create a density map from an arbitrary IMP::algebra::GridD */
+template <class S, class V, class E>
+inline DensityMap *create_density_map(
+    const IMP::algebra::GridD<3, S, V, E> &arg) {
+  IMP_FUNCTION_LOG;
+  typedef IMP::algebra::GridD<3, S, V, E> Grid;
+  IMP_USAGE_CHECK(
+      std::abs(arg.get_unit_cell()[0] - arg.get_unit_cell()[1]) < .01,
+      "The passed grid does not seem to have cubic voxels");
+  base::Pointer<DensityMap> ret = create_density_map(
+      algebra::get_bounding_box(arg), arg.get_unit_cell()[0]);
+  IMP_USAGE_CHECK(arg.get_number_of_voxels(0) ==
+                      static_cast<unsigned int>(ret->get_header()->get_nx()),
+                  "X voxels don't match");
+  IMP_USAGE_CHECK(arg.get_number_of_voxels(1) ==
+                      static_cast<unsigned int>(ret->get_header()->get_ny()),
+                  "Y voxels don't match");
+  IMP_USAGE_CHECK(arg.get_number_of_voxels(2) ==
+                      static_cast<unsigned int>(ret->get_header()->get_nz()),
+                  "Z voxels don't match");
+  IMP_FOREACH(typename Grid::Index i, arg.get_all_indexes()) {
+    long vi = ret->xyz_ind2voxel(i[0], i[1], i[2]);
+    ret->set_value(vi, arg[vi]);
+  }
+  return ret.release();
+}
+
 /** Return a density map with the values taken from the grid.
 */
 IMPEMEXPORT
 DensityMap *create_density_map(
     const algebra::GridD<3, algebra::DenseGridStorageD<3, float>, float> &grid);
+
 //!Return a binaries density map with 1 for voxels that are internal
 // in the input density map
 IMPEMEXPORT
