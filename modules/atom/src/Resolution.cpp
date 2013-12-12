@@ -33,17 +33,17 @@ IntsKey Resolution::get_types_key() {
 }
 
 FloatKey Resolution::get_resolution_key(unsigned int index) {
-  static boost::unorder_map<unsigned int, FloatKey> keys;
+  static boost::unordered_map<unsigned int, FloatKey> keys;
   if (keys.find(index) == keys.end()) {
     std::ostringstream oss;
     oss << "representation_resolution_" << index;
-    keys[index] = ParticleIndexesKey(oss.str());
+    keys[index] = FloatKey(oss.str());
   }
   return keys.find(index)->second;
 }
 
 ParticleIndexesKey Resolution::get_children_key(unsigned int index) {
-  static boost::unorder_map<unsigned int, ParticleIndexesKey> keys;
+  static boost::unordered_map<unsigned int, ParticleIndexesKey> keys;
   if (keys.find(index) == keys.end()) {
     std::ostringstream oss;
     oss << "representation_children_" << index;
@@ -60,11 +60,9 @@ void Resolution::do_setup_particle(kernel::Model* m, kernel::ParticleIndex pi,
   double resolution = get_resolution(children);
   ParticleIndexes pis;
   IMP_FOREACH(Hierarchy h, children) { pis.push_back(h.get_particle_index()); }
-  get_model()->add_attribute(get_types_key(), get_particle_index(),
-                             Ints(1, BALLS));
-  get_model()->add_attribute(get_resolution_key(0), get_particle_index(),
-                             resolution);
-  get_model()->add_attribute(get_children_key(0), get_particle_index(), pis);
+  m->add_attribute(get_types_key(), pi, Ints(1, BALLS));
+  m->add_attribute(get_resolution_key(0), pi, resolution);
+  m->add_attribute(get_children_key(0), pi, pis);
 }
 
 Hierarchies Resolution::get_children(double resolution,
@@ -74,19 +72,24 @@ Hierarchies Resolution::get_children(double resolution,
   int closest_index = -1;
   Ints types =
       get_model()->get_attribute(get_types_key(), get_particle_index());
+  IMP_LOG_VERBOSE("Found " << types.size() << " resolution levels"
+                           << std::endl);
   for (unsigned int i = 0; i < types.size(); ++i) {
-    double resolution =
+    double cur_resolution =
         get_model()->get_attribute(get_resolution_key(i), get_particle_index());
-    if (std::abs(resolution - resolutions[i]) <
+    if (std::abs(resolution - cur_resolution) <
             std::abs(resolution - closest_resolution) &&
         types[i] == type) {
       closest_index = i;
-      closest_resolution = resolutions[i];
+      closest_resolution = cur_resolution;
     }
   }
-  if (closest_index == -1)
+  if (closest_index == -1) {
+    IMP_LOG_VERBOSE("Returning highest resolution children" << std::endl);
     return get_children();
-  else {
+  } else {
+    IMP_LOG_VERBOSE("Returning children with resolution " << closest_resolution
+                                                          << std::endl);
     Hierarchies ret;
     IMP_FOREACH(ParticleIndex pi,
                 get_model()->get_attribute(get_children_key(closest_index),
@@ -113,8 +116,9 @@ Hierarchies Resolution::get_all_children(RepresentationType type) {
   if (type == BALLS) ret += get_children();
   return ret;
 }
-void Resolution::add_children(const Hierarchies& children,
-                              RepresentationType type) {
+
+void Resolution::add_resolution(const Hierarchies& children,
+                                RepresentationType type) {
   double resolution = get_resolution(children);
   ParticleIndexes pis;
   IMP_FOREACH(Hierarchy h, children) { pis.push_back(h.get_particle_index()); }
@@ -123,11 +127,23 @@ void Resolution::add_children(const Hierarchies& children,
   get_model()
       ->access_attribute(get_types_key(), get_particle_index())
       .push_back(type);
-  get_model()
-      ->access_attribute(get_resolution_key(index), get_particle_index())
-      .push_back(resolution);
+  get_model()->add_attribute(get_resolution_key(index), get_particle_index(),
+                             resolution);
   get_model()->add_attribute(get_children_key(index), get_particle_index(),
                              pis);
+}
+
+void Resolution::show(std::ostream& out) const {
+  Floats resolutions;
+  for (unsigned int i = 0;
+       i < get_model()
+               ->get_attribute(get_types_key(), get_particle_index())
+               .size();
+       ++i) {
+    resolutions.push_back(get_model()->get_attribute(get_resolution_key(i),
+                                                     get_particle_index()));
+  }
+  out << resolutions;
 }
 
 IMPATOM_END_NAMESPACE

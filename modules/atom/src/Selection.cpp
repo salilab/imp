@@ -262,7 +262,13 @@ Selection::SearchResult Selection::search(
   kernel::ParticleIndexes children;
   bool children_covered = true;
   bool matched = parent.none();
-  IMP_FOREACH(Hierarchy ch, cur.get_children(resolution_, BALLS)) {
+  Hierarchies chs;
+  if (Resolution::get_is_setup(m, pi)) {
+    chs = Resolution(cur).get_children(resolution_, BALLS);
+  } else {
+    chs = cur.get_children();
+  }
+  IMP_FOREACH(Hierarchy ch, chs) {
     SearchResult curr = search(m, ch, parent);
     matched |= curr.get_match();
     if (curr.get_match()) {

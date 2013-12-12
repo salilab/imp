@@ -32,9 +32,9 @@ enum RepresentationType {
  * resolution. You can used it to get the representation at a given resolution.
  */
 class IMPATOMEXPORT Resolution : public Hierarchy {
-  IntsKey get_types_key();
-  ParticleIndexesKey get_children_key(unsigned int index);
-  FloatKey get_resolution_key(unsigned int index);
+  static IntsKey get_types_key();
+  static ParticleIndexesKey get_children_key(unsigned int index);
+  static FloatKey get_resolution_key(unsigned int index);
 
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                                 const Hierarchies &ch);
@@ -42,8 +42,7 @@ class IMPATOMEXPORT Resolution : public Hierarchy {
  public:
   /** The children are added at a resolution computed using the get_resolution()
    * function */
-  IMP_DECORATOR_SETUP_1(Resolution, const Hierarchies &,
-                        children);
+  IMP_DECORATOR_SETUP_1(Resolution, const Hierarchies &, children);
   IMP_DECORATOR_METHODS(Resolution, Hierarchy);
 
   static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
@@ -64,8 +63,8 @@ class IMPATOMEXPORT Resolution : public Hierarchy {
 
   /** Set the children for a given resolution. The resolution is computed using
    * get_resolution(). /*/
-  void set_children(const Hierarchies &children,
-                    RepresentationType type = BALLS);
+  void add_resolution(const Hierarchies &children,
+                      RepresentationType type = BALLS);
 };
 
 IMP_DECORATORS(Resolution, Resolutions, Hierarchies);
