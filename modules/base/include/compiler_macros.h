@@ -146,6 +146,7 @@
   IMP_CLANG_PRAGMA(diagnostic push)                             \
       IMP_CLANG_PRAGMA(diagnostic warning "-Wall")              \
       IMP_CLANG_PRAGMA(diagnostic warning "-Wextra")            \
+      IMP_CLANG_PRAGMA(diagnostic warning "-Weverything")       \
       IMP_CLANG_PRAGMA(diagnostic ignored "-Wconversion")       \
       IMP_CLANG_PRAGMA(diagnostic ignored "-Wc++11-extensions") \
       IMP_CLANG_PRAGMA(diagnostic ignored "-Wc++11-compat")     \
