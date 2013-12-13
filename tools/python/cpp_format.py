@@ -36,7 +36,6 @@ def check_tokens(scan, filename, header, errors):
     if filename.find("test_") == -1:
         # we don't do it for python tests
         check_comment_header(scan, filename, errors)
-    check_eol(scan, filename, errors)
     if header:
         # Handle older versions of pygments which concatenate \n and # tokens
         if len(scan) >= 3 and scan[2][0] == token.Comment.Preproc \
@@ -53,17 +52,6 @@ def check_comment_header(scan, filename, errors):
                       'with a copyright notice and a description of the file')
 
 
-def check_eol(scan, filename, errors):
-    if len(scan) > 0 and ((scan[-1][0] not in (token.Comment.Preproc,
-                                               token.Text,
-                                               token.Comment.Single))
-                          or not scan[-1][1].endswith('\n')):
-        errors.append('%s:999: No end-of-line character at the ' % filename +
-                      'end of the last line in the file')
-        # Add an EOL so other checks don't complain
-        scan.append((token.Text, '\n'))
-
-
 def have_header_guard(scan):
     return len(scan) >= 11 \
         and scan[4][0] == token.Comment.Preproc \
@@ -73,15 +61,6 @@ def have_header_guard(scan):
         and scan[-3][0] == token.Comment.Preproc \
         and scan[-3][1].startswith('endif') \
         and scan[-2][0] in (token.Comment, token.Comment.Multiline)
-
-
-def header_guard_ok(scan, guard_prefix, guard_suffix):
-    """Make sure the guard has the correct prefix and suffix, and is consistent
-       between the #ifndef, #define and #endif lines"""
-    guard = scan[4][1][7:]
-    return guard.startswith(guard_prefix) and guard.endswith(guard_suffix) \
-        and scan[7][1] == 'define ' + guard \
-        and scan[-2][1] == '/* %s */' % guard
 
 
 def get_header_guard(filename):
@@ -108,9 +87,51 @@ def get_header_guard(filename):
 
 def check_header_start_end(scan, filename, errors):
     guard_prefix, guard_suffix = get_header_guard(filename)
-    if not have_header_guard(scan) \
-       or not header_guard_ok(scan, guard_prefix, guard_suffix):
-        header_guard = guard_prefix + '_' + guard_suffix
+    header_guard = guard_prefix + '_' + guard_suffix
+    bad = False
+    if not len(scan) >= 11:
+        bad = True
+    if not scan[4][0] == token.Comment.Preproc:
+        bad = True
+    if not scan[4][1].startswith('ifndef'):
+        errors.append('%s:%d: Header guard missing #ifndef.'
+                      % (filename, 1))
+        bad = True
+    if not scan[7][0] == token.Comment.Preproc:
+        bad = True
+    if not scan[7][1].startswith('define'):
+        errors.append('%s:%d: Header guard missing #definer.'
+                      % (filename, 1))
+        bad = True
+    if not scan[-3][0] == token.Comment.Preproc and not scan[-4][0] == token.Comment.Preproc:
+        bad = True
+    if not scan[-3][1].startswith('endif') and not scan[-4][1].startswith('endif'):
+        errors.append('%s:%d: Header guard missing #endif.'
+                      % (filename, 1))
+        bad = True
+    if not scan[-2][0] in (token.Comment, token.Comment.Multiline) and not scan[-3][0] in (token.Comment, token.Comment.Multiline):
+        errors.append('%s:%d: Header guard missing closing comment.'
+                      % (filename, 1))
+        bad = True
+
+    guard = scan[4][1][7:]
+    if not guard.startswith(guard_prefix):
+        errors.append('%s:%d: Header guard does not start with "%s".'
+                      % (filename, 1, guard_prefix))
+        bad = True
+    if not guard.endswith(guard_suffix):
+        errors.append('%s:%d: Header guard does not end with "%s".'
+                      % (filename, 1, guard_suffix))
+        bad = True
+    if not scan[7][1] == 'define ' + guard:
+        errors.append('%s:%d: Header guard does define "%s".'
+                      % (filename, 1, guard))
+        bad = True
+    if scan[-2][1] == '/* %s */' % guard:
+        errors.append('%s:%d: Header guard close does not have a comment of "/* %s */".'
+                      % (filename, 1, guard))
+        bad = True
+    if bad:
         errors.append('%s:%d: Missing or incomplete header guard.'
                       % (filename, 1) + """
 Header files should start with a comment, then a blank line, then the rest
@@ -123,5 +144,5 @@ namespace. For example,
 #ifndef %s
 #define %s
 ...
-#endif  /* %s */
+#endif /* %s */
 """ % (guard_prefix, guard_suffix, header_guard, header_guard, header_guard))
