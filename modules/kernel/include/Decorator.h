@@ -125,8 +125,8 @@ class IMPKERNELEXPORT Decorator : public base::Value {
   }
 
  protected:
-  Decorator(kernel::Model* m, ParticleIndex pi);
-  Decorator();
+  Decorator(Model* m, ParticleIndex pi) : model_(m), pi_(pi) {}
+  Decorator() {}
 
 #ifndef IMP_DOXYGEN
  public:
@@ -134,7 +134,6 @@ class IMPKERNELEXPORT Decorator : public base::Value {
   explicit Decorator(ParticleAdaptor p);
 
  public:
-  ParticleIndex get_particle_index() const { return pi_; }
 #ifdef _MSC_VER
   typedef Particle* ParticleP;
 #endif
@@ -162,12 +161,6 @@ class IMPKERNELEXPORT Decorator : public base::Value {
 #endif
 #endif
 
-  /** \name Methods provided by the Decorator class
-      The following methods are provided by the Decorator class.
-      @{
-  */
-
-  /** Returns the particle decorated by this decorator.*/
   /** Returns the particle decorated by this decorator.*/
   Particle* get_particle() const {
     if (!model_)
@@ -179,74 +172,26 @@ class IMPKERNELEXPORT Decorator : public base::Value {
     }
   }
 
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+#if !defined(SWIG)
   operator Particle*() const { return get_particle(); }
   Particle* operator->() const { return get_particle(); }
   operator ParticleIndex() const { return get_particle_index(); }
 #endif
 
+  /** Returns the particle index decorated by this decorator.*/
+  ParticleIndex get_particle_index() const { return pi_; }
+
   /** \brief Returns the Model containing the particle. */
   Model* get_model() const { return model_; }
-  // here just to make the docs symmetric
- private:
-  IMP_ONLY_DOXYGEN(int blah_);
-  //! @}
- public:
+
   IMP_HASHABLE_INLINE(Decorator, return boost::hash_value(get_particle()););
-#ifdef IMP_DOXYGEN
 
-  /** \name Methods that all decorators must have
-      All decorators must have the following methods. Decorators
-      which are parameterized (for example IMP::core::XYZR)
-      take an (optional) extra parameter after the Particle in
-      setup_particle(), and get_is_setup().
-      \note these are
-      not actually methods of the Decorator class itself.
-      @{
-  */
-  /** \brief Return true if the particle can be cast to the decorator.
-
-  That is, if get_is_setup() returns \c true, then it is
-  legal to construct an instance of the decorator with that particle.
-  If not, setup_particle() must be called first.
-  \code
-  IMP::kernel::Particle *p = new IMP::kernel::Particle(m);
-  // it is false
-  std::cout << IMP::core::XYZ::get_is_setup(p) << std::endl;
-  // As a result this is an error
-  IMP::core::XYZ d(p);
-  // now set it up
-  IMP::core::XYZ(p);
-  // now it is true
-  std::cout << IMP::core::XYZ::get_is_setup(p) << std::endl;
-  // and now this code is OK
-  IMP::core::XYZ d(p);
-  \endcode
-  */
-  static bool get_is_setup(Particle* p);
-
-  /** Create an instance of the Decorator from the particle that has
-      already been set up. The particle must have been set up already
-      (eg get_is_setup(p) must be true), but this is not
-      necessarily checked.
-  */
-  Decorator(Particle* p);
-  /** The default constructor must be defined and create a nullptr decorator,
-      analogous to a \c nullptr pointer in C++ or a \c None object in Python.
-  */
-  Decorator();
-//! @}
-#endif
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   typedef boost::false_type DecoratorHasTraits;
 #endif
 };
 
 #ifndef IMP_DOXYGEN
-
-inline Decorator::Decorator(kernel::Model* m, ParticleIndex pi)
-    : model_(m), pi_(pi) {};
-inline Decorator::Decorator() : pi_(-1) {}
 
 #define IMP_CONSTRAINT_DECORATOR_DECL(Name)                                \
  private:                                                                  \
