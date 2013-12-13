@@ -3,10 +3,11 @@
 """Build as many IMP components (modules, applications) as possible, even
    if some of them fail."""
 
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(sys.argv[0]), '..', 'build'))
 import tools
 import time
-import os
-import sys
 import optparse
 import subprocess
 import shutil
