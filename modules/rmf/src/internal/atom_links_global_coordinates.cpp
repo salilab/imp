@@ -8,6 +8,8 @@
 
 #include <IMP/rmf/internal/atom_links_global_coordinates.h>
 #include <IMP/rmf/internal/atom_links_coordinate_helpers.h>
+#include <IMP/atom/Hierarchy.h>
+#include <IMP/core/XYZ.h>
 #include <IMP/core/rigid_bodies.h>
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
