@@ -332,7 +332,7 @@ class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
     // ExtendedIndex ub= get_extended_index(bb.get_corner(1));
     return ExtendedIndexIterator();
   }
-
+  using Storage::get_indexes;
   typedef boost::iterator_range<typename Storage::IndexIterator> Indexes;
   Indexes get_indexes(const BoundingBoxD<D> &bb) const {
     return Indexes(indexes_begin(bb), indexes_end(bb));
@@ -340,11 +340,17 @@ class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
   Indexes get_all_indexes() const {
     return Indexes(Storage::all_indexes_begin(), Storage::all_indexes_end());
   }
+  using Storage::get_extended_indexes;
   typedef boost::iterator_range<ExtendedIndexIterator> ExtendedIndexes;
   ExtendedIndexes get_extended_indexes(const BoundingBoxD<D> &bb) const {
     return ExtendedIndexes(extended_indexes_begin(bb),
                            extended_indexes_end(bb));
   }
+#else
+  base::Vector<GridIndexD<D> > get_indexes(
+      const ExtendedGridIndexD<D> &lb, const ExtendedGridIndexD<D> &ub) const;
+  base::Vector<ExtendedGridIndexD<D> > get_extended_indexes(
+      const ExtendedGridIndexD<D> &lb, const ExtendedGridIndexD<D> &ub) const;
 #endif
   /** @} */
   /** \name Apply

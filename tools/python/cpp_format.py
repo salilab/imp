@@ -127,7 +127,7 @@ def check_header_start_end(scan, filename, errors):
         errors.append('%s:%d: Header guard does define "%s".'
                       % (filename, 1, guard))
         bad = True
-    if scan[-2][1] == '/* %s */' % guard:
+    if scan[-2][1] == '/* %s */' % guard and not scan[-2][2] == '/* %s */' % guard:
         errors.append('%s:%d: Header guard close does not have a comment of "/* %s */".'
                       % (filename, 1, guard))
         bad = True
