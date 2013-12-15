@@ -20,7 +20,7 @@ double get_resolution(kernel::Model* m, kernel::ParticleIndex pi) {
   double sum = 0;
   double count = 0;
   IMP_FOREACH(Hierarchy l, get_leaves(Hierarchy(m, pi))) {
-    sum += Mass(l).get_mass();
+    sum += core::XYZR(l).get_radius();
     ++count;
   }
   return sum / count;
@@ -148,19 +148,27 @@ void Representation::add_representation(ParticleIndexAdaptor rep,
   }
 }
 
-void Representation::show(std::ostream& out) const {
-  Floats resolutions;
-  resolutions.push_back(get_model()->get_attribute(get_base_resolution_key(),
-                                                   get_particle_index()));
-  for (unsigned int i = 0;
-       i < get_model()
-               ->get_attribute(get_types_key(), get_particle_index())
-               .size();
-       ++i) {
-    resolutions.push_back(get_model()->get_attribute(get_resolution_key(i),
-                                                     get_particle_index()));
+Floats Representation::get_resolutions(RepresentationType type) const {
+  Floats ret;
+  if (type == BALLS) {
+    ret.push_back(get_model()->get_attribute(get_base_resolution_key(),
+                                             get_particle_index()));
   }
-  out << resolutions;
+  if (get_model()->get_has_attribute(get_types_key(), get_particle_index())) {
+    Ints types =
+        get_model()->get_attribute(get_types_key(), get_particle_index());
+    for (unsigned int i = 0; i < types.size(); ++i) {
+      if (types[i] == type) {
+        ret.push_back(get_model()->get_attribute(get_resolution_key(i),
+                                                 get_particle_index()));
+      }
+    }
+  }
+  return ret;
+}
+
+void Representation::show(std::ostream& out) const {
+  out << get_resolutions();
 }
 
 IMPATOM_END_NAMESPACE

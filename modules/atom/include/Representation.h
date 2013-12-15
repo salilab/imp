@@ -69,6 +69,10 @@ class IMPATOMEXPORT Representation : public Hierarchy {
   void add_representation(kernel::ParticleIndexAdaptor rep,
                           RepresentationType type = BALLS,
                           double resolution = -1);
+
+  /** Return a list of all resolutions that are available for a specific
+   * RepresentationType. */
+  Floats get_resolutions(RepresentationType type = BALLS) const;
 };
 
 IMP_DECORATORS(Representation, Representations, Hierarchies);
@@ -76,7 +80,7 @@ IMP_DECORATORS(Representation, Representations, Hierarchies);
 /** Return an estimate of the resolution of the hierarchy as used by
    Representation.
 
-    It is currently the averages mass of the leaves. */
+    It is currently the averages radius of the leaves. */
 
 IMPATOMEXPORT double get_resolution(kernel::Model *m, kernel::ParticleIndex pi);
 
