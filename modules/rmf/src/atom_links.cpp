@@ -211,8 +211,7 @@ void HierarchySaveLink::add_recursive(Model *m, kernel::ParticleIndex root,
       data.save_local_coordinates.setup_node(m, p, cur, rigid_bodies);
   bool global_coords =
       data.save_global_coordinates.setup_node(m, p, cur, rigid_bodies);
-  /*bool static_coords =
-    data.save_static_coordinates.setup_node(m, p, cur, rigid_bodies);*/
+  data.save_static_coordinates.setup_node(m, p, cur, rigid_bodies);
   IMP_INTERNAL_CHECK(!local_coords || !global_coords,
                      "A particle can't have saved local and global coords");
 
