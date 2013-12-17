@@ -15,7 +15,7 @@
 #include "ProfileFitter.h"
 #include "ChiScore.h"
 #include "WeightedFitParameters.h"
-#include <Eigen/Dense>
+#include <IMP/algebra/eigen3/Eigen/Dense>
 
 IMPSAXS_BEGIN_NAMESPACE
 
@@ -64,13 +64,13 @@ class IMPSAXSEXPORT WeightedProfileFitter : public ProfileFitter<ChiScore> {
       float max_c2, float old_chi, std::vector<double>& weights) const;
 
  private:
-  Eigen::MatrixXf W_;  // weights matrix
+  IMP_Eigen::MatrixXf W_;  // weights matrix
 
   // weights matrix multiplied by experimental intensities vector
-  Eigen::VectorXf Wb_;
+  IMP_Eigen::VectorXf Wb_;
 
   // intensities
-  Eigen::MatrixXf A_;
+  IMP_Eigen::MatrixXf A_;
 };
 
 IMPSAXS_END_NAMESPACE

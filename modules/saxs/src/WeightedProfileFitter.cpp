@@ -9,19 +9,17 @@
 
 #include <IMP/saxs/WeightedProfileFitter.h>
 
-#include <Eigen/Dense>
-
-using namespace Eigen;
+using namespace IMP_Eigen;
 
 IMPSAXS_BEGIN_NAMESPACE
 
 namespace {
 
-Eigen::VectorXf NNLS(const Eigen::MatrixXf& A, const Eigen::VectorXf& b) {
+IMP_Eigen::VectorXf NNLS(const IMP_Eigen::MatrixXf& A, const IMP_Eigen::VectorXf& b) {
 
   // TODO: make JacobiSVD a class object to avoid memory re-allocations
-  Eigen::JacobiSVD<Eigen::MatrixXf> svd(A, ComputeThinU | ComputeThinV);
-  Eigen::VectorXf x = svd.solve(b);
+  IMP_Eigen::JacobiSVD<IMP_Eigen::MatrixXf> svd(A, ComputeThinU | ComputeThinV);
+  IMP_Eigen::VectorXf x = svd.solve(b);
 
   // compute a small negative tolerance
   float tol = 0;
@@ -37,8 +35,8 @@ Eigen::VectorXf NNLS(const Eigen::MatrixXf& A, const Eigen::VectorXf& b) {
   int sip = int(negs / 100);
   if (sip < 1) sip = 1;
 
-  Eigen::VectorXf zeroed = Eigen::VectorXf::Zero(n);
-  Eigen::MatrixXf C = A;
+  IMP_Eigen::VectorXf zeroed = IMP_Eigen::VectorXf::Zero(n);
+  IMP_Eigen::MatrixXf C = A;
 
   // iteratively zero some x values
   for (int count = 0; count < n; count++) {  // loop till no negatives found
@@ -65,7 +63,7 @@ Eigen::VectorXf NNLS(const Eigen::MatrixXf& A, const Eigen::VectorXf& b) {
     }
 
     // re-solve
-    Eigen::JacobiSVD<Eigen::MatrixXf> svd(C, ComputeThinU | ComputeThinV);
+    IMP_Eigen::JacobiSVD<IMP_Eigen::MatrixXf> svd(C, ComputeThinU | ComputeThinV);
     x = svd.solve(b);
   }
 
@@ -82,7 +80,7 @@ WeightedProfileFitter::WeightedProfileFitter(const Profile* exp_profile)
       Wb_(exp_profile->size()),
       A_(exp_profile->size(), 2) {
 
-  Eigen::VectorXf b(exp_profile->size());
+  IMP_Eigen::VectorXf b(exp_profile->size());
 
   for (unsigned int i = 0; i < exp_profile_->size(); i++) {
     Wb_(i) = exp_profile_->get_intensity(i);
@@ -117,9 +115,9 @@ Float WeightedProfileFitter::compute_score(const ProfilesTemp& profiles,
     }
   }
 
-  Eigen::VectorXf w;
+  IMP_Eigen::VectorXf w;
   if (!nnls) {  // solve least squares
-    Eigen::JacobiSVD<Eigen::MatrixXf> svd(W_.asDiagonal() * A_,
+    IMP_Eigen::JacobiSVD<IMP_Eigen::MatrixXf> svd(W_.asDiagonal() * A_,
                                           ComputeThinU | ComputeThinV);
     w = svd.solve(Wb_);
     // zero the negatives
@@ -134,7 +132,7 @@ Float WeightedProfileFitter::compute_score(const ProfilesTemp& profiles,
   IMP_NEW(Profile, weighted_profile,
           (exp_profile_->get_min_q(), exp_profile_->get_max_q(),
            exp_profile_->get_delta_q()));
-  Eigen::VectorXf wp = A_ * w;
+  IMP_Eigen::VectorXf wp = A_ * w;
   for (unsigned int k = 0; k < profiles[0]->size(); k++)
     weighted_profile->add_entry(profiles[0]->get_q(k), wp[k]);
 
