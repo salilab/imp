@@ -80,7 +80,7 @@ IMP_DECORATORS(Representation, Representations, Hierarchies);
 /** Return an estimate of the resolution of the hierarchy as used by
    Representation.
 
-    It is currently the averages radius of the leaves. */
+    It is currently the inverse average radius of the leaves. */
 
 IMPATOMEXPORT double get_resolution(kernel::Model *m, kernel::ParticleIndex pi);
 

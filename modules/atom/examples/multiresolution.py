@@ -38,6 +38,7 @@ resolutions.add_representation(whole)
 
 print "resolutions are", resolutions
 
+# note these resolutions need to be fixed
 print IMP.atom.Selection(root, residue_index=15).get_selected_particles()
 print IMP.atom.Selection(root, residue_index=15, resolution=100).get_selected_particles()
 print IMP.atom.Selection(root, residue_index=15, resolution=300).get_selected_particles()

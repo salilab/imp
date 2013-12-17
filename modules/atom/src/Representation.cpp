@@ -23,7 +23,7 @@ double get_resolution(kernel::Model* m, kernel::ParticleIndex pi) {
     sum += core::XYZR(l).get_radius();
     ++count;
   }
-  return sum / count;
+  return count / sum;
 }
 const double ALL_RESOLUTIONS = -std::numeric_limits<double>::max();
 
