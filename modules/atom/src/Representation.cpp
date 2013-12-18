@@ -61,6 +61,13 @@ void Representation::do_setup_particle(kernel::Model* m,
   m->add_attribute(get_base_resolution_key(), pi, resolution);
 }
 
+namespace {
+  double get_resolution_distance(double a, double b) {
+    if (a < b) std::swap(a, b);
+    return a / b - 1;
+  }
+}
+
 Hierarchy Representation::get_representation(double resolution,
                                              RepresentationType type) {
   double closest_resolution = get_model()->get_attribute(
@@ -74,8 +81,8 @@ Hierarchy Representation::get_representation(double resolution,
     for (unsigned int i = 0; i < types.size(); ++i) {
       double cur_resolution = get_model()->get_attribute(get_resolution_key(i),
                                                          get_particle_index());
-      if (std::abs(resolution - cur_resolution) <
-              std::abs(resolution - closest_resolution) &&
+      if (get_resolution_distance(resolution, cur_resolution) <
+          get_resolution_distance(resolution, closest_resolution) &&
           types[i] == type) {
         closest_index = i;
         closest_resolution = cur_resolution;
