@@ -21,6 +21,7 @@
 #include <IMP/core/internal/rigid_body_tree.h>
 #include <IMP/kernel/internal/ContainerConstraint.h>
 #include <IMP/kernel/internal/InternalListSingletonContainer.h>
+#include <IMP/kernel/internal/utility.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
@@ -938,6 +939,54 @@ ParticlesTemp create_rigid_bodies(kernel::Model *m, unsigned int n,
     }
   }
   return ret;
+}
+
+namespace {
+  unsigned int get_num_rb_members(kernel::Model *m, kernel::ParticleIndex pi) {
+    if (core::RigidBody::get_is_setup(m, pi)) {
+      core::RigidBody rb(m, pi);
+      return rb.get_member_particle_indexes().size() +
+        rb.get_body_member_particle_indexes().size();
+    } else {
+      return 0;
+    }
+  }
+  kernel::ParticleIndex get_rb_child(kernel::Model *m,
+                                      kernel::ParticleIndex pi,
+                                      unsigned int i) {
+    core::RigidBody rb(m, pi);
+    unsigned int bzs = rb.get_member_particle_indexes().size();
+    if (i < bzs) {
+      return rb.get_member_particle_indexes()[i];
+    } else {
+      return rb.get_body_member_particle_indexes()[i - bzs];
+    }
+  }
+}
+
+void show_rigid_body_hierarchy(RigidBody rb, base::TextOutput out) {
+  kernel::Model *m = rb.get_model();
+  base::Vector<boost::tuple<std::string, std::string, kernel::ParticleIndex> >
+      queue;
+  queue.push_back(
+      boost::make_tuple(std::string(), std::string(), rb.get_particle_index()));
+  do {
+    kernel::ParticleIndex pi = queue.back().get<2>();
+    out.get_stream() << queue.back().get<0>();
+    std::string prefix1 = queue.back().get<1>();
+    queue.pop_back();
+    if (core::RigidBody::get_is_setup(m, pi)) {
+      out.get_stream() << " + " << m->get_particle_name(pi) << std::endl;
+      core::RigidBody rb(m, pi);
+      IMP_FOREACH(kernel::ParticleIndex ch,
+                  rb.get_member_particle_indexes() +
+                      rb.get_body_member_particle_indexes()) {
+        queue.push_back(boost::make_tuple(prefix1 + " ", prefix1 + " ", ch));
+      }
+    } else {
+      out.get_stream() << " - " << m->get_particle_name(pi) << std::endl;
+    }
+  } while (!queue.empty());
 }
 
 IMPCORE_END_NAMESPACE

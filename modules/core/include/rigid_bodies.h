@@ -447,6 +447,12 @@ IMPCOREEXPORT kernel::ParticlesTemp create_rigid_bodies(kernel::Model *m,
 IMP_DECORATORS_DEF(RigidMember, RigidMembers);
 IMP_DECORATORS(RigidBody, RigidBodies, XYZs);
 
+
+/** Show the rigid body hierarchy rooted at passed body. */
+IMPCOREEXPORT void show_rigid_body_hierarchy(RigidBody rb,
+                                             base::TextOutput out =
+                                                 base::TextOutput(std::cout));
+
 IMPCORE_END_NAMESPACE
 
 #endif /* IMPCORE_RIGID_BODIES_H */
