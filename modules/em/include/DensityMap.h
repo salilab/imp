@@ -21,6 +21,7 @@
 #include <iostream>
 #include <iomanip>
 #include <IMP/algebra/standard_grids.h>
+#include <IMP/kernel/base_types.h>
 //#include <IMP/statistics/Histogram.h>
 
 IMPEM_BEGIN_NAMESPACE
@@ -677,6 +678,12 @@ DensityMap *create_density_map(
 // in the input density map
 IMPEMEXPORT
 DensityMap *get_binarized_interior(DensityMap *dmap);
+
+/** Rasterize the particles into an existing density map. */
+IMPEMEXPORT
+void add_to_map(DensityMap *dm,
+                const kernel::Particles &pis);  // defined in
+                                                // SampledDensityMap.cpp
 IMPEM_END_NAMESPACE
 
 #endif /* IMPEM_DENSITY_MAP_H */

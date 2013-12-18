@@ -395,4 +395,11 @@ float SampledDensityMap::get_minimum_resampled_value() {
   return min_weight;
 }
 
+
+void add_to_map(DensityMap *dm, const kernel::Particles& ps) {
+  KernelParameters kp(dm->get_header()->get_resolution());
+  internal_resample(dm, ps,
+                    GaussianKernel(kp, atom::Mass::get_mass_key()));
+}
+
 IMPEM_END_NAMESPACE
