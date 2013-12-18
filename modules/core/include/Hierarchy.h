@@ -144,6 +144,15 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
     return get_model()->get_attribute(get_decorator_traits().get_children_key(),
                                       get_particle_index())[i];
   }
+  kernel::ParticleIndexes get_children_indexes() const {
+    if (get_model()->get_has_attribute(get_decorator_traits().get_children_key(),
+                                       get_particle_index())) {
+      return get_model()->get_attribute(
+          get_decorator_traits().get_children_key(), get_particle_index());
+    } else {
+      return kernel::ParticleIndexes();
+    }
+  }
   GenericHierarchies get_children() const {
     GenericHierarchies ret(get_number_of_children());
     for (unsigned int i = 0; i < ret.size(); ++i) {
