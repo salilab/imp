@@ -68,9 +68,11 @@ unsigned int get_coords_state(
 void HierarchyLoadLink::do_load_one(RMF::NodeConstHandle nh,
                                     kernel::Particle *o) {
   data_.find(o->get_index())
-      ->second->load_global_coordinates.load(nh.get_file(), o->get_model());
+      ->second->load_rigid_bodies.load(nh.get_file(), o->get_model());
   data_.find(o->get_index())
-      ->second->load_local_coordinates.load(nh.get_file(), o->get_model());
+      ->second->load_xyzs.load(nh.get_file(), o->get_model());
+  data_.find(o->get_index())->second->load_rigid_bodies.update_rigid_bodies(
+      nh.get_file(), o->get_model());
   do_load_hierarchy(nh, o->get_model(), o->get_index());
 }
 
@@ -81,21 +83,9 @@ void HierarchyLoadLink::create_recursive(kernel::Model *m,
                                          kernel::ParticleIndexes rigid_bodies,
                                          Data &data) {
   set_association(name, m->get_particle(cur));
-  unsigned int state =
-      get_coords_state(name, intermediate_particle_factory_,
-                       reference_frame_factory_, external_rigid_body_key_);
   data.load_static.setup_particle(name, m, cur, rigid_bodies);
-  IMP::kernel::ParticleIndex rb = data.load_global_coordinates.setup_particle(
-      name, state, m, cur, rigid_bodies);
-  IMP::kernel::ParticleIndex lrb = data.load_local_coordinates.setup_particle(
-      name, state, m, cur, rigid_bodies);
-  data.load_static_coordinates.setup_particle(name, state, m, cur,
-                                              rigid_bodies);
-  if (rb != IMP::kernel::ParticleIndex()) {
-    rigid_bodies.push_back(rb);
-  } else if (lrb != IMP::kernel::ParticleIndex()) {
-    rigid_bodies.push_back(lrb);
-  }
+  data.load_rigid_bodies.setup_particle(name, m, cur, rigid_bodies);
+  data.load_xyzs.setup_particle(name, m, cur, rigid_bodies);
 
   IMP_FOREACH(RMF::NodeConstHandle ch, name.get_children()) {
     if (ch.get_type() == RMF::REPRESENTATION) {
@@ -130,23 +120,11 @@ void HierarchyLoadLink::add_link_recursive(kernel::Model *m,
                   "Names don't match");
   set_association(node, m->get_particle(cur), true);
   RMF::NodeConstHandles ch = node.get_children();
-  unsigned int state =
-      get_coords_state(node, intermediate_particle_factory_,
-                       reference_frame_factory_, external_rigid_body_key_);
   data.load_static.link_particle(node, m, cur, rigid_bodies);
-  kernel::ParticleIndex rb = data.load_global_coordinates.link_particle(
-      node, state, m, cur, rigid_bodies);
-  // data.load_static_coordinates.link_particle(node, m, cur, rigid_bodies);
-  IMP::kernel::ParticleIndex lrb = data.load_local_coordinates.link_particle(
-      node, state, m, cur, rigid_bodies);
+  data.load_rigid_bodies.link_particle(node, m, cur, rigid_bodies);
+  data.load_xyzs.link_particle(node, m, cur, rigid_bodies);
 
   do_link_particle(m, root, cur, node);
-
-  if (rb != kernel::ParticleIndex()) {
-    rigid_bodies.push_back(rb);
-  } else if (lrb != kernel::ParticleIndex()) {
-    rigid_bodies.push_back(lrb);
-  }
 
   int child = 0;
   for (unsigned int i = 0; i < ch.size(); ++i) {
@@ -194,8 +172,8 @@ void HierarchySaveLink::do_save_one(kernel::Particle *o, RMF::NodeHandle nh) {
   RMF::FileHandle fh = nh.get_file();
   DM::iterator it = data_.find(o->get_index());
   IMP_USAGE_CHECK(it != data_.end(), "I don't know that node");
-  it->second->save_local_coordinates.save(o->get_model(), nh.get_file());
-  it->second->save_global_coordinates.save(o->get_model(), nh.get_file());
+  it->second->save_rigid_bodies.save(o->get_model(), nh.get_file());
+  it->second->save_xyzs.save(o->get_model(), nh.get_file());
   do_save_hierarchy(o->get_model(), o->get_index(), nh);
 }
 
@@ -207,13 +185,8 @@ void HierarchySaveLink::add_recursive(Model *m, kernel::ParticleIndex root,
   // make sure not to double add
   if (p != root) set_association(cur, m->get_particle(p));
   data.save_static.setup_node(m, p, cur);
-  bool local_coords =
-      data.save_local_coordinates.setup_node(m, p, cur, rigid_bodies);
-  bool global_coords =
-      data.save_global_coordinates.setup_node(m, p, cur, rigid_bodies);
-  data.save_static_coordinates.setup_node(m, p, cur, rigid_bodies);
-  IMP_INTERNAL_CHECK(!local_coords || !global_coords,
-                     "A particle can't have saved local and global coords");
+  data.save_rigid_bodies.setup_node(m, p, cur, rigid_bodies);
+  data.save_xyzs.setup_node(m, p, cur, rigid_bodies);
 
   do_setup_node(m, root, p, cur);
 

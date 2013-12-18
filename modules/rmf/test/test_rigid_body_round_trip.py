@@ -11,6 +11,7 @@ class Tests(IMP.test.TestCase):
         """Test loading and saving of rigid bodies implicitly"""
         for suffix in RMF.suffixes:
             m = IMP.kernel.Model()
+            m.set_log_level(IMP.base.SILENT)
             r = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
             r.set_name("rt")
             rbd = IMP.core.RigidBody.setup_particle(
@@ -82,9 +83,15 @@ class Tests(IMP.test.TestCase):
                 IMP.rmf.save_frame(f, str(i + 1))
                 coords.append([IMP.core.XYZ(p).get_coordinates() for p in ps])
             del f
+
             f = RMF.open_rmf_file_read_only(fn)
             IMP.base.set_log_level(IMP.base.VERBOSE)
             r2 = IMP.rmf.create_hierarchies(f, m)[0]
+            for pi in m.get_particle_indexes():
+                if IMP.core.RigidBody.get_is_setup(m, pi) and\
+                        not IMP.core.RigidBodyMember.get_is_setup(m, pi):
+                    IMP.core.show_rigid_body_hierarchy(
+                        IMP.core.RigidBody(m, pi), sys.stdout)
             ps = IMP.atom.get_leaves(r2)
             rb = IMP.core.RigidMember(ps[0]).get_rigid_body()
             frame0 = rb.get_reference_frame()
@@ -96,10 +103,10 @@ class Tests(IMP.test.TestCase):
                 print i, frames[i], frame0.get_local_reference_frame(rb.get_reference_frame())
                 for j, c in enumerate(ps):
                     oc = IMP.core.XYZ(c).get_coordinates()
-                    print j, c, oc, coords[i][j]
+                    print "before update", j, c, oc, coords[i][j], IMP.core.RigidBodyMember(c).get_internal_coordinates()
                     m.update()
                     nc = IMP.core.XYZ(c).get_coordinates()
-                    print i, j, c, nc, coords[i][j]
+                    print "after update", i, j, c, nc, coords[i][j], IMP.core.RigidBodyMember(c).get_internal_coordinates()
                     self.assertAlmostEqual((oc - nc).get_magnitude(), 0,
                                            delta=.1)
                     self.assertAlmostEqual(

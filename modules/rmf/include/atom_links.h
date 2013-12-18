@@ -12,9 +12,8 @@
 #include <IMP/rmf/rmf_config.h>
 #include "simple_links.h"
 #include "internal/atom_links_static.h"
-#include "internal/atom_links_global_coordinates.h"
-#include "internal/atom_links_static_coordinates.h"
-#include "internal/atom_links_local_coordinates.h"
+#include "internal/atom_links_rigid_bodies.h"
+#include "internal/atom_links_xyzs.h"
 #include <IMP/base/object_macros.h>
 #include <IMP/base/utility_macros.h>
 #include <RMF/NodeHandle.h>
@@ -40,15 +39,10 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<kernel::Particle> {
   struct Data {
     internal::HierarchyLoadStatic load_static;
     internal::HierarchyLoadBonds load_bonds;
-    internal::HierarchyLoadLocalCoordinates load_local_coordinates;
-    internal::HierarchyLoadStaticCoordinates load_static_coordinates;
-    internal::HierarchyLoadGlobalCoordinates load_global_coordinates;
+    internal::HierarchyLoadXYZs load_xyzs;
+    internal::HierarchyLoadRigidBodies load_rigid_bodies;
     Data(RMF::FileConstHandle h)
-        : load_static(h),
-          load_bonds(h),
-          load_local_coordinates(h),
-          load_static_coordinates(h),
-          load_global_coordinates(h) {}
+        : load_static(h), load_bonds(h), load_xyzs(h), load_rigid_bodies(h) {}
   };
   typedef base::map<kernel::ParticleIndex, boost::shared_ptr<Data> > DM;
   DM data_;
@@ -121,15 +115,10 @@ class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<kernel::Particle> {
   struct Data {
     internal::HierarchySaveStatic save_static;
     internal::HierarchySaveBonds save_bonds;
-    internal::HierarchySaveLocalCoordinates save_local_coordinates;
-    internal::HierarchySaveStaticCoordinates save_static_coordinates;
-    internal::HierarchySaveGlobalCoordinates save_global_coordinates;
+    internal::HierarchySaveXYZs save_xyzs;
+    internal::HierarchySaveRigidBodies save_rigid_bodies;
     Data(RMF::FileHandle h)
-        : save_static(h),
-          save_bonds(h),
-          save_local_coordinates(h),
-          save_static_coordinates(h),
-          save_global_coordinates(h) {}
+        : save_static(h), save_bonds(h), save_xyzs(h), save_rigid_bodies(h) {}
   };
   typedef base::map<kernel::ParticleIndex, boost::shared_ptr<Data> > DM;
   DM data_;
