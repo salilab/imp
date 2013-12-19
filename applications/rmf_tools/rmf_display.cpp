@@ -41,9 +41,14 @@ int main(int argc, char **argv) {
   try {
     IMP::Strings io = IMP::base::setup_from_argv(
         argc, argv, "Export an RMF file to a viewer", "input.rmf [output]", -1);
-    std::string output;
+   std::string output;
     if (io.size() > 1) {
       output = io[1];
+    }
+    if (file_type != "auto" && !output.empty()) {
+      std::cerr << "Cannot specify both the file type and file name."
+                << std::endl;
+      return 1;
     }
     if (frame < 0) {
       IMP::base::write_help();
