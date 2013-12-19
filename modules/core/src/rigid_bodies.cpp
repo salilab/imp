@@ -582,7 +582,7 @@ void RigidBody::update_members() {
   }
 }
 
-RigidMembers RigidBody::get_members() const {
+RigidMembers RigidBody::get_rigid_members() const {
   RigidMembers ret;
   {
     kernel::ParticleIndexes pis = get_member_particle_indexes();
@@ -832,7 +832,7 @@ bool RigidMembersRefiner::get_can_refine(kernel::Particle *p) const {
 }
 const kernel::ParticlesTemp RigidMembersRefiner::get_refined(
     kernel::Particle *p) const {
-  return RigidBody(p).get_members();
+  return RigidBody(p).get_rigid_members();
 }
 
 ModelObjectsTemp RigidMembersRefiner::do_get_inputs(

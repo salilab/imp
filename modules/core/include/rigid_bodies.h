@@ -95,8 +95,17 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   void add_rigid_body_member(kernel::ParticleIndex pi);
 
  public:
-  /** This method does not return non-rigid members. */
-  RigidMembers get_members() const;
+  /** This method does not return non-rigid members.
+
+      \deprecated_at{2.2} Use get_rigid_members() instead.
+    */
+  IMPCORE_DEPRECATED_FUNCTION_DECL(2.2)
+  RigidMembers get_members() const {
+    IMPCORE_DEPRECATED_FUNCTION_DEF(2.2, "Use get_rigid_members() instead.");
+    return get_rigid_members();
+  }
+
+ RigidMembers get_rigid_members() const;
 
   //! Return the members as particle pointers
   /** This member function is here for efficiency. This includes rigid and
@@ -124,6 +133,12 @@ class IMPCOREEXPORT RigidBody : public XYZ {
     } else {
       return empty;
     }
+  }
+
+  /** Get the indexes of all members.
+   `get_member_particle_indexes() + get_body_member_particle_indexes()` */
+  kernel::ParticleIndexes get_member_indexes() const {
+    return get_member_particle_indexes() + get_body_member_particle_indexes();
   }
 
   IMP_DECORATOR_METHODS(RigidBody, XYZ);
