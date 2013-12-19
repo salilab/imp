@@ -604,23 +604,6 @@ core::XYZR create_cover(const Selection &s, std::string name) {
   }
 }
 
-void transform(Hierarchy h, const algebra::Transformation3D &tr) {
-  base::Vector<Hierarchy> stack;
-  stack.push_back(h);
-  do {
-    Hierarchy c = stack.back();
-    stack.pop_back();
-    if (core::RigidBody::get_is_setup(c)) {
-      core::transform(core::RigidBody(c), tr);
-    } else if (core::XYZ::get_is_setup(c)) {
-      core::transform(core::XYZ(c), tr);
-    }
-    for (unsigned int i = 0; i < c.get_number_of_children(); ++i) {
-      stack.push_back(c.get_child(i));
-    }
-  } while (!stack.empty());
-}
-
 double get_mass(const Selection &h) {
   IMP_FUNCTION_LOG;
   double ret = 0;

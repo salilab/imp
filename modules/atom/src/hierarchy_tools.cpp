@@ -11,30 +11,31 @@
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Chain.h>
+#include <IMP/atom/Copy.h>
 #include <IMP/atom/Domain.h>
 #include <IMP/atom/Fragment.h>
 #include <IMP/atom/Mass.h>
+#include <IMP/atom/Molecule.h>
 #include <IMP/atom/Residue.h>
 #include <IMP/atom/bond_decorators.h>
-#include <IMP/atom/estimates.h>
-#include <IMP/atom/Molecule.h>
 #include <IMP/atom/distance.h>
-#include <IMP/atom/Copy.h>
-#include <IMP/core/ConnectivityRestraint.h>
-#include <IMP/core/DistancePairScore.h>
-#include <IMP/core/ClosePairsPairScore.h>
-#include <IMP/core/Harmonic.h>
-#include <IMP/core/SphereDistancePairScore.h>
-#include <IMP/core/PairRestraint.h>
-#include <IMP/core/TableRefiner.h>
-#include <IMP/core/ExcludedVolumeRestraint.h>
-#include <IMP/core/CoverRefined.h>
-#include <IMP/generic.h>
-#include <IMP/container/generic.h>
+#include <IMP/atom/estimates.h>
+#include <IMP/kernel/constants.h>
 #include <IMP/container/AllBipartitePairContainer.h>
-#include <IMP/container/ListSingletonContainer.h>
 #include <IMP/container/ConnectingPairContainer.h>
-#include <IMP/constants.h>
+#include <IMP/container/ListSingletonContainer.h>
+#include <IMP/container/generic.h>
+#include <IMP/core/ClosePairsPairScore.h>
+#include <IMP/core/ConnectivityRestraint.h>
+#include <IMP/core/CoverRefined.h>
+#include <IMP/core/DistancePairScore.h>
+#include <IMP/core/ExcludedVolumeRestraint.h>
+#include <IMP/core/Harmonic.h>
+#include <IMP/core/PairRestraint.h>
+#include <IMP/core/SphereDistancePairScore.h>
+#include <IMP/core/TableRefiner.h>
+#include <IMP/core/rigid_bodies.h>
+#include <IMP/kernel/generic.h>
 #include <algorithm>
 IMPATOM_BEGIN_NAMESPACE
 
@@ -410,6 +411,51 @@ void setup_as_approximation(kernel::Particle *p,
 
 void setup_as_approximation(Hierarchy h, double resolution) {
   setup_as_approximation_internal(h, get_leaves(h), resolution);
+}
+
+namespace {
+void transform_impl(
+    kernel::Model *m, kernel::ParticleIndex cur,
+    const algebra::Transformation3D &tr,
+    boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &
+        rigid_bodies) {
+  if (core::RigidBody::get_is_setup(m, cur)) {
+    core::transform(core::RigidBody(m, cur), tr);
+    return;
+  }
+  if (core::RigidBodyMember::get_is_setup(m, cur)) {
+    kernel::ParticleIndex rb =
+        core::RigidBodyMember(m, cur).get_rigid_body().get_particle_index();
+    rigid_bodies[rb].push_back(cur);
+  } else if (core::XYZ::get_is_setup(m, cur)) {
+    core::transform(core::XYZ(m, cur), tr);
+  }
+  IMP_FOREACH(kernel::ParticleIndex pi,
+              atom::Hierarchy(m, cur).get_children_indexes()) {
+    transform_impl(m, pi, tr, rigid_bodies);
+  }
+}
+}
+
+void transform(atom::Hierarchy h, const algebra::Transformation3D &tr) {
+  kernel::Model *m = h.get_model();
+  typedef std::pair<kernel::ParticleIndex, kernel::ParticleIndexes> RBP;
+  boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes>
+      rigid_bodies;
+  transform_impl(m, h.get_particle_index(), tr, rigid_bodies);
+  IMP_FOREACH(const RBP& rbp, rigid_bodies) {
+    core::RigidBody rb(m, rbp.first);
+    kernel::ParticleIndexes members = rb.get_member_indexes();
+    if (rbp.second.size() != members.size()) {
+      IMP_USAGE_CHECK(
+          rbp.second.size() == members.size(),
+          "Hierarchy contains rigid body members of incomplete rigid bodies. "
+          "It must contain all members of a rigid body or no members. Rigid "
+          "body is "
+              << m->get_particle_name(rbp.first));
+    }
+    core::transform(rb, tr);
+  }
 }
 
 IMPATOM_END_NAMESPACE

@@ -210,6 +210,13 @@ class HierarchiesGeometry : public display::SingletonsGeometry {
   IMP_OBJECT_METHODS(HierarchiesGeometry);
 };
 
+/** Transform a hierarchy, being aware of rigid bodies and intermediate nodes
+ * with coordinates. Rigid bodies must either be completely contained within the
+ * hierarchy or completely disjoint (no rigid bodies that contain particles in
+ * the hierarchy and other particles not in it are allowed). */
+IMPATOMEXPORT void transform(atom::Hierarchy h,
+                             const algebra::Transformation3D &tr);
+
 IMPATOM_END_NAMESPACE
 
 #endif /* IMPATOM_HIERARCHY_TOOLS_H */
