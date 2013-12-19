@@ -245,12 +245,12 @@ HierarchySaveRigidBodies::fill_external(kernel::Model *m,
     kernel::ParticleIndex cur = fill_external(m, ch);
     rbs.insert(cur);
   }
-  kernel::ParticleIndex ret;
+  kernel::ParticleIndex ret = base::get_invalid_index<ParticleIndexTag>();
   if (core::RigidBodyMember::get_is_setup(m, p)) {
     ret = core::RigidBodyMember(m, p).get_rigid_body().get_particle_index();
     rbs.insert(ret);
   }
-  if (rbs.size() == 1 && *rbs.begin() != kernel::ParticleIndex()) {
+  if (rbs.size() == 1 && *rbs.begin() != base::get_invalid_index<ParticleIndexTag>()) {
     externals_[p] = *rbs.begin();
     int index = external_index_.size();
     external_index_[externals_[p]] = index;
