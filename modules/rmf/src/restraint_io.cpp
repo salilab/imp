@@ -9,9 +9,10 @@
 #include <IMP/rmf/restraint_io.h>
 #include <IMP/rmf/simple_links.h>
 #include <IMP/rmf/link_macros.h>
-#include <RMF/decorators.h>
+#include <RMF/decorator/physics.h>
+#include <RMF/decorator/feature.h>
 #include <IMP/core/RestraintsScoringFunction.h>
-#include <IMP/scoped.h>
+#include <IMP/kernel/input_output.h>
 #include <IMP/base/ConstVector.h>
 #include <IMP/base/WeakPointer.h>
 #include <boost/shared_array.hpp>
@@ -36,14 +37,15 @@ class IMPRMFEXPORT RMFRestraint : public kernel::Restraint {
   IMP_OBJECT_METHODS(RMFRestraint);
 };
 
-double RMFRestraint::unprotected_evaluate(DerivativeAccumulator *) const {
+double RMFRestraint::unprotected_evaluate(kernel::DerivativeAccumulator *)
+    const {
   set_was_used(true);
   return get_last_score();
 }
 
-ModelObjectsTemp RMFRestraint::do_get_inputs() const { return ps_; }
+kernel::ModelObjectsTemp RMFRestraint::do_get_inputs() const { return ps_; }
 
-Restraints RMFRestraint::do_create_current_decomposition() const {
+kernel::Restraints RMFRestraint::do_create_current_decomposition() const {
   set_was_used(true);
   if (get_last_score() != 0) {
     const kernel::Restraint *rp = this;
@@ -242,7 +244,8 @@ class RestraintSaveLink : public SimpleSaveLink<kernel::Restraint> {
     if (!sf_.get_is(nh)) {
       RMF::decorator::Representation sdnf = rf_.get(nh);
       // be lazy about it
-      kernel::ParticlesTemp inputs = get_input_particles(o->get_inputs());
+      kernel::ParticlesTemp inputs =
+          kernel::get_input_particles(o->get_inputs());
       std::sort(inputs.begin(), inputs.end());
       inputs.erase(std::unique(inputs.begin(), inputs.end()), inputs.end());
       RMF::Ints nhs = get_node_ids(nh.get_file(), inputs);
@@ -272,12 +275,12 @@ class RestraintSaveLink : public SimpleSaveLink<kernel::Restraint> {
         if (rd && rd != o) {
           rd->set_was_used(true);
           kernel::RestraintsTemp rs =
-              IMP::get_restraints(kernel::RestraintsTemp(1, rd));
+              kernel::get_restraints(kernel::RestraintsTemp(1, rd));
           if (rs.size() > max_terms_) {
             no_terms_.insert(o);
             // delete old children
           } else {
-            IMP_FOREACH(Restraint * r, rs) {
+            IMP_FOREACH(kernel::Restraint * r, rs) {
               Subset s(get_input_particles(r->get_inputs()));
               double score = r->get_last_score();
               r->set_was_used(true);
@@ -324,6 +327,42 @@ IMP_DEFINE_LINKERS(Restraint, restraint, restraints, kernel::Restraint *,
 void set_maximum_number_of_terms(RMF::FileHandle fh, unsigned int num) {
   RestraintSaveLink *hsl = internal::get_save_link<RestraintSaveLink>(fh);
   hsl->set_maximum_number_of_terms(num);
+}
+
+void add_restraints_as_bonds(RMF::FileHandle fh, const kernel::Restraints &rs) {
+  RMF::decorator::BondFactory bf(fh);
+  kernel::Restraints decomp;
+
+  RMF_FOREACH(kernel::Restraint * r, rs) {
+    base::Pointer<kernel::Restraint> rd = r->create_decomposition();
+    if (rd == r) {
+      decomp.push_back(rd);
+    } else {
+      rd->set_was_used(true);
+      decomp += kernel::get_restraints(kernel::RestraintsTemp(1, rd));
+    }
+  }
+  RMF::NodeHandle bdr =
+      fh.get_root_node().add_child("restraint bonds", RMF::ORGANIZATIONAL);
+  RMF_FOREACH(kernel::Restraint* bd, decomp) {
+    Subset s(get_input_particles(bd->get_inputs()));
+    bd->set_was_used(bd);
+    RMF::NodeHandles inputs;
+    RMF_FOREACH(kernel::Particle * cur,
+                kernel::get_input_particles(bd->get_inputs())) {
+      RMF::NodeHandle n = get_node_from_association(fh, cur);
+      if (n != RMF::NodeHandle()) {
+        inputs.push_back(n);
+      }
+    }
+    IMP_USAGE_CHECK(inputs.size() == 2,
+                    "Decomposed restraint does not have two inputs in file: "
+                        << bd->get_name() << " has " << inputs.size()
+                        << std::endl);
+    RMF::NodeHandle nh = bdr.add_child(bd->get_name(), RMF::BOND);
+    bf.get(nh).set_bonded_0(inputs[0].get_id().get_index());
+    bf.get(nh).set_bonded_1(inputs[1].get_id().get_index());
+  }
 }
 
 IMPRMF_END_NAMESPACE

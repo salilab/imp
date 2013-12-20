@@ -13,7 +13,6 @@
 #include "link_macros.h"
 #include <IMP/base/object_macros.h>
 #include <IMP/kernel/Restraint.h>
-#include <IMP/restraint_macros.h>
 
 IMPRMF_BEGIN_NAMESPACE
 
@@ -34,6 +33,12 @@ IMPRMF_BEGIN_NAMESPACE
 IMP_DECLARE_LINKERS(Restraint, restraint, restraints, kernel::Restraint *,
                     kernel::Restraints,
                     (RMF::FileConstHandle fh, kernel::Model *m), );
+
+/** Add a list of restraints to the file as (static) bonds. There restraints
+ * must decompose into pairwise restraints. Their scores will not be recorded in
+ * the file. */
+IMPRMFEXPORT void add_restraints_as_bonds(RMF::FileHandle fh,
+                                          const kernel::Restraints &rs);
 
 /** Certain restraint are made from a really large number of terms.
     Tracking and displaying all those
