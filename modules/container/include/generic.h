@@ -18,6 +18,9 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 /** Create a restraint from a score and a container. The resulting restraint
     is, in general, more efficient than creating an, eg, PairsRestraint.
+
+    A python version of this is provided, but it produces a slightly less
+    efficient restraint.
 */
 template <class Score, class Container>
 inline kernel::Restraint *create_restraint(Score *s, Container *c,

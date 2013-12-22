@@ -321,6 +321,10 @@ return algebra::get_transformation_aligning_first_to_second(a, XYZs(b));
 }
 }
 }
+
+IMP::kernel::Restraint *create_restraint(IMP::kernel::PairScore *ps, IMP::kernel::ParticlePair pp) {
+   return IMP::kernel::create_restraint(ps, pp);
+}
 %}
 
 namespace IMP {
