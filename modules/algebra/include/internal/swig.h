@@ -11,7 +11,16 @@
 #include <IMP/algebra/eigen3/Eigen/Dense>
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
-inline IMP_Eigen::MatrixXf _pass_matrix(const IMP_Eigen::MatrixXf &m) {
+inline IMP_Eigen::MatrixXf _pass_matrix_xf(const IMP_Eigen::MatrixXf &m) {
+  return m;
+}
+inline IMP_Eigen::MatrixXd _pass_matrix_xd(const IMP_Eigen::MatrixXd &m) {
+  return m;
+}
+inline IMP_Eigen::ArrayXd _pass_array_xd(const IMP_Eigen::ArrayXd &m) {
+  return m;
+}
+inline IMP_Eigen::VectorXd _pass_vector_xd(const IMP_Eigen::VectorXd &m) {
   return m;
 }
 IMPALGEBRA_END_INTERNAL_NAMESPACE

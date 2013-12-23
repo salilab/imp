@@ -15,6 +15,11 @@ def get_sphere(v):
 
 IMP_SWIG_BASE_OBJECT(IMP::algebra, VectorKDMetric, VectorKDMetrics);
 IMP_SWIG_EIGEN_MATRIX(MatrixXf);
+IMP_SWIG_EIGEN_MATRIX(MatrixXd);
+IMP_SWIG_EIGEN_VECTOR(VectorXd);
+IMP_SWIG_EIGEN_VECTOR(VectorXf);
+IMP_SWIG_EIGEN_MATRIX(ArrayXf);
+IMP_SWIG_EIGEN_MATRIX(ArrayXd);
 IMP_SWIG_OBJECT(IMP::algebra, EuclideanVectorKDMetric, EuclideanVectorKDMetrics);
 IMP_SWIG_OBJECT(IMP::algebra, MaxVectorKDMetric, MaxVectorKDMetrics);
 IMP_SWIG_OBJECT(IMP::algebra, DynamicNearestNeighbor3D, DynamicNearestNeighbor3Ds);

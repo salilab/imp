@@ -328,6 +328,50 @@ struct ConvertEigenMatrix {
   }
 };
 
+template <class M>
+struct ConvertEigenVector {
+  static int get_dimension(PyObject* o) {
+    return PySequence_Length(o);
+  }
+
+  template <class SwigData>
+  static M get_cpp_object(PyObject* o, SwigData st) {
+    if (!get_is_cpp_object(o, st)) {
+      IMP_THROW("Argument not of correct type", ValueException);
+    }
+    int dim= get_dimension(o);
+    M ret(dim);
+    for (unsigned int i = 0; i < dim; ++i) {
+      PyReceivePointer item(PySequence_GetItem(o, i));
+      ret(i) = PyFloat_AsDouble(item);
+    }
+    return ret;
+  }
+  template <class SwigData>
+  static bool get_is_cpp_object(PyObject* in, SwigData st) {
+    if (!in || !PySequence_Check(in)) {
+      return false;
+    }
+    for (unsigned int i = 0; i < PySequence_Length(in); ++i) {
+      PyReceivePointer o(PySequence_GetItem(in, i));
+      if (!o) {
+        return false;
+      }
+    }
+    return true;
+  }
+  template <class SwigData>
+  static PyObject* create_python_object(const M& t, SwigData st, int OWN) {
+    PyReceivePointer ret(PyList_New(t.rows()));
+    for (unsigned int i = 0; i < t.rows(); ++i) {
+      PyReceivePointer o(PyFloat_FromDouble(t(i)));
+      // this does not increment the ref count
+      IMP_PYTHON_CALL(PyList_SetItem(ret, i, o.release()));
+    }
+    return ret.release();
+  }
+};
+
   %}
 
 %define IMP_SWIG_EIGEN_MATRIX(Name)
@@ -359,6 +403,50 @@ struct ConvertEigenMatrix {
  }
 %typemap(directorin) IMP_Eigen::Name const& {
   $input = ConvertEigenMatrix<IMP_Eigen::Name >::create_python_object($1_name, $descriptor(IMP_Eigen::Name*), SWIG_POINTER_OWN);
+ }
+%typemap(in) IMP_Eigen::Name* {
+  collections_like_##Name##_must_be_passed_by_value_or_const_ref;
+ }
+%typemap(out) IMP_Eigen::Name* {
+  collections_like_##Name##_must_be_returned_by_value_or_const_ref;
+ }
+%typemap(in) IMP_Eigen::Name& {
+  collections_like_##Name##_must_be_passed_by_value_or_const_ref;
+ }
+%typemap(out) IMP_Eigen::Name& {
+  collections_like_##Name##_must_be_returned_by_value_or_const_ref;
+ }
+%enddef
+
+%define IMP_SWIG_EIGEN_VECTOR(Name)
+%typemap(in) IMP_Eigen::Name const& {
+  try {
+    // hack to get around swig's value wrapper being randomly used
+    assign($1, ConvertEigenVector<IMP_Eigen::Name>::get_cpp_object($input, $descriptor(IMP_Eigen::Name*)));
+  } catch (const IMP::base::Exception &e) {
+    //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
+    PyErr_SetString(PyExc_TypeError, e.what());
+    return NULL;
+  }
+ }
+%typemap(freearg) IMP_Eigen::Name const& {
+  delete_if_pointer($1);
+ }
+%typecheck(SWIG_TYPECHECK_POINTER) IMP_Eigen::Name const& {
+  $1= ConvertEigenVector<IMP_Eigen::Name>::get_is_cpp_object($input, $descriptor(IMP_Eigen::Name*));
+ }
+%typemap(out) IMP_Eigen::Name const& {
+  $result = ConvertEigenVector<IMP_Eigen::Name >::create_python_object(ValueOrObject<IMP_Eigen::Name >::get($1), $descriptor(IMP_Eigen::Name*), SWIG_POINTER_OWN);
+ }
+%typemap(out) IMP_Eigen::Name {
+  $result = ConvertEigenVector<IMP_Eigen::Name >::create_python_object(ValueOrObject<IMP_Eigen::Name >::get($1), $descriptor(IMP_Eigen::Name*), SWIG_POINTER_OWN);
+ }
+%typemap(directorout) IMP_Eigen::Name const& {
+  // hack to get around swig's evil value wrapper being randomly used
+  assign($result, ConvertEigenVector<IMP_Eigen::Name >::get_cpp_object($input, $descriptor(IMP_Eigen::Name*)));
+ }
+%typemap(directorin) IMP_Eigen::Name const& {
+  $input = ConvertEigenVector<IMP_Eigen::Name >::create_python_object($1_name, $descriptor(IMP_Eigen::Name*), SWIG_POINTER_OWN);
  }
 %typemap(in) IMP_Eigen::Name* {
   collections_like_##Name##_must_be_passed_by_value_or_const_ref;
