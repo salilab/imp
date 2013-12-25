@@ -28,6 +28,7 @@ void load_frame(RMF::FileConstHandle fh, RMF::FrameID frame) {
 
 RMF::FrameID save_frame(RMF::FileHandle file, std::string name) {
   try {
+    file.set_producer("IMP " + get_module_version());
     RMF::FrameID cur = file.add_frame(name, RMF::FRAME);
     IMP_FOREACH(SaveLink * ll, internal::get_save_linkers(file)) {
       ll->save(file);
