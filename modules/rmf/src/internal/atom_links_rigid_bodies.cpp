@@ -14,6 +14,12 @@
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 
+namespace {
+  // kind of icky, but we need to make sure the rigid body ids are unique
+  // and can't store the FileHandle as that would keep the file open
+  unsigned int rigid_body_count = 0;
+}
+
 HierarchyLoadRigidBodies::HierarchyLoadRigidBodies(RMF::FileConstHandle f)
     : reference_frame_factory_(f), ip_factory_(f) {
   RMF::Category cat = f.get_category("IMP");
@@ -252,7 +258,8 @@ HierarchySaveRigidBodies::fill_external(kernel::Model *m,
   }
   if (rbs.size() == 1 && *rbs.begin() != base::get_invalid_index<ParticleIndexTag>()) {
     externals_[p] = *rbs.begin();
-    int index = external_index_.size();
+    int index = rigid_body_count;
+    ++rigid_body_count;
     external_index_[externals_[p]] = index;
     IMP_FOREACH(kernel::ParticleIndex ch,
                 atom::Hierarchy(m, p).get_children_indexes()) {

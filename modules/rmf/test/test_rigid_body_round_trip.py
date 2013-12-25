@@ -119,5 +119,38 @@ class Tests(IMP.test.TestCase):
                         delta=.1)
                 print "ok"
 
+    def _create_rb(self, m):
+        h = IMP.atom.Hierarchy.setup_particle(m, m.add_particle("h"))
+        IMP.core.XYZR.setup_particle(
+            h, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), 0))
+        rb = IMP.core.RigidBody.setup_particle(
+            m,
+            m.add_particle("rb"),
+            IMP.algebra.ReferenceFrame3D())
+        IMP.atom.Mass.setup_particle(h, 1)
+        rb.add_member(h)
+        return h
+
+    def test_multiple(self):
+        """Test that adding with multiple calls results in unique ids"""
+        m = IMP.kernel.Model()
+        h0 = self._create_rb(m)
+        h1 = self._create_rb(m)
+        path = self.get_tmp_file_name("multiple_rb.rmf3")
+        fh = RMF.create_rmf_file(path)
+        IMP.rmf.add_hierarchy(fh, h0)
+        IMP.rmf.add_hierarchy(fh, h1)
+        IMP.rmf.save_frame(fh, "frame")
+        del fh, m, h0, h1
+
+        m = IMP.kernel.Model()
+        fh = RMF.open_rmf_file_read_only(path)
+        hs = IMP.rmf.create_hierarchies(fh, m)
+        rb_count = 0
+        for pi in m.get_particle_indexes():
+            if IMP.core.RigidBody.get_is_setup(m, pi):
+                rb_count += 1
+        self.assertEqual(rb_count, 2)
+
 if __name__ == '__main__':
     unittest.main()
