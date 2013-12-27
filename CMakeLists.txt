@@ -21,8 +21,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/tools/build/cmake
 
 enable_testing()
 
-include(FindC++11)
-include(FindCompilerFlags)
+include(${CMAKE_SOURCE_DIR}/tools/build/cmake_modules/FindC++11.cmake)
+include(${CMAKE_SOURCE_DIR}/tools/build/cmake_modules/FindCompilerFlags.cmake)
 
 if(POLICY CMP0017)
 cmake_policy(SET CMP0017 NEW)
