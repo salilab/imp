@@ -8,3 +8,6 @@
 [submodule "tools/build/cmake_modules"]
 	path = tools/build/cmake_modules
 	url = ../cmake_modules
+[submodule "tools/developer_tools"]
+	path = tools/developer_tools
+	url = ../developer_tools.git
