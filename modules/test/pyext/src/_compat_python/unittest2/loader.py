@@ -94,7 +94,7 @@ class TestLoader(unittest.TestLoader):
         if use_load_tests and load_tests is not None:
             try:
                 return load_tests(self, tests, None)
-            except Exception as e:
+            except Exception, e:
                 return _make_failed_load_tests(module.__name__, e,
                                                self.suiteClass)
         return tests
@@ -313,7 +313,7 @@ class TestLoader(unittest.TestLoader):
                 else:
                     try:
                         yield load_tests(self, tests, pattern)
-                    except Exception as e:
+                    except Exception, e:
                         yield _make_failed_load_tests(package.__name__, e,
                                                       self.suiteClass)
 
