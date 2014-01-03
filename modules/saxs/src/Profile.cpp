@@ -38,8 +38,6 @@ Profile::Profile(Float qmin, Float qmax, Float delta)
       min_q_(qmin),
       max_q_(qmax),
       delta_q_(delta),
-      c1_(10),
-      c2_(10),
       experimental_(false),
       average_radius_(1.58),
       average_volume_(17.5),
@@ -537,43 +535,38 @@ void Profile::sum_partial_profiles(Float c1, Float c2) {
   // precomputed exp function
   static internal::ExpFunction ef(square(get_max_q()) * 0.3, 0.00001);
 
-  if (partial_profiles_.size() > 0 &&
-      (fabs(c1_ - c1) > 0.000001 || fabs(c2_ - c2) > 0.000001)) {
-    // implements volume fitting function G(s) as described
-    // in crysol paper eq. 13
-    Float rm = average_radius_;
-    // this exponent should match the exponent of g(s) which doesn't have
-    // (4pi/3)^3/2 part so it seems that this part is not needed here too.
-    // Float coefficient =
-    // - std::pow((4.0*PI/3.0), 3.0/2.0) * square(rm) * (c1*c1-1.0) /
-    // (4*PI);
-    Float coefficient = -square(rm) * (c1 * c1 - 1.0) / (4 * PI);
-    Float square_c2 = c2 * c2;
-    Float cube_c1 = c1 * c1 * c1;
+  if (partial_profiles_.size() == 0) return;
+  // implements volume fitting function G(s) as described
+  // in crysol paper eq. 13
+  Float rm = average_radius_;
+  // this exponent should match the exponent of g(s) which doesn't have
+  // (4pi/3)^3/2 part so it seems that this part is not needed here too.
+  // Float coefficient =
+  // - std::pow((4.0*PI/3.0), 3.0/2.0) * square(rm) * (c1*c1-1.0) /
+  // (4*PI);
+  Float coefficient = -square(rm) * (c1 * c1 - 1.0) / (4 * PI);
+  Float square_c2 = c2 * c2;
+  Float cube_c1 = c1 * c1 * c1;
 
-    if (size() != partial_profiles_[0].size()) init();
+  if (size() != partial_profiles_[0].size()) init();
 
-    for (unsigned int k = 0; k < size(); k++) {
-      Float q = get_q(k);
-      Float x = coefficient * square(q);
-      Float G_q = cube_c1;
-      if (std::abs(x) > 1.0e-8) G_q *= ef.exp(x);
-      // Float G_q = cube_c1 * std::exp(coefficient*square(q));
+  for (unsigned int k = 0; k < size(); k++) {
+    Float q = get_q(k);
+    Float x = coefficient * square(q);
+    Float G_q = cube_c1;
+    if (std::abs(x) > 1.0e-8) G_q *= ef.exp(x);
+    // Float G_q = cube_c1 * std::exp(coefficient*square(q));
 
-      Float intensity = partial_profiles_[0][k];
-      intensity += square(G_q) * partial_profiles_[1][k];
-      intensity -= G_q * partial_profiles_[2][k];
+    Float intensity = partial_profiles_[0][k];
+    intensity += square(G_q) * partial_profiles_[1][k];
+    intensity -= G_q * partial_profiles_[2][k];
 
-      if (partial_profiles_.size() > 3) {
-        intensity += square_c2 * partial_profiles_[3][k];
-        intensity += c2 * partial_profiles_[4][k];
-        intensity -= G_q * c2 * partial_profiles_[5][k];
-      }
-      set_intensity(k, intensity);
+    if (partial_profiles_.size() > 3) {
+      intensity += square_c2 * partial_profiles_[3][k];
+      intensity += c2 * partial_profiles_[4][k];
+      intensity -= G_q * c2 * partial_profiles_[5][k];
     }
-    // set new c1/c2 values
-    c1_ = c1;
-    c2_ = c2;
+    set_intensity(k, intensity);
   }
 }
 

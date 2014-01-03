@@ -268,7 +268,6 @@ class IMPSAXSEXPORT Profile : public base::Object {
 
   // stores the intensity split into 6 for c1/c2 enumeration
   std::vector<std::vector<double> > partial_profiles_;
-  Float c1_, c2_;
 
   bool experimental_;     // experimental profile read from file
   Float average_radius_;  // average radius of the particles
