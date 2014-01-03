@@ -82,9 +82,7 @@ int main(int argc, char **argv) {
         IMP::display::create_writer(output);
     if (frame_step == 0) frame_step = std::numeric_limits<int>::max();
     int cur_frame = 0;
-    for (unsigned int frame_iteration = frame;
-         frame_iteration < rh.get_number_of_frames();
-         frame_iteration += frame_step) {
+    IMP_FOREACH(RMF::FrameID frame_iteration, rh.get_frames()) {
       w->set_frame(cur_frame++);
       IMP::rmf::load_frame(rh, frame_iteration);
       for (unsigned int i = 0; i < hs.size(); ++i) {
