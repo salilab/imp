@@ -111,6 +111,9 @@ class OrientedSoap : public Score {
       kernel::Model *, const base::Array<D, kernel::ParticleIndex> &) const {
     return maxrange_;
   }
+
+  double get_distance_threshold() const { return maxrange_; }
+
   template <unsigned int D>
   bool get_is_trivially_zero(kernel::Model *,
                              const base::Array<D, kernel::ParticleIndex> &,
