@@ -58,6 +58,7 @@ class IMPATOMEXPORT Selection :
   SingletonPredicates predicates_;
   kernel::Model *m_;
   double resolution_;
+  int state_;
 
   kernel::ParticleIndexes h_;
   IMP_NAMED_TUPLE_2(SearchResult, SearchResults, bool, match,
@@ -83,7 +84,7 @@ class IMPATOMEXPORT Selection :
             HierarchyType hierarchy_type = None, Terminus terminus = None,
             std::string domain = None, core::ParticleType particle_type = None,
             core::ParticleTypes particle_types = [], int copy_index = -1,
-            Ints copy_indexs = []);
+            Ints copy_indexs = [], int state = ALL_STATES);
 #endif
   Selection();
   Selection(Hierarchy h);
@@ -102,8 +103,10 @@ class IMPATOMEXPORT Selection :
   /** Select based on the molecule name.*/
   void set_molecules(Strings mols);
 
-  /** Select particles whose radii are close to r.*/
+  /** Select at a Representation node with a resolution close to r.*/
   void set_resolution(double r) { resolution_ = r; }
+  /** Select State with the passed index.*/
+  void set_state(int state) { state_ = state; }
   /** Select the n or c terminus.*/
   void set_terminus(Terminus t);
   /** Select particles in chains whose id is
