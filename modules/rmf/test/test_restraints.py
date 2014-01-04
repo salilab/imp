@@ -23,10 +23,8 @@ class Tests(IMP.test.TestCase):
         f = RMF.open_rmf_file_read_only(name)
         m = IMP.kernel.Model()
         ps = IMP.rmf.create_particles(f, m)
-        rs = IMP.kernel.RestraintSet.get_from(
-            IMP.rmf.create_restraints(f, m)[0])
+        r = IMP.rmf.create_restraints(f, m)[0]
         IMP.rmf.load_frame(f, RMF.FrameID(0))
-        r = rs.get_restraints()[0]
         print [IMP.kernel.Particle.get_from(x).get_index() for x in r.get_inputs()]
         print [x.get_index() for x in ps]
         self.assertEqual(r.get_inputs(), ps)
@@ -36,7 +34,9 @@ class Tests(IMP.test.TestCase):
         RMF.set_log_level("Off")
         for suffix in RMF.suffixes:
             name = self.get_tmp_file_name("restr." + suffix)
+            print "#### write"
             self._write_restraint(name)
+            print "#### read"
             self._read_restraint(name)
 
     def test_1(self):
@@ -53,6 +53,7 @@ class Tests(IMP.test.TestCase):
             IMP.rmf.add_restraint(f, r)
             IMP.rmf.save_frame(f, str(0))
             del f
+            print "#### opening"
             f = RMF.open_rmf_file_read_only(nm)
             rr = IMP.rmf.create_restraints(f, m)
             IMP.rmf.load_frame(f, RMF.FrameID(0))
