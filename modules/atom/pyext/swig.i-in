@@ -28,6 +28,7 @@ IMP_SWIG_DECORATOR(IMP::atom, Mass, Masses);
 IMP_SWIG_DECORATOR(IMP::atom, Molecule, Molecules);
 IMP_SWIG_DECORATOR(IMP::atom, Residue, Residues);
 IMP_SWIG_DECORATOR(IMP::atom, Representation, Representations);
+IMP_SWIG_DECORATOR(IMP::atom, State, States);
 IMP_SWIG_DECORATOR(IMP::atom, Copy, Copies);
 IMP_SWIG_DECORATOR(IMP::atom, SecondaryStructureResidue, SecondaryStructureResidues);
 IMP_SWIG_BASE_OBJECT(IMP::atom, Simulator, Simulators);
@@ -200,6 +201,7 @@ namespace IMP {
 %include "IMP/atom/Atom.h"
 %include "IMP/atom/Residue.h"
 %include "IMP/atom/Representation.h"
+%include "IMP/atom/State.h"
 %include "IMP/atom/dihedrals.h"
 %include "IMP/atom/Molecule.h"
 %include "IMP/atom/Copy.h"
