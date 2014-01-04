@@ -273,8 +273,8 @@ class RestraintSaveLink : public SimpleSaveLink<kernel::Restraint> {
             s.set_frame_score(0);
           }
           }*/
-        Subset rds(get_input_particles(rd->get_inputs()));
-        if (rd && rd != o && rds != os) {
+        if (rd && rd != o &&
+            Subset(get_input_particles(rd->get_inputs())) != os) {
           rd->set_was_used(true);
           kernel::RestraintsTemp rs =
               kernel::get_restraints(kernel::RestraintsTemp(1, rd));
