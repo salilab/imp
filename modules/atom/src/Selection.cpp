@@ -245,23 +245,41 @@ IMP_ATOM_SELECTION_PRED(Terminus, Int, {
   else
     return get_is_terminus(m, pi, data_);
 });
+
+kernel::ParticleIndexes expand_search(kernel::Model *m,
+                                      kernel::ParticleIndex pi,
+                                      double resolution) {
+  // to handle representations
+  kernel::ParticleIndexes ret;
+  if (Representation::get_is_setup(m, pi)) {
+    if (resolution == ALL_RESOLUTIONS) {
+      ret = Representation(m, pi).get_representations(BALLS);
+    } else {
+      ret.push_back(
+          Representation(m, pi).get_representation(resolution, BALLS));
+    }
+  } else {
+    ret.push_back(pi);
+  }
+  return ret;
 }
+
+kernel::ParticleIndexes expand_children_search(kernel::Model *m,
+                                        kernel::ParticleIndex pi,
+                                        double resolution) {
+  Hierarchy h(m, pi);
+  kernel::ParticleIndexes ret;
+  IMP_FOREACH(Hierarchy c, h.get_children()) {
+    ret += expand_search(m, c, resolution);
+  }
+  return ret;
+}
+}
+
 Selection::SearchResult Selection::search(
     kernel::Model *m, kernel::ParticleIndex pi,
     boost::dynamic_bitset<> parent) const {
   IMP_FUNCTION_LOG;
-  // to handle representations
-  Hierarchies chs;
-  if (Representation::get_is_setup(m, pi)) {
-    if (resolution_ == ALL_RESOLUTIONS) {
-      chs = Representation(m, pi).get_representations(BALLS);
-      IMP_INTERNAL_CHECK(chs.back().get_particle_index() == pi,
-                         "Current is not on the back");
-      chs.pop_back();
-    } else {
-      pi = Representation(m, pi).get_representation(resolution_, BALLS);
-    }
-  }
   IMP_LOG_VERBOSE("Searching " << m->get_particle_name(pi) << " missing "
                                << parent.count() << std::endl);
   for (unsigned int i = 0; i < predicates_.size(); ++i) {
@@ -273,10 +291,11 @@ Selection::SearchResult Selection::search(
   }
   Hierarchy cur(m, pi);
   kernel::ParticleIndexes children;
+  kernel::ParticleIndexes cur_children =
+      expand_children_search(m, pi, resolution_);
   bool children_covered = true;
   bool matched = parent.none();
-  chs += cur.get_children();
-  IMP_FOREACH(Hierarchy ch, chs) {
+  IMP_FOREACH(kernel::ParticleIndex ch, cur_children) {
     SearchResult curr = search(m, ch, parent);
     matched |= curr.get_match();
     if (curr.get_match()) {
@@ -319,8 +338,10 @@ ParticleIndexes Selection::get_selected_particle_indexes() const {
     IMP_LOG_TERSE("Processing selection on " << h_ << " with predicates "
                                              << predicates_ << std::endl);
   }
-  for (unsigned int i = 0; i < h_.size(); ++i) {
-    ret += search(m_, h_[i], base).get_indexes();
+  IMP_FOREACH(kernel::ParticleIndex pi, h_) {
+    IMP_FOREACH(kernel::ParticleIndex rpi, expand_search(m_, pi, resolution_)) {
+      ret += search(m_, rpi, base).get_indexes();
+    }
   }
   return ret;
 }
