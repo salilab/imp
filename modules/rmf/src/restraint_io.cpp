@@ -258,6 +258,7 @@ class RestraintSaveLink : public SimpleSaveLink<kernel::Restraint> {
     if (score != 0) {
       IMP_LOG_TERSE("Saving score" << std::endl);
       sd.set_frame_score(score);
+      Subset os(get_input_particles(o->get_inputs()));
       if (no_terms_.find(o) != no_terms_.end()) {
         // too big, do nothing
       } else if (!dynamic_cast<kernel::RestraintSet *>(o)) {
@@ -272,7 +273,8 @@ class RestraintSaveLink : public SimpleSaveLink<kernel::Restraint> {
             s.set_frame_score(0);
           }
           }*/
-        if (rd && rd != o) {
+        Subset rds(get_input_particles(rd->get_inputs()));
+        if (rd && rd != o && rds != os) {
           rd->set_was_used(true);
           kernel::RestraintsTemp rs =
               kernel::get_restraints(kernel::RestraintsTemp(1, rd));
@@ -333,7 +335,7 @@ void add_restraints_as_bonds(RMF::FileHandle fh, const kernel::Restraints &rs) {
   RMF::decorator::BondFactory bf(fh);
   kernel::Restraints decomp;
 
-  RMF_FOREACH(kernel::Restraint * r, rs) {
+  IMP_FOREACH(kernel::Restraint * r, rs) {
     base::Pointer<kernel::Restraint> rd = r->create_decomposition();
     if (rd == r) {
       decomp.push_back(rd);
@@ -344,11 +346,11 @@ void add_restraints_as_bonds(RMF::FileHandle fh, const kernel::Restraints &rs) {
   }
   RMF::NodeHandle bdr =
       fh.get_root_node().add_child("restraint bonds", RMF::ORGANIZATIONAL);
-  RMF_FOREACH(kernel::Restraint* bd, decomp) {
+  IMP_FOREACH(kernel::Restraint* bd, decomp) {
     Subset s(get_input_particles(bd->get_inputs()));
     bd->set_was_used(bd);
     RMF::NodeHandles inputs;
-    RMF_FOREACH(kernel::Particle * cur,
+    IMP_FOREACH(kernel::Particle * cur,
                 kernel::get_input_particles(bd->get_inputs())) {
       RMF::NodeHandle n = get_node_from_association(fh, cur);
       if (n != RMF::NodeHandle()) {

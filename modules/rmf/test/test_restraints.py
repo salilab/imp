@@ -109,5 +109,34 @@ class Tests(IMP.test.TestCase):
                     rr[0].evaluate(False),
                     delta=.01)
 
+    def test_3(self):
+        """Test that simple pair restaints don't generate subnodes"""
+        m = IMP.kernel.Model()
+
+        def _cp(m, n):
+            pi = m.add_particle(n)
+            IMP.atom.Mass.setup_particle(m, pi, 1)
+            IMP.core.XYZR.setup_particle(
+                m,
+                pi,
+                IMP.algebra.get_unit_sphere_3d())
+            IMP.atom.Hierarchy.setup_particle(m, pi)
+            return pi
+        pi0 = _cp(m, "p0")
+        pi1 = _cp(m, "p1")
+        ps = IMP.core.SoftSpherePairScore(1)
+        path = self.get_tmp_file_name("pair_restraint.rmf3")
+        print path
+        rh = RMF.create_rmf_file(path)
+        particles = [m.get_particle(pi0), m.get_particle(pi1)]
+        IMP.rmf.add_hierarchies(rh, particles)
+        r = IMP.core.PairRestraint(ps, particles)
+        IMP.rmf.add_restraint(rh, r)
+        IMP.rmf.save_frame(rh, "frame")
+        rn = rh.get_root_node().get_children()[2]
+        RMF.show_hierarchy(rh.get_root_node())
+        self.assertEqual(rn.get_name(), r.get_name())
+        self.assertEqual(rn.get_children(), [])
+
 if __name__ == '__main__':
     unittest.main()
