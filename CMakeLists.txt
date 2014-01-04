@@ -311,6 +311,8 @@ if(IMP_DOXYGEN_FOUND)
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_BINARY_DIR}/doc/tutorial" "${CMAKE_INSTALL_FULL_DOCDIR}/tutorial"
     DEPENDS "IMP-doc"
     COMMENT "Installing documentation to ${CMAKE_INSTALL_FULL_DOCDIR}")
+else()
+  message(STATUS "Documentation disabled as doxygen not found")
 endif(IMP_DOXYGEN_FOUND)
 
 # Install headers
