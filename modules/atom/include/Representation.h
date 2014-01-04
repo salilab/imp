@@ -30,9 +30,11 @@ enum RepresentationType {
 //! A decorator for a representation.
 /** It stores a number of copies of its sub hierarchy each with an associated
  * resolution. You can used it to get the representation at a given resolution.
+ * \note The particle returned for a given representation should be thought of
+ * as replacing this particle (not as a child of it).
  *
- * \note Only one Representation node is allowed in any path up the tree as nesting
- * them does not have a clear meaning.
+ * \note Only one Representation node is allowed in any path up the tree as
+ * nesting them does not have a clear meaning.
  */
 class IMPATOMEXPORT Representation : public Hierarchy {
   static IntsKey get_types_key();
