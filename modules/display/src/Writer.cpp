@@ -59,11 +59,11 @@ void TextWriter::do_set_frame() {
 }
 
 Writer *create_writer(std::string name) {
-  for (std::map<std::string, internal::WriterFactory *>::iterator it =
-           internal::get_writer_factory_table().begin();
-       it != internal::get_writer_factory_table().end(); ++it) {
-    if (boost::algorithm::ends_with(name, it->first)) {
-      return it->second->create(name);
+  typedef std::pair<std::string,
+                    boost::shared_ptr<internal::WriterFactory> > MP;
+  IMP_FOREACH(MP mp, internal::get_writer_factory_table()) {
+    if (boost::algorithm::ends_with(name, mp.first)) {
+      return mp.second->create(name);
     }
   }
   IMP_THROW("No writer found for file " << name, base::ValueException);
