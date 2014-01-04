@@ -104,28 +104,23 @@ class SimpleLoadLink : public LoadLink {
 
     RMF::RestoreCurrentFrame sf(rt.get_file());
     set_was_used(true);
-    RMF::NodeConstHandles ch = rt.get_children();
-    int links = 0;
-    for (unsigned int i = 0; i < ch.size(); ++i) {
-      IMP_LOG_VERBOSE("Checking " << ch[i] << std::endl);
-      if (get_is(ch[i])) {
-        IMP_LOG_VERBOSE("Linking " << ch[i] << std::endl);
-        if (ps.size() <= static_cast<unsigned int>(links)) {
-          IMP_THROW("There are too many matching hierarchies in the rmf to "
-                        << "link against " << ps,
-                    ValueException);
-        }
-        add_link(ps[links], ch[i]);
-        ps[links]->set_was_used(true);
-        do_add_link(ps[links], ch[i]);
-        ++links;
-      }
+    RMF::NodeConstHandles chs = rt.get_children();
+    RMF::NodeConstHandles matching_chs;
+    IMP_FOREACH(RMF::NodeConstHandle ch, rt.get_children()) {
+      IMP_LOG_VERBOSE("Checking " << ch << std::endl);
+      if (get_is(ch)) matching_chs.push_back(ch);
     }
-    IMP_USAGE_CHECK(os_.size() == nhs_.size(),
-                    "Didn't find enough matching things.");
-    IMP_USAGE_CHECK(links == static_cast<int>(ps.size()),
-                    "Didn't find enough matching things. Found "
-                        << links << " wanted " << ps.size());
+    if (matching_chs.size() != ps.size()) {
+      IMP_THROW("Founding " << matching_chs.size() << " matching nodes "
+                << "but passed " << ps.size() << " to match with.",
+                ValueException);
+    }
+    for (unsigned int i = 0; i < matching_chs.size(); ++i) {
+      IMP_LOG_VERBOSE("Linking " << matching_chs[i] << std::endl);
+      add_link(ps[i], matching_chs[i]);
+      ps[i]->set_was_used(true);
+      do_add_link(ps[i], matching_chs[i]);
+    }
   }
 };
 

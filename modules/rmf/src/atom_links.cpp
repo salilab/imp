@@ -119,20 +119,31 @@ void HierarchyLoadLink::add_link_recursive(kernel::Model *m,
   IMP_USAGE_CHECK(get_good_name(m, cur) == node.get_name(),
                   "Names don't match");
   set_association(node, m->get_particle(cur), true);
-  RMF::NodeConstHandles ch = node.get_children();
   data.load_static.link_particle(node, m, cur, rigid_bodies);
   data.load_rigid_bodies.link_particle(node, m, cur, rigid_bodies);
   data.load_xyzs.link_particle(node, m, cur, rigid_bodies);
 
   do_link_particle(m, root, cur, node);
 
-  int child = 0;
-  for (unsigned int i = 0; i < ch.size(); ++i) {
-    if (ch[i].get_type() == RMF::REPRESENTATION) {
-      add_link_recursive(m, root,
-                         atom::Hierarchy(m, cur).get_child_index(child), ch[i],
-                         rigid_bodies, data);
-      ++child;
+  RMF::NodeConstHandles nchs;
+  IMP_FOREACH(RMF::NodeConstHandle ch, node.get_children()) {
+    if (ch.get_type() == RMF::REPRESENTATION) {
+      nchs.push_back(ch);
+    }
+  }
+  kernel::ParticleIndexes pchs = atom::Hierarchy(m, cur).get_children_indexes();
+  if (nchs.size() != pchs.size()) {
+    IMP_THROW(
+        "Number of children doesn't match the number of representation nodes "
+        "at "
+            << m->get_particle_name(cur) << ". "
+            << "They are " << pchs.size() << " and " << nchs.size()
+            << " respectively. " << pchs << " vs " << nchs,
+        ValueException);
+  }
+  for (unsigned int i = 0; i < nchs.size(); ++i) {
+    if (nchs[i].get_type() == RMF::REPRESENTATION) {
+      add_link_recursive(m, root, pchs[i], nchs[i], rigid_bodies, data);
     }
   }
 }
