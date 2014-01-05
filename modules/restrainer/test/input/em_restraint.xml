@@ -1,9 +1,0 @@
-<RestraintSet>
-    <EM>
-        <Restraint name="em_restraint" density_filename="data/in.mrc" spacing="1.0" resolution="3.0" xorigin="-6.0" yorigin="-6.0" zorigin="-6.0">
-            <Particle id="frag1"/>
-            <Particle id="frag2"/>
-            <Particle id="frag3"/>
-        </Restraint>
-    </EM>
-</RestraintSet>
