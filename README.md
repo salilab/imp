@@ -7,4 +7,4 @@ able to figure that one out. We can add a backwards compat method if
 needed for that, but not having it is way simpler.
 
 close #647
-
+close #648
