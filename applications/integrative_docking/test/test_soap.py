@@ -51,18 +51,18 @@ class SOAPDockingApplicationTest(IMP.test.ApplicationTestCase):
         text_file.write(" ");
         text_file.write(self.get_input_file_name('transformed.pdb'));
         text_file.close()
-        p = self.run_application('soap_pdbs_score',
+        p = self.run_application('soap_score',
                                  ['filenames.txt'])
 
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
-        fin=open('static_transformed.soap','r')
+        fin=open('soap_score.res','r')
         lines = fin.readlines()
         last_line = lines[-1]
         words = last_line.split('|')
         self.assertAlmostEqual(float(words[1]), -1541.274, delta=0.01)
-        os.unlink('static_transformed.soap')
+        os.unlink('soap_score.res')
         os.unlink('filenames.txt')
 
 

@@ -210,29 +210,7 @@ each pair of PDB file names in the input file filenames.txt.")
     }
   }
 
-  // compute z_score
-  float average = 0.0;
-  float std = 0.0;
-  int counter = 0;
-  for (unsigned int i = 0; i < results.size(); i++) {
-    if (!results[i].is_filtered()) {
-      counter++;
-      average += results[i].get_score();
-      std += IMP::square(results[i].get_score());
-    }
-  }
-  average /= counter;
-  std /= counter;
-  std -= IMP::square(average);
-  std = sqrt(std);
-
-  // update z_scores
-  for (unsigned int i = 0; i < results.size(); i++) {
-    if (!results[i].is_filtered()) {
-      float z_score = (results[i].get_score() - average) / std;
-      results[i].set_z_score(z_score);
-    }
-  }
+  set_z_scores(results);
 
   // output file header
   SOAPResult::print_header(out_file);

@@ -4,8 +4,8 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
-#include "helpers.h"
 #include "SAXSResult.h"
+#include "../lib/helpers.h"
 
 #include <IMP/saxs/FormFactorTable.h>
 #include <IMP/saxs/Profile.h>
@@ -279,30 +279,7 @@ recommended q value is 0.2")("offset,f",
   }
 
   // compute z_scores for chi
-  if (!rg_only) {
-    float average = 0.0;
-    float std = 0.0;
-    int counter = 0;
-    for (unsigned int i = 0; i < results.size(); i++) {
-      if (!results[i].is_filtered()) {
-        counter++;
-        average += results[i].get_chi();
-        std += IMP::square(results[i].get_chi());
-      }
-    }
-    average /= counter;
-    std /= counter;
-    std -= IMP::square(average);
-    std = sqrt(std);
-
-    // update z_scores
-    for (unsigned int i = 0; i < results.size(); i++) {
-      if (!results[i].is_filtered()) {
-        float z_score = (results[i].get_chi() - average) / std;
-        results[i].set_z_score(z_score);
-      }
-    }
-  }
+  if (!rg_only) set_z_scores(results);
 
   // output
   for (unsigned int i = 0; i < results.size(); i++) {

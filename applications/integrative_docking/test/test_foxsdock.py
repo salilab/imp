@@ -24,6 +24,11 @@ class FoXSDockApplicationTest(IMP.test.ApplicationTestCase):
         fin.close()
         number_of_lines = text.count('\n')
         self.assertEqual(number_of_lines, 15)
+        fin=open('saxs_score.res','r')
+        lines = fin.readlines()
+        last_line = lines[-1]
+        words = last_line.split('|')
+        self.assertAlmostEqual(float(words[1]), 3.36, delta=0.1)
         os.unlink('saxs_score.res')
 
 if __name__ == '__main__':

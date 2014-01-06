@@ -35,6 +35,29 @@ void read_pdb(const std::string pdb_file_name,
   IMP::atom::add_dope_score_data(mhd);
 }
 
+
+void read_pdb_atoms(const std::string file_name,
+                    IMP::kernel::Particles& particles) {
+  IMP::kernel::Model* model = new IMP::kernel::Model();
+  IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(
+      file_name, model, new IMP::atom::NonWaterNonHydrogenPDBSelector(), true,
+      true);
+  particles = IMP::get_as<IMP::kernel::Particles>(
+      get_by_type(mhd, IMP::atom::ATOM_TYPE));
+  std::cout << "Number of atom particles " << particles.size() << std::endl;
+}
+
+void read_pdb_ca_atoms(const std::string file_name,
+                       IMP::kernel::Particles& particles) {
+  IMP::kernel::Model* model = new IMP::kernel::Model();
+  IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(
+      file_name, model, new IMP::atom::CAlphaPDBSelector(), true, true);
+  particles = IMP::get_as<IMP::kernel::Particles>(
+      get_by_type(mhd, IMP::atom::ATOM_TYPE));
+  std::cout << "Number of CA atom particles " << particles.size() << std::endl;
+}
+
+
 void read_trans_file(const std::string file_name,
                      std::vector<IMP::algebra::Transformation3D>& transforms) {
   std::ifstream trans_file(file_name.c_str());
