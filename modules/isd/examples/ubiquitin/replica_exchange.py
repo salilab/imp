@@ -43,14 +43,15 @@ tau = [500.0] * nreps
 #(in units of gibbs sampling steps)
 stat_rate = [1] * nreps
 # list of files relative to the current dir to copy over to all nodes
-initpdb = "generated2.pdb"
-charmmtop = "top.lib"
-charmmpar = "par.lib"
-restraints = "NOE_HN-full_7A_sparse100.tbl"
-sequence = 'sequence.dat'
+initpdb = IMP.isd.get_example_path("generated2.pdb")
+charmmtop = IMP.isd.get_example_path("top.lib")
+charmmpar = IMP.isd.get_example_path("par.lib")
+restraints = IMP.isd.get_example_path("NOE_HN-full_7A_sparse100.tbl")
+sequence = IMP.isd.get_example_path('sequence.dat')
 # export the files in a local tmp directory
+# add whatever you want
 filelist = [initpdb, charmmtop, charmmpar, sequence,
-            restraints, '_shared_functions.py']  # add whatever you want
+            restraints, IMP.isd.get_example_path('_shared_functions.py')]
 # prefix of output files
 nums = [os.path.join(outfolder, 'r%02d' % (i + 1)) for i in xrange(nreps)]
 # thermalization (mc parameters stay fixed)
