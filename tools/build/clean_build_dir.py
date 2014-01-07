@@ -13,6 +13,7 @@ import platform
 import tools
 import glob
 import itertools
+import shutil
 
 
 def check_config():
@@ -54,12 +55,38 @@ def clean_pyc(dir):
                 os.unlink(f)
 
 
+def clean_restrainer():
+    shutil.rmtree(
+        os.path.join(
+            "include",
+            "IMP",
+            "restrainer"),
+        ignore_errors=True)
+    shutil.rmtree(os.path.join("module_bin", "restrainer"),
+                  ignore_errors=True)
+    shutil.rmtree(os.path.join("modules", "restrainer"),
+                  ignore_errors=True)
+    shutil.rmtree(os.path.join("lib", "IMP", "restrainer"),
+                  ignore_errors=True)
+    shutil.rmtree(os.path.join("doc", "html", "restrainer"),
+                  ignore_errors=True)
+    shutil.rmtree(os.path.join("doc", "examples", "restrainer"),
+                  ignore_errors=True)
+    shutil.rmtree(os.path.join("data", "restrainer"),
+                  ignore_errors=True)
+    shutil.rmtree(os.path.join("doxygen", "restrainer"),
+                  ignore_errors=True)
+    shutil.rmtree(os.path.join("test", "restrainer"),
+                  ignore_errors=True)
+
+
 def main():
     check_config()
     declare_container()
     build_info()
     clean_headers()
     clean_pyc("lib")
+    clean_restrainer()
 
 if __name__ == '__main__':
     main()
