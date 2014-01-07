@@ -2,7 +2,6 @@ import IMP
 import IMP.core
 import IMP.example
 import IMP.atom
-import IMP.restrainer
 import IMP.container
 import unittest
 import subprocess
@@ -30,7 +29,7 @@ class IMPInstallTests(unittest.TestCase):
 
     def test_examples_installed(self):
         """Check install of example files"""
-        d = IMP.restrainer.get_example_path("em_restraint.py")
+        d = IMP.atom.get_example_path("assess_dope.py")
         self.assert_(os.path.exists(d))
 
     def test_applications_installed(self):

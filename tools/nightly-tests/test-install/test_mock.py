@@ -31,7 +31,6 @@ class IMPMockTests(unittest.TestCase):
         import IMP.misc
         import IMP.multifit
         import IMP.parallel
-        import IMP.restrainer
         import IMP.rmf
         import IMP.rotamer
         import IMP.saxs
