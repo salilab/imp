@@ -6,6 +6,7 @@
    %include lines as well as any inline C++ code (or at least any such code which uses
    the types in question).
   */
+IMP_SWIG_OBJECT(IMP::isd, ConstantRestraint, ConstantRestraints);
 IMP_SWIG_OBJECT(IMP::isd, JeffreysRestraint, JeffreysRestraints);
 IMP_SWIG_OBJECT(IMP::isd, vonMisesKappaJeffreysRestraint, vonMisesKappaJeffreysRestraints);
 IMP_SWIG_OBJECT(IMP::isd, vonMisesKappaConjugateRestraint, vonMisesKappaConjugateRestraints);
@@ -65,6 +66,7 @@ def create_model_and_particles():
 %include "IMP/isd/Scale.h"
 %include "IMP/isd/Switching.h"
 %include "IMP/isd/Weight.h"
+%include "IMP/isd/ConstantRestraint.h"
 %include "IMP/isd/JeffreysRestraint.h"
 %include "IMP/isd/FNormal.h"
 %include "IMP/isd/vonMises.h"
