@@ -13,7 +13,6 @@
 #include <IMP/algebra/connolly_surface.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/constants.h>
-#include <IMP/atom/pdb.h>
 #include <boost/multi_array.hpp>
 #include <boost/unordered_map.hpp>
 #include <math.h>
