@@ -227,4 +227,8 @@ ParticleIndexKeys Particle::get_particle_keys() const {
   return get_model()->internal::ParticleAttributeTable::get_attribute_keys(id_);
 }
 
+ParticleAdaptor::ParticleAdaptor(const Decorator &d)
+      : m_(d.get_model()), pi_(d.get_particle_index()) {}
+
+
 IMPKERNEL_END_NAMESPACE

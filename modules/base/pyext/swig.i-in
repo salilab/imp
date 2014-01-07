@@ -77,7 +77,6 @@ IMP_SWIG_VALUE(IMP::base::internal, _Protection, _Protections);
 %include "IMP/base/VersionInfo.h"
 %include "IMP/base/file.h"
 %include "IMP/base/log.h"
-%include "IMP/base/declare_Object.h"
 %include "IMP/base/Object.h"
 %include "IMP/base/SetLogState.h"
 %include "IMP/base/WarningContext.h"

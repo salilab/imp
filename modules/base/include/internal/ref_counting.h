@@ -9,8 +9,7 @@
 #ifndef IMPBASE_REF_COUNTING_H
 #define IMPBASE_REF_COUNTING_H
 
-#include "../declare_Object.h"
-#include "../declare_Object.h"
+#include "../Object.h"
 #include "../log_macros.h"
 #include "../check_macros.h"
 

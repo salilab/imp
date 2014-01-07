@@ -257,13 +257,13 @@ namespace kernel {
 }
 }
 
-%include "IMP/kernel/declare_Restraint.h"
-%include "IMP/kernel/declare_RestraintSet.h"
+%include "IMP/kernel/Restraint.h"
+%include "IMP/kernel/RestraintSet.h"
 %include "IMP_kernel.particle.i"
 %include "IMP/kernel/dependency_graph.h"
-%include "IMP/kernel/declare_ScoringFunction.h"
+%include "IMP/kernel/ScoringFunction.h"
 %include "IMP/kernel/Undecorator.h"
-%include "IMP/kernel/declare_Model.h"
+%include "IMP/kernel/Model.h"
 %include "IMP/kernel/Decorator.h"
 %include "IMP/kernel/UnaryFunction.h"
 %include "IMP/kernel/OptimizerState.h"

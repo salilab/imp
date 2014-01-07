@@ -7,12 +7,12 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPKERNEL_DECLARE_CLASSNAME_CONTAINER_H
-#define IMPKERNEL_DECLARE_CLASSNAME_CONTAINER_H
+#ifndef IMPKERNEL_CLASSNAME_CONTAINER_H
+#define IMPKERNEL_CLASSNAME_CONTAINER_H
 
 #include <IMP/kernel/kernel_config.h>
 #include "internal/IndexingIterator.h"
-#include "declare_Particle.h"
+#include "Particle.h"
 #include "container_base.h"
 #include "internal/container_helpers.h"
 #include "DerivativeAccumulator.h"
@@ -156,4 +156,4 @@ class IMPKERNELEXPORT ClassnameContainerAdaptor :
 
 IMPKERNEL_END_NAMESPACE
 
-#endif /* IMPKERNEL_DECLARE_CLASSNAME_CONTAINER_H */
+#endif /* IMPKERNEL_CLASSNAME_CONTAINER_H */

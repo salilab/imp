@@ -10,10 +10,10 @@
 #define IMPKERNEL_INTERNAL_CONTAINER_HELPERS_H
 
 #include "../base_types.h"
-#include "../declare_Particle.h"
+#include "../Particle.h"
 #include "../ParticleTuple.h"
 #include "../particle_index.h"
-#include "../declare_Model.h"
+#include "../Model.h"
 #include "../ModelObject.h"
 #include "utility.h"
 #include <boost/bind.hpp>
