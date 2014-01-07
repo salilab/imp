@@ -7,6 +7,7 @@
 
 #include "IMP/kernel/Refiner.h"
 #include "IMP/kernel/internal/utility.h"
+#include "IMP/kernel/Model.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 

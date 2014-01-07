@@ -9,6 +9,7 @@
 #include <IMP/algebra/eigen_analysis.h>
 #include <IMP/algebra/standard_grids.h>
 #include <IMP/core/internal/grid_close_pairs_impl.h>
+#include <IMP/base/object_cast.h>
 #include <IMP/utility.h>
 #include <vector>
 

@@ -7,6 +7,7 @@
 
 #include "IMP/kernel/ScoreAccumulator.h"
 #include "IMP/kernel/Restraint.h"
+#include "IMP/kernel/ScoringFunction.h" // I don't understand why this is needed
 IMPKERNEL_BEGIN_NAMESPACE
 ScoreAccumulator::ScoreAccumulator(ScoreAccumulator o, const Restraint *r) {
   score_ = o.score_;

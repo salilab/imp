@@ -10,6 +10,7 @@
 #include "IMP/kernel/Model.h"
 #include "IMP/kernel/internal/utility.h"
 #include "IMP/kernel/internal/PrefixStream.h"
+#include "IMP/kernel/Decorator.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
