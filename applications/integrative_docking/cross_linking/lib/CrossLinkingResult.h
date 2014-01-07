@@ -10,22 +10,15 @@
 #ifndef IMP_CROSS_LINKING_RESULT_H
 #define IMP_CROSS_LINKING_RESULT_H
 
-class CrossLinkingResult {
+#include "../../lib/Result.h"
+
+class CrossLinkingResult : public Result {
  public:
   CrossLinkingResult(int number, float score, bool filtered,
                      int unsatisfied_num,
                      IMP::algebra::Transformation3D transformation)
-      : number_(number),
-        score_(score),
-        filtered_(filtered),
-        z_score_(0.0),
-        unsatisfied_num_(unsatisfied_num),
-        transformation_(transformation) {}
-
-  float get_score() const { return score_; }
-  bool is_filtered() const { return filtered_; }
-
-  void set_z_score(float z_score) { z_score_ = z_score; }
+      : Result(number, score, filtered, 0.0, transformation),
+        unsatisfied_num_(unsatisfied_num) {}
 
   friend std::ostream& operator<<(std::ostream& s,
                                   const CrossLinkingResult& p) {
@@ -59,12 +52,7 @@ class CrossLinkingResult {
   }
 
  protected:
-  int number_;
-  float score_;
-  bool filtered_;
-  float z_score_;
   int unsatisfied_num_;  // number of unsatisfied cross links
-  IMP::algebra::Transformation3D transformation_;
 };
 
 #endif /* IMP_CROSS_LINKING_RESULT_H */

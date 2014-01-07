@@ -8,11 +8,16 @@
 #ifndef IMP_HELPERS_H
 #define IMP_HELPERS_H
 
-#include <IMP/Particle.h>
+
+#include <IMP/saxs/SolventAccessibleSurface.h>
+#include <IMP/saxs/FormFactorTable.h>
+#include <IMP/algebra/constants.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/atom/DopePairScore.h>
+#include <IMP/atom/hierarchy_tools.h>
 
 #include <vector>
 #include <string>
@@ -112,6 +117,40 @@ void get_atom_2_residue_map(const IMP::Particles& atom_particles,
       residue_index++;
     }
   }
+}
+
+IMP::algebra::Vector3D get_ca_coordinate(const IMP::kernel::Particles& ca_atoms,
+                                         int residue_index, std::string chain_id) {
+  IMP::algebra::Vector3D v(0, 0, 0);
+  for (unsigned int i = 0; i < ca_atoms.size(); i++) {
+    IMP::atom::Residue r = IMP::atom::get_residue(IMP::atom::Atom(ca_atoms[i]));
+    int curr_residue_index = r.get_index();
+    std::string curr_chain_id =
+      IMP::atom::get_chain_id(IMP::atom::Atom(ca_atoms[i]));
+    if (curr_residue_index == residue_index && curr_chain_id == chain_id) {
+      IMP::algebra::Vector3D v = IMP::core::XYZ(ca_atoms[i]).get_coordinates();
+      return v;
+    }
+  }
+  std::cerr << "Residue not found " << residue_index << " " << chain_id
+            << std::endl;
+  exit(1);
+  //  return v;
+}
+
+void get_residue_solvent_accessibility(
+    const IMP::kernel::Particles& residue_particles,
+    IMP::Floats& residue_solvent_accessibility) {
+  IMP::saxs::FormFactorTable* ft = IMP::saxs::default_form_factor_table();
+  IMP::saxs::FormFactorType ff_type = IMP::saxs::CA_ATOMS;
+  for (unsigned int p_index = 0; p_index < residue_particles.size();
+       p_index++) {
+    float radius = ft->get_radius(residue_particles[p_index], ff_type);
+    IMP::core::XYZR::setup_particle(residue_particles[p_index], radius);
+  }
+  IMP::saxs::SolventAccessibleSurface s;
+  residue_solvent_accessibility =
+      s.get_solvent_accessibility(IMP::core::XYZRs(residue_particles));
 }
 
 }

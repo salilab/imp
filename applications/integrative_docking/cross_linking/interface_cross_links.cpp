@@ -5,7 +5,7 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
-#include "helpers.h"
+#include "../lib/helpers.h"
 #include "CrossLink.h"
 
 #include <IMP/kernel/Model.h>
@@ -131,7 +131,7 @@ int main(int argc, char** argv) {
   std::vector<CrossLink> cross_links, selected_cross_links;
 
   bool chain_id1_set = false;
-  char curr_chain1 = '-';
+  std::string curr_chain1 = "-";
   int link_counter = 0;
   // compute distance for all accessible LYS calpha atoms + N-ter calpha
   for (unsigned int i = 0; i < ca_atoms1.size(); i++) {
@@ -140,8 +140,8 @@ int main(int argc, char** argv) {
         IMP::atom::get_residue(IMP::atom::Atom(ca_atoms1[i]));
     IMP::atom::ResidueType rt1 = r1.get_residue_type();
     int res_index1 = r1.get_index();
-    char chain_id1 =
-        IMP::atom::get_chain_id_char(IMP::atom::Atom(ca_atoms1[i]));
+    std::string chain_id1 =
+      IMP::atom::get_chain_id(IMP::atom::Atom(ca_atoms1[i]));
 
     // check if LYS or N-ter
     if (residue_solvent_accessibility1[i] > 0 &&
@@ -162,7 +162,7 @@ int main(int argc, char** argv) {
       }
 
       bool chain_id2_set = false;
-      char curr_chain2 = '-';
+      std::string curr_chain2 = "-";
       // iterate second mol
       for (unsigned int j = 0; j < ca_atoms2.size(); j++) {
         // check if LYS or N-ter
@@ -170,8 +170,8 @@ int main(int argc, char** argv) {
             IMP::atom::get_residue(IMP::atom::Atom(ca_atoms2[j]));
         IMP::atom::ResidueType rt2 = r2.get_residue_type();
         int res_index2 = r2.get_index();
-        char chain_id2 =
-            IMP::atom::get_chain_id_char(IMP::atom::Atom(ca_atoms2[j]));
+        std::string chain_id2 =
+            IMP::atom::get_chain_id(IMP::atom::Atom(ca_atoms2[j]));
         if (residue_solvent_accessibility2[j] > 0 &&
             (rt2 == IMP::atom::LYS ||
              (use_nter && (!chain_id2_set ||

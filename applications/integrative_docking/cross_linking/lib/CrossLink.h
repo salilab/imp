@@ -1,7 +1,7 @@
 /**
  * \file CrossLink \brief
  *
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -16,14 +16,14 @@ class CrossLink {
  public:
   CrossLink()
       : residue_number1_(0),
-        chain_id1_('-'),
+        chain_id1_("-"),
         residue_number2_(0),
-        chain_id2_('-'),
+        chain_id2_("-"),
         min_distance_(0.0),
         max_distance_(0.0) {}
 
-  CrossLink(int residue_number1, char chain_id1, int residue_number2,
-            char chain_id2, float min_dist, float max_dist,
+  CrossLink(int residue_number1, std::string chain_id1, int residue_number2,
+            std::string chain_id2, float min_dist, float max_dist,
             float actual_distance = 0.0, float actual_cb_distance = 0.0)
       : residue_number1_(residue_number1),
         chain_id1_(chain_id1),
@@ -37,8 +37,8 @@ class CrossLink {
   int get_residue1() const { return residue_number1_; }
   int get_residue2() const { return residue_number2_; }
 
-  char get_chain1() const { return chain_id1_; }
-  char get_chain2() const { return chain_id2_; }
+  std::string get_chain1() const { return chain_id1_; }
+  std::string get_chain2() const { return chain_id2_; }
 
   float get_min_distance() const { return min_distance_; }
   float get_max_distance() const { return max_distance_; }
@@ -50,9 +50,9 @@ class CrossLink {
 
  protected:
   int residue_number1_;
-  char chain_id1_;
+  std::string chain_id1_;
   int residue_number2_;
-  char chain_id2_;
+  std::string chain_id2_;
   float min_distance_;
   float max_distance_;
   float actual_distance_;     // from PDB - for testing purposes

@@ -37,12 +37,12 @@ void write_cross_link_file(const std::string& file_name,
 
 std::ostream& operator<<(std::ostream& s, const CrossLink& cl) {
   s << cl.residue_number1_ << " ";
-  if (cl.chain_id1_ == ' ')
+  if (cl.chain_id1_ == " ")
     s << "-";
   else
     s << cl.chain_id1_;
   s << " " << cl.residue_number2_ << " ";
-  if (cl.chain_id2_ == ' ')
+  if (cl.chain_id2_ == " ")
     s << "-";
   else
     s << cl.chain_id2_;
@@ -53,7 +53,7 @@ std::ostream& operator<<(std::ostream& s, const CrossLink& cl) {
 std::istream& operator>>(std::istream& s, CrossLink& cl) {
   s >> cl.residue_number1_ >> cl.chain_id1_ >> cl.residue_number2_ >>
       cl.chain_id2_ >> cl.min_distance_ >> cl.max_distance_;
-  if (cl.chain_id1_ == '-') cl.chain_id1_ = ' ';
-  if (cl.chain_id2_ == '-') cl.chain_id2_ = ' ';
+  if (cl.chain_id1_ == "-") cl.chain_id1_ = " ";
+  if (cl.chain_id2_ == "-") cl.chain_id2_ = " ";
   return s;
 }

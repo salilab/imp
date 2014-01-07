@@ -7,12 +7,11 @@
  */
 #include <IMP/kernel/Model.h>
 
-#include "helpers.h"
+#include "../lib/helpers.h"
 #include "CrossLink.h"
 #include "CrossLinkingResult.h"
 #include "DockingDistanceRestraint.h"
 
-#include <IMP/algebra/standard_grids.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/pdb.h>
@@ -152,31 +151,7 @@ Each docked complex will be compared against cross links in cross_links_file.")(
       std::cerr << i + 1 << " transforms processed " << std::endl;
   }
 
-  // compute z_scores
-  float average = 0.0;
-  float std = 0.0;
-  int counter = 0;
-  for (unsigned int i = 0; i < results.size(); i++) {
-    if (!results[i].is_filtered()) {
-      counter++;
-      average += results[i].get_score();
-      std += IMP::square(results[i].get_score());
-    }
-  }
-  average /= counter;
-  std /= counter;
-  std -= IMP::square(average);
-  std = sqrt(std);
-
-  // update z_scores
-  for (unsigned int i = 0; i < results.size(); i++) {
-    if (!results[i].is_filtered()) {
-      if (std > 0.0) {
-        float z_score = -(results[i].get_score() - average) / std;
-        results[i].set_z_score(z_score);
-      }
-    }
-  }
+  set_z_scores(results);
 
   // output
   for (unsigned int i = 0; i < results.size(); i++) {

@@ -7,7 +7,7 @@
  */
 #include <IMP/kernel/Model.h>
 
-#include "helpers.h"
+#include "../lib/helpers.h"
 #include "CrossLink.h"
 #include "CrossLinkingResult.h"
 #include "DockingDistanceRestraint.h"

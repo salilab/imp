@@ -4,7 +4,7 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
-#include "SAXSResult.h"
+#include "lib/SAXSResult.h"
 #include "../lib/helpers.h"
 
 #include <IMP/saxs/FormFactorTable.h>
