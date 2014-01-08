@@ -43,11 +43,11 @@ void HierarchyLoadXYZs::link_particle(
     const kernel::ParticleIndexes &rigid_bodies) {
   if (!ip_factory_.get_is(n)) return;
   if (rigid_bodies.empty()) {
-    global_.push_back(std::make_pair(n.get_index(), p));
+    global_.push_back(std::make_pair(n.get_id(), p));
   } else {
     if (rigid_bodies.back() == p) return;
     if (core::NonRigidMember::get_is_setup(m, p)) {
-      local_.push_back(std::make_pair(n.get_index(), p));
+      local_.push_back(std::make_pair(n.get_id(), p));
     }
   }
 }
@@ -74,7 +74,7 @@ void HierarchySaveXYZs::setup_node(
     const kernel::ParticleIndexes &rigid_bodies) {
   if (!core::XYZ::get_is_setup(m, p)) return;
   if (rigid_bodies.empty()) {
-    global_.push_back(std::make_pair(n.get_index(), p));
+    global_.push_back(std::make_pair(n.get_id(), p));
   } else {
     if (core::XYZR::get_is_setup(m, p) && rigid_bodies.back() == p) {
       ip_factory_.get(n).set_static_coordinates(RMF::Vector3(0, 0, 0));
@@ -83,7 +83,7 @@ void HierarchySaveXYZs::setup_node(
           core::RigidBodyMember(m, p).get_internal_coordinates(), n,
           ip_factory_);
     } else if (core::NonRigidMember::get_is_setup(m, p)) {
-      local_.push_back(std::make_pair(n.get_index(), p));
+      local_.push_back(std::make_pair(n.get_id(), p));
     } else {
       IMP_FAILURE("not sure why I am here");
     }

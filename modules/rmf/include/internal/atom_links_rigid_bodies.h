@@ -17,8 +17,8 @@
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 
 class IMPRMFEXPORT HierarchyLoadRigidBodies {
-  RMF::decorator::ReferenceFrameConstFactory reference_frame_factory_;
-  RMF::decorator::IntermediateParticleConstFactory ip_factory_;
+  RMF::decorator::ReferenceFrameFactory reference_frame_factory_;
+  RMF::decorator::IntermediateParticleFactory ip_factory_;
   typedef std::pair<RMF::NodeID, kernel::ParticleIndex> Pair;
   typedef base::Vector<Pair> NodeParticlePairs;
 

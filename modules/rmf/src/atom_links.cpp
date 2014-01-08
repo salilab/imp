@@ -43,8 +43,8 @@ std::string get_good_name(kernel::Model *m, kernel::ParticleIndex h) {
 
 unsigned int get_coords_state(
     RMF::NodeConstHandle nh,
-    RMF::decorator::IntermediateParticleConstFactory ipcf,
-    RMF::decorator::ReferenceFrameConstFactory rfcf, RMF::IntKey external_key) {
+    RMF::decorator::IntermediateParticleFactory ipcf,
+    RMF::decorator::ReferenceFrameFactory rfcf, RMF::IntKey external_key) {
   unsigned int ret = 0;
   if (nh.get_has_value(external_key)) {
     ret |= internal::EXTERNAL_RB;

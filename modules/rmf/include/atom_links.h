@@ -32,9 +32,9 @@ IMPRMF_BEGIN_NAMESPACE
  */
 class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<kernel::Particle> {
   typedef SimpleLoadLink<kernel::Particle> P;
-  RMF::decorator::IntermediateParticleConstFactory
+  RMF::decorator::IntermediateParticleFactory
       intermediate_particle_factory_;
-  RMF::decorator::ReferenceFrameConstFactory reference_frame_factory_;
+  RMF::decorator::ReferenceFrameFactory reference_frame_factory_;
   RMF::IntKey external_rigid_body_key_;
   struct Data {
     internal::HierarchyLoadStatic load_static;

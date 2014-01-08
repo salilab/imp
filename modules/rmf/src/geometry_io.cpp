@@ -27,7 +27,7 @@ template <class G, class F>
 class GeometryLoadLink : public SimpleLoadLink<G> {
   typedef SimpleLoadLink<G> P;
   F factory_;
-  RMF::decorator::ColoredConstFactory colored_factory_;
+  RMF::decorator::ColoredFactory colored_factory_;
   bool get_is(RMF::NodeConstHandle nh) const {
     return nh.get_type() == RMF::GEOMETRY && factory_.get_is(nh);
   }
@@ -76,9 +76,9 @@ class GeometrySaveLink : public SimpleSaveLink<G> {
 
 class SphereLoadLink
     : public GeometryLoadLink<display::SphereGeometry,
-                              RMF::decorator::BallConstFactory> {
+                              RMF::decorator::BallFactory> {
   typedef GeometryLoadLink<display::SphereGeometry,
-                           RMF::decorator::BallConstFactory> P;
+                           RMF::decorator::BallFactory> P;
   void do_load_one(RMF::NodeConstHandle nh, display::SphereGeometry *o) {
     RMF::decorator::BallConst b = get_factory().get(nh);
     RMF::Vector3 cs = b.get_coordinates();
@@ -119,9 +119,9 @@ class SphereSaveLink : public GeometrySaveLink<display::SphereGeometry,
 
 class CylinderLoadLink
     : public GeometryLoadLink<display::CylinderGeometry,
-                              RMF::decorator::CylinderConstFactory> {
+                              RMF::decorator::CylinderFactory> {
   typedef GeometryLoadLink<display::CylinderGeometry,
-                           RMF::decorator::CylinderConstFactory> P;
+                           RMF::decorator::CylinderFactory> P;
   void do_load_one(RMF::NodeConstHandle nh, display::CylinderGeometry *o) {
     RMF::decorator::CylinderConst b = get_factory().get(nh);
     RMF::Vector3s cs = b.get_coordinates_list();
@@ -184,9 +184,9 @@ void set_segment(algebra::Segment3D s, RMF::decorator::Segment c) {
 
 class SegmentLoadLink
     : public GeometryLoadLink<display::SegmentGeometry,
-                              RMF::decorator::SegmentConstFactory> {
+                              RMF::decorator::SegmentFactory> {
   typedef GeometryLoadLink<display::SegmentGeometry,
-                           RMF::decorator::SegmentConstFactory> P;
+                           RMF::decorator::SegmentFactory> P;
   void do_load_one(RMF::NodeConstHandle nh, display::SegmentGeometry *o) {
     RMF::decorator::SegmentConst b = get_factory().get(nh);
     o->set_geometry(get_segment(b));
@@ -223,9 +223,9 @@ class SegmentSaveLink
 
 class BoxLoadLink
     : public GeometryLoadLink<display::BoundingBoxGeometry,
-                              RMF::decorator::SegmentConstFactory> {
+                              RMF::decorator::SegmentFactory> {
   typedef GeometryLoadLink<display::BoundingBoxGeometry,
-                           RMF::decorator::SegmentConstFactory> P;
+                           RMF::decorator::SegmentFactory> P;
   void do_load_one(RMF::NodeConstHandle nh, display::BoundingBoxGeometry *o) {
     algebra::BoundingBox3D b;
     RMF::NodeConstHandles nhs = nh.get_children();

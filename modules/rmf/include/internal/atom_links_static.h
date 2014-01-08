@@ -19,18 +19,18 @@ IMPRMF_BEGIN_INTERNAL_NAMESPACE
 
 /** Load things that are assumed to be unchanging, excluding coordinates. */
 class IMPRMFEXPORT HierarchyLoadStatic {
-  RMF::decorator::ParticleConstFactory particle_factory_;
-  RMF::decorator::IntermediateParticleConstFactory
+  RMF::decorator::ParticleFactory particle_factory_;
+  RMF::decorator::IntermediateParticleFactory
       intermediate_particle_factory_;
-  RMF::decorator::AtomConstFactory atom_factory_;
-  RMF::decorator::ResidueConstFactory residue_factory_;
-  RMF::decorator::ChainConstFactory chain_factory_;
-  RMF::decorator::ColoredConstFactory colored_factory_;
-  RMF::decorator::CopyConstFactory copy_factory_;
-  RMF::decorator::DiffuserConstFactory diffuser_factory_;
-  RMF::decorator::TypedConstFactory typed_factory_;
-  RMF::decorator::DomainConstFactory domain_factory_;
-  RMF::decorator::FragmentConstFactory fragment_factory_;
+  RMF::decorator::AtomFactory atom_factory_;
+  RMF::decorator::ResidueFactory residue_factory_;
+  RMF::decorator::ChainFactory chain_factory_;
+  RMF::decorator::ColoredFactory colored_factory_;
+  RMF::decorator::CopyFactory copy_factory_;
+  RMF::decorator::DiffuserFactory diffuser_factory_;
+  RMF::decorator::TypedFactory typed_factory_;
+  RMF::decorator::DomainFactory domain_factory_;
+  RMF::decorator::FragmentFactory fragment_factory_;
   RMF::FloatKey radius_key_;
   RMF::FloatKey mass_key_;
 
@@ -64,7 +64,7 @@ class IMPRMFEXPORT HierarchySaveStatic {
 };
 
 class IMPRMFEXPORT HierarchyLoadBonds {
-  RMF::decorator::BondConstFactory af_;
+  RMF::decorator::BondFactory af_;
 
  public:
   HierarchyLoadBonds(RMF::FileConstHandle f) : af_(f) {}

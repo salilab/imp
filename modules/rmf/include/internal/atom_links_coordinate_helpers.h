@@ -62,12 +62,12 @@ inline void copy_to_static_particle(
 }
 inline algebra::Vector3D get_coordinates(
     RMF::NodeConstHandle n,
-    RMF::decorator::IntermediateParticleConstFactory ipf) {
+    RMF::decorator::IntermediateParticleFactory ipf) {
   RMF::Vector3 coords = ipf.get(n).get_coordinates();
   return algebra::Vector3D(coords.begin(), coords.end());
 }
 inline algebra::Transformation3D get_transformation(
-    RMF::NodeConstHandle n, RMF::decorator::ReferenceFrameConstFactory rfcf) {
+    RMF::NodeConstHandle n, RMF::decorator::ReferenceFrameFactory rfcf) {
   RMF::Vector3 coords = rfcf.get(n).get_translation();
   RMF::Vector4 quat = rfcf.get(n).get_rotation();
   return algebra::Transformation3D(

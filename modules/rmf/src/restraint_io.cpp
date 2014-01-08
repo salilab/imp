@@ -128,8 +128,8 @@ RMF::NodeHandle get_node(Subset s, RestraintSaveData &d,
 //
 class RestraintLoadLink : public SimpleLoadLink<kernel::Restraint> {
   typedef SimpleLoadLink<kernel::Restraint> P;
-  RMF::decorator::ScoreConstFactory sf_;
-  RMF::decorator::RepresentationConstFactory rf_;
+  RMF::decorator::ScoreFactory sf_;
+  RMF::decorator::RepresentationFactory rf_;
   RMF::Category imp_cat_;
   RMF::FloatKey weight_key_;
 

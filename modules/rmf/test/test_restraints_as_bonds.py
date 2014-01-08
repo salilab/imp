@@ -26,7 +26,7 @@ class Tests(IMP.test.TestCase):
         IMP.rmf.add_restraints_as_bonds(fh, [br])
         IMP.rmf.save_frame(fh, "frame")
 
-        bf = RMF.BondConstFactory(fh)
+        bf = RMF.BondFactory(fh)
         count = 0
         for nid in fh.get_node_ids():
             n = fh.get_node(nid)

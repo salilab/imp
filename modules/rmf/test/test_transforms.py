@@ -23,7 +23,7 @@ class Tests(IMP.test.TestCase):
         t1 = IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_sphere_3d())
 
         rff = RMF.ReferenceFrameFactory(fh)
-        rfcf = RMF.ReferenceFrameConstFactory(fh)
+        rfcf = RMF.ReferenceFrameFactory(fh)
         pf = RMF.ParticleFactory(fh)
 
         ch0 = fh.get_root_node().add_child("ch0", RMF.REPRESENTATION)
@@ -69,7 +69,7 @@ class Tests(IMP.test.TestCase):
         t0 = IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_sphere_3d())
 
         rff = RMF.ReferenceFrameFactory(fh)
-        rfcf = RMF.ReferenceFrameConstFactory(fh)
+        rfcf = RMF.ReferenceFrameFactory(fh)
         pf = RMF.ParticleFactory(fh)
 
         ch0 = fh.get_root_node().add_child("ch0", RMF.REPRESENTATION)
