@@ -6,8 +6,6 @@ import IMP.multifit
 import IMP.test
 import IMP.core
 import IMP.atom
-import IMP.restrainer
-
 
 class Tests(IMP.test.TestCase):
 

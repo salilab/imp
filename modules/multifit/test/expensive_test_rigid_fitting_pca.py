@@ -6,8 +6,6 @@ import IMP.test
 import IMP.core
 import IMP.atom
 import IMP.multifit
-import IMP.restrainer
-
 
 class ProteinRigidFittingTest(IMP.test.TestCase):
 
