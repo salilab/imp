@@ -57,7 +57,7 @@ class IMPATOMEXPORT Representation : public Hierarchy {
   }
 
   /** Return the children at the resolution closest to `resolution` of the
-   * passed type. /*/
+   * passed type. */
   Hierarchy get_representation(double resolution,
                                RepresentationType type = BALLS);
 

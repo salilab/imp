@@ -13,13 +13,15 @@
 #include <IMP/atom/Domain.h>
 #include <IMP/atom/Diffusion.h>
 #include <IMP/atom/Copy.h>
+#include <IMP/atom/State.h>
+#include <IMP/atom/Representation.h>
 #include <IMP/atom/Fragment.h>
 #include <IMP/core/Typed.h>
 #include <IMP/display/Colored.h>
 #include <IMP/rmf/internal/atom_links_coordinate_helpers.h>
+#include <RMF/decorator/alternatives.h>
 #include <algorithm>
 #include <RMF/utility.h>
-#include <RMF/decorators.h>
 #include <boost/make_shared.hpp>
 #include <RMF/SetCurrentFrame.h>
 
@@ -83,6 +85,19 @@ void HierarchyLoadLink::create_recursive(kernel::Model *m,
                                          kernel::ParticleIndexes rigid_bodies,
                                          Data &data) {
   set_association(name, m->get_particle(cur));
+  kernel::ParticleIndexes reps;
+  if (af_.get_is(name)) {
+    IMP_FOREACH(RMF::NodeConstHandle alt,
+                af_.get(name).get_alternatives(RMF::decorator::PARTICLE)) {
+      if (alt == name) continue;
+      kernel::ParticleIndex cur_rep = m->add_particle(alt.get_name());
+      create_recursive(m, root, cur_rep, alt, rigid_bodies, data);
+      reps.push_back(cur_rep);
+    }
+    // for each of them, add particle
+    // recurse
+  }
+
   data.load_static.setup_particle(name, m, cur, rigid_bodies);
   data.load_rigid_bodies.setup_particle(name, m, cur, rigid_bodies);
   data.load_xyzs.setup_particle(name, m, cur, rigid_bodies);
@@ -96,6 +111,12 @@ void HierarchyLoadLink::create_recursive(kernel::Model *m,
     }
   }
   do_setup_particle(m, root, cur, name);
+  if (!reps.empty()) {
+    atom::Representation rep= atom::Representation::setup_particle(m, cur);
+    RMF_FOREACH(kernel::ParticleIndex r, reps) {
+      rep.add_representation(r, atom::BALLS);
+    }
+  }
 }
 
 Particle *HierarchyLoadLink::do_create(RMF::NodeConstHandle node,
@@ -117,8 +138,28 @@ void HierarchyLoadLink::add_link_recursive(kernel::Model *m,
                                            kernel::ParticleIndexes rigid_bodies,
                                            Data &data) {
   IMP_USAGE_CHECK(get_good_name(m, cur) == node.get_name(),
-                  "Names don't match");
+                  "Names don't match: " << get_good_name(m, cur) << " vs "
+                                        << node.get_name());
   set_association(node, m->get_particle(cur), true);
+  if (af_.get_is(node)) {
+    RMF::decorator::AlternativesConst ad = af_.get(node);
+    atom::Representation rd(m, cur);
+    RMF::NodeConstHandles alts = ad.get_alternatives(RMF::decorator::PARTICLE);
+    atom::Hierarchies reps = rd.get_representations(atom::BALLS);
+    if (alts.size() != reps.size()) {
+      IMP_THROW("Number of alternate representations doesn't match: "
+                << alts.size() << " vs " << reps.size(), IOException);
+    }
+    IMP_INTERNAL_CHECK(reps.back().get_particle_index() == cur,
+                       "Not at the back");
+    IMP_INTERNAL_CHECK(alts[0] == node, "Not at front of RMF");
+    for (unsigned int i = 0; i < reps.size() - 1; ++i) {
+      std::cout << "Linking reps " << reps[i]->get_name() << " and "
+                << alts[i + 1].get_name() << std::endl;
+      add_link_recursive(m, root, reps[i].get_particle_index(), alts[i + 1],
+                         rigid_bodies, data);
+    }
+  }
   data.load_static.link_particle(node, m, cur, rigid_bodies);
   data.load_rigid_bodies.link_particle(node, m, cur, rigid_bodies);
   data.load_xyzs.link_particle(node, m, cur, rigid_bodies);
@@ -161,7 +202,8 @@ void HierarchyLoadLink::do_add_link(kernel::Particle *o,
 HierarchyLoadLink::HierarchyLoadLink(RMF::FileConstHandle fh)
     : P("HierarchyLoadLink%1%"),
       intermediate_particle_factory_(fh),
-      reference_frame_factory_(fh) {
+      reference_frame_factory_(fh),
+      af_(fh) {
   RMF::Category imp_cat = fh.get_category("IMP");
   external_rigid_body_key_ =
       fh.get_key(imp_cat, "external frame", RMF::IntTraits());
@@ -195,6 +237,19 @@ void HierarchySaveLink::add_recursive(Model *m, kernel::ParticleIndex root,
   IMP_LOG_VERBOSE("Adding " << atom::Hierarchy(m, p) << std::endl);
   // make sure not to double add
   if (p != root) set_association(cur, m->get_particle(p));
+  RMF::NodeHandles rep_nodes;
+  if (IMP::atom::Representation::get_is_setup(m, p)) {
+    atom::Hierarchies reps =
+        IMP::atom::Representation(m, p).get_representations(atom::BALLS);
+    IMP_FOREACH(atom::Hierarchy cr, reps) {
+      if (cr.get_particle_index() == p) continue;
+      RMF::NodeHandle cn = cur.get_file().add_node(
+          get_good_name(m, cr.get_particle_index()), RMF::REPRESENTATION);
+      rep_nodes.push_back(cn);
+      add_recursive(m, root, cr.get_particle_index(), rigid_bodies, cn, data);
+    }
+  }
+
   data.save_static.setup_node(m, p, cur);
   data.save_rigid_bodies.setup_node(m, p, cur, rigid_bodies);
   data.save_xyzs.setup_node(m, p, cur, rigid_bodies);
@@ -211,10 +266,17 @@ void HierarchySaveLink::add_recursive(Model *m, kernel::ParticleIndex root,
         cur.add_child(get_good_name(m, pc), RMF::REPRESENTATION);
     add_recursive(m, root, pc, rigid_bodies, curc, data);
   }
+
+  if (!rep_nodes.empty()) {
+    RMF::decorator::Alternatives ad = af_.get(cur);
+    IMP_FOREACH(RMF::NodeHandle nh, rep_nodes) {
+      ad.add_alternative(nh, RMF::decorator::PARTICLE);
+    }
+  }
 }
 
 HierarchySaveLink::HierarchySaveLink(RMF::FileHandle f)
-    : P("HierarchySaveLink%1%") {
+  : P("HierarchySaveLink%1%"), af_(f) {
   RMF::Category imp_cat = f.get_category("IMP");
   external_rigid_body_key_ =
       f.get_key(imp_cat, "external frame", RMF::IntTraits());

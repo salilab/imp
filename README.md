@@ -8,3 +8,8 @@ needed for that, but not having it is way simpler.
 
 close #647
 close #648
+
+Todo:
+- synchronize RMF and atom names?
+- check argument orders in RMF
+- move RMF to RMF::Enum
