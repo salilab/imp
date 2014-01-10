@@ -516,27 +516,28 @@ PredicateClassnamesRestraint::PredicateClassnamesRestraint(
 
 void PredicateClassnamesRestraint::do_add_score_and_derivatives(
     ScoreAccumulator sa) const {
+  // currently ignores all maxima
+  // no longer parallizable
   update_lists_if_necessary();
-  for (unsigned int i = 0; i < restraints_.size(); ++i) {
-    restraints_[i]->add_score_and_derivatives(sa);
+  typedef std::pair< int, PLURALINDEXTYPE> LP;
+  IMP_FOREACH(const LP & lp, lists_) {
+    IMP_LOG_VERBOSE("Evaluating score for predicate value " << lp.first
+                                                            << std::endl);
+    kernel::ClassnameScore *score = scores_.find(lp.first)->second;
+    double cur_score = score->evaluate_indexes(get_model(), lp.second,
+                                               sa.get_derivative_accumulator(),
+                                               0, lp.second.size());
+    sa.add_score(cur_score);
   }
-  IMP_OMP_PRAGMA(taskwait)
-}
-
-double PredicateClassnamesRestraint::get_last_score() const {
-  double ret = 0;
-  for (unsigned int i = 0; i < restraints_.size(); ++i) {
-    ret += restraints_[i]->get_last_score();
-  }
-  return ret;
 }
 
 ModelObjectsTemp PredicateClassnamesRestraint::do_get_inputs() const {
   kernel::ModelObjectsTemp ret;
-  ret +=
-      predicate_->get_inputs(get_model(), input_->get_all_possible_indexes());
-  for (unsigned int i = 0; i < restraints_.size(); ++i) {
-    ret += restraints_[i]->get_inputs();
+  kernel::ParticleIndexes all = input_->get_all_possible_indexes();
+  ret += predicate_->get_inputs(get_model(), all);
+  typedef std::pair<int, base::PointerMember<ClassnameScore> > SP;
+  IMP_FOREACH(const SP & sp, scores_) {
+    ret += sp.second->get_inputs(get_model(), all);
   }
   ret.push_back(input_);
   return ret;
@@ -545,72 +546,60 @@ ModelObjectsTemp PredicateClassnamesRestraint::do_get_inputs() const {
 Restraints PredicateClassnamesRestraint::do_create_current_decomposition()
     const {
   Restraints ret;
-  for (unsigned int i = 0; i < restraints_.size(); ++i) {
-    base::Pointer<Restraint> r = restraints_[i]->create_current_decomposition();
-    if (r) {
-      RestraintSet *rs = dynamic_cast<RestraintSet *>(r.get());
-      if (rs) {
-        ret += rs->get_restraints();
-        // suppress warning
-        rs->set_was_used(true);
-      } else {
-        ret.push_back(r);
-      }
+  typedef std::pair<int, PLURALINDEXTYPE> LP;
+  IMP_FOREACH(const LP & lp, lists_) {
+    kernel::ClassnameScore *score = scores_.find(lp.first)->second;
+    IMP_FOREACH(PASSINDEXTYPE it, lp.second) {
+      kernel::Restraints r =
+          score->create_current_decomposition(get_model(), it);
+      ret += r;
     }
   }
   return ret;
 }
 
-bool PredicateClassnamesRestraint::assign_pair(PASSINDEXTYPE index) const {
-  int bin = predicate_->get_value_index(get_model(), index);
-  Map::const_iterator it = containers_.find(bin);
-  if (it == containers_.end()) {
-    if (unknown_container_) {
-      unknown_container_->add(index);
-      return true;
-    } else if (error_on_unknown_) {
-      IMP_THROW("Invalid predicate value of " << bin << " encounted for "
-                                              << index,
-                ValueException);
-      return true;
-    } else {
-      return false;
-    }
-  } else {
-    it->second->add(index);
-    return true;
-  }
-}
 void PredicateClassnamesRestraint::update_lists_if_necessary() const {
   if (!kernel::Container::update_version(input_, input_version_)) return;
-  if (unknown_container_) {
-    unknown_container_->clear();
-  }
-  for (Map::const_iterator it = containers_.begin(); it != containers_.end();
-       ++it) {
-    it->second->clear();
-  }
-  int dropped = 0;
+  lists_.clear();
+
   IMP_CONTAINER_FOREACH(ClassnameContainer, input_, {
-    bool added = assign_pair(_1);
-    if (!added)
-      ++dropped;
+    int bin = predicate_->get_value_index(get_model(), _1);
+    lists_[bin].push_back(_1);
   });
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    unsigned int total = dropped;
-    for (Map::const_iterator it = containers_.begin(); it != containers_.end();
-         ++it) {
-      total += it->second->get_number();
+
+  typedef std::pair<int, PLURALINDEXTYPE> LP;
+  Ints unknown;
+  IMP_FOREACH(const LP &lp, lists_) {
+    int bin = lp.first;
+    if (scores_.find(bin) == scores_.end()) {
+      IMP_USAGE_CHECK(!error_on_unknown_, "Unknown predicate value of "
+                                              << bin << " found for tuples "
+                                              << lp.second);
+      unknown.push_back(bin);
     }
-    if (unknown_container_) {
-      total += unknown_container_->get_number();
-    } else {
-      total += dropped;
-    }
-    IMP_INTERNAL_CHECK(input_->get_number() == total,
-                       "Wrong number of particles "
-                           << total << "!=" << input_->get_number());
   }
+  const int unknown_bin = std::numeric_limits<double>::max();
+  if (scores_.find(unknown_bin) != scores_.end()) {
+    PLURALINDEXTYPE &unknowns = lists_.find(unknown_bin)->second;
+    IMP_FOREACH(int i, unknown) { unknowns += lists_.find(i)->second; }
+  }
+  IMP_FOREACH(int i, unknown) { lists_.erase(i); }
+}
+
+void PredicateClassnamesRestraint::set_score(int predicate_value,
+                                             kernel::ClassnameScore *score) {
+  IMP_USAGE_CHECK(predicate_value != std::numeric_limits<int>::max(),
+                  "The predicate value of " << std::numeric_limits<int>::max()
+                                            << " is reserved.");
+  scores_[predicate_value] = score;
+  score->set_was_used(true);
+}
+
+void PredicateClassnamesRestraint::set_unknown_score(
+    kernel::ClassnameScore *score) {
+  error_on_unknown_ = false;
+  scores_[std::numeric_limits<int>::max()] = score;
+  score->set_was_used(true);
 }
 
 IMPCONTAINER_END_NAMESPACE
