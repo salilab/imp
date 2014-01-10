@@ -57,8 +57,7 @@ class IMPMockTests(unittest.TestCase):
                 'rmf_show', 'rmf_slice', 'rmf_transform', 'rmf_update',
                 'rmf_validate', 'rmf_xml', 'saxs_merge.py', 'saxs_score',
                 'simulate_density_from_pdb.py', 'soap_score',
-                'soap_single_score', 'validate_profile',
-                'view_density_header.py']
+                'validate_profile', 'view_density_header.py']
         # RHEL systems don't include EMageFit; Fedora does
         if mock_config.startswith('fedora'):
             apps.extend(emagefit_apps)
