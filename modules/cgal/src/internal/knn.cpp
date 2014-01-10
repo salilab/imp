@@ -78,7 +78,9 @@ struct RealRCTree : public RCTree {
   Tree tree;
   template <class It>
   RealRCTree(It b, It e)
-      : tree(b, e) {}
+      : tree(b, e) {
+    set_was_used(true);
+  }
 };
 
 void KNNData::initialize(const base::Vector<VectorWithIndex>& v) {
