@@ -64,7 +64,6 @@ class Tests(IMP.test.TestCase):
             rb.set_coordinates(coord)
 
         # Check that the value is a perfect registration
-        rb_fit.set_model(m)
         m.add_restraint(rb_fit)
         score = rb_fit.evaluate(False)
         # print "score ...", score
