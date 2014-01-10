@@ -21,6 +21,9 @@ IMP::Floats SolventAccessibleSurface::get_solvent_accessibility(
     radii[i] = ps[i].get_radius();
   }
 
+  // generate sphere dots for radii present in the ps set
+  create_sphere_dots(ps, density);
+
   // init grid
   typedef IMP::algebra::DenseGrid3D<IMP::Ints> Grid;
   IMP::algebra::BoundingBox3D bb(coordinates);
@@ -58,7 +61,8 @@ IMP::Floats SolventAccessibleSurface::get_solvent_accessibility(
     }
 
     float ratio = (atom_radius + probe_radius) / atom_radius;
-    algebra::Vector3Ds spoints = create_sphere_dots(atom_radius, density);
+    const algebra::Vector3Ds& spoints = get_sphere_dots(atom_radius);
+
     int dotNum = 0;
     for (unsigned int s_index = 0; s_index < spoints.size(); s_index++) {
       IMP::algebra::Vector3D probe_center =
@@ -109,5 +113,26 @@ algebra::Vector3Ds SolventAccessibleSurface::create_sphere_dots(float radius,
   }
   return res;
 }
+
+void SolventAccessibleSurface::create_sphere_dots(const core::XYZRs& ps,
+                                                  float density) {
+
+  if (radii2type_.size() > 0 && density_ != density) {
+    radii2type_.clear();
+    sphere_dots_.clear();
+    density_ = density;
+  }
+  for (unsigned int i = 0; i < ps.size(); i++) {
+    float r = ps[i].get_radius();
+    boost::unordered_map<float, int>::const_iterator it = radii2type_.find(r);
+    if (it == radii2type_.end()) {
+      int type = radii2type_.size();
+      radii2type_[r] = type;
+      algebra::Vector3Ds dots = create_sphere_dots(r, density);
+      sphere_dots_.push_back(dots);
+    }
+  }
+}
+
 
 IMPSAXS_END_NAMESPACE

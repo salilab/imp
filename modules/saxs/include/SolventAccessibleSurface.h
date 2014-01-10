@@ -47,6 +47,23 @@ class IMPSAXSEXPORT SolventAccessibleSurface {
   }
 
   algebra::Vector3Ds create_sphere_dots(float radius, float density);
+
+  // generate and save sphere dots for radii present in the ps set
+  void create_sphere_dots(const core::XYZRs& ps, float density);
+
+  const algebra::Vector3Ds& get_sphere_dots(float r) const {
+    boost::unordered_map<float, int>::const_iterator it = radii2type_.find(r);
+    if (it == radii2type_.end()) {
+      IMP_THROW("SolventAccessibleSurface: can't find sphere dots for radius "
+                << r, ValueException);
+    }
+    return sphere_dots_[it->second];
+  }
+
+ private:
+  boost::unordered_map<float, int> radii2type_;
+  std::vector<algebra::Vector3Ds> sphere_dots_;
+  float density_;
 };
 
 IMPSAXS_END_NAMESPACE
