@@ -31,6 +31,7 @@ IMPCORE_BEGIN_NAMESPACE
 ConnectivityRestraint::ConnectivityRestraint(PairScore *ps,
                                              SingletonContainerAdaptor sc)
     : kernel::Restraint(sc->get_model(), "ConnectivityRestraint %1%"), ps_(ps) {
+  sc.set_name_if_default("ConnectivityRestraintInput%1%");
   sc_ = sc;
 }
 

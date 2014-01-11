@@ -24,7 +24,10 @@ AllBipartitePairContainer::AllBipartitePairContainer(
       a_(a),
       b_(b),
       a_version_(a_->get_contents_version()),
-      b_version_(b_->get_contents_version()) {}
+      b_version_(b_->get_contents_version()) {
+  a.set_name_if_default("AllBipartitePairContainerInput0%1%");
+  b.set_name_if_default("AllBipartitePairContainerInput1%1%");
+}
 
 ParticleIndexPairs AllBipartitePairContainer::get_indexes() const {
   kernel::ParticleIndexes ia = a_->get_indexes();

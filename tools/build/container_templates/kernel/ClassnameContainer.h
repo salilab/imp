@@ -150,8 +150,11 @@ class IMPKERNELEXPORT ClassnameContainerAdaptor :
      @param t a non-empty list of PLURALVARIABLETYPE
      @param name name for the constructed ClassnameContainer
   */
-  ClassnameContainerAdaptor(const PLURALVARIABLETYPE &t,
-                            std::string name = "ClassnameContainerAdaptor%1%");
+  ClassnameContainerAdaptor(const PLURALVARIABLETYPE &t);
+
+  /** Set the name of the resulting container if it is currently the
+      default value. */
+  void set_name_if_default(std::string name);
 };
 
 IMPKERNEL_END_NAMESPACE

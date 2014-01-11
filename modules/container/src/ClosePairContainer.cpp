@@ -22,13 +22,17 @@ ClosePairContainer::ClosePairContainer(SingletonContainerAdaptor c,
                                        double distance, double slack,
                                        std::string name)
     : P(c, distance, core::internal::default_cpf(c->get_indexes().size()),
-        slack, name) {}
+        slack, name) {
+  c.set_name_if_default("ClosePairContainerInput%1%");
+}
 
 ClosePairContainer::ClosePairContainer(SingletonContainerAdaptor c,
                                        double distance,
                                        core::ClosePairsFinder *cpf,
                                        double slack, std::string name)
-    : P(c, distance, cpf, slack, name) {}
+    : P(c, distance, cpf, slack, name) {
+  c.set_name_if_default("ClosePairContainerInput%1%");
+}
 
 namespace {
 struct Data {

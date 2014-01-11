@@ -31,7 +31,9 @@ unsigned int VectorDEmbedding::get_number_of_items() const {
 
 ConfigurationSetXYZEmbedding::ConfigurationSetXYZEmbedding(
     ConfigurationSet *cs, SingletonContainerAdaptor sc, bool align)
-    : Embedding("ConfiguringEmbedding"), cs_(cs), sc_(sc), align_(align) {}
+    : Embedding("ConfiguringEmbedding"), cs_(cs), sc_(sc), align_(align) {
+  sc.set_name_if_default("ConfigurationSetXYZEmbeddingInput%1%");
+}
 
 algebra::VectorKD ConfigurationSetXYZEmbedding::get_point(unsigned int a)
     const {

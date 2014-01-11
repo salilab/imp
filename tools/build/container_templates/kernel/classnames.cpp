@@ -79,14 +79,23 @@ ClassnameContainerAdaptor::ClassnameContainerAdaptor(ClassnameContainer *c)
     : P(c) {}
 
 ClassnameContainerAdaptor::ClassnameContainerAdaptor(
-    const PLURALVARIABLETYPE &t, std::string name) {
+    const PLURALVARIABLETYPE &t) {
   IMP_USAGE_CHECK(t.size() > 0,
                   "An Empty PLURALVARIABLETYPE list cannot be adapted to "
                   "container since it lacks model info");
   kernel::Model *m = internal::get_model(t);
-  IMP_NEW(internal::InternalListClassnameContainer, c, (m, name));
+  IMP_NEW(internal::InternalListClassnameContainer, c,
+          (m, "ClassnameContainerInput%1%"));
   c->set(IMP::kernel::internal::get_index(t));
   P::operator=(c);
+}
+
+void ClassnameContainerAdaptor::set_name_if_default(std::string name) {
+  IMP_USAGE_CHECK(*this, "NULL passed as input");
+  base::Object *o = *this;
+  if (o->get_name().find("ClassnameContainerInput") == 0) {
+    o->set_name(name);
+  }
 }
 
 ClassnameModifier::ClassnameModifier(std::string name) : Object(name) {}

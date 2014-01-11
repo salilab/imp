@@ -16,10 +16,16 @@ IMPCONTAINER_BEGIN_NAMESPACE
 CloseBipartitePairContainer::CloseBipartitePairContainer(
     SingletonContainerAdaptor a, SingletonContainerAdaptor b, double distance,
     double slack, std::string name)
-    : P(a, b, distance, slack, name) {}
+    : P(a, b, distance, slack, name) {
+  a.set_name_if_default("CloseBipartitePairContainerInput0%1%");
+  b.set_name_if_default("CloseBipartitePairContainerInput1%1%");
+}
 
 CloseBipartitePairContainer::CloseBipartitePairContainer(
     SingletonContainerAdaptor a, SingletonContainerAdaptor b, double distance,
     core::ClosePairsFinder *, double slack, std::string name)
-    : P(a, b, distance, slack, name) {}
+    : P(a, b, distance, slack, name) {
+  a.set_name_if_default("CloseBipartitePairContainerInput0%1%");
+  b.set_name_if_default("CloseBipartitePairContainerInput1%1%");
+}
 IMPCONTAINER_END_NAMESPACE

@@ -35,7 +35,7 @@ void Object::initialize(std::string name) {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   add_live_object(this);
 #endif
-  set_name(get_unique_name(name));
+  set_name(name);
   IMP_LOG_MEMORY("Creating object \"" << get_name() << "\" (" << this << ")"
                                       << std::endl);
 }
@@ -101,11 +101,11 @@ void Object::set_log_level(LogLevel l) {
 #endif
 }
 
-void Object::set_name(std::string name) {
-  name_ = name;
+void Object::set_name(std::string in_name) {
+  name_ = get_unique_name(in_name);
   quoted_name_.reset(new char[name_.size() + 3]);
   quoted_name_[0] = '"';
-  std::copy(name.begin(), name.end(), quoted_name_.get() + 1);
+  std::copy(name_.begin(), name_.end(), quoted_name_.get() + 1);
   quoted_name_[name_.size() + 1] = '"';
   quoted_name_[name_.size() + 2] = '\0';
 }

@@ -34,6 +34,7 @@ ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainerAdaptor sc,
       sc_(sc),
       initialized_(false),
       ssps_(new SoftSpherePairScore(k)) {
+  sc.set_name_if_default("EVRInput%1%");
   slack_ = s;
   std::ostringstream oss;
   oss << "ExcludedVolume " << get_name() << " hierarchy " << this;
@@ -47,6 +48,7 @@ ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainerAdaptor sc,
       sc_(sc),
       initialized_(false),
       ssps_(ssps) {
+  sc.set_name_if_default("EVRInput%1%");
   slack_ = s;
   key_ = ok;
 }
