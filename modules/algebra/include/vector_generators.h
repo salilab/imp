@@ -68,6 +68,7 @@ inline VectorD<D> get_random_vector_in(const SphereD<D> &s) {
   return ret;
 }
 
+#ifndef SWIG
 /** Generates a random vector in a circle
     with uniform density with respect to the area of the circle
 
@@ -77,6 +78,7 @@ inline VectorD<D> get_random_vector_in(const SphereD<D> &s) {
     See SphereD
 */
 IMPALGEBRAEXPORT VectorD<2> get_random_vector_in(const SphereD<2> &s);
+#endif
 
 //! Generate a random vector in a cylinder with uniform density
 /** See VectorD

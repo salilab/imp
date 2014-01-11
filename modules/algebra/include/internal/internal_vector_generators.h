@@ -11,6 +11,7 @@
 #include "../SphereD.h"
 #include "../SphericalVector3D.h"
 #include "../utility.h"
+#include "utility.h"
 #include <boost/random/uniform_int.hpp>
 #include <boost/random/uniform_01.hpp>
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
@@ -240,14 +241,6 @@ inline Vector2Ds uniform_cover_sphere(unsigned int N, const Vector2D &center,
   return ret;
 }
 
-template <int DO>
-struct DMinus1 {
-  static const int D = DO - 1;
-};
-template <>
-struct DMinus1<-1> {
-  static const int D = -1;
-};
 
 template <int D>
 struct RandomVectorOnBB {
@@ -289,8 +282,9 @@ struct RandomVectorOnBB {
     }
     VectorD<internal::DMinus1<D>::D> vfmin(fmin.begin(), fmin.end()),
         vfmax(fmax.begin(), fmax.end());
-    VectorD<internal::DMinus1<D>::D> sv = get_random_vector_in(
-        BoundingBoxD<internal::DMinus1<D>::D>(vfmin, vfmax));
+    VectorD<internal::DMinus1<D>::D> sv =
+        algebra::internal::get_random_vector_in(
+            BoundingBoxD<internal::DMinus1<D>::D>(vfmin, vfmax));
 
     Floats ret(bb.get_dimension());
     // std::cout << "Side is " << side << std::endl;

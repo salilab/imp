@@ -133,6 +133,36 @@ ReturnType##KD function_name(const Argument0##KD& a) {
 %}
 %enddef
 
+%define IMP_SWIG_ALGEBRA_FUNCTION_DS_D(ReturnType, function_name, Argument0)
+%inline %{
+  namespace IMP {
+    namespace algebra {
+      base::Vector<ReturnType##1D> function_name(const Argument0##1D& a) {
+  return function_name<1>(a);
+}
+  base::Vector<ReturnType##2D> function_name(const Argument0##2D& a) {
+  return function_name<2>(a);
+}
+base::Vector<ReturnType##3D> function_name(const Argument0##3D& a) {
+  return function_name<3>(a);
+}
+base::Vector<ReturnType##4D> function_name(const Argument0##4D& a) {
+  return function_name<4>(a);
+}
+base::Vector<ReturnType##5D> function_name(const Argument0##5D& a) {
+  return function_name<5>(a);
+}
+base::Vector<ReturnType##6D> function_name(const Argument0##6D& a) {
+  return function_name<6>(a);
+}
+base::Vector<ReturnType##KD> function_name(const Argument0##KD& a) {
+  return function_name<-1>(a);
+}
+    }
+  }
+%}
+%enddef
+
 %define IMP_SWIG_ALGEBRA_FUNCTION_D_DS(ReturnType, function_name, Argument0)
 %inline %{
   namespace IMP {

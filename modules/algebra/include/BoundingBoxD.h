@@ -10,6 +10,7 @@
 
 #include <IMP/algebra/algebra_config.h>
 #include "VectorD.h"
+#include "internal/utility.h"
 #include "algebra_macros.h"
 #include <IMP/base/exception.h>
 
@@ -253,14 +254,22 @@ inline double get_maximum_length(const BoundingBoxD<D> &a) {
 /** See BoundingBoxD */
 template <int D>
 inline base::Vector<VectorD<D> > get_vertices(const BoundingBoxD<D> &bb) {
-  BOOST_STATIC_ASSERT(D > 0);
-  VectorD<D - 1> c0, c1;
+  if (D == 1) {
+    base::Vector<VectorD<D> > ret(2);
+    ret[0] = bb.get_corner(0);
+    ret[1] = bb.get_corner(1);
+    return ret;
+  }
+  if (D == -1) {
+    IMP_NOT_IMPLEMENTED;
+  }
+  VectorD<internal::DMinus1<D>::D> c0, c1;
   for (unsigned int i = 0; i < D - 1; ++i) {
     c0[i] = bb.get_corner(0)[i];
     c1[i] = bb.get_corner(1)[i];
   }
-  BoundingBoxD<D - 1> bbm1(c0, c1);
-  base::Vector<VectorD<D - 1> > recurse = get_vertices(bbm1);
+  BoundingBoxD<internal::DMinus1<D>::D> bbm1(c0, c1);
+  base::Vector<VectorD<internal::DMinus1<D>::D> > recurse = get_vertices(bbm1);
   base::Vector<VectorD<D> > ret;
   for (unsigned int i = 0; i < recurse.size(); ++i) {
     VectorD<D> cur;
@@ -275,12 +284,7 @@ inline base::Vector<VectorD<D> > get_vertices(const BoundingBoxD<D> &bb) {
   return ret;
 }
 
-inline base::Vector<VectorD<1> > get_vertices(const BoundingBoxD<1> &bb) {
-  base::Vector<VectorD<1> > ret(2);
-  ret[0] = bb.get_corner(0);
-  ret[1] = bb.get_corner(1);
-  return ret;
-}
+
 
 //! Return the edges of the box as indices into the vertices list
 /** See BoundingBoxD */
