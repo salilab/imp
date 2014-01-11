@@ -62,7 +62,7 @@ for r in restraints:
 s.set_scoring_function(restraints)
 s.set_number_of_attempts(10)
 
-confs = s.get_sample()
+confs = s.create_sample()
 print "Found", confs.get_number_of_configurations(), "configurations"
 fh = RMF.create_rmf_file("solutions.rmfz")
 IMP.rmf.add_hierarchy(fh, h)
