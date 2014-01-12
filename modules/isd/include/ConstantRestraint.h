@@ -30,7 +30,7 @@ class IMPISDEXPORT ConstantRestraint : public kernel::Restraint {
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
       IMP_OVERRIDE;
 
-  void update() const {std::cout << "updated internal state" << std::endl;}
+  void update() const { std::cout << "updated internal state" << std::endl; }
 
   IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ConstantRestraint);
@@ -57,6 +57,24 @@ class IMPISDEXPORT ConstantScoreState : public ScoreState {
   virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ConstantScoreState);
 };
+
+void ConstantScoreState::do_before_evaluate() {
+  std::cout << "css: do_before_evaluate" << std::endl;
+  cr_->update();
+}
+
+void ConstantScoreState::do_after_evaluate(DerivativeAccumulator *) {
+  std::cout << "css: do_after_evaluate" << std::endl;
+}
+
+ModelObjectsTemp ConstantScoreState::do_get_inputs() const {
+  return kernel::ModelObjectsTemp();
+}
+
+ModelObjectsTemp ConstantScoreState::do_get_outputs() const {
+  return kernel::ModelObjectsTemp();
+}
+
 #endif
 
 ConstantRestraint::ConstantRestraint(kernel::Model *m)
@@ -70,29 +88,12 @@ ModelObjectsTemp ConstantRestraint::do_get_inputs() const {
   return ret;
 }
 
-double ConstantRestraint::unprotected_evaluate(
-        DerivativeAccumulator *accum) const {
-    std::cout << "cr: evaluate" << std::endl;
-    return 1.0;
-}
-
-void ConstantScoreState::do_before_evaluate() {
-    std::cout << "css: do_before_evaluate" << std::endl;
-  cr_->update();
-}
-
-void ConstantScoreState::do_after_evaluate(DerivativeAccumulator *) {
-    std::cout << "css: do_after_evaluate" << std::endl;
-}
-
-ModelObjectsTemp ConstantScoreState::do_get_inputs() const {
-  return kernel::ModelObjectsTemp();
-}
-
-ModelObjectsTemp ConstantScoreState::do_get_outputs() const {
-  return kernel::ModelObjectsTemp();
+double ConstantRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
+    const {
+  std::cout << "cr: evaluate" << std::endl;
+  return 1.0;
 }
 
 IMPISD_END_NAMESPACE
 
-#endif /*IMPISD_CONSTANT_RESTRAINT_H*/
+#endif /* IMPISD_CONSTANT_RESTRAINT_H */
