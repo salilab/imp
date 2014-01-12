@@ -43,9 +43,7 @@ class Tests(IMP.test.TestCase):
         sps = IMP.algebra.get_connolly_surface(spheres, 5, 1.8)
 
         sps_area = sum([s.get_area() for s in sps])
-        # the delta needs to be large for 32 bit as the errors there are
-        # oddly large
-        self.assertAlmostEqual(sps_area, 5477.4, delta=.2)
+        self.assertAlmostEqual(sps_area, 5478.68, delta=.2)
 
 if __name__ == '__main__':
     IMP.test.main()
