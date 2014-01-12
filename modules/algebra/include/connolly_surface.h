@@ -18,21 +18,27 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 
 /** Represent a point on the connoly surface. */
-struct ConnollySurfacePoint {
+class ConnollySurfacePoint {
+  int atom[3];
+  algebra::Vector3D surface_point;
+  double area;
+  algebra::Vector3D normal;
+
+ public:
   ConnollySurfacePoint(int a0, int a1, int a2, algebra::Vector3D sp, float a,
                        algebra::Vector3D n)
-      : atom_0(a0),
-        atom_1(a1),
-        atom_2(a2),
-        surface_point(sp),
-        area(a),
-        normal(n) {}
-  int atom_0;
-  int atom_1;
-  int atom_2;
-  algebra::Vector3D surface_point;
-  float area;
-  algebra::Vector3D normal;
+      : surface_point(sp), area(a), normal(n) {
+    atom[0] = a0;
+    atom[1] = a1;
+    atom[2] = a2;
+  }
+  int get_atom(unsigned int i) {
+    IMP_USAGE_CHECK(i < 3, "Out of range");
+    return atom[i];
+  }
+  const algebra::Vector3D& get_surface_point() const { return surface_point; }
+  double get_area() const { return area; }
+  const algebra::Vector3D& get_normal() const { return normal; }
   IMP_SHOWABLE_INLINE(ConnollySurfacePoint, out << surface_point);
 };
 
@@ -47,9 +53,9 @@ IMP_VALUES(ConnollySurfacePoint, ConnollySurfacePoints);
     M.L. Connolly, "Analytical molecular surface calculation",
     J. Appl. Cryst. 16, p548-558 (1983).
  */
-ConnollySurfacePoints IMPALGEBRAEXPORT
-    get_connolly_surface(const algebra::Sphere3Ds& spheres, float density,
-                         float probe_radius);
+IMPALGEBRAEXPORT ConnollySurfacePoints
+    get_connolly_surface(const algebra::Sphere3Ds& spheres, double density,
+                         double probe_radius);
 
 IMPALGEBRA_END_NAMESPACE
 

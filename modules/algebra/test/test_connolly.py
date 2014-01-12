@@ -20,16 +20,16 @@ class Tests(IMP.test.TestCase):
         total_area = 0.
         for sp in pts:
             # Only one atom, so only convex surface
-            self.assertEqual(sp.atom_0, 0)
-            self.assertEqual(sp.atom_1, -1)
-            self.assertEqual(sp.atom_2, -1)
-            total_area += sp.area
+            self.assertEqual(sp.get_atom(0), 0)
+            self.assertEqual(sp.get_atom(1), -1)
+            self.assertEqual(sp.get_atom(2), -1)
+            total_area += sp.get_area()
             # Surface points should all lie on the surface of the atom
             self.assertAlmostEqual(
-                IMP.algebra.get_distance(sp.surface_point, center),
+                IMP.algebra.get_distance(sp.get_surface_point(), center),
                 2.265, delta=1e-2)
             # Surface normal should be a unit vector
-            self.assertAlmostEqual(sp.normal.get_squared_magnitude(), 1.0,
+            self.assertAlmostEqual(sp.get_normal().get_squared_magnitude(), 1.0,
                                    delta=1e-2)
         # Total area should be roughly 4 * pi * r * r (r=2.265), but a little
         # less due to the probe not being pointlike
@@ -42,7 +42,9 @@ class Tests(IMP.test.TestCase):
         spheres = [IMP.core.XYZR(p).get_sphere() for p in pdb]
         sps = IMP.algebra.get_connolly_surface(spheres, 5, 1.8)
 
-        sps_area = sum([s.area for s in sps])
+        sps_area = sum([s.get_area() for s in sps])
+        # the delta needs to be large for 32 bit as the errors there are
+        # oddly large
         self.assertAlmostEqual(sps_area, 5477.4, delta=.2)
 
 if __name__ == '__main__':

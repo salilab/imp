@@ -62,7 +62,7 @@ struct AtomInfo {
 
 class Cube {
  public:
-  void grid_coordinates(const algebra::Vector3Ds &CO, float radmax, float rp) {
+  void grid_coordinates(const algebra::Vector3Ds &CO, double radmax, double rp) {
     // calculate width of cube from maximum atom radius and probe radius
     width_ = 2. * (radmax + rp);
 
@@ -98,9 +98,9 @@ class Cube {
     update_adjacent();
   }
 
-  bool get_neighbors(int n, const algebra::Vector3Ds &CO, float rp,
+  bool get_neighbors(int n, const algebra::Vector3Ds &CO, double rp,
                      const std::vector<int> &IAT,
-                     const std::vector<float> &rtype,
+                     const std::vector<double> &rtype,
                      std::vector<int> &neighbors) {
     AtomInfo &ai = atom_info_[n];
     neighbors.resize(0);
@@ -113,7 +113,7 @@ class Cube {
     if (!cube_[ici][icj][ick].sscube) {
       return false;
     }
-    float sumi = 2 * rp + rtype[IAT[n]];
+    double sumi = 2 * rp + rtype[IAT[n]];
     for (int jck = ick - 1; jck <= ick + 1; ++jck) {
       if (jck >= 0 && jck < dim_) {
         for (int jcj = icj - 1; jcj <= icj + 1; ++jcj) {
@@ -122,7 +122,7 @@ class Cube {
               if (jci >= 0 && jci < dim_) {
                 for (int jatom = cube_[jci][jcj][jck].icube; jatom >= 0;
                      jatom = atom_info_[jatom].icuptr) {
-                  float sum = sumi + rtype[IAT[jatom]];
+                  double sum = sumi + rtype[IAT[jatom]];
                   if (n != jatom && algebra::get_squared_distance(
                                         CO[n], CO[jatom]) < sum * sum) {
                     neighbors.push_back(jatom);
@@ -191,7 +191,7 @@ class Cube {
   }
 
   int dim_;
-  float width_;
+  double width_;
   std::vector<AtomInfo> atom_info_;
   boost::multi_array<detail::GridPoint, 3> cube_;
 };
@@ -206,7 +206,7 @@ struct YonProbe {
 struct SurfacePoint {
   bool yon;
   algebra::Vector3D s;
-  float area;
+  double area;
   int n1, n2, n3;
 };
 
@@ -228,8 +228,8 @@ struct ProbePoint {
 
 class YonCube {
  public:
-  YonCube(const std::vector<YonProbe> &yon_probes, float rp, float dp,
-          float radmax)
+  YonCube(const std::vector<YonProbe> &yon_probes, double rp, double dp,
+          double radmax)
       : comin_(1000000.0, 1000000.0, 1000000.0) {
     width_ = 2. * (radmax + rp);
     dp2_ = dp * dp;
@@ -317,8 +317,8 @@ class YonCube {
 
   algebra::Vector3D comin_;
   int dim_;
-  float width_;
-  float dp2_;
+  double width_;
+  double dp2_;
   std::vector<AtomInfo> atom_info_;
   boost::multi_array<int, 3> cube_;
 };
@@ -332,14 +332,14 @@ void genun(algebra::Vector3Ds &vec, unsigned n) {
   int nvert = std::max(1, nequat / 2);
 
   for (int i = 0; i <= nvert; ++i) {
-    float fi = (3.14159 * i) / nvert;
-    float z = std::cos(fi);
-    float xy = std::sin(fi);
+    double fi = (3.14159 * i) / nvert;
+    double z = std::cos(fi);
+    double xy = std::sin(fi);
     int nhor = std::max(1, static_cast<int>(nequat * xy));
     for (int j = 0; j < nhor; ++j) {
-      float fj = (2. * 3.14159 * j) / nhor;
-      float x = std::cos(fj) * xy;
-      float y = std::sin(fj) * xy;
+      double fj = (2. * 3.14159 * j) / nhor;
+      double x = std::cos(fj) * xy;
+      double y = std::sin(fj) * xy;
       if (vec.size() >= n) return;
       vec.push_back(algebra::Vector3D(x, y, z));
     }
@@ -347,7 +347,7 @@ void genun(algebra::Vector3Ds &vec, unsigned n) {
 }
 
 // Triple product of three vectors
-float det(const algebra::Vector3D &a, const algebra::Vector3D &b,
+double det(const algebra::Vector3D &a, const algebra::Vector3D &b,
           const algebra::Vector3D &c) {
   algebra::Vector3D ab = algebra::get_vector_product(a, b);
   return ab * c;
@@ -403,7 +403,7 @@ algebra::Vector3D vperp(const algebra::Vector3D &a) {
   algebra::Vector3D b(0., 0., 0.), p;
 
   // FIND SMALLEST COMPONENT
-  float small = 10000.0;
+  double small = 10000.0;
   int m = -1;
   for (int k = 0; k < 3; ++k) {
     if (std::abs(a[k]) < small) {
@@ -414,7 +414,7 @@ algebra::Vector3D vperp(const algebra::Vector3D &a) {
   b[m] = 1.0;
 
   // take projection along a and subtract from b
-  float dt = a[m] / a.get_squared_magnitude();
+  double dt = a[m] / a.get_squared_magnitude();
   b = b - dt * a;
   // renormalize b
   return b.get_unit_vector();
@@ -422,11 +422,11 @@ algebra::Vector3D vperp(const algebra::Vector3D &a) {
 
 // Collision check of probe with neighboring atoms
 bool collid(const algebra::Vector3D &p, const algebra::Vector3Ds &cnbr,
-            const std::vector<float> &ernbr, int jnbr, int knbr, int lkf,
+            const std::vector<double> &ernbr, int jnbr, int knbr, int lkf,
             const std::vector<int> &lknbr) {
   for (int i = lkf; i >= 0; i = lknbr[i]) {
     if (i == jnbr || i == knbr) continue;
-    float dist2 = algebra::get_squared_distance(p, cnbr[i]);
+    double dist2 = algebra::get_squared_distance(p, cnbr[i]);
     if (dist2 < ernbr[i] * ernbr[i]) {
       return true;
     }
@@ -437,28 +437,28 @@ bool collid(const algebra::Vector3D &p, const algebra::Vector3Ds &cnbr,
 struct SurfaceInfo {
   SurfaceInfo() : area(0.), npoints(0), nlost_saddle(0), nlost_concave(0) {}
 
-  float area;
+  double area;
   int npoints;
   int nlost_saddle;
   int nlost_concave;
 };
 
-void handle_atom(ConnollySurfacePoints &surface_points, int iatom, float d,
+void handle_atom(ConnollySurfacePoints &surface_points, int iatom, double d,
                  const std::vector<int> inbr, const algebra::Vector3Ds &CO,
-                 float rp, std::vector<bool> &srs, const algebra::Vector3Ds &up,
+                 double rp, std::vector<bool> &srs, const algebra::Vector3Ds &up,
                  std::vector<YonProbe> &yon_probes,
                  const algebra::Vector3Ds &circle, const std::vector<int> &IAT,
-                 const std::vector<float> &rtype,
+                 const std::vector<double> &rtype,
                  const std::vector<AtomTypeInfo> &attyp_info,
                  std::vector<ProbePoint> &beforept, SurfaceInfo &surface) {
-  float ri = rtype[IAT[iatom]];
+  double ri = rtype[IAT[iatom]];
   algebra::Vector3D ci = CO[iatom];
 
   /* transfer data from main arrays to neighbors */
   algebra::Vector3Ds cnbr;
-  std::vector<float> rnbr;
-  std::vector<float> ernbr;
-  std::vector<float> disnbr;
+  std::vector<double> rnbr;
+  std::vector<double> ernbr;
+  std::vector<double> disnbr;
   std::vector<int> lknbr;
   for (unsigned iuse = 0; iuse < inbr.size(); ++iuse) {
     int jatom = inbr[iuse];
@@ -499,7 +499,7 @@ void handle_atom(ConnollySurfacePoints &surface_points, int iatom, float d,
     int jatom = inbr[jnbr];
     if (jatom <= iatom) continue;
 
-    float rj = rnbr[jnbr];
+    double rj = rnbr[jnbr];
     algebra::Vector3D cj = cnbr[jnbr];
 
     /* HERE FOLLOW GEOMETRIC CALCULATIONS OF POINTS, VECTORS AND
@@ -516,7 +516,7 @@ void handle_atom(ConnollySurfacePoints &surface_points, int iatom, float d,
     /* CREATE AN ORTHONORMAL FRAME
        WITH UIJ POINTING ALONG THE INTER-ATOMIC AXIS
        AND Q AND T DEFINING THE SADDLE PLANE */
-    float dij = vij.get_magnitude();
+    double dij = vij.get_magnitude();
     if (dij <= 0.) {
       IMP_LOG_VERBOSE("Atoms " << iatom << " and " << jatom
                                << " have the same center" << std::endl);
@@ -527,21 +527,21 @@ void handle_atom(ConnollySurfacePoints &surface_points, int iatom, float d,
     algebra::Vector3D t = algebra::get_vector_product(uij, q);
 
     // CALCULATE THE SADDLE CIRCLE CENTER AND RADIUS
-    float f = 0.5 * (1.0 + ((ri + rp) * (ri + rp) - (rj + rp) * (rj + rp)) /
+    double f = 0.5 * (1.0 + ((ri + rp) * (ri + rp) - (rj + rp) * (rj + rp)) /
                                (dij * dij));
     // BASE POINT
     algebra::Vector3D bij = ci + f * vij;
-    float f1 = ri + rj + 2. * rp;
+    double f1 = ri + rj + 2. * rp;
     f1 = f1 * f1 - dij * dij;
     // SKIP TO BOTTOM OF MIDDLE LOOP IF ATOMS ARE TOO FAR APART
     if (f1 <= 0.0) continue;
 
-    float f2 = dij * dij - (ri - rj) * (ri - rj);
+    double f2 = dij * dij - (ri - rj) * (ri - rj);
     // SKIP TO BOTTOM OF MIDDLE LOOP IF ONE ATOM INSIDE THE OTHER
     if (f2 <= 0.0) continue;
 
     // HEIGHT (RADIUS OF SADDLE CIRCLE)
-    float hij = std::sqrt(f1 * f2) / (2. * dij);
+    double hij = std::sqrt(f1 * f2) / (2. * dij);
     // A STARTING ALTITUDE
     algebra::Vector3D aij = hij * q;
 
@@ -551,8 +551,8 @@ void handle_atom(ConnollySurfacePoints &surface_points, int iatom, float d,
     int mutual = 0;
     std::vector<bool> mnbr(inbr.size());
     for (unsigned knbr = 0; knbr < inbr.size(); ++knbr) {
-      float d2 = algebra::get_squared_distance(cj, cnbr[knbr]);
-      float radsum = 2. * rp + rj + rnbr[knbr];
+      double d2 = algebra::get_squared_distance(cj, cnbr[knbr]);
+      double radsum = 2. * rp + rj + rnbr[knbr];
       mnbr[knbr] = d2 < radsum * radsum && knbr != jnbr;
       if (mnbr[knbr]) {
         ++mutual;
@@ -568,7 +568,7 @@ void handle_atom(ConnollySurfacePoints &surface_points, int iatom, float d,
       if (katom <= jatom) continue;
 
       // transfer from neighbor array to katom variables
-      float rk = rnbr[knbr];
+      double rk = rnbr[knbr];
       algebra::Vector3D ck = cnbr[knbr];
 
       /* CALCULATE INTERSECTION OF EXPANDED SPHERE OF KATOM
@@ -578,11 +578,11 @@ void handle_atom(ConnollySurfacePoints &surface_points, int iatom, float d,
          FROM KATOM TO A POINT ON THE SADDLE PLANE,
          ONTO IATOM-JATOM AXIS,
          IN ORDER TO GET DISTANCE KATOM IS FROM SADDLE PLANE */
-      float dk = uij[0] * (bij[0] - ck[0]) + uij[1] * (bij[1] - ck[1]) +
+      double dk = uij[0] * (bij[0] - ck[0]) + uij[1] * (bij[1] - ck[1]) +
                  uij[2] * (bij[2] - ck[2]);
 
       // CALCULATE RADIUS OF KATOM CIRCLE
-      float rijk = (rk + rp) * (rk + rp) - dk * dk;
+      double rijk = (rk + rp) * (rk + rp) - dk * dk;
       // SKIP CONCAVE CALCULATION IF NO INTERSECTION
       if (rijk <= 0.0) continue;
       rijk = std::sqrt(rijk);
@@ -592,27 +592,27 @@ void handle_atom(ConnollySurfacePoints &surface_points, int iatom, float d,
 
       // CALCULATE INTERSECTION OF THE KATOM CIRCLE WITH THE SADDLE CIRCLE
       algebra::Vector3D vijk = cijk - bij;
-      float dijk = vijk.get_magnitude();
+      double dijk = vijk.get_magnitude();
 
       if (dijk <= 0.0) {
         IMP_LOG_VERBOSE("Atoms " << iatom << ", " << jatom << ", and " << katom
                                  << " have concentric circles" << std::endl);
         continue;
       }
-      float f = 0.5 * (1.0 + (hij * hij - rijk * rijk) / (dijk * dijk));
+      double f = 0.5 * (1.0 + (hij * hij - rijk * rijk) / (dijk * dijk));
       // BASE POINT BIJK IS ON SYMMETRY PLANE AND SADDLE PLANE
       algebra::Vector3D bijk = bij + f * vijk;
 
-      float f1 = (hij + rijk) * (hij + rijk) - dijk * dijk;
+      double f1 = (hij + rijk) * (hij + rijk) - dijk * dijk;
       // SKIP TO BOTTOM OF INNER LOOP IF KATOM TOO FAR AWAY
       if (f1 <= 0.0) continue;
 
-      float f2 = dijk * dijk - (hij - rijk) * (hij - rijk);
+      double f2 = dijk * dijk - (hij - rijk) * (hij - rijk);
       // SKIP TO BOTTOM OF INNER LOOP IF KATOM CIRCLE INSIDE SADDLE CIRCLE
       // OR VICE-VERSA
       if (f2 <= 0.0) continue;
 
-      float hijk = std::sqrt(f1 * f2) / (2. * dijk);
+      double hijk = std::sqrt(f1 * f2) / (2. * dijk);
       algebra::Vector3D uijk = vijk.get_unit_vector();
 
       // UIJ AND UIJK LIE IN THE SYMMETRY PLANE PASSING THROUGH THE ATOMS
@@ -638,7 +638,7 @@ void handle_atom(ConnollySurfacePoints &surface_points, int iatom, float d,
       srs[iatom] = srs[jatom] = srs[katom] = true;
 
       // GENERATE SURFACE POINTS
-      float area = (4. * algebra::PI * rp * rp) / up.size();
+      double area = (4. * algebra::PI * rp * rp) / up.size();
       for (int ip = 0; ip < 2; ++ip) {
         if (!pair[ip]) continue;
 
@@ -650,7 +650,7 @@ void handle_atom(ConnollySurfacePoints &surface_points, int iatom, float d,
         algebra::Vector3D vpi = (ci - pijk[ip]) * rp / (ri + rp);
         algebra::Vector3D vpj = (cj - pijk[ip]) * rp / (rj + rp);
         algebra::Vector3D vpk = (ck - pijk[ip]) * rp / (rk + rp);
-        float sign = det(vpi, vpj, vpk);
+        double sign = det(vpi, vpj, vpk);
 
         ProbePoint probe_point;
         // GATHER POINTS ON PROBE SPHERE LYING WITHIN TRIANGLE
@@ -674,9 +674,9 @@ void handle_atom(ConnollySurfacePoints &surface_points, int iatom, float d,
           // FIND THE CLOSEST ATOM AND PUT THE THREE ATOM NUMBERS
           // IN THE PROPER ORDER
           // N1 IS CLOSEST, N2 < N3
-          float dsi = algebra::get_distance(sp.s, ci) - ri;
-          float dsj = algebra::get_distance(sp.s, cj) - rj;
-          float dsk = algebra::get_distance(sp.s, ck) - rk;
+          double dsi = algebra::get_distance(sp.s, ci) - ri;
+          double dsj = algebra::get_distance(sp.s, cj) - rj;
+          double dsk = algebra::get_distance(sp.s, ck) - rk;
           if (dsi <= dsj && dsi <= dsk) {
             sp.n1 = iatom;
             sp.n2 = jatom;
@@ -722,8 +722,8 @@ void handle_atom(ConnollySurfacePoints &surface_points, int iatom, float d,
       bool buried_torus = false;
       for (unsigned knbr = 0; knbr < inbr.size() && !buried_torus; ++knbr) {
         if (!mnbr[knbr]) continue;
-        float d2 = algebra::get_squared_distance(bij, cnbr[knbr]);
-        float rk2 = ernbr[knbr] * ernbr[knbr] - hij * hij;
+        double d2 = algebra::get_squared_distance(bij, cnbr[knbr]);
+        double rk2 = ernbr[knbr] * ernbr[knbr] - hij * hij;
         if (d2 < rk2) {
           buried_torus = true;
         }
@@ -733,10 +733,10 @@ void handle_atom(ConnollySurfacePoints &surface_points, int iatom, float d,
 
     // CALCULATE NUMBER OF ROTATIONS OF PROBE PAIR,
     // ROTATION ANGLE AND ROTATION MATRIX
-    float rij = ri / (ri + rp) + rj / (rj + rp);
-    float avh = (std::abs(hij - rp) + hij * rij) / 3.;
+    double rij = ri / (ri + rp) + rj / (rj + rp);
+    double avh = (std::abs(hij - rp) + hij * rij) / 3.;
     int nrot = std::max(static_cast<int>(std::sqrt(d) * algebra::PI * avh), 1);
-    float angle = algebra::PI / nrot;
+    double angle = algebra::PI / nrot;
 
     // SET UP ROTATION MATRIX AROUND X-AXIS
     algebra::Vector3Ds h(3, algebra::Vector3D(0., 0., 0.));
@@ -764,7 +764,7 @@ void handle_atom(ConnollySurfacePoints &surface_points, int iatom, float d,
     // PROBE-JATOM VECTOR TO FORM THE ARC
     int narc = 0;
     std::vector<bool> ayon;
-    std::vector<float> arca;
+    std::vector<double> arca;
     algebra::Vector3Ds vbs0[2];
     for (unsigned i = 0; i < circle.size(); ++i) {
       algebra::Vector3D vps0;
@@ -783,12 +783,12 @@ void handle_atom(ConnollySurfacePoints &surface_points, int iatom, float d,
          ROTATED AROUND THE IATOM-JATOM AXIS */
       vbs0[0].push_back(vps0 + aij);
       // INVERT ARC THROUGH LINE OF SYMMETRY
-      float duij = uij * vbs0[0][narc];
+      double duij = uij * vbs0[0][narc];
       vbs0[1].push_back(-vbs0[0][narc] + 2 * duij * uij);
 
       /* CHECK WHETHER THE ARC POINT CROSSES THE IATOM-JATOM AXIS
          AND CALCULATE THE AREA ASSOCIATED WITH THE POINT */
-      float ht = aij * vbs0[0][narc] / hij;
+      double ht = aij * vbs0[0][narc] / hij;
       ayon.push_back(ht < 0.);
       arca.push_back((2. * algebra::PI * algebra::PI * rp * std::abs(ht)) /
                      (circle.size() * nrot));
@@ -846,8 +846,8 @@ void handle_atom(ConnollySurfacePoints &surface_points, int iatom, float d,
           // MAKE COORDINATES RELATIVE TO ORIGIN
           sp.s = bij + vbs;
           // FIND THE CLOSEST ATOM AND SET UP THE ATOM NUMBERS FOR THE POINT
-          float dsi = algebra::get_distance(sp.s, ci) - ri;
-          float dsj = algebra::get_distance(sp.s, cj) - rj;
+          double dsi = algebra::get_distance(sp.s, ci) - ri;
+          double dsj = algebra::get_distance(sp.s, cj) - rj;
           if (dsi <= dsj) {
             sp.n1 = iatom;
             sp.n2 = jatom;
@@ -883,7 +883,7 @@ void handle_atom(ConnollySurfacePoints &surface_points, int iatom, float d,
   if (rp > 0. && inbr.size() > 0 && !srs[iatom]) return;
 
   const AtomTypeInfo &attyp = attyp_info[IAT[iatom]];
-  float area = (4. * algebra::PI * ri * ri) / attyp.ua.size();
+  double area = (4. * algebra::PI * ri * ri) / attyp.ua.size();
 
   // CONTACT PROBE PLACEMENT LOOP
   for (unsigned i = 0; i < attyp.ua.size(); ++i) {
@@ -909,8 +909,8 @@ void handle_atom(ConnollySurfacePoints &surface_points, int iatom, float d,
 
 SurfaceInfo generate_contact_surface(
     ConnollySurfacePoints &surface_points, const algebra::Vector3Ds &CO,
-    float radmax, float rp, float d, std::vector<YonProbe> &yon_probes,
-    const std::vector<int> &IAT, const std::vector<float> &rtype,
+    double radmax, double rp, double d, std::vector<YonProbe> &yon_probes,
+    const std::vector<int> &IAT, const std::vector<double> &rtype,
     const std::vector<AtomTypeInfo> &attyp_info,
     std::vector<ProbePoint> &beforept) {
   Cube cube;
@@ -928,7 +928,7 @@ SurfaceInfo generate_contact_surface(
   ncirc = std::min(MAXCIR, ncirc);
   algebra::Vector3Ds circle;
   for (int i = 0; i < ncirc; ++i) {
-    float fi = (2. * algebra::PI * i) / ncirc;
+    double fi = (2. * algebra::PI * i) / ncirc;
     circle.push_back(
         algebra::Vector3D(rp * std::cos(fi), rp * std::sin(fi), 0.));
   }
@@ -947,13 +947,13 @@ SurfaceInfo generate_contact_surface(
 }
 
 void get_victim_probes(const std::vector<YonProbe> &yon_probes,
-                       std::vector<ProbePoint> &beforept, float rp,
-                       float radmax, std::vector<int> &victims) {
+                       std::vector<ProbePoint> &beforept, double rp,
+                       double radmax, std::vector<int> &victims) {
   // NO VICTIM PROBES IF NO YON PROBES
   if (yon_probes.size() == 0) return;
 
   // Probe diameter
-  float dp = 2. * rp;
+  double dp = 2. * rp;
 
   YonCube cube(yon_probes, rp, dp, radmax);
 
@@ -974,7 +974,7 @@ void get_victim_probes(const std::vector<YonProbe> &yon_probes,
 }
 
 void get_eaten_points(const std::vector<YonProbe> &yon_probes,
-                      const std::vector<ProbePoint> &beforept, float dp2,
+                      const std::vector<ProbePoint> &beforept, double dp2,
                       const ProbePoint &probe, unsigned &neat, unsigned &nyeat,
                       const std::vector<int> &victims, algebra::Vector3Ds &eat,
                       int &pi) {
@@ -1018,11 +1018,11 @@ void get_eaten_points(const std::vector<YonProbe> &yon_probes,
 
 void check_eaten_points(ConnollySurfacePoints &surface_points,
                         const std::vector<YonProbe> &yon_probes,
-                        const std::vector<ProbePoint> &beforept, float rp,
+                        const std::vector<ProbePoint> &beforept, double rp,
                         const std::vector<int> &victims, SurfaceInfo &surface) {
-  float rp2 = rp * rp;
-  float dp = rp * 2.;
-  float dp2 = dp * dp;
+  double rp2 = rp * rp;
+  double dp = rp * 2.;
+  double dp2 = dp * dp;
   int pi = 0;
   for (std::vector<ProbePoint>::const_iterator pit = beforept.begin();
        pit != beforept.end(); ++pit) {
@@ -1068,7 +1068,7 @@ void check_eaten_points(ConnollySurfacePoints &surface_points,
 SurfaceInfo generate_reentrant_surface(ConnollySurfacePoints &surface_points,
                                        const std::vector<YonProbe> &yon_probes,
                                        std::vector<ProbePoint> &beforept,
-                                       float rp, float radmax) {
+                                       double rp, double radmax) {
   SurfaceInfo surface;
   std::vector<int> victims;
   get_victim_probes(yon_probes, beforept, rp, radmax, victims);
@@ -1079,11 +1079,11 @@ SurfaceInfo generate_reentrant_surface(ConnollySurfacePoints &surface_points,
   return surface;
 }
 
-void msdots(ConnollySurfacePoints &surface_points, float d, float rp,
-            const std::vector<float> &rtype, const algebra::Vector3Ds &CO,
+void msdots(ConnollySurfacePoints &surface_points, double d, double rp,
+            const std::vector<double> &rtype, const algebra::Vector3Ds &CO,
             const std::vector<int> &IAT) {
   IMP_INTERNAL_CHECK(rp >= 0., "Negative probe radius: " << rp);
-  float radmax = 0.;
+  double radmax = 0.;
 
   std::vector<AtomTypeInfo> attyp_info(rtype.size());
 
@@ -1139,15 +1139,15 @@ void msdots(ConnollySurfacePoints &surface_points, float d, float rp,
 }  // namespace
 
 ConnollySurfacePoints get_connolly_surface(const algebra::Sphere3Ds &spheres,
-                                           float d, float rp) {
-  typedef boost::unordered_map<float, int> M;
+                                           double d, double rp) {
+  typedef boost::unordered_map<double, int> M;
   M radii2type;
 
   std::vector<int> IAT(spheres.size());
   algebra::Vector3Ds CO(spheres.size());
-  std::vector<float> rvdw;
+  std::vector<double> rvdw;
   for (unsigned int i = 0; i < spheres.size(); ++i) {
-    float r = spheres[i].get_radius();
+    double r = spheres[i].get_radius();
     M::const_iterator it = radii2type.find(r);
     int type;
     if (it == radii2type.end()) {
