@@ -33,10 +33,6 @@ class ClassnameScore;
 /** Stores a shared collection of Classnames.
  */
 class IMPKERNELEXPORT ClassnameContainer : public Container {
- protected:
-  ClassnameContainer(kernel::Model *m,
-                     std::string name = "ClassnameContainer %1%");
-
  public:
   typedef VARIABLETYPE ContainedType;
   typedef PLURALVARIABLETYPE ContainedTypes;
@@ -49,8 +45,6 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   //! Apply a SingletonModifier to the contents
   void apply(const ClassnameModifier *sm) const;
 
-  /** Get all the indexes contained in the container.*/
-  virtual PLURALINDEXTYPE get_indexes() const = 0;
   /** Get all the indexes that might possibly be contained in the
       container, useful with dynamic containers. For example,
       with a container::ClosePairContainer, this is the list
@@ -59,7 +53,29 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   */
   virtual PLURALINDEXTYPE get_range_indexes() const = 0;
 
+  const PLURALINDEXTYPE&get_contents() const {
+    if (get_provides_access()) return get_access();
+    else {
+      std::size_t nhash = get_contents_version();
+      if (contents_hash_ != nhash || !cache_initialized_) {
+        contents_hash_ = nhash;
+        cache_initialized_ = true;
+        contents_cache_ = get_indexes();
+      }
+      return contents_cache_;
+    }
+  }
+
+  /** Get all the indexes contained in the container.
+
+    This should be protected but isn't for compatibility reasons.
+
+    External callers should use get_contents().
+  */
+  virtual PLURALINDEXTYPE get_indexes() const = 0;
+
 #ifndef IMP_DOXYGEN
+
   PLURALVARIABLETYPE get() const {
     return IMP::kernel::internal::get_particle(get_model(), get_indexes());
   }
@@ -109,10 +125,17 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const;
 
  protected:
+  ClassnameContainer(kernel::Model *m,
+                     std::string name = "ClassnameContainer %1%");
+
   virtual void do_apply(const ClassnameModifier *sm) const = 0;
   virtual bool do_get_provides_access() const { return false; }
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(ClassnameContainer);
+ private:
+  mutable std::size_t contents_hash_;
+  mutable PLURALINDEXTYPE contents_cache_;
+  mutable bool cache_initialized_;
 };
 
 /** This class allows either a list or a container to be

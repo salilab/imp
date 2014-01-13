@@ -32,7 +32,7 @@ class IMPCONTAINEREXPORT AllPairContainer : public PairContainer {
   template <class F>
   void apply_generic(F* f) const {
     validate_readable();
-    kernel::ParticleIndexes pis = c_->get_indexes();
+    const kernel::ParticleIndexes& pis = c_->get_contents();
     for (unsigned int i = 0; i < pis.size(); ++i) {
       for (unsigned int j = 0; j < i; ++j) {
         f->apply_index(get_model(), kernel::ParticleIndexPair(pis[i], pis[j]));

@@ -342,6 +342,7 @@
   }
 
 #define IMP_CONTAINER_FOREACH_IMPL(ContainerType, container, operation, tname) \
+  IMPKERNEL_DEPRECATED_MACRO(2.2, "Use get_contents() and a IMP_FOREACH macro."); \
   do {                                                                         \
     if (container->get_provides_access()) {                                    \
       const tname ContainerType::ContainedIndexTypes& imp_foreach_indexes =    \

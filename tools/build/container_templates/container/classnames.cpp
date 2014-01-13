@@ -48,9 +48,9 @@ ClassnameContainerIndex::ClassnameContainerIndex(ClassnameContainerAdaptor c,
 
 void ClassnameContainerIndex::build() {
   contents_.clear();
-  IMP_CONTAINER_FOREACH(
-      ClassnameContainer, container_,
-      contents_.insert(IMP::kernel::internal::get_canonical(_1)));
+  IMP_FOREACH(INDEXTYPE it, container_->get_contents()) {
+    contents_.insert(IMP::kernel::internal::get_canonical(it));
+  }
 }
 
 void ClassnameContainerIndex::do_before_evaluate() {
@@ -246,14 +246,14 @@ void DistributeClassnamesScoreState::update_lists_if_necessary() const {
   if (!kernel::Container::update_version(input_, input_version_)) return;
 
   base::Vector<PLURALINDEXTYPE> output(data_.size());
-  IMP_CONTAINER_FOREACH(ClassnameContainer, input_, {
+  IMP_FOREACH(INDEXTYPE it,  input_->get_contents()) {
     for (unsigned int i = 0; i < data_.size(); ++i) {
-      if (data_[i].get<1>()->get_value_index(get_model(), _1) ==
+      if (data_[i].get<1>()->get_value_index(get_model(), it) ==
           data_[i].get<2>()) {
-        output[i].push_back(_1);
+        output[i].push_back(it);
       }
     }
-  });
+  }
   for (unsigned int i = 0; i < output.size(); ++i) {
     data_[i].get<0>()->set(output[i]);
   }
@@ -294,8 +294,9 @@ EventClassnamesOptimizerState::EventClassnamesOptimizerState(
 void EventClassnamesOptimizerState::update() {
   int met = 0;
   kernel::Model *m = get_optimizer()->get_model();
-  IMP_CONTAINER_FOREACH(ClassnameContainer, container_,
-                        if (pred_->get_value_index(m, _1) == v_) { ++met; });
+  IMP_FOREACH(INDEXTYPE it, container_->get_contents()) {
+    if (pred_->get_value_index(m, it) == v_)  ++met;
+  }
   if (met >= min_ && met < max_) {
     throw IMP::base::EventException("an event occurred");
   }
@@ -374,11 +375,11 @@ ClassnameMinimumMS find_minimal_set_ClassnameMinimum(C *c, F *f,
   IMP_LOG_VERBOSE("Finding Minimum " << n << " of " << c->get_number()
                                      << std::endl);
   ClassnameMinimumMS bestn(n);
-  IMP_CONTAINER_FOREACH_TEMPLATE(C, c, {
-    double score = f->evaluate_index(c->get_model(), _1, nullptr);
-    IMP_LOG_VERBOSE("Found " << score << " for " << _1 << std::endl);
-    bestn.insert(score, _1);
-  });
+  IMP_FOREACH(INDEXTYPE it, c->get_contents()) {
+    double score = f->evaluate_index(c->get_model(), it, nullptr);
+    IMP_LOG_VERBOSE("Found " << score << " for " << it << std::endl);
+    bestn.insert(score, it);
+  }
   return bestn;
 }
 }
@@ -562,10 +563,10 @@ void PredicateClassnamesRestraint::update_lists_if_necessary() const {
   if (!kernel::Container::update_version(input_, input_version_)) return;
   lists_.clear();
 
-  IMP_CONTAINER_FOREACH(ClassnameContainer, input_, {
-    int bin = predicate_->get_value_index(get_model(), _1);
-    lists_[bin].push_back(_1);
-  });
+  IMP_FOREACH(INDEXTYPE it, input_->get_contents()) {
+    int bin = predicate_->get_value_index(get_model(), it);
+    lists_[bin].push_back(it);
+  }
 
   typedef std::pair<int, PLURALINDEXTYPE> LP;
   Ints unknown;

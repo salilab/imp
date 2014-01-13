@@ -152,14 +152,14 @@
    public:                                                                 \
     Name##sGeometry(SingletonContainer *sc)                                \
         : display::SingletonsGeometry(sc) {}                               \
-    IMP_IMPLEMENT_INLINE(display::Geometries get_components() const, {     \
+    display::Geometries get_components() const {     \
       display::Geometries ret;                                             \
-      IMP_CONTAINER_FOREACH(SingletonContainer, get_container(), {         \
-        Decorator d(get_container()->get_model(), _1);                     \
-        action;                                                            \
-      });                                                                  \
+      IMP_FOREACH(ParticleIndex pi, get_container()->get_contents()) {  \
+        Decorator d(get_container()->get_model(), pi);                  \
+        action;                                                         \
+      }                                                                  \
       return ret;                                                          \
-    });                                                                    \
+    }                                                                    \
     IMP_OBJECT_METHODS(Name##sGeometry);                                   \
   }
 
@@ -169,27 +169,28 @@
    public:                                                             \
     Name##Geometry(const kernel::ParticlePair &pp)                     \
         : display::PairGeometry(pp) {}                                 \
-    IMP_IMPLEMENT_INLINE(display::Geometries get_components() const, { \
+    display::Geometries get_components() const { \
       display::Geometries ret;                                         \
       Decorator d0(get_particle_pair()[0]);                            \
       Decorator d1(get_particle_pair()[1]);                            \
       action;                                                          \
       return ret;                                                      \
-    }) IMP_OBJECT_METHODS(Name##Geometry);                             \
+    }\
+ IMP_OBJECT_METHODS(Name##Geometry);                             \
   };                                                                   \
   /** Display multiple pairs of particles.*/                           \
   class Name##sGeometry : public display::PairsGeometry {              \
    public:                                                             \
     Name##sGeometry(PairContainer *sc) : display::PairsGeometry(sc) {} \
-    IMP_IMPLEMENT_INLINE(display::Geometries get_components() const, { \
+    display::Geometries get_components() const { \
       display::Geometries ret;                                         \
-      IMP_CONTAINER_FOREACH(PairContainer, get_container(), {          \
-        Decorator d0(get_container()->get_model(), _1[0]);             \
-        Decorator d1(get_container()->get_model(), _1[1]);             \
+      IMP_FOREACH(kernel::ParticleIndexPair pip, get_container()->get_contents()) { \
+        Decorator d0(get_container()->get_model(), pip[0]);             \
+        Decorator d1(get_container()->get_model(), pip[1]);             \
         action;                                                        \
-      });                                                              \
+      }                                                              \
       return ret;                                                      \
-    });                                                                \
+    }                                                                \
     IMP_OBJECT_METHODS(Name##sGeometry);                               \
   }
 

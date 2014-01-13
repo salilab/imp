@@ -197,14 +197,14 @@ class HierarchiesGeometry : public display::SingletonsGeometry {
       : SingletonsGeometry(sc), res_(resolution) {}
   display::Geometries get_components() const {
     display::Geometries ret;
-    IMP_CONTAINER_FOREACH(SingletonContainer, get_container(), {
+    IMP_FOREACH(kernel::ParticleIndex pi, get_container()->get_contents()) {
       kernel::Model *m = get_container()->get_model();
-      if (components_.find(_1) == components_.end()) {
-        IMP_NEW(HierarchyGeometry, g, (atom::Hierarchy(m, _1), res_));
-        components_[_1] = g;
+      if (components_.find(pi) == components_.end()) {
+        IMP_NEW(HierarchyGeometry, g, (atom::Hierarchy(m, pi), res_));
+        components_[pi] = g;
       }
-      ret.push_back(components_.find(_1)->second);
-    });
+      ret.push_back(components_.find(pi)->second);
+    }
     return ret;
   }
   IMP_OBJECT_METHODS(HierarchiesGeometry);

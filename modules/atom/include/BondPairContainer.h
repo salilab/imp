@@ -34,12 +34,12 @@ class IMPATOMEXPORT BondPairContainer : public PairContainer {
  public:
   template <class F>
   void apply_generic(F* f) const {
-    IMP_CONTAINER_FOREACH(SingletonContainer, sc_, {
-      Bond bp(get_model(), _1);
+    IMP_FOREACH(kernel::ParticleIndex pi, sc_->get_contents()) {
+      Bond bp(get_model(), pi);
       f->apply_index(get_model(), kernel::ParticleIndexPair(
                                       bp.get_bonded(0).get_particle_index(),
                                       bp.get_bonded(1).get_particle_index()));
-    });
+    }
   }
 
   //! The container containing the bonds
