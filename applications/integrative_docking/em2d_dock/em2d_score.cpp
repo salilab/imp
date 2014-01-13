@@ -9,6 +9,8 @@
 #include "Projection.h"
 #include "FitResult.h"
 
+#include "../lib/helpers.h"
+
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/kernel/Model.h>
 #include <IMP/atom/pdb.h>
@@ -46,52 +48,7 @@ std::vector<IMP::algebra::Vector3D> read_points_from_pdb(
   return points;
 }
 
-void read_trans_file(const std::string file_name,
-                     std::vector<IMP::algebra::Transformation3D>& transforms) {
-  std::ifstream trans_file(file_name.c_str());
-  if (!trans_file) {
-    std::cerr << "Can't find Transformation file " << file_name << std::endl;
-    exit(1);
-  }
 
-  IMP::algebra::Vector3D rotation_vec, translation;
-  int trans_number;
-  while (trans_file >> trans_number >> rotation_vec >> translation) {
-    IMP::algebra::Rotation3D rotation =
-        IMP::algebra::get_rotation_from_fixed_xyz(
-            rotation_vec[0], rotation_vec[1], rotation_vec[2]);
-    IMP::algebra::Transformation3D trans(rotation, translation);
-    transforms.push_back(trans);
-  }
-  trans_file.close();
-  std::cout << transforms.size() << " transforms were read from " << file_name
-            << std::endl;
-}
-
-void compute_zscores(std::vector<FitResult>& fit_results) {
-  float average = 0.0;
-  float std = 0.0;
-  int counter = 0;
-  for (unsigned int i = 0; i < fit_results.size(); i++) {
-    if (!fit_results[i].is_filtered()) {
-      counter++;
-      average += fit_results[i].get_score();
-      std += IMP::square(fit_results[i].get_score());
-    }
-  }
-  average /= counter;
-  std /= counter;
-  std -= IMP::square(average);
-  std = sqrt(std);
-
-  // update z_scores
-  for (unsigned int i = 0; i < fit_results.size(); i++) {
-    if (!fit_results[i].is_filtered()) {
-      float z_score = (fit_results[i].get_score() - average) / std;
-      fit_results[i].set_z_score(z_score);
-    }
-  }
-}
 }
 
 int main(int argc, char** argv) {
@@ -270,7 +227,7 @@ int main(int argc, char** argv) {
     //<< " | "  << transformation3d_to_rigidtrans3(transforms[t]) << std::endl;
   }
 
-  compute_zscores(fit_results);
+  set_z_scores(fit_results);
 
   // output
   std::ofstream out_file(out_file_name.c_str());
