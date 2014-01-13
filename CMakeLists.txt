@@ -139,8 +139,7 @@ imp_execute_process("setup" ${CMAKE_BINARY_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tool
                     --datapath=${IMP_DATAPATH})
 
 imp_execute_process("setup_containers" ${CMAKE_BINARY_DIR}
-                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_containers.py
-                    ${CMAKE_SOURCE_DIR})
+                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_containers.py)
 
 imp_execute_process("setup_all" ${CMAKE_BINARY_DIR}
                     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_all.py

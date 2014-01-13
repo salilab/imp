@@ -12,6 +12,9 @@ import os.path
 import glob
 import tools
 
+all_inputs = []
+all_outputs = []
+
 
 def filter(xxx_todo_changeme,
            infile, file_name):
@@ -45,12 +48,11 @@ def filter(xxx_todo_changeme,
         .replace("FILESOURCE", file_name)
 
 
-def make_one(source, params, test=True):
+def make_one(path, params, test=True):
     (function_name, type_name, class_name, variable_type, argument_type, return_type,
      storage_type,
      plural_variable_type, plural_argument_type, plural_storage_type,
      index_type, plural_index_type, pass_index_type) = params
-    path = os.path.join(source, "tools", "build", "container_templates")
     multi = class_name
     plural_multi = multi + "s"
     cname = function_name
@@ -82,10 +84,12 @@ def make_one(source, params, test=True):
     for p in files:
         contents = filter(params, open(p[1], 'r').read(), p[1])
         tools.rewrite(p[0], contents)
+        all_outputs.append(p[0])
+        all_inputs.append(p[1])
 
 
 def main():
-    source = sys.argv[1]
+    source = os.path.join(os.path.split(sys.argv[0])[0], "container_templates")
     #(function_name, class_name, variable_type, argument_type,
     # return_type, storage_type,
     #        plural_variable_type, plural_argument_type, plural_storage_type)
@@ -115,6 +119,34 @@ def main():
             "const ParticleQuad", "ParticleQuad",
             "ParticleQuadsTemp", "ParticleQuadsTemp", "ParticleQuads",
             "ParticleIndexQuad", "ParticleIndexQuads", "const ParticleIndexQuad&"), test=False)
+    if len(sys.argv) > 1:
+        deps = ["${PROJECT_SOURCE_DIR}/%s" % x for x in all_inputs]
+        targets = ["${PROJECT_BINARY_DIR}/%s" % x for x in all_outputs]
+        print """
+add_custom_command(OUTPUT %s
+  COMMAND "python" "${PROJECT_SOURCE_DIR}/tools/build/make_containers.py"
+  DEPENDS "${PROJECT_SOURCE_DIR}/tools/build/make_containers.py" %s
+  WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
+  COMMENT "Making decorator headers")
+add_custom_target(IMP-containers ALL DEPENDS %s)
+set_property(TARGET "IMP-containers" PROPERTY FOLDER "RMF")
+
+list(APPEND IMP_KERNEL_LIBRARY_EXTRA_DEPENDENCIES IMP-containers)
+list(REMOVE_DUPLICATES IMP_KERNEL_LIBRARY_EXTRA_DEPENDENCIES)
+list(APPEND IMP_CORE_LIBRARY_EXTRA_DEPENDENCIES IMP-containers)
+list(REMOVE_DUPLICATES IMP_CORE_LIBRARY_EXTRA_DEPENDENCIES)
+list(APPEND IMP_CONTAINER_LIBRARY_EXTRA_DEPENDENCIES IMP-containers)
+list(REMOVE_DUPLICATES IMP_CONTAINER_LIBRARY_EXTRA_DEPENDENCIES)
+list(APPEND IMP_KERNEL_LIBRARY_EXTRA_SOURCES %s)
+list(APPEND IMP_CONTAINER_LIBRARY_EXTRA_SOURCES %s)
+list(APPEND IMP_CORELIBRARY_EXTRA_SOURCES %s)
+""" % (targets, deps, targets,
+            [x for x in targets if x.endswith(
+                ".cpp") and x.find("kernel") != -1],
+            [x for x in targets if x.endswith(
+                ".cpp") and x.find("core") != -1],
+            [x for x in targets if x.endswith(".cpp") and x.find("container") != -1])
+        pass
     # make_one("particle tuple", "ParticlesTemp", "const ParticlesTemp&", "Particles",
     #         "Tuple", "particle tuples", "ParticlesList", "Tuples", test=False)
 
