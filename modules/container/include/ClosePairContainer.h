@@ -107,10 +107,12 @@ class IMPCONTAINEREXPORT ClosePairContainer :
   double get_slack() const;
   kernel::ParticleIndexPairs get_indexes() const;
   kernel::ParticleIndexPairs get_range_indexes() const;
-  void do_before_evaluate();
   kernel::ModelObjectsTemp do_get_inputs() const;
   void do_apply(const PairModifier *sm) const;
   kernel::ParticleIndexes get_all_possible_indexes() const;
+
+ private:
+  virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE;
 #endif
   IMP_OBJECT_METHODS(ClosePairContainer);
 };

@@ -32,8 +32,12 @@ CoreClosePairContainer::CoreClosePairContainer(SingletonContainer *c,
                                                double distance,
                                                ClosePairsFinder *cpf,
                                                double slack, std::string name)
-    : IMP::internal::ListLikePairContainer(c->get_model(), name) {
+    : kernel::internal::ListLikeContainer<kernel::PairContainer>(c->get_model(),
+                                                                 name) {
   initialize(c, distance, slack, cpf);
+  // initialize is called from elsewhere, just do this once
+  score_state_ = new SS(this);
+
 }
 
 void CoreClosePairContainer::initialize(SingletonContainer *c, double distance,
@@ -56,7 +60,16 @@ void CoreClosePairContainer::set_slack(double s) {
   first_call_ = true;
 }
 
-ModelObjectsTemp CoreClosePairContainer::do_get_inputs() const {
+kernel::ModelObjectsTemp CoreClosePairContainer::do_get_inputs() const {
+  kernel::ModelObjectsTemp ret;
+  ret.push_back(c_);
+  ret.push_back(score_state_);
+  ret.push_back(moved_);
+  return ret;
+}
+
+kernel::ModelObjectsTemp CoreClosePairContainer::get_score_state_inputs()
+    const {
   kernel::ParticleIndexes all = c_->get_all_possible_indexes();
   kernel::ModelObjectsTemp ret = IMP::get_particles(get_model(), all);
   for (unsigned int i = 0; i < get_number_of_pair_filters(); ++i) {
@@ -209,7 +222,7 @@ void CoreClosePairContainer::do_rebuild() {
   moved_->reset();
 }
 
-void CoreClosePairContainer::do_before_evaluate() {
+void CoreClosePairContainer::do_score_state_before_evaluate() {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(c_);
   IMP_CHECK_OBJECT(cpf_);

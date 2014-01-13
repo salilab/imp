@@ -11,7 +11,7 @@
 
 #include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
-#include "ScoreState.h"
+#include "ModelObject.h"
 #include "particle_index.h"
 #include <IMP/base/utility_macros.h>
 #include <IMP/base/ref_counted_macros.h>
@@ -41,55 +41,32 @@ class Model;
 
     \note Containers store \em sets and so are fundamentally unordered.
  */
-class IMPKERNELEXPORT Container : public ScoreState {
-  int version_;
+class IMPKERNELEXPORT Container : public ModelObject {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   bool readable_;
   bool writeable_;
 #endif
  protected:
-  //! Call this with true when the contents of the container change
-  /** See get_contents_version() to monitor the container for changes.
-
-      Static containers should call this in their constructor. */
-  void set_is_changed(bool tf);
   Container(kernel::Model *m, std::string name = "Container %1%");
 
+  virtual std::size_t do_get_contents_hash() const = 0;
+
  public:
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  // lazy, should go in an internal header
-  static bool update_version(Container *c, int &version) {
-    int old = version;
-    version = c->get_contents_version();
-    return old != version;
-  }
-#endif
   //! Get contained particles
   /** Get a list of all particles contained in this one,
       given that the input containers are up to date.
   */
   virtual ParticleIndexes get_all_possible_indexes() const = 0;
 
-  /** Return true if the container changed since the last evaluate.
-
-      \deprecated_at{2.1} Use get_contents_version() instead as that
-      is safer.*/
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-  bool get_is_changed() const;
-
-  /** Return a counter that can be used to detect when the contents
+  /** Return a hash that can be used to detect when the contents
       of the container changed. Store the value and then compare
-      against the version next time to detect if it is different. It
-      is initially 0.*/
-  int get_contents_version() const { return version_; }
+      against the version next time to detect if it is different. */
+  std::size_t get_contents_hash() const { return do_get_contents_hash(); }
 
   //! containers don't have outputs
   ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
     return ModelObjectsTemp();
   }
-
-  //! Reset changed status
-  virtual void do_after_evaluate(DerivativeAccumulator *accpt) IMP_OVERRIDE;
 
   /** True if the container's contents are not independent from one
       another, and so it cannot be decomposed into a sum of terms.

@@ -44,6 +44,8 @@ class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer {
     int ib = get_model()->get_attribute(key_, p[1]);
     return std::abs(ia - ib) == 1;
   }
+ protected:
+  virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE { return 0; }
 
  public:
   //! apply to each item in container
@@ -61,7 +63,6 @@ class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer {
   virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
-  virtual void do_before_evaluate() IMP_OVERRIDE;
   IMP_PAIR_CONTAINER_METHODS(ConsecutivePairContainer);
   IMP_OBJECT_METHODS(ConsecutivePairContainer);
 };
@@ -123,6 +124,8 @@ class IMPCONTAINEREXPORT ExclusiveConsecutivePairContainer
     return std::abs(ia - ib) == 1;
   }
   void init();
+ protected:
+  virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE { return 0; }
 
  public:
   //! apply to each item in container
@@ -142,7 +145,6 @@ class IMPCONTAINEREXPORT ExclusiveConsecutivePairContainer
   virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
-  virtual void do_before_evaluate() IMP_OVERRIDE;
   IMP_PAIR_CONTAINER_METHODS(ExclusiveConsecutivePairContainer);
   IMP_OBJECT_METHODS(ExclusiveConsecutivePairContainer);
 };

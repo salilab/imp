@@ -5,7 +5,7 @@
 #include <IMP/core/RigidBodyMover.h>
 #include <IMP/core/RigidClosePairsFinder.h>
 #include <IMP/algebra/vector_generators.h>
-#include <IMP/kernel/internal/InternalListSingletonContainer.h>
+#include <IMP/kernel/internal/StaticListContainer.h>
 #include <IMP/test/test_macros.h>
 #include <IMP/core/internal/CoreClosePairContainer.h>
 
@@ -154,8 +154,9 @@ int main(int argc, char *argv[]) {
     IMP::core::RigidBody r1 = create_rigid_body(m, "1");
     IMP::kernel::ParticleIndexes nr0 = add_non_rigid(m, r0, "0");
     IMP::kernel::ParticleIndexes nr1 = add_non_rigid(m, r1, "1");
-    IMP_NEW(IMP::kernel::internal::InternalListSingletonContainer, lsc,
-            (m, "lsc"));
+    IMP_NEW(IMP::kernel::internal::StaticListContainer<
+                IMP::kernel::SingletonContainer>,
+            lsc, (m, "lsc"));
     lsc->set(get_not_bodies(m, m->get_particle_indexes()));
     IMP_NEW(IMP::core::internal::CoreClosePairContainer, cpc,
             (lsc, 0, new IMP::core::RigidClosePairsFinder(), 0));

@@ -15,7 +15,6 @@
 #include "rigid_body_tree.h"
 #include <IMP/container_macros.h>
 #include "../XYZR.h"
-#include <IMP/kernel/internal/InternalListPairContainer.h>
 #include <IMP/base/warning_macros.h>
 #include <IMP/SingletonContainer.h>
 #include <algorithm>
@@ -26,9 +25,9 @@ inline ClosePairsFinder *default_cpf(unsigned int) {
   return new GridClosePairsFinder();
 }
 
-inline IMP::internal::InternalListPairContainer *get_list(PairContainer *pc) {
+/*inline IMP::internal::InternalListPairContainer *get_list(PairContainer *pc) {
   return dynamic_cast<IMP::internal::InternalListPairContainer *>(pc);
-}
+  }*/
 
 template <class C>
 inline void filter_close_pairs(C *c, kernel::ParticleIndexPairs &ps) {

@@ -20,11 +20,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 AllBipartitePairContainer::AllBipartitePairContainer(
     SingletonContainerAdaptor a, SingletonContainerAdaptor b, std::string name)
-    : PairContainer(a->get_model(), name),
-      a_(a),
-      b_(b),
-      a_version_(a_->get_contents_version()),
-      b_version_(b_->get_contents_version()) {
+    : PairContainer(a->get_model(), name), a_(a), b_(b) {
   a.set_name_if_default("AllBipartitePairContainerInput0%1%");
   b.set_name_if_default("AllBipartitePairContainerInput1%1%");
 }
@@ -66,11 +62,6 @@ ModelObjectsTemp AllBipartitePairContainer::do_get_inputs() const {
   ret.push_back(a_);
   ret.push_back(b_);
   return ret;
-}
-
-void AllBipartitePairContainer::do_before_evaluate() {
-  set_is_changed(update_version(a_, a_version_) ||
-                 update_version(b_, b_version_));
 }
 
 IMPCONTAINER_END_NAMESPACE

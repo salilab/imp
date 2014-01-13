@@ -200,6 +200,7 @@ void build_inputs_graph(const ModelObjectsTemp &mos, DependencyGraph &dg,
 void build_outputs_graph(const ModelObjectsTemp mos, DependencyGraph &dg,
                          const DependencyGraphVertexIndex &dgi) {
   for (unsigned int i = 0; i < mos.size(); ++i) {
+    IMP_CHECK_OBJECT(mos[i]);
     DependencyGraphTraits::vertex_descriptor rv = dgi.find(mos[i])->second;
     {
       ModelObjectsTemp ct =

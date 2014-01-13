@@ -19,6 +19,7 @@
 #include <IMP/container/PairContainerSet.h>
 #include <IMP/pair_macros.h>
 #include <IMP/singleton_macros.h>
+#include <boost/functional/hash/hash.hpp>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -28,8 +29,12 @@ IMPCONTAINER_BEGIN_NAMESPACE
  */
 class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer {
   IMP::base::PointerMember<SingletonContainer> a_, b_;
-  int a_version_, b_version_;
-
+ protected:
+  virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE {
+    std::size_t ret = a_->get_contents_hash();
+    boost::hash_combine(ret, b_->get_contents_hash());
+    return ret;
+  }
  public:
   template <class F>
   void apply_generic(F* f) const {
@@ -47,7 +52,6 @@ class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer {
   virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
-  virtual void do_before_evaluate() IMP_OVERRIDE;
   IMP_PAIR_CONTAINER_METHODS(AllBipartitePairContainer);
   IMP_OBJECT_METHODS(AllBipartitePairContainer);
 };

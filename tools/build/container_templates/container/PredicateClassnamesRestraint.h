@@ -12,8 +12,6 @@
 #define IMPCONTAINER_PREDICATE_CLASSNAMES_RESTRAINT_H
 
 #include <IMP/container/container_config.h>
-
-#include <IMP/kernel/internal/InternalDynamicListClassnameContainer.h>
 #include <IMP/base/map.h>
 #include <IMP/ClassnamePredicate.h>
 #include <IMP/restraint_macros.h>
@@ -35,7 +33,6 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
   base::PointerMember<kernel::ClassnamePredicate> predicate_;
   base::PointerMember<kernel::ClassnameContainer> input_;
-  typedef IMP::kernel::internal::InternalDynamicListClassnameContainer List;
   mutable boost::unordered_map<int, PLURALINDEXTYPE> lists_;
   boost::unordered_map<int, base::PointerMember<ClassnameScore> > scores_;
   mutable int input_version_;

@@ -33,6 +33,8 @@ CoreCloseBipartitePairContainer::CoreCloseBipartitePairContainer(
   initialize(a, b, base::get_invalid_index<kernel::ParticleIndexTag>(),
              base::get_invalid_index<kernel::ParticleIndexTag>(), distance,
              slack, key);
+  // initialize can get called more than once
+  score_state_ = new SS(this);
 }
 
 CoreCloseBipartitePairContainer::CoreCloseBipartitePairContainer(
@@ -41,6 +43,8 @@ CoreCloseBipartitePairContainer::CoreCloseBipartitePairContainer(
     kernel::ObjectKey key, double distance, double slack, std::string name)
     : P(a->get_model(), name) {
   initialize(a, b, cover_a, cover_b, distance, slack, key);
+
+  score_state_ = new SS(this);
 }
 
 void CoreCloseBipartitePairContainer::initialize(kernel::SingletonContainer *a,
@@ -68,16 +72,27 @@ void CoreCloseBipartitePairContainer::initialize(kernel::SingletonContainer *a,
 
 ModelObjectsTemp CoreCloseBipartitePairContainer::do_get_inputs() const {
   kernel::ModelObjectsTemp ret;
+  ret.push_back(sc_[0]);
+  ret.push_back(sc_[1]);
+  ret.push_back(score_state_);
+  return ret;
+}
+
+ModelObjectsTemp CoreCloseBipartitePairContainer::get_score_state_inputs()
+    const {
+  kernel::ModelObjectsTemp ret;
   ret += internal::get_inputs(get_model(), sc_[0], access_pair_filters());
   ret += internal::get_inputs(get_model(), sc_[1], access_pair_filters());
   if (covers_[0] != base::get_invalid_index<kernel::ParticleIndexTag>()) {
     ret.push_back(get_model()->get_particle(covers_[0]));
     ret.push_back(get_model()->get_particle(covers_[1]));
   }
+  ret.push_back(sc_[0]);
+  ret.push_back(sc_[1]);
   return ret;
 }
 
-void CoreCloseBipartitePairContainer::do_before_evaluate() {
+void CoreCloseBipartitePairContainer::do_score_state_before_evaluate() {
   IMP_OBJECT_LOG;
   IMP_IF_LOG(VERBOSE) {
     algebra::Sphere3Ds coords[2];

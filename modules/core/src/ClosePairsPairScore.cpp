@@ -13,7 +13,6 @@
 #include <IMP/algebra/vector_search.h>
 #include <IMP/core/internal/rigid_body_tree.h>
 #include <IMP/core/internal/close_pairs_helpers.h>
-#include <IMP/kernel/internal/InternalListSingletonContainer.h>
 #include <IMP/core/RigidClosePairsFinder.h>
 #include <IMP/algebra/internal/MinimalSet.h>
 #include <IMP/kernel/internal/container_helpers.h>

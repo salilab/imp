@@ -12,7 +12,7 @@
 
 #include <IMP/container/container_config.h>
 #include <IMP/base/object_macros.h>
-#include <IMP/kernel/internal/InternalDynamicListClassnameContainer.h>
+#include <IMP/kernel/internal/DynamicListContainer.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -26,10 +26,12 @@ class IMPCONTAINEREXPORT DynamicListClassnameContainer :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
     public ClassnameContainer
 #else
-    public IMP::kernel::internal::InternalDynamicListClassnameContainer
+    public IMP::kernel::internal::DynamicListContainer<
+        kernel::ClassnameContainer>
 #endif
     {
-  typedef IMP::kernel::internal::InternalDynamicListClassnameContainer P;
+  typedef IMP::kernel::internal::DynamicListContainer<
+      kernel::ClassnameContainer> P;
 
  public:
   DynamicListClassnameContainer(Container *m, std::string name =
@@ -49,7 +51,6 @@ class IMPCONTAINEREXPORT DynamicListClassnameContainer :
 #ifdef SWIG
   PLURALINDEXTYPE get_indexes() const;
   PLURALINDEXTYPE get_range_indexes() const;
-  void do_before_evaluate();
   kernel::ModelObjectsTemp do_get_inputs() const;
   void do_apply(const ClassnameModifier *sm) const;
   kernel::ParticleIndexes get_all_possible_indexes() const;

@@ -39,8 +39,6 @@ void ConsecutivePairContainer::init() {
   }
 }
 
-void ConsecutivePairContainer::do_before_evaluate() { set_is_changed(false); }
-
 ModelObjectsTemp ConsecutivePairContainer::do_get_inputs() const {
   return kernel::ParticlesTemp();
 }
@@ -83,10 +81,6 @@ void ExclusiveConsecutivePairContainer::init() {
     get_model()->add_attribute(get_exclusive_key(), ps_[i], i);
     get_model()->add_attribute(get_exclusive_object_key(), ps_[i], this);
   }
-}
-
-void ExclusiveConsecutivePairContainer::do_before_evaluate() {
-  set_is_changed(false);
 }
 
 ModelObjectsTemp ExclusiveConsecutivePairContainer::do_get_inputs() const {

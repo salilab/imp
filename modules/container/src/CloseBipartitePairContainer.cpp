@@ -10,6 +10,8 @@
  */
 
 #include "IMP/container/CloseBipartitePairContainer.h"
+#include <IMP/kernel/PairContainer.h>
+#include <IMP/kernel/PairModifier.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

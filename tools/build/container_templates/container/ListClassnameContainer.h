@@ -12,7 +12,10 @@
 
 #include <IMP/container/container_config.h>
 #include <IMP/base/object_macros.h>
-#include <IMP/kernel/internal/InternalListClassnameContainer.h>
+#include <IMP/kernel/internal/StaticListContainer.h>
+#include <IMP/kernel/ClassnameContainer.h>
+#include <IMP/kernel/ClassnameModifier.h>
+
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -29,10 +32,12 @@ class IMPCONTAINEREXPORT ListClassnameContainer :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
     public ClassnameContainer
 #else
-    public IMP::kernel::internal::InternalListClassnameContainer
+    public IMP::kernel::internal::StaticListContainer<
+        kernel::ClassnameContainer>
 #endif
     {
-  typedef IMP::kernel::internal::InternalListClassnameContainer P;
+  typedef IMP::kernel::internal::StaticListContainer<kernel::ClassnameContainer>
+      P;
 
  public:
   ListClassnameContainer(kernel::Model *m, const PLURALINDEXTYPE &contents,
@@ -55,10 +60,12 @@ class IMPCONTAINEREXPORT ListClassnameContainer :
 #ifdef SWIG
   PLURALINDEXTYPE get_indexes() const;
   PLURALINDEXTYPE get_range_indexes() const;
-  void do_before_evaluate();
   kernel::ModelObjectsTemp do_get_inputs() const;
   void do_apply(const ClassnameModifier *sm) const;
   kernel::ParticleIndexes get_all_possible_indexes() const;
+
+ private:
+  std::size_t do_get_contents_hash() const;
 #endif
   IMP_OBJECT_METHODS(ListClassnameContainer);
 };

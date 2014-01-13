@@ -11,8 +11,8 @@
 #include "IMP/kernel/ClassnameContainer.h"
 #include "IMP/kernel/ClassnameModifier.h"
 #include "IMP/kernel/internal/container_helpers.h"
-#include "IMP/kernel/internal/InternalDynamicListClassnameContainer.h"
-#include "IMP/kernel/internal/InternalListClassnameContainer.h"
+#include "IMP/kernel/internal/DynamicListContainer.h"
+#include "IMP/kernel/internal/StaticListContainer.h"
 #include "IMP/kernel/internal/utility.h"
 #include "IMP/kernel/ModelObject.h"
 #include <algorithm>
@@ -23,7 +23,6 @@
 #include <IMP/kernel/ClassnamePredicate.h>
 #include <IMP/kernel/ClassnameScore.h>
 #include <IMP/kernel/functor.h>
-#include <IMP/kernel/internal/ListLikeClassnameContainer.h>
 #include <IMP/kernel/internal/TupleRestraint.h>
 #include <IMP/kernel/internal/utility.h>
 #include <IMP/kernel/Restraint.h>
@@ -84,7 +83,7 @@ ClassnameContainerAdaptor::ClassnameContainerAdaptor(
                   "An Empty PLURALVARIABLETYPE list cannot be adapted to "
                   "container since it lacks model info");
   kernel::Model *m = internal::get_model(t);
-  IMP_NEW(internal::InternalListClassnameContainer, c,
+  IMP_NEW(internal::StaticListContainer<ClassnameContainer>, c,
           (m, "ClassnameContainerInput%1%"));
   c->set(IMP::kernel::internal::get_index(t));
   P::operator=(c);
@@ -217,119 +216,3 @@ Restraints ClassnameScore::create_current_decomposition(
 }
 
 IMPKERNEL_END_NAMESPACE
-IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
-
-InternalDynamicListClassnameContainer::InternalDynamicListClassnameContainer(
-    Container *m, std::string name)
-    : P(m->get_model(), name), scope_(m) {}
-
-InternalDynamicListClassnameContainer::InternalDynamicListClassnameContainer(
-    Container *m, const char *name)
-    : P(m->get_model(), name), scope_(m) {}
-
-void InternalDynamicListClassnameContainer::add(PASSINDEXTYPE vt) {
-  PLURALINDEXTYPE cur;
-  swap(cur);
-  cur.push_back(vt);
-  swap(cur);
-}
-void InternalDynamicListClassnameContainer::add(const PLURALINDEXTYPE &c) {
-  if (c.empty()) return;
-  PLURALINDEXTYPE cur;
-  swap(cur);
-  cur += c;
-  swap(cur);
-}
-
-void InternalDynamicListClassnameContainer::set(PLURALINDEXTYPE cp) {
-  swap(cp);
-}
-void InternalDynamicListClassnameContainer::clear() {
-  PLURALINDEXTYPE t;
-  swap(t);
-}
-bool InternalDynamicListClassnameContainer::check_list(
-    const ParticleIndexes &cp) const {
-  ParticleIndexes app = scope_->get_all_possible_indexes();
-
-  base::set<ParticleIndex> all(app.begin(), app.end());
-  for (unsigned int i = 0; i < cp.size(); ++i) {
-    IMP_USAGE_CHECK(
-        all.find(cp[i]) != all.end(),
-        "Particle " << cp[i]
-                    << " is not in the list of all possible particles");
-  }
-  return true;
-}
-
-ParticleIndexes
-InternalDynamicListClassnameContainer::get_all_possible_indexes() const {
-  return scope_->get_all_possible_indexes();
-}
-
-void InternalDynamicListClassnameContainer::do_before_evaluate() {}
-
-ModelObjectsTemp InternalDynamicListClassnameContainer::do_get_inputs() const {
-  return kernel::ModelObjectsTemp();
-}
-
-PLURALINDEXTYPE
-InternalDynamicListClassnameContainer::get_range_indexes() const {
-  return get_indexes();
-}
-
-InternalListClassnameContainer::InternalListClassnameContainer(kernel::Model *m,
-                                                               std::string name)
-    : P(m, name) {}
-
-InternalListClassnameContainer::InternalListClassnameContainer(kernel::Model *m,
-                                                               const char *name)
-    : P(m, name) {}
-void InternalListClassnameContainer::add(PASSINDEXTYPE vt) {
-  set_has_dependencies(false);
-  PLURALINDEXTYPE cur;
-  swap(cur);
-  cur.push_back(vt);
-  swap(cur);
-}
-void InternalListClassnameContainer::add(const PLURALINDEXTYPE &c) {
-  if (c.empty()) return;
-  set_has_dependencies(false);
-  PLURALINDEXTYPE cur;
-  swap(cur);
-  cur += c;
-  swap(cur);
-}
-void InternalListClassnameContainer::set(PLURALINDEXTYPE cp) {
-  set_has_dependencies(false);
-  swap(cp);
-}
-void InternalListClassnameContainer::clear() {
-  set_has_dependencies(false);
-  PLURALINDEXTYPE t;
-  swap(t);
-}
-void InternalListClassnameContainer::remove(PASSINDEXTYPE vt) {
-  set_has_dependencies(false);
-  PLURALINDEXTYPE t;
-  swap(t);
-  t.erase(std::remove(t.begin(), t.end(), vt), t.end());
-  swap(t);
-}
-
-ParticleIndexes InternalListClassnameContainer::get_all_possible_indexes()
-    const {
-  return IMP::kernel::internal::flatten(get_indexes());
-}
-
-PLURALINDEXTYPE InternalListClassnameContainer::get_range_indexes() const {
-  return get_indexes();
-}
-
-void InternalListClassnameContainer::do_before_evaluate() {}
-
-ModelObjectsTemp InternalListClassnameContainer::do_get_inputs() const {
-  return kernel::ModelObjectsTemp();
-}
-
-IMPKERNEL_END_INTERNAL_NAMESPACE

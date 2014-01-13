@@ -1,4 +1,4 @@
-## \example kernel/dependency_graph.py
+# \example kernel/dependency_graph.py
 # When trying to understand what is going on in \imp, it can often be useful to view the dependency graph, that is, the graph showing how various entities relate to one another. In it, an arrow leads from an IMP::Container or IMP::Particle to an IMP::Restraint if the IMP::Restraint reads from that container or particle. Similarly, an arrow leads from an IMP::Container or IMP::Particle to an IMP::ScoreState if the score state reads from it, and an arrow leads from an IMP::ScoreState to an IMP::Container or IMP::Particle if the score state updates the particle.
 #
 # The resulting pruned depenency graph is:
@@ -126,7 +126,7 @@
 # \enddot
 # }
 
-import IMP
+import IMP.kernel
 import IMP.atom
 import IMP.container
 import IMP.base
@@ -153,8 +153,9 @@ def create_representation():
     def create_protein_from_pdbs(name, files):
         def create_from_pdb(file):
             sls = IMP.base.SetLogState(IMP.base.NONE)
-            t = IMP.atom.read_pdb(IMP.get_example_path("data/" + file), m,
-                                  IMP.atom.ATOMPDBSelector())
+            t = IMP.atom.read_pdb(
+                IMP.kernel.get_example_path("data/" + file), m,
+                IMP.atom.ATOMPDBSelector())
             del sls
             # IMP.atom.show_molecular_hierarchy(t)
             c = IMP.atom.Chain(IMP.atom.get_by_type(t, IMP.atom.CHAIN_TYPE)[0])
@@ -237,10 +238,10 @@ create_restraints(m, all)
 
 # we can get the full dependency graph for the whole model with all the restraints
 # but it is pretty complex
-dg = IMP.get_dependency_graph(m)
-IMP.show_graphviz(dg)
+dg = IMP.kernel.get_dependency_graph(m)
+IMP.base.show_graphviz(dg)
 
 # better thing to do is to get the "pruned" graph
-pdg = IMP.get_pruned_dependency_graph(m)
+pdg = IMP.kernel.get_pruned_dependency_graph(m)
 
-IMP.show_graphviz(pdg)
+IMP.base.show_graphviz(pdg)

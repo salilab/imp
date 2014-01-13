@@ -26,8 +26,10 @@ IMPCONTAINER_BEGIN_NAMESPACE
  */
 class IMPCONTAINEREXPORT AllPairContainer : public PairContainer {
   IMP::base::PointerMember<SingletonContainer> c_;
-  int c_version_;
-
+ protected:
+  virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE{
+    return c_->get_contents_hash();
+  }
  public:
   template <class F>
   void apply_generic(F* f) const {
@@ -46,7 +48,6 @@ class IMPCONTAINEREXPORT AllPairContainer : public PairContainer {
   virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
-  virtual void do_before_evaluate() IMP_OVERRIDE;
   IMP_PAIR_CONTAINER_METHODS(AllPairContainer);
   IMP_OBJECT_METHODS(AllPairContainer);
 };

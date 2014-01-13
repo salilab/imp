@@ -29,8 +29,8 @@
 #include <IMP/container_macros.h>
 #include <IMP/core/ClassnameRestraint.h>
 #include <IMP/kernel/internal/container_helpers.h>
-#include <IMP/kernel/internal/InternalListClassnameContainer.h>
 #include <IMP/kernel/internal/TupleRestraint.h>
+#include <boost/functional/hash/hash.hpp>
 #include <IMP/Optimizer.h>
 #include <limits>
 #include <utility>
@@ -41,7 +41,7 @@ ClassnameContainerIndex::ClassnameContainerIndex(ClassnameContainerAdaptor c,
                                                  bool handle_permutations)
     : ScoreState(c->get_model(), c->get_name() + " index"),
       container_(c),
-      container_version_(c->get_contents_version()),
+      container_version_(c->get_contents_hash()),
       handle_permutations_(handle_permutations) {
   build();
 }
@@ -54,7 +54,9 @@ void ClassnameContainerIndex::build() {
 }
 
 void ClassnameContainerIndex::do_before_evaluate() {
-  if (kernel::Container::update_version(container_, container_version_)) {
+  std::size_t h = container_->get_contents_hash();
+  if (h != container_version_) {
+    container_version_ = h;
     build();
   }
 }
@@ -82,10 +84,8 @@ ClassnameContainerSet::ClassnameContainerSet(const ClassnameContainersTemp &in,
 
 PLURALINDEXTYPE ClassnameContainerSet::get_indexes() const {
   PLURALINDEXTYPE sum;
-  for (ClassnameContainerConstIterator it =
-           CLASSFUNCTIONNAME_containers_begin();
-       it != CLASSFUNCTIONNAME_containers_end(); ++it) {
-    PLURALINDEXTYPE cur = (*it)->get_indexes();
+  IMP_FOREACH(kernel::ClassnameContainer * c, get_classname_containers()) {
+    PLURALINDEXTYPE cur = c->get_indexes();
     sum.insert(sum.end(), cur.begin(), cur.end());
   }
   return sum;
@@ -93,10 +93,8 @@ PLURALINDEXTYPE ClassnameContainerSet::get_indexes() const {
 
 PLURALINDEXTYPE ClassnameContainerSet::get_range_indexes() const {
   PLURALINDEXTYPE sum;
-  for (ClassnameContainerConstIterator it =
-           CLASSFUNCTIONNAME_containers_begin();
-       it != CLASSFUNCTIONNAME_containers_end(); ++it) {
-    PLURALINDEXTYPE cur = (*it)->get_range_indexes();
+  IMP_FOREACH(kernel::ClassnameContainer * c, get_classname_containers()) {
+    PLURALINDEXTYPE cur = c->get_range_indexes();
     sum.insert(sum.end(), cur.begin(), cur.end());
   }
   return sum;
@@ -107,34 +105,30 @@ IMP_LIST_IMPL(ClassnameContainerSet, ClassnameContainer,
               ClassnameContainers);
 
 void ClassnameContainerSet::do_apply(const ClassnameModifier *sm) const {
-  for (unsigned int i = 0; i < get_number_of_CLASSFUNCTIONNAME_containers();
-       ++i) {
-    get_CLASSFUNCTIONNAME_container(i)->apply(sm);
+  IMP_FOREACH(kernel::ClassnameContainer * c, get_classname_containers()) {
+    c->apply(sm);
   }
 }
 
 ParticleIndexes ClassnameContainerSet::get_all_possible_indexes() const {
   kernel::ParticleIndexes ret;
-  for (unsigned int i = 0; i < get_number_of_CLASSFUNCTIONNAME_containers();
-       ++i) {
-    ret += get_CLASSFUNCTIONNAME_container(i)->get_all_possible_indexes();
+  IMP_FOREACH(kernel::ClassnameContainer *c, get_classname_containers()) {
+    ret += c->get_all_possible_indexes();
   }
   return ret;
-}
-
-void ClassnameContainerSet::do_before_evaluate() {
-  bool changed = false;
-  versions_.resize(get_number_of_CLASSFUNCTIONNAME_containers(), -1);
-  for (unsigned int i = 0; i < get_number_of_CLASSFUNCTIONNAME_containers();
-       ++i) {
-    changed |= update_version(get_CLASSFUNCTIONNAME_container(i), versions_[i]);
-  }
-  set_is_changed(changed);
 }
 
 ModelObjectsTemp ClassnameContainerSet::do_get_inputs() const {
   return kernel::ModelObjectsTemp(CLASSFUNCTIONNAME_containers_begin(),
                                   CLASSFUNCTIONNAME_containers_end());
+}
+
+std::size_t ClassnameContainerSet::do_get_contents_hash() const {
+  std::size_t ret = 0;
+  IMP_FOREACH(kernel::ClassnameContainer * c, get_classname_containers()) {
+    boost::hash_combine(ret, c->get_contents_hash());
+  }
+  return ret;
 }
 
 IMPCONTAINER_END_NAMESPACE
@@ -243,7 +237,9 @@ void DistributeClassnamesScoreState::do_after_evaluate(
     DerivativeAccumulator *) {}
 
 void DistributeClassnamesScoreState::update_lists_if_necessary() const {
-  if (!kernel::Container::update_version(input_, input_version_)) return;
+  std::size_t h = input_->get_contents_hash();
+  if (h == input_version_) return;
+  input_version_ = h;
 
   base::Vector<PLURALINDEXTYPE> output(data_.size());
   IMP_FOREACH(INDEXTYPE it,  input_->get_contents()) {
@@ -512,7 +508,7 @@ PredicateClassnamesRestraint::PredicateClassnamesRestraint(
     : Restraint(input->get_model(), name),
       predicate_(pred),
       input_(input),
-      input_version_(-1),
+      input_version_(input->get_contents_hash()),
       error_on_unknown_(true) {}
 
 void PredicateClassnamesRestraint::do_add_score_and_derivatives(
@@ -560,7 +556,9 @@ Restraints PredicateClassnamesRestraint::do_create_current_decomposition()
 }
 
 void PredicateClassnamesRestraint::update_lists_if_necessary() const {
-  if (!kernel::Container::update_version(input_, input_version_)) return;
+  std::size_t h = input_->get_contents_hash();
+  if (h == input_version_) return;
+  input_version_ = h;
   lists_.clear();
 
   IMP_FOREACH(INDEXTYPE it, input_->get_contents()) {

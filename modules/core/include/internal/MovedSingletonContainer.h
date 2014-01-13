@@ -14,7 +14,7 @@
 #include <IMP/kernel/Particle.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/SingletonModifier.h>
-#include <IMP/kernel/internal/InternalDynamicListSingletonContainer.h>
+#include <IMP/kernel/internal/ListLikeContainer.h>
 #include <IMP/algebra/Sphere3D.h>
 #include <IMP/base/Pointer.h>
 #include "../XYZR.h"
@@ -25,16 +25,16 @@
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 class IMPCOREEXPORT MovedSingletonContainer
-    : public IMP::internal::ListLikeSingletonContainer {
+  : public kernel::internal::ListLikeContainer<kernel::SingletonContainer> {
  private:
   double threshold_;
   base::Pointer<SingletonContainer> pc_;
   int pc_version_;
   bool reset_all_;
   bool reset_moved_;
+  base::PointerMember<ScoreState> score_state_;
   virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual void do_before_evaluate() IMP_OVERRIDE;
   virtual kernel::ParticleIndexes get_range_indexes() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(MovedSingletonContainer);
   virtual kernel::ParticleIndexes do_get_moved() = 0;
@@ -43,7 +43,9 @@ class IMPCOREEXPORT MovedSingletonContainer
   virtual kernel::ParticleIndexes do_initialize() = 0;
 
  public:
-  void do_after_evaluate(DerivativeAccumulator *);
+  kernel::ModelObjectsTemp get_score_state_inputs() const;
+  void do_score_state_before_evaluate();
+  void do_score_state_after_evaluate(DerivativeAccumulator *);
   void initialize();
   virtual void validate() const = 0;
   MovedSingletonContainer(SingletonContainer *pc, double threshold,

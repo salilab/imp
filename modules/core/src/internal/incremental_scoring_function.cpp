@@ -6,17 +6,21 @@
  */
 
 #include <IMP/core/internal/incremental_scoring_function.h>
-#include <IMP/kernel/internal/InternalListSingletonContainer.h>
+#include <IMP/kernel/internal/StaticListContainer.h>
+#include <IMP/kernel/SingletonModifier.h>
+#include <IMP/kernel/SingletonContainer.h>
 #include <IMP/core/internal/CoreClosePairContainer.h>
 #include <IMP/core/GridClosePairsFinder.h>
-#include <IMP/kernel/internal/InternalPairsRestraint.h>
+#include <IMP/kernel/generic.h>
+#include <IMP/kernel/internal/ContainerRestraint.h>
 #include <IMP/core/internal/close_pairs_helpers.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/core/XYZR.h>
 #include <numeric>
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 namespace {
-class DummyPairContainer : public IMP::internal::ListLikePairContainer {
+class DummyPairContainer
+    : public kernel::internal::ListLikeContainer<kernel::PairContainer> {
   IMP::base::PointerMember<SingletonContainer> c_;
   IMP::base::PointerMember<ClosePairsFinder> cpf_;
 
@@ -24,7 +28,7 @@ class DummyPairContainer : public IMP::internal::ListLikePairContainer {
   DummyPairContainer(SingletonContainer *c, ClosePairsFinder *cpf);
   virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual void do_before_evaluate() IMP_OVERRIDE;
+  void do_score_state_before_evaluate() {}
   virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
 
   IMP_CLANG_PRAGMA(diagnostic push)
@@ -57,8 +61,8 @@ class DummyPairContainer : public IMP::internal::ListLikePairContainer {
 
 DummyPairContainer::DummyPairContainer(SingletonContainer *c,
                                        ClosePairsFinder *cpf)
-    : IMP::internal::ListLikePairContainer(c->get_model(),
-                                           "ClosePairContainer") {
+    : kernel::internal::ListLikeContainer<kernel::PairContainer>(
+          c->get_model(), "ClosePairContainer") {
   c_ = c;
   cpf_ = cpf;
 }
@@ -69,8 +73,6 @@ ModelObjectsTemp DummyPairContainer::do_get_inputs() const {
   ret.push_back(c_);
   return ret;
 }
-
-void DummyPairContainer::do_before_evaluate() {}
 
 ParticleIndexPairs DummyPairContainer::get_range_indexes() const {
   kernel::ParticleIndexes pis = c_->get_range_indexes();
@@ -183,14 +185,13 @@ double NBLScoring::get_score() {
 }
 
 Restraint *NBLScoring::create_restraint() const {
-  IMP_NEW(IMP::internal::InternalListSingletonContainer, lsc,
-          (cache_.get_generator().m_, "NBLInput Container %1%"));
+  IMP_NEW(kernel::internal::StaticListContainer<kernel::SingletonContainer>,
+          lsc, (cache_.get_generator().m_, "NBLInput Container %1%"));
   lsc->set(cache_.get_generator().pis_);
   IMP_NEW(DummyPairContainer, cpc, (lsc, default_cpf(1000)));
 
   base::Pointer<kernel::Restraint> ret =
-      new IMP::internal::InternalPairsRestraint(
-          cache_.get_generator().score_.get(), cpc.get());
+      kernel::create_restraint(cache_.get_generator().score_.get(), cpc.get());
   return ret.release();
 }
 

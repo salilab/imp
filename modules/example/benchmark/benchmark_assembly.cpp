@@ -2,6 +2,7 @@
  * \file benchmark_assembly.cpp for silly standards test
  * Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
+#include <IMP/kernel.h>
 #include <IMP/example.h>
 #include <IMP/benchmark.h>
 #include <IMP/algebra.h>

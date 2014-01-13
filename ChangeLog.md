@@ -1,5 +1,6 @@
 # ChangeLog
 # For IMP 2.2 # {#ChangeLog}
+- The container imlementations has been cleaned up and simplified a bit. This should not change most usage.
 - [RMF](http://salilab.github.io/rmf) has been updated. There are a few minor API changes, in addition to a new, faster format (`.rmf3`).
 - [Eigen](#Eigen) is now included with IMP.
 - The deprecated function IMP::kernel::Optimizer::set_restraints() was removed. Use IMP::kernel::Optimizer::set_scoring_function() instead.

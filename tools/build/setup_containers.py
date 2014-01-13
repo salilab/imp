@@ -120,7 +120,8 @@ def main():
             "ParticleQuadsTemp", "ParticleQuadsTemp", "ParticleQuads",
             "ParticleIndexQuad", "ParticleIndexQuads", "const ParticleIndexQuad&"), test=False)
     if len(sys.argv) > 1:
-        deps = ["${PROJECT_SOURCE_DIR}/%s" % x for x in all_inputs]
+        deps = ["${PROJECT_SOURCE_DIR}/build/tools/%s" %
+                x[x.find("container_templates"):] for x in all_inputs]
         targets = ["${PROJECT_BINARY_DIR}/%s" % x for x in all_outputs]
         print """
 add_custom_command(OUTPUT %s
@@ -129,23 +130,20 @@ add_custom_command(OUTPUT %s
   WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
   COMMENT "Making decorator headers")
 add_custom_target(IMP-containers ALL DEPENDS %s)
-set_property(TARGET "IMP-containers" PROPERTY FOLDER "RMF")
+set_property(TARGET "IMP-containers" PROPERTY FOLDER "IMP")
 
 list(APPEND IMP_KERNEL_LIBRARY_EXTRA_DEPENDENCIES IMP-containers)
-list(REMOVE_DUPLICATES IMP_KERNEL_LIBRARY_EXTRA_DEPENDENCIES)
 list(APPEND IMP_CORE_LIBRARY_EXTRA_DEPENDENCIES IMP-containers)
-list(REMOVE_DUPLICATES IMP_CORE_LIBRARY_EXTRA_DEPENDENCIES)
 list(APPEND IMP_CONTAINER_LIBRARY_EXTRA_DEPENDENCIES IMP-containers)
-list(REMOVE_DUPLICATES IMP_CONTAINER_LIBRARY_EXTRA_DEPENDENCIES)
 list(APPEND IMP_KERNEL_LIBRARY_EXTRA_SOURCES %s)
 list(APPEND IMP_CONTAINER_LIBRARY_EXTRA_SOURCES %s)
 list(APPEND IMP_CORELIBRARY_EXTRA_SOURCES %s)
-""" % (targets, deps, targets,
-            [x for x in targets if x.endswith(
-                ".cpp") and x.find("kernel") != -1],
-            [x for x in targets if x.endswith(
-                ".cpp") and x.find("core") != -1],
-            [x for x in targets if x.endswith(".cpp") and x.find("container") != -1])
+""" % (" ".join(targets), " ".join(deps), " ".join(targets),
+            " ".join([x for x in targets if x.endswith(
+                ".cpp") and x.find("kernel") != -1]),
+            " ".join([x for x in targets if x.endswith(
+                ".cpp") and x.find("core") != -1]),
+            " ".join([x for x in targets if x.endswith(".cpp") and x.find("container") != -1]))
         pass
     # make_one("particle tuple", "ParticlesTemp", "const ParticlesTemp&", "Particles",
     #         "Tuple", "particle tuples", "ParticlesList", "Tuples", test=False)

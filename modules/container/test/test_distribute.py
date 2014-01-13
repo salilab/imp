@@ -34,9 +34,9 @@ class Tests(IMP.test.TestCase):
         ps = []
         for i in range(0, 10):
             p = IMP.kernel.Particle(m)
-            ps.append(p)
+            ps.append(p.get_index())
             p.add_attribute(ik, i)
-        lp = IMP.container.ListSingletonContainer(ps)
+        lp = IMP.container.ListSingletonContainer(m, ps)
         dss = IMP.container.DistributeSingletonsScoreState(lp)
         m.add_score_state(dss)
         even = dss.add_predicate(Odd(), 0)
@@ -49,8 +49,8 @@ class Tests(IMP.test.TestCase):
         pse = [ps[i * 2] for i in range(len(ps) / 2)]
         pso = [ps[i * 2 + 1] for i in range(len(ps) / 2)]
         psf = [ps[0], ps[5]]
-        self.assertEqual(even.get_particles(), pse)
-        self.assertEqual(odd.get_particles(), pso)
-        self.assertEqual(zf.get_particles(), psf)
+        self.assertEqual(even.get_contents(), pse)
+        self.assertEqual(odd.get_contents(), pso)
+        self.assertEqual(zf.get_contents(), psf)
 if __name__ == '__main__':
     IMP.test.main()

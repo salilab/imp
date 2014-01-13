@@ -38,6 +38,8 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   typedef PLURALVARIABLETYPE ContainedTypes;
   typedef PLURALINDEXTYPE ContainedIndexTypes;
   typedef INDEXTYPE ContainedIndexType;
+  typedef ClassnameModifier Modifier;
+  typedef PASSINDEXTYPE PassContainedIndexType;
 
   //! Just use apply() in the base class
   void apply_generic(const ClassnameModifier *m) const;
@@ -56,7 +58,7 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   const PLURALINDEXTYPE&get_contents() const {
     if (get_provides_access()) return get_access();
     else {
-      std::size_t nhash = get_contents_version();
+      std::size_t nhash = get_contents_hash();
       if (contents_hash_ != nhash || !cache_initialized_) {
         contents_hash_ = nhash;
         cache_initialized_ = true;

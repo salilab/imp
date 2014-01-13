@@ -77,13 +77,15 @@ void ModelObject::validate_inputs() const {
         "Dependencies changed without invalidating dependencies."
             << " Make sure you call set_has_dependencies(false) any "
             << "time the list of dependencies changed. Object is " << get_name()
-            << " of type " << get_type_name());
+            << " of type " << get_type_name() << " -- " << ret << " vs "
+            << saved);
   }
 }
 
 void ModelObject::validate_outputs() const {
   if (!get_has_dependencies()) return;
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    IMP_CHECK_OBJECT(this);
     ModelObjectsTemp ret = do_get_outputs();
     std::sort(ret.begin(), ret.end());
     ret.erase(std::unique(ret.begin(), ret.end()), ret.end());

@@ -117,6 +117,7 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
     unsigned int cur_end = cur_begin + 1;
     while (cur_end < states.size() && states[cur_begin]->get_update_order() ==
                                           states[cur_end]->get_update_order()) {
+      IMP_CHECK_OBJECT(states[cur_end]);
       ++cur_end;
     }
     for (unsigned int i = cur_begin; i < cur_end; ++i) {

@@ -10,7 +10,6 @@
 #include <IMP/PairContainer.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/core/FixedRefiner.h>
-#include <IMP/kernel/internal/InternalPairsRestraint.h>
 #include <IMP/core/CoverRefined.h>
 #include <IMP/core/HarmonicLowerBound.h>
 #include <IMP/core/RigidClosePairsFinder.h>
@@ -21,8 +20,8 @@
 #include <IMP/core/ClosePairsPairScore.h>
 #include <IMP/core/internal/evaluate_distance_pair_score.h>
 #include <IMP/core/internal/grid_close_pairs_impl.h>
-#include <IMP/core/internal/CoreCloseBipartitePairContainer.h>
 #include <IMP/core/internal/close_pairs_helpers.h>
+#include <IMP/kernel/generic.h>
 #include <IMP/algebra/eigen_analysis.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -288,11 +287,11 @@ Restraints ExcludedVolumeRestraint::do_create_decomposition() const {
   kernel::Restraints ret;
   for (unsigned int i = 0; i < xyzrs_.size(); ++i) {
     for (unsigned int j = 0; j < i; ++j) {
-      ret.push_back(IMP::create_restraint(
+      ret.push_back(kernel::create_restraint(
           ssps_.get(),
           kernel::ParticlePair(
-              IMP::internal::get_particle(get_model(), xyzrs_[i]),
-              IMP::internal::get_particle(get_model(), xyzrs_[j]))));
+              kernel::internal::get_particle(get_model(), xyzrs_[i]),
+              kernel::internal::get_particle(get_model(), xyzrs_[j]))));
       ret.back()->set_maximum_score(get_maximum_score());
       std::ostringstream oss;
       oss << get_name() << " " << i << " " << j;
@@ -304,16 +303,17 @@ Restraints ExcludedVolumeRestraint::do_create_decomposition() const {
                       kernel::ParticleIndexes>::const_iterator it =
            constituents_.begin();
        it != constituents_.end(); ++it) {
-    tr->add_particle(IMP::internal::get_particle(get_model(), it->first),
-                     IMP::internal::get_particle(get_model(), it->second));
+    tr->add_particle(kernel::internal::get_particle(get_model(), it->first),
+                     kernel::internal::get_particle(get_model(), it->second));
   }
   IMP_NEW(ClosePairsPairScore, cpps, (ssps_, tr, 0));
   for (unsigned int i = 0; i < xyzrs_.size(); ++i) {
     for (unsigned int j = 0; j < rbs_.size(); ++j) {
       ret.push_back(IMP::create_restraint(
-          cpps.get(), kernel::ParticlePair(
-                          IMP::internal::get_particle(get_model(), xyzrs_[i]),
-                          IMP::internal::get_particle(get_model(), rbs_[j]))));
+          cpps.get(),
+          kernel::ParticlePair(
+              kernel::internal::get_particle(get_model(), xyzrs_[i]),
+              kernel::internal::get_particle(get_model(), rbs_[j]))));
       ret.back()->set_maximum_score(get_maximum_score());
       std::ostringstream oss;
       oss << get_name() << " " << i << " " << j;
@@ -322,10 +322,11 @@ Restraints ExcludedVolumeRestraint::do_create_decomposition() const {
   }
   for (unsigned int i = 0; i < rbs_.size(); ++i) {
     for (unsigned int j = 0; j < i; ++j) {
-      ret.push_back(IMP::create_restraint(
-          cpps.get(), kernel::ParticlePair(
-                          IMP::internal::get_particle(get_model(), rbs_[i]),
-                          IMP::internal::get_particle(get_model(), rbs_[j]))));
+      ret.push_back(kernel::create_restraint(
+          cpps.get(),
+          kernel::ParticlePair(
+              kernel::internal::get_particle(get_model(), rbs_[i]),
+              kernel::internal::get_particle(get_model(), rbs_[j]))));
       ret.back()->set_maximum_score(get_maximum_score());
       std::ostringstream oss;
       oss << get_name() << " " << i << " " << j;
@@ -338,8 +339,8 @@ Restraints ExcludedVolumeRestraint::do_create_decomposition() const {
 Restraints ExcludedVolumeRestraint::do_create_current_decomposition() const {
   kernel::Restraints ret;
   for (unsigned int i = 0; i < cur_list_.size(); ++i) {
-    base::Pointer<kernel::Restraint> rc = IMP::create_restraint(
-        ssps_.get(), IMP::internal::get_particle(get_model(), cur_list_[i]));
+    base::Pointer<kernel::Restraint> rc = kernel::create_restraint(
+        ssps_.get(), kernel::internal::get_particle(get_model(), cur_list_[i]));
     rc->set_was_used(true);
     double score = rc->unprotected_evaluate(nullptr);
     if (score != 0) {

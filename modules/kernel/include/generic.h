@@ -11,6 +11,7 @@
 
 #include <IMP/kernel/kernel_config.h>
 #include "internal/scoring_functions.h"
+#include "internal/ContainerRestraint.h"
 #include "internal/TupleRestraint.h"
 #include "internal/TupleConstraint.h"
 
@@ -46,6 +47,12 @@ inline Restraint *create_restraint(const Score *s,
   return internal::create_tuple_restraint(
       const_cast<Score *>(s), IMP::kernel::internal::get_model(t),
       IMP::kernel::internal::get_index(t), name);
+}
+
+template <class Score, class Container>
+inline Restraint *create_restraint(const Score *s, Container *t,
+                                   std::string name = std::string()) {
+  return internal::create_container_restraint(const_cast<Score *>(s), t, name);
 }
 
 /** When programming in C++, you can use generic constraint instead

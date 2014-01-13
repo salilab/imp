@@ -11,6 +11,7 @@
 #include "IMP/container/ConnectingPairContainer.h"
 #include <IMP/container/ListPairContainer.h>
 #include <IMP/core/internal/close_pairs_helpers.h>
+#include <IMP/kernel/internal/ContainerScoreState.h>
 #include <IMP/PairModifier.h>
 #include <IMP/algebra/vector_search.h>
 #include <IMP/base/vector_property_map.h>
@@ -79,8 +80,8 @@ void compute_mst(const SingletonContainer *sc,
 
 ConnectingPairContainer::ConnectingPairContainer(SingletonContainer *c,
                                                  double error)
-    : IMP::internal::ListLikePairContainer(c->get_model(),
-                                           "ConnectingPairContainer"),
+    : kernel::internal::ListLikeContainer<kernel::PairContainer>(
+          c->get_model(), "ConnectingPairContainer"),
       error_bound_(error),
       mst_(true) {
   initialize(c);
@@ -92,12 +93,25 @@ void ConnectingPairContainer::initialize(SingletonContainer *sc) {
   compute_mst(sc_, new_list);
   swap(new_list);
   mv_ = new core::internal::XYZRMovedSingletonContainer(sc, error_bound_);
+  score_state_ =
+      new kernel::internal::ContainerScoreState<ConnectingPairContainer>(this);
 }
 
 ModelObjectsTemp ConnectingPairContainer::do_get_inputs() const {
+  kernel::ModelObjectsTemp ret;
+  ret.push_back(sc_);
+  ret.push_back(mv_);
+  ret.push_back(score_state_);
+  return ret;
+}
+
+ModelObjectsTemp ConnectingPairContainer::get_score_state_inputs() const {
   kernel::ModelObjectsTemp ret = get_particles(get_model(), sc_->get_indexes());
   ret.push_back(sc_);
   ret.push_back(mv_);
+  IMP_FOREACH(kernel::ModelObject* mo, ret) {
+    IMP_INTERNAL_CHECK(mo, "Null object found in " << ret);
+  }
   return ret;
 }
 
@@ -117,7 +131,7 @@ ParticleIndexes ConnectingPairContainer::get_all_possible_indexes() const {
   return sc_->get_all_possible_indexes();
 }
 
-void ConnectingPairContainer::do_before_evaluate() {
+void ConnectingPairContainer::do_score_state_before_evaluate() {
   if (mv_->get_access().size()) {
     kernel::ParticleIndexPairs new_list;
     compute_mst(sc_, new_list);

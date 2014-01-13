@@ -10,7 +10,8 @@
 #include <IMP/kernel/internal/utility.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/PairModifier.h>
-#include <IMP/kernel/internal/InternalListSingletonContainer.h>
+#include <IMP/kernel/internal/ListLikeContainer.h>
+#include <IMP/kernel/internal/ContainerScoreState.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/PairScore.h>
 #include <IMP/base/utility.h>
@@ -23,17 +24,20 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 MovedSingletonContainer::MovedSingletonContainer(SingletonContainer *pc,
                                                  double threshold,
                                                  std::string name)
-    : IMP::internal::ListLikeSingletonContainer(pc->get_model(), name),
+    : kernel::internal::ListLikeContainer<kernel::SingletonContainer>(
+          pc->get_model(), name),
       threshold_(threshold),
       pc_(pc) {
   // make sure it doesn't match anything at the start
   pc_version_ = -1;
   reset_all_ = false;
   reset_moved_ = false;
+  score_state_ =
+      new kernel::internal::ContainerScoreState<MovedSingletonContainer>(this);
 }
 
-void MovedSingletonContainer::do_after_evaluate(DerivativeAccumulator *da) {
-  IMP::internal::ListLikeSingletonContainer::do_after_evaluate(da);
+void MovedSingletonContainer::do_score_state_after_evaluate(
+    DerivativeAccumulator *da) {
   if (reset_all_) {
     do_reset_all();
     kernel::ParticleIndexes t;
@@ -48,10 +52,11 @@ void MovedSingletonContainer::do_after_evaluate(DerivativeAccumulator *da) {
   IMP_IF_CHECK(base::USAGE_AND_INTERNAL) { validate(); }
 }
 
-void MovedSingletonContainer::do_before_evaluate() {
+void MovedSingletonContainer::do_score_state_before_evaluate() {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(pc_);
-  if (update_version(pc_, pc_version_)) {
+  if (pc_version_ != pc_->get_contents_hash()) {
+    pc_version_ = pc_->get_contents_hash();
     IMP_LOG_TERSE("First call" << std::endl);
     initialize();
   } else {
@@ -73,6 +78,13 @@ ParticleIndexes MovedSingletonContainer::get_range_indexes() const {
 }
 
 ModelObjectsTemp MovedSingletonContainer::do_get_inputs() const {
+  kernel::ModelObjectsTemp ret;
+  ret.push_back(pc_);
+  ret.push_back(score_state_);
+  return ret;
+}
+
+ModelObjectsTemp MovedSingletonContainer::get_score_state_inputs() const {
   kernel::ModelObjectsTemp ret =
       IMP::get_particles(get_model(), pc_->get_indexes());
   ret.push_back(pc_);

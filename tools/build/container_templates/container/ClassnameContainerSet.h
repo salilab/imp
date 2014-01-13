@@ -30,6 +30,7 @@ class IMPCONTAINEREXPORT ClassnameContainerSet : public ClassnameContainer {
   static ClassnameContainerSet *get_set(ClassnameContainer *c) {
     return dynamic_cast<ClassnameContainerSet *>(c);
   }
+  virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE;
 
  public:
   //! Construct and empty set
@@ -71,8 +72,6 @@ class IMPCONTAINEREXPORT ClassnameContainerSet : public ClassnameContainer {
   PLURALINDEXTYPE get_range_indexes() const;
   kernel::ModelObjectsTemp do_get_inputs() const;
 #endif
-
-  IMP_IMPLEMENT(void do_before_evaluate());
 };
 
 IMPCONTAINER_END_NAMESPACE

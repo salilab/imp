@@ -20,7 +20,7 @@
 #include <IMP/core/FixedRefiner.h>
 #include <IMP/core/internal/rigid_body_tree.h>
 #include <IMP/kernel/internal/ContainerConstraint.h>
-#include <IMP/kernel/internal/InternalListSingletonContainer.h>
+#include <IMP/kernel/internal/StaticListContainer.h>
 #include <IMP/kernel/internal/utility.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
@@ -453,8 +453,9 @@ void RigidBody::teardown_constraints(kernel::Particle *p) {
   if (p->get_model()->get_has_data(mk)) {
     IMP_LOG_TERSE("Remove from normalize list" << std::endl);
     base::Object *o = p->get_model()->get_data(mk);
-    IMP::internal::InternalListSingletonContainer *list =
-        dynamic_cast<IMP::internal::InternalListSingletonContainer *>(o);
+    kernel::internal::StaticListContainer<kernel::SingletonContainer> *list =
+        dynamic_cast<kernel::internal::StaticListContainer<
+            kernel::SingletonContainer> *>(o);
     list->remove(IMP::internal::get_index(p));
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
     IMP_CONTAINER_FOREACH(SingletonContainer, list, {
@@ -490,13 +491,14 @@ void RigidBody::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
   if (d.get_model()->get_has_data(mk)) {
     // IMP_LOG_TERSE( "Adding particle to list of rigid bodies" << std::endl);
     base::Object *o = d.get_model()->get_data(mk);
-    IMP::internal::InternalListSingletonContainer *list =
-        dynamic_cast<IMP::internal::InternalListSingletonContainer *>(o);
+    kernel::internal::StaticListContainer<kernel::SingletonContainer> *list =
+        dynamic_cast<kernel::internal::StaticListContainer<
+            kernel::SingletonContainer> *>(o);
     list->add(IMP::internal::get_index(p));
   } else {
     // IMP_LOG_TERSE( "Creating new list of rigid bodies" << std::endl);
-    IMP_NEW(IMP::internal::InternalListSingletonContainer, list,
-            (d.get_model(), "rigid bodies list"));
+    IMP_NEW(kernel::internal::StaticListContainer<kernel::SingletonContainer>,
+            list, (d.get_model(), "rigid bodies list"));
     list->set(kernel::ParticleIndexes(1, p->get_index()));
     IMP_NEW(NormalizeRotation, nr, ());
     IMP_NEW(NullSDM, null, ());
@@ -925,8 +927,8 @@ ParticlesTemp create_rigid_bodies(kernel::Model *m, unsigned int n,
     ret[i] = m->get_particle(pi);
     RigidBody::setup_particle(m, pi, algebra::ReferenceFrame3D());
   }
-  IMP_NEW(IMP::internal::InternalListSingletonContainer, list,
-          (m, "rigid body list"));
+  IMP_NEW(kernel::internal::StaticListContainer<kernel::SingletonContainer>,
+          list, (m, "rigid body list"));
   list->set(IMP::internal::get_index(ret));
   if (!no_members) {
     IMP_NEW(UpdateRigidBodyMembers, urbm, ());

@@ -11,8 +11,6 @@
 #include <IMP/core/core_config.h>
 
 #include "internal/remove_pointers.h"
-#include <IMP/kernel/internal/InternalPairsRestraint.h>
-#include "internal/CoreClosePairContainer.h"
 #include "rigid_bodies.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>

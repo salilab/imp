@@ -2,6 +2,7 @@
  * Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 #include <IMP/core.h>
+#include <IMP/kernel.h>
 #include <IMP/atom.h>
 #include <IMP/base/flags.h>
 #include <IMP/container.h>

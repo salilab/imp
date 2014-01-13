@@ -37,7 +37,7 @@ class IMPCONTAINEREXPORT DistributeClassnamesScoreState : public ScoreState {
   typedef boost::tuple<base::Pointer<DynamicListClassnameContainer>,
                        base::PointerMember<ClassnamePredicate>, int> Data;
   base::Vector<Data> data_;
-  mutable int input_version_;
+  mutable std::size_t input_version_;
   void update_lists_if_necessary() const;
 
  public:

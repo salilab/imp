@@ -14,10 +14,11 @@
 #include <IMP/core/core_config.h>
 #include "../ClosePairsFinder.h"
 #include "MovedSingletonContainer.h"
-#include <IMP/PairContainer.h>
-#include <IMP/PairPredicate.h>
-#include <IMP/SingletonContainer.h>
-#include <IMP/kernel/internal/ListLikePairContainer.h>
+#include <IMP/kernel/PairContainer.h>
+#include <IMP/kernel/PairPredicate.h>
+#include <IMP/kernel/SingletonContainer.h>
+#include <IMP/kernel/internal/ContainerScoreState.h>
+#include <IMP/kernel/internal/ListLikeContainer.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
@@ -33,8 +34,8 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
     \usesconstraint
  */
 class IMPCOREEXPORT CoreCloseBipartitePairContainer
-    : public IMP::internal::ListLikePairContainer {
-  typedef IMP::internal::ListLikePairContainer P;
+    : public IMP::kernel::internal::ListLikeContainer<kernel::PairContainer> {
+  typedef IMP::kernel::internal::ListLikeContainer<kernel::PairContainer> P;
   IMP::base::PointerMember<SingletonContainer> sc_[2];
   bool were_close_, reset_;
   ObjectKey key_;
@@ -47,11 +48,15 @@ class IMPCOREEXPORT CoreCloseBipartitePairContainer
   algebra::Rotation3Ds rbs_backup_rot_[2];
   algebra::Sphere3Ds xyzrs_backup_[2];
   ParticleIndex covers_[2];
+  typedef kernel::internal::ContainerScoreState<CoreCloseBipartitePairContainer>
+      SS;
+  base::PointerMember<SS> score_state_;
   void initialize(SingletonContainer *a, SingletonContainer *b,
                   kernel::ParticleIndex cover_a, kernel::ParticleIndex cover_b,
                   double distance, double slack, ObjectKey key);
 
  public:
+  kernel::ModelObjectsTemp get_score_state_inputs() const;
   //! Get the individual particles from the passed SingletonContainer
   CoreCloseBipartitePairContainer(SingletonContainer *a, SingletonContainer *b,
                                   double distance, double slack = 1,
@@ -78,14 +83,18 @@ class IMPCOREEXPORT CoreCloseBipartitePairContainer
                   PairPredicate *, PairPredicates,
   {
     set_has_dependencies(false);
+    score_state_->set_has_dependencies(false);
     obj->set_was_used(true);
   },
-  { set_has_dependencies(false); }, );
+  {
+    score_state_->set_has_dependencies(false);
+    set_has_dependencies(false);
+  }, );
   /**@}*/
   void clear_caches() { reset_ = true; }
   virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual void do_before_evaluate() IMP_OVERRIDE;
+  void do_score_state_before_evaluate();
   virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(CoreCloseBipartitePairContainer);
 };

@@ -15,23 +15,28 @@
 #include "../ClosePairsFinder.h"
 #include "MovedSingletonContainer.h"
 #include "../PairRestraint.h"
-#include <IMP/PairContainer.h>
-#include <IMP/PairPredicate.h>
-#include <IMP/generic.h>
+#include <IMP/kernel/PairContainer.h>
+#include <IMP/kernel/PairPredicate.h>
+#include <IMP/kernel/generic.h>
 #include <IMP/base/Pointer.h>
-#include <IMP/SingletonContainer.h>
-#include <IMP/kernel/internal/ListLikePairContainer.h>
+#include <IMP/kernel/SingletonContainer.h>
+#include <IMP/kernel/internal/ContainerScoreState.h>
+#include <IMP/kernel/internal/ListLikeContainer.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 class IMPCOREEXPORT CoreClosePairContainer
-    : public IMP::internal::ListLikePairContainer {
+    : public IMP::kernel::internal::ListLikeContainer<kernel::PairContainer> {
   IMP::base::PointerMember<SingletonContainer> c_;
   IMP::base::PointerMember<ClosePairsFinder> cpf_;
   IMP::base::PointerMember<internal::MovedSingletonContainer> moved_;
   unsigned int moved_count_;
   bool first_call_;
   double distance_, slack_;
+  typedef kernel::internal::ContainerScoreState<CoreClosePairContainer>
+      SS;
+  base::PointerMember<SS> score_state_;
+
   void initialize(SingletonContainer *c, double distance, double slack,
                   ClosePairsFinder *cpf);
 
@@ -42,10 +47,11 @@ class IMPCOREEXPORT CoreClosePairContainer
   void do_rebuild();
 
  public:
+  kernel::ModelObjectsTemp get_score_state_inputs() const;
   virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
   virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual void do_before_evaluate() IMP_OVERRIDE;
+  void do_score_state_before_evaluate();
 
   CoreClosePairContainer(SingletonContainer *c, double distance,
                          ClosePairsFinder *cpf, double slack = 1,
@@ -62,7 +68,7 @@ class IMPCOREEXPORT CoreClosePairContainer
   void clear_caches() { first_call_ = true; }
   double get_slack() const { return slack_; }
   double get_distance() const { return distance_; }
-  void update() { do_before_evaluate(); }
+  void update() { do_score_state_before_evaluate(); }
   SingletonContainer *get_singleton_container() const { return c_; }
   ClosePairsFinder *get_close_pairs_finder() const { return cpf_; }
   void set_slack(double d);

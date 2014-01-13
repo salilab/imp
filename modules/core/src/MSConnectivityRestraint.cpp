@@ -15,10 +15,12 @@
 #include <IMP/kernel/Model.h>
 #include <IMP/kernel/Particle.h>
 #include <IMP/base/log.h>
-#include <IMP/singleton_macros.h>
-#include <IMP/PairScore.h>
+#include <IMP/kernel/singleton_macros.h>
+#include <IMP/kernel/PairScore.h>
 #include <IMP/core/PairRestraint.h>
-#include <IMP/kernel/internal/InternalListSingletonContainer.h>
+#include <IMP/kernel/SingletonModifier.h>
+#include <IMP/kernel/internal/StaticListContainer.h>
+#include <IMP/kernel/SingletonContainer.h>
 
 #include <climits>
 
@@ -659,10 +661,12 @@ EdgeSet MSConnectivityScore::get_connected_pairs() const {
 }
 
 namespace {
-IMP::internal::InternalListSingletonContainer *ms_get_list(
+kernel::internal::StaticListContainer<kernel::SingletonContainer> *ms_get_list(
     SingletonContainer *sc) {
-  IMP::internal::InternalListSingletonContainer *ret =
-      dynamic_cast<IMP::internal::InternalListSingletonContainer *>(sc);
+  kernel::internal::StaticListContainer<kernel::SingletonContainer> *ret =
+      dynamic_cast<
+          kernel::internal::StaticListContainer<kernel::SingletonContainer> *>(
+          sc);
   if (!ret) {
     IMP_THROW("Can only use the set and add methods when no container"
                   << " was passed on construction of MSConnectivityRestraint.",
@@ -675,7 +679,7 @@ IMP::internal::InternalListSingletonContainer *ms_get_list(
 unsigned int MSConnectivityRestraint::add_type(
     const kernel::ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
-    sc_ = new IMP::internal::InternalListSingletonContainer(
+    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
         ps[0]->get_model(), "msconnectivity list");
   }
   ms_get_list(sc_)->add(IMP::internal::get_index(ps));
