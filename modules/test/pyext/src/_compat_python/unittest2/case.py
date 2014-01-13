@@ -346,7 +346,7 @@ class TestCase(unittest.TestCase):
             success = False
             try:
                 self.setUp()
-            except SkipTest as e:
+            except SkipTest, e:
                 self._addSkip(result, str(e))
             except Exception:
                 result.addError(self, sys.exc_info())
@@ -355,7 +355,7 @@ class TestCase(unittest.TestCase):
                     testMethod()
                 except self.failureException:
                     result.addFailure(self, sys.exc_info())
-                except _ExpectedFailure as e:
+                except _ExpectedFailure, e:
                     addExpectedFailure = getattr(
                         result,
                         'addExpectedFailure',
@@ -379,7 +379,7 @@ class TestCase(unittest.TestCase):
                             "Use of a TestResult without an addUnexpectedSuccess method is deprecated",
                             DeprecationWarning)
                         result.addFailure(self, sys.exc_info())
-                except SkipTest as e:
+                except SkipTest, e:
                     self._addSkip(result, str(e))
                 except Exception:
                     result.addError(self, sys.exc_info())
@@ -813,16 +813,16 @@ class TestCase(unittest.TestCase):
         """
         try:
             difference1 = set1.difference(set2)
-        except TypeError as e:
+        except TypeError, e:
             self.fail('invalid type when attempting set difference: %s' % e)
-        except AttributeError as e:
+        except AttributeError, e:
             self.fail('first argument does not support set difference: %s' % e)
 
         try:
             difference2 = set2.difference(set1)
-        except TypeError as e:
+        except TypeError, e:
             self.fail('invalid type when attempting set difference: %s' % e)
-        except AttributeError as e:
+        except AttributeError, e:
             self.fail(
                 'second argument does not support set difference: %s' %
                 e)
@@ -1040,7 +1040,7 @@ class TestCase(unittest.TestCase):
             )
         try:
             callable_obj(*args, **kwargs)
-        except expected_exception as exc_value:
+        except expected_exception, exc_value:
             if isinstance(expected_regexp, basestring):
                 expected_regexp = re.compile(expected_regexp)
             if not expected_regexp.search(str(exc_value)):
