@@ -8,7 +8,7 @@ imp_get_process_exit_code("Setting up module %(name)s" status ${CMAKE_BINARY_DIR
                           COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_module.py
                           --name=%(name)s
                           --datapath=${IMP_DATAPATH}
-                          --defines=${IMP_%(NAME)s_CONFIG}:%(defines)s
+                          --defines=${IMP_%(name)s_CONFIG}:%(defines)s
                            --source=${CMAKE_SOURCE_DIR})
 if(${status} EQUAL 0)
   imp_execute_process("setup_swig_wrappers %(name)s" ${CMAKE_BINARY_DIR}
@@ -19,6 +19,19 @@ if(${status} EQUAL 0)
 
   # for warning control
   add_definitions(-DIMP%(NAME)s_COMPILATION)
+
+  set(allh_command  "python" "${CMAKE_SOURCE_DIR}/tools/developer_tools/make_all_header.py" "${CMAKE_BINARY_DIR}/include/IMP/%(name)s.h" "IMP/%(name)s" "${PROJECT_SOURCE_DIR}/include/" ${IMP_%(name)s_EXTRA_HEADERS})
+message(STATUS "${allh_command}")
+  # for swig
+  imp_execute_process("IMP.%(name)s making all header" ${PROJECT_BINARY_DIR}
+                   COMMAND ${allh_command})
+
+  add_custom_target(IMP.%(name)s-all-header
+    COMMAND ${allh_command}
+    DEPENDS "${PROJECT_SOURCE_DIR}/tools/developer_tools/make_all_header.py")
+  set_property(TARGET "IMP.%(name)s-all-header" PROPERTY FOLDER "IMP.%(name)s")
+  list(APPEND IMP_%(name)s_LIBRARY_EXTRA_DEPENDENCIES IMP.%(name)s-all-header)
+
 
   if(IMP_DOXYGEN_FOUND)
     # documentation

@@ -328,18 +328,129 @@ add_custom_target(IMP-containers ALL DEPENDS ${PROJECT_BINARY_DIR}/include/IMP/c
    ${PROJECT_BINARY_DIR}/src/kernel/quads.cpp)
 set_property(TARGET "IMP-containers" PROPERTY FOLDER "IMP")
 
-list(APPEND IMP_KERNEL_LIBRARY_EXTRA_DEPENDENCIES IMP-containers)
-list(APPEND IMP_CORE_LIBRARY_EXTRA_DEPENDENCIES IMP-containers)
-list(APPEND IMP_CONTAINER_LIBRARY_EXTRA_DEPENDENCIES IMP-containers)
-list(APPEND IMP_KERNEL_LIBRARY_EXTRA_SOURCES ${PROJECT_BINARY_DIR}/src/kernel/singletons.cpp
+set( IMP_kernel_LIBRARY_EXTRA_DEPENDENCIES ${IMP_kernel_LIBRARY_EXTRA_DEPENDENCIES} IMP-containers)
+set( IMP_core_LIBRARY_EXTRA_DEPENDENCIES ${IMP_core_LIBRARY_EXTRA_DEPENDENCIES} IMP-containers)
+set( IMP_container_LIBRARY_EXTRA_DEPENDENCIES ${IMP_container_LIBRARY_EXTRA_DEPENDENCIES} IMP-containers)
+
+set( IMP_kernel_PYTHON_EXTRA_DEPENDENCIES ${IMP_kernel_LIBRARY_EXTRA_DEPENDENCIES} IMP-containers)
+set( IMP_core_PYTHON_EXTRA_DEPENDENCIES ${IMP_core_LIBRARY_EXTRA_DEPENDENCIES} IMP-containers)
+set( IMP_container_PYTHON_EXTRA_DEPENDENCIES ${IMP_container_LIBRARY_EXTRA_DEPENDENCIES} IMP-containers)
+
+set( IMP_kernel_LIBRARY_EXTRA_SOURCES ${IMP_kernel_LIBRARY_EXTRA_SOURCES} ${PROJECT_BINARY_DIR}/src/kernel/singletons.cpp
    ${PROJECT_BINARY_DIR}/src/kernel/pairs.cpp
    ${PROJECT_BINARY_DIR}/src/kernel/triplets.cpp
    ${PROJECT_BINARY_DIR}/src/kernel/quads.cpp)
-list(APPEND IMP_CONTAINER_LIBRARY_EXTRA_SOURCES ${PROJECT_BINARY_DIR}/src/core/singleton_predicates.cpp
+set( IMP_container_LIBRARY_EXTRA_SOURCES ${IMP_container_LIBRARY_EXTRA_SOURCES} ${PROJECT_BINARY_DIR}/src/core/singleton_predicates.cpp
    ${PROJECT_BINARY_DIR}/src/core/pair_predicates.cpp
    ${PROJECT_BINARY_DIR}/src/core/triplet_predicates.cpp
    ${PROJECT_BINARY_DIR}/src/core/quad_predicates.cpp)
-list(APPEND IMP_CORELIBRARY_EXTRA_SOURCES ${PROJECT_BINARY_DIR}/src/container/singletons.cpp
+set( IMP_core_LIBRARY_EXTRA_SOURCES ${IMP_core_LIBRARY_EXTRA_SOURCES} ${PROJECT_BINARY_DIR}/src/container/singletons.cpp
    ${PROJECT_BINARY_DIR}/src/container/pairs.cpp
    ${PROJECT_BINARY_DIR}/src/container/triplets.cpp
    ${PROJECT_BINARY_DIR}/src/container/quads.cpp)
+
+set( IMP_kernel_EXTRA_HEADERS ${IMP_kernel_EXTRA_HEADERS} SingletonContainer.h
+   SingletonDerivativeModifier.h
+   SingletonModifier.h
+   SingletonPredicate.h
+   SingletonScore.h
+   singleton_macros.h
+   PairContainer.h
+   PairDerivativeModifier.h
+   PairModifier.h
+   PairPredicate.h
+   PairScore.h
+   pair_macros.h
+   TripletContainer.h
+   TripletDerivativeModifier.h
+   TripletModifier.h
+   TripletPredicate.h
+   TripletScore.h
+   triplet_macros.h
+   QuadContainer.h
+   QuadDerivativeModifier.h
+   QuadModifier.h
+   QuadPredicate.h
+   QuadScore.h
+   quad_macros.h)
+set( IMP_core_EXTRA_HEADERS ${IMP_core_EXTRA_HEADERS} DistributeSingletonsScoreState.h
+   MinimumSingletonScore.h
+   SingletonConstraint.h
+   SingletonRestraint.h
+   singleton_predicates.h
+   SingletonScore.h
+   DistributePairsScoreState.h
+   MinimumPairScore.h
+   PairConstraint.h
+   PairRestraint.h
+   pair_predicates.h
+   PairScore.h
+   DistributeTripletsScoreState.h
+   MinimumTripletScore.h
+   TripletConstraint.h
+   TripletRestraint.h
+   triplet_predicates.h
+   TripletScore.h
+   DistributeQuadsScoreState.h
+   MinimumQuadScore.h
+   QuadConstraint.h
+   QuadRestraint.h
+   quad_predicates.h
+   QuadScore.h)
+set( IMP_container_EXTRA_HEADERS ${IMP_container_EXTRA_HEADERS} SingletonContainerSet.h
+   SingletonContainerStatistics.h
+   SingletonsConstraint.h
+   SingletonsOptimizerState.h
+   SingletonsRestraint.h
+   DistributeSingletonsScoreState.h
+   DynamicListSingletonContainer.h
+   EventSingletonsOptimizerState.h
+   InContainerSingletonFilter.h
+   ListSingletonContainer.h
+   MinimumSingletonRestraint.h
+   MinimumSingletonScore.h
+   PredicateSingletonsRestraint.h
+   SingletonContainerIndex.h
+   PairContainerSet.h
+   PairContainerStatistics.h
+   PairsConstraint.h
+   PairsOptimizerState.h
+   PairsRestraint.h
+   DistributePairsScoreState.h
+   DynamicListPairContainer.h
+   EventPairsOptimizerState.h
+   InContainerPairFilter.h
+   ListPairContainer.h
+   MinimumPairRestraint.h
+   MinimumPairScore.h
+   PredicatePairsRestraint.h
+   PairContainerIndex.h
+   TripletContainerSet.h
+   TripletContainerStatistics.h
+   TripletsConstraint.h
+   TripletsOptimizerState.h
+   TripletsRestraint.h
+   DistributeTripletsScoreState.h
+   DynamicListTripletContainer.h
+   EventTripletsOptimizerState.h
+   InContainerTripletFilter.h
+   ListTripletContainer.h
+   MinimumTripletRestraint.h
+   MinimumTripletScore.h
+   PredicateTripletsRestraint.h
+   TripletContainerIndex.h
+   QuadContainerSet.h
+   QuadContainerStatistics.h
+   QuadsConstraint.h
+   QuadsOptimizerState.h
+   QuadsRestraint.h
+   DistributeQuadsScoreState.h
+   DynamicListQuadContainer.h
+   EventQuadsOptimizerState.h
+   InContainerQuadFilter.h
+   ListQuadContainer.h
+   MinimumQuadRestraint.h
+   MinimumQuadScore.h
+   PredicateQuadsRestraint.h
+   QuadContainerIndex.h)
+

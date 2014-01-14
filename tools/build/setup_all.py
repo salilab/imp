@@ -11,28 +11,6 @@ from optparse import OptionParser
 # main loops
 
 
-def generate_all_h():
-    globbed = tools.get_glob([os.path.join("include", "IMP", "*")])
-    for m in [d for d in globbed if (d.find("internal") == -1 and not d.endswith(".h"))]:
-        headers = tools.get_glob([os.path.join(m, "*.h")])
-        module = os.path.split(m)[1]
-        if module == "compatibility":
-            # ick, maybe switch order and always do it here
-            continue
-        includepath = "IMP/" + module + "/"
-        headers.sort()
-        headers = [x for x in headers if not x.endswith("_config.h")]
-        # to suppress deprecated warnings
-        contents = ["#define IMP%s_ALL" % module.upper()]
-        contents.append("#define IMP_ALL")
-        for h in headers:
-            name = os.path.split(h)[1]
-            contents.append("#include <" + includepath + name + ">")
-        contents.append("#undef IMP%s_ALL" % module.upper())
-        contents.append("#undef IMP_ALL")
-        tools.rewrite(m + ".h", "\n".join(contents) + '\n')
-
-
 def generate_all_cpp(source):
     target = os.path.join("src")
     tools.mkdir(target)
@@ -52,7 +30,6 @@ parser.add_option("-s", "--source", dest="source",
 
 def main():
     (options, args) = parser.parse_args()
-    generate_all_h()
     generate_all_cpp(options.source)
 
 if __name__ == '__main__':

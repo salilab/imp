@@ -1,1 +1,1 @@
-developer_tools/check-standards.py
+developer_tools/check_standards.py

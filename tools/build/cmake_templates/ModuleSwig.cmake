@@ -34,7 +34,7 @@ add_custom_command(OUTPUT ${source} ${wrap_py} ${wrap_py_orig}
             "--swig=${SWIG_EXECUTABLE}"
             "--module=%(name)s"
             ${PATH_ARGS}
-   DEPENDS ${swigdeps} ${IMP_%(NAME)s_PYTHON_EXTRA_DEPENDENCIES}
+   DEPENDS ${swigdeps} ${IMP_%(name)s_PYTHON_EXTRA_DEPENDENCIES}
    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
    COMMENT "Running swig on %(name)s")
 

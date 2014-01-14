@@ -236,7 +236,9 @@ endforeach(mod)
 file(STRINGS "${CMAKE_BINARY_DIR}/data/build_info/sorted_modules" enabled_modules)
 
 if(NOT DEFINED IMP_NO_SWIG_DEPENDENCIES)
+# the make_containers.py call is needed to let swig find all headers it needs
 imp_execute_process("setup_swig_dependencies" ${CMAKE_BINARY_DIR}
+                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_containers.py
                     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_swig_deps.py
                     "--swig=${SWIG_EXECUTABLE}")
 endif()

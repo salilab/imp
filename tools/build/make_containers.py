@@ -123,6 +123,7 @@ def main():
         deps = ["${PROJECT_SOURCE_DIR}/tools/build/%s" %
                 x[x.find("container_templates"):] for x in all_inputs]
         targets = ["${PROJECT_BINARY_DIR}/%s" % x for x in all_outputs]
+
         out = """
 add_custom_command(OUTPUT %s
   COMMAND "python" "${PROJECT_SOURCE_DIR}/tools/build/make_containers.py"
@@ -132,18 +133,35 @@ add_custom_command(OUTPUT %s
 add_custom_target(IMP-containers ALL DEPENDS %s)
 set_property(TARGET "IMP-containers" PROPERTY FOLDER "IMP")
 
-list(APPEND IMP_KERNEL_LIBRARY_EXTRA_DEPENDENCIES IMP-containers)
-list(APPEND IMP_CORE_LIBRARY_EXTRA_DEPENDENCIES IMP-containers)
-list(APPEND IMP_CONTAINER_LIBRARY_EXTRA_DEPENDENCIES IMP-containers)
-list(APPEND IMP_KERNEL_LIBRARY_EXTRA_SOURCES %s)
-list(APPEND IMP_CONTAINER_LIBRARY_EXTRA_SOURCES %s)
-list(APPEND IMP_CORELIBRARY_EXTRA_SOURCES %s)
+set( IMP_kernel_LIBRARY_EXTRA_DEPENDENCIES ${IMP_kernel_LIBRARY_EXTRA_DEPENDENCIES} IMP-containers)
+set( IMP_core_LIBRARY_EXTRA_DEPENDENCIES ${IMP_core_LIBRARY_EXTRA_DEPENDENCIES} IMP-containers)
+set( IMP_container_LIBRARY_EXTRA_DEPENDENCIES ${IMP_container_LIBRARY_EXTRA_DEPENDENCIES} IMP-containers)
+
+set( IMP_kernel_PYTHON_EXTRA_DEPENDENCIES ${IMP_kernel_LIBRARY_EXTRA_DEPENDENCIES} IMP-containers)
+set( IMP_core_PYTHON_EXTRA_DEPENDENCIES ${IMP_core_LIBRARY_EXTRA_DEPENDENCIES} IMP-containers)
+set( IMP_container_PYTHON_EXTRA_DEPENDENCIES ${IMP_container_LIBRARY_EXTRA_DEPENDENCIES} IMP-containers)
+
+set( IMP_kernel_LIBRARY_EXTRA_SOURCES ${IMP_kernel_LIBRARY_EXTRA_SOURCES} %s)
+set( IMP_container_LIBRARY_EXTRA_SOURCES ${IMP_container_LIBRARY_EXTRA_SOURCES} %s)
+set( IMP_core_LIBRARY_EXTRA_SOURCES ${IMP_core_LIBRARY_EXTRA_SOURCES} %s)
+
+set( IMP_kernel_EXTRA_HEADERS ${IMP_kernel_EXTRA_HEADERS} %s)
+set( IMP_core_EXTRA_HEADERS ${IMP_core_EXTRA_HEADERS} %s)
+set( IMP_container_EXTRA_HEADERS ${IMP_container_EXTRA_HEADERS} %s)
+
 """ % ("\n   ".join(targets), "\n   ".join(deps), "\n   ".join(targets),
             "\n   ".join([x for x in targets if x.endswith(
                 ".cpp") and x.find("kernel") != -1]),
             "\n   ".join([x for x in targets if x.endswith(
                 ".cpp") and x.find("core") != -1]),
-            "\n   ".join([x for x in targets if x.endswith(".cpp") and x.find("container") != -1]))
+            "\n   ".join(
+                [x for x in targets if x.endswith(
+                    ".cpp") and x.find("container") != -1]),
+            "\n   ".join([os.path.split(x)[1] for x in targets if x.endswith(
+                ".h") and x.find("kernel") != -1]),
+            "\n   ".join([os.path.split(x)[1] for x in targets if x.endswith(
+                ".h") and x.find("core") != -1]),
+            "\n   ".join([os.path.split(x)[1] for x in targets if x.endswith(".h") and x.find("container") != -1]))
 
         tools.rewrite(
             os.path.join(os.path.split(sys.argv[0])[0],
