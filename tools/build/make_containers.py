@@ -124,6 +124,13 @@ def main():
                 x[x.find("container_templates"):] for x in all_inputs]
         targets = ["${PROJECT_BINARY_DIR}/%s" % x for x in all_outputs]
 
+        def get_files(module, suffix, prefix, allh):
+            ret = []
+            for h in allh:
+                if h.endswith(suffix) and os.path.split(os.path.split(h)[0])[1] == module:
+                    ret.append(prefix + os.path.split(h)[1])
+            return ret
+
         out = """
 add_custom_command(OUTPUT %s
   COMMAND "python" "${PROJECT_SOURCE_DIR}/tools/build/make_containers.py"
@@ -142,26 +149,21 @@ set( IMP_core_PYTHON_EXTRA_DEPENDENCIES ${IMP_core_LIBRARY_EXTRA_DEPENDENCIES} I
 set( IMP_container_PYTHON_EXTRA_DEPENDENCIES ${IMP_container_LIBRARY_EXTRA_DEPENDENCIES} IMP-containers)
 
 set( IMP_kernel_LIBRARY_EXTRA_SOURCES ${IMP_kernel_LIBRARY_EXTRA_SOURCES} %s)
-set( IMP_container_LIBRARY_EXTRA_SOURCES ${IMP_container_LIBRARY_EXTRA_SOURCES} %s)
-set( IMP_core_LIBRARY_EXTRA_SOURCES ${IMP_core_LIBRARY_EXTRA_SOURCES} %s)
+set( IMP_core_LIBRARY_EXTRA_SOURCES ${IMP_container_LIBRARY_EXTRA_SOURCES} %s)
+set( IMP_container_LIBRARY_EXTRA_SOURCES ${IMP_core_LIBRARY_EXTRA_SOURCES} %s)
 
 set( IMP_kernel_EXTRA_HEADERS ${IMP_kernel_EXTRA_HEADERS} %s)
 set( IMP_core_EXTRA_HEADERS ${IMP_core_EXTRA_HEADERS} %s)
 set( IMP_container_EXTRA_HEADERS ${IMP_container_EXTRA_HEADERS} %s)
 
-""" % ("\n   ".join(targets), "\n   ".join(deps), "\n   ".join(targets),
-            "\n   ".join([x for x in targets if x.endswith(
-                ".cpp") and x.find("kernel") != -1]),
-            "\n   ".join([x for x in targets if x.endswith(
-                ".cpp") and x.find("core") != -1]),
-            "\n   ".join(
-                [x for x in targets if x.endswith(
-                    ".cpp") and x.find("container") != -1]),
-            "\n   ".join([os.path.split(x)[1] for x in targets if x.endswith(
-                ".h") and x.find("kernel") != -1]),
-            "\n   ".join([os.path.split(x)[1] for x in targets if x.endswith(
-                ".h") and x.find("core") != -1]),
-            "\n   ".join([os.path.split(x)[1] for x in targets if x.endswith(".h") and x.find("container") != -1]))
+""" % ("\n   ".join(targets), "\n   ".join(deps),
+       "\n   ".join(targets),
+            "\n   ".join(get_files("kernel", ".cpp", "${CMAKE_BINARY_DIR}/src/kernel/", targets)),
+            "\n   ".join(get_files("core", ".cpp", "${CMAKE_BINARY_DIR}/src/core/", targets)),
+            "\n   ".join(get_files("container", ".cpp", "${CMAKE_BINARY_DIR}/src/container/", targets)),
+            "\n   ".join(get_files("kernel", ".h", "", targets)),
+            "\n   ".join(get_files("core", ".h", "", targets)),
+            "\n   ".join(get_files("container", ".h", "", targets)))
 
         tools.rewrite(
             os.path.join(os.path.split(sys.argv[0])[0],

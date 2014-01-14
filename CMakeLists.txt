@@ -142,6 +142,11 @@ imp_execute_process("setup_all" ${CMAKE_BINARY_DIR}
                     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_all.py
                     --source=${CMAKE_SOURCE_DIR})
 
+include(${PROJECT_SOURCE_DIR}/tools/build/cmake_files/MakeContainers.cmake)
+
+imp_execute_process("making containers" ${CMAKE_BINARY_DIR}
+                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_containers.py)
+
 imp_execute_process("setup_module_alias for compatibility" ${CMAKE_BINARY_DIR}
                     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_module_alias.py
                     --source=${CMAKE_SOURCE_DIR} --module=base --alias=compatibility --deprecate=2.1)
@@ -223,7 +228,6 @@ add_custom_target("IMP-version"
                   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                   COMMENT "Computing version number")
 
-include(${PROJECT_SOURCE_DIR}/tools/build/cmake_files/MakeContainers.cmake)
 
 # configure modules
 file(STRINGS "${CMAKE_BINARY_DIR}/data/build_info/sorted_modules" modules)
@@ -238,7 +242,6 @@ file(STRINGS "${CMAKE_BINARY_DIR}/data/build_info/sorted_modules" enabled_module
 if(NOT DEFINED IMP_NO_SWIG_DEPENDENCIES)
 # the make_containers.py call is needed to let swig find all headers it needs
 imp_execute_process("setup_swig_dependencies" ${CMAKE_BINARY_DIR}
-                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_containers.py
                     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_swig_deps.py
                     "--swig=${SWIG_EXECUTABLE}")
 endif()
