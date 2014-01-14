@@ -2,7 +2,7 @@
 
 """
 Generate the headers and source files for the container related types from the
-templates in build/tools/container_templates. These are written to the
+templates in tools/build/container_templates. These are written to the
 build directory.
 """
 
@@ -119,11 +119,11 @@ def main():
             "const ParticleQuad", "ParticleQuad",
             "ParticleQuadsTemp", "ParticleQuadsTemp", "ParticleQuads",
             "ParticleIndexQuad", "ParticleIndexQuads", "const ParticleIndexQuad&"), test=False)
-    if len(sys.argv) > 1:
-        deps = ["${PROJECT_SOURCE_DIR}/build/tools/%s" %
+    if True:
+        deps = ["${PROJECT_SOURCE_DIR}/tools/build/%s" %
                 x[x.find("container_templates"):] for x in all_inputs]
         targets = ["${PROJECT_BINARY_DIR}/%s" % x for x in all_outputs]
-        print """
+        out = """
 add_custom_command(OUTPUT %s
   COMMAND "python" "${PROJECT_SOURCE_DIR}/tools/build/make_containers.py"
   DEPENDS "${PROJECT_SOURCE_DIR}/tools/build/make_containers.py" %s
@@ -138,13 +138,17 @@ list(APPEND IMP_CONTAINER_LIBRARY_EXTRA_DEPENDENCIES IMP-containers)
 list(APPEND IMP_KERNEL_LIBRARY_EXTRA_SOURCES %s)
 list(APPEND IMP_CONTAINER_LIBRARY_EXTRA_SOURCES %s)
 list(APPEND IMP_CORELIBRARY_EXTRA_SOURCES %s)
-""" % (" ".join(targets), " ".join(deps), " ".join(targets),
-            " ".join([x for x in targets if x.endswith(
+""" % ("\n   ".join(targets), "\n   ".join(deps), "\n   ".join(targets),
+            "\n   ".join([x for x in targets if x.endswith(
                 ".cpp") and x.find("kernel") != -1]),
-            " ".join([x for x in targets if x.endswith(
+            "\n   ".join([x for x in targets if x.endswith(
                 ".cpp") and x.find("core") != -1]),
-            " ".join([x for x in targets if x.endswith(".cpp") and x.find("container") != -1]))
-        pass
+            "\n   ".join([x for x in targets if x.endswith(".cpp") and x.find("container") != -1]))
+
+        tools.rewrite(
+            os.path.join(os.path.split(sys.argv[0])[0],
+                         "cmake_files",
+                         "MakeContainers.cmake"), out)
     # make_one("particle tuple", "ParticlesTemp", "const ParticlesTemp&", "Particles",
     #         "Tuple", "particle tuples", "ParticlesList", "Tuples", test=False)
 

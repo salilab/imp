@@ -138,9 +138,6 @@ imp_execute_process("setup" ${CMAKE_BINARY_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tool
                     --disabled=${IMP_DISABLED_MODULES}
                     --datapath=${IMP_DATAPATH})
 
-imp_execute_process("setup_containers" ${CMAKE_BINARY_DIR}
-                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_containers.py)
-
 imp_execute_process("setup_all" ${CMAKE_BINARY_DIR}
                     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_all.py
                     --source=${CMAKE_SOURCE_DIR})
@@ -152,6 +149,9 @@ imp_execute_process("setup_module_alias for compatibility" ${CMAKE_BINARY_DIR}
 imp_execute_process("setup_module_alias for kernel" ${CMAKE_BINARY_DIR}
                     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_module_alias.py
                     --source=${CMAKE_SOURCE_DIR} --module=kernel "--alias=")
+
+
+
 
 # Don't link in libpython (that prevents the extension from being used in
 # later compatible versions of Python), except on Windows where all DLL
@@ -222,6 +222,8 @@ add_custom_target("IMP-version"
                   COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_version.py --source=${CMAKE_SOURCE_DIR}
                   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                   COMMENT "Computing version number")
+
+include(${PROJECT_SOURCE_DIR}/tools/build/cmake_files/MakeContainers.cmake)
 
 # configure modules
 file(STRINGS "${CMAKE_BINARY_DIR}/data/build_info/sorted_modules" modules)
