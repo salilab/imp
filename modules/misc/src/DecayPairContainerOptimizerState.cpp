@@ -18,7 +18,7 @@ DecayPairContainerOptimizerState::DecayPairContainerOptimizerState(
     : OptimizerState(initial_list[0][0]->get_model(), name),
       pred_(pred),
       input_(new container::ListPairContainer(initial_list, "decay input")) {
-  output_ = new IMP::internal::InternalDynamicListPairContainer(
+  output_ = new container::DynamicListPairContainer(
       input_, name + " output");
   output_->set(IMP::get_indexes(input_->get_particle_pairs()));
 }
@@ -26,11 +26,11 @@ DecayPairContainerOptimizerState::DecayPairContainerOptimizerState(
 void DecayPairContainerOptimizerState::do_update(unsigned int) {
   IMP_OBJECT_LOG;
   kernel::ParticleIndexPairs to_remove;
-  IMP_FOREACH_PAIR_INDEX(output_, {
-    if (pred_->get_value_index(input_->get_model(), _1) == 0) {
-      to_remove.push_back(_1);
+  IMP_FOREACH(kernel::ParticleIndexPair pip, output_->get_contents()) {
+    if (pred_->get_value_index(input_->get_model(), pip) == 0) {
+      to_remove.push_back(pip);
     }
-  });
+  }
   if (!to_remove.empty()) {
     IMP_LOG_TERSE("Removing " << to_remove << std::endl);
     kernel::ParticleIndexPairs old = output_->get_indexes();

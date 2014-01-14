@@ -13,8 +13,9 @@
 #include <IMP/PairContainer.h>
 #include <IMP/PairContainer.h>
 #include <IMP/kernel/OptimizerState.h>
-#include <IMP/kernel/internal/InternalDynamicListPairContainer.h>
-#include <IMP/PairPredicate.h>
+#include <IMP/container/DynamicListPairContainer.h>
+#include <IMP/kernel/PairPredicate.h>
+#include <IMP/kernel/PairContainer.h>
 #include <IMP/base/Pointer.h>
 #include <IMP/optimizer_state_macros.h>
 
@@ -28,9 +29,9 @@ IMPMISC_BEGIN_NAMESPACE
  */
 class IMPMISCEXPORT DecayPairContainerOptimizerState
     : public kernel::OptimizerState {
-  base::PointerMember<PairPredicate> pred_;
-  base::PointerMember<PairContainer> input_;
-  base::Pointer<IMP::internal::InternalDynamicListPairContainer> output_;
+      base::PointerMember<kernel::PairPredicate> pred_;
+      base::PointerMember<kernel::PairContainer> input_;
+  base::Pointer<container::DynamicListPairContainer> output_;
 
  public:
   DecayPairContainerOptimizerState(
