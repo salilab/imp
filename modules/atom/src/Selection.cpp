@@ -266,12 +266,6 @@ kernel::ParticleIndexes expand_search(kernel::Model *m,
       ret.push_back(
           Representation(m, pi).get_representation(resolution, BALLS));
     }
-  } else if (State::get_is_setup(m, pi)) {
-    if (state == ALL_STATES) {
-      ret += State(m, pi).get_states();
-    } else {
-      ret.push_back(State(m, pi).get_states()[state]);
-    }
   } else {
     ret.push_back(pi);
   }
@@ -802,14 +796,6 @@ std::string get_domain_name(Hierarchy h) {
     }
   } while ((h = h.get_parent()));
   IMP_THROW("Hierarchy " << h << " has no domain name.", ValueException);
-}
-int get_copy_index(Hierarchy h) {
-  do {
-    if (Copy::get_is_setup(h)) {
-      return Copy(h).get_copy_index();
-    }
-  } while ((h = h.get_parent()));
-  IMP_THROW("Hierarchy " << h << " has number.", ValueException);
 }
 std::string get_molecule_name(Hierarchy h) {
   do {

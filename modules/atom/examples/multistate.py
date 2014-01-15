@@ -22,10 +22,11 @@ IMP.atom.State.setup_particle(h1, 1)
 
 
 r8 = IMP.atom.Selection(
-    tr,
-    state=1,
+    rt,
+    state_index=1,
     residue_index=8,
     atom_type=IMP.atom.AT_CA)
 
 # we get the 8th CA from state 1
-print r8
+for p in r8.get_selected_particles():
+    print IMP.atom.get_state_index(p), p

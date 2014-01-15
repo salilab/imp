@@ -243,6 +243,8 @@ IMPATOMEXPORT ResidueType get_residue_type(char c);
 */
 IMPATOMEXPORT char get_one_letter_code(ResidueType c);
 
+
+
 IMPATOM_END_NAMESPACE
 
 #endif /* IMPATOM_RESIDUE_H */

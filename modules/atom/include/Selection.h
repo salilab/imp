@@ -107,7 +107,7 @@ class IMPATOMEXPORT Selection :
   /** Select at a Representation node with a resolution close to r.*/
   void set_resolution(double r) { resolution_ = r; }
   /** Select State with the passed index.*/
-  void set_state_index(int state) { set_states(Ints(1, state)); }
+  void set_state_index(int state) { set_state_indexes(Ints(1, state)); }
   /** Select State with the passed index.*/
   void set_state_indexes(Ints states);
   /** Select the n or c terminus.*/

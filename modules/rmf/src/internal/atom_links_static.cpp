@@ -264,11 +264,9 @@ void HierarchySaveStatic::setup_node(kernel::Model *m, kernel::ParticleIndex p,
     atom::Copy d(m, p);
     copy_factory_.get(n).set_copy_index(d.get_copy_index());
   }
-  if (state_factory_.get_is_static(nh)) {
-    IMP_LOG_VERBOSE("state " << std::endl);
-    int dv = state_factory_.get(nh).get_state_index();
-    IMP_USAGE_CHECK(atom::State(m, p).get_state_index() == dv,
-                    "State indexes don't match");
+  if (atom::State::get_is_setup(m, p)) {
+    atom::State d(m, p);
+    state_factory_.get(n).set_state_index(d.get_state_index());
   }
 }
 

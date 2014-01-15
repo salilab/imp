@@ -44,6 +44,9 @@ class IMPATOMEXPORT Molecule : public Hierarchy {
 
 IMP_DECORATORS(Molecule, Molecules, Hierarchies);
 
+/** Walk up the hierarchy to determine the molecule name. */
+IMPATOMEXPORT std::string get_molecule_name(Hierarchy h);
+
 IMPATOM_END_NAMESPACE
 
 #endif /* IMPATOM_MOLECULE_H */

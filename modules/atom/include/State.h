@@ -34,7 +34,7 @@ class IMPATOMEXPORT State : public Hierarchy {
   void validate();
 
  public:
-  IMP_DECORATOR_SETUP_1(State, unsigned int index);
+  IMP_DECORATOR_SETUP_1(State, unsigned int, index);
   IMP_DECORATOR_METHODS(State, Hierarchy);
 
   static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
@@ -47,6 +47,10 @@ class IMPATOMEXPORT State : public Hierarchy {
 };
 
 IMP_DECORATORS(State, States, Hierarchies);
+
+/** Walk up the hierarchy to find the current state. Return -1 if there is none.
+ */
+IMPATOMEXPORT int get_state_index(Hierarchy h);
 
 IMPATOM_END_NAMESPACE
 

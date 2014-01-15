@@ -92,10 +92,8 @@ IMPATOMEXPORT Hierarchy
     must be above the passed node.
     @{
 */
-IMPATOMEXPORT std::string get_molecule_name(Hierarchy h);
 IMPATOMEXPORT Ints get_residue_indexes(Hierarchy h);
 IMPATOMEXPORT ResidueType get_residue_type(Hierarchy h);
-IMPATOMEXPORT std::string get_chain_id(Hierarchy h);
 /** \deprecated_at{2.2} Use the string version. */
 IMPATOM_DEPRECATED_FUNCTION_DECL(2.2)
 inline char get_chain_id_char(Hierarchy h) {
@@ -104,7 +102,6 @@ inline char get_chain_id_char(Hierarchy h) {
 }
 IMPATOMEXPORT AtomType get_atom_type(Hierarchy h);
 IMPATOMEXPORT std::string get_domain_name(Hierarchy h);
-IMPATOMEXPORT int get_copy_index(Hierarchy h);
 /** @} */
 
 /** Create an excluded volume restraint for the included molecules. If a
