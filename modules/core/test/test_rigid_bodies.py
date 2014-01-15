@@ -50,12 +50,12 @@ class Tests(IMP.test.TestCase):
         dg = IMP.kernel.get_dependency_graph(m)
         # IMP.base.show_graphviz(dg)
         ss = p.get_required_score_states()
-        self.assertEqual(len(ss), 2)
+        self.assertEqual(len(ss), 1)
         self. _add_rb_restraints(rbd)
         rs = m.get_restraints()
         rs[0].set_has_required_score_states(True)
         ss = rs[0].get_required_score_states()
-        self.assertEqual(len(ss), 3)
+        self.assertEqual(len(ss), 2)
 
     def test_create_one(self):
         """Testing create_rigid_body"""
