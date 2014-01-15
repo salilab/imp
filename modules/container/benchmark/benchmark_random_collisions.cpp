@@ -98,22 +98,34 @@ int main(int argc, char **argv) {
   {
     IMP_NEW(QuadraticClosePairsFinder, cpf, ());
     // std::cout << "Quadratic:" << std::endl;
-    test_one("quadratic", cpf, 10000, 0, .1, 87.210356);
-    test_one("quadratic", cpf, 10000, 0, .5, 99.562332);
+    if (IMP::base::run_quick_test) {
+      test_one("quadratic", cpf, 100, 0, .1, 87.210356);
+    } else {
+      test_one("quadratic", cpf, 10000, 0, .1, 87.210356);
+      test_one("quadratic", cpf, 10000, 0, .5, 99.562332);
+    }
   }
 #ifdef IMP_BENCHMARK_USE_IMP_CGAL
   {
     IMP_NEW(BoxSweepClosePairsFinder, cpf, ());
     // std::cout << "Box:" << std::endl;
-    test_one("box", cpf, 10000, 0, .1, 23.306047);
-    test_one("box", cpf, 10000, 0, .5, 1145.327934);
+    if (IMP::base::run_quick_test) {
+      test_one("box", cpf, 100, 0, .1, 23.306047);
+    } else {
+      test_one("box", cpf, 10000, 0, .1, 23.306047);
+      test_one("box", cpf, 10000, 0, .5, 1145.327934);
+    }
   }
 #endif
   {
     IMP_NEW(GridClosePairsFinder, cpf, ());
     // std::cout << "Grid:" << std::endl;
-    test_one("grid", cpf, 10000, 0, .1, 23.649063);
-    test_one("grid", cpf, 10000, 0, .5, 1145.327934);
+    if (IMP::base::run_quick_test) {
+      test_one("grid", cpf, 100, 0, .1, 23.649063);
+    } else {
+      test_one("grid", cpf, 10000, 0, .1, 23.649063);
+      test_one("grid", cpf, 10000, 0, .5, 1145.327934);
+    }
   }
   return IMP::benchmark::get_return_value();
 }
