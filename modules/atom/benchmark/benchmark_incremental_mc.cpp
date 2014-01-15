@@ -42,6 +42,7 @@ RigidBody create_rb(atom::Hierarchy hr) {
   IMP_NEW(kernel::Particle, prb, (m));
   prb->set_name(h->get_name() + " rb");
   RigidBody rb = RigidBody::setup_particle(prb, rbs);
+  rb.set_coordinates_are_optimized(true);
   return rb;
 }
 
@@ -84,7 +85,7 @@ Restraint *add_DOPE(kernel::Model *, atom::Hierarchy h) {
 }
 #endif
 
-void benchmark_it(std::string name, bool incr, bool nbl, bool longr) {
+void benchmark_it(std::string name, bool incr, bool nbl) {
   IMP_NEW(kernel::Model, m, ());
   atom::Hierarchy h = atom::Hierarchy::setup_particle(new kernel::Particle(m));
   h->set_name("root");
@@ -122,13 +123,14 @@ void benchmark_it(std::string name, bool incr, bool nbl, bool longr) {
   // trigger init
   mc->optimize(1);
 
-#if IMP_BUILD == IMP_DEBUG
-  unsigned int nsteps = 300;
-#else
-  unsigned int nsteps = 30000;
-#endif
-  if (IMP::base::run_quick_test) nsteps = 10;
-  if (longr) nsteps *= 100;
+  unsigned int nsteps;
+  if (IMP::base::run_quick_test) {
+    nsteps = 1;
+  } else if (IMP_BUILD == IMP_DEBUG) {
+    nsteps = 300;
+  } else {
+    nsteps = 30000;
+  }
   double runtime, score = 0;
   IMP_TIME(score += mc->optimize(nsteps), runtime);
   // std::cout << "average: "
@@ -139,8 +141,8 @@ void benchmark_it(std::string name, bool incr, bool nbl, bool longr) {
 
 int main(int argc, char *argv[]) {
   IMP::base::setup_from_argv(argc, argv, "Benchmark incremenal evaluation");
-  benchmark_it("incremental nbl", true, true, argc > 1);
-  benchmark_it("non incremental", false, false, false);
-  benchmark_it("incremental", true, false, argc > 1);
+  benchmark_it("incremental nbl", true, true);
+  benchmark_it("non incremental", false, false);
+  benchmark_it("incremental", true, false);
   return 0;
 }

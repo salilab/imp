@@ -14,6 +14,10 @@ IMPCORE_BEGIN_NAMESPACE
 RigidBodyMover::RigidBodyMover(kernel::Model *m, kernel::ParticleIndex pi,
                                Float max_translation, Float max_angle)
     : MonteCarloMover(m, m->get_particle(pi)->get_name() + " mover") {
+  IMP_USAGE_CHECK(RigidBody(m, pi).get_coordinates_are_optimized(),
+                  "Rigid body passed to RigidBodyMover"
+                      << " must be set to be optimized. particle: "
+                      << m->get_particle_name(pi));
   IMP_LOG_VERBOSE("start RigidBodyMover constructor");
   max_translation_ = max_translation;
   max_angle_ = max_angle;
@@ -24,6 +28,10 @@ RigidBodyMover::RigidBodyMover(kernel::Model *m, kernel::ParticleIndex pi,
 RigidBodyMover::RigidBodyMover(RigidBody d, Float max_translation,
                                Float max_angle)
     : MonteCarloMover(d->get_model(), d->get_name() + " mover") {
+  IMP_USAGE_CHECK(
+      d.get_coordinates_are_optimized(),
+      "Rigid body passed to RigidBodyMover"
+          << " must be set to be optimized. particle: " << d->get_name());
   IMP_LOG_VERBOSE("start RigidBodyMover constructor");
   max_translation_ = max_translation;
   max_angle_ = max_angle;
