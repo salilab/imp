@@ -113,29 +113,6 @@ class Tests(IMP.test.TestCase):
         ps = s.get_selected_particle_indexes()
         self.assertEqual(ps, [c2.get_particle_index()])
 
-    def test_radius(self):
-        """Test a selection on radius"""
-        IMP.base.set_log_level(IMP.base.SILENT)
-        m = IMP.kernel.Model()
-        h = IMP.atom.Hierarchy.setup_particle(m, m.add_particle("root"))
-        c0 = IMP.atom.Hierarchy.setup_particle(m, m.add_particle("child0"))
-        c1 = IMP.atom.Hierarchy.setup_particle(m, m.add_particle("child1"))
-        c2 = IMP.atom.Hierarchy.setup_particle(m, m.add_particle("child2"))
-        IMP.atom.Mass.setup_particle(c2, 1)
-        h.add_child(c0)
-        c0.add_child(c1)
-        c1.add_child(c2)
-        d0 = IMP.core.XYZR.setup_particle(c0)
-        d0.set_radius(10)
-        d1 = IMP.core.XYZR.setup_particle(c1)
-        d1.set_radius(5)
-        d2 = IMP.core.XYZR.setup_particle(c2)
-        d2.set_radius(1)
-        self.assert_(h.get_is_valid(True))
-        s = IMP.atom.Selection([h], target_radius=6)
-        ps = s.get_selected_particle_indexes()
-        self.assertEqual(ps, [c1.get_particle_index()])
-
     def test_mol(self):
         """Test selecting molecules"""
         IMP.base.set_log_level(IMP.base.SILENT)

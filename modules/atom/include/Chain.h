@@ -82,6 +82,9 @@ IMP_DECORATORS(Chain, Chains, Hierarchies);
 /** Get the containing chain or Chain() if there is none*/
 IMPATOMEXPORT Chain get_chain(Hierarchy h);
 
+/** Walk up the hierarchy to determine the chain id. */
+IMPATOMEXPORT std::string get_chain_id(Hierarchy h);
+
 IMPATOM_END_NAMESPACE
 
 #endif /* IMPATOM_CHAIN_H */

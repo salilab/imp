@@ -18,6 +18,8 @@
 #include <IMP/atom/Mass.h>
 #include <IMP/atom/Molecule.h>
 #include <IMP/atom/Residue.h>
+#include <IMP/atom/Representation.h>
+#include <IMP/atom/State.h>
 #include <IMP/atom/bond_decorators.h>
 #include <IMP/atom/distance.h>
 #include <IMP/atom/estimates.h>
@@ -39,19 +41,19 @@
 #include <algorithm>
 IMPATOM_BEGIN_NAMESPACE
 
-Selection::Selection() : radius_(-1) { m_ = nullptr; }
-Selection::Selection(kernel::Particle *h) : radius_(-1) {
+Selection::Selection() : resolution_(0) { m_ = nullptr; }
+Selection::Selection(kernel::Particle *h) : resolution_(0) {
   set_hierarchies(h->get_model(), kernel::ParticleIndexes(1, h->get_index()));
 }
-Selection::Selection(Hierarchy h) : radius_(-1) {
+Selection::Selection(Hierarchy h) : resolution_(0) {
   set_hierarchies(h.get_model(),
                   kernel::ParticleIndexes(1, h.get_particle_index()));
 }
 Selection::Selection(kernel::Model *m, const kernel::ParticleIndexes &pis)
-    : radius_(-1) {
+    : resolution_(0) {
   set_hierarchies(m, pis);
 }
-Selection::Selection(const Hierarchies &h) : radius_(-1) {
+Selection::Selection(const Hierarchies &h) : resolution_(0) {
   if (h.empty()) {
     m_ = nullptr;
     return;
@@ -59,7 +61,7 @@ Selection::Selection(const Hierarchies &h) : radius_(-1) {
     set_hierarchies(h[0].get_model(), IMP::internal::get_index(h));
   }
 }
-Selection::Selection(const kernel::ParticlesTemp &h) : radius_(-1) {
+Selection::Selection(const kernel::ParticlesTemp &h) : resolution_(0) {
   if (h.empty()) {
     m_ = nullptr;
     return;
@@ -69,7 +71,7 @@ Selection::Selection(const kernel::ParticlesTemp &h) : radius_(-1) {
 }
 // for C++
 Selection::Selection(Hierarchy h, std::string molname, int residue_index)
-    : radius_(-1) {
+  : resolution_(0){
   set_hierarchies(h.get_model(),
                   kernel::ParticleIndexes(1, h.get_particle_index()));
   set_molecules(Strings(1, molname));
@@ -191,6 +193,13 @@ IMP_ATOM_SELECTION_PRED(CopyIndex, Ints, {
   }
   return 0;
 });
+IMP_ATOM_SELECTION_PRED(StateIndex, Ints, {
+  if (State::get_is_setup(m, pi)) {
+    return std::binary_search(data_.begin(), data_.end(),
+                              State(m, pi).get_state_index());
+  }
+  return 0;
+});
 IMP_ATOM_SELECTION_PRED(Type, core::ParticleTypes, {
   if (core::Typed::get_is_setup(m, pi)) {
     return std::binary_search(data_.begin(), data_.end(),
@@ -244,7 +253,37 @@ IMP_ATOM_SELECTION_PRED(Terminus, Int, {
   else
     return get_is_terminus(m, pi, data_);
 });
+
+kernel::ParticleIndexes expand_search(kernel::Model *m,
+                                      kernel::ParticleIndex pi,
+                                      double resolution, int state) {
+  // to handle representations
+  kernel::ParticleIndexes ret;
+  if (Representation::get_is_setup(m, pi)) {
+    if (resolution == ALL_RESOLUTIONS) {
+      ret = Representation(m, pi).get_representations(BALLS);
+    } else {
+      ret.push_back(
+          Representation(m, pi).get_representation(resolution, BALLS));
+    }
+  } else {
+    ret.push_back(pi);
+  }
+  return ret;
 }
+
+kernel::ParticleIndexes expand_children_search(kernel::Model *m,
+                                        kernel::ParticleIndex pi,
+                                               double resolution, int state) {
+  Hierarchy h(m, pi);
+  kernel::ParticleIndexes ret;
+  IMP_FOREACH(Hierarchy c, h.get_children()) {
+    ret += expand_search(m, c, resolution, state);
+  }
+  return ret;
+}
+}
+
 Selection::SearchResult Selection::search(
     kernel::Model *m, kernel::ParticleIndex pi,
     boost::dynamic_bitset<> parent) const {
@@ -260,18 +299,13 @@ Selection::SearchResult Selection::search(
   }
   Hierarchy cur(m, pi);
   kernel::ParticleIndexes children;
+  kernel::ParticleIndexes cur_children =
+    expand_children_search(m, pi, resolution_, state_);
   bool children_covered = true;
   bool matched = parent.none();
-  double sum_radii = 0;
-  int num_radii = 0;
-  for (unsigned int i = 0; i < cur.get_number_of_children(); ++i) {
-    SearchResult curr =
-        search(m, cur.get_child(i).get_particle_index(), parent);
+  IMP_FOREACH(kernel::ParticleIndex ch, cur_children) {
+    SearchResult curr = search(m, ch, parent);
     matched |= curr.get_match();
-    if (curr.get_radius() >= 0) {
-      sum_radii += curr.get_radius();
-      ++num_radii;
-    }
     if (curr.get_match()) {
       if (curr.get_indexes().empty()) {
         children_covered = false;
@@ -284,19 +318,13 @@ Selection::SearchResult Selection::search(
     IMP_LOG_VERBOSE("Matched " << m->get_particle_name(pi) << " with "
                                << children << " and " << children_covered
                                << std::endl);
-    double my_radius = -std::numeric_limits<double>::max();
-    if (core::XYZR::get_is_setup(m, pi)) {
-      my_radius = core::XYZR(m, pi).get_radius();
-    }
-    double their_radius = sum_radii / num_radii;
-    if (children_covered && !children.empty() &&
-        std::abs(my_radius - radius_) > std::abs(their_radius - radius_)) {
-      return SearchResult(true, their_radius, children);
+    if (children_covered && !children.empty()) {
+      return SearchResult(true, children);
     } else {
-      return SearchResult(true, my_radius, kernel::ParticleIndexes(1, pi));
+      return SearchResult(true, kernel::ParticleIndexes(1, pi));
     }
   }
-  return SearchResult(false, -1, kernel::ParticleIndexes());
+  return SearchResult(false, kernel::ParticleIndexes());
 }
 
 ParticlesTemp Selection::get_selected_particles() const {
@@ -318,8 +346,11 @@ ParticleIndexes Selection::get_selected_particle_indexes() const {
     IMP_LOG_TERSE("Processing selection on " << h_ << " with predicates "
                                              << predicates_ << std::endl);
   }
-  for (unsigned int i = 0; i < h_.size(); ++i) {
-    ret += search(m_, h_[i], base).get_indexes();
+  IMP_FOREACH(kernel::ParticleIndex pi, h_) {
+    IMP_FOREACH(kernel::ParticleIndex rpi,
+                expand_search(m_, pi, resolution_, state_)) {
+      ret += search(m_, rpi, base).get_indexes();
+    }
   }
   return ret;
 }
@@ -377,6 +408,10 @@ void Selection::set_copy_index(unsigned int copy) {
 void Selection::set_copy_indexes(Ints copies) {
   std::sort(copies.begin(), copies.end());
   predicates_.push_back(new CopyIndexSingletonPredicate(copies));
+}
+void Selection::set_state_indexes(Ints copies) {
+  std::sort(copies.begin(), copies.end());
+  predicates_.push_back(new StateIndexSingletonPredicate(copies));
 }
 void Selection::set_particle_type(core::ParticleType t) {
   set_particle_types(core::ParticleTypes(1, t));
@@ -561,7 +596,7 @@ Restraint *create_excluded_volume_restraint(const Hierarchies &hs,
   Selections ss;
   for (unsigned int i = 0; i < hs.size(); ++i) {
     Selection s(hs[i]);
-    s.set_target_radius(resolution);
+    s.set_resolution(resolution);
     ss.push_back(s);
   }
   return create_excluded_volume_restraint(ss);
@@ -761,14 +796,6 @@ std::string get_domain_name(Hierarchy h) {
     }
   } while ((h = h.get_parent()));
   IMP_THROW("Hierarchy " << h << " has no domain name.", ValueException);
-}
-int get_copy_index(Hierarchy h) {
-  do {
-    if (Copy::get_is_setup(h)) {
-      return Copy(h).get_copy_index();
-    }
-  } while ((h = h.get_parent()));
-  IMP_THROW("Hierarchy " << h << " has number.", ValueException);
 }
 std::string get_molecule_name(Hierarchy h) {
   do {

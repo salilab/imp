@@ -37,7 +37,7 @@ IMPATOM_BEGIN_NAMESPACE
     \note Only representational particles are selected. That is, ones
     with x,y,z coordinates. And the highest resolution representation
     that fits is returned. If you want lower resolution, use the
-    target_radius parameter to select the desired radius (pass a very large
+    resolution parameter to select the desired resolution (pass a very large
     number to get the coarsest representation).
 */
 class IMPATOMEXPORT Selection :
@@ -57,10 +57,11 @@ class IMPATOMEXPORT Selection :
  private:
   SingletonPredicates predicates_;
   kernel::Model *m_;
-  double radius_;
+  double resolution_;
+  int state_;
 
   kernel::ParticleIndexes h_;
-  IMP_NAMED_TUPLE_3(SearchResult, SearchResults, bool, match, double, radius,
+  IMP_NAMED_TUPLE_2(SearchResult, SearchResults, bool, match,
                     kernel::ParticleIndexes, indexes, );
   SearchResult search(kernel::Model *m, kernel::ParticleIndex pi,
                       boost::dynamic_bitset<> parent) const;
@@ -77,13 +78,14 @@ class IMPATOMEXPORT Selection :
             Strings molecules = [], Ints residue_indexes = [],
             Strings chains = [], AtomTypes atom_types = [],
             ResidueTypes residue_types = [], Strings domains = [],
-            double target_radius = 0, std::string molecule = None,
+            double resolution = 0, std::string molecule = None,
             int residue_index = None, std::string chain = None,
             AtomType atom_type = None, ResidueType residue_type = None,
             HierarchyType hierarchy_type = None, Terminus terminus = None,
             std::string domain = None, core::ParticleType particle_type = None,
             core::ParticleTypes particle_types = [], int copy_index = -1,
-            Ints copy_indexs = []);
+            Ints copy_indexs = [], int state_index = -1,
+            Ints state_indexes = []);
 #endif
   Selection();
   Selection(Hierarchy h);
@@ -102,8 +104,12 @@ class IMPATOMEXPORT Selection :
   /** Select based on the molecule name.*/
   void set_molecules(Strings mols);
 
-  /** Select particles whose radii are close to r.*/
-  void set_target_radius(double r) { radius_ = r; }
+  /** Select at a Representation node with a resolution close to r.*/
+  void set_resolution(double r) { resolution_ = r; }
+  /** Select State with the passed index.*/
+  void set_state_index(int state) { set_state_indexes(Ints(1, state)); }
+  /** Select State with the passed index.*/
+  void set_state_indexes(Ints states);
   /** Select the n or c terminus.*/
   void set_terminus(Terminus t);
   /** Select particles in chains whose id is

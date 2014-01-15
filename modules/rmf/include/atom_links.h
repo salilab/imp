@@ -14,6 +14,7 @@
 #include "internal/atom_links_static.h"
 #include "internal/atom_links_rigid_bodies.h"
 #include "internal/atom_links_xyzs.h"
+#include <RMF/decorator/alternatives.h>
 #include <IMP/base/object_macros.h>
 #include <IMP/base/utility_macros.h>
 #include <RMF/NodeHandle.h>
@@ -35,6 +36,7 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<kernel::Particle> {
   RMF::decorator::IntermediateParticleFactory
       intermediate_particle_factory_;
   RMF::decorator::ReferenceFrameFactory reference_frame_factory_;
+  RMF::decorator::AlternativesFactory af_;
   RMF::IntKey external_rigid_body_key_;
   struct Data {
     internal::HierarchyLoadStatic load_static;
@@ -122,6 +124,7 @@ class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<kernel::Particle> {
   };
   typedef base::map<kernel::ParticleIndex, boost::shared_ptr<Data> > DM;
   DM data_;
+  RMF::decorator::AlternativesFactory af_;
   RMF::IntKey external_rigid_body_key_;
 
   void add_recursive(Model *m, kernel::ParticleIndex root,

@@ -31,6 +31,7 @@ class IMPRMFEXPORT HierarchyLoadStatic {
   RMF::decorator::TypedFactory typed_factory_;
   RMF::decorator::DomainFactory domain_factory_;
   RMF::decorator::FragmentFactory fragment_factory_;
+  RMF::decorator::StateFactory state_factory_;
   RMF::FloatKey radius_key_;
   RMF::FloatKey mass_key_;
 
@@ -57,6 +58,7 @@ class IMPRMFEXPORT HierarchySaveStatic {
   RMF::decorator::TypedFactory typed_factory_;
   RMF::decorator::DomainFactory domain_factory_;
   RMF::decorator::FragmentFactory fragment_factory_;
+  RMF::decorator::StateFactory state_factory_;
 
  public:
   HierarchySaveStatic(RMF::FileHandle f);

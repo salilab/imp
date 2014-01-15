@@ -92,10 +92,8 @@ IMPATOMEXPORT Hierarchy
     must be above the passed node.
     @{
 */
-IMPATOMEXPORT std::string get_molecule_name(Hierarchy h);
 IMPATOMEXPORT Ints get_residue_indexes(Hierarchy h);
 IMPATOMEXPORT ResidueType get_residue_type(Hierarchy h);
-IMPATOMEXPORT std::string get_chain_id(Hierarchy h);
 /** \deprecated_at{2.2} Use the string version. */
 IMPATOM_DEPRECATED_FUNCTION_DECL(2.2)
 inline char get_chain_id_char(Hierarchy h) {
@@ -104,7 +102,6 @@ inline char get_chain_id_char(Hierarchy h) {
 }
 IMPATOMEXPORT AtomType get_atom_type(Hierarchy h);
 IMPATOMEXPORT std::string get_domain_name(Hierarchy h);
-IMPATOMEXPORT int get_copy_index(Hierarchy h);
 /** @} */
 
 /** Create an excluded volume restraint for the included molecules. If a
@@ -168,13 +165,13 @@ class HierarchyGeometry : public display::SingletonGeometry {
       components_;
 
  public:
-  HierarchyGeometry(core::Hierarchy d, double resolution = -1)
+  HierarchyGeometry(core::Hierarchy d, double resolution = 0)
       : SingletonGeometry(d), res_(resolution) {}
   display::Geometries get_components() const {
     display::Geometries ret;
     atom::Hierarchy d(get_particle());
     atom::Selection sel(d);
-    sel.set_target_radius(res_);
+    sel.set_resolution(res_);
     kernel::ParticlesTemp ps = sel.get_selected_particles();
     for (unsigned int i = 0; i < ps.size(); ++i) {
       if (components_.find(ps[i]) == components_.end()) {
