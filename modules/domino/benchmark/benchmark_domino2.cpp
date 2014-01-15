@@ -1,6 +1,7 @@
 /**
  * Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
+#include <IMP/base/flags.h>
 #include <IMP/domino.h>
 #include <IMP/container.h>
 #include <IMP/benchmark.h>
@@ -13,7 +14,8 @@ using namespace IMP::core;
 using namespace IMP::container;
 using namespace IMP::base;
 
-int main(int argc, char * []) {
+int main(int argc, char *argv[]) {
+  IMP::base::setup_from_argv(argc, argv, "benchmark domino");
   IMP_NEW(kernel::Model, m, ());
   set_log_level(SILENT);
   m->set_log_level(SILENT);
@@ -21,7 +23,7 @@ int main(int argc, char * []) {
   kernel::ParticlesTemp ps = IMP::internal::create_particles_from_pdb(path, m);
   ReferenceFrame3Ds vs;
   unsigned num_rb;
-  if (IMP_BUILD == IMP_DEBUG) {
+  if (IMP_BUILD == IMP_DEBUG || IMP::base::run_quick_test) {
     num_rb = 5;
   } else {
     num_rb = 40;
