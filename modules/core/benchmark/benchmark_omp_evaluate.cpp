@@ -93,9 +93,13 @@ int main(int argc, char **argv) {
   IMP::algebra::BoundingBox3D bb = IMP::algebra::get_unit_bounding_box_d<3>();
   IMP_NEW(IMP::kernel::Model, m, ());
   IMP::Restraints rs;
-  for (unsigned int i = 0; i < 15; ++i) {
+  const unsigned int num_restraints =
+      (IMP::base::run_quick_test || (IMP_BUILD >= IMP_RELEASE)) ? 2 : 15;
+  const unsigned int num_particles =
+      (IMP::base::run_quick_test || (IMP_BUILD >= IMP_RELEASE)) ? 10 : 5000;
+  for (unsigned int i = 0; i < num_restraints; ++i) {
     IMP::kernel::ParticleIndexes pis;
-    for (unsigned int j = 0; j < 5000; ++j) {
+    for (unsigned int j = 0; j < num_particles; ++j) {
       IMP_NEW(IMP::kernel::Particle, p, (m));
       IMP::core::XYZ::setup_particle(p, IMP::algebra::get_random_vector_in(bb));
       pis.push_back(p->get_index());

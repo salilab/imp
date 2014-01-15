@@ -93,10 +93,9 @@ FloatKey sk("slack");
 It create_particles() {
   It ret;
   ret.m = new kernel::Model();
-  ret.m->set_log_level(SILENT);
   Sphere3D perturb(Vector3D(0, 0, 0), pertub_amount);
-  for (unsigned int i = 0; i < num_x; ++i) {
-    for (unsigned int j = 0; j < num_y; ++j) {
+  for (unsigned int i = 0; i < IMP::base::run_quick_test ? 2 : num_x; ++i) {
+    for (unsigned int j = 0; j < IMP::base::run_quick_test ? 2 : num_y; ++j) {
       atom::Hierarchy parent =
           atom::Hierarchy::setup_particle(new kernel::Particle(ret.m));
       std::ostringstream oss;
@@ -173,23 +172,23 @@ It create_restraints(PS0 *link, PS1 *lb, SS *bottom, It in) {
   kernel::Restraints all_restraints = ret.rss;
   all_restraints.push_back(pr);
   ret.bd = new BrownianDynamics(ret.m);
-  ret.bd->set_log_level(SILENT);
   ret.bd->set_scoring_function(all_restraints);
-  ret.bd->get_scoring_function()->set_log_level(SILENT);
   // double ts=Diffusion(ret.all[0]).get_time_step_from_sigma(sigma);
   ret.bd->set_maximum_time_step(ret.sp->get_value(tsk));
   // std::cout << ret.sp->get_value(tsk) << std::endl;
   return ret;
 }
 
-double simulate(It it, int ns, bool verbose = false) {
-  if (!verbose) it.bd->set_log_level(SILENT);
-  return it.bd->optimize(ns);
+double simulate(It it, int ns) {
+  if (IMP::base::run_quick_test) {
+    return it.bd->optimize(1);
+  } else {
+    return it.bd->optimize(ns);
+  }
 }
 
 void update_slack_estimate(It it) {
   std::cout << "Estimating slack " << std::endl;
-  SetLogState sl(VERBOSE);
   kernel::Restraints rt = it.bd->get_scoring_function()->create_restraints();
   double slack = get_slack_estimate(it.lsc->get_particles(), 20, 1,
                                     get_restraints(rt), true, it.bd, it.cpc);
@@ -200,7 +199,6 @@ void create(It it, RMF::FileHandle fh) {
   {
     // repeat estimates to get away from start conditions
     for (unsigned int i = 0; i < 10; ++i) {
-      SetLogState sll(VERBOSE);
       double ts = get_maximum_time_step_estimate(it.bd);
       IMP::rmf::save_frame(fh, "one");
       std::cout << "Maximum time step is " << ts << std::endl;
@@ -269,6 +267,9 @@ IMP::base::AddBoolFlag sfl("setup", "Setup things", &FLAGS_setup);
 
 int main(int argc, char **argv) {
   IMP::base::setup_from_argv(argc, argv, "Benchmark Brownian dynamics.");
+  if (IMP::base::run_quick_test) {
+    std::cout << "Running quick test" << std::endl;
+  }
   IMP_NEW(HarmonicLowerBound, hlb, (0, kk));
   try {
     FloatKey xk = XYZ::get_xyz_keys()[0];
