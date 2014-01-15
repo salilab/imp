@@ -29,6 +29,7 @@ extern IMPBASEEXPORT boost::program_options::options_description flags;
 extern IMPBASEEXPORT boost::program_options::variables_map variables_map;
 
 extern IMPBASEEXPORT boost::int64_t check_level;
+extern IMPBASEEXPORT boost::int64_t stats_level;
 #if !IMP_BASE_HAS_LOG4CXX
 extern IMPBASEEXPORT base::Vector<std::pair<const char *, const void *> >
     log_contexts;

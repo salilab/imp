@@ -10,6 +10,8 @@
 
 #include <IMP/base/base_config.h>
 #include "compiler_macros.h"
+#include <iostream>
+
 // IMPBASE_BEGIN_NAMESPACE
 namespace IMP {
 
@@ -61,11 +63,20 @@ enum CheckLevel {
   USAGE_AND_INTERNAL = IMP_INTERNAL
 };
 #endif
-
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 IMPBASEEXPORT std::istream &operator>>(std::istream &in, CheckLevel &ll);
 #endif
-}
-}  // IMPBASE_END_NAMESPACE
+
+//! Specify the level of statistics to record
+/** See show_timings(). */
+enum StatisticsLevel {
+  NO_STATISTICS = 0,
+  ALL_STATISTICS = 1
+};
+
+} // base
+
+
+}  // imp
 
 #endif /* IMPBASE_ENUMS_H */

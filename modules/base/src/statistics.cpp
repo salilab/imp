@@ -11,12 +11,14 @@
 
 IMPBASE_BEGIN_NAMESPACE
 
-Timer::Timer(const Object *object, std::string operation) {
-  key_ = object->get_name() + "::" + operation;
+void Timer::initialize(std::string operation) {
+  start_ = std::clock();
+  key_ = operation;
 }
-Timer::Timer(std::string operation) { key_ = operation; }
-Timer::~Timer() {
-  internal::timings[key_].total_time += timer_.elapsed();
+void Timer::save() {
+  // from boost/timer.hpp
+  internal::timings[key_].total_time +=
+      double(std::clock() - start_) / CLOCKS_PER_SEC;
   ++internal::timings[key_].calls;
 }
 
@@ -34,6 +36,10 @@ void show_timings(TextOutput out) {
     out.get_stream() << (boost::format("%-61s%10f,%8d") % (name + ",") %
                          tp.second.total_time % tp.second.calls) << std::endl;
   }
+}
+
+void set_statistics_level(StatisticsLevel l) {
+  internal::stats_level = l;
 }
 
 IMPBASE_END_NAMESPACE

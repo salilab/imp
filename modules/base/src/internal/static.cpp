@@ -190,6 +190,14 @@ AddIntFlag llf("log_level", "Logging is disabled, flag is for compatibility.",
                &junk_log);
 #endif
 
+boost::int64_t stats_level = ALL_STATISTICS;
+
+AddIntFlag slf(
+    "statistics_level",
+    "The level of statistics to gather: 0 for NONE, 1 for ALL.",
+    &check_level);
+
+
 bool cpu_profile = false;
 bool heap_profile = false;
 

@@ -11,9 +11,10 @@
 
 #include <IMP/base/base_config.h>
 #include "file.h"
+#include "enums.h"
 #include "internal/static.h"
 #include <string>
-#include <boost/timer.hpp>
+#include <ctime>
 
 IMPBASE_BEGIN_NAMESPACE
 
@@ -25,14 +26,29 @@ IMPBASEEXPORT void show_timings(TextOutput out);
 
 /** Time an operation and save the timings.*/
 class IMPBASEEXPORT Timer : public RAII {
-  boost::timer timer_;
+  std::clock_t start_;
   std::string key_;
 
+  void initialize(std::string key);
+  void save();
  public:
-  Timer(const Object *object, std::string operation);
-  Timer(std::string operation);
-  ~Timer();
+  Timer(const Object *object, std::string operation) {
+    if (internal::stats_level > NO_STATISTICS) {
+      initialize(object->get_name() + "::" + operation);
+    }
+  }
+  Timer(std::string operation) {
+    if (internal::stats_level > NO_STATISTICS) {
+      initialize(operation);
+    }
+  }
+  ~Timer() {
+    if (!key_.empty()) save();
+  }
 };
+
+/** Set the level of statistics to be gathered. */
+IMPBASEEXPORT void set_statistics_level(StatisticsLevel l);
 
 IMPBASE_END_NAMESPACE
 
