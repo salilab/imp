@@ -84,7 +84,8 @@ class IMPATOMEXPORT Selection :
             HierarchyType hierarchy_type = None, Terminus terminus = None,
             std::string domain = None, core::ParticleType particle_type = None,
             core::ParticleTypes particle_types = [], int copy_index = -1,
-            Ints copy_indexs = [], int state = ALL_STATES);
+            Ints copy_indexs = [], int state_index = -1,
+            Ints state_indexes = []);
 #endif
   Selection();
   Selection(Hierarchy h);
@@ -106,7 +107,9 @@ class IMPATOMEXPORT Selection :
   /** Select at a Representation node with a resolution close to r.*/
   void set_resolution(double r) { resolution_ = r; }
   /** Select State with the passed index.*/
-  void set_state(int state) { state_ = state; }
+  void set_state_index(int state) { set_states(Ints(1, state)); }
+  /** Select State with the passed index.*/
+  void set_state_indexes(Ints states);
   /** Select the n or c terminus.*/
   void set_terminus(Terminus t);
   /** Select particles in chains whose id is

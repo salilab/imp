@@ -19,43 +19,31 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-IMPATOMEXPORT extern const int ALL_STATES;
-
-//! A decorator for a node that has multiple states of the system.
-/** It stores a number of copies of its sub hierarchy each with an associated
- * state.
- *
- * \note All the subtrees for the different states should have identical
- * topology. However this is not current enforced.
- *
- * \note The particle returned for a given state should be considered as
- * replacing this particle (as opposed to being a child of it).
- *
+//! A decorator for a node that marks this hierarchy as being a particular
+//state.
+/**
  * \note Only one State node is allowed in any path up the tree as nesting
  * them does not have a clear meaning.
  */
 class IMPATOMEXPORT State : public Hierarchy {
-  static ParticleIndexesKey get_states_key();
-  static IntKey get_marker_key();
+  static IntKey get_index_key();
 
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi);
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                unsigned int state);
 
   void validate();
 
  public:
-  IMP_DECORATOR_SETUP_0(State);
+  IMP_DECORATOR_SETUP_1(State, unsigned int index);
   IMP_DECORATOR_METHODS(State, Hierarchy);
 
   static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
-    return m->get_has_attribute(get_marker_key(), pi);
+    return m->get_has_attribute(get_index_key(), pi);
   }
 
-  /** Return all children at all resolutions. */
-  Hierarchies get_states() const;
-
-  /** Add the state with the next index (returned).
-   */
-  unsigned int add_state(kernel::ParticleIndexAdaptor rep);
+  unsigned int get_state_index() const {
+    return get_model()->get_attribute(get_index_key(), get_particle_index());
+  }
 };
 
 IMP_DECORATORS(State, States, Hierarchies);

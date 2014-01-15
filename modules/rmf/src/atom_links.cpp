@@ -42,29 +42,6 @@ std::string get_good_name(kernel::Model *m, kernel::ParticleIndex h) {
     return m->get_particle_name(h);
   }
 }
-
-unsigned int get_coords_state(
-    RMF::NodeConstHandle nh,
-    RMF::decorator::IntermediateParticleFactory ipcf,
-    RMF::decorator::ReferenceFrameFactory rfcf, RMF::IntKey external_key) {
-  unsigned int ret = 0;
-  if (nh.get_has_value(external_key)) {
-    ret |= internal::EXTERNAL_RB;
-  }
-  {
-    if (ipcf.get_is_static(nh)) ret |= internal::STATIC_XYZ;
-    if (rfcf.get_is_static(nh)) ret |= internal::STATIC_RB;
-  }
-  {
-    RMF::SetCurrentFrame fa(nh.get_file(), RMF::FrameID(0));
-    if (!(ret & internal::STATIC_XYZ) && ipcf.get_is(nh))
-      ret |= internal::FRAME_XYZ;
-    if (!(ret & internal::STATIC_RB) &&
-        rfcf.get_is(nh) & !(ret & internal::EXTERNAL_RB))
-      ret |= internal::FRAME_RB;
-  }
-  return ret;
-}
 }
 
 void HierarchyLoadLink::do_load_one(RMF::NodeConstHandle nh,

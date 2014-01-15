@@ -33,7 +33,8 @@ HierarchyLoadStatic::HierarchyLoadStatic(RMF::FileConstHandle fh)
       diffuser_factory_(fh),
       typed_factory_(fh),
       domain_factory_(fh),
-      fragment_factory_(fh) {
+      fragment_factory_(fh),
+      state_factory_(fh) {
   RMF::Category phy = fh.get_category("physics");
   radius_key_ = fh.get_key(phy, "radius", RMF::FloatTraits());
   mass_key_ = fh.get_key(phy, "mass", RMF::FloatTraits());
@@ -110,6 +111,11 @@ void HierarchyLoadStatic::setup_particle(RMF::NodeConstHandle nh,
     IMP_LOG_VERBOSE("copy " << std::endl);
     int dv = copy_factory_.get(nh).get_copy_index();
     atom::Copy::setup_particle(m, p, dv);
+  }
+  if (state_factory_.get_is_static(nh)) {
+    IMP_LOG_VERBOSE("state " << std::endl);
+    int dv = state_factory_.get(nh).get_state_index();
+    atom::State::setup_particle(m, p, dv);
   }
 }
 
@@ -191,6 +197,12 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
     IMP_USAGE_CHECK(atom::Copy(m, p).get_copy_index() == dv,
                     "Copy indexes don't match");
   }
+  if (state_factory_.get_is_static(nh)) {
+    IMP_LOG_VERBOSE("state " << std::endl);
+    int dv = state_factory_.get(nh).get_state_index();
+    IMP_USAGE_CHECK(atom::State(m, p).get_state_index() == dv,
+                    "State indexes don't match");
+  }
 }
 
 void HierarchySaveStatic::setup_node(kernel::Model *m, kernel::ParticleIndex p,
@@ -252,6 +264,12 @@ void HierarchySaveStatic::setup_node(kernel::Model *m, kernel::ParticleIndex p,
     atom::Copy d(m, p);
     copy_factory_.get(n).set_copy_index(d.get_copy_index());
   }
+  if (state_factory_.get_is_static(nh)) {
+    IMP_LOG_VERBOSE("state " << std::endl);
+    int dv = state_factory_.get(nh).get_state_index();
+    IMP_USAGE_CHECK(atom::State(m, p).get_state_index() == dv,
+                    "State indexes don't match");
+  }
 }
 
 HierarchySaveStatic::HierarchySaveStatic(RMF::FileHandle fh)
@@ -265,7 +283,8 @@ HierarchySaveStatic::HierarchySaveStatic(RMF::FileHandle fh)
       diffuser_factory_(fh),
       typed_factory_(fh),
       domain_factory_(fh),
-      fragment_factory_(fh) {}
+      fragment_factory_(fh),
+      state_factory_(fh) {}
 
 namespace {
 

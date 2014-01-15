@@ -71,7 +71,7 @@ Selection::Selection(const kernel::ParticlesTemp &h) : resolution_(0) {
 }
 // for C++
 Selection::Selection(Hierarchy h, std::string molname, int residue_index)
-  : resolution_(0), state_(ALL_STATES) {
+  : resolution_(0){
   set_hierarchies(h.get_model(),
                   kernel::ParticleIndexes(1, h.get_particle_index()));
   set_molecules(Strings(1, molname));
@@ -190,6 +190,13 @@ IMP_ATOM_SELECTION_PRED(CopyIndex, Ints, {
   if (Copy::get_is_setup(m, pi)) {
     return std::binary_search(data_.begin(), data_.end(),
                               Copy(m, pi).get_copy_index());
+  }
+  return 0;
+});
+IMP_ATOM_SELECTION_PRED(StateIndex, Ints, {
+  if (State::get_is_setup(m, pi)) {
+    return std::binary_search(data_.begin(), data_.end(),
+                              State(m, pi).get_state_index());
   }
   return 0;
 });
@@ -407,6 +414,10 @@ void Selection::set_copy_index(unsigned int copy) {
 void Selection::set_copy_indexes(Ints copies) {
   std::sort(copies.begin(), copies.end());
   predicates_.push_back(new CopyIndexSingletonPredicate(copies));
+}
+void Selection::set_state_indexes(Ints copies) {
+  std::sort(copies.begin(), copies.end());
+  predicates_.push_back(new StateIndexSingletonPredicate(copies));
 }
 void Selection::set_particle_type(core::ParticleType t) {
   set_particle_types(core::ParticleTypes(1, t));

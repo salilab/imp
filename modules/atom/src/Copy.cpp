@@ -10,7 +10,7 @@
 IMPATOM_BEGIN_NAMESPACE
 
 IntKey Copy::get_copy_index_key() {
-  static IntKey k("molecule copy");
+  static IntKey k("copy index");
   return k;
 }
 
