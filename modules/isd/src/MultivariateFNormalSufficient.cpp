@@ -170,6 +170,13 @@ double MultivariateFNormalSufficient::get_minus_log_normalization() const {
   return e;
 }
 
+double MultivariateFNormalSufficient::get_log_generalized_variance() const {
+  if (N_ != 1) IMP_THROW("Not implemented for N>1!", ModelException);
+  IMP_Eigen::LDLT<IMP_Eigen::MatrixXd, IMP_Eigen::Upper> ldlt(get_ldlt());
+  double logDetSigma = ldlt.vectorD().array().abs().log().sum();
+  return logDetSigma + 2*M_*log(factor_);
+}
+
 // O(1) if up to date, O(M^2) if epsilon new, O(M^3) if Sigma new
 IMP_Eigen::VectorXd MultivariateFNormalSufficient::evaluate_derivative_FM()
     const {

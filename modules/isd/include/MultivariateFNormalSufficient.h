@@ -221,6 +221,9 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public base::Object {
    */
   double get_minus_log_normalization() const;
 
+  /* return log |\sigma^2 \Sigma| */
+  double get_log_generalized_variance() const;
+
   /* remaining stuff */
   IMP_OBJECT_METHODS(MultivariateFNormalSufficient);
   /*IMP_OBJECT_INLINE(MultivariateFNormalSufficient,
