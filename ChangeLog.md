@@ -1,5 +1,7 @@
 # ChangeLog
 # For IMP 2.2 # {#ChangeLog}
+- The family of macros IMP_BASE_[SMALL,LARGE]_[UNORDERED,ORDERED]_[MAP,SET] have been added (eg IMP_BASE_SMALL_ORDERED_SET ()). They provide platform and boost-version independent ways to take advantage of the best set/map for an application. In particular, they use boost::container::flat_set and kin when available.
+- IMP::atom::State and IMP::atom::Representation decorators have been added to provide support for multiple states and multiple representation schemes. They are integrated with RMFs and IMP::atom::Selection. See atom/multiresolution.py and atom/multistate.py for examples.
 - The container imlementations has been cleaned up and simplified a bit. This should not change most usage.
 - [RMF](http://salilab.github.io/rmf) has been updated. There are a few minor API changes, in addition to a new, faster format (`.rmf3`).
 - [Eigen](#Eigen) is now included with IMP.
