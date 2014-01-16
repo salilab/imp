@@ -124,7 +124,15 @@ int main(int argc, char** argv) {
           std::cout.precision(3);
           std::cout << results[j][i].get_z_score() << " | ";
         }
-        std::cout << results[0][i].get_transformation() << std::endl;
+        IMP::algebra::FixedXYZ euler_angles =
+        IMP::algebra::get_fixed_xyz_from_rotation(
+                     results[0][i].get_transformation().get_rotation());
+        IMP::algebra::Vector3D translation = results[0][i].get_transformation().get_translation();
+        std::cout.precision(3);
+        std::cout << " " << euler_angles.get_x() << " " << euler_angles.get_y() << " "
+                  << euler_angles.get_z() << " " << translation[0] << " " << translation[1]
+                  << " " << translation[2] << std::endl;
+        //std::cout << results[0][i].get_transformation() << std::endl;
       }
     }
   }

@@ -841,7 +841,7 @@ ligandPdb (str) antibody_cut.pdb
         self.assertEqual(len(lines), 3)
         self.assertEqual(lines[1].strip(' \r\n'),
                          '2 |  3.171 |  +  | -1.000 |  0.221 |  3.190 | -14.430 |'
-                         ' -0.019 |  2.674 0.4152 -0.7746 33.23 -4.204 31.47')
+                         ' -0.019 |  2.674 0.415 -0.775 33.230 -4.204 31.470')
         os.unlink('em3d_scoref.res')
         os.unlink('fd_res.res')
         os.unlink('combined_final.res')
@@ -907,7 +907,7 @@ ligandPdb (str) antibody_cut.pdb
             self.assertEqual(len(lines), 10)
             self.assertEqual(lines[3].strip(' \r\n'),
                              '1 |  -1.603 |  +  | -1.301 |  0.004 |  0.579 | -10.200 |'
-                             ' -2.182 |   -0.9194 -1.0958 -2.0672 -2.7843 -1.1249 -3.0764')
+                             ' -2.182 |  -0.919 -1.096 -2.067 -2.784 -1.125 -3.076')
             for f in ['clustered_cxms.res', 'combined_final.res',
                       'cxms_score.res', 'cxms_scoref.res',
                       'docking.res', 'fd_res_cxms.ref',
