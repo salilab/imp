@@ -535,7 +535,7 @@ void add_bonds(const IMP::atom::Hierarchies & out) {
 }
 }
 
-Hierarchy create_simplified_from_surface(Hierarchy h, double resolution) {
+Hierarchy create_simplified_from_volume(Hierarchy h, double resolution) {
   IMP_FUNCTION_LOG;
   Model *m = h.get_model();
   IMP::algebra::Sphere3Ds in_spheres;
@@ -544,7 +544,7 @@ Hierarchy create_simplified_from_surface(Hierarchy h, double resolution) {
   }
 
   IMP::algebra::Sphere3Ds out_spheres =
-      IMP::algebra::get_surface_simplified(in_spheres, 1.0 / resolution);
+      IMP::algebra::get_simplified_from_volume(in_spheres, 1.0 / resolution);
 
   IMP_LOG_TERSE("Input hierarchy has " << in_spheres.size()
                                        << " balls and output has "

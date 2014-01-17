@@ -48,14 +48,16 @@ IMPALGEBRAEXPORT FloatPair
 /** Return a set of balls that approximates the surface of the passed set within
  * the error tolerance.
  *
- * The any solvent exposed point on the old surface will be within
- * roughly maximum_allowed_error_angstroms of a point on the new surface.
+ * The any point in the old surface will be within
+ * roughly maximum_allowed_error_angstroms of a point in the new surface and any
+ * point outside the old volume will be within roughly
+ * maximum_allowed_error_angstroms of a point outside the new volume.
  *
  * \note The name may change if someone thinks up a better one.
  */
 IMPALGEBRAEXPORT Sphere3Ds
-    get_surface_simplified(Sphere3Ds in,
-                           double maximum_allowed_error_angstroms);
+    get_simplified_from_volume(Sphere3Ds in,
+                             double maximum_allowed_error_angstroms);
 
 IMPALGEBRA_END_NAMESPACE
 

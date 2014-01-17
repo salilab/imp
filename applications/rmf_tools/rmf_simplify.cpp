@@ -258,7 +258,7 @@ int main(int argc, char *argv[]) {
       IMP::atom::Hierarchy::setup_particle(m, m->add_particle(hr->get_name()));
   IMP_FOREACH(IMP::atom::Hierarchy c,
               IMP::atom::get_by_type(hr, IMP::atom::CHAIN_TYPE)) {
-    IMP::atom::Hierarchy cur = create_simplified_from_surface(hr, resolution);
+    IMP::atom::Hierarchy cur = create_simplified_from_volume(hr, resolution);
     IMP::atom::Chain::setup_particle(cur, IMP::atom::Chain(c).get_id());
     root.add_child(cur);
   }

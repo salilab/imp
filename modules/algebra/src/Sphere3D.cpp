@@ -67,8 +67,8 @@ typedef IMP_BASE_SMALL_UNORDERED_SET<SphereIndex> SphereIndexSet;
 typedef IMP_BASE_SMALL_UNORDERED_SET<SPIndex> SPIndexSet;
 }
 
-Sphere3Ds get_surface_simplified(Sphere3Ds in,
-                                 double maximum_allowed_error_angstroms) {
+Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
+                                   double maximum_allowed_error_angstroms) {
   IMP_FUNCTION_LOG;
   const double resolution = 1.0 / maximum_allowed_error_angstroms;
   const double probe = maximum_allowed_error_angstroms;

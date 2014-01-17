@@ -90,7 +90,7 @@ IMPATOMEXPORT Hierarchy
 
     The new hierarchy will contain a number of Fragment particles whose surface
     (and hence volume) approximates the input hierarchy in the sense of
-    IMP::algebra::get_surface_simplified().
+    IMP::algebra::get_simplified_from_volume().
 
     The resulting representation has approximately the desired resolution in the
     sense of get_resolution().
@@ -99,7 +99,7 @@ IMPATOMEXPORT Hierarchy
     residue indexes, and particles containing adjacent residues are connected
     by bonds. */
 IMPATOMEXPORT Hierarchy
-    create_simplified_from_surface(Hierarchy h, double resolution);
+    create_simplified_from_volume(Hierarchy h, double resolution);
 
 /** \name Finding information
     Get the attribute of the given particle or throw a ValueException
