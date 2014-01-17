@@ -58,7 +58,6 @@ class IMPATOMEXPORT Selection :
   SingletonPredicates predicates_;
   kernel::Model *m_;
   double resolution_;
-  int state_;
 
   kernel::ParticleIndexes h_;
   IMP_NAMED_TUPLE_2(SearchResult, SearchResults, bool, match,
