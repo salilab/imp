@@ -1,5 +1,7 @@
 # ChangeLog
 # For IMP 2.2 # {#ChangeLog}
+- Support for computing Connolly surfaces was added with IMP::algebra::get_connolly_surface(). In addition, there is now IMP::algebra::get_uniform_surface_cover(const IMP::algebra::Sphere3Ds&,double) to sample the surface of a collection of balls.
+- IMP::atom::create_simplified_from_surface() was added to create a simplified representation of a hierarchy that preserves the surface are and occupied volume. It uses IMP::algebra::get_surface_simplified(). If you want to play with such representations, you can use the rmf_simply application.
 - The family of macros IMP_BASE_[SMALL,LARGE]_[UNORDERED,ORDERED]_[MAP,SET] have been added (eg IMP_BASE_SMALL_ORDERED_SET ()). They provide platform and boost-version independent ways to take advantage of the best set/map for an application. In particular, they use boost::container::flat_set and kin when available.
 - IMP::atom::State and IMP::atom::Representation decorators have been added to provide support for multiple states and multiple representation schemes. They are integrated with RMFs and IMP::atom::Selection. See atom/multiresolution.py and atom/multistate.py for examples.
 - The container imlementations has been cleaned up and simplified a bit. This should not change most usage.

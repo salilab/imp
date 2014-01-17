@@ -45,6 +45,18 @@ IMPALGEBRAEXPORT FloatPair
     get_surface_area_and_volume(const algebra::Sphere3Ds &ss);
 #endif
 
+/** Return a set of balls that approximates the surface of the passed set within
+ * the error tolerance.
+ *
+ * The any solvent exposed point on the old surface will be within
+ * roughly maximum_allowed_error_angstroms of a point on the new surface.
+ *
+ * \note The name may change if someone thinks up a better one.
+ */
+IMPALGEBRAEXPORT Sphere3Ds
+    get_surface_simplified(Sphere3Ds in,
+                           double maximum_allowed_error_angstroms);
+
 IMPALGEBRA_END_NAMESPACE
 
 #endif /* IMPALGEBRA_SPHERE_3D_H */

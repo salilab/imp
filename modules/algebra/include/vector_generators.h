@@ -222,6 +222,17 @@ IMPALGEBRAEXPORT Vector3Ds
 
 /** @} */
 
+/** Return a cover of the surface of the volume defined by a union of balls
+    bounded by the spheres.
+
+   This is effectively a sampling of the solvent exposed surface of a set of
+   spheres. The density of points has approximately the passed value.
+
+   This method is much faster than get_connolly_surface().
+*/
+IMPALGEBRAEXPORT Vector3Ds
+    get_uniform_surface_cover(const Sphere3Ds &in,
+                              double points_per_square_angstrom);
 IMPALGEBRA_END_NAMESPACE
 
 #endif /* IMPALGEBRA_VECTOR_GENERATORS_H */

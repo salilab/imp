@@ -1,5 +1,5 @@
 /**
- *  \file algebra/connolly_surface.h     \brief Generate surface for a set of
+ *  \file IMP/algebra/connolly_surface.h     \brief Generate surface for a set of
  *atoms
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -52,6 +52,9 @@ IMP_VALUES(ConnollySurfacePoint, ConnollySurfacePoints);
 
     M.L. Connolly, "Analytical molecular surface calculation",
     J. Appl. Cryst. 16, p548-558 (1983).
+
+    See also get_uniform_surface_cover(const IMP::algebra::Sphere3Ds&, double)
+    for a faster alternative.
  */
 IMPALGEBRAEXPORT ConnollySurfacePoints
     get_connolly_surface(const algebra::Sphere3Ds& spheres, double density,

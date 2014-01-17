@@ -86,6 +86,21 @@ IMPATOMEXPORT Hierarchy
                                      bool keep_detailed = false);
 /** @} */
 
+/** Create a new hierarchy that approximates the volume occupied by the old one.
+
+    The new hierarchy will contain a number of Fragment particles whose surface
+    (and hence volume) approximates the input hierarchy in the sense of
+    IMP::algebra::get_surface_simplified().
+
+    The resulting representation has approximately the desired resolution in the
+    sense of get_resolution().
+
+    Residue indexes are assigned to the created Fragments from the original
+    residue indexes, and particles containing adjacent residues are connected
+    by bonds. */
+IMPATOMEXPORT Hierarchy
+    create_simplified_from_surface(Hierarchy h, double resolution);
+
 /** \name Finding information
     Get the attribute of the given particle or throw a ValueException
     if it is not applicable. The particle with the given information

@@ -8,6 +8,7 @@
 
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/base/log_macros.h>
+#include <IMP/algebra/standard_grids.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -183,6 +184,39 @@ Vector3Ds get_random_chain(unsigned int n, double r, const Vector3D &start,
     } else {
       ret.push_back(v);
       failures.push_back(0);
+    }
+  }
+  return ret;
+}
+
+Vector3Ds get_uniform_surface_cover(const Sphere3Ds &in,
+                                    double points_per_square_angstrom) {
+  Vector3Ds ret;
+  const double resolution = std::sqrt(points_per_square_angstrom);
+  const double scale = 1.0 / resolution;
+
+  BoundingBox3D bb;
+  IMP_FOREACH(Sphere3D s, in) { bb += get_bounding_box(s); }
+  bb += scale;
+
+  typedef DenseGrid3D<char> Grid;
+  Grid grid(scale, bb, 0);
+  IMP_FOREACH(Sphere3D s, in) {
+    BoundingBox3D bb = get_bounding_box(s);
+    IMP_FOREACH(Grid::Index i, grid.get_indexes(bb)) {
+      Vector3D c = grid.get_center(i);
+      if (get_distance(c, s.get_center()) <= s.get_radius()) {
+        grid[i] = 1;
+      }
+    }
+  }
+  IMP_FOREACH(Sphere3D s, in) {
+    double a = get_surface_area(s);
+    double n = a * resolution * resolution;
+    IMP_FOREACH(Vector3D v, get_uniform_surface_cover(s, std::ceil(n))) {
+      if (!grid[v]) {
+        ret.push_back(v);
+      }
     }
   }
   return ret;

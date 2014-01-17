@@ -8,6 +8,7 @@
 
 #include "IMP/atom/hierarchy_tools.h"
 #include <IMP/SingletonContainer.h>
+#include <IMP/algebra/Sphere3D.h>
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Chain.h>
@@ -20,6 +21,7 @@
 #include <IMP/atom/bond_decorators.h>
 #include <IMP/atom/distance.h>
 #include <IMP/atom/estimates.h>
+#include <IMP/base/set_map_macros.h>
 #include <IMP/kernel/constants.h>
 #include <IMP/container/AllBipartitePairContainer.h>
 #include <IMP/container/ConnectingPairContainer.h>
@@ -456,6 +458,109 @@ void transform(atom::Hierarchy h, const algebra::Transformation3D &tr) {
     }
     core::transform(rb, tr);
   }
+}
+
+namespace {
+
+void assign_residues(IMP::atom::Hierarchy in,
+                     const IMP::atom::Hierarchies &out) {
+  IMP_FUNCTION_LOG;
+  IMP_BASE_LARGE_UNORDERED_MAP<IMP::atom::Hierarchy,
+                               IMP_BASE_SMALL_UNORDERED_SET<int> > indexes;
+  IMP_FOREACH(IMP::atom::Hierarchy l, IMP::atom::get_leaves(in)) {
+    IMP::core::XYZR d(l);
+    IMP::Ints cur;
+    if (IMP::atom::Atom::get_is_setup(l) &&
+        IMP::atom::Atom(l).get_atom_type() == IMP::atom::AT_CA) {
+      l = l.get_parent();
+    }
+
+    if (IMP::atom::Residue::get_is_setup(l)) {
+      cur.push_back(IMP::atom::Residue(l).get_index());
+    } else if (IMP::atom::Fragment::get_is_setup(l)) {
+      cur = IMP::atom::Fragment(l).get_residue_indexes();
+    } else if (IMP::atom::Domain::get_is_setup(l)) {
+      IMP::IntRange ir = IMP::atom::Domain(l).get_index_range();
+      for (unsigned int i = ir.first; i < ir.second; ++i) {
+        cur.push_back(i);
+      }
+    }
+    IMP::atom::Hierarchy min;
+    double min_distance = std::numeric_limits<double>::max();
+    IMP_FOREACH(IMP::atom::Hierarchy c, out) {
+      double cur_dist = IMP::core::get_distance(IMP::core::XYZR(c), d);
+      if (cur_dist < min_distance) {
+        min_distance = cur_dist;
+        min = c;
+      }
+    }
+    indexes[min].insert(cur.begin(), cur.end());
+  }
+  typedef std::pair<IMP::atom::Hierarchy, IMP_BASE_SMALL_UNORDERED_SET<int> >
+      IP;
+  IMP_FOREACH(IP ip, indexes) {
+    IMP::atom::Fragment::setup_particle(
+        ip.first, IMP::Ints(ip.second.begin(), ip.second.end()));
+    IMP::atom::Mass::setup_particle(
+        ip.first,
+        IMP::atom::get_mass_from_number_of_residues(ip.second.size()));
+  }
+}
+
+void add_bonds(const IMP::atom::Hierarchies & out) {
+  IMP_FUNCTION_LOG;
+  IMP_FOREACH(IMP::atom::Hierarchy c, out) {
+    IMP::atom::Bonded::setup_particle(c);
+  }
+  for (unsigned int i = 0; i < out.size(); ++i) {
+    IMP::Ints ii = IMP::atom::Fragment(out[i]).get_residue_indexes();
+    bool bonded = false;
+    for (unsigned int j = 0; j < i && !bonded; ++j) {
+      IMP::Ints ij = IMP::atom::Fragment(out[j]).get_residue_indexes();
+      std::sort(ij.begin(), ij.end());
+      IMP_FOREACH(int iic, ii) {
+        if (std::binary_search(ij.begin(), ij.end(), iic + 1) ||
+            std::binary_search(ij.begin(), ij.end(), iic - 1)) {
+          IMP::atom::create_custom_bond(
+              IMP::atom::Bonded(out[i]), IMP::atom::Bonded(out[j]),
+              std::max<double>(
+                  0, IMP::core::get_distance(IMP::core::XYZR(out[i]),
+                                             IMP::core::XYZR(out[j]))));
+          bonded = true;
+          break;
+        }
+      }
+    }
+  }
+}
+}
+
+Hierarchy create_simplified_from_surface(Hierarchy h, double resolution) {
+  IMP_FUNCTION_LOG;
+  Model *m = h.get_model();
+  IMP::algebra::Sphere3Ds in_spheres;
+  IMP_FOREACH(IMP::atom::Hierarchy h, IMP::atom::get_leaves(h)) {
+    in_spheres.push_back(IMP::core::XYZR(h).get_sphere());
+  }
+
+  IMP::algebra::Sphere3Ds out_spheres =
+      IMP::algebra::get_surface_simplified(in_spheres, 1.0 / resolution);
+
+  IMP_LOG_TERSE("Input hierarchy has " << in_spheres.size()
+                                       << " balls and output has "
+                                       << out_spheres.size() << std::endl);
+
+  IMP::atom::Hierarchies leaves;
+  IMP_FOREACH(IMP::algebra::Sphere3D s, out_spheres) {
+    IMP::kernel::ParticleIndex cur = m->add_particle("fragment");
+    leaves.push_back(IMP::atom::Hierarchy::setup_particle(m, cur));
+    IMP::core::XYZR::setup_particle(m, cur, s);
+  }
+  assign_residues(h, leaves);
+  add_bonds(leaves);
+  Hierarchy ret = Hierarchy::setup_particle(m, m->add_particle(h->get_name()));
+  IMP_FOREACH(Hierarchy c, leaves) { ret.add_child(c); }
+  return ret;
 }
 
 IMPATOM_END_NAMESPACE
