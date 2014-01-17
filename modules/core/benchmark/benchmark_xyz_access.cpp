@@ -320,7 +320,9 @@ int main(int argc, char **argv) {
   IMP::base::setup_from_argv(argc, argv,
                              "Benchmark accessing particle attributes");
   do_benchmark("small", 100);
-  do_benchmark("large", 1000);
-  do_benchmark("huge", 10000);
+  if (!IMP::base::run_quick_test) {
+    do_benchmark("large", 1000);
+    do_benchmark("huge", 10000);
+  }
   return IMP::benchmark::get_return_value();
 }
