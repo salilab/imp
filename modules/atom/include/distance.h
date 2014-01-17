@@ -35,8 +35,8 @@ IMPATOMEXPORT double get_rmsd(const core::XYZs& s0, const core::XYZs& s1);
 template <class Vector3DsOrXYZs0, class Vector3DsOrXYZs1>
 IMPATOM_DEPRECATED_FUNCTION_DECL(2.2) inline double get_rmsd(
     const Vector3DsOrXYZs0& m1, const Vector3DsOrXYZs1& m2,
-    const IMP::algebra::Transformation3D& tr_for_second =
-        IMP::algebra::get_identity_transformation_3d()) {
+    const algebra::Transformation3D& tr_for_second =
+        algebra::get_identity_transformation_3d()) {
   IMPATOM_DEPRECATED_FUNCTION_DEF(2.2, "Use it in IMP::algebra");
   return algebra::get_rmsd_transforming_first(tr_for_second, m2, m1);
 }
@@ -46,7 +46,7 @@ IMPATOMEXPORT double get_rmsd(const Selection& s0, const Selection& s1);
 
 /** RMSD on a pair of Selections.*/
 IMPATOMEXPORT double get_rmsd_transforming_first(
-    const IMP::algebra::Transformation3D& tr, const Selection& s0,
+    const algebra::Transformation3D& tr, const Selection& s0,
     const Selection& s1);
 
 /**
@@ -63,18 +63,15 @@ IMPATOMEXPORT double get_rmsd(const Selection& s0, const Selection& s1,
 IMPATOM_DEPRECATED_FUNCTION_DECL(2.2)
 IMPATOMEXPORT double get_rmsd(
     const algebra::Vector3Ds& s0, const algebra::Vector3Ds& s1,
-    const IMP::algebra::Transformation3D& tr_for_second);
+    const algebra::Transformation3D& tr_for_second);
 
 /**
    \deprecated_at{2.2} Use IMP::algebra::get_rmsd_transforming_first() or
    IMP::algebra::get_rmsd()
  */
 IMPATOM_DEPRECATED_FUNCTION_DECL(2.2)
-inline double get_rmsd(const core::XYZs& s0, const core::XYZs& s1,
-                       const IMP::algebra::Transformation3D& tr_for_second) {
-  IMPATOM_DEPRECATED_FUNCTION_DEF(2.2, "Use IMP::algebra::get_rmsds()");
-  return algebra::get_rmsd_transforming_first(tr_for_second, s1, s0);
-}
+IMPATOMEXPORT double get_rmsd(const core::XYZs& s0, const core::XYZs& s1,
+                       const IMP::algebra::Transformation3D& tr_for_second);
 
 //! Calculate the root mean square deviation between two sets of 3D points.
 /**
