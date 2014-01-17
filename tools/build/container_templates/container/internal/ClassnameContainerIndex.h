@@ -23,7 +23,7 @@ IMPCONTAINER_BEGIN_INTERNAL_NAMESPACE
     is in a container.*/
 class IMPCONTAINEREXPORT ClassnameContainerIndex : public ScoreState {
   base::Pointer<ClassnameContainer> container_;
-  int container_version_;
+  std::size_t container_version_;
   IMP::base::set<INDEXTYPE> contents_;
   bool handle_permutations_;
 

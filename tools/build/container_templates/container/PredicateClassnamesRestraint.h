@@ -35,7 +35,7 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
   base::PointerMember<kernel::ClassnameContainer> input_;
   mutable boost::unordered_map<int, PLURALINDEXTYPE> lists_;
   boost::unordered_map<int, base::PointerMember<ClassnameScore> > scores_;
-  mutable int input_version_;
+  mutable std::size_t input_version_;
   bool error_on_unknown_;
   void update_lists_if_necessary() const;
 
