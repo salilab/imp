@@ -216,6 +216,18 @@ namespace IMP {
  }
 }
 
+%inline %{
+double get_rmsd_tranforming_first(IMP::algebra::Transformation3D tr,
+                                   const IMP::algebra::Vector3Ds &v0,
+                                   const IMP::algebra::Vector3Ds &v1) {
+  return IMP::algebra::get_rmsd_transforming_first(tr, v0, v1);
+}
+double get_rmsd(const IMP::algebra::Vector3Ds &v0,
+                                   const IMP::algebra::Vector3Ds &v1) {
+  return IMP::algebra::get_rmsd(v0, v1);
+}
+%}
+
 %pythoncode %{
   LinearFit=LinearFit2D
   ParabolicFit=ParabolicFit2D

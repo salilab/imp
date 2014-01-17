@@ -231,7 +231,6 @@ namespace IMP {
    %template(show_molecular_hierarchy) IMP::core::show<IMP::atom::Hierarchy>;
    %template(CHARMMBond) CHARMMConnection<2>;
    %template(CHARMMAngle) CHARMMConnection<3>;
-   %template(_get_rmsd_cpp) get_rmsd<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
    %template(_get_native_overlap_cpp) get_native_overlap<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
    %template(_get_drmsd_cpp) get_drmsd<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
    %template(_get_drms_cpp) get_drms<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
@@ -241,10 +240,6 @@ namespace IMP {
 }
 
 %pythoncode %{
-def get_rmsd(a, b):
-   va= [IMP.algebra.get_vector(x) for x in a]
-   vb= [IMP.algebra.get_vector(x) for x in b]
-   return _get_rmsd_cpp(va, vb)
 def get_native_overlap(a, b, d):
    va= [IMP.algebra.get_vector(x) for x in a]
    vb= [IMP.algebra.get_vector(x) for x in b]

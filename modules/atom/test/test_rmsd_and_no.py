@@ -46,7 +46,7 @@ class Tests(IMP.test.TestCase):
         x1 = IMP.core.XYZ.setup_particle(p1, v1)
         x2 = IMP.core.XYZ.setup_particle(p2, v2)
 
-        self.assertAlmostEqual(IMP.atom.get_rmsd([v1], [v2]), 1.0, delta=1e-6)
+        self.assertAlmostEqual(IMP.algebra.get_rmsd([v1], [v2]), 1.0, delta=1e-6)
         self.assertAlmostEqual(IMP.atom.get_rmsd([x1], [x2]), 1.0, delta=1e-6)
 
     def test_native_overlap(self):
