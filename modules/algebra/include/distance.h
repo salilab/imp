@@ -28,15 +28,14 @@ inline double get_rmsd_transforming_first(const Transformation3D& tr,
                                           const Vector3DsOrXYZs0& m1,
                                           const Vector3DsOrXYZs1& m2) {
   IMP_USAGE_CHECK(std::distance(m1.begin(), m1.end()) ==
-                  std::distance(m2.begin(), m2.end()),
+                      std::distance(m2.begin(), m2.end()),
                   "The input sets of XYZ points "
-                  << "should be of the same size");
+                      << "should be of the same size");
   double rmsd = 0.0;
   typename Vector3DsOrXYZs0::const_iterator it0 = m1.begin();
   typename Vector3DsOrXYZs1::const_iterator it1 = m2.begin();
   for (; it0 != m1.end(); ++it0, ++it1) {
-    Vector3D tred =
-      tr.get_transformed(get_vector_d_geometry(*it0));
+    Vector3D tred = tr.get_transformed(get_vector_d_geometry(*it0));
     rmsd += get_squared_distance(tred, get_vector_d_geometry(*it1));
   }
   return std::sqrt(rmsd / m1.size());
