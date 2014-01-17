@@ -291,7 +291,7 @@ def setup_application(options, name, ordered):
     all_modules = data["required_modules"] + tools.get_all_modules(
         ".", data["required_modules"], "", ordered)
     all_dependencies = tools.get_all_dependencies(
-        ".", all_modules, "", ordered)
+        ".", all_modules, "", ordered) + data["required_dependencies"]
     modules = ["${IMP_%s_LIBRARY}" % s for s in all_modules]
     dependencies = ["${%s_LIBRARIES}" % s.upper() for s in all_dependencies]
     values["modules"] = "\n".join(modules)
