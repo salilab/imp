@@ -9,12 +9,13 @@
 #include <IMP/rmf/internal/atom_links_static.h>
 #include <IMP/rmf/associations.h>
 #include <IMP/atom/Atom.h>
-#include <IMP/atom/Residue.h>
-#include <IMP/atom/Mass.h>
-#include <IMP/atom/Domain.h>
-#include <IMP/atom/Diffusion.h>
 #include <IMP/atom/Copy.h>
+#include <IMP/atom/Diffusion.h>
+#include <IMP/atom/Domain.h>
 #include <IMP/atom/Fragment.h>
+#include <IMP/atom/Mass.h>
+#include <IMP/atom/Residue.h>
+#include <IMP/atom/State.h>
 #include <IMP/core/Typed.h>
 #include <IMP/display/Colored.h>
 #include <RMF/SetCurrentFrame.h>
