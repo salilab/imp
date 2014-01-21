@@ -1,5 +1,6 @@
 # ChangeLog
 # For IMP 2.2 # {#ChangeLog}
+- The generic geometry functions were simplified slightly and renamed to IMP::algebra::get_vector_geometry().
 - The IMP::base::Flag class was added to simplify adding flags in C++.
 - The `--log_level` and `--check_level` command line argument now take strings (eg VERBOSE) to specify their values, rather than cryptic (and a bit unstable) numbers.
 - Command line options are now divided into normal and advanced ones. You do `--help_advanced` to show the advanced ones.

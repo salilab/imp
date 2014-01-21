@@ -27,8 +27,8 @@ template <class P>
 inline double angle(const P &d0, const P &d1, const P &d2,
                     algebra::Vector3D *derv0, algebra::Vector3D *derv1,
                     algebra::Vector3D *derv2) {
-  algebra::Vector3D rij = get_vector_d_geometry(d0) - get_vector_d_geometry(d1);
-  algebra::Vector3D rkj = get_vector_d_geometry(d2) - get_vector_d_geometry(d1);
+  algebra::Vector3D rij = get_vector_geometry(d0) - get_vector_geometry(d1);
+  algebra::Vector3D rkj = get_vector_geometry(d2) - get_vector_geometry(d1);
 
   double scalar_product = rij * rkj;
   double mag_rij = rij.get_magnitude();

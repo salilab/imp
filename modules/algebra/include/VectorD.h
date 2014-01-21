@@ -346,6 +346,7 @@ class VectorD : public GeometricPrimitiveD<D> {
     return data_.get_data() + get_dimension();
   }
 
+  static const int DIMENSION = D;
 #endif
 
 #ifndef SWIG
@@ -625,14 +626,14 @@ typedef VectorD<-1> VectorKD;
 typedef base::Vector<VectorD<-1> > VectorKDs;
 
 #ifndef SWIG
-/** See VectorD */
-template <template <int D> class C, int D>
-inline const VectorD<D> &get_vector_d_geometry(const C<D> &g) {
+/** See VectorD \genericgeometry */
+template <class C>
+inline const VectorD<C::DIMENSION> &get_vector_geometry(const C &g) {
   return g;
 }
-/** See VectorD */
-template <class C, class D>
-inline void set_vector_d_geometry(C &g, const D &v) {
+/** See VectorD \genericgeometry */
+template <class C, class E>
+inline void set_vector_geometry(C &g, const E &v) {
   g = v;
 }
 #endif

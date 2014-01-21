@@ -10,8 +10,6 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/decorator_macros.h>
-#include "internal/dihedral_helpers.h"
-
 #include <IMP/Decorator.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Transformation3D.h>
@@ -127,6 +125,67 @@ class IMPCOREEXPORT XYZ : public Decorator {
   static const FloatKeys &get_xyz_keys();
 };
 
+/** \genericgeometry */
+inline void set_vector_geometry(XYZ d, const algebra::Vector3D &v) {
+  d.set_coordinates(v);
+}
+/** \genericgeometry */
+inline const algebra::Vector3D get_vector_geometry(XYZ d) {
+  return d.get_coordinates();
+}
+
+IMPCORE_END_NAMESPACE
+
+#ifndef SWIG
+// swig doesn't like having the overloads in different namespaces
+// it will do the conversion implicitly anyway
+IMPKERNEL_BEGIN_NAMESPACE
+
+/** \genericgeometry */
+inline const algebra::Vector3D get_vector_geometry(Particle *p) {
+  return core::XYZ(p).get_coordinates();
+}
+/** \genericgeometry */
+inline void set_vector_geometry(Particle *p,
+                                const algebra::Vector3D &v) {
+  core::XYZ(p).set_coordinates(v);
+}
+
+inline const algebra::Vector3D get_vector_geometry(Decorator d) {
+  return core::XYZ(d).get_coordinates();
+}
+/** \genericgeometry */
+inline void set_vector_geometry(Decorator d,
+                                const algebra::Vector3D &v) {
+  core::XYZ(d).set_coordinates(v);
+}
+
+IMPKERNEL_END_NAMESPACE
+IMPBASE_BEGIN_NAMESPACE
+inline const algebra::Vector3D get_vector_geometry(
+    base::WeakPointer<kernel::Particle> d) {
+  return core::XYZ(d).get_coordinates();
+}
+/** \genericgeometry */
+inline void set_vector_geometry(base::WeakPointer<kernel::Particle> d,
+                                const algebra::Vector3D &v) {
+  core::XYZ(d).set_coordinates(v);
+}
+inline const algebra::Vector3D get_vector_geometry(
+    base::Pointer<kernel::Particle> d) {
+  return core::XYZ(d).get_coordinates();
+}
+/** \genericgeometry */
+inline void set_vector_geometry(base::Pointer<kernel::Particle> d,
+                                const algebra::Vector3D &v) {
+  core::XYZ(d).set_coordinates(v);
+}
+IMPBASE_END_NAMESPACE
+
+#endif
+
+IMPCORE_BEGIN_NAMESPACE
+
 //! Compute the distance between a pair of particles
 /** compute the ditance between the x,y,z coordinates of a and b
     \ingroup helper
@@ -140,9 +199,7 @@ inline double get_distance(XYZ a, XYZ b) {
 /** \ingroup helper
     See XYZ
  */
-inline double get_dihedral(XYZ a, XYZ b, XYZ c, XYZ d) {
-  return internal::dihedral(a, b, c, d, nullptr, nullptr, nullptr, nullptr);
-}
+IMPCOREEXPORT double get_dihedral(XYZ a, XYZ b, XYZ c, XYZ d);
 
 //! Apply a transformation to the particle
 /** See XYZ
@@ -150,35 +207,8 @@ inline double get_dihedral(XYZ a, XYZ b, XYZ c, XYZ d) {
 */
 IMPCOREEXPORT void transform(XYZ a, const algebra::Transformation3D &tr);
 
-/** \genericgeometry */
-inline const algebra::Vector3D get_vector_d_geometry(XYZ d) {
-  return d.get_coordinates();
-}
-/** \genericgeometry */
-inline void set_vector_d_geometry(XYZ d, const algebra::Vector3D &v) {
-  d.set_coordinates(v);
-}
-
 IMP_DECORATORS(XYZ, XYZs, kernel::ParticlesTemp);
 
 IMPCORE_END_NAMESPACE
-
-#ifndef SWIG
-// use koenig lookup
-// swig doesn't like having the overloads in different namespaces
-// it will do the conversion implicitly anyway
-IMPKERNEL_BEGIN_NAMESPACE
-/** \genericgeometry */
-inline const algebra::Vector3D get_vector_d_geometry(kernel::Particle *p) {
-  return core::XYZ(p).get_coordinates();
-}
-/** \genericgeometry */
-inline void set_vector_d_geometry(kernel::Particle *p,
-                                  const algebra::Vector3D &v) {
-  core::XYZ(p).set_coordinates(v);
-}
-
-IMPKERNEL_END_NAMESPACE
-#endif
 
 #endif /* IMPCORE_XY_Z_H */

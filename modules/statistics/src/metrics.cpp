@@ -49,8 +49,8 @@ inline double get_rmsd(const Vector3DsOrXYZs0 &m1, const Vector3DsOrXYZs1 &m2,
   typename Vector3DsOrXYZs1::const_iterator it1 = m2.begin();
   for (; it0 != m1.end(); ++it0, ++it1) {
     algebra::Vector3D tred =
-        tr_for_second.get_transformed(get_vector_d_geometry(*it1));
-    rmsd += algebra::get_squared_distance(get_vector_d_geometry(*it0), tred);
+        tr_for_second.get_transformed(get_vector_geometry(*it1));
+    rmsd += algebra::get_squared_distance(get_vector_geometry(*it0), tred);
   }
   return std::sqrt(rmsd / m1.size());
 }

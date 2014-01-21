@@ -61,17 +61,18 @@ IMPATOMEXPORT double get_rmsd(const Selection& s0, const Selection& s1,
    IMP::algebra::get_rmsd()
  */
 IMPATOM_DEPRECATED_FUNCTION_DECL(2.2)
-IMPATOMEXPORT double get_rmsd(
-    const algebra::Vector3Ds& s0, const algebra::Vector3Ds& s1,
-    const algebra::Transformation3D& tr_for_second);
+IMPATOMEXPORT double get_rmsd(const algebra::Vector3Ds& s0,
+                              const algebra::Vector3Ds& s1,
+                              const algebra::Transformation3D& tr_for_second);
 
 /**
    \deprecated_at{2.2} Use IMP::algebra::get_rmsd_transforming_first() or
    IMP::algebra::get_rmsd()
  */
 IMPATOM_DEPRECATED_FUNCTION_DECL(2.2)
-IMPATOMEXPORT double get_rmsd(const core::XYZs& s0, const core::XYZs& s1,
-                       const IMP::algebra::Transformation3D& tr_for_second);
+IMPATOMEXPORT double get_rmsd(
+    const core::XYZs& s0, const core::XYZs& s1,
+    const IMP::algebra::Transformation3D& tr_for_second);
 
 //! Calculate the root mean square deviation between two sets of 3D points.
 /**
@@ -84,18 +85,19 @@ IMPATOMEXPORT double get_rmsd(const core::XYZs& s0, const core::XYZs& s1,
 template <class Vector3DsOrXYZs0, class Vector3DsOrXYZs1>
 inline double get_drmsd(const Vector3DsOrXYZs0& m0,
                         const Vector3DsOrXYZs1& m1) {
+  using algebra::get_vector_geometry;
   IMP_USAGE_CHECK(m0.size() == m1.size(), "The input sets of XYZ points "
                                               << "should be of the same size");
   double drmsd = 0.0;
 
   int npairs = 0;
   for (unsigned i = 0; i < m0.size() - 1; ++i) {
-    algebra::Vector3D v0i = get_vector_d_geometry(m0[i]);
-    algebra::Vector3D v1i = get_vector_d_geometry(m1[i]);
+    algebra::Vector3D v0i = get_vector_geometry(m0[i]);
+    algebra::Vector3D v1i = get_vector_geometry(m1[i]);
 
     for (unsigned j = i + 1; j < m0.size(); ++j) {
-      algebra::Vector3D v0j = get_vector_d_geometry(m0[j]);
-      algebra::Vector3D v1j = get_vector_d_geometry(m1[j]);
+      algebra::Vector3D v0j = get_vector_geometry(m0[j]);
+      algebra::Vector3D v1j = get_vector_geometry(m1[j]);
 
       double dist0 = algebra::get_distance(v0i, v0j);
       double dist1 = algebra::get_distance(v1i, v1j);
@@ -124,8 +126,8 @@ inline double get_native_overlap(const Vector3DsOrXYZs0& m1,
                       << "should be of the same size");
   unsigned int distances = 0;
   for (unsigned int i = 0; i < m1.size(); i++) {
-    double d = algebra::get_distance(get_vector_d_geometry(m1[i]),
-                                     get_vector_d_geometry(m2[i]));
+    double d = algebra::get_distance(get_vector_geometry(m1[i]),
+                                     get_vector_geometry(m2[i]));
     if (d <= threshold) distances++;
   }
   return 100.0 * distances / m1.size();
@@ -150,10 +152,10 @@ inline double get_drms(const Vector3DsOrXYZs0& m1, const Vector3DsOrXYZs1& m2) {
   double sum_d1ij = 0.0;
   for (unsigned int i = 0; i < n; ++i) {
     for (unsigned int j = i + 1; j < n; ++j) {
-      double sqd1 = algebra::get_squared_distance(get_vector_d_geometry(m1[i]),
-                                                  get_vector_d_geometry(m1[j]));
-      double sqd2 = algebra::get_squared_distance(get_vector_d_geometry(m2[i]),
-                                                  get_vector_d_geometry(m2[j]));
+      double sqd1 = algebra::get_squared_distance(get_vector_geometry(m1[i]),
+                                                  get_vector_geometry(m1[j]));
+      double sqd2 = algebra::get_squared_distance(get_vector_geometry(m2[i]),
+                                                  get_vector_geometry(m2[j]));
       drms += (sqd1 - sqd2) * (sqd1 - sqd2);
       sum_d1ij += sqd1;
     }
@@ -202,13 +204,13 @@ inline double get_rigid_bodies_drms(const Vector3DsOrXYZs0& m1,
       IMP_USAGE_CHECK(range2 >= 0, "Point " << j << " of m2 does not belong to "
                                                     "any range");
 
-      double sqd1 = algebra::get_squared_distance(get_vector_d_geometry(m1[i]),
-                                                  get_vector_d_geometry(m1[j]));
+      double sqd1 = algebra::get_squared_distance(get_vector_geometry(m1[i]),
+                                                  get_vector_geometry(m1[j]));
       sum_d1ij += sqd1;
       if (range1 != range2) {
         // points i and j in different ranges compare distances
-        double sqd2 = algebra::get_squared_distance(
-            get_vector_d_geometry(m2[i]), get_vector_d_geometry(m2[j]));
+        double sqd2 = algebra::get_squared_distance(get_vector_geometry(m2[i]),
+                                                    get_vector_geometry(m2[j]));
         drms += (sqd1 - sqd2) * (sqd1 - sqd2);
       }
     }

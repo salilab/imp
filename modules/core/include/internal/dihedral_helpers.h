@@ -10,6 +10,7 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/algebra/Vector3D.h>
+#include <IMP/core/XYZ.h>
 #include <cmath>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
@@ -23,9 +24,9 @@ template <class P>
 inline double dihedral(const P &d0, const P &d1, const P &d2, const P &d3,
                        algebra::Vector3D *derv0, algebra::Vector3D *derv1,
                        algebra::Vector3D *derv2, algebra::Vector3D *derv3) {
-  algebra::Vector3D rij = get_vector_d_geometry(d0) - get_vector_d_geometry(d1);
-  algebra::Vector3D rkj = get_vector_d_geometry(d2) - get_vector_d_geometry(d1);
-  algebra::Vector3D rkl = get_vector_d_geometry(d2) - get_vector_d_geometry(d3);
+  algebra::Vector3D rij = get_vector_geometry(d0) - get_vector_geometry(d1);
+  algebra::Vector3D rkj = get_vector_geometry(d2) - get_vector_geometry(d1);
+  algebra::Vector3D rkl = get_vector_geometry(d2) - get_vector_geometry(d3);
 
   algebra::Vector3D v1 = get_vector_product(rij, rkj);
   algebra::Vector3D v2 = get_vector_product(rkj, rkl);

@@ -137,16 +137,6 @@ IMPCOREEXPORT algebra::Sphere3D get_enclosing_sphere(const XYZs &v);
 IMPCOREEXPORT XYZRs create_xyzr_particles(kernel::Model *m, unsigned int num,
                                           Float radius, Float box_side = 10);
 
-/** \genericgeometry */
-inline const algebra::Sphere3D get_sphere_d_geometry(XYZR d) {
-  return d.get_sphere();
-}
-
-/** \genericgeometry */
-inline void set_sphere_d_geometry(XYZR d, const algebra::Sphere3D &v) {
-  d.set_sphere(v);
-}
-
 /** \class XYZRGeometry
     \brief Display an IMP::core::XYZR particle as a ball.
 
@@ -179,28 +169,5 @@ IMP_PARTICLE_PAIR_GEOMETRY(EdgePair, core::XYZ, {
 });
 
 IMPCORE_END_NAMESPACE
-
-#ifndef SWIG
-// swig doesn't like having the overloads in different namespaces
-// it will do the conversion implicitly anyway
-IMPKERNEL_BEGIN_NAMESPACE
-/** \genericgeometry */
-inline const algebra::Sphere3D get_sphere_d_geometry(kernel::Particle *p) {
-  return core::XYZR(p).get_sphere();
-}
-
-/** \genericgeometry */
-inline void set_sphere_d_geometry(kernel::Particle *p,
-                                  const algebra::Sphere3D &v) {
-  core::XYZR(p).set_sphere(v);
-}
-
-/** \genericgeometry */
-inline const algebra::BoundingBoxD<3> get_bounding_box_d_geometry(
-    kernel::Particle *p) {
-  return get_bounding_box(core::XYZR(p).get_sphere());
-}
-IMPKERNEL_END_NAMESPACE
-#endif
 
 #endif /* IMPCORE_XYZ_R_H */

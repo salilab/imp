@@ -26,4 +26,10 @@ void transform(XYZ a, const algebra::Transformation3D &tr) {
   a.set_coordinates(tr.get_transformed(a.get_coordinates()));
 }
 
+double get_dihedral(XYZ a, XYZ b, XYZ c, XYZ d) {
+  return internal::dihedral(a.get_coordinates(), b.get_coordinates(),
+                            c.get_coordinates(), d.get_coordinates(), nullptr,
+                            nullptr, nullptr, nullptr);
+}
+
 IMPCORE_END_NAMESPACE

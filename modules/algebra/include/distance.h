@@ -27,6 +27,7 @@ template <class Vector3DsOrXYZs0, class Vector3DsOrXYZs1>
 inline double get_rmsd_transforming_first(const Transformation3D& tr,
                                           const Vector3DsOrXYZs0& m1,
                                           const Vector3DsOrXYZs1& m2) {
+  using algebra::get_vector_geometry;
   IMP_USAGE_CHECK(std::distance(m1.begin(), m1.end()) ==
                       std::distance(m2.begin(), m2.end()),
                   "The input sets of XYZ points "
@@ -35,8 +36,8 @@ inline double get_rmsd_transforming_first(const Transformation3D& tr,
   typename Vector3DsOrXYZs0::const_iterator it0 = m1.begin();
   typename Vector3DsOrXYZs1::const_iterator it1 = m2.begin();
   for (; it0 != m1.end(); ++it0, ++it1) {
-    Vector3D tred = tr.get_transformed(get_vector_d_geometry(*it0));
-    rmsd += get_squared_distance(tred, get_vector_d_geometry(*it1));
+    Vector3D tred = tr.get_transformed(get_vector_geometry(*it0));
+    rmsd += get_squared_distance(tred, get_vector_geometry(*it1));
   }
   return std::sqrt(rmsd / m1.size());
 }
