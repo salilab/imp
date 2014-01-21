@@ -13,6 +13,7 @@
 #include <IMP/base/map.h>
 #include <IMP/base/Flag.h>
 #include <IMP/base/tuple_macros.h>
+#include <IMP/base/enums.h>
 #include <boost/cstdint.hpp>
 #include <boost/program_options.hpp>
 #include <boost/unordered_set.hpp>
