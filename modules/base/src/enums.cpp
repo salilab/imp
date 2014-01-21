@@ -31,7 +31,7 @@ std::istream &operator>>(std::istream &in, LogLevel &ll) {
   return in;
 }
 
-std::ostream &operator<<(std::ostream &in, LogLevel &ll) {
+std::ostream &operator<<(std::ostream &in, LogLevel ll) {
   if (ll == SILENT)
     in << "SILENT";
   else if (ll == WARNING)
@@ -63,6 +63,40 @@ std::istream &operator>>(std::istream &in, CheckLevel &ll) {
     IMP_THROW("Bad log check " << str, IOException);
   }
   return in;
+}
+
+std::ostream &operator<<(std::ostream &in, CheckLevel ll) {
+  if (ll== NONE) in << "NONE";
+  else if (ll == USAGE) in << "USAGE";
+  else if (ll == USAGE_AND_INTERNAL) in << "USAGE_AND_INTERNAL";
+  else {
+    IMP_THROW("Bad log check " << ll, IOException);
+  }
+  return in;
+}
+
+std::istream &operator>>(std::istream &in, StatisticsLevel &ll) {
+  std::string str;
+  in >> str;
+  if (str == "NONE")
+    ll = NO_STATISTICS;
+  else if (str == "ALL")
+    ll = ALL_STATISTICS;
+  else {
+    IMP_THROW("Bad statistics level " << str, IOException);
+  }
+  return in;
+}
+
+std::ostream &operator<<(std::ostream &out, StatisticsLevel ll) {
+  if (ll == NO_STATISTICS)
+    out << "NONE";
+  else if (ll == ALL_STATISTICS)
+    out << "ALL";
+  else {
+    IMP_THROW("Bad statistics level " << ll, IOException);
+  }
+  return out;
 }
 
 IMPBASE_END_NAMESPACE

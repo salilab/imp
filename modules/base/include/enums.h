@@ -44,7 +44,7 @@ enum LogLevel {
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 IMPBASEEXPORT std::istream &operator>>(std::istream &in, LogLevel &ll);
-IMPBASEEXPORT std::ostream &operator<<(std::ostream &in, LogLevel &ll);
+IMPBASEEXPORT std::ostream &operator<<(std::ostream &in, LogLevel ll);
 #endif
 
 // duplicated in IMP_base_exception.i otherwise IMP_base_exception.i
@@ -65,6 +65,7 @@ enum CheckLevel {
 #endif
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 IMPBASEEXPORT std::istream &operator>>(std::istream &in, CheckLevel &ll);
+IMPBASEEXPORT std::ostream &operator<<(std::ostream &in, CheckLevel ll);
 #endif
 
 //! Specify the level of statistics to record
@@ -73,6 +74,11 @@ enum StatisticsLevel {
   NO_STATISTICS = 0,
   ALL_STATISTICS = 1
 };
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+IMPBASEEXPORT std::istream &operator>>(std::istream &in, StatisticsLevel &ll);
+IMPBASEEXPORT std::ostream &operator<<(std::ostream &in, StatisticsLevel ll);
+#endif
+
 
 } // base
 

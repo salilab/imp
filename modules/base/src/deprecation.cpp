@@ -18,7 +18,7 @@ void handle_use_deprecated(std::string message) {
 #else
   if (false) {
 #endif
-    if (internal::print_deprecation_messages) {
+    if (internal::no_print_deprecation_messages) {
       if (internal::printed_deprecation_messages.find(message) ==
           internal::printed_deprecation_messages.end()) {
         IMP_WARN(message);
@@ -35,7 +35,7 @@ void handle_use_deprecated(std::string message) {
 }
 
 void set_deprecation_warnings(bool tf) {
-  internal::print_deprecation_messages = tf;
+  internal::no_print_deprecation_messages = !tf;
 }
 
 void set_deprecation_exceptions(bool tf) {

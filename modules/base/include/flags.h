@@ -92,9 +92,13 @@ IMPBASEEXPORT Strings
     setup_from_argv(const Strings &argv, std::string description,
                     std::string positional_description, int num_positional);
 
+
 #ifndef SWIG
 /** Define one of these in C++ to add a new int flag storing
-    into the passed variable.*/
+    into the passed variable.
+
+    \note You should consider using Flag<std::string> instead.
+*/
 struct IMPBASEEXPORT AddStringFlag {
   AddStringFlag(std::string name, std::string description,
                 std::string *storage);
@@ -109,7 +113,10 @@ IMPBASEEXPORT std::string get_string_flag(std::string name);
 
 #ifndef SWIG
 /** Define one of these in C++ to add a new boost::int64_t flag storing
-    into the passed variable.*/
+    into the passed variable.
+
+    \note You should consider using Flag<boost::int64_t> instead.
+*/
 struct IMPBASEEXPORT AddIntFlag {
   AddIntFlag(std::string name, std::string description,
              boost::int64_t *storage);
@@ -124,7 +131,10 @@ IMPBASEEXPORT size_t get_int_flag(std::string name);
 
 #ifndef SWIG
 /** Define one of these in C++ to add a new bool flag storing
-    into the passed variable.*/
+    into the passed variable.
+
+    \note You should consider using Flag<bool> instead.
+*/
 struct IMPBASEEXPORT AddBoolFlag {
   AddBoolFlag(std::string name, std::string description, bool *storage);
 };
@@ -137,7 +147,10 @@ IMPBASEEXPORT bool get_bool_flag(std::string name);
 
 #ifndef SWIG
 /** Define one of these in C++ to add a new float flag storing
-    into the passed variable.*/
+    into the passed variable.
+
+    \note You should consider using Flag<double> instead.
+*/
 struct IMPBASEEXPORT AddFloatFlag {
   AddFloatFlag(std::string name, std::string description, double *storage);
 };
@@ -154,10 +167,14 @@ IMPBASEEXPORT double get_float_flag(std::string name);
     and the flags don't pass it.*/
 IMPBASEEXPORT void write_help(std::ostream &out = std::cerr);
 
+#if defined(IMP_DOXYGEN) || defined(SWIG)
 /** Executables can inspect this flag and when it is true, run a shorter,
     simpler version of their code to just make sure things work.
 */
-extern IMPBASEEXPORT bool run_quick_test;
+extern IMPBASEEXPORT const bool run_quick_test;
+#else
+extern IMPBASEEXPORT AdvancedFlag<bool> run_quick_test;
+#endif
 // defined in static.cpp
 
 IMPBASE_END_NAMESPACE

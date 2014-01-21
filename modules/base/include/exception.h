@@ -80,7 +80,7 @@ IMPBASEEXPORT std::string get_context_message();
 */
 inline void set_check_level(CheckLevel tf) {
   // cap it against the maximum supported level
-  internal::check_level = std::min<int>(tf, IMP_HAS_CHECKS);
+  internal::check_level = std::min<CheckLevel>(tf, CheckLevel(IMP_HAS_CHECKS));
 }
 
 //! Get the current audit mode

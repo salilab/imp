@@ -1,5 +1,8 @@
 # ChangeLog
 # For IMP 2.2 # {#ChangeLog}
+- The IMP::base::Flag class was added to simplify adding flags in C++.
+- The `--log_level` and `--check_level` command line argument now take strings (eg VERBOSE) to specify their values, rather than cryptic (and a bit unstable) numbers.
+- Command line options are now divided into normal and advanced ones. You do `--help_advanced` to show the advanced ones.
 - Support for computing Connolly surfaces was added with IMP::algebra::get_connolly_surface(). In addition, there is now IMP::algebra::get_uniform_surface_cover(const IMP::algebra::Sphere3Ds&,double) to sample the surface of a collection of balls.
 - IMP::atom:: create_simplified_from_volume() was added to create a simplified representation of a hierarchy that preserves the surface are and occupied volume. It uses IMP::algebra::get_simplified_from_volume(). If you want to play with such representations, you can use the rmf_simply application.
 - IMP::atom::get_rmsd(IMP::atom::Selection, IMP::atom::Selection, const IMP::algebra::Transformation3D&) was deprecated. Use IMP::atom::get_rmsd_transforming_first() instead.
