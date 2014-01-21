@@ -27,15 +27,15 @@
 #include <boost/static_assert.hpp>
 
 #if IMP_HAS_CHECKS >= IMP_USAGE
-#define IMP_VECTOR_CHECK check_vector()
-#define IMP_VECTOR_CHECK_INDEX(i) check_index(i)
-#define IMP_VECTOR_CHECK_COMPATIBLE(o) \
+#define IMP_ALGEBRA_VECTOR_CHECK check_vector()
+#define IMP_ALGEBRA_VECTOR_CHECK_INDEX(i) check_index(i)
+#define IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o) \
   check_compatible_vector(o);          \
   o.check_vector()
 #else
-#define IMP_VECTOR_CHECK
-#define IMP_VECTOR_CHECK_INDEX(i)
-#define IMP_VECTOR_CHECK_COMPATIBLE(o)
+#define IMP_ALGEBRA_VECTOR_CHECK
+#define IMP_ALGEBRA_VECTOR_CHECK_INDEX(i)
+#define IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o)
 #endif
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -175,20 +175,20 @@ class VectorD : public GeometricPrimitiveD<D> {
   /** Return the ith Cartesian coordinate. In 3D use [0] to get
       the x coordinate etc.*/
   inline double operator[](unsigned int i) const {
-    IMP_VECTOR_CHECK_INDEX(i);
-    IMP_VECTOR_CHECK;
+    IMP_ALGEBRA_VECTOR_CHECK_INDEX(i);
+    IMP_ALGEBRA_VECTOR_CHECK;
     return data_.get_data()[i];
   }
   /** Return the ith Cartesian coordinate. In 3D use [0] to get
       the x coordinate etc. */
   inline double &operator[](unsigned int i) {
-    IMP_VECTOR_CHECK_INDEX(i);
+    IMP_ALGEBRA_VECTOR_CHECK_INDEX(i);
     return data_.get_data()[i];
   }
 
   double get_scalar_product(const VectorD<D> &o) const {
-    IMP_VECTOR_CHECK_COMPATIBLE(o);
-    IMP_VECTOR_CHECK;
+    IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o);
+    IMP_ALGEBRA_VECTOR_CHECK;
     double ret = 0;
     for (unsigned int i = 0; i < get_dimension(); ++i) {
       ret += operator[](i) * o.operator[](i);
@@ -230,26 +230,26 @@ class VectorD : public GeometricPrimitiveD<D> {
 
 #ifndef IMP_DOXYGEN
   double operator*(const VectorD<D> &o) const {
-    IMP_VECTOR_CHECK_COMPATIBLE(o);
+    IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o);
     return get_scalar_product(o);
   }
 
   VectorD operator*(double s) const {
-    IMP_VECTOR_CHECK;
+    IMP_ALGEBRA_VECTOR_CHECK;
     VectorD ret = *this;
     ret *= s;
     return ret;
   }
 
   VectorD operator/(double s) const {
-    IMP_VECTOR_CHECK;
+    IMP_ALGEBRA_VECTOR_CHECK;
     VectorD ret = *this;
     ret /= s;
     return ret;
   }
 
   VectorD operator-() const {
-    IMP_VECTOR_CHECK;
+    IMP_ALGEBRA_VECTOR_CHECK;
     VectorD ret = *this;
     for (unsigned int i = 0; i < get_dimension(); ++i) {
       ret[i] = -ret[i];
@@ -258,24 +258,24 @@ class VectorD : public GeometricPrimitiveD<D> {
   }
 
   VectorD operator-(const VectorD &o) const {
-    IMP_VECTOR_CHECK_COMPATIBLE(o);
-    IMP_VECTOR_CHECK;
+    IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o);
+    IMP_ALGEBRA_VECTOR_CHECK;
     VectorD ret = *this;
     ret -= o;
     return ret;
   }
 
   VectorD operator+(const VectorD &o) const {
-    IMP_VECTOR_CHECK_COMPATIBLE(o);
-    IMP_VECTOR_CHECK;
+    IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o);
+    IMP_ALGEBRA_VECTOR_CHECK;
     VectorD ret = *this;
     ret += o;
     return ret;
   }
 
   VectorD &operator+=(const VectorD &o) {
-    IMP_VECTOR_CHECK_COMPATIBLE(o);
-    IMP_VECTOR_CHECK;
+    IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o);
+    IMP_ALGEBRA_VECTOR_CHECK;
     for (unsigned int i = 0; i < get_dimension(); ++i) {
       operator[](i) += o[i];
     }
@@ -283,8 +283,8 @@ class VectorD : public GeometricPrimitiveD<D> {
   }
 
   VectorD &operator-=(const VectorD &o) {
-    IMP_VECTOR_CHECK_COMPATIBLE(o);
-    IMP_VECTOR_CHECK;
+    IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o);
+    IMP_ALGEBRA_VECTOR_CHECK;
     for (unsigned int i = 0; i < get_dimension(); ++i) {
       operator[](i) -= o[i];
     }
@@ -292,7 +292,7 @@ class VectorD : public GeometricPrimitiveD<D> {
   }
 
   VectorD &operator/=(double f) {
-    IMP_VECTOR_CHECK;
+    IMP_ALGEBRA_VECTOR_CHECK;
     for (unsigned int i = 0; i < get_dimension(); ++i) {
       operator[](i) /= f;
     }
@@ -300,7 +300,7 @@ class VectorD : public GeometricPrimitiveD<D> {
   }
 
   VectorD &operator*=(double f) {
-    IMP_VECTOR_CHECK;
+    IMP_ALGEBRA_VECTOR_CHECK;
     for (unsigned int i = 0; i < get_dimension(); ++i) {
       operator[](i) *= f;
     }
@@ -308,7 +308,7 @@ class VectorD : public GeometricPrimitiveD<D> {
   }
 
   void show(std::ostream &out, std::string delim, bool parens = true) const {
-    IMP_VECTOR_CHECK;
+    IMP_ALGEBRA_VECTOR_CHECK;
     if (parens) out << "(";
     for (unsigned int i = 0; i < get_dimension(); ++i) {
       out << operator[](i);
@@ -624,16 +624,18 @@ typedef VectorD<-1> VectorKD;
 /** KD vectors typedef for swig */
 typedef base::Vector<VectorD<-1> > VectorKDs;
 
+#ifndef SWIG
 /** See VectorD */
-template <int D>
-inline const VectorD<D> &get_vector_d_geometry(const VectorD<D> &g) {
+template <template <int D> class C, int D>
+inline const VectorD<D> &get_vector_d_geometry(const C<D> &g) {
   return g;
 }
 /** See VectorD */
-template <int D>
-inline void set_vector_d_geometry(VectorD<D> &g, const VectorD<D> &v) {
+template <class C, class D>
+inline void set_vector_d_geometry(C &g, const D &v) {
   g = v;
 }
+#endif
 
 /** See VectorD
     Return the vector that is the elementwise product of the two.
