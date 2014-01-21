@@ -113,7 +113,10 @@ class IMPATOMEXPORT Selection :
   void set_terminus(Terminus t);
   /** Select particles in chains whose id is
       in the passed string.*/
-  void set_chains(Strings chains);
+  void set_chain_ids(Strings chains);
+#ifndef IMP_DOXYGEN
+  void set_chains(Strings chains) { set_chain_ids(chains); }
+#endif
   /** Select residues whose indexes are in the passed list.*/
   void set_residue_indexes(Ints indexes);
   /** Select atoms whose types are in the list, eg AT_CA.*/
@@ -125,8 +128,12 @@ class IMPATOMEXPORT Selection :
   void set_domains(Strings names);
   /** Select a molecule with the passed name. */
   void set_molecule(std::string mol);
+  /** Select with the passed chain id. */
+  void set_chain_id(std::string c);
+#ifndef IMP_DOXYGEN
   /** Select a chain with the passed id*/
-  void set_chain(std::string c);
+  void set_chain(std::string c) { set_chain_id(c); }
+#endif
 #ifndef SWIG
   /** \deprecated_at{2.2} Pass a string */
   IMPATOM_DEPRECATED_FUNCTION_DECL(2.2)

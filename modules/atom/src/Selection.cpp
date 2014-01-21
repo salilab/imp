@@ -370,7 +370,7 @@ void Selection::set_molecules(Strings mols) {
 void Selection::set_terminus(Terminus t) {
   predicates_.push_back(new TerminusSingletonPredicate(t));
 }
-void Selection::set_chains(Strings chains) {
+void Selection::set_chain_ids(Strings chains) {
   std::sort(chains.begin(), chains.end());
   predicates_.push_back(new ChainIDSingletonPredicate(chains));
 }
@@ -393,7 +393,7 @@ void Selection::set_domains(Strings names) {
 void Selection::set_molecule(std::string mol) {
   set_molecules(Strings(1, mol));
 }
-void Selection::set_chain(std::string c) { set_chains(Strings(1, c)); }
+void Selection::set_chain_id(std::string c) { set_chain_ids(Strings(1, c)); }
 void Selection::set_residue_index(int i) { set_residue_indexes(Ints(1, i)); }
 void Selection::set_atom_type(AtomType types) {
   set_atom_types(AtomTypes(1, types));
