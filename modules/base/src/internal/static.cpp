@@ -190,7 +190,7 @@ AdvancedFlag<StatisticsLevel> stats_level(
 AdvancedFlag<bool, IMP_BASE_HAS_GPERFTOOLS> cpu_profile(
     "cpu_profile", "Perform CPU profiling.", false);
 AdvancedFlag<bool, IMP_BASE_HAS_GPERFTOOLS> heap_profile(
-    "heap_profile", "Perform heap profiling.", &heap_profile);
+    "heap_profile", "Perform heap profiling.", false);
 
 AdvancedFlag<boost::int64_t, IMP_BASE_HAS_OPENMP> number_of_threads(
     "number_of_threads", "Number of threads to use.", 1);
