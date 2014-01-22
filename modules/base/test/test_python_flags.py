@@ -17,7 +17,7 @@ class Tests(IMP.test.TestCase):
         IMP.base.add_bool_flag("myboolflag", "Some bool text")
         IMP.base.add_float_flag("myfloatflag", 10, "Some float text")
         extra = IMP.base.setup_from_argv(["python", "--mystringflag=hi",
-                                          "--log_level=3",
+                                          "--log_level=VERBOSE",
                                          "--myintflag=6", "--myfloatflag=-6.0",
                                           "--myboolflag", "zero", "one"],
                                          "test things",
