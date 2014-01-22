@@ -231,9 +231,10 @@ IMPBASE_END_NAMESPACE
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
 AdvancedFlag<bool> no_print_deprecation_messages(
     "no_deprecation_warnings",
-    "Don't print warnings on runtime deprecation use", false);
+    "Don't print warnings on runtime deprecation use.", false);
 AdvancedFlag<bool> exceptions_on_deprecation(
-    "deprecation_warnings", "Print warnings on runtime deprecation use", false);
+    "deprecation_exceptions",
+    "Throw an exception when deprecated functions are used.", false);
 boost::unordered_set<std::string> printed_deprecation_messages;
 
 boost::unordered_map<std::string, Timing> timings;
