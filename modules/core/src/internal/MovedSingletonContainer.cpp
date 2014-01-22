@@ -37,7 +37,7 @@ MovedSingletonContainer::MovedSingletonContainer(SingletonContainer *pc,
 }
 
 void MovedSingletonContainer::do_score_state_after_evaluate(
-    DerivativeAccumulator *da) {
+    DerivativeAccumulator *) {
   if (reset_all_) {
     do_reset_all();
     kernel::ParticleIndexes t;

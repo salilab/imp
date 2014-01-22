@@ -481,7 +481,7 @@ void assign_residues(IMP::atom::Hierarchy in,
       cur = IMP::atom::Fragment(l).get_residue_indexes();
     } else if (IMP::atom::Domain::get_is_setup(l)) {
       IMP::IntRange ir = IMP::atom::Domain(l).get_index_range();
-      for (unsigned int i = ir.first; i < ir.second; ++i) {
+      for (int i = ir.first; i < ir.second; ++i) {
         cur.push_back(i);
       }
     }

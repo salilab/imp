@@ -200,7 +200,7 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
   }
   if (state_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("state " << std::endl);
-    int dv = state_factory_.get(nh).get_state_index();
+    unsigned int dv = state_factory_.get(nh).get_state_index();
     IMP_USAGE_CHECK(atom::State(m, p).get_state_index() == dv,
                     "State indexes don't match");
   }

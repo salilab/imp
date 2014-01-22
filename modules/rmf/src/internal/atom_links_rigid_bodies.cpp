@@ -130,7 +130,7 @@ void HierarchyLoadRigidBodies::link_particle(
 }
 
 void HierarchyLoadRigidBodies::fix_internal_coordinates(
-    core::RigidBody rb, algebra::ReferenceFrame3D rf,
+    core::RigidBody , algebra::ReferenceFrame3D rf,
     core::RigidBodyMember rm) const {
   // Make sure the internal coordinates of the particles match
   // This is needed to handle scripts that change them during optimation
@@ -221,7 +221,7 @@ void HierarchyLoadRigidBodies::load(RMF::FileConstHandle fh, Model *m) {
   }
 }
 
-void HierarchyLoadRigidBodies::update_rigid_bodies(RMF::FileConstHandle fh,
+void HierarchyLoadRigidBodies::update_rigid_bodies(RMF::FileConstHandle ,
                                                    Model *m) {
   // backwards compat
   typedef std::pair<const int, RB> P;

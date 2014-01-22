@@ -80,7 +80,6 @@ Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
   Vector3Ds sps = get_uniform_surface_cover(in, get_squared(resolution));
 
   // which surface points support each sphere
-  typedef std::pair<SphereIndex, SPIndexSet> SupportsPair;
   IMP_BASE_LARGE_UNORDERED_MAP<SphereIndex, SPIndexSet> supports;
   IMP_BASE_LARGE_UNORDERED_MAP<SphereIndex, double> radii;
   IMP_LOG_TERSE("Creating NN search structure." << std::endl);
@@ -127,7 +126,9 @@ Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
   IMP_LOG_TERSE("Distributing support." << std::endl);
   // which spheres are supported by each point
   typedef std::pair<SPIndex, SphereIndexSet> SupportedPair;
+  if (0) SupportedPair(); // suppress warning
   IMP_BASE_LARGE_UNORDERED_MAP<SPIndex, SphereIndexSet> supported;
+  typedef std::pair<SphereIndex, SPIndexSet> SupportsPair;
   IMP_FOREACH(const SupportsPair & ps, supports) {
     IMP_FOREACH(SPIndex spi, ps.second) { supported[spi].insert(ps.first); }
   }

@@ -29,7 +29,7 @@ class IMPCOREEXPORT MovedSingletonContainer
  private:
   double threshold_;
   base::Pointer<SingletonContainer> pc_;
-  int pc_version_;
+  std::size_t pc_version_;
   bool reset_all_;
   bool reset_moved_;
   base::PointerMember<ScoreState> score_state_;

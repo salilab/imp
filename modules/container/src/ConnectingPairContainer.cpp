@@ -110,6 +110,7 @@ ModelObjectsTemp ConnectingPairContainer::get_score_state_inputs() const {
   ret.push_back(sc_);
   ret.push_back(mv_);
   IMP_FOREACH(kernel::ModelObject* mo, ret) {
+    IMP_UNUSED(mo);
     IMP_INTERNAL_CHECK(mo, "Null object found in " << ret);
   }
   return ret;
