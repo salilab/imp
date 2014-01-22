@@ -7,6 +7,7 @@
 
 #include <IMP/core/XYZ.h>
 #include <IMP/core/rigid_bodies.h>
+#include <IMP/core/internal/dihedral_helpers.h>
 #include <cmath>
 
 IMPCORE_BEGIN_NAMESPACE
