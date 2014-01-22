@@ -16,7 +16,7 @@ using namespace IMP::multifit;
 namespace {
 
 void do_it() {
-  IMP_EV_BENCHMARK_SETUP
+  IMP_MULTIFIT_EV_BENCHMARK_SETUP
 
   {
     IMP_NEW(ClosePairContainer, cpc, (lsc, 0, 5));

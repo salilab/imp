@@ -55,7 +55,9 @@ void test_one(std::string name, int seed, kernel::Model *, ScoringFunction *sf,
       IMP::algebra::BoundingBox3D(IMP::algebra::Vector3D(-100, -100, -100),
                                   IMP::algebra::Vector3D(100, 100, 100));
   unsigned int nreps = onreps;
-
+  if (IMP::base::run_quick_test) {
+    nreps = 1;
+  }
   {
     double result = 0, total_reps = 0;
     double runtime;
@@ -146,7 +148,7 @@ void test_one(std::string name, int seed, kernel::Model *, ScoringFunction *sf,
 }
 }
 
-#define IMP_EV_BENCHMARK_SETUP                                         \
+#define IMP_MULTIFIT_EV_BENCHMARK_SETUP                                \
   IMP_NEW(kernel::Model, m, ());                                       \
   int seed = IMP::base::random_number_generator();                     \
   atom::Hierarchy h0 =                                                 \
