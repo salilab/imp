@@ -36,17 +36,6 @@ class Tests(IMP.test.TestCase):
             hd.add_child(chd)
             chd.set_name("child%d" % i)
         return rd.get_particle()
-        
-    def _get_excluded_volume_restraint(self,rb): 
-        import IMP.container
-        m=rb.get_model()
-        ssps=IMP.core.SoftSpherePairScore(1.0)
-        lsa = IMP.container.ListSingletonContainer(m)
-        particles=rb.get_members()
-        lsa.add_particles(particles)          
-        cpc=IMP.container.ClosePairContainer(lsa,0.0,10.0)
-        evr=IMP.container.PairsRestraint(ssps,cpc)
-        return evr
 
     def test_dependencies(self):
         """Test dependencies"""
@@ -126,15 +115,6 @@ class Tests(IMP.test.TestCase):
         self.assertLess(
             (ntr.get_translation() - tr.get_translation()).get_magnitude(),
             2.2)
-
-        evr=self._get_excluded_volume_restraint(rb)
-        initialscore=m.evaluate(False)
-        m.add_restraint(evr)
-        self.assertEqual(evr.unprotected_evaluate(None),0.0)
-        self.assertEqual(m.evaluate(False)-initialscore,0.0)   
-        m.update()
-        self.assertEqual(evr.unprotected_evaluate(None),0.0)
-        self.assertEqual(m.evaluate(False)-initialscore,0.0)      
 
     def test_teardown(self):
         """Testing tearing down rigid bodies"""
