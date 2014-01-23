@@ -158,8 +158,7 @@ class RestraintLoadLink : public SimpleLoadLink<kernel::Restraint> {
       }
     }
     if (rf_.get_is(name)) {
-      IMP_FOREACH(int id, rf_.get(name).get_representation()) {
-        RMF::NodeConstHandle an = name.get_file().get_node(RMF::NodeID(id));
+      IMP_FOREACH(RMF::NodeConstHandle an, rf_.get(name).get_representation()) {
         IMP_LOG_TERSE("Found alias child to " << an.get_name() << " of type "
                                               << an.get_type() << std::endl);
         kernel::Particle *p = get_association<kernel::Particle>(an);

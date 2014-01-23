@@ -300,10 +300,8 @@ void HierarchyLoadBonds::setup_bonds(RMF::NodeConstHandle n, kernel::Model *m,
                                      kernel::ParticleIndex p) {
   if (af_.get_is(n)) {
     RMF::decorator::BondConst bd = af_.get(n);
-    RMF::NodeID ep0(bd.get_bonded_0());
-    RMF::NodeID ep1(bd.get_bonded_1());
-    RMF::NodeConstHandle bd0 = n.get_file().get_node(ep0);
-    RMF::NodeConstHandle bd1 = n.get_file().get_node(ep1);
+    RMF::NodeConstHandle bd0 = bd.get_bonded_0();
+    RMF::NodeConstHandle bd1 = bd.get_bonded_1();
     Particle *p0 = get_association<kernel::Particle>(bd0);
     Particle *p1 = get_association<kernel::Particle>(bd1);
     if (p0 && p1) {

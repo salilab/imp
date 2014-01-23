@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
 
     def test_rt(self):
         """Test round trip"""
-        for suffix in RMF.suffixes:
+        for suffix in [".rmfz", ".rmf3"]:
             m = IMP.kernel.Model()
             print "reading pdb"
             name = self.get_tmp_file_name("test_round_trip." + suffix)
@@ -55,7 +55,7 @@ class Tests(IMP.test.TestCase):
 
     def test_part1(self):
         """Test round trip 1"""
-        for suffix in RMF.suffixes:
+        for suffix in [".rmfz", ".rmf3"]:
             m = IMP.kernel.Model()
             print "reading pdb"
             h = IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
