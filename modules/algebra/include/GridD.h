@@ -129,6 +129,8 @@ class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
   typedef EmbeddingT Embedding;
   typedef VectorD<D> Vector;
   /** Create a grid from a bounding box and the counts in each direction.
+
+      This constructor works for all bounded grids.
    */
   GridD(const Ints counts, const BoundingBoxD<D> &bb,
         Value default_value = Value())
@@ -138,6 +140,8 @@ class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
   }
   /** Create a grid from a bounding box and the side of the cubical
       voxel.
+
+      This constructor works for all bounded grids.
   */
   GridD(double side, const BoundingBoxD<D> &bb,
         const Value &default_value = Value())
@@ -149,15 +153,21 @@ class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
         "This grid constructor can only be used with bounded grids.");
   }
 
+  /** Advanced constructor if you want to explicitly init storage
+      and embedding. */
   GridD(const Storage &storage, const Embedding &embed)
       : Storage(storage), Embedding(embed) {}
   /** Construct a grid from the cubical voxel side and the origin.
+
+      This constructor is only valid with unbounded (hence sparse)
+      grids.
    */
   GridD(double side, const VectorD<D> &origin,
         const Value &default_value = Value())
       : Storage(default_value),
         Embedding(origin, get_ones_vector_kd(origin.get_dimension(), side)) {}
   //! An empty, undefined grid.
+  /** Make sure you initialize it before you try to use it. */
   GridD() : Storage(Value()) {}
   /* \name Indexing
      The vector must fall in a valid voxel to get and must be within
