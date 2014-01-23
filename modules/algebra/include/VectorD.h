@@ -169,6 +169,31 @@ class VectorD : public GeometricPrimitiveD<D> {
     data_.set_coordinates(d, d + 4);
   }
 
+  //! Initialize a 5-vector from separate values.
+  VectorD(double x0, double x1, double x2, double x3, double x4) {
+#if defined(IMP_SWIG_WRAPPER) || defined(_MSC_VER)
+    IMP_USAGE_CHECK(D == 5 || D == -1, "Need " << D << " to construct a " << D
+                                               << "-vector.");
+#else
+    BOOST_STATIC_ASSERT(D == 5);
+#endif
+    double d[] = {x0, x1, x2, x3, x4};
+    data_.set_coordinates(d, d + 5);
+  }
+
+  //! Initialize a 6-vector from separate values.
+  VectorD(double x0, double x1, double x2, double x3, double x4, double x5) {
+#if defined(IMP_SWIG_WRAPPER) || defined(_MSC_VER)
+    IMP_USAGE_CHECK(D == 6 || D == -1, "Need " << D << " to construct a " << D
+                                               << "-vector.");
+#else
+    BOOST_STATIC_ASSERT(D == 6);
+#endif
+    double d[] = {x0, x1, x2, x3, x4, x5};
+    data_.set_coordinates(d, d + 6);
+  }
+
+
   //! Default constructor
   VectorD() {}
 

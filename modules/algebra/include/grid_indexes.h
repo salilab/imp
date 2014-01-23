@@ -69,10 +69,35 @@ class ExtendedGridIndexD : public base::Value {
     data_.set_coordinates(b, e);
   }
 #endif
+  ExtendedGridIndexD(int x) {
+    IMP_USAGE_CHECK(D == 1, "Can only use explicit constructor in 1D");
+    int v[] = {x};
+    data_.set_coordinates(v, v + 1);
+  }
+  ExtendedGridIndexD(int x, int y) {
+    IMP_USAGE_CHECK(D == 2, "Can only use explicit constructor in 2D");
+    int v[] = {x, y};
+    data_.set_coordinates(v, v + 2);
+  }
   ExtendedGridIndexD(int x, int y, int z) {
     IMP_USAGE_CHECK(D == 3, "Can only use explicit constructor in 3D");
     int v[] = {x, y, z};
     data_.set_coordinates(v, v + 3);
+  }
+  ExtendedGridIndexD(int i, int j, int k, int l) {
+    IMP_USAGE_CHECK(D == 4, "Can only use explicit constructor in 4D");
+    int v[] = {i, j, k, l};
+    data_.set_coordinates(v, v + 4);
+  }
+  ExtendedGridIndexD(int i, int j, int k, int l, int m) {
+    IMP_USAGE_CHECK(D == 5, "Can only use explicit constructor in 5D");
+    int v[] = {i, j, k, l, m};
+    data_.set_coordinates(v, v + 5);
+  }
+  ExtendedGridIndexD(int i, int j, int k, int l, int m, int n) {
+    IMP_USAGE_CHECK(D == 6, "Can only use explicit constructor in 6D");
+    int v[] = {i, j, k, l, m, n};
+    data_.set_coordinates(v, v + 6);
   }
   ExtendedGridIndexD() {}
   unsigned int get_dimension() const { return data_.get_dimension(); }
@@ -164,7 +189,36 @@ class GridIndexD : public base::Value {
   }
 #endif
   GridIndexD() {}
-
+  GridIndexD(int x) {
+    IMP_USAGE_CHECK(D == 1, "Can only use explicit constructor in 1D");
+    int v[] = {x};
+    data_.set_coordinates(v, v + 1);
+  }
+  GridIndexD(int x, int y) {
+    IMP_USAGE_CHECK(D == 2, "Can only use explicit constructor in 2D");
+    int v[] = {x, y};
+    data_.set_coordinates(v, v + 2);
+  }
+  GridIndexD(int x, int y, int z) {
+    IMP_USAGE_CHECK(D == 3, "Can only use explicit constructor in 3D");
+    int v[] = {x, y, z};
+    data_.set_coordinates(v, v + 3);
+  }
+  GridIndexD(int i, int j, int k, int l) {
+    IMP_USAGE_CHECK(D == 4, "Can only use explicit constructor in 4D");
+    int v[] = {i, j, k, l};
+    data_.set_coordinates(v, v + 4);
+  }
+  GridIndexD(int i, int j, int k, int l, int m) {
+    IMP_USAGE_CHECK(D == 5, "Can only use explicit constructor in 5D");
+    int v[] = {i, j, k, l, m};
+    data_.set_coordinates(v, v + 5);
+  }
+  GridIndexD(int i, int j, int k, int l, int m, int n) {
+    IMP_USAGE_CHECK(D == 6, "Can only use explicit constructor in 6D");
+    int v[] = {i, j, k, l, m, n};
+    data_.set_coordinates(v, v + 6);
+  }
   unsigned int get_dimension() const { return data_.get_dimension(); }
 
 #ifndef IMP_DOXYGEN
