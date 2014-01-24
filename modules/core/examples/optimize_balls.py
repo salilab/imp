@@ -14,12 +14,22 @@ IMP.base.setup_from_argv(sys.argv, "Optimize balls example")
 
 bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                IMP.algebra.Vector3D(10, 10, 10))
-# in fast do 10,10,10, for the purposes of testing we reduce it
-ni = 2
-nj = 2
-np = 2
-radius = .45
-k = 100
+if IMP.base.run_quick_test:
+    ni = 2
+    nj = 2
+    np = 2
+    radius = .45
+    k = 100
+    ncg = 10
+    nmc = 1
+else:
+    ni = 10
+    nj = 10
+    np = 10
+    radius = .45
+    k = 100
+    ncg = 1000
+    nmc = 100
 
 # using a HarmonicDistancePairScore for fixed length links is more
 # efficient than using a HarmonicSphereDistnacePairScore and works
@@ -99,7 +109,7 @@ for p in aps:
     rs.append(IMP.ScopedSetFloatAttribute(p, IMP.core.XYZR.get_radius_key(),
                                           0))
 cg.set_scoring_function(sf)
-cg.optimize(1000)
+cg.optimize(ncg)
 for r in restraints:
     print r.get_name(), r.evaluate(False)
 
@@ -111,12 +121,12 @@ for i in range(1, 11):
         rs.append(
             IMP.ScopedSetFloatAttribute(p, IMP.core.XYZR.get_radius_key(),
                                         IMP.core.XYZR(p).get_radius() * factor))
-    # move each particle 100 times
+    # move each particle nmc times
     print factor
     for j in range(0, 5):
         print "stage", j
         mc.set_kt(100.0 / (3 * j + 1))
-        print "mc", mc.optimize(ni * nj * np * (j + 1) * 100), cg.optimize(10)
+        print "mc", mc.optimize(ni * nj * np * (j + 1) * nmc), cg.optimize(nmc)
     del rs
     for r in restraints:
         print r.get_name(), r.evaluate(False)
