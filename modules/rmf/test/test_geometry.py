@@ -15,7 +15,7 @@ class Tests(IMP.test.TestCase):
 
     def test_round_trip(self):
         """Test reading and writing geometry"""
-        for suffix in RMF.suffixes:
+        for suffix in IMP.rmf.suffixes:
             nm = self.get_tmp_file_name("geometry." + suffix)
             print nm
             f = RMF.create_rmf_file(nm)
@@ -48,7 +48,7 @@ class Tests(IMP.test.TestCase):
 
     def test_all_geometry(self):
         """Test reading and writing each type of geometry"""
-        for suffix in RMF.suffixes:
+        for suffix in IMP.rmf.suffixes:
             for g in [IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 1, 2), 3),
                       IMP.algebra.Segment3D(IMP.algebra.Vector3D(0, 1, 2),
                                             IMP.algebra.Vector3D(3, 4, 5)),
@@ -59,7 +59,7 @@ class Tests(IMP.test.TestCase):
 
     def test_3(self):
         """Testing surface geometry"""
-        for suffix in RMF.suffixes:
+        for suffix in IMP.rmf.suffixes:
             self.skipTest("surfaces not supported")
         #self.skipTest("surface geometry is disabled")
             g = IMP.algebra.DenseDoubleGrid3D(

@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
 
     def test_2(self):
         """Test that writing restraints doesn't reset model dependencies"""
-        for suffix in RMF.suffixes:
+        for suffix in IMP.rmf.suffixes:
             f = RMF.create_rmf_file(
                 self.get_tmp_file_name("restrnp2." + suffix))
             m = IMP.kernel.Model()

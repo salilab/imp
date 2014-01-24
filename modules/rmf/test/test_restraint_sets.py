@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
 
     def test_0(self):
         """Test writing restraint sets to rmf"""
-        for suffix in RMF.suffixes:
+        for suffix in IMP.rmf.suffixes:
             fn = self.get_tmp_file_name("restsets." + suffix)
             f = RMF.create_rmf_file(fn)
             m = IMP.kernel.Model()
@@ -41,7 +41,7 @@ class Tests(IMP.test.TestCase):
 
     def test_1(self):
         """Test handling non-disjoint restraint sets"""
-        for suffix in RMF.suffixes:
+        for suffix in IMP.rmf.suffixes:
             fn = self.get_tmp_file_name("ndrestsets." + suffix)
             f = RMF.create_rmf_file(fn)
             m = IMP.kernel.Model()

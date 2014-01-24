@@ -32,7 +32,7 @@ class Tests(IMP.test.TestCase):
     def test_0(self):
         """Test writing restraints rmf"""
         RMF.set_log_level("Off")
-        for suffix in RMF.suffixes:
+        for suffix in IMP.rmf.suffixes:
             name = self.get_tmp_file_name("restr." + suffix)
             print "#### write"
             self._write_restraint(name)
@@ -40,7 +40,7 @@ class Tests(IMP.test.TestCase):
             self._read_restraint(name)
 
     def test_1(self):
-        for suffix in RMF.suffixes:
+        for suffix in IMP.rmf.suffixes:
             """Test writing restraints to rmf with no particles"""
             nm = self.get_tmp_file_name("restrnp." + suffix)
             print nm
@@ -62,7 +62,7 @@ class Tests(IMP.test.TestCase):
     def test_2(self):
         """Test writing dynamic restraints"""
         RMF.set_log_level("Off")
-        for suffix in RMF.suffixes:
+        for suffix in IMP.rmf.suffixes:
             RMF.HDF5.set_show_errors(True)
             path = self.get_tmp_file_name("dynamic_restraints." + suffix)
             print path

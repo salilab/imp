@@ -9,7 +9,7 @@ class Tests(IMP.test.TestCase):
 
     def test_round_trip(self):
         """Test reading and writing static geometry"""
-        for suffix in RMF.suffixes:
+        for suffix in IMP.rmf.suffixes:
             nm = self.get_tmp_file_name("static_geometry." + suffix)
             print nm
             f = RMF.create_rmf_file(nm)

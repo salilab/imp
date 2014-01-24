@@ -14,6 +14,7 @@
 #include <RMF/FileHandle.h>
 #include <RMF/decorator/physics.h>
 #include <RMF/decorator/sequence.h>
+#include <RMF/decorator/shape.h>
 #include <RMF/decorator/bond.h>
 #include <IMP/kernel/Model.h>
 

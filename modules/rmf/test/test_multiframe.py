@@ -16,7 +16,7 @@ class Tests(IMP.test.TestCase):
         """Test multi frame files"""
         IMP.base.set_log_level(IMP.base.VERBOSE)
         RMF.set_log_level("trace")
-        for suffix in [".rmf"] + RMF.suffixes:
+        for suffix in [".rmf"] + IMP.rmf.suffixes:
             m = IMP.kernel.Model()
             p = IMP.kernel.Particle(m)
             h = IMP.atom.Hierarchy.setup_particle(p)

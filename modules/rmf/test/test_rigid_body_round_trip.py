@@ -9,7 +9,7 @@ class Tests(IMP.test.TestCase):
 
     def test_navigation(self):
         """Test loading and saving of rigid bodies implicitly"""
-        for suffix in RMF.suffixes:
+        for suffix in IMP.rmf.suffixes:
             m = IMP.kernel.Model()
             m.set_log_level(IMP.base.SILENT)
             r = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))

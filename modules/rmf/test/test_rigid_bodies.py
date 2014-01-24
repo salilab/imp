@@ -9,7 +9,7 @@ class Tests(IMP.test.TestCase):
 
     def test_navigation(self):
         """Test loading and saving of rigid bodies"""
-        for suffix in RMF.suffixes:
+        for suffix in IMP.rmf.suffixes:
             m = IMP.kernel.Model()
             r = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
             r.set_name("rb")
