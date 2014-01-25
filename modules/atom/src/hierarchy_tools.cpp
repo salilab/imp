@@ -182,27 +182,35 @@ Hierarchy create_protein(kernel::Model *m, std::string name, double resolution,
   double overlap_frac = .2;
   std::pair<int, double> nr = compute_n(volume, resolution, overlap_frac);
   Hierarchy pd = Hierarchy::setup_particle(new kernel::Particle(m));
+  Ints residues;
+  for (int i = 0; i < number_of_residues; ++i) {
+    residues.push_back(i + first_residue_index);
+  }
+  atom::Fragment::setup_particle(pd, residues);
   if (ismol) Molecule::setup_particle(pd);
   pd->set_name(name);
-  kernel::Particles ps;
   for (int i = 0; i < nr.first; ++i) {
-    kernel::Particle *pc = new kernel::Particle(m);
-    std::ostringstream oss;
-    oss << name << "-" << i;
-    pc->set_name(oss.str());
-    atom::Fragment pcd = atom::Fragment::setup_particle(pc);
-    pd.add_child(pcd);
+    kernel::Particle *pc;
+    if (nr.first > 1) {
+      pc = new kernel::Particle(m);
+      std::ostringstream oss;
+      oss << name << "-" << i;
+      pc->set_name(oss.str());
+      atom::Fragment pcd = atom::Fragment::setup_particle(pc);
+      Ints indexes;
+      for (int j = i * (number_of_residues / nr.first) + first_residue_index;
+           j < (i + 1) * (number_of_residues / nr.first) + first_residue_index;
+           ++j) {
+        indexes.push_back(j);
+      }
+      pcd.set_residue_indexes(indexes);
+      pd.add_child(pcd);
+    } else {
+      pc = pd;
+    }
+
     core::XYZR xyzd = core::XYZR::setup_particle(pc);
     xyzd.set_radius(nr.second);
-    xyzd.set_coordinates_are_optimized(true);
-    ps.push_back(pc);
-    Ints indexes;
-    for (int j = i * (number_of_residues / nr.first) + first_residue_index;
-         j < (i + 1) * (number_of_residues / nr.first) + first_residue_index;
-         ++j) {
-      indexes.push_back(j);
-    }
-    pcd.set_residue_indexes(indexes);
     atom::Mass::setup_particle(pc, mass / nr.first);
   }
   IMP_INTERNAL_CHECK(pd.get_is_valid(true), "Invalid hierarchy produced "
@@ -216,7 +224,7 @@ Hierarchy create_protein(kernel::Model *m, std::string name, double resolution,
   Domain::setup_particle(root, db.front(), db.back());
   for (unsigned int i = 1; i < db.size(); ++i) {
     std::ostringstream oss;
-    oss << name << i;
+    oss << name << "-" << i - 1;
     Hierarchy cur = create_protein(
         m, oss.str(), resolution, db[i] - db[i - 1], db[i - 1],
         atom::get_volume_from_mass(
