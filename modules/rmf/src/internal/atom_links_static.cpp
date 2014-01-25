@@ -15,11 +15,13 @@
 #include <IMP/atom/Fragment.h>
 #include <IMP/atom/Mass.h>
 #include <IMP/atom/Residue.h>
+#include <IMP/atom/Representation.h>
 #include <IMP/atom/State.h>
 #include <IMP/core/Typed.h>
 #include <IMP/display/Colored.h>
 #include <RMF/SetCurrentFrame.h>
 #include <RMF/NodeHandle.h>
+#include <boost/range/iterator_range_core.hpp>
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 
@@ -315,10 +317,35 @@ void HierarchyLoadBonds::setup_bonds(RMF::NodeConstHandle n, kernel::Model *m,
   }
 }
 
+namespace {
+atom::Bonds get_rep_bonds(atom::Hierarchy h) {
+  atom::Bonds ret;
+  if (atom::Representation::get_is_setup(h)) {
+    IMP_FOREACH(atom::Hierarchy r,
+                atom::Representation(h).get_representations(atom::BALLS)) {
+      if (r != h) {
+        ret += atom::get_internal_bonds(r);
+      }
+    }
+    std::cout << "Found " << ret.size() << " alt bonds" << std::endl;
+  } else {
+    IMP_FOREACH(atom::Hierarchy ch, h.get_children()) {
+      ret += get_rep_bonds(ch);
+    }
+  }
+  return ret;
+}
+atom::Bonds get_rmf_bonds(atom::Hierarchy h) {
+  atom::Bonds ret = atom::get_internal_bonds(h);
+  return ret + get_rep_bonds(h);
+}
+}
+
 void HierarchySaveBonds::setup_bonds(kernel::Model *m, kernel::ParticleIndex p,
                                      RMF::NodeHandle n) {
   IMP_FUNCTION_LOG;
-  atom::Bonds bds = atom::get_internal_bonds(atom::Hierarchy(m, p));
+  // kind of stupid. Would be nice to put alt bonds in the alt tree too.
+  atom::Bonds bds = get_rmf_bonds(IMP::atom::Hierarchy(m, p));
   if (bds.empty()) return;
   // could do this better, but...
   RMF::NodeHandle bonds = n.add_child("bonds", RMF::ORGANIZATIONAL);
