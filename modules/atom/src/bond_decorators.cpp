@@ -36,7 +36,6 @@ void Bond::show(std::ostream &out) const {
     out << " and length "
         << get_particle()->get_value(internal::get_bond_data().length_);
   }
-  out << std::endl;
 }
 
 void Bonded::show(std::ostream &out) const {
