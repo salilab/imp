@@ -444,7 +444,7 @@ def build_all(builder, opts):
         summary_writer.complete(1)
         raise
     for m in comps.values():
-        for typ in ('build', 'benchmark'):
+        for typ in ('build',):
             if getattr(m, typ + '_result', 0) not in (0, 'disabled'):
                 summary_writer.complete(1)
                 sys.exit(1)
