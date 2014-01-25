@@ -75,8 +75,8 @@ void Hierarchy::show(std::ostream &out, std::string delimiter) const {
 }
 
 namespace {
-#define IMP_IMPL_MATCH_TYPE(UCName, lcname, CAPSNAME) \
-  case CAPSNAME:                                      \
+#define IMP_ATOM_IMPL_MATCH_TYPE(UCName, lcname, CAPSNAME) \
+  case CAPSNAME:                                           \
     return h.get_as_##lcname();
 
 struct MHDMatchingType {
@@ -84,7 +84,9 @@ struct MHDMatchingType {
 
   bool operator()(kernel::Particle *p) const {
     Hierarchy h = Hierarchy::decorate_particle(p);
-    switch (t_) { IMP_FOREACH_HIERARCHY_TYPE_STATEMENTS(IMP_IMPL_MATCH_TYPE); }
+    switch (t_) {
+      IMP_ATOM_FOREACH_HIERARCHY_TYPE_STATEMENTS(IMP_ATOM_IMPL_MATCH_TYPE);
+    }
     IMP_FAILURE("Unhandled type in get_by_type.");
     return false;
   }
@@ -568,6 +570,6 @@ algebra::Sphere3D get_bounding_sphere(const Hierarchy &h) {
   return algebra::get_enclosing_sphere(ss);
 }
 
-IMP_FOREACH_HIERARCHY_TYPE_FUNCTIONS(IMP_GET_AS_DEF);
+IMP_ATOM_FOREACH_HIERARCHY_TYPE_FUNCTIONS(IMP_ATOM_GET_AS_DEF);
 
 IMPATOM_END_NAMESPACE

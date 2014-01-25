@@ -31,7 +31,7 @@ IMPATOM_BEGIN_NAMESPACE
     Volume is, as usual, in cubic anstroms.
 
     Currently the function creates a set of balls with radii no greater
-    than resolution which overlap by 20% and have a volume of their
+    than target_radius which overlap by 20% and have a volume of their
     union equal to the passed volume.
 
     The coordinates of the balls defining the protein are optimized
@@ -41,7 +41,7 @@ IMPATOM_BEGIN_NAMESPACE
     See Hierarchy
  */
 IMPATOMEXPORT Hierarchy
-    create_protein(kernel::Model *m, std::string name, double resolution,
+    create_protein(kernel::Model *m, std::string name, double target_radius,
                    int number_of_residues, int first_residue_index = 0,
                    double volume = -1
 #ifndef IMP_DOXYGEN
@@ -50,12 +50,12 @@ IMPATOMEXPORT Hierarchy
 #endif
                    );
 /** Like the former create_protein(), but it enforces domain splits
-    at the provide domain boundairs. The domain boundaries should be
+    at the provide domain boundaries. The domain boundaries should be
     the start of the first domain, any boundies, and then one past
     the end of the last domain.
  */
 IMPATOMEXPORT Hierarchy create_protein(kernel::Model *m, std::string name,
-                                       double resolution,
+                                       double target_radius,
                                        const Ints domain_boundaries);
 
 /** \name Simplification along backbone
