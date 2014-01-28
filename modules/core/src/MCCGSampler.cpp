@@ -261,6 +261,8 @@ MCCGSampler::Container *MCCGSampler::set_up_movers(
       ps.push_back(*pit);
     }
   }
+  IMP_USAGE_CHECK(!ps.empty(), "No optimized particles found");
+
   IMP_NEW(Container, sc, (mc->get_model(), "mccg particles"));
   sc->set_was_used(true);
   sc->set(IMP::internal::get_index(ps));
