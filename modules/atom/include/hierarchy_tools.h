@@ -28,13 +28,13 @@ IMPATOM_BEGIN_NAMESPACE
     particles with appropriate residue indexes stored and are XYZR
     particles.
 
-    Volume is, as usual, in cubic anstroms.
+    Volume is, as usual, in cubic angstroms.
 
     Currently the function creates a set of balls with radii no greater
     than target_radius which overlap by 20% and have a volume of their
     union equal to the passed volume.
 
-    The coordinates of the balls defining the protein are optimized
+    The coordinates of the balls defining the protein are not optimized
     by default, and have garbage coordinate values.
     \untested{create_protein}
     \unstable{create_protein}
@@ -50,8 +50,8 @@ IMPATOMEXPORT Hierarchy
 #endif
                    );
 /** Like the former create_protein(), but it enforces domain splits
-    at the provide domain boundaries. The domain boundaries should be
-    the start of the first domain, any boundies, and then one past
+    at the provided domain boundaries. The domain boundaries should be
+    the start of the first domain, any boundaries, and then one past
     the end of the last domain.
  */
 IMPATOMEXPORT Hierarchy create_protein(kernel::Model *m, std::string name,
