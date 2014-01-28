@@ -123,6 +123,7 @@ IMP_SWIG_OBJECT( IMP::core, AllSameQuadPredicate, AllSameQuadPredicates);
 
 IMP_SWIG_DECORATOR( IMP::core, XYZ, XYZs);
 IMP_SWIG_DECORATOR( IMP::core, XYZR, XYZRs);
+IMP_SWIG_DECORATOR( IMP::core, Gaussian, Gaussians)
 IMP_SWIG_DECORATOR( IMP::core, RigidBody, RigidBodies);
 IMP_SWIG_DECORATOR( IMP::core, RigidBodyMember, RigidBodyMembers);
 IMP_SWIG_DECORATOR( IMP::core, RigidMember, RigidMembers);
@@ -174,7 +175,7 @@ IMP_SWIG_OBJECT(IMP::core, IsCollisionPairPredicate, IsCollisionPairPredicates);
 %include "IMP/core/XYZ.h"
 
 %include "IMP/core/XYZR.h"
-
+%include "IMP/core/Gaussian.h"
 
 /* Wrap the final classes */
 %include "IMP/core/AngleTripletScore.h"

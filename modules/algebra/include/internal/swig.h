@@ -17,6 +17,9 @@ inline IMP_Eigen::MatrixXf _pass_matrix_xf(const IMP_Eigen::MatrixXf &m) {
 inline IMP_Eigen::MatrixXd _pass_matrix_xd(const IMP_Eigen::MatrixXd &m) {
   return m;
 }
+inline IMP_Eigen::Matrix3d _pass_matrix_3d(const IMP_Eigen::Matrix3d &m) {
+  return m;
+}
 inline IMP_Eigen::ArrayXXd _pass_array_xd(const IMP_Eigen::ArrayXXd &m) {
   return m;
 }
