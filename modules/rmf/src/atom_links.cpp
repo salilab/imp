@@ -65,7 +65,7 @@ void HierarchyLoadLink::create_recursive(kernel::Model *m,
   kernel::ParticleIndexes reps;
   if (af_.get_is(name)) {
     IMP_FOREACH(RMF::NodeConstHandle alt,
-                af_.get(name).get_alternatives(RMF::decorator::PARTICLE)) {
+                af_.get(name).get_alternatives(RMF::PARTICLE)) {
       if (alt == name) continue;
       kernel::ParticleIndex cur_rep = m->add_particle(alt.get_name());
       create_recursive(m, root, cur_rep, alt, rigid_bodies, data);
@@ -121,7 +121,7 @@ void HierarchyLoadLink::add_link_recursive(kernel::Model *m,
   if (af_.get_is(node)) {
     RMF::decorator::AlternativesConst ad = af_.get(node);
     atom::Representation rd(m, cur);
-    RMF::NodeConstHandles alts = ad.get_alternatives(RMF::decorator::PARTICLE);
+    RMF::NodeConstHandles alts = ad.get_alternatives(RMF::PARTICLE);
     atom::Hierarchies reps = rd.get_representations(atom::BALLS);
     if (alts.size() != reps.size()) {
       IMP_THROW("Number of alternate representations doesn't match: "
@@ -247,7 +247,7 @@ void HierarchySaveLink::add_recursive(Model *m, kernel::ParticleIndex root,
   if (!rep_nodes.empty()) {
     RMF::decorator::Alternatives ad = af_.get(cur);
     IMP_FOREACH(RMF::NodeHandle nh, rep_nodes) {
-      ad.add_alternative(nh, RMF::decorator::PARTICLE);
+      ad.add_alternative(nh, RMF::PARTICLE);
     }
   }
 }
