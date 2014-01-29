@@ -6,7 +6,6 @@
  *
  */
 #include <IMP/core/SerialMover.h>
-#include <IMP/core/Mover.h>
 #include <iostream>
 
 IMPCORE_BEGIN_NAMESPACE
