@@ -12,16 +12,19 @@
 #include <IMP/base/base_config.h>
 #include "enums.h"
 #include "WarningContext.h"
-#include "internal/static.h"
-#include <iostream>
-#include <cstdlib>
+#include "Flag.h"
 #include <string>
-#include <sstream>
 #if IMP_BASE_HAS_LOG4CXX
 #include <log4cxx/logger.h>
 #endif
 
 IMPBASE_BEGIN_NAMESPACE
+
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+namespace internal {
+  extern IMPBASEEXPORT Flag<LogLevel, IMP_HAS_LOG != IMP_SILENT> log_level;
+}
+#endif
 
 /** \name Logging
     \anchor log

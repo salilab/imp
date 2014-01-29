@@ -28,7 +28,7 @@
    if (!($owner & SWIG_POINTER_NEW)) {
      // out typemaps are also called for constructors, which already use %ref
      // to increase the reference count. So don't do it twice.
-     IMP::base::internal::ref($1);
+     $1->ref();
    }
    %set_output(SWIG_NewPointerObj(%as_voidptr($1), $descriptor(TYPE *), $owner | SWIG_POINTER_OWN));
 }
@@ -55,7 +55,7 @@ namespace swig {
   template <>
   struct traits_from<TYPE *> {
     static PyObject *from(TYPE *f) {
-      IMP::base::internal::ref(f);
+      f->ref();
       return SWIG_NewPointerObj(SWIG_as_voidptr(f), type_info<TYPE>(), SWIG_POINTER_OWN);
     }
   };

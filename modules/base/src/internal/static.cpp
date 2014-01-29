@@ -20,6 +20,7 @@
 #include "IMP/base/statistics.h"
 #include "IMP/base/types.h"
 #include <IMP/base/set.h>
+#include <IMP/base/random.h>
 #include <boost/cstdint.hpp>
 #include <boost/timer.hpp>
 #include <cmath>

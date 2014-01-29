@@ -8,6 +8,7 @@
 
 #include "IMP/base/Object.h"
 #include "IMP/base/log.h"
+#include "IMP/base/log_macros.h"
 #include "IMP/base/exception.h"
 #include "IMP/base/utility.h"
 #include <exception>
@@ -112,6 +113,23 @@ void Object::set_name(std::string in_name) {
 
 void Object::show(std::ostream &out) const {
   out << "\"" << get_name() << "\"";
+}
+
+void Object::unref() const {
+  IMP_INTERNAL_CHECK(count_ != 0, "Too many unrefs on object");
+  IMP_LOG_MEMORY("Unrefing object \"" << get_name() << "\" (" << count_
+		 << ") {" << this << "}" << std::endl);
+  --count_;
+  if (count_ == 0) {
+    delete this;
+  }
+}
+
+void Object::release() const {
+  IMP_INTERNAL_CHECK(count_ != 0, "Release called on unowned object");
+  --count_;
+  IMP_LOG_MEMORY("Releasing object \"" << get_name() << "\" (" << count_
+		 << ") {" << this << "}" << std::endl);
 }
 
 IMPBASE_END_NAMESPACE

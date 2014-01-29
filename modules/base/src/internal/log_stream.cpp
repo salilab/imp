@@ -7,6 +7,8 @@
 
 #include "IMP/base/internal/log_stream.h"
 #include <IMP/base/internal/static.h>
+#include <IMP/base/log.h>
+
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
 #if !IMP_BASE_HAS_LOG4CXX
 struct IndentFilter : public boost::iostreams::output_filter {

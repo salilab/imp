@@ -56,7 +56,6 @@
     cannot be declared on the stack and so must be ref counted.
 
     \see IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR()
-    \see IMP::base::RefCounted
 */
 #define IMP_REF_COUNTED_DESTRUCTOR(Name)
 
@@ -65,11 +64,6 @@
 */
 #define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)
 
-/** Like IMP_REF_COUNTED_DESTRUCTOR(), but the destructor is only
-    declared, not defined and is virtual.
-*/
-#define IMP_REF_COUNTED_NONTRIVIAL_VIRTUAL_DESTRUCTOR(Name)
-
 /** Like IMP_REF_COUNTED_DESTRUCTOR(), but the destructor is declared
     inline.
 */
@@ -77,39 +71,24 @@
 
 #else
 #define IMP_REF_COUNTED_DESTRUCTOR(Name)       \
- protected:                                    \
-  template <class T, class E>                  \
-  friend struct IMP::base::internal::RefStuff; \
+ protected:                                      \
   virtual ~Name() {}                           \
                                                \
  public:                                       \
   IMP_REQUIRE_SEMICOLON_CLASS(destructor)
 
 #define IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, dest) \
- protected:                                           \
-  template <class T, class E>                         \
-  friend struct IMP::base::internal::RefStuff;        \
+ protected:                                             \
   virtual ~Name() { dest }                            \
                                                       \
  public:                                              \
   IMP_REQUIRE_SEMICOLON_CLASS(destructor)
 
 #define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name) \
- protected:                                         \
-  template <class T, class E>                       \
-  friend struct IMP::base::internal::RefStuff;      \
+ protected:                                           \
   virtual ~Name();                                  \
                                                     \
  public:                                            \
-  IMP_REQUIRE_SEMICOLON_CLASS(destructor)
-
-#define IMP_REF_COUNTED_NONTRIVIAL_VIRTUAL_DESTRUCTOR(Name) \
- protected:                                                 \
-  template <class T, class E>                               \
-  friend struct IMP::base::internal::RefStuff;              \
-  virtual ~Name();                                          \
-                                                            \
- public:                                                    \
   IMP_REQUIRE_SEMICOLON_CLASS(destructor)
 #endif
 

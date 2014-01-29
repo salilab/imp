@@ -9,10 +9,7 @@
 #define IMPBASE_VECTOR_H
 
 #include "../exception.h"
-#include "../Object.h"
-#include "ref_counting.h"
 
-#include <vector>
 #include <algorithm>
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE

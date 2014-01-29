@@ -40,21 +40,6 @@
 #error "IMP_SILENT not defined, something is broken"
 #endif
 
-#ifndef IMP_DOXYGEN
-#ifndef SWIG
-
-namespace IMP {
-namespace base {
-class Object;
-namespace internal {
-template <class R, class E>
-struct RefStuff;
-}
-}
-}
-#endif
-#endif
-
 IMPBASE_BEGIN_NAMESPACE
 
 //! Common base class for heavy weight \imp objects.
@@ -125,13 +110,7 @@ class IMPBASEEXPORT Object : public NonCopyable {
   boost::scoped_array<char> quoted_name_;
 
   static unsigned int live_objects_;
-#ifdef _MSC_VER
- public:
-#endif
   mutable int count_;
-#ifdef _MSC_VER
- private:
-#endif
 
 #if IMP_HAS_LOG != IMP_NONE
   LogLevel log_level_;
@@ -158,8 +137,6 @@ class IMPBASEEXPORT Object : public NonCopyable {
     else
       return 0;
   }
-  IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Object);
-
  protected:
   //! Construct an object with the given name
   /** An instance of "%1%" in the string will be replaced by a unique
@@ -168,6 +145,7 @@ class IMPBASEEXPORT Object : public NonCopyable {
   Object(std::string name);
 
  public:
+  virtual ~Object();
   // needed for python to make sure all wrapper objects are equivalent
   IMP_HASHABLE_INLINE(Object, return boost::hash_value(this););
 
@@ -218,19 +196,20 @@ class IMPBASEEXPORT Object : public NonCopyable {
 
   IMP_SHOWABLE(Object);
 
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  const char* get_quoted_name_c_string() const { return quoted_name_.get(); }
-#endif
-
 #ifndef IMP_DOXYGEN
-  void _debugger_show() const { show(std::cout); }
-
   //! Return a string version of the object, can be used in the debugger
   std::string get_string() const {
     std::ostringstream oss;
     show(oss);
     return oss.str();
   }
+
+#ifndef SWIG
+  void ref() const {++count_;}
+  void unref() const ;
+  void release() const;
+  const char* get_quoted_name_c_string() const { return quoted_name_.get(); }
+#endif
 
   void _on_destruction();
 

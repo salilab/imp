@@ -219,7 +219,7 @@ struct ConvertObjectBase : public ConvertAllBase<T> {
   static PyObject* create_python_object(T* t, SwigData st, int OWN) {
     IMP_CHECK_OBJECT(t);
     PyReceivePointer o(SWIG_NewPointerObj(t, st, OWN));
-    IMP::base::internal::ref(t);
+    t->ref();
     return o.release();
   }
 };
@@ -244,7 +244,7 @@ struct ConvertRAII : public ConvertAllBase<T> {
   template <class SwigData>
   static PyObject* create_python_object(T* t, SwigData st, int OWN) {
     PyReceivePointer o(SWIG_NewPointerObj(t, st, OWN));
-    IMP::base::internal::ref(t);
+    t->ref();
     return o.release();
   }
 };
