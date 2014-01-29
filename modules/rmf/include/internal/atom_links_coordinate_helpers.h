@@ -44,7 +44,7 @@ inline void copy_to_static_particle(
     const algebra::Vector3D &v, RMF::NodeHandle n,
     RMF::decorator::IntermediateParticleFactory ipf) {
   RMF::decorator::IntermediateParticle ip = ipf.get(n);
-  ip.set_static_coordinates(RMF::Floats(v));
+  ip.set_static_coordinates(RMF::Vector3(v));
 }
 inline algebra::Vector3D get_coordinates(
     RMF::NodeConstHandle n,
