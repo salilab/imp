@@ -8,6 +8,7 @@
 
 #ifndef IMPTEST_TEST_MACROS_H
 #define IMPTEST_TEST_MACROS_H
+#include <IMP/base/log_macros.h>
 
 //! Report an error if a != b
 #define IMP_TEST_EQUAL(a, b)                                               \
