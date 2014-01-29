@@ -12,6 +12,7 @@
 #include <IMP/base/types.h>
 #include <IMP/base/Object.h>
 #include <IMP/base/log.h>
+#include <IMP/base/log_macros.h>
 #include <IMP/base/SetCheckState.h>
 
 #include "grid_storages.h"
