@@ -162,7 +162,7 @@ algebra::VectorKD get_embedding(const Subset &s, const Assignment &a,
     algebra::VectorKD cur = pst->get_particle_states(s[i])->get_embedding(a[i]);
     embed.insert(embed.end(), cur.coordinates_begin(), cur.coordinates_end());
   }
-  return embed;
+  return algebra::VectorKD(embed);
 }
 
 Assignment get_nearest_assignment(const Subset &s,
