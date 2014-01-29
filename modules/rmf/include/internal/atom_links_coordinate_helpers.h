@@ -29,7 +29,7 @@ inline void copy_to_frame_particle(
     const algebra::Vector3D &v, RMF::NodeHandle n,
     RMF::decorator::IntermediateParticleFactory ipf) {
   RMF::decorator::IntermediateParticle ip = ipf.get(n);
-  ip.set_frame_coordinates(RMF::Floats(v));
+  ip.set_frame_coordinates(RMF::Vector3(v));
 }
 inline void copy_to_static_reference_frame(
     const algebra::Transformation3D &tr, RMF::NodeHandle n,
