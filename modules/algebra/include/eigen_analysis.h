@@ -15,6 +15,7 @@
 #include "IMP/algebra/ReferenceFrame3D.h"
 #include <IMP/algebra/internal/jama_svd.h>
 #include <IMP/base/log.h>
+#include <IMP/base/log_macros.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 /** Represent a eigen analysis of some data.

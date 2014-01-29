@@ -20,6 +20,7 @@
 
 #include <algorithm>
 #include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_real.hpp>
 #include <boost/shared_array.hpp>
 #include <cstdio>
 #include <queue>

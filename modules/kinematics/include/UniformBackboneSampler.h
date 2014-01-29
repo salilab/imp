@@ -1,5 +1,5 @@
 /**
- \file kinematics/UniformBackboneSampler.h
+ \file IMP/kinematics/UniformBackboneSampler.h
  \brief A class for uniform sampling of backbone angles
 
  \authors Dina Schneidman, Barak Raveh
@@ -12,6 +12,7 @@
 #include "kinematics_config.h"
 #include "DOFsSampler.h"
 #include "revolute_joints.h"
+#include <boost/random/uniform_real.hpp>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 

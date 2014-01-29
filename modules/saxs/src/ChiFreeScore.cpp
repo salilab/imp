@@ -6,7 +6,7 @@
  */
 
 #include <IMP/saxs/ChiFreeScore.h>
-
+#include <boost/random/uniform_real.hpp>
 #include <algorithm>
 
 IMPSAXS_BEGIN_NAMESPACE
