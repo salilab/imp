@@ -85,14 +85,14 @@ class VectorD : public GeometricPrimitiveD<D> {
     IMP_USAGE_CHECK(
         D == -1 || o.get_dimension() == static_cast<unsigned int>(D),
         "Dimensions don't match in conversion");
-    data_.set_coordinates(o.coordinates_begin(), o.coordinates_end());
+    data_.set_coordinates(o.begin(), o.end());
   }
   template <int OD>
   VectorD &operator=(const VectorD<OD> &o) {
     BOOST_STATIC_ASSERT(D == -1 || OD == -1 || D == OD);
     IMP_USAGE_CHECK(D == -1 || o.get_dimension() == D,
                     "Dimensions don't match in conversion");
-    data_.set_coordinates(o.coordinates_begin(), o.coordinates_end());
+    data_.set_coordinates(o.begin(), o.end());
   }
 #endif
 

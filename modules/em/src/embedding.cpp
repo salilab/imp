@@ -22,8 +22,7 @@ HighDensityEmbedding::HighDensityEmbedding(em::DensityMap *dm, double threshold)
 }
 
 algebra::VectorKD HighDensityEmbedding::get_point(unsigned int i) const {
-  return algebra::VectorKD(points_[i].coordinates_begin(),
-                           points_[i].coordinates_end());
+  return algebra::VectorKD(points_[i]);
 }
 
 unsigned int HighDensityEmbedding::get_number_of_items() const {
