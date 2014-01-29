@@ -24,7 +24,8 @@ IMPATOMEXPORT extern const double ALL_RESOLUTIONS;
 /** Eventually, other types of representation will be supported, eg gaussians or
  * density maps. */
 enum RepresentationType {
-  BALLS = 0
+  BALLS = 0,
+  GAUSSIANS = 1
 };
 
 //! A decorator for a representation.
