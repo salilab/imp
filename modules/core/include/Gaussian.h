@@ -37,17 +37,17 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
 
   void set_gaussian(const algebra::Gaussian3D &g);
 
-  void set_standard_deviations(const algebra::Vector3D &radii) {
+  void set_variances(const algebra::Vector3D &radii) {
     for (unsigned int i =0; i< 3; ++i) {
-      get_model()->set_attribute(get_standard_deviation_key(i),
+      get_model()->set_attribute(get_variance_key(i),
                                  get_particle_index(), radii[i]);
     }
   }
 
-  static FloatKey get_standard_deviation_key(unsigned int i);
+  static FloatKey get_variance_key(unsigned int i);
 
   static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
-    return m->get_has_attribute(get_standard_deviation_key(0), pi);
+    return m->get_has_attribute(get_variance_key(0), pi);
   }
 };
 IMP_DECORATORS(Gaussian, Gaussians, kernel::Particles);

@@ -19,16 +19,16 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /** A gaussian distribution in 3D. */
 class Gaussian3D : public GeometricPrimitiveD<3> {
   ReferenceFrame3D tr_;
-  Vector3D stddevs_;
+  Vector3D variances_;
 
  public:
   Gaussian3D() {}
-  Gaussian3D(const ReferenceFrame3D &tr, const Vector3D &stddevs)
-      : tr_(tr), stddevs_(stddevs) {}
+  Gaussian3D(const ReferenceFrame3D &tr, const Vector3D &variances)
+      : tr_(tr), variances_(variances) {}
 
   const ReferenceFrame3D &get_reference_frame() const { return tr_; }
-  const Vector3D &get_standard_deviations() const { return stddevs_; }
-  IMP_SHOWABLE_INLINE(Gaussian3D, out << tr_ << ": " << stddevs_);
+  const Vector3D &get_variances() const { return variances_; }
+  IMP_SHOWABLE_INLINE(Gaussian3D, out << tr_ << ": " << variances_);
 };
 IMP_VALUES(Gaussian3D, Gaussian3Ds);
 

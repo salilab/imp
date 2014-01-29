@@ -20,9 +20,10 @@ IMP_Eigen::Matrix3d get_covariance(const Gaussian3D &g) {
   Vector4D iq = trans.get_rotation().get_quaternion();
   IMP_Eigen::Quaterniond q(iq[0], iq[1], iq[2], iq[3]);
   IMP_Eigen::Matrix3d rot = q.toRotationMatrix();
-  Vector3D stddevs = g.get_standard_deviations();
+  Vector3D variances = g.get_variances();
   IMP_Eigen::Matrix3d rad =
-      IMP_Eigen::Vector3d(stddevs[0], stddevs[1], stddevs[2]).asDiagonal();
+      IMP_Eigen::Vector3d(variances[0], variances[1],
+                          variances[2]).asDiagonal();
   IMP_Eigen::Matrix3d covar = rot * (rad * rot.transpose());
   return covar;
 }
