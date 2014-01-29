@@ -96,29 +96,23 @@ class VectorD : public GeometricPrimitiveD<D> {
   }
 #endif
 
-/** \throw base::ValueException if f.size() is not appropriate.
-    \note Only use this from python. */
-#ifndef SWIG
-  IMP_DEPRECATED_ATTRIBUTE
-#endif
-  VectorD(const Floats &f) {
-    if (D != -1 && static_cast<int>(f.size()) != D) {
-      IMP_THROW("Expected " << D << " but got " << f.size(),
-                base::ValueException);
-    }
-    data_.set_coordinates(f.begin(), f.end());
-  }
-
   /** The distance between b and e must be equal to D.
    */
   template <class It>
   VectorD(It b, It e) {
     data_.set_coordinates(b, e);
   }
+
+  /** Will accept a list of floats from python. */
   template <class Range>
   explicit VectorD(Range r) {
     data_.set_coordinates(boost::begin(r), boost::end(r));
   }
+
+#ifdef SWIG
+  VectorD(const Floats &f);
+#endif
+
   //! Initialize the 1-vector from its value.
   explicit VectorD(double x) {
 /* Note that MSVC gets confused with static asserts if we try to subclass
@@ -347,18 +341,24 @@ class VectorD : public GeometricPrimitiveD<D> {
 #endif
 
 #ifndef SWIG
-  typedef double *CoordinateIterator;
-  CoordinateIterator coordinates_begin() { return data_.get_data(); }
-  CoordinateIterator coordinates_end() {
+  typedef double *iterator;
+  typedef const double *const_iterator;
+  /** \deprecated_at{2.2} Use begin(). */
+  IMPALGEBRA_DEPRECATED_FUNCTION_DECL(2.2)
+  iterator coordinates_begin() { return data_.get_data(); }
+  iterator coordinates_end() {
     return data_.get_data() + get_dimension();
   }
-  typedef const double *CoordinateConstIterator;
-  CoordinateConstIterator coordinates_begin() const { return data_.get_data(); }
-  CoordinateConstIterator coordinates_end() const {
+  /** \deprecated_at{2.2} Use begin(). */
+  IMPALGEBRA_DEPRECATED_FUNCTION_DECL(2.2)
+  const_iterator coordinates_begin() const { return data_.get_data(); }
+  const_iterator coordinates_end() const {
     return data_.get_data() + get_dimension();
   }
-  CoordinateIterator begin() { return data_.get_data(); }
-  CoordinateIterator end() { return data_.get_data() + get_dimension(); }
+  iterator begin() { return data_.get_data(); }
+  iterator end() { return data_.get_data() + get_dimension(); }
+  const_iterator begin() const { return data_.get_data(); }
+  const_iterator end() const { return data_.get_data() + get_dimension(); }
 
   typedef double value_type;
   typedef std::random_access_iterator_tag iterator_category;
@@ -366,10 +366,6 @@ class VectorD : public GeometricPrimitiveD<D> {
   typedef double *pointer;
   typedef double &reference;
   typedef const double &const_reference;
-  CoordinateConstIterator begin() const { return data_.get_data(); }
-  CoordinateConstIterator end() const {
-    return data_.get_data() + get_dimension();
-  }
 
   static const int DIMENSION = D;
 #endif
