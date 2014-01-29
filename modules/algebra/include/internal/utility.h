@@ -49,6 +49,10 @@ template <>
 struct DMinus1<-1> {
   static const int D = -1;
 };
+template <>
+struct DMinus1<1> {
+  static const int D = 1;
+};
 
 IMPALGEBRA_END_INTERNAL_NAMESPACE
 
