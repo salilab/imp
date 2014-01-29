@@ -10,19 +10,11 @@
 #define IMPBASE_EXCEPTION_H
 
 #include <IMP/base/base_config.h>
-#include "random.h"
 #include "compiler_macros.h"
 #include "enums.h"
-#include <IMP/base/nullptr.h>
+#include "nullptr.h"
 #include "internal/static.h"
-#include <boost/static_assert.hpp>
-#include <boost/type_traits.hpp>
-#include <boost/random/uniform_real.hpp>
-#include <cassert>
 #include <string>
-#include <iostream>
-#include <new>
-#include <sstream>
 #include <stdexcept>
 
 IMPBASE_BEGIN_NAMESPACE
