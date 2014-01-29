@@ -15,9 +15,9 @@
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 
 namespace {
-  // kind of icky, but we need to make sure the rigid body ids are unique
-  // and can't store the FileHandle as that would keep the file open
-  unsigned int rigid_body_count = 0;
+// kind of icky, but we need to make sure the rigid body ids are unique
+// and can't store the FileHandle as that would keep the file open
+unsigned int rigid_body_count = 0;
 }
 
 HierarchyLoadRigidBodies::HierarchyLoadRigidBodies(RMF::FileConstHandle f)
@@ -30,12 +30,13 @@ HierarchyLoadRigidBodies::HierarchyLoadRigidBodies(RMF::FileConstHandle f)
 }
 
 void HierarchyLoadRigidBodies::setup_particle(
-    RMF::NodeConstHandle n, kernel::Model *m,
-    kernel::ParticleIndex p, kernel::ParticleIndexes &rigid_bodies) {
+    RMF::NodeConstHandle n, kernel::Model *m, kernel::ParticleIndex p,
+    kernel::ParticleIndexes &rigid_bodies) {
   if (n.get_has_value(external_rigid_body_index_)) {
     int i = n.get_value(external_rigid_body_index_);
     if (external_rigid_body_index_map_.find(i) ==
         external_rigid_body_index_map_.end()) {
+      IMP_LOG_TERSE("Creating external rigid body: " << i << std::endl);
       std::ostringstream oss;
       oss << "RB" << i;
       kernel::ParticleIndex pi = m->add_particle(oss.str());
@@ -52,6 +53,8 @@ void HierarchyLoadRigidBodies::setup_particle(
     external_rigid_bodies_[p] = external_rigid_body_index_map_.find(i)->second;
 
   } else if (reference_frame_factory_.get_is(n)) {
+    IMP_LOG_TERSE("Setting up " << m->get_particle_name(p) << " as rigid body."
+                                << std::endl);
     core::RigidBody::setup_particle(m, p, algebra::ReferenceFrame3D());
   }
 
@@ -78,8 +81,8 @@ void HierarchyLoadRigidBodies::setup_particle(
   link_particle(n, m, p, rigid_bodies);
 }
 
-kernel::ParticleIndex HierarchyLoadRigidBodies::find_rigid_body(kernel::Model *m,
-                                               kernel::ParticleIndex p) {
+kernel::ParticleIndex HierarchyLoadRigidBodies::find_rigid_body(
+    kernel::Model *m, kernel::ParticleIndex p) {
   if (external_rigid_bodies_.find(p) == external_rigid_bodies_.end()) {
     // just linking, so search for it
     atom::Hierarchy cur(m, p);
@@ -108,8 +111,8 @@ void HierarchyLoadRigidBodies::link_rigid_body(
 }
 
 void HierarchyLoadRigidBodies::link_particle(
-    RMF::NodeConstHandle n, kernel::Model *m,
-    kernel::ParticleIndex p, kernel::ParticleIndexes &rigid_bodies) {
+    RMF::NodeConstHandle n, kernel::Model *m, kernel::ParticleIndex p,
+    kernel::ParticleIndexes &rigid_bodies) {
   if (n.get_has_value(external_rigid_body_index_)) {
     kernel::ParticleIndex rb = find_rigid_body(m, p);
     link_rigid_body(n, m, rb, rigid_bodies);
@@ -130,7 +133,7 @@ void HierarchyLoadRigidBodies::link_particle(
 }
 
 void HierarchyLoadRigidBodies::fix_internal_coordinates(
-    core::RigidBody , algebra::ReferenceFrame3D rf,
+    core::RigidBody, algebra::ReferenceFrame3D rf,
     core::RigidBodyMember rm) const {
   // Make sure the internal coordinates of the particles match
   // This is needed to handle scripts that change them during optimation
@@ -147,8 +150,7 @@ void HierarchyLoadRigidBodies::fix_internal_coordinates(
   }
 }
 
-void HierarchyLoadRigidBodies::fix_rigid_body(Model *m,
-                                                    const RB &in) const {
+void HierarchyLoadRigidBodies::fix_rigid_body(Model *m, const RB &in) const {
   IMP_LOG_TERSE("Fixing rigid body " << m->get_particle_name(in.rb)
                                      << std::endl);
   // core::RigidMembers rms=in.second;
@@ -172,8 +174,7 @@ void HierarchyLoadRigidBodies::fix_rigid_body(Model *m,
   }
 }
 
-void HierarchyLoadRigidBodies::initialize_rigid_body(Model *m,
-                                                           RB &in) const {
+void HierarchyLoadRigidBodies::initialize_rigid_body(Model *m, RB &in) const {
   IMP_LOG_TERSE("Initializing rigid body " << m->get_particle_name(in.rb)
                                            << std::endl);
   // core::RigidMembers rms=in.second;
@@ -221,7 +222,7 @@ void HierarchyLoadRigidBodies::load(RMF::FileConstHandle fh, Model *m) {
   }
 }
 
-void HierarchyLoadRigidBodies::update_rigid_bodies(RMF::FileConstHandle ,
+void HierarchyLoadRigidBodies::update_rigid_bodies(RMF::FileConstHandle,
                                                    Model *m) {
   // backwards compat
   typedef std::pair<const int, RB> P;
@@ -234,17 +235,15 @@ void HierarchyLoadRigidBodies::update_rigid_bodies(RMF::FileConstHandle ,
   }
 }
 
-HierarchySaveRigidBodies::HierarchySaveRigidBodies(
-    RMF::FileHandle f)
+HierarchySaveRigidBodies::HierarchySaveRigidBodies(RMF::FileHandle f)
     : reference_frame_factory_(f) {
   RMF::Category cat = f.get_category("IMP");
   external_rigid_body_index_ =
       f.get_key(cat, "rigid body index", RMF::IntTraits());
 }
 
-kernel::ParticleIndex
-HierarchySaveRigidBodies::fill_external(kernel::Model *m,
-                                        kernel::ParticleIndex p) {
+kernel::ParticleIndex HierarchySaveRigidBodies::fill_external(
+    kernel::Model *m, kernel::ParticleIndex p) {
   RMF_SMALL_UNORDERED_SET<kernel::ParticleIndex> rbs;
   IMP_FOREACH(kernel::ParticleIndex ch,
               atom::Hierarchy(m, p).get_children_indexes()) {
@@ -256,7 +255,8 @@ HierarchySaveRigidBodies::fill_external(kernel::Model *m,
     ret = core::RigidBodyMember(m, p).get_rigid_body().get_particle_index();
     rbs.insert(ret);
   }
-  if (rbs.size() == 1 && *rbs.begin() != base::get_invalid_index<ParticleIndexTag>()) {
+  if (rbs.size() == 1 &&
+      *rbs.begin() != base::get_invalid_index<ParticleIndexTag>()) {
     externals_[p] = *rbs.begin();
     int index = rigid_body_count;
     ++rigid_body_count;
@@ -282,9 +282,9 @@ void HierarchySaveRigidBodies::handle_rigid_body(
           rigid_bodies.back();
   if (nested && core::RigidMember::get_is_setup(m, p)) {
     // static
-    copy_to_static_reference_frame(core::RigidMember(m, p)
-                                       .get_internal_transformation(),
-                                   n, reference_frame_factory_);
+    copy_to_static_reference_frame(
+        core::RigidMember(m, p).get_internal_transformation(), n,
+        reference_frame_factory_);
   } else if (nested) {
     local_.push_back(std::make_pair(n.get_id(), p));
   } else {
@@ -295,7 +295,7 @@ void HierarchySaveRigidBodies::handle_rigid_body(
 
 void HierarchySaveRigidBodies::setup_node(
     kernel::Model *m, kernel::ParticleIndex p, RMF::NodeHandle n,
-    kernel::ParticleIndexes& rigid_bodies) {
+    kernel::ParticleIndexes &rigid_bodies) {
   if (externals_.find(p) == externals_.end() &&
       not_externals_.find(p) == not_externals_.end()) {
     fill_external(m, p);

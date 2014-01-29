@@ -137,6 +137,7 @@ class Tests(IMP.test.TestCase):
         h0 = self._create_rb(m)
         h1 = self._create_rb(m)
         path = self.get_tmp_file_name("multiple_rb.rmf3")
+        print path
         fh = RMF.create_rmf_file(path)
         IMP.rmf.add_hierarchy(fh, h0)
         IMP.rmf.add_hierarchy(fh, h1)
@@ -149,6 +150,7 @@ class Tests(IMP.test.TestCase):
         rb_count = 0
         for pi in m.get_particle_indexes():
             if IMP.core.RigidBody.get_is_setup(m, pi):
+                print m.get_particle_name(pi)
                 rb_count += 1
         self.assertEqual(rb_count, 2)
 

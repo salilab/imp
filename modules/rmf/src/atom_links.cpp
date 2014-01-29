@@ -50,6 +50,8 @@ void HierarchyLoadLink::do_load_one(RMF::NodeConstHandle nh,
       ->second->load_rigid_bodies.load(nh.get_file(), o->get_model());
   data_.find(o->get_index())
       ->second->load_xyzs.load(nh.get_file(), o->get_model());
+  data_.find(o->get_index())
+      ->second->load_gaussians.load(nh.get_file(), o->get_model());
   data_.find(o->get_index())->second->load_rigid_bodies.update_rigid_bodies(
       nh.get_file(), o->get_model());
   do_load_hierarchy(nh, o->get_model(), o->get_index());
@@ -62,14 +64,23 @@ void HierarchyLoadLink::create_recursive(kernel::Model *m,
                                          kernel::ParticleIndexes rigid_bodies,
                                          Data &data) {
   set_association(name, m->get_particle(cur));
-  kernel::ParticleIndexes reps;
+  kernel::ParticleIndexes breps, greps;
   if (af_.get_is(name)) {
     IMP_FOREACH(RMF::NodeConstHandle alt,
                 af_.get(name).get_alternatives(RMF::PARTICLE)) {
       if (alt == name) continue;
       kernel::ParticleIndex cur_rep = m->add_particle(alt.get_name());
       create_recursive(m, root, cur_rep, alt, rigid_bodies, data);
-      reps.push_back(cur_rep);
+      breps.push_back(cur_rep);
+      IMP_LOG_TERSE("Found particle alternative " << alt << std::endl);
+    }
+    IMP_FOREACH(RMF::NodeConstHandle alt,
+                af_.get(name).get_alternatives(RMF::GAUSSIAN_PARTICLE)) {
+      if (alt == name) continue;
+      kernel::ParticleIndex cur_rep = m->add_particle(alt.get_name());
+      create_recursive(m, root, cur_rep, alt, rigid_bodies, data);
+      greps.push_back(cur_rep);
+      IMP_LOG_TERSE("Found gaussian alternative " << alt << std::endl);
     }
     // for each of them, add particle
     // recurse
@@ -78,6 +89,7 @@ void HierarchyLoadLink::create_recursive(kernel::Model *m,
   data.load_static.setup_particle(name, m, cur, rigid_bodies);
   data.load_rigid_bodies.setup_particle(name, m, cur, rigid_bodies);
   data.load_xyzs.setup_particle(name, m, cur, rigid_bodies);
+  data.load_gaussians.setup_particle(name, m, cur, rigid_bodies);
 
   IMP_FOREACH(RMF::NodeConstHandle ch, name.get_children()) {
     if (ch.get_type() == RMF::REPRESENTATION) {
@@ -88,11 +100,16 @@ void HierarchyLoadLink::create_recursive(kernel::Model *m,
     }
   }
   do_setup_particle(m, root, cur, name);
-  if (!reps.empty()) {
-    atom::Representation rep= atom::Representation::setup_particle(m, cur);
-    RMF_FOREACH(kernel::ParticleIndex r, reps) {
-      rep.add_representation(r, atom::BALLS);
-    }
+  if (!breps.empty() || !greps.empty()) {
+     atom::Representation::setup_particle(m, cur);
+  }
+
+  RMF_FOREACH(kernel::ParticleIndex r, breps) {
+    atom::Representation(m, cur).add_representation(r, atom::BALLS);
+  }
+
+  RMF_FOREACH(kernel::ParticleIndex r, greps) {
+    atom::Representation(m, cur).add_representation(r, atom::GAUSSIANS);
   }
 }
 
@@ -121,25 +138,44 @@ void HierarchyLoadLink::add_link_recursive(kernel::Model *m,
   if (af_.get_is(node)) {
     RMF::decorator::AlternativesConst ad = af_.get(node);
     atom::Representation rd(m, cur);
-    RMF::NodeConstHandles alts = ad.get_alternatives(RMF::PARTICLE);
-    atom::Hierarchies reps = rd.get_representations(atom::BALLS);
-    if (alts.size() != reps.size()) {
-      IMP_THROW("Number of alternate representations doesn't match: "
-                << alts.size() << " vs " << reps.size(), IOException);
+    {
+      RMF::NodeConstHandles alts = ad.get_alternatives(RMF::PARTICLE);
+      atom::Hierarchies reps = rd.get_representations(atom::BALLS);
+      if (alts.size() != reps.size()) {
+        IMP_THROW("Number of alternate representations doesn't match: "
+                      << alts.size() << " vs " << reps.size(),
+                  IOException);
+      }
+      IMP_INTERNAL_CHECK(reps.back().get_particle_index() == cur,
+                         "Not at the back");
+      IMP_INTERNAL_CHECK(alts[0] == node, "Not at front of RMF");
+      for (unsigned int i = 0; i < reps.size() - 1; ++i) {
+        std::cout << "Linking reps " << reps[i]->get_name() << " and "
+                  << alts[i + 1].get_name() << std::endl;
+        add_link_recursive(m, root, reps[i].get_particle_index(), alts[i + 1],
+                           rigid_bodies, data);
+      }
     }
-    IMP_INTERNAL_CHECK(reps.back().get_particle_index() == cur,
-                       "Not at the back");
-    IMP_INTERNAL_CHECK(alts[0] == node, "Not at front of RMF");
-    for (unsigned int i = 0; i < reps.size() - 1; ++i) {
-      std::cout << "Linking reps " << reps[i]->get_name() << " and "
-                << alts[i + 1].get_name() << std::endl;
-      add_link_recursive(m, root, reps[i].get_particle_index(), alts[i + 1],
-                         rigid_bodies, data);
+    {
+      RMF::NodeConstHandles alts = ad.get_alternatives(RMF::GAUSSIAN_PARTICLE);
+      atom::Hierarchies reps = rd.get_representations(atom::GAUSSIANS);
+      if (alts.size() != reps.size()) {
+        IMP_THROW("Number of alternate representations doesn't match: "
+                      << alts.size() << " vs " << reps.size(),
+                  IOException);
+      }
+      for (unsigned int i = 0; i < reps.size(); ++i) {
+        std::cout << "Linking reps " << reps[i]->get_name() << " and "
+                  << alts[i].get_name() << std::endl;
+        add_link_recursive(m, root, reps[i].get_particle_index(), alts[i],
+                           rigid_bodies, data);
+      }
     }
   }
   data.load_static.link_particle(node, m, cur, rigid_bodies);
   data.load_rigid_bodies.link_particle(node, m, cur, rigid_bodies);
   data.load_xyzs.link_particle(node, m, cur, rigid_bodies);
+  data.load_gaussians.link_particle(node, m, cur, rigid_bodies);
 
   do_link_particle(m, root, cur, node);
 
@@ -204,6 +240,7 @@ void HierarchySaveLink::do_save_one(kernel::Particle *o, RMF::NodeHandle nh) {
   IMP_USAGE_CHECK(it != data_.end(), "I don't know that node");
   it->second->save_rigid_bodies.save(o->get_model(), nh.get_file());
   it->second->save_xyzs.save(o->get_model(), nh.get_file());
+  it->second->save_gaussians.save(o->get_model(), nh.get_file());
   do_save_hierarchy(o->get_model(), o->get_index(), nh);
 }
 
@@ -214,22 +251,36 @@ void HierarchySaveLink::add_recursive(Model *m, kernel::ParticleIndex root,
   IMP_LOG_VERBOSE("Adding " << atom::Hierarchy(m, p) << std::endl);
   // make sure not to double add
   if (p != root) set_association(cur, m->get_particle(p));
-  RMF::NodeHandles rep_nodes;
+  RMF::NodeHandles prep_nodes, grep_nodes;
   if (IMP::atom::Representation::get_is_setup(m, p)) {
-    atom::Hierarchies reps =
-        IMP::atom::Representation(m, p).get_representations(atom::BALLS);
-    IMP_FOREACH(atom::Hierarchy cr, reps) {
-      if (cr.get_particle_index() == p) continue;
-      RMF::NodeHandle cn = cur.get_file().add_node(
-          get_good_name(m, cr.get_particle_index()), RMF::REPRESENTATION);
-      rep_nodes.push_back(cn);
-      add_recursive(m, root, cr.get_particle_index(), rigid_bodies, cn, data);
+    {
+      atom::Hierarchies reps =
+          IMP::atom::Representation(m, p).get_representations(atom::BALLS);
+      IMP_FOREACH(atom::Hierarchy cr, reps) {
+        if (cr.get_particle_index() == p) continue;
+        RMF::NodeHandle cn = cur.get_file().add_node(
+            get_good_name(m, cr.get_particle_index()), RMF::REPRESENTATION);
+        prep_nodes.push_back(cn);
+        add_recursive(m, root, cr.get_particle_index(), rigid_bodies, cn, data);
+      }
+    }
+    {
+      atom::Hierarchies reps =
+          IMP::atom::Representation(m, p).get_representations(atom::GAUSSIANS);
+      IMP_FOREACH(atom::Hierarchy cr, reps) {
+        if (cr.get_particle_index() == p) continue;
+        RMF::NodeHandle cn = cur.get_file().add_node(
+            get_good_name(m, cr.get_particle_index()), RMF::REPRESENTATION);
+        grep_nodes.push_back(cn);
+        add_recursive(m, root, cr.get_particle_index(), rigid_bodies, cn, data);
+      }
     }
   }
 
   data.save_static.setup_node(m, p, cur);
   data.save_rigid_bodies.setup_node(m, p, cur, rigid_bodies);
   data.save_xyzs.setup_node(m, p, cur, rigid_bodies);
+  data.save_gaussians.setup_node(m, p, cur, rigid_bodies);
 
   do_setup_node(m, root, p, cur);
 
@@ -244,10 +295,13 @@ void HierarchySaveLink::add_recursive(Model *m, kernel::ParticleIndex root,
     add_recursive(m, root, pc, rigid_bodies, curc, data);
   }
 
-  if (!rep_nodes.empty()) {
+  if (!prep_nodes.empty() || !grep_nodes.empty()) {
     RMF::decorator::Alternatives ad = af_.get(cur);
-    IMP_FOREACH(RMF::NodeHandle nh, rep_nodes) {
+    IMP_FOREACH(RMF::NodeHandle nh, prep_nodes) {
       ad.add_alternative(nh, RMF::PARTICLE);
+    }
+    IMP_FOREACH(RMF::NodeHandle nh, grep_nodes) {
+      ad.add_alternative(nh, RMF::GAUSSIAN_PARTICLE);
     }
   }
 }

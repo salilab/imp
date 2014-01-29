@@ -14,6 +14,7 @@
 #include "internal/atom_links_static.h"
 #include "internal/atom_links_rigid_bodies.h"
 #include "internal/atom_links_xyzs.h"
+#include "internal/atom_links_gaussians.h"
 #include <RMF/decorator/alternatives.h>
 #include <IMP/base/object_macros.h>
 #include <IMP/base/utility_macros.h>
@@ -42,9 +43,14 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<kernel::Particle> {
     internal::HierarchyLoadStatic load_static;
     internal::HierarchyLoadBonds load_bonds;
     internal::HierarchyLoadXYZs load_xyzs;
+    internal::HierarchyLoadGaussians load_gaussians;
     internal::HierarchyLoadRigidBodies load_rigid_bodies;
     Data(RMF::FileConstHandle h)
-        : load_static(h), load_bonds(h), load_xyzs(h), load_rigid_bodies(h) {}
+        : load_static(h),
+          load_bonds(h),
+          load_xyzs(h),
+          load_gaussians(h),
+          load_rigid_bodies(h) {}
   };
   typedef base::map<kernel::ParticleIndex, boost::shared_ptr<Data> > DM;
   DM data_;
@@ -118,9 +124,14 @@ class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<kernel::Particle> {
     internal::HierarchySaveStatic save_static;
     internal::HierarchySaveBonds save_bonds;
     internal::HierarchySaveXYZs save_xyzs;
+    internal::HierarchySaveGaussians save_gaussians;
     internal::HierarchySaveRigidBodies save_rigid_bodies;
     Data(RMF::FileHandle h)
-        : save_static(h), save_bonds(h), save_xyzs(h), save_rigid_bodies(h) {}
+        : save_static(h),
+          save_bonds(h),
+          save_xyzs(h),
+          save_gaussians(h),
+          save_rigid_bodies(h) {}
   };
   typedef base::map<kernel::ParticleIndex, boost::shared_ptr<Data> > DM;
   DM data_;

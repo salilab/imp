@@ -50,7 +50,7 @@ inline algebra::Vector3D get_coordinates(
     RMF::NodeConstHandle n,
     RMF::decorator::IntermediateParticleFactory ipf) {
   RMF::Vector3 coords = ipf.get(n).get_coordinates();
-  return algebra::Vector3D(coords.begin(), coords.end());
+  return algebra::Vector3D(coords);
 }
 inline algebra::Transformation3D get_transformation(
     RMF::NodeConstHandle n, RMF::decorator::ReferenceFrameFactory rfcf) {
