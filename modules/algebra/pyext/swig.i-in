@@ -49,6 +49,7 @@ IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  VectorInput);
 IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  PrincipalComponentAnalysis);
 IMP_SWIG_ALGEBRA_OBJECT_D(IMP::algebra,  NearestNeighbor);
 IMP_SWIG_VALUE(IMP::algebra,  ReferenceFrame3D, ReferenceFrame3Ds);
+IMP_SWIG_VALUE(IMP::algebra, Gaussian3D, Gaussian3Ds);
 
 IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  DefaultEmbedding);
 IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  LogEmbedding);
@@ -119,7 +120,6 @@ IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, Sphere);
 
 %include "IMP/algebra/ReferenceFrame3D.h"
 
-
 %include "IMP_algebra.spherical_coords.i"
 %include "IMP/algebra/eigen_analysis.h"
 %include "IMP/algebra/Segment3D.h"
@@ -139,6 +139,12 @@ IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, Sphere);
 %include "IMP/algebra/grid_utility.h"
 %include "IMP/algebra/GridD.h"
 %include "IMP/algebra/standard_grids.h"
+namespace IMP {
+ namespace algebra {
+   %template(DenseDoubleGrid3D) DenseGrid3D<double>;
+   %template(DenseFloatGrid3D) DenseGrid3D<float >;
+ }
+}
 
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, GridIndex);
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, ExtendedGridIndex);
@@ -156,6 +162,8 @@ IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, LogEmbedding);
 %include "IMP/algebra/shortest_segment.h"
 %include "IMP/algebra/vector_search.h"
 %include "IMP/algebra/vector_metrics.h"
+
+%include "IMP/algebra/Gaussian3D.h"
 
 %include "IMP/algebra/internal/swig.h"
 
@@ -203,8 +211,6 @@ namespace IMP {
    %template(SparseIntGrid3D) GridD<3, SparseGridStorageD<3, int, BoundedGridRangeD<3> >, int, DefaultEmbeddingD<3> >;
    %template(SparseUnboundedIntGrid3D) GridD<3, SparseGridStorageD<3, int, UnboundedGridRangeD<3> >, int, DefaultEmbeddingD<3> >;
    %template(SparseUnboundedIntGridKD) GridD<-1, SparseGridStorageD<-1, int, UnboundedGridRangeD<-1> >, int, DefaultEmbeddingD<-1> >;
-   %template(DenseDoubleGrid3D) GridD<3, DenseGridStorageD<3, double>, double, DefaultEmbeddingD<3> >;
-   %template(DenseFloatGrid3D) GridD<3, DenseGridStorageD<3, float>, float, DefaultEmbeddingD<3> >;
    %template(DenseIntLogGrid3D) GridD<3, DenseGridStorageD<3, int>, int, LogEmbeddingD<3> >;
    %template(SparseIntLogGrid3D) GridD<3, SparseGridStorageD<3, int, BoundedGridRangeD<3 > >, int, LogEmbeddingD<3> >;
    %template(SparseIntLogGridKD) GridD<-1, SparseGridStorageD<-1, int, BoundedGridRangeD<-1 > >, int, LogEmbeddingD<-1> >;

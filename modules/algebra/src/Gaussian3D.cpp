@@ -27,7 +27,8 @@ IMP_Eigen::Matrix3d get_covariance(const Gaussian3D &g) {
   return covar;
 }
 
-Gaussian3D get_gaussian_from_covariance(const IMP_Eigen::Matrix3d &covar) {
+Gaussian3D get_gaussian_from_covariance(const IMP_Eigen::Matrix3d &covar,
+                                        const Vector3D &center) {
   Rotation3D rot;
   Vector3D radii;
 
@@ -54,8 +55,7 @@ Gaussian3D get_gaussian_from_covariance(const IMP_Eigen::Matrix3d &covar) {
   rot=Rotation3D(eq.w(),eq.x(),eq.y(),eq.z());
   //std::cout<<"Decomposed rotation:\n"<<evecs<<std::endl;
   //std::cout<<"Decomposed radii:\n"<<radii<<std::endl;
-  return Gaussian3D(
-      ReferenceFrame3D(Transformation3D(rot, get_zero_vector_d<3>())), radii);
+  return Gaussian3D(ReferenceFrame3D(Transformation3D(rot, center)), radii);
 }
 
 DenseGrid3D<float> get_rasterized(const Gaussian3Ds &gmm, const Floats &weights,

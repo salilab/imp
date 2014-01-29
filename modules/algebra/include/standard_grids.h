@@ -16,9 +16,6 @@
 #include "grid_embeddings.h"
 IMPALGEBRA_BEGIN_NAMESPACE
 
-// They are created with %template in swig to get around inclusion order issues
-#ifndef SWIG
-
 /** A sparse, infinite grid of values. In python SparseUnboundedIntGrid3D
     is provided.*/
 template <int D, class VT>
@@ -44,8 +41,9 @@ struct DenseGrid3D
   typedef GridD<3, DenseGridStorageD<3, VT>, VT, DefaultEmbeddingD<3> > P;
   DenseGrid3D(double side, const BoundingBoxD<3> &bb, VT def = VT())
       : P(side, bb, def) {}
-  DenseGrid3D(int xd, int yd, int zd, const BoundingBoxD<3> &bb, VT def = VT())
-      : P(xd, yd, zd, bb, def) {}
+  /*DenseGrid3D(int xd, int yd, int zd, const BoundingBoxD<3> &bb, VT def =
+    VT())
+    : P(xd, yd, zd, bb, def) {}*/
   DenseGrid3D() {}
 };
 
@@ -75,8 +73,6 @@ struct SparseUnboundedGrid3D
       : P(side, origin, def) {}
   SparseUnboundedGrid3D() {}
 };
-
-#endif
 
 IMPALGEBRA_END_NAMESPACE
 
