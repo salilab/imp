@@ -6,6 +6,7 @@
 
 #include <IMP/cgal/internal/polyhedrons.h>
 #include <IMP/base/log.h>
+#include <IMP/base/log_macros.h>
 #include <IMP/algebra/grid_utility.h>
 IMP_GCC_PRAGMA(diagnostic ignored "-Wuninitialized")
 #include <CGAL/Origin.h>

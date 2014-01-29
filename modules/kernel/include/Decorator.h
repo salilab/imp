@@ -253,20 +253,4 @@ IMPKERNELEXPORT void check_particle(Particle* p);
 
 IMPKERNEL_END_NAMESPACE
 
-#if !defined(SWIG) && !defined IMP_DOXYGEN
-IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
-inline void unref(Decorator d) {
-  return base::internal::unref(static_cast<Particle*>(d));
-}
-inline void release(Decorator d) {
-  return base::internal::release(static_cast<Particle*>(d));
-}
-inline void ref(Decorator d) {
-  return base::internal::ref(static_cast<Particle*>(d));
-}
-
-IMPKERNEL_END_INTERNAL_NAMESPACE
-
-#endif
-
 #endif /* IMPKERNEL_DECORATOR_H */

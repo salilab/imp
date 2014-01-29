@@ -7,6 +7,7 @@
 
 #include "IMP/kmeans/KMeans.h"
 #include <IMP/base/log.h>
+#include <IMP/base/log_macros.h>
 #include <iostream>
 #include <iomanip>
 #include <string>

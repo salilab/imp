@@ -319,7 +319,7 @@ class IMPKERNELEXPORT Model : public base::Object
   /** @} */
 
   IMP_OBJECT_METHODS(Model);
-
+			      public:
 // deprecated
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   struct NotNull {
