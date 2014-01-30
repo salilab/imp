@@ -378,7 +378,10 @@ class VectorD : public GeometricPrimitiveD<D> {
   }
 #endif
 
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+#if !defined(SWIG)
+  /** Return a pointer to the data stored.
+
+      Useful for conversion to other types. */
   const double *get_data() const { return data_.get_data(); }
 #endif
   unsigned int get_dimension() const { return data_.get_dimension(); }
