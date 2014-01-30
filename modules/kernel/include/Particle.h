@@ -49,20 +49,20 @@ class IMPKERNELEXPORT Particle : public ModelObject {
 
 #ifndef IMP_DOXYGEN
 
-#define IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(UCName, lcname, Value) \
-  void add_attribute(UCName##Key name, Value initial_value);    \
-  void remove_attribute(UCName##Key name);                      \
-  bool has_attribute(UCName##Key name) const;                   \
-  Value get_value(UCName##Key name) const;                      \
-  void set_value(UCName##Key name, Value value);                \
-  void add_cache_attribute(UCName##Key name, Value value);      \
+#define IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(UCName, lcname, Value) \
+  void add_attribute(UCName##Key name, Value initial_value);           \
+  void remove_attribute(UCName##Key name);                             \
+  bool has_attribute(UCName##Key name) const;                          \
+  Value get_value(UCName##Key name) const;                             \
+  void set_value(UCName##Key name, Value value);                       \
+  void add_cache_attribute(UCName##Key name, Value value);             \
   UCName##Keys get_##lcname##_keys() const
 
-  IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(Float, float, Float);
-  IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(Int, int, Int);
-  IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(String, string, String);
-  IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(Object, object, Object *);
-  IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(WeakObject, weak_object, Object *);
+  IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(Float, float, Float);
+  IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(Int, int, Int);
+  IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(String, string, String);
+  IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(Object, object, Object *);
+  IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(WeakObject, weak_object, Object *);
 
   /** @name Float Attributes
        Float attributes can be optimized, meaning the optimizer is
@@ -126,7 +126,7 @@ class IMPKERNELEXPORT Particle : public ModelObject {
 class Decorator;
 
 /** Take Decorator or Particle. */
-class ParticleAdaptor : public base::InputAdaptor {
+class IMPKERNELEXPORT ParticleAdaptor : public base::InputAdaptor {
   Model *m_;
   ParticleIndex pi_;
 
