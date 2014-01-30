@@ -1,6 +1,5 @@
 %include "IMP/core/close_pairs_finder_macros.h"
 %include "IMP/core/monte_carlo_macros.h"
-%include "IMP/core/mover_macros.h"
 %include "IMP/core/periodic_optimizer_state_macros.h"
 
 %template(_OpenCubicSplineBase) IMP::score_functor::ScoreUnaryFunction<IMP::score_functor::OpenCubicSpline>;
@@ -169,8 +168,6 @@ IMP_SWIG_OBJECT(IMP::core, IsCollisionPairPredicate, IsCollisionPairPredicates);
 /* Wrap our own base classes */
 %include "IMP/core/ClosePairsFinder.h"
 %include "IMP/core/MonteCarloMover.h"
-%include "IMP/core/Mover.h"
-%include "IMP/core/MoverBase.h"
 
 %include "IMP/core/XYZ.h"
 
