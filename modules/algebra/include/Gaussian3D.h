@@ -16,7 +16,10 @@
 #include <IMP/algebra/eigen3/Eigen/Dense>
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/** A gaussian distribution in 3D. */
+/** A gaussian distribution in 3D.
+
+   The variances are along the axis of the reference frame.
+*/
 class Gaussian3D : public GeometricPrimitiveD<3> {
   ReferenceFrame3D tr_;
   Vector3D variances_;
@@ -28,10 +31,8 @@ class Gaussian3D : public GeometricPrimitiveD<3> {
 
   const ReferenceFrame3D &get_reference_frame() const { return tr_; }
   const Vector3D &get_variances() const { return variances_; }
-  inline IMP_Eigen::Vector3d get_center() const{
-    Vector3D acenter =
-      get_reference_frame().get_transformation_to().get_translation();
-    return IMP_Eigen::Vector3d(acenter[0],acenter[1],acenter[2]);
+  inline const Vector3D& get_center() const{
+    return get_reference_frame().get_transformation_to().get_translation();
   }
   IMP_SHOWABLE_INLINE(Gaussian3D, out << tr_ << ": " << variances_);
 };
