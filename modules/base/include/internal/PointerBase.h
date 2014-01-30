@@ -31,7 +31,9 @@ struct RefCountedPointerTraits {
   }
   static void handle_unset(TT* t) { if (t) t->unref(); }
   static void check(const TT* o) { IMP_CHECK_OBJECT(o); }
-  static void release(TT *o) {o->release();}
+  static void release(TT* o) {
+    if (o) o->release();
+  }
 };
 template <class TT>
 // note: PointerMember replaces the old OwnerPointer
