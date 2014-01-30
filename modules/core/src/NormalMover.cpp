@@ -57,7 +57,6 @@ NormalMover::NormalMover(const kernel::ParticlesTemp &sc, double max)
 IMP_GCC_DISABLE_WARNING(-Wuninitialized)
 MonteCarloMoverResult NormalMover::do_propose() {
   IMP_OBJECT_LOG;
-  boost::uniform_real<> rand(0, 1);
   boost::normal_distribution<double> mrng(0, stddev_);
   boost::variate_generator<base::RandomNumberGenerator &,
                            boost::normal_distribution<double> >
