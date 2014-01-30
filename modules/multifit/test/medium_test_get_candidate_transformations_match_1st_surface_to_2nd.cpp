@@ -5,6 +5,7 @@
 #include <limits>
 #include "IMP/algebra/VectorD.h"
 #include <IMP/base/log.h>
+#include <IMP/base/log_macros.h>
 #include "IMP/algebra/BoundingBoxD.h"
 #include "IMP/algebra/grid_utility.h"
 #include "IMP/algebra/standard_grids.h"

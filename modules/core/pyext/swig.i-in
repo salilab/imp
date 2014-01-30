@@ -6,8 +6,6 @@
 
 IMP_SWIG_BASE_OBJECT(IMP::core,  MonteCarloMover, MonteCarloMovers);
 IMP_SWIG_VALUE(IMP::core, MonteCarloMoverResult, MonteCarloMoverResults);
-IMP_SWIG_OBJECT(IMP::core,  Mover, Movers)
-IMP_SWIG_OBJECT(IMP::core,  MoverBase, MoverBases)
 IMP_SWIG_CONTAINER(IMP::core, IMP::core, MonteCarlo, Mover, mover);
 IMP_SWIG_CONTAINER(IMP::core, IMP::core, SerialMover, Mover, mover);
 
