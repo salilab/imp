@@ -1,5 +1,5 @@
 /**
- *  \file PolarResamplingParameters.h
+ *  \file IMP/em2d/PolarResamplingParameters.h
  *  \brief Funtions related with rotations in em2d
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
 */
@@ -12,6 +12,7 @@
 #include "IMP/algebra/constants.h"
 #include "IMP/base/exception.h"
 #include "IMP/base/log.h"
+#include "IMP/base/log_macros.h"
 #include <IMP/constants.h>
 
 IMPEM2D_BEGIN_NAMESPACE
