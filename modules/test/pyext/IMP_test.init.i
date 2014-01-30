@@ -327,7 +327,7 @@ class TestCase(unittest.TestCase):
             # why is "all" missing on my mac?
             custom_words=["info", "prechange", "int", "ints", "optimizeds", "graphviz",
                           "voxel", "voxels", "endian", 'rna', 'dna',
-                          "xyzr", "pdbs", "fft", "ccc"]
+                          "xyzr", "pdbs", "fft", "ccc", "gaussian"]
             self.words=set(wordlist+custom_words)
         if self.words:
             for i in "0123456789":
