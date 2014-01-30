@@ -14,6 +14,7 @@
 #include <IMP/algebra/VectorD.h>
 #include <IMP/algebra/standard_grids.h>
 #include <IMP/algebra/eigen3/Eigen/Dense>
+
 IMPALGEBRA_BEGIN_NAMESPACE
 
 /** A gaussian distribution in 3D.
