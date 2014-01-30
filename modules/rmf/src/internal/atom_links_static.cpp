@@ -21,7 +21,7 @@
 #include <IMP/display/Colored.h>
 #include <RMF/SetCurrentFrame.h>
 #include <RMF/NodeHandle.h>
-#include <boost/range/iterator_range_core.hpp>
+#include <boost/range/iterator_range.hpp>
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 
