@@ -1,6 +1,6 @@
 /**
  *  \file example/Gaussian.cpp
- *  \brief Add a name to a particle.
+ *  \brief Decorator to hold Gaussian3D
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -27,6 +27,23 @@ void Gaussian::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                    g.get_variances()[1]);
   m->add_attribute(get_variance_key(2), pi,
                    g.get_variances()[2]);
+}
+
+IMP_Eigen::Matrix3d Gaussian::get_covariance() const {
+  algebra::VectorD<4> iq(
+        get_model()->get_attribute(internal::rigid_body_data().quaternion_[0],
+                                   get_particle_index()),
+        get_model()->get_attribute(internal::rigid_body_data().quaternion_[1],
+                                   get_particle_index()),
+        get_model()->get_attribute(internal::rigid_body_data().quaternion_[2],
+                                   get_particle_index()),
+        get_model()->get_attribute(internal::rigid_body_data().quaternion_[3],
+                                   get_particle_index()));
+  IMP_Eigen::Quaterniond q(iq[0], iq[1], iq[2], iq[3]);
+  IMP_Eigen::Matrix3d rot = q.toRotationMatrix();
+  IMP_Eigen::Matrix3d rad = IMP_Eigen::Vector3d(get_variances().get_data()).asDiagonal();
+  IMP_Eigen::Matrix3d covar = rot * (rad * rot.transpose());
+  return covar;
 }
 
 algebra::Gaussian3D Gaussian::get_gaussian() const {

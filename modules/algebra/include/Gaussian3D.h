@@ -1,5 +1,6 @@
 /**
- *  \file IMP/algebra/Gaussian3D.h     \brief Add a name to a particle.
+ *  \file IMP/algebra/Gaussian3D.h
+ *  \brief gaussian shape
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *

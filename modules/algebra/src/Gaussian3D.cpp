@@ -1,6 +1,6 @@
 /**
- *  \file  Sphere3D.cpp
- *  \brief simple implementation of spheres in 3D
+ *  \file  Gaussian3D.cpp
+ *  \brief gaussian shape
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
@@ -54,8 +54,6 @@ Gaussian3D get_gaussian_from_covariance(const IMP_Eigen::Matrix3d &covar,
   // create rotation matrix and return
   IMP_Eigen::Quaterniond eq(evecs);
   rot=Rotation3D(eq.w(),eq.x(),eq.y(),eq.z());
-  //std::cout<<"Decomposed rotation:\n"<<evecs<<std::endl;
-  //std::cout<<"Decomposed radii:\n"<<radii<<std::endl;
   return Gaussian3D(ReferenceFrame3D(Transformation3D(rot, center)), radii);
 }
 
