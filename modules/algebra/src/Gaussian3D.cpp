@@ -72,9 +72,7 @@ DenseGrid3D<float> get_rasterized(const Gaussian3Ds &gmm, const Floats &weights,
     if (!invertible || determinant < 0) {
       std::cout << "\n\n\n->>>>not proper matrix!!\n\n\n" << std::endl;
     }
-    Vector3D acenter =
-        gmm[ng].get_reference_frame().get_transformation_to().get_translation();
-    IMP_Eigen::Vector3d center(acenter[0], acenter[1], acenter[2]);
+    IMP_Eigen::Vector3d center = gmm[ng].get_center();
     IMP_INTERNAL_CHECK(invertible, "matrix wasn't invertible! uh oh!");
     IMP_FOREACH(const DenseGrid3D<float>::Index &i, ret.get_all_indexes()) {
       Vector3D aloc = ret.get_center(i);

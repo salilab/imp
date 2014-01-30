@@ -28,6 +28,11 @@ class Gaussian3D : public GeometricPrimitiveD<3> {
 
   const ReferenceFrame3D &get_reference_frame() const { return tr_; }
   const Vector3D &get_variances() const { return variances_; }
+  inline IMP_Eigen::Vector3d get_center() const{
+    Vector3D acenter =
+      get_reference_frame().get_transformation_to().get_translation();
+    return IMP_Eigen::Vector3d(acenter[0],acenter[1],acenter[2]);
+  }
   IMP_SHOWABLE_INLINE(Gaussian3D, out << tr_ << ": " << variances_);
 };
 IMP_VALUES(Gaussian3D, Gaussian3Ds);
