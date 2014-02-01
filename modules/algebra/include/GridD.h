@@ -19,6 +19,7 @@
 #include <boost/iterator/transform_iterator.hpp>
 #include <IMP/base/map.h>
 #include <IMP/base/Vector.h>
+#include <IMP/base/showable_macros.h>
 #include <boost/range/iterator_range.hpp>
 
 #include <limits>
@@ -73,12 +74,12 @@ IMPALGEBRA_BEGIN_NAMESPACE
    \see DenseGridStorage3D
    \see SparseGridStorageD
 */
-template <int D, class Storage,
+template <int D, class StorageT,
           // swig needs this for some reason
           class Value, class EmbeddingT = DefaultEmbeddingD<D> >
-class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
+class GridD : public StorageT, public EmbeddingT, public GeometricPrimitiveD<D> {
  private:
-  typedef GridD<D, Storage, Value, EmbeddingT> This;
+  typedef GridD<D, StorageT, Value, EmbeddingT> This;
 #ifndef IMP_DOXYGEN
  protected:
   struct GetVoxel {
@@ -126,6 +127,7 @@ class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
   }
 #endif
  public:
+  typedef StorageT Storage;
   typedef EmbeddingT Embedding;
   typedef VectorD<D> Vector;
   /** Create a grid from a bounding box and the counts in each direction.
@@ -169,6 +171,9 @@ class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
   //! An empty, undefined grid.
   /** Make sure you initialize it before you try to use it. */
   GridD() : Storage(Value()) {}
+
+  IMP_SHOWABLE_INLINE(GridD, "Grid");
+
   /* \name Indexing
      The vector must fall in a valid voxel to get and must be within
      the volume of the grid to set.
