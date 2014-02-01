@@ -9,6 +9,7 @@
 #include <IMP/algebra/endian.h>
 #include <IMP/em/MRCReaderWriter.h>
 #include <IMP/base/log.h>
+#include <IMP/base/log_macros.h>
 
 IMPEM_BEGIN_NAMESPACE
 
