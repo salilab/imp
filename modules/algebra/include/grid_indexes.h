@@ -15,6 +15,8 @@
 #include <IMP/base/types.h>
 #include <IMP/base/Value.h>
 #include <IMP/base/exception.h>
+// for swig wrappers
+#include <IMP/base/internal/range.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
