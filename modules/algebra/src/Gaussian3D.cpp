@@ -62,7 +62,8 @@ DenseGrid3D<float> get_rasterized(const Gaussian3Ds &gmm, const Floats &weights,
   DenseGrid3D<float> ret(cell_width, bb, 0);
   for (unsigned int ng=0;ng<gmm.size();ng++){
     IMP_Eigen::Matrix3d covar = get_covariance(gmm[ng]);
-    IMP_Eigen::Matrix3d inverse;
+    // suppress warning
+    IMP_Eigen::Matrix3d inverse = IMP_Eigen::Matrix3d::Zero(3, 3);
     double determinant;
     bool invertible;
     covar.computeInverseAndDetWithCheck(inverse, determinant, invertible);
