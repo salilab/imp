@@ -158,7 +158,7 @@ double ExcludedVolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da)
     }
   }
   bool recomputed = false;
-  if (was_bad_ || get_if_moved() > 0) {
+  if (was_bad_ || get_if_moved()) {
     cur_list_.clear();
     fill_list();
     reset_moved();
@@ -256,7 +256,7 @@ double ExcludedVolumeRestraint::unprotected_evaluate_if_good(
       return cur;
     };
   }
-  if (was_bad_ || get_if_moved() > 0) {
+  if (was_bad_ || get_if_moved()) {
     double ret = fill_list_if_good(max);
     IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
       if (ret > max) {
