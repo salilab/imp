@@ -19,7 +19,7 @@ before_install:
  - ./setup_git.py
 
 script:
- - mkdir build
- - cd build
- - cmake .. -DIMP_PER_CPP_COMPILATION=$BUILD
+ - mkdir ../build
+ - cd ../build
+ - cmake ../imp -DIMP_PER_CPP_COMPILATION=$BUILD
  - make -j 2 IMP.$BUILD
