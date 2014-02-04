@@ -1,0 +1,25 @@
+language: cpp
+branches:
+  only:
+    - develop
+compiler:
+  - gcc
+env:
+  - BUILD=base
+  - BUILD=algebra
+  - BUILD=kernel
+  - BUILD=core
+  - BUILD=rmf
+git:
+  submodules: false
+
+before_install:
+ - sudo apt-get update -qq
+ - sudo apt-get install -qq libboost$BOOST-all-dev swig libhdf5-serial-dev
+ - ./setup_git.py
+
+script:
+ - mkdir build
+ - cd build
+ - cmake .. -DCMAKE_BUILD_TYPE=Release -DIMP_PER_CPP_COMPILATION=$BUILD
+ - make -j 2 IMP.$BUILD
