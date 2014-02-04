@@ -167,15 +167,17 @@ IMPBASEEXPORT double get_float_flag(std::string name);
     and the flags don't pass it.*/
 IMPBASEEXPORT void write_help(std::ostream &out = std::cerr);
 
-#if defined(IMP_DOXYGEN) || defined(SWIG)
-/** Executables can inspect this flag and when it is true, run a shorter,
-    simpler version of their code to just make sure things work.
-*/
-extern IMPBASEEXPORT const bool run_quick_test;
-#else
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+/* Exposing global variables through swig is kind of broken,
+   see issue #723. */
 extern IMPBASEEXPORT AdvancedFlag<bool> run_quick_test;
 #endif
 // defined in static.cpp
+
+/** Executables can inspect this flag and when it is true, run a shorter,
+    simpler version of their code to just make sure things work.
+*/
+inline bool get_is_quick_test() {return run_quick_test;}
 
 IMPBASE_END_NAMESPACE
 

@@ -204,7 +204,8 @@ Strings setup_from_argv_internal(int argc, char **argv, std::string description,
       std::cerr << "Log: " << IMP_HAS_LOG << std::endl;
       exit(0);
     }
-    if (internal::help || internal::help_advanced) {
+    std::cout << "Quick test is " << run_quick_test << std::endl;
+	if (internal::help || internal::help_advanced) {
       write_help(std::cerr);
       exit(0);
     }

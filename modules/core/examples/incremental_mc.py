@@ -11,7 +11,7 @@ import sys
 
 IMP.base.setup_from_argv(sys.argv, "Optimize balls example")
 
-if IMP.base.run_quick_test:
+if IMP.base.get_is_quick_test():
     num_balls = 2
     num_mc_steps = 10
 else:

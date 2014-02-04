@@ -13,7 +13,7 @@ IMP.base.setup_from_argv(sys.argv, "Optimize balls example")
 
 bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                IMP.algebra.Vector3D(10, 10, 10))
-if IMP.base.run_quick_test:
+if IMP.base.get_is_quick_test():
     ni = 2
     nj = 2
     np = 2
@@ -34,7 +34,7 @@ else:
     ninner = 5
     nouter = 11
 
-print IMP.base.run_quick_test, ni, nj, np, ninner, nouter
+print IMP.base.get_is_quick_test(), ni, nj, np, ninner, nouter
 # using a HarmonicDistancePairScore for fixed length links is more
 # efficient than using a HarmonicSphereDistnacePairScore and works
 # better with the optimizer
