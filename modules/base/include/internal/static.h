@@ -10,12 +10,12 @@
 
 #include <IMP/base/base_config.h>
 #include <IMP/base/Vector.h>
-#include <IMP/base/map.h>
 #include <IMP/base/Flag.h>
 #include <IMP/base/tuple_macros.h>
 #include <IMP/base/enums.h>
 #include <boost/cstdint.hpp>
 #include <boost/program_options.hpp>
+#include <boost/unordered_map.hpp>
 #include <boost/unordered_set.hpp>
 #include <boost/progress.hpp>
 #include <boost/scoped_ptr.hpp>
@@ -23,7 +23,8 @@
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
 extern IMPBASEEXPORT bool print_time;
 
-extern IMPBASEEXPORT base::map<std::string, unsigned int> object_type_counts;
+extern IMPBASEEXPORT boost::unordered_map<std::string, unsigned int>
+    object_type_counts;
 
 IMPBASEEXPORT void check_live_objects();
 

@@ -69,7 +69,7 @@ internal::LogStream stream;
 
 // objects
 
-base::map<std::string, unsigned int> object_type_counts;
+boost::unordered_map<std::string, unsigned int> object_type_counts;
 
 #if IMP_BASE_HAS_LOG4CXX
 
