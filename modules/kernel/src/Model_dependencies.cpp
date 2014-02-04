@@ -242,6 +242,7 @@ void Model::do_set_has_all_dependencies(bool tf) {
 void Model::set_has_all_dependencies(bool tf) {
   base::Timer t(this, "set_has_all_dependencies");
   IMP_USAGE_CHECK(tf, "Only works for true.");
+  if (get_has_all_dependencies()) return;
   // check_dependency_invariants();
   do_set_has_all_dependencies(tf);
   IMP_INTERNAL_CHECK(get_has_all_dependencies() == tf,
