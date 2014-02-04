@@ -12,6 +12,8 @@
 #include <IMP/base/base_config.h>
 #include "exception.h"
 #include "compiler_macros.h"
+#include <boost/type_traits/is_base_of.hpp>
+#include <boost/static_assert.hpp>
 #include <iostream>
 #include <cmath>
 
