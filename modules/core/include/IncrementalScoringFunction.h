@@ -67,7 +67,7 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
   void create_flattened_restraints(const kernel::RestraintsTemp &rs);
   void create_scoring_functions();
   void do_non_incremental_evaluate();
-  Data create_data(kernel::ParticleIndex pi,
+  Data create_data(kernel::ParticleIndex pi, RestraintsTemp cr,
                    const base::map<kernel::Restraint *, int> &all,
                    const kernel::Restraints &dummies) const;
 

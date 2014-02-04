@@ -65,9 +65,9 @@ class IncrementalRestraintsScoringFunction
 }
 
 IncrementalScoringFunction::Data IncrementalScoringFunction::create_data(
-    kernel::ParticleIndex pi, const base::map<Restraint *, int> &all,
+    kernel::ParticleIndex pi, kernel::RestraintsTemp cr,
+    const base::map<Restraint *, int> &all,
     const kernel::Restraints &dummies) const {
-  kernel::RestraintsTemp cr = get_dependent_restraints(get_model(), pi);
   IMP_LOG_TERSE("Dependent restraints for particle "
                 << get_model()->get_particle_name(pi) << " are " << cr
                 << std::endl);
@@ -113,8 +113,13 @@ void IncrementalScoringFunction::create_scoring_functions() {
     drs.push_back(nbl_[i]->get_dummy_restraint());
   }
 
+  base::Vector<kernel::RestraintsTemp> crs;
+  IMP_FOREACH(kernel::ParticleIndex pi, all_) {
+    crs.push_back(get_dependent_restraints(get_model(), pi));
+  }
+
   for (unsigned int i = 0; i < all_.size(); ++i) {
-    scoring_functions_[all_[i]] = create_data(all_[i], mp, drs);
+    scoring_functions_[all_[i]] = create_data(all_[i], crs[i], mp, drs);
   }
 }
 
