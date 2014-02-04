@@ -130,7 +130,7 @@ mkdir build && cd build
 # not just the first one.
 %if 0%{?keep_going}
 mkdir logs
-../imp/tools/nightly-tests/build_all.py --outdir=logs --summary=logs/summary.pck make
+../imp/tools/nightly-tests/build_all.py --outdir=logs --summary=logs/summary.pck "make -k"
 %else
 make
 %endif
