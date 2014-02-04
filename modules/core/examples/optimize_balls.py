@@ -6,7 +6,6 @@
 import IMP.core
 import IMP.display
 import IMP.container
-import IMP.rmf
 import IMP.base
 import sys
 
