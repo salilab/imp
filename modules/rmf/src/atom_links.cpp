@@ -101,7 +101,7 @@ void HierarchyLoadLink::create_recursive(kernel::Model *m,
   }
   do_setup_particle(m, root, cur, name);
   if (!breps.empty() || !greps.empty()) {
-     atom::Representation::setup_particle(m, cur);
+    atom::Representation::setup_particle(m, cur);
   }
 
   RMF_FOREACH(kernel::ParticleIndex r, breps) {
@@ -307,7 +307,7 @@ void HierarchySaveLink::add_recursive(Model *m, kernel::ParticleIndex root,
 }
 
 HierarchySaveLink::HierarchySaveLink(RMF::FileHandle f)
-  : P("HierarchySaveLink%1%"), af_(f) {
+    : P("HierarchySaveLink%1%"), af_(f) {
   RMF::Category imp_cat = f.get_category("IMP");
   external_rigid_body_key_ =
       f.get_key(imp_cat, "external frame", RMF::IntTraits());

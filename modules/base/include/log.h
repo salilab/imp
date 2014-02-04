@@ -22,7 +22,7 @@ IMPBASE_BEGIN_NAMESPACE
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 namespace internal {
-  extern IMPBASEEXPORT Flag<LogLevel, IMP_HAS_LOG != IMP_SILENT> log_level;
+extern IMPBASEEXPORT Flag<LogLevel, IMP_HAS_LOG != IMP_SILENT> log_level;
 }
 #endif
 

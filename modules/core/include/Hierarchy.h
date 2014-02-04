@@ -145,8 +145,8 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
                                       get_particle_index())[i];
   }
   kernel::ParticleIndexes get_children_indexes() const {
-    if (get_model()->get_has_attribute(get_decorator_traits().get_children_key(),
-                                       get_particle_index())) {
+    if (get_model()->get_has_attribute(
+            get_decorator_traits().get_children_key(), get_particle_index())) {
       return get_model()->get_attribute(
           get_decorator_traits().get_children_key(), get_particle_index());
     } else {

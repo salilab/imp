@@ -29,12 +29,14 @@ IMPCONTAINER_BEGIN_NAMESPACE
  */
 class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer {
   IMP::base::PointerMember<SingletonContainer> a_, b_;
+
  protected:
   virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE {
     std::size_t ret = a_->get_contents_hash();
     boost::hash_combine(ret, b_->get_contents_hash());
     return ret;
   }
+
  public:
   template <class F>
   void apply_generic(F* f) const {

@@ -13,8 +13,7 @@
 IMPATOM_BEGIN_NAMESPACE
 
 BondPairContainer::BondPairContainer(SingletonContainer *sc)
-    : PairContainer(sc->get_model(), "BondPairContainer%1%"),
-      sc_(sc) {}
+    : PairContainer(sc->get_model(), "BondPairContainer%1%"), sc_(sc) {}
 
 ParticleIndexPairs BondPairContainer::get_indexes() const {
   kernel::ParticleIndexes ia = sc_->get_indexes();

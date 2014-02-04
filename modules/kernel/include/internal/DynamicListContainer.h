@@ -19,8 +19,7 @@
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 template <class Base>
-class DynamicListContainer
-  : public ListLikeContainer<Base> {
+class DynamicListContainer : public ListLikeContainer<Base> {
   typedef ListLikeContainer<Base> P;
   // use this to define the set of all possible particles when it is dynamic
   base::Pointer<Container> scope_;

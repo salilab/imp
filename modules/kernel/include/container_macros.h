@@ -245,7 +245,7 @@
                without                                                         \
                 any callbacks being made.*/                                    \
   PluralData& mutable_access_##lcnames() { return lcname##_vector_; }          \
-  IMP_NO_DOXYGEN(const PluralData& access_##lcnames() const {                  \
+  IMP_NO_DOXYGEN(const PluralData& access_##lcnames() const { \
     return lcname##_vector_;                                                   \
   }) private : void lcname##_handle_remove(Data obj) {                         \
     Ucname##DataWrapper::do_handle_remove(obj, this);                          \
@@ -342,7 +342,8 @@
   }
 
 #define IMP_CONTAINER_FOREACH_IMPL(ContainerType, container, operation, tname) \
-  IMPKERNEL_DEPRECATED_MACRO(2.2, "Use get_contents() and a IMP_FOREACH macro."); \
+  IMPKERNEL_DEPRECATED_MACRO(2.2,                                              \
+                             "Use get_contents() and a IMP_FOREACH macro.");   \
   do {                                                                         \
     if (container->get_provides_access()) {                                    \
       const tname ContainerType::ContainedIndexTypes& imp_foreach_indexes =    \

@@ -65,6 +65,7 @@ class IMPCONTAINEREXPORT ConnectingPairContainer :
   void do_apply(const PairModifier *sm) const;
   kernel::ParticleIndexes get_all_possible_indexes() const;
   IMP_OBJECT_METHODS(ConnectingPairContainer);
+
  private:
   virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE;
 #else

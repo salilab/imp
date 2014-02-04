@@ -55,14 +55,12 @@ struct IMPCGALEXPORT KNNData {
   template <class G>
   void fill_nearest_neighbors(const G &g, unsigned int k, double eps,
                               Ints &ret) const {
-    fill_nearest_neighbors_v(get_vector_geometry(g), k, eps,
-                             ret);
+    fill_nearest_neighbors_v(get_vector_geometry(g), k, eps, ret);
   }
   template <class G>
   void fill_nearest_neighbors(const G &g, double distance, double eps,
                               Ints &ret) const {
-    fill_nearest_neighbors_v(get_vector_geometry(g), distance,
-                             eps, ret);
+    fill_nearest_neighbors_v(get_vector_geometry(g), distance, eps, ret);
   }
   const algebra::VectorKD &get_point(unsigned int i) const { return vsi_[i]; }
   unsigned int get_number_of_points() const { return vsi_.size(); }

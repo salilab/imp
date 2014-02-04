@@ -105,7 +105,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
     return get_rigid_members();
   }
 
- RigidMembers get_rigid_members() const;
+  RigidMembers get_rigid_members() const;
 
   //! Return the members as particle pointers
   /** This member function is here for efficiency. This includes rigid and
@@ -461,7 +461,6 @@ IMPCOREEXPORT kernel::ParticlesTemp create_rigid_bodies(kernel::Model *m,
 
 IMP_DECORATORS_DEF(RigidMember, RigidMembers);
 IMP_DECORATORS(RigidBody, RigidBodies, XYZs);
-
 
 /** Show the rigid body hierarchy rooted at passed body. */
 IMPCOREEXPORT void show_rigid_body_hierarchy(RigidBody rb,

@@ -62,10 +62,10 @@ void Representation::do_setup_particle(kernel::Model* m,
 }
 
 namespace {
-  double get_resolution_distance(double a, double b) {
-    if (a < b) std::swap(a, b);
-    return a / b - 1;
-  }
+double get_resolution_distance(double a, double b) {
+  if (a < b) std::swap(a, b);
+  return a / b - 1;
+}
 }
 
 Hierarchy Representation::get_representation(double resolution,
@@ -82,7 +82,7 @@ Hierarchy Representation::get_representation(double resolution,
       double cur_resolution = get_model()->get_attribute(get_resolution_key(i),
                                                          get_particle_index());
       if (get_resolution_distance(resolution, cur_resolution) <
-          get_resolution_distance(resolution, closest_resolution) &&
+              get_resolution_distance(resolution, closest_resolution) &&
           types[i] == type) {
         closest_index = i;
         closest_resolution = cur_resolution;
@@ -90,7 +90,7 @@ Hierarchy Representation::get_representation(double resolution,
     }
   }
   if (closest_index == -1) {
-     IMP_USAGE_CHECK(type == BALLS, "No matching types found");
+    IMP_USAGE_CHECK(type == BALLS, "No matching types found");
     IMP_LOG_VERBOSE("Returning highest resolution children" << std::endl);
     return *this;
   } else {
@@ -147,11 +147,10 @@ void Representation::add_representation(ParticleIndexAdaptor rep,
     int index = 0;
     get_model()->add_attribute(get_types_key(), get_particle_index(),
                                Ints(1, type));
-    get_model()->add_attribute(get_representations_key(),
-                                  get_particle_index(),
-                                  ParticleIndexes(1, rep));
-  get_model()->add_attribute(get_resolution_key(index), get_particle_index(),
-                             resolution);
+    get_model()->add_attribute(get_representations_key(), get_particle_index(),
+                               ParticleIndexes(1, rep));
+    get_model()->add_attribute(get_resolution_key(index), get_particle_index(),
+                               resolution);
   }
 }
 
@@ -174,8 +173,6 @@ Floats Representation::get_resolutions(RepresentationType type) const {
   return ret;
 }
 
-void Representation::show(std::ostream& out) const {
-  out << get_resolutions();
-}
+void Representation::show(std::ostream& out) const { out << get_resolutions(); }
 
 IMPATOM_END_NAMESPACE

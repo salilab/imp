@@ -453,7 +453,7 @@ void transform(atom::Hierarchy h, const algebra::Transformation3D &tr) {
   boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes>
       rigid_bodies;
   transform_impl(m, h.get_particle_index(), tr, rigid_bodies);
-  IMP_FOREACH(const RBP& rbp, rigid_bodies) {
+  IMP_FOREACH(const RBP & rbp, rigid_bodies) {
     core::RigidBody rb(m, rbp.first);
     kernel::ParticleIndexes members = rb.get_member_indexes();
     if (rbp.second.size() != members.size()) {
@@ -515,7 +515,7 @@ void assign_residues(IMP::atom::Hierarchy in,
   }
 }
 
-void add_bonds(const IMP::atom::Hierarchies & out) {
+void add_bonds(const IMP::atom::Hierarchies &out) {
   IMP_FUNCTION_LOG;
   IMP_FOREACH(IMP::atom::Hierarchy c, out) {
     IMP::atom::Bonded::setup_particle(c);

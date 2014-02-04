@@ -69,7 +69,7 @@ void ConnectivityRestraint::set_particles(const kernel::ParticlesTemp &ps) {
 
 void ConnectivityRestraint::add_particles(const kernel::ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer> (
+    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
         ps[0]->get_model(), "connectivity list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));

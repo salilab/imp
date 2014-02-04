@@ -59,7 +59,7 @@ class ListLikeContainer : public Base {
 
   void do_apply(const typename Base::Modifier *sm) const { apply_generic(sm); }
 
-    typename Base::ContainedIndexTypes get_indexes() const IMP_OVERRIDE {
+  typename Base::ContainedIndexTypes get_indexes() const IMP_OVERRIDE {
     return data_;
   }
   bool do_get_provides_access() const IMP_OVERRIDE { return true; }
@@ -71,7 +71,6 @@ class ListLikeContainer : public Base {
   const_iterator begin() const { return data_.begin(); }
   const_iterator end() const { return data_.end(); }
   IMP_OBJECT_METHODS(ListLikeContainer);
-
 };
 
 IMPKERNEL_END_INTERNAL_NAMESPACE

@@ -57,7 +57,7 @@ IMPALGEBRAEXPORT FloatPair
  */
 IMPALGEBRAEXPORT Sphere3Ds
     get_simplified_from_volume(Sphere3Ds in,
-                             double maximum_allowed_error_angstroms);
+                               double maximum_allowed_error_angstroms);
 
 IMPALGEBRA_END_NAMESPACE
 

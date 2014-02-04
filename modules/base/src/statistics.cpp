@@ -38,8 +38,6 @@ void show_timings(TextOutput out) {
   }
 }
 
-void set_statistics_level(StatisticsLevel l) {
-  internal::stats_level = l;
-}
+void set_statistics_level(StatisticsLevel l) { internal::stats_level = l; }
 
 IMPBASE_END_NAMESPACE

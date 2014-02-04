@@ -63,7 +63,8 @@ struct AtomInfo {
 
 class Cube {
  public:
-  void grid_coordinates(const algebra::Vector3Ds &CO, double radmax, double rp) {
+  void grid_coordinates(const algebra::Vector3Ds &CO, double radmax,
+                        double rp) {
     // calculate width of cube from maximum atom radius and probe radius
     width_ = 2. * (radmax + rp);
 
@@ -349,7 +350,7 @@ void genun(algebra::Vector3Ds &vec, unsigned n) {
 
 // Triple product of three vectors
 double det(const algebra::Vector3D &a, const algebra::Vector3D &b,
-          const algebra::Vector3D &c) {
+           const algebra::Vector3D &c) {
   algebra::Vector3D ab = algebra::get_vector_product(a, b);
   return ab * c;
 }
@@ -446,7 +447,8 @@ struct SurfaceInfo {
 
 void handle_atom(ConnollySurfacePoints &surface_points, int iatom, double d,
                  const std::vector<int> inbr, const algebra::Vector3Ds &CO,
-                 double rp, std::vector<bool> &srs, const algebra::Vector3Ds &up,
+                 double rp, std::vector<bool> &srs,
+                 const algebra::Vector3Ds &up,
                  std::vector<YonProbe> &yon_probes,
                  const algebra::Vector3Ds &circle, const std::vector<int> &IAT,
                  const std::vector<double> &rtype,
@@ -529,7 +531,7 @@ void handle_atom(ConnollySurfacePoints &surface_points, int iatom, double d,
 
     // CALCULATE THE SADDLE CIRCLE CENTER AND RADIUS
     double f = 0.5 * (1.0 + ((ri + rp) * (ri + rp) - (rj + rp) * (rj + rp)) /
-                               (dij * dij));
+                                (dij * dij));
     // BASE POINT
     algebra::Vector3D bij = ci + f * vij;
     double f1 = ri + rj + 2. * rp;
@@ -580,7 +582,7 @@ void handle_atom(ConnollySurfacePoints &surface_points, int iatom, double d,
          ONTO IATOM-JATOM AXIS,
          IN ORDER TO GET DISTANCE KATOM IS FROM SADDLE PLANE */
       double dk = uij[0] * (bij[0] - ck[0]) + uij[1] * (bij[1] - ck[1]) +
-                 uij[2] * (bij[2] - ck[2]);
+                  uij[2] * (bij[2] - ck[2]);
 
       // CALCULATE RADIUS OF KATOM CIRCLE
       double rijk = (rk + rp) * (rk + rp) - dk * dk;

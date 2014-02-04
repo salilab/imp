@@ -29,7 +29,9 @@ struct RefCountedPointerTraits {
     IMP_CHECK_OBJECT_IF_NOT_nullptr(t);
     if (t) t->ref();
   }
-  static void handle_unset(TT* t) { if (t) t->unref(); }
+  static void handle_unset(TT* t) {
+    if (t) t->unref();
+  }
   static void check(const TT* o) { IMP_CHECK_OBJECT(o); }
   static void release(TT* o) {
     if (o) o->release();
@@ -50,7 +52,7 @@ struct WeakPointerTraits {
   static void handle_set(TT*) {}
   static void handle_unset(TT*) {}
   static void check(const TT*) {}
-  static void release(TT *){}
+  static void release(TT*) {}
 };
 
 template <class TT>
@@ -62,7 +64,7 @@ struct CheckedWeakPointerTraits {
   }
   static void handle_unset(TT*) {}
   static void check(const TT* o) { IMP_CHECK_OBJECT(o); }
-  static void release(TT *) {}
+  static void release(TT*) {}
 };
 
 template <class O, class OO, class Enabled = void>

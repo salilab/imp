@@ -66,9 +66,12 @@ std::istream &operator>>(std::istream &in, CheckLevel &ll) {
 }
 
 std::ostream &operator<<(std::ostream &in, CheckLevel ll) {
-  if (ll== NONE) in << "NONE";
-  else if (ll == USAGE) in << "USAGE";
-  else if (ll == USAGE_AND_INTERNAL) in << "USAGE_AND_INTERNAL";
+  if (ll == NONE)
+    in << "NONE";
+  else if (ll == USAGE)
+    in << "USAGE";
+  else if (ll == USAGE_AND_INTERNAL)
+    in << "USAGE_AND_INTERNAL";
   else {
     IMP_THROW("Bad log check " << ll, IOException);
   }

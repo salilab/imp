@@ -54,11 +54,11 @@ class IMPRMFEXPORT HierarchyLoadRigidBodies {
 
  public:
   HierarchyLoadRigidBodies(RMF::FileConstHandle f);
-  void setup_particle(RMF::NodeConstHandle n,
-                      kernel::Model *m, kernel::ParticleIndex p,
+  void setup_particle(RMF::NodeConstHandle n, kernel::Model *m,
+                      kernel::ParticleIndex p,
                       kernel::ParticleIndexes &rigid_bodies);
-  void link_particle(RMF::NodeConstHandle n,
-                     kernel::Model *m, kernel::ParticleIndex p,
+  void link_particle(RMF::NodeConstHandle n, kernel::Model *m,
+                     kernel::ParticleIndex p,
                      kernel::ParticleIndexes &rigid_bodies);
   void load(RMF::FileConstHandle fh, Model *m);
   // backwards compat
@@ -86,7 +86,7 @@ class IMPRMFEXPORT HierarchySaveRigidBodies {
  public:
   HierarchySaveRigidBodies(RMF::FileHandle f);
   void setup_node(kernel::Model *m, kernel::ParticleIndex p, RMF::NodeHandle n,
-                  kernel::ParticleIndexes& rigid_bodies);
+                  kernel::ParticleIndexes &rigid_bodies);
   void save(Model *m, RMF::FileHandle fh);
 };
 

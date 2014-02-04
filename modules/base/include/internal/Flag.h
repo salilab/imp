@@ -73,10 +73,10 @@ class FlagImpl<T, ENABLED, typename boost::enable_if<boost::mpl::or_<
   FlagImpl(boost::program_options::options_description &opt, std::string name,
            std::string description, T default_value)
       : v_(default_value) {
-     if (!ENABLED) description += " Disabled at compile time.";
-     opt.add_options()(name.c_str(),
-                       boost::program_options::value<T>(&v_)->default_value(v_),
-                       description.c_str());
+    if (!ENABLED) description += " Disabled at compile time.";
+    opt.add_options()(name.c_str(),
+                      boost::program_options::value<T>(&v_)->default_value(v_),
+                      description.c_str());
   }
   operator T() const { return v_; }
   operator T &() { return v_; }

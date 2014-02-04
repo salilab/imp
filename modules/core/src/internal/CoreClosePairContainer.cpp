@@ -37,7 +37,6 @@ CoreClosePairContainer::CoreClosePairContainer(SingletonContainer *c,
   initialize(c, distance, slack, cpf);
   // initialize is called from elsewhere, just do this once
   score_state_ = new SS(this);
-
 }
 
 void CoreClosePairContainer::initialize(SingletonContainer *c, double distance,

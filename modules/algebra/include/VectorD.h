@@ -30,7 +30,7 @@
 #define IMP_ALGEBRA_VECTOR_CHECK check_vector()
 #define IMP_ALGEBRA_VECTOR_CHECK_INDEX(i) check_index(i)
 #define IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o) \
-  check_compatible_vector(o);          \
+  check_compatible_vector(o);                  \
   o.check_vector()
 #else
 #define IMP_ALGEBRA_VECTOR_CHECK
@@ -186,7 +186,6 @@ class VectorD : public GeometricPrimitiveD<D> {
     double d[] = {x0, x1, x2, x3, x4, x5};
     data_.set_coordinates(d, d + 6);
   }
-
 
   //! Default constructor
   VectorD() {}
@@ -346,9 +345,7 @@ class VectorD : public GeometricPrimitiveD<D> {
   /** \deprecated_at{2.2} Use begin(). */
   IMPALGEBRA_DEPRECATED_FUNCTION_DECL(2.2)
   iterator coordinates_begin() { return data_.get_data(); }
-  iterator coordinates_end() {
-    return data_.get_data() + get_dimension();
-  }
+  iterator coordinates_end() { return data_.get_data() + get_dimension(); }
   /** \deprecated_at{2.2} Use begin(). */
   IMPALGEBRA_DEPRECATED_FUNCTION_DECL(2.2)
   const_iterator coordinates_begin() const { return data_.get_data(); }

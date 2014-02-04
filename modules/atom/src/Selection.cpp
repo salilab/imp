@@ -71,7 +71,7 @@ Selection::Selection(const kernel::ParticlesTemp &h) : resolution_(0) {
 }
 // for C++
 Selection::Selection(Hierarchy h, std::string molname, int residue_index)
-  : resolution_(0){
+    : resolution_(0) {
   set_hierarchies(h.get_model(),
                   kernel::ParticleIndexes(1, h.get_particle_index()));
   set_molecules(Strings(1, molname));
@@ -273,7 +273,7 @@ kernel::ParticleIndexes expand_search(kernel::Model *m,
 }
 
 kernel::ParticleIndexes expand_children_search(kernel::Model *m,
-                                        kernel::ParticleIndex pi,
+                                               kernel::ParticleIndex pi,
                                                double resolution) {
   Hierarchy h(m, pi);
   kernel::ParticleIndexes ret;
@@ -300,7 +300,7 @@ Selection::SearchResult Selection::search(
   Hierarchy cur(m, pi);
   kernel::ParticleIndexes children;
   kernel::ParticleIndexes cur_children =
-    expand_children_search(m, pi, resolution_);
+      expand_children_search(m, pi, resolution_);
   bool children_covered = true;
   bool matched = parent.none();
   IMP_FOREACH(kernel::ParticleIndex ch, cur_children) {
@@ -347,8 +347,7 @@ ParticleIndexes Selection::get_selected_particle_indexes() const {
                                              << predicates_ << std::endl);
   }
   IMP_FOREACH(kernel::ParticleIndex pi, h_) {
-    IMP_FOREACH(kernel::ParticleIndex rpi,
-                expand_search(m_, pi, resolution_)) {
+    IMP_FOREACH(kernel::ParticleIndex rpi, expand_search(m_, pi, resolution_)) {
       ret += search(m_, rpi, base).get_indexes();
     }
   }

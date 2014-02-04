@@ -33,8 +33,7 @@ class IMPCOREEXPORT CoreClosePairContainer
   unsigned int moved_count_;
   bool first_call_;
   double distance_, slack_;
-  typedef kernel::internal::ContainerScoreState<CoreClosePairContainer>
-      SS;
+  typedef kernel::internal::ContainerScoreState<CoreClosePairContainer> SS;
   base::PointerMember<SS> score_state_;
 
   void initialize(SingletonContainer *c, double distance, double slack,

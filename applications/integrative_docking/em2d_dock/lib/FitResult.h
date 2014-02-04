@@ -15,9 +15,7 @@ class FitResult : public Result {
  public:
   FitResult(int number, float cc, bool filtered,
             const IMP::algebra::Transformation3D& transformation)
-      : Result(number, cc, filtered, 0.0, transformation),
-        cc_(cc) {}
-
+      : Result(number, cc, filtered, 0.0, transformation), cc_(cc) {}
 
   // access
   float get_cc_score() const { return cc_; }

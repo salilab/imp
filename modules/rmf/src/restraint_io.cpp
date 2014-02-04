@@ -345,7 +345,7 @@ void add_restraints_as_bonds(RMF::FileHandle fh, const kernel::Restraints &rs) {
   }
   RMF::NodeHandle bdr =
       fh.get_root_node().add_child("restraint bonds", RMF::ORGANIZATIONAL);
-  IMP_FOREACH(kernel::Restraint* bd, decomp) {
+  IMP_FOREACH(kernel::Restraint * bd, decomp) {
     Subset s(get_input_particles(bd->get_inputs()));
     bd->set_was_used(bd);
     RMF::NodeHandles inputs;

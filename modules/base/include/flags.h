@@ -92,7 +92,6 @@ IMPBASEEXPORT Strings
     setup_from_argv(const Strings &argv, std::string description,
                     std::string positional_description, int num_positional);
 
-
 #ifndef SWIG
 /** Define one of these in C++ to add a new int flag storing
     into the passed variable.
@@ -177,7 +176,7 @@ extern IMPBASEEXPORT AdvancedFlag<bool> run_quick_test;
 /** Executables can inspect this flag and when it is true, run a shorter,
     simpler version of their code to just make sure things work.
 */
-inline bool get_is_quick_test() {return run_quick_test;}
+inline bool get_is_quick_test() { return run_quick_test; }
 
 IMPBASE_END_NAMESPACE
 

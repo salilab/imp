@@ -29,8 +29,7 @@ Restraints create_current_decomposition(kernel::Model *m, Score *score,
       std::ostringstream oss;
       oss << name << " " << Showable(i);
       base::Pointer<Restraint> r =
-          IMP::kernel::internal::create_tuple_restraint(score, m, i,
-                                                        oss.str());
+          IMP::kernel::internal::create_tuple_restraint(score, m, i, oss.str());
       r->set_last_score(cscore);
       ret.push_back(r);
     }

@@ -112,7 +112,7 @@ class SimpleLoadLink : public LoadLink {
     }
     if (matching_chs.size() != ps.size()) {
       IMP_THROW("Founding " << matching_chs.size() << " matching nodes "
-                << "but passed " << ps.size() << " to match with.",
+                            << "but passed " << ps.size() << " to match with.",
                 ValueException);
     }
     for (unsigned int i = 0; i < matching_chs.size(); ++i) {

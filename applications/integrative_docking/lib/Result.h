@@ -20,10 +20,10 @@
 #include <vector>
 
 class Result {
-public:
+ public:
   Result(int number, float score, bool filtered, float z_score,
          IMP::algebra::Transformation3D transformation =
-         IMP::algebra::get_identity_transformation_3d())
+             IMP::algebra::get_identity_transformation_3d())
       : number_(number),
         score_(score),
         filtered_(filtered),
@@ -106,9 +106,9 @@ int read_results_file(const std::string file_name,
     if (split_results2.size() != 6) continue;
 
     IMP::algebra::Rotation3D rotation =
-      IMP::algebra::get_rotation_from_fixed_xyz(atof(split_results2[0].c_str()),
-                                                atof(split_results2[1].c_str()),
-                                                atof(split_results2[2].c_str()));
+        IMP::algebra::get_rotation_from_fixed_xyz(
+            atof(split_results2[0].c_str()), atof(split_results2[1].c_str()),
+            atof(split_results2[2].c_str()));
     IMP::algebra::Vector3D translation(atof(split_results2[3].c_str()),
                                        atof(split_results2[4].c_str()),
                                        atof(split_results2[5].c_str()));
@@ -131,12 +131,12 @@ void set_z_scores(std::vector<ResultT>& results) {
       counter++;
       float score = results[i].get_score();
       average += score;
-      std += (score*score);
+      std += (score * score);
     }
   }
   average /= counter;
   std /= counter;
-  std -= (average*average);
+  std -= (average * average);
   std = sqrt(std);
 
   // update z_scores
@@ -147,7 +147,6 @@ void set_z_scores(std::vector<ResultT>& results) {
     }
   }
 }
-
 }
 
 #endif /* IMP_RESULT_H */

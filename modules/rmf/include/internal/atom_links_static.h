@@ -23,8 +23,7 @@ IMPRMF_BEGIN_INTERNAL_NAMESPACE
 /** Load things that are assumed to be unchanging, excluding coordinates. */
 class IMPRMFEXPORT HierarchyLoadStatic {
   RMF::decorator::ParticleFactory particle_factory_;
-  RMF::decorator::IntermediateParticleFactory
-      intermediate_particle_factory_;
+  RMF::decorator::IntermediateParticleFactory intermediate_particle_factory_;
   RMF::decorator::AtomFactory atom_factory_;
   RMF::decorator::ResidueFactory residue_factory_;
   RMF::decorator::ChainFactory chain_factory_;

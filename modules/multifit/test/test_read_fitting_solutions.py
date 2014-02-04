@@ -6,6 +6,7 @@ import IMP.multifit
 import os
 import time
 
+
 class Tests(IMP.test.TestCase):
 
     """Tests for reading fitting solutions"""

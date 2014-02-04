@@ -31,6 +31,7 @@ class IMPBASEEXPORT Timer : public RAII {
 
   void initialize(std::string key);
   void save();
+
  public:
   Timer(const Object *object, std::string operation) {
     if (internal::stats_level > NO_STATISTICS) {

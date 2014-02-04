@@ -74,11 +74,10 @@ class GeometrySaveLink : public SimpleSaveLink<G> {
   IMP_OBJECT_METHODS(GeometrySaveLink);
 };
 
-class SphereLoadLink
-    : public GeometryLoadLink<display::SphereGeometry,
-                              RMF::decorator::BallFactory> {
-  typedef GeometryLoadLink<display::SphereGeometry,
-                           RMF::decorator::BallFactory> P;
+class SphereLoadLink : public GeometryLoadLink<display::SphereGeometry,
+                                               RMF::decorator::BallFactory> {
+  typedef GeometryLoadLink<display::SphereGeometry, RMF::decorator::BallFactory>
+      P;
   void do_load_one(RMF::NodeConstHandle nh, display::SphereGeometry *o) {
     RMF::decorator::BallConst b = get_factory().get(nh);
     RMF::Vector3 cs = b.get_coordinates();
@@ -221,9 +220,8 @@ class SegmentSaveLink
   static const char *get_name() { return "segment save"; }
 };
 
-class BoxLoadLink
-    : public GeometryLoadLink<display::BoundingBoxGeometry,
-                              RMF::decorator::SegmentFactory> {
+class BoxLoadLink : public GeometryLoadLink<display::BoundingBoxGeometry,
+                                            RMF::decorator::SegmentFactory> {
   typedef GeometryLoadLink<display::BoundingBoxGeometry,
                            RMF::decorator::SegmentFactory> P;
   void do_load_one(RMF::NodeConstHandle nh, display::BoundingBoxGeometry *o) {

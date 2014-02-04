@@ -47,8 +47,6 @@ std::vector<IMP::algebra::Vector3D> read_points_from_pdb(
             << std::endl;
   return points;
 }
-
-
 }
 
 int main(int argc, char** argv) {

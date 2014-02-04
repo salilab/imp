@@ -25,11 +25,11 @@ class IMPRMFEXPORT HierarchyLoadXYZs {
 
  public:
   HierarchyLoadXYZs(RMF::FileConstHandle f);
-  void setup_particle(RMF::NodeConstHandle n,
-                      kernel::Model *m, kernel::ParticleIndex p,
+  void setup_particle(RMF::NodeConstHandle n, kernel::Model *m,
+                      kernel::ParticleIndex p,
                       const kernel::ParticleIndexes &rigid_bodies);
-  void link_particle(RMF::NodeConstHandle n,
-                     kernel::Model *m, kernel::ParticleIndex p,
+  void link_particle(RMF::NodeConstHandle n, kernel::Model *m,
+                     kernel::ParticleIndex p,
                      const kernel::ParticleIndexes &rigid_bodies);
   void load(RMF::FileConstHandle fh, Model *m);
 };
@@ -40,14 +40,13 @@ class IMPRMFEXPORT HierarchySaveXYZs {
   typedef base::Vector<Pair> NodeParticlePairs;
   NodeParticlePairs global_, local_;
 
-  void handle_xyz(kernel::Model *m, kernel::ParticleIndex p,
-                         RMF::NodeHandle n,
-                         kernel::ParticleIndexes &rigid_bodies);
+  void handle_xyz(kernel::Model *m, kernel::ParticleIndex p, RMF::NodeHandle n,
+                  kernel::ParticleIndexes &rigid_bodies);
 
  public:
   HierarchySaveXYZs(RMF::FileHandle f);
   void setup_node(kernel::Model *m, kernel::ParticleIndex p, RMF::NodeHandle n,
-                  const kernel::ParticleIndexes& rigid_bodies);
+                  const kernel::ParticleIndexes &rigid_bodies);
   void save(Model *m, RMF::FileHandle fh);
 };
 

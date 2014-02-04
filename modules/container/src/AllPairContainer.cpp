@@ -18,8 +18,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 AllPairContainer::AllPairContainer(SingletonContainerAdaptor c,
                                    std::string name)
-    : PairContainer(c->get_model(), name),
-      c_(c) {
+    : PairContainer(c->get_model(), name), c_(c) {
   c.set_name_if_default("AllPairContainerInput0%1%");
 }
 

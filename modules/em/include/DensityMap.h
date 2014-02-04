@@ -681,9 +681,8 @@ DensityMap *get_binarized_interior(DensityMap *dmap);
 
 /** Rasterize the particles into an existing density map. */
 IMPEMEXPORT
-void add_to_map(DensityMap *dm,
-                const kernel::Particles &pis);  // defined in
-                                                // SampledDensityMap.cpp
+void add_to_map(DensityMap *dm, const kernel::Particles &pis);  // defined in
+// SampledDensityMap.cpp
 IMPEM_END_NAMESPACE
 
 #endif /* IMPEM_DENSITY_MAP_H */

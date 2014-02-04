@@ -33,7 +33,7 @@ class Gaussian3D : public GeometricPrimitiveD<3> {
 
   const ReferenceFrame3D &get_reference_frame() const { return tr_; }
   const Vector3D &get_variances() const { return variances_; }
-  inline const Vector3D& get_center() const{
+  inline const Vector3D &get_center() const {
     return get_reference_frame().get_transformation_to().get_translation();
   }
   IMP_SHOWABLE_INLINE(Gaussian3D, out << tr_ << ": " << variances_);

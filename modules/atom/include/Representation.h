@@ -87,7 +87,6 @@ IMP_DECORATORS(Representation, Representations, Hierarchies);
 
 IMPATOMEXPORT double get_resolution(kernel::Model *m, kernel::ParticleIndex pi);
 
-
 /** \copydoc get_resolution(kernel::Model, kernel::particleIndex) */
 inline double get_resolution(Hierarchy h) {
   return get_resolution(h.get_model(), h.get_particle_index());

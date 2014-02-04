@@ -29,8 +29,8 @@ IMPMISC_BEGIN_NAMESPACE
  */
 class IMPMISCEXPORT DecayPairContainerOptimizerState
     : public kernel::OptimizerState {
-      base::PointerMember<kernel::PairPredicate> pred_;
-      base::PointerMember<kernel::PairContainer> input_;
+  base::PointerMember<kernel::PairPredicate> pred_;
+  base::PointerMember<kernel::PairContainer> input_;
   base::Pointer<container::DynamicListPairContainer> output_;
 
  public:

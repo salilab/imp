@@ -27,8 +27,8 @@ class IMPALGEBRAEXPORT Ellipsoid3D : public GeometricPrimitiveD<3> {
       : rf_(rf), radii_(radii) {}
   Ellipsoid3D(const Vector3D &center, double radius_x, double radius_y,
               double radius_z, const Rotation3D &rot);
-  const Vector3D &get_radii() const {return radii_;}
-  const ReferenceFrame3D &get_reference_frame() const {return rf_;}
+  const Vector3D &get_radii() const { return radii_; }
+  const ReferenceFrame3D &get_reference_frame() const { return rf_; }
   /** \deprecated_at{2.2} Use get_radii()*/
   IMPALGEBRA_DEPRECATED_FUNCTION_DECL(2.2)
   double get_radius(unsigned int i) const { return radii_[i]; }
@@ -48,6 +48,7 @@ class IMPALGEBRAEXPORT Ellipsoid3D : public GeometricPrimitiveD<3> {
     return rf_.get_transformation_to();
   }
   IMP_SHOWABLE_INLINE(Ellipsoid3D, out << rf_ << ": " << radii_);
+
  private:
   ReferenceFrame3D rf_;
   Vector3D radii_;

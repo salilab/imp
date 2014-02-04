@@ -18,8 +18,7 @@ DecayPairContainerOptimizerState::DecayPairContainerOptimizerState(
     : OptimizerState(initial_list[0][0]->get_model(), name),
       pred_(pred),
       input_(new container::ListPairContainer(initial_list, "decay input")) {
-  output_ = new container::DynamicListPairContainer(
-      input_, name + " output");
+  output_ = new container::DynamicListPairContainer(input_, name + " output");
   output_->set(IMP::get_indexes(input_->get_particle_pairs()));
 }
 

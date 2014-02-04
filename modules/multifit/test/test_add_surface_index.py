@@ -7,6 +7,7 @@ import IMP.test
 import IMP.core
 import IMP.atom
 
+
 class Tests(IMP.test.TestCase):
 
     """Class to test EM correlation restraint"""

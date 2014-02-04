@@ -15,7 +15,8 @@ IMPSAXS_BEGIN_NAMESPACE
 
 namespace {
 
-IMP_Eigen::VectorXf NNLS(const IMP_Eigen::MatrixXf& A, const IMP_Eigen::VectorXf& b) {
+IMP_Eigen::VectorXf NNLS(const IMP_Eigen::MatrixXf& A,
+                         const IMP_Eigen::VectorXf& b) {
 
   // TODO: make JacobiSVD a class object to avoid memory re-allocations
   IMP_Eigen::JacobiSVD<IMP_Eigen::MatrixXf> svd(A, ComputeThinU | ComputeThinV);
@@ -63,7 +64,8 @@ IMP_Eigen::VectorXf NNLS(const IMP_Eigen::MatrixXf& A, const IMP_Eigen::VectorXf
     }
 
     // re-solve
-    IMP_Eigen::JacobiSVD<IMP_Eigen::MatrixXf> svd(C, ComputeThinU | ComputeThinV);
+    IMP_Eigen::JacobiSVD<IMP_Eigen::MatrixXf> svd(C,
+                                                  ComputeThinU | ComputeThinV);
     x = svd.solve(b);
   }
 
@@ -118,7 +120,7 @@ Float WeightedProfileFitter::compute_score(const ProfilesTemp& profiles,
   IMP_Eigen::VectorXf w;
   if (!nnls) {  // solve least squares
     IMP_Eigen::JacobiSVD<IMP_Eigen::MatrixXf> svd(W_.asDiagonal() * A_,
-                                          ComputeThinU | ComputeThinV);
+                                                  ComputeThinU | ComputeThinV);
     w = svd.solve(Wb_);
     // zero the negatives
     for (int i = 0; i < w.size(); i++)

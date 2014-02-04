@@ -11,7 +11,7 @@ int check(const T &t) {
   }
   return ret;
 }
-  template <template <int D> class T, class VT>
+template <template <int D> class T, class VT>
 int check_type() {
   int ret = 0;
   T<1> v1 = T<1>(VT(0));
@@ -37,5 +37,5 @@ int main(int argc, char *argv[]) {
   tot += check_type<IMP::algebra::ExtendedGridIndexD, int>();
   tot += check_type<IMP::algebra::GridIndexD, int>();
 
-  return tot == 0; // reverse sense
+  return tot == 0;  // reverse sense
 }

@@ -25,7 +25,7 @@
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 class IMPCOREEXPORT MovedSingletonContainer
-  : public kernel::internal::ListLikeContainer<kernel::SingletonContainer> {
+    : public kernel::internal::ListLikeContainer<kernel::SingletonContainer> {
  private:
   double threshold_;
   base::Pointer<SingletonContainer> pc_;

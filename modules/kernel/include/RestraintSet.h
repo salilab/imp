@@ -89,7 +89,6 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
 
 IMPKERNELEXPORT RestraintsTemp get_restraints(const RestraintsTemp &rs);
 
-
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 namespace {
 template <class It>

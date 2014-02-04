@@ -13,8 +13,7 @@
 IMPATOM_BEGIN_NAMESPACE
 
 double get_rmsd_transforming_first(const IMP::algebra::Transformation3D& tr,
-                                     const core::XYZs& s0,
-                                     const core::XYZs& s1) {
+                                   const core::XYZs& s0, const core::XYZs& s1) {
   return algebra::get_rmsd_transforming_first(tr, s0, s1);
 }
 

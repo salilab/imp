@@ -137,6 +137,7 @@ class IMPBASEEXPORT Object : public NonCopyable {
     else
       return 0;
   }
+
  protected:
   //! Construct an object with the given name
   /** An instance of "%1%" in the string will be replaced by a unique
@@ -205,8 +206,8 @@ class IMPBASEEXPORT Object : public NonCopyable {
   }
 
 #ifndef SWIG
-  void ref() const {++count_;}
-  void unref() const ;
+  void ref() const { ++count_; }
+  void unref() const;
   void release() const;
   const char* get_quoted_name_c_string() const { return quoted_name_.get(); }
 #endif
@@ -276,14 +277,14 @@ class ShowFull {
   std::string showed_;
 
  public:
-  ShowFull(Object *o) {
+  ShowFull(Object* o) {
     std::ostringstream oss;
     o->show(oss);
     showed_ = oss.str();
   }
-  const std::string &get_string() const { return showed_; }
+  const std::string& get_string() const { return showed_; }
 };
-inline std::ostream &operator<<(std::ostream &o, const ShowFull &sf) {
+inline std::ostream& operator<<(std::ostream& o, const ShowFull& sf) {
   o << sf.get_string();
   return o;
 }

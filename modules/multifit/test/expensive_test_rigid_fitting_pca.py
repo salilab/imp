@@ -7,6 +7,7 @@ import IMP.core
 import IMP.atom
 import IMP.multifit
 
+
 class ProteinRigidFittingTest(IMP.test.TestCase):
 
     """Class to test EM correlation restraint"""

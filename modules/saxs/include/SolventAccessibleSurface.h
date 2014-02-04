@@ -55,7 +55,8 @@ class IMPSAXSEXPORT SolventAccessibleSurface {
     boost::unordered_map<float, int>::const_iterator it = radii2type_.find(r);
     if (it == radii2type_.end()) {
       IMP_THROW("SolventAccessibleSurface: can't find sphere dots for radius "
-                << r, ValueException);
+                    << r,
+                ValueException);
     }
     return sphere_dots_[it->second];
   }

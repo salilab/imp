@@ -1,5 +1,6 @@
 /**
- *  \file IMP/algebra/connolly_surface.h     \brief Generate surface for a set of
+ *  \file IMP/algebra/connolly_surface.h     \brief Generate surface for a set
+ *of
  *atoms
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.

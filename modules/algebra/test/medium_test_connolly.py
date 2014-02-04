@@ -29,8 +29,9 @@ class Tests(IMP.test.TestCase):
                 IMP.algebra.get_distance(sp.get_surface_point(), center),
                 2.265, delta=1e-2)
             # Surface normal should be a unit vector
-            self.assertAlmostEqual(sp.get_normal().get_squared_magnitude(), 1.0,
-                                   delta=1e-2)
+            self.assertAlmostEqual(
+                sp.get_normal().get_squared_magnitude(), 1.0,
+                delta=1e-2)
         # Total area should be roughly 4 * pi * r * r (r=2.265), but a little
         # less due to the probe not being pointlike
         self.assertAlmostEqual(total_area, 64.4, delta=0.1)

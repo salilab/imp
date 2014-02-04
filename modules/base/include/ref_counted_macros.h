@@ -70,22 +70,22 @@
 #define IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, destructor)
 
 #else
-#define IMP_REF_COUNTED_DESTRUCTOR(Name)       \
- protected:                                      \
-  virtual ~Name() {}                           \
-                                               \
- public:                                       \
+#define IMP_REF_COUNTED_DESTRUCTOR(Name) \
+ protected:                              \
+  virtual ~Name() {}                     \
+                                         \
+ public:                                 \
   IMP_REQUIRE_SEMICOLON_CLASS(destructor)
 
 #define IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, dest) \
- protected:                                             \
+ protected:                                           \
   virtual ~Name() { dest }                            \
                                                       \
  public:                                              \
   IMP_REQUIRE_SEMICOLON_CLASS(destructor)
 
 #define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name) \
- protected:                                           \
+ protected:                                         \
   virtual ~Name();                                  \
                                                     \
  public:                                            \

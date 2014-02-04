@@ -146,8 +146,7 @@ inline const algebra::Vector3D get_vector_geometry(Particle *p) {
   return core::XYZ(p).get_coordinates();
 }
 /** \genericgeometry */
-inline void set_vector_geometry(Particle *p,
-                                const algebra::Vector3D &v) {
+inline void set_vector_geometry(Particle *p, const algebra::Vector3D &v) {
   core::XYZ(p).set_coordinates(v);
 }
 
@@ -155,8 +154,7 @@ inline const algebra::Vector3D get_vector_geometry(Decorator d) {
   return core::XYZ(d).get_coordinates();
 }
 /** \genericgeometry */
-inline void set_vector_geometry(Decorator d,
-                                const algebra::Vector3D &v) {
+inline void set_vector_geometry(Decorator d, const algebra::Vector3D &v) {
   core::XYZ(d).set_coordinates(v);
 }
 

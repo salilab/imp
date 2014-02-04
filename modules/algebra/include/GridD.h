@@ -77,7 +77,9 @@ IMPALGEBRA_BEGIN_NAMESPACE
 template <int D, class StorageT,
           // swig needs this for some reason
           class Value, class EmbeddingT = DefaultEmbeddingD<D> >
-class GridD : public StorageT, public EmbeddingT, public GeometricPrimitiveD<D> {
+class GridD : public StorageT,
+              public EmbeddingT,
+              public GeometricPrimitiveD<D> {
  private:
   typedef GridD<D, StorageT, Value, EmbeddingT> This;
 #ifndef IMP_DOXYGEN

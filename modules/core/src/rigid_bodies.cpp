@@ -944,26 +944,25 @@ ParticlesTemp create_rigid_bodies(kernel::Model *m, unsigned int n,
 }
 
 namespace {
-  unsigned int get_num_rb_members(kernel::Model *m, kernel::ParticleIndex pi) {
-    if (core::RigidBody::get_is_setup(m, pi)) {
-      core::RigidBody rb(m, pi);
-      return rb.get_member_particle_indexes().size() +
-        rb.get_body_member_particle_indexes().size();
-    } else {
-      return 0;
-    }
-  }
-  kernel::ParticleIndex get_rb_child(kernel::Model *m,
-                                      kernel::ParticleIndex pi,
-                                      unsigned int i) {
+unsigned int get_num_rb_members(kernel::Model *m, kernel::ParticleIndex pi) {
+  if (core::RigidBody::get_is_setup(m, pi)) {
     core::RigidBody rb(m, pi);
-    unsigned int bzs = rb.get_member_particle_indexes().size();
-    if (i < bzs) {
-      return rb.get_member_particle_indexes()[i];
-    } else {
-      return rb.get_body_member_particle_indexes()[i - bzs];
-    }
+    return rb.get_member_particle_indexes().size() +
+           rb.get_body_member_particle_indexes().size();
+  } else {
+    return 0;
   }
+}
+kernel::ParticleIndex get_rb_child(kernel::Model *m, kernel::ParticleIndex pi,
+                                   unsigned int i) {
+  core::RigidBody rb(m, pi);
+  unsigned int bzs = rb.get_member_particle_indexes().size();
+  if (i < bzs) {
+    return rb.get_member_particle_indexes()[i];
+  } else {
+    return rb.get_body_member_particle_indexes()[i - bzs];
+  }
+}
 }
 
 void show_rigid_body_hierarchy(RigidBody rb, base::TextOutput out) {

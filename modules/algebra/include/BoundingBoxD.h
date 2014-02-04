@@ -284,8 +284,6 @@ inline base::Vector<VectorD<D> > get_vertices(const BoundingBoxD<D> &bb) {
   return ret;
 }
 
-
-
 //! Return the edges of the box as indices into the vertices list
 /** See BoundingBoxD */
 inline IntPairs get_edges(const BoundingBoxD<3> &) {

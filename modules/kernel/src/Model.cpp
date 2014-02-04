@@ -160,9 +160,7 @@ void Model::do_add_score_state(ScoreState *obj) {
   }
 }
 
-void Model::do_remove_score_state(ScoreState *obj) {
-  obj->set_model(nullptr);
-}
+void Model::do_remove_score_state(ScoreState *obj) { obj->set_model(nullptr); }
 
 void Model::clear_particle_caches(ParticleIndex pi) {
   internal::FloatAttributeTable::clear_caches(pi);

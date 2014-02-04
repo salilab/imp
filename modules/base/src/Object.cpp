@@ -117,8 +117,8 @@ void Object::show(std::ostream &out) const {
 
 void Object::unref() const {
   IMP_INTERNAL_CHECK(count_ != 0, "Too many unrefs on object");
-  IMP_LOG_MEMORY("Unrefing object \"" << get_name() << "\" (" << count_
-		 << ") {" << this << "}" << std::endl);
+  IMP_LOG_MEMORY("Unrefing object \"" << get_name() << "\" (" << count_ << ") {"
+                                      << this << "}" << std::endl);
   --count_;
   if (count_ == 0) {
     delete this;
@@ -129,7 +129,7 @@ void Object::release() const {
   IMP_INTERNAL_CHECK(count_ != 0, "Release called on unowned object");
   --count_;
   IMP_LOG_MEMORY("Releasing object \"" << get_name() << "\" (" << count_
-		 << ") {" << this << "}" << std::endl);
+                                       << ") {" << this << "}" << std::endl);
 }
 
 IMPBASE_END_NAMESPACE

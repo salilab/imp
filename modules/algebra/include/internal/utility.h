@@ -40,7 +40,6 @@ inline TNT::Array2D<double> get_covariance_matrix(
   return cov;
 }
 
-
 template <int DO>
 struct DMinus1 {
   static const int D = DO - 1;

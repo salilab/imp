@@ -18,9 +18,9 @@ class SOAPResult : public Result {
              float atom_pairs_score,
              IMP::algebra::Transformation3D transformation =
                  IMP::algebra::get_identity_transformation_3d())
-    : Result(number, score, filtered, 0.0, transformation),
-      sas_score_(sas_score),
-      atom_pairs_score_(atom_pairs_score) {}
+      : Result(number, score, filtered, 0.0, transformation),
+        sas_score_(sas_score),
+        atom_pairs_score_(atom_pairs_score) {}
 
   friend std::ostream& operator<<(std::ostream& s, const SOAPResult& p) {
     s.width(6);

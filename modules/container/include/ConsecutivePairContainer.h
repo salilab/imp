@@ -44,6 +44,7 @@ class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer {
     int ib = get_model()->get_attribute(key_, p[1]);
     return std::abs(ia - ib) == 1;
   }
+
  protected:
   virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE { return 0; }
 
@@ -124,6 +125,7 @@ class IMPCONTAINEREXPORT ExclusiveConsecutivePairContainer
     return std::abs(ia - ib) == 1;
   }
   void init();
+
  protected:
   virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE { return 0; }
 

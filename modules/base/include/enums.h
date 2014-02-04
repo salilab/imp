@@ -79,9 +79,7 @@ IMPBASEEXPORT std::istream &operator>>(std::istream &in, StatisticsLevel &ll);
 IMPBASEEXPORT std::ostream &operator<<(std::ostream &in, StatisticsLevel ll);
 #endif
 
-
-} // base
-
+}  // base
 
 }  // imp
 

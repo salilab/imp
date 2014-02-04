@@ -12,7 +12,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 void NeighborsTable::do_before_evaluate() {
-  std::size_t new_hash= input_->get_contents_hash();
+  std::size_t new_hash = input_->get_contents_hash();
   if (new_hash == input_version_) return;
   input_version_ = new_hash;
 

@@ -26,10 +26,12 @@ IMPCONTAINER_BEGIN_NAMESPACE
  */
 class IMPCONTAINEREXPORT AllPairContainer : public PairContainer {
   IMP::base::PointerMember<SingletonContainer> c_;
+
  protected:
-  virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE{
+  virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE {
     return c_->get_contents_hash();
   }
+
  public:
   template <class F>
   void apply_generic(F* f) const {

@@ -141,7 +141,7 @@ int main(int argc, char** argv) {
     IMP::atom::ResidueType rt1 = r1.get_residue_type();
     int res_index1 = r1.get_index();
     std::string chain_id1 =
-      IMP::atom::get_chain_id(IMP::atom::Atom(ca_atoms1[i]));
+        IMP::atom::get_chain_id(IMP::atom::Atom(ca_atoms1[i]));
 
     // check if LYS or N-ter
     if (residue_solvent_accessibility1[i] > 0 &&

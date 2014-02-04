@@ -134,5 +134,4 @@ void SolventAccessibleSurface::create_sphere_dots(const core::XYZRs& ps,
   }
 }
 
-
 IMPSAXS_END_NAMESPACE

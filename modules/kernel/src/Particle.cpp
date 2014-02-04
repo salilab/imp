@@ -229,7 +229,6 @@ ParticleIndexKeys Particle::get_particle_keys() const {
 }
 
 ParticleAdaptor::ParticleAdaptor(const Decorator &d)
-      : m_(d.get_model()), pi_(d.get_particle_index()) {}
-
+    : m_(d.get_model()), pi_(d.get_particle_index()) {}
 
 IMPKERNEL_END_NAMESPACE

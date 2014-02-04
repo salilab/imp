@@ -38,8 +38,8 @@ class Flag : public internal::FlagImpl<T, ENABLED> {
   Flag(std::string name, std::string description, T default_value = T())
       : internal::FlagImpl<T, ENABLED>(internal::flags, name, description,
                                        default_value) {}
-  Flag<T, ENABLED>& operator=(const T &o) {
-    internal::FlagImpl<T, ENABLED> ::operator=(o);
+  Flag<T, ENABLED>& operator=(const T& o) {
+    internal::FlagImpl<T, ENABLED>::operator=(o);
     return *this;
   }
 };
@@ -58,7 +58,7 @@ class AdvancedFlag : public internal::FlagImpl<T, ENABLED> {
       : internal::FlagImpl<T, ENABLED>(internal::advanced_flags, name,
                                        description, default_value) {}
   AdvancedFlag<T, ENABLED>& operator=(const T& o) {
-    internal::FlagImpl<T, ENABLED> ::operator=(o);
+    internal::FlagImpl<T, ENABLED>::operator=(o);
     return *this;
   }
 };

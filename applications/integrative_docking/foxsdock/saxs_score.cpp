@@ -23,7 +23,7 @@
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   // print command
   for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";
   std::cerr << std::endl;
@@ -73,9 +73,8 @@ use 0.8 for elongated proteins")(
       "background_q,b",
       po::value<float>(&background_adjustment_q)->default_value(0.0),
       "background adjustment, not used by default. if enabled, \
-recommended q value is 0.2")(
-      "offset,f",
-      "use offset in fitting (default = false)")(
+recommended q value is 0.2")("offset,f",
+                             "use offset in fitting (default = false)")(
       "weighted_fit,t",
       "fit monomers in addition to complex model (default = false)")(
       "accurate_slow,a",
@@ -138,7 +137,7 @@ recommended q value is 0.2")(
   IMP::saxs::SolventAccessibleSurface s;
   if (water_layer) {
     // add radius first
-    IMP::saxs::FormFactorTable* ft = IMP::saxs::default_form_factor_table();
+    IMP::saxs::FormFactorTable *ft = IMP::saxs::default_form_factor_table();
     for (unsigned int p_index = 0; p_index < particles1.size(); p_index++) {
       float radius = ft->get_radius(particles1[p_index], ff_type);
       IMP::core::XYZR::setup_particle(particles1[p_index], radius);
@@ -204,16 +203,15 @@ recommended q value is 0.2")(
             << std::endl;
 
   IMP::saxs::Profile *resampled_rigid_part1_profile =
-    new IMP::saxs::Profile(exp_profile->get_min_q(),
-                           exp_profile->get_max_q(),
-                           exp_profile->get_delta_q());
-  rigid_part1_profile->resample(exp_profile, resampled_rigid_part1_profile, true);
+      new IMP::saxs::Profile(exp_profile->get_min_q(), exp_profile->get_max_q(),
+                             exp_profile->get_delta_q());
+  rigid_part1_profile->resample(exp_profile, resampled_rigid_part1_profile,
+                                true);
   IMP::saxs::Profile *resampled_rigid_part2_profile =
-    new IMP::saxs::Profile(exp_profile->get_min_q(),
-                           exp_profile->get_max_q(),
-                           exp_profile->get_delta_q());
-  rigid_part2_profile->resample(exp_profile, resampled_rigid_part2_profile, true);
-
+      new IMP::saxs::Profile(exp_profile->get_min_q(), exp_profile->get_max_q(),
+                             exp_profile->get_delta_q());
+  rigid_part2_profile->resample(exp_profile, resampled_rigid_part2_profile,
+                                true);
 
   // save particles2 coordinates (they are going to move)
   std::vector<IMP::algebra::Vector3D> coordinates2;
@@ -276,12 +274,12 @@ recommended q value is 0.2")(
 
       if (accurate_water_layer) {
         surface_area = s.get_solvent_accessibility(IMP::core::XYZRs(particles));
-        complex_profile->calculate_profile_partial(particles,
-                                                   surface_area, ff_type);
+        complex_profile->calculate_profile_partial(particles, surface_area,
+                                                   ff_type);
       } else {
         if (fit) {
           complex_profile->calculate_profile_partial(
-            particles1, particles2, surface_area1, surface_area2, ff_type);
+              particles1, particles2, surface_area1, surface_area2, ff_type);
           complex_profile->add_partial_profiles(rigid_part1_profile);
         } else {
           complex_profile->calculate_profile(particles1, particles2, ff_type);
@@ -293,22 +291,21 @@ recommended q value is 0.2")(
       if (weighted_fit) {
         // monomer profiles are also fitted to account for a possible mixture
         IMP::saxs::ProfilesTemp profiles;
-        IMP::saxs::Profile *resampled_profile =
-          new IMP::saxs::Profile(exp_profile->get_min_q(),
-                                 exp_profile->get_max_q(),
-                                 exp_profile->get_delta_q());
+        IMP::saxs::Profile *resampled_profile = new IMP::saxs::Profile(
+            exp_profile->get_min_q(), exp_profile->get_max_q(),
+            exp_profile->get_delta_q());
         complex_profile->resample(exp_profile, resampled_profile, true);
         profiles.push_back(resampled_rigid_part1_profile);
         profiles.push_back(resampled_rigid_part2_profile);
         profiles.push_back(resampled_profile);
-        IMP::saxs::WeightedFitParameters wfp =
-          weighted_score->fit_profile(profiles, min_c1, max_c1, min_c2, max_c2);
+        IMP::saxs::WeightedFitParameters wfp = weighted_score->fit_profile(
+            profiles, min_c1, max_c1, min_c2, max_c2);
         chi = wfp.get_chi();
         c1 = wfp.get_c1();
         c2 = wfp.get_c2();
-      } else { // just complex is fitted
+      } else {  // just complex is fitted
         IMP::saxs::FitParameters fp = saxs_score->fit_profile(
-          complex_profile, min_c1, max_c1, min_c2, max_c2, use_offset);
+            complex_profile, min_c1, max_c1, min_c2, max_c2, use_offset);
         chi = fp.get_chi();
         c1 = fp.get_c1();
         c2 = fp.get_c2();

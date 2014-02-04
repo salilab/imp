@@ -242,7 +242,6 @@ inline Vector2Ds uniform_cover_sphere(unsigned int N, const Vector2D &center,
   return ret;
 }
 
-
 template <int D>
 struct RandomVectorOnBB {
   static VectorD<D> get(BoundingBoxD<D> bb) {

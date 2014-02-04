@@ -53,18 +53,16 @@ void HierarchySaveGaussians::setup_node(
     kernel::Model *m, kernel::ParticleIndex p, RMF::NodeHandle n,
     const kernel::ParticleIndexes &rigid_bodies) {
   if (!core::Gaussian::get_is_setup(m, p)) return;
-  algebra::Vector3D st =
-      core::Gaussian(m, p).get_gaussian().get_variances();
+  algebra::Vector3D st = core::Gaussian(m, p).get_gaussian().get_variances();
   gaussian_factory_.get(n).set_variances(RMF::Vector3(st));
-  gaussians_.push_back(Pair(n,p));
+  gaussians_.push_back(Pair(n, p));
 }
 
 void HierarchySaveGaussians::save(kernel::Model *m, RMF::FileHandle fh) {
   IMP_FOREACH(Pair pp, gaussians_) {
-    gaussian_factory_.get(fh.get_node(pp.first)).set_frame_variances(
-        RMF::Vector3(core::Gaussian(m, pp.second)
-                         .get_gaussian()
-                         .get_variances()));
+    gaussian_factory_.get(fh.get_node(pp.first))
+        .set_frame_variances(RMF::Vector3(
+             core::Gaussian(m, pp.second).get_gaussian().get_variances()));
   }
 }
 

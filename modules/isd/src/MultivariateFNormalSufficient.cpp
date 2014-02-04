@@ -691,7 +691,7 @@ IMP_Eigen::MatrixXd MultivariateFNormalSufficient::solve(IMP_Eigen::MatrixXd B)
 }
 
 double MultivariateFNormalSufficient::get_log_generalized_variance() const {
-    return double(N_*M_)/2 * log(2*IMP::PI) - get_norms()[1];
+  return double(N_ * M_) / 2 * log(2 * IMP::PI) - get_norms()[1];
 }
 
 IMPISD_END_NAMESPACE

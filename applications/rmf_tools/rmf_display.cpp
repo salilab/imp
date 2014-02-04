@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
   try {
     IMP::Strings io = IMP::base::setup_from_argv(
         argc, argv, "Export an RMF file to a viewer", "input.rmf [output]", -1);
-   std::string output;
+    std::string output;
     if (io.size() > 1) {
       output = io[1];
     }

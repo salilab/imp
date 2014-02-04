@@ -246,8 +246,8 @@ void MCCGSampler::set_max_monte_carlo_step_size(FloatKey k, double d) {
 
 void MCCGSampler::set_is_refining(bool tf) { is_refining_ = tf; }
 
-MCCGSampler::Container *MCCGSampler::set_up_movers(
-    const Parameters &pms, MonteCarlo *mc) const {
+MCCGSampler::Container *MCCGSampler::set_up_movers(const Parameters &pms,
+                                                   MonteCarlo *mc) const {
   if (pms.opt_keys_[0] != XK && pms.opt_keys_[1] != YK &&
       pms.opt_keys_[2] != ZK) {
     IMP_THROW("Currently, the MCCGSampler can only handle "
