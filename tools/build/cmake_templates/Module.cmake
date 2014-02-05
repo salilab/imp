@@ -20,14 +20,14 @@ if(${status} EQUAL 0)
   # for warning control
   add_definitions(-DIMP%(NAME)s_COMPILATION)
 
-  set(allh_command  "python" "${CMAKE_SOURCE_DIR}/tools/developer_tools/make_all_header.py" "${CMAKE_BINARY_DIR}/include/IMP/%(name)s.h" "IMP/%(name)s" "${PROJECT_SOURCE_DIR}/include/" ${IMP_%(name)s_EXTRA_HEADERS})
+  set(allh_command  "python" "${CMAKE_SOURCE_DIR}/tools/dev_tools/make_all_header.py" "${CMAKE_BINARY_DIR}/include/IMP/%(name)s.h" "IMP/%(name)s" "${PROJECT_SOURCE_DIR}/include/" ${IMP_%(name)s_EXTRA_HEADERS})
   # for swig
   imp_execute_process("IMP.%(name)s making all header" ${PROJECT_BINARY_DIR}
                    COMMAND ${allh_command})
 
   add_custom_target(IMP.%(name)s-all-header
     COMMAND ${allh_command}
-    DEPENDS "${CMAKE_SOURCE_DIR}/tools/developer_tools/make_all_header.py")
+    DEPENDS "${CMAKE_SOURCE_DIR}/tools/dev_tools/make_all_header.py")
   set_property(TARGET "IMP.%(name)s-all-header" PROPERTY FOLDER "IMP.%(name)s")
   list(APPEND IMP_%(name)s_LIBRARY_EXTRA_DEPENDENCIES IMP.%(name)s-all-header)
 

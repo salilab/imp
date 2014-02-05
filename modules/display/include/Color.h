@@ -67,6 +67,9 @@ class IMPDISPLAYEXPORT Color : public base::Value {
   typedef const double *ComponentIterator;
   ComponentIterator components_begin() const { return c_.begin(); }
   ComponentIterator components_end() const { return c_.end(); }
+  const boost::array<double, 3>& get_rgb() const {
+    return c_;
+  }
 #endif
   //!@}
 

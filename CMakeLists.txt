@@ -3,13 +3,23 @@ cmake_minimum_required(VERSION 2.8.3)
 project(IMP)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
 if(${CMAKE_BINARY_DIR} MATCHES "${CMAKE_SOURCE_DIR}/.*")
    message(FATAL_ERROR "Building in the source directory not supported: ${CMAKE_SOURCE_DIR} includes ${CMAKE_BINARY_DIR}")
 endif()
 
-include(${CMAKE_SOURCE_DIR}/tools/build/cmake_modules/ExecuteProcess.cmake)
-include(${CMAKE_SOURCE_DIR}/tools/build/cmake_modules/CheckCompiles.cmake)
+execute_process(COMMAND python setup_git.py
+                  RESULT_VARIABLE setup
+                  OUTPUT_VARIABLE toutput
+                  ERROR_VARIABLE error
+                  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                  OUTPUT_STRIP_TRAILING_WHITESPACE)
+if(NOT ${setup} EQUAL 0)
+   message(FATAL_ERROR " Failed to run setup_git.py: ${setup}; ${error}")
+endif()
+
+include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules/IMPExecuteProcess.cmake)
+include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules/IMPAddTests.cmake)
+include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules/CheckCompiles.cmake)
 
 imp_execute_process("check_common_problems" ${CMAKE_SOURCE_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/check_common_problems.py)
 
@@ -17,17 +27,19 @@ imp_execute_process("clean_build_dir" ${CMAKE_BINARY_DIR} COMMAND ${CMAKE_SOURCE
 
 imp_execute_process("setup_cmake" ${CMAKE_SOURCE_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_cmake.py)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/tools/build/cmake_modules)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules)
 
 enable_testing()
 
-include(${CMAKE_SOURCE_DIR}/tools/build/cmake_modules/FindC++11.cmake)
-include(${CMAKE_SOURCE_DIR}/tools/build/cmake_modules/FindCompilerFlags.cmake)
+include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules/IMPFindC++11.cmake)
+include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules/IMPFindCompilerFlags.cmake)
 
 if(POLICY CMP0017)
 cmake_policy(SET CMP0017 NEW)
 endif(POLICY CMP0017)
 
+
+set(IMP_TEST_SETUP ${PROJECT_BINARY_DIR}/setup_imp.py)
 
 set(timeout_factor 1)
 set(IMP_SWIG_PATH CACHE STRING "List of places for swig to search")

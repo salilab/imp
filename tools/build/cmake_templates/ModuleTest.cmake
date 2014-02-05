@@ -6,103 +6,13 @@ add_definitions("-DIMP_EXECUTABLE")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${%(NAME)s_CXX_FLAGS}")
 
-
 File(GLOB runtimepytests "${CMAKE_BINARY_DIR}/test/%(name)s/test_*.py")
 
-math(EXPR short_timeout "${IMP_TIMEOUT_FACTOR} * 5")
-math(EXPR medium_timeout "${IMP_TIMEOUT_FACTOR} * 15")
-math(EXPR expensive_timeout "${IMP_TIMEOUT_FACTOR} * 120")
+include(Files.cmake)
 
-# should make into function
-foreach (test ${runtimepytests} %(pytests)s)
-  GET_FILENAME_COMPONENT(name ${test} NAME)
-  add_test("IMP.%(name)s-${name}" ${IMP_TEST_SETUP} python ${test})
-  set_tests_properties("IMP.%(name)s-${name}" PROPERTIES LABELS "IMP.%(name)s;test;length_short")
-  set_tests_properties("IMP.%(name)s-${name}" PROPERTIES TIMEOUT ${short_timeout})
-  set_tests_properties("IMP.%(name)s-${name}" PROPERTIES COST 1)
-endforeach(test)
-
-foreach (test %(mdpytests)s)
-  GET_FILENAME_COMPONENT(name ${test} NAME)
-  add_test("IMP.%(name)s-${name}" ${IMP_TEST_SETUP} python ${test})
-  set_tests_properties("IMP.%(name)s-${name}" PROPERTIES LABELS "IMP.%(name)s;test;length_medium")
-  set_tests_properties("IMP.%(name)s-${name}" PROPERTIES TIMEOUT ${medium_timeout})
-  set_tests_properties("IMP.%(name)s-${name}" PROPERTIES COST 2)
-endforeach(test)
-
-foreach (test %(expytests)s)
-  GET_FILENAME_COMPONENT(name ${test} NAME)
-  add_test("IMP.%(name)s-${name}" ${IMP_TEST_SETUP} python ${test})
-  set_tests_properties("IMP.%(name)s-${name}" PROPERTIES LABELS "IMP.%(name)s;test;length_expensive")
-  set_tests_properties("IMP.%(name)s-${name}" PROPERTIES TIMEOUT ${expensive_timeout})
-  set_tests_properties("IMP.%(name)s-${name}" PROPERTIES COST 3)
-endforeach(test)
-
-set(cpp_tests %(cpptests)s)
-
-foreach (test ${cpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME)
-   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
-   add_executable("IMP.%(name)s-${name}" ${test})
-   target_link_libraries("IMP.%(name)s-${name}"     IMP.%(name)s-lib
+set(IMP_TEST_ARGUMENTS)
+set(IMP_LINK_LIBRARIES IMP.%(name)s-lib
     %(modules)s
     %(dependencies)s)
-   set_target_properties("IMP.%(name)s-${name}" PROPERTIES
-                         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test/%(name)s/"
-                         OUTPUT_NAME ${name_we})
-   set_property(TARGET "IMP.%(name)s-${name}" PROPERTY FOLDER "IMP.%(name)s")
 
-   add_test("IMP.%(name)s-${name}" ${IMP_TEST_SETUP}
-            "${CMAKE_BINARY_DIR}/test/%(name)s/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
-   set_tests_properties("IMP.%(name)s-${name}" PROPERTIES LABELS "IMP.%(name)s;test;length_short")
-   set_tests_properties("IMP.%(name)s-${name}" PROPERTIES TIMEOUT ${short_timeout})
-   set_tests_properties("IMP.%(name)s-${name}" PROPERTIES COST 1)
-   set(executables ${executables} "IMP.%(name)s-${name}")
-endforeach(test)
-
-
-set(mdcpp_tests %(mdcpptests)s)
-
-foreach (test ${mdcpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME)
-   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
-   add_executable("IMP.%(name)s-${name}" ${test})
-   target_link_libraries("IMP.%(name)s-${name}"     IMP.%(name)s-lib
-    %(modules)s
-    %(dependencies)s)
-   set_target_properties("IMP.%(name)s-${name}" PROPERTIES
-                         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test/%(name)s/"
-                         OUTPUT_NAME ${name_we})
-   set_property(TARGET "IMP.%(name)s-${name}" PROPERTY FOLDER "IMP.%(name)s")
-
-   add_test("IMP.%(name)s-${name}" ${IMP_TEST_SETUP}
-            "${CMAKE_BINARY_DIR}/test/%(name)s/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
-   set_tests_properties("IMP.%(name)s-${name}" PROPERTIES LABELS "IMP.%(name)s;test;length_medium")
-   set_tests_properties("IMP.%(name)s-${name}" PROPERTIES TIMEOUT ${medium_timeout})
-   set_tests_properties("IMP.%(name)s-${name}" PROPERTIES COST 1)
-   set(executables ${executables} "IMP.%(name)s-${name}")
-endforeach(test)
-
-set(excpp_tests %(excpptests)s)
-
-foreach (test ${excpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME)
-   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
-   add_executable("IMP.%(name)s-${name}" ${test})
-   target_link_libraries("IMP.%(name)s-${name}"     IMP.%(name)s-lib
-    %(modules)s
-    %(dependencies)s)
-   set_target_properties("IMP.%(name)s-${name}" PROPERTIES
-                         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test/%(name)s/"
-                         OUTPUT_NAME ${name_we})
-   set_property(TARGET "IMP.%(name)s-${name}" PROPERTY FOLDER "IMP.%(name)s")
-
-   add_test("IMP.%(name)s-${name}" ${IMP_TEST_SETUP}
-            "${CMAKE_BINARY_DIR}/test/%(name)s/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
-   set_tests_properties("IMP.%(name)s-${name}" PROPERTIES LABELS "IMP.%(name)s;test;length_expensive")
-   set_tests_properties("IMP.%(name)s-${name}" PROPERTIES TIMEOUT ${expensive_timeout})
-   set_tests_properties("IMP.%(name)s-${name}" PROPERTIES COST 1)
-   set(executables ${executables} "IMP.%(name)s-${name}")
-endforeach(test)
-
-set(IMP_%(name)s_TESTS ${executables} CACHE INTERNAL "" FORCE)
+imp_add_tests("IMP.%(name)s" ${PROJECT_BINARY_DIR}/test/%(name)s IMP_%(name)s_TESTS test ${runtimepytests} ${pyfiles} ${cppfiles})

@@ -10,6 +10,8 @@ include_directories(%(includepath)s)
 link_directories(%(libpath)s)
 add_definitions("-DIMP%(CPPNAME)s_EXPORTS")
 
+include(Files.cmake)
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${%(NAME)s_CXX_FLAGS}")
 
 set(headers %(headers)s)
@@ -22,7 +24,7 @@ set_source_files_properties(${CMAKE_BINARY_DIR}/src/%(name)s_config.cpp
   PROPERTIES GENERATED 1)
 
 if(DEFINED IMP_%(name)s_IS_PER_CPP)
-  set(sources %(sources)s)
+  set(sources ${cppfiles})
   add_library(IMP.%(name)s-lib  ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
               ${CMAKE_BINARY_DIR}/src/%(name)s_config.cpp

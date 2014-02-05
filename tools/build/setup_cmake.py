@@ -12,6 +12,7 @@ import os.path
 import shutil
 import platform
 import tools
+import subprocess
 from optparse import OptionParser
 
 check_template = open(
@@ -171,6 +172,15 @@ def setup_module(module, path, ordered):
     deps = []
     contents = []
     defines = []
+    cmd = subprocess.Popen(
+        ["python",
+         os.path.join(
+             "..",
+             "..",
+             "tools",
+             "dev_tools",
+             "setup_cmake.py")],
+        cwd=path)
     for cc in tools.get_glob([os.path.join(path, "compiler", "*.cpp")]):
         ret = make_check(cc, module, path)
         checks.append(ret[0])
@@ -215,40 +225,7 @@ def setup_module(module, path, ordered):
         ["${IMP_%s_PYTHON}" %
          m for m in all_modules])
     values["dependencies"] = ";".join(dependencies)
-    values["sources"] = get_sources(module, path, "src", "*.cpp")
     values["headers"] = get_sources(module, path, "include", "*.h")
-    values["cppbins"] = get_sources(module, path, "bin", "*.cpp")
-    values["cppbenchmarks"] = get_sources(module, path, "benchmark", "*.cpp")
-    values["pybenchmarks"] = get_sources(module, path, "benchmark", "*.py")
-    values["pytests"] = get_sources(module, path, "test", "test_*.py")
-    values["expytests"] = get_sources(
-        module,
-        path,
-        "test",
-        "expensive_test_*.py")
-    values["mdpytests"] = get_sources(module, path, "test", "medium_test_*.py")
-    values["cpptests"] = get_sources(module, path, "test", "test_*.cpp")
-    values["mdcpptests"] = get_sources(
-        module,
-        path,
-        "test",
-        "medium_test_*.cpp")
-    values["excpptests"] = get_sources(
-        module,
-        path,
-        "test",
-        "expensive_test_*.cpp")
-    values["pyexamples"] = get_sources(
-        module,
-        path,
-        "examples",
-        "[a-zA-Z]*.py")
-    values["cppexamples"] = get_sources(module, path, "examples", "*.cpp")
-    values["excpptests"] = get_sources(
-        module,
-        path,
-        "test",
-        "expensive_test_*.cpp")
     values["includepath"] = get_dep_merged([module], "include_path", ordered)
     values["libpath"] = get_dep_merged([module], "link_path", ordered)
     values["swigpath"] = get_dep_merged([module], "swig_path", ordered)

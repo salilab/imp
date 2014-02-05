@@ -6,9 +6,9 @@ add_definitions("-DIMP_EXECUTABLE")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${%(NAME)s_CXX_FLAGS}")
 
-set(cppbins %(cppbins)s)
+include(Files.cmake)
 
-foreach (bin ${cppbins})
+foreach (bin ${cppfiles})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
    add_executable(IMP.%(name)s-${name} ${bin})
    target_link_libraries(IMP.%(name)s-${name}     IMP.%(name)s-lib

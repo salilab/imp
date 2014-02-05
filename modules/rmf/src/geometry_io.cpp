@@ -53,7 +53,7 @@ void save_colored(display::Geometry *g, RMF::NodeHandle nh,
   if (g->get_has_color()) {
     RMF::decorator::Colored cd = f.get(nh);
     display::Color c = g->get_color();
-    cd.set_rgb_color(RMF::Floats(c.components_begin(), c.components_end()));
+    cd.set_rgb_color(RMF::Vector3(c.get_rgb()));
   }
 }
 
@@ -96,8 +96,7 @@ void save_sphere(display::SphereGeometry *o, RMF::NodeHandle nh,
                  RMF::decorator::BallFactory f) {
   algebra::Sphere3D s = o->get_geometry();
   RMF::decorator::Ball b = f.get(nh);
-  b.set_coordinates(RMF::Floats(s.get_center().coordinates_begin(),
-                                s.get_center().coordinates_end()));
+  b.set_coordinates(RMF::Vector3(s.get_center()));
   b.set_radius(s.get_radius());
 }
 

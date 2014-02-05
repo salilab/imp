@@ -5,13 +5,11 @@ branches:
 compiler:
   - gcc
 env:
-  - BUILD=base
-  - BUILD=algebra
-  - BUILD=kernel
-  - BUILD=core
-  - BUILD=rmf
-  - BUILD=atom
-  - BUILD=container
+  - BUILD="IMP.base IMP.test" TEST=IMP.base PERCPP=base
+  - BUILD="IMP.algebra IMP.kernel IMP.container" TEST=XXX PERCPP=algebra:kernel:container
+  - BUILD=IMP.core TEST=XXX PERCPP=core
+  - BUILD=IMP.rmf TEST=XXX PERCPP=rmf
+  - BUILD=IMP.atom TEST=XXX PERCPP=atom
 git:
   submodules: false
 
@@ -23,5 +21,6 @@ before_install:
 script:
  - mkdir ../build
  - cd ../build
- - cmake ../imp -DIMP_PER_CPP_COMPILATION=$BUILD
- - make -j 2 -k IMP.$BUILD
+ - cmake ../imp -DIMP_PER_CPP_COMPILATION=$PERCPP
+ - make -j 2 -k $BUILD
+ - cmake -j 2 -R $TEST
