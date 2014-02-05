@@ -10,6 +10,8 @@ env:
   - BUILD=kernel
   - BUILD=core
   - BUILD=rmf
+  - BUILD=atom
+  - BUILD=container
 git:
   submodules: false
 
@@ -22,4 +24,4 @@ script:
  - mkdir ../build
  - cd ../build
  - cmake ../imp -DIMP_PER_CPP_COMPILATION=$BUILD
- - make -j 2 IMP.$BUILD
+ - make -j 2 -k IMP.$BUILD
