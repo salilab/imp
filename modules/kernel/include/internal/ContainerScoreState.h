@@ -31,7 +31,9 @@ class ContainerScoreState : public ScoreState {
     return back_->do_score_state_before_evaluate();
   }
 
-  virtual void do_after_evaluate(DerivativeAccumulator *) {}
+  virtual void do_after_evaluate(DerivativeAccumulator *) {
+    back_->do_score_state_after_evaluate();
+  }
 
   virtual ModelObjectsTemp do_get_inputs() const {
     IMP_CHECK_OBJECT(back_);

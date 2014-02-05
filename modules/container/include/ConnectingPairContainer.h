@@ -73,6 +73,7 @@ class IMPCONTAINEREXPORT ConnectingPairContainer :
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   kernel::ModelObjectsTemp get_score_state_inputs() const;
   void do_score_state_before_evaluate();
+  void do_score_state_after_evaluate() {}
   virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ConnectingPairContainer);
   bool get_is_decomposable() const { return false; }

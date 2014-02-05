@@ -33,6 +33,7 @@ class IMPCOREEXPORT CoreClosePairContainer
   unsigned int moved_count_;
   bool first_call_;
   double distance_, slack_;
+  unsigned int updates_, rebuilds_, partial_rebuilds_;
   typedef kernel::internal::ContainerScoreState<CoreClosePairContainer> SS;
   base::PointerMember<SS> score_state_;
 
@@ -51,6 +52,7 @@ class IMPCOREEXPORT CoreClosePairContainer
   virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   void do_score_state_before_evaluate();
+  void do_score_state_after_evaluate() {}
 
   CoreClosePairContainer(SingletonContainer *c, double distance,
                          ClosePairsFinder *cpf, double slack = 1,
@@ -90,6 +92,14 @@ class IMPCOREEXPORT CoreClosePairContainer
     }
     return ret;
   }
+  unsigned int get_number_of_update_calls() const { return updates_; }
+  unsigned int get_number_of_full_rebuilds() const {
+    return rebuilds_;
+  }
+  unsigned int get_number_of_partial_rebuilds() const {
+    return partial_rebuilds_;
+  }
+
   IMP_OBJECT_METHODS(CoreClosePairContainer);
 };
 

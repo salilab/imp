@@ -49,6 +49,9 @@ void CoreClosePairContainer::initialize(SingletonContainer *c, double distance,
   cpf_->set_distance(distance_ + 2 * slack_);
   first_call_ = true;
   moved_ = cpf_->get_moved_singleton_container(c_, slack_);
+  updates_ = 0;
+  rebuilds_ = 0;
+  partial_rebuilds_ = 0;
 }
 
 void CoreClosePairContainer::set_slack(double s) {
@@ -161,6 +164,7 @@ void CoreClosePairContainer::do_first_call() {
 void CoreClosePairContainer::do_incremental() {
   IMP_LOG_TERSE("Handling incremental update of ClosePairContainer"
                 << std::endl);
+  ++partial_rebuilds_;
   using IMP::operator<<;
   IMP_LOG_VERBOSE("Moved " << moved_->get_indexes() << std::endl);
   PairPredicatesTemp pf = access_pair_filters();
@@ -208,6 +212,7 @@ void CoreClosePairContainer::do_incremental() {
 }
 void CoreClosePairContainer::do_rebuild() {
   IMP_LOG_TERSE("Handling full update of ClosePairContainer." << std::endl);
+  ++rebuilds_;
   cpf_->set_pair_filters(access_pair_filters());
   cpf_->set_distance(distance_ + 2 * slack_);
   kernel::ParticleIndexPairs ret =
@@ -226,6 +231,7 @@ void CoreClosePairContainer::do_score_state_before_evaluate() {
   IMP_CHECK_OBJECT(c_);
   IMP_CHECK_OBJECT(cpf_);
   set_was_used(true);
+  ++updates_;
   try {
     if (first_call_) {
       do_first_call();

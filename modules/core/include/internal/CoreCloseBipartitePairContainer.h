@@ -95,6 +95,7 @@ class IMPCOREEXPORT CoreCloseBipartitePairContainer
   virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   void do_score_state_before_evaluate();
+  void do_score_state_after_evaluate() {}
   virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(CoreCloseBipartitePairContainer);
 };

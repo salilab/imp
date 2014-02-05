@@ -111,6 +111,16 @@ class IMPCONTAINEREXPORT ClosePairContainer :
   void do_apply(const PairModifier *sm) const;
   kernel::ParticleIndexes get_all_possible_indexes() const;
 
+  /** Get the number of times this container has been asked to update its
+      contents. */
+  unsigned int get_number_of_update_calls() const;
+  /** Get the number of times this container has computed it contents from
+      scratch. */
+  unsigned int get_number_of_full_rebuilds() const;
+  /** Get the number of times this container has performed a partial
+      recomputation of its contents. */
+  unsigned int get_number_of_partial_rebuilds() const;
+
  private:
   virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE;
 #endif

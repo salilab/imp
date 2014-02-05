@@ -45,7 +45,7 @@ class IMPCOREEXPORT MovedSingletonContainer
  public:
   kernel::ModelObjectsTemp get_score_state_inputs() const;
   void do_score_state_before_evaluate();
-  void do_score_state_after_evaluate(DerivativeAccumulator *);
+  void do_score_state_after_evaluate();
   void initialize();
   virtual void validate() const = 0;
   MovedSingletonContainer(SingletonContainer *pc, double threshold,
