@@ -30,12 +30,45 @@ def format_value(val):
         return repr(val.s)
     elif isinstance(val, ast.Name):
         return val.id
+    elif isinstance(val, ast.Add):
+        return '+'
+    elif isinstance(val, ast.Sub):
+        return '-'
+    elif isinstance(val, ast.Mult):
+        return '*'
+    elif isinstance(val, ast.Div):
+        return '/'
+    elif isinstance(val, ast.Pow):
+        return '**'
+    elif isinstance(val, ast.Mod):
+        return '%'
+    elif isinstance(val, ast.LShift):
+        return '<<'
+    elif isinstance(val, ast.RShift):
+        return '>>'
+    elif isinstance(val, ast.BitOr):
+        return '|'
+    elif isinstance(val, ast.BitAnd):
+        return '&'
+    elif isinstance(val, ast.BitXor):
+        return '^'
+    elif isinstance(val, ast.FloorDiv):
+        return '//'
+    elif isinstance(val, ast.Invert):
+        return '~'
+    elif isinstance(val, ast.Not):
+        return 'not '
     elif isinstance(val, ast.Attribute):
         return format_value(val.value) + '.' + val.attr
     elif isinstance(val, ast.List):
         return '[' + ", ".join([format_value(x) for x in val.elts]) + ']'
     elif isinstance(val, ast.Tuple):
         return '(' + ", ".join([format_value(x) for x in val.elts]) + ')'
+    elif isinstance(val, ast.BinOp):
+        return format_value(val.left) + " " + format_value(val.op) \
+               + " " + format_value(val.right)
+    elif isinstance(val, ast.UnaryOp):
+        return format_value(val.op) + format_value(val.operand)
     elif isinstance(val, ast.Call):
         args = [format_value(x) for x in val.args] + \
                ["%s=%s" % (x.arg, format_value(x.value)) for x in val.keywords]
