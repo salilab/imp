@@ -35,7 +35,6 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
   IMP_DECORATOR_SETUP_0(Gaussian);
   IMP_DECORATOR_SETUP_1(Gaussian, algebra::Gaussian3D, g);
 
-  algebra::Gaussian3D get_gaussian() const;
   IMP_Eigen::Matrix3d get_covariance() const;
   void set_gaussian(const algebra::Gaussian3D &g);
 
@@ -51,6 +50,10 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
         get_model()->get_attribute(get_variance_key(0), get_particle_index()),
         get_model()->get_attribute(get_variance_key(1), get_particle_index()),
         get_model()->get_attribute(get_variance_key(2), get_particle_index()));
+  }
+
+  inline algebra::Gaussian3D get_gaussian() const {
+    return algebra::Gaussian3D(RigidBody::get_reference_frame(),get_variances());
   }
 
   static FloatKey get_variance_key(unsigned int i);

@@ -1179,7 +1179,7 @@ DensityMap *binarize(DensityMap *orig_map, float threshold, bool reverse) {
   return bin_map.release();
 }
 
-DensityMap *get_threshold_map(DensityMap *orig_map, float threshold) {
+DensityMap *get_threshold_map(const DensityMap *orig_map, float threshold) {
   const DensityHeader *header = orig_map->get_header();
   // create a new map
   base::Pointer<DensityMap> ret(
