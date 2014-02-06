@@ -1,4 +1,4 @@
-import IMP
+import IMP.kernel
 import IMP.test
 import IMP.core
 import IMP.algebra
@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
     def test_rigid(self):
         """Test ClosePairContainer with rigid finder"""
         m = IMP.kernel.Model()
-        m.set_log_level(IMP.base.SILENT)
+        m.set_log_level(IMP.base.TERSE)
         bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                        IMP.algebra.Vector3D(10, 10, 10))
         slack = 1
@@ -52,10 +52,11 @@ class Tests(IMP.test.TestCase):
             for l0 in ps0:
                 for l1 in ps1:
                     if IMP.core.get_distance(IMP.core.XYZR(l0),
-                                             IMP.core.XYZR(l1)) < 2 * slack:
+                                             IMP.core.XYZR(l1)) < 2.5 * slack:
                         return
             self.assert_(False)
 
+        print ps0, ps1
         rbm0 = IMP.core.RigidBodyMover(rb0, 5, 1)
         rbm1 = IMP.core.RigidBodyMover(rb1, 5, 1)
         tested = False
