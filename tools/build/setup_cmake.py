@@ -172,16 +172,7 @@ def setup_module(module, path, ordered):
     deps = []
     contents = []
     defines = []
-    cmd = subprocess.Popen(
-        ["python",
-         os.path.join(
-             "..",
-             "..",
-             "tools",
-             "dev_tools",
-             "setup_cmake.py")],
-        cwd=path)
-    for cc in tools.get_glob([os.path.join(path, "compiler", "*.cpp")]):
+   for cc in tools.get_glob([os.path.join(path, "compiler", "*.cpp")]):
         ret = make_check(cc, module, path)
         checks.append(ret[0])
         defines.append(ret[1])
@@ -252,6 +243,18 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/bin)""" % ((module,) * 5)
 
     out = os.path.join(path, "CMakeLists.txt")
     tools.rewrite(out, module_template % values)
+
+    # at end so directories exist
+    cmd = subprocess.Popen(
+        ["python",
+         os.path.join(
+             "..",
+             "..",
+             "tools",
+             "dev_tools",
+             "setup_cmake.py")],
+        cwd=path)
+
     return out
 
 
@@ -329,8 +332,8 @@ def main():
 
     for a in [x for x in tools.get_glob([os.path.join("applications", "*")]) if os.path.isdir(x)]:
         main.append(setup_application(options, os.path.split(a)[1], ordered))
-    #contents=["include(${CMAKE_SOURCE_DIR}/%s)"%x for x in main]
-    #tools.rewrite(os.path.join("cmake", "CMakeLists.txt"), "\n".join(contents))
+    # contents=["include(${CMAKE_SOURCE_DIR}/%s)"%x for x in main]
+    # tools.rewrite(os.path.join("cmake", "CMakeLists.txt"), "\n".join(contents))
 
 if __name__ == '__main__':
     main()
