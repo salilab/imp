@@ -15,6 +15,7 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/macros.h>
+#include <boost/unordered_map.hpp>
 #include <IMP/algebra/eigen_analysis.h>
 #include <cmath>
 
@@ -53,7 +54,8 @@ ParticlesTemp get_rigid_bodies(kernel::Model *m,
     });
   return ret;
   }*/
-typedef IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> RBM;
+typedef boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes>
+    RBM;
 void divvy_up_particles(kernel::Model *m, const kernel::ParticleIndexes &ps,
                         kernel::ParticleIndexes &out, RBM &members) {
   IMP_IF_CHECK(base::USAGE) {
