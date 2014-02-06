@@ -23,4 +23,4 @@ script:
  - cd ../build
  - cmake ../imp -DIMP_PER_CPP_COMPILATION=$PERCPP
  - make -j 2 -k $BUILD
- - cmake -j 2 -R $TEST
+ - ctest -j 2 -R $TEST
