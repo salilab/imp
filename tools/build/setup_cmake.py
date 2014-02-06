@@ -172,7 +172,7 @@ def setup_module(module, path, ordered):
     deps = []
     contents = []
     defines = []
-   for cc in tools.get_glob([os.path.join(path, "compiler", "*.cpp")]):
+    for cc in tools.get_glob([os.path.join(path, "compiler", "*.cpp")]):
         ret = make_check(cc, module, path)
         checks.append(ret[0])
         defines.append(ret[1])
