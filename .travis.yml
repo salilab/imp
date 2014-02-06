@@ -7,7 +7,8 @@ compiler:
 env:
 # Make has issues with multiple targets and parallel builds
   - BUILD="IMP.base IMP.test" TEST=IMP.base PERCPP=base
-  - BUILD="IMP.algebra IMP.kernel IMP.container" TEST=XXX PERCPP=algebra:kernel:container
+  - BUILD="IMP.algebra -j 2" TEST=XXX PERCPP=algebra
+  - BUILD="IMP.kernel IMP.container" TEST=XXX PERCPP=kernel:container
   - BUILD="-j 2 IMP.core" TEST=XXX PERCPP=core
   - BUILD="-j 2 IMP.rmf" TEST=XXX PERCPP=rmf
   - BUILD="-j 2 IMP.atom" TEST=XXX PERCPP=atom
