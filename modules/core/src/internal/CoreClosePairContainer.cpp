@@ -210,6 +210,7 @@ void CoreClosePairContainer::do_incremental() {
   moved_->reset_moved();
   IMP_LOG_TERSE("Count is now " << get_access().size() << std::endl);
 }
+
 void CoreClosePairContainer::do_rebuild() {
   IMP_LOG_TERSE("Handling full update of ClosePairContainer." << std::endl);
   ++rebuilds_;
@@ -233,6 +234,8 @@ void CoreClosePairContainer::do_score_state_before_evaluate() {
   set_was_used(true);
   ++updates_;
   try {
+    IMP_LOG_TERSE("Moved count is " << moved_->get_access().size()
+                                    << std::endl);
     if (first_call_) {
       do_first_call();
       check_list(true);

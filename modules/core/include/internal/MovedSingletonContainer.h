@@ -32,8 +32,6 @@ class IMPCOREEXPORT MovedSingletonContainer
   double threshold_;
   base::Pointer<SingletonContainer> pc_;
   std::size_t pc_version_;
-  bool reset_all_;
-  bool reset_moved_;
   base::PointerMember<ScoreState> score_state_;
   virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
@@ -43,6 +41,7 @@ class IMPCOREEXPORT MovedSingletonContainer
   virtual void do_reset_all() = 0;
   virtual void do_reset_moved() = 0;
   virtual kernel::ParticleIndexes do_initialize() = 0;
+  virtual kernel::ModelObjectsTemp get_extra_inputs() const = 0;
 
  public:
   kernel::ModelObjectsTemp get_score_state_inputs() const;
@@ -78,6 +77,9 @@ class IMPCOREEXPORT XYZRMovedSingletonContainer
   virtual void do_reset_all();
   virtual void do_reset_moved();
   virtual kernel::ParticleIndexes do_initialize();
+  kernel::ModelObjectsTemp get_extra_inputs() const {
+    return kernel::ModelObjectsTemp();
+  }
 
  public:
   virtual void validate() const;
@@ -90,7 +92,8 @@ class IMPCOREEXPORT RigidMovedSingletonContainer
   base::Vector<std::pair<algebra::Sphere3D, algebra::Rotation3D> > backup_;
   kernel::ParticleIndexes bodies_;
   boost::unordered_set<int> moved_;
-  boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> rbs_members_;
+  boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes>
+      rbs_members_;
   virtual kernel::ParticleIndexes do_get_moved();
   virtual void do_reset_all();
   virtual void do_reset_moved();
@@ -101,30 +104,8 @@ class IMPCOREEXPORT RigidMovedSingletonContainer
                       std::pair<algebra::Sphere3D, algebra::Rotation3D> s,
                       double d) const;
 
-  double get_distance_estimate(unsigned int i) const {
-    core::XYZR xyz(get_model(), bodies_[i]);
-    if (!core::RigidBody::get_is_setup(get_model(), bodies_[i])) {
-      return (xyz.get_coordinates() - backup_[i].first.get_center())
-          .get_magnitude();
-    } else {
-      core::RigidBody rb(get_model(), bodies_[i]);
-      double dr = std::abs(xyz.get_radius() - backup_[i].first.get_radius());
-      double dx = (xyz.get_coordinates() - backup_[i].first.get_center())
-                      .get_magnitude();
-      algebra::Rotation3D nrot =
-          rb.get_reference_frame().get_transformation_to().get_rotation();
-      algebra::Rotation3D diffrot = backup_[i].second.get_inverse() * nrot;
-      double angle = algebra::get_axis_and_angle(diffrot).second;
-      double drot =
-          std::abs(angle * xyz.get_radius());  // over estimate, but easy
-      double ret = dr + dx + drot;
-      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-        check_estimate(core::RigidBody(get_model(), bodies_[i]), backup_[i],
-                       ret);
-      }
-      return ret;
-    }
-  }
+  double get_distance_estimate(unsigned int i) const;
+
   std::pair<algebra::Sphere3D, algebra::Rotation3D> get_data(
       kernel::ParticleIndex p) const {
     if (!core::RigidBody::get_is_setup(get_model(), p)) {
@@ -138,7 +119,7 @@ class IMPCOREEXPORT RigidMovedSingletonContainer
                                 .get_rotation());
     }
   }
-  kernel::ParticlesTemp get_input_particles() const;
+  kernel::ModelObjectsTemp get_extra_inputs() const;
 
  public:
   //! Track the changes with the specified keys.
