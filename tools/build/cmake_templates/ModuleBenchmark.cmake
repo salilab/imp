@@ -13,4 +13,4 @@ set(IMP_LINK_LIBRARIES IMP.%(name)s-lib
     %(modules)s IMP.benchmark-lib
     %(dependencies)s)
 
-imp_add_tests("IMP.%(name)s" ${PROJECT_BINARY_DIR}/benchmark/%(name)s IMP_%(name)s_BENCHMARKS examples ${pyfiles} ${cppfiles})
+imp_add_tests("IMP.%(name)s" ${PROJECT_BINARY_DIR}/benchmark/%(name)s IMP_%(name)s_BENCHMARKS benchmark ${pyfiles} ${cppfiles})
