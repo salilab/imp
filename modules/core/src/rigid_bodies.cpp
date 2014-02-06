@@ -990,4 +990,12 @@ void show_rigid_body_hierarchy(RigidBody rb, base::TextOutput out) {
   } while (!queue.empty());
 }
 
+kernel::ParticleIndex get_root_rigid_body(RigidMember m) {
+  core::RigidBody body = m.get_rigid_body();
+  while (RigidMember::get_is_setup(body)) {
+    body = RigidBodyMember(body).get_rigid_body();
+  }
+  return body.get_particle_index();
+}
+
 IMPCORE_END_NAMESPACE
