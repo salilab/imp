@@ -5,11 +5,12 @@ branches:
 compiler:
   - gcc
 env:
+# Make has issues with multiple targets and parallel builds
   - BUILD="IMP.base IMP.test" TEST=IMP.base PERCPP=base
   - BUILD="IMP.algebra IMP.kernel IMP.container" TEST=XXX PERCPP=algebra:kernel:container
   - BUILD=IMP.core TEST=XXX PERCPP=core
-  - BUILD=IMP.rmf TEST=XXX PERCPP=rmf
-  - BUILD=IMP.atom TEST=XXX PERCPP=atom
+  - BUILD="-j 2 IMP.rmf" TEST=XXX PERCPP=rmf
+  - BUILD="-j 2 IMP.atom" TEST=XXX PERCPP=atom
 git:
   submodules: false
 
@@ -22,5 +23,5 @@ script:
  - mkdir ../build
  - cd ../build
  - cmake ../imp -DIMP_PER_CPP_COMPILATION=$PERCPP
- - make -j 2 -k $BUILD
+ - make -k $BUILD
  - ctest -j 2 -R $TEST
