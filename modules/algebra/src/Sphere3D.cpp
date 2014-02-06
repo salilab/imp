@@ -87,7 +87,7 @@ Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
 
   IMP_LOG_TERSE("Searching for nearest neighbors." << std::endl);
   {
-    std::ofstream cpout("/tmp/balls.bild");
+    //std::ofstream cpout("/tmp/balls.bild");
     for (unsigned int i = 0; i < in.size(); ++i) {
       SphereIndex si(i);
       unsigned int nn = nns->get_nearest_neighbor(in[i].get_center());
@@ -104,9 +104,9 @@ Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
 
       IMP_FOREACH(int i, support) { supports[si].insert(SPIndex(i)); }
       radii[si] = r + .5 / resolution;
-      cpout << ".sphere " << in[i].get_center()[0] << " "
+      /*cpout << ".sphere " << in[i].get_center()[0] << " "
             << in[i].get_center()[1] << " " << in[i].get_center()[2] << " " << r
-            << std::endl;
+            << std::endl;*/
     }
   }
 
