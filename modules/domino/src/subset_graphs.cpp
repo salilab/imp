@@ -21,6 +21,8 @@
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <boost/graph/connected_components.hpp>
 #include <boost/graph/graphviz.hpp>
+#include <boost/unordered_set.hpp>
+#include <boost/unordered_map.hpp>
 
 // If we're using boost autolinking, have it pull in the boost_graph DSO
 // (needed for graphviz support)
@@ -617,7 +619,7 @@ typedef boost::graph_traits<StableSubsetGraph>::edge_descriptor SSGED;
 typedef boost::graph_traits<StableSubsetGraph>::vertex_descriptor SSGVD;
 base::Vector<SSGED> get_independent_edge_set(const StableSubsetGraph &sg) {
   base::Vector<SSGED> ret;
-  base::set<SSGVD> seen;
+  boost::unordered_set<SSGVD> seen;
   typedef boost::graph_traits<StableSubsetGraph>::edge_iterator EIt;
   std::pair<EIt, EIt> ep = boost::edges(sg);
   base::Vector<SSGED> edges(ep.first, ep.second);
@@ -665,7 +667,7 @@ MergeTree get_balanced_merge_tree(const SubsetGraph &jti) {
       boost::get(boost::vertex_name, junction_tree);
   boost::property_map<MergeTree, boost::vertex_name_t>::type mt_sets =
       boost::get(boost::vertex_name, ret);
-  base::map<SSGVD, int> vertex_map;
+  boost::unordered_map<SSGVD, int> vertex_map;
   for (unsigned int i = 0; i < boost::num_vertices(junction_tree); ++i) {
     SSGVD vd = boost::vertex(i, junction_tree);
     mt_sets[boost::add_vertex(ret)] = jt_sets[vd];
@@ -704,9 +706,9 @@ MergeTree get_balanced_merge_tree(const SubsetGraph &jti) {
 
 namespace {
 struct NameWriter {
-  const base::map<kernel::Particle *, int> &index_;
+  const boost::unordered_map<kernel::Particle *, int> &index_;
   MergeTreeConstVertexName vm_;
-  NameWriter(const base::map<kernel::Particle *, int> &index,
+  NameWriter(const boost::unordered_map<kernel::Particle *, int> &index,
              const MergeTreeConstVertexName &vm)
       : index_(index), vm_(vm) {}
   void operator()(std::ostream &out, int v) const {
@@ -724,7 +726,7 @@ struct NameWriter {
 
 void write_merge_tree(const MergeTree &tree, const kernel::ParticlesTemp &ps,
                       std::ostream &out) {
-  base::map<kernel::Particle *, int> index;
+  boost::unordered_map<kernel::Particle *, int> index;
   for (unsigned int i = 0; i < ps.size(); ++i) {
     index[ps[i]] = i;
   }

@@ -25,7 +25,7 @@ env:
   - TEST=XXX BUILD="-j 2 IMP.em" PERCPP=em
   #- TEST=XXX BUILD="-j 2 IMP.em2d" PERCPP=em2d
   - TEST=XXX BUILD="-j 2 IMP.example" PERCPP=example
-  - TEST=XXX BUILD="-j 2 IMP.gsl" PERCPP=gsl
+  #- TEST=XXX BUILD="-j 2 IMP.gsl" PERCPP=gsl
   - TEST=XXX BUILD="-j 2 IMP.isd" PERCPP=isd
   - TEST=XXX BUILD="-j 2 IMP.kernel" PERCPP=kernel
   - TEST=XXX BUILD="-j 2 IMP.kinematics" PERCPP=kinematics

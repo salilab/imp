@@ -119,7 +119,7 @@
   typedef boost::graph_traits<Name> Name##Traits;                            \
   typedef Name##Traits::vertex_descriptor Name##Vertex;                      \
   typedef Name##Traits::edge_descriptor Name##Edge;                          \
-  typedef base::map<VertexData, Name##Vertex> Name##VertexIndex;             \
+  typedef boost::unordered_map<VertexData, Name##Vertex> Name##VertexIndex;  \
   inline Name##VertexIndex get_vertex_index(const Name& g) {                 \
     return IMP::base::internal::get_graph_vertex_index<                      \
         Name, VertexData, Name##Vertex, Name##Traits>(g);                    \
