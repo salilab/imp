@@ -39,6 +39,7 @@
 #include <IMP/core/TableRefiner.h>
 #include <IMP/generic.h>
 #include <algorithm>
+#include <boost/unordered_set.hpp>
 IMPATOM_BEGIN_NAMESPACE
 
 Selection::Selection() : resolution_(0) { m_ = nullptr; }
@@ -433,7 +434,7 @@ Restraint *create_distance_restraint(const Selection &n0, const Selection &n1,
   kernel::ParticlesTemp p0 = n0.get_selected_particles();
   kernel::ParticlesTemp p1 = n1.get_selected_particles();
   IMP_IF_CHECK(USAGE) {
-    IMP::base::set<kernel::Particle *> all(p0.begin(), p0.end());
+    boost::unordered_set<kernel::Particle *> all(p0.begin(), p0.end());
     all.insert(p1.begin(), p1.end());
     IMP_USAGE_CHECK(all.size() == p0.size() + p1.size(),
                     "The two selections cannot overlap.");
@@ -477,7 +478,7 @@ Restraint *create_distance_restraint(const Selection &n0, const Selection &n1,
 Restraint *create_connectivity_restraint(const Selections &s, double x0,
                                          double k, std::string name) {
   IMP_IF_CHECK(USAGE) {
-    base::set<kernel::ParticleIndex> used;
+    boost::unordered_set<kernel::ParticleIndex> used;
     IMP_FOREACH(const Selection & sel, s) {
       kernel::ParticleIndexes cur = sel.get_selected_particle_indexes();
       int old = used.size();
