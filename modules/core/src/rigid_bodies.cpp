@@ -798,15 +798,7 @@ RigidMember::~RigidMember() {}
 NonRigidMember::~NonRigidMember() {}
 
 void RigidBody::show(std::ostream &out) const {
-  out << "Rigid body " << get_reference_frame() << "("
-      << get_particle()->get_derivative(
-             internal::rigid_body_data().quaternion_[0]) << " "
-      << get_particle()->get_derivative(
-             internal::rigid_body_data().quaternion_[1]) << " "
-      << get_particle()->get_derivative(
-             internal::rigid_body_data().quaternion_[2]) << " "
-      << get_particle()->get_derivative(
-             internal::rigid_body_data().quaternion_[3]) << ")";
+  out << "Rigid body " << get_reference_frame();
 }
 
 void RigidBodyMember::show(std::ostream &out) const {
