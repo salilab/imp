@@ -14,6 +14,7 @@
 #include <boost/graph/incremental_components.hpp>
 #include <boost/graph/graph_utility.hpp>
 #include <boost/pending/disjoint_sets.hpp>
+#include <boost/unordered_map.hpp>
 #if BOOST_VERSION > 103900
 namespace boost {
 // work around bug in bc_clustering
@@ -77,13 +78,13 @@ PartitionalClustering *get_centrality_clustering(CentralityGraph &g,
   DS ds(rank, parent);
   boost::initialize_incremental_components(g, ds);
   boost::incremental_components(g, ds);
-  IMP::base::map<int, Ints> sets;
+  boost::unordered_map<int, Ints> sets;
   for (unsigned int i = 0; i < boost::num_vertices(g); ++i) {
     int s = ds.find_set(i);
     sets[s].push_back(i);
   }
-  IMP::base::Vector<Ints> clusters;
-  for (IMP::base::map<int, Ints>::const_iterator it = sets.begin();
+  base::Vector<Ints> clusters;
+  for (boost::unordered_map<int, Ints>::const_iterator it = sets.begin();
        it != sets.end(); ++it) {
     clusters.push_back(it->second);
   }
