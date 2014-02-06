@@ -6,44 +6,41 @@ compiler:
   - gcc
 env:
 # Make has issues with multiple targets and parallel builds
-  - BUILD="IMP.base IMP.test" TEST=IMP.base PERCPP=base
+  - BUILD="IMP.base IMP.test IMP.benchmark" TEST=IMP.base PERCPP=base:benchmark
   - BUILD="IMP.algebra -j 2" TEST=XXX PERCPP=algebra
   - BUILD="IMP.kernel IMP.container" TEST=XXX PERCPP=kernel:container
-  - BUILD="-j 2 IMP.core" TEST=XXX PERCPP=core
+  - BUILD="-j 2 IMP.core" TEST=XXX PERCPP=core:score_functor
   - BUILD="-j 2 IMP.rmf" TEST=XXX PERCPP=rmf
-  - BUILD="-j 2 IMP.atom" TEST=XXX PERCPP=atom
-  - TEST=XXX BUILD="-j 2 IMP.algebra" PERCPP=algebra
+  #- TEST=XXX BUILD="-j 2 IMP.algebra" PERCPP=algebra
   - TEST=XXX BUILD="-j 2 IMP.atom" PERCPP=atom
-  - TEST=XXX BUILD="-j 2 IMP.base" PERCPP=base
-  - TEST=XXX BUILD="-j 2 IMP.benchmark" PERCPP=benchmark
+  #- TEST=XXX BUILD="-j 2 IMP.base" PERCPP=base
   #- TEST=XXX BUILD="-j 2 IMP.cgal" PERCPP=cgal
   #- TEST=XXX BUILD="-j 2 IMP.cnmultifit" PERCPP=cnmultifit
-  - TEST=XXX BUILD="-j 2 IMP.container" PERCPP=container
-  - TEST=XXX BUILD="-j 2 IMP.core" PERCPP=core
   - TEST=XXX BUILD="-j 2 IMP.display" PERCPP=display
   - TEST=XXX BUILD="-j 2 IMP.domino" PERCPP=domino
   - TEST=XXX BUILD="-j 2 IMP.em" PERCPP=em
   #- TEST=XXX BUILD="-j 2 IMP.em2d" PERCPP=em2d
   - TEST=XXX BUILD="-j 2 IMP.example" PERCPP=example
   #- TEST=XXX BUILD="-j 2 IMP.gsl" PERCPP=gsl
-  - TEST=XXX BUILD="-j 2 IMP.isd" PERCPP=isd
-  - TEST=XXX BUILD="-j 2 IMP.kernel" PERCPP=kernel
+  # very slow
+  #- TEST=XXX BUILD="-j 2 IMP.isd" PERCPP=isd
   - TEST=XXX BUILD="-j 2 IMP.kinematics" PERCPP=kinematics
   - TEST=XXX BUILD="-j 2 IMP.kmeans" PERCPP=kmeans
   - TEST=XXX BUILD="-j 2 IMP.misc" PERCPP=misc
   #- TEST=XXX BUILD="-j 2 IMP.modeller" PERCPP=modeller
   #- TEST=XXX BUILD="-j 2 IMP.mpi" PERCPP=mpi
   #- TEST=XXX BUILD="-j 2 IMP.multifit" PERCPP=multifit
-  - TEST=XXX BUILD="-j 2 IMP.parallel" PERCPP=parallel
-  - TEST=XXX BUILD="-j 2 IMP.pepdock" PERCPP=pepdock
-  - TEST=XXX BUILD="-j 2 IMP.rmf" PERCPP=rmf
+  #- TEST=XXX BUILD="-j 2 IMP.parallel" PERCPP=parallel
+  # no C++, lots of dependencies
+  #- TEST=XXX BUILD="-j 2 IMP.pepdock" PERCPP=pepdock
   - TEST=XXX BUILD="-j 2 IMP.rotamer" PERCPP=rotamer
   - TEST=XXX BUILD="-j 2 IMP.saxs" PERCPP=saxs
-  - TEST=XXX BUILD="-j 2 IMP.score_functor" PERCPP=score_functor
-  - TEST=XXX BUILD="-j 2 IMP.scratch" PERCPP=scratch
+  #- TEST=XXX BUILD="-j 2 IMP.score_functor" PERCPP=score_functor
+  # boring
+  # - TEST=XXX BUILD="-j 2 IMP.scratch" PERCPP=scratch
   - TEST=XXX BUILD="-j 2 IMP.statistics" PERCPP=statistics
   - TEST=XXX BUILD="-j 2 IMP.symmetry" PERCPP=symmetry
-  - TEST=XXX BUILD="-j 2 IMP.test" PERCPP=test
+  #- TEST=XXX BUILD="-j 2 IMP.test" PERCPP=test
 
 
 git:
