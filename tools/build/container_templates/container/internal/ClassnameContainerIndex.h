@@ -15,7 +15,7 @@
 #include <IMP/kernel/internal/container_helpers.h>
 #include <IMP/ScoreState.h>
 #include <IMP/score_state_macros.h>
-#include <IMP/base/set.h>
+#include <boost/unordered_set.hpp>
 
 IMPCONTAINER_BEGIN_INTERNAL_NAMESPACE
 
@@ -24,7 +24,7 @@ IMPCONTAINER_BEGIN_INTERNAL_NAMESPACE
 class IMPCONTAINEREXPORT ClassnameContainerIndex : public ScoreState {
   base::Pointer<ClassnameContainer> container_;
   std::size_t container_version_;
-  IMP::base::set<INDEXTYPE> contents_;
+  boost::unordered_set<INDEXTYPE> contents_;
   bool handle_permutations_;
 
   void build();
