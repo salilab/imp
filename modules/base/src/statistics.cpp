@@ -6,7 +6,7 @@
  */
 
 #include "IMP/base/statistics.h"
-#include "IMP/base/internal/static.h"
+#include "internal/static.h"
 #include <boost/format.hpp>
 
 IMPBASE_BEGIN_NAMESPACE

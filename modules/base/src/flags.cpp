@@ -13,6 +13,7 @@
 #include <IMP/base/internal/directories.h>
 #include <IMP/base/internal/log.h>
 #include <IMP/base/random.h>
+#include "internal/static.h"
 #include <boost/program_options/parsers.hpp>
 
 #if IMP_BASE_HAS_GPERFTOOLS
