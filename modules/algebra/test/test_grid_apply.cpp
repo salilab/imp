@@ -6,7 +6,7 @@
  */
 #include <IMP/algebra/standard_grids.h>
 #include <IMP/algebra/vector_generators.h>
-#include <IMP/base/set.h>
+#include <boost/unordered_set.hpp>
 #include <IMP/test/test_macros.h>
 #include <algorithm>
 
@@ -26,7 +26,7 @@ struct Accum {
 };
 
 struct Count {
-  IMP::base::set<Grid::Index> seen_;
+  boost::unordered_set<Grid::Index> seen_;
   template <class G>
   void operator()(const G&, const typename G::Index& index,
                   const typename G::Vector&) {
