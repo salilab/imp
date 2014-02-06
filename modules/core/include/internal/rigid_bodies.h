@@ -12,6 +12,12 @@
 #include "../XYZ.h"
 #include "../Hierarchy.h"
 #include <IMP/algebra/Sphere3D.h>
+namespace IMP {
+namespace display {
+class Geometry;
+IMP_OBJECTS(Geometry, Geometries);
+}
+}
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
@@ -201,6 +207,9 @@ inline void remove_required_attributes_for_body_member(
     m->remove_attribute(rigid_body_data().lquaternion_[i], p);
   }
 }
+
+IMPCOREEXPORT display::Geometries get_rigid_body_derivative_geometries(
+    kernel::Model *m, kernel::ParticleIndex pi);
 
 IMPCORE_END_INTERNAL_NAMESPACE
 
