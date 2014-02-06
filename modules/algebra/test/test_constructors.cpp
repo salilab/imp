@@ -6,7 +6,7 @@ template <class T>
 int check(const T &t) {
   int ret = 0;
   for (unsigned int i = 0; i < t.get_dimension(); ++i) {
-    assert(t[i] == i);
+    assert(static_cast<unsigned int>(t[i]) == i);
     ret += t[i];
   }
   return ret;
