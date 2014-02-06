@@ -547,8 +547,8 @@ Hierarchy create_simplified_from_volume(Hierarchy h, double resolution) {
   IMP_FUNCTION_LOG;
   Model *m = h.get_model();
   IMP::algebra::Sphere3Ds in_spheres;
-  IMP_FOREACH(IMP::atom::Hierarchy h, IMP::atom::get_leaves(h)) {
-    in_spheres.push_back(IMP::core::XYZR(h).get_sphere());
+  IMP_FOREACH(IMP::atom::Hierarchy child, IMP::atom::get_leaves(h)) {
+    in_spheres.push_back(IMP::core::XYZR(child).get_sphere());
   }
 
   IMP::algebra::Sphere3Ds out_spheres =
