@@ -11,15 +11,17 @@
 
 #include <IMP/base/base_config.h>
 #include "../check_macros.h"
+#include "../warning_macros.h"
 #include "../hash.h"
 #include "../hash_macros.h"
 #include "../nullptr.h"
 
-#include <boost/static_assert.hpp>
+#if defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)
 #include <boost/type_traits.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <boost/mpl/and.hpp>
 #include <boost/mpl/not.hpp>
+#endif
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
 template <class TT>

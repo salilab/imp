@@ -13,8 +13,6 @@
 #include <IMP/base/base_config.h>
 #include "exception.h"
 #include "utility_macros.h"
-#include <boost/static_assert.hpp>
-#include <boost/type_traits.hpp>
 #include "NonCopyable.h"
 #include "ref_counted_macros.h"
 #include "enums.h"

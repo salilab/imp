@@ -12,7 +12,7 @@
 #include <boost/graph/adjacency_list.hpp>
 #include "file.h"
 #include "internal/graph_utility.h"
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <boost/version.hpp>
 
 #if defined(IMP_DOXYGEN)
@@ -63,7 +63,7 @@
     BOOST_VERSION == 104800
 #define IMP_GRAPH_MAP_TYPE std::map
 #else
-#define IMP_GRAPH_MAP_TYPE base::map
+#define IMP_GRAPH_MAP_TYPE boost::unordered_map
 #endif
 
 #define IMP_GRAPH(Name, directionality, VertexData, EdgeData, ShowVertex)     \

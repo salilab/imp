@@ -12,7 +12,6 @@
 #include <IMP/base/internal/static.h>
 #include <IMP/base/internal/directories.h>
 #include <IMP/base/internal/log.h>
-#include <IMP/base/internal/static.h>
 #include <IMP/base/random.h>
 #include <boost/program_options/parsers.hpp>
 

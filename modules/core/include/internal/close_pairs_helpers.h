@@ -17,6 +17,7 @@
 #include "../XYZR.h"
 #include <IMP/base/warning_macros.h>
 #include <IMP/SingletonContainer.h>
+#include <boost/unordered_map.hpp>
 #include <algorithm>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
@@ -129,7 +130,7 @@ struct InList {
 inline void reset_moved(
     kernel::Model *m, kernel::ParticleIndexes &xyzrs_,
     kernel::ParticleIndexes &rbs_,
-    IMP::base::map<kernel::ParticleIndex,
+    boost::unordered_map<kernel::ParticleIndex,
                    kernel::ParticleIndexes> & /*constituents_*/,
     algebra::Sphere3Ds &rbs_backup_sphere_,
     algebra::Rotation3Ds &rbs_backup_rot_, algebra::Sphere3Ds &xyzrs_backup_) {
@@ -151,7 +152,7 @@ inline void reset_moved(
 inline void initialize_particles(
     SingletonContainer *sc, ObjectKey key, kernel::ParticleIndexes &xyzrs_,
     kernel::ParticleIndexes &rbs_,
-    IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &
+    boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &
         constituents_,
     algebra::Sphere3Ds &rbs_backup_sphere_,
     algebra::Rotation3Ds &rbs_backup_rot_, algebra::Sphere3Ds &xyzrs_backup_,
@@ -211,7 +212,7 @@ inline void initialize_particles(
   rbs_backup_sphere_.clear();
   rbs_backup_rot_.clear();
   IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
-    for (IMP::base::map<kernel::ParticleIndex,
+    for (boost::unordered_map<kernel::ParticleIndex,
                         kernel::ParticleIndexes>::const_iterator it =
              constituents_.begin();
          it != constituents_.end(); ++it) {
@@ -231,7 +232,7 @@ inline void initialize_particles(
 inline bool get_if_moved(
     kernel::Model *m, double slack_, const kernel::ParticleIndexes &xyzrs_,
     const kernel::ParticleIndexes &rbs_,
-    const IMP::base::map<kernel::ParticleIndex,
+    const boost::unordered_map<kernel::ParticleIndex,
                          kernel::ParticleIndexes> & /*constituents_*/,
     const algebra::Sphere3Ds &rbs_backup_sphere_,
     const algebra::Rotation3Ds &rbs_backup_rot_,
@@ -303,7 +304,7 @@ inline void fill_list(kernel::Model *m, const PairPredicates &filters,
                       ObjectKey key_, double slack_,
                       kernel::ParticleIndexes &xyzrs_,
                       kernel::ParticleIndexes &rbs_,
-                      IMP::base::map<kernel::ParticleIndex,
+                      boost::unordered_map<kernel::ParticleIndex,
                                      kernel::ParticleIndexes> &constituents_,
                       kernel::ParticleIndexPairs &cur_list_) {
   IMP_INTERNAL_CHECK(slack_ >= 0, "Slack must not be negative");
@@ -336,7 +337,7 @@ inline void fill_list(kernel::Model *m, const PairPredicates &filters,
                       ObjectKey key_, double slack_,
                       kernel::ParticleIndexes xyzrs_[],
                       kernel::ParticleIndexes rbs_[],
-                      IMP::base::map<kernel::ParticleIndex,
+                      boost::unordered_map<kernel::ParticleIndex,
                                      kernel::ParticleIndexes> &constituents_,
                       kernel::ParticleIndexPairs &cur_list_) {
   IMP_INTERNAL_CHECK(slack_ >= 0, "Slack must not be negative");

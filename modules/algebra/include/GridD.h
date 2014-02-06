@@ -17,7 +17,6 @@
 #include "BoundingBoxD.h"
 #include "GeometricPrimitiveD.h"
 #include <boost/iterator/transform_iterator.hpp>
-#include <IMP/base/map.h>
 #include <IMP/base/Vector.h>
 #include <IMP/base/showable_macros.h>
 #include <boost/range/iterator_range.hpp>

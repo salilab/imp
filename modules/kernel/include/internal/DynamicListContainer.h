@@ -15,6 +15,7 @@
 #include "ListLikeContainer.h"
 #include <IMP/kernel/container_base.h>
 #include <IMP/base/Pointer.h>
+#include <boost/unordered_set.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
@@ -26,7 +27,7 @@ class DynamicListContainer : public ListLikeContainer<Base> {
   bool check_list(const ParticleIndexes &cp) const {
     ParticleIndexes app = scope_->get_all_possible_indexes();
 
-    base::set<ParticleIndex> all(app.begin(), app.end());
+    boost::unordered_set<ParticleIndex> all(app.begin(), app.end());
     for (unsigned int i = 0; i < cp.size(); ++i) {
       IMP_USAGE_CHECK(
           all.find(cp[i]) != all.end(),

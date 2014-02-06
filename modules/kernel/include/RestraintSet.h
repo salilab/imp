@@ -12,7 +12,6 @@
 #include <IMP/kernel/kernel_config.h>
 #include "Restraint.h"
 #include "container_macros.h"
-#include <IMP/base/map.h>
 #include <string>
 
 IMPKERNEL_BEGIN_NAMESPACE

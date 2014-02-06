@@ -16,7 +16,6 @@
 #include "Vector3D.h"
 #include "BoundingBoxD.h"
 #include <boost/iterator/transform_iterator.hpp>
-#include <IMP/base/map.h>
 #include <IMP/base/Vector.h>
 
 #include <limits>

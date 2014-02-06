@@ -19,6 +19,7 @@
 #include <IMP/Refiner.h>
 #include "RigidClosePairsFinder.h"
 #include <IMP/core/SphereDistancePairScore.h>
+#include <boost/unordered_map.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -46,7 +47,7 @@ class IMPCOREEXPORT ExcludedVolumeRestraint : public kernel::Restraint {
   // moved stuff
   mutable kernel::ParticleIndexes rbs_;
   mutable kernel::ParticleIndexes xyzrs_;
-  mutable IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes>
+  mutable boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes>
       constituents_;
   double slack_;
   mutable algebra::Sphere3Ds rbs_backup_sphere_;

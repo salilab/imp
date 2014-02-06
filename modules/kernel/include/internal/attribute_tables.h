@@ -17,6 +17,7 @@
 #include <IMP/base/exception.h>
 #include <IMP/base/check_macros.h>
 #include <IMP/base/log.h>
+#include <IMP/base/set_map_macros.h>
 #include <IMP/algebra/Sphere3D.h>
 
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
@@ -59,7 +60,7 @@ class BasicAttributeTable {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   Mask *read_mask_, *write_mask_, *add_remove_mask_;
 #endif
-  base::set<Key> caches_;
+  IMP_BASE_SMALL_UNORDERED_SET<Key> caches_;
 
   void do_add_attribute(Key k, ParticleIndex particle,
                         typename Traits::PassValue value) {
@@ -110,8 +111,8 @@ class BasicAttributeTable {
   }
   void clear_caches(ParticleIndex particle) {
     IMP_OMP_PRAGMA(critical(imp_cache))
-    for (typename base::set<Key>::const_iterator it = caches_.begin();
-         it != caches_.end(); ++it) {
+    for (typename IMP_BASE_SMALL_UNORDERED_SET<Key>::const_iterator it
+          = caches_.begin(); it != caches_.end(); ++it) {
       if (data_.size() > it->get_index() &&
           data_[it->get_index()].size() > get_as_unsigned_int(particle)) {
         data_[it->get_index()][particle] = Traits::get_invalid();

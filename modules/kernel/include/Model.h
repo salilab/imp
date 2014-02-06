@@ -24,8 +24,8 @@
 #include "internal/attribute_tables.h"
 #include <IMP/base/Object.h>
 #include <IMP/base/Pointer.h>
-#include <IMP/base/map.h>
-#include <IMP/base/set.h>
+#include <boost/unordered_map.hpp>
+#include <boost/unordered_set.hpp>
 #include <IMP/base/tuple_macros.h>
 #include <boost/iterator/transform_iterator.hpp>
 #include <boost/iterator/filter_iterator.hpp>
@@ -91,13 +91,13 @@ class IMPKERNELEXPORT Model : public base::Object
   // we don't want any liveness checks
   IMP_NAMED_TUPLE_5(NodeInfo, NodeInfos, Edges, inputs, Edges, input_outputs,
                     Edges, outputs, Edges, readers, Edges, writers, );
-  typedef base::map<const ModelObject *, NodeInfo> DependencyGraph;
+  typedef boost::unordered_map<const ModelObject *, NodeInfo> DependencyGraph;
   DependencyGraph dependency_graph_;
-  base::set<const ModelObject *> no_dependencies_;
-  base::map<const ModelObject *, ScoreStatesTemp> required_score_states_;
+  boost::unordered_set<const ModelObject *> no_dependencies_;
+  boost::unordered_map<const ModelObject *, ScoreStatesTemp> required_score_states_;
 
   // basic representation
-  base::map<FloatKey, FloatRange> ranges_;
+  boost::unordered_map<FloatKey, FloatRange> ranges_;
 
   ParticleIndexes free_particles_;
   base::IndexVector<ParticleIndexTag, base::Pointer<Particle> > particle_index_;

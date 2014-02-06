@@ -17,6 +17,8 @@
 #include <IMP/kernel/internal/ListLikeContainer.h>
 #include <IMP/algebra/Sphere3D.h>
 #include <IMP/base/Pointer.h>
+#include <boost/unordered_set.hpp>
+#include <boost/unordered_map.hpp>
 #include "../XYZR.h"
 #include "../rigid_bodies.h"
 #include <IMP/kernel/internal/container_helpers.h>
@@ -71,7 +73,7 @@ class IMPCOREEXPORT MovedSingletonContainer
 class IMPCOREEXPORT XYZRMovedSingletonContainer
     : public MovedSingletonContainer {
   base::Vector<algebra::Sphere3D> backup_;
-  base::set<int> moved_;
+  boost::unordered_set<int> moved_;
   virtual kernel::ParticleIndexes do_get_moved();
   virtual void do_reset_all();
   virtual void do_reset_moved();
@@ -87,8 +89,8 @@ class IMPCOREEXPORT RigidMovedSingletonContainer
     : public MovedSingletonContainer {
   base::Vector<std::pair<algebra::Sphere3D, algebra::Rotation3D> > backup_;
   kernel::ParticleIndexes bodies_;
-  base::set<int> moved_;
-  IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> rbs_members_;
+  boost::unordered_set<int> moved_;
+  boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> rbs_members_;
   virtual kernel::ParticleIndexes do_get_moved();
   virtual void do_reset_all();
   virtual void do_reset_moved();

@@ -12,8 +12,6 @@
 #include <IMP/base/base_config.h>
 #include "exception.h"
 #include "compiler_macros.h"
-#include <boost/type_traits/is_base_of.hpp>
-#include <boost/static_assert.hpp>
 #include <iostream>
 #include <cmath>
 
@@ -55,12 +53,6 @@
     using namespace IMP::base;                                               \
     std::ostringstream imp_throw_oss;                                        \
     imp_throw_oss << message << std::endl;                                   \
-    BOOST_STATIC_ASSERT(                                                     \
-        (!(boost::is_base_of<IMP::base::UsageException,                      \
-                             exception_name>::value) &&                      \
-         !(boost::is_base_of<IMP::base::InternalException,                   \
-                             exception_name>::value) &&                      \
-         (boost::is_base_of<IMP::base::Exception, exception_name>::value))); \
     throw exception_name(imp_throw_oss.str().c_str());                       \
   } while (true)
 

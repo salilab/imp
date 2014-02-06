@@ -19,6 +19,7 @@
 #include <IMP/kernel/SingletonContainer.h>
 #include <IMP/kernel/internal/ContainerScoreState.h>
 #include <IMP/kernel/internal/ListLikeContainer.h>
+#include <boost/unordered_map.hpp>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
@@ -42,7 +43,7 @@ class IMPCOREEXPORT CoreCloseBipartitePairContainer
   // moved stuff
   kernel::ParticleIndexes rbs_[2];
   kernel::ParticleIndexes xyzrs_[2];
-  IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> constituents_;
+  boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> constituents_;
   double slack_, distance_;
   algebra::Sphere3Ds rbs_backup_sphere_[2];
   algebra::Rotation3Ds rbs_backup_rot_[2];

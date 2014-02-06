@@ -6,7 +6,7 @@
  */
 
 #include "IMP/base/random.h"
-#include <IMP/base/internal/static.h>
+#include "internal/static.h"
 
 IMPBASE_BEGIN_NAMESPACE
 boost::uint64_t get_random_seed() {

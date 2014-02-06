@@ -8,9 +8,8 @@
 #include "IMP/base/log.h"
 #include "IMP/base/exception.h"
 #include "IMP/base/file.h"
-#include "IMP/base/internal/static.h"
 #include "IMP/base/Object.h"
-#include "IMP/base/internal/static.h"
+#include "internal/static.h"
 #include "IMP/base/thread_macros.h"
 #ifdef _OPENMP
 #include <omp.h>

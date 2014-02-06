@@ -10,14 +10,14 @@
 
 #include <IMP/kernel/kernel_config.h>
 #include <IMP/base/exception.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <IMP/base/Vector.h>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 /** \internal The data concerning keys.
   */
 struct IMPKERNELEXPORT KeyData {
-  typedef IMP::base::map<std::string, int> Map;
+  typedef boost::unordered_map<std::string, int> Map;
   typedef IMP::base::Vector<std::string> RMap;
 
   void show(std::ostream &out = std::cout) const;
