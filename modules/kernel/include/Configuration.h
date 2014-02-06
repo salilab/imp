@@ -13,7 +13,6 @@
 #include <IMP/base/Object.h>
 #include <IMP/base/Pointer.h>
 #include "Model.h"
-#include <IMP/base/map.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
