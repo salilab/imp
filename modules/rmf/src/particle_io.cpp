@@ -11,6 +11,7 @@
 #include <RMF/NodeHandle.h>
 #include <IMP/rmf/simple_links.h>
 #include <IMP/rmf/link_macros.h>
+#include <boost/unordered_map.hpp>
 
 IMPRMF_BEGIN_NAMESPACE
 
@@ -20,7 +21,7 @@ class ParticleLoadLink : public SimpleLoadLink<kernel::Particle> {
 
   template <class IK, class RK>
   void load_keys(RMF::FileConstHandle fh, RMF::Category cat,
-                 base::map<RK, IK> &map) {
+                 boost::unordered_map<RK, IK> &map) {
     typedef typename RK::Tag Traits;
     std::vector<RK> ks = fh.get_keys<Traits>(cat);
     for (unsigned int i = 0; i < ks.size(); ++i) {
@@ -28,7 +29,7 @@ class ParticleLoadLink : public SimpleLoadLink<kernel::Particle> {
       map[ks[i]] = ik;
       IMP_LOG_TERSE("Found " << ks[i] << " with " << ik << std::endl);
     }
-    for (typename base::map<RK, IK>::const_iterator it = map.begin();
+    for (typename boost::unordered_map<RK, IK>::const_iterator it = map.begin();
          it != map.end(); ++it) {
       IMP_LOG_TERSE("Added key assoc " << fh.get_name(it->first) << " with "
                                        << it->second << std::endl);
@@ -37,11 +38,11 @@ class ParticleLoadLink : public SimpleLoadLink<kernel::Particle> {
   template <class IK, class RK>
   void load_one(kernel::Particle *o, RMF::NodeConstHandle nh,
                 RMF::Category cat) {
-    base::map<RK, IK> map;
+    boost::unordered_map<RK, IK> map;
     load_keys(nh.get_file(), cat, map);
     /*RMF::show_hierarchy_with_values(nh,
       frame);*/
-    for (typename base::map<RK, IK>::const_iterator it = map.begin();
+    for (typename boost::unordered_map<RK, IK>::const_iterator it = map.begin();
          it != map.end(); ++it) {
       if (nh.get_has_value(it->first)) {
         IK ik = it->second;
@@ -80,12 +81,12 @@ class ParticleLoadLink : public SimpleLoadLink<kernel::Particle> {
 class ParticleSaveLink : public SimpleSaveLink<kernel::Particle> {
   typedef SimpleSaveLink<kernel::Particle> P;
   RMF::Category cat_;
-  base::map<FloatKey, RMF::FloatKey> float_;
-  base::map<IntKey, RMF::IntKey> int_;
-  base::map<StringKey, RMF::StringKey> string_;
+  boost::unordered_map<FloatKey, RMF::FloatKey> float_;
+  boost::unordered_map<IntKey, RMF::IntKey> int_;
+  boost::unordered_map<StringKey, RMF::StringKey> string_;
   template <class IK, class RK>
   void save_one(kernel::Particle *o, const base::Vector<IK> &ks,
-                RMF::NodeHandle nh, base::map<IK, RK> &map) {
+                RMF::NodeHandle nh, boost::unordered_map<IK, RK> &map) {
     for (unsigned int i = 0; i < ks.size(); ++i) {
       if (map.find(ks[i]) == map.end()) {
         map[ks[i]] =

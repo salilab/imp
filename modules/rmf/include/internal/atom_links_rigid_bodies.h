@@ -14,6 +14,8 @@
 #include <RMF/FileHandle.h>
 #include <RMF/decorators.h>
 #include <IMP/core/rigid_bodies.h>
+#include <boost/unordered_map.hpp>
+
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 
 class IMPRMFEXPORT HierarchyLoadRigidBodies {
@@ -37,7 +39,7 @@ class IMPRMFEXPORT HierarchyLoadRigidBodies {
     RB() : initialized(true) {}
   };
   RMF::IntKey rb_index_key_;
-  base::map<int, RB> rigid_body_compositions_;
+  boost::unordered_map<int, RB> rigid_body_compositions_;
   boost::unordered_map<RMF::NodeID, kernel::ParticleIndex> external_rbs_;
   void fix_internal_coordinates(core::RigidBody rb,
                                 algebra::ReferenceFrame3D rf,

@@ -16,6 +16,8 @@
 #include <IMP/base/ConstVector.h>
 #include <IMP/base/WeakPointer.h>
 #include <boost/shared_array.hpp>
+#include <boost/unordered_map.hpp>
+#include <boost/unordered_set.hpp>
 
 IMPRMF_BEGIN_NAMESPACE
 namespace {
@@ -101,7 +103,7 @@ RMF::Ints get_node_ids(RMF::FileConstHandle fh, const C &ps) {
 
 struct RestraintSaveData {
   // must not be a handle so as not to keep things alive
-  base::map<Subset, RMF::NodeID> map_;
+  boost::unordered_map<Subset, RMF::NodeID> map_;
 };
 
 RMF::NodeHandle get_node(Subset s, RestraintSaveData &d,
@@ -109,7 +111,7 @@ RMF::NodeHandle get_node(Subset s, RestraintSaveData &d,
                          RMF::NodeHandle parent) {
   if (d.map_.find(s) == d.map_.end()) {
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-      for (base::map<Subset, RMF::NodeID>::const_iterator it = d.map_.begin();
+      for (boost::unordered_map<Subset, RMF::NodeID>::const_iterator it = d.map_.begin();
            it != d.map_.end(); ++it) {
         IMP_INTERNAL_CHECK(it->first != s, "Found!!!!");
       }
@@ -208,11 +210,11 @@ class RestraintSaveLink : public SimpleSaveLink<kernel::Restraint> {
   RMF::decorator::RepresentationFactory rf_;
   RMF::Category imp_cat_;
   RMF::FloatKey weight_key_;
-  base::map<kernel::Restraint *, RestraintSaveData> data_;
+  boost::unordered_map<kernel::Restraint *, RestraintSaveData> data_;
   kernel::Restraints all_;
   base::PointerMember<core::RestraintsScoringFunction> rsf_;
   unsigned int max_terms_;
-  base::set<kernel::Restraint *> no_terms_;
+  boost::unordered_set<kernel::Restraint *> no_terms_;
 
   void do_add(kernel::Restraint *r, RMF::NodeHandle nh) {
     // handle restraints being in multiple sets
