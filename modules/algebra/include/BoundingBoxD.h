@@ -264,7 +264,7 @@ inline base::Vector<VectorD<D> > get_vertices(const BoundingBoxD<D> &bb) {
     IMP_NOT_IMPLEMENTED;
   }
   VectorD<internal::DMinus1<D>::D> c0, c1;
-  for (unsigned int i = 0; i < D - 1; ++i) {
+  for (int i = 0; i < D - 1; ++i) {
     c0[i] = bb.get_corner(0)[i];
     c1[i] = bb.get_corner(1)[i];
   }
@@ -273,7 +273,7 @@ inline base::Vector<VectorD<D> > get_vertices(const BoundingBoxD<D> &bb) {
   base::Vector<VectorD<D> > ret;
   for (unsigned int i = 0; i < recurse.size(); ++i) {
     VectorD<D> cur;
-    for (unsigned int j = 0; j < D - 1; ++j) {
+    for (int j = 0; j < D - 1; ++j) {
       cur[j] = recurse[i][j];
     }
     cur[D - 1] = bb.get_corner(0)[D - 1];
