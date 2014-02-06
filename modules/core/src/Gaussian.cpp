@@ -25,6 +25,14 @@ void Gaussian::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
   m->add_attribute(get_variance_key(2), pi, g.get_variances()[2]);
 }
 
+void Gaussian::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi) {
+  core::RigidBody::setup_particle(m, pi, algebra::ReferenceFrame3D());
+  m->add_attribute(get_variance_key(0), pi, 0);
+  m->add_attribute(get_variance_key(1), pi, 0);
+  m->add_attribute(get_variance_key(2), pi, 0);
+}
+
+
 IMP_Eigen::Matrix3d Gaussian::get_covariance() const {
   IMP_Eigen::Quaterniond q(
         get_model()->get_attribute(internal::rigid_body_data().quaternion_[0],

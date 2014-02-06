@@ -24,11 +24,9 @@ IMPCORE_BEGIN_NAMESPACE
 
 /** A decorator for a particle storing a Gaussian. */
 class IMPCOREEXPORT Gaussian : public RigidBody {
-  static void do_setup_particle(
-      kernel::Model *m, kernel::ParticleIndex pi,
-      const algebra::Gaussian3D &g =
-          (algebra::Gaussian3D(algebra::ReferenceFrame3D(),
-                               algebra::get_zero_vector_d<3>())));
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                const algebra::Gaussian3D &g);
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi);
 
  public:
   IMP_DECORATOR_METHODS(Gaussian, core::RigidBody);
