@@ -24,6 +24,7 @@ IMP_GCC_PRAGMA(diagnostic ignored "-Wunused-parameter")
 //#include <boost/graph/lookup_edge.hpp>
 #include <IMP/base/vector_property_map.h>
 #include <boost/graph/reverse_graph.hpp>
+#include <boost/unordered_set.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -308,7 +309,7 @@ DependencyGraph get_pruned_dependency_graph(kernel::Model *m) {
   while (changed) {
     changed = false;
     IMP_LOG_VERBOSE("Searching for vertices to prune" << std::endl);
-    base::set<Connections> connections;
+    boost::unordered_set<Connections> connections;
     for (unsigned int i = 0; i < boost::num_vertices(full); ++i) {
       Connections c(i, full);
       if (connections.find(c) != connections.end()) {
