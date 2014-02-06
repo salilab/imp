@@ -5,7 +5,7 @@
  *
  */
 
-#include "IMP/kernel/utility.h"
+#include "IMP/kernel/internal/utility.h"
 #include "IMP/kernel/ScoreState.h"
 #include "IMP/kernel/ModelObject.h"
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
