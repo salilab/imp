@@ -97,28 +97,29 @@ def main():
     tools.mkdir(os.path.join("src", "container"), clean=False)
     tools.mkdir(os.path.join("src", "kernel"), clean=False)
     make_one(
-        source, ("particle", "Particle", "Singleton", "Particle*", "Particle*",
-                 "Particle*", "Pointer<Particle>",
-                 "ParticlesTemp", "ParticlesTemp", "Particles",
-                 "ParticleIndex", "ParticleIndexes", "ParticleIndex"))
+        source, (
+            "particle", "Particle", "Singleton", "kernel::Particle*", "kernel::Particle*",
+            "kernel::Particle*", "base::Pointer<kernel::Particle>",
+            "kernel::ParticlesTemp", "kernel::ParticlesTemp", "kernel::Particles",
+            "kernel::ParticleIndex", "kernel::ParticleIndexes", "kernel::ParticleIndex"))
     make_one(
         source, (
-            "particle_pair", "ParticlePair", "Pair", "ParticlePair", "const ParticlePair&",
-            "const ParticlePair", "ParticlePair",
-            "ParticlePairsTemp", "ParticlePairsTemp", "ParticlePairs",
-            "ParticleIndexPair", "ParticleIndexPairs", "const ParticleIndexPair&"))
+            "particle_pair", "ParticlePair", "Pair", "kernel::ParticlePair", "const kernel::ParticlePair&",
+            "const kernel::ParticlePair", "kernel::ParticlePair",
+            "kernel::ParticlePairsTemp", "kernel::ParticlePairsTemp", "kernel::ParticlePairs",
+            "kernel::ParticleIndexPair", "kernel::ParticleIndexPairs", "const kernel::ParticleIndexPair&"))
     make_one(
         source, (
-            "particle_triplet", "ParticleTriplet", "Triplet", "ParticleTriplet", "const ParticleTriplet&",
-            "const ParticleTriplet", "ParticleTriplet",
-            "ParticleTripletsTemp", "ParticleTripletsTemp", "ParticleTriplets",
-            "ParticleIndexTriplet", "ParticleIndexTriplets", "const ParticleIndexTriplet&"), test=False)
+            "particle_triplet", "ParticleTriplet", "Triplet", "kernel::ParticleTriplet", "const kernel::ParticleTriplet&",
+            "const kernel::ParticleTriplet", "kernel::ParticleTriplet",
+            "kernel::ParticleTripletsTemp", "kernel::ParticleTripletsTemp", "kernel::ParticleTriplets",
+            "kernel::ParticleIndexTriplet", "kernel::ParticleIndexTriplets", "const kernel::ParticleIndexTriplet&"), test=False)
     make_one(
         source, (
-            "particle_quad", "ParticleQuad", "Quad", "ParticleQuad", "const ParticleQuad&",
-            "const ParticleQuad", "ParticleQuad",
-            "ParticleQuadsTemp", "ParticleQuadsTemp", "ParticleQuads",
-            "ParticleIndexQuad", "ParticleIndexQuads", "const ParticleIndexQuad&"), test=False)
+            "particle_quad", "ParticleQuad", "Quad", "kernel::ParticleQuad", "const kernel::ParticleQuad&",
+            "const kernel::ParticleQuad", "kernel::ParticleQuad",
+            "kernel::ParticleQuadsTemp", "kernel::ParticleQuadsTemp", "kernel::ParticleQuads",
+            "kernel::ParticleIndexQuad", "kernel::ParticleIndexQuads", "const kernel::ParticleIndexQuad&"), test=False)
     if True:
         deps = ["${PROJECT_SOURCE_DIR}/tools/build/%s" %
                 x[x.find("container_templates"):] for x in all_inputs]
@@ -157,10 +158,22 @@ set( IMP_core_EXTRA_HEADERS ${IMP_core_EXTRA_HEADERS} %s)
 set( IMP_container_EXTRA_HEADERS ${IMP_container_EXTRA_HEADERS} %s)
 
 """ % ("\n   ".join(targets), "\n   ".join(deps),
-       "\n   ".join(targets),
-            "\n   ".join(get_files("kernel", ".cpp", "${CMAKE_BINARY_DIR}/src/kernel/", targets)),
-            "\n   ".join(get_files("core", ".cpp", "${CMAKE_BINARY_DIR}/src/core/", targets)),
-            "\n   ".join(get_files("container", ".cpp", "${CMAKE_BINARY_DIR}/src/container/", targets)),
+            "\n   ".join(targets),
+            "\n   ".join(
+                get_files("kernel",
+                          ".cpp",
+                          "${CMAKE_BINARY_DIR}/src/kernel/",
+                          targets)),
+            "\n   ".join(
+                get_files("core",
+                          ".cpp",
+                          "${CMAKE_BINARY_DIR}/src/core/",
+                          targets)),
+            "\n   ".join(
+                get_files("container",
+                          ".cpp",
+                          "${CMAKE_BINARY_DIR}/src/container/",
+                          targets)),
             "\n   ".join(get_files("kernel", ".h", "", targets)),
             "\n   ".join(get_files("core", ".h", "", targets)),
             "\n   ".join(get_files("container", ".h", "", targets)))
