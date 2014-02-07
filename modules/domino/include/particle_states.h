@@ -22,9 +22,9 @@
 #include <IMP/algebra/ReferenceFrame3D.h>
 #include <IMP/base/Pointer.h>
 #include <IMP/base/Vector.h>
-#include <IMP/base/map.h>
 #include <IMP/base/InputAdaptor.h>
 #include <IMP/algebra/vector_search.h>
+#include <boost/unordered_map.hpp>
 
 IMPDOMINO_BEGIN_NAMESPACE
 /** Handle the states for a particular particle (or "class" of
@@ -71,8 +71,8 @@ IMP_OBJECTS(ParticleStates, ParticleStatesList);
     in the DominoSampler.
  */
 class IMPDOMINOEXPORT ParticleStatesTable : public IMP::base::Object {
-  typedef IMP::base::map<kernel::Particle *,
-                         IMP::base::PointerMember<ParticleStates> > Map;
+  typedef boost::unordered_map<kernel::Particle *,
+                               IMP::base::PointerMember<ParticleStates> > Map;
   Map enumerators_;
   friend class DominoSampler;
 

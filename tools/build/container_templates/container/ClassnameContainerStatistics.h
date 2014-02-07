@@ -14,7 +14,7 @@
 #include <IMP/ClassnameContainer.h>
 #include <IMP/ScoreState.h>
 #include <IMP/score_state_macros.h>
-#include <IMP/base/set.h>
+#include <boost/unordered_set.hpp>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -29,7 +29,7 @@ class IMPCONTAINEREXPORT ClassnameContainerStatistics : public ScoreState {
   unsigned int max_;
   unsigned int min_;
   bool track_unique_;
-  IMP::base::set<VARIABLETYPE> unique_;
+  boost::unordered_set<VARIABLETYPE> unique_;
 
  public:
   ClassnameContainerStatistics(ClassnameContainerAdaptor c);

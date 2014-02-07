@@ -13,7 +13,6 @@
 #include "internal/CoreClosePairContainer.h"
 #include <IMP/kernel/SingletonContainer.h>
 #include <IMP/kernel/ScoreState.h>
-#include <IMP/base/map.h>
 #include <IMP/base/Pointer.h>
 
 IMPCORE_BEGIN_NAMESPACE
