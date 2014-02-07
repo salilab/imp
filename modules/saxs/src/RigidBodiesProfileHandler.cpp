@@ -7,13 +7,14 @@
  */
 
 #include <IMP/saxs/RigidBodiesProfileHandler.h>
+#include <boost/unordered_map.hpp>
 
 IMPSAXS_BEGIN_NAMESPACE
 
 RigidBodiesProfileHandler::RigidBodiesProfileHandler(
     const kernel::Particles& particles, FormFactorType ff_type)
     : base::Object("RigidBodiesProfileHandler%1%") {
-  IMP::base::map<kernel::ParticleIndex, kernel::Particles> rigid_bodies;
+  boost::unordered_map<kernel::ParticleIndex, kernel::Particles> rigid_bodies;
   for (unsigned int i = 0; i < particles.size(); ++i) {
     if (core::RigidMember::get_is_setup(particles[i])) {
       kernel::ParticleIndex pi =
@@ -28,7 +29,8 @@ RigidBodiesProfileHandler::RigidBodiesProfileHandler(
 
   if (rigid_bodies_.size() > 0) {
     rigid_bodies_profile_ = new Profile();
-    for (IMP::base::map<kernel::ParticleIndex, kernel::Particles>::iterator it =
+    for (boost::unordered_map<kernel::ParticleIndex,
+                              kernel::Particles>::iterator it =
              rigid_bodies.begin();
          it != rigid_bodies.end(); it++) {
       rigid_bodies_.push_back(it->second);
