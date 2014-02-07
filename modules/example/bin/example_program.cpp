@@ -8,6 +8,7 @@
 #include <IMP/core/RestraintsScoringFunction.h>
 #include <IMP/example/ExampleRestraint.h>
 #include <IMP/container/ListPairContainer.h>
+#include <IMP/core/XYZ.h>
 
 using namespace IMP;
 int main(int argc, char **argv) {

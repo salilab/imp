@@ -15,6 +15,7 @@
 #include <IMP/kernel/internal/StaticListContainer.h>
 #include <IMP/kernel/ClassnameContainer.h>
 #include <IMP/kernel/ClassnameModifier.h>
+#include <IMP/kernel/base_types.h>
 
 
 IMPCONTAINER_BEGIN_NAMESPACE
