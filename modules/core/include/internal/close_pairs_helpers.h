@@ -18,6 +18,7 @@
 #include <IMP/base/warning_macros.h>
 #include <IMP/SingletonContainer.h>
 #include <boost/unordered_map.hpp>
+#include <boost/unordered_set.hpp>
 #include <algorithm>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
@@ -159,13 +160,13 @@ inline void initialize_particles(
     bool use_rigid_bodies = true) {
   IMP_IF_CHECK(base::USAGE) {
     kernel::ParticleIndexes pis = sc->get_indexes();
-    IMP::base::set<kernel::ParticleIndex> spis(pis.begin(), pis.end());
+    boost::unordered_set<kernel::ParticleIndex> spis(pis.begin(), pis.end());
     IMP_USAGE_CHECK(pis.size() == spis.size(),
                     "Duplicate particle indexes in input");
   }
   IMP_IF_CHECK(base::USAGE) {
     kernel::ParticlesTemp pis = sc->get();
-    IMP::base::set<kernel::Particle *> spis(pis.begin(), pis.end());
+    boost::unordered_set<kernel::Particle *> spis(pis.begin(), pis.end());
     IMP_USAGE_CHECK(pis.size() == spis.size(), "Duplicate particles in input");
   }
   // constituents_.clear();
@@ -190,7 +191,7 @@ inline void initialize_particles(
         kernel::ParticleIndexes cur = constituents_[pi];
         IMP_USAGE_CHECK(std::find(cur.begin(), cur.end(), pi) == cur.end(),
                         "A rigid body cann't be its own constituent.");
-        IMP::base::set<kernel::ParticleIndex> scur(cur.begin(), cur.end());
+        boost::unordered_set<kernel::ParticleIndex> scur(cur.begin(), cur.end());
         IMP_USAGE_CHECK(cur.size() == scur.size(),
                         "Duplicate constituents for "
                             << sc->get_model()->get_particle(pi)->get_name()
@@ -219,7 +220,7 @@ inline void initialize_particles(
       kernel::ParticleIndexes cur = it->second;
       IMP_USAGE_CHECK(std::find(cur.begin(), cur.end(), it->first) == cur.end(),
                       "A rigid body cann't be its own constituent.");
-      IMP::base::set<kernel::ParticleIndex> scur(cur.begin(), cur.end());
+      boost::unordered_set<kernel::ParticleIndex> scur(cur.begin(), cur.end());
       IMP_USAGE_CHECK(
           cur.size() == scur.size(),
           "Duplicate constituents for "
