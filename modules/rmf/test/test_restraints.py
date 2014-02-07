@@ -137,7 +137,7 @@ class Tests(IMP.test.TestCase):
         rn = rh.get_root_node().get_children()[2]
         RMF.show_hierarchy(rh.get_root_node())
         self.assertEqual(rn.get_name(), r.get_name())
-        self.assertEqual(rn.get_children(), [])
+        self.assertEqual([x for x in rn.get_children()], [])
 
 if __name__ == '__main__':
     unittest.main()
