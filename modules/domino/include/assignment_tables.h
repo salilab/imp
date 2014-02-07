@@ -101,7 +101,7 @@ class IMPDOMINOEXPORT BranchAndBoundAssignmentsTable : public AssignmentsTable {
   SubsetFilterTables sft_;
   unsigned int max_;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-  IMP::base::map<kernel::Particle *, kernel::ParticlesTemp> rls_;
+  boost::unordered_map<kernel::Particle *, kernel::ParticlesTemp> rls_;
 #endif
 #endif
  public:
@@ -121,7 +121,7 @@ class IMPDOMINOEXPORT BranchAndBoundAssignmentsTable : public AssignmentsTable {
     in to domino.
 */
 class IMPDOMINOEXPORT ListAssignmentsTable : public AssignmentsTable {
-  IMP::base::map<Subset, IMP::base::PointerMember<AssignmentContainer> >
+  boost::unordered_map<Subset, IMP::base::PointerMember<AssignmentContainer> >
       states_;
 
  public:

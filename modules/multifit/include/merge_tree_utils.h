@@ -1,5 +1,5 @@
 /**
- *  \file multifit/merge_tree_utils.h
+ *  \file IMP/multifit/merge_tree_utils.h
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
@@ -26,8 +26,8 @@ typedef boost::adjacency_matrix<boost::undirectedS, boost::no_property,
 typedef boost::graph_traits<DependencyGraph>::edge_descriptor DGEdge;
 typedef DependencyGraph::edge_property_type DGWeight;
 typedef boost::graph_traits<DependencyGraph>::vertex_descriptor DGVertex;
-typedef base::map<kernel::Particle *, DGVertex> PVMAP;
-typedef base::map<DGVertex, Particle *> VPMAP;
+typedef boost::unordered_map<kernel::Particle *, DGVertex> PVMAP;
+typedef boost::unordered_map<DGVertex, Particle *> VPMAP;
 };
 
 //! A simple Restraint that always returns a score of zero.

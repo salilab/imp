@@ -167,9 +167,9 @@ class IMPDOMINOEXPORT DisjointSetsSubsetFilterTable : public SubsetFilterTable {
   boost::vector_property_map<int> parent_, rank_;
   mutable boost::disjoint_sets<boost::vector_property_map<int>,
                                boost::vector_property_map<int> > disjoint_sets_;
-  IMP::base::map<const kernel::Particle *, int> index_;
+  boost::unordered_map<const kernel::Particle *, int> index_;
   mutable base::Vector<kernel::ParticlesTemp> sets_;
-  mutable IMP::base::map<const kernel::Particle *, int> set_indexes_;
+  mutable boost::unordered_map<const kernel::Particle *, int> set_indexes_;
 
   int get_index(kernel::Particle *p);
 
@@ -253,7 +253,7 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DECL(EquivalenceAndExclusion);
 class IMPDOMINOEXPORT ListSubsetFilterTable : public SubsetFilterTable {
  public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  IMP::base::map<kernel::Particle *, int> map_;
+  boost::unordered_map<kernel::Particle *, int> map_;
   base::Vector<boost::dynamic_bitset<> > states_;
   base::Pointer<ParticleStatesTable> pst_;
   mutable double num_ok_, num_test_;
@@ -296,7 +296,7 @@ IMP_OBJECTS(ListSubsetFilterTable, ListSubsetFilterTables);
     That is, that something else is restricting p0 to only 0 or 3.
 */
 class IMPDOMINOEXPORT PairListSubsetFilterTable : public SubsetFilterTable {
-  IMP::base::map<kernel::ParticlePair, IntPairs> allowed_;
+  boost::unordered_map<kernel::ParticlePair, IntPairs> allowed_;
   void fill(const Subset &s, const Subsets &e, IntPairs &indexes,
             base::Vector<IntPairs> &allowed) const;
 

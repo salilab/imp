@@ -151,7 +151,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics {
        the joints are stored using ProteinAngleType as an index */
     typedef std::vector<Joint*> ResidueJoints;
     /* mapping between residue and its joints */
-    IMP::base::map<IMP::kernel::ParticleIndex, ResidueJoints>
+    boost::unordered_map<IMP::kernel::ParticleIndex, ResidueJoints>
         residue_to_joints_;
   };
 #endif  // IMP_DOXYGEN
@@ -167,7 +167,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics {
   Graph graph_;
 
   // mapping between atom kernel::ParticleIndex and node number in the graph
-  IMP::base::map<IMP::kernel::ParticleIndex, int> particle_index_to_node_map_;
+  boost::unordered_map<IMP::kernel::ParticleIndex, int> particle_index_to_node_map_;
   IMP::base::Vector<IMP::kernel::ParticleIndex> node_to_particle_index_map_;
 
   // rigid bodies

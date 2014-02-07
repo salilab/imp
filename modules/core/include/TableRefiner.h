@@ -19,7 +19,7 @@ IMPCORE_BEGIN_NAMESPACE
     of particles stored for it in a table.
  */
 class IMPCOREEXPORT TableRefiner : public Refiner {
-  IMP::base::map<kernel::Particle *, kernel::Particles> map_;
+  boost::unordered_map<kernel::Particle *, kernel::Particles> map_;
 
  public:
   //! Initialize it with an empty table

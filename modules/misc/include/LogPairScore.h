@@ -19,7 +19,7 @@ IMPMISC_BEGIN_NAMESPACE
 /** Primarily for testing.
  */
 class LogPairScore : public PairScore {
-  mutable base::map<kernel::ParticlePair, unsigned int> map_;
+  mutable boost::unordered_map<kernel::ParticlePair, unsigned int> map_;
 
  public:
   //! create with an empty map
@@ -37,7 +37,7 @@ class LogPairScore : public PairScore {
   //! Get a list of all pairs (without multiplicity)
   kernel::ParticlePairsTemp get_particle_pairs() const {
     kernel::ParticlePairsTemp ret;
-    for (base::map<kernel::ParticlePair, unsigned int>::const_iterator it =
+    for (boost::unordered_map<kernel::ParticlePair, unsigned int>::const_iterator it =
              map_.begin();
          it != map_.end(); ++it) {
       ret.push_back(it->first);

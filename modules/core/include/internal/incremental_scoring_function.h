@@ -25,7 +25,7 @@ struct IMPCOREEXPORT NBGenerator {
   double distance_;
   kernel::ParticleIndexes pis_;
   PairPredicates filters_;
-  base::map<kernel::ParticleIndex, int> to_dnn_;
+  boost::unordered_map<kernel::ParticleIndex, int> to_dnn_;
   base::PointerMember<algebra::DynamicNearestNeighbor3D> dnn_;
 
   NBGenerator(kernel::Model *m, const kernel::ParticleIndexes &pis,
@@ -66,7 +66,7 @@ class IMPCOREEXPORT NBLScoring {
 
   // changes to cache for rollback
   double weight_, max_;
-  base::map<kernel::ParticleIndex, kernel::ParticleIndexes> controlled_;
+  boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> controlled_;
 
  public:
   NBLScoring(PairScore *ps, double distance,

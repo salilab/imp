@@ -46,7 +46,7 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
   IMP_NAMED_TUPLE_2(Data, Datas, kernel::ParticleIndexes, indexes, double,
                     width, );
 
-  typedef base::map<kernel::ParticleIndex, Data> Index;
+  typedef boost::unordered_map<kernel::ParticleIndex, Data> Index;
   Index get_index(kernel::Model *m, kernel::ParticleIndexes inputs) const {
     unsigned int index_size = std::min<unsigned int>(
         1U, std::sqrt(static_cast<double>(inputs.size())));

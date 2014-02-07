@@ -670,8 +670,8 @@ int Image2D<T>::get_segmentation_threshold() const {
 
 #include <utility>
 
-typedef IMP::base::map<int, int> HashMap;
-typedef IMP::base::map<int, HashMap> DoubleHashMap;
+typedef boost::unordered_map<int, int> HashMap;
+typedef boost::unordered_map<int, HashMap> DoubleHashMap;
 class EquivalenceTable : public DoubleHashMap {
  public:
   EquivalenceTable() { max_color_ = 0; }
@@ -806,7 +806,7 @@ void Image2D<T>::get_largest_connected_component(Image2D<int>& out_image)
     const {
   get_connected_components(out_image);
   // count the number of pixels in each cc
-  IMP::base::map<int, int> counts;
+  boost::unordered_map<int, int> counts;
 
   for (unsigned int i = 0; i < out_image.num_elements(); i++) {
     int color = *(out_image.data() + i);
@@ -820,7 +820,7 @@ void Image2D<T>::get_largest_connected_component(Image2D<int>& out_image)
 
   int largest_size = 0;
   int largest_color = 1;
-  for (IMP::base::map<int, int>::iterator it = counts.begin();
+  for (boost::unordered_map<int, int>::iterator it = counts.begin();
        it != counts.end(); it++) {
     if (it->second > largest_size) {
       largest_size = it->second;
@@ -842,7 +842,7 @@ void Image2D<T>::get_largest_connected_component() {
   Image2D<int> out_image;
   get_connected_components(out_image);
   // count the number of pixels in each cc
-  IMP::base::map<int, int> counts;
+  boost::unordered_map<int, int> counts;
 
   for (unsigned int i = 0; i < out_image.num_elements(); i++) {
     int color = *(out_image.data() + i);
@@ -856,7 +856,7 @@ void Image2D<T>::get_largest_connected_component() {
 
   int largest_size = 0;
   int largest_color = 1;
-  for (IMP::base::map<int, int>::iterator it = counts.begin();
+  for (boost::unordered_map<int, int>::iterator it = counts.begin();
        it != counts.end(); it++) {
     if (it->second > largest_size) {
       largest_size = it->second;
