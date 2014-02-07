@@ -22,7 +22,7 @@
 #include <IMP/algebra/geometric_alignment.h>
 #include <IMP/core/rigid_bodies.h>
 
-#include <IMP/base/set.h>
+#include <boost/unordered_set.hpp>
 
 #include <boost/random/uniform_int.hpp>
 
@@ -292,7 +292,7 @@ Hierarchy create_fragment(const Hierarchies &ps) {
 
 Bonds get_internal_bonds(Hierarchy mhd) {
   kernel::ParticlesTemp ps = core::get_all_descendants(mhd);
-  IMP::base::set<kernel::Particle *> sps(ps.begin(), ps.end());
+  boost::unordered_set<kernel::Particle *> sps(ps.begin(), ps.end());
   Bonds ret;
   for (kernel::ParticlesTemp::iterator pit = ps.begin(); pit != ps.end();
        ++pit) {

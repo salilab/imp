@@ -18,7 +18,7 @@
 #include "subset_scores.h"
 #include <IMP/base/Object.h>
 #include <IMP/base/Pointer.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <IMP/Configuration.h>
 #include <IMP/kernel/Model.h>
 #include <IMP/macros.h>

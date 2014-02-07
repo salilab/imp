@@ -154,7 +154,7 @@ Particle* m2_atom_particle(kernel::Model* m, const std::string& mol2_atomline) {
 }
 
 void bond_particle(kernel::Model*, const String& mol2_bondline,
-                   const base::map<Int, kernel::Particle*>& molecule_atoms) {
+                   const boost::unordered_map<Int, kernel::Particle*>& molecule_atoms) {
   //  kernel::Particle* p = new kernel::Particle(m);
   std::istringstream ins(mol2_bondline);
 
@@ -255,7 +255,7 @@ Hierarchy read_molecule_mol2(kernel::Model* model, std::istream& mol2_file,
 
 void read_atom_mol2(kernel::Model* model, std::istream& mol2_file,
                     Hierarchy& molecule_d,
-                    base::map<Int, kernel::Particle*>& molecule_atoms,
+                    boost::unordered_map<Int, kernel::Particle*>& molecule_atoms,
                     Mol2Selector* mol2sel) {
   IMP::base::PointerMember<Mol2Selector> sel(mol2sel);
   std::string line;
@@ -286,7 +286,7 @@ void read_atom_mol2(kernel::Model* model, std::istream& mol2_file,
 
 void read_bond_mol2(kernel::Model* m, std::istream& mol2_file,
                     Hierarchy& /*molecule_d*/,
-                    const base::map<Int, kernel::Particle*>& molecule_atoms) {
+                    const boost::unordered_map<Int, kernel::Particle*>& molecule_atoms) {
   std::string line;
   char c;
   Int count = 0;
@@ -363,7 +363,7 @@ Hierarchy read_mol2(base::TextInput mol2_file, kernel::Model* model,
   }
   IMP::base::PointerMember<Mol2Selector> sel(mol2sel);
   // create a map to save atom_index and atom particle pairs
-  base::map<Int, kernel::Particle*> molecule_atoms;
+  boost::unordered_map<Int, kernel::Particle*> molecule_atoms;
 
   // create root particle
   Hierarchy root_d = root_particle(model, mol2_file.get_name());

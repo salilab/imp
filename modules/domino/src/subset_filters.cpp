@@ -206,7 +206,7 @@ int DisjointSetsSubsetFilterTable::get_index(kernel::Particle *p) {
 void DisjointSetsSubsetFilterTable::build_sets() const {
   if (!sets_.empty()) return;
   if (pst_) {
-    IMP::base::map<ParticleStates *, int> map;
+    boost::unordered_map<ParticleStates *, int> map;
     kernel::ParticlesTemp allps = pst_->get_particles();
     base::Vector<kernel::ParticlesTemp> allsets;
     for (unsigned int i = 0; i < allps.size(); ++i) {

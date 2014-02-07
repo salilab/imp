@@ -15,7 +15,7 @@
 #include "subset_scores.h"
 #include <IMP/base/Vector.h>
 #include <IMP/base/hash.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <IMP/statistics/metric_clustering.h>
 
 #include <algorithm>

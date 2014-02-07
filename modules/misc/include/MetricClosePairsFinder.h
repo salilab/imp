@@ -13,7 +13,7 @@
 #include <IMP/core/ClosePairsFinder.h>
 #include <IMP/base/Pointer.h>
 #include <IMP/kernel/particle_index.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <algorithm>
 #include <limits>
 

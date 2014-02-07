@@ -14,7 +14,7 @@
 #include <IMP/PairPredicate.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/container/ListPairContainer.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <IMP/pair_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE

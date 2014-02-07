@@ -17,7 +17,7 @@
 #include "IMP/kernel/ModelObject.h"
 #include <algorithm>
 #include <IMP/base/check_macros.h>
-#include <IMP/base/set.h>
+#include <boost/unordered_set.hpp>
 #include <IMP/kernel/classname_macros.h>
 #include <IMP/kernel/ClassnameModifier.h>
 #include <IMP/kernel/ClassnamePredicate.h>

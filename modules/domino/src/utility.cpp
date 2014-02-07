@@ -13,7 +13,7 @@
 #include <IMP/kernel/Restraint.h>
 #include <IMP/ScoreState.h>
 #include <IMP/domino/assignment_containers.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <boost/graph/graphviz.hpp>
 #include <IMP/kernel/internal/graph_utility.h>
 #include <IMP/domino/internal/tree_inference.h>

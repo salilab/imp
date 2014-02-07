@@ -13,7 +13,7 @@
 #include <IMP/algebra/Vector2D.h>
 #include <IMP/algebra/eigen_analysis.h>
 #include <IMP/base/utility.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <IMP/constants.h>
 
 #include <boost/multi_array.hpp>

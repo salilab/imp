@@ -1,5 +1,5 @@
 /**
- * \file kinematics/KinematicForest.h
+ * \file IMP/kinematics/KinematicForest.h
  * \brief Wrapper class for a kinematic forest (collection of trees)
           made of KinematicNode objects, interconnected by joints. This data
           structure allows for kinematic control of the tree and
@@ -19,7 +19,7 @@
 #include <IMP/kinematics/TransformationJoint.h>
 #include <IMP/base/Object.h>
 #include <IMP/Decorator.h>
-#include <IMP/base/set.h>
+#include <boost/unordered_set.hpp>
 #include <IMP/base/exception.h>
 #include <IMP/base/Object.h>
 #include <IMP/base/check_macros.h>
@@ -120,7 +120,7 @@ class IMPKINEMATICSEXPORT KinematicForest
     }
     // tree BFS traversal from roots
     std::queue<KinematicNode> q;
-    IMP::base::set<KinematicNode>::iterator it;
+    boost::unordered_set<KinematicNode>::iterator it;
     for (it = roots_.begin(); it != roots_.end(); it++) {
       q.push(*it);
     }
@@ -143,7 +143,7 @@ class IMPKINEMATICSEXPORT KinematicForest
     Joints ret;
     // tree BFS traversal from roots
     std::queue<KinematicNode> q;
-    IMP::base::set<KinematicNode>::iterator it;
+    boost::unordered_set<KinematicNode>::iterator it;
     for (it = roots_.begin(); it != roots_.end(); it++) q.push(*it);
 
     while (!q.empty()) {
@@ -261,10 +261,10 @@ class IMPKINEMATICSEXPORT KinematicForest
 
   /** the root nodes that serves as spatial anchor to the
       kinematic trees in the forest */
-  IMP::base::set<KinematicNode> roots_;
+  boost::unordered_set<KinematicNode> roots_;
 
   /** the set of nodes in the tree */
-  IMP::base::set<KinematicNode> nodes_;
+  boost::unordered_set<KinematicNode> nodes_;
 
   Joints joints_;
 };

@@ -1,6 +1,6 @@
 /* Why would we copyright a test?
  */
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <IMP/base/Vector.h>
 IMP_COMPILER_DISABLE_WARNINGS
 IMP_CLANG_PRAGMA(diagnostic ignored "-Wc++11-extensions")

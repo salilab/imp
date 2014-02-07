@@ -6,7 +6,7 @@
  */
 #include <IMP/statistics/PartitionalClustering.h>
 #include <IMP/base/check_macros.h>
-#include <IMP/base/set.h>
+#include <boost/unordered_set.hpp>
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 PartitionalClustering::~PartitionalClustering() {}
@@ -16,7 +16,7 @@ void validate_partitional_clustering(PartitionalClustering* pc,
   IMP_CHECK_VARIABLE(pc);
   IMP_CHECK_VARIABLE(n);
   IMP_IF_CHECK(base::USAGE) {
-    IMP::base::set<int> used;
+    boost::unordered_set<int> used;
     for (unsigned int i = 0; i < pc->get_number_of_clusters(); ++i) {
       Ints cluster = pc->get_cluster(i);
       for (unsigned int j = 0; j < cluster.size(); ++j) {

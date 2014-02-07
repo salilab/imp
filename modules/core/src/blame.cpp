@@ -11,10 +11,10 @@
 #include <IMP/core/XYZR.h>
 #include <IMP/display/Color.h>
 #include <IMP/dependency_graph.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 IMPCORE_BEGIN_NAMESPACE
 namespace {
-typedef base::map<kernel::Particle *, kernel::Particle *> ControlledBy;
+typedef boost::unordered_map<kernel::Particle *, kernel::Particle *> ControlledBy;
 void distribute_blame(kernel::Restraint *r, const ControlledBy &cb, FloatKey fk,
                       double weight) {
   kernel::RestraintSet *rs = dynamic_cast<kernel::RestraintSet *>(r);

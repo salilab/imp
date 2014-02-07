@@ -121,9 +121,9 @@ void calc_local_bounding_box(em::DensityMap *dmap, long v_index, int &iminx,
 
 void DensitySegmentationByCommunities::build_density_graph(
     float edge_threshold) {
-  typedef base::map<long, DGVertex> NMAP;
+  typedef boost::unordered_map<long, DGVertex> NMAP;
   NMAP voxel2node;
-  typedef base::map<DGVertex, long> NMAP2;
+  typedef boost::unordered_map<DGVertex, long> NMAP2;
   NMAP2 node2voxel;
   int nx = dmap_->get_header()->get_nx();
   int ny = dmap_->get_header()->get_ny();

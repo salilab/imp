@@ -25,7 +25,7 @@
 #include <IMP/rmf/link_macros.h>
 #include <IMP/base/tuple_macros.h>
 #include <RMF/decorators.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 IMPRMF_BEGIN_NAMESPACE
 
 /** Manage the loading link between an RMF file and an atom::Hierarchy.

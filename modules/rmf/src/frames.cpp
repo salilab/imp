@@ -11,7 +11,7 @@
 #include <IMP/rmf/internal/link_helpers.h>
 #include <IMP/rmf/associations.h>
 #include <IMP/rmf/links.h>
-#include <IMP/base/set.h>
+#include <boost/unordered_set.hpp>
 #include <RMF/SetCurrentFrame.h>
 #include <boost/scoped_ptr.hpp>
 

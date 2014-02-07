@@ -18,7 +18,7 @@
 #include "../Decorator.h"
 #include "../Optimizer.h"
 #include "container_helpers.h"
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <IMP/base/internal/swig.h>
 #include <IMP/base/deprecation_macros.h>
 
@@ -193,7 +193,7 @@ IMPKERNELEXPORT ParticlesTemp
 /** Primarily for testing.
  */
 class IMPKERNELEXPORT _LogPairScore : public PairScore {
-  mutable base::map<ParticlePair, unsigned int> map_;
+  mutable boost::unordered_map<ParticlePair, unsigned int> map_;
 
  public:
   //! create with an empty map

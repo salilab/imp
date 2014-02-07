@@ -13,7 +13,7 @@
 #include <boost/graph/graph_utility.hpp>
 #include <IMP/multifit/multifit_config.h>
 #include <IMP/atom/Hierarchy.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <boost/graph/prim_minimum_spanning_tree.hpp>
 

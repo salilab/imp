@@ -12,7 +12,7 @@
 #define IMPCONTAINER_PREDICATE_CLASSNAMES_RESTRAINT_H
 
 #include <IMP/container/container_config.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <IMP/ClassnamePredicate.h>
 #include <IMP/restraint_macros.h>
 #include "generic.h"

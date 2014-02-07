@@ -40,7 +40,7 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 
 class AssemblyData {
   kernel::ParticlesTemp ps_;
-  base::map<kernel::Particle *, int> index_;
+  boost::unordered_map<kernel::Particle *, int> index_;
   kernel::Restraints rs_;
   kernel::ParticlesTemps particles_;
   domino::InteractionGraph interactions_;

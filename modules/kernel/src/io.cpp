@@ -7,7 +7,7 @@
  */
 
 #include <IMP/kernel/io.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <IMP/kernel/Particle.h>
 #include <IMP/kernel/Model.h>
 #include <boost/iostreams/device/array.hpp>

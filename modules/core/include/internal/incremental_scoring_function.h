@@ -13,7 +13,7 @@
 #include <IMP/base_types.h>
 #include <IMP/PairScore.h>
 #include <IMP/PairPredicate.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <IMP/algebra/vector_search.h>
 #include <IMP/base/cache.h>
 

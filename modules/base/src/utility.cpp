@@ -6,7 +6,7 @@
  */
 
 #include "IMP/base/utility.h"
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <boost/format.hpp>
 #include "internal/static.h"
 IMPBASE_BEGIN_NAMESPACE

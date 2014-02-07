@@ -9,7 +9,7 @@
 #include <IMP/RestraintSet.h>
 #include <IMP/kernel/Restraint.h>
 #include <IMP/dependency_graph.h>
-#include <IMP/base/set.h>
+#include <boost/unordered_set.hpp>
 #include <IMP/core/XYZ.h>
 #include <IMP/kernel/internal/container_helpers.h>
 #include <IMP/core/XYZR.h>

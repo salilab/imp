@@ -154,7 +154,7 @@ void Model::do_add_score_state(ScoreState *obj) {
   obj->set_was_used(true);
   IMP_LOG_VERBOSE("Added score state " << obj->get_name() << std::endl);
   IMP_IF_CHECK(base::USAGE) {
-    base::set<ScoreState *> in(score_states_begin(), score_states_end());
+    boost::unordered_set<ScoreState *> in(score_states_begin(), score_states_end());
     IMP_USAGE_CHECK(in.size() == get_number_of_score_states(),
                     "Score state already in model " << obj->get_name());
   }

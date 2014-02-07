@@ -10,7 +10,7 @@
 
 #include <IMP/atom/atom_config.h>
 #include "../Atom.h"
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <IMP/kernel/Particle.h>
 #include <IMP/base_types.h>
 

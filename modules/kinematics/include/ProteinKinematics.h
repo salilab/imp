@@ -1,5 +1,5 @@
 /**
- * \file kinematics/ProteinKinematics.h
+ * \file IMP/kinematics/ProteinKinematics.h
  * \brief functionality for defining a kinematic forest for proteins
  *
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
@@ -18,7 +18,7 @@
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/atom/Atom.h>
 
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <IMP/base/Vector.h>
 #include <vector>
 #include <iostream>

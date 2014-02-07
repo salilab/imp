@@ -53,7 +53,7 @@ SubsetGraph get_restraint_graph(ScoringFunctionAdaptor in,
   SubsetGraph ret(rs.size());  // + ss.size());
   IMP_LOG_TERSE("Creating restraint graph on " << rs.size() << " restraints."
                                                << std::endl);
-  IMP::base::map<kernel::Particle *, int> map;
+  boost::unordered_map<kernel::Particle *, int> map;
   SubsetGraphVertexName pm = boost::get(boost::vertex_name, ret);
   DependencyGraph dg = get_dependency_graph(rs[0]->get_model());
   DependencyGraphVertexIndex index = IMP::get_vertex_index(dg);
@@ -171,7 +171,7 @@ void triangulate(InteractionGraph &ig) {
                     InteractionGraphTraits::out_edge_iterator> EdgeRange;
   InteractionGraph mig;
   boost::copy_graph(ig, mig);
-  IMP::base::map<kernel::Particle *, int> vmap;
+  boost::unordered_map<kernel::Particle *, int> vmap;
   InteractionGraphVertexName mpm = boost::get(boost::vertex_name, mig);
   for (VertexRange be = boost::vertices(ig); be.first != be.second;
        ++be.first) {
@@ -327,7 +327,7 @@ bool get_has_edge(InteractionGraph &graph, InteractionGraphVertex va,
 }
 
 void add_edges(const kernel::ParticlesTemp &ps, kernel::ModelObjects pt,
-               const IMP::base::map<ModelObject *, int> &map,
+               const boost::unordered_map<ModelObject *, int> &map,
                base::Object *blame, InteractionGraph &g) {
   IMP_LOG_VARIABLE(ps);
   InteractionGraphEdgeName om = boost::get(boost::edge_name, g);
@@ -369,7 +369,7 @@ InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
   kernel::Restraints rs =
       kernel::create_decomposition(rsi->create_restraints());
   // kernel::Model *m= ps[0]->get_model();
-  IMP::base::map<ModelObject *, int> map;
+  boost::unordered_map<ModelObject *, int> map;
   InteractionGraphVertexName pm = boost::get(boost::vertex_name, ret);
   DependencyGraph dg = get_dependency_graph(ps[0]->get_model());
   DependencyGraphVertexIndex index = IMP::get_vertex_index(dg);
@@ -426,7 +426,7 @@ display::Geometries get_interaction_graph_geometry(const InteractionGraph &ig) {
   display::Geometries ret;
   InteractionGraphConstVertexName vm = boost::get(boost::vertex_name, ig);
   InteractionGraphConstEdgeName em = boost::get(boost::edge_name, ig);
-  IMP::base::map<std::string, display::Color> colors;
+  boost::unordered_map<std::string, display::Color> colors;
   for (std::pair<InteractionGraphTraits::vertex_iterator,
                  InteractionGraphTraits::vertex_iterator> be =
            boost::vertices(ig);

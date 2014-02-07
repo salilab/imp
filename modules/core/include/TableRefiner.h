@@ -11,7 +11,7 @@
 #include <IMP/core/core_config.h>
 
 #include <IMP/Refiner.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 IMPCORE_BEGIN_NAMESPACE
 
 //! A lookup based particle refiner

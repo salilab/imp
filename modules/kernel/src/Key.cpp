@@ -18,7 +18,7 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 static double heuristic_value = 238471628;
 
 namespace {
-struct KeyTable : public base::map<unsigned int, KeyData> {
+struct KeyTable : public boost::unordered_map<unsigned int, KeyData> {
   KeyTable() {
     unsigned int fk = FloatKey::get_ID();
     operator[](fk).add_key("x");

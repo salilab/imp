@@ -11,7 +11,7 @@
 #include <IMP/misc/misc_config.h>
 #include <IMP/PairScore.h>
 #include <IMP/generic.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 
 IMPMISC_BEGIN_NAMESPACE
 

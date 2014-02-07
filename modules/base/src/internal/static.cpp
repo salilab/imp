@@ -16,10 +16,10 @@
 #include "IMP/base/base_macros.h"
 #include "IMP/base/flags.h"
 #include "IMP/base/live_objects.h"
-#include "IMP/base/map.h"
+#include "boost/unordered_map.hpp"
 #include "IMP/base/statistics.h"
 #include "IMP/base/types.h"
-#include <IMP/base/set.h>
+#include <boost/unordered_set.hpp>
 #include <IMP/base/random.h>
 #include <boost/cstdint.hpp>
 #include <boost/timer.hpp>
@@ -97,7 +97,7 @@ boost::scoped_ptr<boost::progress_display> progress;
 IMPBASE_END_INTERNAL_NAMESPACE
 IMPBASE_BEGIN_NAMESPACE
 unsigned int Object::live_objects_ = 0;
-base::set<Object*> live_;
+boost::unordered_set<Object*> live_;
 bool show_live = true;
 namespace {
 struct CheckObjects {
@@ -107,7 +107,7 @@ struct CheckObjects {
                 << " unloading. This is probably a bad thing." << std::endl;
       Strings names;
       int pushed = 0;
-      for (base::set<Object*>::const_iterator it = live_.begin();
+      for (boost::unordered_set<Object*>::const_iterator it = live_.begin();
            it != live_.end(); ++it) {
         names.push_back((*it)->get_name());
         ++pushed;
@@ -125,7 +125,7 @@ CheckObjects check;
 #if IMP_HAS_CHECKS
 Strings get_live_object_names() {
   IMP::base::Vector<std::string> ret;
-  for (base::set<Object*>::const_iterator it = live_.begin(); it != live_.end();
+  for (boost::unordered_set<Object*>::const_iterator it = live_.begin(); it != live_.end();
        ++it) {
     ret.push_back((*it)->get_name());
   }
@@ -149,7 +149,7 @@ void Object::remove_live_object(Object* o) {
 IMPBASE_END_NAMESPACE
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
 void check_live_objects() {
-  for (base::set<Object*>::const_iterator it = live_.begin(); it != live_.end();
+  for (boost::unordered_set<Object*>::const_iterator it = live_.begin(); it != live_.end();
        ++it) {
     IMP_USAGE_CHECK((*it)->get_ref_count() > 0,
                     "Object " << (*it)->get_name() << " is not ref counted.");

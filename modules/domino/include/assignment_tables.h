@@ -18,7 +18,7 @@
 #include "domino_macros.h"
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <boost/pending/disjoint_sets.hpp>
 #if BOOST_VERSION > 103900
 #include <boost/property_map/property_map.hpp>

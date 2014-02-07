@@ -19,15 +19,15 @@
 #include "IMP/kernel/internal/evaluate_utility.h"
 #include "IMP/kernel/internal/graph_utility.h"
 #include <IMP/kernel/utility.h>
-#include "IMP/base/map.h"
+#include "boost/unordered_map.hpp"
 #include "IMP/base/log.h"
-#include "IMP/base/set.h"
+#include "boost/unordered_set.hpp"
 #include "IMP/base/statistics.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
 ModelObjectsTemp Model::get_optimized_particles() const {
-  base::set<ModelObject *> ret;
+  boost::unordered_set<ModelObject *> ret;
   FloatIndexes fix = internal::FloatAttributeTable::get_optimized_attributes();
   for (unsigned int i = 0; i < fix.size(); ++i) {
     ret.insert(get_particle(fix[i].get_particle()));
@@ -285,7 +285,7 @@ void Model::do_set_has_dependencies(const ModelObject *mo, bool tf) {
 }
 
 void Model::do_add_dependencies(const ModelObject *cmo) {
-  static base::set<const ModelObject *> computed;
+  static boost::unordered_set<const ModelObject *> computed;
   if (computed.find(cmo) != computed.end()) {
     IMP_THROW("Loop in dependencies at " << cmo->get_name(), ModelException);
   }
@@ -417,7 +417,7 @@ bool Model::do_get_has_required_score_states(const ModelObject *mo) const {
 }
 
 void Model::do_set_has_required_score_states(kernel::ModelObject *mo, bool tf) {
-  static base::set<const ModelObject *> computed;
+  static boost::unordered_set<const ModelObject *> computed;
   if (computed.find(mo) != computed.end()) {
     IMP_THROW("Loop in dependencies at " << mo->get_name(), ModelException);
   }

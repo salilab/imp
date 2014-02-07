@@ -20,7 +20,7 @@
 #include <IMP/kernel/Restraint.h>
 
 #include <vector>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <sstream>
 
 IMPDOMINO_BEGIN_NAMESPACE
