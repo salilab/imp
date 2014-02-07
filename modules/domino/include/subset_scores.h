@@ -19,6 +19,7 @@
 #include <IMP/base/cache.h>
 #include <IMP/kernel/Restraint.h>
 #include <IMP/base/log.h>
+#include <boost/unordered_map.hpp>
 
 #if IMP_DOMINO_HAS_RMF
 #include <RMF/HDF5/Group.h>
@@ -46,9 +47,9 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
 
 #ifndef IMP_DOXYGEN
   class Generator {
-    typedef base::map<kernel::Restraint *, RestraintData> RMap;
+    typedef boost::unordered_map<kernel::Restraint *, RestraintData> RMap;
     RMap rmap_;
-    typedef base::map<kernel::Restraint *, SetData> SMap;
+    typedef boost::unordered_map<kernel::Restraint *, SetData> SMap;
     SMap sets_;
     base::PointerMember<ParticleStatesTable> pst_;
 
@@ -130,7 +131,8 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
       return std::abs(a - b) < .1 * (a + b) + .1;
     }
   };
-  typedef base::map<kernel::Particle *, kernel::ParticlesTemp> DepMap;
+  typedef boost::unordered_map<kernel::Particle *, kernel::ParticlesTemp>
+      DepMap;
   void add_restraint_internal(kernel::Restraint *r, unsigned int index,
                               kernel::RestraintSet *parent, double max,
                               Subset parent_subset, const DepMap &dependencies);
@@ -148,10 +150,12 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
   typedef base::LRUCache<Generator, ApproximatelyEqual> Cache;
   Cache cache_;
 #endif
-  typedef base::map<base::Pointer<kernel::Restraint>, Subset> KnownRestraints;
+  typedef boost::unordered_map<base::Pointer<kernel::Restraint>, Subset>
+      KnownRestraints;
   KnownRestraints known_restraints_;
   // assign a unique index to each restraint for use with I/O
-  typedef base::map<base::Pointer<kernel::Restraint>, int> RestraintIndex;
+  typedef boost::unordered_map<base::Pointer<kernel::Restraint>, int>
+      RestraintIndex;
   RestraintIndex restraint_index_;
   unsigned int next_index_;
 
