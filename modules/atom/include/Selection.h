@@ -18,6 +18,7 @@
 #include <IMP/core/Typed.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/display/declare_Geometry.h>
+#include <boost/unordered_map.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -283,7 +284,7 @@ IMPATOMEXPORT Hierarchies get_leaves(const Selection &h);
 */
 class IMPATOMEXPORT SelectionGeometry : public display::Geometry {
   atom::Selection res_;
-  mutable IMP::base::map<kernel::Particle *, base::Pointer<Geometry> >
+  mutable boost::unordered_map<kernel::Particle *, base::Pointer<Geometry> >
       components_;
 
  public:

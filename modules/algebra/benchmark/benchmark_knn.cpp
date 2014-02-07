@@ -2,7 +2,6 @@
  * Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
-#include <IMP/base.h>
 #include <IMP/algebra.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
