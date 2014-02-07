@@ -2,9 +2,10 @@
  * Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
-#include <IMP.h>
-#include <IMP/core.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/base/flags.h>
+#include <IMP/base/Pointer.h>
+#include <IMP/core/RestraintsScoringFunction.h>
 #include <IMP/example/ExampleRestraint.h>
 #include <IMP/container/ListPairContainer.h>
 
