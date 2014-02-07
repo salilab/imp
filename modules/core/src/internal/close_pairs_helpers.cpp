@@ -19,7 +19,7 @@ ModelObjectsTemp get_inputs(kernel::Model *m, SingletonContainer *sc_,
   for (unsigned int i = 0; i < filters_.size(); ++i) {
     ret += filters_[i]->get_inputs(m, all);
   }
-  base::set<kernel::Particle *> rigid;
+  boost::unordered_set<kernel::Particle *> rigid;
   for (unsigned int i = 0; i < all.size(); ++i) {
     if (core::RigidMember::get_is_setup(m, all[i])) {
       kernel::Particle *rbp = core::RigidMember(m, all[i]).get_rigid_body();
