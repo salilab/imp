@@ -50,8 +50,8 @@ ElementTable::
                                             {"RF", Rf}, {"UNKNOWN_ELEMENT",
                                                          UNKNOWN_ELEMENT}};
 
-IMP::base::map<std::string, Element> ElementTable::string_2_element_;
-IMP::base::map<Element, std::string> ElementTable::element_2_string_;
+boost::unordered_map<std::string, Element> ElementTable::string_2_element_;
+boost::unordered_map<Element, std::string> ElementTable::element_2_string_;
 
 // from http://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl
 Float ElementTable::mass_[] = {

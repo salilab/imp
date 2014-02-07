@@ -13,8 +13,8 @@
 #include <IMP/base/Pointer.h>
 #include <IMP/base_types.h>
 #include "RestraintsScoringFunction.h"
-#include <IMP/base/map.h>
 #include <IMP/algebra/vector_search.h>
+#include <boost/unordered_map.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -48,7 +48,8 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
      -> IncrementalScoringFunction::do_set_has_dependencies()
      -> map destructor -> boom
   */
-  struct ScoringFunctionsMap : public base::map<kernel::ParticleIndex, Data> {
+  struct ScoringFunctionsMap
+      : public boost::unordered_map<kernel::ParticleIndex, Data> {
     ~ScoringFunctionsMap();
   };
   ScoringFunctionsMap scoring_functions_;
@@ -68,7 +69,7 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
   void create_scoring_functions();
   void do_non_incremental_evaluate();
   Data create_data(kernel::ParticleIndex pi, RestraintsTemp cr,
-                   const base::map<kernel::Restraint *, int> &all,
+                   const boost::unordered_map<kernel::Restraint *, int> &all,
                    const kernel::Restraints &dummies) const;
 
  public:

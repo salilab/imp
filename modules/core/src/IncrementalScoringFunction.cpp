@@ -66,7 +66,7 @@ class IncrementalRestraintsScoringFunction
 
 IncrementalScoringFunction::Data IncrementalScoringFunction::create_data(
     kernel::ParticleIndex pi, kernel::RestraintsTemp cr,
-    const base::map<Restraint *, int> &all,
+    const boost::unordered_map<Restraint *, int> &all,
     const kernel::Restraints &dummies) const {
   IMP_LOG_TERSE("Dependent restraints for particle "
                 << get_model()->get_particle_name(pi) << " are " << cr
@@ -101,7 +101,7 @@ void IncrementalScoringFunction::create_scoring_functions() {
   IMP_LOG_TERSE("Creating scoring functions" << std::endl);
   if (flattened_restraints_.empty()) return;
 
-  base::map<kernel::Restraint *, int> mp;
+  boost::unordered_map<kernel::Restraint *, int> mp;
   IMP_LOG_TERSE("All restraints are " << flattened_restraints_ << std::endl);
   for (unsigned int i = 0; i < flattened_restraints_.size(); ++i) {
     mp[flattened_restraints_[i]] = i;
@@ -298,7 +298,7 @@ ModelObjectsTemp IncrementalScoringFunction::do_get_inputs() const {
 
 IncrementalScoringFunction::ScoringFunctionsMap::~ScoringFunctionsMap() {
   // move it to a temp so a second attempt to destoy it succeeds
-  base::map<kernel::ParticleIndex, Data> t;
-  std::swap<base::map<kernel::ParticleIndex, Data> >(*this, t);
+  boost::unordered_map<kernel::ParticleIndex, Data> t;
+  std::swap<boost::unordered_map<kernel::ParticleIndex, Data> >(*this, t);
 }
 IMPCORE_END_NAMESPACE
