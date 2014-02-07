@@ -11,6 +11,7 @@ class Tests(IMP.test.TestCase):
 
         #protein and model
         #pdbFile = "/trombone1/home/dbarkan/IMP/docking/grb.flex.pdb"
+        print "reading pdb"
         pdbFile = self.get_input_file_name("grb.flex.pdb")
         outputFile = self.get_tmp_file_name("mergeTreeOut.txt")
         closePairDistance = 4.0
@@ -53,10 +54,10 @@ class Tests(IMP.test.TestCase):
         mt = IMP.domino.get_balanced_merge_tree(jt)
 
         # print first merge tree
-        print "begin first merge tree"
-        for v in mt.get_vertices():
-            print mt.get_vertex_name(v)
-        print "end first merge tree"
+        # print "begin first merge tree"
+        # for v in mt.get_vertices():
+        #    print mt.get_vertex_name(v)
+        # print "end first merge tree"
 
         # write out first merge tree
         sorted_keys = sorted(namesToParticles.keys())
