@@ -11,6 +11,7 @@
 #include <IMP/kernel/kernel_config.h>
 #include "Key.h"
 #include <IMP/base/object_macros.h>
+#include <IMP/base/value_macros.h>
 #include <IMP/base/Vector.h>
 #include <IMP/base/Pointer.h>
 #include <IMP/base/WeakPointer.h>
