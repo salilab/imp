@@ -353,8 +353,9 @@ class GridD : public StorageT,
   Indexes get_indexes(const BoundingBoxD<D> &bb) const {
     return Indexes(indexes_begin(bb), indexes_end(bb));
   }
-  Indexes get_all_indexes() const {
-    return Indexes(Storage::all_indexes_begin(), Storage::all_indexes_end());
+  typedef boost::iterator_range<typename Storage::AllIndexIterator> AllIndexes;
+  AllIndexes get_all_indexes() const {
+    return AllIndexes(Storage::all_indexes_begin(), Storage::all_indexes_end());
   }
   using Storage::get_extended_indexes;
   typedef boost::iterator_range<ExtendedIndexIterator> ExtendedIndexes;
@@ -365,6 +366,7 @@ class GridD : public StorageT,
 #else
   base::Vector<GridIndexD<D> > get_indexes(
       const ExtendedGridIndexD<D> &lb, const ExtendedGridIndexD<D> &ub) const;
+  base::Vector<GridIndexD<D> > get_all_indexes() const;
   base::Vector<ExtendedGridIndexD<D> > get_extended_indexes(
       const ExtendedGridIndexD<D> &lb, const ExtendedGridIndexD<D> &ub) const;
 #endif

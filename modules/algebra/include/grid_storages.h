@@ -279,13 +279,15 @@ class SparseGridStorageD : public Base {
   typedef typename Data::const_iterator AllConstIterator;
   AllConstIterator all_begin() const { return data_.begin(); }
   AllConstIterator all_end() const { return data_.end(); }
-#endif
-
-  base::Vector<GridIndexD<D> > get_all_indexes() const {
-    return base::Vector<GridIndexD<D> >(
-        boost::make_transform_iterator(all_begin(), GetIndex()),
-        boost::make_transform_iterator(all_end(), GetIndex()));
+  typedef boost::transform_iterator<GetIndex, AllConstIterator>
+      AllIndexIterator;
+  AllIndexIterator all_indexes_begin() const {
+    return boost::make_transform_iterator(all_begin(), GetIndex());
   }
+  AllIndexIterator all_indexes_end() const {
+    return boost::make_transform_iterator(all_end(), GetIndex());
+  }
+#endif
 /** @} */
 
 /** \name Index Iterators

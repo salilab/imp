@@ -76,14 +76,19 @@ namespace multi_array_types {
 }
 
 %extend IMP::algebra::GridD {
-  IMP::base::Vector<IMP::algebra::GridIndexD<D> > get_indexes(IMP::algebra::BoundingBoxD<D> bb) {
+  IMP::base::Vector<IMP::algebra::GridIndexD<D> > get_indexes(IMP::algebra::BoundingBoxD<D> bb) const {
      IMP::base::Vector<IMP::algebra::GridIndexD<D> > ret;
      IMP::base::internal::copy(self->get_indexes(bb), std::back_inserter(ret));
      return ret;
   }
-  IMP::base::Vector<IMP::algebra::ExtendedGridIndexD<D> > get_extended_indexes(IMP::algebra::BoundingBoxD<D> bb) {
+  IMP::base::Vector<IMP::algebra::ExtendedGridIndexD<D> > get_extended_indexes(IMP::algebra::BoundingBoxD<D> bb) const {
      IMP::base::Vector<IMP::algebra::ExtendedGridIndexD<D> > ret;
      IMP::base::internal::copy(self->get_extended_indexes(bb), std::back_inserter(ret));
+     return ret;
+  }
+  IMP::base::Vector<IMP::algebra::GridIndexD<D> > get_all_indexes() const {
+     IMP::base::Vector<IMP::algebra::GridIndexD<D> > ret;
+     IMP::base::internal::copy(self->get_all_indexes(), std::back_inserter(ret));
      return ret;
   }
   std::string __str__() const {
@@ -102,6 +107,11 @@ namespace multi_array_types {
   IMP::base::Vector<IMP::algebra::GridIndexD<3> > get_indexes(IMP::algebra::BoundingBoxD<3> bb) {
      IMP::base::Vector<IMP::algebra::GridIndexD<3> > ret;
      IMP::base::internal::copy(self->get_indexes(bb), std::back_inserter(ret));
+     return ret;
+  }
+  IMP::base::Vector<IMP::algebra::GridIndexD<3> > get_all_indexes() const {
+     IMP::base::Vector<IMP::algebra::GridIndexD<3> > ret;
+     IMP::base::internal::copy(self->get_all_indexes(), std::back_inserter(ret));
      return ret;
   }
   IMP::base::Vector<IMP::algebra::ExtendedGridIndexD<3> > get_extended_indexes(IMP::algebra::BoundingBoxD<3> bb) {
@@ -180,6 +190,10 @@ IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, Sphere);
 %include "IMP/algebra/grid_embeddings.h"
 %include "IMP/algebra/grid_utility.h"
 %include "IMP/algebra/GridD.h"
+%template(_DenseStorageDouble3D) IMP::algebra::DenseGridStorageD<3, double>;
+%template(_DenseStorageFloat3D) IMP::algebra::DenseGridStorageD<3, float>;
+%template(_DenseDoubleGrid3DBase) IMP::algebra::GridD<3, IMP::algebra::DenseGridStorageD<3, double>, double, IMP::algebra::DefaultEmbeddingD<3> >;
+%template(_DenseFloatGrid3DBase) IMP::algebra::GridD<3, IMP::algebra::DenseGridStorageD<3, float>, float, IMP::algebra::DefaultEmbeddingD<3> >;
 %include "IMP/algebra/standard_grids.h"
 namespace IMP {
  namespace algebra {
