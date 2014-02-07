@@ -22,8 +22,8 @@
   }
 }
 
-%feature("ref")   IMP::base::Object "$this->ref();"
-%feature("unref") IMP::base::Object "$this->unref();"
+%feature("ref")   IMP::base::Object "if ($this) $this->ref();"
+%feature("unref") IMP::base::Object "if ($this) $this->unref();"
 
 %include "IMP/base/object_cast.h"
 
