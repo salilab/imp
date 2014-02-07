@@ -16,6 +16,7 @@
 #include <IMP/core/internal/close_pairs_helpers.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/core/XYZR.h>
+#include <boost/unordered_set.hpp>
 #include <numeric>
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 namespace {
@@ -276,7 +277,7 @@ bool NBChecker::operator()(const NBGenerator::result_type &vals) const {
   for (unsigned int i = 0; i < filt_.size(); ++i) {
     filt_[i]->remove_if_equal(m_, found, 1);
   }
-  base::set<kernel::ParticleIndexPair> vals_index;
+  boost::unordered_set<kernel::ParticleIndexPair> vals_index;
   for (unsigned int i = 0; i < vals.size(); ++i) {
     vals_index.insert(kernel::ParticleIndexPair(vals[i][0], vals[i][1]));
   }
