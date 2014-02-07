@@ -21,6 +21,7 @@
 #include <IMP/kernel/Model.h>
 #include <IMP/kernel/Restraint.h>
 #include <IMP/Refiner.h>
+#include <boost/unordered_map.hpp>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -92,7 +93,7 @@ class IMPEMEXPORT FitRestraint : public kernel::Restraint {
   bool use_rigid_bodies_;
   // particle handling
   // map particles to their rigid bodies
-  IMP::base::map<core::RigidBody, kernel::Particles> member_map_;
+  boost::unordered_map<core::RigidBody, kernel::Particles> member_map_;
   kernel::Particles all_ps_;
   // all particles that are not part of a rigid body
   kernel::Particles not_part_of_rb_;
