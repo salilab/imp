@@ -17,6 +17,7 @@
 #include <IMP/macros.h>
 #include <boost/unordered_map.hpp>
 #include <IMP/algebra/eigen_analysis.h>
+#include <boost/unordered_set.hpp>
 #include <cmath>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -36,7 +37,7 @@ RigidClosePairsFinder::RigidClosePairsFinder(ClosePairsFinder *cpf)
 namespace {
 ParticlesTemp get_rigid_bodies(kernel::Model *m,
                                const kernel::ParticleIndexes &pis) {
-  IMP::base::set<kernel::Particle *> rets;
+  boost::unordered_set<kernel::Particle *> rets;
   for (unsigned int i = 0; i < pis.size(); ++i) {
     if (RigidMember::get_is_setup(m, pis[i])) {
       rets.insert(RigidMember(m, pis[i]).get_rigid_body());
@@ -59,7 +60,7 @@ typedef boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes>
 void divvy_up_particles(kernel::Model *m, const kernel::ParticleIndexes &ps,
                         kernel::ParticleIndexes &out, RBM &members) {
   IMP_IF_CHECK(base::USAGE) {
-    base::set<kernel::ParticleIndex> ups(ps.begin(), ps.end());
+    boost::unordered_set<kernel::ParticleIndex> ups(ps.begin(), ps.end());
     IMP_USAGE_CHECK(ups.size() == ps.size(),
                     "Duplicate particles in input: " << ups.size()
                                                      << "!= " << ps.size());
