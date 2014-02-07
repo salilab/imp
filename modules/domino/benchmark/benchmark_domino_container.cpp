@@ -42,8 +42,10 @@ void benchmark_table(AssignmentContainer *ac, std::string name,
 int main(int argc, char *argv[]) {
   IMP::base::setup_from_argv(argc, argv, "benchmark domino containers");
   IMP_NEW(kernel::Model, m, ());
+  kernel::ParticlesTemp ps;
   for (unsigned int i = 0; i < 10; ++i) {
     IMP_NEW(kernel::Particle, p, (m));
+    ps.push_back(p);
   }
   int number_of_values;
   if (IMP_BUILD == IMP_DEBUG || IMP::base::run_quick_test) {
@@ -51,13 +53,13 @@ int main(int argc, char *argv[]) {
   } else {
     number_of_values = 100000;
   }
-  Subset s(m->get_particles());
+  Subset s(ps);
 #ifdef IMP_DOMINO_USE_IMP_RMF
   {
     RMF::HDF5::File file = RMF::HDF5::create_file(
         base::create_temporary_file_name("benchmark", ".hdf5"));
     RMF::HDF5::IndexDataSet2D ds = file.add_child_index_data_set_2d("data");
-    IMP_NEW(WriteHDF5AssignmentContainer, ac, (ds, s, m->get_particles(), "c"));
+    IMP_NEW(WriteHDF5AssignmentContainer, ac, (ds, s, ps, "c"));
     ac->set_cache_size(1);
     benchmark_table<WriteHDF5AssignmentContainer>(ac, "hdf5 no cache",
                                                   number_of_values);
@@ -66,7 +68,7 @@ int main(int argc, char *argv[]) {
     RMF::HDF5::File file = RMF::HDF5::create_file(
         base::create_temporary_file_name("benchmark", ".hdf5"));
     RMF::HDF5::IndexDataSet2D ds = file.add_child_index_data_set_2d("data");
-    IMP_NEW(WriteHDF5AssignmentContainer, ac, (ds, s, m->get_particles(), "c"));
+    IMP_NEW(WriteHDF5AssignmentContainer, ac, (ds, s, ps, "c"));
     ac->set_cache_size(1000000);
     benchmark_table<WriteHDF5AssignmentContainer>(ac, "hdf5", number_of_values);
   }
@@ -74,7 +76,7 @@ int main(int argc, char *argv[]) {
   {
     std::string name =
         base::create_temporary_file_name("benchmark", ".assignments");
-    IMP_NEW(WriteAssignmentContainer, ac, (name, s, m->get_particles(), "c"));
+    IMP_NEW(WriteAssignmentContainer, ac, (name, s, ps, "c"));
     ac->set_cache_size(1000000);
     benchmark_table<WriteAssignmentContainer>(ac, "direct", number_of_values);
   }

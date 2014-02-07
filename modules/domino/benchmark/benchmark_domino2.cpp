@@ -57,6 +57,7 @@ int main(int argc, char *argv[]) {
     oss << "Edge " << ppt[i][0] << "-" << ppt[i][1];
     r->set_name(oss.str());
     m->add_restraint(r);
+    r->set_maximum_score(1);
   }
   IMP_NEW(RigidBodyStates, pstates, (vs));
   IMP_NEW(ParticleStatesTable, pst, ());
@@ -64,7 +65,6 @@ int main(int argc, char *argv[]) {
     pst->set_particle_states(rs[i], pstates);
   }
   IMP_NEW(DominoSampler, ds, (m, pst));
-  m->set_maximum_score(1);
   double runtime, num = 0;
   /*#ifndef NDEBUG
   ds->set_log_level(VERBOSE);
