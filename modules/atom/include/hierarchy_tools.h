@@ -17,6 +17,7 @@
 #include <IMP/core/XYZR.h>
 #include "Selection.h"
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/unordered_map.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -176,8 +177,8 @@ IMPATOMEXPORT HierarchyTree get_hierarchy_tree(Hierarchy h);
 */
 class HierarchyGeometry : public display::SingletonGeometry {
   double res_;
-  mutable IMP::base::map<kernel::Particle *, base::Pointer<display::Geometry> >
-      components_;
+  mutable boost::unordered_map<kernel::Particle *,
+                               base::Pointer<display::Geometry> > components_;
 
  public:
   HierarchyGeometry(core::Hierarchy d, double resolution = 0)
@@ -201,8 +202,8 @@ class HierarchyGeometry : public display::SingletonGeometry {
 };
 class HierarchiesGeometry : public display::SingletonsGeometry {
   double res_;
-  mutable IMP::base::map<kernel::ParticleIndex,
-                         base::Pointer<display::Geometry> > components_;
+  mutable boost::unordered_map<kernel::ParticleIndex,
+                               base::Pointer<display::Geometry> > components_;
 
  public:
   HierarchiesGeometry(SingletonContainer *sc, double resolution = -1)
