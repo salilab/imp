@@ -62,8 +62,8 @@ inline void show_as_graphviz(const Graph &g, ShowFunction f, TextOutput out) {
 
 template <class Graph, class VertexName, class VertexDescriptor,
           class GraphTraits>
-  inline boost::unordered_map<VertexName, VertexDescriptor> get_graph_vertex_index(
-    const Graph &g) {
+inline boost::unordered_map<VertexName, VertexDescriptor>
+get_graph_vertex_index(const Graph &g) {
   boost::unordered_map<VertexName, VertexDescriptor> ret;
   typename boost::property_map<Graph, boost::vertex_name_t>::const_type vm =
       boost::get(boost::vertex_name, g);

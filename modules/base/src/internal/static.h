@@ -59,7 +59,6 @@ extern IMPBASEEXPORT std::string exe_name;
 extern IMPBASEEXPORT std::string exe_usage;
 extern IMPBASEEXPORT std::string exe_description;
 
-
 extern IMPBASEEXPORT AdvancedFlag<boost::int64_t, IMP_BASE_HAS_OPENMP>
     number_of_threads;
 

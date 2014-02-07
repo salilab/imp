@@ -17,7 +17,6 @@
 #include <IMP/kernel/ClassnameModifier.h>
 #include <IMP/kernel/base_types.h>
 
-
 IMPCONTAINER_BEGIN_NAMESPACE
 
 //! Store a PLURALINDEXTYPE

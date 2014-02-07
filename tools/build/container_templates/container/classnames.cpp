@@ -112,7 +112,7 @@ void ClassnameContainerSet::do_apply(const ClassnameModifier *sm) const {
 
 ParticleIndexes ClassnameContainerSet::get_all_possible_indexes() const {
   kernel::ParticleIndexes ret;
-  IMP_FOREACH(kernel::ClassnameContainer *c, get_classname_containers()) {
+  IMP_FOREACH(kernel::ClassnameContainer * c, get_classname_containers()) {
     ret += c->get_all_possible_indexes();
   }
   return ret;
@@ -242,7 +242,7 @@ void DistributeClassnamesScoreState::update_lists_if_necessary() const {
   input_version_ = h;
 
   base::Vector<PLURALINDEXTYPE> output(data_.size());
-  IMP_FOREACH(INDEXTYPE it,  input_->get_contents()) {
+  IMP_FOREACH(INDEXTYPE it, input_->get_contents()) {
     for (unsigned int i = 0; i < data_.size(); ++i) {
       if (data_[i].get<1>()->get_value_index(get_model(), it) ==
           data_[i].get<2>()) {
@@ -291,7 +291,7 @@ void EventClassnamesOptimizerState::update() {
   int met = 0;
   kernel::Model *m = get_optimizer()->get_model();
   IMP_FOREACH(INDEXTYPE it, container_->get_contents()) {
-    if (pred_->get_value_index(m, it) == v_)  ++met;
+    if (pred_->get_value_index(m, it) == v_) ++met;
   }
   if (met >= min_ && met < max_) {
     throw IMP::base::EventException("an event occurred");
@@ -516,7 +516,7 @@ void PredicateClassnamesRestraint::do_add_score_and_derivatives(
   // currently ignores all maxima
   // no longer parallizable
   update_lists_if_necessary();
-  typedef std::pair< int, PLURALINDEXTYPE> LP;
+  typedef std::pair<int, PLURALINDEXTYPE> LP;
   IMP_FOREACH(const LP & lp, lists_) {
     IMP_LOG_VERBOSE("Evaluating score for predicate value " << lp.first
                                                             << std::endl);
@@ -568,7 +568,7 @@ void PredicateClassnamesRestraint::update_lists_if_necessary() const {
 
   typedef std::pair<int, PLURALINDEXTYPE> LP;
   Ints unknown;
-  IMP_FOREACH(const LP &lp, lists_) {
+  IMP_FOREACH(const LP & lp, lists_) {
     int bin = lp.first;
     if (scores_.find(bin) == scores_.end()) {
       IMP_USAGE_CHECK(!error_on_unknown_, "Unknown predicate value of "
@@ -579,7 +579,9 @@ void PredicateClassnamesRestraint::update_lists_if_necessary() const {
   }
   const int unknown_bin = std::numeric_limits<double>::max();
   if (scores_.find(unknown_bin) != scores_.end()) {
-    IMP_FOREACH(int i, unknown) { lists_[unknown_bin] += lists_.find(i)->second; }
+    IMP_FOREACH(int i, unknown) {
+      lists_[unknown_bin] += lists_.find(i)->second;
+    }
   }
   IMP_FOREACH(int i, unknown) { lists_.erase(i); }
 }

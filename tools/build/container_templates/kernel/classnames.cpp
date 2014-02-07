@@ -30,7 +30,7 @@
 IMPKERNEL_BEGIN_NAMESPACE
 
 ClassnameContainer::ClassnameContainer(kernel::Model *m, std::string name)
-: Container(m, name), contents_hash_(-1), cache_initialized_(false) {}
+    : Container(m, name), contents_hash_(-1), cache_initialized_(false) {}
 
 // here for gcc
 ClassnameContainer::~ClassnameContainer() {}
@@ -44,8 +44,7 @@ bool ClassnameContainer::get_contains_FUNCTIONNAME(VARIABLETYPE v) const {
                                   "You should build your own index instead");
   INDEXTYPE iv = IMP::kernel::internal::get_index(v);
   IMP_FOREACH(INDEXTYPE it, get_contents()) {
-    if (it == iv)
-      return true;
+    if (it == iv) return true;
   }
   return false;
 }

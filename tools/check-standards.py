@@ -1,1 +1,0 @@
-developer_tools/check_standards.py

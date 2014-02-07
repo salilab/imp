@@ -26,100 +26,99 @@
  *
  */
 
-#ifndef %(cppprefix)s_CONFIG_H
-#define %(cppprefix)s_CONFIG_H
+#ifndef % (cppprefix) s_CONFIG_H
+#define % (cppprefix) s_CONFIG_H
 
 #include <IMP/base/base_config.h>
 #include <string>
 
 #ifdef _MSC_VER
 
-#ifdef %(cppprefix)s_EXPORTS
-#define %(cppprefix)sEXPORT __declspec(dllexport)
+#ifdef % (cppprefix) s_EXPORTS
+#define % (cppprefix) sEXPORT __declspec(dllexport)
 #else  // EXPORTS
-#define %(cppprefix)sEXPORT __declspec(dllimport)
+#define % (cppprefix) sEXPORT __declspec(dllimport)
 #endif  // EXPORTS
 
 #else  // _MSC_VER
 
 #ifdef GCC_VISIBILITY
-#define %(cppprefix)sEXPORT __attribute__((visibility("default")))
+#define % (cppprefix) sEXPORT __attribute__((visibility("default")))
 #else  // GCC_VISIBILITY
-#define %(cppprefix)sEXPORT
+#define % (cppprefix) sEXPORT
 #endif  // GCC_VISIBILITY
 
 #endif  // _MSC_VER
 
 #if defined(_MSC_VER) && !defined(SWIG)
-#ifdef %(cppprefix)s_EXPORTS
+#ifdef % (cppprefix) s_EXPORTS
 
-#define %(cppprefix)s_EXPORT_TEMPLATE(name)     \
-  template class __declspec(dllexport) name
+#define % (cppprefix) \
+    s_EXPORT_TEMPLATE(name) template class __declspec(dllexport) name
 
-#else  //EXPORTS
+#else  // EXPORTS
 
-#define %(cppprefix)s_EXPORT_TEMPLATE(name)     \
-  template class __declspec(dllimport) name
+#define % (cppprefix) \
+    s_EXPORT_TEMPLATE(name) template class __declspec(dllimport) name
 
 #endif  // EXPORTS
 
 #else  // MSC and SWIG
-#define %(cppprefix)s_EXPORT_TEMPLATE(name) IMP_REQUIRE_SEMICOLON_NAMESPACE
+#define % (cppprefix) s_EXPORT_TEMPLATE(name) IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 #endif  // MSC and SWIG
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 
-#define %(cppprefix)s_BEGIN_NAMESPACE \
-  IMP_COMPILER_ENABLE_WARNINGS namespace IMP{namespace %(name)s {
+#define %                                                                     \
+    (cppprefix) s_BEGIN_NAMESPACE IMP_COMPILER_ENABLE_WARNINGS namespace IMP{ \
+        namespace % (name) s {
 
-#define %(cppprefix)s_END_NAMESPACE } } \
-IMP_COMPILER_DISABLE_WARNINGS
+#define % (cppprefix) s_END_NAMESPACE}} IMP_COMPILER_DISABLE_WARNINGS
 
-#define %(cppprefix)s_BEGIN_INTERNAL_NAMESPACE %(cppprefix)s_BEGIN_NAMESPACE \
-  namespace internal {
+#define % (cppprefix) s_BEGIN_INTERNAL_NAMESPACE % \
+    (cppprefix) s_BEGIN_NAMESPACE namespace internal {
 
-#define %(cppprefix)s_END_INTERNAL_NAMESPACE } %(cppprefix)s_END_NAMESPACE
+#define % (cppprefix) s_END_INTERNAL_NAMESPACE} % (cppprefix) s_END_NAMESPACE
 
 #else  // SWIG and DOXYGEN
-#define %(cppprefix)s_BEGIN_NAMESPACE namespace IMP{namespace %(name)s {
+#define % (cppprefix) s_BEGIN_NAMESPACE namespace IMP{namespace % (name) s {
 
-#define %(cppprefix)s_END_NAMESPACE } }
+#define % (cppprefix) s_END_NAMESPACE}}
 
-#define %(cppprefix)s_BEGIN_INTERNAL_NAMESPACE %(cppprefix)s_BEGIN_NAMESPACE\
-  namespace internal {
+#define % (cppprefix) s_BEGIN_INTERNAL_NAMESPACE % \
+    (cppprefix) s_BEGIN_NAMESPACE namespace internal {
 
-#define %(cppprefix)s_END_INTERNAL_NAMESPACE } %(cppprefix)s_END_NAMESPACE
+#define % (cppprefix) s_END_INTERNAL_NAMESPACE} % (cppprefix) s_END_NAMESPACE
 
 #endif  // SWIG AND DOXYGEN
 
-%(cppdefines)s
+% (cppdefines)s
 
     //  functions are defined explicitly for SWIG
-    namespace IMP {
-  namespace %(name)s {
+    namespace IMP{namespace %
+                  (name)s{
 /** \name Standard module methods
   All \imp modules have a set of standard methods to help get information
   about the module and about files associated with the module.
   @{
   */
 #if !defined(SWIG)
-    %(cppprefix)sEXPORT std::string get_module_version();
+                      % (cppprefix)sEXPORT std::string get_module_version();
 #endif
 
 #if !defined(SWIG)
-    // SWIG will whine about duplicate definitions of function
-    inline std::string get_module_name() { return "IMP::%(name)s"; }
+// SWIG will whine about duplicate definitions of function
+inline std::string get_module_name() { return "IMP::%(name)s"; }
 #endif
+}
+}  // namespace
 
-  }
-}  //namespace
-
-%(showable)s
+% (showable)s
 
 #if !defined(SWIG)
     namespace IMP {
-  namespace %(name)s {
+  namespace % (name)s {
 
     //! Return the full path to installed data
     /** Each module has its own data directory, so be sure to use
@@ -132,7 +131,7 @@ IMP_COMPILER_DISABLE_WARNINGS
         This will ensure that the code works when \imp is installed or
         used via the \c setup_environment.sh script.
     */
-    %(cppprefix)sEXPORT std::string get_data_path(std::string file_name);
+    % (cppprefix)sEXPORT std::string get_data_path(std::string file_name);
 
     //! Return the path to installed example data for this module
     /** Each module has its own example directory, so be sure to use
@@ -146,9 +145,8 @@ IMP_COMPILER_DISABLE_WARNINGS
         This will ensure that the code works when \imp is installed or
         used via the \c setup_environment.sh script.
     */
-    %(cppprefix)sEXPORT std::string get_example_path(std::string file_name);
+    % (cppprefix)sEXPORT std::string get_example_path(std::string file_name);
     /** @} */
-
   }
 }  // namespace
 
@@ -166,93 +164,101 @@ IMP_COMPILER_DISABLE_WARNINGS
 
 // Here so it is always parsed
 
-#ifdef %(cppprefix)s_DEPRECATED_HEADER
-#undef %(cppprefix)s_DEPRECATED_HEADER
-#undef %(cppprefix)s_DEPRECATED_VALUE_DEF
-#undef %(cppprefix)s_DEPRECATED_VALUE_DECL
-#undef %(cppprefix)s_DEPRECATED_OBJECT_DEF
-#undef %(cppprefix)s_DEPRECATED_OBJECT_DECL
-#undef %(cppprefix)s_DEPRECATED_FUNCTION_DEF
-#undef %(cppprefix)s_DEPRECATED_FUNCTION_DECL
-#undef %(cppprefix)s_DEPRECATED_METHOD_DEF
-#undef %(cppprefix)s_DEPRECATED_METHOD_DECL
-#undef %(cppprefix)s_DEPRECATED_MACRO
-#undef %(cppprefix)s_SHOW_WARNINGS
+#ifdef % (cppprefix) s_DEPRECATED_HEADER
+#undef % (cppprefix) s_DEPRECATED_HEADER
+#undef % (cppprefix) s_DEPRECATED_VALUE_DEF
+#undef % (cppprefix) s_DEPRECATED_VALUE_DECL
+#undef % (cppprefix) s_DEPRECATED_OBJECT_DEF
+#undef % (cppprefix) s_DEPRECATED_OBJECT_DECL
+#undef % (cppprefix) s_DEPRECATED_FUNCTION_DEF
+#undef % (cppprefix) s_DEPRECATED_FUNCTION_DECL
+#undef % (cppprefix) s_DEPRECATED_METHOD_DEF
+#undef % (cppprefix) s_DEPRECATED_METHOD_DECL
+#undef % (cppprefix) s_DEPRECATED_MACRO
+#undef % (cppprefix) s_SHOW_WARNINGS
 #endif
 
 // the central modules we can update easily, so don't warn in them
-#if defined( %(cppprefix)s_COMPILATION)                                 \
-  || defined(SWIG) || defined(IMP_SWIG_WRAPPER)                         \
-  || defined( %(cppprefix)s_ALL) || defined(IMP_DOXYGEN)                \
-  || defined(IMPBASE_COMPILATION) || defined(IMPKERNEL_COMPILATION)     \
-  || defined(IMPCORE_COMPILATION) || defined(IMPATOM_COMPILATION)       \
-  || defined(IMPSTATISTICS_COMPILATION) || defined(IMPDOMINO_COMPILATION) \
-  || defined(IMPCONTAINER_COMPILATION) || defined(IMPDISPLAY_COMPILATION) \
-  || defined(IMPSCOREFUNCTOR_COMPILATION) || defined(IMPRMF_COMPILATION) \
-  || defined(IMPGSL_COMPILATION)
-#define %(cppprefix)s_SHOW_WARNINGS 0
+#if defined(% (cppprefix)s_COMPILATION) || defined(SWIG) ||                    \
+    defined(IMP_SWIG_WRAPPER) || defined(% (cppprefix)s_ALL) ||                \
+    defined(IMP_DOXYGEN) || defined(IMPBASE_COMPILATION) ||                    \
+    defined(IMPKERNEL_COMPILATION) || defined(IMPCORE_COMPILATION) ||          \
+    defined(IMPATOM_COMPILATION) || defined(IMPSTATISTICS_COMPILATION) ||      \
+    defined(IMPDOMINO_COMPILATION) || defined(IMPCONTAINER_COMPILATION) ||     \
+    defined(IMPDISPLAY_COMPILATION) || defined(IMPSCOREFUNCTOR_COMPILATION) || \
+    defined(IMPRMF_COMPILATION) || defined(IMPGSL_COMPILATION)
+#define % (cppprefix) s_SHOW_WARNINGS 0
 #else
-#define %(cppprefix)s_SHOW_WARNINGS 1
+#define % (cppprefix) s_SHOW_WARNINGS 1
 #endif
 
 // suppress header warnings with all header, SWIG wrapper and in the module
-#if %(cppprefix)s_SHOW_WARNINGS
-#define %(cppprefix)s_DEPRECATED_HEADER(version, help_message)          \
+#if % (cppprefix)s_SHOW_WARNINGS
+#define % (cppprefix) s_DEPRECATED_HEADER(version, help_message) \
     IMP_PRAGMA(message(__FILE__ " is deprecated: " help_message))
-#define %(cppprefix)s_DEPRECATED_VALUE_DECL(version)    \
-  IMP_DEPRECATED_ATTRIBUTE
-#define %(cppprefix)s_DEPRECATED_OBJECT_DECL(version)    \
-  IMP_DEPRECATED_ATTRIBUTE
-#define %(cppprefix)s_DEPRECATED_FUNCTION_DECL(version) \
-  IMP_DEPRECATED_ATTRIBUTE
-#define %(cppprefix)s_DEPRECATED_METHOD_DECL(version) \
-  IMP_DEPRECATED_ATTRIBUTE
+#define % (cppprefix) s_DEPRECATED_VALUE_DECL(version) IMP_DEPRECATED_ATTRIBUTE
+#define % (cppprefix) s_DEPRECATED_OBJECT_DECL(version) IMP_DEPRECATED_ATTRIBUTE
+#define % (cppprefix) s_DEPRECATED_FUNCTION_DECL(version) \
+    IMP_DEPRECATED_ATTRIBUTE
+#define % (cppprefix) s_DEPRECATED_METHOD_DECL(version) IMP_DEPRECATED_ATTRIBUTE
 
-#else //%(cppprefix)s_SHOW_WARNINGS
-/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation). */
-#define %(cppprefix)s_DEPRECATED_HEADER(version, help_message) \
-/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation). */
-#define %(cppprefix)s_DEPRECATED_VALUE_DECL(version)
-/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation). */
-#define %(cppprefix)s_DEPRECATED_OBJECT_DECL(version)
-/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation). */
-#define %(cppprefix)s_DEPRECATED_FUNCTION_DECL(version)
-/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation). */
-#define %(cppprefix)s_DEPRECATED_METHOD_DECL(version)
+#else  //%(cppprefix)s_SHOW_WARNINGS
+/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation).
+ */
+#define % (cppprefix)                                                               \
+    s_DEPRECATED_HEADER(                                                            \
+        version,                                                                    \
+        help_message) /** See [deprecation                                          \
+                         support](https://github.com/salilab/imp/wiki/Deprecation). \
+                         */
+#define % (cppprefix) s_DEPRECATED_VALUE_DECL(version)
+/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation).
+ */
+#define % (cppprefix) s_DEPRECATED_OBJECT_DECL(version)
+/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation).
+ */
+#define % (cppprefix) s_DEPRECATED_FUNCTION_DECL(version)
+/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation).
+ */
+#define % (cppprefix) s_DEPRECATED_METHOD_DECL(version)
 
-#endif // %(cppprefix)s_SHOW_WARNINGS
+#endif  // %(cppprefix)s_SHOW_WARNINGS
 
 // only warn about it in the all inclusion to cut down on copies
-#if !defined(IMP_ALL) || defined(SWIG) || defined(IMP_DOXYGEN)          \
-  || defined(IMPBASE_COMPILATION) || defined(IMPKERNEL_COMPILATION)     \
-  || defined(IMPCORE_COMPILATION) || defined(IMPATOM_COMPILATION)       \
-  || defined(IMPSTATISTICS_COMPILATION) || defined(IMPDOMINO_COMPILATION) \
-  || defined(IMPCONTAINER_COMPILATION) || defined(IMPDISPLAY_COMPILATION) \
-  || defined(IMPSCOREFUNCTOR_COMPILATION)
-/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation). */
-#define %(cppprefix)s_DEPRECATED_MACRO(version, message)
+#if !defined(IMP_ALL) || defined(SWIG) || defined(IMP_DOXYGEN) ||           \
+    defined(IMPBASE_COMPILATION) || defined(IMPKERNEL_COMPILATION) ||       \
+    defined(IMPCORE_COMPILATION) || defined(IMPATOM_COMPILATION) ||         \
+    defined(IMPSTATISTICS_COMPILATION) || defined(IMPDOMINO_COMPILATION) || \
+    defined(IMPCONTAINER_COMPILATION) || defined(IMPDISPLAY_COMPILATION) || \
+    defined(IMPSCOREFUNCTOR_COMPILATION)
+/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation).
+ */
+#define % (cppprefix) s_DEPRECATED_MACRO(version, message)
 
 #else
-#define %(cppprefix)s_DEPRECATED_MACRO(version, message)        \
-  IMP_DEPRECATED_MACRO(version, message)
+#define % (cppprefix) s_DEPRECATED_MACRO(version, message) \
+    IMP_DEPRECATED_MACRO(version, message)
 #endif
 
-/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation). */
-#define %(cppprefix)s_DEPRECATED_VALUE_DEF(version, message) \
-  IMP_DEPRECATED_VALUE_RUNTIME_WARNING(version, message)
+/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation).
+ */
+#define % (cppprefix) s_DEPRECATED_VALUE_DEF(version, message) \
+    IMP_DEPRECATED_VALUE_RUNTIME_WARNING(version, message)
 
-/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation). */
-#define %(cppprefix)s_DEPRECATED_OBJECT_DEF(version, message) \
-  IMP_DEPRECATED_OBJECT_RUNTIME_WARNING(version, message)
+/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation).
+ */
+#define % (cppprefix) s_DEPRECATED_OBJECT_DEF(version, message) \
+    IMP_DEPRECATED_OBJECT_RUNTIME_WARNING(version, message)
 
-/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation). */
-#define %(cppprefix)s_DEPRECATED_FUNCTION_DEF(version, message) \
-  IMP_DEPRECATED_FUNCTION_RUNTIME_WARNING(version, message)
+/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation).
+ */
+#define % (cppprefix) s_DEPRECATED_FUNCTION_DEF(version, message) \
+    IMP_DEPRECATED_FUNCTION_RUNTIME_WARNING(version, message)
 
-/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation). */
-#define %(cppprefix)s_DEPRECATED_METHOD_DEF(version, message) \
-  IMP_DEPRECATED_METHOD_RUNTIME_WARNING(version, message)
-
+/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation).
+ */
+#define % (cppprefix) s_DEPRECATED_METHOD_DEF(version, message) \
+    IMP_DEPRECATED_METHOD_RUNTIME_WARNING(version, message)
 
 #include <IMP/base/compiler_macros.h>
 

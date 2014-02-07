@@ -66,7 +66,8 @@ class IMPCOREEXPORT NBLScoring {
 
   // changes to cache for rollback
   double weight_, max_;
-  boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> controlled_;
+  boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes>
+      controlled_;
 
  public:
   NBLScoring(PairScore *ps, double distance,

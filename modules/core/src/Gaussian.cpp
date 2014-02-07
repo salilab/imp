@@ -32,25 +32,22 @@ void Gaussian::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi) {
   m->add_attribute(get_variance_key(2), pi, 0);
 }
 
-
 IMP_Eigen::Matrix3d Gaussian::get_covariance() const {
   IMP_Eigen::Quaterniond q(
-        get_model()->get_attribute(internal::rigid_body_data().quaternion_[0],
-                                   get_particle_index()),
-        get_model()->get_attribute(internal::rigid_body_data().quaternion_[1],
-                                   get_particle_index()),
-        get_model()->get_attribute(internal::rigid_body_data().quaternion_[2],
-                                   get_particle_index()),
-        get_model()->get_attribute(internal::rigid_body_data().quaternion_[3],
-                                   get_particle_index()));
+      get_model()->get_attribute(internal::rigid_body_data().quaternion_[0],
+                                 get_particle_index()),
+      get_model()->get_attribute(internal::rigid_body_data().quaternion_[1],
+                                 get_particle_index()),
+      get_model()->get_attribute(internal::rigid_body_data().quaternion_[2],
+                                 get_particle_index()),
+      get_model()->get_attribute(internal::rigid_body_data().quaternion_[3],
+                                 get_particle_index()));
   IMP_Eigen::Matrix3d rot = q.toRotationMatrix();
   IMP_Eigen::Matrix3d rad = IMP_Eigen::Vector3d(
-                get_model()->get_attribute(get_variance_key(0),
-                                           get_particle_index()),
-                get_model()->get_attribute(get_variance_key(1),
-                                           get_particle_index()),
-                get_model()->get_attribute(get_variance_key(2),
-                                           get_particle_index())).asDiagonal();
+      get_model()->get_attribute(get_variance_key(0), get_particle_index()),
+      get_model()->get_attribute(get_variance_key(1), get_particle_index()),
+      get_model()->get_attribute(get_variance_key(2), get_particle_index()))
+                                .asDiagonal();
   IMP_Eigen::Matrix3d covar = rot * (rad * rot.transpose());
   return covar;
 }

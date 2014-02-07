@@ -53,8 +53,9 @@ String pick_mol2atom_type(const String& atom_line) {
   return line_part2;
 }
 
-bool is_ATOM_del(const String& bond_line,
-                 const boost::unordered_map<int, kernel::Particle*>& molecule_atoms) {
+bool is_ATOM_del(
+    const String& bond_line,
+    const boost::unordered_map<int, kernel::Particle*>& molecule_atoms) {
   int bond_number, atom_a_id, atom_b_id;
   sscanf(bond_line.c_str(), "%i %i %i", &bond_number, &atom_a_id, &atom_b_id);
   if (molecule_atoms.find(atom_a_id) == molecule_atoms.end() ||

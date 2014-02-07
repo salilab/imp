@@ -51,7 +51,8 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
   }
 
   inline algebra::Gaussian3D get_gaussian() const {
-    return algebra::Gaussian3D(RigidBody::get_reference_frame(),get_variances());
+    return algebra::Gaussian3D(RigidBody::get_reference_frame(),
+                               get_variances());
   }
 
   static FloatKey get_variance_key(unsigned int i);

@@ -43,7 +43,7 @@ class ClassnameRestraint :
             ss, IMP::kernel::internal::get_model(vt),
             IMP::kernel::internal::get_index(vt), name) {}
 
- //! Create the restraint.
+  //! Create the restraint.
   /** This function takes the function to apply to the
       stored Classname and the Classname.
    */

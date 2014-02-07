@@ -247,11 +247,13 @@ struct HalfParticleIndexPairSinkWithMax
 struct RigidBodyRigidBodyParticleIndexPairSink : public ParticleIndexPairSink {
   ObjectKey key_;
   double dist_;
-  const boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &map_;
+  const boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &
+      map_;
   RigidBodyRigidBodyParticleIndexPairSink(
       kernel::Model *m, const PairPredicates &filters,
       kernel::ParticleIndexPairs &out, ObjectKey key, double dist,
-      const boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &map)
+      const boost::unordered_map<kernel::ParticleIndex,
+                                 kernel::ParticleIndexes> &map)
       : ParticleIndexPairSink(m, filters, out),
         key_(key),
         dist_(dist),
@@ -275,11 +277,13 @@ struct RigidBodyRigidBodyParticleIndexPairSink : public ParticleIndexPairSink {
 struct RigidBodyParticleParticleIndexPairSink : public ParticleIndexPairSink {
   ObjectKey key_;
   double dist_;
-  const boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &map_;
+  const boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &
+      map_;
   RigidBodyParticleParticleIndexPairSink(
       kernel::Model *m, const PairPredicates &filters,
       kernel::ParticleIndexPairs &out, ObjectKey key, double dist,
-      const boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &map)
+      const boost::unordered_map<kernel::ParticleIndex,
+                                 kernel::ParticleIndexes> &map)
       : ParticleIndexPairSink(m, filters, out),
         key_(key),
         dist_(dist),
@@ -303,11 +307,13 @@ struct RigidBodyParticleParticleIndexPairSink : public ParticleIndexPairSink {
 struct ParticleRigidBodyParticleIndexPairSink : public ParticleIndexPairSink {
   ObjectKey key_;
   double dist_;
-  const boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &map_;
+  const boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &
+      map_;
   ParticleRigidBodyParticleIndexPairSink(
       kernel::Model *m, const PairPredicates &filters,
       kernel::ParticleIndexPairs &out, ObjectKey key, double dist,
-      const boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &map)
+      const boost::unordered_map<kernel::ParticleIndex,
+                                 kernel::ParticleIndexes> &map)
       : ParticleIndexPairSink(m, filters, out),
         key_(key),
         dist_(dist),
@@ -333,12 +339,14 @@ struct RigidBodyParticleIndexPairSinkWithMax
     : public ParticleIndexPairSinkWithMax<PS> {
   ObjectKey key_;
   double dist_;
-  const boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &map_;
+  const boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &
+      map_;
   RigidBodyParticleIndexPairSinkWithMax(
       kernel::Model *m, const PairPredicates &filters,
       kernel::ParticleIndexPairs &out, PS *ssps, DerivativeAccumulator *da,
       double &score, double max, ObjectKey key, double dist,
-      const boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &map)
+      const boost::unordered_map<kernel::ParticleIndex,
+                                 kernel::ParticleIndexes> &map)
       : ParticleIndexPairSinkWithMax<PS>(m, filters, out, ssps, da, score, max),
         key_(key),
         dist_(dist),
@@ -360,7 +368,8 @@ struct RigidBodyRigidBodyParticleIndexPairSinkWithMax
       kernel::Model *m, const PairPredicates &filters,
       kernel::ParticleIndexPairs &out, PS *ssps, DerivativeAccumulator *da,
       double &score, double max, ObjectKey key, double dist,
-      const boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &map)
+      const boost::unordered_map<kernel::ParticleIndex,
+                                 kernel::ParticleIndexes> &map)
       : P(m, filters, out, ssps, da, score, max, key, dist, map) {}
   bool operator()(kernel::ParticleIndex a, kernel::ParticleIndex b) {
     fill_close_pairs(
@@ -382,7 +391,8 @@ struct RigidBodyParticleParticleIndexPairSinkWithMax
       kernel::Model *m, const PairPredicates &filters,
       kernel::ParticleIndexPairs &out, PS *ssps, DerivativeAccumulator *da,
       double &score, double max, ObjectKey key, double dist,
-      const boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &map)
+      const boost::unordered_map<kernel::ParticleIndex,
+                                 kernel::ParticleIndexes> &map)
       : P(m, filters, out, ssps, da, score, max, key, dist, map) {}
   bool operator()(kernel::ParticleIndex a, kernel::ParticleIndex b) {
     fill_close_particles(P::m_, P::get_hierarchy(a), b, P::dist_,

@@ -93,9 +93,7 @@ class IMPCOREEXPORT CoreClosePairContainer
     return ret;
   }
   unsigned int get_number_of_update_calls() const { return updates_; }
-  unsigned int get_number_of_full_rebuilds() const {
-    return rebuilds_;
-  }
+  unsigned int get_number_of_full_rebuilds() const { return rebuilds_; }
   unsigned int get_number_of_partial_rebuilds() const {
     return partial_rebuilds_;
   }

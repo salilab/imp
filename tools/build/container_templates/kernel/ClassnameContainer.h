@@ -55,8 +55,9 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   */
   virtual PLURALINDEXTYPE get_range_indexes() const = 0;
 
-  const PLURALINDEXTYPE&get_contents() const {
-    if (get_provides_access()) return get_access();
+  const PLURALINDEXTYPE &get_contents() const {
+    if (get_provides_access())
+      return get_access();
     else {
       std::size_t nhash = get_contents_hash();
       if (contents_hash_ != nhash || !cache_initialized_) {
@@ -134,6 +135,7 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   virtual bool do_get_provides_access() const { return false; }
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(ClassnameContainer);
+
  private:
   mutable std::size_t contents_hash_;
   mutable PLURALINDEXTYPE contents_cache_;

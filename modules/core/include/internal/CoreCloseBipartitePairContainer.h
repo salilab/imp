@@ -43,7 +43,8 @@ class IMPCOREEXPORT CoreCloseBipartitePairContainer
   // moved stuff
   kernel::ParticleIndexes rbs_[2];
   kernel::ParticleIndexes xyzrs_[2];
-  boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> constituents_;
+  boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes>
+      constituents_;
   double slack_, distance_;
   algebra::Sphere3Ds rbs_backup_sphere_[2];
   algebra::Rotation3Ds rbs_backup_rot_[2];

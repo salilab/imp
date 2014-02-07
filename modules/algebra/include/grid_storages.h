@@ -179,7 +179,7 @@ class DenseGridStorageD : public BoundedGridRangeD<D> {
     \see Grid3D
 */
 template <int D, class VT, class Base,
-  class Map = typename boost::unordered_map<GridIndexD<D>, VT> >
+          class Map = typename boost::unordered_map<GridIndexD<D>, VT> >
 class SparseGridStorageD : public Base {
   typedef Map Data;
   struct GetIndex {

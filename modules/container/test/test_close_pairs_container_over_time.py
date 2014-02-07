@@ -46,7 +46,8 @@ class Tests(IMP.test.TestCase):
         pc = IMP.container.ListSingletonContainer(ps)
         threshold = 1
         cpss = IMP.container.ClosePairContainer(pc, threshold,
-                                                IMP.core.GridClosePairsFinder(),
+                                                IMP.core.GridClosePairsFinder(
+                                                ),
                                                 .01)
         m.update()
         n = cpss.get_number_of_particle_pairs()

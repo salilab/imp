@@ -467,7 +467,8 @@ IMPCOREEXPORT void show_rigid_body_hierarchy(RigidBody rb,
                                              base::TextOutput out =
                                                  base::TextOutput(std::cout));
 
-/** Return the particle index of the outer-most rigid body containing the member.
+/** Return the particle index of the outer-most rigid body containing the
+   member.
 
     Use this to, for example, group particles into rigid bodies. */
 IMPCOREEXPORT kernel::ParticleIndex get_root_rigid_body(RigidMember m);

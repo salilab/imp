@@ -59,7 +59,7 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
   void set_is_complete(bool tf) { error_on_unknown_ = tf; }
 
   /** return the indexes of all particles for  a given predicate value.*/
-  PLURALINDEXTYPE get_indexes( int predicate_value) const {
+  PLURALINDEXTYPE get_indexes(int predicate_value) const {
     return lists_.find(predicate_value)->second;
   }
 

@@ -111,7 +111,8 @@ RMF::NodeHandle get_node(Subset s, RestraintSaveData &d,
                          RMF::NodeHandle parent) {
   if (d.map_.find(s) == d.map_.end()) {
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-      for (boost::unordered_map<Subset, RMF::NodeID>::const_iterator it = d.map_.begin();
+      for (boost::unordered_map<Subset, RMF::NodeID>::const_iterator it =
+               d.map_.begin();
            it != d.map_.end(); ++it) {
         IMP_INTERNAL_CHECK(it->first != s, "Found!!!!");
       }

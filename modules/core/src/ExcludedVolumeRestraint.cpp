@@ -300,7 +300,7 @@ Restraints ExcludedVolumeRestraint::do_create_decomposition() const {
   }
   IMP_NEW(TableRefiner, tr, ());
   for (boost::unordered_map<kernel::ParticleIndex,
-                      kernel::ParticleIndexes>::const_iterator it =
+                            kernel::ParticleIndexes>::const_iterator it =
            constituents_.begin();
        it != constituents_.end(); ++it) {
     tr->add_particle(kernel::internal::get_particle(get_model(), it->first),

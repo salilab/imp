@@ -132,7 +132,7 @@ inline void reset_moved(
     kernel::Model *m, kernel::ParticleIndexes &xyzrs_,
     kernel::ParticleIndexes &rbs_,
     boost::unordered_map<kernel::ParticleIndex,
-                   kernel::ParticleIndexes> & /*constituents_*/,
+                         kernel::ParticleIndexes> & /*constituents_*/,
     algebra::Sphere3Ds &rbs_backup_sphere_,
     algebra::Rotation3Ds &rbs_backup_rot_, algebra::Sphere3Ds &xyzrs_backup_) {
   xyzrs_backup_.resize(xyzrs_.size());
@@ -191,7 +191,8 @@ inline void initialize_particles(
         kernel::ParticleIndexes cur = constituents_[pi];
         IMP_USAGE_CHECK(std::find(cur.begin(), cur.end(), pi) == cur.end(),
                         "A rigid body cann't be its own constituent.");
-        boost::unordered_set<kernel::ParticleIndex> scur(cur.begin(), cur.end());
+        boost::unordered_set<kernel::ParticleIndex> scur(cur.begin(),
+                                                         cur.end());
         IMP_USAGE_CHECK(cur.size() == scur.size(),
                         "Duplicate constituents for "
                             << sc->get_model()->get_particle(pi)->get_name()
@@ -214,7 +215,7 @@ inline void initialize_particles(
   rbs_backup_rot_.clear();
   IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     for (boost::unordered_map<kernel::ParticleIndex,
-                        kernel::ParticleIndexes>::const_iterator it =
+                              kernel::ParticleIndexes>::const_iterator it =
              constituents_.begin();
          it != constituents_.end(); ++it) {
       kernel::ParticleIndexes cur = it->second;
@@ -234,7 +235,7 @@ inline bool get_if_moved(
     kernel::Model *m, double slack_, const kernel::ParticleIndexes &xyzrs_,
     const kernel::ParticleIndexes &rbs_,
     const boost::unordered_map<kernel::ParticleIndex,
-                         kernel::ParticleIndexes> & /*constituents_*/,
+                               kernel::ParticleIndexes> & /*constituents_*/,
     const algebra::Sphere3Ds &rbs_backup_sphere_,
     const algebra::Rotation3Ds &rbs_backup_rot_,
     const algebra::Sphere3Ds &xyzrs_backup_) {
@@ -301,13 +302,13 @@ inline bool get_if_moved(
   return false;
 }
 
-inline void fill_list(kernel::Model *m, const PairPredicates &filters,
-                      ObjectKey key_, double slack_,
-                      kernel::ParticleIndexes &xyzrs_,
-                      kernel::ParticleIndexes &rbs_,
-                      boost::unordered_map<kernel::ParticleIndex,
-                                     kernel::ParticleIndexes> &constituents_,
-                      kernel::ParticleIndexPairs &cur_list_) {
+inline void fill_list(
+    kernel::Model *m, const PairPredicates &filters, ObjectKey key_,
+    double slack_, kernel::ParticleIndexes &xyzrs_,
+    kernel::ParticleIndexes &rbs_,
+    boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &
+        constituents_,
+    kernel::ParticleIndexPairs &cur_list_) {
   IMP_INTERNAL_CHECK(slack_ >= 0, "Slack must not be negative");
   /*IMP_LOG_VERBOSE( "filling particle list with slack " << slack_
     << " on " << sc_->get_name());*/
@@ -334,13 +335,13 @@ inline void fill_list(kernel::Model *m, const PairPredicates &filters,
   IMP_LOG_VERBOSE("found " << cur_list_.size() << std::endl);
 }
 
-inline void fill_list(kernel::Model *m, const PairPredicates &filters,
-                      ObjectKey key_, double slack_,
-                      kernel::ParticleIndexes xyzrs_[],
-                      kernel::ParticleIndexes rbs_[],
-                      boost::unordered_map<kernel::ParticleIndex,
-                                     kernel::ParticleIndexes> &constituents_,
-                      kernel::ParticleIndexPairs &cur_list_) {
+inline void fill_list(
+    kernel::Model *m, const PairPredicates &filters, ObjectKey key_,
+    double slack_, kernel::ParticleIndexes xyzrs_[],
+    kernel::ParticleIndexes rbs_[],
+    boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &
+        constituents_,
+    kernel::ParticleIndexPairs &cur_list_) {
   IMP_INTERNAL_CHECK(slack_ >= 0, "Slack must not be negative");
   /*IMP_LOG_VERBOSE( "filling particle list with slack " << slack_
     << " on " << sc_->get_name());*/

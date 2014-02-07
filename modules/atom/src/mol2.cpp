@@ -153,8 +153,9 @@ Particle* m2_atom_particle(kernel::Model* m, const std::string& mol2_atomline) {
   return p;
 }
 
-void bond_particle(kernel::Model*, const String& mol2_bondline,
-                   const boost::unordered_map<Int, kernel::Particle*>& molecule_atoms) {
+void bond_particle(
+    kernel::Model*, const String& mol2_bondline,
+    const boost::unordered_map<Int, kernel::Particle*>& molecule_atoms) {
   //  kernel::Particle* p = new kernel::Particle(m);
   std::istringstream ins(mol2_bondline);
 
@@ -253,10 +254,10 @@ Hierarchy read_molecule_mol2(kernel::Model* model, std::istream& mol2_file,
   return molecule_d;
 }
 
-void read_atom_mol2(kernel::Model* model, std::istream& mol2_file,
-                    Hierarchy& molecule_d,
-                    boost::unordered_map<Int, kernel::Particle*>& molecule_atoms,
-                    Mol2Selector* mol2sel) {
+void read_atom_mol2(
+    kernel::Model* model, std::istream& mol2_file, Hierarchy& molecule_d,
+    boost::unordered_map<Int, kernel::Particle*>& molecule_atoms,
+    Mol2Selector* mol2sel) {
   IMP::base::PointerMember<Mol2Selector> sel(mol2sel);
   std::string line;
   char c;
@@ -284,9 +285,9 @@ void read_atom_mol2(kernel::Model* model, std::istream& mol2_file,
   } while (!mol2_file.eof());
 }
 
-void read_bond_mol2(kernel::Model* m, std::istream& mol2_file,
-                    Hierarchy& /*molecule_d*/,
-                    const boost::unordered_map<Int, kernel::Particle*>& molecule_atoms) {
+void read_bond_mol2(
+    kernel::Model* m, std::istream& mol2_file, Hierarchy& /*molecule_d*/,
+    const boost::unordered_map<Int, kernel::Particle*>& molecule_atoms) {
   std::string line;
   char c;
   Int count = 0;

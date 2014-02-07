@@ -111,8 +111,9 @@ class BasicAttributeTable {
   }
   void clear_caches(ParticleIndex particle) {
     IMP_OMP_PRAGMA(critical(imp_cache))
-    for (typename IMP_BASE_SMALL_UNORDERED_SET<Key>::const_iterator it
-          = caches_.begin(); it != caches_.end(); ++it) {
+    for (typename IMP_BASE_SMALL_UNORDERED_SET<Key>::const_iterator it =
+             caches_.begin();
+         it != caches_.end(); ++it) {
       if (data_.size() > it->get_index() &&
           data_[it->get_index()].size() > get_as_unsigned_int(particle)) {
         data_[it->get_index()][particle] = Traits::get_invalid();

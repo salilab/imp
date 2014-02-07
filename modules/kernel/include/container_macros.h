@@ -245,7 +245,7 @@
                without                                                         \
                 any callbacks being made.*/                                    \
   PluralData& mutable_access_##lcnames() { return lcname##_vector_; }          \
-  IMP_NO_DOXYGEN(const PluralData& access_##lcnames() const { \
+  IMP_NO_DOXYGEN(const PluralData& access_##lcnames() const {                  \
     return lcname##_vector_;                                                   \
   }) private : void lcname##_handle_remove(Data obj) {                         \
     Ucname##DataWrapper::do_handle_remove(obj, this);                          \

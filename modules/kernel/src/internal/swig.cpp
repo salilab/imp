@@ -158,7 +158,8 @@ Float _LogPairScore::evaluate_index(Model *m, const ParticleIndexPair &ipp,
 //! Get a list of all pairs (without multiplicity)
 ParticlePairsTemp _LogPairScore::get_particle_pairs() const {
   ParticlePairsTemp ret;
-  for (boost::unordered_map<ParticlePair, unsigned int>::const_iterator it = map_.begin();
+  for (boost::unordered_map<ParticlePair, unsigned int>::const_iterator it =
+           map_.begin();
        it != map_.end(); ++it) {
     ret.push_back(it->first);
   }

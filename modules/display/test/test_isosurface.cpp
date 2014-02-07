@@ -3,13 +3,13 @@
 #include "IMP/display/geometry.h"
 #include "IMP/algebra/standard_grids.h"
 
-int main(int, char*[]) {
+int main(int, char * []) {
 #if IMP_DISPLAY_HAS_IMP_CGAL
   typedef IMP::algebra::DenseGrid3D<double> G;
   G g(2.5, IMP::algebra::BoundingBox3D(IMP::algebra::Vector3D(-10, -10, -10),
                                        IMP::algebra::Vector3D(10, 10, 10)));
   IMP_FOREACH(G::Index i, g.get_all_indexes()) {
-    double m= g.get_center(i).get_magnitude();
+    double m = g.get_center(i).get_magnitude();
     g[i] = 100 - m;
   }
   IMP_NEW(IMP::display::IsosurfaceGeometry, gg, (g, 95.0));

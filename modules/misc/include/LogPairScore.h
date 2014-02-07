@@ -37,8 +37,8 @@ class LogPairScore : public PairScore {
   //! Get a list of all pairs (without multiplicity)
   kernel::ParticlePairsTemp get_particle_pairs() const {
     kernel::ParticlePairsTemp ret;
-    for (boost::unordered_map<kernel::ParticlePair, unsigned int>::const_iterator it =
-             map_.begin();
+    for (boost::unordered_map<kernel::ParticlePair,
+                              unsigned int>::const_iterator it = map_.begin();
          it != map_.end(); ++it) {
       ret.push_back(it->first);
     }

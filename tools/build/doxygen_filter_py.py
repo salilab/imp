@@ -66,7 +66,7 @@ def format_value(val):
         return '(' + ", ".join([format_value(x) for x in val.elts]) + ')'
     elif isinstance(val, ast.BinOp):
         return format_value(val.left) + " " + format_value(val.op) \
-               + " " + format_value(val.right)
+            + " " + format_value(val.right)
     elif isinstance(val, ast.UnaryOp):
         return format_value(val.op) + format_value(val.operand)
     elif isinstance(val, ast.Call):

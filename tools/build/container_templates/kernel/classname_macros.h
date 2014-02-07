@@ -43,7 +43,6 @@
     return ret;                                                                \
   }
 
-
 //! Define extra the functions needed for a ClassnamePredicate
 #define IMP_CLASSNAME_PREDICATE_METHODS(Name)                                  \
   int get_value(ARGUMENTTYPE a) const {                                        \
@@ -85,7 +84,6 @@
         ps.end());                                                             \
   });
 
-
 //! Use IMP_CLASSNAME_MODIFIER() instead
 #define IMP_CLASSNAME_DERIVATIVE_MODIFIER(Name) IMP_CLASSNAME_MODIFIER(Name)
 
@@ -100,7 +98,6 @@
       apply_index(m, o[i]);                                              \
     }                                                                    \
   }
-
 
 //! Use IMP_INDEX_CLASSNAME_MODIFIER instead
 #define IMP_INDEX_CLASSNAME_DERIVATIVE_MODIFIER(Name) \
@@ -119,6 +116,5 @@
 */
 #define IMP_CLASSNAME_CONTAINER_METHODS(Name) \
   void do_apply(const ClassnameModifier *sm) const { apply_generic(sm); }
-
 
 #endif /* IMPKERNEL_CLASSNAME_MACROS_H */

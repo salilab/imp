@@ -14,8 +14,9 @@
 #include <boost/unordered_set.hpp>
 #include "hash.h"
 
-IMPBASE_DEPRECATED_HEADER(2.2, "Use boost::unordered_set directly or"\
-			  " base/set_map_macros.h.");
+IMPBASE_DEPRECATED_HEADER(2.2,
+                          "Use boost::unordered_set directly or"
+                          " base/set_map_macros.h.");
 
 IMPBASE_BEGIN_NAMESPACE
 /** This class chooses the best of STL compatible

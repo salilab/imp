@@ -94,7 +94,8 @@ class IMPKERNELEXPORT Model : public base::Object
   typedef boost::unordered_map<const ModelObject *, NodeInfo> DependencyGraph;
   DependencyGraph dependency_graph_;
   boost::unordered_set<const ModelObject *> no_dependencies_;
-  boost::unordered_map<const ModelObject *, ScoreStatesTemp> required_score_states_;
+  boost::unordered_map<const ModelObject *, ScoreStatesTemp>
+      required_score_states_;
 
   // basic representation
   boost::unordered_map<FloatKey, FloatRange> ranges_;

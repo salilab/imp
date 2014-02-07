@@ -238,9 +238,8 @@ void RigidMovedSingletonContainer::do_reset_moved() {
 
 namespace {
 std::ostream &operator<<(
-    std::ostream &out,
-    const boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &
-        m) {
+    std::ostream &out, const boost::unordered_map<kernel::ParticleIndex,
+                                                  kernel::ParticleIndexes> &m) {
   typedef std::pair<kernel::ParticleIndex, kernel::ParticleIndexes> P;
   out << "{";
   IMP_FOREACH(P p, m) { out << p.first << ": " << p.second << ", "; }

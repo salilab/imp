@@ -125,8 +125,8 @@ CheckObjects check;
 #if IMP_HAS_CHECKS
 Strings get_live_object_names() {
   IMP::base::Vector<std::string> ret;
-  for (boost::unordered_set<Object*>::const_iterator it = live_.begin(); it != live_.end();
-       ++it) {
+  for (boost::unordered_set<Object*>::const_iterator it = live_.begin();
+       it != live_.end(); ++it) {
     ret.push_back((*it)->get_name());
   }
   return ret;
@@ -149,8 +149,8 @@ void Object::remove_live_object(Object* o) {
 IMPBASE_END_NAMESPACE
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
 void check_live_objects() {
-  for (boost::unordered_set<Object*>::const_iterator it = live_.begin(); it != live_.end();
-       ++it) {
+  for (boost::unordered_set<Object*>::const_iterator it = live_.begin();
+       it != live_.end(); ++it) {
     IMP_USAGE_CHECK((*it)->get_ref_count() > 0,
                     "Object " << (*it)->get_name() << " is not ref counted.");
   }

@@ -51,7 +51,8 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<kernel::Particle> {
           load_gaussians(h),
           load_rigid_bodies(h) {}
   };
-  typedef boost::unordered_map<kernel::ParticleIndex, boost::shared_ptr<Data> > DM;
+  typedef boost::unordered_map<kernel::ParticleIndex, boost::shared_ptr<Data> >
+      DM;
   DM data_;
   virtual bool get_is(RMF::NodeConstHandle nh) const IMP_OVERRIDE {
     return nh.get_type() == RMF::REPRESENTATION;
@@ -132,7 +133,8 @@ class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<kernel::Particle> {
           save_gaussians(h),
           save_rigid_bodies(h) {}
   };
-  typedef boost::unordered_map<kernel::ParticleIndex, boost::shared_ptr<Data> > DM;
+  typedef boost::unordered_map<kernel::ParticleIndex, boost::shared_ptr<Data> >
+      DM;
   DM data_;
   RMF::decorator::AlternativesFactory af_;
   RMF::IntKey external_rigid_body_key_;
