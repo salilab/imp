@@ -20,6 +20,7 @@
 #include <IMP/core/rigid_bodies.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
+#include <boost/unordered_map.hpp>
 #include <locale>
 #include <fstream>
 
@@ -403,9 +404,9 @@ Hierarchies read_pdb(std::istream& in, std::string name, kernel::Model* model,
 }
 
 void read_pdb(base::TextInput in, int model, Hierarchy h) {
-  base::map<int, kernel::Particle*> atoms_map;
+  boost::unordered_map<int, kernel::Particle*> atoms_map;
   atom::Hierarchies atoms = get_by_type(h, ATOM_TYPE);
-  base::map<core::RigidBody, kernel::ParticleIndexes> rigid_bodies;
+  boost::unordered_map<core::RigidBody, kernel::ParticleIndexes> rigid_bodies;
   for (unsigned int i = 0; i < atoms.size(); ++i) {
     atoms_map[atoms[i]->get_value(get_pdb_index_key())] = atoms[i];
     if (core::RigidMember::get_is_setup(atoms[i])) {
@@ -441,8 +442,8 @@ void read_pdb(base::TextInput in, int model, Hierarchy h) {
       }
     }
   }
-  for (base::map<core::RigidBody, kernel::ParticleIndexes>::iterator it =
-           rigid_bodies.begin();
+  for (boost::unordered_map<core::RigidBody, kernel::ParticleIndexes>::iterator
+           it = rigid_bodies.begin();
        it != rigid_bodies.end(); ++it) {
     core::RigidBody rb = it->first;
     rb.set_reference_frame_from_members(it->second);
