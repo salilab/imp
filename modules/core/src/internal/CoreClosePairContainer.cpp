@@ -15,6 +15,7 @@
 #include <IMP/core/pair_predicates.h>
 #include <IMP/generic.h>
 #include <IMP/PairModifier.h>
+#include <boost/unordered_set.hpp>
 #include <IMP/utility.h>
 #include <algorithm>
 
@@ -99,7 +100,8 @@ void CoreClosePairContainer::check_list(bool check_slack) const {
         "There are too many particles in the nbl. Currently "
             << cur.size() << " but there can only be "
             << c_->get_indexes().size() * (c_->get_indexes().size() - 1) / 2);
-    IMP::base::set<kernel::ParticleIndexPair> existings(cur.begin(), cur.end());
+    boost::unordered_set<kernel::ParticleIndexPair> existings(cur.begin(),
+                                                              cur.end());
     unsigned int num = cur.size();
     IMP_UNUSED(num);
     for (unsigned int j = 0; j < num; ++j) {
