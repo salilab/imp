@@ -8,7 +8,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${%(NAME)s_CXX_FLAGS}")
 
 include(Files.cmake)
 
-set(IMP_TEST_ARGUMENTS "--run_quick_test" "--deprecation_exceptions" "--log_level=SILENT")
+set(IMP_TEST_ARGUMENTS "--run_quick_test")
 set(IMP_LINK_LIBRARIES IMP.%(name)s-lib
     %(modules)s IMP.benchmark-lib
     %(dependencies)s)
