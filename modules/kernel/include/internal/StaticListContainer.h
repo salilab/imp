@@ -17,7 +17,7 @@
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 template <class Base>
-class IMPKERNELEXPORT StaticListContainer : public ListLikeContainer<Base> {
+class StaticListContainer : public ListLikeContainer<Base> {
   typedef ListLikeContainer<Base> P;
 
  public:
