@@ -75,65 +75,7 @@ namespace multi_array_types {
 }
 }
 
-%extend IMP::algebra::GridD {
-  IMP::base::Vector<IMP::algebra::GridIndexD<D> > get_indexes(IMP::algebra::BoundingBoxD<D> bb) const {
-     IMP::base::Vector<IMP::algebra::GridIndexD<D> > ret;
-     IMP::base::internal::copy(self->get_indexes(bb), std::back_inserter(ret));
-     return ret;
-  }
-  IMP::base::Vector<IMP::algebra::ExtendedGridIndexD<D> > get_extended_indexes(IMP::algebra::BoundingBoxD<D> bb) const {
-     IMP::base::Vector<IMP::algebra::ExtendedGridIndexD<D> > ret;
-     IMP::base::internal::copy(self->get_extended_indexes(bb), std::back_inserter(ret));
-     return ret;
-  }
-  IMP::base::Vector<IMP::algebra::GridIndexD<D> > get_all_indexes() const {
-     IMP::base::Vector<IMP::algebra::GridIndexD<D> > ret;
-     IMP::base::internal::copy(self->get_all_indexes(), std::back_inserter(ret));
-     return ret;
-  }
-  std::string __str__() const {
-    std::ostringstream out;
-    self->show(out);
-    return out.str();
-  }
-  std::string __repr__() const {
-    std::ostringstream out;
-    self->show(out);
-    return out.str();
-  }
-}
 
-%extend IMP::algebra::DenseGrid3D {
-  IMP::base::Vector<IMP::algebra::GridIndexD<3> > get_indexes(IMP::algebra::BoundingBoxD<3> bb) {
-     IMP::base::Vector<IMP::algebra::GridIndexD<3> > ret;
-     IMP::base::internal::copy(self->get_indexes(bb), std::back_inserter(ret));
-     return ret;
-  }
-  IMP::base::Vector<IMP::algebra::GridIndexD<3> > get_all_indexes() const {
-     IMP::base::Vector<IMP::algebra::GridIndexD<3> > ret;
-     IMP::base::internal::copy(self->get_all_indexes(), std::back_inserter(ret));
-     return ret;
-  }
-  IMP::base::Vector<IMP::algebra::ExtendedGridIndexD<3> > get_extended_indexes(IMP::algebra::BoundingBoxD<3> bb) {
-     IMP::base::Vector<IMP::algebra::ExtendedGridIndexD<3> > ret;
-     IMP::base::internal::copy(self->get_extended_indexes(bb), std::back_inserter(ret));
-     return ret;
-  }
-  std::string __str__() const {
-    std::ostringstream out;
-    self->show(out);
-    return out.str();
-  }
-  std::string __repr__() const {
-    std::ostringstream out;
-    self->show(out);
-    return out.str();
-  }
-  // for some reason swig needs this
-  void show(std::ostream&out = std::cout) const {
-    out << "DenseGrid3D";
-  }
-}
 
 
 /* to extend */
@@ -190,15 +132,22 @@ IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, Sphere);
 %include "IMP/algebra/grid_embeddings.h"
 %include "IMP/algebra/grid_utility.h"
 %include "IMP/algebra/GridD.h"
-%template(_DenseStorageDouble3D) IMP::algebra::DenseGridStorageD<3, double>;
-%template(_DenseStorageFloat3D) IMP::algebra::DenseGridStorageD<3, float>;
-%template(_DenseDoubleGrid3DBase) IMP::algebra::GridD<3, IMP::algebra::DenseGridStorageD<3, double>, double, IMP::algebra::DefaultEmbeddingD<3> >;
-%template(_DenseFloatGrid3DBase) IMP::algebra::GridD<3, IMP::algebra::DenseGridStorageD<3, float>, float, IMP::algebra::DefaultEmbeddingD<3> >;
+IMP_ALGEBRA_SWIG_GRID(IMP::algebra::DenseGrid3D, 3);
+IMP_ALGEBRA_SWIG_GRID(IMP::algebra::SparseGrid3D, 3);
+IMP_ALGEBRA_SWIG_GRID(IMP::algebra::SparseUnboundedGrid3D, 3);
+IMP_ALGEBRA_SWIG_GRID(IMP::algebra::SparseUnboundedGridD, -1);
+IMP_ALGEBRA_SWIG_GRID(IMP::algebra::DenseIntLogGrid3D, 3);
+IMP_ALGEBRA_SWIG_GRID(IMP::algebra::DenseFloatLogGridKD, -1);
+%template(LogEmbedding3D) IMP::algebra::LogEmbeddingD<3>;
+%template(LogEmbeddingKD) IMP::algebra::LogEmbeddingD<-1>;
+
 %include "IMP/algebra/standard_grids.h"
 namespace IMP {
  namespace algebra {
    %template(DenseDoubleGrid3D) DenseGrid3D<double>;
    %template(DenseFloatGrid3D) DenseGrid3D<float >;
+   %template(SparseUnboundedIntGrid3D) SparseUnboundedGrid3D<int >;
+   %template(SparseUnboundedIntGridKD) SparseUnboundedGridD<-1, int>;
  }
 }
 
@@ -256,23 +205,7 @@ IMP_SWIG_ALGEBRA_FUNCTION_DS_DN(Vector, get_grid_interior_cover_by_spacing, Boun
 
 namespace IMP {
  namespace algebra {
-   %template(_SparseIntStorage) SparseGridStorageD<3, int, BoundedGridRangeD<3> >;
-   %template(_SparseUBIntStorage) SparseGridStorageD<3, int, UnboundedGridRangeD<3> >;
-   %template(_SparseUBIntStorageK) SparseGridStorageD<-1, int, UnboundedGridRangeD<-1> >;
-   %template(_SparseIntStorageK) SparseGridStorageD<-1, int, BoundedGridRangeD<-1> >;
-   %template(_DenseDoubleStorage) DenseGridStorageD<3, double>;
-   %template(_DenseFloatStorage) DenseGridStorageD<3, float>;
-   %template(_DenseIntStorage) DenseGridStorageD<3, int>;
-   %template(_DenseFloatStorageK) DenseGridStorageD<-1, float>;
-   %template(SparseIntGrid3D) GridD<3, SparseGridStorageD<3, int, BoundedGridRangeD<3> >, int, DefaultEmbeddingD<3> >;
-   %template(SparseUnboundedIntGrid3D) GridD<3, SparseGridStorageD<3, int, UnboundedGridRangeD<3> >, int, DefaultEmbeddingD<3> >;
-   %template(SparseUnboundedIntGridKD) GridD<-1, SparseGridStorageD<-1, int, UnboundedGridRangeD<-1> >, int, DefaultEmbeddingD<-1> >;
-   %template(DenseIntLogGrid3D) GridD<3, DenseGridStorageD<3, int>, int, LogEmbeddingD<3> >;
-   %template(SparseIntLogGrid3D) GridD<3, SparseGridStorageD<3, int, BoundedGridRangeD<3 > >, int, LogEmbeddingD<3> >;
-   %template(SparseIntLogGridKD) GridD<-1, SparseGridStorageD<-1, int, BoundedGridRangeD<-1 > >, int, LogEmbeddingD<-1> >;
-   %template(DenseFloatLogGridKD) GridD<-1, DenseGridStorageD<-1, float>, float, LogEmbeddingD<-1> >;
    %template(_AxisAnglePair) ::std::pair<IMP::algebra::VectorD<3>,double>;
-
 
    %template(get_transformation_aligning_first_to_second) get_transformation_aligning_first_to_second<IMP::base::Vector<IMP::algebra::VectorD<3> >, IMP::base::Vector<IMP::algebra::VectorD<3> > >;
    // rotation operations

@@ -1,5 +1,6 @@
 # ChangeLog
 # For IMP 2.2 # {#ChangeLog}
+- The python support for grids was cleaned up. Hopefully this makes it more robust. If you were using a grid in python that no longer exists, ping us, we can add it back.
 - The generic geometry functions were simplified slightly and renamed to IMP::algebra::get_vector_geometry().
 - The IMP::base::Flag class was added to simplify adding flags in C++.
 - The `--log_level` and `--check_level` command line argument now take strings (eg VERBOSE) to specify their values, rather than cryptic (and a bit unstable) numbers.

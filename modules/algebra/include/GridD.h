@@ -215,10 +215,6 @@ class GridD : public StorageT,
   using Storage::get_has_index;
   using Storage::get_index;
   using Storage::add_voxel;
-#else
-  bool get_has_index(const ExtendedGridIndexD<D> &i) const;
-  GridIndexD<D> get_index(const ExtendedGridIndexD<D> &i) const;
-  GridIndexD<D> add_voxel(const ExtendedGridIndexD<D> &i, const Value &vt);
 #endif
   //! Convert an index back to an extended index
   ExtendedGridIndexD<D> get_extended_index(const GridIndexD<D> &index) const {
@@ -226,8 +222,6 @@ class GridD : public StorageT,
   }
 #ifndef SWIG
   using Embedding::get_extended_index;
-#else
-  ExtendedGridIndexD<D> get_extended_index(const VectorD<D> &i) const;
 #endif
 
   BoundingBoxD<D> get_bounding_box() const {
@@ -363,12 +357,6 @@ class GridD : public StorageT,
     return ExtendedIndexes(extended_indexes_begin(bb),
                            extended_indexes_end(bb));
   }
-#else
-  base::Vector<GridIndexD<D> > get_indexes(
-      const ExtendedGridIndexD<D> &lb, const ExtendedGridIndexD<D> &ub) const;
-  base::Vector<GridIndexD<D> > get_all_indexes() const;
-  base::Vector<ExtendedGridIndexD<D> > get_extended_indexes(
-      const ExtendedGridIndexD<D> &lb, const ExtendedGridIndexD<D> &ub) const;
 #endif
   /** @} */
   /** \name Apply

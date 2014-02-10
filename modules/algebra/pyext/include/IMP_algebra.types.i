@@ -491,3 +491,69 @@ struct ConvertEigenVector {
   collections_like_##Name##_must_be_returned_by_value_or_const_ref;
  }
 %enddef
+
+
+%define IMP_ALGEBRA_SWIG_GRID(Name, D)
+%extend Name {
+  IMP::base::Vector<IMP::algebra::GridIndexD<D> > get_indexes(IMP::algebra::BoundingBoxD<D> bb) {
+     IMP::base::Vector<IMP::algebra::GridIndexD<D> > ret;
+     IMP::base::internal::copy(self->get_indexes(bb), std::back_inserter(ret));
+     return ret;
+  }
+  IMP::base::Vector<IMP::algebra::GridIndexD<D> > get_indexes(IMP::algebra::ExtendedGridIndexD<D> lb, IMP::algebra::ExtendedGridIndexD<D> ub) {
+     IMP::base::Vector<IMP::algebra::GridIndexD<D> > ret;
+     IMP::base::internal::copy(self->get_indexes(lb, ub), std::back_inserter(ret));
+     return ret;
+  }
+  IMP::base::Vector<IMP::algebra::ExtendedGridIndexD<D> > get_extended_indexes(IMP::algebra::ExtendedGridIndexD<D> lb, IMP::algebra::ExtendedGridIndexD<D> ub) {
+     IMP::base::Vector<IMP::algebra::ExtendedGridIndexD<D> > ret;
+     IMP::base::internal::copy(self->get_extended_indexes(lb, ub), std::back_inserter(ret));
+     return ret;
+  }
+  IMP::base::Vector<IMP::algebra::GridIndexD<D> > get_all_indexes() const {
+     IMP::base::Vector<IMP::algebra::GridIndexD<D> > ret;
+     IMP::base::internal::copy(self->get_all_indexes(), std::back_inserter(ret));
+     return ret;
+  }
+  IMP::base::Vector<IMP::algebra::ExtendedGridIndexD<D> > get_extended_indexes(IMP::algebra::BoundingBoxD<D> bb) {
+     IMP::base::Vector<IMP::algebra::ExtendedGridIndexD<D> > ret;
+     IMP::base::internal::copy(self->get_extended_indexes(bb), std::back_inserter(ret));
+     return ret;
+  }
+  IMP::algebra::VectorD<D> get_center(ExtendedGridIndexD<D> ei) const {
+    return self->get_center(ei);
+  }
+  algebra::ExtendedGridIndexD<D> get_extended_index(
+                                                    algebra::VectorD<D> v) const {
+    return self->get_extended_index(v);
+  }  IMP::algebra::GridIndexD<D> get_index(algebra::ExtendedGridIndexD<D> v) const {
+    return self->get_index(v);
+  }
+  IMP::algebra::VectorD<D> get_origin() const {
+    return self->get_origin();
+  }
+  unsigned int get_dimension() const {
+    return self->get_dimension();
+  }
+  IMP::algebra::VectorD<D> get_unit_cell() const {
+    return self->get_unit_cell();
+  }
+  bool get_has_index(ExtendedGridIndexD<D> v) const {
+    return self->get_has_index(v);
+  }
+  std::string __str__() const {
+    std::ostringstream out;
+    self->show(out);
+    return out.str();
+  }
+  std::string __repr__() const {
+    std::ostringstream out;
+    self->show(out);
+    return out.str();
+  }
+  // for some reason swig needs this
+  void show(std::ostream&out = std::cout) const {
+    out << #Name;
+  }
+}
+%enddef
