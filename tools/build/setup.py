@@ -222,7 +222,7 @@ if __name__ == '__main__':
         open(
             os.path.join("test",
                          module,
-                         "test_standards.py"),
+                         "medium_test_standards.py"),
             "w").write(test)
 
         cpptests = tools.get_glob([os.path.join(g, "test", "test_*.cpp")])

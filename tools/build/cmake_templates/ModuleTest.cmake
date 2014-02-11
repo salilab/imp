@@ -6,7 +6,7 @@ add_definitions("-DIMP_EXECUTABLE")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${%(NAME)s_CXX_FLAGS}")
 
-File(GLOB runtimepytests "${CMAKE_BINARY_DIR}/test/%(name)s/test_*.py")
+File(GLOB runtimepytests "${CMAKE_BINARY_DIR}/test/%(name)s/test_*.py" "${CMAKE_BINARY_DIR}/test/%(name)s/medium_test_*.py" "${CMAKE_BINARY_DIR}/test/%(name)s/expensive_test_*.py")
 
 include(Files.cmake)
 

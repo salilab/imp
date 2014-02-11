@@ -55,6 +55,11 @@ def clean_pyc(dir):
                 os.unlink(f)
 
 
+def clean_standards():
+    for s in glob.glob(os.path.join("test", "*", "test_standards.py")):
+        os.unlink(s)
+
+
 def clean_restrainer():
     shutil.rmtree(
         os.path.join(
@@ -87,6 +92,7 @@ def main():
     clean_headers()
     clean_pyc("lib")
     clean_restrainer()
+    clean_standards()
 
 if __name__ == '__main__':
     main()
