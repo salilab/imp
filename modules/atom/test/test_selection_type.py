@@ -6,80 +6,6 @@ import IMP.atom
 
 class Tests(IMP.test.TestCase):
 
-    def test_hierarchy_type(self):
-        """Test selection of hierarchy types"""
-        IMP.base.set_log_level(IMP.base.SILENT)
-        m = IMP.kernel.Model()
-        h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
-        f = IMP.atom.Fragment.setup_particle(IMP.Particle(m))
-        IMP.core.XYZR.setup_particle(m, f.get_particle_index(),
-                                     IMP.algebra.get_unit_sphere_3d())
-        h.add_child(f)
-        d = IMP.atom.Domain.setup_particle(IMP.Particle(m), 1, 10)
-        IMP.core.XYZR.setup_particle(m, d.get_particle_index(),
-                                     IMP.algebra.get_unit_sphere_3d())
-        h.add_child(d)
-        mol = IMP.atom.Molecule.setup_particle(IMP.Particle(m))
-        IMP.core.XYZR.setup_particle(m, mol.get_particle_index(),
-                                     IMP.algebra.get_unit_sphere_3d())
-        h.add_child(mol)
-
-        satt = IMP.atom.Selection(h, hierarchy_types=[IMP.atom.ATOM_TYPE])
-        sres = IMP.atom.Selection(h, hierarchy_types=[IMP.atom.RESIDUE_TYPE])
-        sch = IMP.atom.Selection(h, hierarchy_types=[IMP.atom.CHAIN_TYPE])
-        sfr = IMP.atom.Selection(h, hierarchy_types=[IMP.atom.FRAGMENT_TYPE])
-        sdom = IMP.atom.Selection(h, hierarchy_types=[IMP.atom.DOMAIN_TYPE])
-        smol = IMP.atom.Selection(h, hierarchy_types=[IMP.atom.MOLECULE_TYPE])
-        att = satt.get_selected_particles()
-        res = sres.get_selected_particles()
-        ch = sch.get_selected_particles()
-        fr = sfr.get_selected_particles()
-        dom = sdom.get_selected_particles()
-        mol = smol.get_selected_particles()
-
-        for p in att:
-            self.assertEqual(IMP.atom.Atom.particle_is_instance(p), True)
-            self.assertEqual(IMP.atom.Residue.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Chain.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Fragment.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Domain.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Molecule.particle_is_instance(p), False)
-        for p in res:
-            self.assertEqual(IMP.atom.Atom.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Residue.particle_is_instance(p), True)
-            self.assertEqual(IMP.atom.Chain.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Fragment.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Domain.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Molecule.particle_is_instance(p), False)
-        for p in ch:
-            self.assertEqual(IMP.atom.Atom.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Residue.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Chain.particle_is_instance(p), True)
-            self.assertEqual(IMP.atom.Fragment.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Domain.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Molecule.particle_is_instance(p), False)
-        for p in fr:
-            self.assertEqual(IMP.atom.Atom.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Residue.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Chain.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Fragment.particle_is_instance(p), True)
-            self.assertEqual(IMP.atom.Domain.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Molecule.particle_is_instance(p), False)
-        for p in dom:
-            self.assertEqual(IMP.atom.Atom.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Residue.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Chain.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Fragment.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Domain.particle_is_instance(p), True)
-            self.assertEqual(IMP.atom.Molecule.particle_is_instance(p), False)
-        for p in mol:
-            self.assertEqual(IMP.atom.Atom.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Residue.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Chain.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Fragment.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Domain.particle_is_instance(p), False)
-            self.assertEqual(IMP.atom.Molecule.particle_is_instance(p), True)
-
     def _get_index(self, l):
         h = IMP.atom.Hierarchy(l[0])
         p = IMP.atom.Residue(h.get_parent())
@@ -186,29 +112,6 @@ class Tests(IMP.test.TestCase):
         s = IMP.atom.Selection([h])
         ps = s.get_selected_particle_indexes()
         self.assertEqual(ps, [c2.get_particle_index()])
-
-    def test_radius(self):
-        """Test a selection on radius"""
-        IMP.base.set_log_level(IMP.base.SILENT)
-        m = IMP.kernel.Model()
-        h = IMP.atom.Hierarchy.setup_particle(m, m.add_particle("root"))
-        c0 = IMP.atom.Hierarchy.setup_particle(m, m.add_particle("child0"))
-        c1 = IMP.atom.Hierarchy.setup_particle(m, m.add_particle("child1"))
-        c2 = IMP.atom.Hierarchy.setup_particle(m, m.add_particle("child2"))
-        IMP.atom.Mass.setup_particle(c2, 1)
-        h.add_child(c0)
-        c0.add_child(c1)
-        c1.add_child(c2)
-        d0 = IMP.core.XYZR.setup_particle(c0)
-        d0.set_radius(10)
-        d1 = IMP.core.XYZR.setup_particle(c1)
-        d1.set_radius(5)
-        d2 = IMP.core.XYZR.setup_particle(c2)
-        d2.set_radius(1)
-        self.assert_(h.get_is_valid(True))
-        s = IMP.atom.Selection([h], target_radius=6)
-        ps = s.get_selected_particle_indexes()
-        self.assertEqual(ps, [c1.get_particle_index()])
 
     def test_mol(self):
         """Test selecting molecules"""
