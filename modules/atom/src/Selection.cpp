@@ -42,6 +42,13 @@
 #include <boost/unordered_set.hpp>
 IMPATOM_BEGIN_NAMESPACE
 
+namespace {
+  int get_match_return(bool v) {
+    if (v) return 1;
+    else return -1;
+  }
+}
+
 Selection::Selection() : resolution_(0) { m_ = nullptr; }
 Selection::Selection(kernel::Particle *h) : resolution_(0) {
   set_hierarchies(h->get_model(), kernel::ParticleIndexes(1, h->get_index()));
@@ -153,64 +160,67 @@ IMP_ATOM_SELECTION_PRED(ResidueIndex, Ints, {
 });
 IMP_ATOM_SELECTION_PRED(MoleculeName, Strings, {
   if (Molecule::get_is_setup(m, pi)) {
-    return std::binary_search(data_.begin(), data_.end(),
-                              m->get_particle_name(pi));
+    return get_match_return(std::binary_search(data_.begin(), data_.end(),
+                                               m->get_particle_name(pi)));
   }
   return 0;
 });
 IMP_ATOM_SELECTION_PRED(ResidueType, ResidueTypes, {
   if (Residue::get_is_setup(m, pi)) {
-    return std::binary_search(data_.begin(), data_.end(),
-                              Residue(m, pi).get_residue_type());
+    return get_match_return(std::binary_search(
+        data_.begin(), data_.end(), Residue(m, pi).get_residue_type()));
   }
   return 0;
 });
 
 IMP_ATOM_SELECTION_PRED(ChainID, Strings, {
   if (Chain::get_is_setup(m, pi)) {
-    return std::binary_search(data_.begin(), data_.end(),
-                              Chain(m, pi).get_id());
+    return get_match_return(
+        std::binary_search(data_.begin(), data_.end(), Chain(m, pi).get_id()));
   }
   return 0;
 });
 IMP_ATOM_SELECTION_PRED(AtomType, AtomTypes, {
   if (Atom::get_is_setup(m, pi)) {
-    return std::binary_search(data_.begin(), data_.end(),
-                              Atom(m, pi).get_atom_type());
+    return get_match_return(std::binary_search(data_.begin(), data_.end(),
+                                               Atom(m, pi).get_atom_type()));
   }
   return 0;
 });
 IMP_ATOM_SELECTION_PRED(DomainName, Strings, {
   if (Domain::get_is_setup(m, pi)) {
-    return std::binary_search(data_.begin(), data_.end(),
-                              m->get_particle_name(pi));
+    return get_match_return(std::binary_search(data_.begin(), data_.end(),
+                                               m->get_particle_name(pi)));
   }
   return 0;
 });
 IMP_ATOM_SELECTION_PRED(CopyIndex, Ints, {
   if (Copy::get_is_setup(m, pi)) {
-    return std::binary_search(data_.begin(), data_.end(),
-                              Copy(m, pi).get_copy_index());
+    return get_match_return(std::binary_search(data_.begin(), data_.end(),
+                                               Copy(m, pi).get_copy_index()));
   }
   return 0;
 });
 IMP_ATOM_SELECTION_PRED(StateIndex, Ints, {
   if (State::get_is_setup(m, pi)) {
-    return std::binary_search(data_.begin(), data_.end(),
-                              State(m, pi).get_state_index());
+    return get_match_return(std::binary_search(data_.begin(), data_.end(),
+                                               State(m, pi).get_state_index()));
   }
   return 0;
 });
 IMP_ATOM_SELECTION_PRED(Type, core::ParticleTypes, {
   if (core::Typed::get_is_setup(m, pi)) {
-    return std::binary_search(data_.begin(), data_.end(),
-                              core::Typed(m, pi).get_type());
+    if( std::binary_search(data_.begin(), data_.end(),
+                           core::Typed(m, pi).get_type())) return 1;
   }
   return 0;
 });
-#define IMP_ATOM_SELECTION_MATCH_TYPE(Type, type, UCTYPE)          \
-  if (Type::get_is_setup(m, pi)) {                                 \
-    return std::binary_search(data_.begin(), data_.end(), UCTYPE); \
+#define IMP_ATOM_SELECTION_MATCH_TYPE(Type, type, UCTYPE)       \
+  if (Type::get_is_setup(m, pi)) {                              \
+    if (std::binary_search(data_.begin(), data_.end(), UCTYPE)) \
+      return 1;                                                 \
+    else                                                        \
+      return 0;                                                 \
   }
 
 IMP_ATOM_SELECTION_PRED(HierarchyType, Ints, {
@@ -293,8 +303,12 @@ Selection::SearchResult Selection::search(
                                << parent.count() << std::endl);
   for (unsigned int i = 0; i < predicates_.size(); ++i) {
     if (parent[i]) {
-      if (predicates_[i]->get_value_index(m, pi)) {
+      int val = predicates_[i]->get_value_index(m, pi);
+      if (val == 1) {
         parent.reset(i);
+      } else if (val == -1) {
+        // nothing can match in this subtree
+        return SearchResult(false, kernel::ParticleIndexes());
       }
     }
   }
