@@ -5,3 +5,6 @@
 [submodule "tools/git/gitflow"]
 	path = tools/git/gitflow
 	url = ../gitflow_imp.git
+[submodule "modules/module_template"]
+	path = modules/module_template
+	url = ../module_template.git
