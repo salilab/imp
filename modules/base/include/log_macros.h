@@ -254,7 +254,9 @@
 #define IMP_ERROR(expr)                            \
   {                                                \
     std::cerr << "ERROR: " << expr << std::endl;   \
-    throw IMP::base::InternalException("Failure"); \
+    std::ostringstream oss;                        \
+    oss << expr;                                   \
+    throw IMP::base::InternalException(oss.str()); \
   }
 
 #endif  // log4cxx
