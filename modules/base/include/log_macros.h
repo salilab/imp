@@ -251,12 +251,12 @@
   }
 #endif
 
-#define IMP_ERROR(expr)                            \
-  {                                                \
-    std::cerr << "ERROR: " << expr << std::endl;   \
-    std::ostringstream oss;                        \
-    oss << expr;                                   \
-    throw IMP::base::InternalException(oss.str()); \
+#define IMP_ERROR(expr)                                    \
+  {                                                        \
+    std::cerr << "ERROR: " << expr << std::endl;           \
+    std::ostringstream oss;                                \
+    oss << expr;                                           \
+    throw IMP::base::InternalException(oss.str().c_str()); \
   }
 
 #endif  // log4cxx
