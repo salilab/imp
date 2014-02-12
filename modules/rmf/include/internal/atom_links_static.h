@@ -15,6 +15,7 @@
 #include <RMF/decorator/physics.h>
 #include <RMF/decorator/sequence.h>
 #include <RMF/decorator/shape.h>
+#include <RMF/decorator/labels.h>
 #include <RMF/decorator/bond.h>
 #include <IMP/kernel/Model.h>
 
@@ -34,6 +35,7 @@ class IMPRMFEXPORT HierarchyLoadStatic {
   RMF::decorator::DomainFactory domain_factory_;
   RMF::decorator::FragmentFactory fragment_factory_;
   RMF::decorator::StateFactory state_factory_;
+  RMF::decorator::Molecule molecule_;
   RMF::FloatKey radius_key_;
   RMF::FloatKey mass_key_;
 
@@ -61,6 +63,7 @@ class IMPRMFEXPORT HierarchySaveStatic {
   RMF::decorator::DomainFactory domain_factory_;
   RMF::decorator::FragmentFactory fragment_factory_;
   RMF::decorator::StateFactory state_factory_;
+  RMF::decorator::Molecule molecule_;
 
  public:
   HierarchySaveStatic(RMF::FileHandle f);

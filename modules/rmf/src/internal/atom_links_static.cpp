@@ -37,7 +37,7 @@ HierarchyLoadStatic::HierarchyLoadStatic(RMF::FileConstHandle fh)
       typed_factory_(fh),
       domain_factory_(fh),
       fragment_factory_(fh),
-      state_factory_(fh) {
+      state_factory_(fh), molecule_(fh) {
   RMF::Category phy = fh.get_category("physics");
   radius_key_ = fh.get_key(phy, "radius", RMF::FloatTraits());
   mass_key_ = fh.get_key(phy, "mass", RMF::FloatTraits());
@@ -83,6 +83,9 @@ void HierarchyLoadStatic::setup_particle(RMF::NodeConstHandle nh,
     } else {
       atom::Domain::setup_particle(m, p, IntRange(b, e));
     }
+  }
+  if (molecule_.get_is(nh)) {
+    atom::Molecule::setup_particle(m, p);
   }
   if (fragment_factory_.get_is_static(nh)) {
     RMF::Ints idx = fragment_factory_.get(nh).get_indexes();
@@ -228,6 +231,9 @@ void HierarchySaveStatic::setup_node(kernel::Model *m, kernel::ParticleIndex p,
     r.set_residue_index(d.get_index());
     r.set_residue_type(d.get_residue_type().get_string());
   }
+  if (atom::Molecule::get_is_setup(m, p)) {
+    molecule_.set_is(n);
+  }
   if (atom::Domain::get_is_setup(m, p)) {
     atom::Domain d(m, p);
     domain_factory_.get(n).set_indexes(
@@ -285,10 +291,10 @@ HierarchySaveStatic::HierarchySaveStatic(RMF::FileHandle fh)
       typed_factory_(fh),
       domain_factory_(fh),
       fragment_factory_(fh),
-      state_factory_(fh) {}
+      state_factory_(fh),
+      molecule_(fh) {}
 
 namespace {
-
 atom::Bonded get_bonded(kernel::Particle *p) {
   if (atom::Bonded::get_is_setup(p)) {
     return atom::Bonded(p);
