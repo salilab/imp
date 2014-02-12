@@ -55,7 +55,7 @@ Floats ReplicaExchange::get_my_parameter(std::string key) {
 
 int ReplicaExchange::get_friend_index(int step) {
   int myindex = index_[myrank_];
-  int findex;
+  int findex = -1;
   if (myindex % 2 == 0 && step % 2 == 0) {
     findex = myindex + 1;
   }
