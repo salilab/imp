@@ -22,7 +22,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.kernel.Model()
         aps = []
         rbs = []
-        for i in range(3):
+        for i in range(2):
             ps = IMP.kernel._create_particles_from_pdb(
                 self.get_input_file_name("small_protein.pdb"),
                 m)
@@ -44,10 +44,10 @@ class Tests(IMP.test.TestCase):
             pst.set_particle_states(p, NullStates())
         g = IMP.domino.get_interaction_graph([m.get_root_restraint_set()],
                                              pst)
-        w = IMP.display.PymolWriter(self.get_tmp_file_name("ig0.pym"))
-        for gg in IMP.domino.get_interaction_graph_geometry(g):
-            w.add_geometry(gg)
-        del w
+        #w = IMP.display.PymolWriter(self.get_tmp_file_name("ig0.pym"))
+        # for gg in IMP.domino.get_interaction_graph_geometry(g):
+        #    w.add_geometry(gg)
+        #del w
         print "done"
         vs = g.get_vertices()
         # IMP.show_graphviz(g)
@@ -56,8 +56,8 @@ class Tests(IMP.test.TestCase):
             l = g.get_vertex_name(v)
             print l.get_name()
             self.assertIn(l, rbs)
-            self.assertEqual(len(g.get_out_neighbors(v)), 2)
-        g.show()
+            self.assertEqual(len(g.get_out_neighbors(v)), 1)
+            # g.show()
 
     def test_global_min(self):
         """Test that simple interaction graphs are fine"""
@@ -81,10 +81,10 @@ class Tests(IMP.test.TestCase):
             pst.set_particle_states(p, NullStates())
         g = IMP.domino.get_interaction_graph([m.get_root_restraint_set()],
                                              pst)
-        w = IMP.display.PymolWriter(self.get_tmp_file_name("ig0.pym"))
-        for gg in IMP.domino.get_interaction_graph_geometry(g):
-            w.add_geometry(gg)
-        del w
+        #w = IMP.display.PymolWriter(self.get_tmp_file_name("ig0.pym"))
+        # for gg in IMP.domino.get_interaction_graph_geometry(g):
+        #    w.add_geometry(gg)
+        #del w
         print g
         vs = g.get_vertices()
         # IMP.show_graphviz(g)
@@ -94,7 +94,7 @@ class Tests(IMP.test.TestCase):
             print l.get_name()
             self.assertIn(l, ps)
             self.assertEqual(len(g.get_out_neighbors(v)), 2)
-        g.show()
+            # g.show()
 
 if __name__ == '__main__':
     IMP.test.main()
