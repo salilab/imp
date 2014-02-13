@@ -1706,9 +1706,12 @@ template <typename Gt>
 SpacefillingVolumetric<Gt>::SpacefillingVolumetric() {
 #ifdef M_PI
   PI = M_PI;
-  OP_PI = M_1_PI;
 #else
   PI = 3.1415926;
+#endif
+#ifdef M_1_PI
+  OP_PI = M_1_PI;
+#else
   OP_PI = (1.0 / 3.1415926);
 #endif
   OP_2PI = (0.5 * OP_PI);
