@@ -12,10 +12,6 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/geometric_alignment.h>
-#include <IMP/algebra/geometric_alignment.h>
-#include <IMP/algebra/internal/jama_eig.h>
-#include <IMP/algebra/internal/tnt_array2d.h>
-#include <IMP/algebra/internal/tnt_array2d_utils.h>
 #include <IMP/base/statistics.h>
 #include <IMP/core/FixedRefiner.h>
 #include <IMP/core/internal/rigid_body_tree.h>
@@ -375,25 +371,24 @@ ModelKey get_rb_list_key() {
 }
 }
 
-typedef IMP::algebra::internal::TNT::Array2D<double> Matrix;
-
 namespace {
-Matrix compute_I(kernel::Model *model, const kernel::ParticleIndexes &ds,
-                 const algebra::Vector3D &center,
-                 const IMP::algebra::Rotation3D &rot) {
-  Matrix I(3, 3, 0.0);
+IMP_Eigen::Matrix3d compute_I(kernel::Model *model,
+                              const kernel::ParticleIndexes &ds,
+                              const algebra::Vector3D &center,
+                              const IMP::algebra::Rotation3D &rot) {
+  IMP_Eigen::Matrix3d I = IMP_Eigen::Matrix3d::Zero();
   for (unsigned int i = 0; i < ds.size(); ++i) {
     XYZ cm(model, ds[i]);
     double m = 1;
     double r = 0;
     algebra::Vector3D cv = rot.get_rotated(cm.get_coordinates() - center);
 
-    Matrix Is(3, 3, 0.0);
+    IMP_Eigen::Matrix3d Is;
     for (unsigned int i = 0; i < 3; ++i) {
       for (unsigned int j = 0; j < 3; ++j) {
-        Is[i][j] = -m * cv[i] * cv[j];
+        Is(i, j) = -m * cv[i] * cv[j];
         if (i == j) {
-          Is[i][j] += m * cv.get_squared_magnitude() + .4 * m * square(r);
+          Is(i, j) += m * cv.get_squared_magnitude() + .4 * m * square(r);
         }
       }
     }
@@ -890,23 +885,17 @@ algebra::ReferenceFrame3D get_initial_reference_frame(
   // parallel axis theorem
   // I'ij= Iij+M(v^2delta_ij-vi*vj)
   // compute I
-  Matrix I = compute_I(m, ps, v, IMP::algebra::get_identity_rotation_3d());
+  IMP_Eigen::Matrix3d I =
+      compute_I(m, ps, v, IMP::algebra::get_identity_rotation_3d());
   // IMP_LOG_VERBOSE( "Initial I is " << I << std::endl);
   // diagonalize it
-  IMP::algebra::internal::JAMA::Eigenvalue<double> eig(I);
-  Matrix rm;
-  eig.getV(rm);
-  if (IMP::algebra::internal::JAMA::determinant(rm) < 0) {
-    for (unsigned int i = 0; i < 3; ++i) {
-      for (unsigned int j = 0; j < 3; ++j) {
-        rm[i][j] = -rm[i][j];
-      }
-    }
+  IMP_Eigen::EigenSolver<IMP_Eigen::Matrix3d> eig(I);
+  IMP_Eigen::Matrix3d rm = eig.eigenvectors().real();
+  if (rm.determinant() < 0) {
+    rm.array() *= -1.0;
   }
   // use the R as the initial orientation
-  IMP::algebra::Rotation3D rot = IMP::algebra::get_rotation_from_matrix(
-      rm[0][0], rm[0][1], rm[0][2], rm[1][0], rm[1][1], rm[1][2], rm[2][0],
-      rm[2][1], rm[2][2]);
+  IMP::algebra::Rotation3D rot = IMP::algebra::get_rotation_from_matrix(rm);
   // IMP_LOG_VERBOSE( "Initial rotation is " << rot << std::endl);
   return algebra::ReferenceFrame3D(algebra::Transformation3D(rot, v));
 }
