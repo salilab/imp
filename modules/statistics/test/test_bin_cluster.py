@@ -17,7 +17,7 @@ class Tests(IMP.test.TestCase):
         bb = IMP.algebra.BoundingBoxKD(IMP.algebra.VectorKD(0, 0, 0, 0),
                                        IMP.algebra.VectorKD(10, 10, 10, 10))
         vs = []
-        for i in range(0, 1000):
+        for i in range(0, 100):
             vs.append(IMP.algebra.get_random_vector_in(bb))
         embed = IMP.statistics.VectorDEmbedding(vs)
         cluster = IMP.statistics.create_bin_based_clustering(embed, 2)
