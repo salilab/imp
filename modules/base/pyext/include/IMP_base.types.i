@@ -335,7 +335,7 @@ IMP_SWIG_VALUE_CHECKS(Namespace, PluralName, SWIGTYPE);
   if (!($owner & SWIG_POINTER_NEW)) {
     // out typemaps are also called for constructors, which already use %ref
     // to increase the reference count. So don't do it twice.
-    $1->ref();
+    if ($1) $1->ref();
   }
   %set_output(SWIG_NewPointerObj(%as_voidptr($1), $descriptor(Namespace::Name *), $owner | SWIG_POINTER_OWN));
  }
@@ -881,13 +881,13 @@ class BoostDigraph;
 %typemap(out) Namespace::Type {
   typedef IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex> GT;
   IMP_NEW(GT, ret, ($1));
-  ret.get()->ref();
+  if (ret) ret.get()->ref();
   %set_output(SWIG_NewPointerObj(%as_voidptr(ret), $descriptor(IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex >*), $owner | SWIG_POINTER_OWN));
  }
 %typemap(out) Namespace::Type const& {
   typedef IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex > GT;
   IMP_NEW(GT, ret, (*$1));
-  ret.get()->ref();
+  if (ret) ret.get()->ref();
   %set_output(SWIG_NewPointerObj(%as_voidptr(ret), $descriptor(IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex >*), $owner | SWIG_POINTER_OWN));
  }
 %typecheck(SWIG_TYPECHECK_POINTER) Namespace::Type const& {
