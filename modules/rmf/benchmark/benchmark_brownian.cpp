@@ -94,8 +94,8 @@ It create_particles() {
   It ret;
   ret.m = new kernel::Model();
   Sphere3D perturb(Vector3D(0, 0, 0), pertub_amount);
-  for (unsigned int i = 0; i < IMP::base::run_quick_test ? 2U : num_x; ++i) {
-    for (unsigned int j = 0; j < IMP::base::run_quick_test ? 2U : num_y; ++j) {
+  for (unsigned int i = 0; i < (IMP::base::run_quick_test ? 2U : num_x); ++i) {
+      for (unsigned int j = 0; j < (IMP::base::run_quick_test ? 2U : num_y); ++j) {
       atom::Hierarchy parent =
           atom::Hierarchy::setup_particle(new kernel::Particle(ret.m));
       std::ostringstream oss;
