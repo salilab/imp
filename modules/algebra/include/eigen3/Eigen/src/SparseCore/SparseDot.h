@@ -23,8 +23,8 @@ SparseMatrixBase<Derived>::dot(const MatrixBase<OtherDerived>& other) const
   IMP_EIGEN_STATIC_ASSERT((internal::is_same<Scalar, typename OtherDerived::Scalar>::value),
     YOU_MIXED_DIFFERENT_NUMERIC_TYPES__YOU_NEED_TO_USE_THE_CAST_METHOD_OF_MATRIXBASE_TO_CAST_NUMERIC_TYPES_EXPLICITLY)
 
-  eigen_assert(size() == other.size());
-  eigen_assert(other.size()>0 && "you are using a non initialized vector");
+  imp_eigen_assert(size() == other.size());
+  imp_eigen_assert(other.size()>0 && "you are using a non initialized vector");
 
   typename Derived::InnerIterator i(derived(),0);
   Scalar res(0);
@@ -47,7 +47,7 @@ SparseMatrixBase<Derived>::dot(const SparseMatrixBase<OtherDerived>& other) cons
   IMP_EIGEN_STATIC_ASSERT((internal::is_same<Scalar, typename OtherDerived::Scalar>::value),
     YOU_MIXED_DIFFERENT_NUMERIC_TYPES__YOU_NEED_TO_USE_THE_CAST_METHOD_OF_MATRIXBASE_TO_CAST_NUMERIC_TYPES_EXPLICITLY)
 
-  eigen_assert(size() == other.size());
+  imp_eigen_assert(size() == other.size());
 
   typedef typename Derived::Nested  Nested;
   typedef typename OtherDerived::Nested  OtherNested;

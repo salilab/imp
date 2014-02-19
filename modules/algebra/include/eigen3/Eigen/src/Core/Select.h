@@ -65,8 +65,8 @@ class Select : internal::no_assignment_operator,
            const ElseMatrixType& a_elseMatrix)
       : m_condition(a_conditionMatrix), m_then(a_thenMatrix), m_else(a_elseMatrix)
     {
-      eigen_assert(m_condition.rows() == m_then.rows() && m_condition.rows() == m_else.rows());
-      eigen_assert(m_condition.cols() == m_then.cols() && m_condition.cols() == m_else.cols());
+      imp_eigen_assert(m_condition.rows() == m_then.rows() && m_condition.rows() == m_else.rows());
+      imp_eigen_assert(m_condition.cols() == m_then.cols() && m_condition.cols() == m_else.cols());
     }
 
     Index rows() const { return m_condition.rows(); }

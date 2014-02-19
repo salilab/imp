@@ -155,8 +155,8 @@ template<typename _Scalar, int _Options, typename _Index>
     /** \sa insertBack */
     inline Scalar& insertBackByOuterInner(Index outer, Index inner)
     {
-      eigen_assert(outer<Index(m_data.size()) && inner<m_innerSize && "out of range");
-      eigen_assert(((m_data[outer].size()==0) || (m_data[outer].index(m_data[outer].size()-1)<inner))
+      imp_eigen_assert(outer<Index(m_data.size()) && inner<m_innerSize && "out of range");
+      imp_eigen_assert(((m_data[outer].size()==0) || (m_data[outer].index(m_data[outer].size()-1)<inner))
                 && "wrong sorted insertion");
       m_data[outer].append(0, inner);
       return m_data[outer].value(m_data[outer].size()-1);
@@ -226,7 +226,7 @@ template<typename _Scalar, int _Options, typename _Index>
     IMP_EIGEN_DEPRECATED inline DynamicSparseMatrix()
       : m_innerSize(0), m_data(0)
     {
-      eigen_assert(innerSize()==0 && outerSize()==0);
+      imp_eigen_assert(innerSize()==0 && outerSize()==0);
     }
 
     /** The class DynamicSparseMatrix is deprectaed */

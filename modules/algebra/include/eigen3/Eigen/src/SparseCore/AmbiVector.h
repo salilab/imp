@@ -172,7 +172,7 @@ void AmbiVector<_Scalar,_Index>::setZero()
   }
   else
   {
-    eigen_assert(m_mode==IsSparse);
+    imp_eigen_assert(m_mode==IsSparse);
     m_llSize = 0;
     m_llStart = -1;
   }
@@ -187,7 +187,7 @@ _Scalar& AmbiVector<_Scalar,_Index>::coeffRef(_Index i)
   {
     ListEl* IMP_EIGEN_RESTRICT llElements = reinterpret_cast<ListEl*>(m_buffer);
     // TODO factorize the following code to reduce code generation
-    eigen_assert(m_mode==IsSparse);
+    imp_eigen_assert(m_mode==IsSparse);
     if (m_llSize==0)
     {
       // this is the first element
@@ -214,7 +214,7 @@ _Scalar& AmbiVector<_Scalar,_Index>::coeffRef(_Index i)
     else
     {
       Index nextel = llElements[m_llCurrent].next;
-      eigen_assert(i>=llElements[m_llCurrent].index && "you must call restart() before inserting an element with lower or equal index");
+      imp_eigen_assert(i>=llElements[m_llCurrent].index && "you must call restart() before inserting an element with lower or equal index");
       while (nextel >= 0 && llElements[nextel].index<=i)
       {
         m_llCurrent = nextel;
@@ -233,7 +233,7 @@ _Scalar& AmbiVector<_Scalar,_Index>::coeffRef(_Index i)
           reallocateSparse();
           llElements = reinterpret_cast<ListEl*>(m_buffer);
         }
-        eigen_internal_assert(m_llSize<m_allocatedElements && "internal error: overflow in sparse mode");
+        imp_eigen_internal_assert(m_llSize<m_allocatedElements && "internal error: overflow in sparse mode");
         // let's insert a new coefficient
         ListEl& el = llElements[m_llSize];
         el.value = Scalar(0);
@@ -255,7 +255,7 @@ _Scalar& AmbiVector<_Scalar,_Index>::coeff(_Index i)
   else
   {
     ListEl* IMP_EIGEN_RESTRICT llElements = reinterpret_cast<ListEl*>(m_buffer);
-    eigen_assert(m_mode==IsSparse);
+    imp_eigen_assert(m_mode==IsSparse);
     if ((m_llSize==0) || (i<llElements[m_llStart].index))
     {
       return m_zero;

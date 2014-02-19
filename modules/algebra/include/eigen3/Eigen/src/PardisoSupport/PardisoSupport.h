@@ -115,7 +115,7 @@ class PardisoImpl
 
     PardisoImpl()
     {
-      eigen_assert((sizeof(Index) >= sizeof(_INTEGER_t) && sizeof(Index) <= 8) && "Non-supported index type");
+      imp_eigen_assert((sizeof(Index) >= sizeof(_INTEGER_t) && sizeof(Index) <= 8) && "Non-supported index type");
       m_iparm.setZero();
       m_msglvl = 0; // No output
       m_initialized = false;
@@ -136,7 +136,7 @@ class PardisoImpl
       */
     ComputationInfo info() const
     {
-      eigen_assert(m_initialized && "Decomposition is not initialized.");
+      imp_eigen_assert(m_initialized && "Decomposition is not initialized.");
       return m_info;
     }
 
@@ -174,8 +174,8 @@ class PardisoImpl
     inline const internal::solve_retval<PardisoImpl, Rhs>
     solve(const MatrixBase<Rhs>& b) const
     {
-      eigen_assert(m_initialized && "Pardiso solver is not initialized.");
-      eigen_assert(rows()==b.rows()
+      imp_eigen_assert(m_initialized && "Pardiso solver is not initialized.");
+      imp_eigen_assert(rows()==b.rows()
                 && "PardisoImpl::solve(): invalid number of rows of the right hand side matrix b");
       return internal::solve_retval<PardisoImpl, Rhs>(*this, b.derived());
     }
@@ -188,8 +188,8 @@ class PardisoImpl
     inline const internal::sparse_solve_retval<PardisoImpl, Rhs>
     solve(const SparseMatrixBase<Rhs>& b) const
     {
-      eigen_assert(m_initialized && "Pardiso solver is not initialized.");
-      eigen_assert(rows()==b.rows()
+      imp_eigen_assert(m_initialized && "Pardiso solver is not initialized.");
+      imp_eigen_assert(rows()==b.rows()
                 && "PardisoImpl::solve(): invalid number of rows of the right hand side matrix b");
       return internal::sparse_solve_retval<PardisoImpl, Rhs>(*this, b.derived());
     }
@@ -285,7 +285,7 @@ template<class Derived>
 Derived& PardisoImpl<Derived>::compute(const MatrixType& a)
 {
   m_size = a.rows();
-  eigen_assert(a.rows() == a.cols());
+  imp_eigen_assert(a.rows() == a.cols());
 
   pardisoRelease();
   memset(m_pt, 0, sizeof(m_pt));
@@ -308,7 +308,7 @@ template<class Derived>
 Derived& PardisoImpl<Derived>::analyzePattern(const MatrixType& a)
 {
   m_size = a.rows();
-  eigen_assert(m_size == a.cols());
+  imp_eigen_assert(m_size == a.cols());
 
   pardisoRelease();
   memset(m_pt, 0, sizeof(m_pt));
@@ -330,8 +330,8 @@ Derived& PardisoImpl<Derived>::analyzePattern(const MatrixType& a)
 template<class Derived>
 Derived& PardisoImpl<Derived>::factorize(const MatrixType& a)
 {
-  eigen_assert(m_analysisIsOk && "You must first call analyzePattern()");
-  eigen_assert(m_size == a.rows() && m_size == a.cols());
+  imp_eigen_assert(m_analysisIsOk && "You must first call analyzePattern()");
+  imp_eigen_assert(m_size == a.rows() && m_size == a.cols());
   
   derived().getMatrix(a);
 
@@ -354,10 +354,10 @@ bool PardisoImpl<Base>::_solve(const MatrixBase<BDerived> &b, MatrixBase<XDerive
 
   //Index n = m_matrix.rows();
   Index nrhs = Index(b.cols());
-  eigen_assert(m_size==b.rows());
-  eigen_assert(((MatrixBase<BDerived>::Flags & RowMajorBit) == 0 || nrhs == 1) && "Row-major right hand sides are not supported");
-  eigen_assert(((MatrixBase<XDerived>::Flags & RowMajorBit) == 0 || nrhs == 1) && "Row-major matrices of unknowns are not supported");
-  eigen_assert(((nrhs == 1) || b.outerStride() == b.rows()));
+  imp_eigen_assert(m_size==b.rows());
+  imp_eigen_assert(((MatrixBase<BDerived>::Flags & RowMajorBit) == 0 || nrhs == 1) && "Row-major right hand sides are not supported");
+  imp_eigen_assert(((MatrixBase<XDerived>::Flags & RowMajorBit) == 0 || nrhs == 1) && "Row-major matrices of unknowns are not supported");
+  imp_eigen_assert(((nrhs == 1) || b.outerStride() == b.rows()));
 
 
 //  switch (transposed) {

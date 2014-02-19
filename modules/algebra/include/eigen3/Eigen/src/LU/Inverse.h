@@ -290,7 +290,7 @@ struct inverse_impl : public ReturnByValue<inverse_impl<MatrixType> >
   {
     const int Size = IMP_EIGEN_PLAIN_ENUM_MIN(MatrixType::ColsAtCompileTime,Dest::ColsAtCompileTime);
     IMP_EIGEN_ONLY_USED_FOR_DEBUG(Size);
-    eigen_assert(( (Size<=1) || (Size>4) || (extract_data(m_matrix)!=extract_data(dst)))
+    imp_eigen_assert(( (Size<=1) || (Size>4) || (extract_data(m_matrix)!=extract_data(dst)))
               && "Aliasing problem detected in inverse(), you need to do inverse().eval() here.");
 
     compute_inverse<MatrixTypeNestedCleaned, Dest>::run(m_matrix, dst);
@@ -320,7 +320,7 @@ template<typename Derived>
 inline const internal::inverse_impl<Derived> MatrixBase<Derived>::inverse() const
 {
   IMP_EIGEN_STATIC_ASSERT(!NumTraits<Scalar>::IsInteger,THIS_FUNCTION_IS_NOT_FOR_INTEGER_NUMERIC_TYPES)
-  eigen_assert(rows() == cols());
+  imp_eigen_assert(rows() == cols());
   return internal::inverse_impl<Derived>(derived());
 }
 
@@ -352,7 +352,7 @@ inline void MatrixBase<Derived>::computeInverseAndDetWithCheck(
   ) const
 {
   // i'd love to put some static assertions there, but SFINAE means that they have no effect...
-  eigen_assert(rows() == cols());
+  imp_eigen_assert(rows() == cols());
   // for 2x2, it's worth giving a chance to avoid evaluating.
   // for larger sizes, evaluating has negligible cost and limits code size.
   typedef typename internal::conditional<
@@ -391,7 +391,7 @@ inline void MatrixBase<Derived>::computeInverseWithCheck(
 {
   RealScalar determinant;
   // i'd love to put some static assertions there, but SFINAE means that they have no effect...
-  eigen_assert(rows() == cols());
+  imp_eigen_assert(rows() == cols());
   computeInverseAndDetWithCheck(inverse,determinant,invertible,absDeterminantThreshold);
 }
 

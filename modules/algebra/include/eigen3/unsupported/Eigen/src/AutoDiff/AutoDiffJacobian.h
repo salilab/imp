@@ -47,7 +47,7 @@ public:
 
   void operator() (const InputType& x, ValueType* v, JacobianType* _jac=0) const
   {
-    eigen_assert(v!=0);
+    imp_eigen_assert(v!=0);
     if (!_jac)
     {
       Functor::operator()(x, v);

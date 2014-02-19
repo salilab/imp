@@ -170,7 +170,7 @@ class PermutationBase : public EigenBase<Derived>
       */
     Derived& applyTranspositionOnTheLeft(Index i, Index j)
     {
-      eigen_assert(i>=0 && j>=0 && i<size() && j<size());
+      imp_eigen_assert(i>=0 && j>=0 && i<size() && j<size());
       for(Index k = 0; k < size(); ++k)
       {
         if(indices().coeff(k) == i) indices().coeffRef(k) = j;
@@ -189,7 +189,7 @@ class PermutationBase : public EigenBase<Derived>
       */
     Derived& applyTranspositionOnTheRight(Index i, Index j)
     {
-      eigen_assert(i>=0 && j>=0 && i<size() && j<size());
+      imp_eigen_assert(i>=0 && j>=0 && i<size() && j<size());
       std::swap(indices().coeffRef(i), indices().coeffRef(j));
       return derived();
     }
@@ -220,7 +220,7 @@ class PermutationBase : public EigenBase<Derived>
     template<typename Lhs,typename Rhs>
     void assignProduct(const Lhs& lhs, const Rhs& rhs)
     {
-      eigen_assert(lhs.cols() == rhs.rows());
+      imp_eigen_assert(lhs.cols() == rhs.rows());
       for (int i=0; i<rows();++i) indices().coeffRef(i) = lhs.indices().coeff(rhs.indices().coeff(i));
     }
 #endif

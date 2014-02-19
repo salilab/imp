@@ -44,7 +44,7 @@ template<typename Derived> class TriangularBase : public EigenBase<Derived>
     typedef typename internal::traits<Derived>::DenseMatrixType DenseMatrixType;
     typedef DenseMatrixType DenseType;
 
-    inline TriangularBase() { eigen_assert(!((Mode&UnitDiag) && (Mode&ZeroDiag))); }
+    inline TriangularBase() { imp_eigen_assert(!((Mode&UnitDiag) && (Mode&ZeroDiag))); }
 
     inline Index rows() const { return derived().rows(); }
     inline Index cols() const { return derived().cols(); }
@@ -96,10 +96,10 @@ template<typename Derived> class TriangularBase : public EigenBase<Derived>
     {
       IMP_EIGEN_ONLY_USED_FOR_DEBUG(row);
       IMP_EIGEN_ONLY_USED_FOR_DEBUG(col);
-      eigen_assert(col>=0 && col<cols() && row>=0 && row<rows());
+      imp_eigen_assert(col>=0 && col<cols() && row>=0 && row<rows());
       const int mode = int(Mode) & ~SelfAdjoint;
       IMP_EIGEN_ONLY_USED_FOR_DEBUG(mode);
-      eigen_assert((mode==Upper && col>=row)
+      imp_eigen_assert((mode==Upper && col>=row)
                 || (mode==Lower && col<=row)
                 || ((mode==StrictlyUpper || mode==UnitUpper) && col>row)
                 || ((mode==StrictlyLower || mode==UnitLower) && col<row));
@@ -443,7 +443,7 @@ struct triangular_assignment_selector
   {
     triangular_assignment_selector<Derived1, Derived2, Mode, UnrollCount-1, ClearOpposite>::run(dst, src);
 
-    eigen_assert( Mode == Upper || Mode == Lower
+    imp_eigen_assert( Mode == Upper || Mode == Lower
             || Mode == StrictlyUpper || Mode == StrictlyLower
             || Mode == UnitUpper || Mode == UnitLower);
     if((Mode == Upper && row <= col)
@@ -614,7 +614,7 @@ void TriangularView<MatrixType, Mode>::lazyAssign(const MatrixBase<OtherDerived>
           && internal::traits<OtherDerived>::CoeffReadCost != Dynamic
           && MatrixType::SizeAtCompileTime*internal::traits<OtherDerived>::CoeffReadCost/2 <= IMP_EIGEN_UNROLLING_LIMIT
   };
-  eigen_assert(m_matrix.rows() == other.rows() && m_matrix.cols() == other.cols());
+  imp_eigen_assert(m_matrix.rows() == other.rows() && m_matrix.cols() == other.cols());
 
   internal::triangular_assignment_selector
     <MatrixType, OtherDerived, int(Mode),
@@ -630,7 +630,7 @@ template<typename OtherDerived>
 inline TriangularView<MatrixType, Mode>&
 TriangularView<MatrixType, Mode>::operator=(const TriangularBase<OtherDerived>& other)
 {
-  eigen_assert(Mode == int(OtherDerived::Mode));
+  imp_eigen_assert(Mode == int(OtherDerived::Mode));
   if(internal::traits<OtherDerived>::Flags & EvalBeforeAssigningBit)
   {
     typename OtherDerived::DenseMatrixType other_evaluated(other.rows(), other.cols());
@@ -652,7 +652,7 @@ void TriangularView<MatrixType, Mode>::lazyAssign(const TriangularBase<OtherDeri
                    && MatrixType::SizeAtCompileTime * internal::traits<OtherDerived>::CoeffReadCost / 2
                         <= IMP_EIGEN_UNROLLING_LIMIT
   };
-  eigen_assert(m_matrix.rows() == other.rows() && m_matrix.cols() == other.cols());
+  imp_eigen_assert(m_matrix.rows() == other.rows() && m_matrix.cols() == other.cols());
 
   internal::triangular_assignment_selector
     <MatrixType, OtherDerived, int(Mode),

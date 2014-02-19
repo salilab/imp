@@ -125,8 +125,8 @@ template<typename _MatrixType> class RealSchur
       */
     const MatrixType& matrixU() const
     {
-      eigen_assert(m_isInitialized && "RealSchur is not initialized.");
-      eigen_assert(m_matUisUptodate && "The matrix U has not been computed during the RealSchur decomposition.");
+      imp_eigen_assert(m_isInitialized && "RealSchur is not initialized.");
+      imp_eigen_assert(m_matUisUptodate && "The matrix U has not been computed during the RealSchur decomposition.");
       return m_matU;
     }
 
@@ -142,7 +142,7 @@ template<typename _MatrixType> class RealSchur
       */
     const MatrixType& matrixT() const
     {
-      eigen_assert(m_isInitialized && "RealSchur is not initialized.");
+      imp_eigen_assert(m_isInitialized && "RealSchur is not initialized.");
       return m_matT;
     }
   
@@ -192,7 +192,7 @@ template<typename _MatrixType> class RealSchur
       */
     ComputationInfo info() const
     {
-      eigen_assert(m_isInitialized && "RealSchur is not initialized.");
+      imp_eigen_assert(m_isInitialized && "RealSchur is not initialized.");
       return m_info;
     }
 
@@ -245,7 +245,7 @@ template<typename _MatrixType> class RealSchur
 template<typename MatrixType>
 RealSchur<MatrixType>& RealSchur<MatrixType>::compute(const MatrixType& matrix, bool computeU)
 {
-  eigen_assert(matrix.cols() == matrix.rows());
+  imp_eigen_assert(matrix.cols() == matrix.rows());
   Index maxIters = m_maxIters;
   if (maxIters == -1)
     maxIters = m_maxIterationsPerRow * matrix.rows();
@@ -467,8 +467,8 @@ inline void RealSchur<MatrixType>::initFrancisQRStep(Index il, Index iu, const V
 template<typename MatrixType>
 inline void RealSchur<MatrixType>::performFrancisQRStep(Index il, Index im, Index iu, bool computeU, const Vector3s& firstHouseholderVector, Scalar* workspace)
 {
-  eigen_assert(im >= il);
-  eigen_assert(im <= iu-2);
+  imp_eigen_assert(im >= il);
+  imp_eigen_assert(im <= iu-2);
 
   const Index size = m_matT.cols();
 

@@ -57,7 +57,7 @@ class CwiseNullaryOp : internal::no_assignment_operator,
     CwiseNullaryOp(Index nbRows, Index nbCols, const NullaryOp& func = NullaryOp())
       : m_rows(nbRows), m_cols(nbCols), m_functor(func)
     {
-      eigen_assert(nbRows >= 0
+      imp_eigen_assert(nbRows >= 0
             && (RowsAtCompileTime == Dynamic || RowsAtCompileTime == nbRows)
             &&  nbCols >= 0
             && (ColsAtCompileTime == Dynamic || ColsAtCompileTime == nbCols));

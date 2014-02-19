@@ -74,7 +74,7 @@ class SimplicialCholeskyBase : internal::noncopyable
       */
     ComputationInfo info() const
     {
-      eigen_assert(m_isInitialized && "Decomposition is not initialized.");
+      imp_eigen_assert(m_isInitialized && "Decomposition is not initialized.");
       return m_info;
     }
     
@@ -86,8 +86,8 @@ class SimplicialCholeskyBase : internal::noncopyable
     inline const internal::solve_retval<SimplicialCholeskyBase, Rhs>
     solve(const MatrixBase<Rhs>& b) const
     {
-      eigen_assert(m_isInitialized && "Simplicial LLT or LDLT is not initialized.");
-      eigen_assert(rows()==b.rows()
+      imp_eigen_assert(m_isInitialized && "Simplicial LLT or LDLT is not initialized.");
+      imp_eigen_assert(rows()==b.rows()
                 && "SimplicialCholeskyBase::solve(): invalid number of rows of the right hand side matrix b");
       return internal::solve_retval<SimplicialCholeskyBase, Rhs>(*this, b.derived());
     }
@@ -100,8 +100,8 @@ class SimplicialCholeskyBase : internal::noncopyable
     inline const internal::sparse_solve_retval<SimplicialCholeskyBase, Rhs>
     solve(const SparseMatrixBase<Rhs>& b) const
     {
-      eigen_assert(m_isInitialized && "Simplicial LLT or LDLT is not initialized.");
-      eigen_assert(rows()==b.rows()
+      imp_eigen_assert(m_isInitialized && "Simplicial LLT or LDLT is not initialized.");
+      imp_eigen_assert(rows()==b.rows()
                 && "SimplicialCholesky::solve(): invalid number of rows of the right hand side matrix b");
       return internal::sparse_solve_retval<SimplicialCholeskyBase, Rhs>(*this, b.derived());
     }
@@ -151,8 +151,8 @@ class SimplicialCholeskyBase : internal::noncopyable
     template<typename Rhs,typename Dest>
     void _solve(const MatrixBase<Rhs> &b, MatrixBase<Dest> &dest) const
     {
-      eigen_assert(m_factorizationIsOk && "The decomposition is not in a valid state for solving, you must first call either compute() or symbolic()/numeric()");
-      eigen_assert(m_matrix.rows()==b.rows());
+      imp_eigen_assert(m_factorizationIsOk && "The decomposition is not in a valid state for solving, you must first call either compute() or symbolic()/numeric()");
+      imp_eigen_assert(m_matrix.rows()==b.rows());
 
       if(m_info!=Success)
         return;
@@ -183,7 +183,7 @@ class SimplicialCholeskyBase : internal::noncopyable
     template<bool DoLDLT>
     void compute(const MatrixType& matrix)
     {
-      eigen_assert(matrix.rows()==matrix.cols());
+      imp_eigen_assert(matrix.rows()==matrix.cols());
       Index size = matrix.cols();
       CholMatrixType ap(size,size);
       ordering(matrix, ap);
@@ -194,7 +194,7 @@ class SimplicialCholeskyBase : internal::noncopyable
     template<bool DoLDLT>
     void factorize(const MatrixType& a)
     {
-      eigen_assert(a.rows()==a.cols());
+      imp_eigen_assert(a.rows()==a.cols());
       int size = a.cols();
       CholMatrixType ap(size,size);
       ap.template selfadjointView<Upper>() = a.template selfadjointView<UpLo>().twistedBy(m_P);
@@ -206,7 +206,7 @@ class SimplicialCholeskyBase : internal::noncopyable
 
     void analyzePattern(const MatrixType& a, bool doLDLT)
     {
-      eigen_assert(a.rows()==a.cols());
+      imp_eigen_assert(a.rows()==a.cols());
       int size = a.cols();
       CholMatrixType ap(size,size);
       ordering(a, ap);
@@ -321,13 +321,13 @@ public:
 
     /** \returns an expression of the factor L */
     inline const MatrixL matrixL() const {
-        eigen_assert(Base::m_factorizationIsOk && "Simplicial LLT not factorized");
+        imp_eigen_assert(Base::m_factorizationIsOk && "Simplicial LLT not factorized");
         return Traits::getL(Base::m_matrix);
     }
 
     /** \returns an expression of the factor U (= L^*) */
     inline const MatrixU matrixU() const {
-        eigen_assert(Base::m_factorizationIsOk && "Simplicial LLT not factorized");
+        imp_eigen_assert(Base::m_factorizationIsOk && "Simplicial LLT not factorized");
         return Traits::getU(Base::m_matrix);
     }
     
@@ -410,18 +410,18 @@ public:
 
     /** \returns a vector expression of the diagonal D */
     inline const VectorType vectorD() const {
-        eigen_assert(Base::m_factorizationIsOk && "Simplicial LDLT not factorized");
+        imp_eigen_assert(Base::m_factorizationIsOk && "Simplicial LDLT not factorized");
         return Base::m_diag;
     }
     /** \returns an expression of the factor L */
     inline const MatrixL matrixL() const {
-        eigen_assert(Base::m_factorizationIsOk && "Simplicial LDLT not factorized");
+        imp_eigen_assert(Base::m_factorizationIsOk && "Simplicial LDLT not factorized");
         return Traits::getL(Base::m_matrix);
     }
 
     /** \returns an expression of the factor U (= L^*) */
     inline const MatrixU matrixU() const {
-        eigen_assert(Base::m_factorizationIsOk && "Simplicial LDLT not factorized");
+        imp_eigen_assert(Base::m_factorizationIsOk && "Simplicial LDLT not factorized");
         return Traits::getU(Base::m_matrix);
     }
 
@@ -509,11 +509,11 @@ public:
     }
 
     inline const VectorType vectorD() const {
-        eigen_assert(Base::m_factorizationIsOk && "Simplicial Cholesky not factorized");
+        imp_eigen_assert(Base::m_factorizationIsOk && "Simplicial Cholesky not factorized");
         return Base::m_diag;
     }
     inline const CholMatrixType rawMatrix() const {
-        eigen_assert(Base::m_factorizationIsOk && "Simplicial Cholesky not factorized");
+        imp_eigen_assert(Base::m_factorizationIsOk && "Simplicial Cholesky not factorized");
         return Base::m_matrix;
     }
     
@@ -556,8 +556,8 @@ public:
     template<typename Rhs,typename Dest>
     void _solve(const MatrixBase<Rhs> &b, MatrixBase<Dest> &dest) const
     {
-      eigen_assert(Base::m_factorizationIsOk && "The decomposition is not in a valid state for solving, you must first call either compute() or symbolic()/numeric()");
-      eigen_assert(Base::m_matrix.rows()==b.rows());
+      imp_eigen_assert(Base::m_factorizationIsOk && "The decomposition is not in a valid state for solving, you must first call either compute() or symbolic()/numeric()");
+      imp_eigen_assert(Base::m_matrix.rows()==b.rows());
 
       if(Base::m_info!=Success)
         return;
@@ -610,7 +610,7 @@ public:
 template<typename Derived>
 void SimplicialCholeskyBase<Derived>::ordering(const MatrixType& a, CholMatrixType& ap)
 {
-  eigen_assert(a.rows()==a.cols());
+  imp_eigen_assert(a.rows()==a.cols());
   const Index size = a.rows();
   // TODO allows to configure the permutation
   // Note that amd compute the inverse permutation

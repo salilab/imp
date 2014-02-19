@@ -102,7 +102,7 @@ template<typename _MatrixType> class FullPivLU
       */
     inline const MatrixType& matrixLU() const
     {
-      eigen_assert(m_isInitialized && "LU is not initialized.");
+      imp_eigen_assert(m_isInitialized && "LU is not initialized.");
       return m_lu;
     }
 
@@ -115,7 +115,7 @@ template<typename _MatrixType> class FullPivLU
       */
     inline Index nonzeroPivots() const
     {
-      eigen_assert(m_isInitialized && "LU is not initialized.");
+      imp_eigen_assert(m_isInitialized && "LU is not initialized.");
       return m_nonzero_pivots;
     }
 
@@ -130,7 +130,7 @@ template<typename _MatrixType> class FullPivLU
       */
     inline const PermutationPType& permutationP() const
     {
-      eigen_assert(m_isInitialized && "LU is not initialized.");
+      imp_eigen_assert(m_isInitialized && "LU is not initialized.");
       return m_p;
     }
 
@@ -140,7 +140,7 @@ template<typename _MatrixType> class FullPivLU
       */
     inline const PermutationQType& permutationQ() const
     {
-      eigen_assert(m_isInitialized && "LU is not initialized.");
+      imp_eigen_assert(m_isInitialized && "LU is not initialized.");
       return m_q;
     }
 
@@ -160,7 +160,7 @@ template<typename _MatrixType> class FullPivLU
       */
     inline const internal::kernel_retval<FullPivLU> kernel() const
     {
-      eigen_assert(m_isInitialized && "LU is not initialized.");
+      imp_eigen_assert(m_isInitialized && "LU is not initialized.");
       return internal::kernel_retval<FullPivLU>(*this);
     }
 
@@ -186,7 +186,7 @@ template<typename _MatrixType> class FullPivLU
     inline const internal::image_retval<FullPivLU>
       image(const MatrixType& originalMatrix) const
     {
-      eigen_assert(m_isInitialized && "LU is not initialized.");
+      imp_eigen_assert(m_isInitialized && "LU is not initialized.");
       return internal::image_retval<FullPivLU>(*this, originalMatrix);
     }
 
@@ -213,7 +213,7 @@ template<typename _MatrixType> class FullPivLU
     inline const internal::solve_retval<FullPivLU, Rhs>
     solve(const MatrixBase<Rhs>& b) const
     {
-      eigen_assert(m_isInitialized && "LU is not initialized.");
+      imp_eigen_assert(m_isInitialized && "LU is not initialized.");
       return internal::solve_retval<FullPivLU, Rhs>(*this, b.derived());
     }
 
@@ -278,7 +278,7 @@ template<typename _MatrixType> class FullPivLU
       */
     RealScalar threshold() const
     {
-      eigen_assert(m_isInitialized || m_usePrescribedThreshold);
+      imp_eigen_assert(m_isInitialized || m_usePrescribedThreshold);
       return m_usePrescribedThreshold ? m_prescribedThreshold
       // this formula comes from experimenting (see "LU precision tuning" thread on the list)
       // and turns out to be identical to Higham's formula used already in LDLt.
@@ -294,7 +294,7 @@ template<typename _MatrixType> class FullPivLU
     inline Index rank() const
     {
       using std::abs;
-      eigen_assert(m_isInitialized && "LU is not initialized.");
+      imp_eigen_assert(m_isInitialized && "LU is not initialized.");
       RealScalar premultiplied_threshold = abs(m_maxpivot) * threshold();
       Index result = 0;
       for(Index i = 0; i < m_nonzero_pivots; ++i)
@@ -310,7 +310,7 @@ template<typename _MatrixType> class FullPivLU
       */
     inline Index dimensionOfKernel() const
     {
-      eigen_assert(m_isInitialized && "LU is not initialized.");
+      imp_eigen_assert(m_isInitialized && "LU is not initialized.");
       return cols() - rank();
     }
 
@@ -323,7 +323,7 @@ template<typename _MatrixType> class FullPivLU
       */
     inline bool isInjective() const
     {
-      eigen_assert(m_isInitialized && "LU is not initialized.");
+      imp_eigen_assert(m_isInitialized && "LU is not initialized.");
       return rank() == cols();
     }
 
@@ -336,7 +336,7 @@ template<typename _MatrixType> class FullPivLU
       */
     inline bool isSurjective() const
     {
-      eigen_assert(m_isInitialized && "LU is not initialized.");
+      imp_eigen_assert(m_isInitialized && "LU is not initialized.");
       return rank() == rows();
     }
 
@@ -348,7 +348,7 @@ template<typename _MatrixType> class FullPivLU
       */
     inline bool isInvertible() const
     {
-      eigen_assert(m_isInitialized && "LU is not initialized.");
+      imp_eigen_assert(m_isInitialized && "LU is not initialized.");
       return isInjective() && (m_lu.rows() == m_lu.cols());
     }
 
@@ -361,8 +361,8 @@ template<typename _MatrixType> class FullPivLU
       */
     inline const internal::solve_retval<FullPivLU,typename MatrixType::IdentityReturnType> inverse() const
     {
-      eigen_assert(m_isInitialized && "LU is not initialized.");
-      eigen_assert(m_lu.rows() == m_lu.cols() && "You can't take the inverse of a non-square matrix!");
+      imp_eigen_assert(m_isInitialized && "LU is not initialized.");
+      imp_eigen_assert(m_lu.rows() == m_lu.cols() && "You can't take the inverse of a non-square matrix!");
       return internal::solve_retval<FullPivLU,typename MatrixType::IdentityReturnType>
                (*this, MatrixType::Identity(m_lu.rows(), m_lu.cols()));
     }
@@ -418,7 +418,7 @@ template<typename MatrixType>
 FullPivLU<MatrixType>& FullPivLU<MatrixType>::compute(const MatrixType& matrix)
 {
   // the permutations are stored as int indices, so just to be sure:
-  eigen_assert(matrix.rows()<=NumTraits<int>::highest() && matrix.cols()<=NumTraits<int>::highest());
+  imp_eigen_assert(matrix.rows()<=NumTraits<int>::highest() && matrix.cols()<=NumTraits<int>::highest());
   
   m_isInitialized = true;
   m_lu = matrix;
@@ -505,8 +505,8 @@ FullPivLU<MatrixType>& FullPivLU<MatrixType>::compute(const MatrixType& matrix)
 template<typename MatrixType>
 typename internal::traits<MatrixType>::Scalar FullPivLU<MatrixType>::determinant() const
 {
-  eigen_assert(m_isInitialized && "LU is not initialized.");
-  eigen_assert(m_lu.rows() == m_lu.cols() && "You can't take the determinant of a non-square matrix!");
+  imp_eigen_assert(m_isInitialized && "LU is not initialized.");
+  imp_eigen_assert(m_lu.rows() == m_lu.cols() && "You can't take the determinant of a non-square matrix!");
   return Scalar(m_det_pq) * Scalar(m_lu.diagonal().prod());
 }
 
@@ -516,7 +516,7 @@ typename internal::traits<MatrixType>::Scalar FullPivLU<MatrixType>::determinant
 template<typename MatrixType>
 MatrixType FullPivLU<MatrixType>::reconstructedMatrix() const
 {
-  eigen_assert(m_isInitialized && "LU is not initialized.");
+  imp_eigen_assert(m_isInitialized && "LU is not initialized.");
   const Index smalldim = (std::min)(m_lu.rows(), m_lu.cols());
   // LU
   MatrixType res(m_lu.rows(),m_lu.cols());
@@ -584,7 +584,7 @@ struct kernel_retval<FullPivLU<_MatrixType> >
     for(Index i = 0; i < dec().nonzeroPivots(); ++i)
       if(abs(dec().matrixLU().coeff(i,i)) > premultiplied_threshold)
         pivots.coeffRef(p++) = i;
-    eigen_internal_assert(p == rank());
+    imp_eigen_internal_assert(p == rank());
 
     // we construct a temporaty trapezoid matrix m, by taking the U matrix and
     // permuting the rows and cols to bring the nonnegligible pivots to the top of
@@ -653,7 +653,7 @@ struct image_retval<FullPivLU<_MatrixType> >
     for(Index i = 0; i < dec().nonzeroPivots(); ++i)
       if(abs(dec().matrixLU().coeff(i,i)) > premultiplied_threshold)
         pivots.coeffRef(p++) = i;
-    eigen_internal_assert(p == rank());
+    imp_eigen_internal_assert(p == rank());
 
     for(Index i = 0; i < rank(); ++i)
       dst.col(i) = originalMatrix().col(dec().permutationQ().indices().coeff(pivots.coeff(i)));
@@ -680,7 +680,7 @@ struct solve_retval<FullPivLU<_MatrixType>, Rhs>
 
     const Index rows = dec().rows(), cols = dec().cols(),
               nonzero_pivots = dec().nonzeroPivots();
-    eigen_assert(rhs().rows() == rows);
+    imp_eigen_assert(rhs().rows() == rows);
     const Index smalldim = (std::min)(rows, cols);
 
     if(nonzero_pivots == 0)

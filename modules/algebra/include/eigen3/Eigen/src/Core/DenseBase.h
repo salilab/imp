@@ -217,7 +217,7 @@ template<typename Derived> class DenseBase
     void resize(Index newSize)
     {
       IMP_EIGEN_ONLY_USED_FOR_DEBUG(newSize);
-      eigen_assert(newSize == this->size()
+      imp_eigen_assert(newSize == this->size()
                 && "DenseBase::resize() does not actually allow to resize.");
     }
     /** Only plain matrices/arrays, not expressions, may be resized; therefore the only useful resize methods are
@@ -228,7 +228,7 @@ template<typename Derived> class DenseBase
     {
       IMP_EIGEN_ONLY_USED_FOR_DEBUG(nbRows);
       IMP_EIGEN_ONLY_USED_FOR_DEBUG(nbCols);
-      eigen_assert(nbRows == this->rows() && nbCols == this->cols()
+      imp_eigen_assert(nbRows == this->rows() && nbCols == this->cols()
                 && "DenseBase::resize() does not actually allow to resize.");
     }
 
@@ -424,7 +424,7 @@ template<typename Derived> class DenseBase
     CoeffReturnType value() const
     {
       IMP_EIGEN_STATIC_ASSERT_SIZE_1x1(Derived)
-      eigen_assert(this->rows() == 1 && this->cols() == 1);
+      imp_eigen_assert(this->rows() == 1 && this->cols() == 1);
       return derived().coeff(0,0);
     }
 

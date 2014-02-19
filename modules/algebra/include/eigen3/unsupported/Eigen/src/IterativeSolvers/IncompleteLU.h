@@ -80,8 +80,8 @@ class IncompleteLU
     template<typename Rhs> inline const internal::solve_retval<IncompleteLU, Rhs>
     solve(const MatrixBase<Rhs>& b) const
     {
-      eigen_assert(m_isInitialized && "IncompleteLU is not initialized.");
-      eigen_assert(cols()==b.rows()
+      imp_eigen_assert(m_isInitialized && "IncompleteLU is not initialized.");
+      imp_eigen_assert(cols()==b.rows()
                 && "IncompleteLU::solve(): invalid number of rows of the right hand side matrix b");
       return internal::solve_retval<IncompleteLU, Rhs>(*this, b.derived());
     }

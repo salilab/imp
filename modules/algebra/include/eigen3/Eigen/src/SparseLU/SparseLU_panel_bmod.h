@@ -142,7 +142,7 @@ void SparseLUImpl<Scalar,Index>::panel_bmod(const Index m, const Index w, const 
       // update
       luptr += u_rows;
       Map<Matrix<Scalar,Dynamic,Dynamic>, 0, OuterStride<> > B(glu.lusup.data()+luptr, nrow, u_rows, OuterStride<>(lda) );
-      eigen_assert(tempv.size()>w*ldu + nrow*w + 1);
+      imp_eigen_assert(tempv.size()>w*ldu + nrow*w + 1);
       
       Index ldl = internal::first_multiple<Index>(nrow, PacketSize);
       Index offset = (PacketSize-internal::first_aligned(B.data(), PacketSize)) % PacketSize;

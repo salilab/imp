@@ -138,8 +138,8 @@ template<typename _Scalar> class AlignedVector3
 
     inline Scalar dot(const AlignedVector3& other) const
     {
-      eigen_assert(m_coeffs.w()==Scalar(0));
-      eigen_assert(other.m_coeffs.w()==Scalar(0));
+      imp_eigen_assert(m_coeffs.w()==Scalar(0));
+      imp_eigen_assert(other.m_coeffs.w()==Scalar(0));
       return m_coeffs.dot(other.m_coeffs);
     }
 
@@ -155,13 +155,13 @@ template<typename _Scalar> class AlignedVector3
 
     inline Scalar sum() const
     {
-      eigen_assert(m_coeffs.w()==Scalar(0));
+      imp_eigen_assert(m_coeffs.w()==Scalar(0));
       return m_coeffs.sum();
     }
 
     inline Scalar squaredNorm() const
     {
-      eigen_assert(m_coeffs.w()==Scalar(0));
+      imp_eigen_assert(m_coeffs.w()==Scalar(0));
       return m_coeffs.squaredNorm();
     }
 

@@ -195,7 +195,7 @@ template<typename VectorsType, typename CoeffsType, int Side> class HouseholderS
       */
     const EssentialVectorType essentialVector(Index k) const
     {
-      eigen_assert(k >= 0 && k < m_length);
+      imp_eigen_assert(k >= 0 && k < m_length);
       return internal::hseq_side_dependent_impl<VectorsType,CoeffsType,Side>::essentialVector(*this, k);
     }
 

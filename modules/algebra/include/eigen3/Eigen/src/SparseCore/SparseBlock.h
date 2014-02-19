@@ -225,7 +225,7 @@ public:
     const Scalar& lastCoeff() const
     {
       IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(BlockImpl);
-      eigen_assert(nonZeros()>0);
+      imp_eigen_assert(nonZeros()>0);
       if(m_matrix.isCompressed())
         return m_matrix.valuePtr()[m_matrix.outerIndexPtr()[m_outerStart+1]-1];
       else

@@ -73,7 +73,7 @@ template<typename ExpressionType> class SwapWrapper
     void copyCoeff(Index rowId, Index colId, const DenseBase<OtherDerived>& other)
     {
       OtherDerived& _other = other.const_cast_derived();
-      eigen_internal_assert(rowId >= 0 && rowId < rows()
+      imp_eigen_internal_assert(rowId >= 0 && rowId < rows()
                          && colId >= 0 && colId < cols());
       Scalar tmp = m_expression.coeff(rowId, colId);
       m_expression.coeffRef(rowId, colId) = _other.coeff(rowId, colId);
@@ -84,7 +84,7 @@ template<typename ExpressionType> class SwapWrapper
     void copyCoeff(Index index, const DenseBase<OtherDerived>& other)
     {
       OtherDerived& _other = other.const_cast_derived();
-      eigen_internal_assert(index >= 0 && index < m_expression.size());
+      imp_eigen_internal_assert(index >= 0 && index < m_expression.size());
       Scalar tmp = m_expression.coeff(index);
       m_expression.coeffRef(index) = _other.coeff(index);
       _other.coeffRef(index) = tmp;
@@ -94,7 +94,7 @@ template<typename ExpressionType> class SwapWrapper
     void copyPacket(Index rowId, Index colId, const DenseBase<OtherDerived>& other)
     {
       OtherDerived& _other = other.const_cast_derived();
-      eigen_internal_assert(rowId >= 0 && rowId < rows()
+      imp_eigen_internal_assert(rowId >= 0 && rowId < rows()
                         && colId >= 0 && colId < cols());
       Packet tmp = m_expression.template packet<StoreMode>(rowId, colId);
       m_expression.template writePacket<StoreMode>(rowId, colId,
@@ -107,7 +107,7 @@ template<typename ExpressionType> class SwapWrapper
     void copyPacket(Index index, const DenseBase<OtherDerived>& other)
     {
       OtherDerived& _other = other.const_cast_derived();
-      eigen_internal_assert(index >= 0 && index < m_expression.size());
+      imp_eigen_internal_assert(index >= 0 && index < m_expression.size());
       Packet tmp = m_expression.template packet<StoreMode>(index);
       m_expression.template writePacket<StoreMode>(index,
         _other.template packet<LoadMode>(index)

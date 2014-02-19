@@ -135,8 +135,8 @@ class Array
     {
       Base::_check_template_params();
       IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(Array)
-      eigen_assert(dim >= 0);
-      eigen_assert(SizeAtCompileTime == Dynamic || SizeAtCompileTime == dim);
+      imp_eigen_assert(dim >= 0);
+      imp_eigen_assert(SizeAtCompileTime == Dynamic || SizeAtCompileTime == dim);
       IMP_EIGEN_INITIALIZE_COEFFS_IF_THAT_OPTION_IS_ENABLED
     }
 

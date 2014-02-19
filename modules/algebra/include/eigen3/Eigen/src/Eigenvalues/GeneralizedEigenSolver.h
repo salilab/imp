@@ -197,7 +197,7 @@ template<typename _MatrixType> class GeneralizedEigenSolver
       */
     EigenvalueType eigenvalues() const
     {
-      eigen_assert(m_isInitialized && "GeneralizedEigenSolver is not initialized.");
+      imp_eigen_assert(m_isInitialized && "GeneralizedEigenSolver is not initialized.");
       return EigenvalueType(m_alphas,m_betas);
     }
 
@@ -208,7 +208,7 @@ template<typename _MatrixType> class GeneralizedEigenSolver
       * \sa betas(), eigenvalues() */
     ComplexVectorType alphas() const
     {
-      eigen_assert(m_isInitialized && "GeneralizedEigenSolver is not initialized.");
+      imp_eigen_assert(m_isInitialized && "GeneralizedEigenSolver is not initialized.");
       return m_alphas;
     }
 
@@ -219,7 +219,7 @@ template<typename _MatrixType> class GeneralizedEigenSolver
       * \sa alphas(), eigenvalues() */
     VectorType betas() const
     {
-      eigen_assert(m_isInitialized && "GeneralizedEigenSolver is not initialized.");
+      imp_eigen_assert(m_isInitialized && "GeneralizedEigenSolver is not initialized.");
       return m_betas;
     }
 
@@ -250,7 +250,7 @@ template<typename _MatrixType> class GeneralizedEigenSolver
 
     ComputationInfo info() const
     {
-      eigen_assert(m_isInitialized && "EigenSolver is not initialized.");
+      imp_eigen_assert(m_isInitialized && "EigenSolver is not initialized.");
       return m_realQZ.info();
     }
 
@@ -278,8 +278,8 @@ template<typename _MatrixType> class GeneralizedEigenSolver
 //template<typename MatrixType>
 //typename GeneralizedEigenSolver<MatrixType>::EigenvectorsType GeneralizedEigenSolver<MatrixType>::eigenvectors() const
 //{
-//  eigen_assert(m_isInitialized && "EigenSolver is not initialized.");
-//  eigen_assert(m_eigenvectorsOk && "The eigenvectors have not been computed together with the eigenvalues.");
+//  imp_eigen_assert(m_isInitialized && "EigenSolver is not initialized.");
+//  imp_eigen_assert(m_eigenvectorsOk && "The eigenvectors have not been computed together with the eigenvalues.");
 //  Index n = m_eivec.cols();
 //  EigenvectorsType matV(n,n);
 //  // TODO
@@ -292,7 +292,7 @@ GeneralizedEigenSolver<MatrixType>::compute(const MatrixType& A, const MatrixTyp
 {
   using std::sqrt;
   using std::abs;
-  eigen_assert(A.cols() == A.rows() && B.cols() == A.rows() && B.cols() == B.rows());
+  imp_eigen_assert(A.cols() == A.rows() && B.cols() == A.rows() && B.cols() == B.rows());
 
   // Reduce to generalized real Schur form:
   // A = Q S Z and B = Q T Z

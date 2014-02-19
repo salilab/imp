@@ -82,7 +82,7 @@ public:
     */
   Derived& factorize(const MatrixType& A)
   {
-    eigen_assert(m_analysisIsOk && "You must first call analyzePattern()"); 
+    imp_eigen_assert(m_analysisIsOk && "You must first call analyzePattern()"); 
     mp_matrix = &A;
     m_preconditioner.factorize(A);
     m_factorizationIsOk = true;
@@ -148,14 +148,14 @@ public:
   /** \returns the number of iterations performed during the last solve */
   int iterations() const
   {
-    eigen_assert(m_isInitialized && "ConjugateGradient is not initialized.");
+    imp_eigen_assert(m_isInitialized && "ConjugateGradient is not initialized.");
     return m_iterations;
   }
 
   /** \returns the tolerance error reached during the last solve */
   RealScalar error() const
   {
-    eigen_assert(m_isInitialized && "ConjugateGradient is not initialized.");
+    imp_eigen_assert(m_isInitialized && "ConjugateGradient is not initialized.");
     return m_error;
   }
 
@@ -166,8 +166,8 @@ public:
   template<typename Rhs> inline const internal::solve_retval<Derived, Rhs>
   solve(const MatrixBase<Rhs>& b) const
   {
-    eigen_assert(m_isInitialized && "IterativeSolverBase is not initialized.");
-    eigen_assert(rows()==b.rows()
+    imp_eigen_assert(m_isInitialized && "IterativeSolverBase is not initialized.");
+    imp_eigen_assert(rows()==b.rows()
               && "IterativeSolverBase::solve(): invalid number of rows of the right hand side matrix b");
     return internal::solve_retval<Derived, Rhs>(derived(), b.derived());
   }
@@ -180,8 +180,8 @@ public:
   inline const internal::sparse_solve_retval<IterativeSolverBase, Rhs>
   solve(const SparseMatrixBase<Rhs>& b) const
   {
-    eigen_assert(m_isInitialized && "IterativeSolverBase is not initialized.");
-    eigen_assert(rows()==b.rows()
+    imp_eigen_assert(m_isInitialized && "IterativeSolverBase is not initialized.");
+    imp_eigen_assert(rows()==b.rows()
               && "IterativeSolverBase::solve(): invalid number of rows of the right hand side matrix b");
     return internal::sparse_solve_retval<IterativeSolverBase, Rhs>(*this, b.derived());
   }
@@ -189,7 +189,7 @@ public:
   /** \returns Success if the iterations converged, and NoConvergence otherwise. */
   ComputationInfo info() const
   {
-    eigen_assert(m_isInitialized && "IterativeSolverBase is not initialized.");
+    imp_eigen_assert(m_isInitialized && "IterativeSolverBase is not initialized.");
     return m_info;
   }
   
@@ -197,7 +197,7 @@ public:
   template<typename Rhs, typename DestScalar, int DestOptions, typename DestIndex>
   void _solve_sparse(const Rhs& b, SparseMatrix<DestScalar,DestOptions,DestIndex> &dest) const
   {
-    eigen_assert(rows()==b.rows());
+    imp_eigen_assert(rows()==b.rows());
     
     int rhsCols = b.cols();
     int size = b.rows();

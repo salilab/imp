@@ -193,7 +193,7 @@ struct SelfadjointProductMatrix<Lhs,LhsMode,false,Rhs,0,true>
     typedef typename Base::RhsScalar RhsScalar;
     typedef Map<Matrix<ResScalar,Dynamic,1>, Aligned> MappedDest;
     
-    eigen_assert(dest.rows()==m_lhs.rows() && dest.cols()==m_rhs.cols());
+    imp_eigen_assert(dest.rows()==m_lhs.rows() && dest.cols()==m_rhs.cols());
 
     typename internal::add_const_on_value_type<ActualLhsType>::type lhs = LhsBlasTraits::extract(m_lhs);
     typename internal::add_const_on_value_type<ActualRhsType>::type rhs = RhsBlasTraits::extract(m_rhs);

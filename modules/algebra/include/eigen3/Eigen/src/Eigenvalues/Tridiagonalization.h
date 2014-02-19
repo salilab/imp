@@ -179,7 +179,7 @@ template<typename _MatrixType> class Tridiagonalization
       */
     inline CoeffVectorType householderCoefficients() const
     {
-      eigen_assert(m_isInitialized && "Tridiagonalization is not initialized.");
+      imp_eigen_assert(m_isInitialized && "Tridiagonalization is not initialized.");
       return m_hCoeffs;
     }
 
@@ -216,7 +216,7 @@ template<typename _MatrixType> class Tridiagonalization
       */
     inline const MatrixType& packedMatrix() const
     {
-      eigen_assert(m_isInitialized && "Tridiagonalization is not initialized.");
+      imp_eigen_assert(m_isInitialized && "Tridiagonalization is not initialized.");
       return m_matrix;
     }
 
@@ -237,7 +237,7 @@ template<typename _MatrixType> class Tridiagonalization
       */
     HouseholderSequenceType matrixQ() const
     {
-      eigen_assert(m_isInitialized && "Tridiagonalization is not initialized.");
+      imp_eigen_assert(m_isInitialized && "Tridiagonalization is not initialized.");
       return HouseholderSequenceType(m_matrix, m_hCoeffs.conjugate())
              .setLength(m_matrix.rows() - 1)
              .setShift(1);
@@ -262,7 +262,7 @@ template<typename _MatrixType> class Tridiagonalization
       */
     MatrixTReturnType matrixT() const
     {
-      eigen_assert(m_isInitialized && "Tridiagonalization is not initialized.");
+      imp_eigen_assert(m_isInitialized && "Tridiagonalization is not initialized.");
       return MatrixTReturnType(m_matrix.real());
     }
 
@@ -304,7 +304,7 @@ template<typename MatrixType>
 typename Tridiagonalization<MatrixType>::DiagonalReturnType
 Tridiagonalization<MatrixType>::diagonal() const
 {
-  eigen_assert(m_isInitialized && "Tridiagonalization is not initialized.");
+  imp_eigen_assert(m_isInitialized && "Tridiagonalization is not initialized.");
   return m_matrix.diagonal();
 }
 
@@ -312,7 +312,7 @@ template<typename MatrixType>
 typename Tridiagonalization<MatrixType>::SubDiagonalReturnType
 Tridiagonalization<MatrixType>::subDiagonal() const
 {
-  eigen_assert(m_isInitialized && "Tridiagonalization is not initialized.");
+  imp_eigen_assert(m_isInitialized && "Tridiagonalization is not initialized.");
   Index n = m_matrix.rows();
   return Block<const MatrixType,SizeMinusOne,SizeMinusOne>(m_matrix, 1, 0, n-1,n-1).diagonal();
 }
@@ -350,8 +350,8 @@ void tridiagonalization_inplace(MatrixType& matA, CoeffVectorType& hCoeffs)
   typedef typename MatrixType::Scalar Scalar;
   typedef typename MatrixType::RealScalar RealScalar;
   Index n = matA.rows();
-  eigen_assert(n==matA.cols());
-  eigen_assert(n==hCoeffs.size()+1 || n==1);
+  imp_eigen_assert(n==matA.cols());
+  imp_eigen_assert(n==hCoeffs.size()+1 || n==1);
   
   for (Index i = 0; i<n-1; ++i)
   {
@@ -426,7 +426,7 @@ struct tridiagonalization_inplace_selector;
 template<typename MatrixType, typename DiagonalType, typename SubDiagonalType>
 void tridiagonalization_inplace(MatrixType& mat, DiagonalType& diag, SubDiagonalType& subdiag, bool extractQ)
 {
-  eigen_assert(mat.cols()==mat.rows() && diag.size()==mat.rows() && subdiag.size()==mat.rows()-1);
+  imp_eigen_assert(mat.cols()==mat.rows() && diag.size()==mat.rows() && subdiag.size()==mat.rows()-1);
   tridiagonalization_inplace_selector<MatrixType>::run(mat, diag, subdiag, extractQ);
 }
 

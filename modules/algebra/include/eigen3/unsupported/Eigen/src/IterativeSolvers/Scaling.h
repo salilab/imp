@@ -73,7 +73,7 @@ class IterScaling
     {
       int m = mat.rows(); 
       int n = mat.cols();
-      eigen_assert((m>0 && m == n) && "Please give a non - empty matrix");
+      imp_eigen_assert((m>0 && m == n) && "Please give a non - empty matrix");
       m_left.resize(m); 
       m_right.resize(n);
       m_left.setOnes();

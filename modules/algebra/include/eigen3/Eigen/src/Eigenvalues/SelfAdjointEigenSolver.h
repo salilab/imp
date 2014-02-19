@@ -227,8 +227,8 @@ template<typename _MatrixType> class SelfAdjointEigenSolver
       */
     const MatrixType& eigenvectors() const
     {
-      eigen_assert(m_isInitialized && "SelfAdjointEigenSolver is not initialized.");
-      eigen_assert(m_eigenvectorsOk && "The eigenvectors have not been computed together with the eigenvalues.");
+      imp_eigen_assert(m_isInitialized && "SelfAdjointEigenSolver is not initialized.");
+      imp_eigen_assert(m_eigenvectorsOk && "The eigenvectors have not been computed together with the eigenvalues.");
       return m_eivec;
     }
 
@@ -249,7 +249,7 @@ template<typename _MatrixType> class SelfAdjointEigenSolver
       */
     const RealVectorType& eigenvalues() const
     {
-      eigen_assert(m_isInitialized && "SelfAdjointEigenSolver is not initialized.");
+      imp_eigen_assert(m_isInitialized && "SelfAdjointEigenSolver is not initialized.");
       return m_eivalues;
     }
 
@@ -273,8 +273,8 @@ template<typename _MatrixType> class SelfAdjointEigenSolver
       */
     MatrixType operatorSqrt() const
     {
-      eigen_assert(m_isInitialized && "SelfAdjointEigenSolver is not initialized.");
-      eigen_assert(m_eigenvectorsOk && "The eigenvectors have not been computed together with the eigenvalues.");
+      imp_eigen_assert(m_isInitialized && "SelfAdjointEigenSolver is not initialized.");
+      imp_eigen_assert(m_eigenvectorsOk && "The eigenvectors have not been computed together with the eigenvalues.");
       return m_eivec * m_eivalues.cwiseSqrt().asDiagonal() * m_eivec.adjoint();
     }
 
@@ -298,8 +298,8 @@ template<typename _MatrixType> class SelfAdjointEigenSolver
       */
     MatrixType operatorInverseSqrt() const
     {
-      eigen_assert(m_isInitialized && "SelfAdjointEigenSolver is not initialized.");
-      eigen_assert(m_eigenvectorsOk && "The eigenvectors have not been computed together with the eigenvalues.");
+      imp_eigen_assert(m_isInitialized && "SelfAdjointEigenSolver is not initialized.");
+      imp_eigen_assert(m_eigenvectorsOk && "The eigenvectors have not been computed together with the eigenvalues.");
       return m_eivec * m_eivalues.cwiseInverse().cwiseSqrt().asDiagonal() * m_eivec.adjoint();
     }
 
@@ -309,7 +309,7 @@ template<typename _MatrixType> class SelfAdjointEigenSolver
       */
     ComputationInfo info() const
     {
-      eigen_assert(m_isInitialized && "SelfAdjointEigenSolver is not initialized.");
+      imp_eigen_assert(m_isInitialized && "SelfAdjointEigenSolver is not initialized.");
       return m_info;
     }
 
@@ -385,8 +385,8 @@ SelfAdjointEigenSolver<MatrixType>& SelfAdjointEigenSolver<MatrixType>
 ::compute(const MatrixType& matrix, int options)
 {
   using std::abs;
-  eigen_assert(matrix.cols() == matrix.rows());
-  eigen_assert((options&~(EigVecMask|GenEigMask))==0
+  imp_eigen_assert(matrix.cols() == matrix.rows());
+  imp_eigen_assert((options&~(EigVecMask|GenEigMask))==0
           && (options&EigVecMask)!=EigVecMask
           && "invalid option parameter");
   bool computeEigenvectors = (options&ComputeEigenvectors)==ComputeEigenvectors;
@@ -543,8 +543,8 @@ template<typename SolverType> struct direct_selfadjoint_eigenvalues<SolverType,3
   static inline void run(SolverType& solver, const MatrixType& mat, int options)
   {
     using std::sqrt;
-    eigen_assert(mat.cols() == 3 && mat.cols() == mat.rows());
-    eigen_assert((options&~(EigVecMask|GenEigMask))==0
+    imp_eigen_assert(mat.cols() == 3 && mat.cols() == mat.rows());
+    imp_eigen_assert((options&~(EigVecMask|GenEigMask))==0
             && (options&EigVecMask)!=EigVecMask
             && "invalid option parameter");
     bool computeEigenvectors = (options&ComputeEigenvectors)==ComputeEigenvectors;
@@ -678,8 +678,8 @@ template<typename SolverType> struct direct_selfadjoint_eigenvalues<SolverType,2
   static inline void run(SolverType& solver, const MatrixType& mat, int options)
   {
     using std::sqrt;
-    eigen_assert(mat.cols() == 2 && mat.cols() == mat.rows());
-    eigen_assert((options&~(EigVecMask|GenEigMask))==0
+    imp_eigen_assert(mat.cols() == 2 && mat.cols() == mat.rows());
+    imp_eigen_assert((options&~(EigVecMask|GenEigMask))==0
             && (options&EigVecMask)!=EigVecMask
             && "invalid option parameter");
     bool computeEigenvectors = (options&ComputeEigenvectors)==ComputeEigenvectors;

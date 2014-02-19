@@ -59,7 +59,7 @@ template<typename MatrixType, unsigned int UpLo> class SparseSelfAdjointView
 
     inline SparseSelfAdjointView(const MatrixType& matrix) : m_matrix(matrix)
     {
-      eigen_assert(rows()==cols() && "SelfAdjointView is only for squared matrices");
+      imp_eigen_assert(rows()==cols() && "SelfAdjointView is only for squared matrices");
     }
 
     inline Index rows() const { return m_matrix.rows(); }
@@ -235,7 +235,7 @@ class SparseSelfAdjointTimeDenseProduct
     {
       IMP_EIGEN_ONLY_USED_FOR_DEBUG(alpha);
       // TODO use alpha
-      eigen_assert(alpha==Scalar(1) && "alpha != 1 is not implemented yet, sorry");
+      imp_eigen_assert(alpha==Scalar(1) && "alpha != 1 is not implemented yet, sorry");
       typedef typename internal::remove_all<Lhs>::type _Lhs;
       typedef typename _Lhs::InnerIterator LhsInnerIterator;
       enum {

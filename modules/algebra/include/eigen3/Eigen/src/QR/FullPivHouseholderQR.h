@@ -146,7 +146,7 @@ template<typename _MatrixType> class FullPivHouseholderQR
     inline const internal::solve_retval<FullPivHouseholderQR, Rhs>
     solve(const MatrixBase<Rhs>& b) const
     {
-      eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
+      imp_eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
       return internal::solve_retval<FullPivHouseholderQR, Rhs>(*this, b.derived());
     }
 
@@ -158,7 +158,7 @@ template<typename _MatrixType> class FullPivHouseholderQR
       */
     const MatrixType& matrixQR() const
     {
-      eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
+      imp_eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
       return m_qr;
     }
 
@@ -167,14 +167,14 @@ template<typename _MatrixType> class FullPivHouseholderQR
     /** \returns a const reference to the column permutation matrix */
     const PermutationType& colsPermutation() const
     {
-      eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
+      imp_eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
       return m_cols_permutation;
     }
 
     /** \returns a const reference to the vector of indices representing the rows transpositions */
     const IntColVectorType& rowsTranspositions() const
     {
-      eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
+      imp_eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
       return m_rows_transpositions;
     }
 
@@ -216,7 +216,7 @@ template<typename _MatrixType> class FullPivHouseholderQR
     inline Index rank() const
     {
       using std::abs;
-      eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
+      imp_eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
       RealScalar premultiplied_threshold = abs(m_maxpivot) * threshold();
       Index result = 0;
       for(Index i = 0; i < m_nonzero_pivots; ++i)
@@ -232,7 +232,7 @@ template<typename _MatrixType> class FullPivHouseholderQR
       */
     inline Index dimensionOfKernel() const
     {
-      eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
+      imp_eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
       return cols() - rank();
     }
 
@@ -245,7 +245,7 @@ template<typename _MatrixType> class FullPivHouseholderQR
       */
     inline bool isInjective() const
     {
-      eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
+      imp_eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
       return rank() == cols();
     }
 
@@ -258,7 +258,7 @@ template<typename _MatrixType> class FullPivHouseholderQR
       */
     inline bool isSurjective() const
     {
-      eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
+      imp_eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
       return rank() == rows();
     }
 
@@ -270,7 +270,7 @@ template<typename _MatrixType> class FullPivHouseholderQR
       */
     inline bool isInvertible() const
     {
-      eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
+      imp_eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
       return isInjective() && isSurjective();
     }
 
@@ -282,7 +282,7 @@ template<typename _MatrixType> class FullPivHouseholderQR
     internal::solve_retval<FullPivHouseholderQR, typename MatrixType::IdentityReturnType>
     inverse() const
     {
-      eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
+      imp_eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
       return internal::solve_retval<FullPivHouseholderQR,typename MatrixType::IdentityReturnType>
                (*this, MatrixType::Identity(m_qr.rows(), m_qr.cols()));
     }
@@ -340,7 +340,7 @@ template<typename _MatrixType> class FullPivHouseholderQR
       */
     RealScalar threshold() const
     {
-      eigen_assert(m_isInitialized || m_usePrescribedThreshold);
+      imp_eigen_assert(m_isInitialized || m_usePrescribedThreshold);
       return m_usePrescribedThreshold ? m_prescribedThreshold
       // this formula comes from experimenting (see "LU precision tuning" thread on the list)
       // and turns out to be identical to Higham's formula used already in LDLt.
@@ -356,7 +356,7 @@ template<typename _MatrixType> class FullPivHouseholderQR
       */
     inline Index nonzeroPivots() const
     {
-      eigen_assert(m_isInitialized && "LU is not initialized.");
+      imp_eigen_assert(m_isInitialized && "LU is not initialized.");
       return m_nonzero_pivots;
     }
 
@@ -383,16 +383,16 @@ template<typename MatrixType>
 typename MatrixType::RealScalar FullPivHouseholderQR<MatrixType>::absDeterminant() const
 {
   using std::abs;
-  eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
-  eigen_assert(m_qr.rows() == m_qr.cols() && "You can't take the determinant of a non-square matrix!");
+  imp_eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
+  imp_eigen_assert(m_qr.rows() == m_qr.cols() && "You can't take the determinant of a non-square matrix!");
   return abs(m_qr.diagonal().prod());
 }
 
 template<typename MatrixType>
 typename MatrixType::RealScalar FullPivHouseholderQR<MatrixType>::logAbsDeterminant() const
 {
-  eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
-  eigen_assert(m_qr.rows() == m_qr.cols() && "You can't take the determinant of a non-square matrix!");
+  imp_eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
+  imp_eigen_assert(m_qr.rows() == m_qr.cols() && "You can't take the determinant of a non-square matrix!");
   return m_qr.diagonal().cwiseAbs().array().log().sum();
 }
 
@@ -494,7 +494,7 @@ struct solve_retval<FullPivHouseholderQR<_MatrixType>, Rhs>
   template<typename Dest> void evalTo(Dest& dst) const
   {
     const Index rows = dec().rows(), cols = dec().cols();
-    eigen_assert(rhs().rows() == rows);
+    imp_eigen_assert(rhs().rows() == rows);
 
     // FIXME introduce nonzeroPivots() and use it here. and more generally,
     // make the same improvements in this dec as in FullPivLU.
@@ -603,7 +603,7 @@ protected:
 template<typename MatrixType>
 inline typename FullPivHouseholderQR<MatrixType>::MatrixQReturnType FullPivHouseholderQR<MatrixType>::matrixQ() const
 {
-  eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
+  imp_eigen_assert(m_isInitialized && "FullPivHouseholderQR is not initialized.");
   return MatrixQReturnType(m_qr, m_hCoeffs, m_rows_transpositions);
 }
 

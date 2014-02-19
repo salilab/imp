@@ -405,7 +405,7 @@ struct SelfadjointProductMatrix<Lhs,LhsMode,false,Rhs,RhsMode,false>
 
   template<typename Dest> void scaleAndAddTo(Dest& dst, const Scalar& alpha) const
   {
-    eigen_assert(dst.rows()==m_lhs.rows() && dst.cols()==m_rhs.cols());
+    imp_eigen_assert(dst.rows()==m_lhs.rows() && dst.cols()==m_rhs.cols());
 
     typename internal::add_const_on_value_type<ActualLhsType>::type lhs = LhsBlasTraits::extract(m_lhs);
     typename internal::add_const_on_value_type<ActualRhsType>::type rhs = RhsBlasTraits::extract(m_rhs);

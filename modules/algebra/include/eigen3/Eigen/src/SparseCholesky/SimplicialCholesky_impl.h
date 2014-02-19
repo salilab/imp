@@ -102,11 +102,11 @@ void SimplicialCholeskyBase<Derived>::factorize_preordered(const CholMatrixType&
 {
   using std::sqrt;
 
-  eigen_assert(m_analysisIsOk && "You must first call analyzePattern()");
-  eigen_assert(ap.rows()==ap.cols());
+  imp_eigen_assert(m_analysisIsOk && "You must first call analyzePattern()");
+  imp_eigen_assert(ap.rows()==ap.cols());
   const Index size = ap.rows();
-  eigen_assert(m_parent.size()==size);
-  eigen_assert(m_nonZerosPerCol.size()==size);
+  imp_eigen_assert(m_parent.size()==size);
+  imp_eigen_assert(m_nonZerosPerCol.size()==size);
 
   const Index* Lp = m_matrix.outerIndexPtr();
   Index* Li = m_matrix.innerIndexPtr();

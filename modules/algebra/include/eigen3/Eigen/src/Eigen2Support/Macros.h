@@ -10,8 +10,8 @@
 #ifndef IMP_EIGEN2_MACROS_H
 #define IMP_EIGEN2_MACROS_H
 
-#define ei_assert eigen_assert
-#define ei_internal_assert eigen_internal_assert
+#define ei_assert imp_eigen_assert
+#define ei_internal_assert imp_eigen_internal_assert
 
 #define IMP_EIGEN_ALIGN_128 IMP_EIGEN_ALIGN16
 

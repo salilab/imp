@@ -62,7 +62,7 @@ template<typename MatrixType> class Minor
                        Index row, Index col)
       : m_matrix(matrix), m_row(row), m_col(col)
     {
-      eigen_assert(row >= 0 && row < matrix.rows()
+      imp_eigen_assert(row >= 0 && row < matrix.rows()
           && col >= 0 && col < matrix.cols());
     }
 

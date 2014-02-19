@@ -109,7 +109,7 @@ template<typename MatrixType, int Direction> class Reverse
 
     inline Scalar& operator()(Index row, Index col)
     {
-      eigen_assert(row >= 0 && row < rows() && col >= 0 && col < cols());
+      imp_eigen_assert(row >= 0 && row < rows() && col >= 0 && col < cols());
       return coeffRef(row, col);
     }
 
@@ -137,7 +137,7 @@ template<typename MatrixType, int Direction> class Reverse
 
     inline Scalar& operator()(Index index)
     {
-      eigen_assert(index >= 0 && index < m_matrix.size());
+      imp_eigen_assert(index >= 0 && index < m_matrix.size());
       return coeffRef(index);
     }
 

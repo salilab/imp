@@ -316,8 +316,8 @@ public:
   inline const internal::solve_retval_with_guess<GMRES, Rhs, Guess>
   solveWithGuess(const MatrixBase<Rhs>& b, const Guess& x0) const
   {
-    eigen_assert(m_isInitialized && "GMRES is not initialized.");
-    eigen_assert(Base::rows()==b.rows()
+    imp_eigen_assert(m_isInitialized && "GMRES is not initialized.");
+    imp_eigen_assert(Base::rows()==b.rows()
               && "GMRES::solve(): invalid number of rows of the right hand side matrix b");
     return internal::solve_retval_with_guess
             <GMRES, Rhs, Guess>(*this, b.derived(), x0);

@@ -1140,7 +1140,7 @@ Transform<Scalar,Dim,Mode,Options>::inverse(TransformTraits hint) const
     }
     else
     {
-      eigen_assert(false && "Invalid transform traits in Transform::Inverse");
+      imp_eigen_assert(false && "Invalid transform traits in Transform::Inverse");
     }
     // translation and remaining parts
     res.matrix().template topRightCorner<Dim,1>()

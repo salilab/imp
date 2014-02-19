@@ -142,7 +142,7 @@ class SparseTriangularView<MatrixType,Mode>::ReverseInnerIterator : public Matri
     IMP_EIGEN_STRONG_INLINE ReverseInnerIterator(const SparseTriangularView& view, Index outer)
       : Base(view.nestedExpression(), outer)
     {
-      eigen_assert((!HasUnitDiag) && "ReverseInnerIterator does not support yet triangular views with a unit diagonal");
+      imp_eigen_assert((!HasUnitDiag) && "ReverseInnerIterator does not support yet triangular views with a unit diagonal");
       if(SkipLast) {
         while((*this) && (SkipDiag ? this->index()>=outer : this->index()>outer))
           --(*this);

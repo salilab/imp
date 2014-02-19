@@ -174,8 +174,8 @@ template<int Side, typename OtherDerived>
 void TriangularView<MatrixType,Mode>::solveInPlace(const MatrixBase<OtherDerived>& _other) const
 {
   OtherDerived& other = _other.const_cast_derived();
-  eigen_assert( cols() == rows() && ((Side==OnTheLeft && cols() == other.rows()) || (Side==OnTheRight && cols() == other.cols())) );
-  eigen_assert((!(Mode & ZeroDiag)) && bool(Mode & (Upper|Lower)));
+  imp_eigen_assert( cols() == rows() && ((Side==OnTheLeft && cols() == other.rows()) || (Side==OnTheRight && cols() == other.cols())) );
+  imp_eigen_assert((!(Mode & ZeroDiag)) && bool(Mode & (Upper|Lower)));
 
   enum { copy = internal::traits<OtherDerived>::Flags & RowMajorBit  && OtherDerived::IsVectorAtCompileTime };
   typedef typename internal::conditional<copy,

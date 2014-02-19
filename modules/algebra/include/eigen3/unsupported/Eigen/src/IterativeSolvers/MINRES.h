@@ -52,7 +52,7 @@ namespace IMP_Eigen {
             VectorType w_new(precond.solve(v_new)); // initialize w_new
 //            RealScalar beta; // will be initialized inside loop
             RealScalar beta_new2(v_new.dot(w_new));
-            eigen_assert(beta_new2 >= 0 && "PRECONDITIONER IS NOT POSITIVE DEFINITE");
+            imp_eigen_assert(beta_new2 >= 0 && "PRECONDITIONER IS NOT POSITIVE DEFINITE");
             RealScalar beta_new(sqrt(beta_new2));
             const RealScalar beta_one(beta_new);
             v_new /= beta_new;
@@ -91,7 +91,7 @@ namespace IMP_Eigen {
                 v_new -= alpha*v; // overwrite v_new
                 w_new = precond.solve(v_new); // overwrite w_new
                 beta_new2 = v_new.dot(w_new); // compute beta_new
-                eigen_assert(beta_new2 >= 0 && "PRECONDITIONER IS NOT POSITIVE DEFINITE");
+                imp_eigen_assert(beta_new2 >= 0 && "PRECONDITIONER IS NOT POSITIVE DEFINITE");
                 beta_new = sqrt(beta_new2); // compute beta_new
                 v_new /= beta_new; // overwrite v_new for next iteration
                 w_new /= beta_new; // overwrite w_new for next iteration
@@ -239,8 +239,8 @@ namespace IMP_Eigen {
         inline const internal::solve_retval_with_guess<MINRES, Rhs, Guess>
         solveWithGuess(const MatrixBase<Rhs>& b, const Guess& x0) const
         {
-            eigen_assert(m_isInitialized && "MINRES is not initialized.");
-            eigen_assert(Base::rows()==b.rows()
+            imp_eigen_assert(m_isInitialized && "MINRES is not initialized.");
+            imp_eigen_assert(Base::rows()==b.rows()
                          && "MINRES::solve(): invalid number of rows of the right hand side matrix b");
             return internal::solve_retval_with_guess
             <MINRES, Rhs, Guess>(*this, b.derived(), x0);

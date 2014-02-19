@@ -49,7 +49,7 @@ ComplexSchur<Matrix<EIGTYPE, Dynamic, Dynamic, EIGCOLROW> >::compute(const Matri
   typedef MatrixType::RealScalar RealScalar; \
   typedef std::complex<RealScalar> ComplexScalar; \
 \
-  eigen_assert(matrix.cols() == matrix.rows()); \
+  imp_eigen_assert(matrix.cols() == matrix.rows()); \
 \
   m_matUisUptodate = false; \
   if(matrix.cols() == 1) \

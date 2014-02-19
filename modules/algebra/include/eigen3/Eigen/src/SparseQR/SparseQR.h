@@ -107,7 +107,7 @@ class SparseQR
       */
     Index rank() const 
     {
-      eigen_assert(m_isInitialized && "The factorization should be called first, use compute()");
+      imp_eigen_assert(m_isInitialized && "The factorization should be called first, use compute()");
       return m_nonzeropivots; 
     }
     
@@ -137,7 +137,7 @@ class SparseQR
       */
     const PermutationType& colsPermutation() const
     { 
-      eigen_assert(m_isInitialized && "Decomposition is not initialized.");
+      imp_eigen_assert(m_isInitialized && "Decomposition is not initialized.");
       return m_outputPerm_c;
     }
     
@@ -150,8 +150,8 @@ class SparseQR
     template<typename Rhs, typename Dest>
     bool _solve(const MatrixBase<Rhs> &B, MatrixBase<Dest> &dest) const
     {
-      eigen_assert(m_isInitialized && "The factorization should be called first, use compute()");
-      eigen_assert(this->rows() == B.rows() && "SparseQR::solve() : invalid number of rows in the right hand side matrix");
+      imp_eigen_assert(m_isInitialized && "The factorization should be called first, use compute()");
+      imp_eigen_assert(this->rows() == B.rows() && "SparseQR::solve() : invalid number of rows in the right hand side matrix");
 
       Index rank = this->rank();
       
@@ -191,15 +191,15 @@ class SparseQR
     template<typename Rhs>
     inline const internal::solve_retval<SparseQR, Rhs> solve(const MatrixBase<Rhs>& B) const 
     {
-      eigen_assert(m_isInitialized && "The factorization should be called first, use compute()");
-      eigen_assert(this->rows() == B.rows() && "SparseQR::solve() : invalid number of rows in the right hand side matrix");
+      imp_eigen_assert(m_isInitialized && "The factorization should be called first, use compute()");
+      imp_eigen_assert(this->rows() == B.rows() && "SparseQR::solve() : invalid number of rows in the right hand side matrix");
       return internal::solve_retval<SparseQR, Rhs>(*this, B.derived());
     }
     template<typename Rhs>
     inline const internal::sparse_solve_retval<SparseQR, Rhs> solve(const SparseMatrixBase<Rhs>& B) const
     {
-          eigen_assert(m_isInitialized && "The factorization should be called first, use compute()");
-          eigen_assert(this->rows() == B.rows() && "SparseQR::solve() : invalid number of rows in the right hand side matrix");
+          imp_eigen_assert(m_isInitialized && "The factorization should be called first, use compute()");
+          imp_eigen_assert(this->rows() == B.rows() && "SparseQR::solve() : invalid number of rows in the right hand side matrix");
           return internal::sparse_solve_retval<SparseQR, Rhs>(*this, B.derived());
     }
     
@@ -213,7 +213,7 @@ class SparseQR
       */
     ComputationInfo info() const
     {
-      eigen_assert(m_isInitialized && "Decomposition is not initialized.");
+      imp_eigen_assert(m_isInitialized && "Decomposition is not initialized.");
       return m_info;
     }
 
@@ -302,7 +302,7 @@ void SparseQR<MatrixType,OrderingType>::factorize(const MatrixType& mat)
   using std::abs;
   using std::max;
   
-  eigen_assert(m_analysisIsok && "analyzePattern() should be called before this step");
+  imp_eigen_assert(m_analysisIsok && "analyzePattern() should be called before this step");
   Index m = mat.rows();
   Index n = mat.cols();
   IndexVector mark(m); mark.setConstant(-1);  // Record the visited nodes
@@ -564,7 +564,7 @@ struct SparseQR_QProduct : ReturnByValue<SparseQR_QProduct<SparseQRType, Derived
     res = m_other;
     if (m_transpose)
     {
-      eigen_assert(m_qr.m_Q.rows() == m_other.rows() && "Non conforming object sizes");
+      imp_eigen_assert(m_qr.m_Q.rows() == m_other.rows() && "Non conforming object sizes");
       //Compute res = Q' * other column by column
       for(Index j = 0; j < res.cols(); j++){
         for (Index k = 0; k < n; k++)
@@ -578,7 +578,7 @@ struct SparseQR_QProduct : ReturnByValue<SparseQR_QProduct<SparseQRType, Derived
     }
     else
     {
-      eigen_assert(m_qr.m_Q.cols() == m_other.rows() && "Non conforming object sizes");
+      imp_eigen_assert(m_qr.m_Q.cols() == m_other.rows() && "Non conforming object sizes");
       // Compute res = Q' * other column by column
       for(Index j = 0; j < res.cols(); j++)
       {

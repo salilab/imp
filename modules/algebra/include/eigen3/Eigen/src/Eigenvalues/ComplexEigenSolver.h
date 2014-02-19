@@ -155,8 +155,8 @@ template<typename _MatrixType> class ComplexEigenSolver
       */
     const EigenvectorType& eigenvectors() const
     {
-      eigen_assert(m_isInitialized && "ComplexEigenSolver is not initialized.");
-      eigen_assert(m_eigenvectorsOk && "The eigenvectors have not been computed together with the eigenvalues.");
+      imp_eigen_assert(m_isInitialized && "ComplexEigenSolver is not initialized.");
+      imp_eigen_assert(m_eigenvectorsOk && "The eigenvectors have not been computed together with the eigenvalues.");
       return m_eivec;
     }
 
@@ -180,7 +180,7 @@ template<typename _MatrixType> class ComplexEigenSolver
       */
     const EigenvalueType& eigenvalues() const
     {
-      eigen_assert(m_isInitialized && "ComplexEigenSolver is not initialized.");
+      imp_eigen_assert(m_isInitialized && "ComplexEigenSolver is not initialized.");
       return m_eivalues;
     }
 
@@ -216,7 +216,7 @@ template<typename _MatrixType> class ComplexEigenSolver
       */
     ComputationInfo info() const
     {
-      eigen_assert(m_isInitialized && "ComplexEigenSolver is not initialized.");
+      imp_eigen_assert(m_isInitialized && "ComplexEigenSolver is not initialized.");
       return m_schur.info();
     }
 
@@ -252,7 +252,7 @@ ComplexEigenSolver<MatrixType>&
 ComplexEigenSolver<MatrixType>::compute(const MatrixType& matrix, bool computeEigenvectors)
 {
   // this code is inspired from Jampack
-  eigen_assert(matrix.cols() == matrix.rows());
+  imp_eigen_assert(matrix.cols() == matrix.rows());
 
   // Do a complex Schur decomposition, A = U T U^*
   // The eigenvalues are on the diagonal of T.

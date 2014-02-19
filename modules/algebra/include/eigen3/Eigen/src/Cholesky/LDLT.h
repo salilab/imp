@@ -109,14 +109,14 @@ template<typename _MatrixType, int _UpLo> class LDLT
     /** \returns a view of the upper triangular matrix U */
     inline typename Traits::MatrixU matrixU() const
     {
-      eigen_assert(m_isInitialized && "LDLT is not initialized.");
+      imp_eigen_assert(m_isInitialized && "LDLT is not initialized.");
       return Traits::getU(m_matrix);
     }
 
     /** \returns a view of the lower triangular matrix L */
     inline typename Traits::MatrixL matrixL() const
     {
-      eigen_assert(m_isInitialized && "LDLT is not initialized.");
+      imp_eigen_assert(m_isInitialized && "LDLT is not initialized.");
       return Traits::getL(m_matrix);
     }
 
@@ -124,21 +124,21 @@ template<typename _MatrixType, int _UpLo> class LDLT
       */
     inline const TranspositionType& transpositionsP() const
     {
-      eigen_assert(m_isInitialized && "LDLT is not initialized.");
+      imp_eigen_assert(m_isInitialized && "LDLT is not initialized.");
       return m_transpositions;
     }
 
     /** \returns the coefficients of the diagonal matrix D */
     inline Diagonal<const MatrixType> vectorD() const
     {
-      eigen_assert(m_isInitialized && "LDLT is not initialized.");
+      imp_eigen_assert(m_isInitialized && "LDLT is not initialized.");
       return m_matrix.diagonal();
     }
 
     /** \returns true if the matrix is positive (semidefinite) */
     inline bool isPositive() const
     {
-      eigen_assert(m_isInitialized && "LDLT is not initialized.");
+      imp_eigen_assert(m_isInitialized && "LDLT is not initialized.");
       return m_sign == 1;
     }
     
@@ -152,7 +152,7 @@ template<typename _MatrixType, int _UpLo> class LDLT
     /** \returns true if the matrix is negative (semidefinite) */
     inline bool isNegative(void) const
     {
-      eigen_assert(m_isInitialized && "LDLT is not initialized.");
+      imp_eigen_assert(m_isInitialized && "LDLT is not initialized.");
       return m_sign == -1;
     }
 
@@ -175,8 +175,8 @@ template<typename _MatrixType, int _UpLo> class LDLT
     inline const internal::solve_retval<LDLT, Rhs>
     solve(const MatrixBase<Rhs>& b) const
     {
-      eigen_assert(m_isInitialized && "LDLT is not initialized.");
-      eigen_assert(m_matrix.rows()==b.rows()
+      imp_eigen_assert(m_isInitialized && "LDLT is not initialized.");
+      imp_eigen_assert(m_matrix.rows()==b.rows()
                 && "LDLT::solve(): invalid number of rows of the right hand side matrix b");
       return internal::solve_retval<LDLT, Rhs>(*this, b.derived());
     }
@@ -204,7 +204,7 @@ template<typename _MatrixType, int _UpLo> class LDLT
       */
     inline const MatrixType& matrixLDLT() const
     {
-      eigen_assert(m_isInitialized && "LDLT is not initialized.");
+      imp_eigen_assert(m_isInitialized && "LDLT is not initialized.");
       return m_matrix;
     }
 
@@ -220,7 +220,7 @@ template<typename _MatrixType, int _UpLo> class LDLT
       */
     ComputationInfo info() const
     {
-      eigen_assert(m_isInitialized && "LDLT is not initialized.");
+      imp_eigen_assert(m_isInitialized && "LDLT is not initialized.");
       return Success;
     }
 
@@ -252,7 +252,7 @@ template<> struct ldlt_inplace<Lower>
     typedef typename MatrixType::Scalar Scalar;
     typedef typename MatrixType::RealScalar RealScalar;
     typedef typename MatrixType::Index Index;
-    eigen_assert(mat.rows()==mat.cols());
+    imp_eigen_assert(mat.rows()==mat.cols());
     const Index size = mat.rows();
 
     if (size <= 1)
@@ -356,7 +356,7 @@ template<> struct ldlt_inplace<Lower>
     typedef typename MatrixType::Index Index;
 
     const Index size = mat.rows();
-    eigen_assert(mat.cols() == size && w.size()==size);
+    imp_eigen_assert(mat.cols() == size && w.size()==size);
 
     RealScalar alpha = 1;
 
@@ -436,7 +436,7 @@ template<typename MatrixType> struct LDLT_Traits<MatrixType,Upper>
 template<typename MatrixType, int _UpLo>
 LDLT<MatrixType,_UpLo>& LDLT<MatrixType,_UpLo>::compute(const MatrixType& a)
 {
-  eigen_assert(a.rows()==a.cols());
+  imp_eigen_assert(a.rows()==a.cols());
   const Index size = a.rows();
 
   m_matrix = a;
@@ -463,7 +463,7 @@ LDLT<MatrixType,_UpLo>& LDLT<MatrixType,_UpLo>::rankUpdate(const MatrixBase<Deri
   const Index size = w.rows();
   if (m_isInitialized)
   {
-    eigen_assert(m_matrix.rows()==size);
+    imp_eigen_assert(m_matrix.rows()==size);
   }
   else
   {    
@@ -492,7 +492,7 @@ struct solve_retval<LDLT<_MatrixType,_UpLo>, Rhs>
 
   template<typename Dest> void evalTo(Dest& dst) const
   {
-    eigen_assert(rhs().rows() == dec().matrixLDLT().rows());
+    imp_eigen_assert(rhs().rows() == dec().matrixLDLT().rows());
     // dst = P b
     dst = dec().transpositionsP() * rhs();
 
@@ -542,8 +542,8 @@ template<typename MatrixType,int _UpLo>
 template<typename Derived>
 bool LDLT<MatrixType,_UpLo>::solveInPlace(MatrixBase<Derived> &bAndX) const
 {
-  eigen_assert(m_isInitialized && "LDLT is not initialized.");
-  eigen_assert(m_matrix.rows() == bAndX.rows());
+  imp_eigen_assert(m_isInitialized && "LDLT is not initialized.");
+  imp_eigen_assert(m_matrix.rows() == bAndX.rows());
 
   bAndX = this->solve(bAndX);
 
@@ -556,7 +556,7 @@ bool LDLT<MatrixType,_UpLo>::solveInPlace(MatrixBase<Derived> &bAndX) const
 template<typename MatrixType, int _UpLo>
 MatrixType LDLT<MatrixType,_UpLo>::reconstructedMatrix() const
 {
-  eigen_assert(m_isInitialized && "LDLT is not initialized.");
+  imp_eigen_assert(m_isInitialized && "LDLT is not initialized.");
   const Index size = m_matrix.rows();
   MatrixType res(size,size);
 

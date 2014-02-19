@@ -24,9 +24,9 @@ void dogleg(
     /* Function Body */
     const Scalar epsmch = NumTraits<Scalar>::epsilon();
     const Index n = qrfac.cols();
-    eigen_assert(n==qtb.size());
-    eigen_assert(n==x.size());
-    eigen_assert(n==diag.size());
+    imp_eigen_assert(n==qtb.size());
+    imp_eigen_assert(n==x.size());
+    imp_eigen_assert(n==diag.size());
     Matrix< Scalar, Dynamic, 1 >  wa1(n), wa2(n);
 
     /* first, calculate the gauss-newton direction. */

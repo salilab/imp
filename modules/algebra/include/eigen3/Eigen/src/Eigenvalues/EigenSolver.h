@@ -197,8 +197,8 @@ template<typename _MatrixType> class EigenSolver
       */
     const MatrixType& pseudoEigenvectors() const
     {
-      eigen_assert(m_isInitialized && "EigenSolver is not initialized.");
-      eigen_assert(m_eigenvectorsOk && "The eigenvectors have not been computed together with the eigenvalues.");
+      imp_eigen_assert(m_isInitialized && "EigenSolver is not initialized.");
+      imp_eigen_assert(m_eigenvectorsOk && "The eigenvectors have not been computed together with the eigenvalues.");
       return m_eivec;
     }
 
@@ -242,7 +242,7 @@ template<typename _MatrixType> class EigenSolver
       */
     const EigenvalueType& eigenvalues() const
     {
-      eigen_assert(m_isInitialized && "EigenSolver is not initialized.");
+      imp_eigen_assert(m_isInitialized && "EigenSolver is not initialized.");
       return m_eivalues;
     }
 
@@ -277,7 +277,7 @@ template<typename _MatrixType> class EigenSolver
 
     ComputationInfo info() const
     {
-      eigen_assert(m_isInitialized && "EigenSolver is not initialized.");
+      imp_eigen_assert(m_isInitialized && "EigenSolver is not initialized.");
       return m_realSchur.info();
     }
 
@@ -312,7 +312,7 @@ template<typename _MatrixType> class EigenSolver
 template<typename MatrixType>
 MatrixType EigenSolver<MatrixType>::pseudoEigenvalueMatrix() const
 {
-  eigen_assert(m_isInitialized && "EigenSolver is not initialized.");
+  imp_eigen_assert(m_isInitialized && "EigenSolver is not initialized.");
   Index n = m_eivalues.rows();
   MatrixType matD = MatrixType::Zero(n,n);
   for (Index i=0; i<n; ++i)
@@ -332,8 +332,8 @@ MatrixType EigenSolver<MatrixType>::pseudoEigenvalueMatrix() const
 template<typename MatrixType>
 typename EigenSolver<MatrixType>::EigenvectorsType EigenSolver<MatrixType>::eigenvectors() const
 {
-  eigen_assert(m_isInitialized && "EigenSolver is not initialized.");
-  eigen_assert(m_eigenvectorsOk && "The eigenvectors have not been computed together with the eigenvalues.");
+  imp_eigen_assert(m_isInitialized && "EigenSolver is not initialized.");
+  imp_eigen_assert(m_eigenvectorsOk && "The eigenvectors have not been computed together with the eigenvalues.");
   Index n = m_eivec.cols();
   EigenvectorsType matV(n,n);
   for (Index j=0; j<n; ++j)
@@ -366,7 +366,7 @@ EigenSolver<MatrixType>::compute(const MatrixType& matrix, bool computeEigenvect
 {
   using std::sqrt;
   using std::abs;
-  eigen_assert(matrix.cols() == matrix.rows());
+  imp_eigen_assert(matrix.cols() == matrix.rows());
 
   // Reduce to real Schur form.
   m_realSchur.compute(matrix, computeEigenvectors);
@@ -581,7 +581,7 @@ void EigenSolver<MatrixType>::doComputeEigenvectors()
     }
     else
     {
-      eigen_assert(0 && "Internal bug in EigenSolver"); // this should not happen
+      imp_eigen_assert(0 && "Internal bug in EigenSolver"); // this should not happen
     }
   }
 

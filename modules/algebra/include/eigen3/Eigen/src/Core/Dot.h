@@ -68,7 +68,7 @@ MatrixBase<Derived>::dot(const MatrixBase<OtherDerived>& other) const
   typedef internal::scalar_conj_product_op<Scalar,typename OtherDerived::Scalar> func;
   IMP_EIGEN_CHECK_BINARY_COMPATIBILIY(func,Scalar,typename OtherDerived::Scalar);
 
-  eigen_assert(size() == other.size());
+  imp_eigen_assert(size() == other.size());
 
   return internal::dot_nocheck<Derived,OtherDerived>::run(*this, other);
 }
@@ -94,7 +94,7 @@ MatrixBase<Derived>::eigen2_dot(const MatrixBase<OtherDerived>& other) const
   IMP_EIGEN_STATIC_ASSERT((internal::is_same<Scalar, typename OtherDerived::Scalar>::value),
     YOU_MIXED_DIFFERENT_NUMERIC_TYPES__YOU_NEED_TO_USE_THE_CAST_METHOD_OF_MATRIXBASE_TO_CAST_NUMERIC_TYPES_EXPLICITLY)
 
-  eigen_assert(size() == other.size());
+  imp_eigen_assert(size() == other.size());
 
   return internal::dot_nocheck<OtherDerived,Derived>::run(other,*this);
 }

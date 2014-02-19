@@ -177,8 +177,8 @@ class SparseLU : public internal::SparseLUImpl<typename _MatrixType::Scalar, typ
     template<typename Rhs>
     inline const internal::solve_retval<SparseLU, Rhs> solve(const MatrixBase<Rhs>& B) const 
     {
-      eigen_assert(m_factorizationIsOk && "SparseLU is not initialized."); 
-      eigen_assert(rows()==B.rows()
+      imp_eigen_assert(m_factorizationIsOk && "SparseLU is not initialized."); 
+      imp_eigen_assert(rows()==B.rows()
                     && "SparseLU::solve(): invalid number of rows of the right hand side matrix B");
           return internal::solve_retval<SparseLU, Rhs>(*this, B.derived());
     }
@@ -190,8 +190,8 @@ class SparseLU : public internal::SparseLUImpl<typename _MatrixType::Scalar, typ
     template<typename Rhs>
     inline const internal::sparse_solve_retval<SparseLU, Rhs> solve(const SparseMatrixBase<Rhs>& B) const 
     {
-      eigen_assert(m_factorizationIsOk && "SparseLU is not initialized."); 
-      eigen_assert(rows()==B.rows()
+      imp_eigen_assert(m_factorizationIsOk && "SparseLU is not initialized."); 
+      imp_eigen_assert(rows()==B.rows()
                     && "SparseLU::solve(): invalid number of rows of the right hand side matrix B");
           return internal::sparse_solve_retval<SparseLU, Rhs>(*this, B.derived());
     }
@@ -206,7 +206,7 @@ class SparseLU : public internal::SparseLUImpl<typename _MatrixType::Scalar, typ
       */
     ComputationInfo info() const
     {
-      eigen_assert(m_isInitialized && "Decomposition is not initialized.");
+      imp_eigen_assert(m_isInitialized && "Decomposition is not initialized.");
       return m_info;
     }
     
@@ -222,7 +222,7 @@ class SparseLU : public internal::SparseLUImpl<typename _MatrixType::Scalar, typ
     bool _solve(const MatrixBase<Rhs> &B, MatrixBase<Dest> &_X) const
     {
       Dest& X(_X.derived());
-      eigen_assert(m_factorizationIsOk && "The matrix should be factorized first");
+      imp_eigen_assert(m_factorizationIsOk && "The matrix should be factorized first");
       IMP_EIGEN_STATIC_ASSERT((Dest::Flags&RowMajorBit)==0,
                         THIS_METHOD_IS_ONLY_FOR_COLUMN_MAJOR_MATRICES);
       
@@ -255,7 +255,7 @@ class SparseLU : public internal::SparseLUImpl<typename _MatrixType::Scalar, typ
       */
      Scalar absDeterminant()
     {
-      eigen_assert(m_factorizationIsOk && "The matrix should be factorized first.");
+      imp_eigen_assert(m_factorizationIsOk && "The matrix should be factorized first.");
       // Initialize with the determinant of the row matrix
       Scalar det = Scalar(1.);
       //Note that the diagonal blocks of U are stored in supernodes,
@@ -285,7 +285,7 @@ class SparseLU : public internal::SparseLUImpl<typename _MatrixType::Scalar, typ
        */
      Scalar logAbsDeterminant() const
      {
-       eigen_assert(m_factorizationIsOk && "The matrix should be factorized first.");
+       imp_eigen_assert(m_factorizationIsOk && "The matrix should be factorized first.");
        Scalar det = Scalar(0.);
        for (Index j = 0; j < this->cols(); ++j)
        {
@@ -308,7 +308,7 @@ class SparseLU : public internal::SparseLUImpl<typename _MatrixType::Scalar, typ
        */
      Scalar signDeterminant()
      {
-       eigen_assert(m_factorizationIsOk && "The matrix should be factorized first.");
+       imp_eigen_assert(m_factorizationIsOk && "The matrix should be factorized first.");
        return Scalar(m_detPermR);
      }
 
@@ -452,8 +452,8 @@ template <typename MatrixType, typename OrderingType>
 void SparseLU<MatrixType, OrderingType>::factorize(const MatrixType& matrix)
 {
   using internal::emptyIdxLU;
-  eigen_assert(m_analysisIsOk && "analyzePattern() should be called first"); 
-  eigen_assert((matrix.rows() == matrix.cols()) && "Only for squared matrices");
+  imp_eigen_assert(m_analysisIsOk && "analyzePattern() should be called first"); 
+  imp_eigen_assert((matrix.rows() == matrix.cols()) && "Only for squared matrices");
   
   typedef typename IndexVector::Scalar Index; 
   

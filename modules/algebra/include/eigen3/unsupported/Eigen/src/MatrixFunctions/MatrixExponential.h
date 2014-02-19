@@ -381,7 +381,7 @@ void MatrixExponential<MatrixType>::computeUV(long double)
   }
 #else
   // this case should be handled in compute()
-  eigen_assert(false && "Bug in MatrixExponential"); 
+  imp_eigen_assert(false && "Bug in MatrixExponential"); 
 #endif  // LDBL_MANT_DIG
 }
 
@@ -442,7 +442,7 @@ struct traits<MatrixExponentialReturnValue<Derived> >
 template <typename Derived>
 const MatrixExponentialReturnValue<Derived> MatrixBase<Derived>::exp() const
 {
-  eigen_assert(rows() == cols());
+  imp_eigen_assert(rows() == cols());
   return MatrixExponentialReturnValue<Derived>(derived());
 }
 

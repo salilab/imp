@@ -166,7 +166,7 @@ template<> IMP_EIGEN_STRONG_INLINE Packet4i pmul<Packet4i>(const Packet4i& a, co
 template<> IMP_EIGEN_STRONG_INLINE Packet4f pdiv<Packet4f>(const Packet4f& a, const Packet4f& b) { return _mm_div_ps(a,b); }
 template<> IMP_EIGEN_STRONG_INLINE Packet2d pdiv<Packet2d>(const Packet2d& a, const Packet2d& b) { return _mm_div_pd(a,b); }
 template<> IMP_EIGEN_STRONG_INLINE Packet4i pdiv<Packet4i>(const Packet4i& /*a*/, const Packet4i& /*b*/)
-{ eigen_assert(false && "packet integer division are not supported by SSE");
+{ imp_eigen_assert(false && "packet integer division are not supported by SSE");
   return pset1<Packet4i>(0);
 }
 

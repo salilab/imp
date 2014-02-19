@@ -86,7 +86,7 @@ public:
                 // do nothing
                 break;
             default:
-                eigen_assert(false);
+                imp_eigen_assert(false);
         };
 
         // Function Body
@@ -112,7 +112,7 @@ public:
                     jac.col(j) = (val2-val1)/(2*h);
                     break;
                 default:
-                    eigen_assert(false);
+                    imp_eigen_assert(false);
             };
         }
         return nfev;

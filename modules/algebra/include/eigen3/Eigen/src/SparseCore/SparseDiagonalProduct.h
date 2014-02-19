@@ -87,7 +87,7 @@ class SparseDiagonalProduct
     IMP_EIGEN_STRONG_INLINE SparseDiagonalProduct(const Lhs& lhs, const Rhs& rhs)
       : m_lhs(lhs), m_rhs(rhs)
     {
-      eigen_assert(lhs.cols() == rhs.rows() && "invalid sparse matrix * diagonal matrix product");
+      imp_eigen_assert(lhs.cols() == rhs.rows() && "invalid sparse matrix * diagonal matrix product");
     }
 
     IMP_EIGEN_STRONG_INLINE Index rows() const { return m_lhs.rows(); }

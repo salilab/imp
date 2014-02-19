@@ -24,7 +24,7 @@ void make_block_householder_triangular_factor(TriangularFactorType& triFactor, c
   typedef typename TriangularFactorType::Index Index;
   typedef typename VectorsType::Scalar Scalar;
   const Index nbVecs = vectors.cols();
-  eigen_assert(triFactor.rows() == nbVecs && triFactor.cols() == nbVecs && vectors.rows()>=nbVecs);
+  imp_eigen_assert(triFactor.rows() == nbVecs && triFactor.cols() == nbVecs && vectors.rows()>=nbVecs);
 
   for(Index i = 0; i < nbVecs; i++)
   {

@@ -18,7 +18,7 @@
  *
  *  - define IMP_EIGEN_NO_STATIC_ASSERT to disable them (and save compilation time)
  *    in that case, the static assertion is converted to the following runtime assert:
- *      eigen_assert(CONDITION && "MSG")
+ *      imp_eigen_assert(CONDITION && "MSG")
  *
  *  - currently IMP_EIGEN_STATIC_ASSERT can only be used in function scope
  *
@@ -117,7 +117,7 @@
 
 #else // IMP_EIGEN_NO_STATIC_ASSERT
 
-  #define IMP_EIGEN_STATIC_ASSERT(CONDITION,MSG) eigen_assert((CONDITION) && #MSG);
+  #define IMP_EIGEN_STATIC_ASSERT(CONDITION,MSG) imp_eigen_assert((CONDITION) && #MSG);
 
 #endif // IMP_EIGEN_NO_STATIC_ASSERT
 
@@ -170,7 +170,7 @@
 
 #ifdef IMP_EIGEN2_SUPPORT
   #define IMP_EIGEN_STATIC_ASSERT_NON_INTEGER(TYPE) \
-    eigen_assert(!NumTraits<Scalar>::IsInteger);
+    imp_eigen_assert(!NumTraits<Scalar>::IsInteger);
 #else
   #define IMP_EIGEN_STATIC_ASSERT_NON_INTEGER(TYPE) \
     IMP_EIGEN_STATIC_ASSERT(!NumTraits<TYPE>::IsInteger, THIS_FUNCTION_IS_NOT_FOR_INTEGER_NUMERIC_TYPES)

@@ -231,7 +231,7 @@ template<typename Derived> class SparseMatrixBase : public EigenBase<Derived>
     inline void assignGeneric(const OtherDerived& other)
     {
       //const bool transpose = (Flags & RowMajorBit) != (OtherDerived::Flags & RowMajorBit);
-      eigen_assert(( ((internal::traits<Derived>::SupportedAccessPatterns&OuterRandomAccessPattern)==OuterRandomAccessPattern) ||
+      imp_eigen_assert(( ((internal::traits<Derived>::SupportedAccessPatterns&OuterRandomAccessPattern)==OuterRandomAccessPattern) ||
                   (!((Flags & RowMajorBit) != (OtherDerived::Flags & RowMajorBit)))) &&
                   "the transpose operation is supposed to be handled in SparseMatrix::operator=");
 

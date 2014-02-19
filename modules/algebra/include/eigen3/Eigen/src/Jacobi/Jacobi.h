@@ -304,7 +304,7 @@ void /*EIGEN_DONT_INLINE*/ apply_rotation_in_the_plane(VectorX& _x, VectorY& _y,
   typedef typename VectorX::Scalar Scalar;
   enum { PacketSize = packet_traits<Scalar>::size };
   typedef typename packet_traits<Scalar>::type Packet;
-  eigen_assert(_x.size() == _y.size());
+  imp_eigen_assert(_x.size() == _y.size());
   Index size = _x.size();
   Index incrx = _x.innerStride();
   Index incry = _y.innerStride();

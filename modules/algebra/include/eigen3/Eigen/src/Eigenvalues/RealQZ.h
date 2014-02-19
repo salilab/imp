@@ -117,8 +117,8 @@ namespace IMP_Eigen {
        * \returns A const reference to the matrix Q.
        */
       const MatrixType& matrixQ() const {
-        eigen_assert(m_isInitialized && "RealQZ is not initialized.");
-        eigen_assert(m_computeQZ && "The matrices Q and Z have not been computed during the QZ decomposition.");
+        imp_eigen_assert(m_isInitialized && "RealQZ is not initialized.");
+        imp_eigen_assert(m_computeQZ && "The matrices Q and Z have not been computed during the QZ decomposition.");
         return m_Q;
       }
 
@@ -127,8 +127,8 @@ namespace IMP_Eigen {
        * \returns A const reference to the matrix Z.
        */
       const MatrixType& matrixZ() const {
-        eigen_assert(m_isInitialized && "RealQZ is not initialized.");
-        eigen_assert(m_computeQZ && "The matrices Q and Z have not been computed during the QZ decomposition.");
+        imp_eigen_assert(m_isInitialized && "RealQZ is not initialized.");
+        imp_eigen_assert(m_computeQZ && "The matrices Q and Z have not been computed during the QZ decomposition.");
         return m_Z;
       }
 
@@ -137,7 +137,7 @@ namespace IMP_Eigen {
        * \returns A const reference to the matrix S.
        */
       const MatrixType& matrixS() const {
-        eigen_assert(m_isInitialized && "RealQZ is not initialized.");
+        imp_eigen_assert(m_isInitialized && "RealQZ is not initialized.");
         return m_S;
       }
 
@@ -146,7 +146,7 @@ namespace IMP_Eigen {
        * \returns A const reference to the matrix S.
        */
       const MatrixType& matrixT() const {
-        eigen_assert(m_isInitialized && "RealQZ is not initialized.");
+        imp_eigen_assert(m_isInitialized && "RealQZ is not initialized.");
         return m_T;
       }
 
@@ -165,7 +165,7 @@ namespace IMP_Eigen {
        */
       ComputationInfo info() const
       {
-        eigen_assert(m_isInitialized && "RealQZ is not initialized.");
+        imp_eigen_assert(m_isInitialized && "RealQZ is not initialized.");
         return m_info;
       }
 
@@ -173,7 +173,7 @@ namespace IMP_Eigen {
       */
       Index iterations() const
       {
-        eigen_assert(m_isInitialized && "RealQZ is not initialized.");
+        imp_eigen_assert(m_isInitialized && "RealQZ is not initialized.");
         return m_global_iter;
       }
 
@@ -559,7 +559,7 @@ namespace IMP_Eigen {
 
       const Index dim = A_in.cols();
 
-      eigen_assert (A_in.rows()==dim && A_in.cols()==dim 
+      imp_eigen_assert (A_in.rows()==dim && A_in.cols()==dim 
           && B_in.rows()==dim && B_in.cols()==dim 
           && "Need square matrices of the same dimension");
 

@@ -126,8 +126,8 @@ class SPQR
     template<typename Rhs>
     inline const internal::solve_retval<SPQR, Rhs> solve(const MatrixBase<Rhs>& B) const 
     {
-      eigen_assert(m_isInitialized && " The QR factorization should be computed first, call compute()");
-      eigen_assert(this->rows()==B.rows()
+      imp_eigen_assert(m_isInitialized && " The QR factorization should be computed first, call compute()");
+      imp_eigen_assert(this->rows()==B.rows()
                     && "SPQR::solve(): invalid number of rows of the right hand side matrix B");
           return internal::solve_retval<SPQR, Rhs>(*this, B.derived());
     }
@@ -135,8 +135,8 @@ class SPQR
     template<typename Rhs, typename Dest>
     void _solve(const MatrixBase<Rhs> &b, MatrixBase<Dest> &dest) const
     {
-      eigen_assert(m_isInitialized && " The QR factorization should be computed first, call compute()");
-      eigen_assert(b.cols()==1 && "This method is for vectors only");
+      imp_eigen_assert(m_isInitialized && " The QR factorization should be computed first, call compute()");
+      imp_eigen_assert(b.cols()==1 && "This method is for vectors only");
       
       //Compute Q^T * b
       Dest y; 
@@ -155,7 +155,7 @@ class SPQR
      */
     const MatrixType matrixR() const
     {
-      eigen_assert(m_isInitialized && " The QR factorization should be computed first, call compute()");
+      imp_eigen_assert(m_isInitialized && " The QR factorization should be computed first, call compute()");
       if(!m_isRUpToDate) {
         m_R = viewAsEigen<Scalar,ColMajor, typename MatrixType::Index>(*m_cR);
         m_isRUpToDate = true;
@@ -170,7 +170,7 @@ class SPQR
     /// Get the permutation that was applied to columns of A
     PermutationType colsPermutation() const
     { 
-      eigen_assert(m_isInitialized && "Decomposition is not initialized.");
+      imp_eigen_assert(m_isInitialized && "Decomposition is not initialized.");
       Index n = m_cR->ncol;
       PermutationType colsPerm(n);
       for(Index j = 0; j <n; j++) colsPerm.indices()(j) = m_E[j];
@@ -183,7 +183,7 @@ class SPQR
      */
     Index rank() const
     {
-      eigen_assert(m_isInitialized && "Decomposition is not initialized.");
+      imp_eigen_assert(m_isInitialized && "Decomposition is not initialized.");
       return m_cc.SPQR_istat[4];
     }
     /// Set the fill-reducing ordering method to be used
@@ -202,7 +202,7 @@ class SPQR
       */
     ComputationInfo info() const
     {
-      eigen_assert(m_isInitialized && "Decomposition is not initialized.");
+      imp_eigen_assert(m_isInitialized && "Decomposition is not initialized.");
       return m_info;
     }
   protected:

@@ -47,14 +47,14 @@ class SparseInnerVectorSet<DynamicSparseMatrix<_Scalar, _Options, _Index>, Size>
     inline SparseInnerVectorSet(const MatrixType& matrix, Index outerStart, Index outerSize)
       : m_matrix(matrix), m_outerStart(outerStart), m_outerSize(outerSize)
     {
-      eigen_assert( (outerStart>=0) && ((outerStart+outerSize)<=matrix.outerSize()) );
+      imp_eigen_assert( (outerStart>=0) && ((outerStart+outerSize)<=matrix.outerSize()) );
     }
 
     inline SparseInnerVectorSet(const MatrixType& matrix, Index outer)
       : m_matrix(matrix), m_outerStart(outer), m_outerSize(Size)
     {
-      eigen_assert(Size!=Dynamic);
-      eigen_assert( (outer>=0) && (outer<matrix.outerSize()) );
+      imp_eigen_assert(Size!=Dynamic);
+      imp_eigen_assert( (outer>=0) && (outer<matrix.outerSize()) );
     }
 
     template<typename OtherDerived>
@@ -94,7 +94,7 @@ class SparseInnerVectorSet<DynamicSparseMatrix<_Scalar, _Options, _Index>, Size>
     const Scalar& lastCoeff() const
     {
       IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(SparseInnerVectorSet);
-      eigen_assert(m_matrix.data()[m_outerStart].size()>0);
+      imp_eigen_assert(m_matrix.data()[m_outerStart].size()>0);
       return m_matrix.data()[m_outerStart].vale(m_matrix.data()[m_outerStart].size()-1);
     }
 

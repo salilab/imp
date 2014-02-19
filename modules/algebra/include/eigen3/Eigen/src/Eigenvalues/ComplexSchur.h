@@ -136,8 +136,8 @@ template<typename _MatrixType> class ComplexSchur
       */
     const ComplexMatrixType& matrixU() const
     {
-      eigen_assert(m_isInitialized && "ComplexSchur is not initialized.");
-      eigen_assert(m_matUisUptodate && "The matrix U has not been computed during the ComplexSchur decomposition.");
+      imp_eigen_assert(m_isInitialized && "ComplexSchur is not initialized.");
+      imp_eigen_assert(m_matUisUptodate && "The matrix U has not been computed during the ComplexSchur decomposition.");
       return m_matU;
     }
 
@@ -160,7 +160,7 @@ template<typename _MatrixType> class ComplexSchur
       */
     const ComplexMatrixType& matrixT() const
     {
-      eigen_assert(m_isInitialized && "ComplexSchur is not initialized.");
+      imp_eigen_assert(m_isInitialized && "ComplexSchur is not initialized.");
       return m_matT;
     }
 
@@ -214,7 +214,7 @@ template<typename _MatrixType> class ComplexSchur
       */
     ComputationInfo info() const
     {
-      eigen_assert(m_isInitialized && "ComplexSchur is not initialized.");
+      imp_eigen_assert(m_isInitialized && "ComplexSchur is not initialized.");
       return m_info;
     }
 
@@ -316,7 +316,7 @@ template<typename MatrixType>
 ComplexSchur<MatrixType>& ComplexSchur<MatrixType>::compute(const MatrixType& matrix, bool computeU)
 {
   m_matUisUptodate = false;
-  eigen_assert(matrix.cols() == matrix.rows());
+  imp_eigen_assert(matrix.cols() == matrix.rows());
 
   if(matrix.cols() == 1)
   {

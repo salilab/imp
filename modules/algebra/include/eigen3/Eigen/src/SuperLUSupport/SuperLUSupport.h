@@ -124,7 +124,7 @@ struct SluMatrix : SuperMatrix
       Store = &storage;
     else
     {
-      eigen_assert(false && "storage type not supported");
+      imp_eigen_assert(false && "storage type not supported");
       Store = 0;
     }
   }
@@ -142,7 +142,7 @@ struct SluMatrix : SuperMatrix
       Dtype = SLU_Z;
     else
     {
-      eigen_assert(false && "Scalar type not supported by SuperLU");
+      imp_eigen_assert(false && "Scalar type not supported by SuperLU");
     }
   }
 
@@ -150,7 +150,7 @@ struct SluMatrix : SuperMatrix
   static SluMatrix Map(MatrixBase<MatrixType>& _mat)
   {
     MatrixType& mat(_mat.derived());
-    eigen_assert( ((MatrixType::Flags&RowMajorBit)!=RowMajorBit) && "row-major dense matrices are not supported by SuperLU");
+    imp_eigen_assert( ((MatrixType::Flags&RowMajorBit)!=RowMajorBit) && "row-major dense matrices are not supported by SuperLU");
     SluMatrix res;
     res.setStorageType(SLU_DN);
     res.setScalarType<typename MatrixType::Scalar>();
@@ -196,7 +196,7 @@ struct SluMatrix : SuperMatrix
     if (MatrixType::Flags & Lower)
       res.Mtype = SLU_TRL;
 
-    eigen_assert(((MatrixType::Flags & SelfAdjoint)==0) && "SelfAdjoint matrix shape not supported by SuperLU");
+    imp_eigen_assert(((MatrixType::Flags & SelfAdjoint)==0) && "SelfAdjoint matrix shape not supported by SuperLU");
 
     return res;
   }
@@ -208,7 +208,7 @@ struct SluMatrixMapHelper<Matrix<Scalar,Rows,Cols,Options,MRows,MCols> >
   typedef Matrix<Scalar,Rows,Cols,Options,MRows,MCols> MatrixType;
   static void run(MatrixType& mat, SluMatrix& res)
   {
-    eigen_assert( ((Options&RowMajor)!=RowMajor) && "row-major dense matrices is not supported by SuperLU");
+    imp_eigen_assert( ((Options&RowMajor)!=RowMajor) && "row-major dense matrices is not supported by SuperLU");
     res.setStorageType(SLU_DN);
     res.setScalarType<Scalar>();
     res.Mtype     = SLU_GE;
@@ -255,7 +255,7 @@ struct SluMatrixMapHelper<SparseMatrixBase<Derived> >
     if (MatrixType::Flags & Lower)
       res.Mtype = SLU_TRL;
 
-    eigen_assert(((MatrixType::Flags & SelfAdjoint)==0) && "SelfAdjoint matrix shape not supported by SuperLU");
+    imp_eigen_assert(((MatrixType::Flags & SelfAdjoint)==0) && "SelfAdjoint matrix shape not supported by SuperLU");
   }
 };
 
@@ -271,7 +271,7 @@ SluMatrix asSluMatrix(MatrixType& mat)
 template<typename Scalar, int Flags, typename Index>
 MappedSparseMatrix<Scalar,Flags,Index> map_superlu(SluMatrix& sluMat)
 {
-  eigen_assert((Flags&RowMajor)==RowMajor && sluMat.Stype == SLU_NR
+  imp_eigen_assert((Flags&RowMajor)==RowMajor && sluMat.Stype == SLU_NR
          || (Flags&ColMajor)==ColMajor && sluMat.Stype == SLU_NC);
 
   Index outerSize = (Flags&RowMajor)==RowMajor ? sluMat.ncol : sluMat.nrow;
@@ -325,7 +325,7 @@ class SuperLUBase : internal::noncopyable
       */
     ComputationInfo info() const
     {
-      eigen_assert(m_isInitialized && "Decomposition is not initialized.");
+      imp_eigen_assert(m_isInitialized && "Decomposition is not initialized.");
       return m_info;
     }
 
@@ -343,8 +343,8 @@ class SuperLUBase : internal::noncopyable
     template<typename Rhs>
     inline const internal::solve_retval<SuperLUBase, Rhs> solve(const MatrixBase<Rhs>& b) const
     {
-      eigen_assert(m_isInitialized && "SuperLU is not initialized.");
-      eigen_assert(rows()==b.rows()
+      imp_eigen_assert(m_isInitialized && "SuperLU is not initialized.");
+      imp_eigen_assert(rows()==b.rows()
                 && "SuperLU::solve(): invalid number of rows of the right hand side matrix b");
       return internal::solve_retval<SuperLUBase, Rhs>(*this, b.derived());
     }
@@ -356,8 +356,8 @@ class SuperLUBase : internal::noncopyable
     template<typename Rhs>
     inline const internal::sparse_solve_retval<SuperLUBase, Rhs> solve(const SparseMatrixBase<Rhs>& b) const
     {
-      eigen_assert(m_isInitialized && "SuperLU is not initialized.");
-      eigen_assert(rows()==b.rows()
+      imp_eigen_assert(m_isInitialized && "SuperLU is not initialized.");
+      imp_eigen_assert(rows()==b.rows()
                 && "SuperLU::solve(): invalid number of rows of the right hand side matrix b");
       return internal::sparse_solve_retval<SuperLUBase, Rhs>(*this, b.derived());
     }
@@ -603,7 +603,7 @@ class SuperLU : public SuperLUBase<_MatrixType,SuperLU<_MatrixType> >
 template<typename MatrixType>
 void SuperLU<MatrixType>::factorize(const MatrixType& a)
 {
-  eigen_assert(m_analysisIsOk && "You must first call analyzePattern()");
+  imp_eigen_assert(m_analysisIsOk && "You must first call analyzePattern()");
   if(!m_analysisIsOk)
   {
     m_info = InvalidInput;
@@ -639,11 +639,11 @@ template<typename MatrixType>
 template<typename Rhs,typename Dest>
 void SuperLU<MatrixType>::_solve(const MatrixBase<Rhs> &b, MatrixBase<Dest>& x) const
 {
-  eigen_assert(m_factorizationIsOk && "The decomposition is not in a valid state for solving, you must first call either compute() or analyzePattern()/factorize()");
+  imp_eigen_assert(m_factorizationIsOk && "The decomposition is not in a valid state for solving, you must first call either compute() or analyzePattern()/factorize()");
 
   const int size = m_matrix.rows();
   const int rhsCols = b.cols();
-  eigen_assert(size==b.rows());
+  imp_eigen_assert(size==b.rows());
 
   m_sluOptions.Trans = NOTRANS;
   m_sluOptions.Fact = FACTORED;
@@ -689,7 +689,7 @@ void SuperLU<MatrixType>::_solve(const MatrixBase<Rhs> &b, MatrixBase<Dest>& x) 
 template<typename MatrixType, typename Derived>
 void SuperLUBase<MatrixType,Derived>::extractData() const
 {
-  eigen_assert(m_factorizationIsOk && "The decomposition is not in a valid state for extracting factors, you must first call either compute() or analyzePattern()/factorize()");
+  imp_eigen_assert(m_factorizationIsOk && "The decomposition is not in a valid state for extracting factors, you must first call either compute() or analyzePattern()/factorize()");
   if (m_extractedDataAreDirty)
   {
     int         upper;
@@ -775,7 +775,7 @@ void SuperLUBase<MatrixType,Derived>::extractData() const
 template<typename MatrixType>
 typename SuperLU<MatrixType>::Scalar SuperLU<MatrixType>::determinant() const
 {
-  eigen_assert(m_factorizationIsOk && "The decomposition is not in a valid state for computing the determinant, you must first call either compute() or analyzePattern()/factorize()");
+  imp_eigen_assert(m_factorizationIsOk && "The decomposition is not in a valid state for computing the determinant, you must first call either compute() or analyzePattern()/factorize()");
   
   if (m_extractedDataAreDirty)
     this->extractData();
@@ -786,7 +786,7 @@ typename SuperLU<MatrixType>::Scalar SuperLU<MatrixType>::determinant() const
     if (m_u.outerIndexPtr()[j+1]-m_u.outerIndexPtr()[j] > 0)
     {
       int lastId = m_u.outerIndexPtr()[j+1]-1;
-      eigen_assert(m_u.innerIndexPtr()[lastId]<=j);
+      imp_eigen_assert(m_u.innerIndexPtr()[lastId]<=j);
       if (m_u.innerIndexPtr()[lastId]==j)
         det *= m_u.valuePtr()[lastId];
     }
@@ -919,7 +919,7 @@ class SuperILU : public SuperLUBase<_MatrixType,SuperILU<_MatrixType> >
 template<typename MatrixType>
 void SuperILU<MatrixType>::factorize(const MatrixType& a)
 {
-  eigen_assert(m_analysisIsOk && "You must first call analyzePattern()");
+  imp_eigen_assert(m_analysisIsOk && "You must first call analyzePattern()");
   if(!m_analysisIsOk)
   {
     m_info = InvalidInput;
@@ -950,11 +950,11 @@ template<typename MatrixType>
 template<typename Rhs,typename Dest>
 void SuperILU<MatrixType>::_solve(const MatrixBase<Rhs> &b, MatrixBase<Dest>& x) const
 {
-  eigen_assert(m_factorizationIsOk && "The decomposition is not in a valid state for solving, you must first call either compute() or analyzePattern()/factorize()");
+  imp_eigen_assert(m_factorizationIsOk && "The decomposition is not in a valid state for solving, you must first call either compute() or analyzePattern()/factorize()");
 
   const int size = m_matrix.rows();
   const int rhsCols = b.cols();
-  eigen_assert(size==b.rows());
+  imp_eigen_assert(size==b.rows());
 
   m_sluOptions.Trans = NOTRANS;
   m_sluOptions.Fact = FACTORED;

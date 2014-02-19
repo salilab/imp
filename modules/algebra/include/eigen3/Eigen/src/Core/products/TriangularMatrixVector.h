@@ -183,7 +183,7 @@ struct TriangularProduct<Mode,true,Lhs,false,Rhs,true>
 
   template<typename Dest> void scaleAndAddTo(Dest& dst, const Scalar& alpha) const
   {
-    eigen_assert(dst.rows()==m_lhs.rows() && dst.cols()==m_rhs.cols());
+    imp_eigen_assert(dst.rows()==m_lhs.rows() && dst.cols()==m_rhs.cols());
   
     internal::trmv_selector<(int(internal::traits<Lhs>::Flags)&RowMajorBit) ? RowMajor : ColMajor>::run(*this, dst, alpha);
   }
@@ -199,7 +199,7 @@ struct TriangularProduct<Mode,false,Lhs,true,Rhs,false>
 
   template<typename Dest> void scaleAndAddTo(Dest& dst, const Scalar& alpha) const
   {
-    eigen_assert(dst.rows()==m_lhs.rows() && dst.cols()==m_rhs.cols());
+    imp_eigen_assert(dst.rows()==m_lhs.rows() && dst.cols()==m_rhs.cols());
 
     typedef TriangularProduct<(Mode & (UnitDiag|ZeroDiag)) | ((Mode & Lower) ? Upper : Lower),true,Transpose<const Rhs>,false,Transpose<const Lhs>,true> TriangularProductTranspose;
     Transpose<Dest> dstT(dst);

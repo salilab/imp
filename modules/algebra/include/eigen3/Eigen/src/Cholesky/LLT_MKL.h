@@ -51,7 +51,7 @@ template<> struct mkl_llt<EIGTYPE> \
     lapack_int matrix_order; \
     lapack_int size, lda, info, StorageOrder; \
     EIGTYPE* a; \
-    eigen_assert(m.rows()==m.cols()); \
+    imp_eigen_assert(m.rows()==m.cols()); \
     /* Set up parameters for ?potrf */ \
     size = m.rows(); \
     StorageOrder = MatrixType::Flags&RowMajorBit?RowMajor:ColMajor; \

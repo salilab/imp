@@ -88,7 +88,7 @@ template<typename BinaryOp, typename Lhs, typename Rhs> class SelfCwiseBinaryOp
     void copyCoeff(Index row, Index col, const DenseBase<OtherDerived>& other)
     {
       OtherDerived& _other = other.const_cast_derived();
-      eigen_internal_assert(row >= 0 && row < rows()
+      imp_eigen_internal_assert(row >= 0 && row < rows()
                          && col >= 0 && col < cols());
       Scalar& tmp = m_matrix.coeffRef(row,col);
       tmp = m_functor(tmp, _other.coeff(row,col));
@@ -98,7 +98,7 @@ template<typename BinaryOp, typename Lhs, typename Rhs> class SelfCwiseBinaryOp
     void copyCoeff(Index index, const DenseBase<OtherDerived>& other)
     {
       OtherDerived& _other = other.const_cast_derived();
-      eigen_internal_assert(index >= 0 && index < m_matrix.size());
+      imp_eigen_internal_assert(index >= 0 && index < m_matrix.size());
       Scalar& tmp = m_matrix.coeffRef(index);
       tmp = m_functor(tmp, _other.coeff(index));
     }
@@ -107,7 +107,7 @@ template<typename BinaryOp, typename Lhs, typename Rhs> class SelfCwiseBinaryOp
     void copyPacket(Index row, Index col, const DenseBase<OtherDerived>& other)
     {
       OtherDerived& _other = other.const_cast_derived();
-      eigen_internal_assert(row >= 0 && row < rows()
+      imp_eigen_internal_assert(row >= 0 && row < rows()
                         && col >= 0 && col < cols());
       m_matrix.template writePacket<StoreMode>(row, col,
         m_functor.packetOp(m_matrix.template packet<StoreMode>(row, col),_other.template packet<LoadMode>(row, col)) );
@@ -117,7 +117,7 @@ template<typename BinaryOp, typename Lhs, typename Rhs> class SelfCwiseBinaryOp
     void copyPacket(Index index, const DenseBase<OtherDerived>& other)
     {
       OtherDerived& _other = other.const_cast_derived();
-      eigen_internal_assert(index >= 0 && index < m_matrix.size());
+      imp_eigen_internal_assert(index >= 0 && index < m_matrix.size());
       m_matrix.template writePacket<StoreMode>(index,
         m_functor.packetOp(m_matrix.template packet<StoreMode>(index),_other.template packet<LoadMode>(index)) );
     }
@@ -133,7 +133,7 @@ template<typename BinaryOp, typename Lhs, typename Rhs> class SelfCwiseBinaryOp
     #ifdef IMP_EIGEN_DEBUG_ASSIGN
       internal::assign_traits<SelfCwiseBinaryOp, RhsDerived>::debug();
     #endif
-      eigen_assert(rows() == rhs.rows() && cols() == rhs.cols());
+      imp_eigen_assert(rows() == rhs.rows() && cols() == rhs.cols());
       internal::assign_impl<SelfCwiseBinaryOp, RhsDerived>::run(*this,rhs.derived());
     #ifndef IMP_EIGEN_NO_DEBUG
       this->checkTransposeAliasing(rhs.derived());

@@ -152,7 +152,7 @@ class CoeffBasedProduct
       // We still allow to mix T and complex<T>.
       IMP_EIGEN_STATIC_ASSERT((internal::scalar_product_traits<typename Lhs::RealScalar, typename Rhs::RealScalar>::Defined),
         YOU_MIXED_DIFFERENT_NUMERIC_TYPES__YOU_NEED_TO_USE_THE_CAST_METHOD_OF_MATRIXBASE_TO_CAST_NUMERIC_TYPES_EXPLICITLY)
-      eigen_assert(lhs.cols() == rhs.rows()
+      imp_eigen_assert(lhs.cols() == rhs.rows()
         && "invalid matrix product"
         && "if you wanted a coeff-wise or a dot product use the respective explicit functions");
     }
@@ -262,7 +262,7 @@ struct product_coeff_impl<DefaultTraversal, Dynamic, Lhs, Rhs, RetScalar>
   typedef typename Lhs::Index Index;
   static IMP_EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, RetScalar& res)
   {
-    eigen_assert(lhs.cols()>0 && "you are using a non initialized matrix");
+    imp_eigen_assert(lhs.cols()>0 && "you are using a non initialized matrix");
     res = lhs.coeff(row, 0) * rhs.coeff(0, col);
       for(Index i = 1; i < lhs.cols(); ++i)
         res += lhs.coeff(row, i) * rhs.coeff(i, col);
@@ -414,7 +414,7 @@ struct product_packet_impl<RowMajor, Dynamic, Lhs, Rhs, Packet, LoadMode>
   typedef typename Lhs::Index Index;
   static IMP_EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, Packet& res)
   {
-    eigen_assert(lhs.cols()>0 && "you are using a non initialized matrix");
+    imp_eigen_assert(lhs.cols()>0 && "you are using a non initialized matrix");
     res = pmul(pset1<Packet>(lhs.coeff(row, 0)),rhs.template packet<LoadMode>(0, col));
       for(Index i = 1; i < lhs.cols(); ++i)
         res =  pmadd(pset1<Packet>(lhs.coeff(row, i)), rhs.template packet<LoadMode>(i, col), res);
@@ -427,7 +427,7 @@ struct product_packet_impl<ColMajor, Dynamic, Lhs, Rhs, Packet, LoadMode>
   typedef typename Lhs::Index Index;
   static IMP_EIGEN_STRONG_INLINE void run(Index row, Index col, const Lhs& lhs, const Rhs& rhs, Packet& res)
   {
-    eigen_assert(lhs.cols()>0 && "you are using a non initialized matrix");
+    imp_eigen_assert(lhs.cols()>0 && "you are using a non initialized matrix");
     res = pmul(lhs.template packet<LoadMode>(row, 0), pset1<Packet>(rhs.coeff(0, col)));
       for(Index i = 1; i < lhs.cols(); ++i)
         res =  pmadd(lhs.template packet<LoadMode>(row, i), pset1<Packet>(rhs.coeff(i, col)), res);

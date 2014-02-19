@@ -97,18 +97,18 @@ class SparseVector
 
     inline Scalar coeff(Index row, Index col) const
     {
-      eigen_assert(IsColVector ? (col==0 && row>=0 && row<m_size) : (row==0 && col>=0 && col<m_size));
+      imp_eigen_assert(IsColVector ? (col==0 && row>=0 && row<m_size) : (row==0 && col>=0 && col<m_size));
       return coeff(IsColVector ? row : col);
     }
     inline Scalar coeff(Index i) const
     {
-      eigen_assert(i>=0 && i<m_size);
+      imp_eigen_assert(i>=0 && i<m_size);
       return m_data.at(i);
     }
 
     inline Scalar& coeffRef(Index row, Index col)
     {
-      eigen_assert(IsColVector ? (col==0 && row>=0 && row<m_size) : (row==0 && col>=0 && col<m_size));
+      imp_eigen_assert(IsColVector ? (col==0 && row>=0 && row<m_size) : (row==0 && col>=0 && col<m_size));
       return coeff(IsColVector ? row : col);
     }
 
@@ -120,7 +120,7 @@ class SparseVector
       */
     inline Scalar& coeffRef(Index i)
     {
-      eigen_assert(i>=0 && i<m_size);
+      imp_eigen_assert(i>=0 && i<m_size);
       return m_data.atWithInsertion(i);
     }
 
@@ -137,13 +137,13 @@ class SparseVector
     inline void startVec(Index outer)
     {
       IMP_EIGEN_UNUSED_VARIABLE(outer);
-      eigen_assert(outer==0);
+      imp_eigen_assert(outer==0);
     }
 
     inline Scalar& insertBackByOuterInner(Index outer, Index inner)
     {
       IMP_EIGEN_UNUSED_VARIABLE(outer);
-      eigen_assert(outer==0);
+      imp_eigen_assert(outer==0);
       return insertBack(inner);
     }
     inline Scalar& insertBack(Index i)
@@ -154,16 +154,16 @@ class SparseVector
 
     inline Scalar& insert(Index row, Index col)
     {
-      eigen_assert(IsColVector ? (col==0 && row>=0 && row<m_size) : (row==0 && col>=0 && col<m_size));
+      imp_eigen_assert(IsColVector ? (col==0 && row>=0 && row<m_size) : (row==0 && col>=0 && col<m_size));
       
       Index inner = IsColVector ? row : col;
       Index outer = IsColVector ? col : row;
-      eigen_assert(outer==0);
+      imp_eigen_assert(outer==0);
       return insert(inner);
     }
     Scalar& insert(Index i)
     {
-      eigen_assert(i>=0 && i<m_size);
+      imp_eigen_assert(i>=0 && i<m_size);
       
       Index startId = 0;
       Index p = Index(m_data.size()) - 1;
@@ -195,7 +195,7 @@ class SparseVector
 
     void resize(Index rows, Index cols)
     {
-      eigen_assert(rows==1 || cols==1);
+      imp_eigen_assert(rows==1 || cols==1);
       resize(IsColVector ? rows : cols);
     }
 
@@ -295,7 +295,7 @@ class SparseVector
     /** \internal \deprecated use insertBack(Index,Index) */
     IMP_EIGEN_DEPRECATED Scalar& fill(Index r, Index c)
     {
-      eigen_assert(r==0 || c==0);
+      imp_eigen_assert(r==0 || c==0);
       return fill(IsColVector ? r : c);
     }
 
@@ -309,7 +309,7 @@ class SparseVector
     /** \internal \deprecated use insert(Index,Index) */
     IMP_EIGEN_DEPRECATED Scalar& fillrand(Index r, Index c)
     {
-      eigen_assert(r==0 || c==0);
+      imp_eigen_assert(r==0 || c==0);
       return fillrand(IsColVector ? r : c);
     }
 
@@ -352,7 +352,7 @@ class SparseVector<Scalar,_Options,_Index>::InnerIterator
       : m_data(vec.m_data), m_id(0), m_end(static_cast<Index>(m_data.size()))
     {
       IMP_EIGEN_UNUSED_VARIABLE(outer);
-      eigen_assert(outer==0);
+      imp_eigen_assert(outer==0);
     }
 
     InnerIterator(const internal::CompressedStorage<Scalar,Index>& data)
@@ -384,7 +384,7 @@ class SparseVector<Scalar,_Options,_Index>::ReverseInnerIterator
       : m_data(vec.m_data), m_id(static_cast<Index>(m_data.size())), m_start(0)
     {
       IMP_EIGEN_UNUSED_VARIABLE(outer);
-      eigen_assert(outer==0);
+      imp_eigen_assert(outer==0);
     }
 
     ReverseInnerIterator(const internal::CompressedStorage<Scalar,Index>& data)
@@ -413,7 +413,7 @@ namespace internal {
 template< typename Dest, typename Src>
 struct sparse_vector_assign_selector<Dest,Src,SVA_Inner> {
   static void run(Dest& dst, const Src& src) {
-    eigen_internal_assert(src.innerSize()==src.size());
+    imp_eigen_internal_assert(src.innerSize()==src.size());
     for(typename Src::InnerIterator it(src, 0); it; ++it)
       dst.insert(it.index()) = it.value();
   }
@@ -422,7 +422,7 @@ struct sparse_vector_assign_selector<Dest,Src,SVA_Inner> {
 template< typename Dest, typename Src>
 struct sparse_vector_assign_selector<Dest,Src,SVA_Outer> {
   static void run(Dest& dst, const Src& src) {
-    eigen_internal_assert(src.outerSize()==src.size());
+    imp_eigen_internal_assert(src.outerSize()==src.size());
     for(typename Dest::Index i=0; i<src.size(); ++i)
     {
       typename Src::InnerIterator it(src, i);

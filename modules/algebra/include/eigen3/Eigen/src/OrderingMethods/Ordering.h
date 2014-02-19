@@ -138,7 +138,7 @@ class COLAMDOrdering
       for(Index i=0; i < nnz; i++)  A(i) = mat.innerIndexPtr()[i];
       // Call Colamd routine to compute the ordering 
       info = internal::colamd(m, n, Alen, A.data(), p.data(), knobs, stats); 
-      eigen_assert( info && "COLAMD failed " );
+      imp_eigen_assert( info && "COLAMD failed " );
       
       perm.resize(n);
       for (Index i = 0; i < n; i++) perm.indices()(p(i)) = i;

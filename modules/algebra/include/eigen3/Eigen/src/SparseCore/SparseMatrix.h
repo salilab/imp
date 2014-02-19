@@ -170,7 +170,7 @@ class SparseMatrix
       * This function returns Scalar(0) if the element is an explicit \em zero */
     inline Scalar coeff(Index row, Index col) const
     {
-      eigen_assert(row>=0 && row<rows() && col>=0 && col<cols());
+      imp_eigen_assert(row>=0 && row<rows() && col>=0 && col<cols());
       
       const Index outer = IsRowMajor ? row : col;
       const Index inner = IsRowMajor ? col : row;
@@ -188,14 +188,14 @@ class SparseMatrix
       */
     inline Scalar& coeffRef(Index row, Index col)
     {
-      eigen_assert(row>=0 && row<rows() && col>=0 && col<cols());
+      imp_eigen_assert(row>=0 && row<rows() && col>=0 && col<cols());
       
       const Index outer = IsRowMajor ? row : col;
       const Index inner = IsRowMajor ? col : row;
 
       Index start = m_outerIndex[outer];
       Index end = m_innerNonZeros ? m_outerIndex[outer] + m_innerNonZeros[outer] : m_outerIndex[outer+1];
-      eigen_assert(end>=start && "you probably called coeffRef on a non finalized matrix");
+      imp_eigen_assert(end>=start && "you probably called coeffRef on a non finalized matrix");
       if(end<=start)
         return insert(row,col);
       const Index p = m_data.searchLowerIndex(start,end-1,inner);
@@ -219,7 +219,7 @@ class SparseMatrix
       */
     Scalar& insert(Index row, Index col)
     {
-      eigen_assert(row>=0 && row<rows() && col>=0 && col<cols());
+      imp_eigen_assert(row>=0 && row<rows() && col>=0 && col<cols());
       
       if(isCompressed())
       {
@@ -255,7 +255,7 @@ class SparseMatrix
       * Precondition: the matrix must be in compressed mode. */
     inline void reserve(Index reserveSize)
     {
-      eigen_assert(isCompressed() && "This function does not make sense in non compressed mode.");
+      imp_eigen_assert(isCompressed() && "This function does not make sense in non compressed mode.");
       m_data.reserve(reserveSize);
     }
     
@@ -380,8 +380,8 @@ class SparseMatrix
       * \sa insertBack, startVec */
     inline Scalar& insertBackByOuterInner(Index outer, Index inner)
     {
-      eigen_assert(size_t(m_outerIndex[outer+1]) == m_data.size() && "Invalid ordered insertion (invalid outer index)");
-      eigen_assert( (m_outerIndex[outer+1]-m_outerIndex[outer]==0 || m_data.index(m_data.size()-1)<inner) && "Invalid ordered insertion (invalid inner index)");
+      imp_eigen_assert(size_t(m_outerIndex[outer+1]) == m_data.size() && "Invalid ordered insertion (invalid outer index)");
+      imp_eigen_assert( (m_outerIndex[outer+1]-m_outerIndex[outer]==0 || m_data.index(m_data.size()-1)<inner) && "Invalid ordered insertion (invalid inner index)");
       Index p = m_outerIndex[outer+1];
       ++m_outerIndex[outer+1];
       m_data.append(0, inner);
@@ -402,8 +402,8 @@ class SparseMatrix
       * \sa insertBack, insertBackByOuterInner */
     inline void startVec(Index outer)
     {
-      eigen_assert(m_outerIndex[outer]==int(m_data.size()) && "You must call startVec for each inner vector sequentially");
-      eigen_assert(m_outerIndex[outer+1]==0 && "You must call startVec for each inner vector sequentially");
+      imp_eigen_assert(m_outerIndex[outer]==int(m_data.size()) && "You must call startVec for each inner vector sequentially");
+      imp_eigen_assert(m_outerIndex[outer+1]==0 && "You must call startVec for each inner vector sequentially");
       m_outerIndex[outer+1] = m_outerIndex[outer];
     }
 
@@ -694,7 +694,7 @@ class SparseMatrix
     /** Sets *this to the identity matrix */
     inline void setIdentity()
     {
-      eigen_assert(rows() == cols() && "ONLY FOR SQUARED MATRICES");
+      imp_eigen_assert(rows() == cols() && "ONLY FOR SQUARED MATRICES");
       this->m_data.resize(rows());
       IMP_Eigen::Map<Matrix<Index, Dynamic, 1> >(&this->m_data.index(0), rows()).setLinSpaced(0, rows()-1);
       IMP_Eigen::Map<Matrix<Scalar, Dynamic, 1> >(&this->m_data.value(0), rows()).setOnes();
@@ -839,8 +839,8 @@ public:
       const Index outer = IsRowMajor ? row : col;
       const Index inner = IsRowMajor ? col : row;
 
-      eigen_assert(!isCompressed());
-      eigen_assert(m_innerNonZeros[outer]<=(m_outerIndex[outer+1] - m_outerIndex[outer]));
+      imp_eigen_assert(!isCompressed());
+      imp_eigen_assert(m_innerNonZeros[outer]<=(m_outerIndex[outer+1] - m_outerIndex[outer]));
 
       Index p = m_outerIndex[outer] + m_innerNonZeros[outer]++;
       m_data.index(p) = inner;
@@ -948,7 +948,7 @@ void set_from_triplets(const InputIterator& begin, const InputIterator& end, Spa
     wi.setZero();
     for(InputIterator it(begin); it!=end; ++it)
     {
-      eigen_assert(it->row()>=0 && it->row()<mat.rows() && it->col()>=0 && it->col()<mat.cols());
+      imp_eigen_assert(it->row()>=0 && it->row()<mat.rows() && it->col()>=0 && it->col()<mat.cols());
       wi(IsRowMajor ? it->col() : it->row())++;
     }
 
@@ -1016,7 +1016,7 @@ void SparseMatrix<Scalar,_Options,_Index>::setFromTriplets(const InputIterators&
 template<typename Scalar, int _Options, typename _Index>
 void SparseMatrix<Scalar,_Options,_Index>::sumupDuplicates()
 {
-  eigen_assert(!isCompressed());
+  imp_eigen_assert(!isCompressed());
   // TODO, in practice we should be able to use m_innerNonZeros for that task
   VectorXi wi(innerSize());
   wi.fill(-1);
@@ -1117,7 +1117,7 @@ IMP_EIGEN_DONT_INLINE SparseMatrix<Scalar,_Options,_Index>& SparseMatrix<Scalar,
 template<typename _Scalar, int _Options, typename _Index>
 IMP_EIGEN_DONT_INLINE typename SparseMatrix<_Scalar,_Options,_Index>::Scalar& SparseMatrix<_Scalar,_Options,_Index>::insertUncompressed(Index row, Index col)
 {
-  eigen_assert(!isCompressed());
+  imp_eigen_assert(!isCompressed());
 
   const Index outer = IsRowMajor ? row : col;
   const Index inner = IsRowMajor ? col : row;
@@ -1138,7 +1138,7 @@ IMP_EIGEN_DONT_INLINE typename SparseMatrix<_Scalar,_Options,_Index>::Scalar& Sp
     m_data.value(p) = m_data.value(p-1);
     --p;
   }
-  eigen_assert((p<=startId || m_data.index(p-1)!=inner) && "you cannot insert an element that already exist, you must call coeffRef to this end");
+  imp_eigen_assert((p<=startId || m_data.index(p-1)!=inner) && "you cannot insert an element that already exist, you must call coeffRef to this end");
 
   m_innerNonZeros[outer]++;
 
@@ -1149,7 +1149,7 @@ IMP_EIGEN_DONT_INLINE typename SparseMatrix<_Scalar,_Options,_Index>::Scalar& Sp
 template<typename _Scalar, int _Options, typename _Index>
 IMP_EIGEN_DONT_INLINE typename SparseMatrix<_Scalar,_Options,_Index>::Scalar& SparseMatrix<_Scalar,_Options,_Index>::insertCompressed(Index row, Index col)
 {
-  eigen_assert(isCompressed());
+  imp_eigen_assert(isCompressed());
 
   const Index outer = IsRowMajor ? row : col;
   const Index inner = IsRowMajor ? col : row;

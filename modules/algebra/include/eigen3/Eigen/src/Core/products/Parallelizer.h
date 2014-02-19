@@ -21,12 +21,12 @@ inline void manage_multi_threading(Action action, int* v)
 
   if(action==SetAction)
   {
-    eigen_internal_assert(v!=0);
+    imp_eigen_internal_assert(v!=0);
     m_maxThreads = *v;
   }
   else if(action==GetAction)
   {
-    eigen_internal_assert(v!=0);
+    imp_eigen_internal_assert(v!=0);
     #ifdef IMP_EIGEN_HAS_OPENMP
     if(m_maxThreads>0)
       *v = m_maxThreads;
@@ -38,7 +38,7 @@ inline void manage_multi_threading(Action action, int* v)
   }
   else
   {
-    eigen_internal_assert(false);
+    imp_eigen_internal_assert(false);
   }
 }
 

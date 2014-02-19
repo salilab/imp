@@ -44,8 +44,8 @@ template<> inline \
 SelfAdjointEigenSolver<Matrix<EIGTYPE, Dynamic, Dynamic, EIGCOLROW> >& \
 SelfAdjointEigenSolver<Matrix<EIGTYPE, Dynamic, Dynamic, EIGCOLROW> >::compute(const Matrix<EIGTYPE, Dynamic, Dynamic, EIGCOLROW>& matrix, int options) \
 { \
-  eigen_assert(matrix.cols() == matrix.rows()); \
-  eigen_assert((options&~(EigVecMask|GenEigMask))==0 \
+  imp_eigen_assert(matrix.cols() == matrix.rows()); \
+  imp_eigen_assert((options&~(EigVecMask|GenEigMask))==0 \
           && (options&EigVecMask)!=EigVecMask \
           && "invalid option parameter"); \
   bool computeEigenvectors = (options&ComputeEigenvectors)==ComputeEigenvectors; \

@@ -38,7 +38,7 @@ struct traits<DGMRES<_MatrixType,_Preconditioner> >
 template <typename VectorType, typename IndexType>
 void sortWithPermutation (VectorType& vec, IndexType& perm, typename IndexType::Scalar& ncut)
 {
-  eigen_assert(vec.size() == perm.size());
+  imp_eigen_assert(vec.size() == perm.size());
   typedef typename IndexType::Scalar Index; 
   typedef typename VectorType::Scalar Scalar; 
   bool flag; 
@@ -147,8 +147,8 @@ class DGMRES : public IterativeSolverBase<DGMRES<_MatrixType,_Preconditioner> >
   inline const internal::solve_retval_with_guess<DGMRES, Rhs, Guess>
   solveWithGuess(const MatrixBase<Rhs>& b, const Guess& x0) const
   {
-    eigen_assert(m_isInitialized && "DGMRES is not initialized.");
-    eigen_assert(Base::rows()==b.rows()
+    imp_eigen_assert(m_isInitialized && "DGMRES is not initialized.");
+    imp_eigen_assert(Base::rows()==b.rows()
               && "DGMRES::solve(): invalid number of rows of the right hand side matrix b");
     return internal::solve_retval_with_guess
             <DGMRES, Rhs, Guess>(*this, b.derived(), x0);

@@ -65,7 +65,7 @@ struct partial_lu_impl<EIGTYPE, StorageOrder, lapack_int> \
 \
     for(int i=0;i<m;i++) { ipiv[i]--; if (ipiv[i]!=i) nb_transpositions++; } \
 \
-    eigen_assert(info >= 0); \
+    imp_eigen_assert(info >= 0); \
 /* something should be done with nb_transpositions */ \
 \
     first_zero_pivot = info; \

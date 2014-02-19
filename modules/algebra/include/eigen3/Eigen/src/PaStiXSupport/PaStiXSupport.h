@@ -148,8 +148,8 @@ class PastixBase : internal::noncopyable
     inline const internal::solve_retval<PastixBase, Rhs>
     solve(const MatrixBase<Rhs>& b) const
     {
-      eigen_assert(m_isInitialized && "Pastix solver is not initialized.");
-      eigen_assert(rows()==b.rows()
+      imp_eigen_assert(m_isInitialized && "Pastix solver is not initialized.");
+      imp_eigen_assert(rows()==b.rows()
                 && "PastixBase::solve(): invalid number of rows of the right hand side matrix b");
       return internal::solve_retval<PastixBase, Rhs>(*this, b.derived());
     }
@@ -216,7 +216,7 @@ class PastixBase : internal::noncopyable
       */
     ComputationInfo info() const
     {
-      eigen_assert(m_isInitialized && "Decomposition is not initialized.");
+      imp_eigen_assert(m_isInitialized && "Decomposition is not initialized.");
       return m_info;
     }
     
@@ -228,8 +228,8 @@ class PastixBase : internal::noncopyable
     inline const internal::sparse_solve_retval<PastixBase, Rhs>
     solve(const SparseMatrixBase<Rhs>& b) const
     {
-      eigen_assert(m_isInitialized && "Pastix LU, LLT or LDLT is not initialized.");
-      eigen_assert(rows()==b.rows()
+      imp_eigen_assert(m_isInitialized && "Pastix LU, LLT or LDLT is not initialized.");
+      imp_eigen_assert(rows()==b.rows()
                 && "PastixBase::solve(): invalid number of rows of the right hand side matrix b");
       return internal::sparse_solve_retval<PastixBase, Rhs>(*this, b.derived());
     }
@@ -248,7 +248,7 @@ class PastixBase : internal::noncopyable
     // Free all the data allocated by Pastix
     void clean()
     {
-      eigen_assert(m_initisOk && "The Pastix structure should be allocated first"); 
+      imp_eigen_assert(m_initisOk && "The Pastix structure should be allocated first"); 
       m_iparm(IPARM_START_TASK) = API_TASK_CLEAN;
       m_iparm(IPARM_END_TASK) = API_TASK_CLEAN;
       internal::eigen_pastix(&m_pastixdata, MPI_COMM_WORLD, 0, 0, 0, (Scalar*)0,
@@ -314,7 +314,7 @@ void PastixBase<Derived>::init()
 template <class Derived>
 void PastixBase<Derived>::compute(ColSpMatrix& mat)
 {
-  eigen_assert(mat.rows() == mat.cols() && "The input matrix should be squared");
+  imp_eigen_assert(mat.rows() == mat.cols() && "The input matrix should be squared");
   
   analyzePattern(mat);  
   factorize(mat);
@@ -327,7 +327,7 @@ void PastixBase<Derived>::compute(ColSpMatrix& mat)
 template <class Derived>
 void PastixBase<Derived>::analyzePattern(ColSpMatrix& mat)
 {                         
-  eigen_assert(m_initisOk && "The initialization of PaSTiX failed");
+  imp_eigen_assert(m_initisOk && "The initialization of PaSTiX failed");
   
   // clean previous calls
   if(m_size>0)
@@ -359,7 +359,7 @@ template <class Derived>
 void PastixBase<Derived>::factorize(ColSpMatrix& mat)
 {
 //   if(&m_cpyMat != &mat) m_cpyMat = mat;
-  eigen_assert(m_analysisIsOk && "The analysis phase should be called before the factorization phase");
+  imp_eigen_assert(m_analysisIsOk && "The analysis phase should be called before the factorization phase");
   m_iparm(IPARM_START_TASK) = API_TASK_NUMFACT;
   m_iparm(IPARM_END_TASK) = API_TASK_NUMFACT;
   m_size = mat.rows();
@@ -387,7 +387,7 @@ template<typename Base>
 template<typename Rhs,typename Dest>
 bool PastixBase<Base>::_solve (const MatrixBase<Rhs> &b, MatrixBase<Dest> &x) const
 {
-  eigen_assert(m_isInitialized && "The matrix should be factorized first");
+  imp_eigen_assert(m_isInitialized && "The matrix should be factorized first");
   IMP_EIGEN_STATIC_ASSERT((Dest::Flags&RowMajorBit)==0,
                      THIS_METHOD_IS_ONLY_FOR_COLUMN_MAJOR_MATRICES);
   int rhs = 1;

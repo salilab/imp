@@ -495,7 +495,7 @@ IMP_EIGEN_STRONG_INLINE Derived& DenseBase<Derived>
 #ifdef IMP_EIGEN_DEBUG_ASSIGN
   internal::assign_traits<Derived, OtherDerived>::debug();
 #endif
-  eigen_assert(rows() == other.rows() && cols() == other.cols());
+  imp_eigen_assert(rows() == other.rows() && cols() == other.cols());
   internal::assign_impl<Derived, OtherDerived, int(SameType) ? int(internal::assign_traits<Derived, OtherDerived>::Traversal)
                                                        : int(InvalidTraversal)>::run(derived(),other.derived());
 #ifndef IMP_EIGEN_NO_DEBUG

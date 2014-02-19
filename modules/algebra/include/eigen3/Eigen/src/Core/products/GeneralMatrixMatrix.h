@@ -86,7 +86,7 @@ static void run(Index rows, Index cols, Index depth,
     imp_ei_declare_aligned_stack_constructed_variable(RhsScalar, w, sizeW, 0);
     
     RhsScalar* blockB = blocking.blockB();
-    eigen_internal_assert(blockB!=0);
+    imp_eigen_internal_assert(blockB!=0);
 
     // For each horizontal panel of the rhs, and corresponding vertical panel of the lhs...
     for(Index k=0; k<depth; k+=kc)
@@ -396,7 +396,7 @@ class GeneralProduct<Lhs, Rhs, GemmProduct>
 
     template<typename Dest> void scaleAndAddTo(Dest& dst, const Scalar& alpha) const
     {
-      eigen_assert(dst.rows()==m_lhs.rows() && dst.cols()==m_rhs.cols());
+      imp_eigen_assert(dst.rows()==m_lhs.rows() && dst.cols()==m_rhs.cols());
 
       typename internal::add_const_on_value_type<ActualLhsType>::type lhs = LhsBlasTraits::extract(m_lhs);
       typename internal::add_const_on_value_type<ActualRhsType>::type rhs = RhsBlasTraits::extract(m_rhs);

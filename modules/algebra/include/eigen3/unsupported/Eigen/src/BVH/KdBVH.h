@@ -34,7 +34,7 @@ struct get_boxes_helper {
   void operator()(const ObjectList &objects, BoxIter boxBegin, BoxIter boxEnd, VolumeList &outBoxes)
   {
     outBoxes.insert(outBoxes.end(), boxBegin, boxEnd);
-    eigen_assert(outBoxes.size() == objects.size());
+    imp_eigen_assert(outBoxes.size() == objects.size());
   }
 };
 
@@ -182,7 +182,7 @@ private:
   //the two halves, and adds their parent node.  TODO: a cache-friendlier layout
   void build(VIPairList &objCenters, int from, int to, const VolumeList &objBoxes, int dim)
   {
-    eigen_assert(to - from > 1);
+    imp_eigen_assert(to - from > 1);
     if(to - from == 2) {
       boxes.push_back(objBoxes[objCenters[from].second].merged(objBoxes[objCenters[from + 1].second]));
       children.push_back(from + (int)objects.size() - 1); //there are objects.size() - 1 tree nodes

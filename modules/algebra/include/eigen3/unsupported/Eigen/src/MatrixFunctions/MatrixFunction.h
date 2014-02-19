@@ -338,7 +338,7 @@ void MatrixFunction<MatrixType,AtomicType,1>::permuteSchur()
     for (j = i; j < p.rows(); j++) {
       if (p(j) == i) break;
     }
-    eigen_assert(p(j) == i);
+    imp_eigen_assert(p(j) == i);
     for (Index k = j-1; k >= i; k--) {
       swapEntriesInSchur(k);
       std::swap(p.coeffRef(k), p.coeffRef(k+1));
@@ -435,12 +435,12 @@ typename MatrixFunction<MatrixType,AtomicType,1>::DynMatrixType MatrixFunction<M
   const DynMatrixType& B, 
   const DynMatrixType& C)
 {
-  eigen_assert(A.rows() == A.cols());
-  eigen_assert(A.isUpperTriangular());
-  eigen_assert(B.rows() == B.cols());
-  eigen_assert(B.isUpperTriangular());
-  eigen_assert(C.rows() == A.rows());
-  eigen_assert(C.cols() == B.rows());
+  imp_eigen_assert(A.rows() == A.cols());
+  imp_eigen_assert(A.isUpperTriangular());
+  imp_eigen_assert(B.rows() == B.cols());
+  imp_eigen_assert(B.isUpperTriangular());
+  imp_eigen_assert(C.rows() == A.rows());
+  imp_eigen_assert(C.cols() == B.rows());
 
   Index m = A.rows();
   Index n = B.rows();
@@ -550,14 +550,14 @@ struct traits<MatrixFunctionReturnValue<Derived> >
 template <typename Derived>
 const MatrixFunctionReturnValue<Derived> MatrixBase<Derived>::matrixFunction(typename internal::stem_function<typename internal::traits<Derived>::Scalar>::type f) const
 {
-  eigen_assert(rows() == cols());
+  imp_eigen_assert(rows() == cols());
   return MatrixFunctionReturnValue<Derived>(derived(), f);
 }
 
 template <typename Derived>
 const MatrixFunctionReturnValue<Derived> MatrixBase<Derived>::sin() const
 {
-  eigen_assert(rows() == cols());
+  imp_eigen_assert(rows() == cols());
   typedef typename internal::stem_function<Scalar>::ComplexScalar ComplexScalar;
   return MatrixFunctionReturnValue<Derived>(derived(), StdStemFunctions<ComplexScalar>::sin);
 }
@@ -565,7 +565,7 @@ const MatrixFunctionReturnValue<Derived> MatrixBase<Derived>::sin() const
 template <typename Derived>
 const MatrixFunctionReturnValue<Derived> MatrixBase<Derived>::cos() const
 {
-  eigen_assert(rows() == cols());
+  imp_eigen_assert(rows() == cols());
   typedef typename internal::stem_function<Scalar>::ComplexScalar ComplexScalar;
   return MatrixFunctionReturnValue<Derived>(derived(), StdStemFunctions<ComplexScalar>::cos);
 }
@@ -573,7 +573,7 @@ const MatrixFunctionReturnValue<Derived> MatrixBase<Derived>::cos() const
 template <typename Derived>
 const MatrixFunctionReturnValue<Derived> MatrixBase<Derived>::sinh() const
 {
-  eigen_assert(rows() == cols());
+  imp_eigen_assert(rows() == cols());
   typedef typename internal::stem_function<Scalar>::ComplexScalar ComplexScalar;
   return MatrixFunctionReturnValue<Derived>(derived(), StdStemFunctions<ComplexScalar>::sinh);
 }
@@ -581,7 +581,7 @@ const MatrixFunctionReturnValue<Derived> MatrixBase<Derived>::sinh() const
 template <typename Derived>
 const MatrixFunctionReturnValue<Derived> MatrixBase<Derived>::cosh() const
 {
-  eigen_assert(rows() == cols());
+  imp_eigen_assert(rows() == cols());
   typedef typename internal::stem_function<Scalar>::ComplexScalar ComplexScalar;
   return MatrixFunctionReturnValue<Derived>(derived(), StdStemFunctions<ComplexScalar>::cosh);
 }

@@ -176,7 +176,7 @@ template<typename _MatrixType> class HessenbergDecomposition
       */
     const CoeffVectorType& householderCoefficients() const
     {
-      eigen_assert(m_isInitialized && "HessenbergDecomposition is not initialized.");
+      imp_eigen_assert(m_isInitialized && "HessenbergDecomposition is not initialized.");
       return m_hCoeffs;
     }
 
@@ -211,7 +211,7 @@ template<typename _MatrixType> class HessenbergDecomposition
       */
     const MatrixType& packedMatrix() const
     {
-      eigen_assert(m_isInitialized && "HessenbergDecomposition is not initialized.");
+      imp_eigen_assert(m_isInitialized && "HessenbergDecomposition is not initialized.");
       return m_matrix;
     }
 
@@ -231,7 +231,7 @@ template<typename _MatrixType> class HessenbergDecomposition
       */
     HouseholderSequenceType matrixQ() const
     {
-      eigen_assert(m_isInitialized && "HessenbergDecomposition is not initialized.");
+      imp_eigen_assert(m_isInitialized && "HessenbergDecomposition is not initialized.");
       return HouseholderSequenceType(m_matrix, m_hCoeffs.conjugate())
              .setLength(m_matrix.rows() - 1)
              .setShift(1);
@@ -259,7 +259,7 @@ template<typename _MatrixType> class HessenbergDecomposition
       */
     MatrixHReturnType matrixH() const
     {
-      eigen_assert(m_isInitialized && "HessenbergDecomposition is not initialized.");
+      imp_eigen_assert(m_isInitialized && "HessenbergDecomposition is not initialized.");
       return MatrixHReturnType(*this);
     }
 
@@ -291,7 +291,7 @@ template<typename _MatrixType> class HessenbergDecomposition
 template<typename MatrixType>
 void HessenbergDecomposition<MatrixType>::_compute(MatrixType& matA, CoeffVectorType& hCoeffs, VectorType& temp)
 {
-  eigen_assert(matA.rows()==matA.cols());
+  imp_eigen_assert(matA.rows()==matA.cols());
   Index n = matA.rows();
   temp.resize(n);
   for (Index i = 0; i<n-1; ++i)

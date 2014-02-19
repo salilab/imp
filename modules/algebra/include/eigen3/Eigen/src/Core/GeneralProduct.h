@@ -344,7 +344,7 @@ class GeneralProduct<Lhs, Rhs, GemvProduct>
 
     template<typename Dest> void scaleAndAddTo(Dest& dst, const Scalar& alpha) const
     {
-      eigen_assert(m_lhs.rows() == dst.rows() && m_rhs.cols() == dst.cols());
+      imp_eigen_assert(m_lhs.rows() == dst.rows() && m_rhs.cols() == dst.cols());
       internal::gemv_selector<Side,(int(MatrixType::Flags)&RowMajorBit) ? RowMajor : ColMajor,
                        bool(internal::blas_traits<MatrixType>::HasUsableDirectAccess)>::run(*this, dst, alpha);
     }
@@ -372,7 +372,7 @@ template<typename Scalar,int Size,int MaxSize,bool Cond> struct gemv_static_vect
 template<typename Scalar,int Size,int MaxSize>
 struct gemv_static_vector_if<Scalar,Size,MaxSize,false>
 {
-  IMP_EIGEN_STRONG_INLINE  Scalar* data() { eigen_internal_assert(false && "should never be called"); return 0; }
+  IMP_EIGEN_STRONG_INLINE  Scalar* data() { imp_eigen_internal_assert(false && "should never be called"); return 0; }
 };
 
 template<typename Scalar,int Size>

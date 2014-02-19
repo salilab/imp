@@ -87,7 +87,7 @@ template<typename MatrixType,int _Direction> class Homogeneous
     inline const internal::homogeneous_right_product_impl<Homogeneous,Rhs>
     operator* (const MatrixBase<Rhs>& rhs) const
     {
-      eigen_assert(int(Direction)==Horizontal);
+      imp_eigen_assert(int(Direction)==Horizontal);
       return internal::homogeneous_right_product_impl<Homogeneous,Rhs>(m_matrix,rhs.derived());
     }
 
@@ -95,7 +95,7 @@ template<typename MatrixType,int _Direction> class Homogeneous
     inline const internal::homogeneous_left_product_impl<Homogeneous,Lhs>
     operator* (const MatrixBase<Lhs>& lhs, const Homogeneous& rhs)
     {
-      eigen_assert(int(Direction)==Vertical);
+      imp_eigen_assert(int(Direction)==Vertical);
       return internal::homogeneous_left_product_impl<Homogeneous,Lhs>(lhs.derived(),rhs.m_matrix);
     }
 
@@ -103,7 +103,7 @@ template<typename MatrixType,int _Direction> class Homogeneous
     inline const internal::homogeneous_left_product_impl<Homogeneous,Transform<Scalar,Dim,Mode,Options> >
     operator* (const Transform<Scalar,Dim,Mode,Options>& lhs, const Homogeneous& rhs)
     {
-      eigen_assert(int(Direction)==Vertical);
+      imp_eigen_assert(int(Direction)==Vertical);
       return internal::homogeneous_left_product_impl<Homogeneous,Transform<Scalar,Dim,Mode,Options> >(lhs,rhs.m_matrix);
     }
 

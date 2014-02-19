@@ -52,7 +52,7 @@ class DiagonalProduct : internal::no_assignment_operator,
     inline DiagonalProduct(const MatrixType& matrix, const DiagonalType& diagonal)
       : m_matrix(matrix), m_diagonal(diagonal)
     {
-      eigen_assert(diagonal.diagonal().size() == (ProductOrder == OnTheLeft ? matrix.rows() : matrix.cols()));
+      imp_eigen_assert(diagonal.diagonal().size() == (ProductOrder == OnTheLeft ? matrix.rows() : matrix.cols()));
     }
 
     IMP_EIGEN_STRONG_INLINE Index rows() const { return m_matrix.rows(); }

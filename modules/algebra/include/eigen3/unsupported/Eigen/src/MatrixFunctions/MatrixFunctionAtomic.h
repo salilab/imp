@@ -86,7 +86,7 @@ MatrixType MatrixFunctionAtomic<MatrixType>::compute(const MatrixType& A)
       return F;
     }
   }
-  eigen_assert("Taylor series does not converge" && 0);
+  imp_eigen_assert("Taylor series does not converge" && 0);
   return F;
 }
 

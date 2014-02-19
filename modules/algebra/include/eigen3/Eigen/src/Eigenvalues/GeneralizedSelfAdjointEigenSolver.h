@@ -163,8 +163,8 @@ template<typename MatrixType>
 GeneralizedSelfAdjointEigenSolver<MatrixType>& GeneralizedSelfAdjointEigenSolver<MatrixType>::
 compute(const MatrixType& matA, const MatrixType& matB, int options)
 {
-  eigen_assert(matA.cols()==matA.rows() && matB.rows()==matA.rows() && matB.cols()==matB.rows());
-  eigen_assert((options&~(EigVecMask|GenEigMask))==0
+  imp_eigen_assert(matA.cols()==matA.rows() && matB.rows()==matA.rows() && matB.cols()==matB.rows());
+  imp_eigen_assert((options&~(EigVecMask|GenEigMask))==0
           && (options&EigVecMask)!=EigVecMask
           && ((options&GenEigMask)==0 || (options&GenEigMask)==Ax_lBx
            || (options&GenEigMask)==ABx_lx || (options&GenEigMask)==BAx_lx)

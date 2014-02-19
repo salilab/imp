@@ -231,7 +231,7 @@ class PlainObjectBase : public internal::dense_xpr_base<Derived>::type
       */
     IMP_EIGEN_STRONG_INLINE void resize(Index nbRows, Index nbCols)
     {
-      eigen_assert(   IMP_EIGEN_IMPLIES(RowsAtCompileTime!=Dynamic,nbRows==RowsAtCompileTime)
+      imp_eigen_assert(   IMP_EIGEN_IMPLIES(RowsAtCompileTime!=Dynamic,nbRows==RowsAtCompileTime)
                    && IMP_EIGEN_IMPLIES(ColsAtCompileTime!=Dynamic,nbCols==ColsAtCompileTime)
                    && IMP_EIGEN_IMPLIES(RowsAtCompileTime==Dynamic && MaxRowsAtCompileTime!=Dynamic,nbRows<=MaxRowsAtCompileTime)
                    && IMP_EIGEN_IMPLIES(ColsAtCompileTime==Dynamic && MaxColsAtCompileTime!=Dynamic,nbCols<=MaxColsAtCompileTime)
@@ -262,7 +262,7 @@ class PlainObjectBase : public internal::dense_xpr_base<Derived>::type
     inline void resize(Index size)
     {
       IMP_EIGEN_STATIC_ASSERT_VECTOR_ONLY(PlainObjectBase)
-      eigen_assert(((SizeAtCompileTime == Dynamic && (MaxSizeAtCompileTime==Dynamic || size<=MaxSizeAtCompileTime)) || SizeAtCompileTime == size) && size>=0);
+      imp_eigen_assert(((SizeAtCompileTime == Dynamic && (MaxSizeAtCompileTime==Dynamic || size<=MaxSizeAtCompileTime)) || SizeAtCompileTime == size) && size>=0);
       #ifdef IMP_EIGEN_INITIALIZE_COEFFS
         bool size_changed = size != this->size();
       #endif
@@ -316,12 +316,12 @@ class PlainObjectBase : public internal::dense_xpr_base<Derived>::type
       const Index othersize = other.rows()*other.cols();
       if(RowsAtCompileTime == 1)
       {
-        eigen_assert(other.rows() == 1 || other.cols() == 1);
+        imp_eigen_assert(other.rows() == 1 || other.cols() == 1);
         resize(1, othersize);
       }
       else if(ColsAtCompileTime == 1)
       {
-        eigen_assert(other.rows() == 1 || other.cols() == 1);
+        imp_eigen_assert(other.rows() == 1 || other.cols() == 1);
         resize(othersize, 1);
       }
       else resize(other.rows(), other.cols());
@@ -566,7 +566,7 @@ class PlainObjectBase : public internal::dense_xpr_base<Derived>::type
     IMP_EIGEN_STRONG_INLINE void _resize_to_match(const EigenBase<OtherDerived>& other)
     {
       #ifdef IMP_EIGEN_NO_AUTOMATIC_RESIZING
-      eigen_assert((this->size()==0 || (IsVectorAtCompileTime ? (this->size() == other.size())
+      imp_eigen_assert((this->size()==0 || (IsVectorAtCompileTime ? (this->size() == other.size())
                  : (rows() == other.rows() && cols() == other.cols())))
         && "Size mismatch. Automatic resizing is disabled because IMP_EIGEN_NO_AUTOMATIC_RESIZING is defined");
       IMP_EIGEN_ONLY_USED_FOR_DEBUG(other);

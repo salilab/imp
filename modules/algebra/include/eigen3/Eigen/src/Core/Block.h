@@ -113,7 +113,7 @@ template<typename XprType, int BlockRows, int BlockCols, bool InnerPanel> class 
       */
     inline Block(XprType& xpr, Index i) : Impl(xpr,i)
     {
-      eigen_assert( (i>=0) && (
+      imp_eigen_assert( (i>=0) && (
           ((BlockRows==1) && (BlockCols==XprType::ColsAtCompileTime) && i<xpr.rows())
         ||((BlockRows==XprType::RowsAtCompileTime) && (BlockCols==1) && i<xpr.cols())));
     }
@@ -124,7 +124,7 @@ template<typename XprType, int BlockRows, int BlockCols, bool InnerPanel> class 
       : Impl(xpr, a_startRow, a_startCol)
     {
       IMP_EIGEN_STATIC_ASSERT(RowsAtCompileTime!=Dynamic && ColsAtCompileTime!=Dynamic,THIS_METHOD_IS_ONLY_FOR_FIXED_SIZE)
-      eigen_assert(a_startRow >= 0 && BlockRows >= 1 && a_startRow + BlockRows <= xpr.rows()
+      imp_eigen_assert(a_startRow >= 0 && BlockRows >= 1 && a_startRow + BlockRows <= xpr.rows()
              && a_startCol >= 0 && BlockCols >= 1 && a_startCol + BlockCols <= xpr.cols());
     }
 
@@ -135,9 +135,9 @@ template<typename XprType, int BlockRows, int BlockCols, bool InnerPanel> class 
           Index blockRows, Index blockCols)
       : Impl(xpr, a_startRow, a_startCol, blockRows, blockCols)
     {
-      eigen_assert((RowsAtCompileTime==Dynamic || RowsAtCompileTime==blockRows)
+      imp_eigen_assert((RowsAtCompileTime==Dynamic || RowsAtCompileTime==blockRows)
           && (ColsAtCompileTime==Dynamic || ColsAtCompileTime==blockCols));
-      eigen_assert(a_startRow >= 0 && blockRows >= 0 && a_startRow  <= xpr.rows() - blockRows
+      imp_eigen_assert(a_startRow >= 0 && blockRows >= 0 && a_startRow  <= xpr.rows() - blockRows
           && a_startCol >= 0 && blockCols >= 0 && a_startCol <= xpr.cols() - blockCols);
     }
 };

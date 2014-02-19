@@ -120,14 +120,14 @@ class BandMatrixBase : public EigenBase<Derived>
     /** \returns a vector expression of the \a i -th sub or super diagonal */
     inline Block<CoefficientsType,1,Dynamic> diagonal(Index i)
     {
-      eigen_assert((i<0 && -i<=subs()) || (i>=0 && i<=supers()));
+      imp_eigen_assert((i<0 && -i<=subs()) || (i>=0 && i<=supers()));
       return Block<CoefficientsType,1,Dynamic>(coeffs(), supers()-i, std::max<Index>(0,i), 1, diagonalLength(i));
     }
 
     /** \returns a vector expression of the \a i -th sub or super diagonal */
     inline const Block<const CoefficientsType,1,Dynamic> diagonal(Index i) const
     {
-      eigen_assert((i<0 && -i<=subs()) || (i>=0 && i<=supers()));
+      imp_eigen_assert((i<0 && -i<=subs()) || (i>=0 && i<=supers()));
       return Block<const CoefficientsType,1,Dynamic>(coeffs(), supers()-i, std::max<Index>(0,i), 1, diagonalLength(i));
     }
     

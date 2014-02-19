@@ -58,7 +58,7 @@ class IncompleteCholesky : internal::noncopyable
       */
     ComputationInfo info() const
     {
-      eigen_assert(m_isInitialized && "IncompleteLLT is not initialized.");
+      imp_eigen_assert(m_isInitialized && "IncompleteLLT is not initialized.");
       return m_info;
     }
     
@@ -91,7 +91,7 @@ class IncompleteCholesky : internal::noncopyable
     template<typename Rhs, typename Dest>
     void _solve(const Rhs& b, Dest& x) const
     {
-      eigen_assert(m_factorizationIsOk && "factorize() should be called first");
+      imp_eigen_assert(m_factorizationIsOk && "factorize() should be called first");
       if (m_perm.rows() == b.rows())
         x = m_perm.inverse() * b; 
       else 
@@ -106,9 +106,9 @@ class IncompleteCholesky : internal::noncopyable
     template<typename Rhs> inline const internal::solve_retval<IncompleteCholesky, Rhs>
     solve(const MatrixBase<Rhs>& b) const
     {
-      eigen_assert(m_factorizationIsOk && "IncompleteLLT did not succeed");
-      eigen_assert(m_isInitialized && "IncompleteLLT is not initialized.");
-      eigen_assert(cols()==b.rows()
+      imp_eigen_assert(m_factorizationIsOk && "IncompleteLLT did not succeed");
+      imp_eigen_assert(m_isInitialized && "IncompleteLLT is not initialized.");
+      imp_eigen_assert(cols()==b.rows()
                 && "IncompleteLLT::solve(): invalid number of rows of the right hand side matrix b");
       return internal::solve_retval<IncompleteCholesky, Rhs>(*this, b.derived());
     }
@@ -133,7 +133,7 @@ void IncompleteCholesky<Scalar,_UpLo, OrderingType>::factorize(const _MatrixType
 {
   using std::sqrt;
   using std::min;
-  eigen_assert(m_analysisIsOk && "analyzePattern() should be called first"); 
+  imp_eigen_assert(m_analysisIsOk && "analyzePattern() should be called first"); 
     
   // Dropping strategies : Keep only the p largest elements per column, where p is the number of elements in the column of the original matrix. Other strategies will be added
   

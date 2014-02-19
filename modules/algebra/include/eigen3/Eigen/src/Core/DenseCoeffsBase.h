@@ -93,7 +93,7 @@ class DenseCoeffsBase<Derived,ReadOnlyAccessors> : public EigenBase<Derived>
       */
     IMP_EIGEN_STRONG_INLINE CoeffReturnType coeff(Index row, Index col) const
     {
-      eigen_internal_assert(row >= 0 && row < rows()
+      imp_eigen_internal_assert(row >= 0 && row < rows()
                         && col >= 0 && col < cols());
       return derived().coeff(row, col);
     }
@@ -110,7 +110,7 @@ class DenseCoeffsBase<Derived,ReadOnlyAccessors> : public EigenBase<Derived>
       */
     IMP_EIGEN_STRONG_INLINE CoeffReturnType operator()(Index row, Index col) const
     {
-      eigen_assert(row >= 0 && row < rows()
+      imp_eigen_assert(row >= 0 && row < rows()
           && col >= 0 && col < cols());
       return derived().coeff(row, col);
     }
@@ -133,7 +133,7 @@ class DenseCoeffsBase<Derived,ReadOnlyAccessors> : public EigenBase<Derived>
     IMP_EIGEN_STRONG_INLINE CoeffReturnType
     coeff(Index index) const
     {
-      eigen_internal_assert(index >= 0 && index < size());
+      imp_eigen_internal_assert(index >= 0 && index < size());
       return derived().coeff(index);
     }
 
@@ -153,7 +153,7 @@ class DenseCoeffsBase<Derived,ReadOnlyAccessors> : public EigenBase<Derived>
       IMP_EIGEN_STATIC_ASSERT(Derived::IsVectorAtCompileTime,
                           THE_BRACKET_OPERATOR_IS_ONLY_FOR_VECTORS__USE_THE_PARENTHESIS_OPERATOR_INSTEAD)
       #endif
-      eigen_assert(index >= 0 && index < size());
+      imp_eigen_assert(index >= 0 && index < size());
       return derived().coeff(index);
     }
 
@@ -170,7 +170,7 @@ class DenseCoeffsBase<Derived,ReadOnlyAccessors> : public EigenBase<Derived>
     IMP_EIGEN_STRONG_INLINE CoeffReturnType
     operator()(Index index) const
     {
-      eigen_assert(index >= 0 && index < size());
+      imp_eigen_assert(index >= 0 && index < size());
       return derived().coeff(index);
     }
 
@@ -207,7 +207,7 @@ class DenseCoeffsBase<Derived,ReadOnlyAccessors> : public EigenBase<Derived>
     template<int LoadMode>
     IMP_EIGEN_STRONG_INLINE PacketReturnType packet(Index row, Index col) const
     {
-      eigen_internal_assert(row >= 0 && row < rows()
+      imp_eigen_internal_assert(row >= 0 && row < rows()
                       && col >= 0 && col < cols());
       return derived().template packet<LoadMode>(row,col);
     }
@@ -234,7 +234,7 @@ class DenseCoeffsBase<Derived,ReadOnlyAccessors> : public EigenBase<Derived>
     template<int LoadMode>
     IMP_EIGEN_STRONG_INLINE PacketReturnType packet(Index index) const
     {
-      eigen_internal_assert(index >= 0 && index < size());
+      imp_eigen_internal_assert(index >= 0 && index < size());
       return derived().template packet<LoadMode>(index);
     }
 
@@ -313,7 +313,7 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
       */
     IMP_EIGEN_STRONG_INLINE Scalar& coeffRef(Index row, Index col)
     {
-      eigen_internal_assert(row >= 0 && row < rows()
+      imp_eigen_internal_assert(row >= 0 && row < rows()
                         && col >= 0 && col < cols());
       return derived().coeffRef(row, col);
     }
@@ -333,7 +333,7 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
     IMP_EIGEN_STRONG_INLINE Scalar&
     operator()(Index row, Index col)
     {
-      eigen_assert(row >= 0 && row < rows()
+      imp_eigen_assert(row >= 0 && row < rows()
           && col >= 0 && col < cols());
       return derived().coeffRef(row, col);
     }
@@ -357,7 +357,7 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
     IMP_EIGEN_STRONG_INLINE Scalar&
     coeffRef(Index index)
     {
-      eigen_internal_assert(index >= 0 && index < size());
+      imp_eigen_internal_assert(index >= 0 && index < size());
       return derived().coeffRef(index);
     }
 
@@ -375,7 +375,7 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
       IMP_EIGEN_STATIC_ASSERT(Derived::IsVectorAtCompileTime,
                           THE_BRACKET_OPERATOR_IS_ONLY_FOR_VECTORS__USE_THE_PARENTHESIS_OPERATOR_INSTEAD)
       #endif
-      eigen_assert(index >= 0 && index < size());
+      imp_eigen_assert(index >= 0 && index < size());
       return derived().coeffRef(index);
     }
 
@@ -391,7 +391,7 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
     IMP_EIGEN_STRONG_INLINE Scalar&
     operator()(Index index)
     {
-      eigen_assert(index >= 0 && index < size());
+      imp_eigen_assert(index >= 0 && index < size());
       return derived().coeffRef(index);
     }
 
@@ -429,7 +429,7 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
     IMP_EIGEN_STRONG_INLINE void writePacket
     (Index row, Index col, const typename internal::packet_traits<Scalar>::type& val)
     {
-      eigen_internal_assert(row >= 0 && row < rows()
+      imp_eigen_internal_assert(row >= 0 && row < rows()
                         && col >= 0 && col < cols());
       derived().template writePacket<StoreMode>(row,col,val);
     }
@@ -458,7 +458,7 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
     IMP_EIGEN_STRONG_INLINE void writePacket
     (Index index, const typename internal::packet_traits<Scalar>::type& val)
     {
-      eigen_internal_assert(index >= 0 && index < size());
+      imp_eigen_internal_assert(index >= 0 && index < size());
       derived().template writePacket<StoreMode>(index,val);
     }
 
@@ -475,7 +475,7 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
     template<typename OtherDerived>
     IMP_EIGEN_STRONG_INLINE void copyCoeff(Index row, Index col, const DenseBase<OtherDerived>& other)
     {
-      eigen_internal_assert(row >= 0 && row < rows()
+      imp_eigen_internal_assert(row >= 0 && row < rows()
                         && col >= 0 && col < cols());
       derived().coeffRef(row, col) = other.derived().coeff(row, col);
     }
@@ -491,7 +491,7 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
     template<typename OtherDerived>
     IMP_EIGEN_STRONG_INLINE void copyCoeff(Index index, const DenseBase<OtherDerived>& other)
     {
-      eigen_internal_assert(index >= 0 && index < size());
+      imp_eigen_internal_assert(index >= 0 && index < size());
       derived().coeffRef(index) = other.derived().coeff(index);
     }
 
@@ -516,7 +516,7 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
     template<typename OtherDerived, int StoreMode, int LoadMode>
     IMP_EIGEN_STRONG_INLINE void copyPacket(Index row, Index col, const DenseBase<OtherDerived>& other)
     {
-      eigen_internal_assert(row >= 0 && row < rows()
+      imp_eigen_internal_assert(row >= 0 && row < rows()
                         && col >= 0 && col < cols());
       derived().template writePacket<StoreMode>(row, col,
         other.derived().template packet<LoadMode>(row, col));
@@ -533,7 +533,7 @@ class DenseCoeffsBase<Derived, WriteAccessors> : public DenseCoeffsBase<Derived,
     template<typename OtherDerived, int StoreMode, int LoadMode>
     IMP_EIGEN_STRONG_INLINE void copyPacket(Index index, const DenseBase<OtherDerived>& other)
     {
-      eigen_internal_assert(index >= 0 && index < size());
+      imp_eigen_internal_assert(index >= 0 && index < size());
       derived().template writePacket<StoreMode>(index,
         other.derived().template packet<LoadMode>(index));
     }

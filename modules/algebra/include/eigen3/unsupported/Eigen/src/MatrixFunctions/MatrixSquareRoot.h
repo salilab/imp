@@ -39,7 +39,7 @@ class MatrixSquareRootQuasiTriangular
     MatrixSquareRootQuasiTriangular(const MatrixType& A) 
       : m_A(A) 
     {
-      eigen_assert(A.rows() == A.cols());
+      imp_eigen_assert(A.rows() == A.cols());
     }
     
     /** \brief Compute the matrix square root
@@ -94,7 +94,7 @@ void MatrixSquareRootQuasiTriangular<MatrixType>::computeDiagonalPartOfSqrt(Matr
   const Index size = m_A.rows();
   for (Index i = 0; i < size; i++) {
     if (i == size - 1 || T.coeff(i+1, i) == 0) {
-      eigen_assert(T(i,i) >= 0);
+      imp_eigen_assert(T(i,i) >= 0);
       sqrtT.coeffRef(i,i) = sqrt(T.coeff(i,i));
     }
     else {
@@ -259,7 +259,7 @@ class MatrixSquareRootTriangular
     MatrixSquareRootTriangular(const MatrixType& A) 
       : m_A(A) 
     {
-      eigen_assert(A.rows() == A.cols());
+      imp_eigen_assert(A.rows() == A.cols());
     }
 
     /** \brief Compute the matrix square root
@@ -344,7 +344,7 @@ class MatrixSquareRoot<MatrixType, 0>
     MatrixSquareRoot(const MatrixType& A) 
       : m_A(A) 
     {  
-      eigen_assert(A.rows() == A.cols());
+      imp_eigen_assert(A.rows() == A.cols());
     }
   
     template <typename ResultType> void compute(ResultType &result)
@@ -377,7 +377,7 @@ class MatrixSquareRoot<MatrixType, 1>
     MatrixSquareRoot(const MatrixType& A) 
       : m_A(A) 
     {  
-      eigen_assert(A.rows() == A.cols());
+      imp_eigen_assert(A.rows() == A.cols());
     }
   
     template <typename ResultType> void compute(ResultType &result)
@@ -457,7 +457,7 @@ struct traits<MatrixSquareRootReturnValue<Derived> >
 template <typename Derived>
 const MatrixSquareRootReturnValue<Derived> MatrixBase<Derived>::sqrt() const
 {
-  eigen_assert(rows() == cols());
+  imp_eigen_assert(rows() == cols());
   return MatrixSquareRootReturnValue<Derived>(derived());
 }
 

@@ -172,7 +172,7 @@ struct redux_impl<Func, Derived, DefaultTraversal, NoUnrolling>
   typedef typename Derived::Index Index;
   static IMP_EIGEN_STRONG_INLINE Scalar run(const Derived& mat, const Func& func)
   {
-    eigen_assert(mat.rows()>0 && mat.cols()>0 && "you are using an empty matrix");
+    imp_eigen_assert(mat.rows()>0 && mat.cols()>0 && "you are using an empty matrix");
     Scalar res;
     res = mat.coeffByOuterInner(0, 0);
     for(Index i = 1; i < mat.innerSize(); ++i)
@@ -199,7 +199,7 @@ struct redux_impl<Func, Derived, LinearVectorizedTraversal, NoUnrolling>
   static Scalar run(const Derived& mat, const Func& func)
   {
     const Index size = mat.size();
-    eigen_assert(size && "you are using an empty matrix");
+    imp_eigen_assert(size && "you are using an empty matrix");
     const Index packetSize = packet_traits<Scalar>::size;
     const Index alignedStart = internal::first_aligned(mat);
     enum {
@@ -256,7 +256,7 @@ struct redux_impl<Func, Derived, SliceVectorizedTraversal, NoUnrolling>
 
   static Scalar run(const Derived& mat, const Func& func)
   {
-    eigen_assert(mat.rows()>0 && mat.cols()>0 && "you are using an empty matrix");
+    imp_eigen_assert(mat.rows()>0 && mat.cols()>0 && "you are using an empty matrix");
     const Index innerSize = mat.innerSize();
     const Index outerSize = mat.outerSize();
     enum {
@@ -298,7 +298,7 @@ struct redux_impl<Func, Derived, LinearVectorizedTraversal, CompleteUnrolling>
   };
   static IMP_EIGEN_STRONG_INLINE Scalar run(const Derived& mat, const Func& func)
   {
-    eigen_assert(mat.rows()>0 && mat.cols()>0 && "you are using an empty matrix");
+    imp_eigen_assert(mat.rows()>0 && mat.cols()>0 && "you are using an empty matrix");
     Scalar res = func.predux(redux_vec_unroller<Func, Derived, 0, Size / PacketSize>::run(mat,func));
     if (VectorizedSize != Size)
       res = func(res,redux_novec_unroller<Func, Derived, VectorizedSize, Size-VectorizedSize>::run(mat,func));

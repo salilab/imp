@@ -23,7 +23,7 @@ static void conservative_sparse_sparse_product_impl(const Lhs& lhs, const Rhs& r
   // make sure to call innerSize/outerSize since we fake the storage order.
   Index rows = lhs.innerSize();
   Index cols = rhs.outerSize();
-  eigen_assert(lhs.outerSize() == rhs.innerSize());
+  imp_eigen_assert(lhs.outerSize() == rhs.innerSize());
 
   std::vector<bool> mask(rows,false);
   Matrix<Scalar,Dynamic,1> values(rows);

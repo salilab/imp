@@ -164,9 +164,9 @@
 # endif
 #endif
 
-// eigen_plain_assert is where we implement the workaround for the assert() bug in GCC <= 4.3, see bug 89
+// imp_eigen_plain_assert is where we implement the workaround for the assert() bug in GCC <= 4.3, see bug 89
 #ifdef IMP_EIGEN_NO_DEBUG
-  #define eigen_plain_assert(x)
+  #define imp_eigen_plain_assert(x)
 #else
   #if IMP_EIGEN_SAFE_TO_USE_STANDARD_ASSERT_MACRO
     namespace IMP_Eigen {
@@ -174,7 +174,7 @@
     inline bool copy_bool(bool b) { return b; }
     }
     }
-    #define eigen_plain_assert(x) assert(x)
+    #define imp_eigen_plain_assert(x) assert(x)
   #else
     // work around bug 89
     #include <cstdlib>   // for abort
@@ -194,7 +194,7 @@
     }
     }
     }
-    #define eigen_plain_assert(x) \
+    #define imp_eigen_plain_assert(x) \
       do { \
         if(!Eigen::internal::copy_bool(x)) \
           IMP_Eigen::internal::assert_fail(IMP_EIGEN_MAKESTRING(x), __PRETTY_FUNCTION__, __FILE__, __LINE__); \
@@ -202,15 +202,15 @@
   #endif
 #endif
 
-// eigen_assert can be overridden
-#ifndef eigen_assert
-#define eigen_assert(x) eigen_plain_assert(x)
+// imp_eigen_assert can be overridden
+#ifndef imp_eigen_assert
+#define imp_eigen_assert(x) imp_eigen_plain_assert(x)
 #endif
 
 #ifdef IMP_EIGEN_INTERNAL_DEBUGGING
-#define eigen_internal_assert(x) eigen_assert(x)
+#define imp_eigen_internal_assert(x) imp_eigen_assert(x)
 #else
-#define eigen_internal_assert(x)
+#define imp_eigen_internal_assert(x)
 #endif
 
 #ifdef IMP_EIGEN_NO_DEBUG
