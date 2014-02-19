@@ -40,8 +40,7 @@ BuildRequires: boost-devel >= 1.41
 %endif
 
 # RHEL doesn't have a CGAL package, so build without CGAL on RHEL. It also
-# doesn't have a new enough OpenCV in EPEL, or the eigen package, so
-# disable em2d and isd modules.
+# doesn't have a new enough OpenCV in EPEL, so disable the em2d module.
 # RHEL 5 also doesn't have a new enough HDF5 package (RHEL 6 does) so this
 # must be upgraded in order to build RMF (to simply install the binary RPM,
 # you can install the libdhf5-187 package from the Sali lab website to
@@ -49,18 +48,8 @@ BuildRequires: boost-devel >= 1.41
 # copy of HDF5).
 # On Fedora, all of these packages are available; add them as dependencies
 
-# If you are using RHEL and really want the isd module, add
-# '-D "rhel_have_eigen3 1"' to your rpmbuild invocation. You will need to
-# build and install your own eigen3-devel RPM first (get the RPM spec and
-# patch files from http://svn.salilab.org/imp/trunk/tools/rpm/).
-# IMP binary RPMs are built this way, since eigen3 is header only and so
-# this adds no extra dependencies to the binary package.
 %if 0%{?fedora}
-BuildRequires: CGAL-devel, opencv-devel, eigen3-devel
-%else
-%if 0%{?rhel_have_eigen3}
-BuildRequires: eigen3-devel
-%endif
+BuildRequires: CGAL-devel, opencv-devel
 %endif
 
 # Add compiler flags for C++11 support
