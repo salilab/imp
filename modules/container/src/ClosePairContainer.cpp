@@ -13,7 +13,6 @@
 #include <IMP/base/log.h>
 #include <algorithm>
 #include <boost/timer.hpp>
-#include <IMP/algebra/internal/tnt_array2d.h>
 #include <vector>
 
 IMPCONTAINER_BEGIN_NAMESPACE
