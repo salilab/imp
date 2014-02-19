@@ -74,7 +74,7 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
  public:
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Rotation3D);
   //! Create a rotation from an unnormalized vector 4
-  Rotation3D(const VectorD<4> &v)
+  explicit Rotation3D(const VectorD<4> &v)
       : v_(v.get_unit_vector()), has_cache_(false) {}
 
   //! Create an invalid rotation
@@ -437,7 +437,7 @@ inline Rotation3D get_interpolated(const Rotation3D &a, const Rotation3D &b,
                                    double f) {
   VectorD<4> bq = b.get_quaternion(), aq = a.get_quaternion();
   if (bq * aq < 0) bq = -bq;
-  return f * aq + (1 - f) * bq;
+  return Rotation3D(f * aq + (1 - f) * bq);
 }
 
 /** Return the rotation which takes the native x and y axes to the
