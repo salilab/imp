@@ -335,7 +335,7 @@ endif(IMP_DOXYGEN_FOUND)
 
 # Install headers
 install(FILES ${CMAKE_BINARY_DIR}/include/IMP.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-install_deref(${CMAKE_BINARY_DIR}/include/IMP *.h ${CMAKE_INSTALL_INCLUDEDIR}/IMP)
+install_deref(${CMAKE_BINARY_DIR}/include/IMP * ${CMAKE_INSTALL_INCLUDEDIR}/IMP)
 
 # Install Python modules
 install_deref(${CMAKE_BINARY_DIR}/lib/IMP * ${CMAKE_INSTALL_PYTHONDIR}/IMP)
