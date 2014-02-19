@@ -78,5 +78,10 @@ int do_benchmark() {
 
 int main(int argc, char **argv) {
   IMP::base::setup_from_argv(argc, argv, "Test optimized patches");
+  // disable test for now
+#if 0
   return do_benchmark();
+#else
+  return 0;
+#endif
 }
