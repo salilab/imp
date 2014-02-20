@@ -56,9 +56,10 @@ class IMPALGEBRAEXPORT Cone3D : public GeometricPrimitiveD<3> {
   double radius_;
 };
 
-IMP_VOLUME_GEOMETRY_METHODS(
-    Cone3D, cone_3d, IMP_UNUSED(g); IMP_NOT_IMPLEMENTED, IMP_UNUSED(g);
-    IMP_NOT_IMPLEMENTED, IMP_UNUSED(g); IMP_NOT_IMPLEMENTED);
+IMP_VOLUME_GEOMETRY_METHODS(Cone3D, cone_3d, IMP_UNUSED(g);
+                            IMP_NOT_IMPLEMENTED, IMP_UNUSED(g);
+                            IMP_NOT_IMPLEMENTED, IMP_UNUSED(g);
+                            IMP_NOT_IMPLEMENTED);
 IMPALGEBRA_END_NAMESPACE
 
 #endif /* IMPALGEBRA_CONE_3D_H */

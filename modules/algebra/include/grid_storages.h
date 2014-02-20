@@ -264,10 +264,10 @@ class SparseGridStorageD : public Base {
       behavior/the existence of these functions is likely to change.
       @{
   */
-  IMP_BRACKET(
-      VT, GridIndexD<D>, true,
-      IMP_USAGE_CHECK(data_.find(i) != data_.end(), "Invalid index " << i);
-      return data_.find(i)->second);
+  IMP_BRACKET(VT, GridIndexD<D>, true,
+              IMP_USAGE_CHECK(data_.find(i) != data_.end(), "Invalid index "
+                                                                << i);
+              return data_.find(i)->second);
 /** @} */
 
 /** \name Iterators through set cells

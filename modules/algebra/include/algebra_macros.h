@@ -12,14 +12,13 @@
 #include <boost/range/iterator_range.hpp>
 
 #ifdef SWIG
-#define IMP_ALGEBRA_VECTOR_SWIG_METHODS(D) \
-  VectorD(const Floats &f);
+#define IMP_ALGEBRA_VECTOR_SWIG_METHODS(D) VectorD(const Floats &f);
 #else
 #define IMP_ALGEBRA_VECTOR_SWIG_METHODS(D) \
-  template <class R>                                                          \
-  VectorD &operator=(const R &o) {                                            \
-    P::operator=(o);                                                          \
-    return *this;                                                             \
+  template <class R>                       \
+  VectorD &operator=(const R &o) {         \
+    P::operator=(o);                       \
+    return *this;                          \
   }
 
 #endif
@@ -47,23 +46,29 @@
   VectorD get_unit_vector() const { return algebra::get_unit_vector(*this); } \
   VectorD operator*(double s) const {                                         \
     VectorD ret(*this);                                                       \
-    ret *= s; return ret;						\
+    ret *= s;                                                                 \
+    return ret;                                                               \
   }                                                                           \
   VectorD operator/(double s) const {                                         \
     VectorD ret(*this);                                                       \
-    ret /= s; return ret;					\
+    ret /= s;                                                                 \
+    return ret;                                                               \
   }                                                                           \
   VectorD operator-() const {                                                 \
     VectorD ret(*this);                                                       \
-    ret *= -1; return ret;						\
+    ret *= -1;                                                                \
+    return ret;                                                               \
   }                                                                           \
   VectorD operator-(const VectorD &o) const {                                 \
-    VectorD ret(*this); ret -= o; return ret;			\
+    VectorD ret(*this);                                                       \
+    ret -= o;                                                                 \
+    return ret;                                                               \
   }                                                                           \
-  VectorD operator+(VectorD ret) const {				\
-    ret += *this; return ret;						\
+  VectorD operator+(VectorD ret) const {                                      \
+    ret += *this;                                                             \
+    return ret;                                                               \
   }                                                                           \
-  VectorD &operator+=(const VectorD& o) {                                     \
+  VectorD &operator+=(const VectorD &o) {                                     \
     P::operator+=(o);                                                         \
     return *this;                                                             \
   }                                                                           \

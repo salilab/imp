@@ -67,13 +67,14 @@ class IMPALGEBRAEXPORT Cylinder3D : public GeometricPrimitiveD<3> {
   double radius_;
 };
 
-IMP_VOLUME_GEOMETRY_METHODS(
-    Cylinder3D, cylinder_3d,
-    return 2.0 * PI * g.get_radius() * g.get_segment().get_length() +
-           2.0 * PI * get_squared(g.get_radius()),
-    return PI * get_squared(g.get_radius()) * g.get_segment().get_length(),
-    IMP_UNUSED(g);
-    IMP_NOT_IMPLEMENTED);
+IMP_VOLUME_GEOMETRY_METHODS(Cylinder3D, cylinder_3d,
+                            return 2.0 * PI * g.get_radius() *
+                                       g.get_segment().get_length() +
+                                   2.0 * PI * get_squared(g.get_radius()),
+                            return PI * get_squared(g.get_radius()) *
+                                   g.get_segment().get_length(),
+                            IMP_UNUSED(g);
+                            IMP_NOT_IMPLEMENTED);
 
 IMPALGEBRA_END_NAMESPACE
 

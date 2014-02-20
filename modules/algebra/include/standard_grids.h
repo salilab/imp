@@ -17,7 +17,7 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 
 #ifdef SWIG
-  // swig is getting confused
+// swig is getting confused
 #define IMP_ALGEBRA_SWIG_GRID_METHODS(D, Q)                            \
   GridIndexD<D> add_voxel(const ExtendedGridIndexD<D> &i, const Q &q); \
   Q __getitem__(const GridIndexD<D> i) const;                          \
@@ -30,7 +30,6 @@ IMPALGEBRA_BEGIN_NAMESPACE
 #else
 #define IMP_ALGEBRA_SWIG_GRID_METHODS(D, VT)
 #endif
-
 
 /** A sparse, infinite grid of values. In python SparseUnboundedIntGrid3D
     is provided.*/
@@ -104,7 +103,6 @@ struct DenseIntLogGrid3D
   DenseIntLogGrid3D(const Ints &sz, LogEmbeddingD<3> le) : P(sz, le) {}
   IMP_ALGEBRA_SWIG_GRID_METHODS(3, int);
 };
-
 
 IMPALGEBRA_END_NAMESPACE
 

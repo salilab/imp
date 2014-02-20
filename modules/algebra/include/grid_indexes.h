@@ -105,16 +105,15 @@ class ExtendedGridIndexD : public base::Value {
   unsigned int get_dimension() const { return data_.get_dimension(); }
   IMP_COMPARISONS(ExtendedGridIndexD);
   //! Get the ith component (i=0,1,2)
-  IMP_BRACKET(
-      int, unsigned int, i < get_dimension(),
-      IMP_USAGE_CHECK(!data_.get_is_null(), "Using uninitialized grid index");
-      return data_.get_data()[i]);
+  IMP_BRACKET(int, unsigned int, i < get_dimension(),
+              IMP_USAGE_CHECK(!data_.get_is_null(),
+                              "Using uninitialized grid index");
+              return data_.get_data()[i]);
   IMP_SHOWABLE_INLINE(ExtendedGridIndexD, {
     out << "(";
     for (unsigned int i = 0; i < get_dimension(); ++i) {
       out << operator[](i);
-      if (i != get_dimension() - 1)
-        out << ", ";
+      if (i != get_dimension() - 1) out << ", ";
     }
     out << ")";
   });
@@ -225,16 +224,15 @@ class GridIndexD : public base::Value {
 
 #ifndef IMP_DOXYGEN
   //! Get the ith component (i=0,1,2)
-  IMP_CONST_BRACKET(
-      int, unsigned int, i < get_dimension(),
-      IMP_USAGE_CHECK(!data_.get_is_null(), "Using uninitialized grid index");
-      return data_.get_data()[i]);
+  IMP_CONST_BRACKET(int, unsigned int, i < get_dimension(),
+                    IMP_USAGE_CHECK(!data_.get_is_null(),
+                                    "Using uninitialized grid index");
+                    return data_.get_data()[i]);
   IMP_SHOWABLE_INLINE(GridIndexD, {
     out << "(";
     for (unsigned int i = 0; i < get_dimension(); ++i) {
       out << operator[](i);
-      if (i != get_dimension() - 1)
-        out << ", ";
+      if (i != get_dimension() - 1) out << ", ";
     }
     out << ")";
   });

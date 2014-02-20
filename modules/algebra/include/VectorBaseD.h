@@ -69,7 +69,6 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
   }
 
  public:
-
   /** Will accept a list of floats from python. */
   template <class Range>
   explicit VectorBaseD(Range r) {
@@ -79,7 +78,7 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
     }
     IMP_IF_CHECK(USAGE) {
       IMP_FOREACH(double f, r) {
-	IMP_USAGE_CHECK(!base::is_nan(f), "NaN passed to constructor");
+        IMP_USAGE_CHECK(!base::is_nan(f), "NaN passed to constructor");
       }
     }
     data_.set_coordinates(boost::begin(r), boost::end(r));
@@ -94,7 +93,7 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
     }
     IMP_IF_CHECK(USAGE) {
       IMP_FOREACH(double f, r) {
-	IMP_USAGE_CHECK(!base::is_nan(f), "NaN passed in equals");
+        IMP_USAGE_CHECK(!base::is_nan(f), "NaN passed in equals");
       }
     }
     data_.set_coordinates(boost::begin(r), boost::end(r));
@@ -116,7 +115,6 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
 #endif
   //! Default constructor
   VectorBaseD() {}
-
 
   double get_scalar_product(const VectorBaseD<D> &o) const {
     IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o);

@@ -49,7 +49,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
     \geometry
  */
 template <int D>
-class VectorD: public VectorBaseD<D> {
+class VectorD : public VectorBaseD<D> {
   /* implementing it via a specialization is in order to get swig
      to only use the right constructors as well as C++. */
   IMP_ALGEBRA_VECTOR_METHODS(D);
@@ -129,7 +129,6 @@ class VectorD<6> : public VectorBaseD<6> {
     P::operator[](5) = x5;
   }
 };
-
 
 #ifndef IMP_DOXYGEN
 

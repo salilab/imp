@@ -82,10 +82,11 @@ class SphereD : public GeometricPrimitiveD<D> {
   double radius_;
 };
 
-IMP_VOLUME_GEOMETRY_METHODS_D(
-    Sphere, sphere, { return PI * 4.0 * get_squared(g.get_radius()); },
+IMP_VOLUME_GEOMETRY_METHODS_D(Sphere, sphere,
+{ return PI * 4.0 * get_squared(g.get_radius()); },
 { return PI * (4.0 / 3.0) * std::pow(g.get_radius(), 3.0); },
-    return BoundingBoxD<D>(g.get_center()) + g.get_radius(););
+                              return BoundingBoxD<D>(g.get_center()) +
+                                     g.get_radius(););
 
 template <unsigned int D>
 inline SphereD<D> get_unit_sphere_d() {
