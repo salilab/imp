@@ -12,11 +12,9 @@ class Statistics:
     - prefix: all outputted files will have this prefix
     - rate: print statistics every so many gibbs sampling steps
     - trajrate: print trajectories (pdb) every multiple of rate (default 1).
+                implies that update_coordinates() has been called by that time
+                otherwise writing will not occur.
     - statfile: suffix of the statistics file
-    - append: whether to append to a trajectory or to write multiple files.
-              For the statistics class, a trajectory is just a string, you can
-              stuff whatever you want in it. If append is False, files will be
-              numbered according to the counter of their category.
     - num_entries_per_line: number of entries per line in the output. -1 to
                             disable wrapping.
     - repeat_title: if 0 (default) only print it in the beginning. Else repeat
@@ -32,13 +30,12 @@ class Statistics:
     """
 
     def __init__(self, prefix='r01', rate=1, trajrate=1, statfile='_stats.txt',
-                 append=True, num_entries_per_line=5, repeat_title=0,
+                 num_entries_per_line=5, repeat_title=0,
                  separate_lines=False, compress=10000):
         self.prefix = prefix
         self.rate = rate
         self.trajrate = trajrate
         self.statfile = prefix + statfile
-        self.append = append
         self.compress = compress
         # list of the things that will be printed to the stats file, in order.
         self.entries = []
@@ -143,16 +140,43 @@ class Statistics:
             raise ValueError("unknown entry %s:%s" % (key, name))
         self.categories[key][name].set_value(value)
 
-    def add_coordinates(self, key, name):
-        """adds a placeholder for coordinates"""
+    def add_coordinates(self, key, name, format='raw', append=True,
+            extension='pdb', hierarchies=None, restraints=None):
+        """adds a placeholder for coordinates
+        - format = rmf3:
+            will write the whole system as provided, in rmf3 format
+            - hierarchies must contain protein hierarchies
+            - restraints is a list of restraints
+        - format = raw:
+            will write provided data as-is
+            - append: whether to append to a trajectory or to write multiple
+              files. With this format, a trajectory is just a string, you can
+              stuff whatever you want in it. If append is False, files will be
+              numbered according to the counter of their category.
+            - extension: the file extension to use
+              """
         if not key in self.categories:
             raise ValueError("unknown category: %s" % key)
         self.categories[key][name] = None
-        self.coordinates.append((key, name))
+        if format == 'raw':
+            self.coordinates.append((key, name, 'raw', (append, extension)))
+        elif format == 'rmf3':
+            import RMF
+            import IMP.rmf
+            assert hierarchies is not None
+            rh = RMF.create_rmf_file(self.prefix + '_' + name + '_traj.rmf3')
+            IMP.rmf.add_hierarchies(rh, hierarchies)
+            if restraints:
+                IMP.rmf.add_restraints(rh, restraints)
+            self.coordinates.append((key, name, 'rmf3', rh))
+        else:
+            raise ValueError, "format can only be rmf3 or raw"
 
-    def update_coordinates(self, key, name, value):
+    def update_coordinates(self, key, name, value=True):
         """updates the coordinates of key:name entry. Format should match with
-        the format specified at init time (pdb or cdf)
+        the format specified at init time (raw or rmf3)
+        note that setting value to None is equivalent to not calling this
+        function
         """
         if not key in self.categories:
             raise ValueError("unknown category: %s" % key)
@@ -177,7 +201,10 @@ class Statistics:
         titles = []
         for (i, entry) in enumerate(self.entries):
             if self.add_numbers_to_titles:
-                title = '%d:' % ((i % self.num_entries_per_line) + 1)
+                if self.num_entries_per_line>0:
+                    title = '%d:' % ((i % self.num_entries_per_line) + 1)
+                else:
+                    title = '%d:' % (i + 1)
             else:
                 title = ''
             cat = self.get_entry_category(entry)
@@ -251,20 +278,28 @@ class Statistics:
         # write trajs
         if stepno % (self.rate * self.trajrate) != 0:
             return True
-        for key, name in self.coordinates:
+        for key, name, format, args in self.coordinates:
             if self.categories[key][name] is None:
-                raise ValueError(
-                    "The trajectory was not passed to the stats class!")
-            if self.append:
-                pdbname = self.prefix + '_traj.pdb'
-                if self.compress > 0 and stepno % self.compress == 0:
-                    newname = "%s_traj_%d.pdb" % (self.prefix, stepno)
-                    os.system('mv %s %s' % (pdbname, newname))
-                    self.compress_file(newname)
-                fl = open(pdbname, 'a')
+                continue
+            if format == 'raw':
+                do_append, extension = args
+                if do_append:
+                    pdbname = self.prefix + '_traj.' + extension
+                    if self.compress > 0 and stepno % self.compress == 0:
+                        newname = "%s_traj_%d.%s" % (self.prefix, stepno, extension)
+                        os.system('mv %s %s' % (pdbname, newname))
+                        self.compress_file(newname)
+                    fl = open(pdbname, 'a')
+                else:
+                    num = self.categories[key]['counter'].get_raw_value()
+                    fl = open(self.prefix + ('_%s_%010d.%s' % (name, num, extension)), 'w')
+                fl.write(self.categories[key][name])
+                fl.close()
+            elif format == 'rmf3':
+                import IMP.rmf
+                IMP.rmf.save_frame(args)
+                args.flush()
             else:
-                num = self.categories[key]['counter'].get_raw_value()
-                fl = open(self.prefix + ('_%s_%010d.pdb' % (name, num)), 'w')
-            fl.write(self.categories[key][name])
-            fl.close()
+                raise RuntimeError
+            self.categories[key][name] = None
         return True
