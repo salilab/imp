@@ -52,18 +52,7 @@ BuildRequires: boost-devel >= 1.41
 BuildRequires: CGAL-devel, opencv-devel
 %endif
 
-# Add compiler flags for C++11 support
-%if 0%{?fedora}
-%define cxx_flags -DCMAKE_CXX_FLAGS="-std=c++11"
-%else
-%if 0%{?rhel} >= 6
-%define cxx_flags -DCMAKE_CXX_FLAGS="-std=gnu++0x"
-%else
-%define cxx_flags %{nil}
-%endif
-%endif
-
-%define cmake_opts %{cxx_flags} %{boost}
+%define cmake_opts %{boost}
 
 %description
 IMP's broad goal is to contribute to a comprehensive structural
