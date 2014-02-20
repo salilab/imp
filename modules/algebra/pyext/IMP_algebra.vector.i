@@ -52,6 +52,11 @@ namespace IMP {
   const IMP::algebra::VectorD<D> __rmul__(double f) const {return self->operator*(f);}
   std::string __str__() const {std::ostringstream oss; self->show(oss); return oss.str();}
   std::string __repr__() const {std::ostringstream oss; self->show(oss); return oss.str();}
+  int __cmp__(const IMP::algebra::VectorD<D> &) const {
+    IMP_UNUSED(self);
+    IMP_THROW("Geometric primitives cannot be compared",
+              IMP::base::ValueException);
+  }
 };
 %enddef
 
