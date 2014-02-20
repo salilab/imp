@@ -168,8 +168,8 @@ inline int compare(const VectorD<D> &a, const VectorD<D> &b) {
 
 /** See VectorD */
 template <int D>
-inline VectorD<D> operator*(double s, const VectorD<D> &o) {
-  return o * s;
+inline VectorD<D> operator*(double s, VectorD<D> o) {
+  return o *= s;
 }
 
 //! compute the squared distance between two vectors

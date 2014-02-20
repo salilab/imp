@@ -13,6 +13,7 @@
 #include <IMP/base/check_macros.h>
 #include <IMP/base/exception.h>
 #include <IMP/base/random.h>
+#include <IMP/base/utility.h>
 #include <IMP/base/types.h>
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/normal_distribution.hpp>
@@ -76,6 +77,11 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
       IMP_THROW("Expected " << D << " but got " << boost::distance(r),
                 base::ValueException);
     }
+    IMP_IF_CHECK(USAGE) {
+      IMP_FOREACH(double f, r) {
+	IMP_USAGE_CHECK(!base::is_nan(f), "NaN passed to constructor");
+      }
+    }
     data_.set_coordinates(boost::begin(r), boost::end(r));
   }
 
@@ -85,6 +91,11 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
     if (D != -1 && static_cast<int>(boost::distance(r)) != D) {
       IMP_THROW("Expected " << D << " but got " << boost::distance(r),
                 base::ValueException);
+    }
+    IMP_IF_CHECK(USAGE) {
+      IMP_FOREACH(double f, r) {
+	IMP_USAGE_CHECK(!base::is_nan(f), "NaN passed in equals");
+      }
     }
     data_.set_coordinates(boost::begin(r), boost::end(r));
   }

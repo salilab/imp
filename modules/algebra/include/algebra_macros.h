@@ -47,25 +47,23 @@
   VectorD get_unit_vector() const { return algebra::get_unit_vector(*this); } \
   VectorD operator*(double s) const {                                         \
     VectorD ret(*this);                                                       \
-    return ret *= s;                                                          \
+    ret *= s; return ret;						\
   }                                                                           \
   VectorD operator/(double s) const {                                         \
     VectorD ret(*this);                                                       \
-    return ret /= s;                                                          \
+    ret /= s; return ret;					\
   }                                                                           \
   VectorD operator-() const {                                                 \
     VectorD ret(*this);                                                       \
-    return ret *= -1;                                                         \
+    ret *= -1; return ret;						\
   }                                                                           \
   VectorD operator-(const VectorD &o) const {                                 \
-    VectorD ret(*this);                                                       \
-    return ret -= o;                                                          \
+    VectorD ret(*this); ret -= o; return ret;			\
   }                                                                           \
-  VectorD operator+(const VectorD &o) const {                                 \
-    VectorD ret(*this);                                                       \
-    return ret += o;                                                          \
+  VectorD operator+(VectorD ret) const {				\
+    ret += *this; return ret;						\
   }                                                                           \
-  VectorD &operator+=(const VectorD &o) {                                     \
+  VectorD &operator+=(const VectorD& o) {                                     \
     P::operator+=(o);                                                         \
     return *this;                                                             \
   }                                                                           \
