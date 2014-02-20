@@ -47,10 +47,8 @@ IMP_SWIG_VALUE(IMP::algebra,  SpherePatch3D, SpherePatch3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  ConnollySurfacePoint, ConnollySurfacePoints);
 
 // we seem to need the non-typedefed name, at least for the first argument
-IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  Vector);
 IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  Sphere);
 IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  BoundingBox);
-IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  VectorInput);
 IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  PrincipalComponentAnalysis);
 IMP_SWIG_ALGEBRA_OBJECT_D(IMP::algebra,  NearestNeighbor);
 IMP_SWIG_VALUE(IMP::algebra,  ReferenceFrame3D, ReferenceFrame3Ds);
@@ -94,6 +92,18 @@ namespace multi_array_types {
 %include "IMP_algebra.transformation3d.i"
 
 /* Wrap our own classes */
+%include "IMP/algebra/VectorBaseD.h"
+namespace IMP {
+ namespace algebra {
+   %template(_VectorBaseKD) VectorBaseD<-1>;
+   %template(_VectorBase1D) VectorBaseD<1>;
+   %template(_VectorBase2D) VectorBaseD<2>;
+   %template(_VectorBase3D) VectorBaseD<3>;
+   %template(_VectorBase4D) VectorBaseD<4>;
+   %template(_VectorBase5D) VectorBaseD<5>;
+   %template(_VectorBase6D) VectorBaseD<6>;
+ }
+}
 %include "IMP/algebra/VectorD.h"
 %include "IMP/algebra/Vector2D.h"
 %include "IMP/algebra/Vector3D.h"
@@ -107,7 +117,6 @@ namespace multi_array_types {
 %include "IMP/algebra/Sphere3D.h"
 
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, Vector);
-IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, VectorInput);
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, BoundingBox);
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, Sphere);
 

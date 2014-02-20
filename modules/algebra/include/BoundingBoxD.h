@@ -53,7 +53,7 @@ class BoundingBoxD {
     b_[1] = VectorD<D>(ub.begin(), ub.end());
   }
   //! Make from the lower and upper corners
-  BoundingBoxD(const VectorInputD<D> &lb, const VectorInputD<D> &ub) {
+  BoundingBoxD(const VectorD<D> &lb, const VectorD<D> &ub) {
     b_[0] = lb;
     b_[1] = ub;
     IMP_IF_CHECK(IMP::base::USAGE) {
@@ -63,7 +63,7 @@ class BoundingBoxD {
     }
   }
   //! Creating a bounding box containing one point
-  explicit BoundingBoxD(const VectorInputD<D> &v) {
+  explicit BoundingBoxD(const VectorD<D> &v) {
     b_[0] = v;
     b_[1] = v;
   }
