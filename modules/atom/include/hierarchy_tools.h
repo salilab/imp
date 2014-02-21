@@ -102,6 +102,15 @@ IMPATOMEXPORT Hierarchy
 IMPATOMEXPORT Hierarchy
     create_simplified_from_volume(Hierarchy h, double resolution);
 
+/** Create a new hierarchy that approximates the volume occupied by the old one.
+
+    This function is like create_simplified_from_volume() except that the
+    result is divided into Chain and Molecule bits. It assumes that all
+    geometry is rooted under a chain or a molecule.
+     */
+IMPATOMEXPORT Hierarchy
+    create_simplified_assembly_from_volume(Hierarchy h, double resolution);
+
 /** \name Finding information
     Get the attribute of the given particle or throw a ValueException
     if it is not applicable. The particle with the given information

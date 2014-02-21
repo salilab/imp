@@ -520,25 +520,27 @@ void add_bonds(const IMP::atom::Hierarchies &out) {
   IMP_FOREACH(IMP::atom::Hierarchy c, out) {
     IMP::atom::Bonded::setup_particle(c);
   }
+  base::set_progress_display("adding bonds", out.size());
   for (unsigned int i = 0; i < out.size(); ++i) {
     IMP::Ints ii = IMP::atom::Fragment(out[i]).get_residue_indexes();
-    bool bonded = false;
-    for (unsigned int j = 0; j < i && !bonded; ++j) {
+    std::sort(ii.begin(), ii.end());
+    for (unsigned int j = 0; j < i; ++j) {
       IMP::Ints ij = IMP::atom::Fragment(out[j]).get_residue_indexes();
       std::sort(ij.begin(), ij.end());
       IMP_FOREACH(int iic, ii) {
         if (std::binary_search(ij.begin(), ij.end(), iic + 1) ||
-            std::binary_search(ij.begin(), ij.end(), iic - 1)) {
+            std::binary_search(ij.begin(), ij.end(), iic - 1) ||
+            std::binary_search(ij.begin(), ij.end(), iic)) {
           IMP::atom::create_custom_bond(
               IMP::atom::Bonded(out[i]), IMP::atom::Bonded(out[j]),
               std::max<double>(
                   0, IMP::core::get_distance(IMP::core::XYZR(out[i]),
                                              IMP::core::XYZR(out[j]))));
-          bonded = true;
           break;
         }
       }
     }
+    base::add_to_progress_display(1);
   }
 }
 }
@@ -569,6 +571,27 @@ Hierarchy create_simplified_from_volume(Hierarchy h, double resolution) {
   Hierarchy ret = Hierarchy::setup_particle(m, m->add_particle(h->get_name()));
   IMP_FOREACH(Hierarchy c, leaves) { ret.add_child(c); }
   return ret;
+}
+
+Hierarchy create_simplified_assembly_from_volume(Hierarchy h,
+                                                 double resolution) {
+  IMP_FUNCTION_LOG;
+  if (Chain::get_is_setup(h)) {
+    Hierarchy ret = create_simplified_from_volume(h, resolution);
+    Chain::setup_particle(ret, Chain(h).get_id());
+    return ret;
+  } else if (Molecule::get_is_setup(h)) {
+    Hierarchy ret = create_simplified_from_volume(h, resolution);
+    Molecule::setup_particle(ret);
+    return ret;
+  } else {
+    Hierarchy ret = Hierarchy::setup_particle(
+        h.get_model(), h.get_model()->add_particle(h->get_name()));
+    IMP_FOREACH(Hierarchy c, h.get_children()) {
+      ret.add_child(create_simplified_assembly_from_volume(c, resolution));
+    }
+    return ret;
+  }
 }
 
 IMPATOM_END_NAMESPACE
