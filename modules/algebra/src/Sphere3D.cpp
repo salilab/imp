@@ -88,6 +88,7 @@ Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
   IMP_LOG_TERSE("Searching for nearest neighbors." << std::endl);
   {
     // std::ofstream cpout("/tmp/balls.bild");
+    base::set_progress_display("computing nearest neighbors", in.size());
     for (unsigned int i = 0; i < in.size(); ++i) {
       SphereIndex si(i);
       unsigned int nn = nns->get_nearest_neighbor(in[i].get_center());
@@ -107,6 +108,7 @@ Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
       /*cpout << ".sphere " << in[i].get_center()[0] << " "
             << in[i].get_center()[1] << " " << in[i].get_center()[2] << " " << r
             << std::endl;*/
+      base::add_to_progress_display(1);
     }
   }
 
@@ -141,6 +143,7 @@ Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
 
   IMP_LOG_TERSE("Generating output." << std::endl);
   Sphere3Ds ret;
+  base::set_progress_display("building representation", supported.size());
   while (!supported.empty()) {
     IMP_USAGE_CHECK(!supports.empty(), "Out of spheres");
     SphereIndex max;
@@ -161,6 +164,7 @@ Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
         }
       }
       supported.erase(spi);
+      base::add_to_progress_display(1);
     }
     supports.erase(max);
     ret.push_back(Sphere3D(in[max.get_index()].get_center(),
