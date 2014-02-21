@@ -78,6 +78,7 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
     }
     IMP_IF_CHECK(USAGE) {
       IMP_FOREACH(double f, r) {
+        IMP_UNUSED(f);
         IMP_USAGE_CHECK(!base::is_nan(f), "NaN passed to constructor");
       }
     }
