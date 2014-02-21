@@ -57,8 +57,28 @@ class VectorD : public VectorBaseD<D> {
 
 template <>
 class VectorD<-1> : public VectorBaseD<-1> {
+  std::vector<double> get_range(double x0, double x1, double x2, double x3,
+                                double x4, double x5) {
+    IMP_USAGE_CHECK(x0 != std::numeric_limits<double>::max(),
+                    "Bad init values");
+    std::vector<double> ret;
+    ret.push_back(x0);
+    if (x1 != std::numeric_limits<double>::max()) ret.push_back(x1);
+    if (x2 != std::numeric_limits<double>::max()) ret.push_back(x2);
+    if (x3 != std::numeric_limits<double>::max()) ret.push_back(x3);
+    if (x4 != std::numeric_limits<double>::max()) ret.push_back(x4);
+    if (x5 != std::numeric_limits<double>::max()) ret.push_back(x5);
+    return ret;
+  }
+
  public:
   IMP_ALGEBRA_VECTOR_METHODS(-1);
+  explicit VectorD(double x0, double x1 = std::numeric_limits<double>::max(),
+                   double x2 = std::numeric_limits<double>::max(),
+                   double x3 = std::numeric_limits<double>::max(),
+                   double x4 = std::numeric_limits<double>::max(),
+                   double x5 = std::numeric_limits<double>::max())
+      : P(get_range(x0, x1, x2, x3, x4, x5)) {}
 };
 
 template <>
