@@ -200,8 +200,11 @@
 #elif defined(_MSC_VER)
 #define IMP_GCC_PUSH_POP(x)
 
-#define IMP_COMPILER_ENABLE_WARNINGS \
-  IMP_VC_PRAGMA(warning(push)) IMP_VC_PRAGMA(warning(disable : 4273))
+#define IMP_COMPILER_ENABLE_WARNINGS                                  \
+  IMP_VC_PRAGMA(warning(push)) IMP_VC_PRAGMA(warning(disable : 4273)) \
+      IMP_VC_PRAGMA(warning(disable : 4244))                          \
+      IMP_VC_PRAGMA(warning(disable : 4068))                          \
+      IMP_VC_PRAGMA(warning(disable : 4297))
 
 #define IMP_COMPILER_DISABLE_WARNINGS IMP_VC_PRAGMA(warning(pop))
 
