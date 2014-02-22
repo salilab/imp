@@ -112,19 +112,6 @@ Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
     }
   }
 
-  for (unsigned int i = 0; i < in.size(); ++i) {
-    SphereIndex si(i);
-    IMP_FOREACH(Vector3D v, sps) {
-      IMP_INTERNAL_CHECK(get_distance(v, in[i].get_center()) >=
-                             radii.find(si)->second - 1.0 / resolution,
-                         "Sphere too big at "
-                             << in[i] << " with radius "
-                             << radii.find(si)->second << " at surface point "
-                             << v << " with distance "
-                             << get_distance(v, in[i].get_center()));
-    }
-  }
-
   IMP_LOG_TERSE("Distributing support." << std::endl);
   // which spheres are supported by each point
   typedef std::pair<SPIndex, SphereIndexSet> SupportedPair;
@@ -133,12 +120,6 @@ Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
   typedef std::pair<SphereIndex, SPIndexSet> SupportsPair;
   IMP_FOREACH(const SupportsPair & ps, supports) {
     IMP_FOREACH(SPIndex spi, ps.second) { supported[spi].insert(ps.first); }
-  }
-
-  for (unsigned int i = 0; i < sps.size(); ++i) {
-    SPIndex spi(i);
-    IMP_INTERNAL_CHECK(supported.find(spi) != supported.end(),
-                       "Point is not supported");
   }
 
   IMP_LOG_TERSE("Generating output." << std::endl);
