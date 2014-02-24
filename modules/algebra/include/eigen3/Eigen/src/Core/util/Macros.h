@@ -23,7 +23,7 @@
 #else
   #define IMP_EIGEN_GNUC_AT_LEAST(x,y) 0
 #endif
- 
+
 #ifdef __GNUC__
   #define IMP_EIGEN_GNUC_AT_MOST(x,y) ((__GNUC__==x && __GNUC_MINOR__<=y) || __GNUC__<x)
 #else
@@ -196,7 +196,7 @@
     }
     #define imp_eigen_plain_assert(x) \
       do { \
-        if(!Eigen::internal::copy_bool(x)) \
+        if(!IMP_Eigen::internal::copy_bool(x)) \
           IMP_Eigen::internal::assert_fail(IMP_EIGEN_MAKESTRING(x), __PRETTY_FUNCTION__, __FILE__, __LINE__); \
       } while(false)
   #endif
