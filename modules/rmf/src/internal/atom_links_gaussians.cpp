@@ -28,9 +28,10 @@ void HierarchyLoadGaussians::setup_particle(
   link_particle(n, m, p, rigid_bodies);
 }
 
-void HierarchyLoadGaussians::link_particle(
-    RMF::NodeConstHandle n, kernel::Model *m, kernel::ParticleIndex p,
-    const kernel::ParticleIndexes &rigid_bodies) {
+void HierarchyLoadGaussians::link_particle(RMF::NodeConstHandle n,
+                                           kernel::Model *,
+                                           kernel::ParticleIndex p,
+                                           const kernel::ParticleIndexes &) {
   if (!gaussian_factory_.get_is_static(n)) return;
   gaussians_.push_back(Pair(n, p));
 }
@@ -49,9 +50,10 @@ void HierarchyLoadGaussians::load(RMF::FileConstHandle fh, Model *m) {
 HierarchySaveGaussians::HierarchySaveGaussians(RMF::FileHandle f)
     : gaussian_factory_(f) {}
 
-void HierarchySaveGaussians::setup_node(
-    kernel::Model *m, kernel::ParticleIndex p, RMF::NodeHandle n,
-    const kernel::ParticleIndexes &rigid_bodies) {
+void HierarchySaveGaussians::setup_node(kernel::Model *m,
+                                        kernel::ParticleIndex p,
+                                        RMF::NodeHandle n,
+                                        const kernel::ParticleIndexes &) {
   if (!core::Gaussian::get_is_setup(m, p)) return;
   algebra::Vector3D st = core::Gaussian(m, p).get_gaussian().get_variances();
   gaussian_factory_.get(n).set_variances(RMF::Vector3(st));

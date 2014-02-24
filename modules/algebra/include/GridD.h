@@ -173,7 +173,7 @@ class GridD : public StorageT,
   /** Make sure you initialize it before you try to use it. */
   GridD() : Storage(Value()) {}
 
-  IMP_SHOWABLE_INLINE(GridD, "Grid");
+  IMP_SHOWABLE_INLINE(GridD, out << "Grid");
 
   /* \name Indexing
      The vector must fall in a valid voxel to get and must be within

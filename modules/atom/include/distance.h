@@ -31,6 +31,8 @@ IMPATOMEXPORT double get_rmsd(const core::XYZs& s0, const core::XYZs& s1);
 
 /**
    Get the rmsd between two lists of particles.
+
+   \deprecated_at{2.2} Use get_rmsd_transforming_first()
  */
 template <class Vector3DsOrXYZs0, class Vector3DsOrXYZs1>
 IMPATOM_DEPRECATED_FUNCTION_DECL(2.2) inline double get_rmsd(
