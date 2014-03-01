@@ -622,6 +622,8 @@ std::string get_pdb_conect_record_string(int a1_ind, int a2_ind) {
   out.setf(std::ios::right, std::ios::adjustfield);
   out << a1_ind;  // a1.get_input_index();
   // 12 - 16 Serial number of bonded atom
+  out.width(5);
+  out.setf(std::ios::right, std::ios::adjustfield);
   out << a2_ind;  // a2.get_input_index();
   out << std::endl;
   return out.str();

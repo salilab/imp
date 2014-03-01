@@ -7,6 +7,11 @@ import os
 
 class Tests(IMP.test.TestCase):
 
+    def test_pdb_conect_string(self):
+        """Test get_pdb_conect_record_string()"""
+        s = IMP.atom.get_pdb_conect_record_string(1001, 2)
+        self.assertEqual(s, 'CONECT 1001    2\n')
+
     def test_write(self):
         """Simple test of writing a PDB"""
         m = IMP.kernel.Model()
