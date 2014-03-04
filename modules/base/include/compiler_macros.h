@@ -150,6 +150,7 @@
       IMP_CLANG_PRAGMA(diagnostic ignored "-Wconversion")       \
       IMP_CLANG_PRAGMA(diagnostic ignored "-Wc++11-extensions") \
       IMP_CLANG_PRAGMA(diagnostic ignored "-Wc++11-compat")     \
+      IMP_CLANG_PRAGMA(diagnostic warning "-Wsign-compare")     \
       IMP_CLANG_PRAGMA(diagnostic ignored "-Wunused-member-function")
 
 #define IMP_HELPER_MACRO_PUSH_WARNINGS IMP_CLANG_PRAGMA(diagnostic push)
