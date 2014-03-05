@@ -7,8 +7,9 @@
  */
 #include <IMP/mpi/ReplicaExchange.h>
 #include "mpi.h"
+#include <IMP/base/random.h>
 #include <boost/scoped_array.hpp>
-#include <time.h>
+#include <boost/random/uniform_01.hpp>
 
 IMPMPI_BEGIN_NAMESPACE
 
@@ -21,9 +22,6 @@ ReplicaExchange::ReplicaExchange() : Object("Replica Exchange") {
   index_ = create_indexes();
   // and list to keep track of the exchange acceptance
   exarray_ = create_exarray();
-  // initialize seed
-  unsigned int iseed = time(NULL)+myrank_;
-  srand(iseed);
 }
 
 Ints ReplicaExchange::create_indexes() {
@@ -185,7 +183,7 @@ bool ReplicaExchange::get_acceptance(double myscore, double fscore) {
   } else {
     accept = exp(delta);
   }
-  double random = (double)rand() / (double)RAND_MAX;
+  double random = boost::uniform_01<>()(base::random_number_generator);
 
   if (random <= accept) {
     return true;

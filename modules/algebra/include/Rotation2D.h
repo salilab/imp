@@ -13,6 +13,8 @@
 #include "Vector2D.h"
 #include "GeometricPrimitiveD.h"
 #include "constants.h"
+#include <IMP/base/random.h>
+#include <boost/random/uniform_01.hpp>
 #include <cmath>
 //#include <stdlib.h>
 
@@ -89,7 +91,8 @@ inline Rotation2D get_identity_rotation_2d() { return Rotation2D(0.0); }
 
 //! Builds an identity rotation in 2D
 inline Rotation2D get_random_rotation_2d() {
-  return Rotation2D(2 * PI * ((double)rand() / ((double)RAND_MAX + 1)));
+  return Rotation2D(2 * PI *
+                    boost::uniform_01<>()(base::random_number_generator));
 }
 
 //! Builds the rotation that transforms the vector X of the origin
