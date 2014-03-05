@@ -22,10 +22,7 @@ ReplicaExchange::ReplicaExchange() : Object("Replica Exchange") {
   // and list to keep track of the exchange acceptance
   exarray_ = create_exarray();
   // initialize seed
-  unsigned int iseed = time(NULL);
-  // broadcast seed
-  MPI_Bcast(&iseed, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
-  // initialize random generator
+  unsigned int iseed = time(NULL)+myrank_;
   srand(iseed);
 }
 
@@ -110,14 +107,24 @@ Ints ReplicaExchange::get_exchange_array() { return exarray_; }
 bool ReplicaExchange::do_exchange(double myscore0, double myscore1,
                                   int findex) {
   double myscore = myscore0 - myscore1;
-  double fscore;
-  int myindex = index_[myrank_];
   int frank = get_rank(findex);
+  bool do_accept;
+  //lowest index does the exchange,
+  //the other one sends his parameters and receives the result
+  if (myrank_ < frank) {
+      //we do the exchange
+      double fscore;
 
-  MPI_Sendrecv(&myscore, 1, MPI_DOUBLE, frank, myrank_, &fscore, 1, MPI_DOUBLE,
-               frank, frank, MPI_COMM_WORLD, &status_);
-
-  bool do_accept = get_acceptance(myscore, fscore);
+      MPI_Recv(&fscore, 1, MPI_DOUBLE, frank, 0, MPI_COMM_WORLD, &status_);
+      do_accept = get_acceptance(myscore, fscore);
+      int atmp = (int)do_accept;
+      MPI_Send(&atmp, 1, MPI_INT, frank, 0, MPI_COMM_WORLD);
+  } else {
+      MPI_Send(&myscore, 1, MPI_DOUBLE, frank, 0, MPI_COMM_WORLD);
+      int atmp;
+      MPI_Recv(&atmp, 1, MPI_INT, frank, 0, MPI_COMM_WORLD, &status_);
+      do_accept = (bool)atmp;
+  }
 
   boost::scoped_array<int> sdel(new int[nproc_ - 1]);
   boost::scoped_array<int> rdel(new int[nproc_ - 1]);
@@ -126,6 +133,7 @@ bool ReplicaExchange::do_exchange(double myscore0, double myscore1,
     sdel[i] = 0;
   }
 
+  int myindex = index_[myrank_];
   if (do_accept) {
     std::map<std::string, Floats>::iterator it;
     for (it = parameters_.begin(); it != parameters_.end(); it++) {
