@@ -34,6 +34,8 @@ class IMPRMFEXPORT HierarchyLoadStatic {
   RMF::decorator::TypedFactory typed_factory_;
   RMF::decorator::DomainFactory domain_factory_;
   RMF::decorator::FragmentFactory fragment_factory_;
+  RMF::decorator::BackwardsCompatibilityFragmentFactory
+      backwards_fragment_factory_;
   RMF::decorator::StateFactory state_factory_;
   RMF::decorator::Molecule molecule_;
   RMF::FloatKey radius_key_;

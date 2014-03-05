@@ -36,8 +36,10 @@ HierarchyLoadStatic::HierarchyLoadStatic(RMF::FileConstHandle fh)
       diffuser_factory_(fh),
       typed_factory_(fh),
       domain_factory_(fh),
+      backwards_fragment_factory_(fh),
       fragment_factory_(fh),
-      state_factory_(fh), molecule_(fh) {
+      state_factory_(fh),
+      molecule_(fh) {
   RMF::Category phy = fh.get_category("physics");
   radius_key_ = fh.get_key(phy, "radius", RMF::FloatTraits());
   mass_key_ = fh.get_key(phy, "mass", RMF::FloatTraits());
@@ -78,17 +80,21 @@ void HierarchyLoadStatic::setup_particle(RMF::NodeConstHandle nh,
   if (domain_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("domain " << std::endl);
     int b, e;
-    boost::tie(b, e) = domain_factory_.get(nh).get_indexes();
-    if (e == b + 1) {
+    RMF::IntRange be = domain_factory_.get(nh).get_residue_indexes();
+    if (be[1] == be[0] + 1) {
     } else {
-      atom::Domain::setup_particle(m, p, IntRange(b, e));
+      atom::Domain::setup_particle(m, p, IntRange(be[0], be[1]));
     }
   }
   if (molecule_.get_is(nh)) {
     atom::Molecule::setup_particle(m, p);
   }
   if (fragment_factory_.get_is_static(nh)) {
-    RMF::Ints idx = fragment_factory_.get(nh).get_indexes();
+    RMF::Ints idx = fragment_factory_.get(nh).get_residue_indexes();
+    atom::Fragment::setup_particle(m, p, Ints(idx.begin(), idx.end()));
+  }
+  if (backwards_fragment_factory_.get_is_static(nh)) {
+    RMF::Ints idx = backwards_fragment_factory_.get(nh).get_indexes();
     atom::Fragment::setup_particle(m, p, Ints(idx.begin(), idx.end()));
   }
   if (colored_factory_.get_is_static(nh)) {
@@ -162,15 +168,14 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
   }
   if (domain_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("domain " << std::endl);
-    int b, e;
-    boost::tie(b, e) = domain_factory_.get(nh).get_indexes();
-    if (e == b + 1) {
+    RMF::IntRange be = domain_factory_.get(nh).get_residue_indexes();
+    if (be[1] == be[0] + 1) {
     } else {
-      atom::Domain(m, p).set_index_range(IntRange(b, e));
+      atom::Domain(m, p).set_index_range(IntRange(be[0], be[1]));
     }
   }
   if (fragment_factory_.get_is_static(nh)) {
-    RMF::Ints idx = fragment_factory_.get(nh).get_indexes();
+    RMF::Ints idx = fragment_factory_.get(nh).get_residue_indexes();
     atom::Fragment(m, p).set_residue_indexes(Ints(idx.begin(), idx.end()));
   }
   if (colored_factory_.get_is_static(nh)) {
@@ -236,14 +241,15 @@ void HierarchySaveStatic::setup_node(kernel::Model *m, kernel::ParticleIndex p,
   }
   if (atom::Domain::get_is_setup(m, p)) {
     atom::Domain d(m, p);
-    domain_factory_.get(n).set_indexes(
-        std::make_pair(d.get_index_range().first, d.get_index_range().second));
+    domain_factory_.get(n).set_residue_indexes(d.get_index_range().first,
+                                               d.get_index_range().second);
   }
   if (atom::Fragment::get_is_setup(m, p)) {
     atom::Fragment d(m, p);
     Ints idx = d.get_residue_indexes();
     if (!idx.empty()) {
-      fragment_factory_.get(n).set_indexes(RMF::Ints(idx.begin(), idx.end()));
+      fragment_factory_.get(n)
+          .set_residue_indexes(RMF::Ints(idx.begin(), idx.end()));
     }
   }
   if (display::Colored::get_is_setup(m, p)) {
