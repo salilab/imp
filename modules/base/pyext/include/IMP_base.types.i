@@ -423,12 +423,14 @@ namespace {
 
 %define IMP_SWIG_FORWARD_0(name, ret)
 ret name() {
+  IMP_USAGE_CHECK(self->get_particle(), "Null particle");
    return self->get_particle()->name();
 }
 %enddef
 
 %define IMP_SWIG_VOID_FORWARD_0(name)
 void name() {
+   IMP_USAGE_CHECK(self->get_particle(), "Null particle");
    self->get_particle()->name();
 }
 %enddef
@@ -436,36 +438,42 @@ void name() {
 
 %define IMP_SWIG_FORWARD_1(name, ret, type0)
 ret name(type0 a0) {
-   return self->get_particle()->name(a0);
+  IMP_USAGE_CHECK(self->get_particle(), "Null particle");
+  return self->get_particle()->name(a0);
 }
 %enddef
 
 %define IMP_SWIG_VOID_FORWARD_1(name, type0)
 void name(type0 a0) {
+   IMP_USAGE_CHECK(self->get_particle(), "Null particle");
    self->get_particle()->name(a0);
 }
 %enddef
 
 %define IMP_SWIG_FORWARD_2(name, ret, type0, type1)
 ret name(type0 a0, type1 a1) {
-   return self->get_particle()->name(a0, a1);
+  IMP_USAGE_CHECK(self->get_particle(), "Null particle");
+  return self->get_particle()->name(a0, a1);
 }
 %enddef
 
 %define IMP_SWIG_VOID_FORWARD_2(name, type0, type1)
 void name(type0 a0, type1 a1) {
-   self->get_particle()->name(a0, a1);
+  IMP_USAGE_CHECK(self->get_particle(), "Null particle");
+  self->get_particle()->name(a0, a1);
 }
 %enddef
 
 %define IMP_SWIG_FORWARD_3(name, ret, type0, type1, type2)
 ret name(type0 a0, type1 a1, type2 a2) {
+   IMP_USAGE_CHECK(self->get_particle(), "Null particle");
    return self->get_particle()->name(a0, a1, a2);
 }
 %enddef
 
 %define IMP_SWIG_VOID_FORWARD_3(name, type0, type1, type2)
 void name(type0 a0, type1 a1, type2 a2) {
+   IMP_USAGE_CHECK(self->get_particle(), "Null particle");
    self->get_particle()->name(a0, a1, a2);
 }
 %enddef
