@@ -17,13 +17,13 @@
 IMPATOM_BEGIN_NAMESPACE
 
 double get_resolution(kernel::Model* m, kernel::ParticleIndex pi) {
-  double sum = 0;
-  double count = 0;
+  double min = std::numeric_limits<double>::max();
   IMP_FOREACH(Hierarchy l, get_leaves(Hierarchy(m, pi))) {
-    sum += core::XYZR(l).get_radius();
-    ++count;
+    double cur = core::XYZR(l).get_radius();
+    IMP_USAGE_CHECK(cur > 0, "Particle " << l << " has an invalid radius");
+    min = std::min(min, cur);
   }
-  return count / sum;
+  return 1.0 / min;
 }
 const double ALL_RESOLUTIONS = -std::numeric_limits<double>::max();
 
