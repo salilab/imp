@@ -28,6 +28,8 @@ IMPRMF_BEGIN_NAMESPACE
     - IMP::atom::Domain
     - IMP::atom::Molecule
     - IMP::atom::Copy
+    - IMP::atom::State
+    - IMP::atom::Representation
     - IMP::core::RigidMember (rigid body information will be written and rigid
     bodies created even when the IMP::core::RigidBody is not itself written
     to the file)
