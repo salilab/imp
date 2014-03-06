@@ -119,9 +119,10 @@ Particle *HierarchyLoadLink::do_create(RMF::NodeConstHandle node,
   kernel::ParticleIndex ret = m->add_particle(node.get_name());
   data_.insert(std::make_pair(ret, boost::make_shared<Data>(node.get_file())));
   create_recursive(m, ret, ret, node, kernel::ParticleIndexes(), *data_[ret]);
-  IMP_INTERNAL_CHECK(atom::Hierarchy(m, ret).get_is_valid(true),
-                     "Invalid hierarchy created");
   data_.find(ret)->second->load_bonds.setup_bonds(node, m, ret);
+  if (!atom::Hierarchy(m, ret).get_is_valid(true)) {
+    IMP_WARN("Invalid hierarchy created.");
+  }
   return m->get_particle(ret);
 }
 
