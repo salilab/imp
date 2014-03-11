@@ -244,7 +244,7 @@ class Demuxer:
         print "Demuxing",len(log_iterators),"replicas"
         for idx,steps in enumerate(zip(*log_iterators)):
             if idx % 10 == 0 and idx>0:
-                print "step",idx,
+                print "step",idx,'\r',
                 sys.stdout.flush()
             # assign state numbers to these logs
             params = [(self.get_param(i.get_stats()), i) for i in steps]
