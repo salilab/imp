@@ -1,5 +1,5 @@
 /**
- *  \file em2d/Image.h
+ *  \file IMP/em2d/Image.h
  *  \brief IMP images for Electron Microscopy using openCV matrices
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
 */
@@ -152,10 +152,6 @@ class IMPEM2DEXPORT Image : public IMP::base::Object {
   //! Define the basic things needed by any Object
   //  IMP_OBJECT_METHODS(Image)
   IMP_OBJECT_METHODS(Image);
-
-  void destroyed_msg() {
-    IMP_LOG_TERSE("Image destroyed " << this->name_ << std::endl);
-  }
 
   /**
    * Set the name of the image
