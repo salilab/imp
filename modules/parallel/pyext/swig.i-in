@@ -131,7 +131,7 @@ class Slave(_Communicator):
         return (time.time() - self.last_contact_time) > timeout
 
     def _start_task(self, task, context):
-        if not self.ready_for_task(context) and not self.ready_for_task(None):
+        if not self._ready_for_task(context) and not self._ready_for_task(None):
             raise TypeError("%s not ready for task" % str(self))
         if self._context != context:
             self._context = context
@@ -162,14 +162,14 @@ class Slave(_Communicator):
         self._state = slavestate.dead
         return task
 
-    def ready_to_start(self):
+    def _ready_to_start(self):
         return self._state == slavestate.init
 
-    def ready_for_task(self, context):
+    def _ready_for_task(self, context):
         return self._state == slavestate.connected \
                and self._context == context
 
-    def running_task(self, context):
+    def _running_task(self, context):
         return self._state == slavestate.running_task \
                and self._context == context
 
@@ -446,7 +446,7 @@ class Manager(object):
                    "%s %d") % (self._python, self._host, self._listen_sock.port)
 
         for (num, slave) in enumerate(self._all_slaves):
-            if slave.ready_to_start():
+            if slave._ready_to_start():
                 unique_id = self._get_unique_id(num)
                 self._starting_slaves[unique_id] = slave
                 slave._start(command, unique_id, self._output % num)
@@ -465,9 +465,9 @@ class Manager(object):
         self._start_all_slaves()
         # Prefer slaves that already have the task context
         available_slaves = [a for a in self._all_slaves
-                            if a.ready_for_task(context)] + \
+                            if a._ready_for_task(context)] + \
                            [a for a in self._all_slaves
-                            if a.ready_for_task(None)]
+                            if a._ready_for_task(None)]
         for slave in available_slaves:
             if len(context._tasks) == 0:
                 break
@@ -499,7 +499,7 @@ class Manager(object):
             # New slave just connected
             (conn, addr) = self._listen_sock.accept()
             new_slave = self._accept_slave(conn, context)
-        elif event.running_task(context):
+        elif event._running_task(context):
             try:
                 task = event._get_finished_task()
                 if task:
@@ -517,7 +517,7 @@ class Manager(object):
             pass # Slave not running a task
 
     def _kill_timed_out_slaves(self, context):
-        timed_out = [a for a in self._all_slaves if a.running_task(context) \
+        timed_out = [a for a in self._all_slaves if a._running_task(context) \
                      and a.get_contact_timed_out(self.heartbeat_timeout)]
         for slave in timed_out:
             task = slave._kill()
@@ -528,7 +528,7 @@ class Manager(object):
             self._send_tasks_to_slaves(context)
 
     def _kill_all_running_slaves(self, context):
-        running = [a for a in self._all_slaves if a.running_task(context)]
+        running = [a for a in self._all_slaves if a._running_task(context)]
         for slave in running:
             task = slave._kill()
             context._tasks.append(task)
@@ -555,7 +555,7 @@ class Manager(object):
             slave._set_python_search_path(sys.path[0])
 
     def _get_network_events(self, context):
-        running = [a for a in self._all_slaves if a.running_task(context)]
+        running = [a for a in self._all_slaves if a._running_task(context)]
         if len(running) == 0:
             if len(context._tasks) == 0:
                 raise _NoMoreTasksError()
