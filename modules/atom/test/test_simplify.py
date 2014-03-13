@@ -72,5 +72,31 @@ class Tests(IMP.test.TestCase):
                          len(IMP.core.get_leaves(mh_simp)))
 
 
+    def test_simplify_by_volume(self):
+        """Test protein simplification by volume"""
+        IMP.base.set_log_level(IMP.base.SILENT)  # VERBOSE)
+        m = IMP.kernel.Model()
+        print 'reading'
+        mh = IMP.atom.read_pdb(self.get_input_file_name('input.pdb'), m)
+        print "getting chains"
+        chains = IMP.atom.get_by_type(mh, IMP.atom.CHAIN_TYPE)
+        IMP.atom.add_radii(mh)
+        for resolution_A in [0.1, 0.3, 0.5, 0.66, 1]:
+            print "simplifying", resolution_A
+            mh_simp = IMP.atom.create_simplified_assembly_from_volume(
+                IMP.atom.Chain(chains[0].get_particle()),
+                resolution_A)
+            IMP.atom.show_molecular_hierarchy(mh_simp)
+            #w= IMP.display.PymolWriter(self.get_tmp_file_name("simplified1."+str(resolution_A)+".pym"))
+            # IMP.atom.show_hierarchy(mh_simp)
+            # for p in IMP.atom.get_leaves(mh_simp):
+            #    d= IMP.core.XYZR(p.get_particle())
+            #    w.add_geometry(IMP.display.SphereGeometry(d.get_sphere()))
+#            o = self._residual_cond(num_residues % res_segment)
+#            print "getting leaves"
+#            lvs = IMP.core.get_leaves(mh_simp)
+#            self.assertEqual(num_residues / res_segment + o, len(lvs))
+
+
 if __name__ == '__main__':
     IMP.test.main()

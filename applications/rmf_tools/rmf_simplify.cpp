@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
   IMP_FOREACH(IMP::atom::Hierarchy c,
               IMP::atom::get_by_type(hr, IMP::atom::CHAIN_TYPE)) {
     IMP::atom::Hierarchy cur =
-        create_simplified_assembly_from_volume(hr, resolution);
+        create_simplified_assembly_from_volume(c, resolution);
     if (multiresolution) {
       IMP::atom::Representation rep =
           IMP::atom::Representation::setup_particle(c);
@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
     } else {
       IMP::atom::Hierarchy p = c.get_parent();
       p.remove_child(c);
-      c.add_child(cur);
+      p.add_child(cur);
     }
   }
 
