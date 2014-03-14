@@ -74,7 +74,8 @@ class LogHolder:
         self.dumpfiles = {}
         self.trajfiles = {}
         for cat, fnames in files.iteritems():
-            if len(fnames) > 1:
+            if len(fnames) > 1 \
+                    or os.path.splitext(fnames[0].split('_')[-1])[0].isdigit():
                 # there are multiple files, no need to understand their content
                 if not cat in self.dumpfiles:
                     self.dumpfiles[cat] = []
@@ -96,7 +97,8 @@ class LogHolder:
                 if ext.startswith('.rmf'):
                     self.trajfiles[cat] = (ext[1:], fname)
                 else:
-                    raise ValueError, "Unknown extension:", ext
+                    raise ValueError, "Unknown extension: %s in file %s" \
+                            % (ext, fname)
 
     def get_stats_header(self):
         if not hasattr(self, 'stats_handle'):
@@ -259,7 +261,7 @@ def get_prefix(folder):
     rval = [re.match(r'(.*_)stats.txt', f) for f in os.listdir(folder)]
     rval = [i for i in rval if i]
     if len(rval) != 1:
-        raise ValueError, "stats file not unique, found", len(rval)
+        raise ValueError, "stats file not unique, found %d" % len(rval)
     return rval[0].group(1)
 
 if __name__ == '__main__':
