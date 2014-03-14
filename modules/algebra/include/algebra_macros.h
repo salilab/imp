@@ -29,7 +29,7 @@
  public:                                                                      \
   /** Will accept a list of floats from python. */                            \
   template <class Range>                                                      \
-  explicit VectorD(Range r)                                                   \
+  explicit VectorD(const Range &r)                                            \
       : P(r) {}                                                               \
   template <int OD>                                                           \
   VectorD(const VectorD<OD> &o)                                               \
