@@ -9,9 +9,10 @@
 #
 
 import IMP
-import IMP.core as core
-import IMP.atom as atom
-import IMP.em2d as em2d
+import IMP.algebra
+import IMP.core
+import IMP.atom
+import IMP.em2d
 import os
 import sys
 import csv
@@ -68,21 +69,21 @@ def argmin(sequence):
 #***************************
 
 
-fn_selection = em2d.get_example_path("all-models-1z5s.sel")
-fn_em2d_scores = em2d.get_example_path("em2d_scores_for_clustering.data")
+fn_selection = IMP.em2d.get_example_path("all-models-1z5s.sel")
+fn_em2d_scores = IMP.em2d.get_example_path("em2d_scores_for_clustering.data")
 # Load models
 print "Reading models ..."
 model = IMP.kernel.Model()
-ssel = atom.ATOMPDBSelector()
+ssel = IMP.atom.ATOMPDBSelector()
 coords = []
-fn_models = em2d.read_selection_file(fn_selection)
+fn_models = IMP.em2d.read_selection_file(fn_selection)
 n_models = len(fn_models)
 hierarchies = []
 for fn in fn_models:
-    fn_model = em2d.get_example_path(fn)
-    h = atom.read_pdb(fn_model, model, ssel, True)
+    fn_model = IMP.em2d.get_example_path(fn)
+    h = IMP.atom.read_pdb(fn_model, model, ssel, True)
     hierarchies.append(h)
-    xyz = core.XYZs(atom.get_leaves(h))
+    xyz = IMP.core.XYZs(IMP.atom.get_leaves(h))
     coords.append([x.get_coordinates() for x in xyz])
 
 print "Computing matrix of RMSD ..."
@@ -99,13 +100,13 @@ for i in xrange(0, n_models):
             transformations[i][j] = t
             transformations[j][i] = t.get_inverse()
             temp = [t.get_transformed(v) for v in coords[i]]
-            rmsd = IMP.atom.get_rmsd(temp, coords[j])
+            rmsd = IMP.algebra.get_rmsd(temp, coords[j])
             rmsds[i][j] = rmsd
             rmsds[j][i] = rmsd
 
 # cluster
 print "Clustering (Complete linkage method)..."
-cluster_set = em2d.do_hierarchical_clustering_complete_linkage(rmsds)
+cluster_set = IMP.em2d.do_hierarchical_clustering_complete_linkage(rmsds)
 mat2 = cluster_set.get_linkage_matrix()
 print "Complete Linkage Matrix"
 for m in mat2:
@@ -135,10 +136,10 @@ for c in clusters:
 
         if(i != min_elem_id):
             print "Writing element", i, "aligned to ", min_elem_id, ":", pdb_name
-            T = core.Transform(transformations[i][min_elem_id])
-            ps = atom.get_leaves(hierarchies[i])
+            T = IMP.core.Transform(transformations[i][min_elem_id])
+            ps = IMP.atom.get_leaves(hierarchies[i])
             for p in ps:
                 T.apply(p)
         else:
             print "Writing representative element", min_elem_id, ":", pdb_name
-        atom.write_pdb(hierarchies[i], pdb_name)
+        IMP.atom.write_pdb(hierarchies[i], pdb_name)
