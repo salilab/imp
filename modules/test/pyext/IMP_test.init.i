@@ -440,12 +440,12 @@ class TestCase(unittest.TestCase):
                      "validate"])
         misspelled = []
         bad=self._check_function_names(module.__name__, None, all, verbs, all, exceptions, words, misspelled)
-        message="All IMP methods should have lower case names separated by underscores and beginning with a verb, preferably one of ['add', 'remove', 'get', 'set', 'create', 'destroy']. Each of the words should be a properly spelled english word. The following do not (given our limited list of verbs that we check for):\n%(bad)s\nIf there is a good reason for them not to (eg it does start with a verb, just one with a meaning that is not covered by the normal list), add them to the function_name_exceptions variable in the IMPModuleTest call. Otherwise, please fix. The current verb list is %(verbs)s" \
+        message="All IMP methods should have lower case names separated by underscores and beginning with a verb, preferably one of ['add', 'remove', 'get', 'set', 'create', 'destroy']. Each of the words should be a properly spelled english word. The following do not (given our limited list of verbs that we check for):\n%(bad)s\nIf there is a good reason for them not to (eg it does start with a verb, just one with a meaning that is not covered by the normal list), add them to the function_name_exceptions variable in the standards_exceptions file. Otherwise, please fix. The current verb list is %(verbs)s" \
                           % {"bad":"\n".join(bad), "verbs":verbs}
         if len(misspelled) > 0:
             message += "\nMisspelled words: " + ", ".join(set(misspelled)) \
                        + ". Add words to the spelling_exceptions variable " \
-                       + "of the IMPModuleTest if needed."
+                       + "of the standards_exceptions file if needed."
         self.assertEquals(len(bad), 0,
                           message)
 
