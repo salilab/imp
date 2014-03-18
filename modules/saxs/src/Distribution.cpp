@@ -34,7 +34,7 @@ void RadialDistributionFunction::scale(Float c) {
 void RadialDistributionFunction::add(
     const RadialDistributionFunction& other_rd) {
   for (unsigned int i = 0; i < other_rd.size(); i++) {
-    add_to_distribution(other_rd.index2dist(i), other_rd[i]);
+    add_to_distribution(other_rd.get_distance_from_index(i), other_rd[i]);
   }
 }
 
@@ -103,8 +103,8 @@ void RadialDistributionFunction::write_fit_file(
 
   unsigned int distribution_size = std::min(size(), model_pr.size());
   for (unsigned int i = 0; i < distribution_size; i++) {
-    out_file << index2dist(i) << " " << (*this)[i] << " " << c * model_pr[i]
-             << std::endl;
+    out_file << get_distance_from_index(i) << " " << (*this)[i] << " "
+             << c * model_pr[i] << std::endl;
   }
   out_file.close();
 }
@@ -113,7 +113,7 @@ void RadialDistributionFunction::show(std::ostream& out) const {
   const std::string TITLE_LINE = "Distance distribution";
   out << TITLE_LINE << std::endl;
   for (unsigned int i = 0; i < size(); i++) {
-    out << index2dist(i) << " " << (*this)[i] << std::endl;
+    out << get_distance_from_index(i) << " " << (*this)[i] << std::endl;
   }
 }
 
@@ -199,8 +199,8 @@ void DeltaDistributionFunction::show(std::ostream& out,
                                      std::string prefix) const {
   out << "DeltaDistributionFunction::show" << std::endl;
   for (unsigned int i = 0; i < size(); i++) {
-    out << prefix << " dist " << index2dist(i) << " value " << (*this)[i]
-        << std::endl;
+    out << prefix << " dist " << get_distance_from_index(i) << " value "
+        << (*this)[i] << std::endl;
   }
 }
 

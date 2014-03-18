@@ -40,10 +40,12 @@ class Distribution : public std::vector<ValueT> {
   //! returns bin size
   Float get_bin_size() const { return bin_size_; }
 
-  unsigned int dist2index(Float dist) const {
+  unsigned int get_index_from_distance(Float dist) const {
     return algebra::get_rounded(dist * one_over_bin_size_);
   }
-  Float index2dist(unsigned int index) const { return index * bin_size_; }
+  Float get_distance_from_index(unsigned int index) const {
+    return index * bin_size_;
+  }
 
  protected:
   void init(Float bin_size) {
@@ -51,7 +53,7 @@ class Distribution : public std::vector<ValueT> {
     bin_size_ = bin_size;
     one_over_bin_size_ = 1.0 / bin_size_;  // for faster calculation
     max_distance_ = 50.0;                  // start with ~50A (by default)
-    std::vector<ValueT>::reserve(dist2index(max_distance_) + 1);
+    std::vector<ValueT>::reserve(get_index_from_distance(max_distance_) + 1);
   }
 
  protected:
@@ -101,12 +103,12 @@ class IMPSAXSEXPORT RadialDistributionFunction : public Distribution<Float> {
   void normalize();
 
   void add_to_distribution(Float dist, Float value) {
-    unsigned int index = dist2index(dist);
+    unsigned int index = get_index_from_distance(dist);
     if (index >= size()) {
       if (capacity() <= index)
         reserve(2 * index);  // to avoid many re-allocations
       resize(index + 1, 0);
-      max_distance_ = index2dist(index + 1);
+      max_distance_ = get_distance_from_index(index + 1);
     }
     (*this)[index] += value;
   }
@@ -143,19 +145,19 @@ class IMPSAXSEXPORT DeltaDistributionFunction
 
  private:
   void add_to_distribution(Float dist, const algebra::Vector3D& value) {
-    unsigned int index = dist2index(dist);
+    unsigned int index = get_index_from_distance(dist);
     if (index >= size()) {
       if (capacity() <= index)
         reserve(2 * index);  // to avoid many re-allocations
       resize(index + 1, algebra::Vector3D(0.0, 0.0, 0.0));
-      max_distance_ = index2dist(index + 1);
+      max_distance_ = get_distance_from_index(index + 1);
     }
     (*this)[index] += value;
   }
 
   void init() {
     clear();
-    insert(begin(), dist2index(max_distance_) + 1,
+    insert(begin(), get_index_from_distance(max_distance_) + 1,
            algebra::Vector3D(0.0, 0.0, 0.0));
   }
 

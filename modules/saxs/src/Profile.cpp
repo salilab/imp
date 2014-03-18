@@ -731,7 +731,7 @@ void Profile::distribution_2_profile(const RadialDistributionFunction& r_dist) {
   for (unsigned int k = 0; k < size(); k++) {
     // iterate over radial distribution
     for (unsigned int r = 0; r < r_dist.size(); r++) {
-      Float dist = r_dist.index2dist(r);
+      Float dist = r_dist.get_distance_from_index(r);
       Float x = dist * q_[k];
       x = boost::math::sinc_pi(x);
       intensity_[k] += r_dist[r] * x;
@@ -749,7 +749,9 @@ void Profile::squared_distribution_2_profile(
   // precompute square roots of distances
   std::vector<float> distances(r_dist.size(), 0.0);
   for (unsigned int r = 0; r < r_dist.size(); r++)
-    if (r_dist[r] != 0.0) distances[r] = sqrt(r_dist.index2dist(r));
+    if (r_dist[r] != 0.0) {
+      distances[r] = sqrt(r_dist.get_distance_from_index(r));
+    }
 
   // iterate over intensity profile
   for (unsigned int k = 0; k < size(); k++) {
@@ -785,8 +787,11 @@ void Profile::squared_distributions_2_partial_profiles(
 
   // precompute square roots of distances
   std::vector<float> distances(r_dist[0].size(), 0.0);
-  for (unsigned int r = 0; r < r_dist[0].size(); r++)
-    if (r_dist[0][r] > 0.0) distances[r] = sqrt(r_dist[0].index2dist(r));
+  for (unsigned int r = 0; r < r_dist[0].size(); r++) {
+    if (r_dist[0][r] > 0.0) {
+      distances[r] = sqrt(r_dist[0].get_distance_from_index(r));
+    }
+  }
 
   // iterate over intensity profile
   for (unsigned int k = 0; k < q_.size(); k++) {
@@ -951,7 +956,7 @@ void Profile::copy_errors(const Profile* exp_profile) {
 void Profile::profile_2_distribution(RadialDistributionFunction& rd,
                                      Float max_distance) const {
   float scale = 1.0 / (2 * PI * PI);
-  unsigned int distribution_size = rd.dist2index(max_distance) + 1;
+  unsigned int distribution_size = rd.get_index_from_distance(max_distance) + 1;
 
   // offset profile so that minimal i(q) is zero
   float min_value = intensity_[0];
@@ -966,7 +971,7 @@ void Profile::profile_2_distribution(RadialDistributionFunction& rd,
 
   // iterate over r
   for (unsigned int i = 0; i < distribution_size; i++) {
-    Float r = rd.index2dist(i);
+    Float r = rd.get_distance_from_index(i);
     Float sum = 0.0;
     // sum over q: SUM (I(q)*q*sin(qr))
     for (unsigned int k = 0; k < p.size(); k++) {
