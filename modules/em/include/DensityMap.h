@@ -113,18 +113,18 @@ class IMPEMEXPORT DensityMap : public IMP::base::Object {
     z_loc_.reset(nullptr);}*/
   }
 
-  //!  Set the density voxels to some calue and reset the managment flags.
+  //!  Set the density voxels to some value and reset the management flags.
   /**
   \param[in] value all of the density voxels will have this value
    */
   void reset_data(float value = 0.0);
 
-  //! Calculates RMSD and mean of a map values are stored in the header.
+  //! Calculates RMSD and mean of a map values as stored in the header.
   /** The header stores whether map is normalized.
    */
   emreal calcRMS();
 
-  //! Normailze the density voxles according to standard deviation (stdv).
+  //! Normalize the density voxles according to standard deviation (stdv).
   /** The mean is subtracted from the map, which is then divided by the stdv.
       The normalization flag is set to avoid repeated computation */
   void std_normalize();
@@ -133,7 +133,7 @@ class IMPEMEXPORT DensityMap : public IMP::base::Object {
 
   //! Calculate the location of a given voxel in a given dimension
   /** \param[in] index The voxel index
-      \param[in] dim   The dimesion of intereset (x:=0,y:=1,z:=2)
+      \param[in] dim   The dimesion of interest (x:=0,y:=1,z:=2)
       \return the location (x,y,z) (in angstroms) of a given voxel. If the
               index is not part of the map, the function returns -1.
    */
@@ -313,9 +313,9 @@ class IMPEMEXPORT DensityMap : public IMP::base::Object {
   /** \param[in] threshold the input threshold
   */
   algebra::Vector3D get_centroid(emreal threshold = 0.0) const;
-  //! Returns the the value of the voxel with the highest density.
+  //! Returns the value of the voxel with the highest density.
   emreal get_max_value() const;
-  //! Returns the the value of the voxel with the lowest density.
+  //! Returns the value of the voxel with the lowest density.
   emreal get_min_value() const;
   //! Sums two grids.
   //! The result is kept in the map.
