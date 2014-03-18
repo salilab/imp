@@ -21,18 +21,15 @@ IMPCORE_BEGIN_NAMESPACE
 /** Provided a number of entry points in cartesian space, this mover will
  * propose random translations of the rigid body from the closest entry point to
  * a randomly chosen other one. This way of moving thus satisfies detailed
- * balance.
+ * balance. Entry points are relative to the center of the provided reference 
+ * rigid body.
  * 
- * \note Entry points are in cartesian space and are not relative to another
- * particle. It is the user's responsibility to ensure proper centering of other
- * particles relative to these entry points to achieve a good acceptance rate.
- *
  * \see RigidBodyMover
  * \see MonteCarlo
  */
 class IMPCOREEXPORT RigidBodyTunneler : public MonteCarloMover {
   algebra::Transformation3D last_transformation_;
-  kernel::ParticleIndex pi_;
+  kernel::ParticleIndex pi_, ref_;
   algebra::Vector3Ds entries_;
   double move_probability_;
 
@@ -40,11 +37,12 @@ class IMPCOREEXPORT RigidBodyTunneler : public MonteCarloMover {
   /** Constructor
    * \param m the model
    * \param pi the rigidbody to move
+   * \param pi the rigidbody reference
    * \param move_probability the prior probability to actually
    * move somewhere else
    */
   RigidBodyTunneler(kernel::Model *m, kernel::ParticleIndex pi,
-          double move_probability=1.);
+          kernel::ParticleIndex ref, double move_probability=1.);
 
   /// add entry point in cartesian space
   void add_entry_point(algebra::Vector3D pt) { entries_.push_back(pt); }

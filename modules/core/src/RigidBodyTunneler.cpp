@@ -13,9 +13,9 @@
 IMPCORE_BEGIN_NAMESPACE
 
 RigidBodyTunneler::RigidBodyTunneler(kernel::Model *m, kernel::ParticleIndex pi,
-        double move_probability)
+        kernel::ParticleIndex ref, double move_probability)
     : MonteCarloMover(m, m->get_particle(pi)->get_name() + " tunneler"),
-    pi_(pi), move_probability_(move_probability)
+    pi_(pi), ref_(ref), move_probability_(move_probability)
 {
   IMP_USAGE_CHECK(RigidBody(m, pi).get_coordinates_are_optimized(),
                   "Rigid body passed to RigidBodyTunneler"
@@ -31,7 +31,7 @@ MonteCarloMoverResult RigidBodyTunneler::do_propose() {
   if (entries_.size() < 2)
       IMP_THROW("You must add at least two entry points for this "
               << "mover to be usable.", ValueException);
-  RigidBody d(get_model(), pi_);
+  RigidBody d(get_model(), pi_), ref(get_model(), ref_);
   IMP_USAGE_CHECK(
       d.get_coordinates_are_optimized(),
       "Rigid body passed to RigidBodyTunneler"
@@ -39,6 +39,8 @@ MonteCarloMoverResult RigidBodyTunneler::do_propose() {
   //get current reference frame of rb
   last_transformation_ = d.get_reference_frame().get_transformation_to();
   const algebra::Vector3D com(last_transformation_.get_translation());
+  const algebra::Vector3D refcom(
+          ref.get_reference_frame().get_transformation_to().get_translation());
   //see if we are to do the move
   ::boost::uniform_01<double> rand01;
   if (rand01(base::random_number_generator) <= move_probability_) {
@@ -46,7 +48,8 @@ MonteCarloMoverResult RigidBodyTunneler::do_propose() {
       unsigned closest=0;
       double mindistsq;
       for (unsigned i=0; i<entries_.size(); i++) {
-          const double distsq = (entries_[i]-com).get_squared_magnitude();
+          const double distsq = ((entries_[i]-refcom)-com
+                                ).get_squared_magnitude();
           if (i==0 || mindistsq > distsq){
               mindistsq = distsq;
               closest = i;
