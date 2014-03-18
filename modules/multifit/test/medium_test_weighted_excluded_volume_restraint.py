@@ -3,7 +3,6 @@ import IMP.test
 import sys
 import IMP.em
 import IMP.multifit
-import IMP.restrainer
 import os
 import time
 
@@ -26,14 +25,20 @@ class Tests(IMP.test.TestCase):
             IMP.atom.read_pdb(self.get_input_file_name("1z5s_C1.pdb"),
                               self.mdl, self.sel))
         self.voxel_size = 1.
+        self.rbs = []
         for mh in self.mhs:
             IMP.atom.add_radii(mh)
             IMP.multifit.add_surface_index(mh, self.voxel_size)
-        self.rbs = IMP.restrainer.set_rigid_bodies(self.mhs)
+            IMP.atom.setup_as_rigid_body(mh)
+            self.rbs.append(IMP.core.RigidBody(mh.get_particle()))
         # set the restraint
-        sr = IMP.restrainer.create_simple_connectivity_on_rigid_bodies(
-            self.rbs,
-            IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits()))
+        hub = IMP.core.HarmonicUpperBound(0, 1)
+        sdps = IMP.core.SphereDistancePairScore(hub)
+        rdps = IMP.core.RigidBodyDistancePairScore(sdps,
+                    IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits()))
+        self.c_r = IMP.core.ConnectivityRestraint(self.mdl, rdps)
+        for r in self.rbs:
+            self.c_r.add_particle(r.get_particle())
 
         print "going to evaluate 2"
         self.mdl.evaluate(False)
@@ -42,7 +47,6 @@ class Tests(IMP.test.TestCase):
 
         print "going to evaluate 1"
         self.mdl.evaluate(False)
-        self.c_r = sr.get_restraint()
         self.mdl.add_restraint(self.c_r)
         print "going to evaluate"
         self.mdl.evaluate(False)

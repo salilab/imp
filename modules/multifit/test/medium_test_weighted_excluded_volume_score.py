@@ -2,8 +2,6 @@ import IMP
 import IMP.test
 import IMP.em
 import IMP.multifit
-import IMP.restrainer
-
 
 class Tests(IMP.test.TestCase):
 
@@ -25,10 +23,12 @@ class Tests(IMP.test.TestCase):
             IMP.atom.read_pdb(self.get_input_file_name("1tyq_D.pdb"),
                               self.mdl, self.sel))
         self.voxel_size = 1.
+        self.rbs = []
         for mh in self.mhs:
             IMP.atom.add_radii(mh)
             IMP.multifit.add_surface_index(mh, self.voxel_size)
-        self.rbs = IMP.restrainer.set_rigid_bodies(self.mhs)
+            IMP.atom.setup_as_rigid_body(mh)
+            self.rbs.append(IMP.core.RigidBody(mh.get_particle()))
         self.trans = []
         self.trans.append(IMP.algebra.Transformation3D(
             IMP.algebra.Rotation3D(1., 0., 0., 0.), IMP.algebra.Vector3D(0., 0., 0.)))
