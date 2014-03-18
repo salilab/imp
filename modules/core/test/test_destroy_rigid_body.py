@@ -11,14 +11,12 @@ class Tests(IMP.test.TestCase):
     def _check_distance(self, pa, pb, idist):
         dist = IMP.core.get_distance(IMP.core.XYZ(pa),
                                      IMP.core.XYZ(pb))
-        print dist
         self.assertAlmostEqual(dist, idist, delta=.1)
 
-    def _check_not_distance(self, pa, pb, idist):
+    def _check_separated(self, pa, pb):
         dist = IMP.core.get_distance(IMP.core.XYZ(pa),
                                      IMP.core.XYZ(pb))
-        print "not", dist
-        self.assertGreater((dist - idist) ** 2, .01)
+        self.assertGreater(dist, 10.)
 
     def _perturb_rb(self, rb):
         r = IMP.algebra.get_random_rotation_3d()
@@ -33,6 +31,14 @@ class Tests(IMP.test.TestCase):
             IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                       IMP.algebra.Vector3D(10, 10, 10)))
         xyz.set_coordinates(t)
+
+    def _try_separate_particles(self, p1, p2):
+        t = IMP.algebra.get_random_vector_in(
+            IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(5, 5, 5),
+                                      IMP.algebra.Vector3D(10, 10, 10)))
+        IMP.core.XYZ(p1).set_coordinates(t)
+        IMP.core.XYZ(p2).set_coordinates(-t)
+        p1.get_model().update()
 
     def _perturb_all(self, all):
         for a in all:
@@ -59,30 +65,32 @@ class Tests(IMP.test.TestCase):
         rb0 = IMP.core.RigidBody.setup_particle(p0, [ps[0], ps[1]])
         rb1 = IMP.core.RigidBody.setup_particle(p1, [ps[2], ps[3]])
         rb01 = IMP.core.RigidBody.setup_particle(p01, [rb0, rb1])
-        print rb0, rb1, rb01
-        print IMP.core.RigidMember(rb0).get_internal_transformation(), IMP.core.RigidMember(rb1).get_internal_transformation()
-        dg = IMP.get_dependency_graph(m)
-        dg.show()
-        # IMP.show_graphviz(dg)
-        ordered = IMP.get_update_order(m.get_score_states())
-        print [o.get_name() for o in ordered]
+        #dg = IMP.get_dependency_graph(m)
+        #dg.show()
+        #ordered = IMP.get_update_order(m.get_score_states())
+        #print [o.get_name() for o in ordered]
         self._perturb_all(ds + [rb0, rb1, rb01])
-        print rb0, rb1, rb01
+        self._try_separate_particles(rb0, rb1)
         self._check_distance(ps[0], ps[1], 1)
         self._check_distance(ps[2], ps[3], 1)
         self._check_distance(ps[1], ps[2], 1)
 
         IMP.core.RigidBody.teardown_particle(rb01)
         self._perturb_all(ds + [rb0, rb1, rb01])
+        self._try_separate_particles(rb0, rb1)
         self._check_distance(ps[0], ps[1], 1)
         self._check_distance(ps[2], ps[3], 1)
-        self._check_not_distance(ps[1], ps[2], 1)
+        self._check_separated(ps[1], ps[2])
 
         IMP.core.RigidBody.teardown_particle(rb0)
         self._perturb_all(ds + [rb0, rb1, rb01])
-        self._check_not_distance(ps[0], ps[1], 1)
+        self._try_separate_particles(ps[0], ps[1])
         self._check_distance(ps[2], ps[3], 1)
-        self._check_not_distance(ps[1], ps[2], 1)
+        self._check_separated(ps[0], ps[1])
+
+        self._try_separate_particles(ps[1], rb1)
+        self._check_distance(ps[2], ps[3], 1)
+        self._check_separated(ps[1], ps[2])
 
 if __name__ == '__main__':
     IMP.test.main()
