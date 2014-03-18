@@ -69,6 +69,7 @@ IMP_SWIG_OBJECT(IMP::core, RestraintsScoringFunction, RestraintsScoringFunctions
 
 IMP_SWIG_OBJECT( IMP::core, RigidBodyDistancePairScore, RigidBodyDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, RigidBodyMover, RigidBodyMovers);
+IMP_SWIG_OBJECT( IMP::core, RigidBodyTunneler, RigidBodyTunnelers);
 IMP_SWIG_OBJECT( IMP::core, RigidClosePairsFinder, RigidClosePairsFinders);
 IMP_SWIG_OBJECT( IMP::core, RigidMembersRefiner, RigidMembersRefiners);
 IMP_SWIG_OBJECT( IMP::core, SingletonConstraint, SingletonConstraints);
@@ -295,6 +296,7 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 
 %include "IMP/core/AngleRestraint.h"
 %include "IMP/core/RigidBodyMover.h"
+%include "IMP/core/RigidBodyTunneler.h"
 %include "IMP/core/VolumeRestraint.h"
 %include "IMP/core/utility.h"
 %include "IMP/core/StatisticalPairScore.h"
