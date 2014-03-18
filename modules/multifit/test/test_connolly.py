@@ -22,8 +22,7 @@ class Tests(IMP.test.TestCase):
         res = IMP.atom.Residue.setup_particle(p, IMP.atom.ALA)
         p = IMP.kernel.Particle(m)
         center = IMP.algebra.Vector3D(10., 10., 10.)
-        IMP.core.XYZ.setup_particle(p, center)
-        IMP.core.XYZR(p).set_radius(2.265)
+        IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(center, 2.265))
         a = IMP.atom.Atom.setup_particle(p, IMP.atom.AT_CA)
         # Connolly radius of ALA:CA = 2.265A
         res.add_child(a)
