@@ -81,7 +81,7 @@ class Tests(IMP.test.TestCase):
                         coords[i],
                         coords[j])
                     temp = [t.get_transformed(v) for v in coords[i]]
-                    rmsds[i][j] = IMP.atom.get_rmsd(temp, coords[j])
+                    rmsds[i][j] = IMP.algebra.get_rmsd(temp, coords[j])
                     rmsds[j][i] = rmsds[i][j]
         # cluster
         linkage_mats = []
