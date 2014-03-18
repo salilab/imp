@@ -51,6 +51,7 @@ class Tests(IMP.test.TestCase):
         for c in chains:
             atoms = IMP.core.get_leaves(c)
             rbd = IMP.core.RigidBody.setup_particle(c, atoms)
+            rbd.set_coordinates_are_optimized(True)
             rigid_bodies.append(rbd)
             native_chain_centers.append(rbd.get_coordinates())
         self.assertEqual(
