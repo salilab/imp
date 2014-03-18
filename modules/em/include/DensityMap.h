@@ -103,15 +103,6 @@ class IMPEMEXPORT DensityMap : public IMP::base::Object {
   DensityMap(std::string name = "DensityMap%1%");
   //! Construct a density map as intructed in the input header
   DensityMap(const DensityHeader &header, std::string name = "DensityMap%1%");
-  void release() {
-    /*    if (data_ != nullptr) {
-          data_.reset(nullptr);}
-    x_loc_.reset();
-    if (y_loc_ != nullptr){
-      y_loc_.reset(nullptr);}
-    if (z_loc_ != nullptr){
-    z_loc_.reset(nullptr);}*/
-  }
 
   //!  Set the density voxels to some value and reset the management flags.
   /**
