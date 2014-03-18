@@ -131,9 +131,9 @@ class Tests(IMP.test.TestCase):
             # check all possible reference frames where the ligand could be
             for r in itertools.chain(docked_refs1, docked_refs2):
                 rb_lig.set_reference_frame(r)
-                docked_coords = [core.XYZ(l)
+                docked_coords = [core.XYZ(l).get_coordinates()
                                  for l in atom.get_leaves(h_ligand)]
-                rmsd = atom.get_rmsd(current_coords, docked_coords)
+                rmsd = alg.get_rmsd(current_coords, docked_coords)
                 if rmsd < 0.1:
                     found = True
             self.assertTrue(found, msg="the proposed move is not "
