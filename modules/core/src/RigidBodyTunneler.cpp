@@ -48,7 +48,7 @@ MonteCarloMoverResult RigidBodyTunneler::do_propose() {
       unsigned closest=0;
       double mindistsq;
       for (unsigned i=0; i<entries_.size(); i++) {
-          const double distsq = ((entries_[i]-refcom)-com
+          const double distsq = ((entries_[i]+refcom)-com
                                 ).get_squared_magnitude();
           if (i==0 || mindistsq > distsq){
               mindistsq = distsq;
@@ -62,8 +62,8 @@ MonteCarloMoverResult RigidBodyTunneler::do_propose() {
           distant = randint(base::random_number_generator);
       } while (distant == closest);
       //propose move to it
-      algebra::Transformation3D t(last_transformation_.get_rotation(),
-                                  entries_[distant]-entries_[closest]);
+      algebra::Transformation3D t(entries_[distant]-entries_[closest]);
+      t *= last_transformation_;
       IMP_LOG_VERBOSE("proposed move " << t << " from entry point " << closest 
               << " to " << distant << std::endl);
       d.set_reference_frame(algebra::ReferenceFrame3D(t));
