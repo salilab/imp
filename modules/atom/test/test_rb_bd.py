@@ -2,9 +2,6 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.atom
-import IMP.rmf
-import RMF
-
 
 class Tests(IMP.test.TestCase):
 
@@ -36,7 +33,6 @@ class Tests(IMP.test.TestCase):
     def test_bonded(self):
         """Check brownian dynamics with rigid bodies"""
         m = IMP.kernel.Model()
-        RMF.set_log_level("Off")
         m.set_log_level(IMP.base.SILENT)
         pa, ma, ca = self._create_rb(m)
         pb, mb, cb = self._create_rb(m)
@@ -54,15 +50,9 @@ class Tests(IMP.test.TestCase):
             rf = IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot,
                                                                            tr))
             IMP.core.RigidBody(pa).set_reference_frame(rf)
-        rmf = RMF.create_rmf_file(self.get_tmp_file_name("bd_rb.rmf"))
-        IMP.rmf.add_hierarchies(rmf, [pa, pb])
-        IMP.rmf.add_restraints(rmf, [r0, r1])
         sf = IMP.core.RestraintsScoringFunction([r0, r1])
         sf.set_log_level(IMP.base.SILENT)
-        os = IMP.rmf.SaveOptimizerState(m, rmf)
-        os.set_log_level(IMP.base.SILENT)
         bd.set_scoring_function(sf)
-        bd.add_optimizer_state(os)
         bd.set_maximum_time_step(10)
         IMP.base.set_log_level(IMP.base.VERBOSE)
         bd.optimize(10)
