@@ -52,12 +52,12 @@ IMP_DECORATORS_DECL(RigidMember, RigidMembers);
     RigidBodies can be nested (that is, a RigidBody can have
     another RigidBody as a member). This can be useful for
     organizational reasons as well as for accelerating
-    computations since since operations are affected by
+    computations since operations are affected by
     the total number of children contained in the rigid body
     being operated on. Examples of this include collision detection
     where if you have multiple representations of geometry at
     different resolutions it is faster to put each of them
-    in a separate rigid body and then creat one rigid body
+    in a separate rigid body and then create one rigid body
     containing all of them.
 
     It is often desirable to randomize the orientation of a rigid
@@ -153,7 +153,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(RigidBody);
   ~RigidBody();
 
-  /** Return true of the particle is a rigid body */
+  /** Return true if the particle is a rigid body */
   static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
     return internal::get_has_required_attributes_for_body(m, pi);
   }
@@ -258,12 +258,12 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 
   RigidMember get_member(unsigned int i) const;
 #endif
-  /** Add a member, properly handle rigid bodies and XYZ particles.
+  /** Add a member, properly handling rigid bodies and XYZ particles.
    */
   void add_member(kernel::ParticleIndexAdaptor p);
 
   /** Add a NonRigidMember. Currently RigidBody non-rigid members are
-      not handler properly.*/
+      not handled properly.*/
   void add_non_rigid_member(kernel::ParticleIndex pi);
 
   /** Set whether a particular member is a rigid member or a non-rigid member.*/
