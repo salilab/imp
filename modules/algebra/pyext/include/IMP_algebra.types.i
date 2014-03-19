@@ -523,6 +523,9 @@ struct ConvertEigenVector {
   IMP::algebra::VectorD<D> get_center(ExtendedGridIndexD<D> ei) const {
     return self->get_center(ei);
   }
+  IMP::algebra::VectorD<D> get_center(GridIndexD<D> ei) const {
+    return self->get_center(ei);
+  }
   algebra::ExtendedGridIndexD<D> get_extended_index(
                                                     algebra::VectorD<D> v) const {
     return self->get_extended_index(v);
