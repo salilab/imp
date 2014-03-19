@@ -377,8 +377,8 @@ IMP_Eigen::Matrix3d compute_I(kernel::Model *model,
                               const algebra::Vector3D &center,
                               const IMP::algebra::Rotation3D &rot) {
   IMP_Eigen::Matrix3d I = IMP_Eigen::Matrix3d::Zero();
-  for (unsigned int i = 0; i < ds.size(); ++i) {
-    XYZ cm(model, ds[i]);
+  for (unsigned int pi = 0; pi < ds.size(); ++pi) {
+    XYZ cm(model, ds[pi]);
     double m = 1;
     double r = 0;
     algebra::Vector3D cv = rot.get_rotated(cm.get_coordinates() - center);
