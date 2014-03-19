@@ -128,6 +128,7 @@ class TestNuisanceScoreState(IMP.test.TestCase):
         nuis = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 50.0)
         lower = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 10.0)
         upper = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 90.0)
+        nuis.set_nuisance_is_optimized(True)
         nuis.set_lower(1.0)
         nuis.set_lower(lower)
         nuis.set_upper(upper)
@@ -153,6 +154,7 @@ class TestNuisanceScoreState(IMP.test.TestCase):
         nuis.set_lower(lower)
         nuis.set_upper(upper)
         nuis.set_upper(80.0)
+        nuis.set_nuisance_is_optimized(True)
         nmv = IMP.core.NormalMover([nuis],
                                    IMP.FloatKeys([IMP.FloatKey("nuisance")]), 10.0)
         mc = IMP.core.MonteCarlo(self.m)
