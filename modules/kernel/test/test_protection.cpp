@@ -1,10 +1,10 @@
 /**
  *   Copyright 2007-2014 IMP Inventors. All rights reserved
  */
+#include <IMP/base_types.h>
 #include <IMP/kernel/Model.h>
 #include <IMP/kernel/Particle.h>
 #include <IMP/kernel/Restraint.h>
-#include <IMP/restraint_macros.h>
 #include <IMP/base/threads.h>
 #include <IMP/base/flags.h>
 
@@ -16,7 +16,7 @@ std::string get_module_version() { return std::string(); }
 
 std::string get_module_name() { return std::string(); }
 
-class TouchyRestraint : public IMP::Restraint {
+class TouchyRestraint : public IMP::kernel::Restraint {
   IMP::kernel::Particle *p_;
   IMP::FloatKey fk_;
 

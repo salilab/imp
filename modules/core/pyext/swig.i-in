@@ -1,6 +1,4 @@
 %include "IMP/core/close_pairs_finder_macros.h"
-%include "IMP/core/monte_carlo_macros.h"
-%include "IMP/core/periodic_optimizer_state_macros.h"
 
 %template(_OpenCubicSplineBase) IMP::score_functor::ScoreUnaryFunction<IMP::score_functor::OpenCubicSpline>;
 
