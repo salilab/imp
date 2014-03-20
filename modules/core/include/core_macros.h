@@ -9,7 +9,6 @@
 #ifndef IMPCORE_MACROS_H
 #define IMPCORE_MACROS_H
 
-#include "monte_carlo_macros.h"
 #include "close_pairs_finder_macros.h"
 
 #endif /* IMPCORE_MACROS_H */
