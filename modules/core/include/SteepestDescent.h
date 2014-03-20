@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/SteepestDescent.h   \brief Simple steepest descent optimizer.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

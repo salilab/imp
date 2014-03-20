@@ -1,8 +1,8 @@
 /**
- *  \file atom/EzRestraint.h
+ *  \file IMP/atom/EzRestraint.h
  *  \brief Ez potential. A statistical scoring function for atom proteins
  *
- *  Copyright 2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_EZ_RESTRAINT_H

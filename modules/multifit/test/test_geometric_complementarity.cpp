@@ -3,7 +3,7 @@
  *   intersection volume and compares it with the 'exact' volume.
  *   Print a nice table results and errors in the end.
  *
- *   Copyright 2007-2013 IMP Inventors. All rights reserved
+ *   Copyright 2007-2014 IMP Inventors. All rights reserved
  */
 #include <vector>
 #include <iostream>

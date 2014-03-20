@@ -2,7 +2,7 @@
  *  \file IMP/atom/BondSingletonScore.h
  *  \brief A Score on the distance between a the two particles in a bond.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_BOND_SINGLETON_SCORE_H

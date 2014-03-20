@@ -2,7 +2,7 @@
  *  \file IMP/base/compiler_macros.h
  *  \brief Various compiler workarounds
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPBASE_COMPILER_MACROS_H

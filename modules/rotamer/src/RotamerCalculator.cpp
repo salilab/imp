@@ -2,7 +2,7 @@
  * \file RotamerCalculator.cpp
  * \brief Object calculating coordinates based on rotamer library.
  *
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

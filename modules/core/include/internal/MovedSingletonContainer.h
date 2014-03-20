@@ -2,7 +2,7 @@
  *  \file MovedSingletonContainer.h
  *  \brief Keep track of the maximum change of a set of attributes.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_INTERNAL_MOVED_SINGLETON_CONTAINER_H

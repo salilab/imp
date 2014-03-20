@@ -1,8 +1,8 @@
 /**
- * \file EnvelopeScore.h
+ * \file IMP/em/EnvelopeScore.h
  * \brief class for envelope based scoring using MapDistanceTransform
  *
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file density_utils.cpp
  *  \brief Density utilities.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

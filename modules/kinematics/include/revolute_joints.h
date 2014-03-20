@@ -1,5 +1,5 @@
 /**
- *  \file kinematics/revolute_joints.h
+ *  \file IMP/kinematics/revolute_joints.h
  *  \brief functionality for defining various revolute kinematic
  *         joints between rigid bodies as part of a kinematic tree,
  *         including RevoluteJoint, DihedralAngleRevoluteJoint, and
@@ -7,7 +7,7 @@
  *  \authors Dina Schneidman, Barak Raveh
  *
 
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKINEMATICS_REVOLUTE_JOINTS_H

@@ -2,7 +2,7 @@
  *  \file IMP/misc/CommonEndpointPairFilter.h
  *  \brief A fake filter that returns true for any pair of bonds with
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPMISC_COMMON_ENDPOINT_PAIR_FILTER_H

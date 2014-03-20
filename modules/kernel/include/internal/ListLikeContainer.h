@@ -4,7 +4,7 @@
  *
  *  BLURB
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_INTERNAL_LIST_LIKE_CONTAINER_H

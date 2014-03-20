@@ -2,7 +2,7 @@
  *  \file IMP/multifit/anchor_utilities.h
  *  \brief Common functions in anchor calculations
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

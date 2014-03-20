@@ -2,7 +2,7 @@
  *  \file domino_filters.cpp
  *  \brief SubsetFilter for checking overlap between projections and images
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

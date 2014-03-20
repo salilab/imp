@@ -1,8 +1,8 @@
 /**
- *  \file path_reader_writer.h
+ *  \file IMP/multifit/path_reader_writer.h
  *  \brief Read and write paths.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

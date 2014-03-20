@@ -2,7 +2,7 @@
  *  \file IMP/multifit/pca_based_rigid_fitting.h
  *  \brief preforms rigid fitting between a set of particles and a density map
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPMULTIFIT_PCA_BASED_RIGID_FITTING_H

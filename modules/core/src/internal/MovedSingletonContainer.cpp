@@ -2,7 +2,7 @@
  *  \file MovedSingletonContainer.cpp
  *  \brief Keep track of the maximumimum change of a set of attributes.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/core/internal/MovedSingletonContainer.h>

@@ -2,7 +2,7 @@
  *  \file IMP/saxs/FormFactorTable.h   \brief A class for computation of
  * atomic and residue level form factors for SAXS calculations
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

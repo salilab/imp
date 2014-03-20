@@ -1,7 +1,7 @@
 /**
  *  \file Simulator.cpp  \brief Simple Brownian dynamics optimizer.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file IMP/rmf/frames.h
  *  \brief Handle read/write of kernel::Model data from/to files.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

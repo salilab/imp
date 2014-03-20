@@ -2,7 +2,7 @@
  *  \file IMP/base/statistics.h
  *  \brief Manage statistics on IMP runs.
  *
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

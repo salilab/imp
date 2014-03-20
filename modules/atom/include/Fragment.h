@@ -2,7 +2,7 @@
  *  \file IMP/atom/Fragment.h
  *  \brief A decorator for associating a Hierachy piece
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_FRAGMENT_H

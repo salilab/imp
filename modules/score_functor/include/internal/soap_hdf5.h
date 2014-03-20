@@ -2,7 +2,7 @@
  * \file soap_hdf5.h
  * \brief Handling of SOAP HDF5 files.
  *
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

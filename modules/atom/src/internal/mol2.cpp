@@ -2,7 +2,7 @@
  *  \file mol2 reader
  *  \brief A class with static functions for parsing mol2 file
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

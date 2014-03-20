@@ -1,11 +1,11 @@
 /**
- \file kinematics/Joint.h
+ \file IMP/kinematics/Joint.h
  \brief functionality for defining a kinematic joint between rigid bodies
         as part of a kinematic tree
 
  \authors Dina Schneidman, Barak Raveh
 
- Copyright 2007-2013 IMP Inventors. All rights reserved.
+ Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPKINEMATICS_JOINT_H

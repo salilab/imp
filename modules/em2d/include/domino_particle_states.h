@@ -1,9 +1,9 @@
 /**
- *  \file domino_particle_states.h
+ *  \file IMP/em2d/domino_particle_states.h
  *  \brief kernel::Particles states for a rigid body that is going to be
  *projected
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

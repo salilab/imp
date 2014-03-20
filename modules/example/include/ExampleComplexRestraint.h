@@ -2,7 +2,7 @@
  *  \file IMP/example/ExampleComplexRestraint.h
  *  \brief A restraint to maintain the diameter of a set of points
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPEXAMPLE_EXAMPLE_COMPLEX_RESTRAINT_H

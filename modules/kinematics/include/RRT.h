@@ -1,10 +1,10 @@
 /**
- * \file kinematics/RRT.h
+ * \file IMP/kinematics/RRT.h
  * \brief simple RRT implementation
  *
  *  \authors Dina Schneidman, Barak Raveh
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

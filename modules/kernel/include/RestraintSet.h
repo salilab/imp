@@ -2,7 +2,7 @@
  *  \file IMP/kernel/RestraintSet.h
  *  \brief Used to hold a set of related restraints.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

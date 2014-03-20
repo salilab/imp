@@ -2,7 +2,7 @@
  *  \file IMP/atom/BondedPairFilter.h
  *  \brief A fake container for bonds
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_BONDED_PAIR_FILTER_H

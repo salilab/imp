@@ -2,7 +2,7 @@
  * \file IMP/algebra/ParabolicFit.h
  * \brief fit the data with parabola
  *
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

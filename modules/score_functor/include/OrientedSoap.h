@@ -2,7 +2,7 @@
  *  \file IMP/score_functor/OrientedSoap.h
  *  \brief Score a particle pair using an orientation-dependent SOAP potential.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSCORE_FUNCTOR_ORIENTED_SOAP_H

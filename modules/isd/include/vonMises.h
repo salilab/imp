@@ -1,7 +1,7 @@
 /**
  *  \file IMP/isd/vonMises.h    \brief Normal distribution of Function
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_VON_MISES_H

@@ -1,7 +1,7 @@
 /**
- *  \file em2d/JPGImageReaderWriter.h
+ *  \file IMP/em2d/JPGImageReaderWriter.h
  *  \brief Management of JPG format for EM images
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_JPG_IMAGE_READER_WRITER_H

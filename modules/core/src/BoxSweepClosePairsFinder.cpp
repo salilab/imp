@@ -2,7 +2,7 @@
  *  \file BoxSweepClosePairsFinder.cpp
  *  \brief Test all pairs.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

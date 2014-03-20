@@ -1,9 +1,9 @@
 /**
- *  \file KinematicNode.h
+ *  \file IMP/kinematics/KinematicNode.h
  *  \brief functionality for defining nodes on a kinematic chain
  *  \authors Dina Schneidman, Barak Raveh
  *
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKINEMATICS_KINEMATIC_NODE_H

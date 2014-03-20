@@ -2,7 +2,7 @@
  *  \file IMP/core/ExcludedVolumeRestraint.h
  *  \brief A prevent spheres from inter-penetrating
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_EXCLUDED_VOLUME_RESTRAINT_H

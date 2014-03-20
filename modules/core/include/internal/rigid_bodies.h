@@ -2,7 +2,7 @@
  *  \file rigid_bodies.h
  *  \brief utilities for rigid bodies.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_INTERNAL_RIGID_BODIES_H

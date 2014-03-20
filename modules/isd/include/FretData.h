@@ -1,7 +1,7 @@
 /**
- *  \file isd/FretData.h    \brief Auxiliary class useful for FRET_R restraint
+ *  \file IMP/isd/FretData.h \brief Auxiliary class useful for FRET_R restraint
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_FRET_DATA_H

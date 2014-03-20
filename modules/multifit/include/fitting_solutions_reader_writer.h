@@ -2,7 +2,7 @@
  *  \file IMP/multifit/fitting_solutions_reader_writer.h
  *  \brief handles reading and writing MultiFit fitting solutions file
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file ChiSquareMetric.cpp
  *  \brief Chi2 Metric
  *
- *  Copyright 2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/statistics/ChiSquareMetric.h>

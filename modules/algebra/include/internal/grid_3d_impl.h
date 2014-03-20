@@ -1,7 +1,7 @@
 /**
  *  \file grid_3d_impl.h   \brief A class to represent a voxel grid.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

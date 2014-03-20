@@ -1,7 +1,7 @@
 /**
  *  \file IMP/kernel/ModelObject.h    \brief Single variable function.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_MODEL_OBJECT_H

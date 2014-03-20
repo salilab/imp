@@ -1,7 +1,7 @@
 /**
  *  \file AttributeTable.h    \brief Keys to cache lookup of attribute strings.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

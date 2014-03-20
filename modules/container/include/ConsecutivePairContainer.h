@@ -2,7 +2,7 @@
  *  \file IMP/container/ConsecutivePairContainer.h
  *  \brief Return all pairs from a SingletonContainer
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_CONSECUTIVE_PAIR_CONTAINER_H

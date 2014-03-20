@@ -2,7 +2,7 @@
  *  \file IMP/kernel/container_macros.h
  *  \brief Macros to define containers of objects
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

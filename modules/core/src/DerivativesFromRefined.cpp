@@ -2,7 +2,7 @@
  *  \file DerivativesFromRefined.cpp
  *  \brief Cover a bond with a sphere.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #include "IMP/core/DerivativesFromRefined.h"

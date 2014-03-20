@@ -2,7 +2,7 @@
  *  \file IMP/saxs/RadiusOfGyrationRestraint.h
  *  \brief Calculate score based on fit to SAXS profile.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

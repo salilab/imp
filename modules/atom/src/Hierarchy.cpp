@@ -2,7 +2,7 @@
  *  \file Hierarchy.cpp   \brief Decorator for helping deal
  *                                                 with a hierarchy.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

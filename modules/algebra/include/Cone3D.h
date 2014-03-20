@@ -2,7 +2,7 @@
  *  \file IMP/algebra/Cone3D.h
  *  \brief stores a cone
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_CONE_3D_H

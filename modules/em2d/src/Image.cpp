@@ -1,7 +1,7 @@
 /*!
  *  \file Image.cpp
  *  \brief Management of IMP images for Electron Microscopy
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em2d/Image.h"

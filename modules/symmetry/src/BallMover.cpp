@@ -2,7 +2,7 @@
  *  \file BallMover.cpp
  *  \brief A mover that keeps a particle in a box
  *
- *  Copyright 2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

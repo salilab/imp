@@ -2,7 +2,7 @@
  *  \file base/internal/PointerBase.h
  *  \brief A nullptr-initialized pointer to an IMP ref-counted Object.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

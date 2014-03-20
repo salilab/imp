@@ -1,8 +1,8 @@
 /**
- *  \file em2d/RigidBodiesImageFitRestraint.h
+ *  \file IMP/em2d/RigidBodiesImageFitRestraint.h
  *  \brief Fit kernel::Restraint
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

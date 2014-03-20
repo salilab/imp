@@ -2,7 +2,7 @@
  * \file em3d_single_score.cpp \brief A program to score a single
  * docking model in PDB file
  *
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 #include "EMFit.h"

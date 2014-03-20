@@ -1,7 +1,7 @@
 /**
  *  \file WeightMover.cpp  \brief A modifier which perturbs a Weight particle.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

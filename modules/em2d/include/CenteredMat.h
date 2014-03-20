@@ -1,7 +1,7 @@
 /**
- *  \file CenteredMat.h
+ *  \file IMP/em2d/CenteredMat.h
  *  \brief Decorator for OpenCV matrix to use relative coordinates
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_CENTERED_MAT_H

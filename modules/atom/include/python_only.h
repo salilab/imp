@@ -2,7 +2,7 @@
  *  \file IMP/atom/python_only.h
  *  \brief functionality only availble in python.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

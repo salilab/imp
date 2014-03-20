@@ -2,7 +2,7 @@
  *  \file IMP/atom/Mass.h
  *  \brief A decorator for particles with mass
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_MASS_H

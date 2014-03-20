@@ -1,8 +1,8 @@
 /**
- *  \file multifit/fitting_states.h
+ *  \file IMP/multifit/fitting_states.h
  *  \brief Fitting states
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

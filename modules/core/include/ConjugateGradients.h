@@ -2,7 +2,7 @@
  *  \file IMP/core/ConjugateGradients.h
  *  \brief Simple conjugate gradients optimizer.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

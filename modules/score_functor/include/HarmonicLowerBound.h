@@ -2,7 +2,7 @@
  *  \file IMP/score_functor/HarmonicLowerBound.h
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSCORE_FUNCTOR_HARMONIC_LOWER_BOUND_H

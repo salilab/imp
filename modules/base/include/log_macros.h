@@ -2,7 +2,7 @@
  *  \file IMP/base/log_macros.h
  *  \brief Logging and error reporting support.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

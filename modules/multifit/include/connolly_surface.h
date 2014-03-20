@@ -1,8 +1,8 @@
 /**
- *  \file multifit/connolly_surface.h     \brief Generate surface for a set of
- *atoms
+ *  \file IMP/multifit/connolly_surface.h
+ *  \brief Generate surface for a set of atoms
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

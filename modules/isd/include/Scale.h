@@ -2,7 +2,7 @@
  *  \file IMP/isd/Scale.h
  *  \brief A decorator for scale parameters particles
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_SCALE_H

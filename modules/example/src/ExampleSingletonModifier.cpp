@@ -3,7 +3,7 @@
  *  \brief A singleton modifier which wraps an attribute into a
  *  given range.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

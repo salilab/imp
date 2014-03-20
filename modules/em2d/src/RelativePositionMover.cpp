@@ -2,7 +2,7 @@
  *  \file RelativePositionMover.cpp
  *  \brief Mover for Rigid Bodies moving respect to each other
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

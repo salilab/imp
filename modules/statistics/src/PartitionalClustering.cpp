@@ -1,7 +1,7 @@
 /**
  *  \file Clustering.cpp   \brief Holds data points to cluster using k-means
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/statistics/PartitionalClustering.h>

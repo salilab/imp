@@ -2,7 +2,7 @@
  *  \file IMP/algebra/endian.h
  *  \brief functions to deal with endian of EM images
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPALGEBRA_ENDIAN_H

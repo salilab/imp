@@ -1,7 +1,7 @@
 /**
  *  \file algebra/internal/utility.h
  *  \brief Functions to deal with very common math operations
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPALGEBRA_INTERNAL_UTILITY_H

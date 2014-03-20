@@ -2,7 +2,7 @@
  *  \file IMP/kernel/Restraint.h
  *  \brief Abstract base class for all restraints.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

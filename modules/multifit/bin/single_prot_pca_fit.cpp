@@ -2,7 +2,7 @@
  *  \file single_prot_pca_fit.cpp
  *  \brief Fit a single protein to a density map
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 **/
 // others
 #include <boost/program_options.hpp>

@@ -2,7 +2,7 @@
  *  \file IMP/rmf/link_macros.h
  *  \brief macros for display classes
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/rmf/internal/link_helpers.h>

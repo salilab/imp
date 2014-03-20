@@ -2,7 +2,7 @@
  *  \file isd/Weight.cpp
  *  \brief Add a name to a particle.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  * \file soap_chain_separation.h
  * \brief SOAP chain separation filter
  *
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

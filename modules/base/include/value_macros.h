@@ -2,7 +2,7 @@
  *  \file IMP/base/value_macros.h
  *  \brief Various general useful macros for IMP.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

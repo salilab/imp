@@ -1,7 +1,7 @@
 /*!
- *  \file align2D.h
+ *  \file IMP/em2d/align2D.h
  *  \brief Alignment of images in 2D
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_ALIGN_2D_H

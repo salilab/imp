@@ -1,7 +1,7 @@
 /**
- *  \file em2d/project.h
+ *  \file IMP/em2d/project.h
  *  \brief Generation of projections from models or density maps
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_PROJECT_H

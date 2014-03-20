@@ -74,7 +74,7 @@ class CommandDispatcher(object):
         print self.long_help + """
 
 This program is part of IMP, the Integrative Modeling Platform,
-which is Copyright 2007-2013 IMP Inventors.
+which is Copyright 2007-2014 IMP Inventors.
 For additional information about IMP, see <http://integrativemodeling.org>.
 
 Usage: %s <command> [options] [args]

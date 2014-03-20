@@ -2,7 +2,7 @@
  *  \file IMP/algebra/Transformation3D.h
  *  \brief Simple 3D transformation class.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

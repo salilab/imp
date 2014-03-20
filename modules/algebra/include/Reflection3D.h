@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/Reflection3D.h   \brief Reflect about a plane in 3D.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

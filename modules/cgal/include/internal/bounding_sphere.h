@@ -1,7 +1,7 @@
 /**
  *  \file bounding_sphere.h   \brief Simple 3D sphere class.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

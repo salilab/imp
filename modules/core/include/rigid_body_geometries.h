@@ -2,7 +2,7 @@
  *  \file IMP/core/rigid_body_geometries.h
  *  \brief functionality for defining rigid bodies
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_RIGID_BODY_GEOMETRIES_H

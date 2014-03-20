@@ -1,8 +1,8 @@
 /**
- * \file RotamerLibrary.h
+ * \file IMP/rotamer/RotamerLibrary.h
  * \brief Object representing rotamer library.
  *
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

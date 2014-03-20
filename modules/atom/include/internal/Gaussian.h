@@ -1,7 +1,7 @@
 /**
  *  \file Gaussian.h    \brief Gaussian function.
  *
- *  Copyright 2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_INTERNAL_GAUSSIAN_H

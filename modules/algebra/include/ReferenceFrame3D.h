@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/ReferenceFrame3D.h   \brief Simple 3D rotation class.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

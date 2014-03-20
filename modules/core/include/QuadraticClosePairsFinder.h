@@ -2,7 +2,7 @@
  *  \file IMP/core/QuadraticClosePairsFinder.h
  *  \brief Test all pairs of particles to find close pairs.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_QUADRATIC_CLOSE_PAIRS_FINDER_H

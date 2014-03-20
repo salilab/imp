@@ -1,7 +1,7 @@
 /**
- *  \file ProjectionMask.h
+ *  \file IMP/em2d/ProjectionMask.h
  *  \brief projection masks
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_PROJECTION_MASK_H

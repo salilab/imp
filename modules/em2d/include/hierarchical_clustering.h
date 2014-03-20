@@ -1,8 +1,8 @@
 /**
- *  \file hierarchical_clustering.h
+ *  \file IMP/em2d/hierarchical_clustering.h
  *  \brief Agglomerative clustering algorithm
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

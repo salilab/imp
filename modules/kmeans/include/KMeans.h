@@ -2,7 +2,7 @@
  *  \file IMP/kmeans/KMeans.h
  *  \brief an interface to k-means open source library (stored internally)
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPKMEANS_KMEANS_H

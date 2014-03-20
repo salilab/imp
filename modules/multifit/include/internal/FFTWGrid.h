@@ -1,7 +1,7 @@
 /**
  *  \file FFTWGrid.h   \brief C++ smart pointer wrapper to fftw_malloc/free
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

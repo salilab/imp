@@ -3,7 +3,7 @@
  * with NMR_RTC related scores
  *
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

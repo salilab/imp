@@ -1,7 +1,7 @@
 /**
- *  \file opencv_interface.h
+ *  \file IMP/em2d/opencv_interface.h
  *  \brief inteface with OpenCV
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_OPENCV_INTERFACE_H

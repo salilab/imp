@@ -1,11 +1,11 @@
 /**
- *  \file CompositeJoint.h
+ *  \file IMP/kinematics/CompositeJoint.h
  *  \brief a joint composed of several joints, applied on the same
  *         pair of rigid bodies
  *  \authors Dina Schneidman, Barak Raveh
  *
 
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKINEMATICS_COMPOSITE_JOINT_H

@@ -2,7 +2,7 @@
  *  \file density_analysis.cpp
  *  \brief tools for analysing density maps
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

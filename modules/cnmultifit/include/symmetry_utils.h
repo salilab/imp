@@ -1,8 +1,8 @@
 /**
- *  \file symmetry_utils.h
+ *  \file IMP/cnmultifit/symmetry_utils.h
  *  \brief Symmetry utilities.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

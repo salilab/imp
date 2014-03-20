@@ -1,8 +1,8 @@
 /**
- *  \file ChiSquareMetric.h
+ *  \file IMP/statistics/ChiSquareMetric.h
  *  \brief Chi2 Metric
  *
- *  Copyright 2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSTATISTICS_CHI_SQUARE_METRIC_H

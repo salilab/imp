@@ -2,7 +2,7 @@
  *  \file IMP/algebra/Gaussian3D.h
  *  \brief gaussian shape
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

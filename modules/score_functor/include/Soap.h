@@ -1,9 +1,9 @@
 /**
- * \file score_functor/Soap.h
+ * \file IMP/score_functor/Soap.h
  * \brief  A Score on the distance between a pair of particles.
  *
  * \authors Dina Schneidman
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

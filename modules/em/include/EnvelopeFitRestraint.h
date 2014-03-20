@@ -1,9 +1,9 @@
 /**
- * \file em/EnvelopeFitRestraint.h
+ * \file IMP/em/EnvelopeFitRestraint.h
  * \brief score envelope fit based on map distance transform
  *
  * \authors Dina Schneidman
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

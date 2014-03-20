@@ -2,7 +2,7 @@
  *  \file IMP/algebra/io.h
  *  \brief Classes to write entities in algebra to files.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file IMP/score_functor/Dope.h
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSCORE_FUNCTOR_DOPE_H

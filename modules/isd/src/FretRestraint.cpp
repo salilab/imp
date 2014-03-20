@@ -3,7 +3,7 @@
  *  \brief FRET_R restraint
  *  to use in vivo FRET data [Muller et al. Mol Biol Cell 16, 3341, 2005]
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 #include <stdio.h>

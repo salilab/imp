@@ -2,7 +2,7 @@
  *  \file IMP/atom/Chain.h
  *  \brief Store the chain ID
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_CHAIN_H

@@ -1,7 +1,7 @@
 /**
  *  \file deprecation.cpp   \brief classes for deprecation.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

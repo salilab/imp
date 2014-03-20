@@ -2,7 +2,7 @@
  *  \file IMP/display/declare_Geometry.h
  *  \brief Implement geometry for the basic shapes from IMP.algebra.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_DECLARE_GEOMETRY_H

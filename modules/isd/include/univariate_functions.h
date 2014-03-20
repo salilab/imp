@@ -2,7 +2,7 @@
  *  \file IMP/isd/univariate_functions.h
  *  \brief Classes for general functions
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_UNIVARIATE_FUNCTIONS_H

@@ -2,7 +2,7 @@
  *  \file interface_rtc.cpp \brief A program for computing NMR residue
  * type content of a single interface.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 #include "nmr_helpers.h"

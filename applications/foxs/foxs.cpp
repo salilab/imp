@@ -181,7 +181,7 @@ int main(int argc, char** argv) {
                      "Any number of input PDBs and profiles is supported. \
 Each PDB will be fitted against each profile.")(
       "version",
-      "FoXS (IMP applications)\nCopyright 2007-2013 IMP Inventors.\n\
+      "FoXS (IMP applications)\nCopyright 2007-2014 IMP Inventors.\n\
 All rights reserved. \nLicense: GNU LGPL version 2.1 or later\n\
 <http://gnu.org/licenses/lgpl.html>.\n\
 Written by Dina Schneidman.")("max_q,q",

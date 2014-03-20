@@ -1,9 +1,9 @@
 /**
- *  \file PrismaticJoint.h
+ *  \file IMP/kinematics/PrismaticJoint.h
  *  \brief a prismatic joint between rigid bodies as part of a kinematic tree
  *  \authors Dina Schneidman, Barak Raveh
  *
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKINEMATICS_PRISMATIC_JOINT_H

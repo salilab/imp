@@ -1,8 +1,8 @@
 /**
- *  \file em2d/CollisionCrossSection.h
+ *  \file IMP/em2d/CollisionCrossSection.h
  *  \brief
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

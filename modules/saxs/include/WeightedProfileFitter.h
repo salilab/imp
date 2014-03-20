@@ -1,11 +1,11 @@
 /**
- * \file saxs/WeightedProfileFitter.h
+ * \file IMP/saxs/WeightedProfileFitter.h
  * \brief  Fitting of multiple profiles to the experimental one.
  * The weights of the profiles are computed analytically using
  * non-negative least squares fitting (NNLS)
  *
  * \authors Dina Schneidman
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

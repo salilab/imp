@@ -1,8 +1,8 @@
 /**
- * \file RotamerCalculator.h
+ * \file IMP/rotamer/RotamerCalculator.h
  * \brief Object performing rotations by Chi angles.
  *
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

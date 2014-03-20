@@ -2,7 +2,7 @@
  *  \file core/utility.cpp
  *  \brief Functions to perform simple functions on a set of particles
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 #include "IMP/core/utility.h"

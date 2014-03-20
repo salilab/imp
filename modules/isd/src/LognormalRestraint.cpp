@@ -3,7 +3,7 @@
  *  \brief Restrain a list of particle pairs with a lognormal+ISPA.
  *  NOTE: for now, the derivatives are written to all variables.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

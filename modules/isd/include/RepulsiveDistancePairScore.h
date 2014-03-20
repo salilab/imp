@@ -3,7 +3,7 @@
  *  \brief A simple quadric repulsive term between two atoms. Restraint is zero
  *  when the distance equals the sum of the radii plus the shift.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_REPULSIVE_DISTANCE_PAIR_SCORE_H

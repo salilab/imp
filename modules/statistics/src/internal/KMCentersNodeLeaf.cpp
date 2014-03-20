@@ -2,7 +2,7 @@
  * \file KMCenetersNode.cpp
  * \brief leaf node of the kc-tree
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

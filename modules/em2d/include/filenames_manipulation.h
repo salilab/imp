@@ -1,7 +1,7 @@
 /**
- *  \file filenames_manipulation.h
+ *  \file IMP/em2d/filenames_manipulation.h
  *  \brief Generation of projections using the central section theorem
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPEM2D_FILENAMES_MANIPULATION_H

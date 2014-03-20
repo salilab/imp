@@ -2,7 +2,7 @@
  *  \file IMP/algebra/Segment3D.h
  *  \brief simple implementation of segments in 3D
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_SEGMENT_3D_H

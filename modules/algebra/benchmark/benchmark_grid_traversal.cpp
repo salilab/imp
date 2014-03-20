@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 #include <IMP/benchmark/benchmark_config.h>
 #include <IMP/benchmark/benchmark_macros.h>

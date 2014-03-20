@@ -3,7 +3,7 @@
  *  \brief Set the coordinates of the particle to be the centoid of the
  *  refined particles.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_CENTROID_OF_REFINED_H

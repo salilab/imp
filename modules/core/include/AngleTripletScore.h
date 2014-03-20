@@ -2,7 +2,7 @@
  *  \file IMP/core/AngleTripletScore.h
  *  \brief A Score on the angle between three particles.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_ANGLE_TRIPLET_SCORE_H

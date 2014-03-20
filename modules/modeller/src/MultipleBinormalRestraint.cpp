@@ -2,7 +2,7 @@
  *  \file MultipleBinormalRestraint.cpp
  *  \brief kernel::Modeller-style multiple binormal (phi/psi) restraint.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

@@ -1,7 +1,7 @@
 /**
  *  \file MapScorer   \brief A class for fast cc scoring of docking models
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 #include "MapScorer.h"
