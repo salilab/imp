@@ -12,7 +12,6 @@
 
 #include <IMP/Decorator.h>
 #include <IMP/decorator_macros.h>
-#include <IMP/score_state_macros.h>
 
 IMPISD_BEGIN_NAMESPACE
 

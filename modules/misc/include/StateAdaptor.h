@@ -12,7 +12,6 @@
 
 #include <IMP/OptimizerState.h>
 #include <IMP/ScoreState.h>
-#include <IMP/score_state_macros.h>
 
 IMPMISC_BEGIN_NAMESPACE
 

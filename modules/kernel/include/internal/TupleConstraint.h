@@ -11,7 +11,6 @@
 
 #include "../Constraint.h"
 #include "container_helpers.h"
-#include "../score_state_macros.h"
 #include <IMP/base/Pointer.h>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE

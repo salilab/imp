@@ -16,7 +16,6 @@
 #include <IMP/kernel/internal/TupleConstraint.h>
 #include <IMP/ClassnameModifier.h>
 #include <IMP/ClassnameDerivativeModifier.h>
-#include <IMP/score_state_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE
 //! Apply a ClassnameFunction to a Classname

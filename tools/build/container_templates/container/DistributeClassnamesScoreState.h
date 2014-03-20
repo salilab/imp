@@ -18,7 +18,6 @@
 #include <IMP/ClassnameContainer.h>
 #include <IMP/base/Vector.h>
 #include <IMP/classname_macros.h>
-#include <IMP/score_state_macros.h>
 #include <boost/tuple/tuple.hpp>
 
 #include <iostream>

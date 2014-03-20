@@ -14,7 +14,6 @@
 #include <IMP/Constraint.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairScore.h>
-#include <IMP/score_state_macros.h>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 

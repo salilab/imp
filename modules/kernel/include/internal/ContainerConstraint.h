@@ -12,7 +12,6 @@
 #include <IMP/kernel/kernel_config.h>
 #include "../base_types.h"
 #include "../Constraint.h"
-#include "../score_state_macros.h"
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 

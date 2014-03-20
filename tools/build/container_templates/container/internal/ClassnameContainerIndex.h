@@ -14,7 +14,6 @@
 #include <IMP/ClassnameContainer.h>
 #include <IMP/kernel/internal/container_helpers.h>
 #include <IMP/ScoreState.h>
-#include <IMP/score_state_macros.h>
 #include <boost/unordered_set.hpp>
 
 IMPCONTAINER_BEGIN_INTERNAL_NAMESPACE

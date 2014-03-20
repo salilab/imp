@@ -13,7 +13,6 @@
 #include <IMP/container/container_config.h>
 #include <IMP/ClassnameContainer.h>
 #include <IMP/ScoreState.h>
-#include <IMP/score_state_macros.h>
 #include <boost/unordered_set.hpp>
 
 IMPCONTAINER_BEGIN_NAMESPACE

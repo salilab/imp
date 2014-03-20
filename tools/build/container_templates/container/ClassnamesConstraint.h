@@ -16,7 +16,6 @@
 #include <IMP/ClassnameModifier.h>
 #include <IMP/Constraint.h>
 #include <IMP/base/object_macros.h>
-#include <IMP/score_state_macros.h>
 #include <IMP/kernel/internal/ContainerConstraint.h>
 
 IMPKERNEL_BEGIN_NAMESPACE

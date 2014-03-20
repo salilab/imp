@@ -13,7 +13,6 @@
 #include "restraint_macros.h"
 #include "optimizer_state_macros.h"
 #include "optimizer_macros.h"
-#include "score_state_macros.h"
 #include "singleton_macros.h"
 #include "pair_macros.h"
 #include "triplet_macros.h"
