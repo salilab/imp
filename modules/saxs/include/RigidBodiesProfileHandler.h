@@ -1,5 +1,5 @@
 /**
- * \file saxs/RigidBodiesProfileHandler.h
+ * \file IMP/saxs/RigidBodiesProfileHandler.h
  * \brief
  *
  * \authors Dina Schneidman
@@ -23,6 +23,7 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
+//! Handle the profile for a set of particles, which may include rigid bodies
 class IMPSAXSEXPORT RigidBodiesProfileHandler : public base::Object {
  public:
   RigidBodiesProfileHandler(const kernel::Particles& particles,
