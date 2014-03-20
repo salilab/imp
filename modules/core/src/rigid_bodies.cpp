@@ -396,6 +396,21 @@ IMP_Eigen::Matrix3d compute_I(kernel::Model *model,
   }
   return I;
 }
+
+bool is_rotation_valid(IMP_Eigen::Matrix3d rm) {
+  for (unsigned i = 0; i < 3; ++i) {
+    for (unsigned j = i; j < 3; ++j) {
+      double expected_dot = (i == j) ? 1. : 0.;
+      if (std::abs(rm.col(i).dot(rm.col(j)) - expected_dot) >= .1) {
+        return false;
+      }
+      if (std::abs(rm.row(i).dot(rm.row(j)) - expected_dot) >= .1) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
 }
 
 void RigidBody::on_change() {
@@ -894,8 +909,16 @@ algebra::ReferenceFrame3D get_initial_reference_frame(
   if (rm.determinant() < 0) {
     rm.array() *= -1.0;
   }
-  // use the R as the initial orientation
-  IMP::algebra::Rotation3D rot = IMP::algebra::get_rotation_from_matrix(rm);
+  IMP::algebra::Rotation3D rot;
+  if (is_rotation_valid(rm)) {
+    // use the R as the initial orientation
+    rot = IMP::algebra::get_rotation_from_matrix(rm);
+  } else {
+    // otherwise, use the identity matrix (this can happen when I is close
+    // to - but not exactly - the identity matrix, which is possible for
+    // very small numbers of particles)
+    rot = IMP::algebra::get_identity_rotation_3d();
+  }
   // IMP_LOG_VERBOSE( "Initial rotation is " << rot << std::endl);
   return algebra::ReferenceFrame3D(algebra::Transformation3D(rot, v));
 }
