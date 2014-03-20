@@ -29,11 +29,6 @@ ConfigurationSet *Sampler::create_sample() const {
 
 void Sampler::set_scoring_function(ScoringFunctionAdaptor sf) { sf_ = sf; }
 
-ConfigurationSet *Sampler::get_sample() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use create_sample instead");
-  return create_sample();
-}
-
 Sampler::~Sampler() {}
 
 IMPKERNEL_END_NAMESPACE
