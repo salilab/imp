@@ -34,10 +34,10 @@ using namespace IMP::multifit;
 
 namespace {
 
-#if IMP_BUILD >= IMP_RELEASE
-const unsigned int onreps = 200;
-#else
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
 const unsigned int onreps = 2;
+#else
+const unsigned int onreps = 200;
 #endif
 double get_val(double v) {
   if (v > .1)
