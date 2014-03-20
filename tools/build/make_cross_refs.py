@@ -63,6 +63,9 @@ def get_function_name(et):
 
 def get_function_link(name, et, mname):
     nicename = name + "::" + et.find(".//name").text
+    # Skip template specializations
+    if '<' in nicename:
+        return None
     refid = et.attrib['id']
     split = refid.split("_1")
     fname = "_1".join(split[:-1]) + ".html"
@@ -163,9 +166,10 @@ def traverse_class(name, et, module):
         return
     if et.tag == 'memberdef' and et.attrib["kind"] == "function":
         membername = get_function_link(name, et, module)
-        traverse_ret(membername, et.find(".//type"))
-        for p in et.findall(".//param"):
-            traverse_param(membername, p)
+        if membername:
+            traverse_ret(membername, et.find(".//type"))
+            for p in et.findall(".//param"):
+                traverse_param(membername, p)
     else:
         for child in et:
             traverse_class(name, child, module)
@@ -176,11 +180,13 @@ def get_namespace_name(et):
 
 
 def traverse_namespace(name, et, module):
+    print module
     if et.tag == 'memberdef' and et.attrib["kind"] == "function":
         membername = get_function_link(name, et, module)
-        traverse_ret(membername, et.find(".//type"))
-        for p in et.findall(".//param"):
-            traverse_param(membername, p)
+        if membername:
+            traverse_ret(membername, et.find(".//type"))
+            for p in et.findall(".//param"):
+                traverse_param(membername, p)
     else:
         for child in et:
             traverse_namespace(name, child, module)
