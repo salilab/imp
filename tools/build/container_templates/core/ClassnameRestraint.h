@@ -15,7 +15,6 @@
 
 #include <IMP/kernel/internal/TupleRestraint.h>
 #include <IMP/ClassnameScore.h>
-#include <IMP/restraint_macros.h>
 
 #include <iostream>
 

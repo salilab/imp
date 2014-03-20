@@ -11,7 +11,6 @@
 
 #include <IMP/isd/isd_config.h>
 #include <IMP/kernel/Restraint.h>
-#include <IMP/restraint_macros.h>
 
 IMPISD_BEGIN_NAMESPACE
 

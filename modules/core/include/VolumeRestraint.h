@@ -12,7 +12,6 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/kernel/Restraint.h>
 #include <IMP/UnaryFunction.h>
-#include <IMP/restraint_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE
 #if defined(IMP_CORE_USE_IMP_CGAL) || defined(IMP_DOXYGEN)

@@ -10,7 +10,6 @@
 #ifndef IMPISD_MARGINAL_HBOND_RESTRAINT_H
 #define IMPISD_MARGINAL_HBOND_RESTRAINT_H
 
-#include <IMP/restraint_macros.h>
 #include <IMP/isd/isd_config.h>
 #include <IMP/kernel/Restraint.h>
 #include <IMP/PairContainer.h>

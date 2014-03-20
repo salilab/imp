@@ -14,7 +14,6 @@
 #include <IMP/container/container_config.h>
 #include <boost/unordered_map.hpp>
 #include <IMP/ClassnamePredicate.h>
-#include <IMP/restraint_macros.h>
 #include "generic.h"
 
 #include <iostream>

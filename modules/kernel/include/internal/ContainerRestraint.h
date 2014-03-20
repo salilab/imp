@@ -13,7 +13,6 @@
 #include "../base_types.h"
 #include "../Restraint.h"
 #include "create_decomposition.h"
-#include "../restraint_macros.h"
 #include "AccumulatorScoreModifier.h"
 #include "functors.h"
 

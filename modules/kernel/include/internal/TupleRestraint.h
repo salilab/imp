@@ -13,7 +13,6 @@
 #include "../Restraint.h"
 #include "container_helpers.h"
 #include <IMP/base/Pointer.h>
-#include "../restraint_macros.h"
 #include "../constants.h"
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE

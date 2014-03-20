@@ -12,7 +12,6 @@
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/base/log.h"
 #include <IMP/kernel/Restraint.h>
-#include "IMP/restraint_macros.h"
 #include "IMP/base/Pointer.h"
 
 #include <IMP/kernel/Restraint.h>

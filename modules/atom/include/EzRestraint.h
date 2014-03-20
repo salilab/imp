@@ -10,7 +10,6 @@
 
 #include <IMP/atom/atom_config.h>
 #include <IMP/kernel/Restraint.h>
-#include <IMP/restraint_macros.h>
 #include <IMP/kernel/Particle.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/base_types.h>

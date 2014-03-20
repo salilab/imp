@@ -14,7 +14,6 @@
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/kernel/Restraint.h>
-#include <IMP/restraint_macros.h>
 #include <IMP/UnaryFunction.h>
 
 IMPCORE_BEGIN_NAMESPACE

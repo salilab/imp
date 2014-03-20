@@ -9,7 +9,6 @@
 #ifndef IMPISD_JEFFREYS_RESTRAINT_H
 #define IMPISD_JEFFREYS_RESTRAINT_H
 
-#include <IMP/restraint_macros.h>
 #include <IMP/isd/isd_config.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/kernel/Restraint.h>
