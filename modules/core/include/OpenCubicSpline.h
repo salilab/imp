@@ -9,7 +9,6 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/UnaryFunction.h>
-#include <IMP/unary_function_macros.h>
 #include <IMP/score_functor/OpenCubicSpline.h>
 #include <IMP/score_functor/ScoreUnaryFunction.h>
 
