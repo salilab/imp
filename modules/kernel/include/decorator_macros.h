@@ -53,18 +53,6 @@
     }                                                                                     \
     return Name(p);                                                                       \
   }                                                                                       \
-  /** \deprecated_at{2.1} Use get_is_setup() instead. */                                  \
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1) static bool particle_is_instance(                 \
-      ::IMP::kernel::Particle *p) {                                                       \
-    IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_is_setup instead.");                    \
-    return get_is_setup(p->get_model(), p->get_index());                                  \
-  }                                                                                       \
-  /** \deprecated_at{2.1} Use get_is_setup() instead. */                                  \
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1) static bool particle_is_instance(                 \
-      IMP::kernel::Model *m, IMP::kernel::ParticleIndex pi) {                             \
-    IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_is_setup instead.");                    \
-    return get_is_setup(m, pi);                                                           \
-  }                                                                                       \
   static bool get_is_setup(const IMP::kernel::ParticleAdaptor &p) {                       \
     return get_is_setup(p.get_model(), p.get_particle_index());                           \
   }                                                                                       \
@@ -120,19 +108,6 @@
       return Name();                                                                       \
     }                                                                                      \
     return Name(p);                                                                        \
-  }                                                                                        \
-  /** \deprecated_at{2.1} Use get_is_setup() instead. */                                   \
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1) static bool particle_is_instance(                  \
-      ::IMP::kernel::Particle *p, const TraitsType &tr = default_traits) {                 \
-    IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_is_setup instead.");                     \
-    return get_is_setup(p->get_model(), p->get_index(), tr);                               \
-  }                                                                                        \
-  /** \deprecated_at{2.1} Use get_is_setup() instead. */                                   \
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1) static bool particle_is_instance(                  \
-      IMP::kernel::Model *m, IMP::kernel::ParticleIndex pi,                                \
-      const TraitsType &tr = default_traits) {                                             \
-    IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_is_setup instead.");                     \
-    return get_is_setup(m, pi, tr);                                                        \
   }                                                                                        \
   static bool get_is_setup(const IMP::kernel::ParticleAdaptor &p,                          \
                            const TraitsType &tr = default_traits) {                        \

@@ -228,12 +228,14 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
     return setup_particle(p->get_model(), p->get_index());
   }
 
+  /** \deprecated_at{2.2} Use get_is_setup() instead. */
   static bool particle_is_instance(kernel::Particle *p) {
     return H::get_is_setup(p, get_traits());
   }
   static bool get_is_setup(kernel::Particle *p) {
     return H::get_is_setup(p, get_traits());
   }
+  /** \deprecated_at{2.2} Use get_is_setup() instead. */
   static bool particle_is_instance(kernel::Model *m, kernel::ParticleIndex p) {
     return H::get_is_setup(m->get_particle(p), get_traits());
   }

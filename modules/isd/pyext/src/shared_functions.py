@@ -228,11 +228,11 @@ class sfo_common:
             bonds = []
             for (i, j) in pairs:
                 # check, because it fails if you try twice
-                if IMP.atom.Bonded.particle_is_instance(i):
+                if IMP.atom.Bonded.get_is_setup(i):
                     bi = IMP.atom.Bonded(i)
                 else:
                     bi = IMP.atom.Bonded.setup_particle(i)
-                if IMP.atom.Bonded.particle_is_instance(j):
+                if IMP.atom.Bonded.get_is_setup(j):
                     bi = IMP.atom.Bonded(i)
                 else:
                     bj = IMP.atom.Bonded.setup_particle(j)
