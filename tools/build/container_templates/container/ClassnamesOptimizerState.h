@@ -15,7 +15,6 @@
 #include <IMP/ClassnameContainer.h>
 #include <IMP/ClassnameModifier.h>
 #include <IMP/OptimizerState.h>
-#include <IMP/optimizer_state_macros.h>
 #include <IMP/base/Pointer.h>
 
 IMPKERNEL_BEGIN_NAMESPACE

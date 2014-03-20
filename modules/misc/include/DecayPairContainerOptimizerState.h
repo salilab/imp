@@ -17,7 +17,6 @@
 #include <IMP/kernel/PairPredicate.h>
 #include <IMP/kernel/PairContainer.h>
 #include <IMP/base/Pointer.h>
-#include <IMP/optimizer_state_macros.h>
 
 IMPMISC_BEGIN_NAMESPACE
 
