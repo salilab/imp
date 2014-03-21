@@ -1,6 +1,6 @@
 /**
  *  \file IMP/modeller/MultipleBinormalRestraint.h
- *  \brief kernel::Modeller-style multiple binormal (phi/psi) restraint.
+ *  \brief Modeller-style multiple binormal (phi/psi) restraint.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -20,13 +20,13 @@ IMPMODELLER_BEGIN_NAMESPACE
 
 class BinormalTerm;
 
-//! kernel::Modeller-style multiple binormal (phi/psi) restraint.
+//! Modeller-style multiple binormal (phi/psi) restraint.
 /** This implements a multiple binormal restraint on the two dihedral angles
     between the two quads of kernel::Particles passed to the restraint, by
    implementing
     equation A.76 in the
     \external{http://salilab.org/modeller/9v7/manual/node441.html,
-   kernel::Modeller manual}.
+   Modeller manual}.
     The two angles are typically the phi and psi dihedrals of a residue.
  */
 class IMPMODELLEREXPORT MultipleBinormalRestraint : public kernel::Restraint {
