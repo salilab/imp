@@ -84,6 +84,13 @@ def main():
         tools.rewrite(
             "include/IMP%s/%s" %
             (var["slashalias"], filename), header)
+    # Remove aliased header if the source header is gone
+    for h in glob.glob("include/IMP%s/*.h" % var["slashalias"]):
+        filename = os.path.split(h)[1]
+        orig_filename = os.path.join("include", "IMP", options.module, filename)
+        if not os.path.exists(orig_filename) \
+           and not os.path.exists(h[:-2]): # Exclude all-module headers
+            os.unlink(h)
     for h in tools.get_glob([os.path.join("include", "IMP", options.module, "internal", "*.h")]):
         filename = os.path.split(h)[1]
         var["file"] = filename
