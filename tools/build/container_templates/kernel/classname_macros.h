@@ -15,7 +15,6 @@
 #include "internal/functors.h"
 #include "container_macros.h"
 #include <IMP/base/object_macros.h>
-#include "input_output_macros.h"
 #include <algorithm>
 
 /** Define

@@ -15,7 +15,6 @@
 #include "base_types.h"
 #include "ParticleTuple.h"
 #include "internal/container_helpers.h"
-#include "input_output_macros.h"
 #include "ClassnameModifier.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
