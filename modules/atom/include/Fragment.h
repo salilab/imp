@@ -40,6 +40,8 @@ class IMPATOMEXPORT Fragment : public Hierarchy {
     do_setup_particle(m, pi, o.get_residue_indexes());
   }
 
+  IntPairs get_residue_index_ranges() const;
+
  public:
   static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
     return Hierarchy::get_is_setup(m, pi) &&
@@ -52,10 +54,6 @@ class IMPATOMEXPORT Fragment : public Hierarchy {
   }
 
   Ints get_residue_indexes() const;
-
-  /** \deprecated_at{2.1} Use the get_residue_indexes() method instead. */
-  IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
-  IntPairs get_residue_index_ranges() const;
 
   //! Return true if this fragment contains a given residue
   /** This could be made more efficient. */
