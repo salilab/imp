@@ -115,7 +115,8 @@ struct MatchResidueIndex {
       if (mhd.get_number_of_children() == 0) {
         if (mhd.get_as_domain()) {
           Domain dd = mhd.get_as_domain();
-          return dd.get_begin_index() <= index_ && dd.get_end_index() > index_;
+          IntRange ir = dd.get_index_range();
+          return ir.first <= index_ && ir.second > index_;
         } else if (mhd.get_as_fragment()) {
           Fragment fd = mhd.get_as_fragment();
           return fd.get_contains_residue(index_);

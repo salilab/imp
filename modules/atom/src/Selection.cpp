@@ -132,10 +132,9 @@ bool get_is_residue_index_match(const Ints &data, kernel::Model *m,
                           std::back_inserter(si));
     return !si.empty();
   } else if (Domain::get_is_setup(m, pi)) {
-    int lb = Domain(m, pi).get_begin_index();
-    int ub = Domain(m, pi).get_end_index();
-    return std::lower_bound(data.begin(), data.end(), lb) !=
-           std::upper_bound(data.begin(), data.end(), ub);
+    IntRange ir = Domain(m, pi).get_index_range();
+    return std::lower_bound(data.begin(), data.end(), ir.first) !=
+           std::upper_bound(data.begin(), data.end(), ir.second);
   }
   return false;
 }
@@ -752,8 +751,8 @@ Ints get_tree_residue_indexes(Hierarchy h) {
   }
   Ints ret;
   if (Domain::get_is_setup(h)) {
-    for (int i = Domain(h).get_begin_index(); i < Domain(h).get_end_index();
-         ++i) {
+    IntRange ir = Domain(h).get_index_range();
+    for (int i = ir.first; i < ir.second; ++i) {
       ret.push_back(i);
     }
   } else if (Fragment::get_is_setup(h)) {

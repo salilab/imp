@@ -78,7 +78,8 @@ void gather_residue_indices(Hierarchy h, Ints &inds) {
     inds.insert(inds.end(), v.begin(), v.end());
   } else if (Domain::get_is_setup(h) && h.get_number_of_children() == 0) {
     Domain d(h);
-    for (int i = d.get_begin_index(); i != d.get_end_index(); ++i) {
+    IntRange ir = d.get_index_range();
+    for (int i = ir.first; i != ir.second; ++i) {
       inds.push_back(i);
     }
   } else if (Atom::get_is_setup(h)) {
@@ -221,7 +222,7 @@ Hierarchy create_protein(kernel::Model *m, std::string name, double resolution,
 Hierarchy create_protein(kernel::Model *m, std::string name, double resolution,
                          const Ints db) {
   Hierarchy root = Hierarchy::setup_particle(new kernel::Particle(m));
-  Domain::setup_particle(root, db.front(), db.back());
+  Domain::setup_particle(root, IntRange(db.front(), db.back()));
   for (unsigned int i = 1; i < db.size(); ++i) {
     std::ostringstream oss;
     oss << name << "-" << i - 1;
