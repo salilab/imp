@@ -12,6 +12,7 @@
 #include <IMP/container/ListPairContainer.h>
 #include <IMP/container/SingletonsRestraint.h>
 #include <IMP/base/Pointer.h>
+#include <IMP/input_output.h>
 #include <IMP/algebra/Segment3D.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
