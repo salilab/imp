@@ -762,14 +762,12 @@ class PeptideDocker:
         # VelocityScalingOptimizerState
         vsos = IMP.atom.VelocityScalingOptimizerState(
             IMP.atom.get_leaves(self.protein),
-            0,
             0)  # temperature is set later
         vsIndex = self.mdOptimizer.add_optimizer_state(vsos)
 
         # SaveHierarchyConfigurationOptimizerState
         hdos = IMP.rmf.SaveHierarchyConfigurationOptimizerState(
             [self.protein], self.rootHandle)
-        hdos.set_skip_steps(0)
         self.mdOptimizer.add_optimizer_state(hdos)
 
         self.hdos = hdos

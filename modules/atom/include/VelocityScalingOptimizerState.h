@@ -24,10 +24,6 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class IMPATOMEXPORT VelocityScalingOptimizerState : public OptimizerState {
  public:
-  /** \deprecated_at{2.1} Use set_period() instead. */
-  IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
-  VelocityScalingOptimizerState(const kernel::Particles &pis, Float temperature,
-                                unsigned skip_steps);
   VelocityScalingOptimizerState(kernel::Model *m,
                                 kernel::ParticleIndexesAdaptor pis,
                                 double temperature);

@@ -24,20 +24,6 @@ LangevinThermostatOptimizerState::LangevinThermostatOptimizerState(
   IMP_LOG_VERBOSE("Thermostat on " << pis_ << std::endl);
 }
 
-LangevinThermostatOptimizerState::LangevinThermostatOptimizerState(
-    const kernel::ParticlesTemp &pis, Float temperature, double gamma)
-    : OptimizerState(pis[0]->get_model(),
-                     "LangevinThermostatOptimizerState%1%"),
-      pis_(pis.begin(), pis.end()),
-      temperature_(temperature),
-      gamma_(gamma) {
-  IMPATOM_DEPRECATED_FUNCTION_DEF(2.1,
-                                  "Use the constructor with particle indexes.");
-  vs_[0] = FloatKey("vx");
-  vs_[1] = FloatKey("vy");
-  vs_[2] = FloatKey("vz");
-}
-
 void LangevinThermostatOptimizerState::do_update(unsigned int) {
   rescale_velocities();
 }

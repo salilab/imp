@@ -200,8 +200,8 @@ class Tests(IMP.test.TestCase):
     def test_get_optimizer_states(self):
         """Test get_optimizer_states() method on nuisances"""
         wrtraj = WriteTrajState(self.model, [])
-        scaler = IMP.atom.VelocityScalingOptimizerState(
-            self.particles, 298.0, 10)
+        scaler = IMP.atom.VelocityScalingOptimizerState(self.particles, 298.0)
+        scaler.set_period(10)
         self.md.add_optimizer_state(wrtraj)
         self.md.add_optimizer_state(scaler)
         m = self.md.get_optimizer_states()

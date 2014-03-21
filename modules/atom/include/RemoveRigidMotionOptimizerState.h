@@ -19,10 +19,6 @@ IMPATOM_BEGIN_NAMESPACE
 //! Removes rigid translation and rotation from the particles.
 class IMPATOMEXPORT RemoveRigidMotionOptimizerState : public OptimizerState {
  public:
-  /** \deprecated_at{2.1} Use set_period() instead. */
-  IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
-  RemoveRigidMotionOptimizerState(const kernel::ParticlesTemp &pis,
-                                  unsigned skip_steps);
   RemoveRigidMotionOptimizerState(kernel::Model *m,
                                   kernel::ParticleIndexesAdaptor pis);
 

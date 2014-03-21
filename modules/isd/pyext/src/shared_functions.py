@@ -721,7 +721,7 @@ class sfo_common:
             os = None
         elif thermostat == 'rescale_velocities':
             os = IMP.atom.VelocityScalingOptimizerState(
-                IMP.atom.get_leaves(prot), temperature, 0)
+                IMP.atom.get_leaves(prot), temperature)
             md.add_optimizer_state(os)
         elif thermostat == 'berendsen':
             os = IMP.atom.BerendsenThermostatOptimizerState(

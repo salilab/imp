@@ -14,14 +14,6 @@
 IMPATOM_BEGIN_NAMESPACE
 
 RemoveTranslationOptimizerState::RemoveTranslationOptimizerState(
-    const kernel::Particles &pis, unsigned skip_steps)
-    : kernel::OptimizerState(pis[0]->get_model(),
-                             "RemoveTranslationOptimizerState%1%"),
-      pis_(pis) {
-  set_period(skip_steps + 1);
-}
-
-RemoveTranslationOptimizerState::RemoveTranslationOptimizerState(
     kernel::Model *m, kernel::ParticleIndexesAdaptor pis)
     : kernel::OptimizerState(m, "RemoveTranslationOptimizerState%1%") {
   IMP_FOREACH(kernel::ParticleIndex pi, pis) {
