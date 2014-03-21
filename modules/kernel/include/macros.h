@@ -10,7 +10,6 @@
 #include <IMP/kernel/kernel_config.h>
 #include <IMP/base/base_macros.h>
 #include "decorator_macros.h"
-#include "optimizer_macros.h"
 #include "singleton_macros.h"
 #include "pair_macros.h"
 #include "triplet_macros.h"

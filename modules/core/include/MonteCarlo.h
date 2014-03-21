@@ -12,7 +12,6 @@
 #include "MonteCarloMover.h"
 #include "IncrementalScoringFunction.h"
 #include <IMP/Optimizer.h>
-#include <IMP/optimizer_macros.h>
 #include <IMP/container_macros.h>
 #include <IMP/kernel/internal/container_helpers.h>
 #include <IMP/algebra/vector_search.h>
