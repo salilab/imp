@@ -10,7 +10,6 @@
 
 #include "ClosePairsFinder.h"
 #include "rigid_bodies.h"
-#include "close_pairs_finder_macros.h"
 #include <IMP/Refiner.h>
 
 IMPCORE_BEGIN_NAMESPACE

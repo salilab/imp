@@ -18,7 +18,6 @@
 #include <IMP/algebra/vector_generators.h>
 #include <boost/random/uniform_real.hpp>
 #include <boost/graph/depth_first_search.hpp>
-#include <IMP/core/core_macros.h>
 #include <IMP/base/random.h>
 #include <boost/graph/reverse_graph.hpp>
 #include <IMP/base/log.h>

@@ -6,7 +6,6 @@
  */
 
 #include <IMP/core/internal/close_pairs_helpers.h>
-#include <IMP/core/core_macros.h>
 
 #include <sstream>
 
