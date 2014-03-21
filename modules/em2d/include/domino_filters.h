@@ -53,7 +53,11 @@ class IMPEM2DEXPORT DistanceFilter : public domino::SubsetFilter {
   void show(std::ostream &out = std::cout) const {
     out << "DistanceFilter" << std::endl;
   }
-  IMP_SUBSET_FILTER(DistanceFilter);
+
+  virtual bool get_is_ok(const IMP::domino::Assignment &assignment) const
+        IMP_OVERRIDE;
+
+  IMP_OBJECT_NO_WARNING(DistanceFilter);
 };
 
 IMP_OBJECTS(DistanceFilter, DistanceFilters);

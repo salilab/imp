@@ -26,7 +26,12 @@ class IMPMULTIFITEXPORT FittingStates : public domino::ParticleStates {
       : domino::ParticleStates("RigidBodyStates %1%"),
         states_(states),
         fit_state_key_(fit_state_key) {}
-  IMP_PARTICLE_STATES(FittingStates);
+
+  virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, kernel::Particle *) const
+      IMP_OVERRIDE;
+
+  IMP_OBJECT_NO_WARNING(FittingStates);
 };
 
 IMPMULTIFIT_END_NAMESPACE

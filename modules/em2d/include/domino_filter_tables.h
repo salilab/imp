@@ -37,7 +37,16 @@ class IMPEM2DEXPORT DistanceFilterTable : public domino::SubsetFilterTable {
     out << "DistanceFilterTable" << std::endl;
   };
 
-  IMP_SUBSET_FILTER_TABLE(DistanceFilterTable);
+  virtual IMP::domino::SubsetFilter *
+      get_subset_filter(const IMP::domino::Subset &s,
+                        const IMP::domino::Subsets &excluded) const
+      IMP_OVERRIDE;
+
+  virtual double get_strength(const IMP::domino::Subset &s,
+                              const IMP::domino::Subsets &excluded) const
+      IMP_OVERRIDE;
+
+  IMP_OBJECT_NO_WARNING(DistanceFilterTable);
 };
 IMP_OBJECTS(DistanceFilterTable, DistanceFilterTables);
 

@@ -62,7 +62,11 @@ class IMPEM2DEXPORT GridStates : public domino::ParticleStates {
   */
   algebra::Rotation3D get_orientation(unsigned int i) const;
 
-  IMP_PARTICLE_STATES(GridStates);
+  virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, kernel::Particle *) const
+      IMP_OVERRIDE;
+
+  IMP_OBJECT_NO_WARNING(GridStates);
 };
 IMP_OBJECTS(GridStates, GridStatesList);
 
@@ -101,7 +105,11 @@ class IMPEM2DEXPORT ProjectionStates : public GridStates {
   */
   Image *get_projection(unsigned int i) const;
 
-  IMP_PARTICLE_STATES(ProjectionStates);
+  virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, kernel::Particle *) const
+      IMP_OVERRIDE;
+
+  IMP_OBJECT_NO_WARNING(ProjectionStates);
 };
 IMP_OBJECTS(ProjectionStates, ProjectionStatesList);
 
