@@ -288,8 +288,11 @@ double FretRestraint::get_sumFi() const {
 
 double FretRestraint::get_model_fretr_type_1() const {
   double sumFi;
-  if (constr_type_ == 1) sumFi = Scale(sumFi_).get_scale();
-  if (constr_type_ == 2) sumFi = get_sumFi();
+  if (constr_type_ == 1) {
+    sumFi = Scale(sumFi_).get_scale();
+  } else {
+    sumFi = get_sumFi();
+  }
   double Ida = Scale(Ida_).get_scale();
   double kda = Scale(kda_).get_scale();
   double Pbl = Scale(Pbl_).get_scale();
