@@ -11,7 +11,6 @@
 #include <IMP/display/writer_macros.h>
 #include <IMP/display/PymolWriter.h>
 #include <IMP/display/ChimeraWriter.h>
-#include <IMP/display/CMMWriter.h>
 #include <IMP/display/BildWriter.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
@@ -74,8 +73,6 @@ WriterAdaptor::~WriterAdaptor() {}
 IMP_REGISTER_WRITER(PymolWriter, ".pym")
 
 IMP_REGISTER_WRITER(ChimeraWriter, ".py")
-
-IMP_REGISTER_WRITER(CMMWriter, ".cmm")
 
 IMP_REGISTER_WRITER(BildWriter, ".bild")
 

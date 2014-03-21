@@ -36,12 +36,6 @@ class Tests(IMP.test.TestCase):
             sg.set_color(IMP.display.Color(0, 0, 1))
             w.add_geometry(sg)
 
-    def test_2(self):
-        """Testing the CMM writer"""
-        nm = self.get_tmp_file_name("test.cmm")
-        w = IMP.display.CMMWriter(nm)
-        self._testit(w, cylinder=False, triangle=False)
-
     def test_3(self):
         """Testing the Bild writer"""
         nm = self.get_tmp_file_name("test.bild")
