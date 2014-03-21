@@ -79,7 +79,6 @@ void HierarchyLoadStatic::setup_particle(RMF::NodeConstHandle nh,
   }
   if (domain_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("domain " << std::endl);
-    int b, e;
     RMF::IntRange be = domain_factory_.get(nh).get_residue_indexes();
     if (be[1] == be[0] + 1) {
     } else {
