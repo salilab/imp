@@ -64,13 +64,6 @@ class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
   }
   //! Get the D key
   static FloatKey get_diffusion_coefficient_key();
-
-  /** \deprecated_at{2.1} Use set_diffusion_coefficient(). */
-  IMPATOM_DEPRECATED_METHOD_DECL(2.1)
-  void set_d(double d);
-  /** \deprecated_at{2.1} Use get_diffusion_coefficient(). */
-  IMPATOM_DEPRECATED_METHOD_DECL(2.1)
-  double get_d() const;
 };
 
 IMPATOMEXPORT double get_diffusion_coefficient_from_cm2_per_second(double din);

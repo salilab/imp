@@ -21,20 +21,6 @@
 */
 #define IMP_FORCE_FIELD_PARAMETERS(Name) IMP_OBJECT_NO_WARNING(Name)
 
-//! Define the basic things you need for a pdb selector
-/** In addition to the methods defined/declared by IMP_OBJECT,
-    it defines:
-    - IMP::PDBSelector::get_is_selected()
-    The selected argument should return true or false and use
-    a string called pdb_line.
- */
-#define IMP_PDB_SELECTOR(Name, parent, selected, show)                  \
-  IMPATOM_DEPRECATED_MACRO(2.1, "Expand the macro in place.");          \
-  Name(std::string name) : parent(name) {}                              \
-  Name() : parent(std::string(#Name) + "%1%") {}                        \
-  bool get_is_selected(const std::string& pdb_line) const { selected; } \
-  IMP_OBJECT_METHODS(Name)
-
 //! Define the basic things you need for a mol2 selector
 /** In addition to the methods defined/declared by IMP_OBJECT,
     it defines:
@@ -46,15 +32,4 @@
   bool get_is_selected(const std::string& mol2_line) const { selected; } \
   IMP_OBJECT_METHODS(Name)
 
-/** Add the methods needed for a Simulator
- */
-#define IMP_SIMULATOR(Name)                                               \
-  IMPATOM_DEPRECATED_MACRO(2.1, "Expand the macro in place.");            \
-                                                                          \
- private:                                                                 \
-  virtual void setup(const kernel::ParticleIndexes& ps);                  \
-  virtual double do_step(const kernel::ParticleIndexes& sc, double dt);   \
-  virtual bool get_is_simulation_particle(kernel::ParticleIndex p) const; \
-                                                                          \
- public:
 #endif /* IMPATOM_MACROS_H */

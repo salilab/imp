@@ -122,12 +122,6 @@ class IMPATOMEXPORT Bonded : public Decorator {
     return graph_get_number_of_edges(get_particle(),
                                      internal::get_bond_data().graph_);
   }
-  /** \deprecated_at{2.1} Use get_bond_indexes() instead. */
-  IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
-  kernel::ParticleIndexes get_bonds() const {
-    IMPATOM_DEPRECATED_FUNCTION_DEF(2.1, "Use get_bond_indexes().");
-    return get_bond_indexes();
-  }
 
   kernel::ParticleIndexes get_bond_indexes() const {
     return graph_get_edges(get_particle(), internal::get_bond_data().graph_);

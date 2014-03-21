@@ -47,7 +47,7 @@ class Tests(IMP.test.TestCase):
         xyzr.set_coordinates(IMP.algebra.Vector3D(0, 0, 0))
         xyzr.set_radius(1)
         d = IMP.atom.Diffusion.setup_particle(p)
-        d.set_d(D)
+        d.set_diffusion_coefficient(D)
         IMP.base.set_check_level(IMP.base.NONE)
         bd = IMP.atom.BrownianDynamics(m)
         bd.set_maximum_time_step(float(timestep))

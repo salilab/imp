@@ -76,8 +76,8 @@ void destroy_bond(Bond b) {
 */
 Bond get_bond(Bonded a, Bonded b) {
   if (a == b) return Bond();
-  kernel::ParticleIndexes ba = a.get_bonds();
-  kernel::ParticleIndexes bb = b.get_bonds();
+  kernel::ParticleIndexes ba = a.get_bond_indexes();
+  kernel::ParticleIndexes bb = b.get_bond_indexes();
   std::sort(bb.begin(), bb.end());
   for (unsigned int i = 0; i < ba.size(); ++i) {
     if (std::binary_search(bb.begin(), bb.end(), ba[i])) {
