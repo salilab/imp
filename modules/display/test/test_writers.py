@@ -36,12 +36,6 @@ class Tests(IMP.test.TestCase):
             sg.set_color(IMP.display.Color(0, 0, 1))
             w.add_geometry(sg)
 
-    def test_3(self):
-        """Testing the Bild writer"""
-        nm = self.get_tmp_file_name("test.bild")
-        w = IMP.display.BildWriter(nm)
-        self._testit(w)
-
     def test_4(self):
         """Testing the chimera writer"""
         nm = self.get_tmp_file_name("test.chimera.py")

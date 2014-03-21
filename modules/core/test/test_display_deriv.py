@@ -11,9 +11,11 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         IMP.base.set_log_level(IMP.base.TERSE)
 
+    @IMP.test.expectedFailure
     def test_derivs(self):
         """Testing execution of derivative display support"""
         # note that there are no actual checks here at this point
+        # also, will fail since display.BildWriter no longer exists
         m = IMP.kernel.Model()
         pts = [IMP.algebra.Vector3D(1, 0, 0), IMP.algebra.Vector3D(0, 1, 0),
                IMP.algebra.Vector3D(-1, 0, 0), IMP.algebra.Vector3D(0, -1, 0)]

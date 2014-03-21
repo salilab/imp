@@ -8,7 +8,6 @@ IMP_SWIG_OBJECT(IMP::display, PairGeometry, PairGeometries);
 IMP_SWIG_OBJECT(IMP::display, SingletonsGeometry, SingletonsGeometries);
 IMP_SWIG_OBJECT(IMP::display, PairsGeometry, PairsGeometries);
 IMP_SWIG_OBJECT(IMP::display, ChimeraWriter, ChimeraWriters);
-IMP_SWIG_OBJECT(IMP::display, BildWriter, BildWriters);
 IMP_SWIG_OBJECT(IMP::display, PymolWriter, PymolWriters);
 IMP_SWIG_OBJECT(IMP::display, SphereGeometry, SphereGeometries);
 IMP_SWIG_OBJECT(IMP::display, CylinderGeometry, CylinderGeometries);
@@ -56,7 +55,6 @@ IMP_SWIG_OBJECT(IMP::display, SkinSurfaceGeometry, SkinSurfaceGeometries);
 %include "IMP/display/GeometryProcessor.h"
 %include "IMP/display/Writer.h"
 
-%include "IMP/display/BildWriter.h"
 %include "IMP/display/ChimeraWriter.h"
 %include "IMP/display/Colored.h"
 %include "IMP/display/FilterGeometry.h"
