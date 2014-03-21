@@ -104,12 +104,6 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
   void add_close_pair_score(PairScore *ps, double distance,
                             const kernel::ParticlesTemp &particles);
   void clear_close_pair_scores();
-  /** \deprecated_at{2.1} Use get_movable_indexes() instead. */
-  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
-  kernel::ParticleIndexes get_movable_particles() const {
-    IMPCORE_DEPRECATED_FUNCTION_DEF(2.1, "Use get_movable_indexes()");
-    return get_movable_indexes();
-  }
   kernel::ParticleIndexes get_movable_indexes() const;
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
                                     const ScoreStatesTemp &ss) IMP_OVERRIDE;
