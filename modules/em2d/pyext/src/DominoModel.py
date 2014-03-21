@@ -247,7 +247,7 @@ class DominoModel:
         """
         t0 = time.time()
         if mode == "configuration":
-            self.configuration_set = self.sampler.get_sample()
+            self.configuration_set = self.sampler.create_sample()
             tf = time.time()
             log.info("found %s configurations. Time %s",
                      self.configuration_set.get_number_of_configurations(),

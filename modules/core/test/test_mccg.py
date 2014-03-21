@@ -78,7 +78,7 @@ class Tests(IMP.test.TestCase):
         while(True):
             try:
                 print "sampling"
-                cs = s.get_sample()
+                cs = s.create_sample()
                 print "found ", cs.get_number_of_configurations(), cs.get_name()
                 for i in range(0, cs.get_number_of_configurations()):
                     cs.load_configuration(i)

@@ -59,7 +59,7 @@ class Tests(IMP.test.TestCase):
         # jt.show_dotty()
         s = IMP.domino.DominoSampler(m, pst)
         s.set_log_level(IMP.base.VERBOSE)
-        cg = s.get_sample()
+        cg = s.create_sample()
         self.assertEqual(cg.get_number_of_configurations(), 4)
 
     def test_global_min1(self):

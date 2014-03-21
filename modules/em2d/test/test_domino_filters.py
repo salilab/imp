@@ -60,7 +60,7 @@ class Tests(IMP.test.TestCase):
         sampler.set_assignments_table(assignments_table)
         sampler.set_subset_filter_tables(filter_tables)
 
-        configuration_set = sampler.get_sample()
+        configuration_set = sampler.create_sample()
         n = configuration_set.get_number_of_configurations()
         print "number of possible_configurations", n
         for i in range(n):

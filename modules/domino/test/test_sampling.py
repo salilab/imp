@@ -36,7 +36,7 @@ class Tests(IMP.test.TestCase):
         sampler.set_use_cross_subset_filtering(True)
         sampler.set_log_level(IMP.base.VERBOSE)
         m.set_maximum_score(.1)
-        cs = sampler.get_sample()
+        cs = sampler.create_sample()
         print 6
         self.assertGreater(cs.get_number_of_configurations(), 0)
         for i in range(0, cs.get_number_of_configurations()):
@@ -77,7 +77,7 @@ class Tests(IMP.test.TestCase):
         m.set_maximum_score(3.1)
         sampler = IMP.domino.DominoSampler(m, pst)
         sampler.set_log_level(IMP.base.VERBOSE)
-        cs = sampler.get_sample()
+        cs = sampler.create_sample()
         self.assertGreater(cs.get_number_of_configurations(), 0)
         for i in range(0, cs.get_number_of_configurations()):
             cs.load_configuration(i)

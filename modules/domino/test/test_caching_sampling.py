@@ -39,7 +39,7 @@ class Tests(IMP.test.TestCase):
         # sampler.set_assignments_table(sst)
         m.set_maximum_score(3.1)
         print "getting sample"
-        cs = sampler.get_sample()
+        cs = sampler.create_sample()
         print "done"
         self.assertGreater(cs.get_number_of_configurations(), 0)
         for i in range(0, cs.get_number_of_configurations()):

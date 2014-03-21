@@ -55,7 +55,7 @@ class Tests(IMP.test.TestCase):
         id_trans.append(rbs[0].get_reference_frame())
         pst.set_particle_states(rbs[0], IMP.domino.RigidBodyStates(id_trans))
         ds = IMP.domino.DominoSampler(mdl, pst)
-        cg = ds.get_sample()
+        cg = ds.create_sample()
         print cg.get_number_of_configurations()
 
 if __name__ == '__main__':

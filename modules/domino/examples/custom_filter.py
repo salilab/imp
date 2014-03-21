@@ -137,7 +137,7 @@ s = create_sampler(m, ps, rs, pst)
 
 # s.set_log_level(IMP.base.SILENT)
 print "sampling"
-cs = s.get_sample()
+cs = s.create_sample()
 
 print "found ", cs.get_number_of_configurations(), "solutions"
 for i in range(cs.get_number_of_configurations()):

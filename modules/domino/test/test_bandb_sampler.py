@@ -42,7 +42,7 @@ class Tests(IMP.test.TestCase):
         dsst = IMP.domino.BranchAndBoundSampler(m, pst)
         for p in ps:
             pst.set_particle_states(p, TrivialParticleStates(ns))
-        cs = dsst.get_sample()
+        cs = dsst.create_sample()
         self.assertEqual(cs.get_number_of_configurations(), ns ** len(ps))
         all_states = []
         for i in range(0, cs.get_number_of_configurations()):

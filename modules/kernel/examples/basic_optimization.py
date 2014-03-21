@@ -23,7 +23,7 @@ s.set_number_of_attempts(10)
 s.set_log_level(IMP.base.TERSE)
 s.set_number_of_monte_carlo_steps(10)
 # find some configurations which move the particles far apart
-configs = s.get_sample()
+configs = s.create_sample()
 for i in range(0, configs.get_number_of_configurations()):
     configs.load_configuration(i)
     # print out the sphere containing the point set

@@ -131,7 +131,7 @@ class Tests(IMP.test.TestCase):
             rc, max_violations)
         samp = IMP.domino.DominoSampler(m, pst)
         samp.set_subset_filter_tables([ft])
-        cs = samp.get_sample()
+        cs = samp.create_sample()
         # print "number of solutions",cs.get_number_of_configurations()
         ok_combs = 0
         for i in range(cs.get_number_of_configurations()):

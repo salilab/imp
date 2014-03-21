@@ -91,7 +91,7 @@ initiate_configuration(domino_smp, ps)
 # 3. construct subset of variables AND
 #   optimize subsets of variables subject to the discrete sampling space AND
 #   gather subset of variables into global solutions
-cs = domino_smp.get_sample()
+cs = domino_smp.create_sample()
 
 # ANALYSE
 # 4. report solutions

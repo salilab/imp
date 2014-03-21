@@ -102,7 +102,7 @@ print "sampling"
 # many, it might be better to use s.get_sample_states() and then
 # IMP.domino.load_particle_states() to handle the states as that takes
 # much less memory, and time.
-cs = s.get_sample()
+cs = s.create_sample()
 
 print "found ", cs.get_number_of_configurations(), "solutions"
 for i in range(cs.get_number_of_configurations()):

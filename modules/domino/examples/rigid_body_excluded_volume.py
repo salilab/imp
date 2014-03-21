@@ -97,7 +97,7 @@ s = create_sampler(m, rs, pst)
 m.set_log_level(IMP.base.SILENT)
 IMP.base.set_log_level(IMP.base.VERBOSE)
 print "sampling"
-cs = s.get_sample()
+cs = s.create_sample()
 
 print "found ", cs.get_number_of_configurations(), "solutions"
 score = []

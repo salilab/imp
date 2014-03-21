@@ -50,7 +50,7 @@ class Tests(IMP.test.TestCase):
             IMP.domino.RigidBodyStates([rbs[0].get_reference_frame()]))
         print "sample"
         s = IMP.domino.DominoSampler(mdl, pst)
-        cs = s.get_sample()
+        cs = s.create_sample()
         print "number of configurations", cs.get_number_of_configurations()
         # TODO - check that the transformations are correct
         cs.load_configuration(0)
