@@ -33,25 +33,8 @@
   virtual ~Name() { IMP::base::Object::_on_destruction(); }                   \
                                                                               \
  public:
-/** \deprecated_at{2.1} Use IMP_OBJECT_METHODS() */
-#define IMP_OBJECT_INLINE(Name, show, destructor)                             \
- public:                                                                      \
-  IMPBASE_DEPRECATED_MACRO(2.1, "Use IMP_OBJECT_METHODS() instead.");         \
-  virtual std::string get_type_name() const IMP_OVERRIDE { return #Name; }    \
-  virtual ::IMP::base::VersionInfo get_version_info() const IMP_OVERRIDE {    \
-    return ::IMP::base::VersionInfo(get_module_name(), get_module_version()); \
-  }                                                                           \
-  IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                                     \
-                                    try {                                     \
-                                      IMP::base::Object::_on_destruction();   \
-                                      destructor;                             \
-                                    } catch (const std::exception &           \
-                                                 e) {                         \
-    IMP_LOG_VARIABLE(e);                                                      \
-    IMP_WARN("Caught exception " << e.what() << " in destructor.");           \
-  })
 
-//! Only to work aroung a gcc bug
+//! Only to work around a gcc bug
 #define IMP_OBJECT_NO_WARNING(Name)                                           \
  public:                                                                      \
   virtual std::string get_type_name() const IMP_OVERRIDE { return #Name; }    \
@@ -60,12 +43,6 @@
   }                                                                           \
   void do_show(std::ostream &out) const;                                      \
   IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
-
-//! \deprecated_at{2.1} Use IMP_OBJECT_METHODS()
-#define IMP_OBJECT(Name)                                              \
- public:                                                              \
-  IMPBASE_DEPRECATED_MACRO(2.1, "Use IMP_OBJECT_METHODS() instead."); \
-  IMP_OBJECT_NO_WARNING(Name)
 
 //! Define the types for storing sets of objects
 /** The macro defines the types PluralName and PluralNameTemp.
