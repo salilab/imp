@@ -12,11 +12,6 @@
 #include <IMP/pair_macros.h>
 
 //! Define information for an Geometry object
-#define IMP_GEOMETRY(Name)                                              \
-  IMPDISPLAY_DEPRECATED_MACRO(2.1, "Just declare the method.");         \
-  virtual IMP::display::Geometries get_components() const IMP_OVERRIDE; \
-  IMP_OBJECT_NO_WARNING(Name)
-
 #define IMP_DISPLAY_GEOMETRY_DEF(Name, Type)                     \
   Name::Name(std::string name) : display::Geometry(name) {}      \
   Name::Name(const Type &v) : display::Geometry(#Name), v_(v) {} \
