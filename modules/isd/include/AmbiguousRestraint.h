@@ -11,6 +11,9 @@
 
 #include <IMP/isd/isd_config.h>
 #include <IMP/kernel/Restraint.h>
+#include <IMP/kernel/Particle.h>
+#include <IMP/kernel/ParticleTuple.h>
+#include <IMP/generic.h>
 
 IMPISD_BEGIN_NAMESPACE
 

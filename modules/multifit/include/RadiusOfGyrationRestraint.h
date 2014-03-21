@@ -15,6 +15,8 @@
 #include <IMP/kernel/Restraint.h>
 #include <IMP/core/HarmonicUpperBound.h>
 #include <IMP/kernel/Particle.h>
+#include <IMP/kernel/container_macros.h>
+
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 //! Ensure the radius of gyration of particles fits the predicted one

@@ -26,7 +26,8 @@ AmbiguousRestraint::AmbiguousRestraint(kernel::Model *m, int d,
 
 /* Apply the restraint by computing the d-norm
  */
-double AmbiguousRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
+double AmbiguousRestraint::unprotected_evaluate(
+                               kernel::DerivativeAccumulator *accum)
     const {
   base::Vector<double> enes;
   double ene = 0;
@@ -37,7 +38,8 @@ double AmbiguousRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   ene = pow(ene, 1.0 / d_);
   if (accum) {
     for (unsigned int i = 0; i < rs_.size(); ++i) {
-      DerivativeAccumulator a0(*accum, pow(enes[i], d_ - 1) * pow(ene, 1 - d_));
+      kernel::DerivativeAccumulator a0(*accum,
+                                       pow(enes[i], d_ - 1) * pow(ene, 1 - d_));
       rs_[i]->unprotected_evaluate(&a0);
     }
   }
@@ -46,7 +48,7 @@ double AmbiguousRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
 
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
-ModelObjectsTemp AmbiguousRestraint::do_get_inputs() const {
+kernel::ModelObjectsTemp AmbiguousRestraint::do_get_inputs() const {
   kernel::ModelObjectsTemp ret;
   for (unsigned int i = 0; i < rs_.size(); ++i) {
     ret += rs_[i]->get_inputs();

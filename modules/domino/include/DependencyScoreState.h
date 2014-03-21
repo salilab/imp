@@ -11,6 +11,7 @@
 
 #include <IMP/domino/domino_config.h>
 #include <IMP/ScoreState.h>
+#include <IMP/container_base.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 

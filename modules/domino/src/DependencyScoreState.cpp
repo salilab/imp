@@ -7,6 +7,7 @@
 
 #include <IMP/domino/DependencyScoreState.h>
 #include <IMP/kernel/Particle.h>
+
 IMPDOMINO_BEGIN_NAMESPACE
 DependencyScoreState::DependencyScoreState(Model *m)
     : ScoreState(m, "DependencyScoreState%1%") {}
