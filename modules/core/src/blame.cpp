@@ -7,6 +7,7 @@
  */
 #include "IMP/core/blame.h"
 #include <IMP/kernel/Restraint.h>
+#include <IMP/kernel/input_output.h>
 #include <IMP/core/RestraintsScoringFunction.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/display/Color.h>

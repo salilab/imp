@@ -13,6 +13,7 @@
 
 #include <IMP/Sampler.h>
 #include <IMP/container_macros.h>
+#include <IMP/kernel/SingletonContainer.h>
 #include <IMP/Optimizer.h>
 #include <IMP/algebra/BoundingBoxD.h>
 #include <IMP/kernel/internal/StaticListContainer.h>

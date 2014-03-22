@@ -20,7 +20,7 @@ bool graph_is_node(kernel::Particle *p, const GraphData &d) {
   return p->has_attribute(d.setup_key_);
 }
 
-Particle *graph_connect(kernel::Particle *a, kernel::Particle *b,
+kernel::Particle *graph_connect(kernel::Particle *a, kernel::Particle *b,
                         GraphData &d) {
   kernel::Model *m = a->get_model();
   kernel::Particle *p = new kernel::Particle(m);
@@ -59,7 +59,8 @@ void graph_disconnect(kernel::Particle *e, const GraphData &d) {
   e->get_model()->remove_particle(e);
 }
 
-Particle *graph_get_edge(kernel::Particle *a, int i, const GraphData &d) {
+kernel::Particle *graph_get_edge(kernel::Particle *a, int i,
+                                 const GraphData &d) {
   IMP_USAGE_CHECK(
       a->get_model()->get_has_attribute(d.edges_key_, a->get_index()),
       "Particle " << a->get_name() << " does not have "
@@ -72,7 +73,8 @@ Particle *graph_get_edge(kernel::Particle *a, int i, const GraphData &d) {
   return a->get_model()->get_particle(all[i]);
 }
 
-ParticleIndexes graph_get_edges(kernel::Particle *a, const GraphData &d) {
+kernel::ParticleIndexes graph_get_edges(kernel::Particle *a,
+                                        const GraphData &d) {
   if (!a->get_model()->get_has_attribute(d.edges_key_, a->get_index())) {
     return kernel::ParticleIndexes();
   }
@@ -81,7 +83,8 @@ ParticleIndexes graph_get_edges(kernel::Particle *a, const GraphData &d) {
   return all;
 }
 
-Particle *graph_get_neighbor(kernel::Particle *a, int i, const GraphData &d) {
+kernel::Particle *graph_get_neighbor(kernel::Particle *a, int i,
+                                     const GraphData &d) {
   kernel::Particle *edge = graph_get_edge(a, i, d);
   if (graph_get_node(edge, 0, d) == a) {
     return graph_get_node(edge, 1, d);
