@@ -39,4 +39,7 @@ available.)
    7. [MultiFit of symmetric complexes](cnmultifit_groel.html).
       Multiple fitting of a protein structure into a symmetric (ring) complex,
       using a 3D cryo-EM density map of the complex.
+
+   8. [Merging SAXS profiles](saxs_merge.html).
+      Merging multiple small angle X-ray (SAXS) profiles using `saxs_merge.py`.
 */
