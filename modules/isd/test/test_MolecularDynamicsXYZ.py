@@ -202,7 +202,8 @@ class Tests(IMP.test.TestCase):
     def test_get_optimizer_states(self):
         """Test get_optimizer_states() method on XYZs"""
         wrtraj = WriteTrajState(self.model, [])
-        scaler = IMP.atom.VelocityScalingOptimizerState(self.particles, 298.0)
+        scaler = IMP.atom.VelocityScalingOptimizerState(self.model,
+                                                        self.particles, 298.0)
         scaler.set_period(10)
         self.md.add_optimizer_state(wrtraj)
         self.md.add_optimizer_state(scaler)
@@ -218,7 +219,8 @@ class Tests(IMP.test.TestCase):
                                                              -43.0, 65.0, 93.0))
             self.particles[-1].add_attribute(masskey, cmass, False)
         self.md.assign_velocities(100.0)
-        scaler = IMP.atom.VelocityScalingOptimizerState(self.particles, 298.0)
+        scaler = IMP.atom.VelocityScalingOptimizerState(self.model,
+                                                        self.particles, 298.0)
         scaler.set_period(10)
         self.md.add_optimizer_state(scaler)
         self.md.optimize(10)
