@@ -11,8 +11,6 @@ class Tests(IMP.test.TestCase):
         """Testing the writer creater"""
         wchimera = IMP.display.create_writer(self.get_tmp_file_name("test.py"))
         wcgo = IMP.display.create_writer(self.get_tmp_file_name("test.pym"))
-        wbild = IMP.display.create_writer(self.get_tmp_file_name("test.bild"))
-        #wvrml= IMP.display.create_writer(self.get_tmp_file_name("test.vrml"))
 
 if __name__ == '__main__':
     IMP.test.main()
