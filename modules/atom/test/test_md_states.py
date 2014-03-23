@@ -34,7 +34,8 @@ class Tests(IMP.test.TestCase):
                                        IMP.algebra.Vector3D(10, 0, 0)],
                                       [IMP.algebra.Vector3D(10, 0, 0),
                                        IMP.algebra.Vector3D(-20, 0, 0)]])
-        s = IMP.atom.RemoveRigidMotionOptimizerState(ps, 1)
+        s = IMP.atom.RemoveRigidMotionOptimizerState(m, ps)
+        s.set_period(1)
         s.remove_rigid_motion()
         self.assertEqual(ps[0].get_value(vxkey), 15.)
         self.assertEqual(ps[1].get_value(vxkey), -15.)
@@ -52,7 +53,8 @@ class Tests(IMP.test.TestCase):
         torque = IMP.algebra.Vector3D(5, 8, 10)
         vs = [IMP.algebra.get_vector_product(x, torque) for x in xs]
         m, ps = self.setup_particles(zip(xs, vs))
-        s = IMP.atom.RemoveRigidMotionOptimizerState(ps, 1)
+        s = IMP.atom.RemoveRigidMotionOptimizerState(m, ps)
+        s.set_period(1)
         s.remove_rigid_motion()
         # We started with no net linear momentum, so removing the angular
         # momentum should cause the system to become stationary
@@ -65,8 +67,9 @@ class Tests(IMP.test.TestCase):
         """Ensure that rigid removal works with a 1-particle system"""
         m, ps = self.setup_particles([[IMP.algebra.Vector3D(0, 0, 0),
                                        IMP.algebra.Vector3D(10, 0, 0)]])
-        s = IMP.atom.RemoveRigidMotionOptimizerState(ps, 1)
-        self.assertEqual(s.get_period(), 2)
+        s = IMP.atom.RemoveRigidMotionOptimizerState(m, ps)
+        s.set_period(1)
+        self.assertEqual(s.get_period(), 1)
         s.remove_rigid_motion()
         self.assertEqual(ps[0].get_value(vxkey), 0.)
         self.assertEqual(ps[0].get_value(vykey), 0.)
@@ -104,7 +107,7 @@ class Tests(IMP.test.TestCase):
                                        IMP.algebra.Vector3D(0.1, 0, 0)]],
                                      copies=50)
         scaler = IMP.atom.LangevinThermostatOptimizerState(
-            ps, 298.0, 0.1)
+            m, ps, 298.0, 0.1)
         md = IMP.atom.MolecularDynamics(m)
         md.set_maximum_time_step(4.0)
         md.add_optimizer_state(scaler)
