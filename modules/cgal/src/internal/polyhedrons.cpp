@@ -302,6 +302,23 @@ class CGALImplicitSurface {
   const Grid &grid_;
   double d_;
 
+  algebra::Vector3D get_center(bool &found) const {
+    algebra::Vector3D center;
+    found = false;
+    IMP_GRID3D_FOREACH_VOXEL(grid_, {
+      typename Grid::ExtendedIndex ei(voxel_index[0], voxel_index[1],
+                                      voxel_index[2]);
+      double v = grid_[grid_.get_index(ei)];
+      IMP_UNUSED(loop_voxel_index);
+      if (v > d_) {
+        center = voxel_center;
+        found = true;
+        return center;
+      }
+    });
+    return center;
+  }
+
  public:
   CGALImplicitSurface(const Grid &grid, double iso_level)
       : grid_(grid), d_(iso_level) {}
@@ -314,23 +331,11 @@ class CGALImplicitSurface {
     return ret;
   }
   Sphere_3 get_bounding_sphere() const {
-    algebra::Vector3D center;
-    bool found = false;
-    IMP_GRID3D_FOREACH_VOXEL(grid_, {
-      typename Grid::ExtendedIndex ei(voxel_index[0], voxel_index[1],
-                                      voxel_index[2]);
-      double v = grid_[grid_.get_index(ei)];
-      IMP_UNUSED(loop_voxel_index);
-      if (v > d_) {
-        center = voxel_center;
-        found = true;
-        goto done;
-      }
-    });
+    bool found;
+    algebra::Vector3D center = get_center(found);
     if (!found) {
       return Sphere_3(Point_3(0, 0, 0), 0);
     }
-  done:
     algebra::Vector3Ds vt =
         algebra::get_vertices(algebra::get_bounding_box(grid_));
     double max2 = 0;
