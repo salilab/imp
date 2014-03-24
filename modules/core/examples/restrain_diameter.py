@@ -1,13 +1,13 @@
 ## \example core/restrain_diameter.py
 # An example restraining the diameter of a set of points. That is, the
-# restraint penalizes conformations where there are two point more than a
+# restraint penalizes conformations where there are two points more than a
 # certain distance from one another.
 
 import IMP
 import IMP.core
 import IMP.container
 
-# This example restraints the diameter of a set of particles to be smaller
+# This example restraint the diameter of a set of particles to be smaller
 # than 10
 
 diameter = 10
@@ -28,7 +28,7 @@ for p0 in lc.get_particles():
                                   IMP.core.XYZ(p1))
         if d > max:
             max = d
-print "The maximim distance is " + str(max)
+print "The maximum distance is " + str(max)
 
 IMP.base.set_log_level(IMP.base.SILENT)
 o.optimize(100)
@@ -40,4 +40,4 @@ for p0 in lc.get_particles():
                                   IMP.core.XYZ(p1))
         if d > max:
             max = d
-print "Afterwards, the maximim distance is " + str(max)
+print "Afterwards, the maximum distance is " + str(max)
