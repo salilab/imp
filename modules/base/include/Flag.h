@@ -46,7 +46,7 @@ class Flag : public internal::FlagImpl<T, ENABLED> {
 
 /** Use this to add an advanced flag to the program.
 
-Such flags are not shown unless requisted (using `--help_advanced`).
+Such flags are not shown unless requested (using `--help_advanced`).
 
 See Flag for more info.
 */
