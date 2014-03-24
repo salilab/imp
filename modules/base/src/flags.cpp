@@ -240,7 +240,7 @@ Strings setup_from_argv_internal(int argc, char **argv, std::string description,
         return Strings(ret.begin(), ret.end());
       }
       catch (...) {
-        std::cerr << "Error gathering unknow arguments" << std::endl;
+        std::cerr << "Error gathering unknown arguments" << std::endl;
         write_help(std::cerr);
         throw IMP::base::UsageException("Bad arguments");
       }
