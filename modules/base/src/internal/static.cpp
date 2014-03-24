@@ -162,7 +162,7 @@ boost::program_options::options_description flags;
 boost::program_options::options_description advanced_flags;
 boost::program_options::variables_map variables_map;
 
-Flag<bool> help("help", "Show command line arguments and exit.", false);
+Flag<bool> help("help,h", "Show command line arguments and exit.", false);
 Flag<bool> version("version", "Show version info and exit.", false);
 Flag<bool> help_advanced(
     "help_advanced",
