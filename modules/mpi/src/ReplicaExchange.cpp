@@ -117,6 +117,9 @@ bool ReplicaExchange::do_exchange(double myscore0, double myscore1,
       do_accept = get_acceptance(myscore, fscore);
       int atmp = (int)do_accept;
       MPI_Send(&atmp, 1, MPI_INT, frank, 0, MPI_COMM_WORLD);
+  } else if (myrank_ == frank) {
+      // cannot exchange with ourself
+      do_accept = false;
   } else {
       MPI_Send(&myscore, 1, MPI_DOUBLE, frank, 0, MPI_COMM_WORLD);
       int atmp;
