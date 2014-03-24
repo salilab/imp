@@ -39,16 +39,6 @@ PLURALVARIABLETYPE ClassnameContainer::get_FUNCTIONNAMEs() const {
   return IMP::kernel::internal::get_particle(get_model(), get_indexes());
 }
 
-bool ClassnameContainer::get_contains_FUNCTIONNAME(VARIABLETYPE v) const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
-                                  "You should build your own index instead");
-  INDEXTYPE iv = IMP::kernel::internal::get_index(v);
-  IMP_FOREACH(INDEXTYPE it, get_contents()) {
-    if (it == iv) return true;
-  }
-  return false;
-}
-
 unsigned int ClassnameContainer::get_number_of_FUNCTIONNAMEs() const {
   IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_indexes()");
   return get_number();

@@ -107,16 +107,6 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
    */
   PLURALVARIABLETYPE get_FUNCTIONNAMEs() const;
 
-  /** \brief This function is very slow and you should think hard about using
-      it.
-
-      \deprecated_at{2.1} This is slow and dependent on the order of elements
-      in the tuple.
-
-      Return whether the container has the given element.*/
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  bool get_contains_FUNCTIONNAME(VARIABLETYPE v) const;
-
   /** \deprecated_at{2.1} This can be very slow and is probably not useful
    */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
