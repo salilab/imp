@@ -100,7 +100,7 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
     is exactly like evaluating the one ScoringFunction.*/
 IMPKERNELEXPORT ScoringFunctions create_decomposition(ScoringFunction *sf);
 
-/** This class is to provide a consisted interface for things
+/** This class is to provide a consistent interface for things
     that take ScoringFunctions as arguments.
 
     \note Passing an empty list of restraints should be supported, but problems
