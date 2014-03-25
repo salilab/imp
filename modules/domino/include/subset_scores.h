@@ -37,7 +37,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 class IMPDOMINOEXPORT RestraintCache : public base::Object {
   IMP_NAMED_TUPLE_2(Key, Keys, base::WeakPointer<kernel::Restraint>, restraint,
                     Assignment, assignment, );
-  IMP_NAMED_TUPLE_3(RestraintData, estraintDatas,
+  IMP_NAMED_TUPLE_3(RestraintData, RestraintDatas,
                     base::PointerMember<ScoringFunction>, scoring_function,
                     Subset, subset, double, max, );
   IMP_NAMED_TUPLE_2(RestraintSetData, RestraintSetDatas, Slice, slice,
@@ -178,13 +178,13 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
     double s = cache_.get(Key(r, a));
     return s;
   }
-  /** The the score for a restraint given a subset and assignment on
+  /** Get the score for a restraint given a subset and assignment on
       that subset.
    */
   double get_score(kernel::Restraint *r, const Subset &s,
                    const Assignment &a) const;
 
-  //! make it so kernel::Restraint::get_last_score() returns the score
+  //! Make it so kernel::Restraint::get_last_score() returns the score
   /** This is useful when writing the restraints to disk, as that
       code often goes off the last score to avoid recomputing the
       restraints.*/
