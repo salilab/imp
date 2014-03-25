@@ -123,9 +123,9 @@ class TestFretRestraint(IMP.test.TestCase):
             expected0 = self.getFM0()
             expected1 = self.getFM1()
             self.assertAlmostEqual(self.fret0.get_model_fretr(),
-                                   expected0, delta=0.01)
+                                   expected0, delta=0.015)
             self.assertAlmostEqual(self.fret1.get_model_fretr(),
-                                   expected1, delta=0.01)
+                                   expected1, delta=0.015)
 
     def testValueFMIda(self):
         "Test FretRestraint Forward Model by changing Ida"
