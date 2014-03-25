@@ -70,7 +70,7 @@ MinimumRestraintScoreSubsetFilterTable::MinimumRestraintScoreSubsetFilterTable(
       rc_(rc),
       rs_(rs.begin(), rs.end()),
       max_violated_(max) {
-  IMP_USAGE_CHECK(rc_, "Must pass a restriant cache");
+  IMP_USAGE_CHECK(rc_, "Must pass a restraint cache");
   std::sort(rs_.begin(), rs_.end());
 }
 
