@@ -144,6 +144,7 @@ class TestNuisanceScoreState(IMP.test.TestCase):
             self.assertTrue(nuis.get_nuisance() >= nuis.get_lower()
                             and nuis.get_nuisance() <= nuis.get_upper())
 
+    @IMP.test.skip("ScoreState won't be called with no restraints that use it")
     def test_NormalMover_MC_fails(self):
         "Test nuisance scorestate with MonteCarlo mover"
         self.m.remove_restraint(self.rs)
