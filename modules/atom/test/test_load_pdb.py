@@ -27,4 +27,4 @@ class Tests(IMP.test.TestCase):
                                0, delta=.1)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

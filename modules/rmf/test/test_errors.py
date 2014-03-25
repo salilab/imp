@@ -32,4 +32,4 @@ class Tests(IMP.test.TestCase):
         """Test that RMF exceptions can be caught in python"""
         self.assertRaises(IOError, RMF.test_throw_exception)
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

@@ -80,4 +80,4 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(rb0, rb1)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

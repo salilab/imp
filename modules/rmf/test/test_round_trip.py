@@ -85,4 +85,4 @@ class Tests(IMP.test.TestCase):
             h2 = IMP.rmf.create_hierarchies(f, m)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

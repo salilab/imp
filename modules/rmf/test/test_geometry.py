@@ -84,4 +84,4 @@ class Tests(IMP.test.TestCase):
             w.add_geometry(gs[0])
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

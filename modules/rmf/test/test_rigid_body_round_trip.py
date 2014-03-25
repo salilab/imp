@@ -155,4 +155,4 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(rb_count, 2)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

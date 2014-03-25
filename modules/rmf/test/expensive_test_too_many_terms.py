@@ -35,4 +35,4 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(num_nodes,
                              m.get_number_of_particles() + 1 + 1)
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

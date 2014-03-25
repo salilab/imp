@@ -72,4 +72,4 @@ class Tests(IMP.test.TestCase):
                         self.assertAlmostEqual(ic[j % 3], 1, delta=.01)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

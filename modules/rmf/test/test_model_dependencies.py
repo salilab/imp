@@ -31,4 +31,4 @@ class Tests(IMP.test.TestCase):
             IMP.rmf.save_frame(f, str(0))
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

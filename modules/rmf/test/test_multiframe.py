@@ -46,4 +46,4 @@ class Tests(IMP.test.TestCase):
                 self.assertEqual(d.get_x(), i)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

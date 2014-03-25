@@ -30,4 +30,4 @@ class Tests(IMP.test.TestCase):
             IMP.rmf.load_frame(f, RMF.FrameID(1))
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

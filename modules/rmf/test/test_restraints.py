@@ -140,4 +140,4 @@ class Tests(IMP.test.TestCase):
         self.assertEqual([x for x in rn.get_children()], [])
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()
