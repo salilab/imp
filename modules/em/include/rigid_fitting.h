@@ -138,22 +138,21 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
     Float max_translation = 2., Float max_rotation = .3, bool fast = false);
 
 //! Local rigid fitting of a rigid body
-/**
-\brief Fit a set of particles to a density map around their centroid.
-       The fitting is assessed using the cross-correaltion score.
-       The optimization is a standard MC/CG procedure.
-       The function returns a list of solutions sortedo the cross-correlation
-       score.
+/** Fit a set of particles to a density map around their centroid.
+    The fitting is assessed using the cross-correlation score.
+    The optimization is a standard MC/CG procedure.
+    The function returns a list of solutions sorted by the cross-correlation
+    score.
 \note The returned cross-correlation score is 1-cc, as we usually want to
-      minimize a scroing function. Thus a score of 1 means no-correlation
-      and a score of 0. is perfect correlation.
+      minimize a scroing function. Thus a score of 1 means no correlation
+      and a score of 0 is perfect correlation.
 \note The input rigid body should be also IMP::atom::Hierarchy
 \param[in] p           The root of the hierarchy to fit
 \param[in] refiner     The refiner to get the leaves of the particle
 \param[in] weight_key  The weight key of the particles in the rigid body
 \param[in] dmap        The density map to fit to
 \param[in] display_log If provided, then intermediate states
-                       in during the optimization procedure are printed
+                       during the optimization procedure are printed
 \param[in] number_of_optimization_runs  number of Monte Carlo optimizations
 \param[in] number_of_mc_steps  number of steps in a Monte Carlo optimization
 \param[in] number_of_cg_steps  number of Conjugate Gradients steps in
