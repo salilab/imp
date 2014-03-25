@@ -137,18 +137,17 @@ class ClassnameContainerTest(IMP.test.TestCase):
                 t = self.create_FUNCTIONNAME(m)
                 l.add_FUNCTIONNAME(t)
                 cs.append(t)
-        for p in cs:
-            self.assertTrue(c.get_contains_FUNCTIONNAME(p))
-        ret = []
-        for i in range(0, len(cs)):
-            ret.append(c.get_FUNCTIONNAME(i))
+        ret = c.get_contents()
+        cs = IMP.get_indexes(cs)
+        for pi in cs:
+            self.assertIn(pi, ret)
         ret.sort(cmp)
         # print ret
         cs.sort(cmp)
         # rint cs
+        self.assertEqual(len(ret), len(cs))
         for i in range(0, len(ret)):
             self.assertEqual(cmp(ret[i], cs[i]), 0)
-        self.assertEqual(c.get_number_of_FUNCTIONNAMEs(), len(cs))
 
 if __name__ == '__main__':
     IMP.test.main()
