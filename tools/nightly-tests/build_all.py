@@ -213,7 +213,7 @@ class RMFDependency(Component):
     def __init__(self, name):
         Component.__init__(self, name)
         self.target['build'] = 'RMF'
-        self.test_regex = '^RMF\\.'
+        self.test_regex = '^RMF\\-'
 
 
 class Builder(object):
