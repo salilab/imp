@@ -713,8 +713,7 @@ class sfo_common:
         thermostat), or None if NVE.
         """
         # Molecular Dynamics (from MAX BONOMI)
-        md = IMP.atom.MolecularDynamics()
-        md.set_model(self._m)
+        md = IMP.atom.MolecularDynamics(self._m)
         md.assign_velocities(temperature)
         md.set_time_step(timestep)
         if thermostat == 'NVE':
