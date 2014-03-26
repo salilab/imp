@@ -142,9 +142,22 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   }
 
   IMP_DECORATOR_METHODS(RigidBody, XYZ);
+
+  /**
+     Create a rigid body for pi with the particle indexes ps as its members.
+     The coordinates of pi are set to the center of mass of ps and the rotation
+     of its reference frame is based on the diagnolized intertia tensor of ps.
+
+     @note If size(ps)=1, then its reference frame is copied if it is a rigid body, \
+     or its rotation is set to identity if it is not a rigid body.
+
+   */
   IMP_DECORATOR_SETUP_1(RigidBody, kernel::ParticleIndexesAdaptor, ps);
-  /** Create a rigid body with the passed reference frame as its initial
-      position. */
+
+  /**
+      Create a rigid body with the passed reference frame as its initial
+      position.
+  */
   IMP_DECORATOR_SETUP_1(RigidBody, algebra::ReferenceFrame3D, rf);
 
   //! Make the rigid body no longer rigid.
@@ -336,6 +349,7 @@ class IMPCOREEXPORT RigidBodyMember : public XYZ {
                                    get_particle_index()));
     return algebra::Transformation3D(rot, tr);
   }
+
   ~RigidBodyMember();
   //! XYZ::set_coordiantes()
   // this is here since swig does like using statements

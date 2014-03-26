@@ -372,6 +372,7 @@ ModelKey get_rb_list_key() {
 }
 
 namespace {
+  // compute inertia tensor for particles ds with origin center
 IMP_Eigen::Matrix3d compute_I(kernel::Model *model,
                               const kernel::ParticleIndexes &ds,
                               const algebra::Vector3D &center,
@@ -868,6 +869,8 @@ bool check_rigid_body(kernel::Model *m, kernel::ParticleIndex pi) {
 
 IMP_CHECK_DECORATOR(RigidBody, check_rigid_body);
 
+// returns reference frame with center of mass of ps and the
+// diagonalized intertia tensor of ps
 algebra::ReferenceFrame3D get_initial_reference_frame(
     kernel::Model *m, const kernel::ParticleIndexes &ps) {
   if (ps.size() == 1) {

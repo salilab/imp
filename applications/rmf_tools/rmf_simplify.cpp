@@ -13,7 +13,7 @@
 #include <RMF/FileHandle.h>
 
 int main(int argc, char *argv[]) {
-  IMP::base::Flag<double> resolution("resolution", "The resolution to use.",
+  IMP::base::Flag<double> resolution("resolution", "The resolution to use in 1/A.",
                                      1.0);
   IMP::base::Flag<bool> multiresolution(
       "multiresolution", "Whether to create a multiresolution representation.");
