@@ -1,6 +1,6 @@
 /**
  *  \file IMP/multifit/density_analysis.h
- *  \brief density analysis tools, such as histogram and segmentation
+ *  \brief density analysis tools, such as segmentation
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -9,7 +9,6 @@
 #ifndef IMPMULTIFIT_DENSITY_ANALYSIS_H
 #define IMPMULTIFIT_DENSITY_ANALYSIS_H
 
-#include <IMP/statistics/Histogram.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/multifit/multifit_config.h>
 #include <boost/graph/adjacency_list.hpp>
@@ -18,10 +17,6 @@
 #include <boost/graph/graph_utility.hpp>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
-
-//! Get a histogram of density values
-IMPMULTIFITEXPORT statistics::Histogram get_density_histogram(
-    const em::DensityMap *dmap, float threshold, int num_bins);
 
 //! Returns a map containing all density without the background
 /**
