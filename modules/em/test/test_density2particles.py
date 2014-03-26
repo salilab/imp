@@ -61,5 +61,18 @@ class Tests(IMP.test.TestCase):
         map_centroid = dmap.get_centroid()
         self.assertLess(IMP.algebra.get_distance(ps_centroid, map_centroid),
                         0.01)
+
+    def test_particles2density_prot(self):
+        m = IMP.kernel.Model()
+        mh=IMP.atom.read_pdb(self.get_input_file_name('1z5s_A.pdb'),m,IMP.atom.AllPDBSelector())
+        ps=IMP.core.get_leaves(mh)
+        res = 6
+        apix = 3
+        dmap = IMP.em.particles2density(ps, res, apix)
+        ps_centroid = IMP.core.get_centroid(IMP.core.XYZs(ps))
+        map_centroid = dmap.get_centroid()
+        self.assertLess(IMP.algebra.get_distance(ps_centroid, map_centroid),
+                        0.01)
+
 if __name__ == '__main__':
     IMP.test.main()
