@@ -51,7 +51,8 @@ def report_python_application(cov, app, srcdir, outdir):
 
 
 def report_python_dependency(cov, dep, outdir):
-    mods = glob.glob('src/dependency/%s/*.py' % dep)
+    mods = glob.glob('src/dependency/%s/*.py' % dep) \
+           + glob.glob('lib/%s*.py' % dep)
     mods = [x for x in mods if not x.endswith('sitecustomize.py')]
     report_python_component(cov, mods, dep, 'dependency', 'src/dependency/',
                             outdir)
