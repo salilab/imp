@@ -41,7 +41,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(
             nd,
             dd.get_diffusion_coefficient(),
-            delta=.1 * nd)
+            delta=.12 * nd)
 
 if __name__ == '__main__':
     IMP.test.main()
