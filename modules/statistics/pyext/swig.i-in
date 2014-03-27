@@ -6,7 +6,6 @@ IMP_SWIG_BASE_OBJECT(IMP::statistics, Embedding, Embeddings);
 IMP_SWIG_OBJECT(IMP::statistics, ConfigurationSetXYZEmbedding, ConfigurationSetXYZEmbeddings);
 IMP_SWIG_OBJECT(IMP::statistics, VectorDEmbedding, VectorDEmbeddings);
 IMP_SWIG_OBJECT(IMP::statistics, ParticleEmbedding, ParticleEmbeddings);
-IMP_SWIG_VALUE(IMP::statistics, Histogram, Histograms);
 IMP_SWIG_BASE_OBJECT(IMP::statistics, Metric, Metrics);
 IMP_SWIG_OBJECT(IMP::statistics, EuclideanMetric, EuclideanMetrics);
 IMP_SWIG_OBJECT(IMP::statistics, ConfigurationSetRMSDMetric, ConfigurationSetRMSDMetrics);
@@ -22,7 +21,6 @@ IMP_SWIG_OBJECT(IMP::statistics, ChiSquareMetric, ChiSquareMetrics);
 %include "IMP/statistics/embeddings.h"
 %include "IMP/statistics/metrics.h"
 %include "IMP/statistics/point_clustering.h"
-%include "IMP/statistics/Histogram.h"
 %include "IMP/statistics/metric_clustering.h"
 %include "IMP/statistics/HistogramD.h"
 %include "IMP/statistics/utility.h"
