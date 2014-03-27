@@ -46,7 +46,7 @@ def get_em2d_restraint(assembly,
     model = assembly.get_model()
     # Setup the restraint
     sc = em2d.EM2DScore()
-    r = em2d.Em2DRestraint()
+    r = em2d.Em2DRestraint(model)
     r.setup(sc, restraint_params)
     names = em2d.read_selection_file(images_selection_file)
     names = [base.get_relative_path(images_selection_file, x) for x in names]
