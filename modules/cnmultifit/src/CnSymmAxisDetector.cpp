@@ -16,12 +16,68 @@
 
 IMPCNMULTIFIT_BEGIN_NAMESPACE
 
+namespace {
+
+class DensityHistogram {
+  double start_, end_, interval_size_;
+  Ints freq_;
+public:
+  DensityHistogram(double start, double end, unsigned int num_bins)
+                 : start_(start), end_(end) {
+    interval_size_ = (end - start) / num_bins;
+    freq_.insert(freq_.end(), num_bins, 0);
+  }
+
+  //! Increase the count for the bin that holds a
+  // value that is in range for this histogram.
+  void add(double x) {
+    IMP_INTERNAL_CHECK(!(x < start_ || x > end_),
+                     "the value being added to the "
+                         << "histogram " << x << " is out of range [" << start_
+                         << "," << end_ << "]" << std::endl);
+    const unsigned int i =
+      (static_cast<unsigned int>((x - start_) / interval_size_));
+    freq_[i]++;
+  }
+
+  unsigned get_total_count() const {
+    return std::accumulate(freq_.begin(), freq_.end(), 0);
+  }
+
+  //! Get the lowest value for which X% of the histogram data is lower
+  double get_top(double percentage) const {
+    IMP_INTERNAL_CHECK(!((percentage < 0.) || (percentage > 1.)),
+                       "The input number is not a percentage\n");
+    double stop_count = get_total_count() * percentage;
+    int partial_count = 0;
+    for (unsigned int i = 0; i < freq_.size(); i++) {
+      partial_count += freq_[i];
+      if (partial_count > stop_count) {
+        return start_ + i * interval_size_;
+      }
+    }
+    return end_;
+  }
+};
+
+double get_top_density_value(em::DensityMap *dmap, float density_threshold,
+                             float top_p) {
+  DensityHistogram dhist(density_threshold - em::EPS,
+                         dmap->get_max_value() + .1, 100);
+  for (long v_ind = 0; v_ind < dmap->get_number_of_voxels(); v_ind++) {
+    if (dmap->get_value(v_ind) > density_threshold) {
+      dhist.add(dmap->get_value(v_ind));
+    }
+  }
+  return dhist.get_top(top_p);
+}
+
+}
+
 CnSymmAxisDetector::CnSymmAxisDetector(int symm_deg, em::DensityMap *dmap,
                                        float density_threshold, float top_p)
     : dmap_(dmap), symm_deg_(symm_deg) {
-  statistics::Histogram hist =
-      my_get_density_histogram(dmap_, density_threshold, 100);
-  double top_p_den_val = hist.get_top(top_p);
+  double top_p_den_val = get_top_density_value(dmap_, density_threshold, top_p);
   vecs_ = em::density2vectors(dmap_, top_p_den_val);
   //  std::cout<<"Taking "<<vecs_.size()<<" vectors with density higher than :"
   //  <<top_p_den_val<<std::endl;
@@ -51,9 +107,8 @@ CnSymmAxisDetector::CnSymmAxisDetector(int symm_deg,
   sampled_dmap->calcRMS();
   dmap_ = new em::DensityMap(*(sampled_dmap->get_header()));
   dmap_->copy_map(sampled_dmap);
-  statistics::Histogram hist =
-      my_get_density_histogram(dmap_, dmap_->get_header()->dmin, 100);
-  double top_20_den_val = hist.get_top(0.8);
+  double top_20_den_val = get_top_density_value(dmap_,
+                                          dmap_->get_header()->dmin, 0.8);
   vecs_ = em::density2vectors(dmap_, top_20_den_val);
   // calculate  pca
   pca_ = algebra::get_principal_components(vecs_);
