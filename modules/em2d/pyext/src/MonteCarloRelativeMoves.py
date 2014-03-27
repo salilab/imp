@@ -104,6 +104,7 @@ class MonteCarloRelativeMoves:
             if rb_id not in relative_names:
                 log.debug("Checking for %s", rb_id)
                 rb_lig = representation.get_rigid_body(self.rbs, rb_id)
+                rb_lig.set_coordinates_are_optimized(True)
                 mv = em2d.RelativePositionMover(rb_lig, max_translation,
                                                 max_rotation)
                 relative_movers.append(mv)
@@ -114,6 +115,7 @@ class MonteCarloRelativeMoves:
                 self.non_relative_move_prob)
             rb_rec = representation.get_rigid_body(self.rbs,
                                                    representation.get_rb_name(d[0]))
+            rb_rec.set_coordinates_are_optimized(True)
             log.debug("Reference added for %s: %s. ref. frame %s ",
                       rb_id, rb_rec.get_name(), rb_rec)
             Tis = io.read_transforms(d[2])
@@ -125,6 +127,7 @@ class MonteCarloRelativeMoves:
             if(not is_anchored):
                 name = rb.get_name()
                 if(not name in relative_names):
+                    rb.set_coordinates_are_optimized(True)
                     log.debug("adding a RigidBodyMover for %s", name)
                     mv = core.RigidBodyMover(rb, max_translation, max_rotation)
                     regular_movers.append(mv)
