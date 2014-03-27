@@ -53,10 +53,10 @@ class Tests(IMP.test.TestCase):
         # Dihedrals (1-4 pairs)
         self.assertContainsPair(pf, atoms, '1:N', '1:OG')
 
-    def test_particles(self):
-        """Test CHARMMStereochemistryRestraint input particles"""
+    def test_get_inputs(self):
+        """Test CHARMMStereochemistryRestraint get_inputs()"""
         r, m, pdb = self.setup_restraint()
-        ps = r.get_input_particles()
+        ps = r.get_inputs()
         self.assertEqual(len(ps), 190)
 
 if __name__ == '__main__':
