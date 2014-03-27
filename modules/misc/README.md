@@ -6,7 +6,7 @@ In particular, other modules should _not_ depend on IMP.misc (e.g. don't create 
 
 _Author(s)_: Daniel Russel
 
-_Maintainer_: `drussel`
+_Maintainer_: `benmwebb`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

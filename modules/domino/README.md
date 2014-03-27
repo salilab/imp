@@ -30,7 +30,7 @@ The idea of a Table is used in several places in the module. A Table, here, is a
 
 _Author(s)_: Daniel Russel, Keren Lasker
 
-_Maintainer_: `drussel`
+_Maintainer_: `benmwebb`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

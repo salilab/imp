@@ -12,7 +12,7 @@ in your Python script before importing IMP.mpi.
 
 _Author(s)_:
 
-_Maintainer_: `drussel`, `benmwebb`
+_Maintainer_: `benmwebb`
 
 _License_: LGPL
 

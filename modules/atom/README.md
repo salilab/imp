@@ -6,7 +6,7 @@ The name "residue index" is used to refer to the index of the residue in the con
 
 _Author(s)_: Daniel Russel, Ben Webb, Dina Schneidman, Javier Velazquez-Muriel
 
-_Maintainer_: `drussel`, `benmwebb`
+_Maintainer_: `benmwebb`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or
