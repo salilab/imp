@@ -1,5 +1,7 @@
 # Ligand Score
 
+To score ligand poses, use the `ligand_score` command line tool.
+
 Two different scoring files are provided:
     - protein_ligand_pose_score.lib for use when one wants to find the
     most near-native poses of a ligand from many geometry decoys of the
