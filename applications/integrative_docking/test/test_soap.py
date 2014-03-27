@@ -16,8 +16,7 @@ class SOAPDockingApplicationTest(IMP.test.ApplicationTestCase):
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
-        fin = open('soap_score.res', 'r')
-        lines = fin.readlines()
+        lines = open('soap_score.res', 'r').readlines()
         last_line = lines[-1]
         words = last_line.split('|')
         self.assertAlmostEqual(float(words[1]), -1541.274, delta=0.01)
@@ -55,8 +54,7 @@ class SOAPDockingApplicationTest(IMP.test.ApplicationTestCase):
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
-        fin = open('soap_score.res', 'r')
-        lines = fin.readlines()
+        lines = open('soap_score.res', 'r').readlines()
         last_line = lines[-1]
         words = last_line.split('|')
         self.assertAlmostEqual(float(words[1]), -1541.274, delta=0.01)
