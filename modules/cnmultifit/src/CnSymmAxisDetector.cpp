@@ -8,7 +8,6 @@
 
 #include <IMP/cnmultifit/CnSymmAxisDetector.h>
 #include <IMP/em/converters.h>
-#include <IMP/statistics/Histogram.h>
 #include <algorithm>
 #include <IMP/em/MRCReaderWriter.h>
 #include <IMP/algebra/constants.h>
