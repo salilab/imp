@@ -12,7 +12,7 @@
 int main(int argc, char **argv) {
   try {
     IMP::Strings files = IMP::base::setup_from_argv(
-        argc, argv, "Add color to an RMF file", "input.pdb output.rmf", 2);
+        argc, argv, "Make an RMF file from a PDB.", "input.pdb output.rmf", 2);
     IMP_NEW(IMP::kernel::Model, m, ());
     IMP::atom::Hierarchy h = IMP::atom::read_pdb(files[0], m);
     IMP::atom::add_bonds(h);
@@ -27,6 +27,7 @@ int main(int argc, char **argv) {
   }
   catch (const std::exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
+    return 1;
   }
   return 0;
 }

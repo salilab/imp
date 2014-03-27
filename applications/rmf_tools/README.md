@@ -8,8 +8,7 @@ Several helper programs are provided.
    hdf5 file to pymol or chimera as appropriate (based on the file name of the
    second argument). It supports hierarchies, restraints and geometry.
 
-- `pdb_rmf` converts an rmf file to or from a PDB file, assuming all hierarchies
-   in the rmf file are atomic resolution.
+- `pdb_rmf` makes an RMF file from a PDB.
 
 # Info
 
