@@ -52,13 +52,10 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(self.sigma.get_scale_derivative(),
                                    1.0 / no, delta=0.001)
 
-    def testParticles(self):
-        "Test JeffreysRestraint::get_input_particles()"
-        self.assertEqual(self.J.get_input_particles(), [self.sigma])
-
-    def testContainers(self):
-        "Test JeffreysRestraint::get_input_containers()"
-        self.assertEqual(self.J.get_input_containers(), [])
+    def test_get_inputs(self):
+        "Test JeffreysRestraint::get_inputs()"
+        self.assertEqual([x.get_name() for x in self.J.get_inputs()],
+                         [self.sigma.get_name()])
 
     def testNonzeroE(self):
         "JeffreysRestraint raise ValueError on evaluate with zero scale"

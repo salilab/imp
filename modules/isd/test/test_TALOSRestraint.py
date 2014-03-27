@@ -203,16 +203,12 @@ class Tests(IMP.test.TestCase):
             else:
                 self.assertAlmostEqual(cpp / py, 1.0, delta=1e-6)
 
-    def testParticles(self):
-        "Test TALOSRestraint::get_input_particles"
+    def test_get_inputs(self):
+        "Test TALOSRestraint::get_inputs"
         self.setup_restraint()
-        self.assertEqual(self.talos.get_input_particles(),
-                         [self.p0, self.p1, self.p2, self.p3, self.kappa])
-
-    def testContainers(self):
-        "Test TALOSRestraint::get_input_containers"
-        self.setup_restraint()
-        self.assertEqual(self.talos.get_input_containers(), [])
+        self.assertEqual([x.get_name() for x in self.talos.get_inputs()],
+                         [y.get_name() for y in [self.p0, self.p1, self.p2,
+                                                 self.p3, self.kappa]])
 
     def testSanityEP(self):
         "Test if TALOS score is -log(prob)"

@@ -256,25 +256,14 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(self.p2.get_derivative(2),
                                0., delta=0.001)
 
-    def testParticles(self):
+    def test_get_inputs(self):
         "Test MarginalNOERestraint::get_input_particles"
         v1, v2 = 1.0, 2.0
-        p0, p1, p2 = self.p0, self.p1, self.p2
-        self.noe.add_contribution(self.p0, self.p1, v1)
-        self.noe.add_contribution(
-            IMP.container.ListPairContainer([(self.p0, self.p2)]), v2)
-        self.assertEqual(self.noe.get_input_particles(),
-                         [self.p0, self.p1, self.p0, self.p2])
-
-    def testContainers(self):
-        "Test MarginalNOERestraint::get_input_containers"
-        v1, v2 = 1.0, 2.0
-        p0, p1, p2 = self.p0, self.p1, self.p2
-        c1 = IMP.container.ListPairContainer([(self.p0, self.p1)])
-        c2 = IMP.container.ListPairContainer([(self.p0, self.p2)])
-        self.noe.add_contribution(c1, v1)
-        self.noe.add_contribution(c2, v2)
-        self.assertEqual(self.noe.get_input_containers(), [c1, c2])
+        c0 = IMP.container.ListPairContainer([(self.p0, self.p2)])
+        self.noe.add_contribution(c0, v2)
+        self.assertEqual([x.get_name() for x in self.noe.get_inputs()],
+                         [y.get_name() for y in \
+                            [self.p0, self.p2, c0]])
 
     def testSanityEP(self):
         "Test if MarginalNOE score is -log(prob)"

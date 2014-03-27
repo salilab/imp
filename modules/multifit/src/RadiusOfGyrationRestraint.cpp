@@ -78,8 +78,7 @@ double RadiusOfGyrationRestraint::unprotected_evaluate(
     IMP_WARN("Can not calcaulte derivatives\n");
   }
   // calculate actual rog
-  // todo - do not use get_input_particles function
-  float actual_rog = get_actual_radius_of_gyration(get_input_particles());
+  float actual_rog = get_actual_radius_of_gyration(get_particles());
   IMP_LOG_VERBOSE("actual_rog:" << actual_rog << " predicted:" << predicted_rog_
                                 << " scale:" << predicted_rog_ * scale_
                                 << " score: " << hub_->evaluate(actual_rog)

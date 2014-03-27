@@ -74,13 +74,10 @@ class Tests(IMP.test.TestCase):
                                        no - no ** 2 / ratio + ratio * no ** 2)),
                                    delta=0.001)
 
-    def testParticles(self):
-        "Test vonMisesKappaJeffreysRestraint::get_input_particles()"
-        self.assertEqual(self.J.get_input_particles(), [self.kappa])
-
-    def testContainers(self):
-        "Test vonMisesKappaJeffreysRestraint::get_input_containers()"
-        self.assertEqual(self.J.get_input_containers(), [])
+    def test_get_inputs(self):
+        "Test vonMisesKappaJeffreysRestraint::get_inputs()"
+        self.assertEqual([x.get_name() for x in self.J.get_inputs()],
+                         [self.kappa.get_name()])
 
     def testNonzeroE(self):
         "vonMisesKappaKappaJeffreys errors on evaluate with zero scale"

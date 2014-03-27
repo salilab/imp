@@ -161,23 +161,15 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(self.kappa.get_scale_derivative(),
                                    -R0 + c * i1(no) / i0(no), delta=0.001)
 
-    def testParticles(self):
-        "Test vonMisesKappaConjugateRestraint::get_input_particles()"
+    def test_get_inputs(self):
+        "Test vonMisesKappaConjugateRestraint::get_inputs()"
         c = 10
         R0 = 1
         self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.m,
                                                          self.kappa, c, R0)
         self.m.add_restraint(self.J)
-        self.assertEqual(self.J.get_input_particles(), [self.kappa])
-
-    def testContainers(self):
-        "Test vonMisesKappaConjugateRestraint::get_input_containers()"
-        c = 10
-        R0 = 1
-        self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.m,
-                                                         self.kappa, c, R0)
-        self.m.add_restraint(self.J)
-        self.assertEqual(self.J.get_input_containers(), [])
+        self.assertEqual([x.get_name() for x in self.J.get_inputs()],
+                         [self.kappa.get_name()])
 
     def testNonzeroE(self):
         "vonMisesKappaConjugate errors on evaluate with zero scale"

@@ -150,14 +150,11 @@ class TestNOERestraintSimple(IMP.test.TestCase):
             self.assertAlmostEqual(self.noe.unprotected_evaluate(None),
                                    expected, delta=0.001)
 
-    def testParticles(self):
-        "Test NOERestraint::get_input_particles"
-        self.assertEqual(self.noe.get_input_particles(),
-                         [self.p0, self.p1, self.sigma, self.gamma])
-
-    def testContainers(self):
-        "Test NOERestraint::get_input_containers"
-        self.assertEqual(self.noe.get_input_containers(), [])
+    def test_get_inputs(self):
+        "Test NOERestraint::get_inputs"
+        self.assertEqual([x.get_name() for x in self.noe.get_inputs()],
+                         [y.get_name() for y in [self.p0, self.p1, self.sigma,
+                                                 self.gamma]])
 
     def testDerivativeX(self):
         "Test NOERestraint derivative w/r to X"
