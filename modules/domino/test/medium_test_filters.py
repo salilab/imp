@@ -115,7 +115,6 @@ class Tests(IMP.test.TestCase):
         pr.set_maximum_score(max_score)
         prd = pr.create_decomposition()
         IMP.show_restraint_hierarchy(prd)
-        print prd.get_input_particles()
         rs = IMP.kernel.RestraintSet.get_from(prd)
         # create particles state table
         pst = IMP.domino.ParticleStatesTable()
