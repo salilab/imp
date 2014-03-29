@@ -415,8 +415,10 @@ bool is_rotation_valid(IMP_Eigen::Matrix3d rm) {
 }
 
 void RigidBody::on_change() {
+  // Compeute maximal $l_inf$ sphere distance from reference frame
   double md = 0;
   {
+    // point members
     const kernel::ParticleIndexes &members = get_member_particle_indexes();
     for (unsigned int i = 0; i < members.size(); ++i) {
       double cd = (get_coordinates() - XYZ(get_model(), members[i])
@@ -428,6 +430,7 @@ void RigidBody::on_change() {
     }
   }
   {
+    // rigid body memebers
     const kernel::ParticleIndexes &members = get_body_member_particle_indexes();
     for (unsigned int i = 0; i < members.size(); ++i) {
       double cd = (get_coordinates() - XYZ(get_model(), members[i])
@@ -438,11 +441,13 @@ void RigidBody::on_change() {
       md = std::max(cd, md);
     }
   }
+  // sets radius to point with maximal distance from reference frame
   if (get_particle()->has_attribute(XYZR::get_radius_key())) {
     get_particle()->set_value(XYZR::get_radius_key(), md);
   } else {
     get_particle()->add_attribute(XYZR::get_radius_key(), md);
   }
+  // clear caches
   for (unsigned int i = 0; i < cache_keys.size(); ++i) {
     if (get_particle()->has_attribute(cache_keys[i])) {
       get_particle()->remove_attribute(cache_keys[i]);
@@ -498,6 +503,8 @@ void RigidBody::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
   internal::add_required_attributes_for_body(m, pi);
   RigidBody d(p);
   d.set_reference_frame(rf);
+  // Include particle in model list of rigid bodies, over which
+  // a container optimizer state normalizez the rotation before score calc.
   kernel::ModelKey mk = get_rb_list_key();
   if (d.get_model()->get_has_data(mk)) {
     // IMP_LOG_TERSE( "Adding particle to list of rigid bodies" << std::endl);
@@ -642,7 +649,8 @@ void RigidBody::add_rigid_body_member(kernel::ParticleIndex pi) {
   RigidBody d(get_model(), pi);
   internal::add_required_attributes_for_body_member(get_model(), d,
                                                     get_particle_index());
-  RigidMember cm(d);
+  RigidMember rm(d);
+  // add / set in list of rigid body memebers
   if (get_model()->get_has_attribute(internal::rigid_body_data().body_members_,
                                      get_particle_index())) {
     kernel::ParticleIndexes members = get_model()->get_attribute(
@@ -658,7 +666,7 @@ void RigidBody::add_rigid_body_member(kernel::ParticleIndex pi) {
   algebra::ReferenceFrame3D pr = d.get_reference_frame();
   algebra::Transformation3D tr =
       r.get_transformation_from() * pr.get_transformation_to();
-  cm.set_internal_transformation(tr);
+  rm.set_internal_transformation(tr);
 }
 
 void RigidBody::add_point_member(kernel::ParticleIndex pi) {
