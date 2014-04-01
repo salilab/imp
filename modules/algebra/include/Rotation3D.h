@@ -73,9 +73,14 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
 
  public:
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Rotation3D);
-  //! Create a rotation from an unnormalized vector 4
-  explicit Rotation3D(const VectorD<4> &v)
-      : v_(v.get_unit_vector()), has_cache_(false) {}
+
+  //! Create a rotation from a vector of 4 quaternion coefficients.
+  //! @note: use assume_normalize with care - inputting an unnormalized
+  //!        vector would result in unexpected results if it is true
+  explicit Rotation3D(const VectorD<4> &v,
+                      bool assume_normalized=false)
+    : v_(assume_normalized ? v : v.get_unit_vector()),
+    has_cache_(false) {}
 
   //! Create an invalid rotation
   Rotation3D() : v_(0, 0, 0, 0), has_cache_(false) {}
@@ -189,6 +194,7 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
                     "Attempting to access uninitialized rotation");
     return v_;
   }
+
   //! multiply two rotations
   Rotation3D operator*(const Rotation3D &q) const {
     IMP_USAGE_CHECK(v_.get_squared_magnitude() > 0,
@@ -208,8 +214,10 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
     return *this;
   }
 
-  /** \brief Return the derivative of the position x with respect to
-      internal variable i. */
+  /** \brief Return the derivative of the position o with respect to
+      the i'th internal quaternion coefficient, for i in [0..3],
+      namely (dx/di, dy/di, dz/di) ??? TODO: is this even true ???
+  */
   const Vector3D get_derivative(const Vector3D &o, unsigned int i) const;
 };
 
@@ -237,7 +245,8 @@ inline double get_distance(const Rotation3D &r0, const Rotation3D &r1) {
   double odot =
       (r0.get_quaternion() + r1.get_quaternion()).get_squared_magnitude();
   double ans = std::min(dot, odot);
-  const double s2 = std::sqrt(2.0);
+  // TODO: barak - added static for efficieny
+  static const double s2 = std::sqrt(2.0);
   double ret = ans / s2;
   return std::max(std::min(ret, 1.0), 0.0);
 }

@@ -206,7 +206,8 @@ class IMPCOREEXPORT RigidBody : public XYZ {
       } else {
       v = algebra::VectorD<4>(1,0,0,0);
       }*/
-    IMP::algebra::Rotation3D rot(v);
+    bool assume_normalized = true;
+    IMP::algebra::Rotation3D rot(v, assume_normalized);
     return algebra::ReferenceFrame3D(
         algebra::Transformation3D(rot, get_coordinates()));
   }
