@@ -48,7 +48,7 @@ if(${status} EQUAL 0)
       COMMAND ${IMP_DOXYGEN_EXECUTABLE} ../../doxygen/%(name)s/Doxyfile 2>&1 /dev/null
       COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=%(name)s --file=../../doxygen/%(name)s/tags
       COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/%(name)s/warnings.txt
-      DEPENDS %(tags)s ${headers} ${docs} ${examples} ${CMAKE_SOURCE_DIR}/modules/%(name)s/README.md IMP.%(name)s-python ${IMP_DOXYGEN_FETCH}
+      DEPENDS %(tags)s ${headers} ${docs} ${examples} ${CMAKE_SOURCE_DIR}/modules/%(name)s/README.md IMP.%(name)s-python
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/doxygen/%(name)s/
       COMMENT "Running doxygen on %(name)s")
 
