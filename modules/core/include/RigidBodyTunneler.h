@@ -45,10 +45,15 @@ class IMPCOREEXPORT RigidBodyTunneler : public MonteCarloMover {
                     kernel::ParticleIndex ref, double move_probability = 1.);
 
   /// add entry point in cartesian space
-  void add_entry_point(IMP_Eigen::Vector3d pt) { entries_.push_back(pt); }
+  void add_entry_point(double x, double y, double z) {
+    IMP_Eigen::Vector3d pt;
+    pt << x, y, z;
+    entries_.push_back(pt);
+  }
 
   /// returns center of mass coordinates and quaternion of rotation wrt ref
-  Floats get_reduced_coordinates() const;
+  static Floats get_reduced_coordinates(kernel::Model*m,
+          kernel::ParticleIndex target, kernel::ParticleIndex ref);
 
   /// returns center of mass coordinates and quaternion of rotation of pi
   static Floats get_reduced_coordinates(kernel::Model*m,
@@ -85,8 +90,6 @@ class IMPCOREEXPORT RigidBodyTunneler : public MonteCarloMover {
                                          & other) const;
     IMP_Eigen::Quaterniond get_local_rotation(const IMP_Eigen::Quaterniond
                                               & other) const;
-    IMP_Eigen::Vector3d get_global_coords(const IMP_Eigen::Vector3d
-                                         & other) const;
 
    private:
     IMP_Eigen::Vector3d compute_centroid() const;

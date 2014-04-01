@@ -23,14 +23,14 @@ IMP_Eigen::Vector3d RigidBodyTunneler::Referential::compute_centroid() const {
   // get rigid body member coordinates
   RigidBody d(m_, pi_);
   kernel::ParticleIndexes pis(d.get_member_particle_indexes());
-  IMP_Eigen::Matrix<double, IMP_Eigen::Dynamic, 3> coords;
+  IMP_Eigen::Matrix<double, IMP_Eigen::Dynamic, 3> coords(pis.size(),3);
   for (unsigned i = 0; i < pis.size(); i++) {
     XYZ xyz(m_, pis[i]);
     coords(i, 0) = xyz.get_x();
     coords(i, 1) = xyz.get_y();
     coords(i, 2) = xyz.get_z();
   }
-  return coords.rowwise().mean();
+  return coords.colwise().mean();
 }
 
 IMP_Eigen::Matrix3d RigidBodyTunneler::Referential::compute_base() const {
@@ -55,17 +55,12 @@ IMP_Eigen::Matrix3d RigidBodyTunneler::Referential::compute_base() const {
 
 IMP_Eigen::Quaterniond RigidBodyTunneler::Referential::compute_quaternion()
     const {
-  return pick_positive(IMP_Eigen::Quaterniond(base_).conjugate());
+  return pick_positive(IMP_Eigen::Quaterniond(base_));
 }
 
 IMP_Eigen::Vector3d RigidBodyTunneler::Referential::get_local_coords(
     const IMP_Eigen::Vector3d& other) const {
-  return q_.inverse() * (other - centroid_);
-}
-
-IMP_Eigen::Vector3d RigidBodyTunneler::Referential::get_global_coords(
-    const IMP_Eigen::Vector3d& other) const {
-  return q_ * other + centroid_;
+  return q_.conjugate() * (other - centroid_);
 }
 
 IMP_Eigen::Quaterniond RigidBodyTunneler::Referential::get_local_rotation(
@@ -84,7 +79,7 @@ IMP_Eigen::Quaterniond RigidBodyTunneler::Referential::pick_positive(
 
 void RigidBodyTunneler::Translater::translate() {
   // convert translation vector from local to global coords
-  IMP_Eigen::Vector3d global_t(ref_.get_global_coords(t_));
+  IMP_Eigen::Vector3d global_t(ref_.get_rotation()*t_);
   // translate each rigid member
   RigidBody d(m_, target_);
   kernel::ParticleIndexes pis(d.get_member_particle_indexes());
@@ -168,8 +163,9 @@ MonteCarloMoverResult RigidBodyTunneler::do_propose() {
 
 void RigidBodyTunneler::do_reject() { last_translation_.undo_translate(); }
 
-Floats RigidBodyTunneler::get_reduced_coordinates() const {
-  Referential target(get_model(), pi_), referential(get_model(), ref_);
+Floats RigidBodyTunneler::get_reduced_coordinates(kernel::Model *m,
+        kernel::ParticleIndex t, kernel::ParticleIndex r) {
+  Referential target(m, t), referential(m, r);
   IMP_Eigen::Vector3d com(
         referential.get_local_coords(target.get_centroid()));
   IMP_Eigen::Quaterniond rot(
