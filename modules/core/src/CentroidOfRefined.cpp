@@ -61,9 +61,10 @@ ModelObjectsTemp CentroidOfRefined::do_get_outputs(
   return ret;
 }
 
-IMP_SUMMARY_DECORATOR_DEF(Centroid, XYZ, XYZs,
-                          SingletonModifier *mod =
-                              new CentroidOfRefined(ref, FloatKey(),
-                                                    XYZ::get_xyz_keys()));
+IMP_SUMMARIZE_DECORATOR_DEF(Centroid, XYZ, XYZs,
+                            (new CentroidOfRefined(ref, FloatKey(), // pre
+                                                   XYZ::get_xyz_keys())),
+                            (new DerivativesToRefined(ref)) // post
+                            );
 
 IMPCORE_END_NAMESPACE

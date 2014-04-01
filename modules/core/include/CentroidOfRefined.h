@@ -48,12 +48,15 @@ class IMPCOREEXPORT CentroidOfRefined : public SingletonModifier {
 };
 
 //! A particle that is the centroid of other particles.
-/** A decorator which sets up a particle to be the centroid of a
-    set of other particles.
+/** A decorator which constrains a particle to be the centroid of a
+    set of other particles. The centroid is updated before model
+    evaluation and its derivatives are copied to its children,
+    using a constraint that is created at setup time.
 
     \usesconstraint
 */
-IMP_SUMMARY_DECORATOR_DECL(Centroid, XYZ, XYZs);
+IMP_SUMMARIZE_DECORATOR_DECL(Centroid, XYZ, XYZs,
+                             Centroid is computed before each evaluation);
 
 IMPCORE_END_NAMESPACE
 

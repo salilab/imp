@@ -18,7 +18,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! Copy the derivatives from the particle to its refined particles.
+//! Copy the derivatives from a coarse particle to its refined particles
 /** \see DerivatvesFromRefinedSingletonModifier
     \see CoverRefined
     \see CentroidOfRefinedSingletonModifer

@@ -17,6 +17,8 @@
 #include <IMP/base/showable_macros.h>
 #include <IMP/base/warning_macros.h>
 
+
+
 /** Implement the needed methods for a decorator based on
     - setup_particle()
     - get_is_setup()
@@ -401,24 +403,106 @@
   }                                                            \
   typedef IMP::base::Vector<Name> PluralName
 
+
+/**
+   Declares Decorator methods that allows (privately) setting a constraint
+   and publicly getting that constraint
+ */
+#define IMP_CONSTRAINT_DECORATOR_DECL(Name)                                \
+ private:                                                                  \
+  static ObjectKey get_constraint_key();                                   \
+ /** set a constraint associated with this decorator that applies 'before' \
+     and 'after' before and after evaluation. The constraint is added as \
+     a model ScoreState. If before and after are Null, the constraint is \
+     reset and removed from the model list of score states.             \
+ */                                                                     \
+ static void set_constraint(SingletonModifier* before,                  \
+                              SingletonDerivativeModifier* after, Model* m, \
+                              ParticleIndex pi);                        \
+                                                                           \
+ public:                                                                   \
+  Constraint* get_constraint() const {                                     \
+    return dynamic_cast<Constraint*>(                                      \
+        get_particle()->get_value(get_constraint_key()));                  \
+  }                                                                        \
+  IMP_REQUIRE_SEMICOLON_CLASS(constraint)
+
+/**
+   Defines Decorator methods that allows (privately) setting a constraint
+   and publicly getting that constraint. The constraint is added as a
+   score state to the model.
+ */
+#define IMP_CONSTRAINT_DECORATOR_DEF(Name)                                \
+  ObjectKey Name::get_constraint_key() {                                  \
+    static ObjectKey ret(#Name " score state");                           \
+    return ret;                                                           \
+  }                                                                       \
+  void Name::set_constraint(SingletonModifier* before,                    \
+                            SingletonDerivativeModifier* after, Model* m, \
+                            ParticleIndex pi) {                           \
+    if (!after && !before) {                                              \
+      if (m->get_has_attribute(get_constraint_key(), pi)) {               \
+        m->remove_score_state(dynamic_cast<ScoreState*>(                  \
+            m->get_attribute(get_constraint_key(), pi)));                 \
+        m->remove_attribute(get_constraint_key(), pi);                    \
+      }                                                                   \
+    } else {                                                              \
+      Constraint* ss = new core::SingletonConstraint(                     \
+          before, after, m, pi,                                           \
+          std::string(#Name "updater for ") + m->get_particle_name(pi));  \
+      m->add_attribute(get_constraint_key(), pi, ss);                     \
+      m->add_score_state(ss);                                             \
+    }                                                                     \
+  }                                                                       \
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
+
+
+/** Register a function that can be used to check that the particle
+    is valid with respect to the decorator. The function should take
+    a Particle* as an argument and return a bool. It should throw
+    an exception if something is wrong.
+
+    This macro should only be used in a .cpp file.
+*/
+#define IMP_CHECK_DECORATOR(Name, function) \
+  IMP::kernel::internal::ParticleCheck Name##pc(Name::get_is_setup, function);
+
+
 //! Create a decorator that computes some sort of summary info on a set
 /** Examples include a centroid or a cover for a set of particles.
 
     \param[in] Name The name for the decorator
     \param[in] Parent the parent decorator type
     \param[in] Members the way to pass a set of particles in
+    \param[in] SetupDoc extra documentation for setup
 */
-#define IMP_SUMMARY_DECORATOR_DECL(Name, Parent, Members)             \
+#define IMP_SUMMARIZE_DECORATOR_DECL(Name, Parent, Members, SetupDoc) \
   class IMPCOREEXPORT Name : public Parent {                          \
     IMP_CONSTRAINT_DECORATOR_DECL(Name);                              \
+  private:                                                            \
+    /** Sets up Name over particles in pis */                         \
     static void do_setup_particle(kernel::Model *m, ParticleIndex pi, \
                                   const ParticleIndexes &pis);        \
-    static void do_setup_particle(kernel::Model *m, ParticleIndex pi, \
+    /** Sets up Name over particles passed by applying the refiner      \
+        over the particle pi                                            \
+    */                                                                  \
+    static void do_setup_particle(kernel::Model *m, ParticleIndex pi,   \
                                   Refiner *ref);                      \
                                                                       \
    public:                                                            \
     IMP_DECORATOR_METHODS(Name, Parent);                              \
+    /** Sets up Name over members, and constrains Name to be          \
+        computed before model evaluation and to propogate derivatives \
+        folllowing model evaulation.                                  \
+        SetupDoc                                                      \
+    */                                                                \
     IMP_DECORATOR_SETUP_1(Name, ParticleIndexesAdaptor, members);     \
+    /** Sets up Name over particles passed by applying the refiner      \
+        over the particle pi, and constrains Name to be computed before \
+        model evaluation and to propogate derivatives following model   \
+        evaluation.                                                      \
+        SetupDoc                                                        \
+    */                                                                  \
     IMP_DECORATOR_SETUP_1(Name, Refiner *, refiner);                  \
     static bool get_is_setup(kernel::Model *m, ParticleIndex pi) {    \
       return m->get_has_attribute(get_constraint_key(), pi);          \
@@ -434,30 +518,90 @@
   };                                                                  \
   IMP_DECORATORS(Name, Name##s, Parent##s)
 
+
+/** See IMP_SUMMARIZE_DECORATOR_DECL()
+    \param[in] Name The name for the decorator
+    \param[in] Parent the parent decorator type
+    \param[in] Members the way to pass a set of particles in
+    \param[in] create_pre_modifier the statements to create the
+               SingletonModifier which computes the summary info,
+               using refiner 'ref'
+    \param[in] create_post_modifier a SingletonDerivativeModifier for
+               the derivatives of the summary back to its members,
+               using refiner 'ref'
+*/
+#define IMP_SUMMARIZE_DECORATOR_DEF(Name, Parent, Members,                \
+                                  create_pre_modifier,                  \
+                                  create_post_modifier)                 \
+  void Name::do_setup_particle(kernel::Model *m, ParticleIndex pi,      \
+                               const ParticleIndexes &pis) {            \
+    Refiner *ref = new FixedRefiner(IMP::kernel::get_particles(m, pis)); \
+    SingletonModifier* pre_mod = create_pre_modifier;                   \
+    SingletonDerivativeModifier* post_mod = create_post_modifier;       \
+    if (!Parent::get_is_setup(m, pi)) Parent::setup_particle(m, pi);    \
+    set_constraint(pre_mod, post_mod, m, pi);                           \
+  }                                                                     \
+                                                                        \
+  void Name::do_setup_particle(kernel::Model *m, ParticleIndex pi,      \
+                               Refiner *ref) {                          \
+    SingletonModifier* pre_mod = create_pre_modifier;                   \
+    SingletonDerivativeModifier* post_mod = create_post_modifier;       \
+    if (!Parent::get_is_setup(m, pi)) Parent::setup_particle(m, pi);    \
+    set_constraint(pre_mod, post_mod, m, pi);                           \
+  }                                                                     \
+                                                                        \
+    void Name::show(std::ostream &out) const {                          \
+      out << #Name << " at " << static_cast<Parent>(*this);             \
+    }                                                                   \
+      IMP_CONSTRAINT_DECORATOR_DEF(Name)
+
+
+/**
+   Provided for backward compatability - use
+   IMP_SUMMARIZE_DECORATOR_DECL instead.
+ */
+#define IMP_SUMMARY_DECORATOR_DECL(Name, Parent, Members)    \
+   IMPKERNEL_DEPRECATED_MACRO (2.2,                                     \
+                 "Use IMP_SUMMARY_DECORATOR_DECL instead"); \
+   IMP_SUMMARIZE_DECORATOR_DECL(Name, Parent, Member, )
+
+// for backward compatability
 /** See IMP_SUMMARY_DECORATOR_DECL()
     \param[in] Name The name for the decorator
     \param[in] Parent the parent decorator type
     \param[in] Members the way to pass a set of particles in
-    \param[in] create_modifier the statements to create the modifier
-    which computes the summary info. It should be called mod.
+    \param[in] create_pre_modifier the statements to create the modifier
+    which computes the summary info. It should be called 'mod',
+    and use the refiner 'ref'
 */
-#define IMP_SUMMARY_DECORATOR_DEF(Name, Parent, Members, create_modifier) \
-  void Name::do_setup_particle(kernel::Model *m, ParticleIndex pi,        \
-                               const ParticleIndexes &pis) {              \
-    Refiner *ref = new FixedRefiner(IMP::kernel::get_particles(m, pis));  \
-    create_modifier;                                                      \
-    if (!Parent::get_is_setup(m, pi)) Parent::setup_particle(m, pi);      \
-    set_constraint(mod, new DerivativesToRefined(ref), m, pi);            \
-  }                                                                       \
-  void Name::do_setup_particle(kernel::Model *m, ParticleIndex pi,        \
-                               Refiner *ref) {                            \
-    create_modifier;                                                      \
-    if (!Parent::get_is_setup(m, pi)) Parent::setup_particle(m, pi);      \
-    set_constraint(mod, new DerivativesToRefined(ref), m, pi);            \
-  }                                                                       \
-  void Name::show(std::ostream &out) const {                              \
-    out << #Name << " at " << static_cast<Parent>(*this);                 \
-  }                                                                       \
+#define IMP_SUMMARY_DECORATOR_DEF(Name, Parent, Members, create_pre_modifier) \
+  IMPKERNEL_DEPRECATED_MACRO (2.2,                                      \
+         "Explicitly state the constraint used to copy" \
+         "derivatives back to the members.");  \
+  void Name::do_setup_particle(kernel::Model *m, ParticleIndex pi,      \
+                                 const ParticleIndexes &pis) {          \
+    Refiner *ref =                                                      \
+      new FixedRefiner(IMP::kernel::get_particles(m, pis));             \
+    create_pre_modifier;                                                \
+    SingletonModifier* post_mod = new DerivativesToRefined(ref);        \
+    if (!Parent::get_is_setup(m, pi)) Parent::setup_particle(m, pi);    \
+    set_constraint(mod, post_mod, m, pi);                               \
+  }                                                                     \
+                                                                        \
+  void Name::do_setup_particle(kernel::Model *m, ParticleIndex pi,      \
+                                 Refiner *ref)                          \
+  {                                                                     \
+    create_pre_modifier;                                                \
+    SingletonModifier* post_mod = new DerivativesToRefined(ref);        \
+    if (!Parent::get_is_setup(m, pi)) Parent::setup_particle(m, pi);    \
+    set_constraint(mod, post_mod, m , pi);                              \
+  }                                                                     \
+  void Name::show(std::ostream &out) const {                            \
+    out << #Name << " at " << static_cast<Parent>(*this);               \
+  }                                                                     \
   IMP_CONSTRAINT_DECORATOR_DEF(Name)
+
+
+
 
 #endif /* IMPKERNEL_DECORATOR_MACROS_H */

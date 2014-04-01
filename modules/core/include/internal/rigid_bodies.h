@@ -34,7 +34,7 @@ struct RigidBodyData {
   RigidBodyData() {
     child_keys_.resize(3);
     std::string pre = "rigid_body_";
-    // rigid body internal coordinates are currently special cased
+    // rigid body internal (local) coordinates are currently special cased
     child_keys_[0] = FloatKey(4);
     child_keys_[1] = FloatKey(5);
     child_keys_[2] = FloatKey(6);
@@ -93,10 +93,10 @@ inline bool get_has_required_attributes_for_member(
     for (unsigned int i = 0; i < 3; ++i) {
       IMP_INTERNAL_CHECK(
           m->get_has_attribute(rigid_body_data().child_keys_[i], p),
-          "Rigid member missing internal coords");
+          "Rigid member missing internal (local) coords");
     }
     IMP_INTERNAL_CHECK(XYZ::get_is_setup(m, p),
-                       "Rigid member missing coordinates");
+                       "Rigid member missing global coordinates");
     return true;
   }
 }
