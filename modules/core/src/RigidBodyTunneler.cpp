@@ -124,9 +124,9 @@ MonteCarloMoverResult RigidBodyTunneler::do_propose() {
     IMP_THROW("You must add at least two entry points for this "
               << "mover to be usable.", ModelException);
   IMP_USAGE_CHECK(
-      RigidBody d(get_model(), pi_).get_coordinates_are_optimized(),
+      RigidBody(get_model(), pi_).get_coordinates_are_optimized(),
       "Rigid body passed to RigidBodyTunneler"
-      << " must be set to be optimized. particle: " << d->get_name());
+      << " must be set to be optimized. particle: " << pi_->get_name());
   // get current reference frame of rb
   Referential target(get_model(), pi_), referential(get_model(), ref_);
   // see if we are to do the move
