@@ -98,6 +98,7 @@ void RigidBodyTunneler::Translater::translate() {
 
 void RigidBodyTunneler::Translater::undo_translate() {
   if (moved_) {
+    std::cout << "rejected that move" << std::endl;
     t_ = -t_;
     translate();
     moved_ = false;
@@ -158,11 +159,16 @@ MonteCarloMoverResult RigidBodyTunneler::do_propose() {
     IMP_LOG_VERBOSE("proposed move " << t.transpose() << " from entry point "
                                      << closest << " to " << distant
                                      << std::endl);
+    std::cout << "proposed move " << t.transpose() << " from entry point "
+                                     << closest << " to " << distant
+                                     << std::endl;
   }
   return MonteCarloMoverResult(kernel::ParticleIndexes(1, pi_), 1.0);
 }
 
-void RigidBodyTunneler::do_reject() { last_translation_.undo_translate(); }
+void RigidBodyTunneler::do_reject() {
+    last_translation_.undo_translate();
+}
 
 Floats RigidBodyTunneler::get_reduced_coordinates(kernel::Model *m,
         kernel::ParticleIndex t, kernel::ParticleIndex r) {
