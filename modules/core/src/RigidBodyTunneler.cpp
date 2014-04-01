@@ -126,7 +126,8 @@ MonteCarloMoverResult RigidBodyTunneler::do_propose() {
   IMP_USAGE_CHECK(
       RigidBody(get_model(), pi_).get_coordinates_are_optimized(),
       "Rigid body passed to RigidBodyTunneler"
-      << " must be set to be optimized. particle: " << pi_->get_name());
+      << " must be set to be optimized. particle: "
+      << get_model()->get_particle(pi_)->get_name());
   // get current reference frame of rb
   Referential target(get_model(), pi_), referential(get_model(), ref_);
   // see if we are to do the move
