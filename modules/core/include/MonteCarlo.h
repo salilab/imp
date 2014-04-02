@@ -117,7 +117,7 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
 
   /** @} */
 
-  /** Computations can be acceletating by throwing out
+  /** Computations can be accelerated by throwing out
       the tails of the distribution of accepted moves. To
       do this, specific a maximum acceptable difference
       between the before and after scores.
