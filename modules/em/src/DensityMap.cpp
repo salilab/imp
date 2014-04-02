@@ -482,16 +482,16 @@ algebra::Vector3D DensityMap::get_centroid(emreal threshold) const {
   float x_centroid = 0.0;
   float y_centroid = 0.0;
   float z_centroid = 0.0;
-  int counter = 0;
+  float counter = 0;
   long nvox = get_number_of_voxels();
   for (long i = 0; i < nvox; i++) {
     if (data_[i] <= threshold) {
       continue;
     }
-    x_centroid += get_location_in_dim_by_voxel(i, 0);
-    y_centroid += get_location_in_dim_by_voxel(i, 1);
-    z_centroid += get_location_in_dim_by_voxel(i, 2);
-    counter += 1;
+    x_centroid += get_location_in_dim_by_voxel(i, 0) * data_[i];
+    y_centroid += get_location_in_dim_by_voxel(i, 1) * data_[i];
+    z_centroid += get_location_in_dim_by_voxel(i, 2) * data_[i];
+    counter += data_[i];
   }
   // counter will not be 0 since we checked that threshold is within
   // the map densities.

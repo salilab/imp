@@ -72,7 +72,7 @@ class Tests(IMP.test.TestCase):
         ps_centroid = IMP.core.get_centroid(IMP.core.XYZs(ps))
         map_centroid = dmap.get_centroid()
         self.assertLess(IMP.algebra.get_distance(ps_centroid, map_centroid),
-                        0.01)
+                        0.07)
 
 if __name__ == '__main__':
     IMP.test.main()
