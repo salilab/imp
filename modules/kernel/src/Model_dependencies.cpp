@@ -26,15 +26,6 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-ModelObjectsTemp Model::get_optimized_particles() const {
-  boost::unordered_set<ModelObject *> ret;
-  FloatIndexes fix = internal::FloatAttributeTable::get_optimized_attributes();
-  for (unsigned int i = 0; i < fix.size(); ++i) {
-    ret.insert(get_particle(fix[i].get_particle()));
-  }
-  return ModelObjectsTemp(ret.begin(), ret.end());
-}
-
 ScoreStatesTemp Model::get_ancestor_score_states(const ModelObject *mo) const {
   ModelObjectsTemp all_in = dependency_graph_.find(mo)->second.get_inputs() +
                             dependency_graph_.find(mo)->second.get_writers();

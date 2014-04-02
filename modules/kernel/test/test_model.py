@@ -255,22 +255,6 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(rg[0], k.get_index())
             self.assertEqual(rg[1], k.get_index() + 1)
 
-    def test_optimized_particles(self):
-        """Test that model returns the right list of optimized particles"""
-        m = IMP.kernel.Model()
-        IMP.base.set_log_level(IMP.base.VERBOSE)
-        opt = []
-        for i in range(0, 100):
-            pi = m.add_particle(str(i))
-            m.add_attribute(IMP.FloatKey(i % 8), pi, i)
-            if i % 3 == 0:
-                m.set_is_optimized(IMP.FloatKey(i % 8), pi, True)
-                opt.append(pi)
-        mopt = m.get_optimized_particles()
-        mopti = sorted([IMP.kernel.Particle.get_from(p).get_index()
-                       for p in mopt])
-        self.assertEqual(mopti, opt)
-
     def test_dependencies(self):
         """Check dependencies with restraints and score states"""
         IMP.base.set_log_level(IMP.base.VERBOSE)
