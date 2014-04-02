@@ -349,17 +349,28 @@ Rotation3D get_rotation_from_x_y_axes(const Vector3D &x, const Vector3D &y) {
 
 std::pair<Vector3D, double> get_axis_and_angle(const Rotation3D &rot) {
   VectorD<4> q = rot.get_quaternion();
-  const double &cos_half = q[0];
-  const double sin_half = std::sqrt(q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
-  if(sin_half>0.0){ // numerically stable solution:
-    double angle = 2 * std::atan2(sin_half, cos_half);
-    Vector3D axis(q[1] / sin_half,
-                  q[2] / sin_half,
-                  q[3]/ sin_half);
-    return std::make_pair(axis.get_unit_vector(), angle);
-  } else {
-     return std::make_pair(Vector3D(1, 0, 0), 0.0);
-  }
+  double a, b, c, d;
+  a = q[0];
+  b = q[1];
+  c = q[2];
+  d = q[3];
+  if (std::abs(a) > .9999) return std::make_pair(Vector3D(1, 0, 0), 0.0);
+  double angle = std::acos(a) * 2;
+  double s = std::sin(angle / 2);
+  Vector3D axis(b / s, c / s, d / s);
+  return std::make_pair(axis.get_unit_vector(), angle);
+  // VectorD<4> q = rot.get_quaternion();
+  // const double &cos_half = q[0];
+  // const double sin_half = std::sqrt(q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
+  // if(sin_half>0.0){ // numerically stable solution:
+  //   double angle = 2 * std::atan2(sin_half, cos_half);
+  //   Vector3D axis(q[1] / sin_half,
+  //                 q[2] / sin_half,
+  //                 q[3]/ sin_half);
+  //   return std::make_pair(axis.get_unit_vector(), angle);
+  // } else {
+  //    return std::make_pair(Vector3D(1, 0, 0), 0.0);
+  // }
 }
 
 //! Generates a nondegenerate set of Euler angles with a delta resolution
