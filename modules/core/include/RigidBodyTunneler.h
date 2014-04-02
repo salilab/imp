@@ -44,18 +44,18 @@ class IMPCOREEXPORT RigidBodyTunneler : public MonteCarloMover {
   RigidBodyTunneler(kernel::Model* m, kernel::ParticleIndex pi,
                     kernel::ParticleIndex ref, double move_probability = 1.);
 
-  /// add entry point in cartesian space
+  //! add entry point in cartesian space
   void add_entry_point(double x, double y, double z) {
     IMP_Eigen::Vector3d pt;
     pt << x, y, z;
     entries_.push_back(pt);
   }
 
-  /// returns center of mass coordinates and quaternion of rotation wrt ref
+  //! returns center of mass coordinates and quaternion of rotation wrt ref
   static Floats get_reduced_coordinates(kernel::Model*m,
           kernel::ParticleIndex target, kernel::ParticleIndex ref);
 
-  /// returns center of mass coordinates and quaternion of rotation of pi
+  //! returns center of mass coordinates and quaternion of rotation of pi
   static Floats get_reduced_coordinates(kernel::Model*m,
           kernel::ParticleIndex pi);
 
@@ -68,6 +68,8 @@ class IMPCOREEXPORT RigidBodyTunneler : public MonteCarloMover {
   virtual void do_reject() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RigidBodyTunneler);
 
+// Hide private nested classes from doxygen
+#ifndef IMP_DOXYGEN
  private:
   class Referential {
    private:
@@ -125,6 +127,7 @@ class IMPCOREEXPORT RigidBodyTunneler : public MonteCarloMover {
   double move_probability_;
   Translater last_translation_;
   std::vector<IMP_Eigen::Vector3d> entries_; //Vector3d not vectorizable
+#endif
 
 };
 
