@@ -25,7 +25,7 @@ MonteCarlo::MonteCarlo(kernel::Model *m)
     : Optimizer(m, "MonteCarlo%1%"),
       temp_(1),
       max_difference_(std::numeric_limits<double>::max()),
-      stat_forward_steps_taken_(0),
+      stat_downward_steps_taken_(0),
       stat_upward_steps_taken_(0),
       stat_num_failures_(0),
       return_best_(true),
@@ -35,6 +35,7 @@ bool MonteCarlo::do_accept_or_reject_move(double score, double last,
                                           double proposal_ratio) {
   bool ok = false;
   if (score < last) {
+    ++stat_downward_steps_taken_;
     ok = true;
     if (score < best_energy_ && return_best_) {
       best_ = new Configuration(get_model());
@@ -55,7 +56,6 @@ bool MonteCarlo::do_accept_or_reject_move(double score, double last,
   if (ok) {
     IMP_LOG_TERSE("Accept: " << score << " previous score was " << last
                              << std::endl);
-    ++stat_forward_steps_taken_;
     last_energy_ = score;
     update_states();
     for (int i = get_number_of_movers() - 1; i >= 0; --i) {
@@ -150,8 +150,7 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
     best_ = new Configuration(get_model());
     best_energy_ = last_energy_;
   }
-  stat_forward_steps_taken_ = 0;
-  stat_num_failures_ = 0;
+  reset_statistics();
   update_states();
 
   IMP_LOG_TERSE("MC Initial energy is " << last_energy_ << std::endl);
