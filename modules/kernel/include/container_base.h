@@ -81,17 +81,6 @@ class IMPKERNELEXPORT Container : public ModelObject {
   void set_is_writable(bool tf);
 #endif
 
-  /** \deprecated_at{2.1} use get_all_possible_indexes() instead
-   */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  ParticlesTemp get_all_possible_particles() const {
-    IMPKERNEL_DEPRECATED_METHOD_DEF(
-        2.1,
-        "Use IMP::Container::get_all_possible_indexes()"
-        "instead");
-    return IMP::kernel::get_particles(get_model(), get_all_possible_indexes());
-  }
-
   IMP_REF_COUNTED_DESTRUCTOR(Container);
 };
 
