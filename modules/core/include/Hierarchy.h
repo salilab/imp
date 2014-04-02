@@ -232,7 +232,7 @@ class IMPCOREEXPORT HierarchyVisitor {
   virtual ~HierarchyVisitor() {}
 };
 
-//! A which applies a singleton modifier to each kernel::Particle in a hierarchy
+//! A visitor which applies a modifier to each kernel::Particle in a hierarchy
 /** This works from both C++ and Python
     \ingroup hierarchy
     \ingroup decorators
@@ -275,7 +275,7 @@ struct Gather {
 }
 #endif
 
-//! Apply the visitor to each particle,  breadth first.
+//! Apply the visitor to each particle, breadth first.
 /** \param[in] d The Hierarchy for the tree in question
     \param[in] f The visitor to be applied. This is passed by reference.
     A branch of the traversal stops when f returns false.
