@@ -158,6 +158,8 @@ inline std::ostream &operator<<(std::ostream &out, const VectorD<D> &v) {
   return out;
 }
 
+#ifndef SWIG
+// SWIG 3.0.0 cannot parse operator>>
 template <int D>
 inline std::istream &operator>>(std::istream &in, VectorD<D> &v) {
   for (unsigned int i = 0; i < D; ++i) {
@@ -165,6 +167,7 @@ inline std::istream &operator>>(std::istream &in, VectorD<D> &v) {
   }
   return in;
 }
+#endif
 
 #endif
 
