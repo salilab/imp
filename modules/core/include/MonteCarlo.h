@@ -117,6 +117,13 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
 
   /** @} */
 
+  //! Set the score threshold.
+  //* An optimization is terminated if the score drops below this value. */
+  void set_score_threshold(double s) { min_score_ = s; }
+
+  //! Get the score threshold.
+  double get_score_threshold() const { return min_score_; }
+
   /** Computations can be accelerated by throwing out
       the tails of the distribution of accepted moves. To
       do this, specific a maximum acceptable difference
@@ -203,6 +210,7 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
   unsigned int stat_upward_steps_taken_;
   unsigned int stat_num_failures_;
   bool return_best_;
+  double min_score_;
   IMP::base::PointerMember<Configuration> best_;
   ::boost::uniform_real<> rand_;
 

@@ -44,7 +44,6 @@ IMPKERNEL_BEGIN_NAMESPACE
 class IMPKERNELEXPORT Optimizer : public ModelObject {
   mutable Floats widths_;
   base::Pointer<Model> my_model_;
-  double min_score_;
   bool stop_on_good_score_;
   mutable base::Pointer<ScoringFunction> cache_;
   base::Pointer<ScoringFunction> scoring_function_;
@@ -114,13 +113,6 @@ class IMPKERNELEXPORT Optimizer : public ModelObject {
   virtual void set_scoring_function(ScoringFunctionAdaptor sf);
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Optimizer);
-
-  /** \deprecated_at{2.1} Do not use as it is not reliably supported. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  void set_score_threshold(double s);
-  /** \deprecated_at{2.1} Do not use as it is not reliably supported. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  double get_score_threshold() const;
 
   // swig needs this at the end for some reason I don't understand
  protected:

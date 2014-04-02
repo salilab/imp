@@ -25,7 +25,6 @@ IMPKERNEL_BEGIN_NAMESPACE
 Optimizer::Optimizer(kernel::Model *m, std::string name)
     : ModelObject(m, name) {
   set_was_used(true);
-  min_score_ = -std::numeric_limits<double>::max();
   stop_on_good_score_ = false;
 }
 
@@ -86,16 +85,6 @@ ModelObjectsTemp Optimizer::get_optimizer_state_inputs() const {
     ret += get_optimizer_state(i)->get_inputs();
   }
   return ret;
-}
-
-double Optimizer::get_score_threshold() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Not a reliable function.");
-  return min_score_;
-}
-
-void Optimizer::set_score_threshold(double s) {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Not a reliable function.");
-  min_score_ = s;
 }
 
 IMPKERNEL_END_NAMESPACE
