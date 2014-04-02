@@ -147,16 +147,27 @@ class Tests(IMP.test.TestCase):
 
     def test_get_axis_and_angle(self):
         """Check that the function get_axis_and_angle is correct"""
+        # Test for non identity rotation:
         r0 = IMP.algebra.get_random_rotation_3d()
         aa = IMP.algebra.get_axis_and_angle(r0)
         axis = aa[0]
         angle = aa[1]
         r1 = IMP.algebra.get_rotation_about_axis(axis, angle)
+        dQ = r0.get_quaternion() - r1.get_quaternion()
+#        print "dQ = ", dQ, dQ.get_squared_magnitude()
         self.assertAlmostEqual(
-            (r0.get_quaternion() - r1.get_quaternion()
-             ).get_squared_magnitude(),
-            0,
-            delta=.1)
+            dQ.get_squared_magnitude(), 0.0,
+            delta=.0001)
+
+        # Test that [1,0,0],0.0 is returned for any identity rotation:
+        r0 = IMP.algebra.get_rotation_about_axis(axis, 0.0)
+        aa = IMP.algebra.get_axis_and_angle(r0)
+        axis = aa[0]
+        angle = aa[1]
+        self.assertAlmostEqual(0.0, angle, delta=.0001)
+        self.assertAlmostEqual((axis - [1,0,0]).get_magnitude(),
+                               0.0, delta=.0001)
+
 
     def test_is_equal_between_rotations(self):
         """Check that two rotations are equal"""

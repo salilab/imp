@@ -458,6 +458,9 @@ IMPALGEBRAEXPORT Rotation3D
 
 //! Decompose a Rotation3D object into a rotation around an axis
 /**
+   Decompose a Rotation3D object into a rotation around an axis. For all identity
+   rotations, returns the axis [1,0,0] and the angle 0.0.
+
    \note http://en.wikipedia.org/wiki/Rotation_matrix
    \note www.euclideanspace.com/maths/geometry/rotations/conversions/
    angleToQuaternion/index.htm
