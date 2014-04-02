@@ -126,7 +126,7 @@ IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
 
 
     The nodes in the hierarchy can correspond to arbitrary bits of a
-    molecule and do not need to have any biological significant. For
+    molecule and do not need to have any biological significance. For
     example we could introduce a fragment containing residues 0 and 1:
     \dotgraph{\dot
     digraph example {
@@ -160,15 +160,15 @@ IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
     - the type of the parent makes sense for the child: eg a Residue
     cannot be the parent of a Chain.
     - the leaves always have coordinates, radius and mass
-    - all particles in hierarchy are from the same model
-    - all Atoms has a Residue for as parent
+    - all particles in the hierarchy are from the same model
+    - all Atoms have a Residue as the parent
     - any Atom with a non-heterogen atom type is part of a protein,
     DNA or RNA molecule.
     - all Residue children of a particle appear in order based
       on their index
-    - all Atom children in of a particle appear in order of their
+    - all Atom children of a particle appear in order of their
       AtomType
-    - if a node has residue indexes, all its descendents down to the
+    - if a node has residue indexes, all its descendants down to the
       residue level also do.
 
     The get_is_valid() method checks some of these properties. Any
@@ -338,7 +338,7 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
       We provide a number of helper methods to get associated
       decorators for the current node in the hierarchy. As an
       example, if the particle decorated by this decorator is
-      a Residue particle, then get_as_residue() return
+      a Residue particle, then get_as_residue() returns
       Residue(get_particle()), if not it returns Residue().
       @{
    */
