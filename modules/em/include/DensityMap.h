@@ -124,7 +124,7 @@ class IMPEMEXPORT DensityMap : public IMP::base::Object {
 
   //! Calculate the location of a given voxel in a given dimension
   /** \param[in] index The voxel index
-      \param[in] dim   The dimesion of interest (x:=0,y:=1,z:=2)
+      \param[in] dim   The dimension of interest (x:=0,y:=1,z:=2)
       \return the location (x,y,z) (in angstroms) of a given voxel. If the
               index is not part of the map, the function returns -1.
    */
@@ -474,7 +474,7 @@ inline algebra::BoundingBoxD<3> get_bounding_box(const DensityMap *m) {
 \param[in] x coordinates of the point to sample around
 \param[in] y coordinates of the point to sample around
 \param[in] z coordinates of the point to sample around
-\param[in] kdist the lenght of the box
+\param[in] kdist the length of the box
 \param[out] iminx the minimum index on the X axis of the output bounding box
 \param[out] iminy the minimum index on the Y axis of the output bounding box
 \param[out] iminz the minimum index on the Z axis of the output bounding box

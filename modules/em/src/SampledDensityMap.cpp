@@ -228,7 +228,7 @@ void internal_resample(em::DensityMap *dmap, kernel::Particles ps, const F &f) {
     for (ivoxz = iminz; ivoxz <= imaxz; ivoxz++) {
       znxny = ivoxz * nxny;
       for (ivoxy = iminy; ivoxy <= imaxy; ivoxy++) {
-        // we increment ivox this way to avoid unneceessary multiplication
+        // we increment ivox this way to avoid unnecessary multiplication
         // operations.
         ivox = znxny + ivoxy * header->get_nx() + iminx;
         for (ivoxx = iminx; ivoxx <= imaxx; ivoxx++) {
