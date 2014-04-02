@@ -294,9 +294,6 @@ using IMP::kernel::get_particles;
 /** Import IMP::kernel::get_pruned_dependency_graph
     in the IMP namespace.*/
 using IMP::kernel::get_pruned_dependency_graph;
-/** Import IMP::kernel::get_required_particles
-    in the IMP namespace.*/
-using IMP::kernel::get_required_particles;
 /** Import IMP::kernel::get_required_score_states
     in the IMP namespace.*/
 using IMP::kernel::get_required_score_states;

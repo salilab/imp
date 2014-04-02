@@ -109,14 +109,6 @@ ScoreStatesTemp get_dependent_score_states(
       ModelObjectsTemp(1, p), all, dg, index);
 }
 
-ParticlesTemp get_required_particles(kernel::ModelObject *p,
-                                     const ModelObjectsTemp &all,
-                                     const DependencyGraph &dg,
-                                     const DependencyGraphVertexIndex &index) {
-  return get_dependent<ParticlesTemp, Particle, true>(
-      kernel::ModelObjectsTemp(1, p), all, dg, index);
-}
-
 ScoreStatesTemp get_required_score_states(
     ModelObject *p, const ModelObjectsTemp &all, const DependencyGraph &dg,
     const DependencyGraphVertexIndex &index) {

@@ -55,13 +55,6 @@ IMPKERNELEXPORT DependencyGraph get_pruned_dependency_graph(kernel::Model *m);
 
 /** \deprecated_at{2.1} You should act directly on the ModelObjects instead. */
 IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-IMPKERNELEXPORT ParticlesTemp
-    get_required_particles(ModelObject *p, const ModelObjectsTemp &all,
-                           const DependencyGraph &dg,
-                           const DependencyGraphVertexIndex &index);
-
-/** \deprecated_at{2.1} You should act directly on the ModelObjects instead. */
-IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
 IMPKERNELEXPORT ScoreStatesTemp
     get_required_score_states(ModelObject *p, const ModelObjectsTemp &all,
                               const DependencyGraph &dg,
