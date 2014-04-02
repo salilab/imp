@@ -41,10 +41,10 @@ class IMPEMEXPORT SampledDensityMap : public DensityMap {
   SampledDensityMap(const DensityHeader &header, KernelType kt = GAUSSIAN);
 
   //! Generate a sampled density map from the particles.
-  /** /param[in] ps     particles with XYZ, radius and weight attributes
-      /param[in] resolution   half width the Gaussian
-      /param[in] voxel_size
-      /param[in] sig_cutoff   Choose what should be the sigma cutoff for
+  /** \param[in] ps     particles with XYZ, radius and weight attributes
+      \param[in] resolution   half width the Gaussian
+      \param[in] voxel_size
+      \param[in] sig_cutoff   Choose what should be the sigma cutoff for
                  accurate sampling. It is used in two functions;
                  (i)  to determine the size of the grid dimensions
                  (ii) to determine the voxels around the coords participating
@@ -90,7 +90,7 @@ class IMPEMEXPORT SampledDensityMap : public DensityMap {
 #endif
 
   inline const core::XYZRs &get_xyzr_particles() const { return xyzr_; }
-  // would go away on§ce we have a XYZRW decorator and the next function as well
+  // would go away once we have a XYZRW decorator and the next function as well
   inline const kernel::Particles &get_sampled_particles() const { return ps_; }
   inline FloatKey get_weight_key() const { return weight_key_; }
 
