@@ -87,9 +87,9 @@ class Tests(IMP.test.TestCase):
                                                  transformed.get_data(), True)
         cross_correlation_coefficient = result.second
         # Tolerate 1 pixel error
-        self.assertAlmostEqual(cross_correlation_coefficient, 1, delta=0.03,
+        self.assertAlmostEqual(cross_correlation_coefficient, 1, delta=0.035,
                                msg="Error in the complete aligment routine,"
-                               "ccc %f less than 0.97" % (cross_correlation_coefficient))
+                               "ccc %f less than 0.965" % (cross_correlation_coefficient))
 
 if __name__ == '__main__':
     IMP.test.main()
