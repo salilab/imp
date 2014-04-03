@@ -20,6 +20,8 @@ IMP_SWIG_DECORATOR(IMP::atom, CenterOfMass, CenterOfMasses);
 IMP_SWIG_DECORATOR(IMP::atom, Charged, Chargeds);
 IMP_SWIG_DECORATOR(IMP::atom, Diffusion, Diffusions);
 IMP_SWIG_DECORATOR(IMP::atom, RigidBodyDiffusion, RigidBodyDiffusions);
+IMP_SWIG_DECORATOR(IMP::atom, TAMDParticle, TAMDParticles);
+IMP_SWIG_DECORATOR(IMP::atom, TAMDCentroid, TAMDCentroids);
 IMP_SWIG_DECORATOR(IMP::atom, Dihedral, Dihedrals);
 IMP_SWIG_DECORATOR(IMP::atom, Domain, Domains);
 IMP_SWIG_DECORATOR(IMP::atom, Fragment, Fragments);
@@ -46,6 +48,7 @@ IMP_SWIG_OBJECT(IMP::atom, BondPairContainer, BondPairContainers);
 IMP_SWIG_OBJECT(IMP::atom, BondSingletonScore, BondSingletonScores);
 IMP_SWIG_OBJECT(IMP::atom, BondedPairFilter, BondedPairFilters);
 IMP_SWIG_OBJECT(IMP::atom, BrownianDynamics, BrownianDynamicsList);
+IMP_SWIG_OBJECT(IMP::atom, BrownianDynamicsTAMD, BrownianDynamicsTAMDList);
 IMP_SWIG_OBJECT(IMP::atom, CAlphaPDBSelector, CAlphaPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, CBetaPDBSelector, CBetaPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, BackbonePDBSelector, BackbonePDBSelectors);
@@ -194,7 +197,9 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
 %include "IMP/atom/CoverBond.h"
 %include "IMP/atom/Simulator.h"
 %include "IMP/atom/BrownianDynamics.h"
+%include "IMP/atom/BrownianDynamicsTAMD.h"
 %include "IMP/atom/Diffusion.h"
+%include "IMP/atom/TAMDParticle.h"
 %include "IMP/atom/Chain.h"
 %include "IMP/atom/Charged.h"
 %include "IMP/atom/CoulombPairScore.h"
