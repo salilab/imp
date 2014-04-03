@@ -48,7 +48,7 @@ class Tests(IMP.test.TestCase):
         for i in xrange(100):
             no = uniform(0.1, 100)
             self.sigma.set_scale(no)
-            self.m.evaluate(self.DA)
+            self.m.evaluate(True)
             self.assertAlmostEqual(self.sigma.get_scale_derivative(),
                                    1.0 / no, delta=0.001)
 

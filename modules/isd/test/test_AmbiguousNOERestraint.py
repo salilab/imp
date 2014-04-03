@@ -213,7 +213,7 @@ class Tests(IMP.test.TestCase):
             self.sigma.set_scale(sigma)
             gamma = uniform(0.1, 100)
             self.gamma.set_scale(gamma)
-            self.m.evaluate(self.DA)
+            self.m.evaluate(True)
             for coord in range(3):
                 self.assertAlmostEqual(self.p0.get_derivative(coord),
                                        ((pos0[coord] - pos1[coord]) * 6 * dist1 ** (-8)
@@ -251,7 +251,7 @@ class Tests(IMP.test.TestCase):
             self.sigma.set_scale(sigma)
             gamma = uniform(0.1, 100)
             self.gamma.set_scale(gamma)
-            self.m.evaluate(self.DA)
+            self.m.evaluate(True)
             self.assertAlmostEqual(self.sigma.get_scale_derivative(),
                                    1 / sigma - 1 / sigma ** 3 *
                                    log(self.V_obs / (gamma * dist ** -6)) ** 2,
@@ -277,7 +277,7 @@ class Tests(IMP.test.TestCase):
             self.sigma.set_scale(sigma)
             gamma = uniform(0.1, 100)
             self.gamma.set_scale(gamma)
-            self.m.evaluate(self.DA)
+            self.m.evaluate(True)
             self.assertAlmostEqual(self.gamma.get_scale_derivative(),
                                    1 / gamma *
                                    (-1 / sigma ** 2 * log(

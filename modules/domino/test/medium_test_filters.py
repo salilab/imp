@@ -136,7 +136,7 @@ class Tests(IMP.test.TestCase):
         for i in range(cs.get_number_of_configurations()):
             cs.load_configuration(i)
             # print IMP.core.XYZ(ps[0]),IMP.core.XYZ(ps[1]),pr.evaluate(None)
-            if pr.evaluate(None) <= max_score:
+            if pr.evaluate(False) <= max_score:
                 ok_combs = ok_combs + 1
         self.assertEqual(cs.get_number_of_configurations(), ok_combs)
 if __name__ == '__main__':

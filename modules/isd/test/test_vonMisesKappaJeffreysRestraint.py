@@ -66,7 +66,7 @@ class Tests(IMP.test.TestCase):
         for i in xrange(100):
             no = uniform(0.1, 100)
             self.kappa.set_scale(no)
-            self.m.evaluate(self.DA)
+            self.m.evaluate(True)
             ratio = i1(no) / i0(no)
             self.assertAlmostEqual(self.kappa.get_scale_derivative(),
                                    0.5 *

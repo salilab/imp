@@ -73,7 +73,7 @@ class Tests(IMP.test.TestCase):
                 expected = 2 * dist ** 3
             delta = p0.get_coordinates() - p1.get_coordinates()
             delta = delta / delta.get_magnitude()
-            self.m.evaluate(self.DA)
+            self.m.evaluate(True)
             for i in xrange(3):
                 self.assertAlmostEqual(p0.get_derivatives()[i],
                                        expected * delta[i], delta=0.001)

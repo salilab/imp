@@ -71,7 +71,7 @@ IMP.atom.create_rigid_body(mh)
 prot_rb = IMP.core.RigidMember(IMP.core.get_leaves(mh)[0]).get_rigid_body()
 # 4.3 apply the trasnformation to the protein
 IMP.core.transform(prot_rb, local_trans)
-m.evaluate(None)  # to make sure the transformation was applied
+m.evaluate(False)  # to make sure the transformation was applied
 # 4.4 print the new correlation score, should be lower than before
 print len(IMP.core.get_leaves(mh))
 IMP.atom.write_pdb(mh, "input2.pdb")
@@ -88,7 +88,7 @@ print "preforming local refinement, may run for 3-4 minutes"
 # translate the molecule to the center of the density
 IMP.core.transform(prot_rb, IMP.algebra.Transformation3D(
     IMP.algebra.get_identity_rotation_3d(), dmap.get_centroid() - IMP.core.get_centroid(ps)))
-m.evaluate(None)  # to make sure the transformation was applied
+m.evaluate(False)  # to make sure the transformation was applied
 sampled_input_density.resample()
 sampled_input_density.calcRMS()
 rmsd = IMP.atom.get_rmsd(IMP.core.XYZs(ps), IMP.core.XYZs(ps_ref))
@@ -112,7 +112,7 @@ print "The start score is:", start_score, "with rmsd of:", start_rmsd
 for i in range(fitting_sols.get_number_of_solutions()):
     IMP.core.transform(prot_rb, fitting_sols.get_transformation(i))
     # prot_rb.set_reference_frame(IMP.algebra.ReferenceFrame3D(fitting_sols.get_transformation(i)))
-    m.evaluate(None)  # to make sure the transformation was applied
+    m.evaluate(False)  # to make sure the transformation was applied
 # 5.2.2 calc rmsd to native configuration
     rmsd = IMP.atom.get_rmsd(
         IMP.core.XYZs(ps), IMP.core.XYZs(IMP.core.get_leaves(mh_ref)))

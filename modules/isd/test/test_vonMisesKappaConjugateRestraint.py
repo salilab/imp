@@ -99,7 +99,7 @@ class Tests(IMP.test.TestCase):
             self.kappa.set_scale(no)
             ratio = i1(no) / i0(no)
             py = -no * R0 + c * log(i0(no))
-            cpp = self.J.evaluate(None)
+            cpp = self.J.evaluate(False)
             self.assertAlmostEqual(cpp, py, delta=0.001)
 
     def testValueEc(self):
@@ -118,7 +118,7 @@ class Tests(IMP.test.TestCase):
             self.m.add_restraint(self.J)
             ratio = i1(no) / i0(no)
             py = -no * R0 + c * log(i0(no))
-            cpp = self.J.evaluate(None)
+            cpp = self.J.evaluate(False)
             self.assertAlmostEqual(cpp, py, delta=0.001)
             self.m.remove_restraint(self.J)
 
@@ -138,7 +138,7 @@ class Tests(IMP.test.TestCase):
             self.m.add_restraint(self.J)
             ratio = i1(no) / i0(no)
             py = -no * R0 + c * log(i0(no))
-            cpp = self.J.evaluate(None)
+            cpp = self.J.evaluate(False)
             self.assertAlmostEqual(cpp, py, delta=0.001)
             self.m.remove_restraint(self.J)
 
@@ -156,7 +156,7 @@ class Tests(IMP.test.TestCase):
         for i in xrange(100):
             no = uniform(0.1, 100)
             self.kappa.set_scale(no)
-            self.m.evaluate(self.DA)
+            self.m.evaluate(True)
             ratio = i1(no) / i0(no)
             self.assertAlmostEqual(self.kappa.get_scale_derivative(),
                                    -R0 + c * i1(no) / i0(no), delta=0.001)

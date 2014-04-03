@@ -148,13 +148,13 @@ class Tests(IMP.test.TestCase):
             print "finish set fit restraint"
             self.imp_model.add_restraint(r)
             print "add rstraint"
-            decomposed_score += r.evaluate(None)
+            decomposed_score += r.evaluate(False)
             print "after evaluate"
         full_r = IMP.em.FitRestraint(self.all_ps, self.scene, [0, 0],
                                      IMP.atom.Mass.get_mass_key(),
                                      1., False)
         self.imp_model.add_restraint(full_r)
-        full_score = full_r.evaluate(None)
+        full_score = full_r.evaluate(False)
         print "decomposed score:", decomposed_score - (len(self.mhs) - 1)
         print "decomposed score normalized:", full_score
         self.assertAlmostEqual(

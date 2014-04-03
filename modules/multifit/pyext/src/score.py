@@ -241,7 +241,7 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn, combs_fn,
                     num_violated = num_violated + 1
         IMP.atom.write_pdb(mhs, "model.%d.pdb" % (i))
         print str(all_leaves[0]) + " :: " + str(all_leaves[-1])
-        score = mdl.evaluate(None)
+        score = mdl.evaluate(False)
         num_violated = 0
         msg = "COMB" + str(i) + "|"
         for r in rs:
@@ -259,8 +259,7 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn, combs_fn,
         msg += "|" + str(
             score) + "|" + str(
             num_violated) + "||||" + str(
-            fitr.evaluate(
-                None)) + "||:"
+            fitr.evaluate(False)) + "||:"
         if all_ref_leaves:
             msg += str(IMP.atom.get_rmsd(IMP.core.XYZs(all_leaves),
                                          IMP.core.XYZs(all_ref_leaves)))

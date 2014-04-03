@@ -62,7 +62,7 @@ class Tests(IMP.test.TestCase):
                                         self.N, self.R, self.chiexp, self.kappa)
         self.m.add_restraint(talos1)
         self.assertAlmostEqual(
-            self.talos.evaluate(None), talos1.evaluate(None),
+            self.talos.evaluate(False), talos1.evaluate(False),
             delta=1e-5)
 
     def testAlternatives2(self):
@@ -72,7 +72,7 @@ class Tests(IMP.test.TestCase):
                                         self.p3, self.obs, self.kappa)
         self.m.add_restraint(talos1)
         self.assertAlmostEqual(
-            self.talos.evaluate(None), talos1.evaluate(None),
+            self.talos.evaluate(False), talos1.evaluate(False),
             delta=1e-5)
 
     def testAlternatives3(self):
@@ -83,7 +83,7 @@ class Tests(IMP.test.TestCase):
                                         self.obs, self.kappa)
         self.m.add_restraint(talos1)
         self.assertAlmostEqual(
-            self.talos.evaluate(None), talos1.evaluate(None),
+            self.talos.evaluate(False), talos1.evaluate(False),
             delta=1e-5)
 
     def testValueDDist(self):
@@ -115,7 +115,7 @@ class Tests(IMP.test.TestCase):
             kappa = uniform(1, 5)
             self.kappa.set_scale(kappa)
             cg.optimize(100)
-            self.talos.evaluate(self.DA)
+            self.talos.evaluate(True)
             pos = self.p3.get_coordinates()
             obssin = -pos[2] / sqrt(pos[0] ** 2 + pos[2] ** 2)
             obscos = pos[0] / sqrt(pos[0] ** 2 + pos[2] ** 2)
@@ -133,7 +133,7 @@ class Tests(IMP.test.TestCase):
         for i in xrange(100):
             kappa = uniform(0.1, 10)
             self.kappa.set_scale(kappa)
-            self.talos.evaluate(self.DA)
+            self.talos.evaluate(True)
             py = self.N * i1(
                 kappa) / i0(
                 kappa) - self.R * cos(
@@ -156,7 +156,7 @@ class Tests(IMP.test.TestCase):
             self.p3.set_coordinates(IMP.algebra.Vector3D(
                 cos(2 * pi - x), 1, sin(2 * pi - x)))
             kappa = self.kappa.get_scale()
-            self.talos.evaluate(self.DA)
+            self.talos.evaluate(True)
             py = self.N * i1(kappa) / i0(kappa) - self.R * cos(x - self.chiexp)
             cpp = self.kappa.get_scale_derivative()
             if py == 0:
@@ -176,7 +176,7 @@ class Tests(IMP.test.TestCase):
             self.p3.set_coordinates(IMP.algebra.Vector3D(
                 cos(2 * pi - x), 1, sin(2 * pi - x)))
             kappa = self.kappa.get_scale()
-            cpp = self.talos.evaluate(None)
+            cpp = self.talos.evaluate(False)
             py = log(2 * pi * i0(kappa) ** self.N) - \
                 self.R * kappa * cos(x - self.chiexp)
             if py == 0:
@@ -195,7 +195,7 @@ class Tests(IMP.test.TestCase):
         for i in xrange(100):
             kappa = uniform(0.1, 10)
             self.kappa.set_scale(kappa)
-            cpp = self.talos.evaluate(None)
+            cpp = self.talos.evaluate(False)
             py = log(2 * pi * i0(kappa) ** self.N) - \
                 self.R * kappa * cos(pi / 2 - self.chiexp)
             if py == 0:
@@ -250,7 +250,7 @@ class Tests(IMP.test.TestCase):
         self.kappa.set_scale(3)
         cg.optimize(100)
         kappa = self.kappa.get_scale()
-        E = self.m.evaluate(None)
+        E = self.m.evaluate(False)
         expE = -10.125165226189658481
         expkappa = 5.3046890629577175140
         self.assertAlmostEqual(kappa, expkappa, delta=1e-6)

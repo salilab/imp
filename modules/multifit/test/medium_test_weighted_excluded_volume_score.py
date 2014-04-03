@@ -68,7 +68,7 @@ class Tests(IMP.test.TestCase):
                 IMP.core.get_leaves(self.mhs[1]), 1.)
             val = IMP.em.calculate_intersection_score(mh1_surface, mh2_surface)
             scores.append(val)
-            scores_by_restraint.append(self.mdl.evaluate(None))
+            scores_by_restraint.append(self.mdl.evaluate(False))
             IMP.core.transform(self.rbs[1], t.get_inverse())
         # test that score makes sense
         for i in range(2):

@@ -55,7 +55,7 @@ class Tests(IMP.test.TestCase):
         m.add_restraint(r)
         score = self.imp_model.evaluate(False)
         self.assertLess(score, 0.01)
-        print "score:", score, r.evaluate(None)
+        print "score:", score, r.evaluate(False)
         # check origin
         ps_centroid = IMP.core.get_centroid(IMP.core.XYZs(ps))
         map_centroid = dmap.get_centroid()

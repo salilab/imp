@@ -70,8 +70,8 @@ class Tests(IMP.test.TestCase):
             dist1 = IMP.core.get_distance(p0, p1) ** -6
             dist2 = IMP.core.get_distance(p0, p2) ** -6
             expected = log(log(dist1 / v1) ** 2 + log(dist2 / v2) ** 2)
-            self.noe.evaluate(None)
-            self.assertAlmostEqual(self.noe.evaluate(None),
+            self.noe.evaluate(False)
+            self.assertAlmostEqual(self.noe.evaluate(False),
                                    expected, delta=0.001)
 
     def testValuePDist2(self):
@@ -121,7 +121,7 @@ class Tests(IMP.test.TestCase):
             for j in xrange(len(pairs)):
                 expected += log(volumes[j] / distances[j] ** (-6)) ** 2
             expected = log(expected) * (len(volumes) / 2.0)
-            self.assertAlmostEqual(self.noe.evaluate(None),
+            self.assertAlmostEqual(self.noe.evaluate(False),
                                    expected, delta=0.001)
 
     def testValueLogsquares(self):
@@ -145,7 +145,7 @@ class Tests(IMP.test.TestCase):
             expected = 0
             for j in xrange(len(pairs)):
                 expected += log(volumes[j] / distances[j] ** (-6)) ** 2
-            self.noe.evaluate(None)
+            self.noe.evaluate(False)
             self.assertAlmostEqual(self.noe.get_logsquares(),
                                    expected, delta=0.001)
 
@@ -182,7 +182,7 @@ class Tests(IMP.test.TestCase):
         p0.set_coordinates(IMP.algebra.Vector3D(0, 0, 0))
         p1.set_coordinates(IMP.algebra.Vector3D(1, 1, 1))
         p2.set_coordinates(IMP.algebra.Vector3D(1, 0, 0))
-        self.noe.evaluate(self.DA)
+        self.noe.evaluate(True)
         # p0
         self.assertAlmostEqual(self.p0.get_derivative(0),
                                -1.89554, delta=0.001)
@@ -226,7 +226,7 @@ class Tests(IMP.test.TestCase):
         for i in xrange(100):
             p0.set_coordinates(IMP.algebra.Vector3D(*[uniform(-10, 10) for i in
                                                       range(3)]))
-            self.assertAlmostEqual(self.noe.evaluate(None),
+            self.assertAlmostEqual(self.noe.evaluate(False),
                                    -log(self.noe.get_probability()), delta=0.001)
 
     def testSanityPE(self):
@@ -242,7 +242,7 @@ class Tests(IMP.test.TestCase):
             p0.set_coordinates(IMP.algebra.Vector3D(*[uniform(-10, 10) for i in
                                                       range(3)]))
             self.assertAlmostEqual(self.noe.get_probability(),
-                                   exp(-self.noe.evaluate(None)), delta=0.001)
+                                   exp(-self.noe.evaluate(False)), delta=0.001)
 
 if __name__ == '__main__':
     IMP.test.main()
