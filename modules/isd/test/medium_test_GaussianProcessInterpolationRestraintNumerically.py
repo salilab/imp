@@ -103,7 +103,7 @@ class Tests(IMP.test.TestCase):
         test the derivatives of the gpi numerically for G
         """
         pnum = 0
-        values = linspace(1, 10)
+        values = linspace(1, 10, num=30)
         particle = self.particles[pnum]
         PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
         for val in values:
@@ -118,7 +118,7 @@ class Tests(IMP.test.TestCase):
         test the derivatives of the gpi numerically for Rg
         """
         pnum = 1
-        values = linspace(1, 10)
+        values = linspace(1, 10, num=30)
         particle = self.particles[pnum]
         PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
         for val in values:
@@ -148,7 +148,7 @@ class Tests(IMP.test.TestCase):
         test the derivatives of the gpi numerically for Tau
         """
         pnum = 5
-        values = linspace(.1, .9)
+        values = linspace(.1, .9, num=30)
         particle = self.particles[pnum]
         PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
         for val in values:
@@ -163,7 +163,7 @@ class Tests(IMP.test.TestCase):
         test the derivatives of the gpi numerically for Lambda
         """
         pnum = 6
-        values = linspace(.3, 2)
+        values = linspace(.3, 2, num=30)
         particle = self.particles[pnum]
         PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
         for val in values:
@@ -199,7 +199,7 @@ class Tests(IMP.test.TestCase):
         """
         pa = 1
         pb = 0
-        values = linspace(1, 10)
+        values = linspace(1, 10, num=30)
         ppa = self.particles[pa]
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
@@ -219,7 +219,7 @@ class Tests(IMP.test.TestCase):
         """
         pa = 1
         pb = 1
-        values = linspace(1, 10)
+        values = linspace(1, 10, num=30)
         ppa = self.particles[pa]
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
@@ -239,7 +239,7 @@ class Tests(IMP.test.TestCase):
         """
         pa = 1
         pb = 0
-        values = linspace(1, 10)
+        values = linspace(1, 10, num=30)
         ppa = self.particles[pa]
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
@@ -280,7 +280,7 @@ class Tests(IMP.test.TestCase):
         """
         pa = 4
         pb = 5
-        values = linspace(.1, .9)
+        values = linspace(.1, .9, num=30)
         ppa = self.particles[pa]
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
@@ -301,7 +301,7 @@ class Tests(IMP.test.TestCase):
         """
         pa = 4
         pb = 6
-        values = linspace(.1, .9)
+        values = linspace(.1, .9, num=30)
         ppa = self.particles[pa]
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
@@ -322,7 +322,7 @@ class Tests(IMP.test.TestCase):
         """
         pa = 5
         pb = 5
-        values = linspace(.1, .9)
+        values = linspace(.1, .9, num=30)
         ppa = self.particles[pa]
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
@@ -343,7 +343,7 @@ class Tests(IMP.test.TestCase):
         """
         pa = 5
         pb = 6
-        values = linspace(.1, .9)
+        values = linspace(.1, .9, num=30)
         ppa = self.particles[pa]
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
@@ -364,7 +364,7 @@ class Tests(IMP.test.TestCase):
         """
         pa = 6
         pb = 6
-        values = linspace(1, 10)
+        values = linspace(1, 10, num=30)
         ppa = self.particles[pa]
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
@@ -385,7 +385,7 @@ class Tests(IMP.test.TestCase):
         """
         pa = 0
         pb = 4
-        values = linspace(.1, .9)
+        values = linspace(.1, .9, num=30)
         ppa = self.particles[pa]
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
@@ -406,7 +406,7 @@ class Tests(IMP.test.TestCase):
         """
         pa = 1
         pb = 4
-        values = linspace(.1, .9)
+        values = linspace(.1, .9, num=30)
         ppa = self.particles[pa]
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
@@ -427,7 +427,7 @@ class Tests(IMP.test.TestCase):
         """
         pa = 0
         pb = 5
-        values = linspace(.1, .9)
+        values = linspace(.1, .9, num=30)
         ppa = self.particles[pa]
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
@@ -448,7 +448,7 @@ class Tests(IMP.test.TestCase):
         """
         pa = 1
         pb = 5
-        values = linspace(.1, .9)
+        values = linspace(.1, .9, num=30)
         ppa = self.particles[pa]
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
@@ -469,7 +469,7 @@ class Tests(IMP.test.TestCase):
         """
         pa = 0
         pb = 6
-        values = linspace(.1, .9)
+        values = linspace(.1, .9, num=30)
         ppa = self.particles[pa]
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
@@ -490,7 +490,7 @@ class Tests(IMP.test.TestCase):
         """
         pa = 1
         pb = 6
-        values = linspace(.1, .9)
+        values = linspace(.1, .9, num=30)
         ppa = self.particles[pa]
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
@@ -511,7 +511,7 @@ class Tests(IMP.test.TestCase):
         """
         pa = 6
         pb = 1
-        values = linspace(.1, .9)
+        values = linspace(.1, .9, num=30)
         ppa = self.particles[pa]
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
