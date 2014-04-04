@@ -125,15 +125,6 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
         this = _IMP_atom.new_Selection(hierarchies)
         try: self.this.append(this)
         except: self.this = this
-      if "residue_indexes" in params.keys():
-        out = []
-        for i in params["residue_indexes"]:
-           if type(i) == tuple:
-              print "WARNING, Passing a tuple to residue_indexes in Selection is deprecated as of IMP 2.1, please use range() instead."
-              out += range(i[0], i[1])
-           else:
-              out.append(i)
-           params["residue_indexes"] = out
       for k in params.keys():
         eval("self.set_%s(params[k])"%k)
 %}
