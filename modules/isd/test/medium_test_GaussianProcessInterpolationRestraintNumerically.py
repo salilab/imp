@@ -539,12 +539,14 @@ class Tests(IMP.test.TestCase):
             np = 0
             # print comb
             for c, p in zip(comb, self.particles):
-                p.set_nuisance_is_optimized(comb)
-                np += 1
+                p.set_nuisance_is_optimized(c)
+                if c:
+                    np += 1
             for rep in xrange(3):
                 self.shuffle_particle_values()
                 Hessian = array(self.gpr.get_hessian(False))
-                self.assertEqual(Hessian.shape, (np, np))
+                if np != 0:
+                    self.assertEqual(Hessian.shape, (np, np))
                 if hasattr(linalg, 'matrix_rank'):
                     self.assertEqual(linalg.matrix_rank(Hessian), np)
                 # try:
