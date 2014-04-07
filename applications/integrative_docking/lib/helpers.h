@@ -17,14 +17,17 @@
 #include <IMP/atom/pdb.h>
 #include <IMP/atom/DopePairScore.h>
 #include <IMP/atom/hierarchy_tools.h>
+#include <IMP/atom/CHARMMParameters.h>
+#include <IMP/atom/CHARMMStereochemistryRestraint.h>
 
 #include <vector>
 #include <string>
 
 namespace {
 
-void read_pdb(const std::string pdb_file_name, IMP::kernel::Model* model,
-              IMP::kernel::ParticleIndexes& pis) {
+IMP::atom::Hierarchy read_pdb(const std::string pdb_file_name,
+                              IMP::kernel::Model* model,
+                              IMP::kernel::ParticleIndexes& pis) {
 
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(
       pdb_file_name, model, new IMP::atom::NonWaterNonHydrogenPDBSelector(),
@@ -34,6 +37,17 @@ void read_pdb(const std::string pdb_file_name, IMP::kernel::Model* model,
       get_by_type(mhd, IMP::atom::ATOM_TYPE));
   std::cout << pis.size() << " atoms read from " << pdb_file_name << std::endl;
   IMP::atom::add_dope_score_data(mhd);
+  return mhd;
+}
+
+IMP::ParticlesTemp add_bonds(IMP::atom::Hierarchy mhd) {
+  IMPATOMEXPORT IMP::atom::CHARMMParameters *ff = IMP::atom::get_heavy_atom_CHARMM_parameters();
+  IMP::base::Pointer<IMP::atom::CHARMMTopology> topology =
+    ff->create_topology(mhd);
+  topology->add_atom_types(mhd);
+
+  IMP::ParticlesTemp bonds =  topology->add_bonds(mhd);
+  return bonds;
 }
 
 void read_pdb_atoms(const std::string file_name,
@@ -145,6 +159,19 @@ void get_residue_solvent_accessibility(
   residue_solvent_accessibility =
       s.get_solvent_accessibility(IMP::core::XYZRs(residue_particles));
 }
+
+
+IMP::atom::Residue find_residue(const IMP::ParticlesTemp& residues,
+                                int res_index, std::string chain) {
+  for(unsigned int i=0; i<residues.size(); i++) {
+    IMP::atom::Residue rd = IMP::atom::Residue(residues[i]);
+    if(rd.get_index() == res_index &&
+       IMP::atom::get_chain(rd).get_id() == chain) return rd;
+  }
+  std::cerr << "Residue not found " << res_index << chain << std::endl;
+  exit(0);
+}
+
 }
 
 #endif /* IMP_HELPERS_H */

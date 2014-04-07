@@ -22,6 +22,8 @@ class SOAPResult : public Result {
         sas_score_(sas_score),
         atom_pairs_score_(atom_pairs_score) {}
 
+  void set_sas_score(float sas_score) { sas_score_ = sas_score; }
+
   friend std::ostream& operator<<(std::ostream& s, const SOAPResult& p) {
     s.width(6);
     s << p.number_ << " | ";
