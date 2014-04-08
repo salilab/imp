@@ -22,7 +22,10 @@
 - IMP::atom::Chain now uses strings for the chain ids, to be consistent with changes in the PDB. PDB files are written using the first character of the chain string.
 - Added orientation-dependent SOAP scoring (IMP::score_functor::OrientedSoap and IMP::atom::OrientedSoapPairScore). Orientation-dependent SOAP scores include those that score loops (SOAP-Loop), protein-peptide interfaces (SOAP-Peptide) and proteins (SOAP-Protein). The library files themselves are rather large (~1.5GB) and so are not included with IMP. They can be downloaded separately from http://salilab.org/SOAP/.
 
-# For IMP 2.1 # {#changelog_21}
+# For IMP 2.1.1 # {#changelog_2_1_1}
+- Added support for Mac OS 10.9
+
+# For IMP 2.1 # {#changelog_2_1}
 - There is now some limited IMP-wide gathering of timing statistics. You can add `--statistics=filename` to the command line or use the IMP::base::show_timings() function to view a summary of where IMP has spent time.
 - Slack was being used inconsistently (and not always correctly) among the various containers and restraints. If you had heavily optimized the slack value for speed, you may want to revisit it.
 - Class name OwnerPointer was switched to PointerMember, to denote more clearly a ref-counting pointer that is a class member.
