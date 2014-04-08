@@ -2,7 +2,7 @@
  *  \file PDBParser.h
  *  \brief A class with static functions for parsing PDB files
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -144,7 +144,7 @@ void write_pdb(const kernel::ParticlesTemp& ps, base::TextOutput out) {
       char chain;
       Chain c = get_chain(rd);
       if (c) {
-        chain = c.get_id();
+        chain = c.get_id()[0];
       } else {
         chain = ' ';
       }

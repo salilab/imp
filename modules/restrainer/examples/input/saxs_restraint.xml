@@ -1,9 +1,0 @@
-<!-- File: saxs_restraint.xml -->
-
-<RestraintSet>
-    <SAXS name="saxs_restraint_set"> 
-        <Restraint name="saxs_restraint" profile_filename="data/lyzexp.dat">
-            <Particle id="6lyz"></Particle>
-        </Restraint>
-    </SAXS>
-</RestraintSet>

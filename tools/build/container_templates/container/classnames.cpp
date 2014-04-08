@@ -3,7 +3,7 @@
  *
  *  BLURB
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -29,8 +29,8 @@
 #include <IMP/container_macros.h>
 #include <IMP/core/ClassnameRestraint.h>
 #include <IMP/kernel/internal/container_helpers.h>
-#include <IMP/kernel/internal/InternalListClassnameContainer.h>
 #include <IMP/kernel/internal/TupleRestraint.h>
+#include <boost/functional/hash/hash.hpp>
 #include <IMP/Optimizer.h>
 #include <limits>
 #include <utility>
@@ -40,19 +40,23 @@ IMPCONTAINER_BEGIN_INTERNAL_NAMESPACE
 ClassnameContainerIndex::ClassnameContainerIndex(ClassnameContainerAdaptor c,
                                                  bool handle_permutations)
     : ScoreState(c->get_model(), c->get_name() + " index"),
-      container_(c), container_version_(c->get_contents_version()),
+      container_(c),
+      container_version_(c->get_contents_hash()),
       handle_permutations_(handle_permutations) {
   build();
 }
 
 void ClassnameContainerIndex::build() {
   contents_.clear();
-  IMP_CONTAINER_FOREACH(ClassnameContainer,
-      container_, contents_.insert(IMP::kernel::internal::get_canonical(_1)));
+  IMP_FOREACH(INDEXTYPE it, container_->get_contents()) {
+    contents_.insert(IMP::kernel::internal::get_canonical(it));
+  }
 }
 
 void ClassnameContainerIndex::do_before_evaluate() {
-  if (kernel::Container::update_version(container_, container_version_)) {
+  std::size_t h = container_->get_contents_hash();
+  if (h != container_version_) {
+    container_version_ = h;
     build();
   }
 }
@@ -80,10 +84,8 @@ ClassnameContainerSet::ClassnameContainerSet(const ClassnameContainersTemp &in,
 
 PLURALINDEXTYPE ClassnameContainerSet::get_indexes() const {
   PLURALINDEXTYPE sum;
-  for (ClassnameContainerConstIterator it =
-           CLASSFUNCTIONNAME_containers_begin();
-       it != CLASSFUNCTIONNAME_containers_end(); ++it) {
-    PLURALINDEXTYPE cur = (*it)->get_indexes();
+  IMP_FOREACH(kernel::ClassnameContainer * c, get_classname_containers()) {
+    PLURALINDEXTYPE cur = c->get_indexes();
     sum.insert(sum.end(), cur.begin(), cur.end());
   }
   return sum;
@@ -91,10 +93,8 @@ PLURALINDEXTYPE ClassnameContainerSet::get_indexes() const {
 
 PLURALINDEXTYPE ClassnameContainerSet::get_range_indexes() const {
   PLURALINDEXTYPE sum;
-  for (ClassnameContainerConstIterator it =
-           CLASSFUNCTIONNAME_containers_begin();
-       it != CLASSFUNCTIONNAME_containers_end(); ++it) {
-    PLURALINDEXTYPE cur = (*it)->get_range_indexes();
+  IMP_FOREACH(kernel::ClassnameContainer * c, get_classname_containers()) {
+    PLURALINDEXTYPE cur = c->get_range_indexes();
     sum.insert(sum.end(), cur.begin(), cur.end());
   }
   return sum;
@@ -105,35 +105,30 @@ IMP_LIST_IMPL(ClassnameContainerSet, ClassnameContainer,
               ClassnameContainers);
 
 void ClassnameContainerSet::do_apply(const ClassnameModifier *sm) const {
-  for (unsigned int i = 0; i < get_number_of_CLASSFUNCTIONNAME_containers();
-       ++i) {
-    get_CLASSFUNCTIONNAME_container(i)->apply(sm);
+  IMP_FOREACH(kernel::ClassnameContainer * c, get_classname_containers()) {
+    c->apply(sm);
   }
 }
 
 ParticleIndexes ClassnameContainerSet::get_all_possible_indexes() const {
   kernel::ParticleIndexes ret;
-  for (unsigned int i = 0; i < get_number_of_CLASSFUNCTIONNAME_containers();
-       ++i) {
-    ret += get_CLASSFUNCTIONNAME_container(i)->get_all_possible_indexes();
+  IMP_FOREACH(kernel::ClassnameContainer * c, get_classname_containers()) {
+    ret += c->get_all_possible_indexes();
   }
   return ret;
 }
 
-void ClassnameContainerSet::do_before_evaluate() {
-  bool changed = false;
-  versions_.resize(get_number_of_CLASSFUNCTIONNAME_containers(), -1);
-  for (unsigned int i = 0; i < get_number_of_CLASSFUNCTIONNAME_containers();
-       ++i) {
-    changed |= update_version(get_CLASSFUNCTIONNAME_container(i),
-                              versions_[i]);
-  }
-  set_is_changed(changed);
-}
-
 ModelObjectsTemp ClassnameContainerSet::do_get_inputs() const {
   return kernel::ModelObjectsTemp(CLASSFUNCTIONNAME_containers_begin(),
-                          CLASSFUNCTIONNAME_containers_end());
+                                  CLASSFUNCTIONNAME_containers_end());
+}
+
+std::size_t ClassnameContainerSet::do_get_contents_hash() const {
+  std::size_t ret = 0;
+  IMP_FOREACH(kernel::ClassnameContainer * c, get_classname_containers()) {
+    boost::hash_combine(ret, c->get_contents_hash());
+  }
+  return ret;
 }
 
 IMPCONTAINER_END_NAMESPACE
@@ -192,7 +187,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 ClassnamesOptimizerState::ClassnamesOptimizerState(ClassnameContainerAdaptor c,
                                                    ClassnameModifier *gm,
                                                    std::string name)
-    : OptimizerState(name), c_(c) {
+    : OptimizerState(c->get_model(), name), c_(c) {
   f_ = gm;
 }
 
@@ -242,17 +237,19 @@ void DistributeClassnamesScoreState::do_after_evaluate(
     DerivativeAccumulator *) {}
 
 void DistributeClassnamesScoreState::update_lists_if_necessary() const {
-  if (!kernel::Container::update_version(input_, input_version_)) return;
+  std::size_t h = input_->get_contents_hash();
+  if (h == input_version_) return;
+  input_version_ = h;
 
   base::Vector<PLURALINDEXTYPE> output(data_.size());
-  IMP_CONTAINER_FOREACH(ClassnameContainer, input_, {
+  IMP_FOREACH(INDEXTYPE it, input_->get_contents()) {
     for (unsigned int i = 0; i < data_.size(); ++i) {
-      if (data_[i].get<1>()->get_value_index(get_model(), _1) ==
+      if (data_[i].get<1>()->get_value_index(get_model(), it) ==
           data_[i].get<2>()) {
-        output[i].push_back(_1);
+        output[i].push_back(it);
       }
     }
-  });
+  }
   for (unsigned int i = 0; i < output.size(); ++i) {
     data_[i].get<0>()->set(output[i]);
   }
@@ -283,7 +280,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 EventClassnamesOptimizerState::EventClassnamesOptimizerState(
     ClassnamePredicate *pred, ClassnameContainerAdaptor container, int value,
     int min_count, int max_count, std::string name)
-    : OptimizerState(name),
+    : OptimizerState(container->get_model(), name),
       pred_(pred),
       container_(container),
       v_(value),
@@ -293,10 +290,9 @@ EventClassnamesOptimizerState::EventClassnamesOptimizerState(
 void EventClassnamesOptimizerState::update() {
   int met = 0;
   kernel::Model *m = get_optimizer()->get_model();
-  IMP_CONTAINER_FOREACH(ClassnameContainer, container_,
-                              if (pred_->get_value_index(m, _1) == v_) {
-    ++met;
-  });
+  IMP_FOREACH(INDEXTYPE it, container_->get_contents()) {
+    if (pred_->get_value_index(m, it) == v_) ++met;
+  }
   if (met >= min_ && met < max_) {
     throw IMP::base::EventException("an event occurred");
   }
@@ -335,10 +331,12 @@ ListClassnameContainer::ListClassnameContainer(kernel::Model *m,
   set(ps);
 }
 
-ListClassnameContainer::ListClassnameContainer(kernel::Model *m, std::string name)
+ListClassnameContainer::ListClassnameContainer(kernel::Model *m,
+                                               std::string name)
     : P(m, name) {}
 
-ListClassnameContainer::ListClassnameContainer(kernel::Model *m, const char *name)
+ListClassnameContainer::ListClassnameContainer(kernel::Model *m,
+                                               const char *name)
     : P(m, name) {}
 
 void ListClassnameContainer::add_FUNCTIONNAME(ARGUMENTTYPE vt) {
@@ -373,11 +371,11 @@ ClassnameMinimumMS find_minimal_set_ClassnameMinimum(C *c, F *f,
   IMP_LOG_VERBOSE("Finding Minimum " << n << " of " << c->get_number()
                                      << std::endl);
   ClassnameMinimumMS bestn(n);
-  IMP_CONTAINER_FOREACH_TEMPLATE(C, c, {
-    double score = f->evaluate_index(c->get_model(), _1, nullptr);
-    IMP_LOG_VERBOSE("Found " << score << " for " << _1 << std::endl);
-    bestn.insert(score, _1);
-  });
+  IMP_FOREACH(INDEXTYPE it, c->get_contents()) {
+    double score = f->evaluate_index(c->get_model(), it, nullptr);
+    IMP_LOG_VERBOSE("Found " << score << " for " << it << std::endl);
+    bestn.insert(score, it);
+  }
   return bestn;
 }
 }
@@ -510,105 +508,98 @@ PredicateClassnamesRestraint::PredicateClassnamesRestraint(
     : Restraint(input->get_model(), name),
       predicate_(pred),
       input_(input),
-      input_version_(-1),
+      input_version_(input->get_contents_hash()),
       error_on_unknown_(true) {}
 
 void PredicateClassnamesRestraint::do_add_score_and_derivatives(
     ScoreAccumulator sa) const {
+  // currently ignores all maxima
+  // no longer parallizable
   update_lists_if_necessary();
-  for (unsigned int i = 0; i < restraints_.size(); ++i) {
-    restraints_[i]->add_score_and_derivatives(sa);
+  typedef std::pair<int, PLURALINDEXTYPE> LP;
+  IMP_FOREACH(const LP & lp, lists_) {
+    IMP_LOG_VERBOSE("Evaluating score for predicate value " << lp.first
+                                                            << std::endl);
+    kernel::ClassnameScore *score = scores_.find(lp.first)->second;
+    double cur_score = score->evaluate_indexes(get_model(), lp.second,
+                                               sa.get_derivative_accumulator(),
+                                               0, lp.second.size());
+    sa.add_score(cur_score);
   }
-  IMP_OMP_PRAGMA(taskwait)
-}
-
-double PredicateClassnamesRestraint::get_last_score() const {
-  double ret = 0;
-  for (unsigned int i = 0; i < restraints_.size(); ++i) {
-    ret += restraints_[i]->get_last_score();
-  }
-  return ret;
 }
 
 ModelObjectsTemp PredicateClassnamesRestraint::do_get_inputs() const {
   kernel::ModelObjectsTemp ret;
-  ret +=
-      predicate_->get_inputs(get_model(), input_->get_all_possible_indexes());
-  for (unsigned int i = 0; i < restraints_.size(); ++i) {
-    ret += restraints_[i]->get_inputs();
+  kernel::ParticleIndexes all = input_->get_all_possible_indexes();
+  ret += predicate_->get_inputs(get_model(), all);
+  typedef std::pair<int, base::PointerMember<ClassnameScore> > SP;
+  IMP_FOREACH(const SP & sp, scores_) {
+    ret += sp.second->get_inputs(get_model(), all);
   }
   ret.push_back(input_);
   return ret;
 }
 
-Restraints
-PredicateClassnamesRestraint::do_create_current_decomposition() const {
+Restraints PredicateClassnamesRestraint::do_create_current_decomposition()
+    const {
   Restraints ret;
-  for (unsigned int i = 0; i < restraints_.size(); ++i) {
-    base::Pointer<Restraint> r = restraints_[i]->create_current_decomposition();
-    if (r) {
-      RestraintSet *rs = dynamic_cast<RestraintSet *>(r.get());
-      if (rs) {
-        ret += rs->get_restraints();
-        // suppress warning
-        rs->set_was_used(true);
-      } else {
-        ret.push_back(r);
-      }
+  typedef std::pair<int, PLURALINDEXTYPE> LP;
+  IMP_FOREACH(const LP & lp, lists_) {
+    kernel::ClassnameScore *score = scores_.find(lp.first)->second;
+    IMP_FOREACH(PASSINDEXTYPE it, lp.second) {
+      kernel::Restraints r =
+          score->create_current_decomposition(get_model(), it);
+      ret += r;
     }
   }
   return ret;
 }
 
-bool PredicateClassnamesRestraint::assign_pair(PASSINDEXTYPE index) const {
-  int bin = predicate_->get_value_index(get_model(), index);
-  Map::const_iterator it = containers_.find(bin);
-  if (it == containers_.end()) {
-    if (unknown_container_) {
-      unknown_container_->add(index);
-      return true;
-    } else if (error_on_unknown_) {
-      IMP_THROW(
-          "Invalid predicate value of " << bin << " encounted for " << index,
-          ValueException);
-      return true;
-    } else {
-      return false;
-    }
-  } else {
-    it->second->add(index);
-    return true;
-  }
-}
 void PredicateClassnamesRestraint::update_lists_if_necessary() const {
-  if (!kernel::Container::update_version(input_, input_version_)) return;
-  if (unknown_container_) {
-    unknown_container_->clear();
+  std::size_t h = input_->get_contents_hash();
+  if (h == input_version_) return;
+  input_version_ = h;
+  lists_.clear();
+
+  IMP_FOREACH(INDEXTYPE it, input_->get_contents()) {
+    int bin = predicate_->get_value_index(get_model(), it);
+    lists_[bin].push_back(it);
   }
-  for (Map::const_iterator it = containers_.begin(); it != containers_.end();
-       ++it) {
-    it->second->clear();
-  }
-  int dropped = 0;
-  IMP_CONTAINER_FOREACH(ClassnameContainer, input_, {
-    bool added = assign_pair(_1);
-    if (!added) ++dropped;
-  });
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    unsigned int total = dropped;
-    for (Map::const_iterator it = containers_.begin(); it != containers_.end();
-         ++it) {
-      total += it->second->get_number();
+
+  typedef std::pair<int, PLURALINDEXTYPE> LP;
+  Ints unknown;
+  IMP_FOREACH(const LP & lp, lists_) {
+    int bin = lp.first;
+    if (scores_.find(bin) == scores_.end()) {
+      IMP_USAGE_CHECK(!error_on_unknown_, "Unknown predicate value of "
+                                              << bin << " found for tuples "
+                                              << lp.second);
+      unknown.push_back(bin);
     }
-    if (unknown_container_) {
-      total += unknown_container_->get_number();
-    } else {
-      total += dropped;
-    }
-    IMP_INTERNAL_CHECK(
-        input_->get_number() == total,
-        "Wrong number of particles " << total << "!=" << input_->get_number());
   }
+  const int unknown_bin = std::numeric_limits<double>::max();
+  if (scores_.find(unknown_bin) != scores_.end()) {
+    IMP_FOREACH(int i, unknown) {
+      lists_[unknown_bin] += lists_.find(i)->second;
+    }
+  }
+  IMP_FOREACH(int i, unknown) { lists_.erase(i); }
+}
+
+void PredicateClassnamesRestraint::set_score(int predicate_value,
+                                             kernel::ClassnameScore *score) {
+  IMP_USAGE_CHECK(predicate_value != std::numeric_limits<int>::max(),
+                  "The predicate value of " << std::numeric_limits<int>::max()
+                                            << " is reserved.");
+  scores_[predicate_value] = score;
+  score->set_was_used(true);
+}
+
+void PredicateClassnamesRestraint::set_unknown_score(
+    kernel::ClassnameScore *score) {
+  error_on_unknown_ = false;
+  scores_[std::numeric_limits<int>::max()] = score;
+  score->set_was_used(true);
 }
 
 IMPCONTAINER_END_NAMESPACE

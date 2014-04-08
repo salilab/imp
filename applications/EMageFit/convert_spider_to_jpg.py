@@ -17,10 +17,10 @@ if len(args) != 1:
 fn_images_names = args[0]
 images_names = em2d.read_selection_file(fn_images_names)
 srw = em2d.SpiderImageReaderWriter()
-images=em2d.read_images(images_names,srw)
+images = em2d.read_images(images_names, srw)
 # Replace the extension .spi for .jpg
-jpg_names=[]
+jpg_names = []
 for s in images_names:
-    jpg_names.append(re.sub(".spi",".jpg",s))
+    jpg_names.append(re.sub(".spi", ".jpg", s))
 jrw = em2d.JPGImageReaderWriter()
-em2d.save_images(images,jpg_names,jrw)
+em2d.save_images(images, jpg_names, jrw)

@@ -2,7 +2,7 @@
  *  \file IMP/display/Color.h
  *  \brief Represent a color
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_COLOR_H
@@ -67,6 +67,7 @@ class IMPDISPLAYEXPORT Color : public base::Value {
   typedef const double *ComponentIterator;
   ComponentIterator components_begin() const { return c_.begin(); }
   ComponentIterator components_end() const { return c_.end(); }
+  const boost::array<double, 3> &get_rgb() const { return c_; }
 #endif
   //!@}
 

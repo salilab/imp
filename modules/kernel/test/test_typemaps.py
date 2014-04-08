@@ -4,39 +4,42 @@ import StringIO
 
 
 class Tests(IMP.test.TestCase):
+
     """Test particles"""
 
     def test_no_model(self):
         """Check particle typemaps"""
-        m= IMP.kernel.Model("particle typemaps")
-        ps= []
-        for i in range(0,10):
+        m = IMP.kernel.Model("particle typemaps")
+        ps = []
+        for i in range(0, 10):
             ps.append(IMP.kernel.Particle(m))
-        num=IMP.kernel._take_particles(ps)
+        num = IMP.kernel._take_particles(ps)
         self.assertEqual(num, len(ps))
-        num=IMP.kernel._take_particles(m, ps)
+        num = IMP.kernel._take_particles(m, ps)
         self.assertEqual(num, len(ps))
-        num=IMP.kernel._take_particles(m, ps, StringIO.StringIO())
+        num = IMP.kernel._take_particles(m, ps, StringIO.StringIO())
         self.assertEqual(num, len(ps))
-        pps= IMP.kernel._pass_particles(ps)
+        pps = IMP.kernel._pass_particles(ps)
         for i in range(len(ps)):
             self.assertEqual(pps[i], ps[i])
-        pso= IMP.kernel._give_particles(m)
+        pso = IMP.kernel._give_particles(m)
         self.assertEqual(len(pso), 10)
         print pso[0]
-        di={}
+        di = {}
         for p in ps:
-            di[p]=IMP.kernel._TrivialDecorator.setup_particle(p)
-        rps= IMP.kernel._take_particles(di.values())
+            di[p] = IMP.kernel._TrivialDecorator.setup_particle(p)
+        rps = IMP.kernel._take_particles(di.values())
+
     def test_particles_temps(self):
         """Test passing of ParticlesTemp"""
-        m= IMP.kernel.Model("particle temps")
-        ps= []
-        for i in range(0,10):
+        m = IMP.kernel.Model("particle temps")
+        ps = []
+        for i in range(0, 10):
             ps.append(IMP.kernel.Particle(m))
-        inlist=[[ps[0], ps[2]],[ps[3], ps[4]]]
-        outlist= IMP.kernel._pass_particles_temps(inlist)
+        inlist = [[ps[0], ps[2]], [ps[3], ps[4]]]
+        outlist = IMP.kernel._pass_particles_temps(inlist)
         self.assertEqual(inlist, outlist)
+
     def _equal_lists(self, va, vb):
         print "testing"
         self.assertEqual(len(va), len(vb))
@@ -44,6 +47,7 @@ class Tests(IMP.test.TestCase):
             print va[i]
             print vb[i]
             self.assertEqual(va[i], vb[i])
+
     def _almost_equal_lists(self, va, vb):
         print "testing"
         self.assertEqual(len(va), len(vb))
@@ -51,225 +55,254 @@ class Tests(IMP.test.TestCase):
             print va[i]
             print vb[i]
             self.assertAlmostEqual(va[i], vb[i], delta=.01)
+
     def _test_o(self):
         """Check overloaded"""
-        m= IMP.kernel.Model("overloaded")
-        ps= []
+        m = IMP.kernel.Model("overloaded")
+        ps = []
         for i in range(10):
             ps.append(IMP.kernel.Particle(m))
-        pso=self._pass(ps)
+        pso = self._pass(ps)
         self._equal_lists(ps, pso)
+
     def test_dec(self):
         """Check decorators"""
-        m= IMP.kernel.Model("decorators")
-        ps= IMP.kernel._TrivialDecorators()
+        m = IMP.kernel.Model("decorators")
+        ps = IMP.kernel._TrivialDecorators()
         for i in range(10):
-            ps.append(IMP.kernel._TrivialDecorator.setup_particle(IMP.kernel.Particle(m)))
-        pso=IMP.kernel._pass_decorators(ps)
+            ps.append(
+                IMP.kernel._TrivialDecorator.setup_particle(IMP.kernel.Particle(m)))
+        pso = IMP.kernel._pass_decorators(ps)
         self._equal_lists(ps, pso)
+
     def test_dect(self):
         """Check decorators traits"""
-        m= IMP.kernel.Model("traits decorator")
-        ps= IMP.kernel._TrivialTraitsDecorators()
-        tr= IMP.StringKey("ttd")
+        m = IMP.kernel.Model("traits decorator")
+        ps = IMP.kernel._TrivialTraitsDecorators()
+        tr = IMP.StringKey("ttd")
         for i in range(10):
-            ps.append(IMP.kernel._TrivialTraitsDecorator.setup_particle(IMP.kernel.Particle(m), tr))
-        pso=IMP.kernel._pass_decorator_traits(ps)
+            ps.append(
+                IMP.kernel._TrivialTraitsDecorator.setup_particle(IMP.kernel.Particle(m), tr))
+        pso = IMP.kernel._pass_decorator_traits(ps)
         self._equal_lists(ps, pso)
 
     def test_pairs(self):
         """Check pairs"""
-        m= IMP.kernel.Model("pairs")
-        ps= []
+        m = IMP.kernel.Model("pairs")
+        ps = []
         for i in range(10):
-            pp = (IMP.kernel.Particle(m), IMP.kernel.Particle(m));
-        pso=IMP.kernel._pass_particle_pairs(ps)
+            pp = (IMP.kernel.Particle(m), IMP.kernel.Particle(m))
+        pso = IMP.kernel._pass_particle_pairs(ps)
         self._equal_lists(ps, pso)
+
     def test_index_pairs(self):
         """Check particle index pairs"""
-        ps= []
+        ps = []
         for i in range(10):
-            pp = (IMP.kernel.ParticleIndex(i), IMP.kernel.ParticleIndex(i+1));
-        pso=IMP.kernel._pass_particle_index_pairs(ps)
+            pp = (IMP.kernel.ParticleIndex(i), IMP.kernel.ParticleIndex(i + 1))
+        pso = IMP.kernel._pass_particle_index_pairs(ps)
         self._equal_lists(ps, pso)
+
     def test_failure(self):
         """Checking bad list"""
         self.assertRaises(TypeError, IMP.kernel._pass_particle_pairs, [1])
+
     def test_dec_to_part(self):
         """Checking conversion of decorators to particles"""
-        m= IMP.kernel.Model("particle decorator conversion")
-        ps= IMP.kernel._TrivialDecorators()
-        rps= []
+        m = IMP.kernel.Model("particle decorator conversion")
+        ps = IMP.kernel._TrivialDecorators()
+        rps = []
         for i in range(10):
-            ps.append(IMP.kernel._TrivialDecorator.setup_particle(IMP.kernel.Particle(m)))
+            ps.append(
+                IMP.kernel._TrivialDecorator.setup_particle(IMP.kernel.Particle(m)))
             rps.append(ps[-1].get_particle())
-        pso=IMP.kernel._pass_particles(ps)
+        pso = IMP.kernel._pass_particles(ps)
         self._equal_lists(rps, pso)
+
     def test_dec_to_part_2(self):
         """Checking conversion of decorator to particle"""
-        m= IMP.kernel.Model("decorator particle conversion")
-        d=IMP.kernel._TrivialDecorator.setup_particle(IMP.kernel.Particle(m))
-        pso=IMP.kernel._pass_particle(d)
+        m = IMP.kernel.Model("decorator particle conversion")
+        d = IMP.kernel._TrivialDecorator.setup_particle(IMP.kernel.Particle(m))
+        pso = IMP.kernel._pass_particle(d)
         self.assertEqual(d.get_particle(), pso)
 
     def test_overload(self):
         """Checking that overloading works"""
-        m= IMP.kernel.Model("overloading")
+        m = IMP.kernel.Model("overloading")
         p = IMP.kernel.Particle(m)
-        r = IMP.kernel._ConstRestraint(1)
-        pi= IMP.kernel._test_overload([p])
-        ri= IMP.kernel._test_overload([r])
+        r = IMP.kernel._ConstRestraint(m, [], 1)
+        pi = IMP.kernel._test_overload([p])
+        ri = IMP.kernel._test_overload([r])
         self.assertEqual(pi, 0)
         self.assertEqual(ri, 1)
+
     def test_dec_conv(self):
         """Checking decorator conversions work"""
-        m= IMP.kernel.Model("decorator conversion")
-        p0= IMP.kernel.Particle(m)
-        p1= IMP.kernel.Particle(m)
+        m = IMP.kernel.Model("decorator conversion")
+        p0 = IMP.kernel.Particle(m)
+        p1 = IMP.kernel.Particle(m)
         print p0
         print p1
-        d0= IMP.kernel._TrivialDecorator.setup_particle(p0)
-        d1= IMP.kernel._TrivialTraitsDecorator.setup_particle(p1)
+        d0 = IMP.kernel._TrivialDecorator.setup_particle(p0)
+        d1 = IMP.kernel._TrivialTraitsDecorator.setup_particle(p1)
         print d0
         print d1
-        d1p= IMP.kernel._TrivialDecorator.setup_particle(p1)
+        d1p = IMP.kernel._TrivialDecorator.setup_particle(p1)
         print d1p
-        ps=[p0, d1]
-        pso= IMP.kernel._pass_decorators(ps)
+        ps = [p0, d1]
+        pso = IMP.kernel._pass_decorators(ps)
         print pso[0]
         print pso[1]
         self.assertEqual(pso[0], d0)
         self.assertEqual(pso[1], d1p)
+
     def test_tuple_conv(self):
         """Checking tuple conversions work"""
-        m= IMP.kernel.Model("tuple conversion")
-        p0= IMP.kernel.Particle(m)
-        p1= IMP.kernel.Particle(m)
-        pp= (p0, p1)
-        ppo= IMP.kernel._pass_particle_pair(pp)
+        m = IMP.kernel.Model("tuple conversion")
+        p0 = IMP.kernel.Particle(m)
+        p1 = IMP.kernel.Particle(m)
+        pp = (p0, p1)
+        ppo = IMP.kernel._pass_particle_pair(pp)
         print [x.get_name() for x in pp]
         print [x.get_name() for x in ppo]
         self.assertEqual(ppo[0], pp[0])
         self.assertEqual(ppo[1], pp[1])
+
     def test_overload_dec(self):
         """Check overloaded functions with decorators"""
-        m= IMP.kernel.Model("overloaded decorators")
-        d0= IMP.kernel._TrivialDecorator.setup_particle(IMP.kernel.Particle(m))
-        d1= IMP.kernel._TrivialDerivedDecorator.setup_particle(IMP.kernel.Particle(m))
+        m = IMP.kernel.Model("overloaded decorators")
+        d0 = IMP.kernel._TrivialDecorator.setup_particle(
+            IMP.kernel.Particle(m))
+        d1 = IMP.kernel._TrivialDerivedDecorator.setup_particle(
+            IMP.kernel.Particle(m))
         self.assertEqual(IMP.kernel._overloaded_decorator(d1), 1)
         self.assertEqual(IMP.kernel._overloaded_decorator(d0), 0)
 
-
     class _TestRestraint(IMP.kernel.Restraint):
+
         def __init__(self, ps):
-            IMP.kernel.Restraint.__init__(self, ps[0].get_model(), "TestRestraint %1%")
-            self.ps=ps
+            IMP.kernel.Restraint.__init__(
+                self,
+                ps[0].get_model(),
+                "TestRestraint %1%")
+            self.ps = ps
+
         def do_show(self, fh):
             fh.write("Test Particle")
+
         def unprotected_evaluate(self, da):
             return 0
+
         def get_version_info(self):
             return IMP.VersionInfo()
+
         def do_get_inputs(self):
             return [self.ps[0], self.ps[1]]
+
         def get_interacting_particles(self):
             return [[self.ps[0], self.ps[1]]]
+
     def test_dir_tms_0(self):
         """Test director methods in restraint"""
-        m= IMP.kernel.Model("directors in restraints")
-        p0= IMP.kernel.Particle(m)
-        p1= IMP.kernel.Particle(m)
-        r= self._TestRestraint([p0, p1])
+        m = IMP.kernel.Model("directors in restraints")
+        p0 = IMP.kernel.Particle(m)
+        p1 = IMP.kernel.Particle(m)
+        r = self._TestRestraint([p0, p1])
         m.add_restraint(r)
         m.evaluate(False)
         r.evaluate(False)
+
     def test_dir_tms(self):
         """Test that decorator particle methods can be called"""
-        m= IMP.kernel.Model("decorator particle methos")
-        p0= IMP.kernel.Particle(m)
-        d= IMP.kernel._TrivialDecorator.setup_particle(p0)
+        m = IMP.kernel.Model("decorator particle methos")
+        p0 = IMP.kernel.Particle(m)
+        d = IMP.kernel._TrivialDecorator.setup_particle(p0)
         d.add_attribute(IMP.IntKey("Hi"), 1)
+
     def test_cast(self):
         """Test that casting objects works"""
-        m=IMP.kernel.Model("object cast")
-        r= IMP.kernel._ConstRestraint(1)
+        m = IMP.kernel.Model("object cast")
+        r = IMP.kernel._ConstRestraint(m, [], 1)
         m.add_restraint(r)
-        rb= m.get_restraints()[0]
-        #print rb.get_value()
-        rc= IMP.kernel._ConstRestraint.get_from(rb)
+        rb = m.get_restraints()[0]
+        # print rb.get_value()
+        rc = IMP.kernel._ConstRestraint.get_from(rb)
         print rc.get_value()
+
     def test_model_objects(self):
         """Test that model objects can get passed from python"""
-        m= IMP.kernel.Model("model objets")
-        r= IMP.kernel._ConstRestraint(1)
-        p= IMP.kernel.Particle(m)
-        self.assertEqual([p],IMP.kernel._pass_model_objects([p]))
-        self.assertEqual([r,p],IMP.kernel._pass_model_objects([r, p]))
+        m = IMP.kernel.Model("model objets")
+        r = IMP.kernel._ConstRestraint(m, [], 1)
+        p = IMP.kernel.Particle(m)
+        self.assertEqual([p], IMP.kernel._pass_model_objects([p]))
+        self.assertEqual([r, p], IMP.kernel._pass_model_objects([r, p]))
+
     def test_restraint_cast(self):
         """Test that restraints can be cast"""
-        m= IMP.kernel.Model("model objets")
-        r= IMP.kernel._ConstRestraint(1)
+        m = IMP.kernel.Model("model objets")
+        r = IMP.kernel._ConstRestraint(m, [], 1)
         m.add_restraint(r)
-        rb= m.get_restraints()[0]
-        rbc= IMP.kernel._ConstRestraint.get_from(rb)
+        rb = m.get_restraints()[0]
+        rbc = IMP.kernel._ConstRestraint.get_from(rb)
         self.assertEqual(rbc, rb)
+
     def test_particle_methods(self):
         """Test that decorators provide particle methods"""
-        exclusions=["do_show",
-                    "get_contained_particles",
-                    "get_contained_particles_changed",
-                    "get_input_containers",
-                    "get_is_active",
-                    "get_is_changed",
-                    "get_is_valid",
-                    "get_log_level",
-                    "get_number_of_live_objects",
-                    "get_prechange_particle",
-                    "get_ref_count",
-                    "get_string",
-                    "get_type_name",
-                    "get_version_info",
-                    "set_log_level",
-                    "set_was_used",
-                    "get_is_up_to_date",
-                    "get_is_scored",
-                    "set_is_scored",
-                    "get_from",
-                    "get_is_shared",
-                    "set_is_ref_counted",
-                    "get_is_ref_counted",
-                    "get_live_object_names",
-                    "add_cache_attribute",
-                    "get_index",
-                    'get_float_keys',
-                    'get_index',
-                    'get_int_keys',
-                    'get_object_keys',
-                    'get_weak_object_keys',
-                    'get_particle_keys',
-                    'get_string_keys',
-                    'do_update_dependencies',
-                    'get_is_part_of_model',
-                    'set_model',
-                    'get_inputs',
-                    'get_outputs',
-                    'get_interactions',
-                    'get_required_score_states',
-                    'update_dependencies',
-                    'get_has_dependencies',
-                    'set_has_dependencies',
-                    'get_has_required_score_states',
-                    'handle_set_has_required_score_states',
-                    'set_has_required_score_states',
-                    ]
-        md= dir(IMP.kernel._TrivialDecorator)
-        missing=[]
+        exclusions = ["do_show",
+                      "get_contained_particles",
+                      "get_contained_particles_changed",
+                      "get_input_containers",
+                      "get_is_active",
+                      "get_is_changed",
+                      "get_is_valid",
+                      "get_log_level",
+                      "get_number_of_live_objects",
+                      "get_prechange_particle",
+                      "get_ref_count",
+                      "get_string",
+                      "get_type_name",
+                      "get_version_info",
+                      "set_log_level",
+                      "set_was_used",
+                      "get_is_up_to_date",
+                      "get_is_scored",
+                      "set_is_scored",
+                      "get_from",
+                      "get_is_shared",
+                      "set_is_ref_counted",
+                      "get_is_ref_counted",
+                      "get_live_object_names",
+                      "add_cache_attribute",
+                      "get_index",
+                      'get_float_keys',
+                      'get_index',
+                      'get_int_keys',
+                      'get_object_keys',
+                      'get_weak_object_keys',
+                      'get_particle_keys',
+                      'get_string_keys',
+                      'do_update_dependencies',
+                      'get_is_part_of_model',
+                      'set_model',
+                      'get_inputs',
+                      'get_outputs',
+                      'get_interactions',
+                      'get_required_score_states',
+                      'update_dependencies',
+                      'get_has_dependencies',
+                      'set_has_dependencies',
+                      'get_has_required_score_states',
+                      'handle_set_has_required_score_states',
+                      'set_has_required_score_states',
+                      ]
+        md = dir(IMP.kernel._TrivialDecorator)
+        missing = []
         for m in dir(IMP.kernel.Particle):
             if not m in md and m not in exclusions and not m.startswith("_") and not m.startswith("do_"):
                 print m
                 missing.append(m)
-        self.assertEqual(len(missing),0,
-                         "The following methods are not found in decorators: "+str(missing))
+        self.assertEqual(len(missing), 0,
+                         "The following methods are not found in decorators: " + str(missing))
 
 if __name__ == '__main__':
     IMP.test.main()

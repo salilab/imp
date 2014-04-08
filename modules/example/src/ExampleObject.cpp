@@ -2,7 +2,7 @@
  *  \file ExampleObject.cpp
  *  \brief An example reference counted object.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,9 +11,8 @@
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
-ExampleObject::ExampleObject(const Floats &data) :
-  base::Object("ExampleObject%1%"),
-  data_(data) {}
+ExampleObject::ExampleObject(const Floats &data)
+    : base::Object("ExampleObject%1%"), data_(data) {}
 namespace {
 
 #ifdef __clang__
@@ -21,7 +20,7 @@ IMP_CLANG_PRAGMA(diagnostic ignored "-Wunused-function")
 #endif
 
 /** An example of how to return a new object. */
-ExampleObject* create_example_object(const Floats &data) {
+ExampleObject *create_example_object(const Floats &data) {
   IMP_NEW(ExampleObject, ret, (data));
   // one could do some work here
 

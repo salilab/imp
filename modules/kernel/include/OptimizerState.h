@@ -1,7 +1,7 @@
 /**
  *  \file IMP/kernel/OptimizerState.h   \brief Shared optimizer state.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -57,10 +57,6 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
             method.
   */
   OptimizerState(kernel::Model* m, std::string name);
-
-  /** \deprecated_at{2.1} Use the constructor that takes a Model. */
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-  OptimizerState(std::string name = "OptimizerState %1%");
 
   //! Called when the Optimizer accepts a new conformation
   /**

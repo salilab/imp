@@ -1,8 +1,8 @@
 /**
- *  \file Em2DRestraint.h
+ *  \file IMP/em2d/Em2DRestraint.h
   *  \brief A restraint to score the fitness of a model to a set of EM images
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -29,12 +29,11 @@ IMPEM2D_BEGIN_NAMESPACE
  * the radius of its particles. In the case of atoms, the radius is generated
  * automatically. For other particles the radius has to be provided.
 */
-class IMPEM2DEXPORT Em2DRestraint : public kernel::Restraint
-{
+class IMPEM2DEXPORT Em2DRestraint : public kernel::Restraint {
   //! SingletonContainer to store the particles that are restrained
   base::Pointer<SingletonContainer> particles_container_;
   // mutable because it has to change to get projections while evaluating
-//  mutable ProjectionFinder finder_;
+  //  mutable ProjectionFinder finder_;
   mutable base::Pointer<ProjectionFinder> finder_;
 
   //! Projection Masks to fast model projection
@@ -44,13 +43,13 @@ class IMPEM2DEXPORT Em2DRestraint : public kernel::Restraint
   bool fast_optimization_mode_;
   bool only_coarse_registration_;
   Em2DRestraintParameters params_;
-public:
 
+ public:
   /**
    * Creates the restraint. You are not done yet by creating the restraint.
    * After creating it, you need to call the setup() function
    */
-  Em2DRestraint();
+  Em2DRestraint(kernel::Model *m);
 
   /**
    * Initializes the restraint
@@ -60,13 +59,13 @@ public:
    */
   void setup(ScoreFunction *score_function,
              const Em2DRestraintParameters &params) {
-  params_ = params;
-  finder_ = new ProjectionFinder;
-  finder_->set_was_used(true);
-  finder_->setup(score_function, params);
-  fast_optimization_mode_ = false;
-  only_coarse_registration_ = false;
-}
+    params_ = params;
+    finder_ = new ProjectionFinder;
+    finder_->set_was_used(true);
+    finder_->setup(score_function, params);
+    fast_optimization_mode_ = false;
+    only_coarse_registration_ = false;
+  }
 
   /**
    * Sets the particles used to compute projections.
@@ -120,7 +119,7 @@ public:
    * @param opt true if you want to use the coarse mode
    */
   void set_coarse_registration_mode(bool opt) {
-    if(opt) only_coarse_registration_ = true;
+    if (opt) only_coarse_registration_ = true;
   }
 
   /**
@@ -133,15 +132,14 @@ public:
     return finder_->get_registration_results();
   }
 
-  virtual double
-  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
-     const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(Em2DRestraint);
 };
 
-IMP_OBJECTS(Em2DRestraint,Em2DRestraints);
+IMP_OBJECTS(Em2DRestraint, Em2DRestraints);
 
 IMPEM2D_END_NAMESPACE
 
-#endif  /* IMPEM2D_EM_2DRESTRAINT_H */
+#endif /* IMPEM2D_EM_2DRESTRAINT_H */

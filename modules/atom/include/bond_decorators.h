@@ -1,7 +1,7 @@
 /**
  *  \file IMP/atom/bond_decorators.h     \brief Contains decorators for a bond
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -121,12 +121,6 @@ class IMPATOMEXPORT Bonded : public Decorator {
   unsigned int get_number_of_bonds() const {
     return graph_get_number_of_edges(get_particle(),
                                      internal::get_bond_data().graph_);
-  }
-  /** \deprecated_at{2.1} Use get_bond_indexes() instead. */
-  IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
-  kernel::ParticleIndexes get_bonds() const {
-    IMPATOM_DEPRECATED_FUNCTION_DEF(2.1, "Use get_bond_indexes().");
-    return get_bond_indexes();
   }
 
   kernel::ParticleIndexes get_bond_indexes() const {

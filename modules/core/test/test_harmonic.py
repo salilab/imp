@@ -2,6 +2,7 @@ import IMP
 import IMP.test
 import IMP.core
 
+
 def _harmonicfunc(val, mean, force_constant):
     """Python implementation of harmonic function and first derivative"""
     diff = val - mean
@@ -11,6 +12,7 @@ def _harmonicfunc(val, mean, force_constant):
 
 
 class Tests(IMP.test.TestCase):
+
     """Tests for harmonic unary function"""
 
     def test_values(self):

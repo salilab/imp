@@ -2,7 +2,7 @@
  *  \file BoxSweepClosePairsFinder.cpp
  *  \brief Test all pairs.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -53,8 +53,7 @@ void copy_particles_to_boxes(kernel::Model *m,
     r += XYZR(m, ps[i]).get_radius();
     IMP_INTERNAL_CHECK(i < boxes.size(), "Off the end");
     boxes[i] = NBLBbox(m, ps[i], r);
-  }
-  ;
+  };
 }
 
 struct AddToList {

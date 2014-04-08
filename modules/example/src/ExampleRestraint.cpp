@@ -2,7 +2,7 @@
  *  \file example/ExampleRestraint.cpp
  *  \brief Restrain a list of particle pairs.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,14 +11,16 @@
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
-ExampleRestraint::ExampleRestraint(kernel::Particle *p, double k)
-    : kernel::Restraint(p->get_model(), "ExampleRestraint%1%"), p_(p), k_(k) {}
+ExampleRestraint::ExampleRestraint(kernel::Model *m, kernel::ParticleIndex p,
+                                   double k)
+    : kernel::Restraint(m, "ExampleRestraint%1%"), p_(p), k_(k) {}
 
 /* Apply the pair score to each particle pair listed in the container.
  */
-void ExampleRestraint::do_add_score_and_derivatives(ScoreAccumulator sa) const {
+void ExampleRestraint::do_add_score_and_derivatives(kernel::ScoreAccumulator sa)
+    const {
   IMP_OBJECT_LOG;
-  core::XYZ d(p_);
+  core::XYZ d(get_model(), p_);
   IMP_LOG_VERBOSE("The z coordinate of " << d->get_name() << " is " << d.get_z()
                                          << std::endl);
   double score = .5 * k_ * square(d.get_z());
@@ -31,8 +33,8 @@ void ExampleRestraint::do_add_score_and_derivatives(ScoreAccumulator sa) const {
 
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
-ModelObjectsTemp ExampleRestraint::do_get_inputs() const {
-  return kernel::ModelObjectsTemp(1, p_);
+kernel::ModelObjectsTemp ExampleRestraint::do_get_inputs() const {
+  return kernel::ModelObjectsTemp(1, get_model()->get_particle(p_));
 }
 
 IMPEXAMPLE_END_NAMESPACE

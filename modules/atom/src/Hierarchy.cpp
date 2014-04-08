@@ -2,7 +2,7 @@
  *  \file Hierarchy.cpp   \brief Decorator for helping deal
  *                                                 with a hierarchy.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -22,7 +22,7 @@
 #include <IMP/algebra/geometric_alignment.h>
 #include <IMP/core/rigid_bodies.h>
 
-#include <IMP/base/set.h>
+#include <boost/unordered_set.hpp>
 
 #include <boost/random/uniform_int.hpp>
 
@@ -75,8 +75,8 @@ void Hierarchy::show(std::ostream &out, std::string delimiter) const {
 }
 
 namespace {
-#define IMP_IMPL_MATCH_TYPE(UCName, lcname, CAPSNAME) \
-  case CAPSNAME:                                      \
+#define IMP_ATOM_IMPL_MATCH_TYPE(UCName, lcname, CAPSNAME) \
+  case CAPSNAME:                                           \
     return h.get_as_##lcname();
 
 struct MHDMatchingType {
@@ -84,7 +84,9 @@ struct MHDMatchingType {
 
   bool operator()(kernel::Particle *p) const {
     Hierarchy h = Hierarchy::decorate_particle(p);
-    switch (t_) { IMP_FOREACH_HIERARCHY_TYPE_STATEMENTS(IMP_IMPL_MATCH_TYPE); }
+    switch (t_) {
+      IMP_ATOM_FOREACH_HIERARCHY_TYPE_STATEMENTS(IMP_ATOM_IMPL_MATCH_TYPE);
+    }
     IMP_FAILURE("Unhandled type in get_by_type.");
     return false;
   }
@@ -113,7 +115,8 @@ struct MatchResidueIndex {
       if (mhd.get_number_of_children() == 0) {
         if (mhd.get_as_domain()) {
           Domain dd = mhd.get_as_domain();
-          return dd.get_begin_index() <= index_ && dd.get_end_index() > index_;
+          IntRange ir = dd.get_index_range();
+          return ir.first <= index_ && ir.second > index_;
         } else if (mhd.get_as_fragment()) {
           Fragment fd = mhd.get_as_fragment();
           return fd.get_contains_residue(index_);
@@ -290,7 +293,7 @@ Hierarchy create_fragment(const Hierarchies &ps) {
 
 Bonds get_internal_bonds(Hierarchy mhd) {
   kernel::ParticlesTemp ps = core::get_all_descendants(mhd);
-  IMP::base::set<kernel::Particle *> sps(ps.begin(), ps.end());
+  boost::unordered_set<kernel::Particle *> sps(ps.begin(), ps.end());
   Bonds ret;
   for (kernel::ParticlesTemp::iterator pit = ps.begin(); pit != ps.end();
        ++pit) {
@@ -517,7 +520,7 @@ void destroy(Hierarchy d) {
   }
 
   for (unsigned int i = 0; i < all.size(); ++i) {
-    all[i]->get_model()->remove_particle(all[i]);
+    all[i]->get_model()->remove_particle(all[i]->get_index());
   }
 }
 
@@ -568,6 +571,6 @@ algebra::Sphere3D get_bounding_sphere(const Hierarchy &h) {
   return algebra::get_enclosing_sphere(ss);
 }
 
-IMP_FOREACH_HIERARCHY_TYPE_FUNCTIONS(IMP_GET_AS_DEF);
+IMP_ATOM_FOREACH_HIERARCHY_TYPE_FUNCTIONS(IMP_ATOM_GET_AS_DEF);
 
 IMPATOM_END_NAMESPACE

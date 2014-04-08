@@ -346,8 +346,11 @@ def _copy_atom(a, model):
     p=IMP.Particle(model)
     ap= IMP.atom.Atom.setup_particle(p,IMP.atom.AtomType(a.name))
     xyzd= IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(a.x, a.y, a.z))
-    IMP.atom.Charged.setup_particle(p, a.charge)
-    IMP.atom.CHARMMAtom.setup_particle(p, a.type.name)
+    # Alignment structures don't have charges or atom types; models do
+    if hasattr(a, 'charge'):
+        IMP.atom.Charged.setup_particle(p, a.charge)
+    if hasattr(a, 'type'):
+        IMP.atom.CHARMMAtom.setup_particle(p, a.type.name)
     ap.set_input_index(a.index)
     return p
 
@@ -396,7 +399,13 @@ class ModelLoader(object):
        in the Modeller model can be loaded into IMP using the load_atoms()
        method, then optionally any Modeller static restraints can be read in
        with load_static_restraints() or load_static_restraints_file().
-       @param modeller_model The Modeller model object to read.
+
+       This class can also be used to read Modeller alignment structures;
+       however, only load_atoms() will be useful in such a case (since
+       alignment structures don't have restraints or other information).
+
+       @param modeller_model The Modeller model or alignment structure
+                             object to read.
     """
 
     def __init__(self, modeller_model):
@@ -404,7 +413,12 @@ class ModelLoader(object):
 
     def load_atoms(self, model):
         """Construct an IMP::atom::Hierarchy that contains the same atoms as
-           the Modeller model.
+           the Modeller model or alignment structure.
+
+           IMP atoms created from a Modeller model will be given charges and
+           CHARMM types, extracted from the model. Alignment structures don't
+           contain this information, so the IMP atoms won't either.
+
            @param model The IMP::Model object in which the hierarchy will be
                         created. The highest level hierarchy node is a PROTEIN.
            @return the newly-created root IMP::atom::Hierarchy.
@@ -468,11 +482,11 @@ class ModelLoader(object):
         for (maa, mab) in self._modeller_model.bonds:
             pa = self._atoms[maa.index]
             pb = self._atoms[mab.index]
-            if IMP.atom.Bonded.particle_is_instance(pa):
+            if IMP.atom.Bonded.get_is_setup(pa):
                 ba= IMP.atom.Bonded(pa)
             else:
                 ba= IMP.atom.Bonded.setup_particle(pa)
-            if IMP.atom.Bonded.particle_is_instance(pb):
+            if IMP.atom.Bonded.get_is_setup(pb):
                 bb= IMP.atom.Bonded(pb)
             else:
                 bb= IMP.atom.Bonded.setup_particle(pb)

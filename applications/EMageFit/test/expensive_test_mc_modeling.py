@@ -16,19 +16,20 @@ class TestMonteCarloModeling(IMP.test.ApplicationTestCase):
     def test_generate_model(self):
         """ Test that Monte Carlo modeling runs """
         try:
-            import networkx, subprocess
-        except ImportError, detail:
+            import networkx
+            import subprocess
+        except ImportError as detail:
             self.skipTest(str(detail))
         domino_model = self.import_python_application('emagefit.py')
         fn_config = self.get_input_file_name("config.py")
         exp = utility.get_experiment_params(fn_config)
         fn_database = "monte_carlo_output_database.db"
         domino_model.generate_monte_carlo_model(exp, fn_database, seed=-1,
-                                                        write_solution=True)
+                                                write_solution=True)
         # test that the database and pdb files are generated and that they
         # are not empty
         self.assertTrue(os.path.exists(fn_database))
-        self.assertGreater(os.path.getsize(fn_database),0)
+        self.assertGreater(os.path.getsize(fn_database), 0)
         fn_pdb = fn_database + ".pdb"
         self.assertTrue(os.path.exists(fn_pdb))
         self.assertGreater(os.path.getsize(fn_pdb), 0)

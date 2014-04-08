@@ -16,8 +16,8 @@ import random
 # of evaluations
 class WriteStatisticsOptimizerScore(IMP.OptimizerState):
 
-    def __init__(self, restraints):
-        IMP.OptimizerState.__init__(self)
+    def __init__(self, m, restraints):
+        IMP.OptimizerState.__init__(self, m, "WriteStats")
         self.count = 0
         self.restraints = restraints
 
@@ -60,7 +60,7 @@ for c in chains:
     native_chain_centers.append(rbd.get_coordinates())
 
 bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-25, -40, -60),
-                               IMP.algebra.Vector3D(25,  40, 60))
+                               IMP.algebra.Vector3D(25, 40, 60))
 # rotate and translate the chains
 for rbd in rigid_bodies:
     # rotation
@@ -116,7 +116,7 @@ images_to_read_names = [IMP.base.get_relative_path(selection_file, x) for x in
 em_images = IMP.em2d.read_images(images_to_read_names, srw)
 print len(em_images), "images read"
 
-em2d_restraint = IMP.em2d.Em2DRestraint()
+em2d_restraint = IMP.em2d.Em2DRestraint(m)
 apix = 1.5  # sampling rate of the available EM images
 # resolution at which you want to generate the projections of the model
 # In principle you want "perfect" projections, so use the highest resolution
@@ -134,13 +134,13 @@ params.coarse_registration_method = IMP.em2d.ALIGN2D_PREPROCESSING
 params.save_match_images = False
 
 score_function = IMP.em2d.EM2DScore()
-em2d_restraint = IMP.em2d.Em2DRestraint()
+em2d_restraint = IMP.em2d.Em2DRestraint(m)
 em2d_restraint.setup(score_function, params)
 em2d_restraint.set_images(em_images)
 em2d_restraint.set_name("em2d restraint")
 container = IMP.container.ListSingletonContainer(IMP.core.get_leaves(prot))
 em2d_restraint.set_particles(container)
-em2d_restraints_set = IMP.kernel.RestraintSet()
+em2d_restraints_set = IMP.kernel.RestraintSet(m)
 
 # The next two lines are commented, because the optimization of the example
 # is expensive. To run the full example, uncomment them (It can take a few
@@ -167,7 +167,7 @@ o_state = IMP.atom.WritePDBOptimizerState(chains, "intermediate-step-%1%.pdb")
 o_state.set_period(10)
 s.add_optimizer_state(o_state)
 
-ostate2 = WriteStatisticsOptimizerScore(m.get_restraints())
+ostate2 = WriteStatisticsOptimizerScore(m, m.get_restraints())
 s.add_optimizer_state(ostate2)
 
 # Perform optimization

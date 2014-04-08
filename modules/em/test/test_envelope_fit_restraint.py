@@ -4,8 +4,8 @@ import IMP.em
 import IMP.test
 import IMP.core
 
-class Tests(IMP.test.TestCase):
 
+class Tests(IMP.test.TestCase):
 
     def test_envelope_fit_restraint(self):
         """Test EM EnvelopeFitRestraint restraint"""

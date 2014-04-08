@@ -2,7 +2,7 @@
  *  \file IMP/atom/Hierarchy.h
  *  \brief Decorator for helping deal with a hierarchy of molecules.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -23,21 +23,21 @@
 #include <vector>
 #include <deque>
 
-#define IMP_GET_AS_DECL(UCName, lcname, CAPSNAME) \
+#define IMP_ATOM_GET_AS_DECL(UCName, lcname, CAPSNAME) \
   UCName get_as_##lcname() const;
 
 // figure out how to inline
-#define IMP_GET_AS_DEF(UCName, lcname, CAPSNAME) \
-  UCName Hierarchy::get_as_##lcname() const {    \
-    if (UCName::get_is_setup(get_particle())) {  \
-      return UCName(get_particle());             \
-    } else {                                     \
-      return UCName();                           \
-    }                                            \
+#define IMP_ATOM_GET_AS_DEF(UCName, lcname, CAPSNAME) \
+  UCName Hierarchy::get_as_##lcname() const {         \
+    if (UCName::get_is_setup(get_particle())) {       \
+      return UCName(get_particle());                  \
+    } else {                                          \
+      return UCName();                                \
+    }                                                 \
   }
 
 // DOMAIN is defined to be 1 by a fedora math header
-#define IMP_FOREACH_HIERARCHY_TYPE_LIST(macro)                             \
+#define IMP_ATOM_FOREACH_HIERARCHY_TYPE_LIST(macro)                        \
   macro(Atom, atom, ATOM_TYPE), macro(Residue, residue, RESIDUE_TYPE),     \
       macro(Chain, chain, CHAIN_TYPE),                                     \
       macro(Molecule, molecule, MOLECULE_TYPE),                            \
@@ -47,19 +47,19 @@
       macro(Mass, mass, MASS_TYPE)
 
 // DOMAIN is defined to be 1 by a fedora math header
-#define IMP_FOREACH_HIERARCHY_TYPE_STATEMENTS(macro) \
-  macro(Atom, atom, ATOM_TYPE);                      \
-  macro(Residue, residue, RESIDUE_TYPE);             \
-  macro(Chain, chain, CHAIN_TYPE);                   \
-  macro(Molecule, molecule, MOLECULE_TYPE);          \
-  macro(Domain, domain, DOMAIN_TYPE);                \
-  macro(Fragment, fragment, FRAGMENT_TYPE);          \
-  macro(core::XYZ, xyz, XYZ_TYPE);                   \
-  macro(core::XYZR, xyzr, XYZR_TYPE);                \
+#define IMP_ATOM_FOREACH_HIERARCHY_TYPE_STATEMENTS(macro) \
+  macro(Atom, atom, ATOM_TYPE);                           \
+  macro(Residue, residue, RESIDUE_TYPE);                  \
+  macro(Chain, chain, CHAIN_TYPE);                        \
+  macro(Molecule, molecule, MOLECULE_TYPE);               \
+  macro(Domain, domain, DOMAIN_TYPE);                     \
+  macro(Fragment, fragment, FRAGMENT_TYPE);               \
+  macro(core::XYZ, xyz, XYZ_TYPE);                        \
+  macro(core::XYZR, xyzr, XYZR_TYPE);                     \
   macro(Mass, mass, MASS_TYPE)
 
 // DOMAIN is defined to be 1 by a fedora math header
-#define IMP_FOREACH_HIERARCHY_TYPE_FUNCTIONS(macro)                            \
+#define IMP_ATOM_FOREACH_HIERARCHY_TYPE_FUNCTIONS(macro)                       \
   macro(Atom, atom, ATOM_TYPE) macro(Residue, residue, RESIDUE_TYPE)           \
       macro(Chain, chain, CHAIN_TYPE) macro(Molecule, molecule, MOLECULE_TYPE) \
       macro(Domain, domain, DOMAIN_TYPE)                                       \
@@ -67,7 +67,7 @@
       macro(core::XYZR, xyzr, XYZR_TYPE) macro(Mass, mass, MASS_TYPE)          \
       IMP_REQUIRE_SEMICOLON_NAMESPACE
 
-#define IMP_CAPS_NAME(UCName, lcname, CAPSNAME) CAPSNAME
+#define IMP_ATOM_CAPS_NAME(UCName, lcname, CAPSNAME) CAPSNAME
 
 IMPATOM_BEGIN_NAMESPACE
 class Atom;
@@ -126,7 +126,7 @@ IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
 
 
     The nodes in the hierarchy can correspond to arbitrary bits of a
-    molecule and do not need to have any biological significant. For
+    molecule and do not need to have any biological significance. For
     example we could introduce a fragment containing residues 0 and 1:
     \dotgraph{\dot
     digraph example {
@@ -160,14 +160,16 @@ IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
     - the type of the parent makes sense for the child: eg a Residue
     cannot be the parent of a Chain.
     - the leaves always have coordinates, radius and mass
-    - all particles in hierarchy are from the same model
-    - all Atoms has a Residue for as parent
+    - all particles in the hierarchy are from the same model
+    - all Atoms have a Residue as the parent
     - any Atom with a non-heterogen atom type is part of a protein,
     DNA or RNA molecule.
     - all Residue children of a particle appear in order based
       on their index
-    - all Atom children in of a particle appear in order of their
+    - all Atom children of a particle appear in order of their
       AtomType
+    - if a node has residue indexes, all its descendants down to the
+      residue level also do.
 
     The get_is_valid() method checks some of these properties. Any
     method taking a hierarchy as an argument should do
@@ -226,12 +228,14 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
     return setup_particle(p->get_model(), p->get_index());
   }
 
+  /** \deprecated_at{2.2} Use get_is_setup() instead. */
   static bool particle_is_instance(kernel::Particle *p) {
     return H::get_is_setup(p, get_traits());
   }
   static bool get_is_setup(kernel::Particle *p) {
     return H::get_is_setup(p, get_traits());
   }
+  /** \deprecated_at{2.2} Use get_is_setup() instead. */
   static bool particle_is_instance(kernel::Model *m, kernel::ParticleIndex p) {
     return H::get_is_setup(m->get_particle(p), get_traits());
   }
@@ -334,11 +338,11 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
       We provide a number of helper methods to get associated
       decorators for the current node in the hierarchy. As an
       example, if the particle decorated by this decorator is
-      a Residue particle, then get_as_residue() return
+      a Residue particle, then get_as_residue() returns
       Residue(get_particle()), if not it returns Residue().
       @{
    */
-  IMP_FOREACH_HIERARCHY_TYPE_FUNCTIONS(IMP_GET_AS_DECL);
+  IMP_ATOM_FOREACH_HIERARCHY_TYPE_FUNCTIONS(IMP_ATOM_GET_AS_DECL);
   /** @} */
 
   //! Get the molecular hierarchy HierararchyTraits.
@@ -357,7 +361,8 @@ enum GetByType {
   ATOM_TYPE,
   RESIDUE_TYPE,
   CHAIN_TYPE,
-  MOLECULE_TYPE.DOMAIN_TYPE,
+  MOLECULE_TYPE,
+  DOMAIN_TYPE,
   FRAGMENT_TYPE,
   XYZ_TYPE,
   XYZR_TYPE,
@@ -365,7 +370,7 @@ enum GetByType {
 };
 #else
 enum GetByType {
-  IMP_FOREACH_HIERARCHY_TYPE_LIST(IMP_CAPS_NAME)
+  IMP_ATOM_FOREACH_HIERARCHY_TYPE_LIST(IMP_ATOM_CAPS_NAME)
 };
 #endif
 

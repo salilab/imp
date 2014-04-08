@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/Rotation3D.h   \brief Simple 3D rotation class.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,6 +13,7 @@
 #include "utility.h"
 #include "constants.h"
 #include "GeometricPrimitiveD.h"
+#include <IMP/algebra/eigen3/Eigen/Dense>
 
 #include <IMP/base/log.h>
 #include <cmath>
@@ -72,9 +73,14 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
 
  public:
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Rotation3D);
-  //! Create a rotation from an unnormalized vector 4
-  Rotation3D(const VectorD<4> &v)
-      : v_(v.get_unit_vector()), has_cache_(false) {}
+
+  //! Create a rotation from a vector of 4 quaternion coefficients.
+  //! @note: use assume_normalize with care - inputting an unnormalized
+  //!        vector would result in unexpected results if it is true
+  explicit Rotation3D(const VectorD<4> &v,
+                      bool assume_normalized=false)
+    : v_(assume_normalized ? v : v.get_unit_vector()),
+    has_cache_(false) {}
 
   //! Create an invalid rotation
   Rotation3D() : v_(0, 0, 0, 0), has_cache_(false) {}
@@ -168,9 +174,8 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
     if (!has_cache_) fill_cache();
     return matrix_[i];
   }
-  IMP_SHOWABLE_INLINE(Rotation3D, {
-    out << v_[0] << " " << v_[1] << " " << v_[2] << " " << v_[3];
-  });
+  IMP_SHOWABLE_INLINE(Rotation3D,
+  { out << v_[0] << " " << v_[1] << " " << v_[2] << " " << v_[3]; });
 
   //! Return the rotation which undoes this rotation.
   inline Rotation3D get_inverse() const {
@@ -189,6 +194,7 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
                     "Attempting to access uninitialized rotation");
     return v_;
   }
+
   //! multiply two rotations
   Rotation3D operator*(const Rotation3D &q) const {
     IMP_USAGE_CHECK(v_.get_squared_magnitude() > 0,
@@ -208,8 +214,10 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
     return *this;
   }
 
-  /** \brief Return the derivative of the position x with respect to
-      internal variable i. */
+  /** \brief Return the derivative of the position o with respect to
+      the i'th internal quaternion coefficient, for i in [0..3],
+      namely (dx/di, dy/di, dz/di) ??? TODO: is this even true ???
+  */
   const Vector3D get_derivative(const Vector3D &o, unsigned int i) const;
 };
 
@@ -237,7 +245,8 @@ inline double get_distance(const Rotation3D &r0, const Rotation3D &r1) {
   double odot =
       (r0.get_quaternion() + r1.get_quaternion()).get_squared_magnitude();
   double ans = std::min(dot, odot);
-  const double s2 = std::sqrt(2.0);
+  // TODO: barak - added static for efficieny
+  static const double s2 = std::sqrt(2.0);
   double ret = ans / s2;
   return std::max(std::min(ret, 1.0), 0.0);
 }
@@ -283,6 +292,12 @@ IMPALGEBRAEXPORT Rotation3D
     get_rotation_from_matrix(double m00, double m01, double m02, double m10,
                              double m11, double m12, double m20, double m21,
                              double m22);
+
+//! Generate a Rotation3D object from a rotation matrix
+/**
+   See Rotation3D
+*/
+IMPALGEBRAEXPORT Rotation3D get_rotation_from_matrix(IMP_Eigen::Matrix3d m);
 
 //! Pick a rotation at random from all possible rotations
 /** See Rotation3D */
@@ -409,7 +424,7 @@ class FixedXYZ : public GeometricPrimitiveD<3> {
   double get_y() const { return v_[1]; }
   double get_z() const { return v_[2]; }
   IMP_SHOWABLE_INLINE(FixedXYZ,
-                      { out << v_[0] << " " << v_[1] << " " << v_[2]; });
+  { out << v_[0] << " " << v_[1] << " " << v_[2]; });
 };
 
 IMP_VALUES(FixedXYZ, FixedXYZs);
@@ -431,7 +446,7 @@ inline Rotation3D get_interpolated(const Rotation3D &a, const Rotation3D &b,
                                    double f) {
   VectorD<4> bq = b.get_quaternion(), aq = a.get_quaternion();
   if (bq * aq < 0) bq = -bq;
-  return f * aq + (1 - f) * bq;
+  return Rotation3D(f * aq + (1 - f) * bq);
 }
 
 /** Return the rotation which takes the native x and y axes to the
@@ -443,6 +458,9 @@ IMPALGEBRAEXPORT Rotation3D
 
 //! Decompose a Rotation3D object into a rotation around an axis
 /**
+   Decompose a Rotation3D object into a rotation around an axis. For all identity
+   rotations, returns the axis [1,0,0] and the angle 0.0.
+
    \note http://en.wikipedia.org/wiki/Rotation_matrix
    \note www.euclideanspace.com/maths/geometry/rotations/conversions/
    angleToQuaternion/index.htm

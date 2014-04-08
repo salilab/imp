@@ -2,7 +2,7 @@
  *  \file internal/swig.h
  *  \brief Functions for use in swig wrappers
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_INTERNAL_SWIG_H
@@ -16,10 +16,9 @@
 #include "../PairScore.h"
 #include "../macros.h"
 #include "../Decorator.h"
-#include "../file.h"
 #include "../Optimizer.h"
 #include "container_helpers.h"
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <IMP/base/internal/swig.h>
 #include <IMP/base/deprecation_macros.h>
 
@@ -37,7 +36,6 @@ class IMPKERNELEXPORT _ConstRestraint : public Restraint {
       : Restraint(internal::get_model(ps), "ConstRestraint%1%"),
         v_(v),
         ps_(ps) {}
-  _ConstRestraint(double v) : Restraint("ConstRestraint%1%"), v_(v) {}
   _ConstRestraint(Model *m, const ParticleIndexes &pis, double v)
       : Restraint(m, "ConstRestraint%1%"), v_(v), ps_(get_particles(m, pis)) {}
   double get_value() const { return v_; }
@@ -195,7 +193,7 @@ IMPKERNELEXPORT ParticlesTemp
 /** Primarily for testing.
  */
 class IMPKERNELEXPORT _LogPairScore : public PairScore {
-  mutable base::map<ParticlePair, unsigned int> map_;
+  mutable boost::unordered_map<ParticlePair, unsigned int> map_;
 
  public:
   //! create with an empty map

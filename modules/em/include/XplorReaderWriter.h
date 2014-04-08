@@ -2,7 +2,7 @@
  *  \file IMP/em/XplorReaderWriter.h
  *  \brief Classes to read or write density files in XPLOR format.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -20,15 +20,15 @@
 IMPEM_BEGIN_NAMESPACE
 
 /** Reader/Writer for xplor files. */
-class IMPEMEXPORT XplorReaderWriter : public MapReaderWriter
-{
+class IMPEMEXPORT XplorReaderWriter : public MapReaderWriter {
 #if !defined(DOXYGEN) && !defined(SWIG)
-public:
+ public:
   void read(const char *filename, float **data, DensityHeader &header);
   void write(const char *filename, const float *data,
-             const DensityHeader &header );
-protected:
-  int read_header(std::ifstream & XPLORstream, internal::XplorHeader &header);
+             const DensityHeader &header);
+
+ protected:
+  int read_header(std::ifstream &XPLORstream, internal::XplorHeader &header);
   int read_map(std::ifstream &XPLORstream, float *data,
                internal::XplorHeader &header);
 #endif
@@ -37,4 +37,4 @@ protected:
 
 IMPEM_END_NAMESPACE
 
-#endif  /* IMPEM_XPLOR_READER_WRITER_H */
+#endif /* IMPEM_XPLOR_READER_WRITER_H */

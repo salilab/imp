@@ -2,7 +2,7 @@
  *  \file restraint_geometry.cpp
  *  \brief XXXX.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,6 +12,7 @@
 #include <IMP/container/ListPairContainer.h>
 #include <IMP/container/SingletonsRestraint.h>
 #include <IMP/base/Pointer.h>
+#include <IMP/input_output.h>
 #include <IMP/algebra/Segment3D.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE

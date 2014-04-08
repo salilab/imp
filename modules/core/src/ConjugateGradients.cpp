@@ -1,7 +1,7 @@
 /**
  *  \file ConjugateGradients.cpp  \brief Simple conjugate gradients optimizer.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -251,11 +251,6 @@ ConjugateGradients::ConjugateGradients(kernel::Model *m, std::string name)
   max_change_ = std::numeric_limits<Float>::max() / 100.0;
 }
 
-ConjugateGradients::ConjugateGradients() : AttributeOptimizer() {
-  threshold_ = std::numeric_limits<Float>::epsilon();
-  max_change_ = std::numeric_limits<Float>::max() / 100.0;
-}
-
 Float ConjugateGradients::do_optimize(unsigned int max_steps) {
   IMP_OBJECT_LOG;
   IMP_USAGE_CHECK(get_model(),
@@ -279,7 +274,7 @@ Float ConjugateGradients::do_optimize(unsigned int max_steps) {
 #ifdef IMP_CG_SCALE
     x[i] = get_scaled_value(float_indices[i]);  // scaled
 #else
-    x[i] = get_value(float_indices[i]);  // scaled
+    x[i] = get_value(float_indices[i]);            // scaled
 #endif
     IMP_USAGE_CHECK(
         !base::isnan(x[i]) && std::abs(x[i]) < std::numeric_limits<NT>::max(),

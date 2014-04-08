@@ -3,7 +3,7 @@
  *  \brief Iteratively refine to find all close pairs in a tree.
  *
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/core/ClosePairsPairScore.h>
@@ -13,11 +13,11 @@
 #include <IMP/algebra/vector_search.h>
 #include <IMP/core/internal/rigid_body_tree.h>
 #include <IMP/core/internal/close_pairs_helpers.h>
-#include <IMP/kernel/internal/InternalListSingletonContainer.h>
 #include <IMP/core/RigidClosePairsFinder.h>
 #include <IMP/algebra/internal/MinimalSet.h>
 #include <IMP/kernel/internal/container_helpers.h>
 #include <IMP/core/PairRestraint.h>
+#include <boost/unordered_set.hpp>
 #include <cmath>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -41,7 +41,7 @@ ParticleIndexes expand(kernel::Particle *p, Refiner *r) {
   if (r->get_can_refine(p)) {
     kernel::ParticleIndexes ret = IMP::internal::get_index(r->get_refined(p));
     IMP_IF_CHECK(USAGE) {
-      base::set<kernel::ParticleIndex> uret(ret.begin(), ret.end());
+      boost::unordered_set<kernel::ParticleIndex> uret(ret.begin(), ret.end());
       IMP_USAGE_CHECK(uret.size() == ret.size(),
                       "Duplicate particles in refined result: "
                           << uret.size() << " != " << ret.size());

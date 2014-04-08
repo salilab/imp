@@ -2,7 +2,7 @@
  *  \file IMP/domino/DependencyScoreState.h
  *  \brief A beyesian infererence-based sampler.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,7 +11,7 @@
 
 #include <IMP/domino/domino_config.h>
 #include <IMP/ScoreState.h>
-#include <IMP/score_state_macros.h>
+#include <IMP/container_base.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -26,7 +26,7 @@ class IMPDOMINOEXPORT DependencyScoreState : public ScoreState {
   ContainersTemp inputc_, outputc_;
 
  public:
-  DependencyScoreState();
+  DependencyScoreState(Model *m);
   void set_input_particles(const kernel::ParticlesTemp &pt) {
     IMP_USAGE_CHECK(!get_model(),
                     "Must set dependencies before adding to model.");

@@ -2,7 +2,7 @@
  *  \file IMP/domino/assignment_containers.h
  *  \brief A beyesian infererence-based sampler.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,19 +13,22 @@
 #include "Assignment.h"
 #include "Order.h"
 #include "subset_scores.h"
-#include <IMP/base/map.h>
+#include <IMP/base/Vector.h>
+#include <IMP/base/hash.h>
+#include <boost/unordered_map.hpp>
 #include <IMP/statistics/metric_clustering.h>
+
+#include <algorithm>
+#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_real.hpp>
+#include <boost/shared_array.hpp>
+#include <cstdio>
+#include <queue>
+
 #if IMP_DOMINO_HAS_RMF
 #include <RMF/HDF5/Group.h>
 #include <RMF/HDF5/File.h>
 #endif
-#include <boost/shared_array.hpp>
-#include <algorithm>
-#include <IMP/base/hash.h>
-#include <IMP/base/Vector.h>
-
-#include <queue>
-#include <cstdio>
 
 #ifdef _MSC_VER
 #include <io.h>
@@ -80,8 +83,8 @@ inline unsigned int PackedAssignmentContainer::get_number_of_assignments()
   return d_.size() / width_;
 }
 
-inline Assignment PackedAssignmentContainer::get_assignment(
-    unsigned int i) const {
+inline Assignment PackedAssignmentContainer::get_assignment(unsigned int i)
+    const {
   IMP_USAGE_CHECK(i < get_number_of_assignments(),
                   "Invalid assignment requested: " << i);
   IMP_USAGE_CHECK(width_ > 0, "Uninitualized PackedAssignmentContainer.");
@@ -126,8 +129,8 @@ inline unsigned int ListAssignmentContainer::get_number_of_assignments() const {
   return d_.size();
 }
 
-inline Assignment ListAssignmentContainer::get_assignment(
-    unsigned int i) const {
+inline Assignment ListAssignmentContainer::get_assignment(unsigned int i)
+    const {
   return d_[i];
 }
 
@@ -167,8 +170,8 @@ inline unsigned int SampleAssignmentContainer::get_number_of_assignments()
   return d_.size() / width_;
 }
 
-inline Assignment SampleAssignmentContainer::get_assignment(
-    unsigned int i) const {
+inline Assignment SampleAssignmentContainer::get_assignment(unsigned int i)
+    const {
   return Assignment(d_.begin() + i * width_, d_.begin() + (i + 1) * width_);
 }
 #endif
@@ -218,7 +221,6 @@ class IMPDOMINOEXPORT ReadHDF5AssignmentContainer : public AssignmentContainer {
   void flush();
 
  public:
-
   ReadHDF5AssignmentContainer(RMF::HDF5::IndexConstDataSet2D dataset,
                               const Subset &s,
                               const kernel::ParticlesTemp &all_particles,

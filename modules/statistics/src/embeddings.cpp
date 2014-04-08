@@ -2,7 +2,7 @@
  *  \file point_clustering.cpp
  *  \brief Cluster sets of points.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/statistics/embeddings.h>
@@ -31,22 +31,22 @@ unsigned int VectorDEmbedding::get_number_of_items() const {
 
 ConfigurationSetXYZEmbedding::ConfigurationSetXYZEmbedding(
     ConfigurationSet *cs, SingletonContainerAdaptor sc, bool align)
-    : Embedding("ConfiguringEmbedding"), cs_(cs), sc_(sc), align_(align) {}
+    : Embedding("ConfiguringEmbedding"), cs_(cs), sc_(sc), align_(align) {
+  sc.set_name_if_default("ConfigurationSetXYZEmbeddingInput%1%");
+}
 
-algebra::VectorKD ConfigurationSetXYZEmbedding::get_point(
-    unsigned int a) const {
+algebra::VectorKD ConfigurationSetXYZEmbedding::get_point(unsigned int a)
+    const {
   algebra::Transformation3D tr = algebra::get_identity_transformation_3d();
   if (align_) {
     cs_->load_configuration(0);
     algebra::Vector3Ds vs0;
-    IMP_CONTAINER_FOREACH(SingletonContainer, sc_, {
-      vs0.push_back(get_coordinates(sc_->get_model(), _1));
-    });
+    IMP_CONTAINER_FOREACH(SingletonContainer, sc_,
+    { vs0.push_back(get_coordinates(sc_->get_model(), _1)); });
     cs_->load_configuration(a);
     algebra::Vector3Ds vsc;
-    IMP_CONTAINER_FOREACH(SingletonContainer, sc_, {
-      vsc.push_back(get_coordinates(sc_->get_model(), _1));
-    });
+    IMP_CONTAINER_FOREACH(SingletonContainer, sc_,
+    { vsc.push_back(get_coordinates(sc_->get_model(), _1)); });
     tr = get_transformation_aligning_first_to_second(vsc, vs0);
   } else {
     cs_->load_configuration(a);

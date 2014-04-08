@@ -1,8 +1,8 @@
 /**
- *  \file model_interaction.h
+ *  \file IMP/em2d/model_interaction.h
  *  \brief operations implying interaction of models and the EM module
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_MODEL_INTERACTION_H
@@ -27,18 +27,16 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-
 //! Generate a PDB file from a set of Vector2D (all the points are C-alpha) and
 //! the Z coordinate is set to 0.
 /*!
   \note This version deals with the problem of having more than 10000 points
 */
-IMPEM2DEXPORT void write_vectors_as_pdb(
-                  const algebra::Vector2Ds vs, const String filename);
+IMPEM2DEXPORT void write_vectors_as_pdb(const algebra::Vector2Ds vs,
+                                        const String filename);
 
-IMPEM2DEXPORT void write_vectors_as_pdb(
-                  const algebra::Vector3Ds vs, const String filename);
-
+IMPEM2DEXPORT void write_vectors_as_pdb(const algebra::Vector3Ds vs,
+                                        const String filename);
 
 IMPEM2D_END_NAMESPACE
 

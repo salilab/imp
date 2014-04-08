@@ -2,7 +2,9 @@ import IMP
 import IMP.test
 import IMP.core
 
+
 class Tests(IMP.test.TestCase):
+
     """Tests for linear unary function"""
 
     def test_values(self):

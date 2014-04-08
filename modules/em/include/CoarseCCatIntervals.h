@@ -2,7 +2,7 @@
  *  \file IMP/em/CoarseCCatIntervals.h
  *  \brief Cross correlation coefficient calculator.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -18,11 +18,9 @@ IMPEM_BEGIN_NAMESPACE
 //! Cross correlation coefficient calculator.
 /** Store CCC and derivative values and recompute then every X steps.
  */
-class IMPEMEXPORT CoarseCCatIntervals : public CoarseCC
-{
+class IMPEMEXPORT CoarseCCatIntervals : public CoarseCC {
 
-public:
-
+ public:
   CoarseCCatIntervals(const int &ncd);
 
   CoarseCCatIntervals();
@@ -53,28 +51,27 @@ the same value before computing the values again
   \return the value of the cross correlation term: scalefac * (1-CCC)
           and a vector of derivatives
    */
-  std::pair<double,algebra::Vector3Ds> evaluate(
-                 DensityMap *em_map, SampledDensityMap *model_map,
-                 const algebra::Vector3Ds &deriv,
-                 float scalefac, bool lderiv,
-                 unsigned long eval_interval);
+  std::pair<double, algebra::Vector3Ds> evaluate(
+      DensityMap *em_map, SampledDensityMap *model_map,
+      const algebra::Vector3Ds &deriv, float scalefac, bool lderiv,
+      unsigned long eval_interval);
 
   IMP_OBJECT_METHODS(CoarseCCatIntervals);
 
-protected:
+ protected:
   void allocate_derivatives_array(int ncd);
   //! Number of times the evaluation has been called.
   /** The evaluation is only performed the first time and when calls_counter
       reaches eval_interval. Otherwise the stored_cc_ value is returned */
   int calls_counter_;
   //! Stored correlation value
-  float stored_cc_ ;
+  float stored_cc_;
   //! Stored derivative terms
-  double *stored_dvx_,*stored_dvy_,*stored_dvz_;
+  double *stored_dvx_, *stored_dvy_, *stored_dvz_;
   // true when memory for the terms storing the derivatives has been assigned
   bool dv_memory_allocated_;
 };
 
 IMPEM_END_NAMESPACE
 
-#endif  /* IMPEM_COARSE_CCAT_INTERVALS_H */
+#endif /* IMPEM_COARSE_CCAT_INTERVALS_H */

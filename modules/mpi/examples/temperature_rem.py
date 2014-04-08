@@ -1,6 +1,13 @@
+## \example temperature_rem.py
+# Temperature replica exchange
+
 import IMP
+import IMP.base
 import IMP.mpi
 import IMP.core
+import sys
+
+IMP.base.setup_from_argv(sys.argv, "Temperature MPI example")
 
 # min and max temperature
 TEMPMIN_ = 1.0
@@ -52,11 +59,8 @@ log = open("log" + str(myindex), "w")
 # start sampling loop
 for istep in range(0, 100):
     # do optimization
-    mc.optimize(100)
+    score = mc.optimize(100)
 
-    # time to try an exchange
-    # get my score
-    score = m.evaluate(False)
     # get my replica index and temperature
     myindex = rem.get_my_index()
     mytemp = rem.get_my_parameter("temp")[0]
@@ -75,5 +79,5 @@ for istep in range(0, 100):
     # try exchange
     flag = rem.do_exchange(myscore, fscore, findex)
     # if accepted, change temperature
-    if (flag == True):
+    if (flag):
         mc.set_kt(ftemp)

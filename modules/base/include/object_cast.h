@@ -2,7 +2,7 @@
  *  \file IMP/base/object_cast.h
  *  \brief A shared base class to help in debugging and things.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -20,7 +20,7 @@ IMPBASE_BEGIN_NAMESPACE /** Up (or down) cast an \imp Object-derived class. If
                             \c dynamic_cast if you prefer to have a nullptr
                             returned.
                          */
-template <class O>
+    template <class O>
 inline O *object_cast(Object *o) {
   O *ret = dynamic_cast<O *>(o);
   if (!ret) {

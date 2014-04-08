@@ -7,11 +7,22 @@ import IMP.core
 import IMP.container
 import IMP.algebra
 import IMP.display
+import sys
+
+IMP.base.setup_from_argv(sys.argv, "Optimize balls example")
+
+if IMP.base.get_is_quick_test():
+    num_balls = 2
+    num_mc_steps = 10
+else:
+    num_balls = 20
+    num_mc_steps = 1000
+
 m = IMP.kernel.Model()
 bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                IMP.algebra.Vector3D(30, 30, 30))
 ps = []
-for i in range(0, 20):
+for i in range(0, num_balls):
     ps.append(IMP.kernel.Particle(m))
     d = IMP.core.XYZR.setup_particle(ps[-1])
     d.set_radius(10)
@@ -33,7 +44,7 @@ sm = IMP.core.SerialMover(mvs)
 mc.add_mover(sm)
 IMP.base.set_log_level(IMP.base.SILENT)
 print "initial", isf.evaluate(False)
-after = mc.optimize(10000)
+after = mc.optimize(num_mc_steps)
 print "final", after
 name = IMP.base.create_temporary_file_name("incremental_mc", ".pym")
 w = IMP.display.PymolWriter(name)

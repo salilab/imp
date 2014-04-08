@@ -1,8 +1,8 @@
 /**
- *  \file ChiSquareMetric.h
+ *  \file IMP/statistics/ChiSquareMetric.h
  *  \brief Chi2 Metric
  *
- *  Copyright 2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSTATISTICS_CHI_SQUARE_METRIC_H
@@ -42,7 +42,6 @@ class IMPSTATISTICSEXPORT ChiSquareMetric : public Metric {
   double get_scalarchisquare(unsigned i, unsigned j) const;
 
  public:
-
   ChiSquareMetric(Floats data_exp, int constr_type = 0);
   //! add a configuration, defined by a list of data points,
   //! a list of standard deviations, and one weight.

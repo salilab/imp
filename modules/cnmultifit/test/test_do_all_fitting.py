@@ -5,6 +5,7 @@ import IMP.multifit
 import IMP.atom
 import os
 
+
 class Tests(IMP.test.TestCase):
 
     def test_do_all_fitting(self):
@@ -17,11 +18,11 @@ monomer = %s
 surface = %s.ms
 prot_lib = %s
 """ % (self.get_input_file_name('monomer.pdb'),
-       self.get_input_file_name('monomer.pdb'),
-       IMP.multifit.get_data_path('chem.lib')))
+            self.get_input_file_name('monomer.pdb'),
+            IMP.multifit.get_data_path('chem.lib')))
         for line in fin:
             if line.startswith("resolution ="):
-                fout.write("map = %s\n" \
+                fout.write("map = %s\n"
                            % self.get_input_file_name('trimer-8.0.mrc'))
             fout.write(line)
         fin.close()
@@ -31,7 +32,8 @@ prot_lib = %s
 
         m = IMP.kernel.Model()
         ref = IMP.atom.read_pdb(self.get_input_file_name('trimer-ref.pdb'), m)
-        ref_atoms = IMP.core.XYZs(IMP.atom.get_by_type(ref, IMP.atom.ATOM_TYPE))
+        ref_atoms = IMP.core.XYZs(
+            IMP.atom.get_by_type(ref, IMP.atom.ATOM_TYPE))
         rmsds = []
         for i in range(3):
             out = IMP.atom.read_pdb('asmb.model.%d.pdb' % i, m)

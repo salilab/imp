@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/Cosine.h    \brief Cosine function.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_COSINE_H
@@ -9,7 +9,6 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/UnaryFunction.h>
-#include <IMP/unary_function_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

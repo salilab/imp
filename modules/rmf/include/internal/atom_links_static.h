@@ -2,7 +2,7 @@
  *  \file IMP/rmf/atom_links.h
  *  \brief Handle read/write of kernel::Model data from/to files.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,24 +12,32 @@
 #include <IMP/rmf/rmf_config.h>
 #include <RMF/NodeHandle.h>
 #include <RMF/FileHandle.h>
-#include <RMF/decorators.h>
+#include <RMF/decorator/physics.h>
+#include <RMF/decorator/sequence.h>
+#include <RMF/decorator/shape.h>
+#include <RMF/decorator/labels.h>
+#include <RMF/decorator/bond.h>
 #include <IMP/kernel/Model.h>
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 
 /** Load things that are assumed to be unchanging, excluding coordinates. */
 class IMPRMFEXPORT HierarchyLoadStatic {
-  RMF::ParticleConstFactory particle_factory_;
-  RMF::IntermediateParticleConstFactory intermediate_particle_factory_;
-  RMF::AtomConstFactory atom_factory_;
-  RMF::ResidueConstFactory residue_factory_;
-  RMF::ChainConstFactory chain_factory_;
-  RMF::ColoredConstFactory colored_factory_;
-  RMF::CopyConstFactory copy_factory_;
-  RMF::DiffuserConstFactory diffuser_factory_;
-  RMF::TypedConstFactory typed_factory_;
-  RMF::DomainConstFactory domain_factory_;
-  RMF::FragmentConstFactory fragment_factory_;
+  RMF::decorator::ParticleFactory particle_factory_;
+  RMF::decorator::IntermediateParticleFactory intermediate_particle_factory_;
+  RMF::decorator::AtomFactory atom_factory_;
+  RMF::decorator::ResidueFactory residue_factory_;
+  RMF::decorator::ChainFactory chain_factory_;
+  RMF::decorator::ColoredFactory colored_factory_;
+  RMF::decorator::CopyFactory copy_factory_;
+  RMF::decorator::DiffuserFactory diffuser_factory_;
+  RMF::decorator::TypedFactory typed_factory_;
+  RMF::decorator::DomainFactory domain_factory_;
+  RMF::decorator::FragmentFactory fragment_factory_;
+  RMF::decorator::BackwardsCompatibilityFragmentFactory
+      backwards_fragment_factory_;
+  RMF::decorator::StateFactory state_factory_;
+  RMF::decorator::Molecule molecule_;
   RMF::FloatKey radius_key_;
   RMF::FloatKey mass_key_;
 
@@ -45,17 +53,19 @@ class IMPRMFEXPORT HierarchyLoadStatic {
 
 /** Save things that are assumed to be unchanging, excluding coordinates. */
 class IMPRMFEXPORT HierarchySaveStatic {
-  RMF::ParticleFactory particle_factory_;
-  RMF::IntermediateParticleFactory intermediate_particle_factory_;
-  RMF::AtomFactory atom_factory_;
-  RMF::ResidueFactory residue_factory_;
-  RMF::ChainFactory chain_factory_;
-  RMF::ColoredFactory colored_factory_;
-  RMF::CopyFactory copy_factory_;
-  RMF::DiffuserFactory diffuser_factory_;
-  RMF::TypedFactory typed_factory_;
-  RMF::DomainFactory domain_factory_;
-  RMF::FragmentFactory fragment_factory_;
+  RMF::decorator::ParticleFactory particle_factory_;
+  RMF::decorator::IntermediateParticleFactory intermediate_particle_factory_;
+  RMF::decorator::AtomFactory atom_factory_;
+  RMF::decorator::ResidueFactory residue_factory_;
+  RMF::decorator::ChainFactory chain_factory_;
+  RMF::decorator::ColoredFactory colored_factory_;
+  RMF::decorator::CopyFactory copy_factory_;
+  RMF::decorator::DiffuserFactory diffuser_factory_;
+  RMF::decorator::TypedFactory typed_factory_;
+  RMF::decorator::DomainFactory domain_factory_;
+  RMF::decorator::FragmentFactory fragment_factory_;
+  RMF::decorator::StateFactory state_factory_;
+  RMF::decorator::Molecule molecule_;
 
  public:
   HierarchySaveStatic(RMF::FileHandle f);
@@ -63,7 +73,7 @@ class IMPRMFEXPORT HierarchySaveStatic {
 };
 
 class IMPRMFEXPORT HierarchyLoadBonds {
-  RMF::AliasConstFactory af_;
+  RMF::decorator::BondFactory af_;
 
  public:
   HierarchyLoadBonds(RMF::FileConstHandle f) : af_(f) {}
@@ -72,7 +82,7 @@ class IMPRMFEXPORT HierarchyLoadBonds {
 };
 
 class IMPRMFEXPORT HierarchySaveBonds {
-  RMF::AliasFactory af_;
+  RMF::decorator::BondFactory af_;
 
  public:
   HierarchySaveBonds(RMF::FileHandle f) : af_(f) {}

@@ -2,7 +2,7 @@
  *  \file IMP/core/ClosePairsPairScore.h
  *  \brief Apply a PairScore to close pairs.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_CLOSE_PAIRS_PAIR_SCORE_H
@@ -42,8 +42,8 @@ class IMPCOREEXPORT KClosePairsPairScore : public PairScore {
    */
   KClosePairsPairScore(PairScore *f, Refiner *r, int k = 1);
 
-  kernel::ParticlePairsTemp get_close_pairs(
-      const kernel::ParticlePair &pp) const {
+  kernel::ParticlePairsTemp get_close_pairs(const kernel::ParticlePair &pp)
+      const {
     return IMP::internal::get_particle(
         pp[0]->get_model(),
         get_close_pairs(pp[0]->get_model(), IMP::internal::get_index(pp)));
@@ -88,8 +88,8 @@ class IMPCOREEXPORT ClosePairsPairScore : public PairScore {
    */
   ClosePairsPairScore(PairScore *f, Refiner *r, Float max_distance);
 
-  kernel::ParticlePairsTemp get_close_pairs(
-      const kernel::ParticlePair &pp) const {
+  kernel::ParticlePairsTemp get_close_pairs(const kernel::ParticlePair &pp)
+      const {
     return IMP::internal::get_particle(
         pp[0]->get_model(),
         get_close_pairs(pp[0]->get_model(), IMP::internal::get_index(pp)));

@@ -2,19 +2,21 @@
  *  \file core/utility.cpp
  *  \brief Functions to perform simple functions on a set of particles
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 #include "IMP/core/blame.h"
 #include <IMP/kernel/Restraint.h>
+#include <IMP/kernel/input_output.h>
 #include <IMP/core/RestraintsScoringFunction.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/display/Color.h>
 #include <IMP/dependency_graph.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 IMPCORE_BEGIN_NAMESPACE
 namespace {
-typedef base::map<kernel::Particle *, kernel::Particle *> ControlledBy;
+typedef boost::unordered_map<kernel::Particle *, kernel::Particle *>
+    ControlledBy;
 void distribute_blame(kernel::Restraint *r, const ControlledBy &cb, FloatKey fk,
                       double weight) {
   kernel::RestraintSet *rs = dynamic_cast<kernel::RestraintSet *>(r);

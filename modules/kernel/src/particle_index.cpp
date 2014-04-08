@@ -1,7 +1,7 @@
 /**
  *  \file Log.cpp   \brief Logging and error reporting support.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -51,7 +51,7 @@ namespace {
 void foreach_test() {
   ParticleIndexes pis;
   ParticleIndexesAdaptor pia(pis);
-  BOOST_FOREACH(ParticleIndex pi, pia) { IMP_UNUSED(pi); }
+  IMP_FOREACH(ParticleIndex pi, pia) { IMP_UNUSED(pi); }
 }
 }
 IMPKERNEL_END_NAMESPACE

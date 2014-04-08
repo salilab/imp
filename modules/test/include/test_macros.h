@@ -2,12 +2,13 @@
  *  \file IMP/test/test_macros.h
  *  Macros for writing C++ tests.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPTEST_TEST_MACROS_H
 #define IMPTEST_TEST_MACROS_H
+#include <IMP/base/log_macros.h>
 
 //! Report an error if a != b
 #define IMP_TEST_EQUAL(a, b)                                               \

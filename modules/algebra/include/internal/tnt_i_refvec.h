@@ -55,7 +55,6 @@ class i_refvec {
   int* ref_count_;
 
  public:
-
   i_refvec();
   explicit i_refvec(int n);
   inline i_refvec(T* data);

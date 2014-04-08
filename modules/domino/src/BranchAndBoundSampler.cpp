@@ -1,14 +1,14 @@
 /**
  *  \file ConjugateGradients.cpp  \brief Simple conjugate gradients optimizer.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
 #include <IMP/domino/BranchAndBoundSampler.h>
 #include <IMP/domino/assignment_tables.h>
 #include <IMP/domino/utility.h>
-#include <IMP/file.h>
+#include <IMP/base/file.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -20,8 +20,8 @@ BranchAndBoundSampler::BranchAndBoundSampler(kernel::Model *m,
 BranchAndBoundSampler::BranchAndBoundSampler(kernel::Model *m, std::string name)
     : DiscreteSampler(m, new ParticleStatesTable(), name) {}
 
-Assignments BranchAndBoundSampler::do_get_sample_assignments(
-    const Subset &s) const {
+Assignments BranchAndBoundSampler::do_get_sample_assignments(const Subset &s)
+    const {
   SubsetFilterTables sfts = DiscreteSampler::get_subset_filter_tables_to_use(
       kernel::RestraintsTemp(1, get_model()->get_root_restraint_set()),
       get_particle_states_table());

@@ -1,7 +1,7 @@
 /**
  *  \file Gaussian.h    \brief Gaussian function.
  *
- *  Copyright 2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_INTERNAL_GAUSSIAN_H
@@ -20,14 +20,18 @@ class Gaussian : public UnaryFunction {
   Gaussian(Float Emin, Float Zmin, Float sigma)
       : Emin_(Emin), Zmin_(Zmin), sigma_(sigma) {}
 
-  IMP_UNARY_FUNCTION_INLINE(Gaussian,
-                            Emin_* exp(-(feature - Zmin_) * (feature - Zmin_) /
-                                       sigma_ / sigma_ / 2.0),
-                            -Emin_* exp(-(feature - Zmin_) * (feature - Zmin_) /
-                                        sigma_ / sigma_ / 2.0) *
-                                (feature - Zmin_) / sigma_ / sigma_,
-                            "Gaussian: " << Emin_ << " and " << Zmin_ << " and "
-                                         << sigma_ << std::endl);
+  virtual DerivativePair evaluate_with_derivative(double feature) const
+      IMP_OVERRIDE {
+    return DerivativePair(evaluate(feature),
+                          -Emin_* exp(-(feature - Zmin_) * (feature - Zmin_) /
+                                      sigma_ / sigma_ / 2.0) *
+                          (feature - Zmin_) / sigma_ / sigma_);
+  }
+  virtual double evaluate(double feature) const IMP_OVERRIDE {
+    return Emin_* exp(-(feature - Zmin_) * (feature - Zmin_) /
+                                       sigma_ / sigma_ / 2.0);
+  }
+  IMP_OBJECT_METHODS(Gaussian);
 
  private:
   Float Emin_;

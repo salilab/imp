@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/core/ConnectivityRestraint.h>
@@ -27,12 +27,12 @@ void benchmark_it(std::string name, std::string algorithm,
   double value = 0;
   m->evaluate(false);
   IMP_TIME({
-    IMP_CONTAINER_FOREACH(SingletonContainer, lsc, {
-      XYZ(lsc->get_model(), _1).set_coordinates(get_random_vector_in(
-          BoundingBox3D(Vector3D(0, 0, 0), Vector3D(10, 10, 10))));
-    });
-    value += m->evaluate(false);
-  },
+             IMP_CONTAINER_FOREACH(SingletonContainer, lsc, {
+               XYZ(lsc->get_model(), _1).set_coordinates(get_random_vector_in(
+                   BoundingBox3D(Vector3D(0, 0, 0), Vector3D(10, 10, 10))));
+             });
+             value += m->evaluate(false);
+           },
            runtime);
   IMP::benchmark::report(name, algorithm, runtime, value);
 }
@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
     m->remove_restraint(r);
   }
   {
-    MSConnectivityRestraint *r = new MSConnectivityRestraint(ss);
+    MSConnectivityRestraint *r = new MSConnectivityRestraint(m, ss);
     Ints composite;
     for (unsigned int i = 0; i < ps.size(); ++i) {
       composite.push_back(r->add_type(kernel::ParticlesTemp(1, ps[i])));

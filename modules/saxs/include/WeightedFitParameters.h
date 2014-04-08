@@ -1,7 +1,7 @@
 /**
  * \file IMP/saxs/WeightedFitParameters.h \brief
  *
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -20,9 +20,8 @@ IMPSAXS_BEGIN_NAMESPACE
 
 class IMPSAXSEXPORT WeightedFitParameters : public FitParameters {
  public:
-
-  WeightedFitParameters(float chi, float c1, float c2, Floats weights):
-    FitParameters(chi, c1, c2), weights_(weights) {}
+  WeightedFitParameters(float chi, float c1, float c2, Floats weights)
+      : FitParameters(chi, c1, c2), weights_(weights) {}
 
   const Floats& get_weights() const { return weights_; }
 

@@ -56,7 +56,6 @@ class Sparse_Matrix_CompRow {
   int dim2_;  // number of cols
 
  public:
-
   Sparse_Matrix_CompRow(const Sparse_Matrix_CompRow &S);
   Sparse_Matrix_CompRow(int M, int N, int nz, const T *val, const int *r,
                         const int *c);

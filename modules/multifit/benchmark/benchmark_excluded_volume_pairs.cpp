@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #include "benchmark_excluded_volume.h"
@@ -16,20 +16,18 @@ using namespace IMP::multifit;
 namespace {
 
 void do_it() {
- IMP_EV_BENCHMARK_SETUP
+  IMP_MULTIFIT_EV_BENCHMARK_SETUP
 
   {
     IMP_NEW(ClosePairContainer, cpc, (lsc, 0, 5));
     IMP_NEW(SoftSpherePairScore, ps, (1));
-    base::Pointer<kernel::Restraint>
-      sr(container::create_restraint(ps.get(), cpc.get()));
+    base::Pointer<kernel::Restraint> sr(
+        container::create_restraint(ps.get(), cpc.get()));
     sr->set_maximum_score(.1);
     test_one<ClosePairContainer>("pairs restraint", seed, m,
-                                 sr->create_scoring_function(), rb0,
-                                 false);
+                                 sr->create_scoring_function(), rb0, false);
     test_one<ClosePairContainer>("pairs restraint", seed, m,
-                                 sr->create_scoring_function(), rb0,
-                                 true);
+                                 sr->create_scoring_function(), rb0, true);
   }
 }
 }

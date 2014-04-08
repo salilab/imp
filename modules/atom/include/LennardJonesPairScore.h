@@ -2,7 +2,7 @@
  *  \file IMP/atom/LennardJonesPairScore.h
  *  \brief Lennard-Jones score between a pair of particles.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_LENNARD_JONES_PAIR_SCORE_H

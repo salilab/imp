@@ -2,7 +2,7 @@
  *  \file IMP/algebra/grid_storages.h
  *  \brief A class to represent a voxel grid.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -18,7 +18,7 @@
 #include "Vector3D.h"
 #include "BoundingBoxD.h"
 #include <boost/iterator/transform_iterator.hpp>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <IMP/base/Vector.h>
 
 #include <limits>
@@ -179,7 +179,7 @@ class DenseGridStorageD : public BoundedGridRangeD<D> {
     \see Grid3D
 */
 template <int D, class VT, class Base,
-          class Map = typename IMP::base::map<GridIndexD<D>, VT> >
+          class Map = typename boost::unordered_map<GridIndexD<D>, VT> >
 class SparseGridStorageD : public Base {
   typedef Map Data;
   struct GetIndex {
@@ -264,10 +264,10 @@ class SparseGridStorageD : public Base {
       behavior/the existence of these functions is likely to change.
       @{
   */
-  IMP_BRACKET(
-      VT, GridIndexD<D>, true,
-      IMP_USAGE_CHECK(data_.find(i) != data_.end(), "Invalid index " << i);
-      return data_.find(i)->second);
+  IMP_BRACKET(VT, GridIndexD<D>, true,
+              IMP_USAGE_CHECK(data_.find(i) != data_.end(), "Invalid index "
+                                                                << i);
+              return data_.find(i)->second);
 /** @} */
 
 /** \name Iterators through set cells
@@ -279,13 +279,15 @@ class SparseGridStorageD : public Base {
   typedef typename Data::const_iterator AllConstIterator;
   AllConstIterator all_begin() const { return data_.begin(); }
   AllConstIterator all_end() const { return data_.end(); }
-#endif
-
-  base::Vector<GridIndexD<D> > get_all_indexes() const {
-    return base::Vector<GridIndexD<D> >(
-        boost::make_transform_iterator(all_begin(), GetIndex()),
-        boost::make_transform_iterator(all_end(), GetIndex()));
+  typedef boost::transform_iterator<GetIndex, AllConstIterator>
+      AllIndexIterator;
+  AllIndexIterator all_indexes_begin() const {
+    return boost::make_transform_iterator(all_begin(), GetIndex());
   }
+  AllIndexIterator all_indexes_end() const {
+    return boost::make_transform_iterator(all_end(), GetIndex());
+  }
+#endif
 /** @} */
 
 /** \name Index Iterators
@@ -345,7 +347,7 @@ class SparseGridStorageD : public Base {
     }
     return f;
   }
-
+#ifndef IMP_DOXYGEN
   //! Return the index which has no lower index in each coordinate
   ExtendedGridIndexD<D> get_minimum_extended_index() const {
     IMP_USAGE_CHECK(!data_.empty(), "No voxels in grid.");
@@ -372,6 +374,7 @@ class SparseGridStorageD : public Base {
     }
     return ret;
   }
+#endif
 };
 IMPALGEBRA_END_NAMESPACE
 

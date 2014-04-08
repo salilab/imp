@@ -1,7 +1,7 @@
 /**
  *  \file graph_base.cpp   \brief classes for implementing a graph.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -9,6 +9,7 @@
 #include <IMP/algebra/eigen_analysis.h>
 #include <IMP/algebra/standard_grids.h>
 #include <IMP/core/internal/grid_close_pairs_impl.h>
+#include <IMP/base/object_cast.h>
 #include <IMP/utility.h>
 #include <vector>
 
@@ -120,9 +121,6 @@ RigidBodyHierarchy::RigidBodyHierarchy(
   set_was_used(true);
   IMP_LOG_TERSE("Building rigid body hierarchy for particle "
                 << d.get_particle()->get_name());
-  if (rb_.get_members().size() < 100) {
-    IMP_LOG_TERSE(" and particles " << rb_.get_members());
-  }
   IMP_LOG_TERSE(std::endl);
   tree_.push_back(Data());
   // build spheres on internal coordinates

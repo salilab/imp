@@ -2,7 +2,7 @@
  *  \file IMP/atom/Domain.h
  *  \brief A decorator for associating an atom::Hierarchy piece with a domain
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_DOMAIN_H
@@ -33,16 +33,11 @@ class IMPATOMEXPORT Domain : public Hierarchy {
     }
   }
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
-                                Int b, Int e) {
-    do_setup_particle(m, pi, IntRange(b, e));
-  }
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                                 Domain o) {
     do_setup_particle(m, pi, o.get_index_range());
   }
 
  public:
-
   static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
     return m->get_has_attribute(get_data().begin, pi) &&
            m->get_has_attribute(get_data().end, pi) &&
@@ -65,21 +60,6 @@ class IMPATOMEXPORT Domain : public Hierarchy {
   IMP_DECORATOR_METHODS(Domain, Hierarchy);
   IMP_DECORATOR_SETUP_1(Domain, Domain, other);
   IMP_DECORATOR_SETUP_1(Domain, IntRange, residues);
-
-  /** \deprecated_at{2.1} Use get_index_range() instead.*/
-  IMPATOM_DEPRECATED_METHOD_DECL(2.1)
-  Int get_begin_index() const;
-  /** \deprecated_at{2.1} Use get_index_range() instead.*/
-  IMPATOM_DEPRECATED_METHOD_DECL(2.1)
-  Int get_end_index() const;
-  /** \deprecated_at{2.1} Use the IntRange setup_particle.*/
-  IMPATOM_DEPRECATED_METHOD_DECL(2.1)
-  static Domain setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
-                               Int residues_begin, Int residues_end);
-  /** \deprecated_at{2.1} Use the IntRange setup_particle.*/
-  IMPATOM_DEPRECATED_METHOD_DECL(2.1)
-  static Domain setup_particle(IMP::kernel::ParticleAdaptor decorator,
-                               Int residues_begin, Int residues_end);
 };
 
 IMP_DECORATORS(Domain, Domains, Hierarchies);

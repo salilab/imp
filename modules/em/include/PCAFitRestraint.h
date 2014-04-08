@@ -2,7 +2,7 @@
  *  \file IMP/em/PCAFitRestraint.h
  *  \brief Calculate match between density map PCA and particles PCA.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -29,9 +29,8 @@ IMPEM_BEGIN_NAMESPACE
 /** \ingroup exp_restraint
 
  */
-class IMPEMEXPORT PCAFitRestraint : public kernel::Restraint
-{
-public:
+class IMPEMEXPORT PCAFitRestraint : public kernel::Restraint {
+ public:
   //! Constructor
   /**
     \param[in] ps The particles participating in the fitting score
@@ -43,21 +42,20 @@ public:
     \param[in] max_angle_diff
     \param[in] max_centroid_diff
    */
-  PCAFitRestraint(kernel::ParticlesTemp ps,
-       DensityMap *em_map, float threahold,
-       float max_pca_size_diff,float max_angle_diff,float max_centroid_diff,
-       FloatKey weight_key= atom::Mass::get_mass_key());
+  PCAFitRestraint(kernel::ParticlesTemp ps, DensityMap *em_map, float threahold,
+                  float max_pca_size_diff, float max_angle_diff,
+                  float max_centroid_diff,
+                  FloatKey weight_key = atom::Mass::get_mass_key());
 
-  virtual double
-  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
-     const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(PCAFitRestraint);
 
 #ifndef SWIG
-  IMP_LIST(private, Particle, particle, kernel::Particle*, kernel::Particles);
+  IMP_LIST(private, Particle, particle, kernel::Particle *, kernel::Particles);
 #endif
-private:
+ private:
   //! Store particles
   void store_particles(kernel::ParticlesTemp ps);
 
@@ -70,10 +68,10 @@ private:
   kernel::Particles all_ps_;
   KernelType kt_;
   algebra::PrincipalComponentAnalysis dens_pca_;
-  float max_angle_diff_,max_pca_size_diff_;
+  float max_angle_diff_, max_pca_size_diff_;
   float max_centroid_diff_;
 };
 
 IMPEM_END_NAMESPACE
 
-#endif  /* IMPEM_PCA_FIT_RESTRAINT_H */
+#endif /* IMPEM_PCA_FIT_RESTRAINT_H */

@@ -2,7 +2,7 @@
  *  \file IMP/atom/Selection.h
  *  \brief A set of useful functionality on IMP::atom::Hierarchy decorators
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_SELECTION_H
@@ -18,6 +18,7 @@
 #include <IMP/core/Typed.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/display/declare_Geometry.h>
+#include <boost/unordered_map.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -37,7 +38,7 @@ IMPATOM_BEGIN_NAMESPACE
     \note Only representational particles are selected. That is, ones
     with x,y,z coordinates. And the highest resolution representation
     that fits is returned. If you want lower resolution, use the
-    target_radius parameter to select the desired radius (pass a very large
+    resolution parameter to select the desired resolution (pass a very large
     number to get the coarsest representation).
 */
 class IMPATOMEXPORT Selection :
@@ -57,10 +58,10 @@ class IMPATOMEXPORT Selection :
  private:
   SingletonPredicates predicates_;
   kernel::Model *m_;
-  double radius_;
+  double resolution_;
 
   kernel::ParticleIndexes h_;
-  IMP_NAMED_TUPLE_3(SearchResult, SearchResults, bool, match, double, radius,
+  IMP_NAMED_TUPLE_2(SearchResult, SearchResults, bool, match,
                     kernel::ParticleIndexes, indexes, );
   SearchResult search(kernel::Model *m, kernel::ParticleIndex pi,
                       boost::dynamic_bitset<> parent) const;
@@ -77,13 +78,14 @@ class IMPATOMEXPORT Selection :
             Strings molecules = [], Ints residue_indexes = [],
             Strings chains = [], AtomTypes atom_types = [],
             ResidueTypes residue_types = [], Strings domains = [],
-            double target_radius = 0, std::string molecule = None,
-            int residue_index = None, char chain = None,
+            double resolution = 0, std::string molecule = None,
+            int residue_index = None, std::string chain = None,
             AtomType atom_type = None, ResidueType residue_type = None,
             HierarchyType hierarchy_type = None, Terminus terminus = None,
             std::string domain = None, core::ParticleType particle_type = None,
             core::ParticleTypes particle_types = [], int copy_index = -1,
-            Ints copy_indexs = []);
+            Ints copy_indexs = [], int state_index = -1,
+            Ints state_indexes = []);
 #endif
   Selection();
   Selection(Hierarchy h);
@@ -102,13 +104,20 @@ class IMPATOMEXPORT Selection :
   /** Select based on the molecule name.*/
   void set_molecules(Strings mols);
 
-  /** Select particles whose radii are close to r.*/
-  void set_target_radius(double r) { radius_ = r; }
+  /** Select at a Representation node with a resolution close to r.*/
+  void set_resolution(double r) { resolution_ = r; }
+  /** Select State with the passed index.*/
+  void set_state_index(int state) { set_state_indexes(Ints(1, state)); }
+  /** Select State with the passed index.*/
+  void set_state_indexes(Ints states);
   /** Select the n or c terminus.*/
   void set_terminus(Terminus t);
   /** Select particles in chains whose id is
       in the passed string.*/
-  void set_chains(std::string chains);
+  void set_chain_ids(Strings chains);
+#ifndef IMP_DOXYGEN
+  void set_chains(Strings chains) { set_chain_ids(chains); }
+#endif
   /** Select residues whose indexes are in the passed list.*/
   void set_residue_indexes(Ints indexes);
   /** Select atoms whose types are in the list, eg AT_CA.*/
@@ -120,8 +129,17 @@ class IMPATOMEXPORT Selection :
   void set_domains(Strings names);
   /** Select a molecule with the passed name. */
   void set_molecule(std::string mol);
+  /** Select with the passed chain id. */
+  void set_chain_id(std::string c);
+#ifndef IMP_DOXYGEN
   /** Select a chain with the passed id*/
-  void set_chain(char c);
+  void set_chain(std::string c) { set_chain_id(c); }
+#endif
+#ifndef SWIG
+  /** \deprecated_at{2.2} Pass a string */
+  IMPATOM_DEPRECATED_FUNCTION_DECL(2.2)
+  void set_chain(char c) { set_chain(std::string(1, c)); }
+#endif
   /** Select only residues with the passed index.*/
   void set_residue_index(int i);
   /** Select atoms with only the passed type. */
@@ -266,7 +284,7 @@ IMPATOMEXPORT Hierarchies get_leaves(const Selection &h);
 */
 class IMPATOMEXPORT SelectionGeometry : public display::Geometry {
   atom::Selection res_;
-  mutable IMP::base::map<kernel::Particle *, base::Pointer<Geometry> >
+  mutable boost::unordered_map<kernel::Particle *, base::Pointer<Geometry> >
       components_;
 
  public:

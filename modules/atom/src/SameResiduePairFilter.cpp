@@ -2,7 +2,7 @@
  *  \file BondPairFilter.cpp
  *  \brief A fake container that returns true if a pair of particles are bonded
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

@@ -1,12 +1,11 @@
 /**
  *  \file graph_base.cpp   \brief classes for implementing a graph.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
 #include <IMP/core/internal/close_pairs_helpers.h>
-#include <IMP/core/core_macros.h>
 
 #include <sstream>
 
@@ -19,7 +18,7 @@ ModelObjectsTemp get_inputs(kernel::Model *m, SingletonContainer *sc_,
   for (unsigned int i = 0; i < filters_.size(); ++i) {
     ret += filters_[i]->get_inputs(m, all);
   }
-  base::set<kernel::Particle *> rigid;
+  boost::unordered_set<kernel::Particle *> rigid;
   for (unsigned int i = 0; i < all.size(); ++i) {
     if (core::RigidMember::get_is_setup(m, all[i])) {
       kernel::Particle *rbp = core::RigidMember(m, all[i]).get_rigid_body();

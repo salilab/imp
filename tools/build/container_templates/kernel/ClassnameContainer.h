@@ -4,15 +4,15 @@
  *
  *  BLURB
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPKERNEL_DECLARE_CLASSNAME_CONTAINER_H
-#define IMPKERNEL_DECLARE_CLASSNAME_CONTAINER_H
+#ifndef IMPKERNEL_CLASSNAME_CONTAINER_H
+#define IMPKERNEL_CLASSNAME_CONTAINER_H
 
 #include <IMP/kernel/kernel_config.h>
 #include "internal/IndexingIterator.h"
-#include "declare_Particle.h"
+#include "Particle.h"
 #include "container_base.h"
 #include "internal/container_helpers.h"
 #include "DerivativeAccumulator.h"
@@ -33,15 +33,13 @@ class ClassnameScore;
 /** Stores a shared collection of Classnames.
  */
 class IMPKERNELEXPORT ClassnameContainer : public Container {
- protected:
-  ClassnameContainer(kernel::Model *m,
-                     std::string name = "ClassnameContainer %1%");
-
  public:
   typedef VARIABLETYPE ContainedType;
   typedef PLURALVARIABLETYPE ContainedTypes;
   typedef PLURALINDEXTYPE ContainedIndexTypes;
   typedef INDEXTYPE ContainedIndexType;
+  typedef ClassnameModifier Modifier;
+  typedef PASSINDEXTYPE PassContainedIndexType;
 
   //! Just use apply() in the base class
   void apply_generic(const ClassnameModifier *m) const;
@@ -49,8 +47,6 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   //! Apply a SingletonModifier to the contents
   void apply(const ClassnameModifier *sm) const;
 
-  /** Get all the indexes contained in the container.*/
-  virtual PLURALINDEXTYPE get_indexes() const = 0;
   /** Get all the indexes that might possibly be contained in the
       container, useful with dynamic containers. For example,
       with a container::ClosePairContainer, this is the list
@@ -59,7 +55,30 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   */
   virtual PLURALINDEXTYPE get_range_indexes() const = 0;
 
+  const PLURALINDEXTYPE &get_contents() const {
+    if (get_provides_access())
+      return get_access();
+    else {
+      std::size_t nhash = get_contents_hash();
+      if (contents_hash_ != nhash || !cache_initialized_) {
+        contents_hash_ = nhash;
+        cache_initialized_ = true;
+        contents_cache_ = get_indexes();
+      }
+      return contents_cache_;
+    }
+  }
+
+  /** Get all the indexes contained in the container.
+
+    This should be protected but isn't for compatibility reasons.
+
+    External callers should use get_contents().
+  */
+  virtual PLURALINDEXTYPE get_indexes() const = 0;
+
 #ifndef IMP_DOXYGEN
+
   PLURALVARIABLETYPE get() const {
     return IMP::kernel::internal::get_particle(get_model(), get_indexes());
   }
@@ -74,7 +93,8 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
     IMP_THROW("Object not implemented properly.", base::IndexException);
   }
 
-  template <class Functor> Functor for_each(Functor f) {
+  template <class Functor>
+  Functor for_each(Functor f) {
     PLURALINDEXTYPE vs = get_indexes();
     // use boost range instead
     return std::for_each(vs.begin(), vs.end(), f);
@@ -87,31 +107,29 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
    */
   PLURALVARIABLETYPE get_FUNCTIONNAMEs() const;
 
-  /** \brief This function is very slow and you should think hard about using
-      it.
-
-      \deprecated_at{2.1} This is slow and dependent on the order of elements
-      in the tuple.
-
-      Return whether the container has the given element.*/
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-    bool get_contains_FUNCTIONNAME(VARIABLETYPE v) const;
-
   /** \deprecated_at{2.1} This can be very slow and is probably not useful
    */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-    unsigned int get_number_of_FUNCTIONNAMEs() const;
+  unsigned int get_number_of_FUNCTIONNAMEs() const;
 
   /** \deprecated_at{2.1}Use get_indexes() instead and thing about using the
       IMP_CONTAINER_FOREACH() macro.*/
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-    VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const;
+  VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const;
 
  protected:
+  ClassnameContainer(kernel::Model *m,
+                     std::string name = "ClassnameContainer %1%");
+
   virtual void do_apply(const ClassnameModifier *sm) const = 0;
   virtual bool do_get_provides_access() const { return false; }
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(ClassnameContainer);
+
+ private:
+  mutable std::size_t contents_hash_;
+  mutable PLURALINDEXTYPE contents_cache_;
+  mutable bool cache_initialized_;
 };
 
 /** This class allows either a list or a container to be
@@ -147,12 +165,14 @@ class IMPKERNELEXPORT ClassnameContainerAdaptor :
      Adapts the non-empty list t to ClassnameContainer
 
      @param t a non-empty list of PLURALVARIABLETYPE
-     @param name name for the constructed ClassnameContainer
   */
-  ClassnameContainerAdaptor(const PLURALVARIABLETYPE &t,
-                            std::string name = "ClassnameContainerAdaptor%1%");
+  ClassnameContainerAdaptor(const PLURALVARIABLETYPE &t);
+
+  /** Set the name of the resulting container if it is currently the
+      default value. */
+  void set_name_if_default(std::string name);
 };
 
 IMPKERNEL_END_NAMESPACE
 
-#endif /* IMPKERNEL_DECLARE_CLASSNAME_CONTAINER_H */
+#endif /* IMPKERNEL_CLASSNAME_CONTAINER_H */

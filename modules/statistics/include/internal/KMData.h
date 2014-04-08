@@ -1,7 +1,7 @@
 /**
  *  \file KMData.h   \brief Holds data points to cluster using k-means
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -28,8 +28,7 @@ typedef enum {      // distributions
   CLUS_ORTH_FLATS,  // clustered on orthog flats
   CLUS_ELLIPSOIDS,  // clustered on ellipsoids
   MULTI_CLUS,       // multi-sized clusters
-  N_DISTRIBS
-} DistributionType;
+  N_DISTRIBS} DistributionType;
 
 typedef Floats KMPoint;
 typedef base::Vector<KMPoint *> KMPointArray;

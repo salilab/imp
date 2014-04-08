@@ -4,6 +4,7 @@ import IMP.test
 import IMP.multifit
 from IMP.multifit import segment
 
+
 class Tests(IMP.test.TestCase):
 
     def test_segment_help(self):
@@ -13,7 +14,7 @@ class Tests(IMP.test.TestCase):
     def test_segment_usage(self):
         """Test segment module incorrect usage"""
         r = self.run_python_module("IMP.multifit.segment", [])
-        out,err = r.communicate()
+        out, err = r.communicate()
         self.assertEqual(out, "")
         self.assertIn("incorrect number of arguments", err)
         self.assertNotEqual(r.returncode, 0)
@@ -21,8 +22,9 @@ class Tests(IMP.test.TestCase):
     def test_segment_run(self):
         """Test segment module run"""
         self.run_python_module(segment,
-                    [self.get_input_file_name('twoblobs-4.0.mrc'), '2', '0.1',
-                     'segment_out.pdb', '--seg', 'segment_out'])
+                               [self.get_input_file_name(
+                                   'twoblobs-4.0.mrc'), '2', '0.1',
+                                'segment_out.pdb', '--seg', 'segment_out'])
         for i in range(2):
             os.unlink('segment_out_%d.mrc' % i)
         os.unlink('segment_out.pdb')

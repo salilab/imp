@@ -2,7 +2,7 @@
  *  \file IMP/atom/VelocityScalingOptimizerState.h
  *  \brief Maintains temperature during molecular dynamics by velocity scaling.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,7 +13,6 @@
 #include <IMP/kernel/Particle.h>
 #include <IMP/base_types.h>
 #include <IMP/OptimizerState.h>
-#include <IMP/optimizer_state_macros.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -25,10 +24,6 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class IMPATOMEXPORT VelocityScalingOptimizerState : public OptimizerState {
  public:
-  /** \deprecated_at{2.1} Use set_period() instead. */
-  IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
-  VelocityScalingOptimizerState(const kernel::Particles &pis, Float temperature,
-                                unsigned skip_steps);
   VelocityScalingOptimizerState(kernel::Model *m,
                                 kernel::ParticleIndexesAdaptor pis,
                                 double temperature);

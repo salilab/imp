@@ -13,7 +13,7 @@ To use, assuming IMP is checked out in <imp_src_dir>:
 % mkdir <imp_bin_dir> && cd <imp_bin_dir>
 
 2. Configure and build IMP in debug mode with gcc coverage flags:
-% cmake <imp_src_dir> -DCMAKE_BUILD_TYPE=Debug \
+% PYTHONPATH=`pwd`/coverage cmake <imp_src_dir> -DCMAKE_BUILD_TYPE=Debug \
         -DCMAKE_CXX_FLAGS="-fprofile-arcs -ftest-coverage" && make
 
 3. Set up for coverage collection

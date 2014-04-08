@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #include <IMP.h>
@@ -30,13 +30,15 @@ class ConstPairScore : public PairScore {
   ConstPairScore() {}
   double evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &p,
                         DerivativeAccumulator *da) const IMP_OVERRIDE;
-  kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m, const kernel::ParticleIndexes &pis) const;
+  kernel::ModelObjectsTemp do_get_inputs(
+      kernel::Model *m, const kernel::ParticleIndexes &pis) const;
   IMP_PAIR_SCORE_METHODS(ConstPairScore);
   IMP_OBJECT_METHODS(ConstPairScore);
   ;
 };
 
-double ConstPairScore::evaluate_index(kernel::Model *, const kernel::ParticleIndexPair &,
+double ConstPairScore::evaluate_index(kernel::Model *,
+                                      const kernel::ParticleIndexPair &,
                                       DerivativeAccumulator *) const {
   return 1;
 }
@@ -53,8 +55,6 @@ namespace {
 
 void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
               float rmin, float rmax, double) {
-  set_log_level(SILENT);
-  set_check_level(IMP::NONE);
   Vector3D minc(0, 0, 0), maxc(10, 10, 10);
   IMP_NEW(kernel::Model, m, ());
   kernel::ParticlesTemp ps = create_xyzr_particles(m, n, rmin);
@@ -70,21 +70,21 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
   m->add_restraint(pr);
   double setuptime;
   IMP_TIME({
-    for (unsigned int i = 0; i < pis.size(); ++i) {
-      XYZ(m, pis[i])
-          .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
-    }
-  },
+             for (unsigned int i = 0; i < pis.size(); ++i) {
+               XYZ(m, pis[i]).set_coordinates(
+                   get_random_vector_in(BoundingBox3D(minc, maxc)));
+             }
+           },
            setuptime);
   double runtime;
   double result = 0;
   IMP_TIME({
-    for (unsigned int i = 0; i < pis.size(); ++i) {
-      XYZ(m, pis[i])
-          .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
-    }
-    result += m->evaluate(false);
-  },
+             for (unsigned int i = 0; i < pis.size(); ++i) {
+               XYZ(m, pis[i]).set_coordinates(
+                   get_random_vector_in(BoundingBox3D(minc, maxc)));
+             }
+             result += m->evaluate(false);
+           },
            runtime);
   std::ostringstream oss;
   oss << "col"
@@ -98,22 +98,34 @@ int main(int argc, char **argv) {
   {
     IMP_NEW(QuadraticClosePairsFinder, cpf, ());
     // std::cout << "Quadratic:" << std::endl;
-    test_one("quadratic", cpf, 10000, 0, .1, 87.210356);
-    test_one("quadratic", cpf, 10000, 0, .5, 99.562332);
+    if (IMP::base::run_quick_test) {
+      test_one("quadratic", cpf, 100, 0, .1, 87.210356);
+    } else {
+      test_one("quadratic", cpf, 10000, 0, .1, 87.210356);
+      test_one("quadratic", cpf, 10000, 0, .5, 99.562332);
+    }
   }
 #ifdef IMP_BENCHMARK_USE_IMP_CGAL
   {
     IMP_NEW(BoxSweepClosePairsFinder, cpf, ());
     // std::cout << "Box:" << std::endl;
-    test_one("box", cpf, 10000, 0, .1, 23.306047);
-    test_one("box", cpf, 10000, 0, .5, 1145.327934);
+    if (IMP::base::run_quick_test) {
+      test_one("box", cpf, 100, 0, .1, 23.306047);
+    } else {
+      test_one("box", cpf, 10000, 0, .1, 23.306047);
+      test_one("box", cpf, 10000, 0, .5, 1145.327934);
+    }
   }
 #endif
   {
     IMP_NEW(GridClosePairsFinder, cpf, ());
     // std::cout << "Grid:" << std::endl;
-    test_one("grid", cpf, 10000, 0, .1, 23.649063);
-    test_one("grid", cpf, 10000, 0, .5, 1145.327934);
+    if (IMP::base::run_quick_test) {
+      test_one("grid", cpf, 100, 0, .1, 23.649063);
+    } else {
+      test_one("grid", cpf, 10000, 0, .1, 23.649063);
+      test_one("grid", cpf, 10000, 0, .5, 1145.327934);
+    }
   }
   return IMP::benchmark::get_return_value();
 }

@@ -60,14 +60,13 @@ class QR {
   TNT::Array1D<Real> Rdiag;
 
  public:
-
   /**
     Create a QR factorization object for A.
 
     @param A rectangular (m>=n) matrix.
   */
   QR(const TNT::Array2D<Real> &A) /* constructor */
-      {
+  {
     QR_ = A.copy();
     m = A.dim1();
     n = A.dim2();
@@ -206,7 +205,7 @@ class QR {
       return TNT::Array1D<Real>();
 
     if (!isFullRank()) /* matrix is rank deficient */
-        {
+    {
       return TNT::Array1D<Real>();
     }
 
@@ -250,7 +249,7 @@ class QR {
       return TNT::Array2D<Real>(0, 0);
 
     if (!isFullRank()) /* matrix is rank deficient */
-        {
+    {
       return TNT::Array2D<Real>(0, 0);
     }
 

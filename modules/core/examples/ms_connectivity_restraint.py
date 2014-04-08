@@ -30,7 +30,7 @@ ds.append(IMP.core.XYZ.setup_particle(
 
 ub = IMP.core.HarmonicUpperBound(1.0, 0.1)
 ss = IMP.core.DistancePairScore(ub)
-r = IMP.core.MSConnectivityRestraint(ss)
+r = IMP.core.MSConnectivityRestraint(m, ss)
 
 # Add particle types to the restraint
 # add_type() returns a unique type handle that can be used as an argument

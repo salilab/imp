@@ -1,7 +1,7 @@
 /**
  *  \file IMP/kernel/python_only.h   \brief Build dependency graphs on models.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

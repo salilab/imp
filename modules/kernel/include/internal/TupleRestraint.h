@@ -2,7 +2,7 @@
  *  \file generic.h    \brief Various important functionality
  *                                       for implementing decorators.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,7 +13,6 @@
 #include "../Restraint.h"
 #include "container_helpers.h"
 #include <IMP/base/Pointer.h>
-#include "../restraint_macros.h"
 #include "../constants.h"
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
@@ -51,8 +50,8 @@ TupleRestraint<Score>::TupleRestraint(Score *ss, Model *m,
     : Restraint(m, name), ss_(ss), v_(vt) {}
 
 template <class Score>
-double TupleRestraint<Score>::unprotected_evaluate(
-    DerivativeAccumulator *accum) const {
+double TupleRestraint<Score>::unprotected_evaluate(DerivativeAccumulator *accum)
+    const {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
   return ss_->evaluate_index(Restraint::get_model(), v_, accum);

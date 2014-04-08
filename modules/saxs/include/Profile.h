@@ -2,7 +2,7 @@
  *  \file IMP/saxs/Profile.h
  *  \brief A class for profile storing and computation
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -29,7 +29,7 @@ class RadialDistributionFunction;
    kernel::Particles (theoretical)
 */
 class IMPSAXSEXPORT Profile : public base::Object {
-public:
+ public:
   // Constructors
 
   //! init from file
@@ -38,21 +38,16 @@ public:
   //! init for theoretical profile
   Profile(Float qmin = 0.0, Float qmax = 0.5, Float delta = 0.005);
 
-  IMP_OBJECT_METHODS(Profile);
-
   // Various ways to compute a profile
 
   //! computes theoretical profile
   void calculate_profile(const kernel::Particles& particles,
                          FormFactorType ff_type = HEAVY_ATOMS,
-                         bool reciprocal=false,
-                         bool variance=false,
-                         double variance_tau=0.1) {
-    IMP_USAGE_CHECK(!(reciprocal && variance),
-            "variance not implemented in reciprocal calculation");
-    if(!reciprocal) calculate_profile_real(particles, ff_type,
-            variance, variance_tau);
-    else calculate_profile_reciprocal(particles, ff_type);
+                         bool reciprocal = false) {
+    if (!reciprocal)
+      calculate_profile_real(particles, ff_type);
+    else
+      calculate_profile_reciprocal(particles, ff_type);
   }
 
   //! compute profile for fitting with hydration layer and excluded volume
@@ -75,17 +70,15 @@ public:
 
   void calculate_profile_reciprocal_partial(const kernel::Particles& particles,
                                             const Floats& surface = Floats(),
-                                          FormFactorType ff_type = HEAVY_ATOMS);
+                                            FormFactorType ff_type =
+                                                HEAVY_ATOMS);
 
   //! computes theoretical profile contribution from iter-molecular
   //! interactions between the particles
   void calculate_profile(const kernel::Particles& particles1,
                          const kernel::Particles& particles2,
-                         FormFactorType ff_type = HEAVY_ATOMS,
-                         bool variance=false,
-                         double variance_tau=0.1) {
-    calculate_profile_real(particles1, particles2, ff_type,
-            variance, variance_tau);
+                         FormFactorType ff_type = HEAVY_ATOMS) {
+    calculate_profile_real(particles1, particles2, ff_type);
   }
 
   //! calculate Intensity at zero (= squared number of electrons)
@@ -93,13 +86,14 @@ public:
                      FormFactorType ff_type = HEAVY_ATOMS);
 
   //! calculate profile for any type of kernel::Particles that have coordinates
-  void calculate_profile_constant_form_factor(const kernel::Particles& particles,
-                                              Float form_factor = 1.0);
+  void calculate_profile_constant_form_factor(
+      const kernel::Particles& particles, Float form_factor = 1.0);
 
   // computes theoretical profile faster for cyclically symmetric particles
   // assumes that the units particles are ordered one after another in the
   // input particles vector (n - symmetry order)
-  void calculate_profile_symmetric(const kernel::Particles& particles, unsigned int n,
+  void calculate_profile_symmetric(const kernel::Particles& particles,
+                                   unsigned int n,
                                    FormFactorType ff_type = HEAVY_ATOMS);
 
   //! convert to real space P(r) function P(r) = 1/2PI^2 Sum(I(q)*qr*sin(qr))
@@ -109,15 +103,13 @@ public:
   //! convert to reciprocal space I(q) = Sum(P(r)*sin(qr)/qr)
   void distribution_2_profile(const RadialDistributionFunction& r_dist);
 
-
   //! return a profile that is sampled on the q values of the exp_profile
-  void resample(const Profile* exp_profile,
-                Profile* resampled_profile,
-                bool partial_profiles=false) const;
-
+  void resample(const Profile* exp_profile, Profile* resampled_profile,
+                bool partial_profiles = false) const;
 
   //! downsample the profile to a given number of points
-  void downsample(Profile* downsampled_profile,unsigned int point_number) const;
+  void downsample(Profile* downsampled_profile,
+                  unsigned int point_number) const;
 
   //! compute radius of gyration with Guinier approximation
   /** ln[I(q)]=ln[I(0)] - (q^2*rg^2)/3
@@ -125,7 +117,6 @@ public:
       i.e. q*rg < end_q_rg. Use 1.3 for globular proteins, 0.8 for elongated
   */
   double radius_of_gyration(double end_q_rg = 1.3) const;
-
 
   // IO functions
 
@@ -140,14 +131,13 @@ public:
   /** \param[in] file_name output file name
       \param[in] max_q output till maximal q value = max_q, or all if max_q<=0
   */
-  void write_SAXS_file(const String& file_name, Float max_q=0.0) const;
+  void write_SAXS_file(const String& file_name, Float max_q = 0.0) const;
 
   //! read a partial profile from file (7 columns)
   void read_partial_profiles(const String& file_name);
 
   //! write a partial profile to file
   void write_partial_profiles(const String& file_name) const;
-
 
   // Access functions
 
@@ -163,10 +153,10 @@ public:
   Float get_intensity(unsigned int i) const { return intensity_[i]; }
   Float get_q(unsigned int i) const { return q_[i]; }
   Float get_error(unsigned int i) const { return error_[i]; }
-  Float get_weight(unsigned int i) const { IMP_UNUSED(i); return 1.0; }
-  Float get_variance(unsigned int i, unsigned int j) const
-  { unsigned a=std::min(i,j); unsigned b=std::max(i,j);
-      return variances_[a][b-a]; }
+  Float get_weight(unsigned int i) const {
+    IMP_UNUSED(i);
+    return 1.0;
+  }
   Float get_average_radius() const { return average_radius_; }
 
   //! return number of entries in SAXS profile
@@ -222,7 +212,8 @@ public:
 
   //! add other partial profiles
   void add_partial_profiles(const std::vector<Profile*>& profiles,
-                     const std::vector<Float>& weights = std::vector<Float>());
+                            const std::vector<Float>& weights =
+                                std::vector<Float>());
 
   //! background adjustment option
   void background_adjust(double start_q);
@@ -239,9 +230,12 @@ public:
   // parameter for E^2(q), used in faster calculation
   static const Float modulation_function_parameter_;
 
- private:
-  void init(bool variance = false);
+  IMP_OBJECT_METHODS(Profile);
 
+ protected:
+  void init();
+
+ private:
   void calculate_profile_reciprocal(const kernel::Particles& particles,
                                     FormFactorType ff_type = HEAVY_ATOMS);
 
@@ -250,50 +244,40 @@ public:
                                     FormFactorType ff_type = HEAVY_ATOMS);
 
   void calculate_profile_real(const kernel::Particles& particles,
-                              FormFactorType ff_type = HEAVY_ATOMS,
-                              bool variance = false,
-                              double variance_tau = 0.1);
+                              FormFactorType ff_type = HEAVY_ATOMS);
 
   void calculate_profile_real(const kernel::Particles& particles1,
                               const kernel::Particles& particles2,
-                              FormFactorType ff_type = HEAVY_ATOMS,
-                              bool variance = false,
-                              double variance_tau = 0.1);
+                              FormFactorType ff_type = HEAVY_ATOMS);
 
   void squared_distribution_2_profile(const RadialDistributionFunction& r_dist);
 
-  void squared_distribution_2_profile(const RadialDistributionFunction& r_dist,
-                                      const RadialDistributionFunction& r_dist2,
-                                      double variance_tau=0.1);
-
   void squared_distributions_2_partial_profiles(
-                         const std::vector<RadialDistributionFunction>& r_dist);
+      const std::vector<RadialDistributionFunction>& r_dist);
 
   double radius_of_gyration_fixed_q(double end_q) const;
 
  protected:
-  std::vector<double> q_; // q sampling points
+  std::vector<double> q_;  // q sampling points
   std::vector<double> intensity_;
-  std::vector<double> error_; // error bar of each point
+  std::vector<double> error_;  // error bar of each point
 
-  Float min_q_, max_q_; // minimal and maximal s values  in the profile
-  Float delta_q_; // profile sampling resolution
-  FormFactorTable* ff_table_; // pointer to form factors table
-
-  std::vector<std::vector<double> > variances_; //profile variances
+  Float min_q_, max_q_;        // minimal and maximal s values  in the profile
+  Float delta_q_;              // profile sampling resolution
+  FormFactorTable* ff_table_;  // pointer to form factors table
 
   // stores the intensity split into 6 for c1/c2 enumeration
   std::vector<std::vector<double> > partial_profiles_;
 
-  bool experimental_; // experimental profile read from file
-  Float average_radius_; // average radius of the particles
-  Float average_volume_; // average volume
+  bool experimental_;     // experimental profile read from file
+  Float average_radius_;  // average radius of the particles
+  Float average_volume_;  // average volume
 
   // mapping from q values to vector index for fast profile resampling
   std::map<float, unsigned int> q_mapping_;
 
-  std::string name_; // file name
-  unsigned int id_;  // identifier
+  std::string name_;  // file name
+  unsigned int id_;   // identifier
 };
 
 IMP_OBJECTS(Profile, Profiles);

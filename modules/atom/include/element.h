@@ -1,7 +1,7 @@
 /**
  * \file IMP/atom/element.h \brief Define the elements used in \imp.
  *
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,9 +13,9 @@
 
 #include <IMP/base/log.h>
 #include <IMP/base/exception.h>
+#include <boost/unordered_map.hpp>
 
 #include <string>
-#include <IMP/base/map.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -133,7 +133,7 @@ enum Element {
   Jl = 105,
   Rf = 106
 #ifndef IMP_DOXYGEN
-      ,
+  ,
   NUMBER_OF_ELEMENTS = 107
 #endif
 };
@@ -164,8 +164,8 @@ class IMPATOMEXPORT ElementTable {
 
   static ElementString element_strings_[];
   static Float mass_[];
-  static IMP::base::map<std::string, Element> string_2_element_;
-  static IMP::base::map<Element, std::string> element_2_string_;
+  static boost::unordered_map<std::string, Element> string_2_element_;
+  static boost::unordered_map<Element, std::string> element_2_string_;
 };
 
 IMPATOMEXPORT ElementTable& get_element_table();

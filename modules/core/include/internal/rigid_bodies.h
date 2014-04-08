@@ -2,7 +2,7 @@
  *  \file rigid_bodies.h
  *  \brief utilities for rigid bodies.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_INTERNAL_RIGID_BODIES_H
@@ -12,6 +12,12 @@
 #include "../XYZ.h"
 #include "../Hierarchy.h"
 #include <IMP/algebra/Sphere3D.h>
+namespace IMP {
+namespace display {
+class Geometry;
+IMP_OBJECTS(Geometry, Geometries);
+}
+}
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
@@ -28,7 +34,7 @@ struct RigidBodyData {
   RigidBodyData() {
     child_keys_.resize(3);
     std::string pre = "rigid_body_";
-    // rigid body internal coordinates are currently special cased
+    // rigid body internal (local) coordinates are currently special cased
     child_keys_[0] = FloatKey(4);
     child_keys_[1] = FloatKey(5);
     child_keys_[2] = FloatKey(6);
@@ -87,10 +93,10 @@ inline bool get_has_required_attributes_for_member(
     for (unsigned int i = 0; i < 3; ++i) {
       IMP_INTERNAL_CHECK(
           m->get_has_attribute(rigid_body_data().child_keys_[i], p),
-          "Rigid member missing internal coords");
+          "Rigid member missing internal (local) coords");
     }
     IMP_INTERNAL_CHECK(XYZ::get_is_setup(m, p),
-                       "Rigid member missing coordinates");
+                       "Rigid member missing global coordinates");
     return true;
   }
 }
@@ -201,6 +207,9 @@ inline void remove_required_attributes_for_body_member(
     m->remove_attribute(rigid_body_data().lquaternion_[i], p);
   }
 }
+
+IMPCOREEXPORT display::Geometries get_rigid_body_derivative_geometries(
+    kernel::Model *m, kernel::ParticleIndex pi);
 
 IMPCORE_END_INTERNAL_NAMESPACE
 

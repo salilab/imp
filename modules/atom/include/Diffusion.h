@@ -2,7 +2,7 @@
  *  \file IMP/atom/Diffusion.h
  *  \brief A decorator for a diffusing particle.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -20,13 +20,16 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-//! A decorator for a diffusing particle.
+//! A decorator for a diffusing particle with a diffusion coefficient.
 /** \ingroup helper
     \ingroup decorators
     \see BrownianDynamics
     \unstable{Diffusion} The name really should be fixed.
 
-    D is assumed to be in \f$A^2/fs\f$
+    Diffusion is used to decorate diffusing particle with a diffusion
+    coefficient D. D is assumed to be in units of \f$A^2/fs\f$.
+
+    \see RigidBodyDiffusion
  */
 class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
@@ -61,13 +64,6 @@ class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
   }
   //! Get the D key
   static FloatKey get_diffusion_coefficient_key();
-
-  /** \deprecated_at{2.1} Use set_diffusion_coefficient(). */
-  IMPATOM_DEPRECATED_METHOD_DECL(2.1)
-  void set_d(double d);
-  /** \deprecated_at{2.1} Use get_diffusion_coefficient(). */
-  IMPATOM_DEPRECATED_METHOD_DECL(2.1)
-  double get_d() const;
 };
 
 IMPATOMEXPORT double get_diffusion_coefficient_from_cm2_per_second(double din);

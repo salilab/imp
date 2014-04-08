@@ -8,6 +8,7 @@ import sys
 import re
 import glob
 
+
 def parse_mainpage(fh):
     """Find all links to local pages in the tutorial main page, and
        return the doxygen page names"""
@@ -19,6 +20,7 @@ def parse_mainpage(fh):
             pages.append(m.group(1))
     return pages
 
+
 def find_pages_in_file(fname, pages, page_map):
     """Look through the given doxygen file, and see if it matches any of
        the given doxygen page names"""
@@ -29,6 +31,7 @@ def find_pages_in_file(fname, pages, page_map):
             if m.group(1) in pages:
                 page_map[m.group(1)] = fname
             return
+
 
 def find_pages(topdir, pages):
     """Get the mapping from doxygen page names to actual files on disk"""
@@ -42,6 +45,7 @@ def find_pages(topdir, pages):
         if val is None:
             raise RuntimeError("Cannot find page %s" % key)
     return page_map
+
 
 def make_doxyfile(infh, outfh, mainpage, pages, page_map):
     """Generate the doxygen config file from the template"""

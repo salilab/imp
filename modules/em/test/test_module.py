@@ -3,6 +3,7 @@ import IMP.test
 
 
 class Tests(IMP.test.TestCase):
+
     """Class to test various low-level IMP module things"""
 
     def test_exceptions(self):

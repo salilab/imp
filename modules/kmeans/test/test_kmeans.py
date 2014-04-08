@@ -2,8 +2,10 @@ import IMP
 import IMP.test
 from IMP.kmeans import KMeans
 
+
 class Tests(IMP.test.TestCase):
-    def  test_simple_kmeans(self):
+
+    def test_simple_kmeans(self):
         km = KMeans()
         # add data
         km.add_data_pt([1, 2])
@@ -20,8 +22,8 @@ class Tests(IMP.test.TestCase):
         # print data
         n = km.get_number_of_data_points()
         print "Number of points: ", n
-        self.assertEqual(n,9)
-        for i in range(0,n):
+        self.assertEqual(n, 9)
+        for i in range(0, n):
             print i
             km.get_data_point(i)
         # cluster data
@@ -40,11 +42,11 @@ class Tests(IMP.test.TestCase):
         c0 = km.get_center(0)
         c1 = km.get_center(1)
         if(c0[0] < 3.0):
-            self.assertAlmostEqual(c0[0],0.4,1)
-            self.assertAlmostEqual(c0[1],0.2,1)
+            self.assertAlmostEqual(c0[0], 0.4, 1)
+            self.assertAlmostEqual(c0[1], 0.2, 1)
         else:
-            self.assertAlmostEqual(c0[0],9.9,1)
-            self.assertAlmostEqual(c0[1],11.5,1)
+            self.assertAlmostEqual(c0[0], 9.9, 1)
+            self.assertAlmostEqual(c0[1], 11.5, 1)
 
 
 if __name__ == '__main__':

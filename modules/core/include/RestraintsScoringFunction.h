@@ -3,7 +3,7 @@
  *  \brief Storage of a model, its restraints,
  *                         constraints and particles.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -36,9 +36,9 @@ class RestraintsScoringFunction :
       : kernel::internal::RestraintsScoringFunction(rs, 1.0, kernel::NO_MAX,
                                                     name) {}
 #if defined(SWIG)
-  void do_add_score_and_derivatives(
-      kernel::ScoreAccumulator sa,
-      const kernel::ScoreStatesTemp &ss) IMP_OVERRIDE;
+  void do_add_score_and_derivatives(kernel::ScoreAccumulator sa,
+                                    const kernel::ScoreStatesTemp &ss)
+      IMP_OVERRIDE;
   virtual kernel::Restraints create_restraints() const IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RestraintsScoringFunction);

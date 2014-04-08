@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/SteepestDescent.h   \brief Simple steepest descent optimizer.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -22,9 +22,6 @@ IMPCORE_BEGIN_NAMESPACE
 */
 class IMPCOREEXPORT SteepestDescent : public AttributeOptimizer {
  public:
-  /** \deprecated_at{2.1} Use the constructor that takes a kernel::Model. */
-  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
-  SteepestDescent();
   SteepestDescent(kernel::Model *m, std::string name = "SteepestDescent%1%");
 
   virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;

@@ -269,7 +269,6 @@ public:
 
 
  private:
-  template <class T, class E> friend struct IMP::base::internal::RefStuff;
   virtual ~PyOutFileAdapter() {
     try {
       if (stream_buf_.get()) pubsync();
@@ -437,7 +436,6 @@ protected:
 
    class PyInFileAdapter: public IMP::base::Object
 {
-  template <class T, class E> friend struct IMP::base::internal::RefStuff;
   virtual ~PyInFileAdapter(){
   }
   std::auto_ptr<InAdapter> streambuf_;

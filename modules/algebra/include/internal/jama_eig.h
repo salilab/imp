@@ -891,7 +891,6 @@ class Eigenvalue {
   }
 
  public:
-
   /** Check for symmetry, then construct the eigenvalue decomposition
   @param A    Square real (non-complex) matrix
   */

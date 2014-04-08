@@ -2,7 +2,7 @@
  *  \file IMP/container/generic.h    \brief Various important functionality
  *                                       for implementing decorators.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -18,6 +18,9 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 /** Create a restraint from a score and a container. The resulting restraint
     is, in general, more efficient than creating an, eg, PairsRestraint.
+
+    A python version of this is provided, but it produces a slightly less
+    efficient restraint.
 */
 template <class Score, class Container>
 inline kernel::Restraint *create_restraint(Score *s, Container *c,

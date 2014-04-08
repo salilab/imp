@@ -1,8 +1,8 @@
 /**
  *  \file IMP/algebra/standard_grids.h
- *  \brief A class to represent a voxel grid.
+ *  \brief All grids that are in the python API should be defined here.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -16,8 +16,20 @@
 #include "grid_embeddings.h"
 IMPALGEBRA_BEGIN_NAMESPACE
 
-// They are created with %template in swig to get around inclusion order issues
-#ifndef SWIG
+#ifdef SWIG
+// swig is getting confused
+#define IMP_ALGEBRA_SWIG_GRID_METHODS(D, Q)                            \
+  GridIndexD<D> add_voxel(const ExtendedGridIndexD<D> &i, const Q &q); \
+  Q __getitem__(const GridIndexD<D> i) const;                          \
+  void __setitem__(const GridIndexD<D> &i, const Q &q);                \
+  Q __getitem__(const VectorD<D> i) const;                             \
+  void __setitem__(const VectorD<D> &i, const Q &q);                   \
+  BoundingBoxD<D> get_bounding_box(ExtendedGridIndexD<D> v) const;     \
+  BoundingBoxD<D> get_bounding_box() const
+
+#else
+#define IMP_ALGEBRA_SWIG_GRID_METHODS(D, VT)
+#endif
 
 /** A sparse, infinite grid of values. In python SparseUnboundedIntGrid3D
     is provided.*/
@@ -30,8 +42,7 @@ struct SparseUnboundedGridD
   SparseUnboundedGridD(double side, const VectorD<D> &origin, VT def = VT())
       : P(side, origin, def) {}
   SparseUnboundedGridD() {}
-  SparseUnboundedGridD(double side, unsigned int d, const VT &def = VT())
-      : P(side, d, def) {}
+  IMP_ALGEBRA_SWIG_GRID_METHODS(D, VT);
 };
 
 /** A dense grid of values. In python DenseFloatGrid3D and DenseDoubleGrid3D are
@@ -44,9 +55,8 @@ struct DenseGrid3D
   typedef GridD<3, DenseGridStorageD<3, VT>, VT, DefaultEmbeddingD<3> > P;
   DenseGrid3D(double side, const BoundingBoxD<3> &bb, VT def = VT())
       : P(side, bb, def) {}
-  DenseGrid3D(int xd, int yd, int zd, const BoundingBoxD<3> &bb, VT def = VT())
-      : P(xd, yd, zd, bb, def) {}
   DenseGrid3D() {}
+  IMP_ALGEBRA_SWIG_GRID_METHODS(3, VT);
 };
 
 /** A sparse grid of values. In python SparseIntGrid3D is provided.*/
@@ -61,6 +71,7 @@ struct SparseGrid3D
   SparseGrid3D(int xd, int yd, int zd, const BoundingBoxD<3> &bb, VT def = VT())
       : P(xd, yd, zd, bb, def) {}
   SparseGrid3D() {}
+  IMP_ALGEBRA_SWIG_GRID_METHODS(3, VT);
 };
 
 /** A sparse, infinite grid of values. In python SparseUnboundedIntGrid3D
@@ -74,9 +85,24 @@ struct SparseUnboundedGrid3D
   SparseUnboundedGrid3D(double side, const Vector3D &origin, VT def = VT())
       : P(side, origin, def) {}
   SparseUnboundedGrid3D() {}
+  IMP_ALGEBRA_SWIG_GRID_METHODS(3, VT);
 };
 
-#endif
+/** A dense grid with logrythmic axes. */
+struct DenseFloatLogGridKD : public GridD<-1, DenseGridStorageD<-1, float>,
+                                          float, LogEmbeddingD<-1> > {
+  typedef GridD<-1, DenseGridStorageD<-1, float>, float, LogEmbeddingD<-1> > P;
+  DenseFloatLogGridKD(const Ints &sz, LogEmbeddingD<-1> le) : P(sz, le) {}
+  IMP_ALGEBRA_SWIG_GRID_METHODS(-1, float);
+};
+
+/** A dense grid with logrythmic axes. */
+struct DenseIntLogGrid3D
+    : public GridD<3, DenseGridStorageD<3, int>, int, LogEmbeddingD<3> > {
+  typedef GridD<3, DenseGridStorageD<3, int>, int, LogEmbeddingD<3> > P;
+  DenseIntLogGrid3D(const Ints &sz, LogEmbeddingD<3> le) : P(sz, le) {}
+  IMP_ALGEBRA_SWIG_GRID_METHODS(3, int);
+};
 
 IMPALGEBRA_END_NAMESPACE
 

@@ -38,7 +38,6 @@ template <class T>
 class Array1D {
 
  private:
-
   /* ... */
   i_refvec<T> v_;
   int n_;
@@ -51,7 +50,6 @@ class Array1D {
   void set_(T* begin, T* end, const T& val);
 
  public:
-
   typedef T value_type;
 
   Array1D();

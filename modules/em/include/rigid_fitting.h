@@ -2,7 +2,7 @@
  *  \file IMP/em/rigid_fitting.h
  *  \brief preforms rigid fitting between a set of particles and a density map
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPEM_RIGID_FITTING_H
@@ -23,7 +23,6 @@
 #include <algorithm>
 IMPEM_BEGIN_NAMESPACE
 
-
 //! A simple list of fitting solutions.
 /**
    \see local_rigid_fitting_around_point
@@ -32,27 +31,28 @@ IMPEM_BEGIN_NAMESPACE
    \see compute_fitting_scores
  */
 class IMPEMEXPORT FittingSolutions {
-typedef std::pair<algebra::Transformation3D,Float> FittingSolution;
-struct sort_by_cc
-{
-  bool operator()(const FittingSolution &s1, const FittingSolution & s2) const
-  {
-    return s1.second < s2.second;
-  }
-};
-public:
- FittingSolutions(){}
+  typedef std::pair<algebra::Transformation3D, Float> FittingSolution;
+  struct sort_by_cc {
+    bool operator()(const FittingSolution &s1,
+                    const FittingSolution &s2) const {
+      return s1.second < s2.second;
+    }
+  };
+
+ public:
+  FittingSolutions() {}
   //! Get the number of solutions in the set
-  inline int get_number_of_solutions() const {return fs_.size();}
+  inline int get_number_of_solutions() const { return fs_.size(); }
   //! Get the score of the i'th solution
   /**
     \return the i'th transformation, or throw an exception
      if the index is out of range
   */
   inline algebra::Transformation3D get_transformation(unsigned int i) const {
-    IMP_USAGE_CHECK(i<fs_.size(),"The index requested ("<<
-       i<<") in get_transformation is our of range ("<<
-       fs_.size()<<")"<<std::endl);
+    IMP_USAGE_CHECK(i < fs_.size(),
+                    "The index requested ("
+                        << i << ") in get_transformation is our of range ("
+                        << fs_.size() << ")" << std::endl);
     return fs_[i].first;
   }
   //! Get the score of the i'th solution
@@ -61,38 +61,43 @@ public:
             if the index is out of range
   */
   inline Float get_score(unsigned int i) const {
-    IMP_USAGE_CHECK(i<fs_.size(),"The index requested ("<<
-       i<<") in get_transformation is out of range ("<<
-       fs_.size()<<")"<<std::endl);
+    IMP_USAGE_CHECK(i < fs_.size(),
+                    "The index requested ("
+                        << i << ") in get_transformation is out of range ("
+                        << fs_.size() << ")" << std::endl);
     return fs_[i].second;
   }
-  void set_score(unsigned int i,Float score) {
-    IMP_USAGE_CHECK(i<fs_.size(),"The index requested ("<<
-       i<<") in get_transformation is out of range ("<<
-       fs_.size()<<")"<<std::endl);
-    fs_[i].second=score;
+  void set_score(unsigned int i, Float score) {
+    IMP_USAGE_CHECK(i < fs_.size(),
+                    "The index requested ("
+                        << i << ") in get_transformation is out of range ("
+                        << fs_.size() << ")" << std::endl);
+    fs_[i].second = score;
   }
   //! Add a solution to the fitting solution set
-  void add_solution(const algebra::Transformation3D &t,Float score);
+  void add_solution(const algebra::Transformation3D &t, Float score);
   //! Sort solutions by cross-correlation scores
-  void sort(bool reverse=false);
+  void sort(bool reverse = false);
   //! Multiply each transformation (T) by t,
   //!such that the new transformation are T*t
   void multiply(const algebra::Transformation3D &t) {
-    for(unsigned int i=0;i<fs_.size();i++) fs_[i].first=fs_[i].first*t;
+    for (unsigned int i = 0; i < fs_.size(); i++)
+      fs_[i].first = fs_[i].first * t;
   }
   inline algebra::Transformation3Ds get_transformations() const {
     algebra::Transformation3Ds all_ts;
-    for(unsigned int i=0;i<fs_.size();i++) all_ts.push_back(fs_[i].first);
+    for (unsigned int i = 0; i < fs_.size(); i++)
+      all_ts.push_back(fs_[i].first);
     return all_ts;
   }
-  void show(std::ostream& out=std::cout) const {
-    for(std::vector<FittingSolution>::const_iterator it = fs_.begin();
-        it != fs_.end(); it++) {
-      out<<"("<<it->first<<" , "<<it->second<<")"<<std::endl;
+  void show(std::ostream &out = std::cout) const {
+    for (std::vector<FittingSolution>::const_iterator it = fs_.begin();
+         it != fs_.end(); it++) {
+      out << "(" << it->first << " , " << it->second << ")" << std::endl;
     }
   }
-protected:
+
+ protected:
   std::vector<FittingSolution> fs_;
 };
 IMP_VALUES(FittingSolutions, FittingSolutionsList);
@@ -126,31 +131,28 @@ IMP_VALUES(FittingSolutions, FittingSolutionsList);
 \return the refined fitting solutions
 */
 IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
- kernel::Particle *p, Refiner *refiner,
-   const FloatKey &weight_key,
-   DensityMap *dmap, const algebra::Vector3D &anchor_centroid,
-   OptimizerStates display_log,
-   Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
-   Int number_of_cg_steps=100,
-   Float max_translation=2., Float max_rotation=.3,bool fast=false);
+    kernel::Particle *p, Refiner *refiner, const FloatKey &weight_key,
+    DensityMap *dmap, const algebra::Vector3D &anchor_centroid,
+    OptimizerStates display_log, Int number_of_optimization_runs = 5,
+    Int number_of_mc_steps = 10, Int number_of_cg_steps = 100,
+    Float max_translation = 2., Float max_rotation = .3, bool fast = false);
 
 //! Local rigid fitting of a rigid body
-/**
-\brief Fit a set of particles to a density map around their centroid.
-       The fitting is assessed using the cross-correaltion score.
-       The optimization is a standard MC/CG procedure.
-       The function returns a list of solutions sortedo the cross-correlation
-       score.
+/** Fit a set of particles to a density map around their centroid.
+    The fitting is assessed using the cross-correlation score.
+    The optimization is a standard MC/CG procedure.
+    The function returns a list of solutions sorted by the cross-correlation
+    score.
 \note The returned cross-correlation score is 1-cc, as we usually want to
-      minimize a scroing function. Thus a score of 1 means no-correlation
-      and a score of 0. is perfect correlation.
+      minimize a scroing function. Thus a score of 1 means no correlation
+      and a score of 0 is perfect correlation.
 \note The input rigid body should be also IMP::atom::Hierarchy
 \param[in] p           The root of the hierarchy to fit
 \param[in] refiner     The refiner to get the leaves of the particle
 \param[in] weight_key  The weight key of the particles in the rigid body
 \param[in] dmap        The density map to fit to
 \param[in] display_log If provided, then intermediate states
-                       in during the optimization procedure are printed
+                       during the optimization procedure are printed
 \param[in] number_of_optimization_runs  number of Monte Carlo optimizations
 \param[in] number_of_mc_steps  number of steps in a Monte Carlo optimization
 \param[in] number_of_cg_steps  number of Conjugate Gradients steps in
@@ -164,25 +166,20 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
 */
 
 inline FittingSolutions local_rigid_fitting(
-   kernel::Particle *p, Refiner *refiner,
-   const FloatKey &weight_key,
-   DensityMap *dmap,
-   OptimizerStates display_log,
-   Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
-   Int number_of_cg_steps=100,
-   Float max_translation=2., Float max_rotation=.3,
-   bool fast=true) {
+    kernel::Particle *p, Refiner *refiner, const FloatKey &weight_key,
+    DensityMap *dmap, OptimizerStates display_log,
+    Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
+    Int number_of_cg_steps = 100, Float max_translation = 2.,
+    Float max_rotation = .3, bool fast = true) {
   IMP_LOG_VERBOSE("Start: local_rigid_fitting\n");
-   algebra::Vector3D rb_cen=
-     IMP::core::get_centroid(core::XYZs(refiner->get_refined(p)));
-   IMP_LOG_VERBOSE("centroid is:"<<rb_cen<<"\n");
-   return local_rigid_fitting_around_point(
-     p, refiner,weight_key, dmap,
-     rb_cen,display_log,
-     number_of_optimization_runs, number_of_mc_steps,
-     number_of_cg_steps, max_translation, max_rotation,fast);
+  algebra::Vector3D rb_cen =
+      IMP::core::get_centroid(core::XYZs(refiner->get_refined(p)));
+  IMP_LOG_VERBOSE("centroid is:" << rb_cen << "\n");
+  return local_rigid_fitting_around_point(
+      p, refiner, weight_key, dmap, rb_cen, display_log,
+      number_of_optimization_runs, number_of_mc_steps, number_of_cg_steps,
+      max_translation, max_rotation, fast);
 }
-
 
 //! Local rigid fitting of a rigid body around a set of center points
 /**
@@ -205,14 +202,11 @@ inline FittingSolutions local_rigid_fitting(
 \return the refined fitting solutions
 */
 IMPEMEXPORT FittingSolutions local_rigid_fitting_around_points(
-   kernel::Particle *p,Refiner *refiner,
-   const FloatKey &wei_key,
-   DensityMap *dmap, const algebra::Vector3Ds &anchor_centroids,
-   OptimizerStates display_log,
-   Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
-   Int number_of_cg_steps=100,
-   Float max_translation=2., Float max_rotation=.3);
-
+    kernel::Particle *p, Refiner *refiner, const FloatKey &wei_key,
+    DensityMap *dmap, const algebra::Vector3Ds &anchor_centroids,
+    OptimizerStates display_log, Int number_of_optimization_runs = 5,
+    Int number_of_mc_steps = 10, Int number_of_cg_steps = 100,
+    Float max_translation = 2., Float max_rotation = .3);
 
 //! Local grid search rigid fitting
 /**
@@ -235,14 +229,9 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_points(
 \return the refined fitting solutions
 */
 IMPEMEXPORT FittingSolutions local_rigid_fitting_grid_search(
-   const kernel::ParticlesTemp &ps,
-   const FloatKey &wei_key,
-   DensityMap *dmap,
-   Int max_voxels_translation=2,
-   Int translation_step=1,
-   Float max_angle_in_radians = 0.174,
-   Int number_of_rotations = 100);
-
+    const kernel::ParticlesTemp &ps, const FloatKey &wei_key, DensityMap *dmap,
+    Int max_voxels_translation = 2, Int translation_step = 1,
+    Float max_angle_in_radians = 0.174, Int number_of_rotations = 100);
 
 //! Compute fitting scores for a given set of rigid transformations
 /**
@@ -264,12 +253,11 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_grid_search(
 \note the function assumes the density map holds its density
  */
 IMPEMEXPORT FittingSolutions
-compute_fitting_scores(const kernel::ParticlesTemp &ps,
-   DensityMap *em_map,
-   const algebra::Transformation3Ds &transformations,
-   bool fast_version=false, bool local_score=false,
-   const FloatKey &wei_key=atom::Mass::get_mass_key());
-
+    compute_fitting_scores(const kernel::ParticlesTemp &ps, DensityMap *em_map,
+                           const algebra::Transformation3Ds &transformations,
+                           bool fast_version = false, bool local_score = false,
+                           const FloatKey &wei_key =
+                               atom::Mass::get_mass_key());
 
 //! Compute fitting scores for a given set of rigid transformations
 /**
@@ -282,14 +270,11 @@ compute_fitting_scores(const kernel::ParticlesTemp &ps,
 \note the function assumes the density map holds its density
  */
 inline FittingSolutions compute_fitting_scores(
-   DensityMap *em_map,
-   core::RigidBody rb,Refiner *refiner,
-   const algebra::Transformation3Ds& transformations) {
-  return compute_fitting_scores(refiner->get_refined(rb),em_map,
-                                transformations,true);
+    DensityMap *em_map, core::RigidBody rb, Refiner *refiner,
+    const algebra::Transformation3Ds &transformations) {
+  return compute_fitting_scores(refiner->get_refined(rb), em_map,
+                                transformations, true);
 }
-
-
 
 //! Compute fitting scores for a given set of rigid transformations
 /**
@@ -299,10 +284,9 @@ inline FittingSolutions compute_fitting_scores(
 \param[in] wei_key  The weight key of the particles in the rigid body
 \note the function assumes the density map holds its density
  */
-IMPEMEXPORT Float compute_fitting_score(const kernel::ParticlesTemp &ps,
-   DensityMap *em_map,
-   FloatKey wei_key=atom::Mass::get_mass_key());
-
+IMPEMEXPORT Float
+    compute_fitting_score(const kernel::ParticlesTemp &ps, DensityMap *em_map,
+                          FloatKey wei_key = atom::Mass::get_mass_key());
 
 IMPEM_END_NAMESPACE
-#endif  /* IMPEM_RIGID_FITTING_H */
+#endif /* IMPEM_RIGID_FITTING_H */

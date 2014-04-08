@@ -2,7 +2,7 @@
  *  \file IMP/base/SetCheckState.h
  *  \brief Checkging and error reporting support.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -40,7 +40,7 @@ class IMPBASEEXPORT SetCheckState : public base::RAII {
                                                        level_ = DEFAULT_CHECK;
                                                        obj_ = nullptr;
                                                      },
-           { do_set(o, l); }, { do_reset(); }, do_show(out););
+  { do_set(o, l); }, { do_reset(); }, do_show(out););
 
   //! Construct it with the desired level and target
   SetCheckState(CheckLevel l) {

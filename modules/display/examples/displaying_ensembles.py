@@ -153,8 +153,8 @@ hso = hs[1:]
 
 # sort them spatially so the colors are nicely arranged and allow one to visually connect
 # the position of one end with that of the other
-hso.sort(lambda h0, h1:  cmp(IMP.core.XYZ(IMP.atom.Selection(h0, chain='I',
-                                                             residue_index=237).get_selected_particles(
+hso.sort(lambda h0, h1: cmp(IMP.core.XYZ(IMP.atom.Selection(h0, chain='I',
+                                                            residue_index=237).get_selected_particles(
 )[0]).get_z(),
     IMP.core.XYZ(IMP.atom.Selection(h1, chain='I',
                                     residue_index=237).get_selected_particles()[0]).get_z()))

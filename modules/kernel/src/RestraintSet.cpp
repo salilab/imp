@@ -1,13 +1,13 @@
 /**
  *  \file RestraintSet.cpp   \brief Used to hold a set of related restraints.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
 #include <IMP/kernel/RestraintSet.h>
 #include <IMP/kernel/Model.h>
-#include <IMP/kernel/log.h>
+#include <IMP/base/log.h>
 #include <IMP/kernel/internal/utility.h>
 #include <IMP/kernel/generic.h>
 #include <IMP/kernel/ScoringFunction.h>
@@ -36,13 +36,6 @@ RestraintSet::RestraintSet(const RestraintsTemp &rs, double weight,
   set_weight(weight);
   set_restraints(rs);
 }
-
-RestraintSet::RestraintSet(double weight, const std::string &name)
-    : Restraint(name) {
-  set_weight(weight);
-}
-
-RestraintSet::RestraintSet(const std::string &name) : Restraint(name) {}
 
 IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint *, Restraints);
 
@@ -86,13 +79,6 @@ RestraintSet::get_non_sets_and_sets() const {
   return ret;
 }
 
-void RestraintSet::do_set_model(kernel::Model *m) {
-  for (RestraintConstIterator it = restraints_begin(); it != restraints_end();
-       ++it) {
-    (*it)->set_model(m);
-  }
-}
-
 void RestraintSet::show_it(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
   for (RestraintConstIterator it = restraints_begin(); it != restraints_end();
@@ -103,20 +89,11 @@ void RestraintSet::show_it(std::ostream &out) const {
 }
 
 void RestraintSet::on_add(Restraint *obj) {
-  if (get_model()) {
-    set_has_dependencies(false);
-    if (!obj->get_model()) {
-      obj->set_model(get_model());
-    }
-  }
+  set_has_dependencies(false);
   obj->set_was_used(true);
   IMP_USAGE_CHECK(obj != this, "Cannot add a restraint set to itself");
 }
-void RestraintSet::on_change() {
-  if (get_model()) {
-    set_has_dependencies(false);
-  }
-}
+void RestraintSet::on_change() { set_has_dependencies(false); }
 
 ModelObjectsTemp RestraintSet::do_get_inputs() const {
   return ModelObjectsTemp(restraints_begin(), restraints_end());

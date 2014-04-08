@@ -2,7 +2,7 @@
  *  \file IMP/score_functor/OpenCubicSpline.h
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSCORE_FUNCTOR_OPEN_CUBIC_SPLINE_H
@@ -14,7 +14,7 @@
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
 //! Open cubic spline function.
-/** This function interpolates a set of eveny spaced values using a spline.
+/** This function interpolates a set of evenly spaced values using a spline.
     The the second derivative at the termini is set to zero. See
     core::ClosedCubicSpline for a periodic version.
 

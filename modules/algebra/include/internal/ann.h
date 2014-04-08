@@ -1,7 +1,7 @@
 /**
  *  \file internal/ann.h
  *  \brief manipulation of text, and Interconversion between text and numbers
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPALGEBRA_INTERNAL_ANN_H
@@ -27,7 +27,7 @@ struct ANNData {
   unsigned int extract_dimension(It b, It e) const {
     unsigned int ret = 0;
     for (It c = b; c != e; ++c) {
-      VectorKD v = get_vector_d_geometry(*c);
+      VectorKD v = get_vector_geometry(*c);
       if (ret == 0) {
         ret = v.get_dimension();
       } else {
@@ -42,7 +42,7 @@ struct ANNData {
     unsigned int i = 0;
     ANNcoord **ret = new ANNcoord *[std::distance(b, e)];
     for (It c = b; c != e; ++c) {
-      VectorKD v = get_vector_d_geometry(*c);
+      VectorKD v = get_vector_geometry(*c);
       ANNcoord *pt = new ANNcoord[dimension_];
       std::copy(v.coordinates_begin(), v.coordinates_end(), pt);
       ret[i++] = pt;
@@ -57,7 +57,7 @@ struct ANNData {
   template <class G>
   void fill_nearest_neighbors(const G &g, unsigned int k, double eps,
                               Ints &ret) const {
-    VectorKD v = get_vector_d_geometry(g);
+    VectorKD v = get_vector_geometry(g);
     ANNcoord pt[dimension_];
     std::copy(v.coordinates_begin(), v.coordinates_end(), pt);
     boost::scoped_array<ANNdist> dists(new ANNdist[k]);
@@ -71,7 +71,7 @@ struct ANNData {
     static const unsigned int guess = 20;
     static double guess_dists[guess];
     ret.resize(guess);
-    VectorKD v = get_vector_d_geometry(g);
+    VectorKD v = get_vector_geometry(g);
     ANNcoord pt[dimension_];
     std::copy(v.coordinates_begin(), v.coordinates_end(), pt);
     unsigned int k = tree_.annkFRSearch(pt, square(fix_distance(distance, eps)),

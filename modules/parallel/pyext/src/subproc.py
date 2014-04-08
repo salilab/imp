@@ -7,16 +7,19 @@ except ImportError:
     # Work with Python 2.3, which doesn't ship with subprocess
     from IMP.parallel import compat_subprocess as subprocess
 
+
 class _Popen4(subprocess.Popen):
+
     """Utility class to provide a portable way to spawn a child process and
        communicate with its stdin and combined stdout/stderr."""
 
     def __init__(self, cmd):
         # shell isn't needed on Win32, and may not be found under wine anyway
         shell = (sys.platform != "win32")
-        subprocess.Popen.__init__(self, cmd, shell=shell, stdin=subprocess.PIPE,
-                                  stdout=subprocess.PIPE,
-                                  stderr=subprocess.STDOUT)
+        subprocess.Popen.__init__(
+            self, cmd, shell=shell, stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT)
 
     def require_clean_exit(self):
         """Make sure the child exited with a zero return code"""

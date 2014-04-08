@@ -1,8 +1,8 @@
 /**
- * \file MapDistanceTransform.h \brief class for computing a distance
+ * \file IMP/em/MapDistanceTransform.h \brief class for computing a distance
  * transform of the density map
  *
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -23,7 +23,7 @@ IMPEM_BEGIN_NAMESPACE
    means inside the object, negative - outside.
  */
 class IMPEMEXPORT MapDistanceTransform : public IMP::em::DensityMap {
-public:
+ public:
   /** init the distance transform
       \param [in] map - input density map
       \param [in] density_threshold - a threshold that detemines
@@ -31,8 +31,7 @@ public:
       \param [in] max_distance - how far from the envelope to compute
                                  the transform
    */
-  MapDistanceTransform(IMP::em::DensityMap* map,
-                       float density_threshold,
+  MapDistanceTransform(IMP::em::DensityMap* map, float density_threshold,
                        float max_distance);
 
   /** get the distance from object envelope
@@ -40,7 +39,7 @@ public:
   */
   float get_distance_from_envelope(const IMP::algebra::Vector3D& v) const {
     long index = get_voxel_by_location(v);
-    if(index >= 0 && index < get_number_of_voxels()) return data_[index];
+    if (index >= 0 && index < get_number_of_voxels()) return data_[index];
     return -std::numeric_limits<float>::max();
   }
 
@@ -50,7 +49,7 @@ public:
  protected:
   // cube neighbors, there are 26 neighbors for each voxel
   std::vector<long> neighbors_;
-  float max_distance_; // distance up to which the grid distances are computed
+  float max_distance_;  // distance up to which the grid distances are computed
 };
 
 IMPEM_END_NAMESPACE

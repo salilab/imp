@@ -1,15 +1,16 @@
 /**
  *  \file Particle.cpp   \brief Classes to handle individual model particles.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
 #include "IMP/kernel/Particle.h"
-#include "IMP/kernel/log.h"
+#include "IMP/base/log_macros.h"
 #include "IMP/kernel/Model.h"
 #include "IMP/kernel/internal/utility.h"
 #include "IMP/kernel/internal/PrefixStream.h"
+#include "IMP/kernel/Decorator.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -226,5 +227,8 @@ ParticleIndexKeys Particle::get_particle_keys() const {
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
   return get_model()->internal::ParticleAttributeTable::get_attribute_keys(id_);
 }
+
+ParticleAdaptor::ParticleAdaptor(const Decorator &d)
+    : m_(d.get_model()), pi_(d.get_particle_index()) {}
 
 IMPKERNEL_END_NAMESPACE

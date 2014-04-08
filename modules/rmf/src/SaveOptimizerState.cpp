@@ -2,7 +2,7 @@
  *  \file IMP/rmf/Category.h
  *  \brief Handle read/write of kernel::Model data from/to files.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,22 +15,18 @@ SaveOptimizerState::SaveOptimizerState(kernel::Model *m, RMF::FileHandle fh)
     : kernel::OptimizerState(m, std::string("Save to ") + fh.get_name()),
       fh_(fh) {}
 
-SaveOptimizerState::SaveOptimizerState(RMF::FileHandle fh)
-    : kernel::OptimizerState(std::string("Save to ") + fh.get_name()),
-      fh_(fh) {}
-
-void SaveOptimizerState::do_update(unsigned int k) {
+void SaveOptimizerState::do_update(unsigned int) {
   std::string name;
   if (sim_) {
     std::ostringstream oss;
     oss << sim_->get_current_time() << "fs";
     name = oss.str();
   }
-  save_frame(fh_, k, name);
+  save_frame(fh_, name);
 }
 
 void SaveOptimizerState::update_always(std::string name) {
-  save_frame(fh_, get_number_of_updates(), name);
+  save_frame(fh_, name);
   set_number_of_updates(get_number_of_updates() + 1);
 }
 

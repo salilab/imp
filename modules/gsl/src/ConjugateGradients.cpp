@@ -2,7 +2,7 @@
  *  \file ConjugateGradients.cpp
  *  \brief XXXX.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,13 +12,6 @@
 IMPGSL_BEGIN_NAMESPACE
 
 ConjugateGradients::ConjugateGradients(kernel::Model *m) : GSLOptimizer(m) {
-  initial_step_ = .01;
-  line_step_ = .0001;
-  min_gradient_ = .001;
-}
-
-ConjugateGradients::ConjugateGradients() : GSLOptimizer() {
-  IMPGSL_DEPRECATED_FUNCTION_DEF(2.1, "Pass the model to the constructor.");
   initial_step_ = .01;
   line_step_ = .0001;
   min_gradient_ = .001;

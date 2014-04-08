@@ -2,7 +2,7 @@
  *  \file IMP/em/EMReaderWriter.h
  *  \brief Classes to read or write density files in EM format.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -17,17 +17,16 @@
 
 IMPEM_BEGIN_NAMESPACE
 /** Reader/writer for EM. */
-class IMPEMEXPORT EMReaderWriter : public MapReaderWriter
-{
-public:
+class IMPEMEXPORT EMReaderWriter : public MapReaderWriter {
+ public:
 #if !defined(DOXYGEN) && !defined(SWIG)
- //! Reads a density file in EM format and stores the information
- /**
-  \param[in] filename name of the file to read
-  \param[in] data pointer to the data
-  \param[in] header DensityHeader() to store the header information
-  \exception IOException in case that the filename was not found
-  */
+  //! Reads a density file in EM format and stores the information
+  /**
+   \param[in] filename name of the file to read
+   \param[in] data pointer to the data
+   \param[in] header DensityHeader() to store the header information
+   \exception IOException in case that the filename was not found
+   */
   void read(const char *filename, float **data, DensityHeader &header);
   //! Writes a density file in EM format with the header information
   /**
@@ -35,10 +34,10 @@ public:
      \param[in] data pointer to the data
      \param[in] header DensityHeader() with the header information
   */
-  void write(const char* filename, const float *data,
+  void write(const char *filename, const float *data,
              const DensityHeader &header);
 #endif
-protected:
+ protected:
   //! Reads the header
   //! Reads the data
   /**
@@ -55,18 +54,18 @@ protected:
   \exception  IOException is the requested data type is not implemented
   */
   void read_data(std::ifstream &file, float **data,
-                const internal::EMHeader &header);
+                 const internal::EMHeader &header);
   //! Writes the header
   /**
      \param[in] s
   \param[in] header internal::EMHeader with the header information
   \exception IOException if the writing operation had failed.
   */
-  void write_header(std::ostream& s, const internal::EMHeader &header);
+  void write_header(std::ostream &s, const internal::EMHeader &header);
 
   IMP_OBJECT_METHODS(EMReaderWriter);
 };
 
 IMPEM_END_NAMESPACE
 
-#endif  /* IMPEM_EM_READER_WRITER_H */
+#endif /* IMPEM_EM_READER_WRITER_H */

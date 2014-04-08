@@ -1,4 +1,3 @@
-if(NOT DEFINED RMF_LIBRARIES)
 
   set(CHECK_COMPILES_BODY "")
 
@@ -46,9 +45,6 @@ if(NOT DEFINED RMF_LIBRARIES)
     endif("${RMF_LIBRARY}" MATCHES ".*NOTFOUND.*"
           OR "${RMF_INCLUDE_DIR}" MATCHES ".*NOTFOUND.*")
   endif("${RMF_ok}" MATCHES "1")
-else(NOT DEFINED RMF_LIBRARIES)
-  message(STATUS "RMF already setup")
-endif(NOT DEFINED RMF_LIBRARIES)
 
 if(DEFINED RMF_INTERNAL)
   if(IMP_STATIC)
@@ -63,8 +59,8 @@ if(DEFINED RMF_INTERNAL)
     add_subdirectory(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source ${RMF_BINARY_DIR})
 
     set(RMF_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/include ${RMF_BINARY_DIR}/include ${RMF_INCLUDE_PATH} CACHE INTERNAL "" FORCE)
+    list(REMOVE_DUPLICATES RMF_INCLUDE_PATH)
     set(RMF_SWIG_PATH ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/swig CACHE INTERNAL "" FORCE)
-
 
     set(RMF_LIBRARIES RMF-lib  CACHE INTERNAL "" FORCE)
 

@@ -2,7 +2,7 @@
  *  \file IMP/example/ExampleObject.h
  *  \brief An example showing how to make a simple ref counted object
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPEXAMPLE_EXAMPLE_OBJECT_H
@@ -46,8 +46,7 @@ class IMPEXAMPLEEXPORT ExampleObject : public base::Object {
 };
 
 typedef base::Vector<base::Pointer<ExampleObject> > ExampleObjects;
-typedef base::Vector<base::WeakPointer<ExampleObject> >
-          ExampleObjectsTemp;
+typedef base::Vector<base::WeakPointer<ExampleObject> > ExampleObjectsTemp;
 
 IMPEXAMPLE_END_NAMESPACE
 

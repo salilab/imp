@@ -2,7 +2,7 @@
  *  \file IMP/core/ConjugateGradients.h
  *  \brief Simple conjugate gradients optimizer.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -32,9 +32,6 @@ IMPCORE_BEGIN_NAMESPACE
 */
 class IMPCOREEXPORT ConjugateGradients : public AttributeOptimizer {
  public:
-  /** \deprecated_at{2.1} Use the constructor that takes a kernel::Model. */
-  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
-  ConjugateGradients();
   ConjugateGradients(kernel::Model *m,
                      std::string name = "ConjugateGradients%1%");
 
@@ -52,7 +49,6 @@ class IMPCOREEXPORT ConjugateGradients : public AttributeOptimizer {
   IMP_OBJECT_METHODS(ConjugateGradients);
 
  private:
-
   typedef double NT;
 
   // Handle optimization failing badly

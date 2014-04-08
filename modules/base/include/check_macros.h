@@ -2,7 +2,7 @@
  *  \file IMP/base/check_macros.h
  *  \brief Exception definitions and assertions.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -47,19 +47,13 @@
               IOException);
     \endcode
  */
-#define IMP_THROW(message, exception_name)                                   \
-  do {                                                                       \
-    /* to bring in exceptions for backward compat */                         \
-    using namespace IMP::base;                                               \
-    std::ostringstream imp_throw_oss;                                        \
-    imp_throw_oss << message << std::endl;                                   \
-    BOOST_STATIC_ASSERT(                                                     \
-        (!(boost::is_base_of<IMP::base::UsageException,                      \
-                             exception_name>::value) &&                      \
-         !(boost::is_base_of<IMP::base::InternalException,                   \
-                             exception_name>::value) &&                      \
-         (boost::is_base_of<IMP::base::Exception, exception_name>::value))); \
-    throw exception_name(imp_throw_oss.str().c_str());                       \
+#define IMP_THROW(message, exception_name)             \
+  do {                                                 \
+    /* to bring in exceptions for backward compat */   \
+    using namespace IMP::base;                         \
+    std::ostringstream imp_throw_oss;                  \
+    imp_throw_oss << message << std::endl;             \
+    throw exception_name(imp_throw_oss.str().c_str()); \
   } while (true)
 
 //! Throw an exception if a check fails

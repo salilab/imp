@@ -2,7 +2,7 @@
  *  \file IMP/core/NeighborsTable.h
  *  \brief Angle restraint between three particles.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,8 +13,8 @@
 #include "internal/CoreClosePairContainer.h"
 #include <IMP/kernel/SingletonContainer.h>
 #include <IMP/kernel/ScoreState.h>
-#include <IMP/base/map.h>
 #include <IMP/base/Pointer.h>
+#include <boost/unordered_map.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -28,8 +28,8 @@ IMPCORE_BEGIN_NAMESPACE
 */
 class IMPCOREEXPORT NeighborsTable : public kernel::ScoreState {
   base::PointerMember<kernel::PairContainer> input_;
-  int input_version_;
-  base::map<kernel::ParticleIndex, kernel::ParticleIndexes> data_;
+  std::size_t input_version_;
+  boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> data_;
 
  protected:
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {

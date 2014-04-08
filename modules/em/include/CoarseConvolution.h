@@ -2,7 +2,7 @@
  *  \file IMP/em/CoarseConvolution.h
  *  \brief Convolutes two grids
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -21,10 +21,9 @@ IMPEM_BEGIN_NAMESPACE
 //! Convolutes two grids
 /** The pixels involved are derived from the positions of N particles.
  */
-class IMPEMEXPORT CoarseConvolution
-{
+class IMPEMEXPORT CoarseConvolution {
 
-public:
+ public:
 #if 0
   //! Evaluates the convolution between two density grids
   /**
@@ -74,11 +73,11 @@ public:
 
       \note recalc_ccnormfac is ignored.
    */
-  static float convolution(const DensityMap *em_map,DensityMap *model_map,
+  static float convolution(const DensityMap *em_map, DensityMap *model_map,
                            float voxel_data_threshold,
                            bool recalc_ccnormfac = true);
 };
 
 IMPEM_END_NAMESPACE
 
-#endif  /* IMPEM_COARSE_CONVOLUTION_H */
+#endif /* IMPEM_COARSE_CONVOLUTION_H */

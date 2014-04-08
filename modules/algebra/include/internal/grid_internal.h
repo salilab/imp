@@ -1,7 +1,7 @@
 /**
  *  \file output_helpers.h
  *  \brief manipulation of text, and Interconversion between text and numbers
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPALGEBRA_INTERNAL_GRID_INTERNAL_H
@@ -9,6 +9,7 @@
 
 #include <IMP/algebra/algebra_config.h>
 #include <IMP/base/warning_macros.h>
+#include <IMP/base/comparison_macros.h>
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 

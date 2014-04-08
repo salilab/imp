@@ -2,7 +2,7 @@
  *  \file IMP/core/ExcludedVolumeRestraint.h
  *  \brief A prevent spheres from inter-penetrating
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_EXCLUDED_VOLUME_RESTRAINT_H
@@ -11,8 +11,6 @@
 #include <IMP/core/core_config.h>
 
 #include "internal/remove_pointers.h"
-#include <IMP/kernel/internal/InternalPairsRestraint.h>
-#include "internal/CoreClosePairContainer.h"
 #include "rigid_bodies.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
@@ -21,6 +19,7 @@
 #include <IMP/Refiner.h>
 #include "RigidClosePairsFinder.h"
 #include <IMP/core/SphereDistancePairScore.h>
+#include <boost/unordered_map.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -48,7 +47,7 @@ class IMPCOREEXPORT ExcludedVolumeRestraint : public kernel::Restraint {
   // moved stuff
   mutable kernel::ParticleIndexes rbs_;
   mutable kernel::ParticleIndexes xyzrs_;
-  mutable IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes>
+  mutable boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes>
       constituents_;
   double slack_;
   mutable algebra::Sphere3Ds rbs_backup_sphere_;

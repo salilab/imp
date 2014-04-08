@@ -9,11 +9,11 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min2(self):
         """Test permutation particle states"""
-        dps= IMP.domino.IndexStates(10)
-        pps= IMP.domino.PermutationStates(dps)
-        all=[pps.get_inner_state(i) for i in range(0,10)]
+        dps = IMP.domino.IndexStates(10)
+        pps = IMP.domino.PermutationStates(dps)
+        all = [pps.get_inner_state(i) for i in range(0, 10)]
         print all
-        for i in range(0,10):
+        for i in range(0, 10):
             self.assertIn(i, all)
 if __name__ == '__main__':
     IMP.test.main()

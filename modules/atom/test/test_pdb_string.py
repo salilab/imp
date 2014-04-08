@@ -3,39 +3,47 @@ import IMP
 import IMP.test
 import IMP.atom
 import os
+
+
 class Tests(IMP.test.TestCase):
+
+    def test_pdb_conect_string(self):
+        """Test get_pdb_conect_record_string()"""
+        s = IMP.atom.get_pdb_conect_record_string(1001, 2)
+        self.assertEqual(s, 'CONECT 1001    2\n')
+
     def test_write(self):
         """Simple test of writing a PDB"""
         m = IMP.kernel.Model()
-        name="test.pdb"
-        f=open(name,"w")
-        #create a pdb file of 5 CA atoms
+        name = "test.pdb"
+        f = open(name, "w")
+        # create a pdb file of 5 CA atoms
         for i in range(5):
-            p=IMP.kernel.Particle(m)
-            IMP.core.XYZ.setup_particle(p,IMP.algebra.Vector3D(i,i,i))
+            p = IMP.kernel.Particle(m)
+            IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(i, i, i))
             f.write(IMP.atom.get_pdb_string(IMP.core.XYZ(p).get_coordinates(),
-                             i,IMP.atom.AT_CA,IMP.atom.ALA,'A',i))
+                                            i, IMP.atom.AT_CA, IMP.atom.ALA, 'A', i))
         f.close()
         mp = IMP.atom.read_pdb(name,
                                m, IMP.atom.CAlphaPDBSelector())
         os.unlink(name)
-        self.assertEqual(len(IMP.core.get_leaves(mp)),5)
+        self.assertEqual(len(IMP.core.get_leaves(mp)), 5)
         m.evaluate(False)
 
     def test_pad(self):
         """Make sure that atom names are padded correctly in PDB files"""
         # Make sure non-standard atom types are defined
         ff = IMP.atom.get_all_atom_CHARMM_parameters()
-        v = IMP.algebra.Vector3D(0,0,0)
+        v = IMP.algebra.Vector3D(0, 0, 0)
         t = IMP.atom.get_element_table()
-        for name, element, expected in (('C',        'C',  ' C  '),
-                                        ('C',        'Un', ' C  '),
-                                        ('CA',       'C',  ' CA '),
-                                        ('CA',       'CA', 'CA  '),
-                                        ('HET:CAD',  'C',  ' CAD'),
-                                        ('HET:HAD1', 'H',  'HAD1'),
-                                        ('HET:HG',   'H',  ' HG '),
-                                        ('HG',       'HG', 'HG  ')):
+        for name, element, expected in (('C', 'C', ' C  '),
+                                        ('C', 'Un', ' C  '),
+                                        ('CA', 'C', ' CA '),
+                                        ('CA', 'CA', 'CA  '),
+                                        ('HET:CAD', 'C', ' CAD'),
+                                        ('HET:HAD1', 'H', 'HAD1'),
+                                        ('HET:HG', 'H', ' HG '),
+                                        ('HG', 'HG', 'HG  ')):
             s = IMP.atom.get_pdb_string(v, 1, IMP.atom.AtomType(name),
                                         IMP.atom.ALA, 'A', 1, ' ', 1.0, 0.0,
                                         t.get_element(element))
@@ -59,7 +67,7 @@ class Tests(IMP.test.TestCase):
             IMP.atom.write_pdb(pdb, s)
             m.evaluate(False)
             print s.getvalue()
-            self.assertEqual(s.getvalue()[15+12:15+16].strip(), atom)
+            self.assertEqual(s.getvalue()[15 + 12:15 + 16].strip(), atom)
 
     def test_read_atom(self):
         """Test that all fields are read from PDB ATOM records"""

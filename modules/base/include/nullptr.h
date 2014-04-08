@@ -2,7 +2,7 @@
  *  \file IMP/base/nullptr.h
  *  \brief Provide a nullptr keyword analog.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPBASE_NULLPTR_H
@@ -61,7 +61,7 @@ extern IMPBASEEXPORT const nullptr_t nullptr;
 IMP_GCC_PRAGMA(diagnostic pop)
 #endif
 
-#else  // SWIG
+#else   // SWIG
 extern const void *const nullptr;
 #endif  // SWIG
 #endif  // IMP_DOXYGEN

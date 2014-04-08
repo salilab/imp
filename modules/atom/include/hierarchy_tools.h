@@ -2,7 +2,7 @@
  *  \file IMP/atom/hierarchy_tools.h
  *  \brief A set of useful functionality on IMP::atom::Hierarchy decorators
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_HIERARCHY_TOOLS_H
@@ -17,6 +17,7 @@
 #include <IMP/core/XYZR.h>
 #include "Selection.h"
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/unordered_map.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -28,20 +29,20 @@ IMPATOM_BEGIN_NAMESPACE
     particles with appropriate residue indexes stored and are XYZR
     particles.
 
-    Volume is, as usual, in cubic anstroms.
+    Volume is, as usual, in cubic angstroms.
 
     Currently the function creates a set of balls with radii no greater
-    than resolution which overlap by 20% and have a volume of their
+    than target_radius which overlap by 20% and have a volume of their
     union equal to the passed volume.
 
-    The coordinates of the balls defining the protein are optimized
+    The coordinates of the balls defining the protein are not optimized
     by default, and have garbage coordinate values.
     \untested{create_protein}
     \unstable{create_protein}
     See Hierarchy
  */
 IMPATOMEXPORT Hierarchy
-    create_protein(kernel::Model *m, std::string name, double resolution,
+    create_protein(kernel::Model *m, std::string name, double target_radius,
                    int number_of_residues, int first_residue_index = 0,
                    double volume = -1
 #ifndef IMP_DOXYGEN
@@ -50,12 +51,12 @@ IMPATOMEXPORT Hierarchy
 #endif
                    );
 /** Like the former create_protein(), but it enforces domain splits
-    at the provide domain boundairs. The domain boundaries should be
-    the start of the first domain, any boundies, and then one past
+    at the provided domain boundaries. The domain boundaries should be
+    the start of the first domain, any boundaries, and then one past
     the end of the last domain.
  */
 IMPATOMEXPORT Hierarchy create_protein(kernel::Model *m, std::string name,
-                                       double resolution,
+                                       double target_radius,
                                        const Ints domain_boundaries);
 
 /** \name Simplification along backbone
@@ -86,19 +87,46 @@ IMPATOMEXPORT Hierarchy
                                      bool keep_detailed = false);
 /** @} */
 
+/** Create a new hierarchy that approximates the volume occupied by the old one.
+
+    The new hierarchy will contain a number of Fragment particles whose surface
+    (and hence volume) approximates the input hierarchy in the sense of
+    IMP::algebra::get_simplified_from_volume().
+
+    The resulting representation has approximately the desired resolution in the
+    sense of get_resolution().
+
+    Residue indexes are assigned to the created Fragments from the original
+    residue indexes, and particles containing adjacent residues are connected
+    by bonds. */
+IMPATOMEXPORT Hierarchy
+    create_simplified_from_volume(Hierarchy h, double resolution);
+
+/** Create a new hierarchy that approximates the volume occupied by the old one.
+
+    This function is like create_simplified_from_volume() except that the
+    result is divided into Chain and Molecule bits. It assumes that all
+    geometry is rooted under a chain or a molecule.
+     */
+IMPATOMEXPORT Hierarchy
+    create_simplified_assembly_from_volume(Hierarchy h, double resolution);
+
 /** \name Finding information
     Get the attribute of the given particle or throw a ValueException
     if it is not applicable. The particle with the given information
     must be above the passed node.
     @{
 */
-IMPATOMEXPORT std::string get_molecule_name(Hierarchy h);
 IMPATOMEXPORT Ints get_residue_indexes(Hierarchy h);
 IMPATOMEXPORT ResidueType get_residue_type(Hierarchy h);
-IMPATOMEXPORT int get_chain_id(Hierarchy h);
+/** \deprecated_at{2.2} Use the string version. */
+IMPATOM_DEPRECATED_FUNCTION_DECL(2.2)
+inline char get_chain_id_char(Hierarchy h) {
+  IMPATOM_DEPRECATED_FUNCTION_DEF(2.2, "Use string version");
+  return get_chain_id(h)[0];
+}
 IMPATOMEXPORT AtomType get_atom_type(Hierarchy h);
 IMPATOMEXPORT std::string get_domain_name(Hierarchy h);
-IMPATOMEXPORT int get_copy_index(Hierarchy h);
 /** @} */
 
 /** Create an excluded volume restraint for the included molecules. If a
@@ -158,17 +186,17 @@ IMPATOMEXPORT HierarchyTree get_hierarchy_tree(Hierarchy h);
 */
 class HierarchyGeometry : public display::SingletonGeometry {
   double res_;
-  mutable IMP::base::map<kernel::Particle *, base::Pointer<display::Geometry> >
-      components_;
+  mutable boost::unordered_map<kernel::Particle *,
+                               base::Pointer<display::Geometry> > components_;
 
  public:
-  HierarchyGeometry(core::Hierarchy d, double resolution = -1)
+  HierarchyGeometry(core::Hierarchy d, double resolution = 0)
       : SingletonGeometry(d), res_(resolution) {}
   display::Geometries get_components() const {
     display::Geometries ret;
     atom::Hierarchy d(get_particle());
     atom::Selection sel(d);
-    sel.set_target_radius(res_);
+    sel.set_resolution(res_);
     kernel::ParticlesTemp ps = sel.get_selected_particles();
     for (unsigned int i = 0; i < ps.size(); ++i) {
       if (components_.find(ps[i]) == components_.end()) {
@@ -183,26 +211,33 @@ class HierarchyGeometry : public display::SingletonGeometry {
 };
 class HierarchiesGeometry : public display::SingletonsGeometry {
   double res_;
-  mutable IMP::base::map<kernel::ParticleIndex,
-                         base::Pointer<display::Geometry> > components_;
+  mutable boost::unordered_map<kernel::ParticleIndex,
+                               base::Pointer<display::Geometry> > components_;
 
  public:
   HierarchiesGeometry(SingletonContainer *sc, double resolution = -1)
       : SingletonsGeometry(sc), res_(resolution) {}
   display::Geometries get_components() const {
     display::Geometries ret;
-    IMP_CONTAINER_FOREACH(SingletonContainer, get_container(), {
+    IMP_FOREACH(kernel::ParticleIndex pi, get_container()->get_contents()) {
       kernel::Model *m = get_container()->get_model();
-      if (components_.find(_1) == components_.end()) {
-        IMP_NEW(HierarchyGeometry, g, (atom::Hierarchy(m, _1), res_));
-        components_[_1] = g;
+      if (components_.find(pi) == components_.end()) {
+        IMP_NEW(HierarchyGeometry, g, (atom::Hierarchy(m, pi), res_));
+        components_[pi] = g;
       }
-      ret.push_back(components_.find(_1)->second);
-    });
+      ret.push_back(components_.find(pi)->second);
+    }
     return ret;
   }
   IMP_OBJECT_METHODS(HierarchiesGeometry);
 };
+
+/** Transform a hierarchy, being aware of rigid bodies and intermediate nodes
+ * with coordinates. Rigid bodies must either be completely contained within the
+ * hierarchy or completely disjoint (no rigid bodies that contain particles in
+ * the hierarchy and other particles not in it are allowed). */
+IMPATOMEXPORT void transform(atom::Hierarchy h,
+                             const algebra::Transformation3D &tr);
 
 IMPATOM_END_NAMESPACE
 

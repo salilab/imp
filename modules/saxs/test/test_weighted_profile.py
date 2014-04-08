@@ -7,6 +7,7 @@ import os
 import time
 import StringIO
 
+
 class Tests(IMP.test.TestCase):
 
     def test_weighted_profile(self):
@@ -48,8 +49,8 @@ class Tests(IMP.test.TestCase):
         model_profile2.calculate_profile_partial(particles2, surface_area2)
 
         #! read the weighted profile
-        weighted_profile = IMP.saxs.Profile(self.get_input_file_name('weighted.dat'))
-
+        weighted_profile = IMP.saxs.Profile(
+            self.get_input_file_name('weighted.dat'))
 
         #! resample model profiles into a weighted profile
         resampled_profile1 = IMP.saxs.Profile()
@@ -57,7 +58,7 @@ class Tests(IMP.test.TestCase):
         resampled_profile2 = IMP.saxs.Profile()
         model_profile2.resample(weighted_profile, resampled_profile2, True)
 
-        saxs_score = IMP.saxs.WeightedProfileFitter(weighted_profile);
+        saxs_score = IMP.saxs.WeightedProfileFitter(weighted_profile)
 
         profile_list = [resampled_profile1, resampled_profile2]
 
@@ -65,10 +66,10 @@ class Tests(IMP.test.TestCase):
         chi = wfp.get_chi()
         weights = wfp.get_weights()
 
-        print 'Chi = ' , str(chi)
-        print 'weight1 = ' , weights[0] , ' weight2 = ' , weights[1]
+        print 'Chi = ', str(chi)
+        print 'weight1 = ', weights[0], ' weight2 = ', weights[1]
 
-        self.assertAlmostEqual(chi, 1.74, delta=0.01)
+        self.assertAlmostEqual(chi, 1.67, delta=0.1)
         self.assertAlmostEqual(weights[0], 0.283, delta=0.1)
         self.assertAlmostEqual(weights[1], 0.716, delta=0.1)
 

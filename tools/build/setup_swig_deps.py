@@ -7,8 +7,7 @@ import sys
 from optparse import OptionParser
 import os.path
 import tools
-import thread_pool
-
+import tools.thread_pool
 
 
 parser = OptionParser()
@@ -17,43 +16,43 @@ parser.add_option("-s", "--swig",
 parser.add_option("-b", "--build_system",
                   dest="build_system", help="The build system being used.")
 
+
 def _fix(name, bs):
     if os.path.isabs(name):
         return name
-    elif bs=="scons":
-        return "#/build/"+name
+    elif bs == "scons":
+        return "#/build/" + name
     else:
-        return os.path.join(os.getcwd(), "%s")%name
+        return os.path.join(os.getcwd(), "%s") % name
+
 
 def get_dep_merged(modules, name, ordered):
-    ret=[]
-    alldeps=tools.get_all_dependencies(".", modules, "", ordered)
+    ret = []
+    alldeps = tools.get_all_dependencies(".", modules, "", ordered)
     for d in alldeps:
         info = tools.get_dependency_info(d, ".")
-        lst= tools.split(info[name], ';') # cmake lists are semicolon-separated
+        # cmake lists are semicolon-separated
+        lst = tools.split(info[name], ';')
         ret.extend(lst)
-    ret=list(set(ret))
-    ret.sort()
+    ret = sorted(set(ret))
     return ret
-
 
 
 def setup_one(module, ordered, build_system, swig):
     info = tools.get_module_info(module, "/")
     if not info["ok"]:
-        tools.rewrite("src/%s_swig.deps"%module, "")
+        tools.rewrite("src/%s_swig.deps" % module, "", False)
         return
     includepath = get_dep_merged([module], "includepath", ordered)
     swigpath = get_dep_merged([module], "swigpath", ordered)
 
-
-    depf= open("src/%s_swig.deps.in"%module, "w")
-    cmd= [swig, "-MM", "-Iinclude", "-Iswig", "-ignoremissing"]\
-    + ["-I"+x for x in swigpath] + ["-I"+x for x in includepath]\
-    + ["swig/IMP_%s.i"%module]
+    depf = open("src/%s_swig.deps.in" % module, "w")
+    cmd = [swig, "-MM", "-Iinclude", "-Iswig", "-ignoremissing"]\
+        + ["-I" + x for x in swigpath] + ["-I" + x for x in includepath]\
+        + ["swig/IMP_%s.i" % module]
 
     lines = tools.run_subprocess(cmd).split("\n")
-    names= []
+    names = []
     for x in lines:
         if x.endswith("\\"):
             x = x[:-1]
@@ -62,23 +61,28 @@ def setup_one(module, ordered, build_system, swig):
             continue
         names.append(x)
 
-    final_names=[_fix(x, build_system) for x in names]
-    final_list= "\n".join(final_names)
-    tools.rewrite("src/%s_swig.deps"%module, final_list)
+    final_names = [_fix(x, build_system) for x in names]
+    final_list = "\n".join(final_names)
+    tools.rewrite("src/%s_swig.deps" % module, final_list)
+
 
 def main():
     (options, args) = parser.parse_args()
-    pool = thread_pool.ThreadPool()
+    pool = tools.thread_pool.ThreadPool()
     ordered = tools.get_sorted_order()
     for m in ordered:
         #setup_one(m, ordered, options.build_system, options.swig)
-        pool.add_task(setup_one, m, ordered, options.build_system, options.swig)
+        pool.add_task(
+            setup_one,
+            m,
+            ordered,
+            options.build_system,
+            options.swig)
     err = pool.wait_completion()
     if err:
         print >> sys.stderr, err
         return 1
     return 0
-
 
 
 if __name__ == '__main__':

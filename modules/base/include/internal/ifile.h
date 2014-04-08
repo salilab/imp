@@ -2,7 +2,7 @@
  *  \file internal/ifile.h
  *  \brief Control display of deprecation information.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -18,8 +18,9 @@ struct IOStorage {
   std::string name_;
   IOStorage(std::string name) : name_(name) {}
   virtual BaseStream &get_stream() = 0;
-  std::string get_name() const { return name_; }
-  ;
+  std::string get_name() const {
+    return name_;
+  };
   virtual ~IOStorage() {}
 };
 }

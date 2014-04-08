@@ -24,6 +24,7 @@ TODO: Add More
 - Nup133 (the whole piece): 23904
 """
 
+
 class SAXSApplicationTest(IMP.test.ApplicationTestCase):
 
     def setUp(self):
@@ -48,41 +49,41 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         return None
 
     def run_app(self, name, args):
-        destname = 'runapp_'+name
+        destname = 'runapp_' + name
         if os.path.isdir(destname):
             return
-        args.append('--destdir='+destname)
-        #args.append('--blimit_fitting=80')
-        #args.append('--elimit_fitting=80')
+        args.append('--destdir=' + destname)
+        # args.append('--blimit_fitting=80')
+        # args.append('--elimit_fitting=80')
         args.append('--allfiles')
         args.append('--outlevel=full')
-        args.extend([#'--blimit_hessian=80', '--elimit_hessian=80',
-                 '--berror','--eerror'])
+        args.extend([  # '--blimit_hessian=80', '--elimit_hessian=80',
+            '--berror', '--eerror'])
         print "### run_app"
         print ' '.join(args)
-        #sys.exit()
-        p = self.run_python_application('saxs_merge.py',args)
+        # sys.exit()
+        p = self.run_python_application('saxs_merge.py', args)
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
-        #do some preliminary tests
-        for i in [destname+'/data_merged.dat', destname+'/mean_merged.dat',
-                destname+'/summary.txt']:
+        # do some preliminary tests
+        for i in [destname + '/data_merged.dat', destname + '/mean_merged.dat',
+                  destname + '/summary.txt']:
             self.assertTrue(os.path.exists(i))
-        text=open(destname+'/summary.txt').read()
+        text = open(destname + '/summary.txt').read()
         m = text.find('Classification')
         self.assertIsNotNone(m,
-                msg="Classification output not found in summary.txt")
+                             msg="Classification output not found in summary.txt")
 
     def uniqify(self, seq):
-        #taken from http://stackoverflow.com/a/480227/958110
+        # taken from http://stackoverflow.com/a/480227/958110
         seen = set()
         seen_add = seen.add
-        return [ x for x in seq if x not in seen and not seen_add(x)]
+        return [x for x in seq if x not in seen and not seen_add(x)]
 
     def plot_data_overlaid(self, name, d1, d2, datarange, chi, title=None):
         # data overlaid in log scale
-        fl=open('Cpgnuplot'+name,'w')
+        fl = open('Cpgnuplot' + name, 'w')
         fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_data_log_overlaid.png"\n' % name)
         fl.write('set log y\n')
@@ -92,12 +93,13 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
             fl.write('set title "%s (chi=%s)"\n' % (title, fitchi))
         else:
             fl.write('set title "chi=%s"\n' % (chi))
-        fl.write('p "%s" u 1:2 w p t "automatic", "%s" u 1:2 w p t "manual"\n' %
-            (d1,d2))
+        fl.write(
+            'p "%s" u 1:2 w p t "automatic", "%s" u 1:2 w p t "manual"\n' %
+            (d1, d2))
         fl.close()
-        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot' + name)
         # data overlaid in linear scale
-        fl=open('Cpgnuplot'+name,'w')
+        fl = open('Cpgnuplot' + name, 'w')
         fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_data_lin_overlaid.png"\n' % name)
         fl.write('set xrange [%s:%s]\n' % (datarange[0], datarange[1]))
@@ -106,37 +108,38 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
             fl.write('set title "%s (chi=%s)"\n' % (title, fitchi))
         else:
             fl.write('set title "chi=%s"\n' % (chi))
-        fl.write('p "%s" u 1:2 w p t "automatic", "%s" u 1:2 w p t "manual"\n' %
-            (d1,d2))
+        fl.write(
+            'p "%s" u 1:2 w p t "automatic", "%s" u 1:2 w p t "manual"\n' %
+            (d1, d2))
         fl.close()
-        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot' + name)
 
-    def plot_data_colored(self, name, d1, datarange, transform=(1,0)):
+    def plot_data_colored(self, name, d1, datarange, transform=(1, 0)):
         # data in linear scale, colored
-        fl=open('Cpgnuplot'+name,'w')
+        fl = open('Cpgnuplot' + name, 'w')
         fl.write('set term png font "Lenka"\n')
         fl.write('set xrange [%s:%s]\n' % (datarange[0], datarange[1]))
         fl.write('set yrange [0:%s]\n' % datarange[3])
         fl.write('set output "%s_data_lin_colored.png"\n' % name)
         fl.write('p "%s" u 1:(%s*($2+%s)):7 w p lc var t "automatic"\n' %
-                   (d1, transform[0], transform[1]))
+                 (d1, transform[0], transform[1]))
         fl.close()
-        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot' + name)
         # data shifted in log scale
-        fl=open('Cpgnuplot'+name,'w')
+        fl = open('Cpgnuplot' + name, 'w')
         fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_data_log_colored.png"\n' % name)
         fl.write('set log y\n')
         fl.write('set xrange [%s:%s]\n' % (datarange[0], datarange[1]))
         fl.write('set yrange [%s:%s]\n' % (datarange[2], datarange[3]))
         fl.write('p "%s" u 1:(%s*($2+%s)):7 w p lc var t "automatic"\n' %
-                (d1, transform[0],transform[1]))
+                (d1, transform[0], transform[1]))
         fl.close()
-        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot' + name)
 
     def plot_means(self, name, d1, d2, datarange, chi):
-        #linear scale
-        fl=open('Cpgnuplot'+name,'w')
+        # linear scale
+        fl = open('Cpgnuplot' + name, 'w')
         fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_means_lin.png"\n' % name)
         fl.write('set xrange [%s:%s]\n' % (datarange[0], datarange[1]))
@@ -146,11 +149,11 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
                  '"" u 1:($2+$3) w l lt 1 not, "" u 1:($2-$3) w l lt 1 not, '
                  '"%s" u 1:2 w l lt 2 t "manual", '
                  '"" u 1:($2+$3) w l lt 2 not, '
-                 '"" u 1:($2-$3) w l lt 2 not\n' % (d1,d2))
+                 '"" u 1:($2-$3) w l lt 2 not\n' % (d1, d2))
         fl.close()
-        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
-        #log scale
-        fl=open('Cpgnuplot'+name,'w')
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot' + name)
+        # log scale
+        fl = open('Cpgnuplot' + name, 'w')
         fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_means_log.png"\n' % name)
         fl.write('set log y\n')
@@ -161,65 +164,76 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
                  '"" u 1:($2+$3) w l lt 1 not, "" u 1:($2-$3) w l lt 1 not, '
                  '"%s" u 1:2 w l lt 2 t "manual", '
                  '"" u 1:($2+$3) w l lt 2 not, '
-                 '"" u 1:($2-$3) w l lt 2 not\n' % (d1,d2))
+                 '"" u 1:($2-$3) w l lt 2 not\n' % (d1, d2))
         fl.close()
-        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot' + name)
 
     def plot_data_mean(self, name, adata, amean, mdata, mmean, datarange):
-        #linear scale
-        fl=open('Cpgnuplot'+name,'w')
+        # linear scale
+        fl = open('Cpgnuplot' + name, 'w')
         fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_data_lin_mean.png"\n' % name)
         fl.write('set xrange [%s:%s]\n' % (datarange[0], datarange[1]))
-        fl.write('set yrange [0:%s]\n' % (datarange[3]+30))
+        fl.write('set yrange [0:%s]\n' % (datarange[3] + 30))
         fl.write('p "%s" u 1:2:3 w yerr t "auto data", \\\n' % adata)
         fl.write('  "%s" u 1:2 w l t "auto mean" lt 2 lw 2, \\\n' % amean)
         fl.write('  "" u 1:($2+$3) w l lt 2 lw 1 not, \\\n')
         fl.write('  "" u 1:($2-$3) w l lt 2 lw 1 not, \\\n')
         fl.write('  "%s" u 1:(30+$2):3 w yerr t "manual data", \\\n' % mdata)
         fl.write('  "%s" u 1:(30+$2) w l t "manual mean" lt 3 lw 2, \\\n'
-                    % mmean)
+                 % mmean)
         fl.write('  "" u 1:(30+$2+$3) w l lt 3 lw 1 not, \\\n')
         fl.write('  "" u 1:(30+$2-$3) w l lt 3 lw 1 not\n')
         fl.close()
-        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
-        #log scale
-        fl=open('Cpgnuplot'+name,'w')
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot' + name)
+        # log scale
+        fl = open('Cpgnuplot' + name, 'w')
         fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_data_log_mean.png"\n' % name)
         fl.write('set log y\n')
         fl.write('set xrange [%s:%s]\n' % (datarange[0], datarange[1]))
-        fl.write('set yrange [%s:%s]\n' % (datarange[2], 10*datarange[3]))
+        fl.write('set yrange [%s:%s]\n' % (datarange[2], 10 * datarange[3]))
         fl.write('p "%s" u 1:2:3 w yerr t "auto data", \\\n' % adata)
         fl.write('  "%s" u 1:2 w l t "auto mean" lt 2 lw 2, \\\n' % amean)
         fl.write('  "" u 1:($2+$3) w l lt 2 lw 1 not, \\\n')
         fl.write('  "" u 1:($2-$3) w l lt 2 lw 1 not, \\\n')
         fl.write('  "%s" u 1:(10*$2):3 w yerr t "manual data", \\\n' % mdata)
         fl.write('  "%s" u 1:(10*$2) w l t "manual mean" lt 3 lw 2, \\\n'
-                % mmean)
+                 % mmean)
         fl.write('  "" u 1:(10*($2+$3)) w l lt 3 lw 1 not, \\\n')
         fl.write('  "" u 1:(10*($2-$3)) w l lt 3 lw 1 not\n')
         fl.close()
-        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot' + name)
 
-    def plot_pdb(self, name, destdir, data, crysol, foxs, datarange, chif, chic):
+    def plot_pdb(
+        self,
+        name,
+        destdir,
+        data,
+        crysol,
+        foxs,
+        datarange,
+        chif,
+            chic):
         dat = os.path.join(destdir, data)
         cry = os.path.join(destdir, crysol)
         fox = os.path.join(destdir, foxs)
-        #linear scale
-        fl=open('Cpgnuplot'+name,'w')
+        # linear scale
+        fl = open('Cpgnuplot' + name, 'w')
         fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_pdb_lin.png"\n' % name)
         fl.write('set xrange [%s:%s]\n' % (datarange[0], datarange[1]))
         fl.write('set yrange [0:%s]\n' % datarange[3])
         fl.write('p "%s" u 1:2:3 w yerr t "data", \\\n' % dat)
         if self.crysol:
-            fl.write('  "%s" u 1:2 w l t "crysol chi=%f" lw 2, \\\n' % (cry,chic))
-        fl.write('  "%s" u 1:2 w l t "FoXS chi=%f" lw 2\n' % (fox,chif))
+            fl.write(
+                '  "%s" u 1:2 w l t "crysol chi=%f" lw 2, \\\n' %
+                (cry, chic))
+        fl.write('  "%s" u 1:2 w l t "FoXS chi=%f" lw 2\n' % (fox, chif))
         fl.close()
-        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
-        #log scale
-        fl=open('Cpgnuplot'+name,'w')
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot' + name)
+        # log scale
+        fl = open('Cpgnuplot' + name, 'w')
         fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_pdb_log.png"\n' % name)
         fl.write('set log y\n')
@@ -227,161 +241,171 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fl.write('set yrange [%s:%s]\n' % (datarange[2], datarange[3]))
         fl.write('p "%s" u 1:2:3 w yerr t "data", \\\n' % dat)
         if self.crysol:
-            fl.write('  "%s" u 1:2 w l t "crysol chi=%f" lw 2, \\\n' % (cry,chic))
-        fl.write('  "%s" u 1:2 w l t "FoXS chi=%f" lw 2\n' % (fox,chif))
+            fl.write(
+                '  "%s" u 1:2 w l t "crysol chi=%f" lw 2, \\\n' %
+                (cry, chic))
+        fl.write('  "%s" u 1:2 w l t "FoXS chi=%f" lw 2\n' % (fox, chif))
         fl.close()
-        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot' + name)
 
     def plot_guinier(self, name, data, mean, Rg, qRgmax=1.3):
-        fl=open('Cpgnuplot'+name,'w')
+        fl = open('Cpgnuplot' + name, 'w')
         fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_guinier.png"\n' % name)
-        fl.write('set xrange [0:%s]\n' % (qRgmax/Rg))
+        fl.write('set xrange [0:%s]\n' % (qRgmax / Rg))
         fl.write('p "%s" u ($1*$1):(log($2)):($3/$2) w yerr t "data", '
                  '  "%s" u ($1*$1):(log($2)) w l t "mean", '
                  '"" u ($1*$1):(log($2)+$3/$2) w l not, '
-                 '"" u ($1*$1):(log($2)-$3/$2) w l not\n' % (data,mean))
+                 '"" u ($1*$1):(log($2)-$3/$2) w l not\n' % (data, mean))
         fl.close()
-        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot' + name)
 
     def plot_inputs(self, name, inpnames, inputs, minputs):
-        #linear scale
-        fl=open('Cpgnuplot'+name,'w')
+        # linear scale
+        fl = open('Cpgnuplot' + name, 'w')
         fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_inputs_lin.png"\n' % name)
-        #get xmax
+        # get xmax
         maximums = [[i.split() for i in open(inp).readlines()]
-                        for inp in inputs]
-        maximums = [ filter(lambda a:int(a[3])==1 ,inp) for inp in maximums ]
-        xmax = 1.1*max([max(map(lambda a:float(a[0]),inp)) for inp in maximums])
+                    for inp in inputs]
+        maximums = [filter(lambda a:int(a[3]) == 1, inp) for inp in maximums]
+        xmax = 1.1 * \
+            max([max(map(lambda a:float(a[0]), inp)) for inp in maximums])
         fl.write('set xrange [0:%s]\n' % xmax)
         fl.write('p ')
-        for i,(inam,idat,imean) in enumerate(zip(inpnames, inputs, minputs)):
+        for i, (inam, idat, imean) in enumerate(zip(inpnames, inputs, minputs)):
             fl.write('"%s" u 1:($4==1?%d+$2:1/0):3 w yerr t "%s"'
-                        % (idat, i*30, inam))
+                     % (idat, i * 30, inam))
             fl.write(', \\\n   ')
-            fl.write('"%s" u 1:(%d+$2) w l lt %d not' % (imean, i*30, i+2))
+            fl.write('"%s" u 1:(%d+$2) w l lt %d not' % (imean, i * 30, i + 2))
             fl.write(', \\\n   ')
-            fl.write('"%s" u 1:(%d+$2+$3) w l lt %d not' % (imean, i*30, i+2))
+            fl.write(
+                '"%s" u 1:(%d+$2+$3) w l lt %d not' %
+                (imean, i * 30, i + 2))
             fl.write(', \\\n   ')
-            fl.write('"%s" u 1:(%d+$2-$3) w l lt %d not' % (imean, i*30, i+2))
-            if i < len(inputs)-1:
+            fl.write(
+                '"%s" u 1:(%d+$2-$3) w l lt %d not' %
+                (imean, i * 30, i + 2))
+            if i < len(inputs) - 1:
                 fl.write(', \\\n')
             else:
                 fl.write('\n')
         fl.close()
-        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
-        #log scale
-        fl=open('Cpgnuplot'+name,'w')
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot' + name)
+        # log scale
+        fl = open('Cpgnuplot' + name, 'w')
         fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_inputs_log.png"\n' % name)
         fl.write('set xrange [0:%s]\n' % xmax)
         fl.write('set log y\n')
         fl.write('p ')
-        for i,(inam,idat,imean) in enumerate(zip(inpnames, inputs, minputs)):
+        for i, (inam, idat, imean) in enumerate(zip(inpnames, inputs, minputs)):
             fl.write('"%s" u 1:($4==1?%d*$2:1/0):(%d*$3) w yerr t "%s"'
-                        % (idat, 10**i, 10**i, inam))
+                     % (idat, 10 ** i, 10 ** i, inam))
             fl.write(', \\\n   ')
-            fl.write('"%s" u 1:(%d*$2) w l lt %d not' % (imean, 10**i, i+2))
+            fl.write(
+                '"%s" u 1:(%d*$2) w l lt %d not' %
+                (imean, 10 ** i, i + 2))
             fl.write(', \\\n   ')
             fl.write('"%s" u 1:(%d*($2+$3)) w l lt %d not' %
-                            (imean, 10**i, i+2))
+                     (imean, 10 ** i, i + 2))
             fl.write(', \\\n   ')
             fl.write('"%s" u 1:(%d*($2-$3)) w l lt %d not' %
-                    (imean, 10**i, i+2))
-            if i < len(inputs)-1:
+                    (imean, 10 ** i, i + 2))
+            if i < len(inputs) - 1:
                 fl.write(', \\\n')
             else:
                 fl.write('\n')
         fl.close()
-        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot' + name)
 
     def plot_inputs_overlaid(self, name, inpnames, inputs, minputs):
-        #linear scale
-        fl=open('Cpgnuplot'+name,'w')
+        # linear scale
+        fl = open('Cpgnuplot' + name, 'w')
         fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_inputs_lin_overlaid.png"\n' % name)
-        #get xmax
+        # get xmax
         maximums = [[i.split() for i in open(inp).readlines()]
-                        for inp in inputs]
-        maximums = [ filter(lambda a:int(a[3])==1 ,inp) for inp in maximums ]
-        xmax = 1.1*max([max(map(lambda a:float(a[0]),inp)) for inp in maximums])
+                    for inp in inputs]
+        maximums = [filter(lambda a:int(a[3]) == 1, inp) for inp in maximums]
+        xmax = 1.1 * \
+            max([max(map(lambda a:float(a[0]), inp)) for inp in maximums])
         fl.write('set xrange [0:%s]\n' % xmax)
         fl.write('p ')
-        for i,(inam,idat,imean) in enumerate(zip(inpnames, inputs, minputs)):
+        for i, (inam, idat, imean) in enumerate(zip(inpnames, inputs, minputs)):
             fl.write('"%s" u 1:($4==1?$2:1/0):3 w yerr t "%s"'
-                        % (idat,inam))
+                     % (idat, inam))
             fl.write(', \\\n   ')
-            fl.write('"%s" u 1:2 w l lt %d not' % (imean, i+2))
+            fl.write('"%s" u 1:2 w l lt %d not' % (imean, i + 2))
             fl.write(', \\\n   ')
-            fl.write('"%s" u 1:($2+$3) w l lt %d not' % (imean, i+2))
+            fl.write('"%s" u 1:($2+$3) w l lt %d not' % (imean, i + 2))
             fl.write(', \\\n   ')
-            fl.write('"%s" u 1:($2-$3) w l lt %d not' % (imean, i+2))
-            if i < len(inputs)-1:
+            fl.write('"%s" u 1:($2-$3) w l lt %d not' % (imean, i + 2))
+            if i < len(inputs) - 1:
                 fl.write(', \\\n')
             else:
                 fl.write('\n')
         fl.close()
-        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
-        #log scale
-        fl=open('Cpgnuplot'+name,'w')
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot' + name)
+        # log scale
+        fl = open('Cpgnuplot' + name, 'w')
         fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_inputs_log_overlaid.png"\n' % name)
         fl.write('set xrange [0:%s]\n' % xmax)
         fl.write('set log y\n')
         fl.write('p ')
-        for i,(inam,idat,imean) in enumerate(zip(inpnames, inputs, minputs)):
+        for i, (inam, idat, imean) in enumerate(zip(inpnames, inputs, minputs)):
             fl.write('"%s" u 1:($4==1?$2:1/0):3 w yerr t "%s"'
-                        % (idat, inam))
+                     % (idat, inam))
             fl.write(', \\\n   ')
-            fl.write('"%s" u 1:2 w l lt %d not' % (imean, i+2))
+            fl.write('"%s" u 1:2 w l lt %d not' % (imean, i + 2))
             fl.write(', \\\n   ')
             fl.write('"%s" u 1:($2+$3) w l lt %d not' %
-                            (imean, i+2))
+                     (imean, i + 2))
             fl.write(', \\\n   ')
             fl.write('"%s" u 1:($2-$3) w l lt %d not' %
-                    (imean, i+2))
-            if i < len(inputs)-1:
+                    (imean, i + 2))
+            if i < len(inputs) - 1:
                 fl.write(', \\\n')
             else:
                 fl.write('\n')
         fl.close()
-        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot' + name)
 
     def cleanup_data(self, qvals, data, precision=5):
-        tbd=[]
-        for i,d in enumerate(data):
-            if int(d[0]*10**precision) not in qvals:
+        tbd = []
+        for i, d in enumerate(data):
+            if int(d[0] * 10 ** precision) not in qvals:
                 tbd.append(i)
         tbd.reverse()
         for i in tbd:
             data.pop(i)
 
     def chisquare(self, fla, flb, weighted=True, qmax=None, lognormal=False,
-            factor=(1,1)):
-        #read first 3 columns
-        da=[map(float, i.split()[:3]) for i in open(fla).readlines() if not
-                i.startswith('#')]
-        db=[map(float, i.split()[:3]) for i in open(flb).readlines() if not
-                i.startswith('#')]
-        #get common q values up to 1e-5 in precision
-        qa = set(map(lambda a:int(a[0]*10**5), da))
-        qb = set(map(lambda a:int(a[0]*10**5), db))
+                  factor=(1, 1)):
+        # read first 3 columns
+        da = [map(float, i.split()[:3]) for i in open(fla).readlines() if not
+              i.startswith('#')]
+        db = [map(float, i.split()[:3]) for i in open(flb).readlines() if not
+              i.startswith('#')]
+        # get common q values up to 1e-5 in precision
+        qa = set(map(lambda a: int(a[0] * 10 ** 5), da))
+        qb = set(map(lambda a: int(a[0] * 10 ** 5), db))
         qvals = qa.intersection(qb)
         if len(qvals) < 10:
             self.fail("datasets do not have more than 10 common q values!")
-        #keep only data at these q values
+        # keep only data at these q values
         self.cleanup_data(qvals, da, precision=5)
         self.cleanup_data(qvals, db, precision=5)
         da.reverse()
         db.reverse()
-        #compute normalized chisquare.
-        #need to find better statistic
-        #Multiple datapoints at same q value are downweighted.
-        #each chunk is a set of values at the same q
+        # compute normalized chisquare.
+        # need to find better statistic
+        # Multiple datapoints at same q value are downweighted.
+        # each chunk is a set of values at the same q
         chi = []
         while da and db:
-            #get chunk
+            # get chunk
             qval = da[-1][0]
             chunka = []
             while da and abs(da[-1][0] - qval) < 1e-5:
@@ -389,104 +413,105 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
             chunkb = []
             while db and abs(db[-1][0] - qval) < 1e-5:
                 chunkb.append(db.pop()[1:])
-            #compute contributions
+            # compute contributions
             if qmax and qval > qmax:
                 continue
             contribs = []
-            for ia,sa in chunka:
-                for ib,sb in chunkb:
-                    #factor is a multiplicative factor for the stadard devs
+            for ia, sa in chunka:
+                for ib, sb in chunkb:
+                    # factor is a multiplicative factor for the stadard devs
                     if lognormal:
-                        ira,irb = numpy.log(ia), numpy.log(ib)
-                        sra, srb = factor[0]*sa/ia, factor[1]*sb/ib
+                        ira, irb = numpy.log(ia), numpy.log(ib)
+                        sra, srb = factor[0] * sa / ia, factor[1] * sb / ib
                     else:
                         ira, irb = ia, ib
-                        sra, srb = factor[0]*sa, factor[1]*sb
+                        sra, srb = factor[0] * sa, factor[1] * sb
                     if weighted:
-                        contribs.append((ira-irb)**2/(sra**2+srb**2))
+                        contribs.append(
+                            (ira - irb) ** 2 / (sra ** 2 + srb ** 2))
                     else:
-                        contribs.append((ira-irb)**2)
-            #downweight and add them
-            chi.append(sum(contribs)/float(len(contribs)))
+                        contribs.append((ira - irb) ** 2)
+            # downweight and add them
+            chi.append(sum(contribs) / float(len(contribs)))
         if len(chi) < 50:
             print "warning: chisquare computed on only %d points!" % len(chi)
-        #print "chisquare",fla,flb,sum(chi)/len(chi)
-        return sum(chi)/len(chi)
+        # print "chisquare",fla,flb,sum(chi)/len(chi)
+        return sum(chi) / len(chi)
 
     def get_transform(self, fname):
-        data=open(fname).readlines()
+        data = open(fname).readlines()
         gamma = float([i for i in data if 'gamma' in i][0].split()[2])
         offset = [i for i in data if 'offset :' in i]
         if offset:
-            offset=float(offset[0].split()[2])
-            return gamma,offset
+            offset = float(offset[0].split()[2])
+            return gamma, offset
         else:
-            return gamma,0
+            return gamma, 0
 
-    def _get_guinier_fit_fixed(self, qs,Is,errs):
-        X=numpy.array([numpy.ones(len(qs)),qs**2]).transpose()
-        W=numpy.diagflat(errs/Is)
-        y=numpy.atleast_2d(numpy.log(Is)).transpose()
-        #weighted least squares estimator
-        #beta = (X^T W X )^(-1) X^T W y
-        XW=numpy.dot(X.transpose(),W)
-        beta = scipy.linalg.solve( numpy.dot(XW,X), numpy.dot(XW,y),
-                sym_pos=True)
-        if beta[1,0]>0:
-            rg=0
+    def _get_guinier_fit_fixed(self, qs, Is, errs):
+        X = numpy.array([numpy.ones(len(qs)), qs ** 2]).transpose()
+        W = numpy.diagflat(errs / Is)
+        y = numpy.atleast_2d(numpy.log(Is)).transpose()
+        # weighted least squares estimator
+        # beta = (X^T W X )^(-1) X^T W y
+        XW = numpy.dot(X.transpose(), W)
+        beta = scipy.linalg.solve(numpy.dot(XW, X), numpy.dot(XW, y),
+                                  sym_pos=True)
+        if beta[1, 0] > 0:
+            rg = 0
         else:
-            rg=numpy.sqrt(-3*beta[1,0])
-        izero = numpy.exp(beta[0,0])
-        return rg,izero
+            rg = numpy.sqrt(-3 * beta[1, 0])
+        izero = numpy.exp(beta[0, 0])
+        return rg, izero
 
     def get_guinier_fit(self, qs, Is, errs, end_q_rg=1.3):
-        #fit the whole range up to q_rg, take median values for robustness
-        cut=5 #drop first 5 points, and take at least 5 points to estimate
+        # fit the whole range up to q_rg, take median values for robustness
+        cut = 5  # drop first 5 points, and take at least 5 points to estimate
         vals = []
-        for i in xrange(cut+5,len(qs)):
-            rg,izero = self._get_guinier_fit_fixed(
-                    qs[cut:i],Is[cut:i],errs[cut:i])
-            if rg >0:
-                vals.append((rg,izero,qs[i-1]*rg))
-                if qs[i-1]*rg > end_q_rg:
+        for i in xrange(cut + 5, len(qs)):
+            rg, izero = self._get_guinier_fit_fixed(
+                qs[cut:i], Is[cut:i], errs[cut:i])
+            if rg > 0:
+                vals.append((rg, izero, qs[i - 1] * rg))
+                if qs[i - 1] * rg > end_q_rg:
                     break
-        vals=numpy.array(vals).transpose()
+        vals = numpy.array(vals).transpose()
         rg = numpy.median(vals[0])
         izero = numpy.median(vals[1])
-        return rg,izero
+        return rg, izero
 
     def get_guinier_Rg(self, profile, weighted=True):
         if weighted:
-            data=numpy.array([map(float, i.split()[:3])
-                for i in open(profile).readlines() if not i.startswith('#')])
-            qs,Is,errs = data.transpose()
+            data = numpy.array([map(float, i.split()[:3])
+                               for i in open(profile).readlines() if not i.startswith('#')])
+            qs, Is, errs = data.transpose()
         else:
-            data=numpy.array([map(float, i.split()[:2])
-                for i in open(profile).readlines() if not i.startswith('#')])
-            qs,Is = data.transpose()
+            data = numpy.array([map(float, i.split()[:2])
+                               for i in open(profile).readlines() if not i.startswith('#')])
+            qs, Is = data.transpose()
             errs = numpy.ones(len(qs))
-        #guinier fit, weighted by errors
+        # guinier fit, weighted by errors
         return self.get_guinier_fit(qs, Is, errs)[0]
 
     def get_GPI_sigma(self, summary):
-        lines=open(summary).readlines()
-        lines = [ numpy.sqrt(float(i.split()[2]))
-                    for i in lines if " sigma2 : " in i ]
+        lines = open(summary).readlines()
+        lines = [numpy.sqrt(float(i.split()[2]))
+                 for i in lines if " sigma2 : " in i]
         return lines
 
     def get_GPI_Rg(self, summary):
-        #GPI
-        lines=open(summary).readlines()
-        lines = [ float(i.split()[2]) for i in lines if " Rg " in i and not
-                'matrix' in i ]
+        # GPI
+        lines = open(summary).readlines()
+        lines = [float(i.split()[2]) for i in lines if " Rg " in i and not
+                 'matrix' in i]
         return lines
 
     def get_foxs_data(self, destdir, pdb, automerge, manualmerge,
-            factor=1, chi_wt=True, chi_qmax=None, chi_ln=False):
+                      factor=1, chi_wt=True, chi_qmax=None, chi_ln=False):
         """get chi and radius of gyration of pdb using foxs"""
         m = IMP.kernel.Model()
-        mp =IMP.atom.read_pdb(pdb, m,
-                      IMP.atom.NonWaterNonHydrogenPDBSelector())
+        mp = IMP.atom.read_pdb(pdb, m,
+                               IMP.atom.NonWaterNonHydrogenPDBSelector())
         particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
 
         # compute surface accessibility
@@ -498,13 +523,13 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         model_profile.calculate_profile_partial(particles, surface_area)
 
         # rewrite profile in 3 col format
-        tmpfl,tmpnam=tempfile.mkstemp()
-        tmpfl=os.fdopen(tmpfl,'w')
+        tmpfl, tmpnam = tempfile.mkstemp()
+        tmpfl = os.fdopen(tmpfl, 'w')
         for line in open(automerge):
             if line.startswith('#'):
                 continue
-            tokens=line.split()
-            if len(tokens)<3:
+            tokens = line.split()
+            if len(tokens) < 3:
                 continue
             tmpfl.write('\t'.join(tokens[:3]))
             tmpfl.write('\n')
@@ -512,34 +537,34 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         # fit the data
         exp_profile = IMP.saxs.Profile(tmpnam)
         os.unlink(tmpnam)
-        print exp_profile.size(),model_profile.size()
+        print exp_profile.size(), model_profile.size()
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
-        #passing default params, want to write log
+        # passing default params, want to write log
         fitfile = os.path.join(destdir, 'foxs.dat')
         fitori = os.path.join(destdir, 'foxs.ori')
         fitparams = saxs_score.fit_profile(model_profile,
-                0.95, 1.05, -2.0, 4.0, False, fitori)
-        #write in correct order
-        fl=open(fitfile,'w')
+                                           0.95, 1.05, -2.0, 4.0, False, fitori)
+        # write in correct order
+        fl = open(fitfile, 'w')
         for i in open(fitori):
             if i.startswith('#'):
                 continue
-            t=i.split()
-            fl.write("%s %s 0.\n" % (t[0],t[2]))
+            t = i.split()
+            fl.write("%s %s 0.\n" % (t[0], t[2]))
         fl.close()
         chi = self.chisquare(automerge, fitfile, weighted=chi_wt,
-                                qmax=chi_qmax, lognormal=chi_ln,
-                                factor=(factor,0))
+                             qmax=chi_qmax, lognormal=chi_ln,
+                             factor=(factor, 0))
         Rg = self.get_guinier_Rg(fitfile, weighted=False)
 
         # rewrite profile in 3 col format
-        tmpfl,tmpnam=tempfile.mkstemp()
-        tmpfl=os.fdopen(tmpfl,'w')
+        tmpfl, tmpnam = tempfile.mkstemp()
+        tmpfl = os.fdopen(tmpfl, 'w')
         for line in open(manualmerge):
             if line.startswith('#'):
                 continue
-            tokens=line.split()
-            if len(tokens)<3:
+            tokens = line.split()
+            if len(tokens) < 3:
                 continue
             tmpfl.write('\t'.join(tokens[:3]))
             tmpfl.write('\n')
@@ -551,134 +576,135 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         mfitori = os.path.join(destdir, 'foxsm.ori')
         mfitfile = os.path.join(destdir, 'foxsm.dat')
         mfitparams = saxs_score.fit_profile(model_profile,
-                0.95, 1.05, -2.0, 4.0, False, mfitori)
-        #write in correct order
-        fl=open(mfitfile,'w')
+                                            0.95, 1.05, -2.0, 4.0, False, mfitori)
+        # write in correct order
+        fl = open(mfitfile, 'w')
         for i in open(mfitori):
             if i.startswith('#'):
                 continue
-            t=i.split()
-            fl.write("%s %s 0.\n" % (t[0],t[2]))
+            t = i.split()
+            fl.write("%s %s 0.\n" % (t[0], t[2]))
         fl.close()
         mchi = self.chisquare(automerge, mfitfile, weighted=chi_wt,
-                                qmax=chi_qmax, lognormal=chi_ln,
-                                factor=(factor,0))
+                              qmax=chi_qmax, lognormal=chi_ln,
+                              factor=(factor, 0))
         try:
             mRg = self.get_guinier_Rg(mfitfile, weighted=False)
         except:
-            mRg=-1
-        #return chi(auto-foxs) chi(manual-foxs) Rg(pdb)
-        return chi,mchi,Rg,mRg
+            mRg = -1
+        # return chi(auto-foxs) chi(manual-foxs) Rg(pdb)
+        return chi, mchi, Rg, mRg
 
     def get_crysol_data(self, destdir, pdb, automerge, factor=1,
-            chi_wt=True, chi_qmax=None, chi_ln=False):
+                        chi_wt=True, chi_qmax=None, chi_ln=False):
         """get chi of pdb using crysol"""
-        #prepare file paths
-        name,ext = os.path.splitext(os.path.basename(pdb))
-        pdb = os.path.relpath(pdb,destdir)
+        # prepare file paths
+        name, ext = os.path.splitext(os.path.basename(pdb))
+        pdb = os.path.relpath(pdb, destdir)
         automerge = os.path.relpath(automerge, destdir)
-        #run crysol
+        # run crysol
         fitfile = os.path.join(destdir, 'crysol.dat')
         if not os.path.isfile(fitfile):
             os.system('cd %s; crysol %s %s; cd -' % (destdir, pdb, automerge))
-        #write in correct order
-        fl=open(fitfile,'w')
-        for i in open(os.path.join(destdir, name+'00.fit')).readlines()[1:]:
-            t=i.split()
-            fl.write("%s %s 0.\n" % (float(t[0]),float(t[2])))
+        # write in correct order
+        fl = open(fitfile, 'w')
+        for i in open(os.path.join(destdir, name + '00.fit')).readlines()[1:]:
+            t = i.split()
+            fl.write("%s %s 0.\n" % (float(t[0]), float(t[2])))
         fl.close()
         chi = self.chisquare(os.path.join(destdir, automerge),
-                fitfile, weighted=chi_wt, qmax=chi_qmax, lognormal=chi_ln,
-                factor=(factor,0))
+                             fitfile, weighted=chi_wt, qmax=chi_qmax, lognormal=chi_ln,
+                             factor=(factor, 0))
         Rg = self.get_guinier_Rg(fitfile, weighted=False)
         return chi, Rg
 
     def rescale_curves(self, adata, amean, mmean, qmax=0.2):
-        #read amean and mmean up to .2 (or 2) and get gamma from it
+        # read amean and mmean up to .2 (or 2) and get gamma from it
         a = [i.split() for i in open(amean) if not i.startswith('#')]
-        a = [map(float,i[:3]) for i in a if len(i) >=3]
+        a = [map(float, i[:3]) for i in a if len(i) >= 3]
         m = [i.split() for i in open(mmean) if not i.startswith('#')]
-        m = [map(float,i[:3]) for i in m if len(i) >=3]
+        m = [map(float, i[:3]) for i in m if len(i) >= 3]
         if max([i[0] for i in m]) > 1:
-            #units are nm
-            factor=10
+            # units are nm
+            factor = 10
         else:
-            #units are Angstrom
-            factor=1
-        gamma = numpy.mean([(i[1]/j[1])
-            for i,j in zip(a,m) if j[0] < factor*qmax])
-        fl=open('rescale.dat','w')
-        [fl.write("%s %s %s %s\n" % (i[0],i[1]/gamma,j[1],i[1]/j[1]/gamma))
-                    for i,j in zip(a,m) if j[0] < factor*qmax]
-        #write automatic merge data and mean
+            # units are Angstrom
+            factor = 1
+        gamma = numpy.mean([(i[1] / j[1])
+                            for i, j in zip(a, m) if j[0] < factor * qmax])
+        fl = open('rescale.dat', 'w')
+        [fl.write("%s %s %s %s\n" % (i[0], i[1] / gamma, j[1], i[1] / j[1] / gamma))
+         for i, j in zip(a, m) if j[0] < factor * qmax]
+        # write automatic merge data and mean
         destdir = os.path.split(adata)[0]
-        dret = os.path.join(destdir,'data_rescaled.dat')
-        mret = os.path.join(destdir,'mean_rescaled.dat')
-        fl=open(mret,'w')
+        dret = os.path.join(destdir, 'data_rescaled.dat')
+        mret = os.path.join(destdir, 'mean_rescaled.dat')
+        fl = open(mret, 'w')
         for dat in a:
-            fl.write("%s %s %s\n" % (dat[0],dat[1]/gamma, dat[2]/gamma))
+            fl.write("%s %s %s\n" % (dat[0], dat[1] / gamma, dat[2] / gamma))
         fl.close()
-        fl=open(dret,'w')
+        fl = open(dret, 'w')
         for line in open(adata):
-            tok=line.split()
-            if len(tok)<3:
+            tok = line.split()
+            if len(tok) < 3:
                 continue
-            dat=map(float,tok)
-            fl.write("%s %s %s\n" % (dat[0],dat[1]/gamma, dat[2]/gamma))
+            dat = map(float, tok)
+            fl.write("%s %s %s\n" % (dat[0], dat[1] / gamma, dat[2] / gamma))
         fl.close()
-        return dret,mret
+        return dret, mret
 
-    def run_results(self, name, manual_merge, inputs, pdb=None, plot_data=False,
+    def run_results(
+        self, name, manual_merge, inputs, pdb=None, plot_data=False,
             extra_args=None):
-        #rescale and fit the two curves
-        destdir='compapp_'+name
+        # rescale and fit the two curves
+        destdir = 'compapp_' + name
         if not os.path.isdir(destdir):
-            args = ['--destdir='+destdir,
-                 '--blimit_fitting=240', '--elimit_fitting=240',
-                 '--blimit_hessian=80', '--elimit_hessian=80',
-                 '--berror','--eerror',
-                 '--cmodel=normal',
-                 '--bmean=Full',
-                 '--stop=rescaling', '--postpone_cleanup',
-                 #'--npoints=-1',
-                 '--allfiles', '--outlevel=full',
-                 'runapp_'+name+'/data_merged.dat', manual_merge]
+            args = ['--destdir=' + destdir,
+                    '--blimit_fitting=240', '--elimit_fitting=240',
+                    '--blimit_hessian=80', '--elimit_hessian=80',
+                    '--berror', '--eerror',
+                    '--cmodel=normal',
+                    '--bmean=Full',
+                    '--stop=rescaling', '--postpone_cleanup',
+                    #'--npoints=-1',
+                    '--allfiles', '--outlevel=full',
+                    'runapp_' + name + '/data_merged.dat', manual_merge]
             if extra_args:
                 args.append(extra_args)
             print "### run_results"
             print ' '.join(args)
-            #sys.exit()
+            # sys.exit()
             p = self.run_python_application('saxs_merge.py', args)
             out, err = p.communicate()
             sys.stderr.write(err)
             self.assertApplicationExitedCleanly(p.returncode, err)
-        #rescale data using q < .2 and set errors to 1
-        manmergedata = destdir+'/data_'+os.path.basename(manual_merge)
-        manmergemean = destdir+'/mean_'+os.path.basename(manual_merge)
-        #automergedata, automergemean = self.rescale_curves(destdir+
+        # rescale data using q < .2 and set errors to 1
+        manmergedata = destdir + '/data_' + os.path.basename(manual_merge)
+        manmergemean = destdir + '/mean_' + os.path.basename(manual_merge)
+        # automergedata, automergemean = self.rescale_curves(destdir+
         #        '/data_data_merged.dat', destdir+'/mean_data_merged.dat',
         #        manmergemean)
-        automergedata = destdir+ '/data_data_merged.dat'
-        automergemean = destdir+'/mean_data_merged.dat'
-        #get sigmas of manual and automatic merge
-        autos, manuals = self.get_GPI_sigma(destdir+'/summary.txt')
-        #compute chi2 of data
+        automergedata = destdir + '/data_data_merged.dat'
+        automergemean = destdir + '/mean_data_merged.dat'
+        # get sigmas of manual and automatic merge
+        autos, manuals = self.get_GPI_sigma(destdir + '/summary.txt')
+        # compute chi2 of data
         datachi = self.chisquare(automergedata, manmergedata,
-                        lognormal=False, qmax=None, factor=(autos,manuals))
+                                 lognormal=False, qmax=None, factor=(autos, manuals))
         print datachi
-        #compute chi2 of fits
+        # compute chi2 of fits
         fitchi = self.chisquare(automergemean, manmergemean,
-                        lognormal=False, qmax=None)
-        #compute chi2 to pdb structure using foxs and crysol
+                                lognormal=False, qmax=None)
+        # compute chi2 to pdb structure using foxs and crysol
         if pdb:
             pdbchi, mpdbchi, pdbRg, mpdbRg = \
-                    self.get_foxs_data(destdir, pdb,
-                        automergedata, manmergemean,
-                        factor=autos, chi_ln=False, chi_qmax=None)
+                self.get_foxs_data(destdir, pdb,
+                                   automergedata, manmergemean,
+                                   factor=autos, chi_ln=False, chi_qmax=None)
             if self.crysol:
                 crychi, cryRg = self.get_crysol_data(destdir, pdb,
-                        automergedata, factor=autos,
-                        chi_ln=False, chi_qmax=None)
+                                                     automergedata, factor=autos,
+                                                     chi_ln=False, chi_qmax=None)
             else:
                 crychi = None
                 cryRg = None
@@ -688,83 +714,86 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
             pdbRg = None
             crychi = None
             cryRg = None
-        #radius of gyration
+        # radius of gyration
         print automergemean
         guinierRg = self.get_guinier_Rg(automergemean)
         try:
             mguinierRg = self.get_guinier_Rg(manmergemean)
         except:
-            mguinierRg=-1
+            mguinierRg = -1
         Rg, mRg = guinierRg, mguinierRg
         #Rg, mRg = self.get_GPI_Rg(destdir+'/summary.txt')
-        #### plot data
+        # plot data
         if plot_data:
-            #get proper bounds
-            points=map(lambda a:map(float,a.split()[:2]),
-                    open(manmergedata).readlines())
+            # get proper bounds
+            points = map(lambda a: map(float, a.split()[:2]),
+                         open(manmergedata).readlines())
             xmin = 0
-            xmax = max([i[0] for i in points if len(i) >= 2])*1.2
-            ymin = min([abs(i[1]) for i in points if len(i) >= 2])*0.8
-            ymax = max([i[1] for i in points if len(i) >= 2])*1.2
-            datarange = (xmin,xmax,ymin,ymax)
-            #plot data
+            xmax = max([i[0] for i in points if len(i) >= 2]) * 1.2
+            ymin = min([abs(i[1]) for i in points if len(i) >= 2]) * 0.8
+            ymax = max([i[1] for i in points if len(i) >= 2]) * 1.2
+            datarange = (xmin, xmax, ymin, ymax)
+            # plot data
             self.plot_data_overlaid(name, automergedata,
-                    manmergedata, datarange, datachi)
+                                    manmergedata, datarange, datachi)
             self.plot_data_colored(name,
-                    'runapp_'+name+'/data_merged.dat', datarange)
-            #plot mean
+                                   'runapp_' + name + '/data_merged.dat', datarange)
+            # plot mean
             self.plot_means(name, automergemean,
-                    manmergemean, datarange, fitchi)
+                            manmergemean, datarange, fitchi)
             self.plot_data_mean(name, automergedata, automergemean,
-                    manmergedata, manmergemean, datarange)
-            #guinier plot
+                                manmergedata, manmergemean, datarange)
+            # guinier plot
             self.plot_guinier(name, automergedata,
-                    automergemean, Rg)
-            #plot all those curves that were kept after cleanup
+                              automergemean, Rg)
+            # plot all those curves that were kept after cleanup
             inpnames = map(os.path.basename, inputs)
             inpnames = filter(lambda a: os.path.isfile(os.path.join(
-                'runapp_'+name,'data_'+a)), inpnames)
-            curves = ['runapp_'+name+'/data_'+i for i in inpnames]
-            mcurves = ['runapp_'+name+'/mean_'+i for i in inpnames]
+                'runapp_' + name, 'data_' + a)), inpnames)
+            curves = ['runapp_' + name + '/data_' + i for i in inpnames]
+            mcurves = ['runapp_' + name + '/mean_' + i for i in inpnames]
             self.plot_inputs(name, inpnames, curves, mcurves)
             self.plot_inputs_overlaid(name, inpnames, curves, mcurves)
-            #plot pdb data
+            # plot pdb data
             if pdb:
                 self.plot_pdb(name, destdir, os.path.basename(automergedata),
-                        'crysol.dat', 'foxs.dat', datarange, pdbchi, crychi)
-        return name,datachi,fitchi,Rg,guinierRg,mRg,mguinierRg,\
-                pdbRg,pdbchi,mpdbchi,crychi,cryRg,autos,manuals
+                              'crysol.dat', 'foxs.dat', datarange, pdbchi, crychi)
+        return name, datachi, fitchi, Rg, guinierRg, mRg, mguinierRg,\
+            pdbRg, pdbchi, mpdbchi, crychi, cryRg, autos, manuals
 
     def make_stats(self, paramnum, inputnum, ret):
-        #name,datachi,fitchi,Rg,guinierRg,mRg,mguinierRg,\
+        # name,datachi,fitchi,Rg,guinierRg,mRg,mguinierRg,\
         #        pdbRg,pdbchi,mpdbchi,crychi = ret
-        ret = [paramnum,inputnum]+list(ret)
+        ret = [paramnum, inputnum] + list(ret)
         return ' '.join(['%s' % i for i in ret])
 
+
 def create_test(paramnum, paramname, params, inputnum, inputname, inputs,
-        mergename, pdb=None, plot_data=False):
+                mergename, pdb=None, plot_data=False):
     """params and inputs are lists of strings
        paramname and inputname are strings
        mergename is the path to manual merge file
        pdbname is the path to pdb file if available, else None
     """
-    outname=inputname+'_'+paramname
+    outname = inputname + '_' + paramname
+
     def testcase(self):
         print "Test case %d %d %s" % (inputnum, paramnum, outname)
-        inp=map(self.get_input_file_name, inputs)
+        inp = map(self.get_input_file_name, inputs)
         merge = self.get_input_file_name(mergename)
         if pdb:
             pdbname = self.get_input_file_name(pdb)
         else:
             pdbname = None
-        self.run_app(outname, params+inp)
+        self.run_app(outname, params + inp)
         ret = self.run_results(outname, merge, inp, pdb=pdbname,
-                plot_data=plot_data)
+                               plot_data=plot_data)
         data = self.make_stats(paramnum, inputnum, ret)
         with open('bench_%d_%d.dat' % (inputnum, paramnum), 'w') as fl:
             fl.write(data)
             fl.write('\n')
     return testcase
+
 
 def create_datasets():
     class dataset:
@@ -773,11 +802,11 @@ def create_datasets():
         mergename = None
         pdb = None
 
-    datasets=[]
+    datasets = []
 
-    #Nup116
-    d=dataset()
-    d.name='Nup116'
+    # Nup116
+    d = dataset()
+    d.name = 'Nup116'
     d.inputs = ['Nup116/25043_01C_S059_0_01.sub',
                 'Nup116/25043_01B_S057_0_01.sub',
                 'Nup116/25043_01D_S061_0_01.sub',
@@ -787,9 +816,9 @@ def create_datasets():
     d.pdb = 'Nup116/3nf5_model.pdb'
     datasets.append(d)
 
-    #Nup192
-    d=dataset()
-    d.name='Nup192'
+    # Nup192
+    d = dataset()
+    d.name = 'Nup192'
     d.inputs = ['Nup192/Nup192_01B_S014_0_01.sub',
                 'Nup192/Nup192_01C_S016_0_01.sub',
                 'Nup192/Nup192_01D_S018_0_01.sub',
@@ -798,9 +827,9 @@ def create_datasets():
     d.mergename = 'Nup192/Nup192_merge.dat'
     datasets.append(d)
 
-    #Nup145
+    # Nup145
     d = dataset()
-    d.name='Nup145'
+    d.name = 'Nup145'
     d.inputs = ['Nup145/23923_A3_2.mccd.dat',
                 'Nup145/23923_A2_2.mccd.dat',
                 'Nup145/23923_A4_2.mccd.dat',
@@ -809,8 +838,8 @@ def create_datasets():
     d.pdb = 'Nup145/3kep_model.pdb'
     datasets.append(d)
 
-    #Nup133
-    d=dataset()
+    # Nup133
+    d = dataset()
     d.name = 'Nup133'
     d.inputs = ['Nup133/23922_G4_2.mccd.dat',
                 #'Nup133/23922_G2_2.mccd.dat',
@@ -820,8 +849,8 @@ def create_datasets():
     d.pdb = 'Nup133/3kfo_model.pdb'
     datasets.append(d)
 
-    #Nup53
-    d=dataset()
+    # Nup53
+    d = dataset()
     d.name = 'Nup53'
     d.inputs = ['Nup53/25029_01B_S065_0_01.sub',
                 'Nup53/25029_01C_S067_0_01.sub',
@@ -831,8 +860,8 @@ def create_datasets():
     d.mergename = 'Nup53/25029_merged.dat'
     datasets.append(d)
 
-    #mo_lair1s
-    d=dataset()
+    # mo_lair1s
+    d = dataset()
     d.name = 'mo_lair1s'
     d.inputs = ['mo_lair1s/mo_lig_apo_02B_S012_0_02.sub',
                 'mo_lair1s/mo_lig_apo_02C_S014_0_02.sub',
@@ -843,7 +872,7 @@ def create_datasets():
     d.pdb = 'mo_lair1s/4ESK_1.pdb'
     datasets.append(d)
 
-    #mo_lair1_ecd
+    # mo_lair1_ecd
     d = dataset()
     d.name = 'mo_lair1_ecd'
     d.inputs = ['mo_lair1_ecd/mo_lecd_apo_01B_S036_0_02.sub',
@@ -855,7 +884,7 @@ def create_datasets():
     d.pdb = 'mo_lair1_ecd/4ETY_1.pdb'
     datasets.append(d)
 
-    #amelogenin_pH56
+    # amelogenin_pH56
     d = dataset()
     d.name = 'amelogenin_pH56'
     d.inputs = ['amelogenin_pH56/3_pH56_lCaP_01C_S014_0_01.sub',
@@ -865,7 +894,7 @@ def create_datasets():
     d.mergename = 'amelogenin_pH56/amelogenin_pH56_merged.dat'
     datasets.append(d)
 
-    #amelogenin_pH75
+    # amelogenin_pH75
     d = dataset()
     d.name = 'amelogenin_pH75'
     d.inputs = ['amelogenin_pH75/5_pH75_lCaP_01f_01C_S014_0_01.sub',
@@ -875,8 +904,8 @@ def create_datasets():
     d.mergename = 'amelogenin_pH75/amelogenin_pH75_merged.dat'
     datasets.append(d)
 
-    #Y1
-    d=dataset()
+    # Y1
+    d = dataset()
     d.name = 'Y1'
     d.inputs = ['Y1/in1.dat',
                 'Y1/in2.dat',
@@ -884,8 +913,8 @@ def create_datasets():
     d.mergename = 'Y1/Y1_merge.dat'
     datasets.append(d)
 
-    #Y2
-    d=dataset()
+    # Y2
+    d = dataset()
     d.name = 'Y2'
     d.inputs = ['Y2/in1.dat',
                 'Y2/in2.dat',
@@ -893,8 +922,8 @@ def create_datasets():
     d.mergename = 'Y2/Y2_merge.dat'
     datasets.append(d)
 
-    #Aldolase
-    d=dataset()
+    # Aldolase
+    d = dataset()
     d.name = 'Aldolase'
     d.inputs = ['Aldolase/in1.dat',
                 'Aldolase/in2.dat',
@@ -903,8 +932,8 @@ def create_datasets():
     d.mergename = 'Aldolase/merge.dat'
     datasets.append(d)
 
-    #Anhydrase
-    d=dataset()
+    # Anhydrase
+    d = dataset()
     d.name = 'Anhydrase'
     d.inputs = ['Anhydrase/in1.dat',
                 'Anhydrase/in2.dat',
@@ -914,8 +943,8 @@ def create_datasets():
     d.pdb = 'Anhydrase/3ks3_model.pdb'
     datasets.append(d)
 
-    #Ferritin
-    d=dataset()
+    # Ferritin
+    d = dataset()
     d.name = 'Ferritin'
     d.inputs = ['Ferritin/in1.dat',
                 'Ferritin/in2.dat',
@@ -924,8 +953,8 @@ def create_datasets():
     d.mergename = 'Ferritin/merge.dat'
     datasets.append(d)
 
-    #Ribonuclease
-    d=dataset()
+    # Ribonuclease
+    d = dataset()
     d.name = 'Ribonuclease'
     d.inputs = ['Ribonuclease/in1.dat',
                 'Ribonuclease/in2.dat',
@@ -935,8 +964,8 @@ def create_datasets():
     d.mergename = 'Ribonuclease/merge.dat'
     datasets.append(d)
 
-    #Thyroglobulin
-    d=dataset()
+    # Thyroglobulin
+    d = dataset()
     d.name = 'Thyroglobulin'
     d.inputs = ['Thyroglobulin/in1.dat',
                 'Thyroglobulin/in2.dat',
@@ -949,76 +978,80 @@ def create_datasets():
 
     return datasets
 
-datasets=create_datasets()
+datasets = create_datasets()
+
 
 def create_params_list():
-    params=[]
+    params = []
     params.append(['--cmodel=normal'])
     params.append(['--aalpha=1e-4', '--cmodel=normal'])
     params.append(['--postpone_cleanup', '--cmodel=normal'])
     params.append(['--cmodel=normal-offset'])
     params.append(['--cmodel=normal', '--blimit_hessian=100',
-                '--boptimize=Full'])
+                   '--boptimize=Full'])
     return params
 
+
 def create_params_shuffle():
-    items=[]
+    items = []
     items.append(['--aalpha=0.05'])
     items.append(['--auto'])
-    items.append([#'--remove_redundant', '--remove_noisy',
+    items.append([  # '--remove_redundant', '--remove_noisy',
         '--remove_redundant --remove_noisy'])
     items.append(['--blimit_hessian=80 --elimit_hessian=80'])
     items.append([
         '--blimit_fitting=240 --elimit_fitting=240'])
     params = []
     for i in itertools.product(*items):
-        tmp=[]
+        tmp = []
         for k in i:
             tmp.extend(k.split())
         params.append(tmp)
-    return items,params
+    return items, params
 
 #params = create_params_list()
-items,params = create_params_shuffle()
+items, params = create_params_shuffle()
 
-###### test creation
+# test creation
 for k, param in enumerate(params):
     for l, dset in enumerate(datasets):
         test_method = create_test(k, str(k), param,
                                   l, dset.name, dset.inputs,
                                   dset.mergename, dset.pdb, plot_data=True)
-        test_method.__name__ = 'test_case_%d_%d' % (l,k)
+        test_method.__name__ = 'test_case_%d_%d' % (l, k)
         setattr(SAXSApplicationTest, test_method.__name__, test_method)
+
 
 def print_corresp():
     print "Datasets"
-    for k,p in enumerate(datasets):
-        print "%s : %s" % (k,p.name)
+    for k, p in enumerate(datasets):
+        print "%s : %s" % (k, p.name)
     print
     print "Params"
-    for k,p in enumerate(params):
+    for k, p in enumerate(params):
         print "%s : %s" % (k, ' '.join(p))
 
+
 def print_params():
-    for k,p in enumerate(params):
-        par=' '.join(p)
+    for k, p in enumerate(params):
+        par = ' '.join(p)
         ind = [k]
         for item in items:
-            matchlen=-1
-            for j,it in enumerate(item):
+            matchlen = -1
+            for j, it in enumerate(item):
                 if it in par:
-                    if matchlen==-1:
+                    if matchlen == -1:
                         ind.append(j)
                     else:
                         if matchlen < len(it):
-                            ind[-1]=j
-                    matchlen=len(it)
-            if matchlen==-1:
+                            ind[-1] = j
+                    matchlen = len(it)
+            if matchlen == -1:
                 raise ValueError
         print " ".join(["%d" % i for i in ind])
 
 
 if __name__ == '__main__':
     IMP.test.main()
-    #print_corresp()
-    #print_params()
+    # print_corresp()
+    # print_params()

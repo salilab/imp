@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/MonteCarlo.h    \brief Simple Monte Carlo optimizer.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,10 +10,8 @@
 
 #include <IMP/core/core_config.h>
 #include "MonteCarloMover.h"
-#include "monte_carlo_macros.h"
 #include "IncrementalScoringFunction.h"
 #include <IMP/Optimizer.h>
-#include <IMP/optimizer_macros.h>
 #include <IMP/container_macros.h>
 #include <IMP/kernel/internal/container_helpers.h>
 #include <IMP/algebra/vector_search.h>
@@ -47,10 +45,6 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT MonteCarlo : public Optimizer {
  public:
   MonteCarlo(kernel::Model *m);
-
-  /** \deprecated_at{2.1} Use the one that takes a model. */
-  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
-  MonteCarlo();
 
  protected:
   virtual Float do_optimize(unsigned int max_steps);
@@ -89,31 +83,48 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
       @{
    */
   //! Return how many times the optimizer has succeeded in taking a step
+  /** \deprecated_at{2.2} Use get_number_of_accepted_steps() instead
+    */
+  IMPCORE_DEPRECATED_FUNCTION_DECL(2.2)
   unsigned int get_number_of_forward_steps() const {
-    return stat_forward_steps_taken_;
+    IMPCORE_DEPRECATED_FUNCTION_DEF(2.2,
+                       "Use get_number_of_accepted_steps() instead.");
+    return get_number_of_accepted_steps();
   }
-  //! Return how many times the optimizer has stepped to higher energy
+
+  //! Return how many times the optimizer has stepped to lower score
+  unsigned int get_number_of_downward_steps() const {
+    return stat_downward_steps_taken_;
+  }
+  //! Return how many times the optimizer has stepped to higher score
   unsigned int get_number_of_upward_steps() const {
     return stat_upward_steps_taken_;
   }
   //! Get number of proposed moves
   unsigned int get_number_of_proposed_steps() const {
-    return stat_forward_steps_taken_ + stat_upward_steps_taken_ +
+    return stat_downward_steps_taken_ + stat_upward_steps_taken_ +
            stat_num_failures_;
   }
   //! Get number of accepted moves
   unsigned int get_number_of_accepted_steps() const {
-    return stat_forward_steps_taken_ + stat_upward_steps_taken_;
+    return stat_downward_steps_taken_ + stat_upward_steps_taken_;
   }
   void reset_statistics() {
-    stat_forward_steps_taken_ = 0;
+    stat_downward_steps_taken_ = 0;
     stat_upward_steps_taken_ = 0;
     stat_num_failures_ = 0;
   }
 
   /** @} */
 
-  /** Computations can be acceletating by throwing out
+  //! Set the score threshold.
+  //* An optimization is terminated if the score drops below this value. */
+  void set_score_threshold(double s) { min_score_ = s; }
+
+  //! Get the score threshold.
+  double get_score_threshold() const { return min_score_; }
+
+  /** Computations can be accelerated by throwing out
       the tails of the distribution of accepted moves. To
       do this, specific a maximum acceptable difference
       between the before and after scores.
@@ -195,10 +206,11 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
   double last_energy_;
   double best_energy_;
   double max_difference_;
-  unsigned int stat_forward_steps_taken_;
+  unsigned int stat_downward_steps_taken_;
   unsigned int stat_upward_steps_taken_;
   unsigned int stat_num_failures_;
   bool return_best_;
+  double min_score_;
   IMP::base::PointerMember<Configuration> best_;
   ::boost::uniform_real<> rand_;
 

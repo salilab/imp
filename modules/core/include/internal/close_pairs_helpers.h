@@ -2,7 +2,7 @@
  *  \file internal/close_pairs_helpers.h
  *  \brief utilities for rigid bodies.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_INTERNAL_CLOSE_PAIRS_HELPERS_H
@@ -15,9 +15,10 @@
 #include "rigid_body_tree.h"
 #include <IMP/container_macros.h>
 #include "../XYZR.h"
-#include <IMP/kernel/internal/InternalListPairContainer.h>
 #include <IMP/base/warning_macros.h>
 #include <IMP/SingletonContainer.h>
+#include <boost/unordered_map.hpp>
+#include <boost/unordered_set.hpp>
 #include <algorithm>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
@@ -26,9 +27,9 @@ inline ClosePairsFinder *default_cpf(unsigned int) {
   return new GridClosePairsFinder();
 }
 
-inline IMP::internal::InternalListPairContainer *get_list(PairContainer *pc) {
+/*inline IMP::internal::InternalListPairContainer *get_list(PairContainer *pc) {
   return dynamic_cast<IMP::internal::InternalListPairContainer *>(pc);
-}
+  }*/
 
 template <class C>
 inline void filter_close_pairs(C *c, kernel::ParticleIndexPairs &ps) {
@@ -130,8 +131,8 @@ struct InList {
 inline void reset_moved(
     kernel::Model *m, kernel::ParticleIndexes &xyzrs_,
     kernel::ParticleIndexes &rbs_,
-    IMP::base::map<kernel::ParticleIndex,
-                   kernel::ParticleIndexes> & /*constituents_*/,
+    boost::unordered_map<kernel::ParticleIndex,
+                         kernel::ParticleIndexes> & /*constituents_*/,
     algebra::Sphere3Ds &rbs_backup_sphere_,
     algebra::Rotation3Ds &rbs_backup_rot_, algebra::Sphere3Ds &xyzrs_backup_) {
   xyzrs_backup_.resize(xyzrs_.size());
@@ -152,20 +153,20 @@ inline void reset_moved(
 inline void initialize_particles(
     SingletonContainer *sc, ObjectKey key, kernel::ParticleIndexes &xyzrs_,
     kernel::ParticleIndexes &rbs_,
-    IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> &
+    boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &
         constituents_,
     algebra::Sphere3Ds &rbs_backup_sphere_,
     algebra::Rotation3Ds &rbs_backup_rot_, algebra::Sphere3Ds &xyzrs_backup_,
     bool use_rigid_bodies = true) {
   IMP_IF_CHECK(base::USAGE) {
     kernel::ParticleIndexes pis = sc->get_indexes();
-    IMP::base::set<kernel::ParticleIndex> spis(pis.begin(), pis.end());
+    boost::unordered_set<kernel::ParticleIndex> spis(pis.begin(), pis.end());
     IMP_USAGE_CHECK(pis.size() == spis.size(),
                     "Duplicate particle indexes in input");
   }
   IMP_IF_CHECK(base::USAGE) {
     kernel::ParticlesTemp pis = sc->get();
-    IMP::base::set<kernel::Particle *> spis(pis.begin(), pis.end());
+    boost::unordered_set<kernel::Particle *> spis(pis.begin(), pis.end());
     IMP_USAGE_CHECK(pis.size() == spis.size(), "Duplicate particles in input");
   }
   // constituents_.clear();
@@ -190,7 +191,8 @@ inline void initialize_particles(
         kernel::ParticleIndexes cur = constituents_[pi];
         IMP_USAGE_CHECK(std::find(cur.begin(), cur.end(), pi) == cur.end(),
                         "A rigid body cann't be its own constituent.");
-        IMP::base::set<kernel::ParticleIndex> scur(cur.begin(), cur.end());
+        boost::unordered_set<kernel::ParticleIndex> scur(cur.begin(),
+                                                         cur.end());
         IMP_USAGE_CHECK(cur.size() == scur.size(),
                         "Duplicate constituents for "
                             << sc->get_model()->get_particle(pi)->get_name()
@@ -212,14 +214,14 @@ inline void initialize_particles(
   rbs_backup_sphere_.clear();
   rbs_backup_rot_.clear();
   IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
-    for (IMP::base::map<kernel::ParticleIndex,
-                        kernel::ParticleIndexes>::const_iterator it =
+    for (boost::unordered_map<kernel::ParticleIndex,
+                              kernel::ParticleIndexes>::const_iterator it =
              constituents_.begin();
          it != constituents_.end(); ++it) {
       kernel::ParticleIndexes cur = it->second;
       IMP_USAGE_CHECK(std::find(cur.begin(), cur.end(), it->first) == cur.end(),
                       "A rigid body cann't be its own constituent.");
-      IMP::base::set<kernel::ParticleIndex> scur(cur.begin(), cur.end());
+      boost::unordered_set<kernel::ParticleIndex> scur(cur.begin(), cur.end());
       IMP_USAGE_CHECK(
           cur.size() == scur.size(),
           "Duplicate constituents for "
@@ -232,8 +234,8 @@ inline void initialize_particles(
 inline bool get_if_moved(
     kernel::Model *m, double slack_, const kernel::ParticleIndexes &xyzrs_,
     const kernel::ParticleIndexes &rbs_,
-    const IMP::base::map<kernel::ParticleIndex,
-                         kernel::ParticleIndexes> & /*constituents_*/,
+    const boost::unordered_map<kernel::ParticleIndex,
+                               kernel::ParticleIndexes> & /*constituents_*/,
     const algebra::Sphere3Ds &rbs_backup_sphere_,
     const algebra::Rotation3Ds &rbs_backup_rot_,
     const algebra::Sphere3Ds &xyzrs_backup_) {
@@ -300,13 +302,13 @@ inline bool get_if_moved(
   return false;
 }
 
-inline void fill_list(kernel::Model *m, const PairPredicates &filters,
-                      ObjectKey key_, double slack_,
-                      kernel::ParticleIndexes &xyzrs_,
-                      kernel::ParticleIndexes &rbs_,
-                      IMP::base::map<kernel::ParticleIndex,
-                                     kernel::ParticleIndexes> &constituents_,
-                      kernel::ParticleIndexPairs &cur_list_) {
+inline void fill_list(
+    kernel::Model *m, const PairPredicates &filters, ObjectKey key_,
+    double slack_, kernel::ParticleIndexes &xyzrs_,
+    kernel::ParticleIndexes &rbs_,
+    boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &
+        constituents_,
+    kernel::ParticleIndexPairs &cur_list_) {
   IMP_INTERNAL_CHECK(slack_ >= 0, "Slack must not be negative");
   /*IMP_LOG_VERBOSE( "filling particle list with slack " << slack_
     << " on " << sc_->get_name());*/
@@ -333,13 +335,13 @@ inline void fill_list(kernel::Model *m, const PairPredicates &filters,
   IMP_LOG_VERBOSE("found " << cur_list_.size() << std::endl);
 }
 
-inline void fill_list(kernel::Model *m, const PairPredicates &filters,
-                      ObjectKey key_, double slack_,
-                      kernel::ParticleIndexes xyzrs_[],
-                      kernel::ParticleIndexes rbs_[],
-                      IMP::base::map<kernel::ParticleIndex,
-                                     kernel::ParticleIndexes> &constituents_,
-                      kernel::ParticleIndexPairs &cur_list_) {
+inline void fill_list(
+    kernel::Model *m, const PairPredicates &filters, ObjectKey key_,
+    double slack_, kernel::ParticleIndexes xyzrs_[],
+    kernel::ParticleIndexes rbs_[],
+    boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &
+        constituents_,
+    kernel::ParticleIndexPairs &cur_list_) {
   IMP_INTERNAL_CHECK(slack_ >= 0, "Slack must not be negative");
   /*IMP_LOG_VERBOSE( "filling particle list with slack " << slack_
     << " on " << sc_->get_name());*/

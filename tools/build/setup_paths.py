@@ -7,7 +7,7 @@ it is installed.
 from optparse import OptionParser
 import tools
 
-template="""
+template = """
 #include <IMP/base/base_config.h>
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
@@ -25,14 +25,12 @@ parser.add_option("-o", "--output", dest="output",
                   help="Where to put the file.")
 
 
-
-
 def main():
     (options, args) = parser.parse_args()
-    data={}
-    data["examplepath"]= options.examplepath
-    data["datapath"]= options.datapath
-    tools.rewrite(options.output, template%data)
+    data = {}
+    data["examplepath"] = options.examplepath
+    data["datapath"] = options.datapath
+    tools.rewrite(options.output, template % data)
 
 if __name__ == '__main__':
     main()

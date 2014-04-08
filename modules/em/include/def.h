@@ -2,7 +2,7 @@
  *  \file IMP/em/def.h
  *  \brief Definitions for EMBED.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -18,4 +18,4 @@ const double EPS = 1e-16;
 
 IMPEM_END_NAMESPACE
 
-#endif  /* IMPEM_DEF_H */
+#endif /* IMPEM_DEF_H */

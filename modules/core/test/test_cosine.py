@@ -4,14 +4,17 @@ import IMP.core
 import math
 import StringIO
 
+
 def _cosfunc(val, force_constant, periodicity, phase):
     """Python implementation of cosine function and first derivative"""
     score = abs(force_constant) \
-            - force_constant * math.cos(periodicity * val + phase)
+        - force_constant * math.cos(periodicity * val + phase)
     deriv = force_constant * periodicity * math.sin(periodicity * val + phase)
     return score, deriv
 
+
 class Tests(IMP.test.TestCase):
+
     """Tests for cosine unary function"""
 
     def test_values(self):

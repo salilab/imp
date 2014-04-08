@@ -4,7 +4,7 @@
  *
  *  BLURB
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_MINIMUM_CLASSNAME_RESTRAINT_H
@@ -14,7 +14,6 @@
 #include <IMP/Restraint.h>
 #include <IMP/ClassnameScore.h>
 #include <IMP/ClassnameContainer.h>
-#include <IMP/restraint_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

@@ -1,5 +1,7 @@
 # Ligand Score
 
+To score ligand poses, use the `ligand_score` command line tool.
+
 Two different scoring files are provided:
     - protein_ligand_pose_score.lib for use when one wants to find the
     most near-native poses of a ligand from many geometry decoys of the
@@ -18,7 +20,7 @@ Two different scoring files are provided:
 
 _Author(s)_: Hao Fan, Daniel Russel
 
-_Maintainer_: `drussel`
+_Maintainer_: `benmwebb`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or
@@ -27,5 +29,5 @@ License as published by the Free Software Foundation; either
 version 2 of the License, or (at your option) any later version.
 
 _Publications_:
- - Hao Fan, Dina Schneidmann, John Irwin, G Dong, Brian Shoichet, Andrej Sali, \quote{Statistical Potential for Modeling and Ranking Protein-Ligand Interactions}, <em>submitted</em>, 2011.
+ - Hao Fan, Dina Schneidmann, John Irwin, G Dong, Brian Shoichet, Andrej Sali. \quote{Statistical Potential for Modeling and Ranking Protein-Ligand Interactions}, J Chem Inf Model <b>51</b>, 3078-3092, 2011.
 */

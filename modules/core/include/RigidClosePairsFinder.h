@@ -2,7 +2,7 @@
  *  \file IMP/core/RigidClosePairsFinder.h
  *  \brief Handle rigid bodies by looking at their members
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_RIGID_CLOSE_PAIRS_FINDER_H
@@ -10,8 +10,6 @@
 
 #include "ClosePairsFinder.h"
 #include "rigid_bodies.h"
-#include "close_pairs_finder_macros.h"
-#include <IMP/kernel/internal/InternalListSingletonContainer.h>
 #include <IMP/Refiner.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -83,8 +81,8 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder {
 #ifndef SWIG
   using ClosePairsFinder::get_close_pairs;
 #else
-  kernel::ParticlePairsTemp get_close_pairs(
-      const kernel::ParticlesTemp &pc) const;
+  kernel::ParticlePairsTemp get_close_pairs(const kernel::ParticlesTemp &pc)
+      const;
   kernel::ParticlePairsTemp get_close_pairs(
       const kernel::ParticlesTemp &pca, const kernel::ParticlesTemp &pcb) const;
 #endif

@@ -2,7 +2,7 @@
  *  \file IMP/domino/DominoSampler.h
  *  \brief A beyesian infererence-based sampler.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -67,8 +67,8 @@ class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler {
       @{
   */
   //! Get the number of states found for the merge at that vertex of the tree
-  unsigned int get_number_of_assignments_for_vertex(
-      unsigned int tree_vertex) const;
+  unsigned int get_number_of_assignments_for_vertex(unsigned int tree_vertex)
+      const;
   //! Return a few subset states from that merge
   Assignments get_sample_assignments_for_vertex(unsigned int tree_vertex) const;
   /** @} */

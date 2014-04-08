@@ -17,7 +17,6 @@ lpc = IMP.container.ListPairContainer(
     [(ps[i[0]], ps[i[1]]) for i in [(0, 1), (1, 2)]])
 print [(p[0].get_name(), p[1].get_name()) for p in lpc.get_particle_pairs()]
 r = IMP.container.PairsRestraint(s, lpc)
-r.set_model(m)
 r.set_maximum_score(.1)
 
 space = IMP.domino.XYZStates(

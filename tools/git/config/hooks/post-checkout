@@ -1,8 +1,9 @@
 #!/bin/sh
 
-git submodule update
+git submodule update --recursive
 
 `git rev-parse --show-toplevel`/tools/git/support/cleanup_pyc.py
 `git rev-parse --show-toplevel`/tools/build/setup_cmake.py > /dev/null
-
 rm -f `git rev-parse --show-toplevel`/VERSION
+
+cd `git rev-parse --show-toplevel`/modules/rmf/dependency/RMF_source && tools/developer_tools/setup_cmake.py > /dev/null

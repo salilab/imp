@@ -1,11 +1,11 @@
 /**
- *  \file CompositeJoint.h
+ *  \file IMP/kinematics/CompositeJoint.h
  *  \brief a joint composed of several joints, applied on the same
  *         pair of rigid bodies
  *  \authors Dina Schneidman, Barak Raveh
  *
 
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKINEMATICS_COMPOSITE_JOINT_H
@@ -31,8 +31,7 @@ class KinematicForest;
     A joint that combines several inner joints, acting on the same
     pair of rigid bodies
 */
-class IMPKINEMATICSEXPORT CompositeJoint : public Joint
-{
+class IMPKINEMATICSEXPORT CompositeJoint : public Joint {
  public:
   /**
      Constructs a composite joint between parent and child,
@@ -47,10 +46,8 @@ class IMPKINEMATICSEXPORT CompositeJoint : public Joint
                         assumed all these joints share the same
                         parent and child as the composite joint.
   */
-  CompositeJoint
-    (IMP::core::RigidBody parent,
-     IMP::core::RigidBody child,
-     Joints joints = Joints() );
+  CompositeJoint(IMP::core::RigidBody parent, IMP::core::RigidBody child,
+                 Joints joints = Joints());
 
   /**
      adds a joint at the end of the list of joints (closest to the child
@@ -59,11 +56,11 @@ class IMPKINEMATICSEXPORT CompositeJoint : public Joint
            joint
    */
   void add_downstream_joint(Joint* j) {
-    IMP_ALWAYS_CHECK( j->get_parent_node() == this->get_parent_node() &&
-                      j->get_child_node() == this->get_child_node(),
-                      "inner joint within a composite joint must have"
-                      "the same parent and child rigid body nodes",
-                      ValueException);
+    IMP_ALWAYS_CHECK(j->get_parent_node() == this->get_parent_node() &&
+                         j->get_child_node() == this->get_child_node(),
+                     "inner joint within a composite joint must have"
+                     "the same parent and child rigid body nodes",
+                     ValueException);
     joints_.push_back(j);
   }
 
@@ -74,11 +71,11 @@ class IMPKINEMATICSEXPORT CompositeJoint : public Joint
            joint
    */
   void add_upstream_joint(Joint* j) {
-    IMP_ALWAYS_CHECK( j->get_parent_node() == this->get_parent_node() &&
-                      j->get_child_node() == this->get_child_node(),
-                      "inner joint within a composite joint must have"
-                      << "the same parent and child rigid body nodes",
-                      ValueException);
+    IMP_ALWAYS_CHECK(j->get_parent_node() == this->get_parent_node() &&
+                         j->get_child_node() == this->get_child_node(),
+                     "inner joint within a composite joint must have"
+                         << "the same parent and child rigid body nodes",
+                     ValueException);
     joints_.insert(joints_.begin(), j);
   }
 
@@ -99,20 +96,15 @@ class IMPKINEMATICSEXPORT CompositeJoint : public Joint
      returns the list of inner joints, ordered from the parent
      rigid body downstream to the child rigid body
   */
-  const Joints& get_inner_joints() const {
-    return joints_;
-  }
+  const Joints& get_inner_joints() const { return joints_; }
 
 #ifndef SWIG
   /**
      returns the list of inner joints, ordered from the parent
      rigid body downstream to the child rigid body
   */
-  Joints& get_inner_joints() {
-    return joints_;
-  }
+  Joints& get_inner_joints() { return joints_; }
 #endif
-
 
  protected:
   /**
@@ -120,7 +112,6 @@ class IMPKINEMATICSEXPORT CompositeJoint : public Joint
      inner joints
    */
   virtual void update_child_node_reference_frame() const;
-
 
   /**
     Updates all inner joints value, and the overall transformation
@@ -134,11 +125,11 @@ class IMPKINEMATICSEXPORT CompositeJoint : public Joint
   virtual void update_joint_from_cartesian_witnesses();
 
  private:
-  Joints joints_; // list of inner joints
+  Joints joints_;  // list of inner joints
 };
 
 IMP_OBJECTS(CompositeJoint, CompositeJoints);
 
 IMPKINEMATICS_END_NAMESPACE
 
-#endif  /* IMPKINEMATICS_COMPOSITE_JOINT_H */
+#endif /* IMPKINEMATICS_COMPOSITE_JOINT_H */

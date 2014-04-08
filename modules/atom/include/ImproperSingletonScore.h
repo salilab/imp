@@ -2,7 +2,7 @@
  *  \file IMP/atom/ImproperSingletonScore.h
  *  \brief A score on the deviation of an improper angle from ideality.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_IMPROPER_SINGLETON_SCORE_H

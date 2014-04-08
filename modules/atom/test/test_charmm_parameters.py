@@ -5,6 +5,7 @@ import IMP.atom
 import IMP.algebra
 import os
 
+
 def get_bonds(numbonds, getfunc, numendpoints):
     """Get all of the bonds (or angles, dihedrals) from a residue topology,
        as a list of strings."""
@@ -24,11 +25,13 @@ def get_bonds(numbonds, getfunc, numendpoints):
     bonds.sort()
     return bonds
 
+
 class Tests(IMP.test.TestCase):
+
     """Test the CHARMMParameters class"""
 
     def assertBondBetween(self, bond, atoms):
-        bond_atoms = [bond.get_endpoint(i).get_atom_name() \
+        bond_atoms = [bond.get_endpoint(i).get_atom_name()
                       for i in range(len(atoms))]
         self.assertEqual(bond_atoms, atoms)
 
@@ -125,7 +128,7 @@ class Tests(IMP.test.TestCase):
         # Atom names must also match
         self.assertEqual(rpdb.get_number_of_atoms(),
                          rcharmm.get_number_of_atoms())
-        for apdb in [rpdb.get_atom(i) \
+        for apdb in [rpdb.get_atom(i)
                      for i in range(rpdb.get_number_of_atoms())]:
             pdb_name = apdb.get_name()
             # Allow for different patch atom naming between CHARMM and
@@ -263,8 +266,8 @@ class Tests(IMP.test.TestCase):
         # Read CHARMM file containing CHARMM atom and residue names; map names
         # to PDB
         pcharmm = IMP.atom.CHARMMParameters(
-                          self.get_input_file_name('top_all22_prot_b5.inp'),
-                          IMP.atom.get_data_path('par.lib'), True)
+            self.get_input_file_name('top_all22_prot_b5.inp'),
+            IMP.atom.get_data_path('par.lib'), True)
         # After mapping, atom and residue names should match
         for res in ['ALA', 'CYS', 'ASP', 'GLU', 'PHE', 'GLY', 'HIS', 'ILE',
                     'LYS', 'LEU', 'MET', 'ASN', 'PRO', 'GLN', 'ARG', 'SER',
@@ -278,6 +281,7 @@ class Tests(IMP.test.TestCase):
             rcharmm = pcharmm.get_patch(res)
             self.assertResidueTopologiesEqual(rpdb, rcharmm)
             # Deleted atom lists must also match
+
             def get_removed_atom(res, i):
                 atom_name = res.get_removed_atom(i)
                 # Allow for difference in patch atom naming between CHARMM
@@ -286,10 +290,10 @@ class Tests(IMP.test.TestCase):
                    and atom_name[1] == ':':
                     atom_name = atom_name[0] + atom_name[2:]
                 return atom_name
-            atoms_pdb = [get_removed_atom(rpdb, i) \
+            atoms_pdb = [get_removed_atom(rpdb, i)
                          for i in range(rpdb.get_number_of_removed_atoms())]
-            atoms_charmm = [get_removed_atom(rcharmm, i) \
-                         for i in range(rcharmm.get_number_of_removed_atoms())]
+            atoms_charmm = [get_removed_atom(rcharmm, i)
+                            for i in range(rcharmm.get_number_of_removed_atoms())]
             self.assertEqual(atoms_pdb, atoms_charmm)
 
     def test_charmm_elements(self):

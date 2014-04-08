@@ -1,7 +1,7 @@
 /**
  *  \file cgal/internal/polyhedrons.h
  *  \brief manipulation of text, and Interconversion between text and numbers
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPCGAL_INTERNAL_SPHERE_COVER_H

@@ -2,7 +2,7 @@
  *  \file Model.cpp \brief Storage of a model, its restraints,
  *                         constraints and particles.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,26 +15,16 @@
 #include "IMP/kernel/ScoreState.h"
 #include "IMP/kernel/ScoringFunction.h"
 #include "IMP/kernel/dependency_graph.h"
-#include "IMP/kernel/file.h"
+#include "IMP/base/file.h"
 #include "IMP/kernel/internal/evaluate_utility.h"
 #include "IMP/kernel/internal/graph_utility.h"
 #include <IMP/kernel/utility.h>
-#include "IMP/base/map.h"
+#include "boost/unordered_map.hpp"
 #include "IMP/base/log.h"
-#include "IMP/base/set.h"
+#include "boost/unordered_set.hpp"
 #include "IMP/base/statistics.h"
-#include <boost/foreach.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
-
-ModelObjectsTemp Model::get_optimized_particles() const {
-  base::set<ModelObject *> ret;
-  FloatIndexes fix = internal::FloatAttributeTable::get_optimized_attributes();
-  for (unsigned int i = 0; i < fix.size(); ++i) {
-    ret.insert(get_particle(fix[i].get_particle()));
-  }
-  return ModelObjectsTemp(ret.begin(), ret.end());
-}
 
 ScoreStatesTemp Model::get_ancestor_score_states(const ModelObject *mo) const {
   ModelObjectsTemp all_in = dependency_graph_.find(mo)->second.get_inputs() +
@@ -50,8 +40,8 @@ ScoreStatesTemp Model::get_ancestor_score_states(const ModelObject *mo) const {
   return ret;
 }
 
-ScoreStatesTemp Model::get_descendent_score_states(
-    const ModelObject *mo) const {
+ScoreStatesTemp Model::get_descendent_score_states(const ModelObject *mo)
+    const {
   ModelObjectsTemp all_out = dependency_graph_.find(mo)->second.get_outputs() +
                              dependency_graph_.find(mo)->second.get_readers();
   ScoreStatesTemp ret;
@@ -67,8 +57,8 @@ ScoreStatesTemp Model::get_descendent_score_states(
 
 void Model::do_check_inputs_and_outputs(const ModelObject *mo) const {
   {
-    BOOST_FOREACH(kernel::ModelObject * i,
-                  dependency_graph_.find(mo)->second.get_inputs()) {
+    IMP_FOREACH(kernel::ModelObject * i,
+                dependency_graph_.find(mo)->second.get_inputs()) {
       ModelObjectsTemp readers =
           dependency_graph_.find(i)->second.get_readers();
       IMP_INTERNAL_CHECK(
@@ -78,8 +68,8 @@ void Model::do_check_inputs_and_outputs(const ModelObject *mo) const {
     }
   }
   {
-    BOOST_FOREACH(kernel::ModelObject * o,
-                  dependency_graph_.find(mo)->second.get_outputs()) {
+    IMP_FOREACH(kernel::ModelObject * o,
+                dependency_graph_.find(mo)->second.get_outputs()) {
       ModelObjectsTemp writers =
           dependency_graph_.find(o)->second.get_writers();
       IMP_INTERNAL_CHECK(
@@ -93,7 +83,7 @@ void Model::do_check_inputs_and_outputs(const ModelObject *mo) const {
 void Model::do_check_readers_and_writers(const ModelObject *mo) const {
   {
     ModelObjectsTemp readers = dependency_graph_.find(mo)->second.get_readers();
-    BOOST_FOREACH(kernel::ModelObject * r, readers) {
+    IMP_FOREACH(kernel::ModelObject * r, readers) {
       IMP_INTERNAL_CHECK(dependency_graph_.find(r) != dependency_graph_.end(),
                          "Reader " << r->get_name() << " of " << mo->get_name()
                                    << " not in graph" << std::endl);
@@ -110,7 +100,7 @@ void Model::do_check_readers_and_writers(const ModelObject *mo) const {
     const ModelObjectsTemp &writers =
         dependency_graph_.find(mo)->second.get_writers();
     IMP_UNUSED(writers);
-    BOOST_FOREACH(kernel::ModelObject * w, writers) {
+    IMP_FOREACH(kernel::ModelObject * w, writers) {
       IMP_INTERNAL_CHECK(dependency_graph_.find(w) != dependency_graph_.end(),
                          "Reader " << w->get_name() << " of " << mo->get_name()
                                    << " not in graph" << std::endl);
@@ -152,7 +142,7 @@ void Model::do_check_update_order(const ScoreState *ss) const {
 
 void Model::do_check_not_in_readers_and_writers(const ModelObject *mo) const {
   IMP_UNUSED(mo);  // for fast builds
-  BOOST_FOREACH(DependencyGraph::value_type vt, dependency_graph_) {
+  IMP_FOREACH(DependencyGraph::value_type vt, dependency_graph_) {
     ModelObjectsTemp readers = vt.second.get_readers();
     IMP_INTERNAL_CHECK(
         std::find(readers.begin(), readers.end(), mo) == readers.end(),
@@ -213,10 +203,10 @@ void Model::check_dependency_invariants() const {
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     IMP_LOG_TERSE("Checking dependency invariants" << std::endl);
     ModelObjectsTemp without;
-    BOOST_FOREACH(const DependencyGraph::value_type & vt, dependency_graph_) {
+    IMP_FOREACH(const DependencyGraph::value_type & vt, dependency_graph_) {
       check_dependency_invariants(vt.first);
     }
-    BOOST_FOREACH(const ModelObject * mo, no_dependencies_) {
+    IMP_FOREACH(const ModelObject * mo, no_dependencies_) {
       IMP_UNUSED(mo);
       IMP_INTERNAL_CHECK(
           dependency_graph_.find(mo) != dependency_graph_.end(),
@@ -243,6 +233,7 @@ void Model::do_set_has_all_dependencies(bool tf) {
 void Model::set_has_all_dependencies(bool tf) {
   base::Timer t(this, "set_has_all_dependencies");
   IMP_USAGE_CHECK(tf, "Only works for true.");
+  if (get_has_all_dependencies()) return;
   // check_dependency_invariants();
   do_set_has_all_dependencies(tf);
   IMP_INTERNAL_CHECK(get_has_all_dependencies() == tf,
@@ -255,7 +246,7 @@ void Model::update() {
   IMP_CHECK_OBJECT(this);
   set_has_all_dependencies(true);
   ScoreStatesTemp sst;
-  BOOST_FOREACH(DependencyGraph::value_type & vt, dependency_graph_) {
+  IMP_FOREACH(DependencyGraph::value_type & vt, dependency_graph_) {
     ModelObject *mo = const_cast<ModelObject *>(vt.first);
     ScoreState *ss = dynamic_cast<ScoreState *>(mo);
     if (ss) {
@@ -285,7 +276,7 @@ void Model::do_set_has_dependencies(const ModelObject *mo, bool tf) {
 }
 
 void Model::do_add_dependencies(const ModelObject *cmo) {
-  static base::set<const ModelObject *> computed;
+  static boost::unordered_set<const ModelObject *> computed;
   if (computed.find(cmo) != computed.end()) {
     IMP_THROW("Loop in dependencies at " << cmo->get_name(), ModelException);
   }
@@ -299,7 +290,7 @@ void Model::do_add_dependencies(const ModelObject *cmo) {
   {
     std::sort(outputs.begin(), outputs.end());
     outputs.erase(std::unique(outputs.begin(), outputs.end()), outputs.end());
-    BOOST_FOREACH(kernel::ModelObject * out, outputs) {
+    IMP_FOREACH(kernel::ModelObject * out, outputs) {
       dependency_graph_[out].access_writers().push_back(mo);
       do_clear_required_score_states(out);
     }
@@ -319,7 +310,7 @@ void Model::do_add_dependencies(const ModelObject *cmo) {
     IMP_INTERNAL_CHECK(
         filtered_inputs.size() + input_outputs.size() == inputs.size(),
         "Sizes don't add up");
-    BOOST_FOREACH(kernel::ModelObject * in, filtered_inputs) {
+    IMP_FOREACH(kernel::ModelObject * in, filtered_inputs) {
       dependency_graph_[in].access_readers().push_back(mo);
     }
     dependency_graph_[mo].set_inputs(filtered_inputs);
@@ -336,12 +327,12 @@ void Model::do_clear_required_score_states(kernel::ModelObject *mo) {
   required_score_states_.erase(mo);
   IMP_CHECK_OBJECT(mo);
   mo->handle_set_has_required_score_states(false);
-  BOOST_FOREACH(kernel::ModelObject * in,
-                dependency_graph_.find(mo)->second.get_readers()) {
+  IMP_FOREACH(kernel::ModelObject * in,
+              dependency_graph_.find(mo)->second.get_readers()) {
     do_clear_required_score_states(in);
   }
-  BOOST_FOREACH(kernel::ModelObject * in,
-                dependency_graph_.find(mo)->second.get_outputs()) {
+  IMP_FOREACH(kernel::ModelObject * in,
+              dependency_graph_.find(mo)->second.get_outputs()) {
     do_clear_required_score_states(in);
   }
 }
@@ -354,7 +345,7 @@ void Model::do_clear_dependencies(const ModelObject *cmo) {
     do_clear_required_score_states(mo);
   }
   NodeInfo &ni = dependency_graph_.find(cmo)->second;
-  BOOST_FOREACH(kernel::ModelObject * in, ni.get_inputs()) {
+  IMP_FOREACH(kernel::ModelObject * in, ni.get_inputs()) {
     // for teardown
     if (dependency_graph_.find(in) == dependency_graph_.end()) continue;
     base::Vector<ModelObject *> &cur =
@@ -368,7 +359,7 @@ void Model::do_clear_dependencies(const ModelObject *cmo) {
   }
   ni.set_inputs(Edges());
 
-  BOOST_FOREACH(kernel::ModelObject * out, ni.get_outputs()) {
+  IMP_FOREACH(kernel::ModelObject * out, ni.get_outputs()) {
     if (dependency_graph_.find(out) == dependency_graph_.end()) continue;
     base::Vector<ModelObject *> &cur =
         dependency_graph_.find(out)->second.access_writers();
@@ -384,14 +375,14 @@ void Model::do_clear_dependencies(const ModelObject *cmo) {
   no_dependencies_.insert(mo);
   {  // down stream might be affected (eg SetContainers)
     Edges readers = ni.get_readers();
-    BOOST_FOREACH(kernel::ModelObject * reader, readers) {
+    IMP_FOREACH(kernel::ModelObject * reader, readers) {
       do_clear_dependencies(reader);
     }
   }
 }
 
-ModelObjectsTemp Model::get_dependency_graph_inputs(
-    const ModelObject *mo) const {
+ModelObjectsTemp Model::get_dependency_graph_inputs(const ModelObject *mo)
+    const {
   IMP_USAGE_CHECK(do_get_has_dependencies(mo),
                   "Object " << mo->get_name()
                             << " does not have dependencies.");
@@ -401,8 +392,8 @@ ModelObjectsTemp Model::get_dependency_graph_inputs(
          dependency_graph_.find(mo)->second.get_writers();
 }
 
-ModelObjectsTemp Model::get_dependency_graph_outputs(
-    const ModelObject *mo) const {
+ModelObjectsTemp Model::get_dependency_graph_outputs(const ModelObject *mo)
+    const {
   IMP_USAGE_CHECK(mo->get_has_dependencies(),
                   "Object " << mo->get_name()
                             << " does not have dependencies.");
@@ -417,7 +408,7 @@ bool Model::do_get_has_required_score_states(const ModelObject *mo) const {
 }
 
 void Model::do_set_has_required_score_states(kernel::ModelObject *mo, bool tf) {
-  static base::set<const ModelObject *> computed;
+  static boost::unordered_set<const ModelObject *> computed;
   if (computed.find(mo) != computed.end()) {
     IMP_THROW("Loop in dependencies at " << mo->get_name(), ModelException);
   }
@@ -430,15 +421,15 @@ void Model::do_set_has_required_score_states(kernel::ModelObject *mo, bool tf) {
   IMP_OBJECT_LOG;
   if (tf) {
     ScoreStates all;
-    BOOST_FOREACH(kernel::ModelObject * input,
-                  dependency_graph_.find(mo)->second.get_inputs()) {
+    IMP_FOREACH(kernel::ModelObject * input,
+                dependency_graph_.find(mo)->second.get_inputs()) {
       do_set_has_required_score_states(input, true);
       all += required_score_states_.find(input)->second;
       ScoreState *ss = dynamic_cast<ScoreState *>(input);
       if (ss) all.push_back(ss);
     }
-    BOOST_FOREACH(kernel::ModelObject * input,
-                  dependency_graph_.find(mo)->second.get_writers()) {
+    IMP_FOREACH(kernel::ModelObject * input,
+                dependency_graph_.find(mo)->second.get_writers()) {
       do_set_has_required_score_states(input, true);
       all += required_score_states_.find(input)->second;
       ScoreState *ss = dynamic_cast<ScoreState *>(input);
@@ -474,9 +465,7 @@ void Model::do_remove_model_object(kernel::ModelObject *mo) {
   // clean up stray references
   {
     Edges readers = dependency_graph_.find(mo)->second.get_readers();
-    BOOST_FOREACH(kernel::ModelObject * r, readers) {
-      do_clear_dependencies(r);
-    }
+    IMP_FOREACH(kernel::ModelObject * r, readers) { do_clear_dependencies(r); }
   }
   IMP_INTERNAL_CHECK(dependency_graph_.find(mo) != dependency_graph_.end(),
                      "Not in dependency graph");

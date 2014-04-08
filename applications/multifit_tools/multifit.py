@@ -2,6 +2,7 @@
 
 import IMP
 
+
 def main():
     c = IMP.CommandDispatcher(short_help='MultiFit.',
                               long_help='Fit complexes into a density map.',

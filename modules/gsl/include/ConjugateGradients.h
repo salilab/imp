@@ -2,7 +2,7 @@
  *  \file IMP/gsl/ConjugateGradients.h
  *  \brief A conjugate gradients optimizer from GSL
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPGSL_CONJUGATE_GRADIENTS_H
@@ -23,9 +23,6 @@ class IMPGSLEXPORT ConjugateGradients : public GSLOptimizer {
  public:
   //!
   ConjugateGradients(kernel::Model *m);
-  /** \deprecated_at{2.1} Pass a model to the constructor. */
-  IMPGSL_DEPRECATED_FUNCTION_DECL(2.1)
-  ConjugateGradients();
 
   //! Set the gradient threshold
   void set_threshold(double mg) { min_gradient_ = mg; }

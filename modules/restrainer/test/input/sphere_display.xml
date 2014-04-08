@@ -1,6 +1,0 @@
-<Display>
-    <Protein id="Protein1"><Color r="1" g="0" b="0"/></Protein>
-    <Protein id="Protein2"><Color r="0" g="1" b="0"/></Protein>
-    <Protein id="Protein3"><Color r="0" g="0" b="1"/></Protein>
-    <Protein id="Protein4"><Color r="0" g="1" b="1"/></Protein>
-</Display>

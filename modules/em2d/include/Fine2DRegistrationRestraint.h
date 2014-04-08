@@ -1,7 +1,7 @@
 /**
- *  \file Fine2DRegistrationRestraint.h
+ *  \file IMP/em2d/Fine2DRegistrationRestraint.h
  *  \brief Alignment of 2D projections of a 3D volume
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_FINE_2DREGISTRATION_RESTRAINT_H
@@ -23,15 +23,12 @@ IMPEM2D_BEGIN_NAMESPACE
 
 //! Performs the fine search for the registration values in order to register
 //! a model projection with an image
-class IMPEM2DEXPORT Fine2DRegistrationRestraint : public kernel::Restraint
-{
-public:
-
+class IMPEM2DEXPORT Fine2DRegistrationRestraint : public kernel::Restraint {
+ public:
   /**
    * Constructs the restraint. Use the setup() function after construction
    */
-  Fine2DRegistrationRestraint();
-
+  Fine2DRegistrationRestraint(kernel::Model *m);
 
   /**
    * Initialization function. To be called after setting the model for the
@@ -44,10 +41,8 @@ public:
    * @param masks A manager containing the masks used for projecting.
    */
   void setup(kernel::ParticlesTemp &ps, const ProjectingParameters &params,
-                 kernel::Model *scoring_model,
-                 ScoreFunction *score_function,
-                 MasksManagerPtr masks=MasksManagerPtr());
-
+             kernel::Model *scoring_model, ScoreFunction *score_function,
+             MasksManagerPtr masks = MasksManagerPtr());
 
   /**
    * Sets the image to use by the restraint to perform the fine search of
@@ -63,9 +58,8 @@ public:
    */
   RegistrationResult get_final_registration() const;
 
-  virtual double
-  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
-     const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(Fine2DRegistrationRestraint);
 
@@ -73,11 +67,9 @@ public:
    * Get the number of times that the function was called
    * @return The number of calls
    */
-  unsigned int get_calls() const { return calls_;}
+  unsigned int get_calls() const { return calls_; }
 
-private:
-
-
+ private:
   base::Pointer<Image> subject_;
   mutable base::Pointer<Image> projection_;
   // Subject particle (it is going to be the parameters for the subject)
@@ -87,18 +79,16 @@ private:
   // Access point for the particles
   kernel::ParticlesTemp ps_;
   // Projection masks for the particles
-  MasksManagerPtr  masks_;
-  double resolution_,pixelsize_;
+  MasksManagerPtr masks_;
+  double resolution_, pixelsize_;
   base::Pointer<ScoreFunction> score_function_;
   ProjectingParameters params_;
 
   mutable unsigned int calls_;
 };
 
-IMP_OBJECTS(Fine2DRegistrationRestraint,Fine2DRegistrationRestraints);
-
-
+IMP_OBJECTS(Fine2DRegistrationRestraint, Fine2DRegistrationRestraints);
 
 IMPEM2D_END_NAMESPACE
 
-#endif  /* IMPEM2D_FINE_2DREGISTRATION_RESTRAINT_H */
+#endif /* IMPEM2D_FINE_2DREGISTRATION_RESTRAINT_H */

@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/BoundingBoxD.h   \brief A bounding box in D dimensions.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,6 +10,7 @@
 
 #include <IMP/algebra/algebra_config.h>
 #include "VectorD.h"
+#include "internal/utility.h"
 #include "algebra_macros.h"
 #include <IMP/base/exception.h>
 
@@ -32,7 +33,6 @@ class BoundingBoxD {
   }
 
  public:
-
   //! Create an empty bounding box
   BoundingBoxD() {
     IMP_USAGE_CHECK(D > 0, "The constructor can not be used "
@@ -53,7 +53,7 @@ class BoundingBoxD {
     b_[1] = VectorD<D>(ub.begin(), ub.end());
   }
   //! Make from the lower and upper corners
-  BoundingBoxD(const VectorInputD<D> &lb, const VectorInputD<D> &ub) {
+  BoundingBoxD(const VectorD<D> &lb, const VectorD<D> &ub) {
     b_[0] = lb;
     b_[1] = ub;
     IMP_IF_CHECK(IMP::base::USAGE) {
@@ -63,7 +63,7 @@ class BoundingBoxD {
     }
   }
   //! Creating a bounding box containing one point
-  explicit BoundingBoxD(const VectorInputD<D> &v) {
+  explicit BoundingBoxD(const VectorD<D> &v) {
     b_[0] = v;
     b_[1] = v;
   }
@@ -252,16 +252,34 @@ inline double get_maximum_length(const BoundingBoxD<D> &a) {
 
 //! Return a list of the 8 bounding points for the bounding box
 /** See BoundingBoxD */
-inline Vector3Ds get_vertices(const BoundingBoxD<3> &bb) {
-  Vector3Ds ret;
-  ret.reserve(8);
-  for (unsigned int i = 0; i < 2; ++i) {
-    for (unsigned int j = 0; j < 2; ++j) {
-      for (unsigned int k = 0; k < 2; ++k) {
-        ret.push_back(Vector3D(bb.get_corner(i)[0], bb.get_corner(j)[1],
-                               bb.get_corner(k)[2]));
-      }
+template <int D>
+inline base::Vector<VectorD<D> > get_vertices(const BoundingBoxD<D> &bb) {
+  if (D == 1) {
+    base::Vector<VectorD<D> > ret(2);
+    ret[0] = bb.get_corner(0);
+    ret[1] = bb.get_corner(1);
+    return ret;
+  }
+  if (D == -1) {
+    IMP_NOT_IMPLEMENTED;
+  }
+  VectorD<internal::DMinus1<D>::D> c0, c1;
+  for (int i = 0; i < D - 1; ++i) {
+    c0[i] = bb.get_corner(0)[i];
+    c1[i] = bb.get_corner(1)[i];
+  }
+  BoundingBoxD<internal::DMinus1<D>::D> bbm1(c0, c1);
+  base::Vector<VectorD<internal::DMinus1<D>::D> > recurse = get_vertices(bbm1);
+  base::Vector<VectorD<D> > ret;
+  for (unsigned int i = 0; i < recurse.size(); ++i) {
+    VectorD<D> cur;
+    for (int j = 0; j < D - 1; ++j) {
+      cur[j] = recurse[i][j];
     }
+    cur[D - 1] = bb.get_corner(0)[D - 1];
+    ret.push_back(cur);
+    cur[D - 1] = bb.get_corner(1)[D - 1];
+    ret.push_back(cur);
   }
   return ret;
 }

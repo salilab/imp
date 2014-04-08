@@ -2,7 +2,7 @@
  *  \file interaction_graph.cpp
  *  \brief Score particles with respect to a tunnel.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/domino/utility.h>
@@ -13,7 +13,7 @@
 #include <IMP/kernel/Restraint.h>
 #include <IMP/ScoreState.h>
 #include <IMP/domino/assignment_containers.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <boost/graph/graphviz.hpp>
 #include <IMP/kernel/internal/graph_utility.h>
 #include <IMP/domino/internal/tree_inference.h>
@@ -162,7 +162,7 @@ algebra::VectorKD get_embedding(const Subset &s, const Assignment &a,
     algebra::VectorKD cur = pst->get_particle_states(s[i])->get_embedding(a[i]);
     embed.insert(embed.end(), cur.coordinates_begin(), cur.coordinates_end());
   }
-  return embed;
+  return algebra::VectorKD(embed);
 }
 
 Assignment get_nearest_assignment(const Subset &s,

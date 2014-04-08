@@ -22,8 +22,8 @@
   }
 }
 
-%feature("ref")   IMP::base::Object "IMP::base::internal::ref($this);"
-%feature("unref") IMP::base::Object "IMP::base::internal::unref($this);"
+%feature("ref")   IMP::base::Object "if ($this) $this->ref();"
+%feature("unref") IMP::base::Object "if ($this) $this->unref();"
 
 %include "IMP/base/object_cast.h"
 
@@ -75,10 +75,8 @@ IMP_SWIG_VALUE(IMP::base::internal, _Protection, _Protections);
 %include "IMP/base/flags.h"
 %include "IMP/base/enums.h"
 %include "IMP/base/VersionInfo.h"
-%include "IMP/base/RefCounted.h"
 %include "IMP/base/file.h"
 %include "IMP/base/log.h"
-%include "IMP/base/declare_Object.h"
 %include "IMP/base/Object.h"
 %include "IMP/base/SetLogState.h"
 %include "IMP/base/WarningContext.h"

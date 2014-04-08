@@ -6,10 +6,6 @@
      if function names match the name of another Python file:
        https://bugzilla.gnome.org/show_bug.cgi?id=709779
 
-   - doxygen's STL support can get confused and add broken links to
-     classstd_1_1vector.html:
-       https://bugzilla.gnome.org/show_bug.cgi?id=709870
-
    The script simply removes such links. Call it with a single argument - the
    directory containing the documentation HTML files.
 """
@@ -19,8 +15,7 @@ import os
 import glob
 import sys
 
-r = re.compile("""<a [^>]*href="(classstd_1_1vector|
-                                 namespacelink|
+r = re.compile("""<a [^>]*href="(namespacelink|
                                  namespacecustom__hierarchy|
                                  namespacesetup|
                                  namespaceBallMover)

@@ -1,7 +1,7 @@
 /**
  *  \file IMP/atom/Copy.h     \brief A particle with a user-defined type.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -48,6 +48,10 @@ class IMPATOMEXPORT Copy : public Molecule {
 };
 
 IMP_DECORATORS(Copy, Copies, kernel::ParticlesTemp);
+
+/** Walk up the hierarchy to find the current state. Return -1 if there is none.
+ */
+IMPATOMEXPORT int get_copy_index(Hierarchy h);
 
 IMPATOM_END_NAMESPACE
 

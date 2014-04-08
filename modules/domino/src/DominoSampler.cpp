@@ -1,7 +1,7 @@
 /**
  *  \file ConjugateGradients.cpp  \brief Simple conjugate gradients optimizer.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,8 +11,9 @@
 #include <IMP/domino/internal/tree_inference.h>
 #include <IMP/base/warning_macros.h>
 #include <IMP/kernel/internal/graph_utility.h>
-#include <IMP/file.h>
+#include <IMP/base/file.h>
 #include <boost/scoped_ptr.hpp>
+#include <boost/unordered_set.hpp>
 #include <boost/graph/connected_components.hpp>
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -29,7 +30,7 @@ void check_graph(const G &jt, Subset known_particles) {
   IMP_CHECK_VARIABLE(known_particles);
   IMP_CHECK_VARIABLE(jt);
   IMP_IF_CHECK(USAGE) {
-    IMP::base::set<kernel::Particle *> used;
+    boost::unordered_set<kernel::Particle *> used;
     typename boost::property_map<G, boost::vertex_name_t>::const_type
         subset_map = boost::get(boost::vertex_name, jt);
     for (unsigned int i = 0; i < boost::num_vertices(jt); ++i) {

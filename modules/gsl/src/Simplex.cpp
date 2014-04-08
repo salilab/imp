@@ -2,7 +2,7 @@
  *  \file Simplex.cpp
  *  \brief XXXX.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,12 +12,6 @@
 IMPGSL_BEGIN_NAMESPACE
 
 Simplex::Simplex(kernel::Model *m) : GSLOptimizer(m) {
-  min_length_ = .1;
-  max_length_ = 1;
-}
-
-Simplex::Simplex() : GSLOptimizer() {
-  IMPGSL_DEPRECATED_FUNCTION_DEF(2.1, "Pass the model to the constructor.");
   min_length_ = .1;
   max_length_ = 1;
 }

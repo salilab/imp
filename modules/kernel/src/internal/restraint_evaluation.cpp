@@ -1,7 +1,7 @@
 /**
  *  \file static.cpp   \brief all static data for module.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -27,6 +27,9 @@ namespace {
 void before_protected_evaluate(kernel::Model *m, const ScoreStatesTemp &states,
                                bool derivative) {
   IMP_CHECK_OBJECT(m);
+  if (m->first_call_) {
+    m->check_dependency_invariants();
+  }
   m->before_evaluate(states);
   if (derivative) {
     m->zero_derivatives();
@@ -49,7 +52,6 @@ void do_evaluate_one(IMP::kernel::ScoreAccumulator sa, RS *restraint,
                      Model *m) {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   if (m->first_call_) {
-    m->check_dependency_invariants();
     try {
       base::SetNumberOfThreads no(1);
       internal::SFResetBitset rbr(m->Masks::read_mask_, true);

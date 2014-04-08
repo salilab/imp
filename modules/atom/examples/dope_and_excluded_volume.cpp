@@ -79,7 +79,8 @@ int main(int argc, char *argv[]) {
                   SoftSphere(Harmonic(spring_constant))));
 
     // Now let's use it
-    IMP::base::PointerMember<IMP::kernel::Model> model = new IMP::kernel::Model();
+    IMP::base::PointerMember<IMP::kernel::Model> model =
+        new IMP::kernel::Model();
     IMP::kernel::ParticleIndexPairs pips = setup_pairs(model);
 
     for (unsigned int i = 0; i < pips.size(); ++i) {
@@ -88,7 +89,7 @@ int main(int argc, char *argv[]) {
     }
     return 0;
   }
-  catch (const std::exception & e) {
+  catch (const std::exception &e) {
     std::cerr << "ERROR: " << e.what() << std::endl;
     return 1;
   }

@@ -25,18 +25,18 @@ rh = RMF.create_rmf_file(tfn)
 IMP.rmf.add_hierarchies(rh, [h])
 
 # add the current configuration to the file as frame 0
-IMP.rmf.save_frame(rh, 0)
+IMP.rmf.save_frame(rh)
 
 # close the file
 del rh
 
 # reopen it, don't clear the file when opening it
-rh = RMF.open_rmf_file(tfn)
+rh = RMF.open_rmf_file_read_only(tfn)
 
 # link to the existing pdb hierarchy
 IMP.rmf.link_hierarchies(rh, [h])
 
 # load the same coordinates in, ok, that is not very exciting
-IMP.rmf.load_frame(rh, 0)
+IMP.rmf.load_frame(rh, RMF.FrameID(0))
 
 print "Try running hdf5_display or hdf5_show on", tfn

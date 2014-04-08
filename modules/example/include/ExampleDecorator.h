@@ -1,7 +1,7 @@
 /**
  *  \file IMP/example/ExampleDecorator.h     \brief Add a name to a particle.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -21,7 +21,8 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 //! A simple decorator which adds a name to a particle.
 /** A decorator adds functionality to a particle and ensures that invariants
     are preserved. In this case, the functionality is the setting and access
-    of a name for the kernel::Particle and the invariant is that the name is always
+    of a name for the kernel::Particle and the invariant is that the name is
+   always
     non-empty.
 
     The source code is as follows:
@@ -40,7 +41,8 @@ class IMPEXAMPLEEXPORT ExampleDecorator : public Decorator {
       the initial state of the Decorator to be reasonable (i.e.
       make sure there is a non-empty name).
    */
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi, std::string name) {
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                                std::string name) {
     // use the usage check macro to make sure that arguments are correct
     IMP_USAGE_CHECK(!name.empty(), "The name cannot be empty.");
     m->add_attribute(get_name_key(), pi, name);

@@ -1,0 +1,11 @@
+#ifndef IMP_EIGEN_ARRAY_MODULE_H
+#define IMP_EIGEN_ARRAY_MODULE_H
+
+// include Core first to handle Eigen2 support macros
+#include "Core"
+
+#ifndef IMP_EIGEN2_SUPPORT
+  #error The Eigen/Array header does no longer exist in Eigen3. All that functionality has moved to Eigen/Core.
+#endif
+
+#endif // IMP_EIGEN_ARRAY_MODULE_H

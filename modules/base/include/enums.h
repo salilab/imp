@@ -1,7 +1,7 @@
 /**
  *  \file IMP/base/enums.h    \brief Basic types used by IMP.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,6 +10,8 @@
 
 #include <IMP/base/base_config.h>
 #include "compiler_macros.h"
+#include <iostream>
+
 // IMPBASE_BEGIN_NAMESPACE
 namespace IMP {
 
@@ -35,14 +37,14 @@ enum LogLevel {
   /** Log memory allocations and frees.*/
   MEMORY = IMP_MEMORY
 #ifndef IMP_DOXYGEN
-      ,
+  ,
   ALL_LOG = 6
 #endif
 };
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 IMPBASEEXPORT std::istream &operator>>(std::istream &in, LogLevel &ll);
-IMPBASEEXPORT std::ostream &operator<<(std::ostream &in, LogLevel &ll);
+IMPBASEEXPORT std::ostream &operator<<(std::ostream &in, LogLevel ll);
 #endif
 
 // duplicated in IMP_base_exception.i otherwise IMP_base_exception.i
@@ -61,11 +63,24 @@ enum CheckLevel {
   USAGE_AND_INTERNAL = IMP_INTERNAL
 };
 #endif
-
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 IMPBASEEXPORT std::istream &operator>>(std::istream &in, CheckLevel &ll);
+IMPBASEEXPORT std::ostream &operator<<(std::ostream &in, CheckLevel ll);
 #endif
-}
-}  // IMPBASE_END_NAMESPACE
+
+//! Specify the level of statistics to record
+/** See show_timings(). */
+enum StatisticsLevel {
+  NO_STATISTICS = 0,
+  ALL_STATISTICS = 1
+};
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+IMPBASEEXPORT std::istream &operator>>(std::istream &in, StatisticsLevel &ll);
+IMPBASEEXPORT std::ostream &operator<<(std::ostream &in, StatisticsLevel ll);
+#endif
+
+}  // base
+
+}  // imp
 
 #endif /* IMPBASE_ENUMS_H */

@@ -2,7 +2,7 @@
  *  \file rigid_pair_score.h
  *  \brief utilities for rigid pair scores.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_INTERNAL_RIGID_BODY_TREE_H
@@ -12,7 +12,6 @@
 #include "../XYZ.h"
 #include "../rigid_bodies.h"
 #include <IMP/algebra/Sphere3D.h>
-#include <IMP/base/set.h>
 #include <queue>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
@@ -98,7 +97,6 @@ class IMPCOREEXPORT RigidBodyHierarchy : public IMP::base::Object {
   const kernel::ParticleIndexes &get_constituents() const {
     return constituents_;
   }
-  IMP_OBJECT_METHODS(RigidBodyHierarchy);
   // for testing
   kernel::ParticleIndexes get_particles(unsigned int i) const {
     kernel::ParticleIndexes ret;
@@ -121,6 +119,7 @@ class IMPCOREEXPORT RigidBodyHierarchy : public IMP::base::Object {
   void validate(kernel::Model *m) const;
   RigidBody get_rigid_body() const { return rb_; }
   kernel::Model *get_model() const { return rb_->get_model(); }
+  IMP_OBJECT_METHODS(RigidBodyHierarchy);
 };
 
 IMPCOREEXPORT kernel::Particle *closest_particle(kernel::Model *m,

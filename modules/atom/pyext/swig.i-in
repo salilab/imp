@@ -27,6 +27,8 @@ IMP_SWIG_DECORATOR(IMP::atom, LennardJones, LennardJonesList);
 IMP_SWIG_DECORATOR(IMP::atom, Mass, Masses);
 IMP_SWIG_DECORATOR(IMP::atom, Molecule, Molecules);
 IMP_SWIG_DECORATOR(IMP::atom, Residue, Residues);
+IMP_SWIG_DECORATOR(IMP::atom, Representation, Representations);
+IMP_SWIG_DECORATOR(IMP::atom, State, States);
 IMP_SWIG_DECORATOR(IMP::atom, Copy, Copies);
 IMP_SWIG_DECORATOR(IMP::atom, SecondaryStructureResidue, SecondaryStructureResidues);
 IMP_SWIG_BASE_OBJECT(IMP::atom, Simulator, Simulators);
@@ -55,6 +57,7 @@ IMP_SWIG_OBJECT(IMP::atom, CoulombPairScore, CoulombPairScores);
 IMP_SWIG_OBJECT(IMP::atom, CoverBond, CoverBonds);
 IMP_SWIG_OBJECT(IMP::atom, DihedralSingletonScore, DihedralSingletonScores);
 IMP_SWIG_OBJECT(IMP::atom, DopePairScore, DopePairScores);
+IMP_SWIG_OBJECT(IMP::atom, OrientedSoapPairScore, OrientedSoapPairScores);
 IMP_SWIG_OBJECT(IMP::atom, EzRestraint, EzRestraints);
 IMP_SWIG_OBJECT(IMP::atom, ForceFieldParameters, ForceFieldParametersList);
 IMP_SWIG_OBJECT(IMP::atom, ForceSwitch, ForceSwitches);
@@ -74,6 +77,7 @@ IMP_SWIG_OBJECT(IMP::atom, PPDBSelector, PPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, ProteinLigandAtomPairScore, ProteinLigandAtomPairScores);
 IMP_SWIG_OBJECT(IMP::atom, ProteinLigandRestraint, ProteinLigandRestraints);
 IMP_SWIG_OBJECT(IMP::atom, SameResiduePairFilter, SameResiduePairFilters);
+IMP_SWIG_OBJECT(IMP::atom, SoapPairFilter, SoapPairFilters);
 IMP_SWIG_OBJECT(IMP::atom, SmoothingFunction, SmoothingFunctions);
 IMP_SWIG_OBJECT(IMP::atom, StereochemistryPairFilter, StereochemistryPairFilters);
 IMP_SWIG_OBJECT(IMP::atom, VelocityScalingOptimizerState, VelocityScalingOptimizerStates);
@@ -121,15 +125,6 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
         this = _IMP_atom.new_Selection(hierarchies)
         try: self.this.append(this)
         except: self.this = this
-      if "residue_indexes" in params.keys():
-        out = []
-        for i in params["residue_indexes"]:
-           if type(i) == tuple:
-              print "WARNING, Passing a tuple to residue_indexes in Selection is deprecated as of IMP 2.1, please use range() instead."
-              out += range(i[0], i[1])
-           else:
-              out.append(i)
-           params["residue_indexes"] = out
       for k in params.keys():
         eval("self.set_%s(params[k])"%k)
 %}
@@ -167,6 +162,7 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
 %include "IMP/atom/VelocityScalingOptimizerState.h"
 %include "IMP/atom/Fragment.h"
 %include "IMP/atom/StereochemistryPairFilter.h"
+%include "IMP/atom/SoapPairFilter.h"
 %include "IMP/atom/Mass.h"
 %include "IMP/atom/BondedPairFilter.h"
 %include "IMP/atom/mol2.h"
@@ -175,6 +171,7 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
 
 %template(_ADopeBase) IMP::score_functor::DistancePairScore<IMP::score_functor::Dope>;
 %template(_BDopeBase) IMP::score_functor::DistancePairScore< IMP::score_functor::Statistical< IMP::atom::DopeType,false,true,false > >;
+%template(_OrientedSoapBase) IMP::score_functor::DistancePairScore<IMP::score_functor::OrientedSoap>;
 namespace IMP {
   namespace atom {
    %template(_SPSFTB) ::IMP::score_functor::DistancePairScore<score_functor::Statistical< IMP::atom::ProteinLigandType, true, false> >;
@@ -194,6 +191,8 @@ namespace IMP {
 %include "IMP/atom/element.h"
 %include "IMP/atom/Atom.h"
 %include "IMP/atom/Residue.h"
+%include "IMP/atom/Representation.h"
+%include "IMP/atom/State.h"
 %include "IMP/atom/dihedrals.h"
 %include "IMP/atom/Molecule.h"
 %include "IMP/atom/Copy.h"
@@ -210,6 +209,7 @@ namespace IMP {
 %include "IMP/atom/EzRestraint.h"
 %include "IMP/atom/hierarchy_tools.h"
 %include "IMP/atom/DopePairScore.h"
+%include "IMP/atom/OrientedSoapPairScore.h"
 %include "IMP/atom/SameResiduePairFilter.h"
 %include "IMP/atom/RemoveRigidMotionOptimizerState.h"
 %include "IMP/atom/BerendsenThermostatOptimizerState.h"
@@ -222,7 +222,6 @@ namespace IMP {
    %template(show_molecular_hierarchy) IMP::core::show<IMP::atom::Hierarchy>;
    %template(CHARMMBond) CHARMMConnection<2>;
    %template(CHARMMAngle) CHARMMConnection<3>;
-   %template(_get_rmsd_cpp) get_rmsd<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
    %template(_get_native_overlap_cpp) get_native_overlap<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
    %template(_get_drmsd_cpp) get_drmsd<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
    %template(_get_drms_cpp) get_drms<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
@@ -232,10 +231,6 @@ namespace IMP {
 }
 
 %pythoncode %{
-def get_rmsd(a, b):
-   va= [IMP.algebra.get_vector(x) for x in a]
-   vb= [IMP.algebra.get_vector(x) for x in b]
-   return _get_rmsd_cpp(va, vb)
 def get_native_overlap(a, b, d):
    va= [IMP.algebra.get_vector(x) for x in a]
    vb= [IMP.algebra.get_vector(x) for x in b]

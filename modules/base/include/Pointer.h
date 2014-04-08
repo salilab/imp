@@ -2,7 +2,7 @@
  *  \file IMP/base/Pointer.h
  *  \brief A nullptr-initialized pointer to an \imp Object.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -189,65 +189,6 @@ struct PointerMember
 #endif
 };
 
-//! A reference counted pointer to an Object
-/**
-    The object being pointed to must inherit from IMP::base::Object.
-    In addition to reference counting the object like Pointer,
-    Object::set_was_used(true) will be called so you don't get
-    warnings about unused objects.
-
-    \param[in] O The type of IMP::RefCounted-derived object to point to
-
-    \deprecated_at{2.1} Use ObjectMember instead
- */
-template <class O>
-struct OwnerPointer : internal::PointerBase<internal::PointerMemberTraits<O> > {
-  typedef internal::PointerBase<internal::PointerMemberTraits<O> > P;
-  /** \deprecated_at{2.1} Use ObjectMember instead */
-  template <class Any>
-  IMPBASE_DEPRECATED_VALUE_DECL(2.1) OwnerPointer(const Any& o)
-      : P(o) {}
-  /** \deprecated_at{2.1} Use ObjectMember instead */
-  IMPBASE_DEPRECATED_VALUE_DECL(2.1)
-  OwnerPointer() {}
-  template <class OT>
-  base::OwnerPointer<O>& operator=(const internal::PointerBase<OT>& o) {
-    P::operator=(o);
-    return *this;
-  }
-  template <class OT>
-  base::OwnerPointer<O>& operator=(OT* o) {
-    P::operator=(o);
-    return *this;
-  }
-#if (defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)) && \
-    !defined(nullptr)
-  base::OwnerPointer<O>& operator=(nullptr_t o) {
-    P::operator=(o);
-    return *this;
-  }
-#endif
-  base::OwnerPointer<O>& operator=(const P& o) {
-    P::operator=(o);
-    return *this;
-  }
-
-#ifdef IMP_DOXYGEN
-  //! Relinquish control of the raw pointer stored in the OwnerPointer
-  /** Relinquish control of the raw pointer stored in the OwnerPointer.
-      Use this to safely return objects allocated within functions.
-      The reference count of the object will be decreased by one,
-      but even it it becomes 0, the object will not be destroyed.
-
-      @return a valid raw pointer to the object stored in the OwnerPointer
-  */
-  O* release();
-
-  //! get the raw pointer to the object
-  O* get() const;
-#endif
-};
-
 /******* streaming ********/
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 template <class T>
@@ -257,12 +198,6 @@ inline std::ostream& operator<<(std::ostream& out, base::Pointer<T> o) {
 }
 template <class T>
 inline std::ostream& operator<<(std::ostream& out, base::PointerMember<T> o) {
-  out << Showable(o.get());
-  return out;
-}
-
-template <class T>
-inline std::ostream& operator<<(std::ostream& out, base::OwnerPointer<T> o) {
   out << Showable(o.get());
   return out;
 }

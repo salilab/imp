@@ -4,12 +4,13 @@ import sys
 import os
 import re
 
+
 class Tests(IMP.test.ApplicationTestCase):
 
     def test_groel(self):
         """Test the GroEL example"""
         cmds = self.read_shell_commands(
-                             '../../../doc/tutorial/cnmultifit_groel.dox')
+            '../../../doc/tutorial/cnmultifit_groel.dox')
         d = IMP.test.RunInTempDir()
         for c in cmds:
             self.run_shell_command(c)

@@ -2,11 +2,10 @@
  *  \file SerialMover.cpp
  *  \brief A mover that apply other movers one at a time
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/core/SerialMover.h>
-#include <IMP/core/Mover.h>
 #include <iostream>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -35,25 +34,6 @@ kernel::ModelObjectsTemp SerialMover::do_get_inputs() const {
     ret += movers_[i]->get_inputs();
   }
   return ret;
-}
-
-double SerialMover::get_acceptance_probability(int i) const {
-  IMPCORE_DEPRECATED_METHOD_DEF(
-      2.1, "Use statistics functions on individual movers");
-  return static_cast<double>(movers_[i]->get_number_of_accepted()) /
-         movers_[i]->get_number_of_proposed();
-}
-void SerialMover::reset_acceptance_probabilities() {
-  IMPCORE_DEPRECATED_METHOD_DEF(
-      2.1, "Use statistics functions on individual movers");
-  for (unsigned int i = 0; i < movers_.size(); ++i) {
-    movers_[i]->reset_statistics();
-  }
-}
-unsigned int SerialMover::get_number_of_movers() const {
-  IMPCORE_DEPRECATED_METHOD_DEF(
-      2.1, "Use statistics functions on individual movers");
-  return movers_.size();
 }
 
 IMPCORE_END_NAMESPACE

@@ -19,7 +19,8 @@ for directory in directories:
         for filename in filenames:
             match = PYTHON_RE.match(filename)
             if match is not None:
-                (source_set if match.group(2) is None else pyc_set).add(match.group(1))
+                (source_set if match.group(2) is None else pyc_set).add(
+                    match.group(1))
         to_remove = (pyc_set - source_set)
         for extra in to_remove:
             unlink(join(dirpath, extra + 'c'))

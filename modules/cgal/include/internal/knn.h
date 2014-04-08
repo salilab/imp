@@ -1,7 +1,7 @@
 /**
  *  \file cgal/internal/knn.h
  *  \brief manipulation of text, and Interconversion between text and numbers
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCGAL_INTERNAL_KNN_H
@@ -29,14 +29,14 @@ base::Vector<VectorWithIndex> create_vectors_with_index(It b, It e) {
   base::Vector<VectorWithIndex> v(std::distance(b, e));
   It c = b;
   for (unsigned int i = 0; i < v.size(); ++i) {
-    v[i] = VectorWithIndex(i, get_vector_d_geometry(*c));
+    v[i] = VectorWithIndex(i, get_vector_geometry(*c));
     ++c;
   }
   return v;
 }
 
 struct IMPCGALEXPORT RCTree : public base::Object {
-  RCTree(): Object("RCTree%1%") {}
+  RCTree() : Object("RCTree%1%") {}
   virtual ~RCTree();
 };
 
@@ -55,12 +55,12 @@ struct IMPCGALEXPORT KNNData {
   template <class G>
   void fill_nearest_neighbors(const G &g, unsigned int k, double eps,
                               Ints &ret) const {
-    fill_nearest_neighbors_v(get_vector_d_geometry(g), k, eps, ret);
+    fill_nearest_neighbors_v(get_vector_geometry(g), k, eps, ret);
   }
   template <class G>
   void fill_nearest_neighbors(const G &g, double distance, double eps,
                               Ints &ret) const {
-    fill_nearest_neighbors_v(get_vector_d_geometry(g), distance, eps, ret);
+    fill_nearest_neighbors_v(get_vector_geometry(g), distance, eps, ret);
   }
   const algebra::VectorKD &get_point(unsigned int i) const { return vsi_[i]; }
   unsigned int get_number_of_points() const { return vsi_.size(); }

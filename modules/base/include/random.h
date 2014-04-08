@@ -1,7 +1,7 @@
 /**
  *  \file IMP/base/random.h    \brief Random number generators used by IMP.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -9,19 +9,17 @@
 #define IMPBASE_RANDOM_H
 
 #include <IMP/base/base_config.h>
-#include <boost/random.hpp>
+#include <boost/random/mersenne_twister.hpp>
 
 IMPBASE_BEGIN_NAMESPACE
-typedef ::boost::rand48 RandomNumberGenerator;
+typedef ::boost::mt19937 RandomNumberGenerator;
 //! A shared random number generator
-/** The random number generator is seeded based of of the current time. To
-    provide a better seed or use a constant seed call
-    random_number_generator.seed(x) with a 32 bit int or a 64 bit unsigned int.
+/** The random number generator is seeded based using the boost::random_device
+if it is available or `/dev/urandom` if it is not.
 
-    This generator can be used by the
-\external{http://www.boost.org/doc/libs/1_39_0/libs/random/index.html,
-Boost.Random}
-    distributions.
+This generator can be used by the
+[Boost.Random](http://www.boost.org/doc/libs/1_39_0/libs/random/index.html)
+distributions.
  */
 extern IMPBASEEXPORT RandomNumberGenerator random_number_generator;
 

@@ -2,7 +2,7 @@
  *  \file IMP/domino/subset_scores.h
  *  \brief A beyesian infererence-based sampler.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -19,6 +19,7 @@
 #include <IMP/base/cache.h>
 #include <IMP/kernel/Restraint.h>
 #include <IMP/base/log.h>
+#include <boost/unordered_map.hpp>
 
 #if IMP_DOMINO_HAS_RMF
 #include <RMF/HDF5/Group.h>
@@ -36,7 +37,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 class IMPDOMINOEXPORT RestraintCache : public base::Object {
   IMP_NAMED_TUPLE_2(Key, Keys, base::WeakPointer<kernel::Restraint>, restraint,
                     Assignment, assignment, );
-  IMP_NAMED_TUPLE_3(RestraintData, estraintDatas,
+  IMP_NAMED_TUPLE_3(RestraintData, RestraintDatas,
                     base::PointerMember<ScoringFunction>, scoring_function,
                     Subset, subset, double, max, );
   IMP_NAMED_TUPLE_2(RestraintSetData, RestraintSetDatas, Slice, slice,
@@ -46,9 +47,9 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
 
 #ifndef IMP_DOXYGEN
   class Generator {
-    typedef base::map<kernel::Restraint *, RestraintData> RMap;
+    typedef boost::unordered_map<kernel::Restraint *, RestraintData> RMap;
     RMap rmap_;
-    typedef base::map<kernel::Restraint *, SetData> SMap;
+    typedef boost::unordered_map<kernel::Restraint *, SetData> SMap;
     SMap sets_;
     base::PointerMember<ParticleStatesTable> pst_;
 
@@ -123,14 +124,15 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
     ParticleStatesTable *get_particle_states_table() const { return pst_; }
     void show_restraint_information(std::ostream &out) const;
   };
-#endif // IMP_DOXYGEN
+#endif  // IMP_DOXYGEN
 
   struct ApproximatelyEqual {
     bool operator()(double a, double b) const {
       return std::abs(a - b) < .1 * (a + b) + .1;
     }
   };
-  typedef base::map<kernel::Particle *, kernel::ParticlesTemp> DepMap;
+  typedef boost::unordered_map<kernel::Particle *, kernel::ParticlesTemp>
+      DepMap;
   void add_restraint_internal(kernel::Restraint *r, unsigned int index,
                               kernel::RestraintSet *parent, double max,
                               Subset parent_subset, const DepMap &dependencies);
@@ -143,15 +145,17 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
                                   const Subset &cur_subset, double cur_max,
                                   const DepMap &dependencies);
   Subset get_subset(kernel::Restraint *r, const DepMap &dependencies) const;
-  // otherwise doxygen seems to index this for some reason
+// otherwise doxygen seems to index this for some reason
 #ifndef IMP_DOXYGEN
   typedef base::LRUCache<Generator, ApproximatelyEqual> Cache;
   Cache cache_;
 #endif
-  typedef base::map<base::Pointer<kernel::Restraint>, Subset> KnownRestraints;
+  typedef boost::unordered_map<base::Pointer<kernel::Restraint>, Subset>
+      KnownRestraints;
   KnownRestraints known_restraints_;
   // assign a unique index to each restraint for use with I/O
-  typedef base::map<base::Pointer<kernel::Restraint>, int> RestraintIndex;
+  typedef boost::unordered_map<base::Pointer<kernel::Restraint>, int>
+      RestraintIndex;
   RestraintIndex restraint_index_;
   unsigned int next_index_;
 
@@ -174,13 +178,13 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
     double s = cache_.get(Key(r, a));
     return s;
   }
-  /** The the score for a restraint given a subset and assignment on
+  /** Get the score for a restraint given a subset and assignment on
       that subset.
    */
   double get_score(kernel::Restraint *r, const Subset &s,
                    const Assignment &a) const;
 
-  //! make it so kernel::Restraint::get_last_score() returns the score
+  //! Make it so kernel::Restraint::get_last_score() returns the score
   /** This is useful when writing the restraints to disk, as that
       code often goes off the last score to avoid recomputing the
       restraints.*/

@@ -1,7 +1,7 @@
 /**
  *  \file internal/cgal_knn.h
  *  \brief manipulation of text, and Interconversion between text and numbers
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #include <IMP/cgal/internal/sphere_cover.h>
@@ -37,12 +37,12 @@ void refine_unit_sphere_cover_d(base::Vector<algebra::VectorD<D> > &ret,
   for (unsigned int rep = 0; rep < 10 * D; ++rep) {
     CH ch(D);
     for (unsigned int i = 0; i < ret.size(); ++i) {
-      P p(D, ret[i].coordinates_begin(), ret[i].coordinates_end());
+      P p(D, ret[i].begin(), ret[i].end());
       typename CH::Vertex_handle vh = ch.insert(p);
       indexes[vh] = i + 1;
       if (!ALL) {
         algebra::VectorD<D> nr = -ret[i];
-        P p(D, nr.coordinates_begin(), nr.coordinates_end());
+        P p(D, nr.begin(), nr.end());
         typename CH::Vertex_handle vh = ch.insert(p);
         indexes[vh] = -static_cast<int>(i) - 1;
       }

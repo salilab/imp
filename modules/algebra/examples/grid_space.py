@@ -18,5 +18,16 @@ for i in range(0, 100):
         print "hit"
     else:
         g.add_voxel(ei, count)
-        count = count + 1
-print "There are", len(g.get_all_indexes()), "distinct values", count
+        count += 1
+
+in_count = 0
+for i in g.get_extended_indexes(IMP.algebra.get_bounding_box(s)):
+    if IMP.algebra.get_distance(s.get_center(), g.get_center(i)) > 6:
+        continue
+    if g.get_has_index(i):
+        print "hit"
+    else:
+        g.add_voxel(i, -1)
+        in_count += 1
+
+print "There are", len(g.get_all_indexes()), "distinct values", count, in_count

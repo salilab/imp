@@ -1,9 +1,0 @@
-<!-- File: eg2_representation.xml -->
-
-<Representation>
-    <Protein id="Protein1"><Chain filename="data/protein1.pdb"/></Protein>
-    <Protein id="Protein2"><Chain filename="data/protein2.pdb"/></Protein>
-    <Protein id="Protein3"><Chain filename="data/protein3.pdb"/></Protein>
-    <Protein id="Protein4"><Chain filename="data/protein4.pdb"/></Protein>
-    <Protein id="Protein5"><Chain filename="data/protein5.pdb"/></Protein>
-</Representation>

@@ -20,7 +20,6 @@ def create_scoring(m, ps):
                                          "Restrained pairs")
     pr = IMP.container.PairsRestraint(score, pc)
     pr.set_maximum_score(.01)
-    pr.set_model(m)
     d = IMP.core.DistanceToSingletonScore(IMP.core.HarmonicUpperBound(2, 1),
                                           IMP.algebra.Vector3D(2, 0, 0))
     return [pr]
@@ -138,7 +137,7 @@ s = create_sampler(m, ps, rs, pst)
 
 # s.set_log_level(IMP.base.SILENT)
 print "sampling"
-cs = s.get_sample()
+cs = s.create_sample()
 
 print "found ", cs.get_number_of_configurations(), "solutions"
 for i in range(cs.get_number_of_configurations()):

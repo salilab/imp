@@ -2,7 +2,7 @@
  * \file IMP/atom/charmm_topology.h
  * \brief Classes for handling CHARMM-style topology.
  *
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -302,8 +302,8 @@ class IMPATOMEXPORT CHARMMResidueTopologyBase : public IMP::base::Object {
   void add_internal_coordinate(const CHARMMInternalCoordinate &ic) {
     internal_coordinates_.push_back(ic);
   }
-  const CHARMMInternalCoordinate &get_internal_coordinate(
-      unsigned int index) const {
+  const CHARMMInternalCoordinate &get_internal_coordinate(unsigned int index)
+      const {
     return internal_coordinates_[index];
   }
 
@@ -423,7 +423,6 @@ class IMPATOMEXPORT CHARMMResidueTopology : public CHARMMIdealResidueTopology {
   bool patched_;
 
  public:
-
   //! Create an empty topology, containing no atoms or bonds.
   CHARMMResidueTopology(ResidueType type)
       : CHARMMIdealResidueTopology(type), patched_(false) {}

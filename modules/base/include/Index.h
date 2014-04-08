@@ -1,7 +1,7 @@
 /**
  *  \file IMP/base/Index.h    \brief Basic types used by IMP.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -22,7 +22,7 @@ IMPBASE_BEGIN_NAMESPACE /** Define a typed index. This can help disambiguate
                             that it can be replaced by an integer everywhere, if
                             needed.
                         */
-template <class Tag>
+    template <class Tag>
 class Index : public Value {
   int i_;
 

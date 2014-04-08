@@ -1,8 +1,9 @@
 /**
- *  \file domino_particle_states.h
- *  \brief kernel::Particles states for a rigid body that is going to be projected
+ *  \file IMP/em2d/domino_particle_states.h
+ *  \brief kernel::Particles states for a rigid body that is going to be
+ *projected
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -21,23 +22,18 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-
-
 /*! States that a set of kernel::Particles can have according to their positions
     and orientations in a grid. The orientations also determine the orientation
     of the projections of the particles.
 */
-class IMPEM2DEXPORT GridStates: public domino::ParticleStates {
+class IMPEM2DEXPORT GridStates : public domino::ParticleStates {
 
-protected:
-
+ protected:
   algebra::Vector3Ds positions_;
   algebra::Rotation3Ds orientations_;
   unsigned int number_of_states_;
 
-public:
-
-
+ public:
   /*!
     \param[in] positions Set of positions that the set of particles
                can have in the grid (points of the grid).
@@ -48,43 +44,42 @@ public:
     \
   */
   GridStates(const algebra::Vector3Ds &positions,
-                            const algebra::Rotation3Ds &orientations,
-                            const String &name="GridStates") :
-                            domino::ParticleStates(name),
-                           positions_(positions),
-                           orientations_(orientations) {
-    number_of_states_ = positions_.size()*orientations_.size();
+             const algebra::Rotation3Ds &orientations,
+             const String &name = "GridStates")
+      : domino::ParticleStates(name),
+        positions_(positions),
+        orientations_(orientations) {
+    number_of_states_ = positions_.size() * orientations_.size();
   };
 
   /*! Returns the position corresponding to the state i
     \param[in] i
   */
-  algebra::Vector3D get_position(unsigned int  i) const;
+  algebra::Vector3D get_position(unsigned int i) const;
 
   /*! Returns the orientation corresponding to the state i
     \param[in] i
   */
-  algebra::Rotation3D get_orientation(unsigned int  i) const;
+  algebra::Rotation3D get_orientation(unsigned int i) const;
 
-  IMP_PARTICLE_STATES(GridStates);
+  virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, kernel::Particle *) const
+      IMP_OVERRIDE;
 
- };
+  IMP_OBJECT_NO_WARNING(GridStates);
+};
 IMP_OBJECTS(GridStates, GridStatesList);
-
 
 /*! States that a set of kernel::Particles can have according to their positions
     and orientations in a grid. The orientations also determine the orientation
     of the projections of the particles.
 */
-class IMPEM2DEXPORT ProjectionStates: public GridStates {
+class IMPEM2DEXPORT ProjectionStates : public GridStates {
 
-protected:
-
+ protected:
   Images projections_;
 
-public:
-
-
+ public:
   /*!
     \param[in] positions Set of positions that the set of particles
                can have in the grid (points of the grid).
@@ -98,27 +93,26 @@ public:
     \
   */
   ProjectionStates(const algebra::Vector3Ds &positions,
-                            const algebra::Rotation3Ds &orientations,
-                            const Images &projections,
-                            const String &name="ProjectionStates")  :
-                            GridStates(positions, orientations, name),
-                           projections_(projections) {
-    number_of_states_ = positions_.size()*orientations_.size();
+                   const algebra::Rotation3Ds &orientations,
+                   const Images &projections,
+                   const String &name = "ProjectionStates")
+      : GridStates(positions, orientations, name), projections_(projections) {
+    number_of_states_ = positions_.size() * orientations_.size();
   };
 
   /*! Returns the projection corresponding to the state i;
     \param[in] i
   */
-  Image* get_projection(unsigned int  i) const;
+  Image *get_projection(unsigned int i) const;
 
-  IMP_PARTICLE_STATES(ProjectionStates);
- };
+  virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, kernel::Particle *) const
+      IMP_OVERRIDE;
+
+  IMP_OBJECT_NO_WARNING(ProjectionStates);
+};
 IMP_OBJECTS(ProjectionStates, ProjectionStatesList);
-
-
-
-
 
 IMPEM2D_END_NAMESPACE
 
-#endif  /* IMPEM2D_DOMINO_PARTICLE_STATES_H */
+#endif /* IMPEM2D_DOMINO_PARTICLE_STATES_H */

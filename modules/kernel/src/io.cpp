@@ -2,13 +2,14 @@
  *  \file file.cpp
  *  \brief Get directories used by IMP.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
 #include <IMP/kernel/io.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <IMP/kernel/Particle.h>
+#include <IMP/kernel/Model.h>
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream.hpp>
 

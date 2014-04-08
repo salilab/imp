@@ -1,7 +1,7 @@
 /**
  *  \file IMP/isd/vonMisesSufficient.h    \brief Normal distribution of Function
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_VON_MISES_SUFFICIENT_H
@@ -33,8 +33,7 @@ IMPISD_BEGIN_NAMESPACE
     \note derivative with respect to the mean \f$\chi_{exp}\f$ is not provided.
  */
 
-class vonMisesSufficient : public base::Object
-{
+class vonMisesSufficient : public base::Object {
  public:
   /** compute von Mises given the sufficient statistics
     \param[in] chi
@@ -44,13 +43,14 @@ class vonMisesSufficient : public base::Object
     \param[in] kappa concentration
   */
   vonMisesSufficient(double chi, unsigned N, double R0, double chiexp,
-                     double kappa):
-  base::Object("von Mises sufficient %1%"), x_(chi), R0_(R0), chiexp_(chiexp)
-
-    {
-        N_=N;
-        force_set_kappa(kappa);
-    }
+                     double kappa)
+      : base::Object("von Mises sufficient %1%"),
+        x_(chi),
+        R0_(R0),
+        chiexp_(chiexp) {
+    N_ = N;
+    force_set_kappa(kappa);
+  }
 
   /** compute von Mises given the raw observations
    * this is equivalent to calling get_sufficient_statistics and then the other
@@ -59,36 +59,31 @@ class vonMisesSufficient : public base::Object
     \param[in] obs a list of observed angles (in radians).
     \param[in] kappa concentration
   */
-  vonMisesSufficient(double chi, Floats obs, double kappa) :
-  base::Object("von Mises sufficient %1%"), x_(chi)
-    {
-        Floats stats = get_sufficient_statistics(obs);
-        N_= (unsigned) stats[0];
-        R0_ = stats[1];
-        chiexp_ = stats[2];
-        force_set_kappa(kappa);
-    }
+  vonMisesSufficient(double chi, Floats obs, double kappa)
+      : base::Object("von Mises sufficient %1%"), x_(chi) {
+    Floats stats = get_sufficient_statistics(obs);
+    N_ = (unsigned)stats[0];
+    R0_ = stats[1];
+    chiexp_ = stats[2];
+    force_set_kappa(kappa);
+  }
 
   /* energy (score) functions, aka -log(p) */
-  virtual double evaluate() const
-  {
-      return logterm_ - R0_*kappa_*cos(x_-chiexp_);
+  virtual double evaluate() const {
+    return logterm_ - R0_ * kappa_ * cos(x_ - chiexp_);
   }
 
-  virtual double evaluate_derivative_x() const
-  {
-      return R0_*kappa_*sin(x_-chiexp_) ;
+  virtual double evaluate_derivative_x() const {
+    return R0_ * kappa_ * sin(x_ - chiexp_);
   }
 
-  virtual double evaluate_derivative_kappa() const
-  {
-     return - R0_ * cos(x_-chiexp_) + double(N_) * I1_/I0_ ;
+  virtual double evaluate_derivative_kappa() const {
+    return -R0_ * cos(x_ - chiexp_) + double(N_) * I1_ / I0_;
   }
 
   /* probability density function */
-  virtual double density() const
-  {
-      return exp(R0_*kappa_*cos(x_-chiexp_))/(2*IMP::PI*I0N_);
+  virtual double density() const {
+    return exp(R0_ * kappa_ * cos(x_ - chiexp_)) / (2 * IMP::PI * I0N_);
   }
 
   /* getting parameters */
@@ -99,22 +94,16 @@ class vonMisesSufficient : public base::Object
   double get_kappa() { return kappa_; }
 
   /* change of parameters */
-  void set_x(double x) {
-    x_=x;
-  }
+  void set_x(double x) { x_ = x; }
 
-  void set_R0(double R0) {
-    R0_=R0;
-  }
+  void set_R0(double R0) { R0_ = R0; }
 
-  void set_chiexp(double chiexp) {
-    chiexp_=chiexp;
-  }
+  void set_chiexp(double chiexp) { chiexp_ = chiexp; }
 
-  void set_N(unsigned N){
-    N_=N;
-    I0N_=pow(I0_, static_cast<int>(N_));
-    logterm_ = log(2*IMP::PI*I0N_);
+  void set_N(unsigned N) {
+    N_ = N;
+    I0N_ = pow(I0_, static_cast<int>(N_));
+    logterm_ = log(2 * IMP::PI * I0N_);
   }
 
   void set_kappa(double kappa) {
@@ -129,25 +118,24 @@ class vonMisesSufficient : public base::Object
       \return the number of observations, \f$R_0\f$ (the component on the
               x axis) and \f$\chi_{exp}\f$
    */
-  static Floats get_sufficient_statistics(Floats data)
-    {
-        unsigned N = data.size();
-        //mean cosine
-        double cosbar=0;
-        double sinbar=0;
-        for (unsigned i=0; i<N; ++i){
-            cosbar += cos(data[i]);
-            sinbar += sin(data[i]);
-        }
-        double R=sqrt(cosbar*cosbar + sinbar*sinbar);
-        double chi=acos(cosbar/R);
-        if (sinbar < 0) chi=-chi;
-        Floats retval (3);
-        retval[0]=N;
-        retval[1]=R;
-        retval[2]=chi;
-        return retval;
+  static Floats get_sufficient_statistics(Floats data) {
+    unsigned N = data.size();
+    // mean cosine
+    double cosbar = 0;
+    double sinbar = 0;
+    for (unsigned i = 0; i < N; ++i) {
+      cosbar += cos(data[i]);
+      sinbar += sin(data[i]);
     }
+    double R = sqrt(cosbar * cosbar + sinbar * sinbar);
+    double chi = acos(cosbar / R);
+    if (sinbar < 0) chi = -chi;
+    Floats retval(3);
+    retval[0] = N;
+    retval[1] = R;
+    retval[2] = chi;
+    return retval;
+  }
 
   IMP_OBJECT_METHODS(vonMisesSufficient);
   /*IMP_OBJECT_INLINE(vonMisesSufficient, out << "vonMisesSufficient: " << x_
@@ -155,17 +143,17 @@ class vonMisesSufficient : public base::Object
                     << ", " << kappa_  <<std::endl, {});*/
 
  private:
-  double x_,R0_,chiexp_,kappa_,I0_,I1_,logterm_,I0N_;
+  double x_, R0_, chiexp_, kappa_, I0_, I1_, logterm_, I0N_;
   unsigned N_;
   void force_set_kappa(double kappa) {
     kappa_ = kappa;
     I0_ = double(boost::math::cyl_bessel_i(0, kappa));
     I1_ = double(boost::math::cyl_bessel_i(1, kappa));
-    I0N_=pow(I0_, static_cast<int>(N_));
-    logterm_ = log(2*IMP::PI*I0N_);
+    I0N_ = pow(I0_, static_cast<int>(N_));
+    logterm_ = log(2 * IMP::PI * I0N_);
   }
 };
 
 IMPISD_END_NAMESPACE
 
-#endif  /* IMPISD_VON_MISES_SUFFICIENT_H */
+#endif /* IMPISD_VON_MISES_SUFFICIENT_H */

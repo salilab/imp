@@ -2,7 +2,7 @@
  *  \file IMP/algebra/vector_generators.h
  *  \brief Functions to generate vectors.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -55,6 +55,7 @@ inline VectorD<D> get_random_vector_on(const BoundingBoxD<D> &bb) {
  */
 template <int D>
 inline VectorD<D> get_random_vector_in(const SphereD<D> &s) {
+  IMP_USAGE_CHECK(s.get_radius() > 0, "The sphere must have positive radius");
   BoundingBoxD<D> bb = get_bounding_box(s);
   double norm;
   VectorD<D> ret;
@@ -67,6 +68,7 @@ inline VectorD<D> get_random_vector_in(const SphereD<D> &s) {
   return ret;
 }
 
+#ifndef SWIG
 /** Generates a random vector in a circle
     with uniform density with respect to the area of the circle
 
@@ -76,12 +78,19 @@ inline VectorD<D> get_random_vector_in(const SphereD<D> &s) {
     See SphereD
 */
 IMPALGEBRAEXPORT VectorD<2> get_random_vector_in(const SphereD<2> &s);
+#endif
 
 //! Generate a random vector in a cylinder with uniform density
 /** See VectorD
     See Cylinder3D
  */
 IMPALGEBRAEXPORT Vector3D get_random_vector_in(const Cylinder3D &c);
+
+//! returns a random vector on a sphere of radius 1 with uniform density
+//! and implementation optimized for the 3D + unit vector case
+inline VectorD<3> get_random_vector_on_unit_sphere() {
+  return internal::get_random_vector_on_unit_sphere();
+}
 
 //! Generate a random vector on a sphere with uniform density
 /** See VectorD
@@ -213,6 +222,17 @@ IMPALGEBRAEXPORT Vector3Ds
 
 /** @} */
 
+/** Return a cover of the surface of the volume defined by a union of balls
+    bounded by the spheres.
+
+   This is effectively a sampling of the solvent exposed surface of a set of
+   spheres. The density of points has approximately the passed value.
+
+   This method is much faster than get_connolly_surface().
+*/
+IMPALGEBRAEXPORT Vector3Ds
+    get_uniform_surface_cover(const Sphere3Ds &in,
+                              double points_per_square_angstrom);
 IMPALGEBRA_END_NAMESPACE
 
 #endif /* IMPALGEBRA_VECTOR_GENERATORS_H */

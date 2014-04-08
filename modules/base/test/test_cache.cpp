@@ -2,7 +2,7 @@
  *  \file test_cache.cpp
  *  \brief A nullptr-initialized pointer to an \imp Object.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/base/cache.h>
@@ -13,7 +13,8 @@
 struct PlusOne {
   typedef int result_type;
   typedef int argument_type;
-  template <class T> result_type operator()(argument_type a, const T &) const {
+  template <class T>
+  result_type operator()(argument_type a, const T &) const {
     return a + 1;
   }
 };

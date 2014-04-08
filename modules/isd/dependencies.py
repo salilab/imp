@@ -1,4 +1,2 @@
 # saxs is just required for benchmark
-required_modules='kernel:container:core:atom:em:statistics:saxs'
-required_dependencies='Eigen3'
-optional_dependencies='CHOLMOD'
+required_modules = 'kernel:container:core:atom:em:statistics:saxs:algebra'

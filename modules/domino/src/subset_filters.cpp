@@ -2,7 +2,7 @@
  *  \file domino/DominoSampler.h \brief A beyesian infererence-based
  *  sampler.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/domino/domino_config.h>
@@ -48,8 +48,8 @@ class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilter : public SubsetFilter {
   IMP_OBJECT_METHODS(MinimumRestraintScoreSubsetFilter);
 };
 
-bool MinimumRestraintScoreSubsetFilter::get_is_ok(
-    const Assignment &state) const {
+bool MinimumRestraintScoreSubsetFilter::get_is_ok(const Assignment &state)
+    const {
   IMP_OBJECT_LOG;
   set_was_used(true);
   unsigned int bad_count = 0;
@@ -70,7 +70,7 @@ MinimumRestraintScoreSubsetFilterTable::MinimumRestraintScoreSubsetFilterTable(
       rc_(rc),
       rs_(rs.begin(), rs.end()),
       max_violated_(max) {
-  IMP_USAGE_CHECK(rc_, "Must pass a restriant cache");
+  IMP_USAGE_CHECK(rc_, "Must pass a restraint cache");
   std::sort(rs_.begin(), rs_.end());
 }
 
@@ -206,7 +206,7 @@ int DisjointSetsSubsetFilterTable::get_index(kernel::Particle *p) {
 void DisjointSetsSubsetFilterTable::build_sets() const {
   if (!sets_.empty()) return;
   if (pst_) {
-    IMP::base::map<ParticleStates *, int> map;
+    boost::unordered_map<ParticleStates *, int> map;
     kernel::ParticlesTemp allps = pst_->get_particles();
     base::Vector<kernel::ParticlesTemp> allsets;
     for (unsigned int i = 0; i < allps.size(); ++i) {
@@ -448,18 +448,18 @@ int get_next_equivalence_exclusion(int pos, const Assignment &state,
 
 IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(
     EquivalenceAndExclusion,
-    {
-      int last = -1;
-      for (unsigned int i = 0; i < members.size(); ++i) {
-        if (members[i] != -1) {
-          unsigned int si = state[members[i]];
-          if (si < i || static_cast<int>(si) <= last)
-            return false;
-          last = state[members[i]];
-        }
-      }
-      return true;
-    },
+{
+  int last = -1;
+  for (unsigned int i = 0; i < members.size(); ++i) {
+    if (members[i] != -1) {
+      unsigned int si = state[members[i]];
+      if (si < i || static_cast<int>(si) <= last)
+        return false;
+      last = state[members[i]];
+    }
+  }
+  return true;
+},
     return get_sorted_strength(s, excluded, members),
     return get_next_equivalence_exclusion(pos, state, set));
 

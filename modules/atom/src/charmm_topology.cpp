@@ -1,7 +1,7 @@
 /**
  * \file charmm_topology.cpp \brief Classes for handling CHARMM-style topology.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/base/exception.h>
@@ -276,8 +276,8 @@ CHARMMAtomTopology &CHARMMResidueTopologyBase::get_atom(std::string name) {
   }
 }
 
-const CHARMMAtomTopology &CHARMMResidueTopologyBase::get_atom(
-    std::string name) const {
+const CHARMMAtomTopology &CHARMMResidueTopologyBase::get_atom(std::string name)
+    const {
   base::Vector<CHARMMAtomTopology>::const_iterator it =
       std::find_if(atoms_.begin(), atoms_.end(), atom_has_name(name));
   if (it != atoms_.end()) {

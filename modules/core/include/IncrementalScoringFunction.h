@@ -2,7 +2,7 @@
  *  \file IMP/core/IncrementalScoringFunction.h
  *  \brief Simple Monte Carlo optimizer.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,8 +13,8 @@
 #include <IMP/base/Pointer.h>
 #include <IMP/base_types.h>
 #include "RestraintsScoringFunction.h"
-#include <IMP/base/map.h>
 #include <IMP/algebra/vector_search.h>
+#include <boost/unordered_map.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -48,7 +48,8 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
      -> IncrementalScoringFunction::do_set_has_dependencies()
      -> map destructor -> boom
   */
-  struct ScoringFunctionsMap : public base::map<kernel::ParticleIndex, Data> {
+  struct ScoringFunctionsMap
+      : public boost::unordered_map<kernel::ParticleIndex, Data> {
     ~ScoringFunctionsMap();
   };
   ScoringFunctionsMap scoring_functions_;
@@ -67,8 +68,8 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
   void create_flattened_restraints(const kernel::RestraintsTemp &rs);
   void create_scoring_functions();
   void do_non_incremental_evaluate();
-  Data create_data(kernel::ParticleIndex pi,
-                   const base::map<kernel::Restraint *, int> &all,
+  Data create_data(kernel::ParticleIndex pi, RestraintsTemp cr,
+                   const boost::unordered_map<kernel::Restraint *, int> &all,
                    const kernel::Restraints &dummies) const;
 
  public:
@@ -103,12 +104,6 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
   void add_close_pair_score(PairScore *ps, double distance,
                             const kernel::ParticlesTemp &particles);
   void clear_close_pair_scores();
-  /** \deprecated_at{2.1} Use get_movable_indexes() instead. */
-  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
-  kernel::ParticleIndexes get_movable_particles() const {
-    IMPCORE_DEPRECATED_FUNCTION_DEF(2.1, "Use get_movable_indexes()");
-    return get_movable_indexes();
-  }
   kernel::ParticleIndexes get_movable_indexes() const;
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
                                     const ScoreStatesTemp &ss) IMP_OVERRIDE;

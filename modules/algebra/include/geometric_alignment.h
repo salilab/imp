@@ -2,7 +2,7 @@
  *  \file IMP/algebra/geometric_alignment.h
  *  \brief align sets of points.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_GEOMETRIC_ALIGNMENT_H
@@ -14,10 +14,9 @@
 #include "Rotation3D.h"
 #include "Transformation3D.h"
 #include "Transformation2D.h"
-#include "internal/tnt_array2d.h"
-#include "internal/jama_svd.h"
 #include <IMP/base/check_macros.h>
 #include <IMP/base/log.h>
+#include <IMP/base/log_macros.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -42,6 +41,7 @@ template <class Vector3DsOrXYZs0, class Vector3DsOrXYZs1>
 inline IMP::algebra::Transformation3D
 get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0& source,
                                             const Vector3DsOrXYZs1& target) {
+  using algebra::get_vector_geometry;
   IMP_INTERNAL_CHECK(source.size() == target.size(), "sizes don't match");
   IMP_INTERNAL_CHECK(source.size() > 0, "Points are needed");
   // compute the centroid of the points and transform
@@ -50,10 +50,10 @@ get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0& source,
   Vector3D center_source(0, 0, 0), center_target(0, 0, 0);
   for (unsigned int i = 0; i < source.size(); ++i) {
     // double x= p_it->x();
-    center_source += get_vector_d_geometry(source[i]);
-    center_target += get_vector_d_geometry(target[i]);
-    IMP_LOG_VERBOSE(i << ": (" << get_vector_d_geometry(source[i]) << ") ("
-                      << get_vector_d_geometry(target[i]) << ")\n");
+    center_source += get_vector_geometry(source[i]);
+    center_target += get_vector_geometry(target[i]);
+    IMP_LOG_VERBOSE(i << ": (" << get_vector_geometry(source[i]) << ") ("
+                      << get_vector_geometry(target[i]) << ")\n");
   }
   center_source = center_source / source.size();
   center_target = center_target / target.size();
@@ -62,36 +62,32 @@ get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0& source,
                                   << ")\n");
   Vector3Ds shifted_source(source.size()), shifted_target(target.size());
   for (unsigned int i = 0; i < source.size(); ++i) {
-    shifted_source[i] = get_vector_d_geometry(source[i]) - center_source;
-    shifted_target[i] = get_vector_d_geometry(target[i]) - center_target;
+    shifted_source[i] = get_vector_geometry(source[i]) - center_source;
+    shifted_target[i] = get_vector_geometry(target[i]) - center_target;
   }
 
   // covariance matrix
-  internal::TNT::Array2D<double> H(3, 3);
+  IMP_Eigen::Matrix3d H;
   for (int i = 0; i < 3; i++) {
     for (int j = 0; j < 3; j++) {
-      H[i][j] = 0;
+      H(i, j) = 0;
     }
   }
   for (unsigned int i = 0; i < source.size(); i++) {
     for (int j = 0; j < 3; j++) {
       for (int k = 0; k < 3; k++) {
-        H[j][k] += shifted_source[i][j] * shifted_target[i][k];
+        H(j, k) += shifted_source[i][j] * shifted_target[i][k];
       }
     }
   }
 
   IMP_LOG_VERBOSE("H is " << H << std::endl);
-
-  internal::JAMA::SVD<double> svd(H);
-  internal::TNT::Array2D<double> U(3, 3), V(3, 3);
-  svd.getU(U);
-  svd.getV(V);
-
+  IMP_Eigen::JacobiSVD<IMP_Eigen::Matrix3d> svd =
+      H.jacobiSvd(IMP_Eigen::ComputeFullV | IMP_Eigen::ComputeFullU);
+  IMP_Eigen::Matrix3d U = svd.matrixU(), V = svd.matrixV();
+  IMP_Eigen::Vector3d SV = svd.singularValues();
   IMP_LOG_VERBOSE("SVD is " << U << std::endl << V << std::endl);
 
-  internal::TNT::Array1D<double> SV;
-  svd.getSingularValues(SV);
   double det = SV[0] * SV[1] * SV[2];
   IMP_IF_CHECK(base::USAGE) {
     if (det < .00001) {
@@ -110,40 +106,31 @@ get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0& source,
   }
 
   IMP_IF_LOG(VERBOSE) {
-    internal::TNT::Array2D<double> Sigma(3, 3, 0.0);
+    IMP_Eigen::Matrix3d Sigma = IMP_Eigen::Matrix3d::Zero();
 
     for (int i = 0; i < 3; ++i) {
-      Sigma[i][i] = SV[i];
+      Sigma(i, i) = SV[i];
     }
 
-    IMP_LOG_VERBOSE("Reconstructed is " << internal::TNT::matmult(
-                                               internal::TNT::matmult(U, Sigma),
-                                               internal::TNT::transpose(V))
+    IMP_LOG_VERBOSE("Reconstructed is " << U * Sigma * V.transpose()
                                         << std::endl);
   }
 
   // the rotation matrix is R = VU^T
-  internal::TNT::Array2D<double> UT = internal::TNT::transpose(U);
-  internal::TNT::Array2D<double> rot(3, 3);
-  rot = matmult(V, UT);
+  IMP_Eigen::Matrix3d rot = V * U.transpose();
 
   // check for reflection
-  if (determinant(rot) < 0) {
+  if (rot.determinant() < 0) {
     IMP_LOG_VERBOSE("Flipping matrix" << std::endl);
-    internal::TNT::Array2D<double> VT = internal::TNT::transpose(V);
-    internal::TNT::Array2D<double> UVT = internal::TNT::matmult(U, VT);
-    internal::TNT::Array2D<double> S(3, 3);
-    S[0][0] = S[1][1] = 1;
-    S[2][2] = determinant(UVT);
-    S[0][1] = S[0][2] = S[1][0] = S[1][2] = S[2][0] = S[2][1] = 0;
-    rot = internal::TNT::matmult(internal::TNT::matmult(U, S), VT);
+    IMP_Eigen::Matrix3d S = IMP_Eigen::Matrix3d::Zero();
+    S(0, 0) = S(1, 1) = 1;
+    S(2, 2) = (U * V.transpose()).determinant();
+    rot = U * S * V.transpose();
   }
 
   IMP_LOG_VERBOSE("Rotation matrix is " << rot << std::endl);
 
-  Rotation3D rotation = get_rotation_from_matrix(
-      rot[0][0], rot[0][1], rot[0][2], rot[1][0], rot[1][1], rot[1][2],
-      rot[2][0], rot[2][1], rot[2][2]);
+  Rotation3D rotation = get_rotation_from_matrix(rot);
   IMP_LOG_VERBOSE("Rotation is " << rotation << std::endl);
   Vector3D translation = center_target - rotation.get_rotated(center_source);
 

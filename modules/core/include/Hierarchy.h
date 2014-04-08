@@ -2,7 +2,7 @@
  *  \file IMP/core/Hierarchy.h     \brief Decorator for helping deal with
  *                                        a hierarchy.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -140,10 +140,18 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
                      get_decorator_traits());
   }
   kernel::ParticleIndex get_child_index(unsigned int i) const {
-     IMP_USAGE_CHECK(i < get_number_of_children(), "Invalid child requested");
-     return  get_model()->get_attribute(
-                                      get_decorator_traits().get_children_key(),
+    IMP_USAGE_CHECK(i < get_number_of_children(), "Invalid child requested");
+    return get_model()->get_attribute(get_decorator_traits().get_children_key(),
                                       get_particle_index())[i];
+  }
+  kernel::ParticleIndexes get_children_indexes() const {
+    if (get_model()->get_has_attribute(
+            get_decorator_traits().get_children_key(), get_particle_index())) {
+      return get_model()->get_attribute(
+          get_decorator_traits().get_children_key(), get_particle_index());
+    } else {
+      return kernel::ParticleIndexes();
+    }
   }
   GenericHierarchies get_children() const {
     GenericHierarchies ret(get_number_of_children());
@@ -224,7 +232,7 @@ class IMPCOREEXPORT HierarchyVisitor {
   virtual ~HierarchyVisitor() {}
 };
 
-//! A which applies a singleton modifier to each kernel::Particle in a hierarchy
+//! A visitor which applies a modifier to each kernel::Particle in a hierarchy
 /** This works from both C++ and Python
     \ingroup hierarchy
     \ingroup decorators
@@ -267,7 +275,7 @@ struct Gather {
 }
 #endif
 
-//! Apply the visitor to each particle,  breadth first.
+//! Apply the visitor to each particle, breadth first.
 /** \param[in] d The Hierarchy for the tree in question
     \param[in] f The visitor to be applied. This is passed by reference.
     A branch of the traversal stops when f returns false.
@@ -411,7 +419,6 @@ struct HierarchyCounter : public HierarchyVisitor {
   IMP_SHOWABLE_INLINE(HierarchyCounter, out << get_count());
 
  private:
-
   unsigned int ct_;
 };
 

@@ -2,7 +2,7 @@
  *  \file IMP/kernel/Configuration.h
  *  \brief Store a set of configurations of the model.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,7 +13,6 @@
 #include <IMP/base/Object.h>
 #include <IMP/base/Pointer.h>
 #include "Model.h"
-#include <IMP/base/map.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 

@@ -11,7 +11,7 @@ with certain other dependencies such as CGAL.
 
 _Author(s)_: Daniel Russel
 
-_Maintainer_: `drussel`
+_Maintainer_: `benmwebb`
 
 _License_: [GPL](http://www.gnu.org/licenses/gpl.html)
 This library is free software; you can redistribute it and/or

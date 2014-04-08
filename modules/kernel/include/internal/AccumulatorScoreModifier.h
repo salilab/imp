@@ -2,7 +2,7 @@
  *  \file generic.h    \brief Various important functionality
  *                                       for implementing decorators.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,7 +13,6 @@
 #include "../Restraint.h"
 #include "container_helpers.h"
 #include <IMP/base/Pointer.h>
-#include "../restraint_macros.h"
 #include "../constants.h"
 #include "../SingletonModifier.h"
 #include "../PairModifier.h"

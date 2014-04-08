@@ -1,31 +1,32 @@
 
+%define IMP_ALGEBRA_VECTOR(D)
 /* Provide our own implementations for some operators */
-%ignore IMP::algebra::VectorD::operator[];
-%ignore IMP::algebra::VectorD::operator+=;
-%ignore IMP::algebra::VectorD::operator*=;
-%ignore IMP::algebra::VectorD::operator/=;
-%ignore IMP::algebra::VectorD::operator-=;
+%ignore IMP::algebra::VectorD<D>::operator[];
+%ignore IMP::algebra::VectorD<D>::operator+=;
+%ignore IMP::algebra::VectorD<D>::operator*=;
+%ignore IMP::algebra::VectorD<D>::operator/=;
+%ignore IMP::algebra::VectorD<D>::operator-=;
 
 /* Make sure that we return the original Python object from C++ inplace
    operators (not a new Python proxy around the same C++ object) */
 namespace IMP {
  namespace algebra {
-  %feature("shadow") VectorD::__iadd__(const IMP::algebra::VectorD<D> &) %{
+  %feature("shadow") VectorD<D>::__iadd__(const IMP::algebra::VectorD<D> &) %{
     def __iadd__(self, *args):
         $action(self, *args)
         return self
   %}
-  %feature("shadow") VectorD::__imul__(double) %{
+  %feature("shadow") VectorD<D>::__imul__(double) %{
     def __imul__(self, *args):
         $action(self, *args)
         return self
   %}
-  %feature("shadow") VectorD::__idiv__(double) %{
+  %feature("shadow") VectorD<D>::__idiv__(double) %{
     def __idiv__(self, *args):
         $action(self, *args)
         return self
   %}
-  %feature("shadow") VectorD::__isub__(const IMP::algebra::VectorD<D> &) %{
+  %feature("shadow") VectorD<D>::__isub__(const IMP::algebra::VectorD<D> &) %{
     def __isub__(self, *args):
         $action(self, *args)
         return self
@@ -33,7 +34,7 @@ namespace IMP {
  }
 }
 
-%extend IMP::algebra::VectorD {
+%extend IMP::algebra::VectorD<D> {
   double __getitem__(unsigned int index) const {
     if (index >= D) throw IMP::base::IndexException("");
     return self->operator[](index);
@@ -49,4 +50,21 @@ namespace IMP {
   void __isub__(const IMP::algebra::VectorD<D> &o) { self->operator-=(o); }
   unsigned int __len__() { return self->get_dimension(); }
   const IMP::algebra::VectorD<D> __rmul__(double f) const {return self->operator*(f);}
+  std::string __str__() const {std::ostringstream oss; self->show(oss); return oss.str();}
+  std::string __repr__() const {std::ostringstream oss; self->show(oss); return oss.str();}
+  int __cmp__(const IMP::algebra::VectorD<D> &) const {
+    IMP_UNUSED(self);
+    IMP_THROW("Geometric primitives cannot be compared",
+              IMP::base::ValueException);
+  }
 };
+%enddef
+
+IMP_ALGEBRA_VECTOR(-1);
+IMP_ALGEBRA_VECTOR(1);
+IMP_ALGEBRA_VECTOR(2);
+IMP_ALGEBRA_VECTOR(3);
+IMP_ALGEBRA_VECTOR(4);
+IMP_ALGEBRA_VECTOR(5);
+IMP_ALGEBRA_VECTOR(6);
+IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  Vector);

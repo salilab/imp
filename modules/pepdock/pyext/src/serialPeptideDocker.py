@@ -43,9 +43,7 @@ p.addCompleteNonBondedRestraints()
 p.logTime("Added complete nonbonded restraints")
 
 
-
-#p.addExcludedVolume()
-
+# p.addExcludedVolume()
 p.logTime("Setup")
 
 p.runMolecularDynamics()

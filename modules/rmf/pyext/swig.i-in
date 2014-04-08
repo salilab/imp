@@ -22,3 +22,7 @@ IMP_SWIG_OBJECT(IMP::rmf, HierarchyLoadLink, HierarchyLoadLinks);
 %template(_ParticleSaveLink) IMP::rmf::SimpleSaveLink<IMP::Particle>;
 %template(_ParticleLoadLink) IMP::rmf::SimpleLoadLink<IMP::Particle>;
 %include "IMP/rmf/atom_links.h"
+
+%pythoncode %{
+suffixes = [".rmf", ".rmfz"]
+%}

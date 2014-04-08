@@ -1,7 +1,7 @@
 /**
  *  \file IMP/em/header_converters.h
  *  \brief Functions to convert between ImageHeader and DensityHeader
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM_HEADER_CONVERTERS_H
@@ -16,13 +16,13 @@ IMPEM_BEGIN_NAMESPACE
 
 //! Function to transfer the (compatible) information content from ImageHeader
 //! to DensityHeader
-IMPEMEXPORT void  ImageHeader_to_DensityHeader(
-                  const ImageHeader& h,DensityHeader& header);
+IMPEMEXPORT void ImageHeader_to_DensityHeader(const ImageHeader& h,
+                                              DensityHeader& header);
 
 //! Function to transfer the (compatible) information content from DensityHeader
 //! to ImageHeader
-IMPEMEXPORT void  DensityHeader_to_ImageHeader(
-                  const DensityHeader& header,ImageHeader& h);
+IMPEMEXPORT void DensityHeader_to_ImageHeader(const DensityHeader& header,
+                                              ImageHeader& h);
 
 IMPEM_END_NAMESPACE
 

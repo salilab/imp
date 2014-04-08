@@ -2,7 +2,7 @@
  *  \file IMP/core/ChildrenRefiner.h
  *  \brief Return the hierarchy children of a particle.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_CHILDREN_REFINER_H
@@ -12,7 +12,6 @@
 #include "Hierarchy.h"
 
 #include <IMP/Refiner.h>
-#include <IMP/refiner_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

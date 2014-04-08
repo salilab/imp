@@ -2,12 +2,13 @@
  *  \file Object.cpp
  *  \brief A shared base class to help in debugging and things.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
 #include "IMP/base/Object.h"
 #include "IMP/base/log.h"
+#include "IMP/base/log_macros.h"
 #include "IMP/base/exception.h"
 #include "IMP/base/utility.h"
 #include <exception>
@@ -15,11 +16,6 @@
 IMPBASE_BEGIN_NAMESPACE
 
 Object::Object(std::string name) { initialize(name); }
-
-Object::Object() {
-  IMPBASE_DEPRECATED_FUNCTION_DEF(2.1, "provide a name");
-  initialize("NoName%1%");
-}
 
 void Object::initialize(std::string name) {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
@@ -40,7 +36,7 @@ void Object::initialize(std::string name) {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   add_live_object(this);
 #endif
-  set_name(get_unique_name(name));
+  set_name(name);
   IMP_LOG_MEMORY("Creating object \"" << get_name() << "\" (" << this << ")"
                                       << std::endl);
 }
@@ -106,17 +102,34 @@ void Object::set_log_level(LogLevel l) {
 #endif
 }
 
-void Object::set_name(std::string name) {
-  name_ = name;
+void Object::set_name(std::string in_name) {
+  name_ = get_unique_name(in_name);
   quoted_name_.reset(new char[name_.size() + 3]);
   quoted_name_[0] = '"';
-  std::copy(name.begin(), name.end(), quoted_name_.get() + 1);
+  std::copy(name_.begin(), name_.end(), quoted_name_.get() + 1);
   quoted_name_[name_.size() + 1] = '"';
   quoted_name_[name_.size() + 2] = '\0';
 }
 
 void Object::show(std::ostream &out) const {
   out << "\"" << get_name() << "\"";
+}
+
+void Object::unref() const {
+  IMP_INTERNAL_CHECK(count_ != 0, "Too many unrefs on object");
+  IMP_LOG_MEMORY("Unrefing object \"" << get_name() << "\" (" << count_ << ") {"
+                                      << this << "}" << std::endl);
+  --count_;
+  if (count_ == 0) {
+    delete this;
+  }
+}
+
+void Object::release() const {
+  IMP_INTERNAL_CHECK(count_ != 0, "Release called on unowned object");
+  --count_;
+  IMP_LOG_MEMORY("Releasing object \"" << get_name() << "\" (" << count_
+                                       << ") {" << this << "}" << std::endl);
 }
 
 IMPBASE_END_NAMESPACE

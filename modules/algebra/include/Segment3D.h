@@ -2,7 +2,7 @@
  *  \file IMP/algebra/Segment3D.h
  *  \brief simple implementation of segments in 3D
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_SEGMENT_3D_H
@@ -40,15 +40,15 @@ class IMPALGEBRAEXPORT Segment3D : public GeometricPrimitiveD<3> {
   Vector3D get_direction() const { return (p_[1] - p_[0]).get_unit_vector(); }
   double get_length() const;
   IMP_SHOWABLE_INLINE(Segment3D,
-                      { out << spaces_io(p_[0]) << ": " << spaces_io(p_[1]); });
+  { out << spaces_io(p_[0]) << ": " << spaces_io(p_[1]); });
 
  private:
   Vector3D p_[2];
 };
 
-IMP_LINEAR_GEOMETRY_METHODS(
-    Segment3D, segment_3d,
-    return BoundingBoxD<3>(g.get_point(0)) + BoundingBoxD<3>(g.get_point(1)));
+IMP_LINEAR_GEOMETRY_METHODS(Segment3D, segment_3d,
+                            return BoundingBoxD<3>(g.get_point(0)) +
+                                   BoundingBoxD<3>(g.get_point(1)));
 
 /**  Returns f, the 'relative' projection of a point p onto the line
      that contains s.

@@ -2,7 +2,7 @@
  *  \file IMP/core/MCCGSampler.h
  *  \brief A Monte Carlo/Conjugate Gradients based sampler.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,11 +12,11 @@
 #include <IMP/core/core_config.h>
 
 #include <IMP/Sampler.h>
-#include <IMP/sampler_macros.h>
 #include <IMP/container_macros.h>
+#include <IMP/kernel/SingletonContainer.h>
 #include <IMP/Optimizer.h>
 #include <IMP/algebra/BoundingBoxD.h>
-#include <IMP/kernel/internal/InternalListSingletonContainer.h>
+#include <IMP/kernel/internal/StaticListContainer.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -54,11 +54,12 @@ class IMPCOREEXPORT MCCGSampler : public Sampler {
   bool is_refining_;
   base::Pointer<ConfigurationSet> rejected_;
 
+  typedef IMP::kernel::internal::StaticListContainer<kernel::SingletonContainer>
+      Container;
+
   Parameters fill_in_parameters() const;
-  void randomize(const Parameters &pms,
-                 IMP::internal::InternalListSingletonContainer *sc) const;
-  IMP::internal::InternalListSingletonContainer *set_up_movers(
-      const Parameters &pms, MonteCarlo *mc) const;
+  void randomize(const Parameters &pms, Container *sc) const;
+  Container *set_up_movers(const Parameters &pms, MonteCarlo *mc) const;
 
  public:
   MCCGSampler(kernel::Model *m, std::string name = "MCCG Sampler %1%");

@@ -2,7 +2,7 @@
  *  \file IMP/base/WarningContext.h
  *  \brief Logging and error reporting support.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,13 +11,13 @@
 
 #include <IMP/base/base_config.h>
 #include "showable_macros.h"
-#include <IMP/base/set.h>
+#include <boost/unordered_set.hpp>
 
 IMPBASE_BEGIN_NAMESPACE
 #if IMP_HAS_LOG
 /** Warnings with the same key within the context are only output once.*/
 struct IMPBASEEXPORT WarningContext {
-  mutable base::set<std::string> data_;
+  mutable boost::unordered_set<std::string> data_;
 
  public:
   void add_warning(std::string key, std::string warning) const;

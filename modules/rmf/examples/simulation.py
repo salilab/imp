@@ -66,7 +66,7 @@ IMP.rmf.add_hierarchy(rmf, h)
 IMP.rmf.add_restraints(rmf, rs)
 IMP.rmf.add_geometry(rmf, IMP.display.BoundingBoxGeometry(bb))
 
-os = IMP.rmf.SaveOptimizerState(rmf)
+os = IMP.rmf.SaveOptimizerState(m, rmf)
 os.update_always("initial conformation")
 os.set_log_level(IMP.base.SILENT)
 os.set_simulator(bd)

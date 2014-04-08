@@ -2,6 +2,7 @@ import IMP.test
 import os
 import sys
 
+
 class Tests(IMP.test.ApplicationTestCase):
 
     def make_dummy_hex(self, input_file_dir):
@@ -16,7 +17,7 @@ for line in sys.stdin.readlines():
     if len(spl) == 2 and spl[0] == 'save_transform':
         shutil.copy('%s/' + spl[1], spl[1])
 """ % input_file_dir)
-        os.chmod('hex', 0755)
+        os.chmod('hex', 0o755)
 
     def test_3sfd(self):
         """Test the 3sfd example"""
@@ -24,7 +25,7 @@ for line in sys.stdin.readlines():
             self.skipTest("does not work on Windows")
         input_file_dir = os.path.dirname(self.get_input_file_name('3sfdA.pdb'))
         cmds = self.read_shell_commands(
-                        '../../../doc/tutorial/emagefit_3sfd.dox')
+            '../../../doc/tutorial/emagefit_3sfd.dox')
         d = IMP.test.RunInTempDir()
         self.make_dummy_hex(input_file_dir)
         for c in cmds:

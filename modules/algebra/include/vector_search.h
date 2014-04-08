@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/vector_search.h   \brief Functions to generate vectors.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,6 +12,7 @@
 #include <IMP/base/types.h>
 #include <IMP/base/Object.h>
 #include <IMP/base/log.h>
+#include <IMP/base/log_macros.h>
 #include <IMP/base/SetCheckState.h>
 
 #include "grid_storages.h"

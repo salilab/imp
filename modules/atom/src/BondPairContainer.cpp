@@ -2,7 +2,7 @@
  *  \file BondPairContainer.cpp
  *  \brief A fake container that returns true if a pair of particles are bonded
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,9 +13,7 @@
 IMPATOM_BEGIN_NAMESPACE
 
 BondPairContainer::BondPairContainer(SingletonContainer *sc)
-    : PairContainer(sc->get_model(), "BondPairContainer%1%"),
-      sc_(sc),
-      sc_version_(sc_->get_contents_version()) {}
+    : PairContainer(sc->get_model(), "BondPairContainer%1%"), sc_(sc) {}
 
 ParticleIndexPairs BondPairContainer::get_indexes() const {
   kernel::ParticleIndexes ia = sc_->get_indexes();
@@ -54,10 +52,6 @@ ParticleIndexPairs BondPairContainer::get_range_indexes() const {
                                   b.get_bonded(1).get_particle_index()));
   }
   return ret;
-}
-
-void BondPairContainer::do_before_evaluate() {
-  set_is_changed(update_version(sc_, sc_version_));
 }
 
 IMPATOM_END_NAMESPACE

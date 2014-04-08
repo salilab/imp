@@ -2,7 +2,7 @@
  *  \file IMP/rmf/link_macros.h
  *  \brief macros for display classes
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPRMF_LINK_HELPERS_H
@@ -11,6 +11,7 @@
 #include "../links.h"
 #include <IMP/base/Pointer.h>
 #include <RMF/FileHandle.h>
+#include <RMF/RestoreCurrentFrame.h>
 #include <RMF/SetCurrentFrame.h>
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
@@ -64,7 +65,7 @@ template <class LinkType, class OutTypes>
 void add_helper(RMF::FileHandle fh, const OutTypes& hs) {
   if (hs.empty()) return;
   LinkType* hsl = get_save_link<LinkType>(fh);
-  RMF::SetCurrentFrame scf(fh, RMF::ALL_FRAMES);
+  RMF::RestoreCurrentFrame scf(fh);
   hsl->add(fh.get_root_node(), hs);
 }
 
@@ -72,7 +73,7 @@ template <class LinkType, class InTypes>
 void link_helper(RMF::FileConstHandle fh, const InTypes& hs) {
   if (hs.empty()) return;
   base::Pointer<LinkType> pll = get_load_link<LinkType>(fh);
-  RMF::SetCurrentFrame scf(fh, RMF::ALL_FRAMES);
+  RMF::RestoreCurrentFrame scf(fh);
   pll->link(fh.get_root_node(), hs);
 }
 

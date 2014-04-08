@@ -8,10 +8,11 @@ import IMP.core
 
 from test_coulomb import place_xyzs
 
+
 def make_test_pair_score(min_distance=9.0, max_distance=10.0):
     m = IMP.kernel.Model()
     p0 = IMP.kernel.Particle(m)
-    sph = IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0), 1.0)
+    sph = IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), 1.0)
     IMP.core.XYZR.setup_particle(p0, sph)
     d0 = IMP.atom.LennardJones.setup_particle(p0, 1.0)
     p1 = IMP.kernel.Particle(m)
@@ -23,7 +24,9 @@ def make_test_pair_score(min_distance=9.0, max_distance=10.0):
     m.add_restraint(r)
     return m, d0, d1, c
 
+
 class Tests(IMP.test.TestCase):
+
     """Test the LennardJonesPairScore"""
 
     def test_get_set(self):
@@ -59,8 +62,8 @@ class Tests(IMP.test.TestCase):
                                 for r in (3.0, 4.0, 5.0):
                                     place_xyzs(d0, d1, box, r)
                                     score = m.evaluate(False)
-                                    expected = wd * (rep * (rmin/r)**12
-                                                     - 2.0 * att * (rmin/r)**6)
+                                    expected = wd * (rep * (rmin / r) ** 12
+                                                     - 2.0 * att * (rmin / r) ** 6)
                                     self.assertAlmostEqual(score, expected,
                                                            delta=1e-2)
 
@@ -70,8 +73,8 @@ class Tests(IMP.test.TestCase):
         # Place one particle at the origin and the other at a random position
         # between 1 and 6 angstroms away (not too close since the derivatives
         # are too large there)
-        d0.set_coordinates(IMP.algebra.Vector3D(0,0,0))
-        d1.set_coordinates(IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d()) \
+        d0.set_coordinates(IMP.algebra.Vector3D(0, 0, 0))
+        d1.set_coordinates(IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d())
                            * (random.random() * 5.0 + 1.0))
         self.assertXYZDerivativesInTolerance(m, d0, 2.0, 5.0)
         self.assertXYZDerivativesInTolerance(m, d1, 2.0, 5.0)
@@ -82,6 +85,7 @@ class Tests(IMP.test.TestCase):
         smm, smd0, smd1, smc = make_test_pair_score(min_distance=4.0,
                                                     max_distance=5.0)
         box = IMP.algebra.Vector3D(10.0, 20.0, 30.0)
+
         def place_all(dist):
             place_xyzs(d0, d1, box, dist)
             smd0.set_coordinates(d0.get_coordinates())

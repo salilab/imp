@@ -4,7 +4,7 @@
  *
  *  BLURB
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,11 +12,8 @@
 #define IMPCONTAINER_PREDICATE_CLASSNAMES_RESTRAINT_H
 
 #include <IMP/container/container_config.h>
-
-#include <IMP/kernel/internal/InternalDynamicListClassnameContainer.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <IMP/ClassnamePredicate.h>
-#include <IMP/restraint_macros.h>
 #include "generic.h"
 
 #include <iostream>
@@ -33,17 +30,13 @@ IMPCONTAINER_BEGIN_NAMESPACE
     different predicate values for different orderings.
 */
 class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
-  base::PointerMember<ClassnamePredicate> predicate_;
-  base::PointerMember<ClassnameContainer> input_;
-  typedef IMP::kernel::internal::InternalDynamicListClassnameContainer List;
-  typedef base::map<unsigned int, base::Pointer<List> > Map;
-  Map containers_;
-  base::Pointer<List> unknown_container_;
-  Restraints restraints_;
-  mutable int input_version_;
+  base::PointerMember<kernel::ClassnamePredicate> predicate_;
+  base::PointerMember<kernel::ClassnameContainer> input_;
+  mutable boost::unordered_map<int, PLURALINDEXTYPE> lists_;
+  boost::unordered_map<int, base::PointerMember<ClassnameScore> > scores_;
+  mutable std::size_t input_version_;
   bool error_on_unknown_;
   void update_lists_if_necessary() const;
-  bool assign_pair(PASSINDEXTYPE index) const;
 
  public:
   PredicateClassnamesRestraint(ClassnamePredicate *pred,
@@ -52,50 +45,21 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
                                    "PredicateClassnamesRestraint %1%");
 
   /** Apply the passed score to all pairs whose predicate values match
-      the passed value.
-
-      This version uses the container::create_restraint() function and so
-      is more efficient than the non-template version.*/
-  template <class Score> void set_score(int predicate_value, Score *score) {
-    IMP_USAGE_CHECK(get_model(),
-                    "You must add this restraint to the model"
-                        << " first, sorry, this can be fixed.");
-    IMP_NEW(List, c, (input_, score->get_name() + " input"));
-    restraints_.push_back(container::create_restraint(score, c.get()));
-    restraints_.back()->set_was_used(true);
-    containers_[predicate_value] = c;
-  }
+      the passed value.*/
+  void set_score(int predicate_value, kernel::ClassnameScore *score);
 
   /** Apply this score to any pair whose predicate value does not match
       one passed to set_score().*/
-  template <class Score> void set_unknown_score(Score *score) {
-    // make sure it gets cleaned up if it is a temporary
-    base::Pointer<Score> pscore(score);
-    IMP_USAGE_CHECK(get_model(),
-                    "You must add this restraint to the model"
-                        << " first, sorry, this can be fixed.");
-    IMP_NEW(List, c, (input_, score->get_name() + " input"));
-    restraints_.push_back(container::create_restraint(score, c.get()));
-    unknown_container_ = c;
-  }
-#ifndef IMP_DOXYGEN
-  void set_score(int predicate_value, ClassnameScore *score) {
-    set_score<ClassnameScore>(predicate_value, score);
-  }
-  void set_unknown_score(ClassnameScore *score) {
-    set_unknown_score<ClassnameScore>(score);
-  }
-#endif
+  void set_unknown_score(kernel::ClassnameScore *score);
+
   /** By default, it is an error if the predicate returns a value that is
       not known. If this is false, then they are silently skipped.
   */
   void set_is_complete(bool tf) { error_on_unknown_ = tf; }
 
-  IMP_IMPLEMENT(double get_last_score() const);
-
   /** return the indexes of all particles for  a given predicate value.*/
   PLURALINDEXTYPE get_indexes(int predicate_value) const {
-    return containers_.find(predicate_value)->second->get_indexes();
+    return lists_.find(predicate_value)->second;
   }
 
  public:
@@ -103,7 +67,6 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
       IMP_OVERRIDE;
   IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(PredicateClassnamesRestraint);
-  ;
 
  private:
   Restraints do_create_current_decomposition() const;

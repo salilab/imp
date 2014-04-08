@@ -10,13 +10,13 @@ import os
 
 log = logging.getLogger("sampling")
 
-#########################################
+#
 """
 
     Functions required for sampling in a 2D/3D grid
 
 """
-#########################################
+#
 
 
 def create_sampling_grid_3d(diameter, n_axis_points):
@@ -28,16 +28,18 @@ def create_sampling_grid_3d(diameter, n_axis_points):
         The other regions of space will contain only the points allowed by
         the size of the spere.
     """
-    radius = diameter/2.0
-    step = diameter/n_axis_points
-    points = [-radius + step*n for n in range(n_axis_points +1 )]
-    points = filter(lambda x: abs(x) > 1, points) # filter points closer than 1A
+    radius = diameter / 2.0
+    step = diameter / n_axis_points
+    points = [-radius + step * n for n in range(n_axis_points + 1)]
+    # filter points closer than 1A
+    points = filter(lambda x: abs(x) > 1, points)
     log.info("Points along the axis %s", points)
     positions = []
     for x, y, z in itertools.product(points, points, points):
-        d = (x**2. + y**2. + z**2.)**.5
-        if(d < (1.01 *radius)): # allow 1% margin. Avoids approximation problems
-            positions.append( alg.Vector3D(x,y,z))
+        d = (x ** 2. + y ** 2. + z ** 2.) ** .5
+        # allow 1% margin. Avoids approximation problems
+        if(d < (1.01 * radius)):
+            positions.append(alg.Vector3D(x, y, z))
     return positions
 
 
@@ -49,19 +51,20 @@ def create_sampling_grid_2d(diameter, n_axis_points):
         will contain n_axis_points, equispaced. The other regions of space will
         contain only the points allowed by the size of the circle.
     """
-    if(diameter < 0 ):
+    if(diameter < 0):
         raise ValueError("create_sampling_grid_2d: Negative diameter.")
-    if(n_axis_points < 1 ):
+    if(n_axis_points < 1):
         raise ValueError("create_sampling_grid_2d: Less than one axis point.")
-    radius = diameter/2.0
-    step = diameter/n_axis_points
-    points = [-radius + step*n for n in range(n_axis_points +1 )]
+    radius = diameter / 2.0
+    step = diameter / n_axis_points
+    points = [-radius + step * n for n in range(n_axis_points + 1)]
     log.info("Points along the axis %s", points)
     positions = []
     for x, y in itertools.product(points, points):
-        d = (x**2. + y**2.)**.5
-        if(d < (1.01 *radius)): # allow 1% margin. Avoids approximation problems
-            positions.append( alg.Vector3D(x,y, 0.0))
+        d = (x ** 2. + y ** 2.) ** .5
+        # allow 1% margin. Avoids approximation problems
+        if(d < (1.01 * radius)):
+            positions.append(alg.Vector3D(x, y, 0.0))
     return positions
 
 
@@ -81,10 +84,9 @@ def get_orientations_nearby(rotation, n, f):
     oris = []
     for rot in unif:
         r = alg.get_interpolated(rot, id_rot, f)
-        r = alg.compose(r, rotation )
+        r = alg.compose(r, rotation)
         oris.append(r)
     return oris
-
 
 
 class SamplingSchema:
@@ -98,8 +100,9 @@ class SamplingSchema:
             @param anchor A list of True/False values. If anchor = True,
                     the component is set at (0,0,0) without rotating it.
         """
-        if(n_components < 1 ):
-            raise ValueError("SamplingSchema: Requesting less than 1 components.")
+        if(n_components < 1):
+            raise ValueError(
+                "SamplingSchema: Requesting less than 1 components.")
 
         self.anchored = anchored
         self.fixed = fixed
@@ -109,23 +112,22 @@ class SamplingSchema:
         return self.transformations[i]
 
     def read_from_database(self, fn_database, fields=["reference_frames"],
-                                    max_number=False, orderby=False ):
+                           max_number=False, orderby=False):
         """
             Read orientations and positions from a database file.
             self.anchored and self.fixed overwrite
             the positions and orientations read from the database
         """
         if not os.path.exists(fn_database):
-            raise IOError("read_from_database: Database file not found. " \
-            "Are you perhaps trying to run the DOMINO optimization without " \
-            "having the database yet?")
-
+            raise IOError("read_from_database: Database file not found. "
+                          "Are you perhaps trying to run the DOMINO optimization without "
+                          "having the database yet?")
 
         db = solutions_io.ResultsDB()
         db.connect(fn_database)
         data = db.get_solutions(fields, max_number, orderby)
         db.close()
-        self.transformations = [ [] for T in range(self.n_components)]
+        self.transformations = [[] for T in range(self.n_components)]
         # Each record contains a reference frame for each of the
         # components. But here the states considered make sense as columns.
         # Each rigidbody is considered to have all the states in a column.
@@ -135,13 +137,11 @@ class SamplingSchema:
                 T = io.TextToTransformation3D(t).get_transformation()
                 self.transformations[i].append(T)
 
-
-
         # Set the anchored components
         for i in range(self.n_components):
             if self.anchored[i]:
                 origin = alg.Transformation3D(alg.get_identity_rotation_3d(),
-                                        alg.Vector3D(0.0, 0.0, 0.))
+                                              alg.Vector3D(0.0, 0.0, 0.))
                 self.transformations[i] = [origin]
 
         # If fixed, only the first state is kept

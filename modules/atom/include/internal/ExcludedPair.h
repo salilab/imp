@@ -2,7 +2,7 @@
  *  \file ExcludedPair.h
  *  \brief A pair of kernel::Particles, used for exclusions.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_INTERNAL_EXCLUDED_PAIR_H

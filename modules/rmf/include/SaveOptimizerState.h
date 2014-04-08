@@ -2,7 +2,7 @@
  *  \file IMP/rmf/SaveOptimizerState.h
  *  \brief Handle read/write of kernel::Model data from/to files.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -28,25 +28,19 @@ class IMPRMFEXPORT SaveOptimizerState : public kernel::OptimizerState {
 
  public:
   SaveOptimizerState(kernel::Model *m, RMF::FileHandle fh);
-  /** \deprecated_at{2.1} Use one that takes a model. */
-  IMPRMF_DEPRECATED_FUNCTION_DECL(2.1)
-  SaveOptimizerState(RMF::FileHandle fh);
 #ifndef IMP_DOXYGEN
   IMP_LIST_ACTION(public, Hierarchy, Hierarchies, hierarchy, hierarchies,
                   kernel::Particle *, kernel::Particles,
-                  { rmf::add_hierarchy(fh_, atom::Hierarchy(obj)); }, {}, {});
+  { rmf::add_hierarchy(fh_, atom::Hierarchy(obj)); }, {}, {});
   IMP_LIST_ACTION(public, Restraint, estraints, restraint, restraints,
                   kernel::Restraint *, kernel::Restraints,
-                  { rmf::add_restraints(fh_, kernel::RestraintsTemp(1, obj)); },
-                  {}, {});
+  { rmf::add_restraints(fh_, kernel::RestraintsTemp(1, obj)); }, {}, {});
   IMP_LIST_ACTION(public, Particle, Particles, particle, particles,
                   kernel::Particle *, kernel::Particles,
-                  { rmf::add_particles(fh_, kernel::ParticlesTemp(1, obj)); },
-                  {}, {});
-  IMP_LIST_ACTION(
-      public, Geometry, Geometries, geometry, geometries, display::Geometry *,
-      display::Geometries,
-      { rmf::add_geometries(fh_, display::GeometriesTemp(1, obj)); }, {}, {});
+  { rmf::add_particles(fh_, kernel::ParticlesTemp(1, obj)); }, {}, {});
+  IMP_LIST_ACTION(public, Geometry, Geometries, geometry, geometries,
+                  display::Geometry *, display::Geometries,
+  { rmf::add_geometries(fh_, display::GeometriesTemp(1, obj)); }, {}, {});
 #endif
   //! Use the simulator to tag frames with current time
   /** \note This may change to a more general mechanism at some point

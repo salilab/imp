@@ -2,7 +2,7 @@
  *  \file IMP/em/embedding.h
  *  \brief Cluster sets of points.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,15 +15,14 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-
 /** Generate a set of points from the voxels in a em::DensityMap
     which are above a certain threshold.
  */
-class IMPEMEXPORT HighDensityEmbedding: public statistics::Embedding {
+class IMPEMEXPORT HighDensityEmbedding : public statistics::Embedding {
   algebra::Vector3Ds points_;
-public:
-  HighDensityEmbedding(DensityMap *dm,
-                       double threshold);
+
+ public:
+  HighDensityEmbedding(DensityMap *dm, double threshold);
   algebra::VectorKD get_point(unsigned int i) const IMP_OVERRIDE;
   unsigned int get_number_of_items() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(HighDensityEmbedding);

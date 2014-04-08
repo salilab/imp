@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/grid_ranges.h   \brief A class to represent a voxel grid.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -16,7 +16,6 @@
 #include "Vector3D.h"
 #include "BoundingBoxD.h"
 #include <boost/iterator/transform_iterator.hpp>
-#include <IMP/base/map.h>
 #include <IMP/base/Vector.h>
 
 #include <limits>

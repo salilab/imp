@@ -2,7 +2,7 @@
  *  \file Parameters.h
  *  \brief Parameters for symmetric MultiFit.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCNMULTIFIT_PARAMETERS_H
@@ -21,10 +21,10 @@ IMPCNMULTIFIT_BEGIN_INTERNAL_NAMESPACE
           docking, and so are stored in libTAU structs.
  */
 class IMPCNMULTIFITEXPORT Parameters {
-public:
-  Parameters(const char* param_filename);
+ public:
+  Parameters(const char *param_filename);
 
-  const TAU::AlgParams& getAlgParams() const { return params_; }
+  const TAU::AlgParams &getAlgParams() const { return params_; }
 
   double get_surface_threshold() const { return surface_threshold_; }
 
@@ -56,9 +56,7 @@ public:
     return params_.densityParams.res_;
   }
 
-  float get_density_map_threshold() const {
-    return params_.densityParams.thr_;
-  }
+  float get_density_map_threshold() const { return params_.densityParams.thr_; }
 
   float get_pca_matching_threshold() const {
     return params_.densityParams.pca_matching_thr_;
@@ -76,15 +74,11 @@ public:
     return params_.dockingParams.symmetryParams.symmetryOf;
   }
 
-  int get_dn_symm() const {
-    return dn_symm_deg_;
-  }
+  int get_dn_symm() const { return dn_symm_deg_; }
 
-  void show(std::ostream& out=std::cout) {
-    params_.show(out);
-  }
+  void show(std::ostream &out = std::cout) { params_.show(out); }
 
-private:
+ private:
   void parse_files_section(const boost::property_tree::ptree &pt);
   void parse_symmetry_section(const boost::property_tree::ptree &pt);
   void parse_scoring_section(const boost::property_tree::ptree &pt);
@@ -102,4 +96,4 @@ private:
 
 IMPCNMULTIFIT_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPCNMULTIFIT_PARAMETERS_H */
+#endif /* IMPCNMULTIFIT_PARAMETERS_H */

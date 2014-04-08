@@ -2,13 +2,16 @@ import IMP
 import IMP.test
 import IMP.atom
 
+
 def _make_test_atom():
     at = IMP.atom.CHARMMAtomTopology('CA')
     at.set_charmm_type('CT1')
     at.set_charge(0.8)
     return at
 
+
 class Tests(IMP.test.TestCase):
+
     """Test CHARMM topology classes"""
 
     def assertAtomsBonded(self, a1, a2, typ1, typ2, bondlen, forcecon):
@@ -106,7 +109,7 @@ class Tests(IMP.test.TestCase):
         """Check addition of internal coordinates"""
         res = IMP.atom.CHARMMIdealResidueTopology(IMP.atom.ResidueType('FOO'))
         ic = IMP.atom.CHARMMInternalCoordinate(['N', 'C', 'CA', 'CB'],
-                                               1,2,3,4,5,True)
+                                               1, 2, 3, 4, 5, True)
         self.assertEqual(ic.get_first_distance(), 1)
         self.assertEqual(ic.get_first_angle(), 2)
         self.assertEqual(ic.get_dihedral(), 3)
@@ -130,7 +133,10 @@ class Tests(IMP.test.TestCase):
     def test_forcefield_add_get(self):
         """Test adding/getting patches and residues to/from forcefields"""
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"))
-        self.assertRaises(IMP.base.ValueException, ff.get_residue_topology, IMP.atom.ResidueType('FOO'))
+        self.assertRaises(
+            IMP.base.ValueException,
+            ff.get_residue_topology,
+            IMP.atom.ResidueType('FOO'))
         self.assertRaises(IMP.base.ValueException, ff.get_patch, 'PFOO')
         patch = IMP.atom.CHARMMPatch('PFOO')
         res = IMP.atom.CHARMMIdealResidueTopology(IMP.atom.ResidueType('FOO'))
@@ -142,7 +148,10 @@ class Tests(IMP.test.TestCase):
     def test_forcefield_read(self):
         """Test read of topology from files"""
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"))
-        self.assertRaises(ValueError, ff.get_residue_topology, IMP.atom.ResidueType('CTER'))
+        self.assertRaises(
+            ValueError,
+            ff.get_residue_topology,
+            IMP.atom.ResidueType('CTER'))
         res = ff.get_residue_topology(IMP.atom.CYS)
         self.assertEqual(res.get_number_of_bonds(), 11)
         self.assertEqual(res.get_number_of_angles(), 0)
@@ -152,8 +161,8 @@ class Tests(IMP.test.TestCase):
                                     ('CA', 'CT1', 0.07), ('HA', 'HB', 0.09),
                                     ('CB', 'CT2', -0.11), ('HB3', 'HA', 0.09),
                                     ('HB2', 'HA', 0.09), ('SG', 'S', -0.23),
-                                    ('HG', 'HS', 0.16), ('C', 'C',  0.51),
-                                    ('O', 'O',  -0.51)]:
+                                    ('HG', 'HS', 0.16), ('C', 'C', 0.51),
+                                    ('O', 'O', -0.51)]:
             at = res.get_atom(name)
             self.assertEqual(at.get_charmm_type(), typ)
             self.assertAlmostEqual(at.get_charge(), charge, delta=1e-3)
@@ -178,7 +187,8 @@ class Tests(IMP.test.TestCase):
 
     def test_residue_topology(self):
         """Test CHARMM residue topology objects"""
-        ideal = IMP.atom.CHARMMIdealResidueTopology(IMP.atom.ResidueType('ALA'))
+        ideal = IMP.atom.CHARMMIdealResidueTopology(
+            IMP.atom.ResidueType('ALA'))
         at = _make_test_atom()
         ideal.add_atom(at)
         res = IMP.atom.CHARMMResidueTopology(ideal)
@@ -192,7 +202,7 @@ class Tests(IMP.test.TestCase):
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"))
         patch = ff.get_patch('CTER')
         res = IMP.atom.CHARMMResidueTopology(
-                               ff.get_residue_topology(IMP.atom.ALA))
+            ff.get_residue_topology(IMP.atom.ALA))
         self.assertEqual(res.get_atom('C').get_charmm_type(), 'C')
         self.assertEqual(res.get_number_of_bonds(), 10)
         self.assertEqual(res.get_number_of_impropers(), 3)
@@ -217,7 +227,7 @@ class Tests(IMP.test.TestCase):
         # Patches should delete atoms
         patch = ff.get_patch('TP1A')
         res = IMP.atom.CHARMMResidueTopology(
-                            ff.get_residue_topology(IMP.atom.TYR))
+            ff.get_residue_topology(IMP.atom.TYR))
         self.assertEqual(res.get_atom('CB').get_charmm_type(), 'CT2')
         patch.apply(res)
         self.assertRaises(IMP.base.ValueException, res.get_atom, 'CB')
@@ -225,14 +235,14 @@ class Tests(IMP.test.TestCase):
     def test_double_patching(self):
         """Test application of two-residue patches"""
         ff = IMP.atom.CHARMMParameters(
-                            self.get_input_file_name("top_2patch.lib"))
+            self.get_input_file_name("top_2patch.lib"))
         # Check patching using both Modeller-style and CHARMM-style atom naming
         for patch_name in ('DIS1', 'DIS2'):
             patch = ff.get_patch(patch_name)
             res1 = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology(
-                                                IMP.atom.ResidueType('CYS')))
+                IMP.atom.ResidueType('CYS')))
             res2 = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology(
-                                                IMP.atom.ResidueType('CYS')))
+                IMP.atom.ResidueType('CYS')))
             self.assertEqual(res1.get_atom('HG').get_charmm_type(), 'HS')
             self.assertEqual(res1.get_number_of_bonds(), 11)
             self.assertEqual(res1.get_number_of_impropers(), 3)
@@ -240,7 +250,11 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(res2.get_number_of_impropers(), 3)
             # Single-residue patches cannot be applied to two residues
             badpatch = ff.get_patch('CTER')
-            self.assertRaises(IMP.base.ValueException, badpatch.apply, res1, res2)
+            self.assertRaises(
+                IMP.base.ValueException,
+                badpatch.apply,
+                res1,
+                res2)
             patch.apply(res1, res2)
             # Patch should change atom type of existing atoms
             self.assertEqual(res1.get_atom('SG').get_charmm_type(), 'SM')
@@ -270,7 +284,8 @@ class Tests(IMP.test.TestCase):
         segment = IMP.atom.CHARMMSegmentTopology()
         model.add_segment(segment)
 
-        ideal = IMP.atom.CHARMMIdealResidueTopology(IMP.atom.ResidueType('ALA'))
+        ideal = IMP.atom.CHARMMIdealResidueTopology(
+            IMP.atom.ResidueType('ALA'))
         at = _make_test_atom()
         ideal.add_atom(at)
         res = IMP.atom.CHARMMResidueTopology(ideal)
@@ -300,7 +315,7 @@ class Tests(IMP.test.TestCase):
         """Test CHARMMTopology::setup_hierarchy() method"""
         m = IMP.kernel.Model()
         pdb = IMP.atom.read_pdb(
-                        self.get_input_file_name('charmm_type_test.pdb'), m)
+            self.get_input_file_name('charmm_type_test.pdb'), m)
         ff = IMP.atom.get_heavy_atom_CHARMM_parameters()
         topology = ff.create_topology(pdb)
         topology.apply_default_patches()
@@ -316,12 +331,16 @@ class Tests(IMP.test.TestCase):
         """Test CHARMM topology handling of HEME residues"""
         m = IMP.kernel.Model()
         pdb = IMP.atom.read_pdb(
-                        self.get_input_file_name('HEM_model.pdb'), m)
+            self.get_input_file_name('HEM_model.pdb'), m)
         residue = IMP.atom.get_by_type(pdb, IMP.atom.RESIDUE_TYPE)[0]
         # Add some dummy atoms, to make sure they get removed
-        a = IMP.atom.Atom.setup_particle(IMP.kernel.Particle(m), IMP.atom.AT_CA)
+        a = IMP.atom.Atom.setup_particle(
+            IMP.kernel.Particle(m),
+            IMP.atom.AT_CA)
         residue.add_child(a)
-        a = IMP.atom.Atom.setup_particle(IMP.kernel.Particle(m), IMP.atom.AT_CB)
+        a = IMP.atom.Atom.setup_particle(
+            IMP.kernel.Particle(m),
+            IMP.atom.AT_CB)
         residue.add_child(a)
         # Remove some needed atoms, to make sure they get added
         residue.remove_child(0)
@@ -374,7 +393,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(t.get_segment(0).get_number_of_residues(), 3)
         self.assertEqual(t.get_segment(1).get_number_of_residues(), 2)
 
-        # Invalid one-letter codes should cause an exception and add no segments
+        # Invalid one-letter codes should cause an exception and add no
+        # segments
         t = IMP.atom.CHARMMTopology(ff)
         self.assertRaises(ValueError, t.add_sequence, 'a')
         self.assertEqual(t.get_number_of_segments(), 0)
@@ -405,10 +425,10 @@ class Tests(IMP.test.TestCase):
         """Test add_dihedrals() method"""
         # Dihedrals with missing atoms should not be created; dihedrals
         # with missing parameters should be (but with no parameters)
-        for atoms,num_dihed,stiff in [(['C', 'CA', 'CB', 'HB1'], 1, 0.6325),
-                                      (['C', 'CA', 'N', 'O'], 1, 0.0),
-                                      (['N', 'C', 'CA', 'SG'], 0, None),
-                                      (['N', 'CA', 'C', '+N'], 0, None)]:
+        for atoms, num_dihed, stiff in [(['C', 'CA', 'CB', 'HB1'], 1, 0.6325),
+                                        (['C', 'CA', 'N', 'O'], 1, 0.0),
+                                        (['N', 'C', 'CA', 'SG'], 0, None),
+                                        (['N', 'CA', 'C', '+N'], 0, None)]:
             m = IMP.kernel.Model()
             ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                            IMP.atom.get_data_path("par.lib"))
@@ -419,7 +439,7 @@ class Tests(IMP.test.TestCase):
             h = topology.create_hierarchy(m)
             for a in IMP.atom.get_by_type(h, IMP.atom.ATOM_TYPE):
                 IMP.core.XYZ.setup_particle(a.get_particle(),
-                                            IMP.algebra.Vector3D(0,0,0))
+                                            IMP.algebra.Vector3D(0, 0, 0))
             topology.add_atom_types(h)
             d = topology.add_dihedrals(h)
             self.assertEqual(len(d), num_dihed)
@@ -438,19 +458,19 @@ class Tests(IMP.test.TestCase):
         h = topology.create_hierarchy(m)
         for a in IMP.atom.get_by_type(h, IMP.atom.ATOM_TYPE):
             IMP.core.XYZ.setup_particle(a.get_particle(),
-                                        IMP.algebra.Vector3D(0,0,0))
+                                        IMP.algebra.Vector3D(0, 0, 0))
         topology.add_atom_types(h)
         bonds = topology.add_bonds(h)
         dihedrals = ff.create_dihedrals(bonds)
         self.assertEqual(len(dihedrals), 67)
         d = IMP.atom.Dihedral(dihedrals[5])
         self.assertEqual([IMP.atom.CHARMMAtom(d.get_particle(x)).
-                                  get_charmm_type() for x in range(4)],
+                          get_charmm_type() for x in range(4)],
                          ['NH1', 'C', 'CP1', 'N'])
         self.assertAlmostEqual(d.get_stiffness(), 0.7746, delta=1e-4)
         d = IMP.atom.Dihedral(dihedrals[6])
         self.assertEqual([IMP.atom.CHARMMAtom(d.get_particle(x)).
-                                  get_charmm_type() for x in range(4)],
+                          get_charmm_type() for x in range(4)],
                          ['NH1', 'C', 'CP1', 'N'])
         self.assertAlmostEqual(d.get_stiffness(), -0.7746, delta=1e-4)
 
@@ -472,13 +492,18 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(topology.get_number_of_segments(), 1)
         segment = topology.get_segment(0)
         self.assertEqual(segment.get_number_of_residues(), 156)
-        self.assertRaises(IMP.base.ValueException, segment.apply_default_patches, ff)
+        self.assertRaises(
+            IMP.base.ValueException,
+            segment.apply_default_patches,
+            ff)
         for typ in (IMP.atom.Charged, IMP.atom.LennardJones):
             self.assertEqual(typ.get_is_setup(last_atom), False)
         topology.add_atom_types(pdb)
         self.assertEqual(IMP.atom.CHARMMAtom.get_is_setup(last_atom),
                          True)
-        self.assertEqual(IMP.atom.CHARMMAtom(last_atom).get_charmm_type(), 'OC')
+        self.assertEqual(
+            IMP.atom.CHARMMAtom(last_atom).get_charmm_type(),
+            'OC')
         topology.add_charges(pdb)
         self.assertAlmostEqual(IMP.atom.Charged(last_atom).get_charge(),
                                -0.67, delta=1e-3)
@@ -489,15 +514,15 @@ class Tests(IMP.test.TestCase):
         dihedrals = ff.create_dihedrals(bonds)
         self.assertEqual(len(dihedrals), 2161)
         for (bondr1, bondr2, bonda1, bonda2, atyp1, atyp2, bondlen, fcon) in [
-           # intraresidue bond
-           (residues[0], residues[0], IMP.atom.AT_CA, IMP.atom.AT_CB,
-            'CT1', 'CT3', 1.5380, 21.095),
-           # backbone bond
-           (residues[0], residues[1], IMP.atom.AT_C, IMP.atom.AT_N,
-            'C', 'NH1', 1.3450, 27.203),
-           # CTER bond
-           (residues[-1], residues[-1], IMP.atom.AT_OXT, IMP.atom.AT_C,
-            'OC', 'CC', 1.2600, 32.404)]:
+            # intraresidue bond
+            (residues[0], residues[0], IMP.atom.AT_CA, IMP.atom.AT_CB,
+             'CT1', 'CT3', 1.5380, 21.095),
+            # backbone bond
+            (residues[0], residues[1], IMP.atom.AT_C, IMP.atom.AT_N,
+             'C', 'NH1', 1.3450, 27.203),
+            # CTER bond
+            (residues[-1], residues[-1], IMP.atom.AT_OXT, IMP.atom.AT_C,
+                'OC', 'CC', 1.2600, 32.404)]:
             r1 = bondr1.get_as_residue()
             r2 = bondr2.get_as_residue()
             a1 = IMP.atom.get_atom(r1, bonda1)
@@ -511,8 +536,8 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(IMP.core.XYZR(last_atom).get_radius(),
                                2.04, delta=1e-3)
         self.assertAlmostEqual(
-              IMP.atom.LennardJones(last_atom).get_well_depth(), 0.12,
-              delta=1e-3)
+            IMP.atom.LennardJones(last_atom).get_well_depth(), 0.12,
+            delta=1e-3)
         last_cg1 = atoms[-3].get_particle()
         self.assertAlmostEqual(IMP.core.XYZR(last_cg1).get_radius(),
                                2.472, delta=1e-3)
@@ -565,7 +590,7 @@ class Tests(IMP.test.TestCase):
         """Test get or removal of untyped atoms"""
         m = IMP.kernel.Model()
         pdb = IMP.atom.read_pdb(
-                 self.get_input_file_name('charmm_type_test.pdb'), m)
+            self.get_input_file_name('charmm_type_test.pdb'), m)
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
         topology = ff.create_topology(pdb)
@@ -584,7 +609,7 @@ class Tests(IMP.test.TestCase):
         """Test adding missing atoms"""
         m = IMP.kernel.Model()
         pdb = IMP.atom.read_pdb(
-                 self.get_input_file_name('charmm_type_test.pdb'), m)
+            self.get_input_file_name('charmm_type_test.pdb'), m)
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
         topology = ff.create_topology(pdb)
@@ -595,7 +620,7 @@ class Tests(IMP.test.TestCase):
         topology.add_missing_atoms(pdb)
 
         atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
-        atom_types = [IMP.atom.Atom(x).get_atom_type().get_string() \
+        atom_types = [IMP.atom.Atom(x).get_atom_type().get_string()
                       for x in atoms]
         # Input system contains only backbone; output should also contain
         # hydrogens, etc. Newly-added atoms should be added after the

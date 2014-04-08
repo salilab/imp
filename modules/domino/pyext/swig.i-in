@@ -56,6 +56,9 @@ IMP_SWIG_OBJECT(IMP::domino, PermutationStates, PermutationStatesList);
 #ifdef IMP_DOMINO_USE_RMF
 IMP_SWIG_OBJECT(IMP::domino, WriteHDF5AssignmentContainer, WriteHDF5AssignmentContainers);
 IMP_SWIG_OBJECT(IMP::domino, ReadHDF5AssignmentContainer, ReadHDF5AssignmentContainers);
+%{
+#include <RMF.h>
+%}
 #endif
 IMP_SWIG_OBJECT(IMP::domino, ReadAssignmentContainer, ReadAssignmentContainers);
 IMP_SWIG_OBJECT(IMP::domino, WriteAssignmentContainer, WriteAssignmentContainers);

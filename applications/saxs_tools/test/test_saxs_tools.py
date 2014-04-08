@@ -3,7 +3,9 @@ import sys
 import os
 import re
 
+
 class SAXSToolsTest(IMP.test.ApplicationTestCase):
+
     def test_rg(self):
         """Simple test of Rg calculation"""
         print self.get_input_file_name('6lyz.pdb')
@@ -32,7 +34,9 @@ class SAXSToolsTest(IMP.test.ApplicationTestCase):
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
         m = re.search('6lyz.pdb.dat chi=([\d\.]+)', out)
-        self.assertIsNotNone(m, msg="chi value output not found in " + str(out))
+        self.assertIsNotNone(
+            m,
+            msg="chi value output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 0.537, delta=0.1)
 
 

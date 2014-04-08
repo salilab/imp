@@ -1,7 +1,7 @@
 /**
  *  \file IMP/kernel/Sampler.h     \brief Base class for all samplers.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -40,10 +40,6 @@ class IMPKERNELEXPORT Sampler : public IMP::base::Object {
   void set_scoring_function(ScoringFunctionAdaptor sf);
 
   Model *get_model() const { return model_; }
-
-  /** \deprecated_at{2.1} Use create_sample */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  ConfigurationSet *get_sample() const;
 
  protected:
   virtual ConfigurationSet *do_sample() const = 0;

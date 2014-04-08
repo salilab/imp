@@ -2,7 +2,7 @@
  * \file IMP/atom/CHARMMParameters.h
  * \brief access to Charmm force field parameters
  *
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -88,7 +88,6 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
       bool allow_wildcards) const;
 
  public:
-
   //! Construction with CHARMM topology (and optionally parameters) file.
   /** For addition of atom types, the topology file alone is enough;
       for adding bonds and radii, both files are needed.
@@ -307,7 +306,6 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
   IMP_FORCE_FIELD_PARAMETERS(CHARMMParameters);
 
  private:
-
   virtual String get_force_field_atom_type(Atom atom) const;
 
   void read_parameter_file(base::TextInput input_file);

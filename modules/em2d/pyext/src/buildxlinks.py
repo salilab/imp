@@ -19,16 +19,15 @@ except NameError:
     from sets import Set as set
 
 
-
-
 class Xlink:
+
     """
         Class defining a cross-link
     """
 
     def __init__(self, id1, chain1, residue1,
-                       id2, chain2, residue2,
-                       distance ):
+                 id2, chain2, residue2,
+                 distance):
         """
             Initialize the class
             @param[in] id1 Id of the first component of the cross-link
@@ -48,9 +47,9 @@ class Xlink:
         self.distance = distance
 
     def clone(self):
-        xl = Xlink( self.first_id, self.first_chain, self.first_residue,
-                    self.second_id, self.second_chain, self.second_residue,
-                    self.distance)
+        xl = Xlink(self.first_id, self.first_chain, self.first_residue,
+                   self.second_id, self.second_chain, self.second_residue,
+                   self.distance)
         return xl
 
     def __eq__(self, other):
@@ -60,7 +59,7 @@ class Xlink:
            self.second_chain != other.second_chain or \
            self.first_residue != other.first_residue or \
            self.second_residue != other.second_residue or \
-           abs(other.distance-self.distance) > 0.01:
+           abs(other.distance - self.distance) > 0.01:
             return False
         return True
 
@@ -70,16 +69,15 @@ class Xlink:
         """
         self.first_id, self.second_id = self.second_id, self.first_id
         self.first_residue, self.second_residue = \
-                                    self.second_residue, self.first_residue
+            self.second_residue, self.first_residue
         self.first_chain, self.second_chain = \
-                                self.second_chain, self.first_chain
-
+            self.second_chain, self.first_chain
 
     def show(self):
         s = "Cross Link: %s %s %d - %s %s %d. Distance %f" % (self.first_id,
-                                self.first_chain, self.first_residue,
-                                self.second_id, self.second_chain,
-                                self.second_residue, self.distance )
+                                                              self.first_chain, self.first_residue,
+                                                              self.second_id, self.second_chain,
+                                                              self.second_residue, self.distance)
         return s
 
     def get_name(self):
@@ -87,11 +85,10 @@ class Xlink:
             Generate a unique name for the restraint.
             @note: The name cannot start with a number, upsets sqlite
         """
-        name = "cl_%s_%s%d_%s_%s%d" % (self.first_id,  self.first_chain,
-                                  self.first_residue, self.second_id,
-                                  self.second_chain, self.second_residue)
+        name = "cl_%s_%s%d_%s_%s%d" % (self.first_id, self.first_chain,
+                                       self.first_residue, self.second_id,
+                                       self.second_chain, self.second_residue)
         return name
-
 
 
 def build_xlinks_graph(xlinks_dict):
@@ -101,26 +98,28 @@ def build_xlinks_graph(xlinks_dict):
         @param xlinks_dict a XlinksDict class
 
     """
-    subunits =  set()
+    subunits = set()
     edges = []
     for key in xlinks_dict.keys():
         subunits.add(key[0])
         subunits.add(key[1])
-        edge = [key[0],key[1]]
-        edge.sort()
+        edge = sorted([key[0], key[1]])
         if edge not in edges:
             edges.append(edge)
     log.debug("Subunits %s", subunits)
     log.debug("Edges %s", edges)
     return subunits, edges
 
+
 class XlinksDict(dict):
+
     """
         Description of crosslinking restraints as a python
         dictionary.
         The keys are a pair with the ids of the cross-linked subunits.
         Note: The pairs are considered in alphabetic order
     """
+
     def add(self, xlink):
         """
             Add a xlink. It is ensured that the id of the first element is
@@ -149,11 +148,9 @@ class XlinksDict(dict):
                 # first id in the xlink
                 for y in ys:
                     y.swap()
-            except KeyError,e:
+            except KeyError as e:
                 raise e
         return ys
-
-
 
         """
         try:
@@ -171,7 +168,9 @@ class XlinksDict(dict):
             return xlinks_list
         """
 
+
 class DockOrder (object):
+
     """
         Compute the order of the docking experiments. The order is derived
         from the cross-linking restraints:
@@ -210,10 +209,10 @@ class DockOrder (object):
         """ return the order to dock components from the cross links """
         docking_pairs = []
         degs = self.G.degree(self.G.nodes())
-        log.debug("Degrees: %s",degs )
-        sorted_degrees = [(v,k) for v,k in zip(degs.values(),degs.keys())]
-        sorted_degrees.sort()
-        sorted_degrees.reverse() # descending order
+        log.debug("Degrees: %s", degs)
+        sorted_degrees = sorted([(v, k)
+                                for v, k in zip(degs.values(), degs.keys())])
+        sorted_degrees.reverse()  # descending order
 
         receptors_considered = []
         for degree, node in sorted_degrees:
@@ -222,16 +221,18 @@ class DockOrder (object):
                     docking_pairs.append((node, n))
             receptors_considered.append(node)
         log.info("The suggested order for the docking pairs is %s",
-                                                            docking_pairs)
+                 docking_pairs)
         return docking_pairs
 
 
 class InitialDockingFromXlinks:
+
     """
         Puts two subunits together using the Xlinkins restraints. The solutions
         offered by this class are just an initial position of the components
         to be fed to HEX
     """
+
     def clear_xlinks(self):
         self.xlinks_list = []
 
@@ -266,7 +267,7 @@ class InitialDockingFromXlinks:
         self.h_receptor = h_receptor
         self.h_ligand = h_ligand
 
-    def set_rigid_bodies(self,rb_receptor, rb_ligand):
+    def set_rigid_bodies(self, rb_receptor, rb_ligand):
         """
             Sets the rigid bodies (core.RigidBody objects) for the receptor and
             the ligand
@@ -295,7 +296,7 @@ class InitialDockingFromXlinks:
             @param ch The chain id
             @param res index of the residue
         """
-        s=IMP.atom.Selection(h, chain=ch, residue_index=res)
+        s = IMP.atom.Selection(h, chain=ch, residue_index=res)
         return s.get_selected_particles()[0]
 
     def get_residue_coordinates(self, h, ch, res):
@@ -322,22 +323,22 @@ class InitialDockingFromXlinks:
         """
         xl = self.xlinks_list[0]
         center = self.get_residue_coordinates(self.h_receptor, xl.first_chain,
-                                                xl.first_residue)
+                                              xl.first_residue)
         sph = alg.Sphere3D(center, xl.distance)
         v = alg.get_random_vector_in(sph)
         ref = self.rb_ligand.get_reference_frame()
         coords = ref.get_transformation_to().get_translation()
         R = ref.get_transformation_to().get_rotation()
         lig = self.get_residue_coordinates(self.h_ligand, xl.second_chain,
-                                                          xl.second_residue)
+                                           xl.second_residue)
         log.debug("Ligand residue before moving %s", lig)
         displacement = v - lig
         T = alg.Transformation3D(R, coords + displacement)
         self.rb_ligand.set_reference_frame(alg.ReferenceFrame3D(T))
-        new_coords = self.get_residue_coordinates(self.h_ligand, xl.second_chain,
-                                                          xl.second_residue)
+        new_coords = self.get_residue_coordinates(
+            self.h_ligand, xl.second_chain,
+            xl.second_residue)
         log.debug("ligand after moving %s", new_coords)
-
 
     def move_xlinks(self, ):
         """
@@ -350,13 +351,13 @@ class InitialDockingFromXlinks:
         lig_coords = []
         for xl in self.xlinks_list:
             c = self.get_residue_coordinates(self.h_receptor, xl.first_chain,
-                                                          xl.first_residue)
+                                             xl.first_residue)
             rec_coords.append(c)
             c = self.get_residue_coordinates(self.h_ligand, xl.second_chain,
-                                                          xl.second_residue)
+                                             xl.second_residue)
             lig_coords.append(c)
-        log.debug( "Receptor residues before moving %s", rec_coords)
-        log.debug( "Ligand residues before moving %s", lig_coords)
+        log.debug("Receptor residues before moving %s", rec_coords)
+        log.debug("Ligand residues before moving %s", lig_coords)
         ref = self.rb_ligand.get_reference_frame()
         Tr = alg.get_transformation_aligning_first_to_second(lig_coords,
                                                              rec_coords)
@@ -367,6 +368,6 @@ class InitialDockingFromXlinks:
         moved_lig_coords = []
         for xl in self.xlinks_list:
             c = self.get_residue_coordinates(self.h_ligand, xl.second_chain,
-                                                          xl.second_residue)
+                                             xl.second_residue)
             moved_lig_coords.append(c)
-        log.debug( "Ligand residues after moving %s", moved_lig_coords)
+        log.debug("Ligand residues after moving %s", moved_lig_coords)

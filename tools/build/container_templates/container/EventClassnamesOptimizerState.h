@@ -4,7 +4,7 @@
  *
  *  BLURB
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_EVENT_CLASSNAMES_OPTIMIZER_STATE_H
@@ -14,7 +14,6 @@
 #include <IMP/ClassnamePredicate.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/ClassnameContainer.h>
-#include <IMP/optimizer_state_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

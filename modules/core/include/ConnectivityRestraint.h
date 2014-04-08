@@ -4,7 +4,7 @@
  *  Restrict max distance between at least one pair of particles of any
  *  two distinct types.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -41,11 +41,9 @@ class IMPCOREEXPORT ConnectivityRestraint : public kernel::Restraint {
 
  public:
   //! Use the given PairScore
-  ConnectivityRestraint(PairScore *ps, SingletonContainer *sc);
-  /** \deprecated_at{2.1} Use constructor that takes a container instead.
-   */
-  IMPCORE_DEPRECATED_METHOD_DECL(2.1)
-  ConnectivityRestraint(PairScore *ps);
+  ConnectivityRestraint(PairScore *ps, SingletonContainerAdaptor sc);
+
+  ConnectivityRestraint(Model *m, PairScore *ps);
 #ifndef IMP_DOXYGEN
   /** @name kernel::Particles to be connected
 

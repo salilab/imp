@@ -2,7 +2,7 @@
  *  \file IMP/kernel/AttributeOptimizer.h
  *   \brief Base class for all optimizers.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -23,12 +23,7 @@ class IMPKERNELEXPORT AttributeOptimizer : public Optimizer {
  public:
   AttributeOptimizer(kernel::Model *m, std::string name = "Optimizer %1%");
 
-  /** \deprecated_at{2.1} Use the constructor with a Model and a name.*/
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  AttributeOptimizer();
-
  protected:
-
   /** @name Methods for getting and setting optimized attributes
       Optimizers don't have to go through the particles themselves
       looking for values to optimize unless they care about special

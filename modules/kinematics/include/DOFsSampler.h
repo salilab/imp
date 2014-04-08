@@ -1,7 +1,7 @@
 /**
- * \file kinematics/DOFsSampler.h \brief
+ * \file IMP/kinematics/DOFsSampler.h \brief
  *
- * Copyright 2007-2010 Sali Lab. All rights reserved.
+ * Copyright 2007-2014 Sali Lab. All rights reserved.
  *
  */
 
@@ -16,25 +16,21 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 /**
    a base class for sampling certain combinations of degrees of freedom
  */
-class DOFsSampler : public IMP::base::Object
-{
+class DOFsSampler : public IMP::base::Object {
   IMP_OBJECT_METHODS(DOFsSampler);
 
-public:
+ public:
   /** Constructs the dofs sampler over specified dofs
   */
- DOFsSampler(DOFs dofs) :
-  IMP::base::Object("IMP_KINEMATICS_DOFSSAMPLER"),
-    dofs_(dofs),
-    last_sample_( DOFValues( dofs ) )
-    {
-    }
+  DOFsSampler(DOFs dofs)
+      : IMP::base::Object("IMP_KINEMATICS_DOFSSAMPLER"),
+        dofs_(dofs),
+        last_sample_(DOFValues(dofs)) {}
 
   /**
      @return a sample on the dofs over which this class samples
    */
-  DOFValues get_sample() const
-  {
+  DOFValues get_sample() const {
     last_sample_ = do_get_sample();
     return last_sample_;
   }
@@ -63,21 +59,17 @@ public:
 
   /** Returns the dofs over which this sampler works
    */
-  DOFs const& get_dofs() const
-  { return dofs_; }
+  DOFs const& get_dofs() const { return dofs_; }
 
   /** Returns the i'th dof over which this sampler works
    */
-  DOF const* get_dof(unsigned int i) const
-  {
-    IMP_USAGE_CHECK( i < dofs_.size(),
-                     "Accessing out-of-range dof in DOFsSampler");
+  DOF const* get_dof(unsigned int i) const {
+    IMP_USAGE_CHECK(i < dofs_.size(),
+                    "Accessing out-of-range dof in DOFsSampler");
     return dofs_[i];
   }
 
-  unsigned int get_number_of_dofs() const
-  { return dofs_.size(); }
-
+  unsigned int get_number_of_dofs() const { return dofs_.size(); }
 
  protected:
   virtual DOFValues do_get_sample() const = 0;

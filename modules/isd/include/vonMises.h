@@ -1,7 +1,7 @@
 /**
  *  \file IMP/isd/vonMises.h    \brief Normal distribution of Function
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_VON_MISES_H
@@ -25,42 +25,36 @@ IMPISD_BEGIN_NAMESPACE
     and \f$\kappa = 1/\sigma^2\f$.
  */
 
-class vonMises : public base::Object
-{
-public:
+class vonMises : public base::Object {
+ public:
   vonMises(double x, double mu, double kappa)
-  : base::Object("von Mises %1%"), x_(x), mu_(mu) {
+      : base::Object("von Mises %1%"), x_(x), mu_(mu) {
     force_set_kappa(kappa);
   }
 
   /* energy (score) functions, aka -log(p) */
-  virtual double evaluate() const
-  {
-      return logterm_ - kappa_*cos(x_-mu_);
+  virtual double evaluate() const { return logterm_ - kappa_ * cos(x_ - mu_); }
+
+  virtual double evaluate_derivative_x() const {
+    return kappa_ * sin(x_ - mu_);
   }
 
-  virtual double evaluate_derivative_x() const
-  { return kappa_*sin(x_-mu_); }
+  virtual double evaluate_derivative_mu() const {
+    return -kappa_ * sin(x_ - mu_);
+  }
 
-  virtual double evaluate_derivative_mu() const
-  { return -kappa_*sin(x_-mu_); }
-
-  virtual double evaluate_derivative_kappa() const
-  { return -cos(x_-mu_) + I1_/I0_; }
+  virtual double evaluate_derivative_kappa() const {
+    return -cos(x_ - mu_) + I1_ / I0_;
+  }
 
   /* probability density function */
-  virtual double density() const
-  {
-      return exp(kappa_*cos(x_-mu_))/(2*IMP::PI*I0_);
+  virtual double density() const {
+    return exp(kappa_ * cos(x_ - mu_)) / (2 * IMP::PI * I0_);
   }
 
   /* change of parameters */
-  void set_x(double x) {
-    x_=x;
-  }
-  void set_mu(double mu) {
-    mu_=mu;
-  }
+  void set_x(double x) { x_ = x; }
+  void set_mu(double mu) { mu_ = mu; }
   void set_kappa(double kappa) {
     if (kappa_ != kappa) {
       force_set_kappa(kappa);
@@ -76,11 +70,11 @@ public:
     kappa_ = kappa;
     I0_ = boost::math::cyl_bessel_i(0, kappa);
     I1_ = boost::math::cyl_bessel_i(1, kappa);
-    logterm_ = log(2*IMP::PI*I0_);
+    logterm_ = log(2 * IMP::PI * I0_);
   }
-  double x_,mu_,kappa_,I0_,I1_,logterm_;
+  double x_, mu_, kappa_, I0_, I1_, logterm_;
 };
 
 IMPISD_END_NAMESPACE
 
-#endif  /* IMPISD_VON_MISES_H */
+#endif /* IMPISD_VON_MISES_H */

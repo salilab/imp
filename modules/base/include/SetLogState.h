@@ -1,7 +1,7 @@
 /**
  *  \file IMP/base/SetLogState.h     \brief Logging and error reporting support.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -40,7 +40,7 @@ class IMPBASEEXPORT SetLogState : public base::RAII {
                                                    level_ = DEFAULT;
                                                    obj_ = nullptr;
                                                  },
-           { do_set(o, l); }, { do_reset(); }, do_show(out););
+  { do_set(o, l); }, { do_reset(); }, do_show(out););
 
   //! Construct it with the desired level and target
   SetLogState(LogLevel l);

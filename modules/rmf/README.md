@@ -17,13 +17,13 @@ and score data.
  to that of an arbitrary frame and IMP::rmf::save_frame() can be used to save
  the current state of the objects into a frame in the RMF file.
 
- See the [RMF library](http://salilab.github.com/rmf) for more information.
+ See the [RMF library](http://salilab.github.io/rmf) for more information.
 
 # Info
 
 _Author(s)_: Daniel Russel
 
-_Maintainer_: `drussel`
+_Maintainer_: `benmwebb`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

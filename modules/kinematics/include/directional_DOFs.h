@@ -1,9 +1,9 @@
 /**
- * \file kinematics/directional_DOFs.h
+ * \file IMP/kinematics/directional_DOFs.h
  * \brief
  * \authors Dina Schneidman, Barak Raveh
  *
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -20,8 +20,8 @@ IMPKINEMATICS_BEGIN_NAMESPACE
   turning it into virtual class
 */
 class IMPKINEMATICSEXPORT DirectionalDOF {
-public:
-  DirectionalDOF(const DOFs& dofs): dofs_(dofs) {}
+ public:
+  DirectionalDOF(const DOFs& dofs) : dofs_(dofs) {}
 
   void set_end_points(const DOFValues& q1, const DOFValues& q2) {
     endpoint1_ = q1;
@@ -32,33 +32,31 @@ public:
 
     // determine step size based on each DOF
     step_number_ = 0;
-    for(unsigned int i=0; i<dofs_.size(); i++) {
+    for (unsigned int i = 0; i < dofs_.size(); i++) {
       int dof_step_number =
-        dofs_[i]->get_number_of_steps(endpoint1_[i], endpoint2_[i]);
-      if(dof_step_number > step_number_)
-        step_number_ = dof_step_number;
+          dofs_[i]->get_number_of_steps(endpoint1_[i], endpoint2_[i]);
+      if (dof_step_number > step_number_) step_number_ = dof_step_number;
     }
 
-    for(unsigned int i=0; i<dofs_.size(); i++) {
-      current_delta_[i] = (endpoint2_[i] - endpoint1_[i])/step_number_;
+    for (unsigned int i = 0; i < dofs_.size(); i++) {
+      current_delta_[i] = (endpoint2_[i] - endpoint1_[i]) / step_number_;
     }
 
     current_step_number_ = 0;
-    delta_ = 1.0/step_number_;
+    delta_ = 1.0 / step_number_;
     value_ = 0.0;
   }
 
   // return current DOF
   DOFValues get_dofs_values() {
     DOFValues ret = endpoint1_;
-    for(unsigned int i=0; i<ret.size(); i++) {
-      ret[i]+= current_step_number_ * current_delta_[i];
+    for (unsigned int i = 0; i < ret.size(); i++) {
+      ret[i] += current_step_number_ * current_delta_[i];
     }
     return ret;
   }
 
   double get_value() const { return value_; }
-
 
 #ifndef SWIG
   void operator++(int) {
@@ -71,8 +69,8 @@ public:
   }
 #endif
 
-protected:
-  DOFs dofs_; // can be a pointer
+ protected:
+  DOFs dofs_;  // can be a pointer
   DOFValues endpoint1_;
   DOFValues endpoint2_;
 
@@ -93,10 +91,9 @@ protected:
 
  public:
   IMP_SHOWABLE_INLINE(DirectionalDOF, {
-      out << "(direction dof from " << endpoint1_ << " to " << endpoint2_
-          << " ; step number " << current_step_number_ << ")";
-    });
-
+    out << "(direction dof from " << endpoint1_ << " to " << endpoint2_
+        << " ; step number " << current_step_number_ << ")";
+  });
 };
 
 IMP_VALUES(DirectionalDOF, DirectionalDOFs);

@@ -2,7 +2,7 @@
  *  \file IMP/rmf/atom_links.h
  *  \brief Handle read/write of kernel::Model data from/to files.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,9 +12,10 @@
 #include <IMP/rmf/rmf_config.h>
 #include "simple_links.h"
 #include "internal/atom_links_static.h"
-#include "internal/atom_links_global_coordinates.h"
-#include "internal/atom_links_static_coordinates.h"
-#include "internal/atom_links_local_coordinates.h"
+#include "internal/atom_links_rigid_bodies.h"
+#include "internal/atom_links_xyzs.h"
+#include "internal/atom_links_gaussians.h"
+#include <RMF/decorator/alternatives.h>
 #include <IMP/base/object_macros.h>
 #include <IMP/base/utility_macros.h>
 #include <RMF/NodeHandle.h>
@@ -24,7 +25,7 @@
 #include <IMP/rmf/link_macros.h>
 #include <IMP/base/tuple_macros.h>
 #include <RMF/decorators.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 IMPRMF_BEGIN_NAMESPACE
 
 /** Manage the loading link between an RMF file and an atom::Hierarchy.
@@ -33,22 +34,25 @@ IMPRMF_BEGIN_NAMESPACE
  */
 class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<kernel::Particle> {
   typedef SimpleLoadLink<kernel::Particle> P;
-  RMF::IntermediateParticleConstFactory intermediate_particle_factory_;
-  RMF::ReferenceFrameConstFactory reference_frame_factory_;
+  RMF::decorator::IntermediateParticleFactory intermediate_particle_factory_;
+  RMF::decorator::ReferenceFrameFactory reference_frame_factory_;
+  RMF::decorator::AlternativesFactory af_;
+  RMF::IntKey external_rigid_body_key_;
   struct Data {
     internal::HierarchyLoadStatic load_static;
     internal::HierarchyLoadBonds load_bonds;
-    internal::HierarchyLoadLocalCoordinates load_local_coordinates;
-    internal::HierarchyLoadStaticCoordinates load_static_coordinates;
-    internal::HierarchyLoadGlobalCoordinates load_global_coordinates;
+    internal::HierarchyLoadXYZs load_xyzs;
+    internal::HierarchyLoadGaussians load_gaussians;
+    internal::HierarchyLoadRigidBodies load_rigid_bodies;
     Data(RMF::FileConstHandle h)
         : load_static(h),
           load_bonds(h),
-          load_local_coordinates(h),
-          load_static_coordinates(h),
-          load_global_coordinates(h) {}
+          load_xyzs(h),
+          load_gaussians(h),
+          load_rigid_bodies(h) {}
   };
-  typedef base::map<kernel::ParticleIndex, boost::shared_ptr<Data> > DM;
+  typedef boost::unordered_map<kernel::ParticleIndex, boost::shared_ptr<Data> >
+      DM;
   DM data_;
   virtual bool get_is(RMF::NodeConstHandle nh) const IMP_OVERRIDE {
     return nh.get_type() == RMF::REPRESENTATION;
@@ -60,36 +64,47 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<kernel::Particle> {
                                   Data &data);
 
   virtual void do_add_link(kernel::Particle *o,
-                           RMF::NodeConstHandle node) IMP_FINAL
-      IMP_OVERRIDE;
+                           RMF::NodeConstHandle node) IMP_FINAL IMP_OVERRIDE;
+  using P::do_create;
   virtual kernel::Particle *do_create(RMF::NodeConstHandle name,
-                                      kernel::Model *m) IMP_FINAL
-      IMP_OVERRIDE;
+                                      kernel::Model *m) IMP_FINAL IMP_OVERRIDE;
   void create_recursive(kernel::Model *m, kernel::ParticleIndex root,
                         kernel::ParticleIndex cur, RMF::NodeConstHandle name,
                         kernel::ParticleIndexes rigid_bodies, Data &data);
   virtual void do_load_one(RMF::NodeConstHandle nh,
-                           kernel::Particle *o) IMP_FINAL
-      IMP_OVERRIDE;
+                           kernel::Particle *o) IMP_FINAL IMP_OVERRIDE;
 
  protected:
   /** This method is called for the hierarchy.*/
   virtual void do_load_hierarchy(RMF::NodeConstHandle root_node,
                                  kernel::Model *m, kernel::ParticleIndex root) {
+    IMP_UNUSED(root_node);
+    IMP_UNUSED(m);
+    IMP_UNUSED(root);
   }
   /** Overload this to take specific action on creating
       a member of the hierarchy.
       \unstable{do_create_recursive} */
   virtual void do_setup_particle(kernel::Model *m, kernel::ParticleIndex root,
                                  kernel::ParticleIndex cur,
-                                 RMF::NodeConstHandle node) {}
+                                 RMF::NodeConstHandle node) {
+    IMP_UNUSED(m);
+    IMP_UNUSED(root);
+    IMP_UNUSED(cur);
+    IMP_UNUSED(node);
+  }
 
   /** Overload this to take specific action on linking
      a member of the hierarchy.
      \unstable{do_add_link_recursive} */
   virtual void do_link_particle(kernel::Model *m, kernel::ParticleIndex root,
                                 kernel::ParticleIndex cur,
-                                RMF::NodeConstHandle node) {}
+                                RMF::NodeConstHandle node) {
+    IMP_UNUSED(root);
+    IMP_UNUSED(m);
+    IMP_UNUSED(cur);
+    IMP_UNUSED(node);
+  }
 
  public:
   HierarchyLoadLink(RMF::FileConstHandle fh);
@@ -108,18 +123,21 @@ class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<kernel::Particle> {
   struct Data {
     internal::HierarchySaveStatic save_static;
     internal::HierarchySaveBonds save_bonds;
-    internal::HierarchySaveLocalCoordinates save_local_coordinates;
-    internal::HierarchySaveStaticCoordinates save_static_coordinates;
-    internal::HierarchySaveGlobalCoordinates save_global_coordinates;
+    internal::HierarchySaveXYZs save_xyzs;
+    internal::HierarchySaveGaussians save_gaussians;
+    internal::HierarchySaveRigidBodies save_rigid_bodies;
     Data(RMF::FileHandle h)
         : save_static(h),
           save_bonds(h),
-          save_local_coordinates(h),
-          save_static_coordinates(h),
-          save_global_coordinates(h) {}
+          save_xyzs(h),
+          save_gaussians(h),
+          save_rigid_bodies(h) {}
   };
-  typedef base::map<kernel::ParticleIndex, boost::shared_ptr<Data> > DM;
+  typedef boost::unordered_map<kernel::ParticleIndex, boost::shared_ptr<Data> >
+      DM;
   DM data_;
+  RMF::decorator::AlternativesFactory af_;
+  RMF::IntKey external_rigid_body_key_;
 
   void add_recursive(Model *m, kernel::ParticleIndex root,
                      kernel::ParticleIndex p,
@@ -135,10 +153,19 @@ class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<kernel::Particle> {
  protected:
   /** Override to add extra data for nodes. */
   virtual void do_setup_node(Model *m, kernel::ParticleIndex root,
-                             kernel::ParticleIndex p, RMF::NodeHandle n) {}
+                             kernel::ParticleIndex p, RMF::NodeHandle n) {
+    IMP_UNUSED(m);
+    IMP_UNUSED(root);
+    IMP_UNUSED(p);
+    IMP_UNUSED(n);
+  }
   /** Override to add extra data for nodes. */
   virtual void do_save_hierarchy(Model *m, kernel::ParticleIndex root,
-                                 RMF::NodeHandle root_node) {}
+                                 RMF::NodeHandle root_node) {
+    IMP_UNUSED(m);
+    IMP_UNUSED(root);
+    IMP_UNUSED(root_node);
+  }
 
  public:
   HierarchySaveLink(RMF::FileHandle fh);

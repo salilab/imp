@@ -8,7 +8,7 @@ clustering object such as an IMP::statistics::PartitionalClustering.
 
 _Author(s)_: Keren Lasker, Daniel Russel
 
-_Maintainer_: `drussel`
+_Maintainer_: `benmwebb`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

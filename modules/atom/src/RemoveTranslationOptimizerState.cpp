@@ -2,7 +2,7 @@
  *  \file RemoveTranslationOptimizerState.cpp
  *  \brief Remove rigid translation during optimization.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -14,17 +14,9 @@
 IMPATOM_BEGIN_NAMESPACE
 
 RemoveTranslationOptimizerState::RemoveTranslationOptimizerState(
-    const kernel::Particles &pis, unsigned skip_steps)
-    : kernel::OptimizerState(pis[0]->get_model(),
-                             "RemoveTranslationOptimizerState%1%"),
-      pis_(pis) {
-  set_period(skip_steps + 1);
-}
-
-RemoveTranslationOptimizerState::RemoveTranslationOptimizerState(
     kernel::Model *m, kernel::ParticleIndexesAdaptor pis)
     : kernel::OptimizerState(m, "RemoveTranslationOptimizerState%1%") {
-  BOOST_FOREACH(kernel::ParticleIndex pi, pis) {
+  IMP_FOREACH(kernel::ParticleIndex pi, pis) {
     pis_.push_back(m->get_particle(pi));
   }
 }

@@ -2,7 +2,7 @@
  *  \file internal/swig_helpers.h
  *  \brief Functions for use in swig wrappers
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPBASE_INTERNAL_SWIG_HELPERS_H
@@ -219,7 +219,7 @@ struct ConvertObjectBase : public ConvertAllBase<T> {
   static PyObject* create_python_object(T* t, SwigData st, int OWN) {
     IMP_CHECK_OBJECT(t);
     PyReceivePointer o(SWIG_NewPointerObj(t, st, OWN));
-    IMP::base::internal::ref(t);
+    t->ref();
     return o.release();
   }
 };
@@ -244,7 +244,7 @@ struct ConvertRAII : public ConvertAllBase<T> {
   template <class SwigData>
   static PyObject* create_python_object(T* t, SwigData st, int OWN) {
     PyReceivePointer o(SWIG_NewPointerObj(t, st, OWN));
-    IMP::base::internal::ref(t);
+    t->ref();
     return o.release();
   }
 };
@@ -407,7 +407,8 @@ struct ConvertVectorBase {
 
 template <class T, class ConvertT>
 struct ConvertSequence<base::Vector<T>, ConvertT> : public ConvertVectorBase<
-    base::Vector<T>, ConvertT> {
+                                                        base::Vector<T>,
+                                                        ConvertT> {
   static const int converter = 7;
 };
 

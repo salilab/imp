@@ -4,7 +4,7 @@
  *
  *  BLURB
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,7 +15,6 @@
 
 #include <IMP/kernel/internal/TupleRestraint.h>
 #include <IMP/ClassnameScore.h>
-#include <IMP/restraint_macros.h>
 
 #include <iostream>
 
@@ -42,6 +41,15 @@ class ClassnameRestraint :
       : IMP::kernel::internal::TupleRestraint<ClassnameScore>(
             ss, IMP::kernel::internal::get_model(vt),
             IMP::kernel::internal::get_index(vt), name) {}
+
+  //! Create the restraint.
+  /** This function takes the function to apply to the
+      stored Classname and the Classname.
+   */
+  ClassnameRestraint(kernel::Model *m, ClassnameScore *ss, PASSINDEXTYPE vt,
+                     std::string name = "ClassnameRestraint %1%")
+      : IMP::kernel::internal::TupleRestraint<ClassnameScore>(ss, m, vt, name) {
+  }
 
 #if defined(SWIG) || defined(IMP_DOXYGEN)
  protected:

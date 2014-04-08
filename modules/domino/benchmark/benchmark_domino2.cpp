@@ -1,6 +1,7 @@
 /**
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
+#include <IMP/base/flags.h>
 #include <IMP/domino.h>
 #include <IMP/container.h>
 #include <IMP/benchmark.h>
@@ -13,7 +14,8 @@ using namespace IMP::core;
 using namespace IMP::container;
 using namespace IMP::base;
 
-int main(int argc, char * []) {
+int main(int argc, char *argv[]) {
+  IMP::base::setup_from_argv(argc, argv, "benchmark domino");
   IMP_NEW(kernel::Model, m, ());
   set_log_level(SILENT);
   m->set_log_level(SILENT);
@@ -21,7 +23,7 @@ int main(int argc, char * []) {
   kernel::ParticlesTemp ps = IMP::internal::create_particles_from_pdb(path, m);
   ReferenceFrame3Ds vs;
   unsigned num_rb;
-  if (IMP_BUILD == IMP_DEBUG) {
+  if (IMP_BUILD == IMP_DEBUG || IMP::base::run_quick_test) {
     num_rb = 5;
   } else {
     num_rb = 40;
@@ -32,7 +34,8 @@ int main(int argc, char * []) {
   kernel::ParticlesTemp rs;
   for (unsigned int i = 0; i < num_rb; ++i) {
     IMP_NEW(kernel::Particle, p, (m));
-    kernel::ParticlesTemp leaves(ps.begin() + i * 10, ps.begin() + (i + 1) * 10);
+    kernel::ParticlesTemp leaves(ps.begin() + i * 10,
+                                 ps.begin() + (i + 1) * 10);
     RigidBody r = RigidBody::setup_particle(p, leaves);
     vs.push_back(ReferenceFrame3D(r.get_reference_frame()));
     rs.push_back(r);
@@ -54,6 +57,7 @@ int main(int argc, char * []) {
     oss << "Edge " << ppt[i][0] << "-" << ppt[i][1];
     r->set_name(oss.str());
     m->add_restraint(r);
+    r->set_maximum_score(1);
   }
   IMP_NEW(RigidBodyStates, pstates, (vs));
   IMP_NEW(ParticleStatesTable, pst, ());
@@ -61,7 +65,6 @@ int main(int argc, char * []) {
     pst->set_particle_states(rs[i], pstates);
   }
   IMP_NEW(DominoSampler, ds, (m, pst));
-  m->set_maximum_score(1);
   double runtime, num = 0;
   /*#ifndef NDEBUG
   ds->set_log_level(VERBOSE);
@@ -71,11 +74,11 @@ int main(int argc, char * []) {
     n = 10;
   }
   IMP_TIME({
-    for (int i = 0; i < n; ++i) {
-      base::Pointer<ConfigurationSet> cs = ds->create_sample();
-      num += cs->get_number_of_configurations();
-    }
-  },
+             for (int i = 0; i < n; ++i) {
+               base::Pointer<ConfigurationSet> cs = ds->create_sample();
+               num += cs->get_number_of_configurations();
+             }
+           },
            runtime);
   IMP::benchmark::report("domino small", runtime, num);
   return IMP::benchmark::get_return_value();

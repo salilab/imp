@@ -3,13 +3,23 @@ cmake_minimum_required(VERSION 2.8.3)
 project(IMP)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
 if(${CMAKE_BINARY_DIR} MATCHES "${CMAKE_SOURCE_DIR}/.*")
    message(FATAL_ERROR "Building in the source directory not supported: ${CMAKE_SOURCE_DIR} includes ${CMAKE_BINARY_DIR}")
 endif()
 
-include(${CMAKE_SOURCE_DIR}/CMakeModules/ExecuteProcess.cmake)
-include(${CMAKE_SOURCE_DIR}/CMakeModules/CheckCompiles.cmake)
+execute_process(COMMAND python setup_git.py
+                  RESULT_VARIABLE setup
+                  OUTPUT_VARIABLE toutput
+                  ERROR_VARIABLE error
+                  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                  OUTPUT_STRIP_TRAILING_WHITESPACE)
+if(NOT ${setup} EQUAL 0)
+   message(FATAL_ERROR " Failed to run setup_git.py: ${setup}; ${error}")
+endif()
+
+include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules/IMPExecuteProcess.cmake)
+include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules/IMPAddTests.cmake)
+include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules/CheckCompiles.cmake)
 
 imp_execute_process("check_common_problems" ${CMAKE_SOURCE_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/check_common_problems.py)
 
@@ -17,18 +27,19 @@ imp_execute_process("clean_build_dir" ${CMAKE_BINARY_DIR} COMMAND ${CMAKE_SOURCE
 
 imp_execute_process("setup_cmake" ${CMAKE_SOURCE_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_cmake.py)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/CMakeModules)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules)
 
 enable_testing()
+
+include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules/IMPFindC++11.cmake)
+include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules/IMPFindCompilerFlags.cmake)
 
 if(POLICY CMP0017)
 cmake_policy(SET CMP0017 NEW)
 endif(POLICY CMP0017)
 
-if(APPLE)
-list(APPEND CMAKE_CXX_FLAGS "-w")
-list(REMOVE_DUPLICATES CMAKE_CXX_FLAGS)
-endif(APPLE)
+
+set(IMP_TEST_SETUP ${PROJECT_BINARY_DIR}/setup_imp.py)
 
 set(timeout_factor 1)
 set(IMP_SWIG_PATH CACHE STRING "List of places for swig to search")
@@ -139,13 +150,14 @@ imp_execute_process("setup" ${CMAKE_BINARY_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tool
                     --disabled=${IMP_DISABLED_MODULES}
                     --datapath=${IMP_DATAPATH})
 
-imp_execute_process("setup_containers" ${CMAKE_BINARY_DIR}
-                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_containers.py
-                    ${CMAKE_SOURCE_DIR})
-
 imp_execute_process("setup_all" ${CMAKE_BINARY_DIR}
                     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_all.py
                     --source=${CMAKE_SOURCE_DIR})
+
+include(${PROJECT_SOURCE_DIR}/tools/build/cmake_files/MakeContainers.cmake)
+
+imp_execute_process("making containers" ${CMAKE_BINARY_DIR}
+                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_containers.py)
 
 imp_execute_process("setup_module_alias for compatibility" ${CMAKE_BINARY_DIR}
                     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_module_alias.py
@@ -154,6 +166,9 @@ imp_execute_process("setup_module_alias for compatibility" ${CMAKE_BINARY_DIR}
 imp_execute_process("setup_module_alias for kernel" ${CMAKE_BINARY_DIR}
                     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_module_alias.py
                     --source=${CMAKE_SOURCE_DIR} --module=kernel "--alias=")
+
+
+
 
 # Don't link in libpython (that prevents the extension from being used in
 # later compatible versions of Python), except on Windows where all DLL
@@ -225,6 +240,7 @@ add_custom_target("IMP-version"
                   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                   COMMENT "Computing version number")
 
+
 # configure modules
 file(STRINGS "${CMAKE_BINARY_DIR}/data/build_info/sorted_modules" modules)
 
@@ -236,6 +252,7 @@ endforeach(mod)
 file(STRINGS "${CMAKE_BINARY_DIR}/data/build_info/sorted_modules" enabled_modules)
 
 if(NOT DEFINED IMP_NO_SWIG_DEPENDENCIES)
+# the make_containers.py call is needed to let swig find all headers it needs
 imp_execute_process("setup_swig_dependencies" ${CMAKE_BINARY_DIR}
                     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_swig_deps.py
                     "--swig=${SWIG_EXECUTABLE}")
@@ -266,10 +283,6 @@ foreach(app ${applications})
   add_subdirectory("${CMAKE_SOURCE_DIR}/applications/${app}")
 endforeach(app)
 
-if(${IMP_DOXYGEN_FOUND})
-  imp_execute_process("setup_doxygen_config" ${CMAKE_BINARY_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_doxygen_config.py "--source=${CMAKE_SOURCE_DIR}")
-endif()
-
 list(INSERT IMP_PYTHONPATH 0 "${CMAKE_BINARY_DIR}/lib")
 list(INSERT IMP_LDPATH 0 "${CMAKE_BINARY_DIR}/lib")
 list(INSERT IMP_PATH 0 "${CMAKE_BINARY_DIR}/bin")
@@ -297,7 +310,8 @@ if(IMP_DOXYGEN_FOUND)
  file(GLOB docs ${CMAKE_SOURCE_DIR}/doc/*.dox
    ${CMAKE_SOURCE_DIR}/doc/*.md)
 
-  add_custom_target(IMP-doc ALL
+  add_custom_target(IMP-doc
+    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_doxygen_config.py "--source=${CMAKE_SOURCE_DIR}"
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/Doxyfile.xml
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_cross_refs.py
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/Doxyfile.html
@@ -315,11 +329,13 @@ if(IMP_DOXYGEN_FOUND)
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_BINARY_DIR}/doc/tutorial" "${CMAKE_INSTALL_FULL_DOCDIR}/tutorial"
     DEPENDS "IMP-doc"
     COMMENT "Installing documentation to ${CMAKE_INSTALL_FULL_DOCDIR}")
+else()
+  message(STATUS "Documentation disabled as doxygen not found")
 endif(IMP_DOXYGEN_FOUND)
 
 # Install headers
 install(FILES ${CMAKE_BINARY_DIR}/include/IMP.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-install_deref(${CMAKE_BINARY_DIR}/include/IMP *.h ${CMAKE_INSTALL_INCLUDEDIR}/IMP)
+install_deref(${CMAKE_BINARY_DIR}/include/IMP * ${CMAKE_INSTALL_INCLUDEDIR}/IMP)
 
 # Install Python modules
 install_deref(${CMAKE_BINARY_DIR}/lib/IMP * ${CMAKE_INSTALL_PYTHONDIR}/IMP)

@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/Sphere3D.h   \brief Simple 3D sphere class.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -44,6 +44,20 @@ inline double get_ball_radius_from_volume_3d(double volume) {
 IMPALGEBRAEXPORT FloatPair
     get_surface_area_and_volume(const algebra::Sphere3Ds &ss);
 #endif
+
+/** Return a set of balls that approximates the surface of the passed set within
+ * the error tolerance.
+ *
+ * The any point in the old surface will be within
+ * roughly maximum_allowed_error_angstroms of a point in the new surface and any
+ * point outside the old volume will be within roughly
+ * maximum_allowed_error_angstroms of a point outside the new volume.
+ *
+ * \note The name may change if someone thinks up a better one.
+ */
+IMPALGEBRAEXPORT Sphere3Ds
+    get_simplified_from_volume(Sphere3Ds in,
+                               double maximum_allowed_error_angstroms);
 
 IMPALGEBRA_END_NAMESPACE
 

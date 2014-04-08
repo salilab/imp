@@ -2,7 +2,7 @@
  *  \file IMP/base/file.h
  *  \brief Handling of file input/output
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,6 +13,9 @@
 #include "exception.h"
 #include "internal/ifile.h"
 #include "Pointer.h"
+#include "Object.h"
+#include "RAII.h"
+#include "raii_macros.h"
 #include "InputAdaptor.h"
 #include "value_macros.h"
 #include "check_macros.h"

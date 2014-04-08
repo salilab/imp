@@ -3,7 +3,9 @@ import sys
 import os
 import re
 
+
 class CombineScoresApplicationTest(IMP.test.ApplicationTestCase):
+
     def test_usage(self):
         """Test usage of combine_scores"""
         p = self.run_application('combine_scores', [])
@@ -40,8 +42,10 @@ class CombineScoresApplicationTest(IMP.test.ApplicationTestCase):
         print self.get_input_file_name('em2d_score.res')
         print self.get_input_file_name('em3d_score.res')
         p = self.run_application('combine_scores',
-                                 [self.get_input_file_name('saxs_score.res'), '1',
-                                  self.get_input_file_name('em2d_score.res'), '1',
+                                 [self.get_input_file_name(
+                                     'saxs_score.res'), '1',
+                                  self.get_input_file_name(
+                                      'em2d_score.res'), '1',
                                   self.get_input_file_name('em3d_score.res'), '1'])
         out, err = p.communicate()
         sys.stderr.write(err)

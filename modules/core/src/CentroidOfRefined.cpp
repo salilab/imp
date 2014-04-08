@@ -2,7 +2,7 @@
  *  \file CentroidOfRefined.cpp
  *  \brief CentroidOf a the refined particles with a sphere.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #include "IMP/core/CentroidOfRefined.h"
@@ -61,9 +61,10 @@ ModelObjectsTemp CentroidOfRefined::do_get_outputs(
   return ret;
 }
 
-IMP_SUMMARY_DECORATOR_DEF(Centroid, XYZ, XYZs,
-                          SingletonModifier *mod =
-                              new CentroidOfRefined(ref, FloatKey(),
-                                                    XYZ::get_xyz_keys()));
+IMP_SUMMARIZE_DECORATOR_DEF(Centroid, XYZ, XYZs,
+                            (new CentroidOfRefined(ref, FloatKey(), // pre
+                                                   XYZ::get_xyz_keys())),
+                            (new DerivativesToRefined(ref)) // post
+                            );
 
 IMPCORE_END_NAMESPACE

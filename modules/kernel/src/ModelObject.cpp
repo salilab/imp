@@ -1,7 +1,7 @@
 /**
  *  \file ModelObject.cpp  \brief Single variable function.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/kernel/ModelObject.h>
@@ -11,7 +11,7 @@
 #include <IMP/kernel/container_base.h>
 // should move to own .cpp
 #include <IMP/kernel/input_output.h>
-#include <boost/foreach.hpp>
+
 #include <algorithm>
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -77,13 +77,15 @@ void ModelObject::validate_inputs() const {
         "Dependencies changed without invalidating dependencies."
             << " Make sure you call set_has_dependencies(false) any "
             << "time the list of dependencies changed. Object is " << get_name()
-            << " of type " << get_type_name());
+            << " of type " << get_type_name() << " -- " << ret << " vs "
+            << saved);
   }
 }
 
 void ModelObject::validate_outputs() const {
   if (!get_has_dependencies()) return;
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    IMP_CHECK_OBJECT(this);
     ModelObjectsTemp ret = do_get_outputs();
     std::sort(ret.begin(), ret.end());
     ret.erase(std::unique(ret.begin(), ret.end()), ret.end());
@@ -119,6 +121,14 @@ ModelObjectsTemps ModelObject::do_get_interactions() const {
 
 ModelObjectsTemps ModelObject::get_interactions() const {
   return do_get_interactions();
+}
+
+void ModelObject::set_model(Model *m) {
+  IMP_USAGE_CHECK(!m, "Can only call set_model with null");
+  if (model_) {
+    model_->do_remove_model_object(this);
+  }
+  model_ = m;
 }
 
 ///////////////////////////////////////// DEPRECATED
@@ -177,26 +187,6 @@ ContainersTemp get_output_containers(const ModelObjectsTemp &mo) {
     }
   }
   return ret;
-}
-
-bool ModelObject::get_is_part_of_model() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Should always be true.");
-  return get_model();
-}
-
-void ModelObject::set_model(kernel::Model *m) {
-  if (model_) {
-    model_->do_remove_model_object(this);
-  }
-  model_ = m;
-  if (model_) {
-    model_->do_add_model_object(this);
-  }
-  do_set_model(m);
-}
-
-ModelObject::ModelObject(std::string name) : base::Object(name) {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Pass the Model to the constructor.");
 }
 
 IMPKERNEL_END_NAMESPACE

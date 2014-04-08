@@ -1,3 +1,3 @@
-required_modules='algebra:kernel'
-required_dependencies=''
-optional_dependencies=''
+required_modules = 'algebra:kernel'
+required_dependencies = ''
+optional_dependencies = ''

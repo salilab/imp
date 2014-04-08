@@ -2,7 +2,7 @@
  *  \file IMP/display/PymolWriter.h
  *  \brief Implement PymolWriter
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_PYMOL_WRITER_H

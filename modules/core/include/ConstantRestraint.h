@@ -3,7 +3,7 @@
  *
  *  Just return a constant.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -14,7 +14,6 @@
 
 #include <IMP/kernel/Restraint.h>
 #include <IMP/PairScore.h>
-#include <IMP/restraint_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -27,10 +26,10 @@ class IMPCOREEXPORT ConstantRestraint : public kernel::Restraint {
 
  public:
   //! Add v to the total score.
-  ConstantRestraint(Float v);
+  ConstantRestraint(Model *m, Float v);
 
-  virtual double unprotected_evaluate(
-      IMP::kernel::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ConstantRestraint);
 };

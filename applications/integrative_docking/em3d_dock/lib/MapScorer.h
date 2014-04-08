@@ -1,7 +1,7 @@
 /**
  *  \file MapScorer   \brief A class for fast cc scoring of docking models
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -14,8 +14,9 @@
 #include <IMP/em/CoarseCC.h>
 
 class MapScorer {
-public:
-  MapScorer(IMP::kernel::Particles& rec_particles, IMP::kernel::Particles& lig_particles,
+ public:
+  MapScorer(IMP::kernel::Particles& rec_particles,
+            IMP::kernel::Particles& lig_particles,
             const IMP::em::DensityMap& map);
 
   MapScorer(IMP::kernel::Particles& particles, const IMP::em::DensityMap& map);
@@ -25,17 +26,17 @@ public:
 
   float score(const IMP::algebra::Transformation3D& map_trans) const;
 
-private:
+ private:
   IMP::em::DensityMap* get_transformed(
-                         const IMP::algebra::Transformation3D& rec_trans,
-                         const IMP::algebra::Transformation3D& lig_trans) const;
+      const IMP::algebra::Transformation3D& rec_trans,
+      const IMP::algebra::Transformation3D& lig_trans) const;
 
   IMP::em::DensityMap* get_transformed(
-                         const IMP::algebra::Transformation3D& trans) const;
+      const IMP::algebra::Transformation3D& trans) const;
 
-private:
+ private:
   const IMP::em::DensityMap& complex_map_;
-  IMP::em::SampledDensityMap *receptor_map_, *ligand_map_, *docked_complex_map_;
+  IMP::em::SampledDensityMap* receptor_map_, *ligand_map_, *docked_complex_map_;
 };
 
 #endif /* IMP_MAP_SCORER_H */

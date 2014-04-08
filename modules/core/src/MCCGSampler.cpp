@@ -1,7 +1,7 @@
 /**
  *  \file ConjugateGradients.cpp  \brief Simple conjugate gradients optimizer.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -9,16 +9,15 @@
 
 #include <IMP/core/ConjugateGradients.h>
 #include <IMP/core/MonteCarlo.h>
+#include <IMP/kernel/SingletonModifier.h>
 #include <IMP/core/BallMover.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/utility.h>
 #include <IMP/base/log.h>
 #include <IMP/dependency_graph.h>
-#include <IMP/kernel/internal/InternalListSingletonContainer.h>
 #include <IMP/algebra/vector_generators.h>
 #include <boost/random/uniform_real.hpp>
 #include <boost/graph/depth_first_search.hpp>
-#include <IMP/core/core_macros.h>
 #include <IMP/base/random.h>
 #include <boost/graph/reverse_graph.hpp>
 #include <IMP/base/log.h>
@@ -246,8 +245,8 @@ void MCCGSampler::set_max_monte_carlo_step_size(FloatKey k, double d) {
 
 void MCCGSampler::set_is_refining(bool tf) { is_refining_ = tf; }
 
-IMP::internal::InternalListSingletonContainer *MCCGSampler::set_up_movers(
-    const Parameters &pms, MonteCarlo *mc) const {
+MCCGSampler::Container *MCCGSampler::set_up_movers(const Parameters &pms,
+                                                   MonteCarlo *mc) const {
   if (pms.opt_keys_[0] != XK && pms.opt_keys_[1] != YK &&
       pms.opt_keys_[2] != ZK) {
     IMP_THROW("Currently, the MCCGSampler can only handle "
@@ -261,8 +260,9 @@ IMP::internal::InternalListSingletonContainer *MCCGSampler::set_up_movers(
       ps.push_back(*pit);
     }
   }
-  IMP_NEW(IMP::internal::InternalListSingletonContainer, sc,
-          (mc->get_model(), "mccg particles"));
+  IMP_USAGE_CHECK(!ps.empty(), "No optimized particles found");
+
+  IMP_NEW(Container, sc, (mc->get_model(), "mccg particles"));
   sc->set_was_used(true);
   sc->set(IMP::internal::get_index(ps));
   IMP_NEW(ScoreWeightedIncrementalBallMover, bm,
@@ -271,9 +271,7 @@ IMP::internal::InternalListSingletonContainer *MCCGSampler::set_up_movers(
   return sc.release();
 }
 
-void MCCGSampler::randomize(
-    const Parameters &pms,
-    IMP::internal::InternalListSingletonContainer *sc) const {
+void MCCGSampler::randomize(const Parameters &pms, Container *sc) const {
   algebra::BoundingBox3D bb(
       algebra::Vector3D(pms.bounds_.find(XK)->second.first,
                         pms.bounds_.find(YK)->second.first,
@@ -281,7 +279,7 @@ void MCCGSampler::randomize(
       algebra::Vector3D(pms.bounds_.find(XK)->second.second,
                         pms.bounds_.find(YK)->second.second,
                         pms.bounds_.find(ZK)->second.second));
-  IMP_CONTAINER_FOREACH(IMP::internal::InternalListSingletonContainer, sc, {
+  IMP_CONTAINER_FOREACH(Container, sc, {
     // _1 is the kernel::ParticleIndex for a singleton container
     IMP::core::XYZ d(get_model(), _1);
     d.set_coordinates(algebra::get_random_vector_in(bb));
@@ -350,8 +348,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
       OptimizerStatesTemp(optimizer_states_begin(), optimizer_states_end()));
   pms.local_opt_->set_log_level(mll);
   mc->set_return_best(true);
-  base::Pointer<IMP::internal::InternalListSingletonContainer> sc =
-      set_up_movers(pms, mc);
+  base::Pointer<Container> sc = set_up_movers(pms, mc);
   IMP_IF_CHECK(base::USAGE) {
     if (sc->get_indexes().size() == 0) {
       IMP_WARN("There are no particles with optimized cartesian coordinates."

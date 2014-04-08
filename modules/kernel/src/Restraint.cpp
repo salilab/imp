@@ -1,7 +1,7 @@
 /**
  *  \file Restraint.cpp   \brief Abstract base class for all restraints.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -9,7 +9,7 @@
 
 #include "IMP/kernel/Particle.h"
 #include "IMP/kernel/Model.h"
-#include "IMP/kernel/log.h"
+#include "IMP/base/log_macros.h"
 #include "IMP/kernel/Restraint.h"
 #include "IMP/kernel/container_base.h"
 #include "IMP/kernel/ScoringFunction.h"
@@ -29,13 +29,6 @@ const double BAD_SCORE = NO_MAX;
 
 Restraint::Restraint(kernel::Model *m, std::string name)
     : ModelObject(m, name), weight_(1), max_(NO_MAX), last_score_(BAD_SCORE) {}
-
-Restraint::Restraint(std::string name)
-    : ModelObject(name), weight_(1), max_(NO_MAX), last_score_(BAD_SCORE) {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(
-      2.1, "You should pass the model to the Restraint constructor. "
-               << "Constructing " << name);
-}
 
 double Restraint::evaluate(bool calc_derivs) const {
   IMP_OBJECT_LOG;
@@ -89,7 +82,7 @@ void check_decomposition(Restraint *in, Restraint *out) {
     // be lazy and hope that they behave the same on un updated states
     // otherwise it can be bery, bery slow
     // in->get_model()->update();
-    base::SetLogState sls(WARNING);
+    base::SetLogState sls(base::WARNING);
     double tin = in->unprotected_evaluate(nullptr);
     double tout = out->unprotected_evaluate(nullptr);
     if (std::abs(tin - tout) > .01 * std::abs(tin + tout) + .1) {
@@ -114,7 +107,6 @@ Restraint *create_decomp_helper(const Restraint *me,
                             me->get_maximum_score() / created[0]->get_weight());
       created[0]->set_weight(weight);
       created[0]->set_maximum_score(max);
-      created[0]->set_model(me->get_model());
       created[0]->set_log_level(me->get_log_level());
       created[0]->set_check_level(me->get_check_level());
     }
@@ -236,15 +228,6 @@ void Restraint::add_score_and_derivatives(ScoreAccumulator sa) const {
   IMP_TASK((nsa), do_add_score_and_derivatives(nsa),
            "add score and derivatives");
   set_was_used(true);
-}
-
-ParticlesTemp Restraint::get_input_particles() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_inputs() instead");
-  return IMP::kernel::get_input_particles(get_inputs());
-}
-ContainersTemp Restraint::get_input_containers() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_inputs() instead");
-  return IMP::kernel::get_input_containers(get_inputs());
 }
 
 Restraint *RestraintsAdaptor::get(kernel::Model *sf) {

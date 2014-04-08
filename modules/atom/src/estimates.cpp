@@ -2,7 +2,7 @@
     *  \file estimates.cpp
     *  \brief Estimates of various physical quantities.
     *
-    *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+    *  Copyright 2007-2014 IMP Inventors. All rights reserved.
     */
 
 #include "IMP/atom/estimates.h"
@@ -10,6 +10,7 @@
 #include <IMP/algebra/Rotation3D.h>
 #include <IMP/kernel/internal/units.h>
 #include <IMP/constants.h>
+#include <boost/unordered_map.hpp>
 #include <IMP/kernel/internal/constants.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -74,7 +75,7 @@ double get_volume_from_residue_type(ResidueType rt) {
       RP(ResidueType("PRO"), 2.780), RP(ResidueType("SER"), 2.609),
       RP(ResidueType("THR"), 2.799), RP(ResidueType("TRP"), 3.456),
       RP(ResidueType("TYR"), 3.318), RP(ResidueType("VAL"), 2.888)};
-  static const IMP::base::map<ResidueType, double> radii_map(
+  static const boost::unordered_map<ResidueType, double> radii_map(
       radii, radii + sizeof(radii) / sizeof(RP));
   if (radii_map.find(rt) == radii_map.end()) {
     IMP_THROW("Can't approximate volume of non-standard residue " << rt,

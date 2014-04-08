@@ -5,7 +5,7 @@
  *
  *  BLURB
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_CLASSNAMES_CONSTRAINT_H
@@ -16,7 +16,6 @@
 #include <IMP/ClassnameModifier.h>
 #include <IMP/Constraint.h>
 #include <IMP/base/object_macros.h>
-#include <IMP/score_state_macros.h>
 #include <IMP/kernel/internal/ContainerConstraint.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -54,8 +53,7 @@ class ClassnamesConstraint :
       after evaluate.
       \param[in] name The object name
    */
-  ClassnamesConstraint(ClassnameModifier *before,
-                       ClassnameModifier *after,
+  ClassnamesConstraint(ClassnameModifier *before, ClassnameModifier *after,
                        ClassnameContainerAdaptor c,
                        std::string name = "ClassnameConstraint %1%")
       : P(before, after, c, name) {}

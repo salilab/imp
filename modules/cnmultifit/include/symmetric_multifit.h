@@ -1,7 +1,8 @@
 /**
- *  \file symmetric_multifit.h  \brief Build cyclic symmetric complexes.
+ *  \file IMP/cnmultifit/symmetric_multifit.h
+ *  \brief Build cyclic symmetric complexes.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -23,9 +24,9 @@ IMPCNMULTIFIT_BEGIN_NAMESPACE
                             information.
  */
 void IMPCNMULTIFITEXPORT
-do_all_fitting(const std::string param_filename,
-               const std::string chimera_filename = "");
+    do_all_fitting(const std::string param_filename,
+                   const std::string chimera_filename = "");
 
 IMPCNMULTIFIT_END_NAMESPACE
 
-#endif  /* IMPCNMULTIFIT_SYMMETRIC_MULTIFIT_H */
+#endif /* IMPCNMULTIFIT_SYMMETRIC_MULTIFIT_H */

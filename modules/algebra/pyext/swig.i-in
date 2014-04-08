@@ -1,3 +1,7 @@
+%{
+#include <IMP/base/internal/range.h>
+%}
+
 %include "IMP/algebra/geometric_primitive_macros.h"
 %include "IMP_algebra.types.i"
 %pythoncode %{
@@ -14,6 +18,14 @@ def get_sphere(v):
 %}
 
 IMP_SWIG_BASE_OBJECT(IMP::algebra, VectorKDMetric, VectorKDMetrics);
+IMP_SWIG_EIGEN_MATRIX(MatrixXf);
+IMP_SWIG_EIGEN_MATRIX(MatrixXd);
+IMP_SWIG_EIGEN_MATRIX(Matrix3d);
+IMP_SWIG_EIGEN_VECTOR(VectorXd);
+IMP_SWIG_EIGEN_VECTOR(VectorXf);
+IMP_SWIG_EIGEN_VECTOR(Vector3d);
+IMP_SWIG_EIGEN_MATRIX(ArrayXXf);
+IMP_SWIG_EIGEN_MATRIX(ArrayXXd);
 IMP_SWIG_OBJECT(IMP::algebra, EuclideanVectorKDMetric, EuclideanVectorKDMetrics);
 IMP_SWIG_OBJECT(IMP::algebra, MaxVectorKDMetric, MaxVectorKDMetrics);
 IMP_SWIG_OBJECT(IMP::algebra, DynamicNearestNeighbor3D, DynamicNearestNeighbor3Ds);
@@ -32,15 +44,15 @@ IMP_SWIG_VALUE(IMP::algebra,  Ellipsoid3D, Ellipsoid3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  Plane3D, Plane3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  Segment3D, Segment3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  SpherePatch3D, SpherePatch3Ds);
+IMP_SWIG_VALUE(IMP::algebra,  ConnollySurfacePoint, ConnollySurfacePoints);
 
 // we seem to need the non-typedefed name, at least for the first argument
-IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  Vector);
 IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  Sphere);
 IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  BoundingBox);
-IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  VectorInput);
 IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  PrincipalComponentAnalysis);
 IMP_SWIG_ALGEBRA_OBJECT_D(IMP::algebra,  NearestNeighbor);
 IMP_SWIG_VALUE(IMP::algebra,  ReferenceFrame3D, ReferenceFrame3Ds);
+IMP_SWIG_VALUE(IMP::algebra, Gaussian3D, Gaussian3Ds);
 
 IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  DefaultEmbedding);
 IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  LogEmbedding);
@@ -62,6 +74,8 @@ namespace multi_array_types {
 }
 
 
+
+
 /* to extend */
 %include "IMP/algebra/GeometricPrimitiveD.h"
 %template(_GeometricPrimitive1D) IMP::algebra::GeometricPrimitiveD<1>;
@@ -78,6 +92,18 @@ namespace multi_array_types {
 %include "IMP_algebra.transformation3d.i"
 
 /* Wrap our own classes */
+%include "IMP/algebra/VectorBaseD.h"
+namespace IMP {
+ namespace algebra {
+   %template(_VectorBaseKD) VectorBaseD<-1>;
+   %template(_VectorBase1D) VectorBaseD<1>;
+   %template(_VectorBase2D) VectorBaseD<2>;
+   %template(_VectorBase3D) VectorBaseD<3>;
+   %template(_VectorBase4D) VectorBaseD<4>;
+   %template(_VectorBase5D) VectorBaseD<5>;
+   %template(_VectorBase6D) VectorBaseD<6>;
+ }
+}
 %include "IMP/algebra/VectorD.h"
 %include "IMP/algebra/Vector2D.h"
 %include "IMP/algebra/Vector3D.h"
@@ -91,13 +117,11 @@ namespace multi_array_types {
 %include "IMP/algebra/Sphere3D.h"
 
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, Vector);
-IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, VectorInput);
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, BoundingBox);
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, Sphere);
 
 
 %include "IMP/algebra/ReferenceFrame3D.h"
-
 
 %include "IMP_algebra.spherical_coords.i"
 %include "IMP/algebra/eigen_analysis.h"
@@ -109,6 +133,7 @@ IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, Sphere);
 %include "IMP/algebra/Reflection3D.h"
 %include "IMP/algebra/Cylinder3D.h"
 %include "IMP/algebra/Ellipsoid3D.h"
+%include "IMP/algebra/connolly_surface.h"
 
 %include "IMP/algebra/grid_indexes.h"
 %include "IMP/algebra/grid_ranges.h"
@@ -116,7 +141,24 @@ IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, Sphere);
 %include "IMP/algebra/grid_embeddings.h"
 %include "IMP/algebra/grid_utility.h"
 %include "IMP/algebra/GridD.h"
+IMP_ALGEBRA_SWIG_GRID(IMP::algebra::DenseGrid3D, 3);
+IMP_ALGEBRA_SWIG_GRID(IMP::algebra::SparseGrid3D, 3);
+IMP_ALGEBRA_SWIG_GRID(IMP::algebra::SparseUnboundedGrid3D, 3);
+IMP_ALGEBRA_SWIG_GRID(IMP::algebra::SparseUnboundedGridD, -1);
+IMP_ALGEBRA_SWIG_GRID(IMP::algebra::DenseIntLogGrid3D, 3);
+IMP_ALGEBRA_SWIG_GRID(IMP::algebra::DenseFloatLogGridKD, -1);
+%template(LogEmbedding3D) IMP::algebra::LogEmbeddingD<3>;
+%template(LogEmbeddingKD) IMP::algebra::LogEmbeddingD<-1>;
+
 %include "IMP/algebra/standard_grids.h"
+namespace IMP {
+ namespace algebra {
+   %template(DenseDoubleGrid3D) DenseGrid3D<double>;
+   %template(DenseFloatGrid3D) DenseGrid3D<float >;
+   %template(SparseUnboundedIntGrid3D) SparseUnboundedGrid3D<int >;
+   %template(SparseUnboundedIntGridKD) SparseUnboundedGridD<-1, int>;
+ }
+}
 
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, GridIndex);
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, ExtendedGridIndex);
@@ -135,6 +177,10 @@ IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, LogEmbedding);
 %include "IMP/algebra/vector_search.h"
 %include "IMP/algebra/vector_metrics.h"
 
+%include "IMP/algebra/Gaussian3D.h"
+
+%include "IMP/algebra/internal/swig.h"
+
 
 IMP_SWIG_ALGEBRA_TEMPLATE_OBJECT_D(IMP::algebra, NearestNeighbor);
 
@@ -143,6 +189,7 @@ IMP_SWIG_ALGEBRA_TEMPLATE_OBJECT_D(IMP::algebra, NearestNeighbor);
 
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, PrincipalComponentAnalysis);
 IMP_SWIG_ALGEBRA_FUNCTION_D_DS(PrincipalComponentAnalysis, get_principal_components, Vector);
+IMP_SWIG_ALGEBRA_FUNCTION_DS_D(Vector, get_vertices, BoundingBox);
 
 IMP_SWIG_ALGEBRA_FUNCTION_N_DD(double, get_distance, Vector, Vector);
 IMP_SWIG_ALGEBRA_FUNCTION_N_DD(double, get_distance, Sphere, Sphere);
@@ -167,30 +214,24 @@ IMP_SWIG_ALGEBRA_FUNCTION_DS_DN(Vector, get_grid_interior_cover_by_spacing, Boun
 
 namespace IMP {
  namespace algebra {
-   %template(_SparseIntStorage) SparseGridStorageD<3, int, BoundedGridRangeD<3> >;
-   %template(_SparseUBIntStorage) SparseGridStorageD<3, int, UnboundedGridRangeD<3> >;
-   %template(_SparseUBIntStorageK) SparseGridStorageD<-1, int, UnboundedGridRangeD<-1> >;
-   %template(_SparseIntStorageK) SparseGridStorageD<-1, int, BoundedGridRangeD<-1> >;
-   %template(_DenseDoubleStorage) DenseGridStorageD<3, double>;
-   %template(_DenseFloatStorage) DenseGridStorageD<3, float>;
-   %template(_DenseIntStorage) DenseGridStorageD<3, int>;
-   %template(_DenseFloatStorageK) DenseGridStorageD<-1, float>;
-   %template(SparseIntGrid3D) GridD<3, SparseGridStorageD<3, int, BoundedGridRangeD<3> >, int, DefaultEmbeddingD<3> >;
-   %template(SparseUnboundedIntGrid3D) GridD<3, SparseGridStorageD<3, int, UnboundedGridRangeD<3> >, int, DefaultEmbeddingD<3> >;
-   %template(SparseUnboundedIntGridKD) GridD<-1, SparseGridStorageD<-1, int, UnboundedGridRangeD<-1> >, int, DefaultEmbeddingD<-1> >;
-   %template(DenseDoubleGrid3D) GridD<3, DenseGridStorageD<3, double>, double, DefaultEmbeddingD<3> >;
-   %template(DenseFloatGrid3D) GridD<3, DenseGridStorageD<3, float>, float, DefaultEmbeddingD<3> >;
-   %template(DenseIntLogGrid3D) GridD<3, DenseGridStorageD<3, int>, int, LogEmbeddingD<3> >;
-   %template(SparseIntLogGrid3D) GridD<3, SparseGridStorageD<3, int, BoundedGridRangeD<3 > >, int, LogEmbeddingD<3> >;
-   %template(SparseIntLogGridKD) GridD<-1, SparseGridStorageD<-1, int, BoundedGridRangeD<-1 > >, int, LogEmbeddingD<-1> >;
-   %template(DenseFloatLogGridKD) GridD<-1, DenseGridStorageD<-1, float>, float, LogEmbeddingD<-1> >;
    %template(_AxisAnglePair) ::std::pair<IMP::algebra::VectorD<3>,double>;
-
 
    %template(get_transformation_aligning_first_to_second) get_transformation_aligning_first_to_second<IMP::base::Vector<IMP::algebra::VectorD<3> >, IMP::base::Vector<IMP::algebra::VectorD<3> > >;
    // rotation operations
  }
 }
+
+%inline %{
+double get_rmsd_tranforming_first(IMP::algebra::Transformation3D tr,
+                                   const IMP::algebra::Vector3Ds &v0,
+                                   const IMP::algebra::Vector3Ds &v1) {
+  return IMP::algebra::get_rmsd_transforming_first(tr, v0, v1);
+}
+double get_rmsd(const IMP::algebra::Vector3Ds &v0,
+                                   const IMP::algebra::Vector3Ds &v1) {
+  return IMP::algebra::get_rmsd(v0, v1);
+}
+%}
 
 %pythoncode %{
   LinearFit=LinearFit2D

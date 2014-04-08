@@ -2,7 +2,7 @@
  *  \file IMP/saxs/Restraint.h
  *  \brief Calculate score based on fit to SAXS profile.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,7 +15,7 @@
 #include <IMP/saxs/Profile.h>
 #include <IMP/saxs/DerivativeCalculator.h>
 
-#include <IMP/core/rigid_bodies.h>
+#include <IMP/saxs/RigidBodiesProfileHandler.h>
 
 #include <IMP/kernel/Model.h>
 #include <IMP/kernel/Restraint.h>
@@ -39,8 +39,7 @@ IMPSAXS_BEGIN_NAMESPACE
     The distances between the atoms of rigid body do not change, therefore
     their contribution to the profile is pre-computed and stored.
  */
-class IMPSAXSEXPORT Restraint : public kernel::Restraint
-{
+class IMPSAXSEXPORT Restraint : public kernel::Restraint {
  public:
   //! Constructor
   /**
@@ -54,27 +53,20 @@ class IMPSAXSEXPORT Restraint : public kernel::Restraint
   Restraint(const kernel::Particles& particles, const Profile* exp_profile,
             FormFactorType ff_type = HEAVY_ATOMS);
 
-  virtual double
-  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
-     const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator* accum)
+      const IMP_OVERRIDE;
+
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+
   IMP_OBJECT_METHODS(Restraint);
 
  protected:
-  void compute_profile(Profile* model_profile);
-
- protected:
-  kernel::Particles particles_; // non-rigid bodies particles
-  std::vector<core::RigidBody> rigid_bodies_decorators_; //rigid bodies
-  std::vector<kernel::Particles> rigid_bodies_; // rigid bodies particles
-  // non-changing part of the profile
-  base::PointerMember<Profile> rigid_bodies_profile_;
-  base::Pointer<ProfileFitter<ChiScore> > profile_fitter_; // computes profiles
+  base::Pointer<RigidBodiesProfileHandler> handler_;
+  base::Pointer<ProfileFitter<ChiScore> > profile_fitter_;  // computes profiles
   // computes derivatives
   base::Pointer<DerivativeCalculator> derivative_calculator_;
-  FormFactorType ff_type_; // type of the form factors to use
 };
 
 IMPSAXS_END_NAMESPACE
 
-#endif  /* IMPSAXS_RESTRAINT_H */
+#endif /* IMPSAXS_RESTRAINT_H */

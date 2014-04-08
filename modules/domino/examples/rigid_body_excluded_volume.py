@@ -32,7 +32,6 @@ def create_excluded_volume(m, helices):
         all.extend(IMP.atom.get_by_type(h, IMP.atom.ATOM_TYPE))
     lsc = IMP.container.ListSingletonContainer(all)
     evr = IMP.core.ExcludedVolumeRestraint(lsc, 1)
-    evr.set_model(m)
     evr.set_maximum_score(.01)
     return [evr]
 
@@ -98,7 +97,7 @@ s = create_sampler(m, rs, pst)
 m.set_log_level(IMP.base.SILENT)
 IMP.base.set_log_level(IMP.base.VERBOSE)
 print "sampling"
-cs = s.get_sample()
+cs = s.create_sample()
 
 print "found ", cs.get_number_of_configurations(), "solutions"
 score = []

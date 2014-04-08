@@ -2,7 +2,7 @@
  *  \file IMP/example/ExampleTemplateClass.h
  *  \brief Show how to manage a template class with python.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -28,7 +28,8 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     The source code is as follows:
     \include ExampleTemplateClass.h
 */
-template <unsigned int D> class ExampleTemplateClassD {
+template <unsigned int D>
+class ExampleTemplateClassD {
   IMP::algebra::VectorD<D> eps_[2];
 
  public:

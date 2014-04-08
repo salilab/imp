@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #include <IMP.h>
@@ -19,8 +19,6 @@ using namespace IMP::container;
 namespace {
 void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
               float rmin, float rmax, bool nobi = false) {
-  set_log_level(SILENT);
-  set_check_level(IMP::NONE);
   {
     Vector3D minc(0, 0, 0), maxc(10, 10, 10);
     IMP_NEW(kernel::Model, m, ());
@@ -35,10 +33,7 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
     cpf->set_distance(0);
     double result = 0;
     double runtime;
-    IMP_TIME({
-      result += cpf->get_close_pairs(m, psi).size();
-    },
-             runtime);
+    IMP_TIME({ result += cpf->get_close_pairs(m, psi).size(); }, runtime);
     std::ostringstream oss;
     oss << "cpf index " << name << " " << n << " " << rmax;
     report(oss.str(), runtime, result);
@@ -56,10 +51,7 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
     cpf->set_distance(0);
     double result = 0;
     double runtime;
-    IMP_TIME({
-      result += cpf->get_close_pairs(ps).size();
-    },
-             runtime);
+    IMP_TIME({ result += cpf->get_close_pairs(ps).size(); }, runtime);
     std::ostringstream oss;
     oss << "cpf " << name << " " << n << " " << rmax;
     report(oss.str(), runtime, result);
@@ -85,9 +77,7 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
     cpf->set_distance(0);
     double result = 0;
     double runtime;
-    IMP_TIME({
-      result += cpf->get_close_pairs(m, ps0i, ps1i).size();
-    },
+    IMP_TIME({ result += cpf->get_close_pairs(m, ps0i, ps1i).size(); },
              runtime);
     std::ostringstream oss;
     oss << "bcpf " << name << " " << n << " " << rmax;
@@ -104,11 +94,13 @@ int main(int argc, char **argv) {
     test_one(name, cpf, 10, 0, .1, true);
     test_one(name, cpf, 100, 0, .1, true);
     test_one(name, cpf, 1000, 0, .1, true);
-    test_one(name, cpf, 1000, 0, .5, true);
-    test_one(name, cpf, 1000, 0, 5, true);
-    test_one(name, cpf, 10000, 0, .1, true);
-    test_one(name, cpf, 10000, 0, .5, true);
-    test_one(name, cpf, 10000, 0, 5, true);
+    if (!IMP::base::run_quick_test) {
+      test_one(name, cpf, 1000, 0, .5, true);
+      test_one(name, cpf, 1000, 0, 5, true);
+      test_one(name, cpf, 10000, 0, .1, true);
+      test_one(name, cpf, 10000, 0, .5, true);
+      test_one(name, cpf, 10000, 0, 5, true);
+    }
     // test_one(name, cpf, 100000, 0, .01, 18.648000, true);
     // test_one(name, cpf, 100000, 0, .1, 23.217500, true);
     // test_one(name, cpf, 100000, 0, .3, 51.800000, true);
@@ -117,10 +109,12 @@ int main(int argc, char **argv) {
     IMP_NEW(NearestNeighborsClosePairsFinder, cpf, ());
     std::string name = "nn";
     test_one(name, cpf, 1000, 0, .1);
-    test_one(name, cpf, 1000, 0, .5);
-    test_one(name, cpf, 1000, 0, 5);
-    test_one(name, cpf, 10000, 0, .1);
-    test_one(name, cpf, 10000, 0, .5);
+    if (!IMP::base::run_quick_test) {
+      test_one(name, cpf, 1000, 0, .5);
+      test_one(name, cpf, 1000, 0, 5);
+      test_one(name, cpf, 10000, 0, .1);
+      test_one(name, cpf, 10000, 0, .5);
+    }
     // test_one(name, cpf, 10000, 0, 5);
     // test_one(name, cpf, 100000, 0, .01, 42.624000);
     // test_one(name, cpf, 100000, 0, .1, 85.593333);
@@ -132,11 +126,13 @@ int main(int argc, char **argv) {
     std::string name = "box";
     // bi takes twice as long as non-bi
     test_one(name, cpf, 1000, 0, .1);
-    test_one(name, cpf, 1000, 0, .5);
-    test_one(name, cpf, 1000, 0, 5);
-    test_one(name, cpf, 10000, 0, .1);
-    test_one(name, cpf, 10000, 0, .5);
-    test_one(name, cpf, 10000, 0, 5);
+    if (!IMP::base::run_quick_test) {
+      test_one(name, cpf, 1000, 0, .5);
+      test_one(name, cpf, 1000, 0, 5);
+      test_one(name, cpf, 10000, 0, .1);
+      test_one(name, cpf, 10000, 0, .5);
+      test_one(name, cpf, 10000, 0, 5);
+    }
     // test_one(name, cpf, 100000, 0, .01, 44.696000);
     // test_one(name, cpf, 100000, 0, .1, 95.830000);
     // test_one(name, cpf, 100000, 0, .3, 198.320000);
@@ -148,12 +144,14 @@ int main(int argc, char **argv) {
     // bi also twice as as slow
     test_one("quadratic", cpf, 10, 0, .1);
     test_one("quadratic", cpf, 100, 0, .1);
-    test_one("quadratic", cpf, 1000, 0, .1);
-    test_one("quadratic", cpf, 1000, 0, .5);
-    test_one("quadratic", cpf, 1000, 0, 5);
-    test_one("quadratic", cpf, 10000, 0, .1);
-    test_one("quadratic", cpf, 10000, 0, .5);
-    test_one("quadratic", cpf, 10000, 0, 5);
+    if (!IMP::base::run_quick_test) {
+      test_one("quadratic", cpf, 1000, 0, .1);
+      test_one("quadratic", cpf, 1000, 0, .5);
+      test_one("quadratic", cpf, 1000, 0, 5);
+      test_one("quadratic", cpf, 10000, 0, .1);
+      test_one("quadratic", cpf, 10000, 0, .5);
+      test_one("quadratic", cpf, 10000, 0, 5);
+    }
   }
   return IMP::benchmark::get_return_value();
 }

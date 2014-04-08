@@ -2,7 +2,7 @@
  *  \file IMP/atom/Simulator.h
  *  \brief Simple molecular dynamics optimizer.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -113,21 +113,38 @@ class IMPATOMEXPORT Simulator : public Optimizer {
   */
   void set_current_time(double ct) { current_time_ = ct; }
 
-  /** Get the set of particles used in the simulation.
-      This may be different then the stored set, eg if
-      no particles are stored, the kernel::Model is searched for
-      appropriate particles.
+  /** Returns the set of particles used in the simulation.  If a non-empty
+      set of particles was provided explicitly by earlier calls to the
+      particles list accessor methods, eg, add_particles(), this set
+      it returned. Otherwise, the associated kernel::Model object is
+      searched for appropriate particles that have a mass and XYZ
+      decorators.
+
+      \see add_particle()
+      \see add_particles()
+      \see remove_particle()
+      \see clear_particles()
+      \see set_particles()
+      \see set_particles_order()
   */
   kernel::ParticlesTemp get_simulation_particles() const;
 
+  /**
+     Same as get_simulation_particles(), but returns particle
+     model indexes.
+
+     \see get_simulation_particles()
+   */
   kernel::ParticleIndexes get_simulation_particle_indexes() const;
 
-  /** \name Explicitly specifying particles
+  /** \name Explicitly accessing the particles list
 
       One can explicitly specify which particles should be used for
-      molecular dynamics. Each particle must be a Mass and
-      core::XYZ particle. If none are specified, the model
-      is searched for appropriate particles.
+      the simulation, or retrieve information about the list of particles.
+      Each particle must be a Mass and core::XYZ particle. If none are
+      specified, the model is searched for appropriate particles, based
+      on the get_simulation_particles() method, which can be overridden
+      by child classes.
       @{
   */
   IMP_LIST(public, Particle, particle, kernel::Particle *, kernel::Particles);

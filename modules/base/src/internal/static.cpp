@@ -1,27 +1,26 @@
 /**
  *  \file static.cpp   \brief all static data for module.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
-#include "IMP/base/internal/static.h"
+#include "static.h"
 #if !IMP_BASE_HAS_LOG4CXX
 #include "IMP/base/internal/log_stream.h"
 #endif
 #include "IMP/base//Pointer.h"
 #include "IMP/base/Object.h"
-#include "IMP/base/RefCounted.h"
-#include "IMP/base/RefCounted.h"
 #include "IMP/base/Showable.h"
 #include "IMP/base/Vector.h"
 #include "IMP/base/base_macros.h"
 #include "IMP/base/flags.h"
 #include "IMP/base/live_objects.h"
-#include "IMP/base/map.h"
+#include "boost/unordered_map.hpp"
 #include "IMP/base/statistics.h"
 #include "IMP/base/types.h"
-#include <IMP/base/set.h>
+#include <boost/unordered_set.hpp>
+#include <IMP/base/random.h>
 #include <boost/cstdint.hpp>
 #include <boost/timer.hpp>
 #include <cmath>
@@ -70,7 +69,7 @@ internal::LogStream stream;
 
 // objects
 
-base::map<std::string, unsigned int> object_type_counts;
+boost::unordered_map<std::string, unsigned int> object_type_counts;
 
 #if IMP_BASE_HAS_LOG4CXX
 
@@ -97,8 +96,8 @@ boost::scoped_ptr<boost::progress_display> progress;
 
 IMPBASE_END_INTERNAL_NAMESPACE
 IMPBASE_BEGIN_NAMESPACE
-unsigned int RefCounted::live_objects_ = 0;
-base::set<Object*> live_;
+unsigned int Object::live_objects_ = 0;
+boost::unordered_set<Object*> live_;
 bool show_live = true;
 namespace {
 struct CheckObjects {
@@ -108,7 +107,7 @@ struct CheckObjects {
                 << " unloading. This is probably a bad thing." << std::endl;
       Strings names;
       int pushed = 0;
-      for (base::set<Object*>::const_iterator it = live_.begin();
+      for (boost::unordered_set<Object*>::const_iterator it = live_.begin();
            it != live_.end(); ++it) {
         names.push_back((*it)->get_name());
         ++pushed;
@@ -126,8 +125,8 @@ CheckObjects check;
 #if IMP_HAS_CHECKS
 Strings get_live_object_names() {
   IMP::base::Vector<std::string> ret;
-  for (base::set<Object*>::const_iterator it = live_.begin(); it != live_.end();
-       ++it) {
+  for (boost::unordered_set<Object*>::const_iterator it = live_.begin();
+       it != live_.end(); ++it) {
     ret.push_back((*it)->get_name());
   }
   return ret;
@@ -150,128 +149,102 @@ void Object::remove_live_object(Object* o) {
 IMPBASE_END_NAMESPACE
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
 void check_live_objects() {
-  for (base::set<Object*>::const_iterator it = live_.begin(); it != live_.end();
-       ++it) {
+  for (boost::unordered_set<Object*>::const_iterator it = live_.begin();
+       it != live_.end(); ++it) {
     IMP_USAGE_CHECK((*it)->get_ref_count() > 0,
                     "Object " << (*it)->get_name() << " is not ref counted.");
   }
 }
-IMPBASE_END_INTERNAL_NAMESPACE
-IMPBASE_BEGIN_INTERNAL_NAMESPACE
+
 std::string exe_name, exe_usage, exe_description;
 
 boost::program_options::options_description flags;
+boost::program_options::options_description advanced_flags;
 boost::program_options::variables_map variables_map;
-namespace {
-int default_check_level = IMP_HAS_CHECKS;
-}
 
-boost::int64_t check_level = default_check_level;
+Flag<bool> help("help,h", "Show command line arguments and exit.", false);
+Flag<bool> version("version", "Show version info and exit.", false);
+Flag<bool> help_advanced(
+    "help_advanced",
+    "Show all command line arguments including advanced ones and exit.", false);
+AdvancedFlag<bool> show_seed("show_seed", "Print the random seed at startup.",
+                             false);
 
-boost::int64_t log_level = TERSE;
-
-#if IMP_HAS_CHECKS != IMP_NONE
-AddIntFlag clf(
+AdvancedFlag<CheckLevel, IMP_HAS_CHECKS != IMP_NONE> check_level(
     "check_level",
-    "The level of checking to use: 0 for NONE, 1 for USAGE and 2 for ALL.",
-    &check_level);
-#else
-boost::int64_t junk_check = IMP_NONE;
-AddIntFlag clf("check_level", "Checks are disabled, flag is for compatibility.",
-               &junk_check);
+    "The level of checking to use: \"NONE\", \"USAGE\" or "
+    "\"USAGE_AND_INTERNAL\"",
+    CheckLevel(IMP_HAS_CHECKS));
 
-#endif
-#if IMP_HAS_LOG != IMP_SILENT
-AddIntFlag llf(
-    "log_level",
-    "The log level, 0 for NONE, 1 for WARN, 2 for TERSE, 3 for VERBOSE",
-    &log_level);
-#else
-boost::int64_t junk_log = IMP_SILENT;
-AddIntFlag llf("log_level", "Logging is disabled, flag is for compatibility.",
-               &junk_log);
-#endif
+Flag<LogLevel, IMP_HAS_LOG != IMP_SILENT> log_level("log_level",
+                                                    "The log level: "
+                                                    "\"SILENT\", \"WARNING\", "
+                                                    "\"PROGRESS\", \"TERSE\", "
+                                                    "\"VERBOSE\"",
+                                                    LogLevel(SILENT));
 
-bool cpu_profile = false;
-bool heap_profile = false;
+AdvancedFlag<StatisticsLevel> stats_level(
+    "statistics_level",
+    "The level of statistics to gather: \"NONE\" or \"ALL\".",
+    StatisticsLevel(ALL_STATISTICS));
 
-#if IMP_BASE_HAS_GPERFTOOLS
-AddBoolFlag cpf("cpu_profile", "Perform CPU profiling.", &cpu_profile);
-#endif
-#if IMP_BASE_HAS_TCMALLOC_HEAPPROFILER
-AddBoolFlag hpf("heap_profile", "Perform heap profiling.", &heap_profile);
-#endif
+AdvancedFlag<bool, IMP_BASE_HAS_GPERFTOOLS> cpu_profile(
+    "cpu_profile", "Perform CPU profiling.", false);
+AdvancedFlag<bool, IMP_BASE_HAS_GPERFTOOLS> heap_profile(
+    "heap_profile", "Perform heap profiling.", false);
 
-#ifdef _OPENMP
-static const boost::int64_t default_number_of_threads = 3;
-#else
-static const boost::int64_t default_number_of_threads = 1;
-#endif
-boost::int64_t number_of_threads = default_number_of_threads;
-#ifdef _OPENMP
-AddIntFlag ntf("number_of_threads", "Number of threads to use.",
-               &number_of_threads);
-#endif
+AdvancedFlag<boost::int64_t, IMP_BASE_HAS_OPENMP> number_of_threads(
+    "number_of_threads", "Number of threads to use.", 1);
 
 namespace {
 boost::uint64_t get_random_seed() {
 #if IMP_BASE_HAS_BOOST_RANDOM
-  // IMP_LOG_TERSE("Seeding from boost::random_device" << std::endl);
   return boost::random_device()();
 #else
   int fd = open("/dev/urandom", O_RDONLY);
   if (fd != -1) {
-    // IMP_LOG_TERSE("Seeding from /dev/urandom" << std::endl);
     boost::uint64_t result;
     int sz = read(fd, reinterpret_cast<char*>(&result), sizeof(result));
     if (sz == sizeof(result)) {
       return result;
     }
   }
-  // IMP_LOG_TERSE("Seeding from time" << std::endl);
   return static_cast<boost::uint64_t>(std::time(nullptr));
 #endif
 }
 }
-
-boost::int64_t random_seed = get_random_seed();
-
-AddIntFlag sf("random_seed", "Random seed to use.", &random_seed);
+AdvancedFlag<boost::int64_t> random_seed("random_seed", "Random seed to use.",
+                                         get_random_seed());
 
 IMPBASE_END_INTERNAL_NAMESPACE
 
 IMPBASE_BEGIN_NAMESPACE
-::boost::rand48 random_number_generator(internal::random_seed);
-IMPBASE_END_NAMESPACE
+::boost::mt19937 random_number_generator(
+    static_cast<boost::int64_t>(internal::random_seed));
 
-IMPBASE_BEGIN_NAMESPACE
-bool run_quick_test = false;
-AddBoolFlag rqt("run_quick_test",
-                "Run (quicker) tests on the program."
-                " Not all executables do useful things with this.",
-                &run_quick_test);
+AdvancedFlag<bool> run_quick_test(
+    "run_quick_test",
+    "Run (quicker) tests on the program."
+    " Not all executables do useful things with this.",
+    false);
 IMPBASE_END_NAMESPACE
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
-bool print_deprecation_messages = true;
-bool exceptions_on_deprecation = false;
-base::set<std::string> printed_deprecation_messages;
+AdvancedFlag<bool> no_print_deprecation_messages(
+    "no_deprecation_warnings",
+    "Don't print warnings on runtime deprecation use.", false);
+AdvancedFlag<bool> exceptions_on_deprecation(
+    "deprecation_exceptions",
+    "Throw an exception when deprecated functions are used.", false);
+boost::unordered_set<std::string> printed_deprecation_messages;
 
-AddBoolFlag printed_deprecation_messages_adder(
-    "deprecation_warnings", "Print warnings on runtime deprecation use",
-    &print_deprecation_messages);
-AddBoolFlag exceptions_depre_adder(
-    "deprecation_exceptions", "Throw an exception on runtime deprecation use",
-    &exceptions_on_deprecation);
-
-base::map<std::string, Timing> timings;
+boost::unordered_map<std::string, Timing> timings;
 
 namespace {
 std::string timings_name;
-AddStringFlag exceptions_depre_adder(
+AdvancedFlag<std::string> statistics(
     "statistics",
-    "Writing statistics about various aspects to a file (or stdout)",
-    &timings_name);
+    "Writing statistics about various aspects to a file (or stdout)", "");
 
 struct TimingsWriter {
   ~TimingsWriter() {

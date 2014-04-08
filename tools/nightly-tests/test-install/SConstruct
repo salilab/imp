@@ -5,8 +5,13 @@ vars.Add(PathVariable('cpppath',
                       'Directory where IMP headers are installed', None))
 vars.Add('cxxflags', 'C++ compile flags', '')
 vars.Add('linkflags', 'Link flags', '')
+vars.Add('mock_config', 'Name of the mock config used to build IMP RPMs. '
+         'Specifying this adds extra RPM and OS-specific tests.', None)
 vars.Add(PathVariable('pypath',
                       'Directory/ies where IMP Python wrappers are installed',
+                      None, PathVariable.PathAccept))
+vars.Add(PathVariable('path',
+                      'Directory/ies where IMP binaries are installed',
                       None, PathVariable.PathAccept))
 vars.Add('python', 'The Python executable to use to execute IMP Python scripts',
          'python')
@@ -17,6 +22,8 @@ Help(vars.GenerateHelpText(env))
 libpath = env.get('libpath', None)
 cpppath = env.get('cpppath', None)
 pypath = env.get('pypath', None)
+path = env.get('path', None)
+mock = env.get('mock_config', None)
 cxxflags = env.get('cxxflags', '').split(' ')
 linkflags = env.get('linkflags', '').split(' ')
 python = env['python']
@@ -28,6 +35,10 @@ env['ENV']['LIBPATH'] = libpath             # AIX
 
 # Set Python search path
 env['ENV']['PYTHONPATH'] = '%s:%s' % (pypath, libpath)
+
+# Set path
+if path:
+    env['ENV']['PATH'] = path + ':' + env['ENV']['PATH']
 
 # Test compiling and running a C++ program that links against IMP
 testcpp = env.Program('test.cpp', CPPPATH=cpppath, LIBPATH=libpath,
@@ -49,4 +60,13 @@ runpy = env.Command('py.out', 'test.py', "%s $SOURCES -v > $TARGET" % python)
 runpy_rmf = env.Command('py_rmf.out', 'test_rmf.py',
                         "%s $SOURCES -v > $TARGET" % python)
 
-env.Default([runcpp, runcpp_rmf, runpy, runpy_rmf])
+tests = [runcpp, runcpp_rmf, runpy, runpy_rmf]
+
+# Add extra RPM and OS-specific tests if requested
+if mock:
+    env['ENV']['MOCK_CONFIG'] = mock
+    runpy_mock = env.Command('mock.out', 'test_mock.py',
+                             "%s $SOURCES -v > $TARGET" % python)
+    tests.append(runpy_mock)
+
+env.Default(tests)

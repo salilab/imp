@@ -1,8 +1,7 @@
 /**
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 #include <IMP/algebra.h>
-#include <IMP/base.h>
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
@@ -27,11 +26,11 @@ int main(int argc, char **argv) {
     Rotation3D r = get_random_rotation_3d();
     double sum = 0;
     IMP_TIME({
-      for (unsigned int i = 0; i < vs.size(); ++i) {
-        vs[i] = r.get_rotated(vs[i]);
-        sum += vs[i][0] + vs[i][1] + vs[i][2];
-      }
-    },
+               for (unsigned int i = 0; i < vs.size(); ++i) {
+                 vs[i] = r.get_rotated(vs[i]);
+                 sum += vs[i][0] + vs[i][1] + vs[i][2];
+               }
+             },
              runtime);
     IMP::benchmark::report("rotation (cache)", runtime, sum);
   }
@@ -47,11 +46,11 @@ int main(int argc, char **argv) {
     Rotation3D r = get_random_rotation_3d();
     double sum = 0;
     IMP_TIME({
-      for (unsigned int i = 0; i < vs.size(); ++i) {
-        vs[i] = r.get_rotated_no_cache(vs[i]);
-        sum += vs[i][0] + vs[i][1] + vs[i][2];
-      }
-    },
+               for (unsigned int i = 0; i < vs.size(); ++i) {
+                 vs[i] = r.get_rotated_no_cache(vs[i]);
+                 sum += vs[i][0] + vs[i][1] + vs[i][2];
+               }
+             },
              runtime);
     IMP::benchmark::report("rotation (nocache)", runtime, sum);
   }

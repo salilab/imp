@@ -2,7 +2,7 @@
  *  \file IMP/domino/assignment_tables.h
  *  \brief A beyesian infererence-based sampler.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -18,7 +18,7 @@
 #include "domino_macros.h"
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <boost/pending/disjoint_sets.hpp>
 #if BOOST_VERSION > 103900
 #include <boost/property_map/property_map.hpp>
@@ -101,7 +101,7 @@ class IMPDOMINOEXPORT BranchAndBoundAssignmentsTable : public AssignmentsTable {
   SubsetFilterTables sft_;
   unsigned int max_;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-  IMP::base::map<kernel::Particle *, kernel::ParticlesTemp> rls_;
+  boost::unordered_map<kernel::Particle *, kernel::ParticlesTemp> rls_;
 #endif
 #endif
  public:
@@ -121,7 +121,7 @@ class IMPDOMINOEXPORT BranchAndBoundAssignmentsTable : public AssignmentsTable {
     in to domino.
 */
 class IMPDOMINOEXPORT ListAssignmentsTable : public AssignmentsTable {
-  IMP::base::map<Subset, IMP::base::PointerMember<AssignmentContainer> >
+  boost::unordered_map<Subset, IMP::base::PointerMember<AssignmentContainer> >
       states_;
 
  public:

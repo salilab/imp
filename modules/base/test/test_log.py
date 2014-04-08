@@ -3,7 +3,9 @@ import IMP.test
 import sys
 from StringIO import StringIO
 
+
 class Tests(IMP.test.TestCase):
+
     def test_log_targets(self):
         """Test log targets"""
         if IMP.base.IMP_BASE_HAS_LOG4CXX:
@@ -14,8 +16,8 @@ class Tests(IMP.test.TestCase):
         IMP.base.set_log_level(IMP.base.VERBOSE)
         if not IMP.base.get_log_level():
             self.skipTest("Logging is disabled")
-        s= StringIO()
-        t=IMP.base.SetLogTarget(s)
+        s = StringIO()
+        t = IMP.base.SetLogTarget(s)
         IMP.base.add_to_log(IMP.base.VERBOSE, "Hey there\n")
         IMP.base.add_to_log(IMP.base.VERBOSE, "Big guy")
         del t
@@ -23,8 +25,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(s.getvalue(), "Hey there\nBig guy")
         del s
         IMP.base.add_to_log(IMP.base.VERBOSE, "what's up")
-        s= StringIO()
-        t= IMP.base.SetLogTarget(s)
+        s = StringIO()
+        t = IMP.base.SetLogTarget(s)
         IMP.base.add_to_log(IMP.base.VERBOSE, "Hey there\n")
         del s
         IMP.base.add_to_log(IMP.base.VERBOSE, "Big guy")
@@ -36,13 +38,14 @@ class Tests(IMP.test.TestCase):
         IMP.base.set_log_level(IMP.base.MEMORY)
         if not IMP.base.get_log_level():
             self.skipTest("Logging is disabled")
-        s= StringIO()
-        t=IMP.base.SetLogTarget(s)
+        s = StringIO()
+        t = IMP.base.SetLogTarget(s)
         # r4694 or earlier will crash here, since the 'Unrefing object' log
         # message emitted at MEMORY log level will attempt to be displayed
         # using the log target that is in the process of being freed
         del t
         IMP.base.set_log_level(log_level)
+
     def test_log_functions(self):
         """Test function log looks ok"""
         # I don't feel like arranging to capture the output...

@@ -2,15 +2,16 @@
  *  \file IMP/rmf/link_macros.h
  *  \brief macros for display classes
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/rmf/internal/link_helpers.h>
-#include <boost/foreach.hpp>
+#include <IMP/base/set_map_macros.h>
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 namespace {
-  base::map<std::string, int> known_load_linkers, known_save_linkers;
+IMP_BASE_SMALL_UNORDERED_MAP<std::string, int> known_load_linkers,
+    known_save_linkers;
 }
 
 unsigned int get_load_linker_index(std::string st) {
@@ -33,12 +34,10 @@ unsigned int get_save_linker_index(std::string st) {
   }
 }
 
-
-
 LoadLinks get_load_linkers(RMF::FileConstHandle fh) {
   LoadLinks ret;
   typedef std::pair<std::string, int> P;
-  BOOST_FOREACH(P kl, known_load_linkers) {
+  IMP_FOREACH(P kl, known_load_linkers) {
     if (fh.get_has_associated_data(kl.second)) {
       ret.push_back(fh.get_associated_data<LoadLinkAssociationType>(kl.second));
     }
@@ -50,7 +49,7 @@ LoadLinks get_load_linkers(RMF::FileConstHandle fh) {
 SaveLinks get_save_linkers(RMF::FileHandle fh) {
   SaveLinks ret;
   typedef std::pair<std::string, int> P;
-  BOOST_FOREACH(P kl, known_save_linkers) {
+  IMP_FOREACH(P kl, known_save_linkers) {
     if (fh.get_has_associated_data(kl.second)) {
       ret.push_back(fh.get_associated_data<SaveLinkAssociationType>(kl.second));
     }
@@ -58,7 +57,6 @@ SaveLinks get_save_linkers(RMF::FileHandle fh) {
   IMP_LOG_VERBOSE("Found " << ret.size() << " save linkers" << std::endl);
   return ret;
 }
-
 
 bool get_has_linker(RMF::FileConstHandle fh, unsigned int id) {
   return fh.get_has_associated_data(id);

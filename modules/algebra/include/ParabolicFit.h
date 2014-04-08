@@ -2,7 +2,7 @@
  * \file IMP/algebra/ParabolicFit.h
  * \brief fit the data with parabola
  *
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -18,7 +18,6 @@ IMPALGEBRA_BEGIN_NAMESPACE
 //! Calculate parabola that fits best the input data points
 class IMPALGEBRAEXPORT ParabolicFit2D : public GeometricPrimitiveD<2> {
  public:
-
   //! Constructor
   /**
      \param[in] data vector of pairs (VectorD<2>) with x and their

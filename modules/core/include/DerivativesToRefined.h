@@ -2,7 +2,7 @@
  *  \file IMP/core/DerivativesToRefined.h
  *  \brief Accumulate the derivatives of the refined particles
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_DERIVATIVES_TO_REFINED_H
@@ -18,7 +18,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! Copy the derivatives from the particle to its refined particles.
+//! Copy the derivatives from a coarse particle to its refined particles
 /** \see DerivatvesFromRefinedSingletonModifier
     \see CoverRefined
     \see CentroidOfRefinedSingletonModifer

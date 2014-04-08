@@ -1,8 +1,8 @@
 /**
- *  \file base/Array.h
+ *  \file IMP/base/Array.h
  *  \brief Classes to handle static sized arrays of things.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -47,8 +47,9 @@ class Array : public Value {
 #ifndef IMP_DOXYGEN
   typedef SwigData value_type;
 #endif
-  unsigned int get_dimension() { return D; }
-  ;
+  unsigned int get_dimension() {
+    return D;
+  };
   Array() {}
   Array(SwigData x, SwigData y) {
     IMP_USAGE_CHECK(D == 2, "Need " << D << " to construct a " << D

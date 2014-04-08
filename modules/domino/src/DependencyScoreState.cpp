@@ -1,14 +1,16 @@
 /**
  *  \file ConjugateGradients.cpp  \brief Simple conjugate gradients optimizer.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
 #include <IMP/domino/DependencyScoreState.h>
 #include <IMP/kernel/Particle.h>
+
 IMPDOMINO_BEGIN_NAMESPACE
-DependencyScoreState::DependencyScoreState() {}
+DependencyScoreState::DependencyScoreState(Model *m)
+    : ScoreState(m, "DependencyScoreState%1%") {}
 
 void DependencyScoreState::do_before_evaluate() {}
 void DependencyScoreState::do_after_evaluate(DerivativeAccumulator *) {}

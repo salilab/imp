@@ -2,7 +2,7 @@
  *  \file KMfilterCenters.h
  *  \brief
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 //----------------------------------------------------------------------
 //      File:           KMfilterCenters.h
 //      Programmer:     David Mount
@@ -29,7 +29,7 @@
 
 #include <IMP/kmeans/kmeans_config.h>
 #include <IMP/base/enums.h>
-#include "KMcenters.h"                  // provides KMcenters
+#include "KMcenters.h"  // provides KMcenters
 #include <iostream>
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
@@ -113,30 +113,30 @@ IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 //       should be split or merged.
 //----------------------------------------------------------------------
 
-class IMPKMEANSEXPORT KMfilterCenters : public KMcenters
-{
-protected:                  // intermediates
-  KMpointArray      sums;            // vector sum of points
-  double*            sumSqs;            // sum of squares
-  int*            weights;      // the weight of each center
-protected:                  // distortion data
-  double*            dists;            // individual distortions
-  double            currDist;      // current total distortion
-  bool            valid;            // are sums/distortions valid?
-  double            dampFactor;      // dampening factor [0,1]
-protected:                  // local utilities
-  void computeDistortion();            // compute distortions
-  void moveToCentroid();            // move centers to cluster centroids
+class IMPKMEANSEXPORT KMfilterCenters : public KMcenters {
+ protected:                  // intermediates
+  KMpointArray sums;         // vector sum of points
+  double* sumSqs;            // sum of squares
+  int* weights;              // the weight of each center
+ protected:                  // distortion data
+  double* dists;             // individual distortions
+  double currDist;           // current total distortion
+  bool valid;                // are sums/distortions valid?
+  double dampFactor;         // dampening factor [0,1]
+ protected:                  // local utilities
+  void computeDistortion();  // compute distortions
+  void moveToCentroid();     // move centers to cluster centroids
   // swap one center
   void swapOneCenter(bool allowDuplicate = true);
-  void validate() {                // make valid
+  void validate() {  // make valid
     valid = true;
   }
-  void invalidate() {                  // make invalid
-    if(kmStatLev >= CENTERS) print(); // print centers
+  void invalidate() {                   // make invalid
+    if (kmStatLev >= CENTERS) print();  // print centers
     valid = false;
   }
-public:
+
+ public:
   // standard constructor
   KMfilterCenters(int k, KMdata& p, double df = 1);
   // copy constructor
@@ -144,52 +144,52 @@ public:
   // assignment operator
   KMfilterCenters& operator=(const KMfilterCenters& s);
 
-  virtual ~KMfilterCenters();            // virtual destructor
+  virtual ~KMfilterCenters();  // virtual destructor
 
-public:                              // public accessors
+ public:  // public accessors
   // returns sums
   KMpointArray getSums(bool autoUpdate = true) {
-    if(autoUpdate && !valid) computeDistortion();
+    if (autoUpdate && !valid) computeDistortion();
     return sums;
   }
   // returns sums of squares
   double* getSumSqs(bool autoUpdate = true) {
-    if(autoUpdate && !valid) computeDistortion();
+    if (autoUpdate && !valid) computeDistortion();
     return sumSqs;
   }
   // returns weights
   int* getWeights(bool autoUpdate = true) {
-    if(autoUpdate && !valid) computeDistortion();
+    if (autoUpdate && !valid) computeDistortion();
     return weights;
   }
   // returns total distortion
-  double getDist(bool autoUpdate = true)      {
-    if(autoUpdate && !valid) computeDistortion();
+  double getDist(bool autoUpdate = true) {
+    if (autoUpdate && !valid) computeDistortion();
     return currDist;
   }
   // returns average distortion
-  double getAvgDist(bool autoUpdate = true)      {
-    if(autoUpdate && !valid) computeDistortion();
+  double getAvgDist(bool autoUpdate = true) {
+    if (autoUpdate && !valid) computeDistortion();
     return currDist / double(getNPts());
   }
   // returns individual distortions
   double* getDists(bool autoUpdate = true) {
-    if(autoUpdate && !valid) computeDistortion();
+    if (autoUpdate && !valid) computeDistortion();
     return dists;
   }
 
-  void getAssignments(            // get point assignments
-    KMctrIdxArray      closeCtr,            // closest center per point
-    double*            sqDist);            // sq'd dist to center
+  void getAssignments(         // get point assignments
+      KMctrIdxArray closeCtr,  // closest center per point
+      double* sqDist);         // sq'd dist to center
 
-  void genRandom() {                  // generate random centers
+  void genRandom() {  // generate random centers
     pts->sampleCtrs(ctrs, kCtrs, false);
     invalidate();
   }
-  void lloyd1Stage() {            // one stage of LLoyd's algorithm
+  void lloyd1Stage() {  // one stage of LLoyd's algorithm
     moveToCentroid();
   }
-  void swap1Stage() {                  // one stage of swap heuristic
+  void swap1Stage() {  // one stage of swap heuristic
     swapOneCenter();
   }
 
@@ -208,18 +208,15 @@ public:                              // public accessors
 
      @return the output stream following output
   */
-  std::ostream& print_to_ostream(std::ostream& out, bool fancy=true);
+  std::ostream& print_to_ostream(std::ostream& out, bool fancy = true);
 
   /**
      print centers to log
      @param ll log level (e.g. IMP::base::PROGRESS)
   */
   void log(base::LogLevel ll);
-
 };
 
-
 IMPKMEANS_END_INTERNAL_NAMESPACE
-
 
 #endif /* IMPKMEANS_INTERNAL_KMFILTER_CENTERS_H */

@@ -2,7 +2,7 @@
  * \file CHARMMParameters \brief access to CHARMMParameters
  *  force field parameters
  *
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/atom/CHARMMParameters.h>
@@ -15,7 +15,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/assign.hpp>
 #include <boost/version.hpp>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <map>
 
 IMPATOM_BEGIN_NAMESPACE

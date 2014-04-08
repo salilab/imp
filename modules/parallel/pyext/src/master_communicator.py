@@ -4,7 +4,9 @@
 import socket
 from IMP.parallel import _Communicator
 
+
 class MasterCommunicator(_Communicator):
+
     """For communicating from the master to slaves."""
 
     connect_timeout = 600

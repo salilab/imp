@@ -1,7 +1,7 @@
 /**
  *  \file IMP/display/python_only.h   \brief Build dependency graphs on models.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -14,7 +14,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
 #ifdef IMP_DOXYGEN
 /** This writer displays things to a
-    \external{http://pivy.coin3d.org/,Pivy} window.
+    [Pivy](https://pypi.python.org/pypi/Pivy) window.
 
     At the moment it support SphereGeometry and CylinderGeometry.
 

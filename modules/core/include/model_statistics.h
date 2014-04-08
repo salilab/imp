@@ -2,7 +2,7 @@
  *  \file IMP/core/model_statistics.h
  *  \brief Log the restraint scores and things.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_MODEL_STATISTICS_H

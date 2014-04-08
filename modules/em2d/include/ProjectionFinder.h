@@ -1,8 +1,8 @@
 /**
- *  \file ProjectionFinder.h
+ *  \file IMP/em2d/ProjectionFinder.h
  *  \brief Coarse registration of 2D projections from a 3D volume
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_PROJECTION_FINDER_H
@@ -27,14 +27,12 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-
 //! Methods for registration used by the finder
 const unsigned int ALIGN2D_NO_PREPROCESSING = 0;
 const unsigned int ALIGN2D_PREPROCESSING = 1;
 const unsigned int ALIGN2D_WITH_CENTERS = 2;
 
-
-class IMPEM2DEXPORT Em2DRestraintParameters: public ProjectingParameters {
+class IMPEM2DEXPORT Em2DRestraintParameters : public ProjectingParameters {
 
   void init_defaults() {
     coarse_registration_method = ALIGN2D_PREPROCESSING;
@@ -44,59 +42,58 @@ class IMPEM2DEXPORT Em2DRestraintParameters: public ProjectingParameters {
     simplex_minimum_size = 0.01;
   }
 
-public:
-
+ public:
   // Number of model projections to generate when scoring
   unsigned int n_projections;
-  unsigned int  coarse_registration_method;
+  unsigned int coarse_registration_method;
   bool save_match_images;
-  unsigned int  optimization_steps;
+  unsigned int optimization_steps;
   double simplex_initial_length;
   double simplex_minimum_size;
 
-  Em2DRestraintParameters() {init_defaults();};
+  Em2DRestraintParameters() {
+    init_defaults();
+  };
 
-  Em2DRestraintParameters(double ps, double res, unsigned int n_proj=20):
-      ProjectingParameters(ps, res), n_projections(n_proj) {
+  Em2DRestraintParameters(double ps, double res, unsigned int n_proj = 20)
+      : ProjectingParameters(ps, res), n_projections(n_proj) {
     init_defaults();
   }
 
   void show(std::ostream &out = std::cout) const {
-    out << "Em2DRestraintParameters: " << std::endl
-        << "pixel_size " << pixel_size << " resolution " << resolution
+    out << "Em2DRestraintParameters: " << std::endl << "pixel_size "
+        << pixel_size << " resolution " << resolution
         << " coarse_registration_method " << coarse_registration_method
         << " optimization_steps " << optimization_steps
         << " simplex_initial_length " << simplex_initial_length
-        << " simplex_minimum_size " << simplex_minimum_size << std::endl;};
+        << " simplex_minimum_size " << simplex_minimum_size << std::endl;
+  };
 };
-IMP_VALUES(Em2DRestraintParameters,Em2DRestraintParametersList);
-
-
-
+IMP_VALUES(Em2DRestraintParameters, Em2DRestraintParametersList);
 
 //! class to perform registration of model projections to images images
-class IMPEM2DEXPORT ProjectionFinder: public IMP::base::Object {
-public:
-
-  ProjectionFinder(): Object("ProjectionFinder%1%"),
-    parameters_setup_(false),registration_done_(false) {};
+class IMPEM2DEXPORT ProjectionFinder : public IMP::base::Object {
+ public:
+  ProjectionFinder()
+      : Object("ProjectionFinder%1%"),
+        parameters_setup_(false),
+        registration_done_(false) {};
 
   //! Initializes the parameters to generate and match projections
   void setup(ScoreFunction *score_function,
              const Em2DRestraintParameters &params) {
 
-    score_function_= score_function;
+    score_function_ = score_function;
     score_function_->set_was_used(true);
     params_ = params;
     masks_manager_ = MasksManagerPtr(new MasksManager);
-    masks_manager_->setup_kernel(params.resolution,params.pixel_size);
+    masks_manager_->setup_kernel(params.resolution, params.pixel_size);
     fast_optimization_mode_ = false;
-    parameters_setup_=true;
-    preprocessing_time_=0.0;
-    coarse_registration_time_=0.0;
-    fine_registration_time_ =0.0;
+    parameters_setup_ = true;
+    preprocessing_time_ = 0.0;
+    coarse_registration_time_ = 0.0;
+    fine_registration_time_ = 0.0;
   }
-
 
   //! Set EM images to use as restraints
   void set_subjects(const em2d::Images &subjects);
@@ -107,7 +104,6 @@ public:
   //! Set the projections of the model to use for initial coarse correlation
   void set_variance_images(const em2d::Images &variances);
 
-
   //! Set the particles where the em2D restraint is applied
   void set_model_particles(const kernel::ParticlesTemp &ps);
 
@@ -117,17 +113,13 @@ public:
     Their name will be: coarse-match-i.spi for coarse registration and
     fine_match-i.spi for full registration.
   */
-  void set_save_match_images(bool x) {
-    params_.save_match_images = x;
-  }
+  void set_save_match_images(bool x) { params_.save_match_images = x; }
 
-  bool get_save_match_images() const {
-     return params_.save_match_images;
-  }
+  bool get_save_match_images() const { return params_.save_match_images; }
   //! With this fast mode, only the first number n of best scoring
   //! projections during the coarse search are refined.
   //! Saves vast times of computation time with some loss of accuracy.
-  //! Try starting with 1 (risky) or 2, and increased it for get more chances
+  //! Try starting with 1 (risky) or 2, and increase it to get more chances
   //! of finding the best projection
   void set_fast_mode(unsigned int n);
 
@@ -144,7 +136,7 @@ public:
   void get_coarse_registration();
 
   //! Performs complete registration of projections against the images.
-  //! This meaning the coarse registration followed by simplex optimization
+  //! This means the coarse registration followed by simplex optimization
   void get_complete_registration();
 
   //! Get the em2d score for a model after the registration performed:
@@ -162,24 +154,20 @@ public:
   //! Time employed for the fine registration part
   double get_fine_registration_time() const;
 
-  unsigned int get_number_of_subjects() const {
-    return subjects_.size();
-  }
+  unsigned int get_number_of_subjects() const { return subjects_.size(); }
 
   void set_number_of_class_averages_members(Ints n_members) {
     n_members_ = n_members;
   }
 
-  unsigned int get_number_of_projections() const {
-    return projections_.size();
-  }
+  unsigned int get_number_of_projections() const { return projections_.size(); }
 
   IMP_OBJECT_METHODS(ProjectionFinder);
 
-protected:
-
-  double preprocessing_time_,coarse_registration_time_,fine_registration_time_;
-   //! Coarse registration for one subject
+ protected:
+  double preprocessing_time_, coarse_registration_time_,
+      fine_registration_time_;
+  //! Coarse registration for one subject
   void get_coarse_registrations_for_subject(unsigned int i,
                                             RegistrationResults &coarse_RRs);
 
@@ -189,8 +177,8 @@ protected:
   //! Computes the weighted centroid and the FFT of the polar-resampled
   //!  autocorrelation.
   void do_preprocess_for_fast_coarse_registration(const cv::Mat &m,
-                                               algebra::Vector2D &center,
-                                               cv::Mat &POLAR_AUTOC);
+                                                  algebra::Vector2D &center,
+                                                  cv::Mat &POLAR_AUTOC);
   //! Main parameters
   em2d::Images subjects_;
   em2d::Images variances_;
@@ -200,26 +188,23 @@ protected:
   Ints n_members_;
   base::Pointer<ScoreFunction> score_function_;
 
-  bool particles_set_,
-       parameters_setup_,
-       registration_done_,
-       fast_optimization_mode_;
-
+  bool particles_set_, parameters_setup_, registration_done_,
+      fast_optimization_mode_;
 
   unsigned int number_of_optimized_projections_;
   // FFT of subjects (storing the FFT of projections is not neccessary
-  std::vector< cv::Mat > SUBJECTS_;
+  std::vector<cv::Mat> SUBJECTS_;
   // FFT of the autocorrelation resampled images
-  std::vector< cv::Mat > SUBJECTS_POLAR_AUTOC_;
-  std::vector< cv::Mat > PROJECTIONS_POLAR_AUTOC_;
+  std::vector<cv::Mat> SUBJECTS_POLAR_AUTOC_;
+  std::vector<cv::Mat> PROJECTIONS_POLAR_AUTOC_;
   algebra::Vector2Ds subjects_cog_;
   algebra::Vector2Ds projections_cog_;
   PolarResamplingParameters polar_params_;
 
   Em2DRestraintParameters params_;
-/**
-  MasksManager masks_manager_;
-**/
+  /**
+    MasksManager masks_manager_;
+  **/
   MasksManagerPtr masks_manager_;
 };
 

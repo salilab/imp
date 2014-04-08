@@ -1,7 +1,7 @@
 /**
- *  \file opencv_interface.h
+ *  \file IMP/em2d/opencv_interface.h
  *  \brief inteface with OpenCV
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_OPENCV_INTERFACE_H
@@ -32,29 +32,26 @@ typedef cv::Mat_<int> cvIntMat;
 typedef cv::MatIterator_<int> cvIntMatIterator;
 
 typedef cv::Point_<int> cvPixel;
-typedef std::vector< cvPixel > cvPixels;
-
+typedef std::vector<cvPixel> cvPixels;
 
 //! Prints a OpenCV matrix
-IMPEM2DEXPORT void show(const cv::Mat &m,std::ostream &out = std::cout);
+IMPEM2DEXPORT void show(const cv::Mat &m, std::ostream &out = std::cout);
 
 //! Quick and dirty way of writing a OpenCV matrix to a Spider image
-IMPEM2DEXPORT void write_matrix(cv::Mat &m,std::string name);
-
+IMPEM2DEXPORT void write_matrix(cv::Mat &m, std::string name);
 
 //! Show a Mat_
-template<typename T>
-void show(const cv::Mat_<T> &m,std::ostream &out = std::cout) {
-  for ( int i=0;i<m.rows;++i) {
-    for ( int j=0;j<m.cols;++j) {
-      out << m(i,j) << " ";
+template <typename T>
+void show(const cv::Mat_<T> &m, std::ostream &out = std::cout) {
+  for (int i = 0; i < m.rows; ++i) {
+    for (int j = 0; j < m.cols; ++j) {
+      out << m(i, j) << " ";
     }
     out << std::endl;
   }
   out << std::endl;
 }
 
-
 IMPEM2D_END_NAMESPACE
 
-#endif  /* IMPEM2D_OPENCV_INTERFACE_H */
+#endif /* IMPEM2D_OPENCV_INTERFACE_H */

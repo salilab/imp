@@ -1,7 +1,9 @@
 import IMP.base
 import IMP.test
 
+
 class Tests(IMP.test.TestCase):
+
     def test_random_number_generator(self):
         """Test the random number generator"""
         IMP.base.random_number_generator.seed(24)

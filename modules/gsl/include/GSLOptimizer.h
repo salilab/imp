@@ -2,7 +2,7 @@
  *  \file IMP/gsl/GSLOptimizer.h
  *  \brief A base class for GSL-based optimizers
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPGSL_GSL_OPTIMIZER_H
@@ -26,7 +26,6 @@ class IMPGSLEXPORT GSLOptimizer : public AttributeOptimizer {
 
  public:
   GSLOptimizer(kernel::Model *m);
-  GSLOptimizer();
 
   virtual ~GSLOptimizer();
 

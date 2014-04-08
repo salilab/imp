@@ -1,14 +1,14 @@
 /**
  *  \file Log.cpp   \brief Logging and error reporting support.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
 #include "IMP/base/utility.h"
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <boost/format.hpp>
-#include "IMP/base/internal/static.h"
+#include "internal/static.h"
 IMPBASE_BEGIN_NAMESPACE
 std::string get_unique_name(std::string name) {
   if (std::find(name.begin(), name.end(), '%') != name.end()) {

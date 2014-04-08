@@ -1,7 +1,0 @@
-<!-- File: nup84_optimization.xml -->
-
-<Optimization>
-  <ConjugateGradients id="opt1" steps="10">
-    <Restraint name="restraint_set"/>
-  </ConjugateGradients>
-</Optimization>

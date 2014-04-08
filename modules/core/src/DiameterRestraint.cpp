@@ -2,7 +2,7 @@
  *  \file DiameterRestraint.cpp
  *  \brief XXXX.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -49,8 +49,8 @@ void DiameterRestraint::init() {
   m->add_score_state(ss_);
 }
 
-double DiameterRestraint::unprotected_evaluate(
-    DerivativeAccumulator *da) const {
+double DiameterRestraint::unprotected_evaluate(DerivativeAccumulator *da)
+    const {
   IMP_CHECK_OBJECT(sc_.get());
   double v = 0;
   XYZ dp(p_);
@@ -86,7 +86,6 @@ kernel::Restraints DiameterRestraint::do_create_decomposition() const {
       std::ostringstream oss;
       oss << get_name() << " " << i << " " << j;
       ret.back()->set_name(oss.str());
-      ret.back()->set_model(get_model());
     }
   }
   return ret;
@@ -106,7 +105,6 @@ kernel::Restraints DiameterRestraint::do_create_current_decomposition() const {
         std::ostringstream oss;
         oss << get_name() << " " << i << " " << j;
         ret.back()->set_name(oss.str());
-        ret.back()->set_model(get_model());
       }
     }
   }

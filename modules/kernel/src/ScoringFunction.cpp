@@ -2,7 +2,7 @@
  *  \file Model.cpp \brief Storage of a model, its restraints,
  *                         constraints and particles.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,7 +10,6 @@
 #include "IMP/kernel/Model.h"
 #include "IMP/kernel/internal/evaluate_utility.h"
 #include "IMP/kernel/internal/scoring_functions.h"
-#include "IMP/kernel/scoring_function_macros.h"
 #include "IMP/kernel/internal/utility.h"
 #include "IMP/kernel/generic.h"
 #include "IMP/kernel/utility.h"

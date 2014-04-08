@@ -2,7 +2,7 @@
  *  \file RemoveRigidMOtionOptimizerState.cpp
  *  \brief Maintains temperature during molecular dynamics by velocity scaling.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,26 +10,13 @@
 #include <IMP/atom/MolecularDynamics.h>
 #include <IMP/atom/Mass.h>
 #include <IMP/core/XYZ.h>
-#include <boost/foreach.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
 
 RemoveRigidMotionOptimizerState::RemoveRigidMotionOptimizerState(
-    const kernel::ParticlesTemp &pis, unsigned skip_steps)
-    : kernel::OptimizerState(pis[0]->get_model(),
-                             "RemoveRigidMotionOptimizerState%1%"),
-      pis_(pis.begin(), pis.end()) {
-  IMPCORE_DEPRECATED_FUNCTION_DEF(2.1, "Use other constructor.");
-  vs_[0] = FloatKey("vx");
-  vs_[1] = FloatKey("vy");
-  vs_[2] = FloatKey("vz");
-  set_period(skip_steps + 1);
-}
-
-RemoveRigidMotionOptimizerState::RemoveRigidMotionOptimizerState(
     kernel::Model *m, kernel::ParticleIndexesAdaptor pis)
     : kernel::OptimizerState(m, "RemoveRigidMotionOptimizerState%1%") {
-  BOOST_FOREACH(kernel::ParticleIndex pi, pis) {
+  IMP_FOREACH(kernel::ParticleIndex pi, pis) {
     pis_.push_back(m->get_particle(pi));
   }
   vs_[0] = FloatKey("vx");

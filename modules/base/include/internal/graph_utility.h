@@ -2,14 +2,13 @@
  *  \file internal/graph_utility.h
  *  \brief Various useful utilities
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPBASE_INTERNAL_GRAPH_UTILITY_H
 #define IMPBASE_INTERNAL_GRAPH_UTILITY_H
 
 #include <IMP/base/base_config.h>
-#include <IMP/base/map.h>
 #include "../file.h"
 #include <cctype>
 #include <algorithm>
@@ -20,6 +19,7 @@
 #include <boost/utility/enable_if.hpp>
 #include <boost/mpl/and.hpp>
 #include <boost/mpl/not.hpp>
+#include <boost/unordered_map.hpp>
 #include <IMP/base/vector_property_map.h>
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
@@ -62,9 +62,9 @@ inline void show_as_graphviz(const Graph &g, ShowFunction f, TextOutput out) {
 
 template <class Graph, class VertexName, class VertexDescriptor,
           class GraphTraits>
-inline base::map<VertexName, VertexDescriptor> get_graph_vertex_index(
-    const Graph &g) {
-  base::map<VertexName, VertexDescriptor> ret;
+inline boost::unordered_map<VertexName, VertexDescriptor>
+get_graph_vertex_index(const Graph &g) {
+  boost::unordered_map<VertexName, VertexDescriptor> ret;
   typename boost::property_map<Graph, boost::vertex_name_t>::const_type vm =
       boost::get(boost::vertex_name, g);
   std::pair<typename GraphTraits::vertex_iterator,

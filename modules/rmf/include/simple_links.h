@@ -2,7 +2,7 @@
  *  \file IMP/rmf/simple_links.h
  *  \brief Handle read/write of kernel::Model data from/to files.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -17,6 +17,7 @@
 #include <IMP/base/object_macros.h>
 #include <IMP/base/log_macros.h>
 #include <IMP/kernel/Model.h>
+#include <RMF/RestoreCurrentFrame.h>
 #include <RMF/SetCurrentFrame.h>
 #include <RMF/names.h>
 #include <RMF/decorators.h>
@@ -48,8 +49,8 @@ class SimpleLoadLink : public LoadLink {
     set_association(nh, o, true);
   }
   virtual bool get_is(RMF::NodeConstHandle nh) const = 0;
-  virtual O *do_create(RMF::NodeConstHandle nh) {IMP_FAILURE("Wrong create");}
-  virtual O *do_create(RMF::NodeConstHandle nh, kernel::Model *m) {
+  virtual O *do_create(RMF::NodeConstHandle) { IMP_FAILURE("Wrong create"); }
+  virtual O *do_create(RMF::NodeConstHandle, kernel::Model *) {
     IMP_FAILURE("Wrong create");
   }
   SimpleLoadLink(std::string name) : LoadLink(name) {}
@@ -59,7 +60,7 @@ class SimpleLoadLink : public LoadLink {
   base::Vector<base::Pointer<O> > create(RMF::NodeConstHandle rt) {
     IMP_OBJECT_LOG;
     IMP_LOG_TERSE("Creating IMP objects from " << rt << std::endl);
-    RMF::SetCurrentFrame sf(rt.get_file(), RMF::ALL_FRAMES);
+    RMF::SetCurrentFrame sf(rt.get_file(), RMF::FrameID(0));
     RMF::NodeConstHandles ch = rt.get_children();
     base::Vector<base::Pointer<O> > ret;
     for (unsigned int i = 0; i < ch.size(); ++i) {
@@ -80,7 +81,7 @@ class SimpleLoadLink : public LoadLink {
                                          kernel::Model *m) {
     IMP_OBJECT_LOG;
     IMP_LOG_TERSE("Creating Model objects from " << rt << std::endl);
-    RMF::SetCurrentFrame sf(rt.get_file(), RMF::ALL_FRAMES);
+    RMF::SetCurrentFrame sf(rt.get_file(), RMF::FrameID(0));
     RMF::NodeConstHandles ch = rt.get_children();
     base::Vector<base::Pointer<O> > ret;
     for (unsigned int i = 0; i < ch.size(); ++i) {
@@ -101,30 +102,25 @@ class SimpleLoadLink : public LoadLink {
     IMP_OBJECT_LOG;
     IMP_LOG_TERSE("Linking " << rt << " to " << ps << std::endl);
 
-    RMF::SetCurrentFrame sf(rt.get_file(), RMF::ALL_FRAMES);
+    RMF::RestoreCurrentFrame sf(rt.get_file());
     set_was_used(true);
-    RMF::NodeConstHandles ch = rt.get_children();
-    int links = 0;
-    for (unsigned int i = 0; i < ch.size(); ++i) {
-      IMP_LOG_VERBOSE("Checking " << ch[i] << std::endl);
-      if (get_is(ch[i])) {
-        IMP_LOG_VERBOSE("Linking " << ch[i] << std::endl);
-        if (ps.size() <= static_cast<unsigned int>(links)) {
-          IMP_THROW("There are too many matching hierarchies in the rmf to "
-                        << "link against " << ps,
-                    ValueException);
-        }
-        add_link(ps[links], ch[i]);
-        ps[links]->set_was_used(true);
-        do_add_link(ps[links], ch[i]);
-        ++links;
-      }
+    RMF::NodeConstHandles chs = rt.get_children();
+    RMF::NodeConstHandles matching_chs;
+    IMP_FOREACH(RMF::NodeConstHandle ch, rt.get_children()) {
+      IMP_LOG_VERBOSE("Checking " << ch << std::endl);
+      if (get_is(ch)) matching_chs.push_back(ch);
     }
-    IMP_USAGE_CHECK(os_.size() == nhs_.size(),
-                    "Didn't find enough matching things.");
-    IMP_USAGE_CHECK(links == static_cast<int>(ps.size()),
-                    "Didn't find enough matching things. Found "
-                        << links << " wanted " << ps.size());
+    if (matching_chs.size() != ps.size()) {
+      IMP_THROW("Founding " << matching_chs.size() << " matching nodes "
+                            << "but passed " << ps.size() << " to match with.",
+                ValueException);
+    }
+    for (unsigned int i = 0; i < matching_chs.size(); ++i) {
+      IMP_LOG_VERBOSE("Linking " << matching_chs[i] << std::endl);
+      add_link(ps[i], matching_chs[i]);
+      ps[i]->set_was_used(true);
+      do_add_link(ps[i], matching_chs[i]);
+    }
   }
 };
 
@@ -162,8 +158,7 @@ class SimpleSaveLink : public SaveLink {
     IMP_OBJECT_LOG;
     IMP_LOG_TERSE("Adding " << os << " to rmf" << std::endl);
     RMF::FileHandle file = parent.get_file();
-    RMF::AliasFactory af(file);
-    RMF::SetCurrentFrame sf(parent.get_file(), RMF::ALL_FRAMES);
+    RMF::decorator::AliasFactory af(file);
     for (unsigned int i = 0; i < os.size(); ++i) {
       std::string nicename = RMF::get_as_node_name(os[i]->get_name());
       if (get_has_associated_node(file, os[i])) {

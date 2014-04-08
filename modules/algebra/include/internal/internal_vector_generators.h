@@ -1,7 +1,7 @@
 /**
  *  \file cgal_predicates.h
  *  \brief predicates implemented using CGAL
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_INTERNAL_VECTOR_GENERATORS_H
@@ -11,6 +11,10 @@
 #include "../SphereD.h"
 #include "../SphericalVector3D.h"
 #include "../utility.h"
+#include "utility.h"
+#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_01.hpp>
+#include <boost/random/uniform_real.hpp>
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
 #include <IMP/cgal/internal/sphere_cover.h>
 #endif
@@ -59,7 +63,9 @@ inline VectorD<2> get_random_vector_on(const SphereD<2> &s) {
   return ret + s.get_center();
 }
 
-inline VectorD<3> get_random_vector_on(const SphereD<3> &s) {
+//! returns a random vector on a sphere of radius 1
+//! with implementation optimized for the 3D + unit vector case
+inline VectorD<3> get_random_vector_on_unit_sphere() {
   ::boost::uniform_real<> rand(-1, 1);
   do {
     double x1 = rand(base::random_number_generator);
@@ -71,9 +77,15 @@ inline VectorD<3> get_random_vector_on(const SphereD<3> &s) {
       ret[0] = 2 * x1 * sq;
       ret[1] = 2 * x2 * sq;
       ret[2] = 1 - 2 * ssq;
-      return s.get_center() + ret * s.get_radius();
+      return ret;
     }
   } while (true);
+}
+
+//! returns a random vector on the surface of the sphere s in 3D
+//! with implementation optimized for the 3D case
+inline VectorD<3> get_random_vector_on(const SphereD<3> &s) {
+  return s.get_center() + s.get_radius() * get_random_vector_on_unit_sphere();
 }
 
 /*inline VectorD<3> get_random_vector_on(const SphereD<3> &s) {
@@ -230,15 +242,6 @@ inline Vector2Ds uniform_cover_sphere(unsigned int N, const Vector2D &center,
   return ret;
 }
 
-template <int DO>
-struct DMinus1 {
-  static const int D = DO - 1;
-};
-template <>
-struct DMinus1<-1> {
-  static const int D = -1;
-};
-
 template <int D>
 struct RandomVectorOnBB {
   static VectorD<D> get(BoundingBoxD<D> bb) {
@@ -279,8 +282,9 @@ struct RandomVectorOnBB {
     }
     VectorD<internal::DMinus1<D>::D> vfmin(fmin.begin(), fmin.end()),
         vfmax(fmax.begin(), fmax.end());
-    VectorD<internal::DMinus1<D>::D> sv = get_random_vector_in(
-        BoundingBoxD<internal::DMinus1<D>::D>(vfmin, vfmax));
+    VectorD<internal::DMinus1<D>::D> sv =
+        algebra::internal::get_random_vector_in(
+            BoundingBoxD<internal::DMinus1<D>::D>(vfmin, vfmax));
 
     Floats ret(bb.get_dimension());
     // std::cout << "Side is " << side << std::endl;

@@ -1,7 +1,7 @@
 /**
  *  \file Vector.h    \brief A bounds checked vector.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -9,10 +9,7 @@
 #define IMPBASE_VECTOR_H
 
 #include "../exception.h"
-#include "../Object.h"
-#include "ref_counting.h"
 
-#include <vector>
 #include <algorithm>
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE

@@ -5,7 +5,7 @@
  *  Restrict max distance between at least one pair of particles of any
  *  two distinct types. It also handles multiple copies of the same particles.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -61,7 +61,7 @@ class IMPCOREEXPORT MSConnectivityRestraint : public kernel::Restraint {
   /** If sc is nullptr, a ListSingletonContainer is created internally.
     eps is set to 0.1 by default.
    */
-  MSConnectivityRestraint(PairScore *ps, double eps = 0.1);
+  MSConnectivityRestraint(Model *m, PairScore *ps, double eps = 0.1);
   /** @name kernel::Particles to be connected
 
     The following methods are used to manipulate the list of particles
@@ -105,7 +105,6 @@ class IMPCOREEXPORT MSConnectivityRestraint : public kernel::Restraint {
 #ifndef IMP_DOXYGEN
   class ParticleMatrix {
    public:
-
     class ParticleData {
      public:
       ParticleData(kernel::Particle *p, unsigned int id)
@@ -226,7 +225,7 @@ class IMPCOREEXPORT MSConnectivityRestraint : public kernel::Restraint {
     unsigned int root_;
     bool finalized_;
   };
-#endif // IMP_DOXYGEN
+#endif  // IMP_DOXYGEN
 
   ParticleMatrix particle_matrix_;
   mutable ExperimentalTree tree_;

@@ -1,15 +1,14 @@
 /**
  *  \file IMP/multifit/density_analysis.h
- *  \brief density analysis tools, such as histogram and segmentation
+ *  \brief density analysis tools, such as segmentation
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPMULTIFIT_DENSITY_ANALYSIS_H
 #define IMPMULTIFIT_DENSITY_ANALYSIS_H
 
-#include <IMP/statistics/Histogram.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/multifit/multifit_config.h>
 #include <boost/graph/adjacency_list.hpp>
@@ -19,10 +18,6 @@
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
-//! Get a histogram of density values
-IMPMULTIFITEXPORT statistics::Histogram get_density_histogram(
-                   const em::DensityMap *dmap, float threshold,int num_bins);
-
 //! Returns a map containing all density without the background
 /**
 \param[in] dmap the density map to segment
@@ -30,9 +25,9 @@ IMPMULTIFITEXPORT statistics::Histogram get_density_histogram(
 \param[in] edge_threshold consider only voxels above this threshold
 \return the segmented map
  */
-IMPMULTIFITEXPORT em::DensityMap* remove_background(em::DensityMap *dmap,
-                                      float threshold,float edge_threshold);
-
+IMPMULTIFITEXPORT em::DensityMap *remove_background(em::DensityMap *dmap,
+                                                    float threshold,
+                                                    float edge_threshold);
 
 //! Return connected components based on density values
 /**
@@ -43,9 +38,8 @@ IMPMULTIFITEXPORT em::DensityMap* remove_background(em::DensityMap *dmap,
    \return List of indexes for each connected component
 */
 IMPMULTIFITEXPORT
-IntsList get_connected_components(
-                                          em::DensityMap *dmap,
-                                          float threshold,float edge_threshold);
+IntsList get_connected_components(em::DensityMap *dmap, float threshold,
+                                  float edge_threshold);
 
 //! Segment a density map using the anchor graph.
 /** All voxels above the threshold are segmented into the given number

@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/Typed.h     \brief A particle with a user-defined type.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,7 +10,6 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/decorator_macros.h>
-#include <IMP/key_macros.h>
 
 #include <IMP/Decorator.h>
 #include <IMP/algebra/Vector3D.h>

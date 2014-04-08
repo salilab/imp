@@ -36,7 +36,6 @@ else:
     acp = IMP.container.ListPairContainer(m)
 ps = IMP.core.SoftSpherePairScore(1)
 r = IMP.container.PairsRestraint(ps, acp)
-r.set_model(m)
 
 # compute the interaction graph based on all the restraints
 ig = IMP.domino.get_interaction_graph([r],

@@ -2,37 +2,32 @@
  *  \file DummyRestraint.cpp
  *  \brief Dummy restraint
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
 #include "IMP/em2d/DummyRestraint.h"
 
-
 IMPEM2D_BEGIN_NAMESPACE
 
-double
-DummyRestraint::unprotected_evaluate(DerivativeAccumulator *) const {
+double DummyRestraint::unprotected_evaluate(DerivativeAccumulator *) const {
   return 0;
 }
 
-ModelObjectsTemp DummyRestraint::do_get_inputs() const
-{
+ModelObjectsTemp DummyRestraint::do_get_inputs() const {
   kernel::ParticlesTemp ret;
   ret.push_back(p0_);
   ret.push_back(p1_);
   return ret;
 }
 
-double
-ParticlesDummyRestraint::unprotected_evaluate(
-                                      DerivativeAccumulator *) const {
+double ParticlesDummyRestraint::unprotected_evaluate(DerivativeAccumulator *)
+    const {
   return 0;
 }
 
-ModelObjectsTemp ParticlesDummyRestraint::do_get_inputs() const
-{
-  kernel::ModelObjectsTemp ret= container_->get_particles();
+ModelObjectsTemp ParticlesDummyRestraint::do_get_inputs() const {
+  kernel::ModelObjectsTemp ret = container_->get_particles();
   ret.push_back(container_);
   return ret;
 }

@@ -2,7 +2,7 @@
  *  \file IMP/rmf/RMFWriter.h
  *  \brief Handle read/write of kernel::Model data from/to files.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,14 +13,14 @@
 #include <RMF/FileHandle.h>
 #include <IMP/display/Writer.h>
 #include <IMP/display/display_macros.h>
-#include <IMP/base/set.h>
+#include <boost/unordered_set.hpp>
 
 IMPRMF_BEGIN_NAMESPACE
 #if 0
 /** Only one frame is handled. Sorry. Kind of hard to fix.*/
 class IMPRMFEXPORT RMFWriter : public display::Writer {
   RMF::FileHandle rh_;
-  base::set<display::Geometry*> added_;
+  boost::unordered_set<display::Geometry*> added_;
   void do_add_geometry(Geometry* g);
   void do_add_geometry(const Geometries& g);
   void on_set_frame();

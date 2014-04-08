@@ -2,7 +2,7 @@
  *  \file IMP/core/SerialMover.h
  *  \brief  A mover that apply other movers one at a time
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -31,16 +31,6 @@ class IMPCOREEXPORT SerialMover : public MonteCarloMover {
   SerialMover(const MonteCarloMoversTemp& mvs);
 
   const MonteCarloMovers& get_movers() const { return movers_; }
-
-  /** \deprecated_at{2.1} Use the functions on the individual movers. */
-  IMPCORE_DEPRECATED_METHOD_DECL(2.1)
-  double get_acceptance_probability(int i) const;
-  /** \deprecated_at{2.1} Use the functions on the individual movers. */
-  IMPCORE_DEPRECATED_METHOD_DECL(2.1)
-  void reset_acceptance_probabilities();
-  /** \deprecated_at{2.1} Use the functions on the individual movers. */
-  IMPCORE_DEPRECATED_METHOD_DECL(2.1)
-  unsigned int get_number_of_movers() const;
 
  protected:
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;

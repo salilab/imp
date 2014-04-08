@@ -2,7 +2,7 @@
  *  \file IMP/rmf/atom_io.h
  *  \brief Handle read/write of kernel::Model data from/to files.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -28,6 +28,8 @@ IMPRMF_BEGIN_NAMESPACE
     - IMP::atom::Domain
     - IMP::atom::Molecule
     - IMP::atom::Copy
+    - IMP::atom::State
+    - IMP::atom::Representation
     - IMP::core::RigidMember (rigid body information will be written and rigid
     bodies created even when the IMP::core::RigidBody is not itself written
     to the file)

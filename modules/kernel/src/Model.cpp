@@ -2,7 +2,7 @@
  *  \file Model.cpp \brief Storage of a model, its restraints,
  *                         constraints and particles.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,7 +10,6 @@
 #include "IMP/kernel/Particle.h"
 #include "IMP/kernel/internal/scoring_functions.h"
 #include "IMP/base//set.h"
-#include <boost/foreach.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -120,7 +119,7 @@ ParticleIndexes Model::get_particle_indexes() {
 ModelObjectsTemp Model::get_model_objects() const {
   ModelObjectsTemp ret;
   ret.reserve(dependency_graph_.size());
-  BOOST_FOREACH(const DependencyGraph::value_type & vt, dependency_graph_) {
+  IMP_FOREACH(const DependencyGraph::value_type & vt, dependency_graph_) {
     ret.push_back(const_cast<ModelObject *>(vt.first));
   }
   return ret;
@@ -155,7 +154,8 @@ void Model::do_add_score_state(ScoreState *obj) {
   obj->set_was_used(true);
   IMP_LOG_VERBOSE("Added score state " << obj->get_name() << std::endl);
   IMP_IF_CHECK(base::USAGE) {
-    base::set<ScoreState *> in(score_states_begin(), score_states_end());
+    boost::unordered_set<ScoreState *> in(score_states_begin(),
+                                          score_states_end());
     IMP_USAGE_CHECK(in.size() == get_number_of_score_states(),
                     "Score state already in model " << obj->get_name());
   }
@@ -200,7 +200,7 @@ void Model::do_destroy() {
   IMP_OBJECT_LOG;
   IMP_LOG_TERSE("Destroying model" << std::endl);
   // make sure we clear their data to free model objects they are keeping alive
-  BOOST_FOREACH(Particle * p, particle_index_) {
+  IMP_FOREACH(Particle * p, particle_index_) {
     if (p) {
       remove_particle(p->get_index());
     }
@@ -208,6 +208,7 @@ void Model::do_destroy() {
   while (!dependency_graph_.empty()) {
     ModelObject *mo =
         const_cast<ModelObject *>(dependency_graph_.begin()->first);
+    IMP_CHECK_OBJECT(mo);
     mo->set_model(nullptr);
   }
 }

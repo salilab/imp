@@ -1,7 +1,7 @@
 /**
  *  \file exception.cpp   \brief Check handling.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -52,8 +52,7 @@ std::string InputOutputException::get_message(kernel::ModelObject *o) const {
           oss << "Unknown read/write error";
       }
       break;
-  }
-  ;
+  };
   oss << " Violating object: \"" << o->get_name() << "\".";
   if (particle_index_ >= 0) {
     oss << " Attribute " << get_key_name() << " of particle \""

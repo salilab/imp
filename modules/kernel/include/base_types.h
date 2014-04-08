@@ -1,7 +1,7 @@
 /**
  *  \file IMP/kernel/base_types.h    \brief Basic types used by IMP.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,8 +10,8 @@
 
 #include <IMP/kernel/kernel_config.h>
 #include "Key.h"
-#include "key_macros.h"
 #include <IMP/base/object_macros.h>
+#include <IMP/base/value_macros.h>
 #include <IMP/base/Vector.h>
 #include <IMP/base/Pointer.h>
 #include <IMP/base/WeakPointer.h>

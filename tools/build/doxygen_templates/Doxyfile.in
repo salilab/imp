@@ -204,10 +204,6 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "internal{2}=<a href=\"\1\">\2</a>" \
                          "imp=\p %IMP" \
                          "string{1}=<tt>\1</tt>" \
-                         "impdev=<a href=\"http://salilab.org/mailman/listinfo/imp-dev\">imp-dev</a>" \
-                         "impbuild=<a href=\"http://salilab.org/mailman/listinfo/imp-dev\">imp-build</a>" \
-                         "impusers=<a href=\"http://salilab.org/mailman/listinfo/imp-users\">imp-users</a>" \
-                         "impcommits=<a href=\"http://salilab.org/mailman/listinfo/imp-commits\">imp-commits</a>" \
                          "advancedmethod=\note Familiarity with these methods is not required to use %imp." \
                          "advanceddoc=\par Advanced:\n" \
                          "usesconstraint=\note The maintenance of the invariant is done by an associated IMP::Constraint. As a result, the state is only guaranteed to be correct either during model evaluation, or immediately following model evaluation before any particles have been changed." \

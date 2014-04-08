@@ -2,7 +2,7 @@
  *  \file kernel::RestraintGraph.cpp
  *  \brief creates a MRF from a set of particles and restraints
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -60,8 +60,8 @@ InferenceStatistics::~InferenceStatistics() {
     }*/
 }
 
-unsigned int InferenceStatistics::get_number_of_assignments(
-    Subset subset) const {
+unsigned int InferenceStatistics::get_number_of_assignments(Subset subset)
+    const {
   return get_data(subset).size;
 }
 
@@ -69,8 +69,8 @@ Assignments InferenceStatistics::get_sample_assignments(Subset subset) const {
   return get_data(subset).sample;
 }
 
-const InferenceStatistics::Data &InferenceStatistics::get_data(
-    const Subset &s) const {
+const InferenceStatistics::Data &InferenceStatistics::get_data(const Subset &s)
+    const {
   IMP_USAGE_CHECK(subsets_.find(s) != subsets_.end(), "Unknown subset " << s);
   return subsets_.find(s)->second;
 }

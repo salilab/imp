@@ -2,7 +2,7 @@
  *  \file IMP/example/ExampleRestraint.h
  *  \brief A restraint on a list of particle pairs.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,11 +10,7 @@
 #define IMPEXAMPLE_EXAMPLE_RESTRAINT_H
 
 #include <IMP/example/example_config.h>
-#include <IMP/SingletonScore.h>
 #include <IMP/kernel/Restraint.h>
-#include <IMP/PairContainer.h>
-#include <IMP/PairScore.h>
-#include <IMP/restraint_macros.h>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
@@ -27,7 +23,7 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     \include ExampleRestraint.cpp
 */
 class IMPEXAMPLEEXPORT ExampleRestraint : public kernel::Restraint {
-  base::Pointer<kernel::Particle> p_;
+  kernel::ParticleIndex p_;
   double k_;
 
  public:
@@ -35,10 +31,10 @@ class IMPEXAMPLEEXPORT ExampleRestraint : public kernel::Restraint {
   /** kernel::Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
    */
-  ExampleRestraint(kernel::Particle *p, double k);
-  void do_add_score_and_derivatives(IMP::ScoreAccumulator sa) const
+  ExampleRestraint(kernel::Model *m, kernel::ParticleIndex p, double k);
+  void do_add_score_and_derivatives(kernel::ScoreAccumulator sa) const
       IMP_OVERRIDE;
-  IMP::kernel::ModelObjectsTemp do_get_inputs() const;
+  kernel::ModelObjectsTemp do_get_inputs() const;
   IMP_OBJECT_METHODS(ExampleRestraint);
 };
 

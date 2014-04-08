@@ -1,7 +1,7 @@
 /**
  *  \file Atom.cpp   \brief Simple atoms decorator.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,6 +11,7 @@
 
 #include <IMP/base_types.h>
 #include <IMP/base/log.h>
+#include <boost/unordered_map.hpp>
 
 #include <sstream>
 #include <vector>
@@ -128,9 +129,8 @@ const RP rp_names[] = {RP(ALA, 'A'), RP(ARG, 'R'), RP(ASP, 'D'), RP(ASN, 'N'),
                        RP(MET, 'M'), RP(PHE, 'F'), RP(PRO, 'P'), RP(SER, 'S'),
                        RP(THR, 'T'), RP(TYR, 'Y'), RP(TRP, 'W'), RP(VAL, 'V'),
                        RP(UNK, 'X')};
-const IMP::base::map<char, ResidueType> rp_map(rp_names,
-                                               rp_names + sizeof(rp_names) /
-                                                              sizeof(RP));
+const boost::unordered_map<char, ResidueType> rp_map(
+    rp_names, rp_names + sizeof(rp_names) / sizeof(RP));
 }
 
 ResidueType get_residue_type(char c) {

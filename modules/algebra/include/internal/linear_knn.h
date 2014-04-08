@@ -1,7 +1,7 @@
 /**
  *  \file internal/linear_knn.h
  *  \brief manipulation of text, and Interconversion between text and numbers
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPALGEBRA_INTERNAL_LINEAR_KNN_H
@@ -33,19 +33,19 @@ struct LinearKNNData {
   LinearKNNData(It b, It e) {
     data_.reserve(std::distance(b, e));
     for (It c = b; c != e; ++c) {
-      data_.push_back(get_vector_d_geometry(*c));
+      data_.push_back(get_vector_geometry(*c));
     }
   }
   template <class G>
   void fill_nearest_neighbors(const G &g, unsigned int k, double,
                               Ints &ret) const {
-    linear_nearest_neighbor(get_vector_d_geometry(g), k, ret);
+    linear_nearest_neighbor(get_vector_geometry(g), k, ret);
   }
   template <class G>
   void fill_nearest_neighbors(const G &g, double distance, double,
                               Ints &ret) const {
     double d2 = base::square(distance);
-    VectorD<D> v = get_vector_d_geometry(g);
+    VectorD<D> v = get_vector_geometry(g);
     for (unsigned int i = 0; i < data_.size(); ++i) {
       if (get_squared_distance(v, data_[i]) < d2) {
         ret.push_back(i);

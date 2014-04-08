@@ -1,7 +1,7 @@
 /**
  *  \file IMP/kernel/Decorator.h    \brief The base class for decorators.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -99,7 +99,8 @@ lazily (at the time of the first use), and not be created as static
 variables. The reason for this is that initialized attribute keys result
 in space being allocated in decorators, even before they are used.\n\n
 Implementors should consult IMP::example::ExampleDecorator,
-IMP_DECORATOR_METHODS(), IMP_DECORATOR_WITH_TRAITS(), IMP_DECORATOR_GET().
+IMP_DECORATOR_METHODS(), IMP_DECORATOR_WITH_TRAITS_METHODS(),
+IMP_DECORATOR_GET().
 
 A decorator can be cast to a IMP::kernel::Particle* in C++. You have to
 use the Decorator::get_particle() function in Python.
@@ -125,8 +126,8 @@ class IMPKERNELEXPORT Decorator : public base::Value {
   }
 
  protected:
-  Decorator(kernel::Model* m, ParticleIndex pi);
-  Decorator();
+  Decorator(Model* m, ParticleIndex pi) : model_(m), pi_(pi) {}
+  Decorator() {}
 
 #ifndef IMP_DOXYGEN
  public:
@@ -134,7 +135,6 @@ class IMPKERNELEXPORT Decorator : public base::Value {
   explicit Decorator(ParticleAdaptor p);
 
  public:
-  ParticleIndex get_particle_index() const { return pi_; }
 #ifdef _MSC_VER
   typedef Particle* ParticleP;
 #endif
@@ -162,12 +162,6 @@ class IMPKERNELEXPORT Decorator : public base::Value {
 #endif
 #endif
 
-  /** \name Methods provided by the Decorator class
-      The following methods are provided by the Decorator class.
-      @{
-  */
-
-  /** Returns the particle decorated by this decorator.*/
   /** Returns the particle decorated by this decorator.*/
   Particle* get_particle() const {
     if (!model_)
@@ -179,126 +173,24 @@ class IMPKERNELEXPORT Decorator : public base::Value {
     }
   }
 
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+#if !defined(SWIG)
   operator Particle*() const { return get_particle(); }
   Particle* operator->() const { return get_particle(); }
   operator ParticleIndex() const { return get_particle_index(); }
 #endif
 
+  /** Returns the particle index decorated by this decorator.*/
+  ParticleIndex get_particle_index() const { return pi_; }
+
   /** \brief Returns the Model containing the particle. */
   Model* get_model() const { return model_; }
-  // here just to make the docs symmetric
- private:
-  IMP_ONLY_DOXYGEN(int blah_);
-  //! @}
- public:
+
   IMP_HASHABLE_INLINE(Decorator, return boost::hash_value(get_particle()););
-#ifdef IMP_DOXYGEN
 
-  /** \name Methods that all decorators must have
-      All decorators must have the following methods. Decorators
-      which are parameterized (for example IMP::core::XYZR)
-      take an (optional) extra parameter after the Particle in
-      setup_particle(), and get_is_setup().
-      \note these are
-      not actually methods of the Decorator class itself.
-      @{
-  */
-  /** \brief Return true if the particle can be cast to the decorator.
-
-  That is, if get_is_setup() returns \c true, then it is
-  legal to construct an instance of the decorator with that particle.
-  If not, setup_particle() must be called first.
-  \code
-  IMP::kernel::Particle *p = new IMP::kernel::Particle(m);
-  // it is false
-  std::cout << IMP::core::XYZ::get_is_setup(p) << std::endl;
-  // As a result this is an error
-  IMP::core::XYZ d(p);
-  // now set it up
-  IMP::core::XYZ(p);
-  // now it is true
-  std::cout << IMP::core::XYZ::get_is_setup(p) << std::endl;
-  // and now this code is OK
-  IMP::core::XYZ d(p);
-  \endcode
-  */
-  static bool get_is_setup(Particle* p);
-
-  /** Create an instance of the Decorator from the particle that has
-      already been set up. The particle must have been set up already
-      (eg get_is_setup(p) must be true), but this is not
-      necessarily checked.
-  */
-  Decorator(Particle* p);
-  /** The default constructor must be defined and create a nullptr decorator,
-      analogous to a \c nullptr pointer in C++ or a \c None object in Python.
-  */
-  Decorator();
-//! @}
-#endif
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   typedef boost::false_type DecoratorHasTraits;
 #endif
 };
-
-#ifndef IMP_DOXYGEN
-
-inline Decorator::Decorator(kernel::Model* m, ParticleIndex pi)
-    : model_(m), pi_(pi) {};
-inline Decorator::Decorator() : pi_(-1) {}
-
-#define IMP_CONSTRAINT_DECORATOR_DECL(Name)                                \
- private:                                                                  \
-  static ObjectKey get_constraint_key();                                   \
-  static void set_constraint(SingletonModifier* before,                    \
-                             SingletonDerivativeModifier* after, Model* m, \
-                             ParticleIndex pi);                            \
-                                                                           \
- public:                                                                   \
-  Constraint* get_constraint() const {                                     \
-    return dynamic_cast<Constraint*>(                                      \
-        get_particle()->get_value(get_constraint_key()));                  \
-  }                                                                        \
-  IMP_REQUIRE_SEMICOLON_CLASS(constraint)
-
-#define IMP_CONSTRAINT_DECORATOR_DEF(Name)                                \
-  ObjectKey Name::get_constraint_key() {                                  \
-    static ObjectKey ret(#Name " score state");                           \
-    return ret;                                                           \
-  }                                                                       \
-  void Name::set_constraint(SingletonModifier* before,                    \
-                            SingletonDerivativeModifier* after, Model* m, \
-                            ParticleIndex pi) {                           \
-    if (!after && !before) {                                              \
-      if (m->get_has_attribute(get_constraint_key(), pi)) {               \
-        m->remove_score_state(dynamic_cast<ScoreState*>(                  \
-            m->get_attribute(get_constraint_key(), pi)));                 \
-        m->remove_attribute(get_constraint_key(), pi);                    \
-      }                                                                   \
-    } else {                                                              \
-      Constraint* ss = new core::SingletonConstraint(                     \
-          before, after, m, pi,                                           \
-          std::string(#Name "updater for ") + m->get_particle_name(pi));  \
-      m->add_attribute(get_constraint_key(), pi, ss);                     \
-      m->add_score_state(ss);                                             \
-    }                                                                     \
-  }                                                                       \
-  IMP_REQUIRE_SEMICOLON_NAMESPACE
-
-#endif
-
-#ifndef SWIG
-/** Register a function that can be used to check that the particle
-    is valid with respect to the decorator. The function should take
-    a Particle* as an argument and return a bool. It should throw
-    an exception if something is wrong.
-
-    This macro should only be used in a .cpp file.
-*/
-#define IMP_CHECK_DECORATOR(Name, function) \
-  IMP::kernel::internal::ParticleCheck Name##pc(Name::get_is_setup, function);
-#endif
 
 #ifndef IMP_DOXYGEN
 /** Check that the particle satisfies invariants registered by decorators.
@@ -307,21 +199,5 @@ IMPKERNELEXPORT void check_particle(Particle* p);
 #endif
 
 IMPKERNEL_END_NAMESPACE
-
-#if !defined(SWIG) && !defined IMP_DOXYGEN
-IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
-inline void unref(Decorator d) {
-  return base::internal::unref(static_cast<Particle*>(d));
-}
-inline void release(Decorator d) {
-  return base::internal::release(static_cast<Particle*>(d));
-}
-inline void ref(Decorator d) {
-  return base::internal::ref(static_cast<Particle*>(d));
-}
-
-IMPKERNEL_END_INTERNAL_NAMESPACE
-
-#endif
 
 #endif /* IMPKERNEL_DECORATOR_H */

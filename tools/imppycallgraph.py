@@ -55,8 +55,8 @@ def reset_settings():
 
     settings = {
         'node_attributes': {
-           'label': r'%(func)s\ncalls: %(hits)i\ntotal time: %(total_time)f',
-           'color': '%(col)s',
+            'label': r'%(func)s\ncalls: %(hits)i\ntotal time: %(total_time)f',
+            'color': '%(col)s',
         },
         'node_colour': colourize_node,
         'edge_colour': colourize_edge,
@@ -111,11 +111,13 @@ def reset_trace():
 
 
 class PyCallGraphException(Exception):
+
     """Exception used for pycallgraph"""
     pass
 
 
 class GlobbingFilter(object):
+
     """Filter module names using a set of globs.
 
     Objects are matched against the exclude list first, then the include list.
@@ -219,7 +221,7 @@ def tracer(frame, event, arg):
             module_name = module.__name__
             module_path = module.__file__
             if not settings['include_stdlib'] \
-                and is_module_stdlib(module_path):
+                    and is_module_stdlib(module_path):
                 keep = False
             if module_name == '__main__':
                 module_name = ''
@@ -248,7 +250,7 @@ def tracer(frame, event, arg):
         # this call
         if keep and trace_filter:
             keep = trace_filter(call_stack, module_name, class_name,
-                func_name, full_name)
+                                func_name, full_name)
 
         # Store the call information
         if keep:
@@ -323,15 +325,15 @@ def get_dot(stop=True):
         for attr, val in comp_attr.items():
             ret.append('%(attr)s = "%(val)s",' % locals())
         ret.append('];')
-    edges={}
+    edges = {}
     for fr_key, fr_val in call_dict.items():
-        if fr_key=="":
+        if fr_key == "":
             continue
         for to_key, to_val in fr_val.items():
-            edges[to_key]=""
-            edges[fr_key]=""
+            edges[to_key] = ""
+            edges[fr_key] = ""
     for func, hits in func_count.items():
-        if not edges.has_key(func):
+        if func not in edges:
             continue
         calls_frac, total_time_frac, total_time = frac_calculation(func, hits)
         col = settings['node_colour'](calls_frac, total_time_frac)
@@ -359,7 +361,7 @@ def save_dot(filename):
 
 def make_graph(filename, format=None, tool=None, stop=None):
     """This has been changed to make_dot_graph."""
-    raise PyCallGraphException( \
+    raise PyCallGraphException(
         'make_graph is depricated. Please use make_dot_graph')
 
 
@@ -388,8 +390,8 @@ def make_dot_graph(filename, format='png', tool='dot', stop=True):
     try:
         ret = os.system(cmd)
         if ret:
-            raise PyCallGraphException( \
-                'The command "%(cmd)s" failed with error ' \
+            raise PyCallGraphException(
+                'The command "%(cmd)s" failed with error '
                 'code %(ret)i.' % locals())
     finally:
         os.unlink(tempname)

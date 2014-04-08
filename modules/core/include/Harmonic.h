@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/Harmonic.h    \brief Harmonic function.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_HARMONIC_H
@@ -9,7 +9,6 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/UnaryFunction.h>
-#include <IMP/unary_function_macros.h>
 #include <IMP/utility.h>
 
 IMPCORE_BEGIN_NAMESPACE

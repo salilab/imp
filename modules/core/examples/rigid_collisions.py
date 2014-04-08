@@ -36,8 +36,7 @@ evr = IMP.container.PairsRestraint(ps, nbl)
 evri = m.add_restraint(evr)
 
 # Set up optimizer
-o = IMP.core.ConjugateGradients()
-o.set_model(m)
+o = IMP.core.ConjugateGradients(m)
 
 done = False
 while not done:

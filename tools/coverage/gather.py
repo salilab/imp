@@ -7,8 +7,11 @@ import subprocess
 import tempfile
 import shutil
 
+
 class _TempDir(object):
+
     "A temporary directory that is automatically removed when no longer needed"
+
     def __init__(self):
         self.tmpdir = tempfile.mkdtemp()
 
@@ -37,12 +40,13 @@ class _TempDir(object):
             fout.write(line)
         fin.close()
         fout.close()
-        os.chmod(os.path.join(self.tmpdir, 'geninfo'), 0755)
+        os.chmod(os.path.join(self.tmpdir, 'geninfo'), 0o755)
         return os.path.join(self.tmpdir, 'lcov')
 
 
 def gather_python():
     """Combine all of the .coverage* files into a single .coverage"""
+
     def _our_abs_file(self, filename):
         return os.path.normcase(os.path.abspath(filename))
     coverage.files.FileLocator.abs_file = _our_abs_file
@@ -51,6 +55,7 @@ def gather_python():
     cov.combine()
     cov.save()
 
+
 def gather_cpp():
     """Make a single lcov info file from all of the .gcda files"""
     t = _TempDir()
@@ -58,6 +63,7 @@ def gather_cpp():
     cmd = [lcov, '-c', '-d', '.', '-b', os.getcwd(), '-o', 'coverage/all.info']
     print " ".join(cmd)
     subprocess.check_call(cmd)
+
 
 def main():
     gather_python()

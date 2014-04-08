@@ -1,11 +1,11 @@
 /**
  *  \file Log.cpp   \brief Logging and error reporting support.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
-#include "IMP/kernel/utility.h"
+#include "IMP/kernel/internal/utility.h"
 #include "IMP/kernel/ScoreState.h"
 #include "IMP/kernel/ModelObject.h"
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE

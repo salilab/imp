@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPMULTIFIT_BENCHMARK_EXCLUDED_VOLUME_H
@@ -34,128 +34,135 @@ using namespace IMP::multifit;
 
 namespace {
 
-#if IMP_BUILD>=IMP_RELEASE
-  const unsigned int onreps=200;
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+const unsigned int onreps = 2;
 #else
-  const unsigned int onreps=2;
+const unsigned int onreps = 200;
 #endif
-  double get_val(double v) {
-    if (v>.1) return 0;
-    else return 1;
-  }
+double get_val(double v) {
+  if (v > .1)
+    return 0;
+  else
+    return 1;
+}
 
-  template <class Tag>
-void test_one(std::string name,
-              int seed,
-              kernel::Model *,
-              ScoringFunction *sf,
-              XYZ to_move,
-              bool eig) {
+template <class Tag>
+void test_one(std::string name, int seed, kernel::Model *, ScoringFunction *sf,
+              XYZ to_move, bool eig) {
   // Take ownership of ScoringFunction object and make sure it's refcounted
   base::PointerMember<ScoringFunction> osf = sf;
-  IMP::algebra::BoundingBox3D bb
-    = IMP::algebra::BoundingBox3D(IMP::algebra::Vector3D(-100,-100,-100),
-                                  IMP::algebra::Vector3D( 100, 100, 100));
-  unsigned int nreps=onreps;
-
-  {
-    double result=0, total_reps=0;
-    double runtime;
-    IMP_TIME({
-        IMP::base::random_number_generator.seed(seed);
-        for (unsigned int i=0; i< nreps; ++i) {
-          to_move.set_coordinates(IMP::algebra::get_random_vector_in(bb));
-          if (eig) {
-            result+=get_val(sf->evaluate_if_good(false));
-          } else {
-            result+=get_val(sf->evaluate(false));
-          }
-          ++total_reps;
-        }
-      }, runtime);
-    std::ostringstream oss;
-    oss << "random"<< (eig?" if good":"");
-    report(name, oss.str(), runtime, result/total_reps);
+  IMP::algebra::BoundingBox3D bb =
+      IMP::algebra::BoundingBox3D(IMP::algebra::Vector3D(-100, -100, -100),
+                                  IMP::algebra::Vector3D(100, 100, 100));
+  unsigned int nreps = onreps;
+  if (IMP::base::run_quick_test) {
+    nreps = 1;
   }
   {
-    to_move.set_coordinates(IMP::algebra::Vector3D(0,0,0));
-    double result=0, total_reps=0;;
+    double result = 0, total_reps = 0;
     double runtime;
-    IMP_TIME({
-        IMP::base::random_number_generator.seed(seed);
-        for (unsigned int i=0; i< nreps; ++i) {
-          to_move.set_x(100.0*static_cast<double>(i)/nreps);
-          if (eig) {
-            result+=get_val(sf->evaluate_if_good(false));
-          } else {
-            result+=get_val(sf->evaluate(false));
-          }
-          ++total_reps;
+    IMP_TIME(
+    {
+      IMP::base::random_number_generator.seed(seed);
+      for (unsigned int i = 0; i < nreps; ++i) {
+        to_move.set_coordinates(IMP::algebra::get_random_vector_in(bb));
+        if (eig) {
+          result += get_val(sf->evaluate_if_good(false));
+        } else {
+          result += get_val(sf->evaluate(false));
         }
-      }, runtime);
+        ++total_reps;
+      }
+    },
+        runtime);
     std::ostringstream oss;
-    oss <<"systematic"<< (eig?" if good":"");
-    report(name, oss.str(), runtime, result/total_reps);
+    oss << "random" << (eig ? " if good" : "");
+    report(name, oss.str(), runtime, result / total_reps);
   }
   {
-    IMP::algebra::Sphere3D s(IMP::algebra::Vector3D(0,0,0), 60);
-    double result=0, total_reps=0;;
+    to_move.set_coordinates(IMP::algebra::Vector3D(0, 0, 0));
+    double result = 0, total_reps = 0;
+    ;
     double runtime;
     IMP_TIME({
-        IMP::base::random_number_generator.seed(seed);
-        for (unsigned int i=0; i< nreps; ++i) {
-          to_move.set_coordinates(IMP::algebra::get_random_vector_on(s));
-          if (eig) {
-            result+=get_val(sf->evaluate_if_good(false));
-          } else {
-            result+=get_val(sf->evaluate(false));
-          }
-          ++total_reps;
-        }
-      }, runtime);
+               IMP::base::random_number_generator.seed(seed);
+               for (unsigned int i = 0; i < nreps; ++i) {
+                 to_move.set_x(100.0 * static_cast<double>(i) / nreps);
+                 if (eig) {
+                   result += get_val(sf->evaluate_if_good(false));
+                 } else {
+                   result += get_val(sf->evaluate(false));
+                 }
+                 ++total_reps;
+               }
+             },
+             runtime);
     std::ostringstream oss;
-    oss << "far"<< (eig?" if good":"");
-    report(name, oss.str(), runtime, result/total_reps);
+    oss << "systematic" << (eig ? " if good" : "");
+    report(name, oss.str(), runtime, result / total_reps);
   }
   {
-    IMP::algebra::Sphere3D s(IMP::algebra::Vector3D(0,0,0), 4);
-    double result=0, total_reps=0;;
+    IMP::algebra::Sphere3D s(IMP::algebra::Vector3D(0, 0, 0), 60);
+    double result = 0, total_reps = 0;
+    ;
     double runtime;
     IMP_TIME({
-        IMP::base::random_number_generator.seed(seed);
-        for (unsigned int i=0; i< nreps; ++i) {
-          to_move.set_coordinates(IMP::algebra::get_random_vector_on(s));
-          if (eig) {
-            result+=get_val(sf->evaluate_if_good(false));
-          } else {
-            result+=get_val(sf->evaluate(false));
-          }
-          ++total_reps;
-        }
-      }, runtime);
+               IMP::base::random_number_generator.seed(seed);
+               for (unsigned int i = 0; i < nreps; ++i) {
+                 to_move.set_coordinates(IMP::algebra::get_random_vector_on(s));
+                 if (eig) {
+                   result += get_val(sf->evaluate_if_good(false));
+                 } else {
+                   result += get_val(sf->evaluate(false));
+                 }
+                 ++total_reps;
+               }
+             },
+             runtime);
     std::ostringstream oss;
-    oss << "close"<< (eig?" if good":"");
-    report(name, oss.str(), runtime, result/total_reps);
+    oss << "far" << (eig ? " if good" : "");
+    report(name, oss.str(), runtime, result / total_reps);
+  }
+  {
+    IMP::algebra::Sphere3D s(IMP::algebra::Vector3D(0, 0, 0), 4);
+    double result = 0, total_reps = 0;
+    ;
+    double runtime;
+    IMP_TIME({
+               IMP::base::random_number_generator.seed(seed);
+               for (unsigned int i = 0; i < nreps; ++i) {
+                 to_move.set_coordinates(IMP::algebra::get_random_vector_on(s));
+                 if (eig) {
+                   result += get_val(sf->evaluate_if_good(false));
+                 } else {
+                   result += get_val(sf->evaluate(false));
+                 }
+                 ++total_reps;
+               }
+             },
+             runtime);
+    std::ostringstream oss;
+    oss << "close" << (eig ? " if good" : "");
+    report(name, oss.str(), runtime, result / total_reps);
   }
 }
-
 }
 
-#define IMP_EV_BENCHMARK_SETUP  \
- IMP_NEW(kernel::Model, m, ()); \
- int seed = IMP::base::random_number_generator(); \
-  atom::Hierarchy h0 \
-    = read_pdb(IMP::benchmark::get_data_path("small_protein.pdb"), m); \
-  atom::Hierarchy h1 \
-    = read_pdb(IMP::benchmark::get_data_path("small_protein.pdb"), m); \
-  RigidBody rb0= create_rigid_body(h0); \
-  RigidBody rb1= create_rigid_body(h1); \
-  rb0.set_coordinates(IMP::algebra::Vector3D(0,0,0)); \
-  rb1.set_coordinates(IMP::algebra::Vector3D(0,0,0)); \
-  kernel::ParticlesTemp leaves= get_leaves(h0); \
-  kernel::ParticlesTemp leaves1= get_leaves(h1); \
-  leaves.insert(leaves.end(), leaves1.begin(), leaves1.end()); \
-  IMP_NEW(ListSingletonContainer, lsc, (leaves)); \
+#define IMP_MULTIFIT_EV_BENCHMARK_SETUP                                \
+  IMP_NEW(kernel::Model, m, ());                                       \
+  int seed = IMP::base::random_number_generator();                     \
+  atom::Hierarchy h0 =                                                 \
+      read_pdb(IMP::benchmark::get_data_path("small_protein.pdb"), m); \
+  atom::Hierarchy h1 =                                                 \
+      read_pdb(IMP::benchmark::get_data_path("small_protein.pdb"), m); \
+  RigidBody rb0 = create_rigid_body(h0);                               \
+  RigidBody rb1 = create_rigid_body(h1);                               \
+  rb0.set_coordinates(IMP::algebra::Vector3D(0, 0, 0));                \
+  rb1.set_coordinates(IMP::algebra::Vector3D(0, 0, 0));                \
+  kernel::ParticlesTemp leaves = get_leaves(h0);                       \
+  kernel::ParticlesTemp leaves1 = get_leaves(h1);                      \
+  leaves.insert(leaves.end(), leaves1.begin(), leaves1.end());         \
+  IMP_NEW(ListSingletonContainer, lsc, (leaves));                      \
   lsc->set_was_used(true);
 
-#endif  /* IMPMULTIFIT_BENCHMARK_EXCLUDED_VOLUME_H */
+#endif /* IMPMULTIFIT_BENCHMARK_EXCLUDED_VOLUME_H */

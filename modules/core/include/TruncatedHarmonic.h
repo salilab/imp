@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/TruncatedHarmonic.h    \brief Truncated harmonic.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_TRUNCATED_HARMONIC_H

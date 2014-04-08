@@ -1,7 +1,7 @@
 /**
  *  \file interna/constants.h    \brief Various useful constants.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -17,6 +17,7 @@
 #include <IMP/base/exception.h>
 #include <IMP/base/check_macros.h>
 #include <IMP/base/log.h>
+#include <IMP/base/set_map_macros.h>
 #include <IMP/algebra/Sphere3D.h>
 
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
@@ -24,6 +25,7 @@
   IMP_USAGE_CHECK(!mask || mask->size() > get_as_unsigned_int(particle_index), \
                   "For some reason the mask is too small.");                   \
   if (mask && !(*mask)[get_as_unsigned_int(particle_index)]) {                 \
+    base::handle_error("bad particle read or written");                        \
     throw InputOutputException(                                                \
         particle_index.get_index(), InputOutputException::operation,           \
         InputOutputException::entity, key.get_string());                       \
@@ -58,7 +60,7 @@ class BasicAttributeTable {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   Mask *read_mask_, *write_mask_, *add_remove_mask_;
 #endif
-  base::set<Key> caches_;
+  IMP_BASE_SMALL_UNORDERED_SET<Key> caches_;
 
   void do_add_attribute(Key k, ParticleIndex particle,
                         typename Traits::PassValue value) {
@@ -92,7 +94,7 @@ class BasicAttributeTable {
         write_mask_(nullptr),
         add_remove_mask_(nullptr)
 #endif
-        {
+  {
   }
 
   void add_attribute(Key k, ParticleIndex particle,
@@ -109,7 +111,8 @@ class BasicAttributeTable {
   }
   void clear_caches(ParticleIndex particle) {
     IMP_OMP_PRAGMA(critical(imp_cache))
-    for (typename base::set<Key>::const_iterator it = caches_.begin();
+    for (typename IMP_BASE_SMALL_UNORDERED_SET<Key>::const_iterator it =
+             caches_.begin();
          it != caches_.end(); ++it) {
       if (data_.size() > it->get_index() &&
           data_[it->get_index()].size() > get_as_unsigned_int(particle)) {
@@ -259,7 +262,7 @@ class FloatAttributeTable {
         read_derivatives_mask_(nullptr),
         write_derivatives_mask_(nullptr)
 #endif
-        {
+  {
   }
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   void set_masks(Mask *read_mask, Mask *write_mask, Mask *add_remove_mask,
@@ -320,8 +323,8 @@ class FloatAttributeTable {
     IMP_ACCUMULATE(internal_coordinate_derivatives_[particle][2], da(v[2]));
   }
 
-  const algebra::Vector3D &get_coordinate_derivatives(
-      ParticleIndex particle) const {
+  const algebra::Vector3D &get_coordinate_derivatives(ParticleIndex particle)
+      const {
     IMP_CHECK_MASK(read_derivatives_mask_, particle, FloatKey(0), GET,
                    DERIVATIVE);
     IMP_USAGE_CHECK(get_has_attribute(FloatKey(0), particle),

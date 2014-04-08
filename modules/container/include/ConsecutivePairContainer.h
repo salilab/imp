@@ -2,7 +2,7 @@
  *  \file IMP/container/ConsecutivePairContainer.h
  *  \brief Return all pairs from a SingletonContainer
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_CONSECUTIVE_PAIR_CONTAINER_H
@@ -14,7 +14,7 @@
 #include <IMP/PairPredicate.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/container/ListPairContainer.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <IMP/pair_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
@@ -45,6 +45,9 @@ class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer {
     return std::abs(ia - ib) == 1;
   }
 
+ protected:
+  virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE { return 0; }
+
  public:
   //! apply to each item in container
   template <class F>
@@ -61,7 +64,6 @@ class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer {
   virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
-  virtual void do_before_evaluate() IMP_OVERRIDE;
   IMP_PAIR_CONTAINER_METHODS(ConsecutivePairContainer);
   IMP_OBJECT_METHODS(ConsecutivePairContainer);
 };
@@ -124,6 +126,9 @@ class IMPCONTAINEREXPORT ExclusiveConsecutivePairContainer
   }
   void init();
 
+ protected:
+  virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE { return 0; }
+
  public:
   //! apply to each item in container
   template <class F>
@@ -142,7 +147,6 @@ class IMPCONTAINEREXPORT ExclusiveConsecutivePairContainer
   virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
-  virtual void do_before_evaluate() IMP_OVERRIDE;
   IMP_PAIR_CONTAINER_METHODS(ExclusiveConsecutivePairContainer);
   IMP_OBJECT_METHODS(ExclusiveConsecutivePairContainer);
 };

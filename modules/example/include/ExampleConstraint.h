@@ -2,7 +2,7 @@
  *  \file IMP/example/ExampleConstraint.h
  *  \brief A restraint on a list of particle pairs.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -14,7 +14,6 @@
 #include <IMP/Constraint.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairScore.h>
-#include <IMP/score_state_macros.h>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 

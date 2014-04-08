@@ -2,7 +2,7 @@
  *  \file domino/DominoSampler.h
  *  \brief A beyesian infererence-based sampler.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,6 +11,7 @@
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/base/random.h>
 #include <algorithm>
+#include <boost/random/uniform_int.hpp>
 
 IMPDOMINO_BEGIN_NAMESPACE
 ParticleStates::~ParticleStates() {}
@@ -85,8 +86,8 @@ algebra::VectorKD RigidBodyStates::get_embedding(unsigned int i) const {
   algebra::Vector6D v = get_as_vector(states_[i], scale_);
   return algebra::VectorKD(v.coordinates_begin(), v.coordinates_end());
 }
-unsigned int RigidBodyStates::get_nearest_state(
-    const algebra::VectorKD &v) const {
+unsigned int RigidBodyStates::get_nearest_state(const algebra::VectorKD &v)
+    const {
   return nn_->get_nearest_neighbors(v, 1)[0];
 }
 
@@ -133,7 +134,7 @@ class DummyConstraint : public Constraint {
 
  public:
   DummyConstraint(kernel::Particle *in, const kernel::ParticlesTemp &out)
-      : in_(in), out_(out) {}
+      : Constraint(in->get_model(), "DummyConstraint%1%"), in_(in), out_(out) {}
   virtual void do_update_attributes() IMP_OVERRIDE;
   virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const;
@@ -157,8 +158,8 @@ RecursiveStates::RecursiveStates(kernel::Particle *p, Subset s,
       s_(s),
       ss_(ss),
       pst_(pst),
-      sss_(new DummyConstraint(p, kernel::ParticlesTemp(s.begin(), s.end())),
-           p->get_model()) {}
+      sss_(new DummyConstraint(p, kernel::ParticlesTemp(s.begin(), s.end()))) {}
+
 unsigned int RecursiveStates::get_number_of_particle_states() const {
   return ss_.size();
 }

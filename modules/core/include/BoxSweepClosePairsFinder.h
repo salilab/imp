@@ -2,7 +2,7 @@
  *  \file IMP/core/BoxSweepClosePairsFinder.h
  *  \brief Test all pairs of particles to find close pairs.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_BOX_SWEEP_CLOSE_PAIRS_FINDER_H
@@ -10,7 +10,6 @@
 
 #include <IMP/core/core_config.h>
 #include "ClosePairsFinder.h"
-#include "close_pairs_finder_macros.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -29,8 +28,8 @@ class IMPCOREEXPORT BoxSweepClosePairsFinder : public ClosePairsFinder {
 #ifndef SWIG
   using ClosePairsFinder::get_close_pairs;
 #else
-  kernel::ParticlePairsTemp get_close_pairs(
-      const kernel::ParticlesTemp &pc) const;
+  kernel::ParticlePairsTemp get_close_pairs(const kernel::ParticlesTemp &pc)
+      const;
   kernel::ParticlePairsTemp get_close_pairs(
       const kernel::ParticlesTemp &pca, const kernel::ParticlesTemp &pcb) const;
 #endif

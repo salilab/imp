@@ -2,7 +2,7 @@
  *  \file IMP/rmf/Category.h
  *  \brief Handle read/write of kernel::Model data from/to files.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -28,6 +28,5 @@ RMF::NodeHandle get_node_from_association(RMF::FileHandle nh,
 bool get_has_associated_node(RMF::FileConstHandle nh, base::Object *oi) {
   return nh.get_node_from_association(oi) != RMF::NodeConstHandle();
 }
-
 
 IMPRMF_END_NAMESPACE

@@ -2,7 +2,7 @@
  *  \file IMP/core/TableRefiner.h
  *  \brief A lookup based particle refiner
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_TABLE_REFINER_H
@@ -11,8 +11,7 @@
 #include <IMP/core/core_config.h>
 
 #include <IMP/Refiner.h>
-#include <IMP/refiner_macros.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 IMPCORE_BEGIN_NAMESPACE
 
 //! A lookup based particle refiner
@@ -20,7 +19,7 @@ IMPCORE_BEGIN_NAMESPACE
     of particles stored for it in a table.
  */
 class IMPCOREEXPORT TableRefiner : public Refiner {
-  IMP::base::map<kernel::Particle *, kernel::Particles> map_;
+  boost::unordered_map<kernel::Particle *, kernel::Particles> map_;
 
  public:
   //! Initialize it with an empty table

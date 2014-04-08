@@ -2,7 +2,7 @@
  *  \file Chain.cpp
  *  \brief XXXX.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,8 +10,8 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-IntKey Chain::get_id_key() {
-  static IntKey k("chain");
+StringKey Chain::get_id_key() {
+  static StringKey k("chain");
   return k;
 }
 

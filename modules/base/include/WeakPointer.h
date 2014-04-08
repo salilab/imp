@@ -2,7 +2,7 @@
  *  \file IMP/base/WeakPointer.h
  *  \brief A nullptr-initialized pointer to an Object.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

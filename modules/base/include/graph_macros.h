@@ -2,7 +2,7 @@
  *  \file IMP/base/graph_macros.h
  *  \brief Various general useful macros for IMP.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,7 +12,7 @@
 #include <boost/graph/adjacency_list.hpp>
 #include "file.h"
 #include "internal/graph_utility.h"
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <boost/version.hpp>
 
 #if defined(IMP_DOXYGEN)
@@ -63,7 +63,7 @@
     BOOST_VERSION == 104800
 #define IMP_GRAPH_MAP_TYPE std::map
 #else
-#define IMP_GRAPH_MAP_TYPE base::map
+#define IMP_GRAPH_MAP_TYPE boost::unordered_map
 #endif
 
 #define IMP_GRAPH(Name, directionality, VertexData, EdgeData, ShowVertex)     \
@@ -119,7 +119,7 @@
   typedef boost::graph_traits<Name> Name##Traits;                            \
   typedef Name##Traits::vertex_descriptor Name##Vertex;                      \
   typedef Name##Traits::edge_descriptor Name##Edge;                          \
-  typedef base::map<VertexData, Name##Vertex> Name##VertexIndex;             \
+  typedef boost::unordered_map<VertexData, Name##Vertex> Name##VertexIndex;  \
   inline Name##VertexIndex get_vertex_index(const Name& g) {                 \
     return IMP::base::internal::get_graph_vertex_index<                      \
         Name, VertexData, Name##Vertex, Name##Traits>(g);                    \

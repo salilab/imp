@@ -2,7 +2,7 @@
  *  \file IMP/em/converters.h
  *  \brief Converters of density values
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -32,9 +32,9 @@ type Float.
 \param[in] step sample every X steps in each direction
 \return particles corresponding to all voxels above the threshold
  */
-IMPEMEXPORT kernel::Particles density2particles(DensityMap *dmap, Float threshold,
-                                        kernel::Model *m,int step=1);
-
+IMPEMEXPORT kernel::Particles density2particles(DensityMap *dmap,
+                                                Float threshold,
+                                                kernel::Model *m, int step = 1);
 
 //! Converts a density grid to a set of paritlces
 /**
@@ -46,8 +46,8 @@ type Float.
 \return a set of vector3Ds corresponding to the positions of all voxels
         above the threshold
  */
-IMPEMEXPORT algebra::Vector3Ds
-    density2vectors(DensityMap *dmap, Float threshold);
+IMPEMEXPORT algebra::Vector3Ds density2vectors(DensityMap *dmap,
+                                               Float threshold);
 
 //! Resample a set of particles into a density grid
 /**
@@ -60,12 +60,10 @@ Each such particle should have xyz, radius and weight attributes
 \return the sampled density grid
 See SampledDensityMap
  */
-IMPEMEXPORT SampledDensityMap * particles2density(
-   const kernel::ParticlesTemp &ps,
-   Float resolution, Float apix,
-   int sig_cutoff=3,
-   const FloatKey &weight_key=IMP::atom::Mass::get_mass_key());
-
+IMPEMEXPORT SampledDensityMap *particles2density(
+    const kernel::ParticlesTemp &ps, Float resolution, Float apix,
+    int sig_cutoff = 3,
+    const FloatKey &weight_key = IMP::atom::Mass::get_mass_key());
 
 //! Resample a set of particles into a binarized density map
 //! 1 for voxels containing particles and 0 otherwise
@@ -79,20 +77,15 @@ Each such particle should have xyz radius and weight attributes
 \return the sampled density grid
 See SampledDensityMap
  */
-inline IMPEMEXPORT SampledDensityMap * particles2binarized_density(
-   const kernel::ParticlesTemp &ps,
-   Float resolution, Float apix,
-   int sig_cutoff=3,
-   const FloatKey &weight_key=IMP::atom::Mass::get_mass_key()) {
+inline IMPEMEXPORT SampledDensityMap *particles2binarized_density(
+    const kernel::ParticlesTemp &ps, Float resolution, Float apix,
+    int sig_cutoff = 3,
+    const FloatKey &weight_key = IMP::atom::Mass::get_mass_key()) {
 
   base::Pointer<SampledDensityMap> dmap(new SampledDensityMap(
-                                     ps, resolution,
-                                     apix,weight_key,sig_cutoff,
-                                     BINARIZED_SPHERE));
-   return dmap.release();
-
+      ps, resolution, apix, weight_key, sig_cutoff, BINARIZED_SPHERE));
+  return dmap.release();
 }
-
 
 //! Resample a set of particles into a density grid
 /**
@@ -103,16 +96,13 @@ Each such particle should have xyz radius and weight attributes
 \return the surface grid
 See SampledDensityMap
  */
-IMPEMEXPORT SurfaceShellDensityMap * particles2surface(
-   const kernel::ParticlesTemp &ps,Float apix,
-   const FloatKey &weight_key=IMP::atom::Mass::get_mass_key());
+IMPEMEXPORT SurfaceShellDensityMap *particles2surface(
+    const kernel::ParticlesTemp &ps, Float apix,
+    const FloatKey &weight_key = IMP::atom::Mass::get_mass_key());
 
-IMPEMEXPORT Float calculate_intersection_score(
-                         const SurfaceShellDensityMap *d1,
-                         const SurfaceShellDensityMap *d2);
-
-
-
+IMPEMEXPORT Float
+    calculate_intersection_score(const SurfaceShellDensityMap *d1,
+                                 const SurfaceShellDensityMap *d2);
 
 IMPEM_END_NAMESPACE
 #endif /* IMPEM_CONVERTERS_H */

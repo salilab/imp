@@ -2,7 +2,7 @@
  *  \file IMP/em/SurfaceShellDensityMap.h
  *  \brief Represent a molecule as shells of distance from the surface
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -24,12 +24,10 @@ IMPEM_BEGIN_NAMESPACE
 //! The class repersents a molecule as shells of distance from the surface
 /**
  */
-class IMPEMEXPORT SurfaceShellDensityMap: public SampledDensityMap
-{
+class IMPEMEXPORT SurfaceShellDensityMap : public SampledDensityMap {
 #define IMP_BACKGROUND_VAL 0.0
 #define IMP_SURFACE_VAL 1.0
-public:
-
+ public:
   //! Creates a new density map.
   /** The header of the map is not determined and no data is being allocated
    */
@@ -45,10 +43,10 @@ public:
       /note the voxel size and the number of shells determines
             the resolution/accuracy of the surface rasterization._
    */
-  SurfaceShellDensityMap(const kernel::ParticlesTemp &ps,
-                         float voxel_size,
-     IMP::FloatKey mass_key = IMP::atom::Mass::get_mass_key(),
-     int num_shells=IMP_DEFAULT_NUM_SHELLS);
+  SurfaceShellDensityMap(const kernel::ParticlesTemp &ps, float voxel_size,
+                         IMP::FloatKey mass_key =
+                             IMP::atom::Mass::get_mass_key(),
+                         int num_shells = IMP_DEFAULT_NUM_SHELLS);
 
   //! Resample the grid to consist of density shells of a model
   /**
@@ -60,7 +58,7 @@ public:
   corresponding shell ( the value increases as the voxel is farthrer away
   from the surface).
   */
-void resample();
+  void resample();
   //! Set the value of the map voxels as either scene or background
   /**
     /param[in] scene_val      all voxels corredponsing to particles will
@@ -75,9 +73,8 @@ void resample();
   */
   bool has_background_neighbor(long voxel_ind) const;
   IMP_REF_COUNTED_DESTRUCTOR(SurfaceShellDensityMap);
-protected:
 
-
+ protected:
   //! Finds all of the voxels that are part of the surface
   //! (i.e, seperate background from scene)
   /**
@@ -96,4 +93,4 @@ protected:
 IMP_OBJECTS(SurfaceShellDensityMap, SurfaceShellDensityMaps);
 IMPEM_END_NAMESPACE
 
-#endif  /* IMPEM_SURFACE_SHELL_DENSITY_MAP_H */
+#endif /* IMPEM_SURFACE_SHELL_DENSITY_MAP_H */

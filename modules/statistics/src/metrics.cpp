@@ -2,7 +2,7 @@
  *  \file point_clustering.cpp
  *  \brief Cluster sets of points.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/statistics/metrics.h>
@@ -31,9 +31,8 @@ algebra::Vector3Ds get_vectors(ConfigurationSet *cs, unsigned int i,
                                SingletonContainer *sc) {
   algebra::Vector3Ds ret;
   cs->load_configuration(i);
-  IMP_CONTAINER_FOREACH(SingletonContainer, sc, {
-    ret.push_back(cs->get_model()->get_sphere(_1).get_center());
-  });
+  IMP_CONTAINER_FOREACH(SingletonContainer, sc,
+  { ret.push_back(cs->get_model()->get_sphere(_1).get_center()); });
   return ret;
 }
 
@@ -50,8 +49,8 @@ inline double get_rmsd(const Vector3DsOrXYZs0 &m1, const Vector3DsOrXYZs1 &m2,
   typename Vector3DsOrXYZs1::const_iterator it1 = m2.begin();
   for (; it0 != m1.end(); ++it0, ++it1) {
     algebra::Vector3D tred =
-        tr_for_second.get_transformed(get_vector_d_geometry(*it1));
-    rmsd += algebra::get_squared_distance(get_vector_d_geometry(*it0), tred);
+        tr_for_second.get_transformed(get_vector_geometry(*it1));
+    rmsd += algebra::get_squared_distance(get_vector_geometry(*it0), tred);
   }
   return std::sqrt(rmsd / m1.size());
 }

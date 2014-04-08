@@ -7,6 +7,7 @@ import os
 import time
 import StringIO
 
+
 class Tests(IMP.test.TestCase):
 
     def test_saxs_profile(self):
@@ -14,16 +15,16 @@ class Tests(IMP.test.TestCase):
         m = IMP.kernel.Model()
 
         #! read PDB
-        mp= IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,
-                              IMP.atom.NonWaterNonHydrogenPDBSelector(),
-                              True, True)
+        mp = IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,
+                               IMP.atom.NonWaterNonHydrogenPDBSelector(),
+                               True, True)
 
         #! read experimental profile
         exp_profile = IMP.saxs.Profile(self.get_input_file_name('lyzexp.dat'))
 
-        #print 'min_q = ' + str(exp_profile.get_min_q())
-        #print 'max_q = ' + str(exp_profile.get_max_q())
-        #print 'delta_q = ' + str(exp_profile.get_delta_q())
+        # print 'min_q = ' + str(exp_profile.get_min_q())
+        # print 'max_q = ' + str(exp_profile.get_max_q())
+        # print 'delta_q = ' + str(exp_profile.get_delta_q())
 
         #! select particles from the model
         particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
@@ -43,7 +44,7 @@ class Tests(IMP.test.TestCase):
         delta_q = 0.5 / 500
         model_profile = IMP.saxs.Profile(0, max_q, delta_q)
         model_profile.calculate_profile(particles)
-        #model_profile.write_SAXS_file('i_single_protein_IMP.txt')
+        # model_profile.write_SAXS_file('i_single_protein_IMP.txt')
 
         #! calculate chi-square
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
@@ -69,7 +70,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(chi, 0.45, delta=0.01)
 
         #! test interval chi
-        chi = saxs_score.compute_score(model_profile, 0.0, 0.2);
+        chi = saxs_score.compute_score(model_profile, 0.0, 0.2)
         print 'Chi interval [0.0:0.2] = ' + str(chi)
         self.assertAlmostEqual(chi, 0.482, delta=0.01)
 
@@ -84,8 +85,8 @@ class Tests(IMP.test.TestCase):
         m = IMP.kernel.Model()
 
         #! read PDB
-        mp= IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,
-                              IMP.atom.NonWaterNonHydrogenPDBSelector())
+        mp = IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,
+                               IMP.atom.NonWaterNonHydrogenPDBSelector())
 
         #! read experimental profile
         exp_profile = IMP.saxs.Profile(self.get_input_file_name('lyzexp.dat'))
@@ -109,14 +110,13 @@ class Tests(IMP.test.TestCase):
         score = saxs_restraint.evaluate(False)
         self.assertAlmostEqual(score, 0.54, delta=0.01)
 
-
     def test_saxs_residue_level_restraint(self):
         """Check residue level saxs restraint"""
         m = IMP.kernel.Model()
 
         #! read PDB
-        mp= IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,
-                              IMP.atom.CAlphaPDBSelector())
+        mp = IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,
+                               IMP.atom.CAlphaPDBSelector())
 
         #! read experimental profile
         exp_profile = IMP.saxs.Profile(self.get_input_file_name('lyzexp.dat'))
@@ -134,9 +134,11 @@ class Tests(IMP.test.TestCase):
         chi = saxs_score.compute_score(model_profile)
         print 'Chi = ' + str(chi)
 
-
         #! define residue level restraint
-        saxs_restraint = IMP.saxs.Restraint(particles, exp_profile, IMP.saxs.CA_ATOMS)
+        saxs_restraint = IMP.saxs.Restraint(
+            particles,
+            exp_profile,
+            IMP.saxs.CA_ATOMS)
         m.add_restraint(saxs_restraint)
         score = saxs_restraint.evaluate(False)
         print 'initial score = ' + str(score)

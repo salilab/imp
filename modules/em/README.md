@@ -16,7 +16,7 @@ The restraints vary based on how accurately the fit to the density is scored, wh
 
 _Author(s)_: Keren Lasker, Javier Velazquez-Muriel, Friedrich Foerster, Daniel Russel, Dina Schneidman
 
-_Maintainer_: `drussel`
+_Maintainer_: `benmwebb`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

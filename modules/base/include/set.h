@@ -2,7 +2,7 @@
  *  \file IMP/base/set.h
  *  \brief Declare an efficient stl-compatible set.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPBASE_SET_H
@@ -13,6 +13,10 @@
 
 #include <boost/unordered_set.hpp>
 #include "hash.h"
+
+IMPBASE_DEPRECATED_HEADER(2.2,
+                          "Use boost::unordered_set directly or"
+                          " base/set_map_macros.h.");
 
 IMPBASE_BEGIN_NAMESPACE
 /** This class chooses the best of STL compatible

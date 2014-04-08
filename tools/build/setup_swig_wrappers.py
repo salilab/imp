@@ -11,40 +11,43 @@ import tools
 from optparse import OptionParser
 
 
-imp_init="""try:
+imp_init = """try:
     from kernel import *
 except:
-    import sys
-    print "no kernel", sys.exc_info()
+    import traceback
+    print "no kernel"
+    traceback.print_exc()
 """
 
+
 def write_module_cpp(m, contents, datapath):
-    info= tools.get_module_info(m, datapath)
+    info = tools.get_module_info(m, datapath)
     contents.append("""%%{
 #include "IMP/%(module)s.h"
 #include "IMP/%(module)s/%(module)s_config.h"
 %%}
-"""%{"module":m})
+""" % {"module": m})
     for macro in info["swig_wrapper_includes"]:
         contents.append("""%%{
 #include <%s>
-%%}"""%(macro))
+%%}""" % (macro))
 
 
 def write_module_swig(m, source, contents, datapath, skip_import=False):
-    info= tools.get_module_info(m, datapath)
-    contents.append("""%%include "IMP/%s/%s_config.h" """%(m,m))
+    info = tools.get_module_info(m, datapath)
+    contents.append("""%%include "IMP/%s/%s_config.h" """ % (m, m))
     for macro in info["swig_includes"]:
-        contents.append("%%include \"%s\""%(macro))
+        contents.append("%%include \"%s\"" % (macro))
     if not skip_import:
-        contents.append("%%import \"IMP_%(module)s.i\""%{"module":m})
+        contents.append("%%import \"IMP_%(module)s.i\"" % {"module": m})
+
 
 def build_wrapper(module, module_path, source, sorted, info, target, datapath):
     info = tools.get_module_info(module, datapath)
     if not info["ok"]:
         return
-    contents=[]
-    swig_module_name="IMP."+module
+    contents = []
+    swig_module_name = "IMP." + module
 
     contents.append("""%%module(directors="1", allprotected="1") "%s"
 %%feature("autodoc", 1);
@@ -86,9 +89,11 @@ void
 #endif
 SWIG_init();
 %%}
-"""%swig_module_name)
-        # some of the typemap code ends up before this is swig sees the typemaps first
-    all_deps = [x for x in tools.get_dependent_modules([module], datapath) if x != module]
+""" % swig_module_name)
+        # some of the typemap code ends up before this is swig sees the
+        # typemaps first
+    all_deps = [x for x in tools.get_dependent_modules(
+        [module], datapath) if x != module]
     for m in reversed(all_deps):
         write_module_cpp(m, contents, datapath)
 
@@ -120,7 +125,7 @@ _plural_types=[]
 
     write_module_swig(module, source, contents, datapath, True)
 
-    contents.append("%%include \"IMP_%s.impl.i\""%module)
+    contents.append("%%include \"IMP_%s.impl.i\"" % module)
     #contents.append(open(os.path.join(module_path, "pyext", "swig.i-in"), "r").read())
 
     contents.append("""
@@ -131,7 +136,7 @@ std::string get_example_path(std::string fname);
 std::string get_data_path(std::string fname);
 }
 }
-"""%module)
+""" % module)
     contents.append("""%pythoncode %{
 import _version_check
 _version_check.check_version(get_module_version())
@@ -153,19 +158,27 @@ def main():
     (options, args) = parser.parse_args()
     sorted_order = tools.get_sorted_order()
     if options.module != "":
-        if options.module=="kernel":
+        if options.module == "kernel":
             tools.rewrite("lib/IMP/__init__.py", imp_init)
-        build_wrapper(options.module, os.path.join(options.source, "modules", options.module),
-                      options.source, sorted_order,
-                      tools.get_module_description(options.source, options.module, options.datapath),
-            os.path.join("swig", "IMP_"+options.module+".i"),
+        build_wrapper(
+            options.module, os.path.join(
+                options.source, "modules", options.module),
+            options.source, sorted_order,
+            tools.get_module_description(
+                options.source,
+                options.module,
+                options.datapath),
+            os.path.join("swig", "IMP_" + options.module + ".i"),
             options.datapath)
     else:
         tools.rewrite("lib/IMP/__init__.py", imp_init)
         for m, path in tools.get_modules(options.source):
             build_wrapper(m, path, options.source, sorted_order,
-                          tools.get_module_description(options.source, m, options.datapath),
-                          os.path.join("swig", "IMP_"+m+".i"),
+                          tools.get_module_description(
+                              options.source,
+                              m,
+                              options.datapath),
+                          os.path.join("swig", "IMP_" + m + ".i"),
                           options.datapath)
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/symmetry.h     \brief Implement various types of symmetry
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -26,7 +26,6 @@ class IMPCOREEXPORT Reference : public Decorator {
   }
 
  public:
-
   IMP_DECORATOR_METHODS(Reference, Decorator);
   /** Make the first particle reference the passed particle. */
   IMP_DECORATOR_SETUP_1(Reference, kernel::ParticleIndexAdaptor, reference);

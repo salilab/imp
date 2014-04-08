@@ -2,7 +2,7 @@
  *  \file IMP/score_functor/Score.h
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSCORE_FUNCTOR_SCORE_H
@@ -25,22 +25,21 @@ struct Score {
       particle indexes are passed along.
 
       \pre get_is_trivially_zero() or get_maximum_range() has been called
-      and get_is_trivially_zero() is false. This allows things to be cached
-      across those calls.
+      and get_is_trivially_zero() is false.
   */
   template <unsigned int D>
-  double get_score(kernel::Model *m, const kernel::ParticleIndexTuple<D> &p,
+  double get_score(kernel::Model *m,
+                   const base::Array<D, kernel::ParticleIndex> &p,
                    double distance) const;
   /** Return the score and derivative at the passed feature size (eg distance).
       The derivative is for the feature decreasing.
 
       \pre get_is_trivially_zero() or get_maximum_range() has been called
-      and get_is_trivially_zero() is false. This allows things to be cached
-      across those calls.
+      and get_is_trivially_zero() is false.
   */
   template <unsigned int D>
   DerivativePair get_score_and_derivative(
-      kernel::Model *m, const kernel::ParticleIndexTuple<D> &p,
+      kernel::Model *m, const base::Array<D, kernel::ParticleIndex> &p,
       double distance) const;
 #endif
   /** Return true if the function can be easily determined to be zero at the

@@ -335,7 +335,7 @@ IMP_SWIG_VALUE_CHECKS(Namespace, PluralName, SWIGTYPE);
   if (!($owner & SWIG_POINTER_NEW)) {
     // out typemaps are also called for constructors, which already use %ref
     // to increase the reference count. So don't do it twice.
-    IMP::base::internal::ref($1);
+    if ($1) $1->ref();
   }
   %set_output(SWIG_NewPointerObj(%as_voidptr($1), $descriptor(Namespace::Name *), $owner | SWIG_POINTER_OWN));
  }
@@ -423,12 +423,14 @@ namespace {
 
 %define IMP_SWIG_FORWARD_0(name, ret)
 ret name() {
+  IMP_USAGE_CHECK(self->get_particle(), "Null particle");
    return self->get_particle()->name();
 }
 %enddef
 
 %define IMP_SWIG_VOID_FORWARD_0(name)
 void name() {
+   IMP_USAGE_CHECK(self->get_particle(), "Null particle");
    self->get_particle()->name();
 }
 %enddef
@@ -436,36 +438,42 @@ void name() {
 
 %define IMP_SWIG_FORWARD_1(name, ret, type0)
 ret name(type0 a0) {
-   return self->get_particle()->name(a0);
+  IMP_USAGE_CHECK(self->get_particle(), "Null particle");
+  return self->get_particle()->name(a0);
 }
 %enddef
 
 %define IMP_SWIG_VOID_FORWARD_1(name, type0)
 void name(type0 a0) {
+   IMP_USAGE_CHECK(self->get_particle(), "Null particle");
    self->get_particle()->name(a0);
 }
 %enddef
 
 %define IMP_SWIG_FORWARD_2(name, ret, type0, type1)
 ret name(type0 a0, type1 a1) {
-   return self->get_particle()->name(a0, a1);
+  IMP_USAGE_CHECK(self->get_particle(), "Null particle");
+  return self->get_particle()->name(a0, a1);
 }
 %enddef
 
 %define IMP_SWIG_VOID_FORWARD_2(name, type0, type1)
 void name(type0 a0, type1 a1) {
-   self->get_particle()->name(a0, a1);
+  IMP_USAGE_CHECK(self->get_particle(), "Null particle");
+  self->get_particle()->name(a0, a1);
 }
 %enddef
 
 %define IMP_SWIG_FORWARD_3(name, ret, type0, type1, type2)
 ret name(type0 a0, type1 a1, type2 a2) {
+   IMP_USAGE_CHECK(self->get_particle(), "Null particle");
    return self->get_particle()->name(a0, a1, a2);
 }
 %enddef
 
 %define IMP_SWIG_VOID_FORWARD_3(name, type0, type1, type2)
 void name(type0 a0, type1 a1, type2 a2) {
+   IMP_USAGE_CHECK(self->get_particle(), "Null particle");
    self->get_particle()->name(a0, a1, a2);
 }
 %enddef
@@ -506,7 +514,7 @@ IMP_SWIG_DECORATOR_ATTRIBUTE(Float, FloatKey);
 IMP_SWIG_DECORATOR_ATTRIBUTE(Int, IntKey);
 IMP_SWIG_DECORATOR_ATTRIBUTE(String, StringKey);
 IMP_SWIG_DECORATOR_ATTRIBUTE(Particle*, ParticleIndexKey);
-IMP_SWIG_DECORATOR_ATTRIBUTE(Object*, ObjectKey);
+IMP_SWIG_DECORATOR_ATTRIBUTE(base::Object*, ObjectKey);
 IMP_SWIG_FORWARD_1(get_derivative, double, IMP::kernel::FloatKey);
 IMP_SWIG_FORWARD_0(get_name, std::string);
 IMP_SWIG_FORWARD_0(clear_caches, void);
@@ -881,13 +889,13 @@ class BoostDigraph;
 %typemap(out) Namespace::Type {
   typedef IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex> GT;
   IMP_NEW(GT, ret, ($1));
-  IMP::base::internal::ref(ret.get());
+  if (ret) ret.get()->ref();
   %set_output(SWIG_NewPointerObj(%as_voidptr(ret), $descriptor(IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex >*), $owner | SWIG_POINTER_OWN));
  }
 %typemap(out) Namespace::Type const& {
   typedef IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex > GT;
   IMP_NEW(GT, ret, (*$1));
-  IMP::base::internal::ref(ret.get());
+  if (ret) ret.get()->ref();
   %set_output(SWIG_NewPointerObj(%as_voidptr(ret), $descriptor(IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex >*), $owner | SWIG_POINTER_OWN));
  }
 %typecheck(SWIG_TYPECHECK_POINTER) Namespace::Type const& {

@@ -2,7 +2,7 @@
  *  \file core/generic.h    \brief Various important functionality
  *                                       for implementing decorators.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,7 +12,6 @@
 #include <IMP/kernel/kernel_config.h>
 #include "../base_types.h"
 #include "../Constraint.h"
-#include "../score_state_macros.h"
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 

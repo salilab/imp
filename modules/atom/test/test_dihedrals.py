@@ -4,14 +4,16 @@ import IMP.atom
 import IMP.core
 import math
 
+
 class Tests(IMP.test.TestCase):
+
     """Test dihedral functions"""
 
     def test_dihedral(self):
         """Test dihedral functions"""
         m = IMP.kernel.Model()
-        p=IMP.atom.get_data_path("top.lib")
-        f=open(p, "r")
+        p = IMP.atom.get_data_path("top.lib")
+        f = open(p, "r")
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
         topology = IMP.atom.CHARMMTopology(ff)
@@ -51,7 +53,6 @@ class Tests(IMP.test.TestCase):
         IMP.atom.destroy(a)
         self.assertEqual(len(IMP.atom.get_phi_dihedral_atoms(r)), 0)
         self.assertEqual(len(IMP.atom.get_psi_dihedral_atoms(r)), 0)
-
 
 
 if __name__ == '__main__':

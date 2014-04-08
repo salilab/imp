@@ -1,7 +1,7 @@
 /**
  *  \file IMP/saxs/utility.h
  *  \brief Functions to deal with very common saxs operations
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPSAXS_UTILITY_H
@@ -19,17 +19,16 @@ inline void get_coordinates(const kernel::Particles& particles,
                             std::vector<algebra::Vector3D>& coordinates) {
   // copy everything in advance for fast access
   coordinates.resize(particles.size());
-  for (unsigned int i=0; i<particles.size(); i++) {
+  for (unsigned int i = 0; i < particles.size(); i++) {
     coordinates[i] = core::XYZ(particles[i]).get_coordinates();
   }
 }
 
 inline void get_form_factors(const kernel::Particles& particles,
-                             FormFactorTable* ff_table,
-                             Floats& form_factors,
+                             FormFactorTable* ff_table, Floats& form_factors,
                              FormFactorType ff_type) {
   form_factors.resize(particles.size());
-  for (unsigned int i=0; i<particles.size(); i++) {
+  for (unsigned int i = 0; i < particles.size(); i++) {
     form_factors[i] = ff_table->get_form_factor(particles[i], ff_type);
   }
 }
@@ -41,10 +40,9 @@ inline Float compute_max_distance(const kernel::Particles& particles) {
   get_coordinates(particles, coordinates);
   for (unsigned int i = 0; i < coordinates.size(); i++) {
     for (unsigned int j = i + 1; j < coordinates.size(); j++) {
-      Float dist2 = algebra::get_squared_distance(coordinates[i],
-                                                  coordinates[j]);
-      if(dist2 > max_dist2)
-        max_dist2 = dist2;
+      Float dist2 =
+          algebra::get_squared_distance(coordinates[i], coordinates[j]);
+      if (dist2 > max_dist2) max_dist2 = dist2;
     }
   }
   return std::sqrt(max_dist2);
@@ -61,10 +59,9 @@ inline Float compute_max_distance(const kernel::Particles& particles1,
 
   for (unsigned int i = 0; i < coordinates1.size(); i++) {
     for (unsigned int j = i + 1; j < coordinates2.size(); j++) {
-      Float dist2 = algebra::get_squared_distance(coordinates1[i],
-                                                  coordinates2[j]);
-      if(dist2 > max_dist2)
-        max_dist2 = dist2;
+      Float dist2 =
+          algebra::get_squared_distance(coordinates1[i], coordinates2[j]);
+      if (dist2 > max_dist2) max_dist2 = dist2;
     }
   }
   return std::sqrt(max_dist2);
@@ -89,4 +86,4 @@ inline Float radius_of_gyration(const kernel::Particles& particles) {
 
 IMPSAXS_END_NAMESPACE
 
-#endif  /* IMPSAXS_UTILITY_H */
+#endif /* IMPSAXS_UTILITY_H */

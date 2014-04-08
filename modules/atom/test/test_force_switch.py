@@ -3,7 +3,9 @@ import IMP
 import IMP.test
 import IMP.atom
 
+
 class Tests(IMP.test.TestCase):
+
     """Test ForceSwitch"""
 
     def test_create(self):
@@ -29,6 +31,7 @@ class Tests(IMP.test.TestCase):
     def test_deriv(self):
         """Check derivatives of ForceSwitch"""
         s = IMP.atom.ForceSwitch(3.0, 6.0)
+
         def func(val):
             return s(100.0, val)
 

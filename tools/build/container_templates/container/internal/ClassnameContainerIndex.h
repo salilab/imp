@@ -4,7 +4,7 @@
  *
  *  BLURB
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_CLASSNAME_CONTAINER_INDEX_H
@@ -14,8 +14,7 @@
 #include <IMP/ClassnameContainer.h>
 #include <IMP/kernel/internal/container_helpers.h>
 #include <IMP/ScoreState.h>
-#include <IMP/score_state_macros.h>
-#include <IMP/base/set.h>
+#include <boost/unordered_set.hpp>
 
 IMPCONTAINER_BEGIN_INTERNAL_NAMESPACE
 
@@ -23,8 +22,8 @@ IMPCONTAINER_BEGIN_INTERNAL_NAMESPACE
     is in a container.*/
 class IMPCONTAINEREXPORT ClassnameContainerIndex : public ScoreState {
   base::Pointer<ClassnameContainer> container_;
-  int container_version_;
-  IMP::base::set<INDEXTYPE> contents_;
+  std::size_t container_version_;
+  boost::unordered_set<INDEXTYPE> contents_;
   bool handle_permutations_;
 
   void build();

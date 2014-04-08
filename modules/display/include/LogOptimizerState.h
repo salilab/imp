@@ -2,7 +2,7 @@
  *  \file IMP/display/LogOptimizerState.h
  *  \brief Write geometry to a file during optimization
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_LOG_OPTIMIZER_STATE_H
@@ -25,9 +25,6 @@ class IMPDISPLAYEXPORT WriteOptimizerState : public kernel::OptimizerState {
   IMP::base::PointerMember<Writer> writer_;
 
  public:
-  /** \deprecated_at{2.1} Use the method that takes a kernel::Model. */
-  IMPDISPLAY_DEPRECATED_FUNCTION_DECL(2.1)
-  WriteOptimizerState(WriterAdaptor w);
   WriteOptimizerState(kernel::Model *m, WriterAdaptor w);
   void write(WriterAdaptor w) const;
   IMP_LIST_ACTION(public, Geometry, Geometries, geometry, geometries,

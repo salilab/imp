@@ -1,7 +1,7 @@
 /**
  *  \file ScoreState.cpp \brief Shared score state.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -18,16 +18,6 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-ScoreState::ScoreState(std::string name)
-    : ModelObject(name), update_order_(-1) {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(
-      2.1, "Use the ScoreState constructor that takes the model and a name.");
-}
-ScoreState::ScoreState(kernel::Model *m)
-    : ModelObject(m, "ScoreState%1%"), update_order_(-1) {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(
-      2.1, "Use the ScoreState constructor that takes the model and a name.");
-}
 ScoreState::ScoreState(kernel::Model *m, std::string name)
     : ModelObject(m, name), update_order_(-1) {}
 
@@ -82,23 +72,6 @@ void ScoreState::handle_set_has_required_score_states(bool tf) {
   } else {
     update_order_ = -1;
   }
-}
-
-ParticlesTemp ScoreState::get_input_particles() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_inputs() instead");
-  return IMP::kernel::get_input_particles(get_inputs());
-}
-ContainersTemp ScoreState::get_input_containers() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_inputs() instead");
-  return IMP::kernel::get_input_containers(get_inputs());
-}
-ParticlesTemp ScoreState::get_output_particles() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_outputs() instead");
-  return IMP::kernel::get_output_particles(get_outputs());
-}
-ContainersTemp ScoreState::get_output_containers() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_outputs() instead");
-  return IMP::kernel::get_output_containers(get_outputs());
 }
 
 IMPKERNEL_END_NAMESPACE

@@ -18,9 +18,8 @@ import logging
 log = logging.getLogger("alignments")
 
 
-
 def get_reference_frames_from_chain_alignment(reference_rbs, reference_index,
-                              rbs_to_align, index_to_align):
+                                              rbs_to_align, index_to_align):
     """
         Align the rigid bodies rbs_to_align to the the reference frames of
         reference_rbs. The rb with index_to_align is aligned to the reference rb
@@ -29,23 +28,21 @@ def get_reference_frames_from_chain_alignment(reference_rbs, reference_index,
     """
     ref_coords = \
         [m.get_coordinates()
-                    for m in reference_rbs[reference_index].get_members()]
-    coords = [m.get_coordinates() for m in rbs_to_align[index_to_align].get_members()]
+         for m in reference_rbs[reference_index].get_members()]
+    coords = [m.get_coordinates()
+              for m in rbs_to_align[index_to_align].get_members()]
     if(len(coords) != len(ref_coords)):
         raise ValueError(
-          "Mismatch in the number of members. Reference %d Aligned %d " % (
-                                                len(ref_coords), len(coords)) )
+            "Mismatch in the number of members. Reference %d Aligned %d " % (
+                len(ref_coords), len(coords)))
     T = alg.get_transformation_aligning_first_to_second(coords, ref_coords)
     new_refs = []
     for rb in rbs_to_align:
 #        log.debug("aligning ... %s",rb)
         t = rb.get_reference_frame().get_transformation_to()
-        new_t =  alg.compose(T, t)
-        new_refs.append( alg.ReferenceFrame3D(new_t) )
+        new_t = alg.compose(T, t)
+        new_refs.append(alg.ReferenceFrame3D(new_t))
     return new_refs
-
-
-
 
 
 def align_centroids_using_pca(ref_frames, ref_frames_reference):
@@ -74,6 +71,7 @@ def align_centroids_using_pca(ref_frames, ref_frames_reference):
             best_rmsd = r
             best_refs = [alg.ReferenceFrame3D(T) for T in new_Ts1]
     return best_rmsd, best_refs
+
 
 def get_reference_frames_aligning_rbs(rbs, reference_rbs):
     """ rbs = rigid bodies """

@@ -11,7 +11,7 @@ from optparse import OptionParser
 import glob
 import os.path
 
-header_template ="""/** \\file IMP%(slashalias)s/%(file)s
+header_template = """/** \\file IMP%(slashalias)s/%(file)s
  \\brief Import IMP/%(module)s/%(file)s in the namespace.
 */
 #include <IMP/%(module)s/%(file)s>
@@ -23,7 +23,7 @@ using namespace ::IMP::%(module)s;
 %(namespaceend)s
 """
 
-internal_header_template ="""#include <IMP/%(module)s/internal/%(file)s>
+internal_header_template = """#include <IMP/%(module)s/internal/%(file)s>
 
 %(deprecate)s
 
@@ -58,37 +58,48 @@ def main():
         print "Skipping alias as original module not found"
         return
     print "Setting up alias for module", options.module, "as", options.alias
-    tools.mkdir("include/IMP/%s"%options.alias)
-    tools.mkdir("include/IMP/%s/internal"%options.alias)
-    var={"module": options.module}
+    tools.mkdir("include/IMP/%s" % options.alias)
+    tools.mkdir("include/IMP/%s/internal" % options.alias)
+    var = {"module": options.module}
     if options.deprecate != "":
-        var["deprecate"] = "IMP%s_DEPRECATED_HEADER(%s, \"%s\")"%(options.module.upper(),
-                                                              options.deprecate,
-                                                              "Use the one in IMP/%s instead."%options.module)
+        var["deprecate"] = "IMP%s_DEPRECATED_HEADER(%s, \"%s\")" % (options.module.upper(),
+                                                                    options.deprecate,
+                                                                    "Use the one in IMP/%s instead." % options.module)
     else:
         var["deprecate"] = ""
-    if options.alias=="":
-        var["namespacebegin"]="namespace IMP {"
-        var["namespaceend"]="}"
-        var["slashalias"]=""
+    if options.alias == "":
+        var["namespacebegin"] = "namespace IMP {"
+        var["namespaceend"] = "}"
+        var["slashalias"] = ""
     else:
-        var["namespacebegin"]="namespace IMP { namespace %s {"%options.alias
-        var["namespaceend"]="} }"
-        var["slashalias"]="/"+options.alias
+        var["namespacebegin"] = "namespace IMP { namespace %s {" % options.alias
+        var["namespaceend"] = "} }"
+        var["slashalias"] = "/" + options.alias
     for h in tools.get_glob([os.path.join("include", "IMP", options.module, "*.h")]):
         if h.endswith("_config.h"):
             continue
-        filename= os.path.split(h)[1]
-        var["file"]=filename
-        header= header_template%var
-        tools.rewrite("include/IMP%s/%s"%(var["slashalias"], filename), header)
+        filename = os.path.split(h)[1]
+        var["file"] = filename
+        header = header_template % var
+        tools.rewrite(
+            "include/IMP%s/%s" %
+            (var["slashalias"], filename), header)
+    # Remove aliased header if the source header is gone
+    for h in glob.glob("include/IMP%s/*.h" % var["slashalias"]):
+        filename = os.path.split(h)[1]
+        orig_filename = os.path.join("include", "IMP", options.module, filename)
+        if not os.path.exists(orig_filename) \
+           and not os.path.exists(h[:-2]): # Exclude all-module headers
+            os.unlink(h)
     for h in tools.get_glob([os.path.join("include", "IMP", options.module, "internal", "*.h")]):
-        filename= os.path.split(h)[1]
-        var["file"]=filename
-        header= internal_header_template%var
-        tools.rewrite("include/IMP/%s/internal/%s"%(options.alias, filename), header)
-    allh= allh_template%var
-    tools.rewrite("include/IMP%s.h"%var["slashalias"], allh)
+        filename = os.path.split(h)[1]
+        var["file"] = filename
+        header = internal_header_template % var
+        tools.rewrite(
+            "include/IMP/%s/internal/%s" %
+            (options.alias, filename), header)
+    allh = allh_template % var
+    tools.rewrite("include/IMP%s.h" % var["slashalias"], allh)
 
 if __name__ == '__main__':
     main()

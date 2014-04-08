@@ -2,7 +2,7 @@
  *  \file IMP/base/log_macros.h
  *  \brief Logging and error reporting support.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -223,8 +223,7 @@
     std::ostringstream oss;                               \
     oss << "WARNING  " << expr << std::flush;             \
     IMP::base::add_to_log(oss.str());                     \
-  }                                                       \
-  ;
+  };
 #endif
 
 #if IMP_HAS_LOG >= IMP_TERSE
@@ -252,10 +251,12 @@
   }
 #endif
 
-#define IMP_ERROR(expr)                            \
-  {                                                \
-    std::cerr << "ERROR: " << expr << std::endl;   \
-    throw IMP::base::InternalException("Failure"); \
+#define IMP_ERROR(expr)                                    \
+  {                                                        \
+    std::cerr << "ERROR: " << expr << std::endl;           \
+    std::ostringstream oss;                                \
+    oss << expr;                                           \
+    throw IMP::base::InternalException(oss.str().c_str()); \
   }
 
 #endif  // log4cxx

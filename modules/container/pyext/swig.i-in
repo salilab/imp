@@ -120,3 +120,9 @@ IMP_SWIG_OBJECT(IMP::container, DistributeQuadsScoreState, DistributeQuadsScoreS
 %include "IMP/container/DistributePairsScoreState.h"
 %include "IMP/container/DistributeTripletsScoreState.h"
 %include "IMP/container/DistributeQuadsScoreState.h"
+
+%inline %{
+IMP::kernel::Restraint *create_restraint(IMP::kernel::PairScore *ps, IMP::kernel::PairContainer* pp) {
+   return IMP::container::create_restraint(ps, pp);
+}
+%}

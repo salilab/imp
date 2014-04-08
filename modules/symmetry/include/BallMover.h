@@ -1,8 +1,8 @@
 /**
- *  \file symmetry/BallMover.h
+ *  \file IMP/symmetry/BallMover.h
  *  \brief A mover that keeps a particle in a box
  *
- *  Copyright 2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -17,9 +17,8 @@
 IMPSYMMETRY_BEGIN_NAMESPACE
 
 //! Move a particle and keep it in the primitive cell of a periodic lattice
-class IMPSYMMETRYEXPORT BallMover : public core::MonteCarloMover
-{
-public:
+class IMPSYMMETRYEXPORT BallMover : public core::MonteCarloMover {
+ public:
   /** The particle is moved within a primitive cell of a periodic lattice
       \param[in] p is the master particle
       \param[in] ps are the slave particles
@@ -28,15 +27,15 @@ public:
       \param[in] trs is the list of transformations from primitive to all cells
    */
   BallMover(kernel::Particle *p, kernel::Particles ps, Float max_tr,
-             algebra::Vector3Ds ctrs, algebra::Transformation3Ds trs);
+            algebra::Vector3Ds ctrs, algebra::Transformation3Ds trs);
 
-
-protected:
+ protected:
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(BallMover);
-private:
+
+ private:
   //! Master particle
   IMP::base::PointerMember<kernel::Particle> p_;
   //! List of slave particles
@@ -48,11 +47,11 @@ private:
   //! List of transformations from primitive to all (including primitive) cells
   algebra::Transformation3Ds trs_;
   // master particle old coordinates
-  algebra::Vector3D  oldcoord_;
+  algebra::Vector3D oldcoord_;
   // slave particles old coordinates
   algebra::Vector3Ds oldcoords_;
 };
 
 IMPSYMMETRY_END_NAMESPACE
 
-#endif  /* IMPSYMMETRY_BALL_MOVER_H */
+#endif /* IMPSYMMETRY_BALL_MOVER_H */

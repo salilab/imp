@@ -3,18 +3,13 @@
     C++ executable. Run with "--help" to see all available flags.
 */
 #include <IMP/base/flags.h>
+#include <IMP/base/Flag.h>
 
 int main(int argc, char *argv[]) {
-  std::string hello = "Hello world";
-  IMP::base::AddStringFlag("hello", "How to say hello", &hello);
+  IMP::base::Flag<std::string> hello("hello", "How to say hello.",
+                                     "Hello world");
 
   IMP::base::setup_from_argv(argc, argv, "Example on C++ use of flags.");
-
-  if (hello.empty()) {
-    // bad argument
-    IMP::base::write_help();
-    return 1;
-  }
 
   std::cout << hello << std::endl;
 

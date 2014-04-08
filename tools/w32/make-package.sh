@@ -90,6 +90,8 @@ cp ${DLLSRC}/hdf5dll.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
    ${DLLSRC}/boost_regex-vc100-mt-1_53.dll \
    ${DLLSRC}/boost_thread-vc100-mt-1_53.dll \
    ${DLLSRC}/boost_random-vc100-mt-1_53.dll \
+   ${DLLSRC}/boost_iostreams-vc100-mt-1_53.dll \
+   ${DLLSRC}/boost_zlib-vc100-mt-1_53.dll \
    ${DLLSRC}/CGAL-vc100-mt-4.1.dll \
    ${DLLSRC}/libgmp-10.dll \
    ${DLLSRC}/libmpfr-4.dll \

@@ -1,11 +1,11 @@
 /**
- *  \file isd/CysteineCrossLinkRestraint.h
+ *  \file IMP/isd/CysteineCrossLinkRestraint.h
  *  \brief A sigmoid shaped restraint between
  *  residues with discrete classifier
  *  and ambiguous assignment. To be used with
  *  cross-linking mass-spectrometry data.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -41,35 +41,35 @@ IMPISD_BEGIN_NAMESPACE
     weight parameter.
  */
 
-class IMPISDEXPORT  CysteineCrossLinkRestraint : public kernel::Restraint
-{
-    kernel::Particles ps1_;
-    kernel::Particles ps2_;
-    std::vector<kernel::Particles> pslist1_;
-    std::vector<kernel::Particles> pslist2_;
-    base::Pointer<kernel::Particle> beta_;
-    base::Pointer<kernel::Particle> sigma_;
-    base::Pointer<kernel::Particle> epsilon_; // k * t at the exponential
-    base::Pointer<kernel::Particle> weight_;
-    base::PointerMember<CrossLinkData> data_;
-    base::PointerMember<CysteineCrossLinkData> ccldata_;
-    int constr_type_;
-    double fexp_;
-    bool use_CA_;
+class IMPISDEXPORT CysteineCrossLinkRestraint : public kernel::Restraint {
+  kernel::Particles ps1_;
+  kernel::Particles ps2_;
+  std::vector<kernel::Particles> pslist1_;
+  std::vector<kernel::Particles> pslist2_;
+  base::Pointer<kernel::Particle> beta_;
+  base::Pointer<kernel::Particle> sigma_;
+  base::Pointer<kernel::Particle> epsilon_;  // k * t at the exponential
+  base::Pointer<kernel::Particle> weight_;
+  base::PointerMember<CrossLinkData> data_;
+  base::PointerMember<CysteineCrossLinkData> ccldata_;
+  int constr_type_;
+  double fexp_;
+  bool use_CA_;
 
-public:
-
+ public:
   //! Create the restraint.
   /** kernel::Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
    */
-CysteineCrossLinkRestraint(kernel::Particle *beta, kernel::Particle *sigma,
-        kernel::Particle *epsilon, kernel::Particle *weight, CrossLinkData
-        *data, double fexp);
+  CysteineCrossLinkRestraint(kernel::Particle *beta, kernel::Particle *sigma,
+                             kernel::Particle *epsilon,
+                             kernel::Particle *weight, CrossLinkData *data,
+                             double fexp);
 
-CysteineCrossLinkRestraint(kernel::Particle *beta, kernel::Particle *sigma,
-    kernel::Particle *epsilon, kernel::Particle *weight, CrossLinkData *data,
-    CysteineCrossLinkData *ccldata);
+  CysteineCrossLinkRestraint(kernel::Particle *beta, kernel::Particle *sigma,
+                             kernel::Particle *epsilon,
+                             kernel::Particle *weight, CrossLinkData *data,
+                             CysteineCrossLinkData *ccldata);
 
   /* call for probability */
   double get_probability() const;
@@ -89,20 +89,18 @@ CysteineCrossLinkRestraint(kernel::Particle *beta, kernel::Particle *sigma,
   void add_contribution(kernel::Particle *p1, kernel::Particle *p2);
   void add_contribution(kernel::Particles p1, kernel::Particles p2);
 
-  algebra::Vector3D get_CB_coordinates(const kernel::Particles& ps) const;
+  algebra::Vector3D get_CB_coordinates(const kernel::Particles &ps) const;
 
   unsigned get_number_of_contributions() const;
 
   /** This macro declares the basic needed methods: evaluate and show
    */
-  virtual double
-  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
-     const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  IMP_OBJECT_METHODS( CysteineCrossLinkRestraint);
-
+  IMP_OBJECT_METHODS(CysteineCrossLinkRestraint);
 };
 
 IMPISD_END_NAMESPACE
 
-#endif  /* IMPISD_CYSTEINE_CROSS_LINK_RESTRAINT_H */
+#endif /* IMPISD_CYSTEINE_CROSS_LINK_RESTRAINT_H */

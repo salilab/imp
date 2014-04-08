@@ -2,7 +2,7 @@
  *  \file IMP/kernel/dependency_graph.h
  *  \brief Build dependency graphs on models.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -52,13 +52,6 @@ IMPKERNELEXPORT DependencyGraph get_dependency_graph(kernel::Model *m);
     same dependencies to produce a simpler graph.
 */
 IMPKERNELEXPORT DependencyGraph get_pruned_dependency_graph(kernel::Model *m);
-
-/** \deprecated_at{2.1} You should act directly on the ModelObjects instead. */
-IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-IMPKERNELEXPORT ParticlesTemp
-    get_required_particles(ModelObject *p, const ModelObjectsTemp &all,
-                           const DependencyGraph &dg,
-                           const DependencyGraphVertexIndex &index);
 
 /** \deprecated_at{2.1} You should act directly on the ModelObjects instead. */
 IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)

@@ -6,42 +6,11 @@ add_definitions("-DIMP_EXECUTABLE")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${%(NAME)s_CXX_FLAGS}")
 
-math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 300")
+include(Files.cmake)
 
-if (NOT ${IMP_MAX_CHECKS} MATCHES "NONE")
-set(testarg "--run_quick_test")
-else()
-set(testarg "")
-endif()
-
-set(cppbenchmarks %(cppbenchmarks)s)
-
-foreach (bin ${cppbenchmarks})
-   GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
-   add_executable(IMP.%(name)s-${name} ${bin})
-   target_link_libraries(IMP.%(name)s-${name} ${IMP_%(name)s_LIBRARY}
-    %(modules)s
-    ${IMP_benchmark_LIBRARY}
+set(IMP_TEST_ARGUMENTS "--run_quick_test")
+set(IMP_LINK_LIBRARIES IMP.%(name)s-lib
+    %(modules)s IMP.benchmark-lib
     %(dependencies)s)
-   set_target_properties(IMP.%(name)s-${name} PROPERTIES
-                         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/benchmark/%(name)s"
-                         OUTPUT_NAME ${name})
-   set_property(TARGET "IMP.%(name)s-${name}" PROPERTY FOLDER "IMP.%(name)s")
-   add_test(IMP.%(name)s-${name} ${IMP_TEST_SETUP}
-            "${CMAKE_BINARY_DIR}/benchmark/%(name)s/${name}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
-   set_tests_properties("IMP.%(name)s-${name}" PROPERTIES LABELS "IMP.%(name)s;benchmark")
-   set_tests_properties("IMP.%(name)s-${name}" PROPERTIES TIMEOUT ${timeout})
-   set_tests_properties("IMP.%(name)s-${name}" PROPERTIES COST 1)
-   set(executables ${executables} "IMP.%(name)s-${name}")
-endforeach(bin)
 
-set(pybenchmarks %(pybenchmarks)s)
-foreach (test ${pybenchmarks})
- GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("IMP.%(name)s-${name}" ${IMP_TEST_SETUP} python ${test} ${testarg})
- set_tests_properties("IMP.%(name)s-${name}" PROPERTIES LABELS "IMP.%(name)s;benchmark")
- set_tests_properties("IMP.%(name)s-${name}" PROPERTIES TIMEOUT ${timeout})
- set_tests_properties("IMP.%(name)s-${name}" PROPERTIES COST 4)
-endforeach(test)
-
-set(IMP_%(name)s_BENCHMARKS ${executables} CACHE INTERNAL "" FORCE)
+imp_add_tests("IMP.%(name)s" ${PROJECT_BINARY_DIR}/benchmark/%(name)s IMP_%(name)s_BENCHMARKS benchmark ${pyfiles} ${cppfiles})

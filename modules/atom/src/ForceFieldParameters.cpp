@@ -1,7 +1,7 @@
 /**
  * \file ForceFieldParameters \brief
  *
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -47,8 +47,8 @@ void ForceFieldParameters::add_well_depths(Hierarchy mhd) const {
   warn_context_.dump_warnings();
 }
 
-Float ForceFieldParameters::get_radius(
-    const String& force_field_atom_type) const {
+Float ForceFieldParameters::get_radius(const String& force_field_atom_type)
+    const {
   if (force_field_atom_type.length() > 0 &&
       force_field_2_vdW_.find(force_field_atom_type) !=
           force_field_2_vdW_.end()) {
@@ -63,8 +63,8 @@ Float ForceFieldParameters::get_radius(
   return 1.7;  // SOME DEFAULT VALUE!!
 }
 
-Float ForceFieldParameters::get_epsilon(
-    const String& force_field_atom_type) const {
+Float ForceFieldParameters::get_epsilon(const String& force_field_atom_type)
+    const {
   if (force_field_atom_type.length() > 0 &&
       force_field_2_vdW_.find(force_field_atom_type) !=
           force_field_2_vdW_.end()) {

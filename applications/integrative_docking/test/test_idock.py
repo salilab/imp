@@ -5,7 +5,9 @@ import sys
 import shutil
 import StringIO
 
+
 class Tests(IMP.test.ApplicationTestCase):
+
     def test_wrong_number_args(self):
         """Test idock.py with wrong number of arguments"""
         p = self.run_python_application('idock.py', [])
@@ -37,11 +39,13 @@ class Tests(IMP.test.ApplicationTestCase):
         """Make an IDock instance. Capture the command lines of any
            subprocesses, rather than actually running them."""
         app = self.import_python_application('idock.py')
+
         class Opts(object):
             pass
         d = app.IDock()
         d.opts = Opts()
         d.ligand = d.receptor = ''
+
         def _run_binary(*args, **keys):
             d.run_binary_args = args
             d.run_binary_keys = keys
@@ -96,9 +100,12 @@ After Refinement:
         """Test _run_binary()"""
         class DummySubprocess(object):
             args = None
+
             class Popen(object):
+
                 def __init__(self, *args, **keys):
                     DummySubprocess.args = self.args = args
+
                 def wait(self):
                     if 'bad' in self.args[0][0]:
                         return 1
@@ -154,24 +161,25 @@ After Refinement:
             dock.opts.precision = 1
             dock.make_patch_dock_parameters()
             self.assertEqual(dock.run_binary_args, ('pd_dir', 'buildParams.pl',
-                                        ['testrecep', 'testlig', '4.0', 'AA']))
+                                                    ['testrecep', 'testlig', '4.0', 'AA']))
 
             dock.opts.precision = 2
             dock.make_patch_dock_parameters()
             self.assertEqual(dock.run_binary_args, ('pd_dir', 'buildParams.pl',
-                                        ['testrecep', 'testlig', '2.0', 'AA']))
+                                                    ['testrecep', 'testlig', '2.0', 'AA']))
 
             dock.opts.precision = 3
             dock.make_patch_dock_parameters()
             self.assertEqual(dock.run_binary_args,
                              ('pd_dir', 'buildParamsFine.pl',
-                                        ['testrecep', 'testlig', '2.0', 'AA']))
+                              ['testrecep', 'testlig', '2.0', 'AA']))
         finally:
             app._run_binary = old_run_binary
 
     def test_get_filename(self):
         """Test get_filename()"""
         app = self.import_python_application('idock.py')
+
         class Opts(object):
             pass
         dock = app.IDock()
@@ -183,7 +191,7 @@ After Refinement:
         """Test do_patch_dock_docking()"""
         def do_dock():
             app, old_run_binary, dock \
-                     = self.make_idock_with_captured_subprocess()
+                = self.make_idock_with_captured_subprocess()
             dock.opts.prefix = 'foo'
             dock.opts.patch_dock = 'pd_dir'
             dock.do_patch_dock_docking()
@@ -194,7 +202,7 @@ After Refinement:
         try:
             self.assertEqual(dock.run_binary_args,
                              ('pd_dir', 'patch_dock.Linux',
-                                           ['params.txt', 'foodocking.res']))
+                              ['params.txt', 'foodocking.res']))
         finally:
             app._run_binary = old_run_binary
 
@@ -204,7 +212,7 @@ After Refinement:
         try:
             self.assertEqual(dock.run_binary_args,
                              ('pd_dir', 'patch_dock.Linux',
-                                           ['params.txt', 'foodocking.res']))
+                              ['params.txt', 'foodocking.res']))
         finally:
             app._run_binary = old_run_binary
 
@@ -219,6 +227,7 @@ After Refinement:
     def test_make_transformation_file(self):
         """Test make_transformation_file()"""
         app = self.import_python_application('idock.py')
+
         class Opts(object):
             pass
         dock = app.IDock()
@@ -249,16 +258,22 @@ Program parameters
     def test_run_patch_dock(self):
         """Test run_patch_dock()"""
         app = self.import_python_application('idock.py')
+
         class Dummy(app.IDock):
+
             def make_patch_dock_surfaces(self):
                 self.calls.append('surface')
+
             def make_patch_dock_parameters(self):
                 self.calls.append('params')
+
             def do_patch_dock_docking(self):
                 self.calls.append('docking')
+
             def make_transformation_file(self):
                 self.calls.append('transforms')
                 return 42
+
         class Opts(object):
             pass
         dock = Dummy()
@@ -317,6 +332,7 @@ Program parameters
     def test_get_scorers(self):
         """Test IDock.get_scorers()"""
         app = self.import_python_application('idock.py')
+
         class Opts(object):
             pass
         d = app.IDock()
@@ -338,12 +354,16 @@ Program parameters
     def test_scorer(self):
         """Test Scorer class"""
         app = self.import_python_application('idock.py')
+
         class MyScorer(app.Scorer):
+
             def _run_score_binary(self):
                 self.run_score = True
+
         class MockIDock(object):
             receptor = 'testrecep'
             ligand = 'testlig'
+
             def get_filename(self, f):
                 return f
         if os.path.exists('testoutput.res'):
@@ -370,7 +390,9 @@ Program parameters
         """Test Scorer.recompute_zscore()"""
         app, idock = self.get_dummy_idock_for_scorer()
         idock.opts.prefix = ''
+
         class MyScorer(app.Scorer):
+
             def __init__(self, idock):
                 app.Scorer.__init__(self, idock, "my_score")
         s = MyScorer(idock)
@@ -395,20 +417,21 @@ ligandPdb (str) antibody_cut.pdb
         lines = open('my_scoref.res').readlines()
         self.assertEqual(len(lines), 5)
         self.assertEqual(lines[1].strip(' \r\n'),
-          '2 |  0.221 |  +  | 0.424 |  2.674 0.4152 -0.7746 33.23 -4.204 31.47')
+                         '2 |  0.221 |  +  | 0.424 |  2.674 0.4152 -0.7746 33.23 -4.204 31.47')
 
         s.reverse_zscores = True
         s.recompute_zscore("transforms")
         lines = open('my_scoref.res').readlines()
         self.assertEqual(len(lines), 5)
         self.assertEqual(lines[1].strip(' \r\n'),
-         '2 |  0.221 |  +  | -0.424 |  2.674 0.4152 -0.7746 33.23 -4.204 31.47')
+                         '2 |  0.221 |  +  | -0.424 |  2.674 0.4152 -0.7746 33.23 -4.204 31.47')
         os.unlink('my_score.res')
         os.unlink('my_scoref.res')
         os.unlink('transforms')
 
     def get_dummy_idock_for_scorer(self):
         app = self.import_python_application('idock.py')
+
         class Opts(object):
             pass
         idock = app.IDock()
@@ -420,7 +443,9 @@ ligandPdb (str) antibody_cut.pdb
 
     def run_scorer_score(self, scorer):
         app = self.import_python_application('idock.py')
+
         class Dummy:
+
             def _run_binary(cls, *args):
                 cls.score_args = args
             _run_binary = classmethod(_run_binary)
@@ -499,7 +524,7 @@ ligandPdb (str) antibody_cut.pdb
         self.assertEqual(self.run_scorer_score(s),
                          (None, 'em2d_score', ['testrecep', 'testlig',
                           'trans_pd', 'test1.pgm', 'test2.pgm', '-o',
-                          'em2d_score.res', '-n', '200', '-s', '4.0']))
+                                               'em2d_score.res', '-n', '200', '-s', '4.0']))
 
     def test_em3d_scorer(self):
         """Test EM3DScorer class"""
@@ -517,7 +542,7 @@ ligandPdb (str) antibody_cut.pdb
         self.assertEqual(self.run_scorer_score(s),
                          (None, 'em3d_score', ['testrecep', 'testlig',
                           'trans_pd', 'test.mrc', '-o', 'em3d_score.res',
-                          '-s']))
+                                               '-s']))
 
     def test_cxms_scorer(self):
         """Test CXMSScorer class"""
@@ -623,9 +648,11 @@ ligandPdb (str) antibody_cut.pdb
     def test_get_transforms_for_fiber_dock(self):
         """Test get_transforms_for_fiber_dock()"""
         app, idock = self.get_dummy_idock_for_scorer()
+
         class MockScorer1(object):
             short_name = 'test1'
             transforms_needed = 10
+
         class MockScorer2(object):
             short_name = 'test2'
             transforms_needed = 3
@@ -638,12 +665,13 @@ ligandPdb (str) antibody_cut.pdb
 11663 | -4.4110 |     3 |    3 |2.07170 0.92170 2.35490 28.79510 33.55630 67.50950
 23569 | -4.0800 |     4 |   11 |-1.67500 -0.39110 3.01710 2.30350 13.13610 -1.50930
 """)
-        fn = idock.get_transforms_for_fiber_dock([MockScorer1(), MockScorer2()],
-                                                 in_transforms)
+        fn = idock.get_transforms_for_fiber_dock(
+            [MockScorer1(), MockScorer2()],
+            in_transforms)
         lines = open(fn).readlines()
         self.assertEqual(len(lines), 3)
         self.assertEqual(lines[0].rstrip('\r\n'),
-               "18901  2.44620 0.74390 2.01370 32.03100 36.50100 74.97570")
+                         "18901  2.44620 0.74390 2.01370 32.03100 36.50100 74.97570")
         self.assertEqual(fn, 'trans_for_fd_test1_test2')
         os.unlink(fn)
         os.unlink(in_transforms)
@@ -657,7 +685,7 @@ ligandPdb (str) antibody_cut.pdb
                              (None, 'reduce',
                               ['-OH', '-HIS', '-NOADJ', '-NOROTMET',
                                'foo.pdb']))
-            self.assertEqual(dock.run_binary_keys, {'out_file':'foo.pdb.HB'})
+            self.assertEqual(dock.run_binary_keys, {'out_file': 'foo.pdb.HB'})
             self.assertEqual(fn, 'foo.pdb.HB')
         finally:
             app._run_binary = old_run_binary
@@ -672,7 +700,7 @@ ligandPdb (str) antibody_cut.pdb
             dock.opts.prefix = ''
             dock.opts.type = 'AA'
             params, out = dock.make_fiber_dock_parameters([MockScorer()],
-                                          'recep.HB', 'lig.HB', 'test_trans')
+                                                          'recep.HB', 'lig.HB', 'test_trans')
             self.assertEqual(dock.run_binary_args,
                              ('fd_dir', 'buildFiberDockParams.pl',
                               ['recep.HB', 'lig.HB', 'U', 'U', 'AA',
@@ -687,7 +715,7 @@ ligandPdb (str) antibody_cut.pdb
         """Test do_fiber_dock_docking()"""
         def do_dock():
             app, old_run_binary, dock \
-                           = self.make_idock_with_captured_subprocess()
+                = self.make_idock_with_captured_subprocess()
             dock.opts.fiber_dock = 'fd_dir'
             dock.opts.prefix = ''
             dock.do_fiber_dock_docking('in_trans', 'params', 'fd_out')
@@ -728,6 +756,7 @@ ligandPdb (str) antibody_cut.pdb
     def test_convert_fiber_dock_to_score(self):
         """Test convert_fiber_dock_to_score()"""
         app, idock = self.get_dummy_idock_for_scorer()
+
         class MockScorer(object):
             short_name = 'mock'
         open('firedock.output', 'w').write("""
@@ -750,23 +779,31 @@ ligandPdb (str) antibody_cut.pdb
             lines = open(fn).readlines()
             self.assertEqual(len(lines), 4)
             self.assertEqual(lines[1].strip(' \r\n'),
-                "1 | -20.010 |  +  | -0.886 | 2.57 0.76 1.77 33.15 35.83 73.77")
+                             "1 | -20.010 |  +  | -0.886 | 2.57 0.76 1.77 33.15 35.83 73.77")
             os.unlink(fn)
             os.unlink(in_fn)
 
     def test_run_fiber_dock(self):
         """Test run_fiber_dock()"""
         app = self.import_python_application('idock.py')
+
         class Dummy(app.IDock):
+
             def get_transforms_for_fiber_dock(self, scorers, transforms_file):
                 return transforms_file + '_fd'
+
             def add_hydrogens(self, in_pdb):
                 return in_pdb + '.HB'
+
             def make_fiber_dock_parameters(self, scorers, receptorH, ligandH,
                                            trans_for_fd):
-                return 'tparams', trans_for_fd + '_' + receptorH + '_' + ligandH
+                return (
+                    'tparams', trans_for_fd + '_' + receptorH + '_' + ligandH
+                )
+
             def do_fiber_dock_docking(self, trans_for_fd, params, fd_out):
                 self.params = params
+
             def convert_fiber_dock_to_score(self, scorers, fd_out):
                 return self.params + '_' + scorers[0] + '_' + fd_out
 
@@ -778,8 +815,8 @@ ligandPdb (str) antibody_cut.pdb
         dock.ligand = 'testlig'
         fn = dock.run_fiber_dock(['mockscore'], 'in_trans')
         self.assertEqual(fn,
-                    ('in_trans_fd',
-                     'tparams_mockscore_in_trans_fd_testrecep.HB_testlig.HB'))
+                         ('in_trans_fd',
+                          'tparams_mockscore_in_trans_fd_testrecep.HB_testlig.HB'))
 
     def test_combine_final_scores(self):
         """Test combine_final_scores()"""
@@ -803,8 +840,8 @@ ligandPdb (str) antibody_cut.pdb
         lines = open('combined_final.res').readlines()
         self.assertEqual(len(lines), 3)
         self.assertEqual(lines[1].strip(' \r\n'),
-                '2 |  3.171 |  +  | -1.000 |  0.221 |  3.190 | -14.430 |'
-                ' -0.019 |  2.674 0.4152 -0.7746 33.23 -4.204 31.47')
+                         '2 |  3.171 |  +  | -1.000 |  0.221 |  3.190 | -14.430 |'
+                         ' -0.019 |  2.674 0.415 -0.775 33.230 -4.204 31.470')
         os.unlink('em3d_scoref.res')
         os.unlink('fd_res.res')
         os.unlink('combined_final.res')
@@ -813,6 +850,7 @@ ligandPdb (str) antibody_cut.pdb
         """Test write_results()"""
         app, idock = self.get_dummy_idock_for_scorer()
         idock.opts.prefix = ''
+
         class MockScorer(object):
             short_name = 'mock'
         open('comb_final', 'w').write("""
@@ -826,15 +864,17 @@ ligandPdb (str) antibody_cut.pdb
         lines = open('results_mock.txt').readlines()
         self.assertEqual(len(lines), 6)
         self.assertEqual(lines[3].strip(' \r\n'),
-            "1 |  -3.976 |  +  | -4.525 | 15.486 | -2.746 |  0.670 | -1.029 "
-            "|   0.9110 0.6830 -0.1227 15.1862 66.0876 62.1971")
+                         "1 |  -3.976 |  +  | -4.525 | 15.486 | -2.746 |  0.670 | -1.029 "
+                         "|   0.9110 0.6830 -0.1227 15.1862 66.0876 62.1971")
         os.unlink('comb_final')
         os.unlink('results_mock.txt')
 
     def test_main(self):
         """Test IDock.main()"""
         app = self.import_python_application('idock.py')
+
         class MockDock(app.IDock):
+
             def run_patch_dock_binary(s, binary, args):
                 # Skip surface/parameters; copy example PatchDock output
                 # instead of running PatchDock itself
@@ -843,12 +883,14 @@ ligandPdb (str) antibody_cut.pdb
                 elif 'interface_cluster' in binary:
                     shutil.copy(self.get_input_file_name('clustered_cxms.res'),
                                 '.')
+
             def run_fiber_dock_binary(s, binary, args):
                 # Skip parameters; copy example FiberDock output
                 # instead of running FiberDock itself
                 if 'Params' not in binary:
                     shutil.copy(self.get_input_file_name('fd_res_cxms.ref'),
                                 '.')
+
             def add_hydrogens(self, in_pdb):
                 # Skip running reduce
                 return in_pdb + '.HB'
@@ -864,8 +906,8 @@ ligandPdb (str) antibody_cut.pdb
             lines = open('results_cxms.txt').readlines()
             self.assertEqual(len(lines), 10)
             self.assertEqual(lines[3].strip(' \r\n'),
-                 '1 |  -1.603 |  +  | -1.301 |  0.004 |  0.579 | -10.200 |'
-                 ' -2.182 |   -0.9194 -1.0958 -2.0672 -2.7843 -1.1249 -3.0764')
+                             '1 |  -1.603 |  +  | -1.301 |  0.004 |  0.579 | -10.200 |'
+                             ' -2.182 |  -0.919 -1.096 -2.067 -2.784 -1.125 -3.076')
             for f in ['clustered_cxms.res', 'combined_final.res',
                       'cxms_score.res', 'cxms_scoref.res',
                       'docking.res', 'fd_res_cxms.ref',

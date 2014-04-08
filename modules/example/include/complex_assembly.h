@@ -2,7 +2,7 @@
  *  \file IMP/example/complex_assembly.h
  *  \brief A simple unary function.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -23,7 +23,8 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 */
 IMPEXAMPLEEXPORT void optimize_assembly(
     kernel::Model *m, const kernel::ParticlesTemp &components,
-    const kernel::RestraintsTemp &interactions, const kernel::RestraintsTemp &other_restraints,
+    const kernel::RestraintsTemp &interactions,
+    const kernel::RestraintsTemp &other_restraints,
     const algebra::BoundingBox3D &bb, PairScore *ev, double cutoff,
     const PairPredicates &excluded = PairPredicates());
 

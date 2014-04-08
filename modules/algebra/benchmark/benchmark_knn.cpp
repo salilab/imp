@@ -1,8 +1,7 @@
 /**
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
-#include <IMP/base.h>
 #include <IMP/algebra.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
@@ -18,12 +17,12 @@ void test(std::string name, const Vector3Ds &pts, const KNN &knn, double eps) {
   double result = 0;
   double runtime;
   IMP_TIME({
-    for (unsigned int i = 0; i < pts.size(); ++i) {
-      Ints ret(2);
-      knn.fill_nearest_neighbors(pts[i], 2U, eps, ret);
-      result += ret[1];
-    }
-  },
+             for (unsigned int i = 0; i < pts.size(); ++i) {
+               Ints ret(2);
+               knn.fill_nearest_neighbors(pts[i], 2U, eps, ret);
+               result += ret[1];
+             }
+           },
            runtime);
   std::ostringstream oss;
   oss << "knn " << name << " " << knn.get_number_of_points() << " " << eps;

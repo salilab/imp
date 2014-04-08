@@ -1,7 +1,7 @@
 /**
  *  \file IMP/atom/Molecule.h     \brief A decorator for Molecules.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -43,6 +43,9 @@ class IMPATOMEXPORT Molecule : public Hierarchy {
 };
 
 IMP_DECORATORS(Molecule, Molecules, Hierarchies);
+
+/** Walk up the hierarchy to determine the molecule name. */
+IMPATOMEXPORT std::string get_molecule_name(Hierarchy h);
 
 IMPATOM_END_NAMESPACE
 

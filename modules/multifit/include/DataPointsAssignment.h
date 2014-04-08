@@ -2,7 +2,7 @@
  *  \file IMP/multifit/DataPointsAssignment.h
  *  \brief Tools for data points assignment, after anchor point segmentation
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -20,39 +20,41 @@
 #include <IMP/multifit/DensityDataPoints.h>
 #include <IMP/multifit/multifit_config.h>
 
-
 IMPMULTIFIT_BEGIN_NAMESPACE
 typedef std::map<IntPair, int> CEdges;
 
 //! Sets the assignment of particles data points into clusters according
 //! to the clustering engine.
 class IMPMULTIFITEXPORT DataPointsAssignment {
-public:
-  DataPointsAssignment
-    (const IMP::statistics::internal::XYZDataPoints *data,
-     const IMP::statistics::internal::ClusteringEngine *cluster_engine);
+ public:
+  DataPointsAssignment(
+      const IMP::statistics::internal::XYZDataPoints *data,
+      const IMP::statistics::internal::ClusteringEngine *cluster_engine);
 
   ~DataPointsAssignment() {}
-  int get_number_of_clusters() const {return cluster_sets_.size();}
-  algebra::Vector3Ds  get_cluster_vectors(int cluster_id) const;
-  //Float get_cluster_xyz_diameter(int cluster_ind) const;
-  const IntPairs *get_edges() const {return &edges_;}
+  int get_number_of_clusters() const { return cluster_sets_.size(); }
+  algebra::Vector3Ds get_cluster_vectors(int cluster_id) const;
+  // Float get_cluster_xyz_diameter(int cluster_ind) const;
+  const IntPairs *get_edges() const { return &edges_; }
   algebra::Vector3Ds get_centers() const {
     algebra::Vector3Ds vecs;
-    for(int i=0;i<get_number_of_clusters();i++) {
-      IMP::statistics::internal::Array1DD xyz =cluster_engine_->get_center(i);
-      vecs.push_back(algebra::Vector3D(xyz[0],xyz[1],xyz[2]));
+    for (int i = 0; i < get_number_of_clusters(); i++) {
+      IMP::statistics::internal::Array1DD xyz = cluster_engine_->get_center(i);
+      vecs.push_back(algebra::Vector3D(xyz[0], xyz[1], xyz[2]));
     }
     return vecs;
   }
   const IMP::statistics::internal::ClusteringEngine *get_cluster_engine()
-    const {return cluster_engine_;};
+      const {
+    return cluster_engine_;
+  };
   IMP::algebra::Vector3Ds get_cluster_xyz(int cluster_ind) const;
-protected:
+
+ protected:
   algebra::Vector3Ds set_cluster(int cluster_ind);
   void set_clusters();
   void connect_clusters(int c1, int c2);
-  void set_edges(double voxel_size=3.);
+  void set_edges(double voxel_size = 3.);
   /*  bool are_particles_close(core::RigidBody rb1,
       core::RigidBody rb2);*/
   base::Pointer<const IMP::statistics::internal::XYZDataPoints> data_;
@@ -62,17 +64,16 @@ protected:
   CEdges edges_map_;
 };
 
-IMPMULTIFITEXPORT void write_chimera(
-           const std::string &chimera_filename,
-           const DataPointsAssignment &dpa);
+IMPMULTIFITEXPORT void write_chimera(const std::string &chimera_filename,
+                                     const DataPointsAssignment &dpa);
 
-IMPMULTIFITEXPORT std::pair<algebra::Vector3Ds,
-                            CEdges> read_cmm(const std::string &cmm_filename);
+IMPMULTIFITEXPORT std::pair<algebra::Vector3Ds, CEdges> read_cmm(
+    const std::string &cmm_filename);
 /*IMPMULTIFITEXPORT void write_cmm(const std::string &cmm_filename,
                const std::string &marker_set_name,
                const DataPointsAssignment &dpa);*/
-IMPMULTIFITEXPORT std::pair<algebra::Vector3Ds,
-                            CEdges> read_cmm(const std::string &cmm_filename);
+IMPMULTIFITEXPORT std::pair<algebra::Vector3Ds, CEdges> read_cmm(
+    const std::string &cmm_filename);
 
 /*IMPMULTIFITEXPORT void write_max_cmm(const std::string &cmm_filename,
                    em::DensityMap *dmap,
@@ -80,13 +81,12 @@ IMPMULTIFITEXPORT std::pair<algebra::Vector3Ds,
                    const DataPointsAssignment &dpa);*/
 
 IMPMULTIFITEXPORT void write_pdb(const std::string &pdb_filename,
-               const DataPointsAssignment &dpa);
+                                 const DataPointsAssignment &dpa);
 
 void write_segments_as_pdb(const DataPointsAssignment &dpa,
                            const std::string &filename);
 
-void write_segment_as_pdb(const DataPointsAssignment &dpa,
-                          int segment_id,
+void write_segment_as_pdb(const DataPointsAssignment &dpa, int segment_id,
                           const std::string &filename);
 //! Write segments in MRC format
 /**
@@ -96,15 +96,14 @@ void write_segment_as_pdb(const DataPointsAssignment &dpa,
  */
 IMPMULTIFITEXPORT
 void write_segments_as_mrc(em::DensityMap *dmap,
-                           const DataPointsAssignment &dpa,
-                           Float resolution, Float apix,
-                           Float threshold,
+                           const DataPointsAssignment &dpa, Float resolution,
+                           Float apix, Float threshold,
                            const std::string &filename);
 
 IMPMULTIFITEXPORT
-void write_segment_as_mrc(em::DensityMap *dmap,
-const DataPointsAssignment &dpa,int segment_id,
-Float resolution, Float apix,const std::string &filename);
+void write_segment_as_mrc(em::DensityMap *dmap, const DataPointsAssignment &dpa,
+                          int segment_id, Float resolution, Float apix,
+                          const std::string &filename);
 
 algebra::Vector3D get_segment_maximum(const DataPointsAssignment &dpa,
                                       em::DensityMap *dmap, int segment_id);

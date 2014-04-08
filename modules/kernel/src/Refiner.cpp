@@ -1,12 +1,13 @@
 /**
  *  \file Refiner.cpp \brief Refine a particle into a list of particles.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
 #include "IMP/kernel/Refiner.h"
 #include "IMP/kernel/internal/utility.h"
+#include "IMP/kernel/Model.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 

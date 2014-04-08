@@ -1,7 +1,7 @@
 /**
  *  \file IMP/kernel/ScoreState.h   \brief Shared score state.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -81,29 +81,8 @@ class IMPKERNELEXPORT ScoreState : public ModelObject {
   virtual void do_after_evaluate(DerivativeAccumulator *accpt) = 0;
 
   IMP_REF_COUNTED_DESTRUCTOR(ScoreState);
-
- public:
-  /** \deprecated_at{2.1} Use version that takes a name too.
-   */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  ScoreState(kernel::Model *m);
-  /** \deprecated_at{2.1} Use version that takes a Model instead.
-   */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  ScoreState(std::string name = "ScoreState %1%");
-  /** \deprecated_at{2.1} use get_inputs() instead.*/
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  ParticlesTemp get_input_particles() const;
-  /** \deprecated_at{2.1} use get_inputs() instead.*/
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  ContainersTemp get_input_containers() const;
-  /** \deprecated_at{2.1} use get_outputs() instead.*/
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  ParticlesTemp get_output_particles() const;
-  /** \deprecated_at{2.1} use get_outputs() instead.*/
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  ContainersTemp get_output_containers() const;
 };
+
 /** Return an appropriate (topoligically sorted) order to update
     the score states in. */
 IMPKERNELEXPORT ScoreStatesTemp get_update_order(ScoreStatesTemp input);

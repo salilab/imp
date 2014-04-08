@@ -2,7 +2,7 @@
  *  \file EzRestraint.cpp \brief
  *  \brief Ez potential. A statistical scoring function for atom proteins
  *
- *  Copyright 2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -23,7 +23,7 @@
 IMPATOM_BEGIN_NAMESPACE
 
 EzRestraint::EzRestraint(kernel::Particles ps)
-    : kernel::Restraint("Ez Potential") {
+    : kernel::Restraint(ps[0]->get_model(), "Ez Potential") {
   ps_ = ps;
   for (unsigned i = 0; i < ps_.size(); ++i) {
     // get residue type

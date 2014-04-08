@@ -3,7 +3,9 @@ import sys
 import os
 import re
 
+
 class CrossLinksApplicationTest(IMP.test.ApplicationTestCase):
+
     def test_simple_interface(self):
         """Simple test of interface cross links generation application"""
         print self.get_input_file_name('static.pdb')
@@ -25,18 +27,17 @@ class CrossLinksApplicationTest(IMP.test.ApplicationTestCase):
         os.unlink('cxms2.dat')
         os.unlink('cxms_all.dat')
 
-
     def test_simple_single_structure_score(self):
         """Simple test of interface cross links single structure score application"""
-        destination = open('complex.pdb','w')
-        file1 = open(self.get_input_file_name('static.pdb'),'r')
-        file2 = open(self.get_input_file_name('transformed.pdb'),'rb')
-        destination.write(file1.read());
-        destination.write(file2.read());
+        destination = open('complex.pdb', 'w')
+        file1 = open(self.get_input_file_name('static.pdb'), 'r')
+        file2 = open(self.get_input_file_name('transformed.pdb'), 'rb')
+        destination.write(file1.read())
+        destination.write(file2.read())
         destination.close()
         p = self.run_application('cross_links_single_score',
                                  ['complex.pdb',
-                                 self.get_input_file_name('cxms.dat')])
+                                  self.get_input_file_name('cxms.dat')])
 
         out, err = p.communicate()
         sys.stderr.write(err)
@@ -52,7 +53,8 @@ class CrossLinksApplicationTest(IMP.test.ApplicationTestCase):
         p = self.run_application('cross_links_score',
                                  [self.get_input_file_name('static.pdb'),
                                   self.get_input_file_name('transformed.pdb'),
-                                  self.get_input_file_name('transforms-foxs10'),
+                                  self.get_input_file_name(
+                                      'transforms-foxs10'),
                                   self.get_input_file_name('cxms.dat')])
         out, err = p.communicate()
         sys.stderr.write(err)

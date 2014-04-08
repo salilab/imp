@@ -2,7 +2,7 @@
  *  \file KMterm.h
  *  \brief Include file for kmeans algorithm
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPKMEANS_INTERNAL_KMTERM_H
@@ -92,91 +92,89 @@ IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 //            a temperature run.
 //------------------------------------------------------------------------
 
-enum {                        // entry names
-  KM_TERM_CONST,            // constant term
-  KM_TERM_LIN_K,            // linear k multiplier
-  KM_TERM_LIN_N,            // linear n multiplier
-  KM_TERM_POW,            // power exponent
-  KM_TERM_VEC_LEN
-};            // length of termination param vector
+enum {               // entry names
+  KM_TERM_CONST,     // constant term
+  KM_TERM_LIN_K,     // linear k multiplier
+  KM_TERM_LIN_N,     // linear n multiplier
+  KM_TERM_POW,       // power exponent
+  KM_TERM_VEC_LEN};  // length of termination param vector
 
-class IMPKMEANSEXPORT KMterm
-{
-private:
-  double   maxTotStageVec[KM_TERM_VEC_LEN];      // max total stages
-  double   minConsecRDL;                  // min consecutive RDL
-  double   minAccumRDL;                  // min accumulated RDL
-  int           maxRunStage;                  // max stages/run for Lloyd's
-  double   initProbAccept;                  // initial prob. of acceptance
-  int      tempRunLength;                  // length of temp run
-  double   tempReducFact;                  // temperature reduction factor
+class IMPKMEANSEXPORT KMterm {
+ private:
+  double maxTotStageVec[KM_TERM_VEC_LEN];  // max total stages
+  double minConsecRDL;                     // min consecutive RDL
+  double minAccumRDL;                      // min accumulated RDL
+  int maxRunStage;                         // max stages/run for Lloyd's
+  double initProbAccept;                   // initial prob. of acceptance
+  int tempRunLength;                       // length of temp run
+  double tempReducFact;                    // temperature reduction factor
 
-protected:                              // stage count
+ protected:  // stage count
   int maxStage(const double param[KM_TERM_VEC_LEN], int k, int n) const;
-public:
-  KMterm();                               // default constructor
-  KMterm(                              // standard constructor
-    double a, double b, double c, double d,      // maxTotStage
-    double mcr, double mar, int mrs,
-    double ipa, int trl, double trf);
 
-  void setMaxTotStage(int i, double val) {      // set max stage parameters
+ public:
+  KMterm();                                    // default constructor
+  KMterm(                                      // standard constructor
+      double a, double b, double c, double d,  // maxTotStage
+      double mcr, double mar, int mrs, double ipa, int trl, double trf);
+
+  void setMaxTotStage(int i, double val) {  // set max stage parameters
     assert(i >= 0 && i < KM_TERM_VEC_LEN);
     maxTotStageVec[i] = val;
   }
-  void setAbsMaxTotStage(int s) {            // set max number of stages
+  void setAbsMaxTotStage(int s) {  // set max number of stages
     maxTotStageVec[KM_TERM_CONST] = s;
     maxTotStageVec[KM_TERM_POW] = 0;
   }
-  int getMaxTotStage(int k, int n) const {    // max total stages
+  int getMaxTotStage(int k, int n) const {  // max total stages
     return maxStage(maxTotStageVec, k, n);
   }
 
-  double getMinConsecRDL() const {          // return min consec RDL
+  double getMinConsecRDL() const {  // return min consec RDL
     return minConsecRDL;
   }
 
-  double getMinAccumRDL() const {          // return min accum RDL
+  double getMinAccumRDL() const {  // return min accum RDL
     return minAccumRDL;
   }
 
-  int getMaxRunStage() const {                // return max runs per stage
+  int getMaxRunStage() const {  // return max runs per stage
     return maxRunStage;
   }
 
-  void setMinConsecRDL(double rdl) {          // set min consec RDL
+  void setMinConsecRDL(double rdl) {  // set min consec RDL
     minConsecRDL = rdl;
   }
 
-  void setMinAccumRDL(double rdl) {          // set min accum RDL
+  void setMinAccumRDL(double rdl) {  // set min accum RDL
     minAccumRDL = rdl;
   }
 
-  void setMaxRunStage(int ms) {                // set max runs per stage
+  void setMaxRunStage(int ms) {  // set max runs per stage
     maxRunStage = ms;
   }
 
-  double getInitProbAccept() const {          // return init. prob. accept
+  double getInitProbAccept() const {  // return init. prob. accept
     return initProbAccept;
   }
 
-  void setInitProbAccept(double ipa) {          // set init. prob. accept
+  void setInitProbAccept(double ipa) {  // set init. prob. accept
     initProbAccept = ipa;
   }
 
-  int getTempRunLength() const {          // return temperature run len.
+  int getTempRunLength() const {  // return temperature run len.
     return tempRunLength;
   }
 
-  void setTempRunLength(int trl) {          // set temperature run length
+  void setTempRunLength(int trl) {  // set temperature run length
     tempRunLength = trl;
   }
 
-  double getTempReducFact() const {          // return temp. reduction fact.
+  double getTempReducFact() const {  // return temp. reduction fact.
     return tempReducFact;
   }
 
-  void setTempReducFact(double trf) {          // set temp. reduction fact.
+  void setTempReducFact(double trf) {  // set temp. reduction fact.
     tempReducFact = trf;
   }
 };

@@ -2,7 +2,7 @@
  *  \file IMP/base/exception.h
  *  \brief Exception definitions and assertions.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,19 +10,11 @@
 #define IMPBASE_EXCEPTION_H
 
 #include <IMP/base/base_config.h>
-#include "random.h"
 #include "compiler_macros.h"
 #include "enums.h"
-#include <IMP/base/nullptr.h>
+#include "nullptr.h"
 #include "internal/static.h"
-#include <boost/static_assert.hpp>
-#include <boost/type_traits.hpp>
-#include <boost/random/uniform_real.hpp>
-#include <cassert>
 #include <string>
-#include <iostream>
-#include <new>
-#include <sstream>
 #include <stdexcept>
 
 IMPBASE_BEGIN_NAMESPACE
@@ -80,7 +72,7 @@ IMPBASEEXPORT std::string get_context_message();
 */
 inline void set_check_level(CheckLevel tf) {
   // cap it against the maximum supported level
-  internal::check_level = std::min<int>(tf, IMP_HAS_CHECKS);
+  internal::check_level = std::min<CheckLevel>(tf, CheckLevel(IMP_HAS_CHECKS));
 }
 
 //! Get the current audit mode

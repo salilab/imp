@@ -1,7 +1,7 @@
 /**
  *  \file Diffusion.cpp   \brief Simple xyzr decorator.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -27,15 +27,6 @@ void Diffusion::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi) {
 void Diffusion::show(std::ostream &out) const {
   XYZ::show(out);
   out << "D= " << get_diffusion_coefficient() << "A^2/fs";
-}
-
-void Diffusion::set_d(double d) {
-  IMPATOM_DEPRECATED_METHOD_DEF(2.1, "Use set_diffusion_coefficient().");
-  set_diffusion_coefficient(d);
-}
-double Diffusion::get_d() const {
-  IMPATOM_DEPRECATED_METHOD_DEF(2.1, "Use set_diffusion_coefficient().");
-  return get_diffusion_coefficient();
 }
 
 double get_diffusion_coefficient_from_cm2_per_second(double din) {

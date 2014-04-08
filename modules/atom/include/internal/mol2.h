@@ -2,7 +2,7 @@
  * \file internal/mol2.h
  * \brief a class with static functions for parsing mol2 files
  *
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_INTERNAL_MOL_2_H
@@ -10,7 +10,7 @@
 
 #include <IMP/atom/atom_config.h>
 #include "../Atom.h"
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <IMP/kernel/Particle.h>
 #include <IMP/base_types.h>
 
@@ -40,7 +40,7 @@ IMPATOMEXPORT String pick_mol2atom_type(const String& atom_line);
 //! Return true if one atom in the bond pair is deleted
 IMPATOMEXPORT bool is_ATOM_del(
     const String& bond_line,
-    const base::map<int, kernel::Particle*>& molecule_atoms);
+    const boost::unordered_map<int, kernel::Particle*>& molecule_atoms);
 
 //! in the mol2 file the atom type string starts at atom_type_field_
 static const unsigned mol2_type_field_ = 47;

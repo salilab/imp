@@ -27,10 +27,10 @@ with cmake.
 Copyright and License information
 =================================
 
-IMP is Copyright 2007-2013 IMP Inventors. The IMP Inventors are
+IMP is Copyright 2007-2014 IMP Inventors. The IMP Inventors are
 Andrej Sali, Ben Webb, Daniel Russel, Keren Lasker, Dina Schneidman,
 Javier Velazquez-Muriel, Friedrich Foerster, Elina Tjioe, Hao Fan,
-Seung Joong Kim, Yannick Spill.
+Seung Joong Kim, Yannick Spill, Riccardo Pellarin.
 
 IMP is largely available under the GNU Lesser GPL; see the file COPYING.LGPL
 for the full text of this license. Some IMP modules are available under the

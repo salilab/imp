@@ -19,7 +19,15 @@ class OptionParser(optparse.OptionParser):
         # Handle old users of IMP.OptionParser that set imp_module
         if 'imp_module' in kwargs:
             del kwargs['imp_module']
-        optparse.OptionParser.__init__(self, *args, **kwargs)
+        try:
+            optparse.OptionParser.__init__(self, *args, **kwargs)
+        except TypeError:
+            if 'epilog' in kwargs:
+                # Older optparse doesn't support the epilog keyword
+                del kwargs['epilog']
+                optparse.OptionParser.__init__(self, *args, **kwargs)
+            else:
+                raise
 
     # Don't complain if invalid options are encountered; pass them through
     # unmodified
@@ -28,7 +36,11 @@ class OptionParser(optparse.OptionParser):
             try:
                 optparse.OptionParser._process_long_opt(self, rargs, values)
             except optparse.BadOptionError, err:
-                self.largs.append(err.opt_str)
+                if not hasattr(err, 'opt_str') \
+                   and err.msg.startswith('no such option:'):
+                    self.largs.append(err.msg[16:])
+                else:
+                    self.largs.append(err.opt_str)
         else:
             optparse.OptionParser._process_long_opt(self, rargs, values)
     def _process_short_opts(self, rargs, values):

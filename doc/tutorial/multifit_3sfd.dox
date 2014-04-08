@@ -266,7 +266,7 @@ which it must be rotated.
 
 It is often useful to cluster the solutions. MultiFit includes a 'cluster'
 command to accomplish this. It uses the
-\external{http://math.stanford.edu/~muellner/fastcluster.html,fastcluster}
+\external{http://danifold.net/fastcluster.html,fastcluster}
 Python module, which needs to be downloaded and installed separately.
 
 To cluster the solutions previously obtained, run:

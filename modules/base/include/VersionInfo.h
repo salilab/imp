@@ -1,7 +1,7 @@
 /**
  *  \file IMP/base/VersionInfo.h   \brief Version and authorship of IMP objects.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

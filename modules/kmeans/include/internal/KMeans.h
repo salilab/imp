@@ -2,7 +2,7 @@
  *  \file KMeans.h
  *  \brief
  *
- *  Copyright 2007-2013 IMP Inventors. All rights
+ *  Copyright 2007-2014 IMP Inventors. All rights
 //----------------------------------------------------------------------
 //      File:           KMeans.h
 //      Programmer:     David Mount
@@ -48,21 +48,19 @@
 
 #include <IMP/kmeans/kmeans_config.h>
 #include <IMP/base/log.h>
-#include "KM_ANN.h"                  // basic definitions
+#include "KM_ANN.h"  // basic definitions
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
-
 
 //----------------------------------------------------------------------
 //  Important strings
 //----------------------------------------------------------------------
-const std::string KMshortName    = "KMlocal";
-const std::string KMlongName          =
-  "KMlocal (k-means clustering by local search)";
-const std::string KMversion          = "1.7";
-const std::string KMversionCmt   = "(Use at your own risk)";
-const std::string KMcopyright    = "David M. Mount";
-const std::string KMlatestRev    = "August 10, 2005";
+const std::string KMshortName = "KMlocal";
+const std::string KMlongName = "KMlocal (k-means clustering by local search)";
+const std::string KMversion = "1.7";
+const std::string KMversionCmt = "(Use at your own risk)";
+const std::string KMcopyright = "David M. Mount";
+const std::string KMlatestRev = "August 10, 2005";
 
 //------------------------------------------------------------------------
 //  Type definitions
@@ -76,109 +74,104 @@ const std::string KMlatestRev    = "August 10, 2005";
 //                  results used in the program.
 //------------------------------------------------------------------------
 
-typedef KMpoint            KMdataPoint;      // data point
-typedef KMpoint            KMcenter;      // center point
+typedef KMpoint KMdataPoint;  // data point
+typedef KMpoint KMcenter;     // center point
 
-typedef KMpointArray      KMdataArray;      // array of data points
-typedef KMpointArray      KMcenterArray;      // array of center
+typedef KMpointArray KMdataArray;    // array of data points
+typedef KMpointArray KMcenterArray;  // array of center
 
-typedef KMidx            KMdataIdx;      // a data point index
-typedef KMidx            KMctrIdx;      // a center point index
-typedef KMdataIdx      *KMdatIdxArray;      // array of data indices
-typedef KMctrIdx      *KMctrIdxArray;      // array of center indices
+typedef KMidx KMdataIdx;           // a data point index
+typedef KMidx KMctrIdx;            // a center point index
+typedef KMdataIdx* KMdatIdxArray;  // array of data indices
+typedef KMctrIdx* KMctrIdxArray;   // array of center indices
 
 //------------------------------------------------------------------------
 //  Global constants
 //------------------------------------------------------------------------
 
-const double KM_ERR       = 1E-6;      // epsilon (for floating compares)
-const double KM_HUGE       = DBL_MAX;      // huge double value
-const int    KM_HUGE_INT = INT_MAX;      // huge int value
+const double KM_ERR = 1E-6;       // epsilon (for floating compares)
+const double KM_HUGE = DBL_MAX;   // huge double value
+const int KM_HUGE_INT = INT_MAX;  // huge int value
 
-enum KMerr {KMwarn = 0, KMabort = 1};      // what to do in case of error
+enum KMerr {
+  KMwarn = 0,
+  KMabort = 1
+};  // what to do in case of error
 
-enum StatLev {                        // output statistics levels
-  SILENT,                        // no output
-  EXEC_TIME,                  // just execution time
-  SUMMARY,                  // summary of entire algorithm
-  PHASE,                        // summary of each phase
-  RUN,                        // summary of each run
-  STAGE,                        // summary of each stage
-  STEP,                        // summary of each step
-  CENTERS,                  // output centers with each step
-  TREE,                        // output tree and points
-  N_STAT_LEVELS
-};                  // number of levels
+enum StatLev {     // output statistics levels
+  SILENT,          // no output
+  EXEC_TIME,       // just execution time
+  SUMMARY,         // summary of entire algorithm
+  PHASE,           // summary of each phase
+  RUN,             // summary of each run
+  STAGE,           // summary of each stage
+  STEP,            // summary of each step
+  CENTERS,         // output centers with each step
+  TREE,            // output tree and points
+  N_STAT_LEVELS};  // number of levels
 
-enum KMalg {                        // k-means algorithm names
-  LLOYD,                        // Lloyd's (using filtering)
-  SWAP,                        // swap heuristic
-  HYBRID,                        // hybrid algorithm
-  EZ_HYBRID,                  // EZ-hybrid algorithm
-  RANDOM,                        // random centers
-  N_KM_ALGS
-};                  // number of algorithms
+enum KMalg {   // k-means algorithm names
+  LLOYD,       // Lloyd's (using filtering)
+  SWAP,        // swap heuristic
+  HYBRID,      // hybrid algorithm
+  EZ_HYBRID,   // EZ-hybrid algorithm
+  RANDOM,      // random centers
+  N_KM_ALGS};  // number of algorithms
 
 //----------------------------------------------------------------------
 //  Global variables
 //----------------------------------------------------------------------
 
 // statistics output level
-IMPKMEANSEXPORT extern StatLev            kmStatLev;
+IMPKMEANSEXPORT extern StatLev kmStatLev;
 
 // standard output stream
-IMPKMEANSEXPORT extern std::ostream*            kmOut;
+IMPKMEANSEXPORT extern std::ostream* kmOut;
 
 // error output stream
-IMPKMEANSEXPORT extern std::ostream*            kmErr;
+IMPKMEANSEXPORT extern std::ostream* kmErr;
 
 // input stream
-IMPKMEANSEXPORT extern std::istream*            kmIn;
+IMPKMEANSEXPORT extern std::istream* kmIn;
 
 //----------------------------------------------------------------------
 //  Printing utilities
 //----------------------------------------------------------------------
 
-IMPKMEANSEXPORT void kmPrintPt(                        // print a point
-  KMpoint            p,                  // the point
-  int                  dim,                           // the dimension
-  bool            fancy = true);            // print plain or fancy?
+IMPKMEANSEXPORT void kmPrintPt(  // print a point
+    KMpoint p,                   // the point
+    int dim,                     // the dimension
+    bool fancy = true);          // print plain or fancy?
 
 //! Log a point depending on log level (see base/log.h)
-IMPKMEANSEXPORT void kmLogPt
-( base::LogLevel ll,
-  KMpoint            p,                  // the point
-  int                  dim,                           // the dimension
-  bool            fancy = true);            // print plain or fancy?
+IMPKMEANSEXPORT void kmLogPt(base::LogLevel ll, KMpoint p,  // the point
+                             int dim,                       // the dimension
+                             bool fancy = true);  // print plain or fancy?
 
-IMPKMEANSEXPORT void kmPrintPts(                  // print points
-  std::string            title,                  // name of point set
-  KMpointArray      pa,                  // the point array
-  int                  n,                  // number of points
-  int                  dim,                  // the dimension
-  bool            fancy = true);            // print plain or fancy?
+IMPKMEANSEXPORT void kmPrintPts(  // print points
+    std::string title,            // name of point set
+    KMpointArray pa,              // the point array
+    int n,                        // number of points
+    int dim,                      // the dimension
+    bool fancy = true);           // print plain or fancy?
 
 //! Log points depending on log level (see base/log.h)
-IMPKMEANSEXPORT void kmLogPts
-( base::LogLevel ll,
-  std::string            title,                  // name of point set
-  KMpointArray      pa,                  // the point array
-  int                  n,                  // number of points
-  int                  dim,                  // the dimension
-  bool            fancy = true);            // print plain or fancy?
-
-
-
+IMPKMEANSEXPORT void kmLogPts(base::LogLevel ll,
+                              std::string title,   // name of point set
+                              KMpointArray pa,     // the point array
+                              int n,               // number of points
+                              int dim,             // the dimension
+                              bool fancy = true);  // print plain or fancy?
 
 //----------------------------------------------------------------------
 //  Utility function declarations
 //----------------------------------------------------------------------
 
-IMPKMEANSEXPORT void kmError(                        // error routine
-  const std::string      &msg,                  // error message
-  KMerr            level);                  // abort afterwards
+IMPKMEANSEXPORT void kmError(  // error routine
+    const std::string& msg,    // error message
+    KMerr level);              // abort afterwards
 
-IMPKMEANSEXPORT void kmExit(int x = 0);                 // exit the program
+IMPKMEANSEXPORT void kmExit(int x = 0);  // exit the program
 
 IMPKMEANS_END_INTERNAL_NAMESPACE
 

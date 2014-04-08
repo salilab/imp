@@ -2,7 +2,7 @@
  *  \file IMP/kernel/doxygen.h
  *  \brief Import kernel classes into the IMP scope in docs.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -294,9 +294,6 @@ using IMP::kernel::get_particles;
 /** Import IMP::kernel::get_pruned_dependency_graph
     in the IMP namespace.*/
 using IMP::kernel::get_pruned_dependency_graph;
-/** Import IMP::kernel::get_required_particles
-    in the IMP namespace.*/
-using IMP::kernel::get_required_particles;
 /** Import IMP::kernel::get_required_score_states
     in the IMP namespace.*/
 using IMP::kernel::get_required_score_states;

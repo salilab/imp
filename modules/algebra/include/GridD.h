@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/GridD.h   \brief A class to represent a voxel grid.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -17,8 +17,9 @@
 #include "BoundingBoxD.h"
 #include "GeometricPrimitiveD.h"
 #include <boost/iterator/transform_iterator.hpp>
-#include <IMP/base/map.h>
 #include <IMP/base/Vector.h>
+#include <IMP/base/showable_macros.h>
+#include <boost/range/iterator_range.hpp>
 
 #include <limits>
 
@@ -72,12 +73,14 @@ IMPALGEBRA_BEGIN_NAMESPACE
    \see DenseGridStorage3D
    \see SparseGridStorageD
 */
-template <int D, class Storage,
+template <int D, class StorageT,
           // swig needs this for some reason
           class Value, class EmbeddingT = DefaultEmbeddingD<D> >
-class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
+class GridD : public StorageT,
+              public EmbeddingT,
+              public GeometricPrimitiveD<D> {
  private:
-  typedef GridD<D, Storage, Value, EmbeddingT> This;
+  typedef GridD<D, StorageT, Value, EmbeddingT> This;
 #ifndef IMP_DOXYGEN
  protected:
   struct GetVoxel {
@@ -125,9 +128,12 @@ class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
   }
 #endif
  public:
+  typedef StorageT Storage;
   typedef EmbeddingT Embedding;
   typedef VectorD<D> Vector;
   /** Create a grid from a bounding box and the counts in each direction.
+
+      This constructor works for all bounded grids.
    */
   GridD(const Ints counts, const BoundingBoxD<D> &bb,
         Value default_value = Value())
@@ -137,6 +143,8 @@ class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
   }
   /** Create a grid from a bounding box and the side of the cubical
       voxel.
+
+      This constructor works for all bounded grids.
   */
   GridD(double side, const BoundingBoxD<D> &bb,
         const Value &default_value = Value())
@@ -148,16 +156,25 @@ class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
         "This grid constructor can only be used with bounded grids.");
   }
 
+  /** Advanced constructor if you want to explicitly init storage
+      and embedding. */
   GridD(const Storage &storage, const Embedding &embed)
       : Storage(storage), Embedding(embed) {}
   /** Construct a grid from the cubical voxel side and the origin.
+
+      This constructor is only valid with unbounded (hence sparse)
+      grids.
    */
   GridD(double side, const VectorD<D> &origin,
         const Value &default_value = Value())
       : Storage(default_value),
         Embedding(origin, get_ones_vector_kd(origin.get_dimension(), side)) {}
   //! An empty, undefined grid.
+  /** Make sure you initialize it before you try to use it. */
   GridD() : Storage(Value()) {}
+
+  IMP_SHOWABLE_INLINE(GridD, out << "Grid");
+
   /* \name Indexing
      The vector must fall in a valid voxel to get and must be within
      the volume of the grid to set.
@@ -198,10 +215,6 @@ class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
   using Storage::get_has_index;
   using Storage::get_index;
   using Storage::add_voxel;
-#else
-  bool get_has_index(const ExtendedGridIndexD<D> &i) const;
-  GridIndexD<D> get_index(const ExtendedGridIndexD<D> &i) const;
-  GridIndexD<D> add_voxel(const ExtendedGridIndexD<D> &i, const Value &vt);
 #endif
   //! Convert an index back to an extended index
   ExtendedGridIndexD<D> get_extended_index(const GridIndexD<D> &index) const {
@@ -209,8 +222,6 @@ class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
   }
 #ifndef SWIG
   using Embedding::get_extended_index;
-#else
-  ExtendedGridIndexD<D> get_extended_index(const VectorD<D> &i) const;
 #endif
 
   BoundingBoxD<D> get_bounding_box() const {
@@ -302,17 +313,49 @@ class GridD : public Storage, public EmbeddingT, public GeometricPrimitiveD<D> {
   }
   using Storage::indexes_begin;
   using Storage::indexes_end;
-  typename Storage::IndexIterator indexes_begin(
-      const BoundingBoxD<D> &bb) const {
-    ExtendedGridIndexD<3> lb = get_extended_index(bb.get_corner(0));
-    ExtendedGridIndexD<3> ub = get_extended_index(bb.get_corner(1));
+  typename Storage::IndexIterator indexes_begin(const BoundingBoxD<D> &bb)
+      const {
+    ExtendedGridIndexD<D> lb = get_extended_index(bb.get_corner(0));
+    ExtendedGridIndexD<D> ub = get_extended_index(bb.get_corner(1));
     return Storage::indexes_begin(lb, ub);
   }
   typename Storage::IndexIterator indexes_end(const BoundingBoxD<D> &) const {
     // ExtendedIndex lb= get_extended_index(bb.get_corner(0));
     // ExtendedIndex ub= get_extended_index(bb.get_corner(1));
-    return Storage::indexes_end(ExtendedGridIndexD<3>(),
-                                ExtendedGridIndexD<3>());
+    return Storage::indexes_end(ExtendedGridIndexD<D>(),
+                                ExtendedGridIndexD<D>());
+  }
+
+  typedef internal::GridIndexIterator<
+      ExtendedGridIndexD<D>,
+      internal::AllItHelp<ExtendedGridIndexD<D>, ExtendedGridIndexD<D> > >
+      ExtendedIndexIterator;
+  ExtendedIndexIterator extended_indexes_begin(const BoundingBoxD<D> &bb)
+      const {
+    ExtendedGridIndexD<D> lb = get_extended_index(bb.get_corner(0));
+    ExtendedGridIndexD<D> ub = get_extended_index(bb.get_corner(1));
+    ExtendedGridIndexD<D> eub = ub.get_offset(1, 1, 1);
+    return ExtendedIndexIterator(lb, eub);
+  }
+  ExtendedIndexIterator extended_indexes_end(const BoundingBoxD<D> &) const {
+    // ExtendedIndex lb= get_extended_index(bb.get_corner(0));
+    // ExtendedIndex ub= get_extended_index(bb.get_corner(1));
+    return ExtendedIndexIterator();
+  }
+  using Storage::get_indexes;
+  typedef boost::iterator_range<typename Storage::IndexIterator> Indexes;
+  Indexes get_indexes(const BoundingBoxD<D> &bb) const {
+    return Indexes(indexes_begin(bb), indexes_end(bb));
+  }
+  typedef boost::iterator_range<typename Storage::AllIndexIterator> AllIndexes;
+  AllIndexes get_all_indexes() const {
+    return AllIndexes(Storage::all_indexes_begin(), Storage::all_indexes_end());
+  }
+  using Storage::get_extended_indexes;
+  typedef boost::iterator_range<ExtendedIndexIterator> ExtendedIndexes;
+  ExtendedIndexes get_extended_indexes(const BoundingBoxD<D> &bb) const {
+    return ExtendedIndexes(extended_indexes_begin(bb),
+                           extended_indexes_end(bb));
   }
 #endif
   /** @} */

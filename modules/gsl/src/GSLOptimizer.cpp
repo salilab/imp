@@ -2,7 +2,7 @@
  *  \file GSLOptimizer.cpp
  *  \brief XXXX.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -18,11 +18,6 @@ struct AllDone {};
 
 GSLOptimizer::GSLOptimizer(kernel::Model *m)
     : AttributeOptimizer(m, "GSLOptimizer%1%"),
-      stop_score_(-std::numeric_limits<double>::max()),
-      best_score_(std::numeric_limits<double>::max()) {}
-
-GSLOptimizer::GSLOptimizer()
-    : AttributeOptimizer(),
       stop_score_(-std::numeric_limits<double>::max()),
       best_score_(std::numeric_limits<double>::max()) {}
 

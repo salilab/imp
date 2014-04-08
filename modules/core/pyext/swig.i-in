@@ -1,14 +1,7 @@
-%include "IMP/core/close_pairs_finder_macros.h"
-%include "IMP/core/monte_carlo_macros.h"
-%include "IMP/core/mover_macros.h"
-%include "IMP/core/periodic_optimizer_state_macros.h"
-
 %template(_OpenCubicSplineBase) IMP::score_functor::ScoreUnaryFunction<IMP::score_functor::OpenCubicSpline>;
 
 IMP_SWIG_BASE_OBJECT(IMP::core,  MonteCarloMover, MonteCarloMovers);
 IMP_SWIG_VALUE(IMP::core, MonteCarloMoverResult, MonteCarloMoverResults);
-IMP_SWIG_OBJECT(IMP::core,  Mover, Movers)
-IMP_SWIG_OBJECT(IMP::core,  MoverBase, MoverBases)
 IMP_SWIG_CONTAINER(IMP::core, IMP::core, MonteCarlo, Mover, mover);
 IMP_SWIG_CONTAINER(IMP::core, IMP::core, SerialMover, Mover, mover);
 
@@ -72,6 +65,7 @@ IMP_SWIG_OBJECT(IMP::core, RestraintsScoringFunction, RestraintsScoringFunctions
 
 IMP_SWIG_OBJECT( IMP::core, RigidBodyDistancePairScore, RigidBodyDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, RigidBodyMover, RigidBodyMovers);
+IMP_SWIG_OBJECT( IMP::core, RigidBodyTunneler, RigidBodyTunnelers);
 IMP_SWIG_OBJECT( IMP::core, RigidClosePairsFinder, RigidClosePairsFinders);
 IMP_SWIG_OBJECT( IMP::core, RigidMembersRefiner, RigidMembersRefiners);
 IMP_SWIG_OBJECT( IMP::core, SingletonConstraint, SingletonConstraints);
@@ -123,6 +117,7 @@ IMP_SWIG_OBJECT( IMP::core, AllSameQuadPredicate, AllSameQuadPredicates);
 
 IMP_SWIG_DECORATOR( IMP::core, XYZ, XYZs);
 IMP_SWIG_DECORATOR( IMP::core, XYZR, XYZRs);
+IMP_SWIG_DECORATOR( IMP::core, Gaussian, Gaussians)
 IMP_SWIG_DECORATOR( IMP::core, RigidBody, RigidBodies);
 IMP_SWIG_DECORATOR( IMP::core, RigidBodyMember, RigidBodyMembers);
 IMP_SWIG_DECORATOR( IMP::core, RigidMember, RigidMembers);
@@ -168,13 +163,11 @@ IMP_SWIG_OBJECT(IMP::core, IsCollisionPairPredicate, IsCollisionPairPredicates);
 /* Wrap our own base classes */
 %include "IMP/core/ClosePairsFinder.h"
 %include "IMP/core/MonteCarloMover.h"
-%include "IMP/core/Mover.h"
-%include "IMP/core/MoverBase.h"
 
 %include "IMP/core/XYZ.h"
 
 %include "IMP/core/XYZR.h"
-
+%include "IMP/core/Gaussian.h"
 
 /* Wrap the final classes */
 %include "IMP/core/AngleTripletScore.h"
@@ -299,6 +292,7 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 
 %include "IMP/core/AngleRestraint.h"
 %include "IMP/core/RigidBodyMover.h"
+%include "IMP/core/RigidBodyTunneler.h"
 %include "IMP/core/VolumeRestraint.h"
 %include "IMP/core/utility.h"
 %include "IMP/core/StatisticalPairScore.h"
@@ -320,6 +314,10 @@ algebra::Transformation3D get_transformation_aligning_first_to_second(const IMP:
 return algebra::get_transformation_aligning_first_to_second(a, XYZs(b));
 }
 }
+}
+
+IMP::kernel::Restraint *create_restraint(IMP::kernel::PairScore *ps, IMP::kernel::ParticlePair pp) {
+   return IMP::kernel::create_restraint(ps, pp);
 }
 %}
 

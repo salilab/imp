@@ -1,7 +1,7 @@
 /**
  *  \file OptimizerState.cpp \brief Shared optimizer state.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,12 +10,6 @@
 #include "IMP/kernel/internal/utility.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
-
-OptimizerState::OptimizerState(std::string name) : ModelObject(name) {
-  is_optimizing_ = false;
-  reset();
-  set_period(1);
-}
 
 OptimizerState::OptimizerState(kernel::Model* m, std::string name)
     : ModelObject(m, name) {

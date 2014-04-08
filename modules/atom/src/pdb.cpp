@@ -1,7 +1,7 @@
 /**
  *  \file PDBParser.h   \brief A class for reading PDB files
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/atom/pdb.h>
@@ -20,9 +20,10 @@
 #include <IMP/core/rigid_bodies.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
+#include <boost/unordered_map.hpp>
 #include <locale>
 #include <fstream>
-#include <boost/foreach.hpp>
+
 #include <iomanip>
 
 #include <boost/version.hpp>
@@ -313,6 +314,8 @@ Hierarchies read_pdb(std::istream& in, std::string name, kernel::Model* model,
         oss << internal::model_index(line);
         root_name = oss.str();
         root_p = nullptr;
+        cp = nullptr;
+        rp = nullptr;
       }
       first_model_read = true;
     }
@@ -401,9 +404,9 @@ Hierarchies read_pdb(std::istream& in, std::string name, kernel::Model* model,
 }
 
 void read_pdb(base::TextInput in, int model, Hierarchy h) {
-  base::map<int, kernel::Particle*> atoms_map;
+  boost::unordered_map<int, kernel::Particle*> atoms_map;
   atom::Hierarchies atoms = get_by_type(h, ATOM_TYPE);
-  base::map<core::RigidBody, kernel::ParticleIndexes> rigid_bodies;
+  boost::unordered_map<core::RigidBody, kernel::ParticleIndexes> rigid_bodies;
   for (unsigned int i = 0; i < atoms.size(); ++i) {
     atoms_map[atoms[i]->get_value(get_pdb_index_key())] = atoms[i];
     if (core::RigidMember::get_is_setup(atoms[i])) {
@@ -439,8 +442,8 @@ void read_pdb(base::TextInput in, int model, Hierarchy h) {
       }
     }
   }
-  for (base::map<core::RigidBody, kernel::ParticleIndexes>::iterator it =
-           rigid_bodies.begin();
+  for (boost::unordered_map<core::RigidBody, kernel::ParticleIndexes>::iterator
+           it = rigid_bodies.begin();
        it != rigid_bodies.end(); ++it) {
     core::RigidBody rb = it->first;
     rb.set_reference_frame_from_members(it->second);
@@ -481,7 +484,7 @@ void write_pdb(const Selection& mhd, base::TextOutput out, unsigned int model) {
 
 void write_multimodel_pdb(const Hierarchies& mhd, base::TextOutput out) {
   for (unsigned int i = 0; i < mhd.size(); ++i) {
-    out.get_stream() << boost::format("MODEL%1$9d") % (i+1) << std::endl;
+    out.get_stream() << boost::format("MODEL%1$9d") % (i + 1) << std::endl;
     internal::write_pdb(get_leaves(mhd[i]), out);
     out.get_stream() << "ENDMDL" << std::endl;
   }
@@ -504,7 +507,7 @@ void write_pdb_of_c_alphas(const Selection& mhd, base::TextOutput out,
     char chain;
     Chain c = get_chain(leaves[i]);
     if (c) {
-      chain = c.get_id();
+      chain = c.get_id()[0];
     } else {
       chain = ' ';
     }
@@ -608,31 +611,21 @@ std::string get_pdb_string(const algebra::Vector3D& v, int index, AtomType at,
 }
 
 std::string get_pdb_conect_record_string(int a1_ind, int a2_ind) {
-  //      const IMP::atom::Atom &a1, const IMP::atom::Atom &a2){
-  //  IMP::atom::Atom *a3,IMP::atom::Atom *a4,IMP::atom::Atom *a5) {
-
   std::stringstream out;
   out.setf(std::ios::left, std::ios::adjustfield);
+  // up to five atoms can be connected by CONECT line, we only support two
   // 1-6         Record name      "CONECT"
   out.width(6);
   out << "CONECT";
   // 7 - 11 Atom serial number
   out.width(5);
+  out.setf(std::ios::right, std::ios::adjustfield);
   out << a1_ind;  // a1.get_input_index();
   // 12 - 16 Serial number of bonded atom
+  out.width(5);
+  out.setf(std::ios::right, std::ios::adjustfield);
   out << a2_ind;  // a2.get_input_index();
-                  // 17 - 21 Serial number of bonded atom
-                  // if(a3 != nullptr) {
-                  //   out<<a3->get_input_index();
-                  // }
-                  // //22 - 26  Serial number of bonded atom
-                  // if(a4 != nullptr) {
-                  //   out<<a4->get_input_index();
-                  // }
-                  // //27 - 31 Serial number of bonded atom
-                  // if(a5 != nullptr) {
-                  //   out<<a5->get_input_index();
-  // }
+  out << std::endl;
   return out.str();
 }
 
@@ -646,9 +639,7 @@ WritePDBOptimizerState::WritePDBOptimizerState(const atom::Hierarchies mh,
                                                std::string filename)
     : kernel::OptimizerState(mh[0].get_model(), filename + "Writer"),
       filename_(filename) {
-  BOOST_FOREACH(atom::Hierarchy h, mh) {
-    pis_.push_back(h.get_particle_index());
-  }
+  IMP_FOREACH(atom::Hierarchy h, mh) { pis_.push_back(h.get_particle_index()); }
 }
 
 void WritePDBOptimizerState::do_update(unsigned int call) {
@@ -656,7 +647,7 @@ void WritePDBOptimizerState::do_update(unsigned int call) {
   bool append = (call != 0);
   std::string filename;
   Hierarchies hs;
-  BOOST_FOREACH(kernel::ParticleIndex pi, pis_) {
+  IMP_FOREACH(kernel::ParticleIndex pi, pis_) {
     hs.push_back(Hierarchy(get_model(), pi));
   }
   try {
@@ -675,7 +666,7 @@ void WritePDBOptimizerState::do_update(unsigned int call) {
 
 ModelObjectsTemp WritePDBOptimizerState::do_get_inputs() const {
   kernel::ModelObjectsTemp ret;
-  BOOST_FOREACH(kernel::ParticleIndex pi, pis_) {
+  IMP_FOREACH(kernel::ParticleIndex pi, pis_) {
     ret += get_leaves(Hierarchy(get_model(), pi));
   }
   return ret;

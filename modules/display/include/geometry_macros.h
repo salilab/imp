@@ -2,7 +2,7 @@
  *  \file IMP/display/geometry_macros.h
  *  \brief macros for display classes
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_GEOMETRY_MACROS_H
@@ -12,11 +12,6 @@
 #include <IMP/pair_macros.h>
 
 //! Define information for an Geometry object
-#define IMP_GEOMETRY(Name)                                              \
-  IMPDISPLAY_DEPRECATED_MACRO(2.1, "Just declare the method.");         \
-  virtual IMP::display::Geometries get_components() const IMP_OVERRIDE; \
-  IMP_OBJECT_NO_WARNING(Name)
-
 #define IMP_DISPLAY_GEOMETRY_DEF(Name, Type)                     \
   Name::Name(std::string name) : display::Geometry(name) {}      \
   Name::Name(const Type &v) : display::Geometry(#Name), v_(v) {} \
@@ -152,14 +147,14 @@
    public:                                                                 \
     Name##sGeometry(SingletonContainer *sc)                                \
         : display::SingletonsGeometry(sc) {}                               \
-    IMP_IMPLEMENT_INLINE(display::Geometries get_components() const, {     \
+    display::Geometries get_components() const {                           \
       display::Geometries ret;                                             \
-      IMP_CONTAINER_FOREACH(SingletonContainer, get_container(), {         \
-        Decorator d(get_container()->get_model(), _1);                     \
+      IMP_FOREACH(ParticleIndex pi, get_container()->get_contents()) {     \
+        Decorator d(get_container()->get_model(), pi);                     \
         action;                                                            \
-      });                                                                  \
+      }                                                                    \
       return ret;                                                          \
-    });                                                                    \
+    }                                                                      \
     IMP_OBJECT_METHODS(Name##sGeometry);                                   \
   }
 
@@ -169,27 +164,29 @@
    public:                                                             \
     Name##Geometry(const kernel::ParticlePair &pp)                     \
         : display::PairGeometry(pp) {}                                 \
-    IMP_IMPLEMENT_INLINE(display::Geometries get_components() const, { \
+    display::Geometries get_components() const {                       \
       display::Geometries ret;                                         \
       Decorator d0(get_particle_pair()[0]);                            \
       Decorator d1(get_particle_pair()[1]);                            \
       action;                                                          \
       return ret;                                                      \
-    }) IMP_OBJECT_METHODS(Name##Geometry);                             \
+    }                                                                  \
+    IMP_OBJECT_METHODS(Name##Geometry);                                \
   };                                                                   \
   /** Display multiple pairs of particles.*/                           \
   class Name##sGeometry : public display::PairsGeometry {              \
    public:                                                             \
     Name##sGeometry(PairContainer *sc) : display::PairsGeometry(sc) {} \
-    IMP_IMPLEMENT_INLINE(display::Geometries get_components() const, { \
+    display::Geometries get_components() const {                       \
       display::Geometries ret;                                         \
-      IMP_CONTAINER_FOREACH(PairContainer, get_container(), {          \
-        Decorator d0(get_container()->get_model(), _1[0]);             \
-        Decorator d1(get_container()->get_model(), _1[1]);             \
+      IMP_FOREACH(kernel::ParticleIndexPair pip,                       \
+                  get_container()->get_contents()) {                   \
+        Decorator d0(get_container()->get_model(), pip[0]);            \
+        Decorator d1(get_container()->get_model(), pip[1]);            \
         action;                                                        \
-      });                                                              \
+      }                                                                \
       return ret;                                                      \
-    });                                                                \
+    }                                                                  \
     IMP_OBJECT_METHODS(Name##sGeometry);                               \
   }
 

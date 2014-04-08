@@ -51,3 +51,5 @@ print 'Chi without parameter fitting = ' + str(chi)
 
 chi = (saxs_score.fit_profile(model_profile)).get_chi()
 print 'Chi after adjustment of excluded volume and water layer parameters = ' + str(chi)
+saxs_score.fit_profile(model_profile, 0.95, 1.05, -2.0, 4.0, False,
+                       '6lyz_fitted.dat')

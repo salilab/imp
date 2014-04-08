@@ -2,7 +2,9 @@ import IMP
 import IMP.test
 import IMP.algebra
 
+
 class Tests(IMP.test.TestCase):
+
     """Test Linear and Parabolic fits"""
 
     def test_linear(self):
@@ -10,7 +12,7 @@ class Tests(IMP.test.TestCase):
         v1 = IMP.algebra.Vector2D(1.0, 4.0)
         v2 = IMP.algebra.Vector2D(2.0, 5.0)
         v3 = IMP.algebra.Vector2D(3.0, 6.0)
-        vs= []
+        vs = []
         vs.append(v1)
         vs.append(v2)
         vs.append(v3)
@@ -24,8 +26,8 @@ class Tests(IMP.test.TestCase):
         v1 = IMP.algebra.Vector2D(1.0, 4.0)
         v2 = IMP.algebra.Vector2D(2.0, 5.0)
         v3 = IMP.algebra.Vector2D(3.0, 6.0)
-        w=[5.0, 1.0, 3.0]
-        vs= []
+        w = [5.0, 1.0, 3.0]
+        vs = []
         vs.append(v1)
         vs.append(v2)
         vs.append(v3)
@@ -40,8 +42,8 @@ class Tests(IMP.test.TestCase):
         v1 = IMP.algebra.Vector2D(1.0, 4.0)
         v2 = IMP.algebra.Vector2D(2.0, 5.0)
         v3 = IMP.algebra.Vector2D(3.0, 6.0)
-        w=[1.0, 1.0, 1.0]
-        vs= []
+        w = [1.0, 1.0, 1.0]
+        vs = []
         vs.append(v1)
         vs.append(v2)
         vs.append(v3)
@@ -55,7 +57,7 @@ class Tests(IMP.test.TestCase):
         v1 = IMP.algebra.Vector2D(1.0, 9.0)
         v2 = IMP.algebra.Vector2D(2.0, 15.0)
         v3 = IMP.algebra.Vector2D(3.0, 23.0)
-        vs= []
+        vs = []
         vs.append(v1)
         vs.append(v2)
         vs.append(v3)

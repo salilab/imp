@@ -2,7 +2,7 @@
  *  \file RigidClosePairsFinder.cpp
  *  \brief Test all pairs.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,7 +15,9 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/macros.h>
+#include <boost/unordered_map.hpp>
 #include <IMP/algebra/eigen_analysis.h>
+#include <boost/unordered_set.hpp>
 #include <cmath>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -35,13 +37,12 @@ RigidClosePairsFinder::RigidClosePairsFinder(ClosePairsFinder *cpf)
 namespace {
 ParticlesTemp get_rigid_bodies(kernel::Model *m,
                                const kernel::ParticleIndexes &pis) {
-  IMP::base::set<kernel::Particle *> rets;
+  boost::unordered_set<kernel::Particle *> rets;
   for (unsigned int i = 0; i < pis.size(); ++i) {
     if (RigidMember::get_is_setup(m, pis[i])) {
       rets.insert(RigidMember(m, pis[i]).get_rigid_body());
     }
-  }
-  ;
+  };
   return kernel::ParticlesTemp(rets.begin(), rets.end());
 }
 
@@ -54,11 +55,12 @@ ParticlesTemp get_rigid_bodies(kernel::Model *m,
     });
   return ret;
   }*/
-typedef IMP::base::map<kernel::ParticleIndex, kernel::ParticleIndexes> RBM;
+typedef boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes>
+    RBM;
 void divvy_up_particles(kernel::Model *m, const kernel::ParticleIndexes &ps,
                         kernel::ParticleIndexes &out, RBM &members) {
   IMP_IF_CHECK(base::USAGE) {
-    base::set<kernel::ParticleIndex> ups(ps.begin(), ps.end());
+    boost::unordered_set<kernel::ParticleIndex> ups(ps.begin(), ps.end());
     IMP_USAGE_CHECK(ups.size() == ps.size(),
                     "Duplicate particles in input: " << ups.size()
                                                      << "!= " << ps.size());

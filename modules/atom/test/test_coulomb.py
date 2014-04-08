@@ -5,27 +5,33 @@ import IMP.test
 import IMP.atom
 import IMP.core
 
+
 def make_test_pair_score(min_distance=9.0, max_distance=10.0):
     m = IMP.kernel.Model()
     p0 = IMP.kernel.Particle(m)
-    d0 = IMP.atom.Charged.setup_particle(p0, IMP.algebra.Vector3D(0,0,0), 0.0)
+    d0 = IMP.atom.Charged.setup_particle(
+        p0, IMP.algebra.Vector3D(0, 0, 0), 0.0)
     p1 = IMP.kernel.Particle(m)
-    d1 = IMP.atom.Charged.setup_particle(p1, IMP.algebra.Vector3D(0,0,0), 0.0)
+    d1 = IMP.atom.Charged.setup_particle(
+        p1, IMP.algebra.Vector3D(0, 0, 0), 0.0)
     sm = IMP.atom.ForceSwitch(min_distance, max_distance)
     c = IMP.atom.CoulombPairScore(sm)
     r = IMP.core.PairRestraint(c, (p0, p1))
     m.add_restraint(r)
     return m, d0, d1, c
 
+
 def place_xyzs(xyz0, xyz1, box, dist):
     """Place two XYZ particles randomly a given distance apart"""
     v = IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(-box, box))
-    delta = IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d()) * dist
+    delta = IMP.algebra.get_random_vector_on(
+        IMP.algebra.get_unit_sphere_3d()) * dist
     xyz0.set_coordinates(v)
     xyz1.set_coordinates(v + delta)
 
 
 class Tests(IMP.test.TestCase):
+
     """Test the CoulombPairScore"""
 
     def test_get_set(self):
@@ -62,8 +68,8 @@ class Tests(IMP.test.TestCase):
         # Place one particle at the origin and the other at a random position
         # between 1 and 6 angstroms away (not too close since the derivatives
         # are too large there)
-        d0.set_coordinates(IMP.algebra.Vector3D(0,0,0))
-        d1.set_coordinates(IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d()) \
+        d0.set_coordinates(IMP.algebra.Vector3D(0, 0, 0))
+        d1.set_coordinates(IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d())
                            * (random.random() * 5.0 + 1.0))
         self.assertXYZDerivativesInTolerance(m, d0, 2.0, 3.0)
         self.assertXYZDerivativesInTolerance(m, d1, 2.0, 3.0)
@@ -74,6 +80,7 @@ class Tests(IMP.test.TestCase):
         smm, smd0, smd1, smc = make_test_pair_score(min_distance=4.0,
                                                     max_distance=5.0)
         box = IMP.algebra.Vector3D(10.0, 20.0, 30.0)
+
         def place_all(dist):
             place_xyzs(d0, d1, box, dist)
             smd0.set_coordinates(d0.get_coordinates())

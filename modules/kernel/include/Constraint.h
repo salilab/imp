@@ -1,7 +1,7 @@
 /**
  *  \file IMP/kernel/Constraint.h   \brief A base class for constraints.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -39,17 +39,15 @@ IMPKERNEL_BEGIN_NAMESPACE
     and created invisibly when needed.
 
     \note Constraint invariants will not necessarily hold if
-    involved particles have been called and Model::evaluate()
-    has not been called. For example, if you change a
-    particle's coordinates, a IMP::core::Centroid of a set
-    containing the particle will not be correct until the
-    Model is evaluated.
+    involved particles have been modified directly (not through e.g., an
+    Optimizer), until Model::update() or Model::evaluate()
+    have been called. For example, if you change a
+    particle's coordinates, a IMP::core::Centroid of a set of particles that
+    contains the particle, will not be the correct centroid until the
+    Model is updated.
  */
 class IMPKERNELEXPORT Constraint : public ScoreState {
  public:
-#ifndef IMP_DOXYGEN
-  Constraint(std::string name = "Constraint %1%");
-#endif
   Constraint(kernel::Model *m, std::string name = "Constraint %1%");
   virtual void do_update_attributes() = 0;
   virtual void do_update_derivatives(DerivativeAccumulator *da) = 0;

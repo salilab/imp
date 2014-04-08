@@ -2,7 +2,9 @@ import IMP
 import IMP.test
 import IMP.atom
 
+
 class Tests(IMP.test.TestCase):
+
     """Test the ResidueType class and related functions"""
 
     def test_get_one_letter_type(self):
@@ -18,9 +20,9 @@ class Tests(IMP.test.TestCase):
 
     def test_equality(self):
         """Check equality of ResidueType types"""
-        at0= IMP.atom.ResidueType(0)
-        at1= IMP.atom.ResidueType(0)
-        at2= IMP.atom.ResidueType(1)
+        at0 = IMP.atom.ResidueType(0)
+        at1 = IMP.atom.ResidueType(0)
+        at2 = IMP.atom.ResidueType(1)
         self.assertEqual(at0, at1)
         self.assertNotEqual(at0, at2)
 

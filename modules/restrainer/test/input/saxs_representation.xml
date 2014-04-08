@@ -1,5 +1,0 @@
-<Representation>
-    <Protein id="6lyz">
-        <Chain filename="data/6lyz.pdb" selector="NonWaterNonHydrogen"/>
-    </Protein>
-</Representation>

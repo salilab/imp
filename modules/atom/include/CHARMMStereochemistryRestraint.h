@@ -2,7 +2,7 @@
  * \file IMP/atom/CHARMMStereochemistryRestraint.h
  * \brief Class to maintain CHARMM stereochemistry.
  *
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -50,8 +50,8 @@ class IMPATOMEXPORT CHARMMStereochemistryRestraint : public kernel::Restraint {
    */
   StereochemistryPairFilter *get_pair_filter();
 
-  virtual double unprotected_evaluate(
-      IMP::kernel::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(CHARMMStereochemistryRestraint);
 };

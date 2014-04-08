@@ -8,16 +8,13 @@ Several helper programs are provided.
    hdf5 file to pymol or chimera as appropriate (based on the file name of the
    second argument). It supports hierarchies, restraints and geometry.
 
-- `pdb_rmf` converts an rmf file to or from a PDB file, assuming all hierarchies
-   in the rmf file are atomic resolution.
-
-- `rmf_color` adds color information to an RMF
+- `pdb_rmf` makes an RMF file from a PDB.
 
 # Info
 
 _Author(s)_: Daniel Russel
 
-_Maintainer_: `drussel`
+_Maintainer_: `benmwebb`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

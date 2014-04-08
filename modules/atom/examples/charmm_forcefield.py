@@ -58,9 +58,10 @@ nbl.add_pair_filter(r.get_pair_filter())
 
 sf = IMP.atom.ForceSwitch(6.0, 7.0)
 ps = IMP.atom.LennardJonesPairScore(sf)
-m.add_restraint(IMP.container.PairsRestraint(ps, nbl))
+restraints = [r, IMP.container.PairsRestraint(ps, nbl)]
+scoring_function = IMP.core.RestraintsScoringFunction(restraints)
 
 # it gets awfully slow with internal checks
 IMP.base.set_check_level(IMP.base.USAGE)
 # Finally, evaluate the score of the whole system (without derivatives)
-print m.evaluate(False)
+print scoring_function.evaluate(False)

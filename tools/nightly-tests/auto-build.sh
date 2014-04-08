@@ -26,6 +26,8 @@ cd ${GIT_TOP}/imp
 git checkout ${BRANCH} -f -q >& /tmp/$$.out
 # Squash chatty output from git checkout
 grep -v "Version=" /tmp/$$.out
+# Clean up untracked or modified files in each submodule
+git submodule foreach --quiet --recursive 'git reset --hard --quiet; git clean -f -q -x -d'
 
 # Make sure we're up to date with the remote
 git merge --ff-only -q origin/${BRANCH} || exit 1
@@ -38,8 +40,10 @@ grep -v "Version=" /tmp/$$.out
 rm -f /tmp/$$.out
 
 # Update any submodules, etc. if necessary
-git submodule update
-./setup_git.py  >& /dev/null
+git submodule update --recursive
+if [ ${BRANCH} = "develop" ]; then
+  ./setup_git.py > /dev/null || exit 1
+fi
 
 # Get top-most revision
 rev=`git rev-parse HEAD`

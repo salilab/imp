@@ -1,9 +1,9 @@
 /**
- \file kinematics/UniformBackboneSampler.h
+ \file IMP/kinematics/UniformBackboneSampler.h
  \brief A class for uniform sampling of backbone angles
 
  \authors Dina Schneidman, Barak Raveh
- Copyright 2007-2013 IMP Inventors. All rights reserved.
+ Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKINEMATICS_UNIFORM_BACKBONE_SAMPLER_H
@@ -12,10 +12,11 @@
 #include "kinematics_config.h"
 #include "DOFsSampler.h"
 #include "revolute_joints.h"
+#include <boost/random/uniform_real.hpp>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-//TODO: is it necessarily backbone? could be any dihedrals too?
+// TODO: is it necessarily backbone? could be any dihedrals too?
 
 /**
    A DOFs sampler that acts on a set of backbone dihedral joints

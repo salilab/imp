@@ -2,7 +2,7 @@
  *  \file generic.h    \brief Various important functionality
  *                                       for implementing decorators.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,7 +11,6 @@
 
 #include "../Constraint.h"
 #include "container_helpers.h"
-#include "../score_state_macros.h"
 #include <IMP/base/Pointer.h>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE

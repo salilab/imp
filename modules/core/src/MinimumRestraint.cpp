@@ -1,7 +1,7 @@
 /**
  *  \file MinimumRestraint.cpp \brief Distance restraint between two particles.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -42,24 +42,12 @@ double MinimumRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   }
 }
 
-void MinimumRestraint::set_model(kernel::Model *m) {
-  kernel::Restraint::set_model(m);
-  for (RestraintConstIterator it = restraints_begin(); it != restraints_end();
-       ++it) {
-    (*it)->set_model(m);
-  }
-}
-
 ModelObjectsTemp MinimumRestraint::do_get_inputs() const {
   kernel::ModelObjectsTemp ret;
   for (unsigned int i = 0; i < get_number_of_restraints(); ++i) {
     ret += get_restraint(i)->get_inputs();
   }
   return ret;
-}
-
-void MinimumRestraint::on_add(kernel::Restraint *r) const {
-  r->set_model(get_model());
 }
 
 void MinimumRestraint::clear_caches() {

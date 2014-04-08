@@ -1,10 +1,10 @@
 /**
- *   Copyright 2007-2013 IMP Inventors. All rights reserved
+ *   Copyright 2007-2014 IMP Inventors. All rights reserved
  */
+#include <IMP/base_types.h>
 #include <IMP/kernel/Model.h>
 #include <IMP/kernel/Particle.h>
 #include <IMP/kernel/Restraint.h>
-#include <IMP/restraint_macros.h>
 #include <IMP/base/threads.h>
 #include <IMP/base/flags.h>
 
@@ -16,21 +16,21 @@ std::string get_module_version() { return std::string(); }
 
 std::string get_module_name() { return std::string(); }
 
-class TouchyRestraint : public IMP::Restraint {
+class TouchyRestraint : public IMP::kernel::Restraint {
   IMP::kernel::Particle *p_;
   IMP::FloatKey fk_;
 
  public:
   TouchyRestraint(IMP::kernel::Particle *p, IMP::FloatKey fk)
       : IMP::Restraint(p->get_model(), "Touchy"), p_(p), fk_(fk) {}
-  virtual double unprotected_evaluate(
-      IMP::kernel::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(TouchyRestraint);
 };
 
-double TouchyRestraint::unprotected_evaluate(
-    IMP::DerivativeAccumulator *) const {
+double TouchyRestraint::unprotected_evaluate(IMP::DerivativeAccumulator *)
+    const {
   return p_->get_value(fk_);
 }
 
@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
     return 1;
     // the exception gets translated into a normal IMP exception
   }
-  catch (const std::runtime_error & e) {
+  catch (const std::runtime_error &e) {
     std::cerr << e.what() << std::endl;
   }
 #endif

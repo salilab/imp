@@ -2,7 +2,7 @@
  *  \file IMP/atom/RemoveRigidMotionOptimizerState.h
  *  \brief Remove rigid rotation and translation during molecular dynamics.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,17 +13,12 @@
 #include <IMP/kernel/Particle.h>
 #include <IMP/base_types.h>
 #include <IMP/OptimizerState.h>
-#include <IMP/optimizer_state_macros.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
 //! Removes rigid translation and rotation from the particles.
 class IMPATOMEXPORT RemoveRigidMotionOptimizerState : public OptimizerState {
  public:
-  /** \deprecated_at{2.1} Use set_period() instead. */
-  IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
-  RemoveRigidMotionOptimizerState(const kernel::ParticlesTemp &pis,
-                                  unsigned skip_steps);
   RemoveRigidMotionOptimizerState(kernel::Model *m,
                                   kernel::ParticleIndexesAdaptor pis);
 

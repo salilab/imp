@@ -1,7 +1,7 @@
 /**
- *  \file em2d/project.h
+ *  \file IMP/em2d/project.h
  *  \brief Generation of projections from models or density maps
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_PROJECT_H
@@ -24,12 +24,11 @@
 #include <algorithm>
 #include <fstream>
 
-
 IMPEM2D_BEGIN_NAMESPACE
 
 //! Parameters needed for the core projection routine
 class IMPEM2DEXPORT ProjectingParameters {
-public:
+ public:
   double pixel_size, resolution;
 
   ProjectingParameters() {};
@@ -39,25 +38,25 @@ public:
    * @param ps Pixel size of the image to generate when projection
    * @param res Resolution used to downsample an atomic model before projecting
    */
-  ProjectingParameters(double ps, double res):
-                  pixel_size(ps), resolution(res) {};
+  ProjectingParameters(double ps, double res)
+      : pixel_size(ps), resolution(res) {};
 
   /**
    * Shows information about the class
    * @param out Stream used to show the information
    */
   void show(std::ostream &out = std::cout) const {
-    out << "ProjectingParameters " << pixel_size
-              << " " << resolution << std::endl;};
+    out << "ProjectingParameters " << pixel_size << " " << resolution
+        << std::endl;
+  };
 };
-IMP_VALUES(ProjectingParameters,ProjectingParametersList);
-
+IMP_VALUES(ProjectingParameters, ProjectingParametersList);
 
 //! Parameters given as options to the get_projections() functions.
 /** This class augments ProjectingParameters adding values that are options
     for the projecting functions, not core parameters.
  */
-class IMPEM2DEXPORT ProjectingOptions: public ProjectingParameters {
+class IMPEM2DEXPORT ProjectingOptions : public ProjectingParameters {
 
   /**
    * Sets the default values for the options: Don't save matching images,
@@ -68,18 +67,19 @@ class IMPEM2DEXPORT ProjectingOptions: public ProjectingParameters {
     normalize = true;
     clear_matrix_before_projecting = true;
   }
-public:
+
+ public:
 #ifndef SWIG
-  base::Pointer<ImageReaderWriter> srw; // Writer used to save the images
+  base::Pointer<ImageReaderWriter> srw;  // Writer used to save the images
 #endif
-  bool save_images; // Save images after projeting
-  bool normalize; // Normalize the projection after generating it
-  bool clear_matrix_before_projecting; // Set the matrix to zeros
+  bool save_images;  // Save images after projeting
+  bool normalize;    // Normalize the projection after generating it
+  bool clear_matrix_before_projecting;  // Set the matrix to zeros
 
   /**
    * Constructor. Calls init_defaults()
    */
-  ProjectingOptions() {init_defaults();}
+  ProjectingOptions() { init_defaults(); }
 
   /**
    * The arguments passed to the constructor are the same as the arguments to
@@ -87,12 +87,12 @@ public:
    * @param ps
    * @param res
    */
-  ProjectingOptions(double ps, double res): ProjectingParameters(ps, res) {
+  ProjectingOptions(double ps, double res) : ProjectingParameters(ps, res) {
     init_defaults();
   }
 
-  ProjectingOptions(double ps, double res, ImageReaderWriter *irw):
-    ProjectingParameters(ps, res), srw(irw) {
+  ProjectingOptions(double ps, double res, ImageReaderWriter *irw)
+      : ProjectingParameters(ps, res), srw(irw) {
     init_defaults();
   }
 
@@ -101,11 +101,10 @@ public:
    * @param out Stream used to show the information
    */
   void show(std::ostream &out = std::cout) const {
-    out << "ProjectingOptions " << pixel_size
-              << " " << resolution << std::endl;};
+    out << "ProjectingOptions " << pixel_size << " " << resolution << std::endl;
+  };
 };
-IMP_VALUES(ProjectingOptions,ProjectingOptionsList);
-
+IMP_VALUES(ProjectingOptions, ProjectingOptionsList);
 
 //! Generates projections from particles
 /**
@@ -116,11 +115,10 @@ IMP_VALUES(ProjectingOptions,ProjectingOptionsList);
   \param[in] options Options for control the projecting
   \param[in] names names of the images
 */
-IMPEM2DEXPORT em2d::Images get_projections(const kernel::ParticlesTemp &ps,
-        const algebra::SphericalVector3Ds &vs,
-        int rows, int cols, const ProjectingOptions &options,
-        Strings names=Strings());
-
+IMPEM2DEXPORT em2d::Images get_projections(
+    const kernel::ParticlesTemp &ps, const algebra::SphericalVector3Ds &vs,
+    int rows, int cols, const ProjectingOptions &options,
+    Strings names = Strings());
 
 //! Generates projections from particles
 /**
@@ -129,11 +127,10 @@ IMPEM2DEXPORT em2d::Images get_projections(const kernel::ParticlesTemp &ps,
 
   \note See the function get_projections() for the rest of the parameters
 */
-IMPEM2DEXPORT em2d::Images get_projections(const kernel::ParticlesTemp &ps,
-        const RegistrationResults &registration_values,
-        int rows, int cols, const ProjectingOptions &options,
-        Strings names=Strings());
-
+IMPEM2DEXPORT em2d::Images get_projections(
+    const kernel::ParticlesTemp &ps,
+    const RegistrationResults &registration_values, int rows, int cols,
+    const ProjectingOptions &options, Strings names = Strings());
 
 //! Generates a projection from particles
 /**
@@ -149,10 +146,11 @@ IMPEM2DEXPORT em2d::Images get_projections(const kernel::ParticlesTemp &ps,
   \note See the function get_projections() for the rest of the parameters
 */
 IMPEM2DEXPORT void get_projection(em2d::Image *img,
-        const kernel::ParticlesTemp &ps,
-        const RegistrationResult &reg, const ProjectingOptions &options,
-        MasksManagerPtr masks=MasksManagerPtr(), String name="");
-
+                                  const kernel::ParticlesTemp &ps,
+                                  const RegistrationResult &reg,
+                                  const ProjectingOptions &options,
+                                  MasksManagerPtr masks = MasksManagerPtr(),
+                                  String name = "");
 
 //! Projects a set of particles. This is the core function that others call
 /**
@@ -165,25 +163,21 @@ IMPEM2DEXPORT void get_projection(em2d::Image *img,
   \note See the function get_projection() for the rest of the parameters
 */
 IMPEM2DEXPORT void do_project_particles(const kernel::ParticlesTemp &ps,
-             cv::Mat &m2,
-             const algebra::Rotation3D &R,
-             const algebra::Vector3D &translation,
-             const ProjectingOptions &options,
-             MasksManagerPtr masks);
-
+                                        cv::Mat &m2,
+                                        const algebra::Rotation3D &R,
+                                        const algebra::Vector3D &translation,
+                                        const ProjectingOptions &options,
+                                        MasksManagerPtr masks);
 
 /** This function is slightly different than the other ones.
     Only generates evenly distributed projections and determines the size of
     the images that encloses the particles. Should not be used unless this is
     exactly what you want.
 */
-IMPEM2DEXPORT Images create_evenly_distributed_projections(
-                                             const kernel::ParticlesTemp &ps,
-                                             unsigned int n,
-                                             const ProjectingOptions &options);
-
-
-
+IMPEM2DEXPORT Images
+    create_evenly_distributed_projections(const kernel::ParticlesTemp &ps,
+                                          unsigned int n,
+                                          const ProjectingOptions &options);
 
 //! Project the points contained in Vector3Ds to gen vectors in 2D
 /**
@@ -193,12 +187,8 @@ IMPEM2DEXPORT Images create_evenly_distributed_projections(
   \return A set of Vector2D with the projected points
 */
 IMPEM2DEXPORT algebra::Vector2Ds do_project_vectors(
-            const algebra::Vector3Ds &ps,
-            const algebra::Rotation3D &R,
-            const  algebra::Vector3D &translation);
-
-
-
+    const algebra::Vector3Ds &ps, const algebra::Rotation3D &R,
+    const algebra::Vector3D &translation);
 
 //! Project the points contained in Vector3Ds
 /**
@@ -209,23 +199,16 @@ IMPEM2DEXPORT algebra::Vector2Ds do_project_vectors(
   \return A set of Vector2D with the projected points
 */
 IMPEM2DEXPORT algebra::Vector2Ds do_project_vectors(
-              const algebra::Vector3Ds &ps,
-              const algebra::Rotation3D &R,
-              const algebra::Vector3D &translation,
-              const algebra::Vector3D &center);
-
+    const algebra::Vector3Ds &ps, const algebra::Rotation3D &R,
+    const algebra::Vector3D &translation, const algebra::Vector3D &center);
 
 //! Get an automatic size for an image that contains the particles
 /**
   slack is the number of pixels left as border
 */
 IMPEM2DEXPORT unsigned int get_enclosing_image_size(
-                   const kernel::ParticlesTemp &ps, double pixel_size,
-                   unsigned int slack);
-
-
+    const kernel::ParticlesTemp &ps, double pixel_size, unsigned int slack);
 
 IMPEM2D_END_NAMESPACE
-
 
 #endif /* IMPEM2D_PROJECT_H */

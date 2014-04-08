@@ -2,7 +2,7 @@
  *  \file kernel::RestraintGraph.h
  *  \brief creates a MRF from a set of particles and restraints
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -20,7 +20,7 @@
 #include <IMP/kernel/Restraint.h>
 
 #include <vector>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <sstream>
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -36,7 +36,7 @@ class IMPDOMINOEXPORT InferenceStatistics {
     Assignments sample;
   };
   Data get_data(const Subset &s, AssignmentContainer *ss) const;
-  IMP::base::map<Subset, Data> subsets_;
+  boost::unordered_map<Subset, Data> subsets_;
   mutable boost::uniform_real<double> select_;
   mutable boost::uniform_int<> place_;
   const Data &get_data(const Subset &s) const;
@@ -64,7 +64,7 @@ struct AsIndexes {
 };
 IMP_VALUES(AsIndexes, AsIndexesList);
 
-typedef IMP::base::map<kernel::Particle *, int> ParticleIndex;
+typedef boost::unordered_map<kernel::Particle *, int> ParticleIndex;
 
 inline ParticleIndex get_index(const Subset &s) {
   ParticleIndex ret;

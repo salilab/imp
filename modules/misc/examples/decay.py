@@ -38,7 +38,7 @@ ps = []
 for i in range(0, np):
     p = IMP.kernel.Particle(m)
     d = IMP.core.XYZR.setup_particle(p)
-    d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
+    d.set_coordinates(IMP.algebra.Vector3D(10. * (i/10), 10. * (i%10), 10.))
     d.set_radius(10)
     d.set_coordinates_are_optimized(True)
     IMP.atom.Hierarchy.setup_particle(p)
@@ -68,11 +68,6 @@ rs.append(IMP.container.PairsRestraint(bond_score,
                                        dos.get_output_container(),
                                        "bonds"))
 ev = IMP.core.ExcludedVolumeRestraint(ps, 10, 10)
-# equilibrate
-print "equilibrating"
-IMP.base.set_log_level(IMP.PROGRESS)
-# IMP.benchmark.set_is_profiling(True)
-IMP.example.optimize_balls(ps, rs)
 IMP.base.set_log_level(IMP.SILENT)
 
 # set up simulator

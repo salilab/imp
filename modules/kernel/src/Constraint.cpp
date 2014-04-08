@@ -1,7 +1,7 @@
 /**
  *  \file Constraint.cpp \brief Shared score state.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,8 +10,6 @@
 #include "IMP/kernel/internal/utility.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
-
-Constraint::Constraint(std::string name) : ScoreState(name) {}
 
 Constraint::Constraint(kernel::Model *m, std::string name)
     : ScoreState(m, name) {}

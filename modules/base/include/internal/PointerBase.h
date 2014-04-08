@@ -2,24 +2,26 @@
  *  \file base/internal/PointerBase.h
  *  \brief A nullptr-initialized pointer to an IMP ref-counted Object.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPBASE_INTERNAL_POINTER_BASE_H
 #define IMPBASE_INTERNAL_POINTER_BASE_H
 
-#include "ref_counting.h"
+#include <IMP/base/base_config.h>
 #include "../check_macros.h"
 #include "../warning_macros.h"
-#include "IMP/base/hash.h"
-#include "IMP/base/nullptr.h"
+#include "../hash.h"
+#include "../hash_macros.h"
+#include "../nullptr.h"
 
-#include <boost/static_assert.hpp>
+#if defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)
 #include <boost/type_traits.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <boost/mpl/and.hpp>
 #include <boost/mpl/not.hpp>
+#endif
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
 template <class TT>
@@ -27,14 +29,19 @@ struct RefCountedPointerTraits {
   typedef TT Type;
   static void handle_set(TT* t) {
     IMP_CHECK_OBJECT_IF_NOT_nullptr(t);
-    internal::ref(t);
+    if (t) t->ref();
   }
-  static void handle_unset(TT* t) { internal::unref(t); }
+  static void handle_unset(TT* t) {
+    if (t) t->unref();
+  }
   static void check(const TT* o) { IMP_CHECK_OBJECT(o); }
+  static void release(TT* o) {
+    if (o) o->release();
+  }
 };
 template <class TT>
 // note: PointerMember replaces the old OwnerPointer
-    struct PointerMemberTraits : public RefCountedPointerTraits<TT> {
+struct PointerMemberTraits : public RefCountedPointerTraits<TT> {
   typedef TT Type;
   static void handle_set(TT* t) {
     t->set_was_used(true);
@@ -46,10 +53,8 @@ struct WeakPointerTraits {
   typedef TT Type;
   static void handle_set(TT*) {}
   static void handle_unset(TT*) {}
-  static void check(const TT*) {
-    // needs to support incomplete types
-    // IMP_CHECK_OBJECT(o);
-  }
+  static void check(const TT*) {}
+  static void release(TT*) {}
 };
 
 template <class TT>
@@ -61,6 +66,7 @@ struct CheckedWeakPointerTraits {
   }
   static void handle_unset(TT*) {}
   static void check(const TT* o) { IMP_CHECK_OBJECT(o); }
+  static void release(TT*) {}
 };
 
 template <class O, class OO, class Enabled = void>
@@ -265,7 +271,7 @@ class PointerBase {
       objects allocated within functions.
   */
   O* release() {
-    internal::release(o_);
+    Traits::release(o_);
     O* ret = o_;
     o_ = nullptr;
     return ret;

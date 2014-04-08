@@ -1,7 +1,7 @@
 /**
  * \file KMCentersNode.h \brief generic node of the kc-tree
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -40,7 +40,7 @@ class IMPSTATISTICSEXPORT KMCentersNode {
 
   KMPoint get_mid_point() const;
   KMRectangle &get_bounding_box()  // TODO - should be const ?
-      {
+  {
     return bnd_box_;
   }
   //! Compute sums of points

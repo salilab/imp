@@ -1,7 +1,7 @@
 /**
  *  \file Log.cpp   \brief Logging and error reporting support.
  *
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,8 +12,8 @@
 #include <IMP/base/internal/static.h>
 #include <IMP/base/internal/directories.h>
 #include <IMP/base/internal/log.h>
-#include <IMP/base/internal/static.h>
 #include <IMP/base/random.h>
+#include "internal/static.h"
 #include <boost/program_options/parsers.hpp>
 
 #if IMP_BASE_HAS_GPERFTOOLS
@@ -129,8 +129,11 @@ void initialize() {
   set_log_level(LogLevel(internal::log_level));
 #endif
 
-  random_number_generator.seed(internal::random_seed);
+  random_number_generator.seed(
+      static_cast<boost::int64_t>(internal::random_seed));
 }
+
+bool already_run = false;
 }
 
 void write_help(std::ostream &out) {
@@ -138,16 +141,18 @@ void write_help(std::ostream &out) {
       << std::endl;
   out << internal::exe_description << std::endl;
   out << internal::flags << std::endl;
+  if (internal::help_advanced) {
+    out << "Advanced options:" << std::endl;
+    out << internal::advanced_flags << std::endl;
+  }
   out << "This program is part of IMP, the Integrative Modeling Platform,"
       << std::endl;
-  out << "which is Copyright 2007-2013 IMP Inventors." << std::endl;
+  out << "which is Copyright 2007-2014 IMP Inventors." << std::endl;
   out << "For additional information about IMP, "
       << "see <http://integrativemodeling.org>." << std::endl;
 }
 
 namespace {
-
-bool already_run = false;
 
 Strings setup_from_argv_internal(int argc, char **argv, std::string description,
                                  std::string usage, int num_positional,
@@ -157,6 +162,7 @@ Strings setup_from_argv_internal(int argc, char **argv, std::string description,
                 << " of IMP.");
   }
   already_run = true;
+
   if (num_positional != 0) {
     IMP_USAGE_CHECK(!usage.empty(),
                     "You must have a usage string describing your "
@@ -164,18 +170,6 @@ Strings setup_from_argv_internal(int argc, char **argv, std::string description,
   }
   internal::exe_usage = usage;
   internal::exe_description = description;
-  bool help = false;
-  AddBoolFlag hf("help", "Print help", &help);
-  IMP_UNUSED(hf);
-
-  bool version = false;
-  AddBoolFlag vf("version", "Show version info and exit", &version);
-  IMP_UNUSED(vf);
-
-  bool show_seed = false;
-  AddBoolFlag ssf("show_random_seed", "Print out the random seed used",
-                  &show_seed);
-  IMP_UNUSED(ssf);
 
   internal::exe_name = argv[0];
 
@@ -188,6 +182,7 @@ Strings setup_from_argv_internal(int argc, char **argv, std::string description,
                     "");
   boost::program_options::options_description all;
   all.add(internal::flags);
+  all.add(internal::advanced_flags);
   all.add(pos);
   m_positional.add("positional", -1);
   try {
@@ -203,13 +198,13 @@ Strings setup_from_argv_internal(int argc, char **argv, std::string description,
       positional =
           internal::variables_map["positional"].as<std::vector<std::string> >();
     }
-    if (version) {
+    if (internal::version) {
       std::cerr << "Version: \"" << get_module_version() << "\"" << std::endl;
       std::cerr << "Checks: " << IMP_HAS_CHECKS << std::endl;
       std::cerr << "Log: " << IMP_HAS_LOG << std::endl;
       exit(0);
     }
-    if (help) {
+    if (internal::help || internal::help_advanced) {
       write_help(std::cerr);
       exit(0);
     }
@@ -232,7 +227,7 @@ Strings setup_from_argv_internal(int argc, char **argv, std::string description,
       }
     }
 
-    if (show_seed) {
+    if (internal::show_seed) {
       std::cerr << "Random seed: " << internal::random_seed << std::endl;
     }
 
@@ -245,7 +240,7 @@ Strings setup_from_argv_internal(int argc, char **argv, std::string description,
         return Strings(ret.begin(), ret.end());
       }
       catch (...) {
-        std::cerr << "Error gathering unknow arguments" << std::endl;
+        std::cerr << "Error gathering unknown arguments" << std::endl;
         write_help(std::cerr);
         throw IMP::base::UsageException("Bad arguments");
       }

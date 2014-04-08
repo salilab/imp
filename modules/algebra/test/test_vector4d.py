@@ -2,7 +2,9 @@ import IMP.algebra
 import IMP.test
 import math
 
+
 class Tests(IMP.test.TestCase):
+
     def test_magnitude(self):
         """Check Vector4D magnitude"""
         v = IMP.algebra.Vector4D(1.0, 2.0, 3.0, 4.0)
@@ -28,8 +30,8 @@ class Tests(IMP.test.TestCase):
         """Check Vector4D scalar product"""
         v1 = IMP.algebra.Vector4D(1.0, 2.0, 3.0, 4.0)
         v2 = IMP.algebra.Vector4D(10.0, 1.0, 2.0, 3.0)
-        self.assertAlmostEqual(v1*v2, v2.get_scalar_product(v1), delta=.1)
-        self.assertAlmostEqual(v1*v2, v1 * v2, delta=.1)
+        self.assertAlmostEqual(v1 * v2, v2.get_scalar_product(v1), delta=.1)
+        self.assertAlmostEqual(v1 * v2, v1 * v2, delta=.1)
         self.assertAlmostEqual(v1.get_scalar_product(v2), v2 * v1, delta=.1)
         self.assertAlmostEqual(v1.get_scalar_product(v2), 30.0, delta=.1)
 
@@ -40,9 +42,9 @@ class Tests(IMP.test.TestCase):
         diff = v1 - v2
         v1 -= v2
         expected_diff = IMP.algebra.Vector4D(-9.0, 1.0, 1.0, 1.0)
-        self.assertAlmostEqual((diff-expected_diff).get_magnitude(),
+        self.assertAlmostEqual((diff - expected_diff).get_magnitude(),
                                0, delta=.1)
-        self.assertAlmostEqual((v1-expected_diff).get_magnitude(),
+        self.assertAlmostEqual((v1 - expected_diff).get_magnitude(),
                                0, delta=.1)
 
     def test_addition(self):
@@ -58,9 +60,9 @@ class Tests(IMP.test.TestCase):
         # The underlying C++ object pointer should be unchanged too:
         self.assertEqual(str(v1.this), cppobj)
         expected_sum = IMP.algebra.Vector4D(11.0, 3.0, 5.0, 7.0)
-        self.assertAlmostEqual((sum-expected_sum).get_magnitude(),
+        self.assertAlmostEqual((sum - expected_sum).get_magnitude(),
                                0, delta=.1)
-        self.assertAlmostEqual((v1-expected_sum).get_magnitude(),
+        self.assertAlmostEqual((v1 - expected_sum).get_magnitude(),
                                0, delta=.1)
 
     def test_scalar_multiplication(self):
@@ -91,13 +93,12 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(prod[i], expected_prod[i])
             self.assertEqual(v1[i], expected_prod[i])
 
-
     def test_rotation_from_vector4d(self):
         """Check creation of a rotation from a 4D vector"""
-        r= IMP.algebra.Rotation3D(1,0,0,0)
-        v1= r.get_quaternion()
-        v2= IMP.algebra.Vector4D(1.0, 2.0, 3.0, 10.0)
-        r2= IMP.algebra.get_rotation_from_vector4d(v2)
+        r = IMP.algebra.Rotation3D(1, 0, 0, 0)
+        v1 = r.get_quaternion()
+        v2 = IMP.algebra.Vector4D(1.0, 2.0, 3.0, 10.0)
+        r2 = IMP.algebra.get_rotation_from_vector4d(v2)
 
 if __name__ == '__main__':
     IMP.test.main()

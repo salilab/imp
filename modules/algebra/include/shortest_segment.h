@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/shortest_segment.h
  *  \brief predicates implemented using CGAL
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPALGEBRA_SHORTEST_SEGMENT_H

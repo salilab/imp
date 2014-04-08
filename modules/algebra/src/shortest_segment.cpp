@@ -2,10 +2,11 @@
  *  \file  Segment3D.cpp
  *  \brief simple implementation of segments in 3D
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 #include <IMP/algebra/shortest_segment.h>
 #include <IMP/base/log.h>
+#include <IMP/base/log_macros.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 

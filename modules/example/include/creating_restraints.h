@@ -2,7 +2,7 @@
  *  \file IMP/example/creating_restraints.h
  *  \brief A simple unary function.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -28,9 +28,9 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 
     The restraint is not added to the model.
 */
-inline kernel::Restraint *create_chain_restraint(const kernel::ParticlesTemp &ps,
-                                         double length_factor, double k,
-                                         std::string name) {
+inline kernel::Restraint *create_chain_restraint(
+    const kernel::ParticlesTemp &ps, double length_factor, double k,
+    std::string name) {
   IMP_USAGE_CHECK(!ps.empty(), "No kernel::Particles passed.");
   double scale = core::XYZR(ps[0]).get_radius();
   IMP_NEW(core::HarmonicDistancePairScore, hdps,
@@ -58,8 +58,8 @@ inline container::ClosePairContainer *create_excluded_volume(
   // that is proportional to the particle radius
   IMP_NEW(container::ClosePairContainer, cpc, (cores_container, 0, scale * .3));
   IMP_NEW(core::SoftSpherePairScore, hlb, (k));
-  base::Pointer<kernel::Restraint> r
-    = container::create_restraint(hlb.get(), cpc.get());
+  base::Pointer<kernel::Restraint> r =
+      container::create_restraint(hlb.get(), cpc.get());
   m->add_restraint(r);
   return cpc.release();
 }

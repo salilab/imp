@@ -2,7 +2,7 @@
  *  \file IMP/atom/RemoveTranslationOptimizerState.h
  *  \brief Remove rigid translation during optimization.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,7 +13,6 @@
 #include <IMP/kernel/Particle.h>
 #include <IMP/base_types.h>
 #include <IMP/OptimizerState.h>
-#include <IMP/optimizer_state_macros.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -23,10 +22,6 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class IMPATOMEXPORT RemoveTranslationOptimizerState : public OptimizerState {
  public:
-  /** \deprecated_at{2.1} Use set_period() instead. */
-  IMPATOM_DEPRECATED_FUNCTION_DECL(2.1)
-  RemoveTranslationOptimizerState(const kernel::Particles &pis,
-                                  unsigned skip_steps);
   RemoveTranslationOptimizerState(kernel::Model *m,
                                   kernel::ParticleIndexesAdaptor pis);
 

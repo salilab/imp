@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/Plane3D.h   \brief Simple 3D plane class.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -50,9 +50,8 @@ class Plane3D : public GeometricPrimitiveD<3> {
   bool get_is_below(const Vector3D &p) const { return get_height(p) < 0; }
   /** @} */
   double get_height(const Vector3D &p) const { return normal_ * p - distance_; }
-  IMP_SHOWABLE_INLINE(Plane3D, {
-    out << "(" << distance_ << ": " << spaces_io(normal_) << ")";
-  });
+  IMP_SHOWABLE_INLINE(Plane3D,
+  { out << "(" << distance_ << ": " << spaces_io(normal_) << ")"; });
 
   //! Return the plane with the opposite normal
   Plane3D get_opposite() const { return Plane3D(-distance_, -normal_); }

@@ -2,7 +2,7 @@
     *  \file IMP/atom/estimates.h
     *  \brief Estimates of various physical quantities.
     *
-    *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+    *  Copyright 2007-2014 IMP Inventors. All rights reserved.
     */
 
 #ifndef IMPATOM_ESTIMATES_H

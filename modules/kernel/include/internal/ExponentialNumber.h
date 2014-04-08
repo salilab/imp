@@ -2,7 +2,7 @@
  *  \file ExponentialNumber.h
  *  \brief Classes to add compile time exponents to numbers.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -60,7 +60,6 @@ class ExponentialNumber {
   }
 
  public:
-
   ExponentialNumber() : v_(std::numeric_limits<double>::infinity()) {}
   template <int OEXP>
   ExponentialNumber(ExponentialNumber<OEXP> o) {

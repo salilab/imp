@@ -1,7 +1,7 @@
 /**
  *  \file IMP/kernel/Optimizer.h     \brief Base class for all optimizers.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -44,13 +44,11 @@ IMPKERNEL_BEGIN_NAMESPACE
 class IMPKERNELEXPORT Optimizer : public ModelObject {
   mutable Floats widths_;
   base::Pointer<Model> my_model_;
-  double min_score_;
   bool stop_on_good_score_;
   mutable base::Pointer<ScoringFunction> cache_;
   base::Pointer<ScoringFunction> scoring_function_;
 
   static void set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o);
-  virtual void do_set_model(kernel::Model *m) IMP_OVERRIDE { my_model_ = m; }
 
  protected:
 #ifndef IMP_DOXYGEN
@@ -106,7 +104,7 @@ class IMPKERNELEXPORT Optimizer : public ModelObject {
                   optimizer_states, OptimizerState *, OptimizerStates,
                   set_optimizer_state_optimizer(obj, this);
                   , {},
-                  { Optimizer::set_optimizer_state_optimizer(obj, nullptr); });
+  { Optimizer::set_optimizer_state_optimizer(obj, nullptr); });
   /**@}*/
 
   /** By default, the Optimizer uses the scoring function provided by
@@ -115,58 +113,6 @@ class IMPKERNELEXPORT Optimizer : public ModelObject {
   virtual void set_scoring_function(ScoringFunctionAdaptor sf);
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Optimizer);
-
-///////////////////////// DEPRECATED METHODS
-
-#ifndef SWIG
-  /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  FloatIndexes get_optimized_attributes() const;
-  /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  void set_value(FloatIndex fi, double v) const;
-  /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  Float get_value(FloatIndex fi) const;
-  /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  Float get_derivative(FloatIndex fi) const;
-#if !defined(SWIG)
-  /** \deprecated_at{2.1} Use AttributeOptimizer instead.*/
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  double width(FloatKey k) const;
-#endif
-  /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  double get_width(FloatKey k) const;
-  /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  void set_scaled_value(FloatIndex fi, Float v) const;
-  /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  double get_scaled_value(FloatIndex fi) const;
-  /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  double get_scaled_derivative(FloatIndex fi) const;
-  /** \deprecated_at{2.1} Use AttributeOptimizer instead. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  void clear_range_cache();
-#endif  // SWIG
-  /** \deprecated_at{2.1} Use Optimizer::get_scoring_function() instead. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  Restraints get_restraints() const;
-  /** \deprecated_at{2.1} Use the constructor with a Model and a name.*/
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  Optimizer();
-  /** \deprecated_at{2.1} Do not use as it is not reliably supported. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  void set_score_threshold(double s);
-  /** \deprecated_at{2.1} Do not use as it is not reliably supported. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  double get_score_threshold() const;
-  /** \deprecated_at{2.1} Use set_scoring_function() instead. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  void set_restraints(const RestraintsTemp &rs);
 
   // swig needs this at the end for some reason I don't understand
  protected:

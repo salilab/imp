@@ -2,7 +2,7 @@
  *  \file IMP/gsl/QuasiNewton.h
  *  \brief A GSL-based Quasi-Newton optimizer
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPGSL_QUASI_NEWTON_H
@@ -22,9 +22,6 @@ class IMPGSLEXPORT QuasiNewton : public GSLOptimizer {
 
  public:
   QuasiNewton(kernel::Model *m);
-  /** \deprecated_at{2.1} Pass a model to the constructor. */
-  IMPGSL_DEPRECATED_FUNCTION_DECL(2.1)
-  QuasiNewton();
 
   // default 0.01
   void set_initial_step(double length) {

@@ -11,6 +11,7 @@ log = logging.getLogger("Database")
 
 
 class Database2:
+
     """ Class to manage a SQL database built with sqlite3 """
 
     def __init__(self):
@@ -18,32 +19,33 @@ class Database2:
         self.connection = None
         # Cursor of actions
         self.cursor = None
-        # Dictionary of tablenames and types (used to convert values when storing data)
+        # Dictionary of tablenames and types (used to convert values when
+        # storing data)
 
-    def create(self,filename,overwrite=False):
+    def create(self, filename, overwrite=False):
         """ Creates a database by simply connecting to the file """
         log.info("Creating database")
         if overwrite and os.path.exists(filename):
             os.remove(filename)
         sqlite.connect(filename)
 
-    def connect(self,filename):
+    def connect(self, filename):
         """ Connects to the database in filename """
         if not os.path.isfile(filename):
-            raise IOError,"Database file not found: %s" % filename
+            raise IOError("Database file not found: %s" % filename)
         self.connection = sqlite.connect(filename)
         self.cursor = self.connection.cursor()
 
     def check_if_is_connected(self):
         """ Checks if the class is connected to the database filename """
-        if self.connection == None:
-            raise ValueError,"The database has not been created " \
-            "or connection not established "
+        if self.connection is None:
+            raise ValueError("The database has not been created "
+                             "or connection not established ")
 
     def create_table(self, table_name, column_names, column_types):
         """ Creates a table. It expects a sorted dictionary
             of (data_field,typename) entries """
-        log.info("Creating table %s",table_name)
+        log.info("Creating table %s", table_name)
         self.check_if_is_connected()
         sql_command = "CREATE TABLE %s (" % (table_name)
         for name, data_type in zip(column_names, column_types):
@@ -51,7 +53,7 @@ class Database2:
             sql_command += "%s %s," % (name, sql_typename)
         # replace last comma for a parenthesis
         n = len(sql_command)
-        sql_command = sql_command[0:n-1] + ")"
+        sql_command = sql_command[0:n - 1] + ")"
         log.debug(sql_command)
         self.cursor.execute(sql_command)
         self.connection.commit()
@@ -60,14 +62,14 @@ class Database2:
         """
             Delete a table if it exists
         """
-        log.info("Deleting table %s",table_name)
+        log.info("Deleting table %s", table_name)
         self.check_if_is_connected()
         sql_command = "DROP TABLE IF EXISTS %s" % (table_name)
         log.debug(sql_command)
         self.cursor.execute(sql_command)
         self.connection.commit()
 
-    def store_dataV1(self,table_name,data):
+    def store_dataV1(self, table_name, data):
         """ Inserts information in a given table of the database.
         The info must be a list of tuples containing as many values
         as columns in the table
@@ -75,20 +77,21 @@ class Database2:
             types stored in the table
         """
         self.check_if_is_connected()
-        n = len(data[0]) # number of columns for each row inserted
-        tuple_format="("+"?,"*(n-1)+"?)"
-        sql_command="INSERT INTO %s VALUES %s " % (table_name, tuple_format)
+        n = len(data[0])  # number of columns for each row inserted
+        tuple_format = "(" + "?," * (n - 1) + "?)"
+        sql_command = "INSERT INTO %s VALUES %s " % (table_name, tuple_format)
         # Fill the table with the info in the tuples
         types = self.get_table_types(table_name)
 #        log.debug("Storing types: %s", types)
         for x in data:
 #            log.debug("DATA %s", x)
-            # convert (applies the types stored in the table dictionary to each value in x
-            y = [apply_type(i) for i,apply_type in zip(x, types)]
+            # convert (applies the types stored in the table dictionary to each
+            # value in x
+            y = [apply_type(i) for i, apply_type in zip(x, types)]
             self.cursor.execute(sql_command, y)
         self.connection.commit()
 
-    def store_data(self,table_name,data):
+    def store_data(self, table_name, data):
         """ Inserts information in a given table of the database.
         The info must be a list of tuples containing as many values
         as columns in the table
@@ -99,18 +102,18 @@ class Database2:
             log.warning("Inserting empty data")
             return
         self.check_if_is_connected()
-        n = len(data[0]) # number of columns for each row inserted
-        tuple_format="("+"?,"*(n-1)+"?)"
-        sql_command="INSERT INTO %s VALUES %s " % (table_name, tuple_format)
+        n = len(data[0])  # number of columns for each row inserted
+        tuple_format = "(" + "?," * (n - 1) + "?)"
+        sql_command = "INSERT INTO %s VALUES %s " % (table_name, tuple_format)
         # Fill the table with the info in the tuples
         types = self.get_table_types(table_name)
 #        log.debug("Storing types: %s", types)
         for i in xrange(len(data)):
-            data[i] = [apply_type(d) for d,apply_type in zip(data[i], types)]
+            data[i] = [apply_type(d) for d, apply_type in zip(data[i], types)]
         self.cursor.executemany(sql_command, data)
         self.connection.commit()
 
-    def retrieve_data(self,sql_command):
+    def retrieve_data(self, sql_command):
         """ Retrieves data from the database using the sql_command
         returns the records as a list of tuples"""
         self.check_if_is_connected()
@@ -133,28 +136,35 @@ class Database2:
         sql_command = sql_command.rstrip(",") + " WHERE "
         s = self.get_condition_string(condition_fields, condition_values)
         sql_command = sql_command + s
-        #print sql_command
-        log.debug("Updating %s: %s",table_name, sql_command)
+        # print sql_command
+        log.debug("Updating %s: %s", table_name, sql_command)
         self.cursor.execute(sql_command)
         self.connection.commit()
 
-    def create_view(self,view_name,table_name,
-                                condition_fields, condition_values):
+    def create_view(self, view_name, table_name,
+                    condition_fields, condition_values):
         """ creates a view of the given table where the values are selected
             using the condition values. See the help for update_data()
         """
-        try: # if this fails is because the view already exist
+        try:  # if this fails is because the view already exist
             self.drop_view(view_name)
         except:
             pass
-        sql_command = 'CREATE VIEW %s AS SELECT * FROM %s WHERE ' % (view_name, table_name)
-        condition = self.get_condition_string(condition_fields, condition_values)
+        sql_command = 'CREATE VIEW %s AS SELECT * FROM %s WHERE ' % (
+            view_name, table_name)
+        condition = self.get_condition_string(
+            condition_fields, condition_values)
         sql_command += condition
         log.info("Creating view %s", sql_command)
         self.cursor.execute(sql_command)
 
-    def create_view_of_best_records(self, view_name, table_name, orderby, n_records):
-        try: # if this fails is because the view already exist
+    def create_view_of_best_records(
+        self,
+        view_name,
+        table_name,
+        orderby,
+            n_records):
+        try:  # if this fails is because the view already exist
             self.drop_view(view_name)
         except:
             pass
@@ -163,7 +173,7 @@ class Database2:
         log.info("Creating view %s", sql_command)
         self.cursor.execute(sql_command)
 
-    def drop_view(self,view_name):
+    def drop_view(self, view_name):
         """ Removes a view from the database """
         self.cursor.execute('DROP VIEW %s' % view_name)
 
@@ -191,11 +201,11 @@ class Database2:
         """ creates a condition applying each value to each field
         """
         s = ""
-        for field,value in zip(fields,values):
+        for field, value in zip(fields, values):
             s += "%s=%s AND " % (field, value)
         # remove last AND
         n = len(s)
-        s = s[0:n-5]
+        s = s[0:n - 5]
         return s
 
     def get_table_types(self, name):
@@ -224,22 +234,22 @@ class Database2:
         sql_command = "PRAGMA table_info(%s)" % name
         self.cursor.execute(sql_command)
         info = self.cursor.fetchall()
-        return [ row[1] for row in info]
+        return [row[1] for row in info]
 
     def execute_sql_command(self, sql_command):
         self.check_if_is_connected()
         self.cursor.execute(sql_command)
         self.connection.commit()
 
-
-    def add_column(self,table,column, data_type):
+    def add_column(self, table, column, data_type):
         """
             Add a column to a table
             column - the name of the column.
             data_type - the type: int, float, str
         """
         sql_typename = get_sql_type_name(data_type)
-        sql_command = "ALTER TABLE %s ADD %s %s" % (table, column, sql_typename)
+        sql_command = "ALTER TABLE %s ADD %s %s" % (
+            table, column, sql_typename)
         self.execute_sql_command(sql_command)
 
     def add_columns(self, table, names, types, check=True):
@@ -264,7 +274,6 @@ class Database2:
         names = [d[0] for d in data]
         return names
 
-
     def select_table(self):
         """
             Prompt for tables so the user can choose one
@@ -274,14 +283,13 @@ class Database2:
         tables = self.get_tables_names()
         for t in tables:
             say = ''
-            while say not in ('n','y'):
+            while say not in ('n', 'y'):
                 say = raw_input("Use table %s (y/n) " % t)
             if say == 'y':
                 table_name = t
                 columns = self.get_table_column_names(t)
                 break
         return table_name, columns
-
 
     def drop_columns(self, table, columns):
 
@@ -290,17 +298,18 @@ class Database2:
             cnames.remove(name)
         names_txt = ", ".join(cnames)
         sql_command = [
-        "CREATE TEMPORARY TABLE backup(%s);" % names_txt,
-        "INSERT INTO backup SELECT %s FROM %s" % (names_txt, table),
-        "DROP TABLE %s;" % table,
-        "CREATE TABLE %s(%s);" % (table, names_txt),
-        "INSERT INTO %s SELECT * FROM backup;" % table,
-        "DROP TABLE backup;",
+            "CREATE TEMPORARY TABLE backup(%s);" % names_txt,
+            "INSERT INTO backup SELECT %s FROM %s" % (names_txt, table),
+            "DROP TABLE %s;" % table,
+            "CREATE TABLE %s(%s);" % (table, names_txt),
+            "INSERT INTO %s SELECT * FROM backup;" % table,
+            "DROP TABLE backup;",
         ]
         for command in sql_command:
             log.debug(command)
 #            print command
             self.cursor.execute(command)
+
 
 def print_data(data, delimiter=" "):
     """ Prints the data recovered from a database """
@@ -308,12 +317,14 @@ def print_data(data, delimiter=" "):
         line = delimiter.join([str(x) for x in row])
         print line
 
-def write_data(data,output_file,delimiter=" "):
+
+def write_data(data, output_file, delimiter=" "):
     """writes data to a file. The output file is expected to be a python
     file object """
     w = csv.writer(output_file, delimiter=delimiter)
     for row in data:
         w.writerow(row)
+
 
 def get_sql_type_name(data_type):
     if(data_type == int):
@@ -321,12 +332,17 @@ def get_sql_type_name(data_type):
     elif(data_type == float):
         return "DOUBLE"
     elif(data_type == str):
-        return "VARCHAR(10)" # 10 is a random number, SQLITE does not chop strings
+        return (
+            # 10 is a random number, SQLITE does not chop strings
+            "VARCHAR(10)"
+        )
+
 
 def open(fn_database):
     db = Database2()
     db.connect(fn_database)
     return db
+
 
 def read_data(fn_database, sql_command):
     db = Database2()
@@ -335,12 +351,13 @@ def read_data(fn_database, sql_command):
     db.close()
     return data
 
+
 def get_sorting_indices(l):
     """ Return indices that sort the list l """
-    pairs = [(element, i) for i,element in enumerate(l)]
-    pairs.sort()
+    pairs = sorted([(element, i) for i, element in enumerate(l)])
     indices = [p[1] for p in pairs]
     return indices
+
 
 def merge_databases(fns, fn_output, tbl):
     """
@@ -353,18 +370,17 @@ def merge_databases(fns, fn_output, tbl):
     names = db.get_table_column_names(tbl)
     types = db.get_table_types(tbl)
     indices = get_sorting_indices(names)
-    sorted_names = [ names[i] for i in indices]
-    sorted_types = [ types[i] for i in indices]
+    sorted_names = [names[i] for i in indices]
+    sorted_types = [types[i] for i in indices]
     log.info("Merging databases. Saving to %s", fn_output)
     out_db = Database2()
     out_db.create(fn_output, overwrite=True)
     out_db.connect(fn_output)
     out_db.create_table(tbl, sorted_names, sorted_types)
     for fn in fns:
-        log.debug("Reading %s",fn)
+        log.debug("Reading %s", fn)
         db.connect(fn)
-        names = db.get_table_column_names(tbl)
-        names.sort()
+        names = sorted(db.get_table_column_names(tbl))
         they_are_sorted = ",".join(names)
         log.debug("Retrieving %s", they_are_sorted)
         sql_command = "SELECT %s FROM %s" % (they_are_sorted, tbl)

@@ -2,18 +2,19 @@
  *  \file IMP/base/map.h
  *  \brief Declare an efficient stl-compatible map
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPBASE_BASE_MAP_H
 #define IMPBASE_BASE_MAP_H
 
 #include <IMP/base/base_config.h>
-#include <boost/version.hpp>
-// creates warnings in clang and we only use clang for diagnostics anyway
-
 #include <boost/unordered_map.hpp>
 #include "hash.h"
+
+IMPBASE_DEPRECATED_HEADER(2.2,
+                          "Use boost::unordered_map directly or"
+                          " base/set_map_macros.h.");
 
 IMPBASE_BEGIN_NAMESPACE
 /** This class chooses the best of STL compatible

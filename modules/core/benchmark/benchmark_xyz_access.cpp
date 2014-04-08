@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 #include <IMP.h>
 #include <IMP/core/XYZR.h>
@@ -24,10 +24,11 @@ IMP_COMPILER_ENABLE_WARNINGS
 namespace {
 
 // TEST 1
-double compute_distances_decorator_access(const IMP::kernel::ParticlesTemp &particles)
-    ATTRIBUTES;
+double compute_distances_decorator_access(
+    const IMP::kernel::ParticlesTemp &particles) ATTRIBUTES;
 
-double compute_distances_decorator_access(const IMP::kernel::ParticlesTemp &particles) {
+double compute_distances_decorator_access(
+    const IMP::kernel::ParticlesTemp &particles) {
   double tdist = 0;
   for (unsigned int i = 0; i < particles.size(); i++) {
     IMP::core::XYZ d1(particles[i]);
@@ -42,10 +43,11 @@ double compute_distances_decorator_access(const IMP::kernel::ParticlesTemp &part
 }
 
 // TEST 1.1
-double compute_distances_particle_access(const IMP::kernel::ParticlesTemp &particles)
-    ATTRIBUTES;
+double compute_distances_particle_access(
+    const IMP::kernel::ParticlesTemp &particles) ATTRIBUTES;
 
-double compute_distances_particle_access(const IMP::kernel::ParticlesTemp &particles) {
+double compute_distances_particle_access(
+    const IMP::kernel::ParticlesTemp &particles) {
   FloatKey xk("x");
   FloatKey yk("y");
   FloatKey zk("z");
@@ -146,17 +148,14 @@ void do_benchmark(std::string descr, unsigned int n) {
     core::XYZ::setup_particle(particles.back(),
                               algebra::get_random_vector_in(bb));
   }
-  // std::cout << "Number of particles " << particles.size() << std::endl;
-  // set_check_level(IMP::NONE);
-  set_log_level(SILENT);
   // TEST 1
   {
     double runtime, dist = 0;
-      // measure time
+    // measure time
     IMP_TIME({
-      dist += compute_distances_decorator_access(particles);
-      dist += compute_distances_decorator_access(particles);
-    },
+               dist += compute_distances_decorator_access(particles);
+               dist += compute_distances_decorator_access(particles);
+             },
              runtime);
     /*std::cout << "TEST1 (decorator_access)  took " << runtime
       << " (" << dist << ")"<< std::endl;*/
@@ -165,11 +164,11 @@ void do_benchmark(std::string descr, unsigned int n) {
   // TEST 1.1
   {
     double runtime, dist = 0;
-      // measure time
+    // measure time
     IMP_TIME({
-      dist += compute_distances_particle_access(particles);
-      dist += compute_distances_particle_access(particles);
-    },
+               dist += compute_distances_particle_access(particles);
+               dist += compute_distances_particle_access(particles);
+             },
              runtime);
     /*std::cout << "TEST1 (decorator_access)  took " << runtime
       << " (" << dist << ")"<< std::endl;*/
@@ -184,9 +183,9 @@ void do_benchmark(std::string descr, unsigned int n) {
       pis[i] = particles[i]->get_index();
     }
     IMP_TIME({
-      dist += compute_distances_no_particle_access(model, pis);
-      dist += compute_distances_no_particle_access(model, pis);
-    },
+               dist += compute_distances_no_particle_access(model, pis);
+               dist += compute_distances_no_particle_access(model, pis);
+             },
              runtime);
     /*std::cout << "TEST1 (decorator_access)  took " << runtime
       << " (" << dist << ")"<< std::endl;*/
@@ -241,15 +240,15 @@ void do_benchmark(std::string descr, unsigned int n) {
   {
     IMP::algebra::Vector3Ds coordinates;
     for (unsigned int i = 0; i < particles.size(); i++) {
-      coordinates.push_back(IMP::core::XYZ::decorate_particle(particles[i])
-                                .get_coordinates());
+      coordinates.push_back(
+          IMP::core::XYZ::decorate_particle(particles[i]).get_coordinates());
     }
     double runtime, dist = 0;
-      // measure time
+    // measure time
     IMP_TIME({
-      dist += compute_distances_direct_access(coordinates);
-      dist += compute_distances_direct_access(coordinates);
-    },
+               dist += compute_distances_direct_access(coordinates);
+               dist += compute_distances_direct_access(coordinates);
+             },
              runtime);
     /*std::cout << "TEST3 (direct access) took " << runtime
       << " (" << dist << ")"<< std::endl;*/
@@ -264,11 +263,11 @@ void do_benchmark(std::string descr, unsigned int n) {
       coordinates.back().z = IMP::core::XYZ(particles[i]).get_z();
     }
     double runtime, dist = 0;
-      // measure time
+    // measure time
     IMP_TIME({
-      dist += compute_distances_direct_access(coordinates);
-      dist += compute_distances_direct_access(coordinates);
-    },
+               dist += compute_distances_direct_access(coordinates);
+               dist += compute_distances_direct_access(coordinates);
+             },
              runtime);
     /*std::cout << "TEST3 (direct access) took " << runtime
       << " (" << dist << ")"<< std::endl;*/
@@ -283,11 +282,11 @@ void do_benchmark(std::string descr, unsigned int n) {
           IMP::core::XYZ::decorate_particle(particles[i]).get_coordinates();
     }
     double runtime, dist = 0;
-      // measure time
+    // measure time
     IMP_TIME({
-      dist += compute_distances_direct_access_space(coordinates);
-      dist += compute_distances_direct_access_space(coordinates);
-    },
+               dist += compute_distances_direct_access_space(coordinates);
+               dist += compute_distances_direct_access_space(coordinates);
+             },
              runtime);
     /*std::cout << "TEST3 (direct access) took " << runtime
       << " (" << dist << ")"<< std::endl;*/
@@ -321,7 +320,9 @@ int main(int argc, char **argv) {
   IMP::base::setup_from_argv(argc, argv,
                              "Benchmark accessing particle attributes");
   do_benchmark("small", 100);
-  do_benchmark("large", 1000);
-  do_benchmark("huge", 10000);
+  if (!IMP::base::run_quick_test) {
+    do_benchmark("large", 1000);
+    do_benchmark("huge", 10000);
+  }
   return IMP::benchmark::get_return_value();
 }

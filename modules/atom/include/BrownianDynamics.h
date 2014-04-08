@@ -2,7 +2,7 @@
  *  \file IMP/atom/BrownianDynamics.h
  *  \brief Simple molecular dynamics optimizer.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -23,30 +23,46 @@ IMPATOM_BEGIN_NAMESPACE
 // for swig
 class SimulationParameters;
 
-//! Simple Brownian dynamics optimizer.
-/** The particles to be optimized must have optimizable x,y,z attributes
-    and a non-optimizable "Stokes radius"; this optimizer assumes
-    the score to be energy in kcal/mol, the xyz coordinates to be in
-    angstroms and the diffusion coefficent be in cm^2/s
+//! Simple Brownian dynamics simulator.
+/** This is an implementation of a Brownian Dynamics simulator.
 
-    kernel::Particles without optimized x,y,z and nonoptimized D are skipped.
+    _Input particles and score_
 
-    Rigid bodies are supported.
-
-    BrownianDynamics uses a SimulationParameters particle to store the
-    parameters of the simulation. Such a particle must be passed on
-    creation. The BrownianDynamics object will at least see updates
-    to the SimulationParamters particle which occur before the
-    call to BrownianDynamics::optimize() or BrownianDynamics::simulate(),
-    changing the the parameters during optimization has undefined
-    results.
+    Each optimized particle must have x,y,z attributes
+    that are optimizable. In addition, each optimized particle must be
+    decorated with the Diffusion decorator. Optionally, the
+    RigidBodyDiffusion decorator can be used to specify a rotational
+    diffusion coefficient for core::RigidBody particles.  The
+    optimizer assumes the scoring function to be energy in kcal/mol, and the xyz
+    coordinates to be in angstroms and the diffusion coefficent of
+    each particle be in \f$A^2/fs\f$ (or \f$Radian^2/fs\f$ for rotational
+    diffusion coefficient).  kernel::Particles without optimized x,y,z
+    and nonoptimized D are skipped.
 
     The optimizer can either automatically determine which particles
     to use from the model or be passed a SingletonContainer for the
     particles. If such a container is passed, particles added to it
     during optimization state updates are handled properly.
 
+    _Simulation_
+
+    At each simulation time step, each particle is translated in the
+    direction of the sum of a random diffusion vector and the gradient
+    of the scoring function (force field) at the particle
+    coordinates. The translation is proportional to the particle
+    diffusion coefficient, the time step size, and the inverse of kT.
+    Note that particles masses are not considered, only their
+    diffusion coefficients.
+
+    Similarly, rigid bodies are rotated by the sum of a random torque and a
+    force field torque, proportionally to the rotational diffusion
+    coefficient, the time step size, and inversely proportional kT.
+
+    If the skt (stochastic runge kutta) flag is true, the simulation is
+    altered slightly to apply the SKT scheme.
+
     \see Diffusion
+    \see RigidBodyDiffusion
   */
 class IMPATOMEXPORT BrownianDynamics : public Simulator {
  public:

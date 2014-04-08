@@ -2,7 +2,7 @@
  *  \file IMP/misc/MetricClosePairsFinder.h
  *  \brief Decorator for a sphere-like particle.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,7 +13,7 @@
 #include <IMP/core/ClosePairsFinder.h>
 #include <IMP/base/Pointer.h>
 #include <IMP/kernel/particle_index.h>
-#include <IMP/base/map.h>
+#include <boost/unordered_map.hpp>
 #include <algorithm>
 #include <limits>
 
@@ -46,7 +46,7 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
   IMP_NAMED_TUPLE_2(Data, Datas, kernel::ParticleIndexes, indexes, double,
                     width, );
 
-  typedef base::map<kernel::ParticleIndex, Data> Index;
+  typedef boost::unordered_map<kernel::ParticleIndex, Data> Index;
   Index get_index(kernel::Model *m, kernel::ParticleIndexes inputs) const {
     unsigned int index_size = std::min<unsigned int>(
         1U, std::sqrt(static_cast<double>(inputs.size())));
@@ -150,8 +150,8 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
 #ifndef SWIG
   using ClosePairsFinder::get_close_pairs;
 #else
-  kernel::ParticlePairsTemp get_close_pairs(
-      const kernel::ParticlesTemp &pc) const;
+  kernel::ParticlePairsTemp get_close_pairs(const kernel::ParticlesTemp &pc)
+      const;
   kernel::ParticlePairsTemp get_close_pairs(
       const kernel::ParticlesTemp &pca, const kernel::ParticlesTemp &pcb) const;
 #endif

@@ -1,0 +1,32 @@
+#ifndef IMP_EIGEN_REGRESSION_MODULE_H
+#define IMP_EIGEN_REGRESSION_MODULE_H
+
+#ifndef IMP_EIGEN2_SUPPORT
+#error LeastSquares is only available in Eigen2 support mode (define IMP_EIGEN2_SUPPORT)
+#endif
+
+// exclude from normal eigen3-only documentation
+#ifdef IMP_EIGEN2_SUPPORT
+
+#include "Core"
+
+#include "src/Core/util/DisableStupidWarnings.h"
+
+#include "Eigenvalues"
+#include "Geometry"
+
+/** \defgroup LeastSquares_Module LeastSquares module
+  * This module provides linear regression and related features.
+  *
+  * \code
+  * #include <Eigen/LeastSquares>
+  * \endcode
+  */
+
+#include "src/Eigen2Support/LeastSquares.h"
+
+#include "src/Core/util/ReenableStupidWarnings.h"
+
+#endif // IMP_EIGEN2_SUPPORT
+
+#endif // IMP_EIGEN_REGRESSION_MODULE_H

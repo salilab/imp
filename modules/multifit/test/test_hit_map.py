@@ -5,7 +5,9 @@ import IMP.algebra
 import IMP.atom
 import IMP.core
 
+
 class Tests(IMP.test.TestCase):
+
     """Class to test hit map generation"""
 
     def read_data(self):
@@ -27,7 +29,7 @@ class Tests(IMP.test.TestCase):
         # is a good fit
         identity_fit = IMP.multifit.FittingSolutionRecord()
         identity_fit.set_fit_transformation(
-                IMP.algebra.get_identity_transformation_3d())
+            IMP.algebra.get_identity_transformation_3d())
 
         hits = IMP.multifit.create_hit_map(rb, ref, [identity_fit], scene)
         self.assertAlmostEqual(hits.get_max_value(), 1.0, delta=1e-4)
@@ -39,8 +41,9 @@ class Tests(IMP.test.TestCase):
         # Translate the PDB far away from the map
         bad_fit = IMP.multifit.FittingSolutionRecord()
         bad_fit.set_fit_transformation(
-           IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),
-                                        IMP.algebra.Vector3D(90.,90.,90.)))
+            IMP.algebra.Transformation3D(
+                IMP.algebra.get_identity_rotation_3d(),
+                IMP.algebra.Vector3D(90., 90., 90.)))
 
         hits = IMP.multifit.create_hit_map(rb, ref, [bad_fit], scene)
         self.assertAlmostEqual(hits.get_max_value(), 0.0, delta=1e-4)

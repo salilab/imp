@@ -4,6 +4,7 @@ import IMP.test
 import IMP.multifit
 from IMP.multifit import indexes
 
+
 class Tests(IMP.test.TestCase):
 
     def test_indexes_help(self):
@@ -13,7 +14,7 @@ class Tests(IMP.test.TestCase):
     def test_indexes_usage(self):
         """Test indexes module incorrect usage"""
         r = self.run_python_module("IMP.multifit.indexes", [])
-        out,err = r.communicate()
+        out, err = r.communicate()
         self.assertEqual(out, "")
         self.assertIn("incorrect number of arguments", err)
         self.assertNotEqual(r.returncode, 0)
@@ -23,8 +24,8 @@ class Tests(IMP.test.TestCase):
         indexes_input = self.get_input_file_name('indexes_test.input')
         input_dir = os.path.dirname(indexes_input)
         self.run_python_module(indexes,
-                  ['foo', indexes_input,
-                   '10', 'foo.indexes.mapping.input'])
+                               ['foo', indexes_input,
+                                '10', 'foo.indexes.mapping.input'])
         lines = open('foo.indexes.mapping.input').readlines()
         lines = [x.rstrip('\r\n') for x in lines]
         self.assertEqual(len(lines), 3)

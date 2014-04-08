@@ -1,7 +1,7 @@
 /**
  *  \file test_grid.cpp   \brief A class to represent a voxel grid.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 #include <IMP/base/piecewise_linear_distribution.h>
 #include <IMP/base/exception.h>
@@ -45,7 +45,7 @@ void check_gaussian() {
   for (unsigned int i = 0; i < steps.size(); ++i) {
     locs0.push_back(locs0.back() + steps[i]);
   }
-  using IMP::base::operator<< ;
+  using IMP::base::operator<<;
   // std::cout << locs0 << std::endl;
   IMP::Floats locs(locs0.rbegin(), locs0.rend());
   for (unsigned int i = 0; i < locs.size(); ++i) {

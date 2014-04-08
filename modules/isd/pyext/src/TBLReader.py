@@ -4,13 +4,15 @@
    Classes to handle TBL files.
 """
 
-import sys, os
+import sys
+import os
 import IMP.isd
 from IMP.isd.utils import Load, read_sequence_file
 #from Isd.io.nomenclature import IUPAC_CONVENTION
-IUPAC_CONVENTION='iupac'
+IUPAC_CONVENTION = 'iupac'
 TYPE_AMINO_ACID = 'AMINO_ACID'
 pseudoatoms_dict = IMP.isd.get_data_path('CHARMM_pseudoatoms.dict')
+
 
 def del_comment(x):
 
@@ -21,8 +23,10 @@ def del_comment(x):
 
     return x
 
+
 def check_assigns(x):
     return 'resid' in x and 'name' in x
+
 
 class TBLReader:
 
@@ -32,11 +36,11 @@ class TBLReader:
 
     pseudoatom_char = '*', '%', '#'
 
-    def __init__(self, sequence, ignore_warnings=False, sequence_match=(1,1)):
+    def __init__(self, sequence, ignore_warnings=False, sequence_match=(1, 1)):
 
         self.sequence = sequence
-        #sequence_match = (a,b) a: NOE numbering, b: sequence numbering
-        self.offset = sequence_match[1]-sequence_match[0]
+        # sequence_match = (a,b) a: NOE numbering, b: sequence numbering
+        self.offset = sequence_match[1] - sequence_match[0]
         self.ignore = ignore_warnings
         self.pseudo_dict = Load(pseudoatoms_dict)
 
@@ -50,7 +54,7 @@ class TBLReader:
                 continue
 
             c = c[c.find('('):]
-            c = c[:c.rfind(')')+1]
+            c = c[:c.rfind(')') + 1]
 
             new_contribs.append(c)
 
@@ -72,9 +76,9 @@ class TBLReader:
 
         atom_name = atom_name.replace(char, '%')
 
-        ## TODO: Assumes that pseudo-atom names are compatible with
-        ##       IUPAC name, since pseudo_dict can handle IUPAC
-        ##       names only.
+        # TODO: Assumes that pseudo-atom names are compatible with
+        # IUPAC name, since pseudo_dict can handle IUPAC
+        # names only.
 
         try:
             group = self.pseudo_dict[residue_type][atom_name]
@@ -85,12 +89,13 @@ class TBLReader:
 
             if not key in self.missing_atoms:
 
-                msg = 'Could not resolve pseudoatom %s.%s.' % (residue_type, atom_name)
+                msg = 'Could not resolve pseudoatom %s.%s.' % (
+                    residue_type, atom_name)
 
                 if self.ignore:
                     print msg
                 else:
-                    raise KeyError, msg
+                    raise KeyError(msg)
 
                 self.missing_atoms.append(key)
 
@@ -128,13 +133,13 @@ class TBLReader:
                         print msg
 
                     else:
-                        raise KeyError, msg
+                        raise KeyError(msg)
 
                 elif self.ignore:
                     msg = 'Warning: atom %s not found in residue %s.' % key
                     print msg
                 else:
-                    raise KeyError, msg % key
+                    raise KeyError(msg % key)
 
                 self.missing_atoms.append(key)
 
@@ -157,8 +162,7 @@ class TBLReader:
 
         for dihedral in self.connectivity[res_type].dihedrals.values():
 
-            keys = [k for k in dihedral.keys() if 'atom' in k]
-            keys.sort()
+            keys = sorted([k for k in dihedral.keys() if 'atom' in k])
 
             atom_names = []
 
@@ -172,13 +176,14 @@ class TBLReader:
             if atom_names == names:
                 return dihedral['name']
 
-        msg = 'Could not determine name of dihedral angles defined by atoms %s.' % str(names)
+        msg = 'Could not determine name of dihedral angles defined by atoms %s.' % str(
+            names)
 
         if self.ignore:
             print msg
             return ''
 
-        raise KeyError, msg
+        raise KeyError(msg)
 
     def extract_atom(self, a):
 
@@ -188,9 +193,9 @@ class TBLReader:
 
         skip_next = False
 
-        ## correct for segid statements
+        # correct for segid statements
 
-        words = [x for x in words if x <> '"']
+        words = [x for x in words if x != '"']
 
         for i in range(len(words)):
 
@@ -208,16 +213,17 @@ class TBLReader:
                 if key in word:
 
                     if key == 'segid':
-                        atom[key] = words[i+1][:-1]
+                        atom[key] = words[i + 1][:-1]
                     else:
-                        atom[key] = words[i+1]
+                        atom[key] = words[i + 1]
 
                     skip_next = True
                     break
 
             else:
-                raise KeyError, 'Value or keyword "%s" unknown. Source: "%s", decomposed into "%s"' % \
-                      (word, str(a), str(words))
+                raise KeyError(
+                    'Value or keyword "%s" unknown. Source: "%s", decomposed into "%s"' %
+                    (word, str(a), str(words)))
 
         atom['resid'] = int(atom['resid']) + self.offset
         atom['name'] = atom['name'].upper()
@@ -261,7 +267,7 @@ class TBLReader:
 
             for j in range(len(group2)):
 
-                if (res_1, name_1) <> (res_2, group2[j]):
+                if (res_1, name_1) != (res_2, group2[j]):
                     contribs.append(((res_1, name_1), (res_2, group2[j])))
 
         return contribs
@@ -270,14 +276,14 @@ class TBLReader:
 
         end = line.rfind(')')
 
-        values = line[end+1:].split()
+        values = line[end + 1:].split()
 
         try:
             distances = [float(x) for x in values[:3]]
         except:
             distances = None
 
-        ## read volume from ARIA 1.x restraint files
+        # read volume from ARIA 1.x restraint files
 
         val = line.split('volume=')
 
@@ -321,7 +327,7 @@ class TBLReader:
 
         contribs = [del_comment(x).strip() for x in line.split('or')]
 
-        ## use alternative parser for implicitly listed atom pairs
+        # use alternative parser for implicitly listed atom pairs
 
         if 1 in [x.count('resid') for x in contribs]:
 
@@ -337,7 +343,8 @@ class TBLReader:
 
                 stop = line.find(')')
 
-                selection = [x.strip() for x in line[start:stop+1].split('or')]
+                selection = [x.strip()
+                             for x in line[start:stop + 1].split('or')]
 
                 for i in range(len(selection)):
 
@@ -353,12 +360,12 @@ class TBLReader:
 
                 atoms.append(selection)
 
-                line = line[stop+1:]
+                line = line[stop + 1:]
 
-            if len(atoms) <> 2:
+            if len(atoms) != 2:
                 raise
 
-            ## find and isolate target distances
+            # find and isolate target distances
 
             l = []
 
@@ -370,9 +377,9 @@ class TBLReader:
 
                     n = atom.rfind(')')
 
-                    if n >= 0 and len(atom[n+1:].strip()) > 3:
-                        distances = atom[n+1:].strip()
-                        atom = atom[:n+1]
+                    if n >= 0 and len(atom[n + 1:].strip()) > 3:
+                        distances = atom[n + 1:].strip()
+                        atom = atom[:n + 1]
 
                     g.append(atom)
 
@@ -387,7 +394,7 @@ class TBLReader:
 
             for i in a:
                 for j in b:
-                    contribs.append('%s %s' % (i,j))
+                    contribs.append('%s %s' % (i, j))
 
             contribs[0] += ' ' + distances
 
@@ -395,10 +402,10 @@ class TBLReader:
 
     def create_distance_restraint(self, distances, volume, contributions):
         if distances is None and volume is None:
-            raise ValueError, "could not find either volume or "\
-                        "distance: %s %s %s" % (distances,volume,contributions)
+            raise ValueError("could not find either volume or "
+                             "distance: %s %s %s" % (distances, volume, contributions))
         if distances is None:
-            distances = [volume**(-1./6),0,0]
+            distances = [volume ** (-1. / 6), 0, 0]
         dist = distances[0]
         if volume is None:
             volume = dist ** (-6)
@@ -444,7 +451,7 @@ class TBLReader:
 
             if contributions:
                 r = self.create_distance_restraint(distances, volume,
-                    contributions)
+                                                   contributions)
 
                 restraints.append(r)
                 seq_number += 1
@@ -463,7 +470,7 @@ class TBLReader:
                     for _type, val in d.items():
 
                         if val:
-                            new_key =  key + '_%s' % _type
+                            new_key = key + '_%s' % _type
                             d[new_key] = val
 
                         del d[_type]
@@ -496,7 +503,8 @@ class TBLReader:
                 continue
 
             if len(new_contribs) > 1:
-                raise ValueError, 'Inconsistency in data file, multiple contributions detected.'
+                raise ValueError(
+                    'Inconsistency in data file, multiple contributions detected.')
 
             atoms = self.split_contribution(new_contribs[0])
             atoms = [self.extract_atom(x) for x in atoms]
@@ -541,7 +549,10 @@ class TBLReader:
                 contributions += self.build_contributions(atoms)
 
             if contributions:
-                r = create_rdc_restraint(seq_number, distances[0], contributions)
+                r = create_rdc_restraint(
+                    seq_number,
+                    distances[0],
+                    contributions)
 
                 restraints.append(r)
                 seq_number += 1

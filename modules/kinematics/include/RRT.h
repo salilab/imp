@@ -1,10 +1,10 @@
 /**
- * \file kinematics/RRT.h
+ * \file IMP/kinematics/RRT.h
  * \brief simple RRT implementation
  *
  *  \authors Dina Schneidman, Barak Raveh
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -33,7 +33,7 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
   // simple RRT node implementation
   // we may replace it with something from boost so we can use boost graph
   class RRTNode {
-  public:
+   public:
     RRTNode(const DOFValues& vec) : vec_(vec) {
       id_ = node_counter_;
       node_counter_++;
@@ -52,14 +52,14 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
     float get_score() const { return score_; }
 
     bool is_edge(const RRTNode* node) const {
-      for(unsigned int i=0; i<edges_.size(); i++)
-        if(node == edges_[i].first) return true;
+      for (unsigned int i = 0; i < edges_.size(); i++)
+        if (node == edges_[i].first) return true;
       return false;
     }
 
     // Modifiers
     void add_edge(const RRTNode* node, float distance) {
-      if(id_ > node->id_) std::cerr << "wrong direction edge" << std::endl;
+      if (id_ > node->id_) std::cerr << "wrong direction edge" << std::endl;
       edges_.push_back(std::make_pair(node, distance));
     }
 
@@ -73,7 +73,7 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
 
     friend std::ostream& operator<<(std::ostream& s, const RRTNode& n);
 
-  private:
+   private:
     const DOFValues vec_;
     // a node and a distance between two dofs
     std::vector<std::pair<const RRTNode*, float> > edges_;
@@ -85,31 +85,33 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
  private:
   // counters for stop condition...
   class Parameters {
-  public:
-    Parameters() :
-      number_of_iterations_(0), actual_tree_size_(0),
-      tree_size_(0), number_of_collisions_(0) {}
+   public:
+    Parameters()
+        : number_of_iterations_(0),
+          actual_tree_size_(0),
+          tree_size_(0),
+          number_of_collisions_(0) {}
 
     Parameters(unsigned int number_of_iterations,
                unsigned int actual_tree_size = 100,
                unsigned int tree_size = 100,
-               unsigned int number_of_collisions = 10000) :
-      number_of_iterations_(number_of_iterations),
-      actual_tree_size_(actual_tree_size),
-      tree_size_(tree_size), number_of_collisions_(number_of_collisions) {}
+               unsigned int number_of_collisions = 10000)
+        : number_of_iterations_(number_of_iterations),
+          actual_tree_size_(actual_tree_size),
+          tree_size_(tree_size),
+          number_of_collisions_(number_of_collisions) {}
 
     unsigned int number_of_iterations_;
-    unsigned int actual_tree_size_; // not including path nodes
-    unsigned int tree_size_; // all nodes
+    unsigned int actual_tree_size_;  // not including path nodes
+    unsigned int tree_size_;         // all nodes
     unsigned int number_of_collisions_;
   };
 
   friend std::ostream& operator<<(std::ostream& s, const Parameters& p);
 
  public:
-
   // Constructor
-  RRT(kernel::Model *m, DOFsSampler* sampler, LocalPlanner* planner,
+  RRT(kernel::Model* m, DOFsSampler* sampler, LocalPlanner* planner,
       const DOFs& cspace_dofs, unsigned int iteration_number = 1000,
       unsigned int tree_size = 100);
 
@@ -133,9 +135,7 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
   }
 
   // tree size
-  void set_tree_size(unsigned int num) {
-    default_parameters_.tree_size_ = num;
-  }
+  void set_tree_size(unsigned int num) { default_parameters_.tree_size_ = num; }
 
   // actual tree size - not including path nodes
   void set_actual_tree_size(unsigned int num) {
@@ -166,8 +166,8 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
   LocalPlanner* local_planner_;
   typedef std::vector<RRTNode*> RRTTree;
   RRTTree tree_;
-  DOFs cspace_dofs_; // configuration space dofs
-  Parameters default_parameters_; // limits for stop condition
+  DOFs cspace_dofs_;               // configuration space dofs
+  Parameters default_parameters_;  // limits for stop condition
 };
 
 IMPKINEMATICS_END_NAMESPACE

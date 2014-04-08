@@ -1,16 +1,15 @@
 /**
  *  \file Log.cpp   \brief Logging and error reporting support.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
 #include "IMP/base/log.h"
 #include "IMP/base/exception.h"
 #include "IMP/base/file.h"
-#include "IMP/base/internal/static.h"
 #include "IMP/base/Object.h"
-#include "IMP/base/internal/static.h"
+#include "internal/static.h"
 #include "IMP/base/thread_macros.h"
 #ifdef _OPENMP
 #include <omp.h>
@@ -149,7 +148,7 @@ void push_log_context(const char *functionname, const void *classname) {
 #ifdef _OPENMP
   if (!omp_in_parallel())
 #endif
-      {
+  {
     internal::log_contexts.push_back(std::make_pair(functionname, classname));
   }
 }
@@ -158,7 +157,7 @@ void pop_log_context() {
 #ifdef _OPENMP
   if (!omp_in_parallel())
 #endif
-      {
+  {
     if (internal::log_context_initializeds >=
         static_cast<int>(internal::log_contexts.size() - 1)) {
       internal::log_indent -= 2;

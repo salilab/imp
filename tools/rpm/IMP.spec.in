@@ -40,8 +40,7 @@ BuildRequires: boost-devel >= 1.41
 %endif
 
 # RHEL doesn't have a CGAL package, so build without CGAL on RHEL. It also
-# doesn't have a new enough OpenCV in EPEL, or the eigen package, so
-# disable em2d and isd modules.
+# doesn't have a new enough OpenCV in EPEL, so disable the em2d module.
 # RHEL 5 also doesn't have a new enough HDF5 package (RHEL 6 does) so this
 # must be upgraded in order to build RMF (to simply install the binary RPM,
 # you can install the libdhf5-187 package from the Sali lab website to
@@ -49,32 +48,11 @@ BuildRequires: boost-devel >= 1.41
 # copy of HDF5).
 # On Fedora, all of these packages are available; add them as dependencies
 
-# If you are using RHEL and really want the isd module, add
-# '-D "rhel_have_eigen3 1"' to your rpmbuild invocation. You will need to
-# build and install your own eigen3-devel RPM first (get the RPM spec and
-# patch files from http://svn.salilab.org/imp/trunk/tools/rpm/).
-# IMP binary RPMs are built this way, since eigen3 is header only and so
-# this adds no extra dependencies to the binary package.
 %if 0%{?fedora}
-BuildRequires: CGAL-devel, opencv-devel, eigen3-devel
-%else
-%if 0%{?rhel_have_eigen3}
-BuildRequires: eigen3-devel
-%endif
+BuildRequires: CGAL-devel, opencv-devel
 %endif
 
-# Add compiler flags for C++11 support
-%if 0%{?fedora}
-%define cxx_flags -DCMAKE_CXX_FLAGS="-std=c++11"
-%else
-%if 0%{?rhel} >= 6
-%define cxx_flags -DCMAKE_CXX_FLAGS="-std=gnu++0x"
-%else
-%define cxx_flags %{nil}
-%endif
-%endif
-
-%define cmake_opts %{cxx_flags} %{boost}
+%define cmake_opts %{boost}
 
 %description
 IMP's broad goal is to contribute to a comprehensive structural
@@ -130,7 +108,7 @@ mkdir build && cd build
 # not just the first one.
 %if 0%{?keep_going}
 mkdir logs
-../imp/tools/build/build_all.py --outdir=logs --summary=logs/summary.pck make
+../imp/tools/nightly-tests/build_all.py --outdir=logs --summary=logs/summary.pck "make -k"
 %else
 make
 %endif

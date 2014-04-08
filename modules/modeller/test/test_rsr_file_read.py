@@ -6,6 +6,7 @@ import IMP.core
 import IMP.atom
 import IMP.modeller
 
+
 def assertSimilarModellerIMPScores(tst, modeller_model, imp_atoms):
     """Assert that Modeller and IMP give the same score and derivatives"""
     modeller_energy = selection(modeller_model).energy()[0]
@@ -16,17 +17,17 @@ def assertSimilarModellerIMPScores(tst, modeller_model, imp_atoms):
         imp_deriv = IMP.core.XYZ(imp_atom).get_derivatives()
         tst.assertAlmostEqual(imp_deriv[0], modeller_atom.dvx, delta=1e-2,
                               msg="x derivative for atom %s differs between "
-                                  "Modeller (%f) and IMP (%f)" \
+                                  "Modeller (%f) and IMP (%f)"
                                   % (str(modeller_atom), modeller_atom.dvx,
                                      imp_deriv[0]))
         tst.assertAlmostEqual(imp_deriv[1], modeller_atom.dvy, delta=1e-2,
                               msg="y derivative for atom %s differs between "
-                                  "Modeller (%f) and IMP (%f)" \
+                                  "Modeller (%f) and IMP (%f)"
                                   % (str(modeller_atom), modeller_atom.dvy,
                                      imp_deriv[1]))
         tst.assertAlmostEqual(imp_deriv[2], modeller_atom.dvz, delta=1e-2,
                               msg="z derivative for atom %s differs between "
-                                  "Modeller (%f) and IMP (%f)" \
+                                  "Modeller (%f) and IMP (%f)"
                                   % (str(modeller_atom), modeller_atom.dvz,
                                      imp_deriv[2]))
 
@@ -101,7 +102,7 @@ class Tests(IMP.test.TestCase):
 
         # Test forms.factor
         r = forms.factor(feature=features.angle(at[0], at[1], at[2]),
-                          factor=100.0, group=physical.xy_distance)
+                         factor=100.0, group=physical.xy_distance)
         restraints.append(r)
 
         # Test periodic splined restraint:
@@ -116,17 +117,17 @@ class Tests(IMP.test.TestCase):
         r = forms.multi_binormal(features=(features.dihedral(*at[0:4]),
                                            features.dihedral(*at[4:8])),
                                  group=physical.xy_distance,
-                                 weights=[0.2,0.8,0.3],
-                                 means=[[0.1,0.2],[0.3,0.4],[0.5,0.6]],
-                                 stdevs=[[0.1,0.2],[0.3,0.4],[0.1,0.3]],
-                                 correls=[0.3,0.6,0.9])
+                                 weights=[0.2, 0.8, 0.3],
+                                 means=[[0.1, 0.2], [0.3, 0.4], [0.5, 0.6]],
+                                 stdevs=[[0.1, 0.2], [0.3, 0.4], [0.1, 0.3]],
+                                 correls=[0.3, 0.6, 0.9])
         restraints.append(r)
 
         for r in restraints:
             modmodel.restraints.clear()
             modmodel.restraints.add(r)
 
-            rset = IMP.kernel.RestraintSet()
+            rset = IMP.kernel.RestraintSet(m, 1.0, "RS")
             m.add_restraint(rset)
             for rsr in loader.load_static_restraints():
                 rset.add_restraint(rsr)
@@ -185,7 +186,7 @@ class Tests(IMP.test.TestCase):
         bonds = topology.add_bonds(protein)
         cont = IMP.container.ListSingletonContainer(m, "bonds")
         cont.add_particles(bonds)
-        bss = IMP.atom.BondSingletonScore(IMP.core.Harmonic(0,1))
+        bss = IMP.atom.BondSingletonScore(IMP.core.Harmonic(0, 1))
         m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
         assertSimilarModellerIMPScores(self, modmodel, protein)
 
@@ -194,9 +195,10 @@ class Tests(IMP.test.TestCase):
         e = self.get_modeller_environ()
         modmodel = model(e)
         modmodel.build_sequence('A')
-        modmodel.restraints.make(selection(modmodel), restraint_type='IMPROPER',
-                                 spline_on_site=False,
-                                 residue_span_range=(0, 99999))
+        modmodel.restraints.make(
+            selection(modmodel), restraint_type='IMPROPER',
+            spline_on_site=False,
+            residue_span_range=(0, 99999))
 
         m = IMP.kernel.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
@@ -210,7 +212,7 @@ class Tests(IMP.test.TestCase):
         bonds = topology.add_impropers(protein)
         cont = IMP.container.ListSingletonContainer(m, "bonds")
         cont.add_particles(bonds)
-        bss = IMP.atom.ImproperSingletonScore(IMP.core.Harmonic(0,1))
+        bss = IMP.atom.ImproperSingletonScore(IMP.core.Harmonic(0, 1))
         m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
         assertSimilarModellerIMPScores(self, modmodel, protein)
 
@@ -236,7 +238,7 @@ class Tests(IMP.test.TestCase):
         angles = ff.create_angles(bonds)
         cont = IMP.container.ListSingletonContainer(m, "bonds")
         cont.add_particles(angles)
-        bss = IMP.atom.AngleSingletonScore(IMP.core.Harmonic(0,1))
+        bss = IMP.atom.AngleSingletonScore(IMP.core.Harmonic(0, 1))
         m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
         assertSimilarModellerIMPScores(self, modmodel, protein)
 
@@ -245,9 +247,10 @@ class Tests(IMP.test.TestCase):
         e = self.get_modeller_environ()
         modmodel = model(e)
         modmodel.build_sequence('A')
-        modmodel.restraints.make(selection(modmodel), restraint_type='DIHEDRAL',
-                                 spline_on_site=False,
-                                 residue_span_range=(0, 99999))
+        modmodel.restraints.make(
+            selection(modmodel), restraint_type='DIHEDRAL',
+            spline_on_site=False,
+            residue_span_range=(0, 99999))
 
         m = IMP.kernel.Model()
         loader = IMP.modeller.ModelLoader(modmodel)

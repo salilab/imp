@@ -2,7 +2,7 @@
  *  \file IMP/base/math.h
  *  \brief Declare an efficient stl-compatible map
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPBASE_BASE_MATH_H

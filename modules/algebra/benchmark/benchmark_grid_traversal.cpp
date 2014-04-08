@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 #include <IMP/benchmark/benchmark_config.h>
 #include <IMP/benchmark/benchmark_macros.h>
@@ -21,9 +21,7 @@ struct Sum {
 template <class Grid>
 double do_foreach(const Grid &g) {
   double dist = 0;
-  IMP_GRID3D_FOREACH_VOXEL(g, {
-    dist += g[voxel_index];
-  });
+  IMP_GRID3D_FOREACH_VOXEL(g, { dist += g[voxel_index]; });
   return dist;
 }
 
@@ -31,10 +29,7 @@ template <class Grid>
 void benchmark(const Grid &g, std::string name) {
   {
     double runtime, dist = 0;
-    IMP_TIME({
-      dist += g.apply(Sum()).sum;
-    },
-             runtime);
+    IMP_TIME({ dist += g.apply(Sum()).sum; }, runtime);
     IMP::benchmark::report(std::string("grid apply ") + name, runtime, dist);
   }
   {
@@ -45,9 +40,7 @@ void benchmark(const Grid &g, std::string name) {
   {
     double runtime, dist = 0;
     IMP_TIME(for (typename Grid::AllIndexIterator it = g.all_indexes_begin();
-                  it != g.all_indexes_end(); ++it) {
-      dist += g[*it];
-    },
+                  it != g.all_indexes_end(); ++it) { dist += g[*it]; },
              runtime);
     IMP::benchmark::report(std::string("grid iterator ") + name, runtime, dist);
   }

@@ -2,7 +2,7 @@
  *  \file KMcenters.h
  *  \brief
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 //----------------------------------------------------------------------
 //      File:           KMCenters.h
 //      Programmer:     David Mount
@@ -28,8 +28,8 @@
 #define IMPKMEANS_INTERNAL_KMCENTERS_H
 
 #include <IMP/kmeans/kmeans_config.h>
-#include "KMeans.h"                  // kmeans includes
-#include "KMdata.h"                  // provides KMdata
+#include "KMeans.h"  // kmeans includes
+#include "KMdata.h"  // provides KMdata
 #include <IMP/base/Object.h>
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
@@ -43,51 +43,46 @@ IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 //      points, but we just copy the pointer to the data set.
 //----------------------------------------------------------------------
 
-class IMPKMEANSEXPORT KMcenters : public base::Object
-{
-protected:
-  int                  kCtrs;            // number of centers
-  KMdata*            pts;            // the data points
-  KMcenterArray      ctrs;            // the centers
-public:                              // constructors, etc.
-  KMcenters(int k, KMdata& p);      // standard constructor
-  KMcenters(const KMcenters& s);      // copy constructor
+class IMPKMEANSEXPORT KMcenters : public base::Object {
+ protected:
+  int kCtrs;                      // number of centers
+  KMdata* pts;                    // the data points
+  KMcenterArray ctrs;             // the centers
+ public:                          // constructors, etc.
+  KMcenters(int k, KMdata& p);    // standard constructor
+  KMcenters(const KMcenters& s);  // copy constructor
   // assignment operator
   KMcenters& operator=(const KMcenters& s);
-  virtual ~KMcenters();            // virtual destructor
-public:                              // accessors
-  int getDim() const {            // get dimension
+  virtual ~KMcenters();  // virtual destructor
+ public:                 // accessors
+  int getDim() const {   // get dimension
     return pts->getDim();
   }
-  int getNPts() const {            // get number of points
+  int getNPts() const {  // get number of points
     return pts->getNPts();
   }
-  int getK() const {                  // get number of centers
+  int getK() const {  // get number of centers
     return kCtrs;
   }
-  KMdata& getData() {                  // get the data point structure
+  KMdata& getData() {  // get the data point structure
     return *pts;
   }
-  KMpointArray getDataPts() const {      // get the data point array
+  KMpointArray getDataPts() const {  // get the data point array
     return pts->getPts();
   }
-  KMcenterArray getCtrPts() const {      // get the center points
+  KMcenterArray getCtrPts() const {  // get the center points
     return ctrs;
   }
-  KMcenter& operator[](int i) {      // index centers
+  KMcenter& operator[](int i) {  // index centers
     return ctrs[i];
   }
-  const KMcenter& operator[](int i) const {
-    return ctrs[i];
-  }
-  void resize(int k);                  // resize array
+  const KMcenter& operator[](int i) const { return ctrs[i]; }
+  void resize(int k);  // resize array
 
-  virtual void print(                  // print centers
-    bool fancy = true);
+  virtual void print(  // print centers
+      bool fancy = true);
 };
 
 IMPKMEANS_END_INTERNAL_NAMESPACE
-
-
 
 #endif /* IMPKMEANS_INTERNAL_KMCENTERS_H */

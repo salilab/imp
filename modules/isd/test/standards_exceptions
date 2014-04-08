@@ -2,6 +2,9 @@ spelling_exceptions=['guinier', 'jeffreys', 'gaussian',
                      'porod', 'logsquares', 'timestep', 'pdf', 'nonmarginal',
                      'ndims', 'gammahat', 'chiexp', 'logdet', 'fretr']
 function_name_exceptions=[
+        'CysteineCrossLinkRestraint.get_CB_coordinates',
+        'FretRestraint.get_sumFi',
+        'MolecularDynamics.simulate_wave',
         'BivariateFunction.has_changed',
         'Covariance1DFunction.has_changed',
         'FNormal.density',

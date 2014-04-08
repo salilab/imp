@@ -2,12 +2,14 @@
  *  \file IMP/display/writer_macros.h
  *  \brief macros for display classes
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_WRITER_MACROS_H
 #define IMPDISPLAY_WRITER_MACROS_H
 #include "Writer.h"
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 
 //! Define information for an TextWriter object
 /** This macro declares the methods do_open, do_close, add_geometry
@@ -41,10 +43,10 @@
   virtual void do_close()
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-#define IMP_REGISTER_WRITER(Name, suffix)                 \
-  namespace {                                             \
-  internal::WriterFactoryRegistrar Name##registrar(       \
-      suffix, new internal::WriterFactoryHelper<Name>()); \
+#define IMP_REGISTER_WRITER(Name, suffix)                                  \
+  namespace {                                                              \
+  internal::WriterFactoryRegistrar Name##registrar(                        \
+      suffix, boost::make_shared<internal::WriterFactoryHelper<Name> >()); \
   }
 #endif
 

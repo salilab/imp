@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 #include <IMP/rmf/atom_io.h>
 #include <IMP/rmf/frames.h>
@@ -17,7 +17,7 @@ void test_it(std::string file_name, std::string test_name,
   double time;
   int nframes = 0;
   IMP_TIME({
-             IMP::rmf::save_frame(fh, nframes);
+             IMP::rmf::save_frame(fh, "frame");
              ++nframes;
            },
            time);

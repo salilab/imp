@@ -1,12 +1,12 @@
 /**
  *  \file test_grid.cpp   \brief A class to represent a voxel grid.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/algebra/standard_grids.h>
 #include <IMP/algebra/vector_generators.h>
-#include <IMP/base/set.h>
+#include <boost/unordered_set.hpp>
 #include <IMP/test/test_macros.h>
 #include <algorithm>
 
@@ -26,7 +26,7 @@ struct Accum {
 };
 
 struct Count {
-  IMP::base::set<Grid::Index> seen_;
+  boost::unordered_set<Grid::Index> seen_;
   template <class G>
   void operator()(const G&, const typename G::Index& index,
                   const typename G::Vector&) {
@@ -42,9 +42,9 @@ int main(int, char * []) {
     gbb += get_random_vector_in(bb);
     Grid g(1, gbb, 0);
     unsigned int count = g.apply(Count()).get_count();
-    IMP_TEST_EQUAL(count,
-                   g.get_number_of_voxels(0) * g.get_number_of_voxels(1) *
-                       g.get_number_of_voxels(2));
+    IMP_TEST_EQUAL(count, g.get_number_of_voxels(0) *
+                              g.get_number_of_voxels(1) *
+                              g.get_number_of_voxels(2));
   }
   {
     BoundingBox3D bb(Vector3D(0, 0, 0), Vector3D(100, 100, 100));

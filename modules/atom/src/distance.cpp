@@ -1,7 +1,7 @@
 /**
  *  \file distance.cpp  \brief distance measures
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/atom/distance.h>
@@ -11,6 +11,45 @@
 #include <IMP/algebra/geometric_alignment.h>
 
 IMPATOM_BEGIN_NAMESPACE
+
+double get_rmsd_transforming_first(const IMP::algebra::Transformation3D& tr,
+                                   const core::XYZs& s0, const core::XYZs& s1) {
+  return algebra::get_rmsd_transforming_first(tr, s0, s1);
+}
+
+double get_rmsd(const core::XYZs& s0, const core::XYZs& s1) {
+  return algebra::get_rmsd(s0, s1);
+}
+
+double get_rmsd(const Selection& s0, const Selection& s1) {
+  return algebra::get_rmsd(s0.get_selected_particles(),
+                           s1.get_selected_particles());
+}
+
+double get_rmsd_transforming_first(const IMP::algebra::Transformation3D& tr,
+                                   const Selection& s0, const Selection& s1) {
+  return algebra::get_rmsd_transforming_first(tr, s0.get_selected_particles(),
+                                              s1.get_selected_particles());
+}
+
+double get_rmsd(const Selection& s0, const Selection& s1,
+                const algebra::Transformation3D& tr_for_second) {
+  IMPATOM_DEPRECATED_FUNCTION_DEF(
+      2.2, "Use IMP::atom::get_rmsd_transforming_first()");
+  return get_rmsd_transforming_first(tr_for_second, s1, s0);
+}
+
+double get_rmsd(const algebra::Vector3Ds& s0, const algebra::Vector3Ds& s1,
+                const IMP::algebra::Transformation3D& tr_for_second) {
+  IMPATOM_DEPRECATED_FUNCTION_DEF(2.2, "Use IMP::algebra::get_rmsds()");
+  return algebra::get_rmsd_transforming_first(tr_for_second, s1, s0);
+}
+
+double get_rmsd(const core::XYZs& s0, const core::XYZs& s1,
+                const IMP::algebra::Transformation3D& tr_for_second) {
+  IMPATOM_DEPRECATED_FUNCTION_DEF(2.2, "Use IMP::algebra::get_rmsds()");
+  return algebra::get_rmsd_transforming_first(tr_for_second, s1, s0);
+}
 
 std::pair<double, double> get_placement_score(const core::XYZs& from,
                                               const core::XYZs& to) {

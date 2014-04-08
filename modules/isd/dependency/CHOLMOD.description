@@ -1,2 +1,0 @@
-headers="ufsparse/cholmod.h"
-libraries="cholmod:amd:metis:colamd:ccolamd:camd:blas"

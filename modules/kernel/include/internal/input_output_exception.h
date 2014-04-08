@@ -2,7 +2,7 @@
  *  \file IMP/base/exception.h
  *  \brief Exception definitions and assertions.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -36,10 +36,12 @@ struct IMPKERNELEXPORT InputOutputException : public std::runtime_error {
     REMOVE,
     ADD
   };
-  int get_particle_index() const { return particle_index_; }
-  ;
-  std::string get_container_name() const { return container_name_; }
-  ;
+  int get_particle_index() const {
+    return particle_index_;
+  };
+  std::string get_container_name() const {
+    return container_name_;
+  };
   int get_operation() const { return operation_; }
   int get_entity() const { return entity_; }
   std::string get_key_name() const { return key_name_; }

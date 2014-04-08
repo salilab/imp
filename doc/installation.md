@@ -51,7 +51,7 @@ Downloads, then Components, and select "Command Line Tools").
 
 Then Mac users should use one of the available collections of Unix tools,
 either
-- [Homebrew](http://mxcl.github.com/homebrew/) (_recommended_) Once you installed `homebrew`
+- [Homebrew](https://github.com/mxcl/homebrew) (_recommended_) Once you installed `homebrew`
   do
 
     `brew tap homebrew/science`
@@ -91,18 +91,25 @@ that you're going to use to build IMP. The basic procedure is as follows:
   - Get [Python 2](http://www.python.org) (not Python 3)
     (make sure you get the
     32-bit version if you're going to build IMP for 32-bit Windows).
+  - Get and install the
+    [zlib package](http://gnuwin32.sourceforge.net/packages/zlib.htm)
+    (both the "complete package, except sources" and the "sources" installers).
+     - The package without sources can be installed anywhere; we chose the
+       default location of `C:\Program Files\GnuWin32`. The sources, however,
+       must be installed in a path that doesn't contain spaces (otherwise the
+       Boost build will fail). We chose `C:\zlib`.
+     - We found that the zconf.h header included with zlib erroneously includes
+       unistd.h, which doesn't exist on Windows, so we commented out that line
+       (in both packages).
   - Download the [Boost source code](http://www.boost.org)
     (we extracted it into `C:\Program Files\boost_1_53_0`), then
      - Open a Visual Studio Command Prompt, and cd into the directory where
        Boost was extracted
      - Run bootstrap.bat
-     - Run `bjam link=shared runtime-link=shared`
+     - You may need to help the compiler find the zlib header file with
+       `set INCLUDE=C:\Program Files\GnuWin32\include`
+     - Run `bjam link=shared runtime-link=shared -sNO_ZLIB=0 -sZLIB_SOURCE=C:\zlib\1.2.3\zlib-1.2.3`
   - Get and install [SWIG for Windows](http://www.swig.org)
-  - Get and install the
-    [zlib package](http://gnuwin32.sourceforge.net/packages/zlib.htm)
-    (complete package without sources).
-     - We found that the zconf.h header included with zlib erroneously includes
-       unistd.h, which doesn't exist on Windows, so we commented out that line.
   - Get the [HDF5 source code](http://www.hdfgroup.org)
      - Edit the H5pubconf.h file in the `windows\src` subdirectory to
        disable szip (or first install szip if you want to include szip support).

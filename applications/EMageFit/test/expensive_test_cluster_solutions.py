@@ -19,11 +19,12 @@ class TestClusterSolutions(IMP.test.ApplicationTestCase):
             as those obtainedduring the benchmark for the paper
         """
         emagefit_cluster = \
-                self.import_python_application('emagefit_cluster.py')
+            self.import_python_application('emagefit_cluster.py')
         fn_config = self.get_input_file_name("config.py")
         fn_database = self.get_input_file_name("domino_solutions.db")
         fn_db_clusters = "clusters.db"
-        # modify the names of the PDB files to include the proper name for testing
+        # modify the names of the PDB files to include the proper name for
+        # testing
         exp = utility.get_experiment_params(fn_config)
         for i in range(len(exp.fn_pdbs)):
             exp.fn_pdbs[i] = self.get_input_file_name(exp.fn_pdbs[i])
@@ -36,13 +37,13 @@ class TestClusterSolutions(IMP.test.ApplicationTestCase):
 
         # retrieve the largest cluster
         solutions_stored = '9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29'
-        solutions_stored = map(int,solutions_stored.split("|"))
+        solutions_stored = map(int, solutions_stored.split("|"))
         db_clusters = solutions_io.ResultsDB()
         db_clusters.connect(fn_db_clusters)
         cl_record = db_clusters.get_nth_largest_cluster(1)
         elements = map(int, cl_record.elements.split("|"))
-        for i,j in zip(solutions_stored, elements):
-            self.assertEqual(i,j)
+        for i, j in zip(solutions_stored, elements):
+            self.assertEqual(i, j)
         db_clusters.close()
         os.remove(fn_db_clusters)
 

@@ -2,7 +2,7 @@
  *  \file ExamplePairScore.cpp
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/example/ExamplePairScore.h>
@@ -40,9 +40,8 @@ Float ExamplePairScore::evaluate_index(kernel::Model *m,
   return score;
 }
 
-ModelObjectsTemp ExamplePairScore::do_get_inputs(kernel::Model *m,
-                                               const kernel::ParticleIndexes &pis)
-    const {
+ModelObjectsTemp ExamplePairScore::do_get_inputs(
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
   return IMP::kernel::get_particles(m, pis);
 }
 

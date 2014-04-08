@@ -2,17 +2,16 @@
  *  \file IMP/core/MoveStatisticsScoreState.h
  *  \brief Write geometry to a file during optimization
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_MOVE_STATISTICS_SCORE_STATE_H
 #define IMPCORE_MOVE_STATISTICS_SCORE_STATE_H
 
 #include <IMP/core/core_config.h>
-#include <IMP/OptimizerState.h>
+#include <IMP/ScoreState.h>
 #include <IMP/kernel/internal/utility.h>
 #include <IMP/algebra/Vector3D.h>
-#include <IMP/score_state_macros.h>
 #include <IMP/io.h>
 
 IMPCORE_BEGIN_NAMESPACE

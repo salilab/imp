@@ -6,7 +6,9 @@ import IMP.cnmultifit
 import os
 import time
 
+
 class Tests(IMP.test.TestCase):
+
     """Tests for generating cyclic models"""
 
     def test_cn_rmsd(self):
@@ -38,7 +40,7 @@ class Tests(IMP.test.TestCase):
         # Offset one atom to make sure method doesn't always return zero!
         atoms = IMP.atom.get_by_type(mh_chains[0], IMP.atom.ATOM_TYPE)
         d = IMP.core.XYZ(atoms[0])
-        d.set_coordinates(d.get_coordinates() \
+        d.set_coordinates(d.get_coordinates()
                           + IMP.algebra.Vector3D(0.0, 0.0, 10.0))
         check_rmsd(mh_ref_chains, mh_chains, 1.690)
 
@@ -48,33 +50,37 @@ class Tests(IMP.test.TestCase):
         mhs = IMP.atom.get_by_type(mh, IMP.atom.CHAIN_TYPE)
         dec = IMP.cnmultifit.MolCnSymmAxisDetector(3, mhs)
         dec.get_pca().show()
-        min_score=999
+        min_score = 999
         for i in range(3):
-            min_score=min(dec.calc_symm_score(i),min_score)
-        #one of the them should be the symm axis
-        self.assertLess(min_score,1)
+            min_score = min(dec.calc_symm_score(i), min_score)
+        # one of the them should be the symm axis
+        self.assertLess(min_score, 1)
 
     def test_symmetry_score_calculation_for_density(self):
         """Test CnSymmAxisDetector with density"""
         dmap = IMP.em.read_map(self.get_input_file_name('1oel_10.mrc'),
                                IMP.em.MRCReaderWriter())
         dec = IMP.cnmultifit.CnSymmAxisDetector(7, dmap, 5.0)
-        min_score=999.
+        min_score = 999.
         for i in range(3):
-            min_score=min(dec.calc_symm_score(i), min_score)
-        #one of them should be the symm axis
+            min_score = min(dec.calc_symm_score(i), min_score)
+        # one of them should be the symm axis
         self.assertLess(min_score, 10.)
 
     def _test_score_by_pca(self):
-        aligner = IMP.cnmultifit.AlignSymmetric(self.dmap,self.cn_symm_deg)
-        for sol_ind in [0,1,2]:
+        aligner = IMP.cnmultifit.AlignSymmetric(self.dmap, self.cn_symm_deg)
+        for sol_ind in [0, 1, 2]:
             IMP.cnmultifit.transform_cn_assembly(self.mhs,
-                                                  self.asmb_sols[sol_ind].get_transformation(),
-                                                  self.ccw)
+                                                 self.asmb_sols[
+                                                     sol_ind].get_transformation(
+                                                 ),
+                                                 self.ccw)
             print aligner.score_alignment(self.mhs)
             IMP.cnmultifit.transform_cn_assembly(self.mhs,
-                                                  self.asmb_sols[sol_ind].get_transformation().get_inverse(),
-                                                  self.ccw)
+                                                 self.asmb_sols[
+                                                     sol_ind].get_transformation(
+                                                 ).get_inverse(),
+                                                 self.ccw)
 
 
 if __name__ == '__main__':

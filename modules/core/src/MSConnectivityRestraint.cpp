@@ -4,7 +4,7 @@
  *  Restrict max distance between at least one pair of particles of any
  *  two distinct types. It also handles multiple copies of the same particles.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,10 +15,12 @@
 #include <IMP/kernel/Model.h>
 #include <IMP/kernel/Particle.h>
 #include <IMP/base/log.h>
-#include <IMP/singleton_macros.h>
-#include <IMP/PairScore.h>
+#include <IMP/kernel/singleton_macros.h>
+#include <IMP/kernel/PairScore.h>
 #include <IMP/core/PairRestraint.h>
-#include <IMP/kernel/internal/InternalListSingletonContainer.h>
+#include <IMP/kernel/SingletonModifier.h>
+#include <IMP/kernel/internal/StaticListContainer.h>
+#include <IMP/kernel/SingletonContainer.h>
 
 #include <climits>
 
@@ -154,8 +156,9 @@ void MSConnectivityRestraint::ExperimentalTree::desc_to_label(
   }
 }
 
-MSConnectivityRestraint::MSConnectivityRestraint(PairScore *ps, double eps)
-    : kernel::Restraint("MSConnectivityRestraint %1%"), ps_(ps), eps_(eps) {}
+MSConnectivityRestraint::MSConnectivityRestraint(Model *m, PairScore *ps,
+                                                 double eps)
+    : kernel::Restraint(m, "MSConnectivityRestraint %1%"), ps_(ps), eps_(eps) {}
 
 unsigned int MSConnectivityRestraint::ParticleMatrix::add_type(
     const kernel::ParticlesTemp &ps) {
@@ -319,7 +322,6 @@ class MSConnectivityScore {
   EdgeSet get_all_edges(NNGraph &G) const;
 
  private:
-
   struct EdgeScoreComparator {
     EdgeScoreComparator(const MSConnectivityRestraint &restraint)
         : restraint_(restraint) {}
@@ -659,10 +661,12 @@ EdgeSet MSConnectivityScore::get_connected_pairs() const {
 }
 
 namespace {
-IMP::internal::InternalListSingletonContainer *ms_get_list(
+kernel::internal::StaticListContainer<kernel::SingletonContainer> *ms_get_list(
     SingletonContainer *sc) {
-  IMP::internal::InternalListSingletonContainer *ret =
-      dynamic_cast<IMP::internal::InternalListSingletonContainer *>(sc);
+  kernel::internal::StaticListContainer<kernel::SingletonContainer> *ret =
+      dynamic_cast<
+          kernel::internal::StaticListContainer<kernel::SingletonContainer> *>(
+          sc);
   if (!ret) {
     IMP_THROW("Can only use the set and add methods when no container"
                   << " was passed on construction of MSConnectivityRestraint.",
@@ -675,7 +679,7 @@ IMP::internal::InternalListSingletonContainer *ms_get_list(
 unsigned int MSConnectivityRestraint::add_type(
     const kernel::ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
-    sc_ = new IMP::internal::InternalListSingletonContainer(
+    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
         ps[0]->get_model(), "msconnectivity list");
   }
   ms_get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -710,7 +714,6 @@ Restraints MSConnectivityRestraint::do_create_current_decomposition() const {
     oss << get_name() << " " << i;
     pr->set_name(oss.str());
     ret[i] = pr;
-    ret[i]->set_model(get_model());
   }
   return ret;
 }
@@ -734,7 +737,7 @@ ModelObjectsTemp MSConnectivityRestraint::do_get_inputs() const {
   if (!sc_) return kernel::ModelObjectsTemp();
   kernel::ModelObjectsTemp ret;
   IMP_CONTAINER_ACCESS(SingletonContainer, sc_,
-                       { ret += ps_->get_inputs(get_model(), imp_indexes); });
+  { ret += ps_->get_inputs(get_model(), imp_indexes); });
   return ret;
 }
 

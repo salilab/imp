@@ -2,7 +2,7 @@
  *  \file IMP/isd/TALOSRestraint.h
  *  \brief TALOS dihedral restraint between four particles.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -29,10 +29,8 @@ IMPISD_BEGIN_NAMESPACE
     \f$R\f$ and \f$\chi_{exp}\f$.
     \see vonMisesSufficient.h for further detail.
 */
-class IMPISDEXPORT TALOSRestraint : public kernel::Restraint
-{
-public:
-
+class IMPISDEXPORT TALOSRestraint : public kernel::Restraint {
+ public:
   //! Create restraint from a list of particles and the data.
   /** \param[in] m the Model
       \param[in] p list of 4 particles that make the dihedral angle.
@@ -40,7 +38,7 @@ public:
       \param[in] kappa Pointer to the \f$\kappa\f$ concentration particle.
    */
   TALOSRestraint(kernel::Model *m, kernel::Particles p, Floats data,
-          kernel::Particle *kappa);
+                 kernel::Particle *kappa);
 
   //! Create restraint from 4 particles and the data.
   /** \param[in] m the Model
@@ -51,9 +49,9 @@ public:
       \param[in] data list of observations for that angle.
       \param[in] kappa Pointer to the \f$\kappa\f$ concentration particle.
    */
-  TALOSRestraint(kernel::Model *m, kernel::Particle* p1, kernel::Particle* p2,
-          kernel::Particle* p3, kernel::Particle *p4, Floats data,
-          kernel::Particle *kappa);
+  TALOSRestraint(kernel::Model *m, kernel::Particle *p1, kernel::Particle *p2,
+                 kernel::Particle *p3, kernel::Particle *p4, Floats data,
+                 kernel::Particle *kappa);
 
   //! Create restraint from a list of particles and the sufficient statistics.
   /** \param[in] m the Model
@@ -64,7 +62,7 @@ public:
       \param[in] kappa Pointer to the \f$\kappa\f$ concentration particle.
    */
   TALOSRestraint(kernel::Model *m, kernel::Particles p, unsigned N, double R0,
-          double chiexp, kernel::Particle *kappa);
+                 double chiexp, kernel::Particle *kappa);
 
   //! Create restraint from 4 particles and the sufficient statistics.
   /** \param[in] m the Model
@@ -77,34 +75,23 @@ public:
       \param[in] chiexp average observed angle.
       \param[in] kappa Pointer to the \f$\kappa\f$ concentration particle.
    */
-  TALOSRestraint(kernel::Model *m, kernel::Particle* p1, kernel::Particle* p2,
-          kernel::Particle* p3, kernel::Particle *p4, unsigned N, double R0,
-          double chiexp, kernel::Particle *kappa);
-
+  TALOSRestraint(kernel::Model *m, kernel::Particle *p1, kernel::Particle *p2,
+                 kernel::Particle *p3, kernel::Particle *p4, unsigned N,
+                 double R0, double chiexp, kernel::Particle *kappa);
 
   //! Call for probability
-  double get_probability() const
-  {
-    return exp(-unprotected_evaluate(nullptr));
-  }
+  double get_probability() const { return exp(-unprotected_evaluate(nullptr)); }
 
-  double get_R0() const
-  {
-      return mises_->get_R0();
-  }
+  double get_R0() const { return mises_->get_R0(); }
 
-  double get_chiexp() const
-  {
-      return mises_->get_chiexp();
-  }
+  double get_chiexp() const { return mises_->get_chiexp(); }
 
-  virtual double
-  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
-     const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(TALOSRestraint);
 
-private:
+ private:
   base::Pointer<kernel::Particle> p_[4];
   base::Pointer<kernel::Particle> kappa_;
   base::Pointer<vonMisesSufficient> mises_;
@@ -112,4 +99,4 @@ private:
 
 IMPISD_END_NAMESPACE
 
-#endif  /* IMPISD_TALOS_RESTRAINT_H */
+#endif /* IMPISD_TALOS_RESTRAINT_H */

@@ -4,7 +4,7 @@
  *
  *  BLURB
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_CLASSNAME_MODIFIER_H
@@ -38,7 +38,7 @@ class IMPKERNELEXPORT ClassnameModifier : public ParticleInputs,
 
   /** \deprecated_at{2.1} use the index version instead*/
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-    virtual void apply(ARGUMENTTYPE vt) const;
+  virtual void apply(ARGUMENTTYPE vt) const;
 
   /** Apply the function to a single value*/
   virtual void apply_index(kernel::Model *m, PASSINDEXTYPE v) const;

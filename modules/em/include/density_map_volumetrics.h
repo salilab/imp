@@ -10,7 +10,7 @@
 
 #include <IMP/em/em_config.h>
 #include <IMP/em/DensityMap.h>
-#include <IMP/base_types.h>         // Float
+#include <IMP/base_types.h>  // Float
 #include <IMP/em/em_config.h>
 #include <IMP/atom/estimates.h>
 
@@ -35,11 +35,10 @@ The default protein density for this computation is HARPAZ
 \return an approximate molecular mass for the set of voxels with intensity
 under the provided threshold (mass in Da)
     */
-IMPEMEXPORT Float get_molecular_mass_at_threshold(
-      DensityMap* m,
-      Float threshold,
-      atom::ProteinDensityReference ref=atom::HARPAZ
-      );
+IMPEMEXPORT Float
+    get_molecular_mass_at_threshold(DensityMap* m, Float threshold,
+                                    atom::ProteinDensityReference ref =
+                                        atom::HARPAZ);
 
 //! Computes the threshold consider in an EM map to get a desired volume
 /** Computes the threshold consider in an EM map to get a desired volume
@@ -48,10 +47,8 @@ IMPEMEXPORT Float get_molecular_mass_at_threshold(
 \param[in] m a density map
 \param[in] desired_volume (in A^3)
     */
-IMPEMEXPORT Float get_threshold_for_approximate_volume(
-      DensityMap* m,
-      Float desired_volume);
-
+IMPEMEXPORT Float
+    get_threshold_for_approximate_volume(DensityMap* m, Float desired_volume);
 
 //! Computes the threshold to consider in an EM map to get a desired mass
 /** Computes the threshold to consider in an EM map to get a desired mass
@@ -61,12 +58,11 @@ IMPEMEXPORT Float get_threshold_for_approximate_volume(
 \param[in] ref the protein density reference to use in the computation.
 The default protein density for this computation is HARPAZ
     */
-IMPEMEXPORT Float get_threshold_for_approximate_mass(
-      DensityMap* m,
-      Float desired_mass,
-      atom::ProteinDensityReference ref=atom::HARPAZ
-      );
+IMPEMEXPORT Float
+    get_threshold_for_approximate_mass(DensityMap* m, Float desired_mass,
+                                       atom::ProteinDensityReference ref =
+                                           atom::HARPAZ);
 
 IMPEM_END_NAMESPACE
 
-#endif  /* IMPEM_DENSITY_MAP_VOLUMETRICS_H */
+#endif /* IMPEM_DENSITY_MAP_VOLUMETRICS_H */

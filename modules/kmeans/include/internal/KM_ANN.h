@@ -2,7 +2,7 @@
  *  \file KM_ANN.h
  *  \brief
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 //----------------------------------------------------------------------
 //      File:           KM_ANN.h
 //      Programmer:     David Mount
@@ -36,15 +36,15 @@
 //  basic includes
 //----------------------------------------------------------------------
 #include <IMP/kmeans/kmeans_config.h>
-#include <cstdlib>                      // standard libs and definitions
-#include <fstream>                      // file I/O streams
-#include <iomanip>                      // I/O manipulators (for setw)
-#include <climits>                      // for INT_MAX
-#include <cfloat>                       // for DBL_MAX
-#include <ctime>                        // for system clock
-#include <cassert>                      // assertion checking
-#include <string>                       // STL strings
-#include <climits>                  // numeric limits
+#include <cstdlib>  // standard libs and definitions
+#include <fstream>  // file I/O streams
+#include <iomanip>  // I/O manipulators (for setw)
+#include <climits>  // for INT_MAX
+#include <cfloat>   // for DBL_MAX
+#include <ctime>    // for system clock
+#include <cassert>  // assertion checking
+#include <string>   // STL strings
+#include <climits>  // numeric limits
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 
@@ -100,17 +100,17 @@ IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 //
 //----------------------------------------------------------------------
 
-typedef      double      KMcoord;            // coordinate data type
-typedef      double      KMdist;                  // distance data type
-typedef int      KMidx;                  // point index
+typedef double KMcoord;  // coordinate data type
+typedef double KMdist;   // distance data type
+typedef int KMidx;       // point index
 
 // largest possible distance
-const KMdist      KM_DIST_INF      =  DBL_MAX;
+const KMdist KM_DIST_INF = DBL_MAX;
 
-#ifdef DSIGNIF                        // number of sig. digits in KMcoord
-const int       KMcoordPrec      = DBL_DIG;
+#ifdef DSIGNIF  // number of sig. digits in KMcoord
+const int KMcoordPrec = DBL_DIG;
 #else
-const int       KMcoordPrec      = 15;      // default precision
+const int KMcoordPrec = 15;  // default precision
 #endif
 
 //----------------------------------------------------------------------
@@ -209,10 +209,10 @@ const int       KMcoordPrec      = 15;      // default precision
 //----------------------------------------------------------------------
 //      Use the following for the Euclidean norm
 //----------------------------------------------------------------------
-#define IMP_POW(v)            ((v)*(v))
-#define IMP_ROOT(x)            sqrt(x)
-#define IMP_SUM(x,y)            ((x) + (y))
-#define IMP_DIFF(x,y)            ((y) - (x))
+#define IMP_POW(v) ((v) * (v))
+#define IMP_ROOT(x) sqrt(x)
+#define IMP_SUM(x, y) ((x) + (y))
+#define IMP_DIFF(x, y) ((y) - (x))
 
 //----------------------------------------------------------------------
 //  Array types
@@ -231,10 +231,10 @@ const int       KMcoordPrec      = 15;      // default precision
 //      the results of k nearest neighbor queries.
 //----------------------------------------------------------------------
 
-typedef KMcoord            *KMpoint;            // a point
-typedef KMpoint       *KMpointArray;            // an array of points
-typedef KMdist        *KMdistArray;            // an array of distances
-typedef KMidx            *KMidxArray;            // an array of point indices
+typedef KMcoord *KMpoint;       // a point
+typedef KMpoint *KMpointArray;  // an array of points
+typedef KMdist *KMdistArray;    // an array of distances
+typedef KMidx *KMidxArray;      // an array of point indices
 
 //----------------------------------------------------------------------
 //  Point utilities:
@@ -270,29 +270,29 @@ typedef KMidx            *KMidxArray;            // an array of point indices
 //        Deallocates points allocated by kmAllocPts().
 //----------------------------------------------------------------------
 
-IMPKMEANSEXPORT KMdist kmDist(           // compute squared distance
-  int                  dim,              // dimension of space
-  KMpoint            p,                  // points
-  KMpoint            q);
+IMPKMEANSEXPORT KMdist kmDist(  // compute squared distance
+    int dim,                    // dimension of space
+    KMpoint p,                  // points
+    KMpoint q);
 
-IMPKMEANSEXPORT bool kmEqualPts(                  // are two points equal?
-  int                  dim,                  // dimension
-  KMpoint            p1,                  // the points
-  KMpoint            p2);
+IMPKMEANSEXPORT bool kmEqualPts(  // are two points equal?
+    int dim,                      // dimension
+    KMpoint p1,                   // the points
+    KMpoint p2);
 
-IMPKMEANSEXPORT KMpoint kmAllocPt(                  // allocate point storage
-  int                  dim,                  // dimension
-  KMcoord            c = 0);                  // coordinate value (all equal)
+IMPKMEANSEXPORT KMpoint kmAllocPt(  // allocate point storage
+    int dim,                        // dimension
+    KMcoord c = 0);                 // coordinate value (all equal)
 
-IMPKMEANSEXPORT void kmDeallocPt(                  // deallocate a point
-  KMpoint            &p);
+IMPKMEANSEXPORT void kmDeallocPt(  // deallocate a point
+    KMpoint &p);
 
-IMPKMEANSEXPORT KMpointArray kmAllocPts(            // allocate point array
-  int                  n,                  // number of points
-  int                  dim);                  // dimension
+IMPKMEANSEXPORT KMpointArray kmAllocPts(  // allocate point array
+    int n,                                // number of points
+    int dim);                             // dimension
 
-IMPKMEANSEXPORT void kmDeallocPts(          // deallocate a point array
-  KMpointArray      &pa);                  // the array
+IMPKMEANSEXPORT void kmDeallocPts(  // deallocate a point array
+    KMpointArray &pa);              // the array
 
 //----------------------------------------------------------------------
 //  Point and other type copying:
@@ -318,49 +318,44 @@ IMPKMEANSEXPORT void kmDeallocPts(          // deallocate a point array
 //----------------------------------------------------------------------
 
 // copy point without allocation
-IMPKMEANSEXPORT void kmCopyPt(
-  int                  dim,                  // dimension
-  KMpoint            source,                  // source point
-  KMpoint            dest);                  // destination point
+IMPKMEANSEXPORT void kmCopyPt(int dim,         // dimension
+                              KMpoint source,  // source point
+                              KMpoint dest);   // destination point
 
 // allocate and copy point
-IMPKMEANSEXPORT KMpoint kmAllocCopyPt(
-  int                  dim,                  // dimension
-  KMpoint            source);            // point to copy
+IMPKMEANSEXPORT KMpoint kmAllocCopyPt(int dim,          // dimension
+                                      KMpoint source);  // point to copy
 
 // copy point array without allocation
-IMPKMEANSEXPORT void kmCopyPts(
-  int                  n,                  // number of points
-  int                  dim,                  // dimension
-  const KMpointArray      source,                  // source point
-  KMpointArray      dest);                  // destination point
+IMPKMEANSEXPORT void kmCopyPts(int n,                      // number of points
+                               int dim,                    // dimension
+                               const KMpointArray source,  // source point
+                               KMpointArray dest);         // destination point
 
 // allocate and copy point array
-IMPKMEANSEXPORT KMpointArray kmAllocCopyPts(
-  int                  n,                  // number of points
-  int                  dim,                  // dimension
-  const KMpointArray      source);            // source point
+IMPKMEANSEXPORT KMpointArray
+    kmAllocCopyPts(int n,                       // number of points
+                   int dim,                     // dimension
+                   const KMpointArray source);  // source point
 
 // copy anything without allocation
 template <typename Object>
-void kmCopy(
-  int                  n,                  // number of object
-  const Object*      source,                  // source array
-  Object*            dest)                  // destination array
+void kmCopy(int n,                 // number of object
+            const Object *source,  // source array
+            Object *dest)          // destination array
 {
-  for(int i = 0; i < n; i++) {             // copy contents
+  for (int i = 0; i < n; i++) {  // copy contents
     dest[i] = source[i];
   }
 }
 
 // allocate and copy anything
 template <typename Object>
-Object* kmAllocCopy(
-  int                  n,                  // number of object
-  const Object*      source)                  // source array
+Object *kmAllocCopy(int n,                 // number of object
+                    const Object *source)  // source array
 {
-  Object* dest = new Object[n];            // allocate array
-  for(int i = 0; i < n; i++) {             // copy contents
+  Object *dest = new Object[n];  // allocate array
+  for (int i = 0; i < n; i++) {  // copy contents
     dest[i] = source[i];
   }
   return dest;
@@ -369,11 +364,20 @@ Object* kmAllocCopy(
 //----------------------------------------------------------------------
 //  Global constants and types
 //----------------------------------------------------------------------
-enum KMtreeType {IMP_KD_TREE, KM_BD_TREE};      // tree types
-enum             {KM_LO = 0, KM_HI = 1};        // splitting indices
-enum             {KM_IN = 0, KM_OUT = 1};        // shrinking indices
+enum KMtreeType {
+  IMP_KD_TREE,
+  KM_BD_TREE
+};  // tree types
+enum {
+  KM_LO = 0,
+  KM_HI = 1
+};  // splitting indices
+enum {
+  KM_IN = 0,
+  KM_OUT = 1
+};  // shrinking indices
 
-const int KM_STRING_LEN = 100;            // default string length
+const int KM_STRING_LEN = 100;  // default string length
 
 //----------------------------------------------------------------------
 //  Orthogonal (axis aligned) rectangle
@@ -392,50 +396,49 @@ const int KM_STRING_LEN = 100;            // default string length
 //      you get into big trouble in the calling procedure.)
 //----------------------------------------------------------------------
 
-class IMPKMEANSEXPORT KMorthRect
-{
-public:
-  KMpoint      lo;                  // rectangle lower bounds
-  KMpoint      hi;                  // rectangle upper bounds
-//
-  KMorthRect(                  // basic constructor
-    int dd,                        // dimension of space
-    KMcoord l = 0,                // default is empty
-    KMcoord h = 0) {
+class IMPKMEANSEXPORT KMorthRect {
+ public:
+  KMpoint lo;         // rectangle lower bounds
+  KMpoint hi;         // rectangle upper bounds
+                      //
+  KMorthRect(         // basic constructor
+      int dd,         // dimension of space
+      KMcoord l = 0,  // default is empty
+      KMcoord h = 0) {
     lo = kmAllocPt(dd, l);
     hi = kmAllocPt(dd, h);
   }
 
-  KMorthRect(                  // (almost a) copy constructor
-    int dd,                        // dimension
-    const KMorthRect &r) {          // rectangle to copy
+  KMorthRect(                 // (almost a) copy constructor
+      int dd,                 // dimension
+      const KMorthRect &r) {  // rectangle to copy
     lo = kmAllocCopyPt(dd, r.lo);
     hi = kmAllocCopyPt(dd, r.hi);
   }
 
-  KMorthRect(                  // construct from points
-    int dd,                        // dimension
-    KMpoint l,                  // low point
-    KMpoint h) {                // hight point
+  KMorthRect(       // construct from points
+      int dd,       // dimension
+      KMpoint l,    // low point
+      KMpoint h) {  // hight point
     lo = kmAllocCopyPt(dd, l);
     hi = kmAllocCopyPt(dd, h);
   }
 
-  ~KMorthRect() {                // destructor
+  ~KMorthRect() {  // destructor
     kmDeallocPt(lo);
     kmDeallocPt(hi);
   }
 
-  bool inside(int dim, KMpoint p);      // is point p inside rectangle?
+  bool inside(int dim, KMpoint p);  // is point p inside rectangle?
   // expand by factor x and store in r
   void expand(int dim, double x, KMorthRect r);
-  void sample(int dim, KMpoint p);      // sample point p uniformly
+  void sample(int dim, KMpoint p);  // sample point p uniformly
 };
 
-IMPKMEANSEXPORT void kmAssignRect(            // assign one rect to another
-  int                  dim,            // dimension (both must be same)
-  KMorthRect            &dest,            // destination (modified)
-  const KMorthRect      &source);      // source
+IMPKMEANSEXPORT void kmAssignRect(  // assign one rect to another
+    int dim,                        // dimension (both must be same)
+    KMorthRect &dest,               // destination (modified)
+    const KMorthRect &source);      // source
 
 IMPKMEANS_END_INTERNAL_NAMESPACE
 

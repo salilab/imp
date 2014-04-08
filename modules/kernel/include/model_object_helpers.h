@@ -1,7 +1,7 @@
 /**
  *  \file IMP/kernel/model_object_helpers.h    \brief Single variable function.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_MODEL_OBJECT_HELPERS_H
@@ -10,7 +10,7 @@
 #include <IMP/kernel/kernel_config.h>
 #include "ModelObject.h"
 #include "particle_index.h"
-
+#include "ScoreState.h"
 IMPKERNEL_BEGIN_NAMESPACE
 
 /** Inherit from this for objects that take particle arguments and read from

@@ -2,7 +2,7 @@
  *  \file bond_helpers.h
  *  \brief Helpers for the bond decorators.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 

@@ -4,7 +4,7 @@ Support for running tests of IMP functionality. Most of this is centered around 
 
 _Author(s)_: Ben Webb, Daniel Russel
 
-_Maintainer_: `benmwebb`, `drussel`
+_Maintainer_: `benmwebb`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

@@ -1,7 +1,9 @@
 import IMP
 import IMP.test
 
+
 class Tests(IMP.test.TestCase):
+
     """Test ParticleTuples"""
 
     def test_pairs(self):

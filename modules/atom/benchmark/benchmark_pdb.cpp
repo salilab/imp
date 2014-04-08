@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 #include <IMP.h>
 #include <IMP/core.h>
@@ -29,10 +29,10 @@ void do_benchmark(kernel::Model *m) {
   double total = 0;
   std::string fname = IMP::benchmark::get_data_path("large_protein.pdb");
   IMP_TIME({
-    atom::Hierarchy h = read_pdb(fname, m);
-    total += reinterpret_cast<size_t>(h.get_particle());
-    atom::destroy(h);
-  },
+             atom::Hierarchy h = read_pdb(fname, m);
+             total += reinterpret_cast<size_t>(h.get_particle());
+             atom::destroy(h);
+           },
            runtime);
   IMP::benchmark::report(std::string("pdb"), runtime, total);
 }

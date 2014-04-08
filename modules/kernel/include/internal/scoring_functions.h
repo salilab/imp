@@ -2,7 +2,7 @@
  *  \file internal/utility.h
  *  \brief Various useful utilities
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_INTERNAL_SCORING_FUNCTIONS_H
@@ -113,9 +113,8 @@ WrappedRestraintScoringFunction<RestraintType>::do_add_score_and_derivatives(
 template <class RestraintType>
 Restraints WrappedRestraintScoringFunction<RestraintType>::create_restraints()
     const {
-  IMP_NEW(RestraintSet, rs, (get_name() + " weights"));
-  rs->add_restraint(r_);
-  rs->set_model(get_model());
+  IMP_NEW(RestraintSet, rs,
+          (RestraintsTemp(1, r_), 1.0, get_name() + " weights"));
   rs->set_maximum_score(max_);
   rs->set_weight(weight_);
   return Restraints(1, rs);

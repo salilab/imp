@@ -3,7 +3,7 @@
  *  \brief A singleton modifier which wraps an attribute into a
  *  given range.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -32,13 +32,13 @@ void ExampleSingletonModifier::apply_index(kernel::Model *m,
 }
 
 /* Only the passed particle is used */
-ModelObjectsTemp ExampleSingletonModifier::do_get_inputs(kernel::Model *m,
-                                          const kernel::ParticleIndexes &pis) const {
+ModelObjectsTemp ExampleSingletonModifier::do_get_inputs(
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
   return IMP::kernel::get_particles(m, pis);
 }
 
-ModelObjectsTemp ExampleSingletonModifier::do_get_outputs(kernel::Model *m,
-                                          const kernel::ParticleIndexes &pis) const {
+ModelObjectsTemp ExampleSingletonModifier::do_get_outputs(
+    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
   return do_get_inputs(m, pis);
 }
 

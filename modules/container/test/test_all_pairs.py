@@ -12,37 +12,41 @@ except NameError:
     import sets
     set = sets.Set
 
+
 class Tests(IMP.test.TestCase):
+
     """Tests for all pairs pair container"""
 
     def test_allp(self):
         """Check AllPairContainer"""
-        m= IMP.kernel.Model()
-        for i in range(0,50):
-            p= IMP.kernel.Particle(m)
-        lp= IMP.container.ListSingletonContainer(m.get_particles())
-        apc= IMP.container.AllPairContainer(lp)
+        m = IMP.kernel.Model()
+        for i in range(0, 50):
+            p = IMP.kernel.Particle(m)
+        lp = IMP.container.ListSingletonContainer(m.get_particles())
+        apc = IMP.container.AllPairContainer(lp)
         #self.assertEqual(lp.get_ref_count(), 2)
         # use that names are unique
-        psl= set()
+        psl = set()
         print apc.get_number_of_particle_pairs()
         print lp.get_number_of_particles()
         IMP.base.set_log_level(IMP.base.VERBOSE)
         for i in range(0, apc.get_number_of_particle_pairs()):
-            #print ap[-1][0]
-            #print ap[-1][1]
-            n0= apc.get_particle_pair(i)[0].get_name()
-            n1= apc.get_particle_pair(i)[1].get_name()
-            if n0 < n1: dp= (n0, n1)
-            else: dp= (n1, n0)
+            # print ap[-1][0]
+            # print ap[-1][1]
+            n0 = apc.get_particle_pair(i)[0].get_name()
+            n1 = apc.get_particle_pair(i)[1].get_name()
+            if n0 < n1:
+                dp = (n0, n1)
+            else:
+                dp = (n1, n0)
             print dp
-            #print psl
-            self.assertNotIn(dp, psl, "Pair " + n0 + " and " +n1\
-                             +" is already in list "+ str(psl))
-            psl=psl.union([dp])
+            # print psl
+            self.assertNotIn(dp, psl, "Pair " + n0 + " and " + n1
+                             + " is already in list " + str(psl))
+            psl = psl.union([dp])
         print psl
         self.assertEqual(apc.get_number_of_particle_pairs(),
-                         lp.get_number_of_particles()*(lp.get_number_of_particles()-1)/2)
+                         lp.get_number_of_particles() * (lp.get_number_of_particles() - 1) / 2)
 
 if __name__ == '__main__':
     IMP.test.main()

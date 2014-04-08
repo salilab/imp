@@ -22,12 +22,10 @@ def create_scoring(m, ps):
                                          "Restrained pairs")
     pr = IMP.container.PairsRestraint(score, pc)
     pr.set_maximum_score(.01)
-    pr.set_model(m)
     d = IMP.core.DistanceToSingletonScore(IMP.core.HarmonicUpperBound(2, 1),
                                           IMP.algebra.Vector3D(2, 0, 0))
     # force ps[1] to be on the positive side to remove flip degree of freedom
     dr = IMP.core.SingletonRestraint(d, ps[1])
-    dr.set_model(m)
     # we are not interested in conformations which don't fit the distances
     # exactly, but using 0 is tricky
     dr.set_maximum_score(.01)
@@ -104,7 +102,7 @@ print "sampling"
 # many, it might be better to use s.get_sample_states() and then
 # IMP.domino.load_particle_states() to handle the states as that takes
 # much less memory, and time.
-cs = s.get_sample()
+cs = s.create_sample()
 
 print "found ", cs.get_number_of_configurations(), "solutions"
 for i in range(cs.get_number_of_configurations()):

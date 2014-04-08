@@ -2,7 +2,7 @@
  *  \file IMP/em/FitRestraint.h
  *  \brief Calculate score based on fit to EM map.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -21,6 +21,7 @@
 #include <IMP/kernel/Model.h>
 #include <IMP/kernel/Restraint.h>
 #include <IMP/Refiner.h>
+#include <boost/unordered_map.hpp>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -28,9 +29,8 @@ IMPEM_BEGIN_NAMESPACE
 /** \ingroup exp_restraint
 
  */
-class IMPEMEXPORT FitRestraint : public kernel::Restraint
-{
-public:
+class IMPEMEXPORT FitRestraint : public kernel::Restraint {
+ public:
   //! Constructor
   /**
     \param[in] ps The particles participating in the fitting score
@@ -51,29 +51,24 @@ public:
           If the user prefers to get more accurate results, provide
           its members as input particles and not the rigid body.
    */
-  FitRestraint(kernel::ParticlesTemp ps,
-               DensityMap *em_map,
-               FloatPair norm_factors=FloatPair(0.,0.),
-               FloatKey weight_key= atom::Mass::get_mass_key(),
-               float scale=1,
-               bool use_rigid_bodies=true,
-               KernelType kt=GAUSSIAN);
+  FitRestraint(kernel::ParticlesTemp ps, DensityMap *em_map,
+               FloatPair norm_factors = FloatPair(0., 0.),
+               FloatKey weight_key = atom::Mass::get_mass_key(),
+               float scale = 1, bool use_rigid_bodies = true,
+               KernelType kt = GAUSSIAN);
   //! \return the predicted density map of the model
-  SampledDensityMap * get_model_dens_map() const {
-    return model_dens_map_;
-  }
-  void set_scale_factor(float scale) {scalefac_=scale;}
-  float get_scale_factor() const {return scalefac_;}
-  virtual double
-  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
-     const IMP_OVERRIDE;
+  SampledDensityMap *get_model_dens_map() const { return model_dens_map_; }
+  void set_scale_factor(float scale) { scalefac_ = scale; }
+  float get_scale_factor() const { return scalefac_; }
+  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+      const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(FitRestraint);
 
 #ifndef SWIG
-  IMP_LIST(private, Particle, particle, kernel::Particle*, kernel::Particles);
+  IMP_LIST(private, Particle, particle, kernel::Particle *, kernel::Particles);
 #endif
-private:
+ private:
   //! Store particles
   void store_particles(kernel::ParticlesTemp ps);
   //! Resample the model density map
@@ -84,8 +79,7 @@ private:
   IMP::base::PointerMember<DensityMap> target_dens_map_;
   mutable IMP::base::PointerMember<SampledDensityMap> model_dens_map_;
   mutable SampledDensityMaps rb_model_dens_map_;
-  mutable IMP::base::PointerMember<SampledDensityMap>
-    none_rb_model_dens_map_;
+  mutable IMP::base::PointerMember<SampledDensityMap> none_rb_model_dens_map_;
   algebra::BoundingBoxD<3> target_bounding_box_;
   // reference to the IMP environment
   float scalefac_;
@@ -97,11 +91,11 @@ private:
   KernelParameters *kernel_params_;
   FloatPair norm_factors_;
   bool use_rigid_bodies_;
-  //particle handling
-  //map particles to their rigid bodies
-  IMP::base::map<core::RigidBody, kernel::Particles> member_map_;
+  // particle handling
+  // map particles to their rigid bodies
+  boost::unordered_map<core::RigidBody, kernel::Particles> member_map_;
   kernel::Particles all_ps_;
-  //all particles that are not part of a rigid body
+  // all particles that are not part of a rigid body
   kernel::Particles not_part_of_rb_;
   kernel::Particles part_of_rb_;
   core::RigidBodies rbs_;
@@ -110,4 +104,4 @@ private:
 
 IMPEM_END_NAMESPACE
 
-#endif  /* IMPEM_FIT_RESTRAINT_H */
+#endif /* IMPEM_FIT_RESTRAINT_H */

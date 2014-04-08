@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/ChecksScoreState.h    \brief Turn checks on and off.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_CHECKS_SCORE_STATE_H
@@ -21,11 +21,7 @@ class IMPCOREEXPORT ChecksScoreState : public ScoreState {
   unsigned int num_checked_;
 
  public:
-
   ChecksScoreState(kernel::Model *m, double probability);
-
-  IMPCORE_DEPRECATED_METHOD_DECL(2.1)
-  ChecksScoreState(double probability);
 
   unsigned int get_number_of_checked() const { return num_checked_; }
 

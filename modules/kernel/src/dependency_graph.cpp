@@ -2,7 +2,7 @@
  *  \file Model.cpp \brief Storage of a model, its restraints,
  *                         constraints and particles.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
@@ -19,11 +19,12 @@ IMP_GCC_PRAGMA(diagnostic ignored "-Wunused-parameter")
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/dynamic_bitset.hpp>
 #include <IMP/base/warning_macros.h>
-#include <boost/foreach.hpp>
+
 #include <IMP/base/file.h>
 //#include <boost/graph/lookup_edge.hpp>
 #include <IMP/base/vector_property_map.h>
 #include <boost/graph/reverse_graph.hpp>
+#include <boost/unordered_set.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -106,14 +107,6 @@ ScoreStatesTemp get_dependent_score_states(
     const DependencyGraphVertexIndex &index) {
   return get_dependent<ScoreStatesTemp, ScoreState, false>(
       ModelObjectsTemp(1, p), all, dg, index);
-}
-
-ParticlesTemp get_required_particles(kernel::ModelObject *p,
-                                     const ModelObjectsTemp &all,
-                                     const DependencyGraph &dg,
-                                     const DependencyGraphVertexIndex &index) {
-  return get_dependent<ParticlesTemp, Particle, true>(
-      kernel::ModelObjectsTemp(1, p), all, dg, index);
 }
 
 ScoreStatesTemp get_required_score_states(
@@ -200,6 +193,7 @@ void build_inputs_graph(const ModelObjectsTemp &mos, DependencyGraph &dg,
 void build_outputs_graph(const ModelObjectsTemp mos, DependencyGraph &dg,
                          const DependencyGraphVertexIndex &dgi) {
   for (unsigned int i = 0; i < mos.size(); ++i) {
+    IMP_CHECK_OBJECT(mos[i]);
     DependencyGraphTraits::vertex_descriptor rv = dgi.find(mos[i])->second;
     {
       ModelObjectsTemp ct =
@@ -307,7 +301,7 @@ DependencyGraph get_pruned_dependency_graph(kernel::Model *m) {
   while (changed) {
     changed = false;
     IMP_LOG_VERBOSE("Searching for vertices to prune" << std::endl);
-    base::set<Connections> connections;
+    boost::unordered_set<Connections> connections;
     for (unsigned int i = 0; i < boost::num_vertices(full); ++i) {
       Connections c(i, full);
       if (connections.find(c) != connections.end()) {
@@ -364,8 +358,8 @@ RestraintsTemp do_get_dependent_restraints(kernel::ModelObject *mo) {
   if (r) {
     ret.push_back(r);
   }
-  BOOST_FOREACH(kernel::ModelObject * cur,
-                mo->get_model()->get_dependency_graph_outputs(mo)) {
+  IMP_FOREACH(kernel::ModelObject * cur,
+              mo->get_model()->get_dependency_graph_outputs(mo)) {
     ret += do_get_dependent_restraints(cur);
   }
   return ret;
