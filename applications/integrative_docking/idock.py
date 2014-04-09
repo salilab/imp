@@ -403,10 +403,6 @@ find 'reduce' in the system path."""
         """Run a binary that is part of the FiberDock distribution"""
         _run_binary(self.opts.fiber_dock, binary, args)
 
-    def make_patch_dock_surfaces(self):
-        """Make molecular surfaces for PatchDock"""
-        self.run_patch_dock_binary('buildMS.pl', [self.receptor, self.ligand])
-
     def make_patch_dock_parameters(self):
         """Make parameter file for PatchDock"""
         if self.opts.precision == 1:
@@ -458,7 +454,6 @@ find 'reduce' in the system path."""
 
     def run_patch_dock(self):
         """Run PatchDock on the ligand and receptor"""
-        self.make_patch_dock_surfaces()
         self.make_patch_dock_parameters()
         self.do_patch_dock_docking()
         num_transforms = self.make_transformation_file()
