@@ -1,5 +1,5 @@
 /**
- *  \file TAMDCentroid.cpp   \brief Simple xyzr decorator.
+ *  \file TAMDCentroid.cpp   \brief A centroid for TAMD simulations
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *

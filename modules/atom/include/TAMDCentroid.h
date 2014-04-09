@@ -1,6 +1,6 @@
 /**
  *  \file IMP/atom/TAMDCentroid.h
- *  \brief A decorator for a diffusing particle.
+ *  \brief A decorator for a particle that is a centroid of TAMD simulations.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
