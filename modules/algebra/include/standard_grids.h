@@ -59,6 +59,18 @@ struct DenseGrid3D
   IMP_ALGEBRA_SWIG_GRID_METHODS(3, VT);
 };
 
+template <int D, class VT>
+struct DenseGridD
+    : public GridD<D, DenseGridStorageD<D, VT>, VT, DefaultEmbeddingD<D> > {
+  typedef GridD<D, DenseGridStorageD<D, VT>, VT, DefaultEmbeddingD<D> > P;
+  DenseGridD(double side, const BoundingBoxD<D> &bb, VT def = VT())
+      : P(side, bb, def) {}
+  DenseGridD(const VectorD<D> &sides, const BoundingBoxD<D> &bb, VT def = VT())
+      : P(sides, bb, def) {}
+  DenseGridD() {}
+  IMP_ALGEBRA_SWIG_GRID_METHODS(D, VT);
+};
+
 /** A sparse grid of values. In python SparseIntGrid3D is provided.*/
 template <class VT>
 struct SparseGrid3D
@@ -84,6 +96,8 @@ struct SparseUnboundedGrid3D
                 DefaultEmbeddingD<3> > P;
   SparseUnboundedGrid3D(double side, const Vector3D &origin, VT def = VT())
       : P(side, origin, def) {}
+  SparseUnboundedGrid3D(const Vector3D &sides, const Vector3D &origin, VT def = VT())
+      : P(sides, origin, def) {}
   SparseUnboundedGrid3D() {}
   IMP_ALGEBRA_SWIG_GRID_METHODS(3, VT);
 };

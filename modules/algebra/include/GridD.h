@@ -115,8 +115,8 @@ class GridD : public StorageT,
   }
   template <class NS>
   Ints get_ns(const NS &ds, const BoundingBoxD<D> &bb) const {
-    Ints dd(ds.size());
-    for (unsigned int i = 0; i < ds.size(); ++i) {
+    Ints dd(bb.get_dimension());
+    for (unsigned int i = 0; i < bb.get_dimension(); ++i) {
       IMP_USAGE_CHECK(ds[i] > 0,
                       "Number of voxels cannot be 0 on dimension: " << i);
       double bside = bb.get_corner(1)[i] - bb.get_corner(0)[i];
@@ -141,6 +141,7 @@ class GridD : public StorageT,
         Embedding(bb.get_corner(0), get_sides(counts, bb)) {
     IMP_USAGE_CHECK(D == 3, "Only in 3D");
   }
+
   /** Create a grid from a bounding box and the side of the cubical
       voxel.
 
@@ -156,10 +157,25 @@ class GridD : public StorageT,
         "This grid constructor can only be used with bounded grids.");
   }
 
+  /** Create a grid from a bounding box and the sides of the variable
+      size voxel.
+
+      This constructor works for all bounded grids.
+  */
+  GridD(const VectorD<D> &sides, const BoundingBoxD<D> &bb,
+        const Value &default_value = Value())
+      : Storage(get_ns(sides.get_coordinates(), bb), default_value),
+        Embedding(bb.get_corner(0), sides) {
+    IMP_USAGE_CHECK(
+        Storage::get_is_bounded(),
+        "This grid constructor can only be used with bounded grids.");
+  }
+
   /** Advanced constructor if you want to explicitly init storage
       and embedding. */
   GridD(const Storage &storage, const Embedding &embed)
       : Storage(storage), Embedding(embed) {}
+
   /** Construct a grid from the cubical voxel side and the origin.
 
       This constructor is only valid with unbounded (hence sparse)
@@ -169,6 +185,17 @@ class GridD : public StorageT,
         const Value &default_value = Value())
       : Storage(default_value),
         Embedding(origin, get_ones_vector_kd(origin.get_dimension(), side)) {}
+
+  /** Construct a grid from the variable voxel side and the origin.
+
+      This constructor is only valid with unbounded (hence sparse)
+      grids.
+  */
+  GridD(const VectorD<D> &sides, const VectorD<D> &origin,
+        const Value &default_value = Value())
+      : Storage(default_value),
+        Embedding(origin, sides) {}
+
   //! An empty, undefined grid.
   /** Make sure you initialize it before you try to use it. */
   GridD() : Storage(Value()) {}
