@@ -41,9 +41,12 @@ class IMPCOREEXPORT DistanceRestraint :
   /** \param[in] score_func Scoring function for the restraint.
       \param[in] a Pointer to first particle in distance restraint.
       \param[in] b Pointer to second particle in distance restraint.
+      \param[in] name restraint name
    */
-  DistanceRestraint(UnaryFunction *score_func, kernel::Particle *a,
-                    kernel::Particle *b);
+  DistanceRestraint(UnaryFunction *score_func,
+                    kernel::Particle *a,
+                    kernel::Particle *b,
+                    std::string name = "DistanceRestraint %1%");
 
 #ifdef SWIG
  protected:

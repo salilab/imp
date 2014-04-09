@@ -74,8 +74,20 @@ class IMPKERNELEXPORT Particle : public ModelObject {
        and derivatives in kcal/mol angstrom. This is not enforced.
    */
   /*@{*/
+  /** add attribute name to the attributes table of this particle
+
+      @param name attribute key
+      @param inital_value initial value for the attribute
+      @param optimized whether to flag this attribute as optimized
+  */
   void add_attribute(FloatKey name, const Float initial_value, bool optimized);
 
+  /** adds a derivative value to the derivatives table of this particle
+
+      @param key the attribute key whose derivative is updates
+      @param value the derivative value to be added
+      @param da a derivative accumulator for reweighting derivatives
+  */
   void add_to_derivative(FloatKey key, Float value,
                          const DerivativeAccumulator &da);
 

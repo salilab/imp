@@ -186,6 +186,7 @@ void Particle::add_attribute(FloatKey name, const Float initial_value,
   get_model()->add_attribute(name, id_, initial_value);
   get_model()->set_is_optimized(name, id_, optimized);
 }
+
 void Particle::add_to_derivative(FloatKey key, Float value,
                                  const DerivativeAccumulator &da) {
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
