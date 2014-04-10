@@ -8,3 +8,6 @@
 [submodule "modules/module_template"]
 	path = modules/module_template
 	url = ../module_template.git
+[submodule "modules/pmi"]
+	path = modules/pmi
+	url = ../pmi.git
