@@ -7,6 +7,8 @@ import IMP.container
 import RMF
 import math
 
+
+
 class Tests(IMP.test.TestCase):
 
     def _create_singleton_particle(self, m, name):
@@ -142,14 +144,17 @@ class Tests(IMP.test.TestCase):
     def test_bonded(self):
         """Check brownian dynamics with rigid bodies"""
         m = IMP.kernel.Model()
-        m.set_log_level(IMP.base.SILENT)
+        LOCAL_WELLS = True
+#        rmf_fname = self.get_tmp_file_name("bd_rb_no_tamd_multi_lw_50.rmf")
+        RMF_FNAME = self.get_tmp_file_name("bd_rb_no_tamd_multi_lw.rmf")
         root, all_centroids, all_images, R \
             = self._create_tamd_hierarchy(m,
                                           5, 2,
-                                          [3,2.5,2,1.5],#[1.1,1.1,1.1,1.1],
-                                          [16,8,4,2],
-#                                          [5,5,5,5] )
-                                          [5e-12,5e-12,5e-12,5e-12] )
+#                                          T_factors = [3,2.5,2,1.5],
+                                          T_factors = [1.8,1.6,1.4,1.2],
+                                          F_factors = [16,8,4,2],
+#                                          Ks = [5,5,5,5] )
+                                         Ks = [5e-12,5e-12,5e-12,5e-12] )
             # = self._create_tamd_hierarchy(m,
             #                               5, 2,
             #                               [1.1,1.1,1.1,1.1],
@@ -173,13 +178,14 @@ class Tests(IMP.test.TestCase):
         print R
 
         # LOCAL WELLS:
-        thb1 = IMP.core.TruncatedHarmonicBound(27.5, 0.1, 8, 20)
-        thb2 = IMP.core.TruncatedHarmonicBound(50, 0.1, 8, 20)
-        dr1 = IMP.core.DistanceRestraint(thb1, leaves[0], leaves[-1])
-#                                        "local_well_1")
-        dr2 = IMP.core.DistanceRestraint(thb2, leaves[0], leaves[-1])
-#                                        "local_well_2")
-        R = R + [dr2] #, dr2]
+        if(LOCAL_WELLS):
+            thb1 = IMP.core.TruncatedHarmonicBound(27.5, 0.175, 8, 20)
+            thb2 = IMP.core.TruncatedHarmonicBound(52.5, 0.175, 8, 20)
+            dr1 = IMP.core.DistanceRestraint(thb1, leaves[0], leaves[-1])
+            #                                        "local_well_1")
+            dr2 = IMP.core.DistanceRestraint(thb2, leaves[0], leaves[-1])
+            #                                        "local_well_2")
+            R = R + [dr2] #, dr2]
 
         # Define BD
         bd = IMP.atom.BrownianDynamicsTAMD(m)
@@ -189,9 +195,8 @@ class Tests(IMP.test.TestCase):
 
         # Attach RMF
 #        RMF.set_log_level("Off")
-        rmf_fname = self.get_tmp_file_name("bd_rb_no_tamd_multi_lw_50.rmf")
-        rmf = RMF.create_rmf_file(rmf_fname)
-        print "RMF: ", rmf_fname
+        rmf = RMF.create_rmf_file(RMF_FNAME)
+        print "RMF: ", RMF_FNAME
         # add all hierarchies
         queue = [rootH]
         while len(queue)>0:
@@ -207,7 +212,7 @@ class Tests(IMP.test.TestCase):
         os.set_log_level(IMP.base.SILENT)
         os.set_period(10)
         bd.set_scoring_function(sf)
-        bd.add_optimizer_state(os)
+#        bd.add_optimizer_state(os)
 
         IMP.base.set_log_level(IMP.base.VERBOSE)
         os.update_always("Init position")
@@ -228,7 +233,7 @@ class Tests(IMP.test.TestCase):
         bd.set_scoring_function(sf)
 
         os.set_period(2500)
-        max_cycles = 100000000
+        max_cycles = 1000000000
         round_cycles = 1000
         total_cycles = 0
         e_threshold = 2
