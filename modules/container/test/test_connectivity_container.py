@@ -48,7 +48,7 @@ class Tests(IMP.test.TestCase):
             dist = IMP.core.get_distance(IMP.core.XYZR(pr[0]),
                                          IMP.core.XYZR(pr[1]))
         print 'eval2'
-        self.assertEqual(m.evaluate(False), 0)
+        self.assertAlmostEqual(m.evaluate(False), 0, delta=1e-3)
 
     def test_score(self):
         """Test connectivity"""
