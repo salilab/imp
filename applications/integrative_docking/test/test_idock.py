@@ -271,8 +271,7 @@ Program parameters
         dock.opts.type = 'other'
         n = dock.run_patch_dock()
         self.assertEqual(n, 42)
-        self.assertEqual(dock.calls, ['surface', 'params', 'docking',
-                                      'transforms'])
+        self.assertEqual(dock.calls, ['params', 'docking', 'transforms'])
         self.assertEqual(dock.ligand, 'testlig')
         self.assertEqual(dock.receptor, 'testrecep')
 
