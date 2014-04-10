@@ -136,19 +136,6 @@ After Refinement:
             sys.stdout = old_stdout
             app.subprocess = oldsubproc
 
-    def test_make_patch_dock_surfaces(self):
-        """Test make_patch_dock_surfaces()"""
-        app, old_run_binary, dock = self.make_idock_with_captured_subprocess()
-        try:
-            dock.opts.patch_dock = 'pd_dir'
-            dock.receptor = 'testrecep'
-            dock.ligand = 'testlig'
-            dock.make_patch_dock_surfaces()
-            self.assertEqual(dock.run_binary_args,
-                             ('pd_dir', 'buildMS.pl', ['testrecep', 'testlig']))
-        finally:
-            app._run_binary = old_run_binary
-
     def test_make_patch_dock_parameters(self):
         """Test make_patch_dock_parameters()"""
         app, old_run_binary, dock = self.make_idock_with_captured_subprocess()
