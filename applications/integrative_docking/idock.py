@@ -32,19 +32,6 @@ def _count_lines(filename):
     return wc
 
 
-def _count_fiber_dock_out(filename):
-    """Count the number of transformations in a FiberDock output file"""
-    wc = 0
-    header_found = False
-    for line in open(filename):
-        if '|' in line:
-            if header_found:
-                wc += 1
-            elif 'glob' in line:
-                header_found = True
-    return wc
-
-
 def _run_binary(path, binary, args, out_file=None):
     if path:
         binary = os.path.join(path, binary)
@@ -67,8 +54,7 @@ class Scorer(object):
        To add support for a new type of data, simply create a new Scorer
        subclass and override its methods and variables."""
     transformations_file = 'trans_pd'
-    # Number of transforms to be passed to FiberDock; more accurate scoring
-    # methods can get away with fewer transforms
+    # Number of transforms to be processed
     transforms_needed = 5000
     # If set to True, higher scores are considered better when calculating
     # zscores
@@ -116,7 +102,7 @@ class Scorer(object):
         fh = open(tmp_tf, 'w')
         for line in open(transforms_file):
             spl = line.split()
-            if len(spl) > 1:
+            if len(spl) > 1 and num_re.search(spl[0]):
                 fh.write(solutions[int(spl[0]) - 1])
         fh.close()
         # Recompute z-scores for the new set
@@ -204,6 +190,30 @@ class SAXSScorer(Scorer):
                     [self.saxs_receptor, self.saxs_ligand,
                      self.transformations_file, self.saxs_file,
                      '-o', self.output_file])
+
+
+class SOAPScorer(Scorer):
+
+    """Score transformations using SOAP statistical potential"""
+    short_name = 'soap'
+
+    @classmethod
+    def check_options(cls, idock, parser):
+        return cls(idock)
+
+    def __init__(self, idock):
+        Scorer.__init__(self, idock, "soap_score")
+        self.saxs_receptor = idock.receptor
+        self.saxs_ligand = idock.ligand
+
+    def __str__(self):
+        return "SOAP score"
+
+    def _run_score_binary(self):
+        _run_binary(None, "soap_score",
+                    [self.saxs_receptor, self.saxs_ligand,
+                     self.transformations_file,
+                    '-o', self.output_file])
 
 
 class EM2DScorer(Scorer):
@@ -327,12 +337,9 @@ class IDock(object):
         data_types = [x.short_name.upper() for x in self._all_scorers]
         data_types = ", ".join(data_types[:-1]) + " and/or " + data_types[-1]
         epilog = """Note that in order to run this application, you must also
-have PatchDock and FiberDock (available from
-http://bioinfo3d.cs.tau.ac.il/FiberDock/) and reduce (available from
-http://kinemage.biochem.duke.edu/software/reduce.php)
-installed. See the --patch-dock and --fiber-dock parameters to tell idock
-where the PatchDock and FiberDock programs are installed. idock expects to
-find 'reduce' in the system path."""
+have PatchDock (available from http://bioinfo3d.cs.tau.ac.il/PatchDock/)
+installed. See the --patch-dock parameter to tell idock
+where the PatchDock program is installed."""
         parser = IMP.OptionParser(usage="%prog [options] <receptor_pdb> "
                                         "<ligand_pdb>",
                                   description="Integrative pairwise docking "
@@ -350,13 +357,6 @@ find 'reduce' in the system path."""
                           help='Directory where PatchDock tools are installed. '
                                'If not specified, the value of the '
                                'PATCH_DOCK_HOME environment variable is used '
-                               'if set, otherwise the tools are assumed to be '
-                               'in the default path.')
-        parser.add_option('--fiber_dock', metavar='DIR',
-                          default=os.environ.get('FIBER_DOCK_HOME', None),
-                          help='Directory where FiberDock tools are installed. '
-                               'If not specified, the value of the '
-                               'FIBER_DOCK_HOME environment variable is used '
                                'if set, otherwise the tools are assumed to be '
                                'in the default path.')
         parser.add_option('--prefix', default='',
@@ -398,10 +398,6 @@ find 'reduce' in the system path."""
     def run_patch_dock_binary(self, binary, args):
         """Run a binary that is part of the PatchDock distribution"""
         _run_binary(self.opts.patch_dock, binary, args)
-
-    def run_fiber_dock_binary(self, binary, args):
-        """Run a binary that is part of the FiberDock distribution"""
-        _run_binary(self.opts.fiber_dock, binary, args)
 
     def make_patch_dock_parameters(self):
         """Make parameter file for PatchDock"""
@@ -494,108 +490,16 @@ find 'reduce' in the system path."""
         """Cluster transformations with PatchDock"""
         out_file = self.get_all_scores_filename(scorers, 'clustered_', '.res')
         self.run_patch_dock_binary('interface_cluster.linux',
-                                   [self.receptor + '.ms', self.ligand,
+                                   [self.receptor, self.ligand,
                                     'trans_for_cluster', '4.0', out_file])
         return out_file
 
-    def get_transforms_for_fiber_dock(self, scorers, transforms_file):
-        """Convert PatchDock-clustered transforms into FiberDock input"""
-        trans_for_fd = self.get_all_scores_filename(scorers, 'trans_for_fd_',
-                                                    '')
-        transforms_needed = min([s.transforms_needed for s in scorers])
-        fh_in = open(transforms_file)
-        fh_out = open(trans_for_fd, 'w')
-        for line in fh_in:
-            spl = line.split('|')
-            if len(spl) > 1:
-                print >> fh_out, spl[0] + " " + spl[4].rstrip('\r\n')
-                transforms_needed -= 1
-                if transforms_needed <= 0:
-                    break
-        return trans_for_fd
-
-    def add_hydrogens(self, in_pdb):
-        """Run reduce to add hydrogens to in_pdb; return the name of the new
-           PDB with hydrogens"""
-        out_pdb = in_pdb + '.HB'
-        _run_binary(None, 'reduce',
-                    ['-OH', '-HIS', '-NOADJ', '-NOROTMET', in_pdb],
-                    out_file=out_pdb)
-        return out_pdb
-
-    def make_fiber_dock_parameters(self, scorers, receptorH, ligandH,
-                                   trans_for_fd):
-        params = self.get_all_scores_filename(scorers, 'params_fd_', '.txt')
-        fd_out = self.get_all_scores_filename(scorers, 'fd_res_', '')
-        self.run_fiber_dock_binary('buildFiberDockParams.pl',
-                                   [receptorH, ligandH, 'U', 'U', self.opts.type, trans_for_fd,
-                                    fd_out, '0', '50', '0.8', '0', 'glpk', params])
-        return params, fd_out + '.ref'
-
-    def do_fiber_dock_docking(self, trans_for_fd, params, fd_out):
-        if os.path.exists(fd_out) \
-           and _count_fiber_dock_out(fd_out) == _count_lines(trans_for_fd):
-            print "Skipping FiberDock for %s" % self.receptor
-            return
-        else:
-            self.run_fiber_dock_binary('FiberDock', [params])
-
-    def convert_fiber_dock_to_score(self, scorers, fd_out):
-        """Convert FiberDock or FireDock output file to the same format
-           as the scorers"""
-        out = self.get_all_scores_filename(scorers, 'fd_res_', '.res')
-        solutions = []
-        fire_dock = False
-        num_re = re.compile('\d')
-        # Extract solutions
-        for line in open(fd_out):
-            spl = line.split('|')
-            if len(spl) > 1 and num_re.search(spl[0]):
-                num = int(spl[0])
-                if fire_dock:
-                    solutions.append((num, float(spl[5]),
-                                      spl[-1].rstrip('\r\n')))
-                else:
-                    solutions.append((num, float(spl[1]), spl[-3]))
-            elif len(spl) > 5 and 'glob' in spl[5]:
-                fire_dock = True
-        # Compute Z-score
-        average = 0.
-        stddev = 0.
-        for solution in solutions:
-            score = solution[1]
-            average += score
-            stddev += (score * score)
-        average /= len(solutions)
-        stddev = math.sqrt(stddev / len(solutions) - (average * average))
-
-        # Output in new format
-        fh = open(out, 'w')
-        print >> fh, "    # | Score | filt| ZScore | Transformation"
-        for solution in solutions:
-            num, score, trans = solution
-            zscore = (score - average) / stddev
-            print >> fh, " %4d | %5.3f |  +  | %5.3f | %s" \
-                         % (num, score, zscore, trans)
-        return out
-
-    def run_fiber_dock(self, scorers, transforms_file):
-        trans_for_fd = self.get_transforms_for_fiber_dock(scorers,
-                                                          transforms_file)
-        receptorH = self.add_hydrogens(self.receptor)
-        ligandH = self.add_hydrogens(self.ligand)
-        params, fd_out = self.make_fiber_dock_parameters(scorers, receptorH,
-                                                         ligandH, trans_for_fd)
-        self.do_fiber_dock_docking(trans_for_fd, params, fd_out)
-        return trans_for_fd, self.convert_fiber_dock_to_score(scorers, fd_out)
-
-    def combine_final_scores(self, scorers, fd_out):
-        """Combine scores for the final set with those from FireDock"""
+    def combine_final_scores(self, scorers):
+        """Combine scores for the final output"""
         out_file = self.get_filename('combined_final.res')
         args = []
         for s in scorers:
             args.extend([s.zscore_output_file, '1.0'])
-        args.extend([fd_out, '1.0'])
         _run_binary(None, 'combine_scores', args, out_file=out_file)
         return out_file
 
@@ -616,7 +520,7 @@ find 'reduce' in the system path."""
         print >> fh, "ligandPdb Str " + self.ligand
         print >> fh, "     # |  Score  | filt| ZScore |" \
             + "|".join(["%-8s| Zscore " % s.short_name for s in scorers]) \
-            + "| Energy | Zscore | Transformation"
+            + "| Transformation"
         for i, solution in enumerate(solutions):
             fh.write("%6d | " % (i + 1) + "|".join(solution[1:]))
         return out_fname
@@ -629,10 +533,9 @@ find 'reduce' in the system path."""
             scorer.score(num_transforms)
         self.get_filtered_scores(scorers)
         transforms_file = self.get_clustered_transforms(scorers)
-        trans_for_fd, fd_out = self.run_fiber_dock(scorers, transforms_file)
         for scorer in scorers:
-            scorer.recompute_zscore(trans_for_fd)
-        fh = self.combine_final_scores(scorers, fd_out)
+            scorer.recompute_zscore(transforms_file)
+        fh = self.combine_final_scores(scorers)
         self.write_results(scorers, fh)
 
 

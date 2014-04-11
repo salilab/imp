@@ -16,17 +16,13 @@ The protocol can currently incorporate data from the following sources:
    (NMR-RTC)
  - chemical cross-linking detected by mass spectrometry (CXMS).
 
-Additionally the protocol can calculate SOAP score based on an atomic statistical potential.
+Additionally the protocol calculates SOAP score based on an atomic statistical potential.
  - a SOAP score (SOAP)
 
 The protocol proceeds by first sampling complex models using
-[PatchDock](http://bioinfo3d.cs.tau.ac.il/) for pairwise protein
+[PatchDock](http://bioinfo3d.cs.tau.ac.il/PatchDock/) for pairwise protein
 docking, followed by
-[filtering based on fit to the experimental data](@ref idock_progs),
-conformational refinement using
-[FiberDock](http://bioinfo3d.cs.tau.ac.il/) and composite scoring.
-Third, good-scoring representatives of clusters of models are picked as
-final models.
+[filtering based on fit to the experimental data](@ref idock_progs), clustering and composite scoring.
 
 _Examples_:
  - [Docking of PCSK9](../tutorial/idock_pcsk9.html)
