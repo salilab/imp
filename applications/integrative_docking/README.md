@@ -46,4 +46,4 @@ version 2 of the License, or (at your option) any later version.
 _Publications_:
  - Schneidman-Duhovny D, Hammel M, Sali A. Macromolecular docking restrained by a small angle X-ray scattering profile. J Struct Biol. 2011 Mar;173(3):461-71.
  - Schneidman-Duhovny et al. A method for integrative structure determination of protein-protein complexes. Bioinformatics. 2012;28(24):3282-9.
- - Dong GQ, Fan H, Schneidman-Duhovny D, Webb B, Sali A. Optimized atomic statistical potentials: Assessment of protein interfaces and loops. submitted.
+ - Dong GQ, Fan H, Schneidman-Duhovny D, Webb B, Sali A. Optimized atomic statistical potentials: Assessment of protein interfaces and loops. Bioinformatics. 2013;29(24):3158-66
