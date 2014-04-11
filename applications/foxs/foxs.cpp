@@ -318,7 +318,6 @@ constant form factor (default = false)")(
   if (!heavy_atoms_only) ff_type = ALL_ATOMS;
   if (residue_level) ff_type = CA_ATOMS;
 
-  if (excluded_volume_c1 == 1.0 && water_layer_c2 == 0.0) fit = false;
 
   // 1. read pdbs and profiles, prepare particles
   std::vector<IMP::kernel::Particles> particles_vec;
@@ -331,8 +330,8 @@ constant form factor (default = false)")(
     for (unsigned int i = 0; i < exp_profiles.size(); i++)
       exp_profiles[i]->background_adjust(background_adjustment_q);
   }
-  if (dat_files.size() == 0) fit = false;
-  if (write_partial_profile) fit = true;
+
+  if (excluded_volume_c1 == 1.0 && water_layer_c2 == 0.0 && !write_partial_profile) fit = false;
 
   // 2. compute profiles for input pdbs
   Profiles profiles;
@@ -351,6 +350,9 @@ constant form factor (default = false)")(
     if (write_partial_profile)
       profile->write_partial_profiles(profile_file_name);
     else {  // write normal profile
+      if (excluded_volume_c1 != 1.0 || water_layer_c2 != 0.0) {
+        profile->sum_partial_profiles(excluded_volume_c1, water_layer_c2);
+      }
       profile->add_errors();
       profile->write_SAXS_file(profile_file_name);
       Gnuplot::print_profile_script(pdb_files[i]);
