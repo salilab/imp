@@ -81,8 +81,12 @@ inline double get_force_displacement_bdb(kernel::Model *m, kernel::ParticleIndex
   double dd = d.get_diffusion_coefficient();
   if(TAMDParticle::get_is_setup(m, pi)){
     TAMDParticle tamd(m, pi);
+    // rescale D = [kT] / [m*gamma] ; T = temperature, gamma = friction
     dd /= tamd.get_friction_scale_factor();
-    ikT /= tamd.get_temperature_scale_factor();
+    // // DEBUG: next two lines even out so commented and kept just to
+    // //        verify we got it right
+    // dd *= tamd.get_temperature_scale_factor();
+    // ikT /= tamd.get_temperature_scale_factor();
   }
   double force_term(nforce * dd * dt * ikT);
   /*if (force_term > unit::Angstrom(.5)) {
@@ -105,11 +109,11 @@ inline double get_torque_bdb(kernel::Model *m, kernel::ParticleIndex pi,
   double cforce(rb.get_torque()[i]);
   // unit::Angstrom R(sampler_());
   double dr = d.get_rotational_diffusion_coefficient();
-  if(TAMDParticle::get_is_setup(m, pi)){
-    TAMDParticle tamd(m, pi);
-    dr /= tamd.get_friction_scale_factor();
-    ikT /= tamd.get_temperature_scale_factor();
-  }
+  // if(TAMDParticle::get_is_setup(m, pi)){
+  //   TAMDParticle tamd(m, pi);
+  //   dr /= tamd.get_friction_scale_factor();
+  //   ikT /= tamd.get_temperature_scale_factor();
+  // }
   double force_term = dr * cforce * dt * ikT;
   /*if (force_term > unit::Angstrom(.5)) {
     std::cout << "Forces on " << _1->get_name() << " are "
@@ -129,7 +133,9 @@ inline double get_sigma_displacement_bdb(kernel::Model *m,
   // Daniel: 6.0 since we are picking radius rather than the coordinates
   double dd = Diffusion(m, pi).get_diffusion_coefficient();
   if(TAMDParticle::get_is_setup(m, pi)){
+    // rescale D = [kT] / [m*gamma] ; T = temperature, gamma = friction
     TAMDParticle tamd(m, pi);
+    dd *= tamd.get_temperature_scale_factor();
     dd /= tamd.get_friction_scale_factor();
   }
   return sqrt(6.0 * dd * dtfs);
@@ -138,10 +144,10 @@ inline double get_rotational_sigma_bdb(kernel::Model *m,
                                        kernel::ParticleIndex pi,
                                        double dtfs) {
   double dr = RigidBodyDiffusion(m, pi).get_rotational_diffusion_coefficient();
-  if(TAMDParticle::get_is_setup(m, pi)){
-    TAMDParticle tamd(m, pi);
-    dr /= tamd.get_friction_scale_factor();
-  }
+  // if(TAMDParticle::get_is_setup(m, pi)){
+  //   TAMDParticle tamd(m, pi);
+  //   dr /= tamd.get_friction_scale_factor();
+  // }
   return sqrt(6.0 * dr * dtfs);
 }
 }
