@@ -20,13 +20,13 @@ First, obtain the input files used in this example and put them in the
 current directory, by typing:
 
 \code{.sh}
-cp <imp_example_path>/saxs/pcsk9/* .
+cp <imp_example_path>/saxs/idock/* .
 \endcode
 
 (On a Windows machine, use 'copy' rather than 'cp'.) Here, \<imp_example_path\>
 is the directory containing the IMP example files. The full path to the files
 can be determined by running in a Python interpreter '<tt>import IMP.saxs;
-print IMP.saxs.get_example_path('pcsk9')</tt>'.
+print IMP.saxs.get_example_path('idock')</tt>'.
 
 The input files include the Protein Data Bank (PDB) structures of the
 isolated J16 Fab antibody and PCSK9 antigen,
