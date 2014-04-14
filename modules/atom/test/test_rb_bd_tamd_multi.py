@@ -152,7 +152,7 @@ class Tests(IMP.test.TestCase):
                                           5, 2,
 #                                          T_factors = [3,2.5,2,1.5],
                                           T_factors = [12,6,3,1.5],
-                                          F_factors = [625,125,25,5],
+                                          F_factors = [10000,1000,100,10],
                                           Ks = [60,40,20,10] ) # TAMD on
 #                                         Ks = [5e-12,5e-12,5e-12,5e-12] ) # TAMD off
             # = self._create_tamd_hierarchy(m,
