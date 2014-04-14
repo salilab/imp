@@ -46,20 +46,18 @@ running:
 idock.py --complex_type AA --cxms=cxms.txt --precision=1 antibody_cut.pdb 2p4e.pdb
 \endcode
 
-The application makes use of the PatchDock and FiberDock programs for docking
-and refinement, which must be obtained separately from
-\external{http://bioinfo3d.cs.tau.ac.il/,the PatchDock website}, and the
-\external{http://kinemage.biochem.duke.edu/software/reduce.php,reduce}
-program for adding hydrogens to PDB files. It expects to find 'reduce' in
-the system path. It must be told explicitly where to find PatchDock and
-FiberDock (either by giving the <tt>--patch_dock</tt> and <tt>--fiber_dock</tt>
-options to idock.py, or by setting the <tt>PATCH_DOCK_HOME</tt> and
-<tt>FIBER_DOCK_HOME</tt> environment variables).
+The application makes use of the PatchDock program for docking, which must
+be obtained separately from
+\external{http://bioinfo3d.cs.tau.ac.il/PatchDock/,the PatchDock website}.
+It must be told explicitly where to find PatchDock
+(either by giving the <tt>--patch_dock</tt>
+option to idock.py, or by setting the <tt>PATCH_DOCK_HOME</tt>
+environment variable).
 
 The <tt>--precision</tt> argument above controls how many candidate dockings
 are sampled by PatchDock, and can range from 1 (normal) to 3 (high precision).
 Higher values result in longer run times. The <tt>--complex_type</tt>
-argument is passed to PatchDock and FiberDock, and identifies the type of
+argument is passed to PatchDock, and identifies the type of
 complex (AA means antibody-antigen in this case). It alters how the docking
 is performed (for more information, see the
 \external{http://bioinfo3d.cs.tau.ac.il/PatchDock/help.html,PatchDock help}).
