@@ -41,9 +41,7 @@ rm -f /tmp/$$.out
 
 # Update any submodules, etc. if necessary
 git submodule update --recursive
-if [ ${BRANCH} = "develop" ]; then
-  ./setup_git.py > /dev/null || exit 1
-fi
+./setup_git.py > /dev/null || exit 1
 
 # Get top-most revision
 rev=`git rev-parse HEAD`
