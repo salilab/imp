@@ -65,17 +65,18 @@ is performed (for more information, see the
 \section idock_pcsk9_results Results
 
 Once the docking procedure has finished, the primary output file generated is
-<tt>results_cxms.txt</tt>, the first few lines of which look similar to:
+<tt>results_cxms_soap.txt</tt>, the first few lines of which look similar to:
 
 \verbatim
-     # |  Score  | filt| ZScore |cxms    | Zscore | Energy | Zscore | Transformation
-     1 |  -1.177 |  +  | -1.695 |  0.016 | -0.454 |  7.310 | -0.723 |   -1.5638 -1.2242 1.9240 2.4535 -2.4522 1.4710
-     2 |   0.276 |  +  | 0.398 |  0.004 |  0.999 |  0.000 | -0.723 |   -0.9194 -1.0958 -2.0672 -2.7843 -1.1249 -3.0764
+     # |  Score  | filt| ZScore |cxms    | Zscore |soap    | Zscore | Transformation
+     1 |  -1.571 |  +  | -0.787 |  0.013 | -0.707 | 1435.624 | -0.864 |  -1.869 0.676 -2.196 -7.105 -2.340 25.311
+     2 |  -1.245 |  +  | -0.624 |  0.013 | -0.707 | 1967.947 | -0.538 |  -2.811 0.568 -1.826 -3.739 -0.751 31.180
 \endverbatim
 
 Each line corresponds to one model; the models are ranked by total score,
-best first. The scores and z-score pairs for each experimental method
-(just cxms in this case) are also shown (only docking solutions that were not
+best first. The scores and z-score pairs for each scoring method
+(just cxms and SOAP in this case) are also shown (only docking solutions that
+were not
 filtered out by any of the data sources – i.e. they scored well against every
 source – are included in this file). The last column is a transformation
 (3 rotation angles and a translation vector) that transforms the antibody
