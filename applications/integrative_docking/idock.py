@@ -50,7 +50,7 @@ def _run_binary(path, binary, args, out_file=None):
 
 class Scorer(object):
 
-    """Score transformations using a type of experimental data.
+    """Score transformations using a type of data.
        To add support for a new type of data, simply create a new Scorer
        subclass and override its methods and variables."""
     transformations_file = 'trans_pd'
@@ -113,7 +113,11 @@ class Scorer(object):
                     out_file=self.zscore_output_file)
 
 
-class NMRScorer(Scorer):
+class ExperimentalScorer(Scorer):
+    """Use data from an experiment."""
+    pass
+
+class NMRScorer(ExperimentalScorer):
 
     """Score transformations using NMR residue type content"""
     short_name = 'nmr_rtc'
@@ -133,7 +137,7 @@ class NMRScorer(Scorer):
             return cls(idock)
 
     def __init__(self, idock):
-        Scorer.__init__(self, idock, "nmr_rtc_score")
+        ExperimentalScorer.__init__(self, idock, "nmr_rtc_score")
         self.receptor_rtc = idock.opts.receptor_rtc
         self.ligand_rtc = idock.opts.ligand_rtc
         if idock.opts.type == 'AA':
@@ -149,7 +153,7 @@ class NMRScorer(Scorer):
                      '-o', self.output_file])
 
 
-class SAXSScorer(Scorer):
+class SAXSScorer(ExperimentalScorer):
 
     """Score transformations using SAXS (rg + chi)"""
     short_name = 'saxs'
@@ -177,7 +181,7 @@ class SAXSScorer(Scorer):
             return cls(idock)
 
     def __init__(self, idock):
-        Scorer.__init__(self, idock, "saxs_score")
+        ExperimentalScorer.__init__(self, idock, "saxs_score")
         self.saxs_file = idock.opts.saxs_file
         self.saxs_receptor = idock.opts.saxs_receptor_pdb or idock.receptor
         self.saxs_ligand = idock.opts.saxs_ligand_pdb or idock.ligand
@@ -216,7 +220,7 @@ class SOAPScorer(Scorer):
                     '-o', self.output_file])
 
 
-class EM2DScorer(Scorer):
+class EM2DScorer(ExperimentalScorer):
 
     """Score transformations using EM2D"""
     short_name = 'em2d'
@@ -243,7 +247,7 @@ class EM2DScorer(Scorer):
                 return cls(idock)
 
     def __init__(self, idock):
-        Scorer.__init__(self, idock, "em2d_score")
+        ExperimentalScorer.__init__(self, idock, "em2d_score")
         self.class_averages = idock.opts.class_averages
         self.pixel_size = idock.opts.pixel_size
 
@@ -258,7 +262,7 @@ class EM2DScorer(Scorer):
                        str(self.pixel_size)])
 
 
-class EM3DScorer(Scorer):
+class EM3DScorer(ExperimentalScorer):
 
     """Score transformations using EM3D"""
     short_name = 'em3d'
@@ -278,7 +282,7 @@ class EM3DScorer(Scorer):
             return cls(idock)
 
     def __init__(self, idock):
-        Scorer.__init__(self, idock, "em3d_score")
+        ExperimentalScorer.__init__(self, idock, "em3d_score")
         self.map_file = idock.opts.map_file
 
     def __str__(self):
@@ -290,7 +294,7 @@ class EM3DScorer(Scorer):
                      self.map_file, '-o', self.output_file, '-s'])
 
 
-class CXMSScorer(Scorer):
+class CXMSScorer(ExperimentalScorer):
 
     """Score transformations using CXMS"""
     short_name = 'cxms'
@@ -310,7 +314,7 @@ class CXMSScorer(Scorer):
             return cls(idock)
 
     def __init__(self, idock):
-        Scorer.__init__(self, idock, "cxms_score")
+        ExperimentalScorer.__init__(self, idock, "cxms_score")
         self.cross_links_file = idock.opts.cross_links_file
 
     def __str__(self):
@@ -328,17 +332,24 @@ class IDock(object):
 
     # Get list of all Scorer subclasses
     _all_scorers = [x[1] for x in inspect.getmembers(sys.modules[__name__],
-                                                     lambda x: inspect.isclass(
-                                                         x)
-                                                     and issubclass(x, Scorer) and x is not Scorer)]
+                    lambda x: inspect.isclass(x)
+                              and issubclass(x, Scorer)
+                              and x not in (Scorer, ExperimentalScorer))]
+    # Get list of all ExperimentalScorer subclasses
+    _all_experimental_scorers = \
+                   [x[1] for x in inspect.getmembers(sys.modules[__name__],
+                    lambda x: inspect.isclass(x)
+                              and issubclass(x, ExperimentalScorer)
+                              and x is not ExperimentalScorer)]
 
     def parse_args(self):
         """Parse command line options, and return all applicable Scorers"""
-        data_types = [x.short_name.upper() for x in self._all_scorers]
+        data_types = [x.short_name.upper() \
+                      for x in self._all_experimental_scorers]
         data_types = ", ".join(data_types[:-1]) + " and/or " + data_types[-1]
         epilog = """Note that in order to run this application, you must also
 have PatchDock (available from http://bioinfo3d.cs.tau.ac.il/PatchDock/)
-installed. See the --patch-dock parameter to tell idock
+installed. See the --patch_dock parameter to tell idock
 where the PatchDock program is installed."""
         parser = IMP.OptionParser(usage="%prog [options] <receptor_pdb> "
                                         "<ligand_pdb>",
@@ -382,7 +393,8 @@ where the PatchDock program is installed."""
         self.receptor, self.ligand = args
         scorers = self.get_scorers(parser)
 
-        if len(scorers) == 0:
+        if len(scorers) == len(self._all_scorers) \
+                            - len(self._all_experimental_scorers):
             parser.error("please provide %s experimental data" % data_types)
         return scorers
 
