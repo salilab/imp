@@ -28,6 +28,7 @@ IMP_SWIG_OBJECT( IMP::core, Cosine, Cosines);
 IMP_SWIG_OBJECT( IMP::core, CoverRefined, CoverRefineds);
 IMP_SWIG_OBJECT( IMP::core, DerivativesFromRefined, DerivativesFromRefineds);
 IMP_SWIG_OBJECT( IMP::core, DerivativesToRefined, DerivativesToRefineds);
+IMP_SWIG_OBJECT( IMP::core, WeightedDerivativesToRefined, WeightedDerivativesToRefineds);
 IMP_SWIG_OBJECT( IMP::core, DiameterRestraint, DiameterRestraints);
 IMP_SWIG_OBJECT( IMP::core, DihedralRestraint, DihedralRestraints);
 IMP_SWIG_OBJECT( IMP::core, DistanceRestraint, DistanceRestraints);

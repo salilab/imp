@@ -32,6 +32,11 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
+// // DEBUG:
+// static double Ek = 0.0; // kinetic energy (translational)
+// static double M = 0.0; // total mass (estimated by 1/D)
+// END DEBUG
+
 namespace {
 
 typedef boost::variate_generator<base::RandomNumberGenerator &,
@@ -59,7 +64,10 @@ bool BrownianDynamics::get_is_simulation_particle(kernel::ParticleIndex pi)
 }
 
 namespace {
-inline double get_force(kernel::Model *m, kernel::ParticleIndex pi,
+/** get the force dispacement term in the Ermak-Mccammon equation
+    for coordinate i of  particle pi in model m, with time step dt and ikT=1/kT
+*/
+inline double get_force_displacement(kernel::Model *m, kernel::ParticleIndex pi,
                         unsigned int i, double dt, double ikT) {
   Diffusion d(m, pi);
   double nforce(-d.get_derivative(i));
@@ -70,7 +78,7 @@ inline double get_force(kernel::Model *m, kernel::ParticleIndex pi,
     std::cout << "Forces on " << _1->get_name() << " are "
     << force << " and " << nforce
     << " and " << force_term <<
-    " vs " << delta[j] << ", " << sigma << std::endl;
+    " vs " << dX[j] << ", " << sigma << std::endl;
     }
   std::cout << "Force " << i << " is " << force_term
             << "= " << nforce << "*" << dd << "*" << dt << "*" << ikT
@@ -91,14 +99,16 @@ inline double get_torque(kernel::Model *m, kernel::ParticleIndex p,
     std::cout << "Forces on " << _1->get_name() << " are "
     << force << " and " << nforce
     << " and " << force_term <<
-    " vs " << delta[j] << ", " << sigma << std::endl;
+    " vs " << dX[j] << ", " << sigma << std::endl;
     }*/
   return -force_term;
 }
 
-inline double get_sigma(kernel::Model *m, kernel::ParticleIndex p,
+  // returns the std-dev for the random displacement in the Ermak-Mccammon equation
+inline double get_sigma_displacement(kernel::Model *m, kernel::ParticleIndex p,
                         double dtfs) {
-  // 6.0 since we are picking radius rather than the coordinates
+  // 6.0 is 2.0 for each dof (Barak)
+  // 6.0 since we are picking radius rather than the coordinates (Daniel)
   double dd = Diffusion(m, p).get_diffusion_coefficient();
   return sqrt(6.0 * dd * dtfs);
 }
@@ -118,10 +128,10 @@ void BrownianDynamics::setup(const kernel::ParticleIndexes &ips) {
     double mf = 0;
     get_scoring_function()->evaluate(true);
     for (unsigned int i = 0; i < ps.size(); ++i) {
-      double c = get_sigma(get_model(), ips[i], dtfs);
+      double c = get_sigma_displacement(get_model(), ips[i], dtfs);
       ms = std::max(ms, c);
       for (unsigned int j = 0; j < 3; ++j) {
-        double f = get_force(get_model(), ips[i], j, dtfs, ikT);
+        double f = get_force_displacement(get_model(), ips[i], j, dtfs, ikT);
         mf = std::max(mf, f);
       }
     }
@@ -133,13 +143,13 @@ void BrownianDynamics::setup(const kernel::ParticleIndexes &ips) {
 IMP_GCC_DISABLE_WARNING(-Wuninitialized)
 
 namespace {
-void check_delta(algebra::Vector3D &delta, double max_step) {
+void check_dX(algebra::Vector3D &dX, double max_step) {
   for (unsigned int j = 0; j < 3; ++j) {
-    // if (std::abs(delta[j]) > max_step) {
-    /*std::cerr << "Truncating motion: " << delta[j] << " to " << max_step
+    // if (std::abs(dX[j]) > max_step) {
+    /*std::cerr << "Truncating motion: " << dX[j] << " to " << max_step
       << std::endl;*/
-    delta[j] = std::min(delta[j], max_step);
-    delta[j] = std::max(delta[j], -max_step);
+    dX[j] = std::min(dX[j], max_step);
+    dX[j] = std::max(dX[j], -max_step);
     //}
   }
 }
@@ -150,34 +160,49 @@ void BrownianDynamics::advance_coordinates_1(kernel::ParticleIndex pi,
                                              double ikT) {
   Diffusion d(get_model(), pi);
   core::XYZ xd(get_model(), pi);
-  algebra::Vector3D force(get_force(get_model(), pi, 0, dt, ikT),
-                          get_force(get_model(), pi, 1, dt, ikT),
-                          get_force(get_model(), pi, 2, dt, ikT));
-  algebra::Vector3D delta = (force - forces_[i]) / 2.0;
-  check_delta(delta, max_step_);
-  xd.set_coordinates(xd.get_coordinates() + delta);
+  algebra::Vector3D force(get_force_displacement(get_model(), pi, 0, dt, ikT),
+                          get_force_displacement(get_model(), pi, 1, dt, ikT),
+                          get_force_displacement(get_model(), pi, 2, dt, ikT));
+  algebra::Vector3D dX = (force - forces_[i]) / 2.0;
+  check_dX(dX, max_step_);
+  xd.set_coordinates(xd.get_coordinates() + dX);
 }
 
 void BrownianDynamics::advance_coordinates_0(kernel::ParticleIndex pi,
                                              unsigned int i, double dtfs,
                                              double ikT) {
   core::XYZ xd(get_model(), pi);
-  double sigma = get_sigma(get_model(), pi, dtfs);
+  double sigma = get_sigma_displacement(get_model(), pi, dtfs);
   boost::normal_distribution<double> nd(0, sigma);
   RNG sampler(base::random_number_generator, nd);
   double r = sampler();
-  algebra::Vector3D random = r * algebra::get_random_vector_on_unit_sphere();
-  algebra::Vector3D force(get_force(get_model(), pi, 0, dtfs, ikT),
-                          get_force(get_model(), pi, 1, dtfs, ikT),
-                          get_force(get_model(), pi, 2, dtfs, ikT));
+  algebra::Vector3D random_dX = r * algebra::get_random_vector_on_unit_sphere();
+  algebra::Vector3D force_dX
+    (get_force_displacement(get_model(), pi, 0, dtfs, ikT),
+     get_force_displacement(get_model(), pi, 1, dtfs, ikT),
+     get_force_displacement(get_model(), pi, 2, dtfs, ikT));
   if (srk_) {
-    forces_[i] = force;
+    forces_[i] = force_dX;
   }
-  algebra::Vector3D delta = random + force;
+  algebra::Vector3D dX = random_dX + force_dX;
   if (!srk_) {
-    check_delta(delta, max_step_);
+    check_dX(dX, max_step_);
   }
-  xd.set_coordinates(xd.get_coordinates() + delta);
+
+  // // DEBUG - get kinetic energy
+  // algebra::Vector3D v = dX / dtfs;
+  // double v2 = v.get_squared_magnitude();
+  // Diffusion D(get_model(), pi);
+  // // unit::Angstrom R(sampler_());
+  // double DD = D.get_diffusion_coefficient();
+  // double m = get_kt() / DD;  // for simplicity assume DD = kT / m
+  // Ek += 0.5 * m * v2;
+  // M += m;
+  // std::cout << "Ek for particle " << pi << " is " << 0.5 * m * v2
+  //           << std::endl;
+  // // DEBUG - end kinetic energy
+
+  xd.set_coordinates(xd.get_coordinates() + dX);
 }
 
 void BrownianDynamics::advance_orientation_0(kernel::ParticleIndex pi,
@@ -237,6 +262,8 @@ double BrownianDynamics::do_step(const kernel::ParticleIndexes &ps, double dt) {
   double dtfs(dt);
   double ikT = 1.0 / get_kt();
   get_scoring_function()->evaluate(true);
+  //  Ek = 0.0; // DEBUG: monitor kinetic energy
+  //  M = 0.0; // DEBUG: monitor kinetic energy
   const unsigned int chunk_size = 20;
   for (unsigned int b = 0; b < ps.size(); b += chunk_size) {
     IMP_TASK_SHARED(
@@ -247,6 +274,12 @@ double BrownianDynamics::do_step(const kernel::ParticleIndexes &ps, double dt) {
   }
   IMP_OMP_PRAGMA(taskwait)
   IMP_OMP_PRAGMA(flush)
+
+    // DEBUG: monitor kinetic energy
+    //  std::cout << "Kinetic energy (translational) for step is " << Ek
+    //            << " , per mass: " << Ek / M << " kT = " << get_kt()
+    //            << std::endl;
+
   if (srk_) {
     get_scoring_function()->evaluate(true);
     for (unsigned int i = 0; i < ps.size(); ++i) {

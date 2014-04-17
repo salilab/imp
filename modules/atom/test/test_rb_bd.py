@@ -2,6 +2,8 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.atom
+import RMF
+import IMP.rmf
 
 class Tests(IMP.test.TestCase):
 
@@ -17,7 +19,7 @@ class Tests(IMP.test.TestCase):
             ep = IMP.kernel.Particle(m, "ep" + str(i))
             d = IMP.core.XYZR.setup_particle(ep)
             d.set_coordinate(i, 1)
-            d.set_radius(.1)
+            d.set_radius(0.5)
             IMP.atom.Mass.setup_particle(ep, 1)
             ps.append(d)
             h0.add_child(IMP.atom.Hierarchy.setup_particle(ep))
@@ -43,7 +45,7 @@ class Tests(IMP.test.TestCase):
         IMP.display.Colored.setup_particle(mb, IMP.display.Color(1, 0, 0))
         r1 = IMP.core.PairRestraint(ps1, (ca, cb))
         bd = IMP.atom.BrownianDynamics(m)
-        bb = IMP.algebra.get_unit_bounding_box_3d()
+        bb = IMP.algebra.BoundingBox3D([0,0,0],[100,100,100])
         for p in (pa, pb):
             rot = IMP.algebra.get_random_rotation_3d()
             tr = IMP.algebra.get_random_vector_in(bb)
@@ -51,14 +53,29 @@ class Tests(IMP.test.TestCase):
                                                                            tr))
             IMP.core.RigidBody(pa).set_reference_frame(rf)
         sf = IMP.core.RestraintsScoringFunction([r0, r1])
+#        IMP.rmf.add_restraints(rmf, [r1])
+#        sf = IMP.core.RestraintsScoringFunction([r1])
         sf.set_log_level(IMP.base.SILENT)
         bd.set_scoring_function(sf)
         bd.set_maximum_time_step(10)
         IMP.base.set_log_level(IMP.base.VERBOSE)
+
+        rmf_output=1
+        if(rmf_output):
+            rmf_fname = self.get_tmp_file_name("bd_rb.rmf")
+            rmf = RMF.create_rmf_file(rmf_fname)
+            print "RMF: ", rmf_fname
+            IMP.rmf.add_hierarchies(rmf, [pa, pb])
+            IMP.rmf.add_restraints(rmf, [r0, r1])
+            os = IMP.rmf.SaveOptimizerState(m, rmf)
+            os.set_log_level(IMP.base.SILENT)
+            bd.add_optimizer_state(os)
+            os.set_period(100)
+
         bd.optimize(10)
         print "going silent"
         IMP.base.set_log_level(IMP.base.SILENT)
-        max_cycles = 5000
+        max_cycles = 5000000
         round_cycles = 250
         total_cycles = 0
         e_threshold = 2
@@ -68,8 +85,8 @@ class Tests(IMP.test.TestCase):
             total_cycles += round_cycles
             print "energy after %d cycles = %.2f" \
                 % (total_cycles, energy)
-            if(energy < e_threshold):
-                break
+#            if(energy < e_threshold):
+#                break
         self.assertLess(energy, e_threshold)
 
 if __name__ == '__main__':

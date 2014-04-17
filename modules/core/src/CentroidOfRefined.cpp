@@ -17,6 +17,7 @@ IMPCORE_BEGIN_NAMESPACE
 CentroidOfRefined::CentroidOfRefined(Refiner *r, FloatKey weight, FloatKeys ks)
     : refiner_(r), ks_(ks), w_(weight) {}
 
+// compute centroid from refined particles
 void CentroidOfRefined::apply_index(kernel::Model *m,
                                     kernel::ParticleIndex pi) const {
   kernel::Particle *p = m->get_particle(pi);
@@ -24,9 +25,15 @@ void CentroidOfRefined::apply_index(kernel::Model *m,
   unsigned int n = ps.size();
   double tw = 0;
   if (w_ != FloatKey()) {
+    IMP_USAGE_CHECK( m->get_has_attribute(w_, pi),
+                     "Centroid particle lacks non-trivial weight key" << w_ );
     for (unsigned int i = 0; i < n; ++i) {
+      IMP_USAGE_CHECK( ps[i]->get_model()->get_has_attribute(w_, ps[i]),
+                       "CentroidOfRefined - Fine particle #" << i
+                       << " lacks non-trivial weight key" << w_);
       tw += ps[i]->get_value(w_);
     }
+    m->set_attribute(w_, pi, tw);
   } else {
     tw = 1;
   }

@@ -60,6 +60,8 @@
   }                                                                                       \
   IMP_SHOWABLE(Name)
 
+
+
 /** Implement the needed methods for a decorator based on
     - setup_particle()
     - get_is_setup()
@@ -387,6 +389,7 @@
 
 //! Define the types for storing sets of decorators
 /** The macro defines the types PluralName and PluralNameTemp.
+    Parent is unused and remains for backward compatability
  */
 #define IMP_DECORATORS(Name, PluralName, Parent) \
   IMP_DECORATORS_DECL(Name, PluralName);         \
@@ -446,7 +449,7 @@
             m->get_attribute(get_constraint_key(), pi)));                 \
         m->remove_attribute(get_constraint_key(), pi);                    \
       }                                                                   \
-    } else {                                                              \
+    } else {                                                            \
       Constraint* ss = new core::SingletonConstraint(                     \
           before, after, m, pi,                                           \
           std::string(#Name "updater for ") + m->get_particle_name(pi));  \

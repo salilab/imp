@@ -16,6 +16,7 @@ IMP_SWIG_DECORATOR(IMP::atom, Bond, Bonds);
 IMP_SWIG_DECORATOR(IMP::atom, Bonded, Bondeds);
 IMP_SWIG_DECORATOR(IMP::atom, CHARMMAtom, CHARMMAtomList);
 IMP_SWIG_DECORATOR(IMP::atom, Chain, Chains);
+IMP_SWIG_DECORATOR(IMP::atom, CenterOfMass, CenterOfMasses);
 IMP_SWIG_DECORATOR(IMP::atom, Charged, Chargeds);
 IMP_SWIG_DECORATOR(IMP::atom, Diffusion, Diffusions);
 IMP_SWIG_DECORATOR(IMP::atom, RigidBodyDiffusion, RigidBodyDiffusions);
@@ -148,6 +149,7 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
 %include "IMP/atom/BondSingletonScore.h"
 %include "IMP/atom/DihedralSingletonScore.h"
 %include "IMP/atom/ImproperSingletonScore.h"
+%include "IMP/atom/CenterOfMass.h"
 %include "IMP/atom/CoverBond.h"
 %include "IMP/atom/Simulator.h"
 %include "IMP/atom/BrownianDynamics.h"

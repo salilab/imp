@@ -1,6 +1,6 @@
 /**
  *  \file DerivativesToRefined.cpp
- *  \brief Cover a bond with a sphere.
+ *  \brief Copy derivatives from coarse particles to fine particles.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
