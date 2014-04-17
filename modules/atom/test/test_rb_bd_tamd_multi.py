@@ -105,7 +105,7 @@ class Tests(IMP.test.TestCase):
         pH = IMP.core.Hierarchy.setup_particle(p)
         pD = IMP.core.XYZR.setup_particle(p)
         pD.set_radius(2) # math.sqrt(math.pow(d, nlevels))) # TODO: something smarter?
-        pMass = IMP.atom.Mass.setup_particle(p, 1) # math.pow(d, nlevels))
+#        pMass = IMP.atom.Mass.setup_particle(p, 1) # math.pow(d, nlevels)) # NOT RELEVANT FOR CENTER OF MASS
         pD.set_coordinates_are_optimized(True) # TODO: very unclear if this is needed or dangerous - to get BD to evaluate on it
         pDiffusion = IMP.atom.Diffusion.setup_particle(p)
         for child in children:
@@ -113,7 +113,7 @@ class Tests(IMP.test.TestCase):
         print pH.get_children()
         refiner = IMP.core.ChildrenRefiner(
             IMP.core.Hierarchy.get_default_traits())
-        IMP.core.Centroid.setup_particle(p, refiner)
+        IMP.atom.CenterOfMass.setup_particle(p, refiner)
         m.update() # so center of mass is up to date
 
         # Add a TAMD image of centroid with a spring
