@@ -21,6 +21,7 @@ DistanceRestraint::DistanceRestraint(UnaryFunction* score_func,
 )
     : IMP::internal::TupleRestraint<DistancePairScore>(
           new DistancePairScore(score_func), p1->get_model(),
-          kernel::ParticleIndexPair(p1->get_index(), p2->get_index())) {}
+          kernel::ParticleIndexPair( p1->get_index(), p2->get_index() ),
+          name) {}
 
 IMPCORE_END_NAMESPACE

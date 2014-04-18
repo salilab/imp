@@ -26,6 +26,9 @@ class DerivativeAccumulator;
     reflect existing relationships, such as the
     IMP::core::LeavesRefiner or arbitrary relationships set up
     for a particular purpose, such as IMP::core::TableRefiner.
+
+    @note it is assumed that refined particles belong to the same model
+          as the coarse particle
 */
 class IMPKERNELEXPORT Refiner : public ParticleInputs, public base::Object {
   struct Accessor;
@@ -42,6 +45,12 @@ class IMPKERNELEXPORT Refiner : public ParticleInputs, public base::Object {
    */
   virtual const ParticlesTemp get_refined(Particle *a) const = 0;
 
+  //! Return the indexes of the particles returned by get_refined()
+  /** Return the indexes of the particles returned by get_refined()
+      for particle pi in model m.
+
+      @note it is assumed that the refined particles are also in model m
+   */
   virtual ParticleIndexes get_refined_indexes(Model *m, ParticleIndex pi) const;
 
   //! Get the ith refined particle.
