@@ -109,11 +109,11 @@ bool Transformer::undo_transform() {
 }
 
 std::ostream& operator<<(std::ostream& out, const Coord& c) {
-    for (Coord::com_type::const_iterator it = c.coms.cbegin();
-            it != c.coms.cend(); ++it)
+    for (Coord::com_type::const_iterator it = c.coms.begin();
+            it != c.coms.end(); ++it)
         out << " xyz= " << it->transpose() << " ";
-    for (Coord::quats_type::const_iterator it = c.quats.cbegin();
-            it != c.quats.cend(); ++it)
+    for (Coord::quats_type::const_iterator it = c.quats.begin();
+            it != c.quats.end(); ++it)
         out << " w=" << it->w()
             << " x=" << it->x() 
             << " y=" << it->y()
