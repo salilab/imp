@@ -20,8 +20,7 @@ CentroidOfRefined::CentroidOfRefined(Refiner *r, FloatKey weight, FloatKeys ks)
 // compute centroid from refined particles
 void CentroidOfRefined::apply_index(kernel::Model *m,
                                     kernel::ParticleIndex pi) const {
-  kernel::Particle *p = m->get_particle(pi);
-  kernel::ParticlesTemp ps = refiner_->get_refined(p);
+  kernel::ParticlesIndexes ps = refiner_->get_refined_indexes(m, pi);
   unsigned int n = ps.size();
   double tw = 0;
   if (w_ != FloatKey()) {
@@ -31,7 +30,7 @@ void CentroidOfRefined::apply_index(kernel::Model *m,
       IMP_USAGE_CHECK( ps[i]->get_model()->get_has_attribute(w_, ps[i]),
                        "CentroidOfRefined - Fine particle #" << i
                        << " lacks non-trivial weight key" << w_);
-      tw += ps[i]->get_value(w_);
+      tw += m->get_attribute(w_, ps[i]);
     }
     m->set_attribute(w_, pi, tw);
   } else {
@@ -42,13 +41,13 @@ void CentroidOfRefined::apply_index(kernel::Model *m,
     for (unsigned int i = 0; i < n; ++i) {
       double w;
       if (w_ != FloatKey()) {
-        w = ps[i]->get_value(w_) / tw;
+        w = m->get_attribute(w_, ps[i]) / tw;
       } else {
         w = Float(1.0) / n;
       }
-      v += ps[i]->get_value(ks_[j]) * w;
+      v += m->get_attribute(ks_[j], ps[i]) * w;
     }
-    p->set_value(ks_[j], v);
+    m->set_attribute(ks_[j], pi, v);
   }
 }
 
