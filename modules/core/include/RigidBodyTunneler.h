@@ -103,10 +103,7 @@ class IMPCOREEXPORT RigidBodyTunneler : public MonteCarloMover {
   IMP_OBJECT_METHODS(RigidBodyTunneler);
 
  private:
-  internal::Coord get_coordinates_from_rbs() const;
   unsigned get_closest_entry_point(const internal::Coord& x) const;
-  double get_squared_distance(const internal::Coord& x,
-                              const internal::Coord& y) const;
 
  private:
   kernel::ParticleIndexes pis_;

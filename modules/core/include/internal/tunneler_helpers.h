@@ -79,6 +79,9 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
     typedef std::vector<IMP_Eigen::Quaterniond,
             IMP_Eigen::aligned_allocator<IMP_Eigen::Quaterniond> > quats_type;
     quats_type quats;
+    Coord() {}
+    Coord(Floats);
+
     IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   };
 
@@ -87,6 +90,10 @@ std::ostream& operator<<(std::ostream& out, const Coord& c);
 
 //helpers
 IMP_Eigen::Quaterniond pick_positive(const IMP_Eigen::Quaterniond& q);
+
+Coord get_coordinates_from_rbs(kernel::Model* m, kernel::ParticleIndexes pis,
+                               kernel::ParticleIndex ref);
+double get_squared_distance(const Coord& x, const Coord& y, double k);
 
 IMPCORE_END_INTERNAL_NAMESPACE
 
