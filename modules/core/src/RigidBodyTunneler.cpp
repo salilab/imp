@@ -14,14 +14,13 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-RigidBodyTunneler::RigidBodyTunneler(kernel::Model* m,
-                                     kernel::ParticleIndexes pis,
+RigidBodyTunneler::RigidBodyTunneler(kernel::ParticleIndexes pis,
                                      kernel::ParticleIndex ref, double k,
                                      double move_probability)
-    : MonteCarloMover(m, "RigidBodyTunneler%1%"), pis_(pis), ref_(ref), k_(k),
-      move_probability_(move_probability) {
+    : MonteCarloMover(get_model(), "RigidBodyTunneler%1%"), pis_(pis),
+      ref_(ref), k_(k), move_probability_(move_probability) {
   for (unsigned i = 0; i < pis.size(); i++) {
-    reset_stats();  
+    reset_stats();
     IMP_USAGE_CHECK(RigidBody(m, pis[i]).get_coordinates_are_optimized(),
                     "Rigid body passed to RigidBodyTunneler"
                     << " must be set to be optimized. particle: "
@@ -33,10 +32,10 @@ RigidBodyTunneler::RigidBodyTunneler(kernel::Model* m,
 }
 
 void RigidBodyTunneler::reset_stats() {
-    num_calls_ = 0;
-    num_proposed_ = 0;
-    num_rejected_ = 0;
-    num_impossible_ = 0;
+  num_calls_ = 0;
+  num_proposed_ = 0;
+  num_rejected_ = 0;
+  num_impossible_ = 0;
 }
 
 void RigidBodyTunneler::add_entry_point(Floats fl) {
@@ -49,10 +48,9 @@ void RigidBodyTunneler::add_entry_point(Floats fl) {
     IMP_Eigen::Vector3d com;
     com << fl[3 * i], fl[3 * i + 1], fl[3 * i + 2];
     x.coms.push_back(com);
-    IMP_Eigen::Quaterniond quat(fl[3 * nrbs + 4 * i],
-            fl[3 * nrbs + 4 * i + 1],
-            fl[3 * nrbs + 4 * i + 2],
-            fl[3 * nrbs + 4 * i + 3]);
+    IMP_Eigen::Quaterniond quat(fl[3 * nrbs + 4 * i], fl[3 * nrbs + 4 * i + 1],
+                                fl[3 * nrbs + 4 * i + 2],
+                                fl[3 * nrbs + 4 * i + 3]);
     quat.normalize();
     x.quats.push_back(quat);
   }
@@ -63,16 +61,16 @@ double RigidBodyTunneler::get_squared_distance(const internal::Coord& x,
                                                const internal::Coord& y) const {
   double dcom(0), dq(0);
   for (unsigned i = 0; i < x.coms.size(); i++) {
-    dcom += (x.coms[i]-y.coms[i]).squaredNorm();
+    dcom += (x.coms[i] - y.coms[i]).squaredNorm();
     dq += IMP::square(x.quats[i].angularDistance(y.quats[i]));
   }
   return dcom + k_ * dq;
 }
 
-unsigned RigidBodyTunneler::get_closest_entry_point(
-        const internal::Coord& x) const {
+unsigned RigidBodyTunneler::get_closest_entry_point(const internal::Coord
+                                                    & x) const {
   double dmin;
-  unsigned closest=0;
+  unsigned closest = 0;
   for (unsigned i = 0; i < entries_.size(); i++) {
     double dist = get_squared_distance(x, entries_[i]);
     if (i == 0 || dist < dmin) {
@@ -86,7 +84,7 @@ unsigned RigidBodyTunneler::get_closest_entry_point(
 internal::Coord RigidBodyTunneler::get_coordinates_from_rbs() const {
   // get current reference frame of rbs
   internal::Referential ref(get_model(), ref_);
-  //get x
+  // get x
   internal::Coord x;
   for (unsigned i = 0; i < pis_.size(); i++) {
     internal::Referential target(get_model(), pis_[i]);
@@ -107,13 +105,13 @@ MonteCarloMoverResult RigidBodyTunneler::do_propose() {
   // see if we are to do the move
   ::boost::uniform_01<double> rand01;
   if (rand01(base::random_number_generator) <= move_probability_) {
-    IMP_LOG_TERSE("will try to move"<<std::endl);
+    IMP_LOG_TERSE("will try to move" << std::endl);
     internal::Coord x(get_coordinates_from_rbs());
-    IMP_LOG_VERBOSE("x is at " << x<<std::endl);
+    IMP_LOG_VERBOSE("x is at " << x << std::endl);
     // compute the closest entry point
     unsigned closest = get_closest_entry_point(x);
-    IMP_LOG_TERSE("closest entry point is number " << closest<<std::endl);
-    IMP_LOG_VERBOSE("with coordinates " << entries_[closest]<<std::endl);
+    IMP_LOG_TERSE("closest entry point is number " << closest << std::endl);
+    IMP_LOG_VERBOSE("with coordinates " << entries_[closest] << std::endl);
     // get list of other entry points
     std::vector<unsigned> entry_nums;
     for (unsigned i = 0; i < entries_.size(); i++)
@@ -123,28 +121,30 @@ MonteCarloMoverResult RigidBodyTunneler::do_propose() {
     unsigned distant;
     do {
       // pick another entry point at random
-      IMP_LOG_TERSE("New iteration, entry_nums.size() == "
-              <<entry_nums.size()<<std::endl);
+      IMP_LOG_TERSE("New iteration, entry_nums.size() == " << entry_nums.size()
+                                                           << std::endl);
       ::boost::uniform_int<unsigned> randint(0, entry_nums.size() - 1);
       unsigned dnum = randint(base::random_number_generator);
       distant = entry_nums[dnum];
-      IMP_LOG_TERSE("distant entry point is number " << distant<<std::endl);
-      IMP_LOG_VERBOSE("with coordinates " << entries_[distant]<<std::endl);
+      IMP_LOG_TERSE("distant entry point is number " << distant << std::endl);
+      IMP_LOG_VERBOSE("with coordinates " << entries_[distant] << std::endl);
       // propose move to it
-      for (unsigned i=0; i<x.coms.size(); i++){
-          transform_coord.coms.push_back(
-                  entries_[distant].coms[i] - entries_[closest].coms[i]);
-          y.coms.push_back(transform_coord.coms.back() + x.coms[i]);
-          transform_coord.quats.push_back(internal::pick_positive(entries_[closest].quats[i].conjugate()*entries_[distant].quats[i]));
-          y.quats.push_back(internal::pick_positive(
-                      transform_coord.quats.back()*x.quats[i]));
+      for (unsigned i = 0; i < x.coms.size(); i++) {
+        transform_coord.coms.push_back(entries_[distant].coms[i]
+                                       - entries_[closest].coms[i]);
+        y.coms.push_back(transform_coord.coms.back() + x.coms[i]);
+        transform_coord.quats.push_back(
+            internal::pick_positive(entries_[closest].quats[i].conjugate()
+                                    * entries_[distant].quats[i]));
+        y.quats.push_back(
+            internal::pick_positive(transform_coord.quats.back() * x.quats[i]));
       }
-      IMP_LOG_VERBOSE("transform is " << transform_coord <<std::endl);
-      IMP_LOG_VERBOSE("y is at " << y<<std::endl);
-      IMP_LOG_TERSE("y is closest to "
-              << get_closest_entry_point(y)<<std::endl);
-      //remove that element from list
-      entry_nums.erase(entry_nums.begin()+dnum);
+      IMP_LOG_VERBOSE("transform is " << transform_coord << std::endl);
+      IMP_LOG_VERBOSE("y is at " << y << std::endl);
+      IMP_LOG_TERSE("y is closest to " << get_closest_entry_point(y)
+                                       << std::endl);
+      // remove that element from list
+      entry_nums.erase(entry_nums.begin() + dnum);
     } while ((!entry_nums.empty()) && (get_closest_entry_point(y) != distant));
     // make move if acceptable
     if (get_closest_entry_point(y) == distant) {
@@ -152,15 +152,16 @@ MonteCarloMoverResult RigidBodyTunneler::do_propose() {
       internal::Referential referential(get_model(), ref_);
       for (unsigned i = 0; i < pis_.size(); i++)
         last_transformations_.push_back(new internal::Transformer(
-            get_model(), referential, pis_[i],
-            transform_coord.coms[i], transform_coord.quats[i]));
-      IMP_LOG_TERSE("proposed move from entry point "
-                      << closest << " to " << distant << std::endl);
-      IMP_USAGE_CHECK(get_squared_distance(y, get_coordinates_from_rbs())<1e-5,
-            "Weird things happened here!");
+            get_model(), referential, pis_[i], transform_coord.coms[i],
+            transform_coord.quats[i]));
+      IMP_LOG_TERSE("proposed move from entry point " << closest << " to "
+                                                      << distant << std::endl);
+      IMP_USAGE_CHECK(
+          get_squared_distance(y, get_coordinates_from_rbs()) < 1e-5,
+          "Weird things happened here!");
       num_proposed_++;
     } else {
-      IMP_LOG_TERSE("no move was possible"<<std::endl);
+      IMP_LOG_TERSE("no move was possible" << std::endl);
       num_impossible_++;
     }
   }
@@ -168,14 +169,14 @@ MonteCarloMoverResult RigidBodyTunneler::do_propose() {
 }
 
 void RigidBodyTunneler::do_reject() {
-  bool was_reset=false;
+  bool was_reset = false;
   for (unsigned i = 0; i < last_transformations_.size(); i++) {
     bool reset = last_transformations_[i].undo_transform();
     was_reset = was_reset || reset;
   }
-  if (was_reset){
-      IMP_LOG_TERSE("move rejected"<<std::endl);
-      num_rejected_++;
+  if (was_reset) {
+    IMP_LOG_TERSE("move rejected" << std::endl);
+    num_rejected_++;
   }
 }
 
@@ -215,8 +216,8 @@ Floats RigidBodyTunneler::get_reduced_coordinates(kernel::Model* m,
 
 kernel::ModelObjectsTemp RigidBodyTunneler::do_get_inputs() const {
   kernel::ModelObjectsTemp retval;
-  for (unsigned i=0; i<pis_.size(); i++)
-      retval.push_back(get_model()->get_particle(pis_[i]));
+  for (unsigned i = 0; i < pis_.size(); i++)
+    retval.push_back(get_model()->get_particle(pis_[i]));
   return retval;
 }
 
