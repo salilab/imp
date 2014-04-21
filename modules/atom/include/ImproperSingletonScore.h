@@ -24,6 +24,10 @@ IMPATOM_BEGIN_NAMESPACE
     difference is in radians between -pi and +pi; it is the shortest
     distance from one angle to the other.
 
+    Just as for regular dihedral angles, the improper angle is defined
+    as the angle between the plane in which the first three atoms lie and
+    the plane in which the last three atoms lie.
+
     \note The multiplicity of the the Dihedral is not used.
 
     \see CHARMMTopology::add_impropers(), Dihedral.
