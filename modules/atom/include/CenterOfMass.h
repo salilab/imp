@@ -30,7 +30,7 @@ IMPATOM_BEGIN_NAMESPACE
 
     \usesconstraint
 */
-class IMPCOREEXPORT CenterOfMass : public IMP::Decorator {
+class IMPATOMEXPORT CenterOfMass : public IMP::Decorator {
   IMP_CONSTRAINT_DECORATOR_DECL(CenterOfMass);
  private:
   /** Sets up CenterOfMass over particles in pis.
