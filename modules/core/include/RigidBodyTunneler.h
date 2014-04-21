@@ -18,6 +18,7 @@
 #include <IMP/algebra/eigen3/Eigen/Dense>
 #include <IMP/algebra/eigen3/Eigen/Geometry>
 #include <iostream>
+#include <boost/ptr_container/ptr_vector.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -112,7 +113,7 @@ class IMPCOREEXPORT RigidBodyTunneler : public MonteCarloMover {
   kernel::ParticleIndex ref_;
   double k_, move_probability_;
   unsigned num_calls_, num_proposed_, num_rejected_, num_impossible_;
-  std::vector<internal::Transformer> last_transformations_;
+  boost::ptr_vector<internal::Transformer> last_transformations_;
   std::vector<internal::Coord> entries_;
 };
 

@@ -151,7 +151,7 @@ MonteCarloMoverResult RigidBodyTunneler::do_propose() {
       last_transformations_.clear();
       internal::Referential referential(get_model(), ref_);
       for (unsigned i = 0; i < pis_.size(); i++)
-        last_transformations_.push_back(internal::Transformer(
+        last_transformations_.push_back(new internal::Transformer(
             get_model(), referential, pis_[i],
             transform_coord.coms[i], transform_coord.quats[i]));
       IMP_LOG_TERSE("proposed move from entry point "
