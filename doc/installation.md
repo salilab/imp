@@ -79,7 +79,8 @@ in your `PATH`.
 We recommend Linux or Mac for developing with IMP, as obtaining the
 prerequisites on Windows is much more involved. However, we do test IMP on
 Windows, built with the Microsoft Visual Studio compilers (we use Visual Studio
-Express 2010 SP1). One complication is that different packages are compiled
+Express 2010 SP1 for 32-bit Windows, and VS Express 2012 for 64-bit).
+One complication is that different packages are compiled
 with different versions of Visual Studio, and mixing the different runtimes
 (msvc*.dll) can cause odd behavior; therefore, we recommend building most
 of the dependencies from source code using the same version of Visual Studio
