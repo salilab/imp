@@ -14,16 +14,18 @@
 # Repeat for all Python versions 2.4 through 2.7.
 #
 # Then run (still in the binary directory)
-# <source_dir>/tools/w32/make-package.sh <version>
+# <source_dir>/tools/w32/make-package.sh <version> <bits>
 #
 # where <version> is the IMP version number, e.g. 1.0
+# and <bits> is 32 or 64
 
-if [ $# -ne 1 ]; then
-  echo "Usage: $0 <IMP version>"
+if [ $# -ne 2 ]; then
+  echo "Usage: $0 <IMP version> <bits>"
   exit 1
 fi
 
 VER=$1
+BITS=$2
 ROOT=w32-inst
 TOOLDIR=`dirname $0`
 
@@ -76,32 +78,63 @@ rm -rf ${ROOT}/bin/example \
 # Remove any .svn directories
 rm -rf `find ${ROOT} -name .svn`
 
-# Add redist MSVC runtime DLLs
-DLLSRC=/usr/lib/w32comp/windows/system
-cp ${DLLSRC}/msvc*100.dll ${ROOT}/bin || exit 1
+if [ "${BITS}" = "32" ]; then
+  PYVERS="24 25 26 27"
+  MAKENSIS="makensis"
+  # Add redist MSVC runtime DLLs
+  DLLSRC=/usr/lib/w32comp/windows/system
+  cp ${DLLSRC}/msvc*100.dll ${ROOT}/bin || exit 1
+  # Add other DLL dependencies
+  cp ${DLLSRC}/hdf5dll.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
+     ${DLLSRC}/boost_filesystem-vc100-mt-1_53.dll \
+     ${DLLSRC}/boost_program_options-vc100-mt-1_53.dll \
+     ${DLLSRC}/boost_system-vc100-mt-1_53.dll \
+     ${DLLSRC}/boost_date_time-vc100-mt-1_53.dll \
+     ${DLLSRC}/boost_graph-vc100-mt-1_53.dll \
+     ${DLLSRC}/boost_regex-vc100-mt-1_53.dll \
+     ${DLLSRC}/boost_thread-vc100-mt-1_53.dll \
+     ${DLLSRC}/boost_random-vc100-mt-1_53.dll \
+     ${DLLSRC}/boost_iostreams-vc100-mt-1_53.dll \
+     ${DLLSRC}/boost_zlib-vc100-mt-1_53.dll \
+     ${DLLSRC}/CGAL-vc100-mt-4.1.dll \
+     ${DLLSRC}/libgmp-10.dll \
+     ${DLLSRC}/libmpfr-4.dll \
+     ${DLLSRC}/libfftw3-3.dll \
+     ${DLLSRC}/avrocpp.dll \
+     ${DLLSRC}/libTAU1.dll \
+     ${DLLSRC}/zlib1.dll \
+     ${DLLSRC}/opencv_core220.dll ${DLLSRC}/opencv_highgui220.dll \
+     ${DLLSRC}/opencv_ffmpeg220.dll \
+     ${DLLSRC}/opencv_imgproc220.dll ${ROOT}/bin || exit 1
+else
+  PYVERS="24 26 27"
+  MAKENSIS="makensis /DIMP_64BIT"
+  # Add redist MSVC runtime DLLs
+  DLLSRC=/usr/lib/w64comp/windows/system32
+  cp ${DLLSRC}/msvc*110.dll ${ROOT}/bin || exit 1
+  # Add other DLL dependencies
+  cp ${DLLSRC}/hdf5dll.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
+     ${DLLSRC}/boost_filesystem-vc110-mt-1_55.dll \
+     ${DLLSRC}/boost_program_options-vc110-mt-1_55.dll \
+     ${DLLSRC}/boost_system-vc110-mt-1_55.dll \
+     ${DLLSRC}/boost_date_time-vc110-mt-1_55.dll \
+     ${DLLSRC}/boost_graph-vc110-mt-1_55.dll \
+     ${DLLSRC}/boost_regex-vc110-mt-1_55.dll \
+     ${DLLSRC}/boost_thread-vc110-mt-1_55.dll \
+     ${DLLSRC}/boost_random-vc110-mt-1_55.dll \
+     ${DLLSRC}/boost_iostreams-vc110-mt-1_55.dll \
+     ${DLLSRC}/boost_zlib-vc110-mt-1_55.dll \
+     ${DLLSRC}/CGAL-vc110-mt-4.4.dll \
+     ${DLLSRC}/libgmp-10.dll \
+     ${DLLSRC}/libmpfr-4.dll \
+     ${DLLSRC}/libfftw3-3.dll \
+     ${DLLSRC}/libTAU1.dll \
+     ${DLLSRC}/zlib1.dll \
+     ${DLLSRC}/opencv_core248.dll ${DLLSRC}/opencv_highgui248.dll \
+     ${DLLSRC}/opencv_ffmpeg248.dll \
+     ${DLLSRC}/opencv_imgproc248.dll ${ROOT}/bin || exit 1
+fi
 
-# Add other DLL dependencies
-cp ${DLLSRC}/hdf5dll.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
-   ${DLLSRC}/boost_filesystem-vc100-mt-1_53.dll \
-   ${DLLSRC}/boost_program_options-vc100-mt-1_53.dll \
-   ${DLLSRC}/boost_system-vc100-mt-1_53.dll \
-   ${DLLSRC}/boost_date_time-vc100-mt-1_53.dll \
-   ${DLLSRC}/boost_graph-vc100-mt-1_53.dll \
-   ${DLLSRC}/boost_regex-vc100-mt-1_53.dll \
-   ${DLLSRC}/boost_thread-vc100-mt-1_53.dll \
-   ${DLLSRC}/boost_random-vc100-mt-1_53.dll \
-   ${DLLSRC}/boost_iostreams-vc100-mt-1_53.dll \
-   ${DLLSRC}/boost_zlib-vc100-mt-1_53.dll \
-   ${DLLSRC}/CGAL-vc100-mt-4.1.dll \
-   ${DLLSRC}/libgmp-10.dll \
-   ${DLLSRC}/libmpfr-4.dll \
-   ${DLLSRC}/libfftw3-3.dll \
-   ${DLLSRC}/avrocpp.dll \
-   ${DLLSRC}/libTAU1.dll \
-   ${DLLSRC}/zlib1.dll \
-   ${DLLSRC}/opencv_core220.dll ${DLLSRC}/opencv_highgui220.dll \
-   ${DLLSRC}/opencv_ffmpeg220.dll \
-   ${DLLSRC}/opencv_imgproc220.dll ${ROOT}/bin || exit 1
 
 # Check all installed binaries for DLL dependencies, to make sure we
 # didn't miss any
@@ -125,7 +158,7 @@ echo "wsock32.dll" >> w32.dlls
 echo "ws2_32.dll" >> w32.dlls
 
 # Add DLLs of our prerequisites (Python)
-for PYVER in 24 25 26 27; do
+for PYVER in ${PYVERS}; do
   echo "python${PYVER}.dll" >> w32.dlls
 done
 
@@ -144,4 +177,4 @@ rm -f w32.dlls w32.deps w32.unmet_deps
 ${TOOLDIR}/gen-w32instlist w32-inst > w32files.tmp || exit 1
 sed -e '/\.pyc"$/d' < w32files.tmp > w32files.install || exit 1
 tac w32files.tmp | sed -e 's/File "w32-inst\\/Delete "$INSTDIR\\/' -e 's/^SetOutPath/RMDir/' > w32files.uninstall || exit 1
-makensis -DVERSION=${VER} -NOCD ${TOOLDIR}/w32-install.nsi || exit 1
+${MAKENSIS} -DVERSION=${VER} -NOCD ${TOOLDIR}/w32-install.nsi || exit 1
