@@ -164,6 +164,7 @@ that you're going to use to build IMP. The basic procedure is as follows:
 
      `cmake <imp_source_directory> -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="/DBOOST_ALL_DYN_LINK /EHsc /D_HDF5USEDLL_ /DWIN32 /DGSL_DLL" -G "NMake Makefiles"`
 
+  - Note: if building for 64-bit Windows, you may need to add `/bigobj` to `CMAKE_CXX_CFLAGS`.
   - Then use simply 'nmake' (instead of 'make', as on Linux or Mac) to
     build IMP. (cmake can also generate Visual Studio project files, but
     we recommend nmake.)
