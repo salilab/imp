@@ -14,14 +14,16 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-RigidBodyTunneler::RigidBodyTunneler(kernel::ParticleIndexes pis,
+RigidBodyTunneler::RigidBodyTunneler(kernel::Model *m,
+                                     kernel::ParticleIndexes pis,
                                      kernel::ParticleIndex ref, double k,
                                      double move_probability)
-    : MonteCarloMover(get_model(), "RigidBodyTunneler%1%"), pis_(pis),
+    : MonteCarloMover(m, "RigidBodyTunneler%1%"), pis_(pis),
       ref_(ref), k_(k), move_probability_(move_probability) {
   for (unsigned i = 0; i < pis.size(); i++) {
     reset_stats();
-    IMP_USAGE_CHECK(RigidBody(m, pis[i]).get_coordinates_are_optimized(),
+    IMP_USAGE_CHECK(RigidBody(m, pis[i]
+                             ).get_coordinates_are_optimized(),
                     "Rigid body passed to RigidBodyTunneler"
                     << " must be set to be optimized. particle: "
                     << m->get_particle_name(pis[i]));
