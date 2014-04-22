@@ -14,14 +14,16 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-RigidBodyTunneler::RigidBodyTunneler(kernel::ParticleIndexes pis,
+RigidBodyTunneler::RigidBodyTunneler(kernel::Model *m,
+                                     kernel::ParticleIndexes pis,
                                      kernel::ParticleIndex ref, double k,
                                      double move_probability)
-    : MonteCarloMover(get_model(), "RigidBodyTunneler%1%"), pis_(pis),
+    : MonteCarloMover(m, "RigidBodyTunneler%1%"), pis_(pis),
       ref_(ref), k_(k), move_probability_(move_probability) {
   for (unsigned i = 0; i < pis.size(); i++) {
     reset_stats();
-    IMP_USAGE_CHECK(RigidBody(m, pis[i]).get_coordinates_are_optimized(),
+    IMP_USAGE_CHECK(RigidBody(m, pis[i]
+                             ).get_coordinates_are_optimized(),
                     "Rigid body passed to RigidBodyTunneler"
                     << " must be set to be optimized. particle: "
                     << m->get_particle_name(pis[i]));
@@ -42,29 +44,8 @@ void RigidBodyTunneler::add_entry_point(Floats fl) {
   IMP_USAGE_CHECK(fl.size() == pis_.size() * 7,
                   "Expected entry point size to be " << (pis_.size() * 7)
                                                      << ", got " << fl.size());
-  internal::Coord x;
-  unsigned nrbs = pis_.size();
-  for (unsigned i = 0; i < nrbs; i++) {
-    IMP_Eigen::Vector3d com;
-    com << fl[3 * i], fl[3 * i + 1], fl[3 * i + 2];
-    x.coms.push_back(com);
-    IMP_Eigen::Quaterniond quat(fl[3 * nrbs + 4 * i], fl[3 * nrbs + 4 * i + 1],
-                                fl[3 * nrbs + 4 * i + 2],
-                                fl[3 * nrbs + 4 * i + 3]);
-    quat.normalize();
-    x.quats.push_back(quat);
-  }
+  internal::Coord x(fl);
   entries_.push_back(x);
-}
-
-double RigidBodyTunneler::get_squared_distance(const internal::Coord& x,
-                                               const internal::Coord& y) const {
-  double dcom(0), dq(0);
-  for (unsigned i = 0; i < x.coms.size(); i++) {
-    dcom += (x.coms[i] - y.coms[i]).squaredNorm();
-    dq += IMP::square(x.quats[i].angularDistance(y.quats[i]));
-  }
-  return dcom + k_ * dq;
 }
 
 unsigned RigidBodyTunneler::get_closest_entry_point(const internal::Coord
@@ -72,26 +53,13 @@ unsigned RigidBodyTunneler::get_closest_entry_point(const internal::Coord
   double dmin;
   unsigned closest = 0;
   for (unsigned i = 0; i < entries_.size(); i++) {
-    double dist = get_squared_distance(x, entries_[i]);
+    double dist = internal::get_squared_distance(x, entries_[i], k_);
     if (i == 0 || dist < dmin) {
       dmin = dist;
       closest = i;
     }
   }
   return closest;
-}
-
-internal::Coord RigidBodyTunneler::get_coordinates_from_rbs() const {
-  // get current reference frame of rbs
-  internal::Referential ref(get_model(), ref_);
-  // get x
-  internal::Coord x;
-  for (unsigned i = 0; i < pis_.size(); i++) {
-    internal::Referential target(get_model(), pis_[i]);
-    x.coms.push_back(ref.get_local_coords(target.get_centroid()));
-    x.quats.push_back(ref.get_local_rotation(target.get_rotation()));
-  }
-  return x;
 }
 
 MonteCarloMoverResult RigidBodyTunneler::do_propose() {
@@ -106,7 +74,8 @@ MonteCarloMoverResult RigidBodyTunneler::do_propose() {
   ::boost::uniform_01<double> rand01;
   if (rand01(base::random_number_generator) <= move_probability_) {
     IMP_LOG_TERSE("will try to move" << std::endl);
-    internal::Coord x(get_coordinates_from_rbs());
+    internal::Coord x(
+        internal::get_coordinates_from_rbs(get_model(), pis_, ref_));
     IMP_LOG_VERBOSE("x is at " << x << std::endl);
     // compute the closest entry point
     unsigned closest = get_closest_entry_point(x);
@@ -156,9 +125,10 @@ MonteCarloMoverResult RigidBodyTunneler::do_propose() {
             transform_coord.quats[i]));
       IMP_LOG_TERSE("proposed move from entry point " << closest << " to "
                                                       << distant << std::endl);
-      IMP_USAGE_CHECK(
-          get_squared_distance(y, get_coordinates_from_rbs()) < 1e-5,
-          "Weird things happened here!");
+      IMP_USAGE_CHECK(internal::get_squared_distance(
+                          y, internal::get_coordinates_from_rbs(
+                                 get_model(), pis_, ref_), k_) < 1e-5,
+                      "Weird things happened here!");
       num_proposed_++;
     } else {
       IMP_LOG_TERSE("no move was possible" << std::endl);
@@ -187,15 +157,10 @@ Floats RigidBodyTunneler::get_reduced_coordinates(kernel::Model* m,
   IMP_Eigen::Vector3d com(referential.get_local_coords(target.get_centroid()));
   IMP_Eigen::Quaterniond rot(
       referential.get_local_rotation(target.get_rotation()));
-  Floats retval;
-  retval.push_back(com(0));
-  retval.push_back(com(1));
-  retval.push_back(com(2));
-  retval.push_back(rot.w());
-  retval.push_back(rot.x());
-  retval.push_back(rot.y());
-  retval.push_back(rot.z());
-  return retval;
+  internal::Coord x;
+  x.coms.push_back(com);
+  x.quats.push_back(rot);
+  return x.as_floats();
 }
 
 Floats RigidBodyTunneler::get_reduced_coordinates(kernel::Model* m,
@@ -204,14 +169,10 @@ Floats RigidBodyTunneler::get_reduced_coordinates(kernel::Model* m,
   IMP_Eigen::Vector3d com(target.get_centroid());
   IMP_Eigen::Quaterniond rot(target.get_rotation());
   Floats retval;
-  retval.push_back(com(0));
-  retval.push_back(com(1));
-  retval.push_back(com(2));
-  retval.push_back(rot.w());
-  retval.push_back(rot.x());
-  retval.push_back(rot.y());
-  retval.push_back(rot.z());
-  return retval;
+  internal::Coord x;
+  x.coms.push_back(com);
+  x.quats.push_back(rot);
+  return x.as_floats();
 }
 
 kernel::ModelObjectsTemp RigidBodyTunneler::do_get_inputs() const {

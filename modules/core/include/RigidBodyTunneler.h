@@ -59,8 +59,9 @@ class IMPCOREEXPORT RigidBodyTunneler : public MonteCarloMover {
    * \param move_probability the prior probability to actually
    * move somewhere else
    */
-  RigidBodyTunneler(kernel::ParticleIndexes pis, kernel::ParticleIndex ref,
-                    double k, double move_probability = 1.);
+  RigidBodyTunneler(kernel::Model *m, kernel::ParticleIndexes pis,
+                    kernel::ParticleIndex ref, double k,
+                    double move_probability = 1.);
 
   //! add entry point
   /** each entry point is a list of coordinates that matches the number of rigid
@@ -103,10 +104,7 @@ class IMPCOREEXPORT RigidBodyTunneler : public MonteCarloMover {
   IMP_OBJECT_METHODS(RigidBodyTunneler);
 
  private:
-  internal::Coord get_coordinates_from_rbs() const;
   unsigned get_closest_entry_point(const internal::Coord& x) const;
-  double get_squared_distance(const internal::Coord& x,
-                              const internal::Coord& y) const;
 
  private:
   kernel::ParticleIndexes pis_;
