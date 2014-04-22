@@ -16,19 +16,19 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-RigidBodyUmbrella::RigidBodyUmbrella(kernel::ParticleIndex pi,
+RigidBodyUmbrella::RigidBodyUmbrella(kernel::Model *m, kernel::ParticleIndex pi,
                                      kernel::ParticleIndex ref, Floats x0,
                                      double alpha, double k, std::string name)
-    : Restraint(get_model(), name), pi_(pi), ref_(ref), x0_(x0), alpha_(alpha),
+    : Restraint(m, name), pi_(pi), ref_(ref), x0_(x0), alpha_(alpha),
       k_(k) {
   IMP_USAGE_CHECK(x0.size() == 7, "Wrong size for x0, should be 7");
 }
 
-RigidBodyUmbrella::RigidBodyUmbrella(kernel::ParticleIndex pi,
+RigidBodyUmbrella::RigidBodyUmbrella(kernel::Model *m, kernel::ParticleIndex pi,
                                      kernel::ParticleIndex ref, double lambda,
                                      Floats x1, Floats x2, double alpha,
                                      double k, std::string name)
-    : Restraint(get_model(), name), pi_(pi), ref_(ref),
+    : Restraint(m, name), pi_(pi), ref_(ref),
       x0_(interpolate(lambda, x1, x2)), alpha_(alpha), k_(k) {}
 
 internal::Coord RigidBodyUmbrella::interpolate(double lambda, Floats x1,

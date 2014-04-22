@@ -46,9 +46,9 @@ class IMPCOREEXPORT RigidBodyUmbrella : public kernel::Restraint {
       restraints
       \param[in] name restraint name
    */
-  RigidBodyUmbrella(kernel::ParticleIndex pi, kernel::ParticleIndex ref,
-                    Floats x0, double alpha, double k,
-                    std::string name = "RigidBodyUmbrella %1%");
+  RigidBodyUmbrella(kernel::Model* m, kernel::ParticleIndex pi,
+                    kernel::ParticleIndex ref, Floats x0, double alpha,
+                    double k, std::string name = "RigidBodyUmbrella %1%");
 
   //! Create the restraint by specifying \f$x_0\f$ as a linear interpolation.
   /**
@@ -66,8 +66,9 @@ class IMPCOREEXPORT RigidBodyUmbrella : public kernel::Restraint {
    * restraints
    * \param[in] name restraint name
    */
-  RigidBodyUmbrella(kernel::ParticleIndex pi, kernel::ParticleIndex ref,
-                    double lambda, Floats x1, Floats x2, double alpha, double k,
+  RigidBodyUmbrella(kernel::Model *m, kernel::ParticleIndex pi,
+                    kernel::ParticleIndex ref, double lambda, Floats x1,
+                    Floats x2, double alpha, double k,
                     std::string name = "RigidBodyUmbrella %1%");
 
   void set_x0(Floats x0) {x0_ = x0; }
