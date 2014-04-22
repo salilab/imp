@@ -155,8 +155,8 @@ that you're going to use to build IMP. The basic procedure is as follows:
   - (Optional) Get and install
     [libTAU](http://integrativemodeling.org/libTAU.html)
      - Copy `libTAU.lib` to `TAU.lib` to help cmake find it.
-  - (Optional) Get the [OpenCV source code](http://opencv.willowgarage.com/wiki/InstallGuide)
-    and build it by following the instructions at that website.
+  - (Optional) Get the [OpenCV source code](http://opencv.org/)
+    and build it by [following these instructions](http://docs.opencv.org/doc/tutorials/introduction/windows_install/windows_install.html)
      - Copy each `opencv_*.lib` to a similar file without the version extension
        (e.g. copy `opencv_ml244.lib` to `opencv_ml.lib`) to help cmake find it
   - Set PATH, INCLUDE, and/or LIB environment variables so that the compiler
