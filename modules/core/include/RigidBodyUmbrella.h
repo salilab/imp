@@ -28,7 +28,7 @@ IMPCORE_BEGIN_NAMESPACE
  * umbrella. Then the restraint score is
  * \f[ E(x) = \frac{\alpha}{2} d^2(x,x_0) \f]
  * \f$d\f$ is the distance between x and x_0
- * \f[d^2(x,x_0) = $d^2_\text{eucl}(COM,COM_0) + k*d^2_\text{quat}(Q,Q_0)\f]
+ * \f[d^2(x,x_0) = d^2_\text{eucl}(COM,COM_0) + k*d^2_\text{quat}(Q,Q_0)\f]
  * \f$d_\text{eucl}\f$ is the 3D euclidian distance
  * \f$d_\text{quat}\f$ is the geodesic distance between two rotations, i.e. the
  * angle of the rotation \f$Q\cdot Q_0^{-1}\f$
@@ -54,7 +54,7 @@ class IMPCOREEXPORT RigidBodyUmbrella : public kernel::Restraint {
   /**
    * The restraint input is the triplet \f$\lambda,x_1,x_2\f$ with \f$\lambda\in
    * \f$[0,1]\f$ such that the restraint center is at
-   * \f$ x_0 = (1-\lambda) x_1 + \lambda x_2 \f$
+   * \f[ x_0 = (1-\lambda) x_1 + \lambda x_2 \f]
    *
    * \param[in] pi rigid body particle index to restrain
    * \param[in] ref rigid body particle index of reference
