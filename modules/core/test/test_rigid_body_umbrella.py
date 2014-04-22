@@ -60,12 +60,33 @@ class RigidBodyTunnelerTest(IMP.test.TestCase):
         rbparts.append(prb)
         return rbparts
 
-
-    def test_get_set(self):
+    def test_get_set_simple(self):
         self.assertTrue(allclose(self.x0, asarray(self.rbu.get_x0())))
         self.x0 = self.rbu.get_x()
         self.rbu.set_x0(self.x0)
         self.assertTrue(allclose(self.x0, asarray(self.rbu.get_x0())))
+
+    def test_get_set_interp(self):
+        self.assertTrue(allclose(self.x0, asarray(self.rbu.get_x0())))
+        x1 = asarray(self.x0)
+        x2 = asarray(self.rbu.get_x())
+        for la in linspace(0,1,num=5):
+            expected = zeros(7)
+            expected[:3] = x1[:3]*(1-la) + x2[:3]*la
+            self.rbu.set_x0(la,x1,x2)
+            observed = asarray(self.rbu.get_x0())
+            self.assertTrue(allclose(observed[:3],expected[:3]))
+
+    def test_get_set_extremes(self):
+        self.assertTrue(allclose(self.x0, asarray(self.rbu.get_x0())))
+        x1 = self.x0[:]
+        x2 = self.rbu.get_x()
+        self.rbu.set_x0(0., x1, x2)
+        observed = asarray(self.rbu.get_x0())
+        self.assertTrue(allclose(observed, x1))
+        self.rbu.set_x0(1., x1, x2)
+        observed = asarray(self.rbu.get_x0())
+        self.assertTrue(allclose(observed, x2))
 
 if __name__ == '__main__':
     IMP.test.main()
