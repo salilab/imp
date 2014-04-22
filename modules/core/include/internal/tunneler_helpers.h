@@ -81,6 +81,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
     quats_type quats;
     Coord() {}
     Coord(Floats);
+    Floats as_floats() const;
 
     IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   };

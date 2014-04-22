@@ -112,6 +112,22 @@ Coord::Coord(Floats fl) {
   }
 }
 
+Floats Coord::as_floats() const {
+      Floats x0;
+      for (unsigned i=0; i<coms.size(); i++) {
+          x0.push_back(coms[i](0));
+          x0.push_back(coms[i](1));
+          x0.push_back(coms[i](2));
+      }
+      for (unsigned i=0; i<quats.size(); i++) {
+          x0.push_back(quats[i].w());
+          x0.push_back(quats[i].x());
+          x0.push_back(quats[i].y());
+          x0.push_back(quats[i].z());
+      }
+      return x0;
+}
+
 std::ostream& operator<<(std::ostream& out, const Coord& c) {
   for (Coord::com_type::const_iterator it = c.coms.begin(); it != c.coms.end();
        ++it)

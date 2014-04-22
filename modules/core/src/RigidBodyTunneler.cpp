@@ -157,15 +157,10 @@ Floats RigidBodyTunneler::get_reduced_coordinates(kernel::Model* m,
   IMP_Eigen::Vector3d com(referential.get_local_coords(target.get_centroid()));
   IMP_Eigen::Quaterniond rot(
       referential.get_local_rotation(target.get_rotation()));
-  Floats retval;
-  retval.push_back(com(0));
-  retval.push_back(com(1));
-  retval.push_back(com(2));
-  retval.push_back(rot.w());
-  retval.push_back(rot.x());
-  retval.push_back(rot.y());
-  retval.push_back(rot.z());
-  return retval;
+  internal::Coord x;
+  x.coms.push_back(com);
+  x.quats.push_back(rot);
+  return x.as_floats();
 }
 
 Floats RigidBodyTunneler::get_reduced_coordinates(kernel::Model* m,
@@ -174,14 +169,10 @@ Floats RigidBodyTunneler::get_reduced_coordinates(kernel::Model* m,
   IMP_Eigen::Vector3d com(target.get_centroid());
   IMP_Eigen::Quaterniond rot(target.get_rotation());
   Floats retval;
-  retval.push_back(com(0));
-  retval.push_back(com(1));
-  retval.push_back(com(2));
-  retval.push_back(rot.w());
-  retval.push_back(rot.x());
-  retval.push_back(rot.y());
-  retval.push_back(rot.z());
-  return retval;
+  internal::Coord x;
+  x.coms.push_back(com);
+  x.quats.push_back(rot);
+  return x.as_floats();
 }
 
 kernel::ModelObjectsTemp RigidBodyTunneler::do_get_inputs() const {
