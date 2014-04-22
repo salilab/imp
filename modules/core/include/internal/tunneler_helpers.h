@@ -80,7 +80,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
             IMP_Eigen::aligned_allocator<IMP_Eigen::Quaterniond> > quats_type;
     quats_type quats;
     Coord() {}
-    Coord(Floats);
+    explicit Coord(Floats);
     Floats as_floats() const;
 
     IMP_EIGEN_MAKE_ALIGNED_OPERATOR_NEW

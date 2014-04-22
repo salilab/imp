@@ -71,7 +71,7 @@ class IMPCOREEXPORT RigidBodyUmbrella : public kernel::Restraint {
                     Floats x2, double alpha, double k,
                     std::string name = "RigidBodyUmbrella %1%");
 
-  void set_x0(Floats x0) {x0_ = x0; }
+  void set_x0(Floats x0) {x0_ = internal::Coord(x0); }
   void set_x0(double lambda, Floats x1, Floats x2) {
       x0_ = interpolate(lambda, x1, x2);
   }
