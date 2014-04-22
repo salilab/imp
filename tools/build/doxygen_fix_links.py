@@ -18,6 +18,7 @@ import sys
 r = re.compile("""<a [^>]*href="(namespacelink|
                                  namespacecustom__hierarchy|
                                  namespacesetup|
+                                 namespacelog|
                                  namespaceBallMover)
                   \.html">([^<]*)</a>""", re.VERBOSE)
 
