@@ -151,10 +151,10 @@ class Tests(IMP.test.TestCase):
             = self._create_tamd_hierarchy(m,
                                           5, 2,
 #                                          T_factors = [3,2.5,2,1.5],
-                                          T_factors = [12,6,3,1.5],
-                                          F_factors = [225*225,225*15,45,15],
+                                          T_factors = [12,9,3,1.5],
+                                          F_factors = [225*225,135,45,15],
 #                                          Ks = [60,40,20,10] ) # TAMD multi on
-                                          Ks = [1e-12,1e-12,10, 10] )# TAMD singular on
+                                          Ks = [1e-12,10,10, 10] )# TAMD singular on
 #                                         Ks = [5e-12,5e-12,5e-12,5e-12] ) # TAMD off
             # = self._create_tamd_hierarchy(m,
             #                               5, 2,
