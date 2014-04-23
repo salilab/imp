@@ -57,7 +57,12 @@ rm -rf ${ROOT}/pylib/*/*.py ${ROOT}/pylib/*/IMP || exit 1
 patch -d ${ROOT}/python/IMP -p1 < ${TOOLDIR}/python-search-path.patch || exit 1
 
 # Make Python version-specific directories for extensions (.pyd)
-for PYVER in 2.4 2.5 2.6 2.7; do
+if [ "${BITS}" = "32" ]; then
+  PYVERS="2.4 2.5 2.6 2.7"
+else
+  PYVERS="2.5 2.6 2.7"
+fi
+for PYVER in ${PYVERS}; do
   mkdir ${ROOT}/python/python${PYVER} || exit 1
   mv ${ROOT}/pylib/${PYVER}/*.pyd ${ROOT}/python/python${PYVER} || exit 1
   rmdir ${ROOT}/pylib/${PYVER} || exit 1
