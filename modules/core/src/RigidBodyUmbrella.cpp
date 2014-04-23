@@ -79,7 +79,7 @@ kernel::ModelObjectsTemp RigidBodyUmbrella::do_get_inputs() const {
     ret.push_back(m->get_particle(pi_));
     kernel::ParticleIndexes iref(
         RigidBody(m, pi_).get_member_indexes());
-    for (unsigned i=0; i<pref.size(); i++)
+    for (unsigned i=0; i<iref.size(); i++)
         ret.push_back(m->get_particle(iref[i]));
     return ret;
 }
