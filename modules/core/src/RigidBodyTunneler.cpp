@@ -153,14 +153,8 @@ void RigidBodyTunneler::do_reject() {
 Floats RigidBodyTunneler::get_reduced_coordinates(kernel::Model* m,
                                                   kernel::ParticleIndex t,
                                                   kernel::ParticleIndex r) {
-  internal::Referential target(m, t), referential(m, r);
-  IMP_Eigen::Vector3d com(referential.get_local_coords(target.get_centroid()));
-  IMP_Eigen::Quaterniond rot(
-      referential.get_local_rotation(target.get_rotation()));
-  internal::Coord x;
-  x.coms.push_back(com);
-  x.quats.push_back(rot);
-  return x.as_floats();
+  kernel::ParticleIndexes pis(1, t);
+  return internal::get_coordinates_from_rbs(m, pis, r).as_floats();
 }
 
 Floats RigidBodyTunneler::get_reduced_coordinates(kernel::Model* m,
@@ -174,6 +168,27 @@ Floats RigidBodyTunneler::get_reduced_coordinates(kernel::Model* m,
   x.quats.push_back(rot);
   return x.as_floats();
 }
+
+void RigidBodyTunneler::set_reduced_coordinates(kernel::Model* m,
+                                      kernel::ParticleIndex target,
+                                      kernel::ParticleIndex ref,
+                                      Floats coords) {
+  //get local and target coords
+  IMP_USAGE_CHECK(coords.size() == 7, "coords have wrong shape");
+  internal::Coord target_c(coords);
+  kernel::ParticleIndexes pis(1, target);
+  internal::Coord my_c(internal::get_coordinates_from_rbs(m, pis, ref));
+  //get translation vector
+  IMP_Eigen::Vector3d tr(target_c.coms[0] - my_c.coms[0]);
+  IMP_Eigen::Quaterniond rot(
+          internal::pick_positive(target_c.quats[0])*my_c.quats[0].conjugate());
+  //apply transformation
+  internal::Referential referential(m, ref);
+  internal::Transformer *t = new internal::Transformer(m, referential, target,
+          tr, rot);
+  delete t;
+}
+
 
 kernel::ModelObjectsTemp RigidBodyTunneler::do_get_inputs() const {
   kernel::ModelObjectsTemp retval;

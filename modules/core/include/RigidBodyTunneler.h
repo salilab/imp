@@ -94,8 +94,10 @@ class IMPCOREEXPORT RigidBodyTunneler : public MonteCarloMover {
                                         kernel::ParticleIndex pi);
 
   /// sets rigid body coordinates in the reference frame of ref
-  // void set_reduced_coordinates(algebra::VectorD<3> com, algebra::VectorD<4>
-  // q);
+  static void set_reduced_coordinates(kernel::Model* m,
+                                      kernel::ParticleIndex target,
+                                      kernel::ParticleIndex ref,
+                                      Floats coords);
 
  protected:
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;

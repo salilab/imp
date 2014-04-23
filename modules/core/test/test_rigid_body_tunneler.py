@@ -74,6 +74,26 @@ class RigidBodyTunnelerTest(IMP.test.TestCase):
         self.assertTrue(allclose(coords[4:]/sin(arccos(coords[3])),
                 array([0,1,0])))
 
+    def test_set2(self):
+        coords = random.random(7)
+        coords[3:] = coords[3:]/linalg.norm(coords[3:])
+        before = asarray(self.rbt.get_reduced_coordinates(self.m,
+            self.iref, self.iori))
+        self.rbori.set_reduced_coordinates(self.m, self.iref, self.iori,
+                coords)
+        observed = asarray(self.rbt.get_reduced_coordinates(self.m,
+            self.iref, self.iori))
+        self.assertTrue(allclose(observed, coords))
+
+    def test_set(self):
+        coords = random.random(7)
+        coords[3:] = coords[3:]/linalg.norm(coords[3:])
+        self.rbt.set_reduced_coordinates(self.m, self.ioth, self.iref,
+                coords)
+        observed = asarray(self.rbt.get_reduced_coordinates(self.m,
+            self.ioth, self.iref))
+        self.assertTrue(allclose(observed, coords))
+
     def test_reduced_coords_ref(self):
         #test Referential.get_centroid and Referential.get_rotation on ref
         coords = array(self.rbt.get_reduced_coordinates(self.m, self.iref))
