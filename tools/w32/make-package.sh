@@ -136,7 +136,6 @@ else
      ${DLLSRC}/libTAU1.dll \
      ${DLLSRC}/zlib1.dll \
      ${DLLSRC}/opencv_core248.dll ${DLLSRC}/opencv_highgui248.dll \
-     ${DLLSRC}/opencv_ffmpeg248.dll \
      ${DLLSRC}/opencv_imgproc248.dll ${ROOT}/bin || exit 1
 fi
 
