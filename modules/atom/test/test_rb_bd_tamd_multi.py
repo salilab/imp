@@ -146,15 +146,16 @@ class Tests(IMP.test.TestCase):
         m = IMP.kernel.Model()
         LOCAL_WELLS = True
 #        rmf_fname = self.get_tmp_file_name("bd_rb_no_tamd_multi_lw_50.rmf")
-        RMF_FNAME = self.get_tmp_file_name("bd_rb_no_tamd_multi_lw.rmf")
+#        RMF_FNAME = self.get_tmp_file_name("bd_rb_tamd_three_layers.rmf")
+        RMF_FNAME = "./bd_rb_tamd_three_layers2.rmf"
         root, all_centroids, all_images, R \
             = self._create_tamd_hierarchy(m,
                                           5, 2,
 #                                          T_factors = [3,2.5,2,1.5],
-                                          T_factors = [12,6,6,3],
-                                          F_factors = [225*225,225*15,45,15],
+                                          T_factors = [12,12,6,3],
+                                          F_factors = [225*225,45,45,15],
 #                                          Ks = [60,40,20,10] ) # TAMD multi on
-                                          Ks = [1e-12,1e-12,10, 10] )# TAMD singular on
+                                          Ks = [1e-12, 10, 10, 10] )# TAMD singular on
 #                                         Ks = [5e-12,5e-12,5e-12,5e-12] ) # TAMD off
             # = self._create_tamd_hierarchy(m,
             #                               5, 2,
@@ -186,13 +187,34 @@ class Tests(IMP.test.TestCase):
             #                                        "local_well_1")
             dr2 = IMP.core.DistanceRestraint(thb2, leaves[0], leaves[-1])
             #                                        "local_well_2")
-            R = R + [dr2] #, dr2]
+            R = R + [dr2] #, dr1]
 
         # Define BD
         bd = IMP.atom.BrownianDynamicsTAMD(m)
         sf = IMP.core.RestraintsScoringFunction(R)
         bd.set_maximum_time_step(5)
 
+
+        bd.set_scoring_function(sf)
+
+        IMP.base.set_log_level(IMP.base.VERBOSE)
+#        os.update_always("Init position")
+        IMP.base.set_log_level(IMP.base.SILENT)
+
+        for i in range(100):
+            bd.optimize(10)
+            m.update()
+#            os.update_always("Init opt %d" % i)
+            for centroid, image in zip(all_centroids, all_images):
+                print centroid, image
+                centroid_coords =  IMP.core.XYZ(centroid).get_coordinates()
+                IMP.core.XYZ(image).set_coordinates( centroid_coords )
+
+        bd.optimize(100000)
+
+        # Add seconds restraint
+        sf = IMP.core.RestraintsScoringFunction(R + [dr1])
+        bd.set_scoring_function(sf)
 
         # Attach RMF
 #        RMF.set_log_level("Off")
@@ -207,33 +229,14 @@ class Tests(IMP.test.TestCase):
             IMP.rmf.add_hierarchies(rmf, [h] )
         for p in all_images:
             IMP.rmf.add_hierarchies(rmf, [IMP.core.Hierarchy(p)])
-        IMP.rmf.add_restraints(rmf, R)
+#        IMP.rmf.add_restraints(rmf, R)
         sf.set_log_level(IMP.base.SILENT)
         os = IMP.rmf.SaveOptimizerState(m, rmf)
         os.set_log_level(IMP.base.SILENT)
-        os.set_period(10)
-        bd.set_scoring_function(sf)
-#        bd.add_optimizer_state(os)
-
-        IMP.base.set_log_level(IMP.base.VERBOSE)
-        os.update_always("Init position")
-        IMP.base.set_log_level(IMP.base.SILENT)
-
-        for i in range(100):
-            bd.optimize(10)
-            m.update()
-            os.update_always("Init opt %d" % i)
-            for centroid, image in zip(all_centroids, all_images):
-                print centroid, image
-                centroid_coords =  IMP.core.XYZ(centroid).get_coordinates()
-                IMP.core.XYZ(image).set_coordinates( centroid_coords )
-
-        # Add seconds restraint
-        bd.optimize(100000)
-        sf = IMP.core.RestraintsScoringFunction(R + [dr1])
-        bd.set_scoring_function(sf)
-
+        IMP.rmf.add_restraints(rmf, R)
+        bd.add_optimizer_state(os)
         os.set_period(2500)
+
         max_cycles = 1000000000
         round_cycles = 1000
         total_cycles = 0
