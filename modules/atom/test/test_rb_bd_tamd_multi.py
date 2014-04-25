@@ -153,7 +153,7 @@ class Tests(IMP.test.TestCase):
                                           5, 2,
 #                                          T_factors = [3,2.5,2,1.5],
                                           T_factors = [12,8,4,2],
-                                          F_factors = [225*225,5.56,2.88,1.44],
+                                          F_factors = [225*225,8,4,2],
 #                                          Ks = [60,40,20,10] ) # TAMD multi on
                                           Ks = [1e-12, 10, 10, 10] )# TAMD singular on
 #                                         Ks = [5e-12,5e-12,5e-12,5e-12] ) # TAMD off
@@ -213,7 +213,8 @@ class Tests(IMP.test.TestCase):
         bd.optimize(100000)
 
         # Add seconds restraint
-        sf = IMP.core.RestraintsScoringFunction(R + [dr1])
+        R.append( dr1 )
+        sf = IMP.core.RestraintsScoringFunction( R )
         bd.set_scoring_function(sf)
 
         # Attach RMF
@@ -235,7 +236,7 @@ class Tests(IMP.test.TestCase):
         os.set_log_level(IMP.base.SILENT)
         IMP.rmf.add_restraints(rmf, R)
         bd.add_optimizer_state(os)
-        os.set_period(2500)
+        os.set_period(10000)
 
         max_cycles = 1000000000
         round_cycles = 1000
