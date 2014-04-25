@@ -112,7 +112,7 @@ if [ "${BITS}" = "32" ]; then
      ${DLLSRC}/opencv_ffmpeg220.dll \
      ${DLLSRC}/opencv_imgproc220.dll ${ROOT}/bin || exit 1
 else
-  PYVERS="24 26 27"
+  PYVERS="25 26 27"
   MAKENSIS="makensis /DIMP_64BIT"
   # Add redist MSVC runtime DLLs
   DLLSRC=/usr/lib/w64comp/windows/system32
