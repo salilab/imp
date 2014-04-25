@@ -129,6 +129,7 @@ else
      ${DLLSRC}/boost_random-vc110-mt-1_55.dll \
      ${DLLSRC}/boost_iostreams-vc110-mt-1_55.dll \
      ${DLLSRC}/boost_zlib-vc110-mt-1_55.dll \
+     ${DLLSRC}/boost_chrono-vc110-mt-1_55.dll \
      ${DLLSRC}/CGAL-vc110-mt-4.4.dll \
      ${DLLSRC}/libgmp-10.dll \
      ${DLLSRC}/libmpfr-4.dll \
@@ -157,6 +158,7 @@ echo "gdi32.dll" >> w32.dlls
 echo "msvcrt.dll" >> w32.dlls
 echo "msvfw32.dll" >> w32.dlls
 echo "ole32.dll" >> w32.dlls
+echo "oleaut32.dll" >> w32.dlls
 echo "user32.dll" >> w32.dlls
 echo "wsock32.dll" >> w32.dlls
 echo "ws2_32.dll" >> w32.dlls
