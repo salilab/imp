@@ -125,6 +125,9 @@ done
 # Bundle non-standard library dependencies (e.g. boost) and make IMP libraries
 # and binaries point to them
 echo "Bundling non-standard library dependencies (e.g. Boost, GSL, HDF5)..."
+BUNDLED_LIB_DIR="${PREFIX}/lib/imp-3rd-party"
+mkdir -p ${DESTDIR}/${BUNDLED_LIB_DIR} || exit 1
+
 if [ "${TARGET_OSX_VER}" = "10.6" ]; then
   # 64-bit builds use homebrew and also include CGAL and protobuf
   BUNDLED_LIBS="/usr/local/lib/libboost_system-mt.dylib \
@@ -141,11 +144,8 @@ if [ "${TARGET_OSX_VER}" = "10.6" ]; then
                 /usr/local/lib/libgslcblas.0.dylib \
                 /usr/local/lib/libhdf5.8.dylib \
                 /usr/local/lib/libopencv_highgui.2.4.2.dylib \
-                /usr/local/lib/libopencv_highgui.2.4.dylib \
                 /usr/local/lib/libopencv_core.2.4.2.dylib \
-                /usr/local/lib/libopencv_core.2.4.dylib \
                 /usr/local/lib/libopencv_imgproc.2.4.2.dylib \
-                /usr/local/lib/libopencv_imgproc.2.4.dylib \
                 /usr/local/lib/libopencv_contrib.2.4.2.dylib \
                 /usr/local/lib/libopencv_calib3d.2.4.dylib \
                 /usr/local/lib/libopencv_features2d.2.4.dylib \
@@ -162,6 +162,12 @@ if [ "${TARGET_OSX_VER}" = "10.6" ]; then
                 /usr/local/lib/libgmp.10.dylib \
                 /usr/local/lib/libgmpxx.4.dylib \
                 /usr/local/lib/libmpfr.4.dylib"
+  # Make symlinks
+  for lib in highgui core imgproc; do
+    ln -sf libopencv_${lib}.2.4.2.dylib \
+           ${BUNDLED_LIB_DIR}/libopencv_${lib}.2.4.dylib
+  done
+  ln -sf libCGAL.10.dylib ${BUNDLED_LIB_DIR}/libCGAL.10.0.3.dylib
 else
   # 32-bit builds use MacPorts
   BUNDLED_LIBS="/opt/local/lib/libboost_system-mt.dylib \
@@ -182,9 +188,6 @@ else
                 /opt/local/lib/libbz2.1.0.dylib"
 fi
 
-BUNDLED_LIB_DIR="${PREFIX}/lib/imp-3rd-party"
-mkdir -p ${DESTDIR}/${BUNDLED_LIB_DIR} || exit 1
-
 for lib in ${BUNDLED_LIBS}; do
   # Copy bundled library and update its id
   cp ${lib} ${DESTDIR}/${BUNDLED_LIB_DIR} || exit 1
@@ -193,10 +196,10 @@ for lib in ${BUNDLED_LIBS}; do
   install_name_tool -id ${BUNDLED_LIB_DIR}/$base \
                         ${DESTDIR}/${BUNDLED_LIB_DIR}/$base || exit 1
 
-  # If the library contains any links to the homebrew Cellar, remap them to
-  # /usr/local/lib/
-  cellar_deps=`otool -L $lib |awk '/\/local\/Cellar\// {print $1}'`
-  for dep in $cellar_deps; do
+  # If the library contains any links to the homebrew Cellar or use of
+  # @loader_path, remap them to /usr/local/lib/
+  deps=`otool -L $lib |awk '/@loader_path|\/local\/Cellar\// {print $1}'`
+  for dep in $deps; do
     depbase=`basename $dep`
     install_name_tool -change $dep /usr/local/lib/$depbase \
                               ${DESTDIR}/${BUNDLED_LIB_DIR}/$base || exit 1
