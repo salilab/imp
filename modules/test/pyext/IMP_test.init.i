@@ -781,12 +781,16 @@ class ApplicationTestCase(TestCase):
            This is used to make sure the commands shown in an application
            example actually work (the testcase can also check the resulting
            files for correctness)."""
+        def win32_normpath(p):
+            # Sometimes Windows can read Unix-style paths, but sometimes it
+            # gets confused... so normalize all paths to be sure
+            return " ".join([os.path.normpath(x) for x in p.split()])
         def fix_win32_command(cmd):
             # Make substitutions so a Unix shell command works on Windows
             if cmd.startswith('cp -r '):
-                return 'xcopy /E ' + cmd[6:]
+                return 'xcopy /E ' + win32_normpath(cmd[6:])
             elif cmd.startswith('cp '):
-                return 'copy ' + cmd[3:]
+                return 'copy ' + win32_normpath(cmd[3:])
             else:
                 return cmd
         d = os.path.dirname(sys.argv[0])
