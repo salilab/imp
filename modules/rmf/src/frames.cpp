@@ -17,16 +17,26 @@
 
 IMPRMF_BEGIN_NAMESPACE
 void load_frame(RMF::FileConstHandle fh, RMF::FrameID frame) {
+  bool except = false;
+  std::string what;
   try {
     fh.set_current_frame(frame);
     IMP_FOREACH(LoadLink * ll, internal::get_load_linkers(fh)) { ll->load(fh); }
   }
   catch (const std::exception& e) {
-    IMP_THROW(e.what(), IOException);
+    except = true;
+    what = e.what();
+  }
+  // Work around an MSVC 2012 compiler bug (exceptions thrown within a
+  // catch block cannot be caught)
+  if (except) {
+    IMP_THROW(what, IOException);
   }
 }
 
 RMF::FrameID save_frame(RMF::FileHandle file, std::string name) {
+  bool except = false;
+  std::string what;
   try {
     file.set_producer("IMP " + get_module_version());
     RMF::FrameID cur = file.add_frame(name, RMF::FRAME);
@@ -37,7 +47,11 @@ RMF::FrameID save_frame(RMF::FileHandle file, std::string name) {
     return cur;
   }
   catch (const std::exception& e) {
-    IMP_THROW(e.what(), IOException);
+    except = true;
+    what = e.what();
+  }
+  if (except) {
+    IMP_THROW(what, IOException);
   }
 }
 
