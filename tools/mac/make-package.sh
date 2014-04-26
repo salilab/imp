@@ -162,12 +162,6 @@ if [ "${TARGET_OSX_VER}" = "10.6" ]; then
                 /usr/local/lib/libgmp.10.dylib \
                 /usr/local/lib/libgmpxx.4.dylib \
                 /usr/local/lib/libmpfr.4.dylib"
-  # Make symlinks
-  for lib in highgui core imgproc; do
-    ln -sf libopencv_${lib}.2.4.2.dylib \
-           ${BUNDLED_LIB_DIR}/libopencv_${lib}.2.4.dylib
-  done
-  ln -sf libCGAL.10.dylib ${BUNDLED_LIB_DIR}/libCGAL.10.0.3.dylib
 else
   # 32-bit builds use MacPorts
   BUNDLED_LIBS="/opt/local/lib/libboost_system-mt.dylib \
@@ -219,9 +213,12 @@ for lib in ${BUNDLED_LIBS}; do
   done
 done
 
-# Save space by replacing duplicates with symlinks
-(cd ${DESTDIR}/${BUNDLED_LIB_DIR} && rm libopencv_imgproc.2.4.dylib && ln -sf libopencv_imgproc.2.4.2.dylib libopencv_imgproc.2.4.dylib)
-(cd ${DESTDIR}/${BUNDLED_LIB_DIR} && rm libopencv_core.2.4.dylib && ln -sf libopencv_core.2.4.2.dylib libopencv_core.2.4.dylib)
+# Make symlinks
+for lib in highgui core imgproc; do
+  ln -sf libopencv_${lib}.2.4.2.dylib \
+         ${DESTDIR}/${BUNDLED_LIB_DIR}/libopencv_${lib}.2.4.dylib
+done
+ln -sf libCGAL.10.dylib ${DESTDIR}/${BUNDLED_LIB_DIR}/libCGAL.10.0.3.dylib
 
 # Make sure we don't link against any non-standard libraries that aren't bundled
 otool -L *.dylib ${bins} IMP-python/*.so ${DESTDIR}/${BUNDLED_LIB_DIR}/* |grep -Ev '/usr/lib|/usr/local/lib/imp-3rd-party|/usr/local/lib/libimp|/usr/local/lib/libRMF|/System/Library/|:'|sort -u > /tmp/non-standard.$$
