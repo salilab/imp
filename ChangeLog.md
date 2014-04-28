@@ -1,5 +1,8 @@
 # ChangeLog
-# For IMP 2.2 # {#ChangeLog}
+# For IMP 2.3.0 # {#changelog}
+- Binary installers for 64-bit Windows are now available.
+
+# For IMP 2.2.0 # {#changelog_2_2_0}
 - A module IMP.template was added to act as a template for creating new external modules. It includes setting up git hooks for format checks and things like that.
 - The python support for grids was cleaned up. Hopefully this makes it more robust. If you were using a grid in python that no longer exists, ping us, we can add it back.
 - The generic geometry functions were simplified slightly and renamed to IMP::algebra::get_vector_geometry().
