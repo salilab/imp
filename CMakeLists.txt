@@ -188,6 +188,9 @@ endif()
 
 set(Boost_NO_BOOST_CMAKE ON)
 find_package(Boost 1.38.0 COMPONENTS system filesystem thread program_options REQUIRED)
+if("${Boost_SYSTEM_LIBRARY_RELEASE}" MATCHES ".*NOTFOUND.*")
+  message(FATAL_ERROR "Boost is required to build IMP.")
+endif()
 find_package(Boost 1.38.0 QUIET COMPONENTS random regex graph)
 
 if("${Boost_RANDOM_LIBRARY_RELEASE}" MATCHES ".*NOTFOUND.*")
