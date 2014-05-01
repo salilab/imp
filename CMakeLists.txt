@@ -93,6 +93,11 @@ set(IMP_${m}_IS_PER_CPP 1)
 endforeach(m)
 
 if(NOT DEFINED PYTHON_INCLUDE_DIRS AND NOT IMP_STATIC)
+  execute_process(COMMAND ${IMP_PYTHON} -c "import sys; print sys.executable"
+                  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                  OUTPUT_VARIABLE python_full_path
+                  OUTPUT_STRIP_TRAILING_WHITESPACE)
+  message(STATUS "Python binary is " ${python_full_path})
   execute_process(COMMAND ${IMP_PYTHON} -c "import sys; print '%d.%d.%d' % sys.version_info[:3]"
                 WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                 OUTPUT_VARIABLE python_full_version
