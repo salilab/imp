@@ -97,14 +97,13 @@ if(NOT DEFINED PYTHON_INCLUDE_DIRS AND NOT IMP_STATIC)
                   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                   OUTPUT_VARIABLE python_full_path
                   OUTPUT_STRIP_TRAILING_WHITESPACE)
-  message(STATUS "Python binary is " ${python_full_path})
   execute_process(COMMAND ${IMP_PYTHON} -c "import sys; print '%d.%d.%d' % sys.version_info[:3]"
                 WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                 OUTPUT_VARIABLE python_full_version
                 OUTPUT_STRIP_TRAILING_WHITESPACE)
   string(REGEX REPLACE "^([0-9]+\\.[0-9]+).*" "\\1" python_version
          ${python_full_version})
-  message(STATUS "Python version is " ${python_version})
+  message(STATUS "Python binary is " ${python_full_path} " (version " ${python_full_version} ")")
 
   FIND_PACKAGE(PythonLibs ${python_full_version} EXACT REQUIRED)
 endif()
