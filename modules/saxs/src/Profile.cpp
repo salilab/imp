@@ -946,7 +946,8 @@ void Profile::offset(Float c) {
 void Profile::copy_errors(const Profile* exp_profile) {
   if (size() != exp_profile->size()) {
     IMP_THROW("Profile::copy_errors is supported "
-                  << "only for profiles with the same q values!",
+              << "only for profiles with the same q values!"
+              << size() << " vs. " <<  exp_profile->size(),
               ValueException);
   }
   // assumes same q values!!!
