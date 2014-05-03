@@ -7,7 +7,7 @@
  */
 #include <IMP/em2d/internal/Image2D.h>
 #include <IMP/em2d/internal/Projection.h>
-#include "FitResult.h"
+#include "lib/FitResult.h"
 
 #include "../lib/helpers.h"
 

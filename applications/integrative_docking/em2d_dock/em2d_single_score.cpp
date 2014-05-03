@@ -5,8 +5,6 @@
  * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
-//#include "Image2D.h"
-//#include "Projection.h"
 
 #include "../lib/helpers.h"
 
