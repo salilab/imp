@@ -1,13 +1,16 @@
 /**
- *  \file ImageTransform  \brief stores image transformation
+ *  \file IMP/em2d/internal/ImageTransform.h
+ *  \brief stores image transformation
  *
+ *  \authors Dina Schneidman
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMP_IMAGE_TRANSFORM_H
-#define IMP_IMAGE_TRANSFORM_H
+#ifndef IMPEM2D_INTERNAL_IMAGE_TRANSFORM_H
+#define IMPEM2D_INTERNAL_IMAGE_TRANSFORM_H
 
+#include <IMP/em2d/em2d_config.h>
 #include <IMP/algebra/constants.h>
 
 #include <math.h>
@@ -15,6 +18,8 @@
 
 #define IMP_RAD_2_DEG(a) 180 * a / IMP::algebra::PI
 #define IMP_DEG_2_RAD(a) a* IMP::algebra::PI / 180
+
+IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 
 class ImageTransform {
  public:
@@ -60,4 +65,6 @@ class ImageTransform {
   double area_score_;
 };
 
-#endif /* IMP_IMAGE_TRANSFORM_H */
+IMPEM2D_END_INTERNAL_NAMESPACE
+
+#endif /* IMPEM2D_INTERNAL_IMAGE_TRANSFORM_H */

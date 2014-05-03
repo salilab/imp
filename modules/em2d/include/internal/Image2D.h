@@ -1,12 +1,16 @@
 /**
- *  \file Image2D.h   \brief A basic image class
+ *  \file IMP/em2d/internal/Image2D.h
+ *  \brief A basic image class
  *
+ *  \authors Dina Schneidman
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMP_IMAGE_2D_H
-#define IMP_IMAGE_2D_H
+#ifndef IMPEM2D_INTERNAL_IMAGE_2D_H
+#define IMPEM2D_INTERNAL_IMAGE_2D_H
+
+#include <IMP/em2d/em2d_config.h>
 
 #include "ImageTransform.h"
 
@@ -25,6 +29,8 @@
 #include <fstream>
 #include <cmath>
 
+IMPEM2D_BEGIN_INTERNAL_NAMESPACE
+
 namespace {
 int symm_round(double r) {
   return static_cast<int>(r > 0.0 ? floor(r + 0.5) : ceil(r - 0.5));
@@ -32,7 +38,7 @@ int symm_round(double r) {
 }
 
 template <class T = double>
-class Image2D : public boost::multi_array<T, 2> {
+class IMPEM2DEXPORT Image2D : public boost::multi_array<T, 2> {
  public:
   // Constructors
   Image2D() : average_computed_(false), stddev_computed_(false) {}
@@ -940,4 +946,6 @@ ImageTransform Image2D<T>::pca_align(const Image2D<T>& image) const {
                         0.0);  // 0 for area_score
 }
 
-#endif /* IMP_IMAGE_2D_H */
+IMPEM2D_END_INTERNAL_NAMESPACE
+
+#endif /* IMPEM2D_INTERNAL_IMAGE_2D_H */

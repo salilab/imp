@@ -5,16 +5,20 @@
  *
  */
 
-#ifndef IMP_PROJECTION_H
-#define IMP_PROJECTION_H
+#ifndef IMPEM2D_INTERNAL_PROJECTION_H
+#define IMPEM2D_INTERNAL_PROJECTION_H
+
+#include <IMP/em2d/em2d_config.h>
+
+#include "Image2D.h"
 
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Rotation3D.h>
 #include <boost/ptr_container/ptr_vector.hpp>
 
-#include "Image2D.h"
+IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 
-class Projection : public Image2D<> {
+class IMPEM2DEXPORT Projection : public Image2D<> {
  public:
   Projection(const IMP::algebra::Vector3Ds& points, double scale,
              double resolution, int axis_size = 0);
@@ -87,4 +91,6 @@ void create_projections(const std::vector<IMP::algebra::Vector3D>& all_points,
                         boost::ptr_vector<Projection>& projections,
                         int image_size = 0);
 
-#endif /* IMP_PROJECTION_H */
+IMPEM2D_END_INTERNAL_NAMESPACE
+
+#endif /* IMPEM2D_INTERNAL_PROJECTION_H */

@@ -1,16 +1,21 @@
 /**
- * \file Projection \brief
+ *  \file IMP/em2d/internal/Projection
+ *  \brief A class for generation and storage of projections
  *
- * Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  \authors Dina Schneidman
+ *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
-#include "Projection.h"
+
+#include <IMP/em2d/internal/Projection.h>
 
 #include <IMP/em/KernelParameters.h>
 #include <IMP/algebra/SphericalVector3D.h>
 #include <IMP/algebra/Rotation3D.h>
 #include <IMP/constants.h>
 #include <boost/scoped_ptr.hpp>
+
+IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 
 Projection::Projection(const IMP::algebra::Vector3Ds& points, double scale,
                        double resolution, int axis_size)
@@ -301,3 +306,5 @@ void create_projections(
     projections.push_back(p.release());
   }
 }
+
+IMPEM2D_END_INTERNAL_NAMESPACE

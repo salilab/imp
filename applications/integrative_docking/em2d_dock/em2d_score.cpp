@@ -5,8 +5,8 @@
  * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
-#include "Image2D.h"
-#include "Projection.h"
+#include <IMP/em2d/internal/Image2D.h>
+#include <IMP/em2d/internal/Projection.h>
 #include "FitResult.h"
 
 #include "../lib/helpers.h"
@@ -124,7 +124,7 @@ int main(int argc, char** argv) {
   points.resize(rpoints.size() + lpoints.size());
 
   // read images
-  std::vector<Image2D<> > images(image_files.size());
+  std::vector<IMP::em2d::internal::Image2D<> > images(image_files.size());
   double max_distance = 0.0;
   for (unsigned int i = 0; i < image_files.size(); i++) {
     images[i].read_PGM(image_files[i]);
@@ -145,7 +145,7 @@ int main(int argc, char** argv) {
   max_distance *= 0.9;
 
   // create receptor projections
-  boost::ptr_vector<Projection> rprojections;
+  boost::ptr_vector<IMP::em2d::internal::Projection> rprojections;
   create_projections(rpoints, projection_number, pixel_size, resolution,
                      rprojections, images[0].get_height());
   //  write_PGM(rprojections, "rprojections.pgm");
@@ -173,7 +173,7 @@ int main(int argc, char** argv) {
     //   }
     // }
 
-    boost::ptr_vector<Projection> projections;
+    boost::ptr_vector<IMP::em2d::internal::Projection> projections;
     // create ligand projections
     create_projections(points, transformed_lpoints, projection_number,
                        pixel_size, resolution, projections,
@@ -194,7 +194,7 @@ int main(int argc, char** argv) {
 
     float total_score = 0.0;
     for (unsigned int i = 0; i < images.size(); i++) {
-      ImageTransform best_transform;
+      IMP::em2d::internal::ImageTransform best_transform;
       best_transform.set_score(0.0);
       int best_projection_id = 0;
       for (unsigned int j = 0; j < projections.size(); j++) {
@@ -206,7 +206,8 @@ int main(int argc, char** argv) {
                                              projections[j].segmented_pixels());
         if (area_score > area_threshold) continue;
 
-        ImageTransform curr_transform = images[i].pca_align(projections[j]);
+        IMP::em2d::internal::ImageTransform curr_transform =
+          images[i].pca_align(projections[j]);
         if (curr_transform.get_score() > best_transform.get_score()) {
           best_transform = curr_transform;
           best_projection_id = projections[j].get_id();

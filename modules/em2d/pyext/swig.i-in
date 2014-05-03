@@ -50,7 +50,9 @@ IMP_SWIG_OBJECT(IMP::em2d, RigidBodiesImageFitRestraint,
 
 IMP_SWIG_OBJECT(IMP::em2d, DummyRestraint, DummyRestraints);
 IMP_SWIG_OBJECT(IMP::em2d, ParticlesDummyRestraint, ParticlesDummyRestraints);
-IMP_SWIG_OBJECT( IMP::em2d, RelativePositionMover, RelativePositionMovers);
+IMP_SWIG_OBJECT(IMP::em2d, RelativePositionMover, RelativePositionMovers);
+
+IMP_SWIG_OBJECT(IMP::em2d, PCAFitRestraint, PCAFitRestraints);
 
 IMP_BUILTIN_VALUES(Transformation3Ds, Transformation3DsList);
 
@@ -92,6 +94,7 @@ IMP_SWIG_DECORATOR(IMP::em2d, ProjectionParameters, ProjectionParametersList);
 %include "IMP/em2d/RigidBodiesImageFitRestraint.h"
 %include "IMP/em2d/RelativePositionMover.h"
 %include "IMP/em2d/DummyRestraint.h"
+%include "IMP/em2d/PCAFitRestraint.h"
 
 // %include "IMP/em2d/TemplateFinder.h"
 
