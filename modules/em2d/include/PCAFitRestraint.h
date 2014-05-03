@@ -42,7 +42,7 @@ public:
   PCAFitRestraint(kernel::Particles particles,
                   const std::vector<std::string>& image_files,
                   double pixel_size, double resolution = 10.0,
-                  unsigned int projection_number = 40);
+                  unsigned int projection_number = 100);
 
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
 

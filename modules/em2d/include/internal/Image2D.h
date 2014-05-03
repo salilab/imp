@@ -167,12 +167,13 @@ void Image2D<T>::read_PGM(const std::string& filename) {
         break;
       case 'P':  // format magick number
         infile.get(ftype);
+        infile.getline(line, MAX_LENGTH);
         break;
       default:  // return the first character
         infile.putback(c);
         break;
     }
-    if (ftype != ' ') break;  // magick number read
+    if (ftype != ' ' && isdigit(c)) break;  // magick number read and the next line is numbers
   }
 
   int width, height, maxval;
