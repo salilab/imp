@@ -38,7 +38,7 @@ int symm_round(double r) {
 }
 
 template <class T = double>
-class IMPEM2DEXPORT Image2D : public boost::multi_array<T, 2> {
+class Image2D : public boost::multi_array<T, 2> {
  public:
   // Constructors
   Image2D() : average_computed_(false), stddev_computed_(false) {}
