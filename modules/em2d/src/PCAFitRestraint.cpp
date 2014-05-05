@@ -35,6 +35,8 @@ PCAFitRestraint::PCAFitRestraint(kernel::Particles particles,
     image.compute_PCA();
     images_.push_back(image);
   }
+
+  internal::Image2D<>::write_PGM(images_, "images.pgm");
 }
 
 double PCAFitRestraint::unprotected_evaluate(

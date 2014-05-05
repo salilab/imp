@@ -27,6 +27,7 @@ class EM2DFitRestraintTest(IMP.test.TestCase):
         score = pca_fit_restraint.evaluate(False)
         print 'initial score = ' + str(score)
         self.assertAlmostEqual(score, 2.84, delta=0.01)
+        os.unlink('images.pgm')
 
 
 if __name__ == '__main__':
