@@ -301,7 +301,7 @@ inline F visit_breadth_first(HD d, F f) {
 }
 
 //! Apply functor F to each particle, traversing the hierarchy depth first.
-/** See breadth_first_traversal() for documentation.
+/** See visit_breadth_first() for documentation.
     \ingroup hierarchy
     See Hierarchy
  */
@@ -367,7 +367,7 @@ inline F visit_breadth_first_with_data(HD d, F f, typename F::result_type i) {
 }
 
 //! Apply functor F to each particle, traversing the hierarchy depth first.
-/** See breadth_first_traversal for documentation.
+/** See visit_breadth_first() for documentation.
     \ingroup hierarchy
     See Hierarchy
  */
