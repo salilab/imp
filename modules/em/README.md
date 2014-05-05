@@ -1,8 +1,8 @@
 This module provides basic utilities for handling 2D and 3D density maps. The main functionalities are:
 1. Reading and writing various density map formats such as XPLOR, MRC, EM and SPIDER.
-1. Simulating density maps of particles, supports particles of any radii and mass.
-1. Calculating cross-correlation scores between a density map and a set of particles.
-1. Implements several Restraints.
+2. Simulating density maps of particles, supports particles of any radii and mass.
+3. Calculating cross-correlation scores between a density map and a set of particles.
+4. Implements several Restraints.
 
 The restraints vary based on how accurately the fit to the density is scored, which is usually related to the evaluation speed. Pick more accurate Restraints for higher resolution maps and models. Below is the Restraints list sorted from the fastest and most simple to the slowest and most accurate.
 
