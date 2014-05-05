@@ -1,4 +1,4 @@
-This module provides basic utilities for handling 2D and 3D density maps. The main functionalities are:
+This module provides basic utilities for handling 3D density maps. The main functionalities are:
 1. Reading and writing various density map formats such as XPLOR, MRC, EM and SPIDER.
 2. Simulating density maps of particles, supports particles of any radii and mass.
 3. Calculating cross-correlation scores between a density map and a set of particles.
