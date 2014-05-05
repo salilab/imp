@@ -41,14 +41,15 @@ class IMPMockTests(unittest.TestCase):
     def test_applications_installed(self):
         """Check install of a fairly comprehensive list of applications"""
         emagefit_apps = ['convert_spider_to_jpg.py', 'emagefit_cluster.py',
-                         'emagefit_dock.py', 'emagefit.py', 'emagefit_score.py']
+                         'emagefit_dock.py', 'emagefit.py', 'emagefit_score.py',
+                         'idock.py']
         apps = ['cluster_profiles', 'cnmultifit.py', 'combine_scores',
                 'complex_to_anchor_graph.py', 'compute_chi',
                 'cross_links_score',
                 'cross_links_single_score', 'em2d_score', 'em2d_single_score',
                 'em3d_score', 'em3d_single_score',
                 'estimate_threshold_from_molecular_mass.py', 'foxs',
-                'idock.py', 'imp_example_app', 'interface_cross_links',
+                'imp_example_app', 'interface_cross_links',
                 'interface_rtc', 'ligand_score', 'map2pca.py', 'mol2pca.py',
                 'multifit.py', 'nmr_rtc_score', 'pdb_check', 'pdb_rmf',
                 'recompute_zscore', 'resample_density.py', 'rg',
@@ -59,7 +60,7 @@ class IMPMockTests(unittest.TestCase):
                 'rmf_validate', 'rmf_xml', 'saxs_merge.py', 'saxs_score',
                 'simulate_density_from_pdb.py', 'soap_score',
                 'validate_profile', 'view_density_header.py']
-        # RHEL systems don't include EMageFit; Fedora does
+        # RHEL systems don't include EMageFit and idock; Fedora does
         if mock_config.startswith('fedora'):
             apps.extend(emagefit_apps)
         else:
