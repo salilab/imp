@@ -76,14 +76,17 @@ class IMPEM2DEXPORT Projection : public Image2D<> {
   IMP::algebra::Vector3D axis_;
 };
 
+IMPEM2DEXPORT
 double compute_max_distance(const std::vector<IMP::algebra::Vector3D>& coords);
 
+IMPEM2DEXPORT
 void create_projections(const std::vector<IMP::algebra::Vector3D>& points,
                         unsigned int projection_number, double pixel_size,
                         double resolution,
                         boost::ptr_vector<Projection>& projections,
                         int image_size = 0);
 
+IMPEM2DEXPORT
 void create_projections(const std::vector<IMP::algebra::Vector3D>& all_points,
                         const std::vector<IMP::algebra::Vector3D>& lig_points,
                         unsigned int projection_number, double pixel_size,
