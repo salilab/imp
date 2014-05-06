@@ -168,6 +168,13 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
   /**@}*/
 
   //! Create topology that corresponds to the primary sequence of the Hierarchy.
+  /** Residues are placed in different segments if they are deemed to be
+      "disconnected", i.e. they have different Chains as parents, they are
+      in different Fragments and the fragments are not consecutive (the last
+      residue index of the first Fragment and the first index of the second
+      Fragment are not consecutive), or their ancestors are different
+      (e.g. one Residue lives in a Chain and another does not have a Chain
+      parent) */
   CHARMMTopology *create_topology(Hierarchy hierarchy) const;
 
   //! Get bond parameters for the bond between the two given CHARMM atom types.

@@ -306,7 +306,7 @@ inline F visit_breadth_first(HD d, F f) {
     See Hierarchy
  */
 template <class HD, class F>
-inline F visit_depth_first(HD d, F f) {
+inline F visit_depth_first(HD d, F &f) {
   base::Vector<HD> stack;
   stack.push_back(d);
   // d.show(std::cerr);

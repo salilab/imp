@@ -1,6 +1,7 @@
 # ChangeLog
 # For IMP 2.3.0 # {#changelog}
 - Binary installers for 64-bit Windows are now available.
+- CHARMMParameters::create_topology() now works with a wider range of hierarchies (previously it would only accept Residues that were direct children of Chains). For example, it should do the right thing when given a Hierarchy that contains no Chain particles, or one where Residues are grouped under Fragments.
 
 # For IMP 2.2.0 # {#changelog_2_2_0}
 - A module IMP.template was added to act as a template for creating new external modules. It includes setting up git hooks for format checks and things like that.

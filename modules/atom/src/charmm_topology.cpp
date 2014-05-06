@@ -503,25 +503,38 @@ void CHARMMTopology::add_sequence(std::string sequence) {
   add_segment(seg);
 }
 
+namespace {
+  class MapTopologyInserter {
+    const CHARMMTopology *topology_;
+    CHARMMTopology::ResMap &resmap_;
+    unsigned int nseg_;
+  public:
+    MapTopologyInserter(const CHARMMTopology *topology,
+                        CHARMMTopology::ResMap &resmap)
+              : topology_(topology), resmap_(resmap), nseg_(0) {}
+
+    void add_chain(Hierarchies residues) {
+      IMP_USAGE_CHECK(nseg_ < topology_->get_number_of_segments(),
+                      "Hierarchy does not match topology");
+      CHARMMSegmentTopology *topseg = topology_->get_segment(nseg_);
+      ++nseg_;
+      IMP_USAGE_CHECK(residues.size() == topseg->get_number_of_residues(),
+                      "Hierarchy does not match topology");
+      unsigned int nres = 0;
+      for (Hierarchies::iterator resit = residues.begin();
+           resit != residues.end(); ++resit, ++nres) {
+        resmap_[topseg->get_residue(nres)] = *resit;
+      }
+    }
+  };
+}
+
 void CHARMMTopology::map_residue_topology_to_hierarchy(Hierarchy hierarchy,
                                                        ResMap &resmap) const {
-  Hierarchies chains = get_by_type(hierarchy, CHAIN_TYPE);
-  IMP_USAGE_CHECK(chains.size() == get_number_of_segments(),
-                  "Hierarchy does not match topology");
-
-  unsigned int nseg = 0;
-  for (Hierarchies::iterator chainit = chains.begin(); chainit != chains.end();
-       ++chainit, ++nseg) {
-    CHARMMSegmentTopology *topseg = get_segment(nseg);
-    Hierarchies residues = get_by_type(*chainit, RESIDUE_TYPE);
-    IMP_USAGE_CHECK(residues.size() == topseg->get_number_of_residues(),
-                    "Hierarchy does not match topology");
-    unsigned int nres = 0;
-    for (Hierarchies::iterator resit = residues.begin();
-         resit != residues.end(); ++resit, ++nres) {
-      resmap[topseg->get_residue(nres)] = *resit;
-    }
-  }
+  MapTopologyInserter ins(this, resmap);
+  internal::TopologyVisitor<MapTopologyInserter> v(ins);
+  core::visit_depth_first(hierarchy, v);
+  v.add_chain();
 }
 
 void CHARMMTopology::add_atom_types(Hierarchy hierarchy) const {

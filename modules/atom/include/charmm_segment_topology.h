@@ -72,9 +72,11 @@ IMP_OBJECTS(CHARMMSegmentTopology, CHARMMSegmentTopologies);
     add_bonds(), add_charges()).
  */
 class IMPATOMEXPORT CHARMMTopology : public IMP::base::Object {
+public:
+  typedef std::map<const CHARMMResidueTopology *, Hierarchy> ResMap;
+private:
   base::Pointer<const CHARMMParameters> force_field_;
   base::WarningContext warn_context_;
-  typedef std::map<const CHARMMResidueTopology *, Hierarchy> ResMap;
 
   void map_residue_topology_to_hierarchy(Hierarchy hierarchy,
                                          ResMap &resmap) const;

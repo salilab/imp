@@ -697,38 +697,53 @@ String CHARMMParameters::get_force_field_atom_type(Atom atom) const {
   }
 }
 
+namespace {
+  class TopologyInserter {
+    CHARMMTopology *topology_;
+    const CHARMMParameters *params_;
+    base::WarningContext warn_context_;
+  public:
+    TopologyInserter(CHARMMTopology *topology, const CHARMMParameters *params,
+                     base::WarningContext warn_context)
+               : topology_(topology), params_(params),
+                 warn_context_(warn_context) {}
+  
+    void add_chain(Hierarchies residues) {
+      IMP_NEW(CHARMMSegmentTopology, segment, ());
+      for (Hierarchies::iterator resit = residues.begin();
+           resit != residues.end(); ++resit) {
+        ResidueType restyp = Residue(*resit).get_residue_type();
+        try {
+          IMP_NEW(CHARMMResidueTopology, residue,
+                  (params_->get_residue_topology(restyp)));
+          segment->add_residue(residue);
+        }
+        catch (base::ValueException) {
+          // If residue type is unknown, add empty topology for this residue
+          IMP_WARN_ONCE(
+              restyp.get_string(),
+              "Residue type "
+                  << restyp
+                  << " was not found in "
+                     "topology library; using empty topology for this residue",
+              warn_context_);
+          IMP_NEW(CHARMMResidueTopology, residue, (restyp));
+          segment->add_residue(residue);
+        }
+      }
+      topology_->add_segment(segment);
+    }
+  };
+}
+
 CHARMMTopology *CHARMMParameters::create_topology(Hierarchy hierarchy) const {
   IMP_OBJECT_LOG;
   IMP_NEW(CHARMMTopology, topology, (this));
 
-  Hierarchies chains = get_by_type(hierarchy, CHAIN_TYPE);
-
-  for (Hierarchies::iterator chainit = chains.begin(); chainit != chains.end();
-       ++chainit) {
-    IMP_NEW(CHARMMSegmentTopology, segment, ());
-    Hierarchies residues = get_by_type(*chainit, RESIDUE_TYPE);
-    for (Hierarchies::iterator resit = residues.begin();
-         resit != residues.end(); ++resit) {
-      ResidueType restyp = Residue(*resit).get_residue_type();
-      try {
-        IMP_NEW(CHARMMResidueTopology, residue, (get_residue_topology(restyp)));
-        segment->add_residue(residue);
-      }
-      catch (base::ValueException) {
-        // If residue type is unknown, add empty topology for this residue
-        IMP_WARN_ONCE(
-            restyp.get_string(),
-            "Residue type "
-                << restyp
-                << " was not found in "
-                   "topology library; using empty topology for this residue",
-            warn_context_);
-        IMP_NEW(CHARMMResidueTopology, residue, (restyp));
-        segment->add_residue(residue);
-      }
-    }
-    topology->add_segment(segment);
-  }
+  TopologyInserter ins(topology, this, warn_context_);
+  internal::TopologyVisitor<TopologyInserter> v(ins);
+  core::visit_depth_first(hierarchy, v);
+  v.add_chain();
   // keep clang happy
   bool dumped = false;
   IMP_IF_LOG(VERBOSE) {
