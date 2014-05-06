@@ -23,6 +23,7 @@ void Gaussian::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
   m->add_attribute(get_variance_key(0), pi, g.get_variances()[0]);
   m->add_attribute(get_variance_key(1), pi, g.get_variances()[1]);
   m->add_attribute(get_variance_key(2), pi, g.get_variances()[2]);
+  core::Gaussian(m,pi).initialize();
 }
 
 void Gaussian::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi) {
@@ -30,9 +31,25 @@ void Gaussian::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi) {
   m->add_attribute(get_variance_key(0), pi, 0);
   m->add_attribute(get_variance_key(1), pi, 0);
   m->add_attribute(get_variance_key(2), pi, 0);
+  core::Gaussian(m,pi).initialize();
 }
 
-IMP_Eigen::Matrix3d Gaussian::get_covariance() const {
+void Gaussian::initialize(){
+  current_covar_=IMP_Eigen::Matrix3d::Zero();
+  current_inv_=IMP_Eigen::Matrix3d::Zero();
+  update_covariance();
+  update_inverse();
+}
+
+void Gaussian::set_gaussian(const algebra::Gaussian3D &g) {
+  RigidBody::set_reference_frame(g.get_reference_frame());
+  set_variances(g.get_variances());
+}
+
+void Gaussian::show(std::ostream &out) const { out << get_gaussian(); }
+
+void Gaussian::update_covariance(){
+  // first calculate covariance from internal rotation and variances
   IMP_Eigen::Quaterniond q(
       get_model()->get_attribute(internal::rigid_body_data().quaternion_[0],
                                  get_particle_index()),
@@ -48,15 +65,21 @@ IMP_Eigen::Matrix3d Gaussian::get_covariance() const {
       get_model()->get_attribute(get_variance_key(1), get_particle_index()),
       get_model()->get_attribute(get_variance_key(2), get_particle_index()))
                                 .asDiagonal();
-  IMP_Eigen::Matrix3d covar = rot * (rad * rot.transpose());
-  return covar;
+  current_covar_ = rot * (rad * rot.transpose());
 }
 
-void Gaussian::set_gaussian(const algebra::Gaussian3D &g) {
-  RigidBody::set_reference_frame(g.get_reference_frame());
-  set_variances(g.get_variances());
+void Gaussian::update_inverse(){
+  Float determinant;
+  bool invertible;
+  current_covar_.computeInverseAndDetWithCheck(current_inv_,determinant,invertible);
+  current_det_invsqrt_ = 1.0/sqrt(determinant);
 }
 
-void Gaussian::show(std::ostream &out) const { out << get_gaussian(); }
+Float Gaussian::get_probability_at_point(const algebra::Vector3D &point) const{
+  IMP_Eigen::Vector3d v = IMP_Eigen::Vector3d(point.get_data());
+  Float prob = current_det_invsqrt_ *
+      std::exp(-0.5*v.transpose()*(current_inv_ * v));
+  return prob;
+}
 
 IMPCORE_END_NAMESPACE

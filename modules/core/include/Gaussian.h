@@ -33,7 +33,14 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
   IMP_DECORATOR_SETUP_0(Gaussian);
   IMP_DECORATOR_SETUP_1(Gaussian, algebra::Gaussian3D, g);
 
-  IMP_Eigen::Matrix3d get_covariance() const;
+  //! calculate iniitial covariances etc
+  void initialize();
+
+  //! Return the covariance, optionally updating too
+  inline IMP_Eigen::Matrix3d get_covariance(bool update=true){
+    if (update) update_covariance();
+    return current_covar_;
+  }
   void set_gaussian(const algebra::Gaussian3D &g);
 
   void set_variances(const algebra::Vector3D &radii) {
@@ -42,6 +49,15 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
                                  radii[i]);
     }
   }
+
+  //! Calculate covariance from the reference frame and variances
+  void update_covariance();
+
+  //! Invert current covariance and store
+  void update_inverse();
+
+  //! Evaluate the gaussian at a point. Be sure to update covariance and inverse!
+  Float get_probability_at_point(const algebra::Vector3D &point) const;
 
   inline algebra::Vector3D get_variances() const {
     return algebra::Vector3D(
@@ -60,6 +76,10 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
   static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
     return m->get_has_attribute(get_variance_key(0), pi);
   }
+ private:
+  IMP_Eigen::Matrix3d current_covar_;
+  IMP_Eigen::Matrix3d current_inv_;
+  Float current_det_invsqrt_;
 };
 IMP_DECORATORS(Gaussian, Gaussians, kernel::Particles);
 
