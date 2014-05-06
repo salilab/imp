@@ -122,6 +122,7 @@ IMPATOMEXPORT extern const ResidueType HEME;
 #endif
 /*@}*/
 
+
 //! A decorator for a residue.
 /**
    As with the Atom, the names of residues may be expanded
@@ -242,6 +243,12 @@ IMPATOMEXPORT ResidueType get_residue_type(char c);
 /** Get the 1-letter amino acid code from the residue type.
 */
 IMPATOMEXPORT char get_one_letter_code(ResidueType c);
+
+
+/** Get the mass from the residue type.
+*/
+IMPATOMEXPORT double get_mass(ResidueType c);
+
 
 IMPATOM_END_NAMESPACE
 

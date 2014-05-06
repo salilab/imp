@@ -148,6 +148,35 @@ char get_one_letter_code(ResidueType c) {
   return 'X';
 }
 
+double get_mass(ResidueType c) {
+  static std::map<ResidueType, double> residue_type_to_mass;
+  if(residue_type_to_mass.size() == 0) {
+    residue_type_to_mass[atom::ALA] = 71.079;
+    residue_type_to_mass[atom::ARG] = 156.188;
+    residue_type_to_mass[atom::ASP] = 115.089;
+    residue_type_to_mass[atom::ASN] = 114.104;
+    residue_type_to_mass[atom::CYS] = 103.144;
+    residue_type_to_mass[atom::GLN] = 128.131;
+    residue_type_to_mass[atom::GLU] = 129.116;
+    residue_type_to_mass[atom::GLY] = 57.052;
+    residue_type_to_mass[atom::HIS] = 137.142;
+    residue_type_to_mass[atom::ILE] = 113.160;
+    residue_type_to_mass[atom::LEU] = 113.160;
+    residue_type_to_mass[atom::LYS] = 128.174;
+    residue_type_to_mass[atom::MET] = 131.198;
+    residue_type_to_mass[atom::PHE] = 147.177;
+    residue_type_to_mass[atom::PRO] = 97.117;
+    residue_type_to_mass[atom::SER] = 87.078;
+    residue_type_to_mass[atom::THR] = 101.105;
+    residue_type_to_mass[atom::TYR] = 163.170;
+    residue_type_to_mass[atom::TRP] = 186.213;
+    residue_type_to_mass[atom::VAL] = 99.133;
+    residue_type_to_mass[atom::UNK] = 113.160;
+  }
+  return residue_type_to_mass[c];
+}
+
+
 namespace {
 bool check_residue(kernel::Model *m, kernel::ParticleIndex pi) {
   unsigned int t = m->get_attribute(Residue::get_residue_type_key(), pi);
