@@ -14,17 +14,37 @@
 
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Rotation3D.h>
+#include <IMP/kernel/Particle.h>
 #include <boost/ptr_container/ptr_vector.hpp>
 
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 
 class IMPEM2DEXPORT Projection : public Image2D<> {
  public:
-  Projection(const IMP::algebra::Vector3Ds& points, double scale,
-             double resolution, int axis_size = 0);
+
+  //! Constructor
+  /**
+     \param[in] particles Particles to project, should have XYZ, radius and mass
+     \param[in] scale Image scale - pixel size
+     \param[in] resolution Estimated resolution of the images
+  */
   Projection(const IMP::algebra::Vector3Ds& points,
-             const IMP::algebra::Vector3Ds& ligand_points, double scale,
-             double resolution, int axis_size = 0);
+             const std::vector<double>& radii,
+             const std::vector<double>& mass,
+             double scale, double resolution, int axis_size = 0);
+
+  //! Constructor
+  /**
+     \param[in] particles All particles in the image
+     \param[in] ligand_particles Ligand only particles
+     \param[in] scale Image scale - pixel size
+     \param[in] resolution Estimated resolution of the images
+  */
+  Projection(const IMP::algebra::Vector3Ds& points,
+             const IMP::algebra::Vector3Ds& ligand_points,
+             const std::vector<double>& ligand_radii,
+             const std::vector<double>& ligand_mass,
+             double scale, double resolution, int axis_size = 0);
 
   IMP::algebra::Vector3D get_axis() const { return axis_; }
   IMP::algebra::Rotation3D get_rotation() const { return rotation_; }
@@ -42,14 +62,20 @@ class IMPEM2DEXPORT Projection : public Image2D<> {
   Projection(Projection&) : Image2D<>() {};
 
   class MaskCell {
-   public:
+  public:
     MaskCell(int ii, int jj, double dd) : i(ii), j(jj), d(dd) {}
     int i, j;
     double d;  // density
   };
 
-  void init(const IMP::algebra::Vector3Ds& points, int axis_size);
-  void project(const IMP::algebra::Vector3Ds& points);
+  void init(const IMP::algebra::Vector3Ds& points,
+            double max_radius, int axis_size);
+
+  void project(const IMP::algebra::Vector3Ds& points,
+               const std::vector<double>& radii,
+               const std::vector<double>& mass);
+
+  const std::vector<MaskCell>& get_sphere_mask(double radius);
 
   void calculate_sphere_mask(std::vector<MaskCell>& mask, double resolution);
 
@@ -77,22 +103,22 @@ class IMPEM2DEXPORT Projection : public Image2D<> {
 };
 
 IMPEM2DEXPORT
-double compute_max_distance(const std::vector<IMP::algebra::Vector3D>& coords);
+double compute_max_distance(const IMP::algebra::Vector3Ds& points);
 
 IMPEM2DEXPORT
-void create_projections(const std::vector<IMP::algebra::Vector3D>& points,
-                        unsigned int projection_number, double pixel_size,
-                        double resolution,
-                        boost::ptr_vector<Projection>& projections,
-                        int image_size = 0);
+void compute_projections(const IMP::kernel::Particles& particles,
+                         unsigned int projection_number, double pixel_size,
+                         double resolution,
+                         boost::ptr_vector<Projection>& projections,
+                         int image_size = 0);
 
 IMPEM2DEXPORT
-void create_projections(const std::vector<IMP::algebra::Vector3D>& all_points,
-                        const std::vector<IMP::algebra::Vector3D>& lig_points,
-                        unsigned int projection_number, double pixel_size,
-                        double resolution,
-                        boost::ptr_vector<Projection>& projections,
-                        int image_size = 0);
+void compute_projections(const kernel::Particles& all_particles,
+                         const kernel::Particles& lig_particles,
+                         unsigned int projection_number, double pixel_size,
+                         double resolution,
+                         boost::ptr_vector<Projection>& projections,
+                         int image_size = 0);
 
 IMPEM2D_END_INTERNAL_NAMESPACE
 

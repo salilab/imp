@@ -31,7 +31,8 @@ class IMPEM2DEXPORT PCAFitRestraint : public IMP::Restraint {
 public:
   //! Constructor
   /**
-    \param[in] particles The particles participating in the score
+    \param[in] particles The particles participating in the score,
+    need to have XYZ, radius and mass
     \param[in] image_file_names 2D class averages filnames in PGM text format
     \param[in] pixel_size Pixel size in Angstrom
     \param[in] resolution Estimated resolution of the images

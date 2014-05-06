@@ -13,8 +13,7 @@ class EM2DFitRestraintTest(IMP.test.TestCase):
         m = IMP.kernel.Model()
         #! read PDB
         mp = IMP.atom.read_pdb(self.get_input_file_name('complex-2d.pdb'), m,
-                               IMP.atom.NonWaterNonHydrogenPDBSelector(),
-                               True, True)
+                               IMP.atom.NonWaterNonHydrogenPDBSelector())
 
         particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
 

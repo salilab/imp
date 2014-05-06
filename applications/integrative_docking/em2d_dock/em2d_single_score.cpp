@@ -9,10 +9,12 @@
 #include "../lib/helpers.h"
 
 #include <IMP/em2d/PCAFitRestraint.h>
+#include <IMP/saxs/FormFactorTable.h>
 
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/kernel/Model.h>
 #include <IMP/atom/pdb.h>
+#include <IMP/atom/Mass.h>
 #include <IMP/core/XYZ.h>
 #include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>
@@ -30,6 +32,7 @@ int main(int argc, char **argv) {
   int projection_number = 40;
   float pixel_size = 2.2;
   float area_threshold = 0.4;  // used 0.4 for benchmark and PCSK9
+  bool residue_level = false;
   std::vector<std::string> image_files;
   std::string pdb;
   po::options_description desc("Usage: <pdb> <image1> <image2>...");
@@ -45,7 +48,10 @@ int main(int argc, char **argv) {
       "number of projections for PDBs")(
       "area-threshold,a", po::value<float>(&area_threshold)->default_value(0.4),
       "maximal percentage of area difference for \
-aligned images (default = 0.4)");
+aligned images (default = 0.4)")(
+      "ca-only,c", "perform fast coarse grained profile calculation using \
+CA atoms only (default = false)")
+    ;
   po::positional_options_description p;
   p.add("input-files", -1);
   po::variables_map vm;
@@ -57,6 +63,7 @@ aligned images (default = 0.4)");
     std::cout << desc << "\n";
     return 0;
   }
+  if (vm.count("ca-only")) residue_level = true;
   if (vm.count("input-files")) {
     std::vector<std::string> files =
         vm["input-files"].as<std::vector<std::string> >();
@@ -72,8 +79,32 @@ aligned images (default = 0.4)");
     return 0;
   }
 
+  IMP::saxs::FormFactorType ff_type = IMP::saxs::HEAVY_ATOMS;
+  if (residue_level) ff_type = IMP::saxs::CA_ATOMS;
+  IMP::saxs::FormFactorTable ft;
   IMP::kernel::Particles particles;
-  read_pdb_atoms(pdb, particles);
+  if (residue_level) {
+    read_pdb_ca_atoms(pdb, particles);
+  } else { // atoms
+    read_pdb_atoms(pdb, particles);
+  }
+
+  // add radius
+  for (unsigned int i=0; i<particles.size(); i++) {
+    double r = ft.get_radius(particles[i], ff_type);
+    IMP::core::XYZR(particles[i]).set_radius(r);
+  }
+
+  // add mass
+  if (residue_level) {
+    for (unsigned int i=0; i<particles.size(); i++) {
+      IMP::atom::Residue r =
+        IMP::atom::get_residue(IMP::atom::Atom(particles[i]));
+      double m = IMP::atom::get_mass(r.get_residue_type());
+      IMP::atom::Mass(particles[i]).set_mass(m);
+    }
+  }
+
   IMP::em2d::PCAFitRestraint *r =
     new IMP::em2d::PCAFitRestraint(particles, image_files,
                                    pixel_size, resolution, projection_number);

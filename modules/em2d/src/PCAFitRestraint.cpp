@@ -42,16 +42,11 @@ PCAFitRestraint::PCAFitRestraint(kernel::Particles particles,
 double PCAFitRestraint::unprotected_evaluate(
                                   IMP::DerivativeAccumulator *accum) const {
   IMP_UNUSED(accum);
-  // get the XYZs
-  IMP::algebra::Vector3Ds coordinates(ps_.size());
-  for (unsigned int i = 0; i < ps_.size(); i++) {
-    coordinates[i] = core::XYZ(ps_[i]).get_coordinates();
-  }
 
   // generate projections
   boost::ptr_vector<internal::Projection> projections;
-  create_projections(coordinates, projection_number_, pixel_size_, resolution_,
-                     projections, images_[0].get_height());
+  compute_projections(ps_, projection_number_, pixel_size_, resolution_,
+                      projections, images_[0].get_height());
   std::cerr << projections.size() << " projections were created" << std::endl;
 
   // process projections
@@ -99,7 +94,7 @@ double PCAFitRestraint::unprotected_evaluate(
     transformed_image.translate(best_transform.get_x(), best_transform.get_y());
     non_const_this->best_projections_.push_back(transformed_image);
   }
-  return  total_score;
+  return total_score;
 }
 
 void PCAFitRestraint::write_best_projections(std::string file_name,
