@@ -17,23 +17,21 @@
 //       and OutType(s) - probably not, need to consolidate
 /**
    declares functions for adding, creating and linking
-   RMF file objects with base calsses of type InType
+   RMF file objects with base classes of type InType
 */
 #define IMP_DECLARE_LINKERS(Name, name, names, Type, Types, cargs,    \
                             link_custom_documentation)                \
   /** Add objects to the file.                                        \
-      \note This does not save a configuration, make sure you use     \
+      \note This does not save a configuration; make sure you use     \
       save_frame() to do that. */                                     \
   IMPRMFEXPORT void add_##names(RMF::FileHandle fh, const Types& hs); \
   /** Add objects to the file under the specified node.               \
-      \note This does not save a configuration, make sure you         \
-      use                                                             \
-      save_frame() to do that. */                                     \
+      \note This does not save a configuration; make sure you         \
+      use save_frame() to do that. */                                 \
   IMPRMFEXPORT void add_##names(RMF::NodeHandle fh, const Types& hs); \
   /** Add a single Name object to the RMF file.                       \
-      \note This does not save a configuration, make                  \
-      sure you use                                                    \
-      save_frame() to do that. */                                     \
+      \note This does not save a configuration; make sure you         \
+      use save_frame() to do that. */                                 \
   IMPRMFEXPORT void add_##name(RMF::FileHandle fh, Type hs);          \
   /** Create Name objects from the RMF file.                          \
       \note This does not load a frame. Make sure you call            \
@@ -43,7 +41,7 @@
       possibly overwriting an                                         \
       existing link for loading from the                              \
       file. This does not alter the                                   \
-      object, but will affect the behaviour                           \
+      object, but will affect the behavior                            \
       of functions like load_frame()                                  \
       and save_frame().                                               \
                                                                       \
@@ -55,7 +53,7 @@
 //       and OutType(s) - probably not, need to consolidate
 /**
    Define functions for adding, creating and linking
-   RMF file objects with base calsses of type InType
+   RMF file objects with base classes of type InType
 
    \see IMP_DECLARE_LINKERS()
 */
