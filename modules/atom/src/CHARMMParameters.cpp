@@ -708,7 +708,7 @@ namespace {
                : topology_(topology), params_(params),
                  warn_context_(warn_context) {}
   
-    void add_chain(Hierarchies residues) {
+    void operator()(Hierarchies residues) {
       IMP_NEW(CHARMMSegmentTopology, segment, ());
       for (Hierarchies::iterator resit = residues.begin();
            resit != residues.end(); ++resit) {

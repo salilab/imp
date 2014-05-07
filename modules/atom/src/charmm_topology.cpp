@@ -513,7 +513,7 @@ namespace {
                         CHARMMTopology::ResMap &resmap)
               : topology_(topology), resmap_(resmap), nseg_(0) {}
 
-    void add_chain(Hierarchies residues) {
+    void operator()(Hierarchies residues) {
       IMP_USAGE_CHECK(nseg_ < topology_->get_number_of_segments(),
                       "Hierarchy does not match topology");
       CHARMMSegmentTopology *topseg = topology_->get_segment(nseg_);

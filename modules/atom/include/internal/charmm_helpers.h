@@ -100,7 +100,7 @@ IMPATOMEXPORT void add_dihedral_to_list(
     kernel::Particle *p3, kernel::Particle *p4, kernel::Particles &ps);
 
 //! A visitor to get chains of connected residues from a Hierarchy
-/** When called via visit_depth_first(), it calls inserter.add_chain()
+/** When called via visit_depth_first(), it calls the given functor
     for each such set. */
 template<class Inserter>
 class TopologyVisitor {
@@ -150,7 +150,7 @@ public:
   void add_chain() {
     // Ignore empty chains
     if (fragment_residues_.size() > 0) {
-      inserter_.add_chain(fragment_residues_);
+      inserter_(fragment_residues_);
       fragment_residues_.clear();
     }
   }
