@@ -3,8 +3,9 @@ cmake_minimum_required(VERSION 2.8.3)
 project(IMP)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-if(${CMAKE_BINARY_DIR} MATCHES "${CMAKE_SOURCE_DIR}/.*")
-   message(FATAL_ERROR "Building in the source directory not supported: ${CMAKE_SOURCE_DIR} includes ${CMAKE_BINARY_DIR}")
+
+if(${CMAKE_BINARY_DIR} MATCHES "${CMAKE_SOURCE_DIR}/.*" OR ${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
+   message(FATAL_ERROR "Building in the source directory not supported: ${CMAKE_SOURCE_DIR} includes ${CMAKE_BINARY_DIR}. If this message seems wrong, make sure to delete the CMakeFiles directory and the CMakeCache.txt file if they exist in the source dir (${CMAKE_SOURCE_DIR}).")
 endif()
 
 execute_process(COMMAND python setup_git.py
