@@ -113,7 +113,8 @@ CA atoms only (default = false)")(
   // add radius
   for (unsigned int i=0; i<particles.size(); i++) {
     double r = ft.get_radius(particles[i], ff_type);
-    IMP::core::XYZR(particles[i]).set_radius(r);
+    IMP::core::XYZR::setup_particle(particles[i]->get_model(),
+                                    particles[i]->get_index(), r);
   }
 
   // add mass

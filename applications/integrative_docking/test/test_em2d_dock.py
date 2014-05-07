@@ -26,7 +26,7 @@ class EM2DDockApplicationTest(IMP.test.ApplicationTestCase):
         os.unlink('best_projections.pgm')
 
     def test_coarse_grain(self):
-        """Simple test of EM2D single PDB score application"""
+        """Simple test of coarse grained EM2D single PDB score application"""
         p = self.run_application('em2d_single_score',
                                  [self.get_input_file_name('complex-2d.pdb'),
                                   self.get_input_file_name('image_1.pgm'),
