@@ -741,9 +741,7 @@ CHARMMTopology *CHARMMParameters::create_topology(Hierarchy hierarchy) const {
   IMP_NEW(CHARMMTopology, topology, (this));
 
   TopologyInserter ins(topology, this, warn_context_);
-  internal::TopologyVisitor<TopologyInserter> v(ins);
-  core::visit_depth_first(hierarchy, v);
-  v.add_chain();
+  internal::visit_connected_chains(hierarchy, ins);
   // keep clang happy
   bool dumped = false;
   IMP_IF_LOG(VERBOSE) {

@@ -532,9 +532,7 @@ namespace {
 void CHARMMTopology::map_residue_topology_to_hierarchy(Hierarchy hierarchy,
                                                        ResMap &resmap) const {
   MapTopologyInserter ins(this, resmap);
-  internal::TopologyVisitor<MapTopologyInserter> v(ins);
-  core::visit_depth_first(hierarchy, v);
-  v.add_chain();
+  internal::visit_connected_chains(hierarchy, ins);
 }
 
 void CHARMMTopology::add_atom_types(Hierarchy hierarchy) const {

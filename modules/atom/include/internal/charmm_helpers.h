@@ -101,7 +101,7 @@ IMPATOMEXPORT void add_dihedral_to_list(
 
 //! A visitor to get chains of connected residues from a Hierarchy
 /** When called via visit_depth_first(), it calls the given functor
-    for each such set. */
+    for each such set. \see visit_connected_chains() */
 template<class Inserter>
 class TopologyVisitor {
 public:
@@ -174,6 +174,14 @@ private:
   Fragment last_fragment_;
   bool in_chain_;
 };
+
+//! Call the given functor for each set of connected residues in the Hierarchy.
+template <class ChainVisitor>
+void visit_connected_chains(Hierarchy h, ChainVisitor &c) {
+  TopologyVisitor<ChainVisitor> v(c);
+  core::visit_depth_first(h, v);
+  v.add_chain();
+}
 
 IMPATOM_END_INTERNAL_NAMESPACE
 
