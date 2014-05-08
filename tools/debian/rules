@@ -1,0 +1,21 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+%:
+	dh $@ 
+
+override_dh_auto_configure:
+	mkdir build
+	cd build && cmake .. -DCMAKE_BUILD_TYPE=Release \
+                -DCMAKE_INSTALL_PREFIX=/usr \
+                -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/imp \
+                -DIMP_DISABLED_MODULES=scratch
+
+override_dh_auto_build:
+	$(MAKE) -C build
+
+override_dh_install:
+	$(MAKE) -C build DESTDIR=$(CURDIR)/debian/tmp install

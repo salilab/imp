@@ -1,0 +1,4 @@
+usr/lib/lib*.so
+usr/lib/python*/site-packages/*
+usr/bin/*
+usr/share/*
