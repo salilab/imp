@@ -8,9 +8,9 @@ mock_config = os.environ['MOCK_CONFIG']
 class IMPMockTests(unittest.TestCase):
 
     def test_modules_installed(self):
-        """Check modules included in the RPM"""
-        # RHEL systems don't include cgal, em2d; Fedora does
-        if mock_config.startswith('fedora'):
+        """Check modules included in the RPM or .deb"""
+        # RHEL systems don't include cgal, em2d; Fedora and Ubuntu do
+        if mock_config.startswith('fedora') or mock_config.startswith('ubuntu'):
             import IMP.cgal
             import IMP.em2d
         else:
@@ -60,8 +60,8 @@ class IMPMockTests(unittest.TestCase):
                 'rmf_validate', 'rmf_xml', 'saxs_merge.py',
                 'simulate_density_from_pdb.py',
                 'validate_profile', 'view_density_header.py']
-        # RHEL systems don't include EMageFit and idock; Fedora does
-        if mock_config.startswith('fedora'):
+        # RHEL systems don't include EMageFit and idock; Fedora and Ubuntu do
+        if mock_config.startswith('fedora') or mock_config.startswith('ubuntu'):
             apps.extend(emagefit_apps)
             apps.extend(idock_apps)
         else:
