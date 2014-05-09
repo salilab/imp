@@ -19,7 +19,7 @@ override_dh_auto_build:
 
 override_dh_install:
 	$(MAKE) -C build DESTDIR=$(CURDIR)/debian/tmp install
-	mkdir debian/usr/lib/python2.7
-	mv debian/tmp/usr/lib/*/python2.7/site-packages debian/usr/lib/python2.7/dist-packages
+	mkdir debian/tmp/usr/lib/python2.7
+	mv debian/tmp/usr/lib/*/python2.7/site-packages debian/tmp/usr/lib/python2.7/dist-packages
 	rmdir debian/tmp/usr/lib/*/python2.7
 	dh_install --list-missing
