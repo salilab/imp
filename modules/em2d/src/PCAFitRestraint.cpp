@@ -85,7 +85,7 @@ double PCAFitRestraint::unprotected_evaluate(
     }
     std::cerr << "Image " << i << " Best projection " << best_projection_id
               << " " << best_transform << std::endl;
-    total_score += best_transform.get_score();
+    total_score += -log(best_transform.get_score());
 
     // save best projection
     internal::Image2D<> transformed_image;
