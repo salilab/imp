@@ -9,6 +9,7 @@
 
 override_dh_auto_configure:
 	mkdir build
+	# Get libTAU (for cnmultifit) and put in search path
 	cd build && wget http://integrativemodeling.org/libTAU/libTAU-1.0.0.zip
 	cd build && echo "861614ac6c03f82c1ee17ccb66caf975a051dc0b libTAU-1.0.0.zip" | sha1sum -c --quiet
 	cd build && unzip libTAU-1.0.0.zip && mv libTAU-1.0.0/include libTAU
@@ -21,12 +22,21 @@ override_dh_auto_configure:
                 -DIMP_DISABLED_MODULES=scratch
 
 override_dh_auto_build:
-	$(MAKE) -C build
+	mkdir build/logs
+	cd build && ../tools/nightly-tests/build_all.py --outdir=logs --summary=logs/summary.pck "make -k"
 
 override_dh_install:
 	$(MAKE) -C build DESTDIR=$(CURDIR)/debian/tmp install
-	cd build/libTAU-1.0.0/lib/Fedora17.x86_64/libTAU.so.1 debian/tmp/usr/lib/*/
+	# Bundle libTAU so users don't have to get it separately
+	cp build/libTAU-1.0.0/lib/Fedora17.x86_64/libTAU.so.1 debian/tmp/usr/lib/*/
 	mkdir debian/tmp/usr/lib/python2.7
 	mv debian/tmp/usr/lib/*/python2.7/site-packages debian/tmp/usr/lib/python2.7/dist-packages
 	rmdir debian/tmp/usr/lib/*/python2.7
+	# Don't distribute example application, dependency, or system
+	rm -rf debian/tmp/usr/bin/example \
+	       debian/tmp/usr/lib/libimp_example_system* \
+	       debian/tmp/usr/lib/libexample* \
+	       debian/tmp/usr/include/example* \
+	       debian/tmp/usr/lib/*/python*/IMP/example_system_local \
+	       debian/tmp/usr/lib/*/python*/_IMP_example_system_local.so
 	dh_install --list-missing
