@@ -1,4 +1,5 @@
-usr/lib/lib*.so
-usr/lib/python*/site-packages/*
+usr/lib/*/lib*.so
+usr/lib/python*/dist-packages/*
 usr/bin/*
-usr/share/*
+usr/share/IMP/*
+usr/share/doc/imp/*
