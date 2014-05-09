@@ -4,6 +4,11 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+# Don't use Debian-provided flags for now; they slow down the build
+CFLAGS :=
+CXXFLAGS :=
+LDFLAGS :=
+
 %:
 	dh $@ 
 
