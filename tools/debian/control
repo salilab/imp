@@ -1,7 +1,7 @@
 Source: imp
 Priority: optional
 Maintainer: Ben Webb <ben@salilab.org>
-Build-Depends: debhelper (>= 8.0.0), cmake, swig, libboost-filesystem-dev, libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-random-dev, libboost-regex-dev, libboost-thread-dev, libcgal-dev, libhdf5-dev, libfftw3-dev, libopencv-dev, libgsl0-dev, python-dev
+Build-Depends: debhelper (>= 8.0.0), cmake, swig, libboost-filesystem-dev, libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-random-dev, libboost-regex-dev, libboost-thread-dev, libcgal-dev, libhdf5-dev, libfftw3-dev, libopencv-dev, libgsl0-dev, python-dev, coreutils, unzip, wget
 Standards-Version: 3.9.4
 Section: libs
 Homepage: http://integrativemodeling.org/
