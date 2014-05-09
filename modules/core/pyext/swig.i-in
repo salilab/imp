@@ -119,8 +119,6 @@ IMP_SWIG_OBJECT( IMP::core, AllSameQuadPredicate, AllSameQuadPredicates);
 
 IMP_SWIG_DECORATOR( IMP::core, XYZ, XYZs);
 IMP_SWIG_DECORATOR( IMP::core, XYZR, XYZRs);
-IMP_SWIG_DECORATOR( IMP::core, Gaussian, Gaussians)
-IMP_SWIG_DECORATOR( IMP::core, SphericalGaussian, SphericalGaussians)
 IMP_SWIG_DECORATOR( IMP::core, RigidBody, RigidBodies);
 IMP_SWIG_DECORATOR( IMP::core, RigidBodyMember, RigidBodyMembers);
 IMP_SWIG_DECORATOR( IMP::core, RigidMember, RigidMembers);
@@ -131,6 +129,8 @@ IMP_SWIG_DECORATOR( IMP::core, Reference, References);
 IMP_SWIG_VALUE_INSTANCE(IMP::core, ParticleType, ParticleType, ParticleTypes);
 IMP_SWIG_DECORATOR( IMP::core, Typed, Typeds);
 IMP_SWIG_DECORATOR_WITH_TRAITS( IMP::core, Hierarchy, GenericHierarchies);
+IMP_SWIG_DECORATOR( IMP::core, Gaussian, Gaussians)
+IMP_SWIG_DECORATOR( IMP::core, SphericalGaussian, SphericalGaussians)
 
 IMP_SWIG_VALUE( IMP::core, HierarchyCounter, HierarchyCounters);
 IMP_SWIG_VALUE( IMP::core, HierarchyTraits, HierarchyTraitsList);
@@ -170,8 +170,6 @@ IMP_SWIG_OBJECT(IMP::core, IsCollisionPairPredicate, IsCollisionPairPredicates);
 %include "IMP/core/XYZ.h"
 
 %include "IMP/core/XYZR.h"
-%include "IMP/core/Gaussian.h"
-%include "IMP/core/SphericalGaussian.h"
 
 /* Wrap the final classes */
 %include "IMP/core/AngleTripletScore.h"
@@ -277,6 +275,8 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/TruncatedHarmonic.h"
 %include "IMP/core/MCCGSampler.h"
 %include "IMP/core/MinimumRestraint.h"
+%include "IMP/core/Gaussian.h"
+%include "IMP/core/SphericalGaussian.h"
 
 %include "IMP/core/PairRestraint.h"
 %include "IMP/core/SingletonRestraint.h"
