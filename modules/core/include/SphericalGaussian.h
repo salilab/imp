@@ -10,6 +10,7 @@
 #define IMPCORE_SPHERICAL_GAUSSIAN_H
 
 #include <IMP/core/core_config.h>
+#include <IMP/core/XYZR.h>
 #include <IMP/algebra/Gaussian3D.h>
 #include <IMP/kernel/Particle.h>
 #include <IMP/kernel/Model.h>
