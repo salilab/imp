@@ -44,4 +44,8 @@ override_dh_install:
 	       debian/tmp/usr/include/example* \
 	       debian/tmp/usr/lib/*/python*/IMP/example_system_local \
 	       debian/tmp/usr/lib/*/python*/_IMP_example_system_local.so
+	# Compress examples, since Debian policy doesn't like big files
+	# in /usr/share/doc
+	cd debian/tmp/usr/share/doc/imp \
+	  && tar -czf examples.tar.gz examples && rm -rf examples
 	dh_install --list-missing
