@@ -14,6 +14,7 @@
 #include <IMP/algebra/Gaussian3D.h>
 #include <IMP/kernel/Particle.h>
 #include <IMP/kernel/Model.h>
+#include <IMP/core/XYZR.h>
 #include <IMP/Decorator.h>
 #include <IMP/decorator_macros.h>
 #include <IMP/base/exception.h>

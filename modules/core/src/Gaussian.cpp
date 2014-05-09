@@ -23,7 +23,7 @@ void Gaussian::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
   m->add_attribute(get_variance_key(0), pi, g.get_variances()[0]);
   m->add_attribute(get_variance_key(1), pi, g.get_variances()[1]);
   m->add_attribute(get_variance_key(2), pi, g.get_variances()[2]);
-  core::Gaussian(m,pi).initialize();
+  core::Gaussian(m,pi).setup_covar();
 }
 
 void Gaussian::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi) {
@@ -31,10 +31,10 @@ void Gaussian::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi) {
   m->add_attribute(get_variance_key(0), pi, 0);
   m->add_attribute(get_variance_key(1), pi, 0);
   m->add_attribute(get_variance_key(2), pi, 0);
-  core::Gaussian(m,pi).initialize();
+  core::Gaussian(m,pi).setup_covar();
 }
 
-void Gaussian::initialize(){
+void Gaussian::setup_covar(){
   current_covar_=IMP_Eigen::Matrix3d::Zero();
   current_inv_=IMP_Eigen::Matrix3d::Zero();
   update_covariance();

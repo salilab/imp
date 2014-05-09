@@ -34,7 +34,7 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
   IMP_DECORATOR_SETUP_1(Gaussian, algebra::Gaussian3D, g);
 
   //! calculate iniitial covariances etc
-  void initialize();
+  void setup_covar();
 
   //! Return the covariance, optionally updating too
   inline IMP_Eigen::Matrix3d get_covariance(bool update=true){
