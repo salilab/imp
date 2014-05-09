@@ -9,7 +9,13 @@
 
 override_dh_auto_configure:
 	mkdir build
+	cd build && wget http://integrativemodeling.org/libTAU/libTAU-1.0.0.zip
+	cd build && echo "861614ac6c03f82c1ee17ccb66caf975a051dc0b libTAU-1.0.0.zip" | sha1sum -c --quiet
+	cd build && unzip libTAU-1.0.0.zip && mv libTAU-1.0.0/include libTAU
+	cd build/libTAU-1.0.0/lib/Fedora17.x86_64 && ln -sf libTAU.so.1 libTAU.so
 	cd build && cmake .. -DCMAKE_BUILD_TYPE=Release \
+	        -DCMAKE_INCLUDE_PATH=`pwd` \
+	        -DCMAKE_LIBRARY_PATH=`pwd`/libTAU-1.0.0/lib/Fedora17.x86_64 \
                 -DCMAKE_INSTALL_PREFIX=/usr \
                 -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/imp \
                 -DIMP_DISABLED_MODULES=scratch
@@ -19,6 +25,7 @@ override_dh_auto_build:
 
 override_dh_install:
 	$(MAKE) -C build DESTDIR=$(CURDIR)/debian/tmp install
+	cd build/libTAU-1.0.0/lib/Fedora17.x86_64/libTAU.so.1 debian/tmp/usr/lib/*/
 	mkdir debian/tmp/usr/lib/python2.7
 	mv debian/tmp/usr/lib/*/python2.7/site-packages debian/tmp/usr/lib/python2.7/dist-packages
 	rmdir debian/tmp/usr/lib/*/python2.7
