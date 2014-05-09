@@ -20,9 +20,12 @@ class SOAPResult : public Result {
                  IMP::algebra::get_identity_transformation_3d())
       : Result(number, score, filtered, 0.0, transformation),
         sas_score_(sas_score),
-        atom_pairs_score_(atom_pairs_score) {}
+        atom_pairs_score_(atom_pairs_score),
+        normalization_score_(0.0) {}
 
   void set_sas_score(float sas_score) { sas_score_ = sas_score; }
+
+  void set_normalization_score(float score) { normalization_score_ = score; }
 
   friend std::ostream& operator<<(std::ostream& s, const SOAPResult& p) {
     s.width(6);
@@ -40,6 +43,7 @@ class SOAPResult : public Result {
     s << p.sas_score_ << " | ";
     s.width(6);
     s << p.atom_pairs_score_ << " | ";
+    if (p.normalization_score_ != 0.0 ) s << p.normalization_score_ << " | ";
     IMP::algebra::FixedXYZ euler_angles =
         IMP::algebra::get_fixed_xyz_from_rotation(
             p.transformation_.get_rotation());
@@ -59,6 +63,7 @@ class SOAPResult : public Result {
  protected:
   float sas_score_;
   float atom_pairs_score_;
+  float normalization_score_;
 };
 
 #endif /* IMP_SOAP_RESULT_H */

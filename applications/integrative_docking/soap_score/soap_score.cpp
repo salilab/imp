@@ -8,6 +8,7 @@
 
 #include "lib/SOAPResult.h"
 #include "lib/soap_score.h"
+#include "lib/Normalization.h"
 #include "../lib/helpers.h"
 
 #include <IMP/kernel/Model.h>
@@ -65,6 +66,7 @@ int main(int argc, char** argv) {
   // input parsing
   std::string out_file_name;
   bool oriented_potentials = false;
+  bool normalize = false;
   std::string potentials_file, receptor_potentials_file, ligand_potentials_file;
   po::options_description desc(
       "Usage: <pdb1> <pdb2> [trans_file] OR <filenames.txt>");
@@ -79,7 +81,7 @@ each pair of PDB file names in the input file filenames.txt.")
     ("potentials_file,f", po::value<std::string>(&potentials_file), "potentials file")
     ("receptor_potentials_file", po::value<std::string>(&receptor_potentials_file), "receptor potentials file")
     ("ligand_potentials_file", po::value<std::string>(&ligand_potentials_file), "ligand potentials file")
-
+    ("normalize,n", "Normalize by residue type (default = false).")
     ("output_file,o",
      po::value<std::string>(&out_file_name)->default_value("soap_score.res"),
      "output file name, default name soap_score.res")
@@ -110,6 +112,8 @@ each pair of PDB file names in the input file filenames.txt.")
                 << std::endl;
     }
   }
+  if (vm.count("normalize")) normalize = true;
+
 
   // init SOAP table
   float distance_threshold = 15.0;
@@ -134,6 +138,11 @@ each pair of PDB file names in the input file filenames.txt.")
   std::vector<SOAPResult> results;                // scored complexes
   std::ofstream out_file(out_file_name.c_str());  // open output file
 
+  Normalization *normalization;
+  if (normalize) {
+    normalization = new Normalization(IMP::score_functor::get_data_path("residue_norm.lib"));
+  }
+
   // Option 1: score pairs of PDBs fom filenames.txt
   std::vector<std::pair<std::string, std::string> > file_names;
   if (files.size() == 1) {
@@ -154,6 +163,24 @@ each pair of PDB file names in the input file filenames.txt.")
 
       // save
       results.push_back(SOAPResult(i + 1, score, false, 0.0, score));
+
+      // meanwhile we only normalize ligand, eg. peptide
+      if (normalize) {
+        IMP::kernel::ParticleIndexes res_pis =
+          IMP::get_as<IMP::kernel::ParticleIndexes>(get_by_type(mhd2, IMP::atom::RESIDUE_TYPE));
+        std::map<IMP::atom::ResidueType, int> residue_content;
+        for (unsigned int k = 0; k<res_pis.size(); k++) {
+          IMP::atom::ResidueType rt =
+            IMP::atom::Residue(model, res_pis[k]).get_residue_type();
+          if (residue_content.find(rt) == residue_content.end())
+            residue_content[rt] = 0;
+          residue_content[rt]++;
+        }
+
+        double nscore = (normalization->get_normalization_score(residue_content))/2.0;
+        results[i].set_score(results[i].get_score() + nscore);
+        results[i].set_normalization_score(nscore);
+      }
 
       // clean up
       for (unsigned int k = 0; k < pis1.size(); k++)
