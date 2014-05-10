@@ -6,6 +6,7 @@
  * Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMP_NORMALIZATION_H
 #define IMP_NORMALIZATION_H
 

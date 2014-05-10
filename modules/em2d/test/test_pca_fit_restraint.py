@@ -23,7 +23,7 @@ class EM2DFitRestraintTest(IMP.test.TestCase):
             particles, image_list, 2.2, 10, 100)
         score = pca_fit_restraint.evaluate(False)
         print 'initial score = ' + str(score)
-        self.assertAlmostEqual(score, 0.94, delta=0.01)
+        self.assertAlmostEqual(score, 0.052, delta=0.01)
         os.unlink('images.pgm')
 
 

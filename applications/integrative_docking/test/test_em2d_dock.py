@@ -20,7 +20,7 @@ class EM2DDockApplicationTest(IMP.test.ApplicationTestCase):
 
         m = re.search('Total\s+score\s+=\s+([\d\.]+)\r?', err)
         self.assertIsNotNone(m, msg="Score output not found in " + str(err))
-        self.assertAlmostEqual(float(m.group(1)), 2.84, delta=0.01)
+        self.assertAlmostEqual(float(m.group(1)), 0.168, delta=0.01)
 
         os.unlink('images.pgm')
         os.unlink('best_projections.pgm')
@@ -39,7 +39,7 @@ class EM2DDockApplicationTest(IMP.test.ApplicationTestCase):
 
         m = re.search('Total\s+score\s+=\s+([\d\.]+)\r?', err)
         self.assertIsNotNone(m, msg="Score output not found in " + str(err))
-        self.assertAlmostEqual(float(m.group(1)), 2.83, delta=0.01)
+        self.assertAlmostEqual(float(m.group(1)), 0.178, delta=0.01)
 
         os.unlink('images.pgm')
         os.unlink('best_projections.pgm')
