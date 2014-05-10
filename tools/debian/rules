@@ -28,7 +28,7 @@ override_dh_auto_configure:
 
 override_dh_auto_build:
 	mkdir build/logs
-	cd build && ../tools/nightly-tests/build_all.py --outdir=logs --summary=logs/summary.pck "make -k"
+	cd build && ../tools/nightly-tests/build_all.py --run-tests=fast --outdir=logs --summary=logs/summary.pck "make -k"
 
 override_dh_install:
 	$(MAKE) -C build DESTDIR=$(CURDIR)/debian/tmp install
