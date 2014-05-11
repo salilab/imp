@@ -24,9 +24,11 @@ BuildRequires: libTAU-devel
 %if 0%{?rhel}
 BuildRequires: cmake28
 %define cmake cmake28
+%define ctest ctest28
 %else
 BuildRequires: cmake >= 2.8
 %define cmake cmake
+%define ctest ctest
 %endif
 
 # RHEL 5 ships with an ancient version of boost. Require the newer version
@@ -108,7 +110,7 @@ mkdir build && cd build
 # not just the first one.
 %if 0%{?keep_going}
 mkdir logs
-../imp/tools/nightly-tests/build_all.py --run-tests=fast --outdir=logs --summary=logs/summary.pck "make -k"
+../imp/tools/nightly-tests/build_all.py --run-tests=fast --ctest="%{ctest}--output-on-failure" --outdir=logs --summary=logs/summary.pck "make -k"
 %else
 make
 %endif
