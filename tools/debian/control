@@ -18,7 +18,7 @@ Description: The Integrative Modeling Platform
 Package: imp
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-numpy
 Description: The Integrative Modeling Platform
   IMP's broad goal is to contribute to a comprehensive structural
   characterization of biomolecules ranging in size and complexity from small
