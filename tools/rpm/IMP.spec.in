@@ -113,7 +113,7 @@ mkdir build && cd build
 # not just the first one.
 %if 0%{?keep_going}
 mkdir logs
-../imp/tools/nightly-tests/build_all.py --run-tests=fast --ctest="%{ctest}--output-on-failure" --outdir=logs --summary=logs/summary.pck "make -k"
+../imp/tools/nightly-tests/build_all.py --run-tests=fast --ctest="%{ctest} --output-on-failure" --outdir=logs --summary=logs/summary.pck "make -k"
 %else
 make
 %endif
