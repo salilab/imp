@@ -86,9 +86,9 @@ kernel::ParticleIndex HierarchyLoadRigidBodies::find_rigid_body(
   if (external_rigid_bodies_.find(p) == external_rigid_bodies_.end()) {
     // just linking, so search for it
     atom::Hierarchy cur(m, p);
-    do {
+    while (!core::RigidBodyMember::get_is_setup(cur)) {
       cur = cur.get_child(0);
-    } while (!core::RigidBodyMember::get_is_setup(cur));
+    }
     external_rigid_bodies_[p] =
         core::RigidBodyMember(cur).get_rigid_body().get_particle_index();
   }
