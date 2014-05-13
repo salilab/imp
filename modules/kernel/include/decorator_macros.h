@@ -26,8 +26,8 @@
 */
 #define IMP_DECORATOR_METHODS(Name, Parent)                                               \
  public:                                                                                  \
-  /* Should be private but SWIG accesses it through the                 \
-     comparison                                                         \
+  /* Should be private but SWIG accesses it through the
+     comparison
      macros*/ IMP_NO_DOXYGEN( \
       typedef Parent ParentDecorator);                                                    \
   Name() : Parent() {}                                                                    \
@@ -79,8 +79,8 @@
     static TraitsType dt = default_traits;                                                 \
     return dt;                                                                             \
   }                                                                                        \
-  /* Should be private but SWIG accesses it through the                  \
-    comparison                                                          \
+  /* Should be private but SWIG accesses it through the
+    comparison
     macros*/ IMP_NO_DOXYGEN( \
       typedef Parent ParentDecorator);                                                     \
   IMP_NO_DOXYGEN(typedef boost::true_type DecoratorHasTraits);                             \
@@ -414,10 +414,10 @@
 #define IMP_CONSTRAINT_DECORATOR_DECL(Name)                                \
  private:                                                                  \
   static ObjectKey get_constraint_key();                                   \
- /** set a constraint associated with this decorator that applies 'before' \
-     and 'after' before and after evaluation. The constraint is added as \
-     a model ScoreState. If before and after are Null, the constraint is \
-     reset and removed from the model list of score states.             \
+ /** set a constraint associated with this decorator that applies 'before'
+     and 'after' before and after evaluation. The constraint is added as
+     a model ScoreState. If before and after are Null, the constraint is
+     reset and removed from the model list of score states.
  */                                                                     \
  static void set_constraint(SingletonModifier* before,                  \
                               SingletonDerivativeModifier* after, Model* m, \
@@ -486,25 +486,25 @@
     /** Sets up Name over particles in pis */                         \
     static void do_setup_particle(kernel::Model *m, ParticleIndex pi, \
                                   const ParticleIndexes &pis);        \
-    /** Sets up Name over particles passed by applying the refiner      \
-        over the particle pi                                            \
+    /** Sets up Name over particles passed by applying the refiner
+        over the particle pi
     */                                                                  \
     static void do_setup_particle(kernel::Model *m, ParticleIndex pi,   \
                                   Refiner *ref);                      \
                                                                       \
    public:                                                            \
     IMP_DECORATOR_METHODS(Name, Parent);                              \
-    /** Sets up Name over members, and constrains Name to be          \
-        computed before model evaluation and to propogate derivatives \
-        folllowing model evaulation.                                  \
-        SetupDoc                                                      \
+    /** Sets up Name over members, and constrains Name to be
+        computed before model evaluation and to propogate derivatives
+        folllowing model evaulation.
+        SetupDoc
     */                                                                \
     IMP_DECORATOR_SETUP_1(Name, ParticleIndexesAdaptor, members);     \
-    /** Sets up Name over particles passed by applying the refiner      \
-        over the particle pi, and constrains Name to be computed before \
-        model evaluation and to propogate derivatives following model   \
-        evaluation.                                                      \
-        SetupDoc                                                        \
+    /** Sets up Name over particles passed by applying the refiner
+        over the particle pi, and constrains Name to be computed before
+        model evaluation and to propogate derivatives following model
+        evaluation.
+        SetupDoc
     */                                                                  \
     IMP_DECORATOR_SETUP_1(Name, Refiner *, refiner);                  \
     static bool get_is_setup(kernel::Model *m, ParticleIndex pi) {    \

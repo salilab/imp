@@ -21,31 +21,31 @@
 */
 #define IMP_DECLARE_LINKERS(Name, name, names, Type, Types, cargs,    \
                             link_custom_documentation)                \
-  /** Add objects to the file.                                        \
-      \note This does not save a configuration; make sure you use     \
+  /** Add objects to the file.
+      \note This does not save a configuration; make sure you use
       save_frame() to do that. */                                     \
   IMPRMFEXPORT void add_##names(RMF::FileHandle fh, const Types& hs); \
-  /** Add objects to the file under the specified node.               \
-      \note This does not save a configuration; make sure you         \
+  /** Add objects to the file under the specified node.
+      \note This does not save a configuration; make sure you
       use save_frame() to do that. */                                 \
   IMPRMFEXPORT void add_##names(RMF::NodeHandle fh, const Types& hs); \
-  /** Add a single Name object to the RMF file.                       \
-      \note This does not save a configuration; make sure you         \
+  /** Add a single Name object to the RMF file.
+      \note This does not save a configuration; make sure you
       use save_frame() to do that. */                                 \
   IMPRMFEXPORT void add_##name(RMF::FileHandle fh, Type hs);          \
-  /** Create Name objects from the RMF file.                          \
-      \note This does not load a frame. Make sure you call            \
+  /** Create Name objects from the RMF file.
+      \note This does not load a frame. Make sure you call
       IMP::rmf::load_frame() before using.*/                          \
   IMPRMFEXPORT Types create_##names cargs;                            \
-  /** Link Name objects with the RMF file,                            \
-      possibly overwriting an                                         \
-      existing link for loading from the                              \
-      file. This does not alter the                                   \
-      object, but will affect the behavior                            \
-      of functions like load_frame()                                  \
-      and save_frame().                                               \
-                                                                      \
-      link_custom_documentation                                       \
+  /** Link Name objects with the RMF file,
+      possibly overwriting an
+      existing link for loading from the
+      file. This does not alter the
+      object, but will affect the behavior
+      of functions like load_frame()
+      and save_frame().
+
+      link_custom_documentation
   */                                                                  \
   IMPRMFEXPORT void link_##names(RMF::FileConstHandle fh, const Types& hs)
 
