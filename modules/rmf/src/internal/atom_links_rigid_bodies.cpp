@@ -136,7 +136,7 @@ void HierarchyLoadRigidBodies::fix_internal_coordinates(
     core::RigidBody, algebra::ReferenceFrame3D rf,
     core::RigidBodyMember rm) const {
   // Make sure the internal coordinates of the particles match
-  // This is needed to handle scripts that change them during optimation
+  // This is needed to handle scripts that change them during optimization
   // and save the result out to RMF.
   if (core::RigidBody::get_is_setup(rm)) {
     core::RigidBody crb(rm);
