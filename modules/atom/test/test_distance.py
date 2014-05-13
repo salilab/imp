@@ -170,9 +170,12 @@ class Tests(IMP.test.TestCase):
                       drmsd += (dist0 - dist1) ** 2
                       npairs += 1.
           drmsd = math.sqrt(drmsd / npairs)
-          drmsd_target = atom.get_drmsd_Q(xyzs1, xyzs2,threshold)   
-          print drmsd,  drmsd_target      
+          drmsd_target = atom.get_drmsd_Q(xyzs1, xyzs2,threshold)        
           self.assertAlmostEqual(drmsd, drmsd_target)
+
+        drmsd_Q = atom.get_drmsd_Q(xyzs1, xyzs2,1000000.0)        
+        drmsd    = atom.get_drmsd(xyzs1, xyzs2)  
+        self.assertAlmostEqual(drmsd, drmsd_Q)
 
 
 if __name__ == '__main__':
