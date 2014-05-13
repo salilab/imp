@@ -54,7 +54,9 @@ BuildRequires: boost-devel >= 1.41
 BuildRequires: CGAL-devel, opencv-devel
 %endif
 
-# Many modules use Python's numpy module, so pull that in
+# Many modules use Python's numpy module, so pull that in (at build time
+# for tests; at install time for using the modules)
+BuildRequires: numpy
 Requires: numpy
 
 %define cmake_opts %{boost}
