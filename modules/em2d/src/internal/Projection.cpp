@@ -1,5 +1,5 @@
 /**
- *  \file IMP/em2d/internal/Projection
+ *  \file IMP/em2d/internal/Projection.cpp
  *  \brief A class for generation and storage of projections
  *
  *  \authors Dina Schneidman

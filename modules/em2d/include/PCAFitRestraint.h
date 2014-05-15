@@ -12,6 +12,7 @@
 
 #include <IMP/em2d/em2d_config.h>
 #include <IMP/em2d/internal/Image2D.h>
+#include <IMP/em2d/internal/Projector.h>
 
 #include <IMP/kernel/Restraint.h>
 
@@ -43,7 +44,8 @@ public:
   PCAFitRestraint(kernel::Particles particles,
                   const std::vector<std::string>& image_files,
                   double pixel_size, double resolution = 10.0,
-                  unsigned int projection_number = 100);
+                  unsigned int projection_number = 100,
+                  bool reuse_direction = false);
 
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
 
@@ -76,6 +78,16 @@ public:
 
   // from last score calculation
   std::vector<internal::Image2D<> > best_projections_;
+
+  // from last calculation
+  IMP::algebra::Vector3Ds best_projections_axis_;
+
+  // Projector class instance
+  internal::Projector projector_;
+
+  bool reuse_direction_;
+
+  mutable unsigned long counter_;
 };
 
 IMPEM2D_END_NAMESPACE
