@@ -18,6 +18,7 @@
 #include <IMP/algebra/LinearFit.h>
 #include <IMP/constants.h>
 #include <IMP/base/random.h>
+#include <IMP/base/nullptr_macros.h>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/random.hpp>
@@ -41,7 +42,8 @@ Profile::Profile(Float qmin, Float qmax, Float delta)
       experimental_(false),
       average_radius_(1.58),
       average_volume_(17.5),
-      id_(0) {
+      id_(0),
+      beam_profile_(IMP_NULLPTR) {
   set_was_used(true);
   ff_table_ = default_form_factor_table();
 }
@@ -50,7 +52,8 @@ Profile::Profile(const String& file_name, bool fit_file)
     : base::Object("profile%1%"),
       experimental_(true),
       name_(file_name),
-      id_(0) {
+      id_(0),
+      beam_profile_(IMP_NULLPTR) {
   set_was_used(true);
   if (fit_file) experimental_ = false;
   read_SAXS_file(file_name, fit_file);
@@ -740,7 +743,7 @@ void Profile::distribution_2_profile(const RadialDistributionFunction& r_dist) {
 }
 
 void Profile::squared_distribution_2_profile(
-    const RadialDistributionFunction& r_dist) {
+                                    const RadialDistributionFunction& r_dist) {
   init();
   // precomputed sin(x)/x function
   static internal::SincFunction sf(
@@ -748,20 +751,35 @@ void Profile::squared_distribution_2_profile(
 
   // precompute square roots of distances
   std::vector<float> distances(r_dist.size(), 0.0);
-  for (unsigned int r = 0; r < r_dist.size(); r++)
+  for (unsigned int r = 0; r < r_dist.size(); r++) {
     if (r_dist[r] != 0.0) {
       distances[r] = sqrt(r_dist.get_distance_from_index(r));
     }
+  }
+
+  bool use_beam_profile = false;
+  if (beam_profile_ != IMP_NULLPTR && beam_profile_->size() > 0)
+    use_beam_profile = true;
 
   // iterate over intensity profile
   for (unsigned int k = 0; k < size(); k++) {
     // iterate over radial distribution
     for (unsigned int r = 0; r < r_dist.size(); r++) {
       if (r_dist[r] != 0.0) {
-        // x = sin(dq)/dq
-        float dist = distances[r];
-        float x = dist * q_[k];
-        x = sf.sinc(x);
+        Float dist = distances[r];
+        Float x = 0.0;
+        if(use_beam_profile) {
+          // iterate over beam profile
+          for (unsigned int t = 0; t < beam_profile_->size(); t++) {
+            // x = 2*I(t)*sinc(sqrt(q^2+t^2)) multiply by 2 because of the symmetry of the beam
+            float x1 = dist * sqrt((q_[k]*q_[k] + beam_profile_->q_[t]*beam_profile_->q_[t]));
+            x += 2 * beam_profile_->intensity_[t] * sf.sinc(x1);
+          }
+        } else {
+          // x = sin(dq)/dq
+          x = dist * q_[k];
+          x = sf.sinc(x);
+        }
         // multiply by the value from distribution
         intensity_[k] += r_dist[r] * x;
       }
@@ -793,16 +811,30 @@ void Profile::squared_distributions_2_partial_profiles(
     }
   }
 
+  bool use_beam_profile = false;
+  if (beam_profile_ != IMP_NULLPTR && beam_profile_->size() > 0)
+    use_beam_profile = true;
+
   // iterate over intensity profile
   for (unsigned int k = 0; k < q_.size(); k++) {
     // iterate over radial distribution
     for (unsigned int r = 0; r < r_dist[0].size(); r++) {
-      // x = sin(dq)/dq
-      Float dist = distances[r];
-      Float x = dist * q_[k];
-      x = sf.sinc(x);
-      // iterate over partial profiles
       if (r_dist[0][r] > 0.0) {
+        Float dist = distances[r];
+        Float x = 0.0;
+        if(use_beam_profile) {
+          // iterate over beam profile
+          for (unsigned int t = 0; t < beam_profile_->size(); t++) {
+            // x = 2*I(t)*sinc(sqrt(q^2+t^2)) multiply by 2 because of the symmetry of the beam
+            float x1 = dist * sqrt((q_[k]*q_[k] + beam_profile_->q_[t]*beam_profile_->q_[t]));
+            x += 2 * beam_profile_->intensity_[t] * sf.sinc(x1);
+          }
+        } else {
+          // x = sin(dq)/dq
+          x = dist * q_[k];
+          x = sf.sinc(x);
+        }
+        // iterate over partial profiles
         for (int i = 0; i < r_size; i++) {
           // multiply by the value from distribution
           partial_profiles_[i][k] += r_dist[i][r] * x;

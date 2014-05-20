@@ -114,9 +114,10 @@ void read_files(const std::vector<std::string>& files,
 Profile* compute_profile(IMP::kernel::Particles particles, float min_q,
                          float max_q, float delta_q, FormFactorTable* ft,
                          FormFactorType ff_type, float water_layer_c2, bool fit,
-                         bool reciprocal, bool ab_initio, bool vacuum) {
+                         bool reciprocal, bool ab_initio, bool vacuum, std::string beam_profile_file) {
   IMP_NEW(Profile, profile, (min_q, max_q, delta_q));
   if (reciprocal) profile->set_ff_table(ft);
+  if (beam_profile_file.size() > 0) profile->set_beam_profile(beam_profile_file);
 
   // compute surface accessibility and average radius
   IMP::Floats surface_area;
@@ -218,6 +219,7 @@ recommended q value is 0.2")("offset,o",
 (default = false)");
 
   std::string form_factor_table_file;
+  std::string beam_profile_file;
   bool ab_initio = false;
   bool vacuum = false;
   bool javascript = false;
@@ -227,7 +229,9 @@ recommended q value is 0.2")("offset,o",
   hidden.add_options()("input-files", po::value<std::vector<std::string> >(),
                        "input PDB and profile files")(
       "form_factor_table,f", po::value<std::string>(&form_factor_table_file),
-      "ff table name")("ab_initio,a",
+      "ff table name")(
+      "beam_profile", po::value<std::string>(&beam_profile_file),
+      "beam profile file name for desmearing")("ab_initio,a",
                        "compute profile for a bead model with \
 constant form factor (default = false)")(
       "vacuum,v", "compute profile in vacuum (default = false)")(
@@ -341,7 +345,8 @@ constant form factor (default = false)")(
               << particles_vec[i].size() << " atoms " << std::endl;
     IMP::base::Pointer<Profile> profile =
         compute_profile(particles_vec[i], 0.0, max_q, delta_q, ft, ff_type,
-                        water_layer_c2, fit, reciprocal, ab_initio, vacuum);
+                        water_layer_c2, fit, reciprocal, ab_initio, vacuum,
+                        beam_profile_file);
 
     // save the profile
     profiles.push_back(profile);

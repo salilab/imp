@@ -184,6 +184,10 @@ class IMPSAXSEXPORT Profile : public base::Object {
 
   void set_id(unsigned int id) { id_ = id; }
 
+  void set_beam_profile(std::string beam_profile_file) {
+    beam_profile_ = new Profile(beam_profile_file);
+  }
+
   //! add intensity entry to profile
   void add_entry(Float q, Float intensity, Float error = 1.0) {
     q_.push_back(q);
@@ -278,6 +282,8 @@ class IMPSAXSEXPORT Profile : public base::Object {
 
   std::string name_;  // file name
   unsigned int id_;   // identifier
+
+  Profile* beam_profile_;
 };
 
 IMP_OBJECTS(Profile, Profiles);
