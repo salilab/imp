@@ -52,13 +52,6 @@ void Gaussian::update_global_covariance(){
   set_global_covariance(covar);
 }
 
-algebra::Gaussian3D Gaussian::get_gaussian() const{
-  algebra::Vector3D vars(get_local_covariance().diagonal()[0],
-                         get_local_covariance().diagonal()[1],
-                         get_local_covariance().diagonal()[2]);
-  return algebra::Gaussian3D(get_reference_frame(),vars);
-}
-
 void Gaussian::show(std::ostream &out) const { out << get_gaussian(); }
 
 

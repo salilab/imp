@@ -60,6 +60,13 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
     return local->get_mat();
   }
 
+  //! retrieve local variances as Vector3D
+  algebra::Vector3D get_variances() const{
+    return algebra::Vector3D(get_local_covariance().diagonal()[0],
+                             get_local_covariance().diagonal()[1],
+                             get_local_covariance().diagonal()[2]);
+  }
+
   //! retrieve global covariance
   IMP_Eigen::Matrix3d get_global_covariance() const {
     base::Pointer<Matrix3D> global(dynamic_cast<Matrix3D *>(get_model()->
@@ -69,8 +76,9 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
   };
 
   //! create Gaussian3D from these attributes
-  algebra::Gaussian3D get_gaussian() const;
-
+  algebra::Gaussian3D get_gaussian() const{
+    return algebra::Gaussian3D(get_reference_frame(),get_variances());
+}
 
   //! set the local-frame covariance. does NOT update global frame!
   void set_local_covariance(const IMP_Eigen::Vector3d covar) {
