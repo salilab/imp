@@ -90,7 +90,7 @@ if [ "${BITS}" = "32" ]; then
   DLLSRC=/usr/lib/w32comp/windows/system
   cp ${DLLSRC}/msvc*100.dll ${ROOT}/bin || exit 1
   # Add other DLL dependencies
-  cp ${DLLSRC}/hdf5dll.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
+  cp ${DLLSRC}/hdf5.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
      ${DLLSRC}/boost_filesystem-vc100-mt-1_53.dll \
      ${DLLSRC}/boost_program_options-vc100-mt-1_53.dll \
      ${DLLSRC}/boost_system-vc100-mt-1_53.dll \
@@ -118,7 +118,7 @@ else
   DLLSRC=/usr/lib/w64comp/windows/system32
   cp ${DLLSRC}/msvc*110.dll ${ROOT}/bin || exit 1
   # Add other DLL dependencies
-  cp ${DLLSRC}/hdf5dll.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
+  cp ${DLLSRC}/hdf5.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
      ${DLLSRC}/boost_filesystem-vc110-mt-1_55.dll \
      ${DLLSRC}/boost_program_options-vc110-mt-1_55.dll \
      ${DLLSRC}/boost_system-vc110-mt-1_55.dll \
