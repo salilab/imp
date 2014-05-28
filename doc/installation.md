@@ -112,25 +112,11 @@ that you're going to use to build IMP. The basic procedure is as follows:
      - Run `bjam link=shared runtime-link=shared -sNO_ZLIB=0 -sZLIB_SOURCE=C:\zlib\1.2.3\zlib-1.2.3`
   - Get and install [SWIG for Windows](http://www.swig.org)
   - Get the [HDF5 source code](http://www.hdfgroup.org)
-     - Edit the H5pubconf.h file in the `windows\src` subdirectory to
-       disable szip (or first install szip if you want to include szip support).
-       Copy this file into the top-level src directory.
-     - Open the h5libsettings project (in `windows\misc\typegen\h5libsettings`)
-       in Visual Studio, and build it in Release configuration. (Note that if
-       you don't have the x64 SDK installed, you'll first need to edit the
-       project file in a text editor and remove any mention of the x64 platform,
-       since otherwise the upgrade of this solution to 2010 format will fail.)
-     - Build the 'h5tinit' project (in `windows\misc\typegen\h5tinit`) in
-       Release configuration.
-     - Build the 'hdf5dll' project (in `windows\proj\hdf5dll`) in
-       Release configuration.
-        - In order for Visual Studio to find zlib, we first opened the project
-          settings, and under C/C++, Additional Include Directories, added
-          `C:\Program Files\GnuWin32\include`, and under Linker, Input,
-          Additional Dependencies, added
-          `C:\Program Files\GnuWin32\lib\zlib.lib`.
-     - Copy proj\hdf5dll\Release\hdf5dll.lib to hdf5.lib to help cmake
-       find it.
+     - Make a 'build' subdirectory, then run from a command prompt in
+       that subdirectory something similar to
+       `cmake.exe -G "Visual Studio 10" -DHDF5_ENABLE_SZIP_SUPPORT:BOOL=OFF -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON -DHDF5_BUILD_HL_LIB:BOOL=ON -DZLIB_INCLUDE_DIR="C:\Program Files\GnuWin32\include" -DZLIB_LIBRARY="C:\Program Files\GnuWin32\lib\zlib.lib" -DBUILD_SHARED_LIBS:BOOL=ON ..`
+     - Open the resulting HDF5 solution file in Visual Studio, change to
+       Release configuration, then build the hdf5 project.
   - (Optional) [Build CGAL from source code](http://www.cgal.org/windows_installation.html).
   - (Optional) [Get and install Eigen](http://eigen.tuxfamily.org).
   - (Optional) Download the
