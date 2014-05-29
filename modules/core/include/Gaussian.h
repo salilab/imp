@@ -23,6 +23,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+
 /** little class to store an Eigen::Matrix3d */
 class IMPCOREEXPORT Matrix3D : public IMP::base::Object{
   IMP_Eigen::Matrix3d mat_;
@@ -31,6 +33,8 @@ class IMPCOREEXPORT Matrix3D : public IMP::base::Object{
           std::string name="Matrix3DDensityMap%1%"):Object(name),mat_(mat){ }
   IMP_Eigen::Matrix3d get_mat() const {return mat_;}
 };
+
+#endif
 
 /** A decorator for a particle storing a Gaussian. */
 class IMPCOREEXPORT Gaussian : public RigidBody {
