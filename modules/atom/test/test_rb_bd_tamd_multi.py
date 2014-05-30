@@ -46,7 +46,7 @@ class Tests(IMP.test.TestCase):
         pstarD.set_coordinates_are_optimized( True )
         pstarH = IMP.core.Hierarchy.setup_particle(pstar)
         IMP.atom.Diffusion.setup_particle( pstar )
-        IMP.atom.TAMDParticle.setup_particle( pstar, T_factor, F_factor)
+        IMP.atom.TAMDParticle.setup_particle( pstar, p, T_factor, F_factor)
         pMass = IMP.atom.Mass(p)
         IMP.atom.Mass.setup_particle( pstar, pMass.get_mass() )
         return pstar
