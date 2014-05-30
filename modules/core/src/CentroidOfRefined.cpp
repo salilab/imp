@@ -20,6 +20,8 @@ CentroidOfRefined::CentroidOfRefined(Refiner *r, FloatKey weight, FloatKeys ks)
 // compute centroid from refined particles
 void CentroidOfRefined::apply_index(kernel::Model *m,
                                     kernel::ParticleIndex pi) const {
+  IMP_LOG_PROGRESS("BEGIN - updating centroid pi" << pi << " coords " <<
+                   IMP::core::XYZ(m, pi).get_coordinates());
   kernel::ParticleIndexes ps = refiner_->get_refined_indexes(m, pi);
   unsigned int n = ps.size();
   double tw = 0;
@@ -49,6 +51,8 @@ void CentroidOfRefined::apply_index(kernel::Model *m,
     }
     m->set_attribute(ks_[j], pi, v);
   }
+  IMP_LOG_PROGRESS("DONE - updated centroid pi" << pi << " coords " <<
+                   IMP::core::XYZ(m, pi).get_coordinates());
 }
 
 ModelObjectsTemp CentroidOfRefined::do_get_inputs(

@@ -424,8 +424,18 @@ struct HierarchyCounter : public HierarchyVisitor {
 
 IMP_VALUES(HierarchyCounter, HierarchyCounters);
 
-//! Gather all the particles in the hierarchy which meet some criteria
-/** \ingroup hierarchy
+//! Gather all the particles in the hierarchy that meet some criteria
+/** Gather all the particles in the hierarchy for which f() returns true
+    and appends them to out
+
+    @param h hierarchy root
+    @param f boolean function / functor that returns true
+                     on desired particles
+    @param out a output iterator for appending the result
+
+    @return the output iterator
+
+    \ingroup hierarchy
     See Hierarchy
  */
 template <class H, class Out, class F>
@@ -435,7 +445,7 @@ inline Out gather(H h, F f, Out out) {
   return gather.get_out();
 }
 
-//! Gather all the particles in the hierarchy which meet some criteria
+//! Gather all the uppermost particles in the hierarchy that meet some criteria
 /** Descent in the tree terminates when a node is gathered so that
     none of its children are explored.
 

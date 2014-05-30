@@ -32,6 +32,7 @@ class DistancePairScore : public PairScore {
 
  public:
   typedef DistanceScoreT DistanceScore;
+
   // for backwards compat
   DistancePairScore(const DistanceScore &t0,
                     std::string name = "FunctorDistancePairScore %1%")
@@ -40,8 +41,17 @@ class DistancePairScore : public PairScore {
   virtual double evaluate_index(kernel::Model *m,
                                 const kernel::ParticleIndexPair &pip,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
+
   virtual kernel::ModelObjectsTemp do_get_inputs(
       kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+
+  /**
+      return a reference to the functor that is applied on a pair of particles
+      in order to compute their distances
+  */
+  DistanceScoreT& get_score_functor()
+    {return ds_; }
+
   IMP_PAIR_SCORE_METHODS(DistancePairScore);
   IMP_OBJECT_METHODS(DistancePairScore);
 };
