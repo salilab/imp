@@ -175,7 +175,8 @@ part of most Unix tool sets (HomeBrew, all Linux distributions etc.).
 - [Google perf tools](\ref perf)
 - [ANN](\ref ANN)
 - [GSL](\ref GSL)
-- [OpenCV](\ref OpenCV)
+- [OpenCV](\ref OpenCV) is needed for IMP.em2d
+- [libTAU](http://integrativemodeling.org/libTAU.html) is needed for IMP.cnmultifit
 - [MPI](\ref impmpi)
 
 # Where to go next # {#installation_next}
