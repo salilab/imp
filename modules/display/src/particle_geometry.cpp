@@ -13,10 +13,10 @@ IMPDISPLAY_BEGIN_NAMESPACE
 SingletonGeometry::SingletonGeometry(kernel::Particle *p)
     : Geometry(p->get_name() + " geometry"), p_(p) {}
 
-SingletonsGeometry::SingletonsGeometry(SingletonContainer *pc)
+SingletonsGeometry::SingletonsGeometry(SingletonContainerAdaptor pc)
     : Geometry(pc->get_name() + " geometry"), sc_(pc) {}
 
-SingletonsGeometry::SingletonsGeometry(SingletonContainer *pc, Color c)
+SingletonsGeometry::SingletonsGeometry(SingletonContainerAdaptor pc, Color c)
     : Geometry(c, pc->get_name() + " geometry"), sc_(pc) {}
 
 PairGeometry::PairGeometry(const kernel::ParticlePair &p)
