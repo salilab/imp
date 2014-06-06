@@ -226,6 +226,7 @@ class IMPBASEEXPORT Object : public NonCopyable {
   */
   virtual void clear_caches() {}
 
+ protected:
   /** Overide this method to take action on destruction. */
   virtual void do_destroy() {}
 };

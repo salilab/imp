@@ -20,7 +20,7 @@
 /** This defines
     - IMP::base::Object::get_version_info()
     - IMP::base::Object::get_type_name()
-    - a private destructor
+    - a protected destructor
 */
 #define IMP_OBJECT_METHODS(Name)                                              \
  public:                                                                      \
