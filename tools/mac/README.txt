@@ -2,8 +2,8 @@ Double-click on the package (.pkg) file and follow the prompts to
 install IMP on your Mac.
 
 (Newer Macs may complain that the installer is from an unknown developer.
-This is expected; simply right click on the installer, and select "Open"
-from the menu, rather than double-clicking on it.)
+This is expected; simply right click (or control-click) on the installer,
+and select "Open" from the menu, rather than double-clicking on it.)
 
 Your Mac might complain that a newer version of IMP already exists, if you
 previously installed a different release of IMP. To fix this, you first need to
