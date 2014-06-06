@@ -67,6 +67,8 @@ class IMPATOMEXPORT TAMDParticle : public IMP::Decorator  {
 
      @note Particle is assumed to be decorated as diffusive, XYZ particle.
 
+     @param m the particle model
+     @param pi the particle index to be setup
      @param pi_ref - reference particle index in same model with which
                      this tamd particle is associate
      @param tsf - temperature scale factor
@@ -83,6 +85,8 @@ class IMPATOMEXPORT TAMDParticle : public IMP::Decorator  {
 
      @note Particle is assumed to be decorated as diffusive, XYZ particle.
 
+     @param m the particle model
+     @param pi the particle index to be setup
      @param p_ref - reference particle with which this tamd particle is associate
      @param tsf - temperature scale factor
      @param fsf - friction scale factor
