@@ -75,11 +75,26 @@ void ExclusiveConsecutivePairContainer::init() {
   for (unsigned int i = 0; i < ps_.size(); ++i) {
     IMP_USAGE_CHECK(
         !get_model()->get_has_attribute(get_exclusive_key(), ps_[i]),
-        "You must create containers before reading in the "
-            << "saved model: "
-            << get_model()->get_particle(ps_[i])->get_name());
+        "Particle already added to some ExclusiveConsecutivePairContainer"
+        << " and cannot be added to another: "
+            << get_model()->get_particle(ps_[i])->get_name() );
     get_model()->add_attribute(get_exclusive_key(), ps_[i], i);
     get_model()->add_attribute(get_exclusive_object_key(), ps_[i], this);
+  }
+}
+
+void ExclusiveConsecutivePairContainer::do_destroy() {
+  for (unsigned int i = 0; i < ps_.size(); ++i) {
+    if(!get_model()->get_has_particle(ps_[i])) {
+        continue; // (particle might have been removed already from model
+                  // if we're in the midst of model destruction, etc.)
+    }
+    if( get_model()->get_has_attribute(get_exclusive_key(), ps_[i]) ) {
+        get_model()->remove_attribute(get_exclusive_key(), ps_[i]);
+    }
+    if( get_model()->get_has_attribute(get_exclusive_object_key(), ps_[i]) ){
+      get_model()->remove_attribute(get_exclusive_object_key(), ps_[i]);
+    }
   }
 }
 
