@@ -8,7 +8,7 @@ if(${CMAKE_BINARY_DIR} MATCHES "${CMAKE_SOURCE_DIR}/.*" OR ${CMAKE_BINARY_DIR} S
    message(FATAL_ERROR "Building in the source directory not supported: ${CMAKE_SOURCE_DIR} includes ${CMAKE_BINARY_DIR}. If this message seems wrong, make sure to delete the CMakeFiles directory and the CMakeCache.txt file if they exist in the source dir (${CMAKE_SOURCE_DIR}).")
 endif()
 
-execute_process(COMMAND python setup_git.py
+execute_process(COMMAND python "tools/dev_tools/git/setup_git.py"
                   RESULT_VARIABLE setup
                   OUTPUT_VARIABLE toutput
                   ERROR_VARIABLE error
