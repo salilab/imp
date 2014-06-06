@@ -20,13 +20,18 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-//! Abstract score function
-/** ClassnameScores will evaluate the score and derivatives
-    for the passed particles. Use in conjunction with various
+//! Abstract class for scoring object(s) of type TYPENAME
+/** ClassnameScore will evaluate the score and derivatives
+    for passed object(s) of type TYPENAME.
+
+    Use in conjunction with various
     restraints such as IMP::core::ClassnamesRestraint or
-    IMP::core::ClassnameRestraint.
+    IMP::core::ClassnameRestraint. The restraints couple the score
+    functions with appropariate lists of object(s) of type TYPENAME.
 
     Implementers should check out IMP_CLASSNAME_SCORE().
+
+    \see PredicateClassnameRestraint
 */
 class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
                                        public base::Object {
@@ -43,10 +48,30 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
   virtual double evaluate(ARGUMENTTYPE vt, DerivativeAccumulator *da) const;
 
   //! Compute the score and the derivative if needed.
+  /** evaluate the score and the derivative if needed over vt
+
+      @param m the model of vt
+      @param vt the index in m of an object of type TYPENAME
+      @param da a derivative accumulator that reweighting
+                computed derivatives. If nullptr, derivatives
+                will not be computed
+   */
   virtual double evaluate_index(kernel::Model *m, PASSINDEXTYPE vt,
                                 DerivativeAccumulator *da) const;
 
-  /** Implementations
+  //! Compute the score and the derivative if needed over a set.
+  /** evaluate the score and the derivative if needed over a set
+      of objects in o
+
+      @param m the model of o
+      @param o objects of type TYPENAME, specified by index
+      @param da a derivative accumulator that reweighting
+                computed derivatives. If nullptr, derivatives
+                will not be computed
+      @param lower_bound index of first item in o to evaluate
+      @param upper_bound index of last item in o to evaluate
+
+      @note Implementations
       for these are provided by the IMP_CLASSNAME_SCORE()
       macro.
   */
@@ -56,11 +81,22 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
                                   unsigned int upper_bound) const;
 
   //! Compute the score and the derivative if needed.
+  /** Compute the score and the derivative if needed as in evaluate_index().
+      but may terminate the computation early if the score is higher than max.
+
+      @return the score if score<= max or some arbitrary value > max otherwise.
+  */
   virtual double evaluate_if_good_index(kernel::Model *m, PASSINDEXTYPE vt,
                                         DerivativeAccumulator *da,
                                         double max) const;
 
-  /** Implementations
+  /**
+  /** Compute the score and the derivative if needed as in evaluate_index().
+      but may terminate the computation early if the total score is higher than max.
+
+      @return the score if score<= max or some arbitrary value > max otherwise.
+
+      Implementations
       for these are provided by the IMP_CLASSNAME_SCORE()
       macro.
   */
