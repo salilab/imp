@@ -8,14 +8,16 @@ if(${CMAKE_BINARY_DIR} MATCHES "${CMAKE_SOURCE_DIR}/.*" OR ${CMAKE_BINARY_DIR} S
    message(FATAL_ERROR "Building in the source directory not supported: ${CMAKE_SOURCE_DIR} includes ${CMAKE_BINARY_DIR}. If this message seems wrong, make sure to delete the CMakeFiles directory and the CMakeCache.txt file if they exist in the source dir (${CMAKE_SOURCE_DIR}).")
 endif()
 
-execute_process(COMMAND python "tools/dev_tools/git/setup_git.py"
-                  RESULT_VARIABLE setup
-                  OUTPUT_VARIABLE toutput
-                  ERROR_VARIABLE error
-                  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-                  OUTPUT_STRIP_TRAILING_WHITESPACE)
-if(NOT ${setup} EQUAL 0)
-   message(FATAL_ERROR " Failed to run setup_git.py: ${setup}; ${error}")
+if(IS_DIRECTORY "${PROJECT_SOURCE_DIR}/.git")
+  execute_process(COMMAND python "tools/dev_tools/git/setup_git.py"
+                    RESULT_VARIABLE setup
+                    OUTPUT_VARIABLE toutput
+                    ERROR_VARIABLE error
+                    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+  if(NOT ${setup} EQUAL 0)
+     message(FATAL_ERROR " Failed to run setup_git.py: ${setup}; ${error}")
+  endif()
 endif()
 
 include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules/IMPExecuteProcess.cmake)
