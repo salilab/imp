@@ -84,10 +84,13 @@ void ExclusiveConsecutivePairContainer::init() {
 }
 
 void ExclusiveConsecutivePairContainer::do_destroy() {
+  if(get_model() == nullptr){ return; }
+  if(!get_model()->get_is_valid()) { return ; }
+  IMP_LOG_PROGRESS("Destroying exclusive pair container with "
+                   << ps_.size() << " particles" << std::endl);
   for (unsigned int i = 0; i < ps_.size(); ++i) {
     if(!get_model()->get_has_particle(ps_[i])) {
-        continue; // (particle might have been removed already from model
-                  // if we're in the midst of model destruction, etc.)
+        continue;
     }
     if( get_model()->get_has_attribute(get_exclusive_key(), ps_[i]) ) {
         get_model()->remove_attribute(get_exclusive_key(), ps_[i]);
