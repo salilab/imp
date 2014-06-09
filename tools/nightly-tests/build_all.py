@@ -300,15 +300,6 @@ class Builder(object):
         return (ret, endtime - starttime)
 
 
-def internal_dep(dep):
-    """Return True iff the given dependency is being built as part of IMP"""
-    libdep = "%s_LIBRARY" % dep
-    for line in open('CMakeCache.txt'):
-        if line.startswith(libdep):
-            return line.rstrip('\r\n').endswith('NOTFOUND')
-    return False
-
-
 def add_disabled_components(conf_comps, all_comps, comps, comp_type):
     """Mark components that are in all_comps but not conf_comps as disabled"""
     # Sanity check: everything in conf_comps should be in all_comps
@@ -333,7 +324,7 @@ def get_all_components():
     special_dep_targets = {"RMF": RMFDependency}
     for dep, cls in special_dep_targets.items():
         i = tools.get_dependency_info(dep, "")
-        if i['ok'] and internal_dep(dep):
+        if i['ok']:
             comps[dep] = cls(dep)
             comps[dep].set_dep_modules(comps, [], [], special_dep_targets)
 
