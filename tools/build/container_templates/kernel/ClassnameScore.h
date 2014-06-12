@@ -90,7 +90,6 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
                                         DerivativeAccumulator *da,
                                         double max) const;
 
-  /**
   /** Compute the score and the derivative if needed as in evaluate_index().
       but may terminate the computation early if the total score is higher than max.
 
