@@ -77,7 +77,7 @@ class SlaveHandler(object):
                     obj.execute()
             except NetworkError:
                 raise
-            except Exception as detail:
+            except Exception, detail:
                 # Send all other exceptions back to the master and reraise
                 self._send_exception_to_master(master, detail)
                 raise
