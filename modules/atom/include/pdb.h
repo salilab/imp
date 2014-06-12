@@ -266,7 +266,6 @@ class PPDBSelector : public NonAlternativePDBSelector {
   IMP_OBJECT_METHODS(PPDBSelector)
 };
 
-// these do not work in python as the wrapped selectors get cleaned up
 //! Select atoms which are selected by both selectors
 /** To use do something like
     \code
@@ -303,7 +302,7 @@ class OrPDBSelector : public PDBSelector {
       : PDBSelector("OrPDBSelector%1%"), a_(a), b_(b) {}
 };
 
-//! Select atoms which not selected by a given selector
+//! Select atoms which are not selected by a given selector
 /** To use do something like
     \code
     read_pdb(name, m, NotPDBSelector(PPDBSelector()));

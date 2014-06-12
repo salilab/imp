@@ -95,7 +95,8 @@ class Tests(IMP.test.TestCase):
         a = IMP.atom.get_leaves(mp)
         self.assertEqual(len(a), 22)
 
-    def _test_sel_logic(self):
+    def test_sel_logic(self):
+        """Test boolean logic selectors"""
         m = IMP.kernel.Model()
         mp = IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"),
                                m, IMP.atom.HydrogenPDBSelector())
@@ -107,6 +108,10 @@ class Tests(IMP.test.TestCase):
                                 m, IMP.atom.OrPDBSelector(IMP.atom.NotPDBSelector(IMP.atom.HydrogenPDBSelector()), IMP.atom.HydrogenPDBSelector()))
         ab = IMP.atom.get_leaves(mpb)
         self.assertEqual(len(ab), len(an) + len(a))
+        mpb = IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"),
+                                m, IMP.atom.AndPDBSelector(IMP.atom.HydrogenPDBSelector(), IMP.atom.ChainPDBSelector('L')))
+        ab = IMP.atom.get_leaves(mpb)
+        self.assertEqual(len(ab), 9)
 
     def test_pyimpl(self):
         """Test PDBSelectors implemented in Python"""
