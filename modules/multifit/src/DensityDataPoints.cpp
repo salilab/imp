@@ -94,11 +94,11 @@ DensityDataPoints::DensityDataPoints(const DensGrid &dens,
 
 IMP::statistics::internal::Array1DD DensityDataPoints::sample() const {
   bool found = false;
-  int num_trails = 0;
+  int num_trials = 0;
   int p_ind = 0;
   do {
-    IMP_LOG_VERBOSE("trail number:" << num_trails << std::endl);
-    ++num_trails;
+    IMP_LOG_VERBOSE("trial number: " << num_trials << std::endl);
+    ++num_trials;
     p_ind = statistics::internal::random_int(data_.size());
     if ((*dens_)[dens_->get_nearest_index(algebra::Vector3D(
             data_[p_ind][0], data_[p_ind][1], data_[p_ind][2]))] >
@@ -106,7 +106,7 @@ IMP::statistics::internal::Array1DD DensityDataPoints::sample() const {
             min_value_) {
       found = true;
     }
-  } while (!found && num_trails < 150);  // TODO - add to multifit param
+  } while (!found && num_trials < 150);  // TODO - add to multifit param
   if (!found) {
     std::cerr << "Could not sample DensityDataPoints."
               << "Probably a problem with reading the map" << std::endl;
