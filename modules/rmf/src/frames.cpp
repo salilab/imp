@@ -35,7 +35,6 @@ void load_frame(RMF::FileConstHandle fh, RMF::FrameID frame) {
 }
 
 RMF::FrameID save_frame(RMF::FileHandle file, std::string name) {
-  bool except = false;
   std::string what;
   try {
     file.set_producer("IMP " + get_module_version());
@@ -47,12 +46,9 @@ RMF::FrameID save_frame(RMF::FileHandle file, std::string name) {
     return cur;
   }
   catch (const std::exception& e) {
-    except = true;
     what = e.what();
   }
-  if (except) {
-    IMP_THROW(what, IOException);
-  }
+  IMP_THROW(what, IOException);
 }
 
 IMPRMF_END_NAMESPACE
