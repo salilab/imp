@@ -36,8 +36,8 @@ HierarchyLoadStatic::HierarchyLoadStatic(RMF::FileConstHandle fh)
       diffuser_factory_(fh),
       typed_factory_(fh),
       domain_factory_(fh),
-      backwards_fragment_factory_(fh),
       fragment_factory_(fh),
+      backwards_fragment_factory_(fh),
       state_factory_(fh),
       molecule_(fh) {
   RMF::Category phy = fh.get_category("physics");
