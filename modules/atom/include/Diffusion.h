@@ -60,7 +60,8 @@ class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
     get_particle()->set_value(get_diffusion_coefficient_key(), d);
   }
   double get_diffusion_coefficient() const {
-    return get_particle()->get_value(get_diffusion_coefficient_key());
+    return get_model()->get_attribute(get_diffusion_coefficient_key(),
+                                      get_particle_index());
   }
   //! Get the D key
   static FloatKey get_diffusion_coefficient_key();
@@ -82,8 +83,9 @@ class IMPATOMEXPORT RigidBodyDiffusion : public Diffusion {
   IMP_DECORATOR_SETUP_0(RigidBodyDiffusion);
 
   double get_rotational_diffusion_coefficient() const {
-    return get_particle()->get_value(
-        get_rotational_diffusion_coefficient_key());
+    return get_model()->get_attribute
+      (get_rotational_diffusion_coefficient_key(),
+       get_particle_index());
   }
   void set_rotational_diffusion_coefficient(double d) const {
     return get_particle()->set_value(get_rotational_diffusion_coefficient_key(),
