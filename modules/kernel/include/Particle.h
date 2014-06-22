@@ -167,7 +167,7 @@ class IMPKERNELEXPORT ParticleAdaptor : public base::InputAdaptor {
 
 /****************** Inline methods ***************/
 
-#ifndef DOXYGEN
+#ifndef IMP_DOXYGEN
 
 bool Particle::get_is_optimized(FloatKey k) const {
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
