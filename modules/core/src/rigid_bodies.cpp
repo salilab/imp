@@ -21,10 +21,6 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-const RigidBodyData &rigid_body_data() {
-  static const RigidBodyData rbd;
-  return rbd;
-}
 IMPCORE_END_INTERNAL_NAMESPACE
 IMPCORE_BEGIN_NAMESPACE
 void RigidBody::normalize_rotation() {
@@ -778,51 +774,26 @@ void RigidBody::set_reference_frame(const IMP::algebra::ReferenceFrame3D &tr) {
   update_members();
 }
 
-void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
-                                   const algebra::Vector3D &deriv_global,
-                                   const algebra::Vector3D &local,
-                                   const algebra::Rotation3D &rot,
-                                   DerivativeAccumulator &da) {
-  // const algebra::Vector3D deriv_global= rot*deriv_local;
-  // IMP_LOG_TERSE( "Accumulating rigid body derivatives" << std::endl);
-  algebra::VectorD<4> q(0, 0, 0, 0);
-  for (unsigned int j = 0; j < 4; ++j) {
-    algebra::Vector3D v = rot.get_derivative(local, j);
-    q[j] = deriv_global * v;
-  }
-  XYZ::add_to_derivatives(deriv_global, da);
-  for (unsigned int j = 0; j < 4; ++j) {
-    get_model()->add_to_derivative(internal::rigid_body_data().quaternion_[j],
-                                   get_particle_index(), q[j], da);
-  }
-  algebra::Vector3D torque = algebra::get_vector_product(local, deriv_local);
-  for (unsigned int i = 0; i < 3; ++i) {
-    get_model()->add_to_derivative(internal::rigid_body_data().torque_[i],
-                                   get_particle_index(), torque[i], da);
-  }
-}
-
-void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
-                                   const algebra::Vector3D &local,
-                                   DerivativeAccumulator &da) {
-  algebra::Rotation3D rot =
-      get_reference_frame().get_transformation_to().get_rotation();
-  const algebra::Vector3D deriv_global = rot * deriv_local;
-  add_to_derivatives(deriv_local, deriv_global, local, rot, da);
-}
-
 RigidBody::~RigidBody() {}
 RigidBodyMember::~RigidBodyMember() {}
 RigidMember::~RigidMember() {}
 NonRigidMember::~NonRigidMember() {}
 
 void RigidBody::show(std::ostream &out) const {
-  out << "Rigid body " << get_reference_frame();
+  if(Decorator::get_is_valid()){
+    out << "Rigid body " << get_reference_frame();
+  } else {
+    out << "Invalid rigid body" ;
+  }
 }
 
 void RigidBodyMember::show(std::ostream &out) const {
-  out << "Member of " << get_rigid_body()->get_name() << " at "
-      << get_internal_coordinates();
+  if(Decorator::get_is_valid()){
+    out << "Member of " << get_rigid_body()->get_name() << " at "
+        << get_internal_coordinates();
+  } else {
+    out << "Invalid rigid body member";
+  }
 }
 
 void RigidMember::show(std::ostream &out) const {

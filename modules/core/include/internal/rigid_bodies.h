@@ -60,7 +60,11 @@ struct RigidBodyData {
   }
 };
 
-IMPCOREEXPORT const RigidBodyData &rigid_body_data();
+inline const RigidBodyData &rigid_body_data(){
+  static const RigidBodyData rbd;
+  return rbd;
+}
+;
 
 inline void set_model_ranges(kernel::Model *m) {
   m->set_range(rigid_body_data().quaternion_[0], FloatRange(0, 1));

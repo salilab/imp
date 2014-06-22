@@ -240,15 +240,17 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   void set_reference_frame_from_members(const kernel::ParticleIndexes &members);
 
 #ifndef IMP_DOXYGEN
-  /** This takes a cartesian derivative, and a location in internal coordinates.
+  /** This takes a cartesian derivative in global coordinates,
+      and a location in internal coordinates.
 
       It is currently hidden since the function signature is highly ambiguous.
    */
-  void add_to_derivatives(const algebra::Vector3D &derivative,
+  inline void add_to_derivatives(const algebra::Vector3D &derivative,
                           const algebra::Vector3D &local_location,
                           DerivativeAccumulator &da);
 
-  void add_to_derivatives(const algebra::Vector3D &derivative,
+  // faster if all is cached
+  inline void add_to_derivatives(const algebra::Vector3D &derivative,
                           const algebra::Vector3D &global_derivative,
                           const algebra::Vector3D &local_location,
                           const algebra::Rotation3D &rot,
@@ -317,6 +319,44 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   */
   void set_is_rigid_member(kernel::ParticleIndex pi, bool tf);
 };
+
+
+// inline implementation
+void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
+                                   const algebra::Vector3D &deriv_global,
+                                   const algebra::Vector3D &local,
+                                   const algebra::Rotation3D &rot,
+                                   DerivativeAccumulator &da) {
+  // const algebra::Vector3D deriv_global= rot*deriv_local;
+  // IMP_LOG_TERSE( "Accumulating rigid body derivatives" << std::endl);
+  algebra::VectorD<4> q(0, 0, 0, 0);
+  for (unsigned int j = 0; j < 4; ++j) {
+    algebra::Vector3D v = rot.get_derivative(local, j);
+    q[j] = deriv_global * v;
+  }
+  XYZ::add_to_derivatives(deriv_global, da);
+  for (unsigned int j = 0; j < 4; ++j) {
+    get_model()->add_to_derivative(internal::rigid_body_data().quaternion_[j],
+                                   get_particle_index(), q[j], da);
+  }
+  algebra::Vector3D torque = algebra::get_vector_product(local, deriv_local);
+  for (unsigned int i = 0; i < 3; ++i) {
+    get_model()->add_to_derivative(internal::rigid_body_data().torque_[i],
+                                   get_particle_index(), torque[i], da);
+  }
+}
+
+// inline implementation
+void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
+                                   const algebra::Vector3D &local,
+                                   DerivativeAccumulator &da) {
+  algebra::Rotation3D rot =
+      get_reference_frame().get_transformation_to().get_rotation();
+  const algebra::Vector3D deriv_global = rot * deriv_local;
+  add_to_derivatives(deriv_local, deriv_global, local, rot, da);
+}
+
+
 
 /** It is often useful to store precalculated properties of the rigid body
     for later use. These need to be cleared out when the rigid body changes.
