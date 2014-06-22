@@ -11,7 +11,8 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-Refiner::Refiner(std::string name) : Object(name) {}
+Refiner::Refiner(std::string name, bool is_by_ref) :
+  Object(name), is_by_ref_(is_by_ref) {}
 
 ParticleIndexes Refiner::get_refined_indexes(kernel::Model *m,
                                              ParticleIndex pi) const {
