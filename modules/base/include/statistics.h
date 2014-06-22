@@ -33,11 +33,22 @@ class IMPBASEEXPORT Timer : public RAII {
   void save();
 
  public:
-  Timer(const Object *object, std::string operation) {
+  // TODO: string ops may be wasteful - could pass pointer
+  //       to const char* or reference to stringsto be initialized?
+  Timer(const Object *object, std::string const& operation) {
     if (internal::stats_level > NO_STATISTICS) {
       initialize(object->get_name() + "::" + operation);
     }
   }
+  // TODO: string ops may be wasteful - could pass pointer
+  //       to const char* or reference to stringsto be initialized?
+  Timer(const Object *object, const char* operation) {
+    if (internal::stats_level > NO_STATISTICS) {
+      std::string s_operation(operation);
+      initialize(object->get_name() + "::" + operation);
+    }
+  }
+
   Timer(std::string operation) {
     if (internal::stats_level > NO_STATISTICS) {
       initialize(operation);
