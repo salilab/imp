@@ -68,7 +68,11 @@ class IMPALGEBRAEXPORT Transformation3D : public GeometricPrimitiveD<3> {
     *this = *this / o;
     return *this;
   }
+
+  //! returns the rotation associated with this transformation
   const Rotation3D &get_rotation() const { return rot_; }
+
+  //! returns the translation vector associated with this transformation
   const Vector3D &get_translation() const { return trans_; }
 
   IMP_SHOWABLE_INLINE(Transformation3D, {
@@ -76,6 +80,14 @@ class IMPALGEBRAEXPORT Transformation3D : public GeometricPrimitiveD<3> {
     out << " || " << trans_;
   });
   Transformation3D get_inverse() const;
+
+  /** @return true if the 3D transformation is valid; false if the
+        transformation was initialized only with the empty constructor,
+        or it was initialized with an invalid rotation.
+  */
+  bool get_is_valid() const {
+    return rot_.get_is_valid();
+  }
 
  private:
   Vector3D trans_;  // translation
@@ -108,6 +120,8 @@ inline Transformation3D get_rotation_about_point(const Vector3D &point,
  */
 inline Transformation3D compose(const Transformation3D &a,
                                 const Transformation3D &b) {
+  IMP_USAGE_CHECK(a.get_is_valid() && b.get_is_valid(),
+                  "composing an invalid transformation");
   return Transformation3D(compose(a.get_rotation(), b.get_rotation()),
                           a.get_transformed(b.get_translation()));
 }

@@ -50,7 +50,7 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
   IMP_NO_SWIG(friend Rotation3D compose(const Rotation3D &a,
                                         const Rotation3D &b));
   void fill_cache() const {
-    IMP_USAGE_CHECK(v_.get_squared_magnitude() > 0,
+    IMP_USAGE_CHECK(get_is_valid(),
                     "Attempting to apply uninitialized rotation");
     has_cache_ = true;
     double v0s = get_squared(v_[0]);
@@ -100,11 +100,11 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
       v_ = -v_;
     }
   }
-  ~Rotation3D();
+  ~Rotation3D(){}
 
 #ifndef IMP_DOXYGEN
   Vector3D get_rotated_no_cache(const Vector3D &o) const {
-    IMP_USAGE_CHECK(v_.get_squared_magnitude() > 0,
+    IMP_USAGE_CHECK(get_is_valid(),
                     "Attempting to access uninitialized rotation");
     return Vector3D(
         (v_[0] * v_[0] + v_[1] * v_[1] - v_[2] * v_[2] - v_[3] * v_[3]) * o[0] +
@@ -123,7 +123,7 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
   //! Gets only the requested rotation coordinate of the vector
   double get_rotated_one_coordinate_no_cache(const Vector3D &o,
                                              unsigned int coord) const {
-    IMP_USAGE_CHECK(v_.get_squared_magnitude() > 0,
+    IMP_USAGE_CHECK(get_is_valid(),
                     "Attempting to apply uninitialized rotation");
     switch (coord) {
       case 0:
@@ -152,7 +152,7 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
 #endif
   //! Rotate a vector around the origin
   Vector3D get_rotated(const Vector3D &o) const {
-    IMP_USAGE_CHECK(v_.get_squared_magnitude() > 0,
+    IMP_USAGE_CHECK(get_is_valid(),
                     "Attempting to apply uninitialized rotation");
     if (!has_cache_) fill_cache();
     return Vector3D(o * matrix_[0], o * matrix_[1], o * matrix_[2]);
@@ -161,7 +161,7 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
   //! Gets only the requested rotation coordinate of the vector
   double get_rotated_one_coordinate(const Vector3D &o,
                                     unsigned int coord) const {
-    IMP_USAGE_CHECK(v_.get_squared_magnitude() > 0,
+    IMP_USAGE_CHECK(get_is_valid(),
                     "Attempting to apply uninitialized rotation");
     if (!has_cache_) fill_cache();
     return o * matrix_[coord];
@@ -179,7 +179,7 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
 
   //! Return the rotation which undoes this rotation.
   inline Rotation3D get_inverse() const {
-    IMP_USAGE_CHECK(v_.get_squared_magnitude() > 0,
+    IMP_USAGE_CHECK(get_is_valid(),
                     "Attempting to invert uninitialized rotation");
     Rotation3D ret(v_[0], -v_[1], -v_[2], -v_[3]);
     return ret;
@@ -190,21 +190,21 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
       equivalent quaternions is returned.
   */
   const Vector4D &get_quaternion() const {
-    IMP_USAGE_CHECK(v_.get_squared_magnitude() > 0,
+    IMP_USAGE_CHECK(get_is_valid(),
                     "Attempting to access uninitialized rotation");
     return v_;
   }
 
   //! multiply two rotations
   Rotation3D operator*(const Rotation3D &q) const {
-    IMP_USAGE_CHECK(v_.get_squared_magnitude() > 0,
+    IMP_USAGE_CHECK(get_is_valid(),
                     "Attempting to compose uninitialized rotation");
     return compose(*this, q);
   }
 
   //! Compute the rotation which when composed with r gives this
   Rotation3D operator/(const Rotation3D &r) const {
-    IMP_USAGE_CHECK(v_.get_squared_magnitude() > 0,
+    IMP_USAGE_CHECK(get_is_valid(),
                     "Attempting to compose uninitialized rotation");
     return compose(*this, r.get_inverse());
   }
@@ -214,11 +214,19 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
     return *this;
   }
 
-  /** \brief Return the derivative of the position o with respect to
+  /** \brief Return the derivative of the local position o with respect to
       the i'th internal quaternion coefficient, for i in [0..3],
-      namely (dx/di, dy/di, dz/di) ??? TODO: is this even true ???
+      namely (dx/dQi, dy/dQi, dz/dQi)
   */
   const Vector3D get_derivative(const Vector3D &o, unsigned int i) const;
+
+  /** returns true is the rotation is valid, false if
+      invalid or not initialized (e.g., only initialized by
+      the empty constructor)
+  */
+  bool get_is_valid() const {
+    return  v_.get_squared_magnitude() > 0; // TODO: add that magnitude ~ 1?
+  }
 };
 
 IMP_VALUES(Rotation3D, Rotation3Ds);
