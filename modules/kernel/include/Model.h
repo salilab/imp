@@ -18,7 +18,7 @@
 #include "ScoreState.h"
 #include "container_macros.h"
 #include "base_types.h"
-#include "Particle.h"
+//#include "Particle.h"
 #include "Undecorator.h"
 #include "internal/AttributeTable.h"
 #include "internal/attribute_tables.h"
@@ -36,6 +36,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 
 class ModelObject;
 class Undecorator;
+class Particle;
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 namespace internal {
@@ -184,9 +185,7 @@ class IMPKERNELEXPORT Model : public base::Object
   ParticleIndex add_particle(std::string name);
 
   //! Get the name of a particle
-  std::string get_particle_name(ParticleIndex pi) {
-    return get_particle(pi)->get_name();
-  }
+  std::string get_particle_name(ParticleIndex pi);
 
   /** Add the passed Undecorator to the particle.*/
   void add_undecorator(ParticleIndex pi, Undecorator *d);
@@ -389,5 +388,6 @@ class IMPKERNELEXPORT Model : public base::Object
 };
 
 IMPKERNEL_END_NAMESPACE
+
 
 #endif /* IMPKERNEL_MODEL_H */

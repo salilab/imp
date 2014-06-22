@@ -12,6 +12,7 @@
 #include <IMP/base_types.h>
 #include <IMP/particle_index.h>
 #include <IMP/base/warning_macros.h>
+#include <IMP/Particle.h>
 #include <limits>
 
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
