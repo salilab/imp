@@ -18,12 +18,15 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
+static const std::string str_before_evaluate("before_evaluate");
+static const std::string str_after_evaluate("after_evaluate");
+
 ScoreState::ScoreState(kernel::Model *m, std::string name)
     : ModelObject(m, name), update_order_(-1) {}
 
 void ScoreState::before_evaluate() {
   IMP_OBJECT_LOG;
-  base::Timer t(this, "before_evaluate");
+  base::Timer t(this, str_before_evaluate);
   validate_inputs();
   validate_outputs();
   do_before_evaluate();
@@ -31,7 +34,7 @@ void ScoreState::before_evaluate() {
 
 void ScoreState::after_evaluate(DerivativeAccumulator *da) {
   IMP_OBJECT_LOG;
-  base::Timer t(this, "after_evaluate");
+  base::Timer t(this, str_after_evaluate);
   validate_inputs();
   validate_outputs();
   do_after_evaluate(da);

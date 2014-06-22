@@ -23,7 +23,7 @@ IMPKERNEL_END_INTERNAL_NAMESPACE
 IMPKERNEL_BEGIN_NAMESPACE
 
 Decorator::Decorator(ParticleAdaptor p)
-    : model_(p.get_model()), pi_(p.get_particle_index()) {}
+  : model_(p.get_model()), pi_(p.get_particle_index()), is_valid_(true) {}
 
 void check_particle(Particle *p) {
   for (unsigned int i = 0; i < internal::particle_validators.size(); ++i) {
