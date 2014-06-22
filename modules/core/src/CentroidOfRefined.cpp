@@ -22,17 +22,29 @@ void CentroidOfRefined::apply_index(kernel::Model *m,
                                     kernel::ParticleIndex pi) const {
   IMP_LOG_PROGRESS("BEGIN - updating centroid pi" << pi << " coords " <<
                    IMP::core::XYZ(m, pi).get_coordinates());
-  kernel::ParticleIndexes ps = refiner_->get_refined_indexes(m, pi);
-  unsigned int n = ps.size();
+  // retrieving pis by ref if possible is cumbersome but is required for speed
+  kernel::ParticleIndexes pis_if_not_byref;
+  kernel::ParticleIndexes const* pPis;
+  if(refiner_->get_is_by_ref_supported()){
+    kernel::ParticleIndexes const& pis =
+      refiner_->get_refined_indexes_by_ref(m, pi);
+    pPis = &pis;
+  } else{
+    pis_if_not_byref = refiner_->get_refined_indexes(m, pi);
+    pPis = &pis_if_not_byref;
+  }
+  kernel::ParticleIndexes const& pis = *pPis;
+  unsigned int n = pis.size();
   double tw = 0;
   if (w_ != FloatKey()) {
     IMP_USAGE_CHECK( m->get_has_attribute(w_, pi),
                      "Centroid particle lacks non-trivial weight key" << w_ );
     for (unsigned int i = 0; i < n; ++i) {
-      IMP_USAGE_CHECK( m->get_has_attribute(w_, ps[i]),
+      ParticleIndex cur_pi = pis[i];
+      IMP_USAGE_CHECK( m->get_has_attribute(w_, cur_pi),
                        "CentroidOfRefined - Fine particle #" << i
                        << " lacks non-trivial weight key" << w_);
-      tw += m->get_attribute(w_, ps[i]);
+      tw += m->get_attribute(w_, cur_pi);
     }
     m->set_attribute(w_, pi, tw);
   } else {
@@ -42,12 +54,13 @@ void CentroidOfRefined::apply_index(kernel::Model *m,
     double v = 0;
     for (unsigned int i = 0; i < n; ++i) {
       double w;
+      ParticleIndex cur_pi = pis[i];
       if (w_ != FloatKey()) {
-        w = m->get_attribute(w_, ps[i]) / tw;
+        w = m->get_attribute(w_, cur_pi) / tw;
       } else {
         w = Float(1.0) / n;
       }
-      v += m->get_attribute(ks_[j], ps[i]) * w;
+      v += m->get_attribute(ks_[j], cur_pi) * w;
     }
     m->set_attribute(ks_[j], pi, v);
   }

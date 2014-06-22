@@ -20,7 +20,18 @@ WeightedDerivativesToRefined::WeightedDerivativesToRefined
 
 void WeightedDerivativesToRefined::apply_index(kernel::Model *m,
                                        kernel::ParticleIndex pi) const {
-  kernel::ParticleIndexes pis = refiner_->get_refined_indexes(m, pi);
+  // retrieving pis by ref if possible is cumbersome but is required for speed
+  kernel::ParticleIndexes pis_if_not_byref;
+  kernel::ParticleIndexes const* pPis;
+  if(refiner_->get_is_by_ref_supported()){
+    kernel::ParticleIndexes const& pis =
+      refiner_->get_refined_indexes_by_ref(m, pi);
+    pPis = &pis;
+  } else{
+    pis_if_not_byref = refiner_->get_refined_indexes(m, pi);
+    pPis = &pis_if_not_byref;
+  }
+  kernel::ParticleIndexes const& pis = *pPis;
   //  Prepare derivative accumulator to normalize by total weight
   Float total_weight;
   if(w_ != FloatKey()){

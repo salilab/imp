@@ -20,15 +20,59 @@ IMPCORE_BEGIN_NAMESPACE
 /**
  */
 class IMPCOREEXPORT FixedRefiner : public Refiner {
-  kernel::ParticlesTemp ps_;
+  Model* m_;
+  kernel::ParticleIndexes pis_;
 
  public:
   //! Store the set of particles
   FixedRefiner(const kernel::ParticlesTemp &ps);
 
-  virtual bool get_can_refine(kernel::Particle *) const IMP_OVERRIDE;
-  virtual const kernel::ParticlesTemp get_refined(kernel::Particle *) const
-      IMP_OVERRIDE;
+  //! Store the set of particle indexes from passed model
+  FixedRefiner(Model* m, const kernel::ParticleIndexes &pis);
+
+  virtual bool get_can_refine(kernel::Particle *) const IMP_OVERRIDE
+  { return true; }
+
+  //! Returns the fixed set of particles.
+  /** Returns the fixed set of particles, regardless of passed particle
+
+      @param a coarse particle to be refined (ignored for FixedRefiner)
+   */
+  virtual const kernel::ParticlesTemp get_refined(kernel::Particle *p) const
+    IMP_OVERRIDE;
+
+  //! Return the indexes of the particles returned by get_refined()
+  /** Return the indexes of the particles returned by get_refined()
+      for particle pi in model m.
+
+      @param pi coarse particle to be refined
+
+      @note For FixedRefiner, this is a faster operation then
+      get_refined()
+
+      @note It is assumed that the refined particles are also in model m,
+
+   */
+  virtual kernel::ParticleIndexes get_refined_indexes
+    (Model* m, ParticleIndex) const IMP_OVERRIDE
+  {
+    IMP_USAGE_CHECK(m == m_,
+                    "mismatching models for refined and coarse particles");
+    IMP_UNUSED(m);
+    return pis_;
+  }
+
+  virtual ParticleIndexes const& get_refined_indexes_by_ref
+    (Model *m, ParticleIndex pi) const
+  {
+    IMP_USAGE_CHECK(m == m_,
+                    "mismatching models for refined and coarse particles");
+    IMP_UNUSED(m);
+    IMP_UNUSED(pi);
+    return pis_;
+  }
+
+
 #ifndef SWIG
   using Refiner::get_refined;
 #endif

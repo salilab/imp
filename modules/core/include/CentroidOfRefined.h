@@ -31,7 +31,7 @@ IMPCORE_BEGIN_NAMESPACE
     \see DerivativesFromRefined
  */
 class IMPCOREEXPORT CentroidOfRefined : public SingletonModifier {
-  IMP::base::PointerMember<Refiner> refiner_;
+  base::PointerMember<Refiner> refiner_;
   FloatKeys ks_;
   FloatKey w_;
 
