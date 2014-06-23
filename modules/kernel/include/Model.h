@@ -389,5 +389,9 @@ class IMPKERNELEXPORT Model : public base::Object
 
 IMPKERNEL_END_NAMESPACE
 
+// This is needed for per cpp compilations, a not even sure why
+// (perhaps cause Model returns ParticleIterator here and there?)
+// - Feel free to remove if you *really* know what you're doing
+#include "IMP/kernel/Particle.h"
 
 #endif /* IMPKERNEL_MODEL_H */
