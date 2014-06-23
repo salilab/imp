@@ -34,9 +34,13 @@ class IMPKINEMATICSEXPORT DOFValues : public std::vector<double> {
   // through RRT class
   double get_distance2(const DOFValues& other_dof_values) const {
     double dist = 0.0;
-    for (unsigned int i = 0; i < size(); i++) {
-      double diff = ((*this)[i] - other_dof_values[i]);
-      dist += (diff * diff);
+    for(unsigned int i=0; i<size(); i++) {
+      double diff1 = ((*this)[i] - other_dof_values[i]);
+      double diff2 = std::fabs(diff1 - 2.0*IMP::algebra::PI);
+      double diff3 = std::fabs(diff1 + 2.0*IMP::algebra::PI);
+      double diff = std::min(std::fabs(diff1), std::min(diff2, diff3));
+      dist += (diff*diff);
+
     }
     return dist / size();
   }
