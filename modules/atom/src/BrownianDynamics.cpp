@@ -126,12 +126,13 @@ void BrownianDynamics::setup(const ParticleIndexes &ips) {
     double ikT = 1.0 / get_kt();
     double ms = 0;
     double mf = 0;
+    Model* m = get_model();
     get_scoring_function()->evaluate(true);
     for (unsigned int i = 0; i < ps.size(); ++i) {
-      double c = get_sigma_displacement(get_model(), ips[i], dtfs);
+      double c = get_sigma_displacement(m, ips[i], dtfs);
       ms = std::max(ms, c);
       for (unsigned int j = 0; j < 3; ++j) {
-        double f = get_force_displacement(get_model(), ips[i], j, dtfs, ikT);
+        double f = get_force_displacement(m, ips[i], j, dtfs, ikT);
         mf = std::max(mf, f);
       }
     }
@@ -232,26 +233,29 @@ void BrownianDynamics::advance_orientation_0(ParticleIndex pi,
                   << std::endl);
 }
 
-void BrownianDynamics::advance_chunk(double dtfs, double ikT,
-                                     const ParticleIndexes &ps,
+void BrownianDynamics::do_advance_chunk(double dtfs, double ikT,
+                                     const kernel::ParticleIndexes &ps,
                                      unsigned int begin, unsigned int end) {
   IMP_LOG_TERSE("Advancing particles " << begin << " to " << end << std::endl);
+  Model* m = get_model();
   for (unsigned int i = begin; i < end; ++i) {
-    if (RigidBodyDiffusion::get_is_setup(get_model(), ps[i])) {
+    ParticleIndex pi = ps[i];
+    if (RigidBodyDiffusion::get_is_setup(m, pi)) {
       // std::cout << "rb" << std::endl;
-      advance_orientation_0(ps[i], dtfs, ikT);
-    } else {
+      advance_orientation_0(pi, dtfs, ikT);
+    }
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-      Particle *p = get_model()->get_particle(ps[i]);
+    else {
+      kernel::Particle *p = get_model()->get_particle(pi);
       IMP_INTERNAL_CHECK(!core::RigidBody::get_is_setup(p),
                          "A rigid body without rigid body diffusion info"
                              << " was found: " << p->get_name());
       IMP_INTERNAL_CHECK(!core::RigidMember::get_is_setup(p),
                          "A rigid member with diffusion info"
                              << " was found: " << p->get_name());
-#endif
     }
-    advance_coordinates_0(ps[i], i, dtfs, ikT);
+#endif
+    advance_coordinates_0(pi, i, dtfs, ikT);
   }
 }
 
@@ -268,8 +272,8 @@ double BrownianDynamics::do_step(const ParticleIndexes &ps, double dt) {
   for (unsigned int b = 0; b < ps.size(); b += chunk_size) {
     IMP_TASK_SHARED(
         (dtfs, ikT, b), (ps),
-        advance_chunk(dtfs, ikT, ps, b,
-                      std::min<unsigned int>(b + chunk_size, ps.size()));
+        do_advance_chunk(dtfs, ikT, ps, b,
+                         std::min<unsigned int>(b + chunk_size, ps.size()));
         , "brownian");
   }
   IMP_OMP_PRAGMA(taskwait)

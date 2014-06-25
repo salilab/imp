@@ -65,6 +65,12 @@ class SimulationParameters;
     \see RigidBodyDiffusion
   */
 class IMPATOMEXPORT BrownianDynamics : public Simulator {
+ private:
+
+  double max_step_;
+  bool srk_;
+  base::Vector<algebra::Vector3D> forces_;
+
  public:
   //! Create the optimizer
   /** If sc is not null, that container will be used to find particles
@@ -86,25 +92,65 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
 
   IMP_OBJECT_METHODS(BrownianDynamics);
 
- private:
-  virtual void setup(const ParticleIndexes &ps) IMP_OVERRIDE;
-  virtual double do_step(const ParticleIndexes &sc,
+ protected:
+  /** a set of setup operations before a series of simulation steps */
+  virtual void setup(const kernel::ParticleIndexes &ps) IMP_OVERRIDE;
+
+  /** Calls do_advance_chunk() to advance ps in chunks
+
+   @param sc particles to simulate in this step
+   @param dt maximal step size in femtoseconds
+
+   @return the time step actually simulated (for this class,
+           it is always equal to the inut dt)
+  */
+  virtual double do_step(const kernel::ParticleIndexes &sc,
                          double dt) IMP_OVERRIDE;
-  virtual bool get_is_simulation_particle(ParticleIndex p) const
+
+  virtual bool get_is_simulation_particle(kernel::ParticleIndex p) const
       IMP_OVERRIDE;
 
- private:
-  void advance_chunk(double dtfs, double ikt, const ParticleIndexes &ps,
-                     unsigned int begin, unsigned int end);
-  void advance_coordinates_1(ParticleIndex pi, unsigned int i,
+ protected:
+  /** advances a chunk of ps from index begin to end
+
+      @param dtfs time step in femtoseconds
+      @param ikt invere kT for current chunk step
+      @param ps particle indexes to advance
+      @param begin beginning index of chunk of ps
+      @param end end index of chunk of ps
+  */
+  virtual void do_advance_chunk(double dtfs, double ikt,
+                             const kernel::ParticleIndexes &ps,
+                             unsigned int begin, unsigned int end);
+
+  //! returns the maximal step size allowed in this simulation
+  double get_max_step() const { return max_step_; }
+
+  //! returns true if implementing the Stochastic Runga-Kutta
+  //! Brownian Dynamics variant
+  double get_is_srk() const { return srk_; }
+
+#ifndef SWIG
+  //! set the force felt on particle i to f
+  void set_force(unsigned int i, algebra::Vector3D const& f)
+  { forces_[i]=f; }
+#endif
+
+  //! get the force felt on each particle
+  algebra::Vector3Ds const& get_forces() const
+    { return forces_; }
+
+  //! get the force felt on particle i
+  algebra::Vector3D const& get_force(unsigned int i) const
+    { return forces_[i]; }
+
+private:
+  void advance_coordinates_1(kernel::ParticleIndex pi, unsigned int i,
+
                              double dtfs, double ikT);
   void advance_coordinates_0(ParticleIndex pi, unsigned int i,
                              double dtfs, double ikT);
-  void advance_orientation_0(ParticleIndex pi, double dtfs, double ikT);
-
-  double max_step_;
-  bool srk_;
-  Vector<algebra::Vector3D> forces_;
+  void advance_orientation_0(kernel::ParticleIndex pi, double dtfs, double ikT);
 };
 
 /** Repeatedly run the current model with Brownian dynamics at different time

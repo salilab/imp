@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef IMPATOM_BROWNIAN_DYNAMICS_BARAK_H
-#define IMPATOM_BROWNIAN_DYNAMICS_BARAK_H
+#ifndef IMPATOM_BROWNIAN_DYNAMICS_TAMD_H
+#define IMPATOM_BROWNIAN_DYNAMICS_TAMD_H
 
 #include <IMP/atom/atom_config.h>
 #include "Diffusion.h"
@@ -64,7 +64,7 @@ class SimulationParameters;
     \see Diffusion
     \see RigidBodyDiffusion
   */
-class IMPATOMEXPORT BrownianDynamicsTAMD : public Simulator {
+class IMPATOMEXPORT BrownianDynamicsTAMD : public BrownianDynamics {
  public:
   //! Create the optimizer
   /** If sc is not null, that container will be used to find particles
@@ -79,34 +79,32 @@ class IMPATOMEXPORT BrownianDynamicsTAMD : public Simulator {
      @note wave_factor is an advanced feature - if you're not sure, just use
                        its default, see also Simulator::simulate_wave()
   */
-  BrownianDynamicsTAMD(kernel::Model *m, std::string name = "BrownianDynamicsTAMD%1%",
-                   double wave_factor = 1.0);
-  void set_maximum_move(double ms) { max_step_ = ms; }
-  void set_use_stochastic_runge_kutta(bool tf) { srk_ = tf; }
+  BrownianDynamicsTAMD(kernel::Model *m,
+                       std::string name = "BrownianDynamicsTAMD%1%",
+                       double wave_factor = 1.0);
 
-  IMP_OBJECT_METHODS(BrownianDynamicsTAMD);
+ protected:
+  /** advances a chunk of ps from index begin to end
+
+      @param dtfs time step in femtoseconds
+      @param ikt invere kT for current chunk step
+      @param ps particle indexes to advance
+      @param begin beginning index of chunk of ps
+      @param end end index of chunk of ps
+  */
+  void do_advance_chunk(double dtfs, double ikt,
+                        const kernel::ParticleIndexes &ps,
+                        unsigned int begin, unsigned int end)
+    IMP_OVERRIDE;
 
  private:
-  virtual void setup(const kernel::ParticleIndexes &ps) IMP_OVERRIDE;
-  virtual double do_step(const kernel::ParticleIndexes &sc,
-                         double dt) IMP_OVERRIDE;
-  virtual bool get_is_simulation_particle(kernel::ParticleIndex p) const
-      IMP_OVERRIDE;
-
- private:
-  void advance_chunk(double dtfs, double ikt, const kernel::ParticleIndexes &ps,
-                     unsigned int begin, unsigned int end);
   void advance_coordinates_1(kernel::ParticleIndex pi, unsigned int i,
                              double dtfs, double ikT);
   void advance_coordinates_0(kernel::ParticleIndex pi, unsigned int i,
                              double dtfs, double ikT);
   void advance_orientation_0(kernel::ParticleIndex pi, double dtfs, double ikT);
-
-  double max_step_;
-  bool srk_;
-  base::Vector<algebra::Vector3D> forces_;
 };
 
 IMPATOM_END_NAMESPACE
 
-#endif /* IMPATOM_BROWNIAN_DYNAMICS__BARAK_H */
+#endif /* IMPATOM_BROWNIAN_DYNAMICS_TAMD_H */
