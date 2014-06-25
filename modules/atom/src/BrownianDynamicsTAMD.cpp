@@ -50,10 +50,8 @@ typedef boost::variate_generator<base::RandomNumberGenerator &,
 
 BrownianDynamicsTAMD::BrownianDynamicsTAMD(kernel::Model *m, std::string name,
                                    double wave_factor)
-    : Simulator(m, name, wave_factor),  // nd_(0,1),
-      // sampler_(base::random_number_generator, nd_),
-      max_step_(std::numeric_limits<double>::max()),
-      srk_(false) {}
+  : BrownianDynamics(m, name, wave_factor)
+{}
 
 /*
   radius
@@ -62,12 +60,6 @@ BrownianDynamicsTAMD::BrownianDynamicsTAMD(kernel::Model *m, std::string name,
 
   T* is
  */
-
-bool BrownianDynamicsTAMD::get_is_simulation_particle(kernel::ParticleIndex pi)
-    const {
-  return (Diffusion::get_is_setup(get_model(), pi) &&
-          IMP::core::XYZ(get_model(), pi).get_coordinates_are_optimized());
-}
 
 namespace {
 /** get the force dispacement term in the Ermak-Mccammon equation
@@ -152,27 +144,6 @@ inline double get_rotational_sigma_bdb(kernel::Model *m,
 }
 }
 
-void BrownianDynamicsTAMD::setup(const kernel::ParticleIndexes &ips) {
-  IMP_IF_LOG(TERSE) {
-    kernel::ParticlesTemp ps = IMP::internal::get_particle(get_model(), ips);
-    double dtfs = get_maximum_time_step();
-    double ikT = 1.0 / get_kt();
-    double ms = 0;
-    double mf = 0;
-    get_scoring_function()->evaluate(true);
-    for (unsigned int i = 0; i < ps.size(); ++i) {
-      double c = get_sigma_displacement_bdb(get_model(), ips[i], dtfs);
-      ms = std::max(ms, c);
-      for (unsigned int j = 0; j < 3; ++j) {
-        double f = get_force_displacement_bdb(get_model(), ips[i], j, dtfs, ikT);
-        mf = std::max(mf, f);
-      }
-    }
-    IMP_LOG_TERSE("Maximum sigma is " << ms << std::endl);
-    IMP_LOG_TERSE("Maximum force is " << mf << std::endl);
-  }
-  forces_.resize(ips.size());
-}
 IMP_GCC_DISABLE_WARNING(-Wuninitialized)
 
 namespace {
@@ -196,8 +167,8 @@ void BrownianDynamicsTAMD::advance_coordinates_1(kernel::ParticleIndex pi,
   algebra::Vector3D force(get_force_displacement_bdb(get_model(), pi, 0, dt, ikT),
                           get_force_displacement_bdb(get_model(), pi, 1, dt, ikT),
                           get_force_displacement_bdb(get_model(), pi, 2, dt, ikT));
-  algebra::Vector3D dX = (force - forces_[i]) / 2.0;
-  check_dX_dbd(dX, max_step_);
+  algebra::Vector3D dX = (force - get_force(i)) / 2.0;
+  check_dX_dbd(dX, get_max_step());
   xd.set_coordinates(xd.get_coordinates() + dX);
 }
 
@@ -219,12 +190,12 @@ void BrownianDynamicsTAMD::advance_coordinates_0(kernel::ParticleIndex pi,
     (get_force_displacement_bdb(get_model(), pi, 0, dtfs, ikT),
      get_force_displacement_bdb(get_model(), pi, 1, dtfs, ikT),
      get_force_displacement_bdb(get_model(), pi, 2, dtfs, ikT));
-  if (srk_) {
-    forces_[i] = force_dX;
+  if (get_is_srk()) {
+    set_force(i, force_dX);
   }
   algebra::Vector3D dX = random_dX + force_dX;
-  if (!srk_) {
-    check_dX_dbd(dX, max_step_);
+  if (!get_is_srk()) {
+    check_dX_dbd(dX, get_max_step());
   }
 
   // // DEBUG - get kinetic energy
@@ -270,64 +241,32 @@ void BrownianDynamicsTAMD::advance_orientation_0(kernel::ParticleIndex pi,
                   << std::endl);
 }
 
-void BrownianDynamicsTAMD::advance_chunk(double dtfs, double ikT,
+void BrownianDynamicsTAMD::do_advance_chunk(double dtfs, double ikT,
                                      const kernel::ParticleIndexes &ps,
                                      unsigned int begin, unsigned int end) {
   IMP_LOG_TERSE("Advancing particles " << begin << " to " << end << std::endl);
+  Model* m = get_model();
   for (unsigned int i = begin; i < end; ++i) {
-    Model* m = get_model();
     ParticleIndex pi = ps[i];
     if (RigidBodyDiffusion::get_is_setup(m, pi)) {
       // std::cout << "rb" << std::endl;
       advance_orientation_0(pi, dtfs, ikT);
-    } else {
+    }
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
+    else  {
       kernel::Particle *p = m->get_particle(ps[i]);
       IMP_INTERNAL_CHECK(!core::RigidBody::get_is_setup(p),
                          "A rigid body without rigid body diffusion info"
-                             << " was found: " << p->get_name());
+                         << " was found: " << p->get_name());
       IMP_INTERNAL_CHECK(!core::RigidMember::get_is_setup(p),
                          "A rigid member with diffusion info"
-                             << " was found: " << p->get_name());
-#endif
+                         << " was found: " << p->get_name());
     }
+#endif
     advance_coordinates_0(pi, i, dtfs, ikT);
   }
 }
 
-/**
-    dx= D/2kT*(F(x0)+F(x0+D/kTF(x0)dt +R)dt +R
- */
-double BrownianDynamicsTAMD::do_step(const kernel::ParticleIndexes &ps, double dt) {
-  double dtfs(dt);
-  double ikT = 1.0 / get_kt();
-  get_scoring_function()->evaluate(true);
-  //  Ek = 0.0; // DEBUG: monitor kinetic energy
-  //  M = 0.0; // DEBUG: monitor kinetic energy
-  const unsigned int chunk_size = 20;
-  for (unsigned int b = 0; b < ps.size(); b += chunk_size) {
-    IMP_TASK_SHARED(
-        (dtfs, ikT, b), (ps),
-        advance_chunk(dtfs, ikT, ps, b,
-                      std::min<unsigned int>(b + chunk_size, ps.size()));
-        , "brownian");
-  }
-  IMP_OMP_PRAGMA(taskwait)
-  IMP_OMP_PRAGMA(flush)
-
-    // DEBUG: monitor kinetic energy
-    //  std::cout << "Kinetic energy (translational) for step is " << Ek
-    //            << " , per mass: " << Ek / M << " kT = " << get_kt()
-    //            << std::endl;
-
-  if (srk_) {
-    get_scoring_function()->evaluate(true);
-    for (unsigned int i = 0; i < ps.size(); ++i) {
-      advance_coordinates_1(ps[i], i, dtfs, ikT);
-    }
-  }
-  return dt;
-}
 
 
 IMPATOM_END_NAMESPACE
