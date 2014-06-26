@@ -17,8 +17,8 @@ simple to the slowest and most accurate.
   particles
 
 - EM2DRestraint - implements FFT based image alignment. This Restraint
-in turn uses internally the Fine2DRegistraitionRestraint. Don't use
-the later one directly. The information obtained after matching a
+in turn uses internally the Fine2DRegistrationRestraint. Don't use
+the latter one directly. The information obtained after matching a
 projection with the EM image is stored in RegistrationResult.
 
 The module goes together with the EMageFit application, that uses the
@@ -45,5 +45,5 @@ License as published by the Free Software Foundation; either
 version 2 of the License, or (at your option) any later version.
 
 _Publications_:
- - Javier A. Velazquez-Muriel, Keren Lasker, Daniel Russel, Jeremy Phillips, Benjamin M. Webb, Dina Schneidman-Duhovny, Andrej Sali, \quote{Assembly of macromolecular complexes by satisfaciton of spatial restraints from electron microscopy images}, <em>Proc Natl Acad Sci USA 109(46), 18821-18826</em>, 2012.
+ - Javier A. Velazquez-Muriel, Keren Lasker, Daniel Russel, Jeremy Phillips, Benjamin M. Webb, Dina Schneidman-Duhovny, Andrej Sali, \quote{Assembly of macromolecular complexes by satisfaction of spatial restraints from electron microscopy images}, <em>Proc Natl Acad Sci USA 109(46), 18821-18826</em>, 2012.
  - Schneidman-Duhovny et al. A method for integrative structure determination of protein-protein complexes. Bioinformatics. 2012;28(24):3282-9.
