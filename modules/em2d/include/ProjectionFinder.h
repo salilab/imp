@@ -71,7 +71,7 @@ class IMPEM2DEXPORT Em2DRestraintParameters : public ProjectingParameters {
 };
 IMP_VALUES(Em2DRestraintParameters, Em2DRestraintParametersList);
 
-//! class to perform registration of model projections to images images
+//! Class to perform registration of model projections to images
 class IMPEM2DEXPORT ProjectionFinder : public IMP::base::Object {
  public:
   ProjectionFinder()
