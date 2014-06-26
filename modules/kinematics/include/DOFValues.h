@@ -12,6 +12,7 @@
 #define IMPKINEMATICS_DOF_VALUES_H
 
 #include "DOF.h"
+#include <IMP/algebra/constants.h>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
