@@ -45,6 +45,7 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(len(h2), 1)
             self.assertEqual(len(IMP.atom.get_leaves(h)),
                              len(IMP.atom.get_leaves(h2[0])))
+            self.assertEqual(len([a for a in IMP.atom.get_leaves(h2) if not IMP.atom.Atom.get_is_setup(a)]),0)
             self.assertAlmostEqual(IMP.atom.get_mass(IMP.atom.Selection(h)),
                                    IMP.atom.get_mass(IMP.atom.Selection(h2[0])), delta=1e-4)
             if hasattr(IMP.atom, 'get_surface_area'):
