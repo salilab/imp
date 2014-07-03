@@ -87,6 +87,30 @@ double get_volume_from_residue_type(ResidueType rt) {
       algebra::Sphere3D(algebra::get_zero_vector_d<3>(), r));
 }
 
+double get_mass_from_residue_type(ResidueType rt) {
+  typedef std::pair<ResidueType, double> RP;
+  static const RP masses[] = {
+      RP(ResidueType("ALA"), 71.04), RP(ResidueType("ARG"), 156.1),
+      RP(ResidueType("ASN"), 114.04), RP(ResidueType("ASP"), 115.03),
+      RP(ResidueType("CYS"), 103.14), RP(ResidueType("GLN"), 128.06),
+      RP(ResidueType("GLU"), 129.04), RP(ResidueType("GLY"), 57.02),
+      RP(ResidueType("HIS"), 137.06), RP(ResidueType("ILE"), 113.08),
+      RP(ResidueType("LEU"), 113.08), RP(ResidueType("LYS"), 128.09),
+      RP(ResidueType("MET"), 131.04), RP(ResidueType("PHE"), 147.07),
+      RP(ResidueType("PRO"), 97.05), RP(ResidueType("SER"), 87.03),
+      RP(ResidueType("THR"), 101.05), RP(ResidueType("TRP"), 186.08),
+      RP(ResidueType("TYR"), 163.06), RP(ResidueType("VAL"), 99.07)};
+  static const boost::unordered_map<ResidueType, double> masses_map(
+      masses, masses + sizeof(masses) / sizeof(RP));
+  if (masses_map.find(rt) == masses_map.end()) {
+    IMP_THROW("Can't approximate volume of non-standard residue " << rt,
+              ValueException);
+  }
+  double m = masses_map.find(rt)->second;
+  IMP_INTERNAL_CHECK(m > 0, "Read garbage m for " << rt);
+  return m;
+}
+
 typedef unit::Shift<unit::Multiply<unit::Pascal, unit::Second>::type, -3>::type
     MillipascalSecond;
 

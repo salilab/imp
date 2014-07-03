@@ -81,6 +81,13 @@ IMPATOMEXPORT double get_mass_from_number_of_residues(unsigned int num_aa);
  */
 IMPATOMEXPORT double get_volume_from_residue_type(ResidueType rt);
 
+//! Return an estimate for the mass of a given residue
+/**
+ \throw ValueException if a non-standard residue type is passed
+ */
+IMPATOMEXPORT double get_mass_from_residue_type(ResidueType rt);
+
+
 //!@}
 
 /** Compute the concentration in molarity from the passed values*/
