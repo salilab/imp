@@ -21,7 +21,7 @@ BuildRequires: libTAU-devel
 
 # The cmake included with RHEL 6 is too old; use cmake28 from EPEL instead.
 # RHEL 5 doesn't have cmake28; you will need to build this package yourself.
-%if 0%{?rhel}
+%if 0%{?rhel} == 5 || 0%{?rhel} == 6
 BuildRequires: cmake28
 %define cmake cmake28
 %define ctest ctest28
