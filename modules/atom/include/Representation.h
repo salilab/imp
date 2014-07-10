@@ -30,7 +30,7 @@ enum RepresentationType {
 
 //! A decorator for a representation.
 /** It stores a number of copies of its sub hierarchy each with an associated
- * resolution. You can used it to get the representation at a given resolution.
+ * resolution. You can use it to get the representation at a given resolution.
  * \note The particle returned for a given representation should be thought of
  * as replacing this particle (not as a child of it).
  *
@@ -65,9 +65,11 @@ class IMPATOMEXPORT Representation : public Hierarchy {
   /** Return all children at all resolutions. */
   Hierarchies get_representations(RepresentationType type = BALLS);
 
-  /** Representation for given resolution. The resolution is computed using
-   * get_resolution().
-   * \note The resolution parameter will go away, as, most likely will the type.
+  /** Add the representation for the given resolution. If the resolution is
+      not given it is computed using get_resolution().
+      Currently only a type of 'BALLS' is supported; eventually, other types
+      of representation may be supported, eg gaussians or density maps.
+     \note The resolution parameter will go away, as, most likely will the type.
    */
   void add_representation(kernel::ParticleIndexAdaptor rep,
                           RepresentationType type = BALLS,
