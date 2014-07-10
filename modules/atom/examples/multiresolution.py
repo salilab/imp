@@ -3,7 +3,6 @@
 # IMP.atom via the IMP.atom.Resolution decorator and IMP.atom.Selection
 
 import IMP.atom
-import IMP.atom
 
 # Create an IMP model and add a heavy atom-only protein from a PDB file
 m = IMP.kernel.Model()
