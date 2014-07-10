@@ -44,7 +44,8 @@
       macro(Domain, domain, DOMAIN_TYPE),                                  \
       macro(Fragment, fragment, FRAGMENT_TYPE),                            \
       macro(core::XYZ, xyz, XYZ_TYPE), macro(core::XYZR, xyzr, XYZR_TYPE), \
-      macro(Mass, mass, MASS_TYPE)
+      macro(Mass, mass, MASS_TYPE),                                        \
+      macro(State, state, STATE_TYPE)
 
 // DOMAIN is defined to be 1 by a fedora math header
 #define IMP_ATOM_FOREACH_HIERARCHY_TYPE_STATEMENTS(macro) \
@@ -56,7 +57,8 @@
   macro(Fragment, fragment, FRAGMENT_TYPE);               \
   macro(core::XYZ, xyz, XYZ_TYPE);                        \
   macro(core::XYZR, xyzr, XYZR_TYPE);                     \
-  macro(Mass, mass, MASS_TYPE)
+  macro(Mass, mass, MASS_TYPE);                           \
+  macro(State, state, STATE_TYPE)
 
 // DOMAIN is defined to be 1 by a fedora math header
 #define IMP_ATOM_FOREACH_HIERARCHY_TYPE_FUNCTIONS(macro)                       \
@@ -65,6 +67,7 @@
       macro(Domain, domain, DOMAIN_TYPE)                                       \
       macro(Fragment, fragment, FRAGMENT_TYPE) macro(core::XYZ, xyz, XYZ_TYPE) \
       macro(core::XYZR, xyzr, XYZR_TYPE) macro(Mass, mass, MASS_TYPE)          \
+      macro(State, state, STATE_TYPE)
       IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 #define IMP_ATOM_CAPS_NAME(UCName, lcname, CAPSNAME) CAPSNAME
@@ -77,6 +80,7 @@ class Fragment;
 class Chain;
 class Molecule;
 class Mass;
+class State;
 
 IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
 
@@ -194,6 +198,7 @@ IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
     \see Domain
     \see Fragment
     \see Mass
+    \see State
  */
 class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
   typedef core::Hierarchy H;
@@ -366,7 +371,8 @@ enum GetByType {
   FRAGMENT_TYPE,
   XYZ_TYPE,
   XYZR_TYPE,
-  MASS_TYPE
+  MASS_TYPE,
+  STATE_TYPE
 };
 #else
 enum GetByType {

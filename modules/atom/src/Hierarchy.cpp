@@ -13,6 +13,7 @@
 #include <IMP/atom/Fragment.h>
 #include <IMP/atom/Domain.h>
 #include <IMP/atom/Mass.h>
+#include <IMP/atom/State.h>
 #include <IMP/core/LeavesRefiner.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/atom/estimates.h>
