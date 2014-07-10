@@ -19,8 +19,7 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-//! A decorator for a node that marks this hierarchy as being a particular
-// state.
+//! Associate an integer "state" index with a hierarchy node.
 /**
  * \note Only one State node is allowed in any path up the tree as nesting
  * them does not have a clear meaning.
