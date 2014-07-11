@@ -1,4 +1,4 @@
-This modules provides support for RMF file format for storing
+This module provides support for RMF file format for storing
 hierarchical molecular data (such as atomic or coarse grained
 representations of proteins), along with markup, including geometry
 and score data.
@@ -6,11 +6,11 @@ and score data.
  IMP.rmf supports I/O of IMP::atom::Hierarchy and associated types as
  well as output of IMP::display::Geometry, IMP::Restraint and
  arbitrary IMP::Particles. For each of these there are methods like:
- - IMP::rmf::add_hierarchies() to add them to an RMF file, note, this does not,
-   for various reasons, write the state to frame 0.
+ - IMP::rmf::add_hierarchies() to add them to an RMF file (note this does not,
+   for various reasons, write the state to frame 0)
  - IMP::rmf::create_hierarchies() to create hierarchies from an RMF file
- - IMP::rmf::link_hierarchies() to link existing hierarchies to a corresponding
-   ones in the rmf file
+ - IMP::rmf::link_hierarchies() to link existing hierarchies to corresponding
+   ones in the RMF file
 
  Once objects are linked/added/created, they are attached to the RMF file.
  IMP::rmf::load_frame() can be used to change the state of the linked objects
