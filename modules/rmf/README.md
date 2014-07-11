@@ -17,7 +17,8 @@ and score data.
  to that of an arbitrary frame and IMP::rmf::save_frame() can be used to save
  the current state of the objects into a frame in the RMF file.
 
- See the [RMF library](http://salilab.github.io/rmf) for more information.
+ See the [RMF library](http://integrativemodeling.org/rmf/nightly/doc/)
+for more information.
 
 # Info
 
