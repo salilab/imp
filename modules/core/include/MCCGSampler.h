@@ -31,7 +31,7 @@ class MonteCarlo;
     passes all of the restraint score cutoffs, it will accept the solution
     and move on to generating another one.
 
-    At the moment it only support optimization of Cartesian coordinates,
+    At the moment it only supports optimization of Cartesian coordinates,
     but this will be fixed when people ask for it
     (and they already have :-). We are also open to supporting a wider
     variety of optimization protocols (eg only do conjugate gradient

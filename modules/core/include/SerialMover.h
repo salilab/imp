@@ -1,6 +1,6 @@
 /**
  *  \file IMP/core/SerialMover.h
- *  \brief  A mover that apply other movers one at a time
+ *  \brief  A mover that applies other movers one at a time
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -15,17 +15,17 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! Apply a list of movers one at a time
-/** Each time a move is requested, on the next mover is applied. This
-    should probably be used in conjunction with incremental scoring
-    (MonteCarlo::set_use_incremental()).
+//! Applies a list of movers one at a time
+/** Each time a move is requested, only the next mover in the list
+    is applied. This should probably be used in conjunction with
+    incremental scoring (MonteCarlo::set_use_incremental()).
  */
 class IMPCOREEXPORT SerialMover : public MonteCarloMover {
   int imov_;
   MonteCarloMovers movers_;
 
  public:
-  /** The Serial are applied one at a time
+  /** Constructor.
       \param[in] mvs list of movers to apply one after another
    */
   SerialMover(const MonteCarloMoversTemp& mvs);
