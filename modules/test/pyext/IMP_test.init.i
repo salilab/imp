@@ -307,7 +307,7 @@ class TestCase(unittest.TestCase):
                 if name in ok:
                     continue
                 bad.append(name)
-        message="All IMP classes should be labeled values or as objects to get memory management correct in python. The following are not:\n%s\nPlease add an IMP_SWIG_OBJECT or IMP_SWIG_VALUE call to the python wrapper, or if the class has a good reason to be neither, add the name to the value_object_exceptions list in the IMPModuleTest call." \
+        message="All IMP classes should be labeled as values or objects to get memory management correct in Python. The following are not:\n%s\nPlease add an IMP_SWIG_OBJECT or IMP_SWIG_VALUE call to the Python wrapper, or if the class has a good reason to be neither, add the name to the value_object_exceptions list in the IMPModuleTest call." \
                           % (str(bad))
         self.assertEquals(len(bad), 0,
                           message)
