@@ -18,13 +18,13 @@
 IMPDOMINO_BEGIN_NAMESPACE
 
 /** An undirected graph on subsets of vertices. Each vertex is
-    named with an Subset.
+    named with a Subset.
  */
 IMP_GRAPH(SubsetGraph, undirected, Subset, int, out << vertex);
 
 /** An undirected graph with one vertex per particle of interest.
     Two particles are connected by an edge if a kernel::Restraint
-    or ScoreState creates and interaction between the two particles.
+    or ScoreState creates an interaction between the two particles.
 
     See \ref graphs "Graphs in IMP" for more information.
  */
@@ -79,14 +79,14 @@ IMPDOMINOEXPORT SubsetGraph get_restraint_graph(ScoringFunctionAdaptor rs,
     particles.  The dependency graph in the model is traversed to
     determine how the passed particles relate to the actual particles
     read as input by the model. For example, if particles contains a
-    rigid body, then an restraint which uses a member of the rigid
+    rigid body, then a restraint which uses a member of the rigid
     body will have an edge from the rigid body particle.
 
     \note You may want to create an OptimizeRestraints object before
     calling this function.
 
     \note These functions are here to aid in debugging of optimization
-    protocols that use Domino2. As a result, its signature and
+    protocols that use Domino. As a result, its signature and
     functionality may change without notice.
     @{
  */
@@ -112,7 +112,7 @@ IMPDOMINOEXPORT display::Geometries get_subset_graph_geometry(
     const SubsetGraph &ig);
 
 /** A directed graph on subsets of vertices. Each vertex is
-    named with an Subset.
+    named with a Subset.
  */
 IMP_GRAPH(MergeTree, bidirectional, Subset, int, out << vertex);
 
@@ -149,7 +149,7 @@ IMPDOMINOEXPORT bool get_is_merge_tree(const MergeTree &tree, Subset all,
                                        bool verbose = true);
 
 /** \name Read and write merge trees
-    Merge trees can be written to an read from a text stream. As always,
+    Merge trees can be written to and read from a text stream. As always,
     this requires a canonical particles list whose order is the same
     for the reading and writing.
     @{
