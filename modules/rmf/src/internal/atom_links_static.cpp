@@ -338,7 +338,7 @@ atom::Bonds get_rep_bonds(atom::Hierarchy h) {
         ret += atom::get_internal_bonds(r);
       }
     }
-    std::cout << "Found " << ret.size() << " alt bonds" << std::endl;
+    IMP_LOG_VERBOSE("Found " << ret.size() << " alt bonds" << std::endl);
   } else {
     IMP_FOREACH(atom::Hierarchy ch, h.get_children()) {
       ret += get_rep_bonds(ch);
