@@ -1,5 +1,6 @@
 /**
- *  \file IMP/atom/Copy.h     \brief A particle with a user-defined type.
+ *  \file IMP/atom/Copy.h
+ *  \brief A decorator for keeping track of copies of a molecule.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -20,7 +21,7 @@ IMPATOM_BEGIN_NAMESPACE
 
 //! A decorator for keeping track of copies of a molecule.
 /** This decorator is for differentiating and keeping track
-    of identity when there are multiple copies of the a
+    of identity when there are multiple copies of
     molecule in the system. It should only be applied to
     Molecule particles.
  */
