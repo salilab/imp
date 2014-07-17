@@ -61,6 +61,12 @@ void Hierarchy::show(std::ostream &out, std::string delimiter) const {
   if (get_as_domain()) {
     out << get_as_domain() << delimiter;
   }
+  if (get_as_state()) {
+    out << get_as_state() << delimiter;
+  }
+  if (Copy::get_is_setup(get_particle())) {
+    out << Copy(get_particle());
+  }
   if (core::RigidBody::get_is_setup(get_particle())) {
     out << core::RigidBody(get_particle());
   }
