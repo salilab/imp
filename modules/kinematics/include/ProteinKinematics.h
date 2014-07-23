@@ -73,7 +73,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics {
 
   DihedralAngleRevoluteJoints get_ordered_joints() {
     DihedralAngleRevoluteJoints ret;
-    BOOST_FOREACH(Joint *j, kf_->get_ordered_joints() ){
+    IMP_FOREACH(Joint *j, kf_->get_ordered_joints() ){
       ret.push_back(dynamic_cast<DihedralAngleRevoluteJoint*>(j));
     }
     return ret;
