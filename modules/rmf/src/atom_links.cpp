@@ -36,8 +36,6 @@ std::string get_good_name(kernel::Model *m, kernel::ParticleIndex h) {
     std::ostringstream oss;
     oss << atom::Residue(m, h).get_index();
     return oss.str();
-  } else if (atom::Chain::get_is_setup(m, h)) {
-    return atom::Chain(m, h).get_id();
   } else {
     return m->get_particle_name(h);
   }
