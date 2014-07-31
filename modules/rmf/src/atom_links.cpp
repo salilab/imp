@@ -63,6 +63,7 @@ void HierarchyLoadLink::create_recursive(kernel::Model *m,
                                          Data &data) {
   set_association(name, m->get_particle(cur));
   kernel::ParticleIndexes breps, greps;
+  Floats bresols, gresols;
   if (af_.get_is(name)) {
     IMP_FOREACH(RMF::NodeConstHandle alt,
                 af_.get(name).get_alternatives(RMF::PARTICLE)) {
@@ -70,6 +71,12 @@ void HierarchyLoadLink::create_recursive(kernel::Model *m,
       kernel::ParticleIndex cur_rep = m->add_particle(alt.get_name());
       create_recursive(m, root, cur_rep, alt, rigid_bodies, data);
       breps.push_back(cur_rep);
+      if (explicit_resolution_factory_.get_is(alt)) {
+        bresols.push_back(explicit_resolution_factory_.get(alt)
+                                    .get_static_explicit_resolution());
+      } else {
+        bresols.push_back(-1);
+      }
       IMP_LOG_TERSE("Found particle alternative " << alt << std::endl);
     }
     IMP_FOREACH(RMF::NodeConstHandle alt,
@@ -78,6 +85,12 @@ void HierarchyLoadLink::create_recursive(kernel::Model *m,
       kernel::ParticleIndex cur_rep = m->add_particle(alt.get_name());
       create_recursive(m, root, cur_rep, alt, rigid_bodies, data);
       greps.push_back(cur_rep);
+      if (explicit_resolution_factory_.get_is(alt)) {
+        gresols.push_back(explicit_resolution_factory_.get(alt)
+                                    .get_static_explicit_resolution());
+      } else {
+        gresols.push_back(-1);
+      }
       IMP_LOG_TERSE("Found gaussian alternative " << alt << std::endl);
     }
     // for each of them, add particle
@@ -99,15 +112,24 @@ void HierarchyLoadLink::create_recursive(kernel::Model *m,
   }
   do_setup_particle(m, root, cur, name);
   if (!breps.empty() || !greps.empty()) {
-    atom::Representation::setup_particle(m, cur);
+    double resolution = -1;
+    if (explicit_resolution_factory_.get_is(name)) {
+      resolution = explicit_resolution_factory_.get(name)
+                               .get_static_explicit_resolution();
+    }
+    atom::Representation::setup_particle(m, cur, resolution);
   }
 
+  int i = 0;
   RMF_FOREACH(kernel::ParticleIndex r, breps) {
-    atom::Representation(m, cur).add_representation(r, atom::BALLS);
+    atom::Representation(m, cur).add_representation(r, atom::BALLS,
+                                                    bresols[i++]);
   }
 
+  i = 0;
   RMF_FOREACH(kernel::ParticleIndex r, greps) {
-    atom::Representation(m, cur).add_representation(r, atom::GAUSSIANS);
+    atom::Representation(m, cur).add_representation(r, atom::GAUSSIANS,
+                                                    gresols[i++]);
   }
 }
 
@@ -215,7 +237,8 @@ HierarchyLoadLink::HierarchyLoadLink(RMF::FileConstHandle fh)
     : P("HierarchyLoadLink%1%"),
       intermediate_particle_factory_(fh),
       reference_frame_factory_(fh),
-      af_(fh) {
+      af_(fh),
+      explicit_resolution_factory_(fh) {
   RMF::Category imp_cat = fh.get_category("IMP");
   external_rigid_body_key_ =
       fh.get_key(imp_cat, "external frame", RMF::IntTraits());
@@ -252,24 +275,36 @@ void HierarchySaveLink::add_recursive(Model *m, kernel::ParticleIndex root,
   if (p != root) set_association(cur, m->get_particle(p));
   RMF::NodeHandles prep_nodes, grep_nodes;
   if (IMP::atom::Representation::get_is_setup(m, p)) {
+    IMP::atom::Representation rep(m, p);
+    Floats bresols = rep.get_resolutions(atom::BALLS);
+    /* First "BALLS" resolution is the default */
+    explicit_resolution_factory_.get(cur).set_static_explicit_resolution(
+                                               bresols[0]);
     {
-      atom::Hierarchies reps =
-          IMP::atom::Representation(m, p).get_representations(atom::BALLS);
+      atom::Hierarchies reps = rep.get_representations(atom::BALLS);
+      int i = 0; /* Skip first (default) resolution */
       IMP_FOREACH(atom::Hierarchy cr, reps) {
+        i++;
         if (cr.get_particle_index() == p) continue;
         RMF::NodeHandle cn = cur.get_file().add_node(
             get_good_name(m, cr.get_particle_index()), RMF::REPRESENTATION);
+        explicit_resolution_factory_.get(cn).set_static_explicit_resolution(
+                                                      bresols[i]);
         prep_nodes.push_back(cn);
         add_recursive(m, root, cr.get_particle_index(), rigid_bodies, cn, data);
       }
     }
     {
-      atom::Hierarchies reps =
-          IMP::atom::Representation(m, p).get_representations(atom::GAUSSIANS);
+      atom::Hierarchies reps = rep.get_representations(atom::GAUSSIANS);
+      Floats gresols = rep.get_resolutions(atom::GAUSSIANS);
+      int i = -1;
       IMP_FOREACH(atom::Hierarchy cr, reps) {
+        i++;
         if (cr.get_particle_index() == p) continue;
         RMF::NodeHandle cn = cur.get_file().add_node(
             get_good_name(m, cr.get_particle_index()), RMF::REPRESENTATION);
+        explicit_resolution_factory_.get(cn).set_static_explicit_resolution(
+                                                      gresols[i]);
         grep_nodes.push_back(cn);
         add_recursive(m, root, cr.get_particle_index(), rigid_bodies, cn, data);
       }
@@ -306,7 +341,7 @@ void HierarchySaveLink::add_recursive(Model *m, kernel::ParticleIndex root,
 }
 
 HierarchySaveLink::HierarchySaveLink(RMF::FileHandle f)
-    : P("HierarchySaveLink%1%"), af_(f) {
+    : P("HierarchySaveLink%1%"), af_(f), explicit_resolution_factory_(f) {
   RMF::Category imp_cat = f.get_category("IMP");
   external_rigid_body_key_ =
       f.get_key(imp_cat, "external frame", RMF::IntTraits());
