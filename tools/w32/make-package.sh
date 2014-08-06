@@ -56,6 +56,22 @@ rm -rf ${ROOT}/pylib/*/*.py ${ROOT}/pylib/*/IMP || exit 1
 # and the IMP DLLs
 patch -d ${ROOT}/python/IMP -p1 < ${TOOLDIR}/python-search-path.patch || exit 1
 
+# If there are any Python applications that don't have a file extension,
+# add .py extension and drop in wrapper so users can run them without an
+# extension (see comments in pyapp_wrapper.c)
+for app in ${ROOT}/bin/*; do
+  if ! echo $app | egrep -q '\.[a-zA-Z]+$'; then
+    if file -b $app | grep -iq python; then
+      mv $app ${app}.py || exit 1
+      cp ${TOOLDIR}/pyapp_wrapper.exe ${app}.exe || exit 1
+    else
+      echo "Application $app has no file extension but"
+      echo "does not appear to be Python"
+      exit 1
+    fi
+  fi
+done
+
 # Make Python version-specific directories for extensions (.pyd)
 if [ "${BITS}" = "32" ]; then
   PYVERS="2.4 2.5 2.6 2.7"
