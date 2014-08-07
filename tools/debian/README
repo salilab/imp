@@ -1,0 +1,5 @@
+This directory contains files to build .deb packages for Debian-based
+systems (we have tested it on Ubuntu 14.04/Trusty Tahr, but it
+may work on other Debian or Ubuntu-based Linux variants).
+
+To use, see the make-package.sh script.

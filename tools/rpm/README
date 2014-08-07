@@ -1,0 +1,6 @@
+This directory contains files to build RPM packages for RedHat Linux and
+similar systems (we have tested it on CentOS/RHEL 5,6,7, and Fedora, but it
+may work on other RPM-based Linux variants).
+
+To use, simply copy IMP.spec.in to IMP.spec and replace @IMP_VERSION@ with
+your IMP version number.
