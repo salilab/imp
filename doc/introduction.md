@@ -43,11 +43,11 @@ At the most basic, to create particles and manipulate attributes you can do
 
     import IMP.kernel
     model= IMP.kernel.Model()
-    particle_0= m.add_particle("my first particle")
+    particle_0= model.add_particle("my first particle")
     string_key = IMP.kernel.StringKey("my first data")
     model.add_attribute(string_key, particle_0, "Hi, particle 0")
 
-    particle_1= m.add_particle("my second particle")
+    particle_1= model.add_particle("my second particle")
     model.add_attribute(string_key, particle_1, "Hi, particle 1")
 
     print model.get_attribute(string_key, particle_0)
