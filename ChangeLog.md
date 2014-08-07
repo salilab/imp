@@ -1,4 +1,8 @@
-# For IMP 2.2 # {#ChangeLog}
+# ChangeLog
+# For IMP 2.2.1 # {#changelog}
+- Bugfix: PoseScore (see the ligand_score application) should now match that used by the Pose&Rank web server (http://salilab.org/poseandrank/)
+
+# For IMP 2.2.0 # {#changelog_2_2_0}
 - A module IMP.template was added to act as a template for creating new external modules. It includes setting up git hooks for format checks and things like that.
 - The python support for grids was cleaned up. Hopefully this makes it more robust. If you were using a grid in python that no longer exists, ping us, we can add it back.
 - The generic geometry functions were simplified slightly and renamed to IMP::algebra::get_vector_geometry().
