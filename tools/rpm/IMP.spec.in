@@ -172,6 +172,21 @@ rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
 /usr/include/RMF
 
 %changelog
+* Wed Apr 09 2014 Ben Webb <ben@salilab.org>   2.2.0-1
+- 2.2.0 release.
+
+* Mon Nov 04 2013 Ben Webb <ben@salilab.org>   2.1.1-1
+- 2.1.1 release.
+
+* Thu Oct 24 2013 Ben Webb <ben@salilab.org>   2.1.0-1
+- 2.1.0 release.
+
+* Thu May 02 2013 Ben Webb <ben@salilab.org>   2.0.1-1
+- 2.0.1 release.
+
+* Mon Apr 29 2013 Ben Webb <ben@salilab.org>   2.0.0-1
+- 2.0.0 release.
+
 * Mon Mar 08 2010 Ben Webb <ben@salilab.org>   1.0-1
 - 1.0 release.
 
