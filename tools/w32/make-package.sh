@@ -171,6 +171,7 @@ echo "avicap32.dll" >> w32.dlls
 echo "avifil32.dll" >> w32.dlls
 echo "comctl32.dll" >> w32.dlls
 echo "gdi32.dll" >> w32.dlls
+echo "shell32.dll" >> w32.dlls
 echo "msvcrt.dll" >> w32.dlls
 echo "msvfw32.dll" >> w32.dlls
 echo "ole32.dll" >> w32.dlls
