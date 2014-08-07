@@ -93,16 +93,15 @@ void MonteCarloWithWte::update_bias(double score)
 }
 
 void MonteCarloWithWte::do_step() {
-  core::MonteCarloMoverResult moved=do_move();
+  ParticlesTemp moved=do_move(get_move_probability());
   double totenergy=get_scoring_function()->evaluate(false);
   double energy=totenergy;
   if(full_==false){energy=rset_->evaluate(false);}
-  bool do_accept=do_accept_or_reject_move(totenergy+get_bias(energy),
-                                          moved.get_proposal_ratio());
+  bool do_accept=do_accept_or_reject_move(totenergy+get_bias(energy));
   if(do_accept) update_bias(energy);
 }
 
-double MonteCarloWithWte::do_evaluate(const ParticleIndexes &moved) const {
+double MonteCarloWithWte::do_evaluate(const ParticlesTemp &moved) const {
   double totenergy=get_scoring_function()->evaluate(false);
   double energy=totenergy;
   if(full_==false){energy=rset_->evaluate(false);}

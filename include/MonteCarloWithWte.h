@@ -34,7 +34,7 @@ class IMPMEMBRANEEXPORT MonteCarloWithWte: public core::MonteCarlo
                      double gamma, double w0);
 
   void    update_bias(double score);
-  double  do_evaluate(const ParticleIndexes &moved) const;
+  double  do_evaluate(const ParticlesTemp &moved) const;
   double  get_spline(double score) const;
 
 public:
