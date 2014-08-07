@@ -9,14 +9,14 @@ import StringIO
 class Tests(IMP.test.ApplicationTestCase):
 
     def test_wrong_number_args(self):
-        """Test idock.py with wrong number of arguments"""
-        p = self.run_python_application('idock.py', [])
+        """Test idock with wrong number of arguments"""
+        p = self.run_python_application('idock', [])
         out, err = p.communicate()
         self.assertNotEqual(p.returncode, 0)
 
     def test_em2d_without_pixel_size(self):
         """Test idock.py with class averages but no pixel size"""
-        p = self.run_python_application('idock.py',
+        p = self.run_python_application('idock',
                                         ['--em2d', 'foo', 'file1', 'file2'])
         out, err = p.communicate()
         self.assertIn('please specify pixel size', err)
@@ -24,7 +24,7 @@ class Tests(IMP.test.ApplicationTestCase):
 
     def test_no_data(self):
         """Test idock.py with no experimental data"""
-        p = self.run_python_application('idock.py',
+        p = self.run_python_application('idock',
                                         ['file1', 'file2'])
         out, err = p.communicate()
         self.assertIn('please provide', err)
@@ -32,13 +32,13 @@ class Tests(IMP.test.ApplicationTestCase):
 
     def test_idock_init(self):
         """Test IDock class init"""
-        app = self.import_python_application('idock.py')
+        app = self.import_python_application('idock')
         dock = app.IDock()
 
     def make_idock_with_captured_subprocess(self):
         """Make an IDock instance. Capture the command lines of any
            subprocesses, rather than actually running them."""
-        app = self.import_python_application('idock.py')
+        app = self.import_python_application('idock')
 
         class Opts(object):
             pass
@@ -66,7 +66,7 @@ class Tests(IMP.test.ApplicationTestCase):
 
     def test_count_lines(self):
         """Test _count_lines()"""
-        app = self.import_python_application('idock.py')
+        app = self.import_python_application('idock')
         open('foo', 'w').write('foo\nbar\nbaz\n')
         self.assertEqual(app._count_lines('foo'), 3)
         os.unlink('foo')
@@ -86,7 +86,7 @@ class Tests(IMP.test.ApplicationTestCase):
                         return 1
                     else:
                         return 0
-        app = self.import_python_application('idock.py')
+        app = self.import_python_application('idock')
         oldsubproc = app.subprocess
         old_stdout = sys.stdout
         try:
@@ -140,7 +140,7 @@ class Tests(IMP.test.ApplicationTestCase):
 
     def test_get_filename(self):
         """Test get_filename()"""
-        app = self.import_python_application('idock.py')
+        app = self.import_python_application('idock')
 
         class Opts(object):
             pass
@@ -188,7 +188,7 @@ class Tests(IMP.test.ApplicationTestCase):
 
     def test_make_transformation_file(self):
         """Test make_transformation_file()"""
-        app = self.import_python_application('idock.py')
+        app = self.import_python_application('idock')
 
         class Opts(object):
             pass
@@ -219,7 +219,7 @@ Program parameters
 
     def test_run_patch_dock(self):
         """Test run_patch_dock()"""
-        app = self.import_python_application('idock.py')
+        app = self.import_python_application('idock')
 
         class Dummy(app.IDock):
 
@@ -267,7 +267,7 @@ Program parameters
 
     def test_parse_args(self):
         """Test IDock.parse_args()"""
-        app = self.import_python_application('idock.py')
+        app = self.import_python_application('idock')
         old_sys_argv = sys.argv
         try:
             # Boost parser cannot be called multiple times, so skip it
@@ -292,7 +292,7 @@ Program parameters
 
     def test_get_scorers(self):
         """Test IDock.get_scorers()"""
-        app = self.import_python_application('idock.py')
+        app = self.import_python_application('idock')
 
         class Opts(object):
             pass
@@ -314,7 +314,7 @@ Program parameters
 
     def test_scorer(self):
         """Test Scorer class"""
-        app = self.import_python_application('idock.py')
+        app = self.import_python_application('idock')
 
         class MyScorer(app.Scorer):
 
@@ -391,7 +391,7 @@ ligandPdb (str) antibody_cut.pdb
         os.unlink('transforms')
 
     def get_dummy_idock_for_scorer(self):
-        app = self.import_python_application('idock.py')
+        app = self.import_python_application('idock')
 
         class Opts(object):
             pass
@@ -403,7 +403,7 @@ ligandPdb (str) antibody_cut.pdb
         return app, idock
 
     def run_scorer_score(self, scorer):
-        app = self.import_python_application('idock.py')
+        app = self.import_python_application('idock')
 
         class Dummy:
 
@@ -653,7 +653,7 @@ ligandPdb (str) antibody_cut.pdb
 
     def test_main(self):
         """Test IDock.main()"""
-        app = self.import_python_application('idock.py')
+        app = self.import_python_application('idock')
 
         class MockDock(app.IDock):
 

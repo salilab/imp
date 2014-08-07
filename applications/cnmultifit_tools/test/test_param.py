@@ -5,8 +5,8 @@ import os
 class Tests(IMP.test.ApplicationTestCase):
 
     def test_param_run(self):
-        """Test run of cnmultifit.py param command"""
-        p = self.run_python_application('cnmultifit.py',
+        """Test run of cnmultifit param command"""
+        p = self.run_python_application('cnmultifit',
                                ['param', '-o', 'test.output', '-i', 'test.int',
                                 '--params', 'test.params',
                                 '--model', 'test.model',
