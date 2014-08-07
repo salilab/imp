@@ -6,55 +6,42 @@
    %include lines as well as any inline C++ code (or at least any such code which uses
    the types in question).
   */
-IMP_SWIG_OBJECT(IMP::membrane,       AttributeDistancePairScore,       AttributeDistancePairScores);
-IMP_SWIG_OBJECT(IMP::membrane,                       BoxedMover,                       BoxedMovers);
-IMP_SWIG_OBJECT(IMP::membrane,                        CellMover,                        CellMovers);
-IMP_SWIG_OBJECT(IMP::membrane,                  ChiSquareMetric,                  ChiSquareMetrics);
-IMP_SWIG_OBJECT(IMP::membrane,                 ContactMapMetric,                 ContactMapMetrics);
-IMP_SWIG_OBJECT(IMP::membrane,               DistanceRMSDMetric,               DistanceRMSDMetrics);
-IMP_SWIG_OBJECT(IMP::membrane,                      EzRestraint,                      EzRestraints);
-IMP_SWIG_OBJECT(IMP::membrane,                         Gaussian,                         Gaussians);
-IMP_SWIG_DECORATOR(IMP::membrane,                HelixDecorator,                   HelixDecorators);
-IMP_SWIG_OBJECT(IMP::membrane,                    KinkPairScore,                    KinkPairScores);
+IMP_SWIG_DECORATOR(IMP::membrane, HelixDecorator, HelixDecorators);
+IMP_SWIG_OBJECT(IMP::membrane, RigidBodyPackingScore, RigidBodyPackingScores);
+IMP_SWIG_OBJECT(IMP::membrane, AttributeDistancePairScore, AttributeDistancePairScores);
+IMP_SWIG_OBJECT(IMP::membrane, SameRigidBodyPairFilter, SameRigidBodyPairFilters); 
+IMP_SWIG_OBJECT(IMP::membrane, RigidBodyNewMover, RigidBodyNewMovers);
+IMP_SWIG_OBJECT(IMP::membrane, TiltSingletonScore, TiltSingletonScores);
 IMP_SWIG_OBJECT(IMP::membrane, LangevinThermostatOptimizerState, LangevinThermostatOptimizerStates);
-IMP_SWIG_OBJECT(IMP::membrane,         MolecularDynamicsWithWte,         MolecularDynamicsWithWtes);
-IMP_SWIG_OBJECT(IMP::membrane,                MonteCarloWithWte,                MonteCarloWithWtes);
-IMP_SWIG_OBJECT(IMP::membrane,                    PbcBoxedMover,                    PbcBoxedMovers);
-IMP_SWIG_OBJECT(IMP::membrane,           PbcBoxedRigidBodyMover,           PbcBoxedRigidBodyMovers);
-IMP_SWIG_OBJECT(IMP::membrane,                  ReplicaExchange,                  ReplicaExchanges);
-IMP_SWIG_OBJECT(IMP::membrane,                       RMSDMetric,                       RMSDMetrics);
-IMP_SWIG_OBJECT(IMP::membrane,                RigidBodyNewMover,                RigidBodyNewMovers);
-IMP_SWIG_OBJECT(IMP::membrane,            RigidBodyPackingScore,            RigidBodyPackingScores);
-IMP_SWIG_OBJECT(IMP::membrane,           SameParticlePairFilter,           SameParticlePairFilters);
-IMP_SWIG_OBJECT(IMP::membrane,          SameRigidBodyPairFilter,          SameRigidBodyPairFilters);
-IMP_SWIG_OBJECT(IMP::membrane,                          Sigmoid,                          Sigmoids);
-IMP_SWIG_OBJECT(IMP::membrane,               TiltSingletonScore,               TiltSingletonScores);
-IMP_SWIG_OBJECT(IMP::membrane,         TwoStateGoModelRestraint,         TwoStateGoModelRestraints);
+IMP_SWIG_OBJECT(IMP::membrane, MonteCarloWithWte, MonteCarloWithWtes);
+IMP_SWIG_OBJECT(IMP::membrane, MolecularDynamicsWithWte, MolecularDynamicsWithWtes);
+IMP_SWIG_OBJECT(IMP::membrane, PbcBoxedMover, PbcBoxedMovers);
+IMP_SWIG_OBJECT(IMP::membrane, ReplicaExchange, ReplicaExchanges);
+IMP_SWIG_OBJECT(IMP::membrane, DistanceRMSDMetric, DistanceRMSDMetrics);
+IMP_SWIG_OBJECT(IMP::membrane, RMSDMetric, RMSDMetrics);
+IMP_SWIG_OBJECT(IMP::membrane, ContactMapMetric, ContactMapMetrics);
+IMP_SWIG_OBJECT(IMP::membrane, EzRestraint, EzRestraints);
+IMP_SWIG_OBJECT(IMP::membrane, KinkPairScore, KinkPairScores);
+IMP_SWIG_OBJECT(IMP::membrane, ChiSquareMetric, ChiSquareMetrics);                         
+IMP_SWIG_OBJECT(IMP::membrane, TwoStateGoModelRestraint, TwoStateGoModelRestraints);
 
 /* Wrap our own classes. Each header in the module should be listed here with a
    %include line.*/
-
-%include "IMP/membrane/AttributeDistancePairScore.h"
-%include "IMP/membrane/BoxedMover.h"
-%include "IMP/membrane/CellMover.h"
-%include "IMP/membrane/ChiSquareMetric.h"
-%include "IMP/membrane/ContactMapMetric.h"
-%include "IMP/membrane/DistanceRMSDMetric.h"
-%include "IMP/membrane/EzRestraint.h"
-%include "IMP/membrane/Gaussian.h"
 %include "IMP/membrane/HelixDecorator.h"
-%include "IMP/membrane/KinkPairScore.h"
-%include "IMP/membrane/LangevinThermostatOptimizerState.h"
-%include "IMP/membrane/MolecularDynamicsWithWte.h"
-%include "IMP/membrane/MonteCarloWithWte.h"
-%include "IMP/membrane/PbcBoxedMover.h"
-%include "IMP/membrane/PbcBoxedRigidBodyMover.h"
-%include "IMP/membrane/ReplicaExchange.h"
-%include "IMP/membrane/RMSDMetric.h"
-%include "IMP/membrane/RigidBodyNewMover.h"
 %include "IMP/membrane/RigidBodyPackingScore.h"
-%include "IMP/membrane/SameParticlePairFilter.h"
+%include "IMP/membrane/AttributeDistancePairScore.h"
 %include "IMP/membrane/SameRigidBodyPairFilter.h"
-%include "IMP/membrane/Sigmoid.h"
 %include "IMP/membrane/TiltSingletonScore.h"
+%include "IMP/membrane/RigidBodyNewMover.h"
+%include "IMP/membrane/LangevinThermostatOptimizerState.h"
+%include "IMP/membrane/MonteCarloWithWte.h"
+%include "IMP/membrane/MolecularDynamicsWithWte.h"
+%include "IMP/membrane/PbcBoxedMover.h"
+%include "IMP/membrane/ReplicaExchange.h"
+%include "IMP/membrane/DistanceRMSDMetric.h"
+%include "IMP/membrane/RMSDMetric.h"
+%include "IMP/membrane/ContactMapMetric.h"
+%include "IMP/membrane/EzRestraint.h"
+%include "IMP/membrane/KinkPairScore.h"
+%include "IMP/membrane/ChiSquareMetric.h"
 %include "IMP/membrane/TwoStateGoModelRestraint.h"
