@@ -71,10 +71,10 @@ def write_ok(
     sys.exit(0)
 
 
-def link_py(path):
+def link_py_apps(path):
     tools.mkdir("bin", clean=False)
-    tools.link_dir(path, "bin", clean=False, match=["*.py"],
-                   exclude=['dependencies.py'])
+    tools.link_dir(path, "bin", clean=False, match=["*"],
+                   filt=tools.filter_pyapps)
 
 
 def make_doxygen(name, source, modules):
@@ -168,7 +168,7 @@ def setup_application(application, source, datapath):
         else:
             unfound_modules.append(d)
     all_modules = tools.get_dependent_modules(modules, datapath)
-    link_py(os.path.join(source, "applications", application))
+    link_py_apps(os.path.join(source, "applications", application))
     make_doxygen(application, source, all_modules)
     make_overview(application, source)
     write_ok(application, all_modules,

@@ -150,16 +150,6 @@ def get_sources(module, path, subdir, pattern):
     return "\n".join(["${CMAKE_SOURCE_DIR}/%s"
                      % tools.to_cmake_path(x) for x in matching])
 
-def has_python_hashbang(fname):
-    line = open(fname).readline()
-    return line.startswith('#!') and 'python' in line
-
-def filter_pyapps(fname):
-    """A Python application ends in .py, or starts with #!/usr/bin/python;
-       exclude dependencies.py."""
-    return os.path.isfile(fname) and not fname.endswith('dependencies.py') \
-           and (fname.endswith('.py') or has_python_hashbang(fname))
-
 def get_app_sources(path, patterns, filt=lambda x:True):
     matching = tools.get_glob([os.path.join(path, x) for x in patterns])
     return "\n".join(["${CMAKE_SOURCE_DIR}/%s"
@@ -315,7 +305,7 @@ def setup_application(options, name, ordered):
         ordered) + " " + localincludes
     values["libpath"] = get_dep_merged(all_modules, "link_path", ordered)
     values["swigpath"] = get_dep_merged(all_modules, "swig_path", ordered)
-    values["pybins"] = get_app_sources(path, ["*"], filter_pyapps)
+    values["pybins"] = get_app_sources(path, ["*"], tools.filter_pyapps)
     values["pytests"] = get_app_sources(os.path.join(path, "test"),
                                         ["test_*.py",
                                          "expensive_test_*.py"])

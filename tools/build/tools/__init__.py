@@ -127,9 +127,18 @@ def link(source, target, verbose=False):
     else:
         shutil.copy(spath, tpath)
 
+def has_python_hashbang(fname):
+    line = open(fname).readline()
+    return line.startswith('#!') and 'python' in line
+
+def filter_pyapps(fname):
+    """A Python application ends in .py, or starts with #!/usr/bin/python;
+       exclude dependencies.py."""
+    return os.path.isfile(fname) and not fname.endswith('dependencies.py') \
+           and (fname.endswith('.py') or has_python_hashbang(fname))
 
 def link_dir(source_dir, target_dir, match=["*"], exclude=[],
-             clean=True, verbose=False):
+             clean=True, verbose=False, filt=None):
     if not isinstance(match, list):
         adkfjads
         lkfjd
@@ -147,6 +156,8 @@ def link_dir(source_dir, target_dir, match=["*"], exclude=[],
     targets = {}
     for m in match:
         files.extend(get_glob([os.path.join(source_dir, m)]))
+    if filt:
+        files = [x for x in files if filt(x)]
     for g in files:
         name = os.path.split(g)[1]
         if name not in exclude:
