@@ -8,10 +8,10 @@ This example demonstrates the
 [integrative docking protocol](@ref impintegrative_docking)
 by application
 to the PCSK9 antigen–J16 Fab antibody complex. It uses a command line tool
-called <tt>idock.py</tt>. For full help on this tool, run from a command line:
+called <tt>idock</tt>. For full help on this tool, run from a command line:
 
 \code{.sh}
-idock.py -h
+idock -h
 \endcode
 
 \section idock_pcsk9_setup Setup
@@ -43,7 +43,7 @@ All steps of the integrative docking procedure are carried out by simply
 running:
 
 \code{.sh}
-idock.py --complex_type AA --cxms=cxms.txt --precision=1 antibody_cut.pdb 2p4e.pdb
+idock --complex_type AA --cxms=cxms.txt --precision=1 antibody_cut.pdb 2p4e.pdb
 \endcode
 
 The application makes use of the PatchDock program for docking, which must
@@ -51,7 +51,7 @@ be obtained separately from
 \external{http://bioinfo3d.cs.tau.ac.il/PatchDock/,the PatchDock website}.
 It must be told explicitly where to find PatchDock
 (either by giving the <tt>--patch_dock</tt>
-option to idock.py, or by setting the <tt>PATCH_DOCK_HOME</tt>
+option to idock, or by setting the <tt>PATCH_DOCK_HOME</tt>
 environment variable).
 
 The <tt>--precision</tt> argument above controls how many candidate dockings
