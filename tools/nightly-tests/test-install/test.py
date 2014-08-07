@@ -34,8 +34,8 @@ class IMPInstallTests(unittest.TestCase):
 
     def test_applications_installed(self):
         """Check install of basic applications"""
-        apps = ['cnmultifit.py', 'foxs', 'ligand_score',
-                'multifit.py', 'pdb_check', 'pdb_rmf', 'rmf_cat',
+        apps = ['cnmultifit', 'foxs', 'ligand_score',
+                'multifit', 'pdb_check', 'pdb_rmf', 'rmf_cat',
                 'saxs_merge.py']
         for app in apps:
             try:

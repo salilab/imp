@@ -42,17 +42,17 @@ class IMPMockTests(unittest.TestCase):
         """Check install of a fairly comprehensive list of applications"""
         emagefit_apps = ['convert_spider_to_jpg.py', 'emagefit_cluster.py',
                          'emagefit_dock.py', 'emagefit.py', 'emagefit_score.py']
-        idock_apps = ['idock.py', 'combine_scores', 'recompute_zscore',
+        idock_apps = ['idock', 'combine_scores', 'recompute_zscore',
                       'cross_links_score', 'cross_links_single_score',
                       'em2d_score', 'em2d_single_score',
                       'interface_cross_links', 'em3d_score',
                       'em3d_single_score', 'saxs_score', 'interface_rtc',
                       'nmr_rtc_score', 'soap_score']
-        apps = ['cluster_profiles', 'cnmultifit.py',
+        apps = ['cluster_profiles', 'cnmultifit',
                 'complex_to_anchor_graph.py', 'compute_chi',
                 'estimate_threshold_from_molecular_mass.py', 'foxs',
                 'imp_example_app', 'ligand_score', 'map2pca.py', 'mol2pca.py',
-                'multifit.py', 'pdb_check', 'pdb_rmf', 'resample_density.py',
+                'multifit', 'pdb_check', 'pdb_rmf', 'resample_density.py',
                 'rg', 'rmf3_dump', 'rmf_cat', 'rmf_display',
                 'rmf_frames', 'rmf_info', 'rmf_interpolate', 'rmf_pdb',
                 'rmf_show', 'rmf_signature', 'rmf_simplify', 'rmf_slice',
