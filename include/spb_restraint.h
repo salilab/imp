@@ -53,8 +53,21 @@ IMPMEMBRANEEXPORT Pointer<isd2::FretRestraint> fret_restraint
  std::string protein_a, std::string residues_a,
  std::string protein_b, std::string residues_b, double fexp,
  FretParameters Fret, std::string cell_type, bool use_GFP,
- Particle *Kda, Particle *Ida, Particle *R0, Particle *Sigma0,
- Particle *pBl);
+ Particle *Kda, Particle *Ida, Particle *R0, Particle *Sigma0, Particle *pBl);
+
+IMPMEMBRANEEXPORT Pointer<isd2::FretRestraint> fret_restraint
+(Model *m, atom::Hierarchies& hs,
+ std::string protein_a, std::string residues_a,
+ std::string protein_b, int residues_b, double fexp,
+ FretParameters Fret, std::string cell_type, bool use_GFP,
+ Particle *Kda, Particle *Ida, Particle *R0, Particle *Sigma0, Particle *pBl);
+
+IMPMEMBRANEEXPORT Pointer<isd2::FretRestraint> fret_restraint
+(Model *m, atom::Hierarchies& hs,
+ std::string protein_a, int residues_a,
+ std::string protein_b, std::string residues_b, double fexp,
+ FretParameters Fret, std::string cell_type, bool use_GFP,
+ Particle *Kda, Particle *Ida, Particle *R0, Particle *Sigma0, Particle *pBl);
 
 IMPMEMBRANEEXPORT Pointer<container::MinimumPairRestraint> y2h_restraint
 (Model *m,
@@ -117,6 +130,14 @@ IMPMEMBRANEEXPORT void add_stay_on_plane_restraint(Model *m,
 IMPMEMBRANEEXPORT void add_diameter_rgyr_restraint(Model *m,
  const atom::Hierarchy& h, std::string protein,
  double diameter, double rgyr, double kappa);
+
+IMPMEMBRANEEXPORT Pointer<isd2::EM2DRestraint> em2d_restraint
+(Model *m, atom::Hierarchies& hs,
+ std::string protein, EM2DParameters EM2D, Particle *Sigma);
+
+IMPMEMBRANEEXPORT Pointer<isd2::EM2DRestraint> em2d_restraint
+(Model *m, atom::Hierarchies& hs, std::string protein,
+ EM2DParameters EM2D, Floats sigma_grid, Floats fmod_grid);
 
 IMPMEMBRANE_END_NAMESPACE
 

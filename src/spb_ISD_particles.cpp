@@ -23,81 +23,84 @@ std::map<std::string, Pointer<Particle> > add_ISD_particles
 std::map<std::string, Pointer<Particle> > ISD_ps;
 IMP_NEW(isd2::NuisanceRangeModifier,nrm,());
 
-// kda particle
-IMP_NEW(Particle,pKda,(m));
-// initial value
-Float Kda_0=(mydata.Fret.KdaMin+mydata.Fret.KdaMax)/2.;
-isd2::Scale Kda=isd2::Scale::setup_particle(pKda,Kda_0);
-Kda.set_lower(mydata.Fret.KdaMin);
-Kda.set_upper(mydata.Fret.KdaMax);
-IMP_NEW(core::SingletonConstraint,sc0,(nrm,NULL,Kda));
-m->add_score_state(sc0);
-Kda->set_is_optimized(Kda.get_nuisance_key(),true);
-// add mover
-add_NuisanceMover(Kda,mydata.MC.dKda,mvs);
-// add particle to map
-ISD_ps["Kda"]=pKda;
+if(mydata.add_fret){
 
-// Ida particle
-IMP_NEW(Particle,pIda,(m));
-isd2::Scale Ida=isd2::Scale::setup_particle(pIda,mydata.Fret.Ida);
-Ida.set_lower(1.0);
-Ida.set_upper(mydata.Fret.Ida+4.0*mydata.Fret.IdaErr);
-IMP_NEW(core::SingletonConstraint,sc1,(nrm,NULL,Ida));
-m->add_score_state(sc1);
-Ida->set_is_optimized(Ida.get_nuisance_key(),true);
-// add mover
-add_NuisanceMover(Ida,mydata.MC.dIda,mvs);
-// add Gaussian restraint on Ida
-IMP_NEW(isd2::GaussianRestraint,gr,(Ida,mydata.Fret.Ida,mydata.Fret.IdaErr));
-m->add_restraint(gr);
-// add particle to map
-ISD_ps["Ida"]=pIda;
+ // kda particle
+ IMP_NEW(Particle,pKda,(m));
+ // initial value
+ Float Kda_0=(mydata.Fret.KdaMin+mydata.Fret.KdaMax)/2.;
+ isd2::Scale Kda=isd2::Scale::setup_particle(pKda,Kda_0);
+ Kda.set_lower(mydata.Fret.KdaMin);
+ Kda.set_upper(mydata.Fret.KdaMax);
+ IMP_NEW(core::SingletonConstraint,sc0,(nrm,NULL,Kda));
+ m->add_score_state(sc0);
+ Kda->set_is_optimized(Kda.get_nuisance_key(),true);
+ // add mover
+ add_NuisanceMover(Kda,mydata.MC.dKda,mvs);
+ // add particle to map
+ ISD_ps["Kda"]=pKda;
 
-// Sigma0 particle
-IMP_NEW(Particle,pSigma0,(m));
-// initial value
-Float Sigma0_0=(mydata.Fret.Sigma0Min+mydata.Fret.Sigma0Max)/2.;
-isd2::Scale Sigma0=isd2::Scale::setup_particle(pSigma0,Sigma0_0);
-Sigma0.set_lower(mydata.Fret.Sigma0Min);
-Sigma0.set_upper(mydata.Fret.Sigma0Max);
-IMP_NEW(core::SingletonConstraint,sc2,(nrm,NULL,Sigma0));
-m->add_score_state(sc2);
-Sigma0->set_is_optimized(Sigma0.get_nuisance_key(),true);
-// add mover
-add_NuisanceMover(Sigma0,mydata.MC.dSigma0,mvs);
-// add particle to map
-ISD_ps["Sigma0"]=pSigma0;
+ // Ida particle
+ IMP_NEW(Particle,pIda,(m));
+ isd2::Scale Ida=isd2::Scale::setup_particle(pIda,mydata.Fret.Ida);
+ Ida.set_lower(1.0);
+ Ida.set_upper(mydata.Fret.Ida+4.0*mydata.Fret.IdaErr);
+ IMP_NEW(core::SingletonConstraint,sc1,(nrm,NULL,Ida));
+ m->add_score_state(sc1);
+ Ida->set_is_optimized(Ida.get_nuisance_key(),true);
+ // add mover
+ add_NuisanceMover(Ida,mydata.MC.dIda,mvs);
+ // add Gaussian restraint on Ida
+ IMP_NEW(isd2::GaussianRestraint,gr,(Ida,mydata.Fret.Ida,mydata.Fret.IdaErr));
+ m->add_restraint(gr);
+ // add particle to map
+ ISD_ps["Ida"]=pIda;
 
-// R0 particle
-IMP_NEW(Particle,pR0,(m));
-// initial value
-Float R0_0=(mydata.Fret.R0Min+mydata.Fret.R0Max)/2.;
-isd2::Scale R0=isd2::Scale::setup_particle(pR0,R0_0);
-R0.set_lower(mydata.Fret.R0Min);
-R0.set_upper(mydata.Fret.R0Max);
-IMP_NEW(core::SingletonConstraint,sc3,(nrm,NULL,R0));
-m->add_score_state(sc3);
-R0->set_is_optimized(R0.get_nuisance_key(),true);
-// add mover
-add_NuisanceMover(R0,mydata.MC.dR0,mvs);
-// add particle to map
-ISD_ps["R0"]=pR0;
+ // Sigma0 particle
+ IMP_NEW(Particle,pSigma0,(m));
+ // initial value
+ Float Sigma0_0=(mydata.Fret.Sigma0Min+mydata.Fret.Sigma0Max)/2.;
+ isd2::Scale Sigma0=isd2::Scale::setup_particle(pSigma0,Sigma0_0);
+ Sigma0.set_lower(mydata.Fret.Sigma0Min);
+ Sigma0.set_upper(mydata.Fret.Sigma0Max);
+ IMP_NEW(core::SingletonConstraint,sc2,(nrm,NULL,Sigma0));
+ m->add_score_state(sc2);
+ Sigma0->set_is_optimized(Sigma0.get_nuisance_key(),true);
+ // add mover
+ add_NuisanceMover(Sigma0,mydata.MC.dSigma0,mvs);
+ // add particle to map
+ ISD_ps["Sigma0"]=pSigma0;
 
-// Pbl particle
-IMP_NEW(Particle,ppBl,(m));
-// initial value
-Float pBl_0=(mydata.Fret.pBlMin+mydata.Fret.pBlMax)/2.;
-isd2::Scale pBl=isd2::Scale::setup_particle(ppBl, pBl_0);
-pBl.set_lower(mydata.Fret.pBlMin);
-pBl.set_upper(mydata.Fret.pBlMax);
-IMP_NEW(core::SingletonConstraint,sc4,(nrm,NULL,pBl));
-m->add_score_state(sc4);
-pBl->set_is_optimized(pBl.get_nuisance_key(),true);
-// add mover
-add_NuisanceMover(pBl,mydata.MC.dpBl,mvs);
-// add particle to map
-ISD_ps["pBl"]=ppBl;
+ // R0 particle
+ IMP_NEW(Particle,pR0,(m));
+ // initial value
+ Float R0_0=(mydata.Fret.R0Min+mydata.Fret.R0Max)/2.;
+ isd2::Scale R0=isd2::Scale::setup_particle(pR0,R0_0);
+ R0.set_lower(mydata.Fret.R0Min);
+ R0.set_upper(mydata.Fret.R0Max);
+ IMP_NEW(core::SingletonConstraint,sc3,(nrm,NULL,R0));
+ m->add_score_state(sc3);
+ R0->set_is_optimized(R0.get_nuisance_key(),true);
+ // add mover
+ add_NuisanceMover(R0,mydata.MC.dR0,mvs);
+ // add particle to map
+ ISD_ps["R0"]=pR0;
+
+ // Pbl particle
+ IMP_NEW(Particle,ppBl,(m));
+ // initial value
+ Float pBl_0=(mydata.Fret.pBlMin+mydata.Fret.pBlMax)/2.;
+ isd2::Scale pBl=isd2::Scale::setup_particle(ppBl, pBl_0);
+ pBl.set_lower(mydata.Fret.pBlMin);
+ pBl.set_upper(mydata.Fret.pBlMax);
+ IMP_NEW(core::SingletonConstraint,sc4,(nrm,NULL,pBl));
+ m->add_score_state(sc4);
+ pBl->set_is_optimized(pBl.get_nuisance_key(),true);
+ // add mover
+ add_NuisanceMover(pBl,mydata.MC.dpBl,mvs);
+ // add particle to map
+ ISD_ps["pBl"]=ppBl;
+}
 
 // CP_A particle
 IMP_NEW(Particle,pA,(m));
@@ -155,8 +158,8 @@ C.set_upper(mydata.CP_IL2_gapMax);
 IMP_NEW(core::SingletonConstraint,sc7,(nrm,NULL,C));
 m->add_score_state(sc7);
 C->set_is_optimized(C.get_nuisance_key(),true);
-// add mover
-add_NuisanceMover(C,mydata.MC.dA,mvs);
+// add mover only if we are applying the Bayesian layer
+if(mydata.add_IL2_layer){add_NuisanceMover(C,mydata.MC.dA,mvs);}
 // add particle to map
 ISD_ps["GAP_A"]=pC;
 
@@ -170,6 +173,41 @@ D.set_upper(IL2_end);
 D->set_is_optimized(D.get_nuisance_key(),false);
 // add particle to map
 ISD_ps["GAP_B"]=pD;
+
+// if using new fret data
+if(mydata.add_new_fret){
+ // kda_new particle
+ IMP_NEW(Particle,pKda_new,(m));
+ // initial value
+ Float Kda_new_0=(mydata.Fret.KdaMin_new+mydata.Fret.KdaMax_new)/2.;
+ isd2::Scale Kda_new=isd2::Scale::setup_particle(pKda_new,Kda_new_0);
+ Kda_new.set_lower(mydata.Fret.KdaMin_new);
+ Kda_new.set_upper(mydata.Fret.KdaMax_new);
+ IMP_NEW(core::SingletonConstraint,sc8,(nrm,NULL,Kda_new));
+ m->add_score_state(sc8);
+ Kda_new->set_is_optimized(Kda_new.get_nuisance_key(),true);
+ // add mover
+ //add_NuisanceMover(Kda_new,mydata.MC.dKda,mvs);
+ // add particle to map
+ ISD_ps["Kda_new"]=pKda_new;
+
+ // Ida particle
+ IMP_NEW(Particle,pIda_new,(m));
+ isd2::Scale Ida_new=isd2::Scale::setup_particle(pIda_new,mydata.Fret.Ida_new);
+ Ida_new.set_lower(1.0);
+ Ida_new.set_upper(mydata.Fret.Ida_new+4.0*mydata.Fret.IdaErr_new);
+ IMP_NEW(core::SingletonConstraint,sc9,(nrm,NULL,Ida_new));
+ m->add_score_state(sc9);
+ Ida_new->set_is_optimized(Ida_new.get_nuisance_key(),true);
+ // add mover
+ //add_NuisanceMover(Ida_new,mydata.MC.dIda,mvs);
+ // add Gaussian restraint on Ida_new
+ //IMP_NEW(isd2::GaussianRestraint,gr,
+ // (Ida_new,mydata.Fret.Ida_new,mydata.Fret.IdaErr_new));
+ //m->add_restraint(gr);
+ // add particle to map
+ ISD_ps["Ida_new"]=pIda_new;
+}
 
 return ISD_ps;
 }

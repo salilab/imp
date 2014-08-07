@@ -17,7 +17,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 
 // convert degrees to radians
 double radians (double d);
-inline double radians (double d) {return d * IMP::algebra::PI/ 180.0;}
+inline double radians (double d) {return d * IMP::algebra::PI / 180.0;}
 
 struct MCParameters {
  double         tmin;
@@ -44,6 +44,14 @@ struct MCParameters {
  bool           wte_restart;
 };
 
+struct EM2DParameters {
+ double resolution;
+ double pixel_size;
+ std::string filename;
+ double SigmaMin;
+ double SigmaMax;
+};
+
 struct FretParameters {
  double R0Min;
  double R0Max;
@@ -55,14 +63,50 @@ struct FretParameters {
  double Sigma0Max;
  double pBlMin;
  double pBlMax;
+ double KdaMin_new;
+ double KdaMax_new;
+ double Ida_new;
+ double IdaErr_new;
  std::string filename;
- bool   sigmafilter;
- double sigmamult;
+ std::string filename_new;
+};
+
+struct ClusterParameters {
+ std::string trajfile;
+ std::string isdtrajfile;
+ std::string biasfile;
+ std::string weightfile;
+ std::string label;
+ int niter;
+ double cutoff;
+ bool weight;
+ bool identical;
+ bool symmetry;
+};
+
+struct MapParameters {
+ std::string frames_list;
+ std::string label;
+ std::string ref_file;
+ std::string ref_isdfile;
+ double xmin;
+ double xmax;
+ double ymin;
+ double ymax;
+ double zmin;
+ double zmax;
+ double resolution;
+ int nbinx;
+ int nbiny;
+ int nbinz;
 };
 
 struct SPBParameters {
  MCParameters MC;
  FretParameters Fret;
+ EM2DParameters EM2D;
+ ClusterParameters Cluster;
+ MapParameters Map;
  double       sideMin;
  double       sideMax;
  double       CP_thicknessMin;
@@ -75,14 +119,9 @@ struct SPBParameters {
  double       kappa;
  double       kappa_vol;
  double       tilt;
+ double       tilt_Spc42;
  double       resolution;
- double       cluster_cut;
  std::string  cell_type;
- std::string  trajfile;
- std::string  isdtrajfile;
- std::string  biasfile;
- std::string  label;
- int          niter;
  int          num_cells;
  int          num_copies;
  algebra::Vector3Ds CP_centers;
@@ -91,6 +130,7 @@ struct SPBParameters {
  bool         use_connectivity;
  std::map<std::string,bool> protein_list;
  bool         add_fret;
+ bool         add_new_fret;
  bool         add_y2h;
  bool         add_tilt;
  bool         add_GFP;
@@ -99,12 +139,10 @@ struct SPBParameters {
  bool         GFP_exc_volume;
  bool         fix_GFP;
  bool         restraint_GFP;
- bool         cluster_weight;
- bool         cluster_identical;
- bool         cluster_symmetry;
  std::map<std::string,std::string> file_list;
  bool         isd_restart;
  std::string  isd_restart_file;
+ bool         add_IL2_layer;
 };
 
 IMPMEMBRANE_END_NAMESPACE

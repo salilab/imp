@@ -1,3 +1,0 @@
-required_modules='container:core:atom:isd2:rmf:saxs:statistics'
-required_dependencies='plumed'
-optional_dependencies=''

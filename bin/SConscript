@@ -1,0 +1,11 @@
+Import('env')
+
+files = [
+         'spb.cpp',
+         'spb_analysis.cpp',
+         'spb_cluster.cpp',
+         'spb_density.cpp',
+        ]
+
+# Not all .cpp files are built into an application
+env.IMPModuleBin(files)

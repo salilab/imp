@@ -22,60 +22,6 @@
 using namespace IMP;
 using namespace IMP::membrane;
 
-// some usefull stuff
-double* create_temperatures(double tmin,double tmax,int nrep)
-{
- double* temp;
- temp=new double[nrep];
- double tfact=exp(log(tmax/tmin)/double(nrep-1));
- for(int i=0;i<nrep;++i) {temp[i]=tmin*pow(tfact,i);}
- return temp;
-}
-
-int* create_indexes(int nrep)
-{
- int* index;
- index=new int[nrep];
- for(int i=0;i<nrep;++i) {index[i]=i;}
- return index;
-}
-
-int get_friend(int* index,int myrank,int step,int nrep)
-{
- int myindex=index[myrank];
- int findex=0;
- int frank=0;
-
- if(myindex%2==0 && step%2==0) {findex=myindex+1;}
- if(myindex%2==0 && step%2==1) {findex=myindex-1;}
- if(myindex%2==1 && step%2==0) {findex=myindex-1;}
- if(myindex%2==1 && step%2==1) {findex=myindex+1;}
- if(findex==-1)   {findex=nrep-1;}
- if(findex==nrep) {findex=0;}
-
- for(int i=0; i<nrep; ++i) {if(index[i]==findex) {frank=i;}}
- return frank;
-}
-
-bool get_acceptance(double score0,double score1,double delta_wte,
-                    double T0,double T1)
-{
- double accept,delta;
- delta=(score1-score0)*(1.0/T1-1.0/T0)+delta_wte;
- if(delta>=0.0){
-  accept=1.0;
- }else{
-  accept=exp(delta);
- }
- double random= (double) rand()/RAND_MAX;
- if(random<=accept){
-  return true;
- }else{
-  return false;
- }
-}
-
-// main program
 int main(int argc, char* argv[])
 {
 
@@ -85,13 +31,6 @@ MPI_Comm_size(MPI_COMM_WORLD, &nproc);
 MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
 MPI_Status status;
 
-// initialize seed
-unsigned int iseed = time(NULL);
-// broadcast seed
-MPI_Bcast(&iseed,1,MPI_UNSIGNED,0,MPI_COMM_WORLD);
-// initialize random generator
-srand (iseed);
-
 // log file
 std::stringstream out;
 out << myrank;
@@ -99,7 +38,6 @@ std::string names="log"+out.str();
 FILE *logfile;
 logfile = fopen(names.c_str(),"w");
 
-// read input
 std::string inputfile="config.ini";
 int i=1;
 while(i<argc){ if(strcmp(argv[i],"-in")==0){++i; inputfile=argv[i];}
@@ -140,7 +78,15 @@ for(itr = ISD_ps.begin(); itr != ISD_ps.end(); ++itr){
 if(myrank==0) {std::cout << "Creating representation" << std::endl;}
 atom::Hierarchies all_mol=
  create_representation(m,mydata,CP_ps,IL2_ps,mvs,
-                       ISD_ps["SideXY"],ISD_ps["SideZ"]);
+                       ISD_ps["SideXY"],ISD_ps["SideZ"],myrank);
+
+// re-initialize seed
+unsigned int iseed = time(NULL);
+// broadcast seed
+MPI_Bcast(&iseed,1,MPI_UNSIGNED,0,MPI_COMM_WORLD);
+// initialize random generator
+srand (iseed);
+
 //
 // Add cell Mover
 //
@@ -159,8 +105,7 @@ if(mydata.file_list.size()>0){
 //
 if(mydata.isd_restart){
  if(myrank==0){std::cout << "Restart ISD particles from file" << std::endl;}
- RMF::FileConstHandle rh =
-  RMF::open_rmf_file_read_only(mydata.isd_restart_file);
+ RMF::FileHandle rh = RMF::open_rmf_file(mydata.isd_restart_file);
  rmf::link_particles(rh, ISD_ps_list);
  unsigned int iframe=rh.get_number_of_frames();
  rmf::load_frame(rh,iframe-1);
@@ -168,21 +113,21 @@ if(mydata.isd_restart){
 //
 // Prepare output file for coordinates
 //
-std::string trajname="traj"+out.str()+".rmf2";
+std::string trajname="traj"+out.str()+".rmf";
 RMF::FileHandle rh = RMF::create_rmf_file(trajname);
 for(unsigned int i=0;i<all_mol.size();++i){
  atom::Hierarchies hs=all_mol[i].get_children();
  for(unsigned int j=0;j<hs.size();++j) {rmf::add_hierarchy(rh, hs[j]);}
 }
 // adding key for score and index
-RMF::Category my_kc= rh.get_category("my data");
-RMF::FloatKey my_key0=rh.get_float_key(my_kc,"my score");
-RMF::IntKey   my_key1=rh.get_int_key(my_kc,"my index");
-RMF::FloatKey my_key2=rh.get_float_key(my_kc,"my bias");
+RMF::Category my_kc= rh.add_category("my data");
+RMF::FloatKey my_key0=rh.add_float_key(my_kc,"my score",true);
+RMF::IntKey   my_key1=rh.add_int_key(my_kc,"my index",true);
+RMF::FloatKey my_key2=rh.add_float_key(my_kc,"my bias",true);
 //
 // Prepare output file for ISD particles
 //
-std::string isdname="trajisd"+out.str()+".rmf2";
+std::string isdname="trajisd"+out.str()+".rmf";
 RMF::FileHandle rh_isd = RMF::create_rmf_file(isdname);
 rmf::add_particles(rh_isd, ISD_ps_list);
 
@@ -248,6 +193,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 // print statistics
   double fretr_score=0.0;
   double y2h_score=0.0;
+
   if(mydata.add_fret){fretr_score=rst_map["FRET_R"]->evaluate(false);}
   if(mydata.add_y2h) {y2h_score=rst_map["Y2H"]->evaluate(false);}
 
@@ -262,22 +208,29 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
          "TimeStep %10d Temperature %12.6f Acceptance %12.6f\n",
          imc,mc->get_kt(),
          float(mc->get_number_of_forward_steps())/float(mydata.MC.nexc));
-  fprintf(logfile,"TimeStep %10d Kda %12.6f Ida %12.6f Sigma0 %12.6f\n",
-          imc,
-          isd2::Scale(ISD_ps["Kda"]).get_scale(),
-          isd2::Scale(ISD_ps["Ida"]).get_scale(),
-          isd2::Scale(ISD_ps["Sigma0"]).get_scale());
-  fprintf(logfile,"TimeStep %10d R0 %12.6f pBl %12.6f\n",
-          imc,
-          isd2::Scale(ISD_ps["R0"]).get_scale(),
-          isd2::Scale(ISD_ps["pBl"]).get_scale());
+  if(mydata.add_fret){
+   fprintf(logfile,"TimeStep %10d Kda %12.6f Ida %12.6f Sigma0 %12.6f\n",
+           imc,
+           isd2::Scale(ISD_ps["Kda"]).get_scale(),
+           isd2::Scale(ISD_ps["Ida"]).get_scale(),
+           isd2::Scale(ISD_ps["Sigma0"]).get_scale());
+   fprintf(logfile,"TimeStep %10d R0 %12.6f pBl %12.6f\n",
+           imc,
+           isd2::Scale(ISD_ps["R0"]).get_scale(),
+           isd2::Scale(ISD_ps["pBl"]).get_scale());
+  }
+  //if(mydata.add_new_fret){
+  // fprintf(logfile,"TimeStep %10d Kda_new %12.6f Ida_new %12.6f\n",
+  //        imc,
+  //        isd2::Scale(ISD_ps["Kda_new"]).get_scale(),
+  //        isd2::Scale(ISD_ps["Ida_new"]).get_scale());
+  //}
   fprintf(logfile,"TimeStep %10d CP %12.6f GAP %12.6f Cell %12.6f\n",
           imc,
           isd2::Scale(ISD_ps["CP_B"]).get_scale()-
           isd2::Scale(ISD_ps["CP_A"]).get_scale(),
           isd2::Scale(ISD_ps["GAP_A"]).get_scale(),
           mydata.sideMin*isd2::Scale(ISD_ps["SideXY"]).get_scale());
-
   // print fmod, fmod_err, ferr, for every data point
   if(mydata.add_fret){
    for(unsigned i=0;i<rst_map["FRET_R"]->get_number_of_restraints();++i){
@@ -288,18 +241,17 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
     Float fmod_err   = rst->get_standard_error();
     Float fexp       = rst->get_experimental_value();
     fprintf(logfile,
-         "TimeStep %10d Name %20s  Model %6.3f  Model_Error %6.3f  Exp %6.3f\n",
+         "TimeStep %10d Name %30s  Model %6.3f  Model_Error %6.3f  Exp %6.3f\n",
          imc,name.c_str(),fmod,fmod_err,fexp);
    }
   }
-// set current frame
-  rh.set_current_frame(imc/mydata.MC.nwrite);
+
 // save score to rmf
-  (rh.get_root_node()).set_value(my_key0,myscore);
+  (rh.get_root_node()).set_value(my_key0,myscore,imc/mydata.MC.nwrite);
 // save index to rmf
-  (rh.get_root_node()).set_value(my_key1,myindex);
+  (rh.get_root_node()).set_value(my_key1,myindex,imc/mydata.MC.nwrite);
 // save bias to rmf
-  (rh.get_root_node()).set_value(my_key2,mybias);
+  (rh.get_root_node()).set_value(my_key2,mybias,imc/mydata.MC.nwrite);
 // save configuration to rmf
   rmf::save_frame(rh,imc/mydata.MC.nwrite);
 

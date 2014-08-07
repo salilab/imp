@@ -13,6 +13,7 @@
 #include <IMP/isd2.h>
 #include <boost/algorithm/string.hpp>
 #include <string>
+#include <sstream>
 #include <iostream>
 #include <list>
 
@@ -162,8 +163,7 @@ Pointer<isd2::FretRestraint> fret_restraint
  std::string protein_a, std::string residues_a,
  std::string protein_b, std::string residues_b, double fexp,
  FretParameters Fret, std::string cell_type, bool use_GFP,
- Particle *Kda, Particle *Ida, Particle *R0, Particle *Sigma0,
- Particle *pBl)
+ Particle *Kda, Particle *Ida, Particle *R0, Particle *Sigma0, Particle *pBl)
 {
  std::string name=protein_a+"-"+residues_a+" "+protein_b+"-"+residues_b;
 // donor and acceptor multiplicity
@@ -175,9 +175,6 @@ Pointer<isd2::FretRestraint> fret_restraint
 // Selections
  atom::Selection sa=atom::Selection(hhs);
  atom::Selection sb=atom::Selection(hs);
-// Particles
- Particles p1;
- Particles p2;
  if(use_GFP){
   protein_a=protein_a+"-"+residues_a+"-GFP";
   sa.set_molecule(protein_a);
@@ -193,8 +190,91 @@ Pointer<isd2::FretRestraint> fret_restraint
   if(residues_b=="C") {sb.set_terminus(atom::Selection::C);}
   if(residues_b=="N") {sb.set_terminus(atom::Selection::N);}
  }
- p1=sa.get_selected_particles();
- p2=sb.get_selected_particles();
+ // get particles
+ Particles p1=sa.get_selected_particles();
+ Particles p2=sb.get_selected_particles();
+ if(p1.size()==0 || p2.size()==0) {return NULL;}
+ IMP_NEW(isd2::FretRestraint,fr,(p1,p2,Kda,Ida,R0,Sigma0,pBl,fexp,m_d,m_a));
+ fr->set_name(name);
+ return fr.release();
+}
+
+Pointer<isd2::FretRestraint> fret_restraint
+(Model *m, atom::Hierarchies& hs,
+ std::string protein_a, std::string residues_a,
+ std::string protein_b, int residues_b, double fexp,
+ FretParameters Fret, std::string cell_type, bool use_GFP,
+ Particle *Kda, Particle *Ida, Particle *R0, Particle *Sigma0, Particle *pBl)
+{
+ std::stringstream out;
+ out << residues_b;
+ std::string name=protein_a+"-"+residues_a+" "+protein_b+"-"+out.str();
+// donor and acceptor multiplicity
+ double m_d=1.;
+ double m_a=7.;
+ atom::Hierarchies hhs;
+ hhs.push_back(hs[0]);
+ if(cell_type=="rhombus"){m_d=1./3.;}
+// Selections
+ atom::Selection sa=atom::Selection(hhs);
+ atom::Selection sb=atom::Selection(hs);
+ // A
+ if(use_GFP){
+  protein_a=protein_a+"-"+residues_a+"-GFP";
+  sa.set_molecule(protein_a);
+  sa.set_residue_index(65);
+ } else {
+  sa.set_molecule(protein_a);
+  if(residues_a=="C") {sa.set_terminus(atom::Selection::C);}
+  if(residues_a=="N") {sa.set_terminus(atom::Selection::N);}
+ }
+ // B
+ sb.set_molecule(protein_b);
+ sb.set_residue_index(residues_b);
+ // get particles
+ Particles p1=sa.get_selected_particles();
+ Particles p2=sb.get_selected_particles();
+ if(p1.size()==0 || p2.size()==0) {return NULL;}
+ IMP_NEW(isd2::FretRestraint,fr,(p1,p2,Kda,Ida,R0,Sigma0,pBl,fexp,m_d,m_a));
+ fr->set_name(name);
+ return fr.release();
+}
+
+Pointer<isd2::FretRestraint> fret_restraint
+(Model *m, atom::Hierarchies& hs,
+ std::string protein_a, int residues_a,
+ std::string protein_b, std::string residues_b, double fexp,
+ FretParameters Fret, std::string cell_type, bool use_GFP,
+ Particle *Kda, Particle *Ida, Particle *R0, Particle *Sigma0, Particle *pBl)
+{
+ std::stringstream out;
+ out << residues_a;
+ std::string name=protein_a+"-"+out.str()+" "+protein_b+"-"+residues_b;
+// donor and acceptor multiplicity
+ double m_d=1.;
+ double m_a=7.;
+ atom::Hierarchies hhs;
+ hhs.push_back(hs[0]);
+ if(cell_type=="rhombus"){m_d=1./3.;}
+// Selections
+ atom::Selection sa=atom::Selection(hhs);
+ atom::Selection sb=atom::Selection(hs);
+ // A
+ sa.set_molecule(protein_a);
+ sa.set_residue_index(residues_a);
+ // B
+ if(use_GFP){
+  protein_b=protein_b+"-"+residues_b+"-GFP";
+  sb.set_molecule(protein_b);
+  sb.set_residue_index(65);
+ } else {
+  sb.set_molecule(protein_b);
+  if(residues_b=="C") {sb.set_terminus(atom::Selection::C);}
+  if(residues_b=="N") {sb.set_terminus(atom::Selection::N);}
+ }
+ // get particles
+ Particles p1=sa.get_selected_particles();
+ Particles p2=sb.get_selected_particles();
  if(p1.size()==0 || p2.size()==0) {return NULL;}
  IMP_NEW(isd2::FretRestraint,fr,(p1,p2,Kda,Ida,R0,Sigma0,pBl,fexp,m_d,m_a));
  fr->set_name(name);
@@ -537,5 +617,35 @@ void add_diameter_rgyr_restraint(Model *m,
   }
  }
 }
+
+Pointer<isd2::EM2DRestraint> em2d_restraint
+(Model *m, atom::Hierarchies& hs,
+ std::string protein, EM2DParameters EM2D, Particle *Sigma)
+{
+ atom::Selection s=atom::Selection(hs);
+ s.set_molecule(protein);
+ Particles ps=s.get_selected_particles();
+ if(ps.size()==0) {return NULL;}
+ IMP_NEW(isd2::EM2DRestraint,er,(ps, Sigma, EM2D.filename,
+                                 EM2D.pixel_size, EM2D.resolution));
+ er->set_name("EM2D restraint");
+ return er.release();
+}
+
+Pointer<isd2::EM2DRestraint> em2d_restraint
+(Model *m, atom::Hierarchies& hs, std::string protein,
+ EM2DParameters EM2D, Floats sigma_grid, Floats fmod_grid)
+{
+ atom::Selection s=atom::Selection(hs);
+ s.set_molecule(protein);
+ Particles ps=s.get_selected_particles();
+ if(ps.size()==0) {return NULL;}
+ IMP_NEW(isd2::EM2DRestraint,er,(ps, sigma_grid, fmod_grid, EM2D.filename,
+                                 EM2D.pixel_size, EM2D.resolution));
+ er->set_name("EM2D restraint");
+ return er.release();
+}
+
+
 
 IMPMEMBRANE_END_NAMESPACE

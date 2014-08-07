@@ -1,0 +1,37 @@
+Import('env')
+
+files = [
+         'AttributeDistancePairScore.cpp',
+         'BoxedMover.cpp',
+         'CellMover.cpp',
+         'ContactMapMetric.cpp',
+         'ChiSquareMetric.cpp',
+         'DistanceRMSDMetric.cpp',
+         'DiameterRgyrRestraint.cpp',
+         'EzRestraint.cpp',
+         'HelixDecorator.cpp',
+         'KinkPairScore.cpp',
+         'LangevinThermostatOptimizerState.cpp',
+         'MolecularDynamicsWithWte.cpp',
+         'MonteCarloWithWte.cpp',
+         'PbcBoxedMover.cpp',
+         'PbcBoxedRigidBodyMover.cpp',
+         'RMSDMetric.cpp',
+         'ReplicaExchange.cpp',
+         'RigidBodyNewMover.cpp',
+         'RigidBodyPackingScore.cpp',
+         'SameParticlePairFilter.cpp',
+         'SameRigidBodyPairFilter.cpp',
+         'TiltSingletonScore.cpp',
+         'TwoStateGoModelRestraint.cpp',
+         'pt_stuff.cpp',
+         'spb_assemble_restraints.cpp',
+         'spb_ISD_particles.cpp',
+         'spb_parser.cpp',
+         'spb_representation.cpp',
+         'spb_restraint.cpp',
+         'spb_sampler.cpp',
+        ]
+
+# Build and install the shared library:
+env.IMPModuleLib(files)

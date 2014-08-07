@@ -20,7 +20,7 @@ IMPMEMBRANEEXPORT atom::Hierarchies create_representation
 container::ListSingletonContainer *CP_ps,
 container::ListSingletonContainer *IL2_ps,
 core::Movers& mvs,
-Particle *SideXY, Particle *SideZ);
+Particle *SideXY, Particle *SideZ, int iseed);
 
 IMPMEMBRANEEXPORT atom::Molecule create_protein
 (Model *m,std::string name,double mass,int nbeads,display::Color color,

@@ -32,6 +32,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  bool add_Cmd1p;
  bool add_Cnm67p;
  bool add_fret;
+ bool add_new_fret;
  bool add_y2h;
  bool add_tilt;
  bool add_GFP;
@@ -45,6 +46,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  bool cluster_identical;
  bool cluster_symmetry;
  bool isd_restart;
+ bool add_IL2_layer;
  std::string isd_restart_file;
  std::string cell_type;
  std::string load_Spc42p;
@@ -52,13 +54,19 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  std::string load_Spc110p;
  std::string load_Cmd1p;
  std::string load_Cnm67p;
- std::string trajfile;
- std::string isdtrajfile;
- std::string biasfile;
- std::string label;
+ std::string cluster_trajfile;
+ std::string cluster_isdtrajfile;
+ std::string cluster_biasfile;
+ std::string cluster_label;
+ std::string cluster_weightfile;
  std::string fret_File;
+ std::string fret_new_File;
+ std::string EM2D_File;
+ std::string map_frames_list;
+ std::string map_label;
+ std::string map_ref_file;
+ std::string map_ref_isdfile;
  std::map<std::string,std::string> file_list;
-
 
  desc.add_options()("do_wte",       value<bool>(&do_wte),           "ciao");
  desc.add_options()("wte_restart",  value<bool>(&wte_restart),      "ciao");
@@ -67,8 +75,9 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  desc.add_options()("add_Spc29p",   value<bool>(&add_Spc29p),       "ciao");
  desc.add_options()("add_Spc110p",  value<bool>(&add_Spc110p),      "ciao");
  desc.add_options()("add_Cmd1p",    value<bool>(&add_Cmd1p),        "ciao");
- desc.add_options()("add_Cnm67p",   value<bool>(&add_Cnm67p),     "ciao");
+ desc.add_options()("add_Cnm67p",   value<bool>(&add_Cnm67p),       "ciao");
  desc.add_options()("add_fret",     value<bool>(&add_fret),         "ciao");
+ desc.add_options()("add_new_fret", value<bool>(&add_new_fret),     "ciao");
  desc.add_options()("add_y2h",      value<bool>(&add_y2h),          "ciao");
  desc.add_options()("add_tilt",     value<bool>(&add_tilt),         "ciao");
  desc.add_options()("add_GFP",      value<bool>(&add_GFP),          "ciao");
@@ -87,14 +96,30 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  desc.add_options()("load_Spc110p",  value<std::string>(&load_Spc110p), "ciao");
  desc.add_options()("load_Cmd1p",    value<std::string>(&load_Cmd1p),   "ciao");
  desc.add_options()("load_Cnm67p",   value<std::string>(&load_Cnm67p),  "ciao");
- desc.add_options()("trajfile",      value<std::string>(&trajfile),     "ciao");
- desc.add_options()("isdtrajfile",   value<std::string>(&isdtrajfile),  "ciao");
- desc.add_options()("biasfile",      value<std::string>(&biasfile),     "ciao");
- desc.add_options()("label",         value<std::string>(&label),        "ciao");
+ desc.add_options()("cluster_trajfile",
+                               value<std::string>(&cluster_trajfile),   "ciao");
+ desc.add_options()("cluster_isdtrajfile",
+                             value<std::string>(&cluster_isdtrajfile),  "ciao");
+ desc.add_options()("cluster_biasfile",
+                             value<std::string>(&cluster_biasfile),     "ciao");
+ desc.add_options()("cluster_label",
+                             value<std::string>(&cluster_label),        "ciao");
+ desc.add_options()("cluster_weightfile",
+                             value<std::string>(&cluster_weightfile),   "ciao");
  desc.add_options()("fret_File",     value<std::string>(&fret_File),    "ciao");
+ desc.add_options()("fret_new_File", value<std::string>(&fret_new_File),"ciao");
+ desc.add_options()("EM2D_File",     value<std::string>(&EM2D_File),    "ciao");
  desc.add_options()("isd_restart",   value<bool>(&isd_restart),         "ciao");
  desc.add_options()("isd_restart_file",
                                 value<std::string >(&isd_restart_file), "ciao");
+ desc.add_options()("add_IL2_layer", value<bool>(&add_IL2_layer),       "ciao");
+
+ desc.add_options()("map_frames_list",
+                                   value<std::string>(&map_frames_list),"ciao");
+ desc.add_options()("map_label",     value<std::string>(&map_label),    "ciao");
+ desc.add_options()("map_ref_file",  value<std::string>(&map_ref_file), "ciao");
+ desc.add_options()("map_ref_isdfile",
+                                  value<std::string>(&map_ref_isdfile),"ciao");
 
  OPTION(double, mc_tmin);
  OPTION(double, mc_tmax);
@@ -110,6 +135,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  OPTION(double, kappa);
  OPTION(double, kappa_vol);
  OPTION(double, tilt);
+ OPTION(double, tilt_Spc42);
  OPTION(double, sideMin);
  OPTION(double, sideMax);
  OPTION(double, CP_thicknessMin);
@@ -125,7 +151,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  OPTION(double, wte_gamma);
  OPTION(double, wte_emin);
  OPTION(double, wte_emax);
- OPTION(double, cluster_cut);
+ OPTION(double, cluster_cutoff);
  OPTION(double, fret_R0Min);
  OPTION(double, fret_R0Max);
  OPTION(double, fret_KdaMin);
@@ -136,7 +162,16 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  OPTION(double, fret_Sigma0Max);
  OPTION(double, fret_pBlMin);
  OPTION(double, fret_pBlMax);
- OPTION(int,    niter);
+ OPTION(double, fret_new_KdaMin);
+ OPTION(double, fret_new_KdaMax);
+ OPTION(double, fret_new_Ida);
+ OPTION(double, fret_new_IdaErr);
+ OPTION(double, EM2D_resolution);
+ OPTION(double, EM2D_pixel_size);
+ OPTION(double, EM2D_SigmaMin);
+ OPTION(double, EM2D_SigmaMax);
+ OPTION(double, map_resolution);
+ OPTION(int,    cluster_niter);
  OPTION(int,    mc_nexc);
  OPTION(int,    mc_nsteps);
  OPTION(int,    mc_nhot);
@@ -185,6 +220,26 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.Fret.pBlMin=fret_pBlMin;
  ret.Fret.pBlMax=fret_pBlMax;
  ret.Fret.filename=fret_File;
+// New fret
+ ret.Fret.filename_new=fret_new_File;
+ ret.Fret.KdaMin_new=fret_new_KdaMin;
+ ret.Fret.KdaMax_new=fret_new_KdaMax;
+ ret.Fret.Ida_new=fret_new_Ida;
+ ret.Fret.IdaErr_new=fret_new_IdaErr;
+
+// EM2D
+ ret.EM2D.resolution=EM2D_resolution;
+ ret.EM2D.pixel_size=EM2D_pixel_size;
+ ret.EM2D.filename=EM2D_File;
+ ret.EM2D.SigmaMin=EM2D_SigmaMin;
+ ret.EM2D.SigmaMax=EM2D_SigmaMax;
+
+// density maps plot
+ ret.Map.frames_list = map_frames_list;
+ ret.Map.label       = map_label;
+ ret.Map.ref_file    = map_ref_file;
+ ret.Map.ref_isdfile = map_ref_isdfile;
+ ret.Map.resolution  = map_resolution;
 
 // General Parameters
  ret.sideMin=sideMin;
@@ -196,31 +251,34 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.IL2_thickness=IL2_thickness;
  ret.Spc29_diameter=Spc29_diameter;
  ret.Spc29_rgyr=Spc29_rgyr;
-
  ret.kappa=kappa;
  ret.kappa_vol=kappa_vol;
  ret.tilt=radians(tilt);
+ ret.tilt_Spc42=radians(tilt_Spc42);
  ret.cell_type=cell_type;
  ret.resolution=resolution;
  ret.use_connectivity=use_connectivity;
+ ret.add_IL2_layer=add_IL2_layer;
 
 // ISD stuff
  ret.isd_restart=isd_restart;
- ret.isd_restart_file=isd_restart_file+suffix+".rmf2";
+ ret.isd_restart_file=isd_restart_file+suffix+".rmf";
 
 // Clustering parameters
- ret.trajfile=trajfile;
- ret.isdtrajfile=isdtrajfile;
- ret.biasfile=biasfile;
- ret.label=label;
- ret.niter=niter;
- ret.cluster_cut=cluster_cut;
- ret.cluster_weight=cluster_weight;
- ret.cluster_identical=cluster_identical;
- ret.cluster_symmetry=cluster_symmetry;
+ ret.Cluster.trajfile=cluster_trajfile;
+ ret.Cluster.isdtrajfile=cluster_isdtrajfile;
+ ret.Cluster.biasfile=cluster_biasfile;
+ ret.Cluster.label=cluster_label;
+ ret.Cluster.weightfile=cluster_weightfile;
+ ret.Cluster.niter=cluster_niter;
+ ret.Cluster.cutoff=cluster_cutoff;
+ ret.Cluster.weight=cluster_weight;
+ ret.Cluster.identical=cluster_identical;
+ ret.Cluster.symmetry=cluster_symmetry;
 
 // Restraints
  ret.add_fret=add_fret;
+ ret.add_new_fret=add_new_fret;
  ret.add_y2h=add_y2h;
  ret.add_tilt=add_tilt;
 
@@ -241,33 +299,33 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
 
 // file map
  if(load_Spc42p.length()>0.0){
-  ret.file_list["Spc42p"]=load_Spc42p+suffix+".rmf2";
+  ret.file_list["Spc42p"]=load_Spc42p+suffix+".rmf";
   if(add_GFP){
-   ret.file_list["Spc42p-N-GFP"]=load_Spc42p+suffix+".rmf2";
-   ret.file_list["Spc42p-C-GFP"]=load_Spc42p+suffix+".rmf2";
+   ret.file_list["Spc42p-N-GFP"]=load_Spc42p+suffix+".rmf";
+   ret.file_list["Spc42p-C-GFP"]=load_Spc42p+suffix+".rmf";
   }
  }
  if(load_Spc29p.length()>0.0){
-  ret.file_list["Spc29p"]=load_Spc29p+suffix+".rmf2";
+  ret.file_list["Spc29p"]=load_Spc29p+suffix+".rmf";
   if(add_GFP){
-   ret.file_list["Spc29p-N-GFP"]=load_Spc29p+suffix+".rmf2";
-   ret.file_list["Spc29p-C-GFP"]=load_Spc29p+suffix+".rmf2";
+   ret.file_list["Spc29p-N-GFP"]=load_Spc29p+suffix+".rmf";
+   ret.file_list["Spc29p-C-GFP"]=load_Spc29p+suffix+".rmf";
   }
  }
  if(load_Cmd1p.length()>0.0){
-  ret.file_list["Cmd1p"]=load_Cmd1p+suffix+".rmf2";
+  ret.file_list["Cmd1p"]=load_Cmd1p+suffix+".rmf";
   if(add_GFP){
-   ret.file_list["Cmd1p-N-GFP"]=load_Cmd1p+suffix+".rmf2";
-   ret.file_list["Cmd1p-C-GFP"]=load_Cmd1p+suffix+".rmf2";
+   ret.file_list["Cmd1p-N-GFP"]=load_Cmd1p+suffix+".rmf";
+   ret.file_list["Cmd1p-C-GFP"]=load_Cmd1p+suffix+".rmf";
   }
  }
  if(load_Cnm67p.length()>0.0){
-  ret.file_list["Cnm67p"]=load_Cnm67p+suffix+".rmf2";
-  if(add_GFP){ret.file_list["Cnm67p-C-GFP"]=load_Cnm67p+suffix+".rmf2";}
+  ret.file_list["Cnm67p"]=load_Cnm67p+suffix+".rmf";
+  if(add_GFP){ret.file_list["Cnm67p-C-GFP"]=load_Cnm67p+suffix+".rmf";}
  }
  if(load_Spc110p.length()>0.0){
-  ret.file_list["Spc110p"]=load_Spc110p+suffix+".rmf2";
-  if(add_GFP){ret.file_list["Spc110p-C-GFP"]=load_Spc110p+suffix+".rmf2";}
+  ret.file_list["Spc110p"]=load_Spc110p+suffix+".rmf";
+  if(add_GFP){ret.file_list["Spc110p-C-GFP"]=load_Spc110p+suffix+".rmf";}
  }
 
  algebra::Vector3D CP_center;

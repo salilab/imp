@@ -57,7 +57,7 @@ for(itr = ISD_ps.begin(); itr != ISD_ps.end(); ++itr){
 //
 atom::Hierarchies all_mol=
  create_representation(m,mydata,CP_ps,IL2_ps,mvs,
-                       ISD_ps["SideXY"],ISD_ps["SideZ"]);
+                       ISD_ps["SideXY"],ISD_ps["SideZ"],0);
 //
 // create list to link to rmf
 //
@@ -68,34 +68,19 @@ for(unsigned int i=0;i<all_mol.size();++i){
 }
 
 //
-// Initialize MonteCarloWithWte to deal with bias
+// READ file with weights
 //
-IMP_NEW(membrane::MonteCarloWithWte,mcwte,(m,mydata.MC.wte_emin,
-                                           mydata.MC.wte_emax,
-                                           mydata.MC.wte_sigma,
-                                           mydata.MC.wte_gamma,1.0));
-//
-// READ BIAS file
-//
-if(mydata.cluster_weight){
- Floats val;
- double bias;
- std::ifstream biasfile;
- biasfile.open(mydata.biasfile.c_str());
- if(biasfile.is_open()){
+Floats weights;
+if(mydata.Cluster.weight){
+ Float weight;
+ std::ifstream weightfile;
+ // open weightfile
+ weightfile.open(mydata.Cluster.weightfile.c_str());
+ if(weightfile.is_open()){
   // read file
-  while (biasfile >> bias){val.push_back(bias);}
-  // find max of bias (only first half of the array, the rest is derivatives)
-  Float maxval = 0;
-  for(unsigned i = 0 ; i < val.size() / 2; ++i ){
-   if( val[i] > maxval ){ maxval = val[i]; }
-  }
-  // shift bias to set max at zero
-  for(unsigned i = 0 ; i < val.size() / 2; ++i ){ val[i] -= maxval; }
-  // set shifted bias into mcwte class
-  mcwte->set_bias(val);
+  while (weightfile >> weight){weights.push_back(weight);}
   // close file
-  biasfile.close();
+  weightfile.close();
  }
 }
 
@@ -105,7 +90,7 @@ if(mydata.cluster_weight){
 std::ifstream labelfile;
 std::string label;
 std::vector<std::string> labels;
-labelfile.open(mydata.label.c_str());
+labelfile.open(mydata.Cluster.label.c_str());
 while (labelfile >> label){labels.push_back(label);}
 labelfile.close();
 
@@ -128,7 +113,7 @@ for(unsigned int j=0;j<labels.size();++j){
 //
 // IGNORE PARTICLE IDENTITY
 //
-if(!mydata.cluster_identical){
+if(!mydata.Cluster.identical){
  for(unsigned i=0; i<assign.size(); ++i){
   assign[i] = i;
  }
@@ -136,7 +121,7 @@ if(!mydata.cluster_identical){
 //
 // IGNORE SIMMETRIES
 //
-if(!mydata.cluster_symmetry){
+if(!mydata.Cluster.symmetry){
  mydata.trs.clear();
  mydata.trs.push_back(algebra::get_identity_transformation_3d());
 }
@@ -149,28 +134,30 @@ IMP_NEW(membrane::DistanceRMSDMetric, drmsd, (cluster_ps, assign, mydata.trs,
 Floats scores;
 // and cell dimension
 Floats cells;
+// counter
+int counter = 0;
 
 // cycle on all iterations
-for(int iter=0;iter<mydata.niter;++iter){
+for(int iter=0;iter<mydata.Cluster.niter;++iter){
 
  // iteration string
  std::stringstream iter_str;
  iter_str << iter;
 
 // open rmf for coordinates
- RMF::FileConstHandle rh =
-  RMF::open_rmf_file_read_only(mydata.trajfile+"_"+iter_str.str()+".rmf2");
+ RMF::FileHandle rh =
+  RMF::open_rmf_file(mydata.Cluster.trajfile+"_"+iter_str.str()+".rmf");
 // read various info
  RMF::Category my_kc  = rh.get_category("my data");
- RMF::FloatKey my_key = rh.get_float_key(my_kc,"my score");
+ RMF::FloatKey my_key = rh.get_float_key(my_kc,"my score",true);
 // linking hierarchies
  rmf::link_hierarchies(rh, hhs);
 // number of frames
  unsigned int nframes=rh.get_number_of_frames();
 
 // open rmf for ISD particles
- RMF::FileConstHandle rh_ISD =
-  RMF::open_rmf_file_read_only(mydata.isdtrajfile+"_"+iter_str.str()+".rmf2");
+ RMF::FileHandle rh_ISD =
+  RMF::open_rmf_file(mydata.Cluster.isdtrajfile+"_"+iter_str.str()+".rmf");
 // linking particles
  rmf::link_particles(rh_ISD, ISD_ps_list);
 // number of frames
@@ -188,25 +175,22 @@ for(int iter=0;iter<mydata.niter;++iter){
   // and ISD particles
   rmf::load_frame(rh_ISD,imc);
 
-  // set current frame
-  rh.set_current_frame(imc);
-
   // get score and add to list
-  Float score = (rh.get_root_node()).get_value(my_key);
+  Float score = (rh.get_root_node()).get_value(my_key,imc);
   scores.push_back(score);
 
   // get cell and add to list
   cells.push_back(isd2::Scale(ISD_ps["SideXY"]).get_scale()*mydata.sideMin);
 
-  // calculate weight
+  // get weight
   double weight = 1.0;
-  if(mydata.cluster_weight){
-   Float bias  = mcwte->get_bias(score);
-   weight      = exp(bias);
-  }
+  if(mydata.Cluster.weight){weight = weights[counter];}
 
   // add configurations to Metric
   drmsd->add_configuration(weight);
+
+  // increase counter
+  counter += 1;
  }
 
  // close RMFs
@@ -214,9 +198,12 @@ for(int iter=0;iter<mydata.niter;++iter){
  rh_ISD = RMF::FileHandle();
 }
 
+// SANITY CHECK
+if(mydata.Cluster.weight && weights.size()!=counter){exit(1);}
+
 // NOW do the clustering
 Pointer<statistics::PartitionalClustering> pc=
- create_gromos_clustering(drmsd,mydata.cluster_cut);
+ create_gromos_clustering(drmsd,mydata.Cluster.cutoff);
 
 // calculate total population
 Float pop_norm = 0.;
