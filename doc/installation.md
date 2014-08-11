@@ -39,7 +39,7 @@ In order to obtain and compile IMP, you will need:
 
 If you wish to build the Python interfaces, you will also need:
 
-- Python (2.4 or later)
+- Python (2.6 or later)
 - SWIG (1.3.40 or later)
 
 ## Getting prerequisites on a Mac ## {#installation_prereqs_mac}
