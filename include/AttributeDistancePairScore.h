@@ -10,7 +10,7 @@
 
 #include "membrane_config.h"
 #include <IMP/PairScore.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/pair_macros.h>
 
@@ -22,7 +22,8 @@ IMPMEMBRANE_BEGIN_NAMESPACE
  */
 class IMPMEMBRANEEXPORT AttributeDistancePairScore : public PairScore
 {
-  IMP::OwnerPointer<UnaryFunction> f_;
+  //IMP::OwnerPointer<UnaryFunction> f_; //shruthi: replaced deprecated version
+  IMP::PointerMember<UnaryFunction> f_;
   FloatKey k_;
 public:
   //! Apply function f to attribute k
