@@ -77,7 +77,8 @@ def format_value(val):
         if val.kwargs:
             args.append('**' + val.kwargs.id)
         return format_value(val.func) + '(' + ", ".join(args) + ')'
-    raise ValueError("Do not know how to format %s" % str(val))
+    raise ValueError("Do not know how to format %s while running %s" \
+                     % (str(val), str(sys.argv)))
 
 
 def get_class_signature(c):
