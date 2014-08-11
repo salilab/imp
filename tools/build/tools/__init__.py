@@ -140,10 +140,7 @@ def filter_pyapps(fname):
 def link_dir(source_dir, target_dir, match=["*"], exclude=[],
              clean=True, verbose=False, filt=None):
     if not isinstance(match, list):
-        adkfjads
-        lkfjd
-        laskjfdl
-        k
+        raise TypeError("Expecting a list object for match")
     exclude = exclude + ["SConscript", "CMakeLists.txt", ".svn"]
     # print "linking", source_dir, target_dir
     mkdir(target_dir, clean=False)
