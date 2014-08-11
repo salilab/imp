@@ -64,6 +64,11 @@ def format_value(val):
         return '[' + ", ".join([format_value(x) for x in val.elts]) + ']'
     elif isinstance(val, ast.Tuple):
         return '(' + ", ".join([format_value(x) for x in val.elts]) + ')'
+    elif isinstance(val, ast.Dict):
+        def format_item(key, val):
+            return "%s: %s" % (format_value(key), format_value(val))
+        return '{' + ", ".join([format_item(key, val) \
+                             for key, val in zip(val.keys, val.values)]) + '}'
     elif isinstance(val, ast.BinOp):
         return format_value(val.left) + " " + format_value(val.op) \
             + " " + format_value(val.right)
