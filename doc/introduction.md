@@ -1,6 +1,7 @@
-# Introduction
+Introduction {#introduction}
+============
 
-# Integrative modeling # {#introduction}
+# Integrative modeling #
 [TOC]
 
 Detailed structural characterization of macromolecular assemblies is usually more difficult than that of single proteins because assemblies often don’t crystallize or are too large for NMR spectroscopy. This challenge can be addressed by an “integrative” or “hybrid” approach that simultaneously considers all available information about a given assembly. The integrative approach has several advantages. First, synergy among the input data minimizes the drawbacks of sparse, noisy, ambiguous and incoherent datasets. Each individual piece of data contains little structural information, but by simultaneously fitting a model to all data derived from independent experiments, the degeneracy of the structures that fit the data can be markedly reduced. Second, this approach has the potential to produce all structures that are consistent with the data, not only one structure. Third, an analysis of the structures allows us to estimate the precision of both the data and the structures. Last, this approach can make the process of structure determination more efficient, by indicating which measurements would be most informative.

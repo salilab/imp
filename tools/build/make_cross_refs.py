@@ -202,8 +202,8 @@ def create_index(
     key_name,
         target_name):
     out = open(target, "w")
-    out.write("# %s\n" % title)
-    out.write("# Overview # {#%s}\n" % ref)
+    out.write("%s {#%s}\n%s\n\n" % (title, ref, "=" * len(title)))
+    out.write("# Overview #\n")
     out.write("[TOC]\n")
     out.write(description + "\n\n")
     out.write(

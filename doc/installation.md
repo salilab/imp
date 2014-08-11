@@ -1,6 +1,7 @@
-# Installation #
+Installation {#installation}
+============
 
-# Building and installing basics # {#installation}
+# Building and installing basics #
 
 [TOC]
 

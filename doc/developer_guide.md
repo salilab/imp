@@ -1,6 +1,7 @@
-# Developer Guide #
+Developer Guide {#devguide}
+===============
 
-# Developing with IMP # {#devguide}
+# Developing with IMP #
 [TOC]
 
 This page presents instructions on how to develop code using

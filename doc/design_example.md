@@ -1,6 +1,7 @@
-# Design example
+Design example {#designexample}
+==============
 
-# Overview # {#designexample}
+# Overview #
 
 [TOC]
 This page walks through an iterative design process to give an

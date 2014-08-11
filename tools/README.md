@@ -1,6 +1,7 @@
-# Tools #
+Tools {#dev_tools}
+=====
 
-# Tools # {#dev_tools}
+# Tools #
 
 IMP provides a variety of scripts to aid the lives of developers.
 
