@@ -19,17 +19,17 @@ to the module.
 You can use your new module in a variety of ways:
 - add C++ code to your module by putting `.h` files in
   `modules/my_module/include` and `.cpp` files in
-  `modules/my_module/src`. In order to use use your new
+  `modules/my_module/src`. In order to use your new
   functions and classes in Python, you must add a line
   `%include "IMP/my_module/myheader.h"` near the end of the
-  file `modules/my_module/pyext/my_module.i`.
+  file `modules/my_module/pyext/swig.i-in`.
 - write C++ programs using IMP by creating `.cpp` files in
       `modules/my_module/bin`. Each `.cpp` file placed there
       is built into a separate executable.
 - add Python code to your library by putting a `.py` file in
-      `modules/my_module/pyext/my_module/`
-- add Python code to your library by by adding
-      `%pythoncode` blocks to `modules/my_module/pyext/my_module.i`.
+      `modules/my_module/pyext/my_module/src/`
+- add Python code to your library by adding
+      `%pythoncode` blocks to `modules/my_module/pyext/swig.i-in`.
 - add test code to your library by putting `.py` files in
       `modules/my_module/test` or a subdirectory.
 
@@ -37,19 +37,21 @@ If you feel your module is of interest to other IMP users and
 developers, see the [contributing code to IMP](#devguide_contributing) section.
 
 If you document your code, building the target `IMP-doc` will build
-documentation of all of the modules including yours and
+documentation for all of the modules including yours and
 `IMP.mymodule-doc` will build the doc for just yours. To access the
 documentation for all of IMP, open `doc/html/index.html` and for just
 your module, open `doc/html/mymodule/index.html`
 
 # Formatting your code # {#dev_tools_clang_format}
 
-The command `./tools/clang-format.py` uses the program `clang-format` to
-reformat C++ code, working around some eccentricies of IMP code. `clang-format`
-is part of [llvm](http://llvm.org) >= 3.3. You should always inspect the
+The command `./tools/dev_tools/cleanup_code.py` uses the external
+`clang-format` and `autopep8` programs to reformat C++ and Python code
+respectively, working around some eccentricities of IMP code. `clang-format`
+is part of [llvm](http://llvm.org) >= 3.4. You should always inspect the
 changes made by `clang-format` before submitting.
 
 # Checking standards # {#dev_tools_check_standards}
 
-The command `./tools/check-standards.py` runs a number of IMP-specific standards
+The command `./tools/dev_tools/check_standards.py` runs a number of
+IMP-specific standards
 checks on C++ and Python files. It is also run as part of `git` commits.
