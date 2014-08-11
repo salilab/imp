@@ -281,7 +281,7 @@ mkdir imp-${VER}-package || exit 1
        -d Description.plist.$$ -ds \
        -p "imp-${VER}-package/IMP ${VER} ${TARGET_OSX_VER}.pkg" -f ${DESTDIR} \
        || exit 1
-cp ${MAC_TOOL_DIR}/README.txt imp-${VER}-package || exit 1
+cp ${MAC_TOOL_DIR}/pkg-README.txt imp-${VER}-package/README.txt || exit 1
 rm -f Info.plist.$$ Description.plist.$$
 
 echo "Making disk image (.dmg)..."
