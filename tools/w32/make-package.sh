@@ -11,7 +11,7 @@
 # make DESTDIR=`pwd`/w32-inst install
 #
 # Where $w32py is the path containing Python headers and libraries.
-# Repeat for all Python versions 2.4 through 2.7.
+# Repeat for all desired Python versions (just 2.7 for us)
 #
 # Then run (still in the binary directory)
 # <source_dir>/tools/w32/make-package.sh <version> <bits>
@@ -73,11 +73,7 @@ for app in ${ROOT}/bin/*; do
 done
 
 # Make Python version-specific directories for extensions (.pyd)
-if [ "${BITS}" = "32" ]; then
-  PYVERS="2.4 2.5 2.6 2.7"
-else
-  PYVERS="2.5 2.6 2.7"
-fi
+PYVERS="2.6 2.7"
 for PYVER in ${PYVERS}; do
   mkdir ${ROOT}/python/python${PYVER} || exit 1
   mv ${ROOT}/pylib/${PYVER}/*.pyd ${ROOT}/python/python${PYVER} || exit 1
