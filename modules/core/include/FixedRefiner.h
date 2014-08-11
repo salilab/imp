@@ -36,7 +36,7 @@ class IMPCOREEXPORT FixedRefiner : public Refiner {
   //! Returns the fixed set of particles.
   /** Returns the fixed set of particles, regardless of passed particle
 
-      @param a coarse particle to be refined (ignored for FixedRefiner)
+      @param p coarse particle to be refined (ignored for FixedRefiner)
    */
   virtual const kernel::ParticlesTemp get_refined(kernel::Particle *p) const
     IMP_OVERRIDE;
@@ -47,10 +47,10 @@ class IMPCOREEXPORT FixedRefiner : public Refiner {
 
       @param pi coarse particle to be refined
 
-      @note For FixedRefiner, this is a faster operation then
+      @note For FixedRefiner, this is a faster operation than
       get_refined()
 
-      @note It is assumed that the refined particles are also in model m,
+      @note It is assumed that the refined particles are also in model m.
 
    */
   virtual kernel::ParticleIndexes get_refined_indexes
