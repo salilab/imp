@@ -21,9 +21,9 @@ when choosing how to implement some functionality.
    of the decorators to speed up scoring.
 3. Read in the potential of mean force (PMF) table from a file with
    a custom format. The number of dimensions can be constant including
-   the two atom types for a pair atoms, and the distance between that
-   pair. The values are stored in the table will not change during the
-   program and need to be looked up quickly given the dimension data.
+   the two atom types for a pair of atoms, and the distance between that
+   pair. The values are stored in the table, will not change during the
+   program, and need to be looked up quickly given the dimension data.
    The PMF table uses different atom names than the mol2 file.
 4. Score a conformation by looping over all ligand-protein atom
      pairs. For each pair look up the PMF value in the table by the
@@ -34,18 +34,18 @@ when choosing how to implement some functionality.
 1. mol2 is a standard file format so it makes sense to have a reader
    for it in IMP. We can adopt the mol2 atom names as the standard names
    for ligand atoms in IMP.
-2. The details of how the coordinates are stored an accessed are
-   implementation details and worring about them too much should probably
+2. The details of how the coordinates are stored and accessed are
+   implementation details and worrying about them too much should probably
    be delayed until later once other considerations are figured out.
 3. Loading the PMF table is a natural operation for an initialization
    function. However, since the PMF table is not a standard file format,
    it doesn't make sense for it to go into IMP, at least not until a file
-   form for the protein-ligand scoring has been worked out. Also there is
+   format for the protein-ligand scoring has been worked out. Also there is
    little reason to keep the PMF table atom types around, and they probably
-   should be convereted to more standard atom types on load. Finally, since
+   should be converted to more standard atom types on load. Finally, since
    the data in the PMF file is directly the scoring data, there isn't a
    real need to have a special representation for it in memory.
-4. There are two different considerations here, which pairs of atoms to
+4. There are two different considerations here; which pairs of atoms to
    use and how to score each pair.
 
 
@@ -56,9 +56,9 @@ provide a function `read_mol2(std::istream &in, Model *m)` which returns
 an IMP::atom::Hierarchy.
 
 The mol2 atom types can either be added at runtime using
-IMP::atom::add_atom_type() or a list of predifined constants can be added
+IMP::atom::add_atom_type() or a list of predefined constants can be added
 similar to the IMP::atom::AT_N. The latter requires editing both
-IMP/atom/Atom.h and modules/atom/src/Atom.cpp and so it a bit harder
+IMP/atom/Atom.h and modules/atom/src/Atom.cpp and so it is a bit harder
 to get right.
 
 # Implementing Scoring as a IMP::Restraint # {#design_restraint}
@@ -96,7 +96,7 @@ their types, and then applies a particular IMP::PairScore based on their types.
 IMP::core::TypedPairScore expects an IMP::IntKey to describe the type. The
 appropriate key can be obtained from IMP::atom::Atom::get_type_key().
 
-Then all that needs to be implemented in a a function, say
+Then all that needs to be implemented in a function, say
 IMP::hao::create_pair_score_from_pmf() which creates an IMP::core::TypedPairScore,
 loads a PMF file and then calls IMP::core::TypedPairScore::set_pair_score() for
 each pair stored in the PMF file after translating PMF types to the
@@ -118,7 +118,7 @@ in a central place.
   functionality into pieces that control each. Here it is the set
   of pairs and how to score each of them. Doing this makes it
   easier to reuse code.
-2. Don't create two classes when only have one set of work. Here,
+2. Don't create two classes when you only have one set of work. Here,
  all you have is a mapping between a pair of types and a
  distance and a score. Having both a PMFTable and PMFPairScore
  locks you into that aspect of the interface without giving you
