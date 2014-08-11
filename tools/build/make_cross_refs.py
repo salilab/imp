@@ -180,7 +180,6 @@ def get_namespace_name(et):
 
 
 def traverse_namespace(name, et, module):
-    print module
     if et.tag == 'memberdef' and et.attrib["kind"] == "function":
         membername = get_function_link(name, et, module)
         if membername:
