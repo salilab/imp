@@ -9,7 +9,7 @@ In addition to the tabs above that take you to individual module, class and func
 - [Installing IMP](@ref installation)
 - [Introduction](@ref introduction)
 - [Tutorial](../tutorial/index.html)
-- [Change history](@ref ChangeLog)
+- [Change history](@ref changelog)
 - [Modules and Applications](@ref allmod)
 - [Biological systems modeled in IMP](http://integrativemodeling.org/systems/)
 - [Wiki](https://github.com/salilab/imp/wiki)
