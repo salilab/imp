@@ -23,7 +23,7 @@ class Marker:
 def load_anchor_graph(cmm_filename):
     try:
         cmm_doc = minidom.parse(cmm_filename)
-    except IOError, xxx_todo_changeme:
+    except IOError as xxx_todo_changeme:
         (e) = xxx_todo_changeme
         print e
         sys.exit(-1)

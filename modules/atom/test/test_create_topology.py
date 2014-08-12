@@ -3,6 +3,7 @@ import IMP.test
 import IMP.core
 import IMP.atom
 
+
 class Tests(IMP.test.TestCase):
 
     def add_residues(self, model, parent, num):
@@ -29,25 +30,25 @@ class Tests(IMP.test.TestCase):
     def test_connected_fragments(self):
         """Test that create_topology works with connected fragments"""
         m, ff, h = self.setup_hierarchy()
-        h.add_child(self.make_fragment(m, [0,1,2]))
-        h.add_child(self.make_fragment(m, [3,4]))
+        h.add_child(self.make_fragment(m, [0, 1, 2]))
+        h.add_child(self.make_fragment(m, [3, 4]))
         t = ff.create_topology(h)
         self.assertEqual(self.get_num_res(t), [5])
 
     def test_disconnected_fragments(self):
         """Test that create_topology works with disconnected fragments"""
         m, ff, h = self.setup_hierarchy()
-        h.add_child(self.make_fragment(m, [0,1,2]))
-        h.add_child(self.make_fragment(m, [4,5]))
+        h.add_child(self.make_fragment(m, [0, 1, 2]))
+        h.add_child(self.make_fragment(m, [4, 5]))
         t = ff.create_topology(h)
         self.assertEqual(self.get_num_res(t), [3, 2])
 
     def test_mix_fragments_residues(self):
         "Test that create_topology works with a mix of fragments and residues"
         m, ff, h = self.setup_hierarchy()
-        h.add_child(self.make_fragment(m, [0,1,2]))
+        h.add_child(self.make_fragment(m, [0, 1, 2]))
         self.add_residues(m, h, 4)
-        h.add_child(self.make_fragment(m, [3,4]))
+        h.add_child(self.make_fragment(m, [3, 4]))
         t = ff.create_topology(h)
         self.assertEqual(self.get_num_res(t), [3, 4, 2])
 
@@ -56,10 +57,10 @@ class Tests(IMP.test.TestCase):
         m, ff, h = self.setup_hierarchy()
         c1 = IMP.atom.Chain.setup_particle(IMP.Particle(m), "A")
         h.add_child(c1)
-        c1.add_child(self.make_fragment(m, [0,1,2]))
+        c1.add_child(self.make_fragment(m, [0, 1, 2]))
         c2 = IMP.atom.Chain.setup_particle(IMP.Particle(m), "B")
         h.add_child(c2)
-        c2.add_child(self.make_fragment(m, [3,4]))
+        c2.add_child(self.make_fragment(m, [3, 4]))
         t = ff.create_topology(h)
         self.assertEqual(self.get_num_res(t), [3, 2])
 
@@ -68,8 +69,8 @@ class Tests(IMP.test.TestCase):
         m, ff, h = self.setup_hierarchy()
         c1 = IMP.atom.Chain.setup_particle(IMP.Particle(m), "A")
         h.add_child(c1)
-        c1.add_child(self.make_fragment(m, [0,1,2]))
-        h.add_child(self.make_fragment(m, [3,4]))
+        c1.add_child(self.make_fragment(m, [0, 1, 2]))
+        h.add_child(self.make_fragment(m, [3, 4]))
         t = ff.create_topology(h)
         self.assertEqual(self.get_num_res(t), [3, 2])
 

@@ -3,6 +3,7 @@ import IMP.test
 import IMP.core
 import IMP.container
 
+
 class Tests(IMP.test.TestCase):
 
     def test_stats(self):
@@ -34,7 +35,7 @@ class Tests(IMP.test.TestCase):
         for i in range(0, 10):
             mc.optimize(100)
             self.assertEqual(mc.get_number_of_accepted_steps(),
-                             mc.get_number_of_upward_steps() + 
+                             mc.get_number_of_upward_steps() +
                              mc.get_number_of_downward_steps())
             self.assertEqual(mc.get_number_of_proposed_steps(), 100)
 

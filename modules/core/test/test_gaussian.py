@@ -70,7 +70,10 @@ class TestGaussian(IMP.test.TestCase):
         # parameters
         final_test_pts = create_test_points([0, 0, 0],
                                             map(sqrt, list(self.g0.get_gaussian().get_variances())))
-        final_trans = self.g0.get_gaussian().get_reference_frame().get_transformation_to()
+        final_trans = self.g0.get_gaussian(
+        ).get_reference_frame(
+        ).get_transformation_to(
+        )
 
         # finally do comparison
         max_min_dist = 0.0

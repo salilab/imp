@@ -23,13 +23,12 @@ class Tests(IMP.test.TestCase):
         pdbname = self.get_input_file_name("simple.pdb")
         full = IMP.atom.read_pdb(pdbname, m)
         chain = IMP.atom.get_by_type(full, IMP.atom.CHAIN_TYPE)[0]
-        rep = IMP.atom.Representation.setup_particle(full,0)
+        rep = IMP.atom.Representation.setup_particle(full, 0)
         for i in range(1, 3):
             simp = IMP.atom.create_simplified_along_backbone(chain, i)
             simp.set_name("A " + str(i))
-            rep.add_representation(simp, IMP.atom.BALLS,i+1)
+            rep.add_representation(simp, IMP.atom.BALLS, i + 1)
         return full
-
 
     def test_0(self):
         """Test writing mult resolutions"""

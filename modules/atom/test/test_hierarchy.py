@@ -36,7 +36,7 @@ class Tests(IMP.test.TestCase):
         """Check hierarchy get_by_type"""
         m = IMP.kernel.Model()
         s1, s2, r1, r2, a1, a2 = _make_hierarchy_decorators(
-            m, (IMP.atom.State,1), (IMP.atom.State,2),
+            m, (IMP.atom.State, 1), (IMP.atom.State, 2),
             (IMP.atom.Residue, IMP.atom.VAL), (IMP.atom.Residue, IMP.atom.VAL),
             (IMP.atom.Atom, IMP.atom.AT_C), (IMP.atom.Atom, IMP.atom.AT_C))
         s1.add_child(r1)

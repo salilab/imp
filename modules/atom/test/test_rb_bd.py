@@ -3,6 +3,7 @@ import IMP.test
 import IMP.core
 import IMP.atom
 
+
 class Tests(IMP.test.TestCase):
 
     def _create_rb(self, m):

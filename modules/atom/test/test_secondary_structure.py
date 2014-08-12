@@ -6,6 +6,7 @@ import IMP.algebra
 from operator import itemgetter
 from math import sqrt
 
+
 class Tests(IMP.test.TestCase):
 
     """Test the SecondaryStructureResidue decorator and reader"""

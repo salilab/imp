@@ -189,7 +189,7 @@ class Tests(IMP.test.TestCase):
     def test_inputs(self):
         "Test AmbiguousNOERestraint::get_inputs"
         self.assertEqual([x.get_name() for x in self.noe.get_inputs()],
-                         [y.get_name() for y in \
+                         [y.get_name() for y in
                           [self.p0, self.p1, self.p0, self.p2, self.sigma,
                            self.gamma, self.ls]])
 

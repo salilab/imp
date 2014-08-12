@@ -64,8 +64,11 @@ class Tests(IMP.test.TestCase):
 
     def test_particles2density_prot(self):
         m = IMP.kernel.Model()
-        mh=IMP.atom.read_pdb(self.get_input_file_name('1z5s_A.pdb'),m,IMP.atom.AllPDBSelector())
-        ps=IMP.core.get_leaves(mh)
+        mh = IMP.atom.read_pdb(
+            self.get_input_file_name('1z5s_A.pdb'),
+            m,
+            IMP.atom.AllPDBSelector())
+        ps = IMP.core.get_leaves(mh)
         res = 6
         apix = 3
         dmap = IMP.em.particles2density(ps, res, apix)

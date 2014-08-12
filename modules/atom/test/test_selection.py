@@ -132,7 +132,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(s0.get_selected_particle_indexes()), 68)
         self.assertEqual(len(s1.get_selected_particle_indexes()), 68)
         self.assert_(
-            len(set(s0.get_selected_particle_indexes() + s1.get_selected_particle_indexes())),
+            len(set(s0.get_selected_particle_indexes()
+                + s1.get_selected_particle_indexes())),
             2 * 68)
 
     def test_residues_rb(self):
