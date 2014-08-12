@@ -96,7 +96,7 @@ rm -rf ${ROOT}/bin/example \
 rm -rf `find ${ROOT} -name .svn`
 
 if [ "${BITS}" = "32" ]; then
-  PYVERS="24 25 26 27"
+  PYVERS="26 27"
   MAKENSIS="makensis"
   # Add redist MSVC runtime DLLs
   DLLSRC=/usr/lib/w32comp/windows/system
@@ -124,7 +124,7 @@ if [ "${BITS}" = "32" ]; then
      ${DLLSRC}/opencv_ffmpeg220.dll \
      ${DLLSRC}/opencv_imgproc220.dll ${ROOT}/bin || exit 1
 else
-  PYVERS="25 26 27"
+  PYVERS="26 27"
   MAKENSIS="makensis -DIMP_64BIT"
   # Add redist MSVC runtime DLLs
   DLLSRC=/usr/lib/w64comp/windows/system32
