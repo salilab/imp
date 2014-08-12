@@ -1,0 +1,2 @@
+This directory contains files to build binary installer (.exe) packages for
+Windows systems. See the make-package.sh script for more details.
