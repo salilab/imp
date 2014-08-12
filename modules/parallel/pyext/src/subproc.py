@@ -1,11 +1,7 @@
 """@namespace IMP.parallel.subproc Subprocess handling."""
 
 import sys
-try:
-    import subprocess
-except ImportError:
-    # Work with Python 2.3, which doesn't ship with subprocess
-    from IMP.parallel import compat_subprocess as subprocess
+import subprocess
 
 
 class _Popen4(subprocess.Popen):
