@@ -3,12 +3,9 @@ import IMP.atom
 import IMP.algebra
 import itertools
 import IMP.test
-import sys
 
 class TestEMRestraint(IMP.test.TestCase):
     def test_some_scores(self):
-        if sys.version_info[:2] < (2,6):
-            self.skipTest("only works with newer Pythons")
         pdb_fn=self.get_input_file_name('helix2.pdb')
 
         mdl=IMP.Model()

@@ -5,7 +5,6 @@ import IMP.atom
 import IMP.algebra
 from operator import itemgetter
 from math import sqrt
-import sys
 
 class Tests(IMP.test.TestCase):
 
@@ -22,8 +21,6 @@ class Tests(IMP.test.TestCase):
 
     def test_coarsen(self):
         """Test coarsening a set of SecondaryStructureResidues"""
-        if sys.version_info[:2] < (2,6):
-            self.skipTest("only works with newer Pythons")
         m = IMP.kernel.Model()
         avs = [0.0, 0.0, 0.0]
         helices = [0.6, 0.4, 0.05]
