@@ -45,7 +45,7 @@ rmdir ${ROOT}/usr/local || exit 1
 rmdir ${ROOT}/usr || exit 1
 
 # Add Windows-specific README
-cp ${TOOLDIR}/README.txt ${ROOT} || exit 1
+cp ${TOOLDIR}/pkg-README.txt ${ROOT}/README.txt || exit 1
 
 # Move pure Python code to Windows location
 mkdir ${ROOT}/python || exit 1
