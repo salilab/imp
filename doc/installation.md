@@ -70,7 +70,7 @@ either
 - or [Fink](http://www.finkproject.org/)
 
 ### Mac OS X 10.5 and 10.6
-These versions of mac os include a 'swig' binary, but it is too old to use
+These versions of Mac OS X include a 'swig' binary, but it is too old to use
 with IMP. You need to make sure that the newer version of `swig` is found first
 in your `PATH`.
 

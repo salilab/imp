@@ -28,10 +28,10 @@ Hybrid structures based on our integrative approach:
 ## The four stage process ## {#introduction_four_stages}
 
 The integrative structure determination is an iterative process consisting of four stages:
-- gathering of data;
-- design of the model representation and encoding of the data as a scoring function. The scoring function consists of that consists of terms, called restraints, one for each data-point
-- the sampling method that finds good scoring conformations of the model;
-- and analysis of data and resulting model conformations, including of uncertainty in the solutions.
+1. gathering of data;
+2. design of the model representation and encoding of the data as a scoring function. The scoring function consists of terms, called restraints, one for each data-point;
+3. the sampling method that finds good scoring conformations of the model;
+4. and analysis of data and resulting model conformations, including of uncertainty in the solutions.
 
 # IMP # {#introduction_imp}
 
@@ -57,11 +57,11 @@ At the most basic, to create particles and manipulate attributes you can do
 Certain of the attributes can be marked as parameters of the model. These are attributes that you want to sample or optimize. To do so you can do
    model.set_is_optimized(float_key, particle_0)
 
-\note A lot of IMP uses IMP::Particle objects instead of IMP::kernel::ParticleIndex objects to identify particles. The should be treated as roughly the same. To map from an index to a particle you use IMP::kernel::Model::get_particle() and to go the other way IMP::kernel::Particle::get_index(). Using the indexes is preferred. When doing it on lists, you can use IMP::kernel::get_indexes() and IMP::kernel::get_particles().
+\note A lot of IMP uses IMP::Particle objects instead of IMP::kernel::ParticleIndex objects to identify particles. They should be treated as roughly the same. To map from an index to a particle you use IMP::kernel::Model::get_particle() and to go the other way IMP::kernel::Particle::get_index(). Using the indexes is preferred. When doing it on lists, you can use IMP::kernel::get_indexes() and IMP::kernel::get_particles().
 
 ## Decorators ## {#introduction_decorators}
 
-Accessing all your data at such a low level can get tiresome, so we provide decorators to make it easier. Each type of decorator provides an interface to manipulate a particular type of data easier. For example, an IMP.atom.Residue decorator provides access to residue associated information (e.g. the index of the residue, or its type) in particles that have it.
+Accessing all your data at such a low level can get tiresome, so we provide decorators to make it easier. Each type of decorator provides an interface to manipulate a particular type of data. For example, an IMP.atom.Residue decorator provides access to residue associated information (e.g. the index of the residue, or its type) in particles that have it.
 
     residue= IMP.atom.Residue(model, my_residue)
     print residue.get_residue_type()
@@ -83,9 +83,9 @@ Decorators can also be used to create relationships between particles. For examp
 
 ## Representing biological molecules ## {#introduction_biomolecules}
 
-Biological modules are represented hierarchically in IMP using the IMP::atom::Hierarchy. These hierarchies follow the natural hierarchical nature of most biomolecules. A protein from a PDB would be a hierarchy with a root for the whole PDB file with a child per chain. Each chain particle has a child for each residue in the chain, and each residue has a child for each atom. Each particle has various types of associated data. For example and atom has data using the IMP::atom::Atom, IMP::core::XYZR, IMP::atom::Mass and IMP::atom::Hierarchy decorators.
+Biological modules are represented hierarchically in IMP using the IMP::atom::Hierarchy. These hierarchies follow the natural hierarchical nature of most biomolecules. A protein from a PDB would be a hierarchy with a root for the whole PDB file with a child per chain. Each chain particle has a child for each residue in the chain, and each residue has a child for each atom. Each particle has various types of associated data. For example an atom has data using the IMP::atom::Atom, IMP::core::XYZR, IMP::atom::Mass and IMP::atom::Hierarchy decorators.
 
-The structures represented do not have to be atomic and can be multi-resolution. That is can have coordinates at any level of the hierarchy. The invariants are that the leaves must have coordinates, radii and mass. Pieces of the hierarchy can be picked out using the IMP::atom::Selection using the standard sort of biological criteria:
+The structures represented do not have to be atomic and can be multi-resolution -  that is, they can have coordinates at any level of the hierarchy. The invariants are that the leaves must have coordinates, radii and mass. Pieces of the hierarchy can be picked out using the IMP::atom::Selection using the standard sorts of biological criteria:
 
     # Select residues 10 through 49.
     my_residues= IMP.atom.Selection(my_pdb, residue_indexes=range(10,50)).get_particles()
@@ -96,7 +96,7 @@ The structures represented do not have to be atomic and can be multi-resolution.
 You can manipulate and maintain collections of particles using IMP::Container. A collection can be anything from a list of particles gathered manually, to all pairs of particles from some list that are closer than a certain distance to one another. For example, to maintain a list of all close pairs of particles you can do
 
     # all particle pairs closer than 3A
-    # it is always good to give things name, that is what the last argument does
+    # it is always good to give things names; that is what the last argument does
     close_pairs= IMP.container.ClosePairContainer(all_my_particles, 3, "My close pairs")
 
 These containers can then be used to create scoring functions or analyze the data.
@@ -138,7 +138,7 @@ It is now time to find configurations of the model that score well with regards 
 
 ### Optimizers ### {#introduction_optimizers}
 
-An IMP::kernel::Optimizer takes the current configuration of the model and perturbs it, typically trying to make it better (but perhaps just into a different configuration following some rule, such as molecular dynamics). They using a scoring function you provide to guide the process.
+An IMP::kernel::Optimizer takes the current configuration of the model and perturbs it, typically trying to make it better (but perhaps just into a different configuration following some rule, such as molecular dynamics). They use a scoring function you provide to guide the process.
 
     my_optimizer= IMP.core.ConjugateGradients(m)
     my_optimizer.set_scoring_function(my_scoring_function)
@@ -152,7 +152,7 @@ A IMP::kernel::Sampler produces a set of configurations of the model using some 
 
 ## Storing and analysis ## {#introduction_analsysis}
 
-Configurations of the model can be saved and visualized in a variety of ways. Atomic structures can be written as pdb files using IMP::atom::write_pdb(). More flexibly, coarse grained models, geometry and information about the scoring function can be written to RMF files.
+Configurations of the model can be saved and visualized in a variety of ways. Atomic structures can be written as PDB files using IMP::atom::write_pdb(). More flexibly, coarse grained models, geometry and information about the scoring function can be written to RMF files.
 
      my_rmf= RMF.create_rmf_file("my.rmf")
      IMP.rmf.add_hierarchy(my_rmf, my_hierarchy)
@@ -182,7 +182,7 @@ See the "Namespaces" tab above for a complete list of modules in this version of
 
 ## Understanding what is going on ## {#introduction_understanding}
 
-IMP provides two sorts of tools to help you understand what is going on when you write a script. Both logging and checks are disabled if you use a `fast` build, so make sure you have access to a non-`fast` build.
+IMP provides two sorts of tools to help you understand what is going on when you write a script. Both logging and checks are disabled if you use a fast build, so make sure you have access to a non-fast build.
 
 ### Logging ### {#introduction_logging}
 
@@ -190,7 +190,7 @@ Many operations in IMP can print out log messages as they work, allowing one to 
 
 ### Runtime checks ### {#introduction_checks}
 
-IMP implements lots of runtime checks to make sure both that it is used properly and that it is working correctly. These can be turned on and off globally using IMP::base::set_checks_level() or for individual objects.
+IMP implements lots of runtime checks to make sure both that it is used properly and that it is working correctly. These can be turned on and off globally using IMP::base::set_check_level() or for individual objects.
 
 ## Conventions ## {#introduction_conventions}
 
@@ -208,30 +208,30 @@ Unless documented otherwise, the following units are used
 ### Names ### {#introduction_names}
 
 - Names in `CamelCase` are class names, for %example IMP::RestraintSet
-- Lower case names with underscores (`_`) in them are functions or methods, for example IMP::Model::update().
-- Collections of data of a certain class, e.g. `ClassName` are passed using type type `ClassNames`. This type is a `list` in Python and a IMP::base::Vector<ClassName> or, more or less,  IMP::base::Vector<ClassName*> in C++.
+- Lower case names separated with underscores (`_`) in them are functions or methods, for example IMP::Model::update() or IMP::Model::add_particle().
+- Collections of data of a certain class, e.g. `ClassName` are passed using type `ClassNames`. This type is a `list` in Python and a IMP::base::Vector<ClassName> (which is roughly equivalent to std::vector<ClassName*>) in C++.
 - These function names start with a verb, which indicates what the method does. Methods starting with
    - `set_` change some stored value
-   - `get_` create or return a \c value object or which
-     return an existing \c object \c class object.
+   - `get_` create or return a \c value object or
+     return an existing IMP::base::Object class object
    - `create_`  create a new IMP::base::Object class object
    - `add_`, `remove_` or `clear_` manipulate the contents of a collection of data
-   - `show_` prints things in a human-readable format
-   - `load_` and `save_` or `read_` and `write` move data between files and memory
-   - `link_` creates an connection between something and an IMP::base::Object
-   - `update_` changes the internal state of an IMP::base::Object
+   - `show_` print things in a human-readable format
+   - `load_` and `save_` or `read_` and `write_` move data between files and memory
+   - `link_` create a connection between something and an IMP::base::Object
+   - `update_` change the internal state of an IMP::base::Object
    - `do_` is a virtual method as part of a \external{http://en.wikipedia.org/wiki/Non-virtual_interface_pattern,non-virtual interface pattern}
-   - `handle_` takes action when an event occurs
-   - `validate_` checks the state of data and prints messages and throws exceptions if something is corrupted
+   - `handle_` take action when an event occurs
+   - `validate_` check the state of data and print messages and throw exceptions if something is corrupted
    - `setup_` and `teardown_` create or destroy some type of invariant (e.g. the constraints for a rigid body)
-   - `apply_` either applies a passed object to each piece of data in some collection or applies the object itself to a particular piece of passed data (yeah, it is a bit ambiguous).
+   - `apply_` either apply a passed object to each piece of data in some collection or apply the object itself to a particular piece of passed data (this is a bit ambiguous)
 - names starting with `IMP_` are preprocessor symbols (C++ only)
 - names don't use abbreviations
 
 ### Graphs ### {#introduction_graphs}
 
 Graphs in IMP are represented in C++ using the \external{http://www.boost.org/doc/libs/release/libs/graph, Boost Graph Library}. All graphs used in IMP are \external{http://www.boost.org/doc/libs/1_43_0/libs/graph/doc/VertexAndEdgeListGraph.html, VertexAndEdgeListGraphs}, have vertex_name properties,
-are \external{http://www.boost.org/doc/libs/1_43_0/libs/graph/doc/BidirectionalGraph.html, BidirectionalGraphs} if they are directed.
+and are \external{http://www.boost.org/doc/libs/1_43_0/libs/graph/doc/BidirectionalGraph.html, BidirectionalGraphs} if they are directed.
 
 The Boost.Graph interface cannot be easily exported to Python so we instead provide a simple wrapper IMP::PythonDirectedGraph. There are methods to translate the graphs into various common Python and other formats (e.g. graphviz).
 
@@ -239,11 +239,12 @@ The Boost.Graph interface cannot be easily exported to Python so we instead prov
 ### Values and Objects (C++ only) ### {#introduction_values}
 
 As is conventional in C++, IMP classes are divided into broad, exclusive types
-- *Object classes*: They inherit from IMP::base::Object and are always passed by pointer. They are reference counted and so should only be stored using IMP::base::Pointer (in C++, in Python everything is reference counted). Never allocate these on the stack as very bad things can happen. Objects cannot be duplicated. Equality on objects is defined as identity (e.g. two different objects are different even if the data they contain is identical).
+- *Object classes*: They inherit from IMP::base::Object and are always passed by pointer. They are reference counted and so should only be stored using IMP::base::Pointer in C++ (in Python everything is reference counted). Never allocate these on the stack as very bad things can happen. Objects cannot be duplicated. Equality on objects is defined as identity (e.g. two different objects are different even if the data they contain is identical).
 
-- *Value classes* which are normal data types. They are passed by value (or `const&`), never by pointer. Equality is defined based on the data stored in the value. Most value types in IMP are always valid, but a few, mostly geometric types (IMP::algebra::Vector3D) are designed for fast, low-level use and are left in an uninitialized state by their default constructor
+- *Value classes* which are normal data types. They are passed by value (or `const&`), never by pointer. Equality is defined based on the data stored in the value. Most value types in IMP are always valid, but a few, mostly geometric types (IMP::algebra::Vector3D) are designed for fast, low-level use and are left in an uninitialized state by their default constructor.
 
-- *RAII classes* control some particular resource. They grab control of a resource when created and then free it when they are destroyed. As a result, they cannot be copied. Non-IMP examples include things like files in Python, which are automatically closed when the file object is deleted.
+- *RAII classes* control some particular resource using the [RAII idiom](http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization).
+They grab control of a resource when created and then free it when they are destroyed. As a result, they cannot be copied. Non-IMP examples include things like files in Python, which are automatically closed when the file object is deleted.
 
 All types in IMP, with a few documented exceptions, can be
 - compared to other objects of the same type
