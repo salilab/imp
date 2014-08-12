@@ -305,7 +305,7 @@ def touch(filename):
         f = open(filename, 'w')
         f.close()
 
-    except IOError, error:
+    except IOError as error:
         import os
         if os.path.isdir(filename):
             pass
@@ -323,7 +323,7 @@ def read_sequence_file(filename, first_residue_number=1):
     filename = os.path.abspath(filename)
     try:
         f = open(filename)
-    except IOError, msg:
+    except IOError as msg:
         raise IOError('Could not open sequence file "%s".' % filename)
     seq = f.read().upper()
 
@@ -665,7 +665,7 @@ def _save_dump(x, filename, err_msg=None, delay=10, show_io_err=True,
     try:
         Dump(x, filename, gzip=gzip, bin=bin)
 
-    except IOError, msg:
+    except IOError as msg:
 
         import time
 

@@ -18,7 +18,7 @@ try:
     # module needs: http://bugs.winehq.org/show_bug.cgi?id=17273
     if sys.platform == 'win32' and 'WINELOADERNOEXEC' in os.environ:
         multiproc_exception = "Wine does not currently support multiprocessing"
-except ImportError, detail:
+except ImportError as detail:
     multiproc_exception = str(detail)
 
 

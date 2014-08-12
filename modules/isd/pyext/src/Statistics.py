@@ -141,7 +141,7 @@ class Statistics:
         self.categories[key][name].set_value(value)
 
     def add_coordinates(self, key, name, format='raw', append=True,
-            extension='pdb', hierarchies=None, restraints=None):
+                        extension='pdb', hierarchies=None, restraints=None):
         """adds a placeholder for coordinates
         - format = rmf3:
             will write the whole system as provided, in rmf3 format
@@ -170,7 +170,7 @@ class Statistics:
                 IMP.rmf.add_restraints(rh, restraints)
             self.coordinates.append((key, name, 'rmf3', rh))
         else:
-            raise ValueError, "format can only be rmf3 or raw"
+            raise ValueError("format can only be rmf3 or raw")
 
     def update_coordinates(self, key, name, value=True):
         """updates the coordinates of key:name entry. Format should match with
@@ -201,7 +201,7 @@ class Statistics:
         titles = []
         for (i, entry) in enumerate(self.entries):
             if self.add_numbers_to_titles:
-                if self.num_entries_per_line>0:
+                if self.num_entries_per_line > 0:
                     title = '%d:' % ((i % self.num_entries_per_line) + 1)
                 else:
                     title = '%d:' % (i + 1)
@@ -286,13 +286,18 @@ class Statistics:
                 if do_append:
                     pdbname = self.prefix + '_traj.' + extension
                     if self.compress > 0 and stepno % self.compress == 0:
-                        newname = "%s_traj_%d.%s" % (self.prefix, stepno, extension)
+                        newname = "%s_traj_%d.%s" % (
+                            self.prefix,
+                            stepno,
+                            extension)
                         os.system('mv %s %s' % (pdbname, newname))
                         self.compress_file(newname)
                     fl = open(pdbname, 'a')
                 else:
                     num = self.categories[key]['counter'].get_raw_value()
-                    fl = open(self.prefix + ('_%s_%010d.%s' % (name, num, extension)), 'w')
+                    fl = open(
+                        self.prefix + ('_%s_%010d.%s' %
+                                       (name, num, extension)), 'w')
                 fl.write(self.categories[key][name])
                 fl.close()
             elif format == 'rmf3':
