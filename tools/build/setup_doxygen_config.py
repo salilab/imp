@@ -88,7 +88,7 @@ def generate_doxyfile(
         doxygen = doxygen.replace("@IS_HTML@", "NO")
 
     # skip linking later
-    inputsh = ["doxygen/generated", source + "/ChangeLog.md",
+    inputsh = ["doxygen/generated", source + "/doc", source + "/ChangeLog.md",
                source + "/tools/README.md", "include", "doc/examples"]
     for m, p in tools.get_modules(source):
         doc = os.path.join(p, "doc")
