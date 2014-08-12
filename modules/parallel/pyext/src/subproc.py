@@ -38,7 +38,7 @@ if sys.platform == 'win32':
                                  stderr=subprocess.STDOUT)
         # Ignore Windows "file not found" errors, so that behavior is consistent
         # between Unix and Windows
-        except WindowsError, detail:
+        except WindowsError as detail:
             print("WindowsError: %s (ignored)" % detail)
 
 else:
