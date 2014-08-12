@@ -1,6 +1,6 @@
 Welcome to the IMP library documentation.
  Throughout the documentation we refer to two, overlapping sets of people.
-- _users_ write python scripts to use existing IMP functionality
+- _users_ write Python scripts to use existing IMP functionality
 - _developers_ develop new methods for scoring, sampling or representation,
    and hopefully contribute them back to IMP central.
  Various pieces of documentation are marked as being intended for developers.

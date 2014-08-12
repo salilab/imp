@@ -59,7 +59,7 @@ either
 
     `brew install boost gmp google-perftools cgal graphviz gsl cmake doxygen hdf5 swig eigen fftw mpfr libtau`
 
-  to install everything IMP finds useful (or that you will want for installing various useful python libs that IMP finds useful). On older Macs, you may also need to `brew install git` if you want to use git (newer Macs include git).
+  to install everything IMP finds useful (or that you will want for installing various useful Python libs that IMP finds useful). On older Macs, you may also need to `brew install git` if you want to use git (newer Macs include git).
 - [Macports](http://www.macports.org/) If you use MacPorts, you must add `/opt/local/bin` to your path (either by modifying your shell's
   config file or by making an `environment.plist` file) and then do
 
