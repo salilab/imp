@@ -32,12 +32,13 @@ for more information.
 # Prerequisites # {#installation_prereqs}
 In order to obtain and compile IMP, you will need:
 
-- cmake (2.8 or later)
-- Boost (1.40 or later)
-- HDF5 (1.8 or later)
-- Python (2.6 or later)
-- SWIG (1.3.40 or later)
-- Developers will also need a git client to access the repository
+- [cmake](http://www.cmake.org) (2.8 or later)
+- [Boost](http://www.boost.org) (1.40 or later)
+- [HDF5](http://www.hdfgroup.org/HDF5/) (1.8 or later)
+- [Python](http://www.python.org) (2.6 or later)
+- [SWIG](http://www.swig.org) (1.3.40 or later)
+- Developers will also need a [git](http://git-scm.com/) client
+  to access the repository
 
 ## Getting prerequisites on a Mac ## {#installation_prereqs_mac}
 
