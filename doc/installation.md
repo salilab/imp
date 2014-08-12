@@ -57,7 +57,7 @@ either
 
     `brew tap salilab/salilab`
 
-    `brew install boost gmp google-perftools cgal graphviz gsl cmake doxygen hdf5 swig eigen fftw mpfr libtau`
+    `brew install boost gmp google-perftools cgal graphviz gsl cmake doxygen hdf5 swig fftw mpfr libtau`
 
   to install everything IMP finds useful (or that you will want for installing various useful Python libs that IMP finds useful). On older Macs, you may also need to `brew install git` if you want to use git (newer Macs include git).
 - [Macports](http://www.macports.org/) If you use MacPorts, you must add `/opt/local/bin` to your path (either by modifying your shell's
@@ -119,7 +119,6 @@ that you're going to use to build IMP. The basic procedure is as follows:
      - Open the resulting HDF5 solution file in Visual Studio, change to
        Release configuration, then build the hdf5 project.
   - (Optional) [Build CGAL from source code](http://www.cgal.org/windows_installation.html).
-  - (Optional) [Get and install Eigen](http://eigen.tuxfamily.org).
   - (Optional) Download the
     [FFTW DLLs](http://www.fftw.org/install/windows.html) and follow the
     instructions at that website to make .lib import libraries needed for
