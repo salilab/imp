@@ -8,11 +8,19 @@ Packager:      Ben Webb <ben@salilab.org>
 URL:           http://www.integrativemodeling.org/
 Source0:       imp-%{version}.tar.gz
 BuildRoot:     %{_tmppath}/%{name}-%{version}-root
+# RHEL 5 ships with Python 2.4. We need Python 2.6 or later, so pull in that
+# from EPEL (note we need to tell the build later on where to find this python)
+%if 0%{?rhel} == 5
+BuildRequires: python26-devel
+Requires: python26
+%else
+BuildRequires: python-devel >= 2.6
+%endif
 # Note that RHEL 5 doesn't have a new enough swig to build IMP. If you must
 # use RHEL 5 (we recommend RHEL 6) you will need to build a newer SWIG package
 # before building IMP.
 BuildRequires: swig >= 1.3.40
-BuildRequires: python-devel >= 2.3, gsl-devel, fftw-devel, hdf5-devel >= 1.8
+BuildRequires: gsl-devel, fftw-devel, hdf5-devel >= 1.8
 BuildRequires: zlib-devel
 # Needed to build the cnmultifit module; obtain
 # from http://salilab.org/imp/libTAU.html
@@ -56,8 +64,13 @@ BuildRequires: CGAL-devel, opencv-devel
 
 # Many modules use Python's numpy module, so pull that in (at build time
 # for tests; at install time for using the modules)
+%if 0%{?rhel} == 5
+BuildRequires: python26-numpy
+Requires: python26-numpy
+%else
 BuildRequires: numpy
 Requires: numpy
+%endif
 
 %define cmake_opts %{boost}
 
@@ -100,6 +113,12 @@ against IMP.
 %setup -n imp-%{version}
 
 %build
+# On RHEL5, we need 'python' to be Python 2.6
+%if 0%{?rhel} == 5
+mkdir python-bin
+ln -sf /usr/bin/python26 python-bin/python
+PATH="`pwd`/python-bin:$PATH"
+%endif
 # For now, bundle RMF with IMP (long term, may be better to put in a separate
 # RPM)
 mkdir imp && mv * imp || :
