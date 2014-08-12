@@ -113,15 +113,15 @@ against IMP.
 %setup -n imp-%{version}
 
 %build
+# For now, bundle RMF with IMP (long term, may be better to put in a separate
+# RPM)
+mkdir imp && mv * imp || :
 # On RHEL5, we need 'python' to be Python 2.6
 %if 0%{?rhel} == 5
 mkdir python-bin
 ln -sf /usr/bin/python26 python-bin/python
 PATH="`pwd`/python-bin:$PATH"
 %endif
-# For now, bundle RMF with IMP (long term, may be better to put in a separate
-# RPM)
-mkdir imp && mv * imp || :
 mkdir build && cd build
 %{cmake} ../imp -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr \
                 -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/%{name}-%{version} \
