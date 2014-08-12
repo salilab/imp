@@ -10,37 +10,29 @@
 #define IMPMEMBRANE_CELL_MOVER_H
 
 #include "membrane_config.h"
-#include <IMP/core/MonteCarlo.h>
-#include <IMP/core/Mover.h>
+#include <IMP/core/MonteCarloMover.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/core/rigid_bodies.h>
-#include <IMP/core/mover_macros.h>
+//#include <IMP/core/mover_macros.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-//! Modify the transformation of a rigid body
-/** The transformation of a rigid body is moved in a ball of given
-    size. The probability distribution is uniform over the ball.
-    \see MonteCarlo
- */
-class IMPMEMBRANEEXPORT CellMover : public core::Mover
+class IMPMEMBRANEEXPORT CellMover : public core::MonteCarloMover
 {
 public:
-  /** The rigid body is rotated and translated to move
-      \param[in] d   the rigid body decorator
-      \param[in] max_translation maximum translation during a step
-      \param[in] max_rotation maximum rotation angle in radians
-   */
-  CellMover(Particle *p, Particles ps, Float max_translation);
+  CellMover(kernel::Model *m, kernel::ParticleIndex pi, Particles ps,
+           Float max_translation);
 
-  IMP_MOVER(CellMover);
+  // IMP_MOVER(CellMover);
+  IMP_OBJECT_METHODS(CellMover);
+
 private:
   Float old_scale_;
   algebra::Vector3Ds oldcoords_;
   algebra::Transformation3Ds oldtrs_;
-  Pointer<Particle> p_;
+  kernel::ParticleIndex pi_;
   Particles ps_;
   Float max_translation_;
   Particles ps_norb_;

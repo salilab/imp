@@ -14,27 +14,28 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-BoxedMover::BoxedMover(Particle *p, Float max_tr,
+BoxedMover::BoxedMover(kernel::Model *m, kernel::ParticleIndex pi,Float max_tr,
                        algebra::Vector3Ds centers):
-  Mover(p->get_model(), "BoxMover%1%")
+  MonteCarloMover(m, "BoxMover%1%")
 {
   IMP_LOG(VERBOSE,"start BoxedMover constructor");
-  p_ = p;
+  pi_ = pi;
   max_tr_ = max_tr;
   centers_ = centers;
-  oldcoord_ = core::XYZ(p_).get_coordinates();
+  oldcoord_ = core::XYZ(m->get_particle(pi_)).get_coordinates();
   IMP_LOG(VERBOSE,"finish mover construction" << std::endl);
 }
 
-ParticlesTemp BoxedMover::propose_move(Float f) {
-  IMP_LOG(VERBOSE,"BoxedMover:: propose move f is  : " << f <<std::endl);
+MonteCarloMoverResult BoxedMover::do_propose() {
+  /*IMP_LOG(VERBOSE,"BoxedMover:: propose move f is  : " << f <<std::endl);
   {
     ::boost::uniform_real<> rand(0,1);
     double fc =rand(random_number_generator);
     if (fc > f) return ParticlesTemp();
   }
+  */
 
-   oldcoord_ = core::XYZ(p_).get_coordinates();
+   oldcoord_ = core::XYZ(m->get_particle(pi_)).get_coordinates();
 
    bool outside=true;
    algebra::Vector3D newcoord;
@@ -60,24 +61,28 @@ ParticlesTemp BoxedMover::propose_move(Float f) {
     if(icell==0) outside=false;
    }
 
-   core::XYZ(p_).set_coordinates(newcoord);
+   core::XYZ(m->get_particle(pi_)).set_coordinates(newcoord);
 
-   ParticlesTemp ret;
-   ret.push_back(p_);
-   return ret;
+   return MonteCarloMoverResult(kernel::ParticleIndexes(1, pi_), 1.0);
 }
 
-void BoxedMover::reset_move() {
- core::XYZ(p_).set_coordinates(oldcoord_);
+void BoxedMover::do_reject() {
+ core::XYZ(m->get_particle(pi_)).set_coordinates(oldcoord_);
 }
 
+/*
 ParticlesTemp BoxedMover::get_output_particles() const {
  ParticlesTemp ret;
  ret.push_back(p_);
  return ret;
 }
+*/
 
-void BoxedMover::do_show(std::ostream &out) const {
+kernel::ModelObjectsTemp BoxedMover::do_get_inputs() const {
+  return kernel::ModelObjectsTemp(1, get_model()->get_particle(pi_));
+}
+
+void BoxedMover::show(std::ostream &out) const {
   out << "max translation: " << max_tr_ << "\n";
 }
 

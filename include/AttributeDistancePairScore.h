@@ -22,14 +22,31 @@ IMPMEMBRANE_BEGIN_NAMESPACE
  */
 class IMPMEMBRANEEXPORT AttributeDistancePairScore : public PairScore
 {
-  //IMP::OwnerPointer<UnaryFunction> f_; //shruthi: replaced deprecated version
+  //IMP::OwnerPointer<UnaryFunction> f_; //replaced deprecated version
   IMP::PointerMember<UnaryFunction> f_;
   FloatKey k_;
 public:
   //! Apply function f to attribute k
   AttributeDistancePairScore(UnaryFunction *f, FloatKey k);
+
+   virtual double evaluate_index(kernel::Model *m,
+   const kernel::ParticleIndexPair &p,
+    DerivativeAccumulator *da) const IMP_OVERRIDE;
+
+   virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
+   const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+
+   void show(std::ostream &out) const ;
+
+
+   IMP_PAIR_SCORE_METHODS(AttributeDistancePairScore);
+   IMP_OBJECT_METHODS(AttributeDistancePairScore);
+
+/** deprecated code
   IMP_SIMPLE_PAIR_SCORE(AttributeDistancePairScore);
+ */
 };
+
 
 IMP_OBJECTS(AttributeDistancePairScore, AttributeDistancePairScores);
 
