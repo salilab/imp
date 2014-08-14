@@ -33,10 +33,10 @@ def readParameters(parameterFileName):
 
 
 def quickParticleName(particle):
-    atomDecorator = IMP.atom.Atom.decorate_particle(particle)
+    atomDecorator = IMP.atom.Atom(particle)
     atomName = atomDecorator.get_atom_type()
 
-    atomDecorator = IMP.atom.Atom.decorate_particle(particle)
+    atomDecorator = IMP.atom.Atom(particle)
     residue = IMP.atom.get_residue(atomDecorator)
     residueNumber = residue.get_index()
 

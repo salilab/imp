@@ -58,13 +58,13 @@ class Tests(IMP.test.TestCase):
         self._compare_lists(m, ps0, ps1, cpss, threshold)
 
         for p in ps0:
-            d = IMP.core.XYZR.decorate_particle(p)
+            d = IMP.core.XYZR(p)
             d.set_coordinates(IMP.algebra.get_random_vector_in(
                 IMP.algebra.get_unit_bounding_box_3d()))
         self._compare_lists(m, ps0, ps1, cpss, threshold)
 
         for p in ps1:
-            d = IMP.core.XYZR.decorate_particle(p)
+            d = IMP.core.XYZR(p)
             d.set_coordinates(IMP.algebra.get_random_vector_in(
                 IMP.algebra.get_unit_bounding_box_3d()))
         self._compare_lists(m, ps0, ps1, cpss, threshold)

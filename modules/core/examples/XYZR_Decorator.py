@@ -20,8 +20,8 @@ d1.set_radius(2.0)
 print IMP.core.get_distance(d0, d1)
 
 # use them as XYZ particles
-xd0 = IMP.core.XYZ.decorate_particle(p0)
-xd1 = IMP.core.XYZ.decorate_particle(p1)
+xd0 = IMP.core.XYZ(p0)
+xd1 = IMP.core.XYZ(p1)
 
 # distance without radii
 print IMP.core.get_distance(xd0, xd1)

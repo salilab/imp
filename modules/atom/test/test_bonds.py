@@ -31,8 +31,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(da.get_number_of_bonds(), 0,
                          "Expected not to find a bond")
         for p in m.get_particles():
-            self.assertEqual(IMP.atom.Bond.decorate_particle(p),
-                             IMP.atom.Bond())
+            self.assertFalse(IMP.atom.Bond.get_is_setup(p))
 
 
 if __name__ == '__main__':

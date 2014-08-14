@@ -50,8 +50,8 @@ class Tests(IMP.test.TestCase):
             print pp[0].get_name(), pp[1].get_name()
         for l0 in ls0:
             for l1 in ls1:
-                d0 = IMP.core.XYZR.decorate_particle(l0.get_particle())
-                d1 = IMP.core.XYZR.decorate_particle(l1.get_particle())
+                d0 = IMP.core.XYZR(l0.get_particle())
+                d1 = IMP.core.XYZR(l1.get_particle())
                 if (IMP.core.get_distance(d0, d1) < .95 * threshold):
                     print "looking for", l0.get_particle().get_name() + " " \
                         + \
