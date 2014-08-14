@@ -19,7 +19,6 @@ JeffreysRestraint::JeffreysRestraint(Model *m, Particle *p)
  */
 double JeffreysRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
     const {
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(p_); }
   Scale sig(p_);
   double score;
   if (sig.get_scale() <= 0) {

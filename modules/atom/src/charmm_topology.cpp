@@ -70,7 +70,7 @@ void add_residue_bonds(
       Bonded b[2];
       for (unsigned int i = 0; i < 2; ++i) {
         if (Bonded::get_is_setup(as[i])) {
-          b[i] = Bonded::decorate_particle(as[i]);
+          b[i] = Bonded(as[i]);
         } else {
           b[i] = Bonded::setup_particle(as[i]);
         }

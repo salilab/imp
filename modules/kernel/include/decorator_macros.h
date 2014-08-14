@@ -47,14 +47,6 @@
                     << " missing required attributes for decorator "                      \
                     << #Name);                                                            \
   }                                                                                       \
-  /** \deprecated_at{2.1} Check explicitly instead. */                                    \
-  static Name decorate_particle(::IMP::kernel::Particle *p) {                             \
-    IMP_CHECK_OBJECT(p);                                                                  \
-    if (!get_is_setup(p->get_model(), p->get_index())) {                                  \
-      return Name();                                                                      \
-    }                                                                                     \
-    return Name(p);                                                                       \
-  }                                                                                       \
   static bool get_is_setup(const IMP::kernel::ParticleAdaptor &p) {                       \
     return get_is_setup(p.get_model(), p.get_particle_index());                           \
   }                                                                                       \
@@ -103,15 +95,6 @@
                            d.get_particle_index())                                         \
                     << " missing required attributes for decorator "                       \
                     << #Name);                                                             \
-  }                                                                                        \
-  /** \deprecated_at{2.1} Check explicitly instead. */                                     \
-  static Name decorate_particle(::IMP::kernel::Particle *p,                                \
-                                const TraitsType &tr = default_traits) {                   \
-    IMP_CHECK_OBJECT(p);                                                                   \
-    if (!get_is_setup(p->get_model(), p->get_index(), tr)) {                               \
-      return Name();                                                                       \
-    }                                                                                      \
-    return Name(p);                                                                        \
   }                                                                                        \
   static bool get_is_setup(const IMP::kernel::ParticleAdaptor &p,                          \
                            const TraitsType &tr = default_traits) {                        \

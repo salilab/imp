@@ -128,8 +128,6 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction {
         J_(jitter),
         cutoff_(cutoff) {
     IMP_LOG_TERSE("Covariance1DFunction: constructor" << std::endl);
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(tau); }
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(ilambda); }
     lambda_val_ = Scale(ilambda).get_nuisance();
     tau_val_ = Scale(tau).get_nuisance();
     do_jitter = (jitter > IMP_ISD_BIVARIATE_FUNCTIONS_MINIMUM);

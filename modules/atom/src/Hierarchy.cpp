@@ -554,9 +554,8 @@ algebra::BoundingBox3D get_bounding_box(const Hierarchy &h) {
   kernel::ParticlesTemp rep = get_leaves(h);
   algebra::BoundingBox3D bb;
   for (unsigned int i = 0; i < rep.size(); ++i) {
-    core::XYZR xyzr = core::XYZR::decorate_particle(rep[i]);
-    if (xyzr) {
-      bb += algebra::get_bounding_box(xyzr.get_sphere());
+    if (core::XYZR::get_is_setup(rep[i])) {
+      bb += algebra::get_bounding_box(core::XYZR(rep[i]).get_sphere());
     } else if (core::XYZ::get_is_setup(rep[i])) {
       bb += algebra::BoundingBox3D(core::XYZ(rep[i]).get_coordinates());
     }
@@ -569,9 +568,8 @@ algebra::Sphere3D get_bounding_sphere(const Hierarchy &h) {
   kernel::ParticlesTemp rep = get_leaves(h);
   algebra::Sphere3Ds ss;
   for (unsigned int i = 0; i < rep.size(); ++i) {
-    core::XYZR xyzr = core::XYZR::decorate_particle(rep[i]);
-    if (xyzr) {
-      ss.push_back(xyzr.get_sphere());
+    if (core::XYZR::get_is_setup(rep[i])) {
+      ss.push_back(core::XYZR(rep[i]).get_sphere());
     } else if (core::XYZ::get_is_setup(rep[i])) {
       ss.push_back(algebra::Sphere3D(core::XYZ(rep[i]).get_coordinates(), 0));
     }

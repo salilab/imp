@@ -241,7 +241,7 @@ void do_benchmark(std::string descr, unsigned int n) {
     IMP::algebra::Vector3Ds coordinates;
     for (unsigned int i = 0; i < particles.size(); i++) {
       coordinates.push_back(
-          IMP::core::XYZ::decorate_particle(particles[i]).get_coordinates());
+          IMP::core::XYZ(particles[i]).get_coordinates());
     }
     double runtime, dist = 0;
     // measure time
@@ -279,7 +279,7 @@ void do_benchmark(std::string descr, unsigned int n) {
     for (unsigned int i = 0; i < particles.size(); i++) {
       coordinates.push_back(VectorHolder());
       coordinates.back().c =
-          IMP::core::XYZ::decorate_particle(particles[i]).get_coordinates();
+          IMP::core::XYZ(particles[i]).get_coordinates();
     }
     double runtime, dist = 0;
     // measure time

@@ -358,7 +358,7 @@ Hierarchies read_pdb(std::istream& in, std::string name, kernel::Model* model,
 
         // check if new residue
         if (rp == nullptr ||
-            residue_index != Residue::decorate_particle(rp).get_index() ||
+            residue_index != Residue(rp).get_index() ||
             residue_icode != curr_residue_icode) {
           curr_residue_icode = residue_icode;
           // create new residue particle

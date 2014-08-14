@@ -112,8 +112,6 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction {
   Linear1DFunction(kernel::Particle* a, kernel::Particle* b)
       : UnivariateFunction("Linear1DFunction %1%"), a_(a), b_(b) {
     IMP_LOG_TERSE("Linear1DFunction: constructor" << std::endl);
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) { Nuisance::decorate_particle(a); }
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) { Nuisance::decorate_particle(b); }
     a_val_ = Nuisance(a).get_nuisance();
     b_val_ = Nuisance(b).get_nuisance();
     update();
@@ -303,11 +301,6 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
         s_(s),
         A_(A) {
     IMP_LOG_TERSE("GeneralizedGuinierPorodFunction: constructor" << std::endl);
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(G); }
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(Rg); }
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(d); }
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(s); }
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) { Nuisance::decorate_particle(A); }
     update();
   }
 

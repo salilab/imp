@@ -94,10 +94,10 @@ TALOSRestraint::TALOSRestraint(kernel::Model *m, kernel::Particle *p1,
  */
 double TALOSRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
     const {
-  core::XYZ d0 = core::XYZ::decorate_particle(p_[0]);
-  core::XYZ d1 = core::XYZ::decorate_particle(p_[1]);
-  core::XYZ d2 = core::XYZ::decorate_particle(p_[2]);
-  core::XYZ d3 = core::XYZ::decorate_particle(p_[3]);
+  core::XYZ d0(p_[0]);
+  core::XYZ d1(p_[1]);
+  core::XYZ d2(p_[2]);
+  core::XYZ d3(p_[3]);
   Scale kappascale(kappa_);
   double kappaval = kappascale.get_scale();
 
