@@ -49,7 +49,6 @@ void Fine2DRegistrationRestraint::setup(
   // Create a particle for the projection parameters to be optimized
   subj_params_particle_ = new kernel::Particle(scoring_model);
   PP_ = ProjectionParameters::setup_particle(subj_params_particle_);
-  PP_.decorate_particle(subj_params_particle_);
   PP_.set_parameters_optimized(true);
   // add the restraint to the model
   scoring_model->add_restraint(this);
