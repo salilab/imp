@@ -16,11 +16,10 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
 //! Create efficient distance-based pair scores.
 /** This class allows one to create efficient distance-based
-    pair scores in C++ by simply writing a pair of small
-    functors (DistanceScore and DistanceDerivative) that do
-    the scoring.
+    pair scores in C++ by simply writing a functor (Score) that
+    does the scoring.
 
-    \see DistanceScore
+    \see Score
 
     \note we can add arguments to get the list of input
     particles and containers later, for now the former
