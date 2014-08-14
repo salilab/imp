@@ -20,11 +20,12 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 //! Score on the crossing angles between two helices
 class IMPMEMBRANEEXPORT KinkPairScore : public PairScore
 {
-  IMP::base::OwnerPointer<UnaryFunction> f_;
+  IMP::base::PointerMember<UnaryFunction> f_;
 public:
   KinkPairScore(UnaryFunction *f);
 
-  IMP_PAIR_SCORE(KinkPairScore);
+  IMP_PAIR_SCORE_METHODS(KinkPairScore);
+  IMP_OBJECT_METHODS(KinkPairScore);
 };
 
 IMP_OBJECTS(KinkPairScore, KinkPairScores);

@@ -9,7 +9,7 @@
 #include <IMP/algebra.h>
 #include <IMP/statistics.h>
 #include <IMP/core/XYZ.h>
-#include <IMP/isd2/Scale.h>
+#include <IMP/isd/Scale.h>
 #include <IMP/statistics/internal/TrivialPartitionalClustering.h>
 #include <algorithm>
 #include <vector>

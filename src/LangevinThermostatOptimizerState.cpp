@@ -9,7 +9,7 @@
 #include <IMP/membrane/LangevinThermostatOptimizerState.h>
 #include <IMP/membrane/MolecularDynamicsWithWte.h>
 #include <IMP/atom/Mass.h>
-#include <IMP/random.h>
+#include <IMP/base/random.h>
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 LangevinThermostatOptimizerState
@@ -23,10 +23,11 @@ LangevinThermostatOptimizerState
   vs_[2] = FloatKey("vz");
 }
 
-void LangevinThermostatOptimizerState::update()
+void LangevinThermostatOptimizerState::do_update()
 {
     rescale_velocities();
 }
+
 IMP_GCC_DISABLE_WARNING("-Wuninitialized")
 void LangevinThermostatOptimizerState::rescale_velocities() const
 {
@@ -52,7 +53,7 @@ void LangevinThermostatOptimizerState::rescale_velocities() const
  }
 }
 
-void LangevinThermostatOptimizerState::do_show(std::ostream &out) const
+void LangevinThermostatOptimizerState::show(std::ostream &out) const
 {
   out << "Langevin thermostat with " << temperature_ << std::endl;
 }

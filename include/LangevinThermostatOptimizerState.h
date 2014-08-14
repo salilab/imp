@@ -14,7 +14,7 @@
 #include <IMP/Particle.h>
 #include <IMP/base_types.h>
 #include <IMP/OptimizerState.h>
-#include <IMP/optimizer_state_macros.h>
+//#include <IMP/optimizer_state_macros.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
@@ -54,7 +54,7 @@ class IMPMEMBRANEEXPORT LangevinThermostatOptimizerState : public OptimizerState
   //! Rescale the velocities now
   void rescale_velocities() const;
 
-  IMP_OPTIMIZER_STATE(LangevinThermostatOptimizerState);
+  IMP_OBJECT_METHODS(LangevinThermostatOptimizerState);
 
 private:
   Particles pis_;

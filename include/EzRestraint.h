@@ -10,7 +10,7 @@
 
 #include "membrane_config.h"
 #include "IMP/Restraint.h"
-#include "IMP/restraint_macros.h"
+//#include "IMP/restraint_macros.h"
 #include <IMP/Particle.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/base_types.h>
@@ -31,9 +31,10 @@ Floats get_parameters(std::string restype);
 
 
 public:
-  EzRestraint(Particles ps);
+  EzRestraint(kernel::Model *m,Particles ps);
 
-  IMP_RESTRAINT(EzRestraint);
+  IMP_OBJECT_METHODS(EzRestraint);
+//  IMP_RESTRAINT(EzRestraint);
 
 };
 

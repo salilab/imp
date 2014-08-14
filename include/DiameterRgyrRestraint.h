@@ -10,7 +10,7 @@
 
 #include "membrane_config.h"
 #include "IMP/Restraint.h"
-#include "IMP/restraint_macros.h"
+//#include "IMP/restraint_macros.h"
 #include <IMP/Particle.h>
 #include <IMP/base_types.h>
 #include <string>
@@ -34,9 +34,9 @@ private:
 
 public:
 
- DiameterRgyrRestraint(Particles ps, Float diameter, Float rgyr, Float kappa);
-
- IMP_RESTRAINT(DiameterRgyrRestraint);
+ DiameterRgyrRestraint(kernel::Model *m,Particles ps, Float diameter,
+               Float rgyr, Float kappa);
+ IMP_OBJECT_METHODS(DiameterRgyrRestraint);
 
 };
 

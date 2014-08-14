@@ -21,8 +21,8 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-EzRestraint::EzRestraint(Particles ps):
-  Restraint("Ez Potential") {
+EzRestraint::EzRestraint(kernel::Model *m,Particles ps):
+  Restraint(m,"Ez Potential") {
 
  ps_ = ps;
  for(unsigned i=0; i<ps_.size(); ++i){
@@ -87,17 +87,17 @@ EzRestraint::unprotected_evaluate(DerivativeAccumulator *da) const
  return score;
 }
 
-ParticlesTemp EzRestraint::get_input_particles() const {
+ParticlesTemp EzRestraint::do_get_inputs() const {
   ParticlesTemp ret;
   ret.insert(ret.end(), ps_.begin(), ps_.end());
   return ret;
 }
-
+/*
 ContainersTemp EzRestraint::get_input_containers() const {
   return ContainersTemp();
 }
-
-void EzRestraint::do_show(std::ostream &) const
+*/
+void EzRestraint::show(std::ostream &) const
 {
 }
 

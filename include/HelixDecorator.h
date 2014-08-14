@@ -10,12 +10,11 @@
 
 #include "membrane_config.h"
 
-#include <IMP/core/core_macros.h>
+//#include <IMP/core/core_macros.h>
 #include <IMP/Particle.h>
 #include <IMP/decorator_macros.h>
 #include <IMP/Model.h>
 #include <IMP/Decorator.h>
-#include <IMP/exception.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
@@ -27,7 +26,7 @@ class IMPMEMBRANEEXPORT HelixDecorator: public Decorator
 
 public:
 
-  IMP_DECORATOR(HelixDecorator, Decorator);
+  IMP_DECORATOR_METHODS(HelixDecorator, Decorator);
 
   static HelixDecorator setup_particle(Particle *p, Float b, Float e) {
     p->add_attribute(get_helix_key(0),b);

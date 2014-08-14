@@ -17,8 +17,8 @@
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 DiameterRgyrRestraint::DiameterRgyrRestraint
-  (Particles ps, Float diameter, Float rgyr, Float kappa):
-   Restraint("Diameter and Radius of Gyration Restraint"),
+  (kernel::Model *m, Particles ps, Float diameter, Float rgyr, Float kappa):
+   Restraint(m,"Diameter and Radius of Gyration Restraint"),
    ps_(ps), diameter_(diameter), rgyr_(rgyr), kappa_(kappa) {}
 
 double
@@ -50,17 +50,17 @@ DiameterRgyrRestraint::unprotected_evaluate(DerivativeAccumulator *da) const
  return 0.5 * kappa_ * score;
 }
 
-ParticlesTemp DiameterRgyrRestraint::get_input_particles() const {
+ParticlesTemp DiameterRgyrRestraint::do_get_inputs() const {
   ParticlesTemp ret;
   ret.insert(ret.end(), ps_.begin(), ps_.end());
   return ret;
 }
-
+/*
 ContainersTemp DiameterRgyrRestraint::get_input_containers() const {
   return ContainersTemp();
 }
-
-void DiameterRgyrRestraint::do_show(std::ostream &) const
+*/
+void DiameterRgyrRestraint::show(std::ostream &) const
 {
 }
 
