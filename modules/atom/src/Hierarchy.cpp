@@ -91,7 +91,7 @@ struct MHDMatchingType {
   MHDMatchingType(GetByType t) : t_(t) {}
 
   bool operator()(kernel::Particle *p) const {
-    Hierarchy h = Hierarchy::decorate_particle(p);
+    Hierarchy h(p);
     switch (t_) {
       IMP_ATOM_FOREACH_HIERARCHY_TYPE_STATEMENTS(IMP_ATOM_IMPL_MATCH_TYPE);
     }
