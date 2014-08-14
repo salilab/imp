@@ -123,7 +123,7 @@
     and other Decorators. To help keep things uniform, we provide macros
     to declare the setup functions. These macros expect that an appropriate
     `do_setup_particle(kernel::Model *, ParticleIndex, args...)` function is
-    defined. But any docs needed before the macro invocation.
+    defined.
 */
 #define IMP_DECORATOR_SETUP_0(Name)                                    \
   /** Setup the particle so it can be used with this decorator. */     \
