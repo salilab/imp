@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
     // do normal IMP initialization of command line arguments
     // Run with --help to see options.
     IMP::base::setup_from_argv(argc, argv,
-                               "Show to to use dope and excluded volume");
+                               "Show how to use dope and excluded volume");
 
     typedef IMP::score_functor::HarmonicLowerBound Harmonic;
     typedef IMP::score_functor::SphereDistance<Harmonic> SoftSphere;
