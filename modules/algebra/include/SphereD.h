@@ -34,8 +34,8 @@ class SphereD : public GeometricPrimitiveD<D> {
     IMP_USAGE_CHECK(radius >= 0, "Radius can't be negative");
   }
   double get_radius() const {
-    IMP_USAGE_CHECK(!base::isnan(radius_),
-                    "Attempt to use uninitialized sphere.");
+    IMP_INTERNAL_CHECK(!base::isnan(radius_),
+                       "Attempt to use uninitialized sphere.");
     return radius_;
   }
   const VectorD<D> &get_center() const { return center_; }
