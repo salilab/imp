@@ -134,7 +134,7 @@ private:
         to particles that do have XYZ coordinates.
 
       - For each segment (chain), if no atoms have coordinates but a triplet
-        of atoms can be found where theit internal distances and angle can be
+        of atoms can be found where their internal distances and angle can be
         determined from internal coordinates, these three atoms will be
         placed to seed the generation procedure. For the first segment, the
         atoms will be placed on the xy plane with the first atom at the origin.

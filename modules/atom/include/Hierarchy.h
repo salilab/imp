@@ -85,7 +85,7 @@ class State;
 IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
 
 //! The standard decorator for manipulating molecular structures.
-/** \imp represents molecular structures using the Hierachy decorator.
+/** \imp represents molecular structures using the Hierarchy decorator.
     Molecules and collections of molecules each are stored as a
     hierarchy (or tree) where the resolution of the representation increases
     as you move further from the root. That is, if a parent has
@@ -352,7 +352,7 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
   IMP_ATOM_FOREACH_HIERARCHY_TYPE_FUNCTIONS(IMP_ATOM_GET_AS_DECL);
   /** @} */
 
-  //! Get the molecular hierarchy HierararchyTraits.
+  //! Get the molecular hierarchy HierarchyTraits.
   static const IMP::core::HierarchyTraits &get_traits();
 
   // swig overwrites __repr__ if it is inherited

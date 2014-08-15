@@ -22,7 +22,7 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-/** Select a part of an atom.Hiearchy or atom.Hierarchies that is identified
+/** Select a part of an atom.Hierarchy or atom.Hierarchies that is identified
     by the biological name.
 
 
@@ -125,7 +125,7 @@ class IMPATOMEXPORT Selection :
   /** Select residues whose types are in the list. Not sure
       why you would do this.*/
   void set_residue_types(ResidueTypes types);
-  /** Select domains with the specificed names. */
+  /** Select domains with the specified names. */
   void set_domains(Strings names);
   /** Select a molecule with the passed name. */
   void set_molecule(std::string mol);
@@ -201,7 +201,7 @@ IMPATOMEXPORT kernel::Restraint *create_connectivity_restraint(
     const Selections &s, double k, std::string name = "Connectivity%1%");
 
 /** Create a restraint connecting the selections. The particles are
- allowed to be appart by x0 and still count as connected.
+ allowed to be apart by x0 and still count as connected.
 
     If one or more of the selections is a rigid body, this will be used
     to accelerate the computation.
@@ -222,7 +222,7 @@ IMPATOMEXPORT kernel::Restraint *create_internal_connectivity_restraint(
     const Selection &s, double k, std::string name = "Connectivity%1%");
 
 /** Create a restraint connecting the selection. The particles are
- allowed to be appart by x0 and still count as connected.
+ allowed to be apart by x0 and still count as connected.
 
     If one or more of the selections is a rigid body, this will be used
     to accelerate the computation.
@@ -249,7 +249,7 @@ IMPATOMEXPORT kernel::Restraint *create_internal_connectivity_restraint(
 IMPATOMEXPORT core::XYZR create_cover(const Selection &s,
                                       std::string name = std::string());
 
-/** Get the total mass of a hierarchy. In daltons.
+/** Get the total mass of a hierarchy. In Daltons.
     See Selection
  */
 IMPATOMEXPORT double get_mass(const Selection &s);

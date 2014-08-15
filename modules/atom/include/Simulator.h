@@ -34,8 +34,8 @@ class SimulationParameters;
 class IMPATOMEXPORT Simulator : public Optimizer {
  public:
   /**
-     @param m model associated with simulater
-     @param name simulater name where %1% is a joker
+     @param m model associated with simulator
+     @param name simulator name where %1% is a joker
      @param wave_factor if >=1.001, use wave time step size with larger maximal
                         time step, using simulate_wave() when calling optimize()
 

@@ -71,8 +71,8 @@ class IMPATOMEXPORT CenterOfMass : public IMP::Decorator {
   IMP_DECORATOR_METHODS(CenterOfMass, IMP::Decorator);
 
     /** Sets up CenterOfMass over members, and constrains CenterOfMass to be
-        computed before model evaluation and to propogate derivatives
-        folllowing model evaulation.
+        computed before model evaluation and to propagate derivatives
+        following model evaluation.
 
         pi is decorated with core::XYZ and atom::Mass decorators, its
         coordinates are set to the current center of mass of pis, and
@@ -82,7 +82,7 @@ class IMPATOMEXPORT CenterOfMass : public IMP::Decorator {
 
     /** Sets up CenterOfMass over particles passed by applying the refiner
         over the particle pi, and constrains CenterOfMass to be computed before
-        model evaluation and to propogate derivatives following model
+        model evaluation and to propagate derivatives following model
         evaluation.
 
         pi is decorated with the core::XYZ and atom::Mass decorators,

@@ -36,7 +36,7 @@ IMP_VALUES(AtomType, AtomTypes);
     created from the PDB atom name string with spaces removed. For
     example, a protein C-alpha has the name AtomType("CA").
     - the AtomType for a hetero (HETATM) atom is the AtomType created by
-    prefixing "HET:" to the PBD atom name string (this time without
+    prefixing "HET:" to the PDB atom name string (this time without
     spaces removed). For example, a calcium atom is AtomType("HET:CA  ").
 
     We provide an AtomType instance for each of the standard PDB %atom types.

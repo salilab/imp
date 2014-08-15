@@ -34,7 +34,7 @@ class SimulationParameters;
     RigidBodyDiffusion decorator can be used to specify a rotational
     diffusion coefficient for core::RigidBody particles.  The
     optimizer assumes the scoring function to be energy in kcal/mol, and the xyz
-    coordinates to be in angstroms and the diffusion coefficent of
+    coordinates to be in angstroms and the diffusion coefficient of
     each particle be in \f$A^2/fs\f$ (or \f$Radian^2/fs\f$ for rotational
     diffusion coefficient).  kernel::Particles without optimized x,y,z
     and nonoptimized D are skipped.
@@ -58,7 +58,7 @@ class SimulationParameters;
     force field torque, proportionally to the rotational diffusion
     coefficient, the time step size, and inversely proportional kT.
 
-    If the skt (stochastic runge kutta) flag is true, the simulation is
+    If the skt (stochastic Runge Kutta) flag is true, the simulation is
     altered slightly to apply the SKT scheme.
 
     \see Diffusion
@@ -107,7 +107,7 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
   base::Vector<algebra::Vector3D> forces_;
 };
 
-/** Repeatedly run the current model with brownian dynamics at different time
+/** Repeatedly run the current model with Brownian dynamics at different time
     steps to try to find the maximum time step that can be used without
     the model exploding.
 */

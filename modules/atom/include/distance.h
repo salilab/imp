@@ -163,7 +163,7 @@ template <class Vector3DsOrXYZs0, class Vector3DsOrXYZs1>
 inline double get_native_overlap(const Vector3DsOrXYZs0& m1,
                                  const Vector3DsOrXYZs1& m2, double threshold) {
   IMP_USAGE_CHECK(m1.size() == m2.size(),
-                  "native_verlap: The input sets of XYZ points "
+                  "native_overlap: The input sets of XYZ points "
                       << "should be of the same size");
   unsigned int distances = 0;
   for (unsigned int i = 0; i < m1.size(); i++) {
@@ -185,7 +185,7 @@ inline double get_native_overlap(const Vector3DsOrXYZs0& m1,
 template <class Vector3DsOrXYZs0, class Vector3DsOrXYZs1>
 inline double get_drms(const Vector3DsOrXYZs0& m1, const Vector3DsOrXYZs1& m2) {
   IMP_USAGE_CHECK(m1.size() == m2.size(),
-                  "native_verlap: The input sets of XYZ points "
+                  "native_overlap: The input sets of XYZ points "
                       << "should be of the same size");
 
   unsigned int n = m1.size();

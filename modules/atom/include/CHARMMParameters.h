@@ -1,6 +1,6 @@
 /**
  * \file IMP/atom/CHARMMParameters.h
- * \brief access to Charmm force field parameters
+ * \brief access to CHARMM force field parameters
  *
  * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *

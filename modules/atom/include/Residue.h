@@ -60,9 +60,9 @@ IMPATOMEXPORT extern const ResidueType ILE;
 IMPATOMEXPORT extern const ResidueType SER;
 /** threonine T*/
 IMPATOMEXPORT extern const ResidueType THR;
-/** cystein C*/
+/** cysteine C*/
 IMPATOMEXPORT extern const ResidueType CYS;
-/** metthionine M*/
+/** methionine M*/
 IMPATOMEXPORT extern const ResidueType MET;
 /** proline P*/
 IMPATOMEXPORT extern const ResidueType PRO;
@@ -80,7 +80,7 @@ IMPATOMEXPORT extern const ResidueType LYS;
 IMPATOMEXPORT extern const ResidueType ARG;
 /** histidine H*/
 IMPATOMEXPORT extern const ResidueType HIS;
-/** phynylaline F*/
+/** phenylalanine F*/
 IMPATOMEXPORT extern const ResidueType PHE;
 /** tyrosine Y */
 IMPATOMEXPORT extern const ResidueType TYR;

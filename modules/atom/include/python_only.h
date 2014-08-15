@@ -1,6 +1,6 @@
 /**
  *  \file IMP/atom/python_only.h
- *  \brief functionality only availble in python.
+ *  \brief functionality only available in python.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -14,7 +14,7 @@
 IMPATOM_BEGIN_NAMESPACE
 
 /** \name Python Only
-    The following functions are only availale in Python as the
+    The following functions are only available in Python as the
     equivalent C++ functionality is provided via template
     functions or in other ways that don't directly map to
     python.

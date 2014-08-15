@@ -31,7 +31,7 @@ class Bonded;
 //! A decorator for wrapping a particle representing a molecular bond
 /**
    As with Atom, the types of bonds will eventually be run-time
-   expandible.
+   expandable.
 
    \ingroup bond
    \see Bonded
@@ -247,7 +247,7 @@ IMPATOMEXPORT inline Bond create_custom_bond(Bonded a, Bonded b, Float length,
 }
 
 //! Connect the two wrapped particles by a custom bond.
-/** Create a bond by copying the information from the othr bond
+/** Create a bond by copying the information from the other bond
 
     \ingroup bond
     See Bond
