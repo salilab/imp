@@ -44,7 +44,7 @@ struct ANNData {
     for (It c = b; c != e; ++c) {
       VectorKD v = get_vector_geometry(*c);
       ANNcoord *pt = new ANNcoord[dimension_];
-      std::copy(v.coordinates_begin(), v.coordinates_end(), pt);
+      std::copy(v.begin(), v.end(), pt);
       ret[i++] = pt;
     }
     return ret;
@@ -59,7 +59,7 @@ struct ANNData {
                               Ints &ret) const {
     VectorKD v = get_vector_geometry(g);
     ANNcoord pt[dimension_];
-    std::copy(v.coordinates_begin(), v.coordinates_end(), pt);
+    std::copy(v.begin(), v.end(), pt);
     boost::scoped_array<ANNdist> dists(new ANNdist[k]);
     IMP_INTERNAL_CHECK(ret.size() >= k, "Not large enough array");
     tree_.annkSearch(pt, std::min(k, get_number_of_points()), &ret[0],
@@ -73,7 +73,7 @@ struct ANNData {
     ret.resize(guess);
     VectorKD v = get_vector_geometry(g);
     ANNcoord pt[dimension_];
-    std::copy(v.coordinates_begin(), v.coordinates_end(), pt);
+    std::copy(v.begin(), v.end(), pt);
     unsigned int k = tree_.annkFRSearch(pt, square(fix_distance(distance, eps)),
                                         guess, &ret[0], guess_dists, eps);
     ret.resize(k);

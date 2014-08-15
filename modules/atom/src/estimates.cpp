@@ -215,8 +215,7 @@ double get_diffusion_coefficient(const algebra::Vector3Ds &displacements,
   }
   IMP_LOG_TERSE("Partial coefficients are " << Ds0 << " and " << Ds1
                                             << std::endl);
-  return std::accumulate(Ds1.coordinates_begin(), Ds1.coordinates_end(), 0.0) /
-         3.0;
+  return std::accumulate(Ds1.begin(), Ds1.end(), 0.0) / 3.0;
 }
 
 double get_rotational_diffusion_coefficient(

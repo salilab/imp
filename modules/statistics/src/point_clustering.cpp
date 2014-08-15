@@ -53,7 +53,7 @@ PartitionalClusteringWithCenter *create_lloyds_kmeans(const Ints &names,
                         names.size());
   for (unsigned int i = 0; i < names.size(); ++i) {
     algebra::VectorKD v = metric->get_point(names[i]);
-    *(data[i]) = Floats(v.coordinates_begin(), v.coordinates_end());
+    *(data[i]) = Floats(v.begin(), v.end());
   }
   internal::KMFilterCenters ctrs(k, &data, nullptr, 1.0);
 

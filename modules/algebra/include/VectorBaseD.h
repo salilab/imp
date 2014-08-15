@@ -187,16 +187,6 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
 #ifndef SWIG
   typedef double *iterator;
   typedef const double *const_iterator;
-  /** \deprecated_at{2.2} Use begin(). */
-  IMPALGEBRA_DEPRECATED_FUNCTION_DECL(2.2)
-  iterator coordinates_begin() { return data_.get_data(); }
-  iterator coordinates_end() { return data_.get_data() + get_dimension(); }
-  /** \deprecated_at{2.2} Use begin(). */
-  IMPALGEBRA_DEPRECATED_FUNCTION_DECL(2.2)
-  const_iterator coordinates_begin() const { return data_.get_data(); }
-  const_iterator coordinates_end() const {
-    return data_.get_data() + get_dimension();
-  }
   iterator begin() { return data_.get_data(); }
   iterator end() { return data_.get_data() + get_dimension(); }
   const_iterator begin() const { return data_.get_data(); }
@@ -216,7 +206,7 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
   // For some reason, this method breaks IMP::atom::get_rmsd() in Python, so
   // hide it from SWIG
   Floats get_coordinates() const {
-    return Floats(coordinates_begin(), coordinates_end());
+    return Floats(begin(), end());
   }
 
   /** Return a pointer to the data stored.
