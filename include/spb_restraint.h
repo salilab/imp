@@ -12,7 +12,7 @@
 #include <IMP.h>
 #include <IMP/atom.h>
 #include <IMP/core.h>
-#include <IMP/isd2.h>
+#include <IMP/isd.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
@@ -48,21 +48,21 @@ container::ListSingletonContainer *lsc, FloatRange range, double kappa);
 IMPMEMBRANEEXPORT void add_bayesian_layer_restraint
 (Model *m, container::ListSingletonContainer *lsc, Particle *a, Particle *b);
 
-IMPMEMBRANEEXPORT Pointer<isd2::FretRestraint> fret_restraint
+IMPMEMBRANEEXPORT Pointer<isd::FretRestraint> fret_restraint
 (Model *m, atom::Hierarchies& hs,
  std::string protein_a, std::string residues_a,
  std::string protein_b, std::string residues_b, double fexp,
  FretParameters Fret, std::string cell_type, bool use_GFP,
  Particle *Kda, Particle *Ida, Particle *R0, Particle *Sigma0, Particle *pBl);
 
-IMPMEMBRANEEXPORT Pointer<isd2::FretRestraint> fret_restraint
+IMPMEMBRANEEXPORT Pointer<isd::FretRestraint> fret_restraint
 (Model *m, atom::Hierarchies& hs,
  std::string protein_a, std::string residues_a,
  std::string protein_b, int residues_b, double fexp,
  FretParameters Fret, std::string cell_type, bool use_GFP,
  Particle *Kda, Particle *Ida, Particle *R0, Particle *Sigma0, Particle *pBl);
 
-IMPMEMBRANEEXPORT Pointer<isd2::FretRestraint> fret_restraint
+IMPMEMBRANEEXPORT Pointer<isd::FretRestraint> fret_restraint
 (Model *m, atom::Hierarchies& hs,
  std::string protein_a, int residues_a,
  std::string protein_b, std::string residues_b, double fexp,
@@ -131,11 +131,11 @@ IMPMEMBRANEEXPORT void add_diameter_rgyr_restraint(Model *m,
  const atom::Hierarchy& h, std::string protein,
  double diameter, double rgyr, double kappa);
 
-IMPMEMBRANEEXPORT Pointer<isd2::EM2DRestraint> em2d_restraint
+IMPMEMBRANEEXPORT Pointer<isd::EM2DRestraint> em2d_restraint
 (Model *m, atom::Hierarchies& hs,
  std::string protein, EM2DParameters EM2D, Particle *Sigma);
 
-IMPMEMBRANEEXPORT Pointer<isd2::EM2DRestraint> em2d_restraint
+IMPMEMBRANEEXPORT Pointer<isd::EM2DRestraint> em2d_restraint
 (Model *m, atom::Hierarchies& hs, std::string protein,
  EM2DParameters EM2D, Floats sigma_grid, Floats fmod_grid);
 

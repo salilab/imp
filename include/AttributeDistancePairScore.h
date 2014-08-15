@@ -23,7 +23,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 class IMPMEMBRANEEXPORT AttributeDistancePairScore : public PairScore
 {
   //IMP::OwnerPointer<UnaryFunction> f_; //replaced deprecated version
-  IMP::PointerMember<UnaryFunction> f_;
+  IMP::base::PointerMember<UnaryFunction> f_;
   FloatKey k_;
 public:
   //! Apply function f to attribute k

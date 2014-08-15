@@ -28,7 +28,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
  */
 class IMPMEMBRANEEXPORT TiltSingletonScore : public SingletonScore
 {
-  IMP::PointerMember<UnaryFunction> f_;
+  IMP::base::PointerMember<UnaryFunction> f_;
   algebra::VectorD<3> local_;
   algebra::VectorD<3> global_;
 public:

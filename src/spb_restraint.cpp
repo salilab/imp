@@ -10,7 +10,7 @@
 #include <IMP/algebra.h>
 #include <IMP/container.h>
 #include <IMP/membrane.h>
-#include <IMP/isd2.h>
+#include <IMP/isd.h>
 #include <boost/algorithm/string.hpp>
 #include <string>
 #include <sstream>
@@ -158,7 +158,7 @@ Pointer<container::MinimumPairRestraint> do_bipartite_mindist
  return mpr.release();
 }
 
-Pointer<isd2::FretRestraint> fret_restraint
+Pointer<isd::FretRestraint> fret_restraint
 (Model *m, atom::Hierarchies& hs,
  std::string protein_a, std::string residues_a,
  std::string protein_b, std::string residues_b, double fexp,
@@ -194,12 +194,12 @@ Pointer<isd2::FretRestraint> fret_restraint
  Particles p1=sa.get_selected_particles();
  Particles p2=sb.get_selected_particles();
  if(p1.size()==0 || p2.size()==0) {return NULL;}
- IMP_NEW(isd2::FretRestraint,fr,(p1,p2,Kda,Ida,R0,Sigma0,pBl,fexp,m_d,m_a));
+ IMP_NEW(isd::FretRestraint,fr,(p1,p2,Kda,Ida,R0,Sigma0,pBl,fexp,m_d,m_a));
  fr->set_name(name);
  return fr.release();
 }
 
-Pointer<isd2::FretRestraint> fret_restraint
+Pointer<isd::FretRestraint> fret_restraint
 (Model *m, atom::Hierarchies& hs,
  std::string protein_a, std::string residues_a,
  std::string protein_b, int residues_b, double fexp,
@@ -235,12 +235,12 @@ Pointer<isd2::FretRestraint> fret_restraint
  Particles p1=sa.get_selected_particles();
  Particles p2=sb.get_selected_particles();
  if(p1.size()==0 || p2.size()==0) {return NULL;}
- IMP_NEW(isd2::FretRestraint,fr,(p1,p2,Kda,Ida,R0,Sigma0,pBl,fexp,m_d,m_a));
+ IMP_NEW(isd::FretRestraint,fr,(p1,p2,Kda,Ida,R0,Sigma0,pBl,fexp,m_d,m_a));
  fr->set_name(name);
  return fr.release();
 }
 
-Pointer<isd2::FretRestraint> fret_restraint
+Pointer<isd::FretRestraint> fret_restraint
 (Model *m, atom::Hierarchies& hs,
  std::string protein_a, int residues_a,
  std::string protein_b, std::string residues_b, double fexp,
@@ -276,7 +276,7 @@ Pointer<isd2::FretRestraint> fret_restraint
  Particles p1=sa.get_selected_particles();
  Particles p2=sb.get_selected_particles();
  if(p1.size()==0 || p2.size()==0) {return NULL;}
- IMP_NEW(isd2::FretRestraint,fr,(p1,p2,Kda,Ida,R0,Sigma0,pBl,fexp,m_d,m_a));
+ IMP_NEW(isd::FretRestraint,fr,(p1,p2,Kda,Ida,R0,Sigma0,pBl,fexp,m_d,m_a));
  fr->set_name(name);
  return fr.release();
 }
@@ -424,7 +424,7 @@ void add_symmetry_restraint
  Particles ps0=atom::get_leaves(hs[0]);
  std::vector<core::RigidBody> rbs0=get_rigid_bodies(ps0);
  for(unsigned int i=1;i<transformations.size();++i){
-  IMP_NEW(isd2::TransformationSymmetry,sm,
+  IMP_NEW(isd::TransformationSymmetry,sm,
           (transformations[i],SideXY,SideXY,SideZ));
   Particles ps1=atom::get_leaves(hs[i]);
   IMP_NEW(container::ListSingletonContainer,lc,(m));
@@ -463,7 +463,7 @@ void add_bayesian_layer_restraint
 {
  Particles ps=lsc->get_particles();
  for(unsigned i=0; i<ps.size(); ++i){
-  IMP_NEW(isd2::UniformBoundedRestraint,ubr,(ps[i], FloatKey("z"), a, b));
+  IMP_NEW(isd::UniformBoundedRestraint,ubr,(ps[i], FloatKey("z"), a, b));
   m->add_restraint(ubr);
  }
 }
@@ -618,7 +618,7 @@ void add_diameter_rgyr_restraint(Model *m,
  }
 }
 
-Pointer<isd2::EM2DRestraint> em2d_restraint
+Pointer<isd::EM2DRestraint> em2d_restraint
 (Model *m, atom::Hierarchies& hs,
  std::string protein, EM2DParameters EM2D, Particle *Sigma)
 {
@@ -626,13 +626,13 @@ Pointer<isd2::EM2DRestraint> em2d_restraint
  s.set_molecule(protein);
  Particles ps=s.get_selected_particles();
  if(ps.size()==0) {return NULL;}
- IMP_NEW(isd2::EM2DRestraint,er,(ps, Sigma, EM2D.filename,
+ IMP_NEW(isd::EM2DRestraint,er,(ps, Sigma, EM2D.filename,
                                  EM2D.pixel_size, EM2D.resolution));
  er->set_name("EM2D restraint");
  return er.release();
 }
 
-Pointer<isd2::EM2DRestraint> em2d_restraint
+Pointer<isd::EM2DRestraint> em2d_restraint
 (Model *m, atom::Hierarchies& hs, std::string protein,
  EM2DParameters EM2D, Floats sigma_grid, Floats fmod_grid)
 {
@@ -640,7 +640,7 @@ Pointer<isd2::EM2DRestraint> em2d_restraint
  s.set_molecule(protein);
  Particles ps=s.get_selected_particles();
  if(ps.size()==0) {return NULL;}
- IMP_NEW(isd2::EM2DRestraint,er,(ps, sigma_grid, fmod_grid, EM2D.filename,
+ IMP_NEW(isd::EM2DRestraint,er,(ps, sigma_grid, fmod_grid, EM2D.filename,
                                  EM2D.pixel_size, EM2D.resolution));
  er->set_name("EM2D restraint");
  return er.release();

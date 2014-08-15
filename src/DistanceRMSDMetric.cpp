@@ -71,9 +71,9 @@ void DistanceRMSDMetric::initialize(Ints align)
 
 algebra::Vector3D DistanceRMSDMetric::get_vector
  (algebra::Vector3D center) const {
- Float sx = isd2::Scale(px_).get_scale();
- Float sy = isd2::Scale(py_).get_scale();
- Float sz = isd2::Scale(pz_).get_scale();
+ Float sx = isd::Scale(px_).get_scale();
+ Float sy = isd::Scale(py_).get_scale();
+ Float sz = isd::Scale(pz_).get_scale();
  algebra::Vector3D newcenter = algebra::Vector3D(center[0]*sx,
                                                  center[1]*sy,
                                                  center[2]*sz);
