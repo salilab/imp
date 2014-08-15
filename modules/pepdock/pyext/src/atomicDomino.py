@@ -622,10 +622,8 @@ class AtomicDomino:
                 continue
             otherParticle = otherNamesToParticles[pName]
             modelParticle = self.namesToParticles[pName]
-            otherVector.append(
-                IMP.core.XYZ.(otherParticle).get_coordinates())
-            modelVector.append(
-                IMP.core.XYZ(modelParticle).get_coordinates())
+            otherVector.append(IMP.core.XYZ(otherParticle).get_coordinates())
+            modelVector.append(IMP.core.XYZ(modelParticle).get_coordinates())
         rmsd = IMP.atom.get_rmsd(otherVector, modelVector)
         return rmsd
 
