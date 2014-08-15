@@ -11,12 +11,12 @@
 
 #include "membrane_config.h"
 #include <IMP/core/MonteCarlo.h>
-#include <IMP/core/Mover.h>
+#include <IMP/symmetry/RigidBodyMover.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/SingletonContainer.h>
-#include <IMP/core/rigid_bodies.h>
-#include <IMP/core/mover_macros.h>
+//#include <IMP/core/rigid_bodies.h>
+//#include <IMP/core/mover_macros.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
@@ -25,7 +25,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
     size. The probability distribution is uniform over the ball.
     \see MonteCarlo
  */
-class IMPMEMBRANEEXPORT PbcBoxedRigidBodyMover : public core::Mover
+class IMPMEMBRANEEXPORT PbcBoxedRigidBodyMover: public symmetry:RigidBodyMover
 {
 public:
   /** The rigid body is rotated and translated to move
@@ -38,27 +38,22 @@ public:
                  Float max_rotation, algebra::Vector3Ds centers,
                  algebra::Transformation3Ds transformations,
                  Particle *px, Particle *py, Particle *pz);
-  IMP_MOVER(PbcBoxedRigidBodyMover);
+
+protected:
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
+  virtual void do_reject() IMP_OVERRIDE;
+
+  IMP_OBJECT_METHODS(PbcBoxedRigidBodyMover);
+
 private:
-  algebra::Transformation3D last_transformation_;
-  algebra::Vector3Ds oldcoords_;
-  algebra::Transformation3Ds oldtrs_;
-  Float max_translation_;
-  Float max_angle_;
-  algebra::Vector3Ds centers_;
-  algebra::Transformation3Ds transformations_;
-  core::RigidBody d_;
-  Particles ps_;
-  Particles ps_norb_;
-  std::vector<core::RigidBody> rbs_;
-  Pointer<Particle> px_;
-  Pointer<Particle> py_;
-  Pointer<Particle> pz_;
+  // particles for scaling
+  IMP::base::PointerMember<kernel::Particle> px_;
+  IMP::base::PointerMember<kernel::Particle> py_;
+  IMP::base::PointerMember<kernel::Particle> pz_;
 
   algebra::Vector3D get_vector(algebra::Vector3D center);
   algebra::Transformation3D get_transformation(algebra::Transformation3D trans);
-  Particles         get_particles(Particles ps);
-  std::vector<core::RigidBody> get_rigid_bodies(Particles ps);
 };
 
 IMPMEMBRANE_END_NAMESPACE

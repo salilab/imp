@@ -19,7 +19,7 @@ PbcBoxedMover::PbcBoxedMover(Particle *p, Particles ps, Float max_tr,
                              algebra::Vector3Ds centers,
                              algebra::Transformation3Ds transformations,
                              Particle *px, Particle *py, Particle *pz):
-  Symmetry::BallMover(p,ps,max_tr,centers,transformations)
+  symmetry::BallMover(p,ps,max_tr,centers,transformations)
 { /* These are in base class
   p_ = p;
   max_tr_ = max_tr;
@@ -52,7 +52,7 @@ algebra::Transformation3D PbcBoxedMover::get_transformation
 }
 
 MonteCarloResult PbcBoxedMover::do_propose() {
-   return Symmetry::BallMover::do_propose();
+   return symmetry::BallMover::do_propose();
 }
 
 /*
@@ -67,7 +67,7 @@ ParticlesTemp PbcBoxedMover::get_output_particles() const {
 */
 
 ModelObjectsTemp PbcBoxedMover::do_get_inputs() const {
-  kernel::ParticlesTemp ret=Symmetry::BallMover::do_get_inputs();
+  kernel::ParticlesTemp ret=symmetry::BallMover::do_get_inputs();
   ret.push_back(px_);
   ret.push_back(py_);
   ret.push_back(pz_);
@@ -79,7 +79,7 @@ void PbcBoxedMover::do_reject() {
  /*for(unsigned int i=0;i<ps_.size();++i){
     core::XYZ(ps_[i]).set_coordinates(oldcoords_[i]);
  } */
-  Symmetry::BallMover::do_reject();
+  symmetry::BallMover::do_reject();
 }
 
 void PbcBoxedMover::show(std::ostream &out) const {
