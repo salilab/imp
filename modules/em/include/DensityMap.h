@@ -496,15 +496,6 @@ inline void calc_local_bounding_box(const em::DensityMap *d_map, double x,
 }
 #endif
 
-//! rotate a grid
-/**
-/param[in] orig_dens the density map to rotate
-/param[in] trans the transformation
-\note this is a low resolution operation.
-IMPEMEXPORT DensityMap* rotate_grid(const DensityMap *orig_dens,
-                        const algebra::Transformation3D &trans);
-*/
-
 IMP_OBJECTS(DensityMap, DensityMaps);
 
 /** Return the value for the density map, m, at point v, interpolating linearly

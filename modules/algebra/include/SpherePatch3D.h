@@ -22,8 +22,8 @@ class IMPALGEBRAEXPORT SpherePatch3D : public GeometricPrimitiveD<3> {
   SpherePatch3D() {}
   //! Constructor
   /**
-  /param[in] sph            the sphere to cut a patch from
-  /param[in] crossing_plane the plane that crosses the sphere
+      \param[in] sph            the sphere to cut a patch from
+      \param[in] crossing_plane the plane that crosses the sphere
   */
   SpherePatch3D(const Sphere3D &sph, const Plane3D &crossing_plane);
   //! Return true if the point is contained in the patch

@@ -48,17 +48,17 @@ class IMPEMEXPORT DensityHeader {
   }
   //! Compute the farthest point of the grid.
   /**
-    /param[in] force if true then the top point is calculated
-               even if it has already been calcualted.
+      \param[in] force if true then the top point is calculated
+                 even if it has already been calculated.
    */
   void compute_xyz_top(bool force = false);
 
   //! Update the dimensions of the map to be (nnx,nny,nnz)
-  //!The origin of the map does not change
+  //! The origin of the map does not change
   /**
-     /param[in] nnx the new number of voxels on the X axis
-     /param[in] nny the new number of voxels on the Y axis
-     /param[in] nnz the new number of voxels on the Z axis
+      \param[in] nnx the new number of voxels on the X axis
+      \param[in] nny the new number of voxels on the Y axis
+      \param[in] nnz the new number of voxels on the Z axis
    */
   void update_map_dimensions(int nnx, int nny, int nnz);
 
