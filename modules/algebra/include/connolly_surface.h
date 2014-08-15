@@ -18,7 +18,7 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/** Represent a point on the connoly surface. */
+/** Represent a point on the Connolly surface. */
 class ConnollySurfacePoint {
   int atom[3];
   algebra::Vector3D surface_point;

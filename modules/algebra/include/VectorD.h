@@ -361,7 +361,7 @@ inline std::ostream &operator<<(std::ostream &out, const CommasIO<D> &s) {
   return out;
 }
 
-//! Use this before outputing to delimited vector entries with a space
+//! Use this before outputting to delimited vector entries with a space
 /** std::cout << spaces_io(v);
     produces "1.0 2.0 3.0"
     See VectorD
@@ -371,7 +371,7 @@ inline SpacesIO<D> spaces_io(const VectorD<D> &v) {
   return SpacesIO<D>(v);
 }
 
-//! Use this before outputing to delimited vector entries with a comma
+//! Use this before outputting to delimited vector entries with a comma
 /** std::cout << commas_io(v);
     produces "1.0, 2.0, 3.0"
     See VectorD

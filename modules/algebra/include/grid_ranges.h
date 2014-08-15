@@ -255,7 +255,7 @@ class BoundedGridRangeD {
     }
     return ret;
   }
-  //! Return the index of the maximumal cell
+  //! Return the index of the maximal cell
   ExtendedGridIndexD<D> get_maximum_extended_index() const {
     ExtendedGridIndexD<D> ret = d_;
     for (unsigned int i = 0; i < ret.get_dimension(); ++i) {

@@ -17,7 +17,7 @@
     - IMP::algebra::get_bounding_box()
     - output to a stream
 
-    The name of the argument is g and the code snipets should return
+    The name of the argument is g and the code snippets should return
     the expected value.
 */
 #define IMP_VOLUME_GEOMETRY_METHODS(Name, name, area, volume, bounding_box) \
@@ -41,7 +41,7 @@
     - IMP::algebra::get_bounding_box()
     - output to a stream
 
-    The name of the argument is g and the code snipets should return
+    The name of the argument is g and the code snippets should return
     the expected value.
 */
 #define IMP_VOLUME_GEOMETRY_METHODS_D(Name, name, area, volume, bounding_box) \
@@ -90,7 +90,7 @@
 
     The name should not include the D.
 
-    The name of the argument is g and the code snipets should return
+    The name of the argument is g and the code snippets should return
     the expected value.
 */
 #define IMP_LINEAR_GEOMETRY_METHODS(Name, name, bounding_box)              \
@@ -108,7 +108,7 @@
     - IMP::algebra::get_bounding_box()
     - output to a stream
 
-    The name of the argument is g and the code snipets should return
+    The name of the argument is g and the code snippets should return
     the expected value.
 */
 #define IMP_AREA_GEOMETRY_METHODS(Name, name, area, bounding_box)          \
@@ -129,7 +129,7 @@
     - IMP::algebra::get_bounding_box()
     - output to a stream
 
-    The name of the argument is g and the code snipets should return
+    The name of the argument is g and the code snippets should return
     the expected value.
 */
 #define IMP_AREA_GEOMETRY_METHODS_D(Name, name, area, bounding_box) \

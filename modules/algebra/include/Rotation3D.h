@@ -253,7 +253,7 @@ inline double get_distance(const Rotation3D &r0, const Rotation3D &r1) {
   double odot =
       (r0.get_quaternion() + r1.get_quaternion()).get_squared_magnitude();
   double ans = std::min(dot, odot);
-  // TODO: barak - added static for efficieny
+  // TODO: barak - added static for efficiency
   static const double s2 = std::sqrt(2.0);
   double ret = ans / s2;
   return std::max(std::min(ret, 1.0), 0.0);
@@ -344,7 +344,7 @@ IMPALGEBRAEXPORT Rotation3Ds
 IMPALGEBRAEXPORT algebra::Rotation3Ds get_uniformly_sampled_rotations(
     double delta);
 
-//! Compute a rotatation from an unnormalized quaternion
+//! Compute a rotation from an unnormalized quaternion
 /** See Rotation3D */
 inline Rotation3D get_rotation_from_vector4d(const VectorD<4> &v) {
   VectorD<4> uv = v.get_unit_vector();
@@ -391,7 +391,7 @@ inline Rotation3D compose(const Rotation3D &a, const Rotation3D &b) {
 IMPALGEBRAEXPORT Rotation3D
     get_rotation_from_fixed_xyz(double xr, double yr, double zr);
 
-//! Initialize a rotation from euler angles
+//! Initialize a rotation from Euler angles
 /**
    \param[in] phi   Rotation around the Z axis in radians
    \param[in] theta Rotation around the X axis in radians

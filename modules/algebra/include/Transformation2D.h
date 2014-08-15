@@ -110,7 +110,7 @@ class IMPALGEBRAEXPORT Transformation2D : public GeometricPrimitiveD<2> {
   Transformation2D get_inverse() const;
 
  private:
-  Vector2D trans_;  // tranlation
+  Vector2D trans_;  // translation
   Rotation2D rot_;  // rotation
 };
 

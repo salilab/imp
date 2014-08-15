@@ -52,7 +52,7 @@ inline const typename Storage::Value get_trilinearly_interpolated(
   internal::trilep_helpers::compute_voxel(g, v, ivox, r);
   typename Storage::Value is[4];
   for (unsigned int i = 0; i < 4; ++i) {
-    // operator >> has high precidence compared. Go fig.
+    // operator >> has high precedence compared. Go fig.
     unsigned int bx = ((i & 2) >> 1);
     unsigned int by = (i & 1);
     IMP_INTERNAL_CHECK((bx == 0 || bx == 1) && (by == 0 || by == 1),

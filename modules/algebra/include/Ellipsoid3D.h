@@ -17,7 +17,7 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/** Represent an ellispoid in 3D.
+/** Represent an ellipsoid in 3D.
     \geometry
   */
 class IMPALGEBRAEXPORT Ellipsoid3D : public GeometricPrimitiveD<3> {

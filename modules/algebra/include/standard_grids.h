@@ -102,7 +102,7 @@ struct SparseUnboundedGrid3D
   IMP_ALGEBRA_SWIG_GRID_METHODS(3, VT);
 };
 
-/** A dense grid with logrythmic axes. */
+/** A dense grid with logarithmic axes. */
 struct DenseFloatLogGridKD : public GridD<-1, DenseGridStorageD<-1, float>,
                                           float, LogEmbeddingD<-1> > {
   typedef GridD<-1, DenseGridStorageD<-1, float>, float, LogEmbeddingD<-1> > P;
@@ -110,7 +110,7 @@ struct DenseFloatLogGridKD : public GridD<-1, DenseGridStorageD<-1, float>,
   IMP_ALGEBRA_SWIG_GRID_METHODS(-1, float);
 };
 
-/** A dense grid with logrythmic axes. */
+/** A dense grid with logarithmic axes. */
 struct DenseIntLogGrid3D
     : public GridD<3, DenseGridStorageD<3, int>, int, LogEmbeddingD<3> > {
   typedef GridD<3, DenseGridStorageD<3, int>, int, LogEmbeddingD<3> > P;

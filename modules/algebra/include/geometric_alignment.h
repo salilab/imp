@@ -45,7 +45,7 @@ get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0& source,
   IMP_INTERNAL_CHECK(source.size() == target.size(), "sizes don't match");
   IMP_INTERNAL_CHECK(source.size() > 0, "Points are needed");
   // compute the centroid of the points and transform
-  // pointsets so that their centroids coinside
+  // point sets so that their centroids coincide
 
   Vector3D center_source(0, 0, 0), center_target(0, 0, 0);
   for (unsigned int i = 0; i < source.size(); ++i) {

@@ -1,6 +1,6 @@
 /**
  *  \file IMP/algebra/Gaussian3D.h
- *  \brief gaussian shape
+ *  \brief Gaussian shape
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -18,7 +18,7 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/** A gaussian distribution in 3D.
+/** A Gaussian distribution in 3D.
 
    The variances are along the axis of the reference frame.
 */
@@ -52,7 +52,7 @@ IMPALGEBRAEXPORT Gaussian3D
     get_gaussian_from_covariance(const IMP_Eigen::Matrix3d &covariance,
                                  const Vector3D &center);
 
-/** Rasterize the gaussians to a grid.*/
+/** Rasterize the Gaussians to a grid.*/
 IMPALGEBRAEXPORT DenseGrid3D<float> get_rasterized(const Gaussian3Ds &gmm,
                                                    const Floats &weights,
                                                    double cell_width,

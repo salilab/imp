@@ -141,7 +141,7 @@ IMPALGEBRAEXPORT Transformation3D
   \note randomly select an axis that passes to the input point
   and rotate around it
   \param[in] origin the origin of the rotation
-  \param[in] max_translation detault value is 5
+  \param[in] max_translation default value is 5
   \param[in] max_angle_in_rad default value is 15 degree in radians
   **/
 IMPALGEBRAEXPORT Transformation3D

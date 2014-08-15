@@ -118,7 +118,7 @@ inline double get_power_distance(const SphereD<D> &a, const SphereD<D> &b) {
   return d - square(a.get_radius()) - square(b.get_radius());
 }
 
-//! Return true if the two balls bounded by the two spheres interesect
+//! Return true if the two balls bounded by the two spheres intersect
 /** See SphereD
  */
 template <int D>
@@ -149,7 +149,7 @@ inline std::ostream &operator<<(std::ostream &out, const SphereSpacesIO<D> &s) {
 }
 }
 
-//! Use this before outputing to a stream with spaces delimiting
+//! Use this before outputting to a stream with spaces delimiting
 /** std::cout << spaces_io(s);
     produces "1.0 2.0 3.0 4.0" where the radius is 4.0
     See SphereD
