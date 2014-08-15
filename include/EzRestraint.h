@@ -31,7 +31,7 @@ Floats get_parameters(std::string restype);
 
 
 public:
-  EzRestraint(kernel::Model *m,Particles ps);
+  EzRestraint(Particles ps);
 
   IMP_OBJECT_METHODS(EzRestraint);
 //  IMP_RESTRAINT(EzRestraint);

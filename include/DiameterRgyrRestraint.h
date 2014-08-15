@@ -34,7 +34,7 @@ private:
 
 public:
 
- DiameterRgyrRestraint(kernel::Model *m,Particles ps, Float diameter,
+ DiameterRgyrRestraint(Particles ps, Float diameter,
                Float rgyr, Float kappa);
  IMP_OBJECT_METHODS(DiameterRgyrRestraint);
 

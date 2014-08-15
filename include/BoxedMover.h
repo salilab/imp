@@ -31,8 +31,7 @@ public:
       \param[in] p is the particle
       \param[in] max_tr is the maximum translation during a step
    */
-  BoxedMover(kernel::Model *m, kernel::ParticleIndex pi, Float max_tr,
-               algebra::Vector3Ds centers);
+ BoxedMover(Particle *p, Float max_tr, algebra::Vector3Ds centers);
 
 protected:
   virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
@@ -47,8 +46,7 @@ private:
   Float max_tr_;
   algebra::Vector3Ds centers_;
   algebra::Vector3D oldcoord_;
-  //Particle *p_;
-  kernel::ParticleIndex pi_;
+  IMP::base::PointerMember<kernel::Particle> p_;
 };
 
 IMPMEMBRANE_END_NAMESPACE

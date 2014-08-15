@@ -22,17 +22,21 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 class IMPMEMBRANEEXPORT CellMover : public core::MonteCarloMover
 {
 public:
-  CellMover(kernel::Model *m, kernel::ParticleIndex pi, Particles ps,
-           Float max_translation);
+  CellMover(Particle *p, Particles ps,Float max_translation);
 
   // IMP_MOVER(CellMover);
+protected:
+  virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
+  virtual void do_reject() IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+
   IMP_OBJECT_METHODS(CellMover);
 
 private:
   Float old_scale_;
   algebra::Vector3Ds oldcoords_;
   algebra::Transformation3Ds oldtrs_;
-  kernel::ParticleIndex pi_;
+  IMP::base::PointerMember<kernel::Particle> p_;
   Particles ps_;
   Float max_translation_;
   Particles ps_norb_;

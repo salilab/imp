@@ -7,7 +7,7 @@
  */
 #include <IMP/membrane/PbcBoxedMover.h>
 #include <IMP/core.h>
-#include <IMP/isd2/Scale.h>
+#include <IMP/isd/Scale.h>
 #include <IMP/algebra.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/atom.h>
@@ -19,13 +19,14 @@ PbcBoxedMover::PbcBoxedMover(Particle *p, Particles ps, Float max_tr,
                              algebra::Vector3Ds centers,
                              algebra::Transformation3Ds transformations,
                              Particle *px, Particle *py, Particle *pz):
-  Mover(p->get_model(), "PbcBoxedMover%1%")
-{
+  Symmetry::BallMover(p,ps,max_tr,centers,transformations)
+{ /* These are in base class
   p_ = p;
   max_tr_ = max_tr;
   centers_ = centers;
   ps_ = ps;
   transformations_ = transformations;
+  */
   // store Scale particles
   px_ = px;
   py_ = py;
@@ -33,9 +34,9 @@ PbcBoxedMover::PbcBoxedMover(Particle *p, Particles ps, Float max_tr,
 }
 
 algebra::Vector3D PbcBoxedMover::get_vector(algebra::Vector3D center){
- Float sx = isd2::Scale(px_).get_scale();
- Float sy = isd2::Scale(py_).get_scale();
- Float sz = isd2::Scale(pz_).get_scale();
+ Float sx = isd::Scale(px_).get_scale();
+ Float sy = isd::Scale(py_).get_scale();
+ Float sz = isd::Scale(pz_).get_scale();
  algebra::Vector3D newcenter = algebra::Vector3D(center[0]*sx,
                                                  center[1]*sy,
                                                  center[2]*sz);
@@ -50,51 +51,11 @@ algebra::Transformation3D PbcBoxedMover::get_transformation
  return newtrans;
 }
 
-ParticlesTemp PbcBoxedMover::propose_move(Float f) {
-  IMP_LOG(VERBOSE,"PbcBoxedMover:: propose move f is  : " << f <<std::endl);
-  {
-    ::boost::uniform_real<> rand(0,1);
-    double fc =rand(random_number_generator);
-    if (fc > f) return ParticlesTemp();
-  }
-
-   algebra::Vector3D tr_x
-     = algebra::get_random_vector_in(algebra::Sphere3D
-                (algebra::Vector3D(0.0,0.0,0.0),max_tr_));
-
-   algebra::Vector3D newcoord=core::XYZ(p_).get_coordinates()+tr_x;
-
-// find cell
-   double mindist=1.0e+24;
-   unsigned icell=0;
-   for(unsigned int i=0;i<centers_.size();++i){
-    double dist=algebra::get_l2_norm(newcoord-get_vector(centers_[i]));
-    if(dist<mindist){
-     mindist=dist;
-     icell=i;
-    }
-   }
-
-   algebra::Transformation3D trans=
-    get_transformation(transformations_[icell]).get_inverse();
-   ParticlesTemp ret;
-   if(icell==0) ret.push_back(p_);
-   else ret=ps_;
-
-   oldcoords_.clear();
-   for(unsigned int i=0;i<ps_.size();++i){
-    core::XYZ xyz = core::XYZ(ps_[i]);
-    algebra::Vector3D oc = xyz.get_coordinates();
-    oldcoords_.push_back(oc);
-    algebra::Vector3D trr_x=algebra::Vector3D(0.0,0.0,0.0);
-    if(ps_[i]==p_) trr_x=tr_x;
-    newcoord=trans.get_transformed(oc+trr_x);
-    xyz.set_coordinates(newcoord);
-   }
-
- return ret;
+MonteCarloResult PbcBoxedMover::do_propose() {
+   return Symmetry::BallMover::do_propose();
 }
 
+/*
 ParticlesTemp PbcBoxedMover::get_output_particles() const {
  ParticlesTemp ret;
  ret.insert(ret.end(), ps_.begin(), ps_.end());
@@ -103,14 +64,25 @@ ParticlesTemp PbcBoxedMover::get_output_particles() const {
  ret.push_back(pz_);
  return ret;
 }
+*/
 
-void PbcBoxedMover::reset_move() {
- for(unsigned int i=0;i<ps_.size();++i){
-    core::XYZ(ps_[i]).set_coordinates(oldcoords_[i]);
- }
+ModelObjectsTemp PbcBoxedMover::do_get_inputs() const {
+  kernel::ParticlesTemp ret=Symmetry::BallMover::do_get_inputs();
+  ret.push_back(px_);
+  ret.push_back(py_);
+  ret.push_back(pz_);
+
+  return ret;
 }
 
-void PbcBoxedMover::do_show(std::ostream &out) const {
+void PbcBoxedMover::do_reject() {
+ /*for(unsigned int i=0;i<ps_.size();++i){
+    core::XYZ(ps_[i]).set_coordinates(oldcoords_[i]);
+ } */
+  Symmetry::BallMover::do_reject();
+}
+
+void PbcBoxedMover::show(std::ostream &out) const {
   out << "max translation: " << max_tr_ << "\n";
 }
 

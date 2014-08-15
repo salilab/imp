@@ -21,8 +21,8 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-EzRestraint::EzRestraint(kernel::Model *m,Particles ps):
-  Restraint(m,"Ez Potential") {
+EzRestraint::EzRestraint(Particles ps):
+  Restraint(ps[0]->get_model(),"Ez Potential") {
 
  ps_ = ps;
  for(unsigned i=0; i<ps_.size(); ++i){

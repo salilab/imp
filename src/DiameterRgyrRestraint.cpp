@@ -17,8 +17,8 @@
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 DiameterRgyrRestraint::DiameterRgyrRestraint
-  (kernel::Model *m, Particles ps, Float diameter, Float rgyr, Float kappa):
-   Restraint(m,"Diameter and Radius of Gyration Restraint"),
+  (Particles ps, Float diameter, Float rgyr, Float kappa):
+   Restraint(ps[0]->get_model(),"Diameter and Radius of Gyration Restraint"),
    ps_(ps), diameter_(diameter), rgyr_(rgyr), kappa_(kappa) {}
 
 double

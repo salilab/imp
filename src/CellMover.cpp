@@ -13,13 +13,12 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-CellMover::CellMover(kernel::Model *m,kernel::ParticleIndex pi,
-                Particles ps, Float max_translation):
+CellMover::CellMover(Particle *p,Particles ps, Float max_translation):
 
-  MonteCarloMover(m, "CellMover%1%")
+  MonteCarloMover(p->get_model(), "CellMover%1%")
 {
 // store Scale particle
- pi_ = pi;
+ p_ = p;
 // list of all particles
  ps_ = ps;
 // list of particles not belonging to rigid bodies
@@ -81,7 +80,7 @@ MonteCarloMoverResult CellMover::do_propose() {
                           sampler(random_number_generator, mrng);
 
 // scale decorator
-  isd::Scale sp = isd::Scale(m->get_particle(pi));
+  isd::Scale sp = isd::Scale(p);
 
 // store old scale
   old_scale_ = sp.get_scale();
@@ -115,17 +114,17 @@ MonteCarloMoverResult CellMover::do_propose() {
   }
 //
   ParticleIndexes ret;
+  ret.push_back(p_->get_index());
   for(unsigned i=0;i<ps_.size();++i) {
       ret.push_back(ps_[i]->get_index());
   }
-  ret.push_back(pi_);
 
   return MonteCarloMoverResult(ret, 1.0);
 }
 
 void CellMover::do_reject() {
 // reset scale
- isd::Scale(m->get_particle(pi_)).set_scale(old_scale_);
+ isd::Scale(p_.set_scale(old_scale_);
 // reset positions of particles
  for(unsigned i=0;i<ps_norb_.size();++i){
   core::XYZ(ps_norb_[i]).set_coordinates(oldcoords_[i]);
@@ -139,8 +138,8 @@ void CellMover::do_reject() {
 kernel::ModelObjectsTemp BoxedMover::do_get_inputs() const {
 
   kernel::ModelObjectsTemp ret;
+  ret.push_back(p_);
   ret.insert(ret.end(),ps_.start(),ps_.end());
-   ret.push_back(m->get_particle(pi_));
 
   return ret;
 }

@@ -14,15 +14,15 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-BoxedMover::BoxedMover(kernel::Model *m, kernel::ParticleIndex pi,Float max_tr,
+BoxedMover::BoxedMover(Particle *p,Float max_tr,
                        algebra::Vector3Ds centers):
-  MonteCarloMover(m, "BoxMover%1%")
+  MonteCarloMover(p->get_model(), "BoxMover%1%")
 {
   IMP_LOG(VERBOSE,"start BoxedMover constructor");
-  pi_ = pi;
+  p_ = p;
   max_tr_ = max_tr;
   centers_ = centers;
-  oldcoord_ = core::XYZ(m->get_particle(pi_)).get_coordinates();
+  oldcoord_ = core::XYZ(p_).get_coordinates();
   IMP_LOG(VERBOSE,"finish mover construction" << std::endl);
 }
 
@@ -35,7 +35,7 @@ MonteCarloMoverResult BoxedMover::do_propose() {
   }
   */
 
-   oldcoord_ = core::XYZ(m->get_particle(pi_)).get_coordinates();
+   oldcoord_ = core::XYZ(p_).get_coordinates();
 
    bool outside=true;
    algebra::Vector3D newcoord;
@@ -61,13 +61,14 @@ MonteCarloMoverResult BoxedMover::do_propose() {
     if(icell==0) outside=false;
    }
 
-   core::XYZ(m->get_particle(pi_)).set_coordinates(newcoord);
+   core::XYZ(p_).set_coordinates(newcoord);
 
-   return MonteCarloMoverResult(kernel::ParticleIndexes(1, pi_), 1.0);
+   return MonteCarloMoverResult(kernel::ParticleIndexes(1, p_->get_index())
+       , 1.0);
 }
 
 void BoxedMover::do_reject() {
- core::XYZ(m->get_particle(pi_)).set_coordinates(oldcoord_);
+ core::XYZ(p_).set_coordinates(oldcoord_);
 }
 
 /*
@@ -79,7 +80,7 @@ ParticlesTemp BoxedMover::get_output_particles() const {
 */
 
 kernel::ModelObjectsTemp BoxedMover::do_get_inputs() const {
-  return kernel::ModelObjectsTemp(1, get_model()->get_particle(pi_));
+  return kernel::ModelObjectsTemp(1, p);
 }
 
 void BoxedMover::show(std::ostream &out) const {
