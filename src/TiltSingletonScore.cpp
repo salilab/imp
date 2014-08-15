@@ -19,18 +19,19 @@ TiltSingletonScore::TiltSingletonScore(UnaryFunction *f,
     : f_(f), local_(v1.get_unit_vector()), global_(v2.get_unit_vector()){}
 
 
-Float TiltSingletonScore::evaluate(Particle *b,
-                                         DerivativeAccumulator *da) const
+Float TiltSingletonScore::evaluate_index(kernel::Model *m,const
+  kernel::ParticleIndex pi, DerivativeAccumulator *da) const
 {
 
   // check if derivatives are requested
   IMP_USAGE_CHECK(!da, "Derivatives not available");
 
   // check if rigid body
-  IMP_USAGE_CHECK(core::RigidBody::particle_is_instance(b),
+  IMP_USAGE_CHECK(core::RigidBody::particle_is_instance(m->get_particle(pi)),
                   "Particle is not a rigid body");
 
-  algebra::ReferenceFrame3D rf = core::RigidBody(b).get_reference_frame();
+  algebra::ReferenceFrame3D rf = core::RigidBody(m->get_particle(pi))
+    .get_reference_frame();
 
   algebra::VectorD<3> local2global
    = rf.get_global_coordinates(local_);
@@ -54,10 +55,15 @@ Float TiltSingletonScore::evaluate(Particle *b,
   return score;
 }
 
-void TiltSingletonScore::do_show(std::ostream &out) const
+void TiltSingletonScore::show(std::ostream &out) const
 {
   out << "function " << *f_;
 }
 
+ParticlesTemp TiltSingletonScore::do_get_inputs(kernel::Model *m,
+  const kernel::ParticleIndexes &pis) const
+{
+   return IMP::kernel::get_particles(m, pis);
+}
 
 IMPMEMBRANE_END_NAMESPACE

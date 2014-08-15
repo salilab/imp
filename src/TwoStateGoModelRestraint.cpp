@@ -19,7 +19,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 TwoStateGoModelRestraint::TwoStateGoModelRestraint
   (Particles ps, Particles psA, Particles psB,
    Float Beta, Float DeltaV, Float Cutoff):
-   Restraint("Two-state Go-model Restraint"),
+   Restraint(ps[0]->get_model(),"Two-state Go-model Restraint"),
    ps_(ps), Beta_(Beta), DeltaV_(DeltaV) {
 
    set_parameters(psA, psB, Cutoff);
@@ -103,17 +103,17 @@ TwoStateGoModelRestraint::unprotected_evaluate(DerivativeAccumulator *da) const
  return VMB;
 }
 
-ParticlesTemp TwoStateGoModelRestraint::get_input_particles() const {
+ParticlesTemp TwoStateGoModelRestraint::do_get_inputs() const {
   ParticlesTemp ret;
   ret.insert(ret.end(), ps_.begin(), ps_.end());
   return ret;
 }
-
+/*
 ContainersTemp TwoStateGoModelRestraint::get_input_containers() const {
   return ContainersTemp();
 }
-
-void TwoStateGoModelRestraint::do_show(std::ostream &) const
+*/
+void TwoStateGoModelRestraint::show(std::ostream &) const
 {
 }
 

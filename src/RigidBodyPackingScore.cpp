@@ -27,8 +27,8 @@ RigidBodyPackingScore::RigidBodyPackingScore(core::TableRefiner *tbr,
                                              ddb_(ddb), dde_(dde),
                                              kappa_(kappa) {}
 
-Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
-                                 DerivativeAccumulator *da) const
+Float RigidBodyPackingScore::evaluate_index(kernel::Model *m,
+    const ParticleIndexPair &pip,DerivativeAccumulator *da) const IMP_OVERRIDE
 {
   // turn on logging for this method
   // IMP_OBJECT_LOG;
@@ -37,14 +37,14 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
   IMP_USAGE_CHECK(!da, "Derivatives not available");
 
   // check if rigid body
-  IMP_USAGE_CHECK(core::RigidBody::particle_is_instance(p[0]),
-                  "Particle is not a rigid body");
-  IMP_USAGE_CHECK(core::RigidBody::particle_is_instance(p[1]),
-                  "Particle is not a rigid body");
+  IMP_USAGE_CHECK(core::RigidBody::particle_is_instance(
+     m->get_particle(pip[0])), "Particle is not a rigid body");
+  IMP_USAGE_CHECK(core::RigidBody::particle_is_instance(
+     m->get_particle(pip[1])), "Particle is not a rigid body");
 
   // check if rigid bodies are close enough
-  Particles ps0=tbr_->get_refined(p[0]);
-  Particles ps1=tbr_->get_refined(p[1]);
+  Particles ps0=tbr_->get_refined(m->get_particle(pip[0]));
+  Particles ps1=tbr_->get_refined(m->get_particle(pip[1]));
 
   unsigned int close = 0;
   for(unsigned int i=0;i<ps0.size();++i){
@@ -60,8 +60,8 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
   if (close < 3) {return 0.;}
 
   // assume they have an helix decorator
-  membrane::HelixDecorator d0(p[0]);
-  membrane::HelixDecorator d1(p[1]);
+  membrane::HelixDecorator d0(m->get_particle(pip[0]));
+  membrane::HelixDecorator d1(m->get_particle(pip[1]));
   // begin and end point
   algebra::Vector3D b0=algebra::Vector3D(d0.get_begin(),0.0,0.0);
   algebra::Vector3D e0=algebra::Vector3D(d0.get_end(),0.0,0.0);
@@ -70,9 +70,11 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
 
   // get rigid body transformation
   algebra::Transformation3D tr0=
-   core::RigidBody(p[0]).get_reference_frame().get_transformation_to();
+   core::RigidBody(m->get_particle(pip[0])).get_reference_frame().
+       get_transformation_to();
   algebra::Transformation3D tr1=
-   core::RigidBody(p[1]).get_reference_frame().get_transformation_to();
+   core::RigidBody(m->get_particle(pip[1])).get_reference_frame().
+       get_transformation_to();
 
   // and apply it to vectors
   b0=tr0.get_transformed(b0);
@@ -132,19 +134,13 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
 }
 
 
-ParticlesTemp RigidBodyPackingScore::get_input_particles(Particle *p) const {
-  // return any particles that would be read if p is one of the particles
-  // being scored. Don't worry about returning duplicates.
-  return ParticlesTemp(1,p);
-}
-ContainersTemp RigidBodyPackingScore::get_input_containers(Particle *p) const {
-  // return any containers that would be read if p is one of the particles
-  // being scored. Don't worry about returning duplicates.
-  return ContainersTemp();
+ParticlesTemp RigidBodyPackingScore::do_get_inputs(
+ kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE {
+  return IMP::kernel::get_particles(m, pis);
 }
 
 
-void RigidBodyPackingScore::do_show(std::ostream &out) const {
+void RigidBodyPackingScore::show(std::ostream &out) const {
   for(unsigned int i=0;i<omb_.size();++i)
    out << "i" << i << "omb_=" << omb_[i] << "ome_=" << ome_[i] << std::endl;
 }

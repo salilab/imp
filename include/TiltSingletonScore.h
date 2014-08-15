@@ -28,13 +28,23 @@ IMPMEMBRANE_BEGIN_NAMESPACE
  */
 class IMPMEMBRANEEXPORT TiltSingletonScore : public SingletonScore
 {
-  IMP::base::OwnerPointer<UnaryFunction> f_;
+  IMP::PointerMember<UnaryFunction> f_;
   algebra::VectorD<3> local_;
   algebra::VectorD<3> global_;
 public:
   TiltSingletonScore(UnaryFunction *f, const algebra::VectorD<3>& v1,
                      const algebra::VectorD<3>& v2);
-  IMP_SIMPLE_SINGLETON_SCORE(TiltSingletonScore);
+
+  virtual double evaluate_index(kernel::Model *m,
+  const kernel::ParticleIndex p,
+   DerivativeAccumulator *da) const IMP_OVERRIDE;
+
+  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
+  const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+
+  IMP_SINGLETON_SCORE_METHODS(TiltSingletonScore);
+  IMP_OBJECT_METHODS(TiltSingletonScore)
+  //IMP_SIMPLE_SINGLETON_SCORE(TiltSingletonScore);
 };
 
 

@@ -20,14 +20,27 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 //! Score on the crossing angles between two helices
 class IMPMEMBRANEEXPORT RigidBodyPackingScore : public PairScore
 {
-  base::OwnerPointer<core::TableRefiner> tbr_;
+  IMP::PointerMember<core::TableRefiner> tbr_;
   Floats omb_, ome_, ddb_, dde_;
   double kappa_;
 public:
   RigidBodyPackingScore(core::TableRefiner *tbr,
                         Floats omb, Floats ome, Floats ddb,
                         Floats dde, double kappa);
-  IMP_PAIR_SCORE(RigidBodyPackingScore);
+
+   virtual double evaluate_index(kernel::Model *m,
+   const kernel::ParticleIndexPair &p,
+    DerivativeAccumulator *da) const IMP_OVERRIDE;
+
+   virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
+   const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+
+   void show(std::ostream &out) const ;
+
+  IMP_PAIR_SCORE_METHODS(RigidBodyPackingScore);
+  IMP_OBJECT_METHODS(RigidBodyPackingScore);
+
+
 };
 
 IMP_OBJECTS(RigidBodyPackingScore, RigidBodyPackingScores);
