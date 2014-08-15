@@ -133,7 +133,6 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
 
 #ifndef IMP_DOXYGEN
   double operator*(const VectorBaseD<D> &o) const {
-    IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o);
     return get_scalar_product(o);
   }
 
