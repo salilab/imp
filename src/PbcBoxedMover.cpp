@@ -51,7 +51,7 @@ algebra::Transformation3D PbcBoxedMover::get_transformation
  return newtrans;
 }
 
-MonteCarloResult PbcBoxedMover::do_propose() {
+MonteCarloMoverResult PbcBoxedMover::do_propose() {
    return symmetry::BallMover::do_propose();
 }
 

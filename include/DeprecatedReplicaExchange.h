@@ -9,7 +9,7 @@
 #define IMPMEMBRANE_DEPRECATED_REPLICA_EXCHANGE_H
 
 #include "membrane_config.h"
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 #include "mpi.h"
 #include <string>
 

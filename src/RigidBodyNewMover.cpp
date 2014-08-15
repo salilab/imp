@@ -7,7 +7,7 @@
  */
 #include <IMP/membrane/RigidBodyNewMover.h>
 #include <IMP/core.h>
-#include <IMP/random.h>
+#include <IMP/base/random.h>
 #include <IMP/algebra.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
@@ -15,7 +15,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 RigidBodyNewMover::RigidBodyNewMover(core::RigidBody d, Float max_x_translation,
                                Float max_y_translation, Float max_z_translation,
                                      Float max_angle):
-  Mover(d->get_model(), "RigidBodyNewMover%1%") {
+  MonteCarloMover(d->get_model(), "RigidBodyNewMover%1%") {
   IMP_LOG(VERBOSE,"start RigidBodyNewMover constructor");
   max_x_translation_ = max_x_translation;
   max_y_translation_ = max_y_translation;
@@ -25,13 +25,7 @@ RigidBodyNewMover::RigidBodyNewMover(core::RigidBody d, Float max_x_translation,
   IMP_LOG(VERBOSE,"finish mover construction" << std::endl);
 }
 
-ParticlesTemp RigidBodyNewMover::propose_move(Float f) {
-  IMP_LOG(VERBOSE,"RigidBodyNewMover:: propose move f is  : " << f <<std::endl);
-  {
-    ::boost::uniform_real<> rand(0,1);
-    double fc =rand(base::random_number_generator);
-    if (fc > f) return ParticlesTemp();
-  }
+MonteCarloMoverResult RigidBodyNewMover::do_propose() {
 
   last_transformation_= d_.get_reference_frame().get_transformation_to();
   algebra::VectorD<3> coord = d_.get_coordinates();
@@ -72,20 +66,20 @@ ParticlesTemp RigidBodyNewMover::propose_move(Float f) {
   algebra::Transformation3D t(rc, translation);
   IMP_LOG(VERBOSE,"RigidBodyNewMover:: propose move : " << t << std::endl);
   d_.set_reference_frame(algebra::ReferenceFrame3D(t));
-  return ParticlesTemp(1, d_);
+  return MonteCarloMoverResult(ParticleIndexes(1, d_->get_index()),1.0);
 }
 
 
-void RigidBodyNewMover::reset_move() {
+void RigidBodyNewMover::do_reject() {
   d_.set_reference_frame(algebra::ReferenceFrame3D(last_transformation_));
   last_transformation_= algebra::Transformation3D();
 }
 
-ParticlesTemp RigidBodyNewMover::get_output_particles() const {
+ParticlesTemp RigidBodyNewMover::do_get_inputs() const {
   return ParticlesTemp(1, d_);
 }
 
-void RigidBodyNewMover::do_show(std::ostream &out) const {
+void RigidBodyNewMover::show(std::ostream &out) const {
   out << "max x translation: " << max_x_translation_ << "\n";
   out << "max y translation: " << max_y_translation_ << "\n";
   out << "max z translation: " << max_z_translation_ << "\n";

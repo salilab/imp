@@ -5,7 +5,7 @@
  *  Copyright 2011 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/membrane/ReplicaExchange.h>
+#include <IMP/membrane/DeprecatedReplicaExchange.h>
 #include "mpi.h"
 #include <iostream>
 #include <string>

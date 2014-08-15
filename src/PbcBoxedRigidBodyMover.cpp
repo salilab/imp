@@ -73,7 +73,7 @@ algebra::Transformation3D PbcBoxedRigidBodyMover::get_transformation
  return newtrans;
 }
 
-ParticlesTemp PbcBoxedRigidBodyMover::do_propose() {
+MonteCarloMoverResult PbcBoxedRigidBodyMover::do_propose() {
   return symmetry::RigidBodyMover::do_propose();
 }
 
