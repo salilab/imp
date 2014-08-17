@@ -128,7 +128,7 @@ struct Pointer : internal::PointerBase<internal::RefCountedPointerTraits<O> > {
 #endif
 };
 
-//! A smart pointer to a ref-counted  Object that is a class memeber
+//! A smart pointer to a ref-counted  Object that is a class member
 /** A smart pointer to a reference counted Object, which is
     meant to be stored as a class member. This class is identical
     to Pointer, but in addition, Object::set_was_used(true) will be called so

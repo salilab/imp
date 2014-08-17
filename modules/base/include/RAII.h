@@ -13,7 +13,7 @@
 #include "utility_macros.h"
 
 IMPBASE_BEGIN_NAMESPACE
-/** An RAII class (Resource Aquisition Is
+/** An RAII class (Resource Acquisition Is
        Initialization) provides a way of
        temporarily changing something and undoing the
        change when the RAII object

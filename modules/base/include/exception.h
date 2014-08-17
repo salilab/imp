@@ -95,7 +95,7 @@ IMPBASEEXPORT void handle_error(const char *msg);
 
 #ifndef SWIG
 
-//! A general exception for an intenal error in IMP.
+//! A general exception for an internal error in IMP.
 /** This exception is thrown by the IMP_INTERNAL_CHECK() and
     IMP_FAILURE() macros. It should never be caught.
  */

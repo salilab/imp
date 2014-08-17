@@ -31,11 +31,11 @@
     base class.
 */
 #define IMP_IMPLEMENT(signature)
-/** Define a method inline that impements a pure virtual method.
+/** Define a method inline that implements a pure virtual method.
  */
 #define IMP_IMPLEMENT_INLINE(signature, body)
 
-/** Define a method inline that impements a pure virtual method that
+/** Define a method inline that implements a pure virtual method that
     is hidden from swig.
  */
 #define IMP_IMPLEMENT_INLINE_NO_SWIG(signature, body)

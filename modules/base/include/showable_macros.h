@@ -19,7 +19,7 @@
     IMP_SHOWABLE() call internal to it and an IMP_OUTPUT_OPERATOR()
     call external to it.
 
-    The suffixs are the number of template arguments that the
+    The suffixes are the number of template arguments that the
     object has (eg _1 means one template argument). _D means
     one integer template argument.
     @{

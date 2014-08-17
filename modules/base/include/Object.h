@@ -77,7 +77,7 @@ longer needed. In reference counting, each object has a reference
 count, which tracks how many different places are using the
 object. When this count goes to 0, the object is freed.
 
-Python internally refence counts everything. C++, on the other
+Python internally reference counts everything. C++, on the other
 hand, requires extra steps be taken to ensure that objects are
 reference counted properly.
 
@@ -227,7 +227,7 @@ class IMPBASEEXPORT Object : public NonCopyable {
   virtual void clear_caches() {}
 
  protected:
-  /** Overide this method to take action on destruction. */
+  /** Override this method to take action on destruction. */
   virtual void do_destroy() {}
 };
 

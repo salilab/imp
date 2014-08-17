@@ -17,10 +17,10 @@
     constructor to a method \c copy_from() which should do the copying.
 
     You should think very hard before implementing a class which
-    requires a custom copy custructor as it is easy to get wrong
+    requires a custom copy constructor as it is easy to get wrong
     and you can easily wrap most resources with RAII objects
     (\external{http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization,
-    wikipedia entry}).
+    Wikipedia entry}).
 */
 #define IMP_COPY_CONSTRUCTOR(Name, Base)         \
   Name(const Name& o) : Base() { copy_from(o); } \

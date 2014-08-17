@@ -18,7 +18,7 @@
 IMPBASE_BEGIN_NAMESPACE
 //! Return true if a number is NaN
 /** With certain compiler settings the compiler can optimize
- out a!=a (and certain intel chips had issues with it too).
+ out a!=a (and certain Intel chips had issues with it too).
  */
 template <class T>
 inline bool isnan(const T& a) {

@@ -1,6 +1,6 @@
 /**
  *  \file IMP/base/SetCheckState.h
- *  \brief Checkging and error reporting support.
+ *  \brief Checking and error reporting support.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
