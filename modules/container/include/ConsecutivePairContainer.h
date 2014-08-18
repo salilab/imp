@@ -19,8 +19,7 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-//! A container which contains all consecutive pairs from an input  list
-//  of particles
+//! A container which contains all consecutive particle pairs from an input list
 /** If it is assumed that each particle is in at most one such container,
     then ExclusiveConsecutivePairContainer should be used instead,
     since it is faster when doing certain computations.
@@ -33,7 +32,7 @@ class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer {
   IntKey key_;
   /**
      add the key of this container as an attribute to all particles
-     if there might be ovrlaps - create a different keys for each instance
+     if there might be overlaps - create a different key for each instance
   */
   void init();
 
