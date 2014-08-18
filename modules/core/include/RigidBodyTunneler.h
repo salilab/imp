@@ -49,11 +49,11 @@ class IMPCOREEXPORT RigidBodyTunneler : public MonteCarloMover {
   /** Constructor
    * \param m the model
    * \param pis the rigid bodies to move, in order
-   * \param ref the rigidbody reference
+   * \param ref the RigidBody reference
    * \param k the weight when calculating distances
    *  The squared distance between two coordinates is
    *  \f$d^2_\text{eucl}(COM1,COM2) + k*d^2_\text{quat}(Q1,Q2)\f$
-   *  If you want to weight rotation differencies at the same level as
+   *  If you want to weight rotation differences at the same level as
    *  translational ones, pick \f$k \simeq d_\text{max}/\pi\f$ where
    *  \f$d_\text{max}\f$ is the largest translational difference to be expected.
    * \param move_probability the prior probability to actually

@@ -33,7 +33,7 @@ class NBLScoring;
     whether the score is good).
 
     The ensure proper evaluation, the ScoringFunction is divided into a number
-    of sub scoring functions, one per possibly moved particles. Each of
+    of sub scoring functions, one for each possibly moved particle.
 */
 class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
   struct Data {
@@ -42,7 +42,7 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
   };
   /* have to make sure that when the dependencies are reset on destruction,
      the map is in a well defined state (and not in the middle of its
-     destructor.
+     destructor).
      Otherwise, ~IncrementalScoringFunction -> map destructor
      -> kernel::Model::set_has_dependencies()
      -> IncrementalScoringFunction::do_set_has_dependencies()
@@ -73,7 +73,7 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
                    const kernel::Restraints &dummies) const;
 
  public:
-  /** Pass the particles that will be individuall mode, and the list of
+  /** Pass the particles that will be individually moved, and the list of
       restraints to evaluate on them.
 
       @param to_move particles to be moved, must contain at least one particle

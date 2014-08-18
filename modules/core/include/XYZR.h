@@ -82,7 +82,7 @@ class IMPCOREEXPORT XYZR : public XYZ {
 IMP_DECORATORS(XYZR, XYZRs, XYZs);
 
 //! Compute the sphere distance between a and b
-/** Compute the spere distance between a and b
+/** Compute the sphere distance between a and b
     See XYZR
  */
 inline double get_distance(XYZR a, XYZR b) {

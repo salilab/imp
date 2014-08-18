@@ -33,7 +33,7 @@ public SingletonDerivativeModifier {
   FloatKeys keys_;
 
  public:
-  //! Contstructs a weighted derivatives-to-refined modifier that copies
+  //! Constructs a weighted derivatives-to-refined modifier that copies
   //! derivatives from the coarse particle to its refinement
   /**
      Constructs a weighted derivatives-to-refined modifier that copies

@@ -1,6 +1,6 @@
 /**
  *  \file IMP/core/CentroidOfRefined.h
- *  \brief Set the coordinates of the particle to be the centoid of the
+ *  \brief Set the coordinates of the particle to be the centroid of the
  *  refined particles.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
@@ -20,7 +20,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! Set the coordinates (or any float keys) of the particle to be the centoid of
+//! Set the coordinates (or any float keys) of the particle to be the centroid of
 //! the corresponding keys in a set of fine particles.
 /** An exception is thrown if there are no refined particles. The weight
     FloatKey can be used to reweight the centroid computation, or it can be set

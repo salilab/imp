@@ -1,5 +1,5 @@
 /**
- *  \file IMP/core/XYZ.h     \brief Simple xyz decorator.
+ *  \file IMP/core/XYZ.h     \brief Simple XYZ decorator.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -185,7 +185,7 @@ IMPBASE_END_NAMESPACE
 IMPCORE_BEGIN_NAMESPACE
 
 //! Compute the distance between a pair of particles
-/** compute the ditance between the x,y,z coordinates of a and b
+/** compute the distance between the x,y,z coordinates of a and b
     \ingroup helper
     See XYZ
  */

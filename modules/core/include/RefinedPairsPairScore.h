@@ -1,6 +1,6 @@
 /**
  *  \file IMP/core/RefinedPairsPairScore.h
- *  \brief Generate pairs by applying a Refiner to the paricles.
+ *  \brief Generate pairs by applying a Refiner to the particles.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */

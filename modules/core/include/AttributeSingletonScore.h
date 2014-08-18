@@ -26,7 +26,7 @@ class GenericAttributeSingletonScore : public SingletonScore {
   FloatKey k_;
 
  public:
-  //! Apply function f to attribete k
+  //! Apply function f to attribute k
   GenericAttributeSingletonScore(UnaryFunction *f, FloatKey k);
   virtual double evaluate_index(kernel::Model *m, kernel::ParticleIndex p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;

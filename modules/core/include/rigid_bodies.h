@@ -91,7 +91,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 
   static ObjectKey get_constraint_key_1();
 
-  // setup rigid body atrributes with particles in ps, using their
+  // setup rigid body attributes with particles in ps, using their
   // center of mass, inertia tensor  to initialize the reference frame
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                                 kernel::ParticleIndexesAdaptor ps);
@@ -122,7 +122,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 
   RigidMembers get_rigid_members() const;
 
-  //! Returns a list of all members that are not themselves decoared as
+  //! Returns a list of all members that are not themselves decorated as
   //! rigid bodies, in the form of particle indexes.
   const kernel::ParticleIndexes &get_member_particle_indexes() const {
     static kernel::ParticleIndexes empty;
@@ -135,7 +135,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
     }
   }
 
-  //! Get all members that are themselved decorated as rigid bodies,
+  //! Get all members that are themselves decorated as rigid bodies,
   //! as model particle indexes
   const kernel::ParticleIndexes &get_body_member_particle_indexes() const {
     static kernel::ParticleIndexes empty;
@@ -159,7 +159,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   /**
      Create a rigid body for pi with the particle indexes ps as its members.
      The coordinates of pi are set to the center of mass of ps and the rotation
-     of its reference frame is based on the diagnolized intertia tensor of ps.
+     of its reference frame is based on the diagonalized inertia tensor of ps.
 
      @note If size(ps)=1, then its reference frame is copied if it is a rigid body, \
      or its rotation is set to identity if it is not a rigid body.
@@ -231,16 +231,16 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 
       This method is useful for updating the rigid body after new
       global coordinates were loaded for the members. The members are
-      passed explictily since, typically, some are desired to just
+      passed explicitly since, typically, some are desired to just
       move along with the newly loaded rigid body.
 
-      \note This requires at least three members that are not collinear
+      \note This requires at least three members that are not colinear
       to work.
   */
   void set_reference_frame_from_members(const kernel::ParticleIndexes &members);
 
 #ifndef IMP_DOXYGEN
-  /** This takes a cartesian derivative in global coordinates,
+  /** This takes a Cartesian derivative in global coordinates,
       and a location in internal coordinates.
 
       It is currently hidden since the function signature is highly ambiguous.
@@ -300,7 +300,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
      as a rigid body member, otherwise it is added as a point member
      (for which the rotation is not tracked). By default, p is considered
      a strictly rigid member, in that its local coordinates are not expected
-     to change independetly.
+     to change independently.
 
      \see add_non_rigid_member
    */
@@ -438,7 +438,7 @@ class IMPCOREEXPORT RigidBodyMember : public XYZ {
   }
 
   ~RigidBodyMember();
-  //! sets the global coordinates of this member using XYZ::set_coordiantes()
+  //! sets the global coordinates of this member using XYZ::set_coordinates()
   // this is here since swig does like using statements
   void set_coordinates(const algebra::Vector3D &center) {
     XYZ::set_coordinates(center);
@@ -469,7 +469,7 @@ class IMPCOREEXPORT RigidBodyMember : public XYZ {
    RigidMember particles, as opposed to NonRigidMember particles, are
    not expected to change their internal (local) coordinates or
    reference frames, and their global coordinates are expected to
-   change only through setting the cooridnates (or reference frame) of
+   change only through setting the coordinates (or reference frame) of
    the rigid body that owns them.
 
    \see RigidBody

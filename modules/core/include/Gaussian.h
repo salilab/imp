@@ -112,7 +112,7 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
   void update_global_covariance();
 
 
-  ////! Evaluate the gaussian at a point?
+  ////! Evaluate the Gaussian at a point?
   //Float get_probability_at_point(const algebra::Vector3D &point) const;
 };
 IMP_DECORATORS(Gaussian, Gaussians, kernel::Particles);
