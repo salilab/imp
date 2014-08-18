@@ -30,6 +30,7 @@ class Tests(IMP.test.ApplicationTestCase):
         """Test bad argument combinations"""
         for inputs in (['--pose', '--rank'], ['--rank', rank_score]):
             p = self.run_application('ligand_score', inputs)
+            out, err = p.communicate()
             self.assertNotEqual(p.wait(), 0)
 
     def check_output(self, p, val1, val2):
