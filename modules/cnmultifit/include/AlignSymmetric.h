@@ -25,7 +25,7 @@ class IMPCNMULTIFITEXPORT AlignSymmetric {
   //! Constructor
   /**
 \param[in] dmap the density map
-\param[in] threshold density threshold used for determining the map pca
+\param[in] threshold density threshold used for determining the map PCA
 \param[in] cn_symm_deg the ring symmetry degree
    */
   AlignSymmetric(em::DensityMap* dmap, float threshold,
