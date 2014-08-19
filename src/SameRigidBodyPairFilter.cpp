@@ -17,8 +17,8 @@ SameRigidBodyPairFilter
 
 int SameRigidBodyPairFilter::get_value(const ParticlePair &pp)
  const {
-     if(!core::RigidMember::particle_is_instance(pp[0]) ||
-        !core::RigidMember::particle_is_instance(pp[1])){return false;}
+     if(!core::RigidMember::get_is_setup(pp[0]) ||
+        !core::RigidMember::get_is_setup(pp[1])){return false;}
      else{
       return core::RigidMember(pp[0]).get_rigid_body() ==
              core::RigidMember(pp[1]).get_rigid_body();}
@@ -27,7 +27,7 @@ int SameRigidBodyPairFilter::get_value(const ParticlePair &pp)
 ParticlesTemp SameRigidBodyPairFilter::get_input_particles( Particle* t) const {
   ParticlesTemp ret;
   ret.push_back(t);
-  if(core::RigidMember::particle_is_instance(t)){
+  if(core::RigidMember::get_is_setup(t)){
    ret.push_back(core::RigidMember(t).get_rigid_body());
   }
   return ret;

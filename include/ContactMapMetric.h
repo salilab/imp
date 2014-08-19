@@ -37,7 +37,10 @@ class IMPMEMBRANEEXPORT ContactMapMetric: public statistics::Metric {
   Float  get_weight(unsigned i) const;
   Floats get_item(unsigned i) const;
 
-  IMP_METRIC(ContactMapMetric);
+  //IMP_METRIC(ContactMapMetric);
+  double get_distance(unsigned int i, unsigned int j) const IMP_OVERRIDE;
+  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ContactMapMetric);
 };
 
 IMPMEMBRANE_END_NAMESPACE

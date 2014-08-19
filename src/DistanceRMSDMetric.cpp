@@ -13,7 +13,7 @@
 #include <IMP/statistics/internal/TrivialPartitionalClustering.h>
 #include <algorithm>
 #include <vector>
-#include <IMP/compatibility/vector_property_map.h>
+#include <IMP/base/vector_property_map.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
@@ -163,8 +163,6 @@ unsigned int DistanceRMSDMetric::get_number_of_items() const {
   return matrices_.size();
 }
 
-void DistanceRMSDMetric::do_show(std::ostream &) const {
-}
 
 statistics::PartitionalClustering* create_gromos_clustering
  (statistics::Metric *d, double cutoff)

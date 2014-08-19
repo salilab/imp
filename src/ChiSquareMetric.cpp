@@ -11,7 +11,7 @@
 #include <IMP/core/XYZ.h>
 #include <algorithm>
 #include <vector>
-#include <IMP/compatibility/vector_property_map.h>
+#include <IMP/base/vector_property_map.h>
 #include <math.h>
 
 
@@ -110,7 +110,5 @@ Floats ChiSquareMetric::get_stddev(unsigned i) const
  return stddev_[i];
 }
 
-void ChiSquareMetric::do_show(std::ostream &) const {
-}
 
 IMPMEMBRANE_END_NAMESPACE

@@ -429,7 +429,7 @@ void add_symmetry_restraint
   Particles ps1=atom::get_leaves(hs[i]);
   IMP_NEW(container::ListSingletonContainer,lc,(m));
   for(unsigned int j=0;j<ps1.size();++j){
-   if(!core::RigidMember::particle_is_instance(ps1[j])){
+   if(!core::RigidMember::get_is_setup(ps1[j])){
     core::Reference::setup_particle(ps1[j],ps0[j]);
     lc->add_particle(ps1[j]);
    }
@@ -472,7 +472,7 @@ std::vector<core::RigidBody> get_rigid_bodies(Particles ps)
 {
  std::vector<core::RigidBody> rbs;
  for(unsigned i=0;i<ps.size();++i){
-  if(core::RigidMember::particle_is_instance(ps[i])){
+  if(core::RigidMember::get_is_setup(ps[i])){
    core::RigidBody rb = core::RigidMember(ps[i]).get_rigid_body();
    std::vector<core::RigidBody>::iterator it = find(rbs.begin(), rbs.end(), rb);
    if(it==rbs.end()){rbs.push_back(rb);}

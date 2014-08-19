@@ -39,7 +39,7 @@ public:
   //IMP_MOVER(RigidBodyNewMover);
 
 protected:
-  virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
+  virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 

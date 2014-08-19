@@ -26,7 +26,7 @@ BoxedMover::BoxedMover(Particle *p,Float max_tr,
   IMP_LOG(VERBOSE,"finish mover construction" << std::endl);
 }
 
-MonteCarloMoverResult BoxedMover::do_propose() {
+core::MonteCarloMoverResult BoxedMover::do_propose() {
   /*IMP_LOG(VERBOSE,"BoxedMover:: propose move f is  : " << f <<std::endl);
   {
     ::boost::uniform_real<> rand(0,1);
@@ -63,7 +63,9 @@ MonteCarloMoverResult BoxedMover::do_propose() {
 
    core::XYZ(p_).set_coordinates(newcoord);
 
-   return MonteCarloMoverResult(kernel::ParticleIndexes(1, p_->get_index())
+   return core::MonteCarloMoverResult(kernel::
+         ParticleIndexes(1, p_->get_index())
+
        , 1.0);
 }
 
@@ -80,7 +82,7 @@ ParticlesTemp BoxedMover::get_output_particles() const {
 */
 
 kernel::ModelObjectsTemp BoxedMover::do_get_inputs() const {
-  return kernel::ModelObjectsTemp(1, p);
+  return kernel::ModelObjectsTemp(1, p_);
 }
 
 void BoxedMover::show(std::ostream &out) const {

@@ -39,9 +39,9 @@ void LangevinThermostatOptimizerState::rescale_velocities() const
   IMP_INTERNAL_CHECK(md, "Can only use velocity scaling with "
              "the molecular dynamics optimizer.");
   boost::normal_distribution<Float> mrng(0., 1.);
-  boost::variate_generator<RandomNumberGenerator&,
+  boost::variate_generator<base::RandomNumberGenerator&,
                            boost::normal_distribution<Float> >
-    sampler(random_number_generator, mrng);
+    sampler(base::random_number_generator, mrng);
   for (unsigned int i=0; i< pis_.size(); ++i) {
     Particle *p = pis_[i];
     double mass = atom::Mass(p).get_mass();

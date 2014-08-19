@@ -233,9 +233,9 @@ void MolecularDynamicsWithWte::assign_velocities(Float temperature)
   ParticlesTemp ps= IMP::internal::get_particle(get_model(), ips);
 
   boost::normal_distribution<Float> mrng(0., 1.);
-  boost::variate_generator<RandomNumberGenerator&,
+  boost::variate_generator<base::RandomNumberGenerator&,
                            boost::normal_distribution<Float> >
-      sampler(random_number_generator, mrng);
+      sampler(base::random_number_generator, mrng);
 
   for (ParticlesTemp::iterator iter = ps.begin();
        iter != ps.end(); ++iter) {

@@ -42,7 +42,7 @@ void AttributeDistancePairScore::show(std::ostream &out) const
 
 Float AttributeDistancePairScore::evaluate_index(kernel::Model *m,
 const kernel::ParticleIndexPair &pip,
-DerivativeAccumulator *da) const IMP_OVERRIDE
+DerivativeAccumulator *da) const
 {
 
   // turn on logging for this method
@@ -86,7 +86,7 @@ DerivativeAccumulator *da) const IMP_OVERRIDE
 }
 
 ModelObjectsTemp AttributeDistancePairScore::do_get_inputs(
- kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE {
+ kernel::Model *m, const kernel::ParticleIndexes &pis) const {
   return IMP::kernel::get_particles(m, pis);
 }
 

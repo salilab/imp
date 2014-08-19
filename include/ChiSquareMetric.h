@@ -42,7 +42,11 @@ class IMPMEMBRANEEXPORT ChiSquareMetric: public statistics::Metric {
 
   double get_chisquare_exp(unsigned i) const;
 
-  IMP_METRIC(ChiSquareMetric);
+  double get_distance(unsigned int i, unsigned int j) const IMP_OVERRIDE;
+  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ChiSquareMetric);
+
+ // IMP_METRIC(ChiSquareMetric);
 };
 
 IMPMEMBRANE_END_NAMESPACE

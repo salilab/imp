@@ -55,7 +55,7 @@ Float KinkPairScore::evaluate(const ParticlePair &p,
 */
 Float KinkPairScore::evaluate_index(kernel::Model *m,
 const kernel::ParticleIndexPair &pip,
-DerivativeAccumulator *da) const IMP_OVERRIDE
+DerivativeAccumulator *da) const
 {
   // check if derivatives are requested
   IMP_USAGE_CHECK(!da, "Derivatives not available");

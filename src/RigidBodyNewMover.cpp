@@ -25,7 +25,7 @@ RigidBodyNewMover::RigidBodyNewMover(core::RigidBody d, Float max_x_translation,
   IMP_LOG(VERBOSE,"finish mover construction" << std::endl);
 }
 
-MonteCarloMoverResult RigidBodyNewMover::do_propose() {
+core::MonteCarloMoverResult RigidBodyNewMover::do_propose() {
 
   last_transformation_= d_.get_reference_frame().get_transformation_to();
   algebra::VectorD<3> coord = d_.get_coordinates();
@@ -66,7 +66,7 @@ MonteCarloMoverResult RigidBodyNewMover::do_propose() {
   algebra::Transformation3D t(rc, translation);
   IMP_LOG(VERBOSE,"RigidBodyNewMover:: propose move : " << t << std::endl);
   d_.set_reference_frame(algebra::ReferenceFrame3D(t));
-  return MonteCarloMoverResult(ParticleIndexes(1, d_->get_index()),1.0);
+  return core::MonteCarloMoverResult(ParticleIndexes(1, d_->get_index()),1.0);
 }
 
 

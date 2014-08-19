@@ -32,8 +32,8 @@ void TwoStateGoModelRestraint::set_parameters
   for(unsigned j=i+1; j<ps_.size(); ++j){
 
   // check if ps_ are member of the same rigid body
-   if(core::RigidMember::particle_is_instance(ps_[i]) &&
-        core::RigidMember::particle_is_instance(ps_[j])){
+   if(core::RigidMember::get_is_setup(ps_[i]) &&
+        core::RigidMember::get_is_setup(ps_[j])){
     if(core::RigidMember(ps_[i]).get_rigid_body() ==
        core::RigidMember(ps_[j]).get_rigid_body()) { continue; }
    }

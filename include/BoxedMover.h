@@ -34,9 +34,11 @@ public:
  BoxedMover(Particle *p, Float max_tr, algebra::Vector3Ds centers);
 
 protected:
-  virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
+  virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+
+  void show(std::ostream &out) const;
 
   // IMP_MOVER(BoxedMover);
 

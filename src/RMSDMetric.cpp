@@ -11,7 +11,7 @@
 #include <IMP/core/XYZ.h>
 #include <algorithm>
 #include <vector>
-#include <IMP/compatibility/vector_property_map.h>
+#include <IMP/base/vector_property_map.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
@@ -57,7 +57,5 @@ unsigned int RMSDMetric::get_number_of_items() const {
   return coords_.size();
 }
 
-void RMSDMetric::do_show(std::ostream &) const {
-}
 
 IMPMEMBRANE_END_NAMESPACE

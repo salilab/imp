@@ -29,7 +29,10 @@ class IMPMEMBRANEEXPORT RMSDMetric: public statistics::Metric {
   void add_configuration(double weight=1.0);
   Float get_weight(unsigned i);
 
-  IMP_METRIC(RMSDMetric);
+  //IMP_METRIC(RMSDMetric);
+  double get_distance(unsigned int i, unsigned int j) const IMP_OVERRIDE;
+  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(RMSDMetric);
 };
 
 IMPMEMBRANE_END_NAMESPACE
