@@ -17,7 +17,7 @@ class Tests(IMP.test.TestCase):
         topology.setup_hierarchy(pdb)
         r = IMP.atom.CHARMMStereochemistryRestraint(pdb, topology)
         m.add_restraint(r)
-        return r, m, pdb, topology
+        return r, m, pdb
 
     def get_all_atoms(self, pdb):
         atoms = {}
@@ -34,34 +34,15 @@ class Tests(IMP.test.TestCase):
         self.assertEquals(pf.get_value([atoms[a1], atoms[a2]]),
                           True)
 
-    def test_charmm_stereochemistry_setup(self):
-        """Test CHARMMStereochemistryRestraint makes the right number of restraints"""
-        r,m,pdb,topology = self.setup_restraint()
-        self.assertEqual(topology.get_number_of_segments(),1)
-        self.assertEqual(topology.get_segment(0).get_number_of_residues(),2)
-        res=topology.get_segment(0).get_residues()
-
-        # info for SER
-        self.assertEqual(res[0].get_number_of_bonds(),6)
-        self.assertEqual(res[0].get_number_of_angles(),7)
-        self.assertEqual(res[0].get_number_of_impropers(),2)
-        self.assertEqual(res[0].get_number_of_dihedrals(),3)
-
-        # info for GLY
-        self.assertEqual(res[1].get_number_of_bonds(),5)
-        self.assertEqual(res[1].get_number_of_angles(),4)
-        self.assertEqual(res[1].get_number_of_impropers(),1)
-        self.assertEqual(res[1].get_number_of_dihedrals(),2)
-
     def test_score(self):
         """Test CHARMMStereochemistryRestraint::evaluate()"""
-        r, m, pdb, topology = self.setup_restraint()
+        r, m, pdb = self.setup_restraint()
         score = pdb.get_model().evaluate(False)
         self.assertAlmostEqual(score, 2.90562, delta=0.02)
 
     def test_pair_filter(self):
         """Test CHARMMStereochemistryRestraint pair filter"""
-        r, m, pdb, topology = self.setup_restraint()
+        r, m, pdb = self.setup_restraint()
         pf = r.get_pair_filter()
         atoms = self.get_all_atoms(pdb)
         # Bonds (1-2 pairs)
@@ -74,7 +55,7 @@ class Tests(IMP.test.TestCase):
 
     def test_get_inputs(self):
         """Test CHARMMStereochemistryRestraint get_inputs()"""
-        r, m, pdb, topology = self.setup_restraint()
+        r, m, pdb = self.setup_restraint()
         ps = r.get_inputs()
         self.assertEqual(len(ps), 190)
 
