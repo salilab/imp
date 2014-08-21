@@ -15,7 +15,6 @@ class Tests(IMP.test.TestCase):
         topology = ff.create_topology(pdb)
         topology.apply_default_patches()
         topology.setup_hierarchy(pdb)
-        IMP.atom.write_pdb(pdb,'fixed.pdb')
         r = IMP.atom.CHARMMStereochemistryRestraint(pdb, topology)
         m.add_restraint(r)
         return r, m, pdb, topology
