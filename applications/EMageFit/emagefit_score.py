@@ -36,7 +36,8 @@ def score_model(complete_fn_model,
     # TYPICAL OPTIMIZER PARAMETERS
     params = em2d.Em2DRestraintParameters(pixel_size, resolution)
     params.coarse_registration_method = em2d.ALIGN2D_PREPROCESSING
-    params.optimization_steps = 4
+    params.optimization_steps = 100
+    #params.optimization_steps = 4      # commented by SJ, to improve the optimization process
     params.simplex_initial_length = 0.1
     params.simplex_minimum_size = 0.02
     params.save_match_images = True
@@ -68,7 +69,8 @@ def score_model(complete_fn_model,
 
     finder.set_model_particles(particles)
     finder.set_projections(projections)
-    optimized_solutions = 2
+    optimized_solutions = 20
+    #optimized_solutions = 2    # commented by SJ, to improve the optimization process
     finder.set_fast_mode(optimized_solutions)
     # read the images in blocks to avoid memory problems
     all_registration_results = []
