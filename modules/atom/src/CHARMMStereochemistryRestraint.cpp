@@ -31,7 +31,7 @@ CHARMMStereochemistryRestraint::CHARMMStereochemistryRestraint(
 }
 
 CHARMMStereochemistryRestraint::CHARMMStereochemistryRestraint(
-    Hierarchy h, atom::CHARMMTopology *topology, atom::Selection sel)
+    Hierarchy h, CHARMMTopology *topology, Selection sel)
   : kernel::Restraint(h->get_model(),
                       "CHARMMStereochemistryRestraint%1%") {
   init(h,topology);
@@ -43,7 +43,7 @@ CHARMMStereochemistryRestraint::CHARMMStereochemistryRestraint(
 
   for (kernel::Particles::const_iterator tb = bonds_.begin(); tb != bonds_.end();
        ++tb) {
-    atom::Bond b(*tb);
+    Bond b(*tb);
     if (pset.count(b.get_bonded(0).get_particle_index()) &&
         pset.count(b.get_bonded(1).get_particle_index()))
       tbonds.push_back(*tb);
@@ -51,7 +51,7 @@ CHARMMStereochemistryRestraint::CHARMMStereochemistryRestraint(
 
   for (kernel::Particles::const_iterator ta = angles_.begin();
        ta != angles_.end(); ++ta) {
-    atom::Angle a(*ta);
+    Angle a(*ta);
     if (pset.count(a.get_particle(0)->get_index()) &&
         pset.count(a.get_particle(1)->get_index()) &&
         pset.count(a.get_particle(2)->get_index()))
@@ -60,7 +60,7 @@ CHARMMStereochemistryRestraint::CHARMMStereochemistryRestraint(
 
   for (kernel::Particles::const_iterator td = dihedrals_.begin();
        td != dihedrals_.end(); ++td) {
-    atom::Dihedral d(*td);
+    Dihedral d(*td);
     if (pset.count(d.get_particle(0)->get_index()) &&
         pset.count(d.get_particle(1)->get_index()) &&
         pset.count(d.get_particle(2)->get_index()) &&
@@ -70,7 +70,7 @@ CHARMMStereochemistryRestraint::CHARMMStereochemistryRestraint(
 
   for (kernel::Particles::const_iterator ti = impropers_.begin();
        ti != impropers_.end(); ++ti) {
-    atom::Dihedral i(*ti);
+    Dihedral i(*ti);
     if (pset.count(i.get_particle(0)->get_index()) &&
         pset.count(i.get_particle(1)->get_index()) &&
         pset.count(i.get_particle(2)->get_index()) &&

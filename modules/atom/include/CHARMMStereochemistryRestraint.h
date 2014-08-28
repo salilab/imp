@@ -15,6 +15,8 @@
 #include "StereochemistryPairFilter.h"
 #include "Hierarchy.h"
 #include "charmm_segment_topology.h"
+#include "angle_decorators.h"
+#include "bond_decorators.h"
 #include "BondSingletonScore.h"
 #include "AngleSingletonScore.h"
 #include "DihedralSingletonScore.h"
