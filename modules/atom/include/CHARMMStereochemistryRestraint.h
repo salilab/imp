@@ -19,6 +19,7 @@
 #include "AngleSingletonScore.h"
 #include "DihedralSingletonScore.h"
 #include "ImproperSingletonScore.h"
+#include "Selection.h"
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -40,9 +41,16 @@ class IMPATOMEXPORT CHARMMStereochemistryRestraint : public kernel::Restraint {
   IMP::base::PointerMember<AngleSingletonScore> angle_score_;
   IMP::base::PointerMember<DihedralSingletonScore> dihedral_score_;
   IMP::base::PointerMember<ImproperSingletonScore> improper_score_;
-
+  void init(Hierarchy h, CHARMMTopology *topology);
  public:
   CHARMMStereochemistryRestraint(Hierarchy h, CHARMMTopology *topology);
+
+  //! Initialize the restraint and limit to selection
+  /** Will only create restraints where every particle in the restraint
+      is selected.
+  */
+  CHARMMStereochemistryRestraint(Hierarchy h, CHARMMTopology *topology,
+                                 Selection sel);
 
   //! Get a PairFilter that excludes all stereochemical pairs.
   /** \return a StereochemistryPairFilter that excludes all 1-2 (bond),

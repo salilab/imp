@@ -8,12 +8,11 @@
 
 #include <IMP/atom/CHARMMStereochemistryRestraint.h>
 #include <IMP/core/Harmonic.h>
-
+#include <set>
 IMPATOM_BEGIN_NAMESPACE
 
-CHARMMStereochemistryRestraint::CHARMMStereochemistryRestraint(
-    Hierarchy h, CHARMMTopology *topology)
-    : kernel::Restraint(h->get_model(), "CHARMMStereochemistryRestraint%1%") {
+
+void CHARMMStereochemistryRestraint::init(Hierarchy h, CHARMMTopology *topology){
   bonds_ = topology->add_bonds(h);
   angles_ = topology->get_parameters()->create_angles(bonds_);
   dihedrals_ = topology->get_parameters()->create_dihedrals(bonds_);
@@ -24,6 +23,68 @@ CHARMMStereochemistryRestraint::CHARMMStereochemistryRestraint(
   dihedral_score_ = new DihedralSingletonScore();
   improper_score_ = new ImproperSingletonScore(new core::Harmonic(0., 1.));
 }
+
+CHARMMStereochemistryRestraint::CHARMMStereochemistryRestraint(
+    Hierarchy h, CHARMMTopology *topology)
+    : kernel::Restraint(h->get_model(), "CHARMMStereochemistryRestraint%1%") {
+  init(h,topology);
+}
+
+CHARMMStereochemistryRestraint::CHARMMStereochemistryRestraint(
+    Hierarchy h, atom::CHARMMTopology *topology, atom::Selection sel)
+  : kernel::Restraint(h->get_model(),
+                      "CHARMMStereochemistryRestraint%1%") {
+  init(h,topology);
+
+  kernel::Particles tbonds, tangles, tdihedrals, timpropers;
+  kernel::ParticleIndexes ps = sel.get_selected_particle_indexes();
+  std::set<kernel::ParticleIndex> pset;
+  std::copy(ps.begin(),ps.end(),std::inserter(pset,pset.begin()));
+
+  for (kernel::Particles::const_iterator tb = bonds_.begin(); tb != bonds_.end();
+       ++tb) {
+    atom::Bond b(*tb);
+    if (pset.count(b.get_bonded(0).get_particle_index()) &&
+        pset.count(b.get_bonded(1).get_particle_index()))
+      tbonds.push_back(*tb);
+  }
+
+  for (kernel::Particles::const_iterator ta = angles_.begin();
+       ta != angles_.end(); ++ta) {
+    atom::Angle a(*ta);
+    if (pset.count(a.get_particle(0)->get_index()) &&
+        pset.count(a.get_particle(1)->get_index()) &&
+        pset.count(a.get_particle(2)->get_index()))
+      tangles.push_back(*ta);
+  }
+
+  for (kernel::Particles::const_iterator td = dihedrals_.begin();
+       td != dihedrals_.end(); ++td) {
+    atom::Dihedral d(*td);
+    if (pset.count(d.get_particle(0)->get_index()) &&
+        pset.count(d.get_particle(1)->get_index()) &&
+        pset.count(d.get_particle(2)->get_index()) &&
+        pset.count(d.get_particle(3)->get_index()))
+      tdihedrals.push_back(*td);
+  }
+
+  for (kernel::Particles::const_iterator ti = impropers_.begin();
+       ti != impropers_.end(); ++ti) {
+    atom::Dihedral i(*ti);
+    if (pset.count(i.get_particle(0)->get_index()) &&
+        pset.count(i.get_particle(1)->get_index()) &&
+        pset.count(i.get_particle(2)->get_index()) &&
+        pset.count(i.get_particle(3)->get_index()))
+      timpropers.push_back(*ti);
+  }
+
+  bonds_ = tbonds;
+  angles_ = tangles;
+  dihedrals_ = tdihedrals;
+  impropers_ = timpropers;
+}
+
+
 
 double CHARMMStereochemistryRestraint::unprotected_evaluate(
     DerivativeAccumulator *accum) const {
