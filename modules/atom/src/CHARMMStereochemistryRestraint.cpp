@@ -22,7 +22,13 @@ void CHARMMStereochemistryRestraint::init(Hierarchy h, CHARMMTopology *topology)
   angle_score_ = new AngleSingletonScore(new core::Harmonic(0., 1.));
   dihedral_score_ = new DihedralSingletonScore();
   improper_score_ = new ImproperSingletonScore(new core::Harmonic(0., 1.));
+
+  full_bonds_ = bonds_;
+  full_angles_ = angles_;
+  full_dihedrals_ = dihedrals_;
+  full_impropers_ = impropers_;
 }
+
 
 CHARMMStereochemistryRestraint::CHARMMStereochemistryRestraint(
     Hierarchy h, CHARMMTopology *topology)
@@ -31,16 +37,14 @@ CHARMMStereochemistryRestraint::CHARMMStereochemistryRestraint(
 }
 
 CHARMMStereochemistryRestraint::CHARMMStereochemistryRestraint(
-    Hierarchy h, CHARMMTopology *topology, Selection sel)
+    Hierarchy h, CHARMMTopology *topology, ParticlesTemp ps)
   : kernel::Restraint(h->get_model(),
                       "CHARMMStereochemistryRestraint%1%") {
-  init(h,topology);
+    init(h,topology);
 
   kernel::Particles tbonds, tangles, tdihedrals, timpropers;
-  kernel::ParticleIndexes ps = sel.get_selected_particle_indexes();
   std::set<kernel::ParticleIndex> pset;
-  std::copy(ps.begin(),ps.end(),std::inserter(pset,pset.begin()));
-
+  for (size_t np=0;np<ps.size();np++) pset.insert(ps[np]->get_index());
   for (kernel::Particles::const_iterator tb = bonds_.begin(); tb != bonds_.end();
        ++tb) {
     Bond b(*tb);
@@ -77,14 +81,11 @@ CHARMMStereochemistryRestraint::CHARMMStereochemistryRestraint(
         pset.count(i.get_particle(3)->get_index()))
       timpropers.push_back(*ti);
   }
-
   bonds_ = tbonds;
   angles_ = tangles;
   dihedrals_ = tdihedrals;
   impropers_ = timpropers;
 }
-
-
 
 double CHARMMStereochemistryRestraint::unprotected_evaluate(
     DerivativeAccumulator *accum) const {
@@ -106,7 +107,6 @@ double CHARMMStereochemistryRestraint::unprotected_evaluate(
        i != impropers_.end(); ++i) {
     score += improper_score_->evaluate(*i, accum);
   }
-
   return score;
 }
 
@@ -146,5 +146,14 @@ StereochemistryPairFilter *CHARMMStereochemistryRestraint::get_pair_filter() {
   pf->set_dihedrals(dihedrals_);
   return pf.release();
 }
+
+StereochemistryPairFilter *CHARMMStereochemistryRestraint::get_full_pair_filter() {
+  IMP_NEW(StereochemistryPairFilter, pf, ());
+  pf->set_bonds(full_bonds_);
+  pf->set_angles(full_angles_);
+  pf->set_dihedrals(full_dihedrals_);
+  return pf.release();
+}
+
 
 IMPATOM_END_NAMESPACE

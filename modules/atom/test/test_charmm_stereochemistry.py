@@ -73,7 +73,8 @@ class SelectionTests(IMP.test.TestCase):
         topology.apply_default_patches()
         topology.setup_hierarchy(pdb)
         sel = IMP.atom.Selection(pdb,residue_index=2)
-        r = IMP.atom.CHARMMStereochemistryRestraint(pdb, topology,sel)
+        r = IMP.atom.CHARMMStereochemistryRestraint(pdb, topology,
+                                                    sel.get_selected_particles())
         m.add_restraint(r)
         return r, m, pdb
 

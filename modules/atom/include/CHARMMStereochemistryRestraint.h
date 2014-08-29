@@ -39,26 +39,36 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class IMPATOMEXPORT CHARMMStereochemistryRestraint : public kernel::Restraint {
   kernel::Particles bonds_, angles_, dihedrals_, impropers_;
+  kernel::Particles full_bonds_, full_angles_, full_dihedrals_, full_impropers_;
   IMP::base::PointerMember<BondSingletonScore> bond_score_;
   IMP::base::PointerMember<AngleSingletonScore> angle_score_;
   IMP::base::PointerMember<DihedralSingletonScore> dihedral_score_;
   IMP::base::PointerMember<ImproperSingletonScore> improper_score_;
+#ifndef IMP_DOXYGEN
   void init(Hierarchy h, CHARMMTopology *topology);
+  void limit_to_particle_indexes(kernel::ParticleIndexes idxs);
+#endif
  public:
   CHARMMStereochemistryRestraint(Hierarchy h, CHARMMTopology *topology);
 
-  //! Initialize the restraint and limit to selection
+  //! Initialize the restraint and limit to a set of particles
   /** Will only create restraints where every particle in the restraint
-      is selected.
+      is in the provided list.
   */
   CHARMMStereochemistryRestraint(Hierarchy h, CHARMMTopology *topology,
-                                 Selection sel);
+                                 ParticlesTemp ps);
 
   //! Get a PairFilter that excludes all stereochemical pairs.
   /** \return a StereochemistryPairFilter that excludes all 1-2 (bond),
               1-3 (angle) and 1-4 (dihedral) pairs.
    */
   StereochemistryPairFilter *get_pair_filter();
+
+  //! Get a PairFilter including everything from original topology
+  /** \return a StereochemistryPairFilter that excludes all 1-2 (bond),
+              1-3 (angle) and 1-4 (dihedral) pairs before limiting to selection.
+   */
+  StereochemistryPairFilter *get_full_pair_filter();
 
   virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
