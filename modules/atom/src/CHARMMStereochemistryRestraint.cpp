@@ -37,14 +37,15 @@ CHARMMStereochemistryRestraint::CHARMMStereochemistryRestraint(
 }
 
 CHARMMStereochemistryRestraint::CHARMMStereochemistryRestraint(
-    Hierarchy h, CHARMMTopology *topology, ParticlesTemp ps)
+    Hierarchy h, CHARMMTopology *topology, ParticlesTemp limit_to_these_particles)
   : kernel::Restraint(h->get_model(),
                       "CHARMMStereochemistryRestraint%1%") {
     init(h,topology);
 
   kernel::Particles tbonds, tangles, tdihedrals, timpropers;
   std::set<kernel::ParticleIndex> pset;
-  for (size_t np=0;np<ps.size();np++) pset.insert(ps[np]->get_index());
+  for (size_t np=0;np<limit_to_these_particles.size();np++)
+    pset.insert(limit_to_these_particles[np]->get_index());
   for (kernel::Particles::const_iterator tb = bonds_.begin(); tb != bonds_.end();
        ++tb) {
     Bond b(*tb);

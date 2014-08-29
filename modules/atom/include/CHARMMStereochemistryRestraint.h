@@ -46,7 +46,6 @@ class IMPATOMEXPORT CHARMMStereochemistryRestraint : public kernel::Restraint {
   IMP::base::PointerMember<ImproperSingletonScore> improper_score_;
 #ifndef IMP_DOXYGEN
   void init(Hierarchy h, CHARMMTopology *topology);
-  void limit_to_particle_indexes(kernel::ParticleIndexes idxs);
 #endif
  public:
   CHARMMStereochemistryRestraint(Hierarchy h, CHARMMTopology *topology);
@@ -56,7 +55,7 @@ class IMPATOMEXPORT CHARMMStereochemistryRestraint : public kernel::Restraint {
       is in the provided list.
   */
   CHARMMStereochemistryRestraint(Hierarchy h, CHARMMTopology *topology,
-                                 ParticlesTemp ps);
+                                 ParticlesTemp limit_to_these_particles);
 
   //! Get a PairFilter that excludes all stereochemical pairs.
   /** \return a StereochemistryPairFilter that excludes all 1-2 (bond),
