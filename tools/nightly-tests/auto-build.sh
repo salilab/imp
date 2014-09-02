@@ -82,6 +82,8 @@ if [ ${BRANCH} = "develop" ]; then
   IMPVERSION="${SORTDATE}.develop.${shortrev}"
 else
   IMPVERSION="`cat imp/VERSION | sed -e 's/[ /-]/./g'`"
+  # For stable releases, assign submodules the same version as IMP itself
+  rm -f imp/modules/*/VERSION
 fi
 IMPSRCTGZ=${IMPINSTALL}/build/sources/imp-${IMPVERSION}.tar.gz
 rm -rf ${IMPINSTALL}
