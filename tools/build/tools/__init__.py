@@ -514,11 +514,14 @@ def get_dependent_dependencies(modules, dependencies, extra_data_path,
 
 
 def get_module_version(module, source_dir):
-    in_module = os.path.join(source_dir, "modules", module, "VERSION")
+    in_module_source = os.path.join(source_dir, "modules", module, "VERSION")
+    in_module_build = os.path.join("modules", module, "VERSION")
     in_source = os.path.join(source_dir, "VERSION")
     in_build = "VERSION"
-    if os.path.exists(in_module):
-        return open(in_module, "r").read().strip()
+    if os.path.exists(in_module_source):
+        return open(in_module_source, "r").read().strip()
+    elif os.path.exists(in_module_build):
+        return open(in_module_build, "r").read().strip()
     elif os.path.exists(in_source):
         return open(in_source, "r").read().strip()
     else:
