@@ -72,6 +72,8 @@ class SelectionTests(IMP.test.TestCase):
         topology = ff.create_topology(pdb)
         topology.apply_default_patches()
         topology.setup_hierarchy(pdb)
+        ff.add_radii(pdb)
+        ff.add_well_depths(pdb)
         sel = IMP.atom.Selection(pdb,residue_index=2)
         r = IMP.atom.CHARMMStereochemistryRestraint(pdb, topology,
                                                     sel.get_selected_particles())
