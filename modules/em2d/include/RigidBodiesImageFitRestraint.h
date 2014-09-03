@@ -21,8 +21,8 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-// Comparison function for the keys of the maping between quaternion of
-// rotation and their corresponding chached mask
+// Comparison function for the keys of the mapping between quaternion of
+// rotation and their corresponding cached mask
 class IntsOrder {
  public:
   // The vector with lower values goes first
@@ -72,7 +72,7 @@ class IMPEM2DEXPORT RigidBodiesImageFitRestraint : public kernel::Restraint {
   void set_projecting_parameters(const ProjectingParameters &p);
 
   /*! Set the possible rotations that a rigid body can have. A projection of
-      the rigid body in all posible orientations is stored
+      the rigid body in all possible orientations is stored
   */
   void set_orientations(const core::RigidBody &rb,
                         const algebra::Rotation3Ds &rots);

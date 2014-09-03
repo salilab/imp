@@ -1,6 +1,6 @@
 /**
  *  \file IMP/domino/subset_graphs.h
- *  \brief A beyesian infererence-based sampler.
+ *  \brief A Bayesian inference-based sampler.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -43,7 +43,7 @@ IMPDOMINOEXPORT Subsets get_subsets(const SubsetGraph &g);
     - for any two vertices whose subsets both contain a vertex, that vertex
     is contained in all subsets along the path connecting those two vertices.
 
-    \note the junction tree is not nececessarily deterministic (you can
+    \note the junction tree is not necessarily deterministic (you can
     get different answers if you run it different times with the same inputs).
 */
 IMPDOMINOEXPORT SubsetGraph get_junction_tree(const InteractionGraph &ig);
@@ -129,7 +129,7 @@ IMPDOMINOEXPORT MergeTree get_merge_tree(ScoringFunctionAdaptor input,
 
     Compute the merge tree from a junction tree.
 
-    \note the merge tree is not nececessarily deterministic (you can
+    \note the merge tree is not necessarily deterministic (you can
     get different answers if you run it different times with the same inputs).
  */
 IMPDOMINOEXPORT MergeTree get_merge_tree(const SubsetGraph &junction_tree);
@@ -139,7 +139,7 @@ IMPDOMINOEXPORT MergeTree get_merge_tree(const SubsetGraph &junction_tree);
     Compute the merge tree from a junction tree, attempting to keep it fairly
     balanced.
 
-    \note the merge tree is not nececessarily deterministic (you can
+    \note the merge tree is not necessarily deterministic (you can
     get different answers if you run it different times with the same inputs).
  */
 IMPDOMINOEXPORT MergeTree

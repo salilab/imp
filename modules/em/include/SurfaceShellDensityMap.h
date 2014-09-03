@@ -21,7 +21,7 @@ IMPEM_BEGIN_NAMESPACE
 #define IMP_DEFAULT_NUM_SHELLS 5
 #define IMP_SIG_CUTOFF 3
 
-//! The class repersents a molecule as shells of distance from the surface
+//! The class represents a molecule as shells of distance from the surface
 /**
  */
 class IMPEMEXPORT SurfaceShellDensityMap : public SampledDensityMap {
@@ -55,7 +55,7 @@ class IMPEMEXPORT SurfaceShellDensityMap : public SampledDensityMap {
   Voxels on the surface between the model and the background
   will be set of 1.
   The interior voxels will be assign value according to their
-  corresponding shell ( the value increases as the voxel is farthrer away
+  corresponding shell ( the value increases as the voxel is further away
   from the surface).
   */
   void resample();

@@ -18,7 +18,7 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 //! Decorator for particles representing the parameters
-//! Rotation and tranlation. In this cases, the translation is the translation
+//! Rotation and translation. In this cases, the translation is the translation
 //! to apply to the model in 3D, in order to perform the registration
 class IMPEM2DEXPORT ProjectionParameters : public Decorator {
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi);

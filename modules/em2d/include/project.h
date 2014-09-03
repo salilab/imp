@@ -72,7 +72,7 @@ class IMPEM2DEXPORT ProjectingOptions : public ProjectingParameters {
 #ifndef SWIG
   base::Pointer<ImageReaderWriter> srw;  // Writer used to save the images
 #endif
-  bool save_images;  // Save images after projeting
+  bool save_images;  // Save images after projecting
   bool normalize;    // Normalize the projection after generating it
   bool clear_matrix_before_projecting;  // Set the matrix to zeros
 

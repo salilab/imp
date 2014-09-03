@@ -172,7 +172,7 @@ IMPEM2DEXPORT RegistrationResults
     get_random_registration_results(unsigned int n, double maximum_shift = 5.0);
 
 //! Provides a set of registration results with directions of projection
-//!      evenly distributed in the semisphere
+//!      evenly distributed in the hemisphere
 /*!
   \param[in] n_projections the number of requested projections
 */

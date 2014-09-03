@@ -44,7 +44,7 @@ inline Strings read_selection_file(String fn) {
 }
 
 //! generates consecutive filenames: basic_name-i.extension
-//! Adds zeros at the front of the number when neccessary
+//! Adds zeros at the front of the number when necessary
 inline Strings create_filenames(unsigned long number, String basic_name,
                                 String extension) {
   // Number of digits to use

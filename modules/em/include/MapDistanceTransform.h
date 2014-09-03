@@ -25,11 +25,11 @@ IMPEM_BEGIN_NAMESPACE
 class IMPEMEXPORT MapDistanceTransform : public IMP::em::DensityMap {
  public:
   /** init the distance transform
-      \param [in] map - input density map
-      \param [in] density_threshold - a threshold that detemines
-                                      the envelope of the map
-      \param [in] max_distance - how far from the envelope to compute
-                                 the transform
+      \param[in] map input density map
+      \param[in] density_threshold a threshold that determines
+                                   the envelope of the map
+      \param[in] max_distance how far from the envelope to compute
+                              the transform
    */
   MapDistanceTransform(IMP::em::DensityMap* map, float density_threshold,
                        float max_distance);

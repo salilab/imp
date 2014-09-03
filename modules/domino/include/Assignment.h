@@ -1,6 +1,6 @@
 /**
  *  \file IMP/domino/Assignment.h
- *  \brief A beyesian infererence-based sampler.
+ *  \brief A Bayesian inference-based sampler.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *

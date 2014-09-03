@@ -52,7 +52,7 @@ class IMPEMEXPORT SpiderMapReaderWriter : public MapReaderWriter {
    *  \param[in] filename file to read
    *  \param[in] skip_type_check if true, the check for type of image is skipped
    *  \param[in] force_reversed if true, the reverse mode is enforced
-   * for reading and writting
+   * for reading and writing
    *  \param[in] skip_extra_checkings if true, the most stringent
    * tests for consistency of images are skipped when reading
    */

@@ -1,6 +1,6 @@
 /**
  *  \file IMP/domino/DiscreteSampler.h
- *  \brief A beyesian infererence-based sampler.
+ *  \brief A Bayesian inference-based sampler.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -70,7 +70,7 @@ class IMPDOMINOEXPORT DiscreteSampler : public Sampler {
       or equivalently, by accessing the table itself
       using get_particle_states_table(). This method
       is provided for users who want to use the default values
-      and want a simple inferface.*/
+      and want a simple interface.*/
   void set_particle_states(kernel::Particle *p, ParticleStates *se) {
     pst_->set_particle_states(p, se);
   }

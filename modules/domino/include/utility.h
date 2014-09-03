@@ -38,7 +38,7 @@ class SubsetFilterTable;
 
 /** \name Debug tools
 
-    We provide a number of different functions for helpering
+    We provide a number of different functions for helping
     optimize and understand domino-based sampling. These functions
     are expose part of the implementation and are liable to change
     without notice.

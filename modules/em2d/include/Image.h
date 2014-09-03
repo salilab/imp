@@ -82,7 +82,7 @@ class IMPEM2DEXPORT Image : public IMP::base::Object {
   /**
    * Recover the value of a pixel
    * @param i row
-   * @param j colum
+   * @param j column
    * @return the value
    */
   double operator()(int i, int j) const { return data_.at<double>(i, j); }
@@ -109,7 +109,7 @@ class IMPEM2DEXPORT Image : public IMP::base::Object {
    */
   void set_size(Image *img);
 
-  //! Adjusts the information of the imager header taking into account the
+  //! Adjusts the information of the image header taking into account the
   //! dimensions of the data and setting the time, date, type, etc ...
   /**
    * Adjust the information of the image header taking into account the
@@ -167,7 +167,7 @@ class IMPEM2DEXPORT Image : public IMP::base::Object {
 
   /**
    * Recover the minimum and maximum values in the image
-   * @return A range. The first value is the minimum. The scond one is the
+   * @return A range. The first value is the minimum. The second one is the
    * maximum.
    */
   FloatRange get_min_and_max_values() const;
@@ -271,7 +271,7 @@ inline Floats get_histogram(Image *img, int bins) {
  * Apply the diffusion filter
  * @param input Input image
  * @param filtered The image containing the result
- * @param beta The beta parameter of the difussion filter
+ * @param beta The beta parameter of the diffusion filter
  * @param pixelsize The pixel size of the image
  * @param time_steps The number of time steps used for the diffusion
  */

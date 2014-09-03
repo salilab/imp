@@ -34,7 +34,7 @@ public:
   /**
     \param[in] particles The particles participating in the score,
     need to have XYZ, radius and mass
-    \param[in] image_file_names 2D class averages filnames in PGM text format
+    \param[in] image_file_names 2D class averages filenames in PGM text format
     \param[in] pixel_size Pixel size in Angstrom
     \param[in] resolution Estimated resolution of the images
     \param[in] projection_number Number of projections to generate and fit to
@@ -53,7 +53,7 @@ public:
 
   void set_projection_number(unsigned int n) { projection_number_ = n; }
 
-  // write best projections fromm last calculation, if evaluate is true,
+  // write best projections from last calculation, if evaluate is true,
   // best projections will be recalculated
   void write_best_projections(std::string file_name, bool evaluate=false);
 

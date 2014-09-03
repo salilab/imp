@@ -21,7 +21,7 @@
 IMPEM_BEGIN_NAMESPACE
 
 /** \todo change so that the att will not be encoded but loaded from
-    a conf file (Keren) */
+    a configuration file (Keren) */
 class IMPEMEXPORT DensityHeader {
 
  public:
@@ -185,7 +185,7 @@ class IMPEMEXPORT DensityHeader {
     zorigin_ = z;
     top_calculated_ = false;
   }
-  //! True if the top coodinates (bounding-box) are calculated
+  //! True if the top coordinates (bounding-box) are calculated
   inline bool is_top_calculated() const { return top_calculated_; }
   float Objectpixelsize_;  // this is the actual pixelsize
 

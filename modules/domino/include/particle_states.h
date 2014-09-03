@@ -1,6 +1,6 @@
 /**
  *  \file IMP/domino/particle_states.h
- *  \brief A beyesian infererence-based sampler.
+ *  \brief A Bayesian inference-based sampler.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -30,9 +30,9 @@ IMPDOMINO_BEGIN_NAMESPACE
 /** Handle the states for a particular particle (or "class" of
     particles. For example a state enumerator class could take
     a bounding box and a number,n, and generate n points in the
-    bounding box. Then the get_number function woudld return
+    bounding box. Then the get_number function would return
     n and update_to_state would modify the particle to have the
-    coordiantes for state i.
+    coordinates for state i.
  */
 class IMPDOMINOEXPORT ParticleStates : public IMP::base::Object {
  public:
@@ -284,7 +284,7 @@ inline void PermutationStates::load_particle_state(unsigned int i,
 #endif
 
 /** Accept either particles, decorators or ParticleStatesTable
-    as an imput to define a list of particle.*/
+    as an input to define a list of particle.*/
 class ParticlesAdaptor :
 #ifndef SWIG
     public kernel::ParticlesTemp,

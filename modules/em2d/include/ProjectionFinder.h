@@ -192,7 +192,7 @@ class IMPEM2DEXPORT ProjectionFinder : public IMP::base::Object {
       fast_optimization_mode_;
 
   unsigned int number_of_optimized_projections_;
-  // FFT of subjects (storing the FFT of projections is not neccessary
+  // FFT of subjects (storing the FFT of projections is not necessary
   std::vector<cv::Mat> SUBJECTS_;
   // FFT of the autocorrelation resampled images
   std::vector<cv::Mat> SUBJECTS_POLAR_AUTOC_;

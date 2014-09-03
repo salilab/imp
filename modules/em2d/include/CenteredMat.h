@@ -22,7 +22,7 @@ class CenteredMat {
 
  public:
   /**
-   * Creates and CenteredMat for the matrx
+   * Creates and CenteredMat for the matrix
    * @param m The matrix
    * @note The center pixel is not provided. It is assumed
    * to be the center of the matrix
@@ -39,7 +39,7 @@ class CenteredMat {
   }
 
   /**
-   * Creates a CenteredMat for the matrx
+   * Creates a CenteredMat for the matrix
    * @param m The matrix
    * @param center_row - The row for the point used as center of CenteredMat
    * @param center_col - The column for the point used as center of CenteredMat

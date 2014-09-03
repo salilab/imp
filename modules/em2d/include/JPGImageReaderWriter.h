@@ -74,7 +74,7 @@ class JPGImageReaderWriter : public ImageReaderWriter {
                 << std::endl);
     // check extension
     String ext = boost::filesystem::extension(filename);
-    IMP_LOG_VERBOSE("JPGImageReaderWriter writting to " << filename
+    IMP_LOG_VERBOSE("JPGImageReaderWriter writing to " << filename
                                                         << std::endl);
     if (ext != ".jpg" && ext != ".jpeg") {
       IMP_THROW(

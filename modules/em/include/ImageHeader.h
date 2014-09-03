@@ -21,7 +21,7 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-//! Class to deal with the header of Electron Microsocopy images in IMP.
+//! Class to deal with the header of Electron Microscopy images in IMP.
 /*!
   \note Compatible with SPIDER format
 */

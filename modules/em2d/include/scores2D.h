@@ -38,7 +38,7 @@ IMPEM2DEXPORT double get_average_shift_error(
 IMPEM2DEXPORT double get_cross_correlation_coefficient(const cv::Mat &m1,
                                                        const cv::Mat &m2);
 
-//! Get the gloal score given a set of individual registration results
+//! Get the global score given a set of individual registration results
 //! from images
 /*!
   \note The function checks what time of registration results are given.
@@ -56,7 +56,7 @@ class IMPEM2DEXPORT ScoreFunction : public IMP::base::Object {
  public:
   ScoreFunction() : Object("ScoreFunction%1%") {}
 
-  //! Given an image and a projection, returns the appropiate score
+  //! Given an image and a projection, returns the appropriate score
   double get_score(Image *image, Image *projection) const {
     // trying to use the non-virtual interface (Alexandrescu, 39)
     return get_private_score(image, projection);
@@ -78,7 +78,7 @@ class IMPEM2DEXPORT ScoreFunction : public IMP::base::Object {
 };
 IMP_OBJECTS(ScoreFunction, ScoreFunctions);
 
-//! Score based on Chi^2 = ((pixels_iamge - pixels_projection)/stddev_image)^2
+//! Score based on Chi^2 = ((pixels_image - pixels_projection)/stddev_image)^2
 class IMPEM2DEXPORT ChiSquaredScore : public ScoreFunction {
  public:
   ChiSquaredScore() : ScoreFunction() {}
@@ -91,7 +91,7 @@ class IMPEM2DEXPORT ChiSquaredScore : public ScoreFunction {
 IMP_OBJECTS(ChiSquaredScore, ChiSquaredScores);
 
 //! EM2DScore, based on squared differences
-//!  (pixels_iamge - pixels_projection)**2
+//!  (pixels_image - pixels_projection)**2
 class IMPEM2DEXPORT EM2DScore : public ScoreFunction {
  public:
   EM2DScore() : ScoreFunction() {}

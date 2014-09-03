@@ -1,6 +1,6 @@
 /**
  *  \file IMP/domino/assignment_containers.h
- *  \brief A beyesian infererence-based sampler.
+ *  \brief A Bayesian inference-based sampler.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -42,7 +42,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 */
 class IMPDOMINOEXPORT AssignmentContainer : public IMP::base::Object {
  public:
-  AssignmentContainer(std::string name = "AssignmentsContainer %1%");
+  AssignmentContainer(std::string name = "AssignmentContainer %1%");
   virtual unsigned int get_number_of_assignments() const = 0;
   virtual Assignment get_assignment(unsigned int i) const = 0;
   virtual Assignments get_assignments(IntRange ir) const = 0;
@@ -67,7 +67,7 @@ class IMPDOMINOEXPORT PackedAssignmentContainer : public AssignmentContainer {
 
  public:
   PackedAssignmentContainer(std::string name =
-                                "PackedAssignmentsContainer %1%");
+                                "PackedAssignmentContainer %1%");
   virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;
   virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE;
   virtual void add_assignment(const Assignment &a) IMP_OVERRIDE;
@@ -87,7 +87,7 @@ inline Assignment PackedAssignmentContainer::get_assignment(unsigned int i)
     const {
   IMP_USAGE_CHECK(i < get_number_of_assignments(),
                   "Invalid assignment requested: " << i);
-  IMP_USAGE_CHECK(width_ > 0, "Uninitualized PackedAssignmentContainer.");
+  IMP_USAGE_CHECK(width_ > 0, "Uninitialized PackedAssignmentContainer.");
   return Assignment(d_.begin() + i * width_, d_.begin() + (i + 1) * width_);
 }
 
@@ -116,7 +116,7 @@ class IMPDOMINOEXPORT ListAssignmentContainer : public AssignmentContainer {
   Assignments d_;
 
  public:
-  ListAssignmentContainer(std::string name = "ListAssignmentsContainer %1%");
+  ListAssignmentContainer(std::string name = "ListAssignmentContainer %1%");
   virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;
   virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE;
   virtual void add_assignment(const Assignment &a) IMP_OVERRIDE;
@@ -156,7 +156,7 @@ class IMPDOMINOEXPORT SampleAssignmentContainer : public AssignmentContainer {
  public:
   SampleAssignmentContainer(unsigned int k,
                             std::string name =
-                                "SampleAssignmentsContainer %1%");
+                                "SampleAssignmentContainer %1%");
   virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;
   virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE;
   virtual void add_assignment(const Assignment &a) IMP_OVERRIDE;
@@ -298,7 +298,7 @@ class IMPDOMINOEXPORT ReadAssignmentContainer : public AssignmentContainer {
   IMP_OBJECT_METHODS(ReadAssignmentContainer);
 };
 
-/** Expose a range [begin, end) of an inner assignement container to
+/** Expose a range [begin, end) of an inner assignment container to
     consumers. One cannot add assignments to this container.
  */
 class IMPDOMINOEXPORT RangeViewAssignmentContainer
@@ -316,7 +316,7 @@ class IMPDOMINOEXPORT RangeViewAssignmentContainer
   IMP_OBJECT_METHODS(RangeViewAssignmentContainer);
 };
 
-/** Store a set of k top scoring assignemnts
+/** Store a set of k top scoring assignments
  */
 class IMPDOMINOEXPORT HeapAssignmentContainer : public AssignmentContainer {
   typedef std::pair<Assignment, double> AP;
@@ -332,7 +332,7 @@ class IMPDOMINOEXPORT HeapAssignmentContainer : public AssignmentContainer {
   base::Pointer<RestraintCache> rssf_;  // to score candidate assignments
  public:
   HeapAssignmentContainer(Subset subset, unsigned int k, RestraintCache *rssf,
-                          std::string name = "HeapAssignmentsContainer %1%");
+                          std::string name = "HeapAssignmentContainer %1%");
   virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;
   virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE;
   virtual void add_assignment(const Assignment &a) IMP_OVERRIDE;

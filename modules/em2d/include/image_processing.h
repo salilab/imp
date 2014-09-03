@@ -182,7 +182,7 @@ IMPEM2DEXPORT void apply_diffusion_filter(const cv::Mat &m, cv::Mat &result,
                                           unsigned int time_steps);
 
 //! Partial derivative with respect to time for an image filtered with
-//! difusion-reaction
+//! diffusion-reaction
 /*!
   \param[in] m input matrix
   \param[in] der output derivative matrix
@@ -211,7 +211,7 @@ IMPEM2DEXPORT void do_fill_holes(const cv::Mat &m, cv::Mat &result, double h);
 */
 IMPEM2DEXPORT void get_domes(cv::Mat &m, cv::Mat &result, double h);
 
-//! Combines the fill holes and tresholding operations together with normalize
+//! Combines the fill holes and thresholding operations together with normalize
 /*!
   \param[in] m Input matrix
   \param[out] result the result matrix
@@ -248,7 +248,7 @@ IMPEM2DEXPORT void apply_variance_filter(const cv::Mat &input,
 /*!
     Supported distributions:
    - uniform distribution, giving the range (lower, upper). DEFAULT
-   - gaussian distribution, giving the mean and the standard deviation
+   - Gaussian distribution, giving the mean and the standard deviation
    \code
    add_noise(v1,0, 1);
    // uniform distribution between 0 and 1
@@ -257,7 +257,7 @@ IMPEM2DEXPORT void apply_variance_filter(const cv::Mat &input,
    // the same
 
    v1.add_noise(0, 1, "gaussian");
-  // gaussian distribution with 0 mean and stddev=1
+  // Gaussian distribution with 0 mean and stddev=1
 
    \endcode
 */
@@ -267,7 +267,7 @@ IMPEM2DEXPORT void add_noise(cv::Mat &v, double op1, double op2,
 //! Resamples a matrix to polar coordinates.
 /*!
   \param[in] input matrix to resample
-  \param[out] resampled reresult matrix to contain the resampling
+  \param[out] resampled result matrix to contain the resampling
   \param[in] polar_params Parameters used for the resampling. Extremely useful
             for speeding up the procedure if they are given with the
             transformation maps, that can be built in the
@@ -289,7 +289,7 @@ IMPEM2DEXPORT void my_meanStdDev(const cv::Mat &m, cv::Scalar &mean,
 IMPEM2DEXPORT void get_transformed(const cv::Mat &input, cv::Mat &transformed,
                                    const algebra::Transformation2D &T);
 
-/*! Extends the bordes of an image
+/*! Extends the borders of an image
  \param[in] orig The image to extend
  \param[in] dst The image destination
  \param[in] pix number of pixels to extend the borders
@@ -297,7 +297,7 @@ IMPEM2DEXPORT void get_transformed(const cv::Mat &input, cv::Mat &transformed,
 IMPEM2DEXPORT void do_extend_borders(cv::Mat &orig, cv::Mat &dst,
                                      unsigned int pix);
 
-/*! Applys a threshold to an image
+/*! Applies a threshold to an image
   `threshold` is a value such that all pixels below this value are set to zero
 */
 IMPEM2DEXPORT void apply_threshold(cv::Mat &m, cv::Mat &result,
@@ -306,7 +306,7 @@ IMPEM2DEXPORT void apply_threshold(cv::Mat &m, cv::Mat &result,
 /*! morphologic enhancement of the contrast
   This function detects areas in the images and enhances the contrast between
   them
-  \param[in] m Imput matrix
+  \param[in] m Input matrix
   \param[out] result
   \param[in] kernel morphologic kernel to use
   \param[in] iterations Higher number, more contrast

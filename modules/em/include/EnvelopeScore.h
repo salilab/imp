@@ -25,9 +25,9 @@ class IMPEMEXPORT EnvelopeScore : public IMP::base::Object {
 
   /** check for penetration with respect to the envelope as defined
       by the distance transform
-      \param [in] points - check this set of points for penetration
-      \param [in] penetration_thr - threshold that defines penetration
-      use penetration_thr=0 to require for all points inside the envelope
+      \param[in] points check this set of points for penetration
+      \param[in] penetration_thr threshold that defines penetration.
+      Use penetration_thr=0 to require for all points inside the envelope
       to allow some penetration set the threshold to the -distance of
       the allowed penetration distance. Recommended value is map
       resolution.
@@ -37,7 +37,7 @@ class IMPEMEXPORT EnvelopeScore : public IMP::base::Object {
 
   /** same as above
       \param[in] points
-      \param [in] trans - apply this transformation on points before
+      \param[in] trans apply this transformation on points before
       checking for penetrations
       \param[in] penetration_thr
   */
@@ -53,8 +53,8 @@ class IMPEMEXPORT EnvelopeScore : public IMP::base::Object {
   double score(const std::vector<IMP::algebra::Vector3D>& points) const;
 
   /** same as above
-      \param [in] points
-      \param [in] trans - apply this transformation on points before scoring
+      \param[in] points
+      \param[in] trans apply this transformation on points before scoring
   */
   double score(const std::vector<IMP::algebra::Vector3D>& points,
                const IMP::algebra::Transformation3D& trans) const;

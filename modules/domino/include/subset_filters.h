@@ -1,6 +1,6 @@
 /**
  *  \file IMP/domino/subset_filters.h
- *  \brief A beyesian infererence-based sampler.
+ *  \brief A Bayesian inference-based sampler.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -32,7 +32,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 
 /** An instance of this type is created by the
     SubsetFilterTable::get_subset_filter method(). It's job
-    is to reject some of the Assignments correspinding to the
+    is to reject some of the Assignments corresponding to the
     Subset it was created with. It has one
     method of interest, get_is_ok() which true if the state
     passes the filter.
@@ -324,8 +324,8 @@ class IMPDOMINOEXPORT ProbabilisticSubsetFilterTable
   bool leaves_only_;
 
  public:
-  /** param[in] p Allow states to pass with probability p
-      param[in] leaves_only If true, only filter the leaves of
+  /** \param[in] p Allow states to pass with probability p
+      \param[in] leaves_only If true, only filter the leaves of
       the merge tree.
   */
   ProbabilisticSubsetFilterTable(double p, bool leaves_only = false);
