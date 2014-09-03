@@ -18,7 +18,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 //! Write geometry to a python file for Chimera to read
 /** The writer writes a python file which can handle markers, edges
     and surfaces.  Since these are native chimera objects, they are
-    handled a bit better than vrml ones.
+    handled a bit better than VRML ones.
 
     This format creates one file per frame. So if you want to use frames
     and save them all, make sure there is a "%1%" in the file name string

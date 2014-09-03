@@ -50,7 +50,7 @@ IMP_DISPLAY_GEOMETRY_DECL(SegmentGeometry, SegmentGeometries,
 */
 IMP_DISPLAY_GEOMETRY_DECL(PolygonGeometry, PolygonGeometries,
                           algebra::Vector3Ds);
-/** \brief Display a triangule.
+/** \brief Display a triangle.
 */
 IMP_DISPLAY_GEOMETRY_DECL(TriangleGeometry, TriangleGeometries,
                           algebra::Triangle3D);

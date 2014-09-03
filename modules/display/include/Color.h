@@ -106,14 +106,14 @@ inline std::ostream &operator<<(std::ostream &out, const CommasIO &s) {
   return out;
 }
 
-//! Use this before outputing to delimited vector entries with a space
+//! Use this before outputting to delimited vector entries with a space
 /** std::cout << spaces_io(v);
     produces "1.0 2.0 3.0"
     See Color
  */
 inline SpacesIO spaces_io(const Color &v) { return SpacesIO(v); }
 
-//! Use this before outputing to delimited vector entries with a comma
+//! Use this before outputting to delimited vector entries with a comma
 /** std::cout << commas_io(v);
     produces "1.0, 2.0, 3.0"
     See Color
@@ -169,7 +169,7 @@ IMPDISPLAYEXPORT Color get_jet_color(double f);
  */
 IMPDISPLAYEXPORT Color get_hot_color(double f);
 
-//! Return the color for f from the rgb color map
+//! Return the color for f from the RGB color map
 /** See Color
  */
 IMPDISPLAYEXPORT Color get_rgb_color(double f);

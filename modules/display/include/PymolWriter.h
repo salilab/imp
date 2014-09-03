@@ -18,8 +18,8 @@
 IMPDISPLAY_BEGIN_NAMESPACE
 
 //! Write a CGO file with the geometry
-/** The cgo file format is a simple format for displaying geometry in Pymol.
-    The cgo writer supports points, spheres, cyliners, and segments.
+/** The CGO file format is a simple format for displaying geometry in Pymol.
+    The CGO writer supports points, spheres, cylinders, and segments.
     The file name should end in ".pym".
 
     The geometry is assembled into objects in pymol based on the passed
