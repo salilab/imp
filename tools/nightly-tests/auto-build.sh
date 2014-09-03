@@ -76,7 +76,9 @@ SORTDATE=`date -u "+%Y%m%d"`
 DATE=`date -u +'%Y/%m/%d'`
 IMPINSTALL=${IMPTOP}/${SORTDATE}-${shortrev}
 # Make sure VERSION file is reasonable
-(cd imp && rm -f VERSION && tools/build/make_version.py --source=.)
+export -n GIT_DIR
+(cd imp && rm -f VERSION && tools/build/make_version.py --source=${GIT_TOP}/imp)
+export GIT_DIR
 if [ ${BRANCH} = "develop" ]; then
   # For nightly builds, prepend the date so the packages are upgradeable
   IMPVERSION="${SORTDATE}.develop.${shortrev}"
