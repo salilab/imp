@@ -1,6 +1,6 @@
 /**
  *  \file Fragment.cpp
- *  \brief XXXX.
+ *  \brief A decorator to associate a particle with a part of a protein/DNA/RNA.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *

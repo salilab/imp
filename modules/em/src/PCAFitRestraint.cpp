@@ -1,6 +1,6 @@
 /**
  *  \file PCAFitRestraint.cpp
- *  \brief Calculate match between density and particle pca
+ *  \brief Calculate match between density and particle PCA
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -18,7 +18,7 @@ double get_angle(const algebra::Vector3D &v1, const algebra::Vector3D &v2) {
 
 algebra::PrincipalComponentAnalysis get_pca_from_particles(
     const core::XYZs &ps_xyz) {
-  // find the pca of the protein
+  // find the PCA of the protein
   algebra::Vector3Ds ps_vecs;
   for (core::XYZs::const_iterator it = ps_xyz.begin(); it != ps_xyz.end();
        it++) {
@@ -29,7 +29,7 @@ algebra::PrincipalComponentAnalysis get_pca_from_particles(
 
 algebra::PrincipalComponentAnalysis get_pca_from_density(DensityMap *dmap,
                                                          float threshold) {
-  // find the pca of the density map
+  // find the PCA of the density map
   algebra::Vector3Ds vecs = density2vectors(dmap, threshold);
   return algebra::get_principal_components(vecs);
 }
@@ -67,7 +67,7 @@ IMP_LIST_IMPL(PCAFitRestraint, Particle, particle, Particle *,
 
 double PCAFitRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
     const {
-  Float escore;  //(1) 0  means that the pcas are (not) matching
+  Float escore;  //(1) 0  means that the PCA are (not) matching
   bool calc_deriv = accum ? true : false;
   algebra::PrincipalComponentAnalysis ps_pca =
       get_pca_from_particles(core::XYZs(all_ps_));
@@ -101,7 +101,7 @@ double PCAFitRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   }
   if (algebra::get_distance(ps_pca.get_centroid(), dens_pca_.get_centroid()) >
       max_centroid_diff_) {
-    IMP_LOG_VERBOSE("Pricipal cnetroid distance does not match: "
+    IMP_LOG_VERBOSE("Principal centroid distance does not match: "
                     << algebra::get_distance(ps_pca.get_centroid(),
                                              dens_pca_.get_centroid()) << " "
                     << max_centroid_diff_ << std::endl);

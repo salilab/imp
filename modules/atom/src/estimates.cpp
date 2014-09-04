@@ -155,7 +155,7 @@ double get_diffusion_length(double D, double dtfs) {
     @param D     diffusion coefficient
     @param force force coefficient
     @param dtfs  time step in femtoseconds
-    @param temp  temperature in Kalvin
+    @param temp  temperature in Kelvin
 \*/
 double get_diffusion_length(double D, double force, double dtfs, double temp) {
   unit::Divide<unit::Femtosecond, unit::Femtojoule>::type dtikt =

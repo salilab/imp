@@ -1,4 +1,4 @@
-/** \file utility.cpp Benchmarking utilties
+/** \file utility.cpp Benchmarking utilities
  *
  * Copyright 2007-2014 IMP Inventors. All rights reserved.
  */

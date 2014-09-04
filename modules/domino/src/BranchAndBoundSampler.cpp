@@ -1,5 +1,6 @@
 /**
- *  \file ConjugateGradients.cpp  \brief Simple conjugate gradients optimizer.
+ *  \file BranchAndBoundSampler.cpp
+ *  \brief Sample best solutions using BranchAndBound.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *

@@ -1,6 +1,6 @@
 /**
  *  \file VolumeRestraint.cpp
- *  \brief XXXX.
+ *  \brief A restraint that prevents spheres from inter-penetrating.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *

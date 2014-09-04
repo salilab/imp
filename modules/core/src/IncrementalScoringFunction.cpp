@@ -297,7 +297,7 @@ ModelObjectsTemp IncrementalScoringFunction::do_get_inputs() const {
 }
 
 IncrementalScoringFunction::ScoringFunctionsMap::~ScoringFunctionsMap() {
-  // move it to a temp so a second attempt to destoy it succeeds
+  // move it to a temp so a second attempt to destroy it succeeds
   boost::unordered_map<kernel::ParticleIndex, Data> t;
   std::swap<boost::unordered_map<kernel::ParticleIndex, Data> >(*this, t);
 }

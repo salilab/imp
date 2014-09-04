@@ -1,6 +1,6 @@
 /**
  *  \file IMP/domino/DependencyScoreState.h
- *  \brief A Bayesian inference-based sampler.
+ *  \brief Add a dependency to the dependency graph.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *

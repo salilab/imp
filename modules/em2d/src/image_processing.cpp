@@ -59,7 +59,7 @@ void do_histogram_stretching(cv::Mat &m, int boxes, int offset) {
   double max_val, min_val;
   cv::minMaxLoc(m, &min_val, &max_val);
   double maxmin = max_val - min_val;
-  // Histogram of boxes posible values
+  // Histogram of boxes possible values
   Ints hist(boxes, 0);
   for (cvDoubleMatIterator it = m.begin<double>(); it != m.end<double>();
        ++it) {

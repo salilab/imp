@@ -29,7 +29,7 @@ EnvelopeScore::EnvelopeScore(const MapDistanceTransform* mdt)
       inner_voxels_.push_back(l);
   }
 
-  // init neighbour voxels offsets
+  // init neighbor voxels offsets
   for (int x = -1; x <= 1; x++) {
     for (int y = -1; y <= 1; y++) {
       for (int z = -1; z <= 1; z++) {

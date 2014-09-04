@@ -10,7 +10,7 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 
 namespace {
-//! Return true if the vectors are paralel
+//! Return true if the vectors are parallel
 bool get_are_parallel(const Vector3D &v1, const Vector3D &v2) {
   double dot_p = v1 * v2;
   double det1 = v1.get_magnitude();

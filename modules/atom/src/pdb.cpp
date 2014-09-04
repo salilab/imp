@@ -47,7 +47,7 @@ bool HydrogenPDBSelector::is_hydrogen(std::string pdb_line) const {
   // 1. if the record has element field (columns 76-77),
   // check that it is indeed H. Note that it may be missing
   // in some files.
-  // some programms do not output element, so the ATOM
+  // some programs do not output element, so the ATOM
   // line can be shorter.
   if (elem.length() == 1 && elem[0] == 'H') return true;
   // 2. support elements that starts with H: He, Ho, Hf, Hg

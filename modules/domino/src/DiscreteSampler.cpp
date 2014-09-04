@@ -1,5 +1,6 @@
 /**
- *  \file ConjugateGradients.cpp  \brief Simple conjugate gradients optimizer.
+ *  \file DiscreteSampler.cpp
+ *  \brief A base class for discrete samplers.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *

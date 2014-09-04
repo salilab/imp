@@ -52,7 +52,7 @@ void ProjectionFinder::set_subjects(const em2d::Images &subjects) {
   SUBJECTS_POLAR_AUTOC_.resize(n_subjects);
   subjects_cog_.resize(n_subjects);
   for (unsigned int i = 0; i < n_subjects; ++i) {
-    subjects_[i] = subjects[i];  // doest not deep copy
+    subjects_[i] = subjects[i];  // doesn't not deep copy
     std::ostringstream oss;
     oss << "Image subject " << i;
     subjects_[i]->set_name(oss.str());
@@ -67,7 +67,7 @@ void ProjectionFinder::set_variance_images(const em2d::Images &variances) {
   variances_.resize(variances.size());
   unsigned int n_variances = variances_.size();
   for (unsigned int i = 0; i < n_variances; ++i) {
-    variances_[i] = variances[i];  // doest not deep copy
+    variances_[i] = variances[i];  // doesn't not deep copy
 
     std::ostringstream oss;
     oss << "Variance subject " << i;
@@ -493,9 +493,9 @@ void ProjectionFinder::show(std::ostream &out) const {
       << "Working parameters: " << std::endl
       << "Resolution: " << params_.resolution << std::endl
       << "A/pixel: " << params_.pixel_size << std::endl
-      << "Coarse egistration method: " << params_.coarse_registration_method
+      << "Coarse registration method: " << params_.coarse_registration_method
       << std::endl << "Simplex initial size: " << params_.simplex_initial_length
-      << std::endl << "Simplex minimun size: " << params_.simplex_minimum_size
+      << std::endl << "Simplex minimum size: " << params_.simplex_minimum_size
       << std::endl
       << "Simplex maximum optimization steps: " << params_.optimization_steps
       << std::endl << "Save matching images: " << params_.save_match_images

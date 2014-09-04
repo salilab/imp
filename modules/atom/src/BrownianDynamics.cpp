@@ -64,7 +64,7 @@ bool BrownianDynamics::get_is_simulation_particle(kernel::ParticleIndex pi)
 }
 
 namespace {
-/** get the force dispacement term in the Ermak-Mccammon equation
+/** get the force displacement term in the Ermak-Mccammon equation
     for coordinate i of  particle pi in model m, with time step dt and ikT=1/kT
 */
 inline double get_force_displacement(kernel::Model *m, kernel::ParticleIndex pi,

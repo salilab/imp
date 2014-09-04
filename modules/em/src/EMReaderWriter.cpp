@@ -139,7 +139,7 @@ void EMReaderWriter::read_data(std::ifstream &file, float **data,
       "Requested size: "
           << nvox * sizeof(float));
 
-  // a density of a single voxel can be reprented in 1 to 4 bytes.
+  // a density of a single voxel can be represented in 1 to 4 bytes.
   // header.type provides this information.
   // 1 : byte
   int voxel_data_size;

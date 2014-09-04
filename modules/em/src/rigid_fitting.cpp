@@ -1,6 +1,6 @@
 /**
  *  \file rigid_fitting.cpp
- *  \brief Rigid fitting functionalities
+ *  \brief Rigid fitting functionality
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -296,7 +296,7 @@ FittingSolutions compute_fitting_scores(
     ps_xyz[i].set_coordinates(
         move_ps_to_map_center.get_transformed(ps_xyz[i].get_coordinates()));
   }
-  // now update all of the transformations accordinly
+  // now update all of the transformations accordingly
   algebra::Transformation3Ds trans_for_fit;
   for (int i = 0; i < (int)transformations.size(); i++) {
     trans_for_fit.push_back(transformations[i] *
@@ -418,7 +418,7 @@ Float compute_fitting_score(const kernel::ParticlesTemp &ps, DensityMap *em_map,
   IMP_NEW(em::SampledDensityMap, model_dens_map, (*(union_map->get_header())));
   model_dens_map->set_particles(ps, wei_key);
   model_dens_map->resample();
-  // extend the density map to the new dimentions (use the union map)
+  // extend the density map to the new dimensions (use the union map)
   union_map->reset_data();
   const DensityHeader *uheader = union_map->get_header();
   int onx = em_map->get_header()->get_nx();

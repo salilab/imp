@@ -36,7 +36,7 @@ Ints ClusterSet::get_clusters_below_cutoff(double cutoff) const {
         if (jid2 >= n_elements_) to_deactivate.push_back(jid2);
       }
     }
-    is_active[i] = false;  // deactivate after consdering it
+    is_active[i] = false;  // deactivate after considering it
   }
   return clusters;
 }

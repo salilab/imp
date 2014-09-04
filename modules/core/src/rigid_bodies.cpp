@@ -411,7 +411,7 @@ bool is_rotation_valid(IMP_Eigen::Matrix3d rm) {
 }
 
 void RigidBody::on_change() {
-  // Compeute maximal $l_inf$ sphere distance from reference frame
+  // Compute maximal $l_inf$ sphere distance from reference frame
   double md = 0;
   {
     // point members
@@ -426,7 +426,7 @@ void RigidBody::on_change() {
     }
   }
   {
-    // rigid body memebers
+    // rigid body members
     const kernel::ParticleIndexes &members = get_body_member_particle_indexes();
     for (unsigned int i = 0; i < members.size(); ++i) {
       double cd = (get_coordinates() - XYZ(get_model(), members[i])
@@ -500,7 +500,7 @@ void RigidBody::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
   RigidBody d(p);
   d.set_reference_frame(rf);
   // Include particle in model list of rigid bodies, over which
-  // a container optimizer state normalizez the rotation before score calc.
+  // a container optimizer state normalizes the rotation before score calc.
   kernel::ModelKey mk = get_rb_list_key();
   if (d.get_model()->get_has_data(mk)) {
     // IMP_LOG_TERSE( "Adding particle to list of rigid bodies" << std::endl);
@@ -646,7 +646,7 @@ void RigidBody::add_rigid_body_member(kernel::ParticleIndex pi) {
   internal::add_required_attributes_for_body_member(get_model(), d,
                                                     get_particle_index());
   RigidMember rm(d);
-  // add / set in list of rigid body memebers
+  // add / set in list of rigid body members
   if (get_model()->get_has_attribute(internal::rigid_body_data().body_members_,
                                      get_particle_index())) {
     kernel::ParticleIndexes members = get_model()->get_attribute(
@@ -849,7 +849,7 @@ bool check_rigid_body(kernel::Model *m, kernel::ParticleIndex pi) {
 IMP_CHECK_DECORATOR(RigidBody, check_rigid_body);
 
 // returns reference frame with center of mass of ps and the
-// diagonalized intertia tensor of ps
+// diagonalized inertia tensor of ps
 algebra::ReferenceFrame3D get_initial_reference_frame(
     kernel::Model *m, const kernel::ParticleIndexes &ps) {
   if (ps.size() == 1) {
@@ -878,7 +878,7 @@ algebra::ReferenceFrame3D get_initial_reference_frame(
   IMP_USAGE_CHECK(mass > 0, "Zero mass when computing axis.");
   v /= mass;
   // IMP_LOG_VERBOSE( "Center of mass is " << v << std::endl);
-  // for a sphere 2/5 m r^2 (diagopnal)
+  // for a sphere 2/5 m r^2 (diagonal)
   // parallel axis theorem
   // I'ij= Iij+M(v^2delta_ij-vi*vj)
   // compute I

@@ -1,6 +1,6 @@
 /**
  *  \file FilterGeometry.cpp
- *  \brief XXXX.
+ *  \brief Remove geometry which is not above a plane.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *

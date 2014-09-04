@@ -1,6 +1,6 @@
 /**
  *  \file IMP/display/GeometryProcessor.h
- *  \brief Implement GeometryProcessor
+ *  \brief Provide a standard geometry processing framework.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */

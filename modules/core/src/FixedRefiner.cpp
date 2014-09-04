@@ -1,6 +1,6 @@
 /**
  *  \file FixedRefiner.cpp
- *  \brief XXXX.
+ *  \brief A particle refiner which returns a fixed set of particles.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *

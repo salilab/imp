@@ -1,6 +1,6 @@
 /**
  *  \file Mass.cpp
- *  \brief XXXX.
+ *  \brief A decorator for particles with mass.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *

@@ -1,6 +1,6 @@
 /**
  *  \file GeometryProcessor.cpp
- *  \brief XXXX.
+ *  \brief Provide a standard geometry processing framework.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *

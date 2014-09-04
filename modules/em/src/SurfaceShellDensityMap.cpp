@@ -85,7 +85,7 @@ void SurfaceShellDensityMap::binaries(float scene_val) {
     for (ivoxz = iminz; ivoxz <= imaxz; ivoxz++) {
       znxny = ivoxz * nxny;
       for (ivoxy = iminy; ivoxy <= imaxy; ivoxy++) {
-        // we increment ivox this way to avoid unneceessary multiplication
+        // we increment ivox this way to avoid unnecessary multiplication
         // operations.
         ivox = znxny + ivoxy * header_.get_nx() + iminx;
         for (ivoxx = iminx; ivoxx <= imaxx; ivoxx++) {
@@ -125,8 +125,8 @@ bool SurfaceShellDensityMap::has_background_neighbor(long voxel_ind) const {
 }
 
 void SurfaceShellDensityMap::set_surface_shell(std::vector<long> *shell) {
-  // a voxel is part of the outher shell if it has at least one
-  // background nieghbor
+  // a voxel is part of the outer shell if it has at least one
+  // background neighbor
   for (long i = 0; i < get_number_of_voxels(); i++) {
     if ((data_[i] != IMP_BACKGROUND_VAL) && (has_background_neighbor(i))) {
       data_[i] = IMP_SURFACE_VAL;
@@ -146,7 +146,7 @@ void SurfaceShellDensityMap::resample() {
   IMP_LOG_VERBOSE("going to binaries\n");
   binaries(num_shells_ * 2);
   IMP_LOG_VERBOSE("after binaries\n");
-  // find the voxeles that are part of the surface, so we'll have
+  // find the voxels that are part of the surface, so we'll have
   // background, surface and interior voxels
   std::vector<long> curr_shell_voxels;
   // all of the voxels that are part of the current shell
@@ -154,7 +154,7 @@ void SurfaceShellDensityMap::resample() {
   // all of the voxels that are part of the next shell
   std::vector<long> next_shell_voxels;
   // keeps the shell index for each of the data voxels
-  IMP_LOG_VERBOSE("reseting shell voxels\n");
+  IMP_LOG_VERBOSE("resetting shell voxels\n");
   std::vector<int> shell_voxels;
   shell_voxels.insert(shell_voxels.end(), get_number_of_voxels(), -1);
   for (long i = 0; i < get_number_of_voxels(); i++) {
@@ -205,7 +205,7 @@ void SurfaceShellDensityMap::resample() {
       data_[i] = 0.;
     }
   }
-  // incase we want to keep the shells and not the indexes
+  // in case we want to keep the shells and not the indexes
   // //now update the voxel data to be the shell index
   // for(long i=0;i<shell_voxels.size();i++) {
   //   data_[i]=shell_voxels[i];

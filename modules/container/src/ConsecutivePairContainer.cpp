@@ -24,7 +24,7 @@ ConsecutivePairContainer::ConsecutivePairContainer(
 }
 
 // add key of this container as attribute to all particles
-// if there might be ovrlaps - create a different keys for each instance
+// if there might be overlaps - create a different keys for each instance
 void ConsecutivePairContainer::init() {
   std::ostringstream oss;
   oss << "CPC cache " << key_count;
@@ -70,7 +70,7 @@ ExclusiveConsecutivePairContainer::ExclusiveConsecutivePairContainer(
 }
 
 // add key of this container as attribute to all particles
-// if there might be ovrlaps - create a different keys for each instance
+// if there might be overlaps - create a different keys for each instance
 void ExclusiveConsecutivePairContainer::init() {
   for (unsigned int i = 0; i < ps_.size(); ++i) {
     IMP_USAGE_CHECK(

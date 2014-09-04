@@ -77,7 +77,7 @@ void FitRestraint::initialize_model_density_map(FloatKey weight_key) {
       // The rigid body may be outside of the density. This means
       // that the generated SampledDensityMap will be empty,
       // as it ignore particles outside of the boundaries.
-      // To overcome that, we tranform the rb to the center of the
+      // To overcome that, we transform the rb to the center of the
       // density map, resample in this transformation and then move
       // the rigid body back to its correct position.
       algebra::Vector3D rb_centroid = core::get_centroid(core::XYZs(members));
@@ -172,11 +172,11 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const {
   f.close();
   kkk=kkk+1;
   */
-  // In many optimization senarios particles are can be found outside of
+  // In many optimization scenarios particles are can be found outside of
   // the density. When all particles are outside of the density the
   // cross-correlation score is zero and the derivatives are meaningless.
   // To handle these cases we return a huge score and do not calculate
-  // derivaties. The CG algorithm should adjust accordinely.
+  // derivatives. The CG algorithm should adjust accordingly.
   // Another option [CURRENTLY NOT IMPLEMENTED] is to guide the particles
   // back into the
   // density by using a simple distance restraint between the centroids

@@ -72,7 +72,7 @@ double get_percentage_of_voxels_covered_by_particles(
     for (ivoxz = iminz; ivoxz <= imaxz; ivoxz++) {
       znxny = ivoxz * nxny;
       for (ivoxy = iminy; ivoxy <= imaxy; ivoxy++) {
-        // we increment ivox this way to avoid unneceessary multiplication
+        // we increment ivox this way to avoid unnecessary multiplication
         // operations.
         ivox = znxny + ivoxy * nx + iminx;
         for (ivoxx = iminx; ivoxx <= imaxx; ivoxx++) {

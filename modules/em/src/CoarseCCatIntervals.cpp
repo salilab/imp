@@ -31,7 +31,7 @@ CoarseCCatIntervals::CoarseCCatIntervals() {
 
 void CoarseCCatIntervals::allocate_derivatives_array(int ncd) {
   if (dv_memory_allocated_) return;
-  // Allocate memmory for the derivative terms if not done yet
+  // Allocate memory for the derivative terms if not done yet
   stored_dvx_ = new double[ncd];
   stored_dvy_ = new double[ncd];
   stored_dvz_ = new double[ncd];
@@ -53,7 +53,7 @@ std::pair<double, algebra::Vector3Ds> CoarseCCatIntervals::evaluate(
   unsigned int number_of_particles = model_map->get_xyzr_particles().size();
   // If the function requires to be evaluated
   if (calls_counter_ % eval_interval == 0) {
-    // The base evaluate function calculates the derivates of the EM term.
+    // The base evaluate function calculates the derivatives of the EM term.
     stored_cc_ = CoarseCC::calc_score(em_map, model_map, scalefac);
     if (lderiv) {
       out_dv = CoarseCC::calc_derivatives(

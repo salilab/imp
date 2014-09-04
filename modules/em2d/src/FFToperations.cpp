@@ -146,7 +146,7 @@ void get_spectrum(const cv::Mat &m, cv::Mat &real, cv::Mat &imag) {
   cv::dft(temp, TEMP, cv::DFT_COMPLEX_OUTPUT, m.rows);
   // Real and imaginary
   // recover real part from the first channel
-  // both source and destination matrices must be allocateda
+  // both source and destination matrices must be allocated
   int rows = temp.rows;
   int cols = temp.cols;
   cv::Mat TEMP_1st_channel(rows, cols, m.type());  // real

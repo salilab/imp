@@ -163,7 +163,7 @@ MonteCarloMoverResult ScoreWeightedIncrementalBallMover::do_propose() {
         IMP_USAGE_CHECK(d.get_coordinates_are_optimized(),
                         "Particles passed to "
                             << "ScoreWeightedIncrementalBallMover must have "
-                            << "optimized cartesian coordinates. "
+                            << "optimized Cartesian coordinates. "
                             << moved_[i]->get_name() << " does not.");
         d.set_coordinates(algebra::get_random_vector_in<3>(
             algebra::Sphere3D(d.get_coordinates(), radius_)));
@@ -250,7 +250,7 @@ MCCGSampler::Container *MCCGSampler::set_up_movers(const Parameters &pms,
   if (pms.opt_keys_[0] != XK && pms.opt_keys_[1] != YK &&
       pms.opt_keys_[2] != ZK) {
     IMP_THROW("Currently, the MCCGSampler can only handle "
-                  << "cartesian coordinates",
+                  << "Cartesian coordinates",
               ValueException);
   }
   kernel::ParticlesTemp ps;
@@ -351,7 +351,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
   base::Pointer<Container> sc = set_up_movers(pms, mc);
   IMP_IF_CHECK(base::USAGE) {
     if (sc->get_indexes().size() == 0) {
-      IMP_WARN("There are no particles with optimized cartesian coordinates."
+      IMP_WARN("There are no particles with optimized Cartesian coordinates."
                << std::endl);
       return nullptr;
     }

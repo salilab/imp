@@ -1,6 +1,6 @@
 /**
  *  \file Color.cpp
- *  \brief XXXX.
+ *  \brief Represent an RGB color.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *

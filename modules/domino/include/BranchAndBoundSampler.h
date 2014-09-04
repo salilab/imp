@@ -1,6 +1,6 @@
 /**
  *  \file IMP/domino/BranchAndBoundSampler.h
- *  \brief A Bayesian inference-based sampler.
+ *  \brief Sample best solutions using BranchAndBound.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *

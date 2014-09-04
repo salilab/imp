@@ -463,7 +463,7 @@ ResidueType CHARMMParameters::parse_residue_line(const String &line,
   if (ResidueType::get_key_exists(curr_residue)) {
     return ResidueType(curr_residue);
   } else {
-    // assume charmm is correct
+    // assume CHARMM is correct
     return ResidueType(ResidueType::add_key(curr_residue));
   }
 }
@@ -677,7 +677,7 @@ void CHARMMParameters::read_parameter_file(base::TextInput input_file) {
     }
   }
   if (force_field_2_vdW_.size() == 0) {
-    IMP_FAILURE("NONBONDED params not found in Charmm parameter file");
+    IMP_FAILURE("NONBONDED params not found in CHARMM parameter file");
   }
 }
 

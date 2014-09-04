@@ -1,6 +1,6 @@
 /**
  *  \file Domain.cpp
- *  \brief XXXX.
+ *  \brief  A decorator for associating a particle with a protein domain.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
