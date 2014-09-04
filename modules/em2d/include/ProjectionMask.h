@@ -131,7 +131,7 @@ inline void do_place(cv::Mat &mask, cv::Mat &m, const algebra::Vector2D &v) {
   }
 }
 
-//! Manage of projection masks
+//! Management of projection masks
 class IMPEM2DEXPORT MasksManager {
  public:
   MasksManager() {
