@@ -32,6 +32,7 @@ const unsigned int ALIGN2D_NO_PREPROCESSING = 0;
 const unsigned int ALIGN2D_PREPROCESSING = 1;
 const unsigned int ALIGN2D_WITH_CENTERS = 2;
 
+//! Parameters used by Em2DRestraint and ProjectionFinder.
 class IMPEM2DEXPORT Em2DRestraintParameters : public ProjectingParameters {
 
   void init_defaults() {
@@ -43,7 +44,7 @@ class IMPEM2DEXPORT Em2DRestraintParameters : public ProjectingParameters {
   }
 
  public:
-  // Number of model projections to generate when scoring
+  //! Number of model projections to generate when scoring
   unsigned int n_projections;
   unsigned int coarse_registration_method;
   bool save_match_images;
