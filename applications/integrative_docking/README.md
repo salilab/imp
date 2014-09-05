@@ -22,7 +22,8 @@ Additionally the protocol calculates SOAP score based on an atomic statistical p
 The protocol proceeds by first sampling complex models using
 [PatchDock](http://bioinfo3d.cs.tau.ac.il/PatchDock/) for pairwise protein
 docking, followed by
-[filtering based on fit to the experimental data](@ref idock_progs), clustering and composite scoring.
+\subpage idock_progs "filtering based on fit to the experimental data",
+clustering and composite scoring.
 
 _Examples_:
  - [Docking of PCSK9](../tutorial/idock_pcsk9.html)
