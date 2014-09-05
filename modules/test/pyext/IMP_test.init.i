@@ -326,7 +326,10 @@ class TestCase(unittest.TestCase):
             custom_words=["info", "prechange", "int", "ints", "optimizeds", "graphviz",
                           "voxel", "voxels", "endian", 'rna', 'dna',
                           "xyzr", "pdbs", "fft", "ccc", "gaussian"]
-            self.words=set(wordlist+custom_words)
+            # Exclude some common alternative spellings - we want to
+            # be consistent
+            exclude_words = set(["adapter", "grey"])
+            self.words=set(wordlist+custom_words) - exclude_words
         if self.words:
             for i in "0123456789":
                 if i in word:
