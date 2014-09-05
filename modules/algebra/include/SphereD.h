@@ -150,7 +150,7 @@ inline std::ostream &operator<<(std::ostream &out, const SphereSpacesIO<D> &s) {
 //! Use this before outputting to a stream with spaces delimiting
 /** std::cout << spaces_io(s);
     produces "1.0 2.0 3.0 4.0" where the radius is 4.0
-    See SphereD
+    \see SphereD
  */
 template <int D>
 inline internal::SphereSpacesIO<D> spaces_io(const SphereD<D> &v) {

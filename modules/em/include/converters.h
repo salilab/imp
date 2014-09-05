@@ -58,7 +58,7 @@ Each such particle should have xyz, radius and weight attributes
 \param[in] sig_cutoff sigma cutoff used in sampling
 \param[in] weight_key the weight attribute key of the particles
 \return the sampled density grid
-See SampledDensityMap
+\see SampledDensityMap
  */
 IMPEMEXPORT SampledDensityMap *particles2density(
     const kernel::ParticlesTemp &ps, Float resolution, Float apix,
@@ -75,7 +75,7 @@ Each such particle should have xyz radius and weight attributes
 \param[in] sig_cutoff sigma cutoff used in sampling
 \param[in] weight_key the weight attribute key of the particles
 \return the sampled density grid
-See SampledDensityMap
+\see SampledDensityMap
  */
 inline IMPEMEXPORT SampledDensityMap *particles2binarized_density(
     const kernel::ParticlesTemp &ps, Float resolution, Float apix,
@@ -94,7 +94,7 @@ Each such particle should have xyz radius and weight attributes
 \param[in] apix the voxel size of the surface map
 \param[in] weight_key the weight attribute key of the particles
 \return the surface grid
-See SampledDensityMap
+\see SampledDensityMap
  */
 IMPEMEXPORT SurfaceShellDensityMap *particles2surface(
     const kernel::ParticlesTemp &ps, Float apix,

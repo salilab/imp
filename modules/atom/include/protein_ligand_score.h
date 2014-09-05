@@ -64,11 +64,9 @@ class IMPATOMEXPORT ProteinLigandAtomPairScore
 
 IMP_OBJECTS(ProteinLigandAtomPairScore, ProteinLigandAtomPairScores);
 
-/** Score a pair of molecules. See ProteinLigandAtomPairScore for
-    simply scoring the atom pairs.
-
-    \see ProteinLigandAtomPairScore
-*/
+//! Score a pair of molecules.
+/** \see ProteinLigandAtomPairScore for simply scoring the atom pairs.
+ */
 class IMPATOMEXPORT ProteinLigandRestraint : public container::PairsRestraint {
   void initialize(Hierarchy protein, Hierarchy ligand);
 

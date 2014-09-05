@@ -52,7 +52,7 @@
 #define IMP_OBJECTS(Name, PluralName)                              \
   /** Store a set of objects.*/                                    \
   typedef IMP::base::Vector<IMP::base::Pointer<Name> > PluralName; \
-  /** Pass a set of objects. See Name */                           \
+  /** Pass a set of objects. \see Name */                          \
   typedef IMP::base::Vector<IMP::base::WeakPointer<Name> > PluralName##Temp;
 
 #define IMP_GENERIC_OBJECT(Name, lcname, targument, carguments, cparguments) \

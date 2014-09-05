@@ -93,7 +93,7 @@
       IMP_BENCHMARK_HEAP_PROFILING_END
 
 //! Time the given command and assign the time of one iteration to the variable
-/** The units for the time are in seconds. See also IMP_TIME_N */
+/** The units for the time are in seconds. \see IMP_TIME_N */
 #define IMP_TIME(block, timev)                                           \
   IMP_BENCHMARK_RUN {                                                    \
     boost::timer imp_timer;                                              \
@@ -116,7 +116,7 @@
   }
 
 //! Time the given command and assign the time of one iteration to the variable
-/** The units for the time are in seconds. See also IMP_TIME_N */
+/** The units for the time are in seconds. \see IMP_TIME_N */
 #define IMP_WALLTIME(block, timev)                                        \
   IMP_BENCHMARK_RUN {                                                     \
     using namespace boost::posix_time;                                    \
@@ -143,7 +143,7 @@
 
 //! Time the given command and assign the time of one iteration to the variable
 /** The units for the time are in seconds. The bit of code is run
-    exact N times. See also IMP_TIME */
+    exactly N times. \see IMP_TIME */
 #define IMP_TIME_N(block, timev, N)                                \
   IMP_BENCHMARK_RUN {                                              \
     boost::timer imp_timer;                                        \

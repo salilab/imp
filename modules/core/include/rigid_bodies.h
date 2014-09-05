@@ -221,7 +221,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   void set_reference_frame(const IMP::algebra::ReferenceFrame3D &tr);
 
   //! Change the reference, delay updating the members until evaluate
-  /** See set_reference_frame()
+  /** \see set_reference_frame()
    */
   void set_reference_frame_lazy(const IMP::algebra::ReferenceFrame3D &tr);
 
@@ -534,8 +534,8 @@ IMPCOREEXPORT RigidMembersRefiner *get_rigid_members_refiner();
     body, as opposed to replacing the current conformation, as in
     RigidBody::set_reference_frame().
 
-    See RigidBody
-     algebra::Transformation3D
+    \see RigidBody
+    \see algebra::Transformation3D
 */
 inline void transform(RigidBody a, const algebra::Transformation3D &tr) {
   a.set_reference_frame(get_transformed(a.get_reference_frame(), tr));

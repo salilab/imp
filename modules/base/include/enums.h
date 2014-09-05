@@ -69,7 +69,7 @@ IMPBASEEXPORT std::ostream &operator<<(std::ostream &in, CheckLevel ll);
 #endif
 
 //! Specify the level of statistics to record
-/** See show_timings(). */
+/** \see show_timings(). */
 enum StatisticsLevel {
   NO_STATISTICS = 0,
   ALL_STATISTICS = 1

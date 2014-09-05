@@ -114,9 +114,9 @@ inline Transformation3D get_rotation_about_point(const Vector3D &point,
   return Transformation3D(rotation, (rotation * (-point) + point));
 }
 
-//! compose two transformations
+//! Compose two transformations
 /** For any vector v (a*b)*v = a*(b*v).
-    See Transformation3D
+    \see Transformation3D
  */
 inline Transformation3D compose(const Transformation3D &a,
                                 const Transformation3D &b) {

@@ -187,7 +187,7 @@ IMPCORE_BEGIN_NAMESPACE
 //! Compute the distance between a pair of particles
 /** compute the distance between the x,y,z coordinates of a and b
     \ingroup helper
-    See XYZ
+    \see XYZ
  */
 inline double get_distance(XYZ a, XYZ b) {
   return algebra::get_distance(a.get_coordinates(), b.get_coordinates());
@@ -195,13 +195,13 @@ inline double get_distance(XYZ a, XYZ b) {
 
 //! Compute the dihedral angle (in radians) between the four particles
 /** \ingroup helper
-    See XYZ
+    \see XYZ
  */
 IMPCOREEXPORT double get_dihedral(XYZ a, XYZ b, XYZ c, XYZ d);
 
 //! Apply a transformation to the particle
-/** See XYZ
-    See algebra::Transformation3D
+/** \see XYZ
+    \see algebra::Transformation3D
 */
 IMPCOREEXPORT void transform(XYZ a, const algebra::Transformation3D &tr);
 

@@ -70,10 +70,9 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
    */
   double evaluate(bool calc_derivs) const;
 
-  //! See Model::evaluate_if_good()
   double evaluate_if_good(bool calc_derivatives) const;
 
-  //! See Model::evaluate_with_maximum()
+  //! \see Model::evaluate_with_maximum()
   double evaluate_if_below(bool calc_derivatives, double max) const;
 
   /** \name Evaluation implementation

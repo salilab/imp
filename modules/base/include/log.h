@@ -110,14 +110,14 @@ inline bool get_is_log_output(LogLevel l) { return l <= get_log_level(); }
 
     @{
  */
-/** Set up the progress bar with the passed description.
-
-    See IMP_PROGRESS_DISPLAY().
+//! Set up the progress bar with the passed description.
+/** \see IMP_PROGRESS_DISPLAY().
 */
 IMPBASEEXPORT void set_progress_display(std::string description,
                                         unsigned int steps);
-/** Set the current progress. When it equals the number of steps,
-    the bar is done.*/
+
+//! Set the current progress.
+/** When it equals the number of steps, the bar is done. */
 IMPBASEEXPORT void add_to_progress_display(unsigned int step = 1);
 
 /** @} */

@@ -17,8 +17,7 @@
     different. This macro also defines the output operator
     for the type.
 
-    See
-    \ref values "Value and Objects" for a description of what
+    See \ref values "Value and Objects" for a description of what
     it means to be an object vs a value in \imp.
  */
 #define IMP_VALUES(Name, PluralName) \

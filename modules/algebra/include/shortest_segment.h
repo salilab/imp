@@ -21,13 +21,13 @@ IMPALGEBRA_BEGIN_NAMESPACE
     the segment is in the first passed object and the 1 point is in
     the second.
 */
-/** See Segment3D
-    See Vector3D
+/** \see Segment3D
+    \see Vector3D
 */
 IMPALGEBRAEXPORT Segment3D
     get_shortest_segment(const Segment3D &s, const Vector3D &p);
 
-/** See Segment3D
+/** \see Segment3D
  */
 IMPALGEBRAEXPORT Segment3D
     get_shortest_segment(const Segment3D &sa, const Segment3D &sb);

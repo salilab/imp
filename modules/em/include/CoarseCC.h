@@ -47,7 +47,7 @@ class IMPEMEXPORT CoarseCC : public IMP::base::Object {
       \param[in] norm_factors if set these precalculated terms are used
                             for normalization
       \return the value of the cross correlation term: scalefac*(1-ccc)
-      See cross_correlation_coefficient
+      \see cross_correlation_coefficient
    */
   static float calc_score(DensityMap *data, SampledDensityMap *model_map,
                           float scalefactor, bool recalc_rms = true,

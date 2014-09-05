@@ -213,9 +213,8 @@ class IMPEMEXPORT DensityHeader {
   int data_type_;
 };
 
-//! Create a header from a bounding box 3D
-/**
- See DensityHeader
+//! Create a header from a bounding box in 3D
+/** \see DensityHeader
 */
 IMPEMEXPORT DensityHeader
     create_density_header(const algebra::BoundingBoxD<3>& bb, float spacing);

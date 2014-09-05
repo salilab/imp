@@ -356,7 +356,7 @@
     }                                                                          \
   } while (false)
 
-/** See IMP_CONTAINER_FOREACH().
+/** \see IMP_CONTAINER_FOREACH().
 
     This version is for use in a template function. See
     IMP_FOREACH_INDEX() for another version.

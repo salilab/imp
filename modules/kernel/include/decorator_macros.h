@@ -505,7 +505,7 @@
   IMP_DECORATORS(Name, Name##s, Parent##s)
 
 
-/** See IMP_SUMMARIZE_DECORATOR_DECL()
+/** \see IMP_SUMMARIZE_DECORATOR_DECL()
     \param[in] Name The name for the decorator
     \param[in] Parent the parent decorator type
     \param[in] Members the way to pass a set of particles in
@@ -552,7 +552,7 @@
    IMP_SUMMARIZE_DECORATOR_DECL(Name, Parent, Member, )
 
 // for backward compatability
-/** See IMP_SUMMARY_DECORATOR_DECL()
+/** \see IMP_SUMMARY_DECORATOR_DECL()
     \param[in] Name The name for the decorator
     \param[in] Parent the parent decorator type
     \param[in] Members the way to pass a set of particles in

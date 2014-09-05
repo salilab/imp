@@ -24,7 +24,7 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 //! Return all bipartite pairs between two containers
-/** See also AllPairContainer, ClosePairContainer,
+/** \see AllPairContainer, ClosePairContainer,
     CloseBipartitePairContainer for variants on the functionality provided.
  */
 class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer {

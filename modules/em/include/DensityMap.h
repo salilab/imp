@@ -38,35 +38,35 @@ IMPEMEXPORT DensityMap *create_density_map(const algebra::BoundingBox3D &bb,
 IMPEMEXPORT DensityMap *create_density_map(int nx, int ny, int nz,
                                            double spacing);
 
-/** Read a density map from a file and return it.
-    See DensityMap
+//! Read a density map from a file and return it.
+/** \see DensityMap
 */
 IMPEMEXPORT DensityMap *read_map(std::string filename, MapReaderWriter *reader);
 
-/** Read a density map from a file and return it. Guess the file type from the
-    file name. The file formats supported are:
+//! Read a density map from a file and return it.
+/** Guess the file type from the file name. The file formats supported are:
     - .mrc
     - .em
     - .vol
     - .xplor
-    See DensityMap
+    \see DensityMap
 */
 IMPEMEXPORT DensityMap *read_map(std::string filename);
 
-/** Write a density map to a file.
-    See DensityMap
+//! Write a density map to a file.
+/** \see DensityMap
 */
 IMPEMEXPORT void write_map(DensityMap *m, std::string filename,
                            MapReaderWriter *writer);
 
-/** Write a density map to a file.
-    Guess the file type from the
+//! Write a density map to a file.
+/** Guess the file type from the
     file name. The file formats supported are:
     - .mrc
     - .em
     - .vol
     - .xplor
-    See DensityMap
+    \see DensityMap
 */
 IMPEMEXPORT void write_map(DensityMap *m, std::string filename);
 
@@ -523,7 +523,7 @@ IMPEMEXPORT DensityMap *get_transformed(DensityMap *input,
 //! Get a resampled version of the map.
 /** The spacing is multiplied by scaling.
     That means, scaling values greater than 1 increase the voxel size.
-    See DensityMap
+    \see DensityMap
 */
 IMPEMEXPORT DensityMap *get_resampled(DensityMap *input, double scaling);
 
@@ -533,7 +533,7 @@ IMPEMEXPORT DensityMap *get_resampled(DensityMap *input, double scaling);
 \param[in] tr transform the from density map by this transformation
 \param[out] into the map to transform into
 \param[in] calc_rms if true RMS is calculated on the transformed map
- See DensityMap
+ \see DensityMap
 */
 IMPEMEXPORT void get_transformed_into(const DensityMap *source,
                                       const algebra::Transformation3D &tr,
@@ -553,7 +553,7 @@ inline bool get_interiors_intersect(const DensityMap *d1,
 \param[in] threshold only add voxels with value above this threshold
                      to the histogram
 \param[in] num_bins the number of bins to have in the histogram
- See DensityMap
+ \see DensityMap
 */
 // IMPEMEXPORT statistics::Histogram
 // get_density_histogram(const DensityMap *dmap, float threshold,int num_bins);

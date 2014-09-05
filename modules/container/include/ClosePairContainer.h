@@ -59,7 +59,7 @@ a call to kernel::Model::update().
     Here is a simple example of using this for a nonbonded list
     \include nonbonded_interactions.py
 
-    See also AllPairContainer, CloseBipartitePairContainer,
+    \see AllPairContainer, CloseBipartitePairContainer,
     AllBipartitePairContainer for variants on the functionality provided.
 
  */

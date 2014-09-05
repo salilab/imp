@@ -40,84 +40,84 @@ IMP_VALUES(ResidueType, ResidueTypes);
     \see Residue
 */
 
-/** Unknown residue */
+//! Unknown residue
 IMPATOMEXPORT extern const ResidueType UNK;
-/** See ResidueType
+/** \see ResidueType
     glycine G*/
 IMPATOMEXPORT extern const ResidueType GLY;
 #ifndef IMP_DOXYGEN
 /* Code currently assumes that all indices between GLY.get_index()
    and TRP.get_index() being amino acids */
-/** alanine A*/
+//! alanine A
 IMPATOMEXPORT extern const ResidueType ALA;
-/** valine V*/
+//! valine V
 IMPATOMEXPORT extern const ResidueType VAL;
-/** leucine L*/
+//! leucine L
 IMPATOMEXPORT extern const ResidueType LEU;
-/** isoleucine I*/
+//! isoleucine I
 IMPATOMEXPORT extern const ResidueType ILE;
-/** serine S*/
+//! serine S
 IMPATOMEXPORT extern const ResidueType SER;
-/** threonine T*/
+//! threonine T
 IMPATOMEXPORT extern const ResidueType THR;
-/** cysteine C*/
+//! cysteine C
 IMPATOMEXPORT extern const ResidueType CYS;
-/** methionine M*/
+//! methionine M
 IMPATOMEXPORT extern const ResidueType MET;
-/** proline P*/
+//! proline P
 IMPATOMEXPORT extern const ResidueType PRO;
-/** aspartic acid D*/
+//! aspartic acid D
 IMPATOMEXPORT extern const ResidueType ASP;
-/** asparagine N*/
+//! asparagine N
 IMPATOMEXPORT extern const ResidueType ASN;
-/** glutamine Q*/
+//! glutamine Q
 IMPATOMEXPORT extern const ResidueType GLU;
-/** glutamic acid E*/
+//! glutamic acid E
 IMPATOMEXPORT extern const ResidueType GLN;
-/** lysine K*/
+//! lysine K
 IMPATOMEXPORT extern const ResidueType LYS;
-/** arginine N*/
+//! arginine N
 IMPATOMEXPORT extern const ResidueType ARG;
-/** histidine H*/
+//! histidine H
 IMPATOMEXPORT extern const ResidueType HIS;
-/** phenylalanine F*/
+//! phenylalanine F
 IMPATOMEXPORT extern const ResidueType PHE;
-/** tyrosine Y */
+//! tyrosine Y
 IMPATOMEXPORT extern const ResidueType TYR;
-/** tryptophan W */
+//! tryptophan W
 IMPATOMEXPORT extern const ResidueType TRP;
-/** ACE */
+//! ACE
 IMPATOMEXPORT extern const ResidueType ACE;
-/** end group */
+//! end group
 IMPATOMEXPORT extern const ResidueType NH2;
 /* Code currently assumes that all indices between ADE.get_index()
    and DTHY.get_index() being nucleic acid */
-/** adenine (RNA) */
+//! adenine (RNA)
 IMPATOMEXPORT extern const ResidueType ADE;
-/** uracil (RNA) */
+//! uracil (RNA)
 IMPATOMEXPORT extern const ResidueType URA;
-/** cytosine (RNA) */
+//! cytosine (RNA)
 IMPATOMEXPORT extern const ResidueType CYT;
-/** guanine (RNA) */
+//! guanine (RNA)
 IMPATOMEXPORT extern const ResidueType GUA;
-/** thymine (RNA) */
+//! thymine (RNA)
 IMPATOMEXPORT extern const ResidueType THY;
-/** adenine (DNA) */
+//! adenine (DNA)
 IMPATOMEXPORT extern const ResidueType DADE;
-/** uracil (DNA) */
+//! uracil (DNA)
 IMPATOMEXPORT extern const ResidueType DURA;
-/** cytosine (DNA) */
+//! cytosine (DNA)
 IMPATOMEXPORT extern const ResidueType DCYT;
-/** guanine (DNA) */
+//! guanine (DNA)
 IMPATOMEXPORT extern const ResidueType DGUA;
-/** thymine (DNA) */
+//! thymine (DNA)
 IMPATOMEXPORT extern const ResidueType DTHY;
 
 // All further residues (including user-added residues) are ligands
 
-/** water molecule */
+//! water molecule
 IMPATOMEXPORT extern const ResidueType HOH;
-/** heme */
+//! heme
 IMPATOMEXPORT extern const ResidueType HEME;
 #endif
 /*@}*/

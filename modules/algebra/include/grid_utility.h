@@ -30,7 +30,7 @@ inline Value get_linearly_interpolated(
     and the passed outside value is used for voxels outside the
     grid. The type Voxel must support get_linearly_interpolated().
     \see get_linearly_interpolated()
-    See GridD
+    \see GridD
 */
 template <class Storage, class Embedding>
 inline const typename Storage::Value get_trilinearly_interpolated(
@@ -76,7 +76,7 @@ IMPALGEBRA_END_NAMESPACE
     GridIndexD<3> voxel_index and the coordinates of the center is
     Vector3D voxel_center and the index of the voxel is
     loop_voxel_index.
-    See Grid3D
+    \see Grid3D
  */
 #define IMP_GRID3D_FOREACH_VOXEL(g, action)                                    \
   {                                                                            \
@@ -115,7 +115,7 @@ IMPALGEBRA_END_NAMESPACE
 /** Iterate over each voxel in a subset of the grid that are less than
     center. The voxel index is unsigned int voxel_index[3]. Use this if,
     for example you want to find nearby pairs of voxels once each.
-    See Grid3D
+    \see Grid3D
 */
 #define IMP_GRID3D_FOREACH_SMALLER_EXTENDED_INDEX_RANGE(                       \
     grid, center, lower_corner, upper_corner, action)                          \

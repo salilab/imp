@@ -22,15 +22,15 @@
 */
 #define IMP_VOLUME_GEOMETRY_METHODS(Name, name, area, volume, bounding_box) \
   IMP_VALUES(Name, Name##s);                                                \
-  /** See Name */                                                           \
+  /** \see Name */                                                          \
   inline double get_surface_area(const Name &g) { area; }                   \
-  /** See Name */                                                           \
+  /** \see Name */                                                          \
   inline double get_volume(const Name &g) { volume; }                       \
-  /** See Name */                                                           \
+  /** \see Name */                                                          \
   inline BoundingBoxD<3> get_bounding_box(const Name &g) { bounding_box; }  \
-  /** See Name */                                                           \
+  /** \see Name */                                                          \
   inline const Name &get_##name##_geometry(const Name &g) { return g; }     \
-  /** See Name */                                                           \
+  /** \see Name */                                                          \
   IMP_NO_SWIG(                                                              \
       inline void set_##name##_geometry(Name &g, const Name &v) { g = v; })
 
@@ -45,19 +45,19 @@
     the expected value.
 */
 #define IMP_VOLUME_GEOMETRY_METHODS_D(Name, name, area, volume, bounding_box) \
-  /** See Name */                                                             \
+  /** \see Name */                                                            \
   inline double get_surface_area(const Name##D<3> &g) { area; }               \
-  /** See Name */                                                             \
+  /** \see Name */                                                            \
   inline double get_volume(const Name##D<3> &g) { volume; }                   \
-  /** See Name */                                                             \
+  /** \see Name */                                                            \
   template <int D>                                                            \
   inline BoundingBoxD<D> get_bounding_box(const Name##D<D> &g) {              \
     bounding_box;                                                             \
   }                                                                           \
-  /** See Name */                                                             \
+  /** \see Name */                                                            \
   IMP_NO_SWIG(template <int D> inline void set_##name##_d_geometry(           \
       Name##D<D> &g, const Name##D<D> &v) { g = v; }                          \
-              /** See Name */                                                 \
+              /** \see Name */                                                \
               template <int D>                                                \
               inline const Name##D<D> &get_##name##_d_geometry(               \
                   const Name##D<D> &g) { return g; })                         \
@@ -95,9 +95,9 @@
 */
 #define IMP_LINEAR_GEOMETRY_METHODS(Name, name, bounding_box)              \
   IMP_VALUES(Name, Name##s);                                               \
-  /** See Name */                                                          \
+  /** \see Name */                                                         \
   inline BoundingBoxD<3> get_bounding_box(const Name &g) { bounding_box; } \
-  /** See Name */                                                          \
+  /** \see Name */                                                         \
   inline const Name &get_##name##_geometry(const Name &g) { return g; }    \
   IMP_NO_SWIG(                                                             \
       inline void set_##name##_geometry(Name &g, const Name &gi) { g = gi; })
@@ -113,13 +113,13 @@
 */
 #define IMP_AREA_GEOMETRY_METHODS(Name, name, area, bounding_box)          \
   IMP_VALUES(Name, Name##s);                                               \
-  /** See Name */                                                          \
+  /** \see Name */                                                         \
   inline double get_area(const Name &g) { area; }                          \
-  /** See Name */                                                          \
+  /** \see Name */                                                         \
   inline BoundingBoxD<3> get_bounding_box(const Name &g) { bounding_box; } \
-  /** See Name */                                                          \
+  /** \see Name */                                                         \
   inline const Name &get_##name##_geometry(const Name &g) { return g; }    \
-  /** See Name */                                                          \
+  /** \see Name */                                                         \
   IMP_NO_SWIG(                                                             \
       inline void set_##name##_geometry(Name &g, const Name &v) { g = v; })
 
@@ -133,22 +133,22 @@
     the expected value.
 */
 #define IMP_AREA_GEOMETRY_METHODS_D(Name, name, area, bounding_box) \
-  /** See Name */                                                   \
+  /** \see Name */                                                  \
   template <int D>                                                  \
   inline double get_area(const Name##D<D> &g) {                     \
     area;                                                           \
   }                                                                 \
-  /** See Name */                                                   \
+  /** \see Name */                                                  \
   template <int D>                                                  \
   inline BoundingBoxD<D> get_bounding_box(const Name##D<D> &g) {    \
     bounding_box;                                                   \
   }                                                                 \
-  /** See Name */                                                   \
+  /** \see Name */                                                  \
   template <int D>                                                  \
   inline const Name &get_##name##_d_geometry(const Name##D<D> &g) { \
     return g;                                                       \
   }                                                                 \
-  /** See Name */                                                   \
+  /** \see Name */                                                  \
   IMP_NO_SWIG(template <int D> inline void set_##name##_d_geometry( \
       Name &g, const Name##D<D> &v) { g = v; })                     \
       /** \brief Typedef for Python. */                             \

@@ -183,7 +183,7 @@ IMP_VALUES(Selection, Selections);
 
     If one or more of the selections is a rigid body, this will be used
     to accelerate the computation.
-    See Selection
+    \see Selection
  */
 IMPATOMEXPORT kernel::Restraint *create_distance_restraint(const Selection &n0,
                                                            const Selection &n1,
@@ -191,43 +191,41 @@ IMPATOMEXPORT kernel::Restraint *create_distance_restraint(const Selection &n0,
                                                            std::string name =
                                                                "Distance%1%");
 
-/** Create a restraint connecting the selections.
-
-    If one or more of the selections is a rigid body, this will be used
+//! Create a restraint connecting the selections.
+/** If one or more of the selections is a rigid body, this will be used
     to accelerate the computation.
-    See Selection
+    \see Selection
 */
 IMPATOMEXPORT kernel::Restraint *create_connectivity_restraint(
     const Selections &s, double k, std::string name = "Connectivity%1%");
 
-/** Create a restraint connecting the selections. The particles are
- allowed to be apart by x0 and still count as connected.
+//! Create a restraint connecting the selections.
+/** The particles are allowed to be apart by x0 and still count as connected.
 
     If one or more of the selections is a rigid body, this will be used
     to accelerate the computation.
-     See Selection
+    \see Selection
 */
 IMPATOMEXPORT kernel::Restraint *create_connectivity_restraint(
     const Selections &s, double x0, double k,
     std::string name = "Connectivity%1%");
 
-/** Create a restraint connecting the selection.
-
-    If one or more of the selections is a rigid body, this will be used
+//! Create a restraint connecting the selection.
+/** If one or more of the selections is a rigid body, this will be used
     to accelerate the computation.
 
-    See Selection
+    \see Selection
 */
 IMPATOMEXPORT kernel::Restraint *create_internal_connectivity_restraint(
     const Selection &s, double k, std::string name = "Connectivity%1%");
 
-/** Create a restraint connecting the selection. The particles are
- allowed to be apart by x0 and still count as connected.
+//! Create a restraint connecting the selection.
+/** The particles are allowed to be apart by x0 and still count as connected.
 
     If one or more of the selections is a rigid body, this will be used
     to accelerate the computation.
 
- See Selection
+    \see Selection
 */
 IMPATOMEXPORT kernel::Restraint *create_internal_connectivity_restraint(
     const Selection &s, double x0, double k,
@@ -244,39 +242,39 @@ IMPATOMEXPORT kernel::Restraint *create_internal_connectivity_restraint(
     geometry represented by the selection with a much simpler
     one.
 
-    See Selection
+    \see Selection
 */
 IMPATOMEXPORT core::XYZR create_cover(const Selection &s,
                                       std::string name = std::string());
 
-/** Get the total mass of a hierarchy. In Daltons.
-    See Selection
+//! Get the total mass of a hierarchy, in Daltons.
+/** \see Selection
  */
 IMPATOMEXPORT double get_mass(const Selection &s);
 
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
-/** Get the total volume of a hierarchy. In cubic angstroms.
-    \requires{get_volume, CGAL}
-    See Selection
+//! Get the total volume of a hierarchy, in cubic angstroms.
+/** \requires{get_volume, CGAL}
+    \see Selection
 */
 IMPATOMEXPORT double get_volume(const Selection &s);
 
-/** Get the total surface area of a hierarchy. In square angstroms.
-    \requires{get_surface_area, CGAL}
-    See Selection
+//! Get the total surface area of a hierarchy, in square angstroms.
+/** \requires{get_surface_area, CGAL}
+    \see Selection
 */
 IMPATOMEXPORT double get_surface_area(const Selection &s);
 #endif
 
-/**     See Selection
+/** \see Selection
  */
 IMPATOMEXPORT double get_radius_of_gyration(const Selection &s);
 
-/** Create an excluded volume restraint for a list of selections.*/
+//! Create an excluded volume restraint for a list of selections.
 IMPATOMEXPORT kernel::Restraint *create_excluded_volume_restraint(
     const Selections &s);
 
-/** See Hierarchy */
+/** \see Hierarchy */
 IMPATOMEXPORT Hierarchies get_leaves(const Selection &h);
 
 /** \class SelectionGeometry

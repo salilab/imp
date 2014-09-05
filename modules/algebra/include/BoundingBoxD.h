@@ -160,20 +160,20 @@ IMP_VOLUME_GEOMETRY_METHODS_D(BoundingBox, bounding_box, IMP_UNUSED(g);
                               return g);
 
 //! Box with radius one
-/** See BoundingBoxD */
+/** \see BoundingBoxD */
 template <unsigned int D>
 inline BoundingBoxD<D> get_unit_bounding_box_d() {
   return BoundingBoxD<D>(-get_ones_vector_d<D>(), get_ones_vector_d<D>());
 }
 
 //! Box with radius one
-/** See BoundingBoxD */
+/** \see BoundingBoxD */
 inline BoundingBoxD<-1> get_unit_bounding_box_kd(unsigned int d) {
   return BoundingBoxD<-1>(-get_ones_vector_kd(d), get_ones_vector_kd(d));
 }
 
 //! Cube with radius of length \c radius
-/** See BoundingBoxD */
+/** \see BoundingBoxD */
 template <unsigned int D>
 inline BoundingBoxD<D> get_cube_d(double radius) {
   return BoundingBoxD<D>(-radius * get_ones_vector_d<D>(),
@@ -181,14 +181,14 @@ inline BoundingBoxD<D> get_cube_d(double radius) {
 }
 
 //! Cube with radius of length \c side
-/** See BoundingBoxD */
+/** \see BoundingBoxD */
 inline BoundingBoxD<-1> get_cube_kd(unsigned int d, double radius) {
   return BoundingBoxD<-1>(-radius * get_ones_vector_kd(d),
                           radius * get_ones_vector_kd(d));
 }
 
 //! Return true if they intersect
-/** See BoundingBoxD */
+/** \see BoundingBoxD */
 template <int D>
 inline bool get_interiors_intersect(const BoundingBoxD<D> &a,
                                     const BoundingBoxD<D> &b) {
@@ -202,7 +202,7 @@ inline bool get_interiors_intersect(const BoundingBoxD<D> &a,
 }
 
 //! Return the intersecting bounding box
-/** See BoundingBoxD */
+/** \see BoundingBoxD */
 template <int D>
 inline BoundingBoxD<D> get_intersection(const BoundingBoxD<D> &a,
                                         const BoundingBoxD<D> &b) {
@@ -230,7 +230,7 @@ inline BoundingBoxD<D> get_intersection(const BoundingBoxD<D> &a,
 
 //! Return the union bounding box
 /** This is the same as doing a+b.
- See BoundingBoxD
+    \see BoundingBoxD
 */
 template <int D>
 inline BoundingBoxD<D> get_union(BoundingBoxD<D> a, const BoundingBoxD<D> &b) {
@@ -239,7 +239,7 @@ inline BoundingBoxD<D> get_union(BoundingBoxD<D> a, const BoundingBoxD<D> &b) {
 }
 
 //! Return the maximum axis aligned extent
-/** See BoundingBoxD */
+/** \see BoundingBoxD */
 template <int D>
 inline double get_maximum_length(const BoundingBoxD<D> &a) {
   double e = a.get_corner(1)[0] - a.get_corner(0)[0];
@@ -251,7 +251,7 @@ inline double get_maximum_length(const BoundingBoxD<D> &a) {
 }
 
 //! Return a list of the 8 bounding points for the bounding box
-/** See BoundingBoxD */
+/** \see BoundingBoxD */
 template <int D>
 inline base::Vector<VectorD<D> > get_vertices(const BoundingBoxD<D> &bb) {
   if (D == 1) {
@@ -285,7 +285,7 @@ inline base::Vector<VectorD<D> > get_vertices(const BoundingBoxD<D> &bb) {
 }
 
 //! Return the edges of the box as indices into the vertices list
-/** See BoundingBoxD */
+/** \see BoundingBoxD */
 inline IntPairs get_edges(const BoundingBoxD<3> &) {
   static const IntPair edges[12] = {
       IntPair(0, 1), IntPair(0, 2), IntPair(0, 4), IntPair(1, 3),
